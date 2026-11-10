@@ -1,0 +1,804 @@
+{
+  "format": "openrc-a34-checked-index-v1",
+  "date": "2026-11-09",
+  "purpose": "Retained latest successful focused checked receipts, validated by the existing Godot evidence summarizer; not a full-suite claim.",
+  "summarizer_stdout": "32 invocations: 32 passed, 0 skipped, 0 failed or invalid.\n",
+  "checks": [
+    {
+      "script": "test_aero_prop_checkpoint_laws.gd",
+      "platform": "Linux",
+      "local_report": "tmp/audit-corsair-runtime-20261108/checks/checkpoint-laws-draft-final-yrvxdqcj/report.json",
+      "report_sha256": "aaa9a2fecc9158f625d41374a8ed021c1dd1f2c29d6e6759a11da37a41f38914",
+      "log_sha256": "37eda3e720a782459ff9fb3c2825a212001c9ff0991446a56a5ca66cf8308a8c",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/test_aero_prop_checkpoint_laws.gd"
+      ]
+    },
+    {
+      "script": "test_aero_prop_checkpoint_laws.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_aero_prop_checkpoint_laws-10y6894q/report.json",
+      "report_sha256": "99bfbdbdd722df99bbf821e9e8a133f5a0ba0977fbd27aa09b75561f22857965",
+      "log_sha256": "37eda3e720a782459ff9fb3c2825a212001c9ff0991446a56a5ca66cf8308a8c",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aero_prop_checkpoint_laws.gd"
+      ]
+    },
+    {
+      "script": "test_cloud_cache_disable.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-final-edge-cache-disable/cache-disable-x453tfgy/report.json",
+      "report_sha256": "bb6f86dad3812137751bc1b86bc292d569962f058e788d87def31ae3a757c5c4",
+      "log_sha256": "101179a3baf76f2e85d4d06ab40ae21a6b874a8ae70caa301ed78f89f98ef35b",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_cloud_cache_disable.gd"
+      ]
+    },
+    {
+      "script": "test_cloud_shadow_map.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-final-edge-cache-core/cache-core-bwcscogz/report.json",
+      "report_sha256": "28a88a37a7914172dee6ff8fe02bd13469ebeac67e1f6d4602818dcaa2eb325d",
+      "log_sha256": "931112ef1931ded1da1410a729598d9ff96e69130a4168406e44dd02ded7b819",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_cloud_shadow_map.gd"
+      ]
+    },
+    {
+      "script": "test_extra_handling.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_extra_handling-ig0h9vuu/report.json",
+      "report_sha256": "13f98d13051f5f7d8e075a0b903edfb4b98aa353c81f68ae078c5ce79aed4182",
+      "log_sha256": "f89d8dab5d7eab74bd57d22b0ad04894e4929cd5f44ba6fbf90991462dc7aa53",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_extra_handling.gd"
+      ]
+    },
+    {
+      "script": "test_extra_post_stall.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_extra_post_stall-cp5z7gtq/report.json",
+      "report_sha256": "94119a9cbd145dbdce29ea2307b36b56d2b828e6555c7cbaa1aa91597bec0544",
+      "log_sha256": "689297bf12892b5b29f2114e7499942ad650175688a3eef52db95aeaf49d0a6b",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_extra_post_stall.gd"
+      ]
+    },
+    {
+      "script": "test_farm_tractor.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-render-tractor-low-4/tractor-low-ih7_8tsp/report.json",
+      "report_sha256": "b0406dc55697362fe4f0d42223fd9e6c923eb01b3e5e764170acc25462ce27ea",
+      "log_sha256": "35b04d254906d55d74ed5aa145fbe908c58905008b4af364bc0b51a2c3964051",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_farm_tractor.gd",
+        "--",
+        "--low-only"
+      ]
+    },
+    {
+      "script": "test_flap_offset.gd",
+      "platform": "Linux",
+      "local_report": "tmp/audit-corsair-runtime-20261108/checks/flap-public-final-draft-5t0zhbgw/report.json",
+      "report_sha256": "bda36a11a53f04249486e33ed32bcc9084256a7734bed46b34a62f98e8dce128",
+      "log_sha256": "17355d80fad721f22beaae6d7d44457bf4fa8f63331da0c0930d3318c638b7d3",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/test_flap_offset.gd"
+      ]
+    },
+    {
+      "script": "test_flap_offset.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_flap_offset-nko15et2/report.json",
+      "report_sha256": "45d2f0da4393bfc7bc41bd5674018da5d200932a5b01135603ee642d03e88c9e",
+      "log_sha256": "17355d80fad721f22beaae6d7d44457bf4fa8f63331da0c0930d3318c638b7d3",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flap_offset.gd"
+      ]
+    },
+    {
+      "script": "test_flight_log.gd",
+      "platform": "Linux",
+      "local_report": "tmp/godot-checks/audit-final-flight-log-7_ylrjpx/report.json",
+      "report_sha256": "822ffeac9b77219e8567b06e144a834715f065c1c470fb5be0692d19a43a0f89",
+      "log_sha256": "881e6cf1086536d6733b18d16a17f235114156486d9846d01cd32612cc37e22d",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_log.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-physics-20261109/log-final"
+      ]
+    },
+    {
+      "script": "test_flight_log.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-integration-20261109/flight-log-0dtlvax7/report.json",
+      "report_sha256": "2a268e3288b9b85e9121251bd2ed61edbe003502597df3c5044f64c684cf796d",
+      "log_sha256": "f48856b5e2f035e88e2f91c7ca3ba9423aa2f448a481e69f7edd9b007daa4865",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_log.gd"
+      ]
+    },
+    {
+      "script": "test_flight_statistics_lifecycle.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-statistics-20261109-socket/statistics-lifecycle-olmai1p_/report.json",
+      "report_sha256": "c5002acc61d5e56cfea75ce7598dd9ed834c343359ed2975227fbb2da1f323a7",
+      "log_sha256": "3b9b84e42df93e84e94f24024f726357929ee64fd0904970cd9e91ced47382cb",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_lifecycle.gd"
+      ]
+    },
+    {
+      "script": "test_flight_statistics_lock.gd",
+      "platform": "Linux",
+      "local_report": "tmp/audit-statistics-20261109-socket/statistics-linux-lock-go6x11d6/report.json",
+      "report_sha256": "1c88527487dd6eff7dbe8832071eb335ab696db533799ca6d5de05ac81d19b79",
+      "log_sha256": "663fabe8c37caa98fab68f26735f192848209253a4d2591243babc4e6599bc45",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        "/tmp/openrc-statistics-audit-20261109-195486/godot",
+        "--headless",
+        "--path",
+        "/tmp/openrc-statistics-audit-20261109-195486/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_lock.gd"
+      ]
+    },
+    {
+      "script": "test_flight_statistics_lock.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-statistics-20261109-socket/statistics-lock-evidence-b6ov0aa4/report.json",
+      "report_sha256": "5baa12e2fda3582d0a2a2212de2c2fceaba9586c2da29c1dd6bfe0f0202d8153",
+      "log_sha256": "809038cdd3b7ee6cf09551ef88f6e4dc30906340a8391c54f2ec1b0675ce1a82",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_lock.gd"
+      ]
+    },
+    {
+      "script": "test_flight_statistics_store.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-statistics-20261109-socket/statistics-store-final-245hdi5t/report.json",
+      "report_sha256": "dd6ff7bcb748cb9a7bb3e9a070dc5a445f4da08671b1a9feaac506952aa4c202",
+      "log_sha256": "93d7d045c2b333e104bd38772e3d1adda957c6e80b2847c73a8b1f36955d4ae9",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_store.gd"
+      ]
+    },
+    {
+      "script": "test_flight_statistics_writer.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-statistics-20261109-socket/statistics-writer-85ownuv5/report.json",
+      "report_sha256": "8de12bedf7a4c5cb1c058b51a75b13937b0551c9a854f5f953de04d58a2d9092",
+      "log_sha256": "f00f9ae619659fd9c111d6ea7b9aa2f6248b2f6c9ba44a21a66e94dacb81c3de",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_writer.gd"
+      ]
+    },
+    {
+      "script": "test_golden.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-goldens-0uj7jh9g/report.json",
+      "report_sha256": "593e0a96da9de924e3c624d8dbb92de6f14b86248928dbf131cb9478b37b4986",
+      "log_sha256": "d83933be5c71914354b600719768846c7aa97b2dff6ff4f4f67593a2c095107f",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ]
+    },
+    {
+      "script": "test_landscape_collision_setup.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-final-edge-collision/collision-s9tglk96/report.json",
+      "report_sha256": "b8f0984fcf75bd0fb437f3de57688e677cf0af4656382375fa0394c5c128a8ac",
+      "log_sha256": "11643de70a79e6b455dbd214527f6f9334b019c3397f69b83ab890a85534d4ca",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_collision_setup.gd"
+      ]
+    },
+    {
+      "script": "test_optional_resource_loading.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-splash-config-resources-3/resources-pp8992it/report.json",
+      "report_sha256": "7986973508cde66f398909c19ca5de32a24baa2e356b2bdeb21058c1c0e1e048",
+      "log_sha256": "68ab1f21a8526bd0405424005803e89893c5b6406ccc6d01bd9c128d164ffa62",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_optional_resource_loading.gd"
+      ]
+    },
+    {
+      "script": "test_rc_track_flight.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-render-track-i18n-1/track-bdwmm9ko/report.json",
+      "report_sha256": "12720aa37f8da547f264eeabf174b555046709936e8710c89362ad4521c37aa5",
+      "log_sha256": "189912d99bac1e7afe6a4dca2d6b19fb56786eca8bdd55c10d5fb5a042ffed83",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rc_track_flight.gd"
+      ]
+    },
+    {
+      "script": "test_sky_relief_layers.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-final-edge-sky-layers/sky-layers-qwrktv1k/report.json",
+      "report_sha256": "16ccca84eeadaeab0604a24dc53a0c22030156d24ac917a25defcc9ea19e5839",
+      "log_sha256": "290b00d74e7244c8d01cb1ce7789e5cc58608a8864b7d9e376562e05bc5abb86",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_sky_relief_layers.gd"
+      ]
+    },
+    {
+      "script": "test_spatial_aero_continuation.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_spatial_aero_continuation-3xwp0bt5/report.json",
+      "report_sha256": "efdc4960a743bba596f3dd201bf9cc508aa7134e8e2e294e9d696ac9f4bf2447",
+      "log_sha256": "83717abf21de50fd59cac196729d8162ec901b3e35605cd870f1b411aaf73848",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_spatial_aero_continuation.gd"
+      ]
+    },
+    {
+      "script": "test_spatial_wind_aerodynamics.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_spatial_wind_aerodynamics-t_xfr0v4/report.json",
+      "report_sha256": "ffd21b44522b159235993a2ba651e20cdaae3b3a9ef141d1a48da51b1f3ddd11",
+      "log_sha256": "8daca0644ebec8bd20c7e832443f2de4f11d948b48b13e81af71508fa2f909be",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_spatial_wind_aerodynamics.gd"
+      ]
+    },
+    {
+      "script": "test_water_checkpoint.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-splash-config-checkpoint-1/checkpoint-ppkziqem/report.json",
+      "report_sha256": "b155f1288421e664e96ece8312acfba8bfaaf00b6a1baf78b85803e10b559c1e",
+      "log_sha256": "3cb9177c66798533c1d8bf9bbc1413a2b41202a6f41dfe1c352e0b30b9de8825",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_water_checkpoint.gd"
+      ]
+    },
+    {
+      "script": "test_water_director.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-splash-config-director-1/director-ifepym8r/report.json",
+      "report_sha256": "9e6e6c802fb2aa01f59fec2623c4ce465acd348acb25526acaae5ff49ca9085a",
+      "log_sha256": "548a652239033090594f732c680c8322bcc3a4ce8a99d4d7c7ce3ffe50542ee0",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_water_director.gd"
+      ]
+    },
+    {
+      "script": "test_water_effects.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-splash-config-water-1/water-99qh3xbb/report.json",
+      "report_sha256": "c4477c63be5ab1af2fd6b0f6ed3f8c69c96f63240883dc9156f7720f4daa9dea",
+      "log_sha256": "a6eca15468992d783a4a7f7d1ffc8c4daadf04f42193d370eb6cb5c59590aec2",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_water_effects.gd"
+      ]
+    },
+    {
+      "script": "test_wing_polar.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_wing_polar-u5pqclze/report.json",
+      "report_sha256": "f819b80e0bf2dcbbb73f090b777a43d6478cea34368bdfc046e6214158c861d2",
+      "log_sha256": "c867595854b85453db33e98fab2c8c80c47f79e21c0a7661533b4ae819851c93",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_polar.gd"
+      ]
+    },
+    {
+      "script": "test_wing_polar_session.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_wing_polar_session-cyp6prhi/report.json",
+      "report_sha256": "4e7d81aa82631d6455312940f58061bf38c0e66719e1bea95c38849dfb9afceb",
+      "log_sha256": "d73bc2f058aa42250b6c8f0fe5e366db98eb5f394bd27273307de445cec8d933",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_polar_session.gd"
+      ]
+    },
+    {
+      "script": "test_wing_reverse_flow.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-current-seams-_rqfnzyu/report.json",
+      "report_sha256": "2bc2c150e429f073af31ad26cda0bf1ef563ef181cc9a7d9fabe8e4504177eab",
+      "log_sha256": "25f84e8287e93e1d91fa21413eb965a1c4697491f1557aae502afa9687fb1e0d",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_reverse_flow.gd"
+      ]
+    },
+    {
+      "script": "test_wing_separated_offset.gd",
+      "platform": "Windows",
+      "local_report": "tmp/godot-checks/audit-final-test_wing_separated_offset-yg76j0si/report.json",
+      "report_sha256": "cecee7b5159e52f65c68833e3ae50fcb770d36380714886f6edce1d12d268cfc",
+      "log_sha256": "53aef0fd626d048b9c0eadb8d7b654f00de1f1ffca55430d389ec4928713c537",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_separated_offset.gd"
+      ]
+    },
+    {
+      "script": "test_world_field_lights.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-final-edge-world-lights-2/world-lights-j0eg672a/report.json",
+      "report_sha256": "6ce3e824d040fe4bf12669739f48afd3381c38fe7c25c0f51895d1c854b216d5",
+      "log_sha256": "2411e9b84b312b47491d71c497c588880a4ef0e366345c977c968e85ab9f49d6",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_world_field_lights.gd"
+      ]
+    },
+    {
+      "script": "test_world_flow.gd",
+      "platform": "Windows",
+      "local_report": "tmp/audit-final-edge-world-flow-off-2/world-flow-off-iu3vnxrt/report.json",
+      "report_sha256": "7045be15b23a6ad2e32664042b01bdeaca285a0d6d0cdd310b6ece9a057ceaaf",
+      "log_sha256": "d7b56afed14d7ec5c145d1742558c9a69cf072185a4c7654caa382914e7e4f6d",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_world_flow.gd"
+      ]
+    }
+  ],
+  "limits": [
+    "Original failed/negative-control runs remain under tmp/ and are not classified as passes.",
+    "Each receipt establishes only its own command and captured source/time; unrelated concurrent edits are not qualified.",
+    "No performance, native fleet/package, device or physical acceptance is inferred."
+  ],
+  "current_source_hashes": {
+    "app/physics/aero.gd": "c0141d609c9e12866dba457c04a412a5609c0ca637222d2057e71771b522ebb8",
+    "app/physics/wing_polar.gd": "fdb76ba7357e00e777985a38b14e0ce182106a4fe68a1083b3e5e95d2a3f755e",
+    "app/physics/aircraft_data.gd": "ae2ced8856cdd9f1fd478db60e7b69f9e7d06465cf53c56be3dd158896a75358",
+    "app/statistics/store.gd": "065ce17a41bdd2baf7dd04d41e2fa4d2f180a257820880f3b243eea19e3e2299",
+    "app/scenery/collision_setup.gd": "992650762920fc7da364f674e533c6469ed17c33b150acb370615ce399e78936",
+    "app/scenery/collision_world.gd": "8c20428356f3d01c0e1fc6b70a8e9da4eb948fdd2f2fe0f2ffd0e2eea330ce35",
+    "app/scenery/scenery.gd": "f9a9b115e41b1892efb8895396fb20411fd296da73b3256fadc0400c8382de4c",
+    "app/scenery/rc_track_option.gd": "80b5d289f8fe2927abeb7d83aef1f848f55d7d61dc4d9a3923a25510349a32a9",
+    "app/render/cloud_shadow_map.gd": "d8703f921f944d1f90bdbda6490837a07c525fda3f5ca664415256aff627f57c",
+    "app/render/atmosphere.gd": "cbbadc35a044b163cd01b99b40d912d3a4349f8c3e8f32bf73171dab385d0394",
+    "app/render/world/field_lights.gd": "f6be6ae9d07a01004357d6580207cf4e87f3fb303e30b2ef7f4203a9fc3c541f",
+    "app/render/world/world.gd": "cf82ef76af22fafea7986c156f96037ca96a51b04f20a1c27c627dc05fd0d1a5",
+    "app/render/lake/water_effects.gd": "5bd605ac7e3c1745c6a5376709c4ddd3ddb178dafd88d99dfcfe0351f038f3b0",
+    "app/render/lake/lake_world.gd": "7f4e0a35150b97af76c5160ed87ac13c43f1215c6f2c7e21ad3ad6f383407881",
+    "app/render/rc_ground_material.gd": "1baf3f8ec96ad4a2694e04512316cac7761dce8d34ee5d486a8636e5209d0e41",
+    "app/render/rc_track_field.gd": "e131d30b52afa4c180049eae5b61f4bc042db59cb717b35dfe1846346cb80255",
+    "app/aircraft/ugly_stik_equipment.gd": "1561e25721bdc1578b8a3ef82e0def2bf89a4331857c380d0cd8de85a64a0446"
+  }
+}

@@ -37,8 +37,11 @@ Original delivery results retain their dated scope. Neither old passing counts n
 | EX-14 | RCM-based mass assumption, Glow propwash/crossflow, fuselage side force, ground effect, APC-based propeller section, installed-engine estimate and FASER-based post-stall polar; later EX-14i adds the separated-wing force offset | Installed propulsion measurements, hands-off stall, sustained spin, knife-edge and left-hammerhead qualification remain open. [EX-14 evidence](research/extra-300-realism/EX-14/README.md). |
 | EX-14i | Bounded quasi-steady separated-wing pitch couple; controlled low-rate stall and snap completion improve in the paired software card | Experimental: late hands-off wing drop, spiral spin entries, unmeasured negative polar, native requalification and real-pilot/physical acceptance. [Comparison](research/extra-300-realism/EX-14/README.md#ex-14i--separated-wing-force-offset-2026-11-09). |
 | EX-14j | Existing wing/body sideslip-roll estimate carried into the local law; the attached oracle coefficients stay unchanged | Model consistency only: late hands-off wing drop grows slightly, snaps still complete, sustained spins remain unqualified. [Comparison](research/extra-300-realism/EX-14/README.md#ex-14j--local-sideslip-roll-consistency-2026-11-09). |
+| EX-14k | Stall-probe timing and rudder interventions, actual-surface logging and conservative classification; no aircraft retune | Canceling rudder trim does not prevent the late departure; earlier pitch-stick release limits bank but leaves a descent. Matched physical identification remains open. [Diagnosis](research/extra-300-realism/EX-14/README.md#ex-14k--stall-protocol-sensitivity-2026-11-09). |
 
 ## Current model limits
+
+EX-14k separates the five-second full-elevator protocol from the qualitative owner accounts. Its rudder interventions do not remove the late bank, while early pitch-stick release greatly reduces it. These software results do not identify a coefficient correction or establish real-aircraft recovery behavior.
 
 EX-14j reduces the change in roll sensitivity as loads shift to the local model by restoring its missing wing/body contribution. It retains the existing estimated coefficient and does not cure the hands-off stall. Its paired card and same-input replay use a frozen reference solver; they do not qualify concurrent solver edits or the native backend.
 

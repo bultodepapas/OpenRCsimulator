@@ -3,7 +3,8 @@ extends RefCounted
 ## active until an HDR readback passes seed-specific sample checks and an RG16F ImageTexture is published.
 ## The checks detect blank, wrong-seed and implausible samples; they do not prove every pixel or displayed frame.
 ## At most MAX_TILES are retained, including failures. Disabling both modes cancels
-## in-flight work and releases every tile. A failed seed remains analytic until then.
+## in-flight work and releases every tile. Removing the last live consumer also
+## releases them. A failed seed remains analytic until either release.
 
 const ENVIRONMENT_KEY := "OPENRC_CLOUD_SHADOW_MAP"
 const GROUND_ENVIRONMENT_KEY := "OPENRC_CLOUD_SHADOW_MAP_GROUND"
@@ -215,10 +216,16 @@ static func _cancel_tiles() -> void:
 
 
 static func _prune_consumers() -> void:
+	var removed := false
 	for id in _consumers.keys():
 		if _consumers[id].material.get_ref() == null:
 			_consumers.erase(id)
 			_generation += 1
+			removed = true
+	# Explicit texture_for() prewarming has no material consumers; only retire
+	# that warm cache here when an actual last consumer was removed.
+	if removed and _consumers.is_empty():
+		_cancel_tiles()
 
 
 static func _sync_consumer(id: Variant) -> void:
@@ -279,8 +286,14 @@ static func _disable_consumer(id: Variant, mat: ShaderMaterial, slot: int = 0) -
 		changed = true
 	if _consumers.erase(id):
 		changed = true
+		# Prune dead weak references before deciding whether another material still
+		# needs the shared cache. No callback is made from _cancel_tiles().
+		_prune_consumers()
+		if _consumers.is_empty():
+			_cancel_tiles()
 	if changed:
 		_generation += 1
+
 
 static func _set_parameter(mat: ShaderMaterial, key: String, value: Variant) -> bool:
 	if mat.get_shader_parameter(key) == value:
@@ -324,6 +337,7 @@ static func _bake_is_current(seed: int, token: int) -> bool:
 
 static func _attach_and_bake(tree: SceneTree, viewport: SubViewport, seed: int, token: int) -> void:
 	_sync_settings()
+	_prune_consumers()
 	if not is_instance_valid(viewport):
 		return
 	if not _bake_is_current(seed, token) or not is_instance_valid(tree) or tree.root == null:
@@ -339,6 +353,7 @@ static func _bake(tree: SceneTree, viewport: SubViewport, seed: int, token: int)
 	for frame in BAKE_FRAMES:
 		await tree.process_frame
 		_sync_settings()
+		_prune_consumers()
 		if not _bake_is_current(seed, token):
 			return
 	var image: Image = null

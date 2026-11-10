@@ -39,6 +39,27 @@ func _run() -> void:
 	for slot in expected.size():
 		check("pending layer %d stays analytic" % slot,
 			material.get_shader_parameter(Cache._slot_parameter(slot, "_enabled")) != true)
+	await process_frame # exercise cancellation after the pending viewports were attached
+	var pending_tiles: Array[Dictionary] = []
+	for seed: int in expected: pending_tiles.append(Cache._tiles[seed])
+	var old_token: int = pending_tiles[0].token
+	check("pending cloudy preset transitions to clear", Atmosphere.configure_appearance(SkyConfig.for_preset("clear")))
+	Atmosphere.update_sky_material(material)
+	check("the live ground consumer keeps the shared pending tiles", Cache._tiles.size() == expected.size())
+	Atmosphere.update_ground_material(ground)
+	check("clear cancels every pending tile when the final consumer leaves", Cache._tiles.is_empty()
+		and Cache.diagnostics().requested == {ground = true, sky = true})
+	for frame in (Cache.BAKE_FRAMES + 2) * Cache.MAX_ATTEMPTS + 2: await process_frame
+	var no_retries := true
+	for tile: Dictionary in pending_tiles: no_retries = no_retries and tile.attempts == 1
+	check("clear prevents canceled readbacks and retries", no_retries and Cache._tiles.is_empty()
+		and root.find_children("CloudShadowMap*", "SubViewport", false, false).is_empty())
+	check("cloudy preset can be selected again", Atmosphere.configure_appearance(config))
+	Atmosphere.update_ground_material(ground)
+	Atmosphere.update_sky_material(material)
+	Cache._complete_bake(self, expected[0], null, "stale", old_token)
+	check("old completion cannot affect the new request for the same seed",
+		Cache._tiles[expected[0]].status == "pending" and Cache._tiles[expected[0]].attempts == 1)
 	for seed: int in expected:
 		var image := Image.create_empty(Cache.SIZE, Cache.SIZE, false, Image.FORMAT_RGH)
 		for index in Cache.SAMPLE_COUNT:
@@ -56,8 +77,8 @@ func _run() -> void:
 	Atmosphere.update_ground_material(ground)
 	check("clear releases the old ground binding", Cache.diagnostics().effective.ground == "unused"
 		and ground.get_shader_parameter("cloud_shadow_map") == null)
-	check("clear removes old consumers and texture bindings", Cache.diagnostics().effective.sky == "unused"
-		and material.get_shader_parameter("cloud_shadow_map") == null
+	check("clear removes old consumers and releases ready tiles", Cache.diagnostics().effective.sky == "unused"
+		and Cache._tiles.is_empty() and material.get_shader_parameter("cloud_shadow_map") == null
 		and material.get_shader_parameter("cloud_relief_map_1") == null
 		and material.get_shader_parameter("cloud_relief_map_2") == null)
 	check("cirrus preset configures", Atmosphere.configure_appearance(SkyConfig.for_preset("cirrus")))
@@ -70,11 +91,16 @@ func _run() -> void:
 	check("anvil is excluded while both opaque storm layers are requested", needed.size() == 2
 		and needed.has(int(state.cloud_layers[0].seed)) and needed.has(int(state.cloud_layers[2].seed))
 		and not needed.has(int(state.cloud_layers[1].seed)))
-	check("tile cache stays within its fixed budget", Cache._tiles.size() <= Cache.MAX_TILES)
+	Cache.texture_for(900001)
+	Cache.texture_for(900002)
+	var over_capacity: Array = needed.duplicate()
+	over_capacity.append(900003)
+	Cache.apply_sky(material, over_capacity)
+	check("tile cache stays within its fixed budget", Cache._tiles.size() == Cache.MAX_TILES)
 	check("capacity leaves the later layer analytic",
-		material.get_shader_parameter("cloud_relief_map_1_enabled") != true
-		and material.get_shader_parameter("cloud_relief_map_1") == null
-		and Cache.diagnostics().effective.sky in ["mixed", "capacity"])
+		material.get_shader_parameter("cloud_relief_map_2_enabled") != true
+		and material.get_shader_parameter("cloud_relief_map_2") == null
+		and Cache.diagnostics().effective.sky == "mixed")
 	OS.set_environment(Cache.SKY_ENVIRONMENT_KEY, "0")
 	Cache.diagnostics()
 	check("sky opt-out clears every layer binding", material.get_shader_parameter("cloud_shadow_map_enabled") != true

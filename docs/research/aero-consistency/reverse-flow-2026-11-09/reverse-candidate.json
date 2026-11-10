@@ -23,10 +23,10 @@
 	"baseline_stage_backend": {
 		"backend": "gdscript_reference"
 	},
-	"candidate": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\gp_extra_300s_60.json",
+	"candidate": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-physics-20261109\\aircraft-baseline.json",
 	"candidate_identity": {
 		"format": "openrc-aircraft v2",
-		"sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf"
+		"sha256": "82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7"
 	},
 	"comparison_method": "Open-loop: baseline body/internal initial state and post-conditioning input tape; candidate aircraft mass/inertia/configuration and current solver. Not a newly trimmed flight or pilot adaptation.",
 	"complete": true,

@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4c1418f2-806c-4371-b35d-f82fbb17dbc5",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/extra-300/ex14/stall_probe.gd",
+    "--",
+    "--case=full/wings_level",
+    "--hold=0.25",
+    "--rudder=neutral_surface",
+    "--data=C:/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/gp_extra_300s_60.json",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/extra300-stall-inputs-20261109/final/integrated-high-rate"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T23:24:38.561693+00:00",
+  "label": "ex14k-final-integrated-high-rate",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-stall-inputs-20261109\\final-checks\\ex14k-final-integrated-high-rate-3gpp65w0\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-stall-inputs-20261109\\final-checks\\ex14k-final-integrated-high-rate-3gpp65w0\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_STALL_PROBE_COMPLETE failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 17.172,
+  "log_bytes": 7906,
+  "log_sha256": "754f283169ab30558c05330c1c30d13c15c802571a360f7f964cf261222b07e7"
+}

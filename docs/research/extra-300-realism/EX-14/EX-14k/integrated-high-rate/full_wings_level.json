@@ -1,0 +1,377 @@
+{
+	"aircraft_id": "gp-extra-300s-60",
+	"aircraft_input_sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
+	"case": "full/wings_level",
+	"deflection_convention": "controls use aerodynamic signs (elevator TE down, rudder TE left positive); legacy elevator_at_stop_deg is TE up positive",
+	"elevator_at_stop_deg": 23.921943,
+	"entry_trims": {
+		"pitch": 0.18498672385994808,
+		"roll": 0.004152235517675854,
+		"yaw": -0.030689821379578177
+	},
+	"first_bank_20_after_stop_s": -1.0,
+	"format": "openrc-extra-stall-probe v2",
+	"heading_rate_usable": true,
+	"height_lost_held_m": 0.5753249957540447,
+	"height_lost_release_m": 19.100000000000023,
+	"hold_end": {
+		"alpha": 21.5,
+		"alt_m": 291.6,
+		"bank": -12.3,
+		"beta": 3.2,
+		"climb": -2.7,
+		"controls": {
+			"aileron_right_deg": -17.600665,
+			"elevator_deg": -23.921943,
+			"engine_rpm": 3602.174872300921,
+			"rudder_deg": -4.271128280913805e-15
+		},
+		"lateral_g": -0.04843850269444696,
+		"p": -21.0,
+		"pitch": 6.5,
+		"r": -41.0,
+		"t": 0.25,
+		"t_s": 0.2541666666666682,
+		"v": 11.33
+	},
+	"hold_s": 0.25,
+	"lateral_g_convention": "previous committed loads Fy / initial loaded mass / g; same normalization as FT pilot",
+	"max_abs_beta_held_deg": 3.1538399573069693,
+	"max_abs_lateral_g_held": 0.04758221775906951,
+	"max_alpha_held_deg": 21.53403158477665,
+	"max_bank_held_deg": 12.157041256920559,
+	"max_rotation_rate_dps": 38.74902078891453,
+	"neutral_rudder_stick": 0.03068982137957832,
+	"nose_drop_deg": 3.4816409352715674,
+	"outcome": "limited bank (stall type unclassified)",
+	"outcome_convention": "bank/heading thresholds only; no stall-type or spin identification",
+	"pitch_trim": 0.18498672385994808,
+	"probe_sha256": "8ddd57e5c948bdbf7805cad35268f24bd841b72e988cbf5fee6e73b1e2762b33",
+	"rates_active": false,
+	"release_end": {
+		"alpha": 6.2,
+		"alt_m": 272.5,
+		"bank": -17.900000000000002,
+		"beta": -0.4,
+		"climb": -6.1000000000000005,
+		"controls": {
+			"aileron_right_deg": -0.07308210634771428,
+			"elevator_deg": -4.425241863934418,
+			"engine_rpm": 5249.1554657667075,
+			"rudder_deg": -4.271128280913805e-15
+		},
+		"lateral_g": 0.006329217299022607,
+		"p": 0.0,
+		"pitch": -11.700000000000001,
+		"r": -9.0,
+		"t": 3.25,
+		"t_s": 3.254166666666668,
+		"v": 20.080000000000002
+	},
+	"rotation_rate_convention": "legacy rotation_rate fields are absolute Euler heading derivatives, ill-conditioned near vertical; not spin rates",
+	"rotation_rate_last_2_s_dps": 29.434443224821578,
+	"rotation_window_s": 0.25,
+	"rudder_intervention": "at elevator stop through end of release",
+	"rudder_policy": "neutral_surface",
+	"series": [
+		{
+			"alpha": 21.5,
+			"alt_m": 292.2,
+			"bank": -5.4,
+			"beta": 0.30000000000000004,
+			"climb": -2.22,
+			"controls": {
+				"aileron_right_deg": -10.084797977357944,
+				"elevator_deg": -23.921943,
+				"engine_rpm": 3609.4374986304892,
+				"rudder_deg": 0.9214947557205323
+			},
+			"lateral_g": -0.0072616438235663895,
+			"p": -21.0,
+			"pitch": 10.0,
+			"r": -20.0,
+			"t": 0.0,
+			"t_s": 0.0,
+			"v": 11.26
+		},
+		{
+			"alpha": 21.5,
+			"alt_m": 291.6,
+			"bank": -12.200000000000001,
+			"beta": 3.2,
+			"climb": -2.69,
+			"controls": {
+				"aileron_right_deg": -17.600665,
+				"elevator_deg": -23.921943,
+				"engine_rpm": 3602.2619428254284,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": -0.04758221775906951,
+			"p": -21.0,
+			"pitch": 6.5,
+			"r": -41.0,
+			"t": 0.25,
+			"t_s": 0.25,
+			"v": 11.33
+		},
+		{
+			"alpha": 12.700000000000001,
+			"alt_m": 290.8,
+			"bank": -21.900000000000002,
+			"beta": 4.6000000000000005,
+			"climb": -3.08,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 3622.3565227906684,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": -0.05432812171122803,
+			"p": -50.0,
+			"pitch": -5.5,
+			"r": -23.0,
+			"t": 0.5,
+			"t_s": 0.5,
+			"v": 11.57
+		},
+		{
+			"alpha": 6.2,
+			"alt_m": 289.90000000000003,
+			"bank": -27.200000000000003,
+			"beta": 0.6000000000000001,
+			"climb": -4.29,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 3685.7815831907556,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": -0.006619536862457356,
+			"p": -3.0,
+			"pitch": -15.4,
+			"r": -2.0,
+			"t": 0.75,
+			"t_s": 0.75,
+			"v": 12.21
+		},
+		{
+			"alpha": 7.1000000000000005,
+			"alt_m": 288.7,
+			"bank": -27.200000000000003,
+			"beta": -2.8000000000000003,
+			"climb": -5.5,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 3783.890910163691,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.03231314325191744,
+			"p": 0.0,
+			"pitch": -17.3,
+			"r": -11.0,
+			"t": 1.0,
+			"t_s": 1.0,
+			"v": 13.06
+		},
+		{
+			"alpha": 7.4,
+			"alt_m": 287.2,
+			"bank": -26.0,
+			"beta": -2.2,
+			"climb": -6.36,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 3907.94012961168,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.021521867376932374,
+			"p": -2.0,
+			"pitch": -19.5,
+			"r": -24.0,
+			"t": 1.25,
+			"t_s": 1.25,
+			"v": 13.98
+		},
+		{
+			"alpha": 7.2,
+			"alt_m": 285.5,
+			"bank": -24.5,
+			"beta": -0.1,
+			"climb": -7.0200000000000005,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 4058.9334305003817,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": -0.007574230684762162,
+			"p": -3.0,
+			"pitch": -21.5,
+			"r": -21.0,
+			"t": 1.5,
+			"t_s": 1.5,
+			"v": 14.93
+		},
+		{
+			"alpha": 6.800000000000001,
+			"alt_m": 283.7,
+			"bank": -23.5,
+			"beta": 0.0,
+			"climb": -7.51,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 4229.082365415203,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": -0.005430204097107815,
+			"p": -2.0,
+			"pitch": -22.0,
+			"r": -10.0,
+			"t": 1.75,
+			"t_s": 1.75,
+			"v": 15.870000000000001
+		},
+		{
+			"alpha": 6.6000000000000005,
+			"alt_m": 281.8,
+			"bank": -22.6,
+			"beta": -0.8,
+			"climb": -7.82,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 4410.2523830523505,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.012168033032844779,
+			"p": 0.0,
+			"pitch": -21.400000000000002,
+			"r": -10.0,
+			"t": 2.0,
+			"t_s": 2.0,
+			"v": 16.77
+		},
+		{
+			"alpha": 6.5,
+			"alt_m": 279.8,
+			"bank": -21.400000000000002,
+			"beta": -0.7000000000000001,
+			"climb": -7.92,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 4595.577178189373,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.009964941318771863,
+			"p": -1.0,
+			"pitch": -20.400000000000002,
+			"r": -13.0,
+			"t": 2.25,
+			"t_s": 2.25,
+			"v": 17.62
+		},
+		{
+			"alpha": 6.4,
+			"alt_m": 277.90000000000003,
+			"bank": -20.3,
+			"beta": -0.30000000000000004,
+			"climb": -7.79,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 4778.6853970390885,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.0020770331726407574,
+			"p": -1.0,
+			"pitch": -19.0,
+			"r": -11.0,
+			"t": 2.5,
+			"t_s": 2.5,
+			"v": 18.39
+		},
+		{
+			"alpha": 6.300000000000001,
+			"alt_m": 276.0,
+			"bank": -19.400000000000002,
+			"beta": -0.4,
+			"climb": -7.43,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 4952.246273356143,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.006112673278049988,
+			"p": 0.0,
+			"pitch": -16.900000000000002,
+			"r": -8.0,
+			"t": 2.75,
+			"t_s": 2.75,
+			"v": 19.06
+		},
+		{
+			"alpha": 6.2,
+			"alt_m": 274.2,
+			"bank": -18.6,
+			"beta": -0.5,
+			"climb": -6.87,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 5109.934500635194,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.008655470511717714,
+			"p": 0.0,
+			"pitch": -14.5,
+			"r": -9.0,
+			"t": 3.0,
+			"t_s": 3.0,
+			"v": 19.63
+		},
+		{
+			"alpha": 6.2,
+			"alt_m": 272.5,
+			"bank": -17.900000000000002,
+			"beta": -0.4,
+			"climb": -6.12,
+			"controls": {
+				"aileron_right_deg": -0.07308210634771428,
+				"elevator_deg": -4.425241863934418,
+				"engine_rpm": 5247.067047547574,
+				"rudder_deg": -4.271128280913805e-15
+			},
+			"lateral_g": 0.006350550472553734,
+			"p": 0.0,
+			"pitch": -11.8,
+			"r": -9.0,
+			"t": 3.25,
+			"t_s": 3.25,
+			"v": 20.07
+		}
+	],
+	"solver_sha256": "e11633515ef5f16f078109fb149fb0ec61d0028cc3790d62be0773a18d5db879",
+	"stop": {
+		"alpha_deg": 21.53403158477665,
+		"alt_m": 292.17532499575407,
+		"bank_deg": -5.447354840266592,
+		"beta_deg": 0.29107322746951614,
+		"initial_controls": {
+			"aileron_right_deg": -10.084797977357944,
+			"elevator_deg": -23.921943,
+			"engine_rpm": 3609.4374986304892,
+			"rudder_deg": 0.9214947557205323
+		},
+		"p_radps": -0.3700229857857583,
+		"pitch_deg": 10.010822151870517,
+		"r_radps": -0.35057093547524726,
+		"speed_mps": 11.255342696116932,
+		"t_s": 12.704166666666666,
+		"tick": 3049
+	}
+}

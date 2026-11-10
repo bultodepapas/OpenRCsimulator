@@ -507,6 +507,8 @@ static func _add_pole(root: Node3D, node_name: String, north: float, east: float
 		radius: float, material: Material) -> void:
 	var pole := MeshInstance3D.new()
 	pole.name = node_name
+	# Structure is collidable even when legacy emitters are switched off.
+	pole.set_meta("physical_structure", true)
 	var cylinder := CylinderMesh.new()
 	cylinder.top_radius = radius * 0.7
 	cylinder.bottom_radius = radius

@@ -343,7 +343,10 @@ func _test_split_index_order_and_fallbacks() -> void:
 	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
 	_check(split.white[Mesh.ARRAY_NORMAL] == normals.slice(0, 3), "ignored trailing invalid index retains original scalar behavior")
 	source = _split_fixture()
-	source[Mesh.ARRAY_VERTEX].append(Vector3(40, 50, 60))
+	var with_tail: PackedVector3Array = source[Mesh.ARRAY_VERTEX]
+	with_tail.append(Vector3(40, 50, 60))
+	source[Mesh.ARRAY_VERTEX] = with_tail
+	_check(source[Mesh.ARRAY_VERTEX].size() == 7, "trailing-vertex fixture contains the ignored seventh entry")
 	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
 	_check(split.white[Mesh.ARRAY_VERTEX].size() == 6 and split.white[Mesh.ARRAY_NORMAL] == normals, "ignored trailing non-indexed vertex does not require longer channels")
 	source = _split_fixture()
@@ -370,7 +373,12 @@ func _test_split_index_order_and_fallbacks() -> void:
 	_check(split.keys() == ["red", "white"] and split.red[Mesh.ARRAY_NORMAL] == normals.slice(0, 3), "non-String remaps retain scalar StringName conversion")
 	var white_before := var_to_bytes(split.white)
 	split.red[Mesh.ARRAY_VERTEX][0] = Vector3(40, 50, 60)
-	_check(var_to_bytes(split.white) == white_before and source[Mesh.ARRAY_VERTEX][0] == Vector3.ZERO, "material-group arrays remain independently owned")
+	_check(split.red[Mesh.ARRAY_VERTEX][0] == Vector3(40, 50, 60) and var_to_bytes(split.white) == white_before and source[Mesh.ARRAY_VERTEX][0] == Vector3.ZERO, "material-group arrays remain independently owned")
+	source = _split_fixture()
+	split = details.call("_split_material_surface", source, {0: "red"}, {}, 0, "white")
+	white_before = var_to_bytes(split.white)
+	split.red[Mesh.ARRAY_VERTEX][0] = Vector3(40, 50, 60)
+	_check(split.red[Mesh.ARRAY_VERTEX][0] == Vector3(40, 50, 60) and var_to_bytes(split.white) == white_before and source[Mesh.ARRAY_VERTEX][0] == Vector3.ZERO, "bulk material-group arrays remain independently owned")
 
 
 func _test_paint_compatibility() -> void:

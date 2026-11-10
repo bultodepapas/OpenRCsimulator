@@ -39,7 +39,7 @@ python tools/godot/run_checked.py --timeout 180 --require-text '0 failed; paint_
   --timber-baseline=C:/captures/timber-baseline.gd --out=C:/captures/timber-companion-new.json
 ```
 
-The output path must be new. Seeded score/trace and command/latch comparisons
+The output path must be new. Seeded score/trace, split-array/ownership and command/latch comparisons
 precede five alternating ABBA/BAAB timing groups per workload. Timber timing covers
 complete cache-cold repair of the actual imported hierarchy in a warm process;
 instantiation and byte comparisons are untimed. Warm-cache repair is a control.
@@ -49,6 +49,15 @@ Command fixtures use fixed synthetic snapshots with one/three nearby threats,
 300 warmup/parity calls and 400 commands per timed batch. Source hashes are checked
 before/after; these are component screens without a full asset/import dependency
 identity or a native 1080p frame qualification. Run without competing measurements.
+
+Add `--parity-only` after the engine's `--` for correctness-only work: one
+ABBA mesh group, all seeded comparisons and no command timing batches. The JSON
+sets `timing_mode=correctness_only`; its incidental repair durations are not
+performance evidence. The 300 split cases include interleaved groups, duplicate
+indices, aliased source channels and scalar-fallback shapes. Native screens use
+the same command without `--headless`, adding `--rendering-method gl_compatibility`
+and `--resolution 1920x1080` before `--script`. They measure construction/submission,
+not drawn frames. [Unsmoothed-split qualification](../../docs/research/timber-integration/TT-21/unsmoothed-split-20261109/README.md).
 
 `trace_export_probe.gd` saves 120,001 synthetic fixed-wing telemetry rows through
 the production exporter. The [C7 / RCV-43 / SC-09-R2 memory follow-up](../../docs/research/memory-2026-11-08.md)

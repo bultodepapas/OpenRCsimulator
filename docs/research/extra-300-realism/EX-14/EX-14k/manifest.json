@@ -1,0 +1,448 @@
+{
+  "format": "openrc-extra-evidence-ex14k-v1",
+  "complete": true,
+  "files": [
+    {
+      "path": "baseline/normal_hands_off.json",
+      "bytes": 17435,
+      "sha256": "b27bd059cc3fb96b80b3053f63256ea28c7c550a5e3478f4b15d81fb1379a71f",
+      "source": "tmp/extra300-stall-inputs-20261109/final/baseline/normal_hands_off.json",
+      "original_bytes": 17435,
+      "original_sha256": "b27bd059cc3fb96b80b3053f63256ea28c7c550a5e3478f4b15d81fb1379a71f",
+      "compression": "none"
+    },
+    {
+      "path": "baseline/normal_hands_off.orfl.gz",
+      "bytes": 1569833,
+      "sha256": "0e1e91e5e1481993eb722263745d5a1f4550532e1d1dc87f90f4e5feaa30d967",
+      "source": "tmp/extra300-stall-inputs-20261109/final/baseline/normal_hands_off.orfl",
+      "original_bytes": 4666924,
+      "original_sha256": "e8f12dfca422f0bc2fd1186295e56c11b165bfd8dd5c465788ece94202857ec6",
+      "compression": "gzip"
+    },
+    {
+      "path": "baseline/exact/replay.json",
+      "bytes": 11719,
+      "sha256": "ed86fd546972e030526e634b09bd5e725e2a60b2151c7b79f36ec6be3ad4d5a0",
+      "source": "tmp/extra300-stall-inputs-20261109/final/baseline-exact/replay.json",
+      "original_bytes": 11719,
+      "original_sha256": "ed86fd546972e030526e634b09bd5e725e2a60b2151c7b79f36ec6be3ad4d5a0",
+      "compression": "none"
+    },
+    {
+      "path": "baseline/exact/flight.csv.gz",
+      "bytes": 1833665,
+      "sha256": "06b9497ee5d115771492a99e4a05dc6bbe3bbe3ffaaa6ba6f689e010370fc620",
+      "source": "tmp/extra300-stall-inputs-20261109/final/baseline-exact/flight.csv",
+      "original_bytes": 5364314,
+      "original_sha256": "9babfffb7bc27031e12f5603a870b68605af33009e7d76c6e06e8abeb59c7ff6",
+      "compression": "gzip"
+    },
+    {
+      "path": "baseline/exact/godot.log",
+      "bytes": 387,
+      "sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "source": "tmp/extra300-stall-inputs-20261109/final/baseline-exact/godot.log",
+      "original_bytes": 387,
+      "original_sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "compression": "none"
+    },
+    {
+      "path": "neutral-rudder/normal_hands_off.json",
+      "bytes": 17719,
+      "sha256": "eefb011c21e48711a0ae37a1d98b77e7a4356310401d413f5241f72dde507cb7",
+      "source": "tmp/extra300-stall-inputs-20261109/final/neutral-rudder/normal_hands_off.json",
+      "original_bytes": 17719,
+      "original_sha256": "eefb011c21e48711a0ae37a1d98b77e7a4356310401d413f5241f72dde507cb7",
+      "compression": "none"
+    },
+    {
+      "path": "neutral-rudder/normal_hands_off.orfl.gz",
+      "bytes": 1569406,
+      "sha256": "317201fd56dcb09fbb89dd813e72b1c8689b7e6afb8abbdd174e1ef85f4a8812",
+      "source": "tmp/extra300-stall-inputs-20261109/final/neutral-rudder/normal_hands_off.orfl",
+      "original_bytes": 4666924,
+      "original_sha256": "74666d4d673881df0703f50b169c4f61b60ba362876410be76fd75e20d1bd3d3",
+      "compression": "gzip"
+    },
+    {
+      "path": "neutral-rudder/exact/replay.json",
+      "bytes": 11725,
+      "sha256": "43b42a71ea45a158b8c121943c93363fc37408be68ed579af7d774a7e46ea6b0",
+      "source": "tmp/extra300-stall-inputs-20261109/final/neutral-rudder-exact/replay.json",
+      "original_bytes": 11725,
+      "original_sha256": "43b42a71ea45a158b8c121943c93363fc37408be68ed579af7d774a7e46ea6b0",
+      "compression": "none"
+    },
+    {
+      "path": "neutral-rudder/exact/flight.csv.gz",
+      "bytes": 1833725,
+      "sha256": "04d4c5de49a031821304db0404b34c78c562f8c34fbee7797389cea99e7b4058",
+      "source": "tmp/extra300-stall-inputs-20261109/final/neutral-rudder-exact/flight.csv",
+      "original_bytes": 5399037,
+      "original_sha256": "1feb70de4bcbbd3a3f4b7554675d7f67cd69f8e163db66fd3613fed3d4b17d58",
+      "compression": "gzip"
+    },
+    {
+      "path": "neutral-rudder/exact/godot.log",
+      "bytes": 387,
+      "sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "source": "tmp/extra300-stall-inputs-20261109/final/neutral-rudder-exact/godot.log",
+      "original_bytes": 387,
+      "original_sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "compression": "none"
+    },
+    {
+      "path": "ball-rudder/normal_hands_off.json",
+      "bytes": 17455,
+      "sha256": "007d9656a3215483a3d44910e637021166293ce01f644fee44a7d7adbef8f22d",
+      "source": "tmp/extra300-stall-inputs-20261109/final/ball-rudder/normal_hands_off.json",
+      "original_bytes": 17455,
+      "original_sha256": "007d9656a3215483a3d44910e637021166293ce01f644fee44a7d7adbef8f22d",
+      "compression": "none"
+    },
+    {
+      "path": "ball-rudder/normal_hands_off.orfl.gz",
+      "bytes": 1613293,
+      "sha256": "1ec24bdf14bfc723485d8120ed402f609a1d491a871c2a0951c06c47f86ef852",
+      "source": "tmp/extra300-stall-inputs-20261109/final/ball-rudder/normal_hands_off.orfl",
+      "original_bytes": 4666924,
+      "original_sha256": "e3b1896a82d0bed986decc058b03e814b8423972a7b3f26cf844b386445e2ae0",
+      "compression": "gzip"
+    },
+    {
+      "path": "ball-rudder/exact/replay.json",
+      "bytes": 11722,
+      "sha256": "87fc7231d3afb502cced3b43e32f24fb4a70d0e8790f6af9b975fdb3060f5d1a",
+      "source": "tmp/extra300-stall-inputs-20261109/final/ball-rudder-exact/replay.json",
+      "original_bytes": 11722,
+      "original_sha256": "87fc7231d3afb502cced3b43e32f24fb4a70d0e8790f6af9b975fdb3060f5d1a",
+      "compression": "none"
+    },
+    {
+      "path": "ball-rudder/exact/flight.csv.gz",
+      "bytes": 1876533,
+      "sha256": "160c74cb939e730137499b5fd294712344a2dff004101995e52e26824b8e9535",
+      "source": "tmp/extra300-stall-inputs-20261109/final/ball-rudder-exact/flight.csv",
+      "original_bytes": 5392910,
+      "original_sha256": "99c017605aed7f6670855c04482b8aee282f3cac617a5518dd48500bd70b5eb1",
+      "compression": "gzip"
+    },
+    {
+      "path": "ball-rudder/exact/godot.log",
+      "bytes": 387,
+      "sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "source": "tmp/extra300-stall-inputs-20261109/final/ball-rudder-exact/godot.log",
+      "original_bytes": 387,
+      "original_sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "compression": "none"
+    },
+    {
+      "path": "release-1s/normal_hands_off.json",
+      "bytes": 10061,
+      "sha256": "3baa7835a6ab8e07df720ed907e2f8e652f9961342cbae9eb9dbb228da1284fc",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-1s/normal_hands_off.json",
+      "original_bytes": 10061,
+      "original_sha256": "3baa7835a6ab8e07df720ed907e2f8e652f9961342cbae9eb9dbb228da1284fc",
+      "compression": "none"
+    },
+    {
+      "path": "release-1s/normal_hands_off.orfl.gz",
+      "bytes": 1284590,
+      "sha256": "adda53f2dc681719ba4ed39ab020c4780d3613188cdf95e7b9bfc89658d556bf",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-1s/normal_hands_off.orfl",
+      "original_bytes": 3767900,
+      "original_sha256": "5c2050ab2702bf32745edd8fbc31cb5e94f7b8f6c5855def0a11ce2da3224dbd",
+      "compression": "gzip"
+    },
+    {
+      "path": "release-1s/exact/replay.json",
+      "bytes": 11721,
+      "sha256": "337a89858596298cc9af1f81982c180c9af392c20be09e51b6cb5f66f2ce23d0",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-1s-exact/replay.json",
+      "original_bytes": 11721,
+      "original_sha256": "337a89858596298cc9af1f81982c180c9af392c20be09e51b6cb5f66f2ce23d0",
+      "compression": "none"
+    },
+    {
+      "path": "release-1s/exact/flight.csv.gz",
+      "bytes": 1494890,
+      "sha256": "4d3a6a081537df88517cb4693734a5ad351ac459d6c2fc43fd3778e21b182a64",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-1s-exact/flight.csv",
+      "original_bytes": 4342928,
+      "original_sha256": "a81781701c2857bfde610869ce15db8404e7dab26f5e5e6166934d85c3610dcf",
+      "compression": "gzip"
+    },
+    {
+      "path": "release-1s/exact/godot.log",
+      "bytes": 387,
+      "sha256": "d1d86791969f748ed2fb15d594605eb28a836fa114fbd1a42160d9042ee0aa05",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-1s-exact/godot.log",
+      "original_bytes": 387,
+      "original_sha256": "d1d86791969f748ed2fb15d594605eb28a836fa114fbd1a42160d9042ee0aa05",
+      "compression": "none"
+    },
+    {
+      "path": "release-2p5s/normal_hands_off.json",
+      "bytes": 12856,
+      "sha256": "cec3fc5f0da9cf6e3b7735de3a5e1412fd1972c9756a45de514839d67f0bf816",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-2p5s/normal_hands_off.json",
+      "original_bytes": 12856,
+      "original_sha256": "cec3fc5f0da9cf6e3b7735de3a5e1412fd1972c9756a45de514839d67f0bf816",
+      "compression": "none"
+    },
+    {
+      "path": "release-2p5s/normal_hands_off.orfl.gz",
+      "bytes": 1391616,
+      "sha256": "0b7c98c07d4b8f1d16eb49a8f106b34652f7465e59271921b6d36efe1018bb16",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-2p5s/normal_hands_off.orfl",
+      "original_bytes": 4104976,
+      "original_sha256": "3a0c0275fec80f3cb0d6300a2a3c6de8c747983dda968513701dc3ad64b680d3",
+      "compression": "gzip"
+    },
+    {
+      "path": "release-2p5s/exact/replay.json",
+      "bytes": 11723,
+      "sha256": "79743a7f64acd918d341dfb919c865d7d3de541d3a8452d9304751a770536e3d",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-2p5s-exact/replay.json",
+      "original_bytes": 11723,
+      "original_sha256": "79743a7f64acd918d341dfb919c865d7d3de541d3a8452d9304751a770536e3d",
+      "compression": "none"
+    },
+    {
+      "path": "release-2p5s/exact/flight.csv.gz",
+      "bytes": 1621456,
+      "sha256": "8756117f579829be3dca715cbb6db6ffd1dfc6cec28aed8062a4c399a816a707",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-2p5s-exact/flight.csv",
+      "original_bytes": 4729054,
+      "original_sha256": "c8451a63649a8d0e8d4c7afa05f73a8b02ea56bde8901e3bb903f212c3bc3171",
+      "compression": "gzip"
+    },
+    {
+      "path": "release-2p5s/exact/godot.log",
+      "bytes": 387,
+      "sha256": "8be70704fc9956578582e24fee822e12ea79725551d1fbc6dc6a79ef21aa2a0d",
+      "source": "tmp/extra300-stall-inputs-20261109/final/release-2p5s-exact/godot.log",
+      "original_bytes": 387,
+      "original_sha256": "8be70704fc9956578582e24fee822e12ea79725551d1fbc6dc6a79ef21aa2a0d",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-ball-rudder-lvujfjwj/engine.log",
+      "bytes": 13137,
+      "sha256": "3bbc621efaa6833f7714fd98ae298cb3662587fe3a9755a4737d4858b308f966",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-ball-rudder-lvujfjwj/engine.log",
+      "original_bytes": 13137,
+      "original_sha256": "3bbc621efaa6833f7714fd98ae298cb3662587fe3a9755a4737d4858b308f966",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-ball-rudder-lvujfjwj/report.json",
+      "bytes": 1592,
+      "sha256": "65c50d144e0e3896567f08c0e220527bec22e0f21e30504f9e3bd8dfd2833ece",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-ball-rudder-lvujfjwj/report.json",
+      "original_bytes": 1592,
+      "original_sha256": "65c50d144e0e3896567f08c0e220527bec22e0f21e30504f9e3bd8dfd2833ece",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-baseline-j9xkzvsq/engine.log",
+      "bytes": 13189,
+      "sha256": "13ddd938059cc93e645806ed14b3965ed2cf9b0a7f80fff6c7b44bed027b6c0d",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-baseline-j9xkzvsq/engine.log",
+      "original_bytes": 13189,
+      "original_sha256": "13ddd938059cc93e645806ed14b3965ed2cf9b0a7f80fff6c7b44bed027b6c0d",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-baseline-j9xkzvsq/report.json",
+      "bytes": 1575,
+      "sha256": "cc266bf90589140843e64ab32f10fa58d2f26c7266b7a0bc35a0e3e0c944c6d1",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-baseline-j9xkzvsq/report.json",
+      "original_bytes": 1575,
+      "original_sha256": "cc266bf90589140843e64ab32f10fa58d2f26c7266b7a0bc35a0e3e0c944c6d1",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-integrated-high-rate-3gpp65w0/engine.log",
+      "bytes": 7906,
+      "sha256": "754f283169ab30558c05330c1c30d13c15c802571a360f7f964cf261222b07e7",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-integrated-high-rate-3gpp65w0/engine.log",
+      "original_bytes": 7906,
+      "original_sha256": "754f283169ab30558c05330c1c30d13c15c802571a360f7f964cf261222b07e7",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-integrated-high-rate-3gpp65w0/report.json",
+      "bytes": 1621,
+      "sha256": "5c6ae46d26bb6c3511cccb64966bd040767782e7d03a2099db722d8648553816",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-integrated-high-rate-3gpp65w0/report.json",
+      "original_bytes": 1621,
+      "original_sha256": "5c6ae46d26bb6c3511cccb64966bd040767782e7d03a2099db722d8648553816",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-neutral-rudder-d4xl0suj/engine.log",
+      "bytes": 13622,
+      "sha256": "73004a2862d44654f7b42e2a2173767bd7fc1a7dc25c2b02fff00af3fa96ff95",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-neutral-rudder-d4xl0suj/engine.log",
+      "original_bytes": 13622,
+      "original_sha256": "73004a2862d44654f7b42e2a2173767bd7fc1a7dc25c2b02fff00af3fa96ff95",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-neutral-rudder-d4xl0suj/report.json",
+      "bytes": 1615,
+      "sha256": "87cdb7ef93762f599a39102bad5b62c909dfdce2b5425ab1572536160922b2a3",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-neutral-rudder-d4xl0suj/report.json",
+      "original_bytes": 1615,
+      "original_sha256": "87cdb7ef93762f599a39102bad5b62c909dfdce2b5425ab1572536160922b2a3",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-release-1s-08p2effx/engine.log",
+      "bytes": 8257,
+      "sha256": "7039f48e7510a3ca0003809dcfc766d258f2d492bc32344a3e6a46bdf4b005db",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-release-1s-08p2effx/engine.log",
+      "original_bytes": 8257,
+      "original_sha256": "7039f48e7510a3ca0003809dcfc766d258f2d492bc32344a3e6a46bdf4b005db",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-release-1s-08p2effx/report.json",
+      "bytes": 1582,
+      "sha256": "0b7e60b0ff7f326be02fd28f5d52adfc1460530fc7f75d159b417717a4b55298",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-release-1s-08p2effx/report.json",
+      "original_bytes": 1582,
+      "original_sha256": "0b7e60b0ff7f326be02fd28f5d52adfc1460530fc7f75d159b417717a4b55298",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-release-2p5s-mhi0nwyj/engine.log",
+      "bytes": 10120,
+      "sha256": "d909d4a9087935e1cb186f5ae80a8bfd868ba5c174fff8c692fc0689c413ac48",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-release-2p5s-mhi0nwyj/engine.log",
+      "original_bytes": 10120,
+      "original_sha256": "d909d4a9087935e1cb186f5ae80a8bfd868ba5c174fff8c692fc0689c413ac48",
+      "compression": "none"
+    },
+    {
+      "path": "final-checks/ex14k-final-release-2p5s-mhi0nwyj/report.json",
+      "bytes": 1593,
+      "sha256": "a009fb4defb30b07f902a15515c2d57756e89c66d4c6c6899c670fced2643327",
+      "source": "tmp/extra300-stall-inputs-20261109/final-checks/ex14k-final-release-2p5s-mhi0nwyj/report.json",
+      "original_bytes": 1593,
+      "original_sha256": "a009fb4defb30b07f902a15515c2d57756e89c66d4c6c6899c670fced2643327",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-high-rate/full_wings_level.json",
+      "bytes": 9364,
+      "sha256": "34111fcd02ff1dccc1a72788b5e2ea1a84b9d7ad9b29522b6a480bb0d011f91c",
+      "source": "tmp/extra300-stall-inputs-20261109/final/integrated-high-rate/full_wings_level.json",
+      "original_bytes": 9364,
+      "original_sha256": "34111fcd02ff1dccc1a72788b5e2ea1a84b9d7ad9b29522b6a480bb0d011f91c",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-high-rate/full_wings_level.orfl.gz",
+      "bytes": 1252652,
+      "sha256": "ab2870867a3c9a11ee140e5d762996ccda72aecaa482b6040c55d43b42f1e082",
+      "source": "tmp/extra300-stall-inputs-20261109/final/integrated-high-rate/full_wings_level.orfl",
+      "original_bytes": 3649844,
+      "original_sha256": "333e2541890e3380d159aba07361326a0948483f72ad6b1b055a1a635fd53640",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/research/extra-300/ex14/stall_probe.gd",
+      "bytes": 12628,
+      "sha256": "8ddd57e5c948bdbf7805cad35268f24bd841b72e988cbf5fee6e73b1e2762b33",
+      "source": "research/extra-300/ex14/stall_probe.gd",
+      "original_bytes": 12628,
+      "original_sha256": "8ddd57e5c948bdbf7805cad35268f24bd841b72e988cbf5fee6e73b1e2762b33",
+      "compression": "none"
+    },
+    {
+      "path": "sources/research/extra-300/ex14/test_stall_probe.py",
+      "bytes": 2376,
+      "sha256": "19b5ae8ea2cb587210a7f42a5f6f952ee4fce4c8e8859e30ebb9b40f8f1fd230",
+      "source": "research/extra-300/ex14/test_stall_probe.py",
+      "original_bytes": 2376,
+      "original_sha256": "19b5ae8ea2cb587210a7f42a5f6f952ee4fce4c8e8859e30ebb9b40f8f1fd230",
+      "compression": "none"
+    },
+    {
+      "path": "sources/research/flight-test/pilot.gd",
+      "bytes": 10817,
+      "sha256": "94f15ee2b219e3241b6347f15743a535ce8c7679fd078b6db009cec05fd4606c",
+      "source": "research/flight-test/pilot.gd",
+      "original_bytes": 10817,
+      "original_sha256": "94f15ee2b219e3241b6347f15743a535ce8c7679fd078b6db009cec05fd4606c",
+      "compression": "none"
+    },
+    {
+      "path": "sources/research/flight-robustness/d8b-r2/analog/post_stall_sweep.gd",
+      "bytes": 6448,
+      "sha256": "6f8fc7c0afdd9fb399019fd6ef5a112ac04ead954f48afe90b27d17bc3da1c70",
+      "source": "research/flight-robustness/d8b-r2/analog/post_stall_sweep.gd",
+      "original_bytes": 6448,
+      "original_sha256": "6f8fc7c0afdd9fb399019fd6ef5a112ac04ead954f48afe90b27d17bc3da1c70",
+      "compression": "none"
+    },
+    {
+      "path": "sources/research/flight-robustness/d8b-r2/analog/faser_cl.csv.gz",
+      "bytes": 487,
+      "sha256": "f5f4a182ecad42d31889d8c78630dbb59ff061e047d613676dedc5c88808617c",
+      "source": "research/flight-robustness/d8b-r2/analog/faser_cl.csv",
+      "original_bytes": 822,
+      "original_sha256": "2ebad07b928f713934272f26d52831dcb44c0bbf6f64c79fc0036b0da685f2da",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/research/flight-robustness/d8b-r2/analog/faser_clp.csv.gz",
+      "bytes": 474,
+      "sha256": "1f1d101746431df46a1775e4fe1f8340e0835716dbd78967b0e6d34388f400ad",
+      "source": "research/flight-robustness/d8b-r2/analog/faser_clp.csv",
+      "original_bytes": 715,
+      "original_sha256": "bd9a74aa0b0adad340a1f94505262114b7a7321a73e21b16c10ebe026abca155",
+      "compression": "gzip"
+    },
+    {
+      "path": "cli-tests.txt",
+      "bytes": 460,
+      "sha256": "d8a4a23718dbad9fd5766439de07e4d733fa67531c95bc7d357751308fd8f982",
+      "source": "tmp/extra300-stall-inputs-20261109/cli-tests.txt",
+      "original_bytes": 460,
+      "original_sha256": "d8a4a23718dbad9fd5766439de07e4d733fa67531c95bc7d357751308fd8f982",
+      "compression": "none"
+    },
+    {
+      "path": "post-stall-sweep.txt",
+      "bytes": 629,
+      "sha256": "2387c6898ba8bebd1a7dde08cd91f8c4c1ac10af386bc95fcdd4bf9406b41e7a",
+      "source": "tmp/extra300-stall-inputs-20261109/post-stall-sweep-qualified.txt",
+      "original_bytes": 629,
+      "original_sha256": "2387c6898ba8bebd1a7dde08cd91f8c4c1ac10af386bc95fcdd4bf9406b41e7a",
+      "compression": "none"
+    },
+    {
+      "path": "sources/retain_evidence.py",
+      "bytes": 8501,
+      "sha256": "6b8b72c3d8fba566678f47b239c086aa7dc99d7935cf1d170bd54f711a565897",
+      "source": "tmp/extra300-stall-inputs-20261109/retain_evidence.py",
+      "original_bytes": 8501,
+      "original_sha256": "6b8b72c3d8fba566678f47b239c086aa7dc99d7935cf1d170bd54f711a565897",
+      "compression": "none"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 6578,
+      "sha256": "42f39e389ba24ef61ca85191bc147349c9fa6ac816a28da7a20da2f6fd8d3761",
+      "source": "source and complete CSV audit",
+      "original_bytes": 6578,
+      "original_sha256": "42f39e389ba24ef61ca85191bc147349c9fa6ac816a28da7a20da2f6fd8d3761",
+      "compression": "none"
+    }
+  ],
+  "note": "Deterministic gzip; all originals remain in ignored tmp/. No images."
+}

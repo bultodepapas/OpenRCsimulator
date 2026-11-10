@@ -6,6 +6,11 @@ Updated **2026-11-09**. This is the active queue, organized by area. Delivered c
 
 Each finding row includes an **Original report** link; implementation evidence remains separate from its originating audit.
 
+The [five-finding audit at `45d86d2`][A34] is retained from the supplied text; its
+external PDF/ZIP were not available for inspection. Fresh bounded repairs and
+their remaining qualification are in the [implemented ledger](COMPLETED-AUDIT-WORK.md).
+Its local-wing closure question remains research, not a newly calibrated flight model.
+
 ## Contents
 
 1. [UI, settings and player flows](#ui-settings-and-player-flows)
@@ -383,6 +388,7 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 | A31 | [RAM and GPU memory review — 2026-11-07, regenerated 2026-11-08][A31] |
 | A32 | [CI changes critical audit at 939ab5d][A32] |
 | A33 | [Mathematical CPU performance review — 2026-11-09][A33] |
+| A34 | [Reverse flow, graphics/scenario separation, statistics recovery, optional resources and layered clouds][A34] |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -419,3 +425,4 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 
 [A32]: ci-changes-critical-audit-939ab5d.md
 [A33]: cpu-mathematical-optimization-2026-11-09.md
+[A34]: five-findings-audit-45d86d2.md

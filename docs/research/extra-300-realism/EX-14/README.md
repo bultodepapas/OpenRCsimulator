@@ -260,7 +260,7 @@ Other changes from B to D:
 **Cause.** The legacy blend separates every strip at one angle onto the flat plate.
 - On the Extra the [bench](ft/ex14h/bench.md) gives roll damping Clp +0.79 / +0.99 / +0.84 / +0.48 at 15 / 16 / 17 / 18°.
 - NASA FASER (Ultra Stick 120, the Extra's Reynolds class) measures −0.45 to 13.5° and −0.31 at 17.5° ([D8b-R2d](../../flight-robustness/D8b-R2/analog/README.md)).
-- [`stall_probe.gd`](../../../../research/extra-300/ex14/stall_probe.gd) flies the owners' test: idle, altitude held until the stick reaches its stop, the stop held 5 s, on the manual's low and high rates. On low rate the stop reaches α 16.9°, inside that window, and the wing is already 52° down.
+- [`stall_probe.gd`](../../../../research/extra-300/ex14/stall_probe.gd) flies a five-second protocol motivated by the owners' accounts: idle, altitude held until the stick reaches its stop, the stop held 5 s, on the manual's low and high rates. The accounts do not establish this exact protocol. On low rate the stop reaches α 16.9°, inside that window, and the wing is already 52° down.
 
 **Section.** The kit plan draws rib 2D at full size in its CG drawing; the printed 4⅛ in measures 4.13 in at 300 dpi.
 - The rib is 1.89 in thick on a 14.7 in local chord: t/c 12.9 %, with its leading edge on a NACA 0013 within 0.01 in. This confirms the generator's 13 % estimate.
@@ -302,7 +302,7 @@ Full card against production on the same commit 3bfdc64f ([compare](ft/ex14h/com
 - SAND80-2114 Fig. 30 (NACA 0015, Re 3.6·10⁵): Cm,c/4 ≈ −0.06 at 20°, −0.10 at 30°, −0.17 at 45°, −0.4 at 90°.
 - Selig's full-envelope RC model applies the section moment at the quarter chord, "driven largely by drag acting on the 50% chord location".
 - Experiment: a disposable-copy law ([patch](ft/ex14h/cp-shift-experiment.patch)) moving the centre of pressure aft by 0.25·|α|/90°·(1 − attached fraction) reproduces those values.
-- With the adopted polar it flies the owners' stall on the manual's low rate. With the wings held level: bank ≤ 6.5°, nose drop 4.9°, sink 1–3 m/s, 9.6 m lost in 5 s, flying again once the elevator is centred. On high rate a wing still drops, as owners warn ("too much elevator will stall the plane").
+- With the adopted polar, the five-second low-rate probe gives the following modeled response with the wings actively held level: bank ≤ 6.5°, nose drop 4.9°, sink 1–3 m/s, 9.6 m lost in 5 s, flying again once the elevator is centred. This is not a reconstruction of an owner's test. On high rate a wing still drops, as owners warn ("too much elevator will stall the plane").
 - But it stops the card's upright spin.
 
 The model's spin is an accelerating spiral dive in every variant: α 18–23°, sideslip about 20°, airspeed 13 → 23 m/s over 6 s ([spin state](ft/ex14h/spin-state.md)). The Extra 260 spins steadily at α ≈ 34° and 12–13 m/s at this wing loading. The centre-of-pressure moment exposes that gap; it does not cause it.
@@ -393,6 +393,30 @@ Checks on the integrated tree: 17 Extra coupling assertions (oracle-gap checks l
 
 Use the [standard data-only comparison workflow](../../../tools/physics.md#flight-test-battery). Decompress retained `.gz` payloads to fresh ignored paths. The baseline runtime can be reconstructed from the recorded base commit and source patch; use its pinned solver for exact replay. Do not substitute a newer solver when interpreting the data-only result.
 
+## EX-14k — stall protocol sensitivity, 2026-11-09
+
+**Diagnostic pass; no aircraft-data or force-law change.** The probe previously called its five-second idle/full-elevator sequence the owner's test. The retained [Character Research](<../../../../external Audits/Extra300_Character_Research/CHARACTER_RESEARCH.txt>) and proposed [C04/C07 cards](<../../../../external Audits/Extra300_Character_Research/flight_cards.json>) distinguish qualitative reports from synchronized measurements and require entry, hold and recovery to be examined separately. They do not establish this hold duration, CG, trims or lack of corrections, and do not require every stall to be benign.
+
+The [probe](../../../../research/extra-300/ex14/stall_probe.gd) now exposes bounded `--hold=0.25..5` and `--rudder=hands_off|neutral_surface|ball` options. Rudder interventions begin at the elevator stop, preserving the entire lead-in and stop state. `neutral_surface` inverts the actual rate/expo/trim mapping to command zero rudder deflection; `ball` uses the existing bounded `P.ball` feedback. Pitch-stick release retains entry trim. Reports identify the exact aircraft/solver/probe sources and log actual surface angles, sideslip and nominal-mass lateral specific force. Unknown options and invalid settings are refused before output creation.
+
+The default numeric flight remains identical to EX-14j across **all 4,917 CSV rows and columns**. All five arms share the complete input/state prefix through stop tick 2,996; only the requested intervention then changes. Each distinct recording replays exactly on the same frozen reference solver, `complete: true`, `solver_changed: false`, **23,020 ticks total**. These are different control tapes, not same-input aircraft candidates. [Summary and source identities](EX-14k/summary.json), [retained payloads](EX-14k/manifest.json) and the earlier [runtime reconstruction](EX-14j/summary.json) bind the evidence.
+
+| Input after stop | Requested hold | Maximum bank during hold | Peak bank in nominal 3 s after release | Endpoint vertical speed |
+| --- | ---: | ---: | ---: | ---: |
+| Existing zero sticks, entry trims retained | 5 s | 91.6° | 100.6° | −9.75 m/s |
+| Zero rudder surface | 5 s | 89.6° | 99.5° | −10.88 m/s |
+| Existing ball feedback | 5 s | 86.1° | 94.8° | −9.04 m/s |
+| Existing rudder, earlier pitch-stick release | 1 s | 5.5° | 7.9° | −3.86 m/s |
+| Existing rudder, earlier pitch-stick release | 2.5 s | 18.2° | 23.2° | −4.58 m/s |
+
+Bank magnitudes are absolute; hold windows and total flight durations differ. Marker ticks retain the one-tick floating-point boundary detail. Canceling the small rudder trim is **not a sufficient cure in this setup**. Ball feedback reduces peak held |β| from 5.02° to 1.42°, but peak |Fy|/(m₀g) remains about 0.050 and the rudder moves, so this does not independently eliminate yaw/roll coupling as a cause. Earlier release limits the subsequent bank and reduces post-release height loss from 51.4 m to 13.2/12.9 m; both endpoints remain descending, not recovered level flight.
+
+The existing read-only static sweep still has negative roll damping at 16–18°; the positive values at 14° and 20° remain model predictions. This does not identify the coupled, evolving departure or justify adding damping to hide it. No engine, CG, polar or control authority was retuned. Frozen-reference observations do not qualify concurrent main-tree or native changes, and real-pilot/physical acceptance remains open.
+
+Probe labels now describe bank/heading thresholds without asserting a mush, wing-drop cause or spin. The legacy `rotation_rate` fields measure **Euler heading derivative**, not earth-vertical angular velocity; near-vertical pitch is flagged as unclassified. Actual surface angles use aerodynamic signs (elevator trailing-edge down and rudder trailing-edge left positive); the legacy `elevator_at_stop_deg` uses trailing-edge up positive. The opposite elevator signs describe the same deflection.
+
+Verification: five complete exact replays; unchanged default numeric flight; identical pre-intervention checkpoints; actual neutral rudder converges to zero; three CLI tests cover eight invalid invocations without creating evidence folders. A checked high-rate/wings-level short intervention also completes on the current integration tree. This is research-tool verification, not an additional physics acceptance gate. Reproduce with the existing command below, using a fresh `--out` for every hold/rudder combination and the pinned frozen solver for exact replay.
+
 ## Open findings (ranked)
 
 1. **The installed engine/propeller remains unidentified.** EX-14g uses a conditional power anchor and one Glassock rig check. External Round 3 identifies the Gierke primary source, but its stock-exhaust/fuel setup is not the Extra's Pitts installation; the borrowed propeller loading also needs independent identification.
@@ -427,7 +451,7 @@ for t in glow_dive_support body_side_force extra_installation extra_handling ext
   "$G" --headless --path app --audio-driver Dummy --script res://tests/test_$t.gd; done
 "$G" --headless --path <app copy> --audio-driver Dummy --script "$PWD/research/extra-300/ex14/taxi_tail_probe.gd"
 "$G" --headless --path <app copy> --audio-driver Dummy --script "$PWD/research/extra-300/ex14/hammerhead_probe.gd" -- --throttle=0.35 --kick=6
-"$G" --headless --path app --audio-driver Dummy --script "$PWD/research/extra-300/ex14/stall_probe.gd" [-- --data=<abs candidate json>]
+"$G" --headless --path app --audio-driver Dummy --script "$PWD/research/extra-300/ex14/stall_probe.gd" -- --case=normal/hands_off --hold=1 --rudder=hands_off --out=<fresh absolute directory> [--data=<abs candidate json>]
 "$G" --headless --path app --script "$PWD/research/flight-robustness/d8b-r2/analog/post_stall_sweep.gd" -- res://data/aircraft/gp_extra_300s_60.json
 python3 -I research/extra-300/ex14/sandia_polar.py <legacy Extra json> 0.15 <out json>   # rejected Sandia candidate
 python3 research/flight-test/run.py --out <new dir> --aircraft gp-extra-300s-60 --app <app copy>

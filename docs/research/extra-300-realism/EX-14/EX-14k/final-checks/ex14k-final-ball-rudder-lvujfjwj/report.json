@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "84e05fd1-8bf5-4911-b565-6fdb7dc14b5b",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/extra300-feel-20261109/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/extra-300/ex14/stall_probe.gd",
+    "--",
+    "--case=normal/hands_off",
+    "--data=C:/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/gp_extra_300s_60.json",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/extra300-stall-inputs-20261109/final/ball-rudder",
+    "--rudder=ball"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T23:24:13.560130+00:00",
+  "label": "ex14k-final-ball-rudder",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-stall-inputs-20261109\\final-checks\\ex14k-final-ball-rudder-lvujfjwj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-stall-inputs-20261109\\final-checks\\ex14k-final-ball-rudder-lvujfjwj\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_STALL_PROBE_COMPLETE failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 18.641,
+  "log_bytes": 13137,
+  "log_sha256": "3bbc621efaa6833f7714fd98ae298cb3662587fe3a9755a4737d4858b308f966"
+}

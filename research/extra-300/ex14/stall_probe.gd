@@ -1,13 +1,11 @@
-# EX-14h probe (read-only): the 1-g stall the GP Extra owners describe (RCU thread 1062376: "Stalls were very very mild
-# ...it sort of mushes forward while loosing a bit of altitude. Center the elevator and its flying again"; "Wingtips
-# didnt drop and the nose really didnt drop either"). Unlike the FT card (full rates, feet on the ball, wing drop
-# detected from the bank), this flies the owner's test: idle, altitude held with the elevator until the stick is at its
-# stop, then the stop held 5 s with the ailerons and rudder hands-off (or ailerons holding the wings level), then the
-# elevator centred for 3 s, still hands-off. On the manual's LOW rate (controls.rates.normal, rate_profile "normal")
-# and on HIGH rate ("full"). Reports the angle of attack the stop reaches, bank, nose drop, rotation and height lost,
-# plus a 0.25 s series from the stop. One JSON line per case.
+# EX-14h/k research probe: an explicit stall protocol motivated by qualitative GP Extra owner reports.
+# Those reports do not establish this five-second hold, trim, CG or hands-off control sequence. This is a
+# sensitivity experiment, not a reconstruction of an owner's test. Idle; altitude and wings held to the elevator
+# stick stop, then held for --hold seconds (default 5); pitch stick centred for 3 s. Entry trims remain active.
+# Ailerons are hands-off or wings-level; --rudder interventions begin only at the stop, with an identical lead-in.
+# Rates are the manual LOW ("normal") or HIGH ("full"). Rotation labels do not establish a spin.
 #   godot --headless --path <app> --audio-driver Dummy --script <abs>/stall_probe.gd -- [--aircraft=gp-extra-300s-60]
-#     [--data=<abs json>]
+#     [--data=<abs json>] [--hold=0.25..5] [--rudder=hands_off|neutral_surface|ball]
 extends SceneTree
 
 const Flight := preload("res://sim/flight_session.gd")
@@ -17,13 +15,14 @@ const P := preload("../../flight-test/pilot.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
 
 const ALTITUDE := 300.0
-const HOLD_S := 5.0
 const RELEASE_S := 3.0
 const ENTRY_VS := 1.4  # entry speed / the FT card's power-off stall speed (summary-extra-d.md: 11.11 m/s)
 const VS_CARD := 11.11
 var output_dir := ""
 var case_filter := ""
 var failed := false
+var hold_s := 5.0
+var rudder_policy := "hands_off"
 
 
 func _initialize() -> void:
@@ -38,6 +37,19 @@ func _initialize() -> void:
 			output_dir = arg.trim_prefix("--out=")
 		elif arg.begins_with("--case="):
 			case_filter = arg.trim_prefix("--case=")
+		elif arg.begins_with("--hold="):
+			var value := arg.trim_prefix("--hold=")
+			hold_s = value.to_float() if value.is_valid_float() else NAN
+		elif arg.begins_with("--rudder="):
+			rudder_policy = arg.trim_prefix("--rudder=")
+		else:
+			printerr("Unknown argument: " + arg)
+			quit(2)
+			return
+	if not is_finite(hold_s) or hold_s < 0.25 or hold_s > 5.0 or not ["hands_off", "neutral_surface", "ball"].has(rudder_policy):
+		printerr("Expected --hold in [0.25, 5] and --rudder=hands_off|neutral_surface|ball")
+		quit(2)
+		return
 	if not case_filter.is_empty() and not ["normal/hands_off", "normal/wings_level", "full/hands_off", "full/wings_level"].has(case_filter):
 		printerr("Unknown --case: " + case_filter)
 		quit(2)
@@ -77,6 +89,11 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 	session.reset()
 	session.rate_profile = rates
 	var sim: Node = session.sim
+	var neutral_yaw := _neutral_yaw_command(session)
+	if rudder_policy == "neutral_surface" and not is_finite(neutral_yaw):
+		failed = true
+		session.free()
+		return {case = "%s/%s" % [rates, ailerons], error = "zero rudder surface is outside available stick travel"}
 	var recorder: RefCounted = null
 	if not output_dir.is_empty():
 		recorder = FlightLog.new(session)
@@ -86,8 +103,17 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 			return {case = "%s/%s" % [rates, ailerons], error = "recording refused"}
 	var dt: float = sim.dt()
 	var ctx := {}
-	var out := {case = "%s/%s" % [rates, ailerons], rates_active = session.rates_active(),
-		pitch_trim = session.trims.pitch}
+	var out := {format = "openrc-extra-stall-probe v2", case = "%s/%s" % [rates, ailerons], rates_active = session.rates_active(),
+		pitch_trim = session.trims.pitch, entry_trims = session.trims.duplicate(), hold_s = hold_s,
+		rudder_policy = rudder_policy, rudder_intervention = "at elevator stop through end of release",
+		neutral_rudder_stick = neutral_yaw, aircraft_id = session.aircraft.model.id,
+		aircraft_input_sha256 = session.aircraft.get("input_identity", {}).get("sha256", ""),
+		solver_sha256 = FlightLog.solver_identity(),
+		probe_sha256 = FileAccess.get_sha256(get_script().resource_path),
+		deflection_convention = "controls use aerodynamic signs (elevator TE down, rudder TE left positive); legacy elevator_at_stop_deg is TE up positive",
+		rotation_rate_convention = "legacy rotation_rate fields are absolute Euler heading derivatives, ill-conditioned near vertical; not spin rates",
+		outcome_convention = "bank/heading thresholds only; no stall-type or spin identification",
+		lateral_g_convention = "previous committed loads Fy / initial loaded mass / g; same normalization as FT pilot"}
 	var t_stop := -1.0
 	var at_stop := 0
 	var stop := {}
@@ -98,6 +124,9 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 	var max_yaw_rate := 0.0
 	var first_bank_20 := -1.0
 	var late_yaw := 0.0
+	var max_beta := 0.0
+	var max_lateral_g := 0.0
+	var heading_rate_usable := true
 	for tick in roundi(60.0 / dt):
 		var t := tick * dt
 		var s: PackedFloat64Array = sim.state
@@ -113,32 +142,43 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 				if recorder != null:
 					recorder.mark("elevator stop: " + rates + "/" + ailerons)
 				stop = {t_s = t, speed_mps = P.speed(s), alpha_deg = rad_to_deg(P.alpha(s)), pitch_deg = rad_to_deg(e[1]),
-					alt_m = P.altitude(s)}
+					alt_m = P.altitude(s), bank_deg = rad_to_deg(e[2]), beta_deg = rad_to_deg(P.beta(s)),
+					p_radps = float(s[RB.RATE]), r_radps = float(s[RB.RATE + 2]),
+					tick = sim.tick, initial_controls = _controls(session)}
 		var since := t - t_stop if t_stop >= 0.0 else -1.0
-		if since >= 0.0 and since <= HOLD_S:
+		if since >= 0.0:
+			if rudder_policy == "neutral_surface":
+				c.yaw = neutral_yaw
+			elif rudder_policy == "ball":
+				ctx.ay = _lateral_g(session)
+				c.yaw = P.ball(s, k, ctx, dt)
+		if since >= 0.0 and since <= hold_s:
 			c.pitch = 1.0
 			c.roll = P.bank(s, 0.0, k) if ailerons == "wings_level" else 0.0
 			max_alpha = maxf(max_alpha, rad_to_deg(P.alpha(s)))
 			max_bank = maxf(max_bank, absf(rad_to_deg(e[2])))
+			max_beta = maxf(max_beta, absf(rad_to_deg(P.beta(s))))
+			max_lateral_g = maxf(max_lateral_g, absf(_lateral_g(session)))
 			min_pitch = minf(min_pitch, rad_to_deg(e[1]))
-			var yaw_rate := absf(rad_to_deg(_earth_yaw_rate(s)))
+			heading_rate_usable = heading_rate_usable and absf(cos(e[1])) >= 0.1
+			var yaw_rate := absf(rad_to_deg(_heading_rate(s)))
 			max_yaw_rate = maxf(max_yaw_rate, yaw_rate)
-			if since > 3.0:
+			if since > maxf(0.0, hold_s - 2.0):
 				late_yaw += yaw_rate * dt
 			if first_bank_20 < 0.0 and absf(rad_to_deg(e[2])) > 20.0:
 				first_bank_20 = since
-		elif since > HOLD_S:
+		elif since > hold_s:
 			c.pitch = 0.0
 			c.roll = 0.0
 			if not out.has("hold_end"):
 				if recorder != null:
 					recorder.mark("release elevator")
-				out.hold_end = _row(s, since)
-			if since > HOLD_S + RELEASE_S:
-				out.release_end = _row(s, since)
+				out.hold_end = _row(s, since, session)
+			if since > hold_s + RELEASE_S:
+				out.release_end = _row(s, since, session)
 				break
 		if since >= 0.0 and roundi(since / dt) % roundi(0.25 / dt) == 0:
-			series.append(_row(s, since))
+			series.append(_row(s, since, session))
 		session.commands = {roll = c.roll, pitch = c.pitch, yaw = c.yaw, throttle = c.throttle}
 		sim.inputs = session._inputs()
 		sim.step()
@@ -152,17 +192,24 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 	if recorder != null and recorder.stop() != OK:
 		out.error = "recording did not close"
 		failed = true
-	var late_rate := late_yaw / 2.0
+	var late_rate := late_yaw / minf(2.0, hold_s)
 	out.stop = stop
 	out.elevator_at_stop_deg = _stop_deflection(session)
 	out.max_alpha_held_deg = max_alpha
 	out.max_bank_held_deg = max_bank
+	out.max_abs_beta_held_deg = max_beta
+	out.max_abs_lateral_g_held = max_lateral_g
 	out.first_bank_20_after_stop_s = first_bank_20
 	out.nose_drop_deg = float(stop.get("pitch_deg", NAN)) - min_pitch
 	out.max_rotation_rate_dps = max_yaw_rate
 	out.rotation_rate_last_2_s_dps = late_rate
+	out.rotation_window_s = minf(2.0, hold_s)
+	out.heading_rate_usable = heading_rate_usable
 	out.height_lost_held_m = float(stop.get("alt_m", NAN)) - float(out.get("hold_end", {}).get("alt_m", NAN))
-	out.outcome = "spin entry" if late_rate > 90.0 else ("wing drop" if max_bank >= 30.0 else "mush")
+	out.height_lost_release_m = float(out.get("hold_end", {}).get("alt_m", NAN)) - float(out.get("release_end", {}).get("alt_m", NAN))
+	out.outcome = "heading rate unclassified near vertical" if not heading_rate_usable else (
+		"large heading rate (spin unclassified)" if late_rate > 90.0 else (
+		"large bank (cause unclassified)" if max_bank >= 30.0 else "limited bank (stall type unclassified)"))
 	out.series = series
 	session.free()
 	return out
@@ -177,16 +224,45 @@ func _stop_deflection(session: Node) -> float:
 	return rad_to_deg(float(f.pitch) * float(session.aircraft.model.controls.throw_rad.elevator))
 
 
-func _row(s: PackedFloat64Array, since: float) -> Dictionary:
+func _row(s: PackedFloat64Array, since: float, session: Node) -> Dictionary:
 	var e := P.euler(s)
-	return {t = snappedf(since, 0.01), alpha = snappedf(rad_to_deg(P.alpha(s)), 0.1), beta = snappedf(rad_to_deg(P.beta(s)), 0.1),
+	return {t = snappedf(since, 0.01), t_s = since, alpha = snappedf(rad_to_deg(P.alpha(s)), 0.1), beta = snappedf(rad_to_deg(P.beta(s)), 0.1),
 		bank = snappedf(rad_to_deg(e[2]), 0.1), pitch = snappedf(rad_to_deg(e[1]), 0.1), v = snappedf(P.speed(s), 0.01),
 		climb = snappedf(P.climb_rate(s), 0.01), p = snappedf(rad_to_deg(s[RB.RATE]), 1.0), r = snappedf(rad_to_deg(s[RB.RATE + 2]), 1.0),
-		alt_m = snappedf(P.altitude(s), 0.1)}
+		alt_m = snappedf(P.altitude(s), 0.1), controls = _controls(session), lateral_g = _lateral_g(session)}
 
 
-## Rotation rate about the earth vertical (rad/s, positive right), from the body rates and attitude.
-func _earth_yaw_rate(s: PackedFloat64Array) -> float:
+func _lateral_g(session: Node) -> float:
+	return float(session.sim.last_loads[1]) / (float(session.aircraft.model.mass_kg) * 9.80665) if session.sim.last_loads.size() >= 2 else 0.0
+
+
+func _controls(session: Node) -> Dictionary:
+	var d: Dictionary = session._deflections(session.sim.aux)
+	return {aileron_right_deg = rad_to_deg(float(d.aileron_right)), elevator_deg = rad_to_deg(float(d.elevator)),
+		rudder_deg = rad_to_deg(float(d.rudder)), engine_rpm = float(session.sim.aux[session.AUX_RPM])}
+
+
+## Invert the actual rate/expo/trim pipeline without touching servo or rigid-body state.
+func _neutral_yaw_command(session: Node) -> float:
+	var saved: Dictionary = session.commands
+	var lo := -1.0
+	var hi := 1.0
+	for _i in 48:
+		var mid := (lo + hi) * 0.5
+		session.commands = {roll = 0.0, pitch = 0.0, yaw = mid, throttle = 0.0}
+		if float(session.flown_commands().yaw) > 0.0:
+			hi = mid
+		else:
+			lo = mid
+	var answer := (lo + hi) * 0.5
+	session.commands = {roll = 0.0, pitch = 0.0, yaw = answer, throttle = 0.0}
+	var reachable := absf(float(session.flown_commands().yaw)) < 1e-10
+	session.commands = saved
+	return answer if reachable else NAN
+
+
+## Euler heading derivative (rad/s), not the earth-vertical angular-velocity component.
+func _heading_rate(s: PackedFloat64Array) -> float:
 	var e := P.euler(s)
 	var q: float = s[RB.RATE + 1]
 	var r: float = s[RB.RATE + 2]

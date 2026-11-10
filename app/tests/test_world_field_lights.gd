@@ -306,10 +306,42 @@ func _initialize() -> void:
 		World.build(holder, field, Callable(), case[0])
 		var has_lights := holder.get_node_or_null("FieldLights") != null
 		var has_stars := holder.get_node_or_null("Stars") != null
-		_check("world %s: hardware and stars" % case[0].get("preset", "legacy"), has_lights == (LandscapeOptions.enabled() or case[1]) and has_stars == case[1])
+		_check("world %s: hardware and stars" % case[0].get("preset", "legacy"), has_lights and has_stars == case[1])
 		if has_lights:
-			_check("field emission follows time", ((holder.get_node("FieldLights/flood_west") as SpotLight3D).light_energy > 0.0) == bool(case[1]))
+			var case_flood: SpotLight3D = holder.get_node("FieldLights/flood_west")
+			var active := case_flood.light_energy > 0.0 if LandscapeOptions.enabled() else case_flood.visible
+			_check("field emission follows time", active == bool(case[1]))
 		holder.free()
+	# The landscape comparison switch changes lighting presentation, not the
+	# permanent pole geometry or collision identity. Exercise actual World updates.
+	var prior_upgrade := OS.get_environment("OPENRC_LANDSCAPE_UPGRADE")
+	OS.set_environment("OPENRC_LANDSCAPE_UPGRADE", "off")
+	var baseline_holder := Node3D.new()
+	World.build(baseline_holder, field, Callable(), {time_of_day = false}, {},
+		{field_lighting = "club", field_activation = "off", campfire = false})
+	var baseline_lights: Node3D = baseline_holder.get_node("FieldLights")
+	var baseline_mast: Node3D = baseline_lights.get_node("field_mast_pole")
+	var baseline_mount: Node3D = baseline_lights.get_node("windsock_mount_pole")
+	var baseline_flood: SpotLight3D = baseline_lights.get_node("flood_west")
+	_check("legacy lighting off keeps both physical poles visible", baseline_lights.visible
+		and baseline_mast.visible and baseline_mount.visible and not baseline_flood.visible)
+	World.set_night_options("club", false, "on")
+	_check("forced legacy lights turn on while the poles stay visible", baseline_mast.visible
+		and baseline_mount.visible and baseline_flood.visible)
+	World.set_night_options("club", false, "off")
+	_check("legacy lights turn off without hiding their poles", baseline_mast.visible
+		and baseline_mount.visible and not baseline_flood.visible)
+	baseline_holder.free()
+	var night_holder := Node3D.new()
+	World.build(night_holder, field, Callable(), Conditions.resolve(PackedStringArray(["--time_of_day=night"])), {},
+		{field_lighting = "club", field_activation = "auto", campfire = false})
+	var night_lights: Node3D = night_holder.get_node("FieldLights")
+	_check("automatic night lighting shows emitters and permanent poles",
+		(night_lights.get_node("flood_west") as Node3D).visible
+		and (night_lights.get_node("field_mast_pole") as Node3D).visible)
+	night_holder.free()
+	if prior_upgrade.is_empty(): OS.unset_environment("OPENRC_LANDSCAPE_UPGRADE")
+	else: OS.set_environment("OPENRC_LANDSCAPE_UPGRADE", prior_upgrade)
 	Atmosphere.state = {}
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

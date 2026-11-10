@@ -38,7 +38,9 @@ existing layout/admissibility checks. It does not migrate other laws.
 | Existing polar/session checks | 126 polar and 8 session checks pass. |
 | Existing consumers | 774 separated-offset, 102 flap-offset, 7 Extra post-stall, 13 Extra handling, 8 checkpoint, 201 attached-spatial and 91 full-angle-spatial checks pass on the final candidate. |
 | Flight logging | 4,391 checks pass, including explicit candidate migration, unchanged complete initial numeric state, exact-law refusal and incompatible-wake refusal. |
-| Native components | Pinned GCC 13.3.0 strict-FP Linux build passes 593,941/593,941 byte-exact comparisons, including the stock Extra, deterministic delayed-detachment cases, wake, ground effect, and separated-offset refusal controls. The checked run is complete, source-stable and valid. This is component agreement only; the binary was not installed or promoted. |
+| Existing golden and trace consumers | Four original golden flights pass without rewriting; the 20-test application trace/metadata suite passes. |
+| Companion admission | All nine retained accepted/current tapes remain byte-identical (2,881 rows each), and the [guarded solver rebind](../../ai-companions/AFC-02/rebinds/2026-11-09-b0a074e4-to-a4ee8de9.json) renews the source pin. Strict live profile and behavior checks pass 52 and 39 checks; seed/timing and Manager checks pass 83 and 53. A matching frozen tree passes real Home-to-Fly and a production quick flight with three active airborne companions, no test override, faults or crashes. Only proven identity pins change; controller gains remain unchanged. |
+| Native components | Pinned GCC 13.3.0 strict-FP Linux/WSL build passes 593,941/593,941 byte-exact comparisons, including the stock Extra, deterministic delayed-detachment cases, wake, ground effect, and separated-offset refusal controls. The checked run is complete, source-stable and valid. This is component agreement only; the binary was not installed or promoted. |
 | Ordinary tape | Baseline exact replay and candidate replay both complete 480 ticks. All exported numeric channels are identical; `first_divergence` is null. |
 | Reverse tape | Baseline exact replay and candidate replay both complete 480 ticks. Candidate divergence starts at tick 1. This is an integrated tail-first rotating release, not a measured or pilot-qualified aerobatic maneuver. |
 
@@ -46,6 +48,10 @@ Both candidate reports explicitly contain `solver_changed: true`, `complete: tru
 and `status: ok`. Candidate row zero retains the recorded historical `last_loads`;
 new-law force samples start at tick 1. The two tapes use the same accepted stock
 Extra data, complete body/internal initial state and post-conditioning input tape.
+The aircraft input is frozen at SHA-256 `82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7`:
+a concurrent EX-14j data change is excluded from this solver experiment. The native
+component run separately includes that newer stock input; both identities are in
+the manifest.
 
 The [evidence manifest](evidence.json) binds both compressed baseline ORFLs,
 baseline/candidate CSVs, exact/candidate reports, comparisons and candidate sources.
@@ -53,6 +59,20 @@ The retained payload is approximately 1.1 MB, without images. The compressed nat
 oracle report retains its source/binary identities and component results; incidental
 shared-host microbenchmarks do not establish performance qualification. Raw checked logs live
 locally in `tmp/audit-physics-20261109/` and `tmp/godot-checks/audit-final-*`.
+
+The [focused verification index](verification.json) also retains checked-report/log
+hashes for the statistics, scenery, cache and optional-resource repairs from this
+audit. The existing evidence summarizer validates all 32 selected invocations:
+32 passed, zero skipped, zero failed/invalid. This selected collection is not a
+full application/CI run. Native 1920×1080 Low-scenery and Prestorm captures remain
+in ignored `tmp/audit-render-1080-{low,sky}-2/`; the GPU numerical probe is
+`tmp/audit-render-native-probe-2/probe.json`. No images are added to Git.
+
+The [companion behavior receipt](../../ai-companions/AFC-02/rebinds/2026-11-09-b0a074e4-to-a4ee8de9-behavior.json)
+preserves the seven checked reports/logs, production launch status and matching
+916-file runtime/configuration inventory used before promoting the two changed
+behavior-source hashes. It establishes the exercised launch/admission paths, not
+general behavioral or physical equivalence.
 
 ## Reproduce and interpret
 
@@ -73,7 +93,9 @@ baseline inputs, not physics edits in this repair.
 
 Run the matching checkout's existing [flight-log exact/candidate and comparison
 commands](../../../FLIGHT-LOGGING.md#compare-a-physics-change). Candidate replay
-uses unchanged `app/data/aircraft/gp_extra_300s_60.json` and the corrected source.
+uses the decompressed `aircraft-baseline.json.gz` and the corrected source. That
+payload is an exact copy of the accepted baseline generated data, not an edited
+aircraft candidate.
 Never report candidate replay as exact solver equivalence or physical validation.
 
 ## Remaining qualification

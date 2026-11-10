@@ -1,5 +1,12 @@
 # AFC-02-R6: seeds, behavior identity and flight status
 
+The 2026-11-09 reverse-flow solver change and subsequent Main/collision-source
+identities were rebound using the [nine-tape solver receipt](../AFC-02/rebinds/2026-11-09-b0a074e4-to-a4ee8de9.json)
+and [bounded behavior and admission evidence](../AFC-02/rebinds/2026-11-09-b0a074e4-to-a4ee8de9-behavior.json).
+The evidence includes a Home-to-Fly check and a production quick flight with three
+companions, both without the test-only solver override. These checks preserve the
+existing narrow profile; they do not establish physical validation.
+
 2026-11-09, Windows x86_64, official Godot `4.8.beta2.official.cafc17a19`,
 headless GDScript reference. This audit follow-up covers AFC-02 seed/admission,
 AFC-05-R2 status and AFC-00-R6 Manager timing. The prior

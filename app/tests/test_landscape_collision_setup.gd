@@ -47,16 +47,23 @@ func _run(field: Dictionary) -> void:
 func _test_landscape_disabled(field: Dictionary) -> void:
 	_set_options("off", "on", "low")
 	var loaded: Dictionary = SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field)
+	var fixtures: Dictionary = FieldLights.load_from()
 	var baseline: Dictionary = CollisionSetup.build(field)
-	var expected: Dictionary = CollisionWorld.build(field, loaded.scenery) if loaded.ok else {ok = false}
+	var expected: Dictionary = CollisionWorld.build(field, loaded.scenery, fixtures.lights) \
+		if loaded.ok and fixtures.ok else {ok = false}
 	_check("landscape baseline retains the visible field and scenery inventory",
 		baseline.ok and expected.ok and baseline.world == expected.world)
 	if not baseline.ok: return
 	var kinds := {}
 	for proxy: Dictionary in baseline.world.proxies: kinds[str(proxy.kind)] = true
-	_check("baseline retains field trees, barrier and scenery while omitting hidden daytime light fixtures",
+	_check("baseline retains field trees, barrier, scenery and permanent light structures",
 		kinds.has("tree_trunk") and kinds.has("fence") and kinds.has("person")
-		and kinds.has("building") and not kinds.has("lamp"))
+		and kinds.has("building") and kinds.has("lamp"))
+	_set_options("on", "on", "low")
+	var upgraded: Dictionary = CollisionSetup.build(field)
+	_check("the visual landscape switch cannot change the collision world",
+		upgraded.ok and upgraded.world == baseline.world)
+	_set_options("off", "on", "low")
 	var track: Dictionary = Track.load_default()
 	var with_track: Dictionary = CollisionSetup.build(field, track.track) if track.ok else {ok = false}
 	var track_count := 0

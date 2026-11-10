@@ -44,7 +44,7 @@ func _initialize() -> void:
 	var lights: Node3D = holder.get_node_or_null("FieldLights")
 	var stars: Node3D = holder.get_node_or_null("Stars")
 	_check("flowing session builds stars and lights at once", lights != null and stars != null)
-	_check("lights off in golden hour", lights != null and (is_zero_approx((lights.get_node("flood_west") as SpotLight3D).light_energy) if LandscapeOptions.enabled() else not lights.visible))
+	_check("lights off in golden hour", lights != null and (is_zero_approx((lights.get_node("flood_west") as SpotLight3D).light_energy) if LandscapeOptions.enabled() else not (lights.get_node("flood_west") as SpotLight3D).visible))
 	_check("one tonemapper for the session (AgX from a 6° start)", env.tonemap_mode == Environment.TONE_MAPPER_AGX)
 	var mats := World.haze_materials(holder)
 	_check("haze materials found (ground and grass)", mats.size() >= 2, str(mats.size()))
@@ -89,7 +89,7 @@ func _initialize() -> void:
 	_check("snapshot composition owns one environment", snapshot_world.world_environment.environment == snapshot_world.environment)
 	_check("snapshot light uses the selected solar direction", (snapshot_world.sun as DirectionalLight3D).transform.basis.z.distance_to(Atmosphere.sun_direction(snapshot)) < 1e-4)
 	_check("snapshot composition has no stale stars", snapshot_holder.get_node_or_null("Stars") == null)
-	_check("snapshot field hardware follows upgrade setting", (snapshot_holder.get_node_or_null("FieldLights") != null) == LandscapeOptions.enabled())
+	_check("snapshot retains permanent field hardware", snapshot_holder.get_node_or_null("FieldLights") != null)
 	snapshot_holder.free()
 	flowing_holder.free()
 	Atmosphere.state = {}

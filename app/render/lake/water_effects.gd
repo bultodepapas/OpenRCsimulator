@@ -72,6 +72,8 @@ void fragment() {
 
 var _configured: bool = false
 var _audio_enabled: bool = true
+# Loaded during configuration, never on the impact or checkpoint-restore path.
+var _splash_streams: Array[AudioStreamWAV] = []
 var _lake: Dictionary = {}
 var _water_level_down_m: float = 0.45
 var _lake_depth_m: float = 5.0
@@ -110,6 +112,8 @@ var _has_aircraft_base: bool = false
 ## node to the render world and calls update with the user's pause state.
 func configure(lake: Dictionary, audio_enabled: bool = true) -> bool:
 	clear()
+	_splash_streams.clear()
+	_configured = false
 	var raw_level: Variant = lake.get("water_level_down_m")
 	if not _is_finite_number(raw_level) or float(raw_level) < 0.05 or float(raw_level) > 2.0:
 		push_error("WaterEffects.configure requires a normalized lake water_level_down_m in [0.05, 2.0].")
@@ -124,6 +128,15 @@ func configure(lake: Dictionary, audio_enabled: bool = true) -> bool:
 	_wind_xz = wind_vector.direction
 	_wind_rate = wind_vector.rate
 	_audio_enabled = audio_enabled
+	if _audio_enabled:
+		for path: String in [SPLASH_ONE_PATH, SPLASH_TWO_PATH]:
+			var stream := load(path) as AudioStreamWAV
+			if stream == null:
+				_splash_streams.clear()
+				_lake = {}
+				push_error("WaterEffects.configure could not load splash audio: " + path)
+				return false
+			_splash_streams.append(stream)
 	_ensure_nodes()
 	_configured = true
 	_set_effect_materials(0.0)
@@ -175,6 +188,7 @@ func update(dt: float, paused: bool = false) -> void:
 
 ## Hide pooled visuals, stop only the impact one-shot, and restore the visual root.
 ## The separate ambient player returned by ambient_player() is not owned here.
+## Configured splash streams survive event resets; configure(false) or node release frees them.
 func clear() -> void:
 	if _has_aircraft_base and is_instance_valid(_aircraft_root):
 		_aircraft_root.global_transform = _aircraft_base_transform
@@ -693,4 +707,4 @@ static func _polygon_centroid(raw_polygon: Variant) -> Vector2:
 
 
 func _splash_stream(index: int) -> AudioStreamWAV:
-	return load(SPLASH_ONE_PATH if index == 0 else SPLASH_TWO_PATH) as AudioStreamWAV
+	return _splash_streams[index] if index >= 0 and index < _splash_streams.size() else null

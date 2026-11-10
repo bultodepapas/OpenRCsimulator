@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0da924c4-d2cd-4529-ae38-1842406fd662",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/extra300-feel-20261109/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/extra-300/ex14/stall_probe.gd",
+    "--",
+    "--case=normal/hands_off",
+    "--data=C:/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/gp_extra_300s_60.json",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/extra300-stall-inputs-20261109/final/release-1s",
+    "--hold=1"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T23:24:32.419840+00:00",
+  "label": "ex14k-final-release-1s",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-stall-inputs-20261109\\final-checks\\ex14k-final-release-1s-08p2effx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-stall-inputs-20261109\\final-checks\\ex14k-final-release-1s-08p2effx\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_STALL_PROBE_COMPLETE failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 18.062,
+  "log_bytes": 8257,
+  "log_sha256": "7039f48e7510a3ca0003809dcfc766d258f2d492bc32344a3e6a46bdf4b005db"
+}

@@ -233,8 +233,31 @@ Headless execution explicitly skips pixels. The separate native
 `test_woodland_edge_habitat.gd` covers geometry, quality and frame selection.
 See [evidence and scope](../../docs/research/visual-quality-implementation/L7-R5/README.md).
 
+## Woodland mesh review (L7-R6)
+
+The woodland views also support `close`, and `--woodland_meshes=on|off`
+sets the capture process's `OPENRC_WOODLAND_MESHES` control. The game defaults to
+mixed meshes/cards; the environment value `off` retains the original cards.
+Use matched explicit 1080p dimensions, scene detail and zero wind. Reports include
+plant/source identities, fitted heights/footprints, independent runtime counts
+and scenery source allowances.
+
+For a calm camera orbit, select one pocket view, then add
+`--motion=woodland-orbit --frames=72 --wind_mps=0`. It renders 24 samples per
+second around that fixed recipe center. This is an offline camera route without
+flight simulation or frame-pacing measurement.
+
+`--mesh_lod_threshold=0` disables automatic mesh LOD only for the probe viewport.
+`--woodland_texture_filter=linear` makes private copies of woodland mesh materials
+without mip filtering. These are diagnostic controls, not production changes.
+Normal captures retain source filters and the viewport's default LOD threshold.
+The static `--profile` path accepts `--wind_mps=0` for matched calm diagnostics;
+its timings do not qualify whole-flight performance.
+
+See [accepted sources, geometry cost and remaining gates](../../docs/research/visual-quality-implementation/L7-R6/README.md).
+
 ## Decorative woodland margins
 
-`python tools/trees/place_woodland_edges.py --check` validates the generated `app/data/woodland_edges.json`; omit `--check` to regenerate it. `python tools/trees/test_place_woodland_edges.py` checks determinism, source geometry bounds and field/scenery exclusions. The runtime builder in `app/scenery/woodland_edge_habitat.gd` reuses the existing downloaded shrub atlas and short-grass mesh. It adds four small default-field patches, with five high-quality batches and 1,956 triangles; balanced quality is a stable subset and low quality omits this decoration.
+`python tools/trees/place_woodland_edges.py --check` validates the generated `app/data/woodland_edges.json`; omit `--check` to regenerate it. `python tools/trees/test_place_woodland_edges.py` checks determinism, source geometry bounds and field/scenery exclusions. The runtime builder in `app/scenery/woodland_edge_habitat.gd` adds four small default-field pockets. High keeps 220 plants: 202 cards and 18 downloaded mesh plants, totaling 2,656 source triangles in 13 batches. Balanced is a stable subset and Low omits the decoration. The all-card option retains 472 triangles/five batches; the recipe's source budget describes that original card realization. The mixed renderer separately verifies actual geometry and fits mesh replacements inside its certified plant envelopes.
 
 The original woodland-edge acceptance configuration contained 649,919 source triangles under its 650,000 cap. That dated count is not current free capacity: the shared world has since exceeded this cap; see [current vegetation evidence](../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md). [LU-34](../../docs/research/landscape-upgrade/LU-34/README.md) has since replaced the pooled cap with per-subsystem source allowances (close vegetation 150,000, botanical 90,000) and a drawn-cost budget per view. Margins do not enter field/scenery data or the collision world. Inputs that differ from the bundled default field, scenery groups or lake skip the recipe. Source hashes in the generated report describe provenance; runtime does not compare text hashes across platform line endings. Re-run the generator and `test_woodland_edge_habitat.gd` plus complete scenery-budget checks after changing the bundled sources or exclusions.

@@ -530,11 +530,10 @@ static func _build_sky_stage(context: Dictionary) -> void:
 	var lights_node: Node3D = null
 	if not lights.is_empty():
 		lights_node = FieldLights.build(lights) # FW-31…34: visual only
-		lights_node.visible = upgraded_lights or _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0)))
 		parent.add_child(lights_node)
 	if lights_node != null and not upgraded_lights:
 		_night_legacy_lights = weakref(lights_node)
-		lights_node.visible = _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0)))
+		_set_legacy_lights_active(lights_node, _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0))))
 	context.sun = sun
 	context.storm_bank = storm_bank
 	context.stars = stars
@@ -939,7 +938,7 @@ static func set_night_options(profile: String, campfire: bool, activation: Strin
 		_night_helper.get_ref().set_activation(activation)
 		_night_helper.get_ref().set_profile(profile)
 	if _night_legacy_lights != null and is_instance_valid(_night_legacy_lights.get_ref()):
-		_night_legacy_lights.get_ref().visible = _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0)))
+		_set_legacy_lights_active(_night_legacy_lights.get_ref(), _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0))))
 	if _night_fire != null and is_instance_valid(_night_fire.get_ref()):
 		_night_fire.get_ref().set_enabled(campfire)
 	if _night_owner != null and is_instance_valid(_night_owner.get_ref()):
@@ -952,6 +951,14 @@ static func set_night_options(profile: String, campfire: bool, activation: Strin
 			reflection.position = original + Vector3(0.0001, 0.0, 0.0)
 			reflection.position = original
 	return true
+
+
+## Legacy baseline hides emitters, never the poles that remain physical obstacles.
+static func _set_legacy_lights_active(lights_node: Node3D, active: bool) -> void:
+	lights_node.visible = true
+	for child: Node in lights_node.get_children():
+		if child is Node3D and not bool(child.get_meta("physical_structure", false)):
+			(child as Node3D).visible = active
 
 
 static func _legacy_lights_enabled(sun_elevation_deg: float) -> bool:
@@ -1172,7 +1179,7 @@ static func flow_to(clock_s: float) -> bool:
 	for m: ShaderMaterial in _flow.materials:
 		Atmosphere._set_haze_uniforms(m)
 	if _flow.lights_node != null and not _flow.get("upgraded_lights", false):
-		(_flow.lights_node as Node3D).visible = _legacy_lights_enabled(float(state.sun_elevation_deg))
+		_set_legacy_lights_active(_flow.lights_node as Node3D, _legacy_lights_enabled(float(state.sun_elevation_deg)))
 	_turn_stars(float(state.lst_deg))
 	if not is_equal_approx(env.tonemap_exposure, state.exposure) and _adapt_clock < 0.0:
 		env.tonemap_exposure = state.exposure # no view target adapts it (e.g. evidence views)

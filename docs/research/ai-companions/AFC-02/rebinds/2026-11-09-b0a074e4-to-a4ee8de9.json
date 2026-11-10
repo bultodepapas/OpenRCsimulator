@@ -1,0 +1,131 @@
+{
+  "format": "openrc-ai-solver-rebind v1",
+  "date": "2026-11-09",
+  "accepted_before": {
+    "solver_sha256": "b0a074e43c9a82d90126a49d86964b638bbd4a4dfeb5aca58bd36677fef02464",
+    "rev": "84b52ce7ac196c7e1cd0954d6d3ed73d3e1d3df7"
+  },
+  "current_solver_sha256": "a4ee8de9c99179ef7faeb758be82ee277b50644762a41f7e8b6408446b97dc92",
+  "head": "0ab4d1e3b6bf052133a5456cbd3d73924646a055",
+  "solver_tree_committed": true,
+  "changed_sources": [
+    "app/physics/aero.gd",
+    "app/physics/aircraft_data.gd",
+    "app/physics/wing_polar.gd"
+  ],
+  "candidate_aircraft": "app/data/aircraft/jensen_ugly_stik_60.json",
+  "identical": true,
+  "tapes": [
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-ai.orfl.gz",
+      "orfl_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+      "rows": 2881,
+      "base_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+      "head_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "6530bf0715ae440f394747944f2d4bbf8ebcd74f3ba4284676ab5777eb30f748",
+      "base_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+      "head_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-coupled.orfl.gz",
+      "orfl_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+      "rows": 2881,
+      "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+      "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "bb1d604945b6439217ba740cad67f77086574ed264083d2c548fa7408aab0f13",
+      "base_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+      "head_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-exogenous.orfl.gz",
+      "orfl_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+      "rows": 2881,
+      "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+      "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "e6c72f34b123fc5f346f670fef9011a26da1464ad7cc8f7182a62510f801bbdb",
+      "base_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+      "head_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-ai.orfl.gz",
+      "orfl_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+      "rows": 2881,
+      "base_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+      "head_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "daf871bc8e5c1c95ef651c5ba0f59e7bdd97c5cd4a418c9151a5d10b96675543",
+      "base_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+      "head_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-coupled.orfl.gz",
+      "orfl_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+      "rows": 2881,
+      "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+      "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "5c731435844c63040183a636e740bbe110d4fbe24cd640ae78cbd3cb0f8abf9a",
+      "base_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+      "head_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-exogenous.orfl.gz",
+      "orfl_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+      "rows": 2881,
+      "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+      "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "430fd976950df54b0addf10867a8ea39571300fefb3869af98ea92d8bdd92401",
+      "base_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+      "head_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-ai.orfl.gz",
+      "orfl_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+      "rows": 2881,
+      "base_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+      "head_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "f487702aa244117f6552dcb3052ad55cada3f8b5197e379c85e82da51b9d789b",
+      "base_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+      "head_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-peer.orfl.gz",
+      "orfl_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+      "rows": 2881,
+      "base_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+      "head_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "09bc3b855fd5cbccd7635eb000dfe0c52edd9d4e661bccc36d1ae51ee17d1c18",
+      "base_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+      "head_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b"
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-player.orfl.gz",
+      "orfl_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+      "rows": 2881,
+      "base_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+      "head_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+      "identical": true,
+      "tape_encoding": "gzip",
+      "stored_sha256": "677e5e446f5087b954df0c95b2bd956d01c1031a6cb5ed2a12705cce37961189",
+      "base_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+      "head_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d"
+    }
+  ],
+  "baseline": "full",
+  "method": "Candidate replays of the retained tapes on the accepted revision's tracked app and replay tooling vs the current tree; CSV bytes compared.",
+  "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical validation."
+}

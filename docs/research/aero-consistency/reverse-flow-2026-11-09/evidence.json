@@ -39,8 +39,8 @@
     },
     {
       "path": "ordinary-candidate.json",
-      "sha256": "ca4687ede6b23966a661ce3817e53671415f60bb520e18b080153eaeb5d7037e",
-      "bytes": 11746
+      "sha256": "b7becf51546286a514959ef0e524e64932ec8ffae3f4554eaf5336173f34045e",
+      "bytes": 11755
     },
     {
       "path": "ordinary-comparison.json",
@@ -68,20 +68,20 @@
     },
     {
       "path": "reverse-candidate.csv.gz",
-      "sha256": "3dc80183467b5e1ccd68670f41d527ae1e2a0358599d872287a64d20a103bc38",
-      "bytes": 175604,
-      "raw_sha256": "ab340e7fe95e8e759ed4134a5c5def67cfee67e9f8fb0d07807b3310405d5a9f",
-      "raw_bytes": 471548
+      "sha256": "b25c2d55e857cd716e190d7c2cd52b05c9e7c8fc7476875ad7c905acd8393c49",
+      "bytes": 175449,
+      "raw_sha256": "d4b192bb9b8ba7a2ec7cce12472e4c524a26217ce4ecf3fb56205e4704b38683",
+      "raw_bytes": 471591
     },
     {
       "path": "reverse-candidate.json",
-      "sha256": "59d05a0c652f38cdfe6fb55c37b312d1f4859e0a88bf0c299087d479e6a580d8",
-      "bytes": 11710
+      "sha256": "df98b88a6f73fdc15468568f72115a0bfce4abbe71b0772d6dc4eece743f748b",
+      "bytes": 11719
     },
     {
       "path": "reverse-comparison.json",
-      "sha256": "02f64efe155c0ce0ff42e7046d7ac1f1a7fd218e4c0078dceeac838c2a39cb4c",
-      "bytes": 2401
+      "sha256": "ac320da549a79346ec26ef64e06927eb94ee1f93aa277c531d5e6f822a0ccacf",
+      "bytes": 2413
     },
     {
       "path": "baseline-sources.json",
@@ -94,6 +94,18 @@
       "bytes": 13566,
       "raw_sha256": "52942775c49f8182fb66930aa82101e66ac610505bfebf70f6198816bfd09420",
       "raw_bytes": 74833
+    },
+    {
+      "path": "aircraft-baseline.json.gz",
+      "sha256": "a16107cdebccf16c0780a9ae258d98dbd2d48865598295ad52b436bb57c097a4",
+      "bytes": 13186,
+      "raw_sha256": "82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7",
+      "raw_bytes": 72452
+    },
+    {
+      "path": "verification.json",
+      "sha256": "a2f1f8e251fadd387878fa7da2dcd75603e5b086dfd325b25611915ca52817ab",
+      "bytes": 27492
     }
   ],
   "limits": [
@@ -149,6 +161,18 @@
       "rolling_native": "wheel-positive-terrain-excess-v2",
       "rolling_reference": "wheel-positive-terrain-excess-v2"
     },
-    "qualification": "Components only; no installation, fleet, package, timing or physical qualification."
+    "qualification": "Components only; no installation, fleet, package, timing or physical qualification.",
+    "aircraft_input_sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf"
+  },
+  "aircraft_input_sha256": "82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7",
+  "companion_requalification": {
+    "solver_rebind": "docs\\research\\ai-companions\\AFC-02\\rebinds\\2026-11-09-b0a074e4-to-a4ee8de9.json",
+    "sha256": "08a6484b86635281f00a45d550b1490348a075f9f26d28cd638ab01d5f7c1bf3",
+    "tapes": 9,
+    "rows_per_tape": 2881,
+    "result": "accepted/current CSV byte identity; strict live profile and behavior admission pass; matching frozen Home/production launches have no test override",
+    "scope": "Proven source identity renewal only, not new physical/target-performance qualification.",
+    "behavior_receipt": "docs\\research\\ai-companions\\AFC-02\\rebinds\\2026-11-09-b0a074e4-to-a4ee8de9-behavior.json",
+    "behavior_receipt_sha256": "e7aef54aafd1631428f54afe0f26a0de9e1d2c7a570268f28dd3f116e84932ce"
   }
 }

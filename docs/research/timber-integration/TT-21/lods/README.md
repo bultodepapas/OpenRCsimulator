@@ -1,5 +1,9 @@
 # TT-21-R1 — preserve Lumber LODs through visual repair
 
+The later [unsmoothed-split follow-up](../unsmoothed-split-20261109/README.md)
+preserves these arrays/LODs while batching empty-lookup channel copies and renewing
+the exact current paint-compatibility identity. Its measurements and scope are separate.
+
 2026-11-09. Implements the first second-pass recommendation in
 [`TRIANGULOS.MD`](../../../../../external%20Audits/TRIANGULOS.MD), checked against
 `8fb825a96dbc39fbbf99c1056ba643c9cde49b5d`. Existing tree/backlight work in the

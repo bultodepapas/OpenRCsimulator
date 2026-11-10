@@ -1,0 +1,8 @@
+test_invalid_hold_is_refused_before_output (__main__.ProbeCLI.test_invalid_hold_is_refused_before_output) ... ok
+test_misspelled_option_cannot_silently_run_the_default (__main__.ProbeCLI.test_misspelled_option_cannot_silently_run_the_default) ... ok
+test_unknown_rudder_policy_is_refused (__main__.ProbeCLI.test_unknown_rudder_policy_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 36.205s
+
+OK

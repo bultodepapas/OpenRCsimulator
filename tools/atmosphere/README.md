@@ -82,7 +82,7 @@ The production cache now keeps analytic noise until a validated HDR bake is
 published. It retries once, then stays analytic for that seed. At most four seeds
 are retained; layered skies request the actual eligible relief seeds, and layers
 without a matching tile stay analytic. Clear and cirrus do not request relief tiles.
-Disabling both cache modes cancels pending work and releases the retained tiles.
+Disabling both cache modes or removing the last material consumer cancels pending work and releases retained tiles.
 `CloudShadowMap.diagnostics()` distinguishes disabled, unused,
 pending, ready, failed and capacity-limited consumers. Readiness checks 16
 seed-specific samples in both channels; it is not a complete image comparison.

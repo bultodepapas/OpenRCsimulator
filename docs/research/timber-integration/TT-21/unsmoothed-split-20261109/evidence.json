@@ -1,0 +1,1554 @@
+{
+  "format": "openrc-timber-unsmoothed-split-v1",
+  "date": "2026-11-09",
+  "baseline_commit": "5e673fbbdd4a2af94fb619eac87430d82f4d46c5",
+  "closing_head": "0ab4d1e3b6bf052133a5456cbd3d73924646a055",
+  "source_sha256": {
+    "app/aircraft/timber_visual_details.gd": "a950fa9bde2effc99b7b38adb64dce528e1b6629e54f05edec32fd7fc2f35f7e",
+    "app/aircraft/custom_skin.gd": "b3efad7a34eebc907a54c7d8dcac08e7b988e542aecf1e95f30265343fda66fa",
+    "app/aircraft/procedural_skin.gd": "7f5d825b2e8e5c9963ef584d77956b89c85a133aedcec37c2e9ecb59af3961fa",
+    "app/aircraft/timber_model.gd": "4d8daf200b7e0928ce18fe6ca451b08423ff1a59e6ef1119350e43004c9b0437",
+    "app/aircraft/timber_visual_lighting.gd": "33551bded719aa3500ad0990da31d57471f06f2065c400426c914561fb6e97cd",
+    "app/aircraft/imported_model.gd": "5925f5b0a45f6e116529574010a66949c34f94dd255ee277741b8ffda82745db",
+    "app/tests/test_timber_visual_lods.gd": "ca2423b781f9833f8fd8d5455c2ef21654ac1a051e3dc7276a21b9e7ab6f8566",
+    "app/tests/test_timber_paint_grid.gd": "d0b1e7330d9e50b231d14cb5e186b3409e2c3adc562aeea325bb6dd739a399f8",
+    "app/tests/test_skin_fleet.gd": "4653d6117e2be33244f608d62dd243395450ad080a3f4e736f50f93e4a42a407",
+    "app/tests/test_timber_detail_textures.gd": "8fdb17bedfa54e60d40eb52b60a66372facd4d2f7dbcb0842dbafd81880beec2",
+    "research/performance/timber_companion_probe.gd": "835a9ab8daced1599c4cf2e997898b34e6bbccb619d25ee64bf45ca25dcaa5b8",
+    "app/assets/aircraft/turbo-lumber-evolution/timber.glb": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+    "app/assets/aircraft/turbo-lumber-evolution/timber.glb.import": "a25822325cc792e13f94f20348af900084df347a5bc04f87a7e98e1cc7bef5f1",
+    "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+    "app/data/aircraft_models/turbo-lumber-evolution.json": "446d9d66373519a5a79e46fb1d799c3373ae7da1d5d0ddb9647cdfac2bfc46c8",
+    "app/assets/skin-kit/models.json": "e3c3d02cefad3f3dea100935929bc28a2747a2fc41696c9c322ae39f11b9e6c5",
+    "app/project.godot": "2ca26f73592fe6fdf0b620a151c2455ac7ed4a854f61043d0bf99bccd8b694ae",
+    "app/.godot/imported/timber.glb-449a28c452d4e5961641c23545d6074c.scn": "ac62277e820acdcc724ce5755be8438ec63d29388503824f801b35eacecca410"
+  },
+  "baseline_source": {
+    "raw_sha256": "b50e0f91291aea08dfb50c129fc16b4359de28ce1b05cc97c99f174438e7d933",
+    "git_blob_sha256": "877b6c87e58381febff96c137e164d64d40d9a242a3d8275eb47a867d9ed7db7",
+    "normalized_equal": true
+  },
+  "environment": {
+    "os": "Windows 11 Pro",
+    "cpu": "AMD Ryzen 9 5900X",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "NVIDIA OpenGL 617.42",
+    "engine": "4.8.beta2.official.cafc17a19",
+    "renderer": "gl_compatibility",
+    "requested_window_size": [
+      1920,
+      1080
+    ],
+    "rendered_pixels_measured": false,
+    "quiet_launch_seconds": 12,
+    "quiet_launch_criterion": "no other Godot process observed",
+    "whole_run_competition_monitored": false,
+    "power_thermal_controlled": false
+  },
+  "engine_sha512": {
+    "Godot_v4.8-beta2_win64_console.exe": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea",
+    "Godot_v4.8-beta2_win64.exe": "e83c615fb181c6e1c83f204801e8c73a9340ea500d0da3d7e598f6c4213051de5df8073041c27790838b9e4eff4770c483d7dbb75545da7ad4382c53e23f6a55"
+  },
+  "paint_identity": {
+    "previous_current": "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c",
+    "current": "375f9373e4755aad93a9907e829ed267e340c16142584991de0fb22aa4e9eedd",
+    "distributed_legacy": "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6"
+  },
+  "native_screens": [
+    {
+      "raw": {
+        "checks": 3126,
+        "command_us": {
+          "1": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 926.32
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 928.5075
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 988.0475
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 953.9175
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 1031.9875
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 973.6275
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 903.9975
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 921.1475
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 915.3475
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 916.7675
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 926.5475
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 911.295
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 928.0625
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 927.05
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 900.68
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 905.805
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 907.7575
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 918.1125
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 928.4425
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 915.4825
+            }
+          ],
+          "3": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 1706.5175
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 2091.595
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 1660.2
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 1713.9075
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 1707.7325
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 1744.3075
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 1664.2275
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 1652.93
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 1700.025
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 1717.2475
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 1706.86
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 1696.8375
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 1655.2125
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 1689.655
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 1673.255
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 1701.5975
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1749.795
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1654.32
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1660.19
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1829.3275
+            }
+          ]
+        },
+        "engine": "4.8-beta2 (official)",
+        "failed": 0,
+        "paint_identity": "375f9373e4755aad93a9907e829ed267e340c16142584991de0fb22aa4e9eedd",
+        "score_cases": 600,
+        "source_sha256": {
+          "C:/DEVELOPMENT/OpenRCsimulator/research/performance/timber_companion_probe.gd": "835a9ab8daced1599c4cf2e997898b34e6bbccb619d25ee64bf45ca25dcaa5b8",
+          "res://../tmp/timber-split-20261109/baseline/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+          "res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd": "b50e0f91291aea08dfb50c129fc16b4359de28ce1b05cc97c99f174438e7d933",
+          "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+          "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+          "res://aircraft/timber_model.gd": "4d8daf200b7e0928ce18fe6ca451b08423ff1a59e6ef1119350e43004c9b0437",
+          "res://aircraft/timber_visual_details.gd": "a950fa9bde2effc99b7b38adb64dce528e1b6629e54f05edec32fd7fc2f35f7e"
+        },
+        "split_cases": 300,
+        "timber_us": [
+          {
+            "candidate": false,
+            "cold": 599150,
+            "group": 0,
+            "warm": 14858
+          },
+          {
+            "candidate": true,
+            "cold": 502352,
+            "group": 0,
+            "warm": 13165
+          },
+          {
+            "candidate": true,
+            "cold": 501035,
+            "group": 0,
+            "warm": 15060
+          },
+          {
+            "candidate": false,
+            "cold": 587409,
+            "group": 0,
+            "warm": 14542
+          },
+          {
+            "candidate": true,
+            "cold": 511119,
+            "group": 1,
+            "warm": 14804
+          },
+          {
+            "candidate": false,
+            "cold": 592328,
+            "group": 1,
+            "warm": 15266
+          },
+          {
+            "candidate": false,
+            "cold": 593445,
+            "group": 1,
+            "warm": 14184
+          },
+          {
+            "candidate": true,
+            "cold": 516727,
+            "group": 1,
+            "warm": 14114
+          },
+          {
+            "candidate": false,
+            "cold": 523374,
+            "group": 2,
+            "warm": 11695
+          },
+          {
+            "candidate": true,
+            "cold": 426197,
+            "group": 2,
+            "warm": 14123
+          },
+          {
+            "candidate": true,
+            "cold": 507786,
+            "group": 2,
+            "warm": 14428
+          },
+          {
+            "candidate": false,
+            "cold": 506532,
+            "group": 2,
+            "warm": 11262
+          },
+          {
+            "candidate": true,
+            "cold": 392812,
+            "group": 3,
+            "warm": 11757
+          },
+          {
+            "candidate": false,
+            "cold": 401135,
+            "group": 3,
+            "warm": 9906
+          },
+          {
+            "candidate": false,
+            "cold": 344934,
+            "group": 3,
+            "warm": 9082
+          },
+          {
+            "candidate": true,
+            "cold": 275350,
+            "group": 3,
+            "warm": 8150
+          },
+          {
+            "candidate": false,
+            "cold": 319970,
+            "group": 4,
+            "warm": 8484
+          },
+          {
+            "candidate": true,
+            "cold": 284666,
+            "group": 4,
+            "warm": 8367
+          },
+          {
+            "candidate": true,
+            "cold": 277425,
+            "group": 4,
+            "warm": 9782
+          },
+          {
+            "candidate": false,
+            "cold": 349849,
+            "group": 4,
+            "warm": 8570
+          }
+        ],
+        "timing_mode": "component_screen"
+      },
+      "summary": {
+        "cold": {
+          "baseline_median_us": 514953.0,
+          "candidate_median_us": 463616.0,
+          "reduction_percent": 9.969259330463165,
+          "candidate_faster_pairs": 9,
+          "pairs": 10,
+          "median_adjacent_saving_us": 74571.0
+        },
+        "warm": {
+          "baseline_median_us": 11478.5,
+          "candidate_median_us": 13639.5,
+          "reduction_percent": -18.826501720608093,
+          "candidate_faster_pairs": 5,
+          "pairs": 10,
+          "median_adjacent_saving_us": -224.0
+        }
+      }
+    },
+    {
+      "raw": {
+        "checks": 3126,
+        "command_us": {
+          "1": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 1381.7425
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 1224.875
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 1325.305
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 1235.8625
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 1245.465
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 1105.2175
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 1265.2075
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 1324.4775
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 1209.775
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 1038.79
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 1388.525
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 1220.87
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 1314.8975
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 1317.1725
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 1172.5
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 1307.17
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1324.765
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1071.6775
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1239.07
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1480.08
+            }
+          ],
+          "3": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 3128.855
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 3102.435
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 2705.605
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 2632.605
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 2999.4525
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 2543.9825
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 2799.585
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 2875.7475
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 3069.675
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 3275.84
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 3311.485
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 3261.8925
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 3335.29
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 3188.625
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 3421.75
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 3004.7325
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 2910.04
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 2659.0525
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 2293.8625
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 2069.7775
+            }
+          ]
+        },
+        "engine": "4.8-beta2 (official)",
+        "failed": 0,
+        "paint_identity": "375f9373e4755aad93a9907e829ed267e340c16142584991de0fb22aa4e9eedd",
+        "score_cases": 600,
+        "source_sha256": {
+          "C:/DEVELOPMENT/OpenRCsimulator/research/performance/timber_companion_probe.gd": "835a9ab8daced1599c4cf2e997898b34e6bbccb619d25ee64bf45ca25dcaa5b8",
+          "res://../tmp/timber-split-20261109/baseline/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+          "res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd": "b50e0f91291aea08dfb50c129fc16b4359de28ce1b05cc97c99f174438e7d933",
+          "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+          "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+          "res://aircraft/timber_model.gd": "4d8daf200b7e0928ce18fe6ca451b08423ff1a59e6ef1119350e43004c9b0437",
+          "res://aircraft/timber_visual_details.gd": "a950fa9bde2effc99b7b38adb64dce528e1b6629e54f05edec32fd7fc2f35f7e"
+        },
+        "split_cases": 300,
+        "timber_us": [
+          {
+            "candidate": false,
+            "cold": 466803,
+            "group": 0,
+            "warm": 8025
+          },
+          {
+            "candidate": true,
+            "cold": 410187,
+            "group": 0,
+            "warm": 11015
+          },
+          {
+            "candidate": true,
+            "cold": 381375,
+            "group": 0,
+            "warm": 12735
+          },
+          {
+            "candidate": false,
+            "cold": 433147,
+            "group": 0,
+            "warm": 7986
+          },
+          {
+            "candidate": true,
+            "cold": 273560,
+            "group": 1,
+            "warm": 7940
+          },
+          {
+            "candidate": false,
+            "cold": 339432,
+            "group": 1,
+            "warm": 7877
+          },
+          {
+            "candidate": false,
+            "cold": 307391,
+            "group": 1,
+            "warm": 7885
+          },
+          {
+            "candidate": true,
+            "cold": 262972,
+            "group": 1,
+            "warm": 8189
+          },
+          {
+            "candidate": false,
+            "cold": 390319,
+            "group": 2,
+            "warm": 11079
+          },
+          {
+            "candidate": true,
+            "cold": 396947,
+            "group": 2,
+            "warm": 12329
+          },
+          {
+            "candidate": true,
+            "cold": 415957,
+            "group": 2,
+            "warm": 7925
+          },
+          {
+            "candidate": false,
+            "cold": 458448,
+            "group": 2,
+            "warm": 12728
+          },
+          {
+            "candidate": true,
+            "cold": 394116,
+            "group": 3,
+            "warm": 12767
+          },
+          {
+            "candidate": false,
+            "cold": 464401,
+            "group": 3,
+            "warm": 12785
+          },
+          {
+            "candidate": false,
+            "cold": 486642,
+            "group": 3,
+            "warm": 12488
+          },
+          {
+            "candidate": true,
+            "cold": 354635,
+            "group": 3,
+            "warm": 7845
+          },
+          {
+            "candidate": false,
+            "cold": 466175,
+            "group": 4,
+            "warm": 12730
+          },
+          {
+            "candidate": true,
+            "cold": 404498,
+            "group": 4,
+            "warm": 12916
+          },
+          {
+            "candidate": true,
+            "cold": 414595,
+            "group": 4,
+            "warm": 12694
+          },
+          {
+            "candidate": false,
+            "cold": 503395,
+            "group": 4,
+            "warm": 12633
+          }
+        ],
+        "timing_mode": "component_screen"
+      },
+      "summary": {
+        "cold": {
+          "baseline_median_us": 461424.5,
+          "candidate_median_us": 395531.5,
+          "reduction_percent": 14.280342721290262,
+          "candidate_faster_pairs": 9,
+          "pairs": 10,
+          "median_adjacent_saving_us": 59146.5
+        },
+        "warm": {
+          "baseline_median_us": 11783.5,
+          "candidate_median_us": 11672.0,
+          "reduction_percent": 0.9462383841812749,
+          "candidate_faster_pairs": 3,
+          "pairs": 10,
+          "median_adjacent_saving_us": -124.5
+        }
+      }
+    }
+  ],
+  "correctness_only_probe": {
+    "checks": 3022,
+    "command_us": {
+      "1": [],
+      "3": []
+    },
+    "engine": "4.8-beta2 (official)",
+    "failed": 0,
+    "paint_identity": "375f9373e4755aad93a9907e829ed267e340c16142584991de0fb22aa4e9eedd",
+    "score_cases": 600,
+    "source_sha256": {
+      "res://../research/performance/timber_companion_probe.gd": "835a9ab8daced1599c4cf2e997898b34e6bbccb619d25ee64bf45ca25dcaa5b8",
+      "res://../tmp/timber-split-20261109/baseline/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+      "res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd": "b50e0f91291aea08dfb50c129fc16b4359de28ce1b05cc97c99f174438e7d933",
+      "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+      "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+      "res://aircraft/timber_model.gd": "4d8daf200b7e0928ce18fe6ca451b08423ff1a59e6ef1119350e43004c9b0437",
+      "res://aircraft/timber_visual_details.gd": "a950fa9bde2effc99b7b38adb64dce528e1b6629e54f05edec32fd7fc2f35f7e"
+    },
+    "split_cases": 300,
+    "timber_us": [
+      {
+        "candidate": false,
+        "cold": 352158,
+        "group": 0,
+        "warm": 8072
+      },
+      {
+        "candidate": true,
+        "cold": 281983,
+        "group": 0,
+        "warm": 7426
+      },
+      {
+        "candidate": true,
+        "cold": 268070,
+        "group": 0,
+        "warm": 7307
+      },
+      {
+        "candidate": false,
+        "cold": 316610,
+        "group": 0,
+        "warm": 7314
+      }
+    ],
+    "timing_mode": "correctness_only"
+  },
+  "untimed_work_counts": {
+    "bulk_corners": 27150,
+    "empty_lookup_corners": 27150,
+    "instrumented_source_sha256": "09a406883a311fc6edf26a970a2f1ced16b257f14fef516b26103d6c5fd730ed",
+    "logical_group_index_bytes": 39012,
+    "max_bulk_corners": 9753,
+    "split_corners": 39168
+  },
+  "accepted_checked_runs": [
+    {
+      "label": "count-final-grouped-work",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/timber-split-20261109/count_grouped_work.gd"
+      ],
+      "started_utc": "2026-11-09T23:09:01.672956+00:00",
+      "elapsed_seconds": 1.047,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "232a51155a266dd00811024098473302a4fe4a49bcb9707d4aeaaf73603e232e",
+      "log_bytes": 314
+    },
+    {
+      "label": "final-baseline-lod-136",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd",
+        "--",
+        "--details-source=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd"
+      ],
+      "started_utc": "2026-11-09T23:23:23.790012+00:00",
+      "elapsed_seconds": 1.25,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5119bc637031be5fde4d3ce69c4ad84282af9ef33da256d5484a32b5c74f6b3b",
+      "log_bytes": 94
+    },
+    {
+      "label": "final-detail-textures",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_detail_textures.gd"
+      ],
+      "started_utc": "2026-11-09T23:29:07.410677+00:00",
+      "elapsed_seconds": 0.875,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "062a0d546d49947e3be9c9fed802746c1338a6921982b83c9ccd9462cb3bbdce",
+      "log_bytes": 2815
+    },
+    {
+      "label": "final-grouped-paint-grid",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_paint_grid.gd"
+      ],
+      "started_utc": "2026-11-09T23:08:14.332247+00:00",
+      "elapsed_seconds": 0.781,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "644ad0cd45f066296a609ac88f648dbce55c84eee3ca01b644587a2aae3c2443",
+      "log_bytes": 113
+    },
+    {
+      "label": "final-grouped-skin-headless",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_skin_fleet.gd",
+        "--",
+        "turbo-lumber-evolution"
+      ],
+      "started_utc": "2026-11-09T23:08:14.353003+00:00",
+      "elapsed_seconds": 3.266,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3f47f566f3bc5b62028f83e651139fd565ee3512822f0f242f9d887b31bf1bef",
+      "log_bytes": 105
+    },
+    {
+      "label": "final-grouped-skin-native",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "res://tests/test_skin_fleet.gd",
+        "--",
+        "turbo-lumber-evolution"
+      ],
+      "started_utc": "2026-11-09T23:08:18.576415+00:00",
+      "elapsed_seconds": 3.656,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cf87e2272a6de3a155106210ce55c7bcc4a1c98e86b160c522c2245f3c5f18d1",
+      "log_bytes": 202
+    },
+    {
+      "label": "final-lod-136",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd"
+      ],
+      "started_utc": "2026-11-09T23:23:23.793222+00:00",
+      "elapsed_seconds": 1.14,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5119bc637031be5fde4d3ce69c4ad84282af9ef33da256d5484a32b5c74f6b3b",
+      "log_bytes": 94
+    },
+    {
+      "label": "final-lod-native-136",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd"
+      ],
+      "started_utc": "2026-11-09T23:29:09.294034+00:00",
+      "elapsed_seconds": 1.719,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fe19a327d54c630d5ed84c8eae40bfd575b59495d22708177402eddf00058990",
+      "log_bytes": 191
+    },
+    {
+      "label": "final-native-grouped-repeat",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/performance/timber_companion_probe.gd",
+        "--",
+        "--pilot-baseline=res://../tmp/timber-split-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-split-20261109/final-native-repeat.json"
+      ],
+      "started_utc": "2026-11-09T23:23:13.120192+00:00",
+      "elapsed_seconds": 47.344,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2ef1998b04bfc2289ce34fe024b1c7b71204a2bc4db21395d1542259b67d5992",
+      "log_bytes": 287
+    },
+    {
+      "label": "final-native-grouped-screen",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/performance/timber_companion_probe.gd",
+        "--",
+        "--pilot-baseline=res://../tmp/timber-split-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-split-20261109/final-native-grouped.json"
+      ],
+      "started_utc": "2026-11-09T23:13:21.954019+00:00",
+      "elapsed_seconds": 36.281,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2ef1998b04bfc2289ce34fe024b1c7b71204a2bc4db21395d1542259b67d5992",
+      "log_bytes": 287
+    },
+    {
+      "label": "retained-grouped-parity",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../research/performance/timber_companion_probe.gd",
+        "--",
+        "--parity-only",
+        "--pilot-baseline=res://../tmp/timber-split-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-split-20261109/retained-parity.json"
+      ],
+      "started_utc": "2026-11-09T23:06:30.406821+00:00",
+      "elapsed_seconds": 4.187,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e049b2752fcb64eb777fa553bd313dd2445f16dc78f92050e761dff2fe4dd799",
+      "log_bytes": 190
+    }
+  ],
+  "preliminary_checked_runs": [
+    {
+      "label": "count-eliminated-work",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/timber-split-20261109/count_split_work.gd"
+      ],
+      "started_utc": "2026-11-09T22:48:07.506911+00:00",
+      "elapsed_seconds": 1.328,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5d913d53840a5f567826ab67fe053bd8f2d7c1aa660362a4862231e9149d475c",
+      "log_bytes": 233
+    },
+    {
+      "label": "final-grouped-parity",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../research/performance/timber_companion_probe.gd",
+        "--",
+        "--parity-only",
+        "--pilot-baseline=res://../tmp/timber-split-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-split-20261109/final-parity.json"
+      ],
+      "started_utc": "2026-11-09T23:02:07.463204+00:00",
+      "elapsed_seconds": 6.375,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "8fa011f8e45ef424184a31525e485208ecf47b53e28f867f70d4877425c03d14",
+      "log_bytes": 190
+    },
+    {
+      "label": "final-split-baseline-regressions",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd",
+        "--",
+        "--details-source=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd"
+      ],
+      "started_utc": "2026-11-09T23:08:14.331208+00:00",
+      "elapsed_seconds": 1.046,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cced88d104dbd472b3e15de982db2b419cf430b81610b8d4bbc02364dd1e90ed",
+      "log_bytes": 94
+    },
+    {
+      "label": "final-split-regressions",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd"
+      ],
+      "started_utc": "2026-11-09T23:05:21.215904+00:00",
+      "elapsed_seconds": 1.171,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cced88d104dbd472b3e15de982db2b419cf430b81610b8d4bbc02364dd1e90ed",
+      "log_bytes": 94
+    },
+    {
+      "label": "grouped-baseline-regressions",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd",
+        "--",
+        "--details-source=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd"
+      ],
+      "started_utc": "2026-11-09T22:58:01.078449+00:00",
+      "elapsed_seconds": 0.968,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0c43d09c58f8025aef6e410201a47ef8c23774939d619a35b4bdc57a2ce01cec",
+      "log_bytes": 94
+    },
+    {
+      "label": "grouped-lod-regressions",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd"
+      ],
+      "started_utc": "2026-11-09T22:58:01.077922+00:00",
+      "elapsed_seconds": 0.968,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0c43d09c58f8025aef6e410201a47ef8c23774939d619a35b4bdc57a2ce01cec",
+      "log_bytes": 94
+    },
+    {
+      "label": "grouped-split-parity",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../research/performance/timber_companion_probe.gd",
+        "--",
+        "--parity-only",
+        "--pilot-baseline=res://../tmp/timber-split-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-split-20261109/grouped-parity.json"
+      ],
+      "started_utc": "2026-11-09T22:56:06.348252+00:00",
+      "elapsed_seconds": 6.375,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f808c48675018dc87b36c7f1bdbd06a8e8f12c39a2cf14c90c7dee1443dc863b",
+      "log_bytes": 190
+    },
+    {
+      "label": "native-split-screen",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/performance/timber_companion_probe.gd",
+        "--",
+        "--pilot-baseline=res://../tmp/timber-split-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-split-20261109/native-screen.json"
+      ],
+      "started_utc": "2026-11-09T22:46:35.895136+00:00",
+      "elapsed_seconds": 33.687,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d517d38b95d4437bcb24045818202de3b17054c762e7eaf9f677b6c3079d8924",
+      "log_bytes": 287
+    },
+    {
+      "label": "split-baseline-regressions",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd",
+        "--",
+        "--details-source=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd"
+      ],
+      "started_utc": "2026-11-09T22:48:09.496382+00:00",
+      "elapsed_seconds": 1.157,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "241d62678828a857146c1fa16092945f9bd5fc8b1aed939a42c881ee550cfb31",
+      "log_bytes": 94
+    },
+    {
+      "label": "split-custom-skin",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_skin_fleet.gd",
+        "--",
+        "turbo-lumber-evolution"
+      ],
+      "started_utc": "2026-11-09T22:48:09.516747+00:00",
+      "elapsed_seconds": 3.578,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3f47f566f3bc5b62028f83e651139fd565ee3512822f0f242f9d887b31bf1bef",
+      "log_bytes": 105
+    },
+    {
+      "label": "split-detail-textures",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_detail_textures.gd"
+      ],
+      "started_utc": "2026-11-09T22:48:09.519852+00:00",
+      "elapsed_seconds": 1.062,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "062a0d546d49947e3be9c9fed802746c1338a6921982b83c9ccd9462cb3bbdce",
+      "log_bytes": 2815
+    },
+    {
+      "label": "split-differential",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/timber-split-20261109/split_differential.gd"
+      ],
+      "started_utc": "2026-11-09T23:05:21.206405+00:00",
+      "elapsed_seconds": 1.078,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7e24d1f8d5a7b6d065f486e947134138cb7066c53c019712331959f2ccedc48c",
+      "log_bytes": 114
+    },
+    {
+      "label": "split-lod-regressions",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd"
+      ],
+      "started_utc": "2026-11-09T22:45:08.877309+00:00",
+      "elapsed_seconds": 1.313,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "241d62678828a857146c1fa16092945f9bd5fc8b1aed939a42c881ee550cfb31",
+      "log_bytes": 94
+    },
+    {
+      "label": "split-paint-grid",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_paint_grid.gd"
+      ],
+      "started_utc": "2026-11-09T22:48:09.497538+00:00",
+      "elapsed_seconds": 0.891,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "644ad0cd45f066296a609ac88f648dbce55c84eee3ca01b644587a2aae3c2443",
+      "log_bytes": 113
+    },
+    {
+      "label": "split-screen",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../research/performance/timber_companion_probe.gd",
+        "--",
+        "--pilot-baseline=res://../tmp/timber-split-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/timber-split-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-split-20261109/screen.json"
+      ],
+      "started_utc": "2026-11-09T22:42:08.445803+00:00",
+      "elapsed_seconds": 35.265,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "26d120b3b65b612d43ec0dfc1441e4aed800678f37ff2fa1328adf18f9a10da4",
+      "log_bytes": 190
+    }
+  ],
+  "key_only_experiment": {
+    "screen.json": {
+      "cold": {
+        "baseline_median_us": 345587.5,
+        "candidate_median_us": 318295.5,
+        "reduction_percent": 7.897276377183782,
+        "candidate_faster_pairs": 9,
+        "pairs": 10,
+        "median_adjacent_saving_us": 20585.5
+      },
+      "warm": {
+        "baseline_median_us": 7555.5,
+        "candidate_median_us": 8291.0,
+        "reduction_percent": -9.734630401694133,
+        "candidate_faster_pairs": 1,
+        "pairs": 10,
+        "median_adjacent_saving_us": -434.5
+      }
+    },
+    "native-screen.json": {
+      "cold": {
+        "baseline_median_us": 349133.0,
+        "candidate_median_us": 349596.0,
+        "reduction_percent": -0.13261421865020662,
+        "candidate_faster_pairs": 6,
+        "pairs": 10,
+        "median_adjacent_saving_us": 1063.0
+      },
+      "warm": {
+        "baseline_median_us": 8958.5,
+        "candidate_median_us": 9106.5,
+        "reduction_percent": -1.6520622872132629,
+        "candidate_faster_pairs": 3,
+        "pairs": 10,
+        "median_adjacent_saving_us": -314.5
+      }
+    }
+  },
+  "limits": [
+    "Warm-process cache-cold CPU construction/submission only; instantiation, comparisons and first drawn/interactive frames excluded.",
+    "Snapshot parity includes arrays, LOD/format/name/transform data and material names; separate skin tests cover material behavior/lifetime.",
+    "Warm timings are mixed and do not establish either a warm benefit or warm non-regression.",
+    "Logical grouped-index data is not allocator capacity, measured peak RAM or VRAM.",
+    "Concurrent tracks changed unrelated sources; selected measured source hashes held fixed. Full CI, exports, sustained/platform and physical gates remain separate."
+  ]
+}
