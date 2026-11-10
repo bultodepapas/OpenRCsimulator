@@ -1,0 +1,177 @@
+{
+  "bounds": {
+    "grounded_bounds_m": {
+      "max": [
+        0.091647,
+        0.352504,
+        0.06045
+      ],
+      "min": [
+        -0.092656,
+        0.0,
+        -0.06211
+      ],
+      "size": [
+        0.184303,
+        0.352504,
+        0.12256
+      ]
+    },
+    "source_bounds_m": {
+      "ground_offset": 0.000846,
+      "height": 0.352504,
+      "max": [
+        0.091647,
+        0.351658,
+        0.06045
+      ],
+      "min": [
+        -0.092656,
+        -0.000846,
+        -0.06211
+      ],
+      "size": [
+        0.184303,
+        0.352504,
+        0.12256
+      ]
+    }
+  },
+  "candidate_id": "polyhaven_shrub_03_b",
+  "conversion_policy": [
+    "retain the selected supplier mesh primitive and binary buffer bytes",
+    "remove only the gallery node translation",
+    "pack the supplier 16-bit grayscale alpha into the supplier diffuse RGB as RGBA8",
+    "preserve supplied normal and ARM texture bytes",
+    "no modeling, retopology, decimation, vertex edits or texture painting"
+  ],
+  "format": "openrc-vegetation-conversion-proof v1",
+  "license": "CC0-1.0",
+  "lod": {
+    "godot_import_generate": false,
+    "note": "The 1K glTF names four separate gallery clumps, not LOD levels; only this complete clump is selected.",
+    "source_supplied": false
+  },
+  "material_alpha": {
+    "alpha_packing": {
+      "fractional_alpha_fraction": 0.02214527,
+      "fractional_alpha_pixel_count": 23221,
+      "height": 1024,
+      "mask_coverage_fraction": 0.25100136,
+      "output_bit_depth": 8,
+      "pixel_count": 1048576,
+      "pixels_at_or_above_mask_cutoff_0_5": 263194,
+      "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+      "source_bit_depth": 16,
+      "source_mode": "I;16",
+      "width": 1024
+    },
+    "alpha_source": "shrub_03/textures/shrub_03_alpha_1k.png",
+    "double_sided": true,
+    "mode_change": "Source MASK mode and cutoff are retained.",
+    "output_alpha_cutoff": 0.5,
+    "output_alpha_mode": "MASK",
+    "source_alpha_cutoff": 0.5,
+    "source_alpha_mode": "MASK"
+  },
+  "outputs": [
+    {
+      "bytes": 238684,
+      "path": "shrub_03.bin",
+      "sha256": "bf4df21e6d2a2bc5f00b4c9142f776171fe7da00cf960001825748067af542b6"
+    },
+    {
+      "bytes": 6083,
+      "path": "shrub_03_b.gltf",
+      "sha256": "a419a961e855f169fa63895dbeacb87e636bc917c084128ba5fb366431acfa4f"
+    },
+    {
+      "bytes": 396238,
+      "path": "textures/shrub_03_arm_1k.jpg",
+      "sha256": "3e2b16812a623037138eedace958210c5f3443a827bbe69663045bba5612f815"
+    },
+    {
+      "bytes": 1234762,
+      "path": "textures/shrub_03_base_color_alpha_1k.png",
+      "sha256": "3c78b2ab114a31c65105cb792cd2bb1fb4052d319d72de1b2a8ca6aede7d9461"
+    },
+    {
+      "bytes": 504734,
+      "path": "textures/shrub_03_nor_gl_1k.jpg",
+      "sha256": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
+    }
+  ],
+  "selected_geometry": {
+    "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+    "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+    "position_accessor_max": [
+      0.09164728224277496,
+      0.35165777802467346,
+      0.060450129210948944
+    ],
+    "position_accessor_min": [
+      -0.09265579283237457,
+      -0.0008460530661977828,
+      -0.06211003288626671
+    ],
+    "source_accessor_indices": {
+      "NORMAL": 6,
+      "POSITION": 4,
+      "TEXCOORD_0": 5,
+      "indices": 7
+    },
+    "source_gallery_translation_m": [
+      0.45767831802368164,
+      0.0,
+      0.0
+    ],
+    "source_mesh_index": 1,
+    "source_mesh_name": "Plane.054",
+    "source_node_index": 1,
+    "source_triangles": 2134,
+    "uv0_max": [
+      0.899445,
+      0.997096
+    ],
+    "uv0_min": [
+      0.028312,
+      0.036247
+    ],
+    "uv_accessor_count": 1530,
+    "vertex_count": 1530
+  },
+  "source_id": "polyhaven_shrub_03",
+  "source_inputs": [
+    {
+      "bytes": 7296,
+      "path": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/shrub_03_1k.gltf",
+      "sha256": "b76d7c14bc027e834e82d3f984c32b5d060e62908aa90ff9420a637ca253a8ea"
+    },
+    {
+      "bytes": 238684,
+      "path": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/shrub_03.bin",
+      "sha256": "bf4df21e6d2a2bc5f00b4c9142f776171fe7da00cf960001825748067af542b6"
+    },
+    {
+      "bytes": 481841,
+      "path": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/textures/shrub_03_diff_1k.jpg",
+      "sha256": "3cadc7aba46d3aabbd7d6d2b1d04aa32e2a7da0bc87c2d38ef3cb1ee42cb03ec"
+    },
+    {
+      "bytes": 79069,
+      "path": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/textures/shrub_03_alpha_1k.png",
+      "sha256": "daef00278879a024fd05216aaa1376067a5f25f1b911d08d9bbdc50fda4a0d66"
+    },
+    {
+      "bytes": 504734,
+      "path": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/textures/shrub_03_nor_gl_1k.jpg",
+      "sha256": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
+    },
+    {
+      "bytes": 396238,
+      "path": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/textures/shrub_03_arm_1k.jpg",
+      "sha256": "3e2b16812a623037138eedace958210c5f3443a827bbe69663045bba5612f815"
+    }
+  ],
+  "source_page": "https://polyhaven.com/a/shrub_03"
+}

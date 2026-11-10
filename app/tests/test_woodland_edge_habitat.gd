@@ -64,6 +64,9 @@ func _run() -> void:
 	var environment_before := OS.get_environment("OPENRC_WOODLAND_MESHES")
 	var card_mode_had_override := OS.has_environment("OPENRC_WOODLAND_CARDS")
 	var card_mode_before := OS.get_environment("OPENRC_WOODLAND_CARDS")
+	var shrub_mode_had_override := OS.has_environment("OPENRC_WOODLAND_SHRUBS")
+	var shrub_mode_before := OS.get_environment("OPENRC_WOODLAND_SHRUBS")
+	OS.set_environment("OPENRC_WOODLAND_SHRUBS", "legacy")
 	OS.set_environment("OPENRC_WOODLAND_CARDS", "legacy")
 	OS.set_environment("OPENRC_WOODLAND_MESHES", "off")
 	var cards: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
@@ -248,6 +251,10 @@ func _run() -> void:
 		OS.set_environment("OPENRC_WOODLAND_CARDS", card_mode_before)
 	else:
 		OS.unset_environment("OPENRC_WOODLAND_CARDS")
+	if shrub_mode_had_override:
+		OS.set_environment("OPENRC_WOODLAND_SHRUBS", shrub_mode_before)
+	else:
+		OS.unset_environment("OPENRC_WOODLAND_SHRUBS")
 	_finish()
 
 

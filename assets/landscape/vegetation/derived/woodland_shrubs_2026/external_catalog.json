@@ -1,0 +1,336 @@
+{
+  "assets": [
+    {
+      "dependencies": [
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03.bin",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03_a.gltf",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_arm_1k.jpg",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_base_color_alpha_1k.png",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_nor_gl_1k.jpg"
+      ],
+      "description": "Poly Haven Shrub 03 complete clump shrub_03_a; external atlas source",
+      "grounded_bounds_m": {
+        "max": [
+          0.12708,
+          0.402784,
+          0.078497
+        ],
+        "min": [
+          -0.073544,
+          0.0,
+          -0.072706
+        ],
+        "size": [
+          0.200624,
+          0.402784,
+          0.151203
+        ]
+      },
+      "id": "polyhaven_shrub_03_a",
+      "lod": {
+        "godot_import_generate": false,
+        "note": "The 1K glTF names four separate gallery clumps, not LOD levels; only this complete clump is selected.",
+        "source_supplied": false
+      },
+      "material_alpha": {
+        "alpha_packing": {
+          "fractional_alpha_fraction": 0.02214527,
+          "fractional_alpha_pixel_count": 23221,
+          "height": 1024,
+          "mask_coverage_fraction": 0.25100136,
+          "output_bit_depth": 8,
+          "pixel_count": 1048576,
+          "pixels_at_or_above_mask_cutoff_0_5": 263194,
+          "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+          "source_bit_depth": 16,
+          "source_mode": "I;16",
+          "width": 1024
+        },
+        "alpha_source": "shrub_03/textures/shrub_03_alpha_1k.png",
+        "double_sided": true,
+        "mode_change": "Source MASK mode and cutoff are retained.",
+        "output_alpha_cutoff": 0.5,
+        "output_alpha_mode": "MASK",
+        "source_alpha_cutoff": 0.5,
+        "source_alpha_mode": "MASK"
+      },
+      "role": "shrub",
+      "scene": "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03_a.gltf",
+      "source_bounds_m": {
+        "ground_offset": 0.001826,
+        "height": 0.402784,
+        "max": [
+          0.12708,
+          0.400958,
+          0.078497
+        ],
+        "min": [
+          -0.073544,
+          -0.001826,
+          -0.072706
+        ],
+        "size": [
+          0.200624,
+          0.402784,
+          0.151203
+        ]
+      },
+      "source_conversion_proof": "assets/landscape/vegetation/derived/woodland_shrubs_2026/proofs/polyhaven_shrub_03_a.json",
+      "source_conversion_proof_sha256": "db72eaa7df228e02fed5d7d786583336d3390786d5c1960bb6ec0035bf516b64",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03.bin": "bf4df21e6d2a2bc5f00b4c9142f776171fe7da00cf960001825748067af542b6",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_arm_1k.jpg": "3e2b16812a623037138eedace958210c5f3443a827bbe69663045bba5612f815",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_base_color_alpha_1k.png": "3c78b2ab114a31c65105cb792cd2bb1fb4052d319d72de1b2a8ca6aede7d9461",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_nor_gl_1k.jpg": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
+      },
+      "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03_a.gltf",
+      "source_format": "glTF 2.0",
+      "source_geometry": {
+        "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+        "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+        "position_accessor_max": [
+          0.1270800232887268,
+          0.4009580910205841,
+          0.07849743962287903
+        ],
+        "position_accessor_min": [
+          -0.07354381680488586,
+          -0.0018257149495184422,
+          -0.07270558923482895
+        ],
+        "source_accessor_indices": {
+          "NORMAL": 2,
+          "POSITION": 0,
+          "TEXCOORD_0": 1,
+          "indices": 3
+        },
+        "source_gallery_translation_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "source_mesh_index": 0,
+        "source_mesh_name": "Plane.002",
+        "source_node_index": 0,
+        "source_triangles": 2385,
+        "uv0_max": [
+          0.947715,
+          0.997096
+        ],
+        "uv0_min": [
+          0.028312,
+          0.036247
+        ],
+        "uv_accessor_count": 1697,
+        "vertex_count": 1697
+      },
+      "source_id": "polyhaven_shrub_03",
+      "source_materials": 1,
+      "source_metadata": {
+        "authors": {
+          "Rico Cilliers": "All"
+        },
+        "publisher_dimensions": [
+          1366.9319450855255,
+          151.20302885770798,
+          402.78380597010255
+        ],
+        "publisher_polycount": 16955,
+        "title": "Shrub 03"
+      },
+      "source_name": "shrub_03_a",
+      "source_sha256": "80f9c8245696ab2197cccc9c32cb30ff6568ea9e7566d25d5b2ee3ed8bd76b48",
+      "source_surfaces": 1,
+      "source_triangles": 2385,
+      "textures": [
+        {
+          "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_base_color_alpha_1k.png",
+          "uri": "textures/shrub_03_base_color_alpha_1k.png"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_nor_gl_1k.jpg",
+          "uri": "textures/shrub_03_nor_gl_1k.jpg"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_arm_1k.jpg",
+          "uri": "textures/shrub_03_arm_1k.jpg"
+        }
+      ],
+      "visual_qualification": "Not performed; staged source candidate only."
+    },
+    {
+      "dependencies": [
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03.bin",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03_b.gltf",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_arm_1k.jpg",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_base_color_alpha_1k.png",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_nor_gl_1k.jpg"
+      ],
+      "description": "Poly Haven Shrub 03 complete clump shrub_03_b; external atlas source",
+      "grounded_bounds_m": {
+        "max": [
+          0.091647,
+          0.352504,
+          0.06045
+        ],
+        "min": [
+          -0.092656,
+          0.0,
+          -0.06211
+        ],
+        "size": [
+          0.184303,
+          0.352504,
+          0.12256
+        ]
+      },
+      "id": "polyhaven_shrub_03_b",
+      "lod": {
+        "godot_import_generate": false,
+        "note": "The 1K glTF names four separate gallery clumps, not LOD levels; only this complete clump is selected.",
+        "source_supplied": false
+      },
+      "material_alpha": {
+        "alpha_packing": {
+          "fractional_alpha_fraction": 0.02214527,
+          "fractional_alpha_pixel_count": 23221,
+          "height": 1024,
+          "mask_coverage_fraction": 0.25100136,
+          "output_bit_depth": 8,
+          "pixel_count": 1048576,
+          "pixels_at_or_above_mask_cutoff_0_5": 263194,
+          "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+          "source_bit_depth": 16,
+          "source_mode": "I;16",
+          "width": 1024
+        },
+        "alpha_source": "shrub_03/textures/shrub_03_alpha_1k.png",
+        "double_sided": true,
+        "mode_change": "Source MASK mode and cutoff are retained.",
+        "output_alpha_cutoff": 0.5,
+        "output_alpha_mode": "MASK",
+        "source_alpha_cutoff": 0.5,
+        "source_alpha_mode": "MASK"
+      },
+      "role": "shrub",
+      "scene": "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03_b.gltf",
+      "source_bounds_m": {
+        "ground_offset": 0.000846,
+        "height": 0.352504,
+        "max": [
+          0.091647,
+          0.351658,
+          0.06045
+        ],
+        "min": [
+          -0.092656,
+          -0.000846,
+          -0.06211
+        ],
+        "size": [
+          0.184303,
+          0.352504,
+          0.12256
+        ]
+      },
+      "source_conversion_proof": "assets/landscape/vegetation/derived/woodland_shrubs_2026/proofs/polyhaven_shrub_03_b.json",
+      "source_conversion_proof_sha256": "646541806dae7b1b6e3f76221873dee079e48bedfe6b8b9dd64d8f26f0dbefa1",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03.bin": "bf4df21e6d2a2bc5f00b4c9142f776171fe7da00cf960001825748067af542b6",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_arm_1k.jpg": "3e2b16812a623037138eedace958210c5f3443a827bbe69663045bba5612f815",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_base_color_alpha_1k.png": "3c78b2ab114a31c65105cb792cd2bb1fb4052d319d72de1b2a8ca6aede7d9461",
+        "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_nor_gl_1k.jpg": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
+      },
+      "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03_b.gltf",
+      "source_format": "glTF 2.0",
+      "source_geometry": {
+        "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+        "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+        "position_accessor_max": [
+          0.09164728224277496,
+          0.35165777802467346,
+          0.060450129210948944
+        ],
+        "position_accessor_min": [
+          -0.09265579283237457,
+          -0.0008460530661977828,
+          -0.06211003288626671
+        ],
+        "source_accessor_indices": {
+          "NORMAL": 6,
+          "POSITION": 4,
+          "TEXCOORD_0": 5,
+          "indices": 7
+        },
+        "source_gallery_translation_m": [
+          0.45767831802368164,
+          0.0,
+          0.0
+        ],
+        "source_mesh_index": 1,
+        "source_mesh_name": "Plane.054",
+        "source_node_index": 1,
+        "source_triangles": 2134,
+        "uv0_max": [
+          0.899445,
+          0.997096
+        ],
+        "uv0_min": [
+          0.028312,
+          0.036247
+        ],
+        "uv_accessor_count": 1530,
+        "vertex_count": 1530
+      },
+      "source_id": "polyhaven_shrub_03",
+      "source_materials": 1,
+      "source_metadata": {
+        "authors": {
+          "Rico Cilliers": "All"
+        },
+        "publisher_dimensions": [
+          1366.9319450855255,
+          151.20302885770798,
+          402.78380597010255
+        ],
+        "publisher_polycount": 16955,
+        "title": "Shrub 03"
+      },
+      "source_name": "shrub_03_b",
+      "source_sha256": "a419a961e855f169fa63895dbeacb87e636bc917c084128ba5fb366431acfa4f",
+      "source_surfaces": 1,
+      "source_triangles": 2134,
+      "textures": [
+        {
+          "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_base_color_alpha_1k.png",
+          "uri": "textures/shrub_03_base_color_alpha_1k.png"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_nor_gl_1k.jpg",
+          "uri": "textures/shrub_03_nor_gl_1k.jpg"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_arm_1k.jpg",
+          "uri": "textures/shrub_03_arm_1k.jpg"
+        }
+      ],
+      "visual_qualification": "Not performed; staged source candidate only."
+    }
+  ],
+  "format": "openrc-external-vegetation-catalog v1",
+  "sources": [
+    {
+      "api_files": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/polyhaven_files.json",
+      "api_info": "assets/landscape/vegetation/source/woodland_shrubs_2026/shrub_03/polyhaven_info.json",
+      "author": "Rico Cilliers",
+      "id": "polyhaven_shrub_03",
+      "license": "CC0-1.0",
+      "license_evidence": "assets/landscape/vegetation/source/woodland_shrubs_2026/SOURCE_LICENSE.md",
+      "license_sha256": "0fb47f4e64068a7903e9b44a048b88d82b2c296ba82f5bbf9c4d60be09bad9db",
+      "license_statement_url": "https://polyhaven.com/license",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "title": "Shrub 03",
+      "url": "https://polyhaven.com/a/shrub_03"
+    }
+  ]
+}

@@ -16,6 +16,7 @@ const Population = preload("res://scenery/population.gd")
 const DATA_PATH := "res://data/woodland_edges.json"
 const GRASS_ID := "grass_common_short"
 const FERN_CARD_ID := "polyhaven_fern_02_a"
+const SHRUB_CARD_IDS := ["polyhaven_shrub_03_a", "polyhaven_shrub_03_b"]
 const CARD_TRIANGLE_BUDGET := 472
 const TRIANGLE_BUDGET := 2656
 const FERN_MESH_PATCHES := ["woodland-edge-east-north", "woodland-edge-northwest"]
@@ -24,6 +25,8 @@ const SPECIES: Array[String] = ["grass_common_tall", "bush_common_flowers", "fer
 static var _card_material: ShaderMaterial
 static var _source_card_material: ShaderMaterial
 static var _fern_manifest: Dictionary = {}
+static var _shrub_manifests: Dictionary = {}
+static var _shrub_materials: Dictionary = {}
 static var _floor_material: ShaderMaterial
 static var _card_manifests: Dictionary = {}
 static var _defaults: Dictionary = {}
@@ -67,6 +70,7 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 	var mesh_plans: Array[Dictionary] = []
 	var use_meshes := OS.get_environment("OPENRC_WOODLAND_MESHES").to_lower() != "off"
 	var source_fern_cards := _use_source_ferns()
+	var source_shrub_cards := _use_source_shrubs()
 	for patch: Dictionary in data.patches:
 		var shrub_records: Array[Dictionary] = []
 		var mesh_batches := {}
@@ -90,6 +94,10 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 					mesh_plans.append(plan)
 				else:
 					if source_fern_cards and record.species == "fern_1": _fit_fern_card(record)
+					var shrub_asset := _shrub_card_asset(patch, path_index) if source_shrub_cards else ""
+					if not shrub_asset.is_empty():
+						_fit_source_card(record, shrub_asset, _source_shrub_manifest(shrub_asset))
+						record.card_variant = SHRUB_CARD_IDS.find(shrub_asset) + 1
 					shrub_records.append(record)
 				plants.append({id = record.id, asset_id = asset_id if queued else record.get("visual_source_asset_id", record.species),
 					source_asset_id = record.species, rendering = "mesh" if queued else "card",
@@ -127,6 +135,7 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 	root.set_meta("mesh_plans", mesh_plans)
 	root.set_meta("mesh_details", use_meshes)
 	root.set_meta("fern_cards", "source" if source_fern_cards else "legacy")
+	root.set_meta("shrub_cards", "source" if source_shrub_cards else "legacy")
 	root.set_meta("card_recipe_triangle_budget", CARD_TRIANGLE_BUDGET)
 	root.set_meta("source_recipe_sha256", FileAccess.get_sha256(DATA_PATH))
 	return root
@@ -145,6 +154,15 @@ static func _mesh_asset(patch: Dictionary, path_index: int) -> String:
 	if str(patch.id) in SHRUB_MESH_PATCHES and path_index == patch.shrub_species.find("bush_common_flowers"):
 		return "forest_leafy_shrub"
 	return ""
+
+
+## Keep one natural shrub form on the last flowering path of each pocket.
+## The earlier flower paths retain color or their existing mesh; selection predates tier filtering.
+static func _shrub_card_asset(patch: Dictionary, path_index: int) -> String:
+	if str(patch.shrub_species[path_index]) != "bush_common_flowers" \
+			or path_index != patch.shrub_species.rfind("bush_common_flowers"):
+		return ""
+	return SHRUB_CARD_IDS[0] if str(patch.id) in ["woodland-edge-east-north", "woodland-edge-east-south"] else SHRUB_CARD_IDS[1]
 
 
 ## A replacement must fit the old card's complete horizontal envelope and source-relative height.
@@ -233,7 +251,8 @@ static func _merge_shrubs(records: Array[Dictionary], surfaces: PackedFloat64Arr
 			source_card_records.append({id = record.id, asset_id = record.visual_source_asset_id,
 				transform = transform, height_m = record.height_m, index = cursor})
 		mesh.set_instance_color(cursor, record.tint)
-		mesh.set_instance_custom_data(cursor, Color(fposmod(float(record.yaw_rad), TAU) / TAU, float(SPECIES.find(record.species)), 0.0, 1.0))
+		mesh.set_instance_custom_data(cursor, Color(fposmod(float(record.yaw_rad), TAU) / TAU,
+			float(SPECIES.find(record.species)), float(record.get("card_variant", 0.0)), 1.0))
 		# A sphere also contains the source card after its shader rotates it toward the camera.
 		var scale := transform.basis.get_scale().abs()
 		var radius := mesh.mesh.get_aabb().size.length() * maxf(scale.x, maxf(scale.y, scale.z)) * 0.5
@@ -253,7 +272,10 @@ static func _merge_shrubs(records: Array[Dictionary], surfaces: PackedFloat64Arr
 ## Refit only cards that survived mesh selection; the existing 3D fern placement stays unchanged.
 ## Keep the old square envelope and plant height, and anchor the new source's visible base.
 static func _fit_fern_card(record: Dictionary) -> void:
-	var manifest := _source_fern_manifest()
+	_fit_source_card(record, FERN_CARD_ID, _source_fern_manifest())
+
+
+static func _fit_source_card(record: Dictionary, asset_id: String, manifest: Dictionary) -> void:
 	var fraction := float(manifest.source_height_m) / float(manifest.frame_world_size_m[0])
 	var original: Transform3D = record.transform
 	var frame := Hedge._frame_size(Hedge._manifest())
@@ -262,7 +284,7 @@ static func _fit_fern_card(record: Dictionary) -> void:
 	record.transform = Transform3D(Basis(Vector3.UP, float(record.yaw_rad)).scaled(Vector3.ONE * side / frame),
 		Vector3(original.origin.x, height * 0.5, original.origin.z))
 	record.height_m = height
-	record.visual_source_asset_id = FERN_CARD_ID
+	record.visual_source_asset_id = asset_id
 
 
 static func _use_source_ferns() -> bool:
@@ -276,6 +298,32 @@ static func _source_fern_manifest() -> Dictionary:
 		_fern_manifest = JSON.parse_string(FileAccess.get_file_as_string(
 			"res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.json"))
 	return _fern_manifest
+
+
+static func _use_source_shrubs() -> bool:
+	if OS.get_environment("OPENRC_WOODLAND_SHRUBS").to_lower() == "legacy": return false
+	for asset_id: String in SHRUB_CARD_IDS:
+		if not ResourceLoader.exists("res://assets/landscape/vegetation/impostors/%s_4view.png" % asset_id) \
+				or _source_shrub_manifest(asset_id).is_empty(): return false
+	return true
+
+
+## Invalid optional source metadata retains the original cards without loading its texture.
+static func _source_shrub_manifest(asset_id: String) -> Dictionary:
+	if _shrub_manifests.has(asset_id): return _shrub_manifests[asset_id]
+	var path := "res://assets/landscape/vegetation/impostors/%s_4view.json" % asset_id
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
+	var result := {}
+	if data is Dictionary and data.get("format") == "openrc-vegetation-impostor v1" \
+			and data.get("derived_from_asset_id") == asset_id and data.get("atlas_size_px") == [1024, 256] \
+			and data.get("baked_azimuth_deg") == [0, 90, 180, 270]:
+		var size: Variant = data.get("frame_world_size_m")
+		var height := float(data.get("source_height_m", 0.0))
+		if size is Array and size.size() == 2 and is_finite(height) and height > 0.0:
+			var side := float(size[0])
+			if is_finite(side) and side >= height and side > 0.0: result = data
+	_shrub_manifests[asset_id] = result
+	return result
 
 
 ## applicable() restricts builds to the immutable default world held in _defaults.
@@ -333,6 +381,15 @@ static func _grass_record(plant: Dictionary) -> Dictionary:
 
 
 static func _material() -> ShaderMaterial:
+	if _use_source_shrubs():
+		var fern_mode := "source" if _use_source_ferns() else "legacy"
+		if not _shrub_materials.has(fern_mode):
+			var fern_path := "res://assets/landscape/vegetation/impostors/%s_4view.png" % (FERN_CARD_ID if fern_mode == "source" else "fern_1")
+			var material := _make_material(fern_path, true)
+			material.set_shader_parameter("shrub_atlas_a", load("res://assets/landscape/vegetation/impostors/%s_4view.png" % SHRUB_CARD_IDS[0]))
+			material.set_shader_parameter("shrub_atlas_b", load("res://assets/landscape/vegetation/impostors/%s_4view.png" % SHRUB_CARD_IDS[1]))
+			_shrub_materials[fern_mode] = material
+		return _shrub_materials[fern_mode]
 	if _use_source_ferns():
 		if _source_card_material == null:
 			_source_card_material = _make_material("res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.png")
@@ -346,9 +403,9 @@ static func _legacy_material() -> ShaderMaterial:
 	return _card_material
 
 
-static func _make_material(fern_atlas: String) -> ShaderMaterial:
+static func _make_material(fern_atlas: String, shrub_cards := false) -> ShaderMaterial:
 	var material := ShaderMaterial.new()
-	material.shader = load("res://scenery/woodland_cards.gdshader")
+	material.shader = load("res://scenery/woodland_shrub_cards.gdshader" if shrub_cards else "res://scenery/woodland_cards.gdshader")
 	material.set_shader_parameter("alpha_cutoff", 0.32)
 	material.set_shader_parameter("atlas_frames", 4.0)
 	material.set_shader_parameter("impostor_atlas", Hedge._atlas())

@@ -1,0 +1,163 @@
+{
+  "format": "openrc-vegetation-impostor v1",
+  "asset_id": "polyhaven_shrub_03_b_4view_impostor",
+  "derived_from_asset_id": "polyhaven_shrub_03_b",
+  "source_name": "shrub_03_b",
+  "source_scene": "assets/landscape/vegetation/derived/woodland_shrubs_2026/shrub_03_b.gltf",
+  "source_geometry_sha256": "a419a961e855f169fa63895dbeacb87e636bc917c084128ba5fb366431acfa4f",
+  "source_triangles": 2134,
+  "source_surfaces": 1,
+  "source_materials": 1,
+  "source_archive_sha256": "",
+  "source_id": "polyhaven_shrub_03",
+  "source_url": "https://polyhaven.com/a/shrub_03",
+  "source_author": "Rico Cilliers",
+  "source_dependencies": [
+    {
+      "uri": "shrub_03.bin",
+      "sha256": "bf4df21e6d2a2bc5f00b4c9142f776171fe7da00cf960001825748067af542b6"
+    },
+    {
+      "uri": "textures/shrub_03_arm_1k.jpg",
+      "sha256": "3e2b16812a623037138eedace958210c5f3443a827bbe69663045bba5612f815"
+    },
+    {
+      "uri": "textures/shrub_03_base_color_alpha_1k.png",
+      "sha256": "3c78b2ab114a31c65105cb792cd2bb1fb4052d319d72de1b2a8ca6aede7d9461"
+    },
+    {
+      "uri": "textures/shrub_03_nor_gl_1k.jpg",
+      "sha256": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
+    }
+  ],
+  "license": "CC0-1.0",
+  "license_evidence": "assets/landscape/vegetation/source/woodland_shrubs_2026/SOURCE_LICENSE.md",
+  "license_evidence_sha256": "0fb47f4e64068a7903e9b44a048b88d82b2c296ba82f5bbf9c4d60be09bad9db",
+  "source_textures": [
+    {
+      "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_base_color_alpha_1k.png",
+      "uri": "textures/shrub_03_base_color_alpha_1k.png",
+      "sha256": "3c78b2ab114a31c65105cb792cd2bb1fb4052d319d72de1b2a8ca6aede7d9461"
+    },
+    {
+      "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_nor_gl_1k.jpg",
+      "uri": "textures/shrub_03_nor_gl_1k.jpg",
+      "sha256": "ff856bacfce859b8a7555dd9a3b92fbd36b2e775d486be71df485afb4235d6c9"
+    },
+    {
+      "source_entry": "assets/landscape/vegetation/derived/woodland_shrubs_2026/textures/shrub_03_arm_1k.jpg",
+      "uri": "textures/shrub_03_arm_1k.jpg",
+      "sha256": "3e2b16812a623037138eedace958210c5f3443a827bbe69663045bba5612f815"
+    }
+  ],
+  "source_base_color_factors": [
+    {
+      "material": "shrub_03",
+      "gltf_value": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "explicit_in_source": false,
+      "gltf_default_when_omitted": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "source_vertex_colors": {
+    "attributes": []
+  },
+  "source_bounds_m": {
+    "ground_offset": 0.000846,
+    "height": 0.352504,
+    "max": [
+      0.091647,
+      0.351658,
+      0.06045
+    ],
+    "min": [
+      -0.092656,
+      -0.000846,
+      -0.06211
+    ],
+    "size": [
+      0.184303,
+      0.352504,
+      0.12256
+    ]
+  },
+  "source_mesh_bounds_blender_z_up_m": {
+    "min": [
+      -0.092656,
+      -0.06045,
+      0.0
+    ],
+    "max": [
+      0.091647,
+      0.06211,
+      0.352504
+    ]
+  },
+  "source_height_m": 0.352504,
+  "frame_world_size_m": [
+    0.387754,
+    0.387754
+  ],
+  "baked_azimuth_deg": [
+    0,
+    90,
+    180,
+    270
+  ],
+  "view_up": "source Y-up, imported and rendered with Blender Z-up",
+  "frame_size_px": [
+    256,
+    256
+  ],
+  "atlas_size_px": [
+    1024,
+    256
+  ],
+  "atlas_path": "res://assets/landscape/vegetation/impostors/polyhaven_shrub_03_b_4view.png",
+  "atlas_sha256": "1e8b043efb165fce24d3e7a14abca41e7d55f73f5c53101b73be0e3de891fb19",
+  "color_pipeline": {
+    "source_color": "glTF material Base Color input, routed directly to Emission Color",
+    "source_color_chain": "full Blender-imported Principled Base Color socket link, including the source image and COLOR_0 node chain",
+    "lighting": "unshaded emission only; no light objects and world strength 0",
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": 0.0,
+    "gamma": 1.0,
+    "output_colorspace": "sRGB PNG",
+    "alpha": "source glTF Alpha input thresholded with Greater Than at glTF alphaCutoff",
+    "alpha_cutoff": 0.5,
+    "alpha_mode": "MASK",
+    "png_channels": "RGBA",
+    "png_bit_depth": 8,
+    "alpha_mode_storage": "straight",
+    "material_routes": [
+      {
+        "material": "shrub_03",
+        "base_color_source": "complete imported glTF Principled Base Color input link, routed to Emission",
+        "base_color_input_network": [
+          "TEX_IMAGE"
+        ],
+        "alpha_source": "complete imported glTF Principled Alpha input link, thresholded",
+        "alpha_input_network": [
+          "MATH",
+          "MATH",
+          "TEX_IMAGE"
+        ],
+        "alpha_mode": "MASK",
+        "alpha_cutoff": 0.5,
+        "surface_render_method": "DITHERED"
+      }
+    ]
+  },
+  "renderer": "Blender 5.2.2 LTS EEVEE, unshaded source Base Color/Alpha, Standard view transform, transparent background",
+  "rebuild_command": "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- --source-asset-id polyhaven_shrub_03_b --output-stem polyhaven_shrub_03_b_4view --frame-size 256 --catalog assets/landscape/vegetation/derived/woodland_shrubs_2026/external_catalog.json"
+}

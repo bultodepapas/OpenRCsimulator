@@ -170,6 +170,11 @@ func _field() -> bool:
 			_fail("woodland_cards must be source or legacy")
 			return false
 		OS.set_environment("OPENRC_WOODLAND_CARDS", str(args.woodland_cards))
+	if args.has("woodland_shrubs"):
+		if str(args.woodland_shrubs) not in ["source", "legacy"]:
+			_fail("woodland_shrubs must be source or legacy")
+			return false
+		OS.set_environment("OPENRC_WOODLAND_SHRUBS", str(args.woodland_shrubs))
 	var path := str(args.get("field", Loader.DEFAULT_PATH))
 	var loaded: Dictionary = Loader.load_from(path)
 	if not loaded.ok:
@@ -308,6 +313,7 @@ func _woodland_review(field: Dictionary) -> bool:
 		builder_sha256 = FileAccess.get_sha256("res://scenery/woodland_edge_habitat.gd"),
 		mesh_details = woodland.get_meta("mesh_details", false), mesh_plans = woodland.get_meta("mesh_plans", []),
 		fern_cards = woodland.get_meta("fern_cards", "legacy"),
+		shrub_cards = woodland.get_meta("shrub_cards", "legacy"),
 		plant_records = woodland.get_meta("plants", []), source_triangle_allowances = {}}
 	var scenery := content.get_node_or_null("Scenery")
 	if scenery != null:
@@ -327,7 +333,12 @@ func _woodland_review(field: Dictionary) -> bool:
 					mesh.surface_set_material(surface, material)
 			batch.multimesh.mesh = mesh
 		inventory["mesh_texture_filter_diagnostic"] = "linear without mipmaps"
-	var shader_path := str(args.get("woodland_shader_source", "res://scenery/woodland_cards.gdshader"))
+	var shader_path := str(args.get("woodland_shader_source", ""))
+	if shader_path.is_empty():
+		for child: Node in woodland.get_children():
+			if child is MultiMeshInstance3D:
+				shader_path = child.material_override.shader.resource_path
+				break
 	var shader_code := FileAccess.get_file_as_string(shader_path)
 	if shader_code.is_empty():
 		_fail("woodland_shader_source must be readable")
@@ -339,9 +350,6 @@ func _woodland_review(field: Dictionary) -> bool:
 			_fail("woodland_root_lift must be finite and between zero and one")
 			return false
 		lift = float(value)
-		if not shader_code.contains("uniform float root_lift"):
-			_fail("woodland_root_lift requires a shader declaring that control")
-			return false
 	var material: ShaderMaterial
 	for child in woodland.get_children():
 		if not child is MultiMeshInstance3D: continue
@@ -354,7 +362,14 @@ func _woodland_review(field: Dictionary) -> bool:
 				var shader := Shader.new()
 				shader.code = shader_code
 				material.shader = shader
-			if lift >= 0.0: material.set_shader_parameter("root_lift", lift)
+			if lift >= 0.0:
+				var supported := false
+				for uniform: Dictionary in material.shader.get_shader_uniform_list():
+					if str(uniform.name) == "root_lift": supported = true
+				if not supported:
+					_fail("woodland_root_lift requires a shader declaring that control")
+					return false
+				material.set_shader_parameter("root_lift", lift)
 		child.material_override = material
 	if material != null:
 		var effective: Variant = material.get_shader_parameter("root_lift")
@@ -366,12 +381,13 @@ func _woodland_review(field: Dictionary) -> bool:
 		var fractions: Variant = material.get_shader_parameter("grass_height_fractions")
 		inventory["grass_height_fractions"] = [fractions.x, fractions.y] if fractions is Vector2 else null
 		inventory["atlases"] = {}
-		for parameter: String in ["impostor_atlas", "plain_atlas", "short_grass_atlas", "fern_atlas"]:
+		for parameter: String in ["impostor_atlas", "plain_atlas", "short_grass_atlas", "fern_atlas", "shrub_atlas_a", "shrub_atlas_b"]:
 			var texture := material.get_shader_parameter(parameter) as Texture2D
 			if texture != null:
 				inventory.atlases[parameter] = {path = texture.resource_path, sha256 = FileAccess.get_sha256(texture.resource_path)}
 	inventory["shader_path"] = shader_path
 	inventory["shader_sha256"] = FileAccess.get_sha256(shader_path)
+	inventory["shader_include_sha256"] = FileAccess.get_sha256("res://scenery/woodland_card_surface.gdshaderinc")
 	report["woodland"] = inventory
 	if not str(args.get("views", "")).contains("woodland-"): return true
 	var table := GroundSurfaces.load_table()
