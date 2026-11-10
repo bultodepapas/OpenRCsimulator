@@ -114,11 +114,40 @@ func _initialize() -> void:
 	c.sim.reset(body)
 	_fly(c, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
 	_check("fast envelope strike ends the flight", not c.crash.is_empty(), str(c.crash.get("reason", "none")))
+	# Scenery obstacles of the default field: a release inside a tree or pole ends the flight on the first tick;
+	# the open start does not.
+	var FieldLoader = load("res://data/field_loader.gd")
+	var CollisionSetup = load("res://scenery/collision_setup.gd")
+	var field: Dictionary = FieldLoader.load_from().field
+	var built: Dictionary = CollisionSetup.build(field)
+	_check("default field obstacle inventory builds", built.ok and not built.world.proxies.is_empty(), str(built.get("errors", [])))
+	var open: Node = Session.new()
+	root.add_child(open)
+	_check("obstacle inventory installs", open.set_collision_world(built.world))
+	open.prepare(field, {})
+	_fly(open, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	_check("open start clear of obstacles", open.crash.is_empty(), str(open.crash.get("reason", "")))
+	var pole: Dictionary = {}
+	for proxy: Dictionary in built.world.proxies:
+		if proxy.shape == "capsule" and float(proxy.radius) < 0.4 and float(proxy.half_length) > 1.0:
+			pole = proxy
+			break
+	if not pole.is_empty():
+		var hit: Node = Session.new()
+		root.add_child(hit)
+		hit.set_collision_world(built.world)
+		var pilot: Dictionary = field.pilot
+		var top := -(float(pole.down) - float(pole.half_length))
+		hit.prepare(field, {north_offset_m = float(pole.north) - float(pilot.north), east_offset_m = float(pole.east) - float(pilot.east),
+			altitude_m = maxf(0.5, top * 0.5 - 0.5), start = "air"})
+		_fly(hit, 0.1, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+		_check("thin %s through the envelope is an obstacle strike" % pole.kind, str(hit.crash.get("reason", "")).begins_with("Obstacle strike"),
+			str(hit.crash.get("reason", "none")))
 	# Weather admission.
 	var w: Node = Session.new()
 	root.add_child(w)
 	_check("gusty/strong wind outside the admitted domain is refused", not w.prepare({}, {wind_speed_mps = 6.0}))
-	var breeze := _session({wind_speed_mps = 2.0, wind_from_deg = 270.0})
+	var breeze := _session({wind_speed_mps = 2.0, wind_from_deg = 270.0, heaviness_kg = 0.0})
 	_fly(breeze, 6.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
 	t = breeze.telemetry()
 	_check("released in a steady breeze, drifts with the air", float(t.ground_speed_mps) > 1.7 and float(t.air_speed_mps) < 0.3,

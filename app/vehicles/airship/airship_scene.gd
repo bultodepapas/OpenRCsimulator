@@ -16,6 +16,7 @@ const SkyConfig = preload("res://environment/sky_appearance_config.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const Spec = preload("res://spec.gd")
+const CollisionSetup = preload("res://scenery/collision_setup.gd")
 
 const DATA_PATH := "res://data/airships/rc-blimp-5m.json"
 const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
@@ -70,6 +71,11 @@ func _ready() -> void:
 	session = Session.new()
 	session.name = "AirshipSession"
 	add_child(session)
+	var obstacles: Dictionary = CollisionSetup.build(field)
+	if not obstacles.ok or not session.set_collision_world(obstacles.world):
+		startup_error = "Blimp obstacle inventory refused: " + "; ".join(obstacles.get("errors", []))
+		_disable()
+		return
 	if not session.prepare(field, _session_options()):
 		startup_error = "Blimp could not be prepared: " + str(session.load_error)
 		_disable()

@@ -77,7 +77,7 @@ static func fixture(length: float, diameter: float, opts := {}) -> Dictionary:
 			radius_profile = q(profile, "m")},
 		gas = {density = q(0.169, "kg/m^3"), fill_fraction = q(1.0, "1")},
 		hull_aero = {axial_drag_coefficient = q(0.03 if drag else 0.0, "1"), crossflow_drag_coefficient = q(1.2 if drag else 0.0, "1"),
-			crossflow_efficiency = q(0.6, "1"), linear_damping_force = q([0.0, 0.0, 0.0], "N*s/m"), linear_damping_moment = q([0.0, 0.0, 0.0], "N*m*s")},
+			crossflow_efficiency = q(0.6, "1"), afterbody_loss_factor = q(float(opts.get("afterbody", 0.0)), "1"), linear_damping_force = q([0.0, 0.0, 0.0], "N*s/m"), linear_damping_moment = q([0.0, 0.0, 0.0], "N*m*s")},
 		added_mass = {fin_normal_coefficient = q(fin_am, "1"), hull_scale = q(hull_scale, "1")},
 		fins = fins,
 		gondola = {min = q(p.call(-0.3, -0.1, 0.5 * b), "m"), max = q(p.call(0.3, 0.1, 0.5 * b + 0.15), "m"), drag_coefficient = q(0.6 if drag else 0.0, "1")},

@@ -183,6 +183,8 @@ var flight: Node
 var ground_vehicle: Node3D
 var selected_ground_vehicle_id := "mt8-bisonte"
 var selected_airship_skin := "tiburon-blanco"
+## The Garage choice returns to the vehicle flown last (an RC car or the RC blimp).
+var selected_airship_last := false
 ## Test seam: custom ground activity factory, default remains the packaged scene script.
 var ground_vehicle_factory := Callable()
 var pause_menu: CanvasLayer:
@@ -533,6 +535,7 @@ func show_home() -> void:
 	home.statistics_service = statistics_service
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.airship_skin_id = selected_airship_skin
+	home.airship_selected = selected_airship_last
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
@@ -632,6 +635,7 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_ground_vehicle_id = vehicle_id
+			selected_airship_last = false
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
@@ -692,6 +696,7 @@ func start_airship(skin_id: String = "") -> void:
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_airship_skin = skin_id
+			selected_airship_last = true
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()

@@ -1,6 +1,6 @@
 # Generic 5 m RC blimp: integration plan
 
-**Status: proposal, 2026-11-08. No airship runtime is implemented by this work.** User requirement: a generic radio-controlled blimp, 5 metres long; the user will provide its 3D model. Other dimensions, mass and hardware are not yet specified. This is a non-rigid helium airship unless the delivery establishes otherwise; the word “Zeppelin” does not imply a rigid historical airship or a wing-supported airplane.
+**Status: first playable experimental gate reached in software, 2026-11-10 ([§14](#14-implementation-status)); physical, pilot and target-hardware gates remain open.** User requirement: a generic radio-controlled blimp, 5 metres long, built from the 3D model the user provided. Other dimensions, mass and hardware are not yet specified. This is a non-rigid helium airship unless the delivery establishes otherwise; the word “Zeppelin” does not imply a rigid historical airship or a wing-supported airplane.
 
 Owner/prefix: **RC airship, BL-00…18**, registered in the ownership index. This document owns implementation scope and gates. The [initial physics investigation](../research/rc-airship/physics-2026-11-08.md) retains its original scientific sources and limits. The follow-up investigations in §13 examine 24 distinct decisions and amend this plan. Shared contracts remain with SF, AS, M5, EL/BAT, GP/CR, input/UI, FL, CAM/AUD and the asset pipeline.
 
@@ -386,3 +386,29 @@ For outdoor scope, calculate force **and moment** equilibrium with thrust-versus
 The research inspected sources around `4bda2e4540fc07ebe8eb63d35072fd5aead39cbe`; the repository advanced to `2465abc4b2def4cc9d6e3a175f4196a2b755236c` during the work. A scoped comparison found no committed changes between them to the integration source paths examined. Reports retain their actual source/access identities; later implementation must recheck changed consumers.
 
 This task delivers documentation and analytical investigation only. No simulation tests, rendered asset checks, flight measurements or performance qualification are claimed by these reports or this plan.
+
+## 14. Implementation status
+
+Checked 2026-11-10. [BL-12 evidence](../research/rc-airship/BL-12/README.md) retains the test results, the review resolution, the divergence probe and the capture inventory. The asset guide is [assets/aircraft/rc-blimp-5m](../../assets/aircraft/rc-blimp-5m/README.md).
+
+| Step | Delivered | Remaining |
+| --- | --- | --- |
+| BL-01 | Owner delivery preserved in [assets/source-deliveries/rc-blimp-5m](../../assets/source-deliveries/rc-blimp-5m/README.md). "5 m" is the envelope length (scale 0.0688). Topology: two side props on 0–120° vectoring pivots, a 0–90° vectored stern pusher, a reversible stern lateral thruster, and three inverted-Y fins with ±20° moving surfaces. | — |
+| BL-02 | Closed `openrc-airship v1` reader ([airship_data.gd](../../app/physics/airship/airship_data.gd)), [design inputs](../../research/rc-airship/design/rc-blimp-5m.json) and a [generator](../../research/rc-airship/build_data.py) that checks the lift budget and solves the keel ballast position for CG under CB. | Applicability ledger beyond the quantity sources |
+| BL-03…06 | [Stage law](../../app/physics/airship/airship_dynamics.gd) with analytical oracles. I06 decision: ideal Munk via C_A plus the Hopkins afterbody loss, declared as `afterbody_loss_factor`; crossflow strips are viscous only. | Moving-axis rotor momentum (omitted, bounded); reverse-flow afterbody |
+| BL-07 | [Session](../../app/sim/airship/session.gd): calm or steady wind ≤ 4 m/s; airborne or two-wheel stance start; pause, reset and reconfiguration; terminal events. | Lake and water entry |
+| BL-08 | Exact replay of the in-session input tape. | `.orfl` recorder, CLI, checkpoint export |
+| BL-09 | Three baked skins as GLB; [visual adapter](../../app/vehicles/airship/airship_visual.gd) poses vectors, fins and rotors from accepted state. | Prop blur art, LOD budgets on target hosts |
+| BL-10 | Garage choice "RC blimp — skin" and Fly RC blimp. Radio, gamepad and keyboard through the shared RC reader with low-throttle arming. HUD and help. `--airship=<skin>` route. | Radio calibration UI inside the activity |
+| BL-11 | Penalty gear and envelope contact against terrain; terminal propeller strike, hard envelope impact, and two-way obstacle tests against the field collision inventory. | Swept continuous test beyond 10 m/s |
+| BL-12 | Activity scene with chase, pilot and orbit cameras, CC0 electric motor audio, pause menu (skin, start, ballast weigh-off, wind, camera). 1080p captures reviewed. | Real-radio pilot review; target-host 1080p performance |
+
+Stick semantics (Mode 2):
+
+- **Throttle:** thrust of the side props and the stern pusher.
+- **Pitch back:** vectors the side props up to 120° (climb, hover and brake), with the elevators nose-up.
+- **Pitch forward:** elevators nose-down, and the stern pusher vectors up to lift the tail.
+- **Yaw:** the reversible stern thruster, coupled with the rudders.
+- **Roll:** ±35 % differential side thrust.
+
+The reference GDScript costs about 0.70 ms per tick, above the 500 µs budget; that is BL-17 work.

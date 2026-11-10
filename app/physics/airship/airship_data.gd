@@ -80,6 +80,7 @@ static func parse(raw: Dictionary) -> Dictionary:
 		axial_drag = _q(hull, "axial_drag_coefficient", "1", e, 0.0, 1.0),
 		crossflow_drag = _q(hull, "crossflow_drag_coefficient", "1", e, 0.0, 3.0),
 		crossflow_efficiency = _q(hull, "crossflow_efficiency", "1", e, 0.0, 1.0),
+		afterbody_loss = _q(hull, "afterbody_loss_factor", "1", e, 0.0, 1.0),
 		linear_force = _qv(hull, "linear_damping_force", "N*s/m", 3, e),
 		linear_moment = _qv(hull, "linear_damping_moment", "N*m*s", 3, e),
 	}
@@ -320,6 +321,8 @@ static func derive(data: Dictionary, rho: float, gravity: float, heaviness_kg: f
 	model.lower = factor.lower
 	model.hull_stations = _hull_stations(profile, float(data.hull_aero.crossflow_drag) * float(data.hull_aero.crossflow_efficiency))
 	model.ref_area = pow(volume, 2.0 / 3.0)
+	model.afterbody = _afterbody(profile)
+	model.separation_x = model.afterbody[0] if model.afterbody.size() >= 2 else 0.0
 	model.bound_radius = _bound_radius(data)
 	_prepare_runtime(model)
 	return {ok = true, model = model, errors = e}
@@ -438,6 +441,27 @@ static func _hull_stations(profile: PackedFloat64Array, crossflow: float) -> Pac
 		var r := 0.5 * (profile[2 * i + 1] + profile[2 * i + 3])
 		out.append(0.5 * (profile[2 * i] + profile[2 * i + 2]))
 		out.append(2.0 * r * dx * crossflow)
+	return out
+
+
+## Profile points [x, section area] from the separation station x0 to the tail. Hopkins: x0 is where the section
+## area decreases fastest going aft (most negative dS/ds along the flow).
+static func _afterbody(profile: PackedFloat64Array) -> PackedFloat64Array:
+	var stations := profile.size() / 2
+	var best := -1
+	var steepest := 0.0
+	for i in stations - 1:
+		var dx := absf(profile[2 * i + 2] - profile[2 * i])
+		var ds := PI * (profile[2 * i + 3] * profile[2 * i + 3] - profile[2 * i + 1] * profile[2 * i + 1])
+		if dx > 0.0 and ds / dx < steepest:
+			steepest = ds / dx
+			best = i
+	var out := PackedFloat64Array()
+	if best < 0:
+		return out
+	for i in range(best, stations):
+		out.append(profile[2 * i])
+		out.append(PI * profile[2 * i + 1] * profile[2 * i + 1])
 	return out
 
 

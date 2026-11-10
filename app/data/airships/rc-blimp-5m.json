@@ -1,0 +1,2031 @@
+{
+ "format": "openrc-airship v1",
+ "id": "rc-blimp-5m",
+ "name": "RC Blimp 5 m",
+ "status": "experimental",
+ "provenance": {
+  "generator": "research/rc-airship/build_data.py",
+  "geometry_sha256": "2c9fde9d03ecf2e85ded74f3bcdc5df6f4d4b706ed8af5fe1d54f1efcb61253f",
+  "design_sha256": "2a404723214300c9df0601f7b9f5b481c1968ffcab96bf9fb9d1a1f70d63eb1f",
+  "notes": "Generic experimental RC blimp. Geometry is measured from the owner's model scaled to a 5.0 m envelope; every physical input below is a documented engineering estimate or design choice, not a measurement of a real aircraft. Positions are anchors resolved by build_data.py against assets/aircraft/rc-blimp-5m/geometry.json."
+ },
+ "envelope": {
+  "length": {
+   "value": 5.0,
+   "unit": "m",
+   "kind": "measured",
+   "source": "Envelope length (5.0 m by definition); geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "max_diameter": {
+   "value": 0.977288,
+   "unit": "m",
+   "kind": "measured",
+   "source": "Maximum envelope diameter; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "volume": {
+   "value": 2.502001,
+   "unit": "m^3",
+   "kind": "measured",
+   "source": "Closed envelope volume; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "centroid": {
+   "value": [
+    0.281273,
+    -0.0,
+    -0.0
+   ],
+   "unit": "m",
+   "kind": "measured",
+   "source": "Envelope volume centroid (centre of buoyancy); geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "surface_area": {
+   "value": 12.132551,
+   "unit": "m^2",
+   "kind": "measured",
+   "source": "Envelope surface area; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "areal_mass": {
+   "value": 0.085,
+   "unit": "kg/m^2",
+   "kind": "estimate",
+   "source": "TPU-laminated 40-70 g/m^2 nylon plus seams, valves and fin mounts, typical outdoor 5 m RC envelopes; estimate"
+  },
+  "radius_profile": {
+   "value": [
+    [
+     2.56022,
+     0.0
+    ],
+    [
+     2.43522,
+     0.186726
+    ],
+    [
+     2.31022,
+     0.259546
+    ],
+    [
+     2.18522,
+     0.30862
+    ],
+    [
+     2.06022,
+     0.348594
+    ],
+    [
+     1.93522,
+     0.379373
+    ],
+    [
+     1.81022,
+     0.40387
+    ],
+    [
+     1.68522,
+     0.423886
+    ],
+    [
+     1.56022,
+     0.439686
+    ],
+    [
+     1.43522,
+     0.453331
+    ],
+    [
+     1.31022,
+     0.464499
+    ],
+    [
+     1.18522,
+     0.4724
+    ],
+    [
+     1.06022,
+     0.478795
+    ],
+    [
+     0.93522,
+     0.484244
+    ],
+    [
+     0.81022,
+     0.487779
+    ],
+    [
+     0.68522,
+     0.488596
+    ],
+    [
+     0.56022,
+     0.488517
+    ],
+    [
+     0.43522,
+     0.488345
+    ],
+    [
+     0.31022,
+     0.488089
+    ],
+    [
+     0.18522,
+     0.487541
+    ],
+    [
+     0.06022,
+     0.485335
+    ],
+    [
+     -0.06478,
+     0.481739
+    ],
+    [
+     -0.18978,
+     0.477381
+    ],
+    [
+     -0.31478,
+     0.472505
+    ],
+    [
+     -0.43978,
+     0.465981
+    ],
+    [
+     -0.56478,
+     0.457909
+    ],
+    [
+     -0.68978,
+     0.448565
+    ],
+    [
+     -0.81478,
+     0.437558
+    ],
+    [
+     -0.93978,
+     0.423698
+    ],
+    [
+     -1.06478,
+     0.4076
+    ],
+    [
+     -1.18978,
+     0.389713
+    ],
+    [
+     -1.31478,
+     0.368668
+    ],
+    [
+     -1.43978,
+     0.344684
+    ],
+    [
+     -1.56478,
+     0.317719
+    ],
+    [
+     -1.68978,
+     0.286581
+    ],
+    [
+     -1.81478,
+     0.252248
+    ],
+    [
+     -1.93978,
+     0.214037
+    ],
+    [
+     -2.06478,
+     0.171384
+    ],
+    [
+     -2.18978,
+     0.122395
+    ],
+    [
+     -2.31478,
+     0.069772
+    ],
+    [
+     -2.43978,
+     0.0
+    ]
+   ],
+   "unit": "m",
+   "kind": "measured",
+   "source": "Equivalent radius sqrt(A/pi) of envelope cross-sections; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  }
+ },
+ "gas": {
+  "density": {
+   "value": 0.169,
+   "unit": "kg/m^3",
+   "kind": "published",
+   "source": "Helium at 20 C, 101.325 kPa, dry (ideal gas, M = 4.0026 g/mol); purity assumed 100 %"
+  },
+  "fill_fraction": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "design",
+   "source": "Taut constant-volume envelope at reference pressure (plan BL-02, short-flight constant-fill approximation)"
+  }
+ },
+ "hull_aero": {
+  "axial_drag_coefficient": {
+   "value": 0.028,
+   "unit": "1",
+   "kind": "estimate",
+   "source": "Volume-referenced bare-hull drag of streamlined airship hulls at Re 0.2-1e6 (Hoerner 1965 ch. 6; Khoury 2012 ch. 5), plus seam roughness"
+  },
+  "crossflow_drag_coefficient": {
+   "value": 1.2,
+   "unit": "1",
+   "kind": "published",
+   "source": "Subcritical circular-cylinder crossflow drag coefficient (Allen and Perkins 1951; Jones and DeLaurier 1983)"
+  },
+  "crossflow_efficiency": {
+   "value": 0.6,
+   "unit": "1",
+   "kind": "estimate",
+   "source": "Finite-length crossflow efficiency for L/D 5 bodies (Allen and Perkins 1951 eta ~0.6)"
+  },
+  "afterbody_loss_factor": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "published",
+   "source": "Hopkins 1951 (NACA RM A51C14): slender-body potential normal force vanishes aft of the station of steepest area decrease; full cancellation of the afterbody potential load in forward flight"
+  },
+  "linear_damping_force": {
+   "value": [
+    0.02,
+    0.05,
+    0.05
+   ],
+   "unit": "N*s/m",
+   "kind": "estimate",
+   "source": "Small low-speed viscous floor so quadratic laws do not leave undamped creep; below 1 % of quadratic drag at 1 m/s"
+  },
+  "linear_damping_moment": {
+   "value": [
+    0.01,
+    0.03,
+    0.03
+   ],
+   "unit": "N*m*s",
+   "kind": "estimate",
+   "source": "Low-rate skin-friction floor for rotation; estimate"
+  }
+ },
+ "added_mass": {
+  "fin_normal_coefficient": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "published",
+   "source": "Strip-theory flat-plate added mass rho*pi*(c/2)^2 per span (Newman 1977, Marine Hydrodynamics, sec. 4.13)"
+  },
+  "hull_scale": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "published",
+   "source": "Lamb 1932 sec. 373 prolate-spheroid coefficients for the volume-equivalent spheroid of the measured length; shape difference retained as uncertainty"
+  }
+ },
+ "fins": [
+  {
+   "id": "dorsal",
+   "area_fixed": {
+    "value": 0.153368,
+    "unit": "m^2",
+    "kind": "measured",
+    "source": "Fin dorsal fixed planform; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "area_moving": {
+    "value": 0.049845,
+    "unit": "m^2",
+    "kind": "measured",
+    "source": "Fin dorsal moving planform; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "centroid": {
+    "value": [
+     -1.815831,
+     0.0,
+     -0.420332
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin dorsal planform centroid; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "normal": {
+    "value": [
+     0.0,
+     1.0,
+     -0.0
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Fin dorsal plane normal; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "span_dir": {
+    "value": [
+     -0.0,
+     -0.0,
+     -1.0
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Fin dorsal span direction; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "span": {
+    "value": 0.367488,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin dorsal span; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "mean_chord": {
+    "value": 0.552977,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin dorsal mean chord; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "te_sign": {
+    "value": 1.0,
+    "unit": "1",
+    "kind": "derived",
+    "source": "Sign of the trailing-edge displacement along the normal for +CTRL (geometry te_dir_at_plus_10deg)"
+   },
+   "travel": {
+    "value": 20.0,
+    "unit": "deg",
+    "kind": "measured",
+    "source": "Model rig limit CTRL Aleta timon +-20 deg (delivery; documented EASA AS.001 LZ N07 reference)"
+   },
+   "servo_response_time": {
+    "value": 0.04,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Standard 9 g digital servo with linkage, first-order approximation"
+   },
+   "servo_max_rate": {
+    "value": 400.0,
+    "unit": "deg/s",
+    "kind": "estimate",
+    "source": "0.12 s/60 deg micro servo at 5 V, derated for load"
+   },
+   "lift_slope_scale": {
+    "value": 0.85,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Thin plate at Re 1e4-6e4 and hull interference relative to the Helmbold low-aspect-ratio slope"
+   },
+   "skin_drag_coefficient": {
+    "value": 0.012,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Laminar/transitional flat plate both sides at Re ~3e4"
+   },
+   "crossflow_drag_coefficient": {
+    "value": 1.15,
+    "unit": "1",
+    "kind": "published",
+    "source": "Normal flat-plate drag of low aspect ratio (Hoerner 1965 ch. 3)"
+   }
+  },
+  {
+   "id": "port",
+   "area_fixed": {
+    "value": 0.153368,
+    "unit": "m^2",
+    "kind": "measured",
+    "source": "Fin port fixed planform; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "area_moving": {
+    "value": 0.049844,
+    "unit": "m^2",
+    "kind": "measured",
+    "source": "Fin port moving planform; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "centroid": {
+    "value": [
+     -1.815831,
+     -0.364018,
+     0.210166
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin port planform centroid; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "normal": {
+    "value": [
+     0.0,
+     -0.5,
+     -0.866025
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Fin port plane normal; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "span_dir": {
+    "value": [
+     0.0,
+     -0.866025,
+     0.5
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Fin port span direction; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "span": {
+    "value": 0.367488,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin port span; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "mean_chord": {
+    "value": 0.552977,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin port mean chord; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "te_sign": {
+    "value": 1.0,
+    "unit": "1",
+    "kind": "derived",
+    "source": "Sign of the trailing-edge displacement along the normal for +CTRL (geometry te_dir_at_plus_10deg)"
+   },
+   "travel": {
+    "value": 20.0,
+    "unit": "deg",
+    "kind": "measured",
+    "source": "Model rig limit CTRL Aleta timon +-20 deg (delivery; documented EASA AS.001 LZ N07 reference)"
+   },
+   "servo_response_time": {
+    "value": 0.04,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Standard 9 g digital servo with linkage, first-order approximation"
+   },
+   "servo_max_rate": {
+    "value": 400.0,
+    "unit": "deg/s",
+    "kind": "estimate",
+    "source": "0.12 s/60 deg micro servo at 5 V, derated for load"
+   },
+   "lift_slope_scale": {
+    "value": 0.85,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Thin plate at Re 1e4-6e4 and hull interference relative to the Helmbold low-aspect-ratio slope"
+   },
+   "skin_drag_coefficient": {
+    "value": 0.012,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Laminar/transitional flat plate both sides at Re ~3e4"
+   },
+   "crossflow_drag_coefficient": {
+    "value": 1.15,
+    "unit": "1",
+    "kind": "published",
+    "source": "Normal flat-plate drag of low aspect ratio (Hoerner 1965 ch. 3)"
+   }
+  },
+  {
+   "id": "starboard",
+   "area_fixed": {
+    "value": 0.153368,
+    "unit": "m^2",
+    "kind": "measured",
+    "source": "Fin starboard fixed planform; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "area_moving": {
+    "value": 0.049844,
+    "unit": "m^2",
+    "kind": "measured",
+    "source": "Fin starboard moving planform; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "centroid": {
+    "value": [
+     -1.815831,
+     0.364018,
+     0.210166
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin starboard planform centroid; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "normal": {
+    "value": [
+     -0.0,
+     -0.5,
+     0.866025
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Fin starboard plane normal; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "span_dir": {
+    "value": [
+     0.0,
+     0.866025,
+     0.5
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Fin starboard span direction; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "span": {
+    "value": 0.367488,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin starboard span; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "mean_chord": {
+    "value": 0.552977,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Fin starboard mean chord; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "te_sign": {
+    "value": 1.0,
+    "unit": "1",
+    "kind": "derived",
+    "source": "Sign of the trailing-edge displacement along the normal for +CTRL (geometry te_dir_at_plus_10deg)"
+   },
+   "travel": {
+    "value": 20.0,
+    "unit": "deg",
+    "kind": "measured",
+    "source": "Model rig limit CTRL Aleta timon +-20 deg (delivery; documented EASA AS.001 LZ N07 reference)"
+   },
+   "servo_response_time": {
+    "value": 0.04,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Standard 9 g digital servo with linkage, first-order approximation"
+   },
+   "servo_max_rate": {
+    "value": 400.0,
+    "unit": "deg/s",
+    "kind": "estimate",
+    "source": "0.12 s/60 deg micro servo at 5 V, derated for load"
+   },
+   "lift_slope_scale": {
+    "value": 0.85,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Thin plate at Re 1e4-6e4 and hull interference relative to the Helmbold low-aspect-ratio slope"
+   },
+   "skin_drag_coefficient": {
+    "value": 0.012,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Laminar/transitional flat plate both sides at Re ~3e4"
+   },
+   "crossflow_drag_coefficient": {
+    "value": 1.15,
+    "unit": "1",
+    "kind": "published",
+    "source": "Normal flat-plate drag of low aspect ratio (Hoerner 1965 ch. 3)"
+   }
+  }
+ ],
+ "gondola": {
+  "min": {
+   "value": [
+    0.55646,
+    -0.095136,
+    0.441163
+   ],
+   "unit": "m",
+   "kind": "measured",
+   "source": "Gondola bounds; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "max": {
+   "value": [
+    1.414362,
+    0.095136,
+    0.66139
+   ],
+   "unit": "m",
+   "kind": "measured",
+   "source": "Gondola bounds; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "drag_coefficient": {
+   "value": 0.55,
+   "unit": "1",
+   "kind": "estimate",
+   "source": "Rounded bluff gondola, per projected axis area"
+  }
+ },
+ "vectors": [
+  {
+   "id": "port",
+   "pivot": {
+    "value": [
+     0.805231,
+     -0.526497,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Vector port pivot; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "axis": {
+    "value": [
+     -0.0,
+     1.0,
+     -0.0
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Vector port rotation axis (positive CTRL right-handed); geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "travel": {
+    "value": [
+     0.0,
+     120.0
+    ],
+    "unit": "deg",
+    "kind": "measured",
+    "source": "Vector port rig travel; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "servo_response_time": {
+    "value": 0.08,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Metal-gear 25 kg-cm servo driving the propeller axle, first order"
+   },
+   "servo_max_rate": {
+    "value": 150.0,
+    "unit": "deg/s",
+    "kind": "estimate",
+    "source": "0.4 s per 60 deg under axle load (derated)"
+   }
+  },
+  {
+   "id": "starboard",
+   "pivot": {
+    "value": [
+     0.805231,
+     0.526497,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Vector starboard pivot; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "axis": {
+    "value": [
+     -0.0,
+     1.0,
+     -0.0
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Vector starboard rotation axis (positive CTRL right-handed); geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "travel": {
+    "value": [
+     0.0,
+     120.0
+    ],
+    "unit": "deg",
+    "kind": "measured",
+    "source": "Vector starboard rig travel; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "servo_response_time": {
+    "value": 0.08,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Metal-gear 25 kg-cm servo driving the propeller axle, first order"
+   },
+   "servo_max_rate": {
+    "value": 150.0,
+    "unit": "deg/s",
+    "kind": "estimate",
+    "source": "0.4 s per 60 deg under axle load (derated)"
+   }
+  },
+  {
+   "id": "stern",
+   "pivot": {
+    "value": [
+     -2.467309,
+     0.0,
+     -0.006882
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Vector stern pivot; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "axis": {
+    "value": [
+     -0.0,
+     1.0,
+     -0.0
+    ],
+    "unit": "1",
+    "kind": "measured",
+    "source": "Vector stern rotation axis (positive CTRL right-handed); geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "travel": {
+    "value": [
+     0.0,
+     90.0
+    ],
+    "unit": "deg",
+    "kind": "measured",
+    "source": "Vector stern rig travel; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "servo_response_time": {
+    "value": 0.08,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Standard servo on the stern pod pivot"
+   },
+   "servo_max_rate": {
+    "value": 180.0,
+    "unit": "deg/s",
+    "kind": "estimate",
+    "source": "0.33 s per 60 deg under load (derated)"
+   }
+  }
+ ],
+ "rotors": [
+  {
+   "id": "port",
+   "vector": "port",
+   "hub": {
+    "value": [
+     0.898142,
+     -0.578114,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor port hub; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "thrust_axis_rest": {
+    "value": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "unit": "1",
+    "kind": "derived",
+    "source": "Opposite of the measured slipstream axis of rotor port at vector 0"
+   },
+   "radius": {
+    "value": 0.092911,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor port blade-tip radius; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "rotation_sense": {
+    "value": -1,
+    "unit": "1",
+    "kind": "design",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "static_thrust_max": {
+    "value": 2.6,
+    "unit": "N",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "pitch_speed": {
+    "value": 11.0,
+    "unit": "m/s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "reverse_efficiency": {
+    "value": 0.0,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "torque_ratio": {
+    "value": 0.012,
+    "unit": "m",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "max_shaft_power": {
+    "value": 27.0,
+    "unit": "W",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "motor_efficiency": {
+    "value": 0.75,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "response_time": {
+    "value": 0.14,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   }
+  },
+  {
+   "id": "starboard",
+   "vector": "starboard",
+   "hub": {
+    "value": [
+     0.898142,
+     0.578114,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor starboard hub; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "thrust_axis_rest": {
+    "value": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "unit": "1",
+    "kind": "derived",
+    "source": "Opposite of the measured slipstream axis of rotor starboard at vector 0"
+   },
+   "radius": {
+    "value": 0.092911,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor starboard blade-tip radius; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "rotation_sense": {
+    "value": 1,
+    "unit": "1",
+    "kind": "design",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "static_thrust_max": {
+    "value": 2.6,
+    "unit": "N",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "pitch_speed": {
+    "value": 11.0,
+    "unit": "m/s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "reverse_efficiency": {
+    "value": 0.0,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "torque_ratio": {
+    "value": 0.012,
+    "unit": "m",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "max_shaft_power": {
+    "value": 27.0,
+    "unit": "W",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "motor_efficiency": {
+    "value": 0.75,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "response_time": {
+    "value": 0.14,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   }
+  },
+  {
+   "id": "stern_axial",
+   "vector": "stern",
+   "hub": {
+    "value": [
+     -2.561596,
+     0.0,
+     -0.006882
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor stern_axial hub; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "thrust_axis_rest": {
+    "value": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "unit": "1",
+    "kind": "derived",
+    "source": "Opposite of the measured slipstream axis of rotor stern_axial at vector 0"
+   },
+   "radius": {
+    "value": 0.092911,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor stern_axial blade-tip radius; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "rotation_sense": {
+    "value": 1,
+    "unit": "1",
+    "kind": "design",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "static_thrust_max": {
+    "value": 1.6,
+    "unit": "N",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "pitch_speed": {
+    "value": 11.0,
+    "unit": "m/s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "reverse_efficiency": {
+    "value": 0.0,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "torque_ratio": {
+    "value": 0.012,
+    "unit": "m",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "max_shaft_power": {
+    "value": 13.0,
+    "unit": "W",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "motor_efficiency": {
+    "value": 0.75,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "response_time": {
+    "value": 0.14,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   }
+  },
+  {
+   "id": "stern_lateral",
+   "vector": "",
+   "hub": {
+    "value": [
+     -2.41225,
+     -0.11287,
+     -0.020647
+    ],
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor stern_lateral hub; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "thrust_axis_rest": {
+    "value": [
+     0.0,
+     -1.0,
+     0.0
+    ],
+    "unit": "1",
+    "kind": "derived",
+    "source": "Opposite of the measured slipstream axis of rotor stern_lateral at vector 0"
+   },
+   "radius": {
+    "value": 0.075706,
+    "unit": "m",
+    "kind": "measured",
+    "source": "Rotor stern_lateral blade-tip radius; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+   },
+   "rotation_sense": {
+    "value": 1,
+    "unit": "1",
+    "kind": "design",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "static_thrust_max": {
+    "value": 1.0,
+    "unit": "N",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "pitch_speed": {
+    "value": 9.0,
+    "unit": "m/s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "reverse_efficiency": {
+    "value": 0.7,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "torque_ratio": {
+    "value": 0.01,
+    "unit": "m",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "max_shaft_power": {
+    "value": 8.7,
+    "unit": "W",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "motor_efficiency": {
+    "value": 0.72,
+    "unit": "1",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   },
+   "response_time": {
+    "value": 0.12,
+    "unit": "s",
+    "kind": "estimate",
+    "source": "Design: 2212-class 1000 kV outrunners on 3S with 7x4 (side, stern) and 6x3 reversible (lateral) props sized to the scaled 2.7/2.2 m full-scale diameters. Static thrust from momentum theory with figure of merit 0.6 at the stated shaft power; pitch speed = rpm x geometric pitch x 0.9; torque ratio Q/T ~ 0.065 D; reverse efficiency of a reversed fixed-pitch prop ~0.7; first-order spool-up 0.12-0.14 s. Estimates, not bench measurements (BL-T02 open)."
+   }
+  }
+ ],
+ "battery": {
+  "cells": {
+   "value": 3,
+   "unit": "1",
+   "kind": "design",
+   "source": "3S LiPo"
+  },
+  "capacity": {
+   "value": 2.2,
+   "unit": "A*h",
+   "kind": "design",
+   "source": "3S 2200 mAh pack, 0.19 kg"
+  },
+  "internal_resistance": {
+   "value": 0.045,
+   "unit": "ohm",
+   "kind": "estimate",
+   "source": "Typical 3S 2200 mAh 25C pack including wiring"
+  },
+  "reference_voltage": {
+   "value": 11.8,
+   "unit": "V",
+   "kind": "design",
+   "source": "Loaded pack voltage at which the stated static thrust is reached"
+  },
+  "cutoff_cell_voltage": {
+   "value": 3.3,
+   "unit": "V",
+   "kind": "design",
+   "source": "ESC low-voltage limiter start per cell"
+  },
+  "cutoff_band": {
+   "value": 0.6,
+   "unit": "V",
+   "kind": "design",
+   "source": "ESC limiter ramps output to zero across 0.6 V of pack voltage"
+  },
+  "initial_soc": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "design",
+   "source": "Freshly charged pack"
+  },
+  "cell_ocv": {
+   "value": [
+    [
+     0.0,
+     3.3
+    ],
+    [
+     0.05,
+     3.55
+    ],
+    [
+     0.1,
+     3.65
+    ],
+    [
+     0.2,
+     3.72
+    ],
+    [
+     0.4,
+     3.79
+    ],
+    [
+     0.6,
+     3.87
+    ],
+    [
+     0.8,
+     4.0
+    ],
+    [
+     1.0,
+     4.2
+    ]
+   ],
+   "unit": "V",
+   "kind": "published",
+   "source": "Generic LiCoO2/LiPo open-circuit curve (manufacturer typical); not this pack's measurement"
+  }
+ },
+ "masses": [
+  {
+   "id": "gondola_shell",
+   "mass": {
+    "value": 0.22,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Vacuum-formed PETG gondola with frame and windows; estimate"
+   },
+   "position": {
+    "value": [
+     0.985411,
+     0.0,
+     0.551277
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor gondola_center + design offset"
+   }
+  },
+  {
+   "id": "receiver_escs_wiring",
+   "mass": {
+    "value": 0.14,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Receiver, four ESCs, BEC and harness; estimate"
+   },
+   "position": {
+    "value": [
+     1.035411,
+     0.0,
+     0.551277
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor gondola_center + design offset"
+   }
+  },
+  {
+   "id": "battery",
+   "mass": {
+    "value": 0.19,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "3S 2200 mAh LiPo; datasheet class"
+   },
+   "position": {
+    "value": [
+     0.935411,
+     0.0,
+     0.571277
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor gondola_center + design offset"
+   }
+  },
+  {
+   "id": "payload_camera",
+   "mass": {
+    "value": 0.1,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Small action camera; design"
+   },
+   "position": {
+    "value": [
+     1.135411,
+     0.0,
+     0.581277
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor gondola_center + design offset"
+   }
+  },
+  {
+   "id": "side_motor_port",
+   "mass": {
+    "value": 0.075,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Motor, prop, nacelle; estimate"
+   },
+   "position": {
+    "value": [
+     0.898142,
+     -0.578114,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor rotor:port + design offset"
+   }
+  },
+  {
+   "id": "side_motor_starboard",
+   "mass": {
+    "value": 0.075,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Motor, prop, nacelle; estimate"
+   },
+   "position": {
+    "value": [
+     0.898142,
+     0.578114,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor rotor:starboard + design offset"
+   }
+  },
+  {
+   "id": "side_pylon_servo_port",
+   "mass": {
+    "value": 0.065,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Vector servo, axle and pylon; estimate"
+   },
+   "position": {
+    "value": [
+     0.805231,
+     -0.526497,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor vector:port + design offset"
+   }
+  },
+  {
+   "id": "side_pylon_servo_starboard",
+   "mass": {
+    "value": 0.065,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Vector servo, axle and pylon; estimate"
+   },
+   "position": {
+    "value": [
+     0.805231,
+     0.526497,
+     0.168617
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor vector:starboard + design offset"
+   }
+  },
+  {
+   "id": "stern_axial_motor",
+   "mass": {
+    "value": 0.05,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Motor, prop, pod; estimate"
+   },
+   "position": {
+    "value": [
+     -2.561596,
+     0.0,
+     -0.006882
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor rotor:stern_axial + design offset"
+   }
+  },
+  {
+   "id": "stern_vector_servo",
+   "mass": {
+    "value": 0.02,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Stern vector servo; estimate"
+   },
+   "position": {
+    "value": [
+     -2.467309,
+     0.0,
+     -0.006882
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor vector:stern + design offset"
+   }
+  },
+  {
+   "id": "stern_lateral_motor",
+   "mass": {
+    "value": 0.035,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Reversible motor and prop; estimate"
+   },
+   "position": {
+    "value": [
+     -2.41225,
+     -0.11287,
+     -0.020647
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor rotor:stern_lateral + design offset"
+   }
+  },
+  {
+   "id": "fin_dorsal",
+   "mass": {
+    "value": 0.045,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "3 mm Depron fin (0.2 m^2) with carbon spar and film covering, ~0.2 kg/m^2; estimate"
+   },
+   "position": {
+    "value": [
+     -1.815831,
+     0.0,
+     -0.420332
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor fin:dorsal + design offset"
+   }
+  },
+  {
+   "id": "fin_port",
+   "mass": {
+    "value": 0.045,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "3 mm Depron fin (0.2 m^2) with carbon spar and film covering, ~0.2 kg/m^2; estimate"
+   },
+   "position": {
+    "value": [
+     -1.815831,
+     -0.364018,
+     0.210166
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor fin:port + design offset"
+   }
+  },
+  {
+   "id": "fin_starboard",
+   "mass": {
+    "value": 0.045,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "3 mm Depron fin (0.2 m^2) with carbon spar and film covering, ~0.2 kg/m^2; estimate"
+   },
+   "position": {
+    "value": [
+     -1.815831,
+     0.364018,
+     0.210166
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor fin:starboard + design offset"
+   }
+  },
+  {
+   "id": "fin_servos",
+   "mass": {
+    "value": 0.027,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Three 9 g micro servos; datasheet class"
+   },
+   "position": {
+    "value": [
+     -2.009635,
+     0.0,
+     0.0
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor fin_hinges_mean + design offset"
+   }
+  },
+  {
+   "id": "landing_gear",
+   "mass": {
+    "value": 0.06,
+    "unit": "kg",
+    "kind": "estimate",
+    "source": "Two wheels and struts; estimate"
+   },
+   "position": {
+    "value": [
+     -0.144528,
+     -0.004506,
+     0.644122
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Anchor gear_mean + design offset"
+   }
+  }
+ ],
+ "ballast": {
+  "position": {
+   "value": [
+    0.479318,
+    0.0,
+    0.581277
+   ],
+   "unit": "m",
+   "kind": "derived",
+   "source": "Keel position solved by build_data.py for CG under CB at the default weigh-off (requested x 0.479 m, keel range 0.3..2.2 m)"
+  },
+  "max_mass": {
+   "value": 1.2,
+   "unit": "kg",
+   "kind": "design",
+   "source": "Lead shot bag capacity in the gondola keel"
+  },
+  "default_heaviness": {
+   "value": 0.08,
+   "unit": "kg",
+   "kind": "design",
+   "source": "Weigh-off 80 g heavy: flown slightly heavy so loss of power descends gently (common RC blimp practice)"
+  }
+ },
+ "contacts": {
+  "gear": [
+   {
+    "id": "front",
+    "point": {
+     "value": [
+      1.135582,
+      -0.004738,
+      0.728149
+     ],
+     "unit": "m",
+     "kind": "measured",
+     "source": "front wheel lowest point; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+    },
+    "stiffness": {
+     "value": 450.0,
+     "unit": "N/m",
+     "kind": "estimate",
+     "source": "Soft foam wheel and strut, a few millimetres under the static load"
+    },
+    "damping": {
+     "value": 22.0,
+     "unit": "N*s/m",
+     "kind": "estimate",
+     "source": "Near critical for ~1 kg effective mass"
+    },
+    "mu_roll": {
+     "value": 0.06,
+     "unit": "1",
+     "kind": "estimate",
+     "source": "Foam wheel rolling resistance on grass/asphalt"
+    },
+    "mu_side": {
+     "value": 0.6,
+     "unit": "1",
+     "kind": "estimate",
+     "source": "Wheel side friction"
+    }
+   },
+   {
+    "id": "rear",
+    "point": {
+     "value": [
+      -1.424639,
+      -0.004274,
+      0.620096
+     ],
+     "unit": "m",
+     "kind": "measured",
+     "source": "rear wheel lowest point; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+    },
+    "stiffness": {
+     "value": 450.0,
+     "unit": "N/m",
+     "kind": "estimate",
+     "source": "Soft foam wheel and strut, a few millimetres under the static load"
+    },
+    "damping": {
+     "value": 22.0,
+     "unit": "N*s/m",
+     "kind": "estimate",
+     "source": "Near critical for ~1 kg effective mass"
+    },
+    "mu_roll": {
+     "value": 0.06,
+     "unit": "1",
+     "kind": "estimate",
+     "source": "Foam wheel rolling resistance on grass/asphalt"
+    },
+    "mu_side": {
+     "value": 0.6,
+     "unit": "1",
+     "kind": "estimate",
+     "source": "Wheel side friction"
+    }
+   }
+  ],
+  "hull_points": {
+   "value": [
+    [
+     2.56022,
+     -0.001376,
+     -0.0
+    ],
+    [
+     -2.43978,
+     -0.020126,
+     -0.0
+    ],
+    [
+     1.930489,
+     -0.0,
+     -0.380422
+    ],
+    [
+     1.930489,
+     0.0,
+     0.380422
+    ],
+    [
+     1.930489,
+     -0.380422,
+     -0.0
+    ],
+    [
+     1.930489,
+     0.380422,
+     -0.0
+    ],
+    [
+     1.300757,
+     -0.0,
+     -0.465268
+    ],
+    [
+     1.300757,
+     0.0,
+     0.465268
+    ],
+    [
+     1.300757,
+     -0.465268,
+     -0.0
+    ],
+    [
+     1.300757,
+     0.465268,
+     -0.0
+    ],
+    [
+     0.686769,
+     -0.0,
+     -0.48864
+    ],
+    [
+     0.686769,
+     0.0,
+     0.48864
+    ],
+    [
+     0.686769,
+     -0.48864,
+     -0.0
+    ],
+    [
+     0.686769,
+     0.48864,
+     -0.0
+    ],
+    [
+     0.07278,
+     -0.0,
+     -0.485675
+    ],
+    [
+     0.07278,
+     0.0,
+     0.485675
+    ],
+    [
+     0.07278,
+     -0.485675,
+     -0.0
+    ],
+    [
+     0.07278,
+     0.485675,
+     -0.0
+    ],
+    [
+     -0.556951,
+     -0.0,
+     -0.458498
+    ],
+    [
+     -0.556951,
+     0.0,
+     0.458498
+    ],
+    [
+     -0.556951,
+     -0.458498,
+     -0.0
+    ],
+    [
+     -0.556951,
+     0.458498,
+     -0.0
+    ],
+    [
+     -1.186683,
+     -0.0,
+     -0.390231
+    ],
+    [
+     -1.186683,
+     0.0,
+     0.390231
+    ],
+    [
+     -1.186683,
+     -0.390231,
+     -0.0
+    ],
+    [
+     -1.186683,
+     0.390231,
+     -0.0
+    ],
+    [
+     -1.800671,
+     -0.0,
+     -0.256327
+    ],
+    [
+     -1.800671,
+     0.0,
+     0.256327
+    ],
+    [
+     -1.800671,
+     -0.256327,
+     -0.0
+    ],
+    [
+     -1.800671,
+     0.256327,
+     -0.0
+    ],
+    [
+     -1.851156,
+     0.005161,
+     -0.619408
+    ],
+    [
+     -2.035371,
+     0.0,
+     -0.612083
+    ],
+    [
+     -2.126015,
+     0.0,
+     -0.209222
+    ],
+    [
+     -1.851156,
+     -0.533842,
+     0.314174
+    ],
+    [
+     -2.035372,
+     -0.53008,
+     0.306042
+    ],
+    [
+     -2.126015,
+     -0.181192,
+     0.104611
+    ],
+    [
+     -1.851156,
+     0.533842,
+     0.314174
+    ],
+    [
+     -2.035372,
+     0.53008,
+     0.306042
+    ],
+    [
+     -2.126015,
+     0.181192,
+     0.104611
+    ],
+    [
+     1.335857,
+     0.004943,
+     0.646374
+    ],
+    [
+     1.293249,
+     -0.0,
+     0.644047
+    ],
+    [
+     1.314522,
+     -0.019943,
+     0.644047
+    ],
+    [
+     1.314522,
+     0.019943,
+     0.644047
+    ]
+   ],
+   "unit": "m",
+   "kind": "measured",
+   "source": "Envelope, fin and gondola collision witnesses; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "prop_points": {
+   "value": [
+    [
+     0.898142,
+     -0.671025,
+     0.168617
+    ],
+    [
+     0.898142,
+     -0.485203,
+     0.168617
+    ],
+    [
+     0.898142,
+     -0.578114,
+     0.261528
+    ],
+    [
+     0.898142,
+     -0.578114,
+     0.075705
+    ],
+    [
+     0.898142,
+     0.485203,
+     0.168617
+    ],
+    [
+     0.898142,
+     0.671025,
+     0.168617
+    ],
+    [
+     0.898142,
+     0.578114,
+     0.261528
+    ],
+    [
+     0.898142,
+     0.578114,
+     0.075705
+    ],
+    [
+     -2.561596,
+     -0.092911,
+     -0.006882
+    ],
+    [
+     -2.561596,
+     0.092911,
+     -0.006882
+    ],
+    [
+     -2.561596,
+     0.0,
+     0.086029
+    ],
+    [
+     -2.561596,
+     0.0,
+     -0.099794
+    ],
+    [
+     -2.487956,
+     -0.11287,
+     -0.020647
+    ],
+    [
+     -2.336545,
+     -0.11287,
+     -0.020647
+    ],
+    [
+     -2.41225,
+     -0.11287,
+     0.055059
+    ],
+    [
+     -2.41225,
+     -0.11287,
+     -0.096352
+    ]
+   ],
+   "unit": "m",
+   "kind": "measured",
+   "source": "Propeller disc extremes at vector 0; geometry.json measured from the owner's model scaled to a 5.0 m envelope"
+  },
+  "hull_stiffness": {
+   "value": 160.0,
+   "unit": "N/m",
+   "kind": "estimate",
+   "source": "Inflated fabric local stiffness per contact point (pressurised 300-400 Pa)"
+  },
+  "hull_damping": {
+   "value": 14.0,
+   "unit": "N*s/m",
+   "kind": "estimate",
+   "source": "Fabric and gas damping; estimate"
+  },
+  "hull_mu": {
+   "value": 0.5,
+   "unit": "1",
+   "kind": "estimate",
+   "source": "TPU fabric on grass"
+  },
+  "impact_speed_limit": {
+   "value": 1.6,
+   "unit": "m/s",
+   "kind": "design",
+   "source": "Experimental terminal threshold for an envelope strike; not a damage model"
+  }
+ },
+ "mixer": {
+  "differential_thrust": {
+   "value": 0.35,
+   "unit": "1",
+   "kind": "design",
+   "source": "Aileron stick trims side thrust +-35 % of the throttle for yaw"
+  },
+  "stern_axial_share": {
+   "value": 0.7,
+   "unit": "1",
+   "kind": "design",
+   "source": "Stern pusher at 70 % of throttle"
+  },
+  "vector_on_pitch": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "design",
+   "source": "Full back stick reaches the full 120 deg side travel (braking/hover past vertical)"
+  },
+  "lateral_on_yaw": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "design",
+   "source": "Rudder stick drives the reversible stern thruster, coupled to the rudders as on the reference airship"
+  },
+  "stern_vector_on_pitch": {
+   "value": -1.0,
+   "unit": "1",
+   "kind": "derived",
+   "source": "+1: stern thrust at full vector points down (back stick, nose up); -1: up (forward stick, nose down)"
+  }
+ },
+ "presentation": {
+  "frame": "GLB in Godot axes (nose -Z, right +X, up +Y), origin = physics datum O",
+  "bindings": {
+   "vector_port": {
+    "node": "vector_port_hinge",
+    "local_axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "sign": 1.0
+   },
+   "vector_starboard": {
+    "node": "vector_starboard_hinge",
+    "local_axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "sign": 1.0
+   },
+   "vector_stern": {
+    "node": "vector_stern_hinge",
+    "local_axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "sign": 1.0
+   },
+   "fin_dorsal": {
+    "node": "rudder_dorsal_hinge",
+    "local_axis": [
+     0.0,
+     0.97561,
+     -0.219512
+    ],
+    "sign": 1.0
+   },
+   "fin_port": {
+    "node": "fin_port_hinge",
+    "local_axis": [
+     -0.844903,
+     -0.487805,
+     -0.219512
+    ],
+    "sign": 1.0
+   },
+   "fin_starboard": {
+    "node": "fin_starboard_hinge",
+    "local_axis": [
+     0.844903,
+     -0.487805,
+     -0.219512
+    ],
+    "sign": 1.0
+   },
+   "rotor_port": {
+    "node": "rotor_port",
+    "local_axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "sign": 1.0
+   },
+   "rotor_starboard": {
+    "node": "rotor_starboard",
+    "local_axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "sign": 1.0
+   },
+   "rotor_stern_axial": {
+    "node": "rotor_stern_axial",
+    "local_axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "sign": 1.0
+   },
+   "rotor_stern_lateral": {
+    "node": "rotor_stern_lateral",
+    "local_axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "sign": 1.0
+   }
+  },
+  "disc_radius": {
+   "rotor_port": 0.092911,
+   "rotor_starboard": 0.092911,
+   "rotor_stern_axial": 0.092911,
+   "rotor_stern_lateral": 0.075706
+  }
+ }
+}

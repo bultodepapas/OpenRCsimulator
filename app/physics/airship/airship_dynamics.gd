@@ -114,6 +114,26 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 		hull_f[2] += fz
 		hull_m[1] -= x * fz
 		hull_m[2] += x * fy
+	# I06 afterbody (Hopkins 1951; Allen and Perkins 1951): aft of the separation station x0 the slender-body potential
+	# normal force density u d(m' v_n)/dx is lost to separated flow. Cancelling it there leaves the ideal Munk moment
+	# of the C_A term intact over the forebody and adds the stabilizing, rate-dependent viscous afterbody load.
+	# Forward flight only (u > 0); in reverse flow the correction is omitted (declared domain limit).
+	var u_axial := vr[0]
+	var afterbody_loss: float = hull_aero.afterbody_loss
+	if u_axial > 0.0 and afterbody_loss > 0.0:
+		var after: PackedFloat64Array = model.afterbody
+		for i in after.size() / 2 - 1:
+			var xa := after[2 * i]
+			var xb := after[2 * i + 2]
+			var ma := afterbody_loss * rho * after[2 * i + 1]
+			var mb := afterbody_loss * rho * after[2 * i + 3]
+			var fy := -u_axial * (ma * (vr[1] + w[2] * xa) - mb * (vr[1] + w[2] * xb))
+			var fz := -u_axial * (ma * (vr[2] - w[1] * xa) - mb * (vr[2] - w[1] * xb))
+			var xm := 0.5 * (xa + xb)
+			hull_f[1] += fy
+			hull_f[2] += fz
+			hull_m[1] -= xm * fz
+			hull_m[2] += xm * fy
 	var lin_f: PackedFloat64Array = hull_aero.linear_force
 	var lin_m: PackedFloat64Array = hull_aero.linear_moment
 	for k in 3:
@@ -291,6 +311,9 @@ static func _contacts(model: Dictionary, body: PackedFloat64Array, continuous: P
 	if not ground.is_valid():
 		return out
 	var radius: float = model.bound_radius
+	# Global ceiling of the field (session-supplied) first: far above every terrain point, no sampling is needed.
+	if -body[2] - 1.3 * radius - 0.5 > float(model.get("ground_ceiling", INF)):
+		return out
 	var under: PackedFloat64Array = ground.call(body[0], body[1])
 	out.clearance_m = -body[2] - under[0]
 	var highest := under[0]

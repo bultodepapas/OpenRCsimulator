@@ -120,9 +120,15 @@ var fly_button: Button
 var ground_vehicle_button: Button
 var ground_vehicle_choice: OptionButton
 var ground_vehicle_id := GroundCatalog.DEFAULT_ID
-var airship_skin_choice: OptionButton
-var airship_button: Button
-var airship_skin_id := AirshipCatalog.DEFAULT_SKIN
+var airship_skin_id := AirshipCatalog.DEFAULT_SKIN:
+	set(value):
+		airship_skin_id = value
+		_refresh_garage_choice()
+## True when the Garage choice holds an RC blimp skin; the Garage action then flies the blimp.
+var airship_selected := false:
+	set(value):
+		airship_selected = value
+		_refresh_garage_choice()
 var workshop_button: Button
 var natural_random_button: Button
 var failures_button: Button
@@ -671,35 +677,20 @@ func _init() -> void:
 	ground_vehicle_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for id: String in GroundCatalog.IDS:
 		ground_vehicle_choice.add_item(GroundCatalog.entry(id).name)
-	ground_vehicle_choice.select(GroundCatalog.IDS.find(ground_vehicle_id))
-	ground_vehicle_choice.item_selected.connect(func(index: int): ground_vehicle_id = GroundCatalog.IDS[index])
+	# BL-10: the experimental RC blimp shares the Garage choice; its skins follow the RC cars.
+	for skin: Dictionary in AirshipCatalog.skins():
+		ground_vehicle_choice.add_item("%s — %s" % [tr("RC blimp (experimental)"), skin.name])
+	ground_vehicle_choice.select(_garage_index())
+	ground_vehicle_choice.item_selected.connect(_select_garage_vehicle)
 	garage_page.add_child(ground_vehicle_choice)
-	ground_vehicle_button = _button("Open RC car garage", "CompactPrimaryButton")
+	ground_vehicle_button = _button("Fly RC blimp" if airship_selected else "Open RC car garage", "CompactPrimaryButton")
 	ground_vehicle_button.name = "GroundVehicles"
 	ground_vehicle_button.custom_minimum_size.y = 56
 	ground_vehicle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ground_vehicle_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
-	garage_page.add_child(_label("RC blimp (experimental)", "SectionTitle"))
-	airship_skin_choice = OptionButton.new()
-	airship_skin_choice.name = "AirshipSkinChoice"
-	airship_skin_choice.tooltip_text = "RC blimp skin"
-	airship_skin_choice.fit_to_longest_item = false
-	airship_skin_choice.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	airship_skin_choice.custom_minimum_size.y = 40
-	airship_skin_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for skin: Dictionary in AirshipCatalog.skins():
-		airship_skin_choice.add_item(skin.name)
-	airship_skin_choice.select(maxi(0, AirshipCatalog.SKIN_IDS.find(airship_skin_id)))
-	airship_skin_choice.item_selected.connect(func(index: int): airship_skin_id = AirshipCatalog.SKIN_IDS[index])
-	garage_page.add_child(airship_skin_choice)
-	airship_button = _button("Fly RC blimp", "HomeChoice")
-	airship_button.name = "AirshipFly"
-	airship_button.custom_minimum_size.y = 44
-	airship_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	airship_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	airship_button.pressed.connect(func() -> void: airship_requested.emit())
-	garage_page.add_child(airship_button)
+	ground_vehicle_button.pressed.connect(func() -> void:
+		if airship_selected: airship_requested.emit()
+		else: ground_vehicle_requested.emit())
 
 	var primary_actions := VBoxContainer.new()
 	primary_actions.name = "PrimaryActions"
@@ -961,7 +952,10 @@ func _ready() -> void:
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
-	_link_garage_focus()
+	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
+	ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
+	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(ground_vehicle_choice)
+	ground_vehicle_button.focus_previous = ground_vehicle_button.get_path_to(ground_vehicle_choice)
 	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(controls_button)
 	ground_vehicle_button.focus_next = ground_vehicle_button.get_path_to(controls_button)
 	get_viewport().size_changed.connect(_apply_responsive_layout)
@@ -971,14 +965,27 @@ func _ready() -> void:
 	set_process(true)
 
 
-## Garage order: RC car choice, RC blimp skin, Fly RC blimp, then the primary Open RC car garage action.
-func _link_garage_focus() -> void:
-	var chain: Array[Control] = [ground_vehicle_choice, airship_skin_choice, airship_button, ground_vehicle_button]
-	for index in chain.size() - 1:
-		chain[index].focus_neighbor_bottom = chain[index].get_path_to(chain[index + 1])
-		chain[index].focus_next = chain[index].get_path_to(chain[index + 1])
-		chain[index + 1].focus_neighbor_top = chain[index + 1].get_path_to(chain[index])
-		chain[index + 1].focus_previous = chain[index + 1].get_path_to(chain[index])
+func _garage_index() -> int:
+	if airship_selected:
+		return GroundCatalog.IDS.size() + maxi(0, AirshipCatalog.SKIN_IDS.find(airship_skin_id))
+	return maxi(0, GroundCatalog.IDS.find(ground_vehicle_id))
+
+
+func _select_garage_vehicle(index: int) -> void:
+	airship_selected = index >= GroundCatalog.IDS.size()
+	if airship_selected:
+		airship_skin_id = AirshipCatalog.SKIN_IDS[index - GroundCatalog.IDS.size()]
+	else:
+		ground_vehicle_id = GroundCatalog.IDS[index]
+	_refresh_garage_choice()
+
+
+## Keeps the Garage choice and its action in step with selections assigned after the page was built.
+func _refresh_garage_choice() -> void:
+	if ground_vehicle_choice != null and ground_vehicle_choice.selected != _garage_index():
+		ground_vehicle_choice.select(_garage_index())
+	if ground_vehicle_button != null:
+		ground_vehicle_button.text = "Fly RC blimp" if airship_selected else "Open RC car garage"
 
 
 func _select_page(index: int) -> void:
@@ -1010,7 +1017,7 @@ func _select_page(index: int) -> void:
 	# Focus stays on the selected destination's content; it never skips into another section.
 	if is_inside_tree():
 		var primary_action: Control = ground_vehicle_button if selected == 3 else review_conditions_button if review_conditions_button.visible else fly_button
-		var action_previous: Control = airship_button if selected == 3 else start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
+		var action_previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
 		primary_action.focus_neighbor_top = primary_action.get_path_to(action_previous)
 		if selected == 0 and not fly_button.disabled:
 			start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
@@ -1020,7 +1027,8 @@ func _select_page(index: int) -> void:
 		if selected == 1 and livery_button.is_visible_in_tree():
 			_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(livery_button)
 		if selected == 3:
-			_link_garage_focus()
+			ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
+			ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
 		if has_focus():
 			_page_buttons[selected].grab_focus()
 		_update_notice_focus_links()

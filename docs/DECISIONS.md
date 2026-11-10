@@ -86,6 +86,16 @@ The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualif
 
 **RCV-43.** When the club field shows the RC car circuit, the aircraft wheels roll on the car course's own float64 surface. The hull meets raised dirt (≥ 5 cm) through an exact-surface sweep, and the circuit's walls, tyres and hardware are collision boxes. Hundreds of terraced boxes would cost every runway tick in the shared 32 m bin; a visual-only circuit would let aircraft pass through ramps and barriers. One per-flight decision feeds render, wheels and obstacles. It is part of the configuration hash, checkpoints and flight logs, and only menu-launched flights read the saved setting, so traces and goldens stay unchanged. The thin pad stays with the flat-datum hull laws (≤ 3.5 cm). Revisit if aircraft need sliding hull contact over relief or a general terrain-feature provider. [Evidence](research/rc-monster-truck/RCV-43/README.md).
 
+### The RC blimp owns a coupled added-mass law with a declared afterbody loss
+
+**BL-03/BL-05/BL-10.** The airship supplies its own `body_derivative`:
+
+- **Coupled solve.** (M_RB + M_A) ν̇ is solved about a fixed datum, with Kirchhoff momentum transport for calm or steady wind. Inflating scalar mass or using a previous-frame acceleration would misstate stopping and oscillation of a near-neutral hull.
+- **Afterbody loss.** Ideal Munk alone made the measured hull diverge in pitch above ~2 m/s. Hopkins' afterbody loss is therefore a declared quantity rather than an undocumented Munk reduction factor.
+- **Activity routing.** The activity shares the exclusive ground-activity slot in AppRoot. That keeps every existing "no activity running" guard and exit request, but needs no aircraft-catalog entry.
+
+Revisit when measured restoring/turn data (BL-13) or gust admission (BL-14) need a different hull moment accounting. [Plan](plans/rc-airship.md#14-implementation-status), [BL-12 evidence](research/rc-airship/BL-12/README.md).
+
 ### Advanced contact and structural failure remain gated foundations
 
 **GP-09/11/12/16/17/20.** The newer foundation couples body, wheels and shaft under one authority; it does not silently layer a new response over legacy contact. Damage state and event evidence commit only on accepted paths, never from rejected integrator trials, and absent strength data remains unknown. A parsed resource or numerical bench does not admit stock-aircraft collapse, moving-hub handling or calibrated fracture. [Ground-physics masterplan](plans/advanced-ground-flight-physics.md), [coupled foundation](research/ground-physics/GP-11/README.md), [accepted damage contract](research/ground-physics/GP-16/README.md).

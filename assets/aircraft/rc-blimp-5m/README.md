@@ -69,11 +69,26 @@ python3 $X --assemble-manifest assets/aircraft/rc-blimp-5m/source-manifest.json 
 
 Each export takes about 2–4 minutes on CPU. The bake and texture files land in `--work-dir`; keep it outside the repository.
 
-VERIFICATION_PLACEHOLDER
+## Godot import and verification
+
+The `.glb.import` settings match the Avanti asset:
+
+- `gltf/embedded_image_handling=2` (textures stay embedded as Basis Universal; no extracted PNG/JPEG files beside the GLB).
+- `meshes/force_disable_compression=true`.
+- `animation/import=false`.
+- Generated LODs.
+
+If an import ever extracts texture files next to a GLB, delete them and restore these settings; images do not belong in the repository.
+
+Verified 2026-11-10 in Godot 4.8-beta2 ([BL-12](../../../docs/research/rc-airship/BL-12/README.md)):
+
+- **Loading:** all three skins load through [airship_visual.gd](../../../app/vehicles/airship/airship_visual.gd) and every `glb_nodes` binding resolves.
+- **1080p captures:** three views per skin plus articulation at vector 0/90/120° and fins ±20° show the baked skins, the vector pivots, the stern pivot and the fins moving about the documented axes.
+- **Not checked:** the exporter's Blender pose test and the original-versus-GLB preview comparison were not completed by the asset run and remain open.
 
 ## Known omissions and open items
 
-- Not yet imported or rendered in Godot: no `.import` sidecars, import settings, LODs or in-app 1080p captures exist. Godot frame cost, VRAM and draw calls on target hardware are unmeasured.
+- Godot frame cost, VRAM and draw calls on target hardware are unmeasured (one development-host scripted flight ran at 82 fps at 1080p including capture).
 - Doors, gear suspension, wheel spin, caster and blade pitch are static at rest. The demo animation is not exported.
 - The chrome skin relies on reflections; without reflection probes or a sky in the scene it renders darker than in Blender.
 - The envelope volume is the delivered visual hull (closed manifold). Fill shape, inflation and gas data are not part of this asset (plan §3).

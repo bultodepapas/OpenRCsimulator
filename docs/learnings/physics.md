@@ -68,6 +68,12 @@ Matching maximum lift does not fix the post-stall slope or departure severity. C
 
 A controller can hide changed physics, and a failed maneuver can be the controller's fault. Record applied inputs, trims, saturation, rates, angles and altitude; establish that the pilot actually achieved the card before interpreting aircraft results. Replay applied controls with the same state/modes and crash detection when isolating physics. Re-trim a changed coefficient before judging stability, and measure oscillatory recovery over a period or mode envelope rather than one phase-dependent sample. Freeze the same app and runner inputs for baseline and candidate on a shared tree. [FT-01](../research/flight-test/FT-01/README.md), [P51-22 correction](../research/p51-realism/P51-22/README.md#resolution--2026-10-16), [E4a](../research/ground-contact/E4a/README.md), [D10-R2](../research/flight-dynamics/stik-lateral-directional-2026-10-18/README.md#6-decisions-and-adoption-d10-r2-2026-10-18), [FT-04](../research/flight-test/FT-04/README.md).
 
+A correct ideal-flow law can still be the wrong model.
+
+- **Blimp case:** the RC blimp's Kirchhoff (Munk) moment passed every analytical oracle, yet in a real session the hull diverged in pitch and spiralled. For a near-neutral hull, the destabilizing Munk slope was about four times the fin restoring slope.
+- **Slender hulls:** compare the Munk slope, fin slope and pendulum stiffness before tuning. Account for viscous afterbody separation explicitly, and name the term instead of scaling Munk away.
+- **Trim:** check static trim (CG under CB) first. An aft-heavy inventory hung the same hull 38° nose-up. [BL-12](../research/rc-airship/BL-12/README.md#pitchyaw-divergence-and-the-afterbody-law-i06-decision).
+
 Setting a session command does not itself prove that synchronous `sim.step()` sampled it. Assert the recorded commands and resulting RPM. When reconstructing a propulsion query from a trace, use the declared sample times: the G1b1 trace combined previous-state velocity with current auxiliary RPM, so same-row velocity described a different operating point. [G1b1](../research/propulsion/G1b1/README.md).
 
 ### Derive geometry and coefficients for the target aircraft

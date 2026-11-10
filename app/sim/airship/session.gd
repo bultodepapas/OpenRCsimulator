@@ -14,6 +14,7 @@ const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
 const WindField := preload("res://physics/wind_field.gd")
 const WindConfig := preload("res://physics/wind_config.gd")
+const CollisionWorld := preload("res://scenery/collision_world.gd")
 
 const DEFAULT_DATA := "res://data/airships/rc-blimp-5m.json"
 const FORMAT := "openrc-airship-session v1"
@@ -48,6 +49,8 @@ var _wind_ned := PackedFloat64Array([0.0, 0.0, 0.0])
 var _ground: Callable
 var _last_info: Dictionary = {}
 var _info_tick := -1
+## BL-11: immutable scenery obstacle inventory (scenery/collision_world.gd); empty = terrain only.
+var _collision_world: Dictionary = {}
 
 
 func _init() -> void:
@@ -119,6 +122,7 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	vehicle.identity = {vehicle = "airship", law = Dynamics.LAW, mixer = Dynamics.MIXER_LAW, layout = Data.STATE_LAYOUT,
 		data_sha256 = loaded.source_sha256, heaviness_kg = heaviness, rho = rho}
 	var captured_model: Dictionary = derived.model
+	captured_model.ground_ceiling = candidate_env.ground_max_height()
 	var captured_env := candidate_env
 	var wind := candidate_env.wind(0.0)
 	var ground := func(n: float, e: float) -> PackedFloat64Array: return captured_env.ground(n, e)
@@ -157,15 +161,24 @@ func reset() -> bool:
 	var east := float(pilot.east) + float(options.east_offset_m)
 	var height := environment.ground(north, east)[0]
 	var down := -height - float(options.altitude_m)
+	var pitch := 0.0
+	if options.start == "ground":
+		# Stand on both wheels: pitch so the front and rear contact points are level, then lower the datum until the
+		# lowest gear or hull witness touches the terrain.
+		var gear: Array = model.contacts.gear
+		if gear.size() >= 2:
+			var front: PackedFloat64Array = gear[0].point
+			var rear: PackedFloat64Array = gear[1].point
+			pitch = atan2(front[2] - rear[2], front[0] - rear[0])
+	var q := M.q_from_euler(heading, pitch, 0.0)
 	if options.start == "ground":
 		var lowest := -INF
-		for gear: Dictionary in model.contacts.gear:
-			lowest = maxf(lowest, float(gear.point[2]))
+		for gear_item: Dictionary in model.contacts.gear:
+			lowest = maxf(lowest, M.q_rotate(q, gear_item.point)[2])
 		var hull: PackedFloat64Array = model.contacts.hull_points
 		for i in hull.size() / 3:
-			lowest = maxf(lowest, hull[3 * i + 2])
+			lowest = maxf(lowest, M.q_rotate(q, hull.slice(3 * i, 3 * i + 3))[2])
 		down = -height - lowest
-	var q := M.q_from_euler(heading, 0.0, 0.0)
 	var body := PackedFloat64Array([north, east, down, 0.0, 0.0, 0.0, q[0], q[1], q[2], q[3], 0.0, 0.0, 0.0])
 	# Calm release moves with the air: the hull starts at rest relative to the wind (zero air-relative velocity).
 	var wind_body := M.q_rotate(M.q_conj(q), _wind_ned)
@@ -246,7 +259,10 @@ func _observe_accepted() -> void:
 	var info := telemetry_info()
 	var contact: Dictionary = info.get("contact", {})
 	var reason := ""
-	if contact.get("prop_contact", false):
+	var obstacle := _obstacle_hit()
+	if not obstacle.is_empty():
+		reason = "Obstacle strike: %s" % obstacle
+	elif contact.get("prop_contact", false):
 		reason = "Propeller strike"
 	elif contact.get("hull_contact", false) and float(contact.get("hull_approach_mps", 0.0)) > float(model.contacts.impact_speed):
 		reason = "Hard envelope impact (%.1f m/s)" % float(contact.hull_approach_mps)
@@ -254,6 +270,111 @@ func _observe_accepted() -> void:
 		crash = {reason = reason, tick = sim.tick, time_s = sim.time(), state = sim.state.duplicate()}
 		_set_paused(true, reason + ". Restart to fly again.")
 		crashed.emit(reason)
+
+
+## Install the field obstacle inventory before reset; refused while a flight is under way.
+func set_collision_world(world: Dictionary) -> bool:
+	if sim.tick > 0 and not paused:
+		return false
+	if not world.is_empty():
+		if not CollisionWorld._world_header_is_valid(world):
+			return false
+		for proxy: Dictionary in world.proxies:
+			if not CollisionWorld._proxy_is_valid(proxy):
+				return false
+	_collision_world = world.duplicate(true)
+	return true
+
+
+## Accepted-tick obstacle test: every hull, fin, gondola, gear and propeller witness against the nearby box and
+## vertical-capsule proxies. Below 10 m/s a tick moves under 4.2 cm, well inside the thinnest proxy (0.36 m trunk);
+## faster motion is outside the admitted collision domain. Returns the struck proxy kind, or "".
+func _obstacle_hit() -> String:
+	if _collision_world.is_empty():
+		return ""
+	var s: PackedFloat64Array = sim.state
+	var reach: float = float(model.bound_radius) + 0.25
+	var near := CollisionWorld.nearby(_collision_world, s[0], s[1], s[2], reach)
+	if near.is_empty():
+		return ""
+	var q := s.slice(6, 10)
+	var points := PackedFloat64Array()
+	points.append_array(model.contacts.hull_points)
+	points.append_array(model.contacts.prop_points)
+	for gear: Dictionary in model.contacts.gear:
+		points.append_array(gear.point)
+	for i in points.size() / 3:
+		var w := M.q_rotate(q, points.slice(3 * i, 3 * i + 3))
+		var n := s[0] + w[0]
+		var e := s[1] + w[1]
+		var d := s[2] + w[2]
+		for proxy: Dictionary in near:
+			if _inside(proxy, n, e, d):
+				return str(proxy.kind)
+	# Reverse test: thin proxies (trunks, poles) can pierce the envelope between surface witnesses.
+	var qc := M.q_conj(q)
+	for proxy: Dictionary in near:
+		for sample: PackedFloat64Array in _proxy_samples(proxy):
+			var b := M.q_rotate(qc, PackedFloat64Array([sample[0] - s[0], sample[1] - s[1], sample[2] - s[2]]))
+			if _inside_hull(b, sample[3]):
+				return str(proxy.kind)
+	return ""
+
+
+## [north, east, down, margin] samples: a capsule axis every <= 0.4 m with its radius; a box centre and corners.
+static func _proxy_samples(proxy: Dictionary) -> Array[PackedFloat64Array]:
+	var out: Array[PackedFloat64Array] = []
+	var n0: float = proxy.north
+	var e0: float = proxy.east
+	var d0: float = proxy.down
+	if proxy.shape == "capsule":
+		var half: float = proxy.half_length
+		var steps := maxi(1, ceili(2.0 * half / 0.4))
+		for i in steps + 1:
+			out.append(PackedFloat64Array([n0, e0, d0 - half + 2.0 * half * float(i) / float(steps), float(proxy.radius)]))
+		return out
+	out.append(PackedFloat64Array([n0, e0, d0, 0.0]))
+	var sh: float = proxy.sin_heading
+	var ch: float = proxy.cos_heading
+	for sx: float in [-1.0, 1.0]:
+		for sz: float in [-1.0, 1.0]:
+			for sd: float in [-1.0, 1.0]:
+				var lx := sx * float(proxy.half_x)
+				var lz := sz * float(proxy.half_z)
+				out.append(PackedFloat64Array([n0 + lz * ch - lx * sh, e0 + lz * sh + lx * ch, d0 + sd * float(proxy.half_down), 0.0]))
+	return out
+
+
+## Body-frame point inside the envelope of revolution R(x), enlarged by margin.
+func _inside_hull(b: PackedFloat64Array, margin: float) -> bool:
+	var profile: PackedFloat64Array = model.envelope.radius_profile
+	var count := profile.size() / 2
+	if b[0] > profile[0] + margin or b[0] < profile[2 * count - 2] - margin:
+		return false
+	var radius := 0.0
+	for i in count - 1:
+		var xa := profile[2 * i]
+		var xb := profile[2 * i + 2]
+		if b[0] <= xa and b[0] >= xb:
+			var f := (b[0] - xa) / (xb - xa) if xa != xb else 0.0
+			radius = lerpf(profile[2 * i + 1], profile[2 * i + 3], f)
+			break
+	return sqrt(b[1] * b[1] + b[2] * b[2]) <= radius + margin
+
+
+static func _inside(proxy: Dictionary, n: float, e: float, d: float) -> bool:
+	var dn := n - float(proxy.north)
+	var de := e - float(proxy.east)
+	var dd := d - float(proxy.down)
+	if proxy.shape == "capsule":
+		var along := clampf(dd, -float(proxy.half_length), float(proxy.half_length))
+		var r: float = proxy.radius
+		return dn * dn + de * de + (dd - along) * (dd - along) <= r * r
+	var sh: float = proxy.sin_heading
+	var ch: float = proxy.cos_heading
+	var local_z := dn * ch + de * sh
+	var local_x := -dn * sh + de * ch
+	return absf(local_x) <= float(proxy.half_x) and absf(local_z) <= float(proxy.half_z) and absf(dd) <= float(proxy.half_down)
 
 
 func _fault(reason: String) -> void:

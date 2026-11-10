@@ -52,6 +52,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.
 - [Twenty-four follow-up investigations and decisions](../plans/rc-airship.md#13-twenty-four-follow-up-investigations-and-resulting-decisions), 2026-11-08: [I01–08 physics/identification](rc-airship/investigations-physics-2026-11-08.md), [I09–16 propulsion/controls](rc-airship/investigations-propulsion-controls-2026-11-08.md), and [I17–24 integration/numerics](rc-airship/investigations-integration-2026-11-08.md). Each records evidence, a concrete plan change, an acceptance check and remaining limits; no matching-model physical tests were available.
+- [BL-12 first playable RC blimp](rc-airship/BL-12/README.md), 2026-11-10: analytical and session test results, Good Enemy review resolution, the Munk/afterbody divergence probe and 1080p capture inventory.
 
 ### Cinematic trailer
 

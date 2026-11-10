@@ -68,6 +68,21 @@ def rotate_about(v, k, angle):
     return [v[i] * c + kv[i] * s + k[i] * kd for i in range(3)]
 
 
+def resample(profile: list, count: int) -> list:
+    """Linear resampling of the nose-to-tail [x, r] profile at `count` equally spaced stations (ends kept)."""
+    x0, x1 = profile[0][0], profile[-1][0]
+    out = []
+    j = 0
+    for i in range(count):
+        x = x0 + (x1 - x0) * i / (count - 1)
+        while j < len(profile) - 2 and profile[j + 1][0] > x:
+            j += 1
+        (xa, ra), (xb, rb) = profile[j], profile[j + 1]
+        f = 0.0 if xa == xb else (x - xa) / (xb - xa)
+        out.append([x, max(0.0, ra + f * (rb - ra))])
+    return out
+
+
 def anchors(geometry: dict) -> dict:
     out = {}
     g = geometry["gondola"]
@@ -91,7 +106,8 @@ def build() -> tuple[dict, dict]:
     design = json.loads(DESIGN.read_text(encoding="utf-8"))
     env = geometry["envelope"]
     a = anchors(geometry)
-    profile = sorted(([float(x), float(r)] for x, r in env["radius_profile"]), key=lambda p: -p[0])
+    measured_profile = sorted(([float(x), float(r)] for x, r in env["radius_profile"]), key=lambda p: -p[0])
+    profile = resample(measured_profile, 41)
     data = {
         "format": "openrc-airship v1",
         "id": design["id"],
@@ -203,6 +219,8 @@ def build() -> tuple[dict, dict]:
             "stiffness": c["gear_stiffness"], "damping": c["gear_damping"], "mu_roll": c["gear_mu_roll"], "mu_side": c["gear_mu_side"]})
     hull_points, prop_points = [], []
     for w in geometry["collision_witnesses"]:
+        if w["part"].startswith("gear"):
+            continue  # the wheels are their own compliant gear contacts; never count them twice
         (prop_points if w["part"].startswith("prop") or w["part"].startswith("rotor") else hull_points).append(r6(w["point_m"]))
     data["contacts"] = {"gear": gear,
         "hull_points": measured(hull_points[:64], "m", "Envelope, fin and gondola collision witnesses"),
@@ -227,7 +245,48 @@ def build() -> tuple[dict, dict]:
         data["presentation"]["bindings"][key] = {"node": node_name, "local_axis": r6(unit(node["local_axis"])), "sign": 1.0}
     for rotor_id in ROTOR_IDS:
         data["presentation"]["disc_radius"]["rotor_" + rotor_id] = r6(geometry["rotors"][rotor_id]["radius_m"])
-    return data, budget(data)
+    report = budget(data)
+    report.update(trim_ballast(data, design["ballast"]["trim_range_x"], report["ballast_for_default_kg"]))
+    return data, report
+
+
+def trim_ballast(data: dict, trim_range: dict, ballast_kg: float) -> dict:
+    """Slide the ballast along its keel line so the default weigh-off puts the CG under the CB (zero static pitch).
+
+    Mirrors the reader: helium and shell are distributed over the profile strips shifted to the measured CB.
+    """
+    env = data["envelope"]
+    profile = env["radius_profile"]["value"]
+    cb_x = env["centroid"]["value"][0]
+    strips = []
+    raw_v = raw_x = shell_len = 0.0
+    for (x0, r0), (x1, r1) in zip(profile, profile[1:]):
+        dx = abs(x1 - x0)
+        vol = math.pi * 0.5 * (r0 * r0 + r1 * r1) * dx
+        ring = 2.0 * math.pi * 0.5 * (r0 + r1) * math.hypot(dx, r1 - r0)
+        strips.append((0.5 * (x0 + x1), vol, ring))
+        raw_v += vol
+        raw_x += vol * 0.5 * (x0 + x1)
+        shell_len += ring
+    shift = cb_x - raw_x / raw_v
+    gas = data["gas"]["density"]["value"] * env["volume"]["value"] * data["gas"]["fill_fraction"]["value"]
+    shell = env["areal_mass"]["value"] * env["surface_area"]["value"]
+    mass = moment = 0.0
+    for xm, vol, ring in strips:
+        piece = gas * vol / raw_v + shell * ring / shell_len
+        mass += piece
+        moment += piece * (xm + shift)
+    for item in data["masses"]:
+        mass += item["mass"]["value"]
+        moment += item["mass"]["value"] * item["position"]["value"][0]
+    lo, hi = trim_range["value"]
+    wanted = (cb_x * (mass + ballast_kg) - moment) / ballast_kg
+    x = min(max(wanted, lo), hi)
+    position = data["ballast"]["position"]["value"]
+    data["ballast"]["position"] = q(r6([x, position[1], position[2]]), "m", "derived",
+        f"Keel position solved by build_data.py for CG under CB at the default weigh-off (requested x {wanted:.3f} m, keel range {lo}..{hi} m)")
+    cg_x = (moment + ballast_kg * x) / (mass + ballast_kg)
+    return {"ballast_x_m": x, "ballast_x_requested_m": wanted, "cg_x_m": cg_x, "cb_x_m": cb_x, "trim_residual_m": cg_x - cb_x}
 
 
 def budget(data: dict) -> dict:
@@ -250,7 +309,8 @@ def main() -> int:
     data, report = build()
     text = json.dumps(data, indent=1, ensure_ascii=False) + "\n"
     print(json.dumps(report, indent=1))
-    if report["ballast_for_neutral_kg"] < 0.05 or report["ballast_for_default_kg"] > report["max_ballast_kg"]:
+    if report["ballast_for_neutral_kg"] < 0.05 or report["ballast_for_default_kg"] > report["max_ballast_kg"] \
+            or abs(report["trim_residual_m"]) > 0.02:
         print("lift budget infeasible: adjust the design inventory", file=sys.stderr)
         return 2
     if args.check:
