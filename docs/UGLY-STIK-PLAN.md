@@ -51,6 +51,8 @@ The [2026-10-19 recheck](research/ugly-stik-finish-v6.md#2026-10-19-documentatio
 
 ## Limits and acceptance
 
+The electric Stik's local and oracle elevator-moment derivatives differ by about 18.7% at the 15 m/s level trim. The owner authorized a 30% `Cmde` software consistency band on 2026-11-10, conditional on both ideal and finite-pack raw `aero` and `reference` objects matching the basic Stik donor. Missing or divergent lineage fails the guard and retains the default 8% band. The basic and finite-glow Stiks retain their existing 25% exceptions. This records an accepted model discrepancy; it does not identify the physically correct derivative. The [regime test](../app/tests/test_regime_consistency.gd) enforces the boundary, and the [earlier elevator investigation](research/flight-dynamics/elevator-repair-2026-10-13.md) records the donor's uncertainty.
+
 The visible wing section is traced from a kit rib, not an identified airfoil polar. Hidden geometry, incidence/dihedral, engine proportions, materials and weathering include estimates. The assembly origin is not a measured CG; flight coefficients and inventory remain separate.
 
 Current geometry/reference data use 720 in²; an older drawing/decision records 723 in². The drawing's 4.76-inch CG reference is not a measured build. Metrology retains scale residuals and uncertainty; [decisions](DECISIONS.md) retains the CG rationale.

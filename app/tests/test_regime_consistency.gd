@@ -14,6 +14,9 @@ const Aero := preload("res://physics/aero.gd")
 const Trim := preload("res://physics/trim.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 
+const STIK_DONOR_ID := "jensen-das-ugly-stik-60"
+const ELECTRIC_STIK_ID := "stik-electric-6s"
+const ELECTRIC_STIK_CMDE_REL := 0.30 # Owner-authorized software consistency band, 2026-11-10.
 const RHO := 1.225
 const G := 9.80665
 ## Relative bands on the oracle's value (Cmq, CLα, Cmδe) and absolute bands (Cmα in 1/rad, static Cm).
@@ -40,6 +43,7 @@ const EXCEPTIONS := {
 
 var _failures := 0
 var _count := 0
+var _electric_stik_lineage_ok := false
 
 
 func _check(label: String, ok: bool, detail := "") -> void:
@@ -50,6 +54,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _initialize() -> void:
+	_electric_stik_lineage_ok = _check_electric_stik_lineage()
 	for entry in Catalog.airplane_flyable_entries():
 		if String(entry.data).is_empty():
 			continue
@@ -61,6 +66,38 @@ func _initialize() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
+func _read_aircraft_source(path: String) -> Dictionary:
+	if path.is_empty() or not FileAccess.file_exists(path):
+		return {}
+	var source: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return source if source is Dictionary else {}
+
+
+func _valid_lineage_source(source: Dictionary, id: String) -> bool:
+	return source.get("id", "") == id and source.get("aero", null) is Dictionary \
+		and not source.aero.is_empty() and source.get("reference", null) is Dictionary \
+		and not source.reference.is_empty()
+
+
+func _check_electric_stik_lineage() -> bool:
+	var donor_path: String = Catalog.data_for(STIK_DONOR_ID)
+	var ideal_path: String = Catalog.data_for(ELECTRIC_STIK_ID)
+	var pack_path: String = Catalog.data_for(ELECTRIC_STIK_ID, "pack")
+	var donor := _read_aircraft_source(donor_path)
+	var ideal := _read_aircraft_source(ideal_path)
+	var pack := _read_aircraft_source(pack_path)
+	var donor_ok := _valid_lineage_source(donor, STIK_DONOR_ID)
+	_check("Stik lineage: donor source, aero and reference are present", donor_ok, donor_path)
+	var ideal_ok: bool = donor_ok and _valid_lineage_source(ideal, ELECTRIC_STIK_ID) \
+		and ideal.aero == donor.aero and ideal.reference == donor.reference \
+		and Catalog.airplane_flyable_ids().has(ELECTRIC_STIK_ID)
+	_check("electric Stik ideal aero and reference match the donor", ideal_ok, ideal_path)
+	var pack_ok: bool = donor_ok and _valid_lineage_source(pack, ELECTRIC_STIK_ID) \
+		and pack.aero == donor.aero and pack.reference == donor.reference
+	_check("electric Stik pack aero and reference match the donor", pack_ok, pack_path)
+	return donor_ok and ideal_ok and pack_ok
+
+
 func _aircraft(id: String, model: Dictionary) -> void:
 	var V: float = model.start_speed
 	var t := Trim.solve("level", V, model, G, model.controls.throw_rad)
@@ -68,6 +105,10 @@ func _aircraft(id: String, model: Dictionary) -> void:
 	if not t.ok:
 		return
 	var bands: Dictionary = EXCEPTIONS.get(id, {})
+	# The electric installation has an explicit 30% Cmde band only while both
+	# raw aero/reference blocks exactly match the donor's known uncertain model.
+	if id == ELECTRIC_STIK_ID and _electric_stik_lineage_ok:
+		bands = {"Cmde": ELECTRIC_STIK_CMDE_REL}
 	var o := _derivatives(model, V, t.alpha, t.elevator, "oracle")
 	var l := _derivatives(model, V, t.alpha, t.elevator, "local")
 	print("%s at the %.0f m/s trim (α %.2f°, δe %.2f°): oracle CLα %.3f Cmα %.3f Cmq %.2f CLq %.2f Cmδe %.3f Cm %.4f | local CLα %.3f Cmα %.3f Cmq %.2f CLq %.2f Cmδe %.3f Cm %.4f"

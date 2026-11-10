@@ -60,6 +60,8 @@ The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualif
 
 **EX-14i.** Admit an explicit, estimated separated-wing force-offset couple for conventional wings without flaps. Preserve attached-flight behavior and expose the remaining hands-off stall and spiral-spin limits; a previously rotating trajectory is not independent evidence for keeping a missing section moment. [Mechanism and comparisons](research/extra-300-realism/EX-14/README.md#ex-14i--separated-wing-force-offset-2026-11-09).
 
+**D11i / v0.2.2 (2026-11-10).** The owner authorized a 30% elevator-moment consistency band for the electric Stik, guarded by equality with the donor's raw aerodynamic and reference data in both electrical modes. This accepts a known discrepancy between internal models while retaining explicit lineage rejection and the other aircraft's existing bands. It does not qualify physical elevator response. [Scope and limits](UGLY-STIK-PLAN.md#limits-and-acceptance).
+
 ### Share mechanics while keeping propulsion sources distinct
 
 **G2 / NITRO / AV.** Electrical, turbine, two-stroke and true four-stroke sources retain their own power and lifecycle laws; supported coupled routes solve shaft/body reactions at the same integration stages. Installed profiles bind source data and calibration instead of borrowing a rating as installed performance. This permits shared mechanics without pretending all legacy routes use the newest shaft model. [Propulsion contract](PROPULSION-CORE-PLAN.md), [glow guide](GLOW-ENGINES.md), [turbine coupling](research/turbine-realism/AV-20/README.md).
