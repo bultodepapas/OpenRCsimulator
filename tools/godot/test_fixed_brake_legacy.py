@@ -4,6 +4,7 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
 from unittest import mock
@@ -146,6 +147,27 @@ class ComparisonTests(unittest.TestCase):
             with self.subTest(index=index), self.assertRaises(ValueError):
                 gate.check_input_bytes(*changed)
 
+    def test_extra_data_must_be_exactly_the_reviewed_additions_to_the_prior_pin(self) -> None:
+        project = gate.ROOT / "app"
+        fuel = (project / "data/fuels/openrc-fuel-registry.json").read_bytes()
+        avanti = (project / "data/aircraft/sebart_avanti_s_a200.json").read_bytes()
+        extra = (project / gate.EXTRA_PATH).read_bytes()
+        stik = (project / gate.STIK_PATH).read_bytes()
+        gate.check_input_bytes(fuel, avanti, extra, stik)
+        for block in gate.EXTRA_ADDITIONS:
+            for altered in (extra.replace(block, b"", 1), extra + block,
+                            extra.replace(block, block.replace(b'"value":', b'"VALUE":', 1), 1)):
+                # Even an incorrectly refreshed current hash cannot admit a
+                # missing, duplicated or modified EX-14 addition.
+                with self.subTest(block=block[:40], length=len(altered)), \
+                     mock.patch.object(gate, "EXTRA_CURRENT", gate.sha(altered)), self.assertRaises(ValueError):
+                    gate.check_input_bytes(fuel, avanti, altered, stik)
+        altered = extra.replace(b'"format":', b'"FORMAT":', 1)
+        self.assertNotEqual(extra, altered)
+        with mock.patch.object(gate, "EXTRA_CURRENT", gate.sha(altered)), \
+             self.assertRaisesRegex(ValueError, "evolution differs"):
+            gate.check_input_bytes(fuel, avanti, altered, stik)
+
     def test_candidate_physics_markers_must_each_occur_once(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             project = Path(directory)
@@ -202,7 +224,8 @@ class ReferenceLawOverlayTests(unittest.TestCase):
         }
         self.originals["sim/other.gd"] = b"# another pinned source\n"
         self.fuel, self.avanti = b"fuel", b"avanti"
-        files = {**self.originals, "data/fuels/openrc-fuel-registry.json": self.fuel,
+        self.contract = b"# reference contract\n"
+        files = {**self.originals, gate.CONTRACT_PATH: self.contract, "data/fuels/openrc-fuel-registry.json": self.fuel,
                  "data/aircraft/sebart_avanti_s_a200.json": self.avanti, "project.godot": b"project\n"}
         for path, contents in files.items():
             target = self.project / path
@@ -215,6 +238,7 @@ class ReferenceLawOverlayTests(unittest.TestCase):
         patches = {
             "pin_paths": mock.Mock(return_value={path: gate.sha(data) for path, data in self.originals.items()}),
             "REFERENCE_PROJECT": gate.sha(files["project.godot"]),
+            "CONTRACT_OLD_LF": gate.sha(self.contract),
             "GLOW_FLIGHT_OLD_LF": gate.sha(flight),
             "GLOW_FLIGHT_LAW_OVERLAY_LF": gate.sha(patched_flight),
             "TRACE_OLD": gate.sha(trace),
@@ -288,7 +312,9 @@ class ReferenceIdentityOverlayTests(unittest.TestCase):
                                "sim/other.gd": b"another pinned source"})
         self.fuel, self.avanti = b"fuel", b"avanti"
         self.data_overlay = {gate.EXTRA_PATH: b"current extra", gate.STIK_PATH: b"current stik"}
-        files = {**self.originals, "data/fuels/openrc-fuel-registry.json": self.fuel,
+        self.contract = b"# pinned contract\n" + gate.CONTRACT_BEFORE + b"\n"
+        self.contract_patched = self.contract.replace(gate.CONTRACT_BEFORE, gate.CONTRACT_AFTER, 1)
+        files = {**self.originals, gate.CONTRACT_PATH: self.contract, "data/fuels/openrc-fuel-registry.json": self.fuel,
                  "data/aircraft/sebart_avanti_s_a200.json": self.avanti, "project.godot": b"project\n"}
         for path, contents in files.items():
             target = self.project / path
@@ -302,6 +328,8 @@ class ReferenceIdentityOverlayTests(unittest.TestCase):
         patches = {
             "pin_paths": mock.Mock(return_value=self.pins),
             "REFERENCE_PROJECT": gate.sha(files["project.godot"]),
+            "CONTRACT_OLD_LF": gate.sha(self.contract),
+            "CONTRACT_OVERLAY_LF": gate.sha(self.contract_patched),
             "REFERENCE_IDENTITY_HASHES": self.hashes,
             "SESSION_IDENTITY_OVERLAY": self.hashes[gate.SESSION_PATH][1],
             "EXTRA_CURRENT": gate.sha(self.data_overlay[gate.EXTRA_PATH]),
@@ -316,6 +344,34 @@ class ReferenceIdentityOverlayTests(unittest.TestCase):
         overlay = gate.reference_identity_overlay(self.project)
         for path, (before, after) in gate.REFERENCE_IDENTITY_EDITS.items():
             self.assertEqual(overlay[path], self.originals[path].replace(before, after, 1))
+
+    def test_contract_overlay_requires_exact_old_and_new_bytes(self) -> None:
+        path = self.project / gate.CONTRACT_PATH
+        overlay = gate.reference_contract_overlay(self.project)
+        self.assertEqual(overlay, self.contract_patched)
+        path.write_bytes(overlay)
+        gate.check_reference_inputs(self.project, self.fuel, self.avanti, contract_overlay=overlay)
+        for changed in (self.contract + b"changed", overlay + b"changed"):
+            path.write_bytes(changed)
+            with self.subTest(changed=changed), self.assertRaises(ValueError):
+                gate.check_reference_inputs(self.project, self.fuel, self.avanti,
+                                            contract_overlay=overlay if changed.startswith(overlay) else None)
+        path.write_bytes(self.contract)
+        with mock.patch.object(gate, "CONTRACT_OVERLAY_LF", "0" * 64), \
+             self.assertRaisesRegex(ValueError, "contract overlay differs"):
+            gate.reference_contract_overlay(self.project)
+        # Checkout line endings do not change the admitted source identity.
+        path.write_bytes(self.contract.replace(b"\n", b"\r\n"))
+        self.assertEqual(gate.reference_contract_overlay(self.project).replace(b"\r\n", b"\n"), overlay)
+
+    def test_contract_anchor_cannot_be_missing_or_duplicated(self) -> None:
+        path = self.project / gate.CONTRACT_PATH
+        for changed in (self.contract.replace(gate.CONTRACT_BEFORE, b"missing", 1),
+                        self.contract + gate.CONTRACT_BEFORE):
+            path.write_bytes(changed)
+            with mock.patch.object(gate, "CONTRACT_OLD_LF", gate.sha(changed)), \
+                 self.assertRaisesRegex(ValueError, "missing or duplicated"):
+                gate.reference_contract_overlay(self.project)
 
     def test_each_missing_or_duplicate_identity_anchor_fails(self) -> None:
         for path, (before, _) in gate.REFERENCE_IDENTITY_EDITS.items():
@@ -367,6 +423,41 @@ class ReferenceIdentityOverlayTests(unittest.TestCase):
                                             changed if name == "identity" else identity,
                                             changed if name == "aircraft" else self.data_overlay)
             (self.project / path).write_bytes(overlay[path])
+
+
+class RealHistoricalReferenceTests(unittest.TestCase):
+    def test_pinned_historical_sources_derive_every_supported_overlay(self) -> None:
+        paths = set(gate.REFERENCE_LAW_DECLARATIONS) | set(gate.REFERENCE_IDENTITY_EDITS) | {gate.CONTRACT_PATH}
+        sources = {}
+        history = subprocess.run(["git", "-C", str(gate.ROOT), "cat-file", "-e", "fa9f387f6^{commit}"],
+                                 capture_output=True, check=False)
+        if history.returncode:
+            self.skipTest("historical reference commit is not present in this checkout")
+        for path in paths:
+            result = subprocess.run(["git", "-C", str(gate.ROOT), "show", "fa9f387f6:app/" + path],
+                                    capture_output=True, check=False)
+            self.assertEqual(result.returncode, 0, path)
+            sources[path] = result.stdout.replace(b"\r\n", b"\n")
+        pins = gate.pin_paths()
+        with tempfile.TemporaryDirectory() as directory:
+            project = Path(directory)
+            for path, data in sources.items():
+                # Reproduce the historical checkout's pinned line endings.
+                if path in pins and gate.sha(data) != pins[path]:
+                    data = data.replace(b"\n", b"\r\n")
+                    self.assertEqual(gate.sha(data), pins[path], path)
+                target = project / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
+            law = gate.reference_law_overlay(project)
+            identity = gate.reference_identity_overlay(project)
+            contract = gate.reference_contract_overlay(project)
+            self.assertEqual(gate.sha(law[gate.TRACE_PATH]), gate.TRACE_LAW_OVERLAY)
+            self.assertEqual(gate.sha(law[gate.GLOW_FLIGHT_PATH].replace(b"\r\n", b"\n")),
+                             gate.GLOW_FLIGHT_LAW_OVERLAY_LF)
+            self.assertEqual(gate.sha(identity[gate.AIRCRAFT_DATA_PATH].replace(b"\r\n", b"\n")),
+                             gate.REFERENCE_IDENTITY_HASHES[gate.AIRCRAFT_DATA_PATH][1])
+            self.assertEqual(gate.sha(contract.replace(b"\r\n", b"\n")), gate.CONTRACT_OVERLAY_LF)
 
 
 if __name__ == "__main__":

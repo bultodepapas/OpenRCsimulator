@@ -41,12 +41,16 @@ original goldens for the current OS using the verified historical beta1 editor.
 It then imports the verified source with the current beta2 editor and compares the
 candidate against a same-host beta2 reference. Only after the original golden run,
 the disposable reference matches pinned fuel, Avanti, Extra, and Stik input bytes.
-Exact-once edits update the glow flight and trace law declarations, the aero loads
-law declaration, and the propulsion coefficient declaration and non-turbine
-configuration identity. The reference retains its historical numerical equations.
-Original pins and derived overlay bytes are checked before and after capture;
-`reference-overlays.json` records the original and derived byte hashes. The trace
-and session overlays also have independently pinned hashes.
+The current Extra must reduce to the previous pinned bytes by removing exactly the
+two reviewed EX-14i/j additions. Exact-once edits update the glow flight and trace
+law declarations, the aero loads law declaration, and the propulsion coefficient
+declaration and non-turbine configuration identity. A separately pinned contract
+edit admits the Extra's new conventional-wing offset; a pinned decoder edit adds
+that value to the normalized model used by the checkpoint configuration hash.
+The historical aerodynamic evaluator does not read the new field and retains its
+original numerical equations. Original pins and derived overlay bytes are checked
+before and after capture; `reference-overlays.json` records their hashes. The
+trace and session overlays also have independently pinned hashes.
 
 For each of four aircraft, Godot produces the checkpoint, metadata, CSV, and
 three-tick state digests; the runner also compares the complete captured initial

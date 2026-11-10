@@ -189,6 +189,10 @@ def check_input_bytes(fuel: bytes, avanti: bytes, extra: bytes, stik: bytes) -> 
     require(sha(fuel) in {FUEL_LF, FUEL_CRLF}, "candidate fuel registry is not a pinned identity")
     require(sha(avanti) in {AVANTI_OLD, AVANTI_CURRENT}, "candidate Avanti is not a pinned identity")
     require(sha(extra) == EXTRA_CURRENT, "candidate Extra is not the pinned identity")
+    previous = extra
+    for block in EXTRA_ADDITIONS:
+        previous = replace_once(previous, block, b"", "candidate Extra addition")
+    require(sha(previous) == EXTRA_PRIOR, "candidate Extra evolution differs from the pinned prior data")
     require(sha(stik) == STIK_CURRENT, "candidate Stik is not the pinned identity")
 
 
@@ -257,14 +261,35 @@ def reference_identity_overlay(project: Path) -> dict[str, bytes]:
     return overlay
 
 
+def reference_contract_overlay(project: Path) -> bytes:
+    """Admit the exact new conventional-wing field without changing its equations."""
+    original = (project / CONTRACT_PATH).read_bytes()
+    lf = original.replace(b"\r\n", b"\n")
+    require(sha(lf) == CONTRACT_OLD_LF, "reference aircraft contract input changed")
+    newline = b"\r\n" if b"\r\n" in original else b"\n"
+    patched = replace_once(original, CONTRACT_BEFORE.replace(b"\n", newline),
+                           CONTRACT_AFTER.replace(b"\n", newline), CONTRACT_PATH)
+    require(sha(patched.replace(b"\r\n", b"\n")) == CONTRACT_OVERLAY_LF,
+            "reference aircraft contract overlay differs")
+    return patched
+
+
 def check_reference_inputs(project: Path, fuel: bytes, avanti: bytes,
                            law_overlay: dict[str, bytes] | None = None,
                            identity_overlay: dict[str, bytes] | None = None,
-                           data_overlay: dict[str, bytes] | None = None) -> None:
+                           data_overlay: dict[str, bytes] | None = None,
+                           contract_overlay: bytes | None = None) -> None:
     require((project / "data/fuels/openrc-fuel-registry.json").read_bytes() == fuel, "reference fuel changed")
     require((project / "data/aircraft/sebart_avanti_s_a200.json").read_bytes() == avanti, "reference Avanti changed")
     require(sha((project / "project.godot").read_bytes().replace(b"\r\n", b"\n")) == REFERENCE_PROJECT,
             "reference project settings changed")
+    contract = (project / CONTRACT_PATH).read_bytes()
+    expected_contract = CONTRACT_OLD_LF if contract_overlay is None else CONTRACT_OVERLAY_LF
+    require(sha(contract.replace(b"\r\n", b"\n")) == expected_contract,
+            "reference aircraft contract identity differs")
+    if contract_overlay is not None:
+        require(contract == contract_overlay and sha(contract_overlay.replace(b"\r\n", b"\n")) == CONTRACT_OVERLAY_LF,
+                "reference aircraft contract overlay changed")
     pins = pin_paths()
     if law_overlay is not None:
         require(set(law_overlay) == set(REFERENCE_LAW_DECLARATIONS) and set(law_overlay).issubset(pins),
@@ -473,12 +498,14 @@ def run(repo: Path, project: Path, godot: Path, historical_godot: Path, out: Pat
     checked(godot, ref / "app", out, "fixed-brake-current-reference-import", ["--import"], timeout=1200, extra_env=run_env)
     check_reference_inputs(ref / "app", historical_fuel, historical_avanti)
     # Only after the historical goldens and original reference checks pass,
-    # derive exact identity-only substitutions from the pinned old files. The
+    # derive exact input/identity substitutions from the pinned old files. The
     # historical equations remain unchanged; only captured states are compared.
     law_overlay = reference_law_overlay(ref / "app")
     identity_overlay = reference_identity_overlay(ref / "app")
+    contract_overlay = reference_contract_overlay(ref / "app")
     data_overlay = {EXTRA_PATH: candidate_extra, STIK_PATH: candidate_stik}
     overlays = {**law_overlay, **identity_overlay, **data_overlay,
+                CONTRACT_PATH: contract_overlay,
                 fuel_path.as_posix(): candidate_fuel, avanti_path.as_posix(): candidate_avanti}
     overlay_identities = {
         path: {"original_sha256": file_sha(ref / "app" / path), "patched_sha256": sha(patched)}
@@ -486,22 +513,22 @@ def run(repo: Path, project: Path, godot: Path, historical_godot: Path, out: Pat
     }
     for path, patched in overlays.items():
         (ref / "app" / path).write_bytes(patched)
-    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay, identity_overlay, data_overlay)
+    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay, identity_overlay, data_overlay, contract_overlay)
     (run_dir / "reference-overlays.json").write_text(json.dumps({
         "reference": overlay_identities,
-        "scope": "pinned inputs and identity declarations only; historical numerical equations retained",
+        "scope": "pinned inputs, contract/decoder and identity declarations only; historical numerical equations retained",
     }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     matched_path, candidate_path = run_dir / "matched-reference.json", run_dir / "candidate.json"
     checked(godot, ref / "app", out, "fixed-brake-matched-reference", ["--script", str(CAPTURE), "--", "--out=" + str(matched_path)], extra_env=run_env)
     checked(godot, project, out, "fixed-brake-candidate-capture", ["--script", str(CAPTURE), "--", "--out=" + str(candidate_path)], extra_env=run_env)
     matched = load_capture(matched_path, fixture, True, CURRENT_CAPTURE_ENGINE, TRACE_LAW_OVERLAY, SESSION_IDENTITY_OVERLAY)
     candidate = load_capture(candidate_path, fixture, False, CURRENT_CAPTURE_ENGINE)
-    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay, identity_overlay, data_overlay)
+    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay, identity_overlay, data_overlay, contract_overlay)
     check_comparison(matched, candidate)
     checked(godot, project, out, "fixed-brake-input", ["--script", "res://tests/test_fixed_gear_brake_input.gd"],
             timeout=180, extra_env={**run_env, "OPENRC_FIXED_BRAKE_REFERENCE": str(matched_path)},
             required_text=("Fixed brake candidate:", "0 failed"))
-    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay, identity_overlay, data_overlay)
+    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay, identity_overlay, data_overlay, contract_overlay)
     require(candidate_manifest(project) == candidate_sources, "candidate inputs changed during the comparison")
     require(check_engine(historical_godot, True) == historical_engine and check_engine(godot, False) == current_engine,
             "engine identity changed during the comparison")
