@@ -13,6 +13,8 @@ const REVIEWED_WHEEL_IDS := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t",
 	"stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60",
 	"p51d-mustang-120", "f4u-corsair-250", "sebart-avanti-s-a200-p100rx",
 	"turbo-lumber-evolution"]
+## Physical wheel reuse does not itself review the statistics landing-support profile.
+const UNREVIEWED_WHEEL_IDS := ["stik-electric-6s"]
 ## Developer-only electric Stik routes (main.gd --electric-demo) also carry reviewed wheel metadata.
 const ELECTRIC_DEMO_IDS := ["synthetic_stik_electric_4s", "synthetic_stik_electric_4s_battery",
 	"synthetic_stik_electric_6s", "synthetic_stik_electric_6s_battery"]
@@ -118,6 +120,8 @@ func _test_profiles_for_catalog_fleet() -> void:
 	var ids: PackedStringArray = AircraftCatalog.airplane_flyable_ids()
 	for reviewed_id: String in REVIEWED_WHEEL_IDS:
 		_check("reviewed wheel aircraft remains covered: %s" % reviewed_id, reviewed_id in ids)
+	for unreviewed_id: String in UNREVIEWED_WHEEL_IDS:
+		_check("unreviewed wheel aircraft remains explicitly covered: %s" % unreviewed_id, unreviewed_id in ids)
 	_check("explicit gearless MoonRunner X99 remains covered", "moonrunner-x99" in ids)
 	for aircraft_id: String in ids:
 		var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
@@ -138,6 +142,17 @@ func _test_profiles_for_catalog_fleet() -> void:
 				var pack_bindings := ContactContract.describe(pack.model, true)
 				_test_moonrunner_unreviewed_hull(pack_path, pack.model, pack_bindings,
 					Profiles.resolve(aircraft_id, pack.model, pack_bindings))
+			continue
+		if aircraft_id in UNREVIEWED_WHEEL_IDS:
+			_check_unreviewed_wheel_profile(aircraft_id, aircraft_id, model, bindings, profile)
+			var battery_path := str(entry.get("battery_data", ""))
+			var battery: Dictionary = AircraftData.load_file(battery_path)
+			_check("%s finite-pack data loads for the unreviewed profile check" % aircraft_id,
+				bool(battery.get("ok", false)), str(battery.get("errors", [])))
+			if bool(battery.get("ok", false)):
+				var battery_bindings: Dictionary = ContactContract.describe(battery.model, true)
+				_check_unreviewed_wheel_profile("%s finite pack" % aircraft_id, aircraft_id, battery.model, battery_bindings,
+					Profiles.resolve(aircraft_id, battery.model, battery_bindings))
 			continue
 		_check("%s is an explicitly reviewed wheel profile" % aircraft_id, aircraft_id in REVIEWED_WHEEL_IDS)
 		if aircraft_id not in REVIEWED_WHEEL_IDS:
@@ -176,6 +191,47 @@ func _test_profiles_for_catalog_fleet() -> void:
 	for reviewed_id: Variant in Profiles._PROFILES.keys():
 		_check("reviewed wheel metadata has a fleet check: %s" % reviewed_id,
 			reviewed_id in REVIEWED_WHEEL_IDS or reviewed_id in ELECTRIC_DEMO_IDS)
+
+
+func _check_unreviewed_wheel_profile(label: String, aircraft_id: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:
+	var wheel: Dictionary = model.get("wheel_profile", {})
+	_check("%s retains its applied physical wheel profile and identity" % label,
+		str(model.get("id", "")) == aircraft_id and wheel.get("status", "") == "applied"
+		and wheel.get("aircraft_id", "") == aircraft_id and bool(bindings.get("ok", false))
+		and bindings.get("support_points", []).size() == 3)
+	_check("%s landing credit is unavailable pending statistics support review" % label,
+		profile.get("landing_available", true) == false and profile.get("reason", "") == "unreviewed_aircraft_profile",
+		str(profile.get("reason", "")))
+	_check("%s has no fabricated landing support maps" % label,
+		profile.get("main_indices", []).is_empty() and profile.get("stop_indices", []).is_empty()
+		and profile.get("main_ids", []).is_empty() and profile.get("stop_ids", []).is_empty()
+		and profile.get("rest_height_m") == -1.0)
+	var detector: RefCounted = Detector.new()
+	detector.configure(profile)
+	detector.observe(_sample(1, {"supported": true, "ground_contact": true}))
+	var started := _start_flight(detector, 2)
+	_check("%s can still record a takeoff and airborne time" % label,
+		started.get("start_kind", "") == "takeoff" and float(started.get("flight", {}).get("airborne_seconds", 0.0)) >= 1.0 - DT)
+	for tick in range(242, 502):
+		detector.observe(_sample(tick, {"clearance_ok": true, "tas": 18.0, "groundspeed": 18.0,
+			"ground_speed_3d": 18.0, "position": PackedFloat64Array([18.0 * float(tick) * DT, 0.0, 0.0]),
+			"velocity_ned": PackedFloat64Array([18.0, 0.0, 0.0])}))
+	_check("%s can still record sustained airspeed and groundspeed" % label,
+		absf(float(detector.flight.get("max_tas_mps", -1.0)) - 18.0) < 1e-9
+		and absf(float(detector.flight.get("max_groundspeed_mps", -1.0)) - 18.0) < 1e-9)
+	var events: Array[Dictionary] = detector.observe(_sample(502, {"supported": true, "ground_contact": true}))
+	events.append_array(detector.end("interrupted"))
+	var landing := _first_event(events, "landing")
+	var flight: Dictionary = landing.get("flight", {})
+	_check("%s unreviewed contact is unknown and receives no landing credit" % label,
+		landing.get("outcome", "") == "unknown" and int(flight.get("unknown_landings", 0)) == 1
+		and int(flight.get("full_stops", -1)) == 0 and int(flight.get("touch_and_go", -1)) == 0)
+	var crashed: RefCounted = Detector.new()
+	crashed.configure(profile, true)
+	_start_flight(crashed)
+	var crash_events: Array[Dictionary] = crashed.observe(_sample(241, {"terminal": true}))
+	_check("%s can still record a terminal crash" % label,
+		_events_of(crash_events, "crash").size() == 1 and _first_event(crash_events, "closed").get("outcome", "") == "crashed")
 
 
 func _check_reviewed_wheel_profile(label: String, aircraft_id: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:

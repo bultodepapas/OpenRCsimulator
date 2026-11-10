@@ -25,10 +25,10 @@ func _run() -> void:
 	home.notification(NOTIFICATION_APPLICATION_FOCUS_IN)
 	_check("focus regain with unchanged keyboard preserves nodes", _ids(home.keys_legend) == initial)
 	home.set_aircraft("gp-extra-300s-60")
-	_check("another airplane shares the same legend nodes", _ids(home.keys_legend) == initial)
+	_check("another airplane shares the same legend nodes", home.aircraft_id == "gp-extra-300s-60" and _ids(home.keys_legend) == initial)
 	_check("aircraft selection retains Fly focus", home.fly_button.has_focus())
 	home.set_aircraft("unknown-test-aircraft")
-	_check("unknown selection keeps the default airplane legend", home.aircraft_id == "jensen-das-ugly-stik-60" and _ids(home.keys_legend) == initial)
+	_check("unknown selection preserves the current airplane and legend", home.aircraft_id == "gp-extra-300s-60" and _ids(home.keys_legend) == initial)
 	home.set_controller_devices("Flight Radio", "Menu Pad")
 	_check("controller selection hides the keyboard legend", not home.keys_legend.visible)
 	home._fill_legend()
@@ -46,6 +46,10 @@ func _run() -> void:
 	_check("retired rows are freed after the frame", old_row.get_ref() == null)
 	home.set_aircraft("jensen-das-ugly-stik-60")
 	_check("returning to airplane restores actions", _actions(home) == ["Roll", "Pitch", "Rudder", "Throttle"])
+	var restored_ids := _ids(home.keys_legend)
+	home.set_aircraft("unknown-test-aircraft")
+	_check("unknown selection also preserves the default airplane and its legend",
+		home.aircraft_id == "jensen-das-ugly-stik-60" and _ids(home.keys_legend) == restored_ids)
 	var qwerty := func(key: int) -> int: return key
 	var azerty := func(key: int) -> int: return KEY_Q if key == KEY_A else (KEY_Z if key == KEY_W else key)
 	home._fill_legend(qwerty)

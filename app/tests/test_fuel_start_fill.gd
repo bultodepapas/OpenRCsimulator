@@ -11,6 +11,7 @@ const CheckpointJson := preload("res://sim/checkpoint_json.gd")
 
 const GLOW := "res://data/aircraft/stik_glow_61fx_2t.json"
 const GLOW_ID := "stik-glow-61fx-2t"
+const HOME_GLOW_ID := "gp-extra-300s-60"
 
 var _checks := 0
 var _failed := 0
@@ -197,10 +198,17 @@ func _home() -> void:
 	var home: Control = Home.new()
 	_check("fuel choice sits in the flight details", home.fuel_button.get_parent() == home._flight_details)
 	_check("the catalog knows which aircraft burn a finite tank",
-		Catalog.has_finite_fuel(GLOW_ID) and not Catalog.has_finite_fuel(Catalog.DEFAULT_ID) and not Catalog.has_finite_fuel("xcell-60-research"))
-	home.set_aircraft(GLOW_ID)
-	_check("a glow Stik shows the choice, full by default", home.fuel_button.visible and home.fuel_start_fill == 1.0
+		Catalog.has_finite_fuel(GLOW_ID) and Catalog.has_finite_fuel(HOME_GLOW_ID)
+		and not Catalog.has_finite_fuel(Catalog.DEFAULT_ID) and not Catalog.has_finite_fuel("xcell-60-research"))
+	home.set_aircraft(HOME_GLOW_ID)
+	_check("the selectable finite-glow Extra shows the choice, full by default",
+		Catalog.is_player_selectable(HOME_GLOW_ID) and home.aircraft_id == HOME_GLOW_ID
+		and home.fuel_button.visible and home.fuel_start_fill == 1.0
 		and home.fuel_button.text == "Fuel: full tank")
+	home.set_aircraft(GLOW_ID)
+	_check("the hidden technical Stik cannot replace the Home selection",
+		not Catalog.is_player_selectable(GLOW_ID) and home.aircraft_id == HOME_GLOW_ID
+		and home.fuel_button.visible and home.fuel_start_fill == 1.0)
 	home.fuel_button.pressed.emit()
 	_check("pressing selects three quarters", home.fuel_start_fill == 0.75 and home.fuel_button.text == "Fuel: 75 % of the tank")
 	home.fuel_button.pressed.emit()
@@ -210,9 +218,11 @@ func _home() -> void:
 	_check("and back to full", home.fuel_start_fill == 1.0)
 	home.set_fuel_fill(0.5)
 	home.set_aircraft(Catalog.DEFAULT_ID)
-	_check("a fixed-fuel aircraft hides the choice and flies its build", not home.fuel_button.visible and home.fuel_start_fill == 1.0)
-	home.set_aircraft(GLOW_ID)
-	_check("returning to a glow Stik keeps the half-tank preference", home.fuel_start_fill == 0.5)
+	_check("a fixed-fuel aircraft hides the choice and flies its build", home.aircraft_id == Catalog.DEFAULT_ID
+		and not home.fuel_button.visible and home.fuel_start_fill == 1.0)
+	home.set_aircraft(HOME_GLOW_ID)
+	_check("returning to the finite-glow Extra keeps the half-tank preference", home.aircraft_id == HOME_GLOW_ID
+		and home.fuel_button.visible and home.fuel_start_fill == 0.5)
 	home.set_fuel_fill(0.33)
 	_check("fills outside the offered steps are ignored", home.fuel_start_fill == 0.5)
 	TranslationServer.set_locale("es")
