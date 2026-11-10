@@ -12,6 +12,11 @@ const GlowFlight := preload("res://physics/glow/flight.gd")
 const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const TIMBER := "turbo-lumber-evolution"
+const ELECTRIC_LAWS := {
+	"fixed_voltage": "electric-fixed-bus-coupled-stop-v1",
+	"ocv_resistance": "electric-ocv-resistance-coupled-events-v1",
+	"pack_ecm": "electric-pack-ecm-coupled-events-v1",
+}
 const WHEEL_LAYOUT_SUFFIX := "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 
 var _failures: int = 0
@@ -142,8 +147,11 @@ func _initialize() -> void:
 					and meta.flap_input_index == 6
 					and input_layout == ["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake", "flaps"]
 					and meta.recording_start_flap == session.flap_state().actual)
-		elif entry.id in [TIMBER, "moonrunner-x99"]:
-			_check("%s coupled electric motor" % entry.id, meta.propulsion_model == "electric-fixed-bus-coupled-stop-v1")
+		elif session.aircraft.model.propulsion.get("kind", "") == "electric_prop":
+			var battery_kind: String = str(session.aircraft.model.propulsion.get("battery", {}).get("kind", ""))
+			_check("%s has a known electric battery law" % entry.id, ELECTRIC_LAWS.has(battery_kind))
+			_check("%s coupled electric motor" % entry.id, meta.propulsion_model == ELECTRIC_LAWS.get(battery_kind, "")
+				and meta.shaft_integrator == "coupled-rk4")
 			_check("%s no unmodeled propwash" % entry.id, meta.propwash_model == "none")
 		elif glow_profiled:
 			# EX-14c: a glow aircraft may declare the quasi-static tail slipstream (the Extra); it is then named, never transported.
@@ -198,6 +206,28 @@ func _initialize() -> void:
 		_check("metadata snapshot remains at recording start", recorder.trace.meta == snapshot)
 		recorder.recording = false
 		_check("discard the metadata fixture before the next aircraft", recorder.discard_unsaved(recorder.recording_generation))
+
+	# The player's electric Stik can select either the ideal bus or the finite pack.
+	# Each trace must name the selected source, even though both share an aircraft ID.
+	var electric_entry: Dictionary = Catalog.entry("stik-electric-6s")
+	for variant: Dictionary in [
+		{name = "ideal", path = electric_entry.data, battery = "fixed_voltage", law = ELECTRIC_LAWS.fixed_voltage},
+		{name = "pack", path = electric_entry.battery_data, battery = "pack_ecm", law = ELECTRIC_LAWS.pack_ecm},
+	]:
+		session.aircraft_path = variant.path
+		var reloaded: bool = session.reload().begins_with("aircraft reloaded:")
+		_check("electric Stik %s reload" % variant.name, reloaded)
+		if not reloaded: continue
+		var electric_meta: Dictionary = session.trace_meta()
+		var config: Variant = JSON.parse_string(str(electric_meta.get("electric_configuration", "")))
+		_check("electric Stik %s keeps aircraft and input identity" % variant.name,
+			str(electric_meta.aircraft).begins_with("stik-electric-6s")
+			and electric_meta.aircraft_input_sha256 == FileAccess.get_sha256(variant.path))
+		_check("electric Stik %s identifies its battery" % variant.name,
+			config is Dictionary and config.get("battery", {}).get("kind", "") == variant.battery)
+		_check("electric Stik %s names the exact coupled law" % variant.name,
+			electric_meta.propulsion_model == variant.law and electric_meta.shaft_integrator == "coupled-rk4")
+		_check("electric Stik %s has no propwash" % variant.name, electric_meta.propwash_model == "none")
 
 	# Remove opt-ins while retaining the P-51 ID: dispatch must follow configuration.
 	session.aircraft_path = Catalog.entry("p51d-mustang-120").data
