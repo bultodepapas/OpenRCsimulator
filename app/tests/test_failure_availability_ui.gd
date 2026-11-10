@@ -13,6 +13,9 @@ const ORDINARY_IDS: Array[String] = [
 	"roll_jam", "pitch_jam", "yaw_jam", "roll_bias", "pitch_bias", "roll_slow",
 	"throttle_limit", "throttle_stuck",
 ]
+const HIDDEN_TECHNICAL_IDS: Array[String] = [
+	"stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t",
+]
 const PREFS := "user://test_failure_availability_ui.cfg"
 
 var _checks := 0
@@ -203,20 +206,50 @@ func _test_real_model_routes() -> void:
 	root.add_child(app)
 	await _ui.settle()
 	var model_ids: PackedStringArray = AircraftCatalog.airplane_flyable_ids()
-	_check("Home availability check covers every catalog airplane", model_ids.size() >= 8, model_ids.size())
+	_check("availability check covers every catalog airplane", model_ids.size() >= 8, model_ids.size())
+	for aircraft_id: String in HIDDEN_TECHNICAL_IDS:
+		_check(aircraft_id + " remains a hidden technical airplane",
+			model_ids.has(aircraft_id) and not AircraftCatalog.is_player_selectable(aircraft_id))
 	var selected_power_model: Dictionary = {}
 	var selected_power_id := ""
+	var hidden_models: Dictionary = {}
 	for aircraft_id: String in model_ids:
 		var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
 		var loaded: Dictionary = AircraftData.load_file(str(entry.get("data", "")))
-		_check(aircraft_id + " Home selection has validated model data", bool(loaded.get("ok", false)), loaded.get("errors", PackedStringArray()))
+		_check(aircraft_id + " has validated model data", bool(loaded.get("ok", false)), loaded.get("errors", PackedStringArray()))
 		if not bool(loaded.get("ok", false)):
 			continue
 		var expected: Dictionary = FailureCatalog.availability(loaded.model)
+		if not AircraftCatalog.is_player_selectable(aircraft_id):
+			_check(aircraft_id + " is an expected hidden technical airplane", HIDDEN_TECHNICAL_IDS.has(aircraft_id))
+			_check(aircraft_id + " technical model retains finite-glow cutoff",
+				str(expected.get("eligibility_profile", "")) == FailureCatalog.FINITE_GLOW_PROFILE
+				and expected.get("power_loss_ids", []) == ["glow_fuel_cut"], expected)
+			hidden_models[aircraft_id] = loaded.model
+			var previous_home_id: String = app.home.aircraft_id
+			app.home.set_aircraft(aircraft_id)
+			_check(aircraft_id + " cannot replace the current Home selection", app.home.aircraft_id == previous_home_id,
+				{"before": previous_home_id, "after": app.home.aircraft_id})
+			var previous_entry: Dictionary = AircraftCatalog.entry(previous_home_id)
+			var previous_loaded: Dictionary = AircraftData.load_file(str(previous_entry.get("data", "")))
+			_check(aircraft_id + " Home selection still has validated model data", bool(previous_loaded.get("ok", false)),
+				previous_loaded.get("errors", PackedStringArray()))
+			app.open_failures_settings(app.home.failures_button)
+			await _ui.settle()
+			var home_menu: CanvasLayer = app.failure_menu
+			var previous_expected: Dictionary = FailureCatalog.availability(previous_loaded.get("model", {}))
+			_check(aircraft_id + " Home availability still belongs to the selected airplane",
+				home_menu != null and bool(previous_loaded.get("ok", false)) and home_menu.failure_availability == previous_expected,
+				home_menu.failure_availability if home_menu != null else "no FailureMenu")
+			if home_menu != null:
+				app.close_failures_settings()
+				await _ui.settle()
+			continue
 		if bool(expected.get("power_loss_supported", false)) and selected_power_model.is_empty():
 			selected_power_model = loaded.model
 			selected_power_id = aircraft_id
 		app.home.set_aircraft(aircraft_id)
+		_check(aircraft_id + " is selected on Home", app.home.aircraft_id == aircraft_id, app.home.aircraft_id)
 		app.open_failures_settings(app.home.failures_button)
 		await _ui.settle()
 		var menu: CanvasLayer = app.failure_menu
@@ -244,41 +277,13 @@ func _test_real_model_routes() -> void:
 		app.close_failures_settings()
 		await _ui.settle()
 
+	# Hidden models remain eligible in accepted sessions, including saved Workshop bases.
+	for aircraft_id: String in HIDDEN_TECHNICAL_IDS:
+		_check(aircraft_id + " technical availability was exercised", hidden_models.has(aircraft_id))
+		if hidden_models.has(aircraft_id):
+			await _test_pause_model(app, aircraft_id, hidden_models[aircraft_id])
 	if not selected_power_model.is_empty():
-		_check("Pause source-loss check uses an aircraft different from current Home selection",
-			app.home.aircraft_id != selected_power_id,
-			{"home": app.home.aircraft_id, "accepted": selected_power_id})
-		var accepted_session := FakeAcceptedSession.new()
-		accepted_session.aircraft = {"ok": true, "model": selected_power_model}
-		var accepted_flight := FakeAcceptedFlight.new()
-		accepted_flight.aircraft_id = selected_power_id
-		accepted_flight.session = accepted_session
-		app.flight = accepted_flight
-		var pause := PauseMenu.new()
-		app.pause_menu = pause
-		app.screens.push("pause", pause, app.home.failures_button)
-		await _ui.settle()
-		app.open_failures_settings(pause.failure_settings_button)
-		await _ui.settle()
-		var pause_menu: CanvasLayer = app.failure_menu
-		var expected_pause: Dictionary = FailureCatalog.availability(selected_power_model)
-		_check("Pause reads source-loss availability from the accepted session model",
-			pause_menu != null and pause_menu.failure_availability == expected_pause
-			and pause_menu.current_flight_settings,
-			pause_menu.failure_availability if pause_menu != null else "no FailureMenu")
-		if pause_menu != null:
-			pause_menu.availability_button.pressed.emit()
-			await _ui.settle()
-			var expected_power_ids: Array = expected_pause.get("power_loss_ids", [])
-			var expected_power: Dictionary = FailureCatalog.definition(str(expected_power_ids[0]))
-			_check("Pause detail shows the accepted aircraft's source-loss event",
-				_event_labels_has(pause_menu, str(expected_power.get("label", ""))), _event_texts(pause_menu))
-			app.close_failures_settings()
-			await _ui.settle()
-		app.screens.pop()
-		app.flight = null
-		accepted_flight.free()
-		await _ui.settle()
+		await _test_pause_model(app, selected_power_id, selected_power_model)
 	else:
 		_check("Pause source-loss verification found a supported power model", false)
 	await _ui.close_app(app)
@@ -286,8 +291,45 @@ func _test_real_model_routes() -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
-func _event_labels_has(menu: CanvasLayer, label_text: String) -> bool:
-	return _event_texts(menu).has(label_text)
+func _test_pause_model(app: Node, aircraft_id: String, model: Dictionary) -> void:
+	_check(aircraft_id + " Pause model differs from the current Home selection",
+		app.home.aircraft_id != aircraft_id, {"home": app.home.aircraft_id, "accepted": aircraft_id})
+	var accepted_session := FakeAcceptedSession.new()
+	accepted_session.aircraft = {"ok": true, "model": model}
+	var accepted_flight := FakeAcceptedFlight.new()
+	accepted_flight.aircraft_id = aircraft_id
+	accepted_flight.session = accepted_session
+	app.flight = accepted_flight
+	var pause := PauseMenu.new()
+	app.pause_menu = pause
+	app.screens.push("pause", pause, app.home.failures_button)
+	await _ui.settle()
+	app.open_failures_settings(pause.failure_settings_button)
+	await _ui.settle()
+	var pause_menu: CanvasLayer = app.failure_menu
+	var expected_pause: Dictionary = FailureCatalog.availability(model)
+	_check(aircraft_id + " Pause reads availability from the accepted session model",
+		pause_menu != null and pause_menu.failure_availability == expected_pause and pause_menu.current_flight_settings,
+		pause_menu.failure_availability if pause_menu != null else "no FailureMenu")
+	if pause_menu != null:
+		pause_menu.availability_button.pressed.emit()
+		await _ui.settle()
+		var expected_power_ids: Array = expected_pause.get("power_loss_ids", [])
+		_check(aircraft_id + " accepted model supports a source-loss event", not expected_power_ids.is_empty())
+		if not expected_power_ids.is_empty():
+			var expected_power: Dictionary = FailureCatalog.definition(str(expected_power_ids[0]))
+			var event_labels := _event_texts(pause_menu)
+			_check(aircraft_id + " Pause shows the accepted model's source-loss event",
+				event_labels.has(str(expected_power.get("label", ""))), event_labels)
+			var other_power_label := "Electric motor power lost." if str(expected_power_ids[0]) == "glow_fuel_cut" else "Engine combustion stopped."
+			_check(aircraft_id + " Pause hides the other propulsion family event",
+				not event_labels.has(other_power_label), event_labels)
+		app.close_failures_settings()
+		await _ui.settle()
+	app.screens.pop()
+	app.flight = null
+	accepted_flight.free()
+	await _ui.settle()
 
 
 class FakeAcceptedSession extends RefCounted:

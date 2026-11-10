@@ -52,12 +52,17 @@ func _run() -> void:
 	var radio: Radio = Radio.new()
 	check("disconnected axis is unseen", not radio.has_axis_sample(0))
 	radio.connect_device(15, {name = "Fake EdgeTX"})
+	radio.on_motion(15, 1, 1.0)
+	check("unconfigured radio cannot establish mapping evidence", not radio.has_axis_sample(1))
+	# A real radio requires a calibrated mapping before axis events count.
+	radio.connect_device(15, {name = "Fake EdgeTX"}, Radio.DEFAULT_PROFILE)
+	radio.poll(func(_id: int, _axis: int) -> float: return 0.0, 1.0 / 60.0)
 	radio.on_motion(14, 0, 1.0)
 	radio.on_motion(15, 1, 1.0)
 	check("unseen polled zero and other-device event do not count", not radio.has_axis_sample(0) and radio.has_axis_sample(1))
 	check("out-of-range access is safe", not radio.has_axis_sample(-1) and not radio.has_axis_sample(10))
 	radio.disconnect_device()
-	radio.connect_device(15, {name = "Fake EdgeTX"})
+	radio.connect_device(15, {name = "Fake EdgeTX"}, Radio.DEFAULT_PROFILE)
 	check("reconnect clears seen flags", not radio.has_axis_sample(1))
 
 	_session = _flight()
@@ -135,7 +140,7 @@ func _run() -> void:
 	_session.radio.axes[0] = 0.0
 	_session.radio.disconnect_device()
 	_gray("disconnected")
-	_session.radio.connect_device(15, {name = "Fake EdgeTX"})
+	_session.radio.connect_device(15, {name = "Fake EdgeTX"}, Radio.DEFAULT_PROFILE)
 	_gray("reconnect waits for fresh axis")
 	_session.radio.on_motion(15, 0, 0.0)
 	_patch._physics_process(0)
@@ -165,8 +170,9 @@ func _run() -> void:
 func _flight() -> Flight:
 	var flight: Flight = Flight.new()
 	flight.setup()
-	flight.radio.connect_device(15, {name = "Fake EdgeTX"})
+	flight.radio.connect_device(15, {name = "Fake EdgeTX"}, Radio.DEFAULT_PROFILE)
 	flight.read_axis = func(_id: int, axis: int) -> float: return _raw[axis]
+	flight.read_button = func(_id: int, _button: int) -> bool: return false
 	root.add_child(flight)
 	return flight
 

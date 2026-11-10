@@ -476,12 +476,19 @@ func _run_device_case(device_id: int, gamepad: bool, direction: float, throw_deg
 	session.device_info = func(_device: int) -> Dictionary:
 		return { guid = "rudder-authority", name = "Test Gamepad" if gamepad else "Fake EdgeTX",
 			vendor_id = 0x1234, product_id = device_id, known = gamepad }
+	session.connected_device_ids = func() -> Array: return [device_id]
 	session.read_axis = func(_device: int, axis: int) -> float:
 		return axes[axis]
+	session.read_button = func(_device: int, _button: int) -> bool: return false
 	await process_frame # let FlightSession connect its real device/input signals
 	session.radio.disconnect_device()
 	session.reset()
 	session.sim.stop_at_tick = 0
+	if not gamepad:
+		# Standalone sessions load a radio calibration only for a uniquely observed device.
+		var info: Dictionary = session.device_info.call(device_id)
+		var key: String = session.RcInput.key_for(device_id, info)
+		_check("radio fixture calibration is saved", session.RcCalibration.save_profile(session.profiles_path, key, session.RcInput.DEFAULT_PROFILE) == OK)
 	Input.joy_connection_changed.emit(device_id, true)
 	session.resume() # device connection intentionally enters the ordinary failsafe pause
 	var yaw_axis := 0 if gamepad else 3

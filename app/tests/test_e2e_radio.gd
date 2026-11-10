@@ -78,8 +78,13 @@ func _run() -> void:
 	_session = _main.session
 	_session.device_info = func(_device: int) -> Dictionary:
 		return { guid = "fake", name = "Fake EdgeTX", vendor_id = 0x1209, product_id = 0x4f54 }
+	_session.connected_device_ids = func() -> Array: return [ID]
 	_session.profiles_path = PROFILES # never the pilot's real calibration file
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
+	# A fake radio needs a completed calibration and a unique live identity, just like a real one.
+	var device_info: Dictionary = _session.device_info.call(ID)
+	var device_key: String = RcInput.key_for(ID, device_info)
+	_check("fixture calibration is saved", _session.RcCalibration.save_profile(PROFILES, device_key, RcInput.DEFAULT_PROFILE) == OK)
 	# BAT-13: the Lumber flies its finite pack by default (owner decision 2026-10-19).
 	_check("direct radio test loads Lumber electric physics", _session.aircraft.ok and _session.aircraft.model.id == AIRCRAFT
 		and _session.start.ok and _session.trace_meta().propulsion_model == "electric-pack-ecm-coupled-events-v1")
@@ -88,6 +93,7 @@ func _run() -> void:
 	Input.joy_connection_changed.emit(ID, true)
 	await _settle()
 	_check("radio connected with its device key", _session.radio.connected and _session.radio.device_key == "fake|1209:4f54|Fake EdgeTX", _session.radio.device_key)
+	_check("radio loads the fixture calibration", _session.radio.profile_source == "calibrated" and _is_default_radio_profile())
 	_check("untouched throttle (reads mid-stick) keeps the engine at idle", _session.commands.throttle == 0.0 and _session.radio.throttle_position() == 0.5, "throttle %s, stick %s, axes %s" % [_session.commands.throttle, _session.radio.throttle_position(), _session.radio.axes])
 	_check("panel says SAFE", _panel_has("SAFE"))
 
@@ -153,11 +159,22 @@ func _run() -> void:
 	_check("K starts the calibration (paused, step 1)", _panel_has("CALIBRATION 1/5") and _session.sim.paused, (_main._panel as Label).text)
 	_key(KEY_ENTER) # rest
 	await _settle()
-	for move in [[2, [1.0, -1.0]], [3, [1.0, -1.0, 0.0]], [1, [-1.0, 1.0, 0.0]], [0, [1.0, -1.0, 0.0]]]:
-		for v in move[1]:
-			_motion(move[0], v)
-			await _settle()
+	for value: float in [1.0, -1.0]:
+		_motion(2, value)
+		await _settle()
+	_key(KEY_ENTER) # throttle returns to low
+	await _settle()
+	for move in [[3, 1.0, -1.0, "LEFT"], [1, -1.0, 1.0, "FORWARD"], [0, 1.0, -1.0, "LEFT"]]:
+		_motion(move[0], move[1]) # hold the requested positive direction
+		await _settle()
 		_key(KEY_ENTER)
+		await _settle()
+		_check("held direction selects the opposite prompt for axis %d" % move[0],
+			_session.calibration != null and move[3] in _session.calibration.instruction())
+		for value: float in [move[2], 0.0]:
+			_motion(move[0], value)
+			await _settle()
+		_key(KEY_ENTER) # opposite endpoint and return to center
 		await _settle()
 	var p: Dictionary = _session.radio.profile
 	_check("calibrated: aileron axis 3, rudder axis 0, elevator inverted", p.roll.axis == 3 and p.yaw.axis == 0 and p.pitch.invert and p.throttle.axis == 2, str(p))
@@ -204,13 +221,16 @@ func _run() -> void:
 		_check("writes malformed fixture " + defect, cfg.save(PROFILES) == OK)
 		Input.joy_connection_changed.emit(ID, true)
 		await _settle()
-		_check("invalid profile falls back to the complete V2 radio default " + defect,
-			_session.radio.profile_source == "default" and _is_default_radio_profile(), str(_session.radio.profile))
+		_check("invalid profile leaves the radio unconfigured " + defect,
+			_session.radio.connected and _session.radio.profile_source == "unconfigured"
+			and _session.radio.profile.kind == "radio" and not _session.radio.profile.get("configured", true)
+			and not _session.radio.profile_error.is_empty(), str(_session.radio.profile))
 		_check("rejected profile remains safe at high throttle " + defect,
 			not _session.radio.armed and _session.commands.throttle == 0.0 and _session.sim.paused)
 		_motion(2, -1.0)
 		await _settle()
-		_check("fallback profile can rearm at low throttle " + defect, _session.radio.armed)
+		_check("unconfigured radio cannot rearm at low throttle " + defect,
+			not _session.radio.armed and _session.commands.throttle == 0.0 and _session.sim.paused)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
 
 	print("all e2e radio checks passed" if _failures == 0 else "%d failed" % _failures)

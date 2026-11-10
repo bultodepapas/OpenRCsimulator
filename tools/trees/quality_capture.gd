@@ -335,6 +335,7 @@ func _woodland_review(field: Dictionary) -> bool:
 		inventory["mesh_texture_filter_diagnostic"] = "linear without mipmaps"
 	var shader_path := str(args.get("woodland_shader_source", ""))
 	if shader_path.is_empty():
+		shader_path = "res://scenery/woodland_cards.gdshader"
 		for child: Node in woodland.get_children():
 			if child is MultiMeshInstance3D:
 				shader_path = child.material_override.shader.resource_path
@@ -371,6 +372,7 @@ func _woodland_review(field: Dictionary) -> bool:
 					return false
 				material.set_shader_parameter("root_lift", lift)
 		child.material_override = material
+	inventory["card_shader_active"] = material != null
 	if material != null:
 		var effective: Variant = material.get_shader_parameter("root_lift")
 		if effective == null:

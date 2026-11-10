@@ -13,6 +13,7 @@ const CATALOG_AIRPLANE_TAGS := {
 	"stik-glow-61fx-2t": "glow_fuel",
 	"stik-glow-55ax-2t": "glow_fuel",
 	"stik-glow-fs64v-4t": "glow_fuel",
+	"stik-electric-6s": "lipo",
 	"gp-extra-300s-60": "glow_fuel",
 	"p51d-mustang-120": "gasoline",
 	"f4u-corsair-250": "gasoline",

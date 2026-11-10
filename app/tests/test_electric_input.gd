@@ -5,11 +5,15 @@ extends SceneTree
 const FAKE_DEVICE: int = 15
 const PROPULSION: Script = preload("res://physics/propulsion.gd")
 const FLIGHT_SESSION: Script = preload("res://sim/flight_session.gd")
+const RADIO: Script = preload("res://input/rc_input.gd")
+const CALIBRATION: Script = preload("res://input/rc_calibration.gd")
 
 var _failures: int = 0
 var _checks: int = 0
 var _main: Node3D
 var _session: Node
+var _fake_connected := false
+var _axes := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 
 
 func _check(label: String, ok: bool, detail: String = "") -> void:
@@ -22,6 +26,7 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 
 func _motion(axis: int, value: float) -> void:
+	_axes[axis] = value
 	var event: InputEventJoypadMotion = InputEventJoypadMotion.new()
 	event.device = FAKE_DEVICE
 	event.axis = axis as JoyAxis
@@ -131,6 +136,14 @@ func _run(demo: String) -> void:
 	_session.set("profiles_path", profile_path)
 	_session.set("device_info", func(_device: int) -> Dictionary:
 		return {"guid": "el1e-fake", "name": "Fake EdgeTX", "vendor_id": 0x1209, "product_id": 0x4f54})
+	_session.set("connected_device_ids", func() -> Array: return [FAKE_DEVICE] if _fake_connected else [])
+	_session.set("read_axis", func(_device: int, axis: int) -> float: return _axes[axis] if axis < _axes.size() else 0.0)
+	_session.set("read_button", func(_device: int, _button: int) -> bool: return false)
+	var info: Dictionary = _session.get("device_info").call(FAKE_DEVICE)
+	var device_key: String = RADIO.key_for(FAKE_DEVICE, info)
+	_check("fake radio has a saved primary calibration",
+		CALIBRATION.save_profile(profile_path, device_key, RADIO.DEFAULT_PROFILE) == OK)
+	_fake_connected = true
 	Input.joy_connection_changed.emit(FAKE_DEVICE, true)
 	await _settle()
 	var radio: Object = _session.get("radio")
@@ -158,6 +171,7 @@ func _run(demo: String) -> void:
 		and float(full.get("motor_current_a", NAN)) > 0.0 and float(full.get("battery_current_a", NAN)) > 0.0,
 		str(full))
 
+	_fake_connected = false
 	Input.joy_connection_changed.emit(FAKE_DEVICE, false)
 	await _settle()
 	_check("unplug pauses and selects the keyboard", sim.get("paused") and not radio.get("connected")
@@ -186,13 +200,18 @@ func _run(demo: String) -> void:
 		and float(sim.get("inputs")[3]) > 0.0)
 
 	_key_tap(KEY_R)
-	await _settle()
+	# Inspect the reset before subsequent ticks evolve the finite-pack trim.
 	var start: Dictionary = _session.get("start")
-	_check("R resets the powered trimmed electric flight", not sim.get("paused") and int(sim.get("tick")) <= 8
+	_check("R resets the powered trimmed electric flight", not sim.get("paused") and int(sim.get("tick")) == 0
 		and bool(_session.get("engine_running"))
 		and absf(float(_session.get("commands").throttle) - float(start.get("throttle", NAN))) < 1e-12
-		and absf(float(sim.get("aux")[0]) - float(start.get("rpm", NAN))) < 0.01)
+		and absf(float(sim.get("aux")[0]) - float(start.get("rpm", NAN))) < 0.01,
+		str({"paused": sim.get("paused"), "tick": sim.get("tick"), "running": _session.get("engine_running"),
+			"throttle": _session.get("commands").throttle, "start_throttle": start.get("throttle"),
+			"rpm": sim.get("aux")[0], "start_rpm": start.get("rpm")}))
+	await _settle()
 	_check("reset keeps keyboard selection", not radio.get("connected") and _panel_has("input: keyboard"))
+	_fake_connected = true
 	Input.joy_connection_changed.emit(FAKE_DEVICE, true)
 	await _settle()
 	_check("reconnect with retained high throttle remains SAFE", radio.get("connected") and not radio.get("armed")
@@ -200,6 +219,7 @@ func _run(demo: String) -> void:
 	_motion(2, -1.0)
 	await _settle()
 	_check("reconnected radio requires and accepts a fresh low event", radio.get("armed"))
+	_fake_connected = false
 	Input.joy_connection_changed.emit(FAKE_DEVICE, false)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(profile_path))
 	print("EL1e electric input %s: %d checks, %d failed" % [demo, _checks, _failures])

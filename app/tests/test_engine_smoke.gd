@@ -3,6 +3,7 @@ extends SceneTree
 const Smoke := preload("res://render/smoke/exhaust.gd")
 const Builder := preload("res://render/airplane.gd")
 const Equipment := preload("res://aircraft/ugly_stik_equipment.gd")
+const Radio := preload("res://input/rc_input.gd")
 var checks := 0
 var failures := 0
 
@@ -131,7 +132,8 @@ func _integration() -> void:
 	check("key repeat cannot toggle pump", main._smoke_key_on)
 	main.session.reset()
 	check("real reset clears request and births", not main._smoke_key_on and not main._smoke.pump.emitting)
-	main.session.radio.connect_device(99, {name = "EdgeTX SM test radio", guid = "sm-fake", known = false})
+	# The simulated radio has a completed primary calibration before adding AUX.
+	main.session.radio.connect_device(99, {name = "EdgeTX SM test radio", guid = "sm-fake", known = false}, Radio.DEFAULT_PROFILE)
 	main.session.profiles_path = "user://sm-test-aux-profile.cfg"
 	main._begin_smoke_assignment()
 	check("guided assignment holds real flight", main.session.sim.paused and main._smoke_assignment != null)
@@ -143,6 +145,8 @@ func _integration() -> void:
 	panel.sample_axis(99, 4, -1.0)
 	panel.advance()
 	check("assignment persists optional profile without AETR changes", main.session.radio.profile.get("aux", {}).get("smoke", {}).get("axis", -1) == 4 and main.session.radio.profile.roll.axis == 0)
+	var saved_radio: Dictionary = main.session.RcCalibration.load_profile(main.session.profiles_path, main.session.radio.device_key)
+	check("radio AUX binding is written with primary calibration", saved_radio.get("aux", {}).get("smoke", {}).get("axis", -1) == 4 and saved_radio.get("roll", {}).get("axis", -1) == 0)
 	check("assignment closes and requires OFF evidence", main._smoke_assignment == null and not main.session.radio.smoke_is_armed() and not main.session.radio.armed)
 	var motion := InputEventJoypadMotion.new()
 	motion.device = 99
@@ -171,6 +175,7 @@ func _integration() -> void:
 	check("gamepad AUX persists independently of the fixed rate profile", binding.get("button", -1) == 5 and main.session.radio.profile.kind == "gamepad" and main.session.radio.is_rate_throttle())
 	main.session.radio.disconnect_device()
 	main.session.device_info = func(_id: int) -> Dictionary: return {name = "SM fake gamepad", guid = "sm-gamepad", known = true}
+	main.session.connected_device_ids = func() -> Array: return [100]
 	main.session._on_joy_connection_changed(100, true)
 	check("gamepad reconnect restores binding and requires a fresh OFF event", main.session.radio.profile.get("aux", {}).get("smoke", {}).get("button", -1) == 5 and not main.session.radio.smoke_is_armed())
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(main.session.profiles_path))

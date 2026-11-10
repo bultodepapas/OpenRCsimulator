@@ -8,6 +8,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const ControllerService := preload("res://input/controller_service.gd")
+const ControllerProfile := preload("res://input/controller_profile.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
@@ -296,6 +297,9 @@ func _fly_with_fake_radio(flight: Node) -> void:
 	controllers.call("refresh")
 	_check("fake radio is registered without implicit flight selection",
 		controllers.get("registry").call("selected_device_id", "flight") == -1)
+	# Names alone no longer supply a flight mapping; provide a calibrated AETR test profile explicitly.
+	_check("fake radio accepts its configured profile",
+		controllers.call("apply_profile", ControllerProfile.defaults("radio", "radio_custom"), UiDriver.FAKE_DEVICE))
 	_check("fake radio can be explicitly selected for flight", controllers.call("select_devices", UiDriver.FAKE_DEVICE, -1))
 	# The fake device has no OS-backed axis state. Keep the real parsed event samples
 	# as the reader source so each poll does not overwrite them with zeros.
@@ -417,11 +421,17 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	app = await _new_app(PREFS)
 	home = app.get("home") as Control
 	for aircraft: String in Catalog.airplane_flyable_ids():
-		app.call("set_aircraft", aircraft)
+		if not Catalog.is_player_selectable(aircraft):
+			var previous_aircraft: String = home.get("aircraft_id")
+			_check("%s remains technical-only and cannot replace the Home selection" % aircraft,
+				Catalog.can_fly(aircraft) and not app.call("set_aircraft", aircraft)
+				and home.get("aircraft_id") == previous_aircraft)
+			continue # test_runway_fleet.gd exercises runway starts for all technical configurations.
+		var selected: bool = app.call("set_aircraft", aircraft)
 		await ui.settle()
 		if not Catalog.runway_supported(aircraft):
 			# X8-07: a gearless airplane shows the hand launch where others show the runway, and the airborne start second.
-			_check("changing to %s shows the hand launch" % aircraft, home.get("aircraft_id") == aircraft
+			_check("changing to %s shows the hand launch" % aircraft, selected and home.get("aircraft_id") == aircraft
 				and home.get("start_choice") == HAND_LAUNCH and not home.get("start_button").disabled
 				and home.get("start_button").text == "Start: hand launch" and Preferences.load_from(PREFS).start_choice == HAND_LAUNCH)
 			home.get("start_button").grab_focus()
@@ -432,7 +442,8 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 			_check("%s cycles back to the hand launch" % aircraft, home.get("start_choice") == HAND_LAUNCH)
 			app.start_flight()
 			_check("%s Home Fly starts by hand at full throttle" % aircraft, app.flight != null
-				and app.flight.startup_error.is_empty() and app.flight.session.trace_meta().launch_choice == HAND_LAUNCH
+				and app.flight.startup_error.is_empty() and app.flight.session.aircraft.model.id == aircraft
+				and app.flight.session.trace_meta().launch_choice == HAND_LAUNCH
 				and app.flight.session.trace_meta().launch_kind == "hand_launch_release"
 				and app.flight.session.commands.throttle == 1.0)
 			if app.flight != null:
@@ -441,12 +452,13 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 				await ui.settle()
 				home = app.home
 			continue
-		_check("changing to %s keeps runway" % aircraft, home.get("aircraft_id") == aircraft
+		_check("changing to %s keeps runway" % aircraft, selected and home.get("aircraft_id") == aircraft
 			and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled
 			and Preferences.load_from(PREFS).start_choice == RUNWAY)
 		app.start_flight()
 		_check("%s Home Fly starts on the runway" % aircraft, app.flight != null
-			and app.flight.startup_error.is_empty() and app.flight.session.trace_meta().launch_choice == RUNWAY)
+			and app.flight.startup_error.is_empty() and app.flight.session.aircraft.model.id == aircraft
+			and app.flight.session.trace_meta().launch_choice == RUNWAY)
 		if app.flight != null:
 			var flight_session: Node = app.flight.session
 			flight_session.physics_enabled = false

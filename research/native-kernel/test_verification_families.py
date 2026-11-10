@@ -222,7 +222,8 @@ def make_other(key):
     data = base(key)
     coverage = data["coverage"]
     if key == "propeller":
-        ids = builder.ELECTRIC_IDS | (builder.LIQUID_IDS - {"sebart-avanti-s-a200-p100rx"}) | {"jensen-das-ugly-stik-60"}
+        ids = builder.ELECTRIC_IDS | (builder.LIQUID_IDS - {"sebart-avanti-s-a200-p100rx"}) | {
+            "jensen-das-ugly-stik-60", "stik-electric-6s"}
         coverage.update({"propeller_" + name: {"states": 1000} for name in ids})
         comparisons(data, ("propeller_velocity", "propeller_thrust_torque", "propeller_loads", "propeller_rotor",
                            "propeller_normal", "propeller_pfactor", "propeller_flow_validity"), len(ids) * 1000)
@@ -360,7 +361,7 @@ class FamilyPromotion(unittest.TestCase):
 
     def test_missing_cases_or_comparisons_cannot_be_disguised_by_a_pass(self):
         cases = {
-            "propeller": lambda d: d["coverage"].pop(next(iter(d["coverage"]))),
+            "propeller": lambda d: d["coverage"].pop("propeller_stik-electric-6s"),
             "electric": lambda d: d["electric_cases"].pop(),
             "liquid": lambda d: d["liquid_cases"].pop(),
             "glow": lambda d: d["glow_feed_cases"].pop(),

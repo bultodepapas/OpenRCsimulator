@@ -280,6 +280,33 @@ so remapped resources work without their original PNG.
 
 See [visual evidence, packed-resource proof and remaining limits](../../docs/research/visual-quality-implementation/L7-R7/README.md).
 
+## Woodland herb-card review (L7-R8)
+
+`--woodland_shrubs=source|legacy` selects the new source-derived Shrub 03 forms or
+the previous flowering cards. The game defaults to source; set
+`OPENRC_WOODLAND_SHRUBS=legacy` to restore the earlier appearance independently
+of the fern and mesh switches. Four fixed paths use two source forms; two purple
+cards remain at High, with the existing two 3D shrubs. Quality filtering preserves
+the selected IDs. Low/custom inputs skip the manifests, new material and textures.
+
+The card shaders share `woodland_card_surface.gdshaderinc`. The original wrapper
+does not compile shrub samplers or their extra varying; the source-shrub wrapper
+enables them explicitly. Reports record the actual shader and shared include
+hashes, effective shrub mode, source IDs and both atlas hashes. The root-lift
+diagnostic inspects compiled uniform declarations, including shader includes.
+
+Run `test_woodland_shrub_cards.gd` through the checked runner. It has 17 headless
+checks; native execution adds eight variant/frame pixel cases and compiled-shader
+inspection, totaling 26. Native transform/custom-data readback also checks each
+new source card against the CPU placement. The existing habitat and root-lighting
+suites remain separate regressions.
+
+Add `--require-shrubs` to the fern pack probe's source and packed runs. Pass
+`--expect-shrub-images=<A decoded SHA-256>,<B decoded SHA-256>` to compare both
+packed textures. It also loads the production shrub material and its compiled
+samplers; `--require-packed` rejects visible source PNGs. This is a resource probe,
+not a full release check. [Sources, 1080p evidence and limits](../../docs/research/visual-quality-implementation/L7-R8/README.md).
+
 ## Decorative woodland margins
 
 `python tools/trees/place_woodland_edges.py --check` validates the generated `app/data/woodland_edges.json`; omit `--check` to regenerate it. `python tools/trees/test_place_woodland_edges.py` checks determinism, source geometry bounds and field/scenery exclusions. The runtime builder in `app/scenery/woodland_edge_habitat.gd` adds four small default-field pockets. High keeps 220 plants: 202 cards and 18 downloaded mesh plants, totaling 2,656 source triangles in 13 batches. Balanced is a stable subset and Low omits the decoration. The all-card option retains 472 triangles/five batches; the recipe's source budget describes that original card realization. The mixed renderer separately verifies actual geometry and fits mesh replacements inside its certified plant envelopes.

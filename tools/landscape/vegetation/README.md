@@ -111,3 +111,31 @@ See [native evidence and limits](../../../docs/research/visual-quality-implement
 `convert_grass_pack.py` extracts LOLIPOP's 26-triangle small and 20-triangle tall tufts. `convert_forest_shrub.py` extracts one 144-triangle leafy shrub from dasy444's forest scene. Both use supplied meshes/maps under CC BY 4.0, pin the licensed glTF archives and preserve source geometry. The grass uses double-sided MASK; the shrub preserves source BLEND. All seven new maps use compressed mipmaps. Runtime notices are `LICENSE_GRASS.txt` and `LICENSE_FOREST.txt`.
 
 Run each converter with `--check`, then `build_library.py --check`. The deterministic habitat layout adds 60 grass tufts and four shrubs at the club, meadow and farm, using existing ground/exclusion sampling and a reserved seed range. [Map expansion evidence](../../../docs/research/visual-quality-implementation/L6c/map-expansion/README.md) records the native views, geometry budget and filtering comparison.
+
+## External woodland herb accents (L7-R8)
+
+Two complete supplied [Poly Haven Shrub 03](https://polyhaven.com/a/shrub_03) forms,
+`shrub_03_a` and `shrub_03_b`, supply the taller herb cards in the woodland pockets.
+The source license is CC0 and the author is Rico Cilliers. Supplier files and
+API/license evidence remain under `assets/landscape/vegetation/source/woodland_shrubs_2026/`.
+The external conversion keeps each entire node, mesh, buffer, normals and UVs,
+removes its gallery translation, and packs the separately supplied 16-bit alpha
+into the original diffuse RGB. The supplied double-sided MASK/0.5 remains in use.
+
+```powershell
+python tools/landscape/vegetation/convert_woodland_shrubs.py --check
+& $Blender --background --python-exit-code 1 --python tools/landscape/vegetation/bake_hedge_impostor.py -- --catalog assets/landscape/vegetation/derived/woodland_shrubs_2026/external_catalog.json --source-asset-id polyhaven_shrub_03_a --output-dir tmp/shrub-bake-a
+```
+
+Repeat for `polyhaven_shrub_03_b` and a second fresh output folder. Compare both
+PNGs/manifests byte for byte before promoting reviewed atlases. The baker's
+`--catalog` accepts the external catalog; `--check` uses the same catalog and
+asset ID. `--output-dir` also stages the converter's outputs inside the repository.
+Derived meshes and PBR maps stay outside `app/`; only the four-view atlas,
+manifest and import configuration enter the game. The runtime library/catalog
+and its 28 mesh assets remain unchanged. This prevents an atlas source's unused
+mesh bundle from entering an all-resources export.
+
+Shrub 01 was rejected for this role: its single supplied node contains widely
+separated geometry rather than a bounded card clump. No geometry was cut out of
+that source. [Native comparison, source proof and remaining limits](../../../docs/research/visual-quality-implementation/L7-R8/README.md).
