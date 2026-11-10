@@ -9277,3 +9277,179 @@ msgstr "元の保存済み機体: %s · リビジョン %d"
 
 msgid "High and Extreme add detailed grass at walking-path edges."
 msgstr "高と最高では、歩道の縁に精細な草地を追加します。"
+
+# Local game repair estimates.
+
+msgid "Preview game parts estimate. DIY labor, tax and shipping are excluded."
+msgstr "ゲーム内の部品費用の概算（プレビュー）。自分で行う作業の人件費、税金、送料は含みません。"
+
+msgid "Wing, flaps and ailerons (servos excluded)"
+msgstr "主翼、フラップ、エルロン（サーボを除く）"
+
+msgid "Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded."
+msgstr "観察された局所部品のみを対象とします。他の損傷は未評価の可能性があります。自分で行う作業の人件費、税金、送料は含みません。"
+
+msgid "LOCAL GAME REPAIR ESTIMATE"
+msgstr "局所的なゲーム内修理費用の概算"
+
+msgid "Observed local parts estimate"
+msgstr "観察された局所部品の概算"
+
+msgid "Preview game parts estimate"
+msgstr "ゲーム内部品費用の概算（プレビュー）"
+
+msgid "Package availability or eligibility is unresolved; no cheapest purchase is confirmed."
+msgstr "パッケージの入手可否または適用条件が未確定のため、最安の購入方法は確認されていません。"
+
+msgid "Included surplus units: %d. No sale credit is assumed."
+msgstr "含まれる余剰部品数：%d。売却による差し引きは見込みません。"
+
+msgid "Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed."
+msgstr "観察された局所的な修理範囲のみを対象とします。選択した修理工賃を含み、税金と送料は含みません。他の損傷は未評価の可能性があります。"
+
+msgid "COST EVIDENCE INCOMPLETE"
+msgstr "費用の根拠が不完全"
+
+msgid "Accident cost evidence is incomplete; some contact observations were rejected."
+msgstr "事故費用の根拠が不完全です。一部の接触観測は棄却されました。"
+
+msgid "Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing."
+msgstr "一部の接触データが棄却されました。これは最後に受理された概算で、追加の損傷が欠けている可能性があります。"
+
+msgid "Preview game repair estimate; component outcomes are deterministic authored game rules, not measured failure predictions."
+msgstr "ゲーム内修理費用の概算（プレビュー）。部品の結果は設定された決定論的なゲーム規則によるもので、実測に基づく故障予測ではありません。"
+
+msgid "Offline USD cash parts estimate; DIY labor is unbilled. Tax, freight, recovery and external equipment are excluded."
+msgstr "オフラインでの米ドル建て部品現金費用の概算です。自分で行う作業の人件費は請求されません。税金、運賃、回収費用、外部機材は含みません。"
+
+msgid "Unquoted parts use explicit authored game allowances dated 2026-11-09. They are not vendor offers or physical-fit claims."
+msgstr "見積もりのない部品には、2026-11-09 付のゲーム内で設定された費用を使用します。販売業者の提示額や実際に適合するという保証ではありません。"
+
+msgid "Water exposure requires assessment; delayed thermal/fire propagation, stopped-blade phase and scenery prop strikes are not modeled."
+msgstr "水にさらされた場合は評価が必要です。遅れて生じる熱や火災の伝播、停止時のブレード位相、プロペラと周囲の物体との衝突はモデル化していません。"
+
+msgid "Only observed local regions are assessed; unobserved secondary/internal damage remains outside this preview scope."
+msgstr "観察された局所領域のみを評価します。観察されていない二次損傷や内部損傷は、このプレビューの対象外です。"
+
+msgid "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation."
+msgstr "物理的な親項目は対象範囲を示す参照であり、追加の質量ではありません。費用の子項目は、従来の一括配分に代わるものです。"
+
+msgid "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work."
+msgstr "局所的なしきい値はゲームのプレビュー上の仮定です。受理された終点の圧縮量や深さは、衝突時に加わった仕事量ではありません。"
+
+msgid "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+msgstr "標準の自力修理用部品の範囲には最終組立と試運転の人件費を含みません。従来の有償組立の参照費用は請求されません。"
+
+msgid "DIY estimate"
+msgstr "自力修理の概算"
+
+msgid "Include shop labor"
+msgstr "修理店の工賃を含める"
+
+msgid "Purchase plan"
+msgstr "購入プラン"
+
+msgid "Recommended parts"
+msgstr "推奨部品"
+
+msgid "Choose a frozen parts package estimate. Extra supplied parts receive no sale credit."
+msgstr "価格を固定した部品パッケージの概算を選択してください。追加で供給された部品の売却による差し引きはありません。"
+
+msgid "Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed."
+msgstr "選択した修理店の工賃を含む、局所的なゲーム内概算です。税金と送料は含みません。他の損傷は未評価の可能性があります。"
+
+msgid "Local game estimate. Other damage may be unassessed. DIY time, tax and shipping are excluded."
+msgstr "局所的なゲーム内概算です。他の損傷は未評価の可能性があります。自分で行う作業時間、税金、送料は含みません。"
+
+msgid "Selected cost plan"
+msgstr "選択した費用プラン"
+
+msgid "Assessed game scope"
+msgstr "評価済みのゲーム内範囲"
+
+msgid "HISTORICAL REPORT · UNVERIFIED"
+msgstr "過去のレポート · 未検証"
+
+msgid "Saved amounts could not be verified. This historical report is for reference."
+msgstr "保存された金額を検証できませんでした。この過去のレポートは参考用です。"
+
+msgid "The saved accident report could not be opened. A new flight can still begin."
+msgstr "保存された事故レポートを開けませんでした。新しい飛行は開始できます。"
+
+msgid "Saved accident report unavailable"
+msgstr "保存された事故レポートを利用できません"
+
+msgid "Cost plan unavailable"
+msgstr "費用プランを利用できません"
+
+msgid "Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."
+msgstr "部品と材料に設定された費用には工賃を含みません。選択した工賃の基準額と共通の準備費用はそれぞれ一度だけ加算されます。"
+
+msgid "Quantities identify purchase or service scope, not a count of physically confirmed failed units."
+msgstr "数量は購入またはサービスの範囲を示すもので、実物の故障が確認された数ではありません。"
+
+msgid "Shop labor uses an authored game rate and duration, not a repair shop quote."
+msgstr "修理店の工賃にはゲーム内で設定された単価と時間を使用します。修理店の見積もりではありません。"
+
+msgid "DIY cash cost does not charge for owner time."
+msgstr "自力修理の現金費用には所有者の作業時間を請求しません。"
+
+msgid "The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."
+msgstr "購入または工賃のプランが未確定です。表示された小計には未確定の費用を含みません。"
+
+msgid "Replacement package"
+msgstr "交換用パッケージ"
+
+msgid "Repair materials"
+msgstr "修理材料"
+
+msgid "Labor"
+msgstr "工賃"
+
+msgid "Incurred fee"
+msgstr "発生済み費用"
+
+msgid "Shared setup"
+msgstr "共通の準備"
+
+msgid "Labor: %s"
+msgstr "工賃：%s"
+
+msgid "Active work: %d min"
+msgstr "実作業：%d 分"
+
+msgid "Active work: unknown"
+msgstr "実作業：不明"
+
+msgid "Labor: %s · duration unknown"
+msgstr "工賃：%s · 所要時間不明"
+
+msgid "Additional duplicate supplied units: %d. They are unvalued and receive no sale credit."
+msgstr "追加で供給された重複部品数：%d。価値は計上されず、売却による差し引きもありません。"
+
+msgid "The cost option could not be applied. The previous estimate is retained."
+msgstr "費用オプションを適用できませんでした。以前の概算を維持します。"
+
+msgid "One package plus individual parts: %s"
+msgstr "パッケージ一つと個別部品：%s"
+
+msgid "No additional game charge within the assessed scope: %s. This does not certify physical health or salvage."
+msgstr "評価範囲内でゲーム上の追加料金はありません：%s。実物の健全性や再利用可能性を保証するものではありません。"
+
+msgid "Previous package (needs review)"
+msgstr "以前のパッケージ（要確認）"
+
+msgid "Selected local game estimate"
+msgstr "選択した局所的なゲーム内概算"
+
+msgid "Selected-plan price range"
+msgstr "選択プランの価格範囲"
+
+msgid "Low estimate"
+msgstr "低い概算"
+
+msgid "High estimate"
+msgstr "高い概算"
+
+msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
+msgstr "価格変動とモデル化された代替案は範囲の上下限であり、信頼確率ではありません。"

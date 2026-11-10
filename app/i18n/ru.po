@@ -10028,3 +10028,179 @@ msgstr "На основе сохранённой модели: %s · верси�
 
 msgid "High and Extreme add detailed grass at walking-path edges."
 msgstr "Высокий и экстремальный уровни добавляют детализированную траву по краям пешеходных дорожек."
+
+# Local game repair estimates.
+
+msgid "Preview game parts estimate. DIY labor, tax and shipping are excluded."
+msgstr "Предварительная игровая оценка стоимости деталей. Собственный труд, налоги и доставка не включены."
+
+msgid "Wing, flaps and ailerons (servos excluded)"
+msgstr "Крыло, закрылки и элероны (без сервоприводов)"
+
+msgid "Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded."
+msgstr "Только наблюдаемые детали в локальной области. Другие повреждения могли остаться без оценки. Собственный труд, налоги и доставка не включены."
+
+msgid "LOCAL GAME REPAIR ESTIMATE"
+msgstr "ЛОКАЛЬНАЯ ИГРОВАЯ ОЦЕНКА РЕМОНТА"
+
+msgid "Observed local parts estimate"
+msgstr "Оценка наблюдаемых локальных деталей"
+
+msgid "Preview game parts estimate"
+msgstr "Предварительная игровая оценка деталей"
+
+msgid "Package availability or eligibility is unresolved; no cheapest purchase is confirmed."
+msgstr "Наличие или применимость комплектов не определены; самый дешёвый вариант покупки не подтверждён."
+
+msgid "Included surplus units: %d. No sale credit is assumed."
+msgstr "Включено излишних единиц: %d. Выручка от продажи не учитывается."
+
+msgid "Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed."
+msgstr "Только наблюдаемый локальный объём ремонта. Выбранный ремонтный труд включён; налоги и доставка исключены. Другие повреждения могли остаться без оценки."
+
+msgid "COST EVIDENCE INCOMPLETE"
+msgstr "ДАННЫЕ О СТОИМОСТИ НЕПОЛНЫ"
+
+msgid "Accident cost evidence is incomplete; some contact observations were rejected."
+msgstr "Данные о стоимости аварии неполны; некоторые наблюдения контакта отклонены."
+
+msgid "Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing."
+msgstr "Некоторые данные о контакте отклонены. Это последняя принятая оценка; дополнительные повреждения могут быть не учтены."
+
+msgid "Preview game repair estimate; component outcomes are deterministic authored game rules, not measured failure predictions."
+msgstr "Предварительная игровая оценка ремонта; исходы для компонентов определяются заданными детерминированными правилами игры, а не прогнозами отказов на основе измерений."
+
+msgid "Offline USD cash parts estimate; DIY labor is unbilled. Tax, freight, recovery and external equipment are excluded."
+msgstr "Автономная оценка денежных затрат на детали в долларах США; собственный труд не оплачивается. Налоги, перевозка, эвакуация и внешнее оборудование исключены."
+
+msgid "Unquoted parts use explicit authored game allowances dated 2026-11-09. They are not vendor offers or physical-fit claims."
+msgstr "Для деталей без предложения используются заданные игровые суммы от 2026-11-09. Это не предложения поставщиков и не утверждения о физической совместимости."
+
+msgid "Water exposure requires assessment; delayed thermal/fire propagation, stopped-blade phase and scenery prop strikes are not modeled."
+msgstr "Воздействие воды требует оценки; отсроченное распространение тепла или огня, фаза остановленных лопастей и удары винта о элементы окружения не моделируются."
+
+msgid "Only observed local regions are assessed; unobserved secondary/internal damage remains outside this preview scope."
+msgstr "Оцениваются только наблюдаемые локальные области; ненаблюдаемые вторичные или внутренние повреждения остаются за пределами этой предварительной оценки."
+
+msgid "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation."
+msgstr "Физические родительские элементы служат ссылками на охватываемые компоненты и не добавляют массу. Финансовые дочерние элементы заменяют прежнее совокупное распределение."
+
+msgid "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work."
+msgstr "Локальные пороги — допущения предварительной игровой модели; принятые значения сжатия или глубины в конечной точке не равны работе входящего удара."
+
+msgid "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+msgstr "Стандартный объём деталей для самостоятельного ремонта не включает труд по окончательной сборке и вводу в эксплуатацию; старые справочные расходы на платную сборку не начисляются."
+
+msgid "DIY estimate"
+msgstr "Оценка самостоятельного ремонта"
+
+msgid "Include shop labor"
+msgstr "Включить работу мастерской"
+
+msgid "Purchase plan"
+msgstr "План покупки"
+
+msgid "Recommended parts"
+msgstr "Рекомендуемые детали"
+
+msgid "Choose a frozen parts package estimate. Extra supplied parts receive no sale credit."
+msgstr "Выберите оценку комплекта деталей с зафиксированными ценами. За дополнительные поставленные детали выручка от продажи не учитывается."
+
+msgid "Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed."
+msgstr "Локальная игровая оценка с выбранной работой мастерской. Налоги и доставка исключены; другие повреждения могли остаться без оценки."
+
+msgid "Local game estimate. Other damage may be unassessed. DIY time, tax and shipping are excluded."
+msgstr "Локальная игровая оценка. Другие повреждения могли остаться без оценки. Время самостоятельной работы, налоги и доставка исключены."
+
+msgid "Selected cost plan"
+msgstr "Выбранный план расходов"
+
+msgid "Assessed game scope"
+msgstr "Оценённый игровой объём"
+
+msgid "HISTORICAL REPORT · UNVERIFIED"
+msgstr "ИСТОРИЧЕСКИЙ ОТЧЁТ · НЕ ПРОВЕРЕН"
+
+msgid "Saved amounts could not be verified. This historical report is for reference."
+msgstr "Сохранённые суммы не удалось проверить. Этот исторический отчёт приведён для справки."
+
+msgid "The saved accident report could not be opened. A new flight can still begin."
+msgstr "Не удалось открыть сохранённый отчёт об аварии. Новый полёт всё равно можно начать."
+
+msgid "Saved accident report unavailable"
+msgstr "Сохранённый отчёт об аварии недоступен"
+
+msgid "Cost plan unavailable"
+msgstr "План расходов недоступен"
+
+msgid "Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."
+msgstr "Заложенные суммы на детали и материалы не включают труд. Выбранная основа оплаты труда и общая подготовка начисляются по одному разу."
+
+msgid "Quantities identify purchase or service scope, not a count of physically confirmed failed units."
+msgstr "Количество определяет объём покупки или услуги, а не число единиц с физически подтверждёнными отказами."
+
+msgid "Shop labor uses an authored game rate and duration, not a repair shop quote."
+msgstr "Для работы мастерской используются заданные в игре ставка и продолжительность, а не смета ремонтной мастерской."
+
+msgid "DIY cash cost does not charge for owner time."
+msgstr "Денежная стоимость самостоятельного ремонта не включает оплату времени владельца."
+
+msgid "The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."
+msgstr "План покупки или оплаты труда не определён. Показанный промежуточный итог не включает недостающие расходы."
+
+msgid "Replacement package"
+msgstr "Комплект для замены"
+
+msgid "Repair materials"
+msgstr "Материалы для ремонта"
+
+msgid "Labor"
+msgstr "Работа"
+
+msgid "Incurred fee"
+msgstr "Понесённый сбор"
+
+msgid "Shared setup"
+msgstr "Общая подготовка"
+
+msgid "Labor: %s"
+msgstr "Работа: %s"
+
+msgid "Active work: %d min"
+msgstr "Активная работа: %d мин"
+
+msgid "Active work: unknown"
+msgstr "Активная работа: неизвестно"
+
+msgid "Labor: %s · duration unknown"
+msgstr "Работа: %s · продолжительность неизвестна"
+
+msgid "Additional duplicate supplied units: %d. They are unvalued and receive no sale credit."
+msgstr "Дополнительно поставлено дублирующих единиц: %d. Их стоимость и выручка от продажи не учитываются."
+
+msgid "The cost option could not be applied. The previous estimate is retained."
+msgstr "Не удалось применить вариант расходов. Предыдущая оценка сохранена."
+
+msgid "One package plus individual parts: %s"
+msgstr "Один комплект и отдельные детали: %s"
+
+msgid "No additional game charge within the assessed scope: %s. This does not certify physical health or salvage."
+msgstr "Дополнительной игровой платы в оценённом объёме нет: %s. Это не подтверждает физическое состояние или возможность восстановления."
+
+msgid "Previous package (needs review)"
+msgstr "Предыдущий комплект (требует проверки)"
+
+msgid "Selected local game estimate"
+msgstr "Выбранная локальная игровая оценка"
+
+msgid "Selected-plan price range"
+msgstr "Диапазон цены выбранного плана"
+
+msgid "Low estimate"
+msgstr "Нижняя оценка"
+
+msgid "High estimate"
+msgstr "Верхняя оценка"
+
+msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
+msgstr "Изменение цен и моделируемые альтернативы задают границы, а не доверительные вероятности."

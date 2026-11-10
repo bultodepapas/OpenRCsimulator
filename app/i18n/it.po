@@ -10053,3 +10053,179 @@ msgstr "Basato sul modello salvato: %s · revisione %d"
 
 msgid "High and Extreme add detailed grass at walking-path edges."
 msgstr "Alto ed Estremo aggiungono erba dettagliata ai bordi dei percorsi pedonali."
+
+# Local game repair estimates.
+
+msgid "Preview game parts estimate. DIY labor, tax and shipping are excluded."
+msgstr "Stima preliminare dei pezzi nel gioco. Sono esclusi lavoro personale, imposte e spedizione."
+
+msgid "Wing, flaps and ailerons (servos excluded)"
+msgstr "Ala, flap e alettoni (servi esclusi)"
+
+msgid "Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded."
+msgstr "Solo pezzi locali osservati. Altri danni potrebbero non essere stati valutati. Sono esclusi lavoro personale, imposte e spedizione."
+
+msgid "LOCAL GAME REPAIR ESTIMATE"
+msgstr "STIMA LOCALE DI RIPARAZIONE DEL GIOCO"
+
+msgid "Observed local parts estimate"
+msgstr "Stima dei pezzi locali osservati"
+
+msgid "Preview game parts estimate"
+msgstr "Stima preliminare dei pezzi nel gioco"
+
+msgid "Package availability or eligibility is unresolved; no cheapest purchase is confirmed."
+msgstr "Disponibilità o idoneità dei pacchetti non risolte; l'acquisto più economico non è confermato."
+
+msgid "Included surplus units: %d. No sale credit is assumed."
+msgstr "Unità in eccedenza incluse: %d. Non si presume alcun credito dalla vendita."
+
+msgid "Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed."
+msgstr "Solo l'ambito di riparazione locale osservato. La manodopera di riparazione selezionata è inclusa; imposte e spedizione sono escluse. Altri danni potrebbero non essere stati valutati."
+
+msgid "COST EVIDENCE INCOMPLETE"
+msgstr "DATI SUI COSTI INCOMPLETI"
+
+msgid "Accident cost evidence is incomplete; some contact observations were rejected."
+msgstr "I dati sui costi dell'incidente sono incompleti; alcune osservazioni di contatto sono state scartate."
+
+msgid "Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing."
+msgstr "Alcuni dati di contatto sono stati scartati. Questa è l'ultima stima accettata; potrebbero mancare ulteriori danni."
+
+msgid "Preview game repair estimate; component outcomes are deterministic authored game rules, not measured failure predictions."
+msgstr "Stima preliminare di riparazione del gioco; gli esiti dei componenti seguono regole deterministiche definite nel gioco, non previsioni di guasto basate su misure."
+
+msgid "Offline USD cash parts estimate; DIY labor is unbilled. Tax, freight, recovery and external equipment are excluded."
+msgstr "Stima offline in USD della spesa per i pezzi; il lavoro personale non viene addebitato. Sono esclusi imposte, trasporto, recupero e attrezzature esterne."
+
+msgid "Unquoted parts use explicit authored game allowances dated 2026-11-09. They are not vendor offers or physical-fit claims."
+msgstr "Per i pezzi senza preventivo si usano importi previsti nel gioco al 2026-11-09. Non sono offerte dei fornitori né garanzie di compatibilità fisica."
+
+msgid "Water exposure requires assessment; delayed thermal/fire propagation, stopped-blade phase and scenery prop strikes are not modeled."
+msgstr "L'esposizione all'acqua richiede una valutazione; non sono modellati la propagazione termica o dell'incendio ritardata, la fase delle pale ferme e gli urti dell'elica contro lo scenario."
+
+msgid "Only observed local regions are assessed; unobserved secondary/internal damage remains outside this preview scope."
+msgstr "Sono valutate solo le zone locali osservate; danni secondari o interni non osservati restano fuori dall'ambito di questa anteprima."
+
+msgid "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation."
+msgstr "Gli elementi fisici principali sono riferimenti di copertura, non massa aggiuntiva. Le voci finanziarie subordinate sostituiscono la precedente ripartizione complessiva."
+
+msgid "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work."
+msgstr "Le soglie locali sono ipotesi dell'anteprima del gioco; la compressione o profondità finale accettata non equivale al lavoro dell'impatto incidente."
+
+msgid "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+msgstr "L'ambito predefinito dei pezzi per il fai da te esclude la manodopera di assemblaggio finale e messa in servizio; i vecchi riferimenti di assemblaggio a pagamento non vengono addebitati."
+
+msgid "DIY estimate"
+msgstr "Stima fai da te"
+
+msgid "Include shop labor"
+msgstr "Includi manodopera d'officina"
+
+msgid "Purchase plan"
+msgstr "Piano di acquisto"
+
+msgid "Recommended parts"
+msgstr "Pezzi consigliati"
+
+msgid "Choose a frozen parts package estimate. Extra supplied parts receive no sale credit."
+msgstr "Scegli una stima di pacchetto di pezzi con prezzi fissati. I pezzi aggiuntivi forniti non danno credito di vendita."
+
+msgid "Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed."
+msgstr "Stima locale del gioco con la manodopera d'officina selezionata. Imposte e spedizione escluse; altri danni potrebbero non essere stati valutati."
+
+msgid "Local game estimate. Other damage may be unassessed. DIY time, tax and shipping are excluded."
+msgstr "Stima locale del gioco. Altri danni potrebbero non essere stati valutati. Tempo personale, imposte e spedizione esclusi."
+
+msgid "Selected cost plan"
+msgstr "Piano dei costi selezionato"
+
+msgid "Assessed game scope"
+msgstr "Ambito del gioco valutato"
+
+msgid "HISTORICAL REPORT · UNVERIFIED"
+msgstr "RAPPORTO STORICO · NON VERIFICATO"
+
+msgid "Saved amounts could not be verified. This historical report is for reference."
+msgstr "Non è stato possibile verificare gli importi salvati. Questo rapporto storico è fornito come riferimento."
+
+msgid "The saved accident report could not be opened. A new flight can still begin."
+msgstr "Non è stato possibile aprire il rapporto dell'incidente salvato. È comunque possibile iniziare un nuovo volo."
+
+msgid "Saved accident report unavailable"
+msgstr "Rapporto dell'incidente salvato non disponibile"
+
+msgid "Cost plan unavailable"
+msgstr "Piano dei costi non disponibile"
+
+msgid "Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."
+msgstr "Gli importi previsti per pezzi e materiali escludono la manodopera. La base di manodopera selezionata e la preparazione condivisa vengono addebitate una sola volta ciascuna."
+
+msgid "Quantities identify purchase or service scope, not a count of physically confirmed failed units."
+msgstr "Le quantità indicano l'ambito di acquisto o servizio, non il numero di unità con guasti fisici confermati."
+
+msgid "Shop labor uses an authored game rate and duration, not a repair shop quote."
+msgstr "La manodopera d'officina usa una tariffa e una durata definite nel gioco, non un preventivo di riparazione."
+
+msgid "DIY cash cost does not charge for owner time."
+msgstr "Il costo in denaro del fai da te non addebita il tempo del proprietario."
+
+msgid "The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."
+msgstr "Il piano di acquisto o di manodopera non è risolto. Il subtotale mostrato esclude i costi mancanti."
+
+msgid "Replacement package"
+msgstr "Pacchetto sostitutivo"
+
+msgid "Repair materials"
+msgstr "Materiali di riparazione"
+
+msgid "Labor"
+msgstr "Manodopera"
+
+msgid "Incurred fee"
+msgstr "Spesa già sostenuta"
+
+msgid "Shared setup"
+msgstr "Preparazione condivisa"
+
+msgid "Labor: %s"
+msgstr "Manodopera: %s"
+
+msgid "Active work: %d min"
+msgstr "Lavoro attivo: %d min"
+
+msgid "Active work: unknown"
+msgstr "Lavoro attivo: sconosciuto"
+
+msgid "Labor: %s · duration unknown"
+msgstr "Manodopera: %s · durata sconosciuta"
+
+msgid "Additional duplicate supplied units: %d. They are unvalued and receive no sale credit."
+msgstr "Unità duplicate aggiuntive fornite: %d. Non hanno un valore attribuito e non danno credito di vendita."
+
+msgid "The cost option could not be applied. The previous estimate is retained."
+msgstr "Impossibile applicare l'opzione di costo. Viene mantenuta la stima precedente."
+
+msgid "One package plus individual parts: %s"
+msgstr "Un pacchetto più pezzi singoli: %s"
+
+msgid "No additional game charge within the assessed scope: %s. This does not certify physical health or salvage."
+msgstr "Nessun costo di gioco aggiuntivo nell'ambito valutato: %s. Questo non certifica lo stato fisico né il recupero dei pezzi."
+
+msgid "Previous package (needs review)"
+msgstr "Pacchetto precedente (da verificare)"
+
+msgid "Selected local game estimate"
+msgstr "Stima locale del gioco selezionata"
+
+msgid "Selected-plan price range"
+msgstr "Intervallo di prezzo del piano selezionato"
+
+msgid "Low estimate"
+msgstr "Stima bassa"
+
+msgid "High estimate"
+msgstr "Stima alta"
+
+msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
+msgstr "Le variazioni di prezzo e le alternative modellate sono limiti, non probabilità di confidenza."

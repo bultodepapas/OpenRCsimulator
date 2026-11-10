@@ -9226,3 +9226,179 @@ msgstr "基于已保存的机型：%s · 版本 %d"
 
 msgid "High and Extreme add detailed grass at walking-path edges."
 msgstr "高和极高设置会在步道边缘添加精细草地。"
+
+# Local game repair estimates.
+
+msgid "Preview game parts estimate. DIY labor, tax and shipping are excluded."
+msgstr "预览游戏零件估算。不含自行维修人工、税费和运费。"
+
+msgid "Wing, flaps and ailerons (servos excluded)"
+msgstr "机翼、襟翼和副翼（不含舵机）"
+
+msgid "Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded."
+msgstr "仅估算已观察到的局部零件。其他损坏可能尚未评估。不含自行维修人工、税费和运费。"
+
+msgid "LOCAL GAME REPAIR ESTIMATE"
+msgstr "局部游戏维修估算"
+
+msgid "Observed local parts estimate"
+msgstr "已观察局部零件估算"
+
+msgid "Preview game parts estimate"
+msgstr "预览游戏零件估算"
+
+msgid "Package availability or eligibility is unresolved; no cheapest purchase is confirmed."
+msgstr "套件供应或适用资格尚未确定；无法确认最便宜的购买方案。"
+
+msgid "Included surplus units: %d. No sale credit is assumed."
+msgstr "包含的多余件数：%d。不计任何出售抵扣。"
+
+msgid "Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed."
+msgstr "仅限已观察到的局部维修范围。包含所选维修人工，不含税费和运费。其他损坏可能尚未评估。"
+
+msgid "COST EVIDENCE INCOMPLETE"
+msgstr "成本依据不完整"
+
+msgid "Accident cost evidence is incomplete; some contact observations were rejected."
+msgstr "事故成本依据不完整；部分接触观测已被拒绝。"
+
+msgid "Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing."
+msgstr "部分接触依据已被拒绝。这是最后一次接受的估算；可能遗漏其他损坏。"
+
+msgid "Preview game repair estimate; component outcomes are deterministic authored game rules, not measured failure predictions."
+msgstr "游戏维修预览估算；零件结果由预设的确定性游戏规则决定，并非根据实测数据预测故障。"
+
+msgid "Offline USD cash parts estimate; DIY labor is unbilled. Tax, freight, recovery and external equipment are excluded."
+msgstr "离线美元现金零件估算；自行维修人工不计费。不含税费、运费、回收费用和外部设备。"
+
+msgid "Unquoted parts use explicit authored game allowances dated 2026-11-09. They are not vendor offers or physical-fit claims."
+msgstr "未报价零件使用日期为 2026-11-09 的游戏预设估算金额，并非供应商报价或实际安装适配声明。"
+
+msgid "Water exposure requires assessment; delayed thermal/fire propagation, stopped-blade phase and scenery prop strikes are not modeled."
+msgstr "接触水后需要评估；模型不包含延迟的热量或火势蔓延、停转桨叶相位和螺旋桨撞击环境物体。"
+
+msgid "Only observed local regions are assessed; unobserved secondary/internal damage remains outside this preview scope."
+msgstr "仅评估已观察到的局部区域；未观察到的次生或内部损坏不在此预览范围内。"
+
+msgid "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation."
+msgstr "实体父项是覆盖关系的参考，不增加质量。财务子项取代旧的合并分配。"
+
+msgid "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work."
+msgstr "局部阈值是游戏预览假设；已接受的终点压缩量或深度不代表输入撞击功。"
+
+msgid "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+msgstr "默认自行维修零件范围不含最终组装和调试人工；不收取旧版付费组装参考费用。"
+
+msgid "DIY estimate"
+msgstr "自行维修估算"
+
+msgid "Include shop labor"
+msgstr "计入维修店人工"
+
+msgid "Purchase plan"
+msgstr "购买方案"
+
+msgid "Recommended parts"
+msgstr "推荐零件"
+
+msgid "Choose a frozen parts package estimate. Extra supplied parts receive no sale credit."
+msgstr "选择一项价格已固定的零件套件估算。额外提供的零件不计出售抵扣。"
+
+msgid "Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed."
+msgstr "包含所选维修店人工的局部游戏估算。不含税费和运费；其他损坏可能尚未评估。"
+
+msgid "Local game estimate. Other damage may be unassessed. DIY time, tax and shipping are excluded."
+msgstr "局部游戏估算。其他损坏可能尚未评估。不含自行维修时间、税费和运费。"
+
+msgid "Selected cost plan"
+msgstr "所选费用方案"
+
+msgid "Assessed game scope"
+msgstr "已评估的游戏范围"
+
+msgid "HISTORICAL REPORT · UNVERIFIED"
+msgstr "历史报告 · 未验证"
+
+msgid "Saved amounts could not be verified. This historical report is for reference."
+msgstr "无法验证已保存的金额。本历史报告仅供参考。"
+
+msgid "The saved accident report could not be opened. A new flight can still begin."
+msgstr "无法打开已保存的事故报告。仍可开始新的飞行。"
+
+msgid "Saved accident report unavailable"
+msgstr "已保存的事故报告不可用"
+
+msgid "Cost plan unavailable"
+msgstr "费用方案不可用"
+
+msgid "Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."
+msgstr "零件和材料估算金额不含人工。所选人工费用只计一次；共用准备费用也只计一次。"
+
+msgid "Quantities identify purchase or service scope, not a count of physically confirmed failed units."
+msgstr "数量表示购买或服务范围，并非已通过实物确认故障的件数。"
+
+msgid "Shop labor uses an authored game rate and duration, not a repair shop quote."
+msgstr "维修店人工采用游戏设定的费率和工时，并非维修店报价。"
+
+msgid "DIY cash cost does not charge for owner time."
+msgstr "自行维修的现金成本不计使用者的时间。"
+
+msgid "The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."
+msgstr "购买或人工方案尚未确定。显示的小计不包含缺失的费用。"
+
+msgid "Replacement package"
+msgstr "更换套件"
+
+msgid "Repair materials"
+msgstr "维修材料"
+
+msgid "Labor"
+msgstr "人工"
+
+msgid "Incurred fee"
+msgstr "已产生费用"
+
+msgid "Shared setup"
+msgstr "共用准备"
+
+msgid "Labor: %s"
+msgstr "人工：%s"
+
+msgid "Active work: %d min"
+msgstr "实际工作：%d 分钟"
+
+msgid "Active work: unknown"
+msgstr "实际工作：未知"
+
+msgid "Labor: %s · duration unknown"
+msgstr "人工：%s · 工时未知"
+
+msgid "Additional duplicate supplied units: %d. They are unvalued and receive no sale credit."
+msgstr "额外提供的重复件数：%d。这些零件不计价值，也不计出售抵扣。"
+
+msgid "The cost option could not be applied. The previous estimate is retained."
+msgstr "无法应用此费用选项。保留原估算。"
+
+msgid "One package plus individual parts: %s"
+msgstr "一个套件加单独零件：%s"
+
+msgid "No additional game charge within the assessed scope: %s. This does not certify physical health or salvage."
+msgstr "在已评估范围内无额外游戏费用：%s。这不能证明实物状态良好或可回收。"
+
+msgid "Previous package (needs review)"
+msgstr "先前套件（需审核）"
+
+msgid "Selected local game estimate"
+msgstr "所选局部游戏估算"
+
+msgid "Selected-plan price range"
+msgstr "所选方案价格区间"
+
+msgid "Low estimate"
+msgstr "低估算"
+
+msgid "High estimate"
+msgstr "高估算"
+
+msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
+msgstr "价格变化和模型替代方案只构成上下界，并非置信概率。"
