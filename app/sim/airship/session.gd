@@ -12,8 +12,8 @@ const Data := preload("res://physics/airship/airship_data.gd")
 const Dynamics := preload("res://physics/airship/airship_dynamics.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
-const WindField := preload("res://physics/wind_field.gd")
-const WindConfig := preload("res://physics/wind_config.gd")
+const WindFieldLaw := preload("res://physics/wind_field.gd")
+const WindSettings := preload("res://physics/wind_config.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 
 const DEFAULT_DATA := "res://data/airships/rc-blimp-5m.json"
@@ -72,7 +72,7 @@ func _init() -> void:
 	sim.faulted.connect(func(reason: String) -> void: _fault("airship kernel: " + reason))
 	# The kernel pauses itself when the application loses focus; the flight follows and needs an explicit resume.
 	sim.paused_changed.connect(func(value: bool) -> void:
-		if value and not paused:
+		if value and not paused and sim.fault_reason.is_empty():
 			_set_paused(true, FOCUS_PAUSE))
 
 
@@ -93,10 +93,10 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	if not is_finite(wind_speed) or wind_speed < 0.0 or wind_speed > MAX_WIND_MPS or not is_finite(float(opts.wind_from_deg)):
 		load_error = "airship weather admits calm or steady wind up to %.1f m/s" % MAX_WIND_MPS
 		return false
-	var weather_raw := WindConfig.defaults()
+	var weather_raw := WindSettings.defaults()
 	weather_raw.speed_mps = wind_speed
 	weather_raw.from_deg = fposmod(float(opts.wind_from_deg), 360.0)
-	var built_weather := WindField.build(weather_raw)
+	var built_weather := WindFieldLaw.build(weather_raw)
 	if not built_weather.ok:
 		load_error = "; ".join(built_weather.errors)
 		return false
@@ -331,8 +331,9 @@ func _nearby_proxies(north: float, east: float, down: float, reach: float) -> Ar
 ## 1. Envelope: the hull of revolution R(x) against every nearby proxy, by axis samples at most AXIS_STEP_M apart.
 ##    Between samples the clearance dist(P(x), proxy) - R(x) cannot drop by more than h/2 * (1 + |dR/dx|) (distance
 ##    is 1-Lipschitz along the axis), so each sample carries that margin: thin wires, poles and off-axis intrusions
-##    are found, at worst a few centimetres early. Samples are also inflated by the largest witness travel of one
-##    tick, so a crossing between two clear endpoints is reported (swept superset; admitted below 10 m/s).
+##    are found, at worst about 3 cm early along the body and up to about 10 cm at the blunt nose tip. Samples
+##    are also inflated by the largest witness travel of one tick, so a crossing between two clear endpoints is
+##    reported (swept superset; admitted below 10 m/s).
 ## 2. Appendages: fin, gondola, gear and vector-following propeller witnesses inside a proxy. A proxy thinner than
 ##    the witness spacing can pass between appendage witnesses (declared limit).
 ## Every response class is terminal for the fabric envelope. Returns "kind (response class)" or "".
@@ -374,6 +375,7 @@ func _build_axis_samples() -> void:
 	_axis = PackedFloat64Array()
 	var profile: PackedFloat64Array = model.envelope.radius_profile
 	var count := profile.size() / 2
+	var previous_margin := 0.0
 	for i in count - 1:
 		var xa := profile[2 * i]
 		var ra := profile[2 * i + 1]
@@ -383,14 +385,13 @@ func _build_axis_samples() -> void:
 		var steps := maxi(1, ceili(length / AXIS_STEP_M))
 		var h := length / float(steps)
 		var margin := 0.5 * h * (1.0 + (absf(rb - ra) / length if length > 0.0 else 0.0))
-		for k in steps + (1 if i == count - 2 else 0):
+		# Samples k = 0..steps-1 of every segment, then the tail station; a profile station shared by two
+		# segments keeps the larger of their margins.
+		for k in steps:
 			var f := float(k) / float(steps)
-			# A sample on a segment boundary keeps the larger margin of its two segments.
-			if k == 0 and _axis.size() >= 3:
-				_axis[_axis.size() - 1] = maxf(_axis[_axis.size() - 1], margin)
-				continue
-			_axis.append_array([lerpf(xa, xb, f), lerpf(ra, rb, f), margin])
-
+			_axis.append_array([lerpf(xa, xb, f), lerpf(ra, rb, f), maxf(margin, previous_margin) if k == 0 else margin])
+		previous_margin = margin
+	_axis.append_array([profile[2 * count - 2], profile[2 * count - 1], previous_margin])
 
 ## Envelope against one proxy. Blocks of AXIS_BLOCK samples are rejected first from their centre sample (clearance
 ## is 1-Lipschitz along the axis), so a far proxy costs a few distance evaluations.

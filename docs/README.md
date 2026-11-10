@@ -29,6 +29,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Reusable Blender developer handoff for new airplanes and all their skins | [Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md) |
 | Create a personal MoonRunner X99 paint with Blender and AI, then load it in the simulator | [Aircraft skins tutorial](AIRCRAFT-SKINS.md) |
 | Landscape folders, field data, adapters, registration and validation | [Landscape contributor guide](LANDSCAPES.md); [selection plan](plans/landscape-selection.md) |
+| Wind-driven flag, windsock reuse, graphics scaling and language-based country artwork | [L15c implementation plan](plans/landscape-flag-windsocks.md); [source audit and research](research/landscape-flag-windsocks-2026-11-10.md) |
 | Workbench: edit, save and test experimental aircraft | [Aircraft Workshop entry point](AIRCRAFT-WORKSHOP.md); [consolidated AE plan](plans/aircraft-editor.md) |
 | Aircraft geometry, generators and configuration limits | The aircraft guide below and its asset README |
 | Delivered source packages and their current asset references | [Source-delivery index](../assets/source-deliveries/README.md) |

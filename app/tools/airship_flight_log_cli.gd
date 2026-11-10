@@ -16,7 +16,7 @@ var options := {}
 func _initialize() -> void:
 	for argument in OS.get_cmdline_user_args():
 		var pair := argument.trim_prefix("--").split("=", true, 1)
-		options[pair[0]] = pair[1] if pair.size() > 1 else true
+		options[pair[0]] = pair[1] if pair.size() > 1 else ""
 	_run.call_deferred()
 
 

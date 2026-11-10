@@ -35,6 +35,7 @@ var _events: Array = []
 var _chain := PackedByteArray()
 var _start_tick := 0
 var _last_tick := 0
+var _stopping := false
 
 
 func _init(session: Node) -> void:
@@ -60,6 +61,7 @@ func start(context: Dictionary = {}, destination := "") -> Error:
 		return _failed("Cannot open flight log (%d)." % FileAccess.get_open_error(), ERR_CANT_CREATE)
 	failure = ""
 	rows_written = 0
+	_stopping = false
 	_chain.clear()
 	_clear_buffers()
 	_start_tick = _session.sim.tick
@@ -100,8 +102,9 @@ func mark(label := "pilot marker") -> void:
 
 
 func stop(reason := "stopped") -> Error:
-	if not recording:
+	if not recording or _stopping:
 		return OK if failure.is_empty() else ERR_FILE_CANT_WRITE
+	_stopping = true
 	_event("stop", reason)
 	_flush()
 	if recording:
@@ -156,7 +159,8 @@ func _resetting() -> void:
 func _event(kind: String, detail: String) -> void:
 	if not recording:
 		return
-	_events.append({tick = _last_tick, kind = kind, detail = detail})
+	# The session tick: an event raised inside an accepted tick (crash, its pause) carries that tick.
+	_events.append({tick = int(_session.sim.tick), kind = kind, detail = detail})
 	if _events.size() >= CHUNK_TICKS:
 		_flush()
 
@@ -168,7 +172,7 @@ func _flush() -> void:
 	if _write_packet({kind = "block", ticks = _ticks, sticks = _sticks, states = _states, continuous = _conts, events = _events}):
 		rows_written += count
 	_clear_buffers()
-	if recording and _file.get_position() >= MAX_BYTES - 2 * OrflContainer.MAX_PACKET:
+	if recording and not _stopping and _file.get_position() >= MAX_BYTES - 2 * OrflContainer.MAX_PACKET:
 		stop("recording byte limit reached")
 
 
@@ -327,6 +331,21 @@ static func _replay(session: Node, field: Dictionary, head: Dictionary, read: Di
 			report.first_mismatch_tick = int(read.ticks[i])
 			report.error = "Replay diverged from the recorded state."
 			return report
+	# Terminal outcome: the same crash at the same tick, or none (obstacle and contact code outside the solver
+	# fingerprint can change it without changing any recorded state).
+	var recorded_crash := {}
+	for event: Dictionary in read.events:
+		if event.kind == "crash":
+			recorded_crash = event
+			break
+	var offset := int(head.checkpoint.tick)
+	var replayed_crash: Dictionary = session.crash
+	report.recorded_crash = str(recorded_crash.get("detail", ""))
+	report.replayed_crash = str(replayed_crash.get("reason", "")).left(160)
+	if recorded_crash.is_empty() != replayed_crash.is_empty() or report.recorded_crash != report.replayed_crash \
+			or (not recorded_crash.is_empty() and int(recorded_crash.tick) != int(replayed_crash.tick) + offset):
+		report.error = "Replay terminal outcome differs from the recording."
+		return report
 	report.exact = true
 	report.ok = true
 	return report

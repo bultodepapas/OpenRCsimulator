@@ -156,6 +156,8 @@ An accepted trim can still waste its entire iteration cap if the requested resid
 
 Replacing a sampled-grid lift maximum with a continuous optimizer changes the quantity being solved and can change the stall angle even when both searches are accurate. For a behavior-preserving optimization, prune the original grid using a justified bound and compare against an exhaustive grid oracle; treat a change of objective as an intentional physics change. [DATA-2a](../research/aircraft-validation/DATA-2a/README.md).
 
+Contact witnesses can dominate a stage near the ground even when few of them touch. On the RC blimp, 43 envelope witnesses with per-witness array allocation and terrain sampling took ~1 ms per tick resting on the gear. Reject witnesses before sampling with a bound that holds without a slope assumption, the field's height ceiling, and the deepest witness along the world-down direction. Then use a coarse footprint bound, and keep the exact per-point test. An unsampled witness contributes exactly nothing, so behaviour is unchanged. Observe-only witnesses (propeller strikes) belong to the accepted-tick observer, not to every RK stage. [BL-12](../research/rc-airship/BL-12/README.md#performance).
+
 ### A prepared model needs an explicit ownership boundary
 
 A native model copy remains isolated from later source edits, but isolation does not imply freshness; dictionary identity misses nested changes. Require rebuild after edits, invalidate generations even when preparation fails, and test rejection through the adapter so a stateless fallback cannot mask a stale handle. [E0b6p prepared model](../research/propwash/E0b6p/prepared-model/README.md).

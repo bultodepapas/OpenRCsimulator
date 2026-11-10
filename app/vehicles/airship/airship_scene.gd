@@ -12,7 +12,7 @@ const FieldBuilder = preload("res://render/field.gd")
 const World = preload("res://render/world/world.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
-const SkyConfig = preload("res://environment/sky_appearance_config.gd")
+const SkyAppearance = preload("res://environment/sky_appearance_config.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const Spec = preload("res://spec.gd")
@@ -35,7 +35,7 @@ var controller_registry: RefCounted
 var field_path: String = FieldLoader.DEFAULT_PATH
 var lighting_config: Dictionary = LightingConfig.defaults()
 var night_options := {}
-var sky_config: Dictionary = SkyConfig.defaults()
+var sky_config: Dictionary = SkyAppearance.defaults()
 var enable_audio := true
 var enable_world := true
 ## Deterministic test seam: tick -> [roll, pitch, yaw, throttle]; sampled only on physics ticks.
@@ -150,7 +150,7 @@ func _load_field() -> bool:
 		startup_error = "; ".join(loaded.errors)
 		return false
 	var checked_light := LightingConfig.validate(lighting_config)
-	var checked_sky := SkyConfig.validate(sky_config)
+	var checked_sky := SkyAppearance.validate(sky_config)
 	if not checked_light.ok or not checked_sky.ok:
 		startup_error = "; ".join(checked_light.errors) + "; ".join(checked_sky.errors)
 		return false
@@ -341,13 +341,13 @@ func _process(delta: float) -> void:
 	var drawn: PackedFloat64Array = session.interpolated(fraction)
 	visual.pose(drawn, session.sim.continuous, delta if not session.paused else 0.0)
 	var target := Frames.ned_to_render([drawn[0], drawn[1], drawn[2]])
-	var basis := Frames.quat_to_render(drawn.slice(6, 10))
-	_update_camera(target, basis, delta)
+	var body_basis := Frames.quat_to_render(drawn.slice(6, 10))
+	_update_camera(target, body_basis, delta)
 	if _environment != null:
 		World.update(_environment, 37.0 + session.sim.time(), Vector3.ZERO, target, camera)
 	var t: Dictionary = session.telemetry()
 	hud.update(t, _last_input, CAMERA_NAMES[camera_mode])
-	_update_audio(target, basis)
+	_update_audio(target, body_basis)
 
 
 func _ground_height_render(x: float, z: float) -> float:
@@ -355,8 +355,8 @@ func _ground_height_render(x: float, z: float) -> float:
 	return h[0] if h.size() == 3 and is_finite(h[0]) else 0.0
 
 
-func _update_camera(target: Vector3, basis: Basis, delta: float) -> void:
-	var nose := -basis.z
+func _update_camera(target: Vector3, body_basis: Basis, delta: float) -> void:
+	var nose := -body_basis.z
 	var heading := atan2(nose.x, -nose.z)
 	_chase_heading = lerp_angle(_chase_heading, heading, clampf(delta * 1.2, 0.0, 1.0))
 	var eye: Vector3
@@ -404,18 +404,18 @@ func _motor_player(stream: AudioStreamWAV, node_name: String) -> AudioStreamPlay
 	return player
 
 
-func _update_audio(target: Vector3, basis: Basis) -> void:
+func _update_audio(target: Vector3, body_basis: Basis) -> void:
 	if _audio_side == null:
 		return
 	var c: PackedFloat64Array = session.sim.continuous
 	var side := maxf(absf(c[0]), absf(c[1]))
 	var stern := maxf(absf(c[2]), absf(c[3]))
-	_motor_sound(_audio_side, side, target + basis * Vector3(0.0, -0.17, -0.8))
-	_motor_sound(_audio_stern, stern, target + basis * Vector3(0.0, 0.0, 2.45))
+	_motor_sound(_audio_side, side, target + body_basis * Vector3(0.0, -0.17, -0.8))
+	_motor_sound(_audio_stern, stern, target + body_basis * Vector3(0.0, 0.0, 2.45))
 
 
-func _motor_sound(player: AudioStreamPlayer3D, n: float, position: Vector3) -> void:
-	player.global_position = position
+func _motor_sound(player: AudioStreamPlayer3D, n: float, at: Vector3) -> void:
+	player.global_position = at
 	var silent: bool = session.paused or n < 0.02
 	player.stream_paused = silent
 	if silent:

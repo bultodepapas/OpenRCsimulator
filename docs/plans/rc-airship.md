@@ -396,11 +396,11 @@ Checked 2026-11-10. [BL-12 evidence](../research/rc-airship/BL-12/README.md) ret
 | BL-01 | Owner delivery preserved in [assets/source-deliveries/rc-blimp-5m](../../assets/source-deliveries/rc-blimp-5m/README.md). "5 m" is the envelope length (scale 0.0688). Topology: two side props on 0–120° vectoring pivots, a 0–90° vectored stern pusher, a reversible stern lateral thruster, and three inverted-Y fins with ±20° moving surfaces. | — |
 | BL-02 | Closed `openrc-airship v1` reader ([airship_data.gd](../../app/physics/airship/airship_data.gd)), [design inputs](../../research/rc-airship/design/rc-blimp-5m.json) and a [generator](../../research/rc-airship/build_data.py) that checks the lift budget and solves the keel ballast position for CG under CB. | Applicability ledger beyond the quantity sources |
 | BL-03…06 | [Stage law](../../app/physics/airship/airship_dynamics.gd) with analytical oracles. I06 decision: ideal Munk via C_A plus the Hopkins afterbody loss, declared as `afterbody_loss_factor`; crossflow strips are viscous only. | Moving-axis rotor momentum (omitted, bounded); reverse-flow afterbody |
-| BL-07 | [Session](../../app/sim/airship/session.gd): calm or steady wind ≤ 4 m/s; airborne or two-wheel stance start; pause, reset and reconfiguration; terminal events. | Lake and water entry |
-| BL-08 | Exact replay of the in-session input tape. | `.orfl` recorder, CLI, checkpoint export |
-| BL-09 | Three baked skins as GLB; [visual adapter](../../app/vehicles/airship/airship_visual.gd) poses vectors, fins and rotors from accepted state. | Prop blur art, LOD budgets on target hosts |
+| BL-07 | [Session](../../app/sim/airship/session.gd): calm or steady wind ≤ 4 m/s; airborne or two-wheel stance start; pause, reset and reconfiguration; terminal events. Resume needs low throttle and a centred yaw stick (the stern lateral motor is energized directly). Losing window focus pauses behind the menu. Only a full, sealed gas fill is admitted. | Lake and water entry (the field lake is not water for the blimp) |
+| BL-08 | Opt-in [flight log](../../app/sim/airship/flight_log.gd) (F10/F11) in the `.orfl` container under its own `openrc-airship-flight-log v1` format. A [CLI](../../app/tools/airship_flight_log_cli.gd) replays a complete file byte-exactly from its mid-flight checkpoint and exports CSV. Identity, divergence, corruption and truncation are refused. See [flight logging](../FLIGHT-LOGGING.md#rc-blimp-logs). | Candidate (changed-law) comparison report |
+| BL-09 | Three baked skins as GLB; [visual adapter](../../app/vehicles/airship/airship_visual.gd) poses vectors, fins and rotors from accepted state. [Parity test](../../app/tests/test_airship_assets.gd): for every skin, posed rotor axes, physics thrust directions and hub positions match the Blender inventory at 0/45/90/120° within 1 µm. | Prop blur art, LOD budgets on target hosts |
 | BL-10 | Garage choice "RC blimp — skin" and Fly RC blimp. Radio, gamepad and keyboard through the shared RC reader with low-throttle arming. HUD and help. `--airship=<skin>` route. | Radio calibration UI inside the activity |
-| BL-11 | Penalty gear and envelope contact against terrain; terminal propeller strike, hard envelope impact, and two-way obstacle tests against the field collision inventory. | Swept continuous test beyond 10 m/s |
+| BL-11 | Penalty gear and envelope contact against terrain; terminal propeller strike and hard envelope impact. The envelope is tested exactly against every nearby box and capsule proxy (axis samples ≤ 5 cm with a Lipschitz margin, inflated by one tick of travel). It catches 12 mm wires, off-axis intrusions and crossings between clear endpoints. Appendages use point witnesses. Every response class is terminal for the fabric envelope. | Appendage (fin) tests against proxies thinner than the witness spacing; speeds above 10 m/s |
 | BL-12 | Activity scene with chase, pilot and orbit cameras, CC0 electric motor audio, pause menu (skin, start, ballast weigh-off, wind, camera). 1080p captures reviewed. | Real-radio pilot review; target-host 1080p performance |
 
 Stick semantics (Mode 2):
@@ -411,4 +411,10 @@ Stick semantics (Mode 2):
 - **Yaw:** the reversible stern thruster, coupled with the rudders.
 - **Roll:** ±35 % differential side thrust.
 
-The reference GDScript costs about 0.70 ms per tick, above the 500 µs budget; that is BL-17 work.
+Accepted-tick cost (reference GDScript, real field with obstacles, Ryzen 9 5900X development host, Godot 4.8-beta2, p50/p95):
+
+- Flight: 406–426 / 610–650 µs.
+- Lift-off: 432–497 / 662–743 µs.
+- Resting on the gear: 717–756 / 1064–1097 µs.
+
+Air flight now meets the 500 µs median target on this host. Ground contact does not, and about 200 µs of every step is shared-kernel overhead. Target-host qualification remains BL-17 ([evidence](../research/rc-airship/BL-12/README.md#performance)).

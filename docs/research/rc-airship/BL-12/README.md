@@ -1,6 +1,6 @@
 # BL-12: first playable experimental RC blimp — evidence (2026-11-10)
 
-Software and rendered evidence for the first playable experimental gate of the [RC airship plan](../../../plans/rc-airship.md#14-implementation-status). No physical measurement exists for this configuration. Nothing here establishes physical validation, target-hardware performance or pilot acceptance.
+Software and rendered evidence for the first playable experimental gate of the [RC airship plan](../../../plans/rc-airship.md#14-implementation-status), updated after the closing audit the same day. No physical measurement exists for this configuration. Nothing here establishes physical validation, target-hardware performance or pilot acceptance.
 
 ## Configuration under test
 
@@ -21,7 +21,7 @@ Software and rendered evidence for the first playable experimental gate of the [
 - Law: `airship-kirchhoff-6dof-v1`.
   - Lamb spheroid and fin-plate added mass.
   - Viscous crossflow strips.
-  - Hopkins afterbody loss aft of the steepest-area-decrease station.
+  - Hopkins afterbody loss aft of the steepest-area-decrease station, using the same lateral added mass as C_A (k2 × `hull_scale`).
   - Fins over the full angle range, with flap effectiveness.
   - Four rotors with inflow lapse and torque reaction.
   - One shared 3S battery bus.
@@ -32,25 +32,32 @@ Software and rendered evidence for the first playable experimental gate of the [
 
 | Test | Result | Discriminates |
 | --- | --- | --- |
-| `test_airship_dynamics.gd` | 45/45 | Lamb k1/k2/k′ against tables (L/D 4, 5, 6); ideal sphere a = F/(m + ρV/2); heave with added mass; zero-added-mass reduction to `RigidBody.derivative` (difference 0.0); datum-shift kinetic energy and v̇′ = v̇ + ω̇×d; Galilean steady wind while rotating; Munk moment sign and magnitude; fin weathervane in yaw and pitch; torque-reaction sign; thrust lapse; shared-bus terminal voltage; gear k·depth, no pulling, tilted wheel friction confined to the ground plane, no damping jump at first touch; closed-contract rejections |
-| `test_airship_session.gd` | 29/29 | See the handling results below |
-| `test_airship_activity.gd` | 11/11 | Home → Garage blimp skin → Fly RC blimp → paused safe start → resume → accepted ticks → Home, with the choice remembered |
-| `test_ui_home.gd`, `test_ui_language.gd`, `test_home_launch_conditions.gd` (1498 checks), `test_rcv_menu.gd` (27), `test_rcv_nitro_activity.gd` (99) | pass | Shared Home, AppRoot and translation consumers |
+| `test_airship_dynamics.gd` | 50/50 | Lamb k1/k2/k′ against tables (L/D 4, 5, 6); ideal sphere a = F/(m + ρV/2); heave with added mass; zero-added-mass reduction to `RigidBody.derivative`; datum-shift kinetic energy and v̇′ = v̇ + ω̇×d; Galilean steady wind while rotating; Munk moment sign and magnitude; fin weathervane in yaw and pitch; torque-reaction sign; thrust lapse; shared-bus voltage; gear k·depth, no pulling, friction in the ground plane, no damping jump; afterbody force −u·w·ρ·k2·S(x₀), restoring moment aft of x₀, none in reverse flow, scaling with `hull_scale`; closed-contract rejections |
+| `test_airship_session.gd` | 43/43 | Handling results below; yaw-centred arming; focus-loss pause; synthetic obstacles (12 mm wire, off-axis quadrant box, clear box, swept beam); terrain-skip equivalence against an unskipped reference (600 random near-ground states, 410 touching, 0 mismatches) |
+| `test_airship_activity.gd` | 13/13 | Home → Garage blimp skin → Fly RC blimp → paused safe start → resume → accepted ticks → focus loss pauses behind the menu → resume → Home, with the choice remembered |
+| `test_airship_flight_log.gd` | 16/16 | Mid-flight recording on the real field in steady wind replays byte-exactly; changed identity, changed stick row, flipped byte, truncation, different terminal outcome and overwrite are refused; a strike replays as the same strike; reset closes a complete file; fixed-wing tools refuse the format |
+| `test_airship_assets.gd` | 16/16 | For each skin, posed GLB rotor axes, physics thrust directions and hub positions match the Blender inventory at 0/45/90/120° within 1 µm; every inventoried node exists |
+| `test_ui_home.gd`, `test_ui_language.gd`, `test_home_launch_conditions.gd` (1498 checks), `test_rcv_menu.gd` (27), `test_rcv_nitro_activity.gd` (99) | pass | Shared Home, AppRoot and translation consumers (first gate; unchanged since) |
+
+The [CLI](../../../../app/tools/airship_flight_log_cli.gd) replayed a 1200-tick ground-start log exactly, exported its CSV, and refused to overwrite its report.
 
 Handling results from `test_airship_session.gd`:
 
 - Motors off and 80 g heavy: sinks at 0.58 m/s.
-- Full throttle: cruises at 6.5 m/s drawing 87 W (7.1 A), pitch +12°.
-- Full back stick brakes from 6.5 to 0.75 m/s.
+- Full throttle, untrimmed: cruises at 6.4 m/s drawing 87 W (7.1 A), pitch +17°, climbing 1.6 m/s on hull dynamic lift.
+- A gentle proportional pilot (rudder 0.04/deg of heading error; elevator on pitch and climb rate) at full throttle holds heading within 0.2° and climb within 0.26 m/s at 6.7 m/s.
+- Full back stick brakes from 6.4 to 1.0 m/s.
 - Vectored climb: +1.1 m/s.
 - Stern thruster yaws the nose right from rest.
 - Ground start: rests on both wheels at the measured 2.4° stance, carrying 0.77 N of gear load, then lifts off by vectored thrust.
-- Ends the flight on a 1.9 m/s envelope strike, and on a real field light pole piercing the envelope.
+- Ends the flight on a 1.9 m/s envelope strike, and on the field flagpole fixture piercing the envelope.
 - Drifts at exactly the wind speed (2.00 m/s ground, 0.00 m/s air) when released neutral in a steady breeze.
 - Refuses winds above 4 m/s.
 - Replay of a 12 s tape reproduces the final state and continuous bytes exactly.
 
 ## Review findings and resolution
+
+### First gate
 
 A read-only Good Enemy review confirmed the equations of motion about O, Galilean invariance in steady wind, and gravity and gas accounted once. It found:
 
@@ -69,21 +76,72 @@ A read-only Good Enemy review confirmed the equations of motion about O, Galilea
 
 All of these were fixed, and the discriminating tests above were added.
 
+### Closing audit (two independent reviews)
+
+The first review re-confirmed the equations of motion, mixer signs, contact, determinism and the repository rules. Its findings and resolutions:
+
+| Finding | Resolution |
+| --- | --- |
+| Point-witness obstacle test missed thin wires and off-axis intrusions; no swept case | Exact envelope test per proxy: axis samples ≤ 5 cm with a Lipschitz margin h/2·(1+\|R′\|), block rejection, inflation by one tick of travel |
+| Window focus loss did not pause the blimp | Session follows the kernel pause; activity opens its menu; explicit resume |
+| Unrelated and duplicate zips committed under `BLIMP/` | Untracked and ignored; extracted deliveries remain in `assets/source-deliveries/rc-blimp-5m` |
+| Arming ignored the yaw channel (stern lateral motor) | Resume refuses \|yaw\| > 0.1 |
+| Afterbody used slender m′ = ρπR², C_A used Lamb k2 | Afterbody uses k2 × `hull_scale` ([decision](../../../DECISIONS.md#the-rc-blimp-owns-a-coupled-added-mass-law-with-a-declared-afterbody-loss)) |
+| Untested afterbody law, loose cost bound, cruise climb unchecked | Afterbody oracle, cost bound < 2500 µs (real time needs < 4167), climb and pilot-model checks |
+| Per-tick detailed evaluation and per-stage propeller sampling | Contact-only observation; propellers observed once per accepted tick |
+| Response classes ignored | Strike reason names kind and class; every class stays terminal for the fabric envelope (declared) |
+| Doc said "light pole"; partial gas fill admitted but not modelled; HUD kept a refused choice | Corrected; only a full fill is admitted; HUD rolls back |
+
+The second review covered the fixes. Its probe of 3000 random near-ground states found the terrain skip byte-identical to the unskipped reference. Its findings:
+
+- **Replay terminal outcome.** Replay verification did not compare the terminal outcome. It now requires the same crash at the same tick.
+- **Axis samples.** Profile stations between segments were not sampled. Every station is sampled now, with the larger margin of its two segments.
+- **Nose tip.** The nose-tip early detection is up to about 10 cm, not "a few centimetres"; the doc is corrected.
+- **Stop at the byte limit.** A latent recursion in stop at the byte limit is now guarded.
+- **Event ticks.** Crash events are stamped with the accepted tick.
+- **Fault pause.** A kernel fault no longer logs a focus pause.
+
 ## Pitch/yaw divergence and the afterbody law (I06 decision)
 
 With only the ideal Kirchhoff (Munk) moment, the hull diverged in pitch above about 2 m/s and spiralled in yaw.
 
 - **Why:** the Munk slope (k2 − k1)ρV·u·w ≈ 2.6·u·w far exceeds the fin restoring slope ≈ 0.6·u·w, and the pendulum stiffness of 6.9 N·m/rad cannot hold it.
-- **Fix:** the Hopkins (1951) afterbody law cancels the slender-body potential load aft of the separation station x₀. It is declared as `afterbody_loss_factor`; the analytical fixtures keep 0 for ideal flow.
+- **Fix:** the Hopkins (1951) afterbody law cancels the potential load aft of the separation station x₀. It is declared as `afterbody_loss_factor`; the analytical fixtures keep 0 for ideal flow.
 
-Full-throttle cruise probe (scratch probe, 30 s):
+Full-throttle cruise probe with the first-gate scaling (slender m′, scratch probe, 30 s):
 
 | Afterbody loss | Fin slope scale | 5 s | 10 s | 15 s | 20 s | 30 s |
 | --- | --- | --- | --- | --- | --- | --- |
 | 0 | 0.85 | p +40°, 4.2 m/s | p +58°, r −65° | p −68° | p +37° | heading wandering |
 | 1 | 0.85 | p +9°, 5.3 m/s | p +14°, 6.2 m/s | p +8°, 6.6 m/s | p +12°, 6.5 m/s | p +9°, 3.6 m/s at half throttle; heading held at 90°, roll 0° |
 
-The remaining nose-up attitude at full throttle is dynamic lift on the 80 g heavy hull. The pilot trims it with forward stick.
+With the consistent k2 scaling (about 10 % less cancellation), the untrimmed hull keeps a lightly damped pitch oscillation (+5° to +19° over 40 s). It is only marginally stable in yaw: heading drifts about 17° in 40 s at neutral stick and wanders under small forward stick. Real airships are typically neutral or slightly unstable directionally. The pilot-model check above shows the blimp is easy to hold. Fin effectiveness was not retuned: hull interference would raise it and the tail boundary layer would lower it, and neither is measured (BL-13).
+
+Pitch authority is large: about −45° of attitude at 40 % forward stick under full throttle, from the stern vector lifting the tail. That is a mixer travel choice. Changing it is flight-feel tuning and needs a pilot review with baseline and candidate logs.
+
+## Performance
+
+Accepted-tick cost, measured with a scratch harness (2 × 2400 ticks per regime, `Time.get_ticks_usec` around `tick_once`).
+
+- **Setup:** reference GDScript on the real field with its obstacle inventory, an AMD Ryzen 9 5900X development host and Godot 4.8-beta2 headless, with no competing workload.
+- **Recorder:** off.
+
+| Regime | p50 | p95 |
+| --- | --- | --- |
+| Air cruise, calm | 406–418 µs | 610–620 µs |
+| Air turn, 3 m/s wind | 418–426 µs | 632–653 µs |
+| Ground roll and lift-off | 432–497 µs | 662–743 µs |
+| Resting on the gear | 717–756 µs | 1064–1097 µs |
+
+Before the audit, the same host measured about 840 µs in the air and 3.4–4.5 ms near the ground. Near the ground, 66 terrain samples per evaluation were the cause. The changes:
+
+- **Observation:** contact-only per-tick observation, with no full detailed evaluation.
+- **Witness prefilter:** a per-witness bound by the field ceiling and an orientation-aware down offset. The footprint samples are taken only when more than five witnesses remain.
+- **Propellers:** observed once per accepted tick, and rotated only when their pivot bound cannot clear them.
+- **Obstacles:** a broad-phase cache.
+- **Stage:** inlined non-transcendental stage arithmetic, and no wind transport in calm air.
+
+About 200 µs of each step is shared-kernel validation and RK bookkeeping. Target-host profiling remains BL-17.
 
 ## Rendered evidence (1920×1080, kept outside Git)
 
@@ -94,15 +152,17 @@ Captures are under `D:\OpenRCsimulator-evidence\blimp-intake\captures\` on the d
 - the pilot view;
 - a scripted chase-camera flight (climb, cruise at 5.2 m/s, right turn heeling 8.6° outward, brake) at 82 fps including capture.
 
-The three skins (Tiburón Blanco, Histórico, Cromo Carbono Azul) render with their baked materials. Vector pivots, the stern pivot, fins and rotors move from accepted physical state.
+The three skins (Tiburón Blanco, Histórico, Cromo Carbono Azul) render with their baked materials. Vector pivots, the stern pivot, fins and rotors move from accepted physical state. The captures predate the audit changes, which do not affect rendering.
 
 ## Open gates
 
-- **CPU cost:** about 0.70 ms per accepted tick in reference GDScript (four RK stages plus one telemetry evaluation), above the shared 500 µs physics budget. Target-host profiling and optimization are open (BL-17).
+- **CPU cost:** resting on the gear and target-host qualification (BL-17).
 - **Physical measurements:** no BL-T01…T08 measurements exist; every non-geometric input is an estimate (BL-13).
-- **Flight logs:** no `.orfl` recorder or exported log exists for the airship. Exact replay is the in-session input tape only (BL-08 remainder).
+- **Flight logs:** a candidate (changed-law) comparison report does not exist for the blimp (BL-08 remainder).
 - **Domain limits:**
   - Gusts, turbulence, shear and altitude-dependent density are refused (BL-14).
-  - Fabric landing support is a penalty proxy, not a qualified envelope model (BL-15).
+  - Fabric landing support is a penalty proxy (BL-15).
   - Reverse-flow afterbody loss is omitted.
-- **Pilot evidence:** no real radio or pilot review has been recorded yet.
+  - The field lake is not water for the blimp.
+  - Fins and other appendages use point witnesses against obstacle proxies.
+- **Pilot evidence:** no real radio or pilot review has been recorded yet. Pitch-stick authority and directional stability need that review.

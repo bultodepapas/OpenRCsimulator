@@ -95,6 +95,33 @@ func _initialize() -> void:
 	var closed := AirshipLog.inspect(reset_path)
 	_check("a reset closes a complete log", not second.recording and closed.ok and closed.complete and closed.ticks.size() == 120)
 	_check("refuses to overwrite an existing log", AirshipLog.new(s).start({}, log_path) == ERR_ALREADY_EXISTS)
+	# A flight that ends in a terminal strike: the replay must end in the same strike at the same tick.
+	var drop: Node = Session.new()
+	root.add_child(drop)
+	drop.set_collision_world(CollisionSetup.build(field).world)
+	drop.prepare(field, {altitude_m = 1.2})
+	var fast: PackedFloat64Array = drop.sim.state.duplicate()
+	fast[5] = 3.0
+	drop.sim.continuous = drop.start_continuous.duplicate()
+	drop.sim.reset(fast)
+	drop.resume(PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	var crash_path := DIR + "/crash.orfl"
+	var third := AirshipLog.new(drop)
+	third.start({field_path = FieldLoader.DEFAULT_PATH}, crash_path)
+	for i in 480:
+		if not drop.tick_once(PackedFloat64Array([0.0, 0.0, 0.0, 0.0])):
+			break
+	third.stop("after strike")
+	var crash_read := AirshipLog.inspect(crash_path)
+	var crash_report := AirshipLog.verify(crash_path)
+	_check("a strike ends the recorded flight and replays as the same strike", not drop.crash.is_empty() and crash_report.ok
+		and crash_report.recorded_crash == str(drop.crash.reason) and crash_report.replayed_crash == crash_report.recorded_crash, JSON.stringify(crash_report))
+	var no_crash: Dictionary = crash_read.duplicate(true)
+	no_crash.events = no_crash.events.filter(func(event: Dictionary) -> bool: return event.kind != "crash")
+	probe = Session.new()
+	var outcome := AirshipLog._replay(probe, field, crash_read.header, no_crash, {identity_match = false, exact = false, ok = false, first_mismatch_tick = -1, error = ""})
+	probe.free()
+	_check("a replay whose terminal outcome differs is refused", not outcome.ok, str(outcome.error))
 	_clean()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

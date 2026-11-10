@@ -342,7 +342,7 @@ func _mixer_signs() -> void:
 	_check("back stick fins add nose-up moment", nose_up.loads[4] > straight.loads[4], "%.4f vs %.4f" % [nose_up.loads[4], straight.loads[4]])
 
 
-func _flat(n: float, e: float) -> PackedFloat64Array:
+func _flat(_n: float, _e: float) -> PackedFloat64Array:
 	return PackedFloat64Array([0.0, 0.0, 0.0])
 
 
@@ -384,8 +384,8 @@ func _discriminating() -> void:
 	_check("fins stabilize in pitch (nose down for w > 0)", lf[4] - lb[4] < 0.0, str(lf[4] - lb[4]))
 	# Torque reaction: port prop, sense -1 about +x thrust, kappa 0.01 m, T0 2 N => +0.02 N m roll.
 	var torqued := _model(fixture(5.0, 1.0, {torque = 0.01}), 0.0)
-	var tr := Dynamics.evaluate(torqued, _body(), _cont(PackedFloat64Array([1.0, 0.0, 0.0, 0.0])), _zero_inputs(), _calm(), Callable(), false)
-	_check("propeller torque reaction sign and size", absf(tr.loads[3] - 0.02) < 1e-12, str(tr.loads[3]))
+	var torque_result := Dynamics.evaluate(torqued, _body(), _cont(PackedFloat64Array([1.0, 0.0, 0.0, 0.0])), _zero_inputs(), _calm(), Callable(), false)
+	_check("propeller torque reaction sign and size", absf(torque_result.loads[3] - 0.02) < 1e-12, str(torque_result.loads[3]))
 	# Thrust lapse: T = T0 (n|n| - |n| V_in / V_p) = 2 (1 - 6/12) = 1 N at 6 m/s.
 	var lapse := _model(fixture(5.0, 1.0, {drag = true}), 0.0)
 	var lr := Dynamics.evaluate(lapse, _body(M.v3(6.0, 0.0, 0.0)), _cont(PackedFloat64Array([1.0, 0.0, 0.0, 0.0])), _zero_inputs(), _calm(), Callable(), true)

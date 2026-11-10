@@ -84,7 +84,8 @@ Verified 2026-11-10 in Godot 4.8-beta2 ([BL-12](../../../docs/research/rc-airshi
 
 - **Loading:** all three skins load through [airship_visual.gd](../../../app/vehicles/airship/airship_visual.gd) and every `glb_nodes` binding resolves.
 - **1080p captures:** three views per skin plus articulation at vector 0/90/120° and fins ±20° show the baked skins, the vector pivots, the stern pivot and the fins moving about the documented axes.
-- **Not checked:** the exporter's Blender pose test and the original-versus-GLB preview comparison were not completed by the asset run and remain open.
+- **Articulation parity:** [test_airship_assets.gd](../../../app/tests/test_airship_assets.gd) poses every skin's GLB at the vector angles recorded from Blender in `geometry.json` (`rotor_axis_at`, 0/45/90/120°). For each skin, the posed rotor spin axes, the physics thrust directions and the posed hub positions match the Blender inventory within 1 µm. Every inventoried `glb_nodes` name exists.
+- **Not checked:** a rendered original-versus-GLB image comparison inside Blender (material look). The 1080p captures above are the only visual check.
 
 ## Known omissions and open items
 

@@ -361,3 +361,14 @@ disposable log files; no golden flights or accepted aircraft data are rewritten.
 [FL-01…04 source research, implementation and verification](research/flight-logging/FL-01/README.md).
 These are software checks; independent measurements and RC pilot feedback remain
 necessary for physical accuracy and flight feel.
+
+## RC blimp logs
+
+The blimp activity records with the same keys: **F10** starts or stops, **F11** adds a marker. A reset or configuration change closes the file. The [recorder](../app/sim/airship/flight_log.gd) uses the `.orfl` container described above under its own `openrc-airship-flight-log v1` format, so the fixed-wing exporter refuses these files. Each row is one accepted tick: the clean sticks that drove it, then the end state and the actuator/battery block. The header keeps the session identity, options, field path, obstacle identity and a checkpoint, so a recording may start mid-flight.
+
+```powershell
+& $env:GODOT --headless --path app --audio-driver Dummy --script res://tools/airship_flight_log_cli.gd -- `
+  --log=<file.orfl> --report=<new.json> [--csv=<new.csv>]
+```
+
+The CLI replays the file from its checkpoint through a fresh session and compares every row byte for byte. It exits 0 only when the report shows `complete`, `identity_match` and `exact`; check `solver_changed` as for aircraft logs. It never overwrites outputs. The CSV is an offline view with fixed decimals; the `.orfl` file stays the exact record. Changed-law candidate comparison is not implemented for the blimp yet. Test: `res://tests/test_airship_flight_log.gd`.

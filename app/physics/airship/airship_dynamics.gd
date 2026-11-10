@@ -316,7 +316,8 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 
 ## Gear and envelope contacts against the terrain sampler [height_up, dh/dnorth, dh/deast]. Penalty normal force
 ## with depth-scaled damping (Hunt-Crossley-like: no force jump at first touch, never pulling) and regularized
-## Coulomb friction in the ground plane. The skip tests sample the terrain under O and at +-R north/east and rely on
+## Coulomb friction in the ground plane. Witnesses above the field ceiling are never sampled. When more than
+## FOOTPRINT_SAMPLES remain, the skip tests sample the terrain under O and at +-R north/east and rely on
 ## the admitted field slope (at most TERRAIN_SLOPE_LIMIT inside the footprint; a steeper cliff is outside the
 ## domain): a witness higher than min(field ceiling, min_k(h_k + slope * distance_k)) + TERRAIN_SKIP_MARGIN cannot
 ## touch, so it is not sampled; the field ceiling bound holds without any slope assumption. Skipping changes no
@@ -325,6 +326,8 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 ## integration stages never evaluate them.
 const TERRAIN_SLOPE_LIMIT := 0.3
 const TERRAIN_SKIP_MARGIN := 0.05
+## Above this many witnesses not cleared by the field ceiling, footprint samples tighten the bound first.
+const FOOTPRINT_SAMPLES := 5
 
 
 static func _contacts(model: Dictionary, body: PackedFloat64Array, continuous: PackedFloat64Array, q: PackedFloat64Array,
@@ -339,24 +342,29 @@ static func _contacts(model: Dictionary, body: PackedFloat64Array, continuous: P
 	# Global ceiling of the field (session-supplied) first: far above every terrain point, no sampling is needed.
 	if -body[2] - 1.3 * radius - 0.5 > ceiling:
 		return out
-	# World-down direction in body axes: a body point p sits dot(down_b, p) below O. The deepest gear or envelope
-	# witness bounds the whole contact set; a vectored propeller point stays within |p - pivot| of its pivot.
+	# World-down direction in body axes: a body point p sits dot(down_b, p) below O. A vectored propeller point stays
+	# within |p - pivot| of its pivot, whatever the vector angle.
 	var down_b := M.q_rotate(PackedFloat64Array([q[0], -q[1], -q[2], -q[3]]), PackedFloat64Array([0.0, 0.0, 1.0]))
 	var contacts: Dictionary = model.contacts
 	var hull: PackedFloat64Array = contacts.hull_points
 	var gear_items: Array = contacts.gear
-	var deepest := -INF
-	for i in hull.size() / 3:
-		deepest = maxf(deepest, down_b[0] * hull[3 * i] + down_b[1] * hull[3 * i + 1] + down_b[2] * hull[3 * i + 2])
-	for gear: Dictionary in gear_items:
-		var gp: PackedFloat64Array = gear.point
-		deepest = maxf(deepest, down_b[0] * gp[0] + down_b[1] * gp[1] + down_b[2] * gp[2])
 	var props: PackedFloat64Array = contacts.prop_points
 	var assign: PackedInt64Array = model.prop_vector
 	var vectors: Array = model.vectors
-	var props_low := false
+	var floor_bound := ceiling + TERRAIN_SKIP_MARGIN
+	# Witnesses the ceiling alone cannot clear. Few of them: sample each directly. Many (relief above them):
+	# the five footprint samples first tighten the bound under the admitted slope limit.
+	var low := 0
+	for i in hull.size() / 3:
+		if -(body[2] + down_b[0] * hull[3 * i] + down_b[1] * hull[3 * i + 1] + down_b[2] * hull[3 * i + 2]) <= floor_bound:
+			low += 1
+	for gear: Dictionary in gear_items:
+		var gp: PackedFloat64Array = gear.point
+		if -(body[2] + down_b[0] * gp[0] + down_b[1] * gp[1] + down_b[2] * gp[2]) <= floor_bound:
+			low += 1
+	var prop_reach := PackedFloat64Array()
 	if observe_props:
-		var deepest_prop := -INF
+		prop_reach.resize(props.size() / 3)
 		for i in props.size() / 3:
 			var px := props[3 * i]
 			var py := props[3 * i + 1]
@@ -368,50 +376,58 @@ static func _contacts(model: Dictionary, body: PackedFloat64Array, continuous: P
 				var dy := py - pivot[1]
 				var dz := pz - pivot[2]
 				reach = down_b[0] * pivot[0] + down_b[1] * pivot[1] + down_b[2] * pivot[2] + sqrt(dx * dx + dy * dy + dz * dz)
-			deepest_prop = maxf(deepest_prop, reach)
-		props_low = -(body[2] + deepest_prop) <= ceiling + TERRAIN_SKIP_MARGIN
-	if -(body[2] + deepest) > ceiling + TERRAIN_SKIP_MARGIN and not props_low:
+			prop_reach[i] = reach
+			if -(body[2] + reach) <= floor_bound:
+				low += 1
+	if low == 0:
 		return out
-	# Footprint samples: samples[0] is the global ceiling, then [north, east, height] under O and at +-R north/east.
 	var samples := PackedFloat64Array([ceiling])
-	var under: PackedFloat64Array = ground.call(body[0], body[1])
-	out.clearance_m = -body[2] - under[0]
-	samples.append_array([body[0], body[1], under[0]])
-	var highest := under[0]
-	for k in 4:
-		var dn := radius if k == 0 else (-radius if k == 1 else 0.0)
-		var de := radius if k == 2 else (-radius if k == 3 else 0.0)
-		var h_k: float = ground.call(body[0] + dn, body[1] + de)[0]
-		samples.append_array([body[0] + dn, body[1] + de, h_k])
-		highest = maxf(highest, h_k)
-	if -body[2] - highest > 1.3 * radius + 0.5:
-		return out
+	var coarse := floor_bound
+	if low > FOOTPRINT_SAMPLES:
+		# Footprint samples: samples[0] is the global ceiling, then [north, east, height] under O and at +-R north/east.
+		var under: PackedFloat64Array = ground.call(body[0], body[1])
+		out.clearance_m = -body[2] - under[0]
+		samples.append_array([body[0], body[1], under[0]])
+		var highest := under[0]
+		for k in 4:
+			var dn := radius if k == 0 else (-radius if k == 1 else 0.0)
+			var de := radius if k == 2 else (-radius if k == 3 else 0.0)
+			var h_k: float = ground.call(body[0] + dn, body[1] + de)[0]
+			samples.append_array([body[0] + dn, body[1] + de, h_k])
+			highest = maxf(highest, h_k)
+		if -body[2] - highest > 1.3 * radius + 0.5:
+			return out
+		# Coarse per-witness bound (every witness lies within R of O, so it dominates the per-point bound).
+		coarse = minf(ceiling, highest + TERRAIN_SLOPE_LIMIT * radius) + TERRAIN_SKIP_MARGIN
 	out.checked = true
-	# Coarse per-witness bound (every witness lies within R of O, so it dominates the per-point bound).
-	var coarse := minf(ceiling, highest + TERRAIN_SLOPE_LIMIT * radius) + TERRAIN_SKIP_MARGIN
 	for gear: Dictionary in gear_items:
 		var gp: PackedFloat64Array = gear.point
 		if -(body[2] + down_b[0] * gp[0] + down_b[1] * gp[1] + down_b[2] * gp[2]) > coarse:
 			continue
-		var load := _contact_point(body, q, v, w, gp, gear.stiffness, gear.damping, gear.mu_roll, gear.mu_side,
+		var normal_load := _contact_point(body, q, v, w, gp, gear.stiffness, gear.damping, gear.mu_roll, gear.mu_side,
 			true, ground, force, moment, out, samples)
-		out.gear_load_n += load
+		out.gear_load_n += normal_load
 	for i in hull.size() / 3:
 		if -(body[2] + down_b[0] * hull[3 * i] + down_b[1] * hull[3 * i + 1] + down_b[2] * hull[3 * i + 2]) > coarse:
 			continue
 		var before: float = out.max_approach_mps
 		out.max_approach_mps = 0.0
-		var load := _contact_point(body, q, v, w, hull.slice(3 * i, 3 * i + 3), contacts.hull_stiffness, contacts.hull_damping,
+		var normal_load := _contact_point(body, q, v, w, hull.slice(3 * i, 3 * i + 3), contacts.hull_stiffness, contacts.hull_damping,
 			contacts.hull_mu, contacts.hull_mu, false, ground, force, moment, out, samples)
-		if load > 0.0:
+		if normal_load > 0.0:
 			out.hull_contact = true
 			out.hull_approach_mps = maxf(float(out.hull_approach_mps), float(out.max_approach_mps))
 		out.max_approach_mps = maxf(before, float(out.max_approach_mps))
-	if not props_low:
+	if not observe_props:
 		return out
-	var moved := prop_points(model, continuous)
-	for i in moved.size() / 3:
-		var world := M.add(body.slice(0, 3), M.q_rotate(q, moved.slice(3 * i, 3 * i + 3)))
+	for i in props.size() / 3:
+		if -(body[2] + prop_reach[i]) > coarse:
+			continue
+		var p := props.slice(3 * i, 3 * i + 3)
+		if assign[i] >= 0:
+			var vec: Dictionary = vectors[assign[i]]
+			p = M.add(vec.pivot, _rotate_about(M.sub(p, vec.pivot), vec.axis, continuous[Data.VECTOR + assign[i]]))
+		var world := M.add(body.slice(0, 3), M.q_rotate(q, p))
 		if _terrain_clear(world, samples):
 			continue
 		var h: PackedFloat64Array = ground.call(world[0], world[1])

@@ -65,7 +65,7 @@ func _initialize() -> void:
 	_check("cruise draws plausible current", float(t.battery.current_a) > 3.0 and float(t.battery.current_a) < 20.0, "%.2f A" % t.battery.current_a)
 	_check("cruise attitude stays moderate", absf(float(t.pitch_deg)) < 25.0 and absf(float(t.roll_deg)) < 15.0, "pitch %.1f roll %.1f" % [t.pitch_deg, t.roll_deg])
 	print("cruise: %.2f m/s, %.1f W, AGL %.2f m, per tick %.1f us" % [t.ground_speed_mps, t.battery.power_w, t.agl_m, per_tick])
-	_check("tick cost bounded (reference GDScript, coarse CI bound)", per_tick < 1500.0, "%.0f us" % per_tick)
+	_check("tick cost bounded (reference GDScript; real time needs < 4167 us)", per_tick < 2500.0, "%.0f us" % per_tick)
 	_check("untrimmed full-throttle climb stays gentle (hull dynamic lift)", absf(float(t.vertical_speed_mps)) < 2.5, "%.2f m/s" % t.vertical_speed_mps)
 	# Braking: full back stick vectors past vertical.
 	var before := float(t.ground_speed_mps)
@@ -148,6 +148,7 @@ func _initialize() -> void:
 	_synthetic_obstacles()
 	_focus_pause()
 	_pilot_model()
+	_contact_skip_equivalence(field)
 	# Weather admission.
 	var w: Node = Session.new()
 	root.add_child(w)
@@ -242,6 +243,64 @@ func _pilot_model() -> void:
 	var final: Dictionary = s.telemetry()
 	_check("a gentle pilot holds heading and height at full-throttle cruise", s.crash.is_empty() and worst_heading < 3.0 and worst_climb < 0.5
 		and float(final.ground_speed_mps) > 5.0, "heading %.1f deg, climb %.2f m/s, %.2f m/s" % [worst_heading, worst_climb, final.ground_speed_mps])
+
+
+## The terrain skips in Dynamics._contacts are exact: on the real field, random near-ground states give the same
+## force, moment, gear load and contact flags as an unskipped reference that samples every witness.
+func _contact_skip_equivalence(field: Dictionary) -> void:
+	var Dynamics = load("res://physics/airship/airship_dynamics.gd")
+	var s := _session()
+	s.prepare(field, {})
+	var model: Dictionary = s.model
+	var ground: Callable = s._ground
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261110
+	var mismatches := 0
+	var touching := 0
+	for n in 600:
+		var north := 22.0 + rng.randf_range(-20.0, 20.0)
+		var east := rng.randf_range(-20.0, 20.0)
+		var q := M.q_from_euler(rng.randf_range(-PI, PI), rng.randf_range(-0.7, 0.7), rng.randf_range(-0.5, 0.5))
+		var height: float = ground.call(north, east)[0]
+		var body := PackedFloat64Array([north, east, -height - rng.randf_range(0.0, 1.6), rng.randf_range(-2.0, 2.0), rng.randf_range(-1.0, 1.0),
+			rng.randf_range(-1.0, 1.0), q[0], q[1], q[2], q[3], rng.randf_range(-0.8, 0.8), rng.randf_range(-0.8, 0.8), rng.randf_range(-0.8, 0.8)])
+		var c := PackedFloat64Array()
+		c.resize(Data.CONTINUOUS_SIZE)
+		for k in 3:
+			c[Data.VECTOR + k] = deg_to_rad(rng.randf_range(0.0, 90.0))
+		var v := body.slice(3, 6)
+		var w := body.slice(10, 13)
+		var f := PackedFloat64Array([0.0, 0.0, 0.0])
+		var m := PackedFloat64Array([0.0, 0.0, 0.0])
+		var out: Dictionary = Dynamics._contacts(model, body, c, q, v, w, ground, f, m, true)
+		# Reference: every witness sampled (bound INF never clears).
+		var rf := PackedFloat64Array([0.0, 0.0, 0.0])
+		var rm := PackedFloat64Array([0.0, 0.0, 0.0])
+		var ref := {max_approach_mps = 0.0}
+		var gear_load := 0.0
+		for gear: Dictionary in model.contacts.gear:
+			gear_load += Dynamics._contact_point(body, q, v, w, gear.point, gear.stiffness, gear.damping, gear.mu_roll, gear.mu_side, true,
+				ground, rf, rm, ref, PackedFloat64Array([INF]))
+		var hull: PackedFloat64Array = model.contacts.hull_points
+		var hull_contact := false
+		for i in hull.size() / 3:
+			var contacts: Dictionary = model.contacts
+			if Dynamics._contact_point(body, q, v, w, hull.slice(3 * i, 3 * i + 3), contacts.hull_stiffness, contacts.hull_damping,
+					contacts.hull_mu, contacts.hull_mu, false, ground, rf, rm, ref, PackedFloat64Array([INF])) > 0.0:
+				hull_contact = true
+		var props: PackedFloat64Array = Dynamics.prop_points(model, c)
+		var prop_contact := false
+		for i in props.size() / 3:
+			var p := M.q_rotate(q, props.slice(3 * i, 3 * i + 3))
+			if body[2] + p[2] + float(ground.call(body[0] + p[0], body[1] + p[1])[0]) > 0.0:
+				prop_contact = true
+		if gear_load > 0.0 or hull_contact or prop_contact:
+			touching += 1
+		if f.to_byte_array() != rf.to_byte_array() or m.to_byte_array() != rm.to_byte_array() or float(out.gear_load_n) != gear_load \
+				or bool(out.hull_contact) != hull_contact or bool(out.prop_contact) != prop_contact:
+			mismatches += 1
+	_check("contact terrain skips are exact against an unskipped reference", mismatches == 0 and touching > 100,
+		"%d mismatches, %d of 600 states touching" % [mismatches, touching])
 
 
 func _finish() -> void:
