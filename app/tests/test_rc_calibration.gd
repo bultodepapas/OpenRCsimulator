@@ -68,7 +68,7 @@ func _direction_case(center: float, requested: float, opposite: float) -> void:
 func _initialize() -> void:
 	var cal := RcCalibration.new()
 	var rest := _axes(0, 0, 0, 0)
-	_check("starts at the rest step", "1/5" in cal.prompt() and "LOW" in cal.prompt(), cal.prompt())
+	_check("starts at the rest step", "1/5" in cal.prompt() and "EXCEPT the THROTTLE" in cal.prompt() and "fully DOWN" in cal.prompt(), cal.prompt())
 	cal.advance(rest)
 	_sweep(cal, [[0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
 	cal.advance(rest)

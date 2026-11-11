@@ -6278,10 +6278,8 @@ msgstr "Calibração do transmissor"
 msgid "Step %d of %d"
 msgstr "Etapa %d de %d"
 
-msgid "Centre the sticks, throttle LOW, hands off. Press Enter"
-msgstr ""
-"Centralize os manches, acelerador no MÍNIMO e mãos fora dos controles. "
-"Pressione Enter"
+msgid "Centre the sticks EXCEPT the THROTTLE: leave it fully DOWN (minimum). Keep these positions, then press Enter"
+msgstr "Centralize os manches, EXCETO o ACELERADOR: deixe-o totalmente PARA BAIXO (no mínimo). Mantenha essas posições e pressione Enter"
 
 msgid "Move the THROTTLE to FULL and back to LOW. Press Enter"
 msgstr "Leve o acelerador até o MÁXIMO e volte ao MÍNIMO. Pressione Enter"

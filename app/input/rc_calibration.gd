@@ -10,7 +10,7 @@ const SmokeAux := preload("res://input/smoke_aux.gd")
 
 const STEPS := ["rest", "throttle", "roll", "pitch", "yaw"]
 const PROMPTS := {
-	rest = "Centre the sticks, throttle LOW, hands off. Press Enter",
+	rest = "Centre the sticks EXCEPT the THROTTLE: leave it fully DOWN (minimum). Keep these positions, then press Enter",
 	throttle = "Move the THROTTLE to FULL and back to LOW. Press Enter",
 	roll = "Hold the AILERON stick fully RIGHT and press Enter",
 	pitch = "Hold the ELEVATOR stick fully BACK and press Enter",

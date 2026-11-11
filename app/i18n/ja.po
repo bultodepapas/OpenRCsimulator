@@ -5762,8 +5762,8 @@ msgstr "送信機のキャリブレーション"
 msgid "Step %d of %d"
 msgstr "%d / %d 段階"
 
-msgid "Centre the sticks, throttle LOW, hands off. Press Enter"
-msgstr "スティックを中央に戻し、スロットルを最小にして、操作を止めてください。Enterを押してください"
+msgid "Centre the sticks EXCEPT the THROTTLE: leave it fully DOWN (minimum). Keep these positions, then press Enter"
+msgstr "スロットル以外のスティックを中央に戻してください。スロットルは一番下（最小）にしてください。その位置を保ったまま、Enterを押してください"
 
 msgid "Move the THROTTLE to FULL and back to LOW. Press Enter"
 msgstr "スロットルを最大まで動かしてから、最小に戻してください。Enterを押してください"

@@ -5659,8 +5659,8 @@ msgstr "遥控器校准"
 msgid "Step %d of %d"
 msgstr "第 %d 步，共 %d 步"
 
-msgid "Centre the sticks, throttle LOW, hands off. Press Enter"
-msgstr "将操纵杆置中，油门调至最低，双手离开操纵杆。按 Enter"
+msgid "Centre the sticks EXCEPT the THROTTLE: leave it fully DOWN (minimum). Keep these positions, then press Enter"
+msgstr "除油门外，将操纵杆置中：油门须拉到最下方（最低位置）。保持这些位置，然后按 Enter"
 
 msgid "Move the THROTTLE to FULL and back to LOW. Press Enter"
 msgstr "将油门推到最大，再收回到最低。按 Enter"
