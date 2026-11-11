@@ -12373,3 +12373,33 @@ msgstr "JETZT LANDEN"
 
 msgid "Camera %s"
 msgstr "Kamera %s"
+
+msgid "Lap %d/%d   Gate %d/%d   %s"
+msgstr "Runde %d/%d   Tor %d/%d   %s"
+
+msgid "Finished in %s"
+msgstr "Ziel in %s"
+
+msgid "Race aborted"
+msgstr "Rennen abgebrochen"
+
+msgid "Race: press G on the pad to start"
+msgstr "Rennen: G auf dem Startplatz drücken"
+
+msgid "GO"
+msgstr "LOS"
+
+msgid "Race start refused: return to the pad and stop"
+msgstr "Start abgelehnt: zum Startplatz zurückkehren und anhalten"
+
+msgid "Lap"
+msgstr "Runde"
+
+msgid "Race result saved"
+msgstr "Rennergebnis gespeichert"
+
+msgid "Race result not saved"
+msgstr "Rennergebnis nicht gespeichert"
+
+msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
+msgstr "G: startet ein Rennen über drei Runden vom Startplatz (Tore der Reihe nach durchfliegen); erneut G bricht ab."

@@ -177,6 +177,10 @@ static func race_route(course: Dictionary, laps: int, before := 4.0, after := 3.
 	return route
 
 
+## A shaft that "never spun": the body-coupling term moves a resting shaft by a hair, drive would reach hundreds.
+const STILL_SHAFT := 1.0
+
+
 func _check(label: String, ok: bool, detail := "") -> void:
 	_count += 1
 	if not ok:
@@ -451,19 +455,20 @@ func _case_start(s: Node, log: Dictionary) -> bool:
 		phases_ok = phases_ok and _phase(s) == Director.PHASE_COUNTDOWN and s.sim.modes[RaceModel.MODE_COUNTDOWN] == i + 1
 	_check("3 RACE-11 the countdown is exactly 720 accepted ticks; the pilot armed, the shafts never spun",
 		phases_ok and s.sim.tick == start_tick + 719 and s.sim.modes[RaceModel.MODE_COUNTDOWN] == 720
-		and s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED and shafts == 0.0 and commands > 0.0 and _types(log.events) == "race_countdown",
-		"shafts %.6f commands %.4f" % [shafts, commands])
+		and s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED and shafts < STILL_SHAFT and commands > 0.0 and _types(log.events) == "race_countdown",
+		"shafts %.6f commands %.4f phases %s tick %d of %d countdown %d motor %d events %s" % [shafts, commands, str(phases_ok),
+			s.sim.tick, start_tick + 719, s.sim.modes[RaceModel.MODE_COUNTDOWN], s.sim.modes[FC.MODE_MOTOR], _types(log.events)])
 	_go_envelope = s.checkpoint()
 	log.events.clear()
 	var refused_ok: bool = _tick(s, Fixtures.pilot(0.0, 0.0, 0.0, 0.6, 1, 1))
 	var go_refusal: Dictionary = log.events[0].event if log.events.size() == 1 else {}
 	_check("3 RACE-11 GO with the throttle high is refused: race_refused, IDLE, motors DISARMED, no drive",
 		refused_ok and _types(log.events) == "race_refused" and go_refusal.stage == "go" and go_refusal.reason == "go_refused_throttle"
-		and _phase(s) == Director.PHASE_IDLE and s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED and _max_shaft(s) == 0.0,
+		and _phase(s) == Director.PHASE_IDLE and s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED and _max_shaft(s) < STILL_SHAFT,
 		_types(log.events))
 	var held_ok := true
 	for _i in 30:
-		held_ok = held_ok and _tick(s, _idle_pilot(1)) and s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED and _max_shaft(s) == 0.0
+		held_ok = held_ok and _tick(s, _idle_pilot(1)) and s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED and _max_shaft(s) < STILL_SHAFT
 	_check("3 RACE-11 an arm switch held high after the refused GO does not rearm", held_ok)
 	_check("3 the pre-GO checkpoint restores (running)", s.restore_checkpoint(_go_envelope) and not s.paused
 		and s.sim.modes[RaceModel.MODE_COUNTDOWN] == 720)

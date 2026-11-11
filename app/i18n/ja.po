@@ -11479,3 +11479,33 @@ msgstr "すぐ着陸"
 
 msgid "Camera %s"
 msgstr "カメラ %s"
+
+msgid "Lap %d/%d   Gate %d/%d   %s"
+msgstr "ラップ %d/%d   ゲート %d/%d   %s"
+
+msgid "Finished in %s"
+msgstr "%s でフィニッシュ"
+
+msgid "Race aborted"
+msgstr "レース中止"
+
+msgid "Race: press G on the pad to start"
+msgstr "レース: パッド上で G を押してスタート"
+
+msgid "GO"
+msgstr "ゴー"
+
+msgid "Race start refused: return to the pad and stop"
+msgstr "スタート不可: パッドに戻って停止してください"
+
+msgid "Lap"
+msgstr "ラップ"
+
+msgid "Race result saved"
+msgstr "レース結果を保存しました"
+
+msgid "Race result not saved"
+msgstr "レース結果を保存できませんでした"
+
+msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
+msgstr "G: パッドから 3 周のレースを開始 (ゲートを順番に通過)。もう一度 G で中止。"

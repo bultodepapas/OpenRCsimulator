@@ -11428,3 +11428,33 @@ msgstr "立即降落"
 
 msgid "Camera %s"
 msgstr "相机 %s"
+
+msgid "Lap %d/%d   Gate %d/%d   %s"
+msgstr "第 %d/%d 圈   门 %d/%d   %s"
+
+msgid "Finished in %s"
+msgstr "完赛用时 %s"
+
+msgid "Race aborted"
+msgstr "比赛已中止"
+
+msgid "Race: press G on the pad to start"
+msgstr "比赛：在起飞垫上按 G 开始"
+
+msgid "GO"
+msgstr "出发"
+
+msgid "Race start refused: return to the pad and stop"
+msgstr "起跑被拒绝：请回到起飞垫并停稳"
+
+msgid "Lap"
+msgstr "圈"
+
+msgid "Race result saved"
+msgstr "比赛成绩已保存"
+
+msgid "Race result not saved"
+msgstr "比赛成绩未保存"
+
+msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
+msgstr "G：从起飞垫开始三圈比赛（按顺序穿过各门）；再按 G 取消。"

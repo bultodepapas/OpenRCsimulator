@@ -1,6 +1,6 @@
 # 5-inch FPV racing drone: simulation integration plan
 
-**Revised:** 2026-10-21. **Status:** plan; no playable drone is implemented. DR-00/01 and the DR-04a…06a laboratory foundation exist. The remaining gates below are open. This revision answers the owner's request for a 5-inch racing-style FPV drone and replaces the older integration proposal in this file. It changes no runtime behavior.
+**Revised:** 2026-10-21; **status updated 2026-11-11.** **Status:** an EXPERIMENTAL software slice of M1–M3 is implemented: closed-loop free flight in the app and a local three-lap gate race, on estimated data. [§15](#15-implementation-status-2026-11-11) owns step status and supersedes the "open" markers in §10; physical, pilot, target-host and CI gates remain open. The [FPV handoff pack](../../FPV/00_START_HERE.md) (2026-11-11) holds the detailed contracts this implementation followed.
 
 **Owner / IDs:** drone track, DR-00…41, under main-line acceptance; existing IDs are retained. **Evidence:** [2026-10-21 investigation](../research/drone-racing/DR-01/refresh-2026-10-21.md), [original source survey](../research/drone-racing/DR-01/README.md), [implemented foundation](../research/drone-racing/DR-04a/README.md). The original survey remains dated research, not the current implementation specification.
 
@@ -300,3 +300,23 @@ DR-02 needs the exact assembly, downloadable parts, motor/prop/pack coverage and
 ## 14. First implementation task
 
 Start **DR-02 + DR-16a**: freeze the sourced build/asset manifest; specify sampled-feedback, stage access and rollback, then demonstrate the current gap in an isolated failing test. Next implement the smallest headless Acro/session/replay slice. Do not begin with a new renderer, procedural drone, global timestep change or fixed-wing FlightSession rewrite.
+
+## 15. Implementation status (2026-11-11)
+
+Software evidence, test names and limits: [M0–M3 slice](../research/drone-racing/M1-M3-2026-11-11/README.md). Decisions: [kernel protocol](../DECISIONS.md#closed-loop-control-samples-the-accepted-frame-through-an-opt-in-protocol), [quad law](../DECISIONS.md#the-first-quad-law-is-transparent-and-its-continuations-are-declared), [race state](../DECISIONS.md#race-state-commits-with-the-physics-tick).
+
+| IDs | State | Note |
+| --- | --- | --- |
+| DR-03, 16a | Done in software | Reference oracles reproduced; opt-in `framed-sampled-v1` kernel protocol with legacy parity evidence. |
+| DR-06, 07, 08, 09a | Done in software | Coupled shaft/body solve, Acro/Angle controller with bounded allocation and feed-forward, Actual and Betaflight rate curves (4.5.2 pin), 240 Hz qualified against 960/1920 Hz. |
+| DR-10, 11, 12, 13 | Done for one build | Strict `openrc-multirotor v1` loader and generator; one product candidate `openrc-fpv5-f50-2150-f5146-6s-x1`, every value manufacturer-reported, derived, borrowed or estimated. No research-aircraft reproduction (DR-11 exact profile) yet. |
+| DR-05, 09b, 18, 19, 20 | Done with declared simplifications | Four motors on one bus (one-quadrant and damped variants), pad contact with substeps, endpoint-resolution crash, strike, obstacle and depletion events. Located sub-tick cut and rotor-stop events are open. |
+| DR-14, 15 | Partly done | Pre-expo input adapter, arm and mode actions, throttle policies and limit. Real radio and gamepad acceptance, the recovery proposal flow and a rates/settings UI are open. |
+| DR-16b, 17 | Done in software | Dedicated session; full-envelope checkpoint; `.orfl` recording with exact and candidate replay from the pilot tape, also for race sessions. |
+| DR-21, 22 | Partly done | Step-response tune by software sweep; whole-step cost measured on one PC (above the 500 µs p95 budget). Endurance runs and target-host qualification are open. |
+| DR-29, 30, 31, 35, 36a, 37 | Done, unqualified natively | Downloaded OpenRacer frame (GPL-3.0, [intake](../../research/drone-racing/DR-29/README.md)), four rotor views, rigid FPV camera, OSD with horizon line, Home and `--multirotor=` routes, crash and restart flow. No 4:3 mode; native 1080p pacing and latency unmeasured. |
+| DR-23, 24, 25, 26, 32, 36b | Done in software | One upright-gate practice oval on the default field, atomic race state, chord-path gate scoring, results outbox and files, gates and race line in the activity (G starts or cancels). |
+| DR-04, 38, 39, 40 | Open | Advanced rotor law, held-out comparison, pilot review, selected-build measurement. |
+| DR-27, 28, 33, 34, 41 | Deferred | Ghosts, further courses, rich audio, effects, capability expansion. |
+
+Next: required CI on the full suite; a native 1080p session with a real radio (DR-14 acceptance, frame pacing, latency); the tick cost near the ground; DR-40 measurements for the selected build.

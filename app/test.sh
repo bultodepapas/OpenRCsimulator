@@ -383,6 +383,8 @@ for t in "${unit_tests[@]}"; do
     test_companions_lifecycle.gd) test_timeout=180 ;; # 50 headless + 10 visual/audio rebuild cycles; measured 67.719 s natively on 4.8 beta1.
     test_glow_dive_support.gd) test_timeout=120 ;; # NITRO-61FX-R1: two 12 s full-throttle dives at 240 Hz; measured 32 s on the shared VM.
     test_extra_handling.gd|test_extra_runway.gd) test_timeout=120 ;; # EX-14c tail slipstream: measured 66 s / 46 s on the quiet shared VM (53 / 41 s before), 77 / 51 s under load.
+    test_race_session.gd|test_race_session_replay.gd) test_timeout=240 ;; # DR-25/26: a complete three-lap race at 240 Hz (and its exact replay); measured 34 s / 40 s on the Windows dev PC.
+    test_mr_activity.gd|test_mr_sample_rate.gd|test_mr_flight_log.gd) test_timeout=180 ;; # DR-17/21/36a: activity journey, 240/960/1920 Hz closed loops, record and replay; measured 25 s / 28 s / 16 s on the Windows dev PC.
     test_pilot_trim.gd) test_timeout=300 ;; # Fleet controls plus frozen/live inventory comparisons; measured 117 s natively.
     test_accident_integration.gd) test_timeout=180 ;; # Multiple complete aircraft/effects rebuilds; native 77-check gate, WSL mounted source exceeds 60 s.
     test_damage_flight_events.gd) test_timeout=120 ;; # Measured 63.8 s on the shared Windows host; retain every assertion.

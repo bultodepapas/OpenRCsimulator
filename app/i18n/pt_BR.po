@@ -12267,3 +12267,33 @@ msgstr "POUSE AGORA"
 
 msgid "Camera %s"
 msgstr "Câmera %s"
+
+msgid "Lap %d/%d   Gate %d/%d   %s"
+msgstr "Volta %d/%d   Portão %d/%d   %s"
+
+msgid "Finished in %s"
+msgstr "Concluído em %s"
+
+msgid "Race aborted"
+msgstr "Corrida abortada"
+
+msgid "Race: press G on the pad to start"
+msgstr "Corrida: pressione G na plataforma para começar"
+
+msgid "GO"
+msgstr "JÁ"
+
+msgid "Race start refused: return to the pad and stop"
+msgstr "Largada recusada: volte à plataforma e pare"
+
+msgid "Lap"
+msgstr "Volta"
+
+msgid "Race result saved"
+msgstr "Resultado da corrida salvo"
+
+msgid "Race result not saved"
+msgstr "Resultado da corrida não salvo"
+
+msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
+msgstr "G: inicia uma corrida de três voltas a partir da plataforma (passe pelos portões em ordem); G novamente cancela."

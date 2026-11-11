@@ -32,6 +32,7 @@ const HELP_LINES := [
 	"Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start.",
 	"C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view",
 	"P or Esc: pause   R: restart on the pad   H: this help",
+	"G: start a three-lap race from the pad (fly the gates in order); G again cancels it.",
 	"F10: start/stop the flight log   F11: log marker",
 	"Estimated, unvalidated physics: not a model of a real quad.",
 ]
@@ -61,6 +62,7 @@ var fixture_label: Label
 var mode_label: Label
 var arm_label: Label
 var timer_label: Label
+var race_label: Label
 var battery_label: Label
 var throttle_label: Label
 var flight_label: Label
@@ -113,6 +115,9 @@ func _ready() -> void:
 		Rect2(-300, m * 0.5 + 30 * s, 600, 30))
 	fixture_label.add_theme_color_override("font_color", OSD_DANGER)
 	fixture_label.visible = false
+	# DR-26/32: local race line under the tag (countdown, lap and gate, lap clock, finish or abort).
+	race_label = _label("Race", 30.0, Control.PRESET_CENTER_TOP, HORIZONTAL_ALIGNMENT_CENTER, Rect2(-520, m * 0.5 + 62 * s, 1040, 44))
+	race_label.visible = false
 	mode_label = _label("FlightMode", 32.0, Control.PRESET_TOP_LEFT, HORIZONTAL_ALIGNMENT_LEFT, Rect2(m, m * 0.6, 700, 44))
 	arm_label = _label("ArmState", 22.0, Control.PRESET_TOP_LEFT, HORIZONTAL_ALIGNMENT_LEFT, Rect2(m, m * 0.6 + 44 * s, 760, 34))
 	timer_label = _label("Timer", 32.0, Control.PRESET_TOP_RIGHT, HORIZONTAL_ALIGNMENT_RIGHT, Rect2(-m - 300, m * 0.6, 300, 44))
@@ -342,6 +347,34 @@ static func format_timer(seconds: float) -> String:
 	return "%02d:%02d.%d" % [tenths / 600, (tenths / 10) % 60, tenths % 10]
 
 
+## Race clock as m:ss.cc (hundredths; crossing times are interpolated inside ticks).
+static func format_lap(seconds: float) -> String:
+	var hundredths := int(floor(maxf(seconds, 0.0) * 100.0))
+	return "%d:%02d.%02d" % [hundredths / 6000, (hundredths / 100) % 60, hundredths % 100]
+
+
+## The race line from the session's race telemetry ("" in free flight without a course): the start hint, the
+## countdown second, lap/gate progress with the running lap clock, the finish total with the lap times, or the abort.
+func race_text(race: Variant) -> String:
+	if typeof(race) != TYPE_DICTIONARY or race.is_empty():
+		return ""
+	match str(race.get("phase", "")):
+		"COUNTDOWN":
+			return str(int(ceil(float(race.get("countdown_s_left", 0.0)))))
+		"RACING":
+			return tr("Lap %d/%d   Gate %d/%d   %s") % [mini(int(race.get("valid_laps", 0)) + 1, int(race.get("laps", []).size())),
+				int(race.get("laps", []).size()), int(race.get("next_gate", 0)) + 1, int(race.get("gate_count", 0)),
+				format_lap(float(race.get("elapsed_lap_s", 0.0)))]
+		"FINISHED":
+			var laps := PackedStringArray()
+			for lap: Variant in race.get("laps", []):
+				laps.append(format_lap(float(lap.duration_s)))
+			return tr("Finished in %s") % format_lap(float(race.get("elapsed_total_s", 0.0))) + "   (" + " / ".join(laps) + ")"
+		"ABORTED":
+			return tr("Race aborted")
+	return tr("Race: press G on the pad to start")
+
+
 ## The arm line: MOTORS ARMED, or MOTORS DISARMED with the controller's reason when an arm request is being refused.
 func arm_text(t: Dictionary, arm_requested: bool) -> String:
 	if bool(t.get("armed", false)):
@@ -406,6 +439,9 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	arm_label.text = arm_text(t, arm_requested)
 	arm_label.add_theme_color_override("font_color", OSD_ARMED if armed else OSD_CAUTION)
 	timer_label.text = format_timer(float(osd_state.get("flight_s", 0.0)))
+	var race_line := race_text(t.get("race", {}))
+	race_label.visible = not race_line.is_empty()
+	race_label.text = race_line
 	var collective := clampf(float(t.get("collective", 0.0)), 0.0, 1.0)
 	var limit := float(osd_state.get("throttle_limit", 1.0))
 	var throttle_text := tr("Throttle %d%%") % int(round(100.0 * collective))

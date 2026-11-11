@@ -12255,3 +12255,33 @@ msgstr "ATTERRA ORA"
 
 msgid "Camera %s"
 msgstr "Telecamera %s"
+
+msgid "Lap %d/%d   Gate %d/%d   %s"
+msgstr "Giro %d/%d   Porta %d/%d   %s"
+
+msgid "Finished in %s"
+msgstr "Concluso in %s"
+
+msgid "Race aborted"
+msgstr "Gara interrotta"
+
+msgid "Race: press G on the pad to start"
+msgstr "Gara: premi G sulla piazzola per partire"
+
+msgid "GO"
+msgstr "VIA"
+
+msgid "Race start refused: return to the pad and stop"
+msgstr "Partenza rifiutata: torna sulla piazzola e fermati"
+
+msgid "Lap"
+msgstr "Giro"
+
+msgid "Race result saved"
+msgstr "Risultato della gara salvato"
+
+msgid "Race result not saved"
+msgstr "Risultato della gara non salvato"
+
+msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
+msgstr "G: avvia una gara di tre giri dalla piazzola (attraversa le porte in ordine); di nuovo G la annulla."

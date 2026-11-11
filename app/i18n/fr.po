@@ -12400,3 +12400,33 @@ msgstr "ATTERRISSEZ"
 
 msgid "Camera %s"
 msgstr "Caméra %s"
+
+msgid "Lap %d/%d   Gate %d/%d   %s"
+msgstr "Tour %d/%d   Porte %d/%d   %s"
+
+msgid "Finished in %s"
+msgstr "Terminé en %s"
+
+msgid "Race aborted"
+msgstr "Course interrompue"
+
+msgid "Race: press G on the pad to start"
+msgstr "Course : appuyez sur G sur la plateforme pour démarrer"
+
+msgid "GO"
+msgstr "PARTEZ"
+
+msgid "Race start refused: return to the pad and stop"
+msgstr "Départ refusé : revenez sur la plateforme et arrêtez-vous"
+
+msgid "Lap"
+msgstr "Tour"
+
+msgid "Race result saved"
+msgstr "Résultat de la course enregistré"
+
+msgid "Race result not saved"
+msgstr "Résultat de la course non enregistré"
+
+msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
+msgstr "G : lance une course de trois tours depuis la plateforme (franchissez les portes dans l'ordre) ; G à nouveau l'annule."

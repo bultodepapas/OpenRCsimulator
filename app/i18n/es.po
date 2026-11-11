@@ -11020,3 +11020,33 @@ msgstr "ATERRIZA YA"
 
 msgid "Camera %s"
 msgstr "Cámara %s"
+
+msgid "Lap %d/%d   Gate %d/%d   %s"
+msgstr "Vuelta %d/%d   Puerta %d/%d   %s"
+
+msgid "Finished in %s"
+msgstr "Terminado en %s"
+
+msgid "Race aborted"
+msgstr "Carrera abortada"
+
+msgid "Race: press G on the pad to start"
+msgstr "Carrera: pulsa G en la plataforma para empezar"
+
+msgid "GO"
+msgstr "YA"
+
+msgid "Race start refused: return to the pad and stop"
+msgstr "Salida rechazada: vuelve a la plataforma y detente"
+
+msgid "Lap"
+msgstr "Vuelta"
+
+msgid "Race result saved"
+msgstr "Resultado de la carrera guardado"
+
+msgid "Race result not saved"
+msgstr "Resultado de la carrera no guardado"
+
+msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
+msgstr "G: inicia una carrera de tres vueltas desde la plataforma (pasa las puertas en orden); G de nuevo la cancela."

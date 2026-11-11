@@ -79,6 +79,7 @@ var source_sha256 := ""
 var race: RefCounted
 var course: Dictionary = {}
 var results: Array[Dictionary] = []
+var _result_sequence := 0
 var _field: Dictionary = {}
 ## Resolved start pose {mode, north_m, east_m, heading_deg[, altitude_m], initial_soc, source_generation}.
 var _start: Dictionary = {}
@@ -417,6 +418,10 @@ func _publish_result(result: Dictionary) -> void:
 		collision_identity = collision_identity(), field_id = str(_field.get("id", ""))}
 	record.terminal_tick = int(sim.tick)
 	record.saved = false
+	# A file identity that stays unique across pad resets (which restart the attempt counter) and across sessions.
+	_result_sequence += 1
+	record.sequence = _result_sequence
+	record.created_utc = Time.get_datetime_string_from_system(true)
 	results.append(record)
 	race_result.emit(record.duplicate(true))
 
@@ -435,8 +440,8 @@ func save_results(directory: String = RESULTS_DIRECTORY) -> Dictionary:
 		return report
 	var kept: Array[Dictionary] = []
 	for record: Dictionary in results:
-		var name := "race-%s-a%03d-t%d-%s.json" % [str(record.get("track_id", "track")), int(record.get("attempt", 0)),
-			int(record.get("terminal_tick", 0)), str(record.get("course_identity", "")).substr(0, 12)]
+		var name := "race-%s-%s-n%03d.json" % [str(record.get("track_id", "track")).validate_filename(),
+			str(record.get("created_utc", "")).replace(":", "").validate_filename(), int(record.get("sequence", 0))]
 		var target := directory.path_join(name)
 		var temporary := target + ".tmp"
 		var written := false
@@ -449,7 +454,7 @@ func save_results(directory: String = RESULTS_DIRECTORY) -> Dictionary:
 			var write_error: Error = file.get_error()
 			file.close()
 			if write_error == OK:
-				# Idempotent: the same attempt maps to the same name, so a retry replaces its own earlier file.
+				# Idempotent: a record keeps its name, so a retry replaces its own earlier file.
 				if FileAccess.file_exists(target):
 					DirAccess.remove_absolute(target)
 				written = DirAccess.rename_absolute(temporary, target) == OK

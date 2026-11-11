@@ -22,12 +22,18 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const Spec = preload("res://spec.gd")
 const CollisionSetup = preload("res://scenery/collision_setup.gd")
+const Track = preload("res://sim/race/track.gd")
+const RaceDirector = preload("res://sim/race/race_director.gd")
 
 const DT := 1.0 / 240.0
 ## CC0 quadcopter recording already shipped for the blimp's electric motors (assets/audio/powertrains/LICENSE.txt).
 const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
 ## Simulation seconds the crash or depletion aftermath keeps running before the menu opens.
 const AFTERMATH_S := 2.0
+const RACE_TRACK := "res://data/race/tracks/openrc-practice-oval-1.json"
+## Gate frame colours: the next required gate, and every other gate.
+const GATE_NEXT := Color(1.0, 0.55, 0.05)
+const GATE_OTHER := Color(0.15, 0.85, 1.0)
 const READY_TEXT := "Ready. Cycle the arm switch OFF then ON at low throttle."
 const CHANGED_TEXT := "The controller changed: restart on the pad to fly with it."
 
@@ -47,6 +53,10 @@ var enable_world := true
 var frame_model: String = Visual.MODEL_PATH
 ## Deterministic test seam: tick -> 9-value pilot frame (FC layout), replacing the input adapter on physics ticks.
 var scripted_pilot := Callable()
+## DR-23/32/36b: the local practice course flown from this activity when it belongs to the loaded field ("" = none).
+var race_track: String = RACE_TRACK
+## Where finished and aborted race records are written (tests point this at an isolated folder).
+var results_directory: String = Session.RESULTS_DIRECTORY
 
 var session: Node
 ## Opt-in black box (F10 start/stop, F11 marker).
@@ -74,6 +84,11 @@ var _audio_level := 0.0
 var _hover_speed := 1.0
 var _accumulation_owned := false
 var _accumulation_before := true
+var _race_option := ""
+var _race_action := 0
+var _gate_views: Array = []
+var _gate_next := -1
+var _gate_materials: Array[StandardMaterial3D] = []
 
 
 func _enter_tree() -> void:
@@ -136,6 +151,9 @@ func _ready() -> void:
 	hud.action_requested.connect(handle_action)
 	session.crashed.connect(_on_crashed)
 	session.depleted.connect(_on_depleted)
+	session.race_event.connect(_on_race_event)
+	session.race_result.connect(_on_race_result)
+	_build_gates()
 	session.faulted.connect(func(reason: String) -> void: _open_menu(tr("Simulation paused: %s") % reason))
 	input.connect_first_device()
 	_flight_generation = input.source_generation
@@ -184,6 +202,12 @@ func _load_field() -> bool:
 	sky_config = checked_sky.config
 	_lighting = TimeOfDayLighting.snapshot(lighting_config) if lighting_config.mode != "legacy" else {}
 	field = loaded.field
+	# The practice course is offered only on the field it was authored for; any other field is plain free flight.
+	_race_option = ""
+	if not race_track.is_empty():
+		var track: Dictionary = Track.load_file(race_track)
+		if track.ok and str(track.track.field_id) == str(field.get("id", "")):
+			_race_option = race_track
 	return true
 
 
@@ -199,7 +223,7 @@ func _build_field() -> void:
 ## limit (a session option: changing it takes a fresh prepare on the pad, never a change mid-flight).
 func _session_options() -> Dictionary:
 	return {data_path = Catalog.DATA_PATH, throttle_policy = _input_policy(), start = "pad",
-		source_generation = input.source_generation, throttle_limit = input.throttle_limit()}
+		source_generation = input.source_generation, throttle_limit = input.throttle_limit(), race_track = _race_option}
 
 
 ## The prepared flight's throttle limit.
@@ -253,6 +277,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				if view.adjust_fov(-1): _flash_view()
 			KEY_EQUAL:
 				if view.adjust_fov(1): _flash_view()
+			KEY_G:
+				request_race()
 			KEY_F10:
 				toggle_recording()
 			KEY_F11:
@@ -411,8 +437,12 @@ func _physics_process(_delta: float) -> void:
 	if int(sample.source_generation) != _flight_generation:
 		_open_menu(tr("Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."))
 		return
-	if not session.tick_once(sample.pilot):
-		if not session.paused:
+	var action: int = _race_action
+	_race_action = RaceDirector.ACTION_NONE
+	if not session.tick_once(sample.pilot, action):
+		if action == RaceDirector.ACTION_START:
+			hud.flash(tr("Race start refused: return to the pad and stop"))
+		elif not session.paused:
 			_open_menu(tr("The input frame was refused."))
 		return
 	if session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED:
@@ -444,6 +474,7 @@ func _process(delta: float) -> void:
 		vfov_deg = camera.fov if camera != null else 90.0, aspect = view.aspect(), attitude = drawn.slice(6, 10),
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
 		bindings = input.bindings(), throttle_limit = _session_limit()})
+	_update_gates(t.get("race", {}))
 	_update_audio(t, delta)
 
 
@@ -522,3 +553,71 @@ func apply_controller_selection(_device_id: int) -> bool:
 
 func _refresh_controller_ui() -> void:
 	pass
+
+
+## DR-36b: G starts a race from the pad, or cancels a countdown or a race in progress. The action is sampled with the
+## next accepted tick (one pulse); the session refuses a start while its result outbox is full.
+func request_race() -> void:
+	if session == null or not session.prepared or session.race == null or session.paused:
+		return
+	var phase := str(session.telemetry().get("race", {}).get("phase", ""))
+	_race_action = RaceDirector.ACTION_CANCEL if phase in ["COUNTDOWN", "RACING"] else RaceDirector.ACTION_START
+
+
+func _on_race_event(event: Dictionary) -> void:
+	match str(event.get("type", "")):
+		"race_go":
+			hud.flash(tr("GO"), 1.5)
+		"race_refused":
+			hud.flash(tr("Race start refused: return to the pad and stop"))
+		"race_lap":
+			hud.flash("%s %d  %s" % [tr("Lap"), int(event.get("lap", 0)), Hud.format_lap(float(event.get("duration_s", 0.0)))], 3.0)
+
+
+## A finished or aborted attempt: write the pending records at once (bounded, on request of this activity); a failed
+## write keeps them in the session outbox and says so.
+func _on_race_result(_result: Dictionary) -> void:
+	var report: Dictionary = session.save_results(results_directory)
+	if int(report.failed) > 0:
+		hud.flash(tr("Race result not saved"))
+	elif int(report.saved) > 0:
+		hud.flash(tr("Race result saved"))
+
+
+## Gate frames of the course, drawn from the same boxes the session collides with (unshaded bars, no assets).
+func _build_gates() -> void:
+	if session.race == null:
+		return
+	for colour: Color in [GATE_OTHER, GATE_NEXT]:
+		var material := StandardMaterial3D.new()
+		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		material.albedo_color = colour
+		_gate_materials.append(material)
+	for gate: Dictionary in session.course.gates:
+		var bars: Array[MeshInstance3D] = []
+		for box: Dictionary in gate.frames:
+			var mesh := BoxMesh.new()
+			# Box axes: x along the gate normal (render -Z at heading 0), z across it (render +X), down vertical.
+			mesh.size = Vector3(2.0 * float(box.half_z), 2.0 * float(box.half_down), 2.0 * float(box.half_x))
+			var bar := MeshInstance3D.new()
+			bar.mesh = mesh
+			bar.material_override = _gate_materials[0]
+			bar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			bar.position = Frames.ned_to_render([float(box.north), float(box.east), float(box.down)])
+			bar.rotation.y = -deg_to_rad(float(box.heading_deg))
+			add_child(bar)
+			bars.append(bar)
+		_gate_views.append(bars)
+
+
+## Highlight the next required gate while a race is counting down or under way.
+func _update_gates(race: Variant) -> void:
+	if _gate_views.is_empty() or typeof(race) != TYPE_DICTIONARY:
+		return
+	var next: int = int(race.get("next_gate", 0)) if str(race.get("phase", "")) in ["COUNTDOWN", "RACING"] else -1
+	if next == _gate_next:
+		return
+	_gate_next = next
+	for index in _gate_views.size():
+		for bar: MeshInstance3D in _gate_views[index]:
+			bar.material_override = _gate_materials[1 if index == next else 0]
