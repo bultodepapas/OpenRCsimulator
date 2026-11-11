@@ -23,6 +23,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
+const MultirotorCatalog := preload("res://vehicles/multirotor/multirotor_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const OutOfTrim := preload("res://sim/out_of_trim.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
@@ -38,6 +39,8 @@ signal launch_setup_changed
 signal ground_vehicle_requested
 ## BL-10: the experimental RC blimp, with the skin selected in airship_skin_id.
 signal airship_requested
+## DR-36a: the experimental FPV quad (MultirotorCatalog.ID).
+signal multirotor_requested
 signal workshop_requested(from: Control)
 signal natural_random_requested(from: Control)
 signal failures_requested(from: Control)
@@ -128,6 +131,11 @@ var airship_skin_id := AirshipCatalog.DEFAULT_SKIN:
 var airship_selected := false:
 	set(value):
 		airship_selected = value
+		_refresh_garage_choice()
+## True when the Garage choice holds the FPV quad; the Garage action then flies it. Takes precedence over the blimp.
+var multirotor_selected := false:
+	set(value):
+		multirotor_selected = value
 		_refresh_garage_choice()
 var workshop_button: Button
 var natural_random_button: Button
@@ -675,21 +683,23 @@ func _init() -> void:
 	ground_vehicle_choice.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	ground_vehicle_choice.custom_minimum_size.y = 40
 	ground_vehicle_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for id: String in GroundCatalog.IDS:
-		ground_vehicle_choice.add_item(GroundCatalog.entry(id).name)
-	# BL-10: the experimental RC blimp shares the Garage choice; its skins follow the RC cars.
-	for skin: Dictionary in AirshipCatalog.skins():
-		ground_vehicle_choice.add_item("%s — %s" % [tr("RC blimp (experimental)"), skin.name])
+	# BL-10: the experimental RC blimp shares the Garage choice; its skins follow the RC cars. DR-36a: then the FPV quad.
+	for entry: Dictionary in _garage_entries():
+		match entry.family:
+			GARAGE_CAR: ground_vehicle_choice.add_item(GroundCatalog.entry(entry.id).name)
+			GARAGE_BLIMP: ground_vehicle_choice.add_item("%s — %s" % [tr("RC blimp (experimental)"), AirshipCatalog.SKINS[entry.id].name])
+			GARAGE_MULTIROTOR: ground_vehicle_choice.add_item(tr(MultirotorCatalog.DISPLAY_NAME))
 	ground_vehicle_choice.select(_garage_index())
 	ground_vehicle_choice.item_selected.connect(_select_garage_vehicle)
 	garage_page.add_child(ground_vehicle_choice)
-	ground_vehicle_button = _button("Fly RC blimp" if airship_selected else "Open RC car garage", "CompactPrimaryButton")
+	ground_vehicle_button = _button(_garage_action_text(), "CompactPrimaryButton")
 	ground_vehicle_button.name = "GroundVehicles"
 	ground_vehicle_button.custom_minimum_size.y = 56
 	ground_vehicle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ground_vehicle_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	ground_vehicle_button.pressed.connect(func() -> void:
-		if airship_selected: airship_requested.emit()
+		if multirotor_selected: multirotor_requested.emit()
+		elif airship_selected: airship_requested.emit()
 		else: ground_vehicle_requested.emit())
 
 	var primary_actions := VBoxContainer.new()
@@ -965,19 +975,53 @@ func _ready() -> void:
 	set_process(true)
 
 
+const GARAGE_CAR := "car"
+const GARAGE_BLIMP := "blimp"
+const GARAGE_MULTIROTOR := "multirotor"
+
+
+## The Garage choice in display order: RC cars, blimp skins, then the FPV quad, as {family, id}.
+static func _garage_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	for id: String in GroundCatalog.IDS:
+		entries.append({family = GARAGE_CAR, id = id})
+	for id: String in AirshipCatalog.SKIN_IDS:
+		entries.append({family = GARAGE_BLIMP, id = id})
+	entries.append({family = GARAGE_MULTIROTOR, id = MultirotorCatalog.ID})
+	return entries
+
+
 func _garage_index() -> int:
-	if airship_selected:
-		return GroundCatalog.IDS.size() + maxi(0, AirshipCatalog.SKIN_IDS.find(airship_skin_id))
-	return maxi(0, GroundCatalog.IDS.find(ground_vehicle_id))
+	var family := GARAGE_MULTIROTOR if multirotor_selected else (GARAGE_BLIMP if airship_selected else GARAGE_CAR)
+	var id := MultirotorCatalog.ID if multirotor_selected else (airship_skin_id if airship_selected else ground_vehicle_id)
+	var entries := _garage_entries()
+	var first_of_family := -1
+	for i in entries.size():
+		if entries[i].family == family:
+			if entries[i].id == id:
+				return i
+			if first_of_family < 0:
+				first_of_family = i
+	return maxi(0, first_of_family)
 
 
 func _select_garage_vehicle(index: int) -> void:
-	airship_selected = index >= GroundCatalog.IDS.size()
-	if airship_selected:
-		airship_skin_id = AirshipCatalog.SKIN_IDS[index - GroundCatalog.IDS.size()]
-	else:
-		ground_vehicle_id = GroundCatalog.IDS[index]
+	var entries := _garage_entries()
+	if index < 0 or index >= entries.size():
+		return
+	var entry: Dictionary = entries[index]
+	match entry.family:
+		GARAGE_CAR: ground_vehicle_id = entry.id
+		GARAGE_BLIMP: airship_skin_id = entry.id
+	multirotor_selected = entry.family == GARAGE_MULTIROTOR
+	airship_selected = entry.family == GARAGE_BLIMP
 	_refresh_garage_choice()
+
+
+func _garage_action_text() -> String:
+	if multirotor_selected:
+		return "Fly FPV quad"
+	return "Fly RC blimp" if airship_selected else "Open RC car garage"
 
 
 ## Keeps the Garage choice and its action in step with selections assigned after the page was built.
@@ -985,7 +1029,7 @@ func _refresh_garage_choice() -> void:
 	if ground_vehicle_choice != null and ground_vehicle_choice.selected != _garage_index():
 		ground_vehicle_choice.select(_garage_index())
 	if ground_vehicle_button != null:
-		ground_vehicle_button.text = "Fly RC blimp" if airship_selected else "Open RC car garage"
+		ground_vehicle_button.text = _garage_action_text()
 
 
 func _select_page(index: int) -> void:

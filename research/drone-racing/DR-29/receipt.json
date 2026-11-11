@@ -1,0 +1,345 @@
+{
+  "step": "DR-29",
+  "date": "2026-11-11",
+  "status": "visual frame asset converted; not a complete or measured aircraft",
+  "source": {
+    "project": "OpenRacer",
+    "url": "https://github.com/OpenRacer/OpenRacer",
+    "commit": "15477b200a569dad9d4107e77fdb7cac5acfffd9",
+    "commit_date": "2026-03-13T21:27:16-05:00",
+    "fetch": "git init; git fetch --depth 1 origin 15477b200a569dad9d4107e77fdb7cac5acfffd9; git checkout FETCH_HEAD",
+    "authors": {
+      "repository": "OpenRacer contributors (GitHub organisation OpenRacer); the README names no individual frame/canopy author",
+      "selected_file_history_at_pin": {
+        "cad/Carbon/2.5mm_BottomPlate.dxf": "05f5e20290 2021-09-03 Ivan Efimov 'initial stl+dxf files upload'",
+        "cad/Carbon/2.5mm_MidPlate.dxf": "05f5e20290 2021-09-03 Ivan Efimov 'initial stl+dxf files upload'",
+        "cad/Carbon/Arms/5mm_Arm_Fatty4Holes.dxf": "bd1c5e44ed 2022-02-01 GitHub user MatthewGuidry 'Carbon folder files renamed for consistentcy' (earliest commit at this path; earlier history under another name not traced)",
+        "cad/AnalogSmoothClassic/Canopy.stl": "05f5e20290 2021-09-03 Ivan Efimov 'initial stl+dxf files upload'"
+      },
+      "history_method": "GitHub REST commits?path=<file>&sha=<pin> via gh api (the local clone is shallow)"
+    },
+    "license": {
+      "name": "GNU General Public License v3.0",
+      "spdx": "GPL-3.0 (the text carries no 'only'/'or later' choice; GitHub reports GPL-3.0)",
+      "file": "LICENSE",
+      "git_blob": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+      "git_blob_matches_requested": true,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149,
+      "added_by": "ea0af01c3d 2023-06-07 Julius Jurgelenas 'Add GPL v3.0 license' (after the selected files were first committed)",
+      "per_file_notices": "none: no per-folder licence or copyright file exists in the repository; cad/Fusion360/README.md and the READMEs carry no other licence terms",
+      "third_party_content_in_repository": [
+        "README credits inspiration from the CampfireQuads frame (not open source); OpenRacer states its design was created from scratch",
+        "JM OpenRacer Light files (JazzMutant) and SharkCanopies (@jares13): not selected",
+        "img/ photographs and renders: not selected"
+      ]
+    },
+    "readme_sha256": "5868a2785d4e047e5de67e34676fd2990e0d199371f1684c12cee4855c350a12"
+  },
+  "selection": {
+    "variant": "Original OpenRacer 5-inch frame: 2.5 mm bottom plate, 2.5 mm top (Mid) plate, four 5 mm 'Fatty' 4-hole arms, AnalogSmoothClassic TPU canopy",
+    "rationale": [
+      "README: 'Carbon files are for 5 inch props unless otherwise specified'; recommended thickness Top/Bottom 2.5 mm, Arms 5 mm",
+      "Fatty arms are the arm style the README recommends; the Fatty DXF is drawn in frame coordinates and its root hole lands on the plate corner hole (22, -22)",
+      "AnalogSmoothClassic canopy: README says the Classic canopies fit normal 20x20 and 30x30 stacks; its four legs centre on the plate holes (+-22, +-22); no camera locker needed; 59k source triangles",
+      "JM Light (2 mm plates, STEP only) and 4/5.5/6-inch XV arms excluded: different plate thickness or prop size; nothing is mixed across variants"
+    ],
+    "files": {
+      "cad/Carbon/2.5mm_BottomPlate.dxf": {
+        "bytes": 16912,
+        "sha256": "7713ec5f7aec281a3a0ebf0831a557f3ec1a5ed4f1b10cf59493719cfaa61b92"
+      },
+      "cad/Carbon/2.5mm_MidPlate.dxf": {
+        "bytes": 14269,
+        "sha256": "cad1e3467f42cfee3d0bd9a16a4880ab66310cfaf0a878edd2cbb45b631880c3"
+      },
+      "cad/Carbon/Arms/5mm_Arm_Fatty4Holes.dxf": {
+        "bytes": 9171,
+        "sha256": "f5828a71fa3f8ddbbda6440f84200f11c1d11e0901b7eac163592db2c2b1ae30"
+      },
+      "cad/AnalogSmoothClassic/Canopy.stl": {
+        "bytes": 2966384,
+        "sha256": "6f0535d6ee55e518e73d1e8f0ae46efa15a30f07e9565864d11de10680267bfc"
+      }
+    },
+    "quantity": {
+      "cad/Carbon/Arms/5mm_Arm_Fatty4Holes.dxf": 4,
+      "others": 1
+    },
+    "excluded_optional": {
+      "cad/Carbon/Braces/4mm_Brace.dxf": "optional front/rear braces; absent from the repository photographs and JM Light lists them as optional; vertical position not documented, so not placed",
+      "camera lockers, fins, GoPro mounts, TPU arm shoes, LiPo coffin": "accessories, not part of the bare frame"
+    },
+    "inventory_cad_formats": {
+      "cad/Carbon": "16 DXF (2D outlines, mm), 3 STEP (JM Light only)",
+      "canopy folders (AnalogPro, AnalogSharpClassic, AnalogSmoothClassic, DjiO3, DjiO4, DjiVista, HDzero_Race2, HDzero_Race3, SharkCanopies)": "STL (Y-up, mm); SharkCanopies also one F3D",
+      "cad/Fusion360": "one F3Z (HDZero parametric canopy) + README",
+      "cad/Accessories": "STL",
+      "3MF": "none"
+    }
+  },
+  "conversion": {
+    "script": "research/drone-racing/DR-29/build_fpv5_glb.py",
+    "command": "\"C:/Program Files/Blender Foundation/Blender 5.2/blender.exe\" --background --factory-startup --python-exit-code 1 --python research/drone-racing/DR-29/build_fpv5_glb.py -- D:/OpenRC-intake/fpv5/OpenRacer D:/OpenRC-intake/fpv5/out/openrc_fpv5_frame.glb --measure D:/OpenRC-intake/fpv5/out/measure.json",
+    "install_command": "copy D:/OpenRC-intake/fpv5/out/openrc_fpv5_frame.glb app/assets/multirotors/openrc-fpv5/openrc_fpv5_frame.glb",
+    "determinism": "two consecutive runs produced byte-identical GLBs (same SHA-256)",
+    "tools": {
+      "git": "2.52.0.windows.1",
+      "blender": "5.2.2 LTS (hash d13f752e3b9c, built 2026-09-15), Windows x64, blender.exe sha256 f141a3c5754500e6f84361099a4cd53f0bb7662b6a0d2cfaaa8fbb63e92234a0",
+      "gltf_exporter": "io_scene_gltf2 5.2.40 (bundled)",
+      "dxf_reader": "built into build_fpv5_glb.py (LINE, ARC incl. OCS extrusion -Z, CIRCLE, LWPOLYLINE with bulge); Blender 5.2 ships no DXF importer",
+      "stl_reader": "built into build_fpv5_glb.py (binary STL)",
+      "step_converter": "not needed and not used; no FreeCAD/gmsh/OCP found on this machine",
+      "godot_check": "Godot 4.8.beta2.official.cafc17a19 (.tools/Godot_v4.8-beta2_win64_console.exe)"
+    },
+    "units": "DXF $INSUNITS=4 (mm) and STL mm, scaled by 0.001 to metres",
+    "plate_extrusion": {
+      "plates_mm": 2.5,
+      "arms_mm": 5.0,
+      "thickness_source": "OpenRacer README 'Recommended carbon thickness'"
+    },
+    "dxf_tessellation": "arcs and circles at 0.03 mm chord sagitta; concentric countersink circles on the bottom plate reduced to the through-hole radius (8 circles dropped)",
+    "assembly": {
+      "arms": "the one arm DXF is placed four times by 0/90/180/270 deg rotation about the plate centre (identical cut parts), not mirrored",
+      "stack_mm_blender_z": {
+        "bottom_plate": [
+          -7.5,
+          -5.0
+        ],
+        "arms": [
+          -5.0,
+          0.0
+        ],
+        "top_plate": [
+          0.0,
+          2.5
+        ],
+        "canopy_legs_on": 2.5
+      },
+      "stack_source": "README hardware list: arm screws pass bottom plate, arm and top plate (pressnut); canopy legs sit on the top plate (photo_AnalogSharpClassic_with_camlocker.jpg)"
+    },
+    "axis_transform": {
+      "dxf_to_blender": "(x, y) -> (x, y, z_stack); DXF +Y is the nose (canopy overhang and camera bay at +Y)",
+      "stl_to_blender": "(x, y, z) -> (x, -z, y + 2.5 mm); STL is Y-up with the camera bay at -Z",
+      "blender_to_gltf": "exporter +Y up: (x, y, z) -> (x, z, -y)",
+      "result": "glTF/Godot +Y up, nose -Z, right +X (matches app/render/frames.gd render axes: x east/right, y up, z = -forward); verified in Godot: canopy AABB z from -0.04069 (nose) to +0.03348"
+    },
+    "origin": "geometric centre of the four motor-mount centres (centre hole of each arm's 4-hole pattern), in the motor-mount plane (top face of the arms)",
+    "triangles": {
+      "canopy_source": 59280,
+      "canopy_output": 30000,
+      "canopy_decimation": "Blender Decimate COLLAPSE, ratio 0.506073, triangulated",
+      "carbon_output": 8032,
+      "total_output": 38032
+    },
+    "materials": {
+      "carbon_fibre": "Principled BSDF, base colour (0.025, 0.025, 0.028), metallic 0, roughness 0.35; plates and arms",
+      "printed_tpu": "Principled BSDF, base colour (0.80, 0.12, 0.06), metallic 0, roughness 0.65; canopy",
+      "textures": "none; no UVs exported",
+      "metal": "no metal parts exist in the selected download (screws, standoffs, motors absent)"
+    },
+    "normals": "smooth shading with sharp edges above 30 deg; exporter splits vertices there",
+    "nodes": "airframe_root (root) > frame_carbon, canopy (meshes), motor_1..4, propeller_1..4, camera_mount (empties); no cameras, lights or animation"
+  },
+  "output": {
+    "path": "app/assets/multirotors/openrc-fpv5/openrc_fpv5_frame.glb",
+    "sha256": "e6c649e6123c66afc8546f940aefc5047cc4e52730d53f5fc039d007a29376e3",
+    "bytes": 822056,
+    "godot_import_sidecar": "app/assets/multirotors/openrc-fpv5/openrc_fpv5_frame.glb.import (Godot 4.8-beta2 default scene importer settings)"
+  },
+  "assembly_mapping": {
+    "rotor_order": "1 rear-right, 2 front-right, 3 rear-left, 4 front-left (docs/plans/drone-racing.md section 4.2)",
+    "nodes_godot_m": {
+      "airframe_root": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_mount": [
+        0.0,
+        0.0315,
+        -0.0225
+      ],
+      "motor_1": [
+        0.072586,
+        0.0,
+        0.072599
+      ],
+      "motor_2": [
+        0.072599,
+        0.0,
+        -0.072586
+      ],
+      "motor_3": [
+        -0.072599,
+        0.0,
+        0.072586
+      ],
+      "motor_4": [
+        -0.072586,
+        0.0,
+        -0.072599
+      ],
+      "propeller_1": [
+        0.072586,
+        0.0,
+        0.072599
+      ],
+      "propeller_2": [
+        0.072599,
+        0.0,
+        -0.072586
+      ],
+      "propeller_3": [
+        -0.072599,
+        0.0,
+        0.072586
+      ],
+      "propeller_4": [
+        -0.072586,
+        0.0,
+        -0.072599
+      ]
+    },
+    "propeller_nodes": "placed at the motor-mount centres in the mount plane; real prop height depends on the missing motors",
+    "spin_directions": "not encoded in the asset; spin is explicit data in the multirotor configuration",
+    "camera_mount": "centre of the coaxial camera side-screw holes of the canopy camera bay (pivot axis), x = 0; side hole area 2.81 mm2 (about M2), one hole pair found. The lens is forward of this pivot by a camera-dependent offset; no camera is in the download"
+  },
+  "measured_geometry_mm": {
+    "motor_to_motor_diagonal": [
+      205.323,
+      205.323
+    ],
+    "hub_radius_from_centre": [
+      102.661,
+      102.661,
+      102.661,
+      102.661
+    ],
+    "adjacent_spacing": {
+      "front_pair": 145.185,
+      "left_pair": 145.185,
+      "rear_pair": 145.185,
+      "right_pair": 145.185
+    },
+    "layout": "true (square) X: all four adjacent spacings equal to 0.001 mm, front/back minus left/right = 0.0 mm; arms on the 45 deg diagonals; hub coordinates differ by 0.013 mm from perfect diagonals as drawn in the arm DXF",
+    "arm_thickness": 5.0,
+    "arm_thickness_source": "OpenRacer README 'Arms: 5mm' (DXF is 2D)",
+    "plate_thickness": 2.5,
+    "arm_width_perpendicular_at_radius_from_centre": {
+      "35": 12.43,
+      "45": 11.201,
+      "55": 10.245,
+      "65": 9.559,
+      "80": 9.072,
+      "90": 11.106
+    },
+    "motor_mount_pattern": "4 x M3 (r 1.5) on a 16 mm circle (holes 8 mm from centre) around a 6 mm centre hole",
+    "bounding_box_godot_m": {
+      "max": [
+        0.091599,
+        0.052466,
+        0.091599
+      ],
+      "min": [
+        -0.091599,
+        -0.0075,
+        -0.091599
+      ]
+    },
+    "bounding_box_size_mm_xyz_blender": [
+      183.198,
+      183.198,
+      59.966
+    ],
+    "canopy_bbox_blender_mm": [
+      [
+        -26.75,
+        -33.481,
+        2.5
+      ],
+      [
+        26.75,
+        40.691,
+        52.466
+      ]
+    ],
+    "prop_clearance": {
+      "5.0in_127mm": {
+        "adjacent_tip_to_tip_gap": 18.185,
+        "diagonal_tip_to_tip_gap": 78.323,
+        "plan_view_margin_to_canopy": 3.3
+      },
+      "5.1in_129.54mm": {
+        "adjacent_tip_to_tip_gap": 15.645,
+        "diagonal_tip_to_tip_gap": 75.783,
+        "plan_view_margin_to_canopy": 2.03
+      },
+      "canopy_detail": {
+        "1": {
+          "nearest_canopy_point_height_above_mount_plane_mm": 15.5,
+          "plan_distance_to_nearest_canopy_point_mm": 66.808,
+          "radial_margin_mm": {
+            "5.0in": 3.308,
+            "5.1in": 2.038
+          }
+        },
+        "2": {
+          "nearest_canopy_point_height_above_mount_plane_mm": 15.5,
+          "plan_distance_to_nearest_canopy_point_mm": 66.8,
+          "radial_margin_mm": {
+            "5.0in": 3.3,
+            "5.1in": 2.03
+          }
+        },
+        "3": {
+          "nearest_canopy_point_height_above_mount_plane_mm": 15.5,
+          "plan_distance_to_nearest_canopy_point_mm": 66.808,
+          "radial_margin_mm": {
+            "5.0in": 3.308,
+            "5.1in": 2.038
+          }
+        },
+        "4": {
+          "nearest_canopy_point_height_above_mount_plane_mm": 15.5,
+          "plan_distance_to_nearest_canopy_point_mm": 66.8,
+          "radial_margin_mm": {
+            "5.0in": 3.3,
+            "5.1in": 2.03
+          }
+        }
+      },
+      "method": "coplanar circular prop discs centred on the hubs. Canopy margin = plan-view distance from hub to the nearest canopy vertex (source mesh, before decimation) minus prop radius; that canopy point is 15.5 mm above the mount plane, so the real 3D margin depends on the missing motor height and prop pitch/flex"
+    },
+    "versus_physics_assumption": {
+      "assumed": "estimated square-X, 215 mm motor diagonal (app/data/multirotors/openrc-fpv5-x1.json)",
+      "measured": "square-X, 205.32 mm motor diagonal",
+      "difference": "diagonal 9.68 mm (4.5 %) shorter; hub radius 102.66 vs 107.50 mm; adjacent spacing 145.19 vs 152.03 mm; layout type agrees (true X)"
+    }
+  },
+  "missing_parts": [
+    "motors (4) and motor bells/stators",
+    "propellers (4); 5.0 vs 5.1 inch choice not fixed by the frame",
+    "flight controller, ESC, receiver, VTX, antenna, wiring",
+    "FPV camera (canopy has only the camera bay)",
+    "battery and strap",
+    "standoffs (4 x 10 mm M3), screws, pressnuts",
+    "optional braces (4mm_Brace.dxf) and accessories"
+  ],
+  "not_established": [
+    "mass, CG and inertia (geometry does not give material mass)",
+    "fit of any particular motor/prop/stack",
+    "per-file authorship beyond the commit history listed above"
+  ],
+  "redistribution": {
+    "facts": [
+      "The pinned repository's root LICENSE is the GPL version 3 text (blob f288702d2fa16d3cdf0035b15a9fcbc552cd88e7), added in 2023 by commit ea0af01c3d; no file-specific licence notices exist",
+      "The GLB is a modified work derived from four GPL-3.0 source files: 2D outlines extruded, parts assembled, canopy decimated, materials and empties added",
+      "The repository carries a notice (app/assets/multirotors/openrc-fpv5/NOTICE.md) naming the source, licence, commit, hashes and modifications, and carries the conversion script that regenerates the GLB from the unmodified source files",
+      "The full GPL-3.0 licence text is not yet copied into this repository; NOTICE.md links the pinned LICENSE file",
+      "The simulator's own code licence (MIT) is not applied to this asset"
+    ],
+    "decision": "not made by this intake; the project owner decides how to distribute the GLB and whether to bundle the licence text and the unmodified source files"
+  },
+  "review_render": "D:/OpenRC-intake/fpv5/review/glb_0.png .. glb_3.png (not committed)"
+}

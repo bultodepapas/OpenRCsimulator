@@ -13,18 +13,22 @@ const Plant := preload("res://physics/multirotor/controlled_plant.gd")
 const Rates := preload("res://physics/multirotor/rates.gd")
 const FC := preload("res://physics/multirotor/flight_controller.gd")
 
+## Feet 22 mm below the hub plane; the fixtures rest at that depth less the static sag of their pad contact.
+const STATIC_SAG_M := 0.0005
+const REST_HEIGHT_M := 0.022 - STATIC_SAG_M
+
 
 static func _controller() -> Dictionary:
 	return {sample_hz = 240, kp = PackedFloat64Array([0.040, 0.036, 0.050]), ki = PackedFloat64Array([0.20, 0.18, 0.15]),
 		kd = PackedFloat64Array([0.0004, 0.0004, 0.0]), i_max = PackedFloat64Array([0.08, 0.08, 0.06]),
 		kaw = PackedFloat64Array([20.0, 20.0, 20.0]), tau_limit = PackedFloat64Array([0.9, 0.9, 0.35]),
-		gyro_lpf_hz = 90.0, dterm_lpf_hz = 60.0, angle_max_tilt_rad = deg_to_rad(55.0), angle_gain_per_s = 6.0,
+		gyro_lpf_hz = 90.0, dterm_lpf_hz = 60.0, kff = PackedFloat64Array([0.0, 0.0, 0.0]), setpoint_lpf_hz = 0.0, angle_max_tilt_rad = deg_to_rad(55.0), angle_gain_per_s = 6.0,
 		angle_rate_limit_rad_s = deg_to_rad(400.0), arm_low_throttle = 0.05,
 		allocator_weights = PackedFloat64Array([1.0, 20.0, 20.0, 5.0]), throttle_rate_per_s = 0.8}
 
 
 static func _contacts(half: float, mass: float) -> Dictionary:
-	var stiffness: float = mass * 9.80665 / (4.0 * 0.004)
+	var stiffness: float = mass * 9.80665 / (4.0 * STATIC_SAG_M)
 	return {feet_frd = [PackedFloat64Array([-half, half, 0.022]), PackedFloat64Array([half, half, 0.022]),
 			PackedFloat64Array([-half, -half, 0.022]), PackedFloat64Array([half, -half, 0.022])],
 		stiffness_n_per_m = stiffness, damping_n_s_per_m = 2.0 * 0.6 * sqrt(4.0 * stiffness * mass) / 4.0, friction = 0.7,
@@ -52,7 +56,7 @@ static func lab() -> Dictionary:
 			time_constant_s = float(source.motor.time_constant_s), idle_command = float(source.motor.idle_duty), max_command = 1.0},
 		controller = _controller(), contacts = _contacts(0.0537, float(source.mass_kg)),
 		camera = {mount_frd = PackedFloat64Array([0.06, 0.0, -0.015]), tilt_deg = 40.0, hfov_deg = 120.0},
-		start = {rest_height_m = 0.018}, derived = {},
+		start = {rest_height_m = REST_HEIGHT_M}, derived = {},
 	}
 
 
@@ -77,12 +81,12 @@ static func electric() -> Dictionary:
 		rotor_law = {thrust_coefficient_n_s2 = 1.53e-6, torque_coefficient_n_m_s2 = 1.58e-8, rotor_drag_n_s2_per_m = 7.6e-5,
 			max_speed_rad_s = 4200.0},
 		airframe = {drag_areas_m2 = PackedFloat64Array([0.012, 0.012, 0.020])},
-		powertrain = {law = "el-one-quadrant-bus-v1", kv_rad_s_per_v = 225.15, resistance_ohm = 0.133, no_load_current_a = 1.0,
+		powertrain = {law = "el-one-quadrant-bus-v1", kv_rad_s_per_v = 225.15, resistance_ohm = 0.133, no_load_current_a = 1.0, braking = "none",
 			idle_command = 0.055, max_command = 1.0},
 		battery = {cells = 6, capacity_ah = 1.3, ocv_points = points, resistance_ohm = 0.030, auxiliary_current_a = 0.6, initial_soc = 1.0},
 		controller = _controller(), contacts = _contacts(half, mass),
 		camera = {mount_frd = PackedFloat64Array([0.06, 0.0, -0.015]), tilt_deg = 40.0, hfov_deg = 120.0},
-		start = {rest_height_m = 0.018}, derived = {},
+		start = {rest_height_m = REST_HEIGHT_M}, derived = {},
 	}
 
 

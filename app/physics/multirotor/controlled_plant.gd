@@ -7,7 +7,9 @@
 #   LAW_LAB       controlled laboratory law: the DR-04a…06a quadratic rotors and first-order shafts of plant.gd,
 #                 driven by the controller instead of raw duties; disarm is zero drive (the shaft coasts under the
 #                 same lag). Continuous: four shaft speeds.
-#   LAW_ELECTRIC  experimental product law: four one-quadrant motors on one battery bus (electric_bus.gd),
+#   LAW_ELECTRIC  experimental product law: four motors on one battery bus, either one-quadrant (electric_bus.gd:
+#                 drive only, the shaft coasts above the commanded speed) or, with powertrain.braking = "damped",
+#                 a signed-current bridge (active braking and regeneration into the pack, no current limit),
 #                 coupled shaft/body acceleration (FPV flight dynamics §4), pack charge and energy integrals and
 #                 the terminal cut latch. Continuous: four shaft speeds, charge [C], terminal energy [J], pack
 #                 loss [J], cut latch (exactly 0 or 1, zero derivative).
@@ -37,6 +39,8 @@ const FC := preload("res://physics/multirotor/flight_controller.gd")
 
 const LAW_LAB := "multirotor-controlled-first-order-v1"
 const LAW_ELECTRIC := "multirotor-controlled-el-coupled-v1"
+## Bus law identity of the damped (signed-current) bridge variant; the one-quadrant variant is electric_bus.gd.
+const BUS_DAMPED := "multirotor-four-load-damped-bus-v1"
 const LAYOUT_LAB := "openrc-multirotor-controlled-lab-v1"
 const LAYOUT_ELECTRIC := "openrc-multirotor-controlled-el-v1"
 
@@ -56,6 +60,12 @@ const CHARGE_TOLERANCE := 2.0
 ## Regularization speed of the contact friction (m/s) and the CG height above which no contact is evaluated.
 const FRICTION_CREEP := 0.05
 const CONTACT_REACH := 0.6
+## Pad contact refinement: pieces per tick and the CG height below which they apply (airframe radius plus margin).
+const CONTACT_SUBSTEPS := 4
+const CONTACT_SUBSTEP_HEIGHT := 0.25
+## Crash impact law: fractions of the tangential velocity and of the body rates kept at a ground crash.
+const CRASH_TANGENT_KEEP := 0.5
+const CRASH_RATE_KEEP := 0.3
 
 var prepared: Dictionary
 var config: Dictionary
@@ -74,16 +84,25 @@ var _points: Array[PackedFloat64Array] = []
 var _foot_count := 0
 var _body_radius := 0.0
 var _resistance := PackedFloat64Array()
+var _braking := false
+var _hub := PackedFloat64Array() # four hubs, three values each
+var _spin := PackedFloat64Array()
+var _rotor_inertia := PackedFloat64Array()
+var _k_t := 0.0
+var _k_q := 0.0
+var _k_h := 0.0
 
 
 ## {ok, errors, plant}. `data` is a prepared multirotor document (physics/multirotor_data.gd), `rates_profile` an
 ## openrc-rates profile, `throttle_policy` FC.THROTTLE_ABSOLUTE or FC.THROTTLE_RATE.
-static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy: int) -> Dictionary:
+static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy: int, research_sample_hz: int = 0,
+		throttle_limit: float = 1.0) -> Dictionary:
 	var errors := PackedStringArray()
 	var plant: RefCounted = (load("res://physics/multirotor/controlled_plant.gd") as GDScript).new()
 	plant.prepared = data
 	var law: String = str(data.get("powertrain", {}).get("law", ""))
 	plant.electric = law == ActuatorMap.LAW_ELECTRIC
+	plant._braking = plant.electric and str(data.powertrain.get("braking", "none")) == "damped"
 	var actuator: Dictionary = ActuatorMap.prepare(data.get("powertrain", {}), data.get("rotor_law", {}))
 	if not actuator.ok:
 		errors.append_array(actuator.errors)
@@ -99,7 +118,13 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 	var reach_x := 0.0
 	var reach_y := 0.0
 	var rotor_inertia := 0.0
+	plant._k_t = k_t
+	plant._k_q = float(data.rotor_law.torque_coefficient_n_m_s2)
+	plant._k_h = float(data.rotor_law.rotor_drag_n_s2_per_m)
 	for rotor: Dictionary in data.rotors:
+		plant._hub.append_array(rotor.hub_frd)
+		plant._spin.append(float(rotor.spin))
+		plant._rotor_inertia.append(float(rotor.inertia_kg_m2))
 		reach_x = maxf(reach_x, absf(rotor.hub_frd[0]))
 		reach_y = maxf(reach_y, absf(rotor.hub_frd[1]))
 		rotor_inertia += float(rotor.inertia_kg_m2)
@@ -113,7 +138,8 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 	if not allocator.ok:
 		errors.append_array(allocator.errors)
 		return {ok = false, errors = errors, plant = null}
-	var controller: Dictionary = FC.prepare(data.controller, rates.prepared, allocator, actuator.map, throttle_policy)
+	var controller: Dictionary = FC.prepare(data.controller, rates.prepared, allocator, actuator.map, throttle_policy,
+		research_sample_hz, throttle_limit)
 	if not controller.ok:
 		errors.append_array(controller.errors)
 		return {ok = false, errors = errors, plant = null}
@@ -161,12 +187,15 @@ func build() -> VehicleModel:
 	vehicle.continuous_size = continuous_size()
 	vehicle.identity = {vehicle = "multirotor", law = law(), layout = layout(), controller = FC.LAW,
 		controller_identity = str(config.identity), allocator = Allocator.LAW, rates = str(config.rates.identity),
-		bus = ElectricBus.LAW if electric else "ideal-supply", data = str(prepared.identity.get("data_sha256", "")),
+		bus = (BUS_DAMPED if _braking else ElectricBus.LAW) if electric else "ideal-supply", data = str(prepared.identity.get("data_sha256", "")),
 		variant = str(prepared.identity.get("variant", "")), throttle_policy = int(config.throttle_policy)}
 	vehicle.sample_tick = sample_tick
 	vehicle.stage_sampled = stage_sampled
 	vehicle.endpoint_transition = endpoint_transition
-	vehicle.state_validator = state_validator
+	vehicle.substeps = substeps
+	# The domain check (state_validator below) runs inside the endpoint transition on every accepted tick and is
+	# called by the session before a reset or restore is committed. It is deliberately not installed as the
+	# kernel's per-step validator hook, which would run its guarded copy of the frame twice per tick.
 	return vehicle
 
 
@@ -256,46 +285,105 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 	var back_emf := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 	var enabled := PackedInt64Array([0, 0, 0, 0])
 	for i in 4:
-		back_emf[i] = maxf(continuous[i], 0.0) / kv
+		back_emf[i] = (continuous[i] if _braking else maxf(continuous[i], 0.0)) / kv
 		if drive:
 			duty[i] = aux[FC.AUX_COMMAND + i]
 			enabled[i] = 1
 	var bus: Dictionary = {}
 	if connected:
-		bus = ElectricBus.solve(_ocv(_soc(continuous)), float(prepared.battery.resistance_ohm),
-			float(prepared.battery.auxiliary_current_a), duty, back_emf, _resistance, enabled)
+		bus = _bus(_ocv(_soc(continuous)), duty, back_emf, enabled, drive)
 		if not bus.get("ok", false):
 			return {loads = PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0]), derivative = derivative,
 				rotor_momentum = M.v3(0.0, 0.0, 0.0), bus = bus}
 	var shaft_torque := PackedFloat64Array([0.0, 0.0, 0.0, 0.0]) # net motor torque minus aerodynamic torque
 	var reaction_z := 0.0
+	var friction_torque: float = kt * float(prepared.powertrain.no_load_current_a)
+	# The rotor law of rotor.gd (quadratic thrust and torque, linear rotor drag at the hub's air velocity) written
+	# out in scalars: this loop runs four times per stage, and the tests hold it equal to Rotor.loads.
+	var fx: float = force[0]
+	var fy: float = force[1]
+	var fz: float = force[2]
+	var mx: float = moment[0]
+	var my: float = moment[1]
+	var mz: float = moment[2]
 	for i in 4:
-		var rotor: Dictionary = prepared.rotors[i]
 		var omega: float = continuous[i]
-		var loads: Dictionary = Rotor.loads(maxf(omega, 0.0), float(rotor.spin), rotor.hub_frd, v_air, rates, 0.0, _rotor_laws[i])
-		force = M.add(force, loads.force)
-		moment = M.add(moment, loads.moment)
+		var motoring: float = maxf(omega, 0.0)
+		var hx: float = _hub[3 * i]
+		var hy: float = _hub[3 * i + 1]
+		var hz: float = _hub[3 * i + 2]
+		var thrust: float = _k_t * motoring * motoring
+		var torque: float = _k_q * motoring * motoring
+		var rotor_fx: float = -_k_h * motoring * (v_air[0] + rates[1] * hz - rates[2] * hy)
+		var rotor_fy: float = -_k_h * motoring * (v_air[1] + rates[2] * hx - rates[0] * hz)
+		fx += rotor_fx
+		fy += rotor_fy
+		fz -= thrust
+		mx += hy * -thrust - hz * rotor_fy
+		my += hz * rotor_fx - hx * -thrust
+		mz += hx * rotor_fy - hy * rotor_fx + _spin[i] * torque
 		var current: float = bus.i_motor[i] if connected else 0.0
-		var friction: float = kt * float(prepared.powertrain.no_load_current_a) * clampf(omega / FRICTION_SPEED, -1.0, 1.0)
-		shaft_torque[i] = kt * current - friction - float(loads.torque)
-		reaction_z += float(rotor.spin) * shaft_torque[i]
-		momentum_z += -float(rotor.spin) * float(rotor.inertia_kg_m2) * omega
+		shaft_torque[i] = kt * current - friction_torque * clampf(omega / FRICTION_SPEED, -1.0, 1.0) - torque
+		reaction_z += _spin[i] * shaft_torque[i]
+		momentum_z += -_spin[i] * _rotor_inertia[i] * omega
+	force = M.v3(fx, fy, fz)
+	moment = M.v3(mx, my, mz)
 	# I_eff·alpha = tau_ext − omega × (I_L·omega + h) + z·sum(spin·(Q_motor − Q_aero)); spin axes are body −z.
 	var momentum: PackedFloat64Array = M.add(RB.inertia_mul(prepared.inertia_kg_m2, rates), M.v3(0.0, 0.0, momentum_z))
 	var rhs: PackedFloat64Array = M.sub(moment, M.cross(rates, momentum))
 	rhs[2] += reaction_z
 	var alpha: PackedFloat64Array = RB.inertia_mul(_effective_inverse, rhs)
 	for i in 4:
-		var rotor: Dictionary = prepared.rotors[i]
-		var omega_dot: float = shaft_torque[i] / float(rotor.inertia_kg_m2) + float(rotor.spin) * alpha[2]
+		var omega_dot: float = shaft_torque[i] / _rotor_inertia[i] + _spin[i] * alpha[2]
 		derivative[i] = omega_dot
-		moment[2] += float(rotor.spin) * float(rotor.inertia_kg_m2) * omega_dot # counted once, here
+		moment[2] += _spin[i] * _rotor_inertia[i] * omega_dot # counted once, here
 	if connected:
 		derivative[C_CHARGE] = -float(bus.i_pack)
 		derivative[C_TERMINAL_ENERGY] = float(bus.p_terminal_w)
 		derivative[C_PACK_LOSS] = float(bus.p_pack_loss_w)
 	return {loads = PackedFloat64Array([force[0], force[1], force[2], moment[0], moment[1], moment[2]]),
 		derivative = derivative, rotor_momentum = M.v3(0.0, 0.0, momentum_z), bus = bus}
+
+
+## The shared bus of one stage: {ok, v_bus, i_motor, i_pack, p_terminal_w, p_pack_loss_w}. Two closed forms cover
+## flight: no drive (only the auxiliary load), and all four loads driving, accepted only when that active set is
+## consistent with its own bus voltage. Every other case (a coasting rotor among driving ones) is the exhaustive
+## active-set solve of electric_bus.gd, the law's reference (tests compare the two).
+func _bus(voc: float, duty: PackedFloat64Array, back_emf: PackedFloat64Array, enabled: PackedInt64Array, drive: bool) -> Dictionary:
+	var pack_resistance: float = prepared.battery.resistance_ohm
+	var auxiliary: float = prepared.battery.auxiliary_current_a
+	if not drive:
+		var idle_bus: float = voc - pack_resistance * auxiliary
+		return {ok = idle_bus > 0.0, v_bus = idle_bus, i_motor = PackedFloat64Array([0.0, 0.0, 0.0, 0.0]), i_pack = auxiliary,
+			p_terminal_w = idle_bus * auxiliary, p_pack_loss_w = pack_resistance * auxiliary * auxiliary}
+	var resistance: float = _resistance[0]
+	var emf_sum := 0.0
+	var duty_sum := 0.0
+	for i in 4:
+		emf_sum += duty[i] * back_emf[i] / resistance
+		duty_sum += duty[i] * duty[i] / resistance
+	var v_bus: float = (voc - pack_resistance * auxiliary + pack_resistance * emf_sum) / (1.0 + pack_resistance * duty_sum)
+	var currents := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	var pack_current: float = auxiliary
+	if _braking:
+		# Damped bridge: every driven motor carries a signed current, so the four-load bus is linear with no
+		# active set. A negative motor current brakes the shaft; a negative pack current charges the pack.
+		for i in 4:
+			currents[i] = (duty[i] * v_bus - back_emf[i]) / resistance
+			pack_current += duty[i] * currents[i]
+		return {ok = v_bus > 0.0, v_bus = v_bus, i_motor = currents, i_pack = pack_current,
+			p_terminal_w = v_bus * pack_current, p_pack_loss_w = pack_resistance * pack_current * pack_current}
+	var consistent: bool = v_bus > 0.0
+	for i in 4:
+		if duty[i] * v_bus <= back_emf[i]:
+			consistent = false
+			break
+		currents[i] = (duty[i] * v_bus - back_emf[i]) / resistance
+		pack_current += duty[i] * currents[i]
+	if not consistent:
+		return ElectricBus.solve(voc, pack_resistance, auxiliary, duty, back_emf, _resistance, enabled)
+	return {ok = true, v_bus = v_bus, i_motor = currents, i_pack = pack_current,
+		p_terminal_w = v_bus * pack_current, p_pack_loss_w = pack_resistance * pack_current * pack_current}
 
 
 func _ground_at(north: float, east: float) -> PackedFloat64Array:
@@ -348,19 +436,60 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 	var modes: PackedInt64Array = candidate.modes
 	var continuous: PackedFloat64Array = candidate.continuous
 	var events: Array = []
-	if modes[FC.MODE_MOTOR] != FC.MOTOR_CRASHED and modes[FC.MODE_MOTOR] != FC.MOTOR_DEPLETED:
+	# A crash is adjudicated until one has happened, also for a quad falling on an exhausted pack.
+	if modes[FC.MODE_MOTOR] != FC.MOTOR_CRASHED:
 		var reason: String = crash_reason(_previous.body, candidate.body, continuous)
 		if not reason.is_empty():
 			modes[FC.MODE_MOTOR] = FC.MOTOR_CRASHED
 			modes[FC.MODE_ARM_BLOCK] = FC.BLOCK_TERMINAL
 			events.append({type = "crash", time_s = float(context.time_s), reason = reason})
-		elif electric and continuous[C_CHARGE] <= 0.0:
+			if reason != "Obstacle strike":
+				candidate.body = _settle_impact(candidate.body)
+		elif electric and continuous[C_CHARGE] <= 0.0 and modes[FC.MODE_MOTOR] != FC.MOTOR_DEPLETED:
 			modes[FC.MODE_MOTOR] = FC.MOTOR_DEPLETED
 			modes[FC.MODE_ARM_BLOCK] = FC.BLOCK_TERMINAL
 			events.append({type = "pack_depleted", time_s = float(context.time_s)})
 		if electric and not events.is_empty():
 			continuous[C_CUT_LATCH] = 1.0
-	return {body = candidate.body, continuous = continuous, aux = candidate.aux, modes = modes, events = events}
+	var accepted := {body = candidate.body, continuous = continuous, aux = candidate.aux, modes = modes}
+	if not state_validator(accepted, context):
+		return {} # outside the law's domain: a malformed result, so the kernel refuses the tick
+	accepted.events = events
+	return accepted
+
+
+## Crash impact law, applied once on the accepted endpoint of a ground crash: the closing velocity along the
+## terrain normal is removed, the tangential velocity and the body rates keep the declared fractions, and the
+## body is lifted along the normal until its deepest contact point is at the surface. A declared aftermath for
+## presentation (the airframe comes to rest instead of burying itself in the penalty springs), not a structural
+## or restitution model; the attempt is already terminal when it runs.
+func _settle_impact(body: PackedFloat64Array) -> PackedFloat64Array:
+	var settled: PackedFloat64Array = body.duplicate()
+	var attitude: PackedFloat64Array = M.quat(body[RB.ATT], body[RB.ATT + 1], body[RB.ATT + 2], body[RB.ATT + 3])
+	var under: PackedFloat64Array = _ground_at(body[RB.POS], body[RB.POS + 1])
+	var normal: PackedFloat64Array = Terrain.normal_from_up_slopes(under[1], under[2])
+	var v_world: PackedFloat64Array = M.q_rotate(attitude, M.v3(body[RB.VEL], body[RB.VEL + 1], body[RB.VEL + 2]))
+	var along: float = M.dot(v_world, normal)
+	var tangential: PackedFloat64Array = M.scale(M.sub(v_world, M.scale(normal, along)), CRASH_TANGENT_KEEP)
+	var kept: PackedFloat64Array = M.add(tangential, M.scale(normal, maxf(along, 0.0)))
+	var v_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), kept)
+	var deepest := 0.0
+	for point: PackedFloat64Array in _points:
+		var offset: PackedFloat64Array = M.q_rotate(attitude, point)
+		var surface: PackedFloat64Array = _ground_at(body[RB.POS] + offset[0], body[RB.POS + 1] + offset[1])
+		deepest = maxf(deepest, body[RB.POS + 2] + offset[2] + surface[0])
+	for i in 3:
+		settled[RB.VEL + i] = v_body[i]
+		settled[RB.RATE + i] = body[RB.RATE + i] * CRASH_RATE_KEEP
+		settled[RB.POS + i] = body[RB.POS + i] + normal[i] * deepest * -normal[2]
+	return settled
+
+
+## Contact substeps for this tick: the stiff pad contact is integrated in CONTACT_SUBSTEPS pieces while the CG is
+## within CONTACT_SUBSTEP_HEIGHT of the terrain; free flight keeps one RK4 step per tick.
+func substeps(body: PackedFloat64Array, _continuous: PackedFloat64Array, _t: float) -> int:
+	var under: PackedFloat64Array = _ground_at(body[RB.POS], body[RB.POS + 1])
+	return CONTACT_SUBSTEPS if -body[RB.POS + 2] - under[0] < CONTACT_SUBSTEP_HEIGHT else 1
 
 
 ## "" or the terminal cause at this accepted body state: a hard impact of a foot or hull point, a spinning rotor
@@ -381,6 +510,10 @@ func crash_reason(previous_body: PackedFloat64Array, body: PackedFloat64Array, c
 	var rates: PackedFloat64Array = M.v3(body[RB.RATE], body[RB.RATE + 1], body[RB.RATE + 2])
 	var attitude: PackedFloat64Array = M.quat(body[RB.ATT], body[RB.ATT + 1], body[RB.ATT + 2], body[RB.ATT + 3])
 	var crash_speed: float = prepared.contacts.crash_speed_mps
+	var previous_velocity: PackedFloat64Array = M.v3(previous_body[RB.VEL], previous_body[RB.VEL + 1], previous_body[RB.VEL + 2])
+	var previous_rates: PackedFloat64Array = M.v3(previous_body[RB.RATE], previous_body[RB.RATE + 1], previous_body[RB.RATE + 2])
+	var previous_attitude: PackedFloat64Array = M.quat(previous_body[RB.ATT], previous_body[RB.ATT + 1], previous_body[RB.ATT + 2],
+		previous_body[RB.ATT + 3])
 	for point: PackedFloat64Array in _points:
 		var offset: PackedFloat64Array = M.q_rotate(attitude, point)
 		var surface: PackedFloat64Array = _ground_at(body[RB.POS] + offset[0], body[RB.POS + 1] + offset[1])
@@ -388,7 +521,10 @@ func crash_reason(previous_body: PackedFloat64Array, body: PackedFloat64Array, c
 			continue
 		var normal: PackedFloat64Array = Terrain.normal_from_up_slopes(surface[1], surface[2])
 		var v_world: PackedFloat64Array = M.q_rotate(attitude, M.add(velocity, M.cross(rates, point)))
-		if -M.dot(v_world, normal) > crash_speed:
+		# The stiff contact has already slowed the point by the endpoint of its first contact tick, so the
+		# closing speed it arrived with (the previous accepted frame) decides as well.
+		var v_before: PackedFloat64Array = M.q_rotate(previous_attitude, M.add(previous_velocity, M.cross(previous_rates, point)))
+		if maxf(-M.dot(v_world, normal), -M.dot(v_before, normal)) > crash_speed:
 			return "Hard impact"
 	# Spinning disc: the rim point closest to the ground.
 	var axis: PackedFloat64Array = M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))
@@ -414,8 +550,11 @@ func state_validator(frame: Dictionary, _context: Dictionary) -> bool:
 		return false
 	var continuous: PackedFloat64Array = frame.continuous
 	var ceiling: float = 1.5 * float(prepared.rotor_law.max_speed_rad_s)
+	# The electrical law's shaft speed is relative to the body: a stopped rotor on a tumbling airframe reads
+	# negative while friction drags it along, so its domain is symmetric. The lag law never goes below rest.
+	var floor_speed: float = -ceiling if electric else -SPEED_TOLERANCE
 	for i in 4:
-		if continuous[i] < -SPEED_TOLERANCE or continuous[i] > ceiling:
+		if continuous[i] < floor_speed or continuous[i] > ceiling:
 			return false
 	var aux: PackedFloat64Array = frame.aux
 	for i in 4:

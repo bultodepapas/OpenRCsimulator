@@ -11230,3 +11230,198 @@ msgstr "为每个控制项选择随之移动的模型部件，然后在预览中
 
 msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
 msgstr "这架飞机有未保存为草稿的更改。不保存就离开吗？"
+
+msgid "Lower the throttle"
+msgstr "降低油门"
+
+msgid "Cycle the arm switch"
+msgstr "重新拨动解锁开关"
+
+msgid "No controller"
+msgstr "无控制器"
+
+msgid "Reset to the pad"
+msgstr "返回起降台"
+
+msgid "FPV"
+msgstr "FPV"
+
+msgid "FPV QUAD CONTROLS (Mode 2)"
+msgstr "FPV四轴操控（美国手）"
+
+msgid "Throttle: left stick up/down (W/S)"
+msgstr "油门：左摇杆上下（W/S）"
+
+msgid "Yaw: left stick sides (A/D)"
+msgstr "偏航：左摇杆左右（A/D）"
+
+msgid "Roll: right stick sides (Left/Right arrows)"
+msgstr "横滚：右摇杆左右（左右方向键）"
+
+msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
+msgstr "俯仰：右摇杆前推＝机头向下（上下方向键）"
+
+msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
+msgstr "解锁或上锁：E、手柄LB，或设为起落架的遥控器开关。油门在低位时解锁。"
+
+msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "飞行模式 特技/自稳：M 或手柄 RB。开始时遥控器为特技，手柄或键盘为自稳。"
+
+msgid "Gamepad stick and keyboard throttle: hold up to add power, down to reduce it."
+msgstr "手柄摇杆和键盘油门：按住向上加油门，向下减油门。"
+
+msgid "C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view"
+msgstr "C：相机（FPV、跟随、飞手）   [ 和 ]：相机倾角   - 和 =：视场角"
+
+msgid "P or Esc: pause   R: restart on the pad   H: this help"
+msgstr "P 或 Esc：暂停   R：在起降台重新开始   H：本帮助"
+
+msgid "F10: start/stop the flight log   F11: log marker"
+msgstr "F10：开始/停止飞行日志   F11：标记"
+
+msgid "Estimated, unvalidated physics: not a model of a real quad."
+msgstr "物理为估算且未经验证：并非真实四轴的模型。"
+
+msgid "EXPERIMENTAL"
+msgstr "实验性"
+
+msgid "LAB FIXTURE VISUAL"
+msgstr "实验室占位模型"
+
+msgid "Resume with throttle reset to zero"
+msgstr "油门归零后继续"
+
+msgid "Resume flight"
+msgstr "继续飞行"
+
+msgid "FPV quad 5\" (experimental)"
+msgstr "FPV 四轴 5 英寸（实验性）"
+
+msgid "Restart on pad"
+msgstr "在起降台重新开始"
+
+msgid "Controls help"
+msgstr "操控帮助"
+
+msgid "MOTORS ARMED"
+msgstr "电机已解锁"
+
+msgid "MOTORS DISARMED"
+msgstr "电机已上锁"
+
+msgid "Angle"
+msgstr "自稳"
+
+msgid "Acro"
+msgstr "特技"
+
+msgid "Timer"
+msgstr "计时"
+
+msgid "Throttle %d%%"
+msgstr "油门 %d%%"
+
+msgid "Speed %.1f m/s"
+msgstr "速度 %.1f m/s"
+
+msgid "Height %.1f m"
+msgstr "高度 %.1f 米"
+
+msgid "Battery %.2f V  %.1f A  %d mAh"
+msgstr "电池 %.2f V  %.1f A  %d mAh"
+
+msgid "Camera %s  tilt %d°  FOV %d°"
+msgstr "相机 %s  倾角 %d°  视场 %d°"
+
+msgid "Crashed: %s. Press R to reset."
+msgstr "坠毁：%s。按 R 重置。"
+
+msgid "Ready. Cycle the arm switch OFF then ON at low throttle."
+msgstr "就绪。在油门低位时将解锁开关先拨到 OFF 再拨到 ON。"
+
+msgid "The controller changed: restart on the pad to fly with it."
+msgstr "控制器已更换：请在起降台重新开始以使用它飞行。"
+
+msgid "Simulation paused: %s"
+msgstr "模拟已暂停：%s"
+
+msgid "Paused: the window lost focus."
+msgstr "已暂停：窗口失去焦点。"
+
+msgid "Controller connected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "控制器已连接：电机已上锁。继续后请重新拨动解锁开关。"
+
+msgid "Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "控制器已断开：电机已上锁。继续后请重新拨动解锁开关。"
+
+msgid "Flight paused"
+msgstr "飞行已暂停"
+
+msgid "Flight log marker"
+msgstr "飞行日志标记"
+
+msgid "Restart on the pad to fly again."
+msgstr "请在起降台重新开始以再次飞行。"
+
+msgid "No controller: connect or check the controller."
+msgstr "无控制器：请连接或检查控制器。"
+
+msgid "Restart refused: %s"
+msgstr "重新开始被拒绝：%s"
+
+msgid "Crashed: %s"
+msgstr "坠毁：%s"
+
+msgid "The battery is depleted. Restart on the pad to fly again."
+msgstr "电池已耗尽。请在起降台重新开始以再次飞行。"
+
+msgid "The battery is depleted."
+msgstr "电池已耗尽。"
+
+msgid "The input frame was refused."
+msgstr "操控输入被拒绝。"
+
+msgid "Fly FPV quad"
+msgstr "飞行 FPV 四轴"
+
+msgid "Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start."
+msgstr "油门限制（暂停菜单）：摇杆推满也只能达到电机范围的这一比例。开始时手柄和键盘为 45%，遥控器为 100%。"
+
+msgid "Resume to watch the fall"
+msgstr "继续以观看坠落"
+
+msgid "Throttle limit: %d%%"
+msgstr "油门限制：%d%%"
+
+msgid "Throttle limit %d%% applies after Restart on pad."
+msgstr "油门限制 %d%% 将在“在起降台重新开始”后生效。"
+
+msgid "Arming refused: lower the throttle fully, then arm again."
+msgstr "解锁被拒绝：先把油门完全拉到底，再重新解锁。"
+
+msgid "Arming refused: set the arm switch OFF, then ON again."
+msgstr "解锁被拒绝：先把解锁开关拨到 OFF，再拨回 ON。"
+
+msgid "Arming refused: press %s to switch arming OFF, then press it again."
+msgstr "解锁被拒绝：按 %s 切换到 OFF，然后再按一次。"
+
+msgid "Set the arm switch ON to arm the motors (throttle low)."
+msgstr "把解锁开关拨到 ON 以解锁电机（油门在低位）。"
+
+msgid "Press %s to arm the motors (throttle low)."
+msgstr "按 %s 解锁电机（油门在低位）。"
+
+msgid "Armed. Raise the throttle gently to take off."
+msgstr "已解锁。轻柔推油门起飞。"
+
+msgid "Armed. Hold %s briefly to add throttle; release it to hold the throttle."
+msgstr "已解锁。短暂按住 %s 增加油门；松开后油门保持不变。"
+
+msgid "LIMIT %d%%"
+msgstr "限制 %d%%"
+
+msgid "%.2f V/cell"
+msgstr "%.2f V/节"
+
+msgid "LAND NOW"
+msgstr "立即降落"

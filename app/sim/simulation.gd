@@ -407,16 +407,20 @@ func step() -> void:
 	var sampled_context: Dictionary = {}
 	var stage_guard: Dictionary = {}
 	if _framed():
+		# One guard, captured before the sample, spans the sample, every stage and the step policy, and is reused
+		# by the endpoint transition: a callback that writes live kernel state or swaps a model field refuses the
+		# tick. Callbacks are not wrapped one by one (cost); the check runs once after the integration.
+		stage_guard = _capture_endpoint_guard()
 		var sample: Dictionary = _framed_sample(endpoint_previous, t)
 		if not sample.ok:
+			_endpoint_guard_unchanged(stage_guard)
 			_fail_safe("step rejected: " + str(sample.message))
 			return
 		aux = sample.aux
 		modes = sample.modes
+		stage_guard.owner.aux = aux.duplicate()
+		stage_guard.owner.modes = modes.duplicate()
 		sampled_context = _sampled_context(aux, modes, tick, t)
-		# Stages are not wrapped one by one (cost): one guard spans the whole integration instead, so a stage or
-		# policy that writes live kernel state or swaps a model field refuses the tick.
-		stage_guard = _capture_endpoint_guard()
 	else:
 		var next_aux: Variant = model.pre_tick.call(old_aux, inputs, dt())
 		if not _array_is_finite(next_aux) or next_aux.size() != old_aux.size():
@@ -521,7 +525,7 @@ func step() -> void:
 		_fail_safe("step rejected: " + stage_error.message)
 		return
 	if not stage_guard.is_empty() and not _endpoint_guard_unchanged(stage_guard):
-		_fail_safe("step rejected: a stage or step policy mutated live state or model")
+		_fail_safe("step rejected: a sample, stage or step policy mutated live state or model")
 		return
 	var tick_events: Array[Dictionary] = []
 	var integration_receipt: Dictionary = {}
@@ -578,7 +582,9 @@ func step() -> void:
 			context.integration_receipt = integration_receipt.duplicate(true)
 		var previous_copy: Dictionary = endpoint_previous.duplicate(true)
 		var context_copy: Dictionary = context.duplicate(true)
-		var transition_guard := _capture_endpoint_guard()
+		# A framed model without a body filter has not touched live state since its integration guard was verified.
+		var transition_guard: Dictionary = stage_guard if not stage_guard.is_empty() \
+			and not model.post_tick.is_valid() and not model.post_tick_joint.is_valid() else _capture_endpoint_guard()
 		var transitioned: Variant = _call_endpoint_read_only(model.endpoint_transition, [endpoint_previous, candidate_frame, context])
 		var pure := _endpoint_guard_unchanged(transition_guard)
 		if not pure or not _guard_values_equal(endpoint_previous, previous_copy) or not _guard_values_equal(context, context_copy):
@@ -1043,11 +1049,11 @@ func _framed_sample(accepted_frame: Dictionary, t: float) -> Dictionary:
 	var input_copy: PackedFloat64Array = input_snapshot.duplicate()
 	var clock := {tick = tick, time_s = t, dt = dt()}
 	var clock_copy: Dictionary = clock.duplicate(true)
-	var guard := _capture_endpoint_guard()
+	# Live kernel state and the model are covered by the caller's integration guard; a reentry attempt marks it.
 	var result: Variant = _call_endpoint_read_only(model.sample_tick, [frame_copy, input_snapshot, clock])
-	if not _endpoint_guard_unchanged(guard) or not _guard_values_equal(accepted_frame, frame_copy) \
+	if _endpoint_reentry_attempted or not _guard_values_equal(accepted_frame, frame_copy) \
 		or not _guard_values_equal(input_snapshot, input_copy) or not _guard_values_equal(clock, clock_copy):
-		return {ok = false, message = "sample callback mutated live state, its frame, inputs or clock"}
+		return {ok = false, message = "sample callback reentered the kernel or mutated its frame, inputs or clock"}
 	if not result is Dictionary or result.size() != 2 or not result.has_all(["aux", "modes"]) \
 		or not _array_is_finite(result.aux, model.aux_size) \
 		or typeof(result.modes) != TYPE_PACKED_INT64_ARRAY or result.modes.size() != model.modes_size:

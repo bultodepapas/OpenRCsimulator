@@ -189,6 +189,8 @@ var selected_ground_vehicle_id := "mt8-bisonte"
 var selected_airship_skin := "tiburon-blanco"
 ## The Garage choice returns to the vehicle flown last (an RC car or the RC blimp).
 var selected_airship_last := false
+## DR-36a: the Garage choice returns to the FPV quad when it was flown last.
+var selected_multirotor_last := false
 ## Test seam: custom ground activity factory, default remains the packaged scene script.
 var ground_vehicle_factory := Callable()
 var pause_menu: CanvasLayer:
@@ -311,6 +313,16 @@ func _ready() -> void:
 	if user_args.size() == 1 and user_args[0].begins_with("--airship="):
 		TranslationServer.set_locale("en")
 		start_airship(user_args[0].trim_prefix("--airship="))
+		return
+	# DR-36a: the experimental FPV quad has its own activity route; it never reaches the airplane parser.
+	var multirotor_route: Dictionary = preload("res://vehicles/multirotor/multirotor_catalog.gd").route_from_args(user_args)
+	if multirotor_route.requested:
+		TranslationServer.set_locale("en")
+		if not multirotor_route.ok:
+			printerr(multirotor_route.error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		start_multirotor(multirotor_route.id)
 		return
 	for arg in user_args:
 		if arg.begins_with("--vehicle"):
@@ -540,6 +552,7 @@ func show_home() -> void:
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.airship_skin_id = selected_airship_skin
 	home.airship_selected = selected_airship_last
+	home.multirotor_selected = selected_multirotor_last
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
@@ -560,6 +573,7 @@ func show_home() -> void:
 	home.launch_setup_changed.connect(_on_home_launch_setup_changed)
 	home.ground_vehicle_requested.connect(start_ground_vehicle)
 	home.airship_requested.connect(start_airship)
+	home.multirotor_requested.connect(start_multirotor)
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
 	home.aircraft_requested.connect(set_aircraft)
@@ -640,6 +654,7 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 			ground_vehicle = candidate
 			selected_ground_vehicle_id = vehicle_id
 			selected_airship_last = false
+			selected_multirotor_last = false
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
@@ -701,6 +716,73 @@ func start_airship(skin_id: String = "") -> void:
 			ground_vehicle = candidate
 			selected_airship_skin = skin_id
 			selected_airship_last = true
+			selected_multirotor_last = false
+			ground_vehicle.home_requested.connect(end_ground_vehicle)
+			if departing_home != null: departing_home.queue_free()
+			if home_scene != null: home_scene.queue_free()
+			home_scene = null
+			return
+		remove_child(candidate)
+		candidate.queue_free()
+	if home_scene != null:
+		add_child(home_scene)
+		home_scene.camera.make_current()
+	if departing_home != null:
+		screens.push("home", departing_home)
+		departing_home.set_note(error)
+		_menu_feedback(&"reject")
+	else:
+		printerr(error)
+		get_tree().quit(ERR_CANT_CREATE)
+
+
+## DR-36a: the experimental FPV quad occupies the same exclusive activity slot as the ground vehicles and the blimp,
+## so every "no activity running" guard, controller hook and exit request also covers it. Its physics/data are its own.
+func start_multirotor(vehicle_id: String = "") -> void:
+	const MultirotorCatalog := preload("res://vehicles/multirotor/multirotor_catalog.gd")
+	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active:
+		return
+	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
+		_home_preparation_route_pending = true
+		await shutdown_home_flight_preparation()
+		_home_preparation_route_pending = false
+		_home_prefetch_suspended = false
+		if not is_inside_tree() or not screens.is_top("home") or _home_preparation_quit_pending or _loading_active:
+			return
+	if ground_vehicle != null or flight != null:
+		return
+	if vehicle_id.is_empty():
+		vehicle_id = MultirotorCatalog.ID
+	if not MultirotorCatalog.contains(vehicle_id):
+		return
+	var departing_home := home
+	if departing_home != null and not screens.is_top("home"):
+		return
+	if departing_home != null:
+		screens.pop(false, false)
+	if home_scene != null:
+		remove_child(home_scene)
+	var candidate: Node3D
+	var script = load("res://vehicles/multirotor/multirotor_scene.gd")
+	if script != null and script.can_instantiate():
+		candidate = script.new()
+	var error := "FPV quad activity could not be loaded"
+	if candidate != null:
+		candidate.departure_managed = true
+		candidate.vehicle_id = vehicle_id
+		candidate.field_path = field_path
+		candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
+		candidate.night_options = _night_options_from_preferences()
+		candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
+		if controllers != null:
+			candidate.controller_registry = controllers.registry
+		add_child(candidate)
+		error = str(candidate.get("startup_error"))
+		if error.is_empty():
+			_menu_feedback(&"accept")
+			ground_vehicle = candidate
+			selected_airship_last = false
+			selected_multirotor_last = true
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()

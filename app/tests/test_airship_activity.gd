@@ -41,7 +41,7 @@ func _run() -> void:
 	app.home._page_buttons[3].pressed.emit()
 	await process_frame
 	var choice: OptionButton = app.home.ground_vehicle_choice
-	check(choice.item_count == GroundCatalog.IDS.size() + Catalog.SKIN_IDS.size(), "Garage lists the RC cars and every blimp skin")
+	check(choice.item_count == GroundCatalog.IDS.size() + Catalog.SKIN_IDS.size() + 1, "Garage lists the RC cars, every blimp skin and the FPV quad")
 	var historic := GroundCatalog.IDS.size() + Catalog.SKIN_IDS.find("historico")
 	choice.select(historic)
 	choice.item_selected.emit(historic)

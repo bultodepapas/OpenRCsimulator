@@ -1,0 +1,1002 @@
+{
+ "airframe": {
+  "drag_areas": {
+   "kind": "borrowed",
+   "source": "borrowed: airframe drag areas from the lab fixture Plant.research_quad()",
+   "unit": "m^2",
+   "value": [
+    0.012,
+    0.012,
+    0.02
+   ]
+  }
+ },
+ "battery": {
+  "auxiliary_current": {
+   "kind": "estimated",
+   "source": "estimated: VTX/FC/receiver draw",
+   "unit": "A",
+   "value": 0.6
+  },
+  "capacity": {
+   "kind": "estimated",
+   "source": "estimated: 1300 mAh pack chosen for this candidate",
+   "unit": "A*h",
+   "value": 1.3
+  },
+  "cells": {
+   "kind": "estimated",
+   "source": "estimated: 6S pack chosen for this candidate",
+   "unit": "1",
+   "value": 6
+  },
+  "initial_soc": {
+   "kind": "estimated",
+   "source": "estimated: fully charged start",
+   "unit": "1",
+   "value": 1.0
+  },
+  "ocv_points": {
+   "kind": "derived",
+   "source": "derived: pack open-circuit voltage (soc, volts) = generic per-cell LiPo rest curve (estimated, not identified for a product) times 6 cells",
+   "unit": "V",
+   "value": [
+    [
+     0.0,
+     19.799999999999997
+    ],
+    [
+     0.05,
+     21.299999999999997
+    ],
+    [
+     0.1,
+     22.080000000000002
+    ],
+    [
+     0.2,
+     22.44
+    ],
+    [
+     0.3,
+     22.62
+    ],
+    [
+     0.4,
+     22.799999999999997
+    ],
+    [
+     0.5,
+     23.04
+    ],
+    [
+     0.6,
+     23.28
+    ],
+    [
+     0.7,
+     23.64
+    ],
+    [
+     0.8,
+     24.119999999999997
+    ],
+    [
+     0.9,
+     24.660000000000004
+    ],
+    [
+     1.0,
+     25.200000000000003
+    ]
+   ]
+  },
+  "resistance": {
+   "kind": "estimated",
+   "source": "estimated: about 5 mOhm per cell",
+   "unit": "ohm",
+   "value": 0.03
+  }
+ },
+ "camera": {
+  "hfov": {
+   "kind": "estimated",
+   "source": "estimated: horizontal field of view starting point, not a calibration",
+   "unit": "deg",
+   "value": 120.0
+  },
+  "mount": {
+   "kind": "derived",
+   "source": "derived: FPV camera 0.022 m forward of the CG and 0.011 m above the hub plane (estimated starting point, not a calibration), from the computed CG",
+   "unit": "m",
+   "value": [
+    0.0225,
+    -0.0,
+    -0.007481651376146789
+   ]
+  },
+  "tilt": {
+   "kind": "estimated",
+   "source": "estimated: camera uptilt starting point, not a calibration",
+   "unit": "deg",
+   "value": 40.0
+  }
+ },
+ "capabilities": [
+  "multirotor",
+  "acro",
+  "angle",
+  "ground_start",
+  "battery",
+  "replay"
+ ],
+ "contacts": {
+  "crash_speed": {
+   "kind": "estimated",
+   "source": "estimated: hull closing speed treated as a crash",
+   "unit": "m/s",
+   "value": 5.0
+  },
+  "damping_per_foot": {
+   "kind": "derived",
+   "source": "derived: total damping 2*0.60*sqrt(k_total*m) for the heave damping ratio (estimated) shared by four feet",
+   "unit": "N*s/m",
+   "value": 22.897764932957973
+  },
+  "feet": {
+   "kind": "derived",
+   "source": "derived: four feet at the hub x/y, 0.022 m below the hub plane (estimated), from the computed CG",
+   "unit": "m",
+   "value": [
+    [
+     -0.07321543536762014,
+     0.07259158215661096,
+     0.02601834862385321
+    ],
+    [
+     0.07196772894560179,
+     0.07259158215661096,
+     0.02601834862385321
+    ],
+    [
+     -0.07321543536762014,
+     -0.07259158215661096,
+     0.02601834862385321
+    ],
+    [
+     0.07196772894560179,
+     -0.07259158215661096,
+     0.02601834862385321
+    ]
+   ]
+  },
+  "friction": {
+   "kind": "estimated",
+   "source": "estimated: foot/ground friction coefficient",
+   "unit": "1",
+   "value": 0.7
+  },
+  "hull": {
+   "kind": "derived",
+   "source": "derived: crash points from the computed CG: four prop-disc centres 0.012 m above the hub plane and the top of the battery (estimated geometry)",
+   "unit": "m",
+   "value": [
+    [
+     -0.07321543536762014,
+     0.07259158215661096,
+     -0.00798165137614679
+    ],
+    [
+     0.07196772894560179,
+     0.07259158215661096,
+     -0.00798165137614679
+    ],
+    [
+     -0.07321543536762014,
+     -0.07259158215661096,
+     -0.00798165137614679
+    ],
+    [
+     0.07196772894560179,
+     -0.07259158215661096,
+     -0.00798165137614679
+    ],
+    [
+     -0.0006238532110091744,
+     0.0,
+     -0.038981651376146786
+    ]
+   ]
+  },
+  "rotor_strike_speed": {
+   "kind": "estimated",
+   "source": "estimated: rotor speed above which a prop strike counts",
+   "unit": "rad/s",
+   "value": 300.0
+  },
+  "stiffness_per_foot": {
+   "kind": "derived",
+   "source": "derived: total vertical stiffness m*g/0.001 m static sag (estimated) shared by four feet",
+   "unit": "N/m",
+   "value": 2672.3121249999995
+  }
+ },
+ "controller": {
+  "allocator_weights": {
+   "kind": "estimated",
+   "source": "estimated: allocator row weights (collective, roll, pitch, yaw) starting value",
+   "unit": "1",
+   "value": [
+    1.0,
+    20.0,
+    20.0,
+    5.0
+   ]
+  },
+  "angle": {
+   "gain": {
+    "kind": "estimated",
+    "source": "estimated: Angle mode attitude-to-rate gain starting value",
+    "unit": "1/s",
+    "value": 6.0
+   },
+   "max_tilt": {
+    "kind": "estimated",
+    "source": "estimated: Angle mode maximum tilt starting value",
+    "unit": "deg",
+    "value": 55.0
+   },
+   "rate_limit": {
+    "kind": "estimated",
+    "source": "estimated: Angle mode roll/pitch rate cap starting value",
+    "unit": "deg/s",
+    "value": 400.0
+   }
+  },
+  "arm_low_throttle": {
+   "kind": "estimated",
+   "source": "estimated: arming low-throttle threshold",
+   "unit": "1",
+   "value": 0.05
+  },
+  "dterm_lpf": {
+   "kind": "estimated",
+   "source": "estimated: first-order D-term low-pass cutoff below the 120 Hz Nyquist frequency",
+   "unit": "Hz",
+   "value": 60.0
+  },
+  "gyro_lpf": {
+   "kind": "estimated",
+   "source": "estimated: first-order gyro low-pass cutoff below the 120 Hz Nyquist frequency",
+   "unit": "Hz",
+   "value": 90.0
+  },
+  "i_max": {
+   "kind": "estimated",
+   "source": "estimated: starting integral limit, to be requalified by the controller owner",
+   "unit": "N*m",
+   "value": [
+    0.08,
+    0.08,
+    0.06
+   ]
+  },
+  "kaw": {
+   "kind": "estimated",
+   "source": "estimated: starting back-calculation anti-windup gain, to be requalified by the controller owner",
+   "unit": "1/s",
+   "value": [
+    20.0,
+    20.0,
+    20.0
+   ]
+  },
+  "kd": {
+   "kind": "estimated",
+   "source": "estimated: derivative-on-measurement gain chosen by the DR-21 software step-response sweep on this estimated plant; not measured on hardware",
+   "unit": "N*m*s^2/rad",
+   "value": [
+    0.002,
+    0.0021,
+    0.0
+   ]
+  },
+  "kff": {
+   "kind": "estimated",
+   "source": "estimated: setpoint-acceleration feed-forward on roll and pitch: about 1.0 times the estimated axis inertia, chosen by the DR-21 software step-response sweep; none on yaw, where it saturates the small yaw torque limit and failed the 240 Hz sample-rate screen; not measured on hardware",
+   "unit": "N*m*s^2/rad",
+   "value": [
+    0.00118,
+    0.00126,
+    0.0
+   ]
+  },
+  "ki": {
+   "kind": "estimated",
+   "source": "estimated: integral gain chosen by the DR-21 software step-response sweep on this estimated plant; not measured on hardware",
+   "unit": "N*m/rad",
+   "value": [
+    0.1,
+    0.11,
+    0.2
+   ]
+  },
+  "kp": {
+   "kind": "estimated",
+   "source": "estimated: rate-loop gain chosen by the DR-21 software step-response sweep on this estimated plant (docs/research/drone-racing/M1-M3-2026-11-11); not measured on hardware",
+   "unit": "N*m*s/rad",
+   "value": [
+    0.08,
+    0.085,
+    0.09
+   ]
+  },
+  "law": "openrc-fc-acro-angle-v1",
+  "sample_rate": {
+   "kind": "estimated",
+   "source": "estimated: the only admitted controller sample schedule (240 Hz outer tick)",
+   "unit": "Hz",
+   "value": 240
+  },
+  "setpoint_lpf": {
+   "kind": "estimated",
+   "source": "estimated: first-order setpoint low-pass ahead of the feed-forward derivative, below the 120 Hz Nyquist frequency",
+   "unit": "Hz",
+   "value": 80.0
+  },
+  "tau_limit": {
+   "kind": "estimated",
+   "source": "estimated: starting torque-request limit, to be requalified by the controller owner",
+   "unit": "N*m",
+   "value": [
+    0.9,
+    0.9,
+    0.35
+   ]
+  },
+  "throttle_rate": {
+   "kind": "estimated",
+   "source": "estimated: rate-throttle policy full-stick slew starting value",
+   "unit": "1/s",
+   "value": 0.8
+  }
+ },
+ "format": "openrc-multirotor v1",
+ "identity": {
+  "family": "openrc-fpv5",
+  "name": "OpenRC FPV5 experimental candidate x1: F50 2150 KV, F5146 5.1 in, 6S 1300 mAh, OpenRacer 205.3 mm square-X frame geometry",
+  "status": "experimental-estimates",
+  "variant": "openrc-fpv5-f50-2150-f5146-6s-x1"
+ },
+ "mass_inventory": {
+  "components": [
+   {
+    "id": "frame",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 5-inch carbon frame with top plate; centroid 12 mm below the hub plane; box inertia-equivalent to two 0.2053 m diagonal arms (side = diagonal/sqrt(2))",
+     "unit": "kg",
+     "value": 0.095
+    },
+    "position": {
+     "kind": "estimated",
+     "source": "estimated: typical 5-inch carbon frame with top plate; centroid 12 mm below the hub plane; box inertia-equivalent to two 0.2053 m diagonal arms (side = diagonal/sqrt(2))",
+     "unit": "m",
+     "value": [
+      0.0,
+      0.0,
+      0.012
+     ]
+    },
+    "shape": {
+     "size": {
+      "kind": "estimated",
+      "source": "estimated: inertia box (full lengths x, y, z) of frame",
+      "unit": "m",
+      "value": [
+       0.1452,
+       0.1452,
+       0.02
+      ]
+     },
+     "type": "box"
+    }
+   },
+   {
+    "id": "stack",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: stack/ESC/receiver/VTX/camera/wiring lumped near the centre between the plates",
+     "unit": "kg",
+     "value": 0.085
+    },
+    "position": {
+     "kind": "estimated",
+     "source": "estimated: stack/ESC/receiver/VTX/camera/wiring lumped near the centre between the plates",
+     "unit": "m",
+     "value": [
+      0.004,
+      0.0,
+      0.006
+     ]
+    },
+    "shape": {
+     "size": {
+      "kind": "estimated",
+      "source": "estimated: inertia box (full lengths x, y, z) of stack",
+      "unit": "m",
+      "value": [
+       0.036,
+       0.036,
+       0.02
+      ]
+     },
+     "type": "box"
+    }
+   },
+   {
+    "id": "battery",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 6S 1300 mAh LiPo strapped on top of the centre, 75 x 35 x 38 mm",
+     "unit": "kg",
+     "value": 0.215
+    },
+    "position": {
+     "kind": "estimated",
+     "source": "estimated: typical 6S 1300 mAh LiPo strapped on top of the centre, 75 x 35 x 38 mm",
+     "unit": "m",
+     "value": [
+      0.0,
+      0.0,
+      -0.024
+     ]
+    },
+    "shape": {
+     "size": {
+      "kind": "estimated",
+      "source": "estimated: inertia box (full lengths x, y, z) of battery",
+      "unit": "m",
+      "value": [
+       0.075,
+       0.035,
+       0.038
+      ]
+     },
+     "type": "box"
+    }
+   },
+   {
+    "id": "motor_1",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 2306-class motor mass, one per hub",
+     "unit": "kg",
+     "value": 0.033
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub x/y of rotor 1 on the 0.205 m square-X diagonal (estimated), centroid 0.010 m below the hub plane (estimated)",
+     "unit": "m",
+     "value": [
+      -0.07259158215661096,
+      0.07259158215661096,
+      0.01
+     ]
+    },
+    "shape": {
+     "type": "point"
+    }
+   },
+   {
+    "id": "motor_2",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 2306-class motor mass, one per hub",
+     "unit": "kg",
+     "value": 0.033
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub x/y of rotor 2 on the 0.205 m square-X diagonal (estimated), centroid 0.010 m below the hub plane (estimated)",
+     "unit": "m",
+     "value": [
+      0.07259158215661096,
+      0.07259158215661096,
+      0.01
+     ]
+    },
+    "shape": {
+     "type": "point"
+    }
+   },
+   {
+    "id": "motor_3",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 2306-class motor mass, one per hub",
+     "unit": "kg",
+     "value": 0.033
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub x/y of rotor 3 on the 0.205 m square-X diagonal (estimated), centroid 0.010 m below the hub plane (estimated)",
+     "unit": "m",
+     "value": [
+      -0.07259158215661096,
+      -0.07259158215661096,
+      0.01
+     ]
+    },
+    "shape": {
+     "type": "point"
+    }
+   },
+   {
+    "id": "motor_4",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 2306-class motor mass, one per hub",
+     "unit": "kg",
+     "value": 0.033
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub x/y of rotor 4 on the 0.205 m square-X diagonal (estimated), centroid 0.010 m below the hub plane (estimated)",
+     "unit": "m",
+     "value": [
+      0.07259158215661096,
+      -0.07259158215661096,
+      0.01
+     ]
+    },
+    "shape": {
+     "type": "point"
+    }
+   },
+   {
+    "id": "prop_1",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 5.1-inch tri-blade prop mass, one per hub at the hub plane",
+     "unit": "kg",
+     "value": 0.0045
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub of rotor 1 on the 0.205 m square-X diagonal (estimated)",
+     "unit": "m",
+     "value": [
+      -0.07259158215661096,
+      0.07259158215661096,
+      0.0
+     ]
+    },
+    "rotor_id": 1,
+    "shape": {
+     "axial_inertia": {
+      "kind": "borrowed",
+      "source": "borrowed: rotating prop plus bell about the spin axis, equal to the rotor inertia (lab fixture Plant.research_quad(), DR-01); counted once here",
+      "unit": "kg*m^2",
+      "value": 7e-06
+     },
+     "transverse_inertia": {
+      "kind": "derived",
+      "source": "derived: half the axial inertia (perpendicular-axis theorem for a planar rotor averaged over a turn)",
+      "unit": "kg*m^2",
+      "value": 3.5e-06
+     },
+     "type": "axisymmetric_z"
+    }
+   },
+   {
+    "id": "prop_2",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 5.1-inch tri-blade prop mass, one per hub at the hub plane",
+     "unit": "kg",
+     "value": 0.0045
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub of rotor 2 on the 0.205 m square-X diagonal (estimated)",
+     "unit": "m",
+     "value": [
+      0.07259158215661096,
+      0.07259158215661096,
+      0.0
+     ]
+    },
+    "rotor_id": 2,
+    "shape": {
+     "axial_inertia": {
+      "kind": "borrowed",
+      "source": "borrowed: rotating prop plus bell about the spin axis, equal to the rotor inertia (lab fixture Plant.research_quad(), DR-01); counted once here",
+      "unit": "kg*m^2",
+      "value": 7e-06
+     },
+     "transverse_inertia": {
+      "kind": "derived",
+      "source": "derived: half the axial inertia (perpendicular-axis theorem for a planar rotor averaged over a turn)",
+      "unit": "kg*m^2",
+      "value": 3.5e-06
+     },
+     "type": "axisymmetric_z"
+    }
+   },
+   {
+    "id": "prop_3",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 5.1-inch tri-blade prop mass, one per hub at the hub plane",
+     "unit": "kg",
+     "value": 0.0045
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub of rotor 3 on the 0.205 m square-X diagonal (estimated)",
+     "unit": "m",
+     "value": [
+      -0.07259158215661096,
+      -0.07259158215661096,
+      0.0
+     ]
+    },
+    "rotor_id": 3,
+    "shape": {
+     "axial_inertia": {
+      "kind": "borrowed",
+      "source": "borrowed: rotating prop plus bell about the spin axis, equal to the rotor inertia (lab fixture Plant.research_quad(), DR-01); counted once here",
+      "unit": "kg*m^2",
+      "value": 7e-06
+     },
+     "transverse_inertia": {
+      "kind": "derived",
+      "source": "derived: half the axial inertia (perpendicular-axis theorem for a planar rotor averaged over a turn)",
+      "unit": "kg*m^2",
+      "value": 3.5e-06
+     },
+     "type": "axisymmetric_z"
+    }
+   },
+   {
+    "id": "prop_4",
+    "mass": {
+     "kind": "estimated",
+     "source": "estimated: typical 5.1-inch tri-blade prop mass, one per hub at the hub plane",
+     "unit": "kg",
+     "value": 0.0045
+    },
+    "position": {
+     "kind": "derived",
+     "source": "derived: hub of rotor 4 on the 0.205 m square-X diagonal (estimated)",
+     "unit": "m",
+     "value": [
+      0.07259158215661096,
+      -0.07259158215661096,
+      0.0
+     ]
+    },
+    "rotor_id": 4,
+    "shape": {
+     "axial_inertia": {
+      "kind": "borrowed",
+      "source": "borrowed: rotating prop plus bell about the spin axis, equal to the rotor inertia (lab fixture Plant.research_quad(), DR-01); counted once here",
+      "unit": "kg*m^2",
+      "value": 7e-06
+     },
+     "transverse_inertia": {
+      "kind": "derived",
+      "source": "derived: half the axial inertia (perpendicular-axis theorem for a planar rotor averaged over a turn)",
+      "unit": "kg*m^2",
+      "value": 3.5e-06
+     },
+     "type": "axisymmetric_z"
+    }
+   }
+  ],
+  "datum": "centre of the hub plane, FRD axes (x forward, y right, z down); positions in metres"
+ },
+ "powertrain": {
+  "braking": "damped",
+  "idle_command": {
+   "kind": "borrowed",
+   "source": "borrowed: idle command from the lab fixture / firmware default idle",
+   "unit": "1",
+   "value": 0.055
+  },
+  "kv": {
+   "kind": "derived",
+   "source": "derived: 2150 rpm/V motor designation (manufacturer-reported) converted to rad/s/V",
+   "unit": "rad/s/V",
+   "value": 225.1474735072685
+  },
+  "law": "el-one-quadrant-bus-v1",
+  "max_command": {
+   "kind": "borrowed",
+   "source": "borrowed: maximum command from the lab fixture output limit",
+   "unit": "1",
+   "value": 1.0
+  },
+  "no_load_current": {
+   "kind": "estimated",
+   "source": "estimated: typical for this motor class at 10 V; no datasheet row pinned",
+   "unit": "A",
+   "value": 1.0
+  },
+  "resistance": {
+   "kind": "derived",
+   "source": "derived: (V - Omega/Kv)/I at the F50 100% row (manufacturer-reported); lumps motor, ESC and wiring loss at an assumed full bridge duty",
+   "unit": "ohm",
+   "value": 0.13292831966559807
+  }
+ },
+ "provenance": {
+  "derived_diagnostics": {
+   "cg_from_datum_m": [
+    0.0006238532110091744,
+    0.0,
+    -0.004018348623853211
+   ],
+   "damping_per_foot_n_s_per_m": 22.897764932957973,
+   "effective_yaw_inertia_kg_m2": 0.002056913196574923,
+   "fit_kq_display_uncertainty_n_m_s2": 4.481431055523573e-10,
+   "fit_kq_n_m_s2": 1.6125874623200525e-08,
+   "fit_kt_n_s2": 1.5472992026085058e-06,
+   "fit_kv_rad_s_per_v": 225.1474735072685,
+   "fit_leave_one_out_thrust_residual_n": [
+    0.3219518790413769,
+    -0.8025970725586795
+   ],
+   "fit_method": "k_T, k_Q: least squares through the origin of T and displayed Q against Omega^2 over both rows; R = (V - Omega/Kv)/I at the 100% row (lumps ESC and wiring loss); thrust = grams * 1e-3 * 9.80665",
+   "fit_omega_rad_s": [
+    2324.150245125729,
+    3669.5896589031177
+   ],
+   "fit_resistance_ohm": 0.13292831966559807,
+   "fit_row100_static_speed_model_rad_s": 3713.2544331624485,
+   "fit_row100_static_thrust_model_n": 21.334561359820277,
+   "fit_row50_implied_duty": 0.4933423100672542,
+   "fit_thrust_reported_n": [
+    8.0806796,
+    20.9470044
+   ],
+   "fit_thrust_residual_n": [
+    0.2773268329465086,
+    -0.11124622557004926
+   ],
+   "fit_torque_residual_n_m": [
+    0.007106723515646132,
+    -0.00285077415295773
+   ],
+   "hover_command_full_charge": 0.18644250447112837,
+   "hover_speed_rad_s": 933.2535185038248,
+   "hover_thrust_per_rotor_n": 1.347639008941388,
+   "hover_thrusts_n": [
+    1.3246731160586114,
+    1.347639008941388,
+    1.3246731160586114,
+    1.347639008941388
+   ],
+   "idle_thrust_full_charge_n": 0.11613948069339576,
+   "inertia_kg_m2": [
+    0.0011793174698470944,
+    0.001259298693088685,
+    0.002084913196574923,
+    0.0,
+    -3.4062385321100873e-06,
+    0.0
+   ],
+   "mass_kg": 0.5449999999999999,
+   "min_prop_clearance_m": 0.015643164313221936,
+   "rest_height_m": 0.02551834862385321,
+   "static_max_speed_rad_s": 3949.138859846424,
+   "static_max_thrust_low_charge_n": 20.141372291802686,
+   "static_max_thrust_per_rotor_n": 24.131210668481664,
+   "stiffness_per_foot_n_per_m": 2672.3121249999995,
+   "thrust_to_weight": 18.060173766926024,
+   "zero_gap_square_x_diagonal_m": 0.18319722486981072
+  },
+  "generator": "research/drone-racing/openrc-fpv5-x1/derive.py",
+  "generator_version": "1",
+  "notes": "Experimental product candidate built from estimates, borrowed lab-fixture values and vendor-reported static rows. Nothing in this file is measured by this project or validated against flight data. Regenerate with derive.py; never hand-edit.",
+  "references": {
+   "f50_table": "LiG Power F50 2150 KV / F5146 static table, https://www.ligpower.com/product/f50-5inch-racing-drone-motor.html, accessed 2026-11-11 as transcribed in FPV/03 section 6; page bytes and hash not yet captured (intake open)",
+   "f5146_spec": "T-Motor F5146 specification, https://www.t-hobby.com/products/t-motor-f5146-drone-propeller, accessed 2026-11-11 as transcribed in FPV/03 section 6: 5.1 in nominal diameter, 4.6 in pitch, recommends motors below 2100 KV (conflicts with the 2150 KV pairing; unresolved)",
+   "lab_fixture": "app/physics/multirotor/plant.gd Plant.research_quad() (DR-01 estimated research-quad fixture)"
+  },
+  "sources": "research/drone-racing/openrc-fpv5-x1/sources.json",
+  "sources_sha256": "2bb6af6d22baa91c2d39275fe3c6cf6bd728546150ce138455c6672ea6a6c0b2"
+ },
+ "rotor_law": {
+  "law": "quadratic-static-v1",
+  "max_speed": {
+   "kind": "derived",
+   "source": "derived: no-load ceiling Kv * full-charge pack OCV * max command; the fitted rows only reach 3669.6 rad/s, above that the static law is extrapolated",
+   "unit": "rad/s",
+   "value": 5673.716332383166
+  },
+  "rotor_drag": {
+   "kind": "borrowed",
+   "source": "borrowed: rotor in-plane drag coefficient k_h from the lab fixture Plant.research_quad()",
+   "unit": "N*s^2/m",
+   "value": 7.6e-05
+  },
+  "thrust_coefficient": {
+   "kind": "derived",
+   "source": "derived: k_T, least-squares fit through the origin against Omega^2 over F50 rows 50% and 100% (sources.json motor_rows, manufacturer-reported); residuals in provenance.derived_diagnostics",
+   "unit": "N*s^2",
+   "value": 1.5472992026085058e-06
+  },
+  "torque_coefficient": {
+   "kind": "derived",
+   "source": "derived: k_Q, least-squares fit through the origin against Omega^2 over F50 rows 50% and 100% (sources.json motor_rows, manufacturer-reported) of the displayed torque (0.01 N*m display step, about +-2.8% coefficient uncertainty)",
+   "unit": "N*m*s^2",
+   "value": 1.6125874623200525e-08
+  }
+ },
+ "rotors": [
+  {
+   "axis": {
+    "kind": "estimated",
+    "source": "estimated: fixed parallel thrust axis up (body -z); no motor tilt modelled",
+    "unit": "1",
+    "value": [
+     0.0,
+     0.0,
+     -1.0
+    ]
+   },
+   "diameter": {
+    "kind": "manufacturer-reported",
+    "source": "manufacturer-reported: T-Motor F5146 nominal 5.1 in = 129.54 mm (FPV/03 section 6), not a 5.0 in / 127 mm prop",
+    "unit": "m",
+    "value": 0.12954
+   },
+   "hub_frd": {
+    "kind": "derived",
+    "source": "derived: hub of rotor 1 from the computed CG (square-X diagonal 0.205 m, estimated)",
+    "unit": "m",
+    "value": [
+     -0.07321543536762014,
+     0.07259158215661096,
+     0.004018348623853211
+    ]
+   },
+   "id": 1,
+   "inertia": {
+    "kind": "borrowed",
+    "source": "borrowed: prop plus bell about the spin axis from the lab fixture Plant.research_quad() (DR-01 derived check)",
+    "unit": "kg*m^2",
+    "value": 7e-06
+   },
+   "motor": "F50 2150 KV",
+   "prop": "T-Motor F5146 (5.1 in, 4.6 in pitch, tri-blade)",
+   "spin": -1
+  },
+  {
+   "axis": {
+    "kind": "estimated",
+    "source": "estimated: fixed parallel thrust axis up (body -z); no motor tilt modelled",
+    "unit": "1",
+    "value": [
+     0.0,
+     0.0,
+     -1.0
+    ]
+   },
+   "diameter": {
+    "kind": "manufacturer-reported",
+    "source": "manufacturer-reported: T-Motor F5146 nominal 5.1 in = 129.54 mm (FPV/03 section 6), not a 5.0 in / 127 mm prop",
+    "unit": "m",
+    "value": 0.12954
+   },
+   "hub_frd": {
+    "kind": "derived",
+    "source": "derived: hub of rotor 2 from the computed CG (square-X diagonal 0.205 m, estimated)",
+    "unit": "m",
+    "value": [
+     0.07196772894560179,
+     0.07259158215661096,
+     0.004018348623853211
+    ]
+   },
+   "id": 2,
+   "inertia": {
+    "kind": "borrowed",
+    "source": "borrowed: prop plus bell about the spin axis from the lab fixture Plant.research_quad() (DR-01 derived check)",
+    "unit": "kg*m^2",
+    "value": 7e-06
+   },
+   "motor": "F50 2150 KV",
+   "prop": "T-Motor F5146 (5.1 in, 4.6 in pitch, tri-blade)",
+   "spin": 1
+  },
+  {
+   "axis": {
+    "kind": "estimated",
+    "source": "estimated: fixed parallel thrust axis up (body -z); no motor tilt modelled",
+    "unit": "1",
+    "value": [
+     0.0,
+     0.0,
+     -1.0
+    ]
+   },
+   "diameter": {
+    "kind": "manufacturer-reported",
+    "source": "manufacturer-reported: T-Motor F5146 nominal 5.1 in = 129.54 mm (FPV/03 section 6), not a 5.0 in / 127 mm prop",
+    "unit": "m",
+    "value": 0.12954
+   },
+   "hub_frd": {
+    "kind": "derived",
+    "source": "derived: hub of rotor 3 from the computed CG (square-X diagonal 0.205 m, estimated)",
+    "unit": "m",
+    "value": [
+     -0.07321543536762014,
+     -0.07259158215661096,
+     0.004018348623853211
+    ]
+   },
+   "id": 3,
+   "inertia": {
+    "kind": "borrowed",
+    "source": "borrowed: prop plus bell about the spin axis from the lab fixture Plant.research_quad() (DR-01 derived check)",
+    "unit": "kg*m^2",
+    "value": 7e-06
+   },
+   "motor": "F50 2150 KV",
+   "prop": "T-Motor F5146 (5.1 in, 4.6 in pitch, tri-blade)",
+   "spin": 1
+  },
+  {
+   "axis": {
+    "kind": "estimated",
+    "source": "estimated: fixed parallel thrust axis up (body -z); no motor tilt modelled",
+    "unit": "1",
+    "value": [
+     0.0,
+     0.0,
+     -1.0
+    ]
+   },
+   "diameter": {
+    "kind": "manufacturer-reported",
+    "source": "manufacturer-reported: T-Motor F5146 nominal 5.1 in = 129.54 mm (FPV/03 section 6), not a 5.0 in / 127 mm prop",
+    "unit": "m",
+    "value": 0.12954
+   },
+   "hub_frd": {
+    "kind": "derived",
+    "source": "derived: hub of rotor 4 from the computed CG (square-X diagonal 0.205 m, estimated)",
+    "unit": "m",
+    "value": [
+     0.07196772894560179,
+     -0.07259158215661096,
+     0.004018348623853211
+    ]
+   },
+   "id": 4,
+   "inertia": {
+    "kind": "borrowed",
+    "source": "borrowed: prop plus bell about the spin axis from the lab fixture Plant.research_quad() (DR-01 derived check)",
+    "unit": "kg*m^2",
+    "value": 7e-06
+   },
+   "motor": "F50 2150 KV",
+   "prop": "T-Motor F5146 (5.1 in, 4.6 in pitch, tri-blade)",
+   "spin": -1
+  }
+ ],
+ "start": {
+  "armed": false,
+  "mode": "ground_rest",
+  "rest_height": {
+   "kind": "derived",
+   "source": "derived: CG height above flat ground with the lowest feet at static sag (estimated stiffness and geometry)",
+   "unit": "m",
+   "value": 0.02551834862385321
+  }
+ }
+}

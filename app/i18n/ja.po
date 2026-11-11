@@ -11281,3 +11281,198 @@ msgstr "各操作に合わせて動くモデルのパーツを選び、プレビ
 
 msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
 msgstr "この機体には下書きとして保存されていない変更があります。保存せずに終了しますか？"
+
+msgid "Lower the throttle"
+msgstr "スロットルを下げてください"
+
+msgid "Cycle the arm switch"
+msgstr "アームスイッチを切り替えてください"
+
+msgid "No controller"
+msgstr "コントローラーなし"
+
+msgid "Reset to the pad"
+msgstr "パッドに戻してください"
+
+msgid "FPV"
+msgstr "FPV"
+
+msgid "FPV QUAD CONTROLS (Mode 2)"
+msgstr "FPVクアッド操作（モード2）"
+
+msgid "Throttle: left stick up/down (W/S)"
+msgstr "スロットル：左スティック上下（W/S）"
+
+msgid "Yaw: left stick sides (A/D)"
+msgstr "ヨー：左スティック左右（A/D）"
+
+msgid "Roll: right stick sides (Left/Right arrows)"
+msgstr "ロール：右スティック左右（左右矢印キー）"
+
+msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
+msgstr "ピッチ：右スティック前＝機首下げ（上下矢印キー）"
+
+msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
+msgstr "アーム／ディスアーム：E、ゲームパッドのLB、または着陸装置に割り当てた送信機スイッチ。スロットルを下げてアームします。"
+
+msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "飛行モード Acro/Angle：M またはゲームパッドの RB。開始時は送信機で Acro、ゲームパッドとキーボードで Angle。"
+
+msgid "Gamepad stick and keyboard throttle: hold up to add power, down to reduce it."
+msgstr "ゲームパッドのスティックとキーボードのスロットル：上で出力を上げ、下で下げます。"
+
+msgid "C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view"
+msgstr "C：カメラ（FPV、追尾、パイロット）   [ と ]：カメラ傾き   - と =：視野角"
+
+msgid "P or Esc: pause   R: restart on the pad   H: this help"
+msgstr "P または Esc：一時停止   R：パッドから再開   H：このヘルプ"
+
+msgid "F10: start/stop the flight log   F11: log marker"
+msgstr "F10：フライトログの開始／停止   F11：マーカー"
+
+msgid "Estimated, unvalidated physics: not a model of a real quad."
+msgstr "推定値による未検証の物理です。実機のクアッドのモデルではありません。"
+
+msgid "EXPERIMENTAL"
+msgstr "実験的"
+
+msgid "LAB FIXTURE VISUAL"
+msgstr "実験用の仮モデル"
+
+msgid "Resume with throttle reset to zero"
+msgstr "スロットルをゼロにして再開"
+
+msgid "Resume flight"
+msgstr "飛行を再開"
+
+msgid "FPV quad 5\" (experimental)"
+msgstr "FPVクアッド 5インチ（実験的）"
+
+msgid "Restart on pad"
+msgstr "パッドから再開"
+
+msgid "Controls help"
+msgstr "操作ヘルプ"
+
+msgid "MOTORS ARMED"
+msgstr "モーター アーム"
+
+msgid "MOTORS DISARMED"
+msgstr "モーター ディスアーム"
+
+msgid "Angle"
+msgstr "Angle"
+
+msgid "Acro"
+msgstr "Acro"
+
+msgid "Timer"
+msgstr "タイマー"
+
+msgid "Throttle %d%%"
+msgstr "スロットル %d%%"
+
+msgid "Speed %.1f m/s"
+msgstr "速度 %.1f m/s"
+
+msgid "Height %.1f m"
+msgstr "高度 %.1f m"
+
+msgid "Battery %.2f V  %.1f A  %d mAh"
+msgstr "バッテリー %.2f V  %.1f A  %d mAh"
+
+msgid "Camera %s  tilt %d°  FOV %d°"
+msgstr "カメラ %s  傾き %d°  視野 %d°"
+
+msgid "Crashed: %s. Press R to reset."
+msgstr "墜落：%s。R でリセットします。"
+
+msgid "Ready. Cycle the arm switch OFF then ON at low throttle."
+msgstr "準備完了。スロットルを下げたままアームスイッチを OFF から ON にしてください。"
+
+msgid "The controller changed: restart on the pad to fly with it."
+msgstr "コントローラーが変わりました。使うにはパッドから再開してください。"
+
+msgid "Simulation paused: %s"
+msgstr "シミュレーション一時停止：%s"
+
+msgid "Paused: the window lost focus."
+msgstr "一時停止：ウィンドウのフォーカスが外れました。"
+
+msgid "Controller connected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "コントローラー接続：モーターはディスアーム状態です。再開後にアームスイッチを切り替えてください。"
+
+msgid "Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "コントローラー切断：モーターはディスアーム状態です。再開後にアームスイッチを切り替えてください。"
+
+msgid "Flight paused"
+msgstr "飛行一時停止"
+
+msgid "Flight log marker"
+msgstr "フライトログのマーカー"
+
+msgid "Restart on the pad to fly again."
+msgstr "再び飛ぶにはパッドから再開してください。"
+
+msgid "No controller: connect or check the controller."
+msgstr "コントローラーがありません。接続または確認してください。"
+
+msgid "Restart refused: %s"
+msgstr "再開を拒否しました：%s"
+
+msgid "Crashed: %s"
+msgstr "墜落：%s"
+
+msgid "The battery is depleted. Restart on the pad to fly again."
+msgstr "バッテリーが切れました。再び飛ぶにはパッドから再開してください。"
+
+msgid "The battery is depleted."
+msgstr "バッテリーが切れました。"
+
+msgid "The input frame was refused."
+msgstr "操作入力が拒否されました。"
+
+msgid "Fly FPV quad"
+msgstr "FPVクアッドを飛ばす"
+
+msgid "Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start."
+msgstr "スロットル制限（ポーズメニュー）：スティックを一杯に倒してもモーター範囲のこの割合までしか届きません。開始時はゲームパッドとキーボードで45%、送信機で100%です。"
+
+msgid "Resume to watch the fall"
+msgstr "再開して落下を見る"
+
+msgid "Throttle limit: %d%%"
+msgstr "スロットル制限: %d%%"
+
+msgid "Throttle limit %d%% applies after Restart on pad."
+msgstr "スロットル制限 %d%% は「パッドから再開」の後に適用されます。"
+
+msgid "Arming refused: lower the throttle fully, then arm again."
+msgstr "アーム拒否：スロットルを一番下まで下げてから、もう一度アームしてください。"
+
+msgid "Arming refused: set the arm switch OFF, then ON again."
+msgstr "アーム拒否：アームスイッチをOFFにしてから、もう一度ONにしてください。"
+
+msgid "Arming refused: press %s to switch arming OFF, then press it again."
+msgstr "アーム拒否：%sを押してOFFにしてから、もう一度押してください。"
+
+msgid "Set the arm switch ON to arm the motors (throttle low)."
+msgstr "アームスイッチをONにしてモーターをアームします（スロットル低）。"
+
+msgid "Press %s to arm the motors (throttle low)."
+msgstr "%sを押してモーターをアームします（スロットル低）。"
+
+msgid "Armed. Raise the throttle gently to take off."
+msgstr "アーム済み。スロットルをゆっくり上げて離陸します。"
+
+msgid "Armed. Hold %s briefly to add throttle; release it to hold the throttle."
+msgstr "アーム済み。%sを少し押し続けるとスロットルが上がり、離すとその値を保ちます。"
+
+msgid "LIMIT %d%%"
+msgstr "制限 %d%%"
+
+msgid "%.2f V/cell"
+msgstr "%.2f V/セル"
+
+msgid "LAND NOW"
+msgstr "すぐ着陸"

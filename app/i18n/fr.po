@@ -12202,3 +12202,198 @@ msgstr "Choisissez la pièce du modèle qui bouge avec chaque commande, vérifie
 
 msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
 msgstr "Cet avion a des modifications qui ne sont pas enregistrées comme brouillon. Quitter sans les enregistrer ?"
+
+msgid "Lower the throttle"
+msgstr "Baissez les gaz"
+
+msgid "Cycle the arm switch"
+msgstr "Basculez l’interrupteur d’armement"
+
+msgid "No controller"
+msgstr "Aucune manette"
+
+msgid "Reset to the pad"
+msgstr "Revenez à l’aire de départ"
+
+msgid "FPV"
+msgstr "FPV"
+
+msgid "FPV QUAD CONTROLS (Mode 2)"
+msgstr "COMMANDES DU QUADRICOPTÈRE FPV (Mode 2)"
+
+msgid "Throttle: left stick up/down (W/S)"
+msgstr "Gaz : manche gauche haut/bas (W/S)"
+
+msgid "Yaw: left stick sides (A/D)"
+msgstr "Lacet : manche gauche sur les côtés (A/D)"
+
+msgid "Roll: right stick sides (Left/Right arrows)"
+msgstr "Roulis : manche droit sur les côtés (flèches gauche/droite)"
+
+msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
+msgstr "Tangage : manche droit en avant = nez vers le bas (flèches haut/bas)"
+
+msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
+msgstr "Armer ou désarmer : E, LB de la manette ou l’interrupteur de la radio affecté au Train d’atterrissage. Armez gaz en bas."
+
+msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "Mode de vol Acro/Angle : M ou RB de la manette. Au départ, Acro avec une radio, Angle avec une manette ou le clavier."
+
+msgid "Gamepad stick and keyboard throttle: hold up to add power, down to reduce it."
+msgstr "Gaz au manche de manette et au clavier : maintenez vers le haut pour augmenter, vers le bas pour réduire."
+
+msgid "C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view"
+msgstr "C : caméra (FPV, poursuite, pilote)   [ et ] : inclinaison de la caméra   - et = : champ de vision"
+
+msgid "P or Esc: pause   R: restart on the pad   H: this help"
+msgstr "P ou Échap : pause   R : redémarrer sur l’aire   H : cette aide"
+
+msgid "F10: start/stop the flight log   F11: log marker"
+msgstr "F10 : démarrer/arrêter l’enregistrement du vol   F11 : marqueur"
+
+msgid "Estimated, unvalidated physics: not a model of a real quad."
+msgstr "Physique estimée et non validée : ce n’est pas le modèle d’un vrai quadricoptère."
+
+msgid "EXPERIMENTAL"
+msgstr "EXPÉRIMENTAL"
+
+msgid "LAB FIXTURE VISUAL"
+msgstr "MODÈLE VISUEL DE LABORATOIRE"
+
+msgid "Resume with throttle reset to zero"
+msgstr "Reprendre avec les gaz remis à zéro"
+
+msgid "Resume flight"
+msgstr "Reprendre le vol"
+
+msgid "FPV quad 5\" (experimental)"
+msgstr "Quadricoptère FPV 5\" (expérimental)"
+
+msgid "Restart on pad"
+msgstr "Redémarrer sur l’aire"
+
+msgid "Controls help"
+msgstr "Aide des commandes"
+
+msgid "MOTORS ARMED"
+msgstr "MOTEURS ARMÉS"
+
+msgid "MOTORS DISARMED"
+msgstr "MOTEURS DÉSARMÉS"
+
+msgid "Angle"
+msgstr "Angle"
+
+msgid "Acro"
+msgstr "Acro"
+
+msgid "Timer"
+msgstr "Chrono"
+
+msgid "Throttle %d%%"
+msgstr "Gaz %d%%"
+
+msgid "Speed %.1f m/s"
+msgstr "Vitesse %.1f m/s"
+
+msgid "Height %.1f m"
+msgstr "Hauteur %.1f m"
+
+msgid "Battery %.2f V  %.1f A  %d mAh"
+msgstr "Batterie %.2f V  %.1f A  %d mAh"
+
+msgid "Camera %s  tilt %d°  FOV %d°"
+msgstr "Caméra %s  inclinaison %d°  champ %d°"
+
+msgid "Crashed: %s. Press R to reset."
+msgstr "Crash : %s. Appuyez sur R pour recommencer."
+
+msgid "Ready. Cycle the arm switch OFF then ON at low throttle."
+msgstr "Prêt. Mettez l’interrupteur d’armement sur OFF puis ON, gaz en bas."
+
+msgid "The controller changed: restart on the pad to fly with it."
+msgstr "La manette a changé : redémarrez sur l’aire pour voler avec elle."
+
+msgid "Simulation paused: %s"
+msgstr "Simulation en pause : %s"
+
+msgid "Paused: the window lost focus."
+msgstr "En pause : la fenêtre a perdu le focus."
+
+msgid "Controller connected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "Manette connectée : les moteurs sont désarmés. Basculez l’interrupteur d’armement après la reprise."
+
+msgid "Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "Manette déconnectée : les moteurs sont désarmés. Basculez l’interrupteur d’armement après la reprise."
+
+msgid "Flight paused"
+msgstr "Vol en pause"
+
+msgid "Flight log marker"
+msgstr "Marqueur du journal de vol"
+
+msgid "Restart on the pad to fly again."
+msgstr "Redémarrez sur l’aire pour voler à nouveau."
+
+msgid "No controller: connect or check the controller."
+msgstr "Aucune manette : connectez ou vérifiez la manette."
+
+msgid "Restart refused: %s"
+msgstr "Redémarrage refusé : %s"
+
+msgid "Crashed: %s"
+msgstr "Crash : %s"
+
+msgid "The battery is depleted. Restart on the pad to fly again."
+msgstr "La batterie est épuisée. Redémarrez sur l’aire pour voler à nouveau."
+
+msgid "The battery is depleted."
+msgstr "La batterie est épuisée."
+
+msgid "The input frame was refused."
+msgstr "L’entrée de commande a été refusée."
+
+msgid "Fly FPV quad"
+msgstr "Piloter le quadricoptère FPV"
+
+msgid "Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start."
+msgstr "Limite de gaz (menu pause) : le manche à fond n’atteint que cette part de la plage moteur. Au départ, 45% à la manette et au clavier, 100% avec une radio."
+
+msgid "Resume to watch the fall"
+msgstr "Reprendre pour regarder la chute"
+
+msgid "Throttle limit: %d%%"
+msgstr "Limite de gaz : %d%%"
+
+msgid "Throttle limit %d%% applies after Restart on pad."
+msgstr "La limite de gaz de %d%% s’applique après « Redémarrer sur l’aire »."
+
+msgid "Arming refused: lower the throttle fully, then arm again."
+msgstr "Armement refusé : baissez complètement les gaz, puis armez de nouveau."
+
+msgid "Arming refused: set the arm switch OFF, then ON again."
+msgstr "Armement refusé : mettez l’interrupteur d’armement sur OFF, puis de nouveau sur ON."
+
+msgid "Arming refused: press %s to switch arming OFF, then press it again."
+msgstr "Armement refusé : appuyez sur %s pour désarmer, puis appuyez de nouveau."
+
+msgid "Set the arm switch ON to arm the motors (throttle low)."
+msgstr "Mettez l’interrupteur d’armement sur ON pour armer les moteurs (gaz bas)."
+
+msgid "Press %s to arm the motors (throttle low)."
+msgstr "Appuyez sur %s pour armer les moteurs (gaz bas)."
+
+msgid "Armed. Raise the throttle gently to take off."
+msgstr "Armé. Montez les gaz doucement pour décoller."
+
+msgid "Armed. Hold %s briefly to add throttle; release it to hold the throttle."
+msgstr "Armé. Maintenez %s brièvement pour ajouter des gaz ; relâchez pour les garder."
+
+msgid "LIMIT %d%%"
+msgstr "LIMITE %d%%"
+
+msgid "%.2f V/cell"
+msgstr "%.2f V/élément"
+
+msgid "LAND NOW"
+msgstr "ATTERRISSEZ"

@@ -12175,3 +12175,198 @@ msgstr "Wähle das Modellteil, das sich mit der jeweiligen Steuerfunktion bewegt
 
 msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
 msgstr "Dieses Flugzeug hat Änderungen, die nicht als Entwurf gespeichert sind. Ohne Speichern verlassen?"
+
+msgid "Lower the throttle"
+msgstr "Gas zurücknehmen"
+
+msgid "Cycle the arm switch"
+msgstr "Scharfschalter aus- und einschalten"
+
+msgid "No controller"
+msgstr "Kein Controller"
+
+msgid "Reset to the pad"
+msgstr "Zurück zum Startplatz"
+
+msgid "FPV"
+msgstr "FPV"
+
+msgid "FPV QUAD CONTROLS (Mode 2)"
+msgstr "FPV-QUADCOPTER-STEUERUNG (Mode 2)"
+
+msgid "Throttle: left stick up/down (W/S)"
+msgstr "Gas: linker Stick hoch/runter (W/S)"
+
+msgid "Yaw: left stick sides (A/D)"
+msgstr "Gieren: linker Stick seitlich (A/D)"
+
+msgid "Roll: right stick sides (Left/Right arrows)"
+msgstr "Rollen: rechter Stick seitlich (Pfeiltasten links/rechts)"
+
+msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
+msgstr "Nicken: rechter Stick nach vorn = Nase runter (Pfeiltasten hoch/runter)"
+
+msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
+msgstr "Scharf- oder unscharf schalten: E, Gamepad-LB oder der als Fahrwerk belegte Senderschalter. Mit wenig Gas scharf schalten."
+
+msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "Flugmodus Acro/Angle: M oder Gamepad-RB. Zu Beginn Acro mit Sender, Angle mit Gamepad oder Tastatur."
+
+msgid "Gamepad stick and keyboard throttle: hold up to add power, down to reduce it."
+msgstr "Gas mit Gamepad-Stick und Tastatur: nach oben halten für mehr Leistung, nach unten für weniger."
+
+msgid "C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view"
+msgstr "C: Kamera (FPV, Verfolger, Pilot)   [ und ]: Kameraneigung   - und =: Sichtfeld"
+
+msgid "P or Esc: pause   R: restart on the pad   H: this help"
+msgstr "P oder Esc: Pause   R: Neustart am Startplatz   H: diese Hilfe"
+
+msgid "F10: start/stop the flight log   F11: log marker"
+msgstr "F10: Fluglog starten/stoppen   F11: Markierung"
+
+msgid "Estimated, unvalidated physics: not a model of a real quad."
+msgstr "Geschätzte, nicht validierte Physik: kein Modell eines echten Quadcopters."
+
+msgid "EXPERIMENTAL"
+msgstr "EXPERIMENTELL"
+
+msgid "LAB FIXTURE VISUAL"
+msgstr "LABOR-ERSATZMODELL"
+
+msgid "Resume with throttle reset to zero"
+msgstr "Mit Gas auf null fortsetzen"
+
+msgid "Resume flight"
+msgstr "Flug fortsetzen"
+
+msgid "FPV quad 5\" (experimental)"
+msgstr "FPV-Quadcopter 5\" (experimentell)"
+
+msgid "Restart on pad"
+msgstr "Neustart am Startplatz"
+
+msgid "Controls help"
+msgstr "Steuerungshilfe"
+
+msgid "MOTORS ARMED"
+msgstr "MOTOREN SCHARF"
+
+msgid "MOTORS DISARMED"
+msgstr "MOTOREN GESICHERT"
+
+msgid "Angle"
+msgstr "Angle"
+
+msgid "Acro"
+msgstr "Acro"
+
+msgid "Timer"
+msgstr "Zeit"
+
+msgid "Throttle %d%%"
+msgstr "Gas %d%%"
+
+msgid "Speed %.1f m/s"
+msgstr "Geschwindigkeit %.1f m/s"
+
+msgid "Height %.1f m"
+msgstr "Höhe %.1f m"
+
+msgid "Battery %.2f V  %.1f A  %d mAh"
+msgstr "Akku %.2f V  %.1f A  %d mAh"
+
+msgid "Camera %s  tilt %d°  FOV %d°"
+msgstr "Kamera %s  Neigung %d°  Sichtfeld %d°"
+
+msgid "Crashed: %s. Press R to reset."
+msgstr "Abgestürzt: %s. R drücken zum Zurücksetzen."
+
+msgid "Ready. Cycle the arm switch OFF then ON at low throttle."
+msgstr "Bereit. Scharfschalter mit wenig Gas auf AUS und dann auf EIN stellen."
+
+msgid "The controller changed: restart on the pad to fly with it."
+msgstr "Der Controller hat gewechselt: Am Startplatz neu starten, um damit zu fliegen."
+
+msgid "Simulation paused: %s"
+msgstr "Simulation pausiert: %s"
+
+msgid "Paused: the window lost focus."
+msgstr "Pausiert: Das Fenster hat den Fokus verloren."
+
+msgid "Controller connected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "Controller verbunden: Die Motoren sind gesichert. Nach dem Fortsetzen den Scharfschalter aus- und einschalten."
+
+msgid "Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "Controller getrennt: Die Motoren sind gesichert. Nach dem Fortsetzen den Scharfschalter aus- und einschalten."
+
+msgid "Flight paused"
+msgstr "Flug pausiert"
+
+msgid "Flight log marker"
+msgstr "Fluglog-Markierung"
+
+msgid "Restart on the pad to fly again."
+msgstr "Am Startplatz neu starten, um wieder zu fliegen."
+
+msgid "No controller: connect or check the controller."
+msgstr "Kein Controller: Controller anschließen oder prüfen."
+
+msgid "Restart refused: %s"
+msgstr "Neustart abgelehnt: %s"
+
+msgid "Crashed: %s"
+msgstr "Abgestürzt: %s"
+
+msgid "The battery is depleted. Restart on the pad to fly again."
+msgstr "Der Akku ist leer. Am Startplatz neu starten, um wieder zu fliegen."
+
+msgid "The battery is depleted."
+msgstr "Der Akku ist leer."
+
+msgid "The input frame was refused."
+msgstr "Die Steuereingabe wurde abgelehnt."
+
+msgid "Fly FPV quad"
+msgstr "FPV-Quadcopter fliegen"
+
+msgid "Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start."
+msgstr "Gasbegrenzung (Pausenmenü): Voller Stick erreicht nur diesen Anteil des Motorbereichs. Zu Beginn 45% mit Gamepad und Tastatur, 100% mit Sender."
+
+msgid "Resume to watch the fall"
+msgstr "Fortsetzen und den Absturz ansehen"
+
+msgid "Throttle limit: %d%%"
+msgstr "Gasbegrenzung: %d%%"
+
+msgid "Throttle limit %d%% applies after Restart on pad."
+msgstr "Gasbegrenzung %d%% gilt nach „Neustart am Startplatz“."
+
+msgid "Arming refused: lower the throttle fully, then arm again."
+msgstr "Scharfschalten abgelehnt: Gas ganz zurücknehmen, dann erneut scharf schalten."
+
+msgid "Arming refused: set the arm switch OFF, then ON again."
+msgstr "Scharfschalten abgelehnt: Scharfschalter auf AUS und dann wieder auf EIN stellen."
+
+msgid "Arming refused: press %s to switch arming OFF, then press it again."
+msgstr "Scharfschalten abgelehnt: %s drücken, um auf AUS zu schalten, dann erneut drücken."
+
+msgid "Set the arm switch ON to arm the motors (throttle low)."
+msgstr "Scharfschalter auf EIN stellen, um die Motoren scharf zu schalten (wenig Gas)."
+
+msgid "Press %s to arm the motors (throttle low)."
+msgstr "%s drücken, um die Motoren scharf zu schalten (wenig Gas)."
+
+msgid "Armed. Raise the throttle gently to take off."
+msgstr "Scharf. Gas behutsam erhöhen, um abzuheben."
+
+msgid "Armed. Hold %s briefly to add throttle; release it to hold the throttle."
+msgstr "Scharf. %s kurz halten, um Gas zu geben; loslassen hält das Gas."
+
+msgid "LIMIT %d%%"
+msgstr "LIMIT %d%%"
+
+msgid "%.2f V/cell"
+msgstr "%.2f V/Zelle"
+
+msgid "LAND NOW"
+msgstr "JETZT LANDEN"

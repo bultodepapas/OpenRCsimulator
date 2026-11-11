@@ -10,7 +10,8 @@
 #
 # Declared idealizations and limits: the gyro and attitude are the accepted body state (no sensor noise, bias or
 # delay); filters are first-order with alpha = 1 − exp(−2·pi·f_c·T_s); the derivative acts on the filtered
-# measurement; no feed-forward (the previous-setpoint slots are reserved); Airmode is always active while armed
+# measurement; an optional first-order setpoint low-pass and acceleration feed-forward on the smoothed setpoint
+# (its memory is the previous-setpoint slots; both default to off); Airmode is always active while armed
 # (moments keep priority through the allocator weights, so collective may rise above a low throttle); the
 # integrator freezes while the collective is at or below the arming threshold. This is a simulator controller,
 # not Betaflight: familiar names do not establish firmware equivalence. 64-bit floats only.
@@ -82,9 +83,13 @@ const THROTTLE_RATE := 1
 ## Build the immutable-by-convention controller configuration.
 ## controller: the `controller` block of a prepared multirotor document (SI gains).
 ## rates: Rates.prepare(...).prepared; allocator: Allocator.prepare(...); actuator: ActuatorMap.prepare(...).map.
+## research_sample_hz > 0 is the DR-09a qualification seam: the same law prepared for a kernel stepped at another
+## rate (960 or 1920 Hz reference runs, every sample with fresh feedback). It changes the identity and is never a
+## product schedule; data admits 240 Hz only.
 static func prepare(controller: Dictionary, rates: Dictionary, allocator: Dictionary, actuator: Dictionary,
-		throttle_policy: int) -> Dictionary:
+		throttle_policy: int, research_sample_hz: int = 0, throttle_limit: float = 1.0) -> Dictionary:
 	var errors := PackedStringArray()
+	var sample_hz: int = research_sample_hz if research_sample_hz > 0 else SAMPLE_HZ
 	if int(controller.get("sample_hz", 0)) != SAMPLE_HZ:
 		errors.append("controller: only the %d Hz sample schedule is admitted" % SAMPLE_HZ)
 	for key: String in ["kp", "ki", "kd", "i_max", "kaw", "tau_limit"]:
@@ -95,7 +100,7 @@ static func prepare(controller: Dictionary, rates: Dictionary, allocator: Dictio
 		for value: float in values:
 			if not is_finite(value) or value < 0.0:
 				errors.append("controller.%s: values must be finite and nonnegative" % key)
-	var nyquist: float = 0.5 * float(SAMPLE_HZ)
+	var nyquist: float = 0.5 * float(sample_hz)
 	for key: String in ["gyro_lpf_hz", "dterm_lpf_hz"]:
 		var cutoff: float = float(controller.get(key, NAN))
 		if not is_finite(cutoff) or cutoff <= 0.0 or cutoff >= nyquist:
@@ -104,6 +109,22 @@ static func prepare(controller: Dictionary, rates: Dictionary, allocator: Dictio
 		var value: float = float(controller.get(key, NAN))
 		if not is_finite(value) or value <= 0.0:
 			errors.append("controller.%s: must be finite and positive" % key)
+	# Optional stick-response shaping: a first-order setpoint low-pass and an acceleration feed-forward on the
+	# smoothed setpoint (N·m per rad/s² of commanded angular acceleration). Absent keys mean no smoothing, no FF.
+	var kff: Variant = controller.get("kff", PackedFloat64Array([0.0, 0.0, 0.0]))
+	if typeof(kff) != TYPE_PACKED_FLOAT64_ARRAY or kff.size() != 3:
+		errors.append("controller.kff: three values required")
+		kff = PackedFloat64Array([0.0, 0.0, 0.0])
+	for value: float in kff:
+		if not is_finite(value) or value < 0.0:
+			errors.append("controller.kff: values must be finite and nonnegative")
+	var setpoint_cutoff: float = float(controller.get("setpoint_lpf_hz", 0.0))
+	if not is_finite(setpoint_cutoff) or setpoint_cutoff < 0.0 or setpoint_cutoff >= nyquist:
+		errors.append("controller.setpoint_lpf_hz: cutoff must be 0 (off) or lie below the %.0f Hz Nyquist frequency" % nyquist)
+	# Pilot preference: the fraction of the command range a full throttle stick reaches (a training aid for
+	# keyboard and gamepad; a radio flies the full range). It scales the collective only, never the arming check.
+	if not is_finite(throttle_limit) or throttle_limit < 0.2 or throttle_limit > 1.0:
+		errors.append("controller: throttle limit must lie in 0.2..1")
 	if throttle_policy not in [THROTTLE_ABSOLUTE, THROTTLE_RATE]:
 		errors.append("controller: unknown throttle policy")
 	if not allocator.get("ok", false):
@@ -112,21 +133,23 @@ static func prepare(controller: Dictionary, rates: Dictionary, allocator: Dictio
 		errors.append("controller: the rates profile is not prepared")
 	if not errors.is_empty():
 		return {ok = false, errors = errors, config = {}}
-	var period: float = 1.0 / float(SAMPLE_HZ)
+	var period: float = 1.0 / float(sample_hz)
 	var config := {
-		law = LAW, period_s = period,
+		law = LAW, period_s = period, sample_hz = sample_hz,
 		kp = controller.kp.duplicate(), ki = controller.ki.duplicate(), kd = controller.kd.duplicate(),
 		i_max = controller.i_max.duplicate(), kaw = controller.kaw.duplicate(), tau_limit = controller.tau_limit.duplicate(),
 		gyro_alpha = 1.0 - exp(-TAU * float(controller.gyro_lpf_hz) * period),
 		dterm_alpha = 1.0 - exp(-TAU * float(controller.dterm_lpf_hz) * period),
+		kff = kff.duplicate(), setpoint_alpha = 1.0 if setpoint_cutoff == 0.0 else 1.0 - exp(-TAU * setpoint_cutoff * period),
 		angle_max_tilt = float(controller.angle_max_tilt_rad), angle_gain = float(controller.angle_gain_per_s),
 		angle_rate_limit = float(controller.angle_rate_limit_rad_s),
 		arm_low_throttle = float(controller.arm_low_throttle), throttle_rate = float(controller.throttle_rate_per_s),
-		throttle_policy = throttle_policy, rates = rates, allocator = allocator, actuator = actuator,
+		throttle_policy = throttle_policy, throttle_limit = throttle_limit, rates = rates, allocator = allocator, actuator = actuator,
 	}
-	config.identity = var_to_bytes([LAW, SAMPLE_HZ, config.kp, config.ki, config.kd, config.i_max, config.kaw,
+	config.identity = var_to_bytes([LAW, sample_hz, config.kp, config.ki, config.kd, config.i_max, config.kaw,
 		config.tau_limit, float(controller.gyro_lpf_hz), float(controller.dterm_lpf_hz), config.angle_max_tilt,
 		config.angle_gain, config.angle_rate_limit, config.arm_low_throttle, config.throttle_rate, throttle_policy,
+		config.kff, setpoint_cutoff, throttle_limit,
 		str(rates.identity), str(allocator.get("law", "")), allocator.weights, allocator.scales,
 		var_to_bytes(actuator)]).hex_encode().sha256_text()
 	return {ok = true, errors = errors, config = config}
@@ -252,7 +275,9 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 		if not ready:
 			modes[MODE_ARM_BLOCK] = BLOCK_SOURCE
 		elif not fresh_edge:
-			modes[MODE_ARM_BLOCK] = BLOCK_SWITCH
+			# A switch still held after a high-throttle refusal keeps that reason until it is cycled.
+			if not (modes[MODE_ARM_BLOCK] == BLOCK_THROTTLE and modes[MODE_PREVIOUS_ARM] == 1):
+				modes[MODE_ARM_BLOCK] = BLOCK_SWITCH
 		elif not throttle_low:
 			modes[MODE_ARM_BLOCK] = BLOCK_THROTTLE
 			modes[MODE_OFF_OBSERVED] = 0 # a refused edge is spent: cycle the switch again
@@ -275,6 +300,12 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 		var level: PackedFloat64Array = _angle_rate_target(config, body, input[IN_ROLL], input[IN_PITCH])
 		setpoint[0] = level[0]
 		setpoint[1] = level[1]
+	# Setpoint smoothing and its rate for the feed-forward path; the memory is the previous smoothed setpoint.
+	var setpoint_rate := PackedFloat64Array([0.0, 0.0, 0.0])
+	for axis in 3:
+		var held: float = previous[AUX_PREVIOUS_SETPOINT + axis]
+		setpoint[axis] = held + float(config.setpoint_alpha) * (setpoint[axis] - held)
+		setpoint_rate[axis] = (setpoint[axis] - held) / period
 
 	# e. Ideal gyro sample and the declared digital filters.
 	var gyro := PackedFloat64Array([0.0, 0.0, 0.0])
@@ -302,13 +333,14 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 			error[axis] = setpoint[axis] - gyro[axis]
 			var limit: float = config.tau_limit[axis]
 			tau_request[axis] = clampf(float(config.kp[axis]) * error[axis] + previous[AUX_INTEGRAL + axis]
-				- float(config.kd[axis]) * dterm[axis], -limit, limit)
+				- float(config.kd[axis]) * dterm[axis] + float(config.kff[axis]) * setpoint_rate[axis], -limit, limit)
 		var actuator: Dictionary = config.actuator
 		var idle: float = actuator.idle
 		var top: float = actuator.top
 		var floor_thrust: float = ActuatorMap.static_thrust(actuator, idle, supply_voltage)
 		var ceiling_thrust: float = maxf(ActuatorMap.static_thrust(actuator, top, supply_voltage), floor_thrust)
-		var collective_thrust: float = 4.0 * ActuatorMap.static_thrust(actuator, idle + collective * (top - idle), supply_voltage)
+		var collective_thrust: float = 4.0 * ActuatorMap.static_thrust(actuator,
+			idle + collective * float(config.throttle_limit) * (top - idle), supply_voltage)
 		var allocation: Dictionary = Allocator.allocate(config.allocator,
 			PackedFloat64Array([collective_thrust, tau_request[0], tau_request[1], tau_request[2]]),
 			PackedFloat64Array([floor_thrust, floor_thrust, floor_thrust, floor_thrust]),

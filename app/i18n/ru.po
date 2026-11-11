@@ -12031,3 +12031,198 @@ msgstr "Выберите часть модели, которая движетс�
 
 msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
 msgstr "В этом самолёте есть изменения, не сохранённые как черновик. Выйти без сохранения?"
+
+msgid "Lower the throttle"
+msgstr "Уберите газ"
+
+msgid "Cycle the arm switch"
+msgstr "Переключите тумблер арма"
+
+msgid "No controller"
+msgstr "Нет контроллера"
+
+msgid "Reset to the pad"
+msgstr "Верните на площадку"
+
+msgid "FPV"
+msgstr "FPV"
+
+msgid "FPV QUAD CONTROLS (Mode 2)"
+msgstr "УПРАВЛЕНИЕ FPV-КВАДРОКОПТЕРОМ (Mode 2)"
+
+msgid "Throttle: left stick up/down (W/S)"
+msgstr "Газ: левый стик вверх/вниз (W/S)"
+
+msgid "Yaw: left stick sides (A/D)"
+msgstr "Рыскание: левый стик в стороны (A/D)"
+
+msgid "Roll: right stick sides (Left/Right arrows)"
+msgstr "Крен: правый стик в стороны (стрелки влево/вправо)"
+
+msgid "Pitch: right stick forward = nose down (Up/Down arrows)"
+msgstr "Тангаж: правый стик вперёд = нос вниз (стрелки вверх/вниз)"
+
+msgid "Arm or disarm: E, gamepad LB, or the radio switch set as Landing gear. Arm with the throttle low."
+msgstr "Арм и дизарм: E, LB геймпада или тумблер пульта, назначенный на «Шасси». Армить при убранном газе."
+
+msgid "Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."
+msgstr "Режим полёта Acro/Angle: M или RB геймпада. В начале Acro с пультом, Angle с геймпадом или клавиатурой."
+
+msgid "Gamepad stick and keyboard throttle: hold up to add power, down to reduce it."
+msgstr "Газ стиком геймпада и клавиатурой: держите вверх, чтобы прибавить, вниз — чтобы убавить."
+
+msgid "C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view"
+msgstr "C: камера (FPV, преследование, пилот)   [ и ]: наклон камеры   - и =: угол обзора"
+
+msgid "P or Esc: pause   R: restart on the pad   H: this help"
+msgstr "P или Esc: пауза   R: заново на площадке   H: эта справка"
+
+msgid "F10: start/stop the flight log   F11: log marker"
+msgstr "F10: начать/остановить запись полёта   F11: метка"
+
+msgid "Estimated, unvalidated physics: not a model of a real quad."
+msgstr "Оценочная, непроверенная физика: это не модель реального квадрокоптера."
+
+msgid "EXPERIMENTAL"
+msgstr "ЭКСПЕРИМЕНТАЛЬНО"
+
+msgid "LAB FIXTURE VISUAL"
+msgstr "ЛАБОРАТОРНАЯ ЗАГЛУШКА МОДЕЛИ"
+
+msgid "Resume with throttle reset to zero"
+msgstr "Продолжить со сбросом газа в ноль"
+
+msgid "Resume flight"
+msgstr "Продолжить полёт"
+
+msgid "FPV quad 5\" (experimental)"
+msgstr "FPV-квадрокоптер 5\" (экспериментальный)"
+
+msgid "Restart on pad"
+msgstr "Заново на площадке"
+
+msgid "Controls help"
+msgstr "Справка по управлению"
+
+msgid "MOTORS ARMED"
+msgstr "МОТОРЫ ЗААРМЛЕНЫ"
+
+msgid "MOTORS DISARMED"
+msgstr "МОТОРЫ ДИЗАРМЛЕНЫ"
+
+msgid "Angle"
+msgstr "Angle"
+
+msgid "Acro"
+msgstr "Acro"
+
+msgid "Timer"
+msgstr "Время"
+
+msgid "Throttle %d%%"
+msgstr "Газ %d%%"
+
+msgid "Speed %.1f m/s"
+msgstr "Скорость %.1f м/с"
+
+msgid "Height %.1f m"
+msgstr "Высота %.1f м"
+
+msgid "Battery %.2f V  %.1f A  %d mAh"
+msgstr "Батарея %.2f В  %.1f А  %d мА·ч"
+
+msgid "Camera %s  tilt %d°  FOV %d°"
+msgstr "Камера %s  наклон %d°  обзор %d°"
+
+msgid "Crashed: %s. Press R to reset."
+msgstr "Авария: %s. Нажмите R для сброса."
+
+msgid "Ready. Cycle the arm switch OFF then ON at low throttle."
+msgstr "Готово. Переведите тумблер арма в OFF, затем в ON при убранном газе."
+
+msgid "The controller changed: restart on the pad to fly with it."
+msgstr "Контроллер сменился: начните заново на площадке, чтобы лететь с ним."
+
+msgid "Simulation paused: %s"
+msgstr "Симуляция приостановлена: %s"
+
+msgid "Paused: the window lost focus."
+msgstr "Пауза: окно потеряло фокус."
+
+msgid "Controller connected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "Контроллер подключён: моторы дизармлены. После продолжения переключите тумблер арма."
+
+msgid "Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."
+msgstr "Контроллер отключён: моторы дизармлены. После продолжения переключите тумблер арма."
+
+msgid "Flight paused"
+msgstr "Полёт приостановлен"
+
+msgid "Flight log marker"
+msgstr "Метка журнала полёта"
+
+msgid "Restart on the pad to fly again."
+msgstr "Начните заново на площадке, чтобы снова лететь."
+
+msgid "No controller: connect or check the controller."
+msgstr "Нет контроллера: подключите или проверьте контроллер."
+
+msgid "Restart refused: %s"
+msgstr "Перезапуск отклонён: %s"
+
+msgid "Crashed: %s"
+msgstr "Авария: %s"
+
+msgid "The battery is depleted. Restart on the pad to fly again."
+msgstr "Батарея разряжена. Начните заново на площадке, чтобы снова лететь."
+
+msgid "The battery is depleted."
+msgstr "Батарея разряжена."
+
+msgid "The input frame was refused."
+msgstr "Ввод управления отклонён."
+
+msgid "Fly FPV quad"
+msgstr "Летать на FPV-квадрокоптере"
+
+msgid "Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start."
+msgstr "Ограничение газа (меню паузы): стик до упора даёт только эту долю диапазона моторов. В начале 45% для геймпада и клавиатуры, 100% для аппаратуры."
+
+msgid "Resume to watch the fall"
+msgstr "Продолжить и посмотреть падение"
+
+msgid "Throttle limit: %d%%"
+msgstr "Ограничение газа: %d%%"
+
+msgid "Throttle limit %d%% applies after Restart on pad."
+msgstr "Ограничение газа %d%% применится после «Заново на площадке»."
+
+msgid "Arming refused: lower the throttle fully, then arm again."
+msgstr "Арм отклонён: полностью уберите газ и заармьте снова."
+
+msgid "Arming refused: set the arm switch OFF, then ON again."
+msgstr "Арм отклонён: переведите тумблер арма в OFF, затем снова в ON."
+
+msgid "Arming refused: press %s to switch arming OFF, then press it again."
+msgstr "Арм отклонён: нажмите %s, чтобы выключить арм, затем нажмите снова."
+
+msgid "Set the arm switch ON to arm the motors (throttle low)."
+msgstr "Переведите тумблер арма в ON, чтобы заармить моторы (газ на минимуме)."
+
+msgid "Press %s to arm the motors (throttle low)."
+msgstr "Нажмите %s, чтобы заармить моторы (газ на минимуме)."
+
+msgid "Armed. Raise the throttle gently to take off."
+msgstr "Заармлено. Плавно добавьте газ для взлёта."
+
+msgid "Armed. Hold %s briefly to add throttle; release it to hold the throttle."
+msgstr "Заармлено. Коротко удерживайте %s, чтобы добавить газ; отпустите, чтобы его сохранить."
+
+msgid "LIMIT %d%%"
+msgstr "ЛИМИТ %d%%"
+
+msgid "%.2f V/cell"
+msgstr "%.2f В/банку"
+
+msgid "LAND NOW"
+msgstr "САДИСЬ"

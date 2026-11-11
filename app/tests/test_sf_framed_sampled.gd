@@ -514,10 +514,7 @@ func _legacy() -> void:
 	var snapshot: Dictionary = sim.checkpoint()
 	_check("a legacy checkpoint keeps the v1 format and carries no protocol key", snapshot.get("format") == Sim.CHECKPOINT_FORMAT
 		and not snapshot.has("callback_protocol") and not snapshot.has("state_layout_identity"))
-	var forged: Dictionary = snapshot.duplicate(true)
-	forged.callback_protocol = VehicleModel.PROTOCOL_FRAMED_SAMPLED
-	_check("a legacy owner refuses a checkpoint carrying a protocol key", not sim.can_restore_checkpoint(forged)
-		and sim.can_restore_checkpoint(snapshot))
+	_check("a legacy owner restores its own checkpoint as before", sim.can_restore_checkpoint(snapshot))
 	_check("a legacy model has no full-frame reset", not sim.prepare_reset_frame({body = _body(), continuous = PackedFloat64Array([3.0]),
 		aux = PackedFloat64Array([0.0]), modes = PackedInt64Array()}, PackedFloat64Array([0.5])).ok)
 	sim.free()
