@@ -511,6 +511,10 @@ static func _flagpole(k: MeshKit) -> Array:
 	k.cylinder(0.06, 0.04, 8.0, 8, Vector3.ZERO, _c("trim"))
 	k.cylinder(0.25, 0.25, 0.25, 8, Vector3.ZERO, _c("concrete"))
 	k.blob(Vector3(0, 8.03, 0), Vector3(0.12, 0.12, 0.12), Color("#c9a64a"), 3, 0.05)
+	# A fixed halyard and two short ties connect the constrained hoist to the mast.
+	k.beam(Vector3(0.06, 6.95, 0), Vector3(0.06, 7.85, 0), 0.006, _c("trim"))
+	for height: float in [6.95, 7.85]:
+		k.beam(Vector3(0.04, height, 0), Vector3(0.06, height, 0), 0.009, _c("trim"))
 	# Cloth geometry/materials belong to the scalable landscape flag renderer.
 	return [{kind = "flag", pivot = Vector3(0.06, 7.85, 0), axis = Vector3.UP, rate = 0.0}]
 

@@ -94,6 +94,22 @@ Descriptor freshness is a separate launch gate. The [interface verification](res
 
 These changes retain estimated aerodynamic coefficients and do not model Reynolds-number changes or certify a real miniature/giant aircraft. Component moves/ballast mounts, editable hardware packages, wider validated ranges, full-fleet conformance and physical aircraft acceptance remain planned. Bounded offline experiments and strict data-only variant bundles now have software paths, but neither establishes measured aircraft performance or full cross-platform package acceptance.
 
+### RC blimp family
+
+The experimental RC blimp is a second Workshop family, listed after the airplanes as **RC blimp (experimental)**. It is not an aircraft-catalog entry. Its base is `openrc-airship v1` ([airship plan](plans/rc-airship.md#14-implementation-status)). The shared compiler, descriptor, dependency, store, trial and mass-edit entry points delegate to `app/workshop/airship_*.gd` when the pinned base is an airship. Fixed-wing behaviour and identities are unchanged.
+
+| Control | Blimp meaning |
+| --- | --- |
+| Size | 40–200% (2–10 m envelope). Froude similarity by declared unit: lengths s, areas s², volume, gas, every mass and forces s³, speeds and times √s, rates 1/√s, power s^3.5, stiffness s². Lift budget, ballast fraction and static trim are preserved. An unknown unit refuses the build. |
+| Mass policy | Not offered: a buoyant build always scales geometrically. |
+| Weight | Multiplies the equipment inventory; the keel ballast is re-derived for the declared weigh-off. A build that cannot reach it is refused. The summary reports the static trim (pitch, + nose up) and the reachable weigh-off range; the activity warns when a pause-menu weigh-off preset is out of that range. |
+| Power | Shaft power × p, static thrust × p^(2/3) (momentum theory). |
+| Control travel | Fin surface throw, up to the 30° linkage limit. No separate aileron/elevator/rudder overrides (inverted-Y fins). |
+| Measured components | Stable-ID `masses[]` entries at original size and weight, positioned from the model origin O. The consistency report and fixed-station proposal are fixed-wing tools and are refused. |
+| Test fly | Airborne, or resting on its wheels (**On the runway**), in the blimp activity. Its menu offers **Return to Workshop**. Weigh-off presets scale with s³, and the default skin is pinned. |
+
+The descriptor is derived from the exact base bytes and the verified presentation hash (`openrc-airship-workshop v1`); there is no generated descriptor file. That hash covers only the skin GLB and the articulation bindings; paint, marking and lighting authoring is covered by the companion's `slots_sha256`. The compiled variant is normalized to a JSON fixed point, so the session flies exactly the frozen bytes (`data_sha256` equals the trial's `resolved_sha256`). The fixed-wing size options `mass_policy` and `size_model` do not enter a blimp's trial identity. The dependency manifest is an explicit empty set. Compiler identities are `openrc-airship-workshop-v1-similarity-1` and `-measured-mass-1`. Servo sound follows the vector and fin actuators through the shared mechanical synthesizer. Presentation (paint, markings, lighting) is described in the [blimp asset guide](../assets/aircraft/rc-blimp-5m/README.md). Tests: `test_airship_workshop.gd`, `test_airship_workshop_flow.gd`. These are similarity estimates, not measured blimps.
+
 ### Measured mass and CG
 
 **Flight setup → Measured components** records a measured mass and its source for an eligible existing component. Add/update measurements, inspect the complete candidate, then **Apply to a new build**. This is one Undo edit. Applying measured edits to a saved build creates a new draft and preserves the saved original. Keep scale, weight and tank-capacity multipliers at 1.0. Source-marked virtual reference masses and fuel/line liquid are unavailable. No mount envelope is authored yet, so positions, new ballast and hardware replacements cannot be edited.

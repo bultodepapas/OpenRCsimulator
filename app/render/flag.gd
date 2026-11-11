@@ -20,8 +20,6 @@ var _time := 0.0
 var _wind := Vector3.ZERO
 var _published_revision := -1
 var _uploads := 0
-var _motion_shape := Vector2.ZERO
-var _motion_mode := ""
 var _failed_countries: Dictionary = {}
 var _last_lod_time := -INF
 var _lod_grid := Vector2i.ZERO
@@ -53,6 +51,9 @@ class TextureRequest extends Node:
 
 	func _ready() -> void:
 		add_to_group("flag_texture_requests")
+		if not is_instance_valid(target.get_ref()):
+			queue_free()
+			return
 		var error := ResourceLoader.load_threaded_request(descriptor.front_path, "Texture2D")
 		if error != OK:
 			_finish(null)
@@ -156,8 +157,6 @@ func _rebuild_motion() -> void:
 				points.append(Vector3(length_m*u*0.35,-height_m*row/4.0-length_m*u*0.8,0.03*sin(u*PI)))
 		_material.set_shader_parameter("cloth_points",points)
 		_material.set_shader_parameter("cloth_energy",0.0)
-	_motion_shape = Vector2(length_m,height_m)
-	_motion_mode = _profile.mode
 	custom_aabb = AABB(Vector3(-length_m-0.2,-height_m-length_m-0.2,-length_m-0.2),Vector3(2*length_m+0.4,height_m+2*length_m+0.4,2*length_m+0.4))
 	_published_revision = -1
 	publish()

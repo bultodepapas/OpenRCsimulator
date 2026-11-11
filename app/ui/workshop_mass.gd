@@ -245,7 +245,8 @@ func _refresh_inventory() -> void:
 		if position.size() == 3:
 			position_text = "[%.3f, %.3f, %.3f] m" % [float(position[0]), float(position[1]), float(position[2])]
 		var provenance := "%s · %s" % [str(row.get("mass_kind", "")), str(row.get("mass_source", ""))]
-		var detail := "%s · %s kg · %s · LE %s" % [str(row.get("id", "")), "%.4f" % float(row.get("mass_kg", 0.0)), provenance, position_text]
+		var detail := "%s · %s kg · %s · %s %s" % [str(row.get("id", "")), "%.4f" % float(row.get("mass_kg", 0.0)), provenance,
+			str(_inspection.get("datum_label", "LE")), position_text]
 		if not bool(row.get("editable", false)):
 			detail += "\n" + tr("Unavailable: ") + str(row.get("reason", ""))
 		row_text.text = "%s\n%s" % [str(row.get("name", "")), detail]

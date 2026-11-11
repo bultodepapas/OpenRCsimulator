@@ -24,12 +24,16 @@ static func is_descriptor(value: Variant) -> bool:
 	return value is Dictionary and value.get("format", "") == DESCRIPTOR_FORMAT
 
 
-## Cheap check on raw base bytes (format string near the start of a generated airship file).
+## Raw base bytes of an airship? A substring pre-check skips every fixed-wing base without parsing it, and the
+## parser object reports malformed text without engine errors.
 static func is_base_bytes(bytes: PackedByteArray) -> bool:
 	if bytes.is_empty():
 		return false
-	var parsed: Variant = JSON.parse_string(bytes.get_string_from_utf8())
-	return parsed is Dictionary and is_base(parsed)
+	var text := bytes.get_string_from_utf8()
+	if not text.contains(Compiler.FAMILY_FORMAT):
+		return false
+	var parser := JSON.new()
+	return parser.parse(text) == OK and parser.data is Dictionary and is_base(parser.data)
 
 
 ## Verified presentation of the blimp's visual family: {ok, visual_family, model_manifest_sha256, bindings,
@@ -48,6 +52,15 @@ static func presentation(skin_id := "") -> Dictionary:
 		slots_sha256 = "", errors = PackedStringArray()}
 
 
+## Customization companion of the blimp (paint, markings, lighting). Fails as "missing" when the presentation module
+## supplies no slots, so callers fall back to the unbound default profile exactly as for an aircraft without one.
+static func customization() -> Dictionary:
+	var shown := presentation()
+	if not shown.get("ok", false) or not shown.get("bindings") is Dictionary or (shown.bindings as Dictionary).is_empty():
+		return {ok = false, missing = true, errors = PackedStringArray(["Blimp customization bindings are unavailable."])}
+	return shown
+
+
 static func descriptor_for(base_id: String, base_bytes: PackedByteArray) -> Dictionary:
 	var base: Variant = JSON.parse_string(base_bytes.get_string_from_utf8())
 	if not base is Dictionary or not is_base(base) or str(base.get("id", "")) != base_id:
@@ -55,22 +68,21 @@ static func descriptor_for(base_id: String, base_bytes: PackedByteArray) -> Dict
 	var shown := presentation()
 	if not shown.get("ok", false):
 		return {ok = false, errors = shown.get("errors", PackedStringArray(["Blimp presentation is unavailable."]))}
-	return {ok = true, errors = PackedStringArray(), descriptor = {format = DESCRIPTOR_FORMAT, base_id = base_id,
-		base_sha256 = _sha(base_bytes), presentation = {visual_family = str(shown.visual_family),
-			model_manifest_sha256 = str(shown.model_manifest_sha256)}}}
+	# Persisted JSON: string keys only.
+	return {ok = true, errors = PackedStringArray(), descriptor = {"format": DESCRIPTOR_FORMAT, "base_id": base_id,
+		"base_sha256": _sha(base_bytes), "presentation": {"visual_family": str(shown.visual_family),
+			"model_manifest_sha256": str(shown.model_manifest_sha256)}}}
 
 
 static func validate_descriptor(value: Variant, base_id: String, base_bytes: PackedByteArray) -> Dictionary:
 	if not is_descriptor(value):
 		return _failure("Workshop airship descriptor has an unsupported format.")
 	var descriptor: Dictionary = value
-	var keys: Array = descriptor.keys()
-	keys.sort()
-	var expected: Array = DESCRIPTOR_KEYS.duplicate()
-	expected.sort()
-	if keys != expected or not descriptor.presentation is Dictionary \
+	if descriptor.size() != DESCRIPTOR_KEYS.size() or not descriptor.has_all(DESCRIPTOR_KEYS) or not descriptor.presentation is Dictionary \
 			or descriptor.presentation.keys().size() != 2 or not descriptor.presentation.has_all(["visual_family", "model_manifest_sha256"]):
 		return _failure("Workshop airship descriptor has unexpected fields.")
+	if not is_base_bytes(base_bytes):
+		return _failure("An airship descriptor requires an airship base snapshot.")
 	if str(descriptor.base_id) != base_id or str(descriptor.base_sha256) != _sha(base_bytes):
 		return _failure("Workshop airship descriptor does not match the exact base snapshot.")
 	if str(descriptor.presentation.visual_family) != Catalog.VISUAL_FAMILY:
@@ -90,7 +102,7 @@ static func verify_presentation(descriptor: Dictionary) -> Dictionary:
 
 
 static func capture_dependencies(_base: Dictionary) -> Dictionary:
-	return {ok = true, errors = PackedStringArray(), manifest = {format = DEPENDENCIES_FORMAT, files = {}}}
+	return {ok = true, errors = PackedStringArray(), manifest = {"format": DEPENDENCIES_FORMAT, "files": {}}}
 
 
 static func validate_dependencies(_base: Dictionary, value: Variant) -> Dictionary:

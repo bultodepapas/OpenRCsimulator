@@ -1,0 +1,69 @@
+{
+  "scope": "Observed after the failed shared run; first gate inventory compared to source before candidate-01 copy.",
+  "changes": {
+    "data/airships/rc-blimp-5m-presentation.json": {
+      "first_manifest": null,
+      "snapshot_source": "a377ba81058a15000aedfcfe48219b4ac58aff9b1d80e482cde05b06e6a7e9be"
+    },
+    "physics/airship/airship_data.gd": {
+      "first_manifest": "6f3750e47827556cc5b5daf8833cfdf003363f6531c1338acb433de374631d3b",
+      "snapshot_source": "25cdfbbd0764b5c2f137c6cc6c27cfae7df701e7cae967f776f80090e866329a"
+    },
+    "render/flag.gd": {
+      "first_manifest": "ed1e96f4e979c0ab7ffa503bacb7295c25e69593d36a200af091d8d3f9d02d75",
+      "snapshot_source": "cfb597e7c4c82eedc2dea42d4677a62127530bd0f29669dc8c2fcb2193ed23d6"
+    },
+    "render/flag_motion.gd": {
+      "first_manifest": "95ef88e64cbff9c5e830f4a9e4d6483daf146ac540c5fa9599632310ba5935c8",
+      "snapshot_source": "cad5f326edee11a8e195901895d2aedf7dd0fe08639a6737c068c6b136f6d202"
+    },
+    "sim/airship/session.gd": {
+      "first_manifest": "17e7a0942fa45a48dd94f7f5aba9a35c025f3cfcd517925c71417d4257220257",
+      "snapshot_source": "7d97af6c7106109ff491302377f24a573c8b2e515016a3c17005d50f6d56772a"
+    },
+    "tests/test_flag_render.gd": {
+      "first_manifest": null,
+      "snapshot_source": "9976f2fac06ea919817a56943e4969cb9f60fc026b750d30fb03fa7ce8c10c97"
+    },
+    "tests/test_windsock_shadow.gd": {
+      "first_manifest": "f9330781a29045593622fc76316515c58afd019aac4f22113adc6fb859b9214a",
+      "snapshot_source": "4543490c5b6377c057500fa5db26b126df76af421164697a3aafeaa7deb7d629"
+    },
+    "vehicles/airship/airship_presentation.gd": {
+      "first_manifest": null,
+      "snapshot_source": "cd7d3dd78f730198760da0fbd18715cff6f3e8883a3e306c5c40d97e95bb1517"
+    },
+    "vehicles/airship/airship_visual.gd": {
+      "first_manifest": "f765ead13dce6f679024a66497dd78968dce77bfd6428d1d07b5baad0d822d0a",
+      "snapshot_source": "47a62b8784cc217fba3cb80af614ea747d5c259a6f7630db2d6918b6bb602dd2"
+    },
+    "workshop/airship_compiler.gd": {
+      "first_manifest": "e48a0838f2e477ed187214a40fae044cc50bbce2f956816bd4b4cb65bf206186",
+      "snapshot_source": "bdc6f3b65fa6c8a4cde396afb886aed2543f0f692b4de41130b13ebf4e2be86a"
+    },
+    "workshop/airship_family.gd": {
+      "first_manifest": null,
+      "snapshot_source": "3619dc3c2a25259eb5d22c4ab77aed2f6fd1df693b10d9bdd59c241e92002491"
+    },
+    "workshop/compiler.gd": {
+      "first_manifest": "522fcb639f3086a26da6cd3807e98e835cbf854907fb61b7f9147fbbc2d8e9e7",
+      "snapshot_source": "b7b390c0f64b51f49b7cc55660b1c335d6c3a82b43c6c1e822fda9f358164260"
+    },
+    "workshop/dependencies.gd": {
+      "first_manifest": "8c0997cae9cb88c59012676df1bf4cfc56f98dfd5655bc3f6337dac97fe258ab",
+      "snapshot_source": "fcb5d8d4e56d879c6b6b9e182462e663b2ebe6ed97020fcae3f53de4ce4ad3a2"
+    },
+    "workshop/descriptor.gd": {
+      "first_manifest": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61",
+      "snapshot_source": "d1bd69d303eefd369ecfcc0e82eb49272b6538b023a132b3bd3ab13b3fbfd46c"
+    },
+    "workshop/store.gd": {
+      "first_manifest": "59f2f32393468b09b64826927627909f68ec5a7020b76b1932c308677dbcf43f",
+      "snapshot_source": "acd7776a7e2844a3fe2eaaeca8af6042613395cb573625ddeb52be786dffcd55"
+    },
+    "workshop/trial.gd": {
+      "first_manifest": "0e5db89de34c2e359beca0e0201cdf0d41afd1c3e3155037cebcee743834bedf",
+      "snapshot_source": "34dc7028d596dc379da31d46c9553b7006a7079bbbc27a43420109bc67a318b5"
+    }
+  }
+}

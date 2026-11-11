@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+AVANTI_BOUNDARY hull=true reference=reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step native=reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step pins_match=false
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+AVANTI_BOUNDARY hull=false reference=reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step native=reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step pins_match=false
+AVANTI_BOUNDARY_CAPTURE verdict=pass rows=2 failures=0

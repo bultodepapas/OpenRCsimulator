@@ -18,6 +18,12 @@ const Frames = preload("res://render/frames.gd")
 const Spec = preload("res://spec.gd")
 const CollisionSetup = preload("res://scenery/collision_setup.gd")
 const AirshipLog = preload("res://sim/airship/flight_log.gd")
+const Catalog = preload("res://vehicles/airship/airship_catalog.gd")
+const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
+const MechanicalProfile = preload("res://audio/mechanical_profile.gd")
+## Servo sound channels: [id, continuous indices averaged] (vector and fin angles in radians, CTRL sign).
+const SERVO_CHANNELS := [["vector_side", [4, 5]], ["vector_stern", [6]], ["fin_dorsal", [7]], ["fin_port", [8]], ["fin_starboard", [9]]]
+const SERVO_ANCHORS := [["vector_port", "vector_starboard"], ["vector_stern"], ["fin_dorsal"], ["fin_port"], ["fin_starboard"]]
 
 const DATA_PATH := "res://data/airships/rc-blimp-5m.json"
 const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
@@ -40,6 +46,11 @@ var enable_audio := true
 var enable_world := true
 ## Deterministic test seam: tick -> [roll, pitch, yaw, throttle]; sampled only on physics ticks.
 var scripted_sticks := Callable()
+## BL-19d: a frozen Workshop build (workshop/trial.gd). Empty = the shipped blimp.
+var workshop_trial := {}
+var _trial_raw := {}
+## Virtual size of the flown build (Workshop scale); camera, audio and weigh-off presets follow it.
+var _size := 1.0
 
 var session: Node
 ## BL-08 opt-in black box (F10 start/stop, F11 marker).
@@ -63,6 +74,8 @@ var _orbit_distance := 10.0
 var _chase_heading := 0.0
 var _audio_side: AudioStreamPlayer3D
 var _audio_stern: AudioStreamPlayer3D
+## BL-19f: the shared servo/retract synthesizer, driven by accepted vector and fin angles (Workshop audio profile).
+var _mechanical: Node3D
 var _pilot_position := Vector3.ZERO
 
 
@@ -90,6 +103,15 @@ func _ready() -> void:
 		_disable()
 		return
 	add_child(visual.root)
+	# The model child carries the Workshop size; the root keeps the accepted pose only.
+	visual.model.scale = Vector3.ONE * _size
+	if not workshop_trial.is_empty() and visual.has_method("apply_presentation"):
+		var painted: Dictionary = visual.call("apply_presentation", workshop_trial.get("presentation_profile", {}))
+		if not painted.get("ok", false):
+			startup_error = "Blimp presentation refused: " + "; ".join(painted.get("errors", PackedStringArray()))
+			_disable()
+			return
+	_configure_lights()
 	if enable_world:
 		Atmosphere.configure_appearance(sky_config)
 		_environment = World.build(self, field, _build_field, {}, _lighting, night_options).environment
@@ -112,6 +134,8 @@ func _ready() -> void:
 	hud.select_choice("wind", wind_index)
 	hud.select_choice("start", start_index)
 	hud.select_choice("camera", camera_mode)
+	if not workshop_trial.is_empty():
+		hud.set_workshop_trial("Workshop trial · RC blimp %.1f m — experimental" % (float(session.data.envelope.length)))
 	hud.action_requested.connect(handle_action)
 	hud.option_selected.connect(_option_selected)
 	session.crashed.connect(func(reason: String) -> void: _open_menu(reason + ". Restart to fly again."))
@@ -122,6 +146,7 @@ func _ready() -> void:
 		_build_audio()
 	_chase_heading = deg_to_rad(float(session.options.heading_deg))
 	_open_menu(session.pause_reason)
+	_note_weigh_off()
 	_process(0.0)
 
 
@@ -140,6 +165,8 @@ func _notification(what: int) -> void:
 
 func _exit_tree() -> void:
 	_stop_recording("left the blimp activity")
+	if visual != null and visual.has_method("dispose_lighting"):
+		visual.dispose_lighting()
 	if Input.joy_connection_changed.is_connected(_joy_connection_changed):
 		Input.joy_connection_changed.disconnect(_joy_connection_changed)
 
@@ -164,8 +191,17 @@ func _load_field() -> bool:
 
 
 func _load_presentation() -> bool:
-	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
-	var parsed: Variant = JSON.parse_string(file.get_as_text()) if file != null else null
+	var parsed: Variant
+	if not workshop_trial.is_empty():
+		var bytes: PackedByteArray = workshop_trial.get("raw_bytes", PackedByteArray())
+		parsed = JSON.parse_string(bytes.get_string_from_utf8())
+		if typeof(parsed) == TYPE_DICTIONARY:
+			_trial_raw = parsed
+		_size = float(workshop_trial.get("scale", 1.0))
+		skin_id = Catalog.DEFAULT_SKIN
+	else:
+		var file := FileAccess.open(DATA_PATH, FileAccess.READ)
+		parsed = JSON.parse_string(file.get_as_text()) if file != null else null
 	if typeof(parsed) != TYPE_DICTIONARY or typeof(parsed.get("presentation")) != TYPE_DICTIONARY:
 		startup_error = "Blimp presentation data is unavailable"
 		return false
@@ -182,8 +218,12 @@ func _build_field() -> void:
 
 
 func _session_options() -> Dictionary:
-	return {data_path = DATA_PATH, heaviness_kg = Hud.BALLAST_KG[ballast_index], wind_speed_mps = Hud.WIND_MPS[wind_index],
-		wind_from_deg = 270.0, start = "air" if start_index == 0 else "ground"}
+	# Weigh-off presets are stated for the 5 m blimp and scale with displaced volume (s^3).
+	var options := {data_path = DATA_PATH, heaviness_kg = Hud.BALLAST_KG[ballast_index] * pow(_size, 3.0),
+		wind_speed_mps = Hud.WIND_MPS[wind_index], wind_from_deg = 270.0, start = "air" if start_index == 0 else "ground"}
+	if not _trial_raw.is_empty():
+		options.data = _trial_raw
+	return options
 
 
 func _joy_connection_changed(id: int, connected: bool) -> void:
@@ -302,7 +342,10 @@ func _restart() -> bool:
 		return false
 	input.reset_throttle()
 	_chase_heading = deg_to_rad(float(session.options.heading_deg))
+	if visual.has_method("reset_lighting"):
+		visual.reset_lighting()
 	_open_menu(session.pause_reason)
+	_note_weigh_off()
 	return true
 
 
@@ -311,10 +354,14 @@ func _swap_skin(next_skin: String) -> void:
 	if not candidate.build(presentation, next_skin):
 		hud.flash(str(candidate.error))
 		return
+	if visual.has_method("dispose_lighting"):
+		visual.dispose_lighting()
 	visual.root.queue_free()
 	visual = candidate
 	skin_id = next_skin
 	add_child(visual.root)
+	visual.model.scale = Vector3.ONE * _size
+	_configure_lights()
 	_process(0.0)
 
 
@@ -331,7 +378,8 @@ func _physics_process(_delta: float) -> void:
 	if not sample.armed or not str(sample.error).is_empty():
 		_open_menu("Controls unavailable: " + (str(sample.error) if not str(sample.error).is_empty() else "arm with the throttle low."))
 		return
-	session.tick_once(sample.sticks)
+	if session.tick_once(sample.sticks) and is_instance_valid(_mechanical):
+		_mechanical.observe_accepted(_servo_snapshot(false))
 
 
 func _process(delta: float) -> void:
@@ -340,6 +388,7 @@ func _process(delta: float) -> void:
 	var fraction := Engine.get_physics_interpolation_fraction() if not session.paused else 1.0
 	var drawn: PackedFloat64Array = session.interpolated(fraction)
 	visual.pose(drawn, session.sim.continuous, delta if not session.paused else 0.0)
+	_update_lights(drawn, delta)
 	var target := Frames.ned_to_render([drawn[0], drawn[1], drawn[2]])
 	var body_basis := Frames.quat_to_render(drawn.slice(6, 10))
 	_update_camera(target, body_basis, delta)
@@ -363,16 +412,16 @@ func _update_camera(target: Vector3, body_basis: Basis, delta: float) -> void:
 	match CAMERA_NAMES[camera_mode]:
 		"chase":
 			var back := Vector3(-sin(_chase_heading), 0.0, cos(_chase_heading))
-			eye = target + back * 11.0 + Vector3.UP * 3.2
+			eye = target + back * 11.0 * _size + Vector3.UP * 3.2 * _size
 			camera.fov = 60.0
 		"pilot":
 			eye = _pilot_position
 			var distance := maxf(eye.distance_to(target), 1.0)
 			# Keep the 5 m hull near a third of the vertical view, within lens limits.
-			camera.fov = clampf(rad_to_deg(2.0 * atan(6.5 / distance)), 12.0, 70.0)
+			camera.fov = clampf(rad_to_deg(2.0 * atan(6.5 * _size / distance)), 12.0, 70.0)
 		_:
 			var offset := Vector3(sin(_orbit_yaw) * cos(_orbit_pitch), sin(_orbit_pitch), cos(_orbit_yaw) * cos(_orbit_pitch))
-			eye = target + offset * _orbit_distance
+			eye = target + offset * _orbit_distance * _size
 			camera.fov = 60.0
 	eye.y = maxf(eye.y, _ground_height_render(eye.x, eye.z) + 0.4)
 	camera.global_position = eye
@@ -390,6 +439,10 @@ func _build_audio() -> void:
 	looped.loop_end = int(stream.get_length() * float(stream.mix_rate))
 	_audio_side = _motor_player(looped, "SideMotors")
 	_audio_stern = _motor_player(looped, "SternMotors")
+	_mechanical = MechanicalAudio.new()
+	_mechanical.name = "ServoAudio"
+	_mechanical.configure(self, &"Master", MechanicalProfile.resolve(workshop_trial.get("presentation_profile", {})))
+	_mechanical.set_accepted_tick_observation(true)
 
 
 func _motor_player(stream: AudioStreamWAV, node_name: String) -> AudioStreamPlayer3D:
@@ -407,11 +460,26 @@ func _motor_player(stream: AudioStreamWAV, node_name: String) -> AudioStreamPlay
 func _update_audio(target: Vector3, body_basis: Basis) -> void:
 	if _audio_side == null:
 		return
+	if is_instance_valid(_mechanical):
+		var servo := _servo_snapshot(session.paused)
+		var root_position: Vector3 = visual.root.global_position
+		for i in SERVO_ANCHORS.size():
+			var sum := Vector3.ZERO
+			var count := 0
+			for key: String in SERVO_ANCHORS[i]:
+				var node: Node3D = (visual.get("_bindings") as Dictionary).get(key, {}).get("node") as Node3D
+				if node != null:
+					sum += node.global_position
+					count += 1
+			servo.channels[i].position = sum / float(count) if count > 0 else root_position
+		servo.gear.position = root_position
+		servo.listener = camera.global_position
+		_mechanical.update_sound(servo, get_process_delta_time())
 	var c: PackedFloat64Array = session.sim.continuous
 	var side := maxf(absf(c[0]), absf(c[1]))
 	var stern := maxf(absf(c[2]), absf(c[3]))
-	_motor_sound(_audio_side, side, target + body_basis * Vector3(0.0, -0.17, -0.8))
-	_motor_sound(_audio_stern, stern, target + body_basis * Vector3(0.0, 0.0, 2.45))
+	_motor_sound(_audio_side, side, target + body_basis * (Vector3(0.0, -0.17, -0.8) * _size))
+	_motor_sound(_audio_stern, stern, target + body_basis * (Vector3(0.0, 0.0, 2.45) * _size))
 
 
 func _motor_sound(player: AudioStreamPlayer3D, n: float, at: Vector3) -> void:
@@ -441,6 +509,52 @@ func toggle_recording() -> void:
 func _stop_recording(reason: String) -> void:
 	if flight_log != null and flight_log.recording:
 		flight_log.stop(reason)
+
+
+## The keel ballast is limited: a heavy (or very light) Workshop build may not reach the selected weigh-off preset.
+func _note_weigh_off() -> void:
+	var requested := float(Hud.BALLAST_KG[ballast_index]) * pow(_size, 3.0)
+	var actual := float(session.model.get("heaviness_kg", requested))
+	if absf(actual - requested) > 1.0e-4:
+		hud.flash("This build cannot trim to the selected weigh-off: it flies %+.0f g %s." % [1000.0 * absf(actual),
+			"heavy" if actual >= 0.0 else "light"], 6.0)
+
+
+## BL-19c: navigation, strobe, beacon and landing lights from the Workshop lighting profile ("inherit" = the night
+## kit only at night). Graphics only: nothing here reads back into the session.
+func _configure_lights() -> void:
+	if visual == null or not visual.has_method("configure_lighting"):
+		return
+	var result: Dictionary = visual.configure_lighting(workshop_trial.get("presentation_profile", {}).get("lighting", {}),
+		{lighting_config = lighting_config, lighting_snapshot = _lighting, rig_parent = self})
+	if not result.get("ok", true):
+		push_warning("Blimp lighting: " + "; ".join(result.get("errors", PackedStringArray())))
+
+
+func _update_lights(drawn: PackedFloat64Array, delta: float) -> void:
+	if not visual.has_method("update_lighting"):
+		return
+	var throttle := 0.0
+	var sticks: Variant = _last_input.get("sticks", PackedFloat64Array())
+	if sticks is PackedFloat64Array and sticks.size() == 4:
+		throttle = sticks[3]
+	var speed := sqrt(drawn[3] * drawn[3] + drawn[4] * drawn[4] + drawn[5] * drawn[5])
+	var distance := camera.global_position.distance_to(visual.root.global_position) if camera != null else 0.0
+	visual.update_lighting(delta if not session.paused else 0.0, session.sim.time(), {throttle = throttle, speed_mps = speed,
+		airspeed = speed, roll_rate = drawn[10], pitch_rate = drawn[11], distance_m = distance})
+
+
+## Accepted actuator angles only (degrees), as the fixed-wing mechanical snapshot. The blimp has fixed gear.
+func _servo_snapshot(paused: bool) -> Dictionary:
+	var c: PackedFloat64Array = session.sim.continuous
+	var channels: Array[Dictionary] = []
+	for spec: Array in SERVO_CHANNELS:
+		var total := 0.0
+		for index: int in spec[1]:
+			total += c[index]
+		channels.append({id = str(spec[0]), angle_deg = rad_to_deg(total / float(spec[1].size())), position = Vector3.ZERO})
+	return {tick = int(session.sim.tick), tick_rate = float(Session.FIXED_HZ), paused = paused, channels = channels,
+		gear = {available = false, extension = 0.0, target_down = false, status = "unavailable", target = 0.0, position = Vector3.ZERO}}
 
 
 ## AppRoot controller hooks shared with the ground activity slot.

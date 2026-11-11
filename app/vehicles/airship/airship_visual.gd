@@ -1,10 +1,16 @@
 ## BL-09: RC blimp visual adapter. Loads one skin GLB and poses its articulated nodes only from accepted physical
 ## state: vector angles, fin deflections and propeller shaft phase. Rendering never feeds back into physics.
 ## Bindings (node names and local rotation axes) come from the generated `presentation` block of the airship data.
+## BL-19c: optional Workshop presentation (paint, markings, aircraft lights) binds lazily; build()/pose() callers that
+## never call it load and allocate nothing extra.
 extends RefCounted
 
 const Frames := preload("res://render/frames.gd")
 const Catalog := preload("res://vehicles/airship/airship_catalog.gd")
+const PRESENTATION_PATH := "res://vehicles/airship/airship_presentation.gd"
+const CUSTOMIZATION_PATH := "res://render/aircraft_customization.gd"
+const WORLD_PATH := "res://render/world/world.gd"
+const RIG_PATH := "res://render/lighting/aircraft_lighting_rig_3d.gd"
 
 const VECTOR_KEYS := ["vector_port", "vector_starboard", "vector_stern"]
 const FIN_KEYS := ["fin_dorsal", "fin_port", "fin_starboard"]
@@ -15,9 +21,22 @@ const FULL_SPEED_REV_S := 120.0
 var root: Node3D
 var model: Node3D
 var error := ""
+var active_skin := ""
+## Builder-compatible presentation dictionary (see AirshipPresentation.instance); empty until bound.
+var customization: Dictionary = {}
 var _bindings := {}
 var _phase := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 var _discs: Array[MeshInstance3D] = []
+var _world: Script
+var _lights: Script
+var _light_state: RefCounted
+var _light_context: Dictionary = {}
+var _light_rig: Node3D
+var _night_kit: Node3D
+var _light_clock := 0.0
+var _light_configured := false
+var _rig_mode := ""
+var _rig_gain := -1.0
 
 
 static func skins(_presentation: Dictionary = {}) -> Array:
@@ -36,6 +55,7 @@ func build(presentation: Dictionary, skin_id: String) -> bool:
 	if scene == null:
 		error = "Blimp model is unavailable: " + str(chosen.model)
 		return false
+	active_skin = skin_id
 	root = Node3D.new()
 	root.name = "Airship"
 	model = scene.instantiate() as Node3D
@@ -106,6 +126,7 @@ func pose(body: PackedFloat64Array, continuous: PackedFloat64Array, frame_dt: fl
 		_turn(ROTOR_KEYS[i], _phase[i])
 		var material := _discs[i].material_override as StandardMaterial3D
 		material.albedo_color.a = clampf((absf(n) - 0.25) * 0.35, 0.0, 0.22)
+	_follow_lights()
 
 
 func _turn(key: String, angle: float) -> void:
@@ -113,3 +134,175 @@ func _turn(key: String, angle: float) -> void:
 	var node: Node3D = binding.node
 	var rest: Transform3D = binding.rest
 	node.transform = Transform3D(rest.basis * Basis(binding.axis, angle * float(binding.sign)), rest.origin)
+
+
+## BL-19c: bind the shared Workshop presentation companion to this built visual. Returns {ok, errors}; idempotent.
+func bind_presentation() -> Dictionary:
+	if not customization.is_empty():
+		return {"ok": true, "errors": PackedStringArray()}
+	if root == null:
+		return {"ok": false, "errors": PackedStringArray(["blimp visual is not built"])}
+	var bound: Dictionary = load(PRESENTATION_PATH).instance(self, active_skin)
+	if not bool(bound.get("ok", false)):
+		return {"ok": false, "errors": bound.get("errors", PackedStringArray())}
+	bound.erase("ok")
+	bound.erase("errors")
+	customization = bound
+	return {"ok": true, "errors": PackedStringArray()}
+
+
+## Paint and markings through the shared AircraftCustomization.apply. An empty profile restores the stock finish.
+## The profile is a canonical Workshop presentation profile bound to this skin (workshop/presentation.gd).
+func apply_presentation(profile: Dictionary) -> Dictionary:
+	var bound := bind_presentation()
+	if not bool(bound.ok):
+		return bound
+	var applied: Dictionary = load(CUSTOMIZATION_PATH).apply(customization, profile)
+	return {"ok": bool(applied.get("ok", false)), "errors": applied.get("errors", PackedStringArray())}
+
+
+## Aircraft lights, mirroring the fixed-wing flight (main.gd). `profile` is a lighting profile (lighting_profile.gd);
+## "inherit" (the default) uses the night kit at the authored anchors, fitted lazily only when the time of day turns
+## the lights on, so daylight and OFF allocate no lights. "preset"/"custom" build an AircraftLightingRig3D; "disabled"
+## keeps everything dark. Context keys (all optional):
+##   lighting_config: Dictionary - the session's time-of-day config (World.aircraft_local_seconds), default legacy;
+##   lighting_snapshot: Dictionary - the World lighting snapshot (World.aircraft_sun_elevation), default {};
+##   rig_parent: Node - parent of the RGB rig node (default: the root's parent, else the root);
+##   luminous_layers: int - render layer bits OR-ed onto luminous nodes (main.gd uses Magnifier.LAYER), default 0;
+##   mode: String - initial light selection "auto" (default), "all", "nav" or "off".
+## Returns {ok, errors, warnings}; callers may ignore it. Call update_lighting() every rendered frame afterwards.
+func configure_lighting(profile: Dictionary, context: Dictionary = {}) -> Dictionary:
+	dispose_lighting()
+	var bound := bind_presentation()
+	if not bool(bound.ok):
+		return {"ok": false, "errors": bound.errors, "warnings": []}
+	_world = load(WORLD_PATH)
+	_lights = _world.AircraftLights
+	_light_state = _world.AircraftLightState.new()
+	if not _light_state.set_mode(str(context.get("mode", "auto"))):
+		return {"ok": false, "errors": PackedStringArray(["unknown light selection: " + str(context.get("mode"))]), "warnings": []}
+	_light_context = context.duplicate()
+	_light_clock = 0.0
+	var warnings: Array = []
+	if str(profile.get("selection", "inherit")) not in ["inherit", "disabled"]:
+		_attach_kit() # the rig reuses this kit instead of fitting the whole mesh
+	if str(profile.get("selection", "inherit")) != "inherit":
+		_light_rig = load(RIG_PATH).new()
+		_light_rig.name = "AirshipLightingRig"
+		var parent: Node = context.get("rig_parent") if context.get("rig_parent") is Node else root.get_parent()
+		(parent if parent != null else root).add_child(_light_rig)
+		var result: Dictionary = _light_rig.configure(root, profile)
+		if not bool(result.get("ok", false)):
+			dispose_lighting()
+			return {"ok": false, "errors": result.get("errors", []), "warnings": result.get("warnings", [])}
+		warnings = result.get("warnings", [])
+		_night_kit = _light_rig.get_kit()
+		var layers := int(context.get("luminous_layers", 0))
+		if layers != 0:
+			for luminous: VisualInstance3D in _light_rig.luminous_nodes():
+				luminous.layers |= layers
+	_light_configured = true
+	update_lighting(0.0, 0.0)
+	return {"ok": true, "errors": PackedStringArray(), "warnings": warnings}
+
+
+## Per rendered frame, after pose(). clock_s is the displayed presentation clock (sim time, as main.gd uses); NAN
+## advances an internal clock by delta. Telemetry is forwarded to the rig (throttle, speed_mps, airspeed, roll_rate,
+## pitch_rate, maneuver, distance_m, effects_allowed); optional overrides: exposure (default World.Exposure.last),
+## local_seconds and sun_elevation_deg (default from the configured context through World).
+func update_lighting(delta: float, clock_s: float = NAN, telemetry: Dictionary = {}) -> void:
+	if not _light_configured or root == null:
+		return
+	_light_clock = clock_s if is_finite(clock_s) else _light_clock + maxf(delta, 0.0)
+	var local_seconds := float(telemetry.get("local_seconds", _world.aircraft_local_seconds(_light_context.get("lighting_config", {}), _light_clock)))
+	var elevation := float(telemetry.get("sun_elevation_deg", _world.aircraft_sun_elevation(_light_context.get("lighting_snapshot", {}))))
+	_light_state.update(local_seconds, 1.0 if elevation < _world.NIGHT_KIT_BELOW_SUN_DEG else 0.0)
+	_apply_light_mode()
+	if is_instance_valid(_light_rig):
+		var forwarded := telemetry.duplicate()
+		forwarded["lighting_priority"] = 100
+		if not forwarded.has("exposure"):
+			forwarded["exposure"] = _world.Exposure.last
+		_light_rig.advance(_light_clock, forwarded)
+	_follow_lights()
+
+
+## Light selection, as the fixed-wing keyboard/menu adapters use it: "auto", "all", "nav" or "off".
+func set_light_mode(mode: String) -> bool:
+	if _light_state == null or not _light_state.set_mode(mode):
+		return false
+	_apply_light_mode()
+	return true
+
+
+## {selection, active_mode, gain}, or empty before configure_lighting().
+func light_state() -> Dictionary:
+	if _light_state == null:
+		return {}
+	return {"selection": _light_state.selection, "active_mode": _light_state.active_mode, "gain": _light_state.gain}
+
+
+## A flight reset: AUTO selection and restarted light patterns.
+func reset_lighting() -> void:
+	if _light_state != null:
+		_light_state.reset()
+	if is_instance_valid(_light_rig):
+		_light_rig.reset()
+	_light_clock = 0.0
+	_apply_light_mode()
+
+
+## Frees the RGB rig (restoring imported materials). A fitted night kit stays on the root and is freed with it.
+func dispose_lighting() -> void:
+	if is_instance_valid(_light_rig):
+		_light_rig.dispose()
+		if _light_rig.is_inside_tree():
+			_light_rig.queue_free()
+		else:
+			_light_rig.free()
+	_light_rig = null
+	_light_configured = false
+	_rig_mode = ""
+	_rig_gain = -1.0
+
+
+func _apply_light_mode() -> void:
+	if _light_state == null or root == null:
+		return
+	var mode: String = _light_state.active_mode
+	var gain: float = _light_state.gain
+	if is_instance_valid(_light_rig):
+		if mode != _rig_mode or gain != _rig_gain:
+			_light_rig.set_mode(mode, gain)
+			_rig_mode = mode
+			_rig_gain = gain
+		return
+	if not is_instance_valid(_night_kit) and mode != "off":
+		_attach_kit()
+	if is_instance_valid(_night_kit) and str(_night_kit.get_meta("mode", "")) != mode:
+		_lights.set_mode(_night_kit, mode)
+	_lights.set_emission_mode(_lights.prepare_emission(root), mode, gain)
+
+
+## Lights mounted on moving parts (the dorsal rudder's tail light) follow the posed hinges.
+func _follow_lights() -> void:
+	if is_instance_valid(_night_kit):
+		_lights.update_dynamic(_night_kit, root, 1.0)
+
+
+## Every lamp and strip is authored, so the kit needs no geometric fitting: the generic fit slices the whole
+## 220k-triangle mesh (about 0.3 s) only to produce fallbacks the authored layout replaces. Bounds stay measured
+## (mesh AABBs only) for the lighting effects' projected-size budget.
+func _attach_kit() -> void:
+	_night_kit = root.get_node_or_null("NightKit") as Node3D
+	if is_instance_valid(_night_kit):
+		return
+	var empty := PackedVector3Array()
+	var tip := {"centre": Vector3.ZERO, "trailing": Vector3.ZERO, "leading_z": 0.0}
+	var layout := {"bounds": _lights.bounds(root).all, "skins": {"lower": {"left": empty, "right": empty},
+		"upper": {"left": empty, "right": empty}}, "left": tip, "right": tip, "belly": empty, "landing": Vector3.ZERO}
+	_night_kit = _lights.attach(root, layout)
+	var layers := int(_light_context.get("luminous_layers", 0))
+	if layers != 0 and is_instance_valid(_night_kit):
+		for luminous: Node in _night_kit.find_children("*", "VisualInstance3D", true, false):
+			(luminous as VisualInstance3D).layers |= layers

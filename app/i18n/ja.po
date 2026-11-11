@@ -9475,3 +9475,27 @@ msgstr "詳細"
 
 msgid "Automatic follows Scene detail. Changes apply immediately."
 msgstr "自動はシーンの詳細設定に従います。変更は直ちに反映されます。"
+
+msgid "Size: %s%% · envelope length: %s m"
+msgstr "サイズ: %s%% · エンベロープ長: %s m"
+
+msgid "Envelope length"
+msgstr "エンベロープ長"
+
+msgid "Envelope volume"
+msgstr "エンベロープ容積"
+
+msgid "Keel ballast"
+msgstr "キールバラスト"
+
+msgid "Weigh-off (heavy)"
+msgstr "超過重量（重い）"
+
+msgid "Static trim"
+msgstr "静的トリム"
+
+msgid "Fin travel"
+msgstr "フィン舵角"
+
+msgid "Close the running activity before starting a blimp trial."
+msgstr "飛行船のテストを始める前に、実行中のアクティビティを閉じてください。"

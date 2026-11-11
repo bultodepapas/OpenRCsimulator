@@ -164,4 +164,227 @@ Queries are preserved exactly, including three initial `site.` spellings; subseq
 
 Planning-document verification used the repository's `tools/ci/check_docs.py` link parser/target checker against working-tree files, checking all local destinations in the two new documents and only new destinations in the two edited indexes. The final pass checked 36 local links/anchors with zero errors. The ledger has 79 entries with 79 distinct query strings; Markdown fences and scoped whitespace checks pass. No repository code was modified by the planning work.
 
-No new rendered images or videos were generated, and existing images were not requalified against the current engine. No benchmark, physical calibration, asset redistribution import, required CI run or target-GPU acceptance is claimed. The plan must be exercised on a stable candidate; captures belong in fresh ignored output directories, with only necessary summaries retained. Unsupported source access, unverified proportions and open model/contact/performance gates remain visible rather than being converted into success claims.
+The planning phase generated no new rendered images or videos and did not requalify existing images against the current engine. It claimed no benchmark, physical calibration, asset redistribution import, required CI run or target-GPU acceptance. Subsequent implementation evidence follows below.
+
+## Implementation record
+
+### Selected model and integration
+
+The user subsequently authorized implementation. The initial 45-particle XPBD
+prototype failed its mast/reversal gate: a short tape produced rejected updates,
+gap resets and a fly edge that remained on the wrong side. Increasing solver
+iterations did not establish an acceptable solution. That experiment is retained
+under ignored `tmp/flag-motion-20261110/`; the runtime does not ship it.
+
+The implemented model is explicitly identified as `modal_2d`. It uses a fixed
+five-point hoist and nine stations across five rows. Wind controls the mean
+direction, drape and energy; two phases and row-dependent waves produce folds.
+Finite-length segments avoid longitudinal rubber stretching. Bounded geometry
+and mast-sweep checks reject unsafe poses. This is procedural cloth presentation,
+not a force-calibrated aeroelastic simulation. Presentation cadence is a sampled
+approximation of the supplied wind, not reconstructed meteorological history.
+
+The static mast remains in its scenery batch. A small halyard and two ties connect
+the cloth's constrained edge. The cloth remains one opaque, two-sided draw, with
+64/256/1,024 triangles at 8×4/16×8/32×16 cells. Smooth normals derive from the
+deformed lattice; the GPU adds small wrinkles and optional shared Fabric001
+weave/roughness detail. Distance LOD swaps only mesh density and microtexture
+work. It never resets the motion. Native flag shadow casting remains disabled.
+
+`Field` now observes each distinct fixed wind-cue position once per accepted
+observation and publishes separately. Invalid session wind cannot be bypassed by
+a spatial sampler. The live World route publishes committed poses; legacy
+scripted/capture routes can observe there. Windsock motion equations are unchanged.
+Its flutter clock now advances only with accepted observations, and its projected
+shadow uses that same effective clock. Simulation state, RNG and vehicle physics
+are not modified by these presentation consumers.
+
+The Graphics panel provides Auto, Static, Basic and Detailed. Auto uses Basic on
+Low scene detail and Detailed on Medium/High/Extreme. Explicit Detailed on Low
+gets the Medium mesh/material tier. CLI `--flag_animation` overrides
+`OPENRC_FLAG_ANIMATION`, then the saved preference. Static releases the motion
+object and skips wind sampling; Basic binds no fabric maps. Live changes and
+revert use the existing preferences flow.
+
+### Artwork and lifecycle
+
+Twenty-seven downloaded flag SVGs have exact source revisions, dimensions,
+license records and hashes in
+[`SOURCES.json`](../../assets/landscape/flags/SOURCES.json). Their generated PNGs
+are 512 px wide, opaque RGB8, with mipmaps and natural aspect ratios. English uses
+US, simplified Chinese CN, French FR, Brazilian Portuguese BR, German DE, Italian
+IT, Russian RU and Japanese JP. Spanish selects once from 19 admitted countries
+using a private cosmetic RNG; the application retains that choice across scene
+rebuilds and language round trips. Paraguay is excluded until separate reverse
+artwork is supported. Current flags use a physically mirrored reverse print.
+
+The manifest contains paths, not preloaded textures. Each live flag keeps its
+current country and at most one pending request; rapid changes coalesce to the
+latest desired country. A weak-reference identity cache avoids a script/instance
+ownership cycle. A transient root-owned request node pairs every successful
+threaded request with terminal retrieval, even if its flag is freed. Detached
+scenery builds do not start requests. A failed country falls back once to US;
+failed fallback does not retry each frame. The [asset tool](../../tools/flags/README.md)
+owns regeneration, checks and extension instructions. Export presets include the
+generated provenance notice.
+
+The 27 PNG files total 269,731 bytes. Full decoded mip chains would total about
+17.07 MiB in RGB8, or 22.76 MiB if represented in RGBA8; they are not all retained
+by the renderer. One country requires about 0.50–0.70 MiB in RGB8, excluding
+driver overhead. These are storage estimates, not GPU-residency measurements.
+Detailed's fabric resources reuse the existing windsock paths; these estimates
+exclude those shared maps.
+
+### Independent review corrections
+
+Good Enemy and the integration specialist identified and checked these changes:
+
+- A projected-shadow signature length/clock-index error could force repeated
+  redraws. Equal-time transitions between global and cue clocks also needed an
+  ownership check. The expanded shadow suite passes 29 checks.
+- Negative observations must leave both pose and flutter unchanged. Windsock
+  clock publication now follows the motion model's accepted result.
+- Equal-size country changes and same-mode mesh-tier changes must not recreate
+  motion. Resize and mode APIs preserve history when the new pose is valid.
+- Requests abandoned before tree entry or during field teardown could retain
+  ResourceLoader tokens. The root-owned collector addresses this lifecycle.
+  The exact pinned engine's [request accounting](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/io/resource_loader.cpp#L3315-L3351)
+  and [retrieval accounting](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/io/resource_loader.cpp#L3788-L3801)
+  explain why merely freeing the flag was insufficient.
+- Godot already flips back-face normals for `cull_disabled` before the user
+  fragment shader. Removing our second flip fixes reverse-side lighting; the
+  binormal now follows increasing UV-v. See the pinned
+  [side check](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/gles3/shaders/scene.glsl#L2113-L2119)
+  and [normal-map transform](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/gles3/shaders/scene.glsl#L2227-L2232).
+- A fixed six-step catch-up limit could freeze the flag below 20 observations/s.
+  Closed-form modal responses remove that dependency; geometry remains bounded
+  per observation. The heading rate limit includes the low-wind gain before
+  clamping, preventing a frame-count-dependent near-target turn.
+
+### Verification and remaining qualification
+
+Checked runs use Godot `4.8.beta2.official.cafc17a19`. Runtime integration tests
+cover real locale loads, rapid switching, application-lifetime Spanish identity,
+aspect changes, quality changes, duplicate publication, invalid observations,
+rotated bases, production cue registration, shared sampling and resource teardown.
+The final 66-check integration run reports zero engine errors and warnings. Additional
+focused passes include field staged build (43), field replacement (70),
+presentation cadence (3,538), display preferences (175), wind-world consumers
+(14), windsock motion (37), and windsock projected shadows (29). Country asset
+regeneration check passes all 27 countries. Language/quality checks also passed
+the actual nine-locale picker, preview/revert and persistence paths.
+
+Native Windows Compatibility captures use an NVIDIA RTX 3090 at 1920×1080.
+The original flag was preserved and captured before changing its runtime path.
+The [capture tool](../../tools/ground/README.md#l15c-flag-review) covers calm,
+light/strong wind, reverse/crosswind, front/rear views and a gust/reversal frame
+sequence, in isolation and in the Club field. Initial comparison showed an
+overly flat banner, motivating stronger finite-length folds and corrected
+lighting. Readback/PNG generation is excluded from performance evidence.
+
+The real application exercised English→Spanish, Static→Detailed during a flight,
+pause/settings preview, persistence and scene replacement at 1080p. Its debug
+bridge exit reported no crash and zero leaked objects. Evidence is retained under
+ignored `tmp/flag-implementation-20261110/`, `tmp/flag-render-tests/`,
+`tmp/flag-quality-f07/` and `tmp/debug-bridge/20261110-181913-6482/`.
+
+The shared M1 was unavailable: both documented ANGEL aliases failed hostname
+resolution and the separate ANGELA_AIR route timed out. No remote files,
+credentials or host keys were changed. No M1, low-end GPU,
+1440p/4K or physical cloth qualification is implied by the Windows captures.
+Required full CI and release/export qualification remain separate gates.
+
+### Stable motion test and component timing
+
+The final motion source SHA-256 is
+`ce3905b5215a7326811a150aba42ce8c8132bffde684c9e53bc4601fd29f0b3e`.
+Its production test passed **95 checks**, including 16 stationary wind directions
+for six dimensions in both modes, clockwise/counterclockwise rotating wind,
+10–144 Hz observation cadences, pause, replay, resizing and extreme inputs.
+Basic now builds one curve and translates it into five rows. Because its rows
+have identical horizontal projections, specialized mast/sweep guards avoid the
+Detailed triangle work. These guards matched the full guards on 4,440 generated
+poses/sweeps and rejected deliberately penetrating cases. Exact settled calm
+updates only the observation clock: pose, phase and revision remain unchanged;
+nonzero wind wakes the model.
+
+The controlled Detailed tape had 3.56% peak structural strain, minimum sampled
+triangle area 0.002725 m², minimum sampled mast clearance 0.060 m, and maximum
+60 Hz tip displacement 0.0478 m. There were no rejected poses or mast backtracks.
+Rotating tapes retained a minimum free-edge/wind alignment dot product of 0.5417;
+this measures the tested lag, not instantaneous alignment or physical validation.
+
+On Windows 10.0.26100 with an AMD Ryzen 9 5900X, the pinned headless engine timed
+2,000 warmed observations per case after 200 warmup observations. Each sample
+measured one `update_to` call for a 1.5×0.9 m flag, 60 observations/s and 8 m/s
+wind. The rotating case advanced heading by 0.002 rad per observation. Source,
+test, benchmark and engine hashes are retained in
+`tmp/flag-motion-20261110/optimized-basic-evidence.txt` with checked-runner receipts.
+
+| Mode / wind | p50 | p95 | p99 | Maximum |
+| --- | ---: | ---: | ---: | ---: |
+| Basic / settled calm | 1 µs | 1 µs | 1 µs | 19 µs |
+| Basic / steady | 20 µs | 22 µs | 25 µs | 61 µs |
+| Basic / rotating | 21 µs | 22 µs | 27 µs | 42 µs |
+| Detailed / settled calm | 1 µs | 1 µs | 1 µs | 5 µs |
+| Detailed / steady | 72 µs | 77 µs | 106 µs | 156 µs |
+| Detailed / rotating | 75 µs | 134 µs | 194 µs | 227 µs |
+
+The preceding general-guard Basic candidate missed the 30 µs target; its p95
+ranged from 71 to 134 µs in the earlier run. A sequential comparison measured
+62/115 µs before versus 22/21 µs after row reuse for steady/rotating cases. The
+prior source, tests and diagnostic remain in `final-evidence.txt` and the paired
+receipts; they are not substituted for the final-source evidence above.
+
+Other headless work may have shared this host. These are local component
+diagnostics, excluding wind sampling, material upload and rendering. Both modes
+are below their proposed 30/150 µs p95 component thresholds in the final cases,
+but neither result establishes the separate whole-frame, low-end CPU/GPU or
+maximum-settings qualification gates. Static constructs no motion object and
+performs no flag wind sample/update.
+
+### Native renderer and frame smoke results
+
+Final native captures completed without engine errors on the RTX 3090 in
+Compatibility, Vulkan Forward+ and Vulkan Mobile, all at 1920×1080. This verifies
+shader execution on those Windows paths; it is not Mac/mobile-device performance
+qualification. The retained variants are:
+
+| Evidence directory under `tmp/flag-implementation-20261110/` | Observed result |
+| --- | --- |
+| `final-low-fr` | Auto + Low selects Basic; French artwork; 64 triangles |
+| `final-medium-cn` | Auto + Medium selects Detailed; Chinese artwork; 256 triangles |
+| `final-static-es` | Static selects SV for that application run; no motion state; 64 triangles |
+| `final-forward-plus`, `final-mobile` | Detailed US flag; 1,024 triangles; front/rear/oblique views |
+| `final-field-reframed` | Full Club field, shared windsock/flag wind tape, complete calm drape in view |
+| `final-distant` | 60 m view selects 8×4 cells / 64 triangles while retaining Detailed motion |
+| `final-motion-v2` | 180 frames at 30 Hz through gusts and reversal, current source hashes in manifest |
+
+Each still-view run records 15 image hashes, the renderer/adapter, source hashes,
+camera coordinates, actual country and profile. The LOD regression independently
+verifies near→far→near at 1080p with unchanged motion time, phase and uploads.
+The integration suite also verifies two simultaneous requests for the same
+country when one owner is freed; the survivor loads and both request owners drain.
+The final scenery-build and 19-check windsock-render tests pass without the
+earlier identity-cycle leak warning.
+
+The existing frame collector/reducer also completed four **scripted rendering
+smoke runs**, each with 5 s warmup, 15 s sampling, 901 drawn frames, a 60 FPS cap
+and a 1920×1080 native window. All had zero undrawable samples, no draw-counter
+resets and no missing draw intervals. These runs used the pilot camera and no
+active simulation physics; they do not measure close-up flag GPU cost or qualify
+active-flight performance.
+
+| Variant | Frame p50 | Frame p95 | Frame p99 |
+| --- | ---: | ---: | ---: |
+| Static | 16.665 ms | 16.871 ms | 17.251 ms |
+| Detailed, before the exact-calm shortcut | 16.665 ms | 16.830 ms | 17.244 ms |
+| Basic, before the row optimization | 16.665 ms | 16.787 ms | 17.104 ms |
+| Final optimized Basic | 16.665 ms | 16.832 ms | 17.250 ms |
+
+The cap masks spare CPU/GPU capacity, GPU timestamps may be delayed, and other
+tracks were active on the shared host. Differences in this table are not a
+causal speedup or regression estimate. The initial full-frame/GPU and low-end
+qualification budgets remain open. Raw reports are `frame-*.json` with checked
+logs under `final-checks`; the existing frame diagnosis reducer retained its
+reports beside them. All diagnostic screenshots remain outside tracked paths; the downloaded country artwork is a required runtime asset.

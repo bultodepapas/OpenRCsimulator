@@ -86,6 +86,17 @@ The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualif
 
 **RCV-43.** When the club field shows the RC car circuit, the aircraft wheels roll on the car course's own float64 surface. The hull meets raised dirt (≥ 5 cm) through an exact-surface sweep, and the circuit's walls, tyres and hardware are collision boxes. Hundreds of terraced boxes would cost every runway tick in the shared 32 m bin; a visual-only circuit would let aircraft pass through ramps and barriers. One per-flight decision feeds render, wheels and obstacles. It is part of the configuration hash, checkpoints and flight logs, and only menu-launched flights read the saved setting, so traces and goldens stay unchanged. The thin pad stays with the flat-datum hull laws (≤ 3.5 cm). Revisit if aircraft need sliding hull contact over relief or a general terrain-feature provider. [Evidence](research/rc-monster-truck/RCV-43/README.md).
 
+### The Workshop admits the blimp as a second family through format dispatch
+
+**BL-19.** The Workshop's entry points route an `openrc-airship v1` base to family modules (`app/workshop/airship_*.gd`): compiler, capabilities, versions, descriptor, dependencies, mass edits and trial identity. The airship is not added to the fixed-wing aircraft catalog, and it is not translated into fake airplane surfaces ([aircraft contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard)).
+
+- **Shared machinery reused.** The store, revisions, recovery, Undo/Redo and presentation profiles work unchanged.
+- **Fixed-wing paths untouched.** Their bytes and identities are unchanged; the existing Workshop suites still pass.
+- **Similarity is unit-driven.** The size transform is driven by each quantity's declared unit and refuses unknown units, so a new field cannot silently escape scaling.
+- **Descriptor derived, not generated.** The blimp's descriptor is derived from its exact base and presentation hash.
+
+Revisit if a third family arrives: then extract an explicit family registry instead of adding more format checks. [Workshop guide](AIRCRAFT-WORKSHOP.md#rc-blimp-family).
+
 ### The RC blimp owns a coupled added-mass law with a declared afterbody loss
 
 **BL-03/BL-05/BL-10.** The airship supplies its own `body_derivative`:
@@ -235,6 +246,18 @@ active. [Contract and evidence](research/ai-companions/AFC-03-R2/README.md).
 ### Preserve Git history and limit future artifact growth
 
 The adopted repository policy retains history rather than rewriting active clones or migrating existing evidence to LFS. Full history supports build identity; re-encoding tracked evidence would retain its old blobs and can destroy pixel-level proof. Bound new artifacts with the [large-file check](../tools/repo/check_large_files.py) and [evidence conventions](README.md#conventions-for-documents). Historical disk totals and provider quotas are not ongoing design assumptions. Reopen only with an explicit repository migration requirement and a coordinated plan.
+
+### Keep landscape fabric in the presentation layer
+
+**L15c.** Use a bounded two-dimensional modal flag surface with finite-length
+segments and mast guards, sharing accepted wind observations with the windsocks.
+The proposed XPBD prototype failed the reversal/contact comparison and is not
+shipped. Country artwork and quality controls belong to presentation and must not
+alter simulation state or weather RNG. Reconsider a particle solver only when it
+demonstrates better native motion within the measured budgets. The
+[implementation record](research/landscape-flag-windsocks-2026-11-10.md#implementation-record)
+owns software evidence and open hardware/visual qualification; procedural motion
+is not physical cloth calibration.
 
 ## Maintaining this record
 

@@ -9424,3 +9424,27 @@ msgstr "详细"
 
 msgid "Automatic follows Scene detail. Changes apply immediately."
 msgstr "自动模式跟随场景细节。更改立即生效。"
+
+msgid "Size: %s%% · envelope length: %s m"
+msgstr "尺寸：%s%% · 气囊长度：%s 米"
+
+msgid "Envelope length"
+msgstr "气囊长度"
+
+msgid "Envelope volume"
+msgstr "气囊容积"
+
+msgid "Keel ballast"
+msgstr "龙骨压舱物"
+
+msgid "Weigh-off (heavy)"
+msgstr "超重（偏重）"
+
+msgid "Static trim"
+msgstr "静态配平"
+
+msgid "Fin travel"
+msgstr "尾翼行程"
+
+msgid "Close the running activity before starting a blimp trial."
+msgstr "开始飞艇试飞前，请先关闭当前活动。"

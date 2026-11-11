@@ -1,0 +1,49 @@
+{
+  "reference": {
+    "data/aircraft/gp_extra_300s_60.json": {
+      "original_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+      "patched_sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf"
+    },
+    "data/aircraft/jensen_ugly_stik_60.json": {
+      "original_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+      "patched_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
+    },
+    "data/aircraft/sebart_avanti_s_a200.json": {
+      "original_sha256": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1",
+      "patched_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9"
+    },
+    "data/fuels/openrc-fuel-registry.json": {
+      "original_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+      "patched_sha256": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043"
+    },
+    "data/schema/aircraft-contract-v2.json": {
+      "original_sha256": "e06159d51a54feea95c498ee81e05903d85246bb512e7dcc7af95f0d8079af34",
+      "patched_sha256": "346ca1bbbc2e7fc7a7a3c6028dae81427bfa149a3c570c497a1091f1f66f1007"
+    },
+    "physics/aero.gd": {
+      "original_sha256": "069b76f54efdc6266c9991c31f0f925339396a023aceff14e990cf1e74c68d32",
+      "patched_sha256": "00c6e9e8f48ffadb46240fb376d53342252d6c2cc2912ced7d047dcd8b4e8e8a"
+    },
+    "physics/aircraft_data.gd": {
+      "original_sha256": "189e1178c1c939804528e1036e2f67299f5b8c51af3d35ee002f48f0e574fa2b",
+      "patched_sha256": "0fe78a0bd1a82714d72282d5dda781e835929039d5a3507d28463dc796f95d81"
+    },
+    "physics/glow/flight.gd": {
+      "original_sha256": "37b5e2d58ffb3615a8aabcaceb26db4408835135723200d07fb5f6b4dd8b60a0",
+      "patched_sha256": "4ab6672f10cd040db430b0f0b7aa3b5b1c3dd305f60c32410c8d6ed31cac4f5a"
+    },
+    "physics/propulsion.gd": {
+      "original_sha256": "e515fb3eaa513cb2508cad7c9a8ed8cf164f9196c69ba11ec52795cb8cc9dcf8",
+      "patched_sha256": "fec3f41604cd5e012d6df12662efa5db05549fbd5f345ba8f7fcc55542b1992d"
+    },
+    "sim/flight_session.gd": {
+      "original_sha256": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+      "patched_sha256": "802232fb200d07341fd034d56fb39b4425011a268122abb7ea0faf1ff0466ee9"
+    },
+    "sim/trace.gd": {
+      "original_sha256": "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e",
+      "patched_sha256": "71fda5648adda1628d38badb99a469eb5c9558d14d4c302d7b63c4960f791205"
+    }
+  },
+  "scope": "pinned inputs, contract/decoder and identity declarations only; historical numerical equations retained"
+}

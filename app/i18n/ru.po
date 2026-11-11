@@ -10226,3 +10226,27 @@ msgstr "Подробная"
 
 msgid "Automatic follows Scene detail. Changes apply immediately."
 msgstr "Автоматический режим следует уровню детализации сцены. Изменения применяются сразу."
+
+msgid "Size: %s%% · envelope length: %s m"
+msgstr "Размер: %s%% · длина оболочки: %s м"
+
+msgid "Envelope length"
+msgstr "Длина оболочки"
+
+msgid "Envelope volume"
+msgstr "Объём оболочки"
+
+msgid "Keel ballast"
+msgstr "Килевой балласт"
+
+msgid "Weigh-off (heavy)"
+msgstr "Перевес (тяжелее воздуха)"
+
+msgid "Static trim"
+msgstr "Статическая балансировка"
+
+msgid "Fin travel"
+msgstr "Ход рулей оперения"
+
+msgid "Close the running activity before starting a blimp trial."
+msgstr "Закройте текущее занятие перед испытанием дирижабля."

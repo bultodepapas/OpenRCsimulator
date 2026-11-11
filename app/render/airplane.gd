@@ -13,6 +13,8 @@ const LightingSkins := preload("res://render/lighting/lighting_skins.gd")
 const TimberVisualLighting := preload("res://aircraft/timber_visual_lighting.gd")
 const TimberVisualDetails := preload("res://aircraft/timber_visual_details.gd")
 const CustomSkin := preload("res://aircraft/custom_skin.gd")
+const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
+const AIRSHIP_VISUAL_PATH := "res://vehicles/airship/airship_visual.gd"
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
@@ -36,6 +38,10 @@ static func _mat(color: Color) -> StandardMaterial3D:
 ## Returns an independently built, validated visual for a catalog physical configuration. `livery_id` selects one of
 ## the visual family's liveries (F4U-16); empty is the default paint.
 static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}, livery_id := "") -> Dictionary:
+	# BL-19c: the experimental RC blimp is not a fixed-wing catalog entry. Its presentation-only route is explicit
+	# and stays out of the airplane model registry; propeller diameter does not apply.
+	if AirshipCatalog.is_stock_id(id):
+		return _build_airship(expected_presentation, livery_id)
 	var family: String = Catalog.visual_family(id)
 	if family.is_empty():
 		push_error("render/airplane.gd: unknown aircraft '%s'" % id)
@@ -199,6 +205,40 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		airplane.custom_skin = {id = paint.id, label = paint.label, sha256 = paint.sha256}
 	_accepted_datums[id] = Vector2(float(manifest.datum.model_z_le), float(manifest.datum.model_y_thrust))
 	return airplane
+
+
+## BL-19c: the blimp's builder dictionary (see AirshipPresentation.instance): root, aircraft_id, visual_family,
+## livery_id (skin), model_manifest_sha256, customization_bindings, customization_slots_sha256, and the root metas
+## the lighting rig reads. It has no airplane manifest, control hinges, gear or propeller: the airplane pose helpers
+## below do not apply. Pose it through root.get_meta("airship_visual") (AirshipVisual.pose); the visual's lifetime
+## is the root's. `livery_id` is a blimp skin id (empty = default); custom paint kits are not supported.
+static func _build_airship(expected_presentation: Dictionary, livery_id: String) -> Dictionary:
+	var skin: String = AirshipCatalog.DEFAULT_SKIN if livery_id.is_empty() else livery_id
+	if not AirshipCatalog.contains(skin):
+		push_warning("render/airplane.gd: unsupported blimp skin '%s'" % livery_id)
+		return {}
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(AirshipCatalog.DATA_PATH))
+	if not (parsed is Dictionary) or not (parsed.get("presentation") is Dictionary):
+		push_error("render/airplane.gd: blimp data has no presentation bindings")
+		return {}
+	var visual: RefCounted = load(AIRSHIP_VISUAL_PATH).new()
+	if not visual.build(parsed.presentation, skin):
+		if visual.root is Node:
+			visual.root.free()
+		push_error("Blimp visual: " + str(visual.error))
+		return {}
+	var bound: Dictionary = visual.bind_presentation()
+	if not bool(bound.get("ok", false)):
+		visual.root.free()
+		push_error("Blimp presentation bindings: " + str(bound.get("errors", [])))
+		return {}
+	var airship: Dictionary = visual.customization
+	if not expected_presentation.is_empty() and (expected_presentation.get("visual_family", "") != airship.visual_family 			or expected_presentation.get("model_manifest_sha256", "") != airship.model_manifest_sha256):
+		visual.root.free()
+		push_warning("Aircraft presentation changed after the Workshop trial was frozen.")
+		return {}
+	visual.root.set_meta("airship_visual", visual)
+	return airship
 
 
 ## MeshInstance3D releases its surface overrides before its rendering instance

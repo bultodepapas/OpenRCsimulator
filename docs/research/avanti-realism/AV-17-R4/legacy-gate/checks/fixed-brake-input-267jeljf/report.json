@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "30892a82-83ab-404c-ab41-69c81e9fe94b",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\legacy-gate\\candidate-01\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_fixed_gear_brake_input.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-10T23:36:55.733275+00:00",
+  "label": "fixed-brake-input",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\legacy-gate\\isolated-receipts\\fixed-brake-input-267jeljf\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\legacy-gate\\isolated-receipts\\fixed-brake-input-267jeljf\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Fixed brake candidate:",
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.984,
+  "log_bytes": 2403,
+  "log_sha256": "aed2604e05959370c9818f4bb0eeed04796f88036b2f95f034d7c10cc95edc40"
+}

@@ -34,10 +34,11 @@ var simulated_step_index: int = 0
 var _epoch: float = 0.0
 var _last_observed: float = 0.0
 var _heading: float = 0.0
+var _turn_side: float = 1.0
 var _sag: float = 1.9
 var _candidate: PackedVector3Array = PackedVector3Array()
-var _trial: PackedVector3Array = PackedVector3Array()
-var _rollback: PackedVector3Array = PackedVector3Array()
+var _row_centers: PackedVector3Array = PackedVector3Array()
+var _row_displacements: PackedFloat64Array = PackedFloat64Array()
 var _gap_resets: int = 0
 var _rejected_steps: int = 0
 var _contact_backtracks: int = 0
@@ -50,8 +51,8 @@ func _init(p_length_m: float = 1.5, p_height_m: float = 0.9, p_mode: String = "d
 	mode = "basic" if p_mode == "basic" else "detailed"
 	points.resize(POINT_COUNT)
 	_candidate.resize(POINT_COUNT)
-	_trial.resize(POINT_COUNT)
-	_rollback.resize(POINT_COUNT)
+	_row_centers.resize(ROWS)
+	_row_displacements.resize(ROWS)
 	reset()
 
 
@@ -68,16 +69,16 @@ func reset(time_s: float = 0.0, wind_local: Vector3 = Vector3.ZERO) -> bool:
 	phase = Vector2.ZERO
 	energy = 0.0
 	_heading = 0.0
+	_turn_side = 1.0
 	_sag = 1.9
-	_build_pose(points, _heading, _sag, energy, phase)
+	_build_pose(points, _heading, _sag, energy, phase, _turn_side)
 	revision += 1
 	return true
 
 
-## The supplied wind is held over the elapsed observation interval. Substeps
-## normally target 120 Hz, with at most six even at low presentation rates.
-## A pause freezes the entire state. A backward clock resets. Long gaps rebase
-## to the last safe pose, discarding catch-up debt without teleporting cloth.
+## The supplied wind is held over each elapsed observation interval. Modal
+## scalars have closed-form responses and the final geometry and its swept
+## path are validated once. Pauses freeze, rewind resets, and long gaps rebase.
 func update_to(time_s: float, wind_local: Vector3) -> bool:
 	if not _valid_input(time_s, wind_local):
 		return false
@@ -93,32 +94,17 @@ func update_to(time_s: float, wind_local: Vector3) -> bool:
 		simulated_step_index = 0
 		_gap_resets += 1
 		return true
-	var due: int = mini(MAX_STEPS_PER_UPDATE, maxi(1, int(ceil(elapsed / STEP_S - 1.0e-8))))
-	var step_s: float = elapsed / float(due)
-	for i: int in POINT_COUNT:
-		_rollback[i] = points[i]
-	var old_phase: Vector2 = phase
-	var old_energy: float = energy
-	var old_heading: float = _heading
-	var old_sag: float = _sag
-	var old_index: int = simulated_step_index
-	var old_backtracks: int = _contact_backtracks
-	var old_blocked: int = _blocked_steps
-	var wind: Vector3 = _cap_wind(wind_local)
-	for _step: int in due:
-		if not _advance_step(wind, step_s):
-			for i: int in POINT_COUNT:
-				points[i] = _rollback[i]
-			phase = old_phase
-			energy = old_energy
-			_heading = old_heading
-			_sag = old_sag
-			simulated_step_index = old_index
-			_contact_backtracks = old_backtracks
-			_blocked_steps = old_blocked
-			_rejected_steps += 1
-			return false
-		simulated_step_index += 1
+	# Exact calm at the settled pose has no pending modal response. Keep the
+	# last geometry and phase and do not trigger a redundant GPU upload.
+	if wind_local == Vector3.ZERO and energy == 0.0 and _sag == 1.9:
+		simulated_step_index += mini(MAX_STEPS_PER_UPDATE, maxi(1, int(ceil(elapsed / STEP_S - 1.0e-8))))
+		_last_observed = time_s
+		simulated_time_s = time_s
+		return true
+	if not _advance(_cap_wind(wind_local), elapsed):
+		_rejected_steps += 1
+		return false
+	simulated_step_index += mini(MAX_STEPS_PER_UPDATE, maxi(1, int(ceil(elapsed / STEP_S - 1.0e-8))))
 	_last_observed = time_s
 	simulated_time_s = time_s
 	revision += 1
@@ -137,7 +123,7 @@ func resize(p_length_m: float, p_height_m: float) -> bool:
 	var old_height: float = height_m
 	length_m = p_length_m
 	height_m = p_height_m
-	_build_pose(_candidate, _heading, _sag, energy, phase)
+	_build_pose(_candidate, _heading, _sag, energy, phase, _turn_side)
 	if not _valid_candidate(_candidate) or not _sweep_clear(points, _candidate):
 		length_m = old_length
 		height_m = old_height
@@ -156,7 +142,7 @@ func set_mode(p_mode: String) -> bool:
 		return true
 	var old_mode: String = mode
 	mode = p_mode
-	_build_pose(_candidate, _heading, _sag, energy, phase)
+	_build_pose(_candidate, _heading, _sag, energy, phase, _turn_side)
 	if not _valid_candidate(_candidate) or not _sweep_clear(points, _candidate):
 		mode = old_mode
 		return false
@@ -179,6 +165,7 @@ func state_snapshot() -> Dictionary:
 		"epoch_s": _epoch,
 		"last_observed_time_s": _last_observed,
 		"heading_rad": _heading,
+		"turn_side": _turn_side,
 		"sag_rad": _sag,
 		"gap_resets": _gap_resets,
 		"rejected_steps": _rejected_steps,
@@ -188,81 +175,168 @@ func state_snapshot() -> Dictionary:
 	}
 
 
-func _advance_step(wind: Vector3, step_s: float) -> bool:
+func _advance(wind: Vector3, elapsed: float) -> bool:
 	var speed: float = wind.length()
 	var target_energy: float = clampf(speed / 8.0, 0.0, 1.0)
-	var next_energy: float = energy + (target_energy - energy) * (1.0 - exp(-step_s / 0.5))
-	var next_phase: Vector2 = Vector2(
-		fposmod(phase.x + 7.0 * next_energy * step_s, TAU),
-		fposmod(phase.y + 10.3 * next_energy * step_s, TAU))
+	var decay: float = exp(-elapsed / 0.5)
+	var next_energy: float = target_energy + (energy - target_energy) * decay
+	var energy_integral: float = target_energy * elapsed + (energy - target_energy) * 0.5 * (1.0 - decay)
 	var horizontal: Vector2 = Vector2(wind.x, wind.z)
+	var horizontal_speed: float = horizontal.length()
 	var heading_step: float = 0.0
-	if horizontal.length() > 0.02:
+	if horizontal_speed > 0.02:
 		var target: float = atan2(horizontal.y, horizontal.x)
 		var turn: float = wrapf(target - _heading, -PI, PI)
-		heading_step = clampf(turn, -2.0 * step_s, 2.0 * step_s) * clampf(horizontal.length() / 2.0, 0.0, 1.0)
-	var desired_sag: float = 1.9 / (1.0 + horizontal.length() * 0.35) - clampf(wind.y / 20.0, -0.2, 0.2)
-	var next_sag: float = _sag + (desired_sag - _sag) * (1.0 - exp(-step_s / 0.7))
-	var next_heading: float = wrapf(_heading + heading_step, -PI, PI)
-	_build_pose(_candidate, next_heading, next_sag, next_energy, next_phase)
+		var turn_limit: float = 2.0 * elapsed * clampf(horizontal_speed / 2.0, 0.0, 1.0)
+		heading_step = clampf(turn, -turn_limit, turn_limit)
+	var desired_sag: float = 1.9 / (1.0 + horizontal_speed * 0.35) - clampf(wind.y / 20.0, -0.2, 0.2)
+	var next_sag: float = _sag + (desired_sag - _sag) * (1.0 - exp(-elapsed / 0.7))
 	var fraction: float = 1.0
-	var accepted: bool = _valid_candidate(_candidate) and _sweep_clear(points, _candidate)
-	if not accepted:
-		_contact_backtracks += 1
-		for _attempt: int in BACKTRACK_ATTEMPTS:
-			fraction *= 0.5
+	for attempt: int in BACKTRACK_ATTEMPTS + 1:
+		var trial_heading: float = wrapf(_heading + heading_step * fraction, -PI, PI)
+		var trial_side: float = _turn_side
+		if cos(trial_heading) >= 0.3 and absf(sin(trial_heading)) > 0.001:
+			trial_side = signf(sin(trial_heading))
+		var trial_energy: float = lerpf(energy, next_energy, fraction)
+		var trial_sag: float = lerpf(_sag, next_sag, fraction)
+		var trial_phase: Vector2 = Vector2(
+			fposmod(phase.x + 7.0 * energy_integral * fraction, TAU),
+			fposmod(phase.y + 10.3 * energy_integral * fraction, TAU))
+		_build_pose(_candidate, trial_heading, trial_sag, trial_energy, trial_phase, trial_side)
+		var pose_valid: bool = _valid_basic(_candidate) if mode == "basic" else _valid_candidate(_candidate)
+		var sweep_valid: bool = false
+		if pose_valid:
+			sweep_valid = _sweep_basic(points, _candidate) if mode == "basic" else _sweep_clear(points, _candidate)
+		if pose_valid and sweep_valid:
 			for i: int in POINT_COUNT:
-				_trial[i] = points[i].lerp(_candidate[i], fraction)
-			if _valid_candidate(_trial) and _sweep_clear(points, _trial):
-				accepted = true
-				break
-	if not accepted:
-		# A safe pose is retained when a feature cannot be moved safely. This
-		# is a bounded visual fallback, not proof that wrapping is solved.
-		_blocked_steps += 1
+				points[i] = _candidate[i]
+			_heading = trial_heading
+			_turn_side = trial_side
+			_sag = trial_sag
+			energy = trial_energy
+			phase = trial_phase
+			return true
+		if attempt == 0:
+			_contact_backtracks += 1
+		fraction *= 0.5
+	# A safe pose is retained if no bounded candidate can be published.
+	_blocked_steps += 1
+	return false
+
+
+func _build_pose(out: PackedVector3Array, heading: float, sag: float, flutter: float, wave_phase: Vector2, side: float) -> void:
+	if mode == "basic":
+		_build_basic(out, heading, sag, flutter, wave_phase, side)
+		return
+	var direction: Vector2 = Vector2(cos(heading), sin(heading))
+	# When a turning wind would pull the free edge across the mast, preserve
+	# the previously chosen side in the intermediate bend. The free-edge
+	# tangent itself continues to follow the real direction.
+	var conflict: float = maxf(0.0, -direction.y * side) * (1.0 - smoothstep(0.0, 0.3, direction.x))
+	var bend_end: float = lerpf(0.5, 0.8, conflict)
+	var bow: float = maxf(0.0, -direction.x) + 0.5 * conflict
+	var dimension_scale: float = minf(1.0, minf(length_m / 1.5, height_m / 0.9))
+	var segment_length: float = length_m / 8.0
+	var detailed: bool = mode == "detailed"
+	for row: int in ROWS:
+		_row_centers[row] = Vector3(0.0, -height_m * float(row) / 4.0, 0.0)
+		_row_displacements[row] = 0.0
+		out[row * COLUMNS] = _row_centers[row]
+	for col: int in range(1, COLUMNS):
+		var u: float = float(col) / 8.0
+		var along: float = (float(col) - 0.5) / 8.0
+		# Bend around the mast from the fixed leading edge. This vector
+		# formulation stays continuous at the -PI/PI direction seam.
+		var steer: float = smoothstep(0.1, bend_end, along)
+		var tangent: Vector2 = Vector2(1.0 - steer + steer * direction.x,
+			steer * direction.y + side * 8.0 * steer * (1.0 - steer) * bow).normalized()
+		var down: float = minf(1.42, sag * sqrt(along))
+		var along_direction: Vector3 = Vector3(tangent.x * cos(down), -sin(down), tangent.y * cos(down))
+		var normal: Vector3 = Vector3(-tangent.y, 0.0, tangent.x)
+		var envelope: float = sin(u * PI * 0.5)
+		for row: int in ROWS:
+			var v: float = float(row) / 4.0
+			var displacement: float = 0.006 * flutter * sin(TAU * u + 1.5 * v - wave_phase.x)
+			if detailed:
+				displacement = 0.04 * sin(TAU * u + 0.6 * v) + 0.1 * flutter * (
+					0.65 * sin(TAU * u + 0.6 * v - wave_phase.x)
+					+ 0.5 * sin(2.0 * TAU * u - 0.8 * v - wave_phase.y))
+			displacement *= dimension_scale * envelope
+			var lateral: float = clampf(displacement - _row_displacements[row], -0.85 * segment_length, 0.85 * segment_length)
+			_row_displacements[row] = displacement
+			# Rotate each segment into the fold, retaining its original length.
+			var axial: float = sqrt(maxf(0.0, segment_length * segment_length - lateral * lateral))
+			_row_centers[row] += along_direction * axial + normal * lateral
+			out[row * COLUMNS + col] = _row_centers[row]
+
+
+## Basic's five rows are vertical translations of this single curve. This
+## deliberately gives up row-dependent folds in exchange for cheaper work.
+func _build_basic(out: PackedVector3Array, heading: float, sag: float, flutter: float, wave_phase: Vector2, side: float) -> void:
+	var direction: Vector2 = Vector2(cos(heading), sin(heading))
+	var conflict: float = maxf(0.0, -direction.y * side) * (1.0 - smoothstep(0.0, 0.3, direction.x))
+	var bend_end: float = lerpf(0.5, 0.8, conflict)
+	var bow: float = maxf(0.0, -direction.x) + 0.5 * conflict
+	var dimension_scale: float = minf(1.0, minf(length_m / 1.5, height_m / 0.9))
+	var segment_length: float = length_m / 8.0
+	var center: Vector3 = Vector3.ZERO
+	var previous_displacement: float = 0.0
+	out[0] = center
+	for col: int in range(1, COLUMNS):
+		var u: float = float(col) / 8.0
+		var along: float = (float(col) - 0.5) / 8.0
+		var steer: float = smoothstep(0.1, bend_end, along)
+		var tangent: Vector2 = Vector2(1.0 - steer + steer * direction.x,
+			steer * direction.y + side * 8.0 * steer * (1.0 - steer) * bow).normalized()
+		var down: float = minf(1.42, sag * sqrt(along))
+		var along_direction: Vector3 = Vector3(tangent.x * cos(down), -sin(down), tangent.y * cos(down))
+		var normal: Vector3 = Vector3(-tangent.y, 0.0, tangent.x)
+		var displacement: float = 0.006 * flutter * sin(TAU * u - wave_phase.x) * dimension_scale * sin(u * PI * 0.5)
+		var lateral: float = clampf(displacement - previous_displacement, -0.85 * segment_length, 0.85 * segment_length)
+		previous_displacement = displacement
+		var axial: float = sqrt(maxf(0.0, segment_length * segment_length - lateral * lateral))
+		center += along_direction * axial + normal * lateral
+		out[col] = center
+	for row: int in range(1, ROWS):
+		var offset: float = -height_m * float(row) / 4.0
+		for col: int in COLUMNS:
+			var point: Vector3 = out[col]
+			out[row * COLUMNS + col] = Vector3(point.x, point.y + offset, point.z)
+
+
+## The Basic builder makes identical x/z rows at fixed y offsets. Therefore
+## all of its triangle projections are exactly the eight curve segments, and
+## each triangle area is half the row spacing times its segment's x/z length.
+## This guard is only for freshly built Basic poses, never a quality transition.
+func _valid_basic(candidate: PackedVector3Array) -> bool:
+	if candidate[0] != Vector3.ZERO:
 		return false
-	for i: int in POINT_COUNT:
-		points[i] = _candidate[i] if fraction == 1.0 else _trial[i]
-	_heading = wrapf(_heading + heading_step * fraction, -PI, PI)
-	_sag = lerpf(_sag, next_sag, fraction)
-	energy = lerpf(energy, next_energy, fraction)
-	phase = Vector2(
-		fposmod(phase.x + 7.0 * next_energy * step_s * fraction, TAU),
-		fposmod(phase.y + 10.3 * next_energy * step_s * fraction, TAU))
+	var rest: float = length_m / 8.0
+	var min_length_sq: float = rest * rest * (1.0 - MAX_EDGE_STRAIN) * (1.0 - MAX_EDGE_STRAIN)
+	var max_length_sq: float = rest * rest * (1.0 + MAX_EDGE_STRAIN) * (1.0 + MAX_EDGE_STRAIN)
+	var min_horizontal_sq: float = rest * rest * MIN_AREA_RATIO * MIN_AREA_RATIO
+	for col: int in range(1, COLUMNS):
+		var a: Vector3 = candidate[col - 1]
+		var b: Vector3 = candidate[col]
+		if not b.is_finite():
+			return false
+		var delta: Vector3 = b - a
+		var segment_sq: float = delta.length_squared()
+		if segment_sq < min_length_sq or segment_sq > max_length_sq \
+				or delta.x * delta.x + delta.z * delta.z < min_horizontal_sq:
+			return false
+		if not _outside_mast_bounds(a, b, a, b) and not _segment_clear(_radial(a), _radial(b)):
+			return false
 	return true
 
 
-func _build_pose(out: PackedVector3Array, heading: float, sag: float, flutter: float, wave_phase: Vector2) -> void:
-	var center: Vector3 = Vector3.ZERO
-	var direction: Vector2 = Vector2(cos(heading), sin(heading))
-	var normal: Vector3 = Vector3(-direction.y, 0.0, direction.x)
-	var dimension_scale: float = minf(1.0, minf(length_m / 1.5, height_m / 0.9))
-	for col: int in COLUMNS:
-		var u: float = float(col) / 8.0
-		if col > 0:
-			var along: float = (float(col) - 0.5) / 8.0
-			# Bend around the mast from the fixed leading edge. This vector
-			# formulation stays continuous at the -PI/PI direction seam.
-			var steer: float = smoothstep(0.1, 0.5, along)
-			var tangent: Vector2 = Vector2(1.0 - steer + steer * direction.x,
-				steer * direction.y + 3.0 * steer * (1.0 - steer) * (1.0 - direction.x)).normalized()
-			# Approach vertical near the free edge without folding the whole
-			# sheet through itself or collapsing a row of triangles.
-			var down: float = minf(1.42, sag * sqrt(along))
-			center += Vector3(tangent.x * cos(down), -sin(down), tangent.y * cos(down)) * (length_m / 8.0)
-		for row: int in ROWS:
-			var v: float = float(row) / 4.0
-			var wave: float = sin(5.0 * u + 2.0 * v - wave_phase.x)
-			var amplitude: float = 0.006
-			var rest_fold: float = 0.0
-			var vertical_fold: float = 0.0
-			if mode == "detailed":
-				wave += 0.45 * sin(8.0 * u - 3.0 * v - wave_phase.y)
-				amplitude = 0.065
-				rest_fold = 0.040 * sin(3.0 * u + 2.0 * v)
-				vertical_fold = 0.015 * flutter * (v - 0.5) * sin(4.0 * u + 3.0 * v - wave_phase.y)
-			var displacement: float = dimension_scale * u * u * (rest_fold + amplitude * flutter * wave)
-			out[row * COLUMNS + col] = center + Vector3(0.0, -height_m * v + dimension_scale * u * u * vertical_fold, 0.0) + normal * displacement
+## All row and diagonal sweeps have the same x/z projection as one of these
+## eight four-point hulls. Use the full guard for mixed-mode transitions.
+func _sweep_basic(previous: PackedVector3Array, candidate: PackedVector3Array) -> bool:
+	for col: int in COLUMNS - 1:
+		if not _edge_sweep_clear(previous[col], previous[col + 1], candidate[col], candidate[col + 1]):
+			return false
+	return true
 
 
 func _valid_input(time_s: float, wind: Vector3) -> bool:
@@ -282,18 +356,27 @@ func _cap_wind(wind: Vector3) -> Vector3:
 
 
 func _valid_candidate(candidate: PackedVector3Array) -> bool:
-	for i: int in POINT_COUNT:
-		if not candidate[i].is_finite():
+	for point: Vector3 in candidate:
+		if not point.is_finite():
 			return false
-		if i % COLUMNS == 0 and candidate[i] != Vector3(0.0, -height_m * float(i / COLUMNS) / 4.0, 0.0):
+	for row: int in ROWS:
+		if candidate[row * COLUMNS] != Vector3(0.0, -height_m * float(row) / 4.0, 0.0):
 			return false
+	var h_min: float = (length_m / 8.0) * (1.0 - MAX_EDGE_STRAIN)
+	var h_max: float = (length_m / 8.0) * (1.0 + MAX_EDGE_STRAIN)
+	var v_min: float = (height_m / 4.0) * (1.0 - MAX_EDGE_STRAIN)
+	var v_max: float = (height_m / 4.0) * (1.0 + MAX_EDGE_STRAIN)
 	for row: int in ROWS:
 		for col: int in COLUMNS:
 			var i: int = row * COLUMNS + col
-			if col < COLUMNS - 1 and absf(candidate[i].distance_to(candidate[i + 1]) / (length_m / 8.0) - 1.0) > MAX_EDGE_STRAIN:
-				return false
-			if row < ROWS - 1 and absf(candidate[i].distance_to(candidate[i + COLUMNS]) / (height_m / 4.0) - 1.0) > MAX_EDGE_STRAIN:
-				return false
+			if col < COLUMNS - 1:
+				var h_sq: float = candidate[i].distance_squared_to(candidate[i + 1])
+				if h_sq < h_min * h_min or h_sq > h_max * h_max:
+					return false
+			if row < ROWS - 1:
+				var v_sq: float = candidate[i].distance_squared_to(candidate[i + COLUMNS])
+				if v_sq < v_min * v_min or v_sq > v_max * v_max:
+					return false
 	var minimum_area: float = length_m * height_m / 64.0 * MIN_AREA_RATIO
 	for row: int in ROWS - 1:
 		for col: int in COLUMNS - 1:
@@ -309,7 +392,7 @@ func _valid_candidate(candidate: PackedVector3Array) -> bool:
 
 
 func _triangle_valid(a: Vector3, b: Vector3, c: Vector3, minimum_area: float) -> bool:
-	if (b - a).cross(c - a).length() * 0.5 < minimum_area:
+	if (b - a).cross(c - a).length_squared() < 4.0 * minimum_area * minimum_area:
 		return false
 	if _outside_mast_bounds(a, b, c, c):
 		return true
@@ -325,6 +408,16 @@ func _triangle_valid(a: Vector3, b: Vector3, c: Vector3, minimum_area: float) ->
 ## Each edge's whole linear sweep lies within the convex hull of its four end
 ## points. Testing that hull is conservative (and can reject a safe sweep).
 func _sweep_clear(previous: PackedVector3Array, candidate: PackedVector3Array) -> bool:
+	# If both endpoints of every trajectory lie in the front half-space,
+	# their complete linear sweeps and every intervening triangle do too.
+	var front_limit: float = MAST_X_M + MAST_CLEARANCE_M + 0.001
+	var all_in_front: bool = true
+	for i: int in POINT_COUNT:
+		if previous[i].x < front_limit or candidate[i].x < front_limit:
+			all_in_front = false
+			break
+	if all_in_front:
+		return true
 	for row: int in ROWS:
 		for col: int in COLUMNS:
 			var i: int = row * COLUMNS + col

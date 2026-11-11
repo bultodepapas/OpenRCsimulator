@@ -5,6 +5,7 @@ extends SceneTree
 const Prefabs = preload("res://scenery/prefabs.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Clock = preload("res://render/shader_clock.gd")
+const Field = preload("res://render/field.gd")
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -16,7 +17,7 @@ func _run() -> void:
 	var mode := "detailed"
 	var locale := "en"
 	var landscape := false
-	var distance := 3.8
+	var distance := 4.4
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="): out = argument.trim_prefix("--out=")
 		elif argument.begins_with("--legacy="): legacy = argument.trim_prefix("--legacy=")
@@ -25,7 +26,7 @@ func _run() -> void:
 		elif argument == "--landscape": landscape = true
 		elif argument.begins_with("--distance="): distance = clampf(float(argument.trim_prefix("--distance=")),2.0,200.0)
 		elif argument.begins_with("--locale="): locale = argument.trim_prefix("--locale=")
-	if out.is_empty() or DirAccess.dir_exists_absolute(out) or DisplayServer.get_name() == "headless":
+	if out.is_empty() or DirAccess.dir_exists_absolute(out) or DisplayServer.get_name() == "headless" or (landscape and not legacy.is_empty()):
 		push_error("Flag capture requires a native renderer and a fresh --out directory")
 		quit(1)
 		return
@@ -55,12 +56,12 @@ func _run() -> void:
 	sun.light_energy = 1.0
 	world.add_child(sun)
 	var flag: MeshInstance3D
+	var field_node: Node3D
 	if landscape:
-		var field_builder: Script = load("res://render/field.gd")
 		var loader: Script = load("res://data/field_loader.gd")
 		var atmosphere: Script = load("res://render/atmosphere.gd")
 		var loaded: Dictionary = loader.load_from()
-		var field_node: Node3D = field_builder.build(loaded.field)
+		field_node = Field.build(loaded.field)
 		world.add_child(field_node)
 		flag = field_node.get_node("Scenery/Motion").get_children().filter(func(node: Node): return node.name.begins_with("flag_"))[0]
 		environment.environment = atmosphere.environment()
@@ -113,29 +114,32 @@ func _run() -> void:
 	var records: Array = []
 	for item in cases:
 		var wind: Vector3 = flag.global_basis * item[1]
-		if legacy.is_empty(): flag.reset_wind(0.0, [0.0,0.0,0.0])
+		if legacy.is_empty(): _observe(flag,field_node,0.0,Vector3.ZERO,true)
 		for tick in 600:
 			var t := (tick + 1) / 120.0
 			Clock.update(t, wind)
-			if legacy.is_empty(): flag.advance_wind(t, [-wind.z, wind.x, -wind.y])
+			if legacy.is_empty(): _observe(flag,field_node,t,wind,false)
 		if legacy.is_empty(): flag.publish()
-		for side in [1.0, -1.0]:
-			camera.global_position = flag.global_transform * Vector3(0.54, -0.7, side * distance)
-			camera.look_at(flag.global_transform * Vector3(0.59,-0.75,0))
+		for side in [1.0, -1.0, 0.0]:
+			camera.global_position = flag.global_transform * (Vector3(0.54,-0.85,side*distance) if side != 0.0 else Vector3(distance*0.6,-0.65,distance*0.8))
+			camera.look_at(flag.global_transform * Vector3(0.59,-0.9,0))
 			camera.fov = 43.0
+			if legacy.is_empty():
+				flag.set("_last_lod_time", -INF)
+				flag.publish()
 			for frame in 8:
 				await process_frame
 				RenderingServer.force_draw(false)
-			var name := "%s-%s" % [item[0], "front" if side > 0 else "rear"]
+			var name := "%s-%s" % [item[0], "front" if side > 0 else ("rear" if side < 0 else "oblique")]
 			var path := out.path_join(name + ".png")
 			if viewport.get_texture().get_image().save_png(path) != OK:
 				quit(1)
 				return
-			records.append({name = name, sha256 = FileAccess.get_sha256(path), wind = [wind.x,wind.y,wind.z]})
+			records.append({name = name, sha256 = FileAccess.get_sha256(path), wind = [wind.x,wind.y,wind.z], eye = [camera.global_position.x,camera.global_position.y,camera.global_position.z], fov = camera.fov})
 	if frames > 0:
 		camera.global_position = flag.global_transform * Vector3(0.44,-0.65,4.0)
 		camera.look_at(flag.global_transform * Vector3(0.59,-0.8,0))
-		if legacy.is_empty(): flag.reset_wind(0.0, [0.0, 0.0, 0.0])
+		if legacy.is_empty(): _observe(flag,field_node,0.0,Vector3.ZERO,true)
 		for frame in mini(frames, 600):
 			var t := float(frame) / 30.0
 			var angle := smoothstep(2.0, 4.0, t) * PI
@@ -143,7 +147,7 @@ func _run() -> void:
 			var wind := flag.global_basis * Vector3(cos(angle), 0, sin(angle)) * speed
 			Clock.update(t, wind)
 			if legacy.is_empty():
-				flag.advance_wind(t, [-wind.z,wind.x,-wind.y])
+				_observe(flag,field_node,t,wind,false)
 				flag.publish()
 			await process_frame
 			RenderingServer.force_draw(false)
@@ -170,3 +174,15 @@ func _run() -> void:
 	await process_frame
 	print("FLAG CAPTURE COMPLETE: ", out)
 	quit()
+
+
+static func _observe(flag: MeshInstance3D, field: Node3D, time_s: float, wind: Vector3, reset: bool) -> void:
+	var ned: Array = [-wind.z,wind.x,-wind.y]
+	if field != null:
+		if reset: Field.reset_wind(field,time_s,ned)
+		else: Field.advance_wind(field,time_s,ned)
+		Field.update_wind(field,time_s,wind)
+	elif reset:
+		flag.reset_wind(time_s,ned)
+	else:
+		flag.advance_wind(time_s,ned)

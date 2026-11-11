@@ -3,6 +3,7 @@ extends RefCounted
 
 const ModelRegistry := preload("res://aircraft/model_registry.gd")
 const Store := preload("res://workshop/store.gd")
+const AirshipFamily := preload("res://workshop/airship_family.gd")
 
 static func freeze(payload: Dictionary) -> Dictionary:
 	if payload.has("battery_mode") and (typeof(payload.battery_mode) != TYPE_STRING or payload.battery_mode != "ideal"):
@@ -54,7 +55,11 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		return {ok = false, errors = PackedStringArray(["Overlay customization dependency is unavailable."])}
 	var customization: Dictionary = {}
 	var presentation_bindings: Dictionary = {}
-	if customization_script != null:
+	var airship: bool = AirshipFamily.is_base(base)
+	if airship:
+		# BL-19b: the blimp's companion comes from its own presentation module.
+		customization = AirshipFamily.customization()
+	elif customization_script != null:
 		if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 			var overlay_path := "res://aircraft/customization_overlay.gd"
 			if not ResourceLoader.exists(overlay_path):
@@ -117,7 +122,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	if typeof(pinned_compiler_value) != TYPE_STRING:
 		return {ok = false, errors = PackedStringArray(["Saved variant compiler version must be a string."])}
 	var pinned_compiler: String = pinned_compiler_value
-	if not pinned_compiler.is_empty() and pinned_compiler != compiler.version_for_recipe(checked_recipe.values):
+	if not pinned_compiler.is_empty() and pinned_compiler != compiler.version_for(base, checked_recipe.values):
 		return {ok = false, errors = PackedStringArray(["This saved variant requires a different Workshop compiler version; the saved variant remains unchanged."])}
 	# Hash the same normalized numeric values the compiler consumes (1 == 1.0).
 	var recipe: Dictionary = checked_recipe.values
@@ -139,9 +144,13 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		return display_result
 	recipe.erase("id")
 	recipe.erase("name")
+	if airship:
+		# The buoyant family ignores these fixed-wing size options; they must not change the physical identity.
+		recipe.erase("mass_policy")
+		recipe.erase("size_model")
 	var base_sha: String = _sha(base_bytes)
 	var recipe_sha: String = _sha(JSON.stringify(recipe, "", true, true).to_utf8_buffer())
-	var compiler_version: String = compiler.version_for_recipe(recipe)
+	var compiler_version: String = compiler.version_for(base, recipe)
 	var trial_id: String = "workshop-" + _sha((base_sha + ":" + recipe_sha + ":" + descriptor_sha \
 		+ ":" + visual_family + ":" + model_manifest_sha + ":" + dependency_sha + ":" + compiler_version).to_utf8_buffer()).substr(0, 32)
 	recipe.id = trial_id
@@ -161,13 +170,14 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		model_manifest_sha256 = model_manifest_sha}
 	var resolved_bytes: PackedByteArray = JSON.stringify(result.raw, "", true, true).to_utf8_buffer()
 	var resolved_sha: String = _sha(resolved_bytes)
-	result.data.input_identity = {format = "openrc-aircraft v2", sha256 = resolved_sha}
+	result.data.input_identity = {format = str(base.get("format", "openrc-aircraft v2")), sha256 = resolved_sha}
 	var model_sha: String = _sha(var_to_bytes(result.data.model))
 	var frozen := {ok = true, errors = PackedStringArray(), data = result.data.duplicate(true),
 		scale = float(recipe.get("scale", 1.0)), raw_bytes = resolved_bytes, presentation = presentation_binding.duplicate(true),
 		presentation_profile = normalized_profile.duplicate(true),
 		presentation_identity = presentation_identity.duplicate(true),
-		identity = {format = "openrc-aircraft-trial v1", trial_id = trial_id, base_id = base_id,
+		vehicle = "airship" if airship else "airplane",
+		identity = {format = AirshipFamily.TRIAL_FORMAT if airship else "openrc-aircraft-trial v1", trial_id = trial_id, base_id = base_id,
 			base_sha256 = base_sha, recipe_sha256 = recipe_sha, resolved_sha256 = resolved_sha,
 			resolved_model_sha256 = model_sha,
 			descriptor_sha256 = descriptor_sha, presentation = presentation_binding.duplicate(true),

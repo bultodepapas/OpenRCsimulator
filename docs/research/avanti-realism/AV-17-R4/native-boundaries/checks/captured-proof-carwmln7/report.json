@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e28764c9-4892-4b98-b12d-61e32410b5a8",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/avanti-pitch-20261110/native-boundaries/verify.gd",
+    "--",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/avanti-pitch-20261110/native-boundaries/pre-observations.json"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-10T23:26:05.587948+00:00",
+  "label": "captured-proof",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/avanti-pitch-20261110/native-boundaries/checks/captured-proof-carwmln7/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/avanti-pitch-20261110/native-boundaries/checks/captured-proof-carwmln7/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AVANTI_BOUNDARY_VERIFY verdict=pass pairs=2 negative_checks=10 failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 30.618463,
+  "log_bytes": 144,
+  "log_sha256": "8567b5ae6c67594c5985c1c78b131f1f8213a729af53849b3e924de324466802"
+}

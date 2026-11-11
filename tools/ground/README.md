@@ -1,5 +1,26 @@
 # Ground surface capture
 
+## L15c flag review
+
+`capture_flag.gd` renders the production cloth and mast at 1920 × 1080 with a
+matched calm/light/strong/reverse/crosswind tape and front/rear views. Pass
+`--landscape` to include the production Club field and its wind cues. Optional
+`--frames=180` captures a 30 Hz gust/reversal sequence; `--distance=30` reviews the
+same cue at range. Use `--locale=fr` and `--flag_animation=static|basic|detailed`
+for controlled variants. Output must be a fresh directory outside `app/`.
+
+```powershell
+python tools/godot/run_checked.py --timeout 180 --require-text 'FLAG CAPTURE COMPLETE' -- C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe --path app --rendering-method gl_compatibility --audio-driver Dummy --script res://../tools/ground/capture_flag.gd -- --landscape --flag_animation=detailed --out=C:/new-empty-location/flag-review
+```
+
+`--legacy=<directory>` accepts preserved `prefabs.gd.txt` and
+`motion.gdshader.txt` sources for the isolated baseline. Do not combine it with
+`--landscape`. The manifest records source/image hashes, engine, renderer,
+adapter, resolution and cloth diagnostics. PNG readback work makes this a
+visual tool, not a frame-time benchmark. Use the existing
+[frame diagnosis workflow](../../docs/tools/graphics.md#frame-diagnosis) for
+native performance measurements.
+
 ## L10c-R5 fence planting review
 
 `capture_barrier_detail.gd` uses the production field and defaults to a native

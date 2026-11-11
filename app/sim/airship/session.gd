@@ -85,7 +85,9 @@ static func default_options() -> Dictionary:
 func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	var opts := default_options()
 	opts.merge(requested, true)
-	var loaded := Data.load_file(str(opts.data_path))
+	# A frozen Workshop variant arrives as an in-memory document; otherwise the shipped data file is read.
+	var loaded := Data.load_document(opts.data, "workshop variant") if opts.get("data") is Dictionary \
+		else Data.load_file(str(opts.data_path))
 	if not loaded.ok:
 		load_error = "; ".join(loaded.errors)
 		return false

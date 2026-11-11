@@ -22,6 +22,8 @@ var help: Label
 var menu: PanelContainer
 var menu_reason: Label
 var resume_button: Button
+var home_button: Button
+var title_label: Label
 var choices := {}
 var skin_names: Array = []
 var _message_until := 0.0
@@ -86,7 +88,7 @@ func _ready() -> void:
 	_build_menu(scale)
 
 
-func _build_menu(scale: float) -> void:
+func _build_menu(ui_scale: float) -> void:
 	menu = PanelContainer.new()
 	menu.name = "PauseMenu"
 	menu.set_anchors_preset(Control.PRESET_CENTER)
@@ -96,8 +98,9 @@ func _build_menu(scale: float) -> void:
 	box.add_theme_constant_override("separation", 8)
 	menu.add_child(box)
 	var title := Label.new()
+	title_label = title
 	title.text = "RC Blimp 5 m — experimental physics"
-	title.add_theme_font_size_override("font_size", int(round(24.0 * scale)))
+	title.add_theme_font_size_override("font_size", int(round(24.0 * ui_scale)))
 	box.add_child(title)
 	menu_reason = Label.new()
 	menu_reason.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -111,15 +114,23 @@ func _build_menu(scale: float) -> void:
 	choices.wind = _choice(box, "Steady wind", "wind", WIND_LABELS)
 	choices.camera = _choice(box, "Camera", "camera", CAMERA_LABELS)
 	_button(box, "Controls help", "help")
-	_button(box, "Home", "home")
+	home_button = _button(box, "Home", "home")
+
+
+## BL-19d: a Workshop trial returns to the Workshop and flies the frozen build with its pinned (default) skin.
+func set_workshop_trial(title: String) -> void:
+	title_label.text = title
+	home_button.text = "Return to Workshop"
+	(choices.skin as OptionButton).disabled = true
+	(choices.skin as OptionButton).tooltip_text = "Workshop builds fly with the default skin their paint slots target."
 
 
 func set_skins(names: Array, selected: int) -> void:
 	skin_names = names
 	var option: OptionButton = choices.skin
 	option.clear()
-	for name: String in names:
-		option.add_item(name)
+	for skin_name: String in names:
+		option.add_item(skin_name)
 	option.select(selected)
 
 

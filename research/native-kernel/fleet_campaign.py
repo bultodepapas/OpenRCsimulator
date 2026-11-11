@@ -34,19 +34,27 @@ MAX_JOBS = 4
 KEY_FIELDS = ("aircraft", "vehicle", "battery", "case", "weather", "soft_hull")
 HEX64 = re.compile(r"[0-9a-f]{64}\Z")
 # Independently pin the named source observations. Runway live-configuration
-# hashes reflect the Linux beta2 reference observations after the v4 aero-law
-# identity and collision-world changes; paired native verification remains required.
+# hashes reflect Linux beta2 observations after the v4 aero-law and collision-world
+# changes, including the AV-17-R4 Avanti update; native-flight verification remains required.
 RUNWAY_START_REASON = "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step"
+# Historical Avanti v4 observation before AV-17-R4; not accepted for current data.
+AVANTI_RUNWAY_V4_HISTORICAL = {
+    "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+    "config_sha256": {True: "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
+                      False: "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d"},
+    "live_config_sha256": {True: "9b6bf87499957e5b3cab7b5f43ef04c660b324341c91ee3a15108a4234e61b03",
+                           False: "f3aa4fbbf22f522341b09c77534f206bfc46ee32e8d354ac34a0edafb83a7632"},
+}
 RUNWAY_START_CASES = {
     "sebart-avanti-s-a200-p100rx": {
         "weather": "crosswind", "batteries": {"ideal": {"default_battery": True,
-        "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+        "aircraft_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
         "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
         "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
-        "live_config_sha256": {True: "9b6bf87499957e5b3cab7b5f43ef04c660b324341c91ee3a15108a4234e61b03",
-                               False: "f3aa4fbbf22f522341b09c77534f206bfc46ee32e8d354ac34a0edafb83a7632"},
-        "config_sha256": {True: "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
-                          False: "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d"}}}},
+        "live_config_sha256": {True: "608ea5ba0dec238cda690638be83e4ca6171de957bd62c55392cd4916e407e12",
+                               False: "15f9d0f9f73c36a3653a542dbfac293d445ec5ab5ad615361f533c73e57d303d"},
+        "config_sha256": {True: "538382d692b329fbf227c0f54fcbb239ff8667880dea650b2395add0a16cf2bc",
+                          False: "847a2023caa0b2ba18bbb43178ca786643e25b094884d0df971fc6439300d565"}}}},
     "p51d-mustang-120": {
         "weather": "crosswind", "batteries": {"ideal": {"default_battery": True,
         "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",

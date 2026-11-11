@@ -1,10 +1,30 @@
 # Wind-driven landscape flag and windsock integration
 
-2026-11-10 · **Detailed implementation plan; runtime implementation has not started.**
+2026-11-10 · **Implementation delivered with focused local verification.** See the [implementation record](../research/landscape-flag-windsocks-2026-11-10.md#implementation-record) for the selected model, delivered behavior and measured limits. Broader hardware/performance qualification remains open.
 
 Owner: Landscape **L15c**, coordinated with scenery **SC-18**, windsock **L15a**, graphics **VQ-06**, and UI localization. Proposed substeps `L15c-F01…F10` below stay within those existing tracks. [Track ownership](../README.md#tracks-plans-and-step-ids) · [Landscape guide](../LANDSCAPE-PLAN.md) · [Wind contract](../WIND-ATMOSPHERE-REFERENCE.md) · [Research, search ledger and Good Enemy review](../research/landscape-flag-windsocks-2026-11-10.md).
 
-## 1. Decision and scope
+## Implementation decision after the prototype comparison
+
+The initial XPBD lattice failed the reversal/contact gate: its conservative swept
+mast guard rejected steps, and the sheet could remain upwind. It is not shipped.
+The implementation uses a **two-dimensional modal surface with finite-length
+segments**, a fixed hoist, wind-dependent heading/drape, independently phased
+folds and bounded mast/swept validation. It retains full directional response and
+independent variation with height, without a particle solver. Basic and Detailed
+share observation handling; Detailed adds stronger folds, higher mesh density and
+fabric maps. This is procedural fabric presentation, not a calibrated cloth solver.
+
+The GPU renders one indexed opaque two-sided surface, with normals reconstructed
+from its deformation. Camera-distance LOD changes mesh density without resetting
+the motion. Original-country aspect ratios, resource ownership and graphics
+preferences are implemented. The original design below is retained as the
+research/prototype specification; it does not describe an implemented XPBD solver.
+Performance and visual claims must use the implementation record, not the proposed
+budgets in this plan. Low-end and other-renderer qualification remains open until
+measured on those targets.
+
+## 1. Initial decision and scope
 
 Develop a **small two-dimensional CPU cloth model with GPU surface detail** as the preferred Medium/High candidate. Start with 9 × 5 visual particles, a fixed hoist, gravity, relative-wind loading, compliant constraints and bounded mast contact. Render it through one indexed, opaque, two-sided mesh. Low uses a direction-aware procedural surface with calm drape; Static disables motion. Country artwork follows the selected language, with a stable application-session Spanish selection.
 
@@ -12,7 +32,7 @@ This is a physically motivated **presentation model**, not validated aeroelastic
 
 The design must pass an early comparison against a simpler procedural candidate. The lattice earns its place through better observed motion at an acceptable measured cost. If it fails, keep the functional Low path and revise the candidate; do not relabel it as High quality or close the visual gate. No engine upgrade, compute requirement, vehicle-kernel changes, broad weather rewrite, new cloth plugin framework, general scene collision solver or runtime network downloads are proposed.
 
-**First deliverable completed by this document:** source analysis, extensive research, alternative selection, independent challenge, pseudocode and validation design. All implementation/capture/performance tasks below remain pending. The investigation made no new visual-quality or speed measurements.
+**First deliverable completed by this document:** source analysis, extensive research, alternative selection, independent challenge, pseudocode and validation design. That planning investigation made no visual-quality or speed measurements; subsequent implementation evidence is recorded separately above.
 
 ## 2. Current system analysis
 

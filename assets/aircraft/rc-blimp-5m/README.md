@@ -94,3 +94,15 @@ Verified 2026-11-10 in Godot 4.8-beta2 ([BL-12](../../../docs/research/rc-airshi
 - The chrome skin relies on reflections; without reflection probes or a sky in the scene it renders darker than in Blender.
 - The envelope volume is the delivered visual hull (closed manifold). Fill shape, inflation and gas data are not part of this asset (plan §3).
 - Display names are working names; no licence file accompanies the delivery.
+
+## Workshop presentation
+
+The blimp is a Workshop presentation family of its own (BL-19c); it is not in the fixed-wing customization registry.
+
+- **Source:** [`app/data/airships/rc-blimp-5m-presentation.json`](../../../app/data/airships/rc-blimp-5m-presentation.json) (authored, `openrc-airship-presentation-source` v1). Paths are relative to the `AirshipVisual` root (`Model` = the skin GLB scene); positions are metres in each host node's local Godot frame. Coordinates come from `geometry.json` (envelope radius profile, fin tips, gondola, beacon) and the GLB surface inventory.
+- **Companion:** [`airship_presentation.gd`](../../../app/vehicles/airship/airship_presentation.gd) `describe(skin)` assembles a customization companion v4 at runtime that the shared validators accept unchanged. It reuses the base registry's proof-v3 presentation source pins, so it goes stale together with `app/data/aircraft_customization.json`. `model_manifest_sha256` hashes the skin GLB pin, the data file's `presentation` (hinge) block and the source file.
+- **Paint slots** (solid fill; textured surfaces are tinted, because the shared painter multiplies the albedo): every skin has `envelope`, `fins` (fixed stabilizers), `rudders` (moving fin surfaces) and `gondola`. `tiburon-blanco` adds `gondola_stripe` and `pods`, `historico` adds `pods`, `cromo-carbono-azul` adds `accents` (blue lacquer). Each target names its expected material; a build fails if a re-export moves surfaces.
+- **Marking:** `registration` (up to 12 characters) on both envelope sides at station z = −0.1 m, 0.9 × 0.22 m flat panels about 7 mm off the skin.
+- **Lighting layout** (v2, no skins): `nav_left`/`nav_right` at the envelope's widest beam (z = −1.2 m), `nav_tail` on the dorsal rudder trailing edge (follows the rudder), `strobe_left`/`strobe_right` at the lower stabilizer tips, red `strobe_dorsal` on the delivered top beacon and `strobe_ventral` under the gondola, `landing` in the gondola nose (aimed along the nose, 6° down by the kit). Five authored strips follow the envelope: cyan `strip_belly`, `strip_left`/`strip_right` 45° below the beam, warm-white `strip_top_left`/`strip_top_right` 45° above it. The red beacon material follows the strobe group. No smoke outlets.
+- **After a GLB re-export:** copy the new `glb.sha256` values from `source-manifest.json` into the source's `asset.sha256` pins and re-check surface indices and material names; then run `app/tests/test_airship_presentation.gd`.
+- **Limits:** the night kit's first fit still measures the whole mesh once (all lamps and strips are authored, so nothing it fits is used); markings are flat panels, not projected decals; the Workshop paints the selected skin's own surfaces only.

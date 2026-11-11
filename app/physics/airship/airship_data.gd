@@ -30,6 +30,18 @@ const FIN := 7
 const SOC := 10
 
 
+## BL-19: admit an in-memory document (a frozen Workshop variant). Its identity hashes the canonical JSON bytes.
+static func load_document(raw: Dictionary, label := "workshop variant") -> Dictionary:
+	var bytes := JSON.stringify(raw, "", true, true).to_utf8_buffer()
+	var ctx := HashingContext.new()
+	ctx.start(HashingContext.HASH_SHA256)
+	ctx.update(bytes)
+	var result := parse(raw.duplicate(true))
+	result.source_sha256 = ctx.finish().hex_encode()
+	result.path = label
+	return result
+
+
 static func load_file(path: String) -> Dictionary:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:

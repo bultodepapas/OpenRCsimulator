@@ -10265,3 +10265,27 @@ msgstr "Detalhada"
 
 msgid "Automatic follows Scene detail. Changes apply immediately."
 msgstr "O modo automático segue o detalhe da cena. As alterações são aplicadas imediatamente."
+
+msgid "Size: %s%% · envelope length: %s m"
+msgstr "Tamanho: %s%% · comprimento do envelope: %s m"
+
+msgid "Envelope length"
+msgstr "Comprimento do envelope"
+
+msgid "Envelope volume"
+msgstr "Volume do envelope"
+
+msgid "Keel ballast"
+msgstr "Lastro de quilha"
+
+msgid "Weigh-off (heavy)"
+msgstr "Excesso de peso (pesado)"
+
+msgid "Static trim"
+msgstr "Compensação estática"
+
+msgid "Fin travel"
+msgstr "Curso das aletas"
+
+msgid "Close the running activity before starting a blimp trial."
+msgstr "Feche a atividade em andamento antes de iniciar um teste do dirigível."

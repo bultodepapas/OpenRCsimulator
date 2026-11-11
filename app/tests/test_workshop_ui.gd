@@ -57,8 +57,10 @@ func _run() -> void:
 	var preview := _find(workshop, "AircraftPreview") as Control
 	var airplane_entries: Array = Catalog.airplane_flyable_entries().filter(func(e: Dictionary) -> bool: return Catalog.is_player_selectable(str(e.id)))
 	_check("screen renders its title, preview and test action", title != null and preview != null and test_fly != null)
-	_check("airplane selector discovers every selectable fixed-wing stock aircraft",
-		base_selector != null and base_selector.item_count == airplane_entries.size())
+	# BL-19: the experimental RC blimp follows the fixed-wing entries as its own Workshop family.
+	_check("airplane selector discovers every selectable fixed-wing stock aircraft, then the blimp",
+		base_selector != null and base_selector.item_count == airplane_entries.size() + 1
+		and str(base_selector.get_item_metadata(base_selector.item_count - 1)) == "rc-blimp-5m")
 	_check("initial keyboard focus enters the library action", _ui.focus_name() == "OpenLibrary", _ui.focus_name())
 	_check("Workshop is a still editor with no flight session", workshop.get("_compiled").get("ok", false)
 		and workshop.get("_trial_pending") == false)

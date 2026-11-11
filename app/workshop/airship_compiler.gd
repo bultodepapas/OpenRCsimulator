@@ -125,6 +125,12 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 		return _failure(errors)
 	if values.has("id"):
 		candidate.id = str(values.id)
+	# The trial pins and the session flies the JSON bytes of this candidate. Godot's parser does not round-trip
+	# every 17-digit double, so normalize to a JSON fixed point first: bytes, flown data and model then agree.
+	var normalized := _json_fixed_point(candidate)
+	if normalized.is_empty():
+		return _failure(PackedStringArray(["The compiled blimp could not be normalized to stable JSON."]))
+	candidate = normalized
 	var checked := Data.parse(candidate.duplicate(true))
 	if not checked.ok:
 		return _failure(checked.errors)
@@ -141,8 +147,27 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 			% [1000.0 * requested, 1000.0 * float(model.ballast.max_mass)]]))
 	var base_derived := Data.derive(base_parse.data, REFERENCE_DENSITY_KG_M3, GRAVITY, float(base_parse.data.ballast.default_heaviness))
 	var summary := _summary(base_derived.model if base_derived.ok else {}, model, checked.data, values)
+	# Reachable weigh-off at 1.225 kg/m³: from a full keel (lightest) to no ballast (heaviest).
+	var no_ballast := Data.derive(checked.data, REFERENCE_DENSITY_KG_M3, GRAVITY, 1.0e3)
+	var full_ballast := Data.derive(checked.data, REFERENCE_DENSITY_KG_M3, GRAVITY, -1.0e3)
+	if no_ballast.ok and full_ballast.ok:
+		summary["weigh_off_min_kg"] = float(full_ballast.model.heaviness_kg)
+		summary["weigh_off_max_kg"] = float(no_ballast.model.heaviness_kg)
 	return {ok = true, errors = PackedStringArray(), raw = candidate, data = {ok = true, data = checked.data, model = model},
 		summary = summary}
+
+
+static func _json_fixed_point(raw: Dictionary) -> Dictionary:
+	var text := JSON.stringify(raw, "", true, true)
+	for i in 4:
+		var parser := JSON.new()
+		if parser.parse(text) != OK or not parser.data is Dictionary:
+			return {}
+		var again := JSON.stringify(parser.data, "", true, true)
+		if again == text:
+			return parser.data
+		text = again
+	return {}
 
 
 ## Recursively scales every {value, unit} quantity of a data block by s^exponent(unit).
@@ -192,8 +217,8 @@ static func _summary(base_model: Dictionary, model: Dictionary, data: Dictionary
 		shaft += float(rotor.shaft_power)
 	var cg: PackedFloat64Array = model.cg
 	var cb: PackedFloat64Array = model.cb
-	# Static hang: the pendulum settles with the CG straight below the CB.
-	var trim_deg := rad_to_deg(atan2(cg[0] - cb[0], cg[2] - cb[2]))
+	# Static hang: the pendulum settles with the CG straight below the CB; pitch convention, + nose up (CG aft).
+	var trim_deg := rad_to_deg(atan2(cb[0] - cg[0], cg[2] - cb[2]))
 	var base_mass := float(base_model.get("mass", model.mass))
 	return {
 		"vehicle": "airship",

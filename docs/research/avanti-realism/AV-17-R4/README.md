@@ -6,6 +6,9 @@ before this work. Concurrent display/UI/flag changes subsequently appeared and w
 preserved. The recorded solver and aircraft hashes, rather than a claim of an entirely
 frozen working tree, identify these physics comparisons. The [aircraft guide](../../../AVANTI-S-PLAN.md#5-november-review-implementation-sequence)
 owns remaining work; the [original review](../review-2026-11-10.md) audits an earlier commit.
+During integration another process committed the mixed working tree as `096f0574162408ba18b3440b6f833c4214346df8`.
+That commit includes unrelated work and intermediate evidence; it is not substituted
+for the per-run identities below. Subsequent integration fixes retain their own checks.
 
 ## Correction
 
@@ -158,3 +161,29 @@ The generator's later edit only corrected evidence links in its report; generate
 aircraft bytes remained unchanged. See the [artifact manifest](manifest.json) for
 retained file and candidate-source hashes. This bounded oracle does not qualify a
 normal installed session, a Windows native backend, long flights or performance.
+
+The [fleet-boundary record](native-boundaries/README.md) separately refreshes the
+exact Avanti crosswind runway refusal pins in both fleet validators. Four actual
+reset observations preserve the original frame and refusal outcome; aircraft,
+setup and live-configuration hashes change with Cmq. Both validators accept the
+two matched pairs and reject ten deliberate proof mutations. The existing Godot
+policy suite passes 586 checks and the Python campaign suite passes 44 tests.
+The actual fleet-case producer also emits two refusal rows accepted unchanged by
+the campaign validator, with paired proofs identical to the captured observations.
+These are pre-native refusals, not successful flights; installed-library checks
+remain explicitly skipped. Historical pins and strict proof requirements remain intact.
+
+## Historical fixed-brake gate
+
+The [strict legacy gate](legacy-gate/README.md) admits the corrected Avanti only
+when replacing its exact Cmq value/provenance block recovers the previously pinned
+aircraft bytes. The historical pins and goldens remain unchanged. Its 25 Python
+regressions include corrupt, duplicate and unrelated-change rejection.
+
+A first run passed the numerical comparisons but correctly failed its final source
+stability guard while unrelated flag, airship and Workshop edits continued. The
+successful rerun used an isolated candidate with 1,898 inventoried entries: all
+16 original beta1 goldens match, the beta2 same-host reference/candidate captures
+match in full values and digests, and the brake suite passes 258 checks. All seven
+checked reports and the final source/engine stability checks pass. This qualifies
+that frozen candidate and these cases, not subsequent unrelated edits or required CI.

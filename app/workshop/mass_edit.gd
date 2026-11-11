@@ -9,6 +9,8 @@ extends RefCounted
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const PhysicalIdentity := preload("res://physics/physical_identity.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
+## BL-19e: the blimp family supplies its own inventory semantics.
+const AirshipMassEdit := preload("res://workshop/airship_mass_edit.gd")
 
 const MAX_EDITS := 32
 const MAX_SOURCE_LENGTH := 256
@@ -21,6 +23,8 @@ const EDIT_KEYS := ["id", "mass_kg", "source"]
 ## Validate an in-memory source, resolve its inventory only by authored stable ID, and report
 ## the measured-state mass/CG. This does not read files or mutate the supplied source.
 static func inspect(base: Dictionary) -> Dictionary:
+	if AirshipMassEdit.is_family(base):
+		return AirshipMassEdit.inspect(base)
 	var context := _validated_context(base)
 	if not context.ok:
 		return _failure(context.errors)
@@ -63,6 +67,8 @@ static func inspect(base: Dictionary) -> Dictionary:
 ## records are required; stable IDs, units and positions never change. The aircraft loader is
 ## the final authority, including mass-balance tolerance, mass range, fuel and inertia checks.
 static func apply_to_validated_base(base: Dictionary, edits: Array) -> Dictionary:
+	if AirshipMassEdit.is_family(base):
+		return AirshipMassEdit.apply_to_validated_base(base, edits)
 	var context := _validated_context(base)
 	if not context.ok:
 		return _failure(context.errors)
@@ -145,6 +151,8 @@ static func apply_pinned(base: Dictionary, descriptor: Dictionary, base_bytes: P
 ## source's balance.cg_tolerance. Axes are x aft, y right, z up in metres.
 static func target_consistency_report(base: Dictionary, observed_total_mass_kg: Variant,
 		observed_cg_le_m: Variant, weighing_state: String) -> Dictionary:
+	if AirshipMassEdit.is_family(base):
+		return AirshipMassEdit.unsupported("The target consistency report")
 	var context := _validated_context(base)
 	if not context.ok:
 		return _failure(context.errors)
@@ -192,6 +200,8 @@ static func target_consistency_report(base: Dictionary, observed_total_mass_kg: 
 ## the inferred result or labels it as a component measurement.
 static func solve_fixed_station(base: Dictionary, component_id: String,
 		observed_total_mass_kg: Variant, observed_cg_le_m: Variant, weighing_state: String) -> Dictionary:
+	if AirshipMassEdit.is_family(base):
+		return AirshipMassEdit.unsupported("The fixed-station proposal")
 	var context := _validated_context(base)
 	if not context.ok:
 		return _failure(context.errors)

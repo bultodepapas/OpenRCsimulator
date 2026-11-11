@@ -5,6 +5,7 @@ extends RefCounted
 const WorkshopDescriptor = preload("res://workshop/descriptor.gd")
 const WorkshopDependencies = preload("res://workshop/dependencies.gd")
 const WorkshopCompiler = preload("res://workshop/compiler.gd")
+const AirshipFamily = preload("res://workshop/airship_family.gd")
 const WorkshopParameters = preload("res://workshop/parameters.gd")
 const PresentationProfile = preload("res://workshop/presentation.gd")
 const ModelRegistry = preload("res://aircraft/model_registry.gd")
@@ -273,7 +274,7 @@ static func _save_variant(
 	var existing_variant: Dictionary = {}
 	var stored_descriptor: Dictionary = {}
 	var stored_dependencies: Dictionary = {}
-	var stored_compiler_version: String = WorkshopCompiler.version_for_recipe(recipe)
+	var stored_compiler_version: String = WorkshopCompiler.version_for(base_parsed, recipe)
 	var revision: int = 1
 	var previous_revision: int = 0
 	var is_existing_variant: bool = false
@@ -295,8 +296,8 @@ static func _save_variant(
 			errors.append("Saved variant changed from expected revision %d to revision %d; reload before saving." % [expected_revision, previous_revision])
 			return _result(false, errors)
 		var pinned_compiler_version: String = str(existing_variant.get("compiler_version", ""))
-		if pinned_compiler_version != WorkshopCompiler.version_for_recipe(recipe):
-			errors.append("This variant is pinned to compiler %s; create a new variant with Save a copy to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.version_for_recipe(recipe)])
+		if pinned_compiler_version != WorkshopCompiler.version_for(base_parsed, recipe):
+			errors.append("This variant is pinned to compiler %s; create a new variant with Save a copy to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.version_for(base_parsed, recipe)])
 			return _result(false, errors)
 		stored_compiler_version = pinned_compiler_version
 		if str(existing_variant["base_id"]) != base_id or str(existing_variant["base_sha256"]) != base_hash:
@@ -828,8 +829,8 @@ static func _load_from_manifest_source(
 		errors.append("Base snapshot must be a finite JSON object.")
 		return _result(false, errors)
 	var base: Dictionary = base_value
-	if str(base.get("format", "")) != "openrc-aircraft v2":
-		errors.append("Base snapshot must use the openrc-aircraft v2 schema.")
+	if str(base.get("format", "")) != "openrc-aircraft v2" and not AirshipFamily.is_base(base):
+		errors.append("Base snapshot must use the openrc-aircraft v2 or openrc-airship v1 schema.")
 		return _result(false, errors)
 	if str(base.get("id", "")) != str(record["base_id"]):
 		errors.append("Base snapshot ID does not match the pinned base ID.")
@@ -1048,7 +1049,7 @@ static func _resolve_workshop_descriptor(
 			return checked
 		return {"ok": true, "errors": PackedStringArray(), "descriptor": checked["descriptor"]}
 	var path: String = WorkshopDescriptor.DEFAULT_ROOT.path_join(base_id + ".json")
-	if not FileAccess.file_exists(path):
+	if not FileAccess.file_exists(path) and not AirshipFamily.is_base_bytes(base_bytes):
 		return {"ok": true, "errors": PackedStringArray(), "descriptor": {}}
 	var loaded: Dictionary = WorkshopDescriptor.load_for(base_id, base_bytes)
 	if not bool(loaded["ok"]):
@@ -1063,7 +1064,11 @@ static func _resolve_customization_bindings(base_id: String, descriptor: Diction
 	if customization_script == null:
 		return {"ok": false, "missing": not ModelRegistry.OVERLAY_FAMILIES.has(base_id), "errors": PackedStringArray(["Customization companion is unavailable."])}
 	var described: Dictionary
-	if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
+	if AirshipFamily.is_descriptor(descriptor):
+		described = AirshipFamily.customization()
+		if not described.get("ok", false):
+			return described
+	elif ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 		var overlay_path := "res://aircraft/customization_overlay.gd"
 		if not ResourceLoader.exists(overlay_path):
 			return {"ok": false, "missing": false, "errors": PackedStringArray(["Overlay customization resolver is unavailable."])}
@@ -1131,8 +1136,9 @@ static func _parse_base_snapshot(base_id: String, bytes: PackedByteArray) -> Dic
 		errors.append_array(tree_result["errors"])
 		return _result(false, errors)
 	var base: Dictionary = value
-	if str(base.get("format", "")) != "openrc-aircraft v2":
-		errors.append("Base snapshot must use the openrc-aircraft v2 schema.")
+	# BL-19b: the airship family is the only other admitted base format.
+	if str(base.get("format", "")) != "openrc-aircraft v2" and not AirshipFamily.is_base(base):
+		errors.append("Base snapshot must use the openrc-aircraft v2 or openrc-airship v1 schema.")
 	if str(base.get("id", "")) != base_id:
 		errors.append("Base snapshot ID does not match base_id.")
 	return {"ok": errors.is_empty(), "errors": errors, "base": base}

@@ -2688,6 +2688,10 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		editor.set_note("; ".join(trial.get("errors", [])))
 		_menu_feedback(&"reject")
 		return
+	# BL-19d: a frozen blimp variant flies in the airship activity, not in the fixed-wing flight scene.
+	if trial.get("vehicle", "airplane") == "airship":
+		_start_workshop_airship_trial(editor, trial, str(chosen_start))
+		return
 	var base_id: String = str(payload.get("base_id", ""))
 	if not Catalog.can_fly(base_id):
 		editor.set_note(tr("The source aircraft is not available in this catalog."))
@@ -2788,20 +2792,91 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		_finish_controller_launch.call_deferred(flight.session)
 
 
-func _return_to_workshop() -> void:
-	if _workshop_screens.is_empty() or flight == null:
+## BL-19d: the blimp trial occupies the exclusive activity slot while the Workshop, Home and any retained flight wait
+## detached exactly as for a fixed-wing trial; its own menu offers Return to Workshop (home_requested).
+func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start: String) -> void:
+	if ground_vehicle != null:
+		editor.set_note(tr("Close the running activity before starting a blimp trial."))
+		_menu_feedback(&"reject")
 		return
-	_begin_exit_request("return_workshop", [_flight_recorder(flight)], Callable(self, "_commit_return_to_workshop"))
+	var previous: Node = flight
+	var previous_sky_transport: Dictionary = Atmosphere.cloud_transport_checkpoint()
+	var previous_world_context: Dictionary = World.presentation_context()
+	if previous != null:
+		if statistics_service != null:
+			statistics_service.suspend_activity()
+		remove_child(previous)
+	if home_scene != null and home_scene.is_inside_tree():
+		remove_child(home_scene)
+		_workshop_home_detached = true
+	var candidate: Node3D = load("res://vehicles/airship/airship_scene.gd").new()
+	candidate.departure_managed = true
+	candidate.workshop_trial = trial.duplicate(true)
+	candidate.start_index = 1 if chosen_start == "runway" else 0
+	candidate.field_path = field_path
+	candidate.lighting_config = (previous.lighting_config if previous != null else preferences.get("lighting_config", TimeOfDay.defaults())).duplicate(true)
+	candidate.night_options = (previous.night_options if previous != null else _night_options_from_preferences()).duplicate(true)
+	candidate.sky_config = (previous.sky_config if previous != null else preferences.get("sky_config", SkyConfig.defaults())).duplicate(true)
+	add_child(candidate)
+	var error := str(candidate.get("startup_error"))
+	if not error.is_empty():
+		remove_child(candidate)
+		candidate.queue_free()
+		if previous != null:
+			add_child(previous)
+			if statistics_service != null:
+				statistics_service.resume_activity()
+			previous._camera.make_current()
+			World.restore_presentation_context(previous_world_context)
+			previous.restore_sky_presentation(previous_sky_transport)
+		if _workshop_home_detached:
+			add_child(home_scene)
+			home_scene.camera.make_current()
+			_workshop_home_detached = false
+			_rebuild_home_scene()
+		editor.set_note(tr("Could not start flight: %s") % tr(error))
+		_menu_feedback(&"reject")
+		return
+	_workshop_previous_flight = previous
+	_workshop_previous_sky_transport = previous_sky_transport
+	_workshop_previous_world_context = previous_world_context
+	_workshop_previous_keyboard = _keyboard_reader
+	while screens.top() != null:
+		var node: Node = screens.top()
+		var id: String = "workshop" if node == editor else ("home" if node == home else "pause")
+		var surface: Control = ScreenStack._surface(node)
+		var opener: Control = surface.return_focus if is_instance_valid(surface.return_focus) else null
+		_workshop_screens.push_front({id = id, node = screens.pop(false, false), opener = opener})
+	flight = null
+	screens.set_session(null)
+	# A retained fixed-wing flight must not receive controller changes while it waits detached.
+	if controllers != null: controllers.attach_session(null, false)
+	ground_vehicle = candidate
+	ground_vehicle.home_requested.connect(_return_to_workshop)
+	_menu_feedback(&"accept")
+
+
+func _return_to_workshop() -> void:
+	if _workshop_screens.is_empty() or (flight == null and ground_vehicle == null):
+		return
+	var recorders: Array = [_flight_recorder(flight)] if flight != null else []
+	_begin_exit_request("return_workshop", recorders, Callable(self, "_commit_return_to_workshop"))
 
 
 func _commit_return_to_workshop() -> void:
 	_menu_feedback(&"exit")
 	screens.clear()
 	screens.set_session(null)
-	if flight.recorder != null:
-		flight.recorder.detach()
-	remove_child(flight)
-	flight.queue_free()
+	if flight != null:
+		if flight.recorder != null:
+			flight.recorder.detach()
+		remove_child(flight)
+		flight.queue_free()
+	elif ground_vehicle != null:
+		# BL-19d: a blimp trial leaves the activity slot.
+		remove_child(ground_vehicle)
+		ground_vehicle.queue_free()
+		ground_vehicle = null
 	flight = _workshop_previous_flight
 	if controllers != null: controllers.attach_session(flight.session if flight != null else null, false)
 	_workshop_previous_flight = null

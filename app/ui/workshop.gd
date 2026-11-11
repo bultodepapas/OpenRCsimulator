@@ -4,6 +4,9 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
+const AirshipFamily := preload("res://workshop/airship_family.gd")
+const AirshipData := preload("res://physics/airship/airship_data.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Compiler := preload("res://workshop/compiler.gd")
 const Parameters := preload("res://workshop/parameters.gd")
@@ -1023,10 +1026,10 @@ func _build_delete_dialog() -> void:
 
 
 func _load_catalog_aircraft(id: String, preserve_recipe: bool, commit_replacement := false) -> bool:
-	var entry := Catalog.entry(id)
+	var entry := _entry(id)
 	var rejected_rotorcraft := not entry.is_empty() and Catalog.is_rotorcraft(id)
 	if entry.is_empty() or rejected_rotorcraft:
-		entry = Catalog.entry(Catalog.DEFAULT_ID)
+		entry = _entry(Catalog.DEFAULT_ID)
 		id = Catalog.DEFAULT_ID
 	var path := str(entry.get("data", ""))
 	var source_bytes := PackedByteArray()
@@ -1041,7 +1044,9 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool, commit_replacemen
 			set_note("Aircraft source is not a valid JSON object.")
 			return false
 		next_base = (parser.data as Dictionary).duplicate(true)
-		var validation: Dictionary = AircraftData.validate_and_derive(next_base.duplicate(true))
+		# BL-19: the blimp family validates through its own closed reader.
+		var validation: Dictionary = AirshipData.parse(next_base.duplicate(true)) if AirshipFamily.is_base(next_base) \
+			else AircraftData.validate_and_derive(next_base.duplicate(true))
 		if not bool(validation.get("ok", false)):
 			set_note(_messages(validation.get("errors", []), "Aircraft data could not be validated."))
 			return false
@@ -1143,7 +1148,7 @@ func _refresh_variants(reload := true) -> void:
 	for variant: Dictionary in _library_summaries:
 		var variant_id := str(variant.get("id", ""))
 		if variant_id == "": continue
-		var source_name := str(Catalog.entry(str(variant.get("base_id", ""))).get("name", tr("Unavailable aircraft")))
+		var source_name := str(_entry(str(variant.get("base_id", ""))).get("name", tr("Unavailable aircraft")))
 		if _favorites_only.button_pressed and variant_id not in _favorites: continue
 		var current := tr("Current") + " · " if variant_id == _saved_variant_id else ""
 		if variant_id in _favorites: current = tr("Favorite") + " · " + current
@@ -1256,7 +1261,7 @@ func _sync_save_button() -> void:
 
 func _on_base_selected(index: int) -> void:
 	_library_source_id = str(_base_selector.get_item_metadata(index))
-	_update_aircraft_description(Catalog.entry(_library_source_id))
+	_update_aircraft_description(_entry(_library_source_id))
 
 
 func _on_variant_selected(index: int) -> void:
@@ -1362,7 +1367,7 @@ func _load_variant_snapshot(selected_id: String) -> void:
 		set_note("The saved build has no exact aircraft source snapshot.")
 		return
 	var next_base_id := str(variant.get("base_id", ""))
-	if Catalog.entry(next_base_id).is_empty():
+	if _entry(next_base_id).is_empty():
 		set_note("The saved build refers to an unknown catalog aircraft.")
 		return
 	if Catalog.is_rotorcraft(next_base_id):
@@ -1400,7 +1405,7 @@ func _load_variant_snapshot(selected_id: String) -> void:
 	_capabilities = Compiler.capabilities(_base)
 	_variant_name.text = str(variant.get("name", ""))
 	_select_base(_base_id)
-	_update_aircraft_description(Catalog.entry(_base_id))
+	_update_aircraft_description(_entry(_base_id))
 	_update_capabilities()
 	_sync_controls()
 	_preview.set_aircraft(_base_id, _preview_scale())
@@ -1543,7 +1548,7 @@ func _apply_scale(requested_scale: float) -> void:
 	if not is_finite(requested_scale):
 		set_note("The requested size is not a finite number.")
 		return
-	var bounded_scale := clampf(requested_scale, Parameters.MIN_SCALE, Parameters.MAX_SCALE)
+	var bounded_scale := clampf(requested_scale, _scale_min(), _scale_max())
 	var proposed_recipe := _recipe.duplicate(true)
 	proposed_recipe["scale"] = bounded_scale
 	proposed_recipe["size_model"] = Parameters.VIRTUAL_SIZE_MODEL
@@ -1568,7 +1573,7 @@ func _scale_option_values() -> Array[float]:
 	for candidate: float in SCALE_OPTIONS:
 		if _within_scale_bounds(candidate) and not values.has(candidate):
 			values.append(candidate)
-	for endpoint: float in [Parameters.MIN_SCALE, Parameters.MAX_SCALE]:
+	for endpoint: float in [_scale_min(), _scale_max()]:
 		if _within_scale_bounds(endpoint) and not values.has(endpoint):
 			values.append(endpoint)
 	var current := float(_recipe.get("scale", 1.0))
@@ -1578,8 +1583,19 @@ func _scale_option_values() -> Array[float]:
 	return values
 
 
+## BL-19: a family may declare narrower size bounds (the blimp: 0.4–2.0) through its compiler capabilities.
+func _scale_min() -> float:
+	var bounds: Variant = _capabilities.get("scale_bounds", null)
+	return float(bounds[0]) if bounds is Array and bounds.size() == 2 else Parameters.MIN_SCALE
+
+
+func _scale_max() -> float:
+	var bounds: Variant = _capabilities.get("scale_bounds", null)
+	return float(bounds[1]) if bounds is Array and bounds.size() == 2 else Parameters.MAX_SCALE
+
+
 func _within_scale_bounds(scale: float) -> bool:
-	return is_finite(scale) and scale >= Parameters.MIN_SCALE and scale <= Parameters.MAX_SCALE
+	return is_finite(scale) and scale >= _scale_min() and scale <= _scale_max()
 
 
 func _scale_shortcut_specs() -> Array[Dictionary]:
@@ -1609,12 +1625,12 @@ func _sync_scale_controls() -> void:
 	var supported := bool(_capabilities.get("scale", false))
 	_scale_selector.disabled = not supported
 	var effective_scale := _preview_scale()
-	_scale_smaller_button.disabled = not supported or effective_scale <= Parameters.MIN_SCALE
-	_scale_larger_button.disabled = not supported or effective_scale >= Parameters.MAX_SCALE
+	_scale_smaller_button.disabled = not supported or effective_scale <= _scale_min()
+	_scale_larger_button.disabled = not supported or effective_scale >= _scale_max()
 	for button: Button in _scale_shortcut_buttons:
 		var shortcut_scale := float(button.get_meta("scale_value", -1.0))
 		button.set_pressed_no_signal(supported and is_equal_approx(effective_scale, shortcut_scale))
-		button.disabled = not supported
+		button.disabled = not supported or not _within_scale_bounds(shortcut_scale)
 
 
 func _refresh_size_readout() -> void:
@@ -1622,7 +1638,9 @@ func _refresh_size_readout() -> void:
 		return
 	var size_percent := String.num(_preview_scale() * 100.0, 4)
 	var summary: Dictionary = _compiled.get("summary", {})
-	if _edit_valid() and _pending_numbers.is_empty() and summary.has("wing_span_m"):
+	if _edit_valid() and _pending_numbers.is_empty() and summary.has("envelope_length_m"):
+		_scale_readout.text = tr("Size: %s%% · envelope length: %s m") % [size_percent, String.num(float(summary.envelope_length_m), 4)]
+	elif _edit_valid() and _pending_numbers.is_empty() and summary.has("wing_span_m"):
 		_scale_readout.text = tr("Size: %s%% · wingspan: %s m") % [size_percent, String.num(float(summary.wing_span_m), 4)]
 	else:
 		_scale_readout.text = tr("Proposed size: %s%% · wingspan pending validation.") % size_percent
@@ -1879,7 +1897,8 @@ func _sync_controls() -> void:
 		if str(_mass_policy_selector.get_item_metadata(index)) == policy:
 			_mass_policy_selector.select(index)
 			break
-	_mass_policy_selector.disabled = not bool(_capabilities.get("weight", false))
+	# A buoyant vehicle always scales geometrically: its family reports no mass-policy choice.
+	_mass_policy_selector.disabled = not bool(_capabilities.get("weight", false)) or not bool(_capabilities.get("mass_policy", true))
 	for key: String in _factor_capabilities:
 		var bounds := _factor_bounds(key)
 		var value := _effective_factor_value(key)
@@ -1948,6 +1967,8 @@ func _update_capabilities() -> void:
 	_scale_support_hint.text = tr("Scaling unavailable: %s") % transform_reason if not bool(_capabilities.get("scale", false)) else ""
 	_scale_support_hint.visible = _scale_support_hint.text != ""
 	_mass_support_hint.text = tr("Mass and weight unavailable: %s") % transform_reason if not bool(_capabilities.get("weight", false)) else ""
+	if is_instance_valid(_mass_policy_selector):
+		_mass_policy_selector.disabled = not bool(_capabilities.get("weight", false)) or not bool(_capabilities.get("mass_policy", true))
 	_mass_support_hint.visible = _mass_support_hint.text != ""
 
 
@@ -1996,6 +2017,13 @@ func _format_summary(summary_value: Variant, model: Dictionary) -> String:
 		{"key": "max_rpm", "label": "Maximum RPM", "unit": "rpm", "digits": 0},
 		{"key": "static_thrust_n", "label": "Static thrust", "unit": "N", "digits": 2},
 		{"key": "static_power_w", "label": "Static power", "unit": "W", "digits": 1},
+		{"key": "envelope_length_m", "label": "Envelope length", "unit": "m", "digits": 2},
+		{"key": "envelope_volume_m3", "label": "Envelope volume", "unit": "m³", "digits": 3},
+		{"key": "buoyancy_n", "label": "Buoyancy", "unit": "N", "digits": 2},
+		{"key": "ballast_kg", "label": "Keel ballast", "unit": "kg", "digits": 3},
+		{"key": "weigh_off_kg", "label": "Weigh-off (heavy)", "unit": "kg", "digits": 3},
+		{"key": "static_trim_deg", "label": "Static trim", "unit": "°", "digits": 1},
+		{"key": "fin_travel_deg", "label": "Fin travel", "unit": "°", "digits": 1},
 	]
 	for metric: Dictionary in metrics:
 		var key := str(metric.key)
@@ -2060,6 +2088,15 @@ func _format_metric_number(value: float, digits: int) -> String:
 	return "%.2f" % value
 
 
+## Catalog lookups that also resolve the Workshop-only blimp family (it is not a fixed-wing catalog entry).
+func _entry(id: String) -> Dictionary:
+	return AirshipCatalog.stock_entry() if AirshipCatalog.is_stock_id(id) else Catalog.entry(id)
+
+
+func _can_fly(id: String) -> bool:
+	return FileAccess.file_exists(AirshipCatalog.DATA_PATH) if AirshipCatalog.is_stock_id(id) else Catalog.can_fly(id)
+
+
 func _cg_percent(model: Dictionary) -> float:
 	var cg: Variant = model.get("cg_le", null)
 	var reference: Dictionary = model.get("reference", {})
@@ -2096,7 +2133,7 @@ func _request_trial() -> void:
 	if Catalog.is_rotorcraft(_base_id):
 		set_note("The fixed-wing Workshop cannot start a rotorcraft trial.")
 		return
-	if not Catalog.can_fly(_base_id):
+	if not _can_fly(_base_id):
 		set_note("This catalog aircraft has no flight model and cannot start a trial.")
 		return
 	_capture_interaction()
@@ -2312,6 +2349,10 @@ func _build_library() -> void:
 			continue
 		_base_selector.add_item(str(entry.get("name", entry.get("id", "Aircraft"))))
 		_base_selector.set_item_metadata(_base_selector.item_count - 1, str(entry.id))
+	# BL-19: the experimental RC blimp is a separate Workshop family, listed after the airplanes.
+	var blimp: Dictionary = AirshipCatalog.stock_entry()
+	_base_selector.add_item(tr(str(blimp.name)))
+	_base_selector.set_item_metadata(_base_selector.item_count - 1, str(blimp.id))
 	_base_selector.item_selected.connect(_on_base_selected)
 	stock.add_child(_base_selector)
 	var open_stock := _button("New build from selected aircraft", "", "OpenStockAircraft")
@@ -2319,7 +2360,7 @@ func _build_library() -> void:
 	open_stock.pressed.connect(func() -> void:
 		var target := str(_base_selector.get_item_metadata(_base_selector.selected))
 		_close_library()
-		request_navigation(tr("Open another aircraft") + " · " + str(Catalog.entry(target).get("name", target)), _replace_aircraft.bind(target), _return_to_library.bind(_base_selector), null, true))
+		request_navigation(tr("Open another aircraft") + " · " + str(_entry(target).get("name", target)), _replace_aircraft.bind(target), _return_to_library.bind(_base_selector), null, true))
 	stock.add_child(open_stock)
 	_aircraft_summary_label = _label("", "SecondaryLabel", true)
 	_aircraft_status_label = _label("", "SecondaryLabel", true)
@@ -2582,7 +2623,7 @@ func _refresh_identity() -> void:
 	if display_name.is_empty(): display_name = tr("Unsaved build")
 	var state := tr("Unsaved changes") if has_unsaved_changes() else (tr("Saved") if not _saved_variant_id.is_empty() else tr("New build"))
 	var revision := " · " + tr("revision %d") % _saved_variant_revision if _saved_variant_revision > 0 else ""
-	_build_identity.text = "%s · %s%s · %s" % [display_name, tr(str(Catalog.entry(_base_id).get("name", _base_id))), revision, state]
+	_build_identity.text = "%s · %s%s · %s" % [display_name, tr(str(_entry(_base_id).get("name", _base_id))), revision, state]
 	_build_identity.tooltip_text = _build_identity.text
 	if is_instance_valid(_library_draft_identity):
 		_library_draft_identity.text = _build_identity.text
@@ -3418,7 +3459,7 @@ func _show_recovery() -> void:
 		var payload: Dictionary = _recovery_loaded.payload
 		var state: Dictionary = _recovery_loaded.editor
 		lines.append(str(state.get("name", "")))
-		lines.append(str(Catalog.entry(str(payload.base_id)).get("name", payload.base_id)))
+		lines.append(str(_entry(str(payload.base_id)).get("name", payload.base_id)))
 		lines.append(tr("Accepted settings"))
 		for key: String in payload.recipe:
 			if key == "mass_edits":
@@ -3535,7 +3576,7 @@ func _apply_recovered_draft() -> void:
 	_clear_history()
 	_variant_name.text = state.name
 	_select_base(_base_id)
-	_update_aircraft_description(Catalog.entry(_base_id))
+	_update_aircraft_description(_entry(_base_id))
 	_sync_controls()
 	_preview.set_aircraft(_base_id, _preview_scale())
 	_set_page(state.page)
@@ -3602,6 +3643,8 @@ func _refresh_recovery_after_conflict() -> void:
 
 
 func _describe_customization(base_id: String) -> Dictionary:
+	if AirshipCatalog.is_stock_id(base_id):
+		return AirshipFamily.customization()
 	if base_id in ["moonrunner-x99", "stik-electric-6s"]:
 		var overlay_path := "res://aircraft/customization_overlay.gd"
 		if not ResourceLoader.exists(overlay_path):

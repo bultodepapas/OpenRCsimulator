@@ -11,6 +11,14 @@ uniform sampler2D weave_color : source_color, repeat_enable, filter_linear_mipma
 uniform sampler2D weave_roughness : repeat_enable, filter_linear_mipmap;
 uniform vec2 cloth_size = vec2(1.5, 0.9);
 
+vec3 along_at(ivec2 i) {
+	return cloth_points[i.y*9+min(i.x+1,8)]-cloth_points[i.y*9+max(i.x-1,0)];
+}
+
+vec3 down_at(ivec2 i) {
+	return cloth_points[min(i.y+1,4)*9+i.x]-cloth_points[max(i.y-1,0)*9+i.x];
+}
+
 vec3 cloth(vec2 uv) {
 	vec2 cell = clamp(uv, vec2(0.0), vec2(1.0)) * vec2(8.0, 4.0);
 	ivec2 i = min(ivec2(floor(cell)), ivec2(7, 3));
@@ -27,17 +35,23 @@ vec3 cloth(vec2 uv) {
 
 void vertex() {
 	VERTEX = cloth(UV);
-	vec3 along = cloth(vec2(min(UV.x+0.003,1.0), UV.y)) - cloth(vec2(max(UV.x-0.003,0.0),UV.y));
-	vec3 down = cloth(vec2(UV.x,min(UV.y+0.003,1.0))) - cloth(vec2(UV.x,max(UV.y-0.003,0.0)));
+	// Smooth vertex normals derived from the deformed lattice, not the bind plane.
+	// Interpolation avoids lighting bands at control-cell boundaries and saves
+	// four extra evaluations of the wrinkle function for every rendered vertex.
+	vec2 cell = clamp(UV,vec2(0.0),vec2(1.0))*vec2(8.0,4.0);
+	ivec2 i = min(ivec2(floor(cell)),ivec2(7,3));
+	vec2 f = cell-vec2(i);
+	vec3 along = mix(mix(along_at(i),along_at(i+ivec2(1,0)),f.x),mix(along_at(i+ivec2(0,1)),along_at(i+ivec2(1,1)),f.x),f.y);
+	vec3 down = mix(mix(down_at(i),down_at(i+ivec2(1,0)),f.x),mix(down_at(i+ivec2(0,1)),down_at(i+ivec2(1,1)),f.x),f.y);
 	NORMAL = normalize(cross(down,along) + vec3(0.0,0.0,0.0000001));
 	TANGENT = normalize(along + vec3(0.0000001,0.0,0.0));
-	BINORMAL = normalize(cross(NORMAL,TANGENT));
+	BINORMAL = normalize(cross(TANGENT,NORMAL));
 }
 
 void fragment() {
 	// The back shows the mirrored print of the same physical sheet.
 	ALBEDO = texture(country_texture,UV).rgb * 0.82;
-	NORMAL = FRONT_FACING ? NORMAL : -NORMAL;
+	// Godot's cull_disabled side check already flips the back-face normal.
 	ROUGHNESS = 0.88;
 	SPECULAR = 0.22;
 	if (fine_fabric) {
