@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2fa27fa9-9261-4711-b946-c527150ee365",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tools/flight_log_cli.gd",
+    "--",
+    "--log=C:/DEVELOPMENT/OpenRCsimulator/tmp/avanti-control-r4/baseline.orfl",
+    "--csv=C:/DEVELOPMENT/OpenRCsimulator/tmp/avanti-control-r4/baseline-exact.csv",
+    "--report=C:/DEVELOPMENT/OpenRCsimulator/tmp/avanti-control-r4/baseline-exact.json",
+    "--replay"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-11T01:20:41.213923+00:00",
+  "label": "r4-baseline-exact",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\baseline-check\\r4-baseline-exact-26ag5qme\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\baseline-check\\r4-baseline-exact-26ag5qme\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 32.922,
+  "log_bytes": 242,
+  "log_sha256": "a333a1ddb899c11e7d216780bd50a1d5e715cf70e7045419da151abcac20420e"
+}

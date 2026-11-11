@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+WARNING: Existing flaps control overlaps a newly calibrated AETR axis; reassign that auxiliary channel.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:279)
+       [1] _next (res://input/rc_calibration.gd:186)
+       [2] advance (res://input/rc_calibration.gd:147)
+       [3] advance (res://ui/radio_calibration_setup.gd:166)
+Preflight calibration: 111 checks, 0 failed

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "360d351d-1fab-447d-8cf3-42eb3b34a38a",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_failure_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-11T01:28:43.584943+00:00",
+  "label": "test_failure_session",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\checks\\test_failure_session-pme_tmba\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\checks\\test_failure_session-pme_tmba\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.515,
+  "log_bytes": 2371,
+  "log_sha256": "840227736214f6b7d7e72f62b54b846dafdd565fb478a787c1c66a2cd5fc9d70"
+}

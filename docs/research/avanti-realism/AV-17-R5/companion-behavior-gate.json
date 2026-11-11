@@ -1,0 +1,14 @@
+{
+  "baseline_commit": "18000e97e586c1a8b0c401dc21ba657750176159",
+  "mismatches": [
+    {
+      "path": "app/app_root.gd",
+      "expected_sha256": "45d3d8f15f0d28c870ee3c4323b0e55860c77a5a0876f9eddb380b004ea2f044",
+      "baseline_sha256": "41e1d5e6d9341327a20e44ec0f28758fca721f890ab801ffa7782d52a8525dde",
+      "current_sha256": "41e1d5e6d9341327a20e44ec0f28758fca721f890ab801ffa7782d52a8525dde",
+      "already_mismatched_at_baseline": true,
+      "unchanged_since_baseline": true
+    }
+  ],
+  "verdict": "solver rebind passed; pre-existing behavior source gate remains refused"
+}

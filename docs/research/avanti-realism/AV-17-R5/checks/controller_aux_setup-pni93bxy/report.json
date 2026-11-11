@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c7e9c36a-40e8-44a6-b442-683ee631f687",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_controller_aux_setup.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-11T01:41:20.294436+00:00",
+  "label": "controller_aux_setup",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\profile-ui\\controller_aux_setup-pni93bxy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\profile-ui\\controller_aux_setup-pni93bxy\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.25,
+  "log_bytes": 1717,
+  "log_sha256": "e75865aec5934573bacfa432fece3f4f1d85e632bb1641212f73649dbd3887a2"
+}

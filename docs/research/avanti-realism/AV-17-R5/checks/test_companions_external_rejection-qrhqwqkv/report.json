@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6ebbe8f8-2def-48b9-878f-febc6fbdb15f",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_external_rejection.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-11T01:28:43.571015+00:00",
+  "label": "test_companions_external_rejection",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\checks\\test_companions_external_rejection-qrhqwqkv\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\checks\\test_companions_external_rejection-qrhqwqkv\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.875,
+  "log_bytes": 1945,
+  "log_sha256": "e4badae3d7237bef884e899618d7d1094c450688687195660125372f7a55cdde"
+}

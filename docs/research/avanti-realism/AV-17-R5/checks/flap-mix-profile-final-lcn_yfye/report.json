@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9d00dbea-2b59-4c9f-ae34-8dd0f7fc1955",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_controller_flap_mix_profile.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-11T01:40:50.615914+00:00",
+  "label": "flap-mix-profile-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\profile-ui\\flap-mix-profile-final-lcn_yfye\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-control-r4\\profile-ui\\flap-mix-profile-final-lcn_yfye\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.75,
+  "log_bytes": 122,
+  "log_sha256": "5df9b3604fdcc4a7e075d4b4b85d327ed432a85e7f10506dfa111b00b5f4e27d"
+}

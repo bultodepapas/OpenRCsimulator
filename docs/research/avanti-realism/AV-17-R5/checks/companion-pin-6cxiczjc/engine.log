@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   qualified source aircraft loads with exact input identity  []
+ok   pinned Club field loads  []
+ok   companion qualification pins the current physics/sim/failures identity
+FAIL current Stik and Club profiles validate  ["behavior source \'res://app_root.gd\': current source does not match the qualified manifest"]

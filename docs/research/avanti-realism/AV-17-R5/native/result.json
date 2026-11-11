@@ -1,0 +1,78 @@
+{
+  "build_binary_sha256": "ea5631517fdb5f6af8c7af4d347bc798f981e0b6fbec997e32635eb0f11a36f7",
+  "build_source_sha256": "a278b5b451f71056a96e8ce2f404304440cc3cabbeb4eac1a219ecd99fdde798",
+  "checkpoint_tick": 96,
+  "checks": 19,
+  "completed_ticks": 192,
+  "failure_details": [],
+  "failures": 0,
+  "native_identity": {
+    "abi_version": 2,
+    "backend": "native",
+    "backend_version": "openrc-native-kernel-stage-v2",
+    "binary_sha256": "ea5631517fdb5f6af8c7af4d347bc798f981e0b6fbec997e32635eb0f11a36f7",
+    "lock_sha256": "4cf3c592b0161174f2521aad8d312d44706c18b73a154e5f10e853a6428e4687",
+    "source_sha256": "a278b5b451f71056a96e8ce2f404304440cc3cabbeb4eac1a219ecd99fdde798"
+  },
+  "original_counters_after": {
+    "context_calls": 193,
+    "stage_calls": 769,
+    "stage_ns": 0.0,
+    "timing": false
+  },
+  "original_counters_before": {
+    "context_calls": 1,
+    "stage_calls": 1,
+    "stage_ns": 0.0,
+    "timing": false
+  },
+  "replay_counters_after": {
+    "context_calls": 97,
+    "stage_calls": 384,
+    "stage_ns": 0.0,
+    "timing": false
+  },
+  "replay_counters_before": {
+    "context_calls": 1,
+    "stage_calls": 0,
+    "stage_ns": 0.0,
+    "timing": false
+  },
+  "replayed_ticks": 96,
+  "requested_ticks": 192,
+  "samples": {
+    "160": {
+      "diagnostics": [
+        -0.08888888888888868,
+        0.011111111111111321,
+        0.33333333333333964
+      ],
+      "flap_actual": 0.44444444444444337,
+      "flap_demand": 1.0,
+      "owner": "simulator",
+      "pitch": 0.1
+    },
+    "60": {
+      "diagnostics": [
+        -0.03333333333333332,
+        0.06666666666666668,
+        2.0000000000000004
+      ],
+      "flap_actual": 0.16666666666666657,
+      "flap_demand": 1.0,
+      "owner": "simulator",
+      "pitch": 0.1
+    },
+    "96": {
+      "diagnostics": [
+        0.0,
+        0.1,
+        3.0
+      ],
+      "flap_actual": 0.2666666666666662,
+      "flap_demand": 1.0,
+      "owner": "transmitter",
+      "pitch": 0.1
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Vantage Jet: current scope and remaining work
 
-Checked 2026-11-10 · Aircraft/model owner · Prefix **AV-00…31** and repair steps AV-17-R1/R2/R3/R4. Code, accepted configuration and generated data define implemented behavior. Implementation, passing software checks and physical validation are separate claims.
+Checked 2026-11-10 · Aircraft/model owner · Prefix **AV-00…31** and repair steps AV-17-R1/R2/R3/R4/R5. Code, accepted configuration and generated data define implemented behavior. Implementation, passing software checks and physical validation are separate claims.
 
 ## 1. Identity and scope
 
@@ -50,6 +50,7 @@ Delivered foundations are recorded in the linked evidence, not an instruction to
 | AV-13 | Future extensions | Scope additional ground/propulsion behavior explicitly; existing retracts, brakes, runway starts and flaps are already implemented. |
 | AV-17-R1/R2/R3 | Implemented repairs | [Keyboard](research/avanti-realism/AV-17-R1/README.md), [polar/gamepad](research/avanti-realism/AV-17-R2/README.md), [yaw](research/avanti-realism/AV-17-R3/README.md) retain dated proof. Pilot acceptance and aircraft-specific identification remain open. |
 | AV-17-R4 | Pitch datum corrected | [Reference-point correction and accepted-command evidence](research/avanti-realism/AV-17-R4/README.md). The generator converts CG-referenced Cmq to the stored ARP convention; runtime fuel transfer remains unchanged. Local/global consistency and physical identification are separate gates. |
+| AV-17-R5 | Flap compensation ownership implemented | [Control ownership and replay evidence](research/avanti-realism/AV-17-R5/README.md). Radio/joystick profiles explicitly select simulator or transmitter compensation; existing profiles retain simulator behavior. Hardware and pilot acceptance remain open. |
 | AV-31 | Imported model integrated | Build/binding/section checks and local package evidence exist; physical installation calibration and target cost remain separate. |
 
 AV-05b, AV-10a/b/c and AV-18…30 have one detailed register in the turbine plan. Finite-fuel runtime is already present; ECU/thermal/pump work remains planned. Do not reset completed implementation to “future” merely because physical acceptance is open.
@@ -75,7 +76,7 @@ the review's implementation assumptions. Keep each behavioral correction indepen
 | R1 pitch reference | AV-17-R4: generator correction and software checks implemented, including native parity and same-tape comparison. Full handling/energy and lateral-effect interpretation remains open; see its evidence. |
 | R2 brake diagnosis | AV-09 + GP: [active-wheel characterization](research/avanti-gear/AV-09/brake-audit-2026-11-10/README.md). This does not calibrate stopping distance or promote the GP-12 candidate law. |
 | R3 ground correction | GP + AV-09: pending the R2 branch/rollout evidence and an identified torque/traction target; preserve rest, release, steering, touchdown, refinement and native gates. |
-| R4 control ownership | Input + AV/session: pending explicit simulator/transmitter flap-mix ownership, profile migration and surface-chain diagnostics. Preserve existing profile behavior. |
+| R4 control ownership | Input + AV/session: AV-17-R5 implements saved simulator/transmitter flap-mix ownership, legacy defaults, per-interval recording/replay and surface-chain diagnostics. Controlled device fixtures establish software behavior; physical-radio and pilot comparison remain open. |
 | R5 lateral consistency | AV + physics/native: next aerodynamic investigation; map residual body terms and global/local derivatives before selecting one correction. |
 | R6 spatial ailerons | Shared aero + AV geometry: after R5, identify coverage and preserve initial aggregate authority; validate strip loading and flap interaction. |
 | R7 physical sheet | AV-01/11: existing AV-06 inputs/derivation remain the estimate ledger; matched A200 mass, geometry, fuel arms, inertia and installation measurements are still needed. |

@@ -1,0 +1,273 @@
+{
+  "format": "openrc-av17-r5-evidence-v1",
+  "baseline_commit": "18000e97e586c1a8b0c401dc21ba657750176159",
+  "implementation_commit": "a9daae7b809bbdf5351a8790a46ed9ee7c119de7",
+  "candidate_sources_sha256": {
+    "app/input/controller_profile.gd": "454a27b03a6bae5dc1a0193369c74243e835312618bf7ffa6c51909224810651",
+    "app/input/controller_diagnostics.gd": "5ad9bca239ab69fb1ef57d2fbacde5073dfe2a5e211c089358ac617427f8f018",
+    "app/ui/controller_setup.gd": "ad75d9da650a3a5d24d55df5c003cc352e09ade785fba8ccdcb58c9ff2176662",
+    "app/sim/flight_session.gd": "0fd7ec186bc879e4a2a4e711cf698596801a161ab31c53fea7e5da04aab487ef",
+    "app/sim/flight_log.gd": "40b639ead778d24804f787b7d49b4b287d497cbf0a35b207f741594d027bc582",
+    "app/tools/flight_log_cli.gd": "7789ad535dd9e73f19285bf69d2bb89ad29d33d6aed0ef0877924e3d53264cfe",
+    "app/tests/test_flap_mix_ownership.gd": "07bee16f6d8d745682f197166ebecd0c5a756857461f46b60f372d52ca123d06",
+    "app/tests/test_flap_mix_ownership.gd.uid": "d73f92a0c0d8d5fe0c29975678e2287e79b4978d036ecff7cd8e29824f55ac4e",
+    "app/tests/test_controller_flap_mix_profile.gd": "275f837be623867d47e51aaba798e4b40dc26e9396df72d755059ff2d7c731fc",
+    "app/tests/test_controller_flap_mix_profile.gd.uid": "8d123109a23eed13d9d71f52ce57e896cc798c18df9d881868eeaa9f173a9ef1",
+    "research/avanti-s/av17-r5/native_mix.gd": "4840655ebee6877e8aaa8a27b9429689488936a82c4f208725c4f38424b7f32d",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "0da7bc434b5a3a5b3d7b41f72e13931c2ae72179eabe67180fad1e3597a2c8a8",
+    "tools/companions/qualification.json": "06ffc67f0c5555b090ca1a3ce77879eeef263334181957a3f2af0e20d7960ac8"
+  },
+  "artifacts_sha256": {
+    "baseline-candidate-final.csv.gz": "02da7551ffed18c353960e8115b9abcc1ea0d801d4d19aad088062a736ff7eae",
+    "baseline-candidate-final.json": "7e447e4b7fbc593a571ecac8c6d683575f5d0db8ae23d52b20320be439ea1447",
+    "baseline-exact.csv.gz": "02da7551ffed18c353960e8115b9abcc1ea0d801d4d19aad088062a736ff7eae",
+    "baseline-exact.json": "1009aa0ed98f445f9b6c2d8c55c88b4915c7f57e91d1f75d5a1c5d2bec459144",
+    "baseline.orfl.gz": "7c49af48219d70f83dbfefad29ad4bb58d60a0cbeaf7e16501a32e2165cd12a6",
+    "checks/baseline-candidate-final-_xifd99c/engine.log": "c983d7e332ba2a095109314ce7e302509e997704af6287d004ad85feb58349ae",
+    "checks/baseline-candidate-final-_xifd99c/report.json": "800f556a130a509b713c31dd0a12084daafce9d8360b5442d5fa69e78b564753",
+    "checks/companion-pin-6cxiczjc/engine.log": "a29d7c5053304a6cafc0578d38a4ee0c7d29efe0f2664491436c4f9b8b8d6246",
+    "checks/companion-pin-6cxiczjc/report.json": "24c7ecd5da8869d391fed557ea639ba7fe3a895bdc903811bda518f1bf136e43",
+    "checks/controller-aux-1080-us038s_a/engine.log": "233b3e64ccacc2410d7412d57ea6c6785b038efa1e11d9a442a453fbfba1fa6c",
+    "checks/controller-aux-1080-us038s_a/report.json": "fbdeb8f11193eb9fcb23ae5d03c7ff7a3d7e50fb2aeaf4ef4b9f8270607e8c38",
+    "checks/controller_aux_setup-pni93bxy/engine.log": "e75865aec5934573bacfa432fece3f4f1d85e632bb1641212f73649dbd3887a2",
+    "checks/controller_aux_setup-pni93bxy/report.json": "d68e3150e049018617d21a379ae076b4a1b6128687cba7900d2937eca8cc4d41",
+    "checks/controller_conditioning-uxa__s66/engine.log": "0fcbdb59b3f46cc5a86985359c68f91704c38c1f72d9b1bba578c77912699433",
+    "checks/controller_conditioning-uxa__s66/report.json": "8627444e0fd736c1498bf2640fd144cb0e6d9e837c6313df2fdacce52f77e67c",
+    "checks/controller_diagnostics-hds667d5/engine.log": "5f32675553dc5dbff7912bea31864be641b852729350540d33fb9274da74fc06",
+    "checks/controller_diagnostics-hds667d5/report.json": "bccdbfdac57f79354ac5061c608fabccda79b92debb2badc5236c60acf702c82",
+    "checks/controller_integration-n8xx3ann/engine.log": "006769237aae717ebebca7ca2d22fdf752aa5162f21f243feba4e4fb52451705",
+    "checks/controller_integration-n8xx3ann/report.json": "16a7ce8f374a06294ef458a12f152f44639cf042d7809de6d7ee504197d9a181",
+    "checks/controller_preflight_calibration-hbakp5gy/engine.log": "cf23ded6fe77ec6c76613b9eb662a2797fd71276c975f7b181dbe05f3f1be6ef",
+    "checks/controller_preflight_calibration-hbakp5gy/report.json": "a9cb8bd716aebd8dc0b567abf1039c8d7c95c483cd29e00cabc35f161638a0d4",
+    "checks/controller_profile-n7oktl4f/engine.log": "8287254ce823e2ad31569d3fc44d558b0c6462672fe4b23de723dac9b4a69012",
+    "checks/controller_profile-n7oktl4f/report.json": "a8c4d25330ce4fcf409149a610b3b0afef4f1b0ec7feaea165afc1b13579d531",
+    "checks/controller_responsive-m6iha8_v/engine.log": "950f147b0ca46b5397266ff3f3e3016fa1904f3d3634cd260074060b0366853f",
+    "checks/controller_responsive-m6iha8_v/report.json": "04b05edf01875d999da1b260dd081b9206904516e83517f5f1f9ea0f03c040ac",
+    "checks/controller_setup-biymly4f/engine.log": "c6489d623c26be82856532331967417cd65989da806be7ff57813e092b517d12",
+    "checks/controller_setup-biymly4f/report.json": "8acbfd01555437568d7c8d4f78999243e392002385841a500aff989535367e9e",
+    "checks/flap-mix-profile-final-lcn_yfye/engine.log": "5df9b3604fdcc4a7e075d4b4b85d327ed432a85e7f10506dfa111b00b5f4e27d",
+    "checks/flap-mix-profile-final-lcn_yfye/report.json": "9eb1fa1c4a8662ee68a010dbad31075f1e73b0221c5605910ec0fda91fbb8c25",
+    "checks/flight-log-lh0ecz3c/engine.log": "bfaabe714c39c4b1e536a42d7564b1bebd969dd84ff44fa90d281151583055e9",
+    "checks/flight-log-lh0ecz3c/report.json": "ff12055dc948eae0199e2b847614f2fc9a1785d20c8d9dd458bc565d18f4d1a0",
+    "checks/mix-accepted-eojvi6xw/engine.log": "48ac836d79005f572e833266abaead79cdab576899b45e6fc18b465766e897e9",
+    "checks/mix-accepted-eojvi6xw/report.json": "8c2f2d8d83485c2d8e1ac5cb1ed72caafd5b05fc3d41c8df677cffd4dab7637b",
+    "checks/ownership-exact-final-q8jv5oii/engine.log": "6e60a752dcbc57fcce2056454d84a14f4abc1ffbbd88998502efce00ced44599",
+    "checks/ownership-exact-final-q8jv5oii/report.json": "a49977ca622b28c48359e5dd8f6462dcf716ee6a37f60baddd26d271a94765ca",
+    "checks/r4-baseline-exact-26ag5qme/engine.log": "a333a1ddb899c11e7d216780bd50a1d5e715cf70e7045419da151abcac20420e",
+    "checks/r4-baseline-exact-26ag5qme/report.json": "cfe57c1dc887b9362778fa5affceab56703f24ede68a62b70b346e74e9f2e3da",
+    "checks/r4-baseline-flaps-0j8vbsed/engine.log": "b3bbf7a561a183acd6d220f97e6aa8dd25549a8da72e1832ef032b47799814e9",
+    "checks/r4-baseline-flaps-0j8vbsed/report.json": "9e9e070a5462f8d3b5970b931da0f044dd48b94537dbea1957703773740db3da",
+    "checks/reset-publication-6jrqf6uq/engine.log": "8141168e52dd8351fb3bea44a067e2ba4bb9ded4f2ed7c64fba70116a1ab894d",
+    "checks/reset-publication-6jrqf6uq/report.json": "7581f92f04a5f9913a1ee24cdfc08e440dc078c6fbde21684fa3755680a37791",
+    "checks/restore-final-mtrbq16g/engine.log": "8aae3ce74dd04b8c74a9f03881517dbd8e671b018c4fb5a2ab0d21fbbe362814",
+    "checks/restore-final-mtrbq16g/report.json": "96267cfaa2e154001700cc60a7b187e13e3f1f32136a65b844f9713705c7b048",
+    "checks/test_companions_external_rejection-qrhqwqkv/engine.log": "e4badae3d7237bef884e899618d7d1094c450688687195660125372f7a55cdde",
+    "checks/test_companions_external_rejection-qrhqwqkv/report.json": "3107590ea0d97bc4df35d6a3e11c5acd7bd4672aa69aa216c2e0836b69f8cb71",
+    "checks/test_controller_rates-tkwxccwo/engine.log": "401c1551347d2cccd635b238139e74f4a2d0d6687d1a4a975773c8bcdddd1aea",
+    "checks/test_controller_rates-tkwxccwo/report.json": "cdb08cbd2106b4351bd3f911ee5a51ca9236319b98e87e987eef22b6b91187a7",
+    "checks/test_failure_session-pme_tmba/engine.log": "840227736214f6b7d7e72f62b54b846dafdd565fb478a787c1c66a2cd5fc9d70",
+    "checks/test_failure_session-pme_tmba/report.json": "5f3724f617f86beb082f9b0085a52f5459a72bcd408c36c031256bf564b47754",
+    "checks/test_flaps_session-_hxm80qe/engine.log": "245236b49b72bf3df05d2cbb31e807394373ae9f260deaa0a892645c5822a542",
+    "checks/test_flaps_session-_hxm80qe/report.json": "4f55a9bbdedd3b048f1c7b9d37a4b2caed35c0a141127a7d1e306a73bc4b977e",
+    "checks/test_flight_log_inputs-nhq366d1/engine.log": "e9e6b439ef831709cd528435395280424df27850603379908959cce5d107c1ee",
+    "checks/test_flight_log_inputs-nhq366d1/report.json": "6d000ea36209a2ec762e17f32099a3a8347dcfcde9fe1b676c88f5211cda6361",
+    "companion-behavior-gate.json": "cc9b57a7e194db7b9574d685ad9f562755f54c7de6226d4b17c1d5312a534bf7",
+    "native/after.json": "f6fa69eb4e1171c092bfc76168684885e800903365d03638e368863d920f9506",
+    "native/before.json": "f6fa69eb4e1171c092bfc76168684885e800903365d03638e368863d920f9506",
+    "native/build-receipt.json": "a9c063db79b66c4617fcc0dcd485b6edb716344fa396a0ec7436961408152c57",
+    "native/checks/av17-r5-native-mix-cdy1ibtg/engine.log": "942d1157075bd8276069790d33c80febfc99e6ce1a651a427bdf7fd0f890863d",
+    "native/checks/av17-r5-native-mix-cdy1ibtg/report.json": "9fbf8e8ebf1b4e415f2579d9bb87fd576fb8470ed6581adf187cfd5f34e6166d",
+    "native/interval-tape.bin": "b31034a14742a5b1f50b82f50c945fdefaa9342297f7d2afe1705ebaf6ba2c8b",
+    "native/result.json": "6a5310cb158bc81a0b14317ac1de483b1b73570e46863e7d455dc25d4e40e0ff",
+    "ownership-exact-final.csv": "de1d9f70299239a3c158e8902323ba1c1f9c3a63dd68c1e5940b34e0b8a076c2",
+    "ownership-exact-final.json": "560ffe5c9be3758065f70b612d319f5dbe1df0536c4e033ac7bdffd07d3a7e28",
+    "ownership.orfl": "66ed04c65885bbfdb891624710182cf2d258cdea1cfd18ff4b448fe422f8aaad",
+    "README.md": "8b57e1e182bd3559872206f53532ef67adb4913958db69fe510070b3e5182916"
+  },
+  "compressed_artifacts": {
+    "baseline-candidate-final.csv.gz": {
+      "uncompressed_sha256": "e6acf016c315330bf0a4dc573e16ef386c1dbd2895696c7c491a6cd3b50f06bc",
+      "uncompressed_bytes": 4591598
+    },
+    "baseline-exact.csv.gz": {
+      "uncompressed_sha256": "e6acf016c315330bf0a4dc573e16ef386c1dbd2895696c7c491a6cd3b50f06bc",
+      "uncompressed_bytes": 4591598
+    },
+    "baseline.orfl.gz": {
+      "uncompressed_sha256": "642e1961da745782a70cc475ba020a2049469b9a1f1739c203d41eb5a1aade85",
+      "uncompressed_bytes": 4775016
+    }
+  },
+  "checked_runs": [
+    {
+      "path": "checks/baseline-candidate-final-_xifd99c/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/companion-pin-6cxiczjc/report.json",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit"
+    },
+    {
+      "path": "checks/controller-aux-1080-us038s_a/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_aux_setup-pni93bxy/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_conditioning-uxa__s66/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_diagnostics-hds667d5/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_integration-n8xx3ann/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_preflight_calibration-hbakp5gy/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_profile-n7oktl4f/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_responsive-m6iha8_v/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/controller_setup-biymly4f/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/flap-mix-profile-final-lcn_yfye/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/flight-log-lh0ecz3c/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/mix-accepted-eojvi6xw/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/ownership-exact-final-q8jv5oii/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/r4-baseline-exact-26ag5qme/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/r4-baseline-flaps-0j8vbsed/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/reset-publication-6jrqf6uq/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/restore-final-mtrbq16g/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/test_companions_external_rejection-qrhqwqkv/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/test_controller_rates-tkwxccwo/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/test_failure_session-pme_tmba/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/test_flaps_session-_hxm80qe/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "checks/test_flight_log_inputs-nhq366d1/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "path": "native/checks/av17-r5-native-mix-cdy1ibtg/report.json",
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    }
+  ],
+  "additional_verification": {
+    "command": "python tools/companions/test_rebind.py",
+    "exit_code": 0,
+    "tests": 37
+  },
+  "local_visual_evidence": {
+    "path": "tmp/avanti-control-r4/ui/en/fixture-aux-1920x1080.png",
+    "sha256": "cbfd11a1a1ce147a5ee5d14a523dbf8589c55db088f975709bd9abf5516d77bc",
+    "width": 1920,
+    "height": 1080,
+    "renderer": "Compatibility/OpenGL",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "scope": "readability only; screenshot intentionally outside Git"
+  },
+  "limits": [
+    "Synthetic controller events, not physical radio validation",
+    "Companion solver rebind passed; inherited app_root behavior-manifest mismatch still refuses admission",
+    "No full CI, release package, performance or physical qualification"
+  ]
+}

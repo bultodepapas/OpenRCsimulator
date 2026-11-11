@@ -17,6 +17,20 @@ inspector does not establish physical validation, and older physics validators r
 
 ## Quick start
 
+Current flap-equipped recordings declare `flap-elevator-mix-owner-v1`. Each accepted
+interval retains `flap_mix_owner` so replay does not consult a connected controller.
+The initial controller profile UUID/hash and subsequent `control_profile` events
+identify changes without embedding device associations. Existing `raw_*` / `stick_*`
+columns are the session's mapped/conditioned channels, not raw HID samples.
+`cmd_pitch` is post-rates/trim and before flap compensation, failures and servos.
+New CSV columns append the owner, normalized added pitch, saturated target before
+failures and actual trailing-edge elevator degrees. These diagnostics use the
+accepted endpoint; the initial row describes the saved checkpoint, not an elapsed
+interval. `srv_pitch` remains actual normalized servo travel. Historical logs omit
+the extension and retain simulator ownership. Unknown or stripped declarations are
+refused. Changing source still requires explicit candidate replay or the original
+solver for exact replay. [Implementation evidence](research/avanti-realism/AV-17-R5/README.md).
+
 1. Launch the simulator normally and fly any fixed-wing aircraft.
 2. Press **F10** to start. A `REC` badge shows elapsed simulation time.
 3. Press **F11** at the start of a maneuver or when a response feels wrong.
