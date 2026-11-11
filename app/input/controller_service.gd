@@ -21,6 +21,8 @@ var clock_msec: Callable = func() -> int: return Time.get_ticks_msec()
 var session: Node
 var _refreshing := false
 var _profiles: Dictionary = {} # connection generation -> explicit selection, never a persistent device ID
+## Rejections are reusable between device refreshes; input events must not reload storage.
+var _profile_misses: Dictionary = {}
 var _elapsed := 0.0
 var _last_process_ms := 0
 var _last_flight_selection_result := true
@@ -31,7 +33,9 @@ var _manual_roles: Dictionary = {}
 
 func _init() -> void:
 	registry.selection_changed.connect(_selection_changed)
-	registry.devices_changed.connect(func() -> void: _defaults_pending = true)
+	registry.devices_changed.connect(func() -> void:
+		_profile_misses.clear()
+		_defaults_pending = true)
 
 
 func _ready() -> void:
@@ -54,6 +58,9 @@ func _process(delta: float) -> void:
 
 
 func refresh() -> void:
+	# Recheck repaired/imported storage at the existing 0.5 s refresh boundary.
+	# Clear before update_devices(), whose selection callbacks run synchronously.
+	_profile_misses.clear()
 	_refreshing = true
 	registry.update_devices(enumerate_devices.call())
 	var ui_id: int = registry.selected_device_id("ui")
@@ -122,6 +129,7 @@ func _restore_ui_preference(devices: Array[Dictionary]) -> bool:
 
 
 func _connection_changed(id: int, connected: bool) -> void:
+	_profile_misses.clear()
 	_refreshing = true
 	if not connected:
 		registry.disconnect_device(id)
@@ -243,30 +251,37 @@ func profile_for_device(id: int) -> Dictionary:
 			and not bool(session.get("_controller_lost")) \
 			and session.radio.device_key == RcInput.key_for(id, info):
 		return session.radio.profile.duplicate(true)
+	if _profile_misses.has(key): return {}
 	# A corrupt or unsupported V2 store must not look like an empty store and
 	# silently enable a legacy mapping or a built-in default for this device.
 	var storage := store.load_all()
 	if not bool(storage.get("ok", false)):
-		return {}
+		return _remember_profile_miss(key)
 	var devices: Array[Dictionary] = registry.get_devices()
 	var profile: Dictionary = store.match_profile(info, devices)
-	if profile.is_empty() and not store.profiles_for_device(info).is_empty(): return {}
+	if profile.is_empty() and not store.profiles_for_device(info).is_empty(): return _remember_profile_miss(key)
 	# A serial-qualified V2 match remains valid even when a family is duplicated.
 	# Legacy keys have no serial and need uniqueness across the current snapshot.
 	if profile.is_empty() and (not JetiRadio.has_jeti_identity_claim(info) or JetiRadio.matches(info)) \
 			and Store.legacy_identity_is_unique(info, devices):
 		var legacy: Dictionary = Calibration.load_profile(store.legacy_path, RcInput.key_for(id, info))
 		if not legacy.is_empty():
-			if info.get("known", false) and info.get("kind", "") == "gamepad": return {}
+			if info.get("known", false) and info.get("kind", "") == "gamepad": return _remember_profile_miss(key)
 			profile = Profile.upgrade_legacy(legacy, {"legacy_device_key": RcInput.key_for(id, info)})
 	if profile.is_empty() and JetiRadio.has_jeti_identity_claim(info):
-		return {}
+		return _remember_profile_miss(key)
 	elif profile.is_empty() and info.get("known", false) and info.get("kind", "") == "gamepad":
 		profile = Profile.defaults()
 	# Names suggest a radio role, not a verified physical mapping. Setup can offer
 	# a starter draft, but an unsaved radio cannot fly until it is calibrated.
-	if not profile.is_empty(): _profiles[key] = profile.duplicate(true)
+	if profile.is_empty(): return _remember_profile_miss(key)
+	_profiles[key] = profile.duplicate(true)
 	return profile
+
+
+func _remember_profile_miss(key: String) -> Dictionary:
+	_profile_misses[key] = true
+	return {}
 
 
 func apply_profile(profile: Dictionary, device_id := -1, runtime_snapshot: Variant = null, defer_rollback_signal := false) -> bool:
@@ -276,6 +291,7 @@ func apply_profile(profile: Dictionary, device_id := -1, runtime_snapshot: Varia
 	if not bool(prepared.get("ok", false)):
 		return false
 	var active_profile: Dictionary = prepared.profile
+	_profile_misses.clear()
 	var key := "%d:%d" % [id, registry.connection_generation(id)]
 	var previous_profile: Dictionary = profile_for_device(id)
 	if typeof(runtime_snapshot) == TYPE_DICTIONARY:
@@ -379,7 +395,9 @@ func save_profile_from_setup(candidate: Dictionary, flight_device_id := -1) -> D
 		var unassociated: Dictionary = Profile.upgrade_legacy(candidate)
 		if unassociated.is_empty():
 			return {"ok": false, "profile": {}, "error": "Invalid controller profile."}
-		return store.save_profile(unassociated)
+		var saved := store.save_profile(unassociated)
+		_profile_misses.clear()
+		return saved
 	if selected_id != id or not registry.device_for_id(id).get("connected", false):
 		return {"ok": false, "profile": {}, "error": "The selected flight controller disconnected or changed before the profile was saved."}
 	var prepared := validate_profile_for_session(candidate)
@@ -430,6 +448,7 @@ func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_d
 		if store.has_method("save_profile_with_ui_preference") else store.save_profile(profile)
 	if not bool(saved.get("ok", false)):
 		return saved
+	_profile_misses.clear()
 
 	_settings_save_transaction = true
 	_last_flight_selection_result = true
@@ -457,6 +476,7 @@ func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_d
 	# route. Selection callbacks remain muted until the whole rollback is complete.
 	var restored_store: Dictionary = store.restore_snapshot(previous_store)
 	_profiles = previous_cache.duplicate(true)
+	_profile_misses.clear()
 	var current_flight_id: int = registry.selected_device_id("flight")
 	var ui_role_restored: bool = registry.select_device("ui", old_ui_id)
 	var flight_role_restored: bool = registry.select_device("flight", old_flight_id)
@@ -557,6 +577,7 @@ func _save_and_apply(profile: Dictionary, id: int) -> Dictionary:
 	if apply_profile(saved.profile, id, previous_runtime_profile, true):
 		return saved
 	var restored: Dictionary = store.restore_snapshot(previous_store)
+	_profile_misses.clear()
 	if bool(restored.get("ok", false)) and registry.selected_device_id("flight") == id:
 		flight_selection_changed.emit()
 	var error := "The active session rejected this controller profile."

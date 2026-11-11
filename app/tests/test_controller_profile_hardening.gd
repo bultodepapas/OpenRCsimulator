@@ -21,6 +21,14 @@ var checks := 0
 var failures := 0
 
 
+class CountingStore extends Store:
+	var reads := 0
+
+	func load_all() -> Dictionary:
+		reads += 1
+		return super.load_all()
+
+
 ## Counts engine and script errors, so a malformed field proves rejection rather than an aborted call.
 class ErrorCounter extends Logger:
 	var _mutex := Mutex.new()
@@ -120,6 +128,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	_test_unconfigured_profile_lookups()
 	for path in [RECOVERY_PATH, CORRUPT_PATH, CORRUPT_LEGACY_PATH, CALIBRATION_PATH, CALIBRATION_LEGACY_PATH, WATCHDOG_PATH, WATCHDOG_LEGACY_PATH, MALFORMED_PATH, MALFORMED_LEGACY_PATH]:
 		_clean(path)
 
@@ -333,3 +342,73 @@ func _run() -> void:
 		_clean(path)
 	print("Controller profile hardening: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+func _test_unconfigured_profile_lookups() -> void:
+	var path := "user://controller_lookup_%d.cfg" % OS.get_process_id()
+	_clean(path)
+	var storage := CountingStore.new(path, path + ".legacy")
+	check("lookup fixture saves an unrelated profile", storage.save_profile(Profile.defaults()).ok)
+	var info := {"id": 93, "name": "Synthetic EdgeTX radio", "guid": "uncalibrated-radio", "kind": "radio", "known": false}
+	var service := Service.new()
+	service.store = storage
+	service.enumerate_devices = func() -> Array: return [info]
+	service.refresh()
+	check("unconfigured radio has no accepted profile", service.profile_for_device(93).is_empty())
+	var reads_after_first := storage.reads
+	var all_refused := true
+	for event in 100:
+		all_refused = service.profile_for_device(93).is_empty() and all_refused
+	check("input bursts do not reread an unconfigured radio profile", all_refused and storage.reads == reads_after_first,
+		"%d extra reads" % (storage.reads - reads_after_first))
+
+	# Identity changes invalidate refusals even when the connection ID is reused.
+	info = info.duplicate(true)
+	info.guid = "replacement-radio"
+	service.registry.update_devices([info])
+	service.registry.select_device("flight", 93)
+	check("replacement radio remains unconfigured", service.profile_for_device(93).is_empty())
+	check("replacement identity gets a fresh storage lookup", storage.reads > reads_after_first)
+
+	# An explicit setup save must supersede a cached refusal immediately.
+	var saved := service.save_profile_from_setup(Profile.defaults("radio", "radio_custom"), 93)
+	check("setup can save after a cached missing profile", saved.ok, str(saved))
+	check("setup save becomes visible without waiting for refresh", not service.profile_for_device(93).is_empty())
+	service.free()
+
+	# Storage repair/import is observed at the existing device-refresh boundary.
+	var another := Service.new()
+	another.store = storage
+	var second_info := {"id": 94, "name": "Synthetic EdgeTX radio", "guid": "later-radio", "kind": "radio", "known": false}
+	another.enumerate_devices = func() -> Array: return [second_info]
+	another.refresh()
+	check("another radio starts unconfigured", another.profile_for_device(94).is_empty())
+	var imported := Profile.defaults("radio", "radio_custom")
+	imported.association = {"guid": "later-radio", "legacy_device_key": RcInput.key_for(94, another.registry.device_for_id(94))}
+	var imported_save := storage.save_profile(imported)
+	check("lookup fixture imports a matching profile", imported_save.ok)
+	another.refresh()
+	check("refresh observes a profile added after a refusal", another.profile_for_device(94).get("profile_id", "") == imported_save.profile.profile_id)
+	another.free()
+
+	var transaction := Service.new()
+	transaction.store = storage
+	var transaction_info := {"id": 95, "name": "Synthetic EdgeTX radio", "guid": "transaction-radio", "kind": "radio", "known": false}
+	transaction.enumerate_devices = func() -> Array: return [transaction_info]
+	transaction.refresh()
+	check("settings transaction starts with a cached refusal", transaction.profile_for_device(95).is_empty())
+	var target := FakeSession.new()
+	transaction.attach_session(target)
+	var candidate := Profile.defaults("radio", "radio_custom")
+	candidate.name = "Rejected setup"
+	target.reject_name = candidate.name
+	var before := FileAccess.get_file_as_bytes(path)
+	var refused := transaction.save_settings_from_setup(candidate, 95, -1)
+	check("settings rollback after a refusal preserves storage", not refused.ok and FileAccess.get_file_as_bytes(path) == before)
+	check("settings rollback cannot expose its rejected profile", transaction.profile_for_device(95).is_empty() and target.last_profile_id.is_empty())
+	target.reject_name = ""
+	var accepted := transaction.save_settings_from_setup(candidate, 95, -1)
+	check("settings save immediately supersedes a cached refusal", accepted.ok and transaction.profile_for_device(95).get("profile_id", "") == accepted.profile.profile_id)
+	transaction.free()
+	target.free()
+	_clean(path)
