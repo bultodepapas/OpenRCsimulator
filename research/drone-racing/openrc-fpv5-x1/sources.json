@@ -1,0 +1,88 @@
+{
+  "schema": "openrc-fpv5 sources v1",
+  "build": {
+    "family": "openrc-fpv5",
+    "variant": "openrc-fpv5-f50-2150-f5146-6s-x1",
+    "name": "OpenRC FPV5 experimental candidate x1: F50 2150 KV, F5146 5.1 in, 6S 1300 mAh, estimated 215 mm square-X frame",
+    "status": "experimental-estimates",
+    "capabilities": ["multirotor", "acro", "angle", "ground_start", "battery", "replay"],
+    "controller_law": "openrc-fc-acro-angle-v1",
+    "rotor_law": "quadratic-static-v1",
+    "powertrain_law": "el-one-quadrant-bus-v1"
+  },
+  "references": {
+    "f50_table": "LiG Power F50 2150 KV / F5146 static table, https://www.ligpower.com/product/f50-5inch-racing-drone-motor.html, accessed 2026-11-11 as transcribed in FPV/03 section 6; page bytes and hash not yet captured (intake open)",
+    "f5146_spec": "T-Motor F5146 specification, https://www.t-hobby.com/products/t-motor-f5146-drone-propeller, accessed 2026-11-11 as transcribed in FPV/03 section 6: 5.1 in nominal diameter, 4.6 in pitch, recommends motors below 2100 KV (conflicts with the 2150 KV pairing; unresolved)",
+    "lab_fixture": "app/physics/multirotor/plant.gd Plant.research_quad() (DR-01 estimated research-quad fixture)"
+  },
+  "motor_rows": {
+    "class": "manufacturer-reported",
+    "note": "F50 2150 KV with F5146 static table (FPV/03 section 6); vendor-reported, no independent instrumentation or uncertainty",
+    "rows": [
+      {"label": "50%", "command": 0.5, "voltage_v": 23.88, "current_a": 10.97, "rpm": 22194, "thrust_g": 824, "torque_displayed_n_m": 0.08},
+      {"label": "100%", "command": 1.0, "voltage_v": 23.28, "current_a": 52.52, "rpm": 35042, "thrust_g": 2136, "torque_displayed_n_m": 0.22}
+    ]
+  },
+  "inputs": {
+    "motor_kv": {"value": 2150, "unit": "rpm/V", "class": "manufacturer-reported", "note": "F50 2150 KV motor designation (FPV/03 section 6)"},
+    "torque_display_half_step": {"value": 0.005, "unit": "N*m", "class": "estimated", "note": "displayed torque has two decimals; half a display step is taken as its uncertainty"},
+    "no_load_current": {"value": 1.0, "unit": "A", "class": "estimated", "note": "typical for this motor class at 10 V; no datasheet row pinned"},
+    "prop_diameter": {"value": 0.12954, "unit": "m", "class": "manufacturer-reported", "note": "T-Motor F5146 nominal 5.1 in = 129.54 mm (FPV/03 section 6), not a 5.0 in / 127 mm prop"},
+    "rotor_inertia": {"value": 7.0e-6, "unit": "kg*m^2", "class": "borrowed", "note": "prop plus bell about the spin axis from the lab fixture Plant.research_quad() (DR-01 derived check)"},
+    "rotor_drag": {"value": 7.6e-5, "unit": "N*s^2/m", "class": "borrowed", "note": "rotor in-plane drag coefficient k_h from the lab fixture Plant.research_quad()"},
+    "airframe_drag_areas": {"value": [0.012, 0.012, 0.020], "unit": "m^2", "class": "borrowed", "note": "airframe drag areas from the lab fixture Plant.research_quad()"},
+    "motor_diagonal": {"value": 0.215, "unit": "m", "class": "estimated", "note": "typical 5-inch racing frame class motor-to-motor diagonal; the downloaded frame intake DR-29 is open"},
+    "motor_mass": {"value": 0.033, "unit": "kg", "class": "estimated", "note": "typical 2306-class motor mass, one per hub"},
+    "motor_centroid_below_hub": {"value": 0.010, "unit": "m", "class": "estimated", "note": "motor mass centroid below the prop hub plane, at the hub x/y; point mass (own inertia neglected so the bell is not counted twice with the rotor inertia)"},
+    "prop_mass": {"value": 0.0045, "unit": "kg", "class": "estimated", "note": "typical 5.1-inch tri-blade prop mass, one per hub at the hub plane"}
+  },
+  "mass_items": [
+    {"id": "frame", "mass": 0.095, "position": [0.0, 0.0, 0.012], "shape": {"type": "box", "size": [0.152, 0.152, 0.020]}, "class": "estimated", "note": "typical 5-inch carbon frame with top plate; centroid 12 mm below the hub plane; box inertia-equivalent to two 0.215 m diagonal arms (side = diagonal/sqrt(2))"},
+    {"id": "stack", "mass": 0.085, "position": [0.004, 0.0, 0.006], "shape": {"type": "box", "size": [0.036, 0.036, 0.020]}, "class": "estimated", "note": "stack/ESC/receiver/VTX/camera/wiring lumped near the centre between the plates"},
+    {"id": "battery", "mass": 0.215, "position": [0.0, 0.0, -0.024], "shape": {"type": "box", "size": [0.075, 0.035, 0.038]}, "class": "estimated", "note": "typical 6S 1300 mAh LiPo strapped on top of the centre, 75 x 35 x 38 mm"}
+  ],
+  "battery": {
+    "cells": {"value": 6, "unit": "1", "class": "estimated", "note": "6S pack chosen for this candidate"},
+    "capacity": {"value": 1.3, "unit": "A*h", "class": "estimated", "note": "1300 mAh pack chosen for this candidate"},
+    "resistance": {"value": 0.030, "unit": "ohm", "class": "estimated", "note": "about 5 mOhm per cell"},
+    "auxiliary_current": {"value": 0.6, "unit": "A", "class": "estimated", "note": "VTX/FC/receiver draw"},
+    "initial_soc": {"value": 1.0, "unit": "1", "class": "estimated", "note": "fully charged start"},
+    "cell_ocv": {"value": [[0.0, 3.30], [0.05, 3.55], [0.10, 3.68], [0.20, 3.74], [0.30, 3.77], [0.40, 3.80], [0.50, 3.84], [0.60, 3.88], [0.70, 3.94], [0.80, 4.02], [0.90, 4.11], [1.0, 4.20]], "unit": "V", "class": "estimated", "note": "generic single-cell LiPo rest curve (soc, volts), not identified for a product"}
+  },
+  "powertrain": {
+    "idle_command": {"value": 0.055, "unit": "1", "class": "borrowed", "note": "idle command from the lab fixture / firmware default idle"},
+    "max_command": {"value": 1.0, "unit": "1", "class": "borrowed", "note": "maximum command from the lab fixture output limit"}
+  },
+  "controller": {
+    "sample_rate": {"value": 240, "unit": "Hz", "class": "estimated", "note": "the only admitted controller sample schedule (240 Hz outer tick)"},
+    "kp": {"value": [0.045, 0.050, 0.060], "unit": "N*m*s/rad", "class": "estimated", "note": "starting rate-loop gain, to be requalified by the controller owner"},
+    "ki": {"value": [0.25, 0.28, 0.20], "unit": "N*m/rad", "class": "estimated", "note": "starting integral gain, to be requalified by the controller owner"},
+    "kd": {"value": [0.00045, 0.00050, 0.0], "unit": "N*m*s^2/rad", "class": "estimated", "note": "starting derivative-on-measurement gain, to be requalified by the controller owner"},
+    "i_max": {"value": [0.08, 0.08, 0.06], "unit": "N*m", "class": "estimated", "note": "starting integral limit, to be requalified by the controller owner"},
+    "kaw": {"value": [20.0, 20.0, 20.0], "unit": "1/s", "class": "estimated", "note": "starting back-calculation anti-windup gain, to be requalified by the controller owner"},
+    "tau_limit": {"value": [0.9, 0.9, 0.35], "unit": "N*m", "class": "estimated", "note": "starting torque-request limit, to be requalified by the controller owner"},
+    "gyro_lpf": {"value": 90.0, "unit": "Hz", "class": "estimated", "note": "first-order gyro low-pass cutoff below the 120 Hz Nyquist frequency"},
+    "dterm_lpf": {"value": 60.0, "unit": "Hz", "class": "estimated", "note": "first-order D-term low-pass cutoff below the 120 Hz Nyquist frequency"},
+    "angle_max_tilt": {"value": 55.0, "unit": "deg", "class": "estimated", "note": "Angle mode maximum tilt starting value"},
+    "angle_gain": {"value": 6.0, "unit": "1/s", "class": "estimated", "note": "Angle mode attitude-to-rate gain starting value"},
+    "angle_rate_limit": {"value": 400.0, "unit": "deg/s", "class": "estimated", "note": "Angle mode roll/pitch rate cap starting value"},
+    "arm_low_throttle": {"value": 0.05, "unit": "1", "class": "estimated", "note": "arming low-throttle threshold"},
+    "allocator_weights": {"value": [1.0, 20.0, 20.0, 5.0], "unit": "1", "class": "estimated", "note": "allocator row weights (collective, roll, pitch, yaw) starting value"},
+    "throttle_rate": {"value": 0.8, "unit": "1/s", "class": "estimated", "note": "rate-throttle policy full-stick slew starting value"}
+  },
+  "contacts": {
+    "foot_depth": {"value": 0.022, "unit": "m", "class": "estimated", "note": "feet under the motors at the hub x/y, 22 mm below the hub plane"},
+    "static_sag": {"value": 0.004, "unit": "m", "class": "estimated", "note": "static sag on four feet used to choose the total vertical stiffness"},
+    "heave_damping_ratio": {"value": 0.6, "unit": "1", "class": "estimated", "note": "damping ratio of the heave mode used to choose the damping"},
+    "friction": {"value": 0.7, "unit": "1", "class": "estimated", "note": "foot/ground friction coefficient"},
+    "prop_hull_height": {"value": 0.012, "unit": "m", "class": "estimated", "note": "crash hull points at the prop-disc centres, 12 mm above the hub plane"},
+    "crash_speed": {"value": 5.0, "unit": "m/s", "class": "estimated", "note": "hull closing speed treated as a crash"},
+    "rotor_strike_speed": {"value": 300.0, "unit": "rad/s", "class": "estimated", "note": "rotor speed above which a prop strike counts"}
+  },
+  "camera": {
+    "forward_of_cg": {"value": 0.060, "unit": "m", "class": "estimated", "note": "FPV camera mount forward of the CG (product starting point, not a calibration)"},
+    "above_hub_plane": {"value": 0.015, "unit": "m", "class": "estimated", "note": "FPV camera mount above the hub plane (product starting point, not a calibration)"},
+    "tilt": {"value": 40.0, "unit": "deg", "class": "estimated", "note": "camera uptilt starting point, not a calibration"},
+    "hfov": {"value": 120.0, "unit": "deg", "class": "estimated", "note": "horizontal field of view starting point, not a calibration"}
+  }
+}

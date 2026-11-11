@@ -94,6 +94,25 @@ var substeps: Callable
 ## The callback must treat current_joint and its arrays as read-only because the kernel reuses k1 after this call.
 ## Set this or `substeps`, never both. Existing three-argument substeps callbacks remain unchanged.
 var substeps_joint: Callable = Callable()
+## DR-16a: explicit callback protocol. PROTOCOL_LEGACY (the default) keeps the historical dispatch exactly.
+## PROTOCOL_FRAMED_SAMPLED is opt-in for closed-loop sampled control. It replaces `pre_tick` and the stage family
+## (`stage`, `block_loads`, `block_derivative`, `stage_rotor_momentum`, `rotor_momentum`, `loads`) with two pure
+## callbacks, so no controller memory or command lives outside the kernel's tick, reset and restore transaction:
+##   sample_tick(previous_frame, input_snapshot, clock) -> {aux: float64[aux_size], modes: int64[modes_size]}
+##     previous_frame = {body, continuous, aux, modes}: the detached ACCEPTED frame at the start of the tick;
+##     input_snapshot = float64[input_size]; clock = {tick, time_s, dt}. Runs once per tick before k1 and returns
+##     only the candidate sampled and discrete arrays. It never changes body or continuous state.
+##   stage_sampled(body, continuous, stage_time_s, sampled_context) -> the same result dictionary as `stage`
+##     sampled_context = {aux, modes, sample_tick, sample_time_s}: a detached copy of that one candidate sample,
+##     the same for k1..k4, substeps, the event locator and every step-policy stage. At reset it is built from the
+##     prepared frame, after a restore from the restored accepted frame.
+## The protocol needs a state layout identity (explicit sizes) and a nonempty continuous block. The legacy default
+## callables stay installed but inactive: the kernel never calls them for a framed model.
+const PROTOCOL_LEGACY := "legacy"
+const PROTOCOL_FRAMED_SAMPLED := "framed-sampled-v1"
+var callback_protocol: String = PROTOCOL_LEGACY
+var sample_tick: Callable = Callable()
+var stage_sampled: Callable = Callable()
 
 
 ## Static shape of the contract. Checks that depend on the live state (continuous size, array finiteness)
@@ -118,9 +137,23 @@ static func validate(candidate: Variant) -> Dictionary:
 				return {ok = false, message = "vehicle model endpoint layout requires explicit %s" % field}
 	for field: String in ["loads", "stage", "block_loads", "block_derivative", "stage_rotor_momentum",
 			"rotor_momentum", "pre_tick", "post_tick", "post_tick_joint", "block_aux", "step_policy", "substeps", "substeps_joint",
-			"endpoint_transition", "state_validator"]:
+			"endpoint_transition", "state_validator", "sample_tick", "stage_sampled"]:
 		if typeof(candidate.get(field)) != TYPE_CALLABLE:
 			return {ok = false, message = "vehicle model %s must be a Callable" % field}
+	if typeof(candidate.callback_protocol) != TYPE_STRING \
+			or candidate.callback_protocol not in [PROTOCOL_LEGACY, PROTOCOL_FRAMED_SAMPLED]:
+		return {ok = false, message = "vehicle model callback protocol is unknown"}
+	if candidate.callback_protocol == PROTOCOL_LEGACY:
+		if not candidate.sample_tick.is_null() or not candidate.stage_sampled.is_null():
+			return {ok = false, message = "vehicle model sampled callbacks require the framed sampled protocol"}
+	else:
+		if candidate.state_layout_identity.is_empty() or candidate.continuous_size <= 0:
+			return {ok = false, message = "framed sampled protocol requires a state layout identity and a nonempty continuous block"}
+		if not candidate.sample_tick.is_valid() or not candidate.stage_sampled.is_valid():
+			return {ok = false, message = "framed sampled protocol requires sample_tick and stage_sampled"}
+		for field: String in ["stage", "block_loads", "block_derivative", "stage_rotor_momentum"]:
+			if not candidate.get(field).is_null():
+				return {ok = false, message = "framed sampled protocol cannot also select the legacy %s route" % field}
 	if candidate.endpoint_transition.is_valid() or candidate.state_validator.is_valid():
 		if candidate.state_layout_identity.is_empty():
 			return {ok = false, message = "vehicle model endpoint callbacks require a state layout identity"}
@@ -128,7 +161,7 @@ static func validate(candidate: Variant) -> Dictionary:
 		return {ok = false, message = "vehicle model selects at most one of post_tick and post_tick_joint"}
 	if candidate.substeps.is_valid() and candidate.substeps_joint.is_valid():
 		return {ok = false, message = "vehicle model selects at most one of substeps and substeps_joint"}
-	if candidate.substeps_joint.is_valid() and not candidate.stage.is_valid():
+	if candidate.substeps_joint.is_valid() and not candidate.uses_joint_stage():
 		return {ok = false, message = "vehicle model substeps_joint requires a joint stage evaluator"}
 	if not candidate.loads.is_valid() and not candidate.stage.is_valid() \
 			and not (candidate.block_loads.is_valid() and candidate.block_derivative.is_valid()):
@@ -149,6 +182,6 @@ static func validate(candidate: Variant) -> Dictionary:
 	return {ok = true, message = ""}
 
 
-## True when the model integrates continuous blocks through the joint `stage` route.
+## True when the model integrates continuous blocks through a joint stage route (`stage` or `stage_sampled`).
 func uses_joint_stage() -> bool:
-	return stage.is_valid()
+	return stage.is_valid() or callback_protocol == PROTOCOL_FRAMED_SAMPLED

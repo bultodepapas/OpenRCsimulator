@@ -200,6 +200,110 @@ func commit_prepared_reset(candidate: Dictionary, before_sample: Callable = Call
 	return true
 
 
+## DR-16a: detached full-frame reset preparation for a framed sampled model.
+## candidate_frame = {body, continuous, aux, modes}; candidate_inputs = float64[input_size].
+## Unlike prepare_reset(), nothing is read from or written to the live arrays: the stage is evaluated on the
+## candidate frame with its own sampled context, no sampler runs and nothing is emitted. A refusal leaves the
+## running flight untouched. The result is sealed to this owner and its unchanged context; only
+## commit_prepared_reset_frame() publishes it, all arrays together.
+func prepare_reset_frame(candidate_frame: Dictionary, candidate_inputs: PackedFloat64Array) -> Dictionary:
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry():
+		return {ok = false, message = "reset preparation is unavailable inside an endpoint callback"}
+	var contract: Dictionary = VehicleModel.validate(model)
+	if not contract.ok:
+		return {ok = false, message = "reset rejected: " + str(contract.message)}
+	if not _framed():
+		return {ok = false, message = "reset rejected: full-frame preparation requires the framed sampled protocol"}
+	if not _mass_properties_are_valid():
+		return {ok = false, message = "reset rejected: mass, gravity, or inertia is invalid"}
+	# The live-layout checks of _configuration_is_valid(), against the declared layout instead.
+	if model.post_tick.is_valid() and model.post_tick_joint.is_valid():
+		return {ok = false, message = "reset rejected: vehicle model selects two body filters"}
+	if not model.events.is_empty():
+		var declared_index: int = int(model.events[0].get("index", -1))
+		if model.step_policy.is_valid() or model.events.size() != 1 \
+			or declared_index < RB.SIZE or declared_index >= RB.SIZE + model.continuous_size:
+			return {ok = false, message = "reset rejected: declared event does not address the continuous block"}
+	if candidate_frame.size() != 4 or not candidate_frame.has_all(["body", "continuous", "aux", "modes"]) \
+		or typeof(candidate_frame.body) != TYPE_PACKED_FLOAT64_ARRAY or not state_is_valid(candidate_frame.body):
+		return {ok = false, message = "reset rejected: initial state is nonfinite, malformed, or has a degenerate quaternion"}
+	if not _array_is_finite(candidate_inputs, model.input_size):
+		return {ok = false, message = "reset rejected: input or auxiliary state is nonfinite or malformed"}
+	var next_body: PackedFloat64Array = candidate_frame.body.duplicate()
+	var a := RB.ATT
+	var quaternion_norm_sq := next_body[a] * next_body[a] + next_body[a + 1] * next_body[a + 1] \
+		+ next_body[a + 2] * next_body[a + 2] + next_body[a + 3] * next_body[a + 3]
+	if absf(quaternion_norm_sq - 1.0) > 1e-12:
+		RK.normalize_attitude(next_body)
+	var probe := {body = next_body, continuous = candidate_frame.continuous, aux = candidate_frame.aux, modes = candidate_frame.modes}
+	if not _endpoint_frame_shape_is_valid(probe):
+		return {ok = false, message = "reset rejected: auxiliary, mode or continuous state disagrees with the vehicle model's declared layout"}
+	var frame: Dictionary = probe.duplicate(true)
+	if not _continuous_aux_matches(frame.continuous, frame.aux):
+		return {ok = false, message = "reset rejected: continuous and auxiliary states disagree"}
+	if not _validate_endpoint_frame(frame, _endpoint_validation_context(0, 1.0 / Engine.physics_ticks_per_second)):
+		return {ok = false, message = "reset rejected: endpoint state validator or layout refused the state"}
+	var next_inertia_inv := RB.inertia_inverse(inertia)
+	if not _array_is_finite(next_inertia_inv, 6):
+		return {ok = false, message = "reset rejected: inertia inverse is nonfinite"}
+	var reset_guard: Dictionary = _capture_endpoint_guard()
+	var joint: Variant = _call_endpoint_read_only(_call_joint_stage, [frame.body.duplicate(), frame.continuous.duplicate(), 0.0,
+		_sampled_context(frame.aux, frame.modes, 0, 0.0)])
+	if not _endpoint_guard_unchanged(reset_guard):
+		return {ok = false, message = "reset rejected: evaluator mutated live state or model"}
+	if not _joint_stage_is_valid(joint, model.continuous_size):
+		return {ok = false, message = "reset rejected: aircraft returned nonfinite or malformed loads"}
+	var prepared := {ok = true, full_frame = true, frame = frame, inputs = candidate_inputs.duplicate(),
+		inertia_inverse = next_inertia_inv, loads = joint.loads.duplicate()}
+	prepared.endpoint_guard = _capture_endpoint_guard()
+	prepared.endpoint_seal = _frame_reset_seal(prepared)
+	return prepared
+
+
+## Publishes a prepare_reset_frame() candidate: body, continuous, aux, modes, inputs and the tick-zero clock
+## together. Refused, with nothing changed, for another owner, a changed context, a tampered candidate or a
+## candidate from prepare_reset(). before_sample follows commit_prepared_reset().
+func commit_prepared_reset_frame(candidate: Dictionary, before_sample: Callable = Callable()) -> bool:
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return false
+	if not before_sample.is_null() and (not before_sample.is_valid() or before_sample.get_argument_count() != 0):
+		return false
+	if not _framed() or candidate.get("ok") != true or candidate.get("full_frame") != true \
+		or not candidate.get("frame") is Dictionary or not candidate.get("endpoint_guard") is Dictionary \
+		or typeof(candidate.get("endpoint_seal")) != TYPE_PACKED_BYTE_ARRAY:
+		return false
+	# A changed context is refused without overwriting the caller's new context.
+	if not _endpoint_guard_matches(candidate.endpoint_guard) or candidate.endpoint_seal != _frame_reset_seal(candidate) \
+		or not _array_is_finite(candidate.get("inputs"), model.input_size) \
+		or not _array_is_finite(candidate.get("inertia_inverse"), 6) or not _loads_are_valid(candidate.get("loads")) \
+		or not _validate_endpoint_frame(candidate.frame, _endpoint_validation_context(0, 1.0 / Engine.physics_ticks_per_second)):
+		return false
+	continuous = candidate.frame.continuous.duplicate()
+	aux = candidate.frame.aux.duplicate()
+	modes = candidate.frame.modes.duplicate()
+	inputs = candidate.inputs.duplicate()
+	state = candidate.frame.body.duplicate()
+	previous = state.duplicate()
+	tick = 0
+	_fixed_dt = 1.0 / Engine.physics_ticks_per_second
+	_inertia_inv = candidate.inertia_inverse.duplicate()
+	_inertia_cache = inertia.duplicate()
+	last_loads = candidate.loads.duplicate()
+	last_events = []
+	fault_reason = ""
+	_state_layout_identity = model.state_layout_identity
+	_remember_valid_state()
+	reset_observer_fault = ""
+	if before_sample.is_null():
+		stepped.emit(tick, time(), state, last_loads, inputs, aux)
+		return true
+	_publish_committed_boundary(before_sample, true, "reset")
+	return true
+
+
+func _frame_reset_seal(candidate: Dictionary) -> PackedByteArray:
+	return var_to_bytes([candidate.get("frame"), candidate.get("inputs"), candidate.get("inertia_inverse"), candidate.get("loads")])
+
+
 ## Shared synchronous publication for accepted reset and restore boundaries.
 ## This helper does not parse, validate or install a physical frame.
 func _publish_committed_boundary(notification: Callable, publish_sample: bool, kind: String,
@@ -299,15 +403,30 @@ func step() -> void:
 	before_step.emit(tick)
 	var endpoint_previous: Dictionary = _endpoint_frame(state, continuous, aux, modes) if _endpoint_enabled() else {}
 	var old_aux := aux.duplicate()
-	var next_aux: Variant = model.pre_tick.call(old_aux, inputs, dt())
-	if not _array_is_finite(next_aux) or next_aux.size() != old_aux.size():
-		_fail_safe("step rejected: pre-step produced nonfinite or malformed auxiliary state")
-		return
-	aux = next_aux
+	# DR-16a: a framed model takes one candidate control sample per tick, held through every stage of this tick.
+	var sampled_context: Dictionary = {}
+	var stage_guard: Dictionary = {}
+	if _framed():
+		var sample: Dictionary = _framed_sample(endpoint_previous, t)
+		if not sample.ok:
+			_fail_safe("step rejected: " + str(sample.message))
+			return
+		aux = sample.aux
+		modes = sample.modes
+		sampled_context = _sampled_context(aux, modes, tick, t)
+		# Stages are not wrapped one by one (cost): one guard spans the whole integration instead, so a stage or
+		# policy that writes live kernel state or swaps a model field refuses the tick.
+		stage_guard = _capture_endpoint_guard()
+	else:
+		var next_aux: Variant = model.pre_tick.call(old_aux, inputs, dt())
+		if not _array_is_finite(next_aux) or next_aux.size() != old_aux.size():
+			_fail_safe("step rejected: pre-step produced nonfinite or malformed auxiliary state")
+			return
+		aux = next_aux
 	var combined: PackedFloat64Array = _packed_state(state)
 	var current_joint: Dictionary = {}
-	if not continuous.is_empty() and model.stage.is_valid():
-		var candidate: Variant = model.stage.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
+	if not continuous.is_empty() and model.uses_joint_stage():
+		var candidate: Variant = _call_joint_stage(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t, sampled_context)
 		if not _joint_stage_is_valid(candidate):
 			aux = old_aux
 			_fail_safe("step rejected: joint stage evaluation is nonfinite or malformed")
@@ -318,7 +437,7 @@ func step() -> void:
 		aux = old_aux
 		_fail_safe("step rejected: aircraft returned nonfinite or malformed loads")
 		return
-	var rotor: Variant = model.rotor_momentum.call(aux) # held constant during RK4, like aux
+	var rotor: Variant = PackedFloat64Array() if _framed() else model.rotor_momentum.call(aux) # held constant during RK4, like aux
 	if not _array_is_finite(rotor) or (not rotor.is_empty() and rotor.size() != 3):
 		aux = old_aux
 		_fail_safe("step rejected: rotor momentum is nonfinite or malformed")
@@ -354,8 +473,8 @@ func step() -> void:
 			stage_error.message = "RK stage state is nonfinite, malformed, or has a degenerate quaternion"
 			return _zero_derivative()
 		var joint: Dictionary = {}
-		if not continuous.is_empty() and model.stage.is_valid():
-			var candidate: Variant = model.stage.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
+		if not continuous.is_empty() and model.uses_joint_stage():
+			var candidate: Variant = _call_joint_stage(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t, sampled_context)
 			if not _joint_stage_is_valid(candidate):
 				stage_error.message = "RK joint stage evaluation is nonfinite or malformed"
 				return _zero_derivative()
@@ -400,6 +519,9 @@ func step() -> void:
 	if not stage_error.message.is_empty():
 		aux = old_aux
 		_fail_safe("step rejected: " + stage_error.message)
+		return
+	if not stage_guard.is_empty() and not _endpoint_guard_unchanged(stage_guard):
+		_fail_safe("step rejected: a stage or step policy mutated live state or model")
 		return
 	var tick_events: Array[Dictionary] = []
 	var integration_receipt: Dictionary = {}
@@ -580,19 +702,20 @@ func _loads_are_valid(candidate: Variant) -> bool:
 
 func _configuration_is_valid() -> bool:
 	if (not model.state_layout_identity.is_empty() or model.endpoint_transition.is_valid() \
-		or model.state_validator.is_valid()) and not VehicleModel.validate(model).ok:
+		or model.state_validator.is_valid() or model.callback_protocol != VehicleModel.PROTOCOL_LEGACY) \
+		and not VehicleModel.validate(model).ok:
 		return false
 	# Joint stages require a continuous block. Never silently discard that evaluator
 	# in favour of the body-only loads callback (whose default returns zero loads).
-	if continuous.is_empty() and (model.stage.is_valid() or not model.loads.is_valid()):
+	if continuous.is_empty() and (model.uses_joint_stage() or not model.loads.is_valid()):
 		return false
 	if model.post_tick.is_valid() and model.post_tick_joint.is_valid():
 		return false
 	if model.substeps.is_valid() and model.substeps_joint.is_valid():
 		return false
-	if model.substeps_joint.is_valid() and (not model.stage.is_valid() or continuous.is_empty()):
+	if model.substeps_joint.is_valid() and (not model.uses_joint_stage() or continuous.is_empty()):
 		return false
-	if not continuous.is_empty() and not model.stage.is_valid() and (not model.block_loads.is_valid() or not model.block_derivative.is_valid()):
+	if not continuous.is_empty() and not model.uses_joint_stage() and (not model.block_loads.is_valid() or not model.block_derivative.is_valid()):
 		return false
 	if not model.events.is_empty():
 		if model.step_policy.is_valid() or model.events.size() != 1:
@@ -600,6 +723,11 @@ func _configuration_is_valid() -> bool:
 		var declared_index: int = int(model.events[0].get("index", -1))
 		if declared_index < RB.SIZE or declared_index >= RB.SIZE + continuous.size():
 			return false
+	return _mass_properties_are_valid()
+
+
+## Mass, gravity and a positive-definite inertia tensor; independent of the state layout.
+func _mass_properties_are_valid() -> bool:
 	if not is_finite(mass) or mass <= 0.0 or not is_finite(gravity) or gravity < 0.0 or inertia.size() != 6:
 		return false
 	for value in inertia:
@@ -772,6 +900,8 @@ func checkpoint() -> Dictionary:
 	if _endpoint_enabled():
 		snapshot.format = ENDPOINT_CHECKPOINT_FORMAT
 		snapshot.state_layout_identity = model.state_layout_identity
+		if _framed():
+			snapshot.callback_protocol = model.callback_protocol
 	# A producer must not emit a boundary that its own reader refuses.
 	return snapshot if can_restore_checkpoint(snapshot) else {}
 
@@ -791,7 +921,11 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 	if _endpoint_enabled():
 		if typeof(candidate.get("state_layout_identity")) != TYPE_STRING \
 			or candidate.state_layout_identity != model.state_layout_identity \
-			or candidate.size() != 14 + (1 if candidate.has("continuous") else 0):
+			or candidate.size() != 14 + (1 if candidate.has("continuous") else 0) + (1 if _framed() else 0):
+			return false
+		# DR-16a: a framed checkpoint pins its callback protocol; a legacy one never carries the key.
+		if _framed() != candidate.has("callback_protocol") or (_framed() \
+			and (typeof(candidate.callback_protocol) != TYPE_STRING or candidate.callback_protocol != model.callback_protocol)):
 			return false
 	elif candidate.has("state_layout_identity"):
 		return false
@@ -882,13 +1016,71 @@ func _packed_state(body: PackedFloat64Array) -> PackedFloat64Array:
 func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
 	if continuous.is_empty():
 		return model.loads.call(combined, stage_t)
-	if model.stage.is_valid():
-		var candidate: Variant = model.stage.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
+	if model.uses_joint_stage():
+		# DR-16a: outside a tick (reset preparation) the sampled context is the candidate frame in the live arrays.
+		var candidate: Variant = _call_joint_stage(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t,
+			_sampled_context(aux, modes, 0, stage_t) if _framed() else {})
 		return candidate.loads if _joint_stage_is_valid(candidate) else PackedFloat64Array([NAN])
 	return model.block_loads.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
 
 
-func _joint_stage_is_valid(candidate: Variant) -> bool:
+## DR-16a: true for the opt-in framed sampled protocol (sim/vehicle_model.gd).
+func _framed() -> bool:
+	return model.callback_protocol == VehicleModel.PROTOCOL_FRAMED_SAMPLED
+
+
+## The one control sample a framed model's stages read. Never handed to a callback: each stage gets a copy.
+static func _sampled_context(sampled: PackedFloat64Array, discrete: PackedInt64Array, at_tick: int, at_time: float) -> Dictionary:
+	return {aux = sampled.duplicate(), modes = discrete.duplicate(), sample_tick = at_tick, sample_time_s = at_time}
+
+
+## Pure sample transition on the detached accepted frame: {ok, message} or {ok, aux, modes}.
+## Nothing live changes here. The caller installs the candidate arrays and a refused tick restores them.
+func _framed_sample(accepted_frame: Dictionary, t: float) -> Dictionary:
+	# The callback gets its own copy: a sampler that keeps a reference cannot reach the frame the endpoint sees.
+	var frame_copy: Dictionary = accepted_frame.duplicate(true)
+	var input_snapshot: PackedFloat64Array = inputs.duplicate()
+	var input_copy: PackedFloat64Array = input_snapshot.duplicate()
+	var clock := {tick = tick, time_s = t, dt = dt()}
+	var clock_copy: Dictionary = clock.duplicate(true)
+	var guard := _capture_endpoint_guard()
+	var result: Variant = _call_endpoint_read_only(model.sample_tick, [frame_copy, input_snapshot, clock])
+	if not _endpoint_guard_unchanged(guard) or not _guard_values_equal(accepted_frame, frame_copy) \
+		or not _guard_values_equal(input_snapshot, input_copy) or not _guard_values_equal(clock, clock_copy):
+		return {ok = false, message = "sample callback mutated live state, its frame, inputs or clock"}
+	if not result is Dictionary or result.size() != 2 or not result.has_all(["aux", "modes"]) \
+		or not _array_is_finite(result.aux, model.aux_size) \
+		or typeof(result.modes) != TYPE_PACKED_INT64_ARRAY or result.modes.size() != model.modes_size:
+		return {ok = false, message = "sample callback returned nonfinite or malformed sampled state"}
+	return {ok = true, aux = result.aux.duplicate(), modes = result.modes.duplicate()}
+
+
+## Single dispatch point for the joint stage. Legacy models keep `stage(body, continuous, t)` exactly.
+## A framed model receives a detached copy of the tick's sampled context. Mutating that copy, or reentering a
+## kernel transition from the stage, refuses the evaluation: null is a malformed joint result to every caller.
+func _call_joint_stage(body: PackedFloat64Array, extra: PackedFloat64Array, stage_t: float, context: Dictionary) -> Variant:
+	if not _framed():
+		return model.stage.call(body, extra, stage_t)
+	if context.size() != 4:
+		return null
+	var detached: Dictionary = {aux = context.aux.duplicate(), modes = context.modes.duplicate(),
+		sample_tick = context.sample_tick, sample_time_s = context.sample_time_s}
+	var was_active: bool = _endpoint_callback_active
+	var was_attempted: bool = _endpoint_reentry_attempted
+	_endpoint_callback_active = true
+	_endpoint_reentry_attempted = false
+	var result: Variant = model.stage_sampled.call(body, extra, stage_t, detached)
+	var reentered: bool = _endpoint_reentry_attempted
+	_endpoint_callback_active = was_active
+	# Inside an outer guarded callback (reset preparation) the attempt stays visible to that guard.
+	_endpoint_reentry_attempted = was_attempted or (reentered and was_active)
+	if reentered or not _guard_values_equal(detached, context):
+		return null
+	return result
+
+
+## extra_size >= 0 checks a detached candidate layout (full-frame reset); the default is the live block.
+func _joint_stage_is_valid(candidate: Variant, extra_size: int = -1) -> bool:
 	if not candidate is Dictionary or not candidate.has_all(["loads", "derivative", "rotor_momentum"]):
 		return false
 	# Every required field is present; exact size rejects unknown keys without allocating keys() on RK stages.
@@ -903,7 +1095,8 @@ func _joint_stage_is_valid(candidate: Variant) -> bool:
 		return false
 	if candidate.has("stage_context") and typeof(candidate.stage_context) != TYPE_DICTIONARY:
 		return false
-	return _loads_are_valid(candidate.loads) and _array_is_finite(candidate.derivative, continuous.size()) \
+	return _loads_are_valid(candidate.loads) \
+		and _array_is_finite(candidate.derivative, continuous.size() if extra_size < 0 else extra_size) \
 		and _array_is_finite(candidate.rotor_momentum, 3)
 
 
@@ -963,7 +1156,7 @@ const _ENDPOINT_STATE_FIELDS := ["mass", "inertia", "gravity", "inputs", "last_l
 const _ENDPOINT_MODEL_FIELDS := ["input_size", "aux_size", "modes_size", "continuous_size", "identity", "state_layout_identity",
 	"loads", "stage", "block_loads", "block_derivative", "stage_rotor_momentum", "rotor_momentum", "pre_tick",
 	"post_tick", "post_tick_joint", "block_aux", "step_policy", "events", "substeps", "substeps_joint",
-	"endpoint_transition", "state_validator"]
+	"endpoint_transition", "state_validator", "callback_protocol", "sample_tick", "stage_sampled"]
 
 
 static func _guard_copy(value: Variant) -> Variant:
