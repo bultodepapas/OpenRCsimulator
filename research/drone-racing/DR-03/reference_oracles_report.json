@@ -1,0 +1,426 @@
+{
+  "schema": "openrc-dr-reference-oracles-v1",
+  "scope": "Synthetic software and mathematical reference checks; not physical validation.",
+  "rate_source": {
+    "project": "Betaflight",
+    "tag": "4.5.2",
+    "commit": "024f8e13d4e642eb6a380308685b9ea3aa3ef1a2",
+    "path": "src/main/fc/rc.c"
+  },
+  "script_sha256": "628a33a210269feb6db17fde2422089288bd3f7e0089eb7963d6180d7a1571ae",
+  "tolerances": {
+    "relative": 1e-10,
+    "absolute": 1e-10
+  },
+  "total": 20,
+  "passed": 20,
+  "failed": 0,
+  "results": [
+    {
+      "name": "actual_rates_full_curve_deg_s",
+      "passed": true,
+      "actual": [
+        -670.0,
+        -309.554443359375,
+        -153.609375,
+        -62.404052734375,
+        0.0,
+        62.404052734375,
+        153.609375,
+        309.554443359375,
+        670.0
+      ],
+      "expected": [
+        -670.0,
+        -309.554443359375,
+        -153.609375,
+        -62.404052734375,
+        0.0,
+        62.404052734375,
+        153.609375,
+        309.554443359375,
+        670.0
+      ],
+      "mismatches": [],
+      "note": "Pinned Actual curve; values at nine signed stick positions."
+    },
+    {
+      "name": "actual_zero_expo_is_not_linear",
+      "passed": true,
+      "actual": 217.5,
+      "expected": 217.5,
+      "mismatches": [],
+      "note": "For zero expo, 0.5 stick does not give half the endpoint rate."
+    },
+    {
+      "name": "actual_full_expo_midstick",
+      "passed": true,
+      "actual": 107.34375,
+      "expected": 107.34375,
+      "mismatches": [],
+      "note": "Checks the fifth-power term separately."
+    },
+    {
+      "name": "actual_max_below_center_floor",
+      "passed": true,
+      "actual": [
+        -200.0,
+        -100.0,
+        100.0,
+        200.0
+      ],
+      "expected": [
+        -200.0,
+        -100.0,
+        100.0,
+        200.0
+      ],
+      "mismatches": [],
+      "note": "The max-minus-center contribution is floored at zero."
+    },
+    {
+      "name": "actual_axis_rate_cap",
+      "passed": true,
+      "actual": [
+        -500.0,
+        500.0
+      ],
+      "expected": [
+        -500.0,
+        500.0
+      ],
+      "mismatches": [],
+      "note": "A separate per-axis cap binds after the curve."
+    },
+    {
+      "name": "actual_deg_to_radians_per_second",
+      "passed": true,
+      "actual": 2.6809893556806648,
+      "expected": 2.6809893556806648,
+      "mismatches": [],
+      "note": "Convert deg/s to rad/s once at the boundary."
+    },
+    {
+      "name": "wrench_forward_frd_signs",
+      "passed": true,
+      "actual": [
+        4.0,
+        0.07999999999999999,
+        0.04000000000000002,
+        0.008000000000000002
+      ],
+      "expected": [
+        4.0,
+        0.08,
+        0.04,
+        0.008
+      ],
+      "mismatches": [],
+      "note": "Wrench order is total positive thrust, FRD roll, pitch and yaw."
+    },
+    {
+      "name": "wrench_inverse_four_forces",
+      "passed": true,
+      "actual": [
+        0.5000000000000002,
+        1.0999999999999999,
+        1.3,
+        1.0999999999999999
+      ],
+      "expected": [
+        0.5,
+        1.1,
+        1.3,
+        1.1
+      ],
+      "mismatches": [],
+      "note": "General Gaussian elimination recovers known synthetic motor thrusts."
+    },
+    {
+      "name": "rotor_total_angular_momentum",
+      "passed": true,
+      "actual": {
+        "alpha_z_rad_s2": 50.25125628140704,
+        "relative_rotor_accel_rad_s2": 10050.251256281406,
+        "body_momentum_rate_nm": 0.10050251256281408,
+        "relative_momentum_rate_nm": -0.10050251256281408,
+        "total_momentum_rate_nm": 0.0
+      },
+      "expected": {
+        "alpha_z_rad_s2": 50.25125628140704,
+        "relative_rotor_accel_rad_s2": 10050.251256281406,
+        "body_momentum_rate_nm": 0.10050251256281408,
+        "relative_momentum_rate_nm": -0.10050251256281406,
+        "total_momentum_rate_nm": 0.0
+      },
+      "mismatches": [],
+      "note": "One free rotor, no external torque; signs are FRD and thrust axis is -z."
+    },
+    {
+      "name": "rotor_motor_work_with_cross_term",
+      "passed": true,
+      "actual": {
+        "relative_spin_energy_rate_w": 100.50251256281406,
+        "cross_term_rate_w": -0.5025125628140704,
+        "total_rotational_energy_rate_w": 99.99999999999999,
+        "internal_motor_work_w": 100.0
+      },
+      "expected": {
+        "relative_spin_energy_rate_w": 100.50251256281406,
+        "cross_term_rate_w": -0.5025125628140704,
+        "total_rotational_energy_rate_w": 100.0,
+        "internal_motor_work_w": 100.0
+      },
+      "mismatches": [],
+      "note": "The body/relative-spin cross term is required for work closure."
+    },
+    {
+      "name": "shared_bus_four_identical_motors",
+      "passed": true,
+      "actual": {
+        "bus_voltage_v": 21.326666666666664,
+        "motor_current_a": [
+          26.633333333333322,
+          26.633333333333322,
+          26.633333333333322,
+          26.633333333333322
+        ],
+        "pack_current_a": 53.46666666666665,
+        "active_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "expected": {
+        "bus_voltage_v": 21.326666666666668,
+        "motor_current_a": [
+          26.633333333333333,
+          26.633333333333333,
+          26.633333333333333,
+          26.633333333333333
+        ],
+        "pack_current_a": 53.46666666666667,
+        "active_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "mismatches": [],
+      "note": "All four DC-equivalent motor loads share one common pack voltage."
+    },
+    {
+      "name": "shared_bus_and_motor_energy_balance",
+      "passed": true,
+      "actual": {
+        "ocv_power_w": 1283.1999999999996,
+        "terminal_power_w": 1140.2657777777772,
+        "pack_resistive_loss_w": 142.93422222222213,
+        "aux_power_w": 4.265333333333333,
+        "each_motor_bus_input_w": 284.000111111111,
+        "each_em_power_w": 213.06666666666658,
+        "each_motor_copper_loss_w": 70.93344444444439
+      },
+      "expected": {
+        "ocv_power_w": 1283.2,
+        "terminal_power_w": 1140.2657777777779,
+        "pack_resistive_loss_w": 142.93422222222222,
+        "aux_power_w": 4.265333333333333,
+        "each_motor_bus_input_w": 284.0001111111111,
+        "each_em_power_w": 213.06666666666666,
+        "each_motor_copper_loss_w": 70.93344444444445
+      },
+      "mismatches": [],
+      "note": "Pack source, terminal, heat, auxiliary, motor conversion and copper losses close."
+    },
+    {
+      "name": "shared_bus_mixed_active_and_coast",
+      "passed": true,
+      "actual": {
+        "bus_voltage_v": 21.858921161825723,
+        "motor_current_a": [
+          57.43568464730289,
+          39.29460580912861,
+          0.0,
+          0.0
+        ],
+        "pack_current_a": 42.82157676348547,
+        "active_indices": [
+          0,
+          1
+        ]
+      },
+      "expected": {
+        "bus_voltage_v": 21.858921161825727,
+        "motor_current_a": [
+          57.4356846473029,
+          39.29460580912863,
+          0.0,
+          0.0
+        ],
+        "pack_current_a": 42.82157676348548,
+        "active_indices": [
+          0,
+          1
+        ]
+      },
+      "mismatches": [],
+      "note": "Third motor overruns and coasts; fourth is disabled."
+    },
+    {
+      "name": "one_load_versus_shared_four_loads",
+      "passed": true,
+      "actual": {
+        "one_load_bus_v": 23.10222222222222,
+        "one_load_pack_a": 17.95555555555555,
+        "four_load_bus_v": 21.326666666666664
+      },
+      "expected": {
+        "one_load_bus_v": 23.10222222222222,
+        "one_load_pack_a": 17.955555555555556,
+        "four_load_bus_v": 21.326666666666668
+      },
+      "mismatches": [],
+      "note": "Four isolated single-pack calls would report the wrong bus voltage."
+    },
+    {
+      "name": "fixture_5_0_inch_disc_clearance",
+      "passed": true,
+      "actual": {
+        "adjacent_hub_spacing_mm": 107.48023074035521,
+        "signed_disc_clearance_mm": -19.51976925964479,
+        "zero_gap_diagonal_mm": 179.60512242138307
+      },
+      "expected": {
+        "adjacent_hub_spacing_mm": 107.48023074035521,
+        "signed_disc_clearance_mm": -19.51976925964479,
+        "zero_gap_diagonal_mm": 179.60512242138307
+      },
+      "mismatches": [],
+      "note": "Coplanar square-X disc envelope; zero gap is not a safety margin."
+    },
+    {
+      "name": "fixture_5_1_inch_disc_clearance",
+      "passed": true,
+      "actual": {
+        "adjacent_hub_spacing_mm": 107.48023074035521,
+        "signed_disc_clearance_mm": -22.05976925964478,
+        "zero_gap_diagonal_mm": 183.19722486981073
+      },
+      "expected": {
+        "adjacent_hub_spacing_mm": 107.48023074035521,
+        "signed_disc_clearance_mm": -22.05976925964478,
+        "zero_gap_diagonal_mm": 183.19722486981073
+      },
+      "mismatches": [],
+      "note": "A nominal 5.1-inch disc is 129.54 mm, not 127 mm."
+    },
+    {
+      "name": "fpv_horizontal_to_vertical_fov",
+      "passed": true,
+      "actual": {
+        "v_fov_16_9_degrees": 88.50715548032275,
+        "v_fov_4_3_degrees": 104.82182106205009
+      },
+      "expected": {
+        "v_fov_16_9_degrees": 88.50715548032275,
+        "v_fov_4_3_degrees": 104.82182106205009
+      },
+      "mismatches": [],
+      "note": "Perspective conversion; actual engine projection needs its own test."
+    },
+    {
+      "name": "zoh_240hz_phase_and_magnitude",
+      "passed": true,
+      "actual": {
+        "phase_degrees": [
+          -15.0,
+          -30.0,
+          -45.0,
+          -60.0
+        ],
+        "magnitude_db": [
+          -0.09944792154339814,
+          -0.4005723594894283,
+          -0.9120975839632404,
+          -1.6499597255724272
+        ],
+        "extra_full_tick_phase_degrees": [
+          -30.0,
+          -60.0,
+          -90.0,
+          -120.0
+        ]
+      },
+      "expected": {
+        "phase_degrees": [
+          -15.0,
+          -30.0,
+          -45.0,
+          -60.0
+        ],
+        "magnitude_db": [
+          -0.09944792154339814,
+          -0.4005723594894283,
+          -0.9120975839632401,
+          -1.6499597255724274
+        ],
+        "extra_full_tick_phase_degrees": [
+          -30.0,
+          -60.0,
+          -90.0,
+          -120.0
+        ]
+      },
+      "mismatches": [],
+      "note": "Zero-order hold only; extra delay values exclude the hold's own phase."
+    },
+    {
+      "name": "motor_kv_kt_and_ideal_bridge_units",
+      "passed": true,
+      "actual": {
+        "kv_rad_s_per_v": 104.71975511965977,
+        "kt_nm_per_a": 0.009549296585513721,
+        "back_emf_v": 9.549296585513721,
+        "equivalent_motor_current_a": 24.50703414486279,
+        "pack_motor_current_a": 12.253517072431395,
+        "bus_power_w": 294.0844097383535,
+        "em_power_w": 234.0249374806064,
+        "copper_loss_w": 60.05947225774707
+      },
+      "expected": {
+        "kv_rad_s_per_v": 104.71975511965977,
+        "kt_nm_per_a": 0.009549296585513721,
+        "back_emf_v": 9.549296585513721,
+        "equivalent_motor_current_a": 24.50703414486279,
+        "pack_motor_current_a": 12.253517072431395,
+        "bus_power_w": 294.0844097383535,
+        "em_power_w": 234.0249374806064,
+        "copper_loss_w": 60.05947225774707
+      },
+      "mismatches": [],
+      "note": "Kt=1/Kv only in the stated ideal reciprocal DC-equivalent convention; effective bridge duty is not DShot."
+    },
+    {
+      "name": "kelvin_is_absolute_temperature_not_motor_kv",
+      "passed": true,
+      "actual": {
+        "minus_40_c_in_k": 233.14999999999998,
+        "plus_20_c_in_k": 293.15,
+        "absolute_zero_k": 0.0,
+        "below_absolute_zero_rejected": true
+      },
+      "expected": {
+        "minus_40_c_in_k": 233.15,
+        "plus_20_c_in_k": 293.15,
+        "absolute_zero_k": 0.0,
+        "below_absolute_zero_rejected": true
+      },
+      "mismatches": [],
+      "note": "Kelvin is K, an absolute temperature; motor Kv is a speed constant in rpm/V."
+    }
+  ]
+}
