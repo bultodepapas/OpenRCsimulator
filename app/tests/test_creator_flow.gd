@@ -7,14 +7,27 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Importer := preload("res://workshop/creator/source_importer.gd")
 const Authoring := preload("res://workshop/creator/authoring.gd")
 const R := preload("res://workshop/creator/result.gd")
+const Fixtures := preload("res://tests/creator_fixtures.gd")
 const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
 var failures := 0
+## The Creator library of this run: a temporary folder, never the player's own.
+var _store_root := ""
+var _default_library_existed := false
 
 
 func _initialize() -> void:
+	_default_library_existed = DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("user://aircraft_creator"))
 	_run.call_deferred()
+
+
+func _remove_tree(path: String) -> void:
+	for directory: String in DirAccess.get_directories_at(path):
+		_remove_tree(path.path_join(directory))
+	for file: String in DirAccess.get_files_at(path):
+		DirAccess.remove_absolute(path.path_join(file))
+	DirAccess.remove_absolute(path)
 
 
 func check(label: String, condition: bool, detail := "") -> void:
@@ -77,6 +90,8 @@ func _run() -> void:
 	check("Workshop opens", host.screens.is_top("workshop"))
 	var editor: Node = host.screens.top()
 	check("Workshop offers the Creator", editor.find_child("OpenCreator", true, false) is Button)
+	_store_root = "user://creator_flow_store_%d_%d" % [OS.get_process_id(), Time.get_ticks_usec()]
+	editor.creator_store_root = _store_root
 
 	var payload: Dictionary = _payload("airborne")
 	check("candidate prepared", not payload.is_empty())
@@ -133,6 +148,7 @@ func _run() -> void:
 		await ui.settle()
 		check(start + ": returns to the same Workshop screen", host.flight == null and host.screens.top() == editor)
 	await _tampered_trial(payload)
+	await _bound_flight(host, editor, ui, payload)
 	await _wizard_journey(host, editor, ui)
 	_finish(host)
 
@@ -156,6 +172,73 @@ func _tampered_trial(payload: Dictionary) -> void:
 		str(flight.startup_error))
 	flight.queue_free()
 	await process_frame
+
+
+## AC-15/AC-17 through the real root and Main: a GLB with bound parts and solid paint flies with
+## its surfaces following the simulated deflections and its propeller turning with the shaft.
+func _bound_flight(host: Node, editor: Node, ui: RefCounted, stl_payload: Dictionary) -> void:
+	var admitted: Dictionary = Importer.inspect_bytes(Fixtures.airplane_glb(), "plane.glb")
+	check("bound: GLB fixture admitted", admitted.ok)
+	if not admitted.ok:
+		return
+	var payload := {creator_candidate = stl_payload.creator_candidate, creator_source = admitted.value,
+		creator_placement = Fixtures.AIRPLANE_PLACEMENT.duplicate(true), creator_name = "Bound parts",
+		creator_bindings = Fixtures.airplane_bindings(), creator_appearance = {"mode": "solid", "color": "#2a6fdb"},
+		start_choice = "airborne"}
+	var broken: Dictionary = payload.duplicate()
+	broken.creator_bindings = Fixtures.airplane_bindings()
+	broken.creator_bindings.controls.rudder[0].node = 99
+	editor.trial_requested.emit(broken)
+	check("bound: a binding to a missing part is refused before anything is built", host.flight == null and host.screens.top() == editor)
+	editor.trial_requested.emit(payload)
+	check("bound: trial starts", host.flight != null and host.flight.startup_error.is_empty(),
+		"" if host.flight == null else str(host.flight.startup_error))
+	if host.flight == null:
+		return
+	var flight: Node = host.flight
+	var airplane: Dictionary = flight.get("_airplane")
+	check("bound: the articulated runtime visual flies", bool(airplane.get("articulated", false)) and bool(airplane.get("has_propeller", false))
+		and (airplane.get("hinges", {}) as Dictionary).size() == 5
+		and str(airplane.model_manifest.builder.adapter) == "creator_articulated")
+	var pivot: Node3D = airplane.get("propeller")
+	var rest := {}
+	for key: Variant in airplane.hinges:
+		rest[key] = (airplane.hinges[key].node as Node3D).transform
+	var angle_before: float = pivot.rotation.z
+	for _frame: int in 30:
+		await process_frame
+	check("bound: the propeller turns with the shaft", pivot.is_inside_tree() and not is_equal_approx(pivot.rotation.z, angle_before))
+	var painted := 0
+	var meshes := 0
+	for node: Node in (airplane.root as Node).find_children("*", "MeshInstance3D", true, false):
+		var instance := node as MeshInstance3D
+		for surface: int in instance.mesh.get_surface_count():
+			var material := instance.get_active_material(surface) as BaseMaterial3D
+			# The speed-driven blur disc brings its own material; the model's surfaces carry the paint.
+			if material != null and material.albedo_color.is_equal_approx(Color("#2a6fdb")):
+				painted += 1
+			meshes += 1
+	check("bound: the solid paint reaches the flying model", painted == 8, "%d of %d surfaces" % [painted, meshes])
+	# A held roll command moves the bound ailerons; the unbound structure stays put.
+	var session: Node = flight.session
+	session.input_enabled = false
+	var moved := 0
+	for _frame: int in 40:
+		session.sim.inputs[0] = 0.8
+		await process_frame
+	for key: Variant in airplane.hinges:
+		var hinge: Dictionary = airplane.hinges[key]
+		if str(hinge.role).begins_with("aileron") and not (hinge.node as Node3D).transform.is_equal_approx(rest[key]):
+			moved += 1
+	check("bound: both ailerons follow the simulated deflection", moved == 2, "%d moved" % moved)
+	var state: PackedFloat64Array = session.sim.state
+	var finite := true
+	for index: int in state.size():
+		finite = finite and is_finite(state[index])
+	check("bound: flight state stays finite", finite and str(session.sim.fault_reason).is_empty())
+	host.end_flight()
+	await ui.settle()
+	check("bound: returns to the same Workshop screen", host.flight == null and host.screens.top() == editor)
 
 
 ## The player's own route: Workshop -> Create aircraft -> import a file -> place it -> starting
@@ -219,25 +302,43 @@ func _wizard_journey(host: Node, editor: Node, ui: RefCounted) -> void:
 	# Escape walks back one step at a time; it never drops the aircraft from a later step.
 	editor.call("_request_close")
 	await ui.settle()
+	var leave := editor.find_child("CreatorLeaveDialog", true, false) as ConfirmationDialog
 	check("wizard: Escape steps back inside the wizard", editor.creator_active() and str(wizard.current_step()) == "paint_skins"
-		and editor.find_child("CreatorDiscardDialog", true, false) == null)
-	# Leaving with unsaved work asks first; keeping the work keeps the wizard.
+		and leave != null and not leave.visible)
+	check("wizard: the library of this run is the temporary one", bool(wizard.save_state().writable)
+		and DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(_store_root)), str(wizard.save_state()))
+	# Leaving with unsaved work asks first, in the wizard's own three-way question; keeping the work keeps the wizard.
 	wizard.close_requested.emit()
 	await ui.settle()
-	var discard := editor.find_child("CreatorDiscardDialog", true, false) as ConfirmationDialog
-	check("wizard: leaving asks before discarding", discard != null and discard.visible and editor.creator_active())
-	if discard != null:
-		discard.canceled.emit()
+	check("wizard: leaving asks before anything is dropped", leave != null and leave.visible and editor.creator_active())
+	if leave != null:
+		leave.get_cancel_button().pressed.emit()
 		await ui.settle()
-		check("wizard: Keep editing keeps the aircraft", editor.creator_active() and wizard.document().source() != null)
+		check("wizard: Keep editing keeps the aircraft", editor.creator_active() and not leave.visible and wizard.document().source() != null)
+		# The host's own navigation guard reaches the same question.
+		var outcome := {proceeded = 0, cancelled = 0}
+		editor.request_navigation("Back to Home", func() -> void: outcome.proceeded += 1, func() -> void: outcome.cancelled += 1)
+		await ui.settle()
+		check("wizard: navigating away asks the same question", leave.visible and outcome.proceeded == 0)
+		leave.get_cancel_button().pressed.emit()
+		await ui.settle()
+		check("wizard: staying cancels the navigation", outcome.cancelled == 1 and outcome.proceeded == 0 and editor.creator_active())
 		editor.call("_request_creator_close")
 		await ui.settle()
-		discard = editor.find_child("CreatorDiscardDialog", true, false) as ConfirmationDialog
-		if discard != null:
-			discard.confirmed.emit()
-			await ui.settle()
+		check("wizard: closing asks again", leave.visible)
+		leave.custom_action.emit(&"discard")
+		await ui.settle()
 	check("wizard: discarding returns to the stock editor", not editor.creator_active()
 		and (editor.find_child("WorkshopPanel", true, false) as Control).visible and host.screens.top() == editor)
+	# Discarded work leaves no automatic backup behind: a new Creator has nothing to recover.
+	editor.open_creator()
+	await ui.settle()
+	var fresh: Control = editor.find_child("AircraftCreator", true, false) as Control
+	var recovery := editor.find_child("CreatorRecoveryDialog", true, false) as Window
+	check("wizard: a discarded aircraft is not offered for recovery", fresh != null and fresh != wizard
+		and (recovery == null or not recovery.visible) and not fresh.has_unsaved_changes())
+	editor.close_creator()
+	await ui.settle()
 
 
 func _finish(host: Node) -> void:
@@ -245,5 +346,11 @@ func _finish(host: Node) -> void:
 		host.close_workshop()
 	host.queue_free()
 	await process_frame
+	await process_frame
+	if not _store_root.is_empty():
+		_remove_tree(ProjectSettings.globalize_path(_store_root))
+		check("the temporary library is removed", not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(_store_root)))
+	check("the player's own library was not touched", not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("user://aircraft_creator"))
+		or _default_library_existed)
 	print("Creator flow: %d failures" % failures)
 	quit(1 if failures else 0)

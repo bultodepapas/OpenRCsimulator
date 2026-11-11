@@ -37,6 +37,43 @@ func _initialize() -> void:
 		check("unicode preserved", data.name == "Ñandú 雪")
 		check("round trip is byte identical", CreatorBytes.encode(data).value.bytes == bytes)
 
+	# Bit-exact floats: the engine's text-to-float conversion alone reads some tokens one unit in
+	# the last place off, which would change a record that is decoded and written again.
+	var seed_state := 20261111
+	var doubles: Array = [0.36497120000000005, 0.24924999999999997, 0.1, 2.0 / 3.0, 1e-7, 123456.789e3,
+		4.35, 0.30000000000000004, 9007199254740993.0, 0.1 + 0.2, 1.0 / 3.0, 100.0 / 7.0]
+	var scratch := PackedByteArray()
+	scratch.resize(8)
+	for _index: int in 4000:
+		seed_state = (seed_state * 6364136223846793005 + 1442695040888963407)
+		scratch.encode_s64(0, seed_state)
+		var candidate := scratch.decode_double(0)
+		if is_finite(candidate):
+			doubles.append(candidate)
+			doubles.append(float(seed_state % 1000003) / 977.0)
+			doubles.append(float(seed_state % 100000007) / 9973.0 * pow(10.0, float((_index % 13) - 6)))
+	var wide_record: Dictionary = CreatorBytes.encode({values = doubles})
+	var reread: Dictionary = CreatorBytes.decode(wide_record.value.bytes) if wide_record.ok else {ok = false}
+	check("many doubles encode and decode", wide_record.ok and reread.ok)
+	if reread.ok:
+		var inexact := 0
+		for index: int in doubles.size():
+			scratch.encode_double(0, doubles[index] if doubles[index] != 0.0 else 0.0)
+			var wanted := scratch.decode_s64(0)
+			scratch.encode_double(0, reread.value.data.values[index])
+			if scratch.decode_s64(0) != wanted:
+				inexact += 1
+		check("every decoded float is bit-identical to the one written (%d of %d differ)" % [inexact, doubles.size()], inexact == 0)
+		check("decoding and encoding again gives the same bytes", CreatorBytes.encode(reread.value.data).value.bytes == wide_record.value.bytes)
+	# A source literal goes through the same engine conversion, so known tokens are checked by spelling.
+	for token: String in ["0.36497120000000005", "-0.003381266352646314", "5.000786261358126e-295", "5e-324",
+			"1.7976931348623157e+308", "-1.0641820432928002e-296", "0.1", "1e-07", "123456789.0"]:
+		check("token reads as the double spelled " + token, JSON.stringify(CreatorBytes.exact_float(token), "", true, true) == token)
+	check("a foreign spelling reads within one unit in the last place",
+		absf(CreatorBytes.exact_float("3.6497120000000005e-1") - CreatorBytes.exact_float("0.36497120000000005")) < 1e-16
+		and CreatorBytes.exact_float("0.50") == 0.5 and CreatorBytes.exact_float("-0e0") == 0.0 and CreatorBytes.exact_float("25E-1") == 2.5)
+	check("text that is not a number does not loop", CreatorBytes.exact_float("abc") == 0.0 and CreatorBytes.exact_float("") == 0.0)
+
 	for bad: String in ['{"revision":1.0}', '{"revision":1e0}', '{"revision":-1}', '{"revision":01}',
 			'{"revision":9007199254740992}', '{"revision":0.5}', '{"revision":"1"}' ]:
 		var refused: Dictionary = CreatorBytes.decode(bad.to_utf8_buffer(), PackedStringArray(["revision"]))
@@ -81,6 +118,33 @@ func _initialize() -> void:
 	cut.append(0xE9)
 	check("text refused: sequence cut at the end", not CreatorBytes.decode(cut).ok)
 	check("pre-scan passes writer output", CreatorBytes.text_problem(bytes).is_empty())
+
+	# The writer never emits bytes its own reader refuses: the engine's JSON writer leaves some control
+	# characters raw and spells U+000B as an escape JSON does not have.
+	for code: int in 0x20:
+		var sample := "a" + String.chr(code) + "b" if code != 0 else "ab"
+		var control: Dictionary = CreatorBytes.encode({s = sample})
+		var writable: bool = code in [0, 0x08, 0x09, 0x0A, 0x0C, 0x0D]
+		check("control character U+%04X is %s" % [code, "written and read back" if writable else "refused when writing"],
+			control.ok == writable and (not writable or (CreatorBytes.decode(control.value.bytes).ok
+			and CreatorBytes.decode(control.value.bytes).value.data.s == sample)))
+	check("a control character in a key is refused", not CreatorBytes.encode({"a" + String.chr(1): 1.0}).ok)
+	check("DEL and other text survive", CreatorBytes.decode(CreatorBytes.encode({s = "x" + String.chr(0x7F) + "\u2028 y"}).value.bytes).ok)
+	# A record made of numbers that need the exact search is refused, not searched for seconds.
+	var slow_started := Time.get_ticks_msec()
+	var many := PackedStringArray()
+	for _index: int in 60000:
+		many.append("2.225073858507201e-308")
+	var flood: Dictionary = CreatorBytes.decode(('{"a":[' + ",".join(many) + "]}").to_utf8_buffer())
+	check("a flood of slow number tokens is refused", not flood.ok)
+	var few := PackedStringArray()
+	for index: int in 2000:
+		few.append(JSON.stringify(2.225073858507201e-308 * (1.0 + float(index) / 4096.0), "", true, true))
+	var tiny: Dictionary = CreatorBytes.decode(('{"a":[' + ",".join(few) + "]}").to_utf8_buffer())
+	check("a few thousand tiny numbers still decode exactly", tiny.ok
+		and JSON.stringify(tiny.value.data.a[1999], "", true, true) == few[1999])
+	var slow_ms := Time.get_ticks_msec() - slow_started
+	check("the exact number path is bounded (%d ms)" % slow_ms, slow_ms < 4000)
 
 	check("NaN refused", not CreatorBytes.encode({x = NAN}).ok)
 	check("infinity refused", not CreatorBytes.encode({x = [1.0, INF]}).ok)

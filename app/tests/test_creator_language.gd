@@ -7,6 +7,11 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 const Authoring := preload("res://workshop/creator/authoring.gd")
 const Importer := preload("res://workshop/creator/source_importer.gd")
 const R := preload("res://workshop/creator/result.gd")
+const Store := preload("res://workshop/creator/store.gd")
+const CreatorTrial := preload("res://workshop/creator/trial.gd")
+const PartsPanel := preload("res://ui/aircraft_creator_parts.gd")
+const VisualBuilder := preload("res://workshop/creator/visual_builder.gd")
+const Fixtures := preload("res://tests/creator_fixtures.gd")
 
 const LOCALES: PackedStringArray = ["es", "pt_BR", "de", "fr", "it", "ru", "ja", "zh_Hans"]
 ## Text that is the same in every language: units, formats, axes, numbers and player data.
@@ -63,7 +68,40 @@ func _catalogs() -> void:
 		messages.append(str(entry.label))
 	messages.append_array([Authoring.STATUS_NOT_STARTED, Authoring.STATUS_IN_PROGRESS, Authoring.STATUS_NEEDS_ATTENTION,
 		Authoring.STATUS_COMPLETE, "Create aircraft…", "Leave the Aircraft Creator?", "Estimated value", "Upward",
-		"Choose an airborne or hand-launch trial start."])
+		"Choose an airborne or hand-launch trial start.",
+		"This aircraft has changes that are not saved as a draft. Leave without saving them?", "Leave without saving",
+		CreatorTrial.PRESENTATION_REFUSAL, CreatorTrial.CLIMB_OUT_REFUSAL,
+		PartsPanel.NOT_BOUND, PartsPanel.STL_NOTE, PartsPanel.SHOW_MOVEMENT, PartsPanel.STOP_MOVEMENT,
+		"Open…", "Save draft", "Save aircraft", "All changes saved", "View only", "Saved as version %s",
+		"Leave with unsaved changes?", "Save draft and leave", "Recover unsaved work?", "Open the recovered draft", "Discard it",
+		"Solid colour", "Paint colour", "Moving parts", "Show archived", "Drafts", "Saved aircraft", "Archive", "Restore"])
+	# Every message the library can show (AC-13).
+	var constants: Dictionary = (Store as Script).get_script_constant_map()
+	for constant: String in constants:
+		if constant.begins_with("M_") and typeof(constants[constant]) == TYPE_STRING:
+			messages.append(str(constants[constant]))
+	# Real refusals of moving-part bindings and paint (AC-15, AC-17).
+	var model: Dictionary = Importer.inspect_bytes(Fixtures.airplane_glb(), "plane.glb")
+	check("parts fixture admitted", model.ok)
+	if model.ok:
+		var twice: Dictionary = Fixtures.airplane_bindings()
+		twice.controls.rudder[0].node = Fixtures.PROPELLER_NODE
+		var missing_part: Dictionary = Fixtures.airplane_bindings()
+		missing_part.controls.rudder[0].node = 99
+		var whole: Dictionary = Fixtures.airplane_bindings()
+		whole.controls.rudder[0].node = 0
+		var bad_axis: Dictionary = Fixtures.airplane_bindings()
+		bad_axis.controls.rudder[0].axis = "w"
+		for refused: Dictionary in [VisualBuilder.validate_bindings(model.value, twice), VisualBuilder.validate_bindings(model.value, missing_part),
+				VisualBuilder.validate_bindings(model.value, whole), VisualBuilder.validate_bindings(model.value, bad_axis),
+				VisualBuilder.validate_bindings(model.value, {"format": "other"}),
+				VisualBuilder.validate_appearance({"mode": "solid", "color": "red"}), VisualBuilder.validate_appearance({"mode": "stripes"})]:
+			check("a hostile binding or paint is refused", not refused.ok)
+			for entry: Variant in refused.get("diagnostics", []):
+				messages.append(str(entry.message))
+		var accepted: Dictionary = VisualBuilder.validate_bindings(model.value, Fixtures.airplane_bindings())
+		for entry: Variant in accepted.get("diagnostics", []):
+			messages.append(str(entry.message))
 	# Real refusals from the readers, as the player would meet them.
 	for hostile: Array in [[PackedByteArray([1, 2, 3, 4, 5]), "broken.stl"], ["v 0 0 0\n".to_utf8_buffer(), "model.obj"],
 			[_plane_stl(), "photo.png"], [PackedByteArray([0x67, 0x6C, 0x54, 0x46, 2, 0, 0, 0]), "short.glb"]]:
@@ -89,6 +127,9 @@ func _crawl() -> void:
 	root.size = Vector2i(1920, 1080)
 	var wizard := Creator.new() as Control
 	wizard.theme = UiTheme.build()
+	# A temporary library: this test never opens the player's own.
+	var store_root := "user://creator_language_store_%d_%d" % [OS.get_process_id(), Time.get_ticks_usec()]
+	wizard.set("store_root", store_root)
 	root.add_child(wizard)
 	for _frame: int in 3:
 		await process_frame
@@ -120,6 +161,16 @@ func _crawl() -> void:
 	Creator.reap_abandoned_imports()
 	for _frame: int in 2:
 		await process_frame
+	_remove_tree(ProjectSettings.globalize_path(store_root))
+	check("the temporary library is removed", not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(store_root)))
+
+
+func _remove_tree(path: String) -> void:
+	for directory: String in DirAccess.get_directories_at(path):
+		_remove_tree(path.path_join(directory))
+	for file: String in DirAccess.get_files_at(path):
+		DirAccess.remove_absolute(path.path_join(file))
+	DirAccess.remove_absolute(path)
 
 
 func _collect(wizard: Control, untranslated: Dictionary) -> void:

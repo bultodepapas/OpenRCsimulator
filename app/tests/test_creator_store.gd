@@ -160,7 +160,8 @@ func _test_lock() -> void:
 
 func _test_roots() -> void:
 	for bad: String in ["C:/somewhere/store", "/tmp/store", "user://", "user://../escape", "user://a/../b", "user://a b",
-			"user://a\\b", "res://store", "user://a//b", "user://c:/x", ""]:
+			"user://a\\b", "res://store", "user://a//b", "user://c:/x", "", "user://lib.", "user://nul", "user://a/COM1",
+			"user://aux.d", "user://a./b"]:
 		var refused: Dictionary = Store.open(bad)
 		check("root refused: '%s'" % bad, not refused.ok and _code(refused) == R.WRITE_FAILED)
 	check("unknown fault stage refused", not Store.open(_base + "/never", {fault_stage = "nowhere"}).ok)
@@ -723,7 +724,9 @@ func _test_fault_stages() -> void:
 # --- Tampering --------------------------------------------------------------------------------
 
 func _test_tampering() -> void:
-	# Flip a byte in an object the last transaction added.
+	# Flip a byte in an object the last transaction added: confined to its entry, like any other damage.
+	# A pointer is moved only after its objects were installed and read back, so this is later damage,
+	# not an unfinished change, and nothing is rolled back for it.
 	var seeded := _seed("tamper_flip_latest")
 	var path := _object_path(seeded.absolute, seeded.a2)
 	var bytes := _read(path)
@@ -731,21 +734,23 @@ func _test_tampering() -> void:
 	_write(path, bytes)
 	var current_bytes := _read(seeded.absolute + "/current.json")
 	var opened: Dictionary = Store.open(seeded.root)
-	check("flipped latest object: opens from the previous pointer and says so", opened.ok and opened.value.recovered_from_previous()
-		and opened.diagnostics.size() == 1 and opened.diagnostics[0].code == R.WRITE_FAILED
-		and opened.diagnostics[0].severity == R.SEVERITY_WARNING and opened.value.is_writer())
+	check("flipped latest object: the store opens on its current state", opened.ok and not opened.value.recovered_from_previous()
+		and opened.diagnostics.is_empty() and opened.value.is_writer() and opened.value.generation() == 3)
 	if opened.ok:
 		var store: RefCounted = opened.value
-		check("flipped latest object: the state before the last change", store.generation() == 2
-			and store.load_draft(ID_A).value.record_sha256 == seeded.a1 and store.load_draft(ID_B).ok)
-		check("flipped latest object: damaged bytes preserved", _read(path) == bytes)
-		check("flipped latest object: the refused pointer is kept aside", _has_bytes(seeded.absolute + "/damaged", current_bytes))
-		var again: Dictionary = store.save_draft(_draft(ID_A, "Alpha", {"v": 2.0}, _bytes(650, 3), "alpha.stl"), seeded.a1)
-		check("flipped latest object: saving the same content again repairs it", again.ok and again.value.record_sha256 == seeded.a2
-			and store.load_draft(ID_A).ok and _has_bytes(seeded.absolute + "/damaged", bytes))
+		var damaged_latest: Dictionary = store.load_draft(ID_A)
+		check("flipped latest object: its draft is refused, still listed", _code(damaged_latest) == R.RECORD_INVALID
+			and not damaged_latest.has("value") and store.list_drafts().size() == 2)
+		check("flipped latest object: other drafts load", store.load_draft(ID_B).ok)
+		check("flipped latest object: damaged bytes preserved, pointer untouched", _read(path) == bytes
+			and _read(seeded.absolute + "/current.json") == current_bytes)
+		var again: Dictionary = store.save_draft(_draft(ID_A, "Alpha", {"v": 9.0}, _bytes(650, 3), "alpha.stl"), seeded.a2)
+		check("flipped latest object: a new save replaces the damaged entry", again.ok and store.load_draft(ID_A).ok
+			and store.load_draft(ID_A).value.snapshot.v == 9.0)
 		store.close()
 	var clean: Dictionary = Store.open(seeded.root)
-	check("flipped latest object: the next open is clean", clean.ok and clean.diagnostics.is_empty() and clean.value.generation() == 3)
+	check("flipped latest object: the next open is clean", clean.ok and clean.diagnostics.is_empty() and clean.value.generation() == 4
+		and clean.value.load_draft(ID_A).ok)
 	if clean.ok:
 		clean.value.close()
 
@@ -775,8 +780,8 @@ func _test_tampering() -> void:
 	var latest_source := CreatorBytes.sha256(_bytes(650, 3))
 	_write(_object_path(seeded.absolute, latest_source), _bytes(650, 3).slice(0, 300))
 	opened = Store.open(seeded.root)
-	check("truncated latest payload: restored from the previous pointer", opened.ok and opened.value.recovered_from_previous()
-		and opened.value.load_draft(ID_A).value.record_sha256 == seeded.a1)
+	check("truncated latest payload: confined to its draft", opened.ok and not opened.value.recovered_from_previous()
+		and not opened.value.load_draft(ID_A).ok and opened.value.load_draft(ID_B).ok)
 	if opened.ok:
 		opened.value.close()
 	seeded = _seed("tamper_truncate_old")
@@ -964,6 +969,8 @@ func _test_forged_records() -> void:
 		"unknown key": func(record: Dictionary) -> void: record["path"] = "C:/Users/pilot/model.stl",
 		"missing key": func(record: Dictionary) -> void: record.erase("snapshot"),
 		"wrong format": func(record: Dictionary) -> void: record["format"] = "openrc-creator-draft v2",
+		"format that is a number": func(record: Dictionary) -> void: record["format"] = 5.0,
+		"format that is a list": func(record: Dictionary) -> void: record["format"] = [],
 		"path-like file name": func(record: Dictionary) -> void: record["source_file_name"] = "../../outside/model.stl",
 		"URL file name": func(record: Dictionary) -> void: record["source_file_name"] = "file:///etc/passwd",
 		"oversized name": func(record: Dictionary) -> void: record["name"] = "n".repeat(Limits.NAME_CHARACTERS + 1),
@@ -992,7 +999,7 @@ func _test_forged_records() -> void:
 				and opened.value.load_draft(ID_B).ok
 		check("forged draft record refused when loaded: " + label, passed)
 
-	# The same forgeries as the last transaction of an honest chain: refused when opening.
+	# The same forgeries as the last transaction of an honest chain: confined to their entry too.
 	var forged_record: Dictionary = honest_record.duplicate(true)
 	forged_record["unknown"] = true
 	var forged_written: Dictionary = CreatorBytes.encode(forged_record, Limits.DRAFT_BYTES)
@@ -1002,16 +1009,18 @@ func _test_forged_records() -> void:
 	chained["drafts"][ID_A]["record"] = {"sha256": forged_written.value.sha256, "byte_length": forged_written.value.bytes.size(), "media_type": Store.MEDIA_DRAFT}
 	_forge(absolute, chained)
 	var refused: Dictionary = Store.open(seeded.root, {read_only = true})
-	check("forged record in the last transaction: current pointer refused, previous used",
-		refused.ok and refused.value.recovered_from_previous() and refused.value.generation() == 2)
+	check("forged record in the last transaction: only that entry fails",
+		refused.ok and not refused.value.recovered_from_previous() and not refused.value.load_draft(ID_A).ok
+		and refused.value.load_draft(ID_B).ok)
 	var ghost := {"name": "Ghost", "aircraft_uuid": "", "archived": false, "updated_unix": 1700000000,
 		"record": {"sha256": SHA_NOWHERE, "byte_length": 321, "media_type": Store.MEDIA_DRAFT}}
 	var missing: Dictionary = _next(honest, honest_reference)
 	missing["drafts"][ID_C] = ghost
 	_forge(absolute, missing)
 	refused = Store.open(seeded.root, {read_only = true})
-	check("index naming a missing blob in the last transaction: previous used",
-		refused.ok and refused.value.recovered_from_previous() and refused.value.generation() == 2)
+	check("index naming a missing blob in the last transaction: only that entry fails",
+		refused.ok and not refused.value.recovered_from_previous() and _code(refused.value.load_draft(ID_C)) == R.DEPENDENCY_MISSING
+		and refused.value.load_draft(ID_B).ok)
 	missing = _next(honest)
 	missing["drafts"][ID_C] = ghost
 	_forge(absolute, missing)
@@ -1025,6 +1034,12 @@ func _test_forged_records() -> void:
 		"unknown key": func(index: Dictionary) -> void: index["note"] = "x",
 		"missing key": func(index: Dictionary) -> void: index.erase("recovery"),
 		"wrong format": func(index: Dictionary) -> void: index["format"] = "openrc-creator-index v9",
+		# A format that is not text must fail the schema, not abort the check and pass as valid.
+		"format that is a number": func(index: Dictionary) -> void: index["format"] = 5.0,
+		"format that is a list": func(index: Dictionary) -> void: index["format"] = [],
+		"format that is a table": func(index: Dictionary) -> void: index["format"] = {},
+		"format that is a flag": func(index: Dictionary) -> void: index["format"] = true,
+		"format that is null": func(index: Dictionary) -> void: index["format"] = null,
 		"draft key that is a path": func(index: Dictionary) -> void: index["drafts"]["../../escape"] = index["drafts"][ID_A],
 		"draft key in upper case": func(index: Dictionary) -> void: index["drafts"][ID_C.to_upper()] = index["drafts"][ID_A],
 		"draft with an unknown key": func(index: Dictionary) -> void: index["drafts"][ID_A]["path"] = "x",
@@ -1073,6 +1088,14 @@ func _test_forged_records() -> void:
 		_write(absolute + "/current.json", _pointer_bytes(3, written, _pointer_of(honest_pointer).transaction_id))
 		var opened: Dictionary = Store.open(seeded.root, {read_only = true})
 		check("forged index text refused: " + label, opened.ok and opened.value.recovered_from_previous() and opened.value.generation() == 2)
+
+	# A pointer whose format is not text: refused as a pointer, the previous one is used.
+	var pointer_text := honest_pointer.get_string_from_utf8()
+	check("pointer fixture names its format", pointer_text.contains('"format":"%s"' % Store.POINTER_FORMAT))
+	for spelled: String in ["5.0", "[]", "{}", "true", "null"]:
+		_write(absolute + "/current.json", pointer_text.replace('"format":"%s"' % Store.POINTER_FORMAT, '"format":' + spelled).to_utf8_buffer())
+		var opened: Dictionary = Store.open(seeded.root, {read_only = true})
+		check("forged pointer refused: format " + spelled, opened.ok and opened.value.recovered_from_previous() and opened.value.generation() == 2)
 
 	# The honest pointer still works: nothing above changed an accepted object.
 	_write(absolute + "/current.json", honest_pointer)

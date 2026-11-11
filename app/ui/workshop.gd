@@ -49,6 +49,8 @@ const PRESET_LABELS := {"mini": "Mini", "giant": "Giant", "light": "Light", "hea
 ## Set before adding this screen to the ScreenStack. Defaults to the current catalog aircraft.
 var initial_aircraft_id := Catalog.DEFAULT_ID
 var variants_root := VARIANT_ROOT
+## Folder of the Aircraft Creator library; "" is the store's default. Tests point it at a temporary folder.
+var creator_store_root := ""
 ## Only the interactive application opts into recovery; tests/captures use isolated roots.
 var recovery_enabled := false
 var recovery_root := "user://workshop_recovery"
@@ -2262,6 +2264,7 @@ func open_creator() -> void:
 	if creator_script == null: return
 	_creator = creator_script.new()
 	_creator.name = "AircraftCreator"
+	_creator.set("store_root", creator_store_root)
 	_creator.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_creator.close_requested.connect(_request_creator_close)
 	_creator.test_fly_requested.connect(func(payload: Dictionary) -> void: trial_requested.emit(payload))
@@ -2287,14 +2290,19 @@ func _confirm_creator_discard(proceed: Callable, cancel: Callable = Callable(), 
 	if not _creator.has_unsaved_changes():
 		proceed.call()
 		return
+	if _creator.is_inside_tree() and dialog_host == null:
+		# The wizard owns the question while it is on screen: save the draft and leave, discard, or keep editing.
+		_creator.confirm_leave(proceed, cancel)
+		return
+	# Detached (a test flight is running) or hosted elsewhere: the library is closed, so saving is not offered.
 	if is_instance_valid(_creator_exit_dialog): return
 	_creator_exit_dialog = ConfirmationDialog.new()
 	_creator_exit_dialog.name = "CreatorDiscardDialog"
 	_creator_exit_dialog.title = tr("Leave the Aircraft Creator?")
-	_creator_exit_dialog.dialog_text = tr("This aircraft cannot be saved yet. Leaving discards it.")
+	_creator_exit_dialog.dialog_text = tr("This aircraft has changes that are not saved as a draft. Leave without saving them?")
 	_creator_exit_dialog.theme = _screen.theme
 	_creator_exit_dialog.exclusive = true
-	_creator_exit_dialog.ok_button_text = tr("Discard aircraft")
+	_creator_exit_dialog.ok_button_text = tr("Leave without saving")
 	_creator_exit_dialog.cancel_button_text = tr("Keep editing")
 	var finish := func(confirmed: bool) -> void:
 		var dialog := _creator_exit_dialog
@@ -2734,8 +2742,8 @@ func _finish_close() -> void:
 func request_navigation(destination: String, proceed: Callable, cancel: Callable = Callable(), dialog_host: Node = null, defer_commit := false) -> void:
 	if is_instance_valid(_guard_dialog): return
 	if creator_active():
-		# An unsaved Creator aircraft cannot be stored yet (AC-13): leaving asks to discard it, never to save.
-		# The stock build underneath then gets its own guard.
+		# Unsaved Creator work is settled first (save the draft, discard or stay); the stock build
+		# underneath then gets its own guard.
 		_confirm_creator_discard(func() -> void:
 			close_creator()
 			request_navigation(destination, proceed, cancel, dialog_host, defer_commit), cancel, dialog_host)

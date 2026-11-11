@@ -11714,3 +11714,320 @@ msgstr "Испытание Конструктора не соответству�
 
 msgid "The compressed data declares a window smaller than its content."
 msgstr "Сжатые данные объявляют окно меньше своего содержимого."
+
+# AC-13/AC-15/AC-17: Aircraft Creator library, moving parts and paint.
+msgid "The aircraft library folder cannot be used because it is not a plain folder inside the simulator's data folder. Move it back there, then open the Creator again."
+msgstr "Папку библиотеки моделей нельзя использовать, потому что это не обычная папка внутри папки данных симулятора. Верните её на место и снова откройте Creator."
+
+msgid "Your aircraft library could not be read because its entry files are damaged (%s). Nothing was changed or deleted. Restore the folder %s from a backup, or move it somewhere safe to start an empty library."
+msgstr "Не удалось прочитать вашу библиотеку моделей: файлы записей повреждены (%s). Ничего не изменено и не удалено. Восстановите папку %s из резервной копии или переместите её в безопасное место, чтобы начать с пустой библиотеки."
+
+msgid "Another OpenRC window is using your aircraft library, so this window can show it but cannot change it. Close the other window, then open the Creator again to edit here."
+msgstr "Другое окно OpenRC использует вашу библиотеку моделей, поэтому это окно может её показывать, но не может изменять. Закройте другое окно, затем снова откройте Creator, чтобы редактировать здесь."
+
+msgid "OpenRC could not reserve your aircraft library for editing on this computer, so it is view-only. Your saved aircraft are safe. Restart the simulator and open the Creator again."
+msgstr "OpenRC не удалось зарезервировать вашу библиотеку моделей для редактирования на этом компьютере, поэтому она доступна только для просмотра. Сохранённые самолёты в безопасности. Перезапустите симулятор и снова откройте Creator."
+
+msgid "The last change to your aircraft library did not finish, so the library was put back to the state before it. Check your most recent draft or aircraft and save it again if the change is missing."
+msgstr "Последнее изменение вашей библиотеки моделей не завершилось, поэтому библиотека возвращена к прежнему состоянию. Проверьте последний черновик или самолёт и сохраните его снова, если изменения нет."
+
+msgid "Your aircraft library was put back to the state before an unfinished change, but that could not be written to disk (%s), so it is view-only. Check that the disk is not full or write-protected, then open the Creator again."
+msgstr "Ваша библиотека моделей возвращена к состоянию до незавершённого изменения, но записать это на диск не удалось (%s), поэтому она доступна только для просмотра. Проверьте, что диск не заполнен и не защищён от записи, затем снова откройте Creator."
+
+msgid "The aircraft library is open for viewing only, so nothing can be saved here. Open the Creator again to edit."
+msgstr "Библиотека моделей открыта только для просмотра, поэтому здесь ничего нельзя сохранить. Снова откройте Creator, чтобы редактировать."
+
+msgid "The aircraft library must be opened again before anything else is saved. Leave the Creator, open it again and check that your last save is there."
+msgstr "Библиотеку моделей нужно открыть заново, прежде чем сохранять что-либо ещё. Выйдите из Creator, откройте его снова и проверьте, что последнее сохранение на месте."
+
+msgid "The simulator could not confirm whether your last save finished. Do not save again yet: leave the Creator, open it again and check whether the change is there."
+msgstr "Симулятор не смог подтвердить, завершилось ли последнее сохранение. Пока не сохраняйте снова: выйдите из Creator, откройте его снова и проверьте, есть ли изменение."
+
+msgid "The aircraft library changed on disk while it was open, so nothing was saved. Leave the Creator, open it again and repeat your change."
+msgstr "Библиотека моделей изменилась на диске, пока была открыта, поэтому ничего не сохранено. Выйдите из Creator, откройте его снова и повторите изменение."
+
+msgid "The aircraft library could not be written (%s), so nothing was saved. Check that the disk is not full or write-protected, then save again."
+msgstr "Не удалось записать библиотеку моделей (%s), поэтому ничего не сохранено. Проверьте, что диск не заполнен и не защищён от записи, затем сохраните снова."
+
+msgid "The aircraft library is full: this change needs %s MB and %s MB of its %s MB limit is free. Nothing was saved. Use a smaller model file; archiving does not free space."
+msgstr "Библиотека моделей заполнена: для этого изменения нужно %s МБ, а свободно %s МБ из лимита %s МБ. Ничего не сохранено. Используйте файл модели меньшего размера; архивация место не освобождает."
+
+msgid "The disk is too full to save this change: it needs %s MB and %s MB is free. Nothing was saved. Free some disk space, then save again."
+msgstr "На диске слишком мало места для сохранения: нужно %s МБ, свободно %s МБ. Ничего не сохранено. Освободите место на диске и сохраните снова."
+
+msgid "The aircraft library already holds %s drafts, its maximum. Nothing was saved. Continue an existing draft instead."
+msgstr "В библиотеке моделей уже %s черновиков — это максимум. Ничего не сохранено. Вместо этого продолжите существующий черновик."
+
+msgid "The aircraft library already holds %s aircraft, its maximum. Nothing was saved. Save a new version of an existing aircraft instead."
+msgstr "В библиотеке моделей уже %s самолётов — это максимум. Ничего не сохранено. Вместо этого сохраните новую версию существующего самолёта."
+
+msgid "This aircraft already has %s saved versions, its maximum. Nothing was saved. Save it as a new aircraft instead."
+msgstr "У этого самолёта уже %s сохранённых версий — это максимум. Ничего не сохранено. Вместо этого сохраните его как новый самолёт."
+
+msgid "The aircraft library cannot list any more entries. Nothing was saved. Continue an existing draft or save a new version of an existing aircraft instead."
+msgstr "Библиотека моделей не может перечислить больше записей. Ничего не сохранено. Вместо этого продолжите существующий черновик или сохраните новую версию существующего самолёта."
+
+msgid "A draft with this identity is already saved, so it was not overwritten. Reload the list of drafts and open that draft."
+msgstr "Черновик с таким идентификатором уже сохранён, поэтому он не был перезаписан. Обновите список черновиков и откройте этот черновик."
+
+msgid "This draft was saved again after you opened it, so the newer version was not overwritten. Reload the draft and repeat your change."
+msgstr "Этот черновик был снова сохранён после того, как вы его открыли, поэтому более новая версия не перезаписана. Перезагрузите черновик и повторите изменение."
+
+msgid "A newer automatic backup of this draft exists, so it was kept. Reload the draft to see it."
+msgstr "Существует более новая автоматическая резервная копия этого черновика, поэтому она сохранена. Перезагрузите черновик, чтобы увидеть её."
+
+msgid "This aircraft was saved again after you opened it, so the newer version was not overwritten. Reload the aircraft and repeat your change."
+msgstr "Этот самолёт был снова сохранён после того, как вы его открыли, поэтому более новая версия не перезаписана. Перезагрузите самолёт и повторите изменение."
+
+msgid "The data to save is incomplete or malformed (%s), so nothing was saved. This is a fault in the simulator; please report it."
+msgstr "Данные для сохранения неполны или повреждены (%s), поэтому ничего не сохранено. Это ошибка симулятора; пожалуйста, сообщите о ней."
+
+msgid "Give it a name of 1 to %s characters without line breaks, then save again."
+msgstr "Введите название длиной от 1 до %s символов без переносов строк и сохраните снова."
+
+msgid "The %s holds a value that cannot be saved (%s). Remove unusual characters or values from it, then save again."
+msgstr "В %s есть значение, которое нельзя сохранить (%s). Удалите из него необычные символы или значения и сохраните снова."
+
+msgid "The data to save is larger than the %s MB limit, so nothing was saved. Remove some notes or parts, then save again."
+msgstr "Данные для сохранения больше лимита %s МБ, поэтому ничего не сохранено. Удалите часть заметок или частей и сохраните снова."
+
+msgid "The model file is larger than the %s MB limit, so it was not saved. Export a smaller model and import it again."
+msgstr "Файл модели больше лимита %s МБ, поэтому не сохранён. Экспортируйте модель меньшего размера и импортируйте её снова."
+
+msgid "This aircraft has no model file yet, so it cannot be saved as an aircraft. Import a model first."
+msgstr "У этого самолёта пока нет файла модели, поэтому его нельзя сохранить как самолёт. Сначала импортируйте модель."
+
+msgid "The checked flight data does not belong to this aircraft (%s), so it was not saved. Run the check again, then save."
+msgstr "Проверенные лётные данные не относятся к этому самолёту (%s), поэтому не сохранены. Повторите проверку, затем сохраните."
+
+msgid "That draft is not in the aircraft library. Reload the list of drafts."
+msgstr "Этого черновика нет в библиотеке моделей. Обновите список черновиков."
+
+msgid "There is no automatic backup for this draft."
+msgstr "Для этого черновика нет автоматической резервной копии."
+
+msgid "That aircraft is not in the aircraft library. Reload the list of aircraft."
+msgstr "Этого самолёта нет в библиотеке моделей. Обновите список самолётов."
+
+msgid "Version %s of this aircraft does not exist. Reload the aircraft."
+msgstr "Версии %s этого самолёта не существует. Перезагрузите самолёт."
+
+msgid "Part of this saved item is damaged or missing, so it cannot be opened (%s). Your other drafts and aircraft are not affected. Restore the aircraft library folder from a backup to get it back."
+msgstr "Часть этого сохранённого элемента повреждена или отсутствует, поэтому его нельзя открыть (%s). Остальные черновики и самолёты не затронуты. Восстановите папку библиотеки моделей из резервной копии, чтобы вернуть его."
+
+msgid "The moving parts or the paint of the model are not valid. Check the Controls and Paint steps, then test fly again."
+msgstr "Подвижные части или окраска модели недопустимы. Проверьте шаги «Управление» и «Окраска», затем снова выполните пробный полёт."
+
+msgid "The frozen moving parts or paint do not match the trial identity."
+msgstr "Зафиксированные подвижные части или окраска не соответствуют идентификатору пробного полёта."
+
+msgid "The moving-part settings cannot be read. Bind the moving parts again."
+msgstr "Не удалось прочитать настройки подвижных частей. Привяжите подвижные части заново."
+
+msgid "A bound part turns about the chosen axis through its own origin. In the modelling tool, put the origin of each moving part on its hinge line or on the propeller shaft."
+msgstr "Привязанная часть поворачивается вокруг выбранной оси, проходящей через её собственное начало координат. В программе моделирования поместите начало координат каждой подвижной части на линию её шарнира или на ось винта."
+
+msgid "An STL model is one rigid shape and has no parts to move. Import a GLB model with separate parts for the control surfaces and the propeller."
+msgstr "Модель STL — это единая жёсткая форма, в ней нет подвижных частей. Импортируйте модель GLB с отдельными частями для рулевых поверхностей и винта."
+
+msgid "\"%s\" is not a control this aircraft can move. Bind parts to the ailerons, the elevator, the rudder or the propeller."
+msgstr "\"%s\" — не орган управления, который может двигать этот самолёт. Привязывайте части к элеронам, рулю высоты, рулю направления или винту."
+
+msgid "The GLB model could not be read again. Import the model again."
+msgstr "Не удалось повторно прочитать модель GLB. Импортируйте модель заново."
+
+msgid "The %s has %s parts bound. Bind one or two parts, or none."
+msgstr "Орган управления: %s. Привязано частей: %s. Привяжите одну или две части либо ни одной."
+
+msgid "Choose the axis (X, Y or Z) that the part bound to the %s turns about."
+msgstr "Орган управления: %s. Выберите ось (X, Y или Z), вокруг которой поворачивается привязанная часть."
+
+msgid "Choose the direction, normal or reversed, of the part bound to the %s."
+msgstr "Орган управления: %s. Выберите направление привязанной части: прямое или обратное."
+
+msgid "A part bound to the %s does not exist in this model. Bind the part again."
+msgstr "Орган управления: %s. Привязанной части нет в этой модели. Привяжите часть заново."
+
+msgid "The part \"%s\" is bound more than once. Bind each part to one control only."
+msgstr "Часть \"%s\" привязана более одного раза. Привязывайте каждую часть только к одному органу управления."
+
+msgid "The part \"%s\" is not shown in this model. Bind a part you can see."
+msgstr "Часть \"%s\" не отображается в этой модели. Привяжите видимую часть."
+
+msgid "The part \"%s\" has no shape to move. Bind a part that holds a mesh."
+msgstr "У части \"%s\" нет формы, которую можно двигать. Привяжите часть с мешем."
+
+msgid "The part \"%s\" holds the whole model. In the modelling tool, make the moving part a separate object and bind only that."
+msgstr "Часть \"%s\" содержит всю модель. В программе моделирования сделайте подвижную часть отдельным объектом и привяжите только его."
+
+msgid "The part \"%s\" is inside the part \"%s\", which is also bound. Bind only one of them, or separate them in the modelling tool."
+msgstr "Часть \"%s\" находится внутри части \"%s\", которая тоже привязана. Привяжите только одну из них или разделите их в программе моделирования."
+
+msgid "The paint settings cannot be read. Choose the paint again."
+msgstr "Не удалось прочитать настройки окраски. Выберите окраску заново."
+
+msgid "Choose the original look of the model or one solid colour."
+msgstr "Выберите исходный вид модели или один сплошной цвет."
+
+msgid "\"%s\" is not a colour. Choose the paint colour again."
+msgstr "\"%s\" не является цветом. Выберите цвет окраски заново."
+
+msgid "The parts of this GLB model could not be matched to the model on screen. Export it again as a self-contained GLB and bind the parts again."
+msgstr "Не удалось сопоставить части этой модели GLB с моделью на экране. Экспортируйте её заново как автономный GLB и привяжите части снова."
+
+msgid "The propeller part \"%s\" cannot be turned in place. Apply its transforms in the modelling tool and export the model again."
+msgstr "Часть винта \"%s\" нельзя повернуть на месте. Примените её трансформации в программе моделирования и экспортируйте модель заново."
+
+msgid "The part \"%s\" is scaled too small to turn. Apply its scale in the modelling tool and export the model again."
+msgstr "Часть \"%s\" слишком сильно уменьшена, чтобы вращаться. Примените её масштаб в программе моделирования и экспортируйте модель заново."
+
+msgid "left aileron"
+msgstr "левый элерон"
+
+msgid "right aileron"
+msgstr "правый элерон"
+
+msgid "elevator"
+msgstr "руль высоты"
+
+msgid "rudder"
+msgstr "руль направления"
+
+msgid "propeller"
+msgstr "винт"
+
+msgid "part %d"
+msgstr "часть %d"
+
+msgid "Wing dihedral"
+msgstr "Поперечное V крыла"
+
+msgid "The wing dihedral is %s degrees; this package supports %s to %s degrees."
+msgstr "Поперечное V крыла — %s градусов; этот пакет поддерживает от %s до %s градусов."
+
+# AC-13/AC-15/AC-17: Aircraft Creator wizard, saving, paint and moving parts.
+msgid "Open…"
+msgstr "Открыть…"
+
+msgid "Save draft"
+msgstr "Сохранить черновик"
+
+msgid "All changes saved"
+msgstr "Все изменения сохранены"
+
+msgid "View only"
+msgstr "Только просмотр"
+
+msgid "Save aircraft"
+msgstr "Сохранить самолёт"
+
+msgid "Give the aircraft a name in the box at the top before saving it."
+msgstr "Дайте самолёту имя в поле сверху, прежде чем сохранять его."
+
+msgid "Saved as version %s"
+msgstr "Сохранено как версия %s"
+
+msgid "Controls simulated · bound parts move with them"
+msgstr "Управление имитируется · привязанные части движутся вместе с ним"
+
+msgid "The model saved with this item could not be read again, so the current aircraft is unchanged."
+msgstr "Модель, сохранённую с этим элементом, не удалось прочитать снова, поэтому текущий самолёт не изменён."
+
+msgid "Wait until the model import has finished, then open the item again."
+msgstr "Дождитесь завершения импорта модели и снова откройте элемент."
+
+msgid "This aircraft has changes that are not saved. Save them as a draft, discard them, or keep editing."
+msgstr "В этом самолёте есть несохранённые изменения. Сохраните их как черновик, отмените или продолжите редактирование."
+
+msgid "An automatic backup holds changes to \"%s\" that were never saved. Open it to continue where you left off, or discard it."
+msgstr "Автоматическая резервная копия содержит несохранённые изменения в \"%s\". Откройте её, чтобы продолжить с того места, где вы остановились, или удалите."
+
+msgid "An automatic backup holds changes to an unnamed aircraft that were never saved. Open it to continue where you left off, or discard it."
+msgstr "Автоматическая резервная копия содержит несохранённые изменения в самолёте без названия. Откройте её, чтобы продолжить с того места, где вы остановились, или удалите."
+
+msgid "Opening…"
+msgstr "Открытие…"
+
+msgid "Leave with unsaved changes?"
+msgstr "Выйти с несохранёнными изменениями?"
+
+msgid "Save draft and leave"
+msgstr "Сохранить черновик и выйти"
+
+msgid "Recover unsaved work?"
+msgstr "Восстановить несохранённую работу?"
+
+msgid "Open the recovered draft"
+msgstr "Открыть восстановленный черновик"
+
+msgid "Discard it"
+msgstr "Отбросить"
+
+msgid "Solid colour"
+msgstr "Сплошной цвет"
+
+msgid "One colour over the whole model"
+msgstr "Один цвет на всю модель"
+
+msgid "Paint colour"
+msgstr "Цвет покраски"
+
+msgid "Show archived"
+msgstr "Показать архивные"
+
+msgid "Drafts"
+msgstr "Черновики"
+
+msgid "Saved aircraft"
+msgstr "Сохранённые самолёты"
+
+msgid "No drafts yet."
+msgstr "Черновиков пока нет."
+
+msgid "No saved aircraft yet."
+msgstr "Сохранённых самолётов пока нет."
+
+msgid "Versions: %s"
+msgstr "Версии: %s"
+
+msgid "Archived"
+msgstr "В архиве"
+
+msgid "Archive"
+msgstr "Архивировать"
+
+msgid "Restore"
+msgstr "Восстановить"
+
+msgid "Moving parts"
+msgstr "Подвижные части"
+
+msgid "Left aileron"
+msgstr "Левый элерон"
+
+msgid "Right aileron"
+msgstr "Правый элерон"
+
+msgid "Elevator, second part"
+msgstr "Руль высоты, вторая часть"
+
+msgid "Not bound"
+msgstr "Не привязано"
+
+msgid "Reversed"
+msgstr "Реверс"
+
+msgid "Show movement"
+msgstr "Показать движение"
+
+msgid "Stop movement"
+msgstr "Остановить движение"
+
+msgid "An STL model is one rigid shape, so none of its parts can move with the controls."
+msgstr "Модель STL — это одна жёсткая форма, поэтому ни одна её часть не может двигаться вместе с органами управления."
+
+msgid "Choose the model part that moves with each control, then check the movement on the preview and change the axis or direction if it is wrong."
+msgstr "Выберите часть модели, которая движется с каждым органом управления, проверьте движение на предпросмотре и измените ось или направление, если оно неверно."
+
+msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
+msgstr "В этом самолёте есть изменения, не сохранённые как черновик. Выйти без сохранения?"

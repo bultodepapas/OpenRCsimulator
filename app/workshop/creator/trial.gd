@@ -15,6 +15,7 @@ const Placement := preload("res://workshop/creator/placement.gd")
 const Parts := preload("res://workshop/creator/visual_parts.gd")
 const Paint := preload("res://workshop/creator/visual_paint.gd")
 const RecordLoader := preload("res://workshop/creator/record_loader.gd")
+const Packages := preload("res://workshop/creator/packages.gd")
 const Session := preload("res://sim/flight_session.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
@@ -23,6 +24,9 @@ const RB := preload("res://physics/rigid_body.gd")
 
 const FORMAT := "openrc-creator-trial v1"
 const CHECK_FORMAT := "openrc-creator-start-check v1"
+## Every key a frozen Creator trial carries. Main reads other keys of a Workshop trial (scale,
+## presentation profile and identity); a Creator trial has none of them, so `verify` refuses extras.
+const TRIAL_KEYS := ["ok", "errors", "vehicle", "data", "scale", "raw_bytes", "identity", "creator", "display_context"]
 const VEHICLE := "creator"
 const START_CHOICES: PackedStringArray = [Session.START_AIRBORNE, Session.START_HAND_LAUNCH]
 ## Hands-off flight after a hand launch that must stay clear of the ground for the start to be offered.
@@ -111,6 +115,12 @@ static func freeze(payload: Dictionary) -> Dictionary:
 static func verify(trial: Dictionary) -> Dictionary:
 	if not is_trial(trial) or not trial.get("ok", false):
 		return _refused("This is not a frozen Creator trial.")
+	# Closed shape: nothing Main could read is left outside what is checked here.
+	for key: Variant in trial:
+		if str(key) not in TRIAL_KEYS:
+			return _refused("This is not a frozen Creator trial.")
+	if typeof(trial.get("scale")) != TYPE_FLOAT or trial.scale != 1.0:
+		return _refused("This is not a frozen Creator trial.")
 	var identity: Variant = trial.get("identity")
 	var data: Variant = trial.get("data")
 	var bytes: Variant = trial.get("raw_bytes")
@@ -119,6 +129,11 @@ static func verify(trial: Dictionary) -> Dictionary:
 			or typeof(bytes) != TYPE_PACKED_BYTE_ARRAY or (bytes as PackedByteArray).is_empty():
 		return _refused("The frozen trial is missing its identity, data, source or exact bytes.")
 	if str(identity.get("format", "")) != FORMAT or not data.get("ok", false) or typeof(data.get("model")) != TYPE_DICTIONARY:
+		return _refused("The frozen trial has an unsupported identity or an invalid model.")
+	# The labels every Creator trial carries. `definition_sha256` is a label only: the definition is not
+	# part of a trial, so nothing here can check it, and no consumer may treat it as proof.
+	if typeof(identity.get("experimental")) != TYPE_BOOL or not identity.experimental \
+			or typeof(identity.get("qualification")) != TYPE_STRING or identity.qualification != Packages.QUALIFICATION:
 		return _refused("The frozen trial has an unsupported identity or an invalid model.")
 	var raw_sha256: String = CreatorBytes.sha256(bytes)
 	if str(identity.get("raw_sha256", "")) != raw_sha256 or typeof(data.get("input_identity")) != TYPE_DICTIONARY \

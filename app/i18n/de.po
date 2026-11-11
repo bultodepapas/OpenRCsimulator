@@ -11858,3 +11858,320 @@ msgstr "Der Creator-Testflug stimmt nicht mit seiner eingefrorenen Kennung über
 
 msgid "The compressed data declares a window smaller than its content."
 msgstr "Die komprimierten Daten geben ein Fenster an, das kleiner ist als ihr Inhalt."
+
+# AC-13/AC-15/AC-17: Aircraft Creator library, moving parts and paint.
+msgid "The aircraft library folder cannot be used because it is not a plain folder inside the simulator's data folder. Move it back there, then open the Creator again."
+msgstr "Der Ordner der Flugzeugbibliothek kann nicht verwendet werden, weil er kein normaler Ordner im Datenordner des Simulators ist. Verschiebe ihn dorthin zurück und öffne dann den Creator erneut."
+
+msgid "Your aircraft library could not be read because its entry files are damaged (%s). Nothing was changed or deleted. Restore the folder %s from a backup, or move it somewhere safe to start an empty library."
+msgstr "Deine Flugzeugbibliothek konnte nicht gelesen werden, weil ihre Eintragsdateien beschädigt sind (%s). Es wurde nichts geändert oder gelöscht. Stelle den Ordner %s aus einer Sicherung wieder her oder verschiebe ihn an einen sicheren Ort, um mit einer leeren Bibliothek zu beginnen."
+
+msgid "Another OpenRC window is using your aircraft library, so this window can show it but cannot change it. Close the other window, then open the Creator again to edit here."
+msgstr "Ein anderes OpenRC-Fenster verwendet deine Flugzeugbibliothek, deshalb kann dieses Fenster sie anzeigen, aber nicht ändern. Schließe das andere Fenster und öffne dann den Creator erneut, um hier zu bearbeiten."
+
+msgid "OpenRC could not reserve your aircraft library for editing on this computer, so it is view-only. Your saved aircraft are safe. Restart the simulator and open the Creator again."
+msgstr "OpenRC konnte deine Flugzeugbibliothek auf diesem Computer nicht zum Bearbeiten reservieren und zeigt sie daher nur an. Deine gespeicherten Flugzeuge sind sicher. Starte den Simulator neu und öffne den Creator erneut."
+
+msgid "The last change to your aircraft library did not finish, so the library was put back to the state before it. Check your most recent draft or aircraft and save it again if the change is missing."
+msgstr "Die letzte Änderung an deiner Flugzeugbibliothek wurde nicht abgeschlossen, deshalb wurde die Bibliothek auf den vorherigen Stand zurückgesetzt. Prüfe deinen letzten Entwurf oder dein letztes Flugzeug und speichere es erneut, falls die Änderung fehlt."
+
+msgid "Your aircraft library was put back to the state before an unfinished change, but that could not be written to disk (%s), so it is view-only. Check that the disk is not full or write-protected, then open the Creator again."
+msgstr "Deine Flugzeugbibliothek wurde auf den Stand vor einer unfertigen Änderung zurückgesetzt, das konnte aber nicht auf den Datenträger geschrieben werden (%s); sie ist daher nur zum Ansehen verfügbar. Prüfe, ob der Datenträger nicht voll oder schreibgeschützt ist, und öffne dann den Creator erneut."
+
+msgid "The aircraft library is open for viewing only, so nothing can be saved here. Open the Creator again to edit."
+msgstr "Die Flugzeugbibliothek ist nur zum Ansehen geöffnet, deshalb kann hier nichts gespeichert werden. Öffne den Creator erneut, um zu bearbeiten."
+
+msgid "The aircraft library must be opened again before anything else is saved. Leave the Creator, open it again and check that your last save is there."
+msgstr "Die Flugzeugbibliothek muss erneut geöffnet werden, bevor etwas anderes gespeichert wird. Verlasse den Creator, öffne ihn erneut und prüfe, ob dein letztes Speichern vorhanden ist."
+
+msgid "The simulator could not confirm whether your last save finished. Do not save again yet: leave the Creator, open it again and check whether the change is there."
+msgstr "Der Simulator konnte nicht bestätigen, ob dein letztes Speichern abgeschlossen wurde. Speichere noch nicht erneut: Verlasse den Creator, öffne ihn erneut und prüfe, ob die Änderung vorhanden ist."
+
+msgid "The aircraft library changed on disk while it was open, so nothing was saved. Leave the Creator, open it again and repeat your change."
+msgstr "Die Flugzeugbibliothek hat sich auf dem Datenträger geändert, während sie geöffnet war, deshalb wurde nichts gespeichert. Verlasse den Creator, öffne ihn erneut und wiederhole deine Änderung."
+
+msgid "The aircraft library could not be written (%s), so nothing was saved. Check that the disk is not full or write-protected, then save again."
+msgstr "Die Flugzeugbibliothek konnte nicht geschrieben werden (%s), deshalb wurde nichts gespeichert. Prüfe, ob der Datenträger nicht voll oder schreibgeschützt ist, und speichere dann erneut."
+
+msgid "The aircraft library is full: this change needs %s MB and %s MB of its %s MB limit is free. Nothing was saved. Use a smaller model file; archiving does not free space."
+msgstr "Die Flugzeugbibliothek ist voll: Diese Änderung benötigt %s MB, aber %s MB von ihrem Limit von %s MB sind frei. Es wurde nichts gespeichert. Verwende eine kleinere Modelldatei; Archivieren schafft keinen Platz."
+
+msgid "The disk is too full to save this change: it needs %s MB and %s MB is free. Nothing was saved. Free some disk space, then save again."
+msgstr "Der Datenträger ist zu voll, um diese Änderung zu speichern: Sie benötigt %s MB, frei sind %s MB. Es wurde nichts gespeichert. Schaffe Speicherplatz und speichere dann erneut."
+
+msgid "The aircraft library already holds %s drafts, its maximum. Nothing was saved. Continue an existing draft instead."
+msgstr "Die Flugzeugbibliothek enthält bereits %s Entwürfe, das Maximum. Es wurde nichts gespeichert. Setze stattdessen einen vorhandenen Entwurf fort."
+
+msgid "The aircraft library already holds %s aircraft, its maximum. Nothing was saved. Save a new version of an existing aircraft instead."
+msgstr "Die Flugzeugbibliothek enthält bereits %s Flugzeuge, das Maximum. Es wurde nichts gespeichert. Speichere stattdessen eine neue Version eines vorhandenen Flugzeugs."
+
+msgid "This aircraft already has %s saved versions, its maximum. Nothing was saved. Save it as a new aircraft instead."
+msgstr "Dieses Flugzeug hat bereits %s gespeicherte Versionen, das Maximum. Es wurde nichts gespeichert. Speichere es stattdessen als neues Flugzeug."
+
+msgid "The aircraft library cannot list any more entries. Nothing was saved. Continue an existing draft or save a new version of an existing aircraft instead."
+msgstr "Die Flugzeugbibliothek kann keine weiteren Einträge auflisten. Es wurde nichts gespeichert. Setze stattdessen einen vorhandenen Entwurf fort oder speichere eine neue Version eines vorhandenen Flugzeugs."
+
+msgid "A draft with this identity is already saved, so it was not overwritten. Reload the list of drafts and open that draft."
+msgstr "Ein Entwurf mit dieser Kennung ist bereits gespeichert und wurde deshalb nicht überschrieben. Lade die Entwurfsliste neu und öffne diesen Entwurf."
+
+msgid "This draft was saved again after you opened it, so the newer version was not overwritten. Reload the draft and repeat your change."
+msgstr "Dieser Entwurf wurde nach dem Öffnen erneut gespeichert, deshalb wurde die neuere Version nicht überschrieben. Lade den Entwurf neu und wiederhole deine Änderung."
+
+msgid "A newer automatic backup of this draft exists, so it was kept. Reload the draft to see it."
+msgstr "Es gibt eine neuere automatische Sicherung dieses Entwurfs, deshalb wurde sie behalten. Lade den Entwurf neu, um sie zu sehen."
+
+msgid "This aircraft was saved again after you opened it, so the newer version was not overwritten. Reload the aircraft and repeat your change."
+msgstr "Dieses Flugzeug wurde nach dem Öffnen erneut gespeichert, deshalb wurde die neuere Version nicht überschrieben. Lade das Flugzeug neu und wiederhole deine Änderung."
+
+msgid "The data to save is incomplete or malformed (%s), so nothing was saved. This is a fault in the simulator; please report it."
+msgstr "Die zu speichernden Daten sind unvollständig oder fehlerhaft (%s), deshalb wurde nichts gespeichert. Das ist ein Fehler im Simulator; bitte melde ihn."
+
+msgid "Give it a name of 1 to %s characters without line breaks, then save again."
+msgstr "Gib einen Namen mit 1 bis %s Zeichen ohne Zeilenumbrüche ein und speichere dann erneut."
+
+msgid "The %s holds a value that cannot be saved (%s). Remove unusual characters or values from it, then save again."
+msgstr "In %s steht ein Wert, der nicht gespeichert werden kann (%s). Entferne ungewöhnliche Zeichen oder Werte daraus und speichere dann erneut."
+
+msgid "The data to save is larger than the %s MB limit, so nothing was saved. Remove some notes or parts, then save again."
+msgstr "Die zu speichernden Daten sind größer als das Limit von %s MB, deshalb wurde nichts gespeichert. Entferne einige Notizen oder Teile und speichere dann erneut."
+
+msgid "The model file is larger than the %s MB limit, so it was not saved. Export a smaller model and import it again."
+msgstr "Die Modelldatei ist größer als das Limit von %s MB und wurde deshalb nicht gespeichert. Exportiere ein kleineres Modell und importiere es erneut."
+
+msgid "This aircraft has no model file yet, so it cannot be saved as an aircraft. Import a model first."
+msgstr "Dieses Flugzeug hat noch keine Modelldatei und kann daher nicht als Flugzeug gespeichert werden. Importiere zuerst ein Modell."
+
+msgid "The checked flight data does not belong to this aircraft (%s), so it was not saved. Run the check again, then save."
+msgstr "Die geprüften Flugdaten gehören nicht zu diesem Flugzeug (%s) und wurden deshalb nicht gespeichert. Führe die Prüfung erneut aus und speichere dann."
+
+msgid "That draft is not in the aircraft library. Reload the list of drafts."
+msgstr "Dieser Entwurf ist nicht in der Flugzeugbibliothek. Lade die Entwurfsliste neu."
+
+msgid "There is no automatic backup for this draft."
+msgstr "Für diesen Entwurf gibt es keine automatische Sicherung."
+
+msgid "That aircraft is not in the aircraft library. Reload the list of aircraft."
+msgstr "Dieses Flugzeug ist nicht in der Flugzeugbibliothek. Lade die Flugzeugliste neu."
+
+msgid "Version %s of this aircraft does not exist. Reload the aircraft."
+msgstr "Version %s dieses Flugzeugs existiert nicht. Lade das Flugzeug neu."
+
+msgid "Part of this saved item is damaged or missing, so it cannot be opened (%s). Your other drafts and aircraft are not affected. Restore the aircraft library folder from a backup to get it back."
+msgstr "Ein Teil dieses gespeicherten Eintrags ist beschädigt oder fehlt, deshalb kann er nicht geöffnet werden (%s). Deine anderen Entwürfe und Flugzeuge sind nicht betroffen. Stelle den Ordner der Flugzeugbibliothek aus einer Sicherung wieder her, um ihn zurückzubekommen."
+
+msgid "The moving parts or the paint of the model are not valid. Check the Controls and Paint steps, then test fly again."
+msgstr "Die beweglichen Teile oder die Lackierung des Modells sind ungültig. Prüfe die Schritte Steuerung und Lackierung und mache dann erneut einen Probeflug."
+
+msgid "The frozen moving parts or paint do not match the trial identity."
+msgstr "Die eingefrorenen beweglichen Teile oder die Lackierung passen nicht zur Kennung des Probeflugs."
+
+msgid "The moving-part settings cannot be read. Bind the moving parts again."
+msgstr "Die Einstellungen der beweglichen Teile können nicht gelesen werden. Weise die beweglichen Teile erneut zu."
+
+msgid "A bound part turns about the chosen axis through its own origin. In the modelling tool, put the origin of each moving part on its hinge line or on the propeller shaft."
+msgstr "Ein zugewiesenes Teil dreht sich um die gewählte Achse durch seinen eigenen Ursprung. Setze im Modellierwerkzeug den Ursprung jedes beweglichen Teils auf seine Scharnierlinie oder auf die Propellerwelle."
+
+msgid "An STL model is one rigid shape and has no parts to move. Import a GLB model with separate parts for the control surfaces and the propeller."
+msgstr "Ein STL-Modell ist eine einzige starre Form und hat keine beweglichen Teile. Importiere ein GLB-Modell mit getrennten Teilen für die Ruder und den Propeller."
+
+msgid "\"%s\" is not a control this aircraft can move. Bind parts to the ailerons, the elevator, the rudder or the propeller."
+msgstr "\"%s\" ist keine Steuerfunktion, die dieses Flugzeug bewegen kann. Weise Teile den Querrudern, dem Höhenruder, dem Seitenruder oder dem Propeller zu."
+
+msgid "The GLB model could not be read again. Import the model again."
+msgstr "Das GLB-Modell konnte nicht erneut gelesen werden. Importiere das Modell erneut."
+
+msgid "The %s has %s parts bound. Bind one or two parts, or none."
+msgstr "Für %s sind %s Teile zugewiesen. Weise ein oder zwei Teile zu, oder keines."
+
+msgid "Choose the axis (X, Y or Z) that the part bound to the %s turns about."
+msgstr "Wähle für %s die Achse (X, Y oder Z), um die sich das zugewiesene Teil dreht."
+
+msgid "Choose the direction, normal or reversed, of the part bound to the %s."
+msgstr "Wähle für %s die Richtung des zugewiesenen Teils, normal oder umgekehrt."
+
+msgid "A part bound to the %s does not exist in this model. Bind the part again."
+msgstr "Das für %s zugewiesene Teil existiert in diesem Modell nicht. Weise das Teil erneut zu."
+
+msgid "The part \"%s\" is bound more than once. Bind each part to one control only."
+msgstr "Das Teil \"%s\" ist mehrfach zugewiesen. Weise jedes Teil nur einer Steuerfunktion zu."
+
+msgid "The part \"%s\" is not shown in this model. Bind a part you can see."
+msgstr "Das Teil \"%s\" wird in diesem Modell nicht angezeigt. Weise ein sichtbares Teil zu."
+
+msgid "The part \"%s\" has no shape to move. Bind a part that holds a mesh."
+msgstr "Das Teil \"%s\" hat keine Form, die sich bewegen lässt. Weise ein Teil zu, das ein Mesh enthält."
+
+msgid "The part \"%s\" holds the whole model. In the modelling tool, make the moving part a separate object and bind only that."
+msgstr "Das Teil \"%s\" enthält das gesamte Modell. Mache im Modellierwerkzeug das bewegliche Teil zu einem eigenen Objekt und weise nur dieses zu."
+
+msgid "The part \"%s\" is inside the part \"%s\", which is also bound. Bind only one of them, or separate them in the modelling tool."
+msgstr "Das Teil \"%s\" liegt im Teil \"%s\", das ebenfalls zugewiesen ist. Weise nur eines von beiden zu oder trenne sie im Modellierwerkzeug."
+
+msgid "The paint settings cannot be read. Choose the paint again."
+msgstr "Die Lackierungseinstellungen können nicht gelesen werden. Wähle die Lackierung erneut."
+
+msgid "Choose the original look of the model or one solid colour."
+msgstr "Wähle das Originalaussehen des Modells oder eine einfarbige Lackierung."
+
+msgid "\"%s\" is not a colour. Choose the paint colour again."
+msgstr "\"%s\" ist keine Farbe. Wähle die Lackierfarbe erneut."
+
+msgid "The parts of this GLB model could not be matched to the model on screen. Export it again as a self-contained GLB and bind the parts again."
+msgstr "Die Teile dieses GLB-Modells konnten dem angezeigten Modell nicht zugeordnet werden. Exportiere es erneut als eigenständiges GLB und weise die Teile erneut zu."
+
+msgid "The propeller part \"%s\" cannot be turned in place. Apply its transforms in the modelling tool and export the model again."
+msgstr "Das Propellerteil \"%s\" kann nicht an Ort und Stelle gedreht werden. Wende im Modellierwerkzeug seine Transformationen an und exportiere das Modell erneut."
+
+msgid "The part \"%s\" is scaled too small to turn. Apply its scale in the modelling tool and export the model again."
+msgstr "Das Teil \"%s\" ist zu klein skaliert, um sich zu drehen. Wende im Modellierwerkzeug seine Skalierung an und exportiere das Modell erneut."
+
+msgid "left aileron"
+msgstr "Linkes Querruder"
+
+msgid "right aileron"
+msgstr "Rechtes Querruder"
+
+msgid "elevator"
+msgstr "Höhenruder"
+
+msgid "rudder"
+msgstr "Seitenruder"
+
+msgid "propeller"
+msgstr "Propeller"
+
+msgid "part %d"
+msgstr "Teil %d"
+
+msgid "Wing dihedral"
+msgstr "Flügel-V-Form"
+
+msgid "The wing dihedral is %s degrees; this package supports %s to %s degrees."
+msgstr "Die V-Form des Flügels beträgt %s Grad; dieses Paket unterstützt %s bis %s Grad."
+
+# AC-13/AC-15/AC-17: Aircraft Creator wizard, saving, paint and moving parts.
+msgid "Open…"
+msgstr "Öffnen…"
+
+msgid "Save draft"
+msgstr "Entwurf speichern"
+
+msgid "All changes saved"
+msgstr "Alle Änderungen gespeichert"
+
+msgid "View only"
+msgstr "Nur Ansicht"
+
+msgid "Save aircraft"
+msgstr "Flugzeug speichern"
+
+msgid "Give the aircraft a name in the box at the top before saving it."
+msgstr "Gib dem Flugzeug oben im Feld einen Namen, bevor du es speicherst."
+
+msgid "Saved as version %s"
+msgstr "Als Version %s gespeichert"
+
+msgid "Controls simulated · bound parts move with them"
+msgstr "Steuerung simuliert · zugewiesene Teile bewegen sich mit"
+
+msgid "The model saved with this item could not be read again, so the current aircraft is unchanged."
+msgstr "Das mit diesem Eintrag gespeicherte Modell konnte nicht erneut gelesen werden, deshalb bleibt das aktuelle Flugzeug unverändert."
+
+msgid "Wait until the model import has finished, then open the item again."
+msgstr "Warte, bis der Modellimport abgeschlossen ist, und öffne den Eintrag dann erneut."
+
+msgid "This aircraft has changes that are not saved. Save them as a draft, discard them, or keep editing."
+msgstr "Dieses Flugzeug hat ungespeicherte Änderungen. Speichere sie als Entwurf, verwirf sie oder bearbeite weiter."
+
+msgid "An automatic backup holds changes to \"%s\" that were never saved. Open it to continue where you left off, or discard it."
+msgstr "Eine automatische Sicherung enthält nie gespeicherte Änderungen an \"%s\". Öffne sie, um dort weiterzumachen, wo du aufgehört hast, oder verwirf sie."
+
+msgid "An automatic backup holds changes to an unnamed aircraft that were never saved. Open it to continue where you left off, or discard it."
+msgstr "Eine automatische Sicherung enthält nie gespeicherte Änderungen an einem unbenannten Flugzeug. Öffne sie, um dort weiterzumachen, wo du aufgehört hast, oder verwirf sie."
+
+msgid "Opening…"
+msgstr "Wird geöffnet…"
+
+msgid "Leave with unsaved changes?"
+msgstr "Mit ungespeicherten Änderungen verlassen?"
+
+msgid "Save draft and leave"
+msgstr "Entwurf speichern und verlassen"
+
+msgid "Recover unsaved work?"
+msgstr "Ungespeicherte Arbeit wiederherstellen?"
+
+msgid "Open the recovered draft"
+msgstr "Wiederhergestellten Entwurf öffnen"
+
+msgid "Discard it"
+msgstr "Verwerfen"
+
+msgid "Solid colour"
+msgstr "Einfarbig"
+
+msgid "One colour over the whole model"
+msgstr "Eine Farbe für das ganze Modell"
+
+msgid "Paint colour"
+msgstr "Lackfarbe"
+
+msgid "Show archived"
+msgstr "Archivierte anzeigen"
+
+msgid "Drafts"
+msgstr "Entwürfe"
+
+msgid "Saved aircraft"
+msgstr "Gespeicherte Flugzeuge"
+
+msgid "No drafts yet."
+msgstr "Noch keine Entwürfe."
+
+msgid "No saved aircraft yet."
+msgstr "Noch keine gespeicherten Flugzeuge."
+
+msgid "Versions: %s"
+msgstr "Versionen: %s"
+
+msgid "Archived"
+msgstr "Archiviert"
+
+msgid "Archive"
+msgstr "Archivieren"
+
+msgid "Restore"
+msgstr "Wiederherstellen"
+
+msgid "Moving parts"
+msgstr "Bewegliche Teile"
+
+msgid "Left aileron"
+msgstr "Linkes Querruder"
+
+msgid "Right aileron"
+msgstr "Rechtes Querruder"
+
+msgid "Elevator, second part"
+msgstr "Höhenruder, zweites Teil"
+
+msgid "Not bound"
+msgstr "Nicht zugewiesen"
+
+msgid "Reversed"
+msgstr "Umgekehrt"
+
+msgid "Show movement"
+msgstr "Bewegung zeigen"
+
+msgid "Stop movement"
+msgstr "Bewegung stoppen"
+
+msgid "An STL model is one rigid shape, so none of its parts can move with the controls."
+msgstr "Ein STL-Modell ist eine einzige starre Form, deshalb kann sich keines seiner Teile mit der Steuerung bewegen."
+
+msgid "Choose the model part that moves with each control, then check the movement on the preview and change the axis or direction if it is wrong."
+msgstr "Wähle das Modellteil, das sich mit der jeweiligen Steuerfunktion bewegt, prüfe die Bewegung in der Vorschau und ändere Achse oder Richtung, wenn sie falsch ist."
+
+msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
+msgstr "Dieses Flugzeug hat Änderungen, die nicht als Entwurf gespeichert sind. Ohne Speichern verlassen?"

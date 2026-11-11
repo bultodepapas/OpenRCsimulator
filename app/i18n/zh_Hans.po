@@ -10913,3 +10913,320 @@ msgstr "创建器试飞与其已冻结的标识不符。"
 
 msgid "The compressed data declares a window smaller than its content."
 msgstr "压缩数据声明的窗口小于其内容。"
+
+# AC-13/AC-15/AC-17: Aircraft Creator library, moving parts and paint.
+msgid "The aircraft library folder cannot be used because it is not a plain folder inside the simulator's data folder. Move it back there, then open the Creator again."
+msgstr "飞机库文件夹不是模拟器数据文件夹内的普通文件夹，无法使用。请将其移回原处，然后重新打开 Creator。"
+
+msgid "Your aircraft library could not be read because its entry files are damaged (%s). Nothing was changed or deleted. Restore the folder %s from a backup, or move it somewhere safe to start an empty library."
+msgstr "无法读取你的飞机库，因为其条目文件已损坏（%s）。未做任何更改或删除。请从备份中恢复文件夹 %s，或将其移到安全位置以开始一个空的飞机库。"
+
+msgid "Another OpenRC window is using your aircraft library, so this window can show it but cannot change it. Close the other window, then open the Creator again to edit here."
+msgstr "另一个 OpenRC 窗口正在使用你的飞机库，因此本窗口只能查看，无法修改。请关闭另一个窗口，然后重新打开 Creator，即可在此编辑。"
+
+msgid "OpenRC could not reserve your aircraft library for editing on this computer, so it is view-only. Your saved aircraft are safe. Restart the simulator and open the Creator again."
+msgstr "OpenRC 无法在这台电脑上为编辑预留你的飞机库，因此它是只读的。已保存的飞机是安全的。请重启模拟器并重新打开 Creator。"
+
+msgid "The last change to your aircraft library did not finish, so the library was put back to the state before it. Check your most recent draft or aircraft and save it again if the change is missing."
+msgstr "对飞机库的上一次更改未完成，因此飞机库已恢复到更改之前的状态。请检查你最近的草稿或飞机，如果更改丢失，请重新保存。"
+
+msgid "Your aircraft library was put back to the state before an unfinished change, but that could not be written to disk (%s), so it is view-only. Check that the disk is not full or write-protected, then open the Creator again."
+msgstr "飞机库已恢复到未完成更改之前的状态，但无法写入磁盘（%s），因此它是只读的。请检查磁盘是否已满或被写保护，然后重新打开 Creator。"
+
+msgid "The aircraft library is open for viewing only, so nothing can be saved here. Open the Creator again to edit."
+msgstr "飞机库以只读方式打开，因此无法在此保存任何内容。请重新打开 Creator 进行编辑。"
+
+msgid "The aircraft library must be opened again before anything else is saved. Leave the Creator, open it again and check that your last save is there."
+msgstr "在保存其他内容之前，必须重新打开飞机库。请退出 Creator，重新打开，并检查上一次保存是否存在。"
+
+msgid "The simulator could not confirm whether your last save finished. Do not save again yet: leave the Creator, open it again and check whether the change is there."
+msgstr "模拟器无法确认你上一次保存是否已完成。请先不要再次保存：退出 Creator，重新打开，检查更改是否存在。"
+
+msgid "The aircraft library changed on disk while it was open, so nothing was saved. Leave the Creator, open it again and repeat your change."
+msgstr "飞机库在打开期间于磁盘上发生了变化，因此未保存任何内容。请退出 Creator，重新打开并重复你的更改。"
+
+msgid "The aircraft library could not be written (%s), so nothing was saved. Check that the disk is not full or write-protected, then save again."
+msgstr "无法写入飞机库（%s），因此未保存任何内容。请检查磁盘是否已满或被写保护，然后重新保存。"
+
+msgid "The aircraft library is full: this change needs %s MB and %s MB of its %s MB limit is free. Nothing was saved. Use a smaller model file; archiving does not free space."
+msgstr "飞机库已满：此更改需要 %s MB，可用空间为 %s MB（上限 %s MB）。未保存任何内容。请使用更小的模型文件；归档不会释放空间。"
+
+msgid "The disk is too full to save this change: it needs %s MB and %s MB is free. Nothing was saved. Free some disk space, then save again."
+msgstr "磁盘空间不足，无法保存此更改：需要 %s MB，可用 %s MB。未保存任何内容。请释放一些磁盘空间，然后重新保存。"
+
+msgid "The aircraft library already holds %s drafts, its maximum. Nothing was saved. Continue an existing draft instead."
+msgstr "飞机库中已有 %s 个草稿，已达上限。未保存任何内容。请改为继续编辑现有草稿。"
+
+msgid "The aircraft library already holds %s aircraft, its maximum. Nothing was saved. Save a new version of an existing aircraft instead."
+msgstr "飞机库中已有 %s 架飞机，已达上限。未保存任何内容。请改为保存现有飞机的新版本。"
+
+msgid "This aircraft already has %s saved versions, its maximum. Nothing was saved. Save it as a new aircraft instead."
+msgstr "这架飞机已有 %s 个已保存版本，已达上限。未保存任何内容。请改为将其另存为新飞机。"
+
+msgid "The aircraft library cannot list any more entries. Nothing was saved. Continue an existing draft or save a new version of an existing aircraft instead."
+msgstr "飞机库无法列出更多条目。未保存任何内容。请改为继续编辑现有草稿，或保存现有飞机的新版本。"
+
+msgid "A draft with this identity is already saved, so it was not overwritten. Reload the list of drafts and open that draft."
+msgstr "已保存具有相同标识的草稿，因此未覆盖。请重新加载草稿列表并打开该草稿。"
+
+msgid "This draft was saved again after you opened it, so the newer version was not overwritten. Reload the draft and repeat your change."
+msgstr "此草稿在你打开之后又被保存过，因此未覆盖较新的版本。请重新加载草稿并重复你的更改。"
+
+msgid "A newer automatic backup of this draft exists, so it was kept. Reload the draft to see it."
+msgstr "此草稿存在更新的自动备份，因此已保留。请重新加载草稿以查看。"
+
+msgid "This aircraft was saved again after you opened it, so the newer version was not overwritten. Reload the aircraft and repeat your change."
+msgstr "这架飞机在你打开之后又被保存过，因此未覆盖较新的版本。请重新加载飞机并重复你的更改。"
+
+msgid "The data to save is incomplete or malformed (%s), so nothing was saved. This is a fault in the simulator; please report it."
+msgstr "要保存的数据不完整或格式有误（%s），因此未保存任何内容。这是模拟器的故障，请报告。"
+
+msgid "Give it a name of 1 to %s characters without line breaks, then save again."
+msgstr "请输入 1 至 %s 个字符、不含换行的名称，然后重新保存。"
+
+msgid "The %s holds a value that cannot be saved (%s). Remove unusual characters or values from it, then save again."
+msgstr "%s 中包含无法保存的值（%s）。请删除其中的异常字符或值，然后重新保存。"
+
+msgid "The data to save is larger than the %s MB limit, so nothing was saved. Remove some notes or parts, then save again."
+msgstr "要保存的数据超过 %s MB 的上限，因此未保存任何内容。请删除部分备注或部件，然后重新保存。"
+
+msgid "The model file is larger than the %s MB limit, so it was not saved. Export a smaller model and import it again."
+msgstr "模型文件超过 %s MB 的上限，因此未保存。请导出更小的模型并重新导入。"
+
+msgid "This aircraft has no model file yet, so it cannot be saved as an aircraft. Import a model first."
+msgstr "这架飞机还没有模型文件，因此无法保存为飞机。请先导入模型。"
+
+msgid "The checked flight data does not belong to this aircraft (%s), so it was not saved. Run the check again, then save."
+msgstr "已检查的飞行数据不属于这架飞机（%s），因此未保存。请重新运行检查，然后保存。"
+
+msgid "That draft is not in the aircraft library. Reload the list of drafts."
+msgstr "飞机库中没有该草稿。请重新加载草稿列表。"
+
+msgid "There is no automatic backup for this draft."
+msgstr "此草稿没有自动备份。"
+
+msgid "That aircraft is not in the aircraft library. Reload the list of aircraft."
+msgstr "飞机库中没有该飞机。请重新加载飞机列表。"
+
+msgid "Version %s of this aircraft does not exist. Reload the aircraft."
+msgstr "这架飞机不存在版本 %s。请重新加载飞机。"
+
+msgid "Part of this saved item is damaged or missing, so it cannot be opened (%s). Your other drafts and aircraft are not affected. Restore the aircraft library folder from a backup to get it back."
+msgstr "此已保存项目的一部分已损坏或缺失，因此无法打开（%s）。你的其他草稿和飞机不受影响。请从备份中恢复飞机库文件夹以找回它。"
+
+msgid "The moving parts or the paint of the model are not valid. Check the Controls and Paint steps, then test fly again."
+msgstr "模型的活动部件或涂装无效。请检查“控制”和“涂装”步骤，然后重新试飞。"
+
+msgid "The frozen moving parts or paint do not match the trial identity."
+msgstr "已冻结的活动部件或涂装与试飞标识不匹配。"
+
+msgid "The moving-part settings cannot be read. Bind the moving parts again."
+msgstr "无法读取活动部件设置。请重新绑定活动部件。"
+
+msgid "A bound part turns about the chosen axis through its own origin. In the modelling tool, put the origin of each moving part on its hinge line or on the propeller shaft."
+msgstr "绑定的部件会绕所选轴、通过其自身原点旋转。请在建模工具中，将每个活动部件的原点放在其铰链线上或螺旋桨轴上。"
+
+msgid "An STL model is one rigid shape and has no parts to move. Import a GLB model with separate parts for the control surfaces and the propeller."
+msgstr "STL 模型是一个刚性整体，没有可活动的部件。请导入带有独立舵面和螺旋桨部件的 GLB 模型。"
+
+msgid "\"%s\" is not a control this aircraft can move. Bind parts to the ailerons, the elevator, the rudder or the propeller."
+msgstr "\"%s\" 不是这架飞机可以活动的控制项。请将部件绑定到副翼、升降舵、方向舵或螺旋桨。"
+
+msgid "The GLB model could not be read again. Import the model again."
+msgstr "无法再次读取 GLB 模型。请重新导入模型。"
+
+msgid "The %s has %s parts bound. Bind one or two parts, or none."
+msgstr "%s 绑定了 %s 个部件。请绑定一个或两个部件，或者不绑定。"
+
+msgid "Choose the axis (X, Y or Z) that the part bound to the %s turns about."
+msgstr "请选择绑定到 %s 的部件所绕的轴（X、Y 或 Z）。"
+
+msgid "Choose the direction, normal or reversed, of the part bound to the %s."
+msgstr "请选择绑定到 %s 的部件的方向：正向或反向。"
+
+msgid "A part bound to the %s does not exist in this model. Bind the part again."
+msgstr "此模型中不存在绑定到 %s 的部件。请重新绑定部件。"
+
+msgid "The part \"%s\" is bound more than once. Bind each part to one control only."
+msgstr "部件 \"%s\" 被绑定了多次。请将每个部件只绑定到一个控制项。"
+
+msgid "The part \"%s\" is not shown in this model. Bind a part you can see."
+msgstr "部件 \"%s\" 在此模型中不显示。请绑定可见的部件。"
+
+msgid "The part \"%s\" has no shape to move. Bind a part that holds a mesh."
+msgstr "部件 \"%s\" 没有可活动的形状。请绑定包含网格的部件。"
+
+msgid "The part \"%s\" holds the whole model. In the modelling tool, make the moving part a separate object and bind only that."
+msgstr "部件 \"%s\" 包含整个模型。请在建模工具中将活动部件设为单独的对象，只绑定它。"
+
+msgid "The part \"%s\" is inside the part \"%s\", which is also bound. Bind only one of them, or separate them in the modelling tool."
+msgstr "部件 \"%s\" 位于也已绑定的部件 \"%s\" 内部。请只绑定其中一个，或在建模工具中将它们分开。"
+
+msgid "The paint settings cannot be read. Choose the paint again."
+msgstr "无法读取涂装设置。请重新选择涂装。"
+
+msgid "Choose the original look of the model or one solid colour."
+msgstr "请选择模型的原始外观或一种纯色。"
+
+msgid "\"%s\" is not a colour. Choose the paint colour again."
+msgstr "\"%s\" 不是颜色。请重新选择涂装颜色。"
+
+msgid "The parts of this GLB model could not be matched to the model on screen. Export it again as a self-contained GLB and bind the parts again."
+msgstr "无法将此 GLB 模型的部件与屏幕上的模型匹配。请重新导出为自包含的 GLB，并重新绑定部件。"
+
+msgid "The propeller part \"%s\" cannot be turned in place. Apply its transforms in the modelling tool and export the model again."
+msgstr "螺旋桨部件 \"%s\" 无法原地旋转。请在建模工具中应用其变换，然后重新导出模型。"
+
+msgid "The part \"%s\" is scaled too small to turn. Apply its scale in the modelling tool and export the model again."
+msgstr "部件 \"%s\" 缩放过小，无法旋转。请在建模工具中应用其缩放，然后重新导出模型。"
+
+msgid "left aileron"
+msgstr "左副翼"
+
+msgid "right aileron"
+msgstr "右副翼"
+
+msgid "elevator"
+msgstr "升降舵"
+
+msgid "rudder"
+msgstr "方向舵"
+
+msgid "propeller"
+msgstr "螺旋桨"
+
+msgid "part %d"
+msgstr "部件 %d"
+
+msgid "Wing dihedral"
+msgstr "机翼上反角"
+
+msgid "The wing dihedral is %s degrees; this package supports %s to %s degrees."
+msgstr "机翼上反角为 %s 度；此套件支持 %s 至 %s 度。"
+
+# AC-13/AC-15/AC-17: Aircraft Creator wizard, saving, paint and moving parts.
+msgid "Open…"
+msgstr "打开…"
+
+msgid "Save draft"
+msgstr "保存草稿"
+
+msgid "All changes saved"
+msgstr "所有更改已保存"
+
+msgid "View only"
+msgstr "只读"
+
+msgid "Save aircraft"
+msgstr "保存飞机"
+
+msgid "Give the aircraft a name in the box at the top before saving it."
+msgstr "保存前，请在顶部的框中为飞机命名。"
+
+msgid "Saved as version %s"
+msgstr "已保存为版本 %s"
+
+msgid "Controls simulated · bound parts move with them"
+msgstr "控制项已模拟 · 已绑定的部件会随之移动"
+
+msgid "The model saved with this item could not be read again, so the current aircraft is unchanged."
+msgstr "无法再次读取随此项一起保存的模型，因此当前飞机未更改。"
+
+msgid "Wait until the model import has finished, then open the item again."
+msgstr "请等模型导入完成后，再重新打开此项。"
+
+msgid "This aircraft has changes that are not saved. Save them as a draft, discard them, or keep editing."
+msgstr "这架飞机有未保存的更改。请将其保存为草稿、放弃或继续编辑。"
+
+msgid "An automatic backup holds changes to \"%s\" that were never saved. Open it to continue where you left off, or discard it."
+msgstr "自动备份中保存着 \"%s\" 从未保存的更改。请打开它从上次中断的地方继续，或将其放弃。"
+
+msgid "An automatic backup holds changes to an unnamed aircraft that were never saved. Open it to continue where you left off, or discard it."
+msgstr "自动备份中保存着一架未命名飞机从未保存的更改。请打开它从上次中断的地方继续，或将其放弃。"
+
+msgid "Opening…"
+msgstr "正在打开…"
+
+msgid "Leave with unsaved changes?"
+msgstr "带着未保存的更改离开吗？"
+
+msgid "Save draft and leave"
+msgstr "保存草稿并离开"
+
+msgid "Recover unsaved work?"
+msgstr "恢复未保存的工作？"
+
+msgid "Open the recovered draft"
+msgstr "打开恢复的草稿"
+
+msgid "Discard it"
+msgstr "放弃它"
+
+msgid "Solid colour"
+msgstr "纯色"
+
+msgid "One colour over the whole model"
+msgstr "为整个模型涂上一种颜色"
+
+msgid "Paint colour"
+msgstr "涂装颜色"
+
+msgid "Show archived"
+msgstr "显示已归档"
+
+msgid "Drafts"
+msgstr "草稿"
+
+msgid "Saved aircraft"
+msgstr "已保存的飞机"
+
+msgid "No drafts yet."
+msgstr "还没有草稿。"
+
+msgid "No saved aircraft yet."
+msgstr "还没有已保存的飞机。"
+
+msgid "Versions: %s"
+msgstr "版本：%s"
+
+msgid "Archived"
+msgstr "已归档"
+
+msgid "Archive"
+msgstr "归档"
+
+msgid "Restore"
+msgstr "恢复"
+
+msgid "Moving parts"
+msgstr "活动部件"
+
+msgid "Left aileron"
+msgstr "左副翼"
+
+msgid "Right aileron"
+msgstr "右副翼"
+
+msgid "Elevator, second part"
+msgstr "升降舵，第二个部件"
+
+msgid "Not bound"
+msgstr "未绑定"
+
+msgid "Reversed"
+msgstr "反向"
+
+msgid "Show movement"
+msgstr "显示运动"
+
+msgid "Stop movement"
+msgstr "停止运动"
+
+msgid "An STL model is one rigid shape, so none of its parts can move with the controls."
+msgstr "STL 模型是一个刚性整体，因此它的任何部件都无法随控制项移动。"
+
+msgid "Choose the model part that moves with each control, then check the movement on the preview and change the axis or direction if it is wrong."
+msgstr "为每个控制项选择随之移动的模型部件，然后在预览中检查运动，若不对请更改轴或方向。"
+
+msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
+msgstr "这架飞机有未保存为草稿的更改。不保存就离开吗？"

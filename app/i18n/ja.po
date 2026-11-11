@@ -10964,3 +10964,320 @@ msgstr "クリエイターの試験飛行が、凍結された識別情報と一
 
 msgid "The compressed data declares a window smaller than its content."
 msgstr "圧縮データが、内容より小さいウィンドウを宣言しています。"
+
+# AC-13/AC-15/AC-17: Aircraft Creator library, moving parts and paint.
+msgid "The aircraft library folder cannot be used because it is not a plain folder inside the simulator's data folder. Move it back there, then open the Creator again."
+msgstr "機体ライブラリのフォルダは、シミュレーターのデータフォルダ内の通常のフォルダではないため使用できません。元の場所に戻してから、もう一度Creatorを開いてください。"
+
+msgid "Your aircraft library could not be read because its entry files are damaged (%s). Nothing was changed or deleted. Restore the folder %s from a backup, or move it somewhere safe to start an empty library."
+msgstr "エントリーファイルが破損しているため、機体ライブラリを読み込めませんでした（%s）。変更や削除は行われていません。フォルダ%sをバックアップから復元するか、安全な場所へ移動して空のライブラリから始めてください。"
+
+msgid "Another OpenRC window is using your aircraft library, so this window can show it but cannot change it. Close the other window, then open the Creator again to edit here."
+msgstr "別のOpenRCウィンドウが機体ライブラリを使用しているため、このウィンドウでは表示のみ可能で、変更はできません。もう一方のウィンドウを閉じてから、もう一度Creatorを開くと、ここで編集できます。"
+
+msgid "OpenRC could not reserve your aircraft library for editing on this computer, so it is view-only. Your saved aircraft are safe. Restart the simulator and open the Creator again."
+msgstr "このコンピューターで機体ライブラリを編集用に確保できなかったため、表示専用になっています。保存済みの機体は無事です。シミュレーターを再起動して、もう一度Creatorを開いてください。"
+
+msgid "The last change to your aircraft library did not finish, so the library was put back to the state before it. Check your most recent draft or aircraft and save it again if the change is missing."
+msgstr "機体ライブラリへの前回の変更が完了しなかったため、ライブラリを変更前の状態に戻しました。直近の下書きまたは機体を確認し、変更が反映されていなければ、もう一度保存してください。"
+
+msgid "Your aircraft library was put back to the state before an unfinished change, but that could not be written to disk (%s), so it is view-only. Check that the disk is not full or write-protected, then open the Creator again."
+msgstr "機体ライブラリを未完了の変更前の状態に戻しましたが、ディスクに書き込めなかった（%s）ため、表示専用になっています。ディスクの空き容量や書き込み保護を確認してから、もう一度Creatorを開いてください。"
+
+msgid "The aircraft library is open for viewing only, so nothing can be saved here. Open the Creator again to edit."
+msgstr "機体ライブラリは表示専用で開かれているため、ここでは何も保存できません。編集するには、もう一度Creatorを開いてください。"
+
+msgid "The aircraft library must be opened again before anything else is saved. Leave the Creator, open it again and check that your last save is there."
+msgstr "ほかのものを保存する前に、機体ライブラリを開き直す必要があります。Creatorを終了してもう一度開き、前回の保存が反映されているか確認してください。"
+
+msgid "The simulator could not confirm whether your last save finished. Do not save again yet: leave the Creator, open it again and check whether the change is there."
+msgstr "前回の保存が完了したかどうか、シミュレーターで確認できませんでした。まだ保存し直さないでください。Creatorを終了してもう一度開き、変更が反映されているか確認してください。"
+
+msgid "The aircraft library changed on disk while it was open, so nothing was saved. Leave the Creator, open it again and repeat your change."
+msgstr "機体ライブラリが開いている間にディスク上で変更されたため、何も保存されませんでした。Creatorを終了してもう一度開き、変更をやり直してください。"
+
+msgid "The aircraft library could not be written (%s), so nothing was saved. Check that the disk is not full or write-protected, then save again."
+msgstr "機体ライブラリに書き込めなかった（%s）ため、何も保存されませんでした。ディスクの空き容量や書き込み保護を確認してから、もう一度保存してください。"
+
+msgid "The aircraft library is full: this change needs %s MB and %s MB of its %s MB limit is free. Nothing was saved. Use a smaller model file; archiving does not free space."
+msgstr "機体ライブラリがいっぱいです。この変更には%s MB必要ですが、空きは%s MBです（上限は%s MB）。何も保存されませんでした。サイズの小さいモデルファイルを使ってください。アーカイブしても空き容量は増えません。"
+
+msgid "The disk is too full to save this change: it needs %s MB and %s MB is free. Nothing was saved. Free some disk space, then save again."
+msgstr "ディスクの空き容量が足りないため、この変更を保存できません。%s MB必要ですが、空きは%s MBです。何も保存されませんでした。ディスクの空き容量を確保してから、もう一度保存してください。"
+
+msgid "The aircraft library already holds %s drafts, its maximum. Nothing was saved. Continue an existing draft instead."
+msgstr "機体ライブラリには、すでに上限の%s件の下書きがあります。何も保存されませんでした。代わりに既存の下書きを続けてください。"
+
+msgid "The aircraft library already holds %s aircraft, its maximum. Nothing was saved. Save a new version of an existing aircraft instead."
+msgstr "機体ライブラリには、すでに上限の%s件の機体があります。何も保存されませんでした。代わりに既存の機体の新しいバージョンを保存してください。"
+
+msgid "This aircraft already has %s saved versions, its maximum. Nothing was saved. Save it as a new aircraft instead."
+msgstr "この機体には、すでに上限の%sバージョンが保存されています。何も保存されませんでした。代わりに新しい機体として保存してください。"
+
+msgid "The aircraft library cannot list any more entries. Nothing was saved. Continue an existing draft or save a new version of an existing aircraft instead."
+msgstr "機体ライブラリにこれ以上エントリーを一覧表示できません。何も保存されませんでした。代わりに既存の下書きを続けるか、既存の機体の新しいバージョンを保存してください。"
+
+msgid "A draft with this identity is already saved, so it was not overwritten. Reload the list of drafts and open that draft."
+msgstr "同じ識別子の下書きがすでに保存されているため、上書きしませんでした。下書きの一覧を再読み込みして、その下書きを開いてください。"
+
+msgid "This draft was saved again after you opened it, so the newer version was not overwritten. Reload the draft and repeat your change."
+msgstr "この下書きは、開いた後にもう一度保存されたため、新しい方のバージョンを上書きしませんでした。下書きを再読み込みして、変更をやり直してください。"
+
+msgid "A newer automatic backup of this draft exists, so it was kept. Reload the draft to see it."
+msgstr "この下書きにはより新しい自動バックアップがあるため、そちらを保持しました。下書きを再読み込みして確認してください。"
+
+msgid "This aircraft was saved again after you opened it, so the newer version was not overwritten. Reload the aircraft and repeat your change."
+msgstr "この機体は、開いた後にもう一度保存されたため、新しい方のバージョンを上書きしませんでした。機体を再読み込みして、変更をやり直してください。"
+
+msgid "The data to save is incomplete or malformed (%s), so nothing was saved. This is a fault in the simulator; please report it."
+msgstr "保存するデータが不完全または不正な形式です（%s）。何も保存されませんでした。これはシミュレーターの不具合です。報告してください。"
+
+msgid "Give it a name of 1 to %s characters without line breaks, then save again."
+msgstr "改行を含まない1～%s文字の名前を付けてから、もう一度保存してください。"
+
+msgid "The %s holds a value that cannot be saved (%s). Remove unusual characters or values from it, then save again."
+msgstr "%sに保存できない値が含まれています（%s）。特殊な文字や値を削除してから、もう一度保存してください。"
+
+msgid "The data to save is larger than the %s MB limit, so nothing was saved. Remove some notes or parts, then save again."
+msgstr "保存するデータが上限の%s MBを超えているため、何も保存されませんでした。メモやパーツをいくつか削除してから、もう一度保存してください。"
+
+msgid "The model file is larger than the %s MB limit, so it was not saved. Export a smaller model and import it again."
+msgstr "モデルファイルが上限の%s MBを超えているため、保存されませんでした。サイズの小さいモデルをエクスポートして、もう一度インポートしてください。"
+
+msgid "This aircraft has no model file yet, so it cannot be saved as an aircraft. Import a model first."
+msgstr "この機体にはまだモデルファイルがないため、機体として保存できません。先にモデルをインポートしてください。"
+
+msgid "The checked flight data does not belong to this aircraft (%s), so it was not saved. Run the check again, then save."
+msgstr "チェック済みの飛行データがこの機体のものではない（%s）ため、保存されませんでした。もう一度チェックを実行してから保存してください。"
+
+msgid "That draft is not in the aircraft library. Reload the list of drafts."
+msgstr "その下書きは機体ライブラリにありません。下書きの一覧を再読み込みしてください。"
+
+msgid "There is no automatic backup for this draft."
+msgstr "この下書きには自動バックアップがありません。"
+
+msgid "That aircraft is not in the aircraft library. Reload the list of aircraft."
+msgstr "その機体は機体ライブラリにありません。機体の一覧を再読み込みしてください。"
+
+msgid "Version %s of this aircraft does not exist. Reload the aircraft."
+msgstr "この機体のバージョン%sは存在しません。機体を再読み込みしてください。"
+
+msgid "Part of this saved item is damaged or missing, so it cannot be opened (%s). Your other drafts and aircraft are not affected. Restore the aircraft library folder from a backup to get it back."
+msgstr "この保存済み項目の一部が破損または欠落しているため、開けません（%s）。ほかの下書きや機体には影響ありません。元に戻すには、機体ライブラリのフォルダをバックアップから復元してください。"
+
+msgid "The moving parts or the paint of the model are not valid. Check the Controls and Paint steps, then test fly again."
+msgstr "モデルの可動パーツまたは塗装が無効です。「操作」と「塗装」のステップを確認してから、もう一度試験飛行してください。"
+
+msgid "The frozen moving parts or paint do not match the trial identity."
+msgstr "固定された可動パーツまたは塗装が、試験飛行の識別子と一致しません。"
+
+msgid "The moving-part settings cannot be read. Bind the moving parts again."
+msgstr "可動パーツの設定を読み込めません。可動パーツをもう一度割り当ててください。"
+
+msgid "A bound part turns about the chosen axis through its own origin. In the modelling tool, put the origin of each moving part on its hinge line or on the propeller shaft."
+msgstr "割り当てたパーツは、自身の原点を通る選択した軸を中心に回転します。モデリングツールで、各可動パーツの原点をヒンジ線上、またはプロペラのシャフト上に置いてください。"
+
+msgid "An STL model is one rigid shape and has no parts to move. Import a GLB model with separate parts for the control surfaces and the propeller."
+msgstr "STLモデルは1つの剛体で、動かせるパーツがありません。操舵面とプロペラ用に別々のパーツを持つGLBモデルをインポートしてください。"
+
+msgid "\"%s\" is not a control this aircraft can move. Bind parts to the ailerons, the elevator, the rudder or the propeller."
+msgstr "\"%s\"は、この機体が動かせる操作ではありません。パーツは、エルロン、エレベーター、ラダー、プロペラのいずれかに割り当ててください。"
+
+msgid "The GLB model could not be read again. Import the model again."
+msgstr "GLBモデルをもう一度読み込めませんでした。モデルをもう一度インポートしてください。"
+
+msgid "The %s has %s parts bound. Bind one or two parts, or none."
+msgstr "%sには%s個のパーツが割り当てられています。割り当てるパーツは1個か2個、または0個にしてください。"
+
+msgid "Choose the axis (X, Y or Z) that the part bound to the %s turns about."
+msgstr "%sに割り当てたパーツが回転する軸（X、YまたはZ）を選んでください。"
+
+msgid "Choose the direction, normal or reversed, of the part bound to the %s."
+msgstr "%sに割り当てたパーツの回転方向（通常または逆）を選んでください。"
+
+msgid "A part bound to the %s does not exist in this model. Bind the part again."
+msgstr "%sに割り当てたパーツが、このモデルにありません。パーツをもう一度割り当ててください。"
+
+msgid "The part \"%s\" is bound more than once. Bind each part to one control only."
+msgstr "パーツ\"%s\"が複数回割り当てられています。各パーツは1つの操作にだけ割り当ててください。"
+
+msgid "The part \"%s\" is not shown in this model. Bind a part you can see."
+msgstr "パーツ\"%s\"はこのモデルで表示されていません。表示されているパーツを割り当ててください。"
+
+msgid "The part \"%s\" has no shape to move. Bind a part that holds a mesh."
+msgstr "パーツ\"%s\"には動かせる形状がありません。メッシュを持つパーツを割り当ててください。"
+
+msgid "The part \"%s\" holds the whole model. In the modelling tool, make the moving part a separate object and bind only that."
+msgstr "パーツ\"%s\"がモデル全体を含んでいます。モデリングツールで可動パーツを別オブジェクトにして、それだけを割り当ててください。"
+
+msgid "The part \"%s\" is inside the part \"%s\", which is also bound. Bind only one of them, or separate them in the modelling tool."
+msgstr "パーツ\"%s\"はパーツ\"%s\"の内側にあり、後者も割り当て済みです。どちらか一方だけを割り当てるか、モデリングツールで分離してください。"
+
+msgid "The paint settings cannot be read. Choose the paint again."
+msgstr "塗装の設定を読み込めません。塗装をもう一度選んでください。"
+
+msgid "Choose the original look of the model or one solid colour."
+msgstr "モデルの元の外観か、単色のどちらかを選んでください。"
+
+msgid "\"%s\" is not a colour. Choose the paint colour again."
+msgstr "\"%s\"は色ではありません。塗装の色をもう一度選んでください。"
+
+msgid "The parts of this GLB model could not be matched to the model on screen. Export it again as a self-contained GLB and bind the parts again."
+msgstr "このGLBモデルのパーツを、画面上のモデルと対応付けられませんでした。自己完結型のGLBとしてもう一度エクスポートし、パーツをもう一度割り当ててください。"
+
+msgid "The propeller part \"%s\" cannot be turned in place. Apply its transforms in the modelling tool and export the model again."
+msgstr "プロペラのパーツ\"%s\"はその場で回転できません。モデリングツールでトランスフォームを適用して、モデルをもう一度エクスポートしてください。"
+
+msgid "The part \"%s\" is scaled too small to turn. Apply its scale in the modelling tool and export the model again."
+msgstr "パーツ\"%s\"はスケールが小さすぎて回転できません。モデリングツールでスケールを適用して、モデルをもう一度エクスポートしてください。"
+
+msgid "left aileron"
+msgstr "左エルロン"
+
+msgid "right aileron"
+msgstr "右エルロン"
+
+msgid "elevator"
+msgstr "エレベーター"
+
+msgid "rudder"
+msgstr "ラダー"
+
+msgid "propeller"
+msgstr "プロペラ"
+
+msgid "part %d"
+msgstr "パーツ%d"
+
+msgid "Wing dihedral"
+msgstr "主翼の上反角"
+
+msgid "The wing dihedral is %s degrees; this package supports %s to %s degrees."
+msgstr "主翼の上反角は%s度です。このパッケージが対応するのは%s～%s度です。"
+
+# AC-13/AC-15/AC-17: Aircraft Creator wizard, saving, paint and moving parts.
+msgid "Open…"
+msgstr "開く…"
+
+msgid "Save draft"
+msgstr "下書きを保存"
+
+msgid "All changes saved"
+msgstr "すべての変更を保存しました"
+
+msgid "View only"
+msgstr "表示専用"
+
+msgid "Save aircraft"
+msgstr "機体を保存"
+
+msgid "Give the aircraft a name in the box at the top before saving it."
+msgstr "保存する前に、上のボックスで機体に名前を付けてください。"
+
+msgid "Saved as version %s"
+msgstr "バージョン%sとして保存しました"
+
+msgid "Controls simulated · bound parts move with them"
+msgstr "操作をシミュレート · 割り当てたパーツが連動して動きます"
+
+msgid "The model saved with this item could not be read again, so the current aircraft is unchanged."
+msgstr "この項目と一緒に保存されたモデルを再び読み込めなかったため、現在の機体は変更されていません。"
+
+msgid "Wait until the model import has finished, then open the item again."
+msgstr "モデルのインポートが完了するまで待ってから、もう一度この項目を開いてください。"
+
+msgid "This aircraft has changes that are not saved. Save them as a draft, discard them, or keep editing."
+msgstr "この機体には保存されていない変更があります。下書きとして保存するか、破棄するか、編集を続けてください。"
+
+msgid "An automatic backup holds changes to \"%s\" that were never saved. Open it to continue where you left off, or discard it."
+msgstr "自動バックアップに、保存されていない\"%s\"の変更が残っています。開いて続きから作業するか、破棄してください。"
+
+msgid "An automatic backup holds changes to an unnamed aircraft that were never saved. Open it to continue where you left off, or discard it."
+msgstr "自動バックアップに、保存されていない名前のない機体の変更が残っています。開いて続きから作業するか、破棄してください。"
+
+msgid "Opening…"
+msgstr "開いています…"
+
+msgid "Leave with unsaved changes?"
+msgstr "保存されていない変更を残して終了しますか？"
+
+msgid "Save draft and leave"
+msgstr "下書きを保存して終了"
+
+msgid "Recover unsaved work?"
+msgstr "保存されていない作業を復元しますか？"
+
+msgid "Open the recovered draft"
+msgstr "復元した下書きを開く"
+
+msgid "Discard it"
+msgstr "破棄する"
+
+msgid "Solid colour"
+msgstr "単色"
+
+msgid "One colour over the whole model"
+msgstr "モデル全体を1色で塗ります"
+
+msgid "Paint colour"
+msgstr "塗装色"
+
+msgid "Show archived"
+msgstr "アーカイブ済みを表示"
+
+msgid "Drafts"
+msgstr "下書き"
+
+msgid "Saved aircraft"
+msgstr "保存済みの機体"
+
+msgid "No drafts yet."
+msgstr "下書きはまだありません。"
+
+msgid "No saved aircraft yet."
+msgstr "保存済みの機体はまだありません。"
+
+msgid "Versions: %s"
+msgstr "バージョン：%s"
+
+msgid "Archived"
+msgstr "アーカイブ済み"
+
+msgid "Archive"
+msgstr "アーカイブ"
+
+msgid "Restore"
+msgstr "復元"
+
+msgid "Moving parts"
+msgstr "可動パーツ"
+
+msgid "Left aileron"
+msgstr "左エルロン"
+
+msgid "Right aileron"
+msgstr "右エルロン"
+
+msgid "Elevator, second part"
+msgstr "エレベーター（2つ目のパーツ）"
+
+msgid "Not bound"
+msgstr "未割り当て"
+
+msgid "Reversed"
+msgstr "反転"
+
+msgid "Show movement"
+msgstr "動きを表示"
+
+msgid "Stop movement"
+msgstr "動きを停止"
+
+msgid "An STL model is one rigid shape, so none of its parts can move with the controls."
+msgstr "STLモデルは1つの剛体なので、どのパーツも操作に合わせて動かせません。"
+
+msgid "Choose the model part that moves with each control, then check the movement on the preview and change the axis or direction if it is wrong."
+msgstr "各操作に合わせて動くモデルのパーツを選び、プレビューで動きを確認して、間違っていれば軸または方向を変更してください。"
+
+msgid "This aircraft has changes that are not saved as a draft. Leave without saving them?"
+msgstr "この機体には下書きとして保存されていない変更があります。保存せずに終了しますか？"

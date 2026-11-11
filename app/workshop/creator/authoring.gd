@@ -78,7 +78,10 @@ const _VECTORS := {
 const _INVENTORY_KINDS: PackedStringArray = ["estimated", "measured", "manual"]
 
 var revision := 0
-var name := ""
+## Display name. Control characters are dropped: they cannot be stored and are never meant.
+var name := "":
+	set(value):
+		name = clean_text(value)
 var _uuid := ""
 var _source: InspectedSource
 var _placement := Placement.unresolved()
@@ -236,6 +239,7 @@ func is_invalid(path: String) -> bool:
 ## Commits typed text. Empty text returns the field to unresolved. Invalid text is kept visible
 ## and flagged; the last accepted value stays for preview but compilation is blocked.
 func set_raw(path: String, text: String) -> bool:
+	text = clean_text(text)
 	var trimmed := text.strip_edges()
 	_raw[path] = text
 	if trimmed.is_empty():
@@ -328,7 +332,7 @@ func add_item(item_name: String) -> String:
 	while _has_item(id):
 		serial += 1
 		id = "item_custom_%d" % serial
-	_inventory.append({id = id, name = item_name, mass = 0.0, position = [0.0, 0.0, 0.0], size = [0.0, 0.0, 0.0], kind = "manual"})
+	_inventory.append({id = id, name = clean_text(item_name).substr(0, Limits.NAME_CHARACTERS), mass = 0.0, position = [0.0, 0.0, 0.0], size = [0.0, 0.0, 0.0], kind = "manual"})
 	_touch()
 	return id
 
@@ -363,7 +367,7 @@ func set_item_raw(id: String, key: String, text: String) -> bool:
 func set_item_name(id: String, item_name: String) -> void:
 	for item: Dictionary in _inventory:
 		if str(item.id) == id:
-			item["name"] = item_name.substr(0, Limits.NAME_CHARACTERS)
+			item["name"] = clean_text(item_name).substr(0, Limits.NAME_CHARACTERS)
 			_touch()
 			return
 
@@ -391,8 +395,10 @@ func bindings() -> Dictionary:
 	return _bindings.duplicate(true)
 
 
+## Whole numbers (part index, direction) are kept as integers whatever the caller or a stored
+## record spelled them as, so the same bindings always have the same fingerprint.
 func set_bindings(bound: Dictionary) -> void:
-	_bindings = bound.duplicate(true)
+	_bindings = _whole_numbers(bound)
 	_touch()
 
 
@@ -447,7 +453,7 @@ func restore(saved: Dictionary, admitted: InspectedSource) -> Dictionary:
 	if (admitted == null) != wanted.is_empty() or (admitted != null and admitted.sha256() != wanted):
 		return R.fail(R.IDENTITY_MISMATCH, "The saved model does not match this draft.")
 	var uuid := str(saved.get("aircraft_uuid", ""))
-	if uuid.length() != 36:
+	if not _is_uuid(uuid):
 		return R.fail(R.RECORD_INVALID, "This draft has no aircraft identity.")
 	var known := {}
 	for entry: Dictionary in FIELDS:
@@ -465,11 +471,21 @@ func restore(saved: Dictionary, admitted: InspectedSource) -> Dictionary:
 		for path: Variant in stored_raw:
 			if known.has(str(path)) and typeof(stored_raw[path]) == TYPE_STRING \
 					and (stored_raw[path] as String).length() <= Limits.RAW_NUMBER_CHARACTERS:
-				raw_text[str(path)] = stored_raw[path]
+				raw_text[str(path)] = clean_text(stored_raw[path])
 	var invalid := {}
 	for path: Variant in saved.get("invalid", []) if saved.get("invalid", []) is Array else []:
-		if known.has(str(path)) and raw_text.has(str(path)):
+		if known.has(str(path)) and raw_text.has(str(path)) and is_nan(parse_number(raw_text[str(path)])) \
+				and not str(raw_text[str(path)]).strip_edges().is_empty():
 			invalid[str(path)] = true
+	# What a field shows must be what the document holds: text is kept only when it is the typed
+	# text of the stored value, the document's own display of it, or recorded as not being a number.
+	for path: String in raw_text.keys():
+		if invalid.has(path):
+			continue
+		if not values.has(path):
+			raw_text.erase(path)
+		elif parse_number(raw_text[path]) != float(values[path]) and raw_text[path] != format_number(float(values[path])):
+			raw_text[path] = format_number(float(values[path]))
 	var origin := {}
 	var stored_origin: Variant = saved.get("origin", {})
 	if stored_origin is Dictionary:
@@ -494,7 +510,7 @@ func restore(saved: Dictionary, admitted: InspectedSource) -> Dictionary:
 		if datum.size() == 3:
 			placed["datum"] = datum
 	_uuid = uuid
-	name = str(saved.get("name", "")).substr(0, Limits.NAME_CHARACTERS)
+	name = clean_text(str(saved.get("name", ""))).substr(0, Limits.NAME_CHARACTERS)
 	_source = admitted
 	_placement = placed
 	_units = str(saved.get("units", "")) if Placement.UNITS.has(str(saved.get("units", ""))) else ""
@@ -503,7 +519,7 @@ func restore(saved: Dictionary, admitted: InspectedSource) -> Dictionary:
 	_invalid = invalid
 	_origin = origin
 	_inventory = items
-	_bindings = (saved.get("bindings", {}) as Dictionary).duplicate(true) if saved.get("bindings", {}) is Dictionary and admitted != null else {}
+	_bindings = _whole_numbers(saved.get("bindings", {})) if saved.get("bindings", {}) is Dictionary and admitted != null else {}
 	_appearance = (saved.get("appearance", {}) as Dictionary).duplicate(true) if saved.get("appearance", {}) is Dictionary \
 		and not (saved.get("appearance", {}) as Dictionary).is_empty() else {"mode": "original"}
 	var revision_saved: Variant = saved.get("published_revision", 0)
@@ -532,6 +548,50 @@ func fingerprint() -> String:
 	return str(written.value.sha256) if written.ok else ""
 
 
+## Text without control characters (C0 and DEL): they cannot be stored and a field never means them.
+static func clean_text(text: String) -> String:
+	var clean := ""
+	var kept_from := 0
+	for index: int in text.length():
+		var code := text.unicode_at(index)
+		if code < 0x20 or code == 0x7F:
+			clean += text.substr(kept_from, index - kept_from)
+			kept_from = index + 1
+	return text if kept_from == 0 else clean + text.substr(kept_from)
+
+
+## Deep copy with every whole-number float turned into an integer (a stored record returns every
+## number as a float). Non-finite and fractional numbers are left for validation to refuse.
+static func _whole_numbers(node: Variant) -> Variant:
+	if node is Dictionary:
+		var fields := {}
+		for key: Variant in node:
+			fields[key] = _whole_numbers(node[key])
+		return fields
+	if node is Array:
+		var items: Array = []
+		for item: Variant in node:
+			items.append(_whole_numbers(item))
+		return items
+	if typeof(node) == TYPE_FLOAT and is_finite(node) and node == floorf(node) and absf(node) <= float(Limits.MAX_SAFE_INTEGER):
+		return int(node)
+	return node
+
+
+## Lowercase version 4 UUID, as `Definition` requires of an aircraft identity.
+static func _is_uuid(text: String) -> bool:
+	if text.length() != 36:
+		return false
+	for index: int in 36:
+		var character := text[index]
+		if index in [8, 13, 18, 23]:
+			if character != "-":
+				return false
+		elif character not in "0123456789abcdef":
+			return false
+	return text[14] == "4" and text[19] in "89ab"
+
+
 static func _restored_item(item: Variant) -> Dictionary:
 	if not item is Dictionary:
 		return {}
@@ -543,7 +603,7 @@ static func _restored_item(item: Variant) -> Dictionary:
 	if id.is_empty() or id.length() > 80 or kind not in _INVENTORY_KINDS or not is_finite(mass) \
 			or position.size() != 3 or size.size() != 3:
 		return {}
-	return {id = id, name = str(item.get("name", "")).substr(0, Limits.NAME_CHARACTERS), mass = mass,
+	return {id = id, name = clean_text(str(item.get("name", ""))).substr(0, Limits.NAME_CHARACTERS), mass = mass,
 		position = position, size = size, kind = kind}
 
 

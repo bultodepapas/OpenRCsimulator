@@ -7,7 +7,8 @@ const AcceptedCandidate := preload("res://workshop/creator/accepted_candidate.gd
 const Definition := preload("res://workshop/creator/definition.gd")
 
 const CAPTION := "Visual preview · no flight simulation"
-const PAYLOAD_KEYS: PackedStringArray = ["creator_candidate", "creator_source", "creator_placement", "creator_name", "start_choice"]
+const PAYLOAD_KEYS: PackedStringArray = ["creator_candidate", "creator_source", "creator_placement", "creator_name", "start_choice",
+	"creator_bindings", "creator_appearance"]
 const WORKER_TIMEOUT_MS := 20000
 
 var failures := 0
@@ -21,6 +22,8 @@ var _half_span := 0.0
 var _nose_x_m := 0.0
 var _length_m := 0.0
 var _span_m := 0.0
+## Every wizard of this test uses its own library folder, never the default one.
+var _store_root := "user://creator-ui-test-store-%d" % Time.get_ticks_usec()
 
 
 func _initialize() -> void:
@@ -62,6 +65,14 @@ func _plane_stl() -> PackedByteArray:
 	return bytes
 
 
+func _remove_tree(path: String) -> void:
+	for directory: String in DirAccess.get_directories_at(path):
+		_remove_tree(path.path_join(directory))
+	for file: String in DirAccess.get_files_at(path):
+		DirAccess.remove_absolute(path.path_join(file))
+	DirAccess.remove_absolute(path)
+
+
 func _write(path: String, bytes: PackedByteArray) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	file.store_buffer(bytes)
@@ -74,6 +85,7 @@ func _find(wizard: Node, node_name: String) -> Node:
 
 func _new_wizard() -> Control:
 	var wizard := Creator.new() as Control
+	wizard.set("store_root", _store_root)
 	wizard.theme = UiTheme.build()
 	wizard.test_fly_requested.connect(func(payload: Dictionary) -> void: payloads.append(payload))
 	wizard.close_requested.connect(func() -> void: closes += 1)
@@ -255,6 +267,8 @@ func _run() -> void:
 	await _settle(3)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(plane_path))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(broken_path))
+	_remove_tree(ProjectSettings.globalize_path(_store_root))
+	check("the test library folder is removed", not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(_store_root)))
 	var orphans := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
 	check("no orphan nodes are left", orphans == orphans_before, "%d before, %d after" % [orphans_before, orphans])
 	if orphans != orphans_before:
@@ -663,6 +677,8 @@ func _review(wizard: Control, doc: Authoring) -> void:
 		check("the payload carries source, placement, name and start", payload.creator_source == doc.source()
 			and payload.creator_placement == doc.placement() and payload.creator_name == "Test plane"
 			and payload.start_choice == "hand_launch", str(payload.start_choice))
+		check("an STL payload has no moving parts and the original paint", payload.creator_bindings == {}
+			and payload.creator_appearance == {"mode": "original"}, "%s %s" % [payload.creator_bindings, payload.creator_appearance])
 	check("a new request clears the old note", not note.is_visible_in_tree())
 	wizard.set_note("Refused: the start is not available.")
 	check("the host's refusal is displayed", note.text == "Refused: the start is not available." and note.is_visible_in_tree())

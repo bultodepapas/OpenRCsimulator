@@ -22,6 +22,7 @@ func _initialize() -> void:
 	var document: RefCounted = _document()
 	_fields(document)
 	_snapshot(document)
+	_hostile_snapshot(document)
 	_trial(document)
 	print("Creator trial: %d failures" % failures)
 	quit(1 if failures else 0)
@@ -139,6 +140,53 @@ func _fields(document: RefCounted) -> void:
 
 ## A saved document comes back exactly, through JSON, onto the re-admitted source; nothing in a
 ## snapshot is trusted, and the dirty state follows the content, not the step.
+## A snapshot comes back from a user-editable file: a hostile one restores into a consistent document.
+func _hostile_snapshot(document: RefCounted) -> void:
+	var source: RefCounted = Importer.inspect_bytes(document.source().source_bytes(), "plane.stl").value
+	var honest: Dictionary = JSON.parse_string(JSON.stringify(document.snapshot()))
+	var edited: Dictionary = honest.duplicate(true)
+	edited.raw["wing/span"] = "2.5"
+	var shown := Authoring.new()
+	check("a snapshot with mismatched text restores", shown.restore(edited, source).ok)
+	check("typed text that is not the stored value is dropped", shown.raw("wing/span") != "2.5"
+		and shown.value("wing/span") == document.value("wing/span"))
+	edited = honest.duplicate(true)
+	edited.raw["wing/span"] = "abc"
+	edited.invalid = ["wing/span"]
+	shown = Authoring.new()
+	check("invalid text is restored as invalid", shown.restore(edited, source).ok and shown.raw("wing/span") == "abc"
+		and not shown.issues().is_empty())
+	edited = honest.duplicate(true)
+	edited.invalid = ["wing/root_chord"]
+	shown = Authoring.new()
+	check("a valid number cannot be marked invalid", shown.restore(edited, source).ok and shown.compile().ok == document.compile().ok)
+	for identity: String in ["ZZZZZZZZ-ZZZZ-4ZZZ-8ZZZ-ZZZZZZZZZZZZ", "00000000-0000-1000-8000-000000000000", "0".repeat(36),
+			str(honest.aircraft_uuid).to_upper()]:
+		edited = honest.duplicate(true)
+		edited.aircraft_uuid = identity
+		check("a snapshot with the identity %s is refused" % identity, not Authoring.new().restore(edited, source).ok)
+	edited = honest.duplicate(true)
+	edited.name = "Tra" + String.chr(11) + "iner" + String.chr(1)
+	edited.raw["wing/span"] = String.chr(7) + str(honest.raw.get("wing/span", "1.5"))
+	shown = Authoring.new()
+	check("control characters are dropped on restore", shown.restore(edited, source).ok and shown.name == "Trainer"
+		and not shown.fingerprint().is_empty())
+	# The same at entry: a pasted control character never makes a draft unsaveable.
+	var typed := Authoring.new()
+	typed.name = "My" + String.chr(11) + " plane"
+	typed.set_raw("wing/span", "1" + String.chr(1) + ".5")
+	check("control characters are dropped when typed", typed.name == "My plane" and typed.value("wing/span") == 1.5
+		and CreatorBytes.encode(typed.snapshot()).ok)
+	# Bindings have one spelling whatever a stored record returned: reopening does not look like an edit.
+	var bound := Authoring.new()
+	bound.set_bindings({"format": "openrc-creator-bindings v1", "controls": {"rudder": [{"node": 7.0, "axis": "z", "sign": -1.0}]}})
+	var spelled := Authoring.new()
+	spelled.set_bindings({"format": "openrc-creator-bindings v1", "controls": {"rudder": [{"node": 7, "axis": "z", "sign": -1}]}})
+	check("whole numbers in bindings are integers either way", bound.bindings() == spelled.bindings()
+		and typeof(bound.bindings().controls.rudder[0].node) == TYPE_INT and bound.fingerprint() != ""
+		and CreatorBytes.encode(bound.bindings()).value.sha256 == CreatorBytes.encode(spelled.bindings()).value.sha256)
+
+
 func _snapshot(document: RefCounted) -> void:
 	check("an edited, never saved document has unsaved changes", document.has_unsaved_changes())
 	document.name = "Saved plane"
@@ -261,6 +309,25 @@ func _trial(document: RefCounted) -> void:
 	tampered = trial.duplicate(true)
 	tampered.identity.qualification = "qualified"
 	check("an edited qualification label is refused", not CreatorTrial.verify(tampered).ok)
+	# Everything Main reads from a trial is covered: a Creator trial has unit scale and none of a
+	# Workshop trial's presentation keys, and its labels cannot be relabelled by rehashing the identity.
+	tampered = trial.duplicate(true)
+	tampered.scale = 5.0
+	check("a rescaled trial is refused", not CreatorTrial.verify(tampered).ok)
+	tampered = trial.duplicate(true)
+	tampered["presentation_profile"] = {"smoke": {"enabled": true}}
+	check("an added presentation profile is refused", not CreatorTrial.verify(tampered).ok)
+	tampered = trial.duplicate(true)
+	tampered["presentation_identity"] = {"sha256": "0".repeat(64)}
+	check("an added presentation identity is refused", not CreatorTrial.verify(tampered).ok)
+	for relabel: Array in [["qualification", "qualified"], ["experimental", false]]:
+		tampered = trial.duplicate(true)
+		tampered.identity[relabel[0]] = relabel[1]
+		var rehashed: Dictionary = tampered.identity.duplicate(true)
+		rehashed.erase("trial_id")
+		rehashed.erase("experimental")
+		tampered.identity.trial_id = "creator-" + str(CreatorBytes.encode(rehashed).value.sha256).substr(0, 24)
+		check("a relabelled %s with a recomputed trial id is refused" % relabel[0], not CreatorTrial.verify(tampered).ok)
 	# The frozen model is what the exact bytes load to, whatever the candidate object carries.
 	var reloaded: Dictionary = RecordLoader.load_bytes(trial.raw_bytes, str(trial.identity.aircraft_id))
 	check("the frozen model is loaded from the exact bytes", reloaded.ok and reloaded.model == trial.data.model)

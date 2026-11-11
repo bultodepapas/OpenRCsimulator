@@ -24,10 +24,11 @@ extends RefCounted
 ## kill inside that gap leaves no current.json and the next open restores the old state from
 ## previous.json. Power-loss durability is NOT claimed: GDScript cannot fsync a file's directory.
 ##
-## What `open` verifies: the pointer, the index (hash and schema) and, by hash, every object the
-## last transaction added, because those are the ones an unfinished commit can leave incomplete.
-## If that fails, previous.json is used only when it passes the same checks. Older objects are
-## verified by length and SHA-256 when they are read; damage there is confined to its own entry.
+## What `open` verifies: the pointer and the index it names (hash and schema). If that fails,
+## previous.json is used only when it passes the same checks. Records and payloads are verified by
+## length and SHA-256 when they are read, and damage is confined to its own entry whichever
+## transaction added the object: a pointer is only ever moved after every object of its
+## transaction was installed and read back, so an accepted pointer never names an unfinished one.
 ##
 ## Opaque members (`snapshot`, `placement`, `bindings`, `appearance`, `definition`) are JSON data
 ## the store does not interpret. Every number in them is stored as a float: a whole number comes
@@ -56,6 +57,8 @@ const MEDIA_DEFINITION := "application/vnd.openrc.creator-definition+json"
 const MEDIA_AIRCRAFT := "application/vnd.openrc.aircraft+json"
 const MEDIA_SOURCE := "application/octet-stream"
 
+const _RESERVED_NAMES: PackedStringArray = ["con", "prn", "aux", "nul", "com1", "com2", "com3", "com4", "com5", "com6", "com7",
+	"com8", "com9", "lpt1", "lpt2", "lpt3", "lpt4", "lpt5", "lpt6", "lpt7", "lpt8", "lpt9"]
 const CURRENT_FILE := "current.json"
 const PREVIOUS_FILE := "previous.json"
 const OBJECTS_DIRECTORY := "objects"
@@ -557,7 +560,7 @@ func _load_draft_record(reference: Dictionary, draft_id: String, entry: Dictiona
 
 
 static func _draft_problem(record: Dictionary) -> String:
-	if not _closed(record, DRAFT_KEYS) or record.format != DRAFT_FORMAT:
+	if not _closed(record, DRAFT_KEYS) or not _is_format(record.format, DRAFT_FORMAT):
 		return "the draft record has an unknown shape"
 	if not _is_uuid(record.draft_id) or not _is_name(record.name, true) \
 			or typeof(record.aircraft_uuid) != TYPE_STRING \
@@ -675,7 +678,7 @@ func _load_revision_record(listed: Dictionary, aircraft_uuid: String) -> Diction
 
 
 static func _revision_problem(record: Dictionary) -> String:
-	if not _closed(record, AIRCRAFT_KEYS) or record.format != AIRCRAFT_FORMAT:
+	if not _closed(record, AIRCRAFT_KEYS) or not _is_format(record.format, AIRCRAFT_FORMAT):
 		return "the aircraft record has an unknown shape"
 	if not _is_uuid(record.aircraft_uuid) or not _is_count(record.revision) or record.revision < 1 \
 			or not _is_name(record.name, false) or not _is_file_name(record.source_file_name) \
@@ -961,7 +964,7 @@ func _read_accepted(file_name: String) -> Dictionary:
 	if not decoded.ok:
 		return {state = "invalid", problem = "%s is not a valid pointer" % file_name}
 	var pointer: Dictionary = decoded.value.data
-	if not _closed(pointer, POINTER_KEYS) or pointer.format != POINTER_FORMAT or not _is_count(pointer.generation) \
+	if not _closed(pointer, POINTER_KEYS) or not _is_format(pointer.format, POINTER_FORMAT) or not _is_count(pointer.generation) \
 			or not _is_uuid(pointer.transaction_id) \
 			or not _blob_problem(pointer.index, MEDIA_INDEX, Limits.STORE_INDEX_BYTES).is_empty():
 		return {state = "invalid", problem = "%s is not a valid pointer" % file_name}
@@ -973,44 +976,7 @@ func _read_accepted(file_name: String) -> Dictionary:
 		return {state = "invalid", problem = "%s names an index where %s" % [file_name, index.problem]}
 	if index.data.generation != pointer.generation or index.data.transaction_id != pointer.transaction_id:
 		return {state = "invalid", problem = "%s and its index disagree" % file_name}
-	var latest := _latest_problem(index.data)
-	if not latest.is_empty():
-		return {state = "invalid", problem = "%s names a change where %s" % [file_name, latest]}
 	return {state = "ok", problem = "", bytes = raw.bytes, pointer = pointer, index = index.data}
-
-
-## Deep check of the objects the last transaction added: the records `index` names that its
-## predecessor did not, with their payloads. "" when they are intact, or when the predecessor
-## cannot be read and so nothing can be told apart.
-func _latest_problem(index: Dictionary) -> String:
-	if index.predecessor == null:
-		return ""
-	var before := _read_object(index.predecessor, Limits.STORE_INDEX_BYTES)
-	if not before.ok:
-		return ""
-	var earlier := _decode_index(before.bytes)
-	if not earlier.ok:
-		return ""
-	var known := {}
-	for group: String in ["drafts", "recovery"]:
-		for id: String in earlier.data[group]:
-			known[earlier.data[group][id].record.sha256] = true
-	for id: String in earlier.data.aircraft:
-		for listed: Dictionary in earlier.data.aircraft[id].revisions:
-			known[listed.record.sha256] = true
-	for id: String in index.drafts:
-		var entry: Dictionary = index.drafts[id]
-		if not known.has(entry.record.sha256) and not _load_draft_record(entry.record, id, entry).ok:
-			return "a saved draft is incomplete"
-	for id: String in index.recovery:
-		var slot: Dictionary = index.recovery[id]
-		if not known.has(slot.record.sha256) and not _load_draft_record(slot.record, id, {}).ok:
-			return "an automatic backup is incomplete"
-	for id: String in index.aircraft:
-		for listed: Dictionary in index.aircraft[id].revisions:
-			if not known.has(listed.record.sha256) and not _load_revision_record(listed, id).ok:
-				return "a saved aircraft is incomplete"
-	return ""
 
 
 ## Decodes and validates index bytes. Returns `{ok, data}` or `{ok = false, problem}`.
@@ -1026,7 +992,7 @@ static func _decode_index(bytes: PackedByteArray) -> Dictionary:
 
 
 static func _index_problem(index: Dictionary) -> String:
-	if not _closed(index, INDEX_KEYS) or index.format != INDEX_FORMAT:
+	if not _closed(index, INDEX_KEYS) or not _is_format(index.format, INDEX_FORMAT):
 		return "the index has an unknown shape"
 	if not _is_count(index.generation) or not _is_count(index.stored_bytes) or not _is_uuid(index.transaction_id) \
 			or typeof(index.aircraft) != TYPE_DICTIONARY or typeof(index.drafts) != TYPE_DICTIONARY \
@@ -1289,6 +1255,9 @@ static func _resolve_root(root: String) -> String:
 	for segment: String in relative.split("/", true):
 		if segment.is_empty() or segment == "." or segment == ".." or segment.length() > 120:
 			return ""
+		# Windows drops a trailing dot (a second spelling of the same folder) and reserves device names.
+		if segment.ends_with(".") or segment.get_slice(".", 0).to_lower() in _RESERVED_NAMES:
+			return ""
 		for index: int in segment.length():
 			var code := segment.unicode_at(index)
 			if not ((code >= 48 and code <= 57) or (code >= 65 and code <= 90) or (code >= 97 and code <= 122)
@@ -1384,6 +1353,12 @@ static func _blob_problem(reference: Variant, media: String, max_bytes: int) -> 
 			or reference.media_type != media:
 		return "a file reference is malformed"
 	return ""
+
+
+## True when a record's `format` member is exactly this text. A file may hold any JSON value there:
+## comparing a number or a list with a String is a script error, not "different".
+static func _is_format(value: Variant, expected: String) -> bool:
+	return typeof(value) == TYPE_STRING and value == expected
 
 
 ## True for a Dictionary with exactly these keys.

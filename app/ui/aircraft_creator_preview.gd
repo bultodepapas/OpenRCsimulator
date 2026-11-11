@@ -185,6 +185,12 @@ func has_model() -> bool:
 	return _root != null
 
 
+## One new image after the owner moved nodes of the shown root (the wizard's moving-part demo).
+## Nothing is rendered while the preview is hidden.
+func refresh() -> void:
+	_request_render()
+
+
 ## The `model` node of the shown root: its local space is the source file's coordinates.
 func model_node() -> Node3D:
 	return _model

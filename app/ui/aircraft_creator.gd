@@ -7,6 +7,12 @@ extends Control
 ## into the Workshop, routes Escape through `handle_back` and launches the flight on
 ## `test_fly_requested`. Text built here is translated with tr(); diagnostics are translated and
 ## formatted at this boundary.
+##
+## Persistence (AC-13/14): the wizard holds one session of the Creator store (`store_root`) while
+## it is in the tree. It saves named drafts, keeps an automatic backup of unsaved work, opens drafts
+## and saved aircraft from the library and publishes new aircraft versions. Store messages are
+## complete player sentences and are shown as they are, translated. Saving never blocks a test
+## flight: a view-only or unusable library only disables the saving controls and says why.
 
 signal close_requested
 signal test_fly_requested(payload: Dictionary)
@@ -20,7 +26,28 @@ const Authoring := preload("res://workshop/creator/authoring.gd")
 const Importer := preload("res://workshop/creator/source_importer.gd")
 const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 const VisualBuilder := preload("res://workshop/creator/visual_builder.gd")
+const Store := preload("res://workshop/creator/store.gd")
 const PreviewScript := preload("res://ui/aircraft_creator_preview.gd")
+const LibraryScript := preload("res://ui/aircraft_creator_library.gd")
+const PartsScript := preload("res://ui/aircraft_creator_parts.gd")
+
+## Quiet time after the last change before the automatic backup is written.
+const BACKUP_DELAY_S := 2.0
+const NEEDS_NAME := "Give the aircraft a name in the box at the top before saving it."
+const SAVED_AS_VERSION := "Saved as version %s"
+const STATE_SAVED := "All changes saved"
+const STATE_UNSAVED := "Unsaved changes"
+const STATE_VIEW_ONLY := "View only"
+const MOVING_VISUAL := "Controls simulated · bound parts move with them"
+const OPEN_FAILED := "The model saved with this item could not be read again, so the current aircraft is unchanged."
+const WAIT_FOR_IMPORT := "Wait until the model import has finished, then open the item again."
+const LEAVE_TEXT := "This aircraft has changes that are not saved. Save them as a draft, discard them, or keep editing."
+const RECOVERY_NAMED := "An automatic backup holds changes to \"%s\" that were never saved. Open it to continue where you left off, or discard it."
+const RECOVERY_UNNAMED := "An automatic backup holds changes to an unnamed aircraft that were never saved. Open it to continue where you left off, or discard it."
+## Paint swatches: caption and colour.
+const SWATCHES: Array[Array] = [["White", "#f2f2f2"], ["Red", "#c62828"], ["Blue", "#1e4fa3"], ["Green", "#2e7d32"],
+	["Black", "#1a1a1a"]]
+const DEFAULT_PAINT := "#c62828"
 
 ## Below this logical width the preview and the inspector take turns instead of sitting side by side.
 const NARROW_WIDTH := 1100.0
@@ -76,6 +103,10 @@ class ImportJob extends RefCounted:
 	var generation := 0
 	var task_id := -1
 	var result := {}
+	## Re-admission of stored source bytes instead of a file: what is being opened and its bytes.
+	var bytes := PackedByteArray()
+	var file_name := ""
+	var opening := {}
 
 
 ## Inspections whose wizard was closed before they finished. Kept alive until their task is released.
@@ -175,6 +206,40 @@ var _review_sections := {}
 var _issue_box: VBoxContainer
 var _issue_signature := "-"
 var _start_choice := "airborne"
+var _field_badges := {}
+
+# Moving parts and paint.
+var _parts: PartsScript
+var _motion_label: Label
+var _preview_value := {}
+var _animating := false
+var _motion_time := 0.0
+var _binding_key := ""
+var _binding_check := {}
+var _paint_cards := {}
+var _paint_picker: ColorPickerButton
+var _picker_created := false
+var _swatches: Array[Button] = []
+
+# Library session.
+## Store root for this wizard, set before it enters the tree. "" is `Store.DEFAULT_ROOT`.
+var store_root := ""
+var _store: Store
+var _store_reason := ""
+var _recovery_checked := false
+var _opening := false
+var _backup_timer: Timer
+var _save_button: Button
+var _open_button: Button
+var _save_state: Label
+var _publish_button: Button
+var _library: LibraryScript
+var _leave_dialog: ConfirmationDialog
+var _leave_proceed := Callable()
+var _leave_cancel := Callable()
+var _leave_pending := false
+var _recovery_dialog: ConfirmationDialog
+var _recovery_entry := {}
 
 
 func _init() -> void:
@@ -187,14 +252,14 @@ func _init() -> void:
 		_known_labels[label] = true
 	_known_labels["Known wingspan (m)"] = true
 	_doc = Authoring.new()
-	_doc.changed.connect(_schedule_refresh)
+	_doc.changed.connect(_on_doc_changed)
 	_build()
 	_show_step(_current)
 
 
 func _ready() -> void:
 	resized.connect(_apply_layout)
-	visibility_changed.connect(_update_preview_active)
+	visibility_changed.connect(_on_visibility_changed)
 	reap_abandoned_imports()
 	_apply_layout()
 	_refresh()
@@ -202,6 +267,10 @@ func _ready() -> void:
 
 func _notification(what: int) -> void:
 	match what:
+		NOTIFICATION_ENTER_TREE:
+			_open_store()
+		NOTIFICATION_EXIT_TREE:
+			_close_store()
 		NOTIFICATION_PREDELETE:
 			# A running inspection finishes on its own; its result is never adopted.
 			_closing = true
@@ -209,26 +278,39 @@ func _notification(what: int) -> void:
 			if _job != null:
 				_abandoned_jobs.append(_job)
 				_job = null
+			_close_store()
 		NOTIFICATION_TRANSLATION_CHANGED, NOTIFICATION_THEME_CHANGED:
 			if _scroll != null and not _closing:
 				for card: Button in _cards:
 					_update_card_text(card)
+				_parts.refresh_texts()
 				_schedule_refresh()
 				if what == NOTIFICATION_THEME_CHANGED:
 					_apply_layout.call_deferred()
 
 
-func _process(_delta: float) -> void:
-	if _job == null:
+func _process(delta: float) -> void:
+	if _job != null and WorkerThreadPool.is_task_completed(_job.task_id):
+		WorkerThreadPool.wait_for_task_completion(_job.task_id)
+		var job := _job
+		_job = null
+		_adopt_import(job)
+	if _animating:
+		_animate(delta)
+	if _job == null and not _animating:
 		set_process(false)
+
+
+## Ctrl+S saves the draft while the wizard is the active, uncovered screen.
+func _input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key == null or not key.pressed or key.echo or key.keycode != KEY_S or not key.is_command_or_control_pressed() \
+			or key.shift_pressed or key.alt_pressed:
 		return
-	if not WorkerThreadPool.is_task_completed(_job.task_id):
+	if not _active or not is_visible_in_tree() or _modal_open():
 		return
-	WorkerThreadPool.wait_for_task_completion(_job.task_id)
-	var job := _job
-	_job = null
-	set_process(false)
-	_adopt_import(job)
+	get_viewport().set_input_as_handled()
+	_on_save_pressed()
 
 
 # --- Public interface -----------------------------------------------------------------------
@@ -239,12 +321,15 @@ func set_note(text: String) -> void:
 	_note_panel.visible = not text.strip_edges().is_empty()
 
 
-## True once a model is imported, a value is set or the aircraft is named.
+## True when the document differs from its last save (or was never saved and holds anything), or
+## while a model is being imported. Follows the document's own save state.
 func has_unsaved_changes() -> bool:
-	return _doc.revision > 0 or not _doc.name.is_empty() or _import_state == "inspecting"
+	return _doc.has_unsaved_changes() or _import_state == "inspecting"
 
 
-## Hides an open file dialog or confirmation. True when something was dismissed.
+## Hides an open file dialog, confirmation, library, leave or recovery question, colour picker or
+## list. A dismissed leave question counts as "Keep editing"; a dismissed recovery question keeps
+## the backup for the next opening. True when something was dismissed.
 func dismiss_modal_for_exit() -> bool:
 	var dismissed := false
 	if _file_dialog.visible:
@@ -254,11 +339,78 @@ func dismiss_modal_for_exit() -> bool:
 		_confirm.hide()
 		_confirm_action = Callable()
 		dismissed = true
+	if _leave_dialog.visible:
+		_leave_dialog.hide()
+		_on_leave_choice("keep")
+		dismissed = true
+	if _recovery_dialog.visible:
+		_recovery_dialog.hide()
+		_recovery_entry = {}
+		dismissed = true
+	if _library.visible:
+		_library.hide()
+		dismissed = true
+	if _picker_open():
+		_paint_picker.get_popup().hide()
+		dismissed = true
 	for picker: OptionButton in _option_buttons():
 		if picker.get_popup().visible:
 			picker.get_popup().hide()
 			dismissed = true
 	return dismissed
+
+
+## Leave guard for the host. Without unsaved changes `proceed` is called at once. Otherwise the
+## player chooses: "Save draft and leave" saves the draft and calls `proceed` only when the save
+## succeeded (a refusal is shown and `cancel` is called instead); "Discard changes" drops the
+## automatic backup and calls `proceed`; "Keep editing", Escape, Back or `dismiss_modal_for_exit`
+## call `cancel`. Exactly one of the two is called per request, never synchronously twice; a new
+## request while the question is open cancels the earlier one first. The document is never
+## reverted here: `proceed` is expected to close or replace it.
+func confirm_leave(proceed: Callable, cancel: Callable = Callable()) -> void:
+	_commit_focused_edit()
+	if not has_unsaved_changes():
+		if proceed.is_valid():
+			proceed.call()
+		return
+	if _leave_dialog.visible:
+		_leave_dialog.hide()
+		_on_leave_choice("keep")
+	if _closing or not is_inside_tree():
+		if cancel.is_valid():
+			cancel.call()
+		return
+	_leave_proceed = proceed
+	_leave_cancel = cancel
+	_leave_pending = true
+	var saving := _can_save()
+	var text := tr(LEAVE_TEXT)
+	if not saving:
+		text += "\n\n" + _store_reason
+	_leave_dialog.dialog_text = text
+	_leave_dialog.get_ok_button().disabled = not saving
+	_leave_dialog.popup_centered_clamped(Vector2i(760, 300), 0.9)
+	_update_preview_active()
+	(_leave_dialog.get_ok_button() if saving else _leave_dialog.get_cancel_button()).grab_focus.call_deferred()
+
+
+## Opens the library of drafts and saved aircraft.
+func open_library() -> void:
+	if _closing or not is_inside_tree() or _store == null:
+		return
+	_library.set_message("" if _can_save() else _store_reason)
+	_fill_library()
+	_library.popup_centered_clamped(Vector2i(900, 640), 0.9)
+	_update_preview_active()
+	_library.focus_first.call_deferred()
+
+
+## Save state for tests and the debug bridge: {state ("saved" | "unsaved" | "view_only"), writable,
+## reason, draft_id, published_revision, opening}.
+func save_state() -> Dictionary:
+	var state := "view_only" if not _can_save() else ("unsaved" if has_unsaved_changes() else "saved")
+	return {state = state, writable = _can_save(), reason = _store_reason, draft_id = _doc.draft_id,
+		published_revision = _doc.published_revision, opening = _opening}
 
 
 ## Escape/Back from the host: closes the top popup, cancels an edit or a datum pick, or goes to the
@@ -310,6 +462,7 @@ func current_step() -> String:
 func set_active(active: bool) -> void:
 	_active = active
 	_update_preview_active()
+	_update_animation()
 
 
 func preview() -> Control:
@@ -349,6 +502,9 @@ static func reap_abandoned_imports() -> int:
 
 ## Worker-thread body. Static and node-free: closing the wizard cannot invalidate it.
 static func _inspect(job: ImportJob) -> void:
+	if not job.opening.is_empty():
+		job.result = Importer.inspect_bytes(job.bytes, job.file_name)
+		return
 	var captured: Dictionary = Importer.read_bounded(job.path)
 	if captured.ok:
 		captured = Importer.inspect_bytes(captured.value, job.path.get_file())
@@ -366,6 +522,7 @@ func _start_import(path: String) -> void:
 		_abandoned_jobs.append(_job)
 		_job = null
 		_discarded_imports += 1
+		_opening = false
 	_import_generation += 1
 	var job := ImportJob.new()
 	job.path = path
@@ -385,6 +542,14 @@ func _adopt_import(job: ImportJob) -> void:
 		_discarded_imports += 1
 		return
 	var result: Dictionary = job.result
+	if not job.opening.is_empty():
+		_opening = false
+		if result.get("ok", false) and result.get("value") is InspectedSource:
+			_finish_open(str(job.opening.kind), job.opening.value, result.value)
+		else:
+			set_note("\n".join(PackedStringArray([tr(OPEN_FAILED), _diagnostics_text(result.get("diagnostics", []))])).strip_edges())
+			_refresh()
+		return
 	if result.get("ok", false) and result.get("value") is InspectedSource:
 		_import_state = "imported"
 		_import_diagnostics = []
@@ -471,7 +636,7 @@ func _build_header(parent: Container) -> void:
 	_name_edit.max_length = Limits.NAME_CHARACTERS
 	_name_edit.custom_minimum_size.x = 280
 	_name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_name_edit.text_changed.connect(func(text: String) -> void: _doc.name = text.strip_edges())
+	_name_edit.text_changed.connect(_on_name_changed)
 	header.add_child(_name_edit)
 	var badge := PanelContainer.new()
 	badge.name = "ExperimentalBadge"
@@ -479,6 +644,19 @@ func _build_header(parent: Container) -> void:
 	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	badge.add_child(Widgets.label("Experimental · estimated", "SecondaryLabel"))
 	header.add_child(badge)
+	_open_button = _button("Open…", "", "OpenLibrary")
+	_open_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_open_button.pressed.connect(_on_open_pressed)
+	header.add_child(_open_button)
+	_save_button = _button("Save draft", "", "SaveDraft")
+	_save_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_save_button.tooltip_text = "Ctrl+S"
+	_save_button.pressed.connect(_on_save_pressed)
+	header.add_child(_save_button)
+	_save_state = Widgets.label("", "SecondaryLabel", false)
+	_save_state.name = "SaveState"
+	_save_state.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(_save_state)
 
 
 func _build_compact_bar(parent: Container) -> void:
@@ -606,6 +784,11 @@ func _build_footer(parent: Container) -> void:
 	_continue_button.size_flags_vertical = Control.SIZE_SHRINK_END
 	_continue_button.pressed.connect(_step_by.bind(1))
 	footer.add_child(_continue_button)
+	_publish_button = _button("Save aircraft", "", "SaveAircraft")
+	_publish_button.size_flags_vertical = Control.SIZE_SHRINK_END
+	_publish_button.pressed.connect(_on_publish_pressed)
+	_publish_button.visible = false
+	footer.add_child(_publish_button)
 	_test_fly_button = _button("Test fly", "PrimaryButton", "TestFly")
 	_test_fly_button.size_flags_vertical = Control.SIZE_SHRINK_END
 	_test_fly_button.pressed.connect(_on_test_fly_pressed)
@@ -639,6 +822,60 @@ func _build_dialogs() -> void:
 	_confirm_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_confirm_text)
 	add_child(_confirm)
+
+	_leave_dialog = ConfirmationDialog.new()
+	_leave_dialog.name = "CreatorLeaveDialog"
+	_leave_dialog.title = "Leave with unsaved changes?"
+	_leave_dialog.ok_button_text = "Save draft and leave"
+	_leave_dialog.cancel_button_text = "Keep editing"
+	_leave_dialog.dialog_autowrap = true
+	_leave_dialog.add_button("Discard changes", true, "discard")
+	_leave_dialog.confirmed.connect(_on_leave_choice.bind("save"))
+	_leave_dialog.custom_action.connect(func(action: StringName) -> void:
+		if action == &"discard":
+			# A cancel emitted while hiding is not an answer.
+			var waiting := _leave_pending
+			_leave_pending = false
+			_leave_dialog.hide()
+			_leave_pending = waiting
+			_on_leave_choice("discard"))
+	_leave_dialog.canceled.connect(_on_leave_choice.bind("keep"))
+	_leave_dialog.visibility_changed.connect(_update_preview_active)
+	add_child(_leave_dialog)
+
+	_recovery_dialog = ConfirmationDialog.new()
+	_recovery_dialog.name = "CreatorRecoveryDialog"
+	_recovery_dialog.title = "Recover unsaved work?"
+	_recovery_dialog.ok_button_text = "Open the recovered draft"
+	_recovery_dialog.dialog_autowrap = true
+	_recovery_dialog.add_button("Discard it", true, "discard")
+	# Escape keeps the backup: it is offered again the next time the Creator opens.
+	_recovery_dialog.get_cancel_button().visible = false
+	_recovery_dialog.confirmed.connect(_on_recovery_open)
+	_recovery_dialog.custom_action.connect(func(action: StringName) -> void:
+		if action == &"discard":
+			var entry := _recovery_entry
+			_recovery_dialog.hide()
+			_on_recovery_discard(entry))
+	_recovery_dialog.canceled.connect(func() -> void:
+		_recovery_entry = {}
+		focus_default.call_deferred())
+	_recovery_dialog.visibility_changed.connect(_update_preview_active)
+	add_child(_recovery_dialog)
+
+	_library = LibraryScript.new()
+	_library.open_requested.connect(_on_library_open)
+	_library.archive_requested.connect(_on_library_archive)
+	_library.show_archived_toggled.connect(func(_on: bool) -> void: _fill_library())
+	_library.visibility_changed.connect(_on_library_visibility)
+	add_child(_library)
+
+	_backup_timer = Timer.new()
+	_backup_timer.name = "BackupTimer"
+	_backup_timer.one_shot = true
+	_backup_timer.wait_time = BACKUP_DELAY_S
+	_backup_timer.timeout.connect(_write_backup)
+	add_child(_backup_timer)
 
 
 func _build_import_page(page: VBoxContainer) -> void:
@@ -815,8 +1052,14 @@ func _build_controls_page(page: VBoxContainer) -> void:
 	var notice := PanelContainer.new()
 	notice.name = "StaticVisualNotice"
 	notice.theme_type_variation = "Notice"
-	notice.add_child(_label(STATIC_VISUAL))
+	_motion_label = _label(STATIC_VISUAL)
+	_motion_label.name = "MotionState"
+	notice.add_child(_motion_label)
 	page.add_child(notice)
+	_parts = PartsScript.new()
+	_parts.bindings_changed.connect(func(bound: Dictionary) -> void: _doc.set_bindings(bound))
+	_parts.movement_toggled.connect(func(_on: bool) -> void: _update_animation())
+	page.add_child(_parts)
 	page.add_child(Widgets.label("Landing gear", "SectionLabel", true))
 	var grid := _card_grid(page, "GearCards", 2)
 	var group := ButtonGroup.new()
@@ -829,10 +1072,47 @@ func _build_controls_page(page: VBoxContainer) -> void:
 func _build_paint_page(page: VBoxContainer) -> void:
 	var grid := _card_grid(page, "PaintCards", 2)
 	var group := ButtonGroup.new()
-	_add_card(grid, "PaintOriginal", "Original", "The model's own colours", group, true)
-	_add_card(grid, "PaintGenerate", "Generate paint", "", group, false, NOT_AVAILABLE)
-	_add_card(grid, "PaintUpload", "Upload image", "", group, false, NOT_AVAILABLE)
-	_add_card(grid, "PaintImportSkin", "Import skin", "", group, false, NOT_AVAILABLE)
+	_paint_cards["original"] = _add_card(grid, "PaintOriginal", "Original", "The model's own colours", group, true)
+	_paint_cards["solid"] = _add_card(grid, "PaintSolid", "Solid colour", "One colour over the whole model", group, false)
+	for mode: String in _paint_cards:
+		(_paint_cards[mode] as Button).pressed.connect(_on_paint_mode.bind(mode))
+	var colour_row := _flow(page, "PaintColorRow")
+	var caption := Widgets.label("Paint colour", "SecondaryLabel")
+	caption.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	colour_row.add_child(caption)
+	_paint_picker = ColorPickerButton.new()
+	_paint_picker.name = "PaintColor"
+	Widgets.fit_color_picker_popup(_paint_picker)
+	_paint_picker.edit_alpha = false
+	_paint_picker.color = Color.html(DEFAULT_PAINT)
+	_paint_picker.custom_minimum_size = Vector2(64, 36)
+	_paint_picker.accessibility_name = tr("Paint colour")
+	_paint_picker.tooltip_text = "Paint colour"
+	_paint_picker.color_changed.connect(func(color: Color) -> void: _set_paint(color))
+	_paint_picker.picker_created.connect(func() -> void: _picker_created = true)
+	colour_row.add_child(_paint_picker)
+	for swatch: Array in SWATCHES:
+		var chip := _button("", "", "PaintSwatch" + str(swatch[0]))
+		chip.custom_minimum_size = Vector2(44, 36)
+		chip.tooltip_text = str(swatch[0])
+		chip.accessibility_name = tr(str(swatch[0]))
+		var fill := ColorRect.new()
+		fill.color = Color.html(str(swatch[1]))
+		fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		fill.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		fill.offset_left = 6
+		fill.offset_top = 6
+		fill.offset_right = -6
+		fill.offset_bottom = -6
+		chip.add_child(fill)
+		chip.pressed.connect(_set_paint.bind(Color.html(str(swatch[1]))))
+		colour_row.add_child(chip)
+		_swatches.append(chip)
+	var later := _card_grid(page, "PaintLaterCards", 2)
+	var unavailable := ButtonGroup.new()
+	_add_card(later, "PaintGenerate", "Generate paint", "", unavailable, false, NOT_AVAILABLE)
+	_add_card(later, "PaintUpload", "Upload image", "", unavailable, false, NOT_AVAILABLE)
+	_add_card(later, "PaintImportSkin", "Import skin", "", unavailable, false, NOT_AVAILABLE)
 
 
 func _build_review_page(page: VBoxContainer) -> void:
@@ -991,12 +1271,19 @@ func _add_fields(parent: Container, step: String) -> void:
 		var unit := Widgets.label(str(entry.unit), "SecondaryLabel", false, false)
 		unit.custom_minimum_size.x = 44
 		row.add_child(unit)
+		# A starting value the player has not confirmed is marked until they type their own.
+		var badge := _label("Estimated value", "SecondaryLabel")
+		badge.name = edit.name + "Estimate"
+		badge.visible = false
+		holder.add_child(badge)
+		edit.text_changed.connect(func(_text: String) -> void: badge.visible = false)
 		var error := _label("", "ErrorLabel", false)
 		error.name = edit.name + "Error"
 		error.visible = false
 		holder.add_child(error)
 		_field_edits[path] = edit
 		_field_errors[path] = error
+		_field_badges[path] = badge
 
 
 ## A two-column read-out of compiler estimates. Absent values show a dash.
@@ -1035,7 +1322,10 @@ func _show_step(step: String) -> void:
 	_back_button.visible = index > 0
 	_continue_button.visible = index < Authoring.STEPS.size() - 1
 	_test_fly_button.visible = index == Authoring.STEPS.size() - 1
+	_publish_button.visible = _test_fly_button.visible
 	_scroll.scroll_vertical = 0
+	if step != "controls_ground" and _parts != null:
+		_parts.stop_movement()
 
 
 func _step_by(offset: int) -> void:
@@ -1074,9 +1364,31 @@ func _set_show_preview(show_preview: bool) -> void:
 
 
 func _update_preview_active() -> void:
-	if _preview == null or _file_dialog == null or _confirm == null:
+	if _preview == null or _file_dialog == null or _confirm == null or _library == null:
 		return
-	_preview.set_active(_active and is_visible_in_tree() and not _file_dialog.visible and not _confirm.visible)
+	_preview.set_active(_active and is_visible_in_tree() and not _file_dialog.visible and not _confirm.visible
+		and not _leave_dialog.visible and not _recovery_dialog.visible and not _library.visible)
+
+
+func _on_visibility_changed() -> void:
+	_update_preview_active()
+	_update_animation()
+
+
+## The colour picker's popup is created on first use only: asking for it earlier would build it.
+func _picker_open() -> bool:
+	return _picker_created and _paint_picker.get_popup().visible
+
+
+## True while a dialog, colour picker or option list covers the wizard.
+func _modal_open() -> bool:
+	if _file_dialog.visible or _confirm.visible or _leave_dialog.visible or _recovery_dialog.visible or _library.visible \
+			or _picker_open():
+		return true
+	for picker: OptionButton in _option_buttons():
+		if picker.get_popup().visible:
+			return true
+	return false
 
 
 func _default_focus(step: String) -> Control:
@@ -1113,6 +1425,7 @@ func _option_buttons() -> Array[OptionButton]:
 	var found: Array[OptionButton] = [_step_select, _nose_axis, _up_axis, _units]
 	for id: String in _item_rows:
 		found.append(_item_rows[id].kind as OptionButton)
+	found.append_array(_parts.pickers())
 	return found
 
 
@@ -1177,6 +1490,8 @@ func _restore_edit(edit: LineEdit) -> bool:
 	edit.text = origin
 	edit.caret_column = origin.length()
 	edit.set_meta("typed", false)
+	# Shows an estimate marker again that typing had hidden.
+	_schedule_refresh()
 	return true
 
 
@@ -1461,7 +1776,7 @@ func _flow(parent: Container, node_name: String) -> HFlowContainer:
 func _on_test_fly_pressed() -> void:
 	_commit_focused_edit()
 	_issues = _collect_issues()
-	if not _issues.is_empty() or _import_state == "inspecting":
+	if not _issues.is_empty() or _import_state == "inspecting" or _opening:
 		_refresh()
 		return
 	var compiled: Dictionary = _doc.compile()
@@ -1474,7 +1789,8 @@ func _on_test_fly_pressed() -> void:
 	if shown_name.is_empty():
 		shown_name = source.file_name().get_basename()
 	test_fly_requested.emit({creator_candidate = compiled.value, creator_source = source,
-		creator_placement = _doc.placement(), creator_name = shown_name, start_choice = _start_choice})
+		creator_placement = _doc.placement(), creator_name = shown_name, start_choice = _start_choice,
+		creator_bindings = _doc.bindings(), creator_appearance = _doc.appearance()})
 
 
 # --- Diagnostics ----------------------------------------------------------------------------
@@ -1527,7 +1843,39 @@ func _local_issues() -> Array:
 				caption = tr(str(number[1]))
 		found.append(R.diagnostic(R.FIELD_INVALID, NOT_A_NUMBER, "local/item/" + slot, "weight_balance",
 			["%s · %s" % [str(_item(parts[0]).get("name", parts[0])), caption]]))
+	for entry: Variant in _presentation_check().get("diagnostics", []):
+		if entry is Dictionary and str((entry as Dictionary).get("severity", R.SEVERITY_ERROR)) == R.SEVERITY_ERROR:
+			found.append(entry)
 	return found
+
+
+## Moving parts and paint checked by the visual builder: the presentation the trial would refuse.
+## Cached per source, bindings and appearance. Returns {ok, diagnostics, note}; `note` is the
+## builder's advice while parts are bound.
+func _presentation_check() -> Dictionary:
+	var source: InspectedSource = _doc.source()
+	var bound: Dictionary = _doc.bindings()
+	var look: Dictionary = _doc.appearance()
+	var key := "%d|%s|%s" % [source.get_instance_id() if source != null else 0, str(bound), str(look)]
+	if key == _binding_key:
+		return _binding_check
+	_binding_key = key
+	var problems: Array = []
+	var note := ""
+	if source != null and not bound.is_empty():
+		var checked: Dictionary = VisualBuilder.validate_bindings(source, bound)
+		for entry: Variant in checked.diagnostics:
+			if not entry is Dictionary:
+				continue
+			if str((entry as Dictionary).get("severity", R.SEVERITY_ERROR)) == R.SEVERITY_ERROR:
+				problems.append(entry)
+			elif note.is_empty():
+				note = str((entry as Dictionary).get("message", ""))
+	var painted: Dictionary = VisualBuilder.validate_appearance(look)
+	if not painted.ok:
+		problems.append_array(painted.diagnostics)
+	_binding_check = {ok = problems.is_empty(), diagnostics = problems, note = note}
+	return _binding_check
 
 
 func _collect_issues() -> Array:
@@ -1554,6 +1902,10 @@ func _issue_step(entry: Dictionary) -> String:
 func _focus_target(path: String) -> Control:
 	if _field_edits.has(path):
 		return _field_edits[path]
+	if path == "bindings" or path.begins_with("bindings/"):
+		return _parts.focus_target(path)
+	if path.begins_with("appearance"):
+		return _paint_cards.solid
 	match path:
 		"source": return _choose_button
 		"placement/nose_axis": return _nose_axis
@@ -1660,10 +2012,15 @@ func _refresh() -> void:
 		"weight_balance":
 			_refresh_inventory()
 			_refresh_fields(_current)
+		"controls_ground":
+			_refresh_fields(_current)
+			_refresh_parts()
+		"paint_skins": _refresh_paint()
 		"review_test": _refresh_review()
 		_: _refresh_fields(_current)
 	_refresh_readouts()
 	_refresh_footer()
+	_refresh_save_state()
 
 
 func _refresh_steps() -> void:
@@ -1683,12 +2040,41 @@ func _refresh_footer() -> void:
 	var reason := ""
 	if _import_state == "inspecting":
 		reason = tr("Inspecting model…")
+	elif _opening:
+		reason = tr("Opening…")
 	elif not _issues.is_empty():
 		reason = tr("Test fly is available once the issues listed above are resolved.")
 	_test_fly_button.disabled = not reason.is_empty()
 	_test_fly_button.tooltip_text = reason
 	_reason_label.text = reason
 	_reason_label.visible = _test_fly_button.visible and not reason.is_empty()
+	# Publishing needs what a test flight needs, a compiled aircraft, and a library that can be written.
+	var publish_reason := reason if not reason.is_empty() else ("" if _can_save() else _store_reason)
+	if publish_reason.is_empty():
+		var compiled: Dictionary = _doc.compile()
+		if not compiled.get("ok", false):
+			publish_reason = _diagnostics_text(compiled.get("diagnostics", []))
+	_publish_button.disabled = not publish_reason.is_empty()
+	_publish_button.tooltip_text = publish_reason
+
+
+## "All changes saved", "Unsaved changes" or "View only", and whether the saving controls work.
+func _refresh_save_state() -> void:
+	if _save_state == null:
+		return
+	var writable := _can_save()
+	_save_state.text = STATE_VIEW_ONLY if not writable else (STATE_UNSAVED if has_unsaved_changes() else STATE_SAVED)
+	_save_state.tooltip_text = "" if writable else _store_reason
+	_save_button.disabled = not writable
+	_save_button.tooltip_text = "Ctrl+S" if writable else _store_reason
+	var open_reason := ""
+	if _store == null:
+		open_reason = _store_reason
+	elif _import_state == "inspecting" or _opening:
+		open_reason = tr(WAIT_FOR_IMPORT) if _import_state == "inspecting" else tr("Opening…")
+	_open_button.disabled = not open_reason.is_empty()
+	_open_button.tooltip_text = open_reason
+	_choose_button.disabled = _opening
 
 
 func _refresh_fields(step: String) -> void:
@@ -1706,6 +2092,8 @@ func _refresh_fields(step: String) -> void:
 		var edit: LineEdit = _field_edits[path]
 		var error: Label = _field_errors[path]
 		_show_text(edit, _doc.raw(path))
+		(_field_badges[path] as Label).visible = _doc.is_estimated(path) \
+			and not (edit.has_focus() and bool(edit.get_meta("typed", false)))
 		if _doc.is_invalid(path):
 			error.text = tr(ENTER_A_NUMBER)
 			error.visible = true
@@ -1923,30 +2311,51 @@ func _section_detail(step: String) -> String:
 		"power_mount":
 			return "%s · %s" % [tr("Electric"), tr(ELECTRIC_PACKAGE)]
 		"controls_ground":
-			return "%s · %s" % [tr("No gear"), tr(STATIC_VISUAL)]
+			return "%s · %s" % [tr("No gear"), tr(_motion_text())]
+	var look: Dictionary = _doc.appearance()
+	if str(look.get("mode", "")) == "solid":
+		return "%s · %s" % [tr("Solid colour"), str(look.get("color", ""))]
 	return tr("Original")
+
+
+## The true state of the visual controls: bound parts move, otherwise the visual is static.
+func _motion_text() -> String:
+	var bound: Dictionary = _doc.bindings()
+	var moving := bound.has("propeller") or not (bound.get("controls", {}) as Dictionary).is_empty()
+	return MOVING_VISUAL if moving and _presentation_check().ok and _doc.source() != null else STATIC_VISUAL
 
 
 # --- Preview --------------------------------------------------------------------------------
 
-## Rebuilds the preview only when the source or its placement changed.
+## Rebuilds the preview only when the source, its placement, the bound parts or the paint changed.
+## Bindings the builder refuses are listed as issues on the Controls step; the preview then shows
+## the model without moving parts rather than no model.
 func _sync_preview() -> void:
 	var source: InspectedSource = _doc.source()
 	var placement: Dictionary = _doc.placement()
-	var signature := "" if source == null else "%d|%s" % [source.get_instance_id(), str(placement)]
+	var bound: Dictionary = _doc.bindings()
+	var look: Dictionary = _doc.appearance()
+	var signature := "" if source == null else "%d|%s|%s|%s" % [source.get_instance_id(), str(placement), str(bound), str(look)]
 	if signature == _preview_signature:
 		return
 	_preview_signature = signature
 	_preview_placed = false
+	_preview_value = {}
 	if source == null:
 		_preview.clear()
+		_update_animation()
 		return
-	var built: Dictionary = VisualBuilder.build_preview(source, placement)
+	var built: Dictionary = VisualBuilder.build_preview(source, placement, bound, look)
+	if not built.ok and not bound.is_empty():
+		built = VisualBuilder.build_preview(source, placement, {}, look)
 	if not built.ok:
 		_preview.show_message(_diagnostics_text(built.diagnostics))
+		_update_animation()
 		return
 	_preview_placed = bool(built.value.placed)
 	_preview.show_root(built.value.root)
+	_preview_value = built.value
+	_update_animation()
 
 
 func _sync_markers() -> void:
@@ -1985,3 +2394,477 @@ func _add_value_marker(markers: Array, caption: String, path: String, lateral: b
 
 static func _model_point(aft: float, right: float, up: float) -> Vector3:
 	return VisualBuilder.structural_to_model(PackedFloat64Array([aft, right, up]))
+
+
+# --- Moving parts and paint -----------------------------------------------------------------
+
+func _refresh_parts() -> void:
+	_parts.show_model(_doc.source(), _doc.placement(), _doc.bindings())
+	var checked: Dictionary = _presentation_check()
+	var by_field := {}
+	for entry: Variant in checked.diagnostics:
+		var field := str((entry as Dictionary).get("field", ""))
+		if (field == "bindings" or field.begins_with("bindings/")) and not by_field.has(field):
+			by_field[field] = _diagnostic_text(entry)
+	var note := str(checked.note)
+	_parts.show_problems(by_field, tr(note) if not note.is_empty() else "")
+	_motion_label.text = _motion_text()
+
+
+func _refresh_paint() -> void:
+	var look: Dictionary = _doc.appearance()
+	var solid := str(look.get("mode", "")) == "solid"
+	for mode: String in _paint_cards:
+		var card: Button = _paint_cards[mode]
+		if card.button_pressed != ((mode == "solid") == solid):
+			card.set_pressed_no_signal((mode == "solid") == solid)
+			_update_card_text(card)
+	var shown := str(look.get("color", ""))
+	if solid and shown.length() == 7 and shown.substr(1).is_valid_hex_number() and _paint_picker.color != Color.html(shown):
+		_paint_picker.color = Color.html(shown)
+
+
+func _on_paint_mode(mode: String) -> void:
+	if mode == "solid":
+		_set_paint(_paint_picker.color)
+	elif str(_doc.appearance().get("mode", "")) != "original":
+		_doc.set_appearance({"mode": "original"})
+
+
+## Paints the whole model one colour: the card, the picker and the preview follow.
+func _set_paint(color: Color) -> void:
+	var opaque := Color(color.r, color.g, color.b, 1.0)
+	if _paint_picker.color != opaque:
+		_paint_picker.color = opaque
+	var chosen := {"mode": "solid", "color": "#" + opaque.to_html(false).to_lower()}
+	if _doc.appearance() != chosen:
+		_doc.set_appearance(chosen)
+
+
+## Runs the moving-part demo only while it is asked for, the Controls step and the preview are
+## shown and the wizard is active, and something is bound. No per-frame work otherwise.
+func _update_animation() -> void:
+	if _parts == null or _preview == null:
+		return
+	if _parts.is_movement_on() and (not _active or _current != "controls_ground" or not is_visible_in_tree()):
+		_parts.stop_movement()
+	var run := _parts.is_movement_on() and _preview.is_visible_in_tree() and bool(_preview_value.get("articulated", false))
+	if run == _animating:
+		return
+	_animating = run
+	if run:
+		_motion_time = 0.0
+		set_process(true)
+	else:
+		_pose_neutral()
+
+
+func _animate(delta: float) -> void:
+	_motion_time += delta
+	if _preview_value.is_empty():
+		return
+	var phase := _motion_time * 2.0
+	VisualBuilder.pose_preview(_preview_value, {"roll": sin(phase), "pitch": sin(phase * 0.7 + 1.0),
+		"yaw": sin(phase * 0.5 + 2.0)}, _motion_time * 12.0)
+	_preview.refresh()
+
+
+func _pose_neutral() -> void:
+	if _preview_value.is_empty() or not is_instance_valid(_preview_value.get("root")):
+		return
+	VisualBuilder.pose_preview(_preview_value, {}, 0.0)
+	_preview.refresh()
+
+
+# --- Library session ------------------------------------------------------------------------
+
+func _open_store() -> void:
+	if _store != null or _closing:
+		return
+	var opened: Dictionary = Store.open(store_root if not store_root.is_empty() else Store.DEFAULT_ROOT)
+	var notes := _diagnostics_text(opened.get("diagnostics", []))
+	if opened.get("ok", false) and opened.get("value") is Store:
+		_store = opened.value
+		_store_reason = "" if _store.is_writer() else (notes if not notes.is_empty() else tr(Store.M_VIEW_ONLY))
+	else:
+		_store_reason = notes
+	if not notes.is_empty():
+		set_note(notes)
+	_refresh_save_state()
+	if _can_save() and not _recovery_checked:
+		_check_recovery.call_deferred()
+
+
+## Leaving the tree: unsaved work waiting for its backup is written first, then the lock is released.
+func _close_store() -> void:
+	if _store == null:
+		return
+	if _backup_timer != null and not _backup_timer.is_stopped():
+		_backup_timer.stop()
+		_write_backup(true)
+	_store.close()
+	_store = null
+	_store_reason = ""
+
+
+func _can_save() -> bool:
+	return _store != null and _store.is_writer() and not _store.needs_reopen()
+
+
+## Shows a refused store call as the store worded it. Nothing in the document changes.
+func _store_failed(result: Dictionary) -> void:
+	if _store != null and _store.needs_reopen():
+		_store_reason = tr(Store.M_REOPEN)
+	set_note(_diagnostics_text(result.get("diagnostics", [])))
+	_refresh_save_state()
+
+
+func _draft_record() -> Dictionary:
+	var source: InspectedSource = _doc.source()
+	return {"draft_id": _doc.draft_id, "name": _doc.name,
+		"aircraft_uuid": _doc.aircraft_uuid() if _doc.published_revision > 0 else "",
+		"snapshot": _doc.snapshot(_current),
+		"source_bytes": source.source_bytes() if source != null else PackedByteArray(),
+		"source_file_name": source.file_name() if source != null else ""}
+
+
+func _on_save_pressed() -> void:
+	_save_draft()
+
+
+## Saves the named draft. False when the name is missing or the store refused; the reason is shown.
+func _save_draft() -> bool:
+	_commit_focused_edit()
+	if not _can_save():
+		set_note(_store_reason)
+		return false
+	if _doc.name.is_empty():
+		set_note(tr(NEEDS_NAME))
+		_focus_control.call_deferred(_name_edit)
+		return false
+	var saved: Dictionary = _store.save_draft(_draft_record(), _doc.saved_record_sha256)
+	if not saved.ok:
+		_store_failed(saved)
+		return false
+	_doc.mark_saved(str(saved.value.record_sha256))
+	_drop_backup()
+	set_note("")
+	_refresh_save_state()
+	return true
+
+
+func _on_doc_changed() -> void:
+	_schedule_refresh()
+	_schedule_backup()
+
+
+func _on_name_changed(text: String) -> void:
+	_doc.name = text.strip_edges()
+	_schedule_backup()
+	_refresh_save_state()
+
+
+func _schedule_backup() -> void:
+	if _closing or _backup_timer == null or not _backup_timer.is_inside_tree() or not _can_save():
+		return
+	_backup_timer.start(BACKUP_DELAY_S)
+
+
+## Writes the automatic backup of unsaved work. Waits while a dialog is open or a model is read.
+func _write_backup(leaving := false) -> void:
+	if not _can_save() or not _doc.has_unsaved_changes() or _job != null:
+		return
+	if not leaving and _modal_open():
+		_backup_timer.start(BACKUP_DELAY_S)
+		return
+	var saved: Dictionary = _store.save_recovery(_draft_record(), _backup_hash(_doc.draft_id))
+	if not saved.ok:
+		_store_failed(saved)
+
+
+## Record hash of the backup slot of a draft, or "" when it has none.
+func _backup_hash(draft_id: String) -> String:
+	for entry: Dictionary in _store.list_recovery():
+		if str(entry.draft_id) == draft_id:
+			return str(entry.record_sha256)
+	return ""
+
+
+func _named_hash(draft_id: String) -> String:
+	for entry: Dictionary in _store.list_drafts(true):
+		if str(entry.draft_id) == draft_id:
+			return str(entry.record_sha256)
+	return ""
+
+
+## The work was saved or discarded: its backup is no longer needed.
+func _drop_backup() -> void:
+	_backup_timer.stop()
+	if not _can_save():
+		return
+	var current := _backup_hash(_doc.draft_id)
+	if current.is_empty():
+		return
+	var cleared: Dictionary = _store.clear_recovery(_doc.draft_id, current)
+	if not cleared.ok:
+		_store_failed(cleared)
+
+
+## Once per opening: a backup newer than its named draft, or of a draft never saved by name, is offered.
+func _check_recovery() -> void:
+	if _recovery_checked or _closing or not _can_save() or not is_inside_tree():
+		return
+	_recovery_checked = true
+	var named := {}
+	for row: Dictionary in _store.list_drafts(true):
+		named[str(row.draft_id)] = row
+	for entry: Dictionary in _store.list_recovery():
+		var id := str(entry.draft_id)
+		if id == _doc.draft_id:
+			continue
+		var draft: Dictionary = named.get(id, {})
+		if not draft.is_empty() and int(entry.updated_unix) < int(draft.updated_unix):
+			continue
+		_recovery_entry = entry.duplicate()
+		var title := str(draft.get("name", ""))
+		_recovery_dialog.dialog_text = tr(RECOVERY_NAMED) % title if not title.is_empty() else tr(RECOVERY_UNNAMED)
+		_recovery_dialog.popup_centered_clamped(Vector2i(760, 300), 0.9)
+		_update_preview_active()
+		_recovery_dialog.get_ok_button().grab_focus.call_deferred()
+		return
+
+
+func _on_recovery_open() -> void:
+	var entry := _recovery_entry
+	_recovery_entry = {}
+	if entry.is_empty() or _store == null:
+		return
+	var loaded: Dictionary = _store.load_recovery(str(entry.draft_id))
+	if not loaded.ok:
+		set_note(_diagnostics_text(loaded.diagnostics))
+		return
+	confirm_leave(_begin_open.bind("recovery", loaded.value))
+
+
+func _on_recovery_discard(entry: Dictionary) -> void:
+	_recovery_entry = {}
+	if not entry.is_empty() and _can_save():
+		var cleared: Dictionary = _store.clear_recovery(str(entry.draft_id), str(entry.record_sha256))
+		if not cleared.ok:
+			_store_failed(cleared)
+	focus_default.call_deferred()
+
+
+func _on_open_pressed() -> void:
+	open_library()
+
+
+func _fill_library() -> void:
+	if _store == null:
+		return
+	var archived := _library.show_archived()
+	_library.populate(_store.list_drafts(archived), _store.list_aircraft(archived), _can_save(), _store_reason)
+
+
+func _on_library_visibility() -> void:
+	_update_preview_active()
+	if not _library.visible and is_inside_tree() and not _closing:
+		_return_focus_from_library.call_deferred()
+
+
+func _return_focus_from_library() -> void:
+	if _closing or _opening or _modal_open():
+		return
+	_focus_control(_open_button)
+
+
+func _load_entry(kind: String, id: String) -> Dictionary:
+	if _store == null:
+		return R.fail(R.DEPENDENCY_MISSING, Store.M_VIEW_ONLY)
+	match kind:
+		"draft": return _store.load_draft(id)
+		"aircraft": return _store.load_aircraft(id, 0)
+	return _store.load_recovery(id)
+
+
+## A damaged entry is reported inside the library and costs nothing else.
+func _on_library_open(kind: String, id: String) -> void:
+	if _job != null:
+		_library.set_message(tr(WAIT_FOR_IMPORT))
+		return
+	var loaded: Dictionary = _load_entry(kind, id)
+	if not loaded.ok:
+		_library.set_message(_diagnostics_text(loaded.diagnostics))
+		return
+	_library.hide()
+	if not has_unsaved_changes():
+		_begin_open(kind, loaded.value)
+		return
+	# Saving first may change what is stored: the entry is read again after the question.
+	confirm_leave(_begin_open_by_id.bind(kind, id))
+
+
+func _on_library_archive(kind: String, id: String, archived: bool) -> void:
+	if not _can_save():
+		_library.set_message(_store_reason)
+		return
+	var changed: Dictionary = _store.set_archived(kind, id, archived)
+	if not changed.ok:
+		if _store.needs_reopen():
+			_store_reason = tr(Store.M_REOPEN)
+		_library.set_message(_diagnostics_text(changed.diagnostics))
+		_refresh_save_state()
+		return
+	_library.set_message("")
+	_fill_library()
+	_library.focus_first()
+
+
+func _begin_open_by_id(kind: String, id: String) -> void:
+	var loaded: Dictionary = _load_entry(kind, id)
+	if not loaded.ok:
+		set_note(_diagnostics_text(loaded.diagnostics))
+		return
+	_begin_open(kind, loaded.value)
+
+
+## Re-admits the stored model on the worker, then rebuilds the document from its snapshot.
+func _begin_open(kind: String, value: Dictionary) -> void:
+	if _closing:
+		return
+	if _job != null:
+		set_note(tr(WAIT_FOR_IMPORT))
+		return
+	var bytes: PackedByteArray = value.get("source_bytes", PackedByteArray())
+	if bytes.is_empty():
+		_finish_open(kind, value, null)
+		return
+	_import_generation += 1
+	var job := ImportJob.new()
+	job.bytes = bytes
+	job.file_name = str(value.get("source_file_name", ""))
+	job.opening = {"kind": kind, "value": value}
+	job.generation = _import_generation
+	job.task_id = _start_task(job)
+	_job = job
+	_opening = true
+	set_process(true)
+	_refresh()
+
+
+## A fresh document is restored and only replaces the current one when everything succeeded.
+func _finish_open(kind: String, value: Dictionary, source: InspectedSource) -> void:
+	var fresh := Authoring.new()
+	var saved_snapshot: Variant = value.get("snapshot", {})
+	var restored: Dictionary = fresh.restore(saved_snapshot if saved_snapshot is Dictionary else {}, source)
+	if not restored.ok:
+		set_note(_diagnostics_text(restored.diagnostics))
+		_refresh()
+		return
+	if source != null and not fresh.bindings().is_empty():
+		# Stored numbers come back as floats: the normalized copy writes the same content as before.
+		var bound: Dictionary = VisualBuilder.validate_bindings(source, fresh.bindings())
+		if bound.ok:
+			fresh.set_bindings(bound.value)
+	match kind:
+		"draft":
+			fresh.draft_id = str(value.draft_id)
+			fresh.mark_saved(str(value.record_sha256))
+		"recovery":
+			fresh.draft_id = str(value.draft_id)
+			fresh.saved_record_sha256 = _named_hash(fresh.draft_id) if _store != null else ""
+		"aircraft":
+			# A new draft of this aircraft: Save aircraft publishes the next version.
+			fresh.published_revision = int(value.revision)
+	_adopt_document(fresh, str(restored.value))
+	set_note("")
+
+
+func _adopt_document(fresh: Authoring, step: String) -> void:
+	_commit_focused_edit()
+	if is_inside_tree():
+		get_viewport().gui_release_focus()
+	_doc.changed.disconnect(_on_doc_changed)
+	_doc = fresh
+	_doc.changed.connect(_on_doc_changed)
+	_backup_timer.stop()
+	_name_edit.text = _doc.name
+	var source: InspectedSource = _doc.source()
+	_import_state = "imported" if source != null else "idle"
+	_import_file_name = source.file_name() if source != null else ""
+	_import_diagnostics = []
+	_reset_orient_inputs()
+	_shown_source = source
+	_item_texts.clear()
+	_item_invalid.clear()
+	_inventory_signature = "-"
+	_issue_signature = "-"
+	_set_inventory_note("")
+	for path: String in _field_edits:
+		(_field_edits[path] as LineEdit).set_meta("typed", false)
+	_parts.stop_movement()
+	go_to_step(step if Authoring.STEPS.has(step) else _current)
+	focus_default.call_deferred()
+
+
+func _on_publish_pressed() -> void:
+	_commit_focused_edit()
+	if not _can_save():
+		set_note(_store_reason)
+		return
+	if _doc.name.is_empty():
+		set_note(tr(NEEDS_NAME))
+		_focus_control.call_deferred(_name_edit)
+		return
+	var compiled: Dictionary = _doc.compile()
+	var source: InspectedSource = _doc.source()
+	if not compiled.get("ok", false) or not compiled.get("value") is Object or source == null:
+		set_note(_diagnostics_text(compiled.get("diagnostics", [])))
+		return
+	var candidate: Object = compiled.value
+	var publication := {"aircraft_uuid": _doc.aircraft_uuid(), "name": _doc.name, "definition": _doc.definition(),
+		"raw_bytes": candidate.call("raw_bytes"), "source_bytes": source.source_bytes(),
+		"source_file_name": source.file_name(), "placement": _doc.placement(), "bindings": _doc.bindings(),
+		"appearance": _doc.appearance(), "snapshot": _doc.snapshot(_current)}
+	var published: Dictionary = _store.publish_aircraft(publication, _doc.published_revision)
+	if not published.ok:
+		_store_failed(published)
+		return
+	var revision := int(published.value.revision)
+	_doc.published_revision = revision
+	var lines := PackedStringArray([tr(SAVED_AS_VERSION) % revision])
+	# The draft follows: it now names the aircraft and the version it became.
+	var saved: Dictionary = _store.save_draft(_draft_record(), _doc.saved_record_sha256)
+	if saved.ok:
+		_doc.mark_saved(str(saved.value.record_sha256))
+		_drop_backup()
+	else:
+		lines.append(_diagnostics_text(saved.diagnostics))
+	set_note("\n".join(lines))
+	_refresh()
+
+
+func _on_leave_choice(choice: String) -> void:
+	var proceed := _leave_proceed
+	var cancel := _leave_cancel
+	if not _leave_pending:
+		return
+	_leave_pending = false
+	_leave_proceed = Callable()
+	_leave_cancel = Callable()
+	_update_preview_active()
+	match choice:
+		"save":
+			if _save_draft():
+				if proceed.is_valid():
+					proceed.call()
+			elif cancel.is_valid():
+				cancel.call()
+		"discard":
+			_drop_backup()
+			if proceed.is_valid():
+				proceed.call()
+		_:
+			if cancel.is_valid():
+				cancel.call()
+			focus_default.call_deferred()

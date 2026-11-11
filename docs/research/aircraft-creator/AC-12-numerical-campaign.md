@@ -107,3 +107,67 @@ The production step has a known timing granularity: a command sampled once per t
 ### What a failure does
 
 A failing case is reported as failing. The tolerances are not widened. If a failure can be tied to a domain bound, that bound is narrowed in the package data with its reason and a test, so the failing corner is no longer admitted. The `experimental` label is not changed by this campaign: that decision belongs to the project owner.
+
+## Results (2026-11-11)
+
+**Gate G05 is not passed.** Under the frozen rule 8 of the 17 preregistered cases pass (56 of their 68 tapes). No bound was narrowed, no tolerance was changed, and the package stays `experimental`.
+
+Runs: 96 tapes × 3 step sizes = 288 flights (68 preregistered tapes, 28 follow-up tapes), all completed without a solver fault. Sources as preregistered (same identities for both packages, `packages.gd`, `compiler.gd`, `definition.gd`, `variants.gd`); `campaign.gd` gained the follow-up cases after the preregistered runs (`20acca0973e6c728`), the C cases unchanged. Raw outputs (`campaign-*.json`, logs) are kept outside the repository and can be regenerated with the [driver](../../../research/aircraft-creator/ac12/README.md).
+
+### Preregistered cases
+
+| Verdict | Cases |
+| --- | --- |
+| Pass (4 of 4 tapes) | C01, C03, C06, C07, C10, C11, C12, C13 |
+| Fail | C02, C04, C05, C08, C09, C14, C15, C16, C17 |
+
+Failing tapes, with E₁ = \|240 − 480 Hz\| and E₂ = \|480 − 960 Hz\|:
+
+| Case and tape | Metric | E₁ | E₂ | Why it fails |
+| --- | --- | --- | --- | --- |
+| C02 `roll_doublet` | position | 1.49 mm | 1.75 mm | ratio 1.18 |
+| C02 `throttle_step` | rotor speed | 0.0012 rpm | 0.0011 rpm | ratio 0.93 |
+| C04 `roll_doublet` | charge | 2.7e-8 | 3.0e-8 | ratio 1.10 |
+| C04 `throttle_step` | rotor speed | 0.0017 rpm | 0.0013 rpm | ratio 0.80 |
+| C05 `throttle_step` | charge | 4.4e-9 | 1.3e-8 | ratio 3.0 |
+| C09 `throttle_step` | charge | 5.7e-9 | 1.2e-8 | ratio 2.1 |
+| C16 `throttle_step` | charge | 6.6e-9 | 1.0e-8 | ratio 1.6 |
+| C08 `roll_doublet` | body rates | 1.24°/s | 0.63°/s | estimated error 2.5°/s > 2°/s |
+| C14 `roll_doublet` | body rates | 1.67°/s | 0.85°/s | 3.4°/s > 2°/s |
+| C15 `pitch_doublet` | body rates | 1.46°/s | 0.73°/s | 2.9°/s > 2°/s |
+| C15 `roll_doublet` | body rates | 3.33°/s | 1.68°/s | 6.7°/s > 2°/s |
+| C17 `roll_doublet` | body rates | 1.10°/s | 0.56°/s | 2.2°/s > 2°/s |
+
+The failures are of two kinds.
+
+- **Differences that do not shrink with the step, at very small size** (first seven rows). They are three to seven orders of magnitude below their tolerances (position 1.5 mm against 0.10 m, rotor speed 0.002 rpm against 20 rpm, charge 1e-8 against 2e-3) but above the preregistered noise floors, so the convergence rule applies and fails them. The floors were set without a measurement of the step-independent scatter of these metrics. The cause of the floor was not investigated.
+- **Body-rate error above tolerance, converging at first order** (last five rows; ratio 0.50 in each). These are real 240 Hz step errors: 2.2 to 6.7°/s in the roll doublet of the smallest, lightest or fastest-servo corners, and 2.9°/s in the pitch doublet of C15. First order is the expected rate (commands and servos advance once per tick). In the same tapes attitude stays within 0.25° (tolerance 0.5°) and position within 0.073 m (tolerance 0.10 m).
+
+Largest estimated 240 Hz error of every converging metric over all 96 tapes: position 0.073 m, attitude 0.25°, body rates 6.7°/s, airspeed 0.0076 m/s, rotor speed 1.1 rpm, current 0.0066 A, charge 0.034 %. Only body rates exceed their tolerance.
+
+### Follow-up cases (added after the preregistered runs; exploratory)
+
+They use the same rule, tapes and tolerances, but they were chosen after seeing the results above and carry no preregistration weight.
+
+| ID | Construction | Verdict |
+| --- | --- | --- |
+| X01 | C12 with the fastest servos (0.05 s), template throws | Fail: roll-doublet body rates 2.3°/s; one non-shrinking charge difference (6e-6) |
+| X02 | C12 with the largest throws (30/30/35°), template servos (0.14 s) | Pass |
+| N01 | span 1.2 m, all lengths scaled | Pass |
+| N02 | C17 at wing loading 7.0 kg/m² | Fail: roll-doublet body rates 2.07°/s; one non-shrinking charge difference |
+| N03 | lightest build, servo 0.10 s, throws 25/25/35° | Fail: roll-doublet body rates 2.06°/s; non-shrinking charge differences |
+| N04 | span 1.2 m, aspect ratio 4.5, lightest build, margin 0.29, servo 0.10 s, throws 25/25/35° | Fail: roll-doublet body rates 2.9°/s; non-shrinking charge differences |
+| N05 | template at wing loading 7.0 kg/m² | Fail: one non-shrinking current difference (9e-6 A) |
+
+X01 against X02 ties the body-rate error of the light build to the servo time, not to the throws. The narrowed corners tried (span ≥ 1.2 m, wing loading ≤ 7.0 kg/m², servo time ≥ 0.10 s, throws ≤ 25/25/35°) do not pass together, so no narrowing is supported by this evidence and none was made.
+
+### What this does and does not establish
+
+- Established: for the cases flown, a 240 Hz flight of this estimated model stays within 0.25° and 0.073 m of its refined-step limit over 6 s; angular rates during abrupt commands differ by up to 6.7°/s in the stiffest corner.
+- Not established: G05. The preregistered question ("for which part of the domain…") has no answer yet, because the rule fails cases on differences far below its own tolerances and no tested narrowing clears the body-rate failures.
+- Not covered: everything listed as not covered in the preregistration; any physical validation.
+
+### Next step (needs a new preregistration; this one is not edited)
+
+1. Measure the step-independent scatter of each metric (for example 960 against 1920 Hz, and repeat runs) and state noise floors from that measurement.
+2. Decide, with the project owner, whether the peak body-rate difference at command edges stays a gate metric with a 2°/s tolerance, or whether the package domain should exclude the fast-servo, light corners that exceed it.
