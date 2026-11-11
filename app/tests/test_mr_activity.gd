@@ -167,7 +167,10 @@ func _launch(app: Node) -> Node:
 	var viewport_centre: Vector2 = activity.hud.root_control.size * 0.5
 	var menu_centre: Vector2 = activity.hud.menu.get_global_rect().get_center()
 	_check("the pause menu is centred", menu_centre.distance_to(viewport_centre) < 2.0, "%s vs %s" % [menu_centre, viewport_centre])
-	_check("the hint and centre OSD are hidden under the open menu", not activity.hud.hint_label.visible)
+	activity._process(0.0)
+	var covered: bool = activity.hud.menu.get_global_rect().grow(8.0).intersects(Activity.Hud._text_rect(activity.hud.hint_label))
+	_check("the open menu never covers a visible hint", activity.hud.hint_label.visible != covered and not activity.hud.warning_label.visible,
+		"covered %s visible %s" % [covered, activity.hud.hint_label.visible])
 	return activity
 
 
@@ -235,7 +238,7 @@ func _flight(activity: Node) -> void:
 	_check("OFF then ON at low throttle arms", t.armed, str(t.arm_block))
 	# The scripted frames request Acro (IN_MODE 0).
 	_check("OSD shows ARMED, the mode and the timer", activity.hud.arm_label.text == "MOTORS ARMED" and activity.hud.mode_label.text == "ACRO"
-		and activity.hud.timer_label.text == Activity.Hud.format_timer(activity.session.sim.time() - activity._arm_time), "%s | %s | %s" % [activity.hud.arm_label.text, activity.hud.mode_label.text,
+		and activity.hud.timer_label.text == Activity.Hud.format_timer(activity._armed_ticks * DT), "%s | %s | %s" % [activity.hud.arm_label.text, activity.hud.mode_label.text,
 		activity.hud.timer_label.text])
 	if bool(t.has_battery):
 		var cell_v := float(t.bus_voltage_v) / float(activity.session.data.battery.cells)

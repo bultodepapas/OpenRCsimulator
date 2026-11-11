@@ -11017,3 +11017,6 @@ msgstr "%.2f V/celda"
 
 msgid "LAND NOW"
 msgstr "ATERRIZA YA"
+
+msgid "Camera %s"
+msgstr "Cámara %s"

@@ -47,8 +47,10 @@ def _schema(properties: dict | None = None, required: list[str] | None = None) -
 
 TOOLS = [
     {"name": "sim_launch", "description": "Start the simulator with its debug bridge (Home screen). headless=true is "
-     "light and has no pictures; the default renders 1920x1080 for screenshots.",
-     "inputSchema": _schema({"headless": {"type": "boolean"}, "resolution": {"type": "string", "description": "WxH"}})},
+     "light and has no pictures; the default renders 1920x1080 for screenshots. Sessions are silent unless "
+     "sound=true.",
+     "inputSchema": _schema({"headless": {"type": "boolean"}, "resolution": {"type": "string", "description": "WxH"},
+                             "sound": {"type": "boolean", "description": "play audio (default: muted)"}})},
     {"name": "sim_stop", "description": "Quit the simulator this server launched (or the session it targets).",
      "inputSchema": _schema()},
     {"name": "sim_look", "description": "What is on screen now: route, screens, flight summary, every visible control "
@@ -164,6 +166,8 @@ def call_tool(name: str, args: dict) -> list[dict]:
         argv = ["--headless"] if args.get("headless") else []
         if args.get("resolution"):
             argv += ["--resolution", str(args["resolution"])]
+        if not args.get("sound"):
+            argv += ["--mute"]  # agent-driven sessions run on someone's desk: silent unless asked
         status, printed = _captured(debugctl.launch, argv)
         if status != 0:
             raise ToolError("launch failed: " + printed[-2000:])

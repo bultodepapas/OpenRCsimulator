@@ -384,6 +384,9 @@ def launch(argv: list[str]) -> int:
                 return 2
             screen = f"{max(int(width), 1920)}x{max(int(height), 1080)}x24"
             command = [xvfb, "-a", "-s", f"-screen 0 {screen}"] + command + ["--audio-driver", "Dummy"]
+    # --mute: a rendered session without sound (the Dummy audio driver), for test and review runs on a desk.
+    if "--mute" in argv and "--audio-driver" not in command:
+        command += ["--audio-driver", "Dummy"]
     if app_args:
         command += ["--"] + app_args
     # A fresh secret per session: other local users and web pages (which can POST to 127.0.0.1) cannot drive it.

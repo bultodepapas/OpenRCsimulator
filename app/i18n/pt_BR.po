@@ -12264,3 +12264,6 @@ msgstr "%.2f V/célula"
 
 msgid "LAND NOW"
 msgstr "POUSE AGORA"
+
+msgid "Camera %s"
+msgstr "Câmera %s"

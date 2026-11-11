@@ -12370,3 +12370,6 @@ msgstr "%.2f V/Zelle"
 
 msgid "LAND NOW"
 msgstr "JETZT LANDEN"
+
+msgid "Camera %s"
+msgstr "Kamera %s"

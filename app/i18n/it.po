@@ -12252,3 +12252,6 @@ msgstr "%.2f V/cella"
 
 msgid "LAND NOW"
 msgstr "ATTERRA ORA"
+
+msgid "Camera %s"
+msgstr "Telecamera %s"

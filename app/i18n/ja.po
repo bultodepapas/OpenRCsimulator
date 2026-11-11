@@ -11476,3 +11476,6 @@ msgstr "%.2f V/セル"
 
 msgid "LAND NOW"
 msgstr "すぐ着陸"
+
+msgid "Camera %s"
+msgstr "カメラ %s"

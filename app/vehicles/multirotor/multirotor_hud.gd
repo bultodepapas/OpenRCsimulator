@@ -47,8 +47,10 @@ const OSD_CAUTION := UiTheme.CAUTION
 ## Edge margin of the OSD (logical px at 1080p, scaled with the UI text scale).
 const MARGIN := 36.0
 ## Artificial horizon: half-length and centre gap in half-picture-height units, end ticks toward the ground in px.
-const HORIZON_HALF := 0.62
-const HORIZON_GAP := 0.09
+## The wide gap keeps the craft symbol and the bottom-centre speed/height readout clear when the line passes them
+## (on the pad with 40° uptilt the horizon sits near the bottom edge).
+const HORIZON_HALF := 0.95
+const HORIZON_GAP := 0.42
 const HORIZON_TICK := 16.0
 const THROTTLE_BAR := Vector2(16.0, 150.0)
 
@@ -310,13 +312,23 @@ func hide_menu() -> void:
 	_refresh_visibility()
 
 
-## The centre and lower-centre OSD texts would sit under the menu: the menu reason carries them while it is open.
+## The centre OSD texts would sit under the menu: the menu reason carries them while it is open. The lower-centre
+## hint and flash stay when the menu leaves them clear (1080p), and hide where it would cover them (720p).
 func _refresh_visibility() -> void:
 	var open := menu_visible
-	hint_label.visible = not open
-	message.visible = not open
+	var menu_rect := menu.get_global_rect().grow(8.0)
+	hint_label.visible = not open or (not menu_rect.intersects(_text_rect(hint_label)) and hint_label.text != menu_reason.text)
+	message.visible = not open or not menu_rect.intersects(_text_rect(message))
 	warning_label.visible = not open
 	osd.queue_redraw()
+
+
+## The part of a bottom-aligned label its text occupies.
+static func _text_rect(label: Label) -> Rect2:
+	var rect := label.get_global_rect()
+	var lines := maxi(label.get_line_count(), 1) if not label.text.is_empty() else 0
+	var height := minf(rect.size.y, float(lines) * (label.get_line_height() + 2.0))
+	return Rect2(rect.position + Vector2(0.0, rect.size.y - height), Vector2(rect.size.x, height))
 
 
 ## text: already-translated.
@@ -449,16 +461,16 @@ func _draw_osd() -> void:
 	if fill > 0.0:
 		osd.draw_rect(Rect2(bar.position + Vector2(0.0, bar.size.y * (1.0 - fill)), Vector2(bar.size.x, bar.size.y * fill)), OSD_TEXT, true)
 	osd.draw_rect(bar, OSD_TEXT, false, 2.0)
-	if open:
+	var horizon: Dictionary = _draw_state.get("horizon", {})
+	# The craft symbol and the horizon belong to the FPV view only (an empty horizon = another view).
+	if open or horizon.is_empty():
 		return
-	# Craft symbol at the screen centre.
 	var wing := 26.0 * s
 	var gap := 9.0 * s
 	for side: float in [-1.0, 1.0]:
 		_stroke(centre + Vector2(side * gap, 0.0), centre + Vector2(side * (gap + wing), 0.0), 2.5 * s)
 	_stroke(centre + Vector2(0.0, -gap * 0.6), centre + Vector2(0.0, gap * 0.6), 2.5 * s)
-	var horizon: Dictionary = _draw_state.get("horizon", {})
-	if horizon.is_empty() or not bool(horizon.valid):
+	if not bool(horizon.valid):
 		return
 	var point: Vector2 = horizon.point
 	var p := centre + Vector2(point.x, -point.y) * half_h

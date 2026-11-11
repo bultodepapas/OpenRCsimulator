@@ -12397,3 +12397,6 @@ msgstr "%.2f V/élément"
 
 msgid "LAND NOW"
 msgstr "ATTERRISSEZ"
+
+msgid "Camera %s"
+msgstr "Caméra %s"

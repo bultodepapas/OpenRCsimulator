@@ -63,6 +63,9 @@ var _last_input := {}
 var _flight_generation := 0
 ## Simulation time of the first accepted armed tick since the last reset; -1 before arming.
 var _arm_time := -1.0
+## Accepted armed ticks since the last reset: the OSD timer is armed flight time, like an FPV OSD's armed timer
+## (it stops while disarmed after a landing).
+var _armed_ticks := 0
 var _aftermath_until := -1.0
 var _terminal_text := ""
 var _crash_cause := ""
@@ -265,6 +268,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _flash_view() -> void:
+	if view.view_name() != "fpv":
+		# Tilt and FOV belong to the FPV mount; the inspection views have their own lenses.
+		hud.flash(tr("Camera %s") % tr(str(Hud.CAMERA_NAMES[view.view_name()])), 2.0)
+		return
 	hud.flash(tr("Camera %s  tilt %d°  FOV %d°") % [tr(str(Hud.CAMERA_NAMES[view.view_name()])), int(round(view.tilt_deg)),
 		int(round(view.hfov_deg))], 2.0)
 
@@ -360,6 +367,7 @@ func restart_on_pad() -> bool:
 	input.reset_for_restart()
 	_flight_generation = input.source_generation
 	_arm_time = -1.0
+	_armed_ticks = 0
 	_aftermath_until = -1.0
 	_terminal_text = ""
 	_crash_cause = ""
@@ -373,14 +381,13 @@ func _on_crashed(reason: String) -> void:
 	_crash_cause = reason
 	_terminal_text = tr("Crashed: %s. Press R to reset.") % reason
 	_aftermath_until = float(session.sim.time()) + AFTERMATH_S
-	hud.flash(tr("Crashed: %s") % reason)
+	# The OSD hint already names the cause (no duplicate flash).
 
 
 func _on_depleted() -> void:
 	_terminal_text = tr("The battery is depleted. Restart on the pad to fly again.")
 	if _aftermath_until < 0.0:
 		_aftermath_until = float(session.sim.time()) + AFTERMATH_S
-	hud.flash(tr("The battery is depleted."))
 
 
 func _physics_process(_delta: float) -> void:
@@ -408,8 +415,10 @@ func _physics_process(_delta: float) -> void:
 		if not session.paused:
 			_open_menu(tr("The input frame was refused."))
 		return
-	if _arm_time < 0.0 and session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED:
-		_arm_time = float(session.sim.time())
+	if session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED:
+		if _arm_time < 0.0:
+			_arm_time = float(session.sim.time())
+		_armed_ticks += 1
 	if _aftermath_until >= 0.0 and float(session.sim.time()) >= _aftermath_until:
 		_aftermath_until = -1.0
 		_open_menu(_terminal_text)
@@ -426,7 +435,7 @@ func _process(delta: float) -> void:
 	view.update(drawn, session.data.camera.mount_frd, delta, _ground_height_render)
 	if _environment != null:
 		World.update(_environment, 37.0 + float(session.sim.time()), Vector3.ZERO, visual.root.position, camera)
-	var flight_s := float(session.sim.time()) - _arm_time if _arm_time >= 0.0 else 0.0
+	var flight_s := float(_armed_ticks) * DT
 	var raw: Variant = _last_input.get("raw", {})
 	var arm_requested := bool((raw as Dictionary).get("arm", false)) if typeof(raw) == TYPE_DICTIONARY else false
 	# Before the first accepted tick the controller still reports its start mode: show the pilot's selection.

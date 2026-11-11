@@ -19,13 +19,14 @@ const HFOV_STEP_DEG := 5.0
 ## front propeller discs about 3 to 8 cm away and slightly below the lens. 1.5 cm keeps them unclipped at every tilt
 ## while the reverse-Z depth buffer keeps far terrain stable; the inspection views use the same plane.
 const NEAR_M := 0.015
-## Chase framing (inspection view, its own lens, not the FPV one): 1.3 m behind and 0.35 m above the CG along the
-## smoothed heading, a 62° vertical FOV, aimed 0.12 m above the CG so the 0.3 m airframe and its props fill about a
-## fifth of the picture height in the lower half and the horizon stays in view.
-const CHASE_BACK_M := 1.3
-const CHASE_UP_M := 0.35
+## Chase framing (inspection view, its own lens, not the FPV one): 1.2 m behind and 0.3 m above the CG along the
+## smoothed heading, a 60° vertical FOV, aimed 0.12 m above the CG so the airframe and its props (about 0.25 m
+## across seen from behind) span about a fifth of the picture height just below the centre and the horizon stays in
+## view.
+const CHASE_BACK_M := 1.2
+const CHASE_UP_M := 0.3
 const CHASE_AIM_UP_M := 0.12
-const CHASE_VFOV_DEG := 62.0
+const CHASE_VFOV_DEG := 60.0
 ## Minimum eye clearance above the terrain in the inspection views (m).
 const EYE_CLEARANCE_M := 0.15
 ## Pilot (line of sight) zoom: the vertical FOV keeps PILOT_FRAME_M of scene height across the picture at the quad's

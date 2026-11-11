@@ -11425,3 +11425,6 @@ msgstr "%.2f V/节"
 
 msgid "LAND NOW"
 msgstr "立即降落"
+
+msgid "Camera %s"
+msgstr "相机 %s"

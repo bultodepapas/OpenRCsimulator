@@ -12226,3 +12226,6 @@ msgstr "%.2f В/банку"
 
 msgid "LAND NOW"
 msgstr "САДИСЬ"
+
+msgid "Camera %s"
+msgstr "Камера %s"
