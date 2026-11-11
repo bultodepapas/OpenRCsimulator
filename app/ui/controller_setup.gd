@@ -55,6 +55,7 @@ var preset_help_label: Label
 var axis_grid: GridContainer
 var aux_grid: VBoxContainer
 var aux_help_label: Label
+var flap_mix_owner_picker: OptionButton
 var action_grid: GridContainer
 var preview_label: Label
 var status_label: Label
@@ -784,6 +785,17 @@ func _build() -> void:
 		aux_preview.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		channel_row.add_child(aux_preview)
 		channel_row.add_child(mapping)
+		if aux_name == "flaps":
+			flap_mix_owner_picker = _option("Flap-to-elevator compensation")
+			flap_mix_owner_picker.name = "FlapElevatorMixOwner"
+			flap_mix_owner_picker.add_item(tr("Simulator"), 0)
+			flap_mix_owner_picker.add_item(tr("Transmitter"), 1)
+			flap_mix_owner_picker.item_selected.connect(_on_flap_mix_owner_selected)
+			var mix_label := _add_control_field(channel_block, "Flap-to-elevator compensation", flap_mix_owner_picker)
+			_register_validation_field("flap_elevator_mix_owner", "aux", flap_mix_owner_picker, [mix_label], "Flap-to-elevator compensation")
+			var mix_help := _label("Simulator compensation follows actual flap position. Choose Transmitter when your radio already adds flap-to-elevator compensation; the simulator will not add its own.", "SecondaryLabel", true)
+			mix_help.name = "FlapElevatorMixHelp"
+			channel_block.add_child(mix_help)
 		channel_block.add_child(HSeparator.new())
 		_aux_controls[aux_name] = {
 			"type": type_picker,
@@ -1620,6 +1632,8 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	_reset_validation()
 	var previous_profile_id := str(_draft_profile.get("profile_id", ""))
 	_draft_profile = profile.duplicate(true)
+	if not _draft_profile.is_empty() and not _draft_profile.has("flap_elevator_mix_owner"):
+		_draft_profile["flap_elevator_mix_owner"] = "simulator"
 	_invalidate_menu_evidence()
 	if not context_key.is_empty():
 		_draft_context_key = context_key
@@ -1729,6 +1743,8 @@ func _on_profile_kind_selected(index: int) -> void:
 	for key in ["profile_id", "association", "actions", "presentation"]:
 		if _draft_profile.has(key):
 			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
+	if selected_kind in ["radio", "joystick"] and str(_draft_profile.get("kind", "")) in ["radio", "joystick"]:
+		replacement["flap_elevator_mix_owner"] = ControllerProfile.flap_elevator_mix_owner(_draft_profile)
 	var entered_name := profile_name_edit.text.strip_edges()
 	if not entered_name.is_empty() and entered_name != str(_draft_profile.get("name", "")):
 		replacement["name"] = entered_name
@@ -1831,7 +1847,7 @@ func _apply_preset(preset: String) -> void:
 		if custom.is_empty():
 			_set_status(tr("Could not restore the selected radio profile."), true)
 			return
-		for key in ["profile_id", "name", "association", "actions", "presentation", "aux"]:
+		for key in ["profile_id", "name", "association", "actions", "presentation", "aux", "flap_elevator_mix_owner"]:
 			if _draft_profile.has(key):
 				custom[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
 		custom["preset"] = "radio_custom"
@@ -1871,7 +1887,7 @@ func _apply_jeti_mode2_preset() -> void:
 	if replacement.is_empty():
 		_set_status(tr("Could not restore the JETI Mode 2 preset."), true)
 		return
-	for key in ["profile_id", "name", "association", "presentation", "aux"]:
+	for key in ["profile_id", "name", "association", "presentation", "aux", "flap_elevator_mix_owner"]:
 		if _draft_profile.has(key):
 			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
 	var actions_value: Variant = _draft_profile.get("actions", {})
@@ -1942,6 +1958,8 @@ func _update_axis_controls() -> void:
 func _update_aux_controls() -> void:
 	if _draft_profile.is_empty() or _aux_controls.is_empty():
 		return
+	flap_mix_owner_picker.select(1 if ControllerProfile.flap_elevator_mix_owner(_draft_profile) == "transmitter" else 0)
+	flap_mix_owner_picker.disabled = str(_draft_profile.get("kind", "")) not in ["radio", "joystick"]
 	var aux_value: Variant = _draft_profile.get("aux", {})
 	var aux: Dictionary = aux_value.duplicate(true) if aux_value is Dictionary else {}
 	for aux_name in AUX_CHANNELS:
@@ -2011,6 +2029,16 @@ func _update_aux_controls() -> void:
 		if mode_id == 0:
 			preview.text = tr("Unbound")
 	_update_aux_preview()
+
+
+func _on_flap_mix_owner_selected(index: int) -> void:
+	if _draft_profile.is_empty() or str(_draft_profile.get("kind", "")) not in ["radio", "joystick"] \
+			or index < 0 or index >= flap_mix_owner_picker.item_count:
+		_update_aux_controls()
+		return
+	_draft_profile["flap_elevator_mix_owner"] = "transmitter" if flap_mix_owner_picker.get_item_id(index) == 1 else "simulator"
+	_set_status(tr("Flap compensation changed. Save the profile to keep it."), false)
+	_refresh_validation_feedback()
 
 
 static func _switch_row_indices(position_count: int) -> Array:

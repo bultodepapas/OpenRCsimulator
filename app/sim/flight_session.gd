@@ -1113,7 +1113,7 @@ func reset_closing_context() -> Dictionary:
 ## for arbitrary external data captured by a callback.
 const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "aircraft", "start", "trims", "commands", "raw", "pause_reason", "start_error",
 	"_launch_metadata", "_failures", "_gear_requested_down", "_wheel_brake_demand", "_gear_request_inhibited",
-	"_gear_cache_fraction", "_gear_cache", "_flap_requested", "_weather_pending_reset", "_shaft_pending_reset",
+	"_gear_cache_fraction", "_gear_cache", "_flap_requested", "_flap_mix_owner", "_accepted_flap_mix_owner", "_weather_pending_reset", "_shaft_pending_reset",
 	"_shaft_integrator", "_shaft_explicit", "_turbulence_aux_index", "_trim_density", "_trim_charge",
 	"_fuel_start_fill_known", "_hull_contact", "_prop_disc", "_contact_bindings", "_ground_effect_reach",
 	"_deflection_key", "_deflection_cache", "_has_committed_aircraft", "_pending_controller_start",
@@ -1174,6 +1174,7 @@ func _commit_start_candidate(candidate: Dictionary, transaction: Dictionary) -> 
 	if not candidate.get("ok", false):
 		return _refuse_start_transaction(transaction, str(candidate.get("message", "invalid reset candidate")))
 	var committed: bool = sim.commit_prepared_reset(candidate, func() -> void:
+		_accepted_flap_mix_owner = _flap_mix_owner
 		transaction.committed = true
 		_reset_physical_committed = true
 		_reset_publication_active = true
@@ -1228,6 +1229,10 @@ const AUX_LAYOUT := ["engine_rpm", "srv_roll", "srv_pitch", "srv_yaw"]
 const AUX_ANCHORS := 4
 const GEAR_AUX_SIZE := 2 # extension, accepted down target; before optional turbulence
 var _flap_requested := 0.0
+## Input ownership, sampled with the command tape; replay never consults a live device.
+var _flap_mix_owner := "simulator"
+var _accepted_flap_mix_owner := "simulator"
+const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
 var _gear_requested_down := false
 const FIXED_BRAKE_INPUT_LAW := "fixed-gear-shared-wheel-brake-input-v1"
 var _wheel_brake_demand := 0.0
@@ -1264,6 +1269,7 @@ var _external_before_raw: Dictionary = {}
 var _external_before_inputs := PackedFloat64Array()
 var _external_before_gear: bool = false
 var _external_before_flaps: float = 0.0
+var _external_before_mix := "simulator"
 var _external_before_brake: float = 0.0
 var _external_spawn_heading_rad := 0.0
 var _external_spawn_heading_set := false
@@ -2439,11 +2445,13 @@ func _on_sim_paused_changed(value: bool) -> void:
 	_drop_tick_facts()
 	if value and not sim.fault_reason.is_empty():
 		_rollback_uncommitted_external_tick()
+		_flap_mix_owner = _accepted_flap_mix_owner
 
 
 func _on_sim_faulted(reason: String) -> void:
 	# Simulation restores its last valid inputs before pause/fault notification.
 	_rollback_uncommitted_external_tick()
+	_flap_mix_owner = _accepted_flap_mix_owner
 	_drop_tick_facts()
 	if _failures != null:
 		_failures.rollback()
@@ -2454,6 +2462,7 @@ func _on_sim_faulted(reason: String) -> void:
 
 func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	_accepted_flap_mix_owner = _flap_mix_owner
 	_drop_tick_facts()
 	# This connection precedes external observers: a rejected RK/contact candidate never announces an incident.
 	var failure_activated: bool = _failures != null and tick > 0 and _failures.commit(tick)
@@ -3123,6 +3132,7 @@ func step_external_tick() -> bool:
 	_external_before_inputs = sim.inputs
 	_external_before_gear = _gear_requested_down
 	_external_before_flaps = _flap_requested
+	_external_before_mix = _flap_mix_owner
 	_external_before_brake = _wheel_brake_demand
 	var packet: Dictionary = _external_pending_packet
 	commands = {roll = packet.roll, pitch = packet.pitch, yaw = packet.yaw, throttle = packet.throttle}
@@ -3155,6 +3165,7 @@ func _rollback_uncommitted_external_tick() -> void:
 	raw = _external_before_raw
 	_gear_requested_down = _external_before_gear
 	_flap_requested = _external_before_flaps
+	_flap_mix_owner = _external_before_mix
 	_wheel_brake_demand = _external_before_brake
 	# Fault recovery already installed the kernel's last valid inputs. A refusal
 	# without a fault instead restores the values present before this attempt.
@@ -3914,6 +3925,7 @@ func _apply_runway_start(north: float, east: float, heading: float, supplied_tra
 	commands = Commands.neutral_commands()
 	commands.throttle = 0.0 # match the solved runway inputs; neutral_commands defaults to airborne half power
 	engine_running = not glow_is_active()
+	_flap_mix_owner = _selected_flap_mix_owner()
 	sim.inputs = inputs
 	aux.append_array(_initial_gear_aux(true))
 	_flap_requested = 0.0
@@ -4151,6 +4163,7 @@ func set_throttle_hold(reason: String, active: bool) -> void:
 
 
 func _inputs() -> PackedFloat64Array:
+	_flap_mix_owner = _selected_flap_mix_owner()
 	var f := flown_commands()
 	var values := PackedFloat64Array([f.roll, f.pitch, f.yaw, 0.0 if not throttle_holds.is_empty() else f.throttle])
 	if gear_is_retractable():
@@ -4159,6 +4172,36 @@ func _inputs() -> PackedFloat64Array:
 		values.append(_wheel_brake_demand)
 	if flaps_available(): values.append(_flap_requested)
 	return values
+
+
+func _selected_flap_mix_owner() -> String:
+	if not input_enabled or external_driver_enabled or not radio.connected or not flaps_available():
+		return "simulator"
+	return ControllerProfile.flap_elevator_mix_owner(radio.profile)
+
+
+func flap_mix_owner() -> String:
+	return _flap_mix_owner
+
+
+## The replay input boundary includes mix ownership as well as sim.inputs.
+## Live input and external drivers select their own policy at the sampler.
+func restore_input_mix_owner(owner: String) -> bool:
+	if _reject_reset_publication_reentry() or input_enabled or external_driver_enabled \
+			or owner not in ["simulator", "transmitter"] or (owner == "transmitter" and not flaps_available()):
+		return false
+	_flap_mix_owner = owner
+	return true
+
+
+## Endpoint diagnostics: added normalized pitch, saturated target before failures,
+## and actual trailing-edge elevator degrees. No extra solver evaluation.
+func flap_mix_diagnostics() -> PackedFloat64Array:
+	if not flaps_available(): return PackedFloat64Array()
+	var offset: float = -sim.aux[flap_aux_index()] * aircraft.model.flaps.elevator_mix_per_flap_fraction \
+		if _flap_mix_owner == "simulator" else 0.0
+	return PackedFloat64Array([offset, clampf(sim.inputs[1] + offset, -1.0, 1.0),
+		float(surface_angles_deg().get("elevator", 0.0))])
 
 
 func flaps_available() -> bool:
@@ -5242,8 +5285,9 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		next_flap = Flaps.advance(aux[flap_aux_index()], inputs[flap_input_index()], dt, aircraft.model.flaps)
 		# Manual down-elevator mix follows slowed flap travel, before failures and physical servos.
 		# An elevator jam must still override the mixer; the recorded input remains pilot demand.
-		inputs = inputs.duplicate()
-		inputs[1] = clampf(inputs[1] - next_flap * aircraft.model.flaps.elevator_mix_per_flap_fraction, -1.0, 1.0)
+		if _flap_mix_owner == "simulator":
+			inputs = inputs.duplicate()
+			inputs[1] = clampf(inputs[1] - next_flap * aircraft.model.flaps.elevator_mix_per_flap_fraction, -1.0, 1.0)
 	if _failures != null:
 		# The incident module owns four primary channels; the gear actuator keeps
 		# its separately recorded demand and never extends the failure snapshot ABI.
@@ -5803,6 +5847,10 @@ func checkpoint() -> Dictionary:
 		boundary.flap_law = Flaps.LAW
 		boundary.flap_aux_index = flap_aux_index()
 		boundary.flap_input_index = flap_input_index()
+		# Absence retains the historical simulator-owned checkpoint/configuration.
+		if _flap_mix_owner != "simulator":
+			boundary.flap_mix_owner = _flap_mix_owner
+			boundary.flap_mix_contract = FLAP_MIX_CONTRACT
 	if not weather_is_calm():
 		boundary.format = "openrc-flight-checkpoint v2"
 		boundary.weather_config = weather_configuration()
@@ -5890,7 +5938,7 @@ func _checkpoint_configuration() -> String:
 	return _configuration_for_weather(_weather)
 
 
-func _configuration_for_weather(field: WeatherField) -> String:
+func _configuration_for_weather(field: WeatherField, mix_owner := "") -> String:
 	var config_hash := HashingContext.new()
 	config_hash.start(HashingContext.HASH_SHA256)
 	var parts: Array = [aircraft.model, ground_surfaces]
@@ -5910,6 +5958,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(FIXED_BRAKE_INPUT_LAW + "; input=4; shared wheel brake demand")
 	if flaps_available():
 		parts.append(Flaps.LAW + "; appended normalized demand and sampled actuator; restart_up")
+		if (mix_owner if not mix_owner.is_empty() else _flap_mix_owner) == "transmitter":
+			parts.append(FLAP_MIX_CONTRACT + "; transmitter")
 	if wheel_count() > 0:
 		parts.append("wheel-state-layout:" + wheel_state_layout())
 		parts.append(Ground.ROLLING_LAW)
@@ -6000,6 +6050,12 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 
 func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) -> bool:
 	if typeof(candidate.get("format")) != TYPE_STRING: return false
+	var restored_mix: Variant = candidate.get("flap_mix_owner", "simulator")
+	if typeof(restored_mix) != TYPE_STRING or restored_mix not in ["simulator", "transmitter"]:
+		return false
+	if candidate.has("flap_mix_owner") or candidate.has("flap_mix_contract"):
+		if not flaps_available() or restored_mix != "transmitter" or candidate.get("flap_mix_contract") != FLAP_MIX_CONTRACT:
+			return false
 	var recorded_backend := NativeStage.reference_identity()
 	if candidate.format == NATIVE_CHECKPOINT_FORMAT:
 		if not candidate.get("stage_backend") is Dictionary \
@@ -6227,7 +6283,7 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 				return false
 	elif candidate.has("atmosphere_law"):
 		return false
-	if candidate.configuration != _configuration_for_weather(restored_weather):
+	if candidate.configuration != _configuration_for_weather(restored_weather, restored_mix):
 		return false
 	if wheel_count() > 0:
 		var profile: Dictionary = aircraft.model.get("wheel_profile", {})
@@ -6283,6 +6339,8 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 	if recorded_backend != stage_backend_identity():
 		return false
 	return sim.restore_checkpoint(snapshot, func() -> void:
+		_flap_mix_owner = restored_mix
+		_accepted_flap_mix_owner = restored_mix
 		transaction.committed = true
 		_reset_physical_committed = true
 		_reset_publication_active = true

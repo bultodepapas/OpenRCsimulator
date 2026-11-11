@@ -8,6 +8,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const REFERENCE_STAGE_BACKEND := "gdscript_reference"
 const NATIVE_STAGE_BACKEND := "native"
 const STAGE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
+const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
 var options := {}
 var report := {status = "error", error = "Not started", format = "openrc-flight-log-report v1"}
 var _completed := false
@@ -138,6 +139,9 @@ func _run() -> void:
 		_finish(checked.error)
 		return
 	var header: Dictionary = checked.header
+	if header.has("flap_mix_contract"):
+		report.control_profile = header.get("control_profile", {})
+		report.flap_mix_contract = header.flap_mix_contract
 	var recorded_backend: Dictionary = recorded_stage_backend(header).identity
 	var current_identity := _current_replay_identity()
 	var recorded_identity := recorded_replay_identity(header)
@@ -195,6 +199,9 @@ func _run() -> void:
 		for row: Dictionary in packet.value.rows:
 			var output := row
 			if flight != null and not first:
+				if row.has("flap_mix_owner") and not flight.call("restore_input_mix_owner", row.flap_mix_owner):
+					error = "Replay refused flap mix ownership at tick %d." % row.tick
+					break
 				for key: String in row.intervention:
 					flight.sim.set(key, row.intervention[key].duplicate())
 				flight.sim.inputs = row.inputs.duplicate()
@@ -212,6 +219,9 @@ func _run() -> void:
 			if flight != null and not options.has("candidate"):
 				error = disagreement(row, output)
 				if not error.is_empty(): break
+			if not header.layout.has("flap_mix"):
+				output.erase("flap_mix")
+				output.erase("flap_mix_owner")
 			write_row(csv, output, float(header.dt_s), int(checked.first_tick))
 			first = false
 		if not error.is_empty(): break
@@ -259,6 +269,8 @@ static func inspect(path: String, recover := false) -> Dictionary:
 			or not header.checkpoint.get("simulation") is Dictionary:
 		return {ok = false, error = "Invalid timestep or initial checkpoint."}
 	var layout: Dictionary = header.layout
+	var mix_error := flap_mix_contract_error(header)
+	if not mix_error.is_empty(): return {ok = false, error = mix_error}
 	for key in ["state", "loads", "inputs", "aux", "continuous", "modes"]:
 		if typeof(layout.get(key)) != TYPE_INT or layout[key] < 0 or layout[key] > 4096:
 			return {ok = false, error = "Invalid sample layout."}
@@ -297,6 +309,8 @@ static func inspect(path: String, recover := false) -> Dictionary:
 			var why := validate_row(row, layout, next_tick)
 			if not why.is_empty(): return {ok = false, error = why}
 			if rows == 0:
+				if layout.has("flap_mix") and row.flap_mix_owner != header.checkpoint.get("flap_mix_owner", "simulator"):
+					return {ok = false, error = "Initial mix owner disagrees with checkpoint."}
 				if not snapshot.get("last_loads") is PackedFloat64Array or row.loads.to_byte_array() != snapshot.last_loads.to_byte_array():
 					return {ok = false, error = "Initial loads disagree with checkpoint."}
 				for key in ["state", "inputs", "aux", "continuous", "modes"]:
@@ -332,6 +346,14 @@ static func _incomplete(header: Dictionary, rows: int, next_tick: int, events: A
 static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 	if not row is Dictionary or row.get("kind") != "sample" or typeof(row.get("tick")) != TYPE_INT or row.tick != tick:
 		return "Nonconsecutive or malformed tick %d." % tick
+	if layout.has("flap_mix"):
+		if typeof(row.get("flap_mix_owner")) != TYPE_STRING or row.flap_mix_owner not in ["simulator", "transmitter"] \
+				or not row.get("flap_mix") is PackedFloat64Array or row.flap_mix.size() != 3:
+			return "Invalid flap mix sample at tick %d." % tick
+		for number: float in row.flap_mix:
+			if not is_finite(number): return "Nonfinite flap mix diagnostic."
+	elif row.has("flap_mix_owner") or row.has("flap_mix"):
+		return "Undeclared flap mix sample."
 	# FUEL-06 logs add a "mass" block (layout.mass = 4); older logs have none.
 	for key in ["state", "loads", "inputs", "aux", "continuous", "raw", "sticks", "air"] + (["mass"] if layout.has("mass") else []):
 		var size: int = layout.get(key, 6 if key == "air" else 4)
@@ -355,6 +377,8 @@ static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 
 
 static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
+	var mix_error := flap_mix_contract_error(header)
+	if not mix_error.is_empty(): return {ok = false, error = mix_error}
 	var recorded_backend := recorded_stage_backend(header)
 	if not recorded_backend.ok: return recorded_backend
 	var recorded_identity := recorded_replay_identity(header)
@@ -374,6 +398,9 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	var aircraft: Dictionary = header.aircraft if candidate.is_empty() else Data.load_file(candidate)
 	if not aircraft.get("ok", false): return {ok = false, error = "Candidate aircraft data invalid."}
 	var flight := Flight.new()
+	if header.has("flap_mix_contract") and not flight.has_method("restore_input_mix_owner"):
+		flight.free()
+		return {ok = false, error = "Selected solver does not support recorded flap mix ownership."}
 	var requested_backend: String = str(recorded_backend.identity.backend) if candidate.is_empty() else REFERENCE_STAGE_BACKEND
 	if flight.has_method("setup_stage_backend"):
 		if not flight.call("setup_stage_backend", requested_backend):
@@ -404,6 +431,9 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 		return {ok = false, error = "Selected stage backend does not match the recorded or requested identity."}
 	var checkpoint: Dictionary = header.checkpoint.duplicate(true)
 	if not candidate.is_empty():
+		if header.has("flap_mix_contract") and not flight.call("restore_input_mix_owner", str(checkpoint.get("flap_mix_owner", "simulator"))):
+			flight.free()
+			return {ok = false, error = "Candidate cannot retain recorded flap mix ownership."}
 		if checkpoint.get("format") == STAGE_CHECKPOINT_FORMAT:
 			checkpoint.format = checkpoint.stage_physics_format
 			checkpoint.erase("stage_physics_format")
@@ -442,6 +472,10 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 
 
 static func disagreement(expected: Dictionary, actual: Dictionary) -> String:
+	if expected.has("flap_mix_owner") and (expected.flap_mix_owner != actual.get("flap_mix_owner") \
+			or not actual.get("flap_mix") is PackedFloat64Array \
+			or expected.flap_mix.to_byte_array() != actual.flap_mix.to_byte_array()):
+		return "Flap mix replay divergence at tick %d." % expected.tick
 	for key in ["state", "loads", "inputs", "aux", "continuous", "modes", "air"] + (["mass"] if expected.has("mass") else []):
 		if not actual.has(key) or expected[key].to_byte_array() != actual[key].to_byte_array():
 			return "First exact replay divergence at tick %d in %s; no equivalence claimed." % [expected.tick, key]
@@ -453,6 +487,30 @@ static func disagreement(expected: Dictionary, actual: Dictionary) -> String:
 ## layout is authoritative only after validation; never silently relabel it.
 ## The versioned fixed-brake branch is reader support, not aircraft admission.
 const FIXED_BRAKE_INPUT_LAW := "fixed-gear-shared-wheel-brake-input-v1"
+
+
+static func flap_mix_contract_error(header: Dictionary) -> String:
+	var declared: bool = header.has("flap_mix_contract")
+	var layout: Variant = header.get("layout")
+	var checkpoint: Variant = header.get("checkpoint")
+	if not layout is Dictionary or not checkpoint is Dictionary:
+		return "Missing mix layout/checkpoint."
+	if not declared:
+		return "Undeclared flap mix contract." if layout.has("flap_mix") or checkpoint.has("flap_mix_owner") \
+			or checkpoint.has("flap_mix_contract") else ""
+	if typeof(header.flap_mix_contract) != TYPE_STRING or header.flap_mix_contract != FLAP_MIX_CONTRACT \
+			or typeof(layout.get("flap_mix")) != TYPE_INT or layout.flap_mix != 3:
+		return "Invalid flap mix contract/layout."
+	var roles := input_names(layout, header.get("metadata", {}))
+	if not roles.ok or not roles.names.has("flaps"):
+		return "Flap mix contract requires recorded flap input."
+	var owner: Variant = checkpoint.get("flap_mix_owner", "simulator")
+	if typeof(owner) != TYPE_STRING or owner not in ["simulator", "transmitter"]:
+		return "Invalid checkpoint mix owner."
+	if checkpoint.has("flap_mix_owner") or checkpoint.has("flap_mix_contract"):
+		if owner != "transmitter" or checkpoint.get("flap_mix_contract") != FLAP_MIX_CONTRACT:
+			return "Invalid transmitter checkpoint mix contract."
+	return ""
 
 
 static func input_names(layout: Dictionary, metadata: Dictionary = {}) -> Dictionary:
@@ -522,6 +580,8 @@ static func columns(layout: Dictionary, metadata: Dictionary = {}) -> PackedStri
 	if layout.has("mass"):
 		result.append_array(PackedStringArray(["mass_kg", "cg_offset_x_m", "cg_offset_y_m", "cg_offset_z_m"]))
 	for i in layout.modes: result.append("mode_%d" % i)
+	if layout.has("flap_mix"):
+		result.append_array(PackedStringArray(["flap_mix_owner", "flap_mix_pitch_offset", "flap_mix_pitch_target", "elevator_actual_deg"]))
 	return result
 
 
@@ -531,6 +591,9 @@ static func write_row(file: FileAccess, row: Dictionary, dt: float, _first_tick:
 	for key in ["state", "loads", "inputs", "aux", "continuous", "raw", "sticks", "air"] + (["mass"] if row.has("mass") else []):
 		for value: float in row[key]: values.append(JSON.stringify(value, "", false, true))
 	for mode: int in row.modes: values.append(str(mode))
+	if row.has("flap_mix"):
+		values.append(row.flap_mix_owner)
+		for value: float in row.flap_mix: values.append(JSON.stringify(value, "", false, true))
 	file.store_csv_line(values)
 
 

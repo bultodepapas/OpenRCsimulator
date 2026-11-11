@@ -6,6 +6,7 @@ const AXIS_COUNT := 10
 const VALID_KINDS := ["gamepad", "radio", "joystick"]
 const VALID_THROTTLE_MODES := ["stick_rate", "trigger_absolute", "radio_absolute"]
 const VALID_GLYPHS := ["auto", "xbox", "playstation", "nintendo", "generic"]
+const VALID_FLAP_ELEVATOR_MIX_OWNERS := ["simulator", "transmitter"]
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
@@ -59,6 +60,7 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		"preset": preset,
 		"preset_revision": 1,
 		"throttle_mode": throttle_mode,
+		"flap_elevator_mix_owner": "simulator",
 		"throttle_rate": DEFAULT_THROTTLE_RATE,
 		"idle_threshold": 0.05,
 		"neutral_duration_ms": 200,
@@ -123,6 +125,8 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 				if _string_field(aux_binding, "type") == "switch" and not SmokeAux.valid_binding(aux_binding):
 					return {}
 		var current: Dictionary = SmokeAux.sanitize_profile(normalized.value, false)
+		if not current.has("flap_elevator_mix_owner"):
+			current["flap_elevator_mix_owner"] = "simulator"
 		return current if validate(current).ok else {}
 	if value.has("schema_version"):
 		return {}
@@ -174,6 +178,14 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 		if not ["kind", "roll", "pitch", "yaw", "throttle", "deadzone", "expo", "throttle_rate", "name", "preset", "schema_version", "profile_id", "aux", "association", "throttle_mode", "configured"].has(str(key)):
 			result[key] = legacy[key].duplicate(true) if typeof(legacy[key]) in [TYPE_ARRAY, TYPE_DICTIONARY] else legacy[key]
 	return result if validate(result).ok else {}
+
+
+## Missing or invalid ownership fails safe to the simulator's established behavior.
+static func flap_elevator_mix_owner(profile: Variant) -> String:
+	if typeof(profile) == TYPE_DICTIONARY and _string_field(profile, "kind") in ["radio", "joystick"] \
+			and _string_field(profile, "flap_elevator_mix_owner") == "transmitter":
+		return "transmitter"
+	return "simulator"
 
 
 ## Merge measured radio fields without replacing the user's other channel settings.
@@ -309,6 +321,14 @@ static func validate(value: Variant) -> Dictionary:
 	if typeof(kind_value) != TYPE_STRING or not VALID_KINDS.has(kind_value):
 		var error: String = "kind must be gamepad, radio, or joystick"
 		_append_validation_issue(errors, issues, "profile_invalid", ["kind"], error)
+	if value.has("flap_elevator_mix_owner"):
+		var owner: Variant = value.get("flap_elevator_mix_owner")
+		if typeof(owner) != TYPE_STRING or not VALID_FLAP_ELEVATOR_MIX_OWNERS.has(owner):
+			var error: String = "flap_elevator_mix_owner must be simulator or transmitter"
+			_append_validation_issue(errors, issues, "profile_invalid", ["flap_elevator_mix_owner"], error)
+		elif owner == "transmitter" and _string_field(value, "kind") not in ["radio", "joystick"]:
+			var error: String = "transmitter flap-to-elevator compensation requires a radio or joystick profile"
+			_append_validation_issue(errors, issues, "profile_invalid", ["flap_elevator_mix_owner"], error)
 	var configured: Variant = value.get("configured", true)
 	if typeof(configured) != TYPE_BOOL or not configured:
 		var error: String = "unconfigured profile cannot drive flight commands"

@@ -6,6 +6,7 @@ const MAGIC := "ORFL0001"
 const FORMAT := "openrc-flight-log v1"
 const MAX_PACKET := 16 * 1024 * 1024
 const CHUNK_TICKS := 240
+const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
 const MAX_BYTES := 512 * 1024 * 1024
 const MAX_TICKS := 240 * 60 * 60
 const BuildInfo := preload("res://app_state/build_info.gd")
@@ -31,6 +32,9 @@ var _last_tick := -1
 var _start_tick := 0
 var _chain := PackedByteArray()
 var _stopping := false
+var _profile_ref: Dictionary = {}
+var _profile_identity_cache: Dictionary = {}
+var _last_profile_identity: Dictionary = {}
 
 
 func _init(session: Node) -> void:
@@ -99,6 +103,13 @@ func start(destination := "") -> Error:
 		mass_boundary = "FUEL-06: live mass kg and CG offset [x, y, z] m body FRD from the fixed datum O, accepted tick end",
 	}
 	# RC-TRACK: only flights over the dirt circuit carry it, so other headers stay byte-compatible.
+	if _session.has_method("flap_mix_owner") and _session.flaps_available():
+		header.flap_mix_contract = FLAP_MIX_CONTRACT
+		header.layout.flap_mix = 3
+		header.control_profile = _control_profile_identity().duplicate(true)
+		_last_profile_identity = header.control_profile
+		header.input_boundary = "post conditioning/rates/trim, before flap mix, failure and servo; owner recorded per interval"
+		header.flap_mix_boundary = "accepted endpoint: added pitch fraction, saturated pre-failure pitch target, actual elevator trailing-edge degrees; initial row is a checkpoint diagnostic"
 	if _session.has_method("rc_track_context") and not _session.rc_track_context().is_empty():
 		header.rc_track = _session.rc_track_context()
 	# Source-built headers remain byte-compatible with historical logs.
@@ -204,6 +215,9 @@ func _sample(intervention: Dictionary) -> Dictionary:
 	sample.intervention = intervention.duplicate(true)
 	sample.raw = _controls(_session.raw)
 	sample.sticks = _controls(_session.commands)
+	if _session.has_method("flap_mix_owner") and _session.flaps_available():
+		sample.flap_mix_owner = _session.flap_mix_owner()
+		sample.flap_mix = _session.flap_mix_diagnostics()
 	# Existing cheap air transform; no extra force, derivative or RK evaluation.
 	var wind: PackedFloat64Array = _session.wind_at(_session.sim.time())
 	var air: Dictionary = Air.compute(_session.sim.state, wind, _session.air_density(_session.sim.state))
@@ -219,6 +233,24 @@ static func _controls(value: Dictionary) -> PackedFloat64Array:
 	return PackedFloat64Array([value.get("roll", 0.0), value.get("pitch", 0.0), value.get("yaw", 0.0), value.get("throttle", 0.0)])
 
 
+## Profiles are replaced on activation. Hash once per accepted profile object;
+## log identity only, never the device association or raw serial number.
+func _control_profile_identity() -> Dictionary:
+	var source := "accepted_commands" if not _session.input_enabled else "keyboard"
+	if _session.external_driver_enabled: source = "external_driver"
+	elif _session.input_enabled and _session.radio.connected: source = "controller"
+	if source != "controller":
+		return {source = source, rates = _session.effective_rate_profile()}
+	var profile: Dictionary = _session.radio.profile
+	if not is_same(profile, _profile_ref) or _profile_identity_cache.is_empty():
+		_profile_ref = profile
+		_profile_identity_cache = {source = source, profile_id = str(profile.get("profile_id", "")),
+			profile_sha256 = sha256(var_to_bytes(profile)).hex_encode(), kind = str(profile.get("kind", ""))}
+	var identity := _profile_identity_cache.duplicate()
+	identity.rates = _session.effective_rate_profile()
+	return identity
+
+
 func _stepped(tick: int, _t: float, _s: PackedFloat64Array, _l: PackedFloat64Array, _i: PackedFloat64Array, _a: PackedFloat64Array) -> void:
 	if not recording:
 		return
@@ -231,6 +263,11 @@ func _stepped(tick: int, _t: float, _s: PackedFloat64Array, _l: PackedFloat64Arr
 		_disconnect()
 		return
 	_rows.append(_sample(_pending))
+	if header.has("flap_mix_contract"):
+		var identity := _control_profile_identity()
+		if identity != _last_profile_identity:
+			_event("control_profile", JSON.stringify(identity))
+			_last_profile_identity = identity
 	_expected = _boundary_bytes()
 	_last_tick = tick
 	peak_buffer_rows = maxi(peak_buffer_rows, _rows.size())
