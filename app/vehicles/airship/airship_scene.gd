@@ -76,6 +76,8 @@ var _audio_side: AudioStreamPlayer3D
 var _audio_stern: AudioStreamPlayer3D
 ## BL-19f: the shared servo/retract synthesizer, driven by accepted vector and fin angles (Workshop audio profile).
 var _mechanical: Node3D
+var _servo_anchors: Array = []
+var _servo_anchor_visual := 0
 var _pilot_position := Vector3.ZERO
 
 
@@ -135,7 +137,8 @@ func _ready() -> void:
 	hud.select_choice("start", start_index)
 	hud.select_choice("camera", camera_mode)
 	if not workshop_trial.is_empty():
-		hud.set_workshop_trial("Workshop trial · RC blimp %.1f m — experimental" % (float(session.data.envelope.length)))
+		var length := float(session.data.envelope.length)
+		hud.set_workshop_trial("Workshop trial · RC blimp %.1f m — experimental" % length, length)
 	hud.action_requested.connect(handle_action)
 	hud.option_selected.connect(_option_selected)
 	session.crashed.connect(func(reason: String) -> void: _open_menu(reason + ". Restart to fly again."))
@@ -463,12 +466,12 @@ func _update_audio(target: Vector3, body_basis: Basis) -> void:
 	if is_instance_valid(_mechanical):
 		var servo := _servo_snapshot(session.paused)
 		var root_position: Vector3 = visual.root.global_position
-		for i in SERVO_ANCHORS.size():
+		var anchors := _servo_anchor_nodes()
+		for i in anchors.size():
 			var sum := Vector3.ZERO
 			var count := 0
-			for key: String in SERVO_ANCHORS[i]:
-				var node: Node3D = (visual.get("_bindings") as Dictionary).get(key, {}).get("node") as Node3D
-				if node != null:
+			for node: Node3D in anchors[i]:
+				if is_instance_valid(node):
 					sum += node.global_position
 					count += 1
 			servo.channels[i].position = sum / float(count) if count > 0 else root_position
@@ -480,6 +483,23 @@ func _update_audio(target: Vector3, body_basis: Basis) -> void:
 	var stern := maxf(absf(c[2]), absf(c[3]))
 	_motor_sound(_audio_side, side, target + body_basis * (Vector3(0.0, -0.17, -0.8) * _size))
 	_motor_sound(_audio_stern, stern, target + body_basis * (Vector3(0.0, 0.0, 2.45) * _size))
+
+
+## The hinge nodes each servo channel sounds from, resolved once per built visual (a skin swap builds a new one).
+func _servo_anchor_nodes() -> Array:
+	var id := visual.get_instance_id()
+	if id != _servo_anchor_visual:
+		_servo_anchor_visual = id
+		_servo_anchors.clear()
+		var bindings: Dictionary = visual.get("_bindings")
+		for keys: Array in SERVO_ANCHORS:
+			var nodes: Array[Node3D] = []
+			for key: String in keys:
+				var node := (bindings.get(key, {}) as Dictionary).get("node") as Node3D
+				if node != null:
+					nodes.append(node)
+			_servo_anchors.append(nodes)
+	return _servo_anchors
 
 
 func _motor_sound(player: AudioStreamPlayer3D, n: float, at: Vector3) -> void:

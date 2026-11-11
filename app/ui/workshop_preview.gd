@@ -359,7 +359,14 @@ func _configure_lighting() -> void:
 		_lighting_rig.name = "PreviewAircraftLighting"
 		_stage.add_child(_lighting_rig)
 	var selected: Dictionary = LightingProfile.defaults() if _lighting_is_original_view else _lighting_profile.duplicate(true)
-	if _preview_night and str(selected.get("selection", "inherit")) == "inherit":
+	# A model with a fully authored kit publishes a fit-free attach (BL-19g: the blimp); call it only when a kit is due.
+	var selection := str(selected.get("selection", "inherit"))
+	if ((_preview_night and selection == "inherit") or selection not in ["inherit", "disabled"]) \
+			and _airplane_root.has_meta("prepare_light_kit"):
+		var prepare: Variant = _airplane_root.get_meta("prepare_light_kit")
+		if prepare is Callable and (prepare as Callable).is_valid():
+			(prepare as Callable).call()
+	if _preview_night and selection == "inherit":
 		# Sample the original fitted kit rather than substituting a different preset.
 		# Its local shader adapter keeps the preview independent of the flight clock/exposure.
 		_lighting_rig.dispose()

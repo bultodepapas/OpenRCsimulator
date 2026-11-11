@@ -1,6 +1,6 @@
 extends RefCounted
 
-## Render-only modal flag prototype, not a calibrated fabric simulation.
+## Render-only modal flag model, not a calibrated fabric simulation.
 ## The caller supplies actual air velocity in the fixed local basis: +X away
 ## from the hoist, +Y up and +Z across it. Points are metres from the hoist
 ## top, row-major index = v * 9 + u. All five points at u=0 remain fixed.
@@ -10,6 +10,8 @@ extends RefCounted
 const COLUMNS: int = 9
 const ROWS: int = 5
 const POINT_COUNT: int = COLUMNS * ROWS
+# Diagnostic index counts up to six 120 Hz-equivalent intervals per receipt;
+# the modal response itself is closed-form and does not integrate substeps.
 const STEP_S: float = 1.0 / 120.0
 const MAX_STEPS_PER_UPDATE: int = 6
 const MAX_GAP_S: float = 0.5
@@ -20,6 +22,9 @@ const MAX_EDGE_STRAIN: float = 0.10
 const MIN_AREA_RATIO: float = 0.01
 const EPSILON: float = 1.0e-8
 const BACKTRACK_ATTEMPTS: int = 8
+const CALM_SAG_RAD: float = 1.9
+const SETTLE_ENERGY: float = 0.00001
+const SETTLE_SAG_RAD: float = 0.00001
 
 var length_m: float
 var height_m: float
@@ -35,7 +40,7 @@ var _epoch: float = 0.0
 var _last_observed: float = 0.0
 var _heading: float = 0.0
 var _turn_side: float = 1.0
-var _sag: float = 1.9
+var _sag: float = CALM_SAG_RAD
 var _candidate: PackedVector3Array = PackedVector3Array()
 var _row_centers: PackedVector3Array = PackedVector3Array()
 var _row_displacements: PackedFloat64Array = PackedFloat64Array()
@@ -70,7 +75,7 @@ func reset(time_s: float = 0.0, wind_local: Vector3 = Vector3.ZERO) -> bool:
 	energy = 0.0
 	_heading = 0.0
 	_turn_side = 1.0
-	_sag = 1.9
+	_sag = CALM_SAG_RAD
 	_build_pose(points, _heading, _sag, energy, phase, _turn_side)
 	revision += 1
 	return true
@@ -96,7 +101,7 @@ func update_to(time_s: float, wind_local: Vector3) -> bool:
 		return true
 	# Exact calm at the settled pose has no pending modal response. Keep the
 	# last geometry and phase and do not trigger a redundant GPU upload.
-	if wind_local == Vector3.ZERO and energy == 0.0 and _sag == 1.9:
+	if wind_local == Vector3.ZERO and energy == 0.0 and _sag == CALM_SAG_RAD:
 		simulated_step_index += mini(MAX_STEPS_PER_UPDATE, maxi(1, int(ceil(elapsed / STEP_S - 1.0e-8))))
 		_last_observed = time_s
 		simulated_time_s = time_s
@@ -189,8 +194,16 @@ func _advance(wind: Vector3, elapsed: float) -> bool:
 		var turn: float = wrapf(target - _heading, -PI, PI)
 		var turn_limit: float = 2.0 * elapsed * clampf(horizontal_speed / 2.0, 0.0, 1.0)
 		heading_step = clampf(turn, -turn_limit, turn_limit)
-	var desired_sag: float = 1.9 / (1.0 + horizontal_speed * 0.35) - clampf(wind.y / 20.0, -0.2, 0.2)
+	var desired_sag: float = CALM_SAG_RAD / (1.0 + horizontal_speed * 0.35) - clampf(wind.y / 20.0, -0.2, 0.2)
 	var next_sag: float = _sag + (desired_sag - _sag) * (1.0 - exp(-elapsed / 0.7))
+	# Only exact external calm can settle. Integrate this entire interval's
+	# phase first; rejected geometry falls through to ordinary gradual motion.
+	if wind == Vector3.ZERO and next_energy <= SETTLE_ENERGY and absf(next_sag - CALM_SAG_RAD) <= SETTLE_SAG_RAD:
+		var settled_phase: Vector2 = Vector2(
+			fposmod(phase.x + 7.0 * energy_integral, TAU),
+			fposmod(phase.y + 10.3 * energy_integral, TAU))
+		if _try_settle(settled_phase):
+			return true
 	var fraction: float = 1.0
 	for attempt: int in BACKTRACK_ATTEMPTS + 1:
 		var trial_heading: float = wrapf(_heading + heading_step * fraction, -PI, PI)
@@ -222,6 +235,24 @@ func _advance(wind: Vector3, elapsed: float) -> bool:
 	# A safe pose is retained if no bounded candidate can be published.
 	_blocked_steps += 1
 	return false
+
+
+## Commit the tiny final calm transition only after the same pose and swept
+## mast guards used by ordinary updates accept it. Heading and side persist.
+func _try_settle(settled_phase: Vector2) -> bool:
+	_build_pose(_candidate, _heading, CALM_SAG_RAD, 0.0, settled_phase, _turn_side)
+	var pose_valid: bool = _valid_basic(_candidate) if mode == "basic" else _valid_candidate(_candidate)
+	if not pose_valid:
+		return false
+	var sweep_valid: bool = _sweep_basic(points, _candidate) if mode == "basic" else _sweep_clear(points, _candidate)
+	if not sweep_valid:
+		return false
+	for i: int in POINT_COUNT:
+		points[i] = _candidate[i]
+	energy = 0.0
+	_sag = CALM_SAG_RAD
+	phase = settled_phase
+	return true
 
 
 func _build_pose(out: PackedVector3Array, heading: float, sag: float, flutter: float, wave_phase: Vector2, side: float) -> void:

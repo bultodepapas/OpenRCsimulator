@@ -7,9 +7,21 @@ var _checks: int = 0
 var _failures: int = 0
 
 
+class RejectOnceMotion extends Motion:
+	var reject_once: bool = false
+
+	func _valid_candidate(candidate: PackedVector3Array) -> bool:
+		if reject_once:
+			reject_once = false
+			return false
+		return super._valid_candidate(candidate)
+
+
 func _initialize() -> void:
 	_test_lifecycle()
 	_test_settled_calm()
+	_test_post_wind_settling()
+	_test_rejected_settle_fallback()
 	_test_directions_and_aspects()
 	_test_tape("basic")
 	_test_tape("detailed")
@@ -53,6 +65,68 @@ func _test_settled_calm() -> void:
 			and after.revision == before.revision and after.simulated_time_s == 2.0 and after.gap_resets == 0)
 		_check("%s wakes immediately when wind arrives" % kind,
 			m.update_to(2.0 + 1.0 / 60.0, Vector3(4, 0, 0)) and m.energy > 0.0 and m.revision == before.revision + 1)
+
+
+func _test_post_wind_settling() -> void:
+	var accepted: bool = true
+	var settled_count: int = 0
+	var preserved: bool = true
+	var asleep: bool = true
+	var woke: bool = true
+	var valid: bool = true
+	var worst_jump: float = 0.0
+	for cadence: float in [0.1, 0.5]:
+		for kind: String in ["basic", "detailed"]:
+			for shape: Vector2 in [Vector2(1.2, 0.9), Vector2(1.8, 0.9), Vector2(0.5, 0.3), Vector2(3, 2), Vector2(3, 0.3), Vector2(0.5, 2)]:
+				for direction_index: int in 16:
+					var m: Variant = Motion.new(shape.x, shape.y, kind)
+					var theta: float = TAU * direction_index / 16.0
+					var wind: Vector3 = Vector3(8 * cos(theta), 0, 8 * sin(theta))
+					for tick: int in range(1, 41):
+						accepted = m.update_to(tick * cadence, wind) and accepted
+					for tick: int in range(41, 151):
+						var before: Dictionary = m.state_snapshot()
+						var now: float = tick * cadence
+						accepted = m.update_to(now, Vector3.ZERO) and accepted
+						if m.energy != 0.0:
+							continue
+						var after: Dictionary = m.state_snapshot()
+						var delta_t: float = now - float(before.last_observed_time_s)
+						var integral: float = before.energy * 0.5 * (1.0 - exp(-delta_t / 0.5))
+						var expected_phase: Vector2 = Vector2(fposmod(before.phase.x + 7.0 * integral, TAU), fposmod(before.phase.y + 10.3 * integral, TAU))
+						preserved = preserved and after.heading_rad == before.heading_rad and after.turn_side == before.turn_side and after.phase == expected_phase
+						for i: int in 45:
+							worst_jump = maxf(worst_jump, before.points[i].distance_to(after.points[i]))
+						valid = valid and m._valid_candidate(m.points) and m._sweep_clear(before.points, m.points)
+						var snapshot: Dictionary = m.state_snapshot()
+						accepted = m.update_to(now, wind) and accepted
+						accepted = not m.update_to(NAN, Vector3.ZERO) and accepted
+						asleep = asleep and m.state_snapshot() == snapshot
+						accepted = m.update_to(now + cadence, Vector3.ZERO) and accepted
+						asleep = asleep and m.revision == snapshot.revision and m.points == snapshot.points and m.phase == snapshot.phase
+						woke = woke and m.update_to(now + 2.0 * cadence, Vector3(0.001, 0, 0)) and m.energy > 0.0 and m.revision == snapshot.revision + 1
+						settled_count += 1
+						break
+	print("post-wind settled cases=%d worst_jump_m=%.9f" % [settled_count, worst_jump])
+	_check("post-wind observations all accepted", accepted)
+	_check("both modes settle across dimensions and directions", settled_count == 384)
+	_check("settling preserves heading, side and integrated phase", preserved)
+	_check("settled poses and mast sweeps remain valid", valid)
+	_check("settled pose transition is less than 0.05 mm", worst_jump < 0.00005)
+	_check("pause, invalid inputs and later calm preserve the settled pose", asleep)
+	_check("nonzero wind wakes the settled pose", woke)
+
+
+func _test_rejected_settle_fallback() -> void:
+	var m: Variant = RejectOnceMotion.new(1.5, 0.9, "detailed")
+	m.energy = 0.000005
+	m._sag = 1.9 - 0.000005
+	m._build_pose(m.points, m._heading, m._sag, m.energy, m.phase, m._turn_side)
+	var initial_revision: int = m.revision
+	m.reject_once = true
+	var accepted: bool = m.update_to(1.0 / 60.0, Vector3.ZERO)
+	_check("unsafe settled candidate falls back to gradual motion", accepted and not m.reject_once and m.energy > 0.0 and m.revision == initial_revision + 1 and m.state_snapshot().rejected_steps == 0)
+	_check("settling retries on a subsequent calm observation", m.update_to(2.0 / 60.0, Vector3.ZERO) and m.energy == 0.0)
 
 
 func _test_directions_and_aspects() -> void:

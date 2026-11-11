@@ -50,6 +50,8 @@ class TextureRequest extends Node:
 	var requested := false
 
 	func _ready() -> void:
+		# Resource ownership must drain even when the SceneTree is paused.
+		process_mode = Node.PROCESS_MODE_ALWAYS
 		add_to_group("flag_texture_requests")
 		if not is_instance_valid(target.get_ref()):
 			queue_free()
@@ -76,6 +78,12 @@ class TextureRequest extends Node:
 		if is_instance_valid(flag):
 			flag._texture_completed(descriptor, texture)
 		queue_free()
+
+func _enter_tree() -> void:
+	# A detached landscape misses quality group notifications. Re-entry does
+	# not run _ready again, and must not retain an obsolete expensive profile.
+	if _material != null:
+		apply_quality()
 
 func _ready() -> void:
 	add_to_group(GROUP)
@@ -201,9 +209,17 @@ func _update_lod() -> void:
 	if clock-_last_lod_time < 0.1:
 		return
 	_last_lod_time = clock
-	var distance := camera.global_position.distance_to(global_position)
 	var size_y := float(get_viewport().get_visible_rect().size.y)
-	var pixels := size_y * float(_descriptor.height_m) / maxf(camera.size,0.01) if camera.projection == Camera3D.PROJECTION_ORTHOGONAL else size_y * float(_descriptor.height_m) / maxf(2.0*distance*tan(deg_to_rad(camera.fov)*0.5),0.01)
+	# A nominal camera-facing height, not the changing cloth footprint. Using
+	# the projection handles KEEP_WIDTH, orthographic size and offset frusta.
+	# Camera-space depth avoids reducing detail at the same depth off axis.
+	var pixels := 0.5 * size_y * float(_descriptor.height_m) * absf(camera.get_camera_projection().y.y)
+	if camera.projection != Camera3D.PROJECTION_ORTHOGONAL:
+		var camera_transform := camera.get_camera_transform()
+		var depth := camera_transform.basis.z.dot(camera_transform.origin-global_position)
+		# Conservatively retain detail near/behind the near plane; never divide
+		# by zero when the camera crosses the hoist during a paused inspection.
+		pixels /= maxf(depth, maxf(camera.near, 0.001))
 	# Hysteresis avoids mesh thrashing while moving around a threshold.
 	var next := _lod_grid
 	if pixels < 24.0: next = Vector2i(8,4)

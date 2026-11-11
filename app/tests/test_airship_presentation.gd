@@ -231,6 +231,15 @@ func _test_lighting() -> void:
 	var dark_result: Dictionary = dark_visual.configure_lighting(disabled, {"rig_parent": dark_stage})
 	dark_visual.update_lighting(0.016, 1.0, NIGHT)
 	_check("disabled lighting allocates no lights", bool(dark_result.ok) and dark.root.get_node_or_null("NightKit") == null, str(dark_result.get("errors")))
+	# BL-19g: hosts that light the root themselves (the Workshop preview) get the fit-free authored kit, dark and once.
+	var hook: Variant = dark.root.get_meta("prepare_light_kit") if dark.root.has_meta("prepare_light_kit") else null
+	var prepared: Node3D = (hook as Callable).call() if hook is Callable else null
+	var fitted_layout: Dictionary = prepared.get_meta("geometry_layout", {}) if prepared != null else {}
+	_check("prepare_light_kit attaches a dark fit-free kit", prepared != null and not prepared.visible
+		and (fitted_layout.get("belly", PackedVector3Array([Vector3.ONE])) as PackedVector3Array).is_empty()
+		and prepared.get_node_or_null("nav_left") != null)
+	_check("prepare_light_kit is idempotent", hook is Callable and (hook as Callable).call() == prepared
+		and dark.root.find_children("NightKit", "", false, false).size() == 1)
 	dark_visual.dispose_lighting()
 	dark_stage.queue_free()
 	await process_frame
@@ -250,6 +259,7 @@ func _test_preview() -> void:
 	var bounds: AABB = preview.get("_model_bounds")
 	_check("Workshop preview displays the blimp", is_instance_valid(model_root) and bounds.size.z > 4.9 and bounds.size.z < 5.4,
 		str(bounds))
+	_check("daylight inherit preview allocates no blimp lights", model_root.get_node_or_null("NightKit") == null)
 	var described := AirshipPresentation.describe()
 	var profile := _painted_profile(described.bindings)
 	profile.lighting = Lighting.preset("classic_rc")
@@ -260,6 +270,11 @@ func _test_preview() -> void:
 		await process_frame
 	var report: Dictionary = preview.get_lighting_capability_report()
 	_check("preview lighting is available for the blimp", str(report.get("state", "")) != "unavailable", str(report))
+	# BL-19g: the preview lights the prepared fit-free kit (no whole-hull fit) and switches it on despite its dark start.
+	var kit := model_root.get_node_or_null("NightKit") as Node3D
+	var layout: Dictionary = kit.get_meta("geometry_layout", {}) if kit != null else {}
+	_check("preview preset reuses the fit-free blimp kit, lit", kit != null and kit.visible and str(kit.get_meta("mode", "")) != "off"
+		and (layout.get("belly", PackedVector3Array([Vector3.ONE])) as PackedVector3Array).is_empty(), str(kit.get_meta("mode", "")) if kit else "no kit")
 	preview.queue_free()
 	for _index in 2:
 		await process_frame

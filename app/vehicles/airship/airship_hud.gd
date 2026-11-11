@@ -26,6 +26,8 @@ var home_button: Button
 var title_label: Label
 var choices := {}
 var skin_names: Array = []
+## First readout line; a Workshop trial names its scaled envelope.
+var vehicle_label := "RC BLIMP 5.0 m"
 var _message_until := 0.0
 
 
@@ -37,7 +39,7 @@ func _ready() -> void:
 	root_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root_control.theme = UiTheme.build()
 	add_child(root_control)
-	var scale := UiTheme.text_scale
+	var ui_scale := UiTheme.text_scale
 	var panel := PanelContainer.new()
 	panel.name = "Telemetry"
 	panel.position = Vector2(24, 24)
@@ -46,14 +48,14 @@ func _ready() -> void:
 	root_control.add_child(panel)
 	readout = Label.new()
 	readout.name = "Readout"
-	readout.add_theme_font_size_override("font_size", int(round(17.0 * scale)))
+	readout.add_theme_font_size_override("font_size", int(round(17.0 * ui_scale)))
 	readout.add_theme_constant_override("line_spacing", 2)
 	panel.add_child(readout)
 	message = Label.new()
 	message.name = "Message"
 	message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	message.add_theme_font_size_override("font_size", int(round(20.0 * scale)))
+	message.add_theme_font_size_override("font_size", int(round(20.0 * ui_scale)))
 	message.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	message.offset_left = -520
 	message.offset_right = 520
@@ -64,7 +66,7 @@ func _ready() -> void:
 	help = Label.new()
 	help.name = "Help"
 	help.visible = false
-	help.add_theme_font_size_override("font_size", int(round(16.0 * scale)))
+	help.add_theme_font_size_override("font_size", int(round(16.0 * ui_scale)))
 	help.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	help.offset_left = -560
 	help.offset_right = -24
@@ -85,7 +87,7 @@ func _ready() -> void:
 		"It is only marginally stable, like a real airship: keep correcting with small rudder.",
 	]))
 	root_control.add_child(help)
-	_build_menu(scale)
+	_build_menu(ui_scale)
 
 
 func _build_menu(ui_scale: float) -> void:
@@ -118,8 +120,9 @@ func _build_menu(ui_scale: float) -> void:
 
 
 ## BL-19d: a Workshop trial returns to the Workshop and flies the frozen build with its pinned (default) skin.
-func set_workshop_trial(title: String) -> void:
+func set_workshop_trial(title: String, envelope_length_m: float) -> void:
 	title_label.text = title
+	vehicle_label = "RC BLIMP %.1f m" % envelope_length_m
 	home_button.text = "Return to Workshop"
 	(choices.skin as OptionButton).disabled = true
 	(choices.skin as OptionButton).tooltip_text = "Workshop builds fly with the default skin their paint slots target."
@@ -207,7 +210,7 @@ func update(t: Dictionary, input: Dictionary, camera_name: String) -> void:
 	var static_text := ("%+.0f g heavy" % heavy_g) if heavy_g > 0.5 else (("%.0f g light" % -heavy_g) if heavy_g < -0.5 else "neutral")
 	var armed := "ARMED" if input.get("armed", false) else "DISARMED"
 	var lines := PackedStringArray([
-		"RC BLIMP 5 m   experimental physics   camera: %s" % camera_name,
+		"%s   experimental physics   camera: %s" % [vehicle_label, camera_name],
 		"Height AGL %6.1f m     Vertical %+5.2f m/s" % [t.agl_m, t.vertical_speed_mps],
 		"Ground %5.2f m/s   Air %5.2f m/s   Heading %03d°" % [t.ground_speed_mps, t.air_speed_mps, int(round(t.heading_deg)) % 360],
 		"Pitch %+5.1f°   Roll %+5.1f°   Wind %s" % [t.pitch_deg, t.roll_deg, wind_text],

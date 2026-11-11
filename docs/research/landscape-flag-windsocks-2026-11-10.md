@@ -294,9 +294,9 @@ credentials or host keys were changed. No M1, low-end GPU,
 1440p/4K or physical cloth qualification is implied by the Windows captures.
 Required full CI and release/export qualification remain separate gates.
 
-### Stable motion test and component timing
+### Initial delivery: stable motion test and component timing
 
-The final motion source SHA-256 is
+The initial delivered motion source SHA-256 is
 `ce3905b5215a7326811a150aba42ce8c8132bffde684c9e53bc4601fd29f0b3e`.
 Its production test passed **95 checks**, including 16 stationary wind directions
 for six dimensions in both modes, clockwise/counterclockwise rotating wind,
@@ -388,3 +388,108 @@ causal speedup or regression estimate. The initial full-frame/GPU and low-end
 qualification budgets remain open. Raw reports are `frame-*.json` with checked
 logs under `final-checks`; the existing frame diagnosis reducer retained its
 reports beside them. All diagnostic screenshots remain outside tracked paths; the downloaded country artwork is a required runtime asset.
+
+### Follow-up audit: projection and lifecycle
+
+The follow-up started from commit `18000e97e586c1a8b0c401dc21ba657750176159`.
+Unrelated work continued in the shared tree; results identify the flag sources
+and checked receipts, not a claim that the whole repository was frozen.
+
+The extended integration test reproduced six failures before the repair:
+quality stayed stale after a detached flag re-entered the tree, a texture request
+could not finish while the SceneTree was paused, and four camera configurations
+selected the wrong mesh tier. The old LOD formula assumed vertical FOV and used
+radial distance. Independent camera-facing reference segments projected through
+Godot measured 112.60 px for KEEP_WIDTH perspective, 172.80 px for KEEP_WIDTH
+orthographic and 19.44 px for an offset frustum; all incorrectly kept the 16×8
+grid. The original off-axis reproduction was followed by an in-frustum case
+at 5 m depth and 5.5 m horizontal offset.
+
+The renderer now uses the camera projection's vertical scale and camera-space
+depth at the existing 10 Hz LOD polling rate. Near-plane clamping avoids a
+singularity. This estimates a **nominal camera-facing height**, not the actual
+cloth footprint; it deliberately avoids changing tessellation with every fold.
+It retains the same cached meshes, hysteresis, quality cap and motion state.
+The pinned engine's [camera transform and projection implementation](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/3d/camera_3d.cpp#L251-L285)
+supports this handling of projection modes, aspect and camera offsets.
+
+Tree entry now refreshes the effective quality, so detached scenery cannot
+retain expensive animation after the player selected Static. Locale re-entry
+already worked through Godot's translation notification and needs no workaround.
+The transient texture collector processes while paused so request ownership can
+drain. This is an additional SceneTree-pause robustness case: the actual product
+pause menu holds the flight session rather than pausing the SceneTree.
+
+Good Enemy challenged the distinction between actual projected cloth extent and
+nominal size, then reviewed the scoped implementation without finding a concrete
+regression. The corrected integration suite passed **81 checks**, with zero
+engine errors or warnings and drained collectors, under
+`tmp/flag-audit-20261110/lifecycle/corrected-fixture-t4r1zcnh/`. Coverage includes
+pitched/rolled cameras, the near plane, state-preserving LOD transitions and the
+existing shared windsock/flag sampling. The mixed-quality sampling fixture now
+attaches its Basic flags before selecting Static for its separate static cue;
+otherwise the new, correct re-entry refresh changes that fixture's premise.
+
+A read-only retry of the documented ANGEL SSH route again failed hostname
+resolution. No remote files or credentials changed; hardware qualification
+remains open.
+
+### Follow-up audit: post-wind settling
+
+Exact reset-time calm already avoided work, but the exponentially decaying
+energy and sag did not reach their exact rest values after wind ceased. The
+clean baseline probe still reached revision 3,121 after 2 s wind and 50 s calm;
+the last 1,200 observations produced unchanged vertex positions while continuing
+to increment the revision. The receipt is
+`tmp/flag-audit-20261110/motion/checks/baseline-settling-valid-mrqatiyn/`.
+
+With exactly zero external wind, the model now attempts the settled pose when
+the next energy is at most `1e-5` and sag is within `1e-5` radians of rest. It
+integrates that interval's phase, retains heading and the mast-bending side, and
+validates the final pose and swept mast clearance before committing. A rejected
+settled candidate falls back to the ordinary gradual update. Later calm advances
+observation time without rebuilding geometry or uploading uniforms; any nonzero
+wind wakes it. No simulation kernel, weather sampling or windsock law changed.
+
+Good Enemy reviewed the candidate and its fallback. The production motion suite
+passes **104 checks**, including 384 post-wind cases across both modes, six
+dimensions, 16 directions and 0.1/0.5 s observation intervals. The largest
+observed settling step in those cases was **0.010782 mm**, below the test's
+0.05 mm gate; this is a sampled result, not a universal displacement bound.
+The earlier 192-state threshold probe measured 0.007077 mm and must not be
+substituted for the larger interval test. Rejection fallback, phase, pause,
+invalid input and wake assertions pass. Existing 4,440 Basic/full guard
+comparisons and the moving-wind tape remain passing.
+
+The final renderer suite passes **89 checks**, including both modes after 2 s
+wind and 12 s calm: another 60 calm observations advance time with **zero new
+revisions or uploads**, then the next nonzero wind produces an update/upload.
+Field staged construction (43) and replacement (70) also pass. These four
+production suites total **306 checks**. This audit establishes avoided work,
+not a new CPU/GPU timing claim on the concurrently used host.
+
+Final source SHA-256:
+
+- `app/render/flag_motion.gd`: `5aee2d32091794a5c0cace1d15ed85b9b2a2b249bb4cd8ee5cc49e95a9db53c0`
+- `app/render/flag.gd`: `cf27316c8772bd465f2f4086f332091e4b760c67da66c9dbc2a3337e0e61305b`
+
+Receipts are under `tmp/flag-audit-20261110/checks/` and
+`tmp/flag-audit-20261110/lifecycle/final-with-sleep-omls23l8/`.
+
+Three native Compatibility captures of the full Club field completed at
+1920×1080 on the RTX 3090. All 15 frame hashes match across the three runs, and
+their recorded flag/motion/shader/field hashes match the final files. Close
+inspection retained the attachment, country print, folds and backdrop integration;
+these still captures do not measure performance or establish physical realism.
+The shader and moving-wind deformation are otherwise unchanged by this audit.
+
+The first capture (`flag-native-audit-ds7s3wpb`) reported **four ObjectDB instances
+retained at exit**, without object types. Two verbose retries
+(`flag-native-leak-detail-fyf805mk`, `flag-native-repeat-zwjj27db`) completed with
+zero engine errors or warnings; the last also enforced warnings as errors.
+Good Enemy independently checked the receipts and matching artifacts. The
+warning's cause remains **inconclusive**, not fixed or disproved by the clean
+retries. Retain these receipts and investigate object identities if it recurs;
+the focused lifetime tests pass, but no unconditional leak-free native-shutdown
+claim is made. Captures are in `native-1080p`, `native-verbose` and `native-repeat`
+under the audit output directory, outside tracked paths.

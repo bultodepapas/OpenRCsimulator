@@ -21,8 +21,51 @@ the motion. Original-country aspect ratios, resource ownership and graphics
 preferences are implemented. The original design below is retained as the
 research/prototype specification; it does not describe an implemented XPBD solver.
 Performance and visual claims must use the implementation record, not the proposed
-budgets in this plan. Low-end and other-renderer qualification remains open until
-measured on those targets.
+budgets in this plan. Native shader execution has been checked on Windows
+Compatibility, Forward+ and Mobile. Low-end hardware and incremental GPU/whole-flight
+performance qualification remain open; running Mobile on an RTX 3090 does not
+qualify a mobile or integrated GPU.
+
+## Current implementation and remaining work
+
+Sections 1–5 below preserve the initial investigation and prototype specification.
+Their XPBD pseudocode is historical. The current implementation is:
+
+```text
+accepted field observation(time, wind receipt):
+    reject invalid time / wind before any spatial query
+    reuse a spatial sample for cues at the same position in this observation
+    skip Static flags; transform wind into each moving flag's fixed local basis
+    update modal heading, sag, energy and bounded phase from elapsed time
+    build one 9-point curve for Basic, or a row-varying 9×5 surface for Detailed
+    validate candidate and swept mast clearance with bounded backtracking
+    in exact zero wind, admit a tiny validated final settling step; wake on new wind
+    publish safe points only; unchanged revisions require no uniform upload
+
+render publication:
+    periodically select cached 8×4, 16×8 or 32×16 mesh with hysteresis
+    preserve motion state across distance changes
+    interpolate the surface and reconstruct its shading basis in the vertex shader
+    use one opaque two-sided country print; Detailed optionally samples fabric maps
+
+language change:
+    resolve supported locale, reusing the application's Spanish country choice
+    coalesce to one pending request per flag; retain the current print until ready
+    let a transient root-owned collector consume every started load request
+    apply texture and original aspect together only if still the desired country
+    discard obsolete results; weak ownership allows the landscape to be freed
+```
+
+The follow-up audit fixes post-wind idle work, camera projection estimates,
+detached quality refresh and paused request collection while preserving wind
+history. See the [audit evidence](../research/landscape-flag-windsocks-2026-11-10.md#follow-up-audit-post-wind-settling).
+Keep source review, reproducible software defects and hardware qualification
+separate. Remaining qualification requires uncapped paired 1080p active-flight
+measurements, cold/warm loading and longer lifecycle tests, packaged-resource
+verification, and real low-end/M1 access. Required CI and user visual acceptance
+also remain separate gates. One native capture reported four retained objects at
+shutdown; two verbose retries were clean. Its cause remains inconclusive and must
+not be treated as a resolved leak. The implementation record owns actual results.
 
 ## 1. Initial decision and scope
 
@@ -426,15 +469,15 @@ Qualification tiers: real low-end/integrated Compatibility host with Basic, midr
 | ID / phase | Tasks and expected result | Main risk | Verification / status |
 | --- | --- | --- | --- |
 | L15c-F01 — source/research | Map actual flag, windsock, weather, quality, locale and tool seams; compare primary sources | Stale graph/docs or outdated Godot claims | **Completed for planning:** dated findings and search ledger; no runtime proof |
-| L15c-F02 — design/challenge | Select candidate, define budgets and independent Good Enemy review | Attractive but impractical solver, invisible lifecycle coupling | **Initial review completed:** dispositions retained; prototype gates remain open |
-| L15c-F03 — baseline and assets | Stable source snapshot; baseline 1080p videos/cost; reuse licensed art; verify aspects, emblems, import and export; select reproducible processing | Icons distorted onto cloth; licensing/import or first-load issues | Asset hashes/notices, contact sheet outside Git, exported-resource test, measured baseline |
-| L15c-F04 — motion prototype | Isolated Basic and 45-point candidates using same dimensions/wind/material; fixed hoist, contact, phase/strain diagnostics | Rubber motion, settled nonflutter, mast tunneling, costly correction | Calm/gust/reversal videos; numerical refinement; native costs; Good Enemy comparison before integration |
-| L15c-F05 — field integration | Explicit registration and accepted observation receipt; no double sample/advance; preserve windsock caches | Pending-weather bypass, caller regression, stale node/sampler ownership | Focused wind/session/cadence tests, all-route lifecycle checks, old windsock state/shadow comparison |
-| L15c-F06 — material and rendering | UV mesh, final-surface basis, restrained weave, both faces and safe bounds | Back-face lighting, seams, shimmer, uniform/sampler incompatibility | Pinned Compatibility/Mobile/Forward+ captures; close/oblique/night/far videos; no unknown shader errors |
-| L15c-F07 — settings and LOD | Preference persistence/precedence; explicit cheap/static paths; bounded transitions | Allocation when disabled, rapid toggles, LOD pops, silent overrides | Settings tests/UI flow, CPU/allocation traces, collision identity across modes |
-| L15c-F08 — language Easter egg | All supported mappings, private stable Spanish RNG, bounded asynchronous resource change | Rerolls, stale texture completion, save failure, restart ambiguity | Seeded selection tests, actual locale UI changes, Home/Fly/rebuild and resource unload cases |
-| L15c-F09 — optimize/qualify | Paired 1080p native runs, cold/warm/lifecycle and render quality; adjust measured bottlenecks only | Microbenchmark success hiding whole-scene/pacing regression | Budget table with actual values/uncertainty, independent visual review; missing hardware marked open |
-| L15c-F10 — final review/delivery | Good Enemy audit, affected CI, packaged-resource smoke, concise guide/decision updates | Combining individually passing changes into a regressed candidate | Stable candidate identity, passing required checks, accepted motion review; consolidate completed plan later |
+| L15c-F02 — design/challenge | Select candidate, define budgets and independent Good Enemy review | Attractive but impractical solver, invisible lifecycle coupling | **Delivered:** modal candidate selected after XPBD reversal/contact failure; review corrections in implementation record |
+| L15c-F03 — baseline and assets | Preserve baseline; reuse licensed art; verify aspects, import and export | Distorted emblems, licensing/import or first-load issues | **Assets delivered:** 27 countries, pinned generator check and provenance; baseline captures retained. Packaged-resource smoke remains open |
+| L15c-F04 — motion prototype | Compare candidates with identical dimensions/wind; fixed hoist, contact and strain diagnostics | Rubber motion, mast tunneling, costly correction | **Delivered:** Basic curve and Detailed 45-point modal surface; motion tests, gust/reversal captures and local CPU diagnostics. Physical calibration is not claimed |
+| L15c-F05 — field integration | Consume accepted observations once; share samples; preserve windsock caches | Weather bypass, caller regression, stale ownership | **Delivered:** focused field/wind/cadence tests and windsock clock/shadow regressions pass; broader all-route qualification is separate |
+| L15c-F06 — material and rendering | UV mesh, shading basis, restrained weave, both faces and bounds | Back-face lighting, seams, shimmer, compatibility | **Delivered:** native Windows Compatibility/Mobile/Forward+ captures at 1080p; no engine errors. Night, other hardware and final human visual acceptance remain open |
+| L15c-F07 — settings and LOD | Preference precedence; cheap/static paths; bounded transitions | Disabled allocations, rapid toggles, LOD pops | **Delivered:** settings/UI, camera-projection, near/far/near state preservation and detached-quality refresh tests pass |
+| L15c-F08 — language Easter egg | Supported mappings, private stable Spanish RNG, bounded async loading | Rerolls, stale completions, save failure | **Delivered:** seeded identity, live locale, scene replacement and overlapping-request teardown tests. Long lifecycle soak and failure injection remain open |
+| L15c-F09 — optimize/qualify | Paired 1080p runs, cold/warm/lifecycle and render quality; optimize measured costs | Microbenchmarks hiding whole-scene regressions | **Partial:** Basic row reuse and exact-calm shortcut measured locally; capped frame runs are smoke evidence only. Uncapped active-flight and low-end/M1 qualification remain open |
+| L15c-F10 — final review/delivery | Good Enemy audit, affected CI, packaged smoke, guide/decision updates | Stale evidence after combining edits | **Local delivery complete; qualification open:** retain this plan until remaining gates close, then consolidate rationale into the owning guide/evidence |
 
 Keep drafts outside `app/` until they parse. Each implementation phase should be a small reviewable patch. Runtime tests use the checked Godot runner; engine errors count as failures even with exit code zero. Do not reflexively run full suites per edit; shared-boundary changes and the final stable candidate determine escalation, and focused checks do not replace required CI.
 

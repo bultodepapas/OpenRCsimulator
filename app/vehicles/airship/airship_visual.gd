@@ -11,6 +11,7 @@ const PRESENTATION_PATH := "res://vehicles/airship/airship_presentation.gd"
 const CUSTOMIZATION_PATH := "res://render/aircraft_customization.gd"
 const WORLD_PATH := "res://render/world/world.gd"
 const RIG_PATH := "res://render/lighting/aircraft_lighting_rig_3d.gd"
+const LIGHTS_PATH := "res://render/world/aircraft_lights.gd"
 
 const VECTOR_KEYS := ["vector_port", "vector_starboard", "vector_stern"]
 const FIN_KEYS := ["fin_dorsal", "fin_port", "fin_starboard"]
@@ -148,6 +149,9 @@ func bind_presentation() -> Dictionary:
 	bound.erase("ok")
 	bound.erase("errors")
 	customization = bound
+	# Hosts that light this root themselves (the Workshop preview) call this first, so the shared rig reuses the
+	# fit-free kit instead of slicing the whole 220k-triangle hull (about 0.3 s). Nothing is allocated until then.
+	root.set_meta("prepare_light_kit", prepare_light_kit)
 	return {"ok": true, "errors": PackedStringArray()}
 
 
@@ -218,13 +222,14 @@ func update_lighting(delta: float, clock_s: float = NAN, telemetry: Dictionary =
 	var elevation := float(telemetry.get("sun_elevation_deg", _world.aircraft_sun_elevation(_light_context.get("lighting_snapshot", {}))))
 	_light_state.update(local_seconds, 1.0 if elevation < _world.NIGHT_KIT_BELOW_SUN_DEG else 0.0)
 	_apply_light_mode()
+	# Anchors first: the rig's effects read their positions, and a kit lit this frame skipped earlier follow passes.
+	_follow_lights()
 	if is_instance_valid(_light_rig):
 		var forwarded := telemetry.duplicate()
 		forwarded["lighting_priority"] = 100
 		if not forwarded.has("exposure"):
 			forwarded["exposure"] = _world.Exposure.last
 		_light_rig.advance(_light_clock, forwarded)
-	_follow_lights()
 
 
 ## Light selection, as the fixed-wing keyboard/menu adapters use it: "auto", "all", "nav" or "off".
@@ -284,24 +289,35 @@ func _apply_light_mode() -> void:
 	_lights.set_emission_mode(_lights.prepare_emission(root), mode, gain)
 
 
-## Lights mounted on moving parts (the dorsal rudder's tail light) follow the posed hinges.
+## Lights mounted on moving parts (the dorsal rudder's tail light) follow the posed hinges. A dark kit is skipped;
+## lighting it up (_apply_light_mode) precedes the follow pass of the same frame.
 func _follow_lights() -> void:
-	if is_instance_valid(_night_kit):
+	if is_instance_valid(_night_kit) and _night_kit.visible:
 		_lights.update_dynamic(_night_kit, root, 1.0)
+
+
+## The dark, fit-free authored kit (root meta "prepare_light_kit"); idempotent. Returns the NightKit.
+func prepare_light_kit() -> Node3D:
+	if root == null:
+		return null
+	_attach_kit()
+	return _night_kit
 
 
 ## Every lamp and strip is authored, so the kit needs no geometric fitting: the generic fit slices the whole
 ## 220k-triangle mesh (about 0.3 s) only to produce fallbacks the authored layout replaces. Bounds stay measured
-## (mesh AABBs only) for the lighting effects' projected-size budget.
+## (mesh AABBs only, at the current model scale) for the lighting effects' projected-size budget. A new kit is dark.
 func _attach_kit() -> void:
+	if _lights == null:
+		_lights = load(LIGHTS_PATH)
 	_night_kit = root.get_node_or_null("NightKit") as Node3D
-	if is_instance_valid(_night_kit):
-		return
-	var empty := PackedVector3Array()
-	var tip := {"centre": Vector3.ZERO, "trailing": Vector3.ZERO, "leading_z": 0.0}
-	var layout := {"bounds": _lights.bounds(root).all, "skins": {"lower": {"left": empty, "right": empty},
-		"upper": {"left": empty, "right": empty}}, "left": tip, "right": tip, "belly": empty, "landing": Vector3.ZERO}
-	_night_kit = _lights.attach(root, layout)
+	if not is_instance_valid(_night_kit):
+		var empty := PackedVector3Array()
+		var tip := {"centre": Vector3.ZERO, "trailing": Vector3.ZERO, "leading_z": 0.0}
+		var layout := {"bounds": _lights.bounds(root).all, "skins": {"lower": {"left": empty, "right": empty},
+			"upper": {"left": empty, "right": empty}}, "left": tip, "right": tip, "belly": empty, "landing": Vector3.ZERO}
+		_night_kit = _lights.attach(root, layout)
+		_lights.set_mode(_night_kit, "off")
 	var layers := int(_light_context.get("luminous_layers", 0))
 	if layers != 0 and is_instance_valid(_night_kit):
 		for luminous: Node in _night_kit.find_children("*", "VisualInstance3D", true, false):

@@ -28,7 +28,9 @@ func _run() -> void:
 	ShaderClock.register()
 	await _resource_request_lifecycle()
 	await _locale_and_lifecycle()
+	await _reentry_and_tree_pause()
 	await _quality_wind_and_basis()
+	await _settled_wind_uploads()
 	await _camera_lod()
 	await _production_registration()
 	await _field_observation()
@@ -192,6 +194,32 @@ func _locale_and_lifecycle() -> void:
 	shell.free()
 
 
+func _reentry_and_tree_pause() -> void:
+	TranslationServer.set_locale("en")
+	FlagQuality.set_preference("basic")
+	var node: MeshInstance3D = _new_flag()
+	_check("reentry fixture loads English", await _wait_country(node, "US"))
+	root.remove_child(node)
+	TranslationServer.set_locale("fr")
+	FlagQuality.set_preference("static")
+	call_group("landscape_flags", "apply_quality")
+	root.add_child(node)
+	_check("reattached flag synchronizes changed locale", await _wait_country(node, "FR"))
+	_check("reattached flag synchronizes changed quality", node.diagnostics().profile.mode == "static" and not node.needs_wind())
+	node.free()
+	FlagQuality.set_preference("basic")
+	TranslationServer.set_locale("en")
+	var paused_flag: MeshInstance3D = _new_flag()
+	_check("tree-pause fixture loads English", await _wait_country(paused_flag, "US"))
+	paused = true
+	TranslationServer.set_locale("ja")
+	_check("SceneTree-paused robustness: country request completes", await _wait_country(paused_flag, "JP"))
+	paused = false
+	_check("pending request completes after SceneTree resumes", await _wait_country(paused_flag, "JP"))
+	paused_flag.free()
+	_check("tree-pause request collector retires", await _wait_no_requests())
+
+
 func _quality_wind_and_basis() -> void:
 	TranslationServer.set_locale("en")
 	FlagQuality.set_preference("basic")
@@ -253,6 +281,40 @@ func _quality_wind_and_basis() -> void:
 	parent.free()
 
 
+func _settled_wind_uploads() -> void:
+	TranslationServer.set_locale("en")
+	for mode: String in ["basic", "detailed"]:
+		FlagQuality.set_preference(mode)
+		var node: MeshInstance3D = _new_flag()
+		_check("%s sleep fixture loads country" % mode, await _wait_country(node, "US"))
+		node.reset_wind(0.0, [0.0, 0.0, 0.0])
+		var initial: Dictionary = node.diagnostics()
+		for tick: int in range(1, 121):
+			node.advance_wind(float(tick) / 60.0, [0.0, 8.0, 0.0])
+			node.publish()
+		var windy: Dictionary = node.diagnostics()
+		_check("%s responds to two seconds of wind" % mode, windy.motion.energy > 0.1 and windy.uploads > initial.uploads)
+		for tick: int in range(121, 841):
+			node.advance_wind(float(tick) / 60.0, [0.0, 0.0, 0.0])
+			node.publish()
+		var settled: Dictionary = node.diagnostics()
+		for tick: int in range(841, 901):
+			node.advance_wind(float(tick) / 60.0, [0.0, 0.0, 0.0])
+			node.publish()
+		var sleeping: Dictionary = node.diagnostics()
+		_check("%s settled calm does not republish for 60 observations" % mode,
+			sleeping.uploads == settled.uploads and sleeping.motion.revision == settled.motion.revision
+			and sleeping.motion.points == settled.motion.points and sleeping.motion.phase == settled.motion.phase
+			and sleeping.motion.simulated_time_s > settled.motion.simulated_time_s)
+		node.advance_wind(901.0 / 60.0, [0.0, 8.0, 0.0])
+		node.publish()
+		var awakened: Dictionary = node.diagnostics()
+		_check("%s wind wakes motion and publishes on the next observation" % mode,
+			awakened.uploads == sleeping.uploads + 1 and awakened.motion.revision > sleeping.motion.revision
+			and awakened.motion.energy > sleeping.motion.energy)
+		node.free()
+
+
 func _camera_lod() -> void:
 	TranslationServer.set_locale("en")
 	FlagQuality.set_preference("detailed")
@@ -304,12 +366,83 @@ func _camera_lod() -> void:
 	_check("near return preserves motion and upload state", node._motion == model and returned.motion == baseline.motion
 		and returned.motion.simulated_time_s == baseline.motion.simulated_time_s and returned.motion.phase == baseline.motion.phase
 		and returned.uploads == baseline.uploads)
+	# Project a camera-facing reference segment: this is independent of the LOD calculation.
+	camera.keep_aspect = Camera3D.KEEP_HEIGHT
+	camera.fov = 75.0
+	camera.position = Vector3(0, 0, 10)
+	node._last_lod_time = -INF
+	node.publish()
+	camera.keep_aspect = Camera3D.KEEP_WIDTH
+	var width_pixels := _projected_height(camera, node.global_position, returned.height_m)
+	node._last_lod_time = -INF
+	node.publish()
+	_check("perspective KEEP_WIDTH selects high detail (oracle %.2f px, grid %s)" % [width_pixels, node.diagnostics().lod_grid],
+		width_pixels > 110.0 and node.diagnostics().lod_grid == Vector2i(32, 16))
+	camera.keep_aspect = Camera3D.KEEP_HEIGHT
+	camera.fov = 75.0
+	camera.position = Vector3(0, 0, 5)
+	node._last_lod_time = -INF
+	node.publish()
+	var center_pixels := _projected_height(camera, node.global_position, returned.height_m)
+	node.position = Vector3(5.5, 0, 0)
+	var off_axis_pixels := _projected_height(camera, node.global_position, returned.height_m)
+	var off_axis_x := camera.unproject_position(node.global_position).x
+	node._last_lod_time = -INF
+	node.publish()
+	_check("same-depth off-axis perspective retains high detail (oracle %.2f / %.2f px, grid %s)" % [center_pixels, off_axis_pixels, node.diagnostics().lod_grid],
+		center_pixels > 110.0 and absf(center_pixels - off_axis_pixels) < 0.01
+		and off_axis_x >= 0.0 and off_axis_x < 1920.0 and node.diagnostics().lod_grid == Vector2i(32, 16))
+	node.position = Vector3.ZERO
+	camera.position = Vector3(0, 0, 10)
+	camera.fov = 75.0
+	node._last_lod_time = -INF
+	node.publish()
+	camera.keep_aspect = Camera3D.KEEP_WIDTH
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	camera.size = 10.0
+	var ortho_pixels := _projected_height(camera, node.global_position, returned.height_m)
+	node._last_lod_time = -INF
+	node.publish()
+	_check("orthographic KEEP_WIDTH selects high detail (oracle %.2f px, grid %s)" % [ortho_pixels, node.diagnostics().lod_grid],
+		ortho_pixels > 110.0 and node.diagnostics().lod_grid == Vector2i(32, 16))
+	camera.keep_aspect = Camera3D.KEEP_HEIGHT
+	camera.set_frustum(0.5, Vector2(0.1, -0.05), 0.1, 200.0)
+	var frustum_pixels := _projected_height(camera, node.global_position, returned.height_m)
+	node._last_lod_time = -INF
+	node.publish()
+	_check("offset frustum selects low detail (oracle %.2f px, grid %s)" % [frustum_pixels, node.diagnostics().lod_grid],
+		frustum_pixels < 24.0 and node.diagnostics().lod_grid == Vector2i(8, 4))
+	camera.projection = Camera3D.PROJECTION_PERSPECTIVE
+	camera.keep_aspect = Camera3D.KEEP_WIDTH
+	camera.fov = 75.0
+	camera.rotation = Vector3(0.35, 0.15, 0.4)
+	camera.position = camera.basis.z * 10.0
+	var tilted_pixels := _projected_height(camera, node.global_position, returned.height_m)
+	node._last_lod_time = -INF
+	node.publish()
+	_check("pitched and rolled camera uses its projected reference height (oracle %.2f px, grid %s)" % [tilted_pixels, node.diagnostics().lod_grid],
+		tilted_pixels > 110.0 and node.diagnostics().lod_grid == Vector2i(32, 16))
+	camera.rotation = Vector3.ZERO
+	camera.position = Vector3.ZERO
+	node._last_lod_time = -INF
+	node.publish()
+	_check("camera at the hoist keeps bounded high detail", node.diagnostics().lod_grid == Vector2i(32, 16))
+	camera.position = Vector3(0, 0, -1)
+	node._last_lod_time = -INF
+	node.publish()
+	_check("camera past the hoist keeps bounded high detail", node.diagnostics().lod_grid == Vector2i(32, 16))
+	_check("projection LOD transitions retain motion and uploads", node._motion == model
+		and node.diagnostics().motion == baseline.motion and node.diagnostics().uploads == baseline.uploads)
 	viewport.free()
 	SceneDetail.set_preference(previous_detail)
 	if previous_environment.is_empty():
 		OS.unset_environment("OPENRC_SCENE_DETAIL")
 	else:
 		OS.set_environment("OPENRC_SCENE_DETAIL", previous_environment)
+
+
+func _projected_height(camera: Camera3D, position: Vector3, height_m: float) -> float:
+	return camera.unproject_position(position).distance_to(camera.unproject_position(position + camera.global_basis.y * height_m))
 
 
 func _production_registration() -> void:
@@ -365,11 +498,13 @@ func _field_observation() -> void:
 	var first: MeshInstance3D = _new_flag(Vector3(0.0, 5.45, 0.0))
 	var second: MeshInstance3D = _new_flag(Vector3(0.0, 5.45, 0.0))
 	var other: MeshInstance3D = _new_flag(Vector3(2.0, 5.45, 0.0))
-	FlagQuality.set_preference("static")
-	var still: MeshInstance3D = _new_flag(Vector3(4.0, 5.45, 0.0))
-	for flag: MeshInstance3D in [first, second, other, still]:
+	for flag: MeshInstance3D in [first, second, other]:
 		flag.reparent(field, false)
 		_check("field flag loads texture", await _wait_country(flag, "US"))
+	FlagQuality.set_preference("static")
+	var still: MeshInstance3D = _new_flag(Vector3(4.0, 5.45, 0.0))
+	still.reparent(field, false)
+	_check("field flag loads texture", await _wait_country(still, "US"))
 	field.set_meta("wind_cues", [sock, first, second, other, still])
 	var samples: Array = []
 	var sampler := func(point: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
