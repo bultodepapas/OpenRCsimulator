@@ -49,8 +49,9 @@ const CONNECT_POLLS := 4
 ## Time a connected candidate has to send its banner; the holder answers within `SERVE_MSEC`.
 const BANNER_MSEC := 1500
 const SERVE_MSEC := 4
-## How long the lower of two simultaneous starters waits for the higher one to yield.
-const YIELD_MSEC := 2 * (CONNECT_MSEC + BANNER_MSEC) + 500
+## How long the lower of two simultaneous starters waits for the higher one to yield: longer
+## than the higher one needs to ask every candidate and release.
+const YIELD_MSEC := CONNECT_MSEC + BANNER_MSEC + 750
 const YIELD_STEP_MSEC := 40
 const _BANNER_BYTES := 128
 

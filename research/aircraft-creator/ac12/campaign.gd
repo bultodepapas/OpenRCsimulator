@@ -142,6 +142,37 @@ func _cases() -> Array:
 	forward["battery"]["initial_soc"] = 0.2
 	cases.append(["C17", "adverse: AR 4, heavy 7.9, margin 0.295, dihedral 8, thrust angles 5/5, charge 0.2",
 		_loaded(Variants.balanced(forward, 0.295), 7.9)])
+	cases.append_array(_follow_up_cases(template, margin, light, forward))
+	return cases
+
+
+## NOT preregistered: added on 2026-11-11 after the first results, to separate the causes of the body-rate
+## failures (X cases) and to confirm the corners of the narrowed domain (N cases) under the same rule.
+## Some of them are outside the narrowed domain and are then listed as refused.
+func _follow_up_cases(template: Dictionary, margin: float, light: Dictionary, forward: Dictionary) -> Array:
+	var cases := []
+	var fast_servo: Dictionary = light.duplicate(true)
+	fast_servo["controls"] = {"aileron_deg": 20.0, "elevator_deg": 20.0, "rudder_deg": 25.0, "servo_time_s": 0.05}
+	cases.append(["X01", "follow-up: lightest build, fastest servos, template throws", fast_servo])
+	var large_throws: Dictionary = light.duplicate(true)
+	large_throws["controls"] = {"aileron_deg": 30.0, "elevator_deg": 30.0, "rudder_deg": 35.0, "servo_time_s": 0.14}
+	cases.append(["X02", "follow-up: lightest build, largest throws, template servos", large_throws])
+	cases.append(["N01", "narrowed edge: span 1.2 m", Variants.balanced(Variants.scaled(1.2 / 1.5), margin)])
+	cases.append(["N02", "narrowed adverse: AR 4, heavy 7.0, margin 0.295, dihedral 8, thrust angles 5/5, charge 0.2",
+		_loaded(Variants.balanced(forward, 0.295), 7.0)])
+	var stiff: Dictionary = light.duplicate(true)
+	stiff["controls"] = {"aileron_deg": 25.0, "elevator_deg": 25.0, "rudder_deg": 35.0, "servo_time_s": 0.1}
+	cases.append(["N03", "narrowed stiff A: lightest build, servo 0.10 s, throws 25/25/35", stiff])
+	var small: Dictionary = Variants.scaled(1.2 / 1.5)
+	small["wing"]["span"] = 1.2
+	small["wing"]["root_chord"] = 1.2 / 4.5
+	small["wing"]["tip_chord"] = 1.2 / 4.5
+	small["inventory"] = []
+	small["inventory"] = Definition.propose_airframe_inventory(small)
+	small["controls"] = {"aileron_deg": 25.0, "elevator_deg": 25.0, "rudder_deg": 35.0, "servo_time_s": 0.1}
+	cases.append(["N04", "narrowed stiff B: span 1.2 m, AR 4.5, lightest build, margin 0.29, servo 0.10 s, throws 25/25/35",
+		Variants.balanced(_lightened(small, 1.97), 0.29)])
+	cases.append(["N05", "narrowed edge: heavy, wing loading 7.0", _loaded(template, 7.0)])
 	return cases
 
 
@@ -374,8 +405,10 @@ func _report(id: String, tape: String, entry: Dictionary) -> void:
 	var parts := PackedStringArray()
 	for metric: String in METRICS:
 		var v: Dictionary = entry["metrics"][metric]
-		parts.append("%s %s err %.3e (e1 %.3e, e2 %.3e, order %.2f)" % [metric, "ok" if v["pass"] else "FAIL", float(v["error_240"]),
-			float(v["e_240_480"]), float(v["e_480_960"]), float(v["order"])])
+		# The engine's % operator has no exponent format.
+		parts.append("%s %s err %s (e1 %s, e2 %s, order %.2f)" % [metric, "ok" if v["pass"] else "FAIL",
+			String.num_scientific(float(v["error_240"])), String.num_scientific(float(v["e_240_480"])),
+			String.num_scientific(float(v["e_480_960"])), float(v["order"])])
 	var x: Dictionary = entry["excursion"]
 	print("  %s %s: %s | bank %.0f deg, pitch %.0f..%.0f deg, airspeed %.1f..%.1f m/s, rpm max %.0f, rate max %.0f deg/s | %s" % [id, tape,
 		"PASS" if entry["pass"] else "FAIL", x["bank_max_deg"], x["pitch_min_deg"], x["pitch_max_deg"], x["airspeed_min_mps"],

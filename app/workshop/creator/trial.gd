@@ -12,6 +12,8 @@ const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const AcceptedCandidate := preload("res://workshop/creator/accepted_candidate.gd")
 const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 const Placement := preload("res://workshop/creator/placement.gd")
+const Parts := preload("res://workshop/creator/visual_parts.gd")
+const Paint := preload("res://workshop/creator/visual_paint.gd")
 const RecordLoader := preload("res://workshop/creator/record_loader.gd")
 const Session := preload("res://sim/flight_session.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
@@ -28,6 +30,7 @@ const CLIMB_OUT_SECONDS := 3.0
 const CLIMB_OUT_MIN_HEIGHT_M := 0.5
 const MAX_CHECK_USEC := 16_000_000
 ## Constant text so the host can translate it; keep its duration in step with CLIMB_OUT_SECONDS.
+const PRESENTATION_REFUSAL := "The moving parts or the paint of the model are not valid. Check the Controls and Paint steps, then test fly again."
 const CLIMB_OUT_REFUSAL := "A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start."
 
 
@@ -40,7 +43,10 @@ static func is_trial(trial: Dictionary) -> bool:
 	return str(trial.get("vehicle", "")) == VEHICLE
 
 
-## Freezes a test-flight request: {creator_candidate, creator_source, creator_placement, creator_name}.
+## Freezes a test-flight request: {creator_candidate, creator_source, creator_placement, creator_name}
+## plus the optional presentation choices {creator_bindings, creator_appearance} (moving parts, paint).
+## Those two never reach the compiled physics; they are validated here, stored normalized and pinned,
+## so the visual that flies is the one the player confirmed.
 ## Returns the frozen-trial dictionary: {ok, errors, vehicle, data, scale, raw_bytes, identity, creator}.
 ## The candidate must be the object the compiler returned: a dictionary claiming success is refused.
 static func freeze(payload: Dictionary) -> Dictionary:
@@ -56,6 +62,9 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var placed: Dictionary = Placement.resolve(placement)
 	if not placed.ok:
 		return _refused("The model orientation, size or datum is not confirmed.")
+	var look: Dictionary = _presentation(source, payload.get("creator_bindings", {}), payload.get("creator_appearance", {}))
+	if not look.ok:
+		return _refused(str(look.reason))
 	var accepted: AcceptedCandidate = candidate
 	var raw_bytes: PackedByteArray = accepted.raw_bytes()
 	var raw_sha256: String = CreatorBytes.sha256(raw_bytes)
@@ -73,6 +82,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		"format": FORMAT, "aircraft_id": aircraft_id, "raw_sha256": raw_sha256,
 		"definition_sha256": accepted.definition_sha256(), "source_sha256": (source as InspectedSource).sha256(),
 		"placement": _placement_pins(placed.value),
+		"bindings": look.bindings, "appearance": look.appearance,
 		"qualification": accepted.qualification(),
 	}
 	var trial_id: String = _trial_id(pinned)
@@ -86,6 +96,8 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		"ok": true, "errors": PackedStringArray(), "vehicle": VEHICLE,
 		"data": data, "scale": 1.0, "raw_bytes": raw_bytes, "identity": identity,
 		"creator": {"source": source, "placement": (placement as Dictionary).duplicate(true),
+			"bindings": (look.bindings as Dictionary).duplicate(true),
+			"appearance": (look.appearance as Dictionary).duplicate(true),
 			"name": str(payload.get("creator_name", ""))},
 		# What Pause shows: an unsaved aircraft under test, by its name. Display only, not identity.
 		"display_context": {"state": "unsaved", "name": str(payload.get("creator_name", ""))},
@@ -127,12 +139,27 @@ static func verify(trial: Dictionary) -> Dictionary:
 	var placed: Dictionary = Placement.resolve(placement) if typeof(placement) == TYPE_DICTIONARY else {"ok": false}
 	if not placed.ok or _placement_pins(placed.value) != identity.get("placement"):
 		return _refused("The frozen model placement does not match the trial identity.")
+	var look: Dictionary = _presentation(source, creator.get("bindings", {}), creator.get("appearance", {}))
+	if not look.ok or look.bindings != identity.get("bindings") or look.appearance != identity.get("appearance") 			or look.bindings != creator.get("bindings") or look.appearance != creator.get("appearance"):
+		return _refused("The frozen moving parts or paint do not match the trial identity.")
 	var pinned: Dictionary = (identity as Dictionary).duplicate(true)
 	pinned.erase("trial_id")
 	pinned.erase("experimental")
 	if str(identity.get("trial_id", "")).is_empty() or str(identity.get("trial_id", "")) != _trial_id(pinned):
 		return _refused("The frozen trial identity does not match its content.")
 	return {"ok": true, "errors": PackedStringArray(), "aircraft_id": aircraft_id}
+
+
+## Normalized moving-part bindings and paint for an admitted source, or the reason they are refused.
+static func _presentation(source: Variant, bindings: Variant, appearance: Variant) -> Dictionary:
+	if typeof(bindings) != TYPE_DICTIONARY or typeof(appearance) != TYPE_DICTIONARY:
+		return {"ok": false, "reason": PRESENTATION_REFUSAL}
+	var bound: Dictionary = Parts.validate_bindings(source as InspectedSource, bindings)
+	var paint: Dictionary = Paint.validate(appearance)
+	# Constant text so the host can translate it; the wizard shows the detailed reason on its own step.
+	if not bound.ok or not paint.ok:
+		return {"ok": false, "reason": PRESENTATION_REFUSAL}
+	return {"ok": true, "bindings": bound.value, "appearance": paint.value}
 
 
 static func _placement_pins(resolved: Dictionary) -> Dictionary:

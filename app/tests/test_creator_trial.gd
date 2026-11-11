@@ -12,6 +12,7 @@ const AcceptedCandidate := preload("res://workshop/creator/accepted_candidate.gd
 const Session := preload("res://sim/flight_session.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Weather := preload("res://physics/wind_config.gd")
+const Fixtures := preload("res://tests/creator_fixtures.gd")
 
 var failures := 0
 
@@ -272,6 +273,8 @@ func _trial(document: RefCounted) -> void:
 	moved.creator_placement.datum = [0.0, 210.0, 0.0]
 	check("a different placement is a different trial", CreatorTrial.freeze(moved).identity.trial_id != trial.identity.trial_id)
 
+	_presentation(payload, trial)
+
 	var field: Dictionary = FieldLoader.load_from().field
 	var weather: Dictionary = Weather.defaults()
 	var airborne: Dictionary = CreatorTrial.check_start(trial, field, weather, Session.START_AIRBORNE)
@@ -303,6 +306,75 @@ func _trial(document: RefCounted) -> void:
 	check("flight visual", not visual.is_empty() and visual.root is Node3D and str(visual.root.name) == "airplane"
 		and visual.propeller is Node3D and not visual.has_propeller and visual._model_builder.has_method("apply_surfaces"))
 	check("no flight visual without a placement", Builder.build_flight(trial.creator.source, {}).is_empty())
+	if not visual.is_empty():
+		(visual.root as Node3D).free()
+
+
+## AC-15/AC-17: paint and moving parts are presentation, but the trial pins them: the visual that
+## flies is the one the player confirmed, and a copy whose look was edited is refused.
+func _presentation(payload: Dictionary, plain: Dictionary) -> void:
+	check("a plain trial pins the original look and no moving parts", plain.identity.appearance == {"mode": "original"}
+		and plain.creator.appearance == {"mode": "original"} and (plain.identity.bindings.controls as Dictionary).is_empty()
+		and not plain.identity.bindings.has("propeller"))
+	var painted := payload.duplicate()
+	painted.creator_appearance = {"mode": "solid", "color": "#2a6fdb"}
+	var solid: Dictionary = CreatorTrial.freeze(painted)
+	check("a painted trial freezes and verifies", solid.get("ok", false) and CreatorTrial.verify(solid).ok)
+	if solid.get("ok", false):
+		check("paint is a different trial of the same aircraft", solid.identity.trial_id != plain.identity.trial_id
+			and solid.identity.raw_sha256 == plain.identity.raw_sha256 and solid.creator.appearance.color == "#2a6fdb")
+		var repainted: Dictionary = solid.duplicate(true)
+		repainted.creator.appearance.color = "#ff0000"
+		check("an edited paint is refused", not CreatorTrial.verify(repainted).ok)
+		repainted = solid.duplicate(true)
+		repainted.identity.appearance = {"mode": "original"}
+		check("an edited paint pin is refused", not CreatorTrial.verify(repainted).ok)
+	painted.creator_appearance = {"mode": "solid", "color": "red"}
+	check("an invalid paint is refused", not CreatorTrial.freeze(painted).get("ok", false))
+	painted.creator_appearance = "solid"
+	check("a paint that is not a dictionary is refused", not CreatorTrial.freeze(painted).get("ok", false))
+	var rigid := payload.duplicate()
+	rigid.creator_bindings = Fixtures.airplane_bindings()
+	check("moving parts on an STL are refused", not CreatorTrial.freeze(rigid).get("ok", false))
+
+	var admitted: Dictionary = Importer.inspect_bytes(Fixtures.airplane_glb(), "plane.glb")
+	check("airplane GLB admitted", admitted.ok)
+	if not admitted.ok:
+		return
+	var parts := {creator_candidate = payload.creator_candidate, creator_source = admitted.value,
+		creator_placement = Fixtures.AIRPLANE_PLACEMENT.duplicate(true), creator_name = "Parts plane",
+		creator_bindings = Fixtures.airplane_bindings(), creator_appearance = {"mode": "solid", "color": "#2a6fdb"}}
+	var bound: Dictionary = CreatorTrial.freeze(parts)
+	check("a trial with moving parts freezes and verifies", bound.get("ok", false) and CreatorTrial.verify(bound).ok)
+	if not bound.get("ok", false):
+		printerr(bound.get("errors", []))
+		return
+	check("the bindings are pinned normalized", bound.identity.bindings == bound.creator.bindings
+		and int(bound.identity.bindings.propeller.node) == Fixtures.PROPELLER_NODE
+		and (bound.identity.bindings.controls.elevator as Array).size() == 2)
+	var unbound := parts.duplicate()
+	unbound.erase("creator_bindings")
+	check("moving parts are part of the trial identity", CreatorTrial.freeze(unbound).identity.trial_id != bound.identity.trial_id)
+	var edited: Dictionary = bound.duplicate(true)
+	edited.creator.bindings.controls.rudder[0].sign = 1
+	check("a reversed part is refused", not CreatorTrial.verify(edited).ok)
+	edited = bound.duplicate(true)
+	edited.creator.bindings.erase("propeller")
+	check("a dropped propeller binding is refused", not CreatorTrial.verify(edited).ok)
+	edited = bound.duplicate(true)
+	edited.creator.bindings.controls.rudder[0].node = 1
+	edited.identity.bindings.controls.rudder[0].node = 1
+	check("bindings edited together with their pin are refused", not CreatorTrial.verify(edited).ok)
+	var wrong := parts.duplicate()
+	wrong.creator_bindings = Fixtures.airplane_bindings()
+	wrong.creator_bindings.controls.rudder[0].node = 99
+	check("a binding to a missing part is refused", not CreatorTrial.freeze(wrong).get("ok", false))
+	# What Main builds from the frozen trial.
+	var visual: Dictionary = Builder.build_flight(bound.creator.source, bound.creator.placement, bound.creator.bindings,
+		bound.creator.appearance)
+	check("the frozen trial builds an articulated flight visual", not visual.is_empty() and visual.has_propeller
+		and visual.articulated and (visual.hinges as Dictionary).size() == 5
+		and str(visual.model_manifest.builder.adapter) == Builder.FLIGHT_ADAPTER_ARTICULATED)
 	if not visual.is_empty():
 		(visual.root as Node3D).free()
 

@@ -303,6 +303,19 @@ func list_aircraft(include_archived: bool = false) -> Array:
 	return rows
 
 
+## Automatic backups, `[{draft_id, updated_unix, record_sha256}]`, newest first. Read from the
+## index only, so it also names the backup of a draft that was never saved by name.
+func list_recovery() -> Array:
+	var rows: Array = []
+	var recovery: Dictionary = _index.get("recovery", {})
+	for draft_id: String in recovery:
+		var entry: Dictionary = recovery[draft_id]
+		rows.append({draft_id = draft_id, updated_unix = entry.updated_unix, record_sha256 = entry.record.sha256})
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return a.draft_id < b.draft_id if a.updated_unix == b.updated_unix else a.updated_unix > b.updated_unix)
+	return rows
+
+
 # --- Drafts and recovery ----------------------------------------------------------------------
 
 ## Saves a named draft. `draft` = `{draft_id, name, aircraft_uuid ("" or UUID), snapshot,
@@ -891,8 +904,8 @@ func _load_accepted(notes: Array) -> Dictionary:
 	# A reader may look while the writer replaces current.json: ask again before giving up on it.
 	var attempts := 0
 	var worth_asking: bool = current.state == "invalid" or FileAccess.file_exists(_root.path_join(PREVIOUS_FILE))
-	while not is_writer() and worth_asking and current.state != "ok" and attempts < 3:
-		OS.delay_msec(30)
+	while not is_writer() and worth_asking and current.state != "ok" and attempts < 2:
+		OS.delay_msec(25)
 		attempts += 1
 		current = _read_accepted(CURRENT_FILE)
 	if current.state == "ok":
@@ -1322,10 +1335,8 @@ static func _plain(node: Variant, depth: int, problems: PackedStringArray) -> Va
 		TYPE_NIL, TYPE_BOOL:
 			return node
 		TYPE_STRING, TYPE_STRING_NAME:
-			var text := str(node)
-			if _has_control(text, true):
-				problems.append("a text holds a control character")
-			return text
+			# Text the reader would refuse is caught when the encoded record is read back.
+			return str(node)
 		TYPE_INT:
 			if absi(node) > Limits.MAX_SAFE_INTEGER:
 				problems.append("a whole number is too large")
@@ -1346,22 +1357,17 @@ static func _plain(node: Variant, depth: int, problems: PackedStringArray) -> Va
 				if typeof(key) != TYPE_STRING and typeof(key) != TYPE_STRING_NAME:
 					problems.append("a key is not text")
 					continue
-				if _has_control(str(key), true):
-					problems.append("a key holds a control character")
 				fields[str(key)] = _plain(node[key], depth + 1, problems)
 			return fields
 	problems.append("a value is not text, a number, a list or a table")
 	return null
 
 
-## True for a C0 control character or DEL. `breaks_allowed` lets tab, LF and CR pass.
-static func _has_control(text: String, breaks_allowed: bool) -> bool:
+## True for a control character, DEL or a lone surrogate (which UTF-8 cannot carry).
+static func _has_control(text: String) -> bool:
 	for index: int in text.length():
 		var code := text.unicode_at(index)
-		if code == 127 or (code < 32 and not (breaks_allowed and (code == 9 or code == 10 or code == 13))):
-			return true
-		# A lone surrogate cannot be written as UTF-8.
-		if code >= 0xD800 and code <= 0xDFFF:
+		if code < 32 or code == 127 or (code >= 0xD800 and code <= 0xDFFF):
 			return true
 	return false
 
@@ -1416,7 +1422,7 @@ static func _is_name(value: Variant, empty_allowed: bool) -> bool:
 	var text: String = value
 	if text.strip_edges().is_empty():
 		return empty_allowed and text.is_empty()
-	return not _has_control(text, false)
+	return not _has_control(text)
 
 
 ## A bare file name for display, or "": never a path, a drive or a URL.
@@ -1424,7 +1430,7 @@ static func _is_file_name(value: Variant) -> bool:
 	if typeof(value) != TYPE_STRING or (value as String).length() > Limits.SOURCE_FILE_NAME_CHARACTERS:
 		return false
 	var text: String = value
-	if text == "." or text == ".." or _has_control(text, false):
+	if text == "." or text == ".." or _has_control(text):
 		return false
 	for character: String in ["/", "\\", ":"]:
 		if text.contains(character):

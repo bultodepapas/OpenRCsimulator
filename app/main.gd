@@ -3254,7 +3254,8 @@ func _build_world() -> bool:
 	if _creator_trial():
 		# AC-11: data-only runtime visual from the admitted source owned by the frozen trial.
 		var creator: Dictionary = workshop_trial.get("creator", {})
-		_airplane = CreatorVisual.build_flight(creator.get("source"), creator.get("placement", {}))
+		_airplane = CreatorVisual.build_flight(creator.get("source"), creator.get("placement", {}),
+			creator.get("bindings", {}), creator.get("appearance", {}))
 	else:
 		_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}), livery if workshop_trial.is_empty() else "")
 	if _airplane.is_empty():
