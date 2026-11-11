@@ -28,7 +28,8 @@ The experimental RC ground activity can use an optional C++ GDExtension for its 
 | Fixed-wing aircraft | Main flight route; aircraft catalog and v2 data contract |
 | Helicopter | Experimental route with its own quantity reader, session and recorder. HX-700 visuals and X-Cell reference physics are declared surrogates; physical and performance qualification remain open; [guide](HELICOPTER.md) |
 | RC ground vehicle | Experimental Bisonte MT8 and MONSTER CAR 2 activities with a separate data/session contract; qualification remains open; [research and controls](../research/rc-monster-truck/README.md) |
-| Multirotor | Physics groundwork and focused tests exist, but there is no runtime session, catalog route or racing activity; see the [active plan](plans/drone-racing.md) |
+| RC airship | Experimental 5 m blimp in the RC Garage, with its own session, presentation, Workshop and flight log; [software evidence and limits](research/rc-airship/BL-12/README.md) |
+| Multirotor | Experimental FPV quad in the RC Garage, with closed-loop flight, a local three-lap gate race and replay; [software evidence and limits](research/drone-racing/M1-M3-2026-11-11/README.md) |
 
 ## Boundaries and data flow
 

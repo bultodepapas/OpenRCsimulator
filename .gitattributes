@@ -204,6 +204,8 @@
 /app/data/ai/companions/**/*.json text eol=lf
 # AFC receipts bind captured reports, samples and native engine logs byte-for-byte.
 /docs/research/ai-companions/**/*.json -text
+# Preserve the native Windows rebind receipt bytes and their recorded hash.
+/docs/research/ai-companions/AFC-02/rebinds/2026-11-11-e9ea5138-to-5510ec6a.json whitespace=cr-at-eol
 /docs/research/ai-companions/**/*.csv -text
 /docs/research/ai-companions/**/*.log -text -whitespace
 /docs/research/ai-companions/**/*.orfl -text

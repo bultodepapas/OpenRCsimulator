@@ -205,7 +205,7 @@ Handling, takeoffs/landings, controller compatibility and target-machine perform
   </tr>
 </table>
 
-The advanced HX-700 helicopter candidate remains a laboratory project. [FPV drone racing](docs/plans/drone-racing.md) is also a research track; a playable drone and race mode are not yet available.
+The advanced HX-700 helicopter candidate remains a laboratory project. The RC Garage also offers an experimental [5 m RC blimp](docs/research/rc-airship/BL-12/README.md) and [FPV quad with a local three-lap gate race](docs/research/drone-racing/M1-M3-2026-11-11/README.md). Their flight models use estimated data; physical, pilot and target-hardware qualification remain open.
 
 ## Roadmap and donations
 

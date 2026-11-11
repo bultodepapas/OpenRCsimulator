@@ -1,5 +1,11 @@
 # AFC-02-R6: seeds, behavior identity and flight status
 
+The 2026-11-11 source renewal preserves this narrow profile: the
+[nine-tape solver rebind](../AFC-02/rebinds/2026-11-11-e9ea5138-to-5510ec6a.json)
+and [bounded behavior/admission checks](../AFC-02/rebinds/2026-11-11-0ab4d1e3-to-60b34346-behavior.json)
+record the changed identities and Windows headless evidence. They do not establish
+physical validation or target-hardware performance.
+
 The 2026-11-09 reverse-flow solver change and subsequent Main/collision-source
 identities were rebound using the [nine-tape solver receipt](../AFC-02/rebinds/2026-11-09-b0a074e4-to-a4ee8de9.json)
 and [bounded behavior and admission evidence](../AFC-02/rebinds/2026-11-09-b0a074e4-to-a4ee8de9-behavior.json).
