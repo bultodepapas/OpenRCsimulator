@@ -303,3 +303,7 @@
 /docs/research/helicopter/HELI-33/a15-h03-h05-20261108/** -text whitespace=cr-at-eol
 /docs/research/helicopter/HELI-33/a15-h03-h05-20261108/**/*.log -whitespace
 /docs/research/extra-300-realism/EX-06/propeller-handedness-20261108.json text eol=lf
+
+# AV-17-R5 identities bind exact recorder and checked-run bytes across platforms.
+/docs/research/avanti-realism/AV-17-R5/** -text whitespace=cr-at-eol
+/docs/research/avanti-realism/AV-17-R5/**/*.log -whitespace
