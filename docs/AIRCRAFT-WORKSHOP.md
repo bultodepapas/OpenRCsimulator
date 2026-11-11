@@ -120,6 +120,17 @@ The Workshop reads each catalog entry's main `data` source. Turbo Lumber Evoluti
 
 The bounded experiment evaluator supports static reports, fixed-tick input-tape runs and offline sweeps/discovery. Sweep evaluation is limited to four axes, eight values per axis and 32 candidates; fixed-tape runs are bounded to 28,800 ticks (120 seconds at 240 Hz). These are deterministic software-simulation tools, not measurements of a real airplane. The source-only analysis CLI is available; see the [Workshop commands](TOOLS.md#aircraft-workshop) for its read-only input and new-output rules.
 
+## Aircraft Creator (experimental)
+
+**Create aircraft…** in the Workshop header opens the Aircraft Creator: a wizard that imports a player's own model and builds a new airplane around it, instead of varying a shipped one. The stock build stays loaded underneath and is untouched. Owner, steps and gates: [Aircraft Creator plan](plans/aircraft-creator.md) (prefix AC); results and limits: [Creator evidence](research/aircraft-creator/README.md).
+
+1. **Import** a local STL (binary or text) or a self-contained GLB. The file is read once, size-checked and refused with a reason if it is damaged, too large or outside the supported subset. A picture is not a 3D model.
+2. **Orient and size** it: which model axis is the nose, which is up, the unit the file was drawn in (or the real wingspan), and the wing leading edge on the centreline, clicked on the preview or typed. Nothing is assumed.
+3. **Describe** the aircraft: layout dimensions, an inventory of everything it carries with masses and positions, the power package's position, and control travel. **Use starting values** fills estimates scaled from the model's size; they stay labelled estimates until typed over.
+4. **Review and test**: the wizard lists what still blocks a flight and jumps to each field. **Test fly** starts an Airborne or Hand-launch trial of that exact configuration and returns to the same wizard from Pause.
+
+Current limits: one layout (conventional wing and aft tail), one estimated electric power package, no landing gear and therefore no Runway start, controls simulated on a static visual, the model's own colours only. **The aircraft cannot be saved yet**: leaving the Creator discards it after a confirmation. The model supplies geometry only; flight behaviour comes from the entered description and an estimated package, labelled experimental. It approximates a trainer inside a stated domain and is not a measurement of any real airplane. Tests: `app/tests/test_creator_*.gd`.
+
 ## Common implementation and authoring interface
 
 | Source | Responsibility |

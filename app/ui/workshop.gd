@@ -253,6 +253,11 @@ var _slider_gesture := false
 var _syncing_controls := false
 var _closing := false
 var _trial_pending := false
+## AC-10: the Aircraft Creator is a second authoring context inside this host. While it is active the stock
+## editor is hidden and inert; root keeps seeing one `workshop` screen for trial start, return and departure.
+var _creator: Control
+var _creator_button: Button
+var _creator_exit_dialog: ConfirmationDialog
 
 
 func _init() -> void:
@@ -312,6 +317,9 @@ func reject_start(message: String = "The trial could not start.") -> void:
 
 
 func set_note(message: String) -> void:
+	if creator_active():
+		_creator.set_note(tr(message) if message != "" else "")
+		return
 	if is_instance_valid(_library_note):
 		_library_note.text = tr(message)
 		_library_note.tooltip_text = _library_note.text
@@ -408,6 +416,11 @@ func _build_ui() -> void:
 	_library_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_library_button.pressed.connect(_open_library)
 	_header.add_child(_library_button)
+	_creator_button = _button("Create aircraft…", "", "OpenCreator")
+	_creator_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_creator_button.tooltip_text = "Import a 3D model and describe a new aircraft"
+	_creator_button.pressed.connect(_request_creator)
+	_header.add_child(_creator_button)
 	var back := _button("Back to Pause" if return_destination == "Pause" else "Back to Home", "", "CloseWorkshop")
 	back.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	back.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2163,6 +2176,9 @@ func _request_trial() -> void:
 
 func _request_close() -> void:
 	if dismiss_modal_for_exit(): return
+	if creator_active():
+		if not _creator.handle_back(): _request_creator_close()
+		return
 	if _active_page in ["appearance", "smoke", "lighting"] and _page_nodes[_active_page].cancel_pending_edit(): return
 	var focused := get_viewport().gui_get_focus_owner()
 	for key: String in _factor_inputs:
@@ -2183,6 +2199,12 @@ func _request_close() -> void:
 
 ## Main-window close consumes one active editor modal before beginning an exit decision.
 func dismiss_modal_for_exit() -> bool:
+	if is_instance_valid(_creator_exit_dialog) and _creator_exit_dialog.visible:
+		_creator_exit_dialog.hide()
+		_creator_exit_dialog.canceled.emit()
+		return true
+	if creator_active() and _creator.dismiss_modal_for_exit():
+		return true
 	if is_instance_valid(_rebind_dialog) and _rebind_dialog.visible:
 		_rebind_dialog.hide()
 		_rebind_proposal.clear()
@@ -2223,6 +2245,73 @@ func dismiss_modal_for_exit() -> bool:
 		_close_library()
 		return true
 	return false
+
+
+func creator_active() -> bool:
+	return is_instance_valid(_creator)
+
+
+## The stock build stays loaded, hidden and untouched underneath, so opening the Creator needs no guard.
+func _request_creator() -> void:
+	open_creator()
+
+
+func open_creator() -> void:
+	if creator_active(): return
+	var creator_script: Script = load("res://ui/aircraft_creator.gd")
+	if creator_script == null: return
+	_creator = creator_script.new()
+	_creator.name = "AircraftCreator"
+	_creator.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_creator.close_requested.connect(_request_creator_close)
+	_creator.test_fly_requested.connect(func(payload: Dictionary) -> void: trial_requested.emit(payload))
+	_layout_panel.visible = false
+	_screen.add_child(_creator)
+	_creator.focus_default.call_deferred()
+
+
+func close_creator() -> void:
+	if not creator_active(): return
+	_creator.queue_free()
+	_creator = null
+	_layout_panel.visible = true
+	if is_instance_valid(_creator_button) and _creator_button.is_inside_tree(): _creator_button.grab_focus.call_deferred()
+
+
+func _request_creator_close() -> void:
+	if not creator_active(): return
+	_confirm_creator_discard(close_creator)
+
+
+func _confirm_creator_discard(proceed: Callable, cancel: Callable = Callable(), dialog_host: Node = null) -> void:
+	if not _creator.has_unsaved_changes():
+		proceed.call()
+		return
+	if is_instance_valid(_creator_exit_dialog): return
+	_creator_exit_dialog = ConfirmationDialog.new()
+	_creator_exit_dialog.name = "CreatorDiscardDialog"
+	_creator_exit_dialog.title = tr("Leave the Aircraft Creator?")
+	_creator_exit_dialog.dialog_text = tr("This aircraft cannot be saved yet. Leaving discards it.")
+	_creator_exit_dialog.theme = _screen.theme
+	_creator_exit_dialog.exclusive = true
+	_creator_exit_dialog.ok_button_text = tr("Discard aircraft")
+	_creator_exit_dialog.cancel_button_text = tr("Keep editing")
+	var finish := func(confirmed: bool) -> void:
+		var dialog := _creator_exit_dialog
+		_creator_exit_dialog = null
+		if is_instance_valid(dialog):
+			dialog.hide()
+			dialog.queue_free()
+		if confirmed:
+			proceed.call()
+		else:
+			if creator_active(): _creator.focus_default.call_deferred()
+			if cancel.is_valid(): cancel.call()
+	_creator_exit_dialog.confirmed.connect(finish.bind(true))
+	_creator_exit_dialog.canceled.connect(finish.bind(false))
+	(dialog_host if dialog_host != null else self).add_child(_creator_exit_dialog)
+	_creator_exit_dialog.popup_centered()
+	_creator_exit_dialog.get_cancel_button().grab_focus.call_deferred()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -2605,6 +2694,8 @@ func _draft_payload() -> Dictionary:
 
 
 func has_unsaved_changes() -> bool:
+	if creator_active() and _creator.has_unsaved_changes():
+		return true
 	return _recovery_requires_copy or not _invalid_fields.is_empty() or not _pending_numbers.is_empty() or not _presentation_buffers.is_empty() \
 		or (not _baseline.is_empty() and _draft_payload() != _baseline)
 
@@ -2642,6 +2733,13 @@ func _finish_close() -> void:
 
 func request_navigation(destination: String, proceed: Callable, cancel: Callable = Callable(), dialog_host: Node = null, defer_commit := false) -> void:
 	if is_instance_valid(_guard_dialog): return
+	if creator_active():
+		# An unsaved Creator aircraft cannot be stored yet (AC-13): leaving asks to discard it, never to save.
+		# The stock build underneath then gets its own guard.
+		_confirm_creator_discard(func() -> void:
+			close_creator()
+			request_navigation(destination, proceed, cancel, dialog_host, defer_commit), cancel, dialog_host)
+		return
 	if not has_unsaved_changes():
 		# Undo may have restored the baseline just before closing, ahead of the debounce.
 		# Synchronize only this editor's recovery; pending review and newer writers stay protected.

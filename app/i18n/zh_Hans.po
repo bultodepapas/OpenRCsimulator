@@ -9448,3 +9448,1468 @@ msgstr "尾翼行程"
 
 msgid "Close the running activity before starting a blimp trial."
 msgstr "开始飞艇试飞前，请先关闭当前活动。"
+
+# AC-10: Aircraft Creator.
+msgid "Not available yet"
+msgstr "暂不可用"
+
+msgid "\"%s\" is not a number."
+msgstr "\"%s\" 不是数字。"
+
+msgid "Enter a number."
+msgstr "请输入数字。"
+
+msgid "No model imported yet"
+msgstr "尚未导入模型"
+
+msgid "Controls simulated · visual is static"
+msgstr "操纵已模拟 · 外观为静态"
+
+msgid "4S · 800 Kv · 12×6 propeller — estimated"
+msgstr "4S · 800 Kv · 12×6 螺旋桨 — 估算"
+
+msgid "Datum X"
+msgstr "基准点 X"
+
+msgid "Datum Y"
+msgstr "基准点 Y"
+
+msgid "Datum Z"
+msgstr "基准点 Z"
+
+msgid "STL (binary)"
+msgstr "STL（二进制）"
+
+msgid "STL (text)"
+msgstr "STL（文本）"
+
+msgid "GLB"
+msgstr "GLB"
+
+msgid "Measured"
+msgstr "实测"
+
+msgid "Manual"
+msgstr "手动"
+
+msgid "Aft"
+msgstr "向后"
+
+msgid "Right"
+msgstr "向右"
+
+msgid "Tailplane"
+msgstr "平尾"
+
+msgid "Fin"
+msgstr "垂尾"
+
+msgid "Equipment positions"
+msgstr "设备位置"
+
+msgid "Inventory"
+msgstr "清单"
+
+msgid "Tailplane position"
+msgstr "平尾位置"
+
+msgid "Fin position"
+msgstr "垂尾位置"
+
+msgid "Propeller hub position"
+msgstr "桨毂位置"
+
+msgid "Battery position"
+msgstr "电池位置"
+
+msgid "Speed controller position"
+msgstr "电调位置"
+
+msgid "Thrust angles"
+msgstr "推力线角度"
+
+msgid "Total mass"
+msgstr "总质量"
+
+msgid "Centre of gravity (aft, right, up)"
+msgstr "重心（向后、向右、向上）"
+
+msgid "Neutral point (aft)"
+msgstr "中性点（向后）"
+
+msgid "Static margin (of the mean chord)"
+msgstr "静稳定裕度（相对平均弦长）"
+
+msgid "Level flight speed"
+msgstr "平飞速度"
+
+msgid "Stall speed"
+msgstr "失速速度"
+
+msgid "Thrust to weight"
+msgstr "推重比"
+
+msgid "Known wingspan (m)"
+msgstr "已知翼展（m）"
+
+msgid "Replace the model?"
+msgstr "替换模型？"
+
+msgid "Importing \"%s\" replaces the current model and resets its orientation, units and datum. The values entered for the aircraft are kept."
+msgstr "导入 \"%s\" 将替换当前模型，并重置其朝向、单位和基准点。已为飞机输入的数值会保留。"
+
+msgid "Replace model"
+msgstr "替换模型"
+
+msgid "Choose a model"
+msgstr "选择模型"
+
+msgid "3D model"
+msgstr "3D 模型"
+
+msgid "Back to Workshop"
+msgstr "返回工坊"
+
+msgid "Create aircraft"
+msgstr "创建飞机"
+
+msgid "Aircraft name"
+msgstr "飞机名称"
+
+msgid "Experimental · estimated"
+msgstr "实验性 · 估算"
+
+msgid "Show preview"
+msgstr "显示预览"
+
+msgid "Choose an STL file or a self-contained GLB file. A picture is not a 3D model."
+msgstr "请选择 STL 文件或自包含的 GLB 文件。图片不是 3D 模型。"
+
+msgid "Choose model…"
+msgstr "选择模型…"
+
+msgid "Replace model…"
+msgstr "替换模型…"
+
+msgid "Import a model first"
+msgstr "请先导入模型"
+
+msgid "Go to Import"
+msgstr "前往“导入”"
+
+msgid "Say how the model sits in its file. Nothing is assumed."
+msgstr "请说明模型在文件中的摆放方式。此处不作任何假设。"
+
+msgid "Until the placement is complete, the preview shows the model in the file's own axes."
+msgstr "在摆放设置完成之前，预览按文件自身的坐标轴显示模型。"
+
+msgid "Model axis pointing to the nose"
+msgstr "指向机头的模型轴"
+
+msgid "Model axis pointing up"
+msgstr "指向上方的模型轴"
+
+msgid "Model units"
+msgstr "模型单位"
+
+msgid "Choose units"
+msgstr "选择单位"
+
+msgid "Choose…"
+msgstr "选择…"
+
+msgid "If the units are unknown, enter the real wingspan instead."
+msgstr "如果不知道单位，请改为输入实际翼展。"
+
+msgid "Datum: wing leading edge on the centreline"
+msgstr "基准点：中心线上的机翼前缘"
+
+msgid "Type the point in the model's own coordinates, or pick it on the preview."
+msgstr "请按模型自身的坐标输入该点，或在预览中点选。"
+
+msgid "Pick on the preview"
+msgstr "在预览中点选"
+
+msgid "Click the wing leading edge at the centreline on the preview."
+msgstr "请在预览中点击中心线处的机翼前缘。"
+
+msgid "Conventional"
+msgstr "常规布局"
+
+msgid "Flying wing"
+msgstr "飞翼"
+
+msgid "Canard"
+msgstr "鸭式布局"
+
+msgid "V-tail"
+msgstr "V 尾"
+
+msgid "Use starting values…"
+msgstr "使用初始值…"
+
+msgid "Estimated starting values — correct them with your measurements."
+msgstr "估算的初始值 — 请根据实测数据修正。"
+
+msgid "Flight dimensions are entered here; they do not reshape the visual model."
+msgstr "飞行尺寸在此输入；它们不会改变外观模型的形状。"
+
+msgid "Distances are in metres from the wing leading edge on the centreline."
+msgstr "距离以米为单位，从中心线上的机翼前缘量起。"
+
+msgid "Power package hardware is added automatically"
+msgstr "动力套件硬件会自动添加"
+
+msgid "The motor, propeller, speed controller and battery are not listed here. List everything else the airplane carries."
+msgstr "电机、螺旋桨、电调和电池不在此列出。请列出飞机携带的其他所有物品。"
+
+msgid "Propose airframe items"
+msgstr "生成机体项目建议"
+
+msgid "Add item"
+msgstr "添加项目"
+
+msgid "Propose replaces items marked Estimated. Mark an item Measured or Manual to keep your values."
+msgstr "生成建议会替换标记为“估算”的项目。将项目标记为“实测”或“手动”可保留已填数值。"
+
+msgid "Electric"
+msgstr "电动"
+
+msgid "Gasoline"
+msgstr "汽油"
+
+msgid "Glow"
+msgstr "甲醇"
+
+msgid "No gear"
+msgstr "无起落架"
+
+msgid "Fixed tricycle"
+msgstr "固定式前三点"
+
+msgid "Taildragger"
+msgstr "后三点"
+
+msgid "Retractable"
+msgstr "可收放"
+
+msgid "The model's own colours"
+msgstr "模型自带的颜色"
+
+msgid "Generate paint"
+msgstr "生成配色"
+
+msgid "Upload image"
+msgstr "上传图像"
+
+msgid "Import skin"
+msgstr "导入涂装"
+
+msgid "Estimated aircraft — not a measurement of a real airplane."
+msgstr "估算的飞机 — 并非对真实飞机的测量结果。"
+
+msgid "Issues"
+msgstr "问题"
+
+msgid "Start"
+msgstr "起始方式"
+
+msgid "Summary"
+msgstr "摘要"
+
+msgid "Needs landing gear"
+msgstr "需要起落架"
+
+msgid "Not set"
+msgstr "未设置"
+
+msgid "Estimated read-out"
+msgstr "估算读数"
+
+msgid "These estimated values replace the current ones:"
+msgstr "以下估算值将替换当前数值："
+
+msgid "Use starting values?"
+msgstr "使用初始值？"
+
+msgid "Use starting values"
+msgstr "使用初始值"
+
+msgid "Choose the nose and up axes first, then enter a wingspan above zero."
+msgstr "请先选择机头轴和向上轴，再输入大于零的翼展。"
+
+msgid "Nothing can be proposed yet. Enter the wing, tail and fuselage dimensions in Aircraft layout first."
+msgstr "暂时无法生成建议。请先在“飞机布局”中输入机翼、尾翼和机身的尺寸。"
+
+msgid "New item"
+msgstr "新项目"
+
+msgid "The inventory is full (%s items)."
+msgstr "清单已满（%s 个项目）。"
+
+msgid "No items yet. Propose the airframe items or add your own."
+msgstr "尚无项目。请生成机体项目建议，或自行添加。"
+
+msgid "Item name"
+msgstr "项目名称"
+
+msgid "Evidence"
+msgstr "依据"
+
+msgid "Status: %s"
+msgstr "状态：%s"
+
+msgid "Inspecting model…"
+msgstr "正在检查模型…"
+
+msgid "Test fly is available once the issues listed above are resolved."
+msgstr "解决上方列出的问题后即可试飞。"
+
+msgid "The model could not be imported"
+msgstr "无法导入模型"
+
+msgid "The current model is unchanged."
+msgstr "当前模型保持不变。"
+
+msgid "Model imported"
+msgstr "模型已导入"
+
+msgid "File: %s"
+msgstr "文件：%s"
+
+msgid "Format: %s"
+msgstr "格式：%s"
+
+msgid "Triangles: %s"
+msgstr "三角形：%s"
+
+msgid "Size in model units: %s × %s × %s"
+msgstr "尺寸（模型单位）：%s × %s × %s"
+
+msgid "File size: %s"
+msgstr "文件大小：%s"
+
+msgid "Warning: %s"
+msgstr "警告：%s"
+
+msgid "Note: %s"
+msgstr "提示：%s"
+
+msgid "Scale: 1 model unit = %s m"
+msgstr "比例：1 个模型单位 = %s m"
+
+msgid "Choose the axes, the units and the datum to see the real size."
+msgstr "选择坐标轴、单位和基准点后即可查看实际尺寸。"
+
+msgid "Span %s m · Length %s m · Height %s m"
+msgstr "翼展 %s m · 长度 %s m · 高度 %s m"
+
+msgid "No open issues."
+msgstr "没有未解决的问题。"
+
+msgid "Not placed yet"
+msgstr "尚未摆放"
+
+msgid "Wingspan"
+msgstr "翼展"
+
+msgid "%s inventory items"
+msgstr "%s 个清单项目"
+
+msgid "CG"
+msgstr "重心"
+
+msgid "Neutral point"
+msgstr "中性点"
+
+msgid "Propeller hub"
+msgstr "桨毂"
+
+msgid "No model imported"
+msgstr "未导入模型"
+
+msgid "Zoom +"
+msgstr "缩放 +"
+
+msgid "Zoom −"
+msgstr "缩放 −"
+
+msgid "Wing root chord"
+msgstr "翼根弦长"
+
+msgid "Wing tip chord"
+msgstr "翼尖弦长"
+
+msgid "Tailplane span"
+msgstr "平尾翼展"
+
+msgid "Tailplane chord"
+msgstr "平尾弦长"
+
+msgid "Tailplane leading edge, distance aft"
+msgstr "平尾前缘，向后距离"
+
+msgid "Tailplane height"
+msgstr "平尾高度"
+
+msgid "Fin height"
+msgstr "垂尾高度"
+
+msgid "Fin chord"
+msgstr "垂尾弦长"
+
+msgid "Fin leading edge, distance aft"
+msgstr "垂尾前缘，向后距离"
+
+msgid "Fin base height"
+msgstr "垂尾底部高度"
+
+msgid "Nose, distance aft (negative ahead of the wing)"
+msgstr "机头，向后距离（在机翼前方为负值）"
+
+msgid "Tail end, distance aft"
+msgstr "机尾末端，向后距离"
+
+msgid "Fuselage width"
+msgstr "机身宽度"
+
+msgid "Fuselage height"
+msgstr "机身高度"
+
+msgid "Fuselage centre height"
+msgstr "机身中心高度"
+
+msgid "Battery, distance aft"
+msgstr "电池，向后距离"
+
+msgid "Battery, distance right"
+msgstr "电池，向右距离"
+
+msgid "Battery height"
+msgstr "电池高度"
+
+msgid "Propeller hub, distance aft"
+msgstr "桨毂，向后距离"
+
+msgid "Propeller hub, distance right"
+msgstr "桨毂，向右距离"
+
+msgid "Propeller hub height"
+msgstr "桨毂高度"
+
+msgid "Speed controller, distance aft"
+msgstr "电调，向后距离"
+
+msgid "Speed controller, distance right"
+msgstr "电调，向右距离"
+
+msgid "Speed controller height"
+msgstr "电调高度"
+
+msgid "Down thrust"
+msgstr "下拉角"
+
+msgid "Right thrust"
+msgstr "右拉角"
+
+msgid "Battery charge at start (0 to 1)"
+msgstr "起始电池电量（0 至 1）"
+
+msgid "Aileron travel"
+msgstr "副翼行程"
+
+msgid "Elevator travel"
+msgstr "升降舵行程"
+
+msgid "Rudder travel"
+msgstr "方向舵行程"
+
+msgid "Neutral to full command time"
+msgstr "从中立到满舵的时间"
+
+msgid "Import"
+msgstr "导入"
+
+msgid "Orient and size"
+msgstr "朝向与尺寸"
+
+msgid "Aircraft layout"
+msgstr "飞机布局"
+
+msgid "Weight and balance"
+msgstr "重量与重心"
+
+msgid "Power and mount"
+msgstr "动力与安装"
+
+msgid "Controls and ground"
+msgstr "操纵与地面"
+
+msgid "Paint and skins"
+msgstr "配色与涂装"
+
+msgid "Review and test"
+msgstr "检查与试飞"
+
+msgid "Not started"
+msgstr "未开始"
+
+msgid "In progress"
+msgstr "进行中"
+
+msgid "Needs attention"
+msgstr "需要处理"
+
+msgid "Complete"
+msgstr "已完成"
+
+msgid "Correct the highlighted values first."
+msgstr "请先修正高亮显示的数值。"
+
+msgid "Import a model first."
+msgstr "请先导入模型。"
+
+msgid "The record cannot be written: %s"
+msgstr "无法写入记录：%s"
+
+msgid "The record exceeds its size limit."
+msgstr "记录超出大小上限。"
+
+msgid "The record starts with a byte-order mark."
+msgstr "记录以字节顺序标记开头。"
+
+msgid "The record is not valid JSON: %s"
+msgstr "记录不是有效的 JSON：%s"
+
+msgid "The record must be a JSON object."
+msgstr "记录必须是 JSON 对象。"
+
+msgid "The record has an invalid number: %s"
+msgstr "记录中有无效的数字：%s"
+
+msgid "The loaded record does not carry the aircraft identity."
+msgstr "加载的记录不含飞机标识。"
+
+msgid "The compiled aircraft could not be sealed."
+msgstr "无法封存编译后的飞机。"
+
+msgid "The aircraft cannot be described by this package."
+msgstr "此套件无法描述这架飞机。"
+
+msgid "The tail surfaces must sit behind the wing's quarter chord."
+msgstr "尾翼面必须位于机翼四分之一弦长位置之后。"
+
+msgid "The propeller hub must sit on the fuselage nose, inside its width and height."
+msgstr "桨毂必须位于机身机头处，且在机身的宽度和高度范围内。"
+
+msgid "The definition format must be %s."
+msgstr "定义格式必须为 %s。"
+
+msgid "The aircraft identity must be a lowercase version 4 UUID."
+msgstr "飞机标识必须是小写的第 4 版 UUID。"
+
+msgid "The tip chord must not exceed the root chord."
+msgstr "翼尖弦长不得超过翼根弦长。"
+
+msgid "The fuselage nose must be ahead of the wing leading edge (negative x)."
+msgstr "机身机头必须位于机翼前缘之前（x 为负）。"
+
+msgid "The fuselage tail must be behind the wing leading edge (positive x)."
+msgstr "机身尾部必须位于机翼前缘之后（x 为正）。"
+
+msgid "The starting charge must be above zero."
+msgstr "起始电量必须大于零。"
+
+msgid "The inventory must be a list of items."
+msgstr "清单必须是项目列表。"
+
+msgid "The inventory holds %s items; the limit is %s."
+msgstr "清单包含 %s 个项目；上限为 %s 个。"
+
+msgid "An inventory item must be an object."
+msgstr "清单项目必须是对象。"
+
+msgid "An item ID is lowercase snake_case, starts with a letter and has at most 80 characters."
+msgstr "项目 ID 须为小写 snake_case 格式，以字母开头，且不超过 80 个字符。"
+
+msgid "The ID %s belongs to the power package or the compiler."
+msgstr "ID %s 为动力套件或编译器专用。"
+
+msgid "The ID %s is used by more than one item."
+msgstr "ID %s 被多个项目使用。"
+
+msgid "An item name is text of 1 to %s characters."
+msgstr "项目名称须为 1 至 %s 个字符的文本。"
+
+msgid "An item is measured, estimated or manual."
+msgstr "项目必须为实测、估算或手动之一。"
+
+msgid "This value is required."
+msgstr "此值为必填项。"
+
+msgid "This field is not part of the definition."
+msgstr "此字段不属于定义的一部分。"
+
+msgid "This value must be an object."
+msgstr "此值必须是对象。"
+
+msgid "This value must be a finite number."
+msgstr "此值必须是有限数值。"
+
+msgid "This value must be between %s and %s."
+msgstr "此值必须在 %s 和 %s 之间。"
+
+msgid "This value must be a list of %s finite numbers."
+msgstr "此值必须是包含 %s 个有限数值的列表。"
+
+msgid "Each number must be between %s and %s."
+msgstr "每个数值必须在 %s 和 %s 之间。"
+
+msgid "The tail sits on the centreline: its y position must be 0."
+msgstr "尾翼位于中心线上：其 y 位置必须为 0。"
+
+msgid "The file is not a binary glTF model. Export the model as glTF Binary (.glb)."
+msgstr "该文件不是二进制 glTF 模型。请将模型导出为 glTF Binary（.glb）。"
+
+msgid "The model file is damaged: its declared length does not match its size."
+msgstr "模型文件已损坏：声明的长度与文件大小不符。"
+
+msgid "The model file is damaged: it does not start with its JSON chunk."
+msgstr "模型文件已损坏：未以 JSON 数据块开头。"
+
+msgid "The model file is damaged: its JSON chunk has an invalid length."
+msgstr "模型文件已损坏：JSON 数据块的长度无效。"
+
+msgid "The model file is damaged: stray bytes follow its JSON chunk."
+msgstr "模型文件已损坏：JSON 数据块之后有多余字节。"
+
+msgid "The model file is damaged: it holds more than one JSON chunk."
+msgstr "模型文件已损坏：包含多个 JSON 数据块。"
+
+msgid "The model file is damaged: its binary chunk has an invalid length."
+msgstr "模型文件已损坏：二进制数据块的长度无效。"
+
+msgid "The model file is damaged: data follows its binary chunk."
+msgstr "模型文件已损坏：二进制数据块之后还有数据。"
+
+msgid "The model description cannot be read: %s."
+msgstr "无法读取模型描述：%s。"
+
+msgid "The model description is not valid JSON: %s"
+msgstr "模型描述不是有效的 JSON：%s"
+
+msgid "The model description is not a JSON object."
+msgstr "模型描述不是 JSON 对象。"
+
+msgid "The model has no asset description."
+msgstr "模型没有资产描述。"
+
+msgid "The model does not state its glTF version."
+msgstr "模型未注明 glTF 版本。"
+
+msgid "The model has an invalid asset description."
+msgstr "模型的资产描述无效。"
+
+msgid "The model has an invalid list of required extensions."
+msgstr "模型的必需扩展列表无效。"
+
+msgid "The model has an invalid list of extensions."
+msgstr "模型的扩展列表无效。"
+
+msgid "The model has an invalid extensions object."
+msgstr "模型的扩展对象无效。"
+
+msgid "The model uses the extension %s without declaring it."
+msgstr "模型使用了扩展 %s，但未声明。"
+
+msgid "The model file holds binary data that no buffer describes."
+msgstr "模型文件包含没有任何缓冲区描述的二进制数据。"
+
+msgid "The model describes a data buffer that the file does not contain."
+msgstr "模型描述了文件中不存在的数据缓冲区。"
+
+msgid "The model's data buffer does not match the binary data in the file."
+msgstr "模型的数据缓冲区与文件中的二进制数据不符。"
+
+msgid "A buffer view refers to a buffer that does not exist."
+msgstr "某个缓冲区视图引用了不存在的缓冲区。"
+
+msgid "A buffer view reaches outside the model's data."
+msgstr "某个缓冲区视图超出了模型数据的范围。"
+
+msgid "A buffer view has an invalid byte stride."
+msgstr "某个缓冲区视图的字节步长无效。"
+
+msgid "A buffer view has an invalid target."
+msgstr "某个缓冲区视图的目标无效。"
+
+msgid "An accessor refers to a buffer view that does not exist."
+msgstr "某个访问器引用了不存在的缓冲区视图。"
+
+msgid "An accessor has an invalid component type."
+msgstr "某个访问器的分量类型无效。"
+
+msgid "An accessor has an invalid type."
+msgstr "某个访问器的类型无效。"
+
+msgid "An accessor has an invalid normalized flag."
+msgstr "某个访问器的归一化标志无效。"
+
+msgid "An accessor has an invalid count or offset."
+msgstr "某个访问器的计数或偏移无效。"
+
+msgid "An accessor is not aligned to its component size."
+msgstr "某个访问器未按其分量大小对齐。"
+
+msgid "A buffer view's byte stride is smaller than its elements."
+msgstr "某个缓冲区视图的字节步长小于其元素大小。"
+
+msgid "An accessor reaches outside its buffer view."
+msgstr "某个访问器超出了其缓冲区视图的范围。"
+
+msgid "An accessor has invalid min or max values."
+msgstr "某个访问器的最小值或最大值无效。"
+
+msgid "An image refers to a buffer view that does not exist."
+msgstr "某个图像引用了不存在的缓冲区视图。"
+
+msgid "An image buffer view has a byte stride."
+msgstr "某个图像缓冲区视图带有字节步长。"
+
+msgid "An embedded image does not state its type."
+msgstr "某个内嵌图像未注明类型。"
+
+msgid "A texture sampler has an invalid filter or wrap mode."
+msgstr "某个纹理采样器的过滤或环绕模式无效。"
+
+msgid "A texture refers to an image that does not exist."
+msgstr "某个纹理引用了不存在的图像。"
+
+msgid "A texture refers to a sampler that does not exist."
+msgstr "某个纹理引用了不存在的采样器。"
+
+msgid "A material has invalid surface settings."
+msgstr "某个材质的表面设置无效。"
+
+msgid "A material has a colour or factor outside 0 to 1."
+msgstr "某个材质的颜色或系数超出 0 至 1 的范围。"
+
+msgid "A material has an invalid alpha mode."
+msgstr "某个材质的 Alpha 模式无效。"
+
+msgid "A material has an invalid alpha cutoff."
+msgstr "某个材质的 Alpha 截止值无效。"
+
+msgid "A material has an invalid double-sided flag."
+msgstr "某个材质的双面标志无效。"
+
+msgid "A material has an invalid %s extension."
+msgstr "某个材质的 %s 扩展无效。"
+
+msgid "A material has an invalid texture reference."
+msgstr "某个材质的纹理引用无效。"
+
+msgid "A material refers to a texture that does not exist."
+msgstr "某个材质引用了不存在的纹理。"
+
+msgid "A material has an invalid texture coordinate set."
+msgstr "某个材质的纹理坐标集无效。"
+
+msgid "A mesh has no geometry."
+msgstr "某个网格没有几何数据。"
+
+msgid "A mesh has an invalid surface."
+msgstr "某个网格的表面无效。"
+
+msgid "A mesh surface has an invalid drawing mode."
+msgstr "某个网格表面的绘制模式无效。"
+
+msgid "A mesh surface refers to a material that does not exist."
+msgstr "某个网格表面引用了不存在的材质。"
+
+msgid "A mesh surface has no vertex positions."
+msgstr "某个网格表面没有顶点位置。"
+
+msgid "A mesh surface refers to an accessor that does not exist."
+msgstr "某个网格表面引用了不存在的访问器。"
+
+msgid "A mesh surface reads vertex data from an index buffer view."
+msgstr "某个网格表面从索引缓冲区视图读取顶点数据。"
+
+msgid "A mesh surface has %s data of the wrong type."
+msgstr "某个网格表面的 %s 数据类型错误。"
+
+msgid "A mesh surface has %s data that is not padded to four bytes."
+msgstr "某个网格表面的 %s 数据未填充对齐到四字节。"
+
+msgid "A mesh surface has vertex attributes of different lengths."
+msgstr "某个网格表面的各顶点属性长度不一致。"
+
+msgid "A mesh surface does not declare the bounds of its vertex positions."
+msgstr "某个网格表面未声明其顶点位置的边界。"
+
+msgid "A mesh surface declares inverted bounds for its vertex positions."
+msgstr "某个网格表面声明的顶点位置边界上下限颠倒。"
+
+msgid "A mesh surface has index data of the wrong type."
+msgstr "某个网格表面的索引数据类型错误。"
+
+msgid "A mesh surface does not hold whole triangles."
+msgstr "某个网格表面包含不完整的三角形。"
+
+msgid "A node refers to a mesh that does not exist."
+msgstr "某个节点引用了不存在的网格。"
+
+msgid "A node has an invalid list of children."
+msgstr "某个节点的子节点列表无效。"
+
+msgid "A node refers to a child that does not exist."
+msgstr "某个节点引用了不存在的子节点。"
+
+msgid "A node is its own child."
+msgstr "某个节点是其自身的子节点。"
+
+msgid "A node lists the same child twice."
+msgstr "某个节点重复列出了同一个子节点。"
+
+msgid "A node has more than one parent."
+msgstr "某个节点有多个父节点。"
+
+msgid "The model's node tree contains a loop."
+msgstr "模型的节点树中存在循环。"
+
+msgid "The model has no scene. Export the model with its objects selected or visible."
+msgstr "模型没有场景。导出模型时，请确保其中的物体已选中或可见。"
+
+msgid "The model selects a scene that does not exist."
+msgstr "模型选定了不存在的场景。"
+
+msgid "A scene has an invalid list of nodes."
+msgstr "某个场景的节点列表无效。"
+
+msgid "A scene refers to a node that does not exist."
+msgstr "某个场景引用了不存在的节点。"
+
+msgid "A scene lists the same node twice."
+msgstr "某个场景重复列出了同一个节点。"
+
+msgid "A scene lists a node that is another node's child."
+msgstr "某个场景列出的节点是另一个节点的子节点。"
+
+msgid "The model's scene is empty. Export the model with its objects selected or visible."
+msgstr "模型的场景为空。导出模型时，请确保其中的物体已选中或可见。"
+
+msgid "A node has both a matrix and separate translation, rotation or scale."
+msgstr "某个节点同时具有矩阵和单独的平移、旋转或缩放。"
+
+msgid "A node has an invalid matrix."
+msgstr "某个节点的矩阵无效。"
+
+msgid "A node has an invalid translation."
+msgstr "某个节点的平移无效。"
+
+msgid "A node has an invalid rotation."
+msgstr "某个节点的旋转无效。"
+
+msgid "A node's rotation is not a unit quaternion."
+msgstr "某个节点的旋转不是单位四元数。"
+
+msgid "A node has an invalid scale."
+msgstr "某个节点的缩放无效。"
+
+msgid "A node has a zero scale."
+msgstr "某个节点的缩放为零。"
+
+msgid "A mesh surface holds vertex data that is not a finite number."
+msgstr "某个网格表面包含不是有限数值的顶点数据。"
+
+msgid "A mesh surface refers to a vertex that does not exist."
+msgstr "某个网格表面引用了不存在的顶点。"
+
+msgid "A mesh surface holds a vertex position that is not a finite number."
+msgstr "某个网格表面包含不是有限数值的顶点位置。"
+
+msgid "A mesh surface has vertex positions outside its declared bounds."
+msgstr "某个网格表面的顶点位置超出了其声明的边界。"
+
+msgid "A node's transform is too large to represent. Apply transforms and re-export."
+msgstr "某个节点的变换过大，无法表示。请应用变换后重新导出。"
+
+msgid "The model's geometry is too large to represent. Apply transforms and re-export."
+msgstr "模型的几何体过大，无法表示。请应用变换后重新导出。"
+
+msgid "The model's scene has no mesh. Export the model with its objects selected or visible."
+msgstr "模型的场景中没有网格。导出模型时，请确保其中的物体已选中或可见。"
+
+msgid "The model's %s list is invalid."
+msgstr "模型的 %s 列表无效。"
+
+msgid "The model has a name that is not text."
+msgstr "模型中有一个名称不是文本。"
+
+msgid "The model uses glTF container version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "模型使用 glTF 容器版本 %s。请将其导出为 glTF 2.0 Binary（.glb）。"
+
+msgid "The model file holds a chunk of an unknown type. Export a self-contained GLB with embedded PNG textures."
+msgstr "模型文件包含未知类型的数据块。请导出带内嵌 PNG 纹理的自包含 GLB。"
+
+msgid "The model holds %s, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "模型包含 %s，不受支持。请导出刚性模型：应用修改器，并移除骨架、形态键和动画。"
+
+msgid "The model holds cameras, which are not supported. Remove them from the export."
+msgstr "模型包含相机，不受支持。请在导出时将其移除。"
+
+msgid "The model uses glTF version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "模型使用 glTF 版本 %s。请将其导出为 glTF 2.0 Binary（.glb）。"
+
+msgid "The model uses more than one data buffer. Export a self-contained GLB with embedded PNG textures."
+msgstr "模型使用了多个数据缓冲区。请导出带内嵌 PNG 纹理的自包含 GLB。"
+
+msgid "The model refers to an external or inline data file. Export a self-contained GLB with embedded PNG textures."
+msgstr "模型引用了外部或内联数据文件。请导出带内嵌 PNG 纹理的自包含 GLB。"
+
+msgid "The model uses sparse accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "模型使用了稀疏访问器，不受支持。请导出刚性模型：应用修改器，并移除骨架、形态键和动画。"
+
+msgid "The model has an accessor without data. Export a self-contained GLB with embedded PNG textures."
+msgstr "模型中有一个不含数据的访问器。请导出带内嵌 PNG 纹理的自包含 GLB。"
+
+msgid "The model uses matrix accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "模型使用了矩阵访问器，不受支持。请导出刚性模型：应用修改器，并移除骨架、形态键和动画。"
+
+msgid "The model refers to an external or inline image file. Export a self-contained GLB with embedded PNG textures."
+msgstr "模型引用了外部或内联图像文件。请导出带内嵌 PNG 纹理的自包含 GLB。"
+
+msgid "The model embeds an image of type %s. Export a self-contained GLB with embedded PNG textures."
+msgstr "模型内嵌了类型为 %s 的图像。请导出带内嵌 PNG 纹理的自包含 GLB。"
+
+msgid "A material uses texture coordinate set %s; only sets 0 and 1 are supported. Use the first UV map and export again."
+msgstr "某个材质使用了纹理坐标集 %s；仅支持坐标集 0 和 1。请使用第一个 UV 贴图并重新导出。"
+
+msgid "The model uses shape keys (morph targets), which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "模型使用了形态键（变形目标），不受支持。请导出刚性模型：应用修改器，并移除骨架、形态键和动画。"
+
+msgid "A mesh surface is made of points, lines, strips or fans. Triangulate the mesh and export again."
+msgstr "某个网格表面由点、线、条带或扇形构成。请将网格三角化后重新导出。"
+
+msgid "The model is skinned (%s). Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "模型带有蒙皮（%s）。请导出刚性模型：应用修改器，并移除骨架、形态键和动画。"
+
+msgid "A mesh surface uses the vertex attribute %s, which is not supported. Remove extra UV maps, colour layers and custom attributes and export again."
+msgstr "某个网格表面使用了顶点属性 %s，不受支持。请移除多余的 UV 贴图、颜色层和自定义属性后重新导出。"
+
+msgid "A mesh surface stores %s as integers. Export without mesh quantization."
+msgstr "某个网格表面以整数存储 %s。导出时请不要使用网格量化。"
+
+msgid "The model uses armatures or shape keys, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "模型使用了骨架或形态键，不受支持。请导出刚性模型：应用修改器，并移除骨架、形态键和动画。"
+
+msgid "A node's matrix is sheared, mirrored, flattened or not affine. Apply transforms and re-export."
+msgstr "某个节点的矩阵存在错切、镜像、压扁，或不是仿射矩阵。请应用变换后重新导出。"
+
+msgid "A node has a negative (mirroring) scale. Apply transforms and re-export."
+msgstr "某个节点的缩放为负值（镜像）。请应用变换后重新导出。"
+
+msgid "The model uses the glTF extension %s, which is not supported. %s"
+msgstr "模型使用了 glTF 扩展 %s，不受支持。%s"
+
+msgid "The model uses the glTF property %s, which is not supported. Export a plain rigid model with the exporter's default settings."
+msgstr "模型使用了 glTF 属性 %s，不受支持。请使用导出器的默认设置导出普通的刚性模型。"
+
+msgid "The model file is larger than %s MiB. Reduce its detail or texture size and export it again."
+msgstr "模型文件大于 %s MiB。请降低其细节或纹理尺寸后重新导出。"
+
+msgid "The model description is larger than %s MiB. Simplify the model and export it again."
+msgstr "模型描述大于 %s MiB。请简化模型后重新导出。"
+
+msgid "The model description is too large or too deeply nested. Simplify the model and export it again."
+msgstr "模型描述过大或嵌套过深。请简化模型后重新导出。"
+
+msgid "The model's textures hold more than %s pixels in total. Reduce the texture sizes."
+msgstr "模型纹理的总像素数超过 %s。请减小纹理尺寸。"
+
+msgid "The model has more than %s mesh surfaces. Join meshes or reduce the material count."
+msgstr "模型的网格表面超过 %s 个。请合并网格或减少材质数量。"
+
+msgid "The model's node tree is deeper than %s levels. Flatten the hierarchy and export again."
+msgstr "模型节点树的深度超过 %s 层。请展平层级后重新导出。"
+
+msgid "The model has more than %s triangles. Reduce its detail and export again."
+msgstr "模型的三角形超过 %s 个。请降低其细节后重新导出。"
+
+msgid "The model has more than %s vertices. Reduce its detail and export again."
+msgstr "模型的顶点超过 %s 个。请降低其细节后重新导出。"
+
+msgid "The model has more than %s %s. Simplify the model and export it again."
+msgstr "模型包含超过 %s 个 %s。请简化模型后重新导出。"
+
+msgid "The compressed data does not start with a valid zlib header."
+msgstr "压缩数据未以有效的 zlib 头开头。"
+
+msgid "The compressed data is truncated: it holds less data than declared."
+msgstr "压缩数据被截断：实际数据少于声明的大小。"
+
+msgid "The compressed data expands beyond its declared size."
+msgstr "压缩数据解压后超出声明的大小。"
+
+msgid "Extra bytes follow the end of the compressed data."
+msgstr "压缩数据末尾之后有多余字节。"
+
+msgid "The compressed data is truncated: its end marker or checksum is missing."
+msgstr "压缩数据被截断：缺少结束标记或校验和。"
+
+msgid "The compressed data holds values its reader refuses."
+msgstr "压缩数据包含读取器拒绝接受的值。"
+
+msgid "The compressed data is corrupt."
+msgstr "压缩数据已损坏。"
+
+msgid "Package %s is not installed."
+msgstr "未安装套件 %s。"
+
+msgid "Package %s cannot be used: %s"
+msgstr "无法使用套件 %s：%s"
+
+msgid "Choose which model axis points to the nose."
+msgstr "请选择指向机头的模型轴。"
+
+msgid "Choose which model axis points up."
+msgstr "请选择指向上方的模型轴。"
+
+msgid "The nose and up directions must be different model axes."
+msgstr "机头方向和向上方向必须是不同的模型轴。"
+
+msgid "Choose the model units or enter the real wingspan."
+msgstr "请选择模型单位或输入实际翼展。"
+
+msgid "Mark the wing leading edge on the centreline."
+msgstr "请标出中心线上的机翼前缘。"
+
+msgid "The image has more than %s chunks. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "图像包含超过 %s 个数据块。请将图像重新导出为不含颜色配置文件和文本元数据的标准 PNG。"
+
+msgid "The image holds metadata of type %s, which is not accepted. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "图像包含类型为 %s 的元数据，不予接受。请将图像重新导出为不含颜色配置文件和文本元数据的标准 PNG。"
+
+msgid "The image holds a chunk of type %s, which is not supported. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "图像包含类型为 %s 的数据块，不受支持。请将图像重新导出为不含颜色配置文件和文本元数据的标准 PNG。"
+
+msgid "The image file is larger than %s MiB. Reduce its resolution and re-export it."
+msgstr "图像文件大于 %s MiB。请降低其分辨率后重新导出。"
+
+msgid "The image is %s x %s pixels; the largest accepted side is %s pixels."
+msgstr "图像为 %s x %s 像素；可接受的最大边长为 %s 像素。"
+
+msgid "The image file is truncated inside a chunk."
+msgstr "图像文件在某个数据块内被截断。"
+
+msgid "The image has a chunk with an invalid type."
+msgstr "图像中有一个数据块的类型无效。"
+
+msgid "The image is damaged: its %s chunk fails its checksum."
+msgstr "图像已损坏：其 %s 数据块未通过校验和检查。"
+
+msgid "The image has more than one header chunk."
+msgstr "图像包含多个头部数据块。"
+
+msgid "The image data chunks are not consecutive."
+msgstr "图像数据块不连续。"
+
+msgid "The indexed image has no palette before its data."
+msgstr "索引图像在数据之前没有调色板。"
+
+msgid "The image end chunk is not empty."
+msgstr "图像的结束数据块不为空。"
+
+msgid "The image has no image data."
+msgstr "图像不含图像数据。"
+
+msgid "Extra bytes follow the end of the image."
+msgstr "图像末尾之后有多余字节。"
+
+msgid "The image has more than one %s chunk."
+msgstr "图像包含多个 %s 数据块。"
+
+msgid "The image has its %s chunk after the image data."
+msgstr "图像的 %s 数据块位于图像数据之后。"
+
+msgid "The image file ends without its end chunk."
+msgstr "图像文件结尾缺少结束数据块。"
+
+msgid "The image data uses an invalid scanline filter."
+msgstr "图像数据使用了无效的扫描线过滤器。"
+
+msgid "The image data is not a valid zlib stream."
+msgstr "图像数据不是有效的 zlib 流。"
+
+msgid "The image data is truncated: it holds less than the image size requires."
+msgstr "图像数据被截断：数据量少于图像尺寸所需。"
+
+msgid "The image data holds more than the image size allows."
+msgstr "图像数据量超出图像尺寸允许的范围。"
+
+msgid "Extra bytes follow the compressed image data."
+msgstr "压缩图像数据之后有多余字节。"
+
+msgid "The image data is corrupt. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "图像数据已损坏。请将图像重新导出为不含颜色配置文件和文本元数据的标准 PNG。"
+
+msgid "The file is too short to be a PNG image."
+msgstr "文件过短，不可能是 PNG 图像。"
+
+msgid "The file is not a PNG image. Export the texture as PNG."
+msgstr "该文件不是 PNG 图像。请将纹理导出为 PNG。"
+
+msgid "The image does not start with a valid header chunk."
+msgstr "图像未以有效的头部数据块开头。"
+
+msgid "The image has a zero width or height."
+msgstr "图像的宽度或高度为零。"
+
+msgid "The image has an invalid colour type or bit depth."
+msgstr "图像的颜色类型或位深度无效。"
+
+msgid "The image has an invalid compression, filter or interlace method."
+msgstr "图像的压缩、过滤或隔行扫描方法无效。"
+
+msgid "The image could not be decoded. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "无法解码图像。请将图像重新导出为不含颜色配置文件和文本元数据的标准 PNG。"
+
+msgid "The file \"%s\" cannot be opened."
+msgstr "无法打开文件 \"%s\"。"
+
+msgid "The file \"%s\" is empty."
+msgstr "文件 \"%s\" 为空。"
+
+msgid "The file \"%s\" is larger than the %s MiB model limit. Reduce its detail and export it again."
+msgstr "文件 \"%s\" 超过了 %s MiB 的模型大小上限。请降低其细节后重新导出。"
+
+msgid "The file \"%s\" could not be read completely."
+msgstr "无法完整读取文件 \"%s\"。"
+
+msgid "\"%s\" is a picture, not a 3D model. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\" 是图片，不是 3D 模型。请将模型导出为 STL 或自包含的 GLB。"
+
+msgid "\"%s\" is not a supported model format. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\" 不是受支持的模型格式。请将模型导出为 STL 或自包含的 GLB。"
+
+msgid "The model in \"%s\" is flat or empty along one axis."
+msgstr "\"%s\" 中的模型在某个轴向上是平的或为空。"
+
+msgid "The model file is empty."
+msgstr "模型文件为空。"
+
+msgid "The model file has %s bytes; the limit is %s bytes."
+msgstr "模型文件有 %s 字节；上限为 %s 字节。"
+
+msgid "This is not an STL file: it has %s bytes, fewer than a binary STL header, and its text does not start with \"solid\"."
+msgstr "这不是 STL 文件：它只有 %s 字节，小于二进制 STL 文件头，且其文本不以 \"solid\" 开头。"
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has only %s bytes. It may be truncated; export it again."
+msgstr "这不是有效的 STL 文件。其文本不以 \"solid\" 开头；按二进制 STL 解读，它声明了 %s 个面片，需要 %s 字节，但文件只有 %s 字节。文件可能被截断；请重新导出。"
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has %s bytes. Export it again as STL."
+msgstr "这不是有效的 STL 文件。其文本不以 \"solid\" 开头；按二进制 STL 解读，它声明了 %s 个面片，需要 %s 字节，但文件有 %s 字节。请重新导出为 STL。"
+
+msgid "The STL file contains no facets."
+msgstr "STL 文件不含任何面片。"
+
+msgid "The file starts with \"solid\" but is not STL text: it has a NUL byte at offset %s. If it is a binary STL file, its length does not match its facet count; it may be truncated. Export it again."
+msgstr "文件以 \"solid\" 开头，但不是 STL 文本：偏移 %s 处有一个 NUL 字节。如果它是二进制 STL 文件，则其长度与面片数量不符；文件可能被截断。请重新导出。"
+
+msgid "The STL text has more than %s solids."
+msgstr "STL 文本包含超过 %s 个实体。"
+
+msgid "The STL text ends at line %s inside an unfinished solid. It looks truncated; export it again."
+msgstr "STL 文本在第 %s 行结束，而实体尚未结束。文件似乎被截断；请重新导出。"
+
+msgid "Line %s of the STL text: \"%s\" is not a plain decimal number."
+msgstr "STL 文本第 %s 行：\"%s\" 不是普通的十进制数。"
+
+msgid "Line %s of the STL text: \"%s\" found where \"facet\" or \"endsolid\" is required."
+msgstr "STL 文本第 %s 行：出现了 \"%s\"，而此处应为 \"facet\" 或 \"endsolid\"。"
+
+msgid "Line %s of the STL text: unexpected \"%s\" after the end of the solid."
+msgstr "STL 文本第 %s 行：实体结束后出现了意外的 \"%s\"。"
+
+msgid "Line %s of the STL text: \"%s\" found where \"%s\" is required."
+msgstr "STL 文本第 %s 行：出现了 \"%s\"，而此处应为 \"%s\"。"
+
+msgid "The STL text is not valid UTF-8 at or after line %s."
+msgstr "STL 文本在第 %s 行或其后不是有效的 UTF-8。"
+
+msgid "Line %s of the STL text is longer than %s bytes."
+msgstr "STL 文本第 %s 行超过 %s 字节。"
+
+msgid "The STL file has more than %s facets. Simplify the model and export it again."
+msgstr "STL 文件的面片超过 %s 个。请简化模型后重新导出。"
+
+msgid "The STL file has no usable facet: all %s have zero area."
+msgstr "STL 文件没有可用的面片：全部 %s 个面片的面积均为零。"
+
+msgid "%s zero-area facets were left out."
+msgstr "已略去 %s 个面积为零的面片。"
+
+msgid "%s facets have a stored normal that points against their vertex order. The vertex order was kept."
+msgstr "有 %s 个面片存储的法线方向与其顶点顺序相反。已保留顶点顺序。"
+
+msgid "%s facets carry attribute data, which was ignored. STL colour is not supported."
+msgstr "有 %s 个面片带有属性数据，已忽略。不支持 STL 颜色。"
+
+msgid "This model format cannot be shown."
+msgstr "无法显示此模型格式。"
+
+msgid "The model has no triangles to show."
+msgstr "模型没有可显示的三角形。"
+
+msgid "The GLB model could not be loaded. Export it again as a self-contained GLB."
+msgstr "无法加载 GLB 模型。请重新导出为自包含的 GLB。"
+
+msgid "The GLB model produced no scene."
+msgstr "GLB 模型未生成任何场景。"
+
+msgid "The GLB model contains an unsupported element (%s)."
+msgstr "GLB 模型包含不受支持的元素（%s）。"
+
+msgid "The wing span is %s m; this package supports %s to %s m."
+msgstr "翼展为 %s m；此套件支持 %s 至 %s m。"
+
+msgid "The wing aspect ratio is %s; this package supports %s to %s."
+msgstr "机翼展弦比为 %s；此套件支持 %s 至 %s。"
+
+msgid "The tip-to-root chord ratio is %s; this package supports %s to %s."
+msgstr "翼尖与翼根的弦长比为 %s；此套件支持 %s 至 %s。"
+
+msgid "The flying mass is %s kg; this package supports %s to %s kg."
+msgstr "飞行质量为 %s kg；此套件支持 %s 至 %s kg。"
+
+msgid "The wing loading is %s kg/m²; this package supports %s to %s kg/m²."
+msgstr "翼载荷为 %s kg/m²；此套件支持 %s 至 %s kg/m²。"
+
+msgid "The horizontal tail aspect ratio is %s; this package supports %s to %s."
+msgstr "平尾展弦比为 %s；此套件支持 %s 至 %s。"
+
+msgid "The vertical tail height-to-chord ratio is %s; this package supports %s to %s."
+msgstr "垂尾高度与弦长之比为 %s；此套件支持 %s 至 %s。"
+
+msgid "The horizontal tail volume is %s; this package supports %s to %s."
+msgstr "平尾尾容量为 %s；此套件支持 %s 至 %s。"
+
+msgid "The vertical tail volume is %s; this package supports %s to %s."
+msgstr "垂尾尾容量为 %s；此套件支持 %s 至 %s。"
+
+msgid "The static margin is %s of the mean chord; this package supports %s to %s."
+msgstr "静稳定裕度为平均弦长的 %s；此套件支持 %s 至 %s。"
+
+msgid "The static thrust is %s times the weight; this package supports %s to %s."
+msgstr "静态推力为重量的 %s 倍；此套件支持 %s 至 %s。"
+
+msgid "The propeller hub is %s m ahead of the fuselage nose; this package supports %s to %s m."
+msgstr "桨毂位于机身机头前方 %s m 处；此套件支持 %s 至 %s m。"
+
+msgid "The flight loader refused the compiled aircraft: %s"
+msgstr "飞行加载器拒绝了编译后的飞机：%s"
+
+msgid "The flight loader notes: %s"
+msgstr "飞行加载器提示：%s"
+
+msgid "Turn off mesh compression in the export settings."
+msgstr "请在导出设置中关闭网格压缩。"
+
+msgid "Turn off mesh quantization in the export settings."
+msgstr "请在导出设置中关闭网格量化。"
+
+msgid "Export the textures as PNG."
+msgstr "请将纹理导出为 PNG。"
+
+msgid "Remove the lights from the export."
+msgstr "请在导出时移除灯光。"
+
+msgid "Turn it off in the export settings and export again."
+msgstr "请在导出设置中将其关闭后重新导出。"
+
+msgid "The greyscale image holds a palette."
+msgstr "灰度图像带有调色板。"
+
+msgid "The image palette has an invalid size."
+msgstr "图像调色板的大小无效。"
+
+msgid "The image palette has more entries than its bit depth can address."
+msgstr "图像调色板的条目数超出其位深度可寻址的范围。"
+
+msgid "The image transparency chunk comes before its palette."
+msgstr "图像的透明度数据块位于调色板之前。"
+
+msgid "The image transparency chunk has an invalid size."
+msgstr "图像透明度数据块的大小无效。"
+
+msgid "The image has both an alpha channel and a transparency chunk."
+msgstr "图像同时具有 Alpha 通道和透明度数据块。"
+
+msgid "The image's %s chunk has the wrong size."
+msgstr "图像的 %s 数据块大小错误。"
+
+msgid "The image's %s chunk comes after its palette."
+msgstr "图像的 %s 数据块位于调色板之后。"
+
+msgid "The image has an invalid sRGB rendering intent."
+msgstr "图像的 sRGB 渲染意图无效。"
+
+msgid "The image has a zero gamma value."
+msgstr "图像的伽马值为零。"
+
+msgid "The image has an invalid pixel-size unit."
+msgstr "图像的像素尺寸单位无效。"
+
+msgid "Facet %s of the STL file has a value that is not a finite 32-bit number."
+msgstr "STL 文件的第 %s 个面片中有一个值不是有限的 32 位数值。"
+
+msgid "Facet %s of the STL file is too large to process. Rescale the model to sensible units and export it again."
+msgstr "STL 文件的第 %s 个面片过大，无法处理。请将模型缩放到合理的单位后重新导出。"
+
+msgid "Facet %s of the STL file (ending at line %s) has a value that is not a finite 32-bit number."
+msgstr "STL 文件的第 %s 个面片（结束于第 %s 行）中有一个值不是有限的 32 位数值。"
+
+msgid "Facet %s of the STL file (ending at line %s) is too large to process. Rescale the model to sensible units and export it again."
+msgstr "STL 文件的第 %s 个面片（结束于第 %s 行）过大，无法处理。请将模型缩放到合理的单位后重新导出。"
+
+msgid "STL model"
+msgstr "STL 模型"
+
+msgid "Self-contained GLB model"
+msgstr "自包含的 GLB 模型"
+
+msgid "A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start."
+msgstr "按标准手抛无法爬升飞离：飞机在 3 秒内触地或失控。请减轻重量、将重心前移，或使用“空中起始”。"
+
+msgid "The aircraft was not accepted by the compiler."
+msgstr "编译器未接受这架飞机。"
+
+msgid "The model source was not admitted."
+msgstr "模型源文件未被接受。"
+
+msgid "The model placement is missing."
+msgstr "缺少模型摆放设置。"
+
+msgid "The model orientation, size or datum is not confirmed."
+msgstr "模型的朝向、尺寸或基准点尚未确认。"
+
+msgid "The compiled aircraft does not match its exact bytes."
+msgstr "编译后的飞机与其精确字节不符。"
+
+msgid "The trial identity could not be written."
+msgstr "无法写入试飞标识。"
+
+msgid "This is not a frozen Creator trial."
+msgstr "这不是已冻结的创建器试飞。"
+
+msgid "The frozen trial is missing its identity, data, source or exact bytes."
+msgstr "已冻结的试飞缺少标识、数据、源文件或精确字节。"
+
+msgid "The frozen trial has an unsupported identity or an invalid model."
+msgstr "已冻结的试飞带有不受支持的标识或无效的模型。"
+
+msgid "The frozen aircraft bytes do not match the trial identity."
+msgstr "已冻结的飞机字节与试飞标识不符。"
+
+msgid "The frozen model does not match the trial identity."
+msgstr "已冻结的模型与试飞标识不符。"
+
+msgid "The frozen model source does not match the trial identity."
+msgstr "已冻结的模型源文件与试飞标识不符。"
+
+msgid "This start is not available for a Creator aircraft without landing gear."
+msgstr "没有起落架的创建器飞机无法使用此起始方式。"
+
+msgid "The selected field is not a normalized field definition."
+msgstr "所选场地不是规范化的场地定义。"
+
+msgid "The weather configuration is invalid."
+msgstr "天气配置无效。"
+
+msgid "The start check needs a running scene tree."
+msgstr "起始检查需要正在运行的场景树。"
+
+msgid "The frozen aircraft could not be prepared."
+msgstr "无法准备已冻结的飞机。"
+
+msgid "The requested start did not commit."
+msgstr "请求的起始方式未能生效。"
+
+msgid "The start check exceeded its time budget."
+msgstr "起始检查超出了时间预算。"
+
+msgid "Create aircraft…"
+msgstr "创建飞机…"
+
+msgid "Import a 3D model and describe a new aircraft"
+msgstr "导入 3D 模型并描述一架新飞机"
+
+msgid "Leave the Aircraft Creator?"
+msgstr "离开飞机创建器？"
+
+msgid "This aircraft cannot be saved yet. Leaving discards it."
+msgstr "这架飞机尚不能保存。离开将丢弃它。"
+
+msgid "Discard aircraft"
+msgstr "丢弃飞机"
+
+msgid "Keep editing"
+msgstr "继续编辑"
+
+msgid "Choose an airborne or hand-launch trial start."
+msgstr "选择空中或手抛试飞起点。"
+
+msgid "Estimated value"
+msgstr "估算值"
+
+msgid "Upward"
+msgstr "上"
+
+msgid "The aileron travel is %s degrees; this package supports %s to %s degrees."
+msgstr "副翼行程为 %s 度；此套件支持 %s 至 %s 度。"
+
+msgid "The elevator travel is %s degrees; this package supports %s to %s degrees."
+msgstr "升降舵行程为 %s 度；此套件支持 %s 至 %s 度。"
+
+msgid "The rudder travel is %s degrees; this package supports %s to %s degrees."
+msgstr "方向舵行程为 %s 度；此套件支持 %s 至 %s 度。"
+
+msgid "The neutral-to-full command time is %s s; this package supports %s to %s s."
+msgstr "从中立到满舵的时间为 %s s；此套件支持 %s 至 %s s。"
+
+msgid "The down thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "下拉角为 %s 度；此套件支持 %s 至 %s 度。"
+
+msgid "The right thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "右拉角为 %s 度；此套件支持 %s 至 %s 度。"
+
+msgid "The starting charge is %s; this package supports %s to %s."
+msgstr "起始电量为 %s；此套件支持 %s 至 %s。"
+
+msgid "The image is compressed with an unusual window size. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "图像使用了不常见的窗口大小进行压缩。请将图像重新导出为不含颜色配置文件和文本元数据的标准 PNG。"
+
+msgid "The image's %s chunk is too large."
+msgstr "图像的 %s 数据块过大。"
+
+msgid "The image's %s chunk is invalid."
+msgstr "图像的 %s 数据块无效。"
+
+msgid "The model does not say which scene to show. Export it again as a self-contained GLB from your modelling tool."
+msgstr "模型未指明要显示的场景。请从建模软件中将其重新导出为自包含的 GLB。"
+
+msgid "The frozen model is not what its exact bytes load to."
+msgstr "已冻结的模型与由其精确字节加载出的模型不符。"
+
+msgid "The frozen model placement does not match the trial identity."
+msgstr "已冻结的模型摆放与试飞标识不符。"
+
+msgid "The frozen trial identity does not match its content."
+msgstr "已冻结的试飞标识与其内容不符。"
+
+msgid "The Creator trial does not match its frozen identity."
+msgstr "创建器试飞与其已冻结的标识不符。"
+
+msgid "The compressed data declares a window smaller than its content."
+msgstr "压缩数据声明的窗口小于其内容。"

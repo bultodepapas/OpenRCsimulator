@@ -2,7 +2,7 @@
 
 Owner: performance tooling, coordinated with the PT instrumentation, VQ performance,
 DT delivery, UI, controller, scenery and aircraft owners. Prefix: **GOD-01–13**.
-Date: 2026-11-10. Status: implementation started; no completed hardware qualification.
+Date: 2026-11-10. Status: first usable source/debug implementation executed; hardware qualification remains open.
 This is the authoritative plan requested by the owner. The tool README will own
 implemented commands; this document owns remaining work and acceptance evidence.
 
@@ -336,7 +336,7 @@ python tools/godtest/godtest.py run ugly-standard --repeats 3
 python tools/godtest/godtest.py memory --cycles 50
 python tools/godtest/godtest.py soak --minutes 30
 python tools/godtest/godtest.py fleet
-python tools/godtest/godtest.py matrix --profile nightly --dry-run
+python tools/godtest/godtest.py matrix --dry-run
 python tools/godtest/godtest.py compare --baseline <run-a> --candidate <run-b>
 python tools/godtest/godtest.py report <run-id>
 ```
@@ -373,19 +373,19 @@ Status is maintained only here; tool instructions describe implemented commands.
 
 | ID | Work | Required proof / current status |
 | --- | --- | --- |
-| GOD-01 | Inventory, boundaries, scenario contract and registration | Source inspection complete; this plan records design; runtime inventory pending |
-| GOD-02 | CLI, strict manifests, profiles, fresh outputs, list/dry-run | Pending implementation and invalid-input checks |
-| GOD-03 | Owned launch, profile, supervision, timeout and partial results | Pending real process success/failure evidence |
-| GOD-04 | Normal startup and Home/Fly instrumentation | Pending markers preserving intro/Home, draws/readiness and effective selection |
-| GOD-05 | Phase collector, bounded frame/resource/event joins | Pending boundary/integrity/overflow tests and observer-cost control |
-| GOD-06 | Normal input adapter, takeoff, climb and navigation | Pending Stik circuit with trajectory/control evidence |
-| GOD-07 | Rural house, flag, five-second pause/resume | Pending continuous route and pause/tick history |
-| GOD-08 | Roll, loop, recovery and prerequisite refusal | Pending observed maneuvers and failures retained |
-| GOD-09 | Approach, landing, stop and bounded go-around | Pending continuous attempt plus isolated fixture distinction |
-| GOD-10 | Night, sky/weather, field, jet and aircraft profiles | Pending capability rejection, effective readback and per-profile evidence |
-| GOD-11 | Comparison and JSON/HTML report | Pending paired comparison, equivalence and invalid-artifact rejection |
-| GOD-12 | Cycles, soak, hardware and overhead | Pending 50-cycle/30-minute evidence; preserve finite-energy limitations |
-| GOD-13 | CI, scheduled GPU runs and package lane | Pending separate source/debug/release scope and actual package instrumentation |
+| GOD-01 | Inventory, boundaries, scenario contract and registration | Implemented; source and first runtime inventory in [dated evidence](../research/god-test/2026-11-10.md) |
+| GOD-02 | CLI, strict manifests, profiles, fresh outputs, list/dry-run | Implemented with bounded suites/matrix and invalid-input checks; profiles remain experimental |
+| GOD-03 | Owned launch, profile, supervision, timeout and partial results | Implemented, clean native exit and retained failed runs; owned early-exit check; disk reserve and shared suite copy added |
+| GOD-04 | Normal startup and Home/Fly instrumentation | Implemented and rendered at 1080p; parent-clock alignment/physical presentation remain unqualified |
+| GOD-05 | Phase collector, bounded frame/resource/event joins | Event stream/integrity/cap checks pass; later phase reduction is offline; observer-cost controls and complete-startup OS coverage pending |
+| GOD-06 | Normal input adapter, takeoff, climb and navigation | Complete rendered Stik circuit observed; real 240 Hz/keyboard seam retained; no physical-validation claim |
+| GOD-07 | Rural house, flag, five-second pause/resume | Complete continuous rendered route observed; HeldKeys/virtual-release regression check added |
+| GOD-08 | Roll, loop, recovery and prerequisite refusal | Complete Stik maneuvers observed; broad-loop geometry, held-out conditions and other profiles pending |
+| GOD-09 | Approach, landing, stop and bounded go-around | Continuous day/night contact and stop collected, with rollout excursions exposed; isolated phase executed but touchdown exceeded runway; landing calibration and go-around remain pending |
+| GOD-10 | Night, sky/weather, field, jet and aircraft profiles | All six all-v1 cases completed with valid data, including rendered night/jet/alternate field; broader fleet profiles remain unqualified |
+| GOD-11 | Comparison and JSON/HTML report | Implemented stream validation and matched-transition comparison; 17 Python checks; whole-flight geometric equivalence and repeated A/B statistics pending |
+| GOD-12 | Cycles, soak, hardware and overhead | Ten rendered load/flight/Home cycles completed; bounded memory/soak commands implemented; 50-cycle/30-minute and overhead qualification remain pending |
+| GOD-13 | CI, scheduled GPU runs and package lane | Offline contract tests registered in research/test-tools.sh; scheduled real-GPU and release/Mac lanes remain pending |
 
 Order: contracts/CLI → supervised normal startup → collectors → basic pilot →
 landmarks/pause → aerobatics/landing → variants/comparison → long campaigns/packages.

@@ -10289,3 +10289,1468 @@ msgstr "Curso das aletas"
 
 msgid "Close the running activity before starting a blimp trial."
 msgstr "Feche a atividade em andamento antes de iniciar um teste do dirigível."
+
+# AC-10: Aircraft Creator.
+msgid "Not available yet"
+msgstr "Ainda não disponível"
+
+msgid "\"%s\" is not a number."
+msgstr "\"%s\" não é um número."
+
+msgid "Enter a number."
+msgstr "Digite um número."
+
+msgid "No model imported yet"
+msgstr "Nenhum modelo importado ainda"
+
+msgid "Controls simulated · visual is static"
+msgstr "Comandos simulados · o modelo visual é estático"
+
+msgid "4S · 800 Kv · 12×6 propeller — estimated"
+msgstr "4S · 800 Kv · hélice 12×6 — estimado"
+
+msgid "Datum X"
+msgstr "Referência X"
+
+msgid "Datum Y"
+msgstr "Referência Y"
+
+msgid "Datum Z"
+msgstr "Referência Z"
+
+msgid "STL (binary)"
+msgstr "STL (binário)"
+
+msgid "STL (text)"
+msgstr "STL (texto)"
+
+msgid "GLB"
+msgstr "GLB"
+
+msgid "Measured"
+msgstr "Medido"
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "Aft"
+msgstr "Atrás"
+
+msgid "Right"
+msgstr "Direita"
+
+msgid "Tailplane"
+msgstr "Estabilizador horizontal"
+
+msgid "Fin"
+msgstr "Deriva"
+
+msgid "Equipment positions"
+msgstr "Posições dos equipamentos"
+
+msgid "Inventory"
+msgstr "Inventário"
+
+msgid "Tailplane position"
+msgstr "Posição do estabilizador horizontal"
+
+msgid "Fin position"
+msgstr "Posição da deriva"
+
+msgid "Propeller hub position"
+msgstr "Posição do cubo da hélice"
+
+msgid "Battery position"
+msgstr "Posição da bateria"
+
+msgid "Speed controller position"
+msgstr "Posição do controlador eletrônico de velocidade"
+
+msgid "Thrust angles"
+msgstr "Ângulos de empuxo"
+
+msgid "Total mass"
+msgstr "Massa total"
+
+msgid "Centre of gravity (aft, right, up)"
+msgstr "Centro de gravidade (atrás, direita, acima)"
+
+msgid "Neutral point (aft)"
+msgstr "Ponto neutro (atrás)"
+
+msgid "Static margin (of the mean chord)"
+msgstr "Margem estática (da corda média)"
+
+msgid "Level flight speed"
+msgstr "Velocidade em voo nivelado"
+
+msgid "Stall speed"
+msgstr "Velocidade de estol"
+
+msgid "Thrust to weight"
+msgstr "Relação empuxo-peso"
+
+msgid "Known wingspan (m)"
+msgstr "Envergadura conhecida (m)"
+
+msgid "Replace the model?"
+msgstr "Substituir o modelo?"
+
+msgid "Importing \"%s\" replaces the current model and resets its orientation, units and datum. The values entered for the aircraft are kept."
+msgstr "Importar \"%s\" substitui o modelo atual e redefine a orientação, as unidades e a referência dele. Os valores informados para a aeronave são mantidos."
+
+msgid "Replace model"
+msgstr "Substituir modelo"
+
+msgid "Choose a model"
+msgstr "Escolher um modelo"
+
+msgid "3D model"
+msgstr "Modelo 3D"
+
+msgid "Back to Workshop"
+msgstr "Voltar à Oficina"
+
+msgid "Create aircraft"
+msgstr "Criar aeronave"
+
+msgid "Aircraft name"
+msgstr "Nome da aeronave"
+
+msgid "Experimental · estimated"
+msgstr "Experimental · estimado"
+
+msgid "Show preview"
+msgstr "Mostrar prévia"
+
+msgid "Choose an STL file or a self-contained GLB file. A picture is not a 3D model."
+msgstr "Escolha um arquivo STL ou um arquivo GLB autocontido. Uma imagem não é um modelo 3D."
+
+msgid "Choose model…"
+msgstr "Escolher modelo…"
+
+msgid "Replace model…"
+msgstr "Substituir modelo…"
+
+msgid "Import a model first"
+msgstr "Importe um modelo primeiro"
+
+msgid "Go to Import"
+msgstr "Ir para Importação"
+
+msgid "Say how the model sits in its file. Nothing is assumed."
+msgstr "Informe como o modelo está posicionado no arquivo. Nada é presumido."
+
+msgid "Until the placement is complete, the preview shows the model in the file's own axes."
+msgstr "Até que o posicionamento esteja completo, a prévia mostra o modelo nos eixos do próprio arquivo."
+
+msgid "Model axis pointing to the nose"
+msgstr "Eixo do modelo que aponta para o nariz"
+
+msgid "Model axis pointing up"
+msgstr "Eixo do modelo que aponta para cima"
+
+msgid "Model units"
+msgstr "Unidades do modelo"
+
+msgid "Choose units"
+msgstr "Escolher unidades"
+
+msgid "Choose…"
+msgstr "Escolher…"
+
+msgid "If the units are unknown, enter the real wingspan instead."
+msgstr "Se as unidades forem desconhecidas, informe a envergadura real."
+
+msgid "Datum: wing leading edge on the centreline"
+msgstr "Referência: bordo de ataque da asa na linha de centro"
+
+msgid "Type the point in the model's own coordinates, or pick it on the preview."
+msgstr "Digite o ponto nas coordenadas do próprio modelo ou marque-o na prévia."
+
+msgid "Pick on the preview"
+msgstr "Marcar na prévia"
+
+msgid "Click the wing leading edge at the centreline on the preview."
+msgstr "Na prévia, clique no bordo de ataque da asa, na linha de centro."
+
+msgid "Conventional"
+msgstr "Convencional"
+
+msgid "Flying wing"
+msgstr "Asa voadora"
+
+msgid "Canard"
+msgstr "Canard"
+
+msgid "V-tail"
+msgstr "Cauda em V"
+
+msgid "Use starting values…"
+msgstr "Usar valores iniciais…"
+
+msgid "Estimated starting values — correct them with your measurements."
+msgstr "Valores iniciais estimados — corrija-os com as suas medições."
+
+msgid "Flight dimensions are entered here; they do not reshape the visual model."
+msgstr "As dimensões de voo são informadas aqui; elas não alteram a forma do modelo visual."
+
+msgid "Distances are in metres from the wing leading edge on the centreline."
+msgstr "As distâncias são medidas em metros a partir do bordo de ataque da asa na linha de centro."
+
+msgid "Power package hardware is added automatically"
+msgstr "Os componentes do conjunto de propulsão são adicionados automaticamente"
+
+msgid "The motor, propeller, speed controller and battery are not listed here. List everything else the airplane carries."
+msgstr "O motor, a hélice, o controlador eletrônico de velocidade e a bateria não aparecem aqui. Liste todo o resto que o avião carrega."
+
+msgid "Propose airframe items"
+msgstr "Propor itens da estrutura"
+
+msgid "Add item"
+msgstr "Adicionar item"
+
+msgid "Propose replaces items marked Estimated. Mark an item Measured or Manual to keep your values."
+msgstr "Propor substitui os itens marcados como Estimado. Marque um item como Medido ou Manual para manter os seus valores."
+
+msgid "Electric"
+msgstr "Elétrico"
+
+msgid "Gasoline"
+msgstr "Gasolina"
+
+msgid "Glow"
+msgstr "Glow"
+
+msgid "No gear"
+msgstr "Sem trem"
+
+msgid "Fixed tricycle"
+msgstr "Triciclo fixo"
+
+msgid "Taildragger"
+msgstr "Bequilha"
+
+msgid "Retractable"
+msgstr "Retrátil"
+
+msgid "The model's own colours"
+msgstr "As cores do próprio modelo"
+
+msgid "Generate paint"
+msgstr "Gerar pintura"
+
+msgid "Upload image"
+msgstr "Carregar imagem"
+
+msgid "Import skin"
+msgstr "Importar pintura"
+
+msgid "Estimated aircraft — not a measurement of a real airplane."
+msgstr "Aeronave estimada — não é uma medição de um avião real."
+
+msgid "Issues"
+msgstr "Problemas"
+
+msgid "Start"
+msgstr "Início"
+
+msgid "Summary"
+msgstr "Resumo"
+
+msgid "Needs landing gear"
+msgstr "Requer trem de pouso"
+
+msgid "Not set"
+msgstr "Não definido"
+
+msgid "Estimated read-out"
+msgstr "Leituras estimadas"
+
+msgid "These estimated values replace the current ones:"
+msgstr "Estes valores estimados substituem os atuais:"
+
+msgid "Use starting values?"
+msgstr "Usar valores iniciais?"
+
+msgid "Use starting values"
+msgstr "Usar valores iniciais"
+
+msgid "Choose the nose and up axes first, then enter a wingspan above zero."
+msgstr "Escolha primeiro os eixos do nariz e de cima e depois informe uma envergadura maior que zero."
+
+msgid "Nothing can be proposed yet. Enter the wing, tail and fuselage dimensions in Aircraft layout first."
+msgstr "Ainda não é possível propor nada. Informe primeiro as dimensões da asa, da cauda e da fuselagem em Layout da aeronave."
+
+msgid "New item"
+msgstr "Novo item"
+
+msgid "The inventory is full (%s items)."
+msgstr "O inventário está cheio (%s itens)."
+
+msgid "No items yet. Propose the airframe items or add your own."
+msgstr "Ainda não há itens. Proponha os itens da estrutura ou adicione os seus."
+
+msgid "Item name"
+msgstr "Nome do item"
+
+msgid "Evidence"
+msgstr "Procedência"
+
+msgid "Status: %s"
+msgstr "Status: %s"
+
+msgid "Inspecting model…"
+msgstr "Inspecionando o modelo…"
+
+msgid "Test fly is available once the issues listed above are resolved."
+msgstr "O voo de teste fica disponível quando os problemas listados acima forem resolvidos."
+
+msgid "The model could not be imported"
+msgstr "Não foi possível importar o modelo"
+
+msgid "The current model is unchanged."
+msgstr "O modelo atual não foi alterado."
+
+msgid "Model imported"
+msgstr "Modelo importado"
+
+msgid "File: %s"
+msgstr "Arquivo: %s"
+
+msgid "Format: %s"
+msgstr "Formato: %s"
+
+msgid "Triangles: %s"
+msgstr "Triângulos: %s"
+
+msgid "Size in model units: %s × %s × %s"
+msgstr "Tamanho em unidades do modelo: %s × %s × %s"
+
+msgid "File size: %s"
+msgstr "Tamanho do arquivo: %s"
+
+msgid "Warning: %s"
+msgstr "Aviso: %s"
+
+msgid "Note: %s"
+msgstr "Observação: %s"
+
+msgid "Scale: 1 model unit = %s m"
+msgstr "Escala: 1 unidade do modelo = %s m"
+
+msgid "Choose the axes, the units and the datum to see the real size."
+msgstr "Escolha os eixos, as unidades e a referência para ver o tamanho real."
+
+msgid "Span %s m · Length %s m · Height %s m"
+msgstr "Envergadura %s m · Comprimento %s m · Altura %s m"
+
+msgid "No open issues."
+msgstr "Nenhum problema pendente."
+
+msgid "Not placed yet"
+msgstr "Ainda não posicionado"
+
+msgid "Wingspan"
+msgstr "Envergadura"
+
+msgid "%s inventory items"
+msgstr "%s itens no inventário"
+
+msgid "CG"
+msgstr "CG"
+
+msgid "Neutral point"
+msgstr "Ponto neutro"
+
+msgid "Propeller hub"
+msgstr "Cubo da hélice"
+
+msgid "No model imported"
+msgstr "Nenhum modelo importado"
+
+msgid "Zoom +"
+msgstr "Zoom +"
+
+msgid "Zoom −"
+msgstr "Zoom −"
+
+msgid "Wing root chord"
+msgstr "Corda na raiz da asa"
+
+msgid "Wing tip chord"
+msgstr "Corda na ponta da asa"
+
+msgid "Tailplane span"
+msgstr "Envergadura do estabilizador horizontal"
+
+msgid "Tailplane chord"
+msgstr "Corda do estabilizador horizontal"
+
+msgid "Tailplane leading edge, distance aft"
+msgstr "Bordo de ataque do estabilizador horizontal, distância para trás"
+
+msgid "Tailplane height"
+msgstr "Altura do estabilizador horizontal"
+
+msgid "Fin height"
+msgstr "Altura da deriva"
+
+msgid "Fin chord"
+msgstr "Corda da deriva"
+
+msgid "Fin leading edge, distance aft"
+msgstr "Bordo de ataque da deriva, distância para trás"
+
+msgid "Fin base height"
+msgstr "Altura da base da deriva"
+
+msgid "Nose, distance aft (negative ahead of the wing)"
+msgstr "Nariz, distância para trás (negativa à frente da asa)"
+
+msgid "Tail end, distance aft"
+msgstr "Extremidade da cauda, distância para trás"
+
+msgid "Fuselage width"
+msgstr "Largura da fuselagem"
+
+msgid "Fuselage height"
+msgstr "Altura da fuselagem"
+
+msgid "Fuselage centre height"
+msgstr "Altura do centro da fuselagem"
+
+msgid "Battery, distance aft"
+msgstr "Bateria, distância para trás"
+
+msgid "Battery, distance right"
+msgstr "Bateria, distância à direita"
+
+msgid "Battery height"
+msgstr "Altura da bateria"
+
+msgid "Propeller hub, distance aft"
+msgstr "Cubo da hélice, distância para trás"
+
+msgid "Propeller hub, distance right"
+msgstr "Cubo da hélice, distância à direita"
+
+msgid "Propeller hub height"
+msgstr "Altura do cubo da hélice"
+
+msgid "Speed controller, distance aft"
+msgstr "Controlador eletrônico de velocidade, distância para trás"
+
+msgid "Speed controller, distance right"
+msgstr "Controlador eletrônico de velocidade, distância à direita"
+
+msgid "Speed controller height"
+msgstr "Altura do controlador eletrônico de velocidade"
+
+msgid "Down thrust"
+msgstr "Empuxo para baixo"
+
+msgid "Right thrust"
+msgstr "Empuxo para a direita"
+
+msgid "Battery charge at start (0 to 1)"
+msgstr "Carga inicial da bateria (de 0 a 1)"
+
+msgid "Aileron travel"
+msgstr "Curso dos ailerons"
+
+msgid "Elevator travel"
+msgstr "Curso do profundor"
+
+msgid "Rudder travel"
+msgstr "Curso do leme"
+
+msgid "Neutral to full command time"
+msgstr "Tempo do neutro ao comando total"
+
+msgid "Import"
+msgstr "Importação"
+
+msgid "Orient and size"
+msgstr "Orientação e tamanho"
+
+msgid "Aircraft layout"
+msgstr "Layout da aeronave"
+
+msgid "Weight and balance"
+msgstr "Peso e balanceamento"
+
+msgid "Power and mount"
+msgstr "Motorização e montagem"
+
+msgid "Controls and ground"
+msgstr "Comandos e solo"
+
+msgid "Paint and skins"
+msgstr "Pinturas"
+
+msgid "Review and test"
+msgstr "Revisão e teste"
+
+msgid "Not started"
+msgstr "Não iniciado"
+
+msgid "In progress"
+msgstr "Em andamento"
+
+msgid "Needs attention"
+msgstr "Requer atenção"
+
+msgid "Complete"
+msgstr "Concluído"
+
+msgid "Correct the highlighted values first."
+msgstr "Corrija primeiro os valores destacados."
+
+msgid "Import a model first."
+msgstr "Importe um modelo primeiro."
+
+msgid "The record cannot be written: %s"
+msgstr "Não é possível gravar o registro: %s"
+
+msgid "The record exceeds its size limit."
+msgstr "O registro excede o limite de tamanho."
+
+msgid "The record starts with a byte-order mark."
+msgstr "O registro começa com uma marca de ordem de bytes."
+
+msgid "The record is not valid JSON: %s"
+msgstr "O registro não é um JSON válido: %s"
+
+msgid "The record must be a JSON object."
+msgstr "O registro deve ser um objeto JSON."
+
+msgid "The record has an invalid number: %s"
+msgstr "O registro tem um número inválido: %s"
+
+msgid "The loaded record does not carry the aircraft identity."
+msgstr "O registro carregado não contém a identidade da aeronave."
+
+msgid "The compiled aircraft could not be sealed."
+msgstr "Não foi possível selar a aeronave compilada."
+
+msgid "The aircraft cannot be described by this package."
+msgstr "Este pacote não consegue descrever a aeronave."
+
+msgid "The tail surfaces must sit behind the wing's quarter chord."
+msgstr "As superfícies da cauda devem ficar atrás do quarto de corda da asa."
+
+msgid "The propeller hub must sit on the fuselage nose, inside its width and height."
+msgstr "O cubo da hélice deve ficar no nariz da fuselagem, dentro da largura e da altura dela."
+
+msgid "The definition format must be %s."
+msgstr "O formato da definição deve ser %s."
+
+msgid "The aircraft identity must be a lowercase version 4 UUID."
+msgstr "A identidade da aeronave deve ser um UUID versão 4 em minúsculas."
+
+msgid "The tip chord must not exceed the root chord."
+msgstr "A corda da ponta não deve exceder a corda da raiz."
+
+msgid "The fuselage nose must be ahead of the wing leading edge (negative x)."
+msgstr "O nariz da fuselagem deve ficar à frente do bordo de ataque da asa (x negativo)."
+
+msgid "The fuselage tail must be behind the wing leading edge (positive x)."
+msgstr "A cauda da fuselagem deve ficar atrás do bordo de ataque da asa (x positivo)."
+
+msgid "The starting charge must be above zero."
+msgstr "A carga inicial deve ser maior que zero."
+
+msgid "The inventory must be a list of items."
+msgstr "O inventário deve ser uma lista de itens."
+
+msgid "The inventory holds %s items; the limit is %s."
+msgstr "O inventário contém %s itens; o limite é %s."
+
+msgid "An inventory item must be an object."
+msgstr "Um item do inventário deve ser um objeto."
+
+msgid "An item ID is lowercase snake_case, starts with a letter and has at most 80 characters."
+msgstr "O ID de um item usa snake_case em minúsculas, começa com uma letra e tem no máximo 80 caracteres."
+
+msgid "The ID %s belongs to the power package or the compiler."
+msgstr "O ID %s pertence ao conjunto de propulsão ou ao compilador."
+
+msgid "The ID %s is used by more than one item."
+msgstr "O ID %s é usado por mais de um item."
+
+msgid "An item name is text of 1 to %s characters."
+msgstr "O nome de um item é um texto de 1 a %s caracteres."
+
+msgid "An item is measured, estimated or manual."
+msgstr "Um item é medido, estimado ou manual."
+
+msgid "This value is required."
+msgstr "Este valor é obrigatório."
+
+msgid "This field is not part of the definition."
+msgstr "Este campo não faz parte da definição."
+
+msgid "This value must be an object."
+msgstr "Este valor deve ser um objeto."
+
+msgid "This value must be a finite number."
+msgstr "Este valor deve ser um número finito."
+
+msgid "This value must be between %s and %s."
+msgstr "Este valor deve estar entre %s e %s."
+
+msgid "This value must be a list of %s finite numbers."
+msgstr "Este valor deve ser uma lista de %s números finitos."
+
+msgid "Each number must be between %s and %s."
+msgstr "Cada número deve estar entre %s e %s."
+
+msgid "The tail sits on the centreline: its y position must be 0."
+msgstr "A cauda fica na linha de centro: sua posição em y deve ser 0."
+
+msgid "The file is not a binary glTF model. Export the model as glTF Binary (.glb)."
+msgstr "O arquivo não é um modelo glTF binário. Exporte o modelo como glTF Binary (.glb)."
+
+msgid "The model file is damaged: its declared length does not match its size."
+msgstr "O arquivo do modelo está danificado: o comprimento declarado não corresponde ao tamanho do arquivo."
+
+msgid "The model file is damaged: it does not start with its JSON chunk."
+msgstr "O arquivo do modelo está danificado: ele não começa com o bloco JSON."
+
+msgid "The model file is damaged: its JSON chunk has an invalid length."
+msgstr "O arquivo do modelo está danificado: o bloco JSON tem um comprimento inválido."
+
+msgid "The model file is damaged: stray bytes follow its JSON chunk."
+msgstr "O arquivo do modelo está danificado: há bytes sobrando depois do bloco JSON."
+
+msgid "The model file is damaged: it holds more than one JSON chunk."
+msgstr "O arquivo do modelo está danificado: ele contém mais de um bloco JSON."
+
+msgid "The model file is damaged: its binary chunk has an invalid length."
+msgstr "O arquivo do modelo está danificado: o bloco binário tem um comprimento inválido."
+
+msgid "The model file is damaged: data follows its binary chunk."
+msgstr "O arquivo do modelo está danificado: há dados depois do bloco binário."
+
+msgid "The model description cannot be read: %s."
+msgstr "Não é possível ler a descrição do modelo: %s."
+
+msgid "The model description is not valid JSON: %s"
+msgstr "A descrição do modelo não é um JSON válido: %s"
+
+msgid "The model description is not a JSON object."
+msgstr "A descrição do modelo não é um objeto JSON."
+
+msgid "The model has no asset description."
+msgstr "O modelo não tem descrição de asset."
+
+msgid "The model does not state its glTF version."
+msgstr "O modelo não informa a versão do glTF."
+
+msgid "The model has an invalid asset description."
+msgstr "O modelo tem uma descrição de asset inválida."
+
+msgid "The model has an invalid list of required extensions."
+msgstr "O modelo tem uma lista de extensões obrigatórias inválida."
+
+msgid "The model has an invalid list of extensions."
+msgstr "O modelo tem uma lista de extensões inválida."
+
+msgid "The model has an invalid extensions object."
+msgstr "O modelo tem um objeto de extensões inválido."
+
+msgid "The model uses the extension %s without declaring it."
+msgstr "O modelo usa a extensão %s sem declará-la."
+
+msgid "The model file holds binary data that no buffer describes."
+msgstr "O arquivo do modelo contém dados binários que nenhum buffer descreve."
+
+msgid "The model describes a data buffer that the file does not contain."
+msgstr "O modelo descreve um buffer de dados que o arquivo não contém."
+
+msgid "The model's data buffer does not match the binary data in the file."
+msgstr "O buffer de dados do modelo não corresponde aos dados binários do arquivo."
+
+msgid "A buffer view refers to a buffer that does not exist."
+msgstr "Uma vista de buffer faz referência a um buffer que não existe."
+
+msgid "A buffer view reaches outside the model's data."
+msgstr "Uma vista de buffer ultrapassa os dados do modelo."
+
+msgid "A buffer view has an invalid byte stride."
+msgstr "Uma vista de buffer tem um passo de bytes inválido."
+
+msgid "A buffer view has an invalid target."
+msgstr "Uma vista de buffer tem um destino inválido."
+
+msgid "An accessor refers to a buffer view that does not exist."
+msgstr "Um acessor faz referência a uma vista de buffer que não existe."
+
+msgid "An accessor has an invalid component type."
+msgstr "Um acessor tem um tipo de componente inválido."
+
+msgid "An accessor has an invalid type."
+msgstr "Um acessor tem um tipo inválido."
+
+msgid "An accessor has an invalid normalized flag."
+msgstr "Um acessor tem um indicador de normalização inválido."
+
+msgid "An accessor has an invalid count or offset."
+msgstr "Um acessor tem uma contagem ou um deslocamento inválido."
+
+msgid "An accessor is not aligned to its component size."
+msgstr "Um acessor não está alinhado ao tamanho do seu componente."
+
+msgid "A buffer view's byte stride is smaller than its elements."
+msgstr "O passo de bytes de uma vista de buffer é menor que os seus elementos."
+
+msgid "An accessor reaches outside its buffer view."
+msgstr "Um acessor ultrapassa a sua vista de buffer."
+
+msgid "An accessor has invalid min or max values."
+msgstr "Um acessor tem valores mínimos ou máximos inválidos."
+
+msgid "An image refers to a buffer view that does not exist."
+msgstr "Uma imagem faz referência a uma vista de buffer que não existe."
+
+msgid "An image buffer view has a byte stride."
+msgstr "A vista de buffer de uma imagem tem um passo de bytes."
+
+msgid "An embedded image does not state its type."
+msgstr "Uma imagem incorporada não informa o seu tipo."
+
+msgid "A texture sampler has an invalid filter or wrap mode."
+msgstr "Um amostrador de textura tem um filtro ou um modo de repetição inválido."
+
+msgid "A texture refers to an image that does not exist."
+msgstr "Uma textura faz referência a uma imagem que não existe."
+
+msgid "A texture refers to a sampler that does not exist."
+msgstr "Uma textura faz referência a um amostrador que não existe."
+
+msgid "A material has invalid surface settings."
+msgstr "Um material tem configurações de superfície inválidas."
+
+msgid "A material has a colour or factor outside 0 to 1."
+msgstr "Um material tem uma cor ou um fator fora do intervalo de 0 a 1."
+
+msgid "A material has an invalid alpha mode."
+msgstr "Um material tem um modo alfa inválido."
+
+msgid "A material has an invalid alpha cutoff."
+msgstr "Um material tem um limite de corte alfa inválido."
+
+msgid "A material has an invalid double-sided flag."
+msgstr "Um material tem um indicador de dupla face inválido."
+
+msgid "A material has an invalid %s extension."
+msgstr "Um material tem uma extensão %s inválida."
+
+msgid "A material has an invalid texture reference."
+msgstr "Um material tem uma referência de textura inválida."
+
+msgid "A material refers to a texture that does not exist."
+msgstr "Um material faz referência a uma textura que não existe."
+
+msgid "A material has an invalid texture coordinate set."
+msgstr "Um material tem um conjunto de coordenadas de textura inválido."
+
+msgid "A mesh has no geometry."
+msgstr "Uma malha não tem geometria."
+
+msgid "A mesh has an invalid surface."
+msgstr "Uma malha tem uma superfície inválida."
+
+msgid "A mesh surface has an invalid drawing mode."
+msgstr "Uma superfície de malha tem um modo de desenho inválido."
+
+msgid "A mesh surface refers to a material that does not exist."
+msgstr "Uma superfície de malha faz referência a um material que não existe."
+
+msgid "A mesh surface has no vertex positions."
+msgstr "Uma superfície de malha não tem posições de vértices."
+
+msgid "A mesh surface refers to an accessor that does not exist."
+msgstr "Uma superfície de malha faz referência a um acessor que não existe."
+
+msgid "A mesh surface reads vertex data from an index buffer view."
+msgstr "Uma superfície de malha lê dados de vértices de uma vista de buffer de índices."
+
+msgid "A mesh surface has %s data of the wrong type."
+msgstr "Uma superfície de malha tem dados %s do tipo errado."
+
+msgid "A mesh surface has %s data that is not padded to four bytes."
+msgstr "Uma superfície de malha tem dados %s que não estão alinhados a quatro bytes."
+
+msgid "A mesh surface has vertex attributes of different lengths."
+msgstr "Uma superfície de malha tem atributos de vértice de comprimentos diferentes."
+
+msgid "A mesh surface does not declare the bounds of its vertex positions."
+msgstr "Uma superfície de malha não declara os limites das posições dos seus vértices."
+
+msgid "A mesh surface declares inverted bounds for its vertex positions."
+msgstr "Uma superfície de malha declara limites invertidos para as posições dos seus vértices."
+
+msgid "A mesh surface has index data of the wrong type."
+msgstr "Uma superfície de malha tem dados de índices do tipo errado."
+
+msgid "A mesh surface does not hold whole triangles."
+msgstr "Uma superfície de malha não contém triângulos completos."
+
+msgid "A node refers to a mesh that does not exist."
+msgstr "Um nó faz referência a uma malha que não existe."
+
+msgid "A node has an invalid list of children."
+msgstr "Um nó tem uma lista de filhos inválida."
+
+msgid "A node refers to a child that does not exist."
+msgstr "Um nó faz referência a um filho que não existe."
+
+msgid "A node is its own child."
+msgstr "Um nó é filho de si mesmo."
+
+msgid "A node lists the same child twice."
+msgstr "Um nó lista o mesmo filho duas vezes."
+
+msgid "A node has more than one parent."
+msgstr "Um nó tem mais de um pai."
+
+msgid "The model's node tree contains a loop."
+msgstr "A árvore de nós do modelo contém um ciclo."
+
+msgid "The model has no scene. Export the model with its objects selected or visible."
+msgstr "O modelo não tem cena. Exporte o modelo com os objetos selecionados ou visíveis."
+
+msgid "The model selects a scene that does not exist."
+msgstr "O modelo seleciona uma cena que não existe."
+
+msgid "A scene has an invalid list of nodes."
+msgstr "Uma cena tem uma lista de nós inválida."
+
+msgid "A scene refers to a node that does not exist."
+msgstr "Uma cena faz referência a um nó que não existe."
+
+msgid "A scene lists the same node twice."
+msgstr "Uma cena lista o mesmo nó duas vezes."
+
+msgid "A scene lists a node that is another node's child."
+msgstr "Uma cena lista um nó que é filho de outro nó."
+
+msgid "The model's scene is empty. Export the model with its objects selected or visible."
+msgstr "A cena do modelo está vazia. Exporte o modelo com os objetos selecionados ou visíveis."
+
+msgid "A node has both a matrix and separate translation, rotation or scale."
+msgstr "Um nó tem ao mesmo tempo uma matriz e translação, rotação ou escala separadas."
+
+msgid "A node has an invalid matrix."
+msgstr "Um nó tem uma matriz inválida."
+
+msgid "A node has an invalid translation."
+msgstr "Um nó tem uma translação inválida."
+
+msgid "A node has an invalid rotation."
+msgstr "Um nó tem uma rotação inválida."
+
+msgid "A node's rotation is not a unit quaternion."
+msgstr "A rotação de um nó não é um quatérnio unitário."
+
+msgid "A node has an invalid scale."
+msgstr "Um nó tem uma escala inválida."
+
+msgid "A node has a zero scale."
+msgstr "Um nó tem escala zero."
+
+msgid "A mesh surface holds vertex data that is not a finite number."
+msgstr "Uma superfície de malha contém dados de vértices que não são números finitos."
+
+msgid "A mesh surface refers to a vertex that does not exist."
+msgstr "Uma superfície de malha faz referência a um vértice que não existe."
+
+msgid "A mesh surface holds a vertex position that is not a finite number."
+msgstr "Uma superfície de malha contém uma posição de vértice que não é um número finito."
+
+msgid "A mesh surface has vertex positions outside its declared bounds."
+msgstr "Uma superfície de malha tem posições de vértices fora dos limites declarados."
+
+msgid "A node's transform is too large to represent. Apply transforms and re-export."
+msgstr "A transformação de um nó é grande demais para ser representada. Aplique as transformações e exporte novamente."
+
+msgid "The model's geometry is too large to represent. Apply transforms and re-export."
+msgstr "A geometria do modelo é grande demais para ser representada. Aplique as transformações e exporte novamente."
+
+msgid "The model's scene has no mesh. Export the model with its objects selected or visible."
+msgstr "A cena do modelo não tem nenhuma malha. Exporte o modelo com os objetos selecionados ou visíveis."
+
+msgid "The model's %s list is invalid."
+msgstr "A lista %s do modelo é inválida."
+
+msgid "The model has a name that is not text."
+msgstr "O modelo tem um nome que não é texto."
+
+msgid "The model uses glTF container version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "O modelo usa a versão %s do contêiner glTF. Exporte-o como glTF 2.0 Binary (.glb)."
+
+msgid "The model file holds a chunk of an unknown type. Export a self-contained GLB with embedded PNG textures."
+msgstr "O arquivo do modelo contém um bloco de tipo desconhecido. Exporte um GLB autocontido com texturas PNG incorporadas."
+
+msgid "The model holds %s, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "O modelo contém dados do tipo %s, que não têm suporte. Exporte um modelo rígido: aplique os modificadores e remova armaduras, shape keys e animações."
+
+msgid "The model holds cameras, which are not supported. Remove them from the export."
+msgstr "O modelo contém câmeras, que não têm suporte. Remova-as da exportação."
+
+msgid "The model uses glTF version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "O modelo usa a versão %s do glTF. Exporte-o como glTF 2.0 Binary (.glb)."
+
+msgid "The model uses more than one data buffer. Export a self-contained GLB with embedded PNG textures."
+msgstr "O modelo usa mais de um buffer de dados. Exporte um GLB autocontido com texturas PNG incorporadas."
+
+msgid "The model refers to an external or inline data file. Export a self-contained GLB with embedded PNG textures."
+msgstr "O modelo faz referência a um arquivo de dados externo ou embutido em linha. Exporte um GLB autocontido com texturas PNG incorporadas."
+
+msgid "The model uses sparse accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "O modelo usa acessores esparsos, que não têm suporte. Exporte um modelo rígido: aplique os modificadores e remova armaduras, shape keys e animações."
+
+msgid "The model has an accessor without data. Export a self-contained GLB with embedded PNG textures."
+msgstr "O modelo tem um acessor sem dados. Exporte um GLB autocontido com texturas PNG incorporadas."
+
+msgid "The model uses matrix accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "O modelo usa acessores de matrizes, que não têm suporte. Exporte um modelo rígido: aplique os modificadores e remova armaduras, shape keys e animações."
+
+msgid "The model refers to an external or inline image file. Export a self-contained GLB with embedded PNG textures."
+msgstr "O modelo faz referência a um arquivo de imagem externo ou embutido em linha. Exporte um GLB autocontido com texturas PNG incorporadas."
+
+msgid "The model embeds an image of type %s. Export a self-contained GLB with embedded PNG textures."
+msgstr "O modelo incorpora uma imagem do tipo %s. Exporte um GLB autocontido com texturas PNG incorporadas."
+
+msgid "A material uses texture coordinate set %s; only sets 0 and 1 are supported. Use the first UV map and export again."
+msgstr "Um material usa o conjunto de coordenadas de textura %s; somente os conjuntos 0 e 1 têm suporte. Use o primeiro mapa UV e exporte novamente."
+
+msgid "The model uses shape keys (morph targets), which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "O modelo usa shape keys (morph targets), que não têm suporte. Exporte um modelo rígido: aplique os modificadores e remova armaduras, shape keys e animações."
+
+msgid "A mesh surface is made of points, lines, strips or fans. Triangulate the mesh and export again."
+msgstr "Uma superfície de malha é formada por pontos, linhas, tiras ou leques. Triangule a malha e exporte novamente."
+
+msgid "The model is skinned (%s). Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "O modelo está vinculado a uma armadura (%s). Exporte um modelo rígido: aplique os modificadores e remova armaduras, shape keys e animações."
+
+msgid "A mesh surface uses the vertex attribute %s, which is not supported. Remove extra UV maps, colour layers and custom attributes and export again."
+msgstr "Uma superfície de malha usa o atributo de vértice %s, que não tem suporte. Remova mapas UV extras, camadas de cor e atributos personalizados e exporte novamente."
+
+msgid "A mesh surface stores %s as integers. Export without mesh quantization."
+msgstr "Uma superfície de malha armazena %s como inteiros. Exporte sem quantização de malha."
+
+msgid "The model uses armatures or shape keys, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "O modelo usa armaduras ou shape keys, que não têm suporte. Exporte um modelo rígido: aplique os modificadores e remova armaduras, shape keys e animações."
+
+msgid "A node's matrix is sheared, mirrored, flattened or not affine. Apply transforms and re-export."
+msgstr "A matriz de um nó está cisalhada, espelhada, achatada ou não é afim. Aplique as transformações e exporte novamente."
+
+msgid "A node has a negative (mirroring) scale. Apply transforms and re-export."
+msgstr "Um nó tem uma escala negativa (de espelhamento). Aplique as transformações e exporte novamente."
+
+msgid "The model uses the glTF extension %s, which is not supported. %s"
+msgstr "O modelo usa a extensão glTF %s, que não tem suporte. %s"
+
+msgid "The model uses the glTF property %s, which is not supported. Export a plain rigid model with the exporter's default settings."
+msgstr "O modelo usa a propriedade glTF %s, que não tem suporte. Exporte um modelo rígido simples com as configurações padrão do exportador."
+
+msgid "The model file is larger than %s MiB. Reduce its detail or texture size and export it again."
+msgstr "O arquivo do modelo tem mais de %s MiB. Reduza o nível de detalhe ou o tamanho das texturas e exporte-o novamente."
+
+msgid "The model description is larger than %s MiB. Simplify the model and export it again."
+msgstr "A descrição do modelo tem mais de %s MiB. Simplifique o modelo e exporte-o novamente."
+
+msgid "The model description is too large or too deeply nested. Simplify the model and export it again."
+msgstr "A descrição do modelo é grande demais ou tem níveis de aninhamento demais. Simplifique o modelo e exporte-o novamente."
+
+msgid "The model's textures hold more than %s pixels in total. Reduce the texture sizes."
+msgstr "As texturas do modelo somam mais de %s pixels no total. Reduza o tamanho das texturas."
+
+msgid "The model has more than %s mesh surfaces. Join meshes or reduce the material count."
+msgstr "O modelo tem mais de %s superfícies de malha. Una malhas ou reduza o número de materiais."
+
+msgid "The model's node tree is deeper than %s levels. Flatten the hierarchy and export again."
+msgstr "A árvore de nós do modelo tem mais de %s níveis de profundidade. Achate a hierarquia e exporte novamente."
+
+msgid "The model has more than %s triangles. Reduce its detail and export again."
+msgstr "O modelo tem mais de %s triângulos. Reduza o nível de detalhe e exporte novamente."
+
+msgid "The model has more than %s vertices. Reduce its detail and export again."
+msgstr "O modelo tem mais de %s vértices. Reduza o nível de detalhe e exporte novamente."
+
+msgid "The model has more than %s %s. Simplify the model and export it again."
+msgstr "O modelo tem mais de %s elementos do tipo %s. Simplifique o modelo e exporte-o novamente."
+
+msgid "The compressed data does not start with a valid zlib header."
+msgstr "Os dados compactados não começam com um cabeçalho zlib válido."
+
+msgid "The compressed data is truncated: it holds less data than declared."
+msgstr "Os dados compactados estão truncados: contêm menos dados do que o declarado."
+
+msgid "The compressed data expands beyond its declared size."
+msgstr "Os dados compactados, ao serem expandidos, ultrapassam o tamanho declarado."
+
+msgid "Extra bytes follow the end of the compressed data."
+msgstr "Há bytes sobrando depois do fim dos dados compactados."
+
+msgid "The compressed data is truncated: its end marker or checksum is missing."
+msgstr "Os dados compactados estão truncados: falta o marcador de fim ou a soma de verificação."
+
+msgid "The compressed data holds values its reader refuses."
+msgstr "Os dados compactados contêm valores que o leitor rejeita."
+
+msgid "The compressed data is corrupt."
+msgstr "Os dados compactados estão corrompidos."
+
+msgid "Package %s is not installed."
+msgstr "O pacote %s não está instalado."
+
+msgid "Package %s cannot be used: %s"
+msgstr "Não é possível usar o pacote %s: %s"
+
+msgid "Choose which model axis points to the nose."
+msgstr "Escolha qual eixo do modelo aponta para o nariz."
+
+msgid "Choose which model axis points up."
+msgstr "Escolha qual eixo do modelo aponta para cima."
+
+msgid "The nose and up directions must be different model axes."
+msgstr "As direções do nariz e de cima devem ser eixos diferentes do modelo."
+
+msgid "Choose the model units or enter the real wingspan."
+msgstr "Escolha as unidades do modelo ou informe a envergadura real."
+
+msgid "Mark the wing leading edge on the centreline."
+msgstr "Marque o bordo de ataque da asa na linha de centro."
+
+msgid "The image has more than %s chunks. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "A imagem tem mais de %s blocos. Exporte a imagem novamente como um PNG padrão, sem perfis de cor nem metadados de texto."
+
+msgid "The image holds metadata of type %s, which is not accepted. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "A imagem contém metadados do tipo %s, que não são aceitos. Exporte a imagem novamente como um PNG padrão, sem perfis de cor nem metadados de texto."
+
+msgid "The image holds a chunk of type %s, which is not supported. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "A imagem contém um bloco do tipo %s, que não tem suporte. Exporte a imagem novamente como um PNG padrão, sem perfis de cor nem metadados de texto."
+
+msgid "The image file is larger than %s MiB. Reduce its resolution and re-export it."
+msgstr "O arquivo de imagem tem mais de %s MiB. Reduza a resolução e exporte-o novamente."
+
+msgid "The image is %s x %s pixels; the largest accepted side is %s pixels."
+msgstr "A imagem tem %s x %s pixels; o maior lado aceito é de %s pixels."
+
+msgid "The image file is truncated inside a chunk."
+msgstr "O arquivo de imagem está truncado dentro de um bloco."
+
+msgid "The image has a chunk with an invalid type."
+msgstr "A imagem tem um bloco com um tipo inválido."
+
+msgid "The image is damaged: its %s chunk fails its checksum."
+msgstr "A imagem está danificada: o bloco %s não passa na soma de verificação."
+
+msgid "The image has more than one header chunk."
+msgstr "A imagem tem mais de um bloco de cabeçalho."
+
+msgid "The image data chunks are not consecutive."
+msgstr "Os blocos de dados da imagem não são consecutivos."
+
+msgid "The indexed image has no palette before its data."
+msgstr "A imagem indexada não tem uma paleta antes dos dados."
+
+msgid "The image end chunk is not empty."
+msgstr "O bloco final da imagem não está vazio."
+
+msgid "The image has no image data."
+msgstr "A imagem não tem dados de imagem."
+
+msgid "Extra bytes follow the end of the image."
+msgstr "Há bytes sobrando depois do fim da imagem."
+
+msgid "The image has more than one %s chunk."
+msgstr "A imagem tem mais de um bloco %s."
+
+msgid "The image has its %s chunk after the image data."
+msgstr "A imagem tem o bloco %s depois dos dados de imagem."
+
+msgid "The image file ends without its end chunk."
+msgstr "O arquivo de imagem termina sem o bloco final."
+
+msgid "The image data uses an invalid scanline filter."
+msgstr "Os dados da imagem usam um filtro de linha de varredura inválido."
+
+msgid "The image data is not a valid zlib stream."
+msgstr "Os dados da imagem não são um fluxo zlib válido."
+
+msgid "The image data is truncated: it holds less than the image size requires."
+msgstr "Os dados da imagem estão truncados: contêm menos do que o tamanho da imagem exige."
+
+msgid "The image data holds more than the image size allows."
+msgstr "Os dados da imagem contêm mais do que o tamanho da imagem permite."
+
+msgid "Extra bytes follow the compressed image data."
+msgstr "Há bytes sobrando depois dos dados compactados da imagem."
+
+msgid "The image data is corrupt. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "Os dados da imagem estão corrompidos. Exporte a imagem novamente como um PNG padrão, sem perfis de cor nem metadados de texto."
+
+msgid "The file is too short to be a PNG image."
+msgstr "O arquivo é curto demais para ser uma imagem PNG."
+
+msgid "The file is not a PNG image. Export the texture as PNG."
+msgstr "O arquivo não é uma imagem PNG. Exporte a textura como PNG."
+
+msgid "The image does not start with a valid header chunk."
+msgstr "A imagem não começa com um bloco de cabeçalho válido."
+
+msgid "The image has a zero width or height."
+msgstr "A imagem tem largura ou altura igual a zero."
+
+msgid "The image has an invalid colour type or bit depth."
+msgstr "A imagem tem um tipo de cor ou uma profundidade de bits inválidos."
+
+msgid "The image has an invalid compression, filter or interlace method."
+msgstr "A imagem tem um método de compactação, de filtro ou de entrelaçamento inválido."
+
+msgid "The image could not be decoded. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "Não foi possível decodificar a imagem. Exporte a imagem novamente como um PNG padrão, sem perfis de cor nem metadados de texto."
+
+msgid "The file \"%s\" cannot be opened."
+msgstr "Não é possível abrir o arquivo \"%s\"."
+
+msgid "The file \"%s\" is empty."
+msgstr "O arquivo \"%s\" está vazio."
+
+msgid "The file \"%s\" is larger than the %s MiB model limit. Reduce its detail and export it again."
+msgstr "O arquivo \"%s\" ultrapassa o limite de %s MiB para modelos. Reduza o nível de detalhe e exporte-o novamente."
+
+msgid "The file \"%s\" could not be read completely."
+msgstr "Não foi possível ler o arquivo \"%s\" por completo."
+
+msgid "\"%s\" is a picture, not a 3D model. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\" é uma imagem, não um modelo 3D. Exporte o modelo como STL ou como GLB autocontido."
+
+msgid "\"%s\" is not a supported model format. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\" não está em um formato de modelo compatível. Exporte o modelo como STL ou como GLB autocontido."
+
+msgid "The model in \"%s\" is flat or empty along one axis."
+msgstr "O modelo em \"%s\" é plano ou vazio ao longo de um eixo."
+
+msgid "The model file is empty."
+msgstr "O arquivo do modelo está vazio."
+
+msgid "The model file has %s bytes; the limit is %s bytes."
+msgstr "O arquivo do modelo tem %s bytes; o limite é de %s bytes."
+
+msgid "This is not an STL file: it has %s bytes, fewer than a binary STL header, and its text does not start with \"solid\"."
+msgstr "Este não é um arquivo STL: ele tem %s bytes, menos que um cabeçalho de STL binário, e o texto não começa com \"solid\"."
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has only %s bytes. It may be truncated; export it again."
+msgstr "Este não é um arquivo STL válido. O texto não começa com \"solid\" e, como STL binário, ele declara %s facetas, o que exige %s bytes, mas o arquivo tem apenas %s bytes. Ele pode estar truncado; exporte-o novamente."
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has %s bytes. Export it again as STL."
+msgstr "Este não é um arquivo STL válido. O texto não começa com \"solid\" e, como STL binário, ele declara %s facetas, o que exige %s bytes, mas o arquivo tem %s bytes. Exporte-o novamente como STL."
+
+msgid "The STL file contains no facets."
+msgstr "O arquivo STL não contém facetas."
+
+msgid "The file starts with \"solid\" but is not STL text: it has a NUL byte at offset %s. If it is a binary STL file, its length does not match its facet count; it may be truncated. Export it again."
+msgstr "O arquivo começa com \"solid\", mas não é um STL de texto: há um byte NUL na posição %s. Se for um arquivo STL binário, o comprimento não corresponde ao número de facetas; ele pode estar truncado. Exporte-o novamente."
+
+msgid "The STL text has more than %s solids."
+msgstr "O texto STL tem mais de %s sólidos."
+
+msgid "The STL text ends at line %s inside an unfinished solid. It looks truncated; export it again."
+msgstr "O texto STL termina na linha %s dentro de um sólido inacabado. Parece truncado; exporte-o novamente."
+
+msgid "Line %s of the STL text: \"%s\" is not a plain decimal number."
+msgstr "Linha %s do texto STL: \"%s\" não é um número decimal simples."
+
+msgid "Line %s of the STL text: \"%s\" found where \"facet\" or \"endsolid\" is required."
+msgstr "Linha %s do texto STL: \"%s\" encontrado onde se exige \"facet\" ou \"endsolid\"."
+
+msgid "Line %s of the STL text: unexpected \"%s\" after the end of the solid."
+msgstr "Linha %s do texto STL: \"%s\" inesperado depois do fim do sólido."
+
+msgid "Line %s of the STL text: \"%s\" found where \"%s\" is required."
+msgstr "Linha %s do texto STL: \"%s\" encontrado onde se exige \"%s\"."
+
+msgid "The STL text is not valid UTF-8 at or after line %s."
+msgstr "O texto STL não é UTF-8 válido na linha %s ou depois dela."
+
+msgid "Line %s of the STL text is longer than %s bytes."
+msgstr "A linha %s do texto STL tem mais de %s bytes."
+
+msgid "The STL file has more than %s facets. Simplify the model and export it again."
+msgstr "O arquivo STL tem mais de %s facetas. Simplifique o modelo e exporte-o novamente."
+
+msgid "The STL file has no usable facet: all %s have zero area."
+msgstr "O arquivo STL não tem nenhuma faceta utilizável: todas as %s têm área zero."
+
+msgid "%s zero-area facets were left out."
+msgstr "%s facetas de área zero foram omitidas."
+
+msgid "%s facets have a stored normal that points against their vertex order. The vertex order was kept."
+msgstr "%s facetas têm uma normal armazenada que aponta no sentido contrário à ordem dos seus vértices. A ordem dos vértices foi mantida."
+
+msgid "%s facets carry attribute data, which was ignored. STL colour is not supported."
+msgstr "%s facetas trazem dados de atributos, que foram ignorados. Cores em STL não têm suporte."
+
+msgid "This model format cannot be shown."
+msgstr "Este formato de modelo não pode ser exibido."
+
+msgid "The model has no triangles to show."
+msgstr "O modelo não tem triângulos para exibir."
+
+msgid "The GLB model could not be loaded. Export it again as a self-contained GLB."
+msgstr "Não foi possível carregar o modelo GLB. Exporte-o novamente como um GLB autocontido."
+
+msgid "The GLB model produced no scene."
+msgstr "O modelo GLB não gerou nenhuma cena."
+
+msgid "The GLB model contains an unsupported element (%s)."
+msgstr "O modelo GLB contém um elemento sem suporte (%s)."
+
+msgid "The wing span is %s m; this package supports %s to %s m."
+msgstr "A envergadura é de %s m; este pacote aceita de %s a %s m."
+
+msgid "The wing aspect ratio is %s; this package supports %s to %s."
+msgstr "O alongamento da asa é %s; este pacote aceita de %s a %s."
+
+msgid "The tip-to-root chord ratio is %s; this package supports %s to %s."
+msgstr "A relação entre a corda da ponta e a da raiz é %s; este pacote aceita de %s a %s."
+
+msgid "The flying mass is %s kg; this package supports %s to %s kg."
+msgstr "A massa em voo é de %s kg; este pacote aceita de %s a %s kg."
+
+msgid "The wing loading is %s kg/m²; this package supports %s to %s kg/m²."
+msgstr "A carga alar é de %s kg/m²; este pacote aceita de %s a %s kg/m²."
+
+msgid "The horizontal tail aspect ratio is %s; this package supports %s to %s."
+msgstr "O alongamento do estabilizador horizontal é %s; este pacote aceita de %s a %s."
+
+msgid "The vertical tail height-to-chord ratio is %s; this package supports %s to %s."
+msgstr "A relação entre a altura e a corda da deriva é %s; este pacote aceita de %s a %s."
+
+msgid "The horizontal tail volume is %s; this package supports %s to %s."
+msgstr "O volume de cauda horizontal é %s; este pacote aceita de %s a %s."
+
+msgid "The vertical tail volume is %s; this package supports %s to %s."
+msgstr "O volume de cauda vertical é %s; este pacote aceita de %s a %s."
+
+msgid "The static margin is %s of the mean chord; this package supports %s to %s."
+msgstr "A margem estática é %s da corda média; este pacote aceita de %s a %s."
+
+msgid "The static thrust is %s times the weight; this package supports %s to %s."
+msgstr "O empuxo estático é %s vezes o peso; este pacote aceita de %s a %s."
+
+msgid "The propeller hub is %s m ahead of the fuselage nose; this package supports %s to %s m."
+msgstr "O cubo da hélice está %s m à frente do nariz da fuselagem; este pacote aceita de %s a %s m."
+
+msgid "The flight loader refused the compiled aircraft: %s"
+msgstr "O carregador de voo recusou a aeronave compilada: %s"
+
+msgid "The flight loader notes: %s"
+msgstr "Observação do carregador de voo: %s"
+
+msgid "Turn off mesh compression in the export settings."
+msgstr "Desative a compactação de malha nas configurações de exportação."
+
+msgid "Turn off mesh quantization in the export settings."
+msgstr "Desative a quantização de malha nas configurações de exportação."
+
+msgid "Export the textures as PNG."
+msgstr "Exporte as texturas como PNG."
+
+msgid "Remove the lights from the export."
+msgstr "Remova as luzes da exportação."
+
+msgid "Turn it off in the export settings and export again."
+msgstr "Desative-a nas configurações de exportação e exporte novamente."
+
+msgid "The greyscale image holds a palette."
+msgstr "A imagem em tons de cinza contém uma paleta."
+
+msgid "The image palette has an invalid size."
+msgstr "A paleta da imagem tem um tamanho inválido."
+
+msgid "The image palette has more entries than its bit depth can address."
+msgstr "A paleta da imagem tem mais entradas do que a profundidade de bits consegue endereçar."
+
+msgid "The image transparency chunk comes before its palette."
+msgstr "O bloco de transparência da imagem vem antes da paleta."
+
+msgid "The image transparency chunk has an invalid size."
+msgstr "O bloco de transparência da imagem tem um tamanho inválido."
+
+msgid "The image has both an alpha channel and a transparency chunk."
+msgstr "A imagem tem ao mesmo tempo um canal alfa e um bloco de transparência."
+
+msgid "The image's %s chunk has the wrong size."
+msgstr "O bloco %s da imagem tem o tamanho errado."
+
+msgid "The image's %s chunk comes after its palette."
+msgstr "O bloco %s da imagem vem depois da paleta."
+
+msgid "The image has an invalid sRGB rendering intent."
+msgstr "A imagem tem uma intenção de renderização sRGB inválida."
+
+msgid "The image has a zero gamma value."
+msgstr "A imagem tem um valor de gama igual a zero."
+
+msgid "The image has an invalid pixel-size unit."
+msgstr "A imagem tem uma unidade de tamanho de pixel inválida."
+
+msgid "Facet %s of the STL file has a value that is not a finite 32-bit number."
+msgstr "A faceta %s do arquivo STL tem um valor que não é um número finito de 32 bits."
+
+msgid "Facet %s of the STL file is too large to process. Rescale the model to sensible units and export it again."
+msgstr "A faceta %s do arquivo STL é grande demais para ser processada. Redimensione o modelo para unidades razoáveis e exporte-o novamente."
+
+msgid "Facet %s of the STL file (ending at line %s) has a value that is not a finite 32-bit number."
+msgstr "A faceta %s do arquivo STL (que termina na linha %s) tem um valor que não é um número finito de 32 bits."
+
+msgid "Facet %s of the STL file (ending at line %s) is too large to process. Rescale the model to sensible units and export it again."
+msgstr "A faceta %s do arquivo STL (que termina na linha %s) é grande demais para ser processada. Redimensione o modelo para unidades razoáveis e exporte-o novamente."
+
+msgid "STL model"
+msgstr "Modelo STL"
+
+msgid "Self-contained GLB model"
+msgstr "Modelo GLB autocontido"
+
+msgid "A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start."
+msgstr "Com um lançamento à mão normal, a aeronave não conseguiria ganhar altura: ela tocou o solo ou perdeu o controle em menos de 3 segundos. Reduza o peso, mova o centro de gravidade para a frente ou use o início Em voo."
+
+msgid "The aircraft was not accepted by the compiler."
+msgstr "A aeronave não foi aceita pelo compilador."
+
+msgid "The model source was not admitted."
+msgstr "A origem do modelo não foi admitida."
+
+msgid "The model placement is missing."
+msgstr "Falta o posicionamento do modelo."
+
+msgid "The model orientation, size or datum is not confirmed."
+msgstr "A orientação, o tamanho ou a referência do modelo não estão confirmados."
+
+msgid "The compiled aircraft does not match its exact bytes."
+msgstr "A aeronave compilada não corresponde aos seus bytes exatos."
+
+msgid "The trial identity could not be written."
+msgstr "Não foi possível gravar a identidade do teste."
+
+msgid "This is not a frozen Creator trial."
+msgstr "Este não é um teste congelado do Criador."
+
+msgid "The frozen trial is missing its identity, data, source or exact bytes."
+msgstr "O teste congelado está sem identidade, dados, origem ou bytes exatos."
+
+msgid "The frozen trial has an unsupported identity or an invalid model."
+msgstr "O teste congelado tem uma identidade sem suporte ou um modelo inválido."
+
+msgid "The frozen aircraft bytes do not match the trial identity."
+msgstr "Os bytes da aeronave congelada não correspondem à identidade do teste."
+
+msgid "The frozen model does not match the trial identity."
+msgstr "O modelo congelado não corresponde à identidade do teste."
+
+msgid "The frozen model source does not match the trial identity."
+msgstr "A origem do modelo congelado não corresponde à identidade do teste."
+
+msgid "This start is not available for a Creator aircraft without landing gear."
+msgstr "Este início não está disponível para uma aeronave do Criador sem trem de pouso."
+
+msgid "The selected field is not a normalized field definition."
+msgstr "O campo selecionado não é uma definição de campo normalizada."
+
+msgid "The weather configuration is invalid."
+msgstr "A configuração do clima é inválida."
+
+msgid "The start check needs a running scene tree."
+msgstr "A verificação do início precisa de uma árvore de cena em execução."
+
+msgid "The frozen aircraft could not be prepared."
+msgstr "Não foi possível preparar a aeronave congelada."
+
+msgid "The requested start did not commit."
+msgstr "O início solicitado não foi confirmado."
+
+msgid "The start check exceeded its time budget."
+msgstr "A verificação do início excedeu o tempo previsto."
+
+msgid "Create aircraft…"
+msgstr "Criar aeronave…"
+
+msgid "Import a 3D model and describe a new aircraft"
+msgstr "Importe um modelo 3D e descreva uma nova aeronave"
+
+msgid "Leave the Aircraft Creator?"
+msgstr "Sair do Criador de aeronaves?"
+
+msgid "This aircraft cannot be saved yet. Leaving discards it."
+msgstr "Esta aeronave ainda não pode ser salva. Ao sair, ela será descartada."
+
+msgid "Discard aircraft"
+msgstr "Descartar aeronave"
+
+msgid "Keep editing"
+msgstr "Continuar editando"
+
+msgid "Choose an airborne or hand-launch trial start."
+msgstr "Escolha um início no ar ou com lançamento à mão para o voo de teste."
+
+msgid "Estimated value"
+msgstr "Estimado"
+
+msgid "Upward"
+msgstr "Acima"
+
+msgid "The aileron travel is %s degrees; this package supports %s to %s degrees."
+msgstr "O curso dos ailerons é de %s graus; este pacote aceita de %s a %s graus."
+
+msgid "The elevator travel is %s degrees; this package supports %s to %s degrees."
+msgstr "O curso do profundor é de %s graus; este pacote aceita de %s a %s graus."
+
+msgid "The rudder travel is %s degrees; this package supports %s to %s degrees."
+msgstr "O curso do leme é de %s graus; este pacote aceita de %s a %s graus."
+
+msgid "The neutral-to-full command time is %s s; this package supports %s to %s s."
+msgstr "O tempo do neutro ao comando total é de %s s; este pacote aceita de %s a %s s."
+
+msgid "The down thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "O empuxo para baixo é de %s graus; este pacote aceita de %s a %s graus."
+
+msgid "The right thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "O empuxo para a direita é de %s graus; este pacote aceita de %s a %s graus."
+
+msgid "The starting charge is %s; this package supports %s to %s."
+msgstr "A carga inicial é %s; este pacote aceita de %s a %s."
+
+msgid "The image is compressed with an unusual window size. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "A imagem está compactada com um tamanho de janela incomum. Exporte a imagem novamente como um PNG padrão, sem perfis de cor nem metadados de texto."
+
+msgid "The image's %s chunk is too large."
+msgstr "O bloco %s da imagem é grande demais."
+
+msgid "The image's %s chunk is invalid."
+msgstr "O bloco %s da imagem é inválido."
+
+msgid "The model does not say which scene to show. Export it again as a self-contained GLB from your modelling tool."
+msgstr "O modelo não indica qual cena mostrar. Exporte-o novamente como GLB autocontido a partir do seu programa de modelagem."
+
+msgid "The frozen model is not what its exact bytes load to."
+msgstr "O modelo congelado não é o que resulta do carregamento dos seus bytes exatos."
+
+msgid "The frozen model placement does not match the trial identity."
+msgstr "O posicionamento do modelo congelado não corresponde à identidade do teste."
+
+msgid "The frozen trial identity does not match its content."
+msgstr "A identidade do teste congelado não corresponde ao seu conteúdo."
+
+msgid "The Creator trial does not match its frozen identity."
+msgstr "O teste do Criador não corresponde à sua identidade congelada."
+
+msgid "The compressed data declares a window smaller than its content."
+msgstr "Os dados compactados declaram uma janela menor que o seu conteúdo."

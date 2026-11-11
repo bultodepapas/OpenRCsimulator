@@ -26,6 +26,16 @@ var _handoff_process_mode: Node.ProcessMode = Node.PROCESS_MODE_INHERIT
 
 
 func _ready() -> void:
+	# GOD-04: opt-in source/debug observer survives the Startup -> AppRoot handoff.
+	# Environment activation preserves the normal no-user-arguments Home route.
+	if OS.is_debug_build() and not OS.get_environment("OPENRC_GODTEST_CONFIG").is_empty():
+		var godtest_script: Script = load("res://debug/godtest_driver.gd")
+		if godtest_script != null:
+			var observer: Node = godtest_script.new()
+			if observer.prepare_startup():
+				get_tree().root.add_child.call_deferred(observer)
+			else:
+				observer.free()
 	# Keep command-line flight, reports and headless contracts free of intro delays.
 	if not _animate_requested():
 		get_tree().change_scene_to_file.call_deferred(APP_SCENE)

@@ -46,6 +46,7 @@ const BuildInfo := preload("res://app_state/build_info.gd")
 const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
@@ -2679,11 +2680,14 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		return
 	var editor: Node = screens.top()
 	var chosen_start: Variant = payload.get("start_choice", "airborne")
-	if typeof(chosen_start) != TYPE_STRING or chosen_start not in ["airborne", "runway"]:
-		editor.set_note(tr("Choose an airborne or runway trial start."))
+	# AC-11: an Aircraft Creator request carries an accepted candidate instead of a catalog base. It has no
+	# landing gear, so its ground start is the hand launch; every other step below is the Workshop trial path.
+	var creator_request: bool = CreatorTrial.is_request(payload)
+	if typeof(chosen_start) != TYPE_STRING or chosen_start not in (["airborne", "hand_launch"] if creator_request else ["airborne", "runway"]):
+		editor.set_note(tr("Choose an airborne or hand-launch trial start.") if creator_request else tr("Choose an airborne or runway trial start."))
 		_menu_feedback(&"reject")
 		return
-	var trial: Dictionary = load("res://workshop/trial.gd").freeze(payload)
+	var trial: Dictionary = CreatorTrial.freeze(payload) if creator_request else load("res://workshop/trial.gd").freeze(payload)
 	if not trial.get("ok", false):
 		editor.set_note("; ".join(trial.get("errors", [])))
 		_menu_feedback(&"reject")
@@ -2692,8 +2696,8 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if trial.get("vehicle", "airplane") == "airship":
 		_start_workshop_airship_trial(editor, trial, str(chosen_start))
 		return
-	var base_id: String = str(payload.get("base_id", ""))
-	if not Catalog.can_fly(base_id):
+	var base_id: String = str(trial.identity.aircraft_id) if creator_request else str(payload.get("base_id", ""))
+	if not creator_request and not Catalog.can_fly(base_id):
 		editor.set_note(tr("The source aircraft is not available in this catalog."))
 		_menu_feedback(&"reject")
 		return
@@ -2704,7 +2708,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		return
 	var selected_weather: Dictionary = flight.weather_config.duplicate(true) if flight != null \
 		else preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
-	var qualified: Dictionary = preload("res://workshop/start_qualification.gd").qualify(trial, selected_field.field, selected_weather, chosen_start)
+	var qualified: Dictionary = CreatorTrial.check_start(trial, selected_field.field, selected_weather, chosen_start) if creator_request 		else preload("res://workshop/start_qualification.gd").qualify(trial, selected_field.field, selected_weather, chosen_start)
 	if not qualified.get("ok", false) or not qualified.get("available", false):
 		editor.set_note(str(qualified.get("reason", "The selected trial start is unavailable.")))
 		_menu_feedback(&"reject")

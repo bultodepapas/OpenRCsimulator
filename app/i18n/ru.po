@@ -10250,3 +10250,1468 @@ msgstr "Ход рулей оперения"
 
 msgid "Close the running activity before starting a blimp trial."
 msgstr "Закройте текущее занятие перед испытанием дирижабля."
+
+# AC-10: Aircraft Creator.
+msgid "Not available yet"
+msgstr "Пока недоступно"
+
+msgid "\"%s\" is not a number."
+msgstr "\"%s\" — не число."
+
+msgid "Enter a number."
+msgstr "Введите число."
+
+msgid "No model imported yet"
+msgstr "Модель ещё не импортирована"
+
+msgid "Controls simulated · visual is static"
+msgstr "Управление моделируется · визуальная модель статична"
+
+msgid "4S · 800 Kv · 12×6 propeller — estimated"
+msgstr "4S · 800 Kv · винт 12×6 — оценочно"
+
+msgid "Datum X"
+msgstr "Точка отсчёта X"
+
+msgid "Datum Y"
+msgstr "Точка отсчёта Y"
+
+msgid "Datum Z"
+msgstr "Точка отсчёта Z"
+
+msgid "STL (binary)"
+msgstr "STL (двоичный)"
+
+msgid "STL (text)"
+msgstr "STL (текстовый)"
+
+msgid "GLB"
+msgstr "GLB"
+
+msgid "Measured"
+msgstr "Измерено"
+
+msgid "Manual"
+msgstr "Вручную"
+
+msgid "Aft"
+msgstr "Назад"
+
+msgid "Right"
+msgstr "Вправо"
+
+msgid "Tailplane"
+msgstr "Стабилизатор"
+
+msgid "Fin"
+msgstr "Киль"
+
+msgid "Equipment positions"
+msgstr "Положение оборудования"
+
+msgid "Inventory"
+msgstr "Инвентарь"
+
+msgid "Tailplane position"
+msgstr "Положение стабилизатора"
+
+msgid "Fin position"
+msgstr "Положение киля"
+
+msgid "Propeller hub position"
+msgstr "Положение втулки винта"
+
+msgid "Battery position"
+msgstr "Положение аккумулятора"
+
+msgid "Speed controller position"
+msgstr "Положение регулятора скорости"
+
+msgid "Thrust angles"
+msgstr "Выкос двигателя"
+
+msgid "Total mass"
+msgstr "Общая масса"
+
+msgid "Centre of gravity (aft, right, up)"
+msgstr "Центр тяжести (назад, вправо, вверх)"
+
+msgid "Neutral point (aft)"
+msgstr "Фокус самолёта (назад)"
+
+msgid "Static margin (of the mean chord)"
+msgstr "Запас статической устойчивости (в долях средней хорды)"
+
+msgid "Level flight speed"
+msgstr "Скорость горизонтального полёта"
+
+msgid "Stall speed"
+msgstr "Скорость сваливания"
+
+msgid "Thrust to weight"
+msgstr "Тяговооружённость"
+
+msgid "Known wingspan (m)"
+msgstr "Известный размах крыла (м)"
+
+msgid "Replace the model?"
+msgstr "Заменить модель?"
+
+msgid "Importing \"%s\" replaces the current model and resets its orientation, units and datum. The values entered for the aircraft are kept."
+msgstr "Импорт \"%s\" заменит текущую модель и сбросит её ориентацию, единицы измерения и точку отсчёта. Значения, введённые для самолёта, сохранятся."
+
+msgid "Replace model"
+msgstr "Заменить модель"
+
+msgid "Choose a model"
+msgstr "Выберите модель"
+
+msgid "3D model"
+msgstr "3D-модель"
+
+msgid "Back to Workshop"
+msgstr "Вернуться в мастерскую"
+
+msgid "Create aircraft"
+msgstr "Создать самолёт"
+
+msgid "Aircraft name"
+msgstr "Название самолёта"
+
+msgid "Experimental · estimated"
+msgstr "Экспериментально · оценочно"
+
+msgid "Show preview"
+msgstr "Показать предпросмотр"
+
+msgid "Choose an STL file or a self-contained GLB file. A picture is not a 3D model."
+msgstr "Выберите файл STL или автономный файл GLB. Изображение — это не 3D-модель."
+
+msgid "Choose model…"
+msgstr "Выбрать модель…"
+
+msgid "Replace model…"
+msgstr "Заменить модель…"
+
+msgid "Import a model first"
+msgstr "Сначала импортируйте модель"
+
+msgid "Go to Import"
+msgstr "Перейти к импорту"
+
+msgid "Say how the model sits in its file. Nothing is assumed."
+msgstr "Укажите, как модель расположена в своём файле. Ничего не предполагается заранее."
+
+msgid "Until the placement is complete, the preview shows the model in the file's own axes."
+msgstr "Пока размещение не завершено, предпросмотр показывает модель в осях самого файла."
+
+msgid "Model axis pointing to the nose"
+msgstr "Ось модели, направленная к носу"
+
+msgid "Model axis pointing up"
+msgstr "Ось модели, направленная вверх"
+
+msgid "Model units"
+msgstr "Единицы измерения модели"
+
+msgid "Choose units"
+msgstr "Выберите единицы"
+
+msgid "Choose…"
+msgstr "Выбрать…"
+
+msgid "If the units are unknown, enter the real wingspan instead."
+msgstr "Если единицы неизвестны, введите вместо них реальный размах крыла."
+
+msgid "Datum: wing leading edge on the centreline"
+msgstr "Точка отсчёта: передняя кромка крыла на оси симметрии"
+
+msgid "Type the point in the model's own coordinates, or pick it on the preview."
+msgstr "Введите точку в собственных координатах модели или укажите её в предпросмотре."
+
+msgid "Pick on the preview"
+msgstr "Указать в предпросмотре"
+
+msgid "Click the wing leading edge at the centreline on the preview."
+msgstr "Щёлкните в предпросмотре по передней кромке крыла на оси симметрии."
+
+msgid "Conventional"
+msgstr "Классическая схема"
+
+msgid "Flying wing"
+msgstr "Летающее крыло"
+
+msgid "Canard"
+msgstr "Утка"
+
+msgid "V-tail"
+msgstr "V-образное оперение"
+
+msgid "Use starting values…"
+msgstr "Использовать начальные значения…"
+
+msgid "Estimated starting values — correct them with your measurements."
+msgstr "Оценочные начальные значения — исправьте их по своим измерениям."
+
+msgid "Flight dimensions are entered here; they do not reshape the visual model."
+msgstr "Здесь вводятся лётные размеры; форму визуальной модели они не меняют."
+
+msgid "Distances are in metres from the wing leading edge on the centreline."
+msgstr "Расстояния указываются в метрах от передней кромки крыла на оси симметрии."
+
+msgid "Power package hardware is added automatically"
+msgstr "Компоненты силовой установки добавляются автоматически"
+
+msgid "The motor, propeller, speed controller and battery are not listed here. List everything else the airplane carries."
+msgstr "Двигатель, винт, регулятор скорости и аккумулятор здесь не указываются. Перечислите всё остальное, что несёт самолёт."
+
+msgid "Propose airframe items"
+msgstr "Предложить элементы планера"
+
+msgid "Add item"
+msgstr "Добавить элемент"
+
+msgid "Propose replaces items marked Estimated. Mark an item Measured or Manual to keep your values."
+msgstr "Предложение заменяет элементы, отмеченные как оценочные. Чтобы сохранить свои значения, отметьте элемент как измеренный или заданный вручную."
+
+msgid "Electric"
+msgstr "Электрический"
+
+msgid "Gasoline"
+msgstr "Бензиновый"
+
+msgid "Glow"
+msgstr "Калильный"
+
+msgid "No gear"
+msgstr "Без шасси"
+
+msgid "Fixed tricycle"
+msgstr "Неубираемое с носовой стойкой"
+
+msgid "Taildragger"
+msgstr "С хвостовым колесом"
+
+msgid "Retractable"
+msgstr "Убираемое"
+
+msgid "The model's own colours"
+msgstr "Собственные цвета модели"
+
+msgid "Generate paint"
+msgstr "Сгенерировать окраску"
+
+msgid "Upload image"
+msgstr "Загрузить изображение"
+
+msgid "Import skin"
+msgstr "Импортировать окраску"
+
+msgid "Estimated aircraft — not a measurement of a real airplane."
+msgstr "Оценочная модель самолёта — не результат измерений реального самолёта."
+
+msgid "Issues"
+msgstr "Проблемы"
+
+msgid "Start"
+msgstr "Старт"
+
+msgid "Summary"
+msgstr "Сводка"
+
+msgid "Needs landing gear"
+msgstr "Нужно шасси"
+
+msgid "Not set"
+msgstr "Не задано"
+
+msgid "Estimated read-out"
+msgstr "Оценочные показатели"
+
+msgid "These estimated values replace the current ones:"
+msgstr "Эти оценочные значения заменят текущие:"
+
+msgid "Use starting values?"
+msgstr "Использовать начальные значения?"
+
+msgid "Use starting values"
+msgstr "Использовать начальные значения"
+
+msgid "Choose the nose and up axes first, then enter a wingspan above zero."
+msgstr "Сначала выберите оси, направленные к носу и вверх, затем введите размах крыла больше нуля."
+
+msgid "Nothing can be proposed yet. Enter the wing, tail and fuselage dimensions in Aircraft layout first."
+msgstr "Пока предложить нечего. Сначала введите размеры крыла, оперения и фюзеляжа в разделе «Компоновка самолёта»."
+
+msgid "New item"
+msgstr "Новый элемент"
+
+msgid "The inventory is full (%s items)."
+msgstr "Инвентарь заполнен (элементов: %s)."
+
+msgid "No items yet. Propose the airframe items or add your own."
+msgstr "Элементов пока нет. Нажмите «Предложить элементы планера» или добавьте свои."
+
+msgid "Item name"
+msgstr "Название элемента"
+
+msgid "Evidence"
+msgstr "Источник данных"
+
+msgid "Status: %s"
+msgstr "Состояние: %s"
+
+msgid "Inspecting model…"
+msgstr "Проверка модели…"
+
+msgid "Test fly is available once the issues listed above are resolved."
+msgstr "Пробный полёт станет доступен после устранения перечисленных выше проблем."
+
+msgid "The model could not be imported"
+msgstr "Не удалось импортировать модель"
+
+msgid "The current model is unchanged."
+msgstr "Текущая модель не изменена."
+
+msgid "Model imported"
+msgstr "Модель импортирована"
+
+msgid "File: %s"
+msgstr "Файл: %s"
+
+msgid "Format: %s"
+msgstr "Формат: %s"
+
+msgid "Triangles: %s"
+msgstr "Треугольников: %s"
+
+msgid "Size in model units: %s × %s × %s"
+msgstr "Размер в единицах модели: %s × %s × %s"
+
+msgid "File size: %s"
+msgstr "Размер файла: %s"
+
+msgid "Warning: %s"
+msgstr "Предупреждение: %s"
+
+msgid "Note: %s"
+msgstr "Примечание: %s"
+
+msgid "Scale: 1 model unit = %s m"
+msgstr "Масштаб: 1 единица модели = %s м"
+
+msgid "Choose the axes, the units and the datum to see the real size."
+msgstr "Выберите оси, единицы измерения и точку отсчёта, чтобы увидеть реальный размер."
+
+msgid "Span %s m · Length %s m · Height %s m"
+msgstr "Размах %s м · Длина %s м · Высота %s м"
+
+msgid "No open issues."
+msgstr "Открытых проблем нет."
+
+msgid "Not placed yet"
+msgstr "Ещё не размещена"
+
+msgid "Wingspan"
+msgstr "Размах крыла"
+
+msgid "%s inventory items"
+msgstr "Элементов в инвентаре: %s"
+
+msgid "CG"
+msgstr "ЦТ"
+
+msgid "Neutral point"
+msgstr "Фокус"
+
+msgid "Propeller hub"
+msgstr "Втулка винта"
+
+msgid "No model imported"
+msgstr "Модель не импортирована"
+
+msgid "Zoom +"
+msgstr "Масштаб +"
+
+msgid "Zoom −"
+msgstr "Масштаб −"
+
+msgid "Wing root chord"
+msgstr "Корневая хорда крыла"
+
+msgid "Wing tip chord"
+msgstr "Концевая хорда крыла"
+
+msgid "Tailplane span"
+msgstr "Размах стабилизатора"
+
+msgid "Tailplane chord"
+msgstr "Хорда стабилизатора"
+
+msgid "Tailplane leading edge, distance aft"
+msgstr "Передняя кромка стабилизатора, расстояние назад"
+
+msgid "Tailplane height"
+msgstr "Высота стабилизатора"
+
+msgid "Fin height"
+msgstr "Высота киля"
+
+msgid "Fin chord"
+msgstr "Хорда киля"
+
+msgid "Fin leading edge, distance aft"
+msgstr "Передняя кромка киля, расстояние назад"
+
+msgid "Fin base height"
+msgstr "Высота основания киля"
+
+msgid "Nose, distance aft (negative ahead of the wing)"
+msgstr "Нос, расстояние назад (отрицательное — впереди крыла)"
+
+msgid "Tail end, distance aft"
+msgstr "Конец хвоста, расстояние назад"
+
+msgid "Fuselage width"
+msgstr "Ширина фюзеляжа"
+
+msgid "Fuselage height"
+msgstr "Высота фюзеляжа"
+
+msgid "Fuselage centre height"
+msgstr "Высота центра фюзеляжа"
+
+msgid "Battery, distance aft"
+msgstr "Аккумулятор, расстояние назад"
+
+msgid "Battery, distance right"
+msgstr "Аккумулятор, расстояние вправо"
+
+msgid "Battery height"
+msgstr "Высота аккумулятора"
+
+msgid "Propeller hub, distance aft"
+msgstr "Втулка винта, расстояние назад"
+
+msgid "Propeller hub, distance right"
+msgstr "Втулка винта, расстояние вправо"
+
+msgid "Propeller hub height"
+msgstr "Высота втулки винта"
+
+msgid "Speed controller, distance aft"
+msgstr "Регулятор скорости, расстояние назад"
+
+msgid "Speed controller, distance right"
+msgstr "Регулятор скорости, расстояние вправо"
+
+msgid "Speed controller height"
+msgstr "Высота регулятора скорости"
+
+msgid "Down thrust"
+msgstr "Выкос вниз"
+
+msgid "Right thrust"
+msgstr "Выкос вправо"
+
+msgid "Battery charge at start (0 to 1)"
+msgstr "Заряд аккумулятора на старте (от 0 до 1)"
+
+msgid "Aileron travel"
+msgstr "Ход элеронов"
+
+msgid "Elevator travel"
+msgstr "Ход руля высоты"
+
+msgid "Rudder travel"
+msgstr "Ход руля направления"
+
+msgid "Neutral to full command time"
+msgstr "Время от нейтрали до полного отклонения"
+
+msgid "Import"
+msgstr "Импорт"
+
+msgid "Orient and size"
+msgstr "Ориентация и размер"
+
+msgid "Aircraft layout"
+msgstr "Компоновка самолёта"
+
+msgid "Weight and balance"
+msgstr "Вес и центровка"
+
+msgid "Power and mount"
+msgstr "Силовая установка и монтаж"
+
+msgid "Controls and ground"
+msgstr "Управление и шасси"
+
+msgid "Paint and skins"
+msgstr "Окраска и схемы"
+
+msgid "Review and test"
+msgstr "Проверка и испытание"
+
+msgid "Not started"
+msgstr "Не начато"
+
+msgid "In progress"
+msgstr "В процессе"
+
+msgid "Needs attention"
+msgstr "Требует внимания"
+
+msgid "Complete"
+msgstr "Завершено"
+
+msgid "Correct the highlighted values first."
+msgstr "Сначала исправьте выделенные значения."
+
+msgid "Import a model first."
+msgstr "Сначала импортируйте модель."
+
+msgid "The record cannot be written: %s"
+msgstr "Не удалось сохранить запись: %s"
+
+msgid "The record exceeds its size limit."
+msgstr "Запись превышает допустимый размер."
+
+msgid "The record starts with a byte-order mark."
+msgstr "Запись начинается с метки порядка байтов."
+
+msgid "The record is not valid JSON: %s"
+msgstr "Запись не является корректным JSON: %s"
+
+msgid "The record must be a JSON object."
+msgstr "Запись должна быть объектом JSON."
+
+msgid "The record has an invalid number: %s"
+msgstr "В записи недопустимое число: %s"
+
+msgid "The loaded record does not carry the aircraft identity."
+msgstr "Загруженная запись не содержит идентификатора самолёта."
+
+msgid "The compiled aircraft could not be sealed."
+msgstr "Не удалось запечатать скомпилированный самолёт."
+
+msgid "The aircraft cannot be described by this package."
+msgstr "Этот пакет не может описать такой самолёт."
+
+msgid "The tail surfaces must sit behind the wing's quarter chord."
+msgstr "Хвостовое оперение должно находиться позади четверти хорды крыла."
+
+msgid "The propeller hub must sit on the fuselage nose, inside its width and height."
+msgstr "Втулка винта должна находиться на носу фюзеляжа, в пределах его ширины и высоты."
+
+msgid "The definition format must be %s."
+msgstr "Формат определения должен быть %s."
+
+msgid "The aircraft identity must be a lowercase version 4 UUID."
+msgstr "Идентификатор самолёта должен быть UUID версии 4 в нижнем регистре."
+
+msgid "The tip chord must not exceed the root chord."
+msgstr "Концевая хорда не должна превышать корневую."
+
+msgid "The fuselage nose must be ahead of the wing leading edge (negative x)."
+msgstr "Нос фюзеляжа должен быть впереди передней кромки крыла (отрицательный x)."
+
+msgid "The fuselage tail must be behind the wing leading edge (positive x)."
+msgstr "Хвост фюзеляжа должен быть позади передней кромки крыла (положительный x)."
+
+msgid "The starting charge must be above zero."
+msgstr "Начальный заряд должен быть больше нуля."
+
+msgid "The inventory must be a list of items."
+msgstr "Инвентарь должен быть списком элементов."
+
+msgid "The inventory holds %s items; the limit is %s."
+msgstr "Элементов в инвентаре: %s; предел — %s."
+
+msgid "An inventory item must be an object."
+msgstr "Элемент инвентаря должен быть объектом."
+
+msgid "An item ID is lowercase snake_case, starts with a letter and has at most 80 characters."
+msgstr "Идентификатор элемента записывается в snake_case строчными буквами, начинается с буквы и содержит не более 80 символов."
+
+msgid "The ID %s belongs to the power package or the compiler."
+msgstr "Идентификатор %s зарезервирован за силовой установкой или компилятором."
+
+msgid "The ID %s is used by more than one item."
+msgstr "Идентификатор %s используется более чем одним элементом."
+
+msgid "An item name is text of 1 to %s characters."
+msgstr "Название элемента — текст длиной от 1 до %s символов."
+
+msgid "An item is measured, estimated or manual."
+msgstr "Элемент может быть измеренным, оценочным или заданным вручную."
+
+msgid "This value is required."
+msgstr "Это значение обязательно."
+
+msgid "This field is not part of the definition."
+msgstr "Это поле не входит в определение."
+
+msgid "This value must be an object."
+msgstr "Это значение должно быть объектом."
+
+msgid "This value must be a finite number."
+msgstr "Это значение должно быть конечным числом."
+
+msgid "This value must be between %s and %s."
+msgstr "Это значение должно быть в пределах от %s до %s."
+
+msgid "This value must be a list of %s finite numbers."
+msgstr "Это значение должно быть списком из %s конечных чисел."
+
+msgid "Each number must be between %s and %s."
+msgstr "Каждое число должно быть в пределах от %s до %s."
+
+msgid "The tail sits on the centreline: its y position must be 0."
+msgstr "Хвостовое оперение расположено на оси симметрии: его координата y должна быть равна 0."
+
+msgid "The file is not a binary glTF model. Export the model as glTF Binary (.glb)."
+msgstr "Файл не является двоичной моделью glTF. Экспортируйте модель в формате glTF Binary (.glb)."
+
+msgid "The model file is damaged: its declared length does not match its size."
+msgstr "Файл модели повреждён: заявленная длина не совпадает с его размером."
+
+msgid "The model file is damaged: it does not start with its JSON chunk."
+msgstr "Файл модели повреждён: он не начинается с блока JSON."
+
+msgid "The model file is damaged: its JSON chunk has an invalid length."
+msgstr "Файл модели повреждён: у блока JSON недопустимая длина."
+
+msgid "The model file is damaged: stray bytes follow its JSON chunk."
+msgstr "Файл модели повреждён: после блока JSON идут посторонние байты."
+
+msgid "The model file is damaged: it holds more than one JSON chunk."
+msgstr "Файл модели повреждён: в нём больше одного блока JSON."
+
+msgid "The model file is damaged: its binary chunk has an invalid length."
+msgstr "Файл модели повреждён: у двоичного блока недопустимая длина."
+
+msgid "The model file is damaged: data follows its binary chunk."
+msgstr "Файл модели повреждён: после двоичного блока идут данные."
+
+msgid "The model description cannot be read: %s."
+msgstr "Не удалось прочитать описание модели: %s."
+
+msgid "The model description is not valid JSON: %s"
+msgstr "Описание модели не является корректным JSON: %s"
+
+msgid "The model description is not a JSON object."
+msgstr "Описание модели не является объектом JSON."
+
+msgid "The model has no asset description."
+msgstr "В модели нет описания ассета."
+
+msgid "The model does not state its glTF version."
+msgstr "В модели не указана версия glTF."
+
+msgid "The model has an invalid asset description."
+msgstr "В модели недопустимое описание ассета."
+
+msgid "The model has an invalid list of required extensions."
+msgstr "В модели недопустимый список обязательных расширений."
+
+msgid "The model has an invalid list of extensions."
+msgstr "В модели недопустимый список расширений."
+
+msgid "The model has an invalid extensions object."
+msgstr "В модели недопустимый объект расширений."
+
+msgid "The model uses the extension %s without declaring it."
+msgstr "Модель использует расширение %s, не объявив его."
+
+msgid "The model file holds binary data that no buffer describes."
+msgstr "Файл модели содержит двоичные данные, не описанные ни одним буфером."
+
+msgid "The model describes a data buffer that the file does not contain."
+msgstr "Модель описывает буфер данных, которого нет в файле."
+
+msgid "The model's data buffer does not match the binary data in the file."
+msgstr "Буфер данных модели не соответствует двоичным данным в файле."
+
+msgid "A buffer view refers to a buffer that does not exist."
+msgstr "Представление буфера ссылается на несуществующий буфер."
+
+msgid "A buffer view reaches outside the model's data."
+msgstr "Представление буфера выходит за пределы данных модели."
+
+msgid "A buffer view has an invalid byte stride."
+msgstr "У представления буфера недопустимый шаг в байтах."
+
+msgid "A buffer view has an invalid target."
+msgstr "У представления буфера недопустимое назначение."
+
+msgid "An accessor refers to a buffer view that does not exist."
+msgstr "Аксессор ссылается на несуществующее представление буфера."
+
+msgid "An accessor has an invalid component type."
+msgstr "У аксессора недопустимый тип компонента."
+
+msgid "An accessor has an invalid type."
+msgstr "У аксессора недопустимый тип."
+
+msgid "An accessor has an invalid normalized flag."
+msgstr "У аксессора недопустимый флаг нормализации."
+
+msgid "An accessor has an invalid count or offset."
+msgstr "У аксессора недопустимое количество или смещение."
+
+msgid "An accessor is not aligned to its component size."
+msgstr "Аксессор не выровнен по размеру своего компонента."
+
+msgid "A buffer view's byte stride is smaller than its elements."
+msgstr "Шаг в байтах у представления буфера меньше размера его элементов."
+
+msgid "An accessor reaches outside its buffer view."
+msgstr "Аксессор выходит за пределы своего представления буфера."
+
+msgid "An accessor has invalid min or max values."
+msgstr "У аксессора недопустимые значения min или max."
+
+msgid "An image refers to a buffer view that does not exist."
+msgstr "Изображение ссылается на несуществующее представление буфера."
+
+msgid "An image buffer view has a byte stride."
+msgstr "У представления буфера с изображением задан шаг в байтах."
+
+msgid "An embedded image does not state its type."
+msgstr "У встроенного изображения не указан тип."
+
+msgid "A texture sampler has an invalid filter or wrap mode."
+msgstr "У сэмплера текстуры недопустимый фильтр или режим повторения."
+
+msgid "A texture refers to an image that does not exist."
+msgstr "Текстура ссылается на несуществующее изображение."
+
+msgid "A texture refers to a sampler that does not exist."
+msgstr "Текстура ссылается на несуществующий сэмплер."
+
+msgid "A material has invalid surface settings."
+msgstr "У материала недопустимые параметры поверхности."
+
+msgid "A material has a colour or factor outside 0 to 1."
+msgstr "У материала цвет или коэффициент выходит за пределы от 0 до 1."
+
+msgid "A material has an invalid alpha mode."
+msgstr "У материала недопустимый режим альфа-канала."
+
+msgid "A material has an invalid alpha cutoff."
+msgstr "У материала недопустимый порог отсечения по альфа-каналу."
+
+msgid "A material has an invalid double-sided flag."
+msgstr "У материала недопустимый флаг двусторонности."
+
+msgid "A material has an invalid %s extension."
+msgstr "У материала недопустимое расширение %s."
+
+msgid "A material has an invalid texture reference."
+msgstr "У материала недопустимая ссылка на текстуру."
+
+msgid "A material refers to a texture that does not exist."
+msgstr "Материал ссылается на несуществующую текстуру."
+
+msgid "A material has an invalid texture coordinate set."
+msgstr "У материала недопустимый набор текстурных координат."
+
+msgid "A mesh has no geometry."
+msgstr "В меше нет геометрии."
+
+msgid "A mesh has an invalid surface."
+msgstr "В меше есть недопустимая поверхность."
+
+msgid "A mesh surface has an invalid drawing mode."
+msgstr "У поверхности меша недопустимый режим отрисовки."
+
+msgid "A mesh surface refers to a material that does not exist."
+msgstr "Поверхность меша ссылается на несуществующий материал."
+
+msgid "A mesh surface has no vertex positions."
+msgstr "У поверхности меша нет координат вершин."
+
+msgid "A mesh surface refers to an accessor that does not exist."
+msgstr "Поверхность меша ссылается на несуществующий аксессор."
+
+msgid "A mesh surface reads vertex data from an index buffer view."
+msgstr "Поверхность меша читает данные вершин из представления буфера с индексами."
+
+msgid "A mesh surface has %s data of the wrong type."
+msgstr "Данные %s в поверхности меша имеют неверный тип."
+
+msgid "A mesh surface has %s data that is not padded to four bytes."
+msgstr "Данные %s в поверхности меша не выровнены по четырём байтам."
+
+msgid "A mesh surface has vertex attributes of different lengths."
+msgstr "У поверхности меша атрибуты вершин имеют разную длину."
+
+msgid "A mesh surface does not declare the bounds of its vertex positions."
+msgstr "Поверхность меша не объявляет границы координат своих вершин."
+
+msgid "A mesh surface declares inverted bounds for its vertex positions."
+msgstr "Поверхность меша объявляет перевёрнутые границы координат своих вершин."
+
+msgid "A mesh surface has index data of the wrong type."
+msgstr "Индексные данные поверхности меша имеют неверный тип."
+
+msgid "A mesh surface does not hold whole triangles."
+msgstr "Поверхность меша содержит неполные треугольники."
+
+msgid "A node refers to a mesh that does not exist."
+msgstr "Узел ссылается на несуществующий меш."
+
+msgid "A node has an invalid list of children."
+msgstr "У узла недопустимый список дочерних узлов."
+
+msgid "A node refers to a child that does not exist."
+msgstr "Узел ссылается на несуществующий дочерний узел."
+
+msgid "A node is its own child."
+msgstr "Узел является дочерним для самого себя."
+
+msgid "A node lists the same child twice."
+msgstr "Узел дважды указывает один и тот же дочерний узел."
+
+msgid "A node has more than one parent."
+msgstr "У узла больше одного родителя."
+
+msgid "The model's node tree contains a loop."
+msgstr "Дерево узлов модели содержит цикл."
+
+msgid "The model has no scene. Export the model with its objects selected or visible."
+msgstr "В модели нет сцены. Экспортируйте модель с выделенными или видимыми объектами."
+
+msgid "The model selects a scene that does not exist."
+msgstr "Модель выбирает несуществующую сцену."
+
+msgid "A scene has an invalid list of nodes."
+msgstr "У сцены недопустимый список узлов."
+
+msgid "A scene refers to a node that does not exist."
+msgstr "Сцена ссылается на несуществующий узел."
+
+msgid "A scene lists the same node twice."
+msgstr "Сцена дважды указывает один и тот же узел."
+
+msgid "A scene lists a node that is another node's child."
+msgstr "Сцена указывает узел, который является дочерним для другого узла."
+
+msgid "The model's scene is empty. Export the model with its objects selected or visible."
+msgstr "Сцена модели пуста. Экспортируйте модель с выделенными или видимыми объектами."
+
+msgid "A node has both a matrix and separate translation, rotation or scale."
+msgstr "У узла заданы и матрица, и отдельные перемещение, поворот или масштаб."
+
+msgid "A node has an invalid matrix."
+msgstr "У узла недопустимая матрица."
+
+msgid "A node has an invalid translation."
+msgstr "У узла недопустимое перемещение."
+
+msgid "A node has an invalid rotation."
+msgstr "У узла недопустимый поворот."
+
+msgid "A node's rotation is not a unit quaternion."
+msgstr "Поворот узла не является единичным кватернионом."
+
+msgid "A node has an invalid scale."
+msgstr "У узла недопустимый масштаб."
+
+msgid "A node has a zero scale."
+msgstr "У узла нулевой масштаб."
+
+msgid "A mesh surface holds vertex data that is not a finite number."
+msgstr "Поверхность меша содержит данные вершин, не являющиеся конечными числами."
+
+msgid "A mesh surface refers to a vertex that does not exist."
+msgstr "Поверхность меша ссылается на несуществующую вершину."
+
+msgid "A mesh surface holds a vertex position that is not a finite number."
+msgstr "Поверхность меша содержит координату вершины, не являющуюся конечным числом."
+
+msgid "A mesh surface has vertex positions outside its declared bounds."
+msgstr "Координаты вершин поверхности меша выходят за объявленные границы."
+
+msgid "A node's transform is too large to represent. Apply transforms and re-export."
+msgstr "Трансформация узла слишком велика для представления. Примените трансформации и экспортируйте заново."
+
+msgid "The model's geometry is too large to represent. Apply transforms and re-export."
+msgstr "Геометрия модели слишком велика для представления. Примените трансформации и экспортируйте заново."
+
+msgid "The model's scene has no mesh. Export the model with its objects selected or visible."
+msgstr "В сцене модели нет мешей. Экспортируйте модель с выделенными или видимыми объектами."
+
+msgid "The model's %s list is invalid."
+msgstr "Список %s в модели недопустим."
+
+msgid "The model has a name that is not text."
+msgstr "В модели есть имя, не являющееся текстом."
+
+msgid "The model uses glTF container version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "Модель использует контейнер glTF версии %s. Экспортируйте её в формате glTF 2.0 Binary (.glb)."
+
+msgid "The model file holds a chunk of an unknown type. Export a self-contained GLB with embedded PNG textures."
+msgstr "Файл модели содержит блок неизвестного типа. Экспортируйте автономный GLB со встроенными текстурами PNG."
+
+msgid "The model holds %s, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "Модель содержит %s — эти данные не поддерживаются. Экспортируйте жёсткую модель: примените модификаторы и удалите арматуры, ключи формы и анимации."
+
+msgid "The model holds cameras, which are not supported. Remove them from the export."
+msgstr "Модель содержит камеры — они не поддерживаются. Исключите их из экспорта."
+
+msgid "The model uses glTF version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "Модель использует glTF версии %s. Экспортируйте её в формате glTF 2.0 Binary (.glb)."
+
+msgid "The model uses more than one data buffer. Export a self-contained GLB with embedded PNG textures."
+msgstr "Модель использует более одного буфера данных. Экспортируйте автономный GLB со встроенными текстурами PNG."
+
+msgid "The model refers to an external or inline data file. Export a self-contained GLB with embedded PNG textures."
+msgstr "Модель ссылается на внешний или встроенный в описание файл данных. Экспортируйте автономный GLB со встроенными текстурами PNG."
+
+msgid "The model uses sparse accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "Модель использует разреженные аксессоры — они не поддерживаются. Экспортируйте жёсткую модель: примените модификаторы и удалите арматуры, ключи формы и анимации."
+
+msgid "The model has an accessor without data. Export a self-contained GLB with embedded PNG textures."
+msgstr "В модели есть аксессор без данных. Экспортируйте автономный GLB со встроенными текстурами PNG."
+
+msgid "The model uses matrix accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "Модель использует матричные аксессоры — они не поддерживаются. Экспортируйте жёсткую модель: примените модификаторы и удалите арматуры, ключи формы и анимации."
+
+msgid "The model refers to an external or inline image file. Export a self-contained GLB with embedded PNG textures."
+msgstr "Модель ссылается на внешний или встроенный в описание файл изображения. Экспортируйте автономный GLB со встроенными текстурами PNG."
+
+msgid "The model embeds an image of type %s. Export a self-contained GLB with embedded PNG textures."
+msgstr "В модель встроено изображение типа %s. Экспортируйте автономный GLB со встроенными текстурами PNG."
+
+msgid "A material uses texture coordinate set %s; only sets 0 and 1 are supported. Use the first UV map and export again."
+msgstr "Материал использует набор текстурных координат %s; поддерживаются только наборы 0 и 1. Используйте первую UV-развёртку и экспортируйте заново."
+
+msgid "The model uses shape keys (morph targets), which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "Модель использует ключи формы (morph targets) — они не поддерживаются. Экспортируйте жёсткую модель: примените модификаторы и удалите арматуры, ключи формы и анимации."
+
+msgid "A mesh surface is made of points, lines, strips or fans. Triangulate the mesh and export again."
+msgstr "Поверхность меша состоит из точек, линий, полос или вееров. Триангулируйте меш и экспортируйте заново."
+
+msgid "The model is skinned (%s). Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "В модели используется скиннинг (%s). Экспортируйте жёсткую модель: примените модификаторы и удалите арматуры, ключи формы и анимации."
+
+msgid "A mesh surface uses the vertex attribute %s, which is not supported. Remove extra UV maps, colour layers and custom attributes and export again."
+msgstr "Поверхность меша использует атрибут вершин %s — он не поддерживается. Удалите лишние UV-развёртки, слои цвета и пользовательские атрибуты и экспортируйте заново."
+
+msgid "A mesh surface stores %s as integers. Export without mesh quantization."
+msgstr "Поверхность меша хранит %s в виде целых чисел. Экспортируйте без квантования меша."
+
+msgid "The model uses armatures or shape keys, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "Модель использует арматуры или ключи формы — они не поддерживаются. Экспортируйте жёсткую модель: примените модификаторы и удалите арматуры, ключи формы и анимации."
+
+msgid "A node's matrix is sheared, mirrored, flattened or not affine. Apply transforms and re-export."
+msgstr "Матрица узла содержит сдвиг, отражение или сплющивание либо не является аффинной. Примените трансформации и экспортируйте заново."
+
+msgid "A node has a negative (mirroring) scale. Apply transforms and re-export."
+msgstr "У узла отрицательный (зеркальный) масштаб. Примените трансформации и экспортируйте заново."
+
+msgid "The model uses the glTF extension %s, which is not supported. %s"
+msgstr "Модель использует расширение glTF %s — оно не поддерживается. %s"
+
+msgid "The model uses the glTF property %s, which is not supported. Export a plain rigid model with the exporter's default settings."
+msgstr "Модель использует свойство glTF %s — оно не поддерживается. Экспортируйте простую жёсткую модель с настройками экспорта по умолчанию."
+
+msgid "The model file is larger than %s MiB. Reduce its detail or texture size and export it again."
+msgstr "Файл модели больше %s MiB. Уменьшите детализацию или размер текстур и экспортируйте модель заново."
+
+msgid "The model description is larger than %s MiB. Simplify the model and export it again."
+msgstr "Описание модели больше %s MiB. Упростите модель и экспортируйте её заново."
+
+msgid "The model description is too large or too deeply nested. Simplify the model and export it again."
+msgstr "Описание модели слишком велико или имеет слишком глубокую вложенность. Упростите модель и экспортируйте её заново."
+
+msgid "The model's textures hold more than %s pixels in total. Reduce the texture sizes."
+msgstr "Текстуры модели содержат в сумме больше %s пикселей. Уменьшите размеры текстур."
+
+msgid "The model has more than %s mesh surfaces. Join meshes or reduce the material count."
+msgstr "В модели больше %s поверхностей мешей. Объедините меши или уменьшите число материалов."
+
+msgid "The model's node tree is deeper than %s levels. Flatten the hierarchy and export again."
+msgstr "Дерево узлов модели глубже %s уровней. Упростите иерархию и экспортируйте заново."
+
+msgid "The model has more than %s triangles. Reduce its detail and export again."
+msgstr "В модели больше %s треугольников. Уменьшите детализацию и экспортируйте заново."
+
+msgid "The model has more than %s vertices. Reduce its detail and export again."
+msgstr "В модели больше %s вершин. Уменьшите детализацию и экспортируйте заново."
+
+msgid "The model has more than %s %s. Simplify the model and export it again."
+msgstr "В модели больше %s элементов %s. Упростите модель и экспортируйте её заново."
+
+msgid "The compressed data does not start with a valid zlib header."
+msgstr "Сжатые данные не начинаются с корректного заголовка zlib."
+
+msgid "The compressed data is truncated: it holds less data than declared."
+msgstr "Сжатые данные обрезаны: данных меньше, чем заявлено."
+
+msgid "The compressed data expands beyond its declared size."
+msgstr "Сжатые данные при распаковке превышают заявленный размер."
+
+msgid "Extra bytes follow the end of the compressed data."
+msgstr "После конца сжатых данных идут лишние байты."
+
+msgid "The compressed data is truncated: its end marker or checksum is missing."
+msgstr "Сжатые данные обрезаны: отсутствует маркер конца или контрольная сумма."
+
+msgid "The compressed data holds values its reader refuses."
+msgstr "Сжатые данные содержат значения, которые не принимает распаковщик."
+
+msgid "The compressed data is corrupt."
+msgstr "Сжатые данные повреждены."
+
+msgid "Package %s is not installed."
+msgstr "Пакет %s не установлен."
+
+msgid "Package %s cannot be used: %s"
+msgstr "Пакет %s нельзя использовать: %s"
+
+msgid "Choose which model axis points to the nose."
+msgstr "Выберите, какая ось модели направлена к носу."
+
+msgid "Choose which model axis points up."
+msgstr "Выберите, какая ось модели направлена вверх."
+
+msgid "The nose and up directions must be different model axes."
+msgstr "Направления к носу и вверх должны быть разными осями модели."
+
+msgid "Choose the model units or enter the real wingspan."
+msgstr "Выберите единицы измерения модели или введите реальный размах крыла."
+
+msgid "Mark the wing leading edge on the centreline."
+msgstr "Отметьте переднюю кромку крыла на оси симметрии."
+
+msgid "The image has more than %s chunks. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "В изображении больше %s блоков. Экспортируйте изображение заново как стандартный PNG без цветовых профилей и текстовых метаданных."
+
+msgid "The image holds metadata of type %s, which is not accepted. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "Изображение содержит метаданные типа %s — они не принимаются. Экспортируйте изображение заново как стандартный PNG без цветовых профилей и текстовых метаданных."
+
+msgid "The image holds a chunk of type %s, which is not supported. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "Изображение содержит блок типа %s — он не поддерживается. Экспортируйте изображение заново как стандартный PNG без цветовых профилей и текстовых метаданных."
+
+msgid "The image file is larger than %s MiB. Reduce its resolution and re-export it."
+msgstr "Файл изображения больше %s MiB. Уменьшите разрешение и экспортируйте его заново."
+
+msgid "The image is %s x %s pixels; the largest accepted side is %s pixels."
+msgstr "Размер изображения — %s x %s пикселей; наибольшая допустимая сторона — %s пикселей."
+
+msgid "The image file is truncated inside a chunk."
+msgstr "Файл изображения обрывается внутри блока."
+
+msgid "The image has a chunk with an invalid type."
+msgstr "В изображении есть блок недопустимого типа."
+
+msgid "The image is damaged: its %s chunk fails its checksum."
+msgstr "Изображение повреждено: блок %s не проходит проверку контрольной суммы."
+
+msgid "The image has more than one header chunk."
+msgstr "В изображении больше одного блока заголовка."
+
+msgid "The image data chunks are not consecutive."
+msgstr "Блоки данных изображения идут не подряд."
+
+msgid "The indexed image has no palette before its data."
+msgstr "В индексированном изображении нет палитры перед данными."
+
+msgid "The image end chunk is not empty."
+msgstr "Завершающий блок изображения не пуст."
+
+msgid "The image has no image data."
+msgstr "В изображении нет данных изображения."
+
+msgid "Extra bytes follow the end of the image."
+msgstr "После конца изображения идут лишние байты."
+
+msgid "The image has more than one %s chunk."
+msgstr "В изображении больше одного блока %s."
+
+msgid "The image has its %s chunk after the image data."
+msgstr "В изображении блок %s находится после данных изображения."
+
+msgid "The image file ends without its end chunk."
+msgstr "Файл изображения заканчивается без завершающего блока."
+
+msgid "The image data uses an invalid scanline filter."
+msgstr "В данных изображения используется недопустимый фильтр строки."
+
+msgid "The image data is not a valid zlib stream."
+msgstr "Данные изображения не являются корректным потоком zlib."
+
+msgid "The image data is truncated: it holds less than the image size requires."
+msgstr "Данные изображения обрезаны: их меньше, чем требует размер изображения."
+
+msgid "The image data holds more than the image size allows."
+msgstr "Данных изображения больше, чем допускает размер изображения."
+
+msgid "Extra bytes follow the compressed image data."
+msgstr "После сжатых данных изображения идут лишние байты."
+
+msgid "The image data is corrupt. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "Данные изображения повреждены. Экспортируйте изображение заново как стандартный PNG без цветовых профилей и текстовых метаданных."
+
+msgid "The file is too short to be a PNG image."
+msgstr "Файл слишком короткий для изображения PNG."
+
+msgid "The file is not a PNG image. Export the texture as PNG."
+msgstr "Файл не является изображением PNG. Экспортируйте текстуру в формате PNG."
+
+msgid "The image does not start with a valid header chunk."
+msgstr "Изображение не начинается с корректного блока заголовка."
+
+msgid "The image has a zero width or height."
+msgstr "У изображения нулевая ширина или высота."
+
+msgid "The image has an invalid colour type or bit depth."
+msgstr "У изображения недопустимый тип цвета или битовая глубина."
+
+msgid "The image has an invalid compression, filter or interlace method."
+msgstr "У изображения недопустимый метод сжатия, фильтрации или чересстрочной развёртки."
+
+msgid "The image could not be decoded. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "Не удалось декодировать изображение. Экспортируйте изображение заново как стандартный PNG без цветовых профилей и текстовых метаданных."
+
+msgid "The file \"%s\" cannot be opened."
+msgstr "Не удалось открыть файл \"%s\"."
+
+msgid "The file \"%s\" is empty."
+msgstr "Файл \"%s\" пуст."
+
+msgid "The file \"%s\" is larger than the %s MiB model limit. Reduce its detail and export it again."
+msgstr "Файл \"%s\" больше предела в %s MiB для моделей. Уменьшите детализацию и экспортируйте его заново."
+
+msgid "The file \"%s\" could not be read completely."
+msgstr "Не удалось полностью прочитать файл \"%s\"."
+
+msgid "\"%s\" is a picture, not a 3D model. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\" — это изображение, а не 3D-модель. Экспортируйте модель в формате STL или как автономный GLB."
+
+msgid "\"%s\" is not a supported model format. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\" — неподдерживаемый формат модели. Экспортируйте модель в формате STL или как автономный GLB."
+
+msgid "The model in \"%s\" is flat or empty along one axis."
+msgstr "Модель в файле \"%s\" плоская или пустая вдоль одной из осей."
+
+msgid "The model file is empty."
+msgstr "Файл модели пуст."
+
+msgid "The model file has %s bytes; the limit is %s bytes."
+msgstr "Размер файла модели — %s байт; предел — %s байт."
+
+msgid "This is not an STL file: it has %s bytes, fewer than a binary STL header, and its text does not start with \"solid\"."
+msgstr "Это не файл STL: его размер — %s байт, что меньше заголовка двоичного STL, а его текст не начинается с \"solid\"."
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has only %s bytes. It may be truncated; export it again."
+msgstr "Это некорректный файл STL. Его текст не начинается с \"solid\", а как двоичный STL он заявляет граней: %s, для чего нужно %s байт, но в файле только %s байт. Возможно, файл обрезан; экспортируйте его заново."
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has %s bytes. Export it again as STL."
+msgstr "Это некорректный файл STL. Его текст не начинается с \"solid\", а как двоичный STL он заявляет граней: %s, для чего нужно %s байт, но в файле %s байт. Экспортируйте его заново в формате STL."
+
+msgid "The STL file contains no facets."
+msgstr "Файл STL не содержит граней."
+
+msgid "The file starts with \"solid\" but is not STL text: it has a NUL byte at offset %s. If it is a binary STL file, its length does not match its facet count; it may be truncated. Export it again."
+msgstr "Файл начинается с \"solid\", но не является текстовым STL: в нём есть байт NUL по смещению %s. Если это двоичный файл STL, его длина не соответствует числу граней; возможно, он обрезан. Экспортируйте его заново."
+
+msgid "The STL text has more than %s solids."
+msgstr "В тексте STL больше %s тел."
+
+msgid "The STL text ends at line %s inside an unfinished solid. It looks truncated; export it again."
+msgstr "Текст STL обрывается на строке %s внутри незавершённого тела. Похоже, файл обрезан; экспортируйте его заново."
+
+msgid "Line %s of the STL text: \"%s\" is not a plain decimal number."
+msgstr "Строка %s текста STL: \"%s\" не является простым десятичным числом."
+
+msgid "Line %s of the STL text: \"%s\" found where \"facet\" or \"endsolid\" is required."
+msgstr "Строка %s текста STL: найдено \"%s\" там, где требуется \"facet\" или \"endsolid\"."
+
+msgid "Line %s of the STL text: unexpected \"%s\" after the end of the solid."
+msgstr "Строка %s текста STL: неожиданное \"%s\" после конца тела."
+
+msgid "Line %s of the STL text: \"%s\" found where \"%s\" is required."
+msgstr "Строка %s текста STL: найдено \"%s\" там, где требуется \"%s\"."
+
+msgid "The STL text is not valid UTF-8 at or after line %s."
+msgstr "Текст STL не является корректным UTF-8 в строке %s или после неё."
+
+msgid "Line %s of the STL text is longer than %s bytes."
+msgstr "Строка %s текста STL длиннее %s байт."
+
+msgid "The STL file has more than %s facets. Simplify the model and export it again."
+msgstr "В файле STL больше %s граней. Упростите модель и экспортируйте её заново."
+
+msgid "The STL file has no usable facet: all %s have zero area."
+msgstr "В файле STL нет пригодных граней: у всех граней (%s) нулевая площадь."
+
+msgid "%s zero-area facets were left out."
+msgstr "Пропущено граней с нулевой площадью: %s."
+
+msgid "%s facets have a stored normal that points against their vertex order. The vertex order was kept."
+msgstr "Граней, у которых записанная нормаль направлена против порядка вершин: %s. Порядок вершин сохранён."
+
+msgid "%s facets carry attribute data, which was ignored. STL colour is not supported."
+msgstr "Граней с данными атрибутов: %s; эти данные проигнорированы. Цвет STL не поддерживается."
+
+msgid "This model format cannot be shown."
+msgstr "Этот формат модели нельзя показать."
+
+msgid "The model has no triangles to show."
+msgstr "В модели нет треугольников для показа."
+
+msgid "The GLB model could not be loaded. Export it again as a self-contained GLB."
+msgstr "Не удалось загрузить модель GLB. Экспортируйте её заново как автономный GLB."
+
+msgid "The GLB model produced no scene."
+msgstr "Из модели GLB не получено ни одной сцены."
+
+msgid "The GLB model contains an unsupported element (%s)."
+msgstr "Модель GLB содержит неподдерживаемый элемент (%s)."
+
+msgid "The wing span is %s m; this package supports %s to %s m."
+msgstr "Размах крыла — %s м; этот пакет поддерживает от %s до %s м."
+
+msgid "The wing aspect ratio is %s; this package supports %s to %s."
+msgstr "Удлинение крыла — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The tip-to-root chord ratio is %s; this package supports %s to %s."
+msgstr "Отношение концевой хорды к корневой — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The flying mass is %s kg; this package supports %s to %s kg."
+msgstr "Полётная масса — %s кг; этот пакет поддерживает от %s до %s кг."
+
+msgid "The wing loading is %s kg/m²; this package supports %s to %s kg/m²."
+msgstr "Нагрузка на крыло — %s кг/м²; этот пакет поддерживает от %s до %s кг/м²."
+
+msgid "The horizontal tail aspect ratio is %s; this package supports %s to %s."
+msgstr "Удлинение горизонтального оперения — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The vertical tail height-to-chord ratio is %s; this package supports %s to %s."
+msgstr "Отношение высоты вертикального оперения к его хорде — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The horizontal tail volume is %s; this package supports %s to %s."
+msgstr "Коэффициент статического момента горизонтального оперения — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The vertical tail volume is %s; this package supports %s to %s."
+msgstr "Коэффициент статического момента вертикального оперения — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The static margin is %s of the mean chord; this package supports %s to %s."
+msgstr "Запас статической устойчивости — %s средней хорды; этот пакет поддерживает от %s до %s."
+
+msgid "The static thrust is %s times the weight; this package supports %s to %s."
+msgstr "Отношение статической тяги к весу — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The propeller hub is %s m ahead of the fuselage nose; this package supports %s to %s m."
+msgstr "Втулка винта находится на %s м впереди носа фюзеляжа; этот пакет поддерживает от %s до %s м."
+
+msgid "The flight loader refused the compiled aircraft: %s"
+msgstr "Загрузчик полёта отклонил скомпилированный самолёт: %s"
+
+msgid "The flight loader notes: %s"
+msgstr "Примечание загрузчика полёта: %s"
+
+msgid "Turn off mesh compression in the export settings."
+msgstr "Отключите сжатие мешей в настройках экспорта."
+
+msgid "Turn off mesh quantization in the export settings."
+msgstr "Отключите квантование мешей в настройках экспорта."
+
+msgid "Export the textures as PNG."
+msgstr "Экспортируйте текстуры в формате PNG."
+
+msgid "Remove the lights from the export."
+msgstr "Исключите источники света из экспорта."
+
+msgid "Turn it off in the export settings and export again."
+msgstr "Отключите его в настройках экспорта и экспортируйте заново."
+
+msgid "The greyscale image holds a palette."
+msgstr "Изображение в оттенках серого содержит палитру."
+
+msgid "The image palette has an invalid size."
+msgstr "У палитры изображения недопустимый размер."
+
+msgid "The image palette has more entries than its bit depth can address."
+msgstr "В палитре изображения больше записей, чем позволяет адресовать его битовая глубина."
+
+msgid "The image transparency chunk comes before its palette."
+msgstr "Блок прозрачности изображения расположен перед палитрой."
+
+msgid "The image transparency chunk has an invalid size."
+msgstr "У блока прозрачности изображения недопустимый размер."
+
+msgid "The image has both an alpha channel and a transparency chunk."
+msgstr "В изображении есть и альфа-канал, и блок прозрачности."
+
+msgid "The image's %s chunk has the wrong size."
+msgstr "У блока %s изображения неверный размер."
+
+msgid "The image's %s chunk comes after its palette."
+msgstr "Блок %s изображения расположен после палитры."
+
+msgid "The image has an invalid sRGB rendering intent."
+msgstr "У изображения недопустимый способ цветопередачи sRGB."
+
+msgid "The image has a zero gamma value."
+msgstr "У изображения нулевое значение гаммы."
+
+msgid "The image has an invalid pixel-size unit."
+msgstr "У изображения недопустимая единица размера пикселя."
+
+msgid "Facet %s of the STL file has a value that is not a finite 32-bit number."
+msgstr "Грань %s файла STL содержит значение, не являющееся конечным 32-битным числом."
+
+msgid "Facet %s of the STL file is too large to process. Rescale the model to sensible units and export it again."
+msgstr "Грань %s файла STL слишком велика для обработки. Измените масштаб модели до разумных единиц и экспортируйте её заново."
+
+msgid "Facet %s of the STL file (ending at line %s) has a value that is not a finite 32-bit number."
+msgstr "Грань %s файла STL (заканчивается на строке %s) содержит значение, не являющееся конечным 32-битным числом."
+
+msgid "Facet %s of the STL file (ending at line %s) is too large to process. Rescale the model to sensible units and export it again."
+msgstr "Грань %s файла STL (заканчивается на строке %s) слишком велика для обработки. Измените масштаб модели до разумных единиц и экспортируйте её заново."
+
+msgid "STL model"
+msgstr "Модель STL"
+
+msgid "Self-contained GLB model"
+msgstr "Автономная модель GLB"
+
+msgid "A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start."
+msgstr "При обычном броске с руки самолёт не смог бы набрать высоту: он коснулся земли или потерял управление в течение 3 секунд. Уменьшите вес, сместите центр тяжести вперёд или выберите старт в воздухе."
+
+msgid "The aircraft was not accepted by the compiler."
+msgstr "Компилятор не принял самолёт."
+
+msgid "The model source was not admitted."
+msgstr "Исходный файл модели не был допущен."
+
+msgid "The model placement is missing."
+msgstr "Отсутствует размещение модели."
+
+msgid "The model orientation, size or datum is not confirmed."
+msgstr "Ориентация, размер или точка отсчёта модели не подтверждены."
+
+msgid "The compiled aircraft does not match its exact bytes."
+msgstr "Скомпилированный самолёт не соответствует своим точным байтам."
+
+msgid "The trial identity could not be written."
+msgstr "Не удалось записать идентификатор испытания."
+
+msgid "This is not a frozen Creator trial."
+msgstr "Это не зафиксированное испытание Конструктора."
+
+msgid "The frozen trial is missing its identity, data, source or exact bytes."
+msgstr "В зафиксированном испытании отсутствует идентификатор, данные, исходный файл или точные байты."
+
+msgid "The frozen trial has an unsupported identity or an invalid model."
+msgstr "У зафиксированного испытания неподдерживаемый идентификатор или недопустимая модель."
+
+msgid "The frozen aircraft bytes do not match the trial identity."
+msgstr "Байты зафиксированного самолёта не соответствуют идентификатору испытания."
+
+msgid "The frozen model does not match the trial identity."
+msgstr "Зафиксированная модель не соответствует идентификатору испытания."
+
+msgid "The frozen model source does not match the trial identity."
+msgstr "Исходный файл зафиксированной модели не соответствует идентификатору испытания."
+
+msgid "This start is not available for a Creator aircraft without landing gear."
+msgstr "Этот старт недоступен для самолёта из Конструктора без шасси."
+
+msgid "The selected field is not a normalized field definition."
+msgstr "Выбранное поле не является нормализованным описанием поля."
+
+msgid "The weather configuration is invalid."
+msgstr "Недопустимая конфигурация погоды."
+
+msgid "The start check needs a running scene tree."
+msgstr "Для проверки старта нужно работающее дерево сцены."
+
+msgid "The frozen aircraft could not be prepared."
+msgstr "Не удалось подготовить зафиксированный самолёт."
+
+msgid "The requested start did not commit."
+msgstr "Запрошенный старт не был выполнен."
+
+msgid "The start check exceeded its time budget."
+msgstr "Проверка старта превысила отведённое время."
+
+msgid "Create aircraft…"
+msgstr "Создать самолёт…"
+
+msgid "Import a 3D model and describe a new aircraft"
+msgstr "Импортируйте 3D-модель и опишите новый самолёт"
+
+msgid "Leave the Aircraft Creator?"
+msgstr "Выйти из Конструктора самолётов?"
+
+msgid "This aircraft cannot be saved yet. Leaving discards it."
+msgstr "Этот самолёт пока нельзя сохранить. При выходе он будет удалён."
+
+msgid "Discard aircraft"
+msgstr "Удалить самолёт"
+
+msgid "Keep editing"
+msgstr "Продолжить редактирование"
+
+msgid "Choose an airborne or hand-launch trial start."
+msgstr "Выберите старт испытания в воздухе или с руки."
+
+msgid "Estimated value"
+msgstr "Оценка"
+
+msgid "Upward"
+msgstr "Вверх"
+
+msgid "The aileron travel is %s degrees; this package supports %s to %s degrees."
+msgstr "Ход элеронов — %s град.; этот пакет поддерживает от %s до %s град."
+
+msgid "The elevator travel is %s degrees; this package supports %s to %s degrees."
+msgstr "Ход руля высоты — %s град.; этот пакет поддерживает от %s до %s град."
+
+msgid "The rudder travel is %s degrees; this package supports %s to %s degrees."
+msgstr "Ход руля направления — %s град.; этот пакет поддерживает от %s до %s град."
+
+msgid "The neutral-to-full command time is %s s; this package supports %s to %s s."
+msgstr "Время от нейтрали до полного отклонения — %s с; этот пакет поддерживает от %s до %s с."
+
+msgid "The down thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "Выкос вниз — %s град.; этот пакет поддерживает от %s до %s град."
+
+msgid "The right thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "Выкос вправо — %s град.; этот пакет поддерживает от %s до %s град."
+
+msgid "The starting charge is %s; this package supports %s to %s."
+msgstr "Заряд на старте — %s; этот пакет поддерживает от %s до %s."
+
+msgid "The image is compressed with an unusual window size. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "Изображение сжато с необычным размером окна. Экспортируйте изображение заново как стандартный PNG без цветовых профилей и текстовых метаданных."
+
+msgid "The image's %s chunk is too large."
+msgstr "Блок %s изображения слишком велик."
+
+msgid "The image's %s chunk is invalid."
+msgstr "Блок %s изображения недопустим."
+
+msgid "The model does not say which scene to show. Export it again as a self-contained GLB from your modelling tool."
+msgstr "В модели не указано, какую сцену показывать. Экспортируйте её заново как автономный GLB из своей программы моделирования."
+
+msgid "The frozen model is not what its exact bytes load to."
+msgstr "Зафиксированная модель не совпадает с той, что загружается из её точных байтов."
+
+msgid "The frozen model placement does not match the trial identity."
+msgstr "Размещение зафиксированной модели не соответствует идентификатору испытания."
+
+msgid "The frozen trial identity does not match its content."
+msgstr "Идентификатор зафиксированного испытания не соответствует его содержимому."
+
+msgid "The Creator trial does not match its frozen identity."
+msgstr "Испытание Конструктора не соответствует своему зафиксированному идентификатору."
+
+msgid "The compressed data declares a window smaller than its content."
+msgstr "Сжатые данные объявляют окно меньше своего содержимого."

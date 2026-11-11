@@ -9499,3 +9499,1468 @@ msgstr "フィン舵角"
 
 msgid "Close the running activity before starting a blimp trial."
 msgstr "飛行船のテストを始める前に、実行中のアクティビティを閉じてください。"
+
+# AC-10: Aircraft Creator.
+msgid "Not available yet"
+msgstr "まだ利用できません"
+
+msgid "\"%s\" is not a number."
+msgstr "\"%s\"は数値ではありません。"
+
+msgid "Enter a number."
+msgstr "数値を入力してください。"
+
+msgid "No model imported yet"
+msgstr "モデルはまだインポートされていません"
+
+msgid "Controls simulated · visual is static"
+msgstr "操縦をシミュレート · 外観は静止"
+
+msgid "4S · 800 Kv · 12×6 propeller — estimated"
+msgstr "4S · 800 Kv · 12×6プロペラ — 推定"
+
+msgid "Datum X"
+msgstr "基準点 X"
+
+msgid "Datum Y"
+msgstr "基準点 Y"
+
+msgid "Datum Z"
+msgstr "基準点 Z"
+
+msgid "STL (binary)"
+msgstr "STL（バイナリ）"
+
+msgid "STL (text)"
+msgstr "STL（テキスト）"
+
+msgid "GLB"
+msgstr "GLB"
+
+msgid "Measured"
+msgstr "実測"
+
+msgid "Manual"
+msgstr "手動"
+
+msgid "Aft"
+msgstr "後方"
+
+msgid "Right"
+msgstr "右"
+
+msgid "Tailplane"
+msgstr "水平尾翼"
+
+msgid "Fin"
+msgstr "垂直尾翼"
+
+msgid "Equipment positions"
+msgstr "搭載機器の位置"
+
+msgid "Inventory"
+msgstr "搭載品リスト"
+
+msgid "Tailplane position"
+msgstr "水平尾翼の位置"
+
+msgid "Fin position"
+msgstr "垂直尾翼の位置"
+
+msgid "Propeller hub position"
+msgstr "プロペラハブの位置"
+
+msgid "Battery position"
+msgstr "バッテリーの位置"
+
+msgid "Speed controller position"
+msgstr "ESCの位置"
+
+msgid "Thrust angles"
+msgstr "スラスト角"
+
+msgid "Total mass"
+msgstr "総質量"
+
+msgid "Centre of gravity (aft, right, up)"
+msgstr "重心（後方、右、上）"
+
+msgid "Neutral point (aft)"
+msgstr "中立点（後方）"
+
+msgid "Static margin (of the mean chord)"
+msgstr "静安定余裕（平均翼弦比）"
+
+msgid "Level flight speed"
+msgstr "水平飛行速度"
+
+msgid "Stall speed"
+msgstr "失速速度"
+
+msgid "Thrust to weight"
+msgstr "推力重量比"
+
+msgid "Known wingspan (m)"
+msgstr "既知の翼幅（m）"
+
+msgid "Replace the model?"
+msgstr "モデルを置き換えますか？"
+
+msgid "Importing \"%s\" replaces the current model and resets its orientation, units and datum. The values entered for the aircraft are kept."
+msgstr "\"%s\"をインポートすると、現在のモデルが置き換えられ、向き、単位、基準点がリセットされます。機体に入力した値は保持されます。"
+
+msgid "Replace model"
+msgstr "モデルを置き換え"
+
+msgid "Choose a model"
+msgstr "モデルを選択"
+
+msgid "3D model"
+msgstr "3Dモデル"
+
+msgid "Back to Workshop"
+msgstr "工房に戻る"
+
+msgid "Create aircraft"
+msgstr "機体を作成"
+
+msgid "Aircraft name"
+msgstr "機体名"
+
+msgid "Experimental · estimated"
+msgstr "実験段階 · 推定"
+
+msgid "Show preview"
+msgstr "プレビューを表示"
+
+msgid "Choose an STL file or a self-contained GLB file. A picture is not a 3D model."
+msgstr "STLファイルまたは自己完結型のGLBファイルを選んでください。画像は3Dモデルではありません。"
+
+msgid "Choose model…"
+msgstr "モデルを選択…"
+
+msgid "Replace model…"
+msgstr "モデルを置き換え…"
+
+msgid "Import a model first"
+msgstr "先にモデルをインポートしてください"
+
+msgid "Go to Import"
+msgstr "「インポート」へ移動"
+
+msgid "Say how the model sits in its file. Nothing is assumed."
+msgstr "モデルがファイル内でどう配置されているかを指定してください。自動的な推測は行いません。"
+
+msgid "Until the placement is complete, the preview shows the model in the file's own axes."
+msgstr "配置の設定が完了するまで、プレビューではファイル本来の軸でモデルを表示します。"
+
+msgid "Model axis pointing to the nose"
+msgstr "機首方向のモデル軸"
+
+msgid "Model axis pointing up"
+msgstr "上方向のモデル軸"
+
+msgid "Model units"
+msgstr "モデルの単位"
+
+msgid "Choose units"
+msgstr "単位を選択"
+
+msgid "Choose…"
+msgstr "選択…"
+
+msgid "If the units are unknown, enter the real wingspan instead."
+msgstr "単位が不明な場合は、代わりに実際の翼幅を入力してください。"
+
+msgid "Datum: wing leading edge on the centreline"
+msgstr "基準点：中心線上の主翼前縁"
+
+msgid "Type the point in the model's own coordinates, or pick it on the preview."
+msgstr "モデル自身の座標で点を入力するか、プレビュー上で指定してください。"
+
+msgid "Pick on the preview"
+msgstr "プレビュー上で指定"
+
+msgid "Click the wing leading edge at the centreline on the preview."
+msgstr "プレビュー上で、中心線上の主翼前縁をクリックしてください。"
+
+msgid "Conventional"
+msgstr "通常型"
+
+msgid "Flying wing"
+msgstr "全翼機"
+
+msgid "Canard"
+msgstr "カナード"
+
+msgid "V-tail"
+msgstr "V尾翼"
+
+msgid "Use starting values…"
+msgstr "初期値を使用…"
+
+msgid "Estimated starting values — correct them with your measurements."
+msgstr "推定による初期値 — 実測値で修正してください。"
+
+msgid "Flight dimensions are entered here; they do not reshape the visual model."
+msgstr "飛行用の寸法はここで入力します。外観モデルの形状は変わりません。"
+
+msgid "Distances are in metres from the wing leading edge on the centreline."
+msgstr "距離は、中心線上の主翼前縁からのメートル値です。"
+
+msgid "Power package hardware is added automatically"
+msgstr "動力パッケージの機器は自動的に追加されます"
+
+msgid "The motor, propeller, speed controller and battery are not listed here. List everything else the airplane carries."
+msgstr "モーター、プロペラ、ESC、バッテリーはここには表示されません。それ以外に機体へ搭載するものをすべて登録してください。"
+
+msgid "Propose airframe items"
+msgstr "機体の項目を提案"
+
+msgid "Add item"
+msgstr "項目を追加"
+
+msgid "Propose replaces items marked Estimated. Mark an item Measured or Manual to keep your values."
+msgstr "提案を実行すると、「推定」の項目が置き換えられます。入力した値を残すには、項目を「実測」または「手動」にしてください。"
+
+msgid "Electric"
+msgstr "電動"
+
+msgid "Gasoline"
+msgstr "ガソリン"
+
+msgid "Glow"
+msgstr "グロー"
+
+msgid "No gear"
+msgstr "着陸装置なし"
+
+msgid "Fixed tricycle"
+msgstr "固定脚（前輪式）"
+
+msgid "Taildragger"
+msgstr "尾輪式"
+
+msgid "Retractable"
+msgstr "引込脚"
+
+msgid "The model's own colours"
+msgstr "モデル本来の色"
+
+msgid "Generate paint"
+msgstr "配色を生成"
+
+msgid "Upload image"
+msgstr "画像をアップロード"
+
+msgid "Import skin"
+msgstr "塗装をインポート"
+
+msgid "Estimated aircraft — not a measurement of a real airplane."
+msgstr "推定による機体です — 実機を測定したものではありません。"
+
+msgid "Issues"
+msgstr "問題"
+
+msgid "Start"
+msgstr "スタート"
+
+msgid "Summary"
+msgstr "概要"
+
+msgid "Needs landing gear"
+msgstr "着陸装置が必要"
+
+msgid "Not set"
+msgstr "未設定"
+
+msgid "Estimated read-out"
+msgstr "推定値"
+
+msgid "These estimated values replace the current ones:"
+msgstr "次の推定値で現在の値が置き換えられます："
+
+msgid "Use starting values?"
+msgstr "初期値を使用しますか？"
+
+msgid "Use starting values"
+msgstr "初期値を使用"
+
+msgid "Choose the nose and up axes first, then enter a wingspan above zero."
+msgstr "先に機首方向と上方向の軸を選び、0より大きい翼幅を入力してください。"
+
+msgid "Nothing can be proposed yet. Enter the wing, tail and fuselage dimensions in Aircraft layout first."
+msgstr "まだ提案できません。先に「機体レイアウト」で主翼、尾翼、胴体の寸法を入力してください。"
+
+msgid "New item"
+msgstr "新しい項目"
+
+msgid "The inventory is full (%s items)."
+msgstr "搭載品リストがいっぱいです（%s項目）。"
+
+msgid "No items yet. Propose the airframe items or add your own."
+msgstr "項目はまだありません。機体の項目を提案するか、自分で追加してください。"
+
+msgid "Item name"
+msgstr "項目名"
+
+msgid "Evidence"
+msgstr "根拠"
+
+msgid "Status: %s"
+msgstr "状態：%s"
+
+msgid "Inspecting model…"
+msgstr "モデルを検査中…"
+
+msgid "Test fly is available once the issues listed above are resolved."
+msgstr "上記の問題をすべて解決すると、試験飛行できます。"
+
+msgid "The model could not be imported"
+msgstr "モデルをインポートできませんでした"
+
+msgid "The current model is unchanged."
+msgstr "現在のモデルは変更されていません。"
+
+msgid "Model imported"
+msgstr "モデルをインポートしました"
+
+msgid "File: %s"
+msgstr "ファイル：%s"
+
+msgid "Format: %s"
+msgstr "形式：%s"
+
+msgid "Triangles: %s"
+msgstr "三角形：%s"
+
+msgid "Size in model units: %s × %s × %s"
+msgstr "サイズ（モデル単位）：%s × %s × %s"
+
+msgid "File size: %s"
+msgstr "ファイルサイズ：%s"
+
+msgid "Warning: %s"
+msgstr "警告：%s"
+
+msgid "Note: %s"
+msgstr "注記：%s"
+
+msgid "Scale: 1 model unit = %s m"
+msgstr "スケール：1モデル単位 = %s m"
+
+msgid "Choose the axes, the units and the datum to see the real size."
+msgstr "実際のサイズを表示するには、軸、単位、基準点を選んでください。"
+
+msgid "Span %s m · Length %s m · Height %s m"
+msgstr "翼幅%s m · 全長%s m · 全高%s m"
+
+msgid "No open issues."
+msgstr "未解決の問題はありません。"
+
+msgid "Not placed yet"
+msgstr "配置は未設定"
+
+msgid "Wingspan"
+msgstr "翼幅"
+
+msgid "%s inventory items"
+msgstr "搭載品%s項目"
+
+msgid "CG"
+msgstr "重心"
+
+msgid "Neutral point"
+msgstr "中立点"
+
+msgid "Propeller hub"
+msgstr "プロペラハブ"
+
+msgid "No model imported"
+msgstr "モデル未インポート"
+
+msgid "Zoom +"
+msgstr "ズーム +"
+
+msgid "Zoom −"
+msgstr "ズーム −"
+
+msgid "Wing root chord"
+msgstr "主翼の翼根弦長"
+
+msgid "Wing tip chord"
+msgstr "主翼の翼端弦長"
+
+msgid "Tailplane span"
+msgstr "水平尾翼の翼幅"
+
+msgid "Tailplane chord"
+msgstr "水平尾翼の翼弦長"
+
+msgid "Tailplane leading edge, distance aft"
+msgstr "水平尾翼前縁、後方への距離"
+
+msgid "Tailplane height"
+msgstr "水平尾翼の高さ"
+
+msgid "Fin height"
+msgstr "垂直尾翼の高さ"
+
+msgid "Fin chord"
+msgstr "垂直尾翼の翼弦長"
+
+msgid "Fin leading edge, distance aft"
+msgstr "垂直尾翼前縁、後方への距離"
+
+msgid "Fin base height"
+msgstr "垂直尾翼基部の高さ"
+
+msgid "Nose, distance aft (negative ahead of the wing)"
+msgstr "機首、後方への距離（主翼より前は負）"
+
+msgid "Tail end, distance aft"
+msgstr "機体後端、後方への距離"
+
+msgid "Fuselage width"
+msgstr "胴体の幅"
+
+msgid "Fuselage height"
+msgstr "胴体の高さ"
+
+msgid "Fuselage centre height"
+msgstr "胴体中心の高さ"
+
+msgid "Battery, distance aft"
+msgstr "バッテリー、後方への距離"
+
+msgid "Battery, distance right"
+msgstr "バッテリー、右への距離"
+
+msgid "Battery height"
+msgstr "バッテリーの高さ"
+
+msgid "Propeller hub, distance aft"
+msgstr "プロペラハブ、後方への距離"
+
+msgid "Propeller hub, distance right"
+msgstr "プロペラハブ、右への距離"
+
+msgid "Propeller hub height"
+msgstr "プロペラハブの高さ"
+
+msgid "Speed controller, distance aft"
+msgstr "ESC、後方への距離"
+
+msgid "Speed controller, distance right"
+msgstr "ESC、右への距離"
+
+msgid "Speed controller height"
+msgstr "ESCの高さ"
+
+msgid "Down thrust"
+msgstr "ダウンスラスト"
+
+msgid "Right thrust"
+msgstr "右サイドスラスト"
+
+msgid "Battery charge at start (0 to 1)"
+msgstr "開始時のバッテリー残量（0～1）"
+
+msgid "Aileron travel"
+msgstr "エルロンの舵角"
+
+msgid "Elevator travel"
+msgstr "エレベーターの舵角"
+
+msgid "Rudder travel"
+msgstr "ラダーの舵角"
+
+msgid "Neutral to full command time"
+msgstr "中立から最大舵角までの時間"
+
+msgid "Import"
+msgstr "インポート"
+
+msgid "Orient and size"
+msgstr "向きとサイズ"
+
+msgid "Aircraft layout"
+msgstr "機体レイアウト"
+
+msgid "Weight and balance"
+msgstr "重量とバランス"
+
+msgid "Power and mount"
+msgstr "動力と取り付け"
+
+msgid "Controls and ground"
+msgstr "操縦と地上"
+
+msgid "Paint and skins"
+msgstr "配色と塗装"
+
+msgid "Review and test"
+msgstr "確認と試験飛行"
+
+msgid "Not started"
+msgstr "未着手"
+
+msgid "In progress"
+msgstr "進行中"
+
+msgid "Needs attention"
+msgstr "要確認"
+
+msgid "Complete"
+msgstr "完了"
+
+msgid "Correct the highlighted values first."
+msgstr "先に、強調表示された値を修正してください。"
+
+msgid "Import a model first."
+msgstr "先にモデルをインポートしてください。"
+
+msgid "The record cannot be written: %s"
+msgstr "レコードを書き込めません：%s"
+
+msgid "The record exceeds its size limit."
+msgstr "レコードがサイズ上限を超えています。"
+
+msgid "The record starts with a byte-order mark."
+msgstr "レコードの先頭にバイトオーダーマークがあります。"
+
+msgid "The record is not valid JSON: %s"
+msgstr "レコードが有効なJSONではありません：%s"
+
+msgid "The record must be a JSON object."
+msgstr "レコードはJSONオブジェクトである必要があります。"
+
+msgid "The record has an invalid number: %s"
+msgstr "レコードに無効な数値があります：%s"
+
+msgid "The loaded record does not carry the aircraft identity."
+msgstr "読み込んだレコードに機体の識別情報がありません。"
+
+msgid "The compiled aircraft could not be sealed."
+msgstr "コンパイル済みの機体を封印できませんでした。"
+
+msgid "The aircraft cannot be described by this package."
+msgstr "この機体は、このパッケージでは記述できません。"
+
+msgid "The tail surfaces must sit behind the wing's quarter chord."
+msgstr "尾翼は、主翼の1/4翼弦位置より後方に配置してください。"
+
+msgid "The propeller hub must sit on the fuselage nose, inside its width and height."
+msgstr "プロペラハブは胴体の機首にあり、胴体の幅と高さの範囲内に収まっている必要があります。"
+
+msgid "The definition format must be %s."
+msgstr "定義の形式は%sである必要があります。"
+
+msgid "The aircraft identity must be a lowercase version 4 UUID."
+msgstr "機体の識別情報は、小文字のバージョン4 UUIDである必要があります。"
+
+msgid "The tip chord must not exceed the root chord."
+msgstr "翼端弦長は翼根弦長以下にしてください。"
+
+msgid "The fuselage nose must be ahead of the wing leading edge (negative x)."
+msgstr "胴体の機首は、主翼前縁より前方にある必要があります（xは負）。"
+
+msgid "The fuselage tail must be behind the wing leading edge (positive x)."
+msgstr "胴体の後端は、主翼前縁より後方にある必要があります（xは正）。"
+
+msgid "The starting charge must be above zero."
+msgstr "開始時の残量は0より大きくしてください。"
+
+msgid "The inventory must be a list of items."
+msgstr "搭載品リストは項目のリストである必要があります。"
+
+msgid "The inventory holds %s items; the limit is %s."
+msgstr "搭載品リストには%s項目あります。上限は%s項目です。"
+
+msgid "An inventory item must be an object."
+msgstr "搭載品リストの項目はオブジェクトである必要があります。"
+
+msgid "An item ID is lowercase snake_case, starts with a letter and has at most 80 characters."
+msgstr "項目IDは小文字のsnake_caseで、英字で始まり、80文字以内にしてください。"
+
+msgid "The ID %s belongs to the power package or the compiler."
+msgstr "ID %sは、動力パッケージまたはコンパイラーが使用するものです。"
+
+msgid "The ID %s is used by more than one item."
+msgstr "ID %sが複数の項目で使われています。"
+
+msgid "An item name is text of 1 to %s characters."
+msgstr "項目名は1～%s文字のテキストにしてください。"
+
+msgid "An item is measured, estimated or manual."
+msgstr "項目は「実測」「推定」「手動」のいずれかです。"
+
+msgid "This value is required."
+msgstr "この値は必須です。"
+
+msgid "This field is not part of the definition."
+msgstr "このデータ項目は定義に含まれていません。"
+
+msgid "This value must be an object."
+msgstr "この値はオブジェクトである必要があります。"
+
+msgid "This value must be a finite number."
+msgstr "この値は有限の数値である必要があります。"
+
+msgid "This value must be between %s and %s."
+msgstr "この値は%s～%sの範囲にしてください。"
+
+msgid "This value must be a list of %s finite numbers."
+msgstr "この値は、%s個の有限な数値のリストである必要があります。"
+
+msgid "Each number must be between %s and %s."
+msgstr "各数値は%s～%sの範囲にしてください。"
+
+msgid "The tail sits on the centreline: its y position must be 0."
+msgstr "尾翼は中心線上にあるため、y位置は0にしてください。"
+
+msgid "The file is not a binary glTF model. Export the model as glTF Binary (.glb)."
+msgstr "このファイルはバイナリglTFモデルではありません。モデルをglTF Binary（.glb）としてエクスポートしてください。"
+
+msgid "The model file is damaged: its declared length does not match its size."
+msgstr "モデルファイルが破損しています：宣言された長さがファイルサイズと一致しません。"
+
+msgid "The model file is damaged: it does not start with its JSON chunk."
+msgstr "モデルファイルが破損しています：先頭がJSONチャンクではありません。"
+
+msgid "The model file is damaged: its JSON chunk has an invalid length."
+msgstr "モデルファイルが破損しています：JSONチャンクの長さが無効です。"
+
+msgid "The model file is damaged: stray bytes follow its JSON chunk."
+msgstr "モデルファイルが破損しています：JSONチャンクの後に余分なバイトがあります。"
+
+msgid "The model file is damaged: it holds more than one JSON chunk."
+msgstr "モデルファイルが破損しています：JSONチャンクが複数あります。"
+
+msgid "The model file is damaged: its binary chunk has an invalid length."
+msgstr "モデルファイルが破損しています：バイナリチャンクの長さが無効です。"
+
+msgid "The model file is damaged: data follows its binary chunk."
+msgstr "モデルファイルが破損しています：バイナリチャンクの後にデータがあります。"
+
+msgid "The model description cannot be read: %s."
+msgstr "モデル記述を読み取れません：%s。"
+
+msgid "The model description is not valid JSON: %s"
+msgstr "モデル記述が有効なJSONではありません：%s"
+
+msgid "The model description is not a JSON object."
+msgstr "モデル記述がJSONオブジェクトではありません。"
+
+msgid "The model has no asset description."
+msgstr "モデルにアセット記述がありません。"
+
+msgid "The model does not state its glTF version."
+msgstr "モデルにglTFバージョンが記載されていません。"
+
+msgid "The model has an invalid asset description."
+msgstr "モデルのアセット記述が無効です。"
+
+msgid "The model has an invalid list of required extensions."
+msgstr "モデルの必須拡張機能リストが無効です。"
+
+msgid "The model has an invalid list of extensions."
+msgstr "モデルの拡張機能リストが無効です。"
+
+msgid "The model has an invalid extensions object."
+msgstr "モデルの拡張機能オブジェクトが無効です。"
+
+msgid "The model uses the extension %s without declaring it."
+msgstr "モデルは拡張機能%sを宣言せずに使用しています。"
+
+msgid "The model file holds binary data that no buffer describes."
+msgstr "モデルファイルに、どのバッファーにも記述されていないバイナリデータがあります。"
+
+msgid "The model describes a data buffer that the file does not contain."
+msgstr "モデルが記述しているデータバッファーが、ファイルに含まれていません。"
+
+msgid "The model's data buffer does not match the binary data in the file."
+msgstr "モデルのデータバッファーが、ファイル内のバイナリデータと一致しません。"
+
+msgid "A buffer view refers to a buffer that does not exist."
+msgstr "バッファービューが存在しないバッファーを参照しています。"
+
+msgid "A buffer view reaches outside the model's data."
+msgstr "バッファービューがモデルのデータ範囲を超えています。"
+
+msgid "A buffer view has an invalid byte stride."
+msgstr "バッファービューのバイトストライドが無効です。"
+
+msgid "A buffer view has an invalid target."
+msgstr "バッファービューのターゲットが無効です。"
+
+msgid "An accessor refers to a buffer view that does not exist."
+msgstr "アクセサーが存在しないバッファービューを参照しています。"
+
+msgid "An accessor has an invalid component type."
+msgstr "アクセサーのコンポーネント型が無効です。"
+
+msgid "An accessor has an invalid type."
+msgstr "アクセサーの型が無効です。"
+
+msgid "An accessor has an invalid normalized flag."
+msgstr "アクセサーの正規化フラグが無効です。"
+
+msgid "An accessor has an invalid count or offset."
+msgstr "アクセサーの要素数またはオフセットが無効です。"
+
+msgid "An accessor is not aligned to its component size."
+msgstr "アクセサーがコンポーネントサイズに整列されていません。"
+
+msgid "A buffer view's byte stride is smaller than its elements."
+msgstr "バッファービューのバイトストライドが要素サイズより小さくなっています。"
+
+msgid "An accessor reaches outside its buffer view."
+msgstr "アクセサーがバッファービューの範囲を超えています。"
+
+msgid "An accessor has invalid min or max values."
+msgstr "アクセサーの最小値または最大値が無効です。"
+
+msgid "An image refers to a buffer view that does not exist."
+msgstr "画像が存在しないバッファービューを参照しています。"
+
+msgid "An image buffer view has a byte stride."
+msgstr "画像のバッファービューにバイトストライドが設定されています。"
+
+msgid "An embedded image does not state its type."
+msgstr "埋め込み画像に種類が記載されていません。"
+
+msgid "A texture sampler has an invalid filter or wrap mode."
+msgstr "テクスチャサンプラーのフィルターまたはラップモードが無効です。"
+
+msgid "A texture refers to an image that does not exist."
+msgstr "テクスチャが存在しない画像を参照しています。"
+
+msgid "A texture refers to a sampler that does not exist."
+msgstr "テクスチャが存在しないサンプラーを参照しています。"
+
+msgid "A material has invalid surface settings."
+msgstr "マテリアルのサーフェス設定が無効です。"
+
+msgid "A material has a colour or factor outside 0 to 1."
+msgstr "マテリアルの色または係数が0～1の範囲外です。"
+
+msgid "A material has an invalid alpha mode."
+msgstr "マテリアルのアルファモードが無効です。"
+
+msgid "A material has an invalid alpha cutoff."
+msgstr "マテリアルのアルファカットオフが無効です。"
+
+msgid "A material has an invalid double-sided flag."
+msgstr "マテリアルの両面フラグが無効です。"
+
+msgid "A material has an invalid %s extension."
+msgstr "マテリアルの拡張機能%sが無効です。"
+
+msgid "A material has an invalid texture reference."
+msgstr "マテリアルのテクスチャ参照が無効です。"
+
+msgid "A material refers to a texture that does not exist."
+msgstr "マテリアルが存在しないテクスチャを参照しています。"
+
+msgid "A material has an invalid texture coordinate set."
+msgstr "マテリアルのテクスチャ座標セットが無効です。"
+
+msgid "A mesh has no geometry."
+msgstr "メッシュにジオメトリがありません。"
+
+msgid "A mesh has an invalid surface."
+msgstr "メッシュのサーフェスが無効です。"
+
+msgid "A mesh surface has an invalid drawing mode."
+msgstr "メッシュサーフェスの描画モードが無効です。"
+
+msgid "A mesh surface refers to a material that does not exist."
+msgstr "メッシュサーフェスが存在しないマテリアルを参照しています。"
+
+msgid "A mesh surface has no vertex positions."
+msgstr "メッシュサーフェスに頂点位置がありません。"
+
+msgid "A mesh surface refers to an accessor that does not exist."
+msgstr "メッシュサーフェスが存在しないアクセサーを参照しています。"
+
+msgid "A mesh surface reads vertex data from an index buffer view."
+msgstr "メッシュサーフェスが、インデックス用のバッファービューから頂点データを読み取っています。"
+
+msgid "A mesh surface has %s data of the wrong type."
+msgstr "メッシュサーフェスの%sデータの型が正しくありません。"
+
+msgid "A mesh surface has %s data that is not padded to four bytes."
+msgstr "メッシュサーフェスの%sデータが4バイト境界にパディングされていません。"
+
+msgid "A mesh surface has vertex attributes of different lengths."
+msgstr "メッシュサーフェスの頂点属性の長さがそろっていません。"
+
+msgid "A mesh surface does not declare the bounds of its vertex positions."
+msgstr "メッシュサーフェスが頂点位置の範囲を宣言していません。"
+
+msgid "A mesh surface declares inverted bounds for its vertex positions."
+msgstr "メッシュサーフェスが宣言している頂点位置の範囲は、最小と最大が逆になっています。"
+
+msgid "A mesh surface has index data of the wrong type."
+msgstr "メッシュサーフェスのインデックスデータの型が正しくありません。"
+
+msgid "A mesh surface does not hold whole triangles."
+msgstr "メッシュサーフェスのデータが三角形単位になっていません。"
+
+msgid "A node refers to a mesh that does not exist."
+msgstr "ノードが存在しないメッシュを参照しています。"
+
+msgid "A node has an invalid list of children."
+msgstr "ノードの子リストが無効です。"
+
+msgid "A node refers to a child that does not exist."
+msgstr "ノードが存在しない子を参照しています。"
+
+msgid "A node is its own child."
+msgstr "ノードが自分自身の子になっています。"
+
+msgid "A node lists the same child twice."
+msgstr "ノードの子リストに同じ子が重複しています。"
+
+msgid "A node has more than one parent."
+msgstr "ノードに複数の親があります。"
+
+msgid "The model's node tree contains a loop."
+msgstr "モデルのノードツリーにループがあります。"
+
+msgid "The model has no scene. Export the model with its objects selected or visible."
+msgstr "モデルにシーンがありません。オブジェクトを選択または表示した状態で、モデルをエクスポートしてください。"
+
+msgid "The model selects a scene that does not exist."
+msgstr "モデルが存在しないシーンを選択しています。"
+
+msgid "A scene has an invalid list of nodes."
+msgstr "シーンのノードリストが無効です。"
+
+msgid "A scene refers to a node that does not exist."
+msgstr "シーンが存在しないノードを参照しています。"
+
+msgid "A scene lists the same node twice."
+msgstr "シーンのノードリストに同じノードが重複しています。"
+
+msgid "A scene lists a node that is another node's child."
+msgstr "シーンのノードリストに、別のノードの子であるノードが含まれています。"
+
+msgid "The model's scene is empty. Export the model with its objects selected or visible."
+msgstr "モデルのシーンが空です。オブジェクトを選択または表示した状態で、モデルをエクスポートしてください。"
+
+msgid "A node has both a matrix and separate translation, rotation or scale."
+msgstr "ノードに、行列と個別の移動、回転、スケールの両方が設定されています。"
+
+msgid "A node has an invalid matrix."
+msgstr "ノードの行列が無効です。"
+
+msgid "A node has an invalid translation."
+msgstr "ノードの移動が無効です。"
+
+msgid "A node has an invalid rotation."
+msgstr "ノードの回転が無効です。"
+
+msgid "A node's rotation is not a unit quaternion."
+msgstr "ノードの回転が単位クォータニオンではありません。"
+
+msgid "A node has an invalid scale."
+msgstr "ノードのスケールが無効です。"
+
+msgid "A node has a zero scale."
+msgstr "ノードのスケールがゼロです。"
+
+msgid "A mesh surface holds vertex data that is not a finite number."
+msgstr "メッシュサーフェスに、有限の数値ではない頂点データがあります。"
+
+msgid "A mesh surface refers to a vertex that does not exist."
+msgstr "メッシュサーフェスが存在しない頂点を参照しています。"
+
+msgid "A mesh surface holds a vertex position that is not a finite number."
+msgstr "メッシュサーフェスに、有限の数値ではない頂点位置があります。"
+
+msgid "A mesh surface has vertex positions outside its declared bounds."
+msgstr "メッシュサーフェスの頂点位置が、宣言された範囲を超えています。"
+
+msgid "A node's transform is too large to represent. Apply transforms and re-export."
+msgstr "ノードのトランスフォームが大きすぎて表現できません。トランスフォームを適用して、再エクスポートしてください。"
+
+msgid "The model's geometry is too large to represent. Apply transforms and re-export."
+msgstr "モデルのジオメトリが大きすぎて表現できません。トランスフォームを適用して、再エクスポートしてください。"
+
+msgid "The model's scene has no mesh. Export the model with its objects selected or visible."
+msgstr "モデルのシーンにメッシュがありません。オブジェクトを選択または表示した状態で、モデルをエクスポートしてください。"
+
+msgid "The model's %s list is invalid."
+msgstr "モデルの%sリストが無効です。"
+
+msgid "The model has a name that is not text."
+msgstr "モデルにテキストではない名前があります。"
+
+msgid "The model uses glTF container version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "モデルはglTFコンテナーバージョン%sを使用しています。glTF 2.0 Binary（.glb）としてエクスポートしてください。"
+
+msgid "The model file holds a chunk of an unknown type. Export a self-contained GLB with embedded PNG textures."
+msgstr "モデルファイルに不明な種類のチャンクがあります。PNGテクスチャを埋め込んだ自己完結型のGLBをエクスポートしてください。"
+
+msgid "The model holds %s, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "モデルに%sが含まれていますが、対応していません。変形しないモデルをエクスポートしてください：モディファイアーを適用し、アーマチュア、シェイプキー、アニメーションを削除します。"
+
+msgid "The model holds cameras, which are not supported. Remove them from the export."
+msgstr "モデルにカメラが含まれていますが、対応していません。エクスポート対象から除外してください。"
+
+msgid "The model uses glTF version %s. Export it as glTF 2.0 Binary (.glb)."
+msgstr "モデルはglTFバージョン%sを使用しています。glTF 2.0 Binary（.glb）としてエクスポートしてください。"
+
+msgid "The model uses more than one data buffer. Export a self-contained GLB with embedded PNG textures."
+msgstr "モデルが複数のデータバッファーを使用しています。PNGテクスチャを埋め込んだ自己完結型のGLBをエクスポートしてください。"
+
+msgid "The model refers to an external or inline data file. Export a self-contained GLB with embedded PNG textures."
+msgstr "モデルが外部またはインラインのデータファイルを参照しています。PNGテクスチャを埋め込んだ自己完結型のGLBをエクスポートしてください。"
+
+msgid "The model uses sparse accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "モデルはスパースアクセサーを使用していますが、対応していません。変形しないモデルをエクスポートしてください：モディファイアーを適用し、アーマチュア、シェイプキー、アニメーションを削除します。"
+
+msgid "The model has an accessor without data. Export a self-contained GLB with embedded PNG textures."
+msgstr "モデルにデータのないアクセサーがあります。PNGテクスチャを埋め込んだ自己完結型のGLBをエクスポートしてください。"
+
+msgid "The model uses matrix accessors, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "モデルは行列アクセサーを使用していますが、対応していません。変形しないモデルをエクスポートしてください：モディファイアーを適用し、アーマチュア、シェイプキー、アニメーションを削除します。"
+
+msgid "The model refers to an external or inline image file. Export a self-contained GLB with embedded PNG textures."
+msgstr "モデルが外部またはインラインの画像ファイルを参照しています。PNGテクスチャを埋め込んだ自己完結型のGLBをエクスポートしてください。"
+
+msgid "The model embeds an image of type %s. Export a self-contained GLB with embedded PNG textures."
+msgstr "モデルに種類が%sの画像が埋め込まれています。PNGテクスチャを埋め込んだ自己完結型のGLBをエクスポートしてください。"
+
+msgid "A material uses texture coordinate set %s; only sets 0 and 1 are supported. Use the first UV map and export again."
+msgstr "マテリアルがテクスチャ座標セット%sを使用しています。対応しているのはセット0と1のみです。最初のUVマップを使用して、もう一度エクスポートしてください。"
+
+msgid "The model uses shape keys (morph targets), which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "モデルはシェイプキー（モーフターゲット）を使用していますが、対応していません。変形しないモデルをエクスポートしてください：モディファイアーを適用し、アーマチュア、シェイプキー、アニメーションを削除します。"
+
+msgid "A mesh surface is made of points, lines, strips or fans. Triangulate the mesh and export again."
+msgstr "メッシュサーフェスが点、線、ストリップ、またはファンで構成されています。メッシュを三角面化して、もう一度エクスポートしてください。"
+
+msgid "The model is skinned (%s). Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "モデルにスキニングが設定されています（%s）。変形しないモデルをエクスポートしてください：モディファイアーを適用し、アーマチュア、シェイプキー、アニメーションを削除します。"
+
+msgid "A mesh surface uses the vertex attribute %s, which is not supported. Remove extra UV maps, colour layers and custom attributes and export again."
+msgstr "メッシュサーフェスは頂点属性%sを使用していますが、対応していません。余分なUVマップ、カラーレイヤー、カスタム属性を削除して、もう一度エクスポートしてください。"
+
+msgid "A mesh surface stores %s as integers. Export without mesh quantization."
+msgstr "メッシュサーフェスが%sを整数で格納しています。メッシュの量子化を使わずにエクスポートしてください。"
+
+msgid "The model uses armatures or shape keys, which are not supported. Export a rigid model: apply modifiers and remove armatures, shape keys and animations."
+msgstr "モデルはアーマチュアまたはシェイプキーを使用していますが、対応していません。変形しないモデルをエクスポートしてください：モディファイアーを適用し、アーマチュア、シェイプキー、アニメーションを削除します。"
+
+msgid "A node's matrix is sheared, mirrored, flattened or not affine. Apply transforms and re-export."
+msgstr "ノードの行列に、せん断、ミラー反転、平面化があるか、アフィン変換になっていません。トランスフォームを適用して、再エクスポートしてください。"
+
+msgid "A node has a negative (mirroring) scale. Apply transforms and re-export."
+msgstr "ノードに負の（ミラー反転の）スケールがあります。トランスフォームを適用して、再エクスポートしてください。"
+
+msgid "The model uses the glTF extension %s, which is not supported. %s"
+msgstr "モデルはglTF拡張機能%sを使用していますが、対応していません。%s"
+
+msgid "The model uses the glTF property %s, which is not supported. Export a plain rigid model with the exporter's default settings."
+msgstr "モデルはglTFプロパティ%sを使用していますが、対応していません。エクスポーターの既定の設定で、変形のない単純なモデルをエクスポートしてください。"
+
+msgid "The model file is larger than %s MiB. Reduce its detail or texture size and export it again."
+msgstr "モデルファイルが%s MiBを超えています。ディテールまたはテクスチャサイズを減らして、もう一度エクスポートしてください。"
+
+msgid "The model description is larger than %s MiB. Simplify the model and export it again."
+msgstr "モデル記述が%s MiBを超えています。モデルを簡略化して、もう一度エクスポートしてください。"
+
+msgid "The model description is too large or too deeply nested. Simplify the model and export it again."
+msgstr "モデル記述が大きすぎるか、入れ子が深すぎます。モデルを簡略化して、もう一度エクスポートしてください。"
+
+msgid "The model's textures hold more than %s pixels in total. Reduce the texture sizes."
+msgstr "モデルのテクスチャの合計が%sピクセルを超えています。テクスチャサイズを小さくしてください。"
+
+msgid "The model has more than %s mesh surfaces. Join meshes or reduce the material count."
+msgstr "モデルのメッシュサーフェスが%s個を超えています。メッシュを結合するか、マテリアル数を減らしてください。"
+
+msgid "The model's node tree is deeper than %s levels. Flatten the hierarchy and export again."
+msgstr "モデルのノードツリーが%s階層を超えています。階層を浅くして、もう一度エクスポートしてください。"
+
+msgid "The model has more than %s triangles. Reduce its detail and export again."
+msgstr "モデルの三角形が%s個を超えています。ディテールを減らして、もう一度エクスポートしてください。"
+
+msgid "The model has more than %s vertices. Reduce its detail and export again."
+msgstr "モデルの頂点が%s個を超えています。ディテールを減らして、もう一度エクスポートしてください。"
+
+msgid "The model has more than %s %s. Simplify the model and export it again."
+msgstr "モデルに%s個を超える%sがあります。モデルを簡略化して、もう一度エクスポートしてください。"
+
+msgid "The compressed data does not start with a valid zlib header."
+msgstr "圧縮データが有効なzlibヘッダーで始まっていません。"
+
+msgid "The compressed data is truncated: it holds less data than declared."
+msgstr "圧縮データが途中で切れています：宣言より少ないデータしかありません。"
+
+msgid "The compressed data expands beyond its declared size."
+msgstr "圧縮データを展開すると、宣言されたサイズを超えます。"
+
+msgid "Extra bytes follow the end of the compressed data."
+msgstr "圧縮データの終端の後に余分なバイトがあります。"
+
+msgid "The compressed data is truncated: its end marker or checksum is missing."
+msgstr "圧縮データが途中で切れています：終了マーカーまたはチェックサムがありません。"
+
+msgid "The compressed data holds values its reader refuses."
+msgstr "圧縮データに、読み取り処理が受け付けない値が含まれています。"
+
+msgid "The compressed data is corrupt."
+msgstr "圧縮データが破損しています。"
+
+msgid "Package %s is not installed."
+msgstr "パッケージ%sはインストールされていません。"
+
+msgid "Package %s cannot be used: %s"
+msgstr "パッケージ%sを使用できません：%s"
+
+msgid "Choose which model axis points to the nose."
+msgstr "機首方向を指すモデル軸を選んでください。"
+
+msgid "Choose which model axis points up."
+msgstr "上方向を指すモデル軸を選んでください。"
+
+msgid "The nose and up directions must be different model axes."
+msgstr "機首方向と上方向には、異なるモデル軸を指定してください。"
+
+msgid "Choose the model units or enter the real wingspan."
+msgstr "モデルの単位を選ぶか、実際の翼幅を入力してください。"
+
+msgid "Mark the wing leading edge on the centreline."
+msgstr "中心線上の主翼前縁を指定してください。"
+
+msgid "The image has more than %s chunks. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "画像のチャンクが%s個を超えています。カラープロファイルやテキストメタデータを含まない標準的なPNGとして、画像を再エクスポートしてください。"
+
+msgid "The image holds metadata of type %s, which is not accepted. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "画像に種類が%sのメタデータが含まれていますが、受け付けられません。カラープロファイルやテキストメタデータを含まない標準的なPNGとして、画像を再エクスポートしてください。"
+
+msgid "The image holds a chunk of type %s, which is not supported. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "画像に種類が%sのチャンクが含まれていますが、対応していません。カラープロファイルやテキストメタデータを含まない標準的なPNGとして、画像を再エクスポートしてください。"
+
+msgid "The image file is larger than %s MiB. Reduce its resolution and re-export it."
+msgstr "画像ファイルが%s MiBを超えています。解像度を下げて、再エクスポートしてください。"
+
+msgid "The image is %s x %s pixels; the largest accepted side is %s pixels."
+msgstr "画像は%s x %sピクセルです。受け付けられる辺の長さは最大%sピクセルです。"
+
+msgid "The image file is truncated inside a chunk."
+msgstr "画像ファイルがチャンクの途中で切れています。"
+
+msgid "The image has a chunk with an invalid type."
+msgstr "画像に種類が無効なチャンクがあります。"
+
+msgid "The image is damaged: its %s chunk fails its checksum."
+msgstr "画像が破損しています：%sチャンクのチェックサムが一致しません。"
+
+msgid "The image has more than one header chunk."
+msgstr "画像にヘッダーチャンクが複数あります。"
+
+msgid "The image data chunks are not consecutive."
+msgstr "画像データのチャンクが連続していません。"
+
+msgid "The indexed image has no palette before its data."
+msgstr "インデックスカラー画像のデータの前にパレットがありません。"
+
+msgid "The image end chunk is not empty."
+msgstr "画像の終了チャンクが空ではありません。"
+
+msgid "The image has no image data."
+msgstr "画像に画像データがありません。"
+
+msgid "Extra bytes follow the end of the image."
+msgstr "画像の終端の後に余分なバイトがあります。"
+
+msgid "The image has more than one %s chunk."
+msgstr "画像に%sチャンクが複数あります。"
+
+msgid "The image has its %s chunk after the image data."
+msgstr "画像の%sチャンクが画像データの後にあります。"
+
+msgid "The image file ends without its end chunk."
+msgstr "画像ファイルが終了チャンクなしで終わっています。"
+
+msgid "The image data uses an invalid scanline filter."
+msgstr "画像データに無効なスキャンラインフィルターが使われています。"
+
+msgid "The image data is not a valid zlib stream."
+msgstr "画像データが有効なzlibストリームではありません。"
+
+msgid "The image data is truncated: it holds less than the image size requires."
+msgstr "画像データが途中で切れています：画像サイズに必要な量より少ないデータしかありません。"
+
+msgid "The image data holds more than the image size allows."
+msgstr "画像データが、画像サイズで許される量を超えています。"
+
+msgid "Extra bytes follow the compressed image data."
+msgstr "圧縮された画像データの後に余分なバイトがあります。"
+
+msgid "The image data is corrupt. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "画像データが破損しています。カラープロファイルやテキストメタデータを含まない標準的なPNGとして、画像を再エクスポートしてください。"
+
+msgid "The file is too short to be a PNG image."
+msgstr "ファイルが短すぎるため、PNG画像ではありません。"
+
+msgid "The file is not a PNG image. Export the texture as PNG."
+msgstr "このファイルはPNG画像ではありません。テクスチャをPNGとしてエクスポートしてください。"
+
+msgid "The image does not start with a valid header chunk."
+msgstr "画像が有効なヘッダーチャンクで始まっていません。"
+
+msgid "The image has a zero width or height."
+msgstr "画像の幅または高さがゼロです。"
+
+msgid "The image has an invalid colour type or bit depth."
+msgstr "画像のカラータイプまたはビット深度が無効です。"
+
+msgid "The image has an invalid compression, filter or interlace method."
+msgstr "画像の圧縮方式、フィルター方式、またはインターレース方式が無効です。"
+
+msgid "The image could not be decoded. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "画像をデコードできませんでした。カラープロファイルやテキストメタデータを含まない標準的なPNGとして、画像を再エクスポートしてください。"
+
+msgid "The file \"%s\" cannot be opened."
+msgstr "ファイル\"%s\"を開けません。"
+
+msgid "The file \"%s\" is empty."
+msgstr "ファイル\"%s\"は空です。"
+
+msgid "The file \"%s\" is larger than the %s MiB model limit. Reduce its detail and export it again."
+msgstr "ファイル\"%s\"が、モデルの上限である%s MiBを超えています。ディテールを減らして、もう一度エクスポートしてください。"
+
+msgid "The file \"%s\" could not be read completely."
+msgstr "ファイル\"%s\"を最後まで読み取れませんでした。"
+
+msgid "\"%s\" is a picture, not a 3D model. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\"は画像であり、3Dモデルではありません。モデルをSTLまたは自己完結型のGLBとしてエクスポートしてください。"
+
+msgid "\"%s\" is not a supported model format. Export the model as STL or as a self-contained GLB."
+msgstr "\"%s\"は対応していないモデル形式です。モデルをSTLまたは自己完結型のGLBとしてエクスポートしてください。"
+
+msgid "The model in \"%s\" is flat or empty along one axis."
+msgstr "\"%s\"のモデルは、いずれかの軸方向に厚みがないか、空です。"
+
+msgid "The model file is empty."
+msgstr "モデルファイルが空です。"
+
+msgid "The model file has %s bytes; the limit is %s bytes."
+msgstr "モデルファイルは%sバイトです。上限は%sバイトです。"
+
+msgid "This is not an STL file: it has %s bytes, fewer than a binary STL header, and its text does not start with \"solid\"."
+msgstr "これはSTLファイルではありません：%sバイトしかなく、バイナリSTLのヘッダーより小さいうえ、テキストが\"solid\"で始まっていません。"
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has only %s bytes. It may be truncated; export it again."
+msgstr "これは有効なSTLファイルではありません。テキストが\"solid\"で始まっておらず、バイナリSTLとしては%s個のファセットを宣言していて%sバイト必要ですが、ファイルは%sバイトしかありません。途中で切れている可能性があります。もう一度エクスポートしてください。"
+
+msgid "This is not a valid STL file. Its text does not start with \"solid\", and as binary STL it declares %s facets, which needs %s bytes, but the file has %s bytes. Export it again as STL."
+msgstr "これは有効なSTLファイルではありません。テキストが\"solid\"で始まっておらず、バイナリSTLとしては%s個のファセットを宣言していて%sバイト必要ですが、ファイルは%sバイトです。STLとしてもう一度エクスポートしてください。"
+
+msgid "The STL file contains no facets."
+msgstr "STLファイルにファセットがありません。"
+
+msgid "The file starts with \"solid\" but is not STL text: it has a NUL byte at offset %s. If it is a binary STL file, its length does not match its facet count; it may be truncated. Export it again."
+msgstr "ファイルは\"solid\"で始まっていますが、STLテキストではありません：オフセット%sにNULバイトがあります。バイナリSTLファイルの場合、長さがファセット数と一致しておらず、途中で切れている可能性があります。もう一度エクスポートしてください。"
+
+msgid "The STL text has more than %s solids."
+msgstr "STLテキストのソリッドが%s個を超えています。"
+
+msgid "The STL text ends at line %s inside an unfinished solid. It looks truncated; export it again."
+msgstr "STLテキストが%s行目で、ソリッドが完結しないまま終わっています。途中で切れているようです。もう一度エクスポートしてください。"
+
+msgid "Line %s of the STL text: \"%s\" is not a plain decimal number."
+msgstr "STLテキストの%s行目：\"%s\"は通常の10進数ではありません。"
+
+msgid "Line %s of the STL text: \"%s\" found where \"facet\" or \"endsolid\" is required."
+msgstr "STLテキストの%s行目：\"%s\"がありますが、ここには\"facet\"または\"endsolid\"が必要です。"
+
+msgid "Line %s of the STL text: unexpected \"%s\" after the end of the solid."
+msgstr "STLテキストの%s行目：ソリッドの終了後に予期しない\"%s\"があります。"
+
+msgid "Line %s of the STL text: \"%s\" found where \"%s\" is required."
+msgstr "STLテキストの%s行目：\"%s\"がありますが、ここには\"%s\"が必要です。"
+
+msgid "The STL text is not valid UTF-8 at or after line %s."
+msgstr "STLテキストの%s行目またはそれ以降が、有効なUTF-8ではありません。"
+
+msgid "Line %s of the STL text is longer than %s bytes."
+msgstr "STLテキストの%s行目が%sバイトを超えています。"
+
+msgid "The STL file has more than %s facets. Simplify the model and export it again."
+msgstr "STLファイルのファセットが%s個を超えています。モデルを簡略化して、もう一度エクスポートしてください。"
+
+msgid "The STL file has no usable facet: all %s have zero area."
+msgstr "STLファイルに使用できるファセットがありません：%s個すべての面積がゼロです。"
+
+msgid "%s zero-area facets were left out."
+msgstr "面積ゼロのファセット%s個を除外しました。"
+
+msgid "%s facets have a stored normal that points against their vertex order. The vertex order was kept."
+msgstr "%s個のファセットで、保存された法線が頂点の順序と逆を向いています。頂点の順序を維持しました。"
+
+msgid "%s facets carry attribute data, which was ignored. STL colour is not supported."
+msgstr "%s個のファセットに属性データがありましたが、無視しました。STLの色には対応していません。"
+
+msgid "This model format cannot be shown."
+msgstr "このモデル形式は表示できません。"
+
+msgid "The model has no triangles to show."
+msgstr "モデルに表示できる三角形がありません。"
+
+msgid "The GLB model could not be loaded. Export it again as a self-contained GLB."
+msgstr "GLBモデルを読み込めませんでした。自己完結型のGLBとしてもう一度エクスポートしてください。"
+
+msgid "The GLB model produced no scene."
+msgstr "GLBモデルからシーンが生成されませんでした。"
+
+msgid "The GLB model contains an unsupported element (%s)."
+msgstr "GLBモデルに対応していない要素が含まれています（%s）。"
+
+msgid "The wing span is %s m; this package supports %s to %s m."
+msgstr "翼幅は%s mです。このパッケージが対応するのは%s～%s mです。"
+
+msgid "The wing aspect ratio is %s; this package supports %s to %s."
+msgstr "主翼のアスペクト比は%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The tip-to-root chord ratio is %s; this package supports %s to %s."
+msgstr "翼端弦長と翼根弦長の比は%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The flying mass is %s kg; this package supports %s to %s kg."
+msgstr "飛行質量は%s kgです。このパッケージが対応するのは%s～%s kgです。"
+
+msgid "The wing loading is %s kg/m²; this package supports %s to %s kg/m²."
+msgstr "翼面荷重は%s kg/m²です。このパッケージが対応するのは%s～%s kg/m²です。"
+
+msgid "The horizontal tail aspect ratio is %s; this package supports %s to %s."
+msgstr "水平尾翼のアスペクト比は%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The vertical tail height-to-chord ratio is %s; this package supports %s to %s."
+msgstr "垂直尾翼の高さと翼弦長の比は%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The horizontal tail volume is %s; this package supports %s to %s."
+msgstr "水平尾翼容積は%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The vertical tail volume is %s; this package supports %s to %s."
+msgstr "垂直尾翼容積は%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The static margin is %s of the mean chord; this package supports %s to %s."
+msgstr "静安定余裕は平均翼弦の%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The static thrust is %s times the weight; this package supports %s to %s."
+msgstr "静止推力は重量の%s倍です。このパッケージが対応するのは%s～%sです。"
+
+msgid "The propeller hub is %s m ahead of the fuselage nose; this package supports %s to %s m."
+msgstr "プロペラハブは胴体の機首より%s m前方にあります。このパッケージが対応するのは%s～%s mです。"
+
+msgid "The flight loader refused the compiled aircraft: %s"
+msgstr "フライトローダーがコンパイル済みの機体を拒否しました：%s"
+
+msgid "The flight loader notes: %s"
+msgstr "フライトローダーからの注記：%s"
+
+msgid "Turn off mesh compression in the export settings."
+msgstr "エクスポート設定でメッシュ圧縮をオフにしてください。"
+
+msgid "Turn off mesh quantization in the export settings."
+msgstr "エクスポート設定でメッシュの量子化をオフにしてください。"
+
+msgid "Export the textures as PNG."
+msgstr "テクスチャをPNGとしてエクスポートしてください。"
+
+msgid "Remove the lights from the export."
+msgstr "ライトをエクスポート対象から除外してください。"
+
+msgid "Turn it off in the export settings and export again."
+msgstr "エクスポート設定でオフにして、もう一度エクスポートしてください。"
+
+msgid "The greyscale image holds a palette."
+msgstr "グレースケール画像にパレットが含まれています。"
+
+msgid "The image palette has an invalid size."
+msgstr "画像パレットのサイズが無効です。"
+
+msgid "The image palette has more entries than its bit depth can address."
+msgstr "画像パレットのエントリー数が、ビット深度で指定できる数を超えています。"
+
+msgid "The image transparency chunk comes before its palette."
+msgstr "画像の透明度チャンクがパレットより前にあります。"
+
+msgid "The image transparency chunk has an invalid size."
+msgstr "画像の透明度チャンクのサイズが無効です。"
+
+msgid "The image has both an alpha channel and a transparency chunk."
+msgstr "画像にアルファチャンネルと透明度チャンクの両方があります。"
+
+msgid "The image's %s chunk has the wrong size."
+msgstr "画像の%sチャンクのサイズが正しくありません。"
+
+msgid "The image's %s chunk comes after its palette."
+msgstr "画像の%sチャンクがパレットより後にあります。"
+
+msgid "The image has an invalid sRGB rendering intent."
+msgstr "画像のsRGBレンダリングインテントが無効です。"
+
+msgid "The image has a zero gamma value."
+msgstr "画像のガンマ値がゼロです。"
+
+msgid "The image has an invalid pixel-size unit."
+msgstr "画像のピクセルサイズ単位が無効です。"
+
+msgid "Facet %s of the STL file has a value that is not a finite 32-bit number."
+msgstr "STLファイルのファセット%sに、有限の32ビット数値ではない値があります。"
+
+msgid "Facet %s of the STL file is too large to process. Rescale the model to sensible units and export it again."
+msgstr "STLファイルのファセット%sが大きすぎて処理できません。モデルを適切な単位にスケールし直して、もう一度エクスポートしてください。"
+
+msgid "Facet %s of the STL file (ending at line %s) has a value that is not a finite 32-bit number."
+msgstr "STLファイルのファセット%s（%s行目で終了）に、有限の32ビット数値ではない値があります。"
+
+msgid "Facet %s of the STL file (ending at line %s) is too large to process. Rescale the model to sensible units and export it again."
+msgstr "STLファイルのファセット%s（%s行目で終了）が大きすぎて処理できません。モデルを適切な単位にスケールし直して、もう一度エクスポートしてください。"
+
+msgid "STL model"
+msgstr "STLモデル"
+
+msgid "Self-contained GLB model"
+msgstr "自己完結型のGLBモデル"
+
+msgid "A standard hand throw would not climb away: the aircraft touched the ground or lost control within 3 seconds. Reduce weight, move the balance point forward or use the Airborne start."
+msgstr "標準的な手投げでは上昇できません：機体は3秒以内に接地したか、操縦不能になりました。重量を減らすか、重心を前方に移すか、「空中スタート」を使用してください。"
+
+msgid "The aircraft was not accepted by the compiler."
+msgstr "機体はコンパイラーに受け付けられませんでした。"
+
+msgid "The model source was not admitted."
+msgstr "モデルのソースが受け入れられませんでした。"
+
+msgid "The model placement is missing."
+msgstr "モデルの配置情報がありません。"
+
+msgid "The model orientation, size or datum is not confirmed."
+msgstr "モデルの向き、サイズ、または基準点が確定していません。"
+
+msgid "The compiled aircraft does not match its exact bytes."
+msgstr "コンパイル済みの機体が、その正確なバイト列と一致しません。"
+
+msgid "The trial identity could not be written."
+msgstr "試験飛行の識別情報を書き込めませんでした。"
+
+msgid "This is not a frozen Creator trial."
+msgstr "これは凍結されたクリエイターの試験飛行ではありません。"
+
+msgid "The frozen trial is missing its identity, data, source or exact bytes."
+msgstr "凍結された試験飛行に、識別情報、データ、ソース、または正確なバイト列がありません。"
+
+msgid "The frozen trial has an unsupported identity or an invalid model."
+msgstr "凍結された試験飛行の識別情報に対応していないか、モデルが無効です。"
+
+msgid "The frozen aircraft bytes do not match the trial identity."
+msgstr "凍結された機体のバイト列が、試験飛行の識別情報と一致しません。"
+
+msgid "The frozen model does not match the trial identity."
+msgstr "凍結されたモデルが、試験飛行の識別情報と一致しません。"
+
+msgid "The frozen model source does not match the trial identity."
+msgstr "凍結されたモデルのソースが、試験飛行の識別情報と一致しません。"
+
+msgid "This start is not available for a Creator aircraft without landing gear."
+msgstr "着陸装置のないクリエイター機体では、このスタートは利用できません。"
+
+msgid "The selected field is not a normalized field definition."
+msgstr "選択したフィールドは、正規化されたフィールド定義ではありません。"
+
+msgid "The weather configuration is invalid."
+msgstr "天候の設定が無効です。"
+
+msgid "The start check needs a running scene tree."
+msgstr "スタートの確認には、実行中のシーンツリーが必要です。"
+
+msgid "The frozen aircraft could not be prepared."
+msgstr "凍結された機体を準備できませんでした。"
+
+msgid "The requested start did not commit."
+msgstr "要求されたスタートを確定できませんでした。"
+
+msgid "The start check exceeded its time budget."
+msgstr "スタートの確認が制限時間を超えました。"
+
+msgid "Create aircraft…"
+msgstr "機体を作成…"
+
+msgid "Import a 3D model and describe a new aircraft"
+msgstr "3Dモデルをインポートして、新しい機体を定義します"
+
+msgid "Leave the Aircraft Creator?"
+msgstr "機体クリエイターを終了しますか？"
+
+msgid "This aircraft cannot be saved yet. Leaving discards it."
+msgstr "この機体はまだ保存できません。終了すると破棄されます。"
+
+msgid "Discard aircraft"
+msgstr "機体を破棄"
+
+msgid "Keep editing"
+msgstr "編集を続ける"
+
+msgid "Choose an airborne or hand-launch trial start."
+msgstr "空中または手投げのスタートを選んでください。"
+
+msgid "Estimated value"
+msgstr "推定値"
+
+msgid "Upward"
+msgstr "上"
+
+msgid "The aileron travel is %s degrees; this package supports %s to %s degrees."
+msgstr "エルロンの舵角は%s度です。このパッケージが対応するのは%s～%s度です。"
+
+msgid "The elevator travel is %s degrees; this package supports %s to %s degrees."
+msgstr "エレベーターの舵角は%s度です。このパッケージが対応するのは%s～%s度です。"
+
+msgid "The rudder travel is %s degrees; this package supports %s to %s degrees."
+msgstr "ラダーの舵角は%s度です。このパッケージが対応するのは%s～%s度です。"
+
+msgid "The neutral-to-full command time is %s s; this package supports %s to %s s."
+msgstr "中立から最大舵角までの時間は%s sです。このパッケージが対応するのは%s～%s sです。"
+
+msgid "The down thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "ダウンスラストは%s度です。このパッケージが対応するのは%s～%s度です。"
+
+msgid "The right thrust is %s degrees; this package supports %s to %s degrees."
+msgstr "右サイドスラストは%s度です。このパッケージが対応するのは%s～%s度です。"
+
+msgid "The starting charge is %s; this package supports %s to %s."
+msgstr "開始時の残量は%sです。このパッケージが対応するのは%s～%sです。"
+
+msgid "The image is compressed with an unusual window size. Re-export the image as a standard PNG without colour profiles or text metadata."
+msgstr "画像が通常とは異なるウィンドウサイズで圧縮されています。カラープロファイルやテキストメタデータを含まない標準的なPNGとして、画像を再エクスポートしてください。"
+
+msgid "The image's %s chunk is too large."
+msgstr "画像の%sチャンクが大きすぎます。"
+
+msgid "The image's %s chunk is invalid."
+msgstr "画像の%sチャンクが正しくありません。"
+
+msgid "The model does not say which scene to show. Export it again as a self-contained GLB from your modelling tool."
+msgstr "モデルに表示するシーンの指定がありません。モデリングソフトから自己完結型のGLBとして再エクスポートしてください。"
+
+msgid "The frozen model is not what its exact bytes load to."
+msgstr "凍結されたモデルが、その正確なバイト列から読み込まれる内容と一致しません。"
+
+msgid "The frozen model placement does not match the trial identity."
+msgstr "凍結されたモデルの配置が、試験飛行の識別情報と一致しません。"
+
+msgid "The frozen trial identity does not match its content."
+msgstr "凍結された試験飛行の識別情報が、その内容と一致しません。"
+
+msgid "The Creator trial does not match its frozen identity."
+msgstr "クリエイターの試験飛行が、凍結された識別情報と一致しません。"
+
+msgid "The compressed data declares a window smaller than its content."
+msgstr "圧縮データが、内容より小さいウィンドウを宣言しています。"

@@ -13,6 +13,8 @@ const Spec := preload("res://spec.gd")
 const Scripted := preload("res://sim/scripted.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const CreatorVisual := preload("res://workshop/creator/visual_builder.gd")
+const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const AircraftLightingRig := preload("res://render/lighting/aircraft_lighting_rig_3d.gd")
 const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const GroundGear := preload("res://render/ground_gear.gd")
@@ -113,6 +115,8 @@ var _flight_log_label: Label
 var aircraft_id := ""
 ## Detached Workshop compilation; aircraft_id remains the catalog visual identity.
 var workshop_trial: Dictionary = {}
+## AC-11: -1 not checked yet, 0 refused, 1 verified against its exact bytes. See `_creator_trial`.
+var _creator_trial_state := -1
 ## NR: accepted resolved selection, outside the sealed physics/weather/checkpoint contracts.
 var flight_scenario: Dictionary = {}
 ## Session origin survives checkpoint restore, which deliberately clears scenario provenance.
@@ -503,7 +507,7 @@ func _new_flight_setup(args: Dictionary) -> Dictionary:
 	var next_session := FlightSession.new()
 	# The app requests native physics by default; tools and replay retain their reference default.
 	if (not _scripted or args.has("physics-backend")) \
-			and (not next_session.setup_stage_backend(str(args.get("physics-backend", "native"))) or _scripted):
+			and (not next_session.setup_stage_backend(_requested_stage_backend(args)) or _scripted):
 		printerr("physics backend refused: ", next_session.stage_backend_error if not _scripted else "requires a physics flight")
 		next_session.free()
 		next_session = null
@@ -718,7 +722,16 @@ func _prepare_flight() -> void:
 	# Frozen Workshop builds retain their own original base and exact snapshot identity.
 	if workshop_trial.is_empty():
 		aircraft_id = Catalog.canonical_id(aircraft_id)
-	if not Catalog.has(aircraft_id) or (not Catalog.can_fly(aircraft_id) and not _scripted):
+	# AC-11: a Creator trial flies its own compiled, validated record; it is not a catalog entry.
+	# It is re-verified here against its exact bytes: a trial that does not verify never skips a gate.
+	if str(workshop_trial.get("vehicle", "")) == "creator" and not _creator_trial():
+		startup_error = "The Creator trial does not match its frozen identity."
+		printerr(startup_error)
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start: get_tree().quit(ERR_INVALID_DATA)
+		return
+	if not _creator_trial() and (not Catalog.has(aircraft_id) or (not Catalog.can_fly(aircraft_id) and not _scripted)):
 		# Never another airplane in its place, and never a preview "flying" without flight data (it would be a
 		# ballistic throw). A preview may still fly the scripted circle (--scripted): visual only.
 		push_error("aircraft '%s' refused: %s" % [aircraft_id, "not in the catalog (%s)" % ", ".join(Catalog.ids()) if not Catalog.has(aircraft_id) else "preview only, no flight data (use --scripted)"])
@@ -754,7 +767,8 @@ func _prepare_flight() -> void:
 		battery_mode = str(args.get("battery", ""))
 	if battery_mode.is_empty():
 		battery_mode = "ideal" if not _electric_demo.is_empty() or not workshop_trial.is_empty() else Catalog.default_battery_mode(aircraft_id)
-	if not Catalog.has_battery_mode(aircraft_id, battery_mode) or (battery_mode != "ideal" and not _electric_demo.is_empty()):
+	# A Creator trial carries its own finite energy source in the frozen record; the catalog mode label does not apply.
+	if not _creator_trial() and (not Catalog.has_battery_mode(aircraft_id, battery_mode) or (battery_mode != "ideal" and not _electric_demo.is_empty())):
 		printerr("battery mode '%s' refused for '%s': use ideal, or pack where the catalog declares battery_data" % [battery_mode, aircraft_id])
 		set_process(false)
 		set_process_unhandled_input(false)
@@ -3210,6 +3224,23 @@ func _view_name() -> String:
 
 
 ## Workshop trials (even unit-scale customizations) and inspection fixtures are outside proxy qualification.
+## AC-11: true for a frozen Aircraft Creator trial (a runtime-compiled aircraft with a runtime-built visual).
+## Verified once per flight: the frozen dictionary is checked against its exact bytes before any gate is skipped.
+func _creator_trial() -> bool:
+	if str(workshop_trial.get("vehicle", "")) != "creator":
+		return false
+	if _creator_trial_state < 0:
+		_creator_trial_state = 1 if CreatorTrial.verify(workshop_trial).get("ok", false) else 0
+	return _creator_trial_state == 1
+
+
+## The app requests native physics by default. A Creator trial pins the reference evaluator instead:
+## catalog native qualification does not cover an imported aircraft, so it neither requests native
+## nor inherits a command-line backend (AC-11).
+func _requested_stage_backend(args: Dictionary) -> String:
+	return "gdscript_reference" if _creator_trial() else str(args.get("physics-backend", "native"))
+
+
 func _shadow_proxy_context() -> Dictionary:
 	var args := _user_args()
 	if not workshop_trial.is_empty() or _scripted or args.has("capture") or args.has("trace"):
@@ -3220,11 +3251,16 @@ func _shadow_proxy_context() -> Dictionary:
 func _build_world() -> bool:
 	if not await _startup_stage("Preparing aircraft"):
 		return false
-	_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}), livery if workshop_trial.is_empty() else "")
+	if _creator_trial():
+		# AC-11: data-only runtime visual from the admitted source owned by the frozen trial.
+		var creator: Dictionary = workshop_trial.get("creator", {})
+		_airplane = CreatorVisual.build_flight(creator.get("source"), creator.get("placement", {}))
+	else:
+		_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}), livery if workshop_trial.is_empty() else "")
 	if _airplane.is_empty():
 		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
 		return false
-	if not workshop_trial.is_empty():
+	if not workshop_trial.is_empty() and not _creator_trial():
 		var applied := AircraftCustomization.apply(_airplane, workshop_trial.get("presentation_profile", {}))
 		if not applied.get("ok", false):
 			startup_error = "; ".join(PackedStringArray(applied.get("errors", [])))

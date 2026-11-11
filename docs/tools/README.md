@@ -19,6 +19,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Native flight backend development | [NK-3 C++ tools](../../research/native-kernel/README.md#c-development-tools-nk-3): sanitizers, symbols, exactness and timing. |
 | Rendering, materials, lighting or scenery | [Area checkers](graphics.md#area-capture-checkers); full suite: `app/capture.sh`. |
 | Frame time or GPU cost | [Frame diagnosis](graphics.md#frame-diagnosis); use the target display/GPU and record actual pixels. |
+| Automated startup, real-flight phases, pause and lifecycle benchmark | [GOD TEST](../../tools/godtest/README.md); `all --dry-run` lists the versioned battery; experimental pilot and hardware limits remain explicit. |
 | High profile or Windows NVIDIA package | [Graphics modes](../../tools/graphics/README.md); [NVIDIA build/launch](../../tools/graphics/native/README.md). |
 | An agent driving the app: menus, options, flights | `debugctl.py look` / `choose` / `catalog` / `setup`, or the MCP server `tools/debug/mcp_server.py`; [agents and MCP](../../tools/debug/README.md#agents-and-mcp-pt1h-r11). |
 | Running-app UI, keys, sticks, state, logs or screenshots | `python3 tools/debug/debugctl.py launch`; [debug bridge](../../tools/debug/README.md#quick-start). Add `--headless` when rendering is unnecessary. |

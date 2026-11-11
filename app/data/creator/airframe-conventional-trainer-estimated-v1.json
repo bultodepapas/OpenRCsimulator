@@ -1,0 +1,103 @@
+{
+  "format": "openrc-creator-airframe-package v1",
+  "id": "conventional-trainer-estimated-v1",
+  "qualification": "experimental",
+  "description": "Estimated aerodynamic and mass package for a conventional wing-and-aft-tail electric trainer without landing gear. Geometry comes from the player; closed forms are evaluated by app/workshop/creator/packages.gd; the constants below are borrowed from the donor record or estimated. Software estimate only: no real-aircraft calibration. Derivation: docs/research/aircraft-creator/estimated-trainer-package.md.",
+  "donor": {
+    "path": "app/data/aircraft/synthetic_stik_electric_4s_battery.json",
+    "aspect_ratio": 5.0,
+    "taper_ratio": 1.0,
+    "dihedral_deg": 2.86,
+    "note": "Rectangular AR 5 Stik carrying the OpenFlightSim UltraStick25e nondimensional coefficient set. Dihedral 2.86 deg per panel, estimated from the plan's 1.5 in tip rise (docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19)."
+  },
+  "wing": {
+    "zero_alpha_lift": {"value": 0.1068, "unit": "1", "kind": "borrowed", "source": "Donor aero.coefficients.CL0 (OpenFlightSim UltraStick25e), used as the wing's lift at zero body angle of attack: lightly cambered trainer section with its chord line on the body x axis"},
+    "section_moment": {"value": -0.0278, "unit": "1", "kind": "borrowed", "source": "Donor aero.coefficients.Cm0 (OpenFlightSim UltraStick25e), used as the wing section moment about its aerodynamic centre; its size matches the zero-alpha lift for a lightly cambered section"},
+    "downwash_factor": {"value": 0.844, "unit": "1", "kind": "derived", "source": "Donor downwash gradient 0.457 (flat-wing vortex lattice, AR 5, docs/research/roadmap-investigations/02-aerodynamics-rc-scale.md T2) divided by the far-wake estimate 2·Helmbold(5)/(π·5) = 0.5416; one calibration point, valid near the donor's tail arm of 2.4 chords"},
+    "oswald_efficiency": {"value": 0.7812, "unit": "1", "kind": "derived", "source": "1/(π·AR·k) with the donor's k_induced 0.0814934 at AR 5 (OpenFlightSim UltraStick25e)"},
+    "profile_drag": {"value": 0.0434, "unit": "1", "kind": "borrowed", "source": "Donor aero.coefficients.CD0 (OpenFlightSim UltraStick25e whole-aircraft zero-lift drag of a stick-type sport model); the donor value includes a fixed gear the candidate lacks"},
+    "minimum_drag_lift": {"value": 0.23, "unit": "1", "kind": "borrowed", "source": "Donor aero.coefficients.CL_minD (OpenFlightSim UltraStick25e)"},
+    "dihedral_factor": {"value": 0.7192, "unit": "1", "kind": "derived", "source": "Share of the strip-theory dihedral effect −a_w·Γ/4 that the induced flow of an antisymmetric loading leaves: the donor wing's lifting-line slope −0.01335 per rad of sideslip per degree of dihedral (D10-R5, docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19 section 3, through the runtime's induced map) divided by Helmbold(5)/4·(π/180) = 0.018561; one calibration point, AR 5 rectangular. Lifting-line theory for an elliptic wing gives (AR + 2)/(AR + 4) = 0.78 at AR 5 for the same share"},
+    "roll_damping_reference": {"value": -0.4496, "unit": "1/rad", "kind": "borrowed", "source": "Donor aero.coefficients.Clp (OpenFlightSim UltraStick25e) at AR 5, taper 1"},
+    "cruise_lift": {"value": 0.44, "unit": "1", "kind": "borrowed", "source": "Lift coefficient of the donor at its 15 m/s level start: 2·2.885 kg·g/(1.225 kg/m3·0.464515 m2·(15 m/s)²) = 0.442"}
+  },
+  "tail": {
+    "efficiency": {"value": 0.9, "unit": "1", "kind": "borrowed", "source": "Tail dynamic-pressure ratio η of the donor's horizontal-tail estimate (donor aero.surfaces.horizontal.downwash_gradient source: Helmbold tail with η 0.9)"},
+    "elevator_effectiveness": {"value": 0.55, "unit": "1", "kind": "estimated", "source": "Plain-flap effectiveness of the elevator relative to the tail's free lift slope. The donor's Cmde −0.8488 over its tail term a_free·(S_h/S)·(l_h/c) = 1.566 gives 0.54; thin-airfoil theory for a 35-40 % chord flap gives 0.7 before viscous losses. The definition carries no hinge-line position"},
+    "rudder_effectiveness": {"value": 0.55, "unit": "1", "kind": "borrowed", "source": "Donor aero.surfaces.vertical.control_effectiveness (provisional finite-span rudder effectiveness)"},
+    "fin_aspect_ratio_factor": {"value": 2.0, "unit": "1", "kind": "estimated", "source": "Reflection-plane assumption: the fuselage acts as a wall under the fin, effective aspect ratio = 2·height²/area. With it the donor fin (0.22 m × 0.22 m) gets 0.9·Helmbold(2) = 2.34/rad against the donor's provisional 2.4/rad"},
+    "fin_incidence": {"value": 0.0, "unit": "rad", "kind": "estimated", "source": "Symmetric fin on the centreline"},
+    "geometric_incidence": {"value": 0.0, "unit": "rad", "kind": "estimated", "source": "Horizontal tail chord parallel to the wing chord line; the tail's effective incidence then comes only from the wing's zero-alpha downwash"},
+    "profile_drag": {"value": 0.012, "unit": "1", "kind": "borrowed", "source": "Donor aero.surfaces.tail_CD0 (provisional surface model, estimated)"},
+    "induced_drag": {"value": 0.08, "unit": "1", "kind": "borrowed", "source": "Donor aero.surfaces.tail_k (provisional surface model, estimated)"},
+    "flat_plate_drag": {"value": 1.2, "unit": "1", "kind": "borrowed", "source": "Donor aero.surfaces.tail_CD90 (flat-plate approximation)"},
+    "attached_limit": {"value": 8.0, "unit": "deg", "kind": "borrowed", "source": "Donor aero.surfaces.attached_limit (small-angle oracle validity limit)"},
+    "local_limit": {"value": 12.0, "unit": "deg", "kind": "borrowed", "source": "Donor aero.surfaces.tail_local_limit"},
+    "stall_end": {"value": 24.0, "unit": "deg", "kind": "borrowed", "source": "Donor aero.surfaces.tail_stall_end"}
+  },
+  "body": {
+    "side_force": {"value": -0.2388, "unit": "1/rad", "kind": "borrowed", "source": "Donor CYb −0.4889 minus the donor's own fin term −a_v·S_v/S = −0.2501: side force of a slab-sided stick fuselage and wing, not rescaled with the player's fuselage"},
+    "dihedral_effect": {"value": -0.0537, "unit": "1/rad", "kind": "borrowed", "source": "Donor Clb −0.0545 minus the donor's own fin term −0.0008: the donor's wing-body term at its own 2.86 deg of dihedral. D10-R5 (docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19) attributes −0.0382 of it to geometric dihedral and −0.0155 to high-wing interference (DATCOM). The player's wing dihedral moves the dihedral share (packages.gd dihedral_effect); the interference share is not rescaled with the player's fuselage or wing height"}
+  },
+  "borrowed_coefficients": {
+    "CLda_each": {"value": 0.23755, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "CDda_each": {"value": 0.0151, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "CDdr": {"value": 0.0303, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "CDde": {"value": 0.0135, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "CYp": {"value": -0.0375, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "CYr": {"value": 0.15, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "Clr": {"value": 0.1086, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "Clda_right": {"value": -0.0823, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e: strip ailerons on a rectangular AR 5 wing; the definition carries no aileron geometry"},
+    "Clda_left": {"value": 0.0823, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e: strip ailerons on a rectangular AR 5 wing; the definition carries no aileron geometry"},
+    "Cmda_each": {"value": 0.02335, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "Cnp": {"value": 0.118, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "Cnda_right": {"value": 0.0287, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"},
+    "Cnda_left": {"value": -0.0287, "unit": "1/rad", "kind": "borrowed", "source": "Donor record, OpenFlightSim UltraStick25e"}
+  },
+  "envelope": {
+    "CL_max": {"value": 1.1, "unit": "1", "kind": "borrowed", "source": "Donor aero.envelope.CL_max (estimated there: semi-symmetric section near Re 3e5)"},
+    "CL_min": {"value": -0.8, "unit": "1", "kind": "borrowed", "source": "Donor aero.envelope.CL_min (estimated there)"},
+    "stall_blend_width": {"value": 6.0, "unit": "deg", "kind": "borrowed", "source": "Donor aero.envelope.stall_blend_width (estimated there)"},
+    "sideslip_blend": {"value": [15.0, 25.0], "unit": "deg", "kind": "borrowed", "source": "Donor aero.envelope.sideslip_blend (estimated there)"},
+    "flat_plate_base": {"value": 1.11, "unit": "1", "kind": "borrowed", "source": "Viterna CDmax = 1.11 + 0.018·AR (NASA CR-1983), as the donor's CD90"},
+    "flat_plate_per_aspect_ratio": {"value": 0.018, "unit": "1", "kind": "borrowed", "source": "Viterna CDmax = 1.11 + 0.018·AR (NASA CR-1983), as the donor's CD90"}
+  },
+  "plausibility": {
+    "inertia_reference": {"value": [0.07151, 0.08636, 0.15364], "unit": "kg·m2", "kind": "borrowed", "source": "UltraStick25e Jxx Jyy Jzz (1.959 kg, 1.27 m span), the loader's inertia plausibility reference; compared after scaling by m·b²"}
+  },
+  "mass_proposal": {
+    "wing_areal_density": {"value": 1.12, "unit": "kg/m2", "kind": "estimated", "source": "Donor built-up covered wing: 0.52 kg over 0.4645 m2"},
+    "tail_areal_density": {"value": 1.08, "unit": "kg/m2", "kind": "estimated", "source": "Donor stabilizer and fin: 0.155 kg over 0.144 m2"},
+    "fuselage_shell_density": {"value": 0.89, "unit": "kg/m2", "kind": "estimated", "source": "Donor balsa/ply fuselage: 0.36 kg over the shell area 2·(width + height)·length of its two inventory boxes, 0.406 m2"},
+    "fuselage_taper_factor": {"value": 0.8, "unit": "1", "kind": "estimated", "source": "Share of the bounding-box shell a fuselage that tapers toward the tail actually has"},
+    "fuselage_centroid_fraction": {"value": 0.45, "unit": "1", "kind": "estimated", "source": "Centre of mass of a fuselage shell with a heavier front section, as a fraction of its length from the nose"},
+    "wing_centroid_chord_fraction": {"value": 0.4, "unit": "1", "kind": "estimated", "source": "Donor wing item: centroid near 40 % chord"},
+    "wing_thickness_ratio": {"value": 0.12, "unit": "1", "kind": "estimated", "source": "Typical trainer section thickness, for the wing item's box height only"},
+    "tail_thickness": {"value": 0.01, "unit": "m", "kind": "estimated", "source": "Donor stabilizer and fin boxes"},
+    "servo_mass": {"value": 0.045, "unit": "kg", "kind": "estimated", "source": "Standard analog servo, as the donor's servo items"},
+    "receiver_mass": {"value": 0.025, "unit": "kg", "kind": "estimated", "source": "Typical 6-8 channel receiver, as the donor's receiver item"},
+    "hardware_mass": {"value": 0.07, "unit": "kg", "kind": "estimated", "source": "Pushrods, horns, clevises and harness, as the donor's hardware item"}
+  },
+  "domain": {
+    "wing_span_m": {"min": 0.9, "max": 2.2, "reason": "Chord Reynolds numbers of the borrowed drag and stall data (donor span 1.52 m, UltraStick25e 1.27 m)"},
+    "aspect_ratio": {"min": 4.0, "max": 7.0, "reason": "Borrowed roll, yaw and aileron derivatives and the single downwash calibration point belong to an AR 5 wing"},
+    "taper_ratio": {"min": 0.6, "max": 1.0, "reason": "Borrowed aileron and roll data are for a rectangular wing; mild straight taper only"},
+    "wing_dihedral_deg": {"min": 0.0, "max": 8.0, "reason": "The dihedral relation is a small-angle strip estimate calibrated at the donor's 2.86 deg; it neglects the side force and yawing moment of order dihedral squared (about 12 % of CYb at 8 deg). Anhedral and polyhedral wings are not described, and the borrowed interference term belongs to a shoulder wing"},
+    "mass_kg": {"min": 1.0, "max": 4.0, "reason": "Around the donor (2.9 kg) and the UltraStick25e (2.0 kg); also the record's plausibility mass range"},
+    "wing_loading_kg_m2": {"min": 3.0, "max": 8.0, "reason": "Donor 6.2 kg/m2; keeps the derived level speed between 10 and 17 m/s"},
+    "tail_aspect_ratio": {"min": 2.5, "max": 6.0, "reason": "Helmbold tail slope with the donor's efficiency factor (donor 3.3)"},
+    "fin_aspect_ratio": {"min": 0.7, "max": 2.5, "reason": "Reflection-plane fin slope (donor 1.0)"},
+    "tail_volume_h": {"min": 0.35, "max": 0.8, "reason": "Donor 0.49; the downwash calibration and the neglected fuselage term assume a conventional tail"},
+    "tail_volume_v": {"min": 0.025, "max": 0.08, "reason": "Donor 0.051; the fuselage's destabilizing yaw is neglected"},
+    "static_margin": {"min": 0.08, "max": 0.3, "reason": "The fuselage and propeller move the real neutral point forward by a few percent of chord, which the model neglects: 8 % keeps a positive real margin; above 30 % the elevator trim leaves the model's small-angle region"},
+    "thrust_to_weight": {"min": 0.5, "max": 2.0, "reason": "Hand launch needs a clear thrust surplus; above 2 the aircraft can hang on the propeller, where the model has no propeller wash on the tail"},
+    "hub_ahead_of_nose_m": {"min": 0.0, "max": 0.12, "reason": "Tractor propeller disc ahead of the fuselage nose, with the motor still attached to it"},
+    "aileron_travel_deg": {"min": 5.0, "max": 30.0, "reason": "The borrowed aileron derivatives are linear per radian (donor 20 deg); beyond about 30 deg a real surface separates and the linear model overstates roll power"},
+    "elevator_travel_deg": {"min": 5.0, "max": 30.0, "reason": "The borrowed elevator derivative is linear per radian (donor 20 deg); larger travel drives the model far outside its attached-flow region"},
+    "rudder_travel_deg": {"min": 5.0, "max": 35.0, "reason": "The fin-derived rudder derivative is linear per radian (donor 25 deg)"},
+    "servo_time_s": {"min": 0.05, "max": 0.5, "reason": "Neutral-to-full times of ordinary RC servos on these throws (donor 0.14 s); faster than 0.05 s is not hardware this package describes"},
+    "down_thrust_deg": {"min": -5.0, "max": 5.0, "reason": "Thrust-line trim angles of a conventional tractor installation; larger angles are a different installation, with propeller normal force the model neglects"},
+    "right_thrust_deg": {"min": -5.0, "max": 5.0, "reason": "Thrust-line trim angles of a conventional tractor installation"},
+    "initial_charge": {"min": 0.2, "max": 1.0, "reason": "A flight started below about 20 % charge sags to the bottom of the borrowed two-point voltage curve within seconds; the start checks assume usable power"}
+  }
+}

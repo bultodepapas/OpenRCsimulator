@@ -1,0 +1,62 @@
+{
+  "format": "openrc-creator-power-package v1",
+  "id": "electric-4s-800kv-apc12x6-estimated-v1",
+  "qualification": "experimental",
+  "description": "One complete electric power installation: 800 rpm/V outrunner, ideal ESC, 4S 3.2 Ah battery (open-circuit voltage and resistance law) and a 12x6 propeller. Electrical data and propeller tables are taken from the donor record, a synthetic estimated fixture; hardware masses and sizes are catalogue-range estimates, not a specific product. Derivation: docs/research/aircraft-creator/estimated-trainer-package.md.",
+  "donor": {
+    "path": "app/data/aircraft/synthetic_stik_electric_4s_battery.json"
+  },
+  "motor": {
+    "kv_rpm_per_volt": {"value": 800.0, "unit": "rpm/V", "kind": "estimated", "source": "Donor propulsion.motor.kv_rpm_per_volt (synthetic EL1b demo value, no measured motor)"},
+    "resistance_ohm": {"value": 0.08, "unit": "ohm", "kind": "estimated", "source": "Donor propulsion.motor.resistance_ohm (synthetic EL1b equivalent winding resistance, no measured motor)"},
+    "no_load_current_a": {"value": 1.2, "unit": "A", "kind": "estimated", "source": "Donor propulsion.motor.no_load_current_a (synthetic EL1b demo value, no measured motor)"},
+    "no_load_voltage_v": {"value": 14.8, "unit": "V", "kind": "estimated", "source": "Donor propulsion.motor.no_load_context.voltage_v (synthetic)"},
+    "no_load_rpm": {"value": 11840.0, "unit": "rpm", "kind": "estimated", "source": "Donor propulsion.motor.no_load_context.rpm (synthetic: Kv × 14.8 V)"},
+    "no_load_temperature_c": {"value": 25.0, "unit": "°C", "kind": "estimated", "source": "Donor propulsion.motor.no_load_context.temperature_c (synthetic)"}
+  },
+  "battery": {
+    "capacity_ah": {"value": 3.2, "unit": "Ah", "kind": "estimated", "source": "Donor propulsion.battery.capacity_ah (EL2a synthetic authored fixture, not a measured LiPo)"},
+    "resistance_ohm": {"value": 0.03, "unit": "ohm", "kind": "estimated", "source": "Donor propulsion.battery.resistance_ohm (EL2a synthetic authored fixture, not a measured LiPo)"},
+    "auxiliary_current_a": {"value": 0.2, "unit": "A", "kind": "estimated", "source": "Donor propulsion.battery.auxiliary_current_a (EL2a synthetic authored fixture)"},
+    "ocv_points": {"value": [[0.0, 12.0], [1.0, 16.8]], "unit": "1, V", "kind": "estimated", "source": "Donor propulsion.battery.ocv_points: linear 3.0 to 4.2 V per cell over state of charge (EL2a synthetic authored fixture, not a measured LiPo fit)"}
+  },
+  "propeller": {
+    "name": "12x6 sport propeller (UIUC APC Sport 11x6 coefficients)",
+    "diameter": {"value": 0.3048, "unit": "m", "kind": "manual", "source": "12 in nominal (donor propulsion.propeller.diameter)"},
+    "rotating_inertia": {"value": 0.0005, "unit": "kg·m2", "kind": "estimated", "source": "Donor propulsion.propeller.rotating_inertia (synthetic EL1b rotor inertia: propeller plus motor bell)"},
+    "ct_table": {"value": [[0.0, 0.113], [0.373, 0.0796], [0.414, 0.0725], [0.457, 0.0633], [0.504, 0.0537], [0.55, 0.0437], [0.592, 0.0351], [0.634, 0.0271], [0.679, 0.018], [0.724, 0.0095], [0.767, 0.001], [0.788, -0.0034]], "unit": "1", "kind": "borrowed", "source": "Donor propulsion.propeller.ct_table: UIUC propeller database vol. 1, measured APC Sport 11x6 (apcsp_11x6_static_rd0488.txt, apcsp_11x6_rd0495_6000.txt), applied to the 12x6 by T = Ct·ρ·n²·D⁴; linear between J = 0 and 0.373"},
+    "cp_table": {"value": [[0.0, 0.0471], [0.373, 0.0489], [0.457, 0.0442], [0.55, 0.036], [0.634, 0.0278], [0.724, 0.0176], [0.788, 0.0092]], "unit": "1", "kind": "borrowed", "source": "Donor propulsion.propeller.cp_table: UIUC propeller database vol. 1, measured APC Sport 11x6 (apcsp_11x6_static_rd0488.txt, apcsp_11x6_rd0495_6000.txt), applied to the 12x6"}
+  },
+  "installation": {
+    "motor_behind_hub": {"value": 0.04, "unit": "m", "kind": "estimated", "source": "Motor centre behind the propeller hub: 0.015 m adapter plus half of a 0.05 m outrunner"},
+    "firewall_behind_hub": {"value": 0.065, "unit": "m", "kind": "estimated", "source": "Motor rear face behind the propeller hub: 0.015 m adapter plus a 0.05 m outrunner"},
+    "spinner_length": {"value": 0.03, "unit": "m", "kind": "estimated", "source": "Small spinner or prop nut ahead of the hub, for the crash-hull nose point"}
+  },
+  "hardware": [
+    {
+      "id": "item_motor_main",
+      "mount": "motor",
+      "mass": {"value": 0.2, "unit": "kg", "kind": "estimated", "source": "Typical 42 mm class 800 rpm/V outrunner for a 12x6 propeller on 4S (catalogue range 0.16-0.21 kg); not a specific product"},
+      "size": {"value": [0.05, 0.042, 0.042], "unit": "m", "kind": "estimated", "source": "Typical 42 mm class outrunner envelope"}
+    },
+    {
+      "id": "item_propeller_main",
+      "mount": "hub",
+      "mass": {"value": 0.066, "unit": "kg", "kind": "estimated", "source": "APC 12x6 1.62 oz (0.046 kg, donor inventory) plus collet adapter and small spinner 0.02 kg"},
+      "size": {"value": [0.01, 0.305, 0.025], "unit": "m", "kind": "estimated", "source": "Donor propeller envelope for intrinsic inertia"}
+    },
+    {
+      "id": "item_esc_main",
+      "mount": "esc",
+      "mass": {"value": 0.065, "unit": "kg", "kind": "estimated", "source": "Typical 60 A brushless speed controller with leads (catalogue range 0.05-0.08 kg)"},
+      "size": {"value": [0.07, 0.035, 0.015], "unit": "m", "kind": "estimated", "source": "Typical 60 A speed controller envelope"}
+    },
+    {
+      "id": "item_battery_main",
+      "mount": "battery",
+      "energy_source": "lipo",
+      "mass": {"value": 0.35, "unit": "kg", "kind": "estimated", "source": "Typical 4S 3200 mAh 30C LiPo pack (catalogue range 0.32-0.38 kg)"},
+      "size": {"value": [0.135, 0.043, 0.03], "unit": "m", "kind": "estimated", "source": "Typical 4S 3200 mAh pack envelope, long axis fore-aft"}
+    }
+  ]
+}
