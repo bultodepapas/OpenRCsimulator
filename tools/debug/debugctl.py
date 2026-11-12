@@ -419,6 +419,7 @@ def _launch_local(argv: list[str]) -> int:
         with open(out / "engine.log", "wb") as engine_log:
             process = subprocess.Popen(command, cwd=REPO, env=env, stdout=engine_log, stderr=subprocess.STDOUT,
                                        stdin=subprocess.DEVNULL, start_new_session=True)
+        _OWNED_PROCESSES[process.pid] = process
         session = {"port": chosen, "launcher_pid": process.pid, "out": str(out),
                    "profile": str(profile) if profile else "real", "command": command, "attempt": attempt + 1}
         (out / "launch.json").write_text(json.dumps(session, indent=2) + "\n")
@@ -528,6 +529,13 @@ def write_private(path: Path, value: dict) -> None:
 def kill_group(pid: int | None) -> None:
     """Kill a process this tool launched, with its children (xvfb-run, Xvfb, Godot)."""
     if not pid:
+        return
+    if admission.enabled() and admission.inherited("control"):
+        owned = _OWNED_PROCESSES.get(pid)
+        if owned is None:
+            raise ValueError("cannot prove ownership of launcher; supervisor cleanup required")
+        if owned.poll() is None:
+            owned.kill()  # retained process handle; the supervisor owns descendant teardown
         return
     try:
         if hasattr(os, "killpg"):

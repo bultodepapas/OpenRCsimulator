@@ -13201,3 +13201,216 @@ msgstr "КЛАВИШИ ПОЛЁТА"
 
 msgid "SHORTCUTS"
 msgstr "БЫСТРЫЕ КЛАВИШИ"
+
+msgid "Detect"
+msgstr "Определить"
+
+msgid "Advanced"
+msgstr "Дополнительно"
+
+msgid "Keep"
+msgstr "Оставить"
+
+msgid "Swap"
+msgstr "Поменять"
+
+msgid "Control"
+msgstr "Орган управления"
+
+msgid "%s is already used by %s."
+msgstr "%s уже используется: %s."
+
+msgid "%s is not assigned."
+msgstr "%s не назначен."
+
+msgid "%s is unavailable: %s"
+msgstr "%s недоступно: %s"
+
+msgid "%s is used by %s."
+msgstr "%s используется: %s."
+
+msgid "%s keeps its axis. Nothing changed."
+msgstr "%s сохраняет свою ось. Ничего не изменено."
+
+msgid "%s no longer uses this control."
+msgstr "%s больше не использует этот орган управления."
+
+msgid "%s took the previous control."
+msgstr "%s получил прежний орган управления."
+
+msgid "%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it."
+msgstr "%s использует ось %d (выкл %+.2f, вкл %+.2f). Сохраните профиль, чтобы оставить это."
+
+msgid "%s uses axis %d. Save the profile to keep it."
+msgstr "%s использует ось %d. Сохраните профиль, чтобы оставить это."
+
+msgid "Actions are back to their defaults in the draft. Save keeps them; Cancel discards them."
+msgstr "Действия в черновике возвращены к значениям по умолчанию. «Сохранить» оставит их, «Отмена» — отменит."
+
+msgid "Actions were not reset: %s"
+msgstr "Действия не сброшены: %s"
+
+msgid "Advanced: edit axis numbers"
+msgstr "Дополнительно: изменить номера осей"
+
+msgid "Assign to %s"
+msgstr "Назначить: %s"
+
+msgid "Axis %d is already used by %s. Nothing changed."
+msgstr "Ось %d уже используется: %s. Ничего не изменено."
+
+msgid "Calibrate the radio again before saving."
+msgstr "Перед сохранением снова откалибруйте аппаратуру."
+
+msgid "Choose Swap, Replace or Cancel."
+msgstr "Выберите «Поменять», «Заменить» или «Отмена»."
+
+msgid "Connect the flight controller to detect its axes."
+msgstr "Подключите полётный контроллер, чтобы определить его оси."
+
+msgid "Connect the flight controller to measure this control."
+msgstr "Подключите полётный контроллер, чтобы измерить этот орган управления."
+
+msgid "Detect %s"
+msgstr "Определить: %s"
+
+msgid "Detect %s axis"
+msgstr "Определить ось: %s"
+
+msgid "During a flight, recalibrate this radio from Pause → Controls."
+msgstr "Во время полёта перекалибруйте аппаратуру через Пауза → Управление."
+
+msgid "Every flight channel needs its own axis."
+msgstr "Каждому полётному каналу нужна своя ось."
+
+msgid "Extra channel was not changed: %s"
+msgstr "Дополнительный канал не изменён: %s"
+
+msgid "Find control"
+msgstr "Найти орган управления"
+
+msgid "Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF."
+msgstr "Удерживайте орган управления %s в положении ВЫКЛ и подтвердите. Не двигайте полётные стики. Затем переведите его во ВКЛ и держите, пока не попросят вернуть в ВЫКЛ."
+
+msgid "Invalid or interrupted input. Nothing changed."
+msgstr "Недопустимый или прерванный ввод. Ничего не изменено."
+
+msgid "It moved the other way, so %s is inverted."
+msgstr "Движение было в обратную сторону, поэтому %s инвертирован."
+
+msgid "LIVE INPUT"
+msgstr "ВВОД В РЕАЛЬНОМ ВРЕМЕНИ"
+
+msgid "More than one axis moved. Move only the stick you want, then try again."
+msgstr "Сдвинулось больше одной оси. Двигайте только нужный стик и попробуйте снова."
+
+msgid "Move or press the control for %s…"
+msgstr "Сдвиньте или нажмите орган управления для %s…"
+
+msgid "Move the control"
+msgstr "Сдвинуть орган управления"
+
+msgid "Move the control for %s"
+msgstr "Сдвинуть орган управления: %s"
+
+msgid "Move the control you want for Throttle to FULL and hold it."
+msgstr "Переведите нужный для газа орган управления на МАКСИМУМ и держите."
+
+msgid "Move the stick you want for Pitch fully BACK (toward you) and hold it."
+msgstr "Отведите нужный для тангажа стик полностью НА СЕБЯ и держите."
+
+msgid "Move the stick you want for Roll fully RIGHT and hold it."
+msgstr "Отведите нужный для крена стик полностью ВПРАВО и держите."
+
+msgid "Move the stick you want for Yaw fully RIGHT and hold it."
+msgstr "Отведите нужный для рыскания стик полностью ВПРАВО и держите."
+
+msgid "New controller detected. Choose Set up this device to configure it step by step."
+msgstr "Обнаружен новый контроллер. Выберите «Настроить это устройство», чтобы настроить его шаг за шагом."
+
+msgid "No input was detected in time. Nothing changed."
+msgstr "Ввод не обнаружен вовремя. Ничего не изменено."
+
+msgid "Nothing changed."
+msgstr "Ничего не изменено."
+
+msgid "Only another flight channel can take an axis in exchange."
+msgstr "Только другой полётный канал может взять ось взамен."
+
+msgid "Press or move any control to find what it does."
+msgstr "Нажмите или сдвиньте любой орган управления, чтобы узнать, что он делает."
+
+msgid "Replace is not available here."
+msgstr "Замена здесь недоступна."
+
+msgid "Replace: %s loses this control."
+msgstr "Заменить: %s теряет этот орган управления."
+
+msgid "Reset %s"
+msgstr "Сбросить: %s"
+
+msgid "Reset all actions"
+msgstr "Сбросить все действия"
+
+msgid "Reset category"
+msgstr "Сбросить категорию"
+
+msgid "Reset every action to its default control? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "Сбросить каждое действие к органу управления по умолчанию? «Назад» и «Пауза» всегда сохраняют назначение. Изменение остаётся черновиком до сохранения."
+
+msgid "Reset the %s actions shown to their default controls? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "Сбросить показанные действия категории «%s» к органам управления по умолчанию? «Назад» и «Пауза» всегда сохраняют назначение. Изменение остаётся черновиком до сохранения."
+
+msgid "Reset to defaults"
+msgstr "Сбросить по умолчанию"
+
+msgid "Set up this device…"
+msgstr "Настроить это устройство…"
+
+msgid "Setup cancelled. The previous draft is back."
+msgstr "Настройка отменена. Предыдущий черновик восстановлен."
+
+msgid "Step by step: controller type, stick mode, calibration, a live test and the main switches."
+msgstr "Шаг за шагом: тип контроллера, режим стиков, калибровка, проверка вживую и основные переключатели."
+
+msgid "Swap: %s gets %s, the control %s had."
+msgstr "Поменять: %s получит %s — орган управления, который был у %s."
+
+msgid "Swap: %s takes the control %s had."
+msgstr "Поменять: %s получит орган управления, который был у %s."
+
+msgid "The %s extra channel cannot use that kind of control."
+msgstr "Дополнительный канал %s не может использовать такой орган управления."
+
+msgid "The window lost focus; detection was cancelled."
+msgstr "Окно потеряло фокус; определение отменено."
+
+msgid "This controller is recognised as a gamepad, so its type cannot be changed."
+msgstr "Этот контроллер распознан как геймпад, поэтому его тип нельзя изменить."
+
+msgid "Waiting for input…"
+msgstr "Ожидание ввода…"
+
+msgid "cancels. Listening stops after %d seconds without input."
+msgstr "— отмена. Ожидание прекращается через %d с без ввода."
+
+msgid "“%s” cannot take that kind of control. Use Replace or Cancel."
+msgstr "«%s» не может принять такой орган управления. Используйте «Заменить» или «Отмена»."
+
+msgid "“%s” has no control to give in exchange."
+msgstr "У «%s» нет органа управления для обмена."
+
+msgid "“%s” must always keep a control."
+msgstr "У «%s» всегда должен оставаться орган управления."
+
+msgid "Joysticks are set up with Detect in Flight axes; skip this step."
+msgstr "Джойстики настраиваются кнопкой «Определить» в разделе «Полётные оси»; пропустите этот шаг."
+
+msgid "A radio's directions come from calibration. Reverse a channel on the transmitter, or calibrate again."
+msgstr "Направления аппаратуры задаются калибровкой. Реверсируйте канал на аппаратуре или откалибруйте заново."
+
+msgid "Calibration could not start. Select a connected radio with a radio profile."
+msgstr "Не удалось начать калибровку. Выберите подключённую аппаратуру с профилем аппаратуры."
+
+msgid "All vehicles"
+msgstr "Все машины"

@@ -12451,3 +12451,216 @@ msgstr "飛行キー"
 
 msgid "SHORTCUTS"
 msgstr "ショートカット"
+
+msgid "Detect"
+msgstr "検出"
+
+msgid "Advanced"
+msgstr "詳細"
+
+msgid "Keep"
+msgstr "保持"
+
+msgid "Swap"
+msgstr "入れ替え"
+
+msgid "Control"
+msgstr "操作"
+
+msgid "%s is already used by %s."
+msgstr "%sはすでに%sが使っています。"
+
+msgid "%s is not assigned."
+msgstr "%sは割り当てられていません。"
+
+msgid "%s is unavailable: %s"
+msgstr "%sは使用できません：%s"
+
+msgid "%s is used by %s."
+msgstr "%sは%sが使っています。"
+
+msgid "%s keeps its axis. Nothing changed."
+msgstr "%sは軸をそのまま保持します。変更はありません。"
+
+msgid "%s no longer uses this control."
+msgstr "%sはこの操作を使わなくなりました。"
+
+msgid "%s took the previous control."
+msgstr "%sが以前の操作を引き継ぎました。"
+
+msgid "%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it."
+msgstr "%sは軸 %d を使います（OFF %+.2f、ON %+.2f）。保持するにはプロファイルを保存してください。"
+
+msgid "%s uses axis %d. Save the profile to keep it."
+msgstr "%sは軸 %d を使います。保持するにはプロファイルを保存してください。"
+
+msgid "Actions are back to their defaults in the draft. Save keeps them; Cancel discards them."
+msgstr "下書きの操作を既定値に戻しました。保存で保持、キャンセルで破棄します。"
+
+msgid "Actions were not reset: %s"
+msgstr "操作はリセットされませんでした：%s"
+
+msgid "Advanced: edit axis numbers"
+msgstr "詳細：軸番号を編集"
+
+msgid "Assign to %s"
+msgstr "%sに割り当て"
+
+msgid "Axis %d is already used by %s. Nothing changed."
+msgstr "軸 %d はすでに%sが使っています。変更はありません。"
+
+msgid "Calibrate the radio again before saving."
+msgstr "保存する前に送信機をもう一度校正してください。"
+
+msgid "Choose Swap, Replace or Cancel."
+msgstr "入れ替え、置き換え、キャンセルのいずれかを選んでください。"
+
+msgid "Connect the flight controller to detect its axes."
+msgstr "軸を検出するには飛行用コントローラーを接続してください。"
+
+msgid "Connect the flight controller to measure this control."
+msgstr "この操作を測定するには飛行用コントローラーを接続してください。"
+
+msgid "Detect %s"
+msgstr "%sを検出"
+
+msgid "Detect %s axis"
+msgstr "%sの軸を検出"
+
+msgid "During a flight, recalibrate this radio from Pause → Controls."
+msgstr "飛行中は、一時停止 → 操作設定からこの送信機を再校正してください。"
+
+msgid "Every flight channel needs its own axis."
+msgstr "飛行チャンネルにはそれぞれ専用の軸が必要です。"
+
+msgid "Extra channel was not changed: %s"
+msgstr "追加チャンネルは変更されませんでした：%s"
+
+msgid "Find control"
+msgstr "操作を探す"
+
+msgid "Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF."
+msgstr "%sの操作をOFFにして確定してください。飛行用スティックは動かさないでください。次にONにし、OFFに戻すよう指示されるまで保持してください。"
+
+msgid "Invalid or interrupted input. Nothing changed."
+msgstr "入力が無効か中断されました。変更はありません。"
+
+msgid "It moved the other way, so %s is inverted."
+msgstr "逆方向に動いたため、%sを反転しました。"
+
+msgid "LIVE INPUT"
+msgstr "リアルタイム入力"
+
+msgid "More than one axis moved. Move only the stick you want, then try again."
+msgstr "複数の軸が動きました。目的のスティックだけを動かして、もう一度試してください。"
+
+msgid "Move or press the control for %s…"
+msgstr "%sの操作を動かすか押してください…"
+
+msgid "Move the control"
+msgstr "操作を動かす"
+
+msgid "Move the control for %s"
+msgstr "%sの操作を動かす"
+
+msgid "Move the control you want for Throttle to FULL and hold it."
+msgstr "スロットルに使う操作を最大まで動かして保持してください。"
+
+msgid "Move the stick you want for Pitch fully BACK (toward you) and hold it."
+msgstr "ピッチに使うスティックを手前いっぱいに引いて保持してください。"
+
+msgid "Move the stick you want for Roll fully RIGHT and hold it."
+msgstr "ロールに使うスティックを右いっぱいに倒して保持してください。"
+
+msgid "Move the stick you want for Yaw fully RIGHT and hold it."
+msgstr "ヨーに使うスティックを右いっぱいに倒して保持してください。"
+
+msgid "New controller detected. Choose Set up this device to configure it step by step."
+msgstr "新しいコントローラーを検出しました。「このデバイスを設定」で手順に沿って設定できます。"
+
+msgid "No input was detected in time. Nothing changed."
+msgstr "時間内に入力が検出されませんでした。変更はありません。"
+
+msgid "Nothing changed."
+msgstr "変更はありません。"
+
+msgid "Only another flight channel can take an axis in exchange."
+msgstr "交換で軸を受け取れるのは別の飛行チャンネルだけです。"
+
+msgid "Press or move any control to find what it does."
+msgstr "操作を押すか動かすと、その役割がわかります。"
+
+msgid "Replace is not available here."
+msgstr "ここでは置き換えできません。"
+
+msgid "Replace: %s loses this control."
+msgstr "置き換え：%sはこの操作を失います。"
+
+msgid "Reset %s"
+msgstr "%sをリセット"
+
+msgid "Reset all actions"
+msgstr "すべての操作をリセット"
+
+msgid "Reset category"
+msgstr "カテゴリーをリセット"
+
+msgid "Reset every action to its default control? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "すべての操作を既定の割り当てに戻しますか？戻ると一時停止には常に操作が残ります。変更は保存するまで下書きのままです。"
+
+msgid "Reset the %s actions shown to their default controls? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "表示中の%sの操作を既定の割り当てに戻しますか？戻ると一時停止には常に操作が残ります。変更は保存するまで下書きのままです。"
+
+msgid "Reset to defaults"
+msgstr "既定値に戻す"
+
+msgid "Set up this device…"
+msgstr "このデバイスを設定…"
+
+msgid "Setup cancelled. The previous draft is back."
+msgstr "設定をキャンセルしました。以前の下書きに戻しました。"
+
+msgid "Step by step: controller type, stick mode, calibration, a live test and the main switches."
+msgstr "手順に沿って：コントローラーの種類、スティックモード、校正、ライブテスト、主なスイッチ。"
+
+msgid "Swap: %s gets %s, the control %s had."
+msgstr "入れ替え：%sは%s（%sが使っていた操作）になります。"
+
+msgid "Swap: %s takes the control %s had."
+msgstr "入れ替え：%sが%sの使っていた操作を引き継ぎます。"
+
+msgid "The %s extra channel cannot use that kind of control."
+msgstr "追加チャンネル %s はその種類の操作を使えません。"
+
+msgid "The window lost focus; detection was cancelled."
+msgstr "ウィンドウのフォーカスが外れたため、検出を取り消しました。"
+
+msgid "This controller is recognised as a gamepad, so its type cannot be changed."
+msgstr "このコントローラーはゲームパッドとして認識されているため、種類を変更できません。"
+
+msgid "Waiting for input…"
+msgstr "入力を待っています…"
+
+msgid "cancels. Listening stops after %d seconds without input."
+msgstr "で取り消し。入力がないまま %d 秒経つと待機を終了します。"
+
+msgid "“%s” cannot take that kind of control. Use Replace or Cancel."
+msgstr "「%s」はその種類の操作を受け取れません。置き換えかキャンセルを使ってください。"
+
+msgid "“%s” has no control to give in exchange."
+msgstr "「%s」には交換で渡せる操作がありません。"
+
+msgid "“%s” must always keep a control."
+msgstr "「%s」には常に操作が必要です。"
+
+msgid "Joysticks are set up with Detect in Flight axes; skip this step."
+msgstr "ジョイスティックは飛行軸の「検出」で設定します。このステップはスキップしてください。"
+
+msgid "A radio's directions come from calibration. Reverse a channel on the transmitter, or calibrate again."
+msgstr "送信機の向きは校正で決まります。チャンネルは送信機側で反転するか、もう一度校正してください。"
+
+msgid "Calibration could not start. Select a connected radio with a radio profile."
+msgstr "校正を開始できませんでした。送信機プロファイルのある接続済み送信機を選んでください。"
+
+msgid "All vehicles"
+msgstr "すべての機体"

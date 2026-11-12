@@ -227,6 +227,7 @@ func show_device(device_id: int, kind: String, family: String, stick_mode: int, 
 	_fit_picture_height()
 	picture_title.text = title
 	picture_hint.text = hint
+	picture_hint.visible = not hint.is_empty()
 	_axis_list = PackedInt32Array()
 	_picture_buttons = PackedInt32Array()
 	match picture.device_kind():

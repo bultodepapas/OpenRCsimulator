@@ -19,6 +19,8 @@ signal cancel_pressed
 signal timed_out
 ## Conflict mode answer: "swap", "replace" or "cancel".
 signal choice_made(choice: String)
+## The player confirmed the shown step (show_confirm).
+signal confirm_pressed
 
 const DEFAULT_SECONDS := 8.0
 
@@ -39,8 +41,10 @@ var conflict_reasons: Label
 var cancel_row: HBoxContainer
 var cancel_chips: HBoxContainer
 var cancel_hint: Label
+var confirm_button: Button
 var cancel_button: Button
 
+var _live_row: HBoxContainer
 var _duration := DEFAULT_SECONDS
 var _remaining := DEFAULT_SECONDS
 var _paused := false
@@ -59,7 +63,7 @@ func _init() -> void:
 	add_child(center)
 	card = PanelContainer.new()
 	card.name = "CaptureCard"
-	card.custom_minimum_size.x = 560.0
+	card.custom_minimum_size.x = 640.0
 	var style := StyleBoxFlat.new()
 	style.bg_color = UiTheme.CARD
 	style.border_color = UiTheme.FOCUS
@@ -77,6 +81,7 @@ func _init() -> void:
 	prompt_label = _text("CapturePrompt", "")
 	column.add_child(prompt_label)
 	var live := HBoxContainer.new()
+	_live_row = live
 	live.name = "CaptureLive"
 	live.add_theme_constant_override("separation", 18)
 	column.add_child(live)
@@ -86,9 +91,11 @@ func _init() -> void:
 	var preview := VBoxContainer.new()
 	preview.name = "CapturePreview"
 	preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	preview.add_theme_constant_override("separation", 6)
 	live.add_child(preview)
 	preview_caption = _text("CapturePreviewCaption", "SectionLabel")
+	preview_caption.autowrap_mode = TextServer.AUTOWRAP_OFF
 	preview.add_child(preview_caption)
 	preview_chip = BindingChip.new()
 	preview_chip.name = "CapturePreviewChip"
@@ -130,10 +137,17 @@ func _init() -> void:
 	cancel_chips.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	cancel_row.add_child(cancel_chips)
 	cancel_hint = _text("CaptureCancelHint", "SecondaryLabel")
-	cancel_hint.autowrap_mode = TextServer.AUTOWRAP_OFF
 	cancel_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cancel_hint.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	cancel_row.add_child(cancel_hint)
+	# A step the player confirms (Learn axis / Move the control: "the control is at OFF"); focusable while shown.
+	confirm_button = Widgets.button("Confirm OFF", "PrimaryButton", "CaptureConfirm")
+	confirm_button.visible = false
+	confirm_button.pressed.connect(func() -> void:
+		if is_capturing() and confirm_button.visible:
+			confirm_pressed.emit())
+	confirm_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_live_row.add_child(confirm_button)
 	# Pointer only: keyboard and gamepad cancel through Escape/Back (or the timeout) while the row keeps focus.
 	cancel_button = Widgets.button("Cancel", "", "CaptureCancel")
 	cancel_button.focus_mode = Control.FOCUS_NONE
@@ -183,8 +197,30 @@ func show_capture(title: String, prompt: String, cancel_text: String, cancel_bin
 			chip.set_binding(binding, family, device, profile)
 			chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			cancel_chips.add_child(chip)
+	confirm_button.visible = false
 	restart_countdown(seconds)
 	visible = true
+
+
+## Show a confirmation step (text already translated) and focus it; the countdown pauses until it is confirmed.
+## Focus stays on it (and the pointer Cancel) until hide_confirm().
+func show_confirm(text: String) -> void:
+	confirm_button.text = text
+	confirm_button.visible = true
+	confirm_button.focus_neighbor_left = confirm_button.get_path_to(confirm_button)
+	confirm_button.focus_neighbor_right = confirm_button.get_path_to(confirm_button)
+	confirm_button.focus_neighbor_top = confirm_button.get_path_to(confirm_button)
+	confirm_button.focus_neighbor_bottom = confirm_button.get_path_to(confirm_button)
+	confirm_button.focus_next = confirm_button.get_path_to(confirm_button)
+	confirm_button.focus_previous = confirm_button.get_path_to(confirm_button)
+	pause_countdown(true)
+	if is_inside_tree():
+		confirm_button.grab_focus()
+
+
+func hide_confirm() -> void:
+	confirm_button.visible = false
+	pause_countdown(false)
 
 
 func set_prompt(prompt: String) -> void:

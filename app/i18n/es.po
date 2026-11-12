@@ -11992,3 +11992,216 @@ msgstr "TECLAS DE VUELO"
 
 msgid "SHORTCUTS"
 msgstr "ATAJOS"
+
+msgid "Detect"
+msgstr "Detectar"
+
+msgid "Advanced"
+msgstr "Avanzado"
+
+msgid "Keep"
+msgstr "Conservar"
+
+msgid "Swap"
+msgstr "Intercambiar"
+
+msgid "Control"
+msgstr "Control"
+
+msgid "%s is already used by %s."
+msgstr "%s ya lo usa %s."
+
+msgid "%s is not assigned."
+msgstr "%s no está asignado."
+
+msgid "%s is unavailable: %s"
+msgstr "%s no está disponible: %s"
+
+msgid "%s is used by %s."
+msgstr "%s lo usa %s."
+
+msgid "%s keeps its axis. Nothing changed."
+msgstr "%s conserva su eje. No se ha cambiado nada."
+
+msgid "%s no longer uses this control."
+msgstr "%s ya no usa este control."
+
+msgid "%s took the previous control."
+msgstr "%s tomó el control anterior."
+
+msgid "%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it."
+msgstr "%s usa el eje %d (Off %+.2f, On %+.2f). Guarda el perfil para conservarlo."
+
+msgid "%s uses axis %d. Save the profile to keep it."
+msgstr "%s usa el eje %d. Guarda el perfil para conservarlo."
+
+msgid "Actions are back to their defaults in the draft. Save keeps them; Cancel discards them."
+msgstr "Las acciones vuelven a sus valores predeterminados en el borrador. Guardar las conserva; Cancelar las descarta."
+
+msgid "Actions were not reset: %s"
+msgstr "No se restablecieron las acciones: %s"
+
+msgid "Advanced: edit axis numbers"
+msgstr "Avanzado: editar números de eje"
+
+msgid "Assign to %s"
+msgstr "Asignar a %s"
+
+msgid "Axis %d is already used by %s. Nothing changed."
+msgstr "El eje %d ya lo usa %s. No se ha cambiado nada."
+
+msgid "Calibrate the radio again before saving."
+msgstr "Vuelve a calibrar la emisora antes de guardar."
+
+msgid "Choose Swap, Replace or Cancel."
+msgstr "Elige Intercambiar, Sustituir o Cancelar."
+
+msgid "Connect the flight controller to detect its axes."
+msgstr "Conecta el controlador de vuelo para detectar sus ejes."
+
+msgid "Connect the flight controller to measure this control."
+msgstr "Conecta el controlador de vuelo para medir este control."
+
+msgid "Detect %s"
+msgstr "Detectar %s"
+
+msgid "Detect %s axis"
+msgstr "Detectar eje de %s"
+
+msgid "During a flight, recalibrate this radio from Pause → Controls."
+msgstr "Durante un vuelo, recalibra esta emisora desde Pausa → Controles."
+
+msgid "Every flight channel needs its own axis."
+msgstr "Cada canal de vuelo necesita su propio eje."
+
+msgid "Extra channel was not changed: %s"
+msgstr "El canal extra no se ha cambiado: %s"
+
+msgid "Find control"
+msgstr "Buscar control"
+
+msgid "Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF."
+msgstr "Mantén el control de %s en OFF y confirma. No muevas las palancas de vuelo. Después llévalo a ON y mantenlo hasta que se te pida volver a OFF."
+
+msgid "Invalid or interrupted input. Nothing changed."
+msgstr "Entrada no válida o interrumpida. No se ha cambiado nada."
+
+msgid "It moved the other way, so %s is inverted."
+msgstr "Se movió en sentido contrario, así que %s queda invertido."
+
+msgid "LIVE INPUT"
+msgstr "ENTRADA EN DIRECTO"
+
+msgid "More than one axis moved. Move only the stick you want, then try again."
+msgstr "Se movió más de un eje. Mueve solo la palanca que quieres y vuelve a intentarlo."
+
+msgid "Move or press the control for %s…"
+msgstr "Mueve o pulsa el control para %s…"
+
+msgid "Move the control"
+msgstr "Mover el control"
+
+msgid "Move the control for %s"
+msgstr "Mover el control de %s"
+
+msgid "Move the control you want for Throttle to FULL and hold it."
+msgstr "Lleva al MÁXIMO el control que quieras para el acelerador y mantenlo."
+
+msgid "Move the stick you want for Pitch fully BACK (toward you) and hold it."
+msgstr "Lleva completamente hacia ATRÁS (hacia ti) la palanca que quieras para la profundidad y mantenla."
+
+msgid "Move the stick you want for Roll fully RIGHT and hold it."
+msgstr "Lleva completamente a la DERECHA la palanca que quieras para el alabeo y mantenla."
+
+msgid "Move the stick you want for Yaw fully RIGHT and hold it."
+msgstr "Lleva completamente a la DERECHA la palanca que quieras para la guiñada y mantenla."
+
+msgid "New controller detected. Choose Set up this device to configure it step by step."
+msgstr "Nuevo mando detectado. Elige Configurar este dispositivo para ajustarlo paso a paso."
+
+msgid "No input was detected in time. Nothing changed."
+msgstr "No se detectó ninguna entrada a tiempo. No se ha cambiado nada."
+
+msgid "Nothing changed."
+msgstr "No se ha cambiado nada."
+
+msgid "Only another flight channel can take an axis in exchange."
+msgstr "Solo otro canal de vuelo puede tomar un eje a cambio."
+
+msgid "Press or move any control to find what it does."
+msgstr "Pulsa o mueve cualquier control para ver qué hace."
+
+msgid "Replace is not available here."
+msgstr "Sustituir no está disponible aquí."
+
+msgid "Replace: %s loses this control."
+msgstr "Sustituir: %s pierde este control."
+
+msgid "Reset %s"
+msgstr "Restablecer %s"
+
+msgid "Reset all actions"
+msgstr "Restablecer todas las acciones"
+
+msgid "Reset category"
+msgstr "Restablecer categoría"
+
+msgid "Reset every action to its default control? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "¿Restablecer cada acción a su control predeterminado? Atrás y Pausa siempre conservan un control. El cambio queda en el borrador hasta que guardes."
+
+msgid "Reset the %s actions shown to their default controls? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "¿Restablecer a sus controles predeterminados las acciones de %s mostradas? Atrás y Pausa siempre conservan un control. El cambio queda en el borrador hasta que guardes."
+
+msgid "Reset to defaults"
+msgstr "Restablecer valores predeterminados"
+
+msgid "Set up this device…"
+msgstr "Configurar este dispositivo…"
+
+msgid "Setup cancelled. The previous draft is back."
+msgstr "Configuración cancelada. Se ha recuperado el borrador anterior."
+
+msgid "Step by step: controller type, stick mode, calibration, a live test and the main switches."
+msgstr "Paso a paso: tipo de mando, modo de palancas, calibración, prueba en directo y los interruptores principales."
+
+msgid "Swap: %s gets %s, the control %s had."
+msgstr "Intercambiar: %s recibe %s, el control que tenía %s."
+
+msgid "Swap: %s takes the control %s had."
+msgstr "Intercambiar: %s toma el control que tenía %s."
+
+msgid "The %s extra channel cannot use that kind of control."
+msgstr "El canal extra %s no puede usar ese tipo de control."
+
+msgid "The window lost focus; detection was cancelled."
+msgstr "La ventana perdió el foco; se canceló la detección."
+
+msgid "This controller is recognised as a gamepad, so its type cannot be changed."
+msgstr "Este mando se reconoce como gamepad, así que su tipo no se puede cambiar."
+
+msgid "Waiting for input…"
+msgstr "Esperando entrada…"
+
+msgid "cancels. Listening stops after %d seconds without input."
+msgstr "cancela. La escucha se detiene tras %d segundos sin entrada."
+
+msgid "“%s” cannot take that kind of control. Use Replace or Cancel."
+msgstr "«%s» no puede tomar ese tipo de control. Usa Sustituir o Cancelar."
+
+msgid "“%s” has no control to give in exchange."
+msgstr "«%s» no tiene ningún control que dar a cambio."
+
+msgid "“%s” must always keep a control."
+msgstr "«%s» siempre debe conservar un control."
+
+msgid "Joysticks are set up with Detect in Flight axes; skip this step."
+msgstr "Los joysticks se configuran con Detectar en Ejes de vuelo; omite este paso."
+
+msgid "A radio's directions come from calibration. Reverse a channel on the transmitter, or calibrate again."
+msgstr "Los sentidos de una emisora vienen de la calibración. Invierte el canal en la emisora o vuelve a calibrar."
+
+msgid "Calibration could not start. Select a connected radio with a radio profile."
+msgstr "No se pudo iniciar la calibración. Selecciona una emisora conectada con un perfil de radio."
+
+msgid "All vehicles"
+msgstr "Todos los vehículos"

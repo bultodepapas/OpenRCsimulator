@@ -225,6 +225,9 @@ func _capture_tests(screen: CanvasLayer, registry: RefCounted, store: RefCounted
 	await process_frame
 	before = screen.current_profile()
 	_learn(screen, raw, "camera_cycle", 5, -0.5, 0.5)
+	# UI-15-UX-06: the shared source is offered as Swap / Replace / Cancel; Cancel keeps the former rejection.
+	_check("a learned source conflict asks Swap / Replace / Cancel", screen.capture_overlay.is_conflict())
+	screen.capture_overlay.conflict_cancel_button.pressed.emit()
 	_check("capturing another action on learned source is rejected", screen.current_profile() == before and not screen._is_capture_active(), screen.status_label.text)
 	await process_frame
 	_learn(screen, raw, "camera_cycle", 6, 0.8, 0.2)
@@ -243,6 +246,7 @@ func _capture_tests(screen: CanvasLayer, registry: RefCounted, store: RefCounted
 	screen._set_draft_profile(with_aux)
 	before = screen.current_profile()
 	_learn(screen, raw, "view_reset", 8, -0.5, 0.5)
+	screen.capture_overlay.conflict_cancel_button.pressed.emit() # UI-15-UX-06: Cancel the Swap/Replace question
 	_check("learned shortcut cannot overlap a configured AUX axis", screen.current_profile() == before
 		and not screen._is_capture_active(), screen.status_label.text)
 	await process_frame

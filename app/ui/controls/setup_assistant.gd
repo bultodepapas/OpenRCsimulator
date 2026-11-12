@@ -173,7 +173,16 @@ func _init() -> void:
 	var center: CenterContainer = _surface.call("center", 0.0)
 	_panel = PanelContainer.new()
 	_panel.name = "AssistantPanel"
-	_panel.theme_type_variation = "SettingsPanel"
+	# The opaque Controls panel style: the assistant covers a live 3D scene, which must not show through its text.
+	var panel_style := _surface.get_theme_stylebox("panel", "Sidebar").duplicate() as StyleBoxFlat
+	if panel_style != null:
+		panel_style.content_margin_left = 24.0
+		panel_style.content_margin_right = 24.0
+		panel_style.content_margin_top = 20.0
+		panel_style.content_margin_bottom = 20.0
+		_panel.add_theme_stylebox_override("panel", panel_style)
+	else:
+		_panel.theme_type_variation = "SettingsPanel"
 	center.add_child(_panel)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 14)
@@ -580,11 +589,20 @@ func _should_poll() -> bool:
 	return current_step() == "test" and not is_busy() and not _closing and _surface != null and _surface.visible
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not _should_poll():
 		set_process(false)
 		return
+	# About 20 samples a second is smooth for the test widgets and keeps the host's work small.
+	_preview_wait -= delta
+	if _preview_wait > 0.0:
+		return
+	_preview_wait = PREVIEW_INTERVAL
 	_poll_preview()
+
+
+const PREVIEW_INTERVAL := 0.05
+var _preview_wait := 0.0
 
 
 func _resize_panel() -> void:
@@ -1007,9 +1025,13 @@ func _poll_preview() -> void:
 		gimbal.set_stick(Vector2(x, y), true)
 	aircraft.set_controls(roll, pitch, yaw, level)
 	var inverted: Variant = sample.get("inverted", {})
+	var reverse_available := bool(sample.get("reverse_available", true))
 	if inverted is Dictionary:
 		for channel: String in reverse_toggles:
 			var toggle: CheckButton = reverse_toggles[channel]
+			if toggle.disabled == reverse_available:
+				toggle.disabled = not reverse_available
+				toggle.tooltip_text = "" if reverse_available else tr("A radio's directions come from calibration. Reverse a channel on the transmitter, or calibrate again.")
 			var on := bool(inverted.get(channel, false))
 			if toggle.button_pressed != on:
 				toggle.set_pressed_no_signal(on)

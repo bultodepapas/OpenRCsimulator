@@ -102,20 +102,37 @@ Independent review hardening (before the final qualification run):
 - Installation removes a cached registration of the Windows descriptor from `.godot/extension_list.cfg`.
 - `run.py --app-library` reads the platform's own installed descriptor and receipt.
 
+Final installation: after `run_checked.py` stabilised, a full run under the hardened rules passed all 19 gates
+and `--install-app` accepted every result (binary `b958cc3f…`). The installer first refused that evidence because
+`run.py` records harness keys with Windows separators; the lookup now normalises them.
+
+Linux CI's extra native checks, run on Windows against the installed library: glow rejection, native admission
+and wheel admission pass with their native markers; trajectory at 14,400 ticks 156,030/156,030 identical; the
+production `session_baseline.py --compare-backends` probe gives identical reference/native fingerprints for trim
+and runway. `test_fleet.gd --require-runtime-domain` passes on Linux but not on Windows: its observed-start
+fixtures (`RUNWAY_START_BOUNDARIES`, `RUNWAY_LIVE_CONFIG_V4`, the FS64V reverse-domain trial) are SHA-256 pins of
+Linux reference bytes. On Windows, reference and native produce identical bytes for every boundary row, but those
+bytes differ from the Linux pins (frame/outcome for the P-51 and Turbo Lumber, live configuration for all): the
+GDScript reference itself is not bit-identical across the Linux and Windows engines (different libm). A Windows
+variant of these fixtures is an NK-track decision.
+
+CI: `.github/workflows/ci.yml` job `native-kernel-windows` (windows-2025) installs the pinned nuwen MinGW
+`components-20.0.7z` by SHA-256, builds the library and mutant, runs every installer gate, accepts them through
+`build_windows.py`'s evidence rules, installs, and requires the stage, session, replay and helicopter native
+markers. It is informational, not yet in the required/release set, until it has run green on the hosted runner.
+
 ## Open
 
-- Re-record the installation under the hardened evidence rules. Two later full gate runs again passed every gate
-  with the same binary (`b958cc3f…`), but another track edited `tools/godot/run_checked.py` (part of the oracle
-  harness) during both, so `--install-app` correctly refused the mixed evidence. The installed receipt still holds
-  the first complete run; the loader's runtime checks (binary, executable, descriptor, mirrored sources) pass, and
-  `test_native_stage` passes 97/97 natively. Once that file is stable, rerun the gates and `--install-app`.
-
+- Run the new CI job once on the hosted runner, then decide whether it joins the required set
+  (`tools/ci/policy.py` `PRODUCTION`) and the release dependencies.
+- Windows release packages: the export plugin, embedded manifest and package receipt are Linux-only, and the
+  4.8-beta2 Windows release template is not installed on this host. Packaged qualification belongs with the
+  export job (DT), as for Linux.
+- Windows observed-start fixtures for `test_fleet.gd --require-runtime-domain` (see above).
 - Signaling-NaN inputs: inline `sqrtsd` quiets them; the engine's path may not. Ordinary arithmetic produces only
   quiet NaNs, so this is reachable only by injected bit patterns; it is not covered by the oracles.
-
-- Windows release packages (export plugin, embedded manifest), a Windows CI job and target-host timing with the
-  release template. Source/debug runs on this host only.
-- Companion solver pin: `native_stage.gd` is in the pinned solver directories. The report is identical; after
-  committing, run `python tools/companions/rebind.py --accept` (`test_companions_profiles.gd` fails until then).
+- Companion admission: the solver pin is renewed (receipt `AFC-02/rebinds/2026-11-12-2ac90e15-to-192efadc.json`,
+  nine identical tapes). The separate behaviour manifest pins `main.gd`/`app_root.gd`, which several tracks
+  changed on 2026-11-12; renew it at release preparation, as v0.2.4 did.
 - Fleet campaign (`fleet_campaign.py`, 1,238 cases) was not rerun on Windows; admission is capability-based and
   every family oracle passed.

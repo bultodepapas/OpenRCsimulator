@@ -2102,6 +2102,8 @@ func _open_radio_calibration(setup: Node) -> void:
 	if not wizard.configure(controllers.registry, device_id, setup.current_profile()):
 		wizard.free()
 		_update_controller_calibration_button(setup)
+		# Always answer the request: the Setup assistant waits for a result (UI-15-UX-07).
+		setup.calibration_cancelled(tr("Calibration could not start. Select a connected radio with a radio profile."))
 		return
 	wizard.completed.connect(func(profile: Dictionary, warning: String) -> void:
 		if not screens.is_top("radio_calibration"): return
@@ -2111,10 +2113,11 @@ func _open_radio_calibration(setup: Node) -> void:
 	wizard.cancelled.connect(func(reason: String) -> void:
 		if not screens.is_top("radio_calibration"): return
 		screens.pop()
-		setup._set_status(reason, false)
+		setup.calibration_cancelled(reason)
 		_restore_calibration_controls_focus.call_deferred(setup))
 	if not screens.push("radio_calibration", wizard, setup.calibrate_button):
 		wizard.free()
+		setup.calibration_cancelled(tr("Calibration could not start. Select a connected radio with a radio profile."))
 
 
 func _restore_calibration_controls_focus(setup: Node) -> void:

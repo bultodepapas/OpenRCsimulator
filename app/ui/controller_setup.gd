@@ -21,6 +21,8 @@ const ResponseCurve := preload("res://ui/controls/response_curve.gd")
 const CalibrationView := preload("res://ui/controls/calibration_view.gd")
 const ControlsReference := preload("res://ui/controls_reference.gd")
 const CaptureOverlay := preload("res://ui/controls/capture_overlay.gd")
+const SetupAssistant := preload("res://ui/controls/setup_assistant.gd")
+const SetupAssistantBridge := preload("res://ui/controls/setup_assistant_bridge.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 
@@ -105,6 +107,12 @@ var preview_label: Label
 var status_label: Label
 var save_button: Button
 var calibrate_button: Button
+var setup_assistant_button: Button
+var _assistant: CanvasLayer
+var _assistant_bridge: RefCounted
+var _assistant_restore: Dictionary = {}
+## Devices already offered the Setup assistant in this app run (one hint per device).
+static var _assistant_offered: Dictionary = {}
 var choose_radio_profile_button: Button
 var calibration_prerequisite: Label
 var calibration_scope_help: Label
@@ -271,6 +279,9 @@ var _detect_channel := ""
 var _axis_detector: AxisDetector
 var _capturing_aux_axis := "" # AUX channel measured by "Move the control" (ActionAxisCapture)
 var _finding := false
+## Axis values when Find control started; a resting end position is not a deliberate choice.
+var _find_baseline := PackedFloat64Array()
+const FIND_AXIS_MIN_TRAVEL := 0.5
 var _find_origin := ""
 var _conflict: Dictionary = {}
 var _detect_preview_axis := -1
@@ -314,6 +325,13 @@ func configure(controller_registry: Object, store: Object, flight_device_id := -
 ## An open popover or unsaved-changes question is answered first ("Keep editing"), then an active capture is
 ## cancelled; a dirty draft asks Save / Discard / Keep editing before it closes.
 func request_close() -> void:
+	if is_instance_valid(_assistant):
+		# Back while the Setup assistant is open steps it back (its first step cancels it); capture keeps priority.
+		if _is_assignment_busy():
+			_cancel_capture()
+		elif not _assistant.is_busy():
+			_assistant.go_back()
+		return
 	if _dismiss_own_dialogs():
 		return
 	if _is_assignment_busy():
@@ -786,6 +804,12 @@ func _build() -> void:
 	calibrate_button.disabled = true
 	calibrate_button.pressed.connect(func() -> void: calibration_requested.emit())
 	calibrate_button.focus_entered.connect(_queue_mapping_focus_visibility)
+	setup_assistant_button = _button("Set up this device…", "PrimaryButton", "SetupAssistantButton")
+	setup_assistant_button.tooltip_text = tr("Step by step: controller type, stick mode, calibration, a live test and the main switches.")
+	setup_assistant_button.visible = false
+	setup_assistant_button.pressed.connect(func() -> void: open_setup_assistant())
+	setup_assistant_button.focus_entered.connect(_queue_mapping_focus_visibility)
+	page.add_child(setup_assistant_button)
 	page.add_child(role_actions)
 	page.add_child(calibrate_button)
 	calibration_prerequisite = _label("Using an RC transmitter? Choose a radio profile before calibrating.", "SecondaryLabel", true)
@@ -891,12 +915,6 @@ func _build() -> void:
 	page = _make_section("axes", "Flight axes")
 	page.add_child(_section_label("AXIS MAPPING AND RESPONSE"))
 	page.add_child(_label("Each channel uses its own scalar axis. Tune its deadzone, expo and inversion, then move the selected flight controller to preview the conditioned value.", "SecondaryLabel", true))
-	# UI-15-UX-05: axes are assigned by moving them (Detect); the axis numbers are an Advanced disclosure.
-	axis_advanced_toggle = CheckBox.new()
-	axis_advanced_toggle.name = "AxisAdvancedToggle"
-	axis_advanced_toggle.text = "Advanced: edit axis numbers"
-	axis_advanced_toggle.toggled.connect(func(_on: bool) -> void: _apply_advanced_visibility())
-	page.add_child(axis_advanced_toggle)
 	_axis_columns = BoxContainer.new()
 	var axis_columns := _axis_columns
 	axis_columns.add_theme_constant_override("separation", 28)
@@ -908,14 +926,27 @@ func _build() -> void:
 	axis_grid.add_theme_constant_override("h_separation", 14)
 	axis_grid.add_theme_constant_override("v_separation", 5)
 	axis_grid.visible = false
-	axis_columns.add_child(axis_grid)
+	# UI-15-UX-05: the table column holds the table (or its compact form) and, under it, the Advanced disclosure for
+	# the axis numbers; it is shorter than the live preview beside it, so the page gains no height.
+	var table_column := VBoxContainer.new()
+	table_column.name = "AxisTableColumn"
+	table_column.add_theme_constant_override("separation", 8)
+	axis_columns.add_child(table_column)
+	table_column.add_child(axis_grid)
 	for heading in ["Channel", "Source axis", "Deadzone", "Expo", "Invert"]:
 		axis_grid.add_child(_label(heading, "SectionLabel"))
 	_axis_compact_grid = VBoxContainer.new()
 	_axis_compact_grid.name = "AxisMappingCompact"
 	_axis_compact_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_axis_compact_grid.add_theme_constant_override("separation", 8)
-	axis_columns.add_child(_axis_compact_grid)
+	table_column.add_child(_axis_compact_grid)
+	# Axes are assigned by moving them (Detect); typing an axis number is the Advanced route.
+	axis_advanced_toggle = CheckBox.new()
+	axis_advanced_toggle.name = "AxisAdvancedToggle"
+	axis_advanced_toggle.text = "Advanced: edit axis numbers"
+	axis_advanced_toggle.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	axis_advanced_toggle.toggled.connect(func(_on: bool) -> void: _apply_advanced_visibility())
+	table_column.add_child(axis_advanced_toggle)
 	for channel in CHANNELS:
 		var channel_block := VBoxContainer.new()
 		channel_block.name = "AxisChannel_%s" % channel
@@ -971,7 +1002,16 @@ func _build() -> void:
 		invert.toggled.connect(_on_axis_invert.bind(channel))
 
 	page = _make_section("aux", "Extra channels")
-	page.add_child(_section_label("AUXILIARY CHANNELS"))
+	# UI-15-UX-05/06: Advanced (axis numbers and endpoints) and Find control sit on the heading line.
+	var aux_heading := HFlowContainer.new()
+	aux_heading.name = "AuxiliaryHeadingRow"
+	aux_heading.add_theme_constant_override("h_separation", 8)
+	aux_heading.add_theme_constant_override("v_separation", 6)
+	var aux_title := _section_label("AUXILIARY CHANNELS")
+	aux_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	aux_title.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	aux_heading.add_child(aux_title)
+	page.add_child(aux_heading)
 	aux_help_label = _label("Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Availability depends on the selected aircraft. Axis endpoints need at least 0.5 travel.", "SecondaryLabel", true)
 	aux_help_label.name = "AuxiliaryHelp"
 	aux_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -987,7 +1027,10 @@ func _build() -> void:
 	# D6-UX-01: beside the help text, so the page gains no row (the 1280x720 AUX editors must still fit).
 	show_all_vehicle_aux = CheckBox.new()
 	show_all_vehicle_aux.name = "ShowAllVehicleAuxChannels"
-	show_all_vehicle_aux.text = "Show channels for all vehicles"
+	# Short visible text keeps this row from widening the page in long languages at large text sizes; the full
+	# meaning is the tooltip and the accessible name (refreshed in _update_accessible_names).
+	show_all_vehicle_aux.text = "All vehicles"
+	show_all_vehicle_aux.set_meta("accessible_caption", "Show channels for all vehicles")
 	show_all_vehicle_aux.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	show_all_vehicle_aux.toggled.connect(func(_pressed: bool) -> void: _update_aux_controls())
 	aux_help_row.add_child(show_all_vehicle_aux)
@@ -996,11 +1039,11 @@ func _build() -> void:
 	aux_advanced_toggle.text = "Advanced"
 	aux_advanced_toggle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	aux_advanced_toggle.toggled.connect(func(_on: bool) -> void: _apply_advanced_visibility())
-	aux_help_row.add_child(aux_advanced_toggle)
+	aux_heading.add_child(aux_advanced_toggle)
 	find_aux_button = _button("Find control", "", "FindControlAux")
 	find_aux_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	find_aux_button.pressed.connect(func() -> void: _start_find(find_aux_button))
-	aux_help_row.add_child(find_aux_button)
+	aux_heading.add_child(find_aux_button)
 	page.add_child(aux_help_row)
 	aux_grid = VBoxContainer.new()
 	aux_grid.sort_children.connect(_queue_mapping_focus_visibility)
@@ -1418,6 +1461,9 @@ func _build() -> void:
 	capture_overlay.cancel_pressed.connect(_cancel_capture)
 	capture_overlay.timed_out.connect(_on_capture_timeout)
 	capture_overlay.choice_made.connect(_resolve_conflict)
+	capture_overlay.confirm_pressed.connect(func() -> void:
+		if is_instance_valid(_axis_capture_dialog) and _axis_capture == null:
+			_axis_capture_dialog.confirmed.emit())
 	_settings_panel.add_child(capture_overlay)
 	_build_keyboard_views()
 	_tag_workspace_rows()
@@ -1762,8 +1808,115 @@ func _update_device_summary() -> void:
 	_device_summary.tooltip_text = _device_summary.text if metadata.is_empty() else "%s\n%s" % [_device_summary.text, metadata]
 	_empty_device_label.visible = not _devices.any(func(device: Dictionary) -> bool: return bool(device.get("connected", true)))
 	_set_keyboard_mode(_draft_flight_device_id < 0)
+	_update_setup_assistant_button()
 	_queue_workspace_refresh()
 	_queue_dirty_marker()
+
+
+## UI-15-UX-07: the Setup assistant is offered for every connected controller; a device that still needs setup
+## (an unconfigured joystick or an uncalibrated radio) gets a one-time hint per app run. It never opens by itself.
+func _update_setup_assistant_button() -> void:
+	if setup_assistant_button == null:
+		return
+	var device := _device_for_id(_draft_flight_device_id)
+	var available := _draft_flight_device_id >= 0 and bool(device.get("connected", false))
+	setup_assistant_button.visible = available
+	setup_assistant_button.disabled = not available
+	if not available or not _device_needs_setup():
+		return
+	var key := "%s|%s" % [str(device.get("guid", "")), str(device.get("name", ""))]
+	if _assistant_offered.has(key):
+		return
+	_assistant_offered[key] = true
+	_set_status(tr("New controller detected. Choose Set up this device to configure it step by step."), false)
+
+
+func _device_needs_setup() -> bool:
+	var kind := str(_draft_profile.get("kind", ""))
+	if kind == "joystick":
+		return not bool(_draft_profile.get("configured", true))
+	return kind == "radio" and not radio_mapping_verified(_draft_profile)
+
+
+## Opens the Setup assistant over this screen. It edits only this draft through setup_assistant_bridge.gd;
+## Cancel restores the draft as it was when the assistant opened, Save uses the normal transactional Save.
+func open_setup_assistant() -> bool:
+	if is_instance_valid(_assistant) or _is_assignment_busy() or setup_assistant_button == null or setup_assistant_button.disabled:
+		return false
+	_assistant_restore = {
+		"profile": _draft_profile.duplicate(true), "context": _draft_context_key,
+		"unsaved_calibration": _unsaved_calibration.duplicate(true), "calibration_origins": _calibration_origins.duplicate(true),
+		"menu_origins": _menu_verification_origins.duplicate(true), "ui_device": _draft_ui_device_id,
+	}
+	_assistant_bridge = SetupAssistantBridge.new(self)
+	_assistant = SetupAssistant.new()
+	_assistant.name = "SetupAssistant"
+	_assistant.configure(_assistant_bridge)
+	_assistant_bridge.assistant = _assistant
+	_assistant.finished.connect(_on_assistant_finished)
+	_assistant.closed.connect(_on_assistant_closed)
+	add_child(_assistant)
+	_screen.set_active(false)
+	_assistant.open(setup_assistant_button)
+	return true
+
+
+## The assistant hides while this screen captures for it, so the capture overlay and the Swap/Replace question show.
+func _assistant_capture_started() -> void:
+	if is_instance_valid(_assistant):
+		_assistant.visible = false
+		_screen.set_active(true)
+
+
+func _assistant_capture_aborted() -> void:
+	if is_instance_valid(_assistant):
+		_screen.set_active(false)
+		_assistant.visible = true
+
+
+func _on_capture_finished_for_assistant(target_id: String, ok: bool, message: String) -> void:
+	if not is_instance_valid(_assistant):
+		return
+	_screen.set_active(false)
+	_assistant.visible = true
+	_assistant.notify_capture_finished(target_id, ok, message)
+
+
+func _on_calibration_finished_for_assistant(ok: bool, message: String) -> void:
+	if not is_instance_valid(_assistant):
+		return
+	_screen.set_active(false) # the calibration screen's pop re-activated this one
+	if ok and _assistant_bridge != null:
+		_assistant_bridge.reset_reverse_baseline()
+	_assistant.notify_calibration_finished(ok, message)
+
+
+func _on_assistant_finished(saved: bool) -> void:
+	if saved or _assistant_restore.is_empty():
+		return
+	_unsaved_calibration = _assistant_restore.unsaved_calibration
+	_calibration_origins = _assistant_restore.calibration_origins
+	_set_draft_profile(_assistant_restore.profile, str(_assistant_restore.context))
+	# Edits can invalidate radio menu evidence and drop the radio as menu device; Cancel brings both back.
+	_menu_verification_origins = _assistant_restore.menu_origins
+	if _draft_ui_device_id != int(_assistant_restore.ui_device):
+		_draft_ui_device_id = int(_assistant_restore.ui_device)
+		_refresh_devices()
+	_set_status(tr("Setup cancelled. The previous draft is back."), false)
+
+
+func _on_assistant_closed() -> void:
+	var finished_assistant := _assistant
+	_assistant = null
+	_assistant_bridge = null
+	_assistant_restore = {}
+	_screen.set_active(true)
+	if is_instance_valid(finished_assistant):
+		finished_assistant.queue_free()
+	_update_device_summary()
+	_draft_validation_changed()
+	if is_inside_tree() and is_instance_valid(setup_assistant_button) and setup_assistant_button.is_visible_in_tree():
+		setup_assistant_button.grab_focus()
 
 
 static func _is_jeti_device(device: Dictionary) -> bool:
@@ -1793,6 +1946,8 @@ func _device_metadata_tooltip(device: Dictionary) -> String:
 
 func _ready() -> void:
 	get_tree().root.window_input.connect(_observe_popup_diagnostics)
+	capture_finished.connect(_on_capture_finished_for_assistant)
+	calibration_finished.connect(_on_calibration_finished_for_assistant)
 	get_viewport().gui_focus_changed.connect(_on_workspace_focus_changed)
 	if registry == null:
 		_set_status(tr("Controller services are not available."), true)
@@ -1914,7 +2069,15 @@ func _input(event: InputEvent) -> void:
 	if not _is_capture_active():
 		return
 	if _axis_capture_dialog != null:
-		if _axis_capture == null: return # native OFF confirmation owns its keys
+		if _axis_capture == null:
+			# OFF step: the overlay's focused Confirm OFF takes Enter/accept; Escape cancels.
+			var off_key := event as InputEventKey
+			if off_key != null and off_key.pressed and not off_key.echo \
+					and (off_key.keycode == KEY_ESCAPE or off_key.physical_keycode == KEY_ESCAPE):
+				get_viewport().set_input_as_handled()
+				_track_capture_release(event)
+				_cancel_capture()
+			return
 		if event is InputEventKey:
 			get_viewport().set_input_as_handled()
 			if event.pressed and (event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE): _cancel_capture()
@@ -1970,6 +2133,10 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		if not is_finite(motion.axis_value) or absf(motion.axis_value) < 0.65:
 			return
+		# Find control: an axis resting at an end (radio throttle at LOW, an axis switch) only counts once it moves
+		# well away from where it was when Find started, so its resting jitter is never reported as a choice.
+		if _finding and motion.axis < _find_baseline.size() 				and absf(motion.axis_value - _find_baseline[motion.axis]) < FIND_AXIS_MIN_TRAVEL:
+			return
 		_track_capture_release(motion)
 		_on_capture_event(motion)
 
@@ -2021,6 +2188,7 @@ func _on_registry_devices_changed() -> void:
 			or (_capturing_generation > 0 and not _calibration_connection_matches(_capturing_device_id, _capturing_generation)):
 			_set_status(tr("The selected flight controller disconnected; remapping was cancelled."), true)
 			_capture_done(false, tr("The selected flight controller disconnected; remapping was cancelled."))
+	_update_axis_controls()
 	_update_action_controls()
 	_update_preview()
 
@@ -3418,6 +3586,10 @@ func _capture_done(ok := false, message := "") -> void:
 
 ## The capture state machine's reset, without reporting: the overlay closes unless a conflict question follows.
 func _end_capture_state() -> void:
+	# A cancelled Confirm OFF step (Learn axis / Move the control) owned focus inside the overlay; give it back to the
+	# row that started the capture so keyboard and gamepad users are never left without a focus owner.
+	var focus_return := _capture_button if is_instance_valid(_capture_button) else null
+	var overlay_had_focus := capture_overlay != null and is_inside_tree() 		and capture_overlay.is_ancestor_of(get_viewport().gui_get_focus_owner()) if get_viewport() != null else false
 	_axis_capture = null
 	if is_instance_valid(_axis_capture_dialog): _axis_capture_dialog.queue_free()
 	_axis_capture_dialog = null
@@ -3441,6 +3613,20 @@ func _end_capture_state() -> void:
 	_update_axis_controls()
 	_update_action_controls()
 	_update_aux_controls()
+	if overlay_had_focus or (is_inside_tree() and get_viewport().gui_get_focus_owner() == null):
+		_restore_capture_focus.call_deferred(focus_return)
+
+
+func _restore_capture_focus(target: Control) -> void:
+	if not is_inside_tree() or is_instance_valid(_assistant) or not _screen.visible:
+		return # the Setup assistant (or a covering screen) owns focus now
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused != null and focused.is_visible_in_tree():
+		return
+	for candidate: Control in [target, save_button]:
+		if is_instance_valid(candidate) and candidate.is_visible_in_tree() and candidate.focus_mode != Control.FOCUS_NONE 				and not (candidate is BaseButton and (candidate as BaseButton).disabled):
+			candidate.grab_focus()
+			return
 
 
 func _start_axis_capture(action_id: String, button: Button) -> void:
@@ -3457,7 +3643,7 @@ func _start_axis_capture(action_id: String, button: Button) -> void:
 	var text := tr("Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF.")
 	_open_axis_off_dialog(tr("Learn axis switch"), text)
 	_show_capture_overlay(tr("Learn axis for %s") % _target_caption("action:" + action_id), text)
-	capture_overlay.pause_countdown(true)
+	capture_overlay.show_confirm(tr("Confirm OFF"))
 	_update_action_controls()
 
 
@@ -3486,7 +3672,7 @@ func _start_aux_axis_capture(aux_name: String, button: Button) -> void:
 	var text := tr("Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF.") % caption
 	_open_axis_off_dialog(tr("Move the control"), text)
 	_show_capture_overlay(tr("Move the control for %s") % caption, text)
-	capture_overlay.pause_countdown(true)
+	capture_overlay.show_confirm(tr("Confirm OFF"))
 	_update_aux_controls()
 
 
@@ -3498,8 +3684,9 @@ func _open_axis_off_dialog(title: String, text: String) -> void:
 	_axis_capture_dialog.get_ok_button().text = tr("Confirm OFF")
 	_axis_capture_dialog.confirmed.connect(_confirm_axis_off)
 	_axis_capture_dialog.canceled.connect(_cancel_capture)
+	# UI-15-UX-06: the OFF step is confirmed in the in-workspace overlay (show_confirm); the dialog object only
+	# carries the confirmed/canceled contract and is never shown as a native window.
 	add_child(_axis_capture_dialog)
-	_axis_capture_dialog.popup_centered(Vector2i(540, 180))
 
 
 func _capture_axes() -> PackedFloat64Array:
@@ -3526,8 +3713,12 @@ func _confirm_axis_off() -> void:
 	_set_status(tr("Hold the switch at ON. Keep all other switches still."), false)
 	_axis_capture_phase = "on"
 	if capture_overlay.is_capturing():
+		capture_overlay.hide_confirm()
 		capture_overlay.set_prompt(tr("Hold the switch at ON. Keep all other switches still."))
 		capture_overlay.restart_countdown()
+	# The row's button keeps focus while the control is measured (as before the OFF step).
+	if is_instance_valid(_capture_button) and _capture_button.is_visible_in_tree():
+		_capture_button.grab_focus()
 
 
 func _sample_axis_capture(delta: float) -> void:
@@ -4218,8 +4409,8 @@ func _refresh_workspace() -> void:
 	# UI-15-UX-05: a compact caption (the device name is on its rail card and in the header).
 	var title := tr("LIVE INPUT")
 	var hint := tr("Move a stick or press a button: it lights up here and on its action.")
-	if _selected_section == "axes":
-		hint = tr("The curve shows the focused channel's response. Move a stick to see it live.")
+	if _selected_section == "axes" and _response_curve.get_parent() == workspace.context_box:
+		hint = "" # the response curve below the picture names its channel and explains itself
 	if keyboard:
 		hint = tr(KEYBOARD_READ_ONLY_NOTE) + " " + tr("Flight keys are marked; keys you hold light up.")
 	elif not bool(device.get("connected", false)):
@@ -4597,7 +4788,7 @@ func _update_status_info_button() -> void:
 ## UX-02 (A9): every per-row control names its action or channel, so assistive technology and the debug
 ## bridge never list dozens of identical "Clear", "Remap" or "Invert" entries.
 func _update_accessible_names() -> void:
-	for button: Button in [aux_help_info_button, device_summary_info_button, status_info_button]:
+	for button: Button in [aux_help_info_button, device_summary_info_button, status_info_button, show_all_vehicle_aux]:
 		if button != null:
 			button.tooltip_text = tr(str(button.get_meta("accessible_caption", "")))
 			button.accessibility_name = button.tooltip_text
@@ -5083,7 +5274,7 @@ func _offer_conflict(request: Dictionary) -> void:
 	capture_overlay.show_conflict({
 		"title": tr("Assign to %s") % target_caption,
 		"text": question,
-		"details": "%s\n%s" % [tr("Swap: %s takes the control %s had.") % [owner_caption, target_caption],
+		"details": "%s\n%s" % [_swap_detail(owner_caption, target_caption, request.get("previous")),
 			tr("Replace: %s loses this control.") % owner_caption],
 		"binding": request.binding, "family": _glyph_family(), "device": _device_for_id(_draft_flight_device_id),
 		"profile": _chip_profile(), "swap_reason": str(swap.get("reason", "")), "replace_reason": str(replace.get("reason", "")),
@@ -5091,10 +5282,23 @@ func _offer_conflict(request: Dictionary) -> void:
 	_set_status(question + " " + tr("Choose Swap, Replace or Cancel."), false)
 
 
+func _swap_detail(owner_caption: String, target_caption: String, previous: Variant) -> String:
+	var given := ""
+	if previous is Dictionary and str((previous as Dictionary).get("type", "unbound")) != "unbound":
+		given = _binding_caption(previous)
+	elif (previous is int or previous is float) and int(previous) >= 0:
+		given = tr("Axis %d") % int(previous)
+	if given.is_empty():
+		return tr("Swap: %s takes the control %s had.") % [owner_caption, target_caption]
+	return tr("Swap: %s gets %s, the control %s had.") % [owner_caption, given, target_caption]
+
+
 func _swap_candidate(target: String, owner: String, candidate: Dictionary, binding: Dictionary, previous: Variant) -> Dictionary:
 	var t := target.split(":")
 	var o := owner.split(":")
 	var profile := candidate.duplicate(true)
+	if _radio_navigation_owner(owner):
+		return {"reason": tr("Radio menu movement uses the calibrated roll and pitch controls.")}
 	if t[0] == "axis":
 		if o[0] != "axis" or int(previous) < 0:
 			return {"reason": tr("Only another flight channel can take an axis in exchange.")}
@@ -5133,9 +5337,16 @@ func _swap_candidate(target: String, owner: String, candidate: Dictionary, bindi
 	return _checked_binding_candidate(profile)
 
 
+## Radio navigation rows stay locked to the calibrated sticks: a conflict never rewrites them.
+func _radio_navigation_owner(owner: String) -> bool:
+	return str(_draft_profile.get("kind", "")) == "radio" and owner.begins_with("action:navigate_")
+
+
 func _replace_candidate(target: String, owner: String, candidate: Dictionary) -> Dictionary:
 	var o := owner.split(":")
 	var profile := candidate.duplicate(true)
+	if _radio_navigation_owner(owner):
+		return {"reason": tr("Radio menu movement uses the calibrated roll and pitch controls.")}
 	match o[0]:
 		"axis":
 			return {"reason": tr("Every flight channel needs its own axis.")}
@@ -5252,6 +5463,7 @@ func _start_find(button: Button) -> void:
 	_finding = true
 	_capturing_device_id = _draft_flight_device_id
 	_capturing_generation = _registry_generation(_capturing_device_id)
+	_find_baseline = _capture_axes()
 	_capture_button = button
 	_capture_target = "find"
 	if button != null and button.is_visible_in_tree():
@@ -5322,6 +5534,7 @@ func _find_by_event(event: InputEvent) -> void:
 	if focus_target != null and focus_target.is_visible_in_tree():
 		focus_target.grab_focus()
 		_ensure_whole_control_visible.call_deferred(focus_target)
+		_queue_mapping_focus_visibility()
 	_emit_capture_finished("find", true, "")
 
 

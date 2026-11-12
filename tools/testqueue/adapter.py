@@ -17,7 +17,11 @@ from tools.testqueue.common import inherited, write_json
 
 def prepare_history(preset, directory, request):
     """Preparation subprocesses also inherit the attempt's process containment."""
+    if ROOT != directory.resolve() / "source":
+        raise ValueError("adapter source must be inside its owned attempt directory")
     if preset in {"suite", "ci", "godtest", "capture"}:
+        if (ROOT / ".git").exists() or (ROOT / ".git").is_symlink():
+            raise ValueError("history destination must be new inside the owned attempt")
         history = directory / "history"
         subprocess.run(["git", "clone", "--no-checkout", "--no-hardlinks", request["source"], str(history)],
                        check=True, capture_output=True, timeout=300)

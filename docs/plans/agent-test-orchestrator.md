@@ -37,7 +37,8 @@ verification applies to the integrated working candidate, not that incomplete co
 
 Native Windows fixtures verify actual process lifetimes, including five competing
 rendered owners and retained orphan children. WSL fixtures cover the cooperative
-POSIX boundary. Existing debug/MCP (102 cases), GOD TEST (17), checked-runner (21)
+POSIX boundary. The admission suite passes 59 cases on each platform, with two
+Windows skips and four WSL skips. Existing debug/MCP (102 cases), GOD TEST (17), checked-runner (21)
 and Linux CI orchestration (125) fixtures pass with their platform-specific skips.
 The new admission suite also runs in the hosted scope job and local quick checks.
 

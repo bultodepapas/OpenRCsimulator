@@ -432,11 +432,18 @@ class Worker:
                         data["session"] = {key: value for key, value in private_session.items() if key != "token"}
                         self.store.update(job, attempt, "RUNNING", data)
                 lost_desktop = False
+                root_exit = process.poll()
+                failed_root = root_exit is not None and root_exit != 0
                 if not self.fixture and not payload["options"]["headless"] and time.monotonic() >= next_desktop_check:
                     lost_desktop = not desktop_ready()
                     next_desktop_check = time.monotonic() + 1
-                if canceled or time.monotonic() >= deadline or lost_desktop:
-                    reason = "CANCELED" if canceled else "INFRA_FAILED" if lost_desktop else "TIMED_OUT"
+                if canceled or time.monotonic() >= deadline or lost_desktop or failed_root:
+                    if canceled:
+                        reason = "CANCELED"
+                    elif lost_desktop:
+                        reason = "INFRA_FAILED"
+                    elif time.monotonic() >= deadline:
+                        reason = "TIMED_OUT"
                     if lost_desktop:
                         data["session_failure"] = "GUI_LOCKED_OR_UNAVAILABLE"
                     with self.lock:

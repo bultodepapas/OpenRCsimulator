@@ -13345,3 +13345,216 @@ msgstr "FLUGTASTEN"
 
 msgid "SHORTCUTS"
 msgstr "TASTENKÜRZEL"
+
+msgid "Detect"
+msgstr "Erkennen"
+
+msgid "Advanced"
+msgstr "Erweitert"
+
+msgid "Keep"
+msgstr "Behalten"
+
+msgid "Swap"
+msgstr "Tauschen"
+
+msgid "Control"
+msgstr "Bedienelement"
+
+msgid "%s is already used by %s."
+msgstr "%s wird bereits von %s genutzt."
+
+msgid "%s is not assigned."
+msgstr "%s ist nicht zugewiesen."
+
+msgid "%s is unavailable: %s"
+msgstr "%s ist nicht verfügbar: %s"
+
+msgid "%s is used by %s."
+msgstr "%s wird von %s genutzt."
+
+msgid "%s keeps its axis. Nothing changed."
+msgstr "%s behält seine Achse. Nichts wurde geändert."
+
+msgid "%s no longer uses this control."
+msgstr "%s nutzt dieses Bedienelement nicht mehr."
+
+msgid "%s took the previous control."
+msgstr "%s hat das vorherige Bedienelement übernommen."
+
+msgid "%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it."
+msgstr "%s nutzt Achse %d (Aus %+.2f, Ein %+.2f). Speichere das Profil, um es zu behalten."
+
+msgid "%s uses axis %d. Save the profile to keep it."
+msgstr "%s nutzt Achse %d. Speichere das Profil, um es zu behalten."
+
+msgid "Actions are back to their defaults in the draft. Save keeps them; Cancel discards them."
+msgstr "Die Aktionen sind im Entwurf wieder auf Standard. Speichern behält sie; Abbrechen verwirft sie."
+
+msgid "Actions were not reset: %s"
+msgstr "Die Aktionen wurden nicht zurückgesetzt: %s"
+
+msgid "Advanced: edit axis numbers"
+msgstr "Erweitert: Achsnummern bearbeiten"
+
+msgid "Assign to %s"
+msgstr "%s zuweisen"
+
+msgid "Axis %d is already used by %s. Nothing changed."
+msgstr "Achse %d wird bereits von %s genutzt. Nichts wurde geändert."
+
+msgid "Calibrate the radio again before saving."
+msgstr "Kalibriere den Sender vor dem Speichern erneut."
+
+msgid "Choose Swap, Replace or Cancel."
+msgstr "Wähle Tauschen, Ersetzen oder Abbrechen."
+
+msgid "Connect the flight controller to detect its axes."
+msgstr "Schließe den Flug-Controller an, um seine Achsen zu erkennen."
+
+msgid "Connect the flight controller to measure this control."
+msgstr "Schließe den Flug-Controller an, um dieses Bedienelement zu messen."
+
+msgid "Detect %s"
+msgstr "%s erkennen"
+
+msgid "Detect %s axis"
+msgstr "Achse für %s erkennen"
+
+msgid "During a flight, recalibrate this radio from Pause → Controls."
+msgstr "Kalibriere diesen Sender während eines Flugs über Pause → Steuerung neu."
+
+msgid "Every flight channel needs its own axis."
+msgstr "Jeder Flugkanal braucht seine eigene Achse."
+
+msgid "Extra channel was not changed: %s"
+msgstr "Der Zusatzkanal wurde nicht geändert: %s"
+
+msgid "Find control"
+msgstr "Bedienelement finden"
+
+msgid "Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF."
+msgstr "Halte das Bedienelement für %s auf AUS und bestätige. Halte die Flugknüppel still. Bewege es dann auf EIN und halte es, bis du zurück auf AUS sollst."
+
+msgid "Invalid or interrupted input. Nothing changed."
+msgstr "Ungültige oder unterbrochene Eingabe. Nichts wurde geändert."
+
+msgid "It moved the other way, so %s is inverted."
+msgstr "Es bewegte sich andersherum, daher ist %s umgekehrt."
+
+msgid "LIVE INPUT"
+msgstr "LIVE-EINGABE"
+
+msgid "More than one axis moved. Move only the stick you want, then try again."
+msgstr "Mehr als eine Achse hat sich bewegt. Bewege nur den gewünschten Knüppel und versuche es erneut."
+
+msgid "Move or press the control for %s…"
+msgstr "Bewege oder drücke das Bedienelement für %s …"
+
+msgid "Move the control"
+msgstr "Bedienelement bewegen"
+
+msgid "Move the control for %s"
+msgstr "Bedienelement für %s bewegen"
+
+msgid "Move the control you want for Throttle to FULL and hold it."
+msgstr "Bewege das gewünschte Bedienelement für Gas auf VOLL und halte es."
+
+msgid "Move the stick you want for Pitch fully BACK (toward you) and hold it."
+msgstr "Bewege den gewünschten Knüppel für Nicken ganz nach HINTEN (zu dir) und halte ihn."
+
+msgid "Move the stick you want for Roll fully RIGHT and hold it."
+msgstr "Bewege den gewünschten Knüppel für Rollen ganz nach RECHTS und halte ihn."
+
+msgid "Move the stick you want for Yaw fully RIGHT and hold it."
+msgstr "Bewege den gewünschten Knüppel für Gieren ganz nach RECHTS und halte ihn."
+
+msgid "New controller detected. Choose Set up this device to configure it step by step."
+msgstr "Neuer Controller erkannt. Wähle Dieses Gerät einrichten, um ihn Schritt für Schritt einzurichten."
+
+msgid "No input was detected in time. Nothing changed."
+msgstr "Keine Eingabe rechtzeitig erkannt. Nichts wurde geändert."
+
+msgid "Nothing changed."
+msgstr "Nichts wurde geändert."
+
+msgid "Only another flight channel can take an axis in exchange."
+msgstr "Nur ein anderer Flugkanal kann im Tausch eine Achse übernehmen."
+
+msgid "Press or move any control to find what it does."
+msgstr "Drücke oder bewege ein Bedienelement, um zu sehen, was es tut."
+
+msgid "Replace is not available here."
+msgstr "Ersetzen ist hier nicht verfügbar."
+
+msgid "Replace: %s loses this control."
+msgstr "Ersetzen: %s verliert dieses Bedienelement."
+
+msgid "Reset %s"
+msgstr "%s zurücksetzen"
+
+msgid "Reset all actions"
+msgstr "Alle Aktionen zurücksetzen"
+
+msgid "Reset category"
+msgstr "Kategorie zurücksetzen"
+
+msgid "Reset every action to its default control? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "Jede Aktion auf ihr Standard-Bedienelement zurücksetzen? Zurück und Pause behalten immer ein Bedienelement. Die Änderung bleibt bis zum Speichern im Entwurf."
+
+msgid "Reset the %s actions shown to their default controls? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "Die angezeigten %s-Aktionen auf ihre Standard-Bedienelemente zurücksetzen? Zurück und Pause behalten immer ein Bedienelement. Die Änderung bleibt bis zum Speichern im Entwurf."
+
+msgid "Reset to defaults"
+msgstr "Auf Standard zurücksetzen"
+
+msgid "Set up this device…"
+msgstr "Dieses Gerät einrichten …"
+
+msgid "Setup cancelled. The previous draft is back."
+msgstr "Einrichtung abgebrochen. Der vorherige Entwurf ist wiederhergestellt."
+
+msgid "Step by step: controller type, stick mode, calibration, a live test and the main switches."
+msgstr "Schritt für Schritt: Controllertyp, Knüppelmodus, Kalibrierung, Live-Test und die wichtigsten Schalter."
+
+msgid "Swap: %s gets %s, the control %s had."
+msgstr "Tauschen: %s erhält %s, das Bedienelement von %s."
+
+msgid "Swap: %s takes the control %s had."
+msgstr "Tauschen: %s übernimmt das Bedienelement von %s."
+
+msgid "The %s extra channel cannot use that kind of control."
+msgstr "Der Zusatzkanal %s kann diese Art von Bedienelement nicht nutzen."
+
+msgid "The window lost focus; detection was cancelled."
+msgstr "Das Fenster hat den Fokus verloren; die Erkennung wurde abgebrochen."
+
+msgid "This controller is recognised as a gamepad, so its type cannot be changed."
+msgstr "Dieser Controller wird als Gamepad erkannt; sein Typ kann nicht geändert werden."
+
+msgid "Waiting for input…"
+msgstr "Warte auf Eingabe …"
+
+msgid "cancels. Listening stops after %d seconds without input."
+msgstr "bricht ab. Die Erfassung endet nach %d Sekunden ohne Eingabe."
+
+msgid "“%s” cannot take that kind of control. Use Replace or Cancel."
+msgstr "„%s“ kann diese Art von Bedienelement nicht übernehmen. Nutze Ersetzen oder Abbrechen."
+
+msgid "“%s” has no control to give in exchange."
+msgstr "„%s“ hat kein Bedienelement zum Tauschen."
+
+msgid "“%s” must always keep a control."
+msgstr "„%s“ muss immer ein Bedienelement behalten."
+
+msgid "Joysticks are set up with Detect in Flight axes; skip this step."
+msgstr "Joysticks richtest du mit Erkennen unter Flugachsen ein; überspringe diesen Schritt."
+
+msgid "A radio's directions come from calibration. Reverse a channel on the transmitter, or calibrate again."
+msgstr "Die Richtungen eines Senders stammen aus der Kalibrierung. Kehre einen Kanal am Sender um oder kalibriere erneut."
+
+msgid "Calibration could not start. Select a connected radio with a radio profile."
+msgstr "Die Kalibrierung konnte nicht starten. Wähle einen verbundenen Sender mit Senderprofil."
+
+msgid "All vehicles"
+msgstr "Alle Fahrzeuge"

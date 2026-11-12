@@ -15,6 +15,10 @@ const PREVIEW_BUTTONS := 24
 var setup: Node
 var assistant: Object
 var _error := ""
+## Reverse in the assistant means "opposite to the correct setup", not the profile's raw invert flag: gamepad
+## presets already invert some axes (Mode 2 throttle: stick up reads negative) and calibration measures a radio's
+## direction. The baseline is the preset default (gamepads) or the draft once kind/preset/calibration settle.
+var _baseline_invert: Dictionary = {}
 
 
 func _init(owner_setup: Node) -> void:
@@ -47,6 +51,11 @@ func set_profile_kind(kind: String) -> bool:
 	if str(setup.current_profile().get("kind", "")) == kind:
 		return true
 	var picker: OptionButton = setup.profile_kind_picker
+	if not picker.visible:
+		# A recognised device keeps its kind (controller contract): only unknown devices and joysticks choose.
+		var device: Dictionary = setup._device_for_id(setup.selected_flight_device_id())
+		_error = tr("This controller is recognised as a gamepad, so its type cannot be changed.") 			if str(device.get("kind", "")) == "gamepad" else tr("This controller type could not be applied.")
+		return false
 	for index in picker.item_count:
 		var choice_id := picker.get_item_id(index)
 		for choice: Dictionary in setup.get_script().get_script_constant_map().get("PROFILE_KIND_CHOICES", []):
@@ -54,6 +63,7 @@ func set_profile_kind(kind: String) -> bool:
 				picker.select(index)
 				setup._on_profile_kind_selected(index)
 				if str(setup.current_profile().get("kind", "")) == kind:
+					reset_reverse_baseline()
 					return true
 				_error = tr("This controller type could not be applied.")
 				return false
@@ -75,13 +85,23 @@ func apply_preset(preset_id: String) -> bool:
 	if str(setup.current_profile().get("preset", "")) != preset_id:
 		_error = tr("This stick layout could not be applied.")
 		return false
+	reset_reverse_baseline()
 	return true
 
 
 func request_calibration() -> bool:
 	_error = ""
-	if setup._is_capture_active() or setup.selected_flight_device_id() < 0:
+	var device_id: int = setup.selected_flight_device_id()
+	if setup._is_capture_active() or device_id < 0 or not bool(setup._device_for_id(device_id).get("connected", false)):
 		_error = tr("Calibration could not start.")
+		return false
+	if str(setup._draft_profile.get("kind", "")) != "radio":
+		# The calibration wizard measures radios only; a joystick's axes are assigned with Detect in Flight axes.
+		_error = tr("Joysticks are set up with Detect in Flight axes; skip this step.")
+		return false
+	if setup.calibration_saves_first and setup.radio_mapping_verified(setup._draft_profile):
+		# During a flight a verified radio recalibrates from Pause (it saves first and leaves Controls).
+		_error = tr("During a flight, recalibrate this radio from Pause → Controls.")
 		return false
 	setup.calibration_requested.emit()
 	return true
@@ -89,20 +109,22 @@ func request_calibration() -> bool:
 
 func preview() -> Dictionary:
 	var device_id: int = setup.selected_flight_device_id()
-	var draft: Dictionary = setup.current_profile()
+	var draft: Dictionary = setup._draft_profile # read only: no per-poll deep copy
 	# A fresh array each poll: the assistant compares the previous sample with the new one.
 	var buttons: Array[int] = []
 	var result := {"buttons": buttons, "inverted": {}}
 	var kind := str(draft.get("kind", "gamepad"))
 	var throttle_mode := str(draft.get("throttle_mode", "stick_rate" if kind == "gamepad" else "radio_absolute"))
 	result["throttle_centered"] = throttle_mode == "stick_rate"
+	# A radio's direction comes from its calibration; reversing it here would void that calibration.
+	result["reverse_available"] = kind != "radio"
 	for channel_name in FLIGHT_CHANNELS:
 		var channel: Variant = draft.get(channel_name, {})
 		var value := 0.0
 		if channel is Dictionary and device_id >= 0:
 			value = ControllerProfile.channel_value(setup._read_axis_preview(device_id, int(channel.get("axis", -1))), channel_name, draft)
 		result[channel_name] = value
-		result.inverted[channel_name] = bool(channel.get("invert", false)) if channel is Dictionary else false
+		result.inverted[channel_name] = _invert_flag(draft, channel_name) != _baseline(draft, channel_name)
 	if device_id >= 0:
 		for button in PREVIEW_BUTTONS:
 			if setup._read_button_preview(device_id, button):
@@ -113,7 +135,10 @@ func preview() -> Dictionary:
 func set_channel_inverted(channel: String, inverted: bool) -> void:
 	if channel not in FLIGHT_CHANNELS:
 		return
-	setup._on_axis_invert(inverted, channel)
+	var draft: Dictionary = setup._draft_profile
+	if str(draft.get("kind", "")) == "radio":
+		return # see reverse_available: the next preview restores the switch
+	setup._on_axis_invert(_baseline(draft, channel) != inverted, channel)
 	setup._update_axis_controls()
 	setup.draft_changed.emit()
 
@@ -131,7 +156,13 @@ func binding_for(id: String) -> Dictionary:
 
 func capture(id: String) -> bool:
 	_error = ""
-	if not setup.has_method("start_capture_for") or not setup.start_capture_for(id):
+	if not setup.has_method("start_capture_for"):
+		_error = tr("Assignment could not start.")
+		return false
+	# The screen becomes active first so its capture can take focus and show its overlay and conflict question.
+	setup._assistant_capture_started()
+	if not setup.start_capture_for(id):
+		setup._assistant_capture_aborted()
 		_error = tr("Assignment could not start.")
 		return false
 	return true
@@ -150,3 +181,24 @@ func save() -> bool:
 func last_error() -> String:
 	return _error
 
+
+## Forget the Reverse baseline after the kind, preset or calibration changed.
+func reset_reverse_baseline() -> void:
+	_baseline_invert.clear()
+
+
+func _invert_flag(draft: Dictionary, channel_name: String) -> bool:
+	var channel: Variant = draft.get(channel_name, {})
+	return bool(channel.get("invert", false)) if channel is Dictionary else false
+
+
+func _baseline(draft: Dictionary, channel_name: String) -> bool:
+	if _baseline_invert.is_empty():
+		var reference := draft
+		if str(draft.get("kind", "")) == "gamepad":
+			var defaults: Dictionary = ControllerProfile.defaults("gamepad", str(draft.get("preset", "mode2")))
+			if not defaults.is_empty():
+				reference = defaults
+		for name in FLIGHT_CHANNELS:
+			_baseline_invert[name] = _invert_flag(reference, name)
+	return bool(_baseline_invert.get(channel_name, false))

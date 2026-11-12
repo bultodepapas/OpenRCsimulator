@@ -12400,3 +12400,216 @@ msgstr "飞行按键"
 
 msgid "SHORTCUTS"
 msgstr "快捷键"
+
+msgid "Detect"
+msgstr "检测"
+
+msgid "Advanced"
+msgstr "高级"
+
+msgid "Keep"
+msgstr "保留"
+
+msgid "Swap"
+msgstr "交换"
+
+msgid "Control"
+msgstr "控件"
+
+msgid "%s is already used by %s."
+msgstr "%s已被%s使用。"
+
+msgid "%s is not assigned."
+msgstr "%s未分配。"
+
+msgid "%s is unavailable: %s"
+msgstr "%s不可用：%s"
+
+msgid "%s is used by %s."
+msgstr "%s由%s使用。"
+
+msgid "%s keeps its axis. Nothing changed."
+msgstr "%s保留其轴。未作任何更改。"
+
+msgid "%s no longer uses this control."
+msgstr "%s不再使用此控件。"
+
+msgid "%s took the previous control."
+msgstr "%s接管了之前的控件。"
+
+msgid "%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it."
+msgstr "%s使用轴 %d（关 %+.2f，开 %+.2f）。保存配置以保留。"
+
+msgid "%s uses axis %d. Save the profile to keep it."
+msgstr "%s使用轴 %d。保存配置以保留。"
+
+msgid "Actions are back to their defaults in the draft. Save keeps them; Cancel discards them."
+msgstr "草稿中的操作已恢复默认。保存将保留，取消将放弃。"
+
+msgid "Actions were not reset: %s"
+msgstr "操作未重置：%s"
+
+msgid "Advanced: edit axis numbers"
+msgstr "高级：编辑轴编号"
+
+msgid "Assign to %s"
+msgstr "分配给%s"
+
+msgid "Axis %d is already used by %s. Nothing changed."
+msgstr "轴 %d 已被%s使用。未作任何更改。"
+
+msgid "Calibrate the radio again before saving."
+msgstr "保存前请重新校准遥控器。"
+
+msgid "Choose Swap, Replace or Cancel."
+msgstr "请选择交换、替换或取消。"
+
+msgid "Connect the flight controller to detect its axes."
+msgstr "请连接飞行控制器以检测其轴。"
+
+msgid "Connect the flight controller to measure this control."
+msgstr "请连接飞行控制器以测量此控件。"
+
+msgid "Detect %s"
+msgstr "检测%s"
+
+msgid "Detect %s axis"
+msgstr "检测%s轴"
+
+msgid "During a flight, recalibrate this radio from Pause → Controls."
+msgstr "飞行中请通过“暂停 → 控制设置”重新校准此遥控器。"
+
+msgid "Every flight channel needs its own axis."
+msgstr "每个飞行通道都需要自己的轴。"
+
+msgid "Extra channel was not changed: %s"
+msgstr "额外通道未更改：%s"
+
+msgid "Find control"
+msgstr "查找控件"
+
+msgid "Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF."
+msgstr "将%s的控件保持在关闭位置，然后确认。不要移动飞行摇杆。接着拨到开启并保持，直到提示返回关闭。"
+
+msgid "Invalid or interrupted input. Nothing changed."
+msgstr "输入无效或已中断。未作任何更改。"
+
+msgid "It moved the other way, so %s is inverted."
+msgstr "移动方向相反，因此%s已反向。"
+
+msgid "LIVE INPUT"
+msgstr "实时输入"
+
+msgid "More than one axis moved. Move only the stick you want, then try again."
+msgstr "有多个轴在移动。请只移动你想要的摇杆，然后重试。"
+
+msgid "Move or press the control for %s…"
+msgstr "移动或按下用于%s的控件…"
+
+msgid "Move the control"
+msgstr "移动控件"
+
+msgid "Move the control for %s"
+msgstr "移动%s的控件"
+
+msgid "Move the control you want for Throttle to FULL and hold it."
+msgstr "将你想用于油门的控件推到最大并保持。"
+
+msgid "Move the stick you want for Pitch fully BACK (toward you) and hold it."
+msgstr "将你想用于俯仰的摇杆拉到最后（朝向你）并保持。"
+
+msgid "Move the stick you want for Roll fully RIGHT and hold it."
+msgstr "将你想用于横滚的摇杆推到最右并保持。"
+
+msgid "Move the stick you want for Yaw fully RIGHT and hold it."
+msgstr "将你想用于偏航的摇杆推到最右并保持。"
+
+msgid "New controller detected. Choose Set up this device to configure it step by step."
+msgstr "检测到新控制器。选择“设置此设备”即可逐步配置。"
+
+msgid "No input was detected in time. Nothing changed."
+msgstr "未及时检测到输入。未作任何更改。"
+
+msgid "Nothing changed."
+msgstr "未作任何更改。"
+
+msgid "Only another flight channel can take an axis in exchange."
+msgstr "只有其他飞行通道才能交换接收轴。"
+
+msgid "Press or move any control to find what it does."
+msgstr "按下或移动任意控件即可查看其作用。"
+
+msgid "Replace is not available here."
+msgstr "此处无法替换。"
+
+msgid "Replace: %s loses this control."
+msgstr "替换：%s将失去此控件。"
+
+msgid "Reset %s"
+msgstr "重置%s"
+
+msgid "Reset all actions"
+msgstr "重置所有操作"
+
+msgid "Reset category"
+msgstr "重置类别"
+
+msgid "Reset every action to its default control? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "将每个操作重置为默认控件吗？返回和暂停始终保留控件。更改在保存前一直是草稿。"
+
+msgid "Reset the %s actions shown to their default controls? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "将显示的%s操作重置为默认控件吗？返回和暂停始终保留控件。更改在保存前一直是草稿。"
+
+msgid "Reset to defaults"
+msgstr "恢复默认"
+
+msgid "Set up this device…"
+msgstr "设置此设备…"
+
+msgid "Setup cancelled. The previous draft is back."
+msgstr "设置已取消。已恢复之前的草稿。"
+
+msgid "Step by step: controller type, stick mode, calibration, a live test and the main switches."
+msgstr "逐步设置：控制器类型、摇杆模式、校准、实时测试和主要开关。"
+
+msgid "Swap: %s gets %s, the control %s had."
+msgstr "交换：%s获得%s，即%s原来的控件。"
+
+msgid "Swap: %s takes the control %s had."
+msgstr "交换：%s接管%s原来的控件。"
+
+msgid "The %s extra channel cannot use that kind of control."
+msgstr "额外通道 %s 无法使用该类型的控件。"
+
+msgid "The window lost focus; detection was cancelled."
+msgstr "窗口失去焦点，检测已取消。"
+
+msgid "This controller is recognised as a gamepad, so its type cannot be changed."
+msgstr "此控制器已被识别为手柄，因此无法更改类型。"
+
+msgid "Waiting for input…"
+msgstr "等待输入…"
+
+msgid "cancels. Listening stops after %d seconds without input."
+msgstr "取消。%d 秒无输入后停止监听。"
+
+msgid "“%s” cannot take that kind of control. Use Replace or Cancel."
+msgstr "“%s”无法接收该类型的控件。请使用替换或取消。"
+
+msgid "“%s” has no control to give in exchange."
+msgstr "“%s”没有可交换的控件。"
+
+msgid "“%s” must always keep a control."
+msgstr "“%s”必须始终保留一个控件。"
+
+msgid "Joysticks are set up with Detect in Flight axes; skip this step."
+msgstr "摇杆请在“飞行轴”中用“检测”设置；请跳过此步骤。"
+
+msgid "A radio's directions come from calibration. Reverse a channel on the transmitter, or calibrate again."
+msgstr "遥控器的方向由校准决定。请在遥控器上反向通道，或重新校准。"
+
+msgid "Calibration could not start. Select a connected radio with a radio profile."
+msgstr "无法开始校准。请选择已连接且使用遥控器配置的遥控器。"
+
+msgid "All vehicles"
+msgstr "所有载具"

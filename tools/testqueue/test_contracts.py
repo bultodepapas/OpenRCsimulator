@@ -22,6 +22,13 @@ from tools.testqueue.worker import Worker
 
 
 class ContractFixture(unittest.TestCase):
+    def test_inherited_cleanup_requires_a_retained_owned_process(self):
+        from tools.debug import debugctl
+        with mock.patch.object(debugctl.admission, "enabled", return_value=True), mock.patch.object(debugctl.admission, "inherited", return_value=True), mock.patch.dict(debugctl._OWNED_PROCESSES, {}, clear=True), mock.patch.object(debugctl.subprocess, "run") as command:
+            with self.assertRaisesRegex(ValueError, "ownership"):
+                debugctl.kill_group(123456)
+        command.assert_not_called()
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="openrc-contracts-")
         self.addCleanup(self.temp.cleanup)

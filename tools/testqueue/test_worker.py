@@ -59,9 +59,10 @@ while not (d / 'release-child').exists() and time.monotonic() < until:
     until = time.monotonic() + 5
     while not (directory / "child-start.json").exists() and time.monotonic() < until:
         time.sleep(0.02)
-    (directory / "verdict.json").write_text(json.dumps({"ok": True, "complete": True}))
+    failed = owner.endswith("-failed")
+    (directory / "verdict.json").write_text(json.dumps({"ok": not failed, "complete": True}))
     (directory / "launcher-returning").write_text("yes")
-    sys.exit(0)
+    sys.exit(7 if failed else 0)
 
 if owner.startswith("headless"):
     (root / (owner + ".ready")).write_text("yes")
@@ -347,6 +348,16 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(status.get("outcome"), "CANCELED", status)
         self.assertEqual(status.get("cleanup"), "CONFIRMED")
         self.assertEqual(self.worker.store.db.execute("SELECT COUNT(*) FROM claims").fetchone()[0], 0)
+
+    def test_failed_adapter_cleans_its_surviving_child(self):
+        accepted = self._submit("orphan-failed")
+        status = self._finish(accepted["job"])
+        self.assertEqual(status.get("outcome"), "TEST_FAILED", status)
+        self.assertEqual(status.get("runner_exit_code"), 7)
+        self.assertEqual(status.get("cleanup"), "CONFIRMED")
+        directory = self.worker.root / "attempts" / status["attempt"]
+        self.assertTrue((directory / "child-start.json").exists())
+        self.assertFalse((directory / "child-end.json").exists())
 
     def test_external_simulator_appearing_during_preparation_prevents_start(self):
         self.worker.draining = True

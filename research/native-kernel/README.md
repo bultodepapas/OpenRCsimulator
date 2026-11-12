@@ -394,4 +394,6 @@ python research/native-kernel/build_windows.py --install-app      # beside the L
 
 The Windows installation uses `openrc_native_kernel_windows.gdextension` and `build-receipt-windows.json`; the
 loader checks the exact `Godot_v4.8-beta2_win64.exe`, the descriptor, binary and mirrored sources like Linux.
-`--define` diagnostic builds are never installable. Release packages remain Linux-only.
+`--define` diagnostic builds are never installable. Release packages remain Linux-only. CI job
+`native-kernel-windows` repeats the build, every gate and the native production markers with the pinned nuwen
+MinGW archive (informational until it has run green).

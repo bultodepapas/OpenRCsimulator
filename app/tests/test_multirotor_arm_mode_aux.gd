@@ -237,6 +237,25 @@ func _explicit_arm_wins() -> void:
 	_motion(input, 5, 1.0)
 	s = input.sample(DT, true)
 	_check("Arm re-arms after OFF then ON", s.pilot[FC.IN_ARM] == 1.0)
+	# Good Enemy finding: a toggle latch set before an Arm switch was bound must not come back when it is unbound
+	# again under the same profile id (Pause → Controls → Save keeps the source key).
+	_reset_devices()
+	input = _seamed()
+	var plain := _radio_profile({})
+	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, plain)
+	_keys.arm = true
+	input.sample(DT, true)
+	_keys.arm = false
+	s = input.sample(DT, true)
+	_check("the E key toggles the latch while no arm switch is bound", s.pilot[FC.IN_ARM] == 1.0, str(s.raw))
+	var with_arm := plain.duplicate(true)
+	with_arm["aux"] = {"arm": _axis(5)}
+	input.radio.use_profile(with_arm, "calibrated")
+	s = input.sample(DT, true)
+	_check("binding an arm switch takes over from the latch", s.raw.arm_source == "switch:arm" and s.pilot[FC.IN_ARM] == 0.0)
+	input.radio.use_profile(plain, "calibrated")
+	s = input.sample(DT, true)
+	_check("unbinding it again does not resurrect the old latch", s.raw.arm_source == "toggle" and s.pilot[FC.IN_ARM] == 0.0, str(s.raw))
 
 
 func _flight_mode_switch() -> void:

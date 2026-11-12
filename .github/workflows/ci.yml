@@ -450,6 +450,114 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  native-kernel-windows:
+    needs: scope
+    if: needs.scope.outputs.app == 'true'
+    # NK-4: informational until it has run green on the hosted runner; not yet a release dependency.
+    name: NK-4 native kernel qualification (Windows)
+    runs-on: windows-2025
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    env:
+      OPENRC_NK_TOOL_ROOT: ${{ github.workspace }}/tmp/native-kernel-windows
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            .tools/Godot_v*_win64*.exe
+            .tools/Godot_v*_win64.exe.sha512
+            .tools/Godot_v*_win64.exe.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - name: Install the pinned MinGW-w64 toolchain (nuwen components 20.0, g++ 15.2.0, mingw-w64 11.0.1)
+        shell: pwsh
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP 'components-20.0.7z'
+          Invoke-WebRequest -Uri 'https://nuwen.net/files/mingw/components-20.0.7z' -OutFile $archive -MaximumRetryCount 3 -RetryIntervalSec 15
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $archive).Hash.ToLowerInvariant()
+          if ($hash -ne '561d873b7f95dbb39a34b7ab00050dc6028808310a847721a8aea5e5b0bff1c9') { throw "MinGW archive hash mismatch: $hash" }
+          $root = Join-Path $env:RUNNER_TEMP 'nk4-mingw'
+          7z x $archive "-o$root" -y | Out-Null
+          $dir = Join-Path $root 'components-20.0'
+          foreach ($inner in (Get-ChildItem -LiteralPath $dir -Filter '*.7z')) { 7z x $inner.FullName "-o$dir" -y | Out-Null }
+          "$dir\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          "C_INCLUDE_PATH=$dir\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "CPLUS_INCLUDE_PATH=$dir\include" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Import project resources with checked diagnostics
+        run: |
+          g++ --version
+          python tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk4-ci/checks --label nk4-import -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
+      - name: Build the pinned native stage and the separate mutation control
+        run: |
+          mkdir -p tmp/nk4-ci
+          python research/native-kernel/build_windows.py --jobs 2 2>&1 | tee tmp/nk4-ci/build-output.log
+          python research/native-kernel/build_windows.py --jobs 2 --mutant 2>&1 | tee tmp/nk4-ci/build-mutant-output.log
+      - name: Run every required native evidence gate
+        run: |
+          python - "$(app/get-godot.sh)" <<'PY'
+          import importlib.util, json, shlex, subprocess, sys
+          from pathlib import Path
+          root = Path.cwd()
+          spec = importlib.util.spec_from_file_location("nk4_ci_builder", root / "research/native-kernel/build_windows.py")
+          windows = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(windows)
+          builder = windows.nk
+          tool_root = Path(windows.os.environ["OPENRC_NK_TOOL_ROOT"]).resolve()
+          if set(builder.VERIFICATIONS) != set(builder.ORACLE_SCRIPTS) or set(builder.VERIFICATIONS) != set(builder.ORACLE_ARGUMENTS):
+              raise SystemExit("The required evidence roster and oracle commands differ")
+          logs = root / "tmp/nk4-ci/oracles"
+          logs.mkdir(parents=True, exist_ok=True)
+          for key in builder.VERIFICATIONS:
+              options = shlex.split(builder.ORACLE_ARGUMENTS[key])
+              command = [sys.executable, str(root / "research/native-kernel/run.py"), "--godot", sys.argv[1],
+                         "--script", builder.ORACLE_SCRIPTS[key], *options, "--timeout", "2400"]
+              print(f"Running {key}: {shlex.join(command)}", flush=True)
+              with (logs / f"{key}.log").open("w", encoding="utf-8") as output:
+                  result = subprocess.run(command, cwd=root, stdout=output, stderr=subprocess.STDOUT)
+              print((logs / f"{key}.log").read_text(encoding="utf-8"), end="", flush=True)
+              result.check_returncode()
+          receipt = json.loads((tool_root / "build-receipt.json").read_text(encoding="utf-8"))
+          sources = builder.mirrored_sources()
+          for key, pattern in builder.VERIFICATIONS.items():
+              proof = windows.find_verification(tool_root, key, pattern, receipt["binary_sha256"], sources)
+              expected = "fail" if key == "negative_control" else "pass"
+              if proof["verdict"] != expected:
+                  raise SystemExit(f"Unexpected {key} verdict: {proof}")
+              print(f"Accepted {key}: {proof}", flush=True)
+          PY
+      - name: Install the verified library for production-path tests
+        run: python research/native-kernel/build_windows.py --install-app 2>&1 | tee tmp/nk4-ci/install-output.log
+      - name: Require installed native stage, session, replay and helicopter branches
+        run: |
+          godot="$(app/get-godot.sh)"
+          python tools/godot/run_checked.py --timeout 180 --out-dir tmp/nk4-ci/checks --label nk4-native-stage \
+            --require-text 'NK3_NATIVE_STAGE_NATIVE verdict=pass' -- \
+            "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_stage.gd
+          python tools/godot/run_checked.py --timeout 240 --out-dir tmp/nk4-ci/checks --label nk4-native-session \
+            --require-text 'NK3_NATIVE_SESSION_NATIVE verdict=pass' -- \
+            "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_session.gd
+          python tools/godot/run_checked.py --timeout 180 --out-dir tmp/nk4-ci/checks --label nk4-native-replay \
+            --require-text 'NK3_NATIVE_REPLAY_NATIVE verdict=pass' -- \
+            "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_replay.gd
+          python tools/godot/run_checked.py --timeout 240 --out-dir tmp/nk4-ci/checks --label nk4-native-helicopter \
+            --require-text 'NK3_NATIVE_HELICOPTER_NATIVE verdict=pass' -- \
+            "$godot" --headless --path app --audio-driver Dummy --script res://tests/test_native_helicopter_session.gd
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: nk4-native-windows-diagnostics
+          path: |
+            tmp/nk4-ci/
+            tmp/native-kernel-windows/build*.log
+            tmp/native-kernel-windows/*.json
+            tmp/native-kernel-windows/checks/
+            app/native/kernel/build-receipt-windows.json
+          if-no-files-found: ignore
+          retention-days: 7
+
   visuals:
     needs: scope
     if: needs.scope.outputs.app == 'true'

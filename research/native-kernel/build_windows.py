@@ -124,7 +124,9 @@ def find_verification(tool_root: Path, key: str, pattern: str, binary_sha256: st
                 current = sources.get(relative) if relative in sources else nk.sha256_file(file)
                 if value != current:
                     raise ValueError("oracle source changed")
-            if any(data["harness_sources"].get(name) != nk.sha256_file(ROOT / name) for name in harness):
+            # run.py records repository-relative keys with the host separator (backslashes on Windows).
+            recorded = {str(name).replace("\\", "/"): digest for name, digest in data["harness_sources"].items()}
+            if any(recorded.get(name) != nk.sha256_file(ROOT / name) for name in harness):
                 continue
             for name, digest in data["harness_sources"].items():
                 file = (ROOT / name).resolve()

@@ -57,6 +57,7 @@ var message := ""
 ## Increases on every connection change or source switch; the controller drops authority on a new generation.
 var source_generation := 0
 var _arm_latch := false
+var _last_arm_channel := ""
 var _mode := FC.FLIGHT_ANGLE
 var _arm_input_held := false
 var _mode_input_held := false
@@ -310,6 +311,11 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	var mode_pressed := bool(keys.get("mode", false)) or button_mode
 	var arm_channel := arm_aux()
 	var mode_switch := mode_from_switch()
+	# A changed arm source (a switch bound or unbound in Controls) starts from OFF: a latch toggled earlier must not
+	# reappear as an arm level, and the controller then needs its own fresh OFF -> ON at low throttle.
+	if arm_channel != _last_arm_channel:
+		_last_arm_channel = arm_channel
+		_arm_latch = false
 	if integrate and arm_pressed and not _arm_input_held and arm_channel.is_empty():
 		_arm_latch = not _arm_latch
 	if integrate and mode_pressed and not _mode_input_held and not mode_switch:

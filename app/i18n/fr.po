@@ -13372,3 +13372,216 @@ msgstr "TOUCHES DE VOL"
 
 msgid "SHORTCUTS"
 msgstr "RACCOURCIS"
+
+msgid "Detect"
+msgstr "Détecter"
+
+msgid "Advanced"
+msgstr "Avancé"
+
+msgid "Keep"
+msgstr "Garder"
+
+msgid "Swap"
+msgstr "Échanger"
+
+msgid "Control"
+msgstr "Commande"
+
+msgid "%s is already used by %s."
+msgstr "%s est déjà utilisé par %s."
+
+msgid "%s is not assigned."
+msgstr "%s n’est pas assigné."
+
+msgid "%s is unavailable: %s"
+msgstr "%s n’est pas disponible : %s"
+
+msgid "%s is used by %s."
+msgstr "%s est utilisé par %s."
+
+msgid "%s keeps its axis. Nothing changed."
+msgstr "%s garde son axe. Rien n’a changé."
+
+msgid "%s no longer uses this control."
+msgstr "%s n’utilise plus cette commande."
+
+msgid "%s took the previous control."
+msgstr "%s a pris la commande précédente."
+
+msgid "%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it."
+msgstr "%s utilise l’axe %d (Arrêt %+.2f, Marche %+.2f). Enregistre le profil pour le garder."
+
+msgid "%s uses axis %d. Save the profile to keep it."
+msgstr "%s utilise l’axe %d. Enregistre le profil pour le garder."
+
+msgid "Actions are back to their defaults in the draft. Save keeps them; Cancel discards them."
+msgstr "Les actions sont revenues à leurs valeurs par défaut dans le brouillon. Enregistrer les garde ; Annuler les abandonne."
+
+msgid "Actions were not reset: %s"
+msgstr "Les actions n’ont pas été réinitialisées : %s"
+
+msgid "Advanced: edit axis numbers"
+msgstr "Avancé : modifier les numéros d’axe"
+
+msgid "Assign to %s"
+msgstr "Assigner à %s"
+
+msgid "Axis %d is already used by %s. Nothing changed."
+msgstr "L’axe %d est déjà utilisé par %s. Rien n’a changé."
+
+msgid "Calibrate the radio again before saving."
+msgstr "Étalonne à nouveau la radio avant d’enregistrer."
+
+msgid "Choose Swap, Replace or Cancel."
+msgstr "Choisis Échanger, Remplacer ou Annuler."
+
+msgid "Connect the flight controller to detect its axes."
+msgstr "Connecte la manette de vol pour détecter ses axes."
+
+msgid "Connect the flight controller to measure this control."
+msgstr "Connecte la manette de vol pour mesurer cette commande."
+
+msgid "Detect %s"
+msgstr "Détecter %s"
+
+msgid "Detect %s axis"
+msgstr "Détecter l’axe de %s"
+
+msgid "During a flight, recalibrate this radio from Pause → Controls."
+msgstr "Pendant un vol, réétalonne cette radio depuis Pause → Commandes."
+
+msgid "Every flight channel needs its own axis."
+msgstr "Chaque voie de vol a besoin de son propre axe."
+
+msgid "Extra channel was not changed: %s"
+msgstr "Le canal supplémentaire n’a pas été modifié : %s"
+
+msgid "Find control"
+msgstr "Trouver une commande"
+
+msgid "Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF."
+msgstr "Maintiens la commande de %s sur ARRÊT, puis confirme. Ne bouge pas les manches de vol. Mets-la ensuite sur MARCHE et maintiens-la jusqu’à ce qu’on te demande de revenir à ARRÊT."
+
+msgid "Invalid or interrupted input. Nothing changed."
+msgstr "Entrée invalide ou interrompue. Rien n’a changé."
+
+msgid "It moved the other way, so %s is inverted."
+msgstr "Il a bougé dans l’autre sens, donc %s est inversé."
+
+msgid "LIVE INPUT"
+msgstr "ENTRÉE EN DIRECT"
+
+msgid "More than one axis moved. Move only the stick you want, then try again."
+msgstr "Plusieurs axes ont bougé. Bouge seulement le manche voulu, puis réessaie."
+
+msgid "Move or press the control for %s…"
+msgstr "Bouge ou appuie sur la commande pour %s…"
+
+msgid "Move the control"
+msgstr "Bouger la commande"
+
+msgid "Move the control for %s"
+msgstr "Bouger la commande de %s"
+
+msgid "Move the control you want for Throttle to FULL and hold it."
+msgstr "Pousse au MAXIMUM la commande voulue pour les gaz et maintiens-la."
+
+msgid "Move the stick you want for Pitch fully BACK (toward you) and hold it."
+msgstr "Tire complètement en ARRIÈRE (vers toi) le manche voulu pour le tangage et maintiens-le."
+
+msgid "Move the stick you want for Roll fully RIGHT and hold it."
+msgstr "Pousse complètement à DROITE le manche voulu pour le roulis et maintiens-le."
+
+msgid "Move the stick you want for Yaw fully RIGHT and hold it."
+msgstr "Pousse complètement à DROITE le manche voulu pour le lacet et maintiens-le."
+
+msgid "New controller detected. Choose Set up this device to configure it step by step."
+msgstr "Nouvelle manette détectée. Choisis Configurer cet appareil pour la régler étape par étape."
+
+msgid "No input was detected in time. Nothing changed."
+msgstr "Aucune entrée détectée à temps. Rien n’a changé."
+
+msgid "Nothing changed."
+msgstr "Rien n’a changé."
+
+msgid "Only another flight channel can take an axis in exchange."
+msgstr "Seule une autre voie de vol peut prendre un axe en échange."
+
+msgid "Press or move any control to find what it does."
+msgstr "Appuie sur une commande ou bouge-la pour voir ce qu’elle fait."
+
+msgid "Replace is not available here."
+msgstr "Remplacer n’est pas disponible ici."
+
+msgid "Replace: %s loses this control."
+msgstr "Remplacer : %s perd cette commande."
+
+msgid "Reset %s"
+msgstr "Réinitialiser %s"
+
+msgid "Reset all actions"
+msgstr "Réinitialiser toutes les actions"
+
+msgid "Reset category"
+msgstr "Réinitialiser la catégorie"
+
+msgid "Reset every action to its default control? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "Réinitialiser chaque action à sa commande par défaut ? Retour et Pause gardent toujours une commande. Le changement reste en brouillon jusqu’à l’enregistrement."
+
+msgid "Reset the %s actions shown to their default controls? Back and Pause always keep a control. The change stays in the draft until you Save."
+msgstr "Réinitialiser les actions %s affichées à leurs commandes par défaut ? Retour et Pause gardent toujours une commande. Le changement reste en brouillon jusqu’à l’enregistrement."
+
+msgid "Reset to defaults"
+msgstr "Rétablir les valeurs par défaut"
+
+msgid "Set up this device…"
+msgstr "Configurer cet appareil…"
+
+msgid "Setup cancelled. The previous draft is back."
+msgstr "Configuration annulée. Le brouillon précédent est rétabli."
+
+msgid "Step by step: controller type, stick mode, calibration, a live test and the main switches."
+msgstr "Étape par étape : type de manette, mode des manches, étalonnage, test en direct et interrupteurs principaux."
+
+msgid "Swap: %s gets %s, the control %s had."
+msgstr "Échanger : %s reçoit %s, la commande qu’avait %s."
+
+msgid "Swap: %s takes the control %s had."
+msgstr "Échanger : %s prend la commande qu’avait %s."
+
+msgid "The %s extra channel cannot use that kind of control."
+msgstr "Le canal supplémentaire %s ne peut pas utiliser ce type de commande."
+
+msgid "The window lost focus; detection was cancelled."
+msgstr "La fenêtre a perdu le focus ; la détection est annulée."
+
+msgid "This controller is recognised as a gamepad, so its type cannot be changed."
+msgstr "Cette manette est reconnue comme manette de jeu ; son type ne peut pas être changé."
+
+msgid "Waiting for input…"
+msgstr "En attente d’une entrée…"
+
+msgid "cancels. Listening stops after %d seconds without input."
+msgstr "annule. L’écoute s’arrête après %d secondes sans entrée."
+
+msgid "“%s” cannot take that kind of control. Use Replace or Cancel."
+msgstr "« %s » ne peut pas prendre ce type de commande. Utilise Remplacer ou Annuler."
+
+msgid "“%s” has no control to give in exchange."
+msgstr "« %s » n’a aucune commande à donner en échange."
+
+msgid "“%s” must always keep a control."
+msgstr "« %s » doit toujours garder une commande."
+
+msgid "Joysticks are set up with Detect in Flight axes; skip this step."
+msgstr "Les joysticks se configurent avec Détecter dans Axes de vol ; passe cette étape."
+
+msgid "A radio's directions come from calibration. Reverse a channel on the transmitter, or calibrate again."
+msgstr "Les sens d’une radio viennent de l’étalonnage. Inverse la voie sur la radio ou étalonne à nouveau."
+
+msgid "Calibration could not start. Select a connected radio with a radio profile."
+msgstr "L’étalonnage n’a pas pu démarrer. Choisis une radio connectée avec un profil radio."
+
+msgid "All vehicles"
+msgstr "Tous les véhicules"
