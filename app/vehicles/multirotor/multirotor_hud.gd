@@ -17,6 +17,7 @@ const FC = preload("res://physics/multirotor/flight_controller.gd")
 const Cam = preload("res://vehicles/multirotor/multirotor_camera.gd")
 const Osd = preload("res://vehicles/multirotor/osd_model.gd")
 const Paint = preload("res://vehicles/multirotor/osd_painter.gd")
+const SettingsPanel = preload("res://vehicles/multirotor/osd_settings_panel.gd")
 
 signal action_requested(action: String)
 
@@ -44,6 +45,7 @@ const HELP_LINES := [
 	"O: OSD layout (Off, Race, Freestyle, Full). Units in the pause menu.",
 	"P or Esc: pause   R: restart on the pad   H: this help",
 	"G: start a three-lap race from the pad (fly the gates in order); G again cancels it.",
+	"T: next race course (back on the pad).",
 	"F10: start/stop the flight log   F11: log marker",
 	"Estimated, unvalidated physics: not a model of a real quad.",
 ]
@@ -63,8 +65,10 @@ const SIDEBAR_X := 270.0
 const SIDEBAR_HALF := 110.0
 ## Closer than this (m) the home arrow is hidden and only the distance shows.
 const HOME_ARROW_MIN_M := 2.0
-## A disarmed roll or pitch stick beyond this share dismisses the statistics screen.
+## A pitch-forward stick beyond this share (or a high throttle) dismisses the statistics screen.
 const STATS_DISMISS_STICK := 0.5
+## Analog style refresh period (s): a flight controller's character OSD draws at about 12 Hz.
+const ANALOG_REFRESH_S := 1.0 / 12.0
 ## Edge margin of the OSD (logical px at 1080p, scaled with the UI text scale).
 const MARGIN := 36.0
 ## Artificial horizon: half-length and centre gap in half-picture-height units, end ticks toward the ground in px.
@@ -91,8 +95,26 @@ var warning_label: Label
 ## Post-flight statistics screen (centre, after a disarm).
 var stats_panel: PanelContainer
 var stats_label: Label
+## DR-31c: the pause menu's "OSD settings" button and the panel it opens beside the menu (layout_button and
+## units_button are the panel's).
+var osd_button: Button
+var settings_panel: PanelContainer
 var layout_button: Button
 var units_button: Button
+## Elements of the active layout (osd_config), cached for shows().
+var _elements: Array = []
+var gforce := Osd.GForce.new()
+## Pack capacity of the configuration (mAh; 0 = unknown: no remaining-time estimate) and the craft name element.
+var capacity_mah := 0.0
+var craft_name := ""
+var _ever_armed := false
+var _stats_since := -1.0
+var _stats_sticks_seen_low := false
+## Analog style: the next wall-clock second the character OSD refreshes (12 Hz like a flight controller).
+var _next_refresh := 0.0
+## DR-28 course choice (hidden on a field with fewer than two courses); the activity cycles it ("course" action).
+var course_button: Button
+var _course_name := ""
 ## {layout, units} (osd_model.gd); saved to `prefs_path` when it is set (the interactive route only).
 var osd_config := Osd.DEFAULTS.duplicate()
 var prefs_path := ""
@@ -262,15 +284,18 @@ func _build_stats(s: float) -> void:
 	stats_panel.add_child(stats_label)
 
 
-## The statistics screen text: a title and aligned label/value rows (labels translated, values in OSD units).
+## The statistics screen text like a flight controller's: a "--- … ---" title, then label : value rows with the colons
+## aligned (labels translated and upper case, values in OSD units) and how to leave it.
 func stats_text() -> String:
 	var rows: Array = stats.rows(str(osd_config.units), cells)
 	var width := 0
 	for row: Array in rows:
 		width = maxi(width, tr(str(row[0])).length())
-	var lines := PackedStringArray([tr("FLIGHT STATISTICS"), ""])
+	var lines := PackedStringArray(["--- %s ---" % tr("FLIGHT STATISTICS"), ""])
 	for row: Array in rows:
-		lines.append(tr(str(row[0])).to_upper().rpad(width + 3, " ") + str(row[1]))
+		lines.append(tr(str(row[0])).to_upper().rpad(width + 1, " ") + ": " + str(row[1]))
+	lines.append("")
+	lines.append(tr("Throttle or pitch forward to close"))
 	return "\n".join(lines)
 
 
@@ -318,10 +343,28 @@ func _build_menu(s: float) -> void:
 	limit_note.add_theme_color_override("font_color", UiTheme.CAUTION)
 	limit_note.visible = false
 	box.add_child(limit_note)
-	layout_button = _local_button(box, "OsdLayout", cycle_layout)
-	units_button = _local_button(box, "OsdUnits", cycle_units)
+	osd_button = _local_button(box, "OsdSettingsButton", toggle_osd_settings)
+	course_button = _button(box, "", "course")
+	course_button.name = "Course"
+	course_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	course_button.visible = false
 	_button(box, "Controls help", "help")
 	home_button = _button(box, "Back to Home", "home")
+	# The OSD settings open to the right of the menu (the menu stays, so pausing and resuming work as before).
+	settings_panel = SettingsPanel.new()
+	settings_panel.build(s)
+	settings_panel.grow_horizontal = Control.GROW_DIRECTION_END
+	settings_panel.offset_left = 300.0 * s
+	settings_panel.offset_right = 300.0 * s
+	settings_panel.visible = false
+	settings_panel.config_changed.connect(func(next: Dictionary) -> void: _apply_config(next, true))
+	settings_panel.closed.connect(func() -> void:
+		settings_panel.visible = false
+		osd_button.grab_focus())
+	root_control.add_child(settings_panel)
+	layout_button = settings_panel.layout_button
+	units_button = settings_panel.units_button
+	_elements = Osd.elements_of(osd_config)
 
 
 func _button(parent: Container, text: String, action: String) -> Button:
@@ -348,27 +391,44 @@ func _local_button(parent: Container, node_name: String, callback: Callable) -> 
 ## Load the saved OSD choice from `path` and save later changes there ("" = in memory only).
 func set_prefs_path(path: String) -> void:
 	prefs_path = path
-	osd_config = Osd.load_config(path)
-	_update_texts()
+	_apply_config(Osd.load_config(path), false)
 
 
 func shows(element: String) -> bool:
-	return Osd.shows(str(osd_config.layout), element)
+	return element in _elements
+
+
+## Adopt an OSD configuration (validated), save it when asked and a path is set, and show it everywhere.
+func _apply_config(next: Dictionary, save: bool) -> void:
+	osd_config = Osd.sanitize(next)
+	_elements = Osd.elements_of(osd_config)
+	if save:
+		Osd.save_config(prefs_path, osd_config)
+	if settings_panel != null:
+		settings_panel.show_config(osd_config)
+	_next_refresh = 0.0
+	_update_texts()
+	osd.queue_redraw()
 
 
 func cycle_layout() -> void:
-	osd_config.layout = Osd.next_in(Osd.LAYOUTS, str(osd_config.layout))
-	Osd.save_config(prefs_path, osd_config)
-	_update_texts()
+	var next := osd_config.duplicate(true)
+	next.layout = Osd.next_in(Osd.LAYOUTS, str(osd_config.layout))
+	_apply_config(next, true)
 	flash(tr("OSD layout: %s") % tr(str(Osd.LAYOUT_NAMES[osd_config.layout])), 1.5)
-	osd.queue_redraw()
 
 
 func cycle_units() -> void:
-	osd_config.units = Osd.next_in(Osd.UNITS, str(osd_config.units))
-	Osd.save_config(prefs_path, osd_config)
-	_update_texts()
-	osd.queue_redraw()
+	var next := osd_config.duplicate(true)
+	next.units = Osd.next_in(Osd.UNITS, str(osd_config.units))
+	_apply_config(next, true)
+
+
+## Open or close the OSD settings beside the pause menu.
+func toggle_osd_settings() -> void:
+	settings_panel.visible = not settings_panel.visible and menu_visible
+	if settings_panel.visible:
+		settings_panel.layout_button.grab_focus()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -399,15 +459,25 @@ func _update_texts() -> void:
 	limit_button.text = tr("Throttle limit: %d%%") % int(round(100.0 * float(_limit.pending)))
 	limit_note.text = tr("Throttle limit %d%% applies after Restart on pad.") % int(round(100.0 * float(_limit.pending)))
 	limit_note.visible = absf(float(_limit.pending) - float(_limit.active)) > 1.0e-6
-	layout_button.text = tr("OSD layout: %s") % tr(str(Osd.LAYOUT_NAMES[osd_config.layout]))
-	units_button.text = tr("OSD units: %s") % tr(str(Osd.UNIT_NAMES[osd_config.units]))
+	osd_button.text = tr("OSD settings")
+	course_button.text = tr("Course: %s") % tr(_course_name)
 	if _stats_ready:
 		stats_label.text = stats_text()
+
+
+## The prepared course's name and whether the field offers another one (the Course button cycles them).
+func set_course(course_name: String, choice: bool) -> void:
+	_course_name = course_name
+	course_button.visible = choice and not course_name.is_empty()
+	_update_texts()
 
 
 ## The vehicle and variant id, shown in the menu and the help (the OSD tag stays short).
 func set_variant(text: String) -> void:
 	variant_text = text
+	# The craft name element: the maker and model of the variant id ("openrc-fpv5-…" -> "OPENRC FPV5").
+	var parts := text.split("-", false)
+	craft_name = " ".join(parts.slice(0, mini(2, parts.size()))).to_upper()
 	_update_texts()
 
 
@@ -454,6 +524,7 @@ func show_menu(reason: String, can_resume: bool, rate_reset: bool = false, termi
 
 func hide_menu() -> void:
 	menu.visible = false
+	settings_panel.visible = false
 	var focus := root_control.get_viewport().gui_get_focus_owner()
 	if focus != null:
 		focus.release_focus()
@@ -609,25 +680,44 @@ static func cell_color(cell_v: float) -> Color:
 
 
 ## t: session telemetry (evaluated once this frame). osd_state: {camera, tilt_deg, hfov_deg, vfov_deg, aspect,
-## attitude (the frame's interpolated [w, x, y, z]), body (the drawn rigid-body state), sticks (the input's raw
-## sticks), stick_policy, flight_s, arm_requested, crash_reason, pilot_mode (-1 = the flight's), bindings,
+## attitude (the frame's interpolated [w, x, y, z]), body (the drawn rigid-body state), accepted (the accepted tick's
+## state, for the G value), tick_dt, sticks (the input's raw sticks), stick_policy, gate (render-space centre of the
+## next race gate), gate_number, flight_s, arm_requested, crash_reason, pilot_mode (-1 = the flight's), bindings,
 ## throttle_limit}. Every key is optional: an element without its source is not drawn.
 func update(t: Dictionary, osd_state: Dictionary) -> void:
 	if t.is_empty():
 		return
+	var now := Time.get_ticks_msec() / 1000.0
+	var accepted: Variant = osd_state.get("accepted")
+	if typeof(accepted) == TYPE_PACKED_FLOAT64_ARRAY:
+		gforce.sample(int(t.get("tick", 0)), accepted, float(osd_state.get("tick_dt", 1.0 / 240.0)))
+	var armed := bool(t.get("armed", false))
+	var flight_s := float(osd_state.get("flight_s", 0.0))
+	var body: Variant = osd_state.get("body")
+	# The Off layout draws no flight element: skip the derivations (home and statistics wait for a layout).
+	var flight := Osd.flight_values(body) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY and str(osd_config.layout) != "off" else {}
+	var sticks: Variant = osd_state.get("sticks")
+	_track_flight(t, flight, armed, float(t.get("time_s", flight_s)), sticks, str(osd_state.get("stick_policy", "")), now)
+	# Analog style: a flight controller's character OSD refreshes at about 12 Hz; frames in between keep the picture.
+	if str(osd_config.style) == "analog":
+		if now < _next_refresh:
+			return
+		_next_refresh = now + ANALOG_REFRESH_S
 	var mode := int(osd_state.get("pilot_mode", -1))
 	if mode < 0:
 		mode = int(t.get("flight_mode", FC.FLIGHT_ACRO))
-	mode_label.text = (tr("Angle") if mode == FC.FLIGHT_ANGLE else tr("Acro")).to_upper()
+	# The four-letter mode names of Betaflight and INAV.
+	mode_label.text = "ANGL" if mode == FC.FLIGHT_ANGLE else "ACRO"
 	mode_label.visible = shows("mode")
-	var armed := bool(t.get("armed", false))
 	var arm_requested := bool(osd_state.get("arm_requested", false))
 	var bindings: Dictionary = osd_state.get("bindings", {})
 	arm_label.text = arm_text(t, arm_requested, controller_not_ready(bindings))
-	_set_color(arm_label, OSD_ARMED if armed else OSD_CAUTION)
-	var flight_s := float(osd_state.get("flight_s", 0.0))
+	_set_color(arm_label, _tone(Osd.INFO) if armed else _tone(Osd.WARNING))
 	timer_label.text = format_timer(flight_s)
 	timer_label.visible = shows("timer")
+	var timer_alarm := flight_s >= Osd.TIMER_ALARM_S
+	_set_color(timer_label, _tone(Osd.CRITICAL) if timer_alarm else OSD_TEXT)
+	timer_label.modulate.a = 0.0 if timer_alarm and not Osd.blink_on(now) else 1.0
 	var race_line := race_text(t.get("race", {}))
 	var big := countdown_text(t.get("race", {}))
 	countdown_label.visible = not big.is_empty() and not menu_visible
@@ -648,105 +738,130 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	throttle_label.text = throttle_text
 	throttle_label.visible = shows("throttle")
 	var units := str(osd_config.units)
-	var body: Variant = osd_state.get("body")
-	# The Off layout draws no flight element: skip the derivations (home and statistics wait for a layout).
-	var flight := Osd.flight_values(body) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY and str(osd_config.layout) != "off" else {}
-	_track_flight(t, flight, armed, float(t.get("time_s", flight_s)), osd_state.get("sticks"))
 	var home_info := {}
 	if not flight.is_empty() and home.is_finite():
 		home_info = Osd.home_vector(float(flight.north), float(flight.east), float(flight.heading_deg), home)
-	# Pack warnings are not layout: LAND NOW and LOW BATTERY follow the cells in every layout, Off included.
+	# Pack warnings are not layout: they follow the cells in every layout, Off included.
 	var has_pack := bool(t.get("has_battery", false))
 	var cell_v := float(t.bus_voltage_v) / float(cells) if has_pack and cells > 0 else INF
-	var land := cell_v < CELL_LAND_V
-	var low := cell_v < CELL_CAUTION_V
-	var soc := -1.0
+	var soc := clampf(float(t.get("soc", -1.0)), -1.0, 1.0) if has_pack else -1.0
+	var amps := float(t.get("pack_current_a", 0.0))
 	if has_pack and shows("battery"):
 		var volts := float(t.bus_voltage_v)
-		soc = clampf(float(t.get("soc", -1.0)), -1.0, 1.0)
 		var lines := PackedStringArray()
-		var color := OSD_TEXT
 		var first := "%d%%  " % int(round(100.0 * soc)) if soc >= 0.0 else ""
 		if cells > 0:
-			color = cell_color(cell_v)
 			lines.append(first + "%.1f V  %s" % [volts, tr("%.2f V/cell") % cell_v])
 		else:
 			lines.append(first + "%.1f V" % volts)
 		if shows("battery_detail"):
-			lines.append("%.1f A  %d mAh" % [float(t.pack_current_a), int(round(float(t.consumed_mah)))])
+			lines.append("%.1f A  %d mAh" % [amps, int(round(float(t.consumed_mah)))])
+		var extra := PackedStringArray()
 		if shows("power"):
-			lines.append("%d W" % int(round(volts * float(t.pack_current_a))))
+			extra.append("%d W" % int(round(volts * amps)))
+		if shows("efficiency") and not flight.is_empty():
+			extra.append(Osd.efficiency_text(amps, float(flight.ground_mps), units))
+		if not extra.is_empty():
+			lines.append("  ".join(extra))
 		battery_label.text = "\n".join(lines)
-		_set_color(battery_label, color)
+		var band := Osd.CRITICAL if cell_v < CELL_LAND_V else (Osd.WARNING if cell_v < CELL_CAUTION_V else Osd.NORMAL)
+		_set_color(battery_label, _tone(band))
 		battery_label.visible = true
 	else:
 		battery_label.text = ""
 		battery_label.visible = false
-	_update_warning(t, armed, land, low)
+	var crashed := bool(t.get("crashed", false)) or not str(osd_state.get("crash_reason", "")).is_empty()
+	_show_warning(Osd.warning({armed = armed, arm_requested = arm_requested, block = int(t.get("arm_block", FC.BLOCK_NONE)),
+		not_ready = controller_not_ready(bindings), crashed = crashed, depleted = bool(t.get("depleted", false)),
+		cell_v = cell_v, ever_armed = _ever_armed, armed_notice = now < _armed_notice_until}), now)
 	hint_label.text = hint_text(t, arm_requested, osd_state.get("bindings", {}), str(osd_state.get("crash_reason", "")))
-	if Time.get_ticks_msec() / 1000.0 > _message_until:
+	if now > _message_until:
 		message.text = ""
 	var horizon := {}
 	var vfov_deg := float(osd_state.get("vfov_deg", 90.0))
-	if (shows("horizon") or shows("crosshair")) and str(osd_state.get("camera", "fpv")) == "fpv" \
-			and typeof(osd_state.get("attitude")) == TYPE_PACKED_FLOAT64_ARRAY:
-		horizon = Cam.horizon_line(osd_state.attitude, deg_to_rad(float(osd_state.get("tilt_deg", 0.0))),
-			deg_to_rad(vfov_deg), float(osd_state.get("aspect", 16.0 / 9.0)))
-	var sticks: Variant = osd_state.get("sticks")
+	var fpv := str(osd_state.get("camera", "fpv")) == "fpv" and typeof(osd_state.get("attitude")) == TYPE_PACKED_FLOAT64_ARRAY
+	var tilt_rad := deg_to_rad(float(osd_state.get("tilt_deg", 0.0)))
+	if fpv and (shows("horizon") or shows("crosshair")):
+		horizon = Cam.horizon_line(osd_state.attitude, tilt_rad, deg_to_rad(vfov_deg), float(osd_state.get("aspect", 16.0 / 9.0)))
 	# Only a sample that carries the four sticks is drawn (the scripted pilot reports none).
 	var has_sticks := typeof(sticks) == TYPE_DICTIONARY and (sticks as Dictionary).has_all(["roll", "pitch", "yaw", "throttle"])
+	var rotors: Variant = t.get("rotor_speed_rad_s")
+	var rpm_mean := 0.0
+	if typeof(rotors) == TYPE_PACKED_FLOAT64_ARRAY and not (rotors as PackedFloat64Array).is_empty():
+		for w: float in rotors:
+			rpm_mean += absf(w)
+		rpm_mean /= float((rotors as PackedFloat64Array).size())
+	var gate: Variant = osd_state.get("gate")
 	_draw_state = {horizon = horizon, throttle = collective, vfov_deg = vfov_deg, flight = flight, home = home_info,
 		units = units, soc = soc, speed_mps = float(t.get("speed_mps", 0.0)), altitude_m = float(t.get("altitude_agl_m", 0.0)),
 		commands = t.get("commands", PackedFloat64Array()), sticks = sticks if has_sticks else {},
-		stick_policy = str(osd_state.get("stick_policy", "absolute"))}
+		stick_policy = str(osd_state.get("stick_policy", "absolute")), armed = armed,
+		g = gforce.value if typeof(accepted) == TYPE_PACKED_FLOAT64_ARRAY else NAN, rotor_rad_s = rpm_mean,
+		on_s = float(t.get("time_s", 0.0)),
+		remaining_s = Osd.remaining_s(soc, capacity_mah, stats.used_mah, stats.flight_s) if armed else -1.0,
+		updown = Osd.updown(osd_state.attitude, tilt_rad) if fpv else "",
+		gate = gate if typeof(gate) == TYPE_VECTOR3 else null, gate_number = int(osd_state.get("gate_number", 0)),
+		blink = Osd.blink_on(now)}
 	_refresh_visibility()
 
 
+## A severity's colour in the configured style: HD goggles colour it, an analog character OSD is all white.
+func _tone(severity: int) -> Color:
+	return OSD_TEXT if str(osd_config.style) == "analog" else Paint.SEVERITY[severity]
+
+
 ## Home, the armed notice and the statistics follow the arm state like a flight controller: arming sets home, resets
-## the statistics and shows ARMED; armed frames feed the statistics; the disarm after a real flight shows them.
-## clock_s: the simulation clock (armed time = clock since the arm). A roll or pitch stick pushed past half while
-## disarmed dismisses the statistics, as on a flight controller.
-func _track_flight(t: Dictionary, flight: Dictionary, armed: bool, clock_s: float, sticks: Variant) -> void:
-	if _stats_ready and not armed and typeof(sticks) == TYPE_DICTIONARY \
-			and maxf(absf(float(sticks.get("roll", 0.0))), absf(float(sticks.get("pitch", 0.0)))) > STATS_DISMISS_STICK:
-		_stats_ready = false
+## the statistics and shows ARMED; armed frames feed the statistics; the disarm after a real flight shows them until
+## a throttle-high or pitch-forward stick (after the sticks were seen low once) or STATS_TIMEOUT_S, as on Betaflight.
+## clock_s: the simulation clock (armed time = clock since the arm).
+func _track_flight(t: Dictionary, flight: Dictionary, armed: bool, clock_s: float, sticks: Variant, policy: String,
+		now: float) -> void:
+	if _stats_ready and not armed:
+		var high := stats_stick_high(sticks, policy)
+		if not high:
+			_stats_sticks_seen_low = true
+		elif _stats_sticks_seen_low or now - _stats_since > Osd.STATS_TIMEOUT_S:
+			_stats_ready = false
+		if now - _stats_since > Osd.STATS_TIMEOUT_S:
+			_stats_ready = false
 	var position := Vector2(float(flight.north), float(flight.east)) if not flight.is_empty() else Vector2.INF
 	if armed and not _was_armed:
 		stats.reset()
 		_stats_ready = false
+		_ever_armed = true
 		_arm_clock_s = clock_s
-		_armed_notice_until = Time.get_ticks_msec() / 1000.0 + ARMED_NOTICE_S
+		_armed_notice_until = now + ARMED_NOTICE_S
 		if position.is_finite():
 			home = position
 	if armed:
 		var home_m := position.distance_to(home) if position.is_finite() and home.is_finite() else INF
-		stats.sample(t, position, home_m, cells, maxf(0.0, clock_s - _arm_clock_s))
+		stats.sample(t, position, home_m, cells, maxf(0.0, clock_s - _arm_clock_s), gforce.value)
 	elif _was_armed and stats.was_flight():
 		_stats_ready = true
+		_stats_since = now
+		_stats_sticks_seen_low = not stats_stick_high(sticks, policy)
 		stats_label.text = stats_text()
 	_was_armed = armed
 
 
-## Centre warning, most urgent first: LAND NOW (blinking), LOW BATTERY in flight, then the brief ARMED notice.
-func _update_warning(t: Dictionary, armed: bool, land: bool, low: bool) -> void:
-	var now := Time.get_ticks_msec() / 1000.0
-	var text := ""
-	var color := OSD_DANGER
-	var blink := false
+## A throttle-high or pitch-forward stick (the sticks that leave Betaflight's statistics screen).
+static func stats_stick_high(sticks: Variant, policy: String) -> bool:
+	if typeof(sticks) != TYPE_DICTIONARY:
+		return false
+	var throttle := float((sticks as Dictionary).get("throttle", 0.0))
+	var throttle_high := throttle > (0.5 if policy == "rate" else 0.75)
+	return throttle_high or float((sticks as Dictionary).get("pitch", 0.0)) < -STATS_DISMISS_STICK
+
+
+## The warning slot: one text by priority (osd_model.gd warning()), coloured by severity in the HD style and blinking
+## at 2 Hz when the warning blinks. The statistics own the centre after a flight.
+func _show_warning(warn: Dictionary, now: float) -> void:
+	var text := str(warn.text)
 	if _stats_visible():
-		pass # the statistics own the centre after a flight; the pack colour still shows a low cell
-	elif land and not bool(t.get("depleted", false)):
-		text = tr("LAND NOW")
-		blink = true
-	elif low and armed:
-		text = tr("LOW BATTERY")
-		color = OSD_CAUTION
-	elif armed and now < _armed_notice_until:
-		text = tr("Armed").to_upper()
-		color = OSD_ARMED
-	warning_label.text = text
-	_set_color(warning_label, color)
-	warning_label.modulate.a = (1.0 if fmod(now, 0.6) < 0.4 else 0.25) if blink else 1.0
+		text = ""
+	warning_label.text = tr("Armed").to_upper() if text == "ARMED" else tr(text) if not text.is_empty() else ""
+	_set_color(warning_label, _tone(int(warn.severity)))
+	warning_label.modulate.a = 0.0 if bool(warn.blink) and not Osd.blink_on(now) else 1.0
 
 
 ## The statistics screen shows after a flight until the next arm, never over the menu, a start count or a race.
@@ -777,12 +892,25 @@ func _draw_osd() -> void:
 		var bar_w := (THROTTLE_BAR.x + 14.0) * s
 		var area := Rect2(Vector2(size.x - m - bar_w - 96.0 * s, size.y - m - 166.0 * s), Vector2(84.0 * s, 60.0 * s))
 		Paint.motors(osd, area, commands, s)
+	var rpm := float(_draw_state.get("rotor_rad_s", 0.0))
+	if shows("rpm") and rpm > 0.0:
+		var bar_w := (THROTTLE_BAR.x + 14.0) * s
+		Paint.text(osd, Vector2(size.x - m - bar_w - 12.0 * s, size.y - m - 186.0 * s), "RPM " + Osd.rpm_text(rpm),
+			int(round(20.0 * s)), OSD_TEXT, 1)
 	var soc := float(_draw_state.get("soc", -1.0))
 	if battery_label.visible and soc >= 0.0:
 		var gauge := Rect2(Vector2(m, size.y - m - 62.0 * s), Vector2(24.0 * s, 58.0 * s))
-		Paint.battery_icon(osd, gauge, soc, [OSD_DANGER, OSD_CAUTION, OSD_ARMED][Osd.charge_band(soc)], s)
+		Paint.battery_icon(osd, gauge, soc, _tone([Osd.CRITICAL, Osd.WARNING, Osd.INFO][Osd.charge_band(soc)]), s)
+	if timer_label.visible and timer_label.modulate.a > 0.0:
+		var size_px := timer_label.get_theme_font_size("font_size")
+		var width := Paint.text_width(timer_label.text, size_px)
+		Paint.icon_clock(osd, Vector2(size.x - m - width - 20.0 * s, m * 0.6 + 22.0 * s), 9.0 * s,
+			timer_label.get_theme_color("font_color"))
+	if shows("craft") and not craft_name.is_empty():
+		Paint.text(osd, Vector2(centre.x, size.y - m * 0.5), craft_name, int(round(20.0 * s)), OSD_TEXT, 0)
 	if open:
 		return
+	_draw_top_right(size, m, s, units)
 	var sticks: Dictionary = _draw_state.get("sticks", {})
 	if shows("sticks") and not sticks.is_empty():
 		var throttle := float(sticks.get("throttle", 0.0))
@@ -797,15 +925,6 @@ func _draw_osd() -> void:
 	var flight: Dictionary = _draw_state.get("flight", {})
 	if shows("compass") and not flight.is_empty():
 		Paint.compass(osd, centre.x, top_band(s), 300.0 * s, float(flight.heading_deg), s)
-	var home_info: Dictionary = _draw_state.get("home", {})
-	# Within a couple of metres of home its direction is meaningless (a flight controller blinks it); only the
-	# distance is shown there.
-	if shows("home") and not home_info.is_empty():
-		var at := Vector2(size.x - m - 14.0 * s, m * 0.6 + 66.0 * s)
-		if float(home_info.distance_m) >= HOME_ARROW_MIN_M:
-			Paint.home_arrow(osd, at, float(home_info.relative_deg), 12.0 * s)
-		Paint.text(osd, at - Vector2(24.0 * s, 0.0), Osd.distance_text(float(home_info.distance_m), units),
-			int(round(24.0 * s)), OSD_TEXT, 1)
 	if shows("angles") and not flight.is_empty():
 		var size_px := int(round(20.0 * s))
 		var y0 := m * 0.6 + 96.0 * s
@@ -820,27 +939,45 @@ func _draw_osd() -> void:
 		var alt_ticks := altitude * (Osd.M_TO_FT / 5.0 if units == "imperial" else 1.0)
 		Paint.sidebar(osd, centre.x - side_x, centre.y, SIDEBAR_HALF * s, speed_ticks, -1.0, s)
 		Paint.sidebar(osd, centre.x + side_x, centre.y, SIDEBAR_HALF * s, alt_ticks, 1.0, s)
+	var blink := bool(_draw_state.get("blink", true))
 	if shows("speed"):
 		Paint.readout(osd, Vector2(centre.x - side_x - 22.0 * s, centre.y), Osd.speed_text(speed, units), -1.0, s)
+	var g := float(_draw_state.get("g", NAN))
+	if shows("gforce") and is_finite(g):
+		# INAV's G element: two decimals, blinking past the 5 g alarm.
+		var alarm := g > Osd.GFORCE_ALARM
+		if not alarm or blink:
+			Paint.text(osd, Vector2(centre.x - side_x - 22.0 * s, centre.y + 36.0 * s), "%.2f G" % g, int(round(18.0 * s)),
+				_tone(Osd.CRITICAL) if alarm else OSD_TEXT, 1)
 	if shows("altitude"):
 		var climb := float(flight.get("climb_mps", 0.0))
 		var vario := shows("vario") and not flight.is_empty()
 		var at := Vector2(centre.x + side_x + 22.0 * s, centre.y)
 		var value := Osd.altitude_text(altitude, units)
-		Paint.readout(osd, at, value, 1.0, s, OSD_TEXT, Osd.climb_text(climb, units) if vario else "")
+		# The altitude alarm of Betaflight and INAV: armed above 100 m the value blinks.
+		var high := bool(_draw_state.get("armed", false)) and altitude > Osd.ALTITUDE_ALARM_M
+		Paint.readout(osd, at, value if not high or blink else "", 1.0, s, _tone(Osd.CRITICAL) if high else OSD_TEXT,
+			Osd.climb_text(climb, units) if vario else "")
 		if vario:
 			var width := Paint.text_width(value, int(round(26.0 * s))) + 16.0 * s
 			Paint.vario(osd, at + Vector2(width + 14.0 * s, 0.0), Osd.vario_steps(climb), s)
+	var gate: Variant = _draw_state.get("gate")
+	if shows("gate") and typeof(gate) == TYPE_VECTOR3:
+		var camera := osd.get_viewport().get_camera_3d()
+		if camera != null:
+			var distance := camera.global_position.distance_to(gate)
+			var label := "%s %d  %s" % [tr("GATE"), int(_draw_state.get("gate_number", 0)), Osd.distance_text(distance, units)]
+			Paint.gate_marker(osd, size, camera.unproject_position(gate), camera.is_position_behind(gate), label,
+				m * 2.2, s, _tone(Osd.WARNING))
 	var horizon: Dictionary = _draw_state.get("horizon", {})
 	# The craft symbol and the horizon belong to the FPV view only (an empty horizon = another view).
 	if horizon.is_empty():
 		return
 	if shows("crosshair"):
-		var wing := 26.0 * s
-		var gap := 9.0 * s
-		for side: float in [-1.0, 1.0]:
-			_stroke(centre + Vector2(side * gap, 0.0), centre + Vector2(side * (gap + wing), 0.0), 2.5 * s)
-		_stroke(centre + Vector2(0.0, -gap * 0.6), centre + Vector2(0.0, gap * 0.6), 2.5 * s)
+		Paint.crosshair(osd, centre, str(osd_config.crosshair), s)
+	var updown := str(_draw_state.get("updown", ""))
+	if shows("updown") and not updown.is_empty():
+		Paint.text(osd, centre + Vector2(0.0, -52.0 * s), updown, int(round(30.0 * s)), OSD_TEXT, 0)
 	if not bool(horizon.valid) or not shows("horizon"):
 		return
 	var point: Vector2 = horizon.point
@@ -876,6 +1013,30 @@ func _draw_osd() -> void:
 		var b := p + along * side * outer
 		_stroke(a, b, 3.0 * s)
 		_stroke(b, b + ground * HORIZON_TICK * s, 3.0 * s)
+
+
+## The column under the flight timer: home arrow and distance, the on-time and the remaining-time estimate, each
+## row only when its element is shown (rows close up).
+func _draw_top_right(size: Vector2, m: float, s: float, units: String) -> void:
+	var size_px := int(round(22.0 * s))
+	var right := size.x - m
+	var y := m * 0.6 + 66.0 * s
+	var home_info: Dictionary = _draw_state.get("home", {})
+	if shows("home") and not home_info.is_empty():
+		var at := Vector2(right - 14.0 * s, y)
+		# Within a couple of metres of home its direction is meaningless; only the distance is shown there.
+		if float(home_info.distance_m) >= HOME_ARROW_MIN_M:
+			Paint.home_arrow(osd, at, float(home_info.relative_deg), 12.0 * s)
+		var text := Osd.distance_text(float(home_info.distance_m), units)
+		Paint.text(osd, at - Vector2(24.0 * s, 0.0), text, size_px, OSD_TEXT, 1)
+		Paint.icon_home(osd, at - Vector2(36.0 * s + Paint.text_width(text, size_px), 0.0), 16.0 * s)
+		y += 30.0 * s
+	if shows("on_timer"):
+		Paint.text(osd, Vector2(right, y), "ON " + Osd.clock_text(float(_draw_state.get("on_s", 0.0))), size_px, OSD_TEXT, 1)
+		y += 30.0 * s
+	if shows("remaining") and capacity_mah > 0.0:
+		Paint.text(osd, Vector2(right, y), tr("LEFT %s") % Osd.clock_text(float(_draw_state.get("remaining_s", -1.0))),
+			size_px, OSD_TEXT, 1)
 
 
 ## Half-width (px) the horizon's centre gap needs to stay clear of the visible hint text when the line passes

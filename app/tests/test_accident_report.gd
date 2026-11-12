@@ -35,8 +35,58 @@ func _run() -> void:
 	await _timber_parts_behavior()
 	await _preview_scope_behavior()
 	await _cost_plan_behavior()
+	await _reveal_behavior()
 	print("accident report: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## CR-22e: a live terminal card waits a short beat, then counts its headline up to the exact text.
+func _reveal_behavior() -> void:
+	var view := AccidentReport.new()
+	root.add_child(view)
+	await _ui.settle()
+	view.set_process(false) # Drive the presentation clock explicitly.
+	var source := {currency = "USD", complete = true, total_minor = 6000, known_subtotal_minor = 6000,
+		low_minor = 6000, high_minor = 6000, outcome = "repair", incident_id = "reveal-fixture",
+		identity = {aircraft_id = "jensen-das-ugly-stik-60", incident_id = "reveal-fixture"},
+		lines = [{id = "propeller", action = "replacement", quantity = 1, amount_minor = 6000}], assumptions = [], unresolved = []}
+	var final_text: String = view._headline_state(source).amount
+	var amount_label := view.find_child("ReportAmount", true, false) as Label
+	view.show_assessment(source, true, true)
+	_check("live terminal card is held for a short beat", not view._content_visible and not view._report_panel.visible)
+	view._process(AccidentReport.REVEAL_DELAY_S * 0.5)
+	_check("held card stays hidden before its beat", not view._content_visible)
+	var newer := source.duplicate(true)
+	newer.total_minor = 7000
+	newer.known_subtotal_minor = 7000
+	newer.high_minor = 7000
+	view.show_assessment(newer, true, true)
+	view._process(AccidentReport.REVEAL_DELAY_S)
+	final_text = view._headline_state(newer).amount
+	_check("held card opens with the newest value and starts its count-up", view._report_panel.visible
+		and amount_label.text != final_text, amount_label.text)
+	view._process(AccidentReport.COUNT_UP_S * 0.5)
+	var middle := amount_label.text
+	view._process(AccidentReport.COUNT_UP_S)
+	_check("count-up passes through an intermediate amount and lands on the exact headline",
+		middle != final_text and amount_label.text == final_text and view._count_up_elapsed < 0.0, "%s -> %s" % [middle, amount_label.text])
+	view.show_assessment(newer, true, true)
+	_check("an update to the visible card is immediate, without a second beat", view._reveal_pending.is_empty()
+		and amount_label.text == final_text)
+	view.clear_report()
+	view.show_assessment(source, true, true)
+	view.suspend(true)
+	view._process(AccidentReport.REVEAL_DELAY_S * 2.0)
+	_check("a paused flight holds the beat", not view._content_visible and not view._reveal_pending.is_empty())
+	view.suspend(false)
+	view.clear_report()
+	view._process(AccidentReport.REVEAL_DELAY_S * 2.0)
+	_check("restart cancels a held card", not view._content_visible and view._reveal_pending.is_empty())
+	view.show_assessment(source, true)
+	_check("tests and replays without animation show the exact card at once", view._report_panel.visible
+		and amount_label.text == view._headline_state(source).amount)
+	view.queue_free()
+	await _ui.settle()
 
 
 func _cost_plan_behavior() -> void:

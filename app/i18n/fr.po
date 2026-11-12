@@ -12338,6 +12338,9 @@ msgstr "Redémarrez sur l’aire pour voler à nouveau."
 msgid "No controller: connect or check the controller."
 msgstr "Aucune manette : connectez ou vérifiez la manette."
 
+msgid "T: next race course (back on the pad)."
+msgstr "T : parcours de course suivant (retour sur la plateforme)."
+
 msgid "Practice oval 1"
 msgstr "Ovale d'entraînement 1"
 

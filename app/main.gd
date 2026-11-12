@@ -368,6 +368,8 @@ var _accident_ground_stable := false
 var _accident_reload_pending := false
 ## CR-22e: true once the frame that first saw the current crash has passed.
 var _accident_crash_deferred := false
+## CR-22e: true only while the live frame path commits a background valuation.
+var _accident_presenting_live := false
 var _accident_checkpoint_restoring := false
 var _accident_paired_history := false
 var _crash_director: CrashDirector
@@ -1181,6 +1183,7 @@ func _prepare_flight() -> void:
 		crash_context.workshop_trial = workshop_trial
 		crash_context.aircraft_data_path = session.aircraft_path
 		crash_context.cg_model = _cg_model
+		crash_context.collision_world = _camera_obstacles # The world installed in the session, read-only (CR-22e).
 		crash_context.pose_provider = Callable(self, "_current_pose")
 		crash_context.wind_provider = Callable(self, "_render_wind")
 		crash_context.shadow = _shadow
@@ -1353,7 +1356,7 @@ func _process(delta: float) -> void:
 		var crash_frame: bool = not session.crash.is_empty() and not _accident_crash_deferred
 		_accident_crash_deferred = not session.crash.is_empty()
 		if not crash_frame:
-			_update_accident_report()
+			_update_accident_report(true)
 	if flight_log != null and _flight_log_label != null:
 		_update_flight_log_label()
 	if _capturing:
@@ -2867,7 +2870,9 @@ func _observe_accident_settlement() -> void:
 
 
 ## All valuation, UI publication and persistence run outside accepted simulation callbacks.
-func _update_accident_report() -> void:
+## `live` (the per-frame flight path, CR-22e): value new revisions on a worker thread and let a new
+## terminal card arrive after a short beat with a counted-up headline. Direct callers stay synchronous.
+func _update_accident_report(live := false) -> void:
 	if _accident_evidence_warning_pending:
 		_accident_evidence_warning_pending = false
 		_note = tr("Accident cost evidence is incomplete; some contact observations were rejected.")
@@ -2880,11 +2885,15 @@ func _update_accident_report() -> void:
 			_accident_report.show_archived(archived)
 		_accident_restored = true # Earlier contacts under the changed identity were not retained.
 		_on_accident_contacts()
+	if live:
+		_accident_presenting_live = true
+		_accident_incident.evaluate_in_background()
+		_accident_presenting_live = false
 	var archive_result: int = _accident_incident.flush()
 	if archive_result != OK and archive_result != _accident_archive_error:
 		_note = tr("Accident report could not be saved; it remains available for this session.")
 	_accident_archive_error = archive_result
-	if _accident_settled_pending and not _accident_incident.terminal:
+	if _accident_settled_pending and not _accident_incident.terminal and not _accident_incident.valuation_in_flight():
 		_accident_report.show_settled(_accident_incident.report)
 		_accident_settled_pending = false
 	elif not _accident_ground_stable:
@@ -2906,7 +2915,7 @@ func _begin_accident_ledger() -> void:
 
 
 func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
-	_accident_report.show_assessment(report, terminal)
+	_accident_report.show_assessment(report, terminal, _accident_presenting_live)
 
 
 func _on_accident_costing_mode_requested(mode: String) -> void:

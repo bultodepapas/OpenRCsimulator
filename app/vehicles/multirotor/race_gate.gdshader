@@ -27,6 +27,8 @@ uniform float chase_speed = 1.6;
 uniform float flash = 0.0;
 uniform float breathe = 0.0;
 uniform float weave = 0.05;
+// 1 / the scene's tonemap exposure: LED emission keeps its on-screen level and hue under eye adaptation (night).
+uniform float exposure_comp = 1.0;
 
 varying vec3 local_pos;
 
@@ -60,5 +62,5 @@ void fragment() {
 	float level = led_energy * mix(1.0, run, chase) * swell + flash * 2.0;
 	ALBEDO = albedo;
 	ROUGHNESS = mix(0.75, 0.35, led);
-	EMISSION = led_rgb * led * level + base * panel_glow;
+	EMISSION = (led_rgb * led * level + base * panel_glow) * exposure_comp;
 }

@@ -10958,6 +10958,9 @@ msgstr "Reinicia en la plataforma para volver a volar."
 msgid "No controller: connect or check the controller."
 msgstr "Sin controlador: conecta o revisa el controlador."
 
+msgid "T: next race course (back on the pad)."
+msgstr "T: siguiente recorrido de carrera (de vuelta en la plataforma)."
+
 msgid "Practice oval 1"
 msgstr "Óvalo de práctica 1"
 

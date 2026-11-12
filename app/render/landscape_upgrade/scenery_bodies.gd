@@ -3,10 +3,14 @@
 extends RefCounted
 const Frames := preload("res://render/frames.gd")
 const WreckScene := preload("res://render/crash/wreck.gd")
+const SceneryDamage := preload("res://sim/scenery_damage.gd")
 const RANGE_M := 65.0
 const MAX_BODIES := 160
 
-static func build_near(world: Dictionary, point_ned: PackedFloat64Array) -> Node3D:
+## `broken` (optional, CR-22e): scenery damage records; their broken proxies are skipped exactly as
+## FlightSession.collision_world(true) removes them, so a caller can pass the installed world itself
+## instead of a deep copy of every proxy.
+static func build_near(world: Dictionary, point_ned: PackedFloat64Array, broken: Dictionary = {}) -> Node3D:
 	var root := Node3D.new()
 	root.name = "SceneryWreckContacts"
 	if point_ned.size() != 3:
@@ -15,6 +19,8 @@ static func build_near(world: Dictionary, point_ned: PackedFloat64Array) -> Node
 	for proxy: Dictionary in world.get("proxies", []):
 		# Leaves do not become solid walls when an aircraft breaks up.
 		if str(proxy.get("response_class", "")) == "soft_foliage_impulse":
+			continue
+		if not broken.is_empty() and SceneryDamage.id_is_broken(broken, str(proxy.get("damage_id", ""))):
 			continue
 		var margin := maxf(float(proxy.get("radius", 0.0)), maxf(float(proxy.get("half_x", 0.0)), float(proxy.get("half_z", 0.0))))
 		if absf(float(proxy.north) - point_ned[0]) > RANGE_M + margin or absf(float(proxy.east) - point_ned[1]) > RANGE_M + margin:

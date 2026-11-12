@@ -12193,6 +12193,9 @@ msgstr "Riparti dalla piazzola per volare di nuovo."
 msgid "No controller: connect or check the controller."
 msgstr "Nessun controller: collega o controlla il controller."
 
+msgid "T: next race course (back on the pad)."
+msgstr "T: percorso di gara successivo (di nuovo sulla piazzola)."
+
 msgid "Practice oval 1"
 msgstr "Ovale di allenamento 1"
 

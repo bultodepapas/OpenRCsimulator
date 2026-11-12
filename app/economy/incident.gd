@@ -121,6 +121,18 @@ var _report_serial := 0
 ## automatic plan and the identical "Automatic" purchase option are prepared once.
 var _prepare_memo_active := false
 var _prepare_memo: Dictionary = {}
+## CR-22e: the runtime owner may value pending revisions in the background. A worker runs the
+## unchanged _recalculate() on a private copy of this ledger; the frame commits its outputs.
+## Every synchronous entry point (evaluate_pending, checkpoint, setters, archive) first waits.
+var _valuation_task_id := -1
+var _valuation_job: Dictionary = {}
+## Never copied into a valuation clone: session caches, worker bookkeeping and pass-local memo.
+const _VALUATION_SKIP: Array[String] = ["_catalog_cache", "_catalog_cache_key", "_recipe_cache",
+	"_recipe_cache_loaded", "_recipe_cache_hash", "async_archive", "_archive_task_id", "_archive_job",
+	"_valuation_task_id", "_valuation_job", "_prepare_memo_active", "_prepare_memo"]
+## Outputs of one _recalculate() that a background valuation hands back.
+const _VALUATION_OUTPUTS: Array[String] = ["report", "_active_cost_receipt", "_costing_error",
+	"_purchase_options_key", "_purchase_options_cache"]
 
 
 func begin(aircraft_id: String, source_hash: String) -> void:
@@ -132,6 +144,7 @@ func begin(aircraft_id: String, source_hash: String) -> void:
 
 
 func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: String) -> void:
+	_discard_valuation_job() # A stale valuation of the previous incident must never land in this one.
 	_collect_archive_job(true) # A write of the previous incident finishes before its state is replaced.
 	dossier =loaded.get("dossier", {}).duplicate(true) if loaded.get("ok", false) else {}
 	_catalog_errors = Array(loaded.get("errors", []))
@@ -332,7 +345,7 @@ func set_purchase_package(id: String) -> Dictionary:
 
 
 func _prepare_purchase(mode: String, id: String) -> Dictionary:
-	var memo_key := mode + "\u001f" + id
+	var memo_key := "%d\u001f%s\u001f%s" % [_revision, mode, id]
 	if _prepare_memo_active and _prepare_memo.has(memo_key):
 		return _prepare_memo[memo_key]
 	var context := cost_transaction_context()
@@ -406,6 +419,7 @@ func prepare_restore(value: Variant, tick: int, bindings: Dictionary) -> Diction
 ## Internal transaction commit: call only with a successful prepare_restore result.
 ## The UI owner commits this after its associated physics checkpoint succeeds.
 func commit_restore(prepared: Dictionary) -> void:
+	_discard_valuation_job()
 	_collect_archive_job(true)
 	var data: Dictionary = prepared.data
 	_identity = data.identity.duplicate(true)
@@ -920,6 +934,7 @@ func _queue_assessment(tick: int) -> void:
 
 ## Frame/reset/exit boundary only: no price calculation, UI signal or disk I/O in observe().
 func evaluate_pending() -> void:
+	_collect_valuation_job(true) # Synchronous callers see every accepted revision valued.
 	if not _pending and not _evidence_pending:
 		return
 	if not _pending:
@@ -930,6 +945,72 @@ func evaluate_pending() -> void:
 	_evidence_pending = false
 	_apply_game_assessment()
 	_recalculate()
+
+
+## CR-22e frame path: commit a finished background valuation, or start one for a pending
+## revision. Revisions accepted while one is in flight coalesce into the next pass, exactly
+## like a slower frame cadence (CR-39h: publication cadence cannot change the result).
+## Returns true while a valuation is in flight.
+func evaluate_in_background() -> bool:
+	_collect_valuation_job(false)
+	if _valuation_task_id >= 0:
+		return true
+	if not _pending:
+		return false
+	_pending = false
+	_evidence_pending = false
+	_apply_game_assessment() # Cheap and mutating: stays on this thread, before the copy.
+	_valuation_job = {clone = _valuation_clone()}
+	_valuation_task_id = WorkerThreadPool.add_task(Callable(get_script(), "_valuation_worker").bind(_valuation_job),
+		false, "accident valuation")
+	return true
+
+
+func valuation_in_flight() -> bool:
+	return _valuation_task_id >= 0
+
+
+## Block until a background valuation has landed (tests, explicit owners).
+func wait_for_valuation() -> void:
+	_collect_valuation_job(true)
+
+
+func _valuation_clone() -> RefCounted:
+	var clone: RefCounted = get_script().new()
+	for property: Dictionary in get_property_list():
+		if not (int(property.usage) & PROPERTY_USAGE_SCRIPT_VARIABLE) or _VALUATION_SKIP.has(str(property.name)):
+			continue
+		var value: Variant = get(property.name)
+		clone.set(property.name, value.duplicate(true) if value is Dictionary or value is Array else value)
+	return clone
+
+
+static func _valuation_worker(job: Dictionary) -> void:
+	job.clone._recalculate() # No connections on the clone: its signal reaches nobody.
+
+
+func _collect_valuation_job(wait: bool) -> void:
+	if _valuation_task_id < 0:
+		return
+	if not wait and not WorkerThreadPool.is_task_completed(_valuation_task_id):
+		return
+	WorkerThreadPool.wait_for_task_completion(_valuation_task_id)
+	_valuation_task_id = -1
+	var clone: RefCounted = _valuation_job.clone
+	_valuation_job = {}
+	for field: String in _VALUATION_OUTPUTS:
+		set(field, clone.get(field))
+	_dirty = true
+	_evidence_only_dirty = false
+	_report_serial += 1
+	assessment_changed.emit(report.duplicate(true), terminal)
+
+
+func _discard_valuation_job() -> void:
+	if _valuation_task_id >= 0:
+		WorkerThreadPool.wait_for_task_completion(_valuation_task_id)
+	_valuation_task_id = -1
+	_valuation_job = {}
 
 
 ## Update cumulative evidence without rerunning the price optimizer or creating
@@ -949,7 +1030,7 @@ func _refresh_report_evidence() -> void:
 	_dirty = true
 	_evidence_only_dirty = true
 	_report_serial += 1
-	if _flush_error == OK:
+	if _flush_error == OK and _archive_task_id < 0: # An in-flight write's outcome is not known yet.
 		_flush_attempt_revision = -1
 
 
@@ -1292,6 +1373,8 @@ func _purchase_options() -> Array:
 ## Called outside accepted-tick callbacks. Persistence is a single bounded latest-report snapshot.
 func flush(force_retry := false) -> Error:
 	_collect_archive_job(force_retry)
+	if _valuation_task_id >= 0 and not force_retry:
+		return _flush_error as Error # The report is being revalued; it is written after it lands.
 	evaluate_pending()
 	if not _dirty or report.is_empty() or (_persisted_revision == _revision and not _evidence_only_dirty):
 		return OK
@@ -1300,8 +1383,9 @@ func flush(force_retry := false) -> Error:
 		return OK
 	if _flush_attempt_revision == _revision and _flush_error != OK and not force_retry:
 		return _flush_error as Error
+	# A previous failure stays reported until a write succeeds, as with synchronous writes.
 	if _archive_task_id >= 0:
-		return OK # One write in flight; a later frame writes the newest report.
+		return _flush_error as Error # One write in flight; a later frame writes the newest report.
 	_flush_attempt_revision = _revision
 	if async_archive and not force_retry:
 		_archive_job = {report = report.duplicate(true), path = archive_path, revision = _revision,
@@ -1309,7 +1393,7 @@ func flush(force_retry := false) -> Error:
 		# A script-level callable: the worker never touches this ledger, only its own copy.
 		_archive_task_id = WorkerThreadPool.add_task(Callable(get_script(), "_archive_worker").bind(_archive_job),
 			false, "accident report archive")
-		return OK
+		return _flush_error as Error
 	_flush_error = _write_archive()
 	return _flush_error as Error
 
@@ -1362,9 +1446,10 @@ func _collect_archive_job(wait := false) -> void:
 	var job := _archive_job
 	_archive_job = {}
 	var error: Error = job.result.get("error", ERR_BUG)
-	if job.revision == _flush_attempt_revision:
-		_flush_error = error
+	_flush_error = error
 	if error != OK:
+		# Like a failed synchronous write: no automatic retry of this revision; archive() retries.
+		_flush_attempt_revision = job.revision
 		return
 	_persisted_revision = job.revision
 	_last_archive_tick = job.last_tick

@@ -11366,6 +11366,9 @@ msgstr "请在起降台重新开始以再次飞行。"
 msgid "No controller: connect or check the controller."
 msgstr "无控制器：请连接或检查控制器。"
 
+msgid "T: next race course (back on the pad)."
+msgstr "T：下一条比赛赛道（回到起飞台）。"
+
 msgid "Practice oval 1"
 msgstr "练习椭圆 1"
 

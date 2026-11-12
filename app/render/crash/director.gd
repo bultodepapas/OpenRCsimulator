@@ -246,7 +246,9 @@ func _start() -> void:
 		report["obstacle_id"] = str(impact.obstacle_id)
 		report["response_class"] = str(impact.response_class)
 		report["mass_basis"] = "rigid-body effective mass at the swept contact; material transfer remains estimated"
-		_scenery_contacts = SceneryBodies.build_near(context.session.collision_world(true), point)
+		# CR-22e: the installed world without its per-call deep copy; broken proxies are skipped as before.
+		_scenery_contacts = SceneryBodies.build_near(context.collision_world, point, context.session.scenery_damage()) \
+			if not context.collision_world.is_empty() else SceneryBodies.build_near(context.session.collision_world(true), point)
 		add_child(_scenery_contacts)
 	report["trigger"] = impact.trigger
 	# E3d1: the soft-contact rule ends a flight only at C2 energy (transfer-free), so it never shows as a scrape.

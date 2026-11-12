@@ -51,7 +51,7 @@ const LAMP_GREEN := Color(0.15, 1.0, 0.25)
 const LAMP_YELLOW := Color(1.0, 0.8, 0.1)
 ## Guidance: path dot spacing and size (m), chevron size and its height above the banner (m), the gate light's range.
 const PATH_SPACING_M := 0.9
-const PATH_DOT_M := 0.16
+const PATH_DOT_M := 0.26
 const PATH_MAX_DOTS := 160
 const CHEVRON_SIZE := Vector2(0.75, 0.55)
 const CHEVRON_LIFT_M := 0.8
@@ -80,8 +80,14 @@ var chevron: MeshInstance3D
 var gate_light: OmniLight3D
 var path: MultiMeshInstance3D
 var next_gate := -1
-## 0 by day … 1 at night (from the sun's energy); scales the light-only elements.
+## 0 by day … 1 at night (from the scene's exposure); scales the light-only elements.
 var night := 0.0
+## 1 / the scene's tonemap exposure; every light-only element and LED emission is multiplied by it.
+var exposure_comp := 1.0
+## Response of light-only elements to the scene exposure: comp = exposure ^ -exposure_gamma. 0.5 measured on the
+## default field at night (exposure 2497 under AgX): 1.0 left the neon nearly invisible, 0 burned it to white.
+var exposure_gamma := 0.5
+var _exposure_set := false
 ## Identity of the prepared course this visual draws.
 var course_identity := ""
 var _finish := -1
@@ -326,7 +332,7 @@ func _build_guidance() -> void:
 	chevron_material.shader = MarkerShader
 	chevron_material.set_shader_parameter("shape", 1)
 	chevron_material.set_shader_parameter("marker_color", LED_NEXT)
-	chevron_material.set_shader_parameter("energy", 0.9 + 0.8 * night)
+	chevron_material.set_shader_parameter("energy", 0.6 + 1.0 * night)
 	chevron.material_override = chevron_material
 	chevron.visible = false
 	root.add_child(chevron)
@@ -334,7 +340,7 @@ func _build_guidance() -> void:
 	gate_light.name = "NextGateLight"
 	gate_light.light_color = LED_NEXT
 	gate_light.omni_range = GATE_LIGHT_RANGE_M
-	gate_light.light_energy = 0.25 + 1.6 * night
+	gate_light.light_energy = (0.25 + 0.45 * night) * exposure_comp
 	gate_light.shadow_enabled = false
 	gate_light.visible = false
 	root.add_child(gate_light)
@@ -354,7 +360,7 @@ func _build_guidance() -> void:
 	path_material.shader = MarkerShader
 	path_material.set_shader_parameter("shape", 0)
 	path_material.set_shader_parameter("marker_color", LED_NEXT)
-	path_material.set_shader_parameter("energy", 0.55 + 0.9 * night)
+	path_material.set_shader_parameter("energy", 1.1 + 0.6 * night)
 	path.material_override = path_material
 	path.visible = false
 	root.add_child(path)
@@ -377,7 +383,7 @@ func free_nodes() -> void:
 func set_next(next: int) -> void:
 	next_gate = next
 	var count := gate_views.size()
-	var light_scale := 0.35 + 1.4 * night
+	var light_scale := 0.35 + 2.6 * night
 	for index in count:
 		var state := GateState.CALM
 		if next >= 0 and index == next:
@@ -390,7 +396,7 @@ func set_next(next: int) -> void:
 		var led: Color = [calm, LED_NEXT, LED_AFTER][state]
 		var panel: Color = [PANEL_COLORS[index % PANEL_COLORS.size()], PANEL_NEXT, PANEL_AFTER][state]
 		# Daylight emission stays below saturation so the LED keeps its hue (white means overexposed).
-		var energy: float = [0.35, 1.0, 0.6][state] * (1.0 + 0.6 * night)
+		var energy: float = [0.35, 1.0, 0.6][state] * (1.0 + 2.0 * night)
 		var glow: float = [0.0, 0.18, 0.05][state]
 		var width: float = [0.025, 0.045, 0.035][state]
 		for material: ShaderMaterial in gate_materials[index]:
@@ -405,6 +411,7 @@ func set_next(next: int) -> void:
 			material.set_shader_parameter("glow_color", led)
 			material.set_shader_parameter("energy", float(HALO_ENERGY[state]) * light_scale)
 			material.set_shader_parameter("chase", 1.0 if state == GateState.NEXT else 0.0)
+	gate_light.light_energy = (0.25 + 0.45 * night) * exposure_comp
 	_place_guidance(next)
 
 
@@ -444,6 +451,31 @@ func _place_guidance(next: int) -> void:
 		path.multimesh.set_instance_transform(i, Transform3D(Basis(), p))
 		path.multimesh.set_instance_color(i, Color(1, 1, 1, t))
 	path.multimesh.visible_instance_count = dots
+
+
+## Follow the scene's eye-adapted exposure (World's tonemap): light-only elements are scaled by its inverse so they
+## keep their colour on screen, and the night factor is read from it (exposure 1 by day, about 10^3 at night).
+func set_exposure(exposure: float) -> void:
+	var value: float = exposure if is_finite(exposure) and exposure > 0.0 else 1.0
+	var comp: float = pow(value, -exposure_gamma)
+	if _exposure_set and absf(comp / exposure_comp - 1.0) < 0.03:
+		return
+	_exposure_set = true
+	exposure_comp = comp
+	night = clampf(log(value) / log(10.0) / 3.0, 0.0, 1.0)
+	var all: Array = []
+	for group: Array in gate_materials:
+		all.append_array(group)
+	for group: Array in halo_materials:
+		all.append_array(group)
+	all.append(chevron.material_override)
+	all.append(path.material_override)
+	for material: ShaderMaterial in all:
+		material.set_shader_parameter("exposure_comp", comp)
+	(chevron.material_override as ShaderMaterial).set_shader_parameter("energy", 0.6 + 2.0 * night)
+	(path.material_override as ShaderMaterial).set_shader_parameter("energy", 1.1 + 1.9 * night)
+	_lamp_state = ""
+	set_next(next_gate)
 
 
 ## A gate the race director has just scored flashes white.
@@ -495,4 +527,4 @@ func _update_lamps(race: Dictionary) -> void:
 		return
 	_lamp_state = state
 	for k in LAMPS_PER_SIDE:
-		lamp_materials[k].albedo_color = colour if k < lit else LAMP_OFF
+		lamp_materials[k].albedo_color = (colour if k < lit else LAMP_OFF) * exposure_comp * (1.0 + 2.0 * night)

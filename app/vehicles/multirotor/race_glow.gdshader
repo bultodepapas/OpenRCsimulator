@@ -12,6 +12,8 @@ uniform float chase_speed = 1.6;
 // Chase segments along the edge (edge length / segment length).
 uniform float segments = 8.0;
 uniform float flash = 0.0;
+// 1 / the scene's tonemap exposure (eye adaptation at night would otherwise burn the halo to white).
+uniform float exposure_comp = 1.0;
 
 void fragment() {
 	float d = dot(UV - vec2(0.5), edge_dir) * 2.0;
@@ -20,5 +22,5 @@ void fragment() {
 	float run = 0.45 + 0.55 * smoothstep(0.35, 0.65, fract(along * segments - TIME * chase_speed));
 	float modulation = mix(1.0, run, chase);
 	vec3 colour = mix(glow_color.rgb, vec3(1.0), clamp(flash, 0.0, 1.0));
-	ALBEDO = colour * falloff * (energy * modulation + flash * 1.5);
+	ALBEDO = colour * falloff * (energy * modulation + flash * 1.5) * exposure_comp;
 }

@@ -81,6 +81,12 @@ var _toast_remaining := 0.0
 var _layout_retry_frames := 0
 var _evidence_warning := false
 var _archive_unavailable := false
+## CR-22e presentation beat: a held terminal card and the headline count-up clock (-1 = idle).
+const REVEAL_DELAY_S := 0.6
+const COUNT_UP_S := 0.9
+var _reveal_pending: Dictionary = {}
+var _reveal_remaining := 0.0
+var _count_up_elapsed := -1.0
 
 
 func mark_evidence_unavailable() -> void:
@@ -109,9 +115,20 @@ func _notification(what: int) -> void:
 
 
 ## Shows a copied assessment. Incomplete values stay labeled as a range, subtotal, or unknown amount.
-func show_assessment(report: Dictionary, terminal: bool = true) -> void:
+## CR-22e: `animate` (live flight only) holds a new terminal card for a short beat while the camera
+## shows the wreck, then counts its headline up; the values and their labels are unchanged.
+func show_assessment(report: Dictionary, terminal: bool = true, animate: bool = false) -> void:
 	if _surface == null:
 		_build_ui()
+	var showing_card: bool = _content_visible and _terminal and not _archived \
+		and not _incident_id(report).is_empty() and _incident_id(report) == _incident_id(_report)
+	if animate and terminal and not showing_card:
+		if _reveal_pending.is_empty():
+			_reveal_remaining = REVEAL_DELAY_S
+		_reveal_pending = {report = report.duplicate(true), terminal = terminal} # The newest value wins.
+		return
+	_reveal_pending = {}
+	_count_up_elapsed = -1.0
 	var id := _incident_id(report)
 	var preserve_view: bool = not id.is_empty() and id == _incident_id(_report) and not _archived and terminal == _terminal \
 		and report.get("costing_available", false) == true and _report.get("costing_available", false) == true
@@ -186,6 +203,8 @@ static func _incident_id(value: Dictionary) -> String:
 
 ## Restores an immutable previous assessment behind a small reopen control, without taking focus or input.
 func show_archived(report: Dictionary) -> void:
+	_reveal_pending = {} # CR-22e: another presentation supersedes a held or counting card.
+	_count_up_elapsed = -1.0
 	if _surface == null:
 		_build_ui()
 	_report = report.duplicate(true)
@@ -231,6 +250,8 @@ func show_archive_unavailable() -> void:
 
 ## Shows a prominent read-only report when a nonterminal incident settles on the ground.
 func show_settled(report: Dictionary) -> void:
+	_reveal_pending = {} # CR-22e: another presentation supersedes a held or counting card.
+	_count_up_elapsed = -1.0
 	if _surface == null:
 		_build_ui()
 	_report = report.duplicate(true)
@@ -269,6 +290,8 @@ func dismiss_settled() -> void:
 
 ## Removes the current report after an intentional caller action, such as restarting the incident.
 func clear_report() -> void:
+	_reveal_pending = {} # CR-22e: another presentation supersedes a held or counting card.
+	_count_up_elapsed = -1.0
 	_archive_unavailable = false
 	_evidence_warning = false
 	_report.clear()
@@ -324,6 +347,17 @@ func suspend(on: bool) -> void:
 
 
 func _process(delta: float) -> void:
+	if not _suspended and not _reveal_pending.is_empty():
+		_reveal_remaining -= delta
+		if _reveal_remaining <= 0.0:
+			var held := _reveal_pending
+			_reveal_pending = {}
+			show_assessment(held.report, held.terminal)
+			_count_up_elapsed = 0.0 if COUNT_UP_S > 0.0 else -1.0
+			_apply_count_up()
+	elif not _suspended and _count_up_elapsed >= 0.0:
+		_count_up_elapsed += delta
+		_apply_count_up()
 	if not _suspended and _content_visible and _layout_retry_frames > 0:
 		_layout()
 		_layout_retry_frames -= 1
@@ -339,6 +373,30 @@ func _process(delta: float) -> void:
 		_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_apply_action_visibility()
 		_layout()
+
+
+## Headline count-up: the same formatter on proportionally scaled amounts (ease-out). A frame whose
+## scaled state would read differently (status, range kind) shows the final text instead.
+func _apply_count_up() -> void:
+	if _count_up_elapsed < 0.0 or _amount_label == null:
+		return
+	var final_state := _headline_state(_report)
+	var t := clampf(_count_up_elapsed / COUNT_UP_S, 0.0, 1.0)
+	var text: String = final_state.amount
+	if t < 1.0:
+		var scaled := _report.duplicate() # Shallow: only the four headline amounts are replaced.
+		var eased := 1.0 - pow(1.0 - t, 3.0)
+		for field: String in ["total_minor", "low_minor", "high_minor", "known_subtotal_minor"]:
+			var amount: Variant = _valid_minor(_report.get(field))
+			if amount != null:
+				scaled[field] = int(round(float(amount) * eased))
+		var state := _headline_state(scaled)
+		if state.status == final_state.status:
+			text = state.amount
+	else:
+		_count_up_elapsed = -1.0
+	_amount_label.text = text
+	_toast_amount.text = text
 
 
 func _unhandled_input(event: InputEvent) -> void:

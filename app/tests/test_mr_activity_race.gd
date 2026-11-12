@@ -101,6 +101,19 @@ func _run() -> void:
 		and _scene.course_visual.gate_states[0] == CourseVisual.GateState.NEXT
 		and _scene.course_visual.gate_states[1] == CourseVisual.GateState.AFTER
 		and _scene.course_visual.gate_states[2] == CourseVisual.GateState.CALM, _scene.hud.countdown_label.text)
+	var cv: RefCounted = _scene.course_visual
+	var red: Color = cv.lamp_materials[0].albedo_color
+	_check("DR-32 the countdown shows the guidance: chevron and light at gate 1, a dotted path from the pad, red start lamps",
+		cv.chevron.visible and cv.gate_light.visible and cv.path.visible and cv.path.multimesh.visible_instance_count > 2
+		and cv.chevron.position.distance_to((cv.gate_frames[0].top as Vector3) + (cv.gate_frames[0].up as Vector3) * cv.CHEVRON_LIFT_M) < 1.0e-4
+		and red.r > 4.0 * red.g, "lamp %s, %d dots" % [red, cv.path.multimesh.visible_instance_count])
+	_check("DR-28 the pause menu offers the field's other course", _scene.hud.course_button.visible
+		and _scene.hud.course_button.text == "Course: Practice oval 1", _scene.hud.course_button.text)
+	cv.gate_passed(3)
+	cv.update(0.1, {})
+	_check("DR-32 a scored gate flashes white, then fades", float(cv.gate_materials[3][0].get_shader_parameter("flash")) > 0.5)
+	cv.update(1.0, {})
+	_check("DR-32 the flash is over after its time", float(cv.gate_materials[3][0].get_shader_parameter("flash")) == 0.0)
 	var racing: bool = await _until(func() -> bool: return _phase() == Director.PHASE_RACING, 1500)
 	await _settle()
 	_check("GO after the countdown with the motors armed: RACING and the lap line on the OSD", racing

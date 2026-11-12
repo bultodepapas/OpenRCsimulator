@@ -1,4 +1,4 @@
-## DR-31b: drawing primitives of the FPV quad OSD (Betaflight/INAV-style graphics): white strokes and monospaced
+## DR-31b/c: drawing primitives of the FPV quad OSD (Betaflight/INAV-style graphics): white strokes and monospaced
 ## text with a dark outline so every element reads against bright sky and dark ground, the compass tape, scrolling
 ## speed/altitude sidebars, pitch ladder, battery gauge, home arrow, vario chevrons, stick overlay and motor bars.
 ## Stateless: each function draws into the CanvasItem it is given during that item's draw callback.
@@ -12,6 +12,8 @@ const DANGER := Color("#FF5A4A")
 const ARMED := UiTheme.FOCUS
 const CAUTION := UiTheme.CAUTION
 const SHADE := Color(0.0, 0.0, 0.0, 0.42)
+## Severity colours of HD DisplayPort fonts (normal, info, warning, critical); analog characters are all white.
+const SEVERITY := [TEXT, ARMED, CAUTION, DANGER]
 const CARDINALS := {0: "N", 45: "NE", 90: "E", 135: "SE", 180: "S", 225: "SW", 270: "W", 315: "NW"}
 
 static var _font: Font
@@ -237,3 +239,81 @@ static func motors(ci: CanvasItem, rect: Rect2, commands: PackedFloat64Array, s:
 			ci.draw_rect(Rect2(Vector2(bar.position.x, bar.end.y - bar.size.y * fill), Vector2(bar.size.x, bar.size.y * fill)), color, true)
 		ci.draw_rect(bar, Color(TEXT, 0.8), false, 1.0)
 		text(ci, Vector2(bar.get_center().x, bar.end.y + 10.0 * s), str(i + 1), size, TEXT, 0)
+
+
+## The crosshair at the picture centre in one of INAV's styles: default (wings and a centre tick), aircraft (wings,
+## fin and tail), cross (+) or dot.
+static func crosshair(ci: CanvasItem, centre: Vector2, style: String, s: float) -> void:
+	match style:
+		"aircraft":
+			var span := 34.0 * s
+			stroke(ci, centre + Vector2(-span, 0.0), centre + Vector2(-8.0 * s, 0.0), 2.5 * s)
+			stroke(ci, centre + Vector2(8.0 * s, 0.0), centre + Vector2(span, 0.0), 2.5 * s)
+			polyline(ci, PackedVector2Array([centre + Vector2(-8.0, 0.0) * s, centre + Vector2(0.0, 7.0) * s,
+				centre + Vector2(8.0, 0.0) * s]), 2.5 * s)
+			stroke(ci, centre + Vector2(0.0, -12.0 * s), centre + Vector2(0.0, -4.0 * s), 2.5 * s)
+		"cross":
+			var arm := 14.0 * s
+			stroke(ci, centre + Vector2(-arm, 0.0), centre + Vector2(arm, 0.0), 2.5 * s)
+			stroke(ci, centre + Vector2(0.0, -arm), centre + Vector2(0.0, arm), 2.5 * s)
+		"dot":
+			ci.draw_circle(centre, 5.0 * s, OUTLINE)
+			ci.draw_circle(centre, 3.2 * s, TEXT)
+		_:
+			var wing := 26.0 * s
+			var gap := 9.0 * s
+			for side: float in [-1.0, 1.0]:
+				stroke(ci, centre + Vector2(side * gap, 0.0), centre + Vector2(side * (gap + wing), 0.0), 2.5 * s)
+			stroke(ci, centre + Vector2(0.0, -gap * 0.6), centre + Vector2(0.0, gap * 0.6), 2.5 * s)
+
+
+## A stopwatch icon (the fly-timer symbol) centred at `at` with radius r.
+static func icon_clock(ci: CanvasItem, at: Vector2, r: float, color: Color = TEXT) -> void:
+	ci.draw_arc(at, r, 0.0, TAU, 20, OUTLINE, r * 0.55, true)
+	ci.draw_arc(at, r, 0.0, TAU, 20, color, r * 0.25, true)
+	ci.draw_line(at, at + Vector2(0.0, -r * 0.65), color, r * 0.22, true)
+	ci.draw_line(at, at + Vector2(r * 0.5, 0.0), color, r * 0.22, true)
+	ci.draw_line(at + Vector2(0.0, -r * 1.15), at + Vector2(0.0, -r * 1.45), color, r * 0.3, true)
+
+
+## A house icon (the home symbol) centred at `at`, `size` high.
+static func icon_home(ci: CanvasItem, at: Vector2, size: float, color: Color = TEXT) -> void:
+	var h := size * 0.5
+	var points := PackedVector2Array([at + Vector2(-h, h), at + Vector2(-h, -h * 0.1), at + Vector2(0.0, -h),
+		at + Vector2(h, -h * 0.1), at + Vector2(h, h)])
+	ci.draw_colored_polygon(points, color)
+	points.append(points[0])
+	ci.draw_polyline(points, OUTLINE, 1.5, true)
+	ci.draw_rect(Rect2(at + Vector2(-h * 0.22, h * 0.15), Vector2(h * 0.44, h * 0.85)), OUTLINE, true)
+
+
+## The next race gate: on the picture a diamond marker with the gate number and distance; off it (or behind the
+## camera) an arrow at the picture edge pointing toward it, like a racing simulator's gate guide.
+## screen: projected gate centre (px); behind: the gate lies behind the camera.
+static func gate_marker(ci: CanvasItem, size: Vector2, screen: Vector2, behind: bool, label: String, margin: float,
+		s: float, color: Color) -> void:
+	var centre := size * 0.5
+	var inner := Rect2(Vector2(margin, margin), size - Vector2(margin, margin) * 2.0)
+	if not behind and inner.has_point(screen):
+		var r := 13.0 * s
+		var diamond := PackedVector2Array([screen + Vector2(0.0, -r), screen + Vector2(r, 0.0), screen + Vector2(0.0, r),
+			screen + Vector2(-r, 0.0), screen + Vector2(0.0, -r)])
+		ci.draw_polyline(diamond, OUTLINE, 5.0 * s, true)
+		ci.draw_polyline(diamond, color, 2.5 * s, true)
+		text(ci, screen + Vector2(0.0, r + 14.0 * s), label, int(round(18.0 * s)), color, 0)
+		return
+	# Off the picture: the direction from the centre (mirrored when the gate is behind the camera).
+	var toward := (screen - centre) * (-1.0 if behind else 1.0)
+	if toward.length() < 1.0:
+		toward = Vector2(0.0, 1.0)
+	toward = toward.normalized()
+	var half := inner.size * 0.5
+	var reach := minf(half.x / maxf(absf(toward.x), 1.0e-6), half.y / maxf(absf(toward.y), 1.0e-6))
+	var tip := centre + toward * reach
+	var side := Vector2(-toward.y, toward.x)
+	var a := tip
+	var b := tip - toward * 26.0 * s + side * 15.0 * s
+	var c := tip - toward * 26.0 * s - side * 15.0 * s
+	ci.draw_colored_polygon(PackedVector2Array([a, b, c]), color)
+	ci.draw_polyline(PackedVector2Array([a, b, c, a]), OUTLINE, 2.0 * s, true)
+	text(ci, tip - toward * 46.0 * s, label, int(round(18.0 * s)), color, 0)

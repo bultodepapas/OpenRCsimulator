@@ -12311,6 +12311,9 @@ msgstr "Am Startplatz neu starten, um wieder zu fliegen."
 msgid "No controller: connect or check the controller."
 msgstr "Kein Controller: Controller anschließen oder prüfen."
 
+msgid "T: next race course (back on the pad)."
+msgstr "T: nächste Rennstrecke (zurück auf dem Startplatz)."
+
 msgid "Practice oval 1"
 msgstr "Übungsoval 1"
 

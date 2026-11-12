@@ -176,6 +176,7 @@ func _ready() -> void:
 	hud.set_variant(str(identity.get("variant", "")))
 	var battery: Variant = session.data.get("battery")
 	hud.cells = int((battery as Dictionary).get("cells", 0)) if typeof(battery) == TYPE_DICTIONARY else 0
+	hud.capacity_mah = 1000.0 * float((battery as Dictionary).get("capacity_ah", 0.0)) if typeof(battery) == TYPE_DICTIONARY else 0.0
 	hud.set_fixture(visual.fixture)
 	hud.action_requested.connect(handle_action)
 	session.crashed.connect(_on_crashed)
@@ -561,6 +562,8 @@ func handle_action(action: String) -> void:
 			restart_on_pad()
 		"throttle_limit":
 			cycle_throttle_limit()
+		"course":
+			cycle_course()
 		"help":
 			hud.toggle_help()
 		"home":
@@ -699,10 +702,18 @@ func _process(delta: float) -> void:
 	hud.update(t, {camera = view.view_name(), tilt_deg = view.tilt_deg, hfov_deg = view.hfov_deg,
 		vfov_deg = camera.fov if camera != null else 90.0, aspect = view.aspect(), attitude = drawn.slice(6, 10),
 		body = drawn, sticks = raw, stick_policy = str(_last_input.get("throttle_policy", "")),
+		accepted = session.sim.state, tick_dt = DT, gate = _osd_gate(), gate_number = course_visual.next_gate + 1 if course_visual != null else 0,
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
 		bindings = _osd_bindings(), throttle_limit = _session_limit()})
 	_update_gates(t.get("race", {}), delta)
 	_update_audio(t, delta)
+
+
+## DR-31c: the next race gate's render-space centre for the OSD gate guide, or null outside a race.
+func _osd_gate() -> Variant:
+	if course_visual == null or int(course_visual.next_gate) < 0 or int(course_visual.next_gate) >= course_visual.gate_frames.size():
+		return null
+	return (course_visual.gate_frames[course_visual.next_gate] as Dictionary).get("centre")
 
 
 ## The source's OSD bindings plus whether its latest sample is ready (a connected controller may not be yet).
@@ -872,11 +883,23 @@ func _sync_course_visual() -> void:
 	_build_gates()
 
 
+## The pause menu's Course button: the prepared course and whether the field offers another.
+func _refresh_course_choice() -> void:
+	if hud == null or session == null:
+		return
+	var offered := 0
+	for path: String in RACE_TRACKS:
+		if not _course_option(path).is_empty():
+			offered += 1
+	hud.set_course(str(session.course.get("track_name", "")) if session.race != null else "", offered > 1)
+
+
 ## The course as drawn (race_course_visual.gd): panels at the same boxes the session collides with, LED states,
 ## numbers, feet and the start pad.
 func _build_gates() -> void:
 	if session.race == null:
 		return
+	_refresh_course_choice()
 	course_visual = CourseVisual.new()
 	# Light-only course elements (neon halos, guidance) brighten as the sun's energy falls.
 	var night: float = 1.0 - clampf(float(_lighting.get("sun_energy", 1.0)), 0.0, 1.0)
@@ -888,6 +911,7 @@ func _build_gates() -> void:
 func _update_gates(race: Variant, delta := 0.0) -> void:
 	if course_visual == null or typeof(race) != TYPE_DICTIONARY:
 		return
+	course_visual.set_exposure(_environment.tonemap_exposure if _environment != null else 1.0)
 	course_visual.update(delta, race)
 	var next: int = int(race.get("next_gate", 0)) if str(race.get("phase", "")) in ["COUNTDOWN", "RACING"] else -1
 	if next == _gate_next:

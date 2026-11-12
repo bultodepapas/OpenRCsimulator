@@ -24,6 +24,9 @@ var wind_provider: Callable
 var shadow: MeshInstance3D
 var sun: DirectionalLight3D
 var propeller_blur: Node3D
+## CR-22e: the scenery collision world the owner installed in `session`, shared read-only so a
+## scenery crash does not deep-copy every proxy. Empty: ask the session for a detached copy.
+var collision_world: Dictionary = {}
 
 
 func is_valid() -> bool:

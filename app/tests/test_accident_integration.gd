@@ -211,6 +211,36 @@ func _test_archive_integrity(incident: RefCounted, reader: RefCounted) -> void:
 	check("refused corrupt reads preserve the saved valid quote", not reader.load_archive().is_empty() and reader.archive_load_error.is_empty())
 
 
+## CR-22e: a background valuation runs the same _recalculate() on a private copy; the committed
+## report, receipt and options equal the synchronous result, and newer revisions coalesce.
+func _test_background_valuation(session: Variant, bindings: Dictionary) -> void:
+	var sync := Incident.new()
+	var background := Incident.new()
+	var published: Array = []
+	background.assessment_changed.connect(func(report: Dictionary, terminal: bool) -> void: published.append([report, terminal]))
+	for ledger: RefCounted in [sync, background]:
+		ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
+		ledger._identity.incident_id = "background-valuation-fixture"
+		ledger.observe({tick = 1, events = [_strike(1, bindings)]}, bindings, false)
+	sync.evaluate_pending()
+	var started: bool = background.evaluate_in_background() and background.valuation_in_flight() and background.report.is_empty()
+	background.observe({tick = 2, events = []}, bindings, true) # Terminal while the first pass runs.
+	check("background valuation never blocks the frame path", started and background.flush() == OK and background.valuation_in_flight())
+	background.wait_for_valuation()
+	check("background valuation commits the synchronous report exactly", background.report == sync.report
+		and background._active_cost_receipt == sync._active_cost_receipt and published.size() == 1 and published[0][0] == sync.report)
+	sync.observe({tick = 2, events = []}, bindings, true)
+	sync.evaluate_pending()
+	var second_started: bool = background.evaluate_in_background()
+	background.wait_for_valuation()
+	check("a revision accepted during the pass is valued next", second_started and background.report == sync.report
+		and background.terminal and published.size() == 2 and not background.valuation_in_flight())
+	background.evaluate_in_background()
+	check("the synchronous entry points wait for an in-flight pass", background.checkpoint(2, bindings) != {} and not background.valuation_in_flight())
+	background.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
+	check("a new incident discards no state into the next ledger", background.report.is_empty() and not background.valuation_in_flight())
+
+
 ## CR-22e: the runtime writes on a worker thread from a copy; failure, retry and dirty tracking keep the synchronous contract.
 func _test_async_archive(session: Variant, bindings: Dictionary) -> void:
 	var ledger := Incident.new()
@@ -272,6 +302,7 @@ func _test_bounds(session: Variant) -> void:
 	ledger.archive()
 	check("explicit archival retries a previous failed write", ledger.flush() == OK and not ledger.load_archive().is_empty())
 	_test_async_archive(session, bindings)
+	_test_background_valuation(session, bindings)
 	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
 	ledger.observe({tick = 1, events = [{invalid = true}]}, bindings, true)
 	ledger.evaluate_pending()

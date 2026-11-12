@@ -189,7 +189,7 @@ func _launch(app: Node) -> Node:
 	_check("keyboard flights start with the 45% trainer throttle limit",
 		is_equal_approx(float(activity.session.options.throttle_limit), 0.45), str(activity.session.options.throttle_limit))
 	_check("the pad start hint names the arm key", "Press E to arm" in activity.hud.hint_label.text, activity.hud.hint_label.text)
-	_check("the OSD shows the pilot's Angle selection before the first tick", activity.hud.mode_label.text == "ANGLE",
+	_check("the OSD shows the pilot's Angle selection before the first tick", activity.hud.mode_label.text == "ANGL",
 		activity.hud.mode_label.text)
 	await process_frame
 	var viewport_centre: Vector2 = activity.hud.root_control.size * 0.5

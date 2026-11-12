@@ -11417,6 +11417,9 @@ msgstr "再び飛ぶにはパッドから再開してください。"
 msgid "No controller: connect or check the controller."
 msgstr "コントローラーがありません。接続または確認してください。"
 
+msgid "T: next race course (back on the pad)."
+msgstr "T: 次のレースコース（パッドに戻ります）。"
+
 msgid "Practice oval 1"
 msgstr "練習用オーバル 1"
 

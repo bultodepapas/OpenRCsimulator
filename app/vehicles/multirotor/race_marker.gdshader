@@ -9,8 +9,11 @@ uniform float energy = 1.0;
 uniform int shape = 0;
 uniform float flow_speed = 0.9;
 uniform float bob_m = 0.12;
+// 1 / the scene's tonemap exposure.
+uniform float exposure_comp = 1.0;
 
 varying float flow;
+varying float view_depth;
 
 void vertex() {
 	flow = COLOR.a;
@@ -18,6 +21,7 @@ void vertex() {
 	// Billboard: keep the instance origin, face the camera.
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2],
 		MODEL_MATRIX[3] + vec4(lift, 0.0));
+	view_depth = -(MODELVIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).z;
 }
 
 void fragment() {
@@ -32,5 +36,7 @@ void fragment() {
 		alpha = pow(clamp(1.0 - length(p), 0.0, 1.0), 2.0);
 	}
 	float wave = shape == 1 ? 1.0 : 0.35 + 0.65 * pow(fract(flow * 4.0 - TIME * flow_speed), 3.0);
-	ALBEDO = marker_color.rgb * alpha * energy * wave;
+	// Path dots fade out within a few metres of the camera (a dot at the lens would fill the picture).
+	wave *= shape == 1 ? 1.0 : smoothstep(1.2, 3.5, view_depth);
+	ALBEDO = marker_color.rgb * alpha * energy * wave * exposure_comp;
 }
