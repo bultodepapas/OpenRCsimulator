@@ -11366,6 +11366,12 @@ msgstr "请在起降台重新开始以再次飞行。"
 msgid "No controller: connect or check the controller."
 msgstr "无控制器：请连接或检查控制器。"
 
+msgid "Practice oval 1"
+msgstr "练习椭圆 1"
+
+msgid "Tower sprint"
+msgstr "高塔冲刺"
+
 msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
 msgstr "控制器未就绪：请活动两个摇杆后回中，或在“控制”中校准。"
 
@@ -11464,3 +11470,75 @@ msgstr "比赛成绩未保存"
 
 msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
 msgstr "G：从起飞垫开始三圈比赛（按顺序穿过各门）；再按 G 取消。"
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full). Units in the pause menu."
+msgstr "O：OSD 布局（关闭、竞速、花飞、完整）。单位在暂停菜单中设置。"
+
+msgid "OSD layout: %s"
+msgstr "OSD 布局：%s"
+
+msgid "OSD units: %s"
+msgstr "OSD 单位：%s"
+
+msgid "Race"
+msgstr "竞速"
+
+msgid "Freestyle"
+msgstr "花飞"
+
+msgid "Metric"
+msgstr "公制"
+
+msgid "Imperial"
+msgstr "英制"
+
+msgid "THR %d%%"
+msgstr "油门 %d%%"
+
+msgid "LOW BATTERY"
+msgstr "电量低"
+
+msgid "Armed"
+msgstr "已解锁"
+
+msgid "PITCH %+d°"
+msgstr "俯仰 %+d°"
+
+msgid "ROLL %+d°"
+msgstr "横滚 %+d°"
+
+msgid "FLIGHT STATISTICS"
+msgstr "飞行统计"
+
+msgid "Flight time"
+msgstr "飞行时间"
+
+msgid "Max speed"
+msgstr "最高速度"
+
+msgid "Max altitude"
+msgstr "最大高度"
+
+msgid "Max distance"
+msgstr "最远距离"
+
+msgid "Total distance"
+msgstr "总距离"
+
+msgid "Min cell voltage"
+msgstr "最低单芯电压"
+
+msgid "Min pack voltage"
+msgstr "最低电池电压"
+
+msgid "Max current"
+msgstr "最大电流"
+
+msgid "Max power"
+msgstr "最大功率"
+
+msgid "Used"
+msgstr "已用"
+
+msgid "Efficiency"
+msgstr "效率"

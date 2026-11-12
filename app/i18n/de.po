@@ -12311,6 +12311,12 @@ msgstr "Am Startplatz neu starten, um wieder zu fliegen."
 msgid "No controller: connect or check the controller."
 msgstr "Kein Controller: Controller anschließen oder prüfen."
 
+msgid "Practice oval 1"
+msgstr "Übungsoval 1"
+
+msgid "Tower sprint"
+msgstr "Turmsprint"
+
 msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
 msgstr "Controller nicht bereit: Beide Sticks bewegen und zentrieren oder unter Steuerung kalibrieren."
 
@@ -12409,3 +12415,75 @@ msgstr "Rennergebnis nicht gespeichert"
 
 msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
 msgstr "G: startet ein Rennen über drei Runden vom Startplatz (Tore der Reihe nach durchfliegen); erneut G bricht ab."
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full). Units in the pause menu."
+msgstr "O: OSD-Layout (Aus, Rennen, Freestyle, Voll). Einheiten im Pausenmenü."
+
+msgid "OSD layout: %s"
+msgstr "OSD-Layout: %s"
+
+msgid "OSD units: %s"
+msgstr "OSD-Einheiten: %s"
+
+msgid "Race"
+msgstr "Rennen"
+
+msgid "Freestyle"
+msgstr "Freestyle"
+
+msgid "Metric"
+msgstr "Metrisch"
+
+msgid "Imperial"
+msgstr "Imperial"
+
+msgid "THR %d%%"
+msgstr "GAS %d%%"
+
+msgid "LOW BATTERY"
+msgstr "AKKU SCHWACH"
+
+msgid "Armed"
+msgstr "Scharf"
+
+msgid "PITCH %+d°"
+msgstr "NICKEN %+d°"
+
+msgid "ROLL %+d°"
+msgstr "ROLLEN %+d°"
+
+msgid "FLIGHT STATISTICS"
+msgstr "FLUGSTATISTIK"
+
+msgid "Flight time"
+msgstr "Flugzeit"
+
+msgid "Max speed"
+msgstr "Max. Geschwindigkeit"
+
+msgid "Max altitude"
+msgstr "Max. Höhe"
+
+msgid "Max distance"
+msgstr "Max. Entfernung"
+
+msgid "Total distance"
+msgstr "Gesamtstrecke"
+
+msgid "Min cell voltage"
+msgstr "Min. Zellspannung"
+
+msgid "Min pack voltage"
+msgstr "Min. Akkuspannung"
+
+msgid "Max current"
+msgstr "Max. Strom"
+
+msgid "Max power"
+msgstr "Max. Leistung"
+
+msgid "Used"
+msgstr "Verbraucht"
+
+msgid "Efficiency"
+msgstr "Effizienz"

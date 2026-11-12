@@ -39,8 +39,13 @@ const MIN_GATE_SPACING_M := 6.0
 const MIN_PAD_SETBACK_M := 4.0
 ## The pad stays this far from every gate plane wherever it is within this distance of the aperture's side edges.
 const PAD_PLANE_CLEARANCE_M := 1.0
-## Solid frame proxies: square section of the posts and bars (m).
-const FRAME_SECTION_M := 0.06
+## Solid frame proxies (DR-32, 2026-11-12): each post and bar is a fabric panel FRAME_SECTION_M wide in the gate
+## plane around the aperture and FRAME_THICKNESS_M thick along the gate normal (league gates frame the opening with
+## 20-30 cm mesh panels; a 6 cm tube vanished at distance in a 1080p FPV view). The drawn panels are these boxes.
+const FRAME_SECTION_M := 0.18
+const FRAME_THICKNESS_M := 0.04
+## The top bar is a taller banner carrying the gate number (read at distance); the posts rise to its top.
+const TOP_BANNER_M := 0.40
 ## Minimum horizontal clearance of a gate frame footprint or the pad zone from listed field objects.
 const OBJECT_CLEARANCE_M := 1.0
 ## Horizontal radius of a tree card (field_loader.gd TREE_CARD_MAX_HORIZONTAL_RADIUS_M).
@@ -262,7 +267,8 @@ static func prepare(track: Dictionary, field: Dictionary, ground: Callable) -> D
 		var u := PackedFloat64Array([-normal[1], normal[0], 0.0])
 		var v := PackedFloat64Array([0.0, 0.0, 1.0])
 		var half_section: float = 0.5 * FRAME_SECTION_M
-		var top: float = altitude + h + FRAME_SECTION_M
+		var half_thickness: float = 0.5 * FRAME_THICKNESS_M
+		var top: float = altitude + h + TOP_BANNER_M
 		var boxes: Array = []
 		for side: float in [-1.0, 1.0]:
 			var post_north: float = north + side * (w + half_section) * u[0]
@@ -271,11 +277,13 @@ static func prepare(track: Dictionary, field: Dictionary, ground: Callable) -> D
 			if altitude - h - base[0] < MIN_LOWER_EDGE_M:
 				e.append("%s: lower aperture edge is %.3f m above the ground at a post; at least %.2f m required" % [path,
 					altitude - h - base[0], MIN_LOWER_EDGE_M])
-			boxes.append({north = post_north, east = post_east, down = -0.5 * (top + base[0]), half_x = half_section,
+			boxes.append({north = post_north, east = post_east, down = -0.5 * (top + base[0]), half_x = half_thickness,
 				half_down = 0.5 * (top - base[0]), half_z = half_section, heading_deg = float(gate.heading_deg)})
 		for bar_side: float in [-1.0, 1.0]:
-			boxes.append({north = north, east = east, down = -altitude + bar_side * (h + half_section), half_x = half_section,
-				half_down = half_section, half_z = w + FRAME_SECTION_M, heading_deg = float(gate.heading_deg)})
+			# bar_side -1 is the top banner (up is -down), +1 the bottom bar.
+			var half_bar: float = 0.5 * TOP_BANNER_M if bar_side < 0.0 else half_section
+			boxes.append({north = north, east = east, down = -altitude + bar_side * (h + half_bar), half_x = half_thickness,
+				half_down = half_bar, half_z = w + FRAME_SECTION_M, heading_deg = float(gate.heading_deg)})
 		if altitude - h - surface[0] < MIN_LOWER_EDGE_M:
 			e.append("%s: lower aperture edge below %.2f m above the ground" % [path, MIN_LOWER_EDGE_M])
 		frames.append_array(boxes)
@@ -303,8 +311,9 @@ static func prepare(track: Dictionary, field: Dictionary, ground: Callable) -> D
 	var resolved: Array = []
 	for gate: Dictionary in gates:
 		resolved.append([gate.id, gate.c, gate.n, gate.w, gate.h])
+	# The solid frame geometry is part of what a recorded race collided with.
 	var identity: String = _sha256(var_to_bytes([FORMAT, str(track.source_sha256), str(field_id), rules, resolved,
-		pad_north, pad_east, -pad_ground[0]]))
+		pad_north, pad_east, -pad_ground[0], FRAME_SECTION_M, FRAME_THICKNESS_M, TOP_BANNER_M]))
 	var course := {identity = identity, tag = float(identity.substr(0, 13).hex_to_int()), track_id = str(track.id),
 		track_name = str(track.name), track_sha256 = str(track.source_sha256), field_id = str(field_id), ruleset = rules,
 		laps = int(track.laps), gate_count = count, gates = gates, frames = frames,

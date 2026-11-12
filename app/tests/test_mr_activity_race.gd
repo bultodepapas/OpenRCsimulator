@@ -8,6 +8,7 @@ const Scene := preload("res://vehicles/multirotor/multirotor_scene.gd")
 const Fixtures := preload("res://tests/mr_fixtures.gd")
 const FC := preload("res://physics/multirotor/flight_controller.gd")
 const RaceModel := preload("res://sim/race/race_model.gd")
+const CourseVisual = preload("res://vehicles/multirotor/race_course_visual.gd")
 const Director := preload("res://sim/race/race_director.gd")
 
 const DIR := "user://test_mr_activity_race"
@@ -97,8 +98,9 @@ func _run() -> void:
 	_check("a race request starts the countdown: the OSD counts seconds and the first gate is highlighted",
 		_phase() == Director.PHASE_COUNTDOWN and _scene.hud.countdown_label.visible
 		and _scene.hud.countdown_label.text in ["3", "2", "1"] and not _scene.hud.race_label.visible and _scene._gate_next == 0
-		and first_bar.material_override == _scene._gate_materials[1]
-		and (_scene._gate_views[1][0] as MeshInstance3D).material_override == _scene._gate_materials[0], _scene.hud.countdown_label.text)
+		and _scene.course_visual.gate_states[0] == CourseVisual.GateState.NEXT
+		and _scene.course_visual.gate_states[1] == CourseVisual.GateState.AFTER
+		and _scene.course_visual.gate_states[2] == CourseVisual.GateState.CALM, _scene.hud.countdown_label.text)
 	var racing: bool = await _until(func() -> bool: return _phase() == Director.PHASE_RACING, 1500)
 	await _settle()
 	_check("GO after the countdown with the motors armed: RACING and the lap line on the OSD", racing
@@ -115,6 +117,26 @@ func _run() -> void:
 		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DIR.path_join(files[0])))
 		_check("the saved record is the aborted attempt of this course", typeof(parsed) == TYPE_DICTIONARY and parsed.get("valid") == false
 			and parsed.get("phase") == "ABORTED" and parsed.get("course_identity") == str(s.course.identity) and parsed.get("saved") == true)
+	# DR-28/32: T switches to the next course of this field; the quad is back on the pad and the new gates are drawn.
+	var oval: String = str(s.course.identity)
+	_scene.cycle_course()
+	await _settle()
+	await process_frame
+	var tower: bool = str(s.course.track_id) == "openrc-tower-sprint-1" and str(s.course.identity) != oval
+	_check("T switches to the tower sprint: prepared on the pad, its seven gates drawn at their collision boxes", tower
+		and int(s.sim.tick) == 0 and s.paused and _phase() == Director.PHASE_IDLE
+		and _scene.course_visual.course_identity == str(s.course.identity) and _scene._gate_views.size() == 7
+		and (_scene._gate_views[2][0] as MeshInstance3D).position.is_equal_approx(Vector3(float(s.course.gates[2].frames[0].east),
+			-float(s.course.gates[2].frames[0].down), -float(s.course.gates[2].frames[0].north)))
+		and _scene.find_children("RaceCourse", "Node3D", false, false).size() == 1,
+		"%s, %d gates, tick %d paused %s phase %d visual %s roots %d" % [s.course.track_id, _scene._gate_views.size(), s.sim.tick,
+			s.paused, _phase(), _scene.course_visual.course_identity == str(s.course.identity),
+			_scene.find_children("RaceCourse", "Node3D", false, false).size()])
+	_scene.cycle_course()
+	await _settle()
+	await process_frame
+	_check("T again returns to the practice oval", str(s.course.track_id) == "openrc-practice-oval-1" and _scene._gate_views.size() == 6
+		and _scene.find_children("RaceCourse", "Node3D", false, false).size() == 1)
 	_scene.race_track = ""
 	_check("without a course the activity falls back to plain free flight", _scene._load_field() and _scene._race_option.is_empty())
 	_finish()

@@ -366,6 +366,8 @@ var _accident_settlement: RefCounted
 var _accident_settled_pending := false
 var _accident_ground_stable := false
 var _accident_reload_pending := false
+## CR-22e: true once the frame that first saw the current crash has passed.
+var _accident_crash_deferred := false
 var _accident_checkpoint_restoring := false
 var _accident_paired_history := false
 var _crash_director: CrashDirector
@@ -1195,6 +1197,7 @@ func _prepare_flight() -> void:
 		_accident_incident = AccidentIncident.new()
 		_accident_settlement = AccidentSettlement.new()
 		_accident_incident.archive_path = accident_archive_path
+		_accident_incident.async_archive = true # CR-22e: encode/validate/write off the frame.
 		_begin_accident_ledger()
 		_accident_report = AccidentReport.new()
 		_accident_report.name = "AccidentReport"
@@ -1345,7 +1348,12 @@ func _process(delta: float) -> void:
 		Reconstruction.guard_runtime_failure(get_viewport())
 	if _accident_report != null:
 		_accident_report.suspend(not session.holds.is_empty())
-		_update_accident_report()
+		# CR-22e: the crash director builds the wreck in the frame that first sees the crash;
+		# value the incident on the next frame instead of stacking both costs in one.
+		var crash_frame: bool = not session.crash.is_empty() and not _accident_crash_deferred
+		_accident_crash_deferred = not session.crash.is_empty()
+		if not crash_frame:
+			_update_accident_report()
 	if flight_log != null and _flight_log_label != null:
 		_update_flight_log_label()
 	if _capturing:

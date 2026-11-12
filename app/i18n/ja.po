@@ -11417,6 +11417,12 @@ msgstr "再び飛ぶにはパッドから再開してください。"
 msgid "No controller: connect or check the controller."
 msgstr "コントローラーがありません。接続または確認してください。"
 
+msgid "Practice oval 1"
+msgstr "練習用オーバル 1"
+
+msgid "Tower sprint"
+msgstr "タワースプリント"
+
 msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
 msgstr "コントローラーの準備ができていません。両方のスティックを動かしてから中央に戻すか、「操作」で校正してください。"
 
@@ -11515,3 +11521,75 @@ msgstr "レース結果を保存できませんでした"
 
 msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
 msgstr "G: パッドから 3 周のレースを開始 (ゲートを順番に通過)。もう一度 G で中止。"
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full). Units in the pause menu."
+msgstr "O: OSDレイアウト（なし、レース、フリースタイル、フル）。単位は一時停止メニューで。"
+
+msgid "OSD layout: %s"
+msgstr "OSDレイアウト: %s"
+
+msgid "OSD units: %s"
+msgstr "OSD単位: %s"
+
+msgid "Race"
+msgstr "レース"
+
+msgid "Freestyle"
+msgstr "フリースタイル"
+
+msgid "Metric"
+msgstr "メートル法"
+
+msgid "Imperial"
+msgstr "ヤード・ポンド法"
+
+msgid "THR %d%%"
+msgstr "スロットル %d%%"
+
+msgid "LOW BATTERY"
+msgstr "バッテリー低下"
+
+msgid "Armed"
+msgstr "アーム"
+
+msgid "PITCH %+d°"
+msgstr "ピッチ %+d°"
+
+msgid "ROLL %+d°"
+msgstr "ロール %+d°"
+
+msgid "FLIGHT STATISTICS"
+msgstr "飛行統計"
+
+msgid "Flight time"
+msgstr "飛行時間"
+
+msgid "Max speed"
+msgstr "最高速度"
+
+msgid "Max altitude"
+msgstr "最高高度"
+
+msgid "Max distance"
+msgstr "最大距離"
+
+msgid "Total distance"
+msgstr "総飛行距離"
+
+msgid "Min cell voltage"
+msgstr "最低セル電圧"
+
+msgid "Min pack voltage"
+msgstr "最低パック電圧"
+
+msgid "Max current"
+msgstr "最大電流"
+
+msgid "Max power"
+msgstr "最大電力"
+
+msgid "Used"
+msgstr "消費"
+
+msgid "Efficiency"
+msgstr "効率"

@@ -1,0 +1,19 @@
+{
+	"format": "openrc-race-track v1",
+	"id": "openrc-tower-sprint-1",
+	"name": "Tower sprint",
+	"field_id": "default",
+	"ruleset": "openrc-local-race-v1",
+	"laps": 3,
+	"origin": "pilot",
+	"pad": {"north_m": 6.0, "east_m": 0.0, "heading_deg": 90.0},
+	"gates": [
+		{"id": "start", "north_m": 13.0, "east_m": 7.0, "center_height_m": 1.8, "heading_deg": 90.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "hurdle", "north_m": 13.0, "east_m": 22.0, "center_height_m": 1.0, "heading_deg": 90.0, "width_m": 5.0, "height_m": 1.3},
+		{"id": "tower", "north_m": 13.0, "east_m": 38.0, "center_height_m": 4.6, "heading_deg": 90.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "east-climb", "north_m": 24.0, "east_m": 47.0, "center_height_m": 3.0, "heading_deg": 0.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "high-north", "north_m": 34.0, "east_m": 33.0, "center_height_m": 4.0, "heading_deg": 270.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "low-north", "north_m": 34.0, "east_m": 14.0, "center_height_m": 1.3, "heading_deg": 270.0, "width_m": 4.0, "height_m": 1.4},
+		{"id": "west-finish", "north_m": 23.0, "east_m": -3.0, "center_height_m": 2.2, "heading_deg": 180.0, "width_m": 3.0, "height_m": 2.0}
+	]
+}

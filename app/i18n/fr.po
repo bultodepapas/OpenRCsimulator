@@ -12338,6 +12338,12 @@ msgstr "Redémarrez sur l’aire pour voler à nouveau."
 msgid "No controller: connect or check the controller."
 msgstr "Aucune manette : connectez ou vérifiez la manette."
 
+msgid "Practice oval 1"
+msgstr "Ovale d'entraînement 1"
+
+msgid "Tower sprint"
+msgstr "Sprint de la tour"
+
 msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
 msgstr "Manette pas prête : bougez les deux sticks puis recentrez-les, ou calibrez-la dans Commandes."
 
@@ -12436,3 +12442,75 @@ msgstr "Résultat de la course non enregistré"
 
 msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
 msgstr "G : lance une course de trois tours depuis la plateforme (franchissez les portes dans l'ordre) ; G à nouveau l'annule."
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full). Units in the pause menu."
+msgstr "O : disposition de l'OSD (Aucun, Course, Freestyle, Complet). Unités dans le menu pause."
+
+msgid "OSD layout: %s"
+msgstr "Disposition OSD : %s"
+
+msgid "OSD units: %s"
+msgstr "Unités OSD : %s"
+
+msgid "Race"
+msgstr "Course"
+
+msgid "Freestyle"
+msgstr "Freestyle"
+
+msgid "Metric"
+msgstr "Métriques"
+
+msgid "Imperial"
+msgstr "Impériales"
+
+msgid "THR %d%%"
+msgstr "GAZ %d%%"
+
+msgid "LOW BATTERY"
+msgstr "BATTERIE FAIBLE"
+
+msgid "Armed"
+msgstr "Armé"
+
+msgid "PITCH %+d°"
+msgstr "TANGAGE %+d°"
+
+msgid "ROLL %+d°"
+msgstr "ROULIS %+d°"
+
+msgid "FLIGHT STATISTICS"
+msgstr "STATISTIQUES DU VOL"
+
+msgid "Flight time"
+msgstr "Temps de vol"
+
+msgid "Max speed"
+msgstr "Vitesse max."
+
+msgid "Max altitude"
+msgstr "Altitude max."
+
+msgid "Max distance"
+msgstr "Distance max."
+
+msgid "Total distance"
+msgstr "Distance totale"
+
+msgid "Min cell voltage"
+msgstr "Tension min. par cellule"
+
+msgid "Min pack voltage"
+msgstr "Tension min. du pack"
+
+msgid "Max current"
+msgstr "Courant max."
+
+msgid "Max power"
+msgstr "Puissance max."
+
+msgid "Used"
+msgstr "Consommé"
+
+msgid "Efficiency"
+msgstr "Efficacité"

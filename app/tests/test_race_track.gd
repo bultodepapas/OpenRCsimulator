@@ -7,6 +7,7 @@ const Track := preload("res://sim/race/track.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 
 const SHIPPED := "res://data/race/tracks/openrc-practice-oval-1.json"
+const TOWER := "res://data/race/tracks/openrc-tower-sprint-1.json"
 
 var _count := 0
 var _failures := 0
@@ -39,6 +40,7 @@ func _run() -> void:
 	_refusals(field)
 	_identity(field)
 	_frames(field)
+	_tower(field)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -242,3 +244,27 @@ func _frames(field: Dictionary) -> void:
 	_check("RACE-01 the four frame boxes (posts to the ground, top and bottom bars) surround each aperture exactly",
 		surround and course.frames.size() == 4 * course.gates.size())
 	_check("RACE-01 no frame box intrudes into an open aperture", clear, detail)
+
+
+## DR-28/32 second shipped course: the tower sprint loads and prepares on the default field, varies its gate heights
+## and sizes (a low hurdle, a raised tower gate), and every frame box stays out of every aperture.
+func _tower(field: Dictionary) -> void:
+	var loaded: Dictionary = Track.load_file(TOWER)
+	_check("DR-28 the tower sprint loads under the closed contract", loaded.ok, str(loaded.errors))
+	if not loaded.ok:
+		return
+	var prepared: Dictionary = Track.prepare(loaded.track, field, _flat)
+	_check("DR-28 the tower sprint prepares on the default field", prepared.ok, str(prepared.errors))
+	if not prepared.ok:
+		return
+	var gates: Array = prepared.course.gates
+	var lowest := INF
+	var highest := -INF
+	var widths := {}
+	for gate: Dictionary in gates:
+		lowest = minf(lowest, -float(gate.c[2]) - float(gate.h))
+		highest = maxf(highest, -float(gate.c[2]))
+		widths[gate.width_m] = true
+	_check("DR-28 the tower sprint varies height and size: a low hurdle, a raised tower, three gate widths",
+		gates.size() == 7 and lowest < 0.4 and highest > 4.0 and widths.size() == 3 and prepared.course.frames.size() == 28,
+		"lowest edge %.2f m, highest centre %.2f m, widths %s" % [lowest, highest, widths.keys()])

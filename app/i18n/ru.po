@@ -12167,6 +12167,12 @@ msgstr "Начните заново на площадке, чтобы снова
 msgid "No controller: connect or check the controller."
 msgstr "Нет контроллера: подключите или проверьте контроллер."
 
+msgid "Practice oval 1"
+msgstr "Тренировочный овал 1"
+
+msgid "Tower sprint"
+msgstr "Спринт с башней"
+
 msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
 msgstr "Контроллер не готов: подвигайте оба стика и верните их в центр или откалибруйте его в разделе «Управление»."
 
@@ -12265,3 +12271,75 @@ msgstr "Результат гонки не сохранён"
 
 msgid "G: start a three-lap race from the pad (fly the gates in order); G again cancels it."
 msgstr "G: старт гонки на три круга с площадки (пролетайте ворота по порядку); повторное G отменяет её."
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full). Units in the pause menu."
+msgstr "O: раскладка OSD (Выкл., Гонка, Фристайл, Полная). Единицы — в меню паузы."
+
+msgid "OSD layout: %s"
+msgstr "Раскладка OSD: %s"
+
+msgid "OSD units: %s"
+msgstr "Единицы OSD: %s"
+
+msgid "Race"
+msgstr "Гонка"
+
+msgid "Freestyle"
+msgstr "Фристайл"
+
+msgid "Metric"
+msgstr "Метрические"
+
+msgid "Imperial"
+msgstr "Имперские"
+
+msgid "THR %d%%"
+msgstr "ГАЗ %d%%"
+
+msgid "LOW BATTERY"
+msgstr "НИЗКИЙ ЗАРЯД"
+
+msgid "Armed"
+msgstr "Взведён"
+
+msgid "PITCH %+d°"
+msgstr "ТАНГАЖ %+d°"
+
+msgid "ROLL %+d°"
+msgstr "КРЕН %+d°"
+
+msgid "FLIGHT STATISTICS"
+msgstr "СТАТИСТИКА ПОЛЁТА"
+
+msgid "Flight time"
+msgstr "Время полёта"
+
+msgid "Max speed"
+msgstr "Макс. скорость"
+
+msgid "Max altitude"
+msgstr "Макс. высота"
+
+msgid "Max distance"
+msgstr "Макс. удаление"
+
+msgid "Total distance"
+msgstr "Общая дистанция"
+
+msgid "Min cell voltage"
+msgstr "Мин. напряжение банки"
+
+msgid "Min pack voltage"
+msgstr "Мин. напряжение батареи"
+
+msgid "Max current"
+msgstr "Макс. ток"
+
+msgid "Max power"
+msgstr "Макс. мощность"
+
+msgid "Used"
+msgstr "Израсходовано"
+
+msgid "Efficiency"
+msgstr "Эффективность"

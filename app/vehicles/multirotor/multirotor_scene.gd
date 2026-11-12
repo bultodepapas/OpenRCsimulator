@@ -26,6 +26,7 @@ const Spec = preload("res://spec.gd")
 const CollisionSetup = preload("res://scenery/collision_setup.gd")
 const Track = preload("res://sim/race/track.gd")
 const RaceDirector = preload("res://sim/race/race_director.gd")
+const CourseVisual = preload("res://vehicles/multirotor/race_course_visual.gd")
 
 const DT := 1.0 / 240.0
 ## CC0 quadcopter recording already shipped for the blimp's electric motors (assets/audio/powertrains/LICENSE.txt).
@@ -33,9 +34,9 @@ const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
 ## Simulation seconds the crash or depletion aftermath keeps running before the menu opens.
 const AFTERMATH_S := 2.0
 const RACE_TRACK := "res://data/race/tracks/openrc-practice-oval-1.json"
-## Gate frame colours: the next required gate, and every other gate.
-const GATE_NEXT := Color(1.0, 0.55, 0.05)
-const GATE_OTHER := Color(0.15, 0.85, 1.0)
+## DR-28/32 courses the pilot cycles with T on this field (each is offered only on the field it was authored for).
+const RACE_TRACKS := [RACE_TRACK, "res://data/race/tracks/openrc-tower-sprint-1.json"]
+const OSD_PREFS := "user://multirotor_osd.cfg"
 const READY_TEXT := "Ready. Cycle the arm switch OFF then ON at low throttle."
 const CHANGED_TEXT := "The controller changed: restart on the pad to fly with it."
 
@@ -98,7 +99,8 @@ var _race_option := ""
 var _race_action := 0
 var _gate_views: Array = []
 var _gate_next := -1
-var _gate_materials: Array[StandardMaterial3D] = []
+## DR-32 race course presentation (gates, numbers, start pad); null in free flight without a course.
+var course_visual: RefCounted
 ## Telemetry of the last accepted tick (one plant evaluation per tick, not per rendered frame); emptied by the
 ## session's `resetting` signal so a pad restart, prepare or restore at the same tick is never served stale values.
 var _telemetry := {}
@@ -166,6 +168,10 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_on_viewport_resized)
 	hud = Hud.new()
 	add_child(hud)
+	# DR-31b: the OSD layout and units persist only on the interactive route with the player's own settings file.
+	var app := get_parent()
+	if app != null and app.get("has_home") == true and str(app.get("preferences_path")) == "user://settings.cfg":
+		hud.set_prefs_path(OSD_PREFS)
 	var identity: Dictionary = session.data.identity
 	hud.set_variant(str(identity.get("variant", "")))
 	var battery: Variant = session.data.get("battery")
@@ -234,13 +240,33 @@ func _load_field() -> bool:
 	sky_config = checked_sky.config
 	_lighting = TimeOfDayLighting.snapshot(lighting_config) if lighting_config.mode != "legacy" else {}
 	field = loaded.field
-	# The practice course is offered only on the field it was authored for; any other field is plain free flight.
-	_race_option = ""
-	if not race_track.is_empty():
-		var track: Dictionary = Track.load_file(race_track)
-		if track.ok and str(track.track.field_id) == str(field.get("id", "")):
-			_race_option = race_track
+	_race_option = _course_option(race_track)
 	return true
+
+
+## The course path to prepare: `path` when it loads and belongs to the loaded field, else "" (plain free flight).
+func _course_option(path: String) -> String:
+	if path.is_empty():
+		return ""
+	var track: Dictionary = Track.load_file(path)
+	return path if track.ok and str(track.track.field_id) == str(field.get("id", "")) else ""
+
+
+## T: the next course for this field; the quad returns to the pad to fly it (a race attempt is aborted as by R).
+func cycle_course() -> void:
+	if session == null or not session.prepared:
+		return
+	var available: Array = []
+	for path: String in RACE_TRACKS:
+		if not _course_option(path).is_empty():
+			available.append(path)
+	if available.size() < 2:
+		return
+	var at: int = available.find(_race_option)
+	race_track = available[(at + 1) % available.size()]
+	_race_option = race_track
+	if restart_on_pad():
+		hud.flash(tr("Course: %s") % tr(str(session.course.get("track_name", ""))), 3.0)
 
 
 func _build_field() -> void:
@@ -441,6 +467,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				if view.adjust_fov(-1): _flash_view()
 			KEY_EQUAL:
 				if view.adjust_fov(1): _flash_view()
+			KEY_T:
+				cycle_course()
 			KEY_G:
 				request_race()
 			KEY_F10:
@@ -559,7 +587,9 @@ func restart_on_pad() -> bool:
 	# The session's `resetting` signal closes a recording on success; a refused restart keeps flight and log.
 	_race_action = RaceDirector.ACTION_NONE
 	var ok: bool
-	if _input_policy() != str(session.options.throttle_policy) or absf(input.throttle_limit() - _session_limit()) > 1.0e-9:
+	var reconfigure: bool = _input_policy() != str(session.options.throttle_policy) \
+		or absf(input.throttle_limit() - _session_limit()) > 1.0e-9 or _race_option != str(session.options.get("race_track", ""))
+	if reconfigure:
 		# A fresh prepare publishes no race record: abort an attempt in progress through the pad reset first.
 		ok = true
 		if session.race != null and str(_race_phase()) in ["COUNTDOWN", "RACING"]:
@@ -583,6 +613,7 @@ func restart_on_pad() -> bool:
 ## stale camera history; arm switch OFF and the menu ready to fly.
 func _after_pad_reset() -> void:
 	_stop_recording("restarted on the pad")
+	_sync_course_visual()
 	_hold_pose_until_tick = -1
 	input.reset_for_restart()
 	_flight_generation = input.source_generation
@@ -667,6 +698,7 @@ func _process(delta: float) -> void:
 	var pilot_mode: int = input.flight_mode() if not scripted_pilot.is_valid() and int(session.sim.tick) == 0 else -1
 	hud.update(t, {camera = view.view_name(), tilt_deg = view.tilt_deg, hfov_deg = view.hfov_deg,
 		vfov_deg = camera.fov if camera != null else 90.0, aspect = view.aspect(), attitude = drawn.slice(6, 10),
+		body = drawn, sticks = raw, stick_policy = str(_last_input.get("throttle_policy", "")),
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
 		bindings = _osd_bindings(), throttle_limit = _session_limit()})
 	_update_gates(t.get("race", {}))
@@ -823,40 +855,37 @@ func _on_race_result(_result: Dictionary) -> void:
 		hud.flash(tr("Race result saved"))
 
 
-## Gate frames of the course, drawn from the same boxes the session collides with (unshaded bars, no assets).
+## A prepared course that differs from the drawn one (a course change through a fresh prepare) is drawn anew.
+func _sync_course_visual() -> void:
+	var drawn: String = str(course_visual.course_identity) if course_visual != null else ""
+	var prepared: String = str(session.course.get("identity", "")) if session.race != null else ""
+	if drawn == prepared:
+		return
+	if course_visual != null:
+		course_visual.free_nodes()
+		course_visual = null
+	_gate_views = []
+	_gate_next = -1
+	_build_gates()
+
+
+## The course as drawn (race_course_visual.gd): panels at the same boxes the session collides with, LED states,
+## numbers, feet and the start pad.
 func _build_gates() -> void:
 	if session.race == null:
 		return
-	for colour: Color in [GATE_OTHER, GATE_NEXT]:
-		var material := StandardMaterial3D.new()
-		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		material.albedo_color = colour
-		_gate_materials.append(material)
-	for gate: Dictionary in session.course.gates:
-		var bars: Array[MeshInstance3D] = []
-		for box: Dictionary in gate.frames:
-			var mesh := BoxMesh.new()
-			# Box axes: x along the gate normal (render -Z at heading 0), z across it (render +X), down vertical.
-			mesh.size = Vector3(2.0 * float(box.half_z), 2.0 * float(box.half_down), 2.0 * float(box.half_x))
-			var bar := MeshInstance3D.new()
-			bar.mesh = mesh
-			bar.material_override = _gate_materials[0]
-			bar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			bar.position = Frames.ned_to_render([float(box.north), float(box.east), float(box.down)])
-			bar.rotation.y = -deg_to_rad(float(box.heading_deg))
-			add_child(bar)
-			bars.append(bar)
-		_gate_views.append(bars)
+	course_visual = CourseVisual.new()
+	course_visual.build(self, session.course)
+	_gate_views = course_visual.gate_views
 
 
-## Highlight the next required gate while a race is counting down or under way.
+## Highlight the next required gate (and the one after it) while a race is counting down or under way.
 func _update_gates(race: Variant) -> void:
-	if _gate_views.is_empty() or typeof(race) != TYPE_DICTIONARY:
+	if course_visual == null or typeof(race) != TYPE_DICTIONARY:
 		return
+	course_visual.update(Time.get_ticks_msec() / 1000.0)
 	var next: int = int(race.get("next_gate", 0)) if str(race.get("phase", "")) in ["COUNTDOWN", "RACING"] else -1
 	if next == _gate_next:
 		return
 	_gate_next = next
-	for index in _gate_views.size():
-		for bar: MeshInstance3D in _gate_views[index]:
-			bar.material_override = _gate_materials[1 if index == next else 0]
+	course_visual.set_next(next)

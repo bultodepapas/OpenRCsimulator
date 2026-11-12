@@ -109,6 +109,18 @@ var _catalog_cache: Dictionary = {}
 var _recipe_cache_loaded := false
 var _recipe_cache: Dictionary = {}
 var _recipe_cache_hash := ""
+## CR-22e: the runtime owner sets this so flush() encodes, validates and writes the archive on a
+## worker thread from a deep copy; the frame pays only that copy. Explicit archive() keeps the
+## synchronous retry. Tests and tools keep the synchronous default.
+var async_archive := false
+var _archive_task_id := -1
+var _archive_job: Dictionary = {}
+## Bumped on every report change, so a finished background write only clears the dirty state it captured.
+var _report_serial := 0
+## CR-22e: within one _recalculate pass every input of _prepare_purchase is fixed, so the selected
+## automatic plan and the identical "Automatic" purchase option are prepared once.
+var _prepare_memo_active := false
+var _prepare_memo: Dictionary = {}
 
 
 func begin(aircraft_id: String, source_hash: String) -> void:
@@ -120,7 +132,8 @@ func begin(aircraft_id: String, source_hash: String) -> void:
 
 
 func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: String) -> void:
-	dossier = loaded.get("dossier", {}).duplicate(true) if loaded.get("ok", false) else {}
+	_collect_archive_job(true) # A write of the previous incident finishes before its state is replaced.
+	dossier =loaded.get("dossier", {}).duplicate(true) if loaded.get("ok", false) else {}
 	_catalog_errors = Array(loaded.get("errors", []))
 	_binding = str(loaded.get("binding", "exact"))
 	_catalog_hash = str(loaded.get("catalog_hash", ""))
@@ -319,9 +332,15 @@ func set_purchase_package(id: String) -> Dictionary:
 
 
 func _prepare_purchase(mode: String, id: String) -> Dictionary:
+	var memo_key := mode + "\u001f" + id
+	if _prepare_memo_active and _prepare_memo.has(memo_key):
+		return _prepare_memo[memo_key]
 	var context := cost_transaction_context()
-	return CostTransaction.prepare_mode(dossier, _assessment, _recipe_book, context, mode) if id.is_empty() \
+	var prepared: Dictionary = CostTransaction.prepare_mode(dossier, _assessment, _recipe_book, context, mode) if id.is_empty() \
 		else CostTransaction.prepare_package_option(dossier, _assessment, _recipe_book, context, mode, id)
+	if _prepare_memo_active:
+		_prepare_memo[memo_key] = prepared
+	return prepared
 
 
 func _active_has_explicit_repairs() -> bool:
@@ -387,6 +406,7 @@ func prepare_restore(value: Variant, tick: int, bindings: Dictionary) -> Diction
 ## Internal transaction commit: call only with a successful prepare_restore result.
 ## The UI owner commits this after its associated physics checkpoint succeeds.
 func commit_restore(prepared: Dictionary) -> void:
+	_collect_archive_job(true)
 	var data: Dictionary = prepared.data
 	_identity = data.identity.duplicate(true)
 	_assessment = data.assessment.duplicate(true)
@@ -928,6 +948,7 @@ func _refresh_report_evidence() -> void:
 		report.game_assessment["components"] = _summaries.duplicate(true)
 	_dirty = true
 	_evidence_only_dirty = true
+	_report_serial += 1
 	if _flush_error == OK:
 		_flush_attempt_revision = -1
 
@@ -1074,6 +1095,8 @@ func compare_replacements(package_candidates: Array = []) -> Dictionary:
 
 
 func _recalculate() -> void:
+	_prepare_memo_active = true
+	_prepare_memo = {}
 	var base_calculation := {}
 	var costing_available: bool = not _package_book.is_empty() and not _labor_policy.is_empty() \
 		and not _assessment.get("total_loss", false)
@@ -1204,8 +1227,11 @@ func _recalculate() -> void:
 	report["terminal"] = terminal
 	report["tick"] = _assessment_tick
 	report["revision"] = _revision
+	_prepare_memo_active = false
+	_prepare_memo = {}
 	_dirty = true
 	_evidence_only_dirty = false
+	_report_serial += 1
 	assessment_changed.emit(report.duplicate(true), terminal)
 
 
@@ -1265,6 +1291,7 @@ func _purchase_options() -> Array:
 
 ## Called outside accepted-tick callbacks. Persistence is a single bounded latest-report snapshot.
 func flush(force_retry := false) -> Error:
+	_collect_archive_job(force_retry)
 	evaluate_pending()
 	if not _dirty or report.is_empty() or (_persisted_revision == _revision and not _evidence_only_dirty):
 		return OK
@@ -1273,16 +1300,36 @@ func flush(force_retry := false) -> Error:
 		return OK
 	if _flush_attempt_revision == _revision and _flush_error != OK and not force_retry:
 		return _flush_error as Error
+	if _archive_task_id >= 0:
+		return OK # One write in flight; a later frame writes the newest report.
 	_flush_attempt_revision = _revision
+	if async_archive and not force_retry:
+		_archive_job = {report = report.duplicate(true), path = archive_path, revision = _revision,
+			last_tick = _last_tick, serial = _report_serial, result = {}}
+		# A script-level callable: the worker never touches this ledger, only its own copy.
+		_archive_task_id = WorkerThreadPool.add_task(Callable(get_script(), "_archive_worker").bind(_archive_job),
+			false, "accident report archive")
+		return OK
 	_flush_error = _write_archive()
 	return _flush_error as Error
 
 
 func _write_archive() -> Error:
-	var encoded := ReportArchive.encode(report)
+	var error := _store_archive(report, archive_path)
+	if error == OK:
+		_dirty = false
+		_evidence_only_dirty = false
+		_persisted_revision = _revision
+		_last_archive_tick = _last_tick
+	return error
+
+
+## Encode, validate and atomically replace one archive. Pure: safe on a worker thread with a copied report.
+static func _store_archive(value: Dictionary, path: String) -> Error:
+	var encoded := ReportArchive.encode(value)
 	if not encoded.ok:
 		return ERR_INVALID_DATA
-	var file := FileAccess.open(archive_path + ".tmp", FileAccess.WRITE)
+	var file := FileAccess.open(path + ".tmp", FileAccess.WRITE)
 	if file == null:
 		return FileAccess.get_open_error()
 	file.store_string(encoded.text)
@@ -1291,16 +1338,37 @@ func _write_archive() -> Error:
 	file.close()
 	if write_error != OK:
 		return write_error
-	var rename_error := DirAccess.rename_absolute(archive_path + ".tmp", archive_path)
-	if rename_error == OK:
+	return DirAccess.rename_absolute(path + ".tmp", path)
+
+
+static func _archive_worker(job: Dictionary) -> void:
+	job.result["error"] = _store_archive(job.report, job.path)
+
+
+## Apply a finished background write. `wait` blocks for one still in flight (reset, restore, exit).
+func _collect_archive_job(wait := false) -> void:
+	if _archive_task_id < 0:
+		return
+	if not wait and not WorkerThreadPool.is_task_completed(_archive_task_id):
+		return
+	WorkerThreadPool.wait_for_task_completion(_archive_task_id)
+	_archive_task_id = -1
+	var job := _archive_job
+	_archive_job = {}
+	var error: Error = job.result.get("error", ERR_BUG)
+	if job.revision == _flush_attempt_revision:
+		_flush_error = error
+	if error != OK:
+		return
+	_persisted_revision = job.revision
+	_last_archive_tick = job.last_tick
+	if job.serial == _report_serial:
 		_dirty = false
 		_evidence_only_dirty = false
-		_persisted_revision = _revision
-		_last_archive_tick = _last_tick
-	return rename_error
 
 
 func archive() -> Dictionary:
+	_collect_archive_job(true)
 	evaluate_pending()
 	if not report.is_empty():
 		flush(true) # Explicit reset/exit gets one retry; the per-frame path never spins on a failed disk.
