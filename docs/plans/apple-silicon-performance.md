@@ -489,6 +489,8 @@ Use three separate ledger columns: **launch**, **software/visual correctness**, 
 
 ## 13. Phase 10 — conditional NK-3 ARM64 project
 
+The [native kernel feasibility and implementation specification](../../APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md) expands DT-MAC-04n1–n4 with the source assessment, primary references, six-phase work breakdown, effort estimates and benchmark/test matrix. This master plan retains priority, status and promotion ownership; the specification does not authorize or claim implementation.
+
 **Priority/size:** P2/large. **Entry:** M1 reference still misses the relevant budget after justified script/observer work, the evaluator is a material limiter, and SF/NK owners explicitly select a port under existing backend policy. **Benefit:** possible evaluator cost reduction; no extrapolation from Linux ratios. This branch can stay deferred while renderer and diagnostics ship.
 
 ### DT-MAC-04n1 — math/toolchain feasibility, outside app
