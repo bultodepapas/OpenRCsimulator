@@ -17,6 +17,16 @@ from unittest import mock
 import zipfile
 
 
+def copy_checked_runner(repo: Path, root: Path):
+    """Copy the real runner and its test-queue admission dependencies into a fixture."""
+    for relative in ("tools/godot/run_checked.py", "tools/testqueue/__init__.py",
+                     "tools/testqueue/common.py", "tools/testqueue/integration.py",
+                     "tools/testqueue/presets.py", "tools/testqueue/snapshots.py"):
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(repo / relative, target)
+
+
 @unittest.skipUnless(sys.platform.startswith("linux"), "export requires a Linux host; use WSL on Windows")
 class ExportIdentity(unittest.TestCase):
     def setUp(self):
@@ -28,9 +38,7 @@ class ExportIdentity(unittest.TestCase):
         source = Path(__file__).parents[1] / "export.sh"
         (self.app / "export.sh").write_text(source.read_text(encoding="utf-8"),
                                              encoding="utf-8", newline="\n")
-        runner = self.root / "tools/godot/run_checked.py"
-        runner.parent.mkdir(parents=True)
-        shutil.copyfile(Path(__file__).resolve().parents[2] / "tools/godot/run_checked.py", runner)
+        copy_checked_runner(Path(__file__).resolve().parents[2], self.root)
         (self.app / "project.godot").write_text('config/version="1.2.3"\n', encoding="utf-8")
         scripts = {
             "get-godot.sh": '#!/usr/bin/env bash\nprintf "%s/fake-engine.sh\\n" "$(cd "$(dirname "$0")" && pwd)"\n',
@@ -362,6 +370,18 @@ exit 23
         self.assertIn("SCRIPT ERROR: simulated import failure", (output / "export-failure.log").read_text())
         self.assertTrue((output / "export-source-status.txt").is_file())
 
+    def test_enrolled_host_with_unavailable_worker_refuses_before_engine(self):
+        queue = self.root / "unavailable-queue"
+        queue.mkdir()
+        (queue / "enrollment.json").write_text("{}", encoding="utf-8")
+        result = self.export(OPENRC_TESTQUEUE_ROOT=str(queue), OPENRC_TESTQUEUE_CONTEXT="")
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("testqueue worker unavailable", result.stdout)
+        self.assertNotIn("ModuleNotFoundError", result.stdout)
+        self.assertFalse((self.root / "identity.json").exists())
+        output = self.output_path(result)
+        self.assertIn("testqueue worker unavailable", (output / "export-failure.log").read_text())
+
     def test_import_generated_uid_is_reported_on_metadata_refusal(self):
         (self.app / "test_generated.gd").write_text("extends Node\n", encoding="utf-8")
         release = self.root / "tools/release"
@@ -480,7 +500,7 @@ class ExportDiagnostics(unittest.TestCase):
         (dist / "windows/OpenRC Simulator.exe").write_bytes(b"windows fixture")
         with zipfile.ZipFile(dist / "macos/OpenRC Simulator.zip", "w") as archive:
             archive.writestr("OpenRC Simulator.app/Contents/Resources/game.pck", b"macOS fixture")
-        shutil.copyfile(self.repo / "tools/godot/run_checked.py", root / "tools/godot/run_checked.py")
+        copy_checked_runner(self.repo, root)
         python = root / "fake-bin/python3"
         python.write_text(
             '#!/usr/bin/env bash\n'

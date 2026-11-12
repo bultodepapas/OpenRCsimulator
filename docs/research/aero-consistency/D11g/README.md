@@ -61,6 +61,26 @@ comparison and its checks; its earlier qualification fields are preserved.
 Initial Windows imports of copied caches reported engine errors and were
 rejected; clean checked reimports passed.
 
+### 2026-11-12 v0.2.6 release renewal
+
+On Linux x86_64 under WSL2 with pinned Godot 4.8 beta2, isolated projects
+reconstructed v0.2.5 (`3d2f60443ffa1cdfa711de20855127327976505d`) and
+`249febcce810f746a0b93b219479aa9d08a08d4d` plus version `0.2.6`.
+The 149-file inventory retained 147 identical inputs; only the multirotor
+controlled plant and project version changed. The complete normalized aggregate
+is `5c83d4e5911493abce076bbf979adf7f588f21aa59fd488a80ea1faad87d5bb2`.
+
+The baseline passed both guards. The candidate initially refused exactly the
+three historical-source leaves; normalized aircraft input, trim, unrounded and
+rounded derivatives, sensitivity rows and generated provenance matched exactly.
+After renewal, fresh generator and updater checks passed. Disposable source and
+version mutations were refused by both guards and restored byte for byte. The
+aircraft bytes and historical provenance remain unchanged. The
+[qualification receipt](2026-11-12-release-v026-qualification.json) retains the
+reports and checked-log identities. This renewal did not rerun the Windows D11g
+reconstruction locally; required release CI and native platform checks remain
+separate evidence.
+
 This establishes model consistency only for these inputs and sampled conditions, not general equivalence of the laws or physical validation. The original 2026-10-07 values and checks below describe the earlier D11g decision, not the present R02 values.
 
 ## Decision

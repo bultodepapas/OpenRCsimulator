@@ -1,0 +1,600 @@
+{
+  "format": "openrc-afc-02-behavior-requalification v1",
+  "date": "2026-11-12",
+  "platform": "WSL Ubuntu 24.04 x86_64; official Godot 4.8.beta2.official.cafc17a19; headless GDScript reference",
+  "head_at_collection": "249febcce810f746a0b93b219479aa9d08a08d4d",
+  "release_checkout_head_at_promotion": "75317347e24d8333c9237bb20572c1e88ab59088",
+  "head_difference": "Release checkout includes a subsequent tools/debug/test_debugctl.py-only change; no application files differ between commits.",
+  "previous_behavior_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-11-0ab4d1e3-to-60b34346-behavior.json",
+  "previous_behavior_receipt_sha256": "a923406a81215dcaaf5f88d75f8851ed6e275c6f3a3646108e3f360c3f609ffd",
+  "previous_behavior_source_revision": "60b3434613b2425c4c19c44d50be65412d248865",
+  "solver_rebind_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-12-2ac90e15-to-192efadc.json",
+  "solver_rebind_receipt_sha256": "1b407ad82a301d7d56237f5ebb55184ab321078498670bd8c91cfc28e7c18a5b",
+  "scope": "Bounded source review, strict profile and Home admission of the existing Stik/Club fixed-wing companion profile. Solver parity has a separate nine-tape receipt and is not exact replay or physical validation.",
+  "review": {
+    "manifest_source_changes": {
+      "res://app_root.gd": {
+        "old": "1721a49379a4fffee755d12a1635e9e163e5026aaa614c54a2d4a983af4de219",
+        "candidate": "eafe1598fb98ee4623ccf70abf6b41ac638005c3cac354295d29a74acf64433e"
+      },
+      "res://main.gd": {
+        "old": "3df85ff61b28301819d55b4b5fb7b325d4cc0d7a92de789eb741d491a1a4a248",
+        "candidate": "9e6d45984b09ecb3f43628e44150cfc140078dd5fa07094de780e00eaf79f81b"
+      }
+    },
+    "unchanged_manifest_sources": 14,
+    "analysis": "Main adds a lens stack consuming accepted player contact and presentation data, and background accident-report valuation. Companion setup and transition functions are unchanged. AppRoot adds staged Home loading, selection/preview of RC vehicles and refuses fixed-wing Fly while a non-aircraft activity is selected. The ordinary Home fixed-wing companion configuration handoff remains; normal and rejected routes are exercised by the strict shell and companion suites. This is not full semantic closure of dependencies.",
+    "manifest_before": "9ff51a28445e98df5d9e90cdb9f6204c29b44e8da090ee6585a23cc361b09f43",
+    "manifest_candidate": "154ea821e1ab726618accdf213b85c69c79bf5409445ae012b8b2063b34d01ac",
+    "profile_candidate_raw_sha256": "473bfd8014f5cf04807bbda0ede9660cff1696f93fabce5dfb69a238ea56b04a",
+    "solver_qualification_sha256": "192efadc00c92259d1e2d0f1c5e0c48a6b570992f927ef33732a8594c6d4d937"
+  },
+  "snapshot": {
+    "description": "Linux candidate imported and tested; release checkout compared before promotion. All sixteen manifest sources and the versioned project and D11g guards matched after LF normalization. No tracked solver change after recorded solver rebind. The engine, AppRoot, Main and project byte hashes were unchanged across the checked suite. These are point-in-time checks and do not lock the files.",
+    "project_normalized_sha256": "728562015f078fd0be2b673eca6309f114d59bf256a754cb4a2e7c2128402c8d",
+    "source_changes_after_test_base": "tools/debug/test_debugctl.py only",
+    "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "home_shell_test": {
+    "source": "app/tests/test_companions_shell.gd",
+    "source_normalized_sha256": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb",
+    "derived_normalized_sha256": "7c4ef043e4a8e7fdd4fd52466564e202138c5d4f382f455091f68c285ef88118",
+    "derivation": "Removed exactly one accept_current_solver_for_tests call from a disposable copy, following the previous behavior receipt; real Home, Fly, Main and Manager paths and assertions are unchanged."
+  },
+  "checks": [
+    {
+      "label": "companion-config",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_config.gd"
+      ],
+      "started_utc": "2026-11-12T22:31:51.570337+00:00",
+      "elapsed_seconds": 0.588862,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "885f1a2571a58cd887f13aff461e8c79f7d43a825b0a33e2f10d02ca439da2e5",
+      "log_bytes": 2171,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   defaults keep companions off\nok   defaults select only the accepted Stik circuit profile\nok   presentation defaults preserve audio and keep labels optional\nok   presentation preferences accept mute and bounded labels\nok   invalid volume refuses atomically\nok   invalid volume refuses atomically\nok   invalid volume refuses atomically\nok   invalid volume refuses atomically\nok   invalid volume refuses atomically\nok   invalid volume refuses atomically\nok   invalid label distance refuses atomically\nok   invalid label distance refuses atomically\nok   invalid label distance refuses atomically\nok   invalid label distance refuses atomically\nok   label toggle requires a boolean\nok   valid three-aircraft uint32 config normalizes fixed MVP choices\nok   engine preflight preserves the requested settings\nok   unqualified engine suppresses only the effective roster\nok   an already disabled roster is never marked suppressed\nok   invalid settings still fail before engine preflight\nok   enabled with zero companions is refused\nok   count above the finite fleet cap is refused\nok   fractional count is refused\nok   boolean count is refused\nok   negative seed is refused\nok   seed above uint32 is refused\nok   nonfinite seed is refused\nok   unsupported aircraft is refused\nok   unsupported activity is refused\nok   unsupported pilot skill is refused\nok   MVP incidents cannot be enabled\nok   unknown fields are refused\nok   explicit CLI seed overlays Home config and preserves its count\nok   explicit CLI zero disables and clears the requested count\nok   invalid CLI count is refused\nok   invalid CLI seed is refused\nok   duplicate CLI count is refused\nok   CLI count flag without a value is refused\nok   CLI seed flag without a value is refused\nok   capture requires an enabled roster\nok   capture without a directory is refused\nok   empty capture directory is refused\nok   duplicate capture arguments are refused\nok   separate player and fleet log CLI starts are mutually exclusive\nok   capture path is parsed separately and never persisted in companion settings\ncompanion config: 45 checks, 0 failed\n"
+    },
+    {
+      "label": "companion-dialog",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_dialog.gd"
+      ],
+      "started_utc": "2026-11-12T22:31:52.228259+00:00",
+      "elapsed_seconds": 1.150823,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "9f85bac7d9c895ad2bdc87a6763f5e6b0ea230e38203199a0137410a6eb7e74a",
+      "log_bytes": 2299,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   new settings are Off with count 1 and seed 0\nok   controller Accept applies the selected settings once\nok   Apply emits the flight and presentation draft\nok   an out-of-range seed blocks Apply\nok   invalid Apply preserves every control value\nok   invalid seed focuses the field for correction\nok   Cancel requests close without applying the draft\nok   Escape requests close from a focused control\nok   Tab moves from enable to count\nok   Tab moves from count to seed\nok   controller navigation moves from enable to count\nok   Tab reaches companion volume\nok   controller reaches optional labels\nok   presentation values are emitted without touching the source\nok   in-flight status explains restart and Remove now behavior\nok   new pending count takes precedence over the legacy admitted count\nok   same-count flight changes still show a pending restart\nok   disabling companions leaves the live group distinct from the next launch\nok   unchanged flight settings do not claim a pending restart\nok   Spanish status translates flying, pending count, and restart notice\nok   en translates flying, session and restart status\nok   en 1080p pending dialog and footer fit\nok   es translates flying, session and restart status\nok   es 1080p pending dialog and footer fit\nok   zh_Hans translates flying, session and restart status\nok   zh_Hans 1080p pending dialog and footer fit\nok   pt_BR translates flying, session and restart status\nok   pt_BR 1080p pending dialog and footer fit\nok   de translates flying, session and restart status\nok   de 1080p pending dialog and footer fit\nok   fr translates flying, session and restart status\nok   fr 1080p pending dialog and footer fit\nok   it translates flying, session and restart status\nok   it 1080p pending dialog and footer fit\nok   ru translates flying, session and restart status\nok   ru 1080p pending dialog and footer fit\nok   ja translates flying, session and restart status\nok   ja 1080p pending dialog and footer fit\nok   Remove companions is shown only for an active in-flight group\nok   Save as default checkbox is available to the Pause owner\nok   Remove emits the immediate removal request\nok   the dialog leaves its preferences path untouched\nCompanions dialog: 0 failed\n"
+    },
+    {
+      "label": "companion-draft-refresh",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_draft_refresh.gd"
+      ],
+      "started_utc": "2026-11-12T22:31:53.460615+00:00",
+      "elapsed_seconds": 19.473447,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4f9a6ffa0c2f038caeb47e2abaad3aa9f4419cf350a053d79d80d684e4f8c592",
+      "log_bytes": 12044,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   isolated enabled roster preference saves 0\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   normal Home flight starts\nok   unmodified qualified profile admits one actual companion\nok   Pause freezes admitted player and companion\nok   en 1080p pending status is localized Traffic: 1 flying · 2 after restart\nFlight settings change after restart.\nFlight settings apply after Restart flight. Sound and labels apply immediately. Remove now clears the current companions.\nok   en 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   en 1080p Remove focus is visible\nok   es 1080p pending status is localized Tráfico: 1 en vuelo · 2 tras reiniciar\nLos ajustes de vuelo cambian al reiniciar.\nLos ajustes de vuelo se aplican al reiniciar el vuelo. El sonido y las etiquetas cambian de inmediato. Retirar ahora elimina a los compañeros actuales.\nok   es 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   es 1080p Remove focus is visible\nok   zh_Hans 1080p pending status is localized 交通流：1 架在空中 · 重启后有 2 架\n飞行设置将在重启后更改。\n飞行设置会在重新开始飞行后生效。声音和标签会立即生效。现在移除会清空当前伙伴。\nok   zh_Hans 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   zh_Hans 1080p Remove focus is visible\nok   pt_BR 1080p pending status is localized Tráfego: 1 no ar · 2 após reiniciar\nAs configurações de voo mudam após reiniciar.\nAs configurações de voo entram em vigor após Reiniciar voo. O som e os rótulos são aplicados imediatamente. Remover agora limpa os companheiros atuais.\nok   pt_BR 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   pt_BR 1080p Remove focus is visible\nok   de 1080p pending status is localized Flugverkehr: 1 in der Luft · 2 nach dem Neustart\nDie Flugeinstellungen ändern sich nach dem Neustart.\nFlugeinstellungen gelten nach „Flug neu starten“. Ton und Beschriftungen werden sofort übernommen. Mit „Jetzt entfernen“ werden die aktuellen Begleitflugzeuge entfernt.\nok   de 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   de 1080p Remove focus is visible\nok   fr 1080p pending status is localized Trafic : 1 en vol · 2 après redémarrage\nLes paramètres de vol changent après le redémarrage.\nLes paramètres de vol s’appliquent après « Redémarrer le vol ». Le son et les libellés prennent effet immédiatement. « Retirer maintenant » supprime les avions accompagnateurs actuels.\nok   fr 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   fr 1080p Remove focus is visible\nok   it 1080p pending status is localized Traffico: 1 in volo · 2 dopo il riavvio\nLe impostazioni di volo cambiano dopo il riavvio.\nLe impostazioni di volo si applicano dopo Riavvia volo. Suono ed etichette cambiano subito. Rimuovi ora elimina gli aerei accompagnatori attuali.\nok   it 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   it 1080p Remove focus is visible\nok   ru 1080p pending status is localized Трафик: 1 в воздухе · 2 после перезапуска\nНастройки полёта изменятся после перезапуска.\nНастройки полёта применяются после перезапуска. Звук и подписи меняются сразу. «Убрать сейчас» очищает список самолётов-компаньонов.\nok   ru 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   ru 1080p Remove focus is visible\nok   ja 1080p pending status is localized 飛行中：1機 · 再開後2機\n飛行設定は再開後に変更されます。\n飛行設定は飛行を再開した後に反映されます。音量とラベルはすぐに反映されます。今すぐ削除すると、現在の僚機が消去されます。\nok   ja 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]\nok   ja 1080p Remove focus is visible\nok   Pause opens real roster dialog\nok   invalid seed refuses Apply and retains draft\nok   repeated status refresh retains invalid seed and every draft field { \"enabled\": true, \"count\": 3, \"seed\": \"bad seed\", \"volume\": 35.0, \"labels\": true, \"distance\": 600.0, \"distance_text\": \"600 m\", \"save_default\": true, \"save_as_default\": true }\nok   status refresh preserves validation error and seed editing focus\nok   status refresh does not advance player or companion physics\nok   status refresh retains uncommitted distance text and focused editor text=675 value=600.0 before=600.0 focus=@SpinBoxLineEdit@1326\nok   status refresh retains scroll position\nDISTANCE_BLUR raw=675 m value=675.0\nok   leaving distance editor commits its native value\nok   invalid seed feedback returns after editing distance\nok   real Remove control has focus\nok   manager owns active player observer callbacks\nok   actual Remove clears the admitted manager roster { &\"active\": 0, &\"airborne\": 0, &\"requested\": 1, &\"faulted\": 0, &\"crashed\": 0, &\"seed\": 101, &\"error\": \"\", &\"removed\": true, &\"last_tick_usec\": 0, &\"ticks\": 44, &\"observation_batches\": 11, &\"timing\": { &\"format\": \"openrc-companion-timing v1\", &\"detailed\": false, &\"paired_tick_usec\": 0, &\"before_usec\": 0, &\"after_usec\": 0 }, &\"config\": { \"enabled\": true, \"count\": 1, \"seed\": 101, \"aircraft_id\": \"jensen-das-ugly-stik-60\", \"activity\": \"circuits\", \"pilot\": \"experienced\", \"incidents_enabled\": false, \"engine_volume\": 1.0, \"show_labels\": false, \"label_distance_m\": 250.0 }, &\"profile_identity\": { \"format\": \"openrc-ai-profile-identity v2\", \"aircraft_id\": \"jensen-das-ugly-stik-60\", \"aircraft_data_path\": \"res://data/aircraft/jensen_ugly_stik_60.json\", \"aircraft_data_format\": \"openrc-aircraft v2\", \"aircraft_data_sha256\": \"5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66\", \"controller_path\": \"res://ai/companions/pilot.gd\", \"controller_sha256\": \"873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1\", \"controller_dependencies\": { \"res://ai/companions/circuit_controller.gd\": \"3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f\" }, \"behavior_manifest_path\": \"res://data/ai/companions/behavior-manifest.json\", \"behavior_manifest_format\": \"openrc-ai-behavior-manifest v1\", \"behavior_manifest_sha256\": \"154ea821e1ab726618accdf213b85c69c79bf5409445ae012b8b2063b34d01ac\", \"behavior_normalization\": \"utf8-lf\", \"solver_sha256\": \"192efadc00c92259d1e2d0f1c5e0c48a6b570992f927ef33732a8594c6d4d937\", \"solver_qualification_sha256\": \"192efadc00c92259d1e2d0f1c5e0c48a6b570992f927ef33732a8594c6d4d937\", \"solver_normalization\": \"utf8-lf\", \"engine_version\": \"4.8.beta2.official.cafc17a19\", \"field_profile_id\": \"club-default\", \"field_data_path\": \"res://data/fields/default.json\", \"field_data_format\": \"openrc-field v1\", \"field_data_sha256\": \"de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d\", \"aircraft_profile_path\": \"res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json\", \"aircraft_profile_sha256\": \"473bfd8014f5cf04807bbda0ede9660cff1696f93fabce5dfb69a238ea56b04a\", \"field_profile_path\": \"res://data/ai/companions/fields/club-default.json\", \"field_profile_sha256\": \"bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611\" }, &\"seed_allocation\": { &\"format\": \"openrc-companion-seeds v1\", &\"domain\": \"openrc/companions/turbulence/v1\", &\"player_seed\": 20261011, &\"traffic_seed\": 101, &\"count\": 1, &\"allocations\": [{ &\"actor_id\": \"companion-0\", &\"slot\": 0, &\"seed\": 2602027804, &\"nonce\": 0, &\"initial_rng_state_hex\": \"7ef147ee6dd66a8f\" }] }, &\"seed_weather\": { &\"weather_has_seed\": true, &\"turbulence_active\": true }, &\"airspace_report\": { &\"policy\": \"openrc-ai-static-circuit v1\", &\"scope\": \"nominal_circuit_corridor\", &\"count\": 1, &\"center_north_m\": 199.0, &\"center_east_m\": 0.0, &\"radius_m\": 80.0, &\"inner_radius_m\": 67.0949026518531, &\"outer_radius_m\": 92.9050973481469, &\"corridors\": [{ &\"slot\": 0, &\"center_height_m\": 35.0, &\"min_height_m\": 30.0949026518531, &\"max_height_m\": 39.9050973481469 }], &\"aircraft_radius_m\": 0.90509734814686, &\"radial_allowance_m\": 10.0, &\"vertical_allowance_m\": 2.0, &\"obstacle_clearance_m\": 2.0, &\"exclusion_margin_m\": 30.0, &\"ground_upper_m\": 0.007, &\"collision_enabled\": true, &\"collision_world_identity\": \"82ec6fcdfe951f3211b29e92afee8aeb13d4bc937b0c440a91a622660d1d0350\", &\"geometry_sha256\": \"ce2ffd5299c7f66a6dd4e8af6c79e3636a68c12bd38d26b3a2291d2a0ac941dc\", &\"proxy_count\": 6092, &\"surfaces_sha256\": \"16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa\", &\"lake_identity\": \"bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa\", &\"protected_proxy_count\": 62, &\"minimum_vertical_gap_after_allowances_m\": 28.2949026518531, &\"identity\": \"107745091883e0bd1285462dda80d071cb81d620176d6c06fc12c4f976372ec9\" }, &\"recording\": { &\"active\": false, &\"complete\": false, &\"error\": \"\", &\"directory\": \"\" }, &\"requested_count\": 1, &\"admitted_count\": 1, &\"pending_count\": 1, &\"pending_restart\": false, &\"requested_config\": { \"enabled\": true, \"count\": 1, \"seed\": 101, \"aircraft_id\": \"jensen-das-ugly-stik-60\", \"activity\": \"circuits\", \"pilot\": \"experienced\", \"incidents_enabled\": false, \"engine_volume\": 1.0, \"show_labels\": false, \"label_distance_m\": 250.0 }, &\"admitted_config\": { \"enabled\": true, \"count\": 1, \"seed\": 101, \"aircraft_id\": \"jensen-das-ugly-stik-60\", \"activity\": \"circuits\", \"pilot\": \"experienced\", \"incidents_enabled\": false, \"engine_volume\": 1.0, \"show_labels\": false, \"label_distance_m\": 250.0 }, &\"in_flight\": true }\nok   actual Remove releases companion session, model, and engine nodes\nok   actual Remove disconnects the player observers\nok   Remove keeps every pending field and default choice { \"enabled\": true, \"count\": 3, \"seed\": \"bad seed\", \"volume\": 35.0, \"labels\": true, \"distance\": 675.0, \"distance_text\": \"675 m\", \"save_default\": true, \"save_as_default\": true }\nok   Remove keeps validation feedback and reports empty traffic\nok   focus moves to Cancel when focused Remove disappears\nok   Remove leaves paused player state and accepted settings intact\nok   post-removal refresh preserves draft, error and Cancel focus\nok   Cancel discards draft while keeping immediate removal\nok   reopened draft comes from accepted config\nok   flight admission refusal keeps dialog and all draft fields error=Companions require a normal fixed-wing flight at Club field. focus=Apply draft={ \"enabled\": true, \"count\": 2, \"seed\": \"77\", \"volume\": 35.0, \"labels\": true, \"distance\": 600.0, \"distance_text\": \"600 m\", \"save_default\": true, \"save_as_default\": true } expected={ \"enabled\": true, \"count\": 2, \"seed\": \"77\", \"volume\": 35.0, \"labels\": true, \"distance\": 600.0, \"distance_text\": \"600 m\", \"save_default\": true, \"save_as_default\": true }\nok   status refresh preserves rejected Apply feedback\nok   Apply commits precisely the surviving draft to flight and default { \"enabled\": true, \"count\": 2, \"seed\": 77, \"aircraft_id\": \"jensen-das-ugly-stik-60\", \"activity\": \"circuits\", \"pilot\": \"experienced\", \"incidents_enabled\": false, \"engine_volume\": 0.35, \"show_labels\": true, \"label_distance_m\": 600.0 }\nok   Apply does not recreate the removed roster before Restart\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   direct flight admits an actual companion\nok   direct dialog hides default persistence\nok   direct status refresh keeps hidden default and draft\nok   direct real Remove retains hidden default and draft\ncompanions draft refresh: 60 checks, 0 failed\n"
+    },
+    {
+      "label": "companion-external-rejection",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_external_rejection.gd"
+      ],
+      "started_utc": "2026-11-12T22:31:02.524563+00:00",
+      "elapsed_seconds": 3.385724,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "53ae2ef6e571307728efb1a07f933b5dc5e5f5a57cb7a423b3865b49d79b9e23",
+      "log_bytes": 1928,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\nCRASH at 29.0 m/s (sink 0.0 m/s, airframe contact (hull point 1), point speed 29.0 m/s at detected tick) - restarting\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\ncompanion external rejection: 63 checks, 0 failed\n"
+    },
+    {
+      "label": "companion-home-no-override",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/mnt/d/OpenRCsimulator-evidence/release-v026-companion/test_companions_shell_no_override.gd"
+      ],
+      "started_utc": "2026-11-12T22:30:17.456581+00:00",
+      "elapsed_seconds": 25.706748,
+      "required_text": [
+        "Companions shell: 0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a57b40771c8b1e7a7f706bf059c4850146ba01853df968076fe78de7ce1e5c17",
+      "log_bytes": 5969,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   rotorcraft direct route rejects an enabled companion group\nok   rotorcraft direct route allows an explicitly disabled group\nok   fixed-wing direct route keeps enabled companions available\nok   non-companion direct arguments leave companions disabled\nok   direct companion CLI validates --companions\nok   direct companion CLI validates --companions=4\nok   direct companion CLI validates --companions=-1\nok   direct companion CLI validates --companions=1.5\nok   direct companion CLI validates --companions-seed\nok   direct companion CLI validates --companions-seed=-1\nok   direct companion CLI validates --companions-seed=4294967296\nok   Home companions default Off with count 1 and seed 1\nok   Home companions are disabled outside Club Field\nok   Home opens the companions dialog through the shell\nok   Home Cancel preserves preferences and the live Home draft\nok   Home Apply persists the checked count and seed\nok   Home summary reflects the saved choice\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   Home flight receives the saved companion config before startup\nok   the manager starts three real AI pilots\nok   Pause freezes simulation ticks and propeller angle\nok   Pause dialog reports all three active pilots\nok   Pause Cancel leaves the flight config and active group unchanged\nok   Cancel preserves live companion presentation\nok   presentation-only Apply does not mark a flight restart pending\nok   admitted config retains launch-time presentation and requested config is current\nok   status configuration snapshots do not alias Main or each other\nok   presentation-only Apply displays no pending restart\nok   seed-only Apply stages the same population without changing admission\nok   seed-only pending restart is visible at the same count\nok   Pause Apply stages two pilots for the next restart\nok   sound and labels apply without replacing or advancing the paused flight\nok   reopened dialog shows the live and next-restart populations\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   Restart rebuilds the live group from the staged count\nok   Disable stages zero without removing the admitted roster\nok   disabled request is distinct from the live group\nok   restoring the admitted flight settings clears pending status\nok   Pause Save as default is the only Pause action that persists\nok   Pause save failure rolls the staged flight config back\nok   failed save retains its draft while status reflects the rolled-back config\nok   failed save also restores live presentation\nok   Pause save failure preserves the previous on-disk default\nok   Cancel after a failed save leaves the flight config unchanged\nok   Remove now appears for an active group\nok   Remove now leaves no active AI pilots\nok   Remove preserves the request and shows what will return after restart\nok   Remove now does not rewrite the saved default\nok   future preferences fixture writes\nok   future schema stays protected\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}\nok   direct CLI ignores saved Home companion settings\nok   direct fixed-wing Pause keeps the flight settings entry\nok   an Off launch still records admitted settings without a manager\nok   presentation-only Apply preserves a direct Off/count-zero request\nok   enabling after an Off launch is pending rather than admitted live\nok   Off launch displays the staged first pilot\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-status/shell-capture-21516105/player.orfl\nFlight log REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-status/shell-capture-21516105/companion-0.orfl\nCompanion capture REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-status/shell-capture-21516105\nok   synthetic electric demo cannot enable companions or fleet capture\nok   synthetic electric demo retains explicit companion Off support\nok   direct CLI starts a fleet capture before flight ticks\nok   capture HUD distinguishes the fleet and leaves the separate player log idle\nFlight log saved: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-status/shell-capture-21516105/player.orfl (42 ticks)\nFlight log saved: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-status/shell-capture-21516105/companion-0.orfl (42 ticks)\nCompanion capture closed: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-status/shell-capture-21516105 (complete=true, tick=42)\nok   F10 closes all streams without starting a second player log\nok   capture HUD confirms a saved cohort\nok   F11 marks the player stream\nok   F11 marks the companion-0 stream\nok   F11 marks every stream at the same tick\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   Restart rebuilds the companion without reusing its capture directory\nok   capture directory is never saved in Home preferences\nCompanions shell: 0 failed\n"
+    },
+    {
+      "label": "companion-layout",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_layout.gd"
+      ],
+      "started_utc": "2026-11-12T22:32:13.001205+00:00",
+      "elapsed_seconds": 2.839256,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "82c923f746b8b6ec59b82fcde0f45c274b4496da4190730e6d209c16f9bf846b",
+      "log_bytes": 109,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\ncompanion layout: 276 checks, 0 failed\n"
+    },
+    {
+      "label": "companion-lifecycle",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_lifecycle.gd"
+      ],
+      "started_utc": "2026-11-12T22:31:12.168000+00:00",
+      "elapsed_seconds": 39.320101,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f",
+      "log_bytes": 10945,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\ncompanions lifecycle: 653 checks, 0 failed; 50 headless cycles, 10 visual/audio cycles\n"
+    },
+    {
+      "label": "companion-manager",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_manager.gd"
+      ],
+      "started_utc": "2026-11-12T22:30:43.238691+00:00",
+      "elapsed_seconds": 19.208104,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d",
+      "log_bytes": 1412,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\ncompanions manager: 53 checks, 0 failed\n"
+    },
+    {
+      "label": "companion-manifest",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_behavior_manifest.gd"
+      ],
+      "started_utc": "2026-11-12T22:30:13.319861+00:00",
+      "elapsed_seconds": 4.046896,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+      "log_bytes": 365,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nUnicode parsing error: Overlong encoding (c0 af)\nUnicode parsing error, some characters were replaced with � (U+FFFD): Invalid UTF-8 leading byte (af)\ncompanion behavior manifest: 39 checks, 0 failed\n"
+    },
+    {
+      "label": "companion-observation",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_observation.gd"
+      ],
+      "started_utc": "2026-11-12T22:32:15.917548+00:00",
+      "elapsed_seconds": 11.764658,
+      "required_text": [
+        "AFC COMPANION OBSERVATION TEST COMPLETE"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25",
+      "log_bytes": 2520,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   production Agent script is loadable\nok   airspeed helper matches all 521 authoritative Air.compute cases  521/521 cases; signed-zero inputs=6\nok   signed-zero inputs retain distinct IEEE-754 bits\nok   Club field loads  []\nok   Club field collision fixture builds  []\nok   lake context loads  []\nok   physics rate remains 240 Hz\n[observation-test] start companions=1 ticks=1200\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   count-1 admitted roster is exact and nonzero  1\nok   count-1 player, manager, and companions finish 1200 ticks\nok   count-1 scheduled manager batches are exact  300\nok   count-1 production/legacy observation rows are exact and nonzero  300 expected 300\nok   count-1 every agent has 300 byte-equal snapshots  per-agent={ \"0\": 300 } mismatches=0\nok   count-1 uses the production Agent script\nok   count-1 exact post-gust samples are present  120\n{\"byte_mismatches\":0,\"companions\":1,\"manager_batches\":300,\"observation_rows\":300,\"observations_at_or_after_gust_delay\":120,\"per_slot_sample_counts\":{\"0\":300},\"production_agent_scripts\":true,\"roster_count\":1,\"ticks\":1200}\n[observation-test] start companions=3 ticks=1200\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nok   count-3 admitted roster is exact and nonzero  3\nok   count-3 player, manager, and companions finish 1200 ticks\nok   count-3 scheduled manager batches are exact  300\nok   count-3 production/legacy observation rows are exact and nonzero  900 expected 900\nok   count-3 every agent has 300 byte-equal snapshots  per-agent={ \"0\": 300, \"1\": 300, \"2\": 300 } mismatches=0\nok   count-3 uses the production Agent script\nok   count-3 exact post-gust samples are present  360\n{\"byte_mismatches\":0,\"companions\":3,\"manager_batches\":300,\"observation_rows\":900,\"observations_at_or_after_gust_delay\":360,\"per_slot_sample_counts\":{\"0\":300,\"1\":300,\"2\":300},\"production_agent_scripts\":true,\"roster_count\":3,\"ticks\":1200}\nAFC COMPANION OBSERVATION CHECKS 21 FAILED 0\nAFC COMPANION OBSERVATION TEST COMPLETE\n"
+    },
+    {
+      "label": "companion-profiles",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "started_utc": "2026-11-12T22:30:09.652522+00:00",
+      "elapsed_seconds": 3.580954,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d",
+      "log_bytes": 3002,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok   qualified source aircraft loads with exact input identity  []\nok   pinned Club field loads  []\nok   companion qualification pins the current physics/sim/failures identity\nok   current Stik and Club profiles validate  []\nok   only the evidenced circuits activity is qualified\nok   stall, approach, cruise, and entry speeds remain explicitly unknown\nok   field profile records the current 80 m north-side circuit\nok   identity carries accepted aircraft, field, controller, and profile hashes\nok   solver qualification pins strict UTF-8/LF identity separately from FlightLog raw identity\nok   unknown aircraft profile versions fail closed\nok   legacy profile without behavior qualification refuses\nok   behavior manifest identity mismatch refuses\nok   invalid behavior reference refuses [\"path\"]\nok   invalid behavior reference refuses [\"format\"]\nok   invalid behavior reference refuses [\"normalization\"]\nok   invalid behavior reference refuses [\"sha256\"]\nok   invalid behavior reference refuses [\"extra\"]\nok   behavior reference without digest refuses\nok   unsupported activities fail closed\nok   an unqualified stall-speed claim fails closed\nok   controller source drift fails closed\nok   missing/malformed/wrong circuit dependency refuses\nok   missing/malformed/wrong circuit dependency refuses\nok   missing/malformed/wrong circuit dependency refuses\nok   missing/malformed/wrong circuit dependency refuses\nok   missing/malformed/wrong circuit dependency refuses\nok   legacy unbound controller profile refuses\nok   actual pilot inheritance is source bound\nok   physics and simulation source drift fails closed\nok   unknown solver normalization fails closed\nok   LF and CRLF checkouts produce the same canonical qualification identity\nok   empty solver source sets fail closed\nok   missing solver source bytes fail closed\nok   code drift changes the canonical hash and is refused against the pinned source set\nok   the beta1 qualification cannot be reused on beta2\nok   an unqualified engine version fails closed\nok   runtime engine identity includes the qualified prerelease and revision\nok   engine identity rejects changed status\nok   engine identity rejects changed build\nok   engine identity rejects changed hash\nok   engine identity rejects changed patch\nok   changed physics rates cannot reuse the 240 Hz pilot qualification\nok   accepted aircraft data identity drift fails closed\nok   unexpected input identity fields fail closed\nok   unknown field profile versions fail closed\nok   field route geometry drift fails closed\nok   non-finite dimensional values fail closed\nok   unproven static route clearance cannot be claimed\nok   observations outside their qualification gate fail closed\nok   custom geometry with the same field id is refused\nok   unknown aircraft IDs are refused without fallback\nok   returned profile dictionaries are detached from later loads\nAFC-02 companion profile validation: 52 checks, 0 failed\n"
+    },
+    {
+      "label": "companion-seeds-timing",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_seeds_timing.gd"
+      ],
+      "started_utc": "2026-11-12T22:31:05.990245+00:00",
+      "elapsed_seconds": 6.094843,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d6c203686c8684ea157003c2fd02ffcd8fcefa648336a8b7e553769eb69a4543",
+      "log_bytes": 3236,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nFlight log REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/player.orfl\nFlight log REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/companion-0.orfl\nFlight log REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/companion-1.orfl\nFlight log REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/companion-2.orfl\nCompanion capture REC: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174\nFlight log saved: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/player.orfl (240 ticks)\nFlight log saved: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/companion-0.orfl (240 ticks)\nFlight log saved: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/companion-1.orfl (240 ticks)\nFlight log saved: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174/companion-2.orfl (240 ticks)\nCompanion capture closed: /home/bulto/openrc-release-v026-20261112/tmp/afc-r11-capture-3659174 (complete=true, tick=240)\nSEED CAPTURE /home/bulto/openrc-release-v026-20261112/app/../tmp/afc-r11-capture-3659174\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\ncompanions seeds and timing: 83 checks, 0 failed\n"
+    },
+    {
+      "label": "stale-refusal",
+      "command": [
+        "/home/bulto/openrc-release-v026-20261112/.tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_behavior_manifest.gd"
+      ],
+      "started_utc": "2026-11-12T22:30:05.751975+00:00",
+      "elapsed_seconds": 3.806391,
+      "required_text": [
+        "0 failed"
+      ],
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd",
+      "log_bytes": 118,
+      "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\ncompanion behavior manifest: 8 checks, 0 failed\n"
+    }
+  ],
+  "negative_control": "stale-refusal ran with OPENRC_BEHAVIOR_EXPECT_REFUSAL=1 against the unmodified manifest before installing the candidate and passed its explicit refusal assertions.",
+  "production_admission": {
+    "command": "python3 tools/debug/debugctl.py launch --headless --app <linux-candidate>/app --profile <isolated-profile> -- --quick-flight --companions=3 --aircraft=jensen-das-ugly-stik-60 --start=airborne",
+    "query": "debugctl call node=AppRoot/Main method=companion_status",
+    "test_profile_override": false,
+    "status": {
+      "active": 3,
+      "airborne": 3,
+      "requested": 3,
+      "faulted": 0,
+      "crashed": 0,
+      "seed": 1,
+      "error": "",
+      "removed": false,
+      "last_tick_usec": 2409,
+      "ticks": 168,
+      "observation_batches": 42,
+      "timing": {
+        "format": "openrc-companion-timing v1",
+        "detailed": false,
+        "paired_tick_usec": 2409,
+        "before_usec": 4,
+        "after_usec": 2405
+      },
+      "config": {
+        "enabled": true,
+        "count": 3,
+        "seed": 1,
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "activity": "circuits",
+        "pilot": "experienced",
+        "incidents_enabled": false,
+        "engine_volume": 1.0,
+        "show_labels": false,
+        "label_distance_m": 250.0
+      },
+      "profile_identity": {
+        "format": "openrc-ai-profile-identity v2",
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_format": "openrc-aircraft v2",
+        "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+        "controller_path": "res://ai/companions/pilot.gd",
+        "controller_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "controller_dependencies": {
+          "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+        },
+        "behavior_manifest_path": "res://data/ai/companions/behavior-manifest.json",
+        "behavior_manifest_format": "openrc-ai-behavior-manifest v1",
+        "behavior_manifest_sha256": "154ea821e1ab726618accdf213b85c69c79bf5409445ae012b8b2063b34d01ac",
+        "behavior_normalization": "utf8-lf",
+        "solver_sha256": "192efadc00c92259d1e2d0f1c5e0c48a6b570992f927ef33732a8594c6d4d937",
+        "solver_qualification_sha256": "192efadc00c92259d1e2d0f1c5e0c48a6b570992f927ef33732a8594c6d4d937",
+        "solver_normalization": "utf8-lf",
+        "engine_version": "4.8.beta2.official.cafc17a19",
+        "field_profile_id": "club-default",
+        "field_data_path": "res://data/fields/default.json",
+        "field_data_format": "openrc-field v1",
+        "field_data_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "aircraft_profile_sha256": "473bfd8014f5cf04807bbda0ede9660cff1696f93fabce5dfb69a238ea56b04a",
+        "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+        "field_profile_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611"
+      },
+      "seed_allocation": {
+        "format": "openrc-companion-seeds v1",
+        "domain": "openrc/companions/turbulence/v1",
+        "player_seed": 0,
+        "traffic_seed": 1,
+        "count": 3,
+        "allocations": [
+          {
+            "actor_id": "companion-0",
+            "slot": 0,
+            "seed": 3269300042,
+            "nonce": 0,
+            "initial_rng_state_hex": "943f24df9e1a9efa"
+          },
+          {
+            "actor_id": "companion-1",
+            "slot": 1,
+            "seed": 3688718101,
+            "nonce": 0,
+            "initial_rng_state_hex": "437b58614da858c0"
+          },
+          {
+            "actor_id": "companion-2",
+            "slot": 2,
+            "seed": 2424114590,
+            "nonce": 0,
+            "initial_rng_state_hex": "5820bd9ab14d91ed"
+          }
+        ]
+      },
+      "seed_weather": {
+        "weather_has_seed": false,
+        "turbulence_active": false
+      },
+      "airspace_report": {
+        "policy": "openrc-ai-static-circuit v1",
+        "scope": "nominal_circuit_corridor",
+        "count": 3,
+        "center_north_m": 199.0,
+        "center_east_m": 0.0,
+        "radius_m": 80.0,
+        "inner_radius_m": 67.09490265185313,
+        "outer_radius_m": 92.90509734814687,
+        "corridors": [
+          {
+            "slot": 0,
+            "center_height_m": 35.0,
+            "min_height_m": 30.094902651853136,
+            "max_height_m": 39.90509734814686
+          },
+          {
+            "slot": 1,
+            "center_height_m": 55.0,
+            "min_height_m": 50.09490265185314,
+            "max_height_m": 59.90509734814686
+          },
+          {
+            "slot": 2,
+            "center_height_m": 75.0,
+            "min_height_m": 70.09490265185313,
+            "max_height_m": 79.90509734814687
+          }
+        ],
+        "aircraft_radius_m": 0.9050973481468628,
+        "radial_allowance_m": 10.0,
+        "vertical_allowance_m": 2.0,
+        "obstacle_clearance_m": 2.0,
+        "exclusion_margin_m": 30.0,
+        "ground_upper_m": 0.007,
+        "collision_enabled": true,
+        "collision_world_identity": "82ec6fcdfe951f3211b29e92afee8aeb13d4bc937b0c440a91a622660d1d0350",
+        "geometry_sha256": "ce2ffd5299c7f66a6dd4e8af6c79e3636a68c12bd38d26b3a2291d2a0ac941dc",
+        "proxy_count": 6092,
+        "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "protected_proxy_count": 62,
+        "minimum_vertical_gap_after_allowances_m": 28.294902651853135,
+        "identity": "f3bf447db222f1941ab079d3ca8eec9c3dbbd2f4ce30fd4c0d5e3076400ab3ca"
+      },
+      "recording": {
+        "active": false,
+        "complete": false,
+        "error": "",
+        "directory": ""
+      },
+      "requested_count": 3,
+      "admitted_count": 3,
+      "pending_count": 3,
+      "pending_restart": false,
+      "requested_config": {
+        "enabled": true,
+        "count": 3,
+        "seed": 1,
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "activity": "circuits",
+        "pilot": "experienced",
+        "incidents_enabled": false,
+        "engine_volume": 1.0,
+        "show_labels": false,
+        "label_distance_m": 250.0
+      },
+      "admitted_config": {
+        "enabled": true,
+        "count": 3,
+        "seed": 1,
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "activity": "circuits",
+        "pilot": "experienced",
+        "incidents_enabled": false,
+        "engine_volume": 1.0,
+        "show_labels": false,
+        "label_distance_m": 250.0
+      },
+      "in_flight": true
+    },
+    "stop": {
+      "stopped": true,
+      "pid": 14961,
+      "forced": false,
+      "launcher_exit_code": null,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "engine_log_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\ndebug bridge: listening on 127.0.0.1:47870 (pid 14961)\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\nphysics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage library not installed\",\"requested\":\"native\"}\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value\n"
+  },
+  "limits": "Bounded headless software evidence on this Linux reference backend and source snapshot. Does not qualify packaged source availability, other backends, aircraft, pilot maneuvers, physical realism, rendered output, native controller devices or target-hardware performance. Required tag CI and package verification remain separate."
+}

@@ -1,0 +1,223 @@
+{
+  "format": "openrc-d11g-historical-provenance-requalification-v1",
+  "date_local": "2026-11-12",
+  "baseline_commit": "3d2f60443ffa1cdfa711de20855127327976505d",
+  "candidate_base_commit": "249febcce810f746a0b93b219479aa9d08a08d4d",
+  "candidate_changes": [
+    "app/project.godot: config/version 0.2.5 to 0.2.6"
+  ],
+  "platform": "Linux x86_64 under WSL2; Windows D11g reconstruction not rerun locally",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "inventory": {
+    "baseline_count": 149,
+    "baseline_sha256": "28069054e72cb6fa3181f5e5b4e8d3db9dfacf5f81193a9975e95e8d347e8fa5",
+    "candidate_count": 149,
+    "candidate_sha256": "5c83d4e5911493abce076bbf979adf7f588f21aa59fd488a80ea1faad87d5bb2",
+    "changed": {
+      "app/physics/multirotor/controlled_plant.gd": {
+        "before": "f70bcc80bd6844830de1a10e741be13234248d007235c1bdddfa25fc9294105e",
+        "after": "195a0937f43f9b125c9df8f0525ba726a38b7ee28855402daf76440f2f239a00"
+      },
+      "app/project.godot": {
+        "before": "ef0fbad4bb1b027d00dab0454ea94f6e6218c458219341b371bc1ff05276e13d",
+        "after": "728562015f078fd0be2b673eca6309f114d59bf256a754cb4a2e7c2128402c8d"
+      }
+    },
+    "added": [],
+    "removed": [],
+    "unchanged": 147
+  },
+  "numerical_and_provenance_result": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "law": "section-plane-source-weighted-wake-velocity-v4",
+    "engine_hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "condition": {
+      "central_difference_step_rad_s": 0.05,
+      "controls": "neutral",
+      "density_kg_m3": 1.225,
+      "speed_mps": 15.0,
+      "trim_alpha_deg": 4.195979159664104,
+      "trim_alpha_rad": 0.07323365168120345,
+      "wake": "settled instantaneous Aero.wing_wake_velocity output; no ground effect"
+    },
+    "about_cg": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -7.928815588194173,
+      "Cnr": -0.1335802424533328
+    },
+    "about_arp": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -8.082101784164095,
+      "Cnr": -0.13604012801947268
+    },
+    "rounded_4_significant_digits": {
+      "CLq": 2.357,
+      "Cmq": -8.082,
+      "Cnr": -0.136
+    },
+    "provenance": {
+      "CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
+      "Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+      "Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+    },
+    "alpha_sensitivity_about_cg": [
+      {
+        "CLq": 2.465798153025895,
+        "Cmq_about_cg": -7.882827840819535,
+        "Cnr_about_cg": -0.13681305590437906,
+        "alpha_deg": 0.0
+      },
+      {
+        "CLq": 2.4103239493708846,
+        "Cmq_about_cg": -7.895873160074377,
+        "Cnr_about_cg": -0.1354648138993857,
+        "alpha_deg": 2.0
+      },
+      {
+        "CLq": 2.3617900208368128,
+        "Cmq_about_cg": -7.925095563963791,
+        "Cnr_about_cg": -0.13376507955880204,
+        "alpha_deg": 4.0
+      },
+      {
+        "CLq": 2.3206741895900262,
+        "Cmq_about_cg": -7.970108277446484,
+        "Cnr_about_cg": -0.1317326595812141,
+        "alpha_deg": 6.0
+      }
+    ]
+  },
+  "normalized_aircraft_input": {
+    "excluded_leaves": [
+      "aero.coefficients.Cmq.value",
+      "aero.coefficients.Cmq.source",
+      "aero.coefficients.CLq.value",
+      "aero.coefficients.CLq.source",
+      "aero.coefficients.Cnr.value",
+      "aero.coefficients.Cnr.source"
+    ],
+    "ok": true,
+    "scheme": "utf8-source-text-v1",
+    "sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+  },
+  "comparison": "Exact equality of all listed numerical/provenance fields before and after renewal; original aircraft bytes unchanged. Baseline accepted; candidate initially refused exactly three historical-source leaves; renewed candidate accepted. Version/source negative controls refused by both guards and restored byte for byte.",
+  "guard_source_sha256": {
+    "research/aero/d11g/derive_rate_derivatives.gd": "11378a7dee7e8638d7da5da345a38086063fde662aaaa06d18a56a5e2f74c70c",
+    "research/aero/d11g/apply_rate_derivatives.py": "08462ec7f24c769ea70070f88b3154d281aa3c8bdf684e7bdd7acd978a3ea886"
+  },
+  "reports_sha256": {
+    "baseline-before.json": "5976c6596f6356af717d5b5cddfcefaeae773ccb3fcd465f06a974688c0a2b91",
+    "candidate-after.json": "64a4302f6896e5be531d9becae7360639604f201e7239a9662a0237809d2d5ef",
+    "candidate-before.json": "99d401f95f44f1573a5dca4bfe4a794da669b35f8e715da106229478d7903af7",
+    "negative-physics.json": "98faaf098cf48eb585935628dc14fe08501b997736654cb9bd043ce2a6c3cef8",
+    "negative-version.json": "214ade9bd7bc559e004d65eb70111bd2fac58bf9d2d7c61fa108233785b3f760"
+  },
+  "checks": {
+    "baseline-before": {
+      "process_exit": 0,
+      "engine_errors": 0,
+      "complete": true,
+      "checked_report_sha256": "c8b89fef9029c4f37765af3f3e9960a8c042f1b92205f79b662ee11d0503fb01",
+      "wrapper_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    "baseline-import": {
+      "process_exit": 0,
+      "engine_errors": 0,
+      "complete": true,
+      "checked_report_sha256": "d263297be4d06805e07f1cacc5e16d46e460126312f7cf199386adfffa1c7e31",
+      "wrapper_log_sha256": "44b7eb8219246a958e99238d763a66922652db8bd4b2cfe72240842e5fa511ae"
+    },
+    "candidate-after": {
+      "process_exit": 0,
+      "engine_errors": 0,
+      "complete": true,
+      "checked_report_sha256": "a457ac85c11de9c4f9f76be5d10c6913755186846d6d082d23d3e76435899d4f",
+      "wrapper_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+    },
+    "candidate-before": {
+      "process_exit": 1,
+      "engine_errors": 0,
+      "complete": true,
+      "checked_report_sha256": "00dbdec66a9fb69ac07c5536654e6a446d834cb04089c153de966e205a671e89",
+      "wrapper_log_sha256": "82bdeae1d263a22b0d500bfb58a8076ae73e0dfd9cd8e8123a04ee8e4b84d092"
+    },
+    "candidate-import": {
+      "process_exit": 0,
+      "engine_errors": 0,
+      "complete": true,
+      "checked_report_sha256": "190972503e99560c43e5f4e9e35b7a71de04fac846abd18bfa9ef4c038ad3e29",
+      "wrapper_log_sha256": "6f46c1df9ad6c3277d2039d3d50e406766787fb29c4323a237ab5da0daed848e"
+    },
+    "negative-physics": {
+      "process_exit": 1,
+      "engine_errors": 0,
+      "complete": true,
+      "checked_report_sha256": "66141c411df57a2cfe1deb087ec4dd6d336528061be89e10ebb9357f274d48d3",
+      "wrapper_log_sha256": "4a82a21e083e4527e1767688265ca97eb6971f8c67f49d95e5f421e83e32286f"
+    },
+    "negative-version": {
+      "process_exit": 1,
+      "engine_errors": 0,
+      "complete": true,
+      "checked_report_sha256": "aea903c855766912b36daa33eb80d4fd6fc3cb91b8fe0cd56c14530d5d71ca5a",
+      "wrapper_log_sha256": "2768c7e81f6a203df1902d623f2451774ae25ed4319ea3d06e65e8eaa5a5f82a"
+    },
+    "baseline-before-updater": {
+      "log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48",
+      "exit_verified_in_completed_campaign": 0
+    },
+    "candidate-after-updater": {
+      "log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48",
+      "exit_verified_in_completed_campaign": 0
+    },
+    "candidate-before-updater": {
+      "log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+      "exit_verified_in_completed_campaign": 1
+    },
+    "negative-physics-updater": {
+      "log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+      "exit_verified_in_completed_campaign": 1
+    },
+    "negative-version-updater": {
+      "log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+      "exit_verified_in_completed_campaign": 1
+    }
+  },
+  "uid_sidecars_generated": [
+    "app/app_state/vehicle_roster.gd.uid",
+    "app/tests/test_calibration_view.gd.uid",
+    "app/tests/test_controls_assign.gd.uid",
+    "app/tests/test_controls_components.gd.uid",
+    "app/tests/test_controls_setup_p0.gd.uid",
+    "app/tests/test_controls_widgets.gd.uid",
+    "app/tests/test_controls_workspace.gd.uid",
+    "app/tests/test_home_staged_routes.gd.uid",
+    "app/tests/test_home_vehicle_roster.gd.uid",
+    "app/tests/test_lens_person_strike.gd.uid",
+    "app/tests/test_multirotor_arm_mode_aux.gd.uid",
+    "app/tests/test_race_records.gd.uid",
+    "app/tests/test_setup_assistant.gd.uid",
+    "app/tests/test_setup_assistant_wiring.gd.uid",
+    "app/tests/test_startup_loading.gd.uid",
+    "app/ui/controls/binding_chip.gd.uid",
+    "app/ui/controls/calibration_view.gd.uid",
+    "app/ui/controls/capture_overlay.gd.uid",
+    "app/ui/controls/channel_bar.gd.uid",
+    "app/ui/controls/controls_workspace.gd.uid",
+    "app/ui/controls/device_card.gd.uid",
+    "app/ui/controls/device_picture.gd.uid",
+    "app/ui/controls/response_curve.gd.uid",
+    "app/ui/controls/setup_assistant.gd.uid",
+    "app/ui/controls/setup_assistant_bridge.gd.uid",
+    "app/ui/controls/setup_assistant_host.gd.uid",
+    "app/ui/controls/stick_gimbal_view.gd.uid",
+    "app/ui/home_vehicle_preview.gd.uid",
+    "app/ui/loading_bar.gd.uid",
+    "app/vehicles/multirotor/race_records.gd.uid"
+  ],
+  "diagnostic_root": "/mnt/d/OpenRCsimulator-evidence/release-v026-d11g",
+  "limits": "Model consistency at the retained sampled conditions only; no physical validation, general law equivalence or native Windows qualification claim."
+}
