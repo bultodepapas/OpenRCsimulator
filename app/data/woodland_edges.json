@@ -2290,7 +2290,7 @@
     "app/scenery/imported_vegetation.gd": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
     "app/scenery/models.gd": "72daff888627ac0839246777fb2aec49ef33a0a4403cd1ae4fa6ba0c49f4f703",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
-    "app/scenery/prefabs.gd": "7a2e33f25de71557a0c235e4923484d4d4070b334419b9a38df986dabf6c8c87",
+    "app/scenery/prefabs.gd": "37d1ac3566c5efbaf41d860422bd61df8260e9f20de167152ca65ec22965476a",
     "app/scenery/vegetation_placement.gd": "3c0ae8b78e3e573f44a4c9c731e7e7566d25d93d76472653b50d15b173aeae98",
     "tools/trees/place.py": "e182c0cdd7032c26162465c16bf37446ed8f6e2b49b575a652f9f4379ece44b2"
   },
