@@ -159,6 +159,8 @@ The [consolidated Apple technical background, 2026-11-02](../APPLE-SILICON-TECHN
 
 [Apple Silicon cross-platform audit, 2026-11-06](apple-silicon-cross-platform-audit-2026-11-06.md) distinguishes optimizations already in shared game code, Apple-specific policy, remaining branch/release integration, rejected experiments and the next non-Apple qualification work. It is a source/evidence review, not a new benchmark.
 
+[Apple Silicon comparable projects, 2026-11-12](native-kernel/apple-silicon-comparables-2026-11-12.md) records primary CPU-library, GPU-physics, rendering and energy measurements, their numerical/workload limits and their implications for the conditional native evaluator plan. These are external results, not measured OpenRC Mac gains.
+
 ### Roadmap knowledge base (all phases)
 
 [Roadmap investigations](roadmap-investigations/README.md) collects pre-work research for numerics, aerodynamics, propulsion, ground handling, radio, weather, validation, aircraft data and presentation. Read the relevant phase brief before starting its implementation step.

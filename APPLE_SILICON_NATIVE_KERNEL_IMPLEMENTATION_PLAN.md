@@ -154,6 +154,10 @@ Swift supports bidirectional C++ interoperability, with documented type, excepti
 
 Godot supports GDExtension C++ bindings and custom API descriptions. The repository's locked API/binding choice takes precedence over current upstream examples; do not copy newer SCons options blindly into the locked version. [Official godot-cpp guidance](https://github.com/godotengine/godot-cpp#compatibility).
 
+### 3.7 Comparable projects and measured benefits
+
+The [2026-11-12 comparable-project review](docs/research/native-kernel/apple-silicon-comparables-2026-11-12.md) adds primary measurements from MATLAB, AppleAccelerate.jl, elastic-wave simulation, Blender, neutron transport and OpenMM, plus MuJoCo and Dolphin architecture/numerical counterexamples. It records hardware, workload, precision, baseline, measurement scope and missing evidence. CPU-library, GPU-grid, rendering, energy and batch results are kept distinct. No external ratio is an OpenRC Mac forecast; the review maps each useful finding to DT-MAC-04n1–n4 and illustrates how evaluator savings are diluted in complete ticks and frames.
+
 ## 4. Feasibility analysis
 
 **Architectural feasibility: high for an evaluator-only CPU port. Numerical feasibility: unproven on ARM64. Product benefit: unproven and workload-dependent.**
