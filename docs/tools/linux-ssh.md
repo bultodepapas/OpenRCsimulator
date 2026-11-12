@@ -31,9 +31,10 @@ route and identity.
 
 The local connection check receipt is
 `C:\ProgramData\OpenRC\testqueue\connections\linux-ssh.json` by default (under
-`OPENRC_TESTQUEUE_ROOT` when set). It records the latest bounded connection check;
-it is not coordinator enrollment or evidence of a qualified adapter. It contains
-no private key or password. Recheck connectivity before relying on an old receipt.
+`OPENRC_TESTQUEUE_ROOT` when set). It records a connection check at `checked_at`;
+the shell commands above do not automatically refresh it. It is not coordinator
+enrollment or evidence of a qualified adapter. It contains no private key or password.
+Recheck connectivity before relying on an old receipt.
 
 Persistent Linux worker transport, process containment, isolated imports and host
 resource budgets remain gated by [TQ-02](../plans/agent-test-orchestrator.md).
