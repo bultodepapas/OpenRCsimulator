@@ -444,7 +444,9 @@ class Stats extends RefCounted:
 			out.append(["Max power", "%d W" % int(round(max_power_w))])
 			out.append(["Used", "%d MAH" % int(round(used_mah))])
 			if total_distance_m >= EFFICIENCY_MIN_M:
-				out.append(["Efficiency", "%d MAH/KM" % int(round(used_mah / (total_distance_m / 1000.0)))])
+				var per_km := used_mah / (total_distance_m / 1000.0)
+				out.append(["Efficiency", ("%d MAH/MI" % int(round(per_km * 1.609344))) if units == "imperial"
+					else ("%d MAH/KM" % int(round(per_km)))])
 		if max_g > 0.0:
 			out.append(["Max G-force", "%.1f G" % max_g])
 		if max_rpm_rad_s > 0.0:

@@ -702,18 +702,27 @@ func _process(delta: float) -> void:
 	hud.update(t, {camera = view.view_name(), tilt_deg = view.tilt_deg, hfov_deg = view.hfov_deg,
 		vfov_deg = camera.fov if camera != null else 90.0, aspect = view.aspect(), attitude = drawn.slice(6, 10),
 		body = drawn, sticks = raw, stick_policy = str(_last_input.get("throttle_policy", "")),
-		accepted = session.sim.state, tick_dt = DT, gate = _osd_gate(), gate_number = course_visual.next_gate + 1 if course_visual != null else 0,
+		accepted = session.sim.state, tick_dt = DT, gate = _osd_gate(_osd_gate_index(t)), gate_number = _osd_gate_index(t) + 1,
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
 		bindings = _osd_bindings(), throttle_limit = _session_limit()})
 	_update_gates(t.get("race", {}), delta)
 	_update_audio(t, delta)
 
 
-## DR-31c: the next race gate's render-space centre for the OSD gate guide, or null outside a race.
-func _osd_gate() -> Variant:
-	if course_visual == null or int(course_visual.next_gate) < 0 or int(course_visual.next_gate) >= course_visual.gate_frames.size():
+## DR-31c: the next required gate of this frame's race telemetry (not the course visual, which follows a frame
+## later), or -1 outside a counting-down or running race.
+func _osd_gate_index(t: Dictionary) -> int:
+	var race: Variant = t.get("race", {})
+	if typeof(race) != TYPE_DICTIONARY or not str((race as Dictionary).get("phase", "")) in ["COUNTDOWN", "RACING"]:
+		return -1
+	return int((race as Dictionary).get("next_gate", -1))
+
+
+## The render-space centre of gate `index` for the OSD gate guide, or null.
+func _osd_gate(index: int) -> Variant:
+	if course_visual == null or index < 0 or index >= course_visual.gate_frames.size():
 		return null
-	return (course_visual.gate_frames[course_visual.next_gate] as Dictionary).get("centre")
+	return (course_visual.gate_frames[index] as Dictionary).get("centre")
 
 
 ## The source's OSD bindings plus whether its latest sample is ready (a connected controller may not be yet).

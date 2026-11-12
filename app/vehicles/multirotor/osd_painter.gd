@@ -14,6 +14,9 @@ const CAUTION := UiTheme.CAUTION
 const SHADE := Color(0.0, 0.0, 0.0, 0.42)
 ## Severity colours of HD DisplayPort fonts (normal, info, warning, critical); analog characters are all white.
 const SEVERITY := [TEXT, ARMED, CAUTION, DANGER]
+const LADDER_RUNGS: Array[int] = [-40, -30, -20, -10, 10, 20, 30, 40]
+const RUNG_LABELS := {10: "10", 20: "20", 30: "30", 40: "40"}
+const MOTOR_LABELS: Array[String] = ["1", "2", "3", "4", "5", "6", "7", "8"]
 const CARDINALS := {0: "N", 45: "NE", 90: "E", 135: "SE", 180: "S", 225: "SW", 270: "W", 315: "NW"}
 
 static var _font: Font
@@ -32,21 +35,47 @@ static func font() -> Font:
 	return _font
 
 
+## DR-31d: shaped OSD texts kept by font size, then string (a TextLine is shaped once; drawing one costs a fraction
+## of shaping the string again). Bounded: past LINE_CACHE_MAX lines the cache starts over.
+const LINE_CACHE_MAX := 768
+static var _lines := {}
+static var _line_count := 0
+
+
+static func _line(value: String, size: int) -> TextLine:
+	var by_size: Dictionary = _lines.get(size, {})
+	if by_size.is_empty() and not _lines.has(size):
+		_lines[size] = by_size
+	var line: TextLine = by_size.get(value)
+	if line == null:
+		if _line_count >= LINE_CACHE_MAX:
+			_lines.clear()
+			_line_count = 0
+			by_size = {}
+			_lines[size] = by_size
+		line = TextLine.new()
+		line.add_string(value, font(), size)
+		by_size[value] = line
+		_line_count += 1
+	return line
+
+
 ## Text with a dark outline. align: -1 left of `at`, 0 centred on it, 1 right of it ending at it; `at.y` is the
 ## vertical centre of the line.
 static func text(ci: CanvasItem, at: Vector2, value: String, size: int, color: Color = TEXT, align := -1) -> void:
 	if value.is_empty():
 		return
-	var f := font()
-	var width := f.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
-	var x := at.x if align < 0 else (at.x - width * 0.5 if align == 0 else at.x - width)
-	var base := Vector2(x, at.y + (f.get_ascent(size) - f.get_descent(size)) * 0.5)
-	ci.draw_string_outline(f, base, value, HORIZONTAL_ALIGNMENT_LEFT, -1, size, maxi(3, int(round(size * 0.24))), OUTLINE)
-	ci.draw_string(f, base, value, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
+	var line := _line(value, size)
+	var extent := line.get_size()
+	var x := at.x if align < 0 else (at.x - extent.x * 0.5 if align == 0 else at.x - extent.x)
+	var top := Vector2(x, at.y - extent.y * 0.5)
+	var canvas := ci.get_canvas_item()
+	line.draw_outline(canvas, top, maxi(3, int(round(size * 0.24))), OUTLINE)
+	line.draw(canvas, top, color)
 
 
 static func text_width(value: String, size: int) -> float:
-	return font().get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+	return _line(value, size).get_size().x
 
 
 ## A white stroke over a dark one (readable against sky and ground).
@@ -146,7 +175,7 @@ static func ladder(ci: CanvasItem, centre: Vector2, p: Vector2, along: Vector2, 
 	var half_len := 46.0 * s
 	var gap := 22.0 * s
 	var size := int(round(16.0 * s))
-	for k in [-40, -30, -20, -10, 10, 20, 30, 40]:
+	for k: int in LADDER_RUNGS:
 		var e := elevation - deg_to_rad(float(k))
 		if absf(e) >= PI * 0.45:
 			continue
@@ -170,7 +199,7 @@ static func ladder(ci: CanvasItem, centre: Vector2, p: Vector2, along: Vector2, 
 					var t1 := t0 + 0.6 / parts
 					stroke(ci, a.lerp(b, t0), a.lerp(b, t1), 2.0 * s, color)
 			stroke(ci, b, b + tick, 2.0 * s, color)
-			text(ci, b + along * side * 18.0 * s, str(absi(k)), size, color, 0)
+			text(ci, b + along * side * 18.0 * s, RUNG_LABELS[absi(k)], size, color, 0)
 
 
 ## A vertical battery gauge: outline, terminal, and a fill by state of charge in the band's colour.
@@ -238,7 +267,7 @@ static func motors(ci: CanvasItem, rect: Rect2, commands: PackedFloat64Array, s:
 		if fill > 0.0:
 			ci.draw_rect(Rect2(Vector2(bar.position.x, bar.end.y - bar.size.y * fill), Vector2(bar.size.x, bar.size.y * fill)), color, true)
 		ci.draw_rect(bar, Color(TEXT, 0.8), false, 1.0)
-		text(ci, Vector2(bar.get_center().x, bar.end.y + 10.0 * s), str(i + 1), size, TEXT, 0)
+		text(ci, Vector2(bar.get_center().x, bar.end.y + 10.0 * s), MOTOR_LABELS[i] if i < MOTOR_LABELS.size() else str(i + 1), size, TEXT, 0)
 
 
 ## The crosshair at the picture centre in one of INAV's styles: default (wings and a centre tick), aircraft (wings,

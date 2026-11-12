@@ -124,11 +124,12 @@ var _prepare_memo: Dictionary = {}
 ## CR-22e: the runtime owner may value pending revisions in the background. A worker runs the
 ## unchanged _recalculate() on a private copy of this ledger; the frame commits its outputs.
 ## Every synchronous entry point (evaluate_pending, checkpoint, setters, archive) first waits.
+var async_valuation := false
 var _valuation_task_id := -1
 var _valuation_job: Dictionary = {}
 ## Never copied into a valuation clone: session caches, worker bookkeeping and pass-local memo.
 const _VALUATION_SKIP: Array[String] = ["_catalog_cache", "_catalog_cache_key", "_recipe_cache",
-	"_recipe_cache_loaded", "_recipe_cache_hash", "async_archive", "_archive_task_id", "_archive_job",
+	"_recipe_cache_loaded", "_recipe_cache_hash", "async_archive", "async_valuation", "_archive_task_id", "_archive_job",
 	"_valuation_task_id", "_valuation_job", "_prepare_memo_active", "_prepare_memo"]
 ## Outputs of one _recalculate() that a background valuation hands back.
 const _VALUATION_OUTPUTS: Array[String] = ["report", "_active_cost_receipt", "_costing_error",
@@ -952,6 +953,9 @@ func evaluate_pending() -> void:
 ## like a slower frame cadence (CR-39h: publication cadence cannot change the result).
 ## Returns true while a valuation is in flight.
 func evaluate_in_background() -> bool:
+	if not async_valuation:
+		evaluate_pending()
+		return false
 	_collect_valuation_job(false)
 	if _valuation_task_id >= 0:
 		return true

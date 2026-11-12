@@ -216,6 +216,7 @@ func _test_archive_integrity(incident: RefCounted, reader: RefCounted) -> void:
 func _test_background_valuation(session: Variant, bindings: Dictionary) -> void:
 	var sync := Incident.new()
 	var background := Incident.new()
+	background.async_valuation = true
 	var published: Array = []
 	background.assessment_changed.connect(func(report: Dictionary, terminal: bool) -> void: published.append([report, terminal]))
 	for ledger: RefCounted in [sync, background]:

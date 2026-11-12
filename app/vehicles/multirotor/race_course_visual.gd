@@ -1,8 +1,10 @@
 ## DR-32: the local race course as an FPV pilot reads it, by day and at night.
 ##
 ## Solids: every gate is drawn from its collision boxes, each box a fabric panel at exactly the box's size and place
-## (what is seen is what collides): striped side posts and bottom bar in woven vinyl mesh, a solid top banner with the
-## gate number on a plate on both faces, rubber feet, and a checkered start/finish gate (the last gate closes the lap).
+## (what is seen is what collides), built like a league gate: a woven sleeve between a white PVC tube outside and an
+## LED diffuser tube on the aperture, moulded corner connectors, striped side posts and bottom bar, a solid top banner
+## with eyelets and the gate number on a rimmed plate on both faces, and a checkered start/finish gate (the last gate
+## closes the lap). On the ground each post stands on a foot tube held by two sandbags.
 ## The entry face's plate is dark with a white number; the exit face's is red, so a pilot who sees red is flying the
 ## gate the wrong way.
 ##
@@ -24,6 +26,7 @@ const Track = preload("res://sim/race/track.gd")
 const GateShader = preload("res://vehicles/multirotor/race_gate.gdshader")
 const GlowShader = preload("res://vehicles/multirotor/race_glow.gdshader")
 const MarkerShader = preload("res://vehicles/multirotor/race_marker.gdshader")
+const PlateShader = preload("res://vehicles/multirotor/race_plate.gdshader")
 
 ## Global shader parameter carrying exposure ^ -exposure_gamma to every gate, halo and marker material.
 const EXPOSURE_PARAM := &"race_exposure_comp"
@@ -39,7 +42,12 @@ const LED_CALM := Color(0.75, 0.92, 1.0)
 const LED_NEXT := Color(0.3, 1.0, 0.2)
 const LED_AFTER := Color(1.0, 0.72, 0.1)
 const STRIPE_PERIOD_M := 0.6
-const FOOT_SIZE := Vector3(0.32, 0.03, 0.6)
+## Feet: a PVC tube on the ground along the gate normal under each post, two sandbags across it (m).
+const FOOT_TUBE_RADIUS_M := 0.02
+const FOOT_TUBE_LENGTH_M := 0.7
+## Sandbag size: along the foot tube, across it, height.
+const SANDBAG_SIZE := Vector3(0.16, 0.3, 0.09)
+const SANDBAG_OFFSET_M := 0.2
 const PAD_SIZE_M := 1.4
 const NUMBER_PIXEL_SIZE := 0.0032
 const NUMBER_FONT_SIZE := 96
@@ -67,6 +75,8 @@ const PATH_MAX_DOTS := 160
 const CHEVRON_SIZE := Vector2(0.75, 0.55)
 const CHEVRON_LIFT_M := 0.8
 const GATE_LIGHT_RANGE_M := 7.0
+const GATE_LIGHT_STANDOFF_M := 2.2
+const GATE_LIGHT_ENERGY := 0.05
 ## Seconds a passed gate flashes white.
 const FLASH_S := 0.45
 
@@ -89,6 +99,7 @@ var gate_states: Array[int] = []
 var gate_frames: Array = []
 var number_labels: Array[Label3D] = []
 var feet: MultiMeshInstance3D
+var sandbags: MultiMeshInstance3D
 var plates: Array[MultiMeshInstance3D] = []
 ## Start light bar of the start/finish gate (one MultiMesh; lamp k's instances share a colour).
 var lamps: MultiMeshInstance3D
@@ -136,11 +147,22 @@ func build(parent: Node3D, course: Dictionary, night_factor := 0.0) -> void:
 	for index in gates.size():
 		_build_gate(index, gates[index], foot_transforms, plate_rows, lamp_transforms)
 	feet = _multimesh("Feet", _foot_mesh(), foot_transforms)
+	# Two sandbags weigh down each foot, one either side of the post.
+	var bag_transforms: Array[Transform3D] = []
+	for foot: Transform3D in foot_transforms:
+		var along: Vector3 = foot.basis.y
+		# Pillow axes: x across the tube (its length), y up, z along the tube.
+		var across: Vector3 = Vector3.UP.cross(along).normalized()
+		var flat := Basis(across, Vector3.UP, along).scaled_local(Vector3(SANDBAG_SIZE.y, SANDBAG_SIZE.z, SANDBAG_SIZE.x))
+		for side: float in [-1.0, 1.0]:
+			var at: Vector3 = foot.origin + along * side * SANDBAG_OFFSET_M
+			bag_transforms.append(Transform3D(flat, at + Vector3.UP * (0.5 * SANDBAG_SIZE.z - FOOT_TUBE_RADIUS_M)))
+	sandbags = _multimesh("Sandbags", _sandbag_mesh(), bag_transforms)
 	for exit in 2:
 		var quad := QuadMesh.new()
-		var material := StandardMaterial3D.new()
-		material.albedo_color = PLATE_BACK if exit == 1 else PLATE_DARK
-		material.roughness = 0.6
+		var material := ShaderMaterial.new()
+		material.shader = PlateShader
+		material.set_shader_parameter("plate_color", PLATE_BACK if exit == 1 else PLATE_DARK)
 		quad.material = material
 		plates.append(_multimesh("BackPlates" if exit == 1 else "NumberPlates", quad, plate_rows[exit]))
 	_build_lamps(lamp_transforms)
@@ -168,13 +190,18 @@ func _build_gate(index: int, gate: Dictionary, foot_transforms: Array[Transform3
 	holder.transform = Transform3D(basis, centre)
 	holder.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	var drawn: Array = []
-	holder.mesh = _panel_mesh(boxes, holder.transform, drawn)
+	var extent := {}
+	holder.mesh = _panel_mesh(boxes, holder.transform, drawn, extent)
 	var material := ShaderMaterial.new()
 	material.shader = GateShader
 	material.set_shader_parameter("color_a", PANEL_COLORS[index % PANEL_COLORS.size()])
 	material.set_shader_parameter("color_b", STRIPE_DARK)
 	material.set_shader_parameter("stripe_period", STRIPE_PERIOD_M)
 	material.set_shader_parameter("checker", index == _finish)
+	material.set_shader_parameter("frame_extent", Vector4(float(gate.w), float(gate.h), float(extent.get("x_out", 0.0)),
+		float(extent.get("y_top", 0.0))))
+	material.set_shader_parameter("frame_bottom", float(extent.get("y_bottom", 0.0)))
+	material.set_shader_parameter("tube_m", Track.FRAME_THICKNESS_M)
 	holder.material_override = material
 	root.add_child(holder)
 	gate_views.append([holder])
@@ -184,7 +211,9 @@ func _build_gate(index: int, gate: Dictionary, foot_transforms: Array[Transform3
 	_flash.append(0.0)
 	for box: Dictionary in drawn:
 		if (box.size as Vector3).y > (box.size as Vector3).x:
-			foot_transforms.append(Transform3D(basis, (box.position as Vector3) - Vector3.UP * (0.5 * (box.size as Vector3).y - 0.5 * FOOT_SIZE.y)))
+			# A foot tube lying on the ground along the gate normal under each post (its axis is the mesh's y).
+			var ground: Vector3 = (box.position as Vector3) - Vector3.UP * (0.5 * (box.size as Vector3).y)
+			foot_transforms.append(Transform3D(basis * Basis(Vector3.RIGHT, 0.5 * PI), ground + Vector3.UP * FOOT_TUBE_RADIUS_M))
 	var normal := Vector3(n[1], -n[2], -n[0]).normalized()
 	var top: Vector3 = drawn[2].position if drawn.size() >= 3 else centre
 	gate_frames.append({centre = centre, normal = normal, up = basis.y, across = basis.x, w = float(gate.w),
@@ -203,45 +232,81 @@ func _build_gate(index: int, gate: Dictionary, foot_transforms: Array[Transform3
 		_add_numbers(holder, index, drawn[2], normal, plate_rows, lamp_transforms)
 
 
-## One mesh for a gate's collision boxes, in the gate frame `frame`: each box's faces carry the shader's per-box data
-## (UV: post flag, sign toward the aperture; UV2: centre across coordinate, half width across). `drawn` receives each
-## box's render-space {position, size, basis}.
-static func _panel_mesh(boxes: Array, frame: Transform3D, drawn: Array) -> ArrayMesh:
+## One mesh for a gate's collision boxes, in the gate frame `frame`. The posts are cut where the bars cross them, so
+## no two faces share a plane (they flickered) while the union stays exactly the boxes'. UV.x is 1 on a post and 0 on
+## a bar. `drawn` receives each box's render-space {position, size, basis}; `extent` the frame's {x_out (outer half
+## width), y_top (top of the banner), y_bottom (underside of the bottom bar)} in the gate frame.
+static func _panel_mesh(boxes: Array, frame: Transform3D, drawn: Array, extent := {}) -> ArrayMesh:
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var uvs := PackedVector2Array()
-	var uv2s := PackedVector2Array()
 	var indices := PackedInt32Array()
 	var to_gate := frame.affine_inverse()
+	var parts: Array = [] # [local centre, size]
+	var bars: Array = [] # [x min, x max, y min, y max]
+	var x_out := 0.0
+	var y_top := -INF
+	var y_bottom := INF
 	for box: Dictionary in boxes:
 		var size := Vector3(2.0 * float(box.half_z), 2.0 * float(box.half_down), 2.0 * float(box.half_x))
 		var world := Frames.ned_to_render([float(box.north), float(box.east), float(box.down)])
 		drawn.append({position = world, size = size, basis = frame.basis})
 		var local: Vector3 = to_gate * world
+		parts.append([local, size])
+		x_out = maxf(x_out, absf(local.x) + 0.5 * size.x)
+		y_top = maxf(y_top, local.y + 0.5 * size.y)
+		if size.y <= size.x:
+			bars.append([local.x - 0.5 * size.x, local.x + 0.5 * size.x, local.y - 0.5 * size.y, local.y + 0.5 * size.y])
+			y_bottom = minf(y_bottom, local.y - 0.5 * size.y)
+	extent.x_out = x_out
+	extent.y_top = y_top
+	extent.y_bottom = y_bottom if is_finite(y_bottom) else y_top
+	for part: Array in parts:
+		var local: Vector3 = part[0]
+		var size: Vector3 = part[1]
 		var vertical: bool = size.y > size.x
-		var across_origin: float = local.x if vertical else local.y
-		var inner: float = -signf(across_origin) if absf(across_origin) > 1.0e-9 else 1.0
-		var shape := BoxMesh.new()
-		shape.size = size
-		var arrays: Array = shape.get_mesh_arrays()
-		var base := vertices.size()
-		for v: Vector3 in arrays[Mesh.ARRAY_VERTEX]:
-			vertices.append(v + local)
-			uvs.append(Vector2(1.0 if vertical else 0.0, inner))
-			uv2s.append(Vector2(across_origin, 0.5 * (size.x if vertical else size.y)))
-		normals.append_array(arrays[Mesh.ARRAY_NORMAL])
-		for i: int in arrays[Mesh.ARRAY_INDEX]:
-			indices.append(base + i)
+		var segments: Array = [[local.y - 0.5 * size.y, local.y + 0.5 * size.y]]
+		if vertical:
+			for bar: Array in bars:
+				if float(bar[0]) <= local.x - 0.5 * size.x + 1.0e-6 and float(bar[1]) >= local.x + 0.5 * size.x - 1.0e-6:
+					segments = _cut(segments, float(bar[2]), float(bar[3]))
+		for segment: Array in segments:
+			var shape := BoxMesh.new()
+			shape.size = Vector3(size.x, float(segment[1]) - float(segment[0]), size.z)
+			var centre := Vector3(local.x, 0.5 * (float(segment[0]) + float(segment[1])), local.z)
+			var arrays: Array = shape.get_mesh_arrays()
+			var base := vertices.size()
+			for v: Vector3 in arrays[Mesh.ARRAY_VERTEX]:
+				vertices.append(v + centre)
+				uvs.append(Vector2(1.0 if vertical else 0.0, 0.0))
+			normals.append_array(arrays[Mesh.ARRAY_NORMAL])
+			for i: int in arrays[Mesh.ARRAY_INDEX]:
+				indices.append(base + i)
 	var surface := []
 	surface.resize(Mesh.ARRAY_MAX)
 	surface[Mesh.ARRAY_VERTEX] = vertices
 	surface[Mesh.ARRAY_NORMAL] = normals
 	surface[Mesh.ARRAY_TEX_UV] = uvs
-	surface[Mesh.ARRAY_TEX_UV2] = uv2s
 	surface[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface)
 	return mesh
+
+
+## `segments` ([[lo, hi]]) without the interval lo..hi.
+static func _cut(segments: Array, lo: float, hi: float) -> Array:
+	var kept: Array = []
+	for segment: Array in segments:
+		var a: float = segment[0]
+		var b: float = segment[1]
+		if hi <= a or lo >= b:
+			kept.append(segment)
+			continue
+		if lo > a + 1.0e-6:
+			kept.append([a, lo])
+		if hi < b - 1.0e-6:
+			kept.append([hi, b])
+	return kept
 
 
 ## One mesh for a gate's four neon halo quads in the gate plane, fading from each aperture edge inward. COLOR carries
@@ -284,13 +349,51 @@ static func _halo_mesh(w: float, h: float) -> ArrayMesh:
 	return mesh
 
 
-static func _foot_mesh() -> BoxMesh:
-	var mesh := BoxMesh.new()
-	mesh.size = FOOT_SIZE
+## The white PVC foot tube (axis y), the same tube as the frame's.
+static func _foot_mesh() -> CylinderMesh:
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = FOOT_TUBE_RADIUS_M
+	mesh.bottom_radius = FOOT_TUBE_RADIUS_M
+	mesh.height = FOOT_TUBE_LENGTH_M
+	mesh.radial_segments = 10
+	mesh.rings = 1
 	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(0.06, 0.06, 0.07)
-	material.roughness = 0.9
+	material.albedo_color = Color(0.9, 0.91, 0.93)
+	material.roughness = 0.32
 	mesh.material = material
+	return mesh
+
+
+## A sandbag: a unit pillow (a superellipsoid, boxy in plan and rounded on top; scaled per instance), olive canvas.
+static func _sandbag_mesh() -> ArrayMesh:
+	var sphere := SphereMesh.new()
+	sphere.radius = 0.5
+	sphere.height = 1.0
+	sphere.radial_segments = 16
+	sphere.rings = 8
+	var arrays: Array = sphere.get_mesh_arrays()
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	# p = sign(v) |v|^e per axis; the normal of that surface follows sign(v) |v|^(2 - e).
+	var e := Vector3(0.35, 0.8, 0.35)
+	for i in vertices.size():
+		var v: Vector3 = vertices[i] * 2.0
+		var p := Vector3.ZERO
+		var n := Vector3.ZERO
+		for axis in 3:
+			p[axis] = signf(v[axis]) * pow(absf(v[axis]), e[axis])
+			n[axis] = signf(v[axis]) * pow(absf(v[axis]), 2.0 - e[axis])
+		vertices[i] = 0.5 * p
+		normals[i] = n.normalized() if n.length_squared() > 1.0e-12 else normals[i]
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_TANGENT] = null
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(0.2, 0.22, 0.14)
+	material.roughness = 0.95
+	mesh.surface_set_material(0, material)
 	return mesh
 
 
@@ -344,6 +447,12 @@ func _add_numbers(holder: Node3D, index: int, top: Dictionary, normal: Vector3, 
 		holder.add_child(label)
 		number_labels.append(label)
 		if finish:
+			# Each side's lamps sit in a dark rimmed housing.
+			var housing := Vector2(LAMPS_PER_SIDE * LAMP_SPACING_M + 0.05, 2.0 * LAMP_RADIUS_M + 0.07)
+			for sign_x: float in [-1.0, 1.0]:
+				var mid: float = sign_x * (0.5 * plate_size.x + 0.14 + 0.5 * (LAMPS_PER_SIDE - 1) * LAMP_SPACING_M)
+				(plate_rows[0] as Array).append(Transform3D(facing.scaled_local(Vector3(housing.x, housing.y, 1.0)),
+					(top.position as Vector3) + facing.x * mid + outward * (depth + 0.002)))
 			for k in LAMPS_PER_SIDE:
 				for sign_x: float in [-1.0, 1.0]:
 					var x: float = sign_x * (0.5 * plate_size.x + 0.14 + k * LAMP_SPACING_M)
@@ -504,8 +613,9 @@ func _apply_energies() -> void:
 		var material: ShaderMaterial = gate_materials[index][0]
 		material.set_shader_parameter("led_color", led)
 		material.set_shader_parameter("led_energy", [0.35, 1.0, 0.6][state] * (1.0 + 2.0 * night))
-		material.set_shader_parameter("panel_glow", [0.0, 0.18, 0.05][state])
-		material.set_shader_parameter("led_width", [0.025, 0.045, 0.035][state])
+		# Panel glow keeps the colour readable by day; at night the LEDs and the light carry it (it would burn to white).
+		material.set_shader_parameter("panel_glow", [0.0, 0.18, 0.05][state] * lerpf(1.0, 0.12, night))
+		material.set_shader_parameter("led_width", [0.02, 0.06, 0.04][state])
 		material.set_shader_parameter("color_a", panel)
 		material.set_shader_parameter("chase", 1.0 if state == GateState.NEXT else 0.0)
 		material.set_shader_parameter("breathe", 1.0 if state == GateState.CALM else 0.0)
@@ -520,7 +630,9 @@ func _apply_energies() -> void:
 
 
 func _apply_light() -> void:
-	gate_light.light_energy = (0.25 + 0.45 * night) * exposure_comp
+	# Lit surfaces take the full exposure (about 50x at night against the compensated 1 / sqrt): a small energy washes
+	# the gate and pools on the ground without burning the fabric to white.
+	gate_light.light_energy = GATE_LIGHT_ENERGY * exposure_comp
 	gate_light.visible = next_gate >= 0 and next_gate < gate_frames.size() and night >= GATE_LIGHT_NIGHT
 
 
@@ -536,7 +648,7 @@ func _place_guidance(next: int) -> void:
 		return
 	var target: Dictionary = gate_frames[next]
 	chevron.position = (target.top as Vector3) + (target.up as Vector3) * CHEVRON_LIFT_M
-	gate_light.position = (target.centre as Vector3) - (target.normal as Vector3) * 1.2
+	gate_light.position = (target.centre as Vector3) - (target.normal as Vector3) * GATE_LIGHT_STANDOFF_M
 	var start: Vector3
 	var start_dir: Vector3
 	if next == 0:
@@ -630,7 +742,8 @@ func _update_lamps(race: Dictionary) -> void:
 	var level := exposure_comp * (1.0 + 2.0 * night)
 	_lamp_shown.resize(_lamp_instances.size())
 	for k in _lamp_instances.size():
-		var shown: Color = (colour if k < lit else LAMP_OFF) * level
+		# An unlit lens is a dark surface: fully compensated (exposure ^ -1), so it stays dark at night.
+		var shown: Color = colour * level if k < lit else LAMP_OFF * exposure_comp * exposure_comp
 		_lamp_shown[k] = shown
 		for i: int in _lamp_instances[k]:
 			lamps.multimesh.set_instance_color(i, shown)

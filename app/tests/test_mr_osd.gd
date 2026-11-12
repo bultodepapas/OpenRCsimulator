@@ -194,9 +194,19 @@ func _hud_c(hud: CanvasLayer, state: Dictionary) -> void:
 	hud.show_menu("paused", true)
 	hud.toggle_osd_settings()
 	var panel: PanelContainer = hud.settings_panel
-	_check("OSD settings open beside the menu", panel.visible and hud.osd_button.text == "OSD settings"
-		and panel.get_global_rect().position.x > hud.menu.get_global_rect().end.x - 1.0,
-		"%s %s" % [panel.get_global_rect(), hud.menu.get_global_rect()])
+	await process_frame
+	var view: Vector2 = hud.root_control.size
+	var rect := panel.get_global_rect()
+	var room: bool = hud.menu.get_global_rect().end.x + panel.get_combined_minimum_size().x + 32.0 * 1.0 <= view.x
+	_check("OSD settings open inside the screen, beside the menu when there is room", panel.visible
+		and hud.osd_button.text == "OSD settings" and rect.position.x >= -1.0 and (rect.end.x <= view.x + 1.0 or rect.size.x > view.x)
+		and (not room or rect.position.x > hud.menu.get_global_rect().end.x - 1.0), "%s %s %s" % [rect, hud.menu.get_global_rect(), view])
+	var esc := InputEventKey.new()
+	esc.physical_keycode = KEY_ESCAPE
+	esc.pressed = true
+	hud._unhandled_input(esc)
+	_check("Esc closes the OSD settings and keeps the menu", not panel.visible and hud.menu_visible)
+	hud.toggle_osd_settings()
 	(panel.checks["gforce"] as CheckBox).button_pressed = true
 	_check("checking an element selects Custom with it", hud.osd_config.layout == "custom" and hud.shows("gforce")
 		and "Custom" in hud.layout_button.text)
@@ -296,6 +306,7 @@ func _hud() -> void:
 	low_cell.time_s = 9.0
 	hud.update(low_cell, state)
 	_check("Off still warns LAND NOW on a low cell", hud.warning_label.text == "LAND NOW", hud.warning_label.text)
+	_check("Off still sets home at the arm", hud.home == Vector2(29.0, 0.0), str(hud.home))
 	hud.update(t, state)
 	await process_frame
 	hud.cycle_layout()

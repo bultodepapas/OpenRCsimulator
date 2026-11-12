@@ -4,7 +4,7 @@
 ## line from the activity's one interpolated attitude through the camera actually in use. It shows only what the
 ## session publishes: battery values only when the configuration has a pack (none are invented), the controller's arm
 ## refusal in words, the crash or depletion cause, the lab-fixture notice and a short EXPERIMENTAL tag. English
-## source strings through tr(). Presentation only: nothing here writes simulation state.
+## source strings through _tr(). Presentation only: nothing here writes simulation state.
 ## DR-31b: a Betaflight/INAV-style OSD on top: monospaced goggle text, heading tape, scrolling speed and altitude
 ## sidebars with vario, pitch ladder, battery gauge with charge, home arrow and distance (home = where the quad was
 ## armed), attitude angles, motor outputs, stick overlay, blinking pack warnings and a post-flight statistics screen.
@@ -21,6 +21,7 @@ const Cam = preload("res://vehicles/multirotor/multirotor_camera.gd")
 const Osd = preload("res://vehicles/multirotor/osd_model.gd")
 const Paint = preload("res://vehicles/multirotor/osd_painter.gd")
 const SettingsPanel = preload("res://vehicles/multirotor/osd_settings_panel.gd")
+const Frames = preload("res://render/frames.gd")
 
 signal action_requested(action: String)
 
@@ -81,9 +82,21 @@ const HORIZON_HALF := 0.95
 const HORIZON_GAP := 0.42
 const HORIZON_TICK := 16.0
 const THROTTLE_BAR := Vector2(16.0, 150.0)
+## The heading tape is redrawn when the heading moves by this much (deg) and fixed-place values every SLOW_REDRAW_S.
+const COMPASS_STEP_DEG := 0.25
+const SLOW_REDRAW_S := 1.0 / 30.0
 
 var root_control: Control
 var osd: Control
+## DR-31d: the heading tape and the fixed-place values on their own canvas items (_redraw_layers).
+var osd_compass: Control
+var osd_slow: Control
+var _compass_key := -1
+var _slow_due := 0.0
+## Elements of the active layout as a set (shows() runs dozens of times per frame).
+var _shown := {}
+## _tr() results by source string for the current locale (cleared when the language changes).
+var _tr_cache := {}
 var tag: Label
 var fixture_label: Label
 var mode_label: Label
@@ -173,6 +186,8 @@ func _ready() -> void:
 	osd.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	osd.draw.connect(_draw_osd)
 	root_control.add_child(osd)
+	osd_compass = _layer("OsdCompass", _draw_compass)
+	osd_slow = _layer("OsdValues", _draw_slow)
 	var m := MARGIN * s
 	tag = _label("ExperimentalTag", 15.0, Control.PRESET_CENTER_TOP, HORIZONTAL_ALIGNMENT_CENTER, Rect2(-300, m * 0.25, 600, 24 * s))
 	tag.add_theme_color_override("font_color", Color(1.0, 0.78, 0.25))
@@ -230,6 +245,17 @@ func _ready() -> void:
 	help_panel.add_child(help)
 	_build_menu(s)
 	_update_texts()
+
+
+## A full-screen OSD canvas item drawn by `callback` (osd_compass, osd_slow).
+func _layer(node_name: String, callback: Callable) -> Control:
+	var layer_control := Control.new()
+	layer_control.name = node_name
+	layer_control.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer_control.draw.connect(callback)
+	root_control.add_child(layer_control)
+	return layer_control
 
 
 ## An OSD text: white with a dark outline so it reads against bright sky and dark ground alike.
@@ -293,12 +319,12 @@ func stats_text() -> String:
 	var rows: Array = stats.rows(str(osd_config.units), cells)
 	var width := 0
 	for row: Array in rows:
-		width = maxi(width, tr(str(row[0])).length())
-	var lines := PackedStringArray(["--- %s ---" % tr("FLIGHT STATISTICS"), ""])
+		width = maxi(width, _tr(str(row[0])).to_upper().length())
+	var lines := PackedStringArray(["--- %s ---" % _tr("FLIGHT STATISTICS"), ""])
 	for row: Array in rows:
-		lines.append(tr(str(row[0])).to_upper().rpad(width + 1, " ") + ": " + str(row[1]))
+		lines.append(_tr(str(row[0])).to_upper().rpad(width + 1, " ") + ": " + str(row[1]))
 	lines.append("")
-	lines.append(tr("Throttle or pitch forward to close"))
+	lines.append(_tr("Throttle or pitch forward to close"))
 	return "\n".join(lines)
 
 
@@ -368,6 +394,8 @@ func _build_menu(s: float) -> void:
 	layout_button = settings_panel.layout_button
 	units_button = settings_panel.units_button
 	_elements = Osd.elements_of(osd_config)
+	for element: String in _elements:
+		_shown[element] = true
 
 
 func _button(parent: Container, text: String, action: String) -> Button:
@@ -398,27 +426,39 @@ func set_prefs_path(path: String) -> void:
 
 
 func shows(element: String) -> bool:
-	return element in _elements
+	return _shown.has(element)
+
+
+## _tr() remembered per source string until the language changes (tr costs about 2 µs; the OSD asks every frame).
+func _tr(source: String) -> String:
+	var hit: Variant = _tr_cache.get(source)
+	if hit == null:
+		hit = tr(source)
+		_tr_cache[source] = hit
+	return hit
 
 
 ## Adopt an OSD configuration (validated), save it when asked and a path is set, and show it everywhere.
 func _apply_config(next: Dictionary, save: bool) -> void:
 	osd_config = Osd.sanitize(next)
 	_elements = Osd.elements_of(osd_config)
+	_shown = {}
+	for element: String in _elements:
+		_shown[element] = true
 	if save:
 		Osd.save_config(prefs_path, osd_config)
 	if settings_panel != null:
 		settings_panel.show_config(osd_config)
 	_next_refresh = 0.0
 	_update_texts()
-	osd.queue_redraw()
+	_redraw_layers(true)
 
 
 func cycle_layout() -> void:
 	var next := osd_config.duplicate(true)
 	next.layout = Osd.next_in(Osd.LAYOUTS, str(osd_config.layout))
 	_apply_config(next, true)
-	flash(tr("OSD layout: %s") % tr(str(Osd.LAYOUT_NAMES[osd_config.layout])), 1.5)
+	flash(_tr("OSD layout: %s") % _tr(str(Osd.LAYOUT_NAMES[osd_config.layout])), 1.5)
 
 
 func cycle_units() -> void:
@@ -431,39 +471,61 @@ func cycle_units() -> void:
 func toggle_osd_settings() -> void:
 	settings_panel.visible = not settings_panel.visible and menu_visible
 	if settings_panel.visible:
+		_place_settings()
 		settings_panel.layout_button.grab_focus()
 
 
+## Beside the menu when the screen has room (1080p at the default scale); otherwise centred over it, inside the
+## screen (larger UI scales, 720p).
+func _place_settings() -> void:
+	var view := root_control.size
+	var width := settings_panel.get_combined_minimum_size().x
+	var gap := 16.0 * UiTheme.text_scale
+	var beside := menu.get_global_rect().end.x + gap
+	settings_panel.grow_horizontal = Control.GROW_DIRECTION_END
+	var left := beside if beside + width <= view.x - gap else maxf(gap, 0.5 * (view.x - width))
+	settings_panel.offset_left = left - 0.5 * view.x
+	settings_panel.offset_right = settings_panel.offset_left
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_O:
+	if not (event is InputEventKey and event.pressed and not event.echo):
+		return
+	if event.physical_keycode == KEY_O:
 		cycle_layout()
+		get_viewport().set_input_as_handled()
+	elif event.physical_keycode == KEY_ESCAPE and settings_panel.visible:
+		# Esc backs out of the OSD settings to the pause menu (it resumes the flight only from the menu itself).
+		settings_panel.visible = false
+		osd_button.grab_focus()
 		get_viewport().set_input_as_handled()
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and help != null:
+		_tr_cache.clear()
 		_update_texts()
 
 
 func _update_texts() -> void:
 	var lines := PackedStringArray()
 	for line: String in HELP_LINES:
-		lines.append(tr(line))
+		lines.append(_tr(line))
 	if not variant_text.is_empty():
 		lines.append(variant_text)
 	help.text = "\n".join(lines)
-	tag.text = tr("EXPERIMENTAL")
-	fixture_label.text = tr("LAB FIXTURE VISUAL")
+	tag.text = _tr("EXPERIMENTAL")
+	fixture_label.text = _tr("LAB FIXTURE VISUAL")
 	menu_variant.text = variant_text
 	if _terminal == "depleted_air":
-		resume_button.text = tr("Resume to watch the fall")
+		resume_button.text = _tr("Resume to watch the fall")
 	else:
-		resume_button.text = tr("Resume with throttle reset to zero") if _rate_reset_resume else tr("Resume flight")
-	limit_button.text = tr("Throttle limit: %d%%") % int(round(100.0 * float(_limit.pending)))
-	limit_note.text = tr("Throttle limit %d%% applies after Restart on pad.") % int(round(100.0 * float(_limit.pending)))
+		resume_button.text = _tr("Resume with throttle reset to zero") if _rate_reset_resume else _tr("Resume flight")
+	limit_button.text = _tr("Throttle limit: %d%%") % int(round(100.0 * float(_limit.pending)))
+	limit_note.text = _tr("Throttle limit %d%% applies after Restart on pad.") % int(round(100.0 * float(_limit.pending)))
 	limit_note.visible = absf(float(_limit.pending) - float(_limit.active)) > 1.0e-6
-	osd_button.text = tr("OSD settings")
-	course_button.text = tr("Course: %s") % tr(_course_name)
+	osd_button.text = _tr("OSD settings")
+	course_button.text = _tr("Course: %s") % _tr(_course_name)
 	if _stats_ready:
 		stats_label.text = stats_text()
 
@@ -536,14 +598,14 @@ func hide_menu() -> void:
 
 ## The centre OSD texts would sit under the menu: the menu reason carries them while it is open. The lower-centre
 ## hint and flash stay when the menu leaves them clear (1080p), and hide where it would cover them (720p).
-func _refresh_visibility() -> void:
+func _refresh_visibility(force := true) -> void:
 	var open := menu_visible
 	var menu_rect := menu.get_global_rect().grow(8.0)
 	hint_label.visible = not open or (not menu_rect.intersects(_text_rect(hint_label)) and hint_label.text != menu_reason.text)
 	message.visible = not open or not menu_rect.intersects(_text_rect(message))
 	warning_label.visible = not open
 	stats_panel.visible = _stats_visible()
-	osd.queue_redraw()
+	_redraw_layers(force)
 
 
 ## The part of a bottom-aligned label its text occupies.
@@ -580,17 +642,17 @@ func race_text(race: Variant) -> String:
 		"COUNTDOWN":
 			return str(int(ceil(float(race.get("countdown_s_left", 0.0)))))
 		"RACING":
-			return tr("Lap %d/%d   Gate %d/%d   %s") % [mini(int(race.get("valid_laps", 0)) + 1, int(race.get("laps", []).size())),
+			return _tr("Lap %d/%d   Gate %d/%d   %s") % [mini(int(race.get("valid_laps", 0)) + 1, int(race.get("laps", []).size())),
 				int(race.get("laps", []).size()), int(race.get("next_gate", 0)) + 1, int(race.get("gate_count", 0)),
 				format_lap(float(race.get("elapsed_lap_s", 0.0)))]
 		"FINISHED":
 			var laps := PackedStringArray()
 			for lap: Variant in race.get("laps", []):
 				laps.append(format_lap(float(lap.duration_s)))
-			return tr("Finished in %s") % format_lap(float(race.get("elapsed_total_s", 0.0))) + "   (" + " / ".join(laps) + ")"
+			return _tr("Finished in %s") % format_lap(float(race.get("elapsed_total_s", 0.0))) + "   (" + " / ".join(laps) + ")"
 		"ABORTED":
-			return tr("Race aborted")
-	return tr("Race: press G on the pad to start")
+			return _tr("Race aborted")
+	return _tr("Race: press G on the pad to start")
 
 
 ## Whether the quad sits on the ground (the race start hint is offered only there).
@@ -606,7 +668,7 @@ func countdown_text(race: Variant) -> String:
 		"RACING":
 			var r: Dictionary = race
 			if int(r.get("valid_laps", 0)) == 0 and int(r.get("next_gate", 0)) == 0 and float(r.get("elapsed_lap_s", 0.0)) < 1.0:
-				return tr("GO")
+				return _tr("GO")
 	return ""
 
 
@@ -630,7 +692,7 @@ static func controller_not_ready(bindings: Dictionary) -> bool:
 ## controller: a connected controller that is not ready yet (named instead of the arm block).
 func arm_text(t: Dictionary, arm_requested: bool, controller := false) -> String:
 	if bool(t.get("armed", false)):
-		return tr("MOTORS ARMED")
+		return _tr("MOTORS ARMED")
 	var block := int(t.get("arm_block", FC.BLOCK_NONE))
 	var reason := ""
 	if bool(t.get("crashed", false)) or bool(t.get("depleted", false)) or block == FC.BLOCK_TERMINAL:
@@ -641,37 +703,37 @@ func arm_text(t: Dictionary, arm_requested: bool, controller := false) -> String
 		reason = BLOCK_REASONS[block]
 	elif block == FC.BLOCK_SWITCH and arm_requested:
 		reason = BLOCK_REASONS[block]
-	return tr("MOTORS DISARMED") if reason.is_empty() else "%s — %s" % [tr("MOTORS DISARMED"), tr(reason)]
+	return _tr("MOTORS DISARMED") if reason.is_empty() else "%s — %s" % [_tr("MOTORS DISARMED"), _tr(reason)]
 
 
 ## The next step for the pilot, in words, with the active source's binding (bindings: {arm, arm_switch,
 ## throttle_up}); "" while flying.
 func hint_text(t: Dictionary, arm_requested: bool, bindings: Dictionary, crash_reason: String) -> String:
 	if bool(t.get("crashed", false)) or not crash_reason.is_empty():
-		return tr("Crashed: %s. Press R to reset.") % (crash_reason if not crash_reason.is_empty() else "—")
+		return _tr("Crashed: %s. Press R to reset.") % (crash_reason if not crash_reason.is_empty() else "—")
 	if bool(t.get("depleted", false)):
-		return tr("The battery is depleted. Restart on the pad to fly again.")
+		return _tr("The battery is depleted. Restart on the pad to fly again.")
 	var arm := str(bindings.get("arm", "E"))
 	var use_switch := bool(bindings.get("arm_switch", false))
 	if not bool(t.get("armed", false)) and controller_not_ready(bindings):
-		return tr(NOT_READY_TEXT)
+		return _tr(NOT_READY_TEXT)
 	if not bool(t.get("armed", false)):
 		var block := int(t.get("arm_block", FC.BLOCK_NONE))
 		if block == FC.BLOCK_SOURCE:
 			if str(bindings.get("source", "keyboard")) != "keyboard":
-				return tr(NOT_READY_TEXT)
-			return tr("No controller: connect or check the controller.")
+				return _tr(NOT_READY_TEXT)
+			return _tr("No controller: connect or check the controller.")
 		if block == FC.BLOCK_THROTTLE:
-			return tr("Arming refused: lower the throttle fully, then arm again.")
+			return _tr("Arming refused: lower the throttle fully, then arm again.")
 		if block == FC.BLOCK_SWITCH and arm_requested:
-			return tr("Arming refused: set the arm switch OFF, then ON again.") if use_switch \
-				else tr("Arming refused: press %s to switch arming OFF, then press it again.") % arm
-		return tr("Set the arm switch ON to arm the motors (throttle low).") if use_switch \
-			else tr("Press %s to arm the motors (throttle low).") % arm
+			return _tr("Arming refused: set the arm switch OFF, then ON again.") if use_switch \
+				else _tr("Arming refused: press %s to switch arming OFF, then press it again.") % arm
+		return _tr("Set the arm switch ON to arm the motors (throttle low).") if use_switch \
+			else _tr("Press %s to arm the motors (throttle low).") % arm
 	if float(t.get("altitude_agl_m", 0.0)) < 0.15 and float(t.get("collective", 0.0)) < 0.03:
 		var up := str(bindings.get("throttle_up", ""))
-		return tr("Armed. Raise the throttle gently to take off.") if up.is_empty() \
-			else tr("Armed. Hold %s briefly to add throttle; release it to hold the throttle.") % up
+		return _tr("Armed. Raise the throttle gently to take off.") if up.is_empty() \
+			else _tr("Armed. Hold %s briefly to add throttle; release it to hold the throttle.") % up
 	return ""
 
 
@@ -698,7 +760,8 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	var flight_s := float(osd_state.get("flight_s", 0.0))
 	var body: Variant = osd_state.get("body")
 	# The Off layout draws no flight element: skip the derivations (home and statistics wait for a layout).
-	var flight := Osd.flight_values(body) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY and str(osd_config.layout) != "off" else {}
+	# Like a flight controller, home and the statistics follow the flight in every layout (Off included).
+	var flight := Osd.flight_values(body) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY else {}
 	var sticks: Variant = osd_state.get("sticks")
 	_track_flight(t, flight, armed, float(t.get("time_s", flight_s)), sticks, str(osd_state.get("stick_policy", "")), now)
 	# Analog style: a flight controller's character OSD refreshes at about 12 Hz; frames in between keep the picture.
@@ -735,9 +798,9 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	_racing = race_phase(t.get("race", {})) in ["COUNTDOWN", "RACING"]
 	var collective := clampf(float(t.get("collective", 0.0)), 0.0, 1.0)
 	var limit := float(osd_state.get("throttle_limit", 1.0))
-	var throttle_text := tr("THR %d%%") % int(round(100.0 * collective))
+	var throttle_text := _tr("THR %d%%") % int(round(100.0 * collective))
 	if limit < 1.0 - 1.0e-6:
-		throttle_text += "\n" + tr("LIMIT %d%%") % int(round(100.0 * limit))
+		throttle_text += "\n" + _tr("LIMIT %d%%") % int(round(100.0 * limit))
 	throttle_label.text = throttle_text
 	throttle_label.visible = shows("throttle")
 	var units := str(osd_config.units)
@@ -754,7 +817,7 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 		var lines := PackedStringArray()
 		var first := "%d%%  " % int(round(100.0 * soc)) if soc >= 0.0 else ""
 		if cells > 0:
-			lines.append(first + "%.1f V  %s" % [volts, tr("%.2f V/cell") % cell_v])
+			lines.append(first + "%.1f V  %s" % [volts, _tr("%.2f V/cell") % cell_v])
 		else:
 			lines.append(first + "%.1f V" % volts)
 		if shows("battery_detail"):
@@ -804,8 +867,10 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 		remaining_s = Osd.remaining_s(soc, capacity_mah, stats.used_mah, stats.flight_s) if armed else -1.0,
 		updown = Osd.updown(osd_state.attitude, tilt_rad) if fpv else "",
 		gate = gate if typeof(gate) == TYPE_VECTOR3 else null, gate_number = int(osd_state.get("gate_number", 0)),
+		quad = Frames.ned_to_render([body[0], body[1], body[2]]) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY \
+			and (body as PackedFloat64Array).size() >= 3 else null,
 		blink = Osd.blink_on(now)}
-	_refresh_visibility()
+	_refresh_visibility(false)
 
 
 ## A severity's colour in the configured style: HD goggles colour it, an analog character OSD is all white.
@@ -820,12 +885,15 @@ func _tone(severity: int) -> Color:
 func _track_flight(t: Dictionary, flight: Dictionary, armed: bool, clock_s: float, sticks: Variant, policy: String,
 		now: float) -> void:
 	if _stats_ready and not armed:
+		# The timeout counts simulation seconds (a pause does not use it up); a pad restart rewinds the clock.
+		if clock_s < _stats_since:
+			_stats_since = clock_s
 		var high := stats_stick_high(sticks, policy)
 		if not high:
 			_stats_sticks_seen_low = true
-		elif _stats_sticks_seen_low or now - _stats_since > Osd.STATS_TIMEOUT_S:
+		elif _stats_sticks_seen_low:
 			_stats_ready = false
-		if now - _stats_since > Osd.STATS_TIMEOUT_S:
+		if clock_s - _stats_since > Osd.STATS_TIMEOUT_S:
 			_stats_ready = false
 	var position := Vector2(float(flight.north), float(flight.east)) if not flight.is_empty() else Vector2.INF
 	if armed and not _was_armed:
@@ -841,7 +909,7 @@ func _track_flight(t: Dictionary, flight: Dictionary, armed: bool, clock_s: floa
 		stats.sample(t, position, home_m, cells, maxf(0.0, clock_s - _arm_clock_s), gforce.value)
 	elif _was_armed and stats.was_flight():
 		_stats_ready = true
-		_stats_since = now
+		_stats_since = clock_s
 		_stats_sticks_seen_low = not stats_stick_high(sticks, policy)
 		stats_label.text = stats_text()
 	_was_armed = armed
@@ -862,7 +930,7 @@ func _show_warning(warn: Dictionary, now: float) -> void:
 	var text := str(warn.text)
 	if _stats_visible():
 		text = ""
-	warning_label.text = tr("Armed").to_upper() if text == "ARMED" else tr(text) if not text.is_empty() else ""
+	warning_label.text = _tr("Armed").to_upper() if text == "ARMED" else _tr(text) if not text.is_empty() else ""
 	_set_color(warning_label, _tone(int(warn.severity)))
 	warning_label.modulate.a = 0.0 if bool(warn.blink) and not Osd.blink_on(now) else 1.0
 
@@ -872,48 +940,79 @@ func _stats_visible() -> bool:
 	return _stats_ready and not menu_visible and shows("stats") and not countdown_label.visible and not _racing
 
 
-func _draw_osd() -> void:
-	var size := osd.size
+## DR-31d: the OSD draws on three canvas items so each is re-recorded only as often as its content moves (a canvas
+## item keeps its last drawing until it is queued again):
+## - osd (every frame): what moves with the picture - horizon, ladder, crosshair, up/down, sidebar ticks, gate guide;
+## - osd_compass: the heading tape, only when the heading moves by COMPASS_STEP_DEG or the layout changes;
+## - osd_slow (SLOW_REDRAW_S, like a flight controller's OSD refresh): values at fixed places - readouts, battery,
+##   timers, home, angles, G, motors, RPM, sticks, craft name, throttle bar.
+func _redraw_layers(force: bool) -> void:
+	if force:
+		_compass_key = -1
+		_slow_due = 0.0
+	osd.queue_redraw()
+	var flight: Dictionary = _draw_state.get("flight", {})
+	var key := -2
+	if shows("compass") and not flight.is_empty() and not menu_visible:
+		key = int(round(float(flight.heading_deg) / COMPASS_STEP_DEG))
+	if key != _compass_key:
+		_compass_key = key
+		osd_compass.queue_redraw()
+	var now := Time.get_ticks_msec() / 1000.0
+	if now >= _slow_due:
+		_slow_due = now + SLOW_REDRAW_S
+		osd_slow.queue_redraw()
+
+
+func _draw_compass() -> void:
+	var flight: Dictionary = _draw_state.get("flight", {})
+	if _compass_key < -1 or flight.is_empty():
+		return
+	Paint.compass(osd_compass, osd_compass.size.x * 0.5, top_band(UiTheme.text_scale), 300.0 * UiTheme.text_scale,
+		float(_compass_key) * COMPASS_STEP_DEG, UiTheme.text_scale)
+
+
+func _draw_slow() -> void:
+	var ci := osd_slow
+	var size := ci.size
 	if size.x <= 0.0 or size.y <= 0.0:
 		return
 	var s := UiTheme.text_scale
 	var centre := size * 0.5
-	var half_h := size.y * 0.5
-	var open := menu_visible
 	var m := MARGIN * s
 	var units := str(_draw_state.get("units", "metric"))
 	# Throttle bar (bottom right): the stick share of the limited range.
 	if shows("throttle"):
 		var bar := Rect2(Vector2(size.x - m - THROTTLE_BAR.x * s, size.y - m - THROTTLE_BAR.y * s), THROTTLE_BAR * s)
-		osd.draw_rect(bar.grow(2.0), Color(0, 0, 0, 0.45), true)
+		ci.draw_rect(bar.grow(2.0), Color(0, 0, 0, 0.45), true)
 		var fill := clampf(float(_draw_state.get("throttle", 0.0)), 0.0, 1.0)
 		if fill > 0.0:
-			osd.draw_rect(Rect2(bar.position + Vector2(0.0, bar.size.y * (1.0 - fill)), Vector2(bar.size.x, bar.size.y * fill)), OSD_TEXT, true)
-		osd.draw_rect(bar, OSD_TEXT, false, 2.0)
+			ci.draw_rect(Rect2(bar.position + Vector2(0.0, bar.size.y * (1.0 - fill)), Vector2(bar.size.x, bar.size.y * fill)), OSD_TEXT, true)
+		ci.draw_rect(bar, OSD_TEXT, false, 2.0)
 	var commands: Variant = _draw_state.get("commands")
 	if shows("motors") and typeof(commands) == TYPE_PACKED_FLOAT64_ARRAY and not (commands as PackedFloat64Array).is_empty():
 		var bar_w := (THROTTLE_BAR.x + 14.0) * s
 		var area := Rect2(Vector2(size.x - m - bar_w - 96.0 * s, size.y - m - 166.0 * s), Vector2(84.0 * s, 60.0 * s))
-		Paint.motors(osd, area, commands, s)
+		Paint.motors(ci, area, commands, s)
 	var rpm := float(_draw_state.get("rotor_rad_s", 0.0))
 	if shows("rpm") and rpm > 0.0:
 		var bar_w := (THROTTLE_BAR.x + 14.0) * s
-		Paint.text(osd, Vector2(size.x - m - bar_w - 12.0 * s, size.y - m - 186.0 * s), "RPM " + Osd.rpm_text(rpm),
+		Paint.text(ci, Vector2(size.x - m - bar_w - 12.0 * s, size.y - m - 186.0 * s), "RPM " + Osd.rpm_text(rpm),
 			int(round(20.0 * s)), OSD_TEXT, 1)
 	var soc := float(_draw_state.get("soc", -1.0))
 	if battery_label.visible and soc >= 0.0:
 		var gauge := Rect2(Vector2(m, size.y - m - 62.0 * s), Vector2(24.0 * s, 58.0 * s))
-		Paint.battery_icon(osd, gauge, soc, _tone([Osd.CRITICAL, Osd.WARNING, Osd.INFO][Osd.charge_band(soc)]), s)
+		Paint.battery_icon(ci, gauge, soc, _tone([Osd.CRITICAL, Osd.WARNING, Osd.INFO][Osd.charge_band(soc)]), s)
 	if timer_label.visible and timer_label.modulate.a > 0.0:
 		var size_px := timer_label.get_theme_font_size("font_size")
 		var width := Paint.text_width(timer_label.text, size_px)
-		Paint.icon_clock(osd, Vector2(size.x - m - width - 20.0 * s, m * 0.6 + 22.0 * s), 9.0 * s,
+		Paint.icon_clock(ci, Vector2(size.x - m - width - 20.0 * s, m * 0.6 + 22.0 * s), 9.0 * s,
 			timer_label.get_theme_color("font_color"))
 	if shows("craft") and not craft_name.is_empty():
-		Paint.text(osd, Vector2(centre.x, size.y - m * 0.5), craft_name, int(round(20.0 * s)), OSD_TEXT, 0)
-	if open:
+		Paint.text(ci, Vector2(centre.x, size.y - m * 0.5), craft_name, int(round(20.0 * s)), OSD_TEXT, 0)
+	if menu_visible:
 		return
-	_draw_top_right(size, m, s, units)
+	_draw_top_right(ci, size, m, s, units)
 	var sticks: Dictionary = _draw_state.get("sticks", {})
 	if shows("sticks") and not sticks.is_empty():
 		var throttle := float(sticks.get("throttle", 0.0))
@@ -921,36 +1020,28 @@ func _draw_osd() -> void:
 		var thr_y := -throttle if str(_draw_state.get("stick_policy", "")) == "rate" else 1.0 - 2.0 * throttle
 		var box := 68.0 * s
 		var y := size.y - m - 112.0 * s - box
-		Paint.gimbal(osd, Rect2(Vector2(m, y), Vector2(box, box)), Vector2(float(sticks.get("yaw", 0.0)), thr_y), s)
+		Paint.gimbal(ci, Rect2(Vector2(m, y), Vector2(box, box)), Vector2(float(sticks.get("yaw", 0.0)), thr_y), s)
 		# Pitch > 0 is stick back (toward the pilot), drawn down.
-		Paint.gimbal(osd, Rect2(Vector2(m + box + 12.0 * s, y), Vector2(box, box)),
+		Paint.gimbal(ci, Rect2(Vector2(m + box + 12.0 * s, y), Vector2(box, box)),
 			Vector2(float(sticks.get("roll", 0.0)), float(sticks.get("pitch", 0.0))), s)
 	var flight: Dictionary = _draw_state.get("flight", {})
-	if shows("compass") and not flight.is_empty():
-		Paint.compass(osd, centre.x, top_band(s), 300.0 * s, float(flight.heading_deg), s)
 	if shows("angles") and not flight.is_empty():
 		var size_px := int(round(20.0 * s))
 		var y0 := m * 0.6 + 96.0 * s
-		Paint.text(osd, Vector2(m, y0), tr("PITCH %+d°") % int(round(float(flight.pitch_deg))), size_px)
-		Paint.text(osd, Vector2(m, y0 + 26.0 * s), tr("ROLL %+d°") % int(round(float(flight.roll_deg))), size_px)
+		Paint.text(ci, Vector2(m, y0), _tr("PITCH %+d°") % int(round(float(flight.pitch_deg))), size_px)
+		Paint.text(ci, Vector2(m, y0 + 26.0 * s), _tr("ROLL %+d°") % int(round(float(flight.roll_deg))), size_px)
 	var side_x := SIDEBAR_X * s
 	var speed := float(_draw_state.get("speed_mps", 0.0))
 	var altitude := float(_draw_state.get("altitude_m", 0.0))
-	if shows("sidebars"):
-		# One tick per 5 km/h (mph) of speed and per metre (5 ft) of height; the ticks scroll with the value.
-		var speed_ticks := speed * (Osd.MPS_TO_MPH if units == "imperial" else Osd.MPS_TO_KMH) / 5.0
-		var alt_ticks := altitude * (Osd.M_TO_FT / 5.0 if units == "imperial" else 1.0)
-		Paint.sidebar(osd, centre.x - side_x, centre.y, SIDEBAR_HALF * s, speed_ticks, -1.0, s)
-		Paint.sidebar(osd, centre.x + side_x, centre.y, SIDEBAR_HALF * s, alt_ticks, 1.0, s)
-	var blink := bool(_draw_state.get("blink", true))
+	var blink := Osd.blink_on(Time.get_ticks_msec() / 1000.0)
 	if shows("speed"):
-		Paint.readout(osd, Vector2(centre.x - side_x - 22.0 * s, centre.y), Osd.speed_text(speed, units), -1.0, s)
+		Paint.readout(ci, Vector2(centre.x - side_x - 22.0 * s, centre.y), Osd.speed_text(speed, units), -1.0, s)
 	var g := float(_draw_state.get("g", NAN))
 	if shows("gforce") and is_finite(g):
 		# INAV's G element: two decimals, blinking past the 5 g alarm.
 		var alarm := g > Osd.GFORCE_ALARM
 		if not alarm or blink:
-			Paint.text(osd, Vector2(centre.x - side_x - 22.0 * s, centre.y + 36.0 * s), "%.2f G" % g, int(round(18.0 * s)),
+			Paint.text(ci, Vector2(centre.x - side_x - 22.0 * s, centre.y + 36.0 * s), "%.2f G" % g, int(round(18.0 * s)),
 				_tone(Osd.CRITICAL) if alarm else OSD_TEXT, 1)
 	if shows("altitude"):
 		var climb := float(flight.get("climb_mps", 0.0))
@@ -959,17 +1050,40 @@ func _draw_osd() -> void:
 		var value := Osd.altitude_text(altitude, units)
 		# The altitude alarm of Betaflight and INAV: armed above 100 m the value blinks.
 		var high := bool(_draw_state.get("armed", false)) and altitude > Osd.ALTITUDE_ALARM_M
-		Paint.readout(osd, at, value if not high or blink else "", 1.0, s, _tone(Osd.CRITICAL) if high else OSD_TEXT,
+		Paint.readout(ci, at, value if not high or blink else "", 1.0, s, _tone(Osd.CRITICAL) if high else OSD_TEXT,
 			Osd.climb_text(climb, units) if vario else "")
 		if vario:
 			var width := Paint.text_width(value, int(round(26.0 * s))) + 16.0 * s
-			Paint.vario(osd, at + Vector2(width + 14.0 * s, 0.0), Osd.vario_steps(climb), s)
+			Paint.vario(ci, at + Vector2(width + 14.0 * s, 0.0), Osd.vario_steps(climb), s)
+
+
+func _draw_osd() -> void:
+	var size := osd.size
+	if size.x <= 0.0 or size.y <= 0.0 or menu_visible:
+		return
+	var s := UiTheme.text_scale
+	var centre := size * 0.5
+	var half_h := size.y * 0.5
+	var m := MARGIN * s
+	var units := str(_draw_state.get("units", "metric"))
+	var side_x := SIDEBAR_X * s
+	if shows("sidebars"):
+		# One tick per 5 km/h (mph) of speed and per metre (5 ft) of height; the ticks scroll with the value.
+		var speed := float(_draw_state.get("speed_mps", 0.0))
+		var altitude := float(_draw_state.get("altitude_m", 0.0))
+		var speed_ticks := speed * (Osd.MPS_TO_MPH if units == "imperial" else Osd.MPS_TO_KMH) / 5.0
+		var alt_ticks := altitude * (Osd.M_TO_FT / 5.0 if units == "imperial" else 1.0)
+		Paint.sidebar(osd, centre.x - side_x, centre.y, SIDEBAR_HALF * s, speed_ticks, -1.0, s)
+		Paint.sidebar(osd, centre.x + side_x, centre.y, SIDEBAR_HALF * s, alt_ticks, 1.0, s)
 	var gate: Variant = _draw_state.get("gate")
 	if shows("gate") and typeof(gate) == TYPE_VECTOR3:
 		var camera := osd.get_viewport().get_camera_3d()
 		if camera != null:
-			var distance := camera.global_position.distance_to(gate)
-			var label := "%s %d  %s" % [tr("GATE"), int(_draw_state.get("gate_number", 0)), Osd.distance_text(distance, units)]
+			# The quad's distance to the gate (in the pilot or chase view the camera is elsewhere).
+			var quad: Variant = _draw_state.get("quad")
+			var distance := (quad as Vector3).distance_to(gate) if typeof(quad) == TYPE_VECTOR3 \
+				else camera.global_position.distance_to(gate)
+			var label := "%s %d  %s" % [_tr("GATE"), int(_draw_state.get("gate_number", 0)), Osd.distance_text(distance, units)]
 			Paint.gate_marker(osd, size, camera.unproject_position(gate), camera.is_position_behind(gate), label,
 				m * 2.2, s, _tone(Osd.WARNING))
 	var horizon: Dictionary = _draw_state.get("horizon", {})
@@ -1020,7 +1134,7 @@ func _draw_osd() -> void:
 
 ## The column under the flight timer: home arrow and distance, the on-time and the remaining-time estimate, each
 ## row only when its element is shown (rows close up).
-func _draw_top_right(size: Vector2, m: float, s: float, units: String) -> void:
+func _draw_top_right(ci: CanvasItem, size: Vector2, m: float, s: float, units: String) -> void:
 	var size_px := int(round(22.0 * s))
 	var right := size.x - m
 	var y := m * 0.6 + 66.0 * s
@@ -1029,16 +1143,16 @@ func _draw_top_right(size: Vector2, m: float, s: float, units: String) -> void:
 		var at := Vector2(right - 14.0 * s, y)
 		# Within a couple of metres of home its direction is meaningless; only the distance is shown there.
 		if float(home_info.distance_m) >= HOME_ARROW_MIN_M:
-			Paint.home_arrow(osd, at, float(home_info.relative_deg), 12.0 * s)
+			Paint.home_arrow(ci, at, float(home_info.relative_deg), 12.0 * s)
 		var text := Osd.distance_text(float(home_info.distance_m), units)
-		Paint.text(osd, at - Vector2(24.0 * s, 0.0), text, size_px, OSD_TEXT, 1)
-		Paint.icon_home(osd, at - Vector2(36.0 * s + Paint.text_width(text, size_px), 0.0), 16.0 * s)
+		Paint.text(ci, at - Vector2(24.0 * s, 0.0), text, size_px, OSD_TEXT, 1)
+		Paint.icon_home(ci, at - Vector2(36.0 * s + Paint.text_width(text, size_px), 0.0), 16.0 * s)
 		y += 30.0 * s
 	if shows("on_timer"):
-		Paint.text(osd, Vector2(right, y), "ON " + Osd.clock_text(float(_draw_state.get("on_s", 0.0))), size_px, OSD_TEXT, 1)
+		Paint.text(ci, Vector2(right, y), "ON " + Osd.clock_text(float(_draw_state.get("on_s", 0.0))), size_px, OSD_TEXT, 1)
 		y += 30.0 * s
 	if shows("remaining") and capacity_mah > 0.0:
-		Paint.text(osd, Vector2(right, y), tr("LEFT %s") % Osd.clock_text(float(_draw_state.get("remaining_s", -1.0))),
+		Paint.text(ci, Vector2(right, y), _tr("LEFT %s") % Osd.clock_text(float(_draw_state.get("remaining_s", -1.0))),
 			size_px, OSD_TEXT, 1)
 
 
