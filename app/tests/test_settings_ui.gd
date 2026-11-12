@@ -5,6 +5,7 @@ extends SceneTree
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
+const UiInput := preload("res://ui/ui_input.gd")
 const AppRoot := preload("res://app_root.gd")
 const PREFS := "user://test_settings_ui_display.cfg"
 
@@ -106,6 +107,52 @@ func _run() -> void:
 		_check("default Settings category %d fits without scrolling" % category,
 			not default_settings._scroll.get_v_scroll_bar().visible,
 			"surface=%s body=%s page=%s" % [default_settings._surface.size, default_settings._scroll.size, default_settings._pages[category].size])
+	default_settings._show_category(3)
+	await process_frame
+	await process_frame
+	var graphics_defaults := default_settings.find_child("GraphicsDefaults", true, false) as Button
+	var graphics_area := default_settings._scroll.get_global_rect()
+	_check("1080p Graphics exposes flag animation and actions without clipping",
+		default_settings._flag_animation_picker.is_visible_in_tree() and graphics_defaults.is_visible_in_tree()
+		and graphics_area.encloses(default_settings._flag_animation_picker.get_global_rect())
+		and graphics_area.encloses(graphics_defaults.get_global_rect()),
+		"area=%s flag=%s defaults=%s" % [graphics_area, default_settings._flag_animation_picker.get_global_rect(), graphics_defaults.get_global_rect()])
+	test_viewport.size = Vector2i(1280, 720)
+	await process_frame
+	await process_frame
+	_check("720p Graphics scrolls with its footer inside the viewport",
+		default_settings._scroll.get_v_scroll_bar().visible
+		and Rect2(Vector2.ZERO, Vector2(test_viewport.size)).encloses(default_settings._keep_button.get_global_rect()))
+	default_settings._flag_animation_picker.grab_focus()
+	await process_frame
+	await process_frame
+	await process_frame
+	_check("720p focus reveals the flag animation control",
+		test_viewport.gui_get_focus_owner() == default_settings._flag_animation_picker
+		and default_settings._scroll.get_global_rect().encloses(default_settings._flag_animation_picker.get_global_rect()))
+	await _tap_key(test_viewport, KEY_TAB)
+	var next_graphics_focus := test_viewport.gui_get_focus_owner()
+	_check("720p keyboard navigation keeps the next Graphics control visible", next_graphics_focus != null
+		and next_graphics_focus != default_settings._flag_animation_picker
+		and default_settings._scroll.get_global_rect().grow(1.0).encloses(next_graphics_focus.get_global_rect()))
+	UiInput.set_gamepad(15)
+	default_settings._flag_animation_picker.grab_focus()
+	await _tap_joy(test_viewport, JOY_BUTTON_DPAD_DOWN, 15)
+	var pad_graphics_focus := test_viewport.gui_get_focus_owner()
+	_check("720p gamepad navigation keeps the next Graphics control visible", pad_graphics_focus != null
+		and pad_graphics_focus != default_settings._flag_animation_picker
+		and default_settings._scroll.get_global_rect().grow(1.0).encloses(pad_graphics_focus.get_global_rect()))
+	UiInput.isolate_joypads()
+	graphics_defaults.grab_focus()
+	await process_frame
+	await process_frame
+	await process_frame
+	_check("720p focus reaches the Graphics actions", test_viewport.gui_get_focus_owner() == graphics_defaults
+		and default_settings._scroll.get_global_rect().grow(1.0).encloses(graphics_defaults.get_global_rect()),
+		"focus=%s area=%s defaults=%s scroll=%d" % [test_viewport.gui_get_focus_owner(), default_settings._scroll.get_global_rect(), graphics_defaults.get_global_rect(), default_settings._scroll.scroll_vertical])
+	test_viewport.size = Vector2i(1920, 1080)
+	await process_frame
+	await process_frame
 	default_settings._volume_changed(0.0)
 	_check("muted preview disables Test sound", default_settings._test_sound_button.disabled
 		and default_settings._volume_value.text == tr("Muted"))
@@ -365,6 +412,18 @@ func _tap_key(viewport: Viewport, code: Key) -> void:
 		event.physical_keycode = code
 		event.pressed = pressed
 		viewport.push_input(event)
+	await process_frame
+	await process_frame
+
+
+func _tap_joy(viewport: Viewport, button: JoyButton, device: int) -> void:
+	for pressed in [true, false]:
+		var event := InputEventJoypadButton.new()
+		event.device = device
+		event.button_index = button
+		event.pressed = pressed
+		viewport.push_input(event)
+	await process_frame
 	await process_frame
 	await process_frame
 

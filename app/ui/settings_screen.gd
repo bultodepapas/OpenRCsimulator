@@ -231,7 +231,7 @@ func _build() -> void:
 	var interface_page := _pages[1]
 	var sound_page := _pages[2]
 	var graphics_page := _pages[3]
-	graphics_page.add_theme_constant_override("separation", 10)
+	graphics_page.add_theme_constant_override("separation", 6)
 	var camera_page := _pages[4]
 	var lighting_page := _pages[5]
 
@@ -1302,7 +1302,7 @@ func _update_layout() -> void:
 	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
 	# Give the full 1080p Graphics page room without shrinking its controls or
 	# text. Smaller viewports still fit within their available height and scroll.
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(1000.0, maxf(0.0, available.y)))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(1024.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
 	_sync_reconstruction_controls()
 	_sync_reflex_controls()
