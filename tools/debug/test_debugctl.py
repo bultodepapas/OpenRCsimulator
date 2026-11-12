@@ -1451,7 +1451,9 @@ class DebugctlTests(unittest.TestCase):
         import ctypes
         session = {"port": self.bridge.port, "pid": 123456789, "launcher_pid": 123456789}
         kernel = SimpleNamespace(OpenProcess=Mock(return_value=None), GetExitCodeProcess=Mock(), CloseHandle=Mock())
-        with patch.object(debugctl.os, "name", "nt"), \
+        # Exercise legacy Windows liveness without probing the real host's enrollment.
+        with patch.object(debugctl.admission, "enabled", return_value=False), \
+                patch.object(debugctl.os, "name", "nt"), \
                 patch.object(ctypes, "WinDLL", return_value=kernel, create=True), \
                 patch.object(ctypes, "get_last_error", return_value=5, create=True), \
                 patch.object(debugctl, "ambiguous_target", return_value=[]), \
