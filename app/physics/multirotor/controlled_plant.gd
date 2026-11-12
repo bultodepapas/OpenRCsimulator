@@ -72,6 +72,10 @@ const REST_RATE_RAD_S := 0.5
 const REST_ROTOR_FRACTION := 0.05
 ## Standard gravity for the rest threshold's symmetric hover speed only (the kernel owns the gravity of the dynamics).
 const STANDARD_GRAVITY := 9.80665
+## One piece is admitted for a parked quad only while h·|λ| of its stiffest parked contact mode stays at or below
+## this bound (RK4's real-axis stability limit is about 2.79), at the session's fixed 240 Hz tick.
+const PARKED_H_LAMBDA_LIMIT := 2.0
+const PARKED_CHECK_DT := 1.0 / 240.0
 ## Crash impact law: fractions of the tangential velocity and of the body rates kept at a ground crash.
 const CRASH_TANGENT_KEEP := 0.5
 const CRASH_RATE_KEEP := 0.3
@@ -92,8 +96,11 @@ var _effective_inverse := PackedFloat64Array()
 var _points: Array[PackedFloat64Array] = []
 var _foot_count := 0
 var _body_radius := 0.0
-## Shaft speed (rad/s) above which a rotor counts as turning for the contact refinement; 0 refines any turning rotor.
+## Shaft speed (rad/s) above which a rotor counts as turning for the contact refinement; 0 refines any turning rotor
+## and a negative value means the quad is never parked (its parked contact would be too stiff for one piece).
 var _rest_rotor_speed := 0.0
+## h·|λ| of the stiffest parked contact mode (see parked_stiffness); above PARKED_H_LAMBDA_LIMIT nothing is parked.
+var parked_one_piece_h_lambda := INF
 var _resistance := PackedFloat64Array()
 var _braking := false
 var _hub := PackedFloat64Array() # four hubs, three values each
@@ -174,7 +181,43 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 	plant._foot_count = plant._points.size()
 	for point: PackedFloat64Array in data.contacts.hull_frd:
 		plant._points.append(point.duplicate())
+	var yaw_inertia: float = float(data.inertia_kg_m2[2]) - (rotor_inertia if plant.electric else 0.0)
+	plant.parked_one_piece_h_lambda = parked_stiffness(data, yaw_inertia) * PARKED_CHECK_DT
+	if not (plant.parked_one_piece_h_lambda <= PARKED_H_LAMBDA_LIMIT):
+		plant._rest_rotor_speed = -1.0 # never parked: this contact needs the refined pieces even at rest
 	return {ok = true, errors = errors, plant = plant}
+
+
+## Largest |λ| (1/s) of the parked contact's modes, a conservative single-axis estimate: heave, roll and pitch
+## rocking (penalty springs and dampers, max(ω, c/I) bounds a damped pair's roots) and the regularized friction
+## in translation and yaw (μ·N/FRICTION_CREEP per foot). Infinite for unusable data.
+static func parked_stiffness(data: Dictionary, yaw_inertia: float) -> float:
+	var contacts: Dictionary = data.contacts
+	var feet: Array = contacts.feet_frd
+	var mass := float(data.mass_kg)
+	var inertia: PackedFloat64Array = data.inertia_kg_m2
+	if feet.is_empty() or not (mass > 0.0) or not (inertia[0] > 0.0) or not (inertia[1] > 0.0) or not (yaw_inertia > 0.0):
+		return INF
+	var k := float(contacts.stiffness_n_per_m)
+	var c := float(contacts.damping_n_s_per_m)
+	var n := float(feet.size())
+	var sum_x2 := 0.0
+	var sum_y2 := 0.0
+	for foot: PackedFloat64Array in feet:
+		sum_x2 += foot[0] * foot[0]
+		sum_y2 += foot[1] * foot[1]
+	var friction_rate := float(contacts.friction) * STANDARD_GRAVITY / FRICTION_CREEP # per unit mass
+	var rates := PackedFloat64Array([
+		maxf(sqrt(n * k / mass), n * c / mass),
+		maxf(sqrt(k * sum_y2 / inertia[0]), c * sum_y2 / inertia[0]),
+		maxf(sqrt(k * sum_x2 / inertia[1]), c * sum_x2 / inertia[1]),
+		friction_rate,
+		friction_rate * mass * (sum_x2 + sum_y2) / n / yaw_inertia,
+	])
+	var worst := 0.0
+	for rate: float in rates:
+		worst = maxf(worst, rate) if is_finite(rate) else INF
+	return worst
 
 
 func law() -> String:
@@ -571,6 +614,8 @@ func substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: floa
 ## Whether a contact near the terrain needs the refined pieces (see substeps): CG speed, body rate or a turning
 ## rotor. Non-finite values refine.
 func contact_is_moving(body: PackedFloat64Array, continuous: PackedFloat64Array) -> bool:
+	if _rest_rotor_speed < 0.0:
+		return true
 	var speed2: float = body[RB.VEL] * body[RB.VEL] + body[RB.VEL + 1] * body[RB.VEL + 1] + body[RB.VEL + 2] * body[RB.VEL + 2]
 	var rate2: float = body[RB.RATE] * body[RB.RATE] + body[RB.RATE + 1] * body[RB.RATE + 1] \
 		+ body[RB.RATE + 2] * body[RB.RATE + 2]

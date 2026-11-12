@@ -39,6 +39,11 @@ const TAPE_FULL := "Paused: the input tape is full (30 minutes); reset to fly ag
 const READY := "Ready. Cycle the arm switch OFF then ON at low throttle."
 ## Obstacle query reach beyond the airframe sphere (m); the plant decides a strike at the sphere radius.
 const OBSTACLE_SLACK_M := 0.5
+## Contact terrain law (DR-22/R1, contact_ground): linearization square (m), memo bound (entries) and the coordinate
+## bound of the square index (Vector2i cells stay inside int32 below it).
+const TERRAIN_CELL_M := 1.0e-4
+const TERRAIN_MEMO_MAX := 256 # a parked quad uses 10-20 squares; a small memo clears in microseconds
+const TERRAIN_MEMO_REACH_M := 1.0e5
 ## Obstacle broad phase (DR-22/R1): index cell size (m) and the cell count above which a proxy is tested always.
 const OBSTACLE_INDEX_CELL_M := 4.0
 const OBSTACLE_INDEX_MAX_CELLS := 256
@@ -238,7 +243,8 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	var candidate_plant: RefCounted = created.plant
 	var captured_env := candidate_env
 	candidate_plant.environment = captured_env
-	candidate_plant.ground = func(n: float, e: float) -> PackedFloat64Array: return captured_env.ground(n, e)
+	candidate_plant.ground = contact_ground(captured_env)
+	var exact_ground := func(n: float, e: float) -> PackedFloat64Array: return captured_env.ground(n, e)
 	var radius := _airframe_radius(doc)
 	# DR-23…26 race composition: a strict track for this field, its pad as the start, its gate frames as solids,
 	# and the race-state wrapper as the one installed model. Free flight installs the plant's own model.
@@ -254,7 +260,7 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 		var loaded_track: Dictionary = Track.load_file(str(opts.race_track))
 		if not loaded_track.ok:
 			return _refused("; ".join(loaded_track.errors))
-		var made_course: Dictionary = Track.prepare(loaded_track.track, field, candidate_plant.ground)
+		var made_course: Dictionary = Track.prepare(loaded_track.track, field, exact_ground)
 		if not made_course.ok:
 			return _refused("; ".join(made_course.errors))
 		race_course = made_course.course
@@ -594,10 +600,11 @@ func collision_identity() -> String:
 
 ## obstacle(north, east, down) -> signed clearance (m) to the nearest proxy within `reach`, else `reach`. Pure: it
 ## reads only an immutable index built here from the installed world (no query-time memory), so the kernel's
-## guarded callbacks see no session state. The result equals the former fresh CollisionWorld.nearby query bit for
-## bit: the index's fine cells give a superset of candidates, the world's own AABB-sphere test keeps exactly the
-## proxies that query returned, and the minimum of their clearances does not depend on order or repeats
-## (DR-22/R1 equivalence check in test_mr_fast_paths). `frames` are the race course's gate-frame boxes (few:
+## guarded callbacks see no session state. On a validated world (set_collision_world checks every proxy) the result
+## equals the former fresh CollisionWorld.nearby query: the index's fine cells give a superset of candidates and the
+## world's own AABB-sphere test keeps the proxies that query returned; the minimum of their clearances does not
+## depend on order or repeats except for a signed zero (bit for bit on 199 376 queries, DR-22/R1,
+## test_mr_fast_paths). At a 32 m bin border the index can also find a proxy the former query missed by rounding. `frames` are the race course's gate-frame boxes (few:
 ## tested directly, no broad phase).
 static func _obstacle_query(world: Dictionary, frames: Array, reach: float) -> Callable:
 	var index: Dictionary = obstacle_index(world, reach)
@@ -611,6 +618,33 @@ static func _obstacle_query(world: Dictionary, frames: Array, reach: float) -> C
 			if absf(north - float(proxy.north)) < proxy.span and absf(east - float(proxy.east)) < proxy.span:
 				nearest = minf(nearest, _clearance(proxy, north, east, down))
 		return nearest
+
+
+## DR-22/R1 terrain law of the plant's contact, impact and substep queries: the field surface linearized inside
+## TERRAIN_CELL_M squares, h(n, e) = h(a) + dh/dn(a)·(n − a_n) + dh/de(a)·(e − a_e) with slopes dh(a), where a is the
+## square's centre. A pure function of (n, e): the memo of centre samples changes the speed, never a value, so
+## replay, checkpoints and reset are unaffected by what it holds. A quad resting on the pad queries the same few
+## squares every stage, so the microrelief sampler (about 5 µs) runs once per square instead of about 230 times a
+## tick. Linearization error: curvature × (cell/2)² ≈ 1e-9 m on the field's microrelief. Points beyond
+## TERRAIN_MEMO_REACH_M from the origin or non-finite take the exact sample.
+static func contact_ground(env: RefCounted) -> Callable:
+	var memo := {}
+	return func(n: float, e: float) -> PackedFloat64Array:
+		if not (absf(n) < TERRAIN_MEMO_REACH_M and absf(e) < TERRAIN_MEMO_REACH_M):
+			return env.ground(n, e)
+		var cell_n := floori(n / TERRAIN_CELL_M)
+		var cell_e := floori(e / TERRAIN_CELL_M)
+		var anchor_n := (float(cell_n) + 0.5) * TERRAIN_CELL_M
+		var anchor_e := (float(cell_e) + 0.5) * TERRAIN_CELL_M
+		var key := Vector2i(cell_n, cell_e)
+		var centre: Variant = memo.get(key)
+		if centre == null:
+			if memo.size() >= TERRAIN_MEMO_MAX:
+				memo.clear()
+			centre = env.ground(anchor_n, anchor_e)
+			memo[key] = centre
+		var a: PackedFloat64Array = centre
+		return PackedFloat64Array([a[0] + a[1] * (n - anchor_n) + a[2] * (e - anchor_e), a[1], a[2]])
 
 
 ## Fine 2D broad phase over a validated world for queries of radius `reach`: {cell_m, cells: {key: Array of
@@ -722,8 +756,10 @@ func telemetry() -> Dictionary:
 	return out
 
 
-## Plain identity of everything that affects accepted physics: model/law/controller/rates/data, throttle policy,
-## resolved start, weather, field surfaces and the fixed tick. The obstacle inventory has its own identity.
+## Plain identity of the configuration that affects accepted physics: model/law/controller/rates/data, throttle
+## policy, resolved start, weather, field surfaces and the fixed tick. The obstacle inventory has its own identity;
+## a change of the solver source itself (for example DR-18/22-R1's parked substeps and contact terrain law) is
+## identified by the flight log's solver identity, not here.
 func identity() -> Dictionary:
 	if not prepared:
 		return {}

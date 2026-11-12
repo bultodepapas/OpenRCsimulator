@@ -4,6 +4,10 @@
 #    every proxy's box and edges, on index cell borders, several reaches, non-finite input), and is faster.
 # 2. Contact loads: the plant's scalar _contact_loads equals the former M.* vector form (kept below verbatim) on
 #    seeded states resting, sliding, tumbling and plunging into the default field's terrain, and is faster.
+# 3. Contact terrain law: the plant's linearized, memoized terrain is pure (memo and order never change a value)
+#    and stays within a hair of the exact field sample.
+# 4. Contact substep policy (DR-18-R1, a declared physics change): one piece only for a parked quad, and a contact
+#    too stiff for one parked piece is never parked.
 # Headless software checks; no physical claim.
 extends SceneTree
 
@@ -16,6 +20,8 @@ const Plant := preload("res://physics/multirotor/controlled_plant.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const FC := preload("res://physics/multirotor/flight_controller.gd")
+const Rates := preload("res://physics/multirotor/rates.gd")
 
 var _count := 0
 var _failures := 0
@@ -78,6 +84,99 @@ static func _contact_reference(plant: RefCounted, body: PackedFloat64Array, atti
 		force = M.add(force, f_body)
 		moment = M.add(moment, M.cross(point, f_body))
 	return {force = force, moment = moment}
+
+
+## 3. The contact terrain law (Session.contact_ground): a pure function of position, whatever its memo holds or the
+## query order, and within a hair of the exact field sample (heights 1e-7 m, slopes 1e-3) over the default field.
+func _terrain(field: Dictionary) -> void:
+	var s: Node = Session.new()
+	root.add_child(s)
+	if not s.prepare(field, {data_path = Catalog.DATA_PATH, throttle_policy = "absolute", start = "pad"}):
+		_check("the shipped quad prepares on the default field", false, str(s.load_error))
+		return
+	var env: RefCounted = s.environment
+	var pad: PackedFloat64Array = s.sim.state
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 2026_11_12_3
+	var points: Array[Vector2] = []
+	for i in 3000:
+		points.append(Vector2(pad[0] + rng.randf_range(-0.2, 0.2), pad[1] + rng.randf_range(-0.2, 0.2)))
+	for i in 3000:
+		points.append(Vector2(rng.randf_range(-400.0, 400.0), rng.randf_range(-400.0, 400.0)))
+	var a: Callable = Session.contact_ground(env)
+	var b: Callable = Session.contact_ground(env)
+	# Warm b's memo with unrelated squares and past its bound (it clears), then query in reverse order.
+	for i in Session.TERRAIN_MEMO_MAX + 100:
+		b.call(rng.randf_range(-300.0, 300.0), rng.randf_range(-300.0, 300.0))
+	var forward: Array[PackedFloat64Array] = []
+	for p: Vector2 in points:
+		forward.append(a.call(p.x, p.y))
+	var pure := true
+	for i in range(points.size() - 1, -1, -1):
+		if var_to_bytes(b.call(points[i].x, points[i].y)) != var_to_bytes(forward[i]):
+			pure = false
+	_check("the contact terrain law does not depend on its memo or the query order", pure)
+	var worst_h := 0.0
+	var worst_slope := 0.0
+	for i in points.size():
+		var exact: PackedFloat64Array = env.ground(points[i].x, points[i].y)
+		worst_h = maxf(worst_h, absf(forward[i][0] - exact[0]))
+		worst_slope = maxf(worst_slope, maxf(absf(forward[i][1] - exact[1]), absf(forward[i][2] - exact[2])))
+	_check("the linearized contact terrain stays within 1e-7 m and 1e-3 of the exact sample", worst_h < 1.0e-7
+		and worst_slope < 1.0e-3, "height %s m, slope %s" % [String.num_scientific(worst_h), String.num_scientific(worst_slope)])
+	var far: PackedFloat64Array = a.call(2.0e5, 0.0)
+	_check("beyond the memo reach and for non-finite input the exact sample is used",
+		var_to_bytes(far) == var_to_bytes(env.ground(2.0e5, 0.0)) and is_nan(a.call(NAN, 0.0)[0]))
+	s.queue_free()
+
+
+## 4. DR-18-R1 contact substep policy: one piece only for a parked quad (near the ground, still, rotors stopped),
+## four pieces for turning rotors either way, motion, rates or non-finite state, one piece in free flight; and a
+## contact too stiff for one parked piece is never parked.
+func _substeps(field: Dictionary) -> void:
+	var s: Node = Session.new()
+	root.add_child(s)
+	if not s.prepare(field, {data_path = Catalog.DATA_PATH, throttle_policy = "absolute", start = "pad"}):
+		_check("the shipped quad prepares on the default field", false, str(s.load_error))
+		return
+	var plant: RefCounted = s.plant
+	var body: PackedFloat64Array = s.sim.state.duplicate()
+	var stopped := PackedFloat64Array(s.sim.continuous)
+	for i in 4:
+		stopped[i] = 0.0
+	var pieces := func(b: PackedFloat64Array, c: PackedFloat64Array) -> int: return plant.substeps(b, c, 0.0)
+	_check("the shipped quad's parked contact admits one piece (h|λ| %.2f <= %.1f)" % [plant.parked_one_piece_h_lambda,
+		Plant.PARKED_H_LAMBDA_LIMIT], plant.parked_one_piece_h_lambda <= Plant.PARKED_H_LAMBDA_LIMIT)
+	var turning := stopped.duplicate()
+	turning[2] = 300.0
+	var reverse := stopped.duplicate()
+	reverse[1] = -300.0
+	var sliding := body.duplicate()
+	sliding[RB.VEL] = 0.3
+	var rolling := body.duplicate()
+	rolling[RB.RATE] = 0.6
+	var broken := body.duplicate()
+	broken[RB.VEL + 2] = NAN
+	var lifted := body.duplicate()
+	lifted[RB.POS + 2] -= 0.5
+	_check("parked on the pad: one piece", pieces.call(body, stopped) == 1)
+	_check("armed idle (a rotor turning either way): four pieces", pieces.call(body, turning) == 4
+		and pieces.call(body, reverse) == 4)
+	_check("sliding, rolling or a non-finite state on the pad: four pieces", pieces.call(sliding, stopped) == 4
+		and pieces.call(rolling, stopped) == 4 and pieces.call(broken, stopped) == 4)
+	_check("free flight, rotors stopped or turning: one piece", pieces.call(lifted, stopped) == 1
+		and pieces.call(lifted, turning) == 1)
+	var stiff: Dictionary = s.data.duplicate(true)
+	stiff.contacts.friction = 3.0
+	var made: Dictionary = Plant.create(stiff, Rates.default_profile(), FC.THROTTLE_ABSOLUTE)
+	var flat := body.duplicate()
+	flat[RB.POS] = 0.0
+	flat[RB.POS + 1] = 0.0
+	flat[RB.POS + 2] = -0.03 # flat fixture ground (no terrain callable) at down 0
+	_check("a contact too stiff for one parked piece is never parked", made.ok
+		and made.plant.parked_one_piece_h_lambda > Plant.PARKED_H_LAMBDA_LIMIT
+		and made.plant.substeps(flat, stopped, 0.0) == 4, "h|λ| %s" % [made.plant.parked_one_piece_h_lambda if made.ok else made.errors])
+	s.queue_free()
 
 
 func _contact(field: Dictionary) -> void:
@@ -190,5 +289,7 @@ func _run() -> void:
 	var empty: Callable = Session._obstacle_query({}, [], 0.6608)
 	_check("an empty inventory leaves the reach", _same(empty.call(0.0, 0.0, 0.0), 0.6608))
 	_contact(field)
+	_terrain(field)
+	_substeps(field)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
