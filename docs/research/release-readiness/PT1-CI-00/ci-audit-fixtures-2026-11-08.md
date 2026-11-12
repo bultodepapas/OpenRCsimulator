@@ -57,3 +57,30 @@ The installed library's receipt cites an older `app/data/aircraft/f4u_corsair_25
 ## Reproduction inputs
 
 The retained capture recipes are [shaft](../../../../tools/godot/audit_fixture_shaft_capture.gd), [weather](../../../../tools/godot/audit_fixture_weather_capture.gd), [fleet](../../../../tools/godot/audit_fixture_fleet_capture.gd), [typed comparison](../../../../tools/godot/audit_fixture_compare.gd), and the fail-closed [fixture packer](../../../../tools/godot/audit_fixture_pack.py). Run the two publication captures with the checked Godot runner, an imported isolated project, and `OPENRC_AUDIT_CAPTURE` naming a fresh output file. The fleet capture must be copied beside `fleet.gd` in a disposable native-kernel snapshot so its relative preload resolves. The packer requires `--capture-dir` and a fresh `--output`; it checks the observed difference boundary and the exact source pins before writing. The compressed evidence also contains the original one-off config observer and comparison scripts, along with the intentionally failed Windows baseline and stale-native receipts. **Those historical one-off scripts predate the output guards: run them only with fresh scratch paths.**
+
+## 2026-11-11 publication source-identity follow-up
+
+The release candidate changed `flight_session.gd` for flap-mix ownership and
+`simulation.gd`/`vehicle_model.gd` for the opt-in framed sampled protocol. The
+existing source guard therefore refused both publication families. Imported,
+isolated projects at baseline `4f0ca86823a2398e668d63abbcb2d09a5a15974d` and
+candidate `676be5351357c981d6500b17569aa38615a0c8cb` were tested on Windows and
+Linux with Godot `4.8.beta2.official.cafc17a19` and separate profiles.
+
+All four baseline capture files reproduced the v4 candidate hashes in the
+packer's `V4_EVIDENCE`; each candidate capture matched its baseline byte for
+byte. This compares the complete typed configuration, all 300 checkpoints and
+300 event frames across four weather and two shaft cases on each host. The
+[qualification receipt](publication-rebind-2026-11-11.json) records the exact
+source, engine, capture and checked-log hashes. All 19 guarded source identities
+matched the candidate on promotion. Only the candidate commit, three source
+pins, Session overlay and helper's fixture hash changed; historical families,
+reference commit and the v4 requalification record are unchanged.
+
+The promoted weather and shaft publication suites passed 313/313 and 214/214
+checks respectively on each host, with no engine errors. A temporary comment in
+the isolated Windows Session source caused the expected identity refusal: 193
+checks, one failure, no engine errors; the source was restored byte for byte.
+The four imports each reported eight asset-material warnings and no errors.
+The event arrays in these short traces are empty, so this establishes bounded
+software preservation, not event-producing behavior or physical validation.

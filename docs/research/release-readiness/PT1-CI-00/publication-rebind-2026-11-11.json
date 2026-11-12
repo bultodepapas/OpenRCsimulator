@@ -1,0 +1,258 @@
+{
+  "format": "openrc-publication-source-requalification-v1",
+  "date_local": "2026-11-11",
+  "baseline_commit": "4f0ca86823a2398e668d63abbcb2d09a5a15974d",
+  "candidate_commit": "676be5351357c981d6500b17569aa38615a0c8cb",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "executable_sha256": {
+      "Godot_v4.8-beta2_win64_console.exe": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "Godot_v4.8-beta2_win64.exe": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+      "Godot_v4.8-beta2_linux.x86_64": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+    }
+  },
+  "source_pin_changes": {
+    "sim/flight_session.gd": {
+      "before": "621507d66c4a785fe101f08576d04104fe6ce60955dd700b5fa50fd3454e3853",
+      "after": "0fd7ec186bc879e4a2a4e711cf698596801a161ab31c53fea7e5da04aab487ef"
+    },
+    "sim/simulation.gd": {
+      "before": "56953f116a293a984cbc5315b9cd97dc156e63cdd98c12fbc041e6df6baaab92",
+      "after": "d56b08720363eaab495e320147a93170eb429dfe9243bcdfd6c6fd670b4670bd"
+    },
+    "sim/vehicle_model.gd": {
+      "before": "e065d8b8b52c223c0260ac3da3976fd528755d5052d8245ae070cccd4b287174",
+      "after": "5fe73efd3fe0e51b5bb6b553b39db567c596deedc2bd2443ccbcd07712a94b20"
+    }
+  },
+  "fixture_sha256": {
+    "before": "5493c5c96964c1a94de2509dada739345980407dc22c8b71069338c883063e19",
+    "after": "842bfddfbbdd677114b9e4d9a9c74da5a06961c76c0a6e52a7bf3fb32cf5f86f"
+  },
+  "capture_reference": "tools/godot/audit_fixture_pack.py V4_EVIDENCE candidate capture hashes",
+  "captures": {
+    "windows-weather": {
+      "sha256": "486dde6965fe8f8284dd502d3cde5ca4fe70e90590053cc9102e48b1a3d5bd18",
+      "case_count": 4,
+      "endpoints": 100,
+      "event_frames": 100,
+      "baseline": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=4"
+        ],
+        "log_sha256": "61fa42b3851b4d9828e43882faa452ac3ac2e4e9e4cbb9e55af7c3adbf5c1e98",
+        "report_sha256": "eec7bd4ee2fb4c54e1b5906fa903b848fe9a0a5c140d0e009a3fdac848777d22"
+      },
+      "candidate": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=4"
+        ],
+        "log_sha256": "61fa42b3851b4d9828e43882faa452ac3ac2e4e9e4cbb9e55af7c3adbf5c1e98",
+        "report_sha256": "3a31c7fbe20d7e226a722b5e6d2f81bd49fc2cbeac13b10ba1c3e3dec450483c"
+      }
+    },
+    "windows-shaft": {
+      "sha256": "b0b7a8c1962d42b763ece51e7fddcba7a3a06a6c9af941480e0d920930ab4440",
+      "case_count": 2,
+      "endpoints": 50,
+      "event_frames": 50,
+      "baseline": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=2"
+        ],
+        "log_sha256": "938bb4668e2fa83282f217612a9462ce1558781ffa11de0b7ab09b9906e10e88",
+        "report_sha256": "70193e67ca0f1a04e457ca3881d4137bdeb96eb7b1c3e558084e12f2c2a1b178"
+      },
+      "candidate": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=2"
+        ],
+        "log_sha256": "938bb4668e2fa83282f217612a9462ce1558781ffa11de0b7ab09b9906e10e88",
+        "report_sha256": "922a699f3bf625e4055c66ab0c63e1d0cab6537ccca05f71d0bd519586b1f11c"
+      }
+    },
+    "linux-weather": {
+      "sha256": "bdf1ca4517ab62bbedef15f9c577d7ee33e6550244ea92718199f8532c9a28ac",
+      "case_count": 4,
+      "endpoints": 100,
+      "event_frames": 100,
+      "baseline": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=4"
+        ],
+        "log_sha256": "6d0280fda6a025878faaf2bc0f499555ddd2982cb346cb528fc911f3ecc6d09a",
+        "report_sha256": "4278937d16c93e83358f847649761e0685a067fdf243d18e0d7d178c4b8a3863"
+      },
+      "candidate": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=4"
+        ],
+        "log_sha256": "6d0280fda6a025878faaf2bc0f499555ddd2982cb346cb528fc911f3ecc6d09a",
+        "report_sha256": "6ec88ac8f2ef2742cddfceb6356da33da5953bd6d9165a833667e4dd55b4700b"
+      }
+    },
+    "linux-shaft": {
+      "sha256": "8fd77590d5ac162777f305530cfe0390fd51187c515f26304bdd0c28f7943456",
+      "case_count": 2,
+      "endpoints": 50,
+      "event_frames": 50,
+      "baseline": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=2"
+        ],
+        "log_sha256": "b2118a6cfdf8583e0ce538e235539e05549b209493d80c1743133e2cf24f4bf8",
+        "report_sha256": "2f00ff3ccac1e4d4b137903d176a5b794e0ce47e27565310cdfc8c5545d75e95"
+      },
+      "candidate": {
+        "ok": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "required_text": [
+          "failures=0 cases=2"
+        ],
+        "log_sha256": "b2118a6cfdf8583e0ce538e235539e05549b209493d80c1743133e2cf24f4bf8",
+        "report_sha256": "5e4f305a622dd5edbed7851231c6ea9b05cbd8b816ed13c423032f6c0948c8a9"
+      }
+    }
+  },
+  "imports": {
+    "windows-baseline": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 8,
+      "required_text": [],
+      "log_sha256": "bb06e43c3d157cf2bfec6eb4d12b64a51a373fc6a7eb4e11b56b0027e1f5ad38",
+      "report_sha256": "c47096dcc920e7eac590a3ab0768f9ed2c97b66e36d04ecea13d714f5f2ee69f"
+    },
+    "windows-candidate": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 8,
+      "required_text": [],
+      "log_sha256": "ad2dc4f50dd7f2651cf18cede66999f137e5ef075967c899b082b7a016d1c5d1",
+      "report_sha256": "d490cc55f9b269ec4576ce8293cd22dcd61cc98a3b6566fe0617b2eadeca26be"
+    },
+    "linux-baseline": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 8,
+      "required_text": [],
+      "log_sha256": "a61c4c647b88bcb946abab22383e9d7cf78a84d60a20b35097049950ca0ca3ad",
+      "report_sha256": "b2e3168725b350bb3f4c0f1459e9bd338b2530890afc1dc8d90fa50fbfa0c1ed"
+    },
+    "linux-candidate": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 8,
+      "required_text": [],
+      "log_sha256": "44b7eb8219246a958e99238d763a66922652db8bd4b2cfe72240842e5fa511ae",
+      "report_sha256": "f8fa15b12a0869eb77725dc005f8b9b79068389cf0b51292d8f55e7b0b8f15ec"
+    }
+  },
+  "publication_tests": {
+    "windows-weather": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 0,
+      "required_text": [
+        "Weather publication: 313 checks, 0 failed"
+      ],
+      "log_sha256": "9641268ccad3a31bff51e347f97ef5c83756865ba8b8c52d42536c78d8d21994",
+      "report_sha256": "0a8d4d02e99019777cbb7fa03197da98b64fdc1c37c233dd9dba4f8e3724b7f7",
+      "checks": 313
+    },
+    "windows-shaft": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 0,
+      "required_text": [
+        "Shaft publication: 214 checks, 0 failed"
+      ],
+      "log_sha256": "eff3dd63fc6907cc7b8b9b077caeddeb3ca6c944e52d4a27f9f8d5fd36335d0a",
+      "report_sha256": "6f47d39d1178d9b4b2ad0d5e9cf2b8f88c2a6701c8e0ad02e0231c1e7930419c",
+      "checks": 214
+    },
+    "linux-weather": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 0,
+      "required_text": [
+        "Weather publication: 313 checks, 0 failed"
+      ],
+      "log_sha256": "c832646b9a47073d8a83ccc39d5530fe55d92279e3ec1e9020ac6a273acb4dd7",
+      "report_sha256": "56938ab3cbb3eed76b3caef66689d1dfceb99044e7b646e87be153e194b94485",
+      "checks": 313
+    },
+    "linux-shaft": {
+      "ok": true,
+      "process_exit": 0,
+      "engine_errors": 0,
+      "warnings": 0,
+      "required_text": [
+        "Shaft publication: 214 checks, 0 failed"
+      ],
+      "log_sha256": "08648802d286901a95c3e4bb5b76d644e2fd902d23c8bf91d02ece1d9506bec9",
+      "report_sha256": "95c6d89156d4e284f9950b7dbf65a54e2cc7b1db81c8320360e53d5e116b141c",
+      "checks": 214
+    }
+  },
+  "source_mutation_refusal": {
+    "ok": false,
+    "process_exit": 1,
+    "engine_errors": 0,
+    "warnings": 0,
+    "required_text": [
+      "FAIL source-bound weather fixture loads",
+      "weather fixture: fixture manifest or source identity differs"
+    ],
+    "log_sha256": "5e413c65e6bb5eff48ec538855f56c618c7b14cb80843fcad3f3c5ba42292700",
+    "report_sha256": "11021b41fc7939ae493d56bba00d1a380086da86e0e6226abb5570c834c827a2",
+    "source": "sim/flight_session.gd",
+    "mutation": "temporary comment in isolated candidate; source restored byte-for-byte",
+    "checks": 193,
+    "failed": 1
+  },
+  "preserved": [
+    "families",
+    "reference_commit",
+    "requalification"
+  ],
+  "limits": "Empty event arrays; 25-tick software-preservation result only, not physical or general behavioral equivalence."
+}
