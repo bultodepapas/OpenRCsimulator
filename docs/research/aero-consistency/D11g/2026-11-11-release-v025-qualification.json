@@ -309,5 +309,237 @@
       }
     }
   },
-  "limits": "Model consistency for the tested Stik and sampled conditions, not physical validation or general law equivalence."
+  "limits": "Model consistency for the tested Stik and sampled conditions, not physical validation or general law equivalence.",
+  "h6_followup": {
+    "date_local": "2026-11-11",
+    "baseline_commit": "fc3e5d16ad36b2469d0cc29c2703f14f8470d5e1",
+    "candidate_commit": "10db558ffe24e05ec3df5604a8eb66fccb9eb406",
+    "candidate_root_after_companion_commit": "81b168f63",
+    "inventory_count": 149,
+    "baseline_aggregate": "8091f2bc5c168f16558c09b59a6d7582a68387dd00683c4de259593d1d815443",
+    "candidate_aggregate": "28069054e72cb6fa3181f5e5b4e8d3db9dfacf5f81193a9975e95e8d347e8fa5",
+    "unchanged_inputs": 147,
+    "changed_inputs": {
+      "app/physics/airship/airship_data.gd": {
+        "before": "25cdfbbd0764b5c2f137c6cc6c27cfae7df701e7cae967f776f80090e866329a",
+        "after": "91bdd61980a45e7da024a890bc2021374c541b1baba2f5f8f6b46110bdb14c24"
+      },
+      "app/physics/multirotor/flight_controller.gd": {
+        "before": "5f4c570e19da1494fe724042e6d3afd5e07cf7e5b5accfb1dd519004704b8211",
+        "after": "8f8677532c1c5165b7948095f2a58dc5b3f2cec62c6de290d8e73fd925444a11"
+      }
+    },
+    "other_simulation_paths": [
+      "app/sim/airship/session.gd",
+      "app/sim/multirotor/session.gd",
+      "app/sim/race/track.gd"
+    ],
+    "source_diff": "Exactly 13 direct calls routed through existing math3d wrappers and one math3d preload; no other changes in the five source files.",
+    "aircraft_raw_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+    "normalized_aircraft_input_sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79",
+    "guard_source_sha256": {
+      "research/aero/d11g/derive_rate_derivatives.gd": "e1ee477ef2fece9d494299eadb41cffb7a6ce46e94c3d22fbe969ae5ddf48865",
+      "research/aero/d11g/apply_rate_derivatives.py": "7ce5cca406c076ecc5926d062e2c2551bd1b7e5ce2a9a936daecbbd8f894d6e5"
+    },
+    "numerical_result": "Every compared condition, unrounded and rounded derivative, sensitivity row and provenance text exactly matches the prior numerical_and_provenance_result on each host.",
+    "checks": {
+      "windows": {
+        "derivations": {
+          "baseline": {
+            "derivation_report_sha256": "f99f44ecf79dace9b2ea9aff0a7ac42b6aa7ef2283e3545ec052cec06ad70eb2",
+            "generator": {
+              "process_exit": 0,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+              "checked_report_sha256": "08cf86856225d7f7cc609467bda3a69b33b33242cbf8176856b75bd0c172a3ef"
+            },
+            "updater_exit": 0,
+            "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+          },
+          "candidate_before": {
+            "derivation_report_sha256": "c219f1429904a711d39313012924a9e97ea432928966f5f26c50e522ed7e2ae0",
+            "generator": {
+              "process_exit": 1,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+              "checked_report_sha256": "4e21e48f4a3db5db7782a0a0342579767e875a424aa6b9d6d3e645f9e7fea4d6"
+            },
+            "updater_exit": 1,
+            "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5"
+          },
+          "candidate_after": {
+            "derivation_report_sha256": "3bd78c9b6f674ef95d72c7339c1b012564a40830385656e7246df89bf28e9cc5",
+            "generator": {
+              "process_exit": 0,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+              "checked_report_sha256": "c8aa2ef9ea634ce6a32a37f38b9cfad8bf3c6d5314bb8bbac7fdc82519968bbd"
+            },
+            "updater_exit": 0,
+            "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+          }
+        },
+        "human_check": {
+          "process_exit": 0,
+          "engine_errors": 0,
+          "warnings": 0,
+          "log_sha256": "001bf0c81d62a5801007ef7194e604efa061d856daa34f564fdbdfb9d5d09d56",
+          "checked_report_sha256": "3d1855e18bf33d757b2372e1b91281b845580465c9f1629c5f3968a8079b9c81"
+        },
+        "mutation_refusals": {
+          "physics": {
+            "derivation_report_sha256": "cc9e73b49977eb9f621a03a45f7991c882400e8c0373a5a5624d2d0457c98f43",
+            "generator": {
+              "process_exit": 1,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+              "checked_report_sha256": "93b7a4d69e39df16caeed425d139a0ee9ba06d9d4a12e37e4a8e92d968614208"
+            },
+            "updater_exit": 1,
+            "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5",
+            "restored_byte_for_byte": true
+          },
+          "project-version": {
+            "derivation_report_sha256": "9828deaf636f863333ce7d049ea0604822b7e3698dde3a1c9047e256333ef5ed",
+            "generator": {
+              "process_exit": 1,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+              "checked_report_sha256": "1576b822e3ca4ab2a5aad35bf37d108abe7ad35625525a26eca256233f5930a9"
+            },
+            "updater_exit": 1,
+            "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5",
+            "restored_byte_for_byte": true
+          }
+        },
+        "imports": {
+          "baseline": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "54fd56fdd0cf3318d2ad4266d939d574119085dd0fe962d8392cae7cf562303f",
+            "checked_report_sha256": "89606e72e8568799f3d3085e973305994e6d20b83424355d9b10e80cca6e6e1c"
+          },
+          "candidate": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "54fd56fdd0cf3318d2ad4266d939d574119085dd0fe962d8392cae7cf562303f",
+            "checked_report_sha256": "7b688d78558174759d6324f25a72fbba199668d3fee62337f0086327a6f25455"
+          }
+        },
+        "rejected_initial_cache_import_baseline": {
+          "process_exit": 0,
+          "engine_errors": 4,
+          "warnings": 0,
+          "log_sha256": "17a3076ba7c027d5e74e4426de0a3c1b350b83100e5baa1fdc56b03ef11251a2",
+          "checked_report_sha256": "fe7feacb138c46b124c47490badcda6c11ee17768271b4f42d47f81529575304"
+        },
+        "rejected_initial_cache_import_candidate": {
+          "process_exit": 0,
+          "engine_errors": 4,
+          "warnings": 0,
+          "log_sha256": "40549b6084baf8d5b50fafff15d6492c5bdcdbe2c1a33b8067f423800c23811c",
+          "checked_report_sha256": "e7ec4d495c3b165d7901036b2e7c97442ea510bc9c68dd2178c28e1181c9f71a"
+        }
+      },
+      "linux": {
+        "derivations": {
+          "baseline": {
+            "derivation_report_sha256": "16bcd090f490f0ed612ec22173cc134170be6f78e6c029861f9f76ee9242dea3",
+            "generator": {
+              "process_exit": 0,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+              "checked_report_sha256": "f4ca8d23536c10b127ad4a370535f2707114639a69569c575d447694356352fd"
+            },
+            "updater_exit": 0,
+            "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+          },
+          "candidate_before": {
+            "derivation_report_sha256": "7a92d50c250673b321148767e952f0a3b9ec7600eab0544513ac5307b5646204",
+            "generator": {
+              "process_exit": 1,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+              "checked_report_sha256": "289fe60673044b842b17438243d12cb390e68b0257620f48b715fec1ce30ea0d"
+            },
+            "updater_exit": 1,
+            "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+          },
+          "candidate_after": {
+            "derivation_report_sha256": "7f57775d590d8b863027bcabf4856f30c77400f88e1385914baa4b5277986a20",
+            "generator": {
+              "process_exit": 0,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+              "checked_report_sha256": "928a2886298833ac6f1f4b384cddcac8291b54daef582ea8fbfbc8d1cdd43c7c"
+            },
+            "updater_exit": 0,
+            "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+          }
+        },
+        "human_check": {
+          "process_exit": 0,
+          "engine_errors": 0,
+          "warnings": 0,
+          "log_sha256": "fc3488fc277c62ce1a7301ae1bc22faaf460b66c2cbdffeffc8072d9ad1e1f1f",
+          "checked_report_sha256": "d043af8726387cae77670722e07c9fcfb1fc24ee0aa8927a029914b960d4139f"
+        },
+        "mutation_refusals": {
+          "physics": {
+            "derivation_report_sha256": "fe6863b87c265c74f45990201e185557ad35a78c60922e1f4fa1ace6b792a20e",
+            "generator": {
+              "process_exit": 1,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+              "checked_report_sha256": "d143ff99d435fe72356397118022b35cdbfd6d2606c1e808c667d8cbf2da99a5"
+            },
+            "updater_exit": 1,
+            "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+            "restored_byte_for_byte": true
+          },
+          "project-version": {
+            "derivation_report_sha256": "a49a7c71768be8449386f541921b2ae86a262b5d3bcf2e102cde80c1334de0b2",
+            "generator": {
+              "process_exit": 1,
+              "engine_errors": 0,
+              "warnings": 0,
+              "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+              "checked_report_sha256": "8592b27cfeac88ba40ddb1e8501e76659defed37ebf9d226d12e9d1ffed25046"
+            },
+            "updater_exit": 1,
+            "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+            "restored_byte_for_byte": true
+          }
+        },
+        "imports": {
+          "baseline": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "0c2aaaf084979d7b33a38db185fa3639e16600bb1c386a51dd46c3dd277bd36b",
+            "checked_report_sha256": "8831d0802ecc57b40ec5e1fae9bfe371abd573d958c38e4d0996cf8321fb41fc"
+          },
+          "candidate": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "0c2aaaf084979d7b33a38db185fa3639e16600bb1c386a51dd46c3dd277bd36b",
+            "checked_report_sha256": "093034bfc2d039d4957d324ce5cb44254865a1eb99e8e461cc83bbbda1264179"
+          }
+        }
+      }
+    },
+    "limits": "Short software model-consistency qualification only; no physical-validation claim."
+  }
 }

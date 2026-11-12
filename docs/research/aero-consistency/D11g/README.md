@@ -39,6 +39,28 @@ The initial concurrent Windows imports of copied caches reported engine errors
 and were not used as passes. Subsequent sequential checked imports completed
 without engine errors, as did both Linux imports and the derivation checks.
 
+### 2026-11-11 H6 wrapper follow-up
+
+The H6 source change at `10db558ffe24e05ec3df5604a8eb66fccb9eb406` routes
+13 existing transcendental calls through the existing `math3d` wrappers; the
+five-file diff contains only those substitutions and one required preload. Of
+the 149 D11g inventory inputs at baseline
+`fc3e5d16ad36b2469d0cc29c2703f14f8470d5e1`, 147 are unchanged and only
+`physics/airship/airship_data.gd` and
+`physics/multirotor/flight_controller.gd` changed. The new complete normalized
+aggregate is `28069054e72cb6fa3181f5e5b4e8d3db9dfacf5f81193a9975e95e8d347e8fa5`.
+
+On Windows and Linux, the reconstructed baseline passed both guards and the
+candidate initially refused only the three historical-source checks. Trim,
+unrounded and rounded derivatives, sensitivity rows and provenance matched
+exactly. After renewal, fresh generator and updater checks passed on both hosts.
+Separate physics-source and project-version mutations were refused by both
+guards on each host and restored byte for byte. The Stik bytes and historical
+source strings remain unchanged. The receipt's `h6_followup` records this
+comparison and its checks; its earlier qualification fields are preserved.
+Initial Windows imports of copied caches reported engine errors and were
+rejected; clean checked reimports passed.
+
 This establishes model consistency only for these inputs and sampled conditions, not general equivalence of the laws or physical validation. The original 2026-10-07 values and checks below describe the earlier D11g decision, not the present R02 values.
 
 ## Decision
