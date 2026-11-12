@@ -16,6 +16,9 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 
 ## Tools
 
+- Shared-host launch admission and session ownership: [test queue](tools/testqueue/README.md).
+  On enrolled hosts use the returned session handle; a bridge port alone is not ownership.
+
 - Find the tool for your task in the [tool index](docs/tools/README.md) before writing ad-hoc test, probe or debug code.
 - For M1 access, native Mac tests or captures, read the [shared M1 guide](docs/tools/macos-m1.md): SSH, installed tools, isolated workspaces and evidence retention. Preserve its existing SSH keys and frozen campaigns.
 - To inspect or drive a running app (state, live log, menus, keys, sticks, pause/step, screenshots, hitches, leaks,

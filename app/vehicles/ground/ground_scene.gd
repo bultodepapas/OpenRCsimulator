@@ -34,6 +34,8 @@ const GroundWetEffects = preload("res://vehicles/ground/ground_wet_effects.gd")
 const DamageView = preload("res://vehicles/ground/ground_damage_view.gd")
 const ContactDebug = preload("res://vehicles/ground/contact_debug.gd")
 const NitroExhaust = preload("res://vehicles/ground/nitro_exhaust.gd")
+const LensStack = preload("res://render/lens/lens_stack.gd")
+const LensSettings = preload("res://render/lens/lens_settings.gd")
 
 
 ## Adapts the scene's stopped/export-pending recording to the application exit guard.
@@ -116,6 +118,11 @@ var field := {}
 var lighting_config: Dictionary = LightingConfig.defaults()
 var night_options := {}
 var sky_config: Dictionary = SkyConfig.defaults()
+## LENS-01 (docs/plans/lens-screen-effects.md): rain on the chase lens, mud and water thrown by the wheels, damage dust,
+## and blood if the vehicle runs into the driver in the pilot view. Null when disabled.
+var _lens: LensStack
+## Camera rig mode → lens view (chase, pilot, orbit, and the fixed track overview as a tripod camera).
+const LENS_VIEWS := ["chase", "pilot", "orbit", "flyby"]
 var _lighting := {}
 var _environment: Environment
 var _presentation_context := {}
@@ -285,6 +292,7 @@ func _ready() -> void:
 	_previous = _snapshot.duplicate()
 	if enable_audio:
 		_build_audio()
+	_start_lens()
 	open_garage()
 	_capture_initial_controller_selection()
 	_refresh_controller_ui()
@@ -722,8 +730,14 @@ func _process(delta: float) -> void:
 		if _wet_effects != null:
 			_wet_effects.audio_enabled = enable_audio
 			_wet_effects.update_render(simulated_delta, telemetry, session.paused, night_weight)
+			if _lens != null:
+				var mud := _peak(_wet_effects.get("_mud_activity"))
+				var water := _peak(_wet_effects.get("_water_activity"))
+				_lens.kick_up(mud, water, target, float(telemetry.get("speed_m_per_s", 0.0)), simulated_delta)
 		dashboard.update_lights(_effects.headlights_enabled, _effects.auxiliary_enabled, _effects.neon_enabled)
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
+	if _lens != null:
+		_lens.advance(delta, session.time_s(), session.paused)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
 	dashboard.update_input_status(_controls_ready(_last_controls), _controller_requires_selection, _focused)
 	if visual.travel_outside_art:
@@ -750,6 +764,74 @@ func _process(delta: float) -> void:
 		_nitro_sound.refill()
 
 ## One adapter is kept for the scene's lifetime so recovery can track its decisions.
+## LENS-01: built once the camera and session exist; rebuilt when Settings change during a drive.
+func _start_lens() -> void:
+	if _lens != null:
+		remove_child(_lens)
+		_lens.queue_free()
+		_lens = null
+	if camera == null or session == null:
+		return
+	var resolved: Dictionary = LensSettings.resolve({}, enable_vehicle_effects)
+	if not resolved.enabled:
+		return
+	_lens = LensStack.new()
+	_lens.name = "LensStack"
+	add_child(_lens)
+	var eye: Vector3 = camera_rig.pilot_position
+	# The driver stands at the rig's pilot position; a truck sweeping through that point strikes them (presentation).
+	var ok := _lens.configure({
+		"settings": resolved,
+		"camera": camera,
+		"session": session,
+		"view_provider": func() -> String: return str(LENS_VIEWS[clampi(camera_rig.mode, 0, LENS_VIEWS.size() - 1)]),
+		"sky_provider": func() -> String: return str(sky_config.get("preset", "classic")),
+		"field": field,
+		"hull": PackedFloat64Array([0.25, 0.0, 0.0, -0.25, 0.0, 0.0, 0.0, 0.18, 0.0, 0.0, -0.18, 0.0]),
+		"station": PackedFloat64Array([-eye.z, eye.x, -(eye.y - 1.6)]),
+		"eye_height": 1.6,
+		"mass_kg": float(_model.get("mass_kg", 2.5)) if typeof(_model) == TYPE_DICTIONARY else 2.5,
+		"seed": hash(str(_vehicle_entry.get("id", "ground"))),
+	})
+	if not ok:
+		_lens.queue_free()
+		_lens = null
+		return
+	_lens.person_struck.connect(func(_player: bool) -> void:
+		_lens.show_message(tr("The vehicle struck the driver. Keep it away from where you stand.")))
+
+
+## Settings changed during the drive: rebuild the lens from the new preference (presentation only).
+func apply_lens_preferences() -> void:
+	_start_lens()
+
+
+## Damage and hard landings throw dirt at a nearby camera; reported events only, never the physics.
+func _lens_event(event: Dictionary) -> void:
+	if _lens == null:
+		return
+	var state: PackedFloat64Array = session.state_snapshot()
+	if state.size() < 3:
+		return
+	var at := Frames.ned_to_render([state[0], state[1], state[2]])
+	match str(event.get("type", "")):
+		"damage":
+			if str(event.get("stage", "")) in ["damaged", "disabled"]:
+				_lens.strike_surface("obstacle", 0.8, at, 10.0, "ground-damage:%d" % int(event.get("tick", 0)))
+		"landing":
+			var speed := float(event.get("speed_m_per_s", 0.0))
+			if speed > 4.0:
+				_lens.strike_surface("ground", clampf(speed / 14.0, 0.0, 1.0), at, speed, "ground-landing:%d" % int(event.get("tick", 0)))
+
+
+static func _peak(values: Variant) -> float:
+	var peak := 0.0
+	if values is PackedFloat32Array:
+		for value: float in values:
+			peak = maxf(peak, value)
+	return peak
+
+
 func get_departure_recorder() -> RefCounted:
 	if _departure_recorder == null:
 		_departure_recorder = DepartureRecorder.new(self)
@@ -860,6 +942,7 @@ func handle_action(action: String) -> void:
 		"clean":
 			if _effects != null: _effects.clean_vehicle()
 			if _wet_effects != null: _wet_effects.reset()
+			if _lens != null: _lens.reset() # a clean truck gets a clean lens too
 			dashboard.message("Vehicle cleaned.", "Carro limpio.")
 		"recover":
 			if session.manual_recovery():
@@ -1069,6 +1152,7 @@ func _after_reset() -> void:
 	_effects_time_s = session.time_s()
 	if _effects != null: _effects.reset()
 	if _wet_effects != null: _wet_effects.reset()
+	if _lens != null: _lens.reset()
 	if _nitro_exhaust != null: _nitro_exhaust.restart()
 	if _damage_view != null:
 		_damage_view.reset()
@@ -1105,6 +1189,7 @@ func _experiment(knobs: Dictionary) -> void:
 		dashboard.message(session.load_error, session.load_error)
 
 func _event(event: Dictionary) -> void:
+	_lens_event(event)
 	if event.type == "damage":
 		if event.stage == "disabled":
 			dashboard.message("Drive damaged. Recover with R to repair.", "Propulsión averiada. Pulsa R para recuperar y reparar.")

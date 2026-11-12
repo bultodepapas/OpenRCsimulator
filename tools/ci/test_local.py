@@ -19,8 +19,13 @@ class LocalPreflight(unittest.TestCase):
             (self.root / name).mkdir(parents=True)
         (self.root / ".nvmrc").write_text("24\n")
         shutil.copyfile(ROOT / "tools/ci/check-local.sh", self.root / "tools/ci/check-local.sh")
+        admission = self.root / "tools/testqueue"
+        admission.mkdir()
+        for name in ("__init__.py", "common.py", "entry.py", "integration.py"):
+            shutil.copyfile(ROOT / "tools/testqueue" / name, admission / name)
         self.log = self.root / "calls"
         fake = '''#!/bin/bash
+if [[ "${1##*/}" == entry.py ]]; then exit 100; fi # explicitly unenrolled command-stub domain
 printf '%s %s\n' "${0##*/}" "$*" >> "$CALL_LOG"
 if [[ -n "${PROFILE_LOG:-}" ]]; then
   printf '%s|%s|%s|%s|%s|%s|%s|%s\n' "$*" "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "${OPENRC_TEST_PART:-}" "${OPENRC_UNIT_SHARDS:-}" "${OPENRC_UNIT_SHARD:-}" "${OPENRC_PARSE_WITH_UNITS-__unset__}" >> "$PROFILE_LOG"
@@ -39,6 +44,9 @@ exit 0
         getter.write_text('#!/bin/bash\nprintf "/fake/godot\\n"\n', encoding="utf-8")
         getter.chmod(0o755)
         self.env = os.environ.copy()
+        self.env.pop("OPENRC_TESTQUEUE_CONTEXT", None)
+        self.env.pop("OPENRC_TESTQUEUE_HANDLE", None)
+        self.env["OPENRC_TESTQUEUE_ROOT"] = str(self.root / "private-queue-state")
         self.env.update(PATH=str(self.root / "bin") + os.pathsep + self.env["PATH"], CALL_LOG=str(self.log))
 
     def run_mode(self, mode, **overrides):
@@ -49,7 +57,7 @@ exit 0
 
     def test_quick_is_partial_and_every_fixture_failure_is_fatal(self):
         fixtures = ["app/tests/test_ci_partitions.py", "app/tests/test_export_identity.py",
-                    "-m unittest discover -s tools/ci -p test_*.py"]
+                    "-m unittest discover -s tools/ci -p test_*.py", "-m unittest discover -s tools/testqueue -p test_*.py"]
         result = self.run_mode("quick")
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("Quick is partial", result.stdout)

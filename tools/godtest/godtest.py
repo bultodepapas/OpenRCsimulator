@@ -166,6 +166,11 @@ def main(argv=None) -> int:
         if args.dry_run:
             print(json.dumps({"suite": "all-v1" if args.command == "all" else args.command, "cases": cases, "max_wall_seconds": sum(item["timeout_s"]+80 for item in cases), "case_count": len(cases), "note": "bounds, not measured duration; fleet profiles and hardware gates remain explicit"}, indent=2))
             return 0
+        sys.path.insert(0, str(ROOT))
+        from tools.testqueue.common import enabled, inherited
+        if enabled() and not inherited("rendered"):
+            from tools.testqueue.integration import run as admitted_run
+            return admitted_run("godtest", list(argv if argv is not None else sys.argv[1:]), ROOT)
         suite_dir = None
         if len(cases) > 1:
             suite_dir = (args.out or ROOT / "tmp/godtest" / f"suite-{args.command}-{time.strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:8]}").resolve()

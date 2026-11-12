@@ -109,6 +109,8 @@ var _race_option := ""
 ## DR-40: the pilot's race record book (race_records.gd), read once from results_directory.
 var _records := {}
 var _records_loaded := false
+## False when an unreadable record book could not be kept aside: nothing may overwrite it this session.
+var _records_writable := true
 ## RC-TRACK: the club field's RC car circuit when the pilot shows it (Settings > Graphics), else {}; one decision per
 ## activity feeds the drawn circuit, the quad's terrain and its obstacle inventory together.
 var _rc_track := {}
@@ -970,15 +972,22 @@ func _refresh_controller_ui() -> void:
 func request_race() -> void:
 	if session == null or not session.prepared or session.race == null:
 		return
-	var racing: bool = _race_phase() in ["COUNTDOWN", "RACING"]
-	if not racing and (not _on_race_pad() or not session.crash.is_empty()):
-		# DR-37 one-key retry: anywhere off the pad (after a finish, a crash or free flight) G first puts the quad back
-		# on the pad, resumes and stages the start (the countdown then asks to arm).
+	var phase := _race_phase()
+	var racing: bool = phase in ["COUNTDOWN", "RACING"]
+	if not racing and (not _on_race_pad() or _terminal_state() != "" or phase in ["FINISHED", "ABORTED"]):
+		# DR-37 one-key retry: off the pad, after a crash or an empty pack, and after any attempt (a fresh pack, so
+		# attempts compare fairly), G first puts the quad back on the pad, resumes and stages the start (the countdown
+		# then asks to arm).
 		if quick_restart():
 			_race_action = RaceDirector.ACTION_START
 		return
 	if session.paused:
-		return
+		# On the pad behind the menu: G resumes and starts (a refused resume keeps the menu and says why).
+		if racing:
+			return
+		handle_action("resume")
+		if session.paused:
+			return
 	_race_action = RaceDirector.ACTION_CANCEL if racing else RaceDirector.ACTION_START
 
 
@@ -1030,13 +1039,18 @@ func _on_race_result(result: Dictionary) -> void:
 	var report: Dictionary = session.save_results(results_directory)
 	if int(report.failed) > 0:
 		hud.flash(tr("Race result not saved"))
-	if str(result.get("reason", "")) == "pad_reset" or session.race == null:
+	if session.race == null:
 		return
 	_load_records()
-	var summary: Dictionary = RaceRecords.apply(_records, session.course, result)
+	# The pilot leaving an attempt (G cancel, a pad reset) is no attempt for the book; a lap already flown still counts.
+	var left: bool = str(result.get("reason", "")) in ["pad_reset", "cancelled"]
+	var summary: Dictionary = RaceRecords.apply(_records, session.course, result, not left)
 	_records = summary.records
-	if RaceRecords.save_file(_records, records_path()) != OK:
+	if not _records_writable or RaceRecords.save_file(_records, records_path()) != OK:
 		hud.flash(tr("Race record not saved"))
+	if str(result.get("reason", "")) == "pad_reset":
+		_push_race_info()
+		return
 	var card: Dictionary = result.duplicate(true)
 	card.merge(summary, true)
 	card.erase("records")
@@ -1083,9 +1097,14 @@ func _load_records() -> void:
 	_records_loaded = true
 	var loaded: Dictionary = RaceRecords.load_file(records_path())
 	_records = loaded.records
-	if not loaded.ok:
-		RaceRecords.set_aside(records_path())
-		hud.flash(tr("Race records unreadable: a new record book starts (the old file is kept)."), 6.0)
+	if not loaded.ok or int(loaded.get("dropped", 0)) > 0:
+		# Keep the unreadable (or partly unreadable) book aside before any save could replace it; when it cannot be
+		# kept, this session saves no records at all.
+		if RaceRecords.set_aside(records_path()).is_empty():
+			_records_writable = false
+			hud.flash(tr("Race records unreadable and not kept aside: records are not saved this session."), 6.0)
+		else:
+			hud.flash(tr("Race records unreadable: a new record book starts (the old file is kept)."), 6.0)
 
 
 ## The prepared course's best total, best lap, best medal and medal targets for the OSD and the pause menu.
@@ -1101,7 +1120,8 @@ func _push_race_info() -> void:
 		medal = str(entry.get("medal", "")), targets = RaceRecords.targets(session.course)})
 
 
-## Whether the quad sits on the course's start pad (the race rules' radius) - what G needs to start.
+## Whether the quad sits on the course's start pad as the race director tests it (within the rules' radius and rest
+## height, not crashed) - where G starts rather than returns.
 func _on_race_pad() -> bool:
 	if session == null or session.race == null:
 		return false
@@ -1109,7 +1129,8 @@ func _on_race_pad() -> bool:
 	var rules: Dictionary = Track.ruleset()
 	var dn: float = session.sim.state[RB.POS] - float(pad.get("north", 0.0))
 	var de: float = session.sim.state[RB.POS + 1] - float(pad.get("east", 0.0))
-	return sqrt(dn * dn + de * de) <= float(rules.pad_radius_m) and session.crash.is_empty()
+	return sqrt(dn * dn + de * de) <= float(rules.pad_radius_m) and session.crash.is_empty() \
+		and absf(session.sim.state[RB.POS + 2] - float(pad.get("down", 0.0))) <= float(rules.pad_rest_height_m)
 
 
 ## The course as drawn (race_course_visual.gd): panels at the same boxes the session collides with, LED states,

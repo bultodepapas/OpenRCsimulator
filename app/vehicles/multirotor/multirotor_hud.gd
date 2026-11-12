@@ -396,6 +396,10 @@ func _update_race_note() -> void:
 	if best > 0.0:
 		var medal := str(_race_info.get("medal", ""))
 		race_note.text = _tr("Best %s") % format_lap(best) + ("   " + _tr(MEDAL_NAMES[medal]) if MEDAL_NAMES.has(medal) else "")
+		for next: String in ["bronze", "silver", "gold"]:
+			if goals.has(next) and ["", "bronze", "silver", "gold"].find(next) > ["", "bronze", "silver", "gold"].find(medal):
+				race_note.text += "   " + _tr("%s target %s") % [_tr(MEDAL_NAMES[next]), format_lap(float(goals[next]))]
+				break
 	elif goals.has("bronze"):
 		race_note.text = _tr("No finish yet. Bronze target %s") % format_lap(float(goals.bronze))
 	else:
@@ -734,6 +738,10 @@ func show_menu(reason: String, can_resume: bool, rate_reset: bool = false, termi
 	_update_texts()
 	menu.visible = true
 	menu_reason.text = reason
+	# DR-37: a menu over a finished or ended attempt (the crash aftermath) keeps its outcome and the way back.
+	var outcome := race_card_text()
+	if not str(outcome.title).is_empty():
+		menu_reason.text = reason + "\n" + str(outcome.title) + "   " + _tr("G: race again   R: back to the pad")
 	var box := resume_button.get_parent()
 	var resumable := can_resume and terminal in ["", "depleted_air"]
 	resume_button.visible = terminal == "" or terminal == "depleted_air"
@@ -941,7 +949,9 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	if phase in ["COUNTDOWN", "RACING"] and not _race_result.is_empty():
 		_race_result = {}
 		_refresh_race_card()
-	var card: bool = not _race_result.is_empty() and phase in ["FINISHED", "ABORTED"] and not menu_visible
+	# Never over the picture in flight (a finish gate is crossed at speed): once landed or disarmed.
+	var card: bool = not _race_result.is_empty() and phase in ["FINISHED", "ABORTED"] and not menu_visible \
+		and (on_ground(t) or not armed)
 	if race_card.visible != card:
 		race_card.visible = card
 		stats_panel.visible = _stats_visible()

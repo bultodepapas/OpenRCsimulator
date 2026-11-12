@@ -24,7 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import debugctl  # noqa: E402
 
-SERVER = {"name": "openrc-sim", "version": "1.0.0"}
+SERVER = {"name": "openrc-sim", "version": "1.1.0"}
 PROTOCOLS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
 INSTRUCTIONS = (
     "Drives the running OpenRC RC-flight simulator. Start with sim_launch (unless one is running), then sim_look: "
@@ -32,6 +32,9 @@ INSTRUCTIONS = (
     "with sim_press / sim_choose (by ref from the latest look, or by field/text), sim_close, sim_open, sim_setup + "
     "sim_fly, sim_sticks, sim_key. Each action returns the new snapshot. sim_catalog lists valid ids. "
     "sim_command reaches any other bridge command (help lists them). Stop the app with sim_stop when done.")
+INSTRUCTIONS += (" On an enrolled shared host, launch and control use the host test queue. This server retains "
+                 "its own session handle; a fresh client must launch its own session or explicitly provide "
+                 "OPENRC_TESTQUEUE_HANDLE. A bridge port alone is not ownership.")
 
 LOOKUP = {"ref": {"type": "string", "description": "control ref from the latest sim_look, e.g. e12"},
           "field": {"type": "string", "description": "a field's name as sim_look shows it, e.g. Window resolution"},

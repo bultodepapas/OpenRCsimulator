@@ -12205,6 +12205,9 @@ msgstr "Reinicie na plataforma para voar de novo."
 msgid "No controller: connect or check the controller."
 msgstr "Sem controle: conecte ou verifique o controle."
 
+msgid "Race records unreadable and not kept aside: records are not saved this session."
+msgstr "Recordes de corrida ilegíveis e não guardados à parte: nenhum recorde é salvo nesta sessão."
+
 msgid "Best %s"
 msgstr "Melhor %s"
 
@@ -12972,3 +12975,267 @@ msgstr "Linear: ajuste a resposta no rádio"
 
 msgid "conflict"
 msgstr "conflito"
+
+msgid "The vehicle struck the driver. Keep it away from where you stand."
+msgstr "O veículo atingiu o piloto. Mantenha-o longe de onde você está."
+
+msgid "Identify"
+msgstr "Identificar"
+
+msgid "Mode"
+msgstr "Modo"
+
+msgid "Calibrate"
+msgstr "Calibrar"
+
+msgid "Test"
+msgstr "Testar"
+
+msgid "Switches"
+msgstr "Chaves"
+
+msgid "Airplane"
+msgstr "Avião"
+
+msgid "Helicopter"
+msgstr "Helicóptero"
+
+msgid "Skip"
+msgstr "Pular"
+
+msgid "Assigned"
+msgstr "Atribuído"
+
+msgid "Detected"
+msgstr "Detectado"
+
+msgid "Reverse"
+msgstr "Inverter"
+
+msgid "Assign"
+msgstr "Atribuir"
+
+msgid "Ailerons"
+msgstr "Ailerons"
+
+msgid "done"
+msgstr "feita"
+
+msgid "Mode 1"
+msgstr "Modo 1"
+
+msgid "Mode 2"
+msgstr "Modo 2"
+
+msgid "RC transmitter in USB joystick mode: EdgeTX, OpenTX, JETI and others."
+msgstr "Rádio RC em modo joystick USB: EdgeTX, OpenTX, JETI e outros."
+
+msgid "Xbox, PlayStation, Nintendo or another game controller."
+msgstr "Controle de Xbox, PlayStation, Nintendo ou outro controle de jogo."
+
+msgid "Flight stick or other USB joystick. It is calibrated like a radio."
+msgstr "Joystick de voo ou outro joystick USB. É calibrado como um rádio."
+
+msgid "Triggers throttle"
+msgstr "Acelerador nos gatilhos"
+
+msgid "Throttle and roll on the right stick; pitch and yaw on the left."
+msgstr "Acelerador e rolagem no manche direito; arfagem e guinada no esquerdo."
+
+msgid "Throttle and yaw on the left stick; pitch and roll on the right. The most common layout."
+msgstr "Acelerador e guinada no manche esquerdo; arfagem e rolagem no direito. O layout mais comum."
+
+msgid "The right trigger sets the throttle; the sticks fly yaw, pitch and roll."
+msgstr "O gatilho direito define o acelerador; os manches controlam guinada, arfagem e rolagem."
+
+msgid "Arm motors"
+msgstr "Armar motores"
+
+msgid "FPV quad"
+msgstr "Quadricóptero FPV"
+
+msgid "EdgeTX / OpenTX: select USB Joystick (Classic) for this model."
+msgstr "EdgeTX / OpenTX: selecione Joystick USB (Clássico) para este modelo."
+
+msgid "Turn the internal and external RF modules off while the radio is a joystick."
+msgstr "Desligue os módulos RF interno e externo enquanto o rádio funciona como joystick."
+
+msgid "Calibrate the sticks on the radio first."
+msgstr "Calibre primeiro os manches no rádio."
+
+msgid "Use expo in the radio or in the simulator, not in both."
+msgstr "Use expo no rádio ou no simulador, não nos dois."
+
+msgid "JETI: set USB joystick mode and your stick mode on the transmitter."
+msgstr "JETI: ative o modo joystick USB e o seu modo de manches no rádio."
+
+msgid "Centre the stick and set any throttle lever to LOW."
+msgstr "Centralize o manche e coloque qualquer alavanca de acelerador no MÍNIMO."
+
+msgid "Close other programs that use the joystick."
+msgstr "Feche outros programas que usam o joystick."
+
+msgid "Controller setup"
+msgstr "Configurar controle"
+
+msgid "Changes stay in the draft until you Save."
+msgstr "As alterações ficam no rascunho até você salvar."
+
+msgid "This controller type could not be applied."
+msgstr "Não foi possível aplicar este tipo de controle."
+
+msgid "This stick layout could not be applied."
+msgstr "Não foi possível aplicar este layout de manches."
+
+msgid "Not assigned."
+msgstr "Não atribuído."
+
+msgid "Save controller settings"
+msgstr "Salvar configurações do controle"
+
+msgid "Next step"
+msgstr "Próxima etapa"
+
+msgid "Controller settings could not be saved."
+msgstr "Não foi possível salvar as configurações do controle."
+
+msgid "What kind of controller is this?"
+msgstr "Que tipo de controle é este?"
+
+msgid "Choose the type that matches the device. A recognised device is preselected; an unknown one must be chosen before you continue."
+msgstr "Escolha o tipo que corresponde ao dispositivo. Um dispositivo reconhecido vem pré-selecionado; um desconhecido deve ser escolhido antes de continuar."
+
+msgid "Not recognised. Choose its type to continue."
+msgstr "Não reconhecido. Escolha o tipo para continuar."
+
+msgid "Detected as: %s. Change it if this is wrong."
+msgstr "Detectado como: %s. Mude se estiver errado."
+
+msgid "Which stick does what?"
+msgstr "O que cada manche faz?"
+
+msgid "Pick the layout you fly with. You can change it later in Controls."
+msgstr "Escolha o layout com que você voa. Você pode mudá-lo depois em Controles."
+
+msgid "Pick your transmitter's stick mode. Calibration still detects each channel by movement."
+msgstr "Escolha o modo de manches do seu rádio. A calibração continua detectando cada canal pelo movimento."
+
+msgid "The simulator measures which channel each stick sends, its centre and its endpoints. Nothing starts until you press Start calibration, and the result stays in the draft until you Save."
+msgstr "O simulador mede qual canal cada manche envia, seu centro e seus extremos. Nada começa até você pressionar Iniciar calibração, e o resultado fica no rascunho até você salvar."
+
+msgid "Start calibration"
+msgstr "Iniciar calibração"
+
+msgid "Calibrate the joystick"
+msgstr "Calibrar o joystick"
+
+msgid "Calibrate again"
+msgstr "Calibrar de novo"
+
+msgid "Calibration is running…"
+msgstr "Calibração em andamento…"
+
+msgid "Calibration finished."
+msgstr "Calibração concluída."
+
+msgid "Calibration did not finish."
+msgstr "A calibração não terminou."
+
+msgid "Calibration could not start."
+msgstr "Não foi possível iniciar a calibração."
+
+msgid "Test the controls"
+msgstr "Teste os controles"
+
+msgid "Move each stick. The model should move the way you expect; if a channel works backwards, turn on Reverse next to it."
+msgstr "Mova cada manche. O modelo deve se mover como você espera; se um canal funcionar ao contrário, ative Inverter ao lado dele."
+
+msgid "Buttons held now"
+msgstr "Botões pressionados agora"
+
+msgid "Switches and buttons"
+msgstr "Chaves e botões"
+
+msgid "Assign the controls you use most: press Assign, then move the switch or press the button. Skip any you do not need; you can change them later in Controls."
+msgstr "Atribua os controles que você mais usa: pressione Atribuir e depois mova a chave ou pressione o botão. Pule os que não precisar; você pode mudá-los depois em Controles."
+
+msgid "Recovery (always available)"
+msgstr "Recuperação (sempre disponível)"
+
+msgid "Always kept"
+msgstr "Sempre mantido"
+
+msgid "Suggested for: %s"
+msgstr "Sugerido para: %s"
+
+msgid "Needed to leave menus and dialogs."
+msgstr "Necessário para sair de menus e diálogos."
+
+msgid "Assignment could not start."
+msgstr "Não foi possível iniciar a atribuição."
+
+msgid "Waiting: move a switch or press a button. Esc or Back cancels."
+msgstr "Aguardando: mova uma chave ou pressione um botão. Esc ou Voltar cancela."
+
+msgid "Check and save"
+msgstr "Revisar e salvar"
+
+msgid "The numbers on the picture match the list. Save keeps these settings; Back changes them."
+msgstr "Os números na imagem correspondem à lista. Salvar mantém estas configurações; Voltar permite mudá-las."
+
+msgid "not needed for gamepads"
+msgstr "não necessária para controles"
+
+msgid "skipped; the current calibration is kept"
+msgstr "pulada; a calibração atual é mantida"
+
+msgid "Device type: %s"
+msgstr "Tipo de dispositivo: %s"
+
+msgid "Stick layout: %s"
+msgstr "Layout dos manches: %s"
+
+msgid "Calibration: %s"
+msgstr "Calibração: %s"
+
+msgid "Cancel setup"
+msgstr "Cancelar configuração"
+
+msgid "Skip this step"
+msgstr "Pular esta etapa"
+
+msgid "Previous step"
+msgstr "Etapa anterior"
+
+msgid "Reverse %s"
+msgstr "Inverter %s"
+
+msgid "Assign %s"
+msgstr "Atribuir %s"
+
+msgid "Seen from behind"
+msgstr "Visto por trás"
+
+msgid "Controller type: %s"
+msgstr "Tipo de controle: %s"
+
+msgid "Keyboard keys cannot be remapped yet."
+msgstr "As teclas do teclado ainda não podem ser remapeadas."
+
+msgid "The keyboard uses the fixed layout shown in the picture. To edit a controller profile, select a gamepad or radio in the device list."
+msgstr "O teclado usa o layout fixo mostrado na imagem. Para editar um perfil de controle, selecione um controle ou rádio na lista de dispositivos."
+
+msgid "Move a stick or press a button: it lights up here and on its action."
+msgstr "Mova um manche ou pressione um botão: ele acende aqui e na sua ação."
+
+msgid "Flight keys are marked; keys you hold light up."
+msgstr "As teclas de voo estão marcadas; as que você segura acendem."
+
+msgid "Connect this controller to see its input live."
+msgstr "Conecte este controle para ver a entrada ao vivo."
+
+msgid "FLIGHT KEYS"
+msgstr "TECLAS DE VOO"
+
+msgid "SHORTCUTS"
+msgstr "ATALHOS"

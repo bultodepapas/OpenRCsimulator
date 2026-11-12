@@ -131,6 +131,8 @@ func _test_capture(tag: String) -> void:
 	_button_event(100, true)
 	_button_event(100, false)
 	await _settle()
+	_escape() # UI-15-UX-06: Escape answers the Swap/Replace question with Cancel and returns focus to the row.
+	await _settle()
 	_check(tag + " rejects conflict", setup.current_profile().actions.rates_toggle.button == 104 and not setup._is_capture_active())
 	_check_position(tag + " rejected", scroll, target, before)
 	target.pressed.emit()
@@ -158,13 +160,14 @@ func _test_capture(tag: String) -> void:
 	_check(tag + " programmatic capture reveals hidden row", setup._selected_section == "buttons" and setup.action_filter.selected == 0 and target.is_visible_in_tree() and target.has_focus())
 	_escape()
 	await _settle() # Escape cancels this capture; it must not arrive after navigation already did.
-	# All AUX channels are populated so the last switch is below the fold.
+	# All AUX channels are populated so the last switch is below the fold. Flaps is shown last (Landing gear
+	# moved above it); UI-15-UX-03 gave the page the workspace height, so the gear group now fits unscrolled.
 	for index in 3:
 		var aux_name: String = ["smoke", "flaps", "gear"][index]
 		_check(tag + " installs " + aux_name, setup._commit_aux_binding(aux_name, {"type": "switch", "buttons": [20 + index * 3, 21 + index * 3, 22 + index * 3], "invert": false}))
 	setup.select_section("aux")
 	await _settle()
-	target = setup.find_child("AuxSwitchCapture_gear_2", true, false) as Button
+	target = setup.find_child("AuxSwitchCapture_flaps_2", true, false) as Button
 	before = await _position_target(scroll, target)
 	_check(tag + " AUX requires scrolling", before > 0)
 	target.pressed.emit()
@@ -173,13 +176,13 @@ func _test_capture(tag: String) -> void:
 	_button_event(120, true)
 	_button_event(120, false)
 	await _settle()
-	_check(tag + " AUX captured", setup.current_profile().aux.gear.buttons[2] == 120)
+	_check(tag + " AUX captured", setup.current_profile().aux.flaps.buttons[2] == 120)
 	_check_position(tag + " AUX accepted", scroll, target, before)
 	target.pressed.emit()
 	_button_event(20, true)
 	_button_event(20, false)
 	await _settle()
-	_check(tag + " AUX rejects overlap", setup.current_profile().aux.gear.buttons[2] == 120)
+	_check(tag + " AUX rejects overlap", setup.current_profile().aux.flaps.buttons[2] == 120)
 	_check_position(tag + " AUX rejected", scroll, target, before)
 	target.pressed.emit()
 	_escape()
@@ -187,6 +190,6 @@ func _test_capture(tag: String) -> void:
 	_check_position(tag + " AUX cancelled", scroll, target, before)
 	_check(tag + " release tokens consumed", setup._capture_release_tokens.is_empty())
 	_check(tag + " valid draft saves", setup._save_profile(false) and store.saved_count == 1)
-	_check(tag + " saved mappings retained", store.last_saved_profile.actions.camera_zoom_in.button == 100 and store.last_saved_profile.aux.gear.buttons[2] == 120)
+	_check(tag + " saved mappings retained", store.last_saved_profile.actions.camera_zoom_in.button == 100 and store.last_saved_profile.aux.flaps.buttons[2] == 120)
 	setup.free()
 	await _settle()

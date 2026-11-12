@@ -1,5 +1,10 @@
 # Agent debug bridge (PT1h-R7)
 
+On an enrolled shared host, [test-queue admission](../testqueue/README.md) owns launch
+and teardown. Retain the returned `OPENRC_TESTQUEUE_HANDLE` on CLI commands; MCP
+retains its own handle. A port or last-launch pointer alone cannot authorize control.
+The standalone behavior below applies to unenrolled/private runners.
+
 Drive a **running** app from the shell, with no mouse and no editor. You can read its state and live log, use every
 menu, setting, shortcut and controller action, fly with stick values or drive the RC truck, pause and step exact
 physics ticks, sample telemetry, take screenshots, record flight logs and evaluate expressions. For batch checks of

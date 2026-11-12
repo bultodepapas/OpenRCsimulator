@@ -376,14 +376,22 @@ Sanitizer/profile overhead and shared-host measurements do not qualify target pe
 
 Design sources and bounded execution evidence: [tooling research](../../docs/research/native-kernel/NK-3/tooling-research-2026-10-28.md).
 
-## Windows design note (not built)
+## Windows build (NK-4)
 
-MSVC x64 has no inline assembly, so rule 2 needs another left-first mechanism there; none is verified yet:
+The design note's preferred route works: MinGW-w64 GCC (15.2, msvcrt) links the same math split as the pinned
+engine, and three Windows-only switches make every installer gate bit-identical, NaN bits included:
+`-fno-builtin-sin -fno-builtin-cos` (no libmingwex `sincos` fusion), `NK_ENGINE_LERP_SOURCE_ORDER` (the Windows
+engine's lerp operand order) and `NK_ENGINE_SQRT_SSE2` (`sqrtsd` instead of libmingwex's double-rounding x87 `sqrt`).
+MSVC (`/fp:strict`, no inline assembly) remains unbuilt. Evidence: [NK-4](../../docs/research/native-kernel/NK-4/README.md).
 
-1. **Preferred:** build the Windows library with MinGW-w64 GCC, like the official Godot Windows binaries. The same
-   `nk::R` asm applies, and the extension links the same CRT math as the engine, which may restore NK-1's
-   same-library identity. Verify with these oracles on a Windows host.
-2. MSVC with a tiny MASM object exporting `nk_add/sub/mul/div(xmm0, xmm1)`: guaranteed operand order, at a call per
-   operation (roughly 1–2 µs more per stage). Intrinsics such as `_mm_add_sd` do not guarantee operand order.
-3. If neither proves identical, D3's tolerance tier applies on Windows: NaN-sign differences occur only on outputs
-   the kernel rejects anyway, so NaN-class equality plus bit identity of finite outputs would be the criterion.
+```bash
+export OPENRC_NK_TOOL_ROOT=D:/OpenRCsimulator-native/nk          # keep the toolchain off a full system drive
+python research/native-kernel/build_windows.py --jobs 8           # DLL, descriptor, receipt (MinGW-w64 g++)
+python research/native-kernel/build_windows.py --jobs 8 --mutant  # negative control
+python research/native-kernel/run.py --script <gate> <arguments>  # every build.py ORACLE_ARGUMENTS gate
+python research/native-kernel/build_windows.py --install-app      # beside the Linux install, never over it
+```
+
+The Windows installation uses `openrc_native_kernel_windows.gdextension` and `build-receipt-windows.json`; the
+loader checks the exact `Godot_v4.8-beta2_win64.exe`, the descriptor, binary and mirrored sources like Linux.
+`--define` diagnostic builds are never installable. Release packages remain Linux-only.

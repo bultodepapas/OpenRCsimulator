@@ -12167,6 +12167,9 @@ msgstr "Начните заново на площадке, чтобы снова
 msgid "No controller: connect or check the controller."
 msgstr "Нет контроллера: подключите или проверьте контроллер."
 
+msgid "Race records unreadable and not kept aside: records are not saved this session."
+msgstr "Рекорды заездов не читаются и не отложены: в этом сеансе рекорды не сохраняются."
+
 msgid "Best %s"
 msgstr "Лучшее %s"
 
@@ -12934,3 +12937,267 @@ msgstr "Линейно: настройте отклик на аппаратур�
 
 msgid "conflict"
 msgstr "конфликт"
+
+msgid "The vehicle struck the driver. Keep it away from where you stand."
+msgstr "Машина сбила пилота. Держите её подальше от места, где вы стоите."
+
+msgid "Identify"
+msgstr "Определение"
+
+msgid "Mode"
+msgstr "Режим"
+
+msgid "Calibrate"
+msgstr "Калибровка"
+
+msgid "Test"
+msgstr "Проверка"
+
+msgid "Switches"
+msgstr "Переключатели"
+
+msgid "Airplane"
+msgstr "Самолёт"
+
+msgid "Helicopter"
+msgstr "Вертолёт"
+
+msgid "Skip"
+msgstr "Пропустить"
+
+msgid "Assigned"
+msgstr "Назначено"
+
+msgid "Detected"
+msgstr "Обнаружено"
+
+msgid "Reverse"
+msgstr "Реверс"
+
+msgid "Assign"
+msgstr "Назначить"
+
+msgid "Ailerons"
+msgstr "Элероны"
+
+msgid "done"
+msgstr "выполнена"
+
+msgid "Mode 1"
+msgstr "Режим 1"
+
+msgid "Mode 2"
+msgstr "Режим 2"
+
+msgid "RC transmitter in USB joystick mode: EdgeTX, OpenTX, JETI and others."
+msgstr "RC-аппаратура в режиме USB-джойстика: EdgeTX, OpenTX, JETI и другие."
+
+msgid "Xbox, PlayStation, Nintendo or another game controller."
+msgstr "Геймпад Xbox, PlayStation, Nintendo или другой игровой контроллер."
+
+msgid "Flight stick or other USB joystick. It is calibrated like a radio."
+msgstr "Лётный джойстик или другой USB-джойстик. Калибруется как аппаратура."
+
+msgid "Triggers throttle"
+msgstr "Газ на триггерах"
+
+msgid "Throttle and roll on the right stick; pitch and yaw on the left."
+msgstr "Газ и крен на правом стике; тангаж и рыскание на левом."
+
+msgid "Throttle and yaw on the left stick; pitch and roll on the right. The most common layout."
+msgstr "Газ и рыскание на левом стике; тангаж и крен на правом. Самая распространённая раскладка."
+
+msgid "The right trigger sets the throttle; the sticks fly yaw, pitch and roll."
+msgstr "Правый триггер задаёт газ; стики управляют рысканием, тангажом и креном."
+
+msgid "Arm motors"
+msgstr "Взвести моторы"
+
+msgid "FPV quad"
+msgstr "FPV-квадрокоптер"
+
+msgid "EdgeTX / OpenTX: select USB Joystick (Classic) for this model."
+msgstr "EdgeTX / OpenTX: выберите для этой модели USB Joystick (Classic)."
+
+msgid "Turn the internal and external RF modules off while the radio is a joystick."
+msgstr "Выключите внутренний и внешний ВЧ-модули, пока аппаратура работает как джойстик."
+
+msgid "Calibrate the sticks on the radio first."
+msgstr "Сначала откалибруйте стики на аппаратуре."
+
+msgid "Use expo in the radio or in the simulator, not in both."
+msgstr "Используйте экспоненту на аппаратуре или в симуляторе, но не в обоих."
+
+msgid "JETI: set USB joystick mode and your stick mode on the transmitter."
+msgstr "JETI: включите на аппаратуре режим USB-джойстика и ваш режим стиков."
+
+msgid "Centre the stick and set any throttle lever to LOW."
+msgstr "Поставьте стик в центр, а любой рычаг газа — на МИНИМУМ."
+
+msgid "Close other programs that use the joystick."
+msgstr "Закройте другие программы, использующие джойстик."
+
+msgid "Controller setup"
+msgstr "Настройка контроллера"
+
+msgid "Changes stay in the draft until you Save."
+msgstr "Изменения остаются черновиком, пока вы их не сохраните."
+
+msgid "This controller type could not be applied."
+msgstr "Не удалось применить этот тип контроллера."
+
+msgid "This stick layout could not be applied."
+msgstr "Не удалось применить эту раскладку стиков."
+
+msgid "Not assigned."
+msgstr "Не назначено."
+
+msgid "Save controller settings"
+msgstr "Сохранить настройки контроллера"
+
+msgid "Next step"
+msgstr "Следующий шаг"
+
+msgid "Controller settings could not be saved."
+msgstr "Не удалось сохранить настройки контроллера."
+
+msgid "What kind of controller is this?"
+msgstr "Что это за контроллер?"
+
+msgid "Choose the type that matches the device. A recognised device is preselected; an unknown one must be chosen before you continue."
+msgstr "Выберите подходящий тип устройства. Распознанное устройство выбрано заранее; неизвестное нужно выбрать перед продолжением."
+
+msgid "Not recognised. Choose its type to continue."
+msgstr "Не распознано. Выберите тип, чтобы продолжить."
+
+msgid "Detected as: %s. Change it if this is wrong."
+msgstr "Определено как: %s. Измените, если это неверно."
+
+msgid "Which stick does what?"
+msgstr "Какой стик за что отвечает?"
+
+msgid "Pick the layout you fly with. You can change it later in Controls."
+msgstr "Выберите раскладку, с которой вы летаете. Её можно изменить позже в разделе «Управление»."
+
+msgid "Pick your transmitter's stick mode. Calibration still detects each channel by movement."
+msgstr "Выберите режим стиков вашей аппаратуры. Калибровка всё равно определяет каждый канал по движению."
+
+msgid "The simulator measures which channel each stick sends, its centre and its endpoints. Nothing starts until you press Start calibration, and the result stays in the draft until you Save."
+msgstr "Симулятор определяет, какой канал передаёт каждый стик, его центр и крайние точки. Ничего не начнётся, пока вы не нажмёте «Начать калибровку», а результат останется черновиком до сохранения."
+
+msgid "Start calibration"
+msgstr "Начать калибровку"
+
+msgid "Calibrate the joystick"
+msgstr "Откалибровать джойстик"
+
+msgid "Calibrate again"
+msgstr "Откалибровать снова"
+
+msgid "Calibration is running…"
+msgstr "Идёт калибровка…"
+
+msgid "Calibration finished."
+msgstr "Калибровка завершена."
+
+msgid "Calibration did not finish."
+msgstr "Калибровка не завершена."
+
+msgid "Calibration could not start."
+msgstr "Не удалось начать калибровку."
+
+msgid "Test the controls"
+msgstr "Проверьте управление"
+
+msgid "Move each stick. The model should move the way you expect; if a channel works backwards, turn on Reverse next to it."
+msgstr "Подвигайте каждый стик. Модель должна двигаться так, как вы ожидаете; если канал работает наоборот, включите рядом «Реверс»."
+
+msgid "Buttons held now"
+msgstr "Нажатые сейчас кнопки"
+
+msgid "Switches and buttons"
+msgstr "Переключатели и кнопки"
+
+msgid "Assign the controls you use most: press Assign, then move the switch or press the button. Skip any you do not need; you can change them later in Controls."
+msgstr "Назначьте органы управления, которыми пользуетесь чаще всего: нажмите «Назначить», затем переключите тумблер или нажмите кнопку. Ненужные пропустите; их можно изменить позже в разделе «Управление»."
+
+msgid "Recovery (always available)"
+msgstr "Восстановление (всегда доступно)"
+
+msgid "Always kept"
+msgstr "Сохраняется всегда"
+
+msgid "Suggested for: %s"
+msgstr "Рекомендуется для: %s"
+
+msgid "Needed to leave menus and dialogs."
+msgstr "Нужно, чтобы выходить из меню и диалогов."
+
+msgid "Assignment could not start."
+msgstr "Не удалось начать назначение."
+
+msgid "Waiting: move a switch or press a button. Esc or Back cancels."
+msgstr "Ожидание: переключите тумблер или нажмите кнопку. Esc или «Назад» — отмена."
+
+msgid "Check and save"
+msgstr "Проверить и сохранить"
+
+msgid "The numbers on the picture match the list. Save keeps these settings; Back changes them."
+msgstr "Номера на рисунке соответствуют списку. «Сохранить» оставит эти настройки; «Назад» — изменить их."
+
+msgid "not needed for gamepads"
+msgstr "не нужна для геймпадов"
+
+msgid "skipped; the current calibration is kept"
+msgstr "пропущена; текущая калибровка сохранена"
+
+msgid "Device type: %s"
+msgstr "Тип устройства: %s"
+
+msgid "Stick layout: %s"
+msgstr "Раскладка стиков: %s"
+
+msgid "Calibration: %s"
+msgstr "Калибровка: %s"
+
+msgid "Cancel setup"
+msgstr "Отменить настройку"
+
+msgid "Skip this step"
+msgstr "Пропустить этот шаг"
+
+msgid "Previous step"
+msgstr "Предыдущий шаг"
+
+msgid "Reverse %s"
+msgstr "Реверс: %s"
+
+msgid "Assign %s"
+msgstr "Назначить: %s"
+
+msgid "Seen from behind"
+msgstr "Вид сзади"
+
+msgid "Controller type: %s"
+msgstr "Тип контроллера: %s"
+
+msgid "Keyboard keys cannot be remapped yet."
+msgstr "Клавиши клавиатуры пока нельзя переназначить."
+
+msgid "The keyboard uses the fixed layout shown in the picture. To edit a controller profile, select a gamepad or radio in the device list."
+msgstr "Клавиатура использует фиксированную раскладку с рисунка. Чтобы изменить профиль контроллера, выберите геймпад или аппаратуру в списке устройств."
+
+msgid "Move a stick or press a button: it lights up here and on its action."
+msgstr "Подвигайте стик или нажмите кнопку: он подсветится здесь и у своего действия."
+
+msgid "Flight keys are marked; keys you hold light up."
+msgstr "Клавиши полёта отмечены; удерживаемые клавиши подсвечиваются."
+
+msgid "Connect this controller to see its input live."
+msgstr "Подключите этот контроллер, чтобы видеть его ввод вживую."
+
+msgid "FLIGHT KEYS"
+msgstr "КЛАВИШИ ПОЛЁТА"
+
+msgid "SHORTCUTS"
+msgstr "БЫСТРЫЕ КЛАВИШИ"

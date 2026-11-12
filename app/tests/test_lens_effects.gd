@@ -340,6 +340,15 @@ func _stack_checks() -> void:
 	_check("rain keeps mud wet and rinses it off within half a minute", not mud.is_empty()
 		and float(mud[0].dry_t) < 0.05 and is_finite(float(mud[0].life)) and float(mud[0].life) <= LensStack.MUD_RINSE_S + 2.0)
 	stack.debug_rain(0.0)
+	stack.reset()
+	var wheels := camera.global_position + Vector3(0.0, -0.5, -2.0)
+	for i in 30:
+		stack.kick_up(1.0, 1.0, wheels, 6.0, 0.5)
+	_check("wheels throw mud flecks and water at a camera close behind them", stack.snapshot().stamps > 0 and stack.snapshot().drops > 0)
+	stack.reset()
+	for i in 30:
+		stack.kick_up(1.0, 1.0, camera.global_position + Vector3(0.0, 0.0, -40.0), 6.0, 0.5)
+	_check("a distant truck throws nothing at the lens", stack.snapshot().stamps == 0 and stack.snapshot().drops == 0)
 	stack.settings["impact"] = "curtain"
 	var pilot_stack := LensStack.new()
 	holder.add_child(pilot_stack)

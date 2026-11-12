@@ -2,6 +2,15 @@
 # Headless checks (no display needed). Fails if any script fails to parse or any test fails.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
+if python3 "$HERE/../tools/testqueue/entry.py" suite -- "$@"; then
+  exit 0
+else
+  queue_status=$?
+  [[ "$queue_status" == 100 ]] || exit "$queue_status"
+fi
+if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then
+  trap 'queue_status=$?; python3 "$HERE/../tools/testqueue/entry.py" receipt suite "$queue_status"' EXIT
+fi
 # Full local verification remains the default. CI runs every partition as a required job.
 TEST_PART="${OPENRC_TEST_PART:-all}"
 UNIT_SHARDS="${OPENRC_UNIT_SHARDS:-1}"
@@ -72,7 +81,7 @@ mkdir -p "$CHECK_OUT"
 LOG="$(mktemp)"
 RUN_SUFFIX="${LOG##*/}"
 ROSTER="$(mktemp)"; ROSTER_CURRENT="$(mktemp)"; ROSTER_DONE="$(mktemp)"; ROSTER_STATE="$(mktemp)"
-trap 'rm -f "$LOG" "$ROSTER" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE"' EXIT
+trap 'queue_status=$?; rm -f "$LOG" "$ROSTER" "$ROSTER_CURRENT" "$ROSTER_DONE" "$ROSTER_STATE"; if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then python3 "$HERE/../tools/testqueue/entry.py" receipt suite "$queue_status"; fi; exit "$queue_status"' EXIT
 ROSTER_HELPER="$HERE/../tools/ci/phase_roster.py"
 collect_parse_roster() {
   python3 "$ROSTER_HELPER" collect "$HERE" parse "$PARSE_COVERAGE"

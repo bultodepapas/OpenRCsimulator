@@ -7,7 +7,7 @@ extends RefCounted
 
 const FORMAT := "openrc-race-records v1"
 const FILE_NAME := "records.json"
-## Bounded book: the least recently improved courses leave first.
+## Bounded book: the least recently raced courses leave first.
 const MAX_COURSES := 64
 ## [medal, mean speed (m/s) along the straight gate-to-gate path], best first. Beginners fly about 5 m/s on these
 ## courses in Angle mode; a fast pilot well above 10 m/s.
@@ -15,22 +15,26 @@ const MEDALS := [["gold", 11.0], ["silver", 8.0], ["bronze", 5.0]]
 const MEDAL_RANK := {"": 0, "bronze": 1, "silver": 2, "gold": 3}
 
 
-## The record book at `path`: {ok, records: {course identity: entry}, error}. A missing file is an empty book; an
-## unreadable one is reported (the caller keeps it aside rather than overwrite it).
+## The record book at `path`: {ok, records: {course identity: entry}, dropped (invalid entries left out), error}. A
+## missing file is an empty book; an unreadable one, or one with dropped entries, is reported (the caller keeps it
+## aside rather than overwrite it).
 static func load_file(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
-		return {ok = true, records = {}, error = ""}
+		return {ok = true, records = {}, dropped = 0, error = ""}
 	# A JSON instance reports a parse error by its return value (JSON.parse_string would also log an engine error).
 	var json := JSON.new()
 	var parsed: Variant = json.data if json.parse(FileAccess.get_file_as_string(path)) == OK else null
 	if typeof(parsed) != TYPE_DICTIONARY or str(parsed.get("format", "")) != FORMAT or typeof(parsed.get("courses")) != TYPE_DICTIONARY:
-		return {ok = false, records = {}, error = "unreadable record book %s" % path}
+		return {ok = false, records = {}, dropped = 0, error = "unreadable record book %s" % path}
 	var records := {}
+	var dropped := 0
 	for identity: Variant in parsed.courses:
 		var entry: Variant = parsed.courses[identity]
 		if typeof(identity) == TYPE_STRING and typeof(entry) == TYPE_DICTIONARY and _entry_is_valid(entry):
 			records[identity] = entry
-	return {ok = true, records = records, error = ""}
+		else:
+			dropped += 1
+	return {ok = true, records = records, dropped = dropped, error = ""}
 
 
 static func _entry_is_valid(entry: Dictionary) -> bool:
@@ -65,8 +69,13 @@ static func save_file(records: Dictionary, path: String) -> Error:
 static func set_aside(path: String) -> String:
 	if not FileAccess.file_exists(path):
 		return ""
-	var aside := "%s.unreadable-%s" % [path, Time.get_datetime_string_from_system(true).replace(":", "")]
-	return aside if DirAccess.rename_absolute(path, aside) == OK else ""
+	var stamp := Time.get_datetime_string_from_system(true).replace(":", "")
+	var aside := "%s.unreadable-%s" % [path, stamp]
+	var n := 1
+	while FileAccess.file_exists(aside) and n < 100:
+		n += 1
+		aside = "%s.unreadable-%s-%d" % [path, stamp, n]
+	return aside if not FileAccess.file_exists(aside) and DirAccess.rename_absolute(path, aside) == OK else ""
 
 
 ## Medal target totals (s) for a prepared course ({gates[{c}], pad {north, east, down}, laps}): {distance_m, gold,
@@ -113,16 +122,17 @@ static func next_medal(medal: String, goals: Dictionary) -> Dictionary:
 	return {}
 
 
-## Fold one terminal race record into the book for `course`. Pure: returns {records (a new book), entry, finished,
+## Fold one terminal race record into the book for `course` (`count_attempt` false when the pilot left the attempt:
+## its completed laps still compete for the best lap). Pure: returns {records (a new book), entry, finished,
 ## new_best_total, new_best_lap, previous_total_s, previous_lap_s (0 when there was none), medal, new_medal,
 ## best_lap_index (this attempt's fastest completed lap)}.
-static func apply(records: Dictionary, course: Dictionary, result: Dictionary) -> Dictionary:
+static func apply(records: Dictionary, course: Dictionary, result: Dictionary, count_attempt := true) -> Dictionary:
 	var book: Dictionary = records.duplicate(true)
 	var identity := str(course.get("identity", result.get("course_identity", "")))
 	var entry: Dictionary = book.get(identity, {track_id = str(course.get("track_id", "")),
 		track_name = str(course.get("track_name", "")), best_total_s = 0.0, best_laps = [], best_lap_s = 0.0, medal = "",
 		finishes = 0, attempts = 0, best_utc = ""}).duplicate(true)
-	entry.attempts = int(entry.get("attempts", 0)) + 1
+	entry.attempts = int(entry.get("attempts", 0)) + (1 if count_attempt else 0)
 	var summary := {finished = false, new_best_total = false, new_best_lap = false,
 		previous_total_s = float(entry.best_total_s), previous_lap_s = float(entry.best_lap_s), medal = "",
 		new_medal = false, best_lap_index = -1}

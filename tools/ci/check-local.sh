@@ -2,6 +2,15 @@
 # Local CI preflight. It never represents hosted, native or publication gates as passed.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+if python3 "$ROOT/tools/testqueue/entry.py" ci -- "$@"; then
+  exit 0
+else
+  queue_status=$?
+  [[ "$queue_status" == 100 ]] || exit "$queue_status"
+fi
+if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then
+  trap 'queue_status=$?; python3 "$ROOT/tools/testqueue/entry.py" receipt ci "$queue_status"; exit "$queue_status"' EXIT
+fi
 cd "$ROOT"
 MODE="${1:-quick}"
 if [[ $# -gt 1 ]] || [[ "$MODE" != quick && "$MODE" != full && "$MODE" != release ]]; then
@@ -49,6 +58,7 @@ echo "== local quick checks (partial CI scope)"
 python3 app/tests/test_ci_partitions.py
 python3 app/tests/test_export_identity.py
 python3 -m unittest discover -s tools/ci -p 'test_*.py'
+python3 -m unittest discover -s tools/testqueue -p 'test_*.py'
 if [[ "$MODE" == quick ]]; then
   echo "Quick is partial: app integration/units, schema, offline tools, visuals, site and prototype were not run."
   omitted

@@ -6,6 +6,15 @@ export PYTHONDONTWRITEBYTECODE=1
 export OPENRC_SCENERY=off
 export OPENRC_SCENERY_BIRDS=off OPENRC_ENGINE_SHADOWS=off
 HERE="$(cd "$(dirname "$0")" && pwd)"
+if python3 "$HERE/../tools/testqueue/entry.py" capture -- "$@"; then
+  exit 0
+else
+  queue_status=$?
+  [[ "$queue_status" == 100 ]] || exit "$queue_status"
+fi
+if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then
+  trap 'queue_status=$?; python3 "$HERE/../tools/testqueue/entry.py" receipt capture "$queue_status"' EXIT
+fi
 GROUP=all
 OUTPUT=""
 RUN_ID=""
@@ -58,7 +67,7 @@ PHASE_START=0
 printf 'phase\tseconds\tresult\n' > "$CAPTURES/timings.tsv"
 start_phase() { PHASE="$1"; PHASE_START=$SECONDS; }
 finish_phase() { printf '%s\t%d\tpass\n' "$PHASE" "$((SECONDS - PHASE_START))" >> "$CAPTURES/timings.tsv"; PHASE=""; }
-trap 'status=$?; if [[ -n "$PHASE" ]]; then printf "%s\t%d\tfail (%d)\n" "$PHASE" "$((SECONDS - PHASE_START))" "$status" >> "$CAPTURES/timings.tsv"; fi' EXIT
+trap 'status=$?; if [[ -n "$PHASE" ]]; then printf "%s\t%d\tfail (%d)\n" "$PHASE" "$((SECONDS - PHASE_START))" "$status" >> "$CAPTURES/timings.tsv"; fi; if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then python3 "$HERE/../tools/testqueue/entry.py" receipt capture "$status"; fi; exit "$status"' EXIT
 start_phase setup
 GODOT="$("$HERE/get-godot.sh")"
 if [[ -n "$RUN_ID" ]]; then

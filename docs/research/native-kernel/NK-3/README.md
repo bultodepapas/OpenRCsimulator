@@ -445,7 +445,7 @@ slower in both backends.
 ### Limits
 
 - Linux x86_64, one shared host, debug VM, no release template or target host; Windows is not built (design note in
-  the [code README](../../../../research/native-kernel/README.md#windows-design-note-not-built)); macOS is
+  the [code README](../../../../research/native-kernel/README.md#windows-build-nk-4)); macOS is
   reference-only.
 - The native stage covers only this route: the electric Stik, fixed gear, legacy propeller, soft hull, calm settled
   weather. Every other aircraft or option falls back. The fallback is shown at session level for the P-51 only;

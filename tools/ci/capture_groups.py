@@ -187,6 +187,14 @@ def configuration(check_environment: bool = False, revision: str | None = None) 
             fail(f"experimental receipts require the fixed capture environment: {actual}")
         prefixes = ("OPENRC_", "GODOT_", "MESA_", "LIBGL_", "GALLIUM_", "LP_", "VK_")
         allowed = set(expected)
+        # Routing metadata does not change the capture's graphics configuration.
+        allowed.add("OPENRC_TESTQUEUE_ROOT")
+        if os.environ.get("OPENRC_TESTQUEUE_CONTEXT"):
+            sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+            from tools.testqueue.common import inherited
+            if not inherited("rendered"):
+                fail("capture requires a live rendered attempt capability")
+            allowed.update({"OPENRC_TESTQUEUE_CONTEXT", "OPENRC_GODOT", "OPENRC_CHECK_OUT", "OPENRC_EXPECTED_CHECK_OUT"})
         if revision is not None:
             allowed.add("OPENRC_CODE_REVISION")
             if os.environ.get("OPENRC_CODE_REVISION") != revision:

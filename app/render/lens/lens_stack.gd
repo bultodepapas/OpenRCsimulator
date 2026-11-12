@@ -31,6 +31,14 @@ const MESSAGE_S := 5.0
 const STREAK_TRAVEL_REBASE_M := 50000.0
 ## Closing speed above which arriving drops may burst into satellite beads.
 const SPLASH_SPEED_MPS := 8.0
+## Wheel throw (kick_up): full strength at this speed; the camera catches it inside KICK_NEAR_M, none past KICK_FAR_M;
+## average flecks and drops per second at full mud or water activity.
+const KICK_FULL_SPEED_MPS := 8.0
+const KICK_SPIN_FLOOR := 0.45
+const KICK_NEAR_M := 1.5
+const KICK_FAR_M := 6.0
+const KICK_MUD_PER_S := 2.5
+const KICK_WATER_PER_S := 14.0
 const CRACK_POINTS := 30
 ## Rain streaks fall faster than the number-weighted mean drop: what the eye reads as rain are the large, fast drops.
 ## Art factor on the mean fall speed for the streaks only; arrivals on the lens use the physical mean.
@@ -395,6 +403,31 @@ func strike_from_crash(point_ned: PackedFloat64Array, speed_mps: float, obstacle
 				return
 			obstacle = true
 	strike_surface("obstacle" if obstacle else "ground", strength, point, speed_mps, event_key)
+
+
+## RC cars and trucks: wheels throwing mud and water at a camera close behind them (the rally-game classic). `mud` and
+## `water` are the wheels' summed activity (0…1 each, as the wet-effects presenter measures it), `source` the vehicle's
+## render position. Arrivals are random in presentation time, scaled by speed and how close the camera is.
+func kick_up(mud: float, water: float, source: Vector3, speed_mps: float, dt: float) -> void:
+	if not configured or not bool(settings.get("grime", false)) or dt <= 0.0 or (mud <= 0.0 and water <= 0.0):
+		return
+	if _view() == "pilot" and not bool(settings.get("glasses", false)):
+		return # the driver's eye is metres away from the wheels
+	var reach := 1.0 - smoothstep(KICK_NEAR_M, KICK_FAR_M, _camera.global_position.distance_to(source))
+	# Spinning wheels throw even when the truck crawls (the activity already carries wheel motion): a floor, plus speed.
+	var throw := clampf(KICK_SPIN_FLOOR + speed_mps / KICK_FULL_SPEED_MPS, 0.0, 1.5) * reach
+	if throw <= 0.01:
+		return
+	var aspect := _aspect()
+	if mud > 0.0 and _rng.randf() < clampf(mud, 0.0, 1.0) * throw * KICK_MUD_PER_S * dt:
+		_ensure_stamps()
+		# Flecks land low on the lens first: the wheels are below the camera.
+		var at := Vector2(_rng.randf() * aspect, clampf(_rng.randfn(0.72, 0.18), 0.05, 0.98))
+		_add_stamp(STAMP_MUD, at, _rng.randf_range(0.012, 0.038), INF)
+		_apply_visibility()
+	if water > 0.0 and bool(settings.get("rain", false)) and _ensure_pool():
+		for i in _pool.poisson(clampf(water, 0.0, 1.0) * throw * KICK_WATER_PER_S * dt):
+			_pool.spawn(_rng.randf() * aspect, clampf(_rng.randfn(0.7, 0.2), 0.02, 0.98), _rng.randf_range(0.004, 0.016))
 
 
 ## A rebuilt stack (settings changed mid-flight) must not replay the crash it was rebuilt after.

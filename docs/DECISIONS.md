@@ -36,7 +36,7 @@ Curated architecture and product choices, with the reasons worth preserving. Rev
 
 ### Native acceleration replaces a stage, not the transaction
 
-**SF-08 / NK-3.** Keep the GDScript reference selectable and replace only an identified evaluation boundary. Receipts and replay bind the actual backend; unsupported configurations or unverified artifacts retain the reference. Owner-directed NK-3 promotion supersedes the blanket fixed-wing deferral: ordinary application flights request native by default for the verified Linux x86_64 aircraft catalog and admitted conditions, including coupled electric/battery, finite glow, liquid combustion, turbine and helicopter capabilities. The shared kernel and existing start, weather and runtime contracts remain authoritative. Completed flights, startup refusals, runtime refusals and terminal collisions carry separate evidence. Low-level sessions remain reference by default. Windows/macOS admission and target-host Gate P remain separate qualifications.
+**SF-08 / NK-3.** Keep the GDScript reference selectable and replace only an identified evaluation boundary. Receipts and replay bind the actual backend; unsupported configurations or unverified artifacts retain the reference. Owner-directed NK-3 promotion supersedes the blanket fixed-wing deferral: ordinary application flights request native by default for the verified Linux x86_64 aircraft catalog and admitted conditions, including coupled electric/battery, finite glow, liquid combustion, turbine and helicopter capabilities. The shared kernel and existing start, weather and runtime contracts remain authoritative. Completed flights, startup refusals, runtime refusals and terminal collisions carry separate evidence. Low-level sessions remain reference by default. NK-4 admits Windows x86_64 source/debug runs on the same evidence rule: a MinGW-w64 build with engine-matching math (no `sincos` fusion, the Windows engine's lerp order, SSE2 `sqrtsd`) is bit-identical, so the D3 NaN-class tolerance tier is not used; its installation sits beside the Linux one, never over it ([NK-4](research/native-kernel/NK-4/README.md)). Windows release packages, macOS admission and target-host Gate P remain separate qualifications.
 
 The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29) records the original adoption and its qualified expansion. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) remains the broader qualification reference; its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#normal-flight-backend-selection).
 
@@ -302,6 +302,25 @@ demonstrates better native motion within the measured budgets. The
 [implementation record](research/landscape-flag-windsocks-2026-11-10.md#implementation-record)
 owns software evidence and open hardware/visual qualification; procedural motion
 is not physical cloth calibration.
+
+### Keep host admission outside worktrees and retain uncertain claims
+
+**TQ-00/TQ-01, experimental local implementation.** Use one host-local authority,
+durable attempts and Windows Job supervision above existing port/capture locks.
+Reservations follow verified process-tree teardown. A lost worker retains claims as
+UNKNOWN; heartbeat loss and launcher exit never establish cleanup. Owner capabilities
+also gate existing CLI/MCP controls. See the [operating contract](../tools/testqueue/README.md).
+
+The initial combined worker uses Python's SQLite locally to avoid adding an otherwise
+unused controller/service/plugin deployment to the developer desktop. This is a
+provisional deployment choice, not evidence that existing queues lack these features:
+[Jenkins Lockable Resources](https://plugins.jenkins.io/lockable-resources/) supports
+remote resource clients and stale leases. Local inventory found Java and a Docker CLI,
+but no running Jenkins installation. A live Jenkins contention/restart/disconnect
+comparison remains a TQ-00 gate. OpenRC still needs snapshots, ownership and worker
+containment with either backend; do not build a generic backend framework meanwhile.
+[SQLite WAL](https://www.sqlite.org/wal.html) requires same-host access, so remote
+workers must use structured transport rather than share this database.
 
 ## Maintaining this record
 

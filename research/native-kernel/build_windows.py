@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""NK-4 spike: build the NK-3 native kernel for Windows x86_64 with MinGW-w64 GCC (research only).
+"""NK-4: build, qualify and install the native kernel for Windows x86_64 with MinGW-w64 GCC.
 
 The Windows design note in README.md prefers MinGW-w64 GCC, like the official Godot Windows binaries:
 the extension then links the same msvcrt/libmingwex math as the engine. This builder reuses the
 Linux builder's pinned godot-cpp, SCons wheel, build profile, sources, floating-point and exception
 flags, mutant switch and receipt fields; only the platform, compiler and import inspection differ.
-It never installs anything into app/. Oracles run through run.py with OPENRC_NK_TOOL_ROOT set to the
-same --tool-root.
+Oracles run through run.py with OPENRC_NK_TOOL_ROOT set to the same --tool-root; only --install-app
+writes into the ignored app/native/kernel/, beside (never over) the Linux installation.
 """
 from __future__ import annotations
 
@@ -57,6 +57,9 @@ def dll_imports(binary: Path) -> dict[str, list[str]]:
     return {dll: sorted(set(names)) for dll, names in imports.items()}
 
 
+# Pinned Windows toolchain: the extension's statically linked libmingwex math must be the version qualified
+# against the engine (sampled oracles alone cannot prove a different runtime identical on rare inputs).
+WINDOWS_TOOLCHAIN = {"target": "x86_64-w64-mingw32", "compiler_version": "15.2.0", "mingw_runtime": "11.0.1"}
 ENGINE_LABEL = "4.8-beta2 (official)"
 # run.py launches oracles through the console wrapper; the app process is the GUI executable it starts.
 ENGINE_WRAPPER = ROOT / ".tools/Godot_v4.8-beta2_win64_console.exe"
@@ -76,6 +79,13 @@ WINDOWS_DESCRIPTOR = (
 def find_verification(tool_root: Path, key: str, pattern: str, binary_sha256: str, sources: dict[str, str]) -> dict:
     """build.py's find_verification for the Windows build: same evidence rules, Windows identities."""
     wrapper_sha256 = nk.sha256_file(ENGINE_WRAPPER)
+    executable_sha256 = nk.sha256_file(ENGINE_EXECUTABLE)
+    harness = ["research/native-kernel/" + name for name in
+               ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "run.py", "build.py", nk.ORACLE_SCRIPTS[key])]
+    harness += ["app/sim/native_stage.gd", "tools/godot/run_checked.py"]
+    if key == "electric_stage": harness.append("research/native-kernel/electric_oracle.gd")
+    if key == "helicopter_stage": harness.append("research/native-kernel/helicopter_oracle.gd")
+    if key == "wake_spatial": harness += ["research/native-kernel/weather_oracle.gd", "research/native-kernel/wake_oracle.gd"]
     mutant = key == "negative_control"
     candidate_binary = tool_root / f"lib/{nk.NAME}_mutant.dll"
     builder = nk.sha256_file(Path(__file__))
@@ -84,7 +94,11 @@ def find_verification(tool_root: Path, key: str, pattern: str, binary_sha256: st
             continue
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-            if (data["engine_sha256_before"] != wrapper_sha256 or data["engine_sha256_after"] != wrapper_sha256):
+            # The oracle must have run on the very GUI executable the receipt binds (the wrapper only starts it).
+            if (data["engine"] != ENGINE_LABEL
+                    or data["engine_sha256_before"] != wrapper_sha256 or data["engine_sha256_after"] != wrapper_sha256
+                    or data["engine_executable_sha256_before"] != executable_sha256
+                    or data["engine_executable_sha256_after"] != executable_sha256):
                 continue
             receipt = data["build_receipt"]
             expected_binary = nk.sha256_file(candidate_binary) if mutant else binary_sha256
@@ -110,6 +124,8 @@ def find_verification(tool_root: Path, key: str, pattern: str, binary_sha256: st
                 current = sources.get(relative) if relative in sources else nk.sha256_file(file)
                 if value != current:
                     raise ValueError("oracle source changed")
+            if any(data["harness_sources"].get(name) != nk.sha256_file(ROOT / name) for name in harness):
+                continue
             for name, digest in data["harness_sources"].items():
                 file = (ROOT / name).resolve()
                 if not file.is_relative_to(ROOT.resolve()) or nk.sha256_file(file) != digest:
@@ -162,6 +178,7 @@ def install_app(tool_root: Path) -> int:
                "abi_version": nk.ABI_VERSION, "platforms": {"windows": record}}
     destination = nk.APP_DESTINATION
     nk.prepare_manual_loading(ROOT / "app", destination)
+    _forget_cached_windows_descriptor(ROOT / "app")
     installed = destination / library.name
     if not installed.is_file() or nk.sha256_file(installed) != built["binary_sha256"]:
         staged = destination / (library.name + ".tmp")
@@ -179,6 +196,26 @@ def install_app(tool_root: Path) -> int:
     return 0
 
 
+def _forget_cached_windows_descriptor(app_dir: Path) -> None:
+    """Like build.py's prepare_manual_loading for the Windows descriptor: an import-time registration would load the
+    library before the loader's checks (the loader then refuses for the whole process). Remove only that line."""
+    registry = app_dir / ".godot/extension_list.cfg"
+    if not registry.is_file() or registry.is_symlink():
+        return
+    entry = f"res://native/kernel/{nk.NAME}_windows.gdextension"
+    lines = registry.read_text(encoding="utf-8").splitlines(keepends=True)
+    kept = [line for line in lines if line.strip() != entry]
+    if kept != lines:
+        registry.write_text("".join(kept), encoding="utf-8", newline="")
+
+
+def _mingw_runtime_version() -> str:
+    """mingw-w64 runtime version from _mingw.h (preprocesses to `"11" "." "0" "." "1"`)."""
+    output = subprocess.run(["g++", "-E", "-P", "-include", "_mingw.h", "-"], input="__MINGW64_VERSION_STR",
+                            check=True, text=True, capture_output=True).stdout.strip().splitlines()[-1]
+    return ".".join(token.strip('"') for token in output.split() if token.strip('"') not in {"", "."})
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jobs", type=int, default=8)
@@ -188,7 +225,7 @@ def main() -> int:
     parser.add_argument("--install-app", action="store_true",
                         help="install the existing verified Windows build into the ignored app/native/kernel/ "
                              "(no rebuild); requires complete matching evidence for every installer gate")
-    parser.add_argument("--tool-root", type=Path, default=Path(os.environ.get("OPENRC_NK_TOOL_ROOT", ROOT / "tmp/native-kernel")),
+    parser.add_argument("--tool-root", type=Path, default=Path(os.environ.get("OPENRC_NK_TOOL_ROOT", ROOT / "tmp/native-kernel-windows")),
                         help="toolchain/build root (keep it off a nearly full system drive)")
     args = parser.parse_args()
     if locked.host_platform_name() != "windows" or locked.host_arch_name() != "x86_64":
@@ -203,10 +240,12 @@ def main() -> int:
     if shutil.disk_usage(tool_root.anchor).free < 4 * 1024**3:
         raise SystemExit(f"Less than 4 GB free on {tool_root.anchor}; refusing to build.")
     target = subprocess.run(["g++", "-dumpmachine"], check=True, text=True, capture_output=True).stdout.strip()
-    if target != "x86_64-w64-mingw32":
-        raise SystemExit(f"Expected a MinGW-w64 x86_64 g++, got target {target!r}.")
     compiler_version = subprocess.run(["g++", "-dumpfullversion", "-dumpversion"], check=True, text=True,
                                       capture_output=True).stdout.strip()
+    runtime = _mingw_runtime_version()
+    found = {"target": target, "compiler_version": compiler_version, "mingw_runtime": runtime}
+    if found != WINDOWS_TOOLCHAIN:
+        raise SystemExit(f"Unpinned Windows toolchain {found}; expected {WINDOWS_TOOLCHAIN} (requalify before changing it).")
     lock = locked.load_lock()
     linux = lock["linux"]
     variant = "_mutant" if args.mutant else ""

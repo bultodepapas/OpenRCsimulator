@@ -161,6 +161,7 @@ func _test_validation_feedback(setup) -> void:
 	event.button_index = JOY_BUTTON_RIGHT_STICK
 	event.pressed = true
 	setup._capture_binding(event)
+	setup.capture_overlay.conflict_cancel_button.pressed.emit() # UI-15-UX-06: Cancel the Swap/Replace question
 	_check("Remap explains when an action conflicts with an AUX input", setup.status_label.text.contains("“Previous camera” uses the same control as the Smoke extra channel."))
 
 	var endpoints := ControllerProfile.defaults()

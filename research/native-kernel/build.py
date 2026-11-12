@@ -1031,7 +1031,7 @@ def install_app() -> int:
     build_receipt_path = TOOL_ROOT / "build-receipt.json"
     library = TOOL_ROOT / f"lib/lib{NAME}.so"
     if not build_receipt_path.is_file() or not library.is_file():
-        raise SystemExit("No build in tmp/native-kernel; run build.py first.")
+        raise SystemExit(f"No build in {TOOL_ROOT}; run build.py first.")
     built = json.loads(build_receipt_path.read_text(encoding="utf-8"))
     if built.get("mutant") or built.get("binary_sha256") != sha256_file(library):
         raise SystemExit("The staged library does not match its build receipt (or is the mutant).")

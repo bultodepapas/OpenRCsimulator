@@ -42,6 +42,8 @@ import hashlib, json, os, pathlib, sys, struct
 from pathlib import Path
 name = Path(sys.argv[1]).name
 args = sys.argv[2:]
+if name == 'python3' and args and Path(args[0]).name == 'entry.py':
+    sys.exit(100) # command-stub fixture is an explicitly unenrolled domain
 env = os.environ
 root, app, out = env['FAKE_ROOT'], env['FAKE_APP'], env['FAKE_OUT']
 def normalize(value):
@@ -291,6 +293,10 @@ class CaptureGroupsTests(unittest.TestCase):
         godot_tools.mkdir()
         for name in ('run_checked.py', 'summarize.py'):
             shutil.copy2(ROOT / 'tools/godot' / name, godot_tools / name)
+        admission = self.root / 'tools/testqueue'
+        admission.mkdir()
+        for name in ('__init__.py', 'common.py'):
+            shutil.copy2(ROOT / 'tools/testqueue' / name, admission / name)
         (self.root / 'tools/ci').mkdir()
         shutil.copy2(ROOT / 'tools/ci/capture_groups.py', self.root / 'tools/ci/capture_groups.py')
         self.bin = self.root / "bin"
@@ -308,6 +314,7 @@ class CaptureGroupsTests(unittest.TestCase):
         excluded = ('OPENRC_', 'GODOT_', 'MESA_', 'LIBGL_', 'GALLIUM_', 'LP_', 'VK_')
         self.env = {key: value for key, value in os.environ.items() if not key.startswith(excluded)}
         self.env.update(PATH=f"{self.bin}:{os.environ['PATH']}", FAKE_ROOT=str(self.root),
+                        OPENRC_TESTQUEUE_ROOT=str(self.root / "private-queue-state"),
                         FAKE_APP=str(self.app), FAKE_LOG=str(self.log),
                         FAKE_TEST_PYTHON=sys.executable, FAKE_STUB=str(stub),
                         FAKE_VQ_CASES=json.dumps(receipts.VQ_CASES), FAKE_TREE_CASES=json.dumps(receipts.TREELINE_CASES))

@@ -58,6 +58,9 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.testqueue import common as admission
+
 DEFAULT_PORT = 47870
 REPO = Path(__file__).resolve().parents[2]
 RUNS = REPO / "tmp" / "debug-bridge"
@@ -185,6 +188,9 @@ def parse_args(items: list[str]) -> dict:
 
 
 def request(cmd: str, args: dict | None = None, timeout: float = 900.0, to_port: int | None = None) -> dict:
+    if admission.enabled() and not admission.inherited("control"):
+        from tools.testqueue.integration import request as managed_request
+        return managed_request(cmd, args, timeout, to_port or env_port())
     payload = {"id": 1, "cmd": cmd, **(args or {})}
     secret = token(to_port)
     if secret:
@@ -317,6 +323,14 @@ def godot() -> str:
 
 
 def launch(argv: list[str]) -> int:
+    engine_argv = argv[:argv.index("--")] if "--" in argv else argv
+    if admission.enabled() and not admission.inherited("headless" if "--headless" in engine_argv else "rendered"):
+        from tools.testqueue.integration import open_debug
+        return open_debug(argv, REPO)
+    return _launch_local(argv)
+
+
+def _launch_local(argv: list[str]) -> int:
     app_args: list[str] = []
     if "--" in argv:
         split = argv.index("--")
@@ -588,6 +602,9 @@ def status() -> int:
 
 
 def stop(argv: list[str]) -> int:
+    if admission.enabled() and not admission.inherited("control"):
+        from tools.testqueue.integration import close_debug
+        return close_debug()
     others = ambiguous_target()
     if others:
         print(f"debugctl: {len(others)} live sessions (ports {others}); stop yours with OPENRC_DEBUG_BRIDGE=<port>",
@@ -1736,6 +1753,9 @@ def main(argv: list[str]) -> int:
         if command == "monkey":
             return monkey(rest)
         if command == "smoke":
+            if admission.enabled() and not admission.inherited("headless"):
+                from tools.testqueue.integration import run as managed_run
+                return managed_run("debug-smoke", rest, REPO)
             return smoke(rest)
         if command == "ready":
             timeout = float(rest[rest.index("--timeout") + 1]) if "--timeout" in rest else 60.0

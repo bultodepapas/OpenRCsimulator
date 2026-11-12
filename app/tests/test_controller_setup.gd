@@ -189,7 +189,8 @@ func _test_profile_name_error_lifecycle() -> void:
 	valid_profile["name"] = "Saved profile"
 	store.profiles.append(valid_profile)
 	var setup := ControllerSetup.new()
-	setup.configure(FakeRegistry.new(), store)
+	# UI-15-UX-03: the Keyboard's pages are read-only, so the editable name belongs to a controller's draft.
+	setup.configure(FakeRegistry.new(), store, 5)
 	root.add_child(setup)
 	await process_frame
 	await process_frame
@@ -283,6 +284,9 @@ func _test_mapping_error_recovery() -> void:
 	event.button_index = 15
 	event.pressed = true
 	setup._capture_binding(event)
+	# UI-15-UX-06: the conflict is offered as Swap / Replace / Cancel; Cancel keeps the former rejection.
+	_check("conflicting remap asks Swap / Replace / Cancel", setup.capture_overlay.is_conflict())
+	setup.capture_overlay.conflict_cancel_button.pressed.emit()
 	_check("rejected action/AUX remap leaves the accepted draft intact", setup.current_profile() == previous and not setup._is_capture_active() and setup.status_label.text.contains("Binding was not changed"))
 	_check("rejected remap highlights the attempted action and conflicting AUX", remap.has_theme_stylebox_override("normal") and setup._aux_controls.smoke.button.get_line_edit().has_theme_stylebox_override("normal"))
 	_check("rejected remap retains unrelated draft errors", roll.get_line_edit().has_theme_stylebox_override("normal") and setup._axis_channel_labels.roll.text.contains("Roll, Pitch"))

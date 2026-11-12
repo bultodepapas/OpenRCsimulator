@@ -8,6 +8,7 @@ import secrets
 import sqlite3
 import time
 import uuid
+import re
 
 ACTIVE = ("DISPATCHING", "RUNNING", "CLEANING", "UNKNOWN")
 
@@ -49,7 +50,9 @@ class Store:
         self.db.execute("INSERT INTO events(at,job,event,data) VALUES(?,?,?,?)", (time.time(), job, event, json.dumps(data or {})))
 
     def submit(self, request_id: str, payload: dict, request_secret: str) -> dict:
-        if len(request_secret) < 32:
+        if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", request_id) or ".." in request_id:
+            raise ValueError("request_id must be a safe opaque token")
+        if not isinstance(request_secret, str) or not 32 <= len(request_secret) <= 256:
             raise ValueError("submission secret must have at least 32 characters")
         hashed = digest(payload)
         prior = self.db.execute("SELECT * FROM jobs WHERE request_id=?", (request_id,)).fetchone()
@@ -79,6 +82,8 @@ class Store:
             attempt["data"] = json.loads(attempt["data"])
         if result["attempts"]:
             result.update(result["attempts"][-1]["data"])
+        elif result["state"] == "FINISHED" and result["canceled"]:
+            result.update(outcome="CANCELED", evidence="INCOMPLETE", cleanup="CONFIRMED")
         return result
 
     def authorize(self, handle: str) -> str:
@@ -88,7 +93,7 @@ class Store:
             raise ValueError("owning session handle required")
         return job
 
-    def allocate(self, job: str, resources: dict[str, int], capacities: dict[str, int]) -> str | None:
+    def allocate(self, job: str, resources: dict[str, int], capacities: dict[str, int], identity: dict | None = None) -> str | None:
         self.db.execute("BEGIN IMMEDIATE")
         try:
             row = self.db.execute("SELECT state,canceled FROM jobs WHERE id=?", (job,)).fetchone()
@@ -102,7 +107,7 @@ class Store:
                     self.db.commit()
                     return None
             attempt = "A-" + uuid.uuid4().hex
-            self.db.execute("INSERT INTO attempts VALUES(?,?,1,'DISPATCHING','{}')", (attempt, job))
+            self.db.execute("INSERT INTO attempts VALUES(?,?,1,'DISPATCHING',?)", (attempt, job, json.dumps(identity or {})))
             self.db.execute("UPDATE jobs SET state='DISPATCHING',reason='' WHERE id=?", (job,))
             self.db.executemany("INSERT INTO claims VALUES(?,?,?)", [(key, attempt, amount) for key, amount in resources.items()])
             self.event(job, "DISPATCHING", {"attempt": attempt, "resources": resources})
@@ -124,6 +129,8 @@ class Store:
 
     def cancel(self, job: str):
         with self.db:
+            if self.get(job)["state"] == "FINISHED":
+                return
             # Durable cancellation before any future dispatch/start checks.
             self.db.execute("UPDATE jobs SET canceled=1 WHERE id=?", (job,))
             self.db.execute("UPDATE jobs SET state='FINISHED',reason='CANCELED before dispatch' WHERE id=? AND state='QUEUED'", (job,))

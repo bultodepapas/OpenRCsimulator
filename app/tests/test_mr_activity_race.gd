@@ -154,9 +154,9 @@ func _run() -> void:
 			and parsed.get("phase") == "ABORTED" and parsed.get("course_identity") == str(s.course.identity) and parsed.get("saved") == true)
 	var book: Dictionary = RaceRecords.load_file(_scene.records_path())
 	var entry: Dictionary = book.records.get(str(s.course.identity), {})
-	_check("DR-40 the attempt enters the record book: one attempt, no finish, no best total", book.ok
-		and int(entry.get("attempts", 0)) == 1 and int(entry.get("finishes", -1)) == 0 and float(entry.get("best_total_s", -1.0)) == 0.0,
-		str(entry))
+	_check("DR-40 a cancelled race enters the record book as no attempt (the pilot left it), no finish, no best total",
+		book.ok and not entry.is_empty() and int(entry.get("attempts", -1)) == 0 and int(entry.get("finishes", -1)) == 0
+		and float(entry.get("best_total_s", -1.0)) == 0.0, str(entry))
 	_check("DR-37 the results card shows why the attempt ended and how to race again", _scene.hud.race_card.visible
 		and _scene.hud.race_card_title.text == "ATTEMPT OVER" and _scene.hud.race_card_body.text.contains("Race cancelled (G).")
 		and _scene.hud.race_card_body.text.contains("G: race again"), _scene.hud.race_card_body.text)

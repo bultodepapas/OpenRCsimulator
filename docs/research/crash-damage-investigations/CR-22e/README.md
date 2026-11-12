@@ -123,9 +123,10 @@ revision key, terminal pairing and count-up form.
 
 - First-crash GPU stalls in a fresh session (above). Rerun on an idle host before changing the
   warmup.
-- Contact-tick physics cost and the 12-step catch-up limit. This is a pinned-solver or owner
-  decision: Windows native stage, a lower catch-up limit (time dilation) or a cheaper contact path.
-- Glow-voice synthesis runs in GDScript on the main thread, proportional to elapsed audio time
-  (audio track).
+- Contact-tick physics cost: [NK-4](../../native-kernel/NK-4/README.md) brings the bit-identical native stage to
+  Windows (ground-slide tick 2.0–2.2 → 1.3 ms, same state hash). The 12-step catch-up limit (time dilation
+  under load) remains an owner decision.
+- Glow-voice synthesis runs in GDScript on its own producer thread (`glow_audio_pump.gd`), not on the frame;
+  it costs CPU proportional to audio time (audio track).
 - Per-tick accident observers during ground contact (`incident.observe` 60–190 µs, settlement 50–70
   µs) remain; they are defensive by design (bounded, digested evidence).

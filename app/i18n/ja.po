@@ -11417,6 +11417,9 @@ msgstr "再び飛ぶにはパッドから再開してください。"
 msgid "No controller: connect or check the controller."
 msgstr "コントローラーがありません。接続または確認してください。"
 
+msgid "Race records unreadable and not kept aside: records are not saved this session."
+msgstr "レース記録を読めず退避もできません：このセッションでは記録を保存しません。"
+
 msgid "Best %s"
 msgstr "ベスト %s"
 
@@ -12184,3 +12187,267 @@ msgstr "リニア：応答は送信機で調整してください"
 
 msgid "conflict"
 msgstr "競合"
+
+msgid "The vehicle struck the driver. Keep it away from where you stand."
+msgstr "車両がドライバーに当たりました。自分の立ち位置から離して走らせてください。"
+
+msgid "Identify"
+msgstr "識別"
+
+msgid "Mode"
+msgstr "モード"
+
+msgid "Calibrate"
+msgstr "校正"
+
+msgid "Test"
+msgstr "テスト"
+
+msgid "Switches"
+msgstr "スイッチ"
+
+msgid "Airplane"
+msgstr "飛行機"
+
+msgid "Helicopter"
+msgstr "ヘリコプター"
+
+msgid "Skip"
+msgstr "スキップ"
+
+msgid "Assigned"
+msgstr "割り当て済み"
+
+msgid "Detected"
+msgstr "検出"
+
+msgid "Reverse"
+msgstr "反転"
+
+msgid "Assign"
+msgstr "割り当て"
+
+msgid "Ailerons"
+msgstr "エルロン"
+
+msgid "done"
+msgstr "完了"
+
+msgid "Mode 1"
+msgstr "モード1"
+
+msgid "Mode 2"
+msgstr "モード2"
+
+msgid "RC transmitter in USB joystick mode: EdgeTX, OpenTX, JETI and others."
+msgstr "USBジョイスティックモードのRC送信機：EdgeTX、OpenTX、JETIなど。"
+
+msgid "Xbox, PlayStation, Nintendo or another game controller."
+msgstr "Xbox、PlayStation、Nintendo、またはその他のゲームコントローラー。"
+
+msgid "Flight stick or other USB joystick. It is calibrated like a radio."
+msgstr "フライトスティックやその他のUSBジョイスティック。送信機と同じように校正します。"
+
+msgid "Triggers throttle"
+msgstr "トリガーでスロットル"
+
+msgid "Throttle and roll on the right stick; pitch and yaw on the left."
+msgstr "右スティックでスロットルとロール、左スティックでピッチとヨー。"
+
+msgid "Throttle and yaw on the left stick; pitch and roll on the right. The most common layout."
+msgstr "左スティックでスロットルとヨー、右スティックでピッチとロール。最も一般的な配置です。"
+
+msgid "The right trigger sets the throttle; the sticks fly yaw, pitch and roll."
+msgstr "右トリガーでスロットルを設定し、スティックでヨー・ピッチ・ロールを操作します。"
+
+msgid "Arm motors"
+msgstr "モーターをアーム"
+
+msgid "FPV quad"
+msgstr "FPVクワッド"
+
+msgid "EdgeTX / OpenTX: select USB Joystick (Classic) for this model."
+msgstr "EdgeTX / OpenTX：このモデルでUSBジョイスティック（Classic）を選んでください。"
+
+msgid "Turn the internal and external RF modules off while the radio is a joystick."
+msgstr "送信機をジョイスティックとして使う間は、内部・外部のRFモジュールをオフにしてください。"
+
+msgid "Calibrate the sticks on the radio first."
+msgstr "先に送信機でスティックを校正してください。"
+
+msgid "Use expo in the radio or in the simulator, not in both."
+msgstr "EXPOは送信機かシミュレーターのどちらか一方だけで使ってください。"
+
+msgid "JETI: set USB joystick mode and your stick mode on the transmitter."
+msgstr "JETI：送信機でUSBジョイスティックモードとスティックモードを設定してください。"
+
+msgid "Centre the stick and set any throttle lever to LOW."
+msgstr "スティックを中央にし、スロットルレバーは最小にしてください。"
+
+msgid "Close other programs that use the joystick."
+msgstr "ジョイスティックを使う他のプログラムを閉じてください。"
+
+msgid "Controller setup"
+msgstr "コントローラー設定"
+
+msgid "Changes stay in the draft until you Save."
+msgstr "変更は保存するまで下書きのままです。"
+
+msgid "This controller type could not be applied."
+msgstr "このコントローラーの種類を適用できませんでした。"
+
+msgid "This stick layout could not be applied."
+msgstr "このスティック配置を適用できませんでした。"
+
+msgid "Not assigned."
+msgstr "未割り当て。"
+
+msgid "Save controller settings"
+msgstr "コントローラー設定を保存"
+
+msgid "Next step"
+msgstr "次のステップ"
+
+msgid "Controller settings could not be saved."
+msgstr "コントローラー設定を保存できませんでした。"
+
+msgid "What kind of controller is this?"
+msgstr "これはどの種類のコントローラーですか？"
+
+msgid "Choose the type that matches the device. A recognised device is preselected; an unknown one must be chosen before you continue."
+msgstr "デバイスに合う種類を選んでください。認識済みのデバイスは選択済みです。不明なデバイスは続行前に選ぶ必要があります。"
+
+msgid "Not recognised. Choose its type to continue."
+msgstr "認識されませんでした。続行するには種類を選んでください。"
+
+msgid "Detected as: %s. Change it if this is wrong."
+msgstr "検出結果：%s。違う場合は変更してください。"
+
+msgid "Which stick does what?"
+msgstr "どのスティックが何をしますか？"
+
+msgid "Pick the layout you fly with. You can change it later in Controls."
+msgstr "飛ばし方に合う配置を選んでください。後で操作設定から変更できます。"
+
+msgid "Pick your transmitter's stick mode. Calibration still detects each channel by movement."
+msgstr "送信機のスティックモードを選んでください。校正では引き続き動きで各チャンネルを検出します。"
+
+msgid "The simulator measures which channel each stick sends, its centre and its endpoints. Nothing starts until you press Start calibration, and the result stays in the draft until you Save."
+msgstr "シミュレーターは各スティックが送るチャンネル、中央、端点を測定します。校正を開始を押すまで何も始まらず、結果は保存するまで下書きのままです。"
+
+msgid "Start calibration"
+msgstr "校正を開始"
+
+msgid "Calibrate the joystick"
+msgstr "ジョイスティックを校正"
+
+msgid "Calibrate again"
+msgstr "もう一度校正"
+
+msgid "Calibration is running…"
+msgstr "校正中…"
+
+msgid "Calibration finished."
+msgstr "校正が完了しました。"
+
+msgid "Calibration did not finish."
+msgstr "校正は完了しませんでした。"
+
+msgid "Calibration could not start."
+msgstr "校正を開始できませんでした。"
+
+msgid "Test the controls"
+msgstr "操作をテスト"
+
+msgid "Move each stick. The model should move the way you expect; if a channel works backwards, turn on Reverse next to it."
+msgstr "各スティックを動かしてください。モデルが思い通りに動くはずです。逆に動くチャンネルは横の反転をオンにしてください。"
+
+msgid "Buttons held now"
+msgstr "押されているボタン"
+
+msgid "Switches and buttons"
+msgstr "スイッチとボタン"
+
+msgid "Assign the controls you use most: press Assign, then move the switch or press the button. Skip any you do not need; you can change them later in Controls."
+msgstr "よく使う操作を割り当ててください。割り当てを押してから、スイッチを動かすかボタンを押します。不要なものはスキップできます。後で操作設定から変更できます。"
+
+msgid "Recovery (always available)"
+msgstr "復帰（常に使用可能）"
+
+msgid "Always kept"
+msgstr "常に保持"
+
+msgid "Suggested for: %s"
+msgstr "おすすめ：%s"
+
+msgid "Needed to leave menus and dialogs."
+msgstr "メニューやダイアログを閉じるために必要です。"
+
+msgid "Assignment could not start."
+msgstr "割り当てを開始できませんでした。"
+
+msgid "Waiting: move a switch or press a button. Esc or Back cancels."
+msgstr "待機中：スイッチを動かすかボタンを押してください。Escまたは戻るで取り消し。"
+
+msgid "Check and save"
+msgstr "確認して保存"
+
+msgid "The numbers on the picture match the list. Save keeps these settings; Back changes them."
+msgstr "図の番号はリストと対応しています。保存でこの設定を保持し、戻るで変更できます。"
+
+msgid "not needed for gamepads"
+msgstr "ゲームパッドでは不要"
+
+msgid "skipped; the current calibration is kept"
+msgstr "スキップ。現在の校正を維持します"
+
+msgid "Device type: %s"
+msgstr "デバイスの種類：%s"
+
+msgid "Stick layout: %s"
+msgstr "スティック配置：%s"
+
+msgid "Calibration: %s"
+msgstr "校正：%s"
+
+msgid "Cancel setup"
+msgstr "設定をキャンセル"
+
+msgid "Skip this step"
+msgstr "このステップをスキップ"
+
+msgid "Previous step"
+msgstr "前のステップ"
+
+msgid "Reverse %s"
+msgstr "%sを反転"
+
+msgid "Assign %s"
+msgstr "%sを割り当て"
+
+msgid "Seen from behind"
+msgstr "後方から見た図"
+
+msgid "Controller type: %s"
+msgstr "コントローラーの種類：%s"
+
+msgid "Keyboard keys cannot be remapped yet."
+msgstr "キーボードのキーはまだ再割り当てできません。"
+
+msgid "The keyboard uses the fixed layout shown in the picture. To edit a controller profile, select a gamepad or radio in the device list."
+msgstr "キーボードは図の固定配置を使います。コントローラーのプロファイルを編集するには、デバイス一覧でゲームパッドか送信機を選んでください。"
+
+msgid "Move a stick or press a button: it lights up here and on its action."
+msgstr "スティックを動かすかボタンを押すと、ここと対応する操作が光ります。"
+
+msgid "Flight keys are marked; keys you hold light up."
+msgstr "飛行キーに印が付き、押しているキーが光ります。"
+
+msgid "Connect this controller to see its input live."
+msgstr "入力をリアルタイムで見るには、このコントローラーを接続してください。"
+
+msgid "FLIGHT KEYS"
+msgstr "飛行キー"
+
+msgid "SHORTCUTS"
+msgstr "ショートカット"

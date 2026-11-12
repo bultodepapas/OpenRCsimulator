@@ -7,9 +7,14 @@ import os
 from pathlib import Path
 import socket
 import time
+import re
 
 VERSION = 1
 LIMIT = 4 * 1024 * 1024
+
+
+def enabled() -> bool:
+    return bool(os.environ.get("OPENRC_TESTQUEUE_CONTEXT")) or (state_root() / "enrollment.json").is_file()
 
 
 def state_root() -> Path:
@@ -32,6 +37,26 @@ def write_json(path: Path, value: dict) -> None:
     with contextlib.suppress(OSError):
         temporary.chmod(0o600)
     temporary.replace(path)
+
+
+def submission_receipt(root: Path, request: dict) -> Path:
+    identifier = request["request_id"]
+    if not isinstance(identifier, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", identifier) or ".." in identifier:
+        raise ValueError("request_id must be a safe opaque token")
+    path = root / "submissions" / (identifier + ".json")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        descriptor = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    except FileExistsError:
+        if json.loads(path.read_text(encoding="utf-8")) != request:
+            raise ValueError("submission receipt already exists with different inputs or credentials")
+        return path
+    with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+        json.dump(request, stream, sort_keys=True, allow_nan=False)
+        stream.write("\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+    return path
 
 
 class Singleton:
@@ -58,6 +83,32 @@ class Singleton:
 
     def close(self):
         self.stream.close()
+
+
+class HostSingleton:
+    """One enrolled Windows authority even when callers choose different roots."""
+
+    def __init__(self, host: str):
+        self.handle = None
+        if os.name == "nt":
+            import ctypes
+            from ctypes import wintypes
+            self.kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+            self.kernel.CreateMutexW.argtypes = [ctypes.c_void_p, wintypes.BOOL, wintypes.LPCWSTR]
+            self.kernel.CreateMutexW.restype = wintypes.HANDLE
+            self.kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+            self.kernel.CloseHandle.restype = wintypes.BOOL
+            self.handle = self.kernel.CreateMutexW(None, True, "Global\\OpenRC-Testqueue-" + host)
+            if not self.handle:
+                raise ctypes.WinError(ctypes.get_last_error())
+            if ctypes.get_last_error() == 183:
+                self.close()
+                raise RuntimeError("another enrolled worker already owns this physical Windows host")
+
+    def close(self):
+        if self.handle:
+            self.kernel.CloseHandle(self.handle)
+            self.handle = None
 
 
 def rpc(operation: str, *, root: Path | None = None, timeout: float = 30, **payload):

@@ -21,6 +21,8 @@ const AirshipLog = preload("res://sim/airship/flight_log.gd")
 const Catalog = preload("res://vehicles/airship/airship_catalog.gd")
 const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
 const MechanicalProfile = preload("res://audio/mechanical_profile.gd")
+const LensStack = preload("res://render/lens/lens_stack.gd")
+const LensSettings = preload("res://render/lens/lens_settings.gd")
 ## Servo sound channels: [id, continuous indices averaged] (vector and fin angles in radians, CTRL sign).
 const SERVO_CHANNELS := [["vector_side", [4, 5]], ["vector_stern", [6]], ["fin_dorsal", [7]], ["fin_port", [8]], ["fin_starboard", [9]]]
 const SERVO_ANCHORS := [["vector_port", "vector_starboard"], ["vector_stern"], ["fin_dorsal"], ["fin_port"], ["fin_starboard"]]
@@ -42,6 +44,10 @@ var field_path: String = FieldLoader.DEFAULT_PATH
 var lighting_config: Dictionary = LightingConfig.defaults()
 var night_options := {}
 var sky_config: Dictionary = SkyAppearance.defaults()
+## LENS-01 (docs/plans/lens-screen-effects.md): rain on the lens, impact grime, and blood when the blimp strikes a
+## person. Null when disabled.
+var _lens: LensStack
+var _obstacle_world: Dictionary = {}
 var enable_audio := true
 var enable_world := true
 ## Deterministic test seam: tick -> [roll, pitch, yaw, throttle]; sampled only on physics ticks.
@@ -94,6 +100,7 @@ func _ready() -> void:
 		startup_error = "Blimp obstacle inventory refused: " + "; ".join(obstacles.get("errors", []))
 		_disable()
 		return
+	_obstacle_world = obstacles.world
 	if not session.prepare(field, _session_options()):
 		startup_error = "Blimp could not be prepared: " + str(session.load_error)
 		_disable()
@@ -142,6 +149,11 @@ func _ready() -> void:
 	hud.action_requested.connect(handle_action)
 	hud.option_selected.connect(_option_selected)
 	session.crashed.connect(func(reason: String) -> void: _open_menu(reason + ". Restart to fly again."))
+	session.crashed.connect(_lens_crash)
+	session.resetting.connect(func() -> void:
+		if _lens != null:
+			_lens.reset())
+	_start_lens()
 	session.faulted.connect(func(reason: String) -> void: _open_menu("Simulation paused: " + reason))
 	input.connect_first_device()
 	Input.joy_connection_changed.connect(_joy_connection_changed)
@@ -151,6 +163,63 @@ func _ready() -> void:
 	_open_menu(session.pause_reason)
 	_note_weigh_off()
 	_process(0.0)
+
+
+## LENS-01: the blimp session reports a crash as a reason; the lens asks the installed obstacle inventory (read-only)
+## what lies within the envelope's reach of the accepted crash state.
+func _start_lens() -> void:
+	if _lens != null:
+		remove_child(_lens)
+		_lens.queue_free()
+		_lens = null
+	if camera == null or not enable_world:
+		return
+	var resolved: Dictionary = LensSettings.resolve({}, true)
+	if not resolved.enabled:
+		return
+	_lens = LensStack.new()
+	_lens.name = "LensStack"
+	add_child(_lens)
+	var pilot: Dictionary = field.pilot
+	var ok := _lens.configure({
+		"settings": resolved,
+		"camera": camera,
+		"session": session,
+		"view_provider": func() -> String: return str(CAMERA_NAMES[camera_mode]),
+		"sky_provider": func() -> String: return str(sky_config.get("preset", "classic")),
+		"field": field,
+		"hull": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"station": PackedFloat64Array([float(pilot.north), float(pilot.east), float(pilot.down)]),
+		"eye_height": float(pilot.get("eye_height", 1.7)),
+		"mass_kg": float(session.model.get("mass", 5.0)),
+		"seed": hash(skin_id),
+	})
+	if not ok:
+		_lens.queue_free()
+		_lens = null
+		return
+	_lens.person_struck.connect(func(player: bool) -> void:
+		_lens.show_message(tr("The aircraft struck the pilot. Keep it in front of you and away from the flight line.") if player
+			else tr("The aircraft struck a person. Never fly over or toward people.")))
+
+
+## Settings changed during the flight: rebuild the lens from the new preference (presentation only).
+func apply_lens_preferences() -> void:
+	if session != null and session.prepared:
+		_start_lens()
+
+
+func _lens_crash(reason: String) -> void:
+	if _lens == null:
+		return
+	var state: Variant = session.crash.get("state", PackedFloat64Array())
+	if not state is PackedFloat64Array or (state as PackedFloat64Array).size() < 6:
+		return
+	var s: PackedFloat64Array = state
+	var speed := Vector3(s[3], s[4], s[5]).length()
+	var reach := float(session.model.get("bound_radius", 1.4)) + 0.6
+	_lens.strike_from_crash(s.slice(0, 3), speed, _obstacle_world if reason.begins_with("Obstacle strike") else {},
+		"blimp:%d" % int(session.crash.get("tick", 0)), reach)
 
 
 func _disable() -> void:
@@ -397,6 +466,9 @@ func _process(delta: float) -> void:
 	_update_camera(target, body_basis, delta)
 	if _environment != null:
 		World.update(_environment, 37.0 + session.sim.time(), Vector3.ZERO, target, camera)
+	if _lens != null:
+		# A crash pauses the session; the lens keeps presenting its aftermath, and holds only for a real pause.
+		_lens.advance(delta, session.sim.time(), session.paused and session.crash.is_empty())
 	var t: Dictionary = session.telemetry()
 	hud.update(t, _last_input, CAMERA_NAMES[camera_mode])
 	_update_audio(target, body_basis)

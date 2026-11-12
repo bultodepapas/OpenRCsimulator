@@ -286,7 +286,7 @@ func _run() -> void:
 	setup.select_section("axes")
 	await _settle()
 	var scroll := setup.find_child("ControllerSetupScroll", true, false) as ScrollContainer
-	_check("all four live meters fit beside their axis controls", scroll.get_global_rect().encloses(setup._preview_bars.throttle.get_global_rect()) and scroll.get_global_rect().encloses(setup._axis_controls.throttle.axis.get_global_rect()))
+	_check("all four live meters fit beside their axis controls", scroll.get_global_rect().encloses(setup._preview_bars.throttle.get_global_rect()) and scroll.get_global_rect().encloses(setup._axis_controls.throttle.source.get_global_rect()))
 	_check("live preview names the mapped source axis", setup._preview_axis_labels.roll.text == "Eje %d" % int(original.roll.axis))
 	var aux_preview_profile := original.duplicate(true)
 	aux_preview_profile["aux"] = {
@@ -297,7 +297,7 @@ func _run() -> void:
 	setup._set_draft_profile(aux_preview_profile)
 	setup.select_section("aux")
 	await _settle()
-	_check("all three configured AUX editors fit at 1280x720 in Spanish", scroll.get_global_rect().encloses(setup._aux_controls.smoke.axis.get_global_rect()) and scroll.get_global_rect().encloses(setup._aux_controls.gear.button_mode.get_global_rect()),
+	_check("all three configured AUX editors fit at 1280x720 in Spanish", scroll.get_global_rect().encloses(setup._aux_controls.smoke.detect.get_global_rect()) and scroll.get_global_rect().encloses(setup._aux_controls.gear.button_mode.get_global_rect()),
 		"scroll=%s smoke=%s flaps=%s gear=%s mix_owner=%s mix_help=%s" % [scroll.get_global_rect(),
 			setup._aux_controls.smoke.axis.get_global_rect(), setup._aux_controls.flaps.button_mode.get_global_rect(),
 			setup._aux_controls.gear.button_mode.get_global_rect(), setup.flap_mix_owner_picker.get_global_rect(),
@@ -310,7 +310,7 @@ func _run() -> void:
 		setup.select_section("aux")
 		await _settle()
 		var area := scroll.get_global_rect()
-		var smoke: Control = setup._aux_controls.smoke.axis
+		var smoke: Control = setup._aux_controls.smoke.detect # UI-15-UX-05: the axis number is Advanced
 		var flaps: Control = setup._aux_controls.flaps.button_mode
 		var gear: Control = setup._aux_controls.gear.button_mode
 		_check("%s 1080p configured AUX editors are visible and readable" % locale,

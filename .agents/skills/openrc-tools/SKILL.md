@@ -5,6 +5,9 @@ description: Find and run the right OpenRC simulator tool for a task — tests (
 
 # Which OpenRC tool?
 
+On enrolled shared hosts follow [host admission](../../../tools/testqueue/README.md).
+Retain the owning session handle through teardown; a port alone is insufficient.
+
 Start at the task table in [docs/tools/README.md](../../../docs/tools/README.md) and read only the doc its row names.
 Every tool's README owns its commands; do not copy them into notes or new scripts.
 

@@ -15,7 +15,7 @@ import stat
 import subprocess
 
 
-DEFAULT_SCOPE = ("app", "tools", "research/performance/godtest")
+DEFAULT_SCOPE = ("app", "tools", "research/performance")
 RESERVE_BYTES = 512 * 1024 * 1024
 FORMAT = "openrc-testqueue-snapshot-v1"
 _BLOCK = 1024 * 1024
@@ -139,13 +139,80 @@ def _covered(path: str, scope: tuple[str, ...]) -> bool:
     return any(path == item or path.startswith(item + "/") for item in scope)
 
 
+def _authoring_inputs(root: Path, candidates: set[str]) -> tuple[set[str], set[str]]:
+    """Include the same aircraft authoring references consumed by GOD TEST."""
+    present: set[str] = set()
+    missing: set[str] = set()
+
+    def collect(value: object) -> None:
+        if isinstance(value, dict):
+            for nested in value.values():
+                collect(nested)
+        elif isinstance(value, list):
+            for nested in value:
+                collect(nested)
+        elif isinstance(value, str) and value.startswith("assets/"):
+            name = _relative(value)
+            path = root / name
+            _check_no_links(path)
+            try:
+                _file_stat(path)
+            except FileNotFoundError:
+                missing.add(name)
+            else:
+                present.add(name)
+
+    for name in sorted(candidates):
+        parts = PurePosixPath(name).parts
+        if (len(parts) != 4 or parts[:2] != ("app", "data")
+                or parts[2] not in ("aircraft_models", "aircraft_model_overlays")
+                or not name.endswith(".json")):
+            continue
+        path = root / name
+        try:
+            metadata = _file_stat(path)
+        except FileNotFoundError:
+            continue  # A tracked deletion is recorded by the normal inventory.
+        flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+        with os.fdopen(os.open(path, flags), "rb") as stream:
+            if _signature(os.fstat(stream.fileno())) != _signature(metadata):
+                raise ValueError(f"source changed during snapshot: {name}")
+            text = stream.read().decode("utf-8")
+            if _signature(os.fstat(stream.fileno())) != _signature(metadata):
+                raise ValueError(f"source changed during snapshot: {name}")
+        if _signature(_file_stat(path)) != _signature(metadata):
+            raise ValueError(f"source changed during snapshot: {name}")
+        collect(json.loads(text))
+    return present, missing
+
+
+def _native_inputs(root: Path, scope: tuple[str, ...]) -> set[str]:
+    if _covered("app/native", scope):
+        return _walk_files(root, "app/native", native=True)
+    found: set[str] = set()
+    for item in scope:
+        if not item.startswith("app/native/"):
+            continue
+        path = root / item
+        _check_no_links(path)
+        if not path.exists():
+            continue
+        if path.is_dir():
+            found |= _walk_files(root, item, native=True)
+        elif not (path.name.startswith("~") and path.name.lower().endswith(".tmp")):
+            _file_stat(path)
+            found.add(item)
+    return found
+
+
 def _inventory(root: Path, scope: tuple[str, ...], include_imports: bool) -> dict:
     commit = _git(root, "rev-parse", "--verify", "HEAD").decode("ascii").strip()
-    status = _status(root, scope)
     tracked = _git_paths(root, ("ls-files", "-z", "--cached"), scope)
     tracked |= _git_paths(root, ("ls-tree", "-r", "--name-only", "-z", "HEAD"), scope)
     untracked = _git_paths(root, ("ls-files", "-z", "--others", "--exclude-standard"), scope)
-    native = _walk_files(root, "app/native", native=True) if _covered("app/native", scope) else set()
+    authoring, missing_authoring = _authoring_inputs(root, tracked | untracked)
+    status = _status(root, scope + tuple(sorted(authoring | missing_authoring)))
+    native = _native_inputs(root, scope)
     imports: set[str] = set()
     if include_imports:
         if not _covered("app", scope):
@@ -164,23 +231,24 @@ def _inventory(root: Path, scope: tuple[str, ...], include_imports: bool) -> dic
             imports.add("app/.godot/.gdignore")
     files = {}
     deleted = []
-    for relative in sorted(tracked | untracked | native | imports):
+    for relative in sorted(tracked | untracked | native | imports | authoring):
         path = root / relative
         _check_no_links(path)
         try:
             metadata = _file_stat(path)
         except FileNotFoundError:
-            if relative in tracked and relative not in untracked | native | imports:
+            if relative in tracked and relative not in untracked | native | imports | authoring:
                 deleted.append(relative)
                 continue
             raise ValueError(f"source disappeared during snapshot: {relative}") from None
         files[relative] = metadata
     return {"commit": commit, "status": status, "files": files, "deleted": deleted,
-            "native": sorted(native), "imports": sorted(imports)}
+            "native": sorted(native), "imports": sorted(imports), "authoring": sorted(authoring),
+            "missing_authoring": sorted(missing_authoring)}
 
 
 def _same_inventory(before: dict, after: dict) -> bool:
-    if any(before[key] != after[key] for key in ("commit", "status", "deleted", "native", "imports")):
+    if any(before[key] != after[key] for key in ("commit", "status", "deleted", "native", "imports", "authoring", "missing_authoring")):
         return False
     if before["files"].keys() != after["files"].keys():
         return False
@@ -231,15 +299,16 @@ def _set_metadata(path: Path, source: os.stat_result) -> None:
 
 
 def _identity(manifest: dict) -> dict:
-    return {key: manifest[key] for key in ("scope", "files", "deleted", "native_files", "import_files")}
+    return {key: manifest[key] for key in ("scope", "files", "deleted", "native_files", "import_files",
+                                            "authoring_files", "missing_authoring_files")}
 
 
 def capture(source: Path, destination: Path, *, scope: tuple[str, ...] = DEFAULT_SCOPE,
             include_imports: bool = False) -> dict:
     """Capture scoped worktree bytes into a new destination outside the checkout.
 
-    Git history and ignored files are excluded, except installed app/native inputs
-    and optionally the listed Godot import caches. Failed captures leave an
+    Git history and ignored files are excluded, except installed app/native inputs,
+    referenced aircraft authoring inputs and optionally the Godot import caches. Failed captures leave an
     incomplete directory for the owner to inspect or remove. Retrying requires a
     fresh destination. `include_imports` does not qualify cache compatibility.
     """
@@ -297,17 +366,19 @@ def capture(source: Path, destination: Path, *, scope: tuple[str, ...] = DEFAULT
         "format": FORMAT, "source_root": str(root), "commit": before["commit"],
         "dirty": bool(before["status"]), "status": before["status"], "scope": list(scope),
         "files": files, "deleted": before["deleted"], "native_files": before["native"],
-        "import_files": before["imports"], "history_included": False,
+        "import_files": before["imports"], "authoring_files": before["authoring"],
+        "missing_authoring_files": before["missing_authoring"], "history_included": False,
         "adapter_digests": {name: item["sha256"] for name, item in files.items() if name.startswith(_ADAPTERS)},
         "limitations": [
             "Per-file verified copy; not an atomic or semantically consistent multi-file snapshot.",
             "Git history is absent; history-dependent suites need a suitable checkout or bundle.",
             "Prepared caches are copied inputs, not proof of engine, platform or source compatibility.",
             "Each attempt requires an independent writable project, cache and runtime profile.",
-            "Ignored files are excluded except installed native inputs and requested import caches; native ~*.tmp files are excluded.",
+            "Ignored files are excluded except installed native inputs, referenced aircraft authoring files and requested import caches; native ~*.tmp files are excluded.",
         ],
     }
     manifest["source_digest"] = _digest(_identity(manifest))
+    manifest["manifest_digest"] = _digest(manifest)
     (output / "manifest.json").write_bytes(_canonical(manifest) + b"\n")
     report = verify(output)
     if not report["ok"]:
@@ -315,7 +386,7 @@ def capture(source: Path, destination: Path, *, scope: tuple[str, ...] = DEFAULT
     return manifest
 
 
-def verify(snapshot_dir: Path) -> dict:
+def verify(snapshot_dir: Path, *, canceled=None) -> dict:
     """Validate receipt, file hashes, metadata, links and unexpected materialized files."""
     errors = []
     manifest = None
@@ -327,6 +398,8 @@ def verify(snapshot_dir: Path) -> dict:
         manifest = json.loads(receipt.read_text(encoding="utf-8"))
         if not isinstance(manifest, dict) or manifest.get("format") != FORMAT:
             raise ValueError("unsupported snapshot manifest")
+        if manifest.get("manifest_digest") != _digest({key: value for key, value in manifest.items() if key != "manifest_digest"}):
+            errors.append("manifest digest does not match")
         files = manifest.get("files")
         if not isinstance(files, dict):
             raise ValueError("invalid snapshot files")
@@ -349,6 +422,8 @@ def verify(snapshot_dir: Path) -> dict:
         for name in sorted(actual - set(files)):
             errors.append(f"unexpected file: {name}")
         for name in sorted(set(files) & actual):
+            if canceled is not None and canceled():
+                raise InterruptedError("snapshot verification canceled")
             path = root / name
             expected = files[name]
             metadata = _file_stat(path)

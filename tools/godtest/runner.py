@@ -211,6 +211,9 @@ def _call(function, arguments) -> tuple[int, dict]:
 
 
 def run(manifest: dict, output: Path | None = None, *, godot: str | None = None, resources: bool = False, snapshot: dict | None = None) -> tuple[Path, dict]:
+    from tools.testqueue.common import enabled, inherited
+    if enabled() and not inherited("rendered"):
+        raise ValueError("GOD TEST on an enrolled host requires the admitted godtest.py CLI or inherited attempt")
     validate(manifest)
     if sys.platform == "darwin":
         raise ValueError("Mac profile isolation requires the existing isolated-project workflow; this runner has not qualified it")

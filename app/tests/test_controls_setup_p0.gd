@@ -225,6 +225,7 @@ func _test_friendly_errors() -> void:
 	event.button_index = 15 as JoyButton
 	event.pressed = true
 	setup._capture_binding(event)
+	setup.capture_overlay.conflict_cancel_button.pressed.emit() # UI-15-UX-06: Cancel the Swap/Replace question
 	_check("a rejected remap names the action and the extra channel",
 		setup.status_label.text.contains("“Previous camera” uses the same control as the Smoke extra channel."), setup.status_label.text)
 	await _close(setup)

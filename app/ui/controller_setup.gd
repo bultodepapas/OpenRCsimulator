@@ -14,12 +14,28 @@ const ActionAxisCapture := preload("res://input/action_axis_capture.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
 const ControllerDiagnostics := preload("res://input/controller_diagnostics.gd")
 const InputReportData := preload("res://input/input_report_data.gd")
+const ControlsWorkspace := preload("res://ui/controls/controls_workspace.gd")
+const BindingChip := preload("res://ui/controls/binding_chip.gd")
+const GimbalView := preload("res://ui/controls/stick_gimbal_view.gd")
+const ResponseCurve := preload("res://ui/controls/response_curve.gd")
+const CalibrationView := preload("res://ui/controls/calibration_view.gd")
+const ControlsReference := preload("res://ui/controls_reference.gd")
+const CaptureOverlay := preload("res://ui/controls/capture_overlay.gd")
+const RcCalibration := preload("res://input/rc_calibration.gd")
+const KeyCap := preload("res://ui/key_cap.gd")
 
 signal close_requested
 signal profile_saved(profile: Dictionary)
 signal draft_changed
 signal calibration_requested
 signal menu_verification_requested
+## UI-15-UX-06: emitted exactly once when a capture this screen owns ends. `target_id` is the action id (Remap and
+## Learn axis), "aux:<channel>" (switch position Capture, Move the control), "axis:<channel>" (Detect) or "find".
+## `ok` is true only when the draft binding was committed (after a Swap/Replace choice when one was needed); for
+## "find" it is true when a row was found. `message` is the translated reason when `ok` is false ("" otherwise).
+signal capture_finished(target_id: String, ok: bool, message: String)
+## Emitted by apply_calibration_draft (ok = its result) and calibration_cancelled (ok = false).
+signal calibration_finished(ok: bool, message: String)
 
 const LAYER := 12
 const CAPTURE_AXIS_RELEASE_THRESHOLD := 0.35
@@ -43,6 +59,32 @@ const AUX_CHANNELS: Array[String] = ["smoke", "flaps", "gear", "arm", "flight_mo
 const AUX_CHANNEL_LABELS: Dictionary = {"smoke": "Smoke", "flaps": "Flaps", "gear": "Landing gear",
 	"arm": "Arm (FPV quad)", "flight_mode": "Flight mode (FPV quad)"}
 const AUX_LEGACY_ARM_HINT := "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
+## UI-15-UX-03: full-screen workspace (menu-redesign safe inset at 1080p); beyond SPAN the text column stops growing.
+const WORKSPACE_INSET := 48.0
+const WORKSPACE_SPAN := 2560.0
+const RAIL_WIDTH := 300.0
+## The device picture sits between the rail and the pages only while the pages keep the former modal's wide
+## layouts (axis table, inline AUX editors: an effective canvas of 1100+ px) and their full height.
+const PAGE_MIN_EFFECTIVE := 1108.0
+const PAGE_MAX_WIDTH := 1400.0
+const PICTURE_MIN_WIDTH := 360.0
+const KEYBOARD_PAGE_MIN_WIDTH := 700.0
+const KEYBOARD_READ_ONLY_NOTE := "Keyboard keys cannot be remapped yet."
+## Pages that edit a controller profile; with the Keyboard selected they show its fixed map instead.
+const PROFILE_SECTIONS: Array[String] = ["profile", "axes", "aux", "buttons"]
+const ACTION_CONFLICT_CODES: Array[String] = ["binding_conflict", "action_aux_source_conflict",
+	"action_flight_axis_conflict", "action_aux_conflict"]
+## UI-15-UX-06: same-control conflicts that the capture overlay offers to Swap or Replace.
+const SWAPPABLE_CONFLICT_CODES: Array[String] = ["binding_conflict", "action_aux_source_conflict", "aux_conflict"]
+## Seconds a capture waits for input before it cancels itself (gamepad-only players have no Escape key).
+const CAPTURE_SECONDS := 8.0
+## UI-15-UX-05: the requested direction per flight channel; a detected axis that moved the other way is inverted.
+const DETECT_PROMPTS: Dictionary = {
+	"roll": "Move the stick you want for Roll fully RIGHT and hold it.",
+	"pitch": "Move the stick you want for Pitch fully BACK (toward you) and hold it.",
+	"yaw": "Move the stick you want for Yaw fully RIGHT and hold it.",
+	"throttle": "Move the control you want for Throttle to FULL and hold it.",
+}
 
 var registry: Object
 var profile_store: Object
@@ -192,6 +234,48 @@ var show_all_vehicle_actions: CheckBox
 var show_all_vehicle_aux: CheckBox
 var aux_legacy_arm_hint: Label
 
+## UI-15-UX-03/04/08: the workspace regions (device rail, device picture, pages) and the live views.
+var workspace: ControlsWorkspace
+var _workspace_body: HBoxContainer
+var _workspace_main: BoxContainer
+var _page_column: VBoxContainer
+var _workspace_refresh_queued := false
+var _binding_chips: Dictionary = {} # action id -> BindingChip
+var _axis_gimbals: Array[GimbalView] = []
+var _response_curve: ResponseCurve
+var _curve_channel := "roll"
+var _live_stick_mode := 2
+var _axis_raw := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+var _axis_out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+var _page_editables: Dictionary = {} # section -> wrapper of the profile editors
+var _keyboard_blocks: Dictionary = {} # section -> read-only keyboard view
+var _keyboard_mode := false
+var _keyboard_tables_vehicle := ""
+
+## UI-15-UX-05/06: capture overlay, flight-axis detection, AUX "Move the control", search by input, conflicts, reset.
+var capture_overlay: CaptureOverlay
+var axis_advanced_toggle: CheckBox
+var aux_advanced_toggle: CheckBox
+var find_actions_button: Button
+var find_aux_button: Button
+var reset_category_button: Button
+var reset_all_button: Button
+var reset_dialog: ConfirmationDialog
+var _reset_scope := -1
+var _reset_return_focus: Control
+var _axis_detect_buttons: Dictionary = {} # channel -> Button
+var _aux_detect_buttons: Dictionary = {} # aux channel -> Button
+var _axis_live_views: HFlowContainer
+var _capture_target := "" # the capture_finished target of the running capture
+var _detect_channel := ""
+var _axis_detector: AxisDetector
+var _capturing_aux_axis := "" # AUX channel measured by "Move the control" (ActionAxisCapture)
+var _finding := false
+var _find_origin := ""
+var _conflict: Dictionary = {}
+var _detect_preview_axis := -1
+var _axis_capture_phase := ""
+
 
 func _init() -> void:
 	name = "ControllerSetup"
@@ -232,7 +316,7 @@ func configure(controller_registry: Object, store: Object, flight_device_id := -
 func request_close() -> void:
 	if _dismiss_own_dialogs():
 		return
-	if _is_capture_active():
+	if _is_assignment_busy():
 		_cancel_capture()
 		return
 	if is_inside_tree() and has_unsaved_changes():
@@ -247,8 +331,10 @@ func close_without_prompt() -> void:
 	_hide_unsaved_dialog()
 	if is_instance_valid(_info_dialog) and _info_dialog.visible:
 		_info_dialog.hide()
-	if _is_capture_active():
-		_capture_done()
+	if is_instance_valid(reset_dialog) and reset_dialog.visible:
+		reset_dialog.hide()
+	if _is_assignment_busy():
+		_capture_done(false, tr("Remapping cancelled."))
 	_reset_validation()
 	close_requested.emit()
 
@@ -389,6 +475,14 @@ func _dismiss_own_dialogs() -> bool:
 		_info_dialog.hide()
 		_restore_info_focus()
 		return true
+	# UI-15-UX-06: Back/Escape answers the conflict question with Cancel and closes the reset question.
+	if not _conflict.is_empty():
+		_resolve_conflict("cancel")
+		return true
+	if is_instance_valid(reset_dialog) and reset_dialog.visible:
+		reset_dialog.hide()
+		_restore_reset_focus()
+		return true
 	return false
 
 
@@ -401,10 +495,12 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 	if _draft_flight_device_id != device_id or _draft_profile.get("kind", "") != "radio" \
 		or not _calibration_connection_matches(device_id, generation):
 		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
+		calibration_finished.emit(false, tr("The radio connection changed. Calibrate again before saving these settings."))
 		return false
 	var calibrated: Dictionary = ControllerProfile.merge_radio_calibration(_draft_profile, calibration)
 	if calibrated.is_empty() or calibrated.get("kind", "") != "radio":
 		_set_status(tr("Invalid calibration. The draft is unchanged."), true)
+		calibration_finished.emit(false, tr("Invalid calibration. The draft is unchanged."))
 		return false
 	_draft_profile = calibrated
 	# The wizard retains valid AUX and reports bindings consumed by newly assigned flight axes.
@@ -422,7 +518,14 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 		message += " " + tr(warning)
 	_set_status(message, false)
 	_draft_validation_changed()
+	calibration_finished.emit(true, tr(warning) if not warning.is_empty() else "")
 	return true
+
+
+## The calibration owner reports a cancelled or abandoned calibration: the draft is unchanged.
+func calibration_cancelled(reason: String) -> void:
+	_set_status(reason, false)
+	calibration_finished.emit(false, reason)
 
 
 func _calibration_connection_matches(device_id: int, generation: int) -> bool:
@@ -583,13 +686,41 @@ func _build() -> void:
 	_device_details_label.max_lines_visible = 2
 	_device_details_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	shell.add_child(_device_details_label)
+	# UI-15-UX-03: [device rail | [device picture, section tabs + page]]; the picture moves beside the pages on wide
+	# canvases and the rail and picture fold away on compact ones (see _resize_panel).
+	workspace = ControlsWorkspace.new()
+	add_child(workspace)
+	workspace.read_axis = _read_axis_preview
+	workspace.read_button = _read_button_preview
+	workspace.host_visible = func() -> bool: return visible and _screen.is_visible_in_tree()
+	workspace.card_activated.connect(_on_rail_card_activated)
+	_workspace_body = HBoxContainer.new()
+	_workspace_body.name = "ControlsWorkspaceBody"
+	_workspace_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_workspace_body.add_theme_constant_override("separation", 16)
+	shell.add_child(_workspace_body)
+	workspace.rail.custom_minimum_size.x = RAIL_WIDTH
+	_workspace_body.add_child(workspace.rail)
+	_workspace_main = BoxContainer.new()
+	_workspace_main.name = "ControlsWorkspaceMain"
+	_workspace_main.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_workspace_main.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_workspace_main.add_theme_constant_override("separation", 12)
+	_workspace_body.add_child(_workspace_main)
+	_workspace_main.add_child(workspace.picture_panel)
+	_page_column = VBoxContainer.new()
+	_page_column.name = "ControllerPageColumn"
+	_page_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_page_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_page_column.add_theme_constant_override("separation", 12)
+	_workspace_main.add_child(_page_column)
 	_section_navigation = HFlowContainer.new()
 	_section_navigation.name = "ControllerSections"
 	_section_navigation.add_theme_constant_override("separation", 6)
 	_section_navigation.add_theme_constant_override("h_separation", 6)
 	_section_navigation.add_theme_constant_override("v_separation", 6)
-	shell.add_child(_section_navigation)
-	shell.add_child(HSeparator.new())
+	_page_column.add_child(_section_navigation)
+	_page_column.add_child(HSeparator.new())
 	var scroll := ScrollContainer.new()
 	scroll.name = "ControllerSetupScroll"
 	scroll.follow_focus = true
@@ -597,7 +728,7 @@ func _build() -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.resized.connect(_queue_mapping_focus_visibility)
 	scroll.get_v_scroll_bar().gui_input.connect(_on_mapping_scroll_input)
-	shell.add_child(scroll)
+	_page_column.add_child(scroll)
 	_section_body = VBoxContainer.new()
 	_section_body.name = "ControllerSetupPage"
 	_section_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -760,6 +891,12 @@ func _build() -> void:
 	page = _make_section("axes", "Flight axes")
 	page.add_child(_section_label("AXIS MAPPING AND RESPONSE"))
 	page.add_child(_label("Each channel uses its own scalar axis. Tune its deadzone, expo and inversion, then move the selected flight controller to preview the conditioned value.", "SecondaryLabel", true))
+	# UI-15-UX-05: axes are assigned by moving them (Detect); the axis numbers are an Advanced disclosure.
+	axis_advanced_toggle = CheckBox.new()
+	axis_advanced_toggle.name = "AxisAdvancedToggle"
+	axis_advanced_toggle.text = "Advanced: edit axis numbers"
+	axis_advanced_toggle.toggled.connect(func(_on: bool) -> void: _apply_advanced_visibility())
+	page.add_child(axis_advanced_toggle)
 	_axis_columns = BoxContainer.new()
 	var axis_columns := _axis_columns
 	axis_columns.add_theme_constant_override("separation", 28)
@@ -809,11 +946,23 @@ func _build() -> void:
 		expo_spin.custom_minimum_size.x = 110.0
 		var invert := CheckBox.new()
 		invert.text = "Invert"
-		_add_control_field(channel_fields, "Source axis", axis_spin)
+		var source_cell := HBoxContainer.new()
+		source_cell.name = "AxisSource_%s" % channel
+		source_cell.add_theme_constant_override("separation", 6)
+		# The mapped axis number is in the live preview beside the table ("Axis 2"); its SpinBox is Advanced.
+		axis_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		source_cell.add_child(axis_spin)
+		var detect_button := _button("Detect", "", "AxisDetect_%s" % channel)
+		detect_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		detect_button.pressed.connect(_start_axis_detect.bind(channel, detect_button))
+		_axis_detect_buttons[channel] = detect_button
+		source_cell.add_child(detect_button)
+		_add_control_field(channel_fields, "Source axis", source_cell)
 		_add_control_field(channel_fields, "Deadzone", deadzone_spin)
 		_add_control_field(channel_fields, "Expo", expo_spin)
 		_add_control_field(channel_fields, "Direction", invert)
-		_axis_controls[channel] = {"axis": axis_spin, "deadzone": deadzone_spin, "expo": expo_spin, "invert": invert}
+		_axis_controls[channel] = {"axis": axis_spin, "deadzone": deadzone_spin, "expo": expo_spin, "invert": invert,
+			"source": source_cell}
 		for key: String in ["axis", "deadzone", "expo", "invert"]:
 			_register_validation_field(channel + "." + key, "axes", _axis_controls[channel][key], [row_label, compact_label], str(CHANNEL_LABELS[channel]))
 		axis_spin.value_changed.connect(_on_axis_changed.bind(channel, "axis"))
@@ -842,6 +991,16 @@ func _build() -> void:
 	show_all_vehicle_aux.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	show_all_vehicle_aux.toggled.connect(func(_pressed: bool) -> void: _update_aux_controls())
 	aux_help_row.add_child(show_all_vehicle_aux)
+	aux_advanced_toggle = CheckBox.new()
+	aux_advanced_toggle.name = "AuxAdvancedToggle"
+	aux_advanced_toggle.text = "Advanced"
+	aux_advanced_toggle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	aux_advanced_toggle.toggled.connect(func(_on: bool) -> void: _apply_advanced_visibility())
+	aux_help_row.add_child(aux_advanced_toggle)
+	find_aux_button = _button("Find control", "", "FindControlAux")
+	find_aux_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	find_aux_button.pressed.connect(func() -> void: _start_find(find_aux_button))
+	aux_help_row.add_child(find_aux_button)
 	page.add_child(aux_help_row)
 	aux_grid = VBoxContainer.new()
 	aux_grid.sort_children.connect(_queue_mapping_focus_visibility)
@@ -895,9 +1054,16 @@ func _build() -> void:
 		var aux_invert := CheckBox.new()
 		aux_invert.name = "AuxInvert_%s" % aux_name
 		aux_invert.text = tr("Invert")
-		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "Axis", axis_spin))
-		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "Off endpoint", off_spin))
-		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "On endpoint", on_spin))
+		# UI-15-UX-05: measure OFF then ON by moving the control; the numbers are the page's Advanced disclosure.
+		var aux_detect := _button("Move the control", "", "AuxDetect_%s" % aux_name)
+		aux_detect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		aux_detect.pressed.connect(_start_aux_axis_capture.bind(aux_name, aux_detect))
+		_aux_detect_buttons[aux_name] = aux_detect
+		axis_editor.add_child(aux_detect)
+		var aux_axis_field := _add_inline_control_field(axis_editor, "Axis", axis_spin)
+		var aux_off_field := _add_inline_control_field(axis_editor, "Off endpoint", off_spin)
+		var aux_on_field := _add_inline_control_field(axis_editor, "On endpoint", on_spin)
+		_aux_inline_fields.append_array([aux_axis_field, aux_off_field, aux_on_field])
 		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "Direction", aux_invert))
 		mapping.add_child(axis_editor)
 		var button_editor := BoxContainer.new()
@@ -1011,6 +1177,8 @@ func _build() -> void:
 			"off": off_spin,
 			"on": on_spin,
 			"invert": aux_invert,
+			"detect": aux_detect,
+			"advanced_fields": [aux_axis_field, aux_off_field, aux_on_field],
 			"button_editor": button_editor,
 			"button": button_spin,
 			"button_mode": button_mode,
@@ -1049,6 +1217,30 @@ func _build() -> void:
 	preview_column.add_theme_constant_override("separation", 5)
 	axis_columns.add_child(preview_column)
 	preview_column.add_child(_section_label("LIVE PREVIEW"))
+	# UI-15-UX-04/08: two gimbals in the profile's stick mode and the focused channel's response curve, fed by the
+	# same four samples as the value rows (no extra reads), only while this tab is shown.
+	var live_views := HFlowContainer.new()
+	_axis_live_views = live_views
+	live_views.name = "AxisLiveViews"
+	live_views.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	live_views.add_theme_constant_override("h_separation", 24)
+	live_views.add_theme_constant_override("v_separation", 8)
+	# Below the table and its value rows, across the page, so the values keep their place at compact sizes.
+	page.add_child(live_views)
+	for side in 2:
+		var gimbal := GimbalView.new()
+		gimbal.name = "AxisGimbalLeft" if side == 0 else "AxisGimbalRight"
+		gimbal.side = 150.0
+		gimbal.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		live_views.add_child(gimbal)
+		_axis_gimbals.append(gimbal)
+	_response_curve = ResponseCurve.new()
+	_response_curve.name = "AxisResponseCurve"
+	_response_curve.custom_minimum_size = Vector2(300.0, 270.0)
+	_response_curve.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_response_curve.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# UI-15-UX-05: shown large in the picture panel when that panel is visible (see _place_response_curve).
+	live_views.add_child(_response_curve)
 	_preview_grid = GridContainer.new()
 	_preview_grid.name = "AxisLivePreview"
 	_preview_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1058,7 +1250,6 @@ func _build() -> void:
 	preview_column.add_child(_preview_grid)
 	for channel in CHANNELS:
 		var live_row := VBoxContainer.new()
-		live_row.custom_minimum_size.y = 40.0
 		live_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		live_row.add_theme_constant_override("separation", 3)
 		_preview_grid.add_child(live_row)
@@ -1070,6 +1261,8 @@ func _build() -> void:
 		var meter_row := HBoxContainer.new()
 		live_row.add_child(meter_row)
 		var meter := ProgressBar.new()
+		# Superseded by the gimbals; kept (hidden) because tests read its conditioned value.
+		meter.visible = false
 		meter.custom_minimum_size = Vector2(120.0, 10.0)
 		meter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		meter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -1082,7 +1275,7 @@ func _build() -> void:
 		_preview_bars[channel] = meter
 		meter_row.add_child(meter)
 		meter_row.add_child(axis_name)
-	preview_label = _label("Select a flight controller to preview mapped channels.", "SecondaryLabel", true)
+	preview_label =_label("Select a flight controller to preview mapped channels.", "SecondaryLabel", true)
 	page.add_child(preview_label)
 
 	page = _make_section("buttons", "Buttons")
@@ -1104,6 +1297,21 @@ func _build() -> void:
 	show_all_vehicle_actions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	show_all_vehicle_actions.toggled.connect(_on_show_all_vehicle_actions)
 	page.add_child(show_all_vehicle_actions)
+	# UI-15-UX-06: search by input and reset to defaults (draft only, confirmed first).
+	var tools := HFlowContainer.new()
+	tools.name = "ActionTools"
+	tools.add_theme_constant_override("h_separation", 8)
+	tools.add_theme_constant_override("v_separation", 8)
+	find_actions_button = _button("Find control", "", "FindControlActions")
+	find_actions_button.pressed.connect(func() -> void: _start_find(find_actions_button))
+	tools.add_child(find_actions_button)
+	reset_category_button = _button("Reset category", "", "ResetActionsCategory")
+	reset_category_button.pressed.connect(func() -> void: _ask_reset_actions(action_filter.selected, reset_category_button))
+	tools.add_child(reset_category_button)
+	reset_all_button = _button("Reset all actions", "", "ResetActionsAll")
+	reset_all_button.pressed.connect(func() -> void: _ask_reset_actions(0, reset_all_button))
+	tools.add_child(reset_all_button)
+	page.add_child(tools)
 	page.add_child(_label("Bindings are saved by physical control. A different device cannot trigger them.", "SecondaryLabel", true))
 	page.add_child(_label("Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Flap actions depend on the selected aircraft. Existing assignments take priority; remap other joysticks to choose their buttons.", "SecondaryLabel", true))
 	action_grid = GridContainer.new()
@@ -1126,6 +1334,13 @@ func _build() -> void:
 		binding_cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		binding_cell.add_theme_constant_override("separation", 8)
 		_action_binding_cells.append(binding_cell)
+		# UI-15-UX-04: the binding is a chip (glyph or physical label, conflict badge, live-press glow). The former
+		# glyph and text nodes stay hidden with their names and contents for existing callers and tests.
+		var chip := BindingChip.new()
+		chip.name = "BindingChip_%s" % action_id
+		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		binding_cell.add_child(chip)
+		_binding_chips[action_id] = chip
 		var binding_glyph := TextureRect.new()
 		binding_glyph.name = "BindingGlyph_%s" % action_id
 		binding_glyph.custom_minimum_size = Vector2(28.0, 28.0)
@@ -1135,10 +1350,16 @@ func _build() -> void:
 		binding_cell.add_child(binding_glyph)
 		var binding_label := _label("Unbound", "SecondaryLabel")
 		binding_label.name = "Binding_%s" % action_id
+		binding_label.visible = false
 		binding_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		binding_label.custom_minimum_size.x = 0.0
 		binding_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		binding_cell.add_child(binding_label)
+		var binding_spacer := Control.new()
+		binding_spacer.name = "BindingSpacer_%s" % action_id
+		binding_spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		binding_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		binding_cell.add_child(binding_spacer)
 		var clear_button := _button("Clear")
 		clear_button.name = "Clear_%s" % action_id
 		clear_button.pressed.connect(_clear_action_binding.bind(action_id))
@@ -1192,6 +1413,16 @@ func _build() -> void:
 	save_button.pressed.connect(_save_profile)
 	footer.add_child(save_button)
 	shell.add_child(footer)
+	capture_overlay = CaptureOverlay.new()
+	capture_overlay.set_process(false)
+	capture_overlay.cancel_pressed.connect(_cancel_capture)
+	capture_overlay.timed_out.connect(_on_capture_timeout)
+	capture_overlay.choice_made.connect(_resolve_conflict)
+	_settings_panel.add_child(capture_overlay)
+	_build_keyboard_views()
+	_tag_workspace_rows()
+	_apply_advanced_visibility()
+	draft_changed.connect(_queue_workspace_refresh)
 	_update_accessible_names()
 	select_section("devices")
 	_screen.resized.connect(_resize_panel)
@@ -1203,33 +1434,76 @@ func _resize_panel() -> void:
 	if not is_instance_valid(_settings_panel) or not is_instance_valid(_screen):
 		return
 	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
-	_settings_panel.custom_minimum_size = Vector2(minf(1160.0, maxf(0.0, _screen.size.x - 40.0)), minf(780.0, maxf(0.0, _screen.size.y - 40.0)))
 	var scale := maxf(0.5, ScreenTheme.text_scale)
-	var effective_width := _screen.size.x / scale
-	var compact_height := _screen.size.y / scale < 760.0
+	var screen_size := _screen.size
+	var effective_screen := screen_size / scale
+	var compact_height := effective_screen.y < 760.0
+	# UI-15-UX-03: a full-screen workspace with the 48 px safe inset from 1080p up (20 px on smaller canvases, as
+	# before); past WORKSPACE_SPAN the rail and picture grow instead of the text column.
+	var inset := WORKSPACE_INSET if screen_size.x >= 1600.0 and screen_size.y >= 900.0 else 20.0
+	var panel_size := Vector2(minf(WORKSPACE_SPAN * maxf(1.0, scale), maxf(0.0, screen_size.x - inset * 2.0)),
+		maxf(0.0, screen_size.y - inset * 2.0))
+	_settings_panel.custom_minimum_size = panel_size
 	_shell.add_theme_constant_override("separation", 6 if compact_height else 12)
-	_settings_panel_style.content_margin_left = 16.0 if _screen.size.x < 1100.0 else 24.0
+	_page_column.add_theme_constant_override("separation", 6 if compact_height else 12)
+	_settings_panel_style.content_margin_left = 16.0 if screen_size.x < 1100.0 else 24.0
 	_settings_panel_style.content_margin_right = _settings_panel_style.content_margin_left
 	_settings_panel_style.content_margin_top = 12.0 if compact_height else 20.0
 	_settings_panel_style.content_margin_bottom = _settings_panel_style.content_margin_top
 	status_label.max_lines_visible = (1 if scale >= 1.5 else 2) if compact_height else 3
 	_settings_title.tooltip_text = _settings_title.text
+	# Three regions [rail | picture | pages] when the pages keep their wide layouts (PAGE_MIN_EFFECTIVE) and full
+	# height; otherwise the rail goes first (the Devices tab has the same picker), then the picture.
+	var rail_width := clampf(RAIL_WIDTH * scale, RAIL_WIDTH, 560.0)
+	var inner_width := panel_size.x - _settings_panel_style.content_margin_left * 2.0
+	var page_min := PAGE_MIN_EFFECTIVE * scale - 88.0
+	var picture_need := PICTURE_MIN_WIDTH * scale + 12.0
+	var rail_allowed := effective_screen.x >= 1500.0 and not compact_height
+	var picture_allowed := effective_screen.y >= 880.0 and effective_screen.x >= 1100.0
+	var show_rail := false
+	var show_picture := false
+	if rail_allowed and picture_allowed and inner_width - rail_width - 16.0 >= page_min + picture_need:
+		show_rail = true
+		show_picture = true
+	elif picture_allowed and inner_width >= page_min + picture_need:
+		show_picture = true
+	elif rail_allowed and inner_width - rail_width - 16.0 >= page_min:
+		show_rail = true
+	var centre_width := inner_width - (rail_width + 16.0 if show_rail else 0.0)
+	var page_width := clampf(centre_width * 0.62, page_min, PAGE_MAX_WIDTH * scale) if show_picture else centre_width
+	page_width = minf(page_width, centre_width - (picture_need if show_picture else 0.0))
+	if show_picture and _keyboard_mode:
+		# The Keyboard's pages are short read-only tables; its wide key map gets the room instead.
+		page_width = clampf(centre_width * 0.5, minf(page_width, KEYBOARD_PAGE_MIN_WIDTH * scale), page_width)
+	var hiding_focus := is_instance_valid(focused) and not show_rail and workspace.rail.is_ancestor_of(focused)
+	workspace.rail.visible = show_rail
+	workspace.rail.custom_minimum_size.x = rail_width
+	workspace.picture_panel.visible = show_picture
+	_page_column.custom_minimum_size.x = page_width if show_picture else 0.0
+	_page_column.size_flags_horizontal = Control.SIZE_FILL if show_picture else Control.SIZE_EXPAND_FILL
 	var navigation_in_scroll := compact_height
 	if navigation_in_scroll and _section_navigation.get_parent() != _section_body:
 		if _section_navigation.get_parent() != null:
 			_section_navigation.get_parent().remove_child(_section_navigation)
 		_section_body.add_child(_section_navigation)
 		_section_body.move_child(_section_navigation, 0)
-	elif not navigation_in_scroll and _section_navigation.get_parent() != _shell:
+	elif not navigation_in_scroll and _section_navigation.get_parent() != _page_column:
 		if _section_navigation.get_parent() != null:
 			_section_navigation.get_parent().remove_child(_section_navigation)
-		_shell.add_child(_section_navigation)
-		_shell.move_child(_section_navigation, 2)
+		_page_column.add_child(_section_navigation)
+		_page_column.move_child(_section_navigation, 0)
+	if hiding_focus and is_inside_tree():
+		select_section("devices")
+		flight_device_picker.grab_focus()
+		focused = flight_device_picker
+	# Page layouts keep their earlier thresholds, now measured on the page column: the former modal's page was
+	# the canvas width minus 88 px.
+	var effective_width := (page_width + 88.0) / scale
 	var compact_fields := effective_width < 1280.0
 	_device_roles.columns = 1 if compact_fields else 2
 	_profile_fields.columns = 1 if compact_fields else 2
 	aux_grid.add_theme_constant_override("separation", 2 if effective_width >= 1100.0 else 8)
-	(_section_pages["aux"] as VBoxContainer).add_theme_constant_override("separation", 4 if effective_width >= 1100.0 else 10)
+	(_page_editables.get("aux", _section_pages["aux"]) as VBoxContainer).add_theme_constant_override("separation", 4 if effective_width >= 1100.0 else 10)
 	if effective_width >= 1100.0:
 		aux_help_label.max_lines_visible = 1
 		aux_help_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -1256,9 +1530,9 @@ func _resize_panel() -> void:
 	for row in _aux_channel_rows:
 		row.vertical = effective_width < 820.0
 		(row.get_parent() as VBoxContainer).add_theme_constant_override("separation", 1 if effective_width >= 1100.0 else 3)
-	# The panel tops out at 1160 px even on a wide display. One preview column
-	# leaves room for a readable channel label beside the axis table.
+	# One preview column leaves room for a readable channel label beside the axis table.
 	_preview_grid.columns = 1
+	_place_response_curve()
 	# Reparenting navigation or axis fields removes native focus. Keep the same
 	# control through reflow; follow its final bounds after containers have settled.
 	if is_instance_valid(focused) and _screen.is_ancestor_of(focused) and focused.is_visible_in_tree() \
@@ -1273,7 +1547,7 @@ func _set_axis_grid_layout(use_table: bool) -> void:
 	_axis_layout_is_table = use_table
 	axis_grid.visible = use_table
 	_axis_compact_grid.visible = not use_table
-	var control_keys: Array[String] = ["axis", "deadzone", "expo", "invert"]
+	var control_keys: Array[String] = ["source", "deadzone", "expo", "invert"]
 	for channel_index in CHANNELS.size():
 		var channel: String = CHANNELS[channel_index]
 		var controls: Dictionary = _axis_controls[channel]
@@ -1420,12 +1694,15 @@ func select_section(section_id: String, focus_content := false) -> void:
 	if not _section_pages.has(section_id):
 		return
 	var section_changed := section_id != _selected_section
-	if section_changed and _is_capture_active():
+	if section_changed and _is_assignment_busy():
 		_cancel_capture()
 	_selected_section = section_id
 	for key in _section_pages:
 		_section_pages[key].visible = key == section_id
 		_section_buttons[key].set_pressed_no_signal(key == section_id)
+	_place_response_curve()
+	if section_changed:
+		_queue_workspace_refresh()
 	if section_changed:
 		_refresh_visible_preview()
 	var scroll := _section_body.get_parent() as ScrollContainer
@@ -1437,14 +1714,22 @@ func select_section(section_id: String, focus_content := false) -> void:
 		match section_id:
 			"devices": target = flight_device_picker
 			"profile": target = profile_picker
-			"axes": target = _axis_controls.roll.axis.get_line_edit()
+			"axes": target = _axis_detect_buttons.roll if not axis_advanced_toggle.button_pressed else _axis_controls.roll.axis.get_line_edit()
 			"aux": target = _aux_controls.smoke.type
 			"buttons": target = action_filter
+		if section_id == "aux" and not target.is_visible_in_tree():
+			for aux_name: String in AUX_CHANNELS:
+				if (_aux_controls[aux_name].type as Control).is_visible_in_tree():
+					target = _aux_controls[aux_name].type
+					break
+		# The Keyboard's read-only pages have nothing to edit; their tab keeps focus.
+		if not target.is_visible_in_tree():
+			target = _section_buttons[section_id]
 	target.grab_focus()
 
 
 func _on_action_filter_selected(_index: int) -> void:
-	if not _capturing_action.is_empty():
+	if _is_assignment_busy():
 		_cancel_capture()
 	_update_action_controls()
 	(_section_body.get_parent() as ScrollContainer).scroll_vertical = 0
@@ -1476,6 +1761,8 @@ func _update_device_summary() -> void:
 	_device_details_label.tooltip_text = metadata
 	_device_summary.tooltip_text = _device_summary.text if metadata.is_empty() else "%s\n%s" % [_device_summary.text, metadata]
 	_empty_device_label.visible = not _devices.any(func(device: Dictionary) -> bool: return bool(device.get("connected", true)))
+	_set_keyboard_mode(_draft_flight_device_id < 0)
+	_queue_workspace_refresh()
 	_queue_dirty_marker()
 
 
@@ -1506,6 +1793,7 @@ func _device_metadata_tooltip(device: Dictionary) -> String:
 
 func _ready() -> void:
 	get_tree().root.window_input.connect(_observe_popup_diagnostics)
+	get_viewport().gui_focus_changed.connect(_on_workspace_focus_changed)
 	if registry == null:
 		_set_status(tr("Controller services are not available."), true)
 		return
@@ -1525,6 +1813,10 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and _axis_capture_dialog != null:
 		_cancel_capture()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT and _axis_detector != null:
+		var lost := tr("The window lost focus; detection was cancelled.")
+		_set_status(lost, false)
+		_capture_done(false, lost)
 	elif what == NOTIFICATION_WM_WINDOW_FOCUS_OUT and _axis_capture_dialog != null:
 		_check_axis_capture_focus.call_deferred()
 	if what != NOTIFICATION_TRANSLATION_CHANGED or not is_node_ready():
@@ -1541,6 +1833,10 @@ func _notification(what: int) -> void:
 	_update_accessible_names()
 	_refresh_validation_feedback()
 	_queue_dirty_marker()
+	_keyboard_tables_vehicle = ""
+	_set_keyboard_mode(_keyboard_mode)
+	_configure_live_axis_views()
+	_queue_workspace_refresh()
 
 
 ## The OFF confirmation transfers focus to our own native popup. Resolve that
@@ -1567,6 +1863,10 @@ func close_button_focus() -> void:
 func _process(delta: float) -> void:
 	if _axis_capture != null:
 		_sample_axis_capture(delta)
+	if _axis_detector != null:
+		_sample_axis_detect(delta)
+	if capture_overlay != null and capture_overlay.is_capturing():
+		capture_overlay.advance(delta)
 	# Containers finish sorting at the end of the previous frame. Coalesce their
 	# layout notifications; ordinary wheel scrolling must not force focus back.
 	if _mapping_focus_layout_pending:
@@ -1603,6 +1903,14 @@ func _input(event: InputEvent) -> void:
 	if _consume_capture_release(event):
 		get_viewport().set_input_as_handled()
 		return
+	if not _conflict.is_empty():
+		# The question's buttons take gamepad/keyboard navigation; Escape answers Cancel (Back does via the Screen).
+		if event is InputEventKey and (event as InputEventKey).pressed and not (event as InputEventKey).echo \
+				and ((event as InputEventKey).physical_keycode == KEY_ESCAPE or (event as InputEventKey).keycode == KEY_ESCAPE):
+			get_viewport().set_input_as_handled()
+			_track_capture_release(event)
+			_resolve_conflict("cancel")
+		return
 	if not _is_capture_active():
 		return
 	if _axis_capture_dialog != null:
@@ -1612,6 +1920,9 @@ func _input(event: InputEvent) -> void:
 			if event.pressed and (event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE): _cancel_capture()
 		elif (event is InputEventJoypadMotion or event is InputEventJoypadButton) and event.device == _capturing_device_id:
 			get_viewport().set_input_as_handled()
+		return
+	if _axis_detector != null:
+		_input_axis_detect(event)
 		return
 	if not _capturing_aux_name.is_empty():
 		if event is InputEventKey:
@@ -1640,7 +1951,7 @@ func _input(event: InputEvent) -> void:
 		if key_event.physical_keycode == KEY_ESCAPE or key_event.keycode == KEY_ESCAPE:
 			_cancel_capture()
 			return
-		_capture_binding(key_event)
+		_on_capture_event(key_event)
 		return
 	if event is InputEventJoypadButton:
 		var button_event := event as InputEventJoypadButton
@@ -1650,7 +1961,7 @@ func _input(event: InputEvent) -> void:
 		if not button_event.pressed:
 			return
 		_track_capture_release(button_event)
-		_capture_binding(button_event)
+		_on_capture_event(button_event)
 		return
 	if event is InputEventJoypadMotion:
 		var motion := event as InputEventJoypadMotion
@@ -1660,7 +1971,7 @@ func _input(event: InputEvent) -> void:
 		if not is_finite(motion.axis_value) or absf(motion.axis_value) < 0.65:
 			return
 		_track_capture_release(motion)
-		_capture_binding(motion)
+		_on_capture_event(motion)
 
 
 func _event_release_token(event: InputEvent) -> String:
@@ -1708,8 +2019,8 @@ func _on_registry_devices_changed() -> void:
 		var captured_device := _device_for_id(_capturing_device_id)
 		if captured_device.is_empty() or not bool(captured_device.get("connected", true)) \
 			or (_capturing_generation > 0 and not _calibration_connection_matches(_capturing_device_id, _capturing_generation)):
-			_capture_done()
 			_set_status(tr("The selected flight controller disconnected; remapping was cancelled."), true)
+			_capture_done(false, tr("The selected flight controller disconnected; remapping was cancelled."))
 	_update_action_controls()
 	_update_preview()
 
@@ -1785,9 +2096,9 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 
 func _on_flight_device_selected(index: int) -> void:
 	var selected_id := flight_device_picker.get_item_id(index)
-	var capture_cancelled := selected_id != _draft_flight_device_id and _is_capture_active()
+	var capture_cancelled := selected_id != _draft_flight_device_id and _is_assignment_busy()
 	if capture_cancelled:
-		_capture_done()
+		_capture_done(false, tr("The flight controller changed; remapping was cancelled."))
 	_draft_flight_device_id = selected_id
 	_update_device_summary()
 	_load_profile_for_device(_draft_flight_device_id)
@@ -1952,13 +2263,13 @@ func _update_profile_options() -> void:
 func _on_profile_selected(index: int) -> void:
 	var profile_index := profile_picker.get_item_id(index)
 	if profile_index == -1:
-		if _is_capture_active():
+		if _is_assignment_busy():
 			_cancel_capture()
 		# New and the initial device draft share one unsaved context. Returning
 		# here restores pending edits without borrowing a saved profile's UUID.
 		_switch_draft_profile(_default_profile_for_device(_draft_flight_device_id), "device:%d" % _draft_flight_device_id)
 	elif profile_index >= 0 and profile_index < _profiles.size():
-		if _is_capture_active():
+		if _is_assignment_busy():
 			_cancel_capture()
 		var profile: Dictionary = _profiles[profile_index]
 		_switch_draft_profile(profile, _profile_context_key(profile))
@@ -2221,6 +2532,10 @@ func _update_axis_controls() -> void:
 		invert.set_pressed_no_signal(bool(channel.get("invert", false)))
 		axis_spin.editable = true
 		invert.disabled = false
+		var detect: Button = _axis_detect_buttons[channel_name]
+		detect.text = tr("Listening…") if _detect_channel == channel_name else tr("Detect")
+		detect.disabled = not _flight_device_connected()
+		detect.tooltip_text = tr(str(DETECT_PROMPTS[channel_name]))
 
 
 func _update_aux_controls() -> void:
@@ -2255,6 +2570,9 @@ func _update_aux_controls() -> void:
 		axis_editor.visible = mode_id == 1
 		button_editor.visible = mode_id == 2
 		switch_editor.visible = mode_id == 3
+		var aux_detect: Button = controls.detect
+		aux_detect.text = tr("Listening…") if _capturing_aux_axis == aux_name else tr("Move the control")
+		aux_detect.disabled = not _flight_device_connected()
 		var axis_spin: SpinBox = controls.axis
 		axis_spin.set_value_no_signal(float(binding.get("axis", _default_aux_axis(aux_name))))
 		var off_spin: SpinBox = controls.off
@@ -2691,6 +3009,7 @@ func _on_joystick_enabled(enabled: bool) -> void:
 
 
 func _update_preview() -> void:
+	_configure_live_axis_views()
 	_update_axis_preview()
 	_update_aux_preview()
 
@@ -2701,11 +3020,14 @@ func _update_axis_preview() -> void:
 	var device := _device_for_id(_draft_flight_device_id)
 	var connected := _draft_flight_device_id >= 0 and not device.is_empty() and bool(device.get("connected", true))
 	var kind := str(_draft_profile.get("kind", "gamepad"))
-	for channel_name in CHANNELS:
+	for channel_index in CHANNELS.size():
+		var channel_name: String = CHANNELS[channel_index]
 		var channel: Dictionary = _draft_profile.get(channel_name, {})
 		var axis := int(channel.get("axis", 0))
 		var raw := _read_axis_preview(_draft_flight_device_id, axis) if connected else 0.0
 		var conditioned := ControllerProfile.channel_value(raw, channel_name, _draft_profile) if connected else 0.0
+		_axis_raw[channel_index] = raw
+		_axis_out[channel_index] = conditioned
 		var current: Label = _preview_labels[channel_name]
 		if connected and channel_name == "throttle" and str(_draft_profile.get("throttle_mode", "")) == "radio_absolute":
 			current.text = tr("%s: %.0f%% · raw %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), conditioned * 100.0, raw]
@@ -2724,6 +3046,67 @@ func _update_axis_preview() -> void:
 	else:
 		axis_label = tr("Select a connected flight controller to preview mapped channels.")
 	preview_label.text = axis_label
+	_update_live_axis_views(connected)
+
+
+## UI-15-UX-04/08: gimbal captions, throttle end and deadzone ring follow the draft and its stick mode; the curve
+## plots the focused channel through ControllerProfile.channel_value. Called on draft changes, never per sample.
+func _configure_live_axis_views() -> void:
+	if _axis_gimbals.is_empty() or _draft_profile.is_empty():
+		return
+	_live_stick_mode = _stick_mode_for_profile()
+	var functions: Array = CalibrationView.gimbal_functions(_live_stick_mode)
+	var gamepad := str(_draft_profile.get("kind", "")) == "gamepad"
+	var absolute_throttle := _throttle_is_absolute()
+	for side in 2:
+		var gimbal := _axis_gimbals[side]
+		var x_function: String = functions[side][0]
+		var y_function: String = functions[side][1]
+		# Vertical function first, as the device picture names its gimbals ("Throttle · Yaw").
+		gimbal.caption = "%s · %s" % [tr(str(CHANNEL_LABELS[y_function])), tr(str(CHANNEL_LABELS[x_function]))]
+		var one_ended := y_function == "throttle" and absolute_throttle
+		gimbal.one_ended_y = one_ended
+		gimbal.end_labels = PackedStringArray([tr("FULL"), tr("LOW")]) if one_ended else PackedStringArray()
+		var deadzone := 0.0
+		if gamepad:
+			for function: String in [x_function, y_function]:
+				if function == "throttle" and absolute_throttle:
+					continue
+				var channel: Variant = _draft_profile.get(function, {})
+				if channel is Dictionary:
+					deadzone = maxf(deadzone, float(channel.get("deadzone", 0.0)))
+		gimbal.set_deadzone(deadzone)
+	_response_curve.set_channel(_draft_profile, _curve_channel)
+
+
+func _throttle_is_absolute() -> bool:
+	var throttle: Variant = _draft_profile.get("throttle", {})
+	return throttle is Dictionary and str(throttle.get("range_kind", "centered")) == "absolute"
+
+
+## Profile preset Mode 1 / Mode 2 when it names one, else the pilot's HUD stick mode (presentation only).
+func _stick_mode_for_profile() -> int:
+	match str(_draft_profile.get("preset", "")):
+		"mode1": return 1
+		"mode2", "jeti_mode2": return 2
+	return CalibrationView.presentation_stick_mode(self)
+
+
+## Live samples only: the values the four rows above already read (no extra provider calls).
+func _update_live_axis_views(connected: bool) -> void:
+	if _axis_gimbals.is_empty() or not _section_pages.axes.is_visible_in_tree():
+		return
+	var functions: Array = CalibrationView.gimbal_functions(_live_stick_mode)
+	var absolute_throttle := _axis_gimbals[0].one_ended_y or _axis_gimbals[1].one_ended_y
+	for side in 2:
+		var x := _axis_out[CHANNELS.find(functions[side][0])]
+		var y_function: String = functions[side][1]
+		var y := _axis_out[CHANNELS.find(y_function)]
+		if y_function == "throttle":
+			# Output +1 is throttle up: the stick forward (up in the picture).
+			y = GimbalView.throttle_to_y(y) if absolute_throttle else -y
+		_axis_gimbals[side].set_stick(Vector2(x, y), connected)
+	_response_curve.set_raw_value(_axis_raw[CHANNELS.find(_curve_channel)], connected)
 
 
 func _update_action_controls() -> void:
@@ -2736,6 +3119,9 @@ func _update_action_controls() -> void:
 	var last_change_button: Button
 	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	var focus_in_rows := focused != null and action_grid.is_ancestor_of(focused)
+	var conflicts := _action_conflicts()
+	var chip_profile: Dictionary = _draft_profile if str(_draft_profile.get("kind", "")) in ["radio", "joystick"] else {}
+	var chips_by_control: Dictionary = {}
 	for definition in ControllerActions.ACTIONS:
 		var action_id := str(definition.id)
 		var label_control: Label = action_grid.get_child(child_index)
@@ -2763,7 +3149,12 @@ func _update_action_controls() -> void:
 		if radio_navigation: binding_control.text = tr("Calibrated roll / pitch")
 		var texture_path := str(prompt.get("texture_path", ""))
 		glyph_control.texture = _get_prompt_texture(texture_path)
-		glyph_control.visible = glyph_control.texture != null
+		glyph_control.visible = false
+		var chip: BindingChip = _binding_chips[action_id]
+		chip.action_name = label_control.text
+		chip.set_binding(binding, family, device, chip_profile)
+		chip.set_label(binding_control.text if radio_navigation else "")
+		chip.conflict = conflicts.has(action_id)
 		if _capturing_action == action_id:
 			capture_button.text = tr("Listening…")
 		else:
@@ -2782,7 +3173,17 @@ func _update_action_controls() -> void:
 		capture_button.focus_neighbor_bottom = NodePath()
 		if row_visible:
 			last_change_button = capture_button
+			if not radio_navigation:
+				for control_id: String in _binding_control_ids(binding):
+					(chips_by_control.get_or_add(control_id, []) as Array).append(chip)
 		child_index += 3
+	if reset_category_button != null:
+		var category := action_filter.selected
+		reset_category_button.visible = category > 0
+		if category > 0:
+			reset_category_button.text = tr("Reset %s") % tr(action_filter.get_item_text(category))
+	if workspace != null:
+		workspace.set_chips(chips_by_control)
 	# The shorter Save caption must remain the next D-pad target below the list,
 	# regardless of the Cancel button's relative width in the current language.
 	if is_inside_tree() and last_change_button != null:
@@ -2817,7 +3218,7 @@ func _reveal_action_row(action_id: String) -> void:
 
 
 func _on_show_all_vehicle_actions(_pressed: bool) -> void:
-	if not _capturing_action.is_empty():
+	if _is_assignment_busy():
 		_cancel_capture()
 	_update_action_controls()
 	_refresh_validation_feedback()
@@ -2852,6 +3253,7 @@ func _on_glyph_family_selected(index: int) -> void:
 	presentation["glyph_family"] = family
 	_draft_profile["presentation"] = presentation
 	_update_action_controls()
+	_queue_workspace_refresh()
 	_set_status(tr("Controller prompt family changed. Save the profile to keep it."), false)
 	_refresh_validation_feedback()
 
@@ -2867,7 +3269,7 @@ func _get_prompt_texture(texture_path: String) -> Texture2D:
 
 func _start_capture(action_id: String, button: Button) -> void:
 	if _draft_profile.get("kind", "") == "radio" and action_id.begins_with("navigate_"): return
-	if _is_capture_active(): _capture_done()
+	if _is_assignment_busy(): _capture_done()
 	# Selecting even the current section resets its scroll and focuses its tab.
 	# A row edit is not navigation: keep its viewport and keyboard/gamepad focus.
 	if _selected_section != "buttons":
@@ -2882,15 +3284,18 @@ func _start_capture(action_id: String, button: Button) -> void:
 	_capturing_generation = int(registry.connection_generation(_capturing_device_id)) \
 		if registry != null and registry.has_method("connection_generation") else 0
 	_capture_button = button
+	_capture_target = action_id
 	_capture_button.grab_focus()
 	_set_status(tr("Press a keyboard key or an input on the selected flight controller. Escape cancels remapping."), false)
+	var caption := _target_caption("action:" + action_id)
+	_show_capture_overlay(tr("Remap %s") % caption, tr("Move or press the control for %s…") % caption)
 	_update_action_controls()
 
 
 func _start_aux_capture(aux_name: String, row_index: int, button: Button) -> void:
 	if button.disabled or not _aux_controls.has(aux_name):
 		return
-	if _is_capture_active(): _capture_done()
+	if _is_assignment_busy(): _capture_done()
 	if _selected_section != "aux":
 		select_section("aux")
 	if not _aux_row_shown(aux_name):
@@ -2901,13 +3306,18 @@ func _start_aux_capture(aux_name: String, row_index: int, button: Button) -> voi
 	_capturing_aux_position = row_index
 	_capturing_device_id = _draft_flight_device_id
 	_capture_button = button
+	_capture_target = "aux:" + aux_name
 	_capture_button.grab_focus()
 	_set_status(tr("Move the selected radio switch to this position. The next button press is captured; no other switch needs to be released."), false)
+	var position := "%s %s" % [_target_caption("aux:" + aux_name), tr(_switch_position_name(row_index))]
+	_show_capture_overlay(tr("Capture %s position") % position,
+		tr("Move the selected radio switch to this position. The next button press is captured; no other switch needs to be released."))
 	_update_aux_controls()
 
 
 func _is_capture_active() -> bool:
-	return not _capturing_action.is_empty() or not _capturing_aux_name.is_empty()
+	return not _capturing_action.is_empty() or not _capturing_aux_name.is_empty() or _axis_detector != null \
+		or not _capturing_aux_axis.is_empty() or _finding
 
 
 func _capture_binding(event: InputEvent) -> void:
@@ -2920,8 +3330,12 @@ func _capture_binding(event: InputEvent) -> void:
 
 
 func _accept_captured_binding(binding: Dictionary) -> void:
+	var action_id := _capturing_action
+	var target := _capture_target
+	var return_focus := _capture_button
+	var previous: Dictionary = _action_bindings.get(action_id, {}).duplicate(true)
 	var candidate := _base_actions.duplicate(true)
-	candidate[_capturing_action] = binding
+	candidate[action_id] = binding
 	var candidate_profile := _draft_profile.duplicate(true)
 	candidate_profile["actions"] = candidate
 	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
@@ -2930,12 +3344,22 @@ func _accept_captured_binding(binding: Dictionary) -> void:
 		_base_actions = candidate
 		_draft_profile["actions"] = _base_actions.duplicate(true)
 		_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile, action_capabilities))
-	_capture_done()
+	_end_capture_state()
 	if accepted:
 		_set_status(tr("Binding updated. Save the profile to keep it."), false)
 		_draft_validation_changed()
+		_emit_capture_finished(target, true, "")
 	else:
-		_show_rejected_validation(validation, "Binding was not changed: %s")
+		# UI-15-UX-06: one action or extra channel already uses this control: ask Swap / Replace / Cancel.
+		var owner := _single_conflict_owner(validation.get("issues", []), "action:" + action_id)
+		if not owner.is_empty():
+			_offer_conflict({"target": "action:" + action_id, "report": target, "owner": owner,
+				"candidate": candidate_profile, "binding": binding, "previous": previous, "rejected": validation,
+				"rejected_message": "Binding was not changed: %s", "focus": return_focus,
+				"success": tr("Binding updated. Save the profile to keep it.")})
+		else:
+			_show_rejected_validation(validation, "Binding was not changed: %s")
+			_emit_capture_finished(target, false, _rejection_text())
 	get_viewport().set_input_as_handled()
 
 
@@ -2945,15 +3369,17 @@ func _capture_aux_button(button_index: int) -> void:
 	var binding := _aux_binding_for_type(_capturing_aux_name, "switch")
 	var candidate := _switch_with_member_swap(binding, _capturing_aux_position, button_index)
 	if candidate.is_empty():
-		_capture_done()
 		_set_status(tr("That switch position is no longer available. Capture was cancelled."), true)
+		_capture_done(false, tr("That switch position is no longer available. Capture was cancelled."))
 		return
 	var captured_aux := _capturing_aux_name
 	var committed := _commit_aux_binding(captured_aux, candidate, false)
-	_capture_done()
 	if committed:
+		_capture_done(true)
 		_set_status(tr("Button %d captured for this switch position. Save the profile to keep it.") % button_index, false)
 		_draft_validation_changed()
+	else:
+		_capture_done(false, _rejection_text())
 	get_viewport().set_input_as_handled()
 
 
@@ -2977,11 +3403,21 @@ func _clear_action_binding(action_id: String) -> void:
 
 
 func _cancel_capture() -> void:
-	_capture_done()
 	_set_status(tr("Remapping cancelled."), false)
+	_capture_done(false, tr("Remapping cancelled."))
 
 
-func _capture_done() -> void:
+## Ends any capture (and a pending conflict question) and reports it once through capture_finished.
+func _capture_done(ok := false, message := "") -> void:
+	var target := _capture_target
+	var reason := "" if ok else (message if not message.is_empty() else tr("Remapping cancelled."))
+	_drop_conflict(reason)
+	_end_capture_state()
+	_emit_capture_finished(target, ok, reason)
+
+
+## The capture state machine's reset, without reporting: the overlay closes unless a conflict question follows.
+func _end_capture_state() -> void:
 	_axis_capture = null
 	if is_instance_valid(_axis_capture_dialog): _axis_capture_dialog.queue_free()
 	_axis_capture_dialog = null
@@ -2991,12 +3427,25 @@ func _capture_done() -> void:
 	_capturing_aux_position = -1
 	_capturing_device_id = -1
 	_capture_button = null
+	_capture_target = ""
+	_axis_detector = null
+	_detect_channel = ""
+	_detect_preview_axis = -1
+	_capturing_aux_axis = ""
+	_axis_capture_phase = ""
+	_finding = false
+	if capture_overlay != null and capture_overlay.is_capturing():
+		capture_overlay.hide_overlay()
+	if workspace != null:
+		workspace.set_capture_control("")
+	_update_axis_controls()
 	_update_action_controls()
 	_update_aux_controls()
 
 
 func _start_axis_capture(action_id: String, button: Button) -> void:
 	if _draft_flight_device_id < 0 or _is_capture_active(): return
+	_drop_conflict(tr("Remapping cancelled."))
 	var definition := ControllerActions.action_definition(action_id)
 	if definition.get("context", "menu") not in ["flight", "both"] \
 		and not (_draft_profile.get("kind", "") == "radio" and action_id in ["accept", "back"]): return
@@ -3004,16 +3453,53 @@ func _start_axis_capture(action_id: String, button: Button) -> void:
 	_capturing_device_id = _draft_flight_device_id
 	_capturing_generation = int(registry.connection_generation(_capturing_device_id))
 	_capture_button = button
+	_capture_target = action_id
+	var text := tr("Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF.")
+	_open_axis_off_dialog(tr("Learn axis switch"), text)
+	_show_capture_overlay(tr("Learn axis for %s") % _target_caption("action:" + action_id), text)
+	capture_overlay.pause_countdown(true)
+	_update_action_controls()
+
+
+## UI-15-UX-05: AUX "Move the control": the same OFF confirmation and OFF→ON→OFF measurement as Learn axis
+## (ActionAxisCapture), stored as the channel's axis endpoints.
+func _start_aux_axis_capture(aux_name: String, button: Button) -> void:
+	if not _aux_controls.has(aux_name) or _draft_profile.is_empty():
+		return
+	if _is_assignment_busy(): _capture_done()
+	if not _flight_device_connected() or registry == null or not registry.has_method("connection_generation"):
+		_set_status(tr("Connect the flight controller to measure this control."), true)
+		return
+	if _selected_section != "aux":
+		select_section("aux")
+	if not _aux_row_shown(aux_name):
+		show_all_vehicle_aux.set_pressed_no_signal(true)
+		_update_aux_controls()
+	_capturing_aux_axis = aux_name
+	_capturing_device_id = _draft_flight_device_id
+	_capturing_generation = int(registry.connection_generation(_capturing_device_id))
+	_capture_button = button
+	_capture_target = "aux:" + aux_name
+	if button.is_visible_in_tree():
+		button.grab_focus()
+	var caption := _target_caption("aux:" + aux_name)
+	var text := tr("Hold the control for %s at OFF, then confirm. Keep the flight sticks still. Next move it to ON and hold until asked to return to OFF.") % caption
+	_open_axis_off_dialog(tr("Move the control"), text)
+	_show_capture_overlay(tr("Move the control for %s") % caption, text)
+	capture_overlay.pause_countdown(true)
+	_update_aux_controls()
+
+
+func _open_axis_off_dialog(title: String, text: String) -> void:
 	_axis_capture_dialog = ConfirmationDialog.new()
 	_axis_capture_dialog.dialog_autowrap = true
-	_axis_capture_dialog.title = tr("Learn axis switch")
-	_axis_capture_dialog.dialog_text = tr("Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF.")
+	_axis_capture_dialog.title = title
+	_axis_capture_dialog.dialog_text = text
 	_axis_capture_dialog.get_ok_button().text = tr("Confirm OFF")
 	_axis_capture_dialog.confirmed.connect(_confirm_axis_off)
 	_axis_capture_dialog.canceled.connect(_cancel_capture)
 	add_child(_axis_capture_dialog)
 	_axis_capture_dialog.popup_centered(Vector2i(540, 180))
-	_update_action_controls()
 
 
 func _capture_axes() -> PackedFloat64Array:
@@ -3033,11 +3519,15 @@ func _confirm_axis_off() -> void:
 		return
 	_axis_capture = ActionAxisCapture.new()
 	if not _axis_capture.begin(_capture_axes(), SmokeAux.flight_axes(_draft_profile)):
-		_capture_done()
 		_set_status(tr("Invalid or interrupted switch capture. The binding is unchanged."), true)
+		_capture_done(false, tr("Invalid or interrupted switch capture. The binding is unchanged."))
 		return
 	_axis_capture_dialog.hide()
 	_set_status(tr("Hold the switch at ON. Keep all other switches still."), false)
+	_axis_capture_phase = "on"
+	if capture_overlay.is_capturing():
+		capture_overlay.set_prompt(tr("Hold the switch at ON. Keep all other switches still."))
+		capture_overlay.restart_countdown()
 
 
 func _sample_axis_capture(delta: float) -> void:
@@ -3046,8 +3536,10 @@ func _sample_axis_capture(delta: float) -> void:
 		return
 	var result: Dictionary = _axis_capture.sample(_capture_axes(), delta)
 	if result.has("error"):
-		_capture_done()
 		_set_status(tr(str(result.error)), true)
+		_capture_done(false, tr(str(result.error)))
+	elif result.has("binding") and not _capturing_aux_axis.is_empty():
+		_accept_aux_axis_binding(result.binding)
 	elif result.has("binding"):
 		var action_id := _capturing_action
 		_accept_captured_binding(result.binding)
@@ -3055,6 +3547,10 @@ func _sample_axis_capture(delta: float) -> void:
 			_set_status(tr("Axis switch learned. Save, then move away from OFF and back to OFF before use."), false)
 	elif _axis_capture.returning:
 		_set_status(tr("Return the switch to OFF and hold it there to finish learning."), false)
+		if _axis_capture_phase != "return":
+			_axis_capture_phase = "return"
+			capture_overlay.set_prompt(tr("Return the switch to OFF and hold it there to finish learning."))
+			capture_overlay.restart_countdown()
 
 
 func _update_menu_controls() -> void:
@@ -3198,7 +3694,7 @@ func _associate_candidate(candidate: Dictionary) -> Dictionary:
 
 func _save_profile(close_on_success := true) -> bool:
 	_reset_validation()
-	if _is_capture_active():
+	if _is_assignment_busy():
 		_set_status(tr("Finish or cancel remapping before saving."), true)
 		return false
 	if _draft_profile.is_empty() or profile_store == null:
@@ -3402,6 +3898,7 @@ func _reset_validation() -> void:
 func _draft_validation_changed() -> void:
 	_invalidate_menu_evidence()
 	_update_menu_controls()
+	_queue_workspace_refresh()
 	if not _rejected_issues.is_empty():
 		_rejected_issues.clear()
 		_rejected_message = ""
@@ -3625,6 +4122,7 @@ func _render_validation_fields(issues: Array, focus_error: bool, rejected := fal
 	for key: String in messages:
 		var entry: Dictionary = _validation_fields[key]
 		var control: Control = entry.control
+		_open_advanced_for(control)
 		_mark_field_error(control.get_line_edit() if control is SpinBox else control)
 		for label: Label in entry.labels:
 			if not label_messages.has(label):
@@ -3642,6 +4140,7 @@ func _focus_validation_field(key: String) -> bool:
 	var control: Control = entry.control
 	if entry.section == "buttons" and not control.is_visible_in_tree() and key.begins_with("actions."):
 		_reveal_action_row(key.trim_prefix("actions."))
+	_open_advanced_for(control)
 	if control is SpinBox:
 		control = control.get_line_edit()
 	if not control.is_visible_in_tree() or (control is BaseButton and control.disabled) or (control is LineEdit and not control.editable):
@@ -3688,6 +4187,353 @@ func _clear_field_errors() -> void:
 	for label: Label in _validation_label_captions:
 		if is_instance_valid(label):
 			label.text = tr(str(_validation_label_captions[label]))
+
+
+# --- UI-15-UX-03/04: workspace (device rail, device picture, live highlight, keyboard view) -----------------------
+
+func _queue_workspace_refresh() -> void:
+	if _workspace_refresh_queued:
+		return
+	_workspace_refresh_queued = true
+	_refresh_workspace.call_deferred()
+
+
+## Rail cards and the device picture follow the draft selection and profile (coalesced to once per frame).
+func _refresh_workspace() -> void:
+	_workspace_refresh_queued = false
+	if workspace == null or _draft_profile.is_empty():
+		return
+	workspace.set_cards(_device_rail_entries())
+	var device := _device_for_id(_draft_flight_device_id)
+	var keyboard := _draft_flight_device_id < 0
+	var kind := str(_draft_profile.get("kind", device.get("kind", "gamepad")))
+	var presentation: Variant = _draft_profile.get("presentation", {})
+	var requested_family := str(presentation.get("glyph_family", "auto")) if presentation is Dictionary else "auto"
+	var family := ControllerPrompts.resolve_family(requested_family, device)
+	var channels: Dictionary = {}
+	for channel_name: String in CHANNELS:
+		var channel: Variant = _draft_profile.get(channel_name, {})
+		if channel is Dictionary:
+			channels[channel_name] = channel
+	# UI-15-UX-05: a compact caption (the device name is on its rail card and in the header).
+	var title := tr("LIVE INPUT")
+	var hint := tr("Move a stick or press a button: it lights up here and on its action.")
+	if _selected_section == "axes":
+		hint = tr("The curve shows the focused channel's response. Move a stick to see it live.")
+	if keyboard:
+		hint = tr(KEYBOARD_READ_ONLY_NOTE) + " " + tr("Flight keys are marked; keys you hold light up.")
+	elif not bool(device.get("connected", false)):
+		hint = tr("Connect this controller to see its input live.")
+	workspace.show_device(_draft_flight_device_id, kind, family, _stick_mode_for_profile(), channels, _radio_lamps(),
+		title, hint, _keyboard_vehicle_type())
+	_refresh_row_highlight()
+
+
+func _device_display_name(device: Dictionary, device_id: int) -> String:
+	if device.is_empty():
+		return tr("Disconnected controller %d") % device_id
+	if _is_jeti_device(device):
+		return JetiRadio.display_name(device)
+	return str(device.get("name", device.get("raw_name", tr("Controller %d") % device_id)))
+
+
+## One card per connected controller (and the selected one even while disconnected), then the Keyboard.
+func _device_rail_entries() -> Array:
+	var entries: Array = []
+	var selected_listed := _draft_flight_device_id < 0
+	for device: Dictionary in _devices:
+		var id := int(device.get("id", -1))
+		var connected := bool(device.get("connected", true))
+		if id < 0 or (not connected and id != _draft_flight_device_id):
+			continue
+		selected_listed = selected_listed or id == _draft_flight_device_id
+		entries.append(_rail_entry(device, id))
+	if not selected_listed:
+		entries.append(_rail_entry({}, _draft_flight_device_id))
+	var keyboard_statuses: Array[String] = ["connected"]
+	if _draft_flight_device_id < 0:
+		keyboard_statuses.append("flight")
+	if _draft_ui_device_id < 0:
+		keyboard_statuses.append("menus")
+	entries.append({"id": -1, "name": tr("Keyboard"), "kind": "keyboard", "family": "generic",
+		"statuses": keyboard_statuses, "selected": _draft_flight_device_id < 0})
+	return entries
+
+
+func _rail_entry(device: Dictionary, id: int) -> Dictionary:
+	var selected := id == _draft_flight_device_id
+	var profile: Dictionary = _draft_profile if selected else {}
+	if not selected and profile_store != null and profile_store.has_method("match_profile"):
+		var matched: Variant = profile_store.call("match_profile", device, _devices)
+		profile = matched if matched is Dictionary else {}
+	var kind := str(profile.get("kind", device.get("kind", "joystick")))
+	var presentation: Variant = profile.get("presentation", {})
+	var requested_family := str(presentation.get("glyph_family", "auto")) if presentation is Dictionary else "auto"
+	var statuses: Array[String] = ["connected" if bool(device.get("connected", false)) else "disconnected"]
+	if kind == "radio":
+		# The draft's mapping needs this connection's calibration evidence; a saved radio profile carries its own.
+		var calibrated := radio_mapping_verified(_draft_profile) if selected else not profile.is_empty()
+		statuses.append("calibrated" if calibrated else "needs_setup")
+	elif kind == "joystick" and (profile.is_empty() or not bool(profile.get("configured", true))):
+		statuses.append("needs_setup")
+	if selected:
+		statuses.append("flight")
+	if id == _draft_ui_device_id:
+		statuses.append("menus")
+	return {"id": id, "name": _device_display_name(device, id), "kind": kind,
+		"family": ControllerPrompts.resolve_family(requested_family, device), "statuses": statuses, "selected": selected}
+
+
+## A card selects the draft flight controller through the flight device picker's own path.
+func _on_rail_card_activated(device_id: int) -> void:
+	if device_id != _draft_flight_device_id:
+		for index in flight_device_picker.item_count:
+			if flight_device_picker.get_item_id(index) == device_id and not flight_device_picker.is_item_disabled(index):
+				flight_device_picker.select(index)
+				_on_flight_device_selected(index)
+				break
+	_queue_workspace_refresh()
+
+
+## Radio switch row: AUX switch positions (named "Sa1", "Sa2" … from the group's physical label), AUX buttons and
+## pots, then button actions; the picture shows up to eight.
+func _radio_lamps() -> Array:
+	var lamps: Array = []
+	var seen: Dictionary = {}
+	var aux: Variant = _draft_profile.get("aux", {})
+	if aux is Dictionary:
+		for aux_name: String in AUX_CHANNELS:
+			var binding: Variant = aux.get(aux_name, {})
+			if not binding is Dictionary or binding.is_empty():
+				continue
+			match str(binding.get("type", "")):
+				"switch":
+					var label := str(binding.get("label", "")).strip_edges()
+					var buttons: Array = binding.get("buttons", [])
+					for index in buttons.size():
+						if not seen.has("button:%d" % int(buttons[index])):
+							seen["button:%d" % int(buttons[index])] = true
+							lamps.append({"button": int(buttons[index]), "label": "%s%d" % [label, index + 1] if not label.is_empty() else ""})
+				"button":
+					if not seen.has("button:%d" % int(binding.get("button", -1))):
+						seen["button:%d" % int(binding.get("button", -1))] = true
+						lamps.append({"button": int(binding.get("button", 0)), "label": ""})
+				"axis":
+					lamps.append({"axis": int(binding.get("axis", 0)), "label": ""})
+	for definition in ControllerActions.ACTIONS:
+		var binding: Dictionary = _action_bindings.get(str(definition.id), {})
+		if str(binding.get("type", "")) == "button" and not seen.has("button:%d" % int(binding.get("button", -1))):
+			seen["button:%d" % int(binding.get("button", -1))] = true
+			lamps.append({"button": int(binding.get("button", 0)), "label": ""})
+	return lamps.slice(0, 8)
+
+
+## Picture control ids a binding shows: "button:N", "axis:N", "key:K"; every member of a switch group.
+static func _binding_control_ids(binding: Dictionary) -> PackedStringArray:
+	var ids := PackedStringArray()
+	match str(binding.get("type", "")):
+		"button":
+			ids.append("button:%d" % int(binding.get("button", -1)))
+		"axis":
+			ids.append("axis:%d" % int(binding.get("axis", -1)))
+		"key":
+			var key := int(binding.get("physical_keycode", 0))
+			ids.append("key:%d" % (key if key != 0 else int(binding.get("keycode", 0))))
+		"switch":
+			for button: Variant in binding.get("buttons", []):
+				ids.append("button:%d" % int(button))
+	return ids
+
+
+## Actions the draft reports in a conflict (the chip's badge); the draft stays as it is.
+func _action_conflicts() -> Dictionary:
+	var result: Dictionary = {}
+	if _draft_profile.is_empty():
+		return result
+	var report: Dictionary = ControllerActions.validate_profile_bindings(_draft_profile, action_capabilities)
+	for issue: Variant in report.get("issues", []):
+		if not issue is Dictionary or not str(issue.get("code", "")) in ACTION_CONFLICT_CODES:
+			continue
+		for path: Variant in issue.get("paths", []):
+			if str(path).begins_with("actions."):
+				result[str(path).trim_prefix("actions.")] = true
+	return result
+
+
+## Rows name the control they edit ("action:flaps_down", "aux:smoke", "axis:roll"); focus or pointer over one
+## highlights its bound control on the picture.
+func _tag_workspace_rows() -> void:
+	for definition in ControllerActions.ACTIONS:
+		var action_id := str(definition.id)
+		for control: Control in [action_grid.find_child("Remap_%s" % action_id, false, false), _clear_action_buttons[action_id],
+				_axis_capture_buttons[action_id]]:
+			_tag_row(control, "action:" + action_id)
+	for aux_name: String in AUX_CHANNELS:
+		var controls: Dictionary = _aux_controls[aux_name]
+		for key: String in ["type", "axis", "off", "on", "invert", "button", "button_mode", "switch_count", "switch_label", "switch_invert"]:
+			_tag_row(controls[key], "aux:" + aux_name)
+		for control: Control in controls.switch_button_spins:
+			_tag_row(control, "aux:" + aux_name)
+		for control: Control in controls.switch_capture_buttons:
+			_tag_row(control, "aux:" + aux_name)
+	for channel: String in CHANNELS:
+		for control: Control in _axis_controls[channel].values():
+			_tag_row(control, "axis:" + channel)
+		_tag_row(_axis_detect_buttons[channel], "axis:" + channel)
+		(_axis_controls[channel].axis as Control).set_meta("advanced_page", "axes")
+	for aux_name: String in AUX_CHANNELS:
+		_tag_row(_aux_detect_buttons[aux_name], "aux:" + aux_name)
+		for key: String in ["axis", "off", "on"]:
+			(_aux_controls[aux_name][key] as Control).set_meta("advanced_page", "aux")
+
+
+func _tag_row(control: Control, row: String) -> void:
+	if control == null:
+		return
+	control.set_meta("controls_row", row)
+	control.mouse_entered.connect(_on_row_hovered.bind(row))
+	control.mouse_exited.connect(_on_row_hovered.bind(""))
+	if control is SpinBox:
+		_tag_row((control as SpinBox).get_line_edit(), row)
+
+
+func _on_workspace_focus_changed(control: Control) -> void:
+	if workspace == null or control == null or not _screen.is_ancestor_of(control):
+		return
+	var row := str(control.get_meta("controls_row", ""))
+	if row.begins_with("axis:") and row.trim_prefix("axis:") != _curve_channel:
+		_curve_channel = row.trim_prefix("axis:")
+		_response_curve.set_channel(_draft_profile, _curve_channel)
+		_response_curve.set_raw_value(_axis_raw[CHANNELS.find(_curve_channel)], _response_curve.is_live())
+	workspace.set_focus_control(_row_control_id(row))
+
+
+func _on_row_hovered(row: String) -> void:
+	if workspace != null:
+		workspace.set_hover_control(_row_control_id(row))
+
+
+func _refresh_row_highlight() -> void:
+	if not is_inside_tree():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	workspace.set_focus_control(_row_control_id(str(focused.get_meta("controls_row", ""))) if focused != null else "")
+
+
+## The picture control a row's current draft binding uses, or "".
+func _row_control_id(row: String) -> String:
+	var parts := row.split(":")
+	if parts.size() != 2 or _draft_profile.is_empty():
+		return ""
+	var ids := PackedStringArray()
+	match parts[0]:
+		"action":
+			ids = _binding_control_ids(_action_bindings.get(parts[1], {}))
+		"aux":
+			var aux: Variant = _draft_profile.get("aux", {})
+			if aux is Dictionary and aux.get(parts[1], {}) is Dictionary:
+				ids = _binding_control_ids(aux.get(parts[1], {}))
+		"axis":
+			var channel: Variant = _draft_profile.get(parts[1], {})
+			if channel is Dictionary:
+				ids.append("axis:%d" % int(channel.get("axis", -1)))
+	return ids[0] if not ids.is_empty() else ""
+
+
+## UI-15-UX-03: with the Keyboard selected, the profile pages show its fixed map read-only (keyboard remapping is
+## D6-UX-02). Each page's editors move into one wrapper so the switch never fights their own visibility rules.
+func _build_keyboard_views() -> void:
+	for section: String in PROFILE_SECTIONS:
+		var page: VBoxContainer = _section_pages[section]
+		var editable := VBoxContainer.new()
+		editable.name = "EditablePage_%s" % section
+		editable.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		editable.add_theme_constant_override("separation", page.get_theme_constant("separation"))
+		for child in page.get_children():
+			page.remove_child(child)
+			editable.add_child(child)
+		page.add_child(editable)
+		_page_editables[section] = editable
+		var block := VBoxContainer.new()
+		block.name = "KeyboardReadOnly_%s" % section
+		block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		block.add_theme_constant_override("separation", 10)
+		block.visible = false
+		var note := _label(KEYBOARD_READ_ONLY_NOTE, "CardTitle", true)
+		note.name = "KeyboardReadOnlyNote_%s" % section
+		block.add_child(note)
+		block.add_child(_label("The keyboard uses the fixed layout shown in the picture. To edit a controller profile, select a gamepad or radio in the device list.", "SecondaryLabel", true))
+		var keys := VBoxContainer.new()
+		keys.name = "KeyboardKeys_%s" % section
+		keys.add_theme_constant_override("separation", 8)
+		block.add_child(keys)
+		page.add_child(block)
+		page.move_child(block, 0)
+		_keyboard_blocks[section] = block
+
+
+func _keyboard_vehicle_type() -> String:
+	return ControlsReference.ROTORCRAFT if bool(action_capabilities.get("helicopter", false)) else ControlsReference.AIRPLANE
+
+
+## The Flight axes page lists the flight keys and Buttons the shortcuts, from the shared reference table.
+func _ensure_keyboard_tables() -> void:
+	var vehicle := _keyboard_vehicle_type()
+	if vehicle == _keyboard_tables_vehicle:
+		return
+	_keyboard_tables_vehicle = vehicle
+	for section: String in PROFILE_SECTIONS:
+		var keys := (_keyboard_blocks[section] as Node).get_node("KeyboardKeys_%s" % section) as VBoxContainer
+		for child in keys.get_children():
+			keys.remove_child(child)
+			child.queue_free()
+		match section:
+			"axes":
+				keys.add_child(_section_label("FLIGHT KEYS"))
+				keys.add_child(_keyboard_table(ControlsReference.flight_table(vehicle)))
+			"buttons":
+				keys.add_child(_section_label("SHORTCUTS"))
+				keys.add_child(_keyboard_table(ControlsReference.shortcut_table(vehicle)))
+
+
+static func _keyboard_table(rows: Array) -> GridContainer:
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 4)
+	for row: Array in rows:
+		var caps := HFlowContainer.new()
+		caps.add_theme_constant_override("h_separation", 4)
+		caps.add_theme_constant_override("v_separation", 4)
+		caps.custom_minimum_size.x = 150.0
+		caps.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		for key: Variant in row[0]:
+			caps.add_child(KeyCap.for_key(int(key) as Key))
+		grid.add_child(caps)
+		var what := _label(str(row[1]), "SecondaryLabel", true)
+		what.custom_minimum_size.x = 0.0
+		what.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		grid.add_child(what)
+	return grid
+
+
+func _set_keyboard_mode(on: bool) -> void:
+	if _keyboard_blocks.is_empty():
+		return
+	if on:
+		_ensure_keyboard_tables()
+	if on == _keyboard_mode:
+		return
+	_keyboard_mode = on
+	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	for section: String in PROFILE_SECTIONS:
+		(_page_editables[section] as Control).visible = not on
+		(_keyboard_blocks[section] as Control).visible = on
+	_resize_panel()
+	_place_response_curve()
+	if is_instance_valid(focused) and _screen.is_ancestor_of(focused) and not focused.is_visible_in_tree():
+		(_section_buttons[_selected_section] as Control).grab_focus()
 
 
 ## UX-02: a small focusable "?" beside clipped text; keyboard, gamepad and pointer open the full text.
@@ -3762,10 +4608,12 @@ func _update_accessible_names() -> void:
 		_name_control(controls.deadzone, tr("%s deadzone") % caption)
 		_name_control(controls.expo, tr("%s expo") % caption)
 		_name_control(controls.invert, tr("Invert %s") % caption)
+		_name_control(_axis_detect_buttons[channel], tr("Detect %s axis") % caption)
 	for aux_name: String in AUX_CHANNELS:
 		var caption := tr(str(AUX_CHANNEL_LABELS[aux_name]))
 		var controls: Dictionary = _aux_controls[aux_name]
 		_name_control(controls.type, tr("%s input type") % caption)
+		_name_control(controls.detect, tr("Move the control for %s") % caption)
 		_name_control(controls.axis, tr("%s source axis") % caption)
 		_name_control(controls.off, tr("%s Off endpoint") % caption)
 		_name_control(controls.on, tr("%s On endpoint") % caption)
@@ -3862,3 +4710,812 @@ static func _add_inline_control_field(parent: BoxContainer, label_text: String, 
 	field.add_child(control)
 	parent.add_child(field)
 	return field
+
+
+# --- UI-15-UX-05/06: capture overlay, axis detection, conflicts, search by input, reset -----------------------------
+
+## A capture or a pending conflict question: either owns input, blocks Save, and navigation cancels it.
+func _is_assignment_busy() -> bool:
+	return _is_capture_active() or not _conflict.is_empty()
+
+
+## Public (Setup assistant): start the capture a row's button would start. `target_id` is an action id,
+## "aux:<channel>" (the channel's first capture slot: Move the control for an axis, the first position of a switch
+## group), "axis:<channel>" (Detect) or "find". False when it cannot start now (keyboard selected, no connected
+## controller for axes, a locked radio navigation row, a disabled or button-type AUX channel).
+func start_capture_for(target_id: String) -> bool:
+	if _draft_profile.is_empty() or _keyboard_mode:
+		return false
+	if target_id == "find":
+		_start_find(find_aux_button if _selected_section == "aux" else find_actions_button)
+		return _finding
+	if target_id.begins_with("axis:"):
+		var channel := target_id.trim_prefix("axis:")
+		if not _axis_detect_buttons.has(channel):
+			return false
+		_start_axis_detect(channel, _axis_detect_buttons[channel])
+		return _detect_channel == channel
+	if target_id.begins_with("aux:"):
+		var aux_name := target_id.trim_prefix("aux:")
+		if not _aux_controls.has(aux_name):
+			return false
+		var binding := _draft_aux(aux_name)
+		match str(binding.get("type", "")):
+			"axis":
+				_start_aux_axis_capture(aux_name, _aux_detect_buttons[aux_name])
+				return _capturing_aux_axis == aux_name
+			"switch":
+				var rows := _switch_row_indices(SmokeAux.bound_buttons(binding).size())
+				var slot := int(rows[0])
+				_start_aux_capture(aux_name, slot, _aux_controls[aux_name].switch_capture_buttons[slot])
+				return _capturing_aux_name == aux_name
+		return false
+	if ControllerActions.action_definition(target_id).is_empty():
+		return false
+	var remap := action_grid.find_child("Remap_%s" % target_id, false, false) as Button
+	if remap == null or remap.disabled:
+		return false
+	_start_capture(target_id, remap)
+	return _capturing_action == target_id
+
+
+func _flight_device_connected() -> bool:
+	return _draft_flight_device_id >= 0 and bool(_device_for_id(_draft_flight_device_id).get("connected", false))
+
+
+func _registry_generation(device_id: int) -> int:
+	if registry == null or not registry.has_method("connection_generation"):
+		return 0
+	return int(registry.connection_generation(device_id))
+
+
+## The capturing controller is still the same connection (a registry without generations: still connected).
+func _capture_connection_ok() -> bool:
+	if _capturing_generation > 0:
+		return _calibration_connection_matches(_capturing_device_id, _capturing_generation)
+	return bool(_device_for_id(_capturing_device_id).get("connected", false))
+
+
+func _glyph_family() -> String:
+	var presentation: Variant = _draft_profile.get("presentation", {})
+	return str(presentation.get("glyph_family", "auto")) if presentation is Dictionary else "auto"
+
+
+func _chip_profile() -> Dictionary:
+	return _draft_profile if str(_draft_profile.get("kind", "")) in ["radio", "joystick"] else {}
+
+
+## "action:flaps_down" → “Flaps down”, "aux:smoke" → “Smoke”, "axis:roll" → “Roll”.
+func _target_caption(target: String) -> String:
+	var parts := target.split(":")
+	if parts.size() != 2:
+		return target
+	match parts[0]:
+		"action":
+			var definition := ControllerActions.action_definition(parts[1])
+			return tr(str(definition.get("label", parts[1])))
+		"aux":
+			return tr(str(AUX_CHANNEL_LABELS.get(parts[1], parts[1])))
+		"axis":
+			return tr(str(CHANNEL_LABELS.get(parts[1], parts[1])))
+	return target
+
+
+func _binding_caption(binding: Dictionary) -> String:
+	var prompt: Dictionary = ControllerPrompts.prompt(binding, _glyph_family(), _device_for_id(_draft_flight_device_id), _draft_profile)
+	var text := str(prompt.get("text", ""))
+	return text if not text.is_empty() else ControllerActions.binding_text(binding)
+
+
+## Overlay over the workspace for the capture that just started. `back_cancels`: the profile's Back button also
+## cancels (axis detection, where buttons are not captured).
+func _show_capture_overlay(title: String, prompt: String, back_cancels := false) -> void:
+	if capture_overlay == null:
+		return
+	var bindings: Array = [{"type": "key", "physical_keycode": KEY_ESCAPE}]
+	if back_cancels:
+		var back: Dictionary = _action_bindings.get("back", {})
+		if str(back.get("type", "")) == "button":
+			bindings.append(back)
+	var hint := tr("cancels. Listening stops after %d seconds without input.") % int(CAPTURE_SECONDS)
+	capture_overlay.show_capture(title, prompt, hint, bindings, _glyph_family(), _device_for_id(_capturing_device_id),
+		_chip_profile(), CAPTURE_SECONDS)
+
+
+func _emit_capture_finished(target: String, ok: bool, message: String) -> void:
+	if not target.is_empty():
+		capture_finished.emit(target, ok, "" if ok else message)
+
+
+## The last rejected attempt's sentence, as the footer shows it without the "Problem:" prefix.
+func _rejection_text() -> String:
+	if _rejected_message.is_empty():
+		return status_label.text
+	return tr(_rejected_message) % _friendly_validation_text(_rejected_issues, _rejected_errors)
+
+
+func _on_capture_timeout() -> void:
+	if not _is_capture_active():
+		return
+	var message := tr("No input was detected in time. Nothing changed.")
+	_set_status(message, false)
+	_capture_done(false, message)
+
+
+func _on_capture_event(event: InputEvent) -> void:
+	if _finding:
+		_find_by_event(event)
+	else:
+		_capture_binding(event)
+
+
+# Flight-axis detection (UX-05) --------------------------------------------------------------------------------------
+
+func _start_axis_detect(channel: String, button: Button) -> void:
+	if not _axis_controls.has(channel) or _draft_profile.is_empty():
+		return
+	if _is_assignment_busy(): _capture_done()
+	if not _flight_device_connected():
+		_set_status(tr("Connect the flight controller to detect its axes."), true)
+		return
+	if _selected_section != "axes":
+		select_section("axes")
+	_capturing_device_id = _draft_flight_device_id
+	_capturing_generation = _registry_generation(_capturing_device_id)
+	var detector := AxisDetector.new()
+	if not detector.begin(_capture_axes()):
+		_capturing_device_id = -1
+		_capturing_generation = 0
+		_set_status(tr("Invalid or interrupted input. Nothing changed."), true)
+		return
+	_axis_detector = detector
+	_detect_channel = channel
+	_detect_preview_axis = -1
+	_capture_target = "axis:" + channel
+	_capture_button = button
+	if button.is_visible_in_tree():
+		button.grab_focus()
+	var prompt := tr(str(DETECT_PROMPTS[channel]))
+	_set_status(prompt, false)
+	_show_capture_overlay(tr("Detect %s") % _target_caption("axis:" + channel), prompt, true)
+	_update_axis_controls()
+
+
+## Keys and the capturing controller's events belong to detection (axes are polled); Escape or the profile's Back
+## button cancels and its release is consumed.
+func _input_axis_detect(event: InputEvent) -> void:
+	if event is InputEventKey:
+		get_viewport().set_input_as_handled()
+		var key := event as InputEventKey
+		if key.pressed and not key.echo and (key.physical_keycode == KEY_ESCAPE or key.keycode == KEY_ESCAPE):
+			_track_capture_release(key)
+			_cancel_capture()
+		return
+	if not (event is InputEventJoypadButton or event is InputEventJoypadMotion) or event.device != _capturing_device_id:
+		return
+	get_viewport().set_input_as_handled()
+	if event is InputEventJoypadButton and (event as InputEventJoypadButton).pressed:
+		var back: Dictionary = _action_bindings.get("back", {})
+		if str(back.get("type", "")) == "button" and int(back.get("button", -1)) == int((event as InputEventJoypadButton).button_index):
+			_track_capture_release(event)
+			_cancel_capture()
+
+
+func _sample_axis_detect(delta: float) -> void:
+	if not _capture_connection_ok():
+		_set_status(tr("The selected flight controller disconnected; remapping was cancelled."), true)
+		_capture_done(false, tr("The selected flight controller disconnected; remapping was cancelled."))
+		return
+	var axes := _capture_axes()
+	var result: Dictionary = _axis_detector.sample(axes, delta)
+	if result.has("error"):
+		var message := tr(str(result.error))
+		_set_status(message, true)
+		_capture_done(false, message)
+		return
+	if result.has("axis"):
+		_finish_axis_detect(int(result.axis), bool(result.negative), axes)
+		return
+	var lead := int(result.get("candidate", -1))
+	if lead == _detect_preview_axis:
+		return
+	_detect_preview_axis = lead
+	if lead >= 0:
+		capture_overlay.set_preview({"type": "axis", "axis": lead}, tr("Axis %d") % lead)
+		workspace.set_capture_control("axis:%d" % lead)
+	else:
+		capture_overlay.clear_preview()
+		workspace.set_capture_control("")
+
+
+func _finish_axis_detect(axis: int, negative: bool, axes: PackedFloat64Array) -> void:
+	var channel := _detect_channel
+	var target := _capture_target
+	var return_focus := _capture_button
+	var baseline := _axis_detector.baseline[axis] if axis < _axis_detector.baseline.size() else 0.0
+	# A stick held away from a centred rest is released after detection; that release is not navigation.
+	if absf(baseline) <= CAPTURE_AXIS_RELEASE_THRESHOLD and axis < axes.size() and absf(axes[axis]) >= 0.65:
+		var motion := InputEventJoypadMotion.new()
+		motion.device = _capturing_device_id
+		motion.axis = axis as JoyAxis
+		var token := _event_release_token(motion)
+		if not token.is_empty():
+			_capture_release_tokens[token] = true
+	var previous: Dictionary = _draft_profile.get(channel, {})
+	var updated := previous.duplicate(true)
+	updated["axis"] = axis
+	updated["invert"] = negative
+	var candidate := _draft_profile.duplicate(true)
+	candidate[channel] = updated
+	var caption := _target_caption("axis:" + channel)
+	var success := tr("%s uses axis %d. Save the profile to keep it.") % [caption, axis]
+	if negative:
+		success += " " + tr("It moved the other way, so %s is inverted.") % caption
+	if str(_draft_profile.get("kind", "")) == "radio":
+		success += " " + tr("Calibrate the radio again before saving.")
+	var owners := _axis_owners(candidate, channel, axis)
+	_end_capture_state()
+	if owners.is_empty():
+		_commit_candidate_profile(candidate)
+		_set_status(success, false)
+		_emit_capture_finished(target, true, "")
+		return
+	if owners.size() > 1:
+		var names: Array[String] = []
+		for owner: String in owners:
+			names.append("“%s”" % _target_caption(owner))
+		var message := tr("Axis %d is already used by %s. Nothing changed.") % [axis, ", ".join(names)]
+		_set_status(message, true)
+		_emit_capture_finished(target, false, message)
+		return
+	_offer_conflict({"target": "axis:" + channel, "report": target, "owner": owners[0], "candidate": candidate,
+		"binding": {"type": "axis", "axis": axis}, "previous": int(previous.get("axis", -1)), "focus": return_focus,
+		"success": success, "cancel_message": tr("%s keeps its axis. Nothing changed.") % caption})
+
+
+## Other users of a raw axis: flight channels, AUX axis channels and flight actions learned on an axis.
+func _axis_owners(profile: Dictionary, channel: String, axis: int) -> Array[String]:
+	var owners: Array[String] = []
+	for other: String in CHANNELS:
+		var data: Variant = profile.get(other, {})
+		if other != channel and data is Dictionary and int(data.get("axis", -1)) == axis:
+			owners.append("axis:" + other)
+	var aux: Variant = profile.get("aux", {})
+	if aux is Dictionary:
+		for aux_name: String in AUX_CHANNELS:
+			var binding: Variant = aux.get(aux_name, {})
+			if binding is Dictionary and str(binding.get("type", "")) == "axis" and int(binding.get("axis", -1)) == axis:
+				owners.append("aux:" + aux_name)
+	for definition in ControllerActions.ACTIONS:
+		var binding: Dictionary = _action_bindings.get(str(definition.id), {})
+		if str(definition.context) in ["flight", "both"] and str(binding.get("type", "")) == "axis" and int(binding.get("axis", -1)) == axis:
+			owners.append("action:" + str(definition.id))
+	return owners
+
+
+func _draft_aux(aux_name: String) -> Dictionary:
+	var aux: Variant = _draft_profile.get("aux", {})
+	if aux is Dictionary and aux.get(aux_name, {}) is Dictionary:
+		return (aux.get(aux_name, {}) as Dictionary).duplicate(true)
+	return {}
+
+
+## AUX "Move the control" result: the channel's axis with the measured OFF and ON endpoints.
+func _accept_aux_axis_binding(learned: Dictionary) -> void:
+	var aux_name := _capturing_aux_axis
+	var target := _capture_target
+	var return_focus := _capture_button
+	var off := float(learned.get("off", -1.0))
+	var on := float(learned.get("on", 1.0))
+	var binding := {"type": "axis", "axis": int(learned.get("axis", 0)), "off": off, "on": on, "invert": on < off}
+	var previous := _draft_aux(aux_name)
+	var candidate := _draft_profile.duplicate(true)
+	var aux: Dictionary = (candidate.get("aux", {}) as Dictionary).duplicate(true) if candidate.get("aux", {}) is Dictionary else {}
+	aux[aux_name] = binding
+	candidate["aux"] = aux
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate, action_capabilities)
+	var caption := _target_caption("aux:" + aux_name)
+	var success := tr("%s uses axis %d (Off %+.2f, On %+.2f). Save the profile to keep it.") % [caption, int(binding.axis), off, on]
+	_end_capture_state()
+	if bool(validation.get("ok", false)):
+		_commit_candidate_profile(candidate)
+		_set_status(success, false)
+		_emit_capture_finished(target, true, "")
+		return
+	var owner := _single_conflict_owner(validation.get("issues", []), "aux:" + aux_name)
+	if not owner.is_empty():
+		_offer_conflict({"target": "aux:" + aux_name, "report": target, "owner": owner, "candidate": candidate,
+			"binding": binding, "previous": previous, "rejected": validation,
+			"rejected_message": "Extra channel was not changed: %s", "focus": return_focus, "success": success})
+		return
+	_show_rejected_validation(validation, "Extra channel was not changed: %s")
+	_emit_capture_finished(target, false, _rejection_text())
+
+
+# Conflicts (UX-06) --------------------------------------------------------------------------------------------------
+
+## "action:x", "aux:y" or "axis:z" for a validation path ("actions.x", "aux.y.button", "roll.axis").
+func _path_owner(path: String) -> String:
+	var parts := path.split(".")
+	if parts.size() >= 2 and parts[0] == "actions":
+		return "action:" + parts[1]
+	if parts.size() >= 2 and parts[0] == "aux":
+		return "aux:" + parts[1]
+	if parts[0] in CHANNELS:
+		return "axis:" + parts[0]
+	return ""
+
+
+## The one action or extra channel whose same-control conflict is the only reason `target` was rejected, or "".
+func _single_conflict_owner(issues: Array, target: String) -> String:
+	var owners: Dictionary = {}
+	for issue: Variant in issues:
+		if not issue is Dictionary:
+			return ""
+		if not str(issue.get("code", "")) in SWAPPABLE_CONFLICT_CODES:
+			return ""
+		var ids: Array[String] = []
+		for path: Variant in issue.get("paths", []):
+			ids.append(_path_owner(str(path)))
+		if not ids.has(target):
+			return ""
+		for id: String in ids:
+			if id != target and not id.is_empty():
+				owners[id] = true
+	return str(owners.keys()[0]) if owners.size() == 1 else ""
+
+
+## Show "<control> is already used by <owner>" with Swap / Replace / Cancel over the workspace. Both choices are
+## whole draft candidates validated now; an invalid one is disabled with its reason. Nothing changes until a choice.
+func _offer_conflict(request: Dictionary) -> void:
+	var target := str(request.target)
+	var owner := str(request.owner)
+	var swap := _swap_candidate(target, owner, request.candidate, request.binding, request.get("previous"))
+	var replace := _replace_candidate(target, owner, request.candidate)
+	_conflict = request.duplicate()
+	_conflict["swap"] = swap.get("profile", {})
+	_conflict["replace"] = replace.get("profile", {})
+	var target_caption := "“%s”" % _target_caption(target)
+	var owner_caption := "“%s”" % _target_caption(owner)
+	var control_caption := _binding_caption(request.binding)
+	var question := tr("%s is already used by %s.") % [control_caption, owner_caption]
+	_conflict["question"] = question
+	capture_overlay.show_conflict({
+		"title": tr("Assign to %s") % target_caption,
+		"text": question,
+		"details": "%s\n%s" % [tr("Swap: %s takes the control %s had.") % [owner_caption, target_caption],
+			tr("Replace: %s loses this control.") % owner_caption],
+		"binding": request.binding, "family": _glyph_family(), "device": _device_for_id(_draft_flight_device_id),
+		"profile": _chip_profile(), "swap_reason": str(swap.get("reason", "")), "replace_reason": str(replace.get("reason", "")),
+	})
+	_set_status(question + " " + tr("Choose Swap, Replace or Cancel."), false)
+
+
+func _swap_candidate(target: String, owner: String, candidate: Dictionary, binding: Dictionary, previous: Variant) -> Dictionary:
+	var t := target.split(":")
+	var o := owner.split(":")
+	var profile := candidate.duplicate(true)
+	if t[0] == "axis":
+		if o[0] != "axis" or int(previous) < 0:
+			return {"reason": tr("Only another flight channel can take an axis in exchange.")}
+		var other: Dictionary = (profile.get(o[1], {}) as Dictionary).duplicate(true)
+		other["axis"] = int(previous)
+		profile[o[1]] = other
+		return _checked_axis_candidate(profile)
+	var given: Dictionary = previous if previous is Dictionary else {}
+	if given.is_empty() or str(given.get("type", "unbound")) == "unbound":
+		return {"reason": tr("“%s” has no control to give in exchange.") % _target_caption(target)}
+	if o[0] == "action" and t[0] == "action":
+		var actions: Dictionary = (profile.get("actions", {}) as Dictionary).duplicate(true)
+		actions[o[1]] = given.duplicate(true)
+		profile["actions"] = actions
+	elif o[0] == "aux":
+		var aux: Dictionary = (profile.get("aux", {}) as Dictionary).duplicate(true)
+		var other: Dictionary = (aux.get(o[1], {}) as Dictionary).duplicate(true)
+		if t[0] == "aux":
+			other = given.duplicate(true)
+		elif str(other.get("type", "")) == "button" and str(given.get("type", "")) == "button":
+			other["button"] = int(given.button)
+		elif str(other.get("type", "")) == "switch" and str(given.get("type", "")) == "button" \
+				and str(binding.get("type", "")) == "button":
+			var buttons: Array = (other.get("buttons", []) as Array).duplicate()
+			var member := buttons.find(int(binding.button))
+			if member < 0:
+				return {"reason": tr("The %s extra channel cannot use that kind of control.") % _target_caption(owner)}
+			buttons[member] = int(given.button)
+			other["buttons"] = buttons
+		else:
+			return {"reason": tr("The %s extra channel cannot use that kind of control.") % _target_caption(owner)}
+		aux[o[1]] = other
+		profile["aux"] = aux
+	else:
+		return {"reason": tr("“%s” cannot take that kind of control. Use Replace or Cancel.") % _target_caption(owner)}
+	return _checked_binding_candidate(profile)
+
+
+func _replace_candidate(target: String, owner: String, candidate: Dictionary) -> Dictionary:
+	var o := owner.split(":")
+	var profile := candidate.duplicate(true)
+	match o[0]:
+		"axis":
+			return {"reason": tr("Every flight channel needs its own axis.")}
+		"action":
+			if o[1] in ["back", "pause"]:
+				return {"reason": tr("“%s” must always keep a control.") % _target_caption(owner)}
+			var actions: Dictionary = (profile.get("actions", {}) as Dictionary).duplicate(true)
+			actions[o[1]] = {"type": "unbound"}
+			profile["actions"] = actions
+		"aux":
+			var aux: Dictionary = (profile.get("aux", {}) as Dictionary).duplicate(true)
+			aux.erase(o[1])
+			if aux.is_empty():
+				profile.erase("aux")
+			else:
+				profile["aux"] = aux
+		_:
+			return {"reason": tr("Replace is not available here.")}
+	return _checked_axis_candidate(profile) if target.begins_with("axis:") else _checked_binding_candidate(profile)
+
+
+func _checked_binding_candidate(profile: Dictionary) -> Dictionary:
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(profile, action_capabilities)
+	if bool(validation.get("ok", false)):
+		return {"profile": profile}
+	return {"reason": _friendly_validation_text(validation.get("issues", []), validation.get("errors", []))}
+
+
+## A flight-channel candidate may not add problems the current draft does not already have.
+func _checked_axis_candidate(profile: Dictionary) -> Dictionary:
+	var known: Dictionary = {}
+	for issue: Dictionary in _validate_candidate(_named_candidate(_draft_profile)).get("issues", []):
+		known[str(issue.code) + str(issue.paths)] = true
+	var fresh: Array = []
+	for issue: Dictionary in _validate_candidate(_named_candidate(profile)).get("issues", []):
+		if not known.has(str(issue.code) + str(issue.paths)):
+			fresh.append(issue)
+	return {"profile": profile} if fresh.is_empty() else {"reason": _friendly_validation_text(fresh, [])}
+
+
+func _named_candidate(profile: Dictionary) -> Dictionary:
+	var candidate := profile.duplicate(true)
+	candidate["name"] = profile_name_edit.text.strip_edges()
+	return candidate
+
+
+## Swap and Replace commit their candidate atomically; Cancel (or Back/Escape) keeps the draft and reports the
+## attempt like a rejected remap.
+func _resolve_conflict(choice: String) -> void:
+	if _conflict.is_empty():
+		return
+	var request := _conflict
+	_conflict = {}
+	capture_overlay.hide_overlay()
+	var report := str(request.get("report", ""))
+	var profile: Dictionary = request.get(choice, {}) if choice in ["swap", "replace"] else {}
+	if not profile.is_empty():
+		_commit_candidate_profile(profile)
+		var owner_caption := "“%s”" % _target_caption(str(request.owner))
+		var note := tr("%s took the previous control.") % owner_caption if choice == "swap" \
+			else tr("%s no longer uses this control.") % owner_caption
+		_set_status("%s %s" % [str(request.success), note], false)
+		_restore_conflict_focus(request.get("focus"))
+		_emit_capture_finished(report, true, "")
+		return
+	var message := ""
+	var rejected: Dictionary = request.get("rejected", {})
+	if not rejected.is_empty():
+		_show_rejected_validation(rejected, str(request.get("rejected_message", "Binding was not changed: %s")))
+		message = _rejection_text()
+	else:
+		message = str(request.get("cancel_message", tr("Nothing changed.")))
+		_set_status(message, false)
+	_restore_conflict_focus(request.get("focus"))
+	_emit_capture_finished(report, false, message)
+
+
+## A pending question ends without a choice (navigation, device change, a new capture, close): nothing changes.
+func _drop_conflict(reason: String) -> void:
+	if _conflict.is_empty():
+		return
+	var report := str(_conflict.get("report", ""))
+	_conflict = {}
+	capture_overlay.hide_overlay()
+	_emit_capture_finished(report, false, reason)
+
+
+func _restore_conflict_focus(target: Variant) -> void:
+	if is_instance_valid(target) and target is Control and (target as Control).is_visible_in_tree() \
+			and (target as Control).focus_mode != Control.FOCUS_NONE:
+		(target as Control).grab_focus()
+
+
+## One draft write for a whole candidate (conflict choices, detection, reset): actions, AUX and channels together.
+func _commit_candidate_profile(profile: Dictionary) -> void:
+	_draft_profile = profile.duplicate(true)
+	_base_actions = (_draft_profile.get("actions", {}) as Dictionary).duplicate(true) if _draft_profile.get("actions", {}) is Dictionary else {}
+	_draft_profile["actions"] = _base_actions.duplicate(true)
+	_action_bindings = ControllerActions.effective_bindings(_draft_profile, action_capabilities)
+	_update_axis_controls()
+	_update_aux_controls()
+	_update_action_controls()
+	_update_preview()
+	_draft_validation_changed()
+
+
+# Search by input (UX-06) --------------------------------------------------------------------------------------------
+
+func _start_find(button: Button) -> void:
+	if _draft_profile.is_empty() or _keyboard_mode:
+		return
+	if _is_assignment_busy(): _capture_done()
+	_find_origin = _selected_section
+	_finding = true
+	_capturing_device_id = _draft_flight_device_id
+	_capturing_generation = _registry_generation(_capturing_device_id)
+	_capture_button = button
+	_capture_target = "find"
+	if button != null and button.is_visible_in_tree():
+		button.grab_focus()
+	var prompt := tr("Press or move any control to find what it does.")
+	_set_status(prompt, false)
+	_show_capture_overlay(tr("Find control"), prompt)
+
+
+func _event_control_id(event: InputEvent) -> String:
+	if event is InputEventKey:
+		var key := event as InputEventKey
+		return "key:%d" % (int(key.physical_keycode) if key.physical_keycode != KEY_NONE else int(key.keycode))
+	if event is InputEventJoypadButton:
+		return "button:%d" % int((event as InputEventJoypadButton).button_index)
+	if event is InputEventJoypadMotion:
+		return "axis:%d" % int((event as InputEventJoypadMotion).axis)
+	return ""
+
+
+## Reveal (including other vehicles' rows), scroll to and focus the rows the pressed control drives.
+func _find_by_event(event: InputEvent) -> void:
+	var control_id := _event_control_id(event)
+	var caption := _binding_caption(ControllerActions.binding_from_event(event))
+	var radio := str(_draft_profile.get("kind", "")) == "radio"
+	var actions: Array[String] = []
+	for definition in ControllerActions.ACTIONS:
+		var action_id := str(definition.id)
+		if radio and action_id.begins_with("navigate_"):
+			continue
+		if _binding_control_ids(_action_bindings.get(action_id, {})).has(control_id):
+			actions.append(action_id)
+	var aux_rows: Array[String] = []
+	for aux_name: String in AUX_CHANNELS:
+		if _binding_control_ids(_draft_aux(aux_name)).has(control_id):
+			aux_rows.append(aux_name)
+	var channels: Array[String] = []
+	for channel: String in CHANNELS:
+		var data: Variant = _draft_profile.get(channel, {})
+		if data is Dictionary and control_id == "axis:%d" % int(data.get("axis", -1)):
+			channels.append(channel)
+	var origin := _find_origin
+	var return_focus := _capture_button
+	_end_capture_state()
+	get_viewport().set_input_as_handled()
+	if actions.is_empty() and aux_rows.is_empty() and channels.is_empty():
+		var missing := tr("%s is not assigned.") % caption
+		_set_status(missing, false)
+		_restore_conflict_focus(return_focus)
+		_emit_capture_finished("find", false, missing)
+		return
+	var names: Array[String] = []
+	for action_id: String in actions:
+		names.append("“%s”" % _target_caption("action:" + action_id))
+	for aux_name: String in aux_rows:
+		names.append("“%s”" % _target_caption("aux:" + aux_name))
+	for channel: String in channels:
+		names.append("“%s”" % _target_caption("axis:" + channel))
+	var focus_target: Control
+	if not aux_rows.is_empty() and (origin == "aux" or actions.is_empty()):
+		focus_target = _reveal_found_aux(aux_rows)
+	elif not actions.is_empty():
+		focus_target = _reveal_found_actions(actions)
+	else:
+		select_section("axes")
+		focus_target = _axis_detect_buttons[channels[0]]
+	_set_status(tr("%s is used by %s.") % [caption, ", ".join(names)], false)
+	if focus_target != null and focus_target.is_visible_in_tree():
+		focus_target.grab_focus()
+		_ensure_whole_control_visible.call_deferred(focus_target)
+	_emit_capture_finished("find", true, "")
+
+
+func _reveal_found_actions(actions: Array[String]) -> Control:
+	if _selected_section != "buttons":
+		select_section("buttons")
+	for action_id: String in actions:
+		_reveal_action_row(action_id)
+	var remap := action_grid.find_child("Remap_%s" % actions[0], false, false) as Button
+	return remap if remap != null and not remap.disabled else _binding_chips.get(actions[0])
+
+
+func _reveal_found_aux(aux_rows: Array[String]) -> Control:
+	if _selected_section != "aux":
+		select_section("aux")
+	for aux_name: String in aux_rows:
+		if not _aux_row_shown(aux_name):
+			show_all_vehicle_aux.set_pressed_no_signal(true)
+			_update_aux_controls()
+	return _aux_controls[aux_rows[0]].type
+
+
+# Reset to defaults (UX-06) ------------------------------------------------------------------------------------------
+
+## Ask before resetting `category` (the action filter index: 0 = every action, 1–4 = Flight, Camera, Auxiliary, Menu).
+func _ask_reset_actions(category: int, from: Control) -> void:
+	if _draft_profile.is_empty() or _is_assignment_busy():
+		return
+	_reset_scope = category
+	_reset_return_focus = from
+	if reset_dialog == null:
+		reset_dialog = ConfirmationDialog.new()
+		reset_dialog.name = "ResetActionsDialog"
+		reset_dialog.dialog_autowrap = true
+		reset_dialog.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		reset_dialog.confirmed.connect(func() -> void:
+			reset_actions(_reset_scope)
+			_restore_reset_focus())
+		reset_dialog.canceled.connect(_restore_reset_focus)
+		add_child(reset_dialog)
+	reset_dialog.title = tr("Reset to defaults")
+	if category <= 0:
+		reset_dialog.dialog_text = tr("Reset every action to its default control? Back and Pause always keep a control. The change stays in the draft until you Save.")
+	else:
+		reset_dialog.dialog_text = tr("Reset the %s actions shown to their default controls? Back and Pause always keep a control. The change stays in the draft until you Save.") % tr(action_filter.get_item_text(category))
+	reset_dialog.get_ok_button().text = tr("Reset")
+	reset_dialog.get_ok_button().name = "ConfirmResetActions"
+	reset_dialog.get_cancel_button().text = tr("Keep")
+	reset_dialog.popup_centered_clamped(Vector2i(620, 200), 0.9)
+	_focus_if_shown.call_deferred(reset_dialog.get_cancel_button())
+
+
+func _restore_reset_focus() -> void:
+	var target := _reset_return_focus
+	_reset_return_focus = null
+	if is_instance_valid(target) and target.is_inside_tree() and target.is_visible_in_tree():
+		_focus_if_shown.call_deferred(target)
+
+
+## Draft only. Category 0 resets every action; 1–4 the rows of that category shown now (the vehicle filter
+## applies). Radio and JETI profiles reset to the safe radio map; radio navigation stays locked to the sticks.
+func reset_actions(category: int) -> bool:
+	if _draft_profile.is_empty() or _is_assignment_busy():
+		return false
+	var candidate := _base_actions.duplicate(true)
+	var clean: Dictionary = ControllerActions.clean_radio_bindings() if _supports_clean_radio_actions(_draft_profile) else {}
+	var radio := str(_draft_profile.get("kind", "")) == "radio"
+	for definition in ControllerActions.ACTIONS:
+		var action_id := str(definition.id)
+		if category > 0 and (_action_category(definition) != category or not _action_row_shown(definition)):
+			continue
+		if radio and action_id.begins_with("navigate_"):
+			continue
+		if clean.is_empty():
+			candidate.erase(action_id)
+		else:
+			candidate[action_id] = (clean.get(action_id, {"type": "unbound"}) as Dictionary).duplicate(true)
+	var profile := _draft_profile.duplicate(true)
+	profile["actions"] = candidate
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(profile, action_capabilities)
+	if not bool(validation.get("ok", false)):
+		_show_rejected_validation(validation, "Actions were not reset: %s")
+		return false
+	_commit_candidate_profile(profile)
+	_set_status(tr("Actions are back to their defaults in the draft. Save keeps them; Cancel discards them."), false)
+	return true
+
+
+# Advanced disclosure and the response curve placement (UX-05) ------------------------------------------------------
+
+func _apply_advanced_visibility() -> void:
+	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var axes_open := axis_advanced_toggle.button_pressed
+	for channel: String in CHANNELS:
+		(_axis_controls[channel].axis as Control).visible = axes_open
+	var aux_open := aux_advanced_toggle.button_pressed
+	for aux_name: String in AUX_CHANNELS:
+		for field: Control in _aux_controls[aux_name].advanced_fields:
+			field.visible = aux_open
+	if is_instance_valid(focused) and _screen.is_ancestor_of(focused) and not focused.is_visible_in_tree():
+		(axis_advanced_toggle if _selected_section == "axes" else aux_advanced_toggle).grab_focus()
+	_queue_mapping_focus_visibility()
+
+
+## A validation error or focus request on a number inside a closed Advanced disclosure opens it.
+func _open_advanced_for(control: Control) -> void:
+	if control == null or not control.has_meta("advanced_page"):
+		return
+	var toggle := axis_advanced_toggle if str(control.get_meta("advanced_page")) == "axes" else aux_advanced_toggle
+	if not toggle.button_pressed:
+		toggle.set_pressed_no_signal(true)
+		_apply_advanced_visibility()
+
+
+## The response curve is drawn large in the picture panel on Flight axes; where the panel is folded away (compact
+## canvases) it stays with the gimbals on the page.
+func _place_response_curve() -> void:
+	if _response_curve == null or workspace == null or _axis_live_views == null:
+		return
+	if workspace.picture_panel.visible and _selected_section == "axes" and not _keyboard_mode:
+		workspace.set_context(_response_curve)
+		return
+	workspace.set_context(null)
+	if _response_curve.get_parent() != _axis_live_views:
+		if _response_curve.get_parent() != null:
+			_response_curve.get_parent().remove_child(_response_curve)
+		_axis_live_views.add_child(_response_curve)
+
+## UI-15-UX-05: "move the stick you want for Roll". Pure detection over raw axis samples, using the radio wizard's
+## movement thresholds (rc_calibration.gd): an axis must move MIN_SWEEP from the baseline sampled when detection
+## starts and stay there for HOLD_SECONDS; the largest deviation wins; a second axis that moved OTHER_AXIS_THRESHOLD
+## (or two axes past MIN_SWEEP at once) makes it ambiguous; deviations under DIRECTION_THRESHOLD are noise and never
+## count, so a jittering axis (a radio throttle resting at an endpoint) can neither win nor end detection.
+## A pure helper beside rc_calibration.gd in app/input would be cleaner (input owner, D6-UX); kept here for UX-05.
+class AxisDetector extends RefCounted:
+	const Thresholds := preload("res://input/rc_calibration.gd")
+	const HOLD_SECONDS := 0.25
+	const AMBIGUOUS := "More than one axis moved. Move only the stick you want, then try again."
+	const INVALID := "Invalid or interrupted input. Nothing changed."
+
+	var baseline := PackedFloat64Array()
+	var peaks := PackedFloat64Array()
+	var leader := -1
+	var held := 0.0
+
+	func begin(axes: PackedFloat64Array) -> bool:
+		if not _valid(axes):
+			return false
+		baseline = axes.duplicate()
+		peaks.resize(axes.size())
+		peaks.fill(0.0)
+		leader = -1
+		held = 0.0
+		return true
+
+	## {} while waiting, {candidate: axis} while one axis leads, {axis, negative} when done, {error} when rejected.
+	func sample(axes: PackedFloat64Array, delta: float) -> Dictionary:
+		if baseline.is_empty() or axes.size() != baseline.size() or not _valid(axes):
+			return {error = INVALID}
+		var step := delta if is_finite(delta) and delta > 0.0 and delta <= 1.0 else 0.0
+		var lead := -1
+		var lead_size := 0.0
+		var moving := 0
+		for axis in axes.size():
+			var size := absf(axes[axis] - baseline[axis])
+			if size < Thresholds.DIRECTION_THRESHOLD:
+				continue
+			peaks[axis] = maxf(peaks[axis], size)
+			if size >= Thresholds.MIN_SWEEP:
+				moving += 1
+			if size > lead_size:
+				lead = axis
+				lead_size = size
+		if moving > 1:
+			return {error = AMBIGUOUS}
+		if lead < 0 or lead_size < Thresholds.MIN_SWEEP:
+			held = 0.0
+			leader = -1
+			return {candidate = lead} if lead >= 0 else {}
+		if lead != leader:
+			leader = lead
+			held = 0.0
+		held += step
+		if held < HOLD_SECONDS:
+			return {candidate = lead}
+		for axis in peaks.size():
+			if axis != lead and peaks[axis] >= Thresholds.OTHER_AXIS_THRESHOLD:
+				return {error = AMBIGUOUS}
+		return {axis = lead, negative = axes[lead] < baseline[lead]}
+
+	static func _valid(axes: PackedFloat64Array) -> bool:
+		if axes.is_empty():
+			return false
+		for value: float in axes:
+			if not is_finite(value) or absf(value) > 1.0:
+				return false
+		return true

@@ -37,6 +37,8 @@ jobs:
           fetch-depth: 0 # Tag/version preflight and multi-commit push comparison.
       - name: CI orchestration regressions
         run: python3 -m unittest discover -s tools/ci -p 'test_*.py'
+      - name: Host admission and process ownership regressions
+        run: python3 -m unittest discover -s tools/testqueue -p 'test_*.py'
       - name: Check release source, version and notes before expensive jobs
         run: python3 tools/ci/release_preflight.py --root . --event "$GITHUB_EVENT_NAME" --ref "$GITHUB_REF" --sha "$GITHUB_SHA"
       - name: Record conservative selection (shadow mode keeps full production)

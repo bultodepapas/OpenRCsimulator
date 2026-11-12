@@ -25,6 +25,10 @@ class Partitions(unittest.TestCase):
         runner = self.root.parent / "tools" / "godot"
         runner.mkdir(parents=True)
         shutil.copyfile(Path(__file__).parents[2] / "tools/godot/run_checked.py", runner / "run_checked.py")
+        admission = self.root.parent / "tools/testqueue"
+        admission.mkdir(parents=True)
+        for name in ("__init__.py", "common.py", "entry.py", "integration.py"):
+            shutil.copyfile(Path(__file__).parents[2] / "tools/testqueue" / name, admission / name)
         ci_tools = self.root.parent / "tools" / "ci"
         ci_tools.mkdir(parents=True)
         shutil.copyfile(Path(__file__).parents[2] / "tools/ci/phase_roster.py", ci_tools / "phase_roster.py")
@@ -54,6 +58,9 @@ exit 0
 
     def run_partition(self, shard=0, count=8, **overrides):
         env = os.environ.copy()
+        env.pop("OPENRC_TESTQUEUE_CONTEXT", None)
+        env.pop("OPENRC_TESTQUEUE_HANDLE", None)
+        env["OPENRC_TESTQUEUE_ROOT"] = str(self.root.parent / "private-queue-state")
         env.pop("OPENRC_PARSE_WITH_UNITS", None)
         env.update(OPENRC_TEST_PART="units", OPENRC_UNIT_SHARD=str(shard), OPENRC_UNIT_SHARDS=str(count))
         env["OPENRC_CHECK_OUT"] = str(self.root.parent / "tmp/godot-checks")

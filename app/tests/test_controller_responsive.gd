@@ -56,7 +56,7 @@ func _check_scroll_width(section: String, tag: String) -> void:
 			stack.append(child)
 
 func _check_axis_row_labels(tag: String) -> void:
-	var control_keys: Array[String] = ["axis", "deadzone", "expo", "invert"]
+	var control_keys: Array[String] = ["source", "deadzone", "expo", "invert"] # UI-15-UX-05: axis spin + Detect
 	var channels: Array[String] = ["roll", "pitch", "yaw", "throttle"]
 	for channel_index in range(channels.size()):
 		var channel: String = channels[channel_index]

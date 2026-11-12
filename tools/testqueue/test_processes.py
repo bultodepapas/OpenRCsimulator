@@ -8,10 +8,11 @@ import sys
 import tempfile
 import time
 import unittest
+import uuid
 from unittest import mock
 
 import processes
-from processes import OwnedProcess
+from processes import OwnedProcess, confirm_stopped, host_identity
 
 
 def wait_for(predicate, timeout=8):
@@ -22,6 +23,12 @@ def wait_for(predicate, timeout=8):
             return value
         time.sleep(0.025)
     raise AssertionError("Timed out waiting for process state")
+
+
+def stop_fixture_process(process):
+    if process.poll() is None:
+        process.kill()
+    process.wait(timeout=5)
 
 
 def runner_with_orphan(ready):
@@ -60,23 +67,43 @@ class ProcessFixture(unittest.TestCase):
         self.assertEqual(process.identity["pid"], process.pid)
         self.assertTrue(process.identity["creation"])
         self.assertTrue(process.identity["boot"])
+        self.assertEqual(process.identity["host"], host_identity()["host"])
+        if os.name == "nt":
+            self.assertFalse(confirm_stopped(process.identity))
         self.assertIn("argument with spaces", process.log.read_text())
         process.close()
         process.close()
 
     def test_orphan_descendant_stays_owned_and_unrelated_process_survives(self):
         unrelated = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
-        self.addCleanup(lambda: unrelated.poll() is None and unrelated.kill())
-        self.addCleanup(lambda: unrelated.poll() is not None or unrelated.wait(timeout=5))
+        self.addCleanup(stop_fixture_process, unrelated)
         ready = self.root / "orphan ready.txt"
         process = self.owned(runner_with_orphan(ready))
         wait_for(lambda: ready.exists())
         wait_for(lambda: process.poll() == 0)
         self.assertTrue(process.alive(), "the launcher exited but its child is still running")
+        self.assertIn(int(ready.read_text()), process.pids())
+        child_handle = None
+        if os.name == "nt":
+            import ctypes
+            from ctypes import wintypes
+            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+            kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+            kernel32.OpenProcess.restype = wintypes.HANDLE
+            kernel32.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+            kernel32.WaitForSingleObject.restype = wintypes.DWORD
+            kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+            child_handle = kernel32.OpenProcess(0x00100000, False, int(ready.read_text()))
+            self.assertTrue(child_handle)
+            self.addCleanup(kernel32.CloseHandle, child_handle)
+            self.assertFalse(confirm_stopped(process.identity))
         started = time.monotonic()
         process.terminate()
         self.assertLess(time.monotonic() - started, 10)
         self.assertFalse(process.alive())
+        if child_handle:
+            self.assertEqual(kernel32.WaitForSingleObject(child_handle, 0), 0,
+                             "termination returned before the orphan process exited")
         self.assertIsNone(unrelated.poll(), "cleanup must leave unrelated processes alone")
         unrelated.terminate()
         unrelated.wait(timeout=5)
@@ -98,6 +125,18 @@ class ProcessFixture(unittest.TestCase):
             process.start()
         self.assertEqual(log.read_text(), "preserve me")
 
+    def test_identity_failure_cleans_gate_before_command_is_released(self):
+        marker = self.root / "must not run"
+        code = f"from pathlib import Path; Path({str(marker)!r}).write_text('ran')"
+        process = OwnedProcess([sys.executable, "-c", code], self.root, os.environ.copy(),
+                               self.root / "attempt log.txt")
+        boot_function = "_windows_boot" if os.name == "nt" else "_posix_boot"
+        with mock.patch.object(processes, boot_function, side_effect=OSError("injected")):
+            with self.assertRaises(OSError):
+                process.start()
+        self.assertIsNotNone(process._process.returncode)
+        self.assertFalse(marker.exists())
+
     def test_supervisor_crash_kills_orphan(self):
         ready = self.root / "orphan ready.txt"
         control = self.root / "supervisor ready.json"
@@ -115,9 +154,9 @@ class ProcessFixture(unittest.TestCase):
         )
         supervisor = subprocess.Popen([sys.executable, "-c", supervisor_code],
                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        self.addCleanup(lambda: supervisor.poll() is None and supervisor.kill())
-        self.addCleanup(lambda: supervisor.poll() is not None or supervisor.wait(timeout=5))
+        self.addCleanup(stop_fixture_process, supervisor)
         wait_for(lambda: control.exists() and ready.exists())
+        identity = json.loads(control.read_text())
         child_pid = int(ready.read_text())
         if os.name == "nt":
             import ctypes
@@ -133,7 +172,14 @@ class ProcessFixture(unittest.TestCase):
             try:
                 supervisor.kill()
                 supervisor.wait(timeout=5)
+                if confirm_stopped(identity):
+                    self.assertEqual(kernel32.WaitForSingleObject(handle, 0), 0,
+                                     "reconciliation claimed empty before the child terminated")
                 self.assertEqual(kernel32.WaitForSingleObject(handle, 8000), 0)
+                self.assertFalse(confirm_stopped(identity),
+                                 "an absent job alone must remain unknown")
+                after_reboot = dict(identity, boot=str(uuid.uuid4()))
+                self.assertTrue(confirm_stopped(after_reboot))
             finally:
                 kernel32.CloseHandle(handle)
         else:
@@ -150,6 +196,47 @@ class ProcessFixture(unittest.TestCase):
                 self.assertTrue(poller.poll(8000), "orphan outlived the supervisor")
             finally:
                 os.close(fd)
+
+    def test_missing_or_invalid_reconciliation_identity_is_unknown(self):
+        self.assertFalse(confirm_stopped({}))
+        self.assertFalse(confirm_stopped(None))
+        self.assertFalse(confirm_stopped({"kind": "windows-job-v1", "job": "anything"}))
+        self.assertFalse(confirm_stopped({"host": 123, "boot": 123}))
+
+    def test_prelaunch_host_identity(self):
+        identity = host_identity()
+        self.assertTrue(identity["host"])
+        self.assertTrue(identity["boot"])
+        self.assertFalse(confirm_stopped(identity))
+        old_boot = "1:0" if sys.platform == "darwin" else str(uuid.uuid4())
+        previous_boot = dict(identity, boot=old_boot)
+        self.assertTrue(confirm_stopped(previous_boot))
+
+    @unittest.skipUnless(os.name == "nt", "Windows Job Object behavior")
+    def test_missing_process_witness_remains_unknown_after_close(self):
+        process = OwnedProcess([sys.executable, "-c", "pass"], self.root, os.environ.copy(),
+                               self.root / "attempt log.txt")
+        process.start()
+        try:
+            wait_for(lambda: process.poll() == 0)
+            wait_for(lambda: not process.alive())
+            original = process._windows_accounting
+
+            def missing_member():
+                info = original()
+                info.total_processes += 1
+                return info
+
+            with mock.patch.object(process, "_windows_accounting", side_effect=missing_member):
+                with self.assertRaisesRegex(RuntimeError, "witnessed"):
+                    process.alive()
+                with self.assertRaisesRegex(RuntimeError, "cleanup"):
+                    process.close()
+            with self.assertRaisesRegex(RuntimeError, "could not be verified"):
+                process.close()
+        finally:
+            if not process._closed:
+                process.close()
 
     @unittest.skipUnless(os.name == "nt", "Windows Job Object behavior")
     def test_job_handle_is_not_inheritable(self):

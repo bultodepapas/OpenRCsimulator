@@ -76,6 +76,9 @@ func _run() -> void:
 	_check("an aborted attempt earns no total or medal but its completed lap can be the best lap", not crash.finished
 		and crash.new_best_lap and float(crash.entry.best_lap_s) == 11.0 and float(crash.entry.best_total_s) == float(goals.silver) - 1.0
 		and int(crash.entry.attempts) == 4)
+	var left := RaceRecords.apply(crash.records, course, _result(0.0, [10.5], false, "cancelled"), false)
+	_check("an attempt the pilot left is no attempt, but its completed lap is the best lap", int(left.entry.attempts) == 4
+		and float(left.entry.best_lap_s) == 10.5)
 	var path := DIR.path_join(RaceRecords.FILE_NAME)
 	_check("save then load returns the same book", RaceRecords.save_file(crash.records, path) == OK
 		and var_to_str(RaceRecords.load_file(path).records.keys()) == var_to_str(crash.records.keys())
@@ -88,6 +91,14 @@ func _run() -> void:
 	_check("an unreadable book reports itself and is kept aside, never overwritten", not corrupt.ok and corrupt.records.is_empty()
 		and not aside.is_empty() and FileAccess.file_exists(aside) and not FileAccess.file_exists(path), aside)
 	_check("a missing book is an empty book", RaceRecords.load_file(path).ok and RaceRecords.load_file(path).records.is_empty())
+	var partial := {"format": RaceRecords.FORMAT, "courses": {"good": {"best_total_s": 60.0, "best_lap_s": 20.0, "medal": "bronze",
+		"best_laps": [20.0, 20.0, 20.0]}, "bad": {"best_total_s": "fast"}}}
+	file = FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(JSON.stringify(partial))
+	file.close()
+	var read := RaceRecords.load_file(path)
+	_check("a book with an invalid entry keeps the valid ones and reports the dropped one", read.ok and read.records.has("good")
+		and not read.records.has("bad") and int(read.dropped) == 1)
 	var book := {}
 	for i in RaceRecords.MAX_COURSES + 5:
 		var other: Dictionary = course.duplicate()

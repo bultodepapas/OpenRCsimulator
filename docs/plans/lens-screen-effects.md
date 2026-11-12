@@ -592,7 +592,7 @@ Following the owner's instruction not to reinvent proven techniques:
 
 | Check | Result |
 | --- | --- |
-| [test_lens_effects.gd](../../app/tests/test_lens_effects.gd) | 68 checks, 0 failed (one buffer-layout check is skipped under the headless dummy renderer and was verified with the real renderer). Covers settings, the rain law and worked example, triggers, pilot sweep at 20/60/144 FPS, drop-pool conservation and pinning, the no-TIME rule, preference save/load and lifecycle |
+| [test_lens_effects.gd](../../app/tests/test_lens_effects.gd) | 70 checks, 0 failed (one buffer-layout check is skipped under the headless dummy renderer and was verified with the real renderer). Covers settings, the rain law and worked example, triggers, pilot sweep at 20/60/144 FPS, drop-pool conservation and pinning, the no-TIME rule, preference save/load and lifecycle |
 | [test_lens_person_strike.gd](../../app/tests/test_lens_person_strike.gd) | 8 checks, 0 failed. A real FlightSession flies into a spectator capsule; the accepted event starts the curtain once; a restored tick does not replay it |
 | Affected suites | `test_settings_ui`, `test_ui_language` (all eight catalogues), `test_display_preferences`, `test_lighting_settings_ui`, `test_shadow_settings_ui`, `test_ui_settings_integration`, `test_advanced_graphics_settings`, `test_camera_settings`, `test_ui_pause`, `test_mr_activity`, `test_mr_activity_race`, `test_mr_camera`, `test_mr_osd`, `test_accident_integration`, `test_crash`: all passed |
 | Visual review in the running app | Curtain (strike and drain), lens splatter, rain in the electrical-storm preset (pilot, chase and FPV), mud and grass, cracked lens. Screenshots stay under `tmp/` and are not committed |
@@ -654,6 +654,25 @@ Cost benchmarking was deferred: other tracks' Godot sessions were sharing the GP
 Verification: `test_lens_effects` gained checks for inertia, splash crowns, runner creep and set, and mud kept wet and rinsed by rain (68 checks, 0 failed). A rendered probe compiles every lens shader without errors. In the running app, a real ground crash in chase view left mud and a grass blade from accepted contact events. The wet-sun glare was not caught on screen in this session.
 
 `test_mr_activity` failed on its race-countdown HUD check, which drives `MultirotorHud` directly with the world and the lens disabled. Another track was editing race code at the time. The failure is outside this plan's files.
+
+### Every vehicle (2026-11-12)
+
+| Vehicle | Scene | Rain | Blood | Grime |
+| --- | --- | --- | --- | --- |
+| Airplanes | `app/main.gd` | yes | contact events (person) and the pilot sweep | contact events, crash surface |
+| Helicopter | `app/helicopter_main.gd` | via `--lens-rain-mmph` (no sky preset on this route) | crash point at a person (`strike_from_crash`, 1.2 m) | crash dust and mud |
+| FPV quad | `app/vehicles/multirotor/multirotor_scene.gd` | yes | obstacle strike at a person | crash grime, cracked lens |
+| RC cars and trucks | `app/vehicles/ground/ground_scene.gd` | yes (chase, orbit, tripod) | the truck sweeping through the driver in the pilot view | mud and water thrown by the wheels at a nearby camera (`kick_up`), dust on damage and hard landings; "Clean vehicle" also cleans the lens |
+| RC blimp | `app/vehicles/airship/airship_scene.gd` | yes | obstacle strike within the envelope's reach of a person | crash dust and mud |
+
+Every route rebuilds its lens when Settings change mid-session, resets it with the route's own reset, and reads nothing but accepted state. The cars use a vehicle-specific caption ("The vehicle struck the driver…").
+
+Verification:
+
+- `test_lens_effects` adds checks for wheel throw near and far (70 checks, 0 failed).
+- `test_rcv_activity`, `test_rcv_effects_activity`, `test_ground_departure`, `test_controller_ground`, `test_lake_world`, `test_airship_presentation` and `test_airship_workshop_flow` pass.
+- In the running app, a lens was confirmed on the blimp and on the MT8. The truck drove into the lake shore (mud activity 1.0 on all wheels), and the wheel throw put water drops and mud flecks on its lens.
+- `test_rcv_menu` and `test_airship_activity` stopped at parse errors in another track's in-progress `app/ui/controller_setup.gd`, before any lens code ran.
 
 ### Still open
 

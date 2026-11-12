@@ -1,5 +1,10 @@
 # Checked Godot commands
 
+On an enrolled shared host, ordinary focused script commands enter the
+[admitted checked preset](../testqueue/README.md) automatically. Broader engine
+operations need an admitted outer suite; resource/performance capture needs separate
+qualification. Standalone commands below remain available on unenrolled/private runners.
+
 `run_checked.py` wraps the existing Godot CLI with Python's standard library by default. It
 fails on engine, script and shader error records even when Godot exits zero. No
 code is installed in the game or simulation loop. Import resources before running

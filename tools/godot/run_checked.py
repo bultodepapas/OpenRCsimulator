@@ -108,6 +108,16 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                 resource_max_samples: int = 2100, resource_disk_paths=(),
                 resource_threads: bool = False, host_state_helper: Path | None = None) -> dict:
     required = required or []
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from tools.testqueue.common import enabled, inherited
+    engine_argv = command[:command.index("--")] if "--" in command else command
+    engine_headless = bool(command) and Path(command[0]).name.lower().startswith("godot") and "--headless" in engine_argv
+    if enabled() and not inherited("headless" if engine_headless else "rendered"):
+        if resources or host_state_helper is not None:
+            raise ValueError("resource/performance checks require a separately qualified inherited attempt")
+        from tools.testqueue.integration import checked
+        return checked(command, timeout=timeout, required=required, max_log_bytes=max_log_bytes,
+                       warnings_as_errors=warnings_as_errors, label=label)
     if type(resources) is not bool:
         raise ValueError("resources must be a boolean")
     if (not command or type(timeout) not in (int, float) or not math.isfinite(timeout)

@@ -130,23 +130,31 @@ def main() -> int:
         return 0
     variant = "_mutant" if args.mutant else ""
     descriptor = TOOL_ROOT / f"openrc_native_kernel{variant}.gdextension"
+    # NK-4: the Windows installation keeps its own descriptor and receipt beside the Linux ones.
+    app_suffix = "_windows" if sys.platform == "win32" else ""
+    app_descriptor = ROOT / f"app/native/kernel/openrc_native_kernel{app_suffix}.gdextension"
+    app_receipt = ROOT / ("app/native/kernel/build-receipt-windows.json" if app_suffix else "app/native/kernel/build-receipt.json")
     if args.app_library:
         if args.mutant:
             parser.error("--app-library never holds the mutant")
-        if not (ROOT / "app/native/kernel/openrc_native_kernel.gdextension").is_file():
-            raise SystemExit("No app install; run build.py --install-app first.")
-        descriptor = "res://native/kernel/openrc_native_kernel.gdextension"
+        if not app_descriptor.is_file():
+            raise SystemExit("No app install; run build.py (or build_windows.py) --install-app first.")
+        descriptor = f"res://native/kernel/{app_descriptor.name}"
     elif not descriptor.is_file():
         raise SystemExit(f"Missing {descriptor}; run build.py{' --mutant' if args.mutant else ''} first.")
-    descriptor_file = ROOT / "app/native/kernel/openrc_native_kernel.gdextension" if args.app_library else descriptor
+    descriptor_file = app_descriptor if args.app_library else descriptor
     binary = selected_binary(descriptor_file)
-    receipt_path = (ROOT / "app/native/kernel/build-receipt.json") if args.app_library \
-        else TOOL_ROOT / f"build-receipt{variant}.json"
+    receipt_path = app_receipt if args.app_library else TOOL_ROOT / f"build-receipt{variant}.json"
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if args.app_library:
-        receipt = receipt["platforms"]["linux"]
+        receipt = receipt["platforms"]["windows" if app_suffix else "linux"]
     binary_before = sha256(binary)
     engine_before = sha256(args.godot)
+    # NK-4: on Windows the console wrapper starts the sibling GUI executable, which is the engine that runs the
+    # oracle and the one the installed receipt binds; record it too.
+    engine_executable = args.godot.with_name(args.godot.name.replace("_console.exe", ".exe")) \
+        if args.godot.name.endswith("_console.exe") else args.godot
+    engine_executable_before = sha256(engine_executable)
     if binary_before != receipt["binary_sha256"]:
         raise SystemExit("The descriptor's binary differs from its build receipt; rebuild/reinstall first.")
     paths = reference_source_paths()
@@ -200,6 +208,8 @@ def main() -> int:
     results["binary_sha256_after"] = sha256(binary)
     results["engine_sha256_before"] = engine_before
     results["engine_sha256_after"] = sha256(args.godot)
+    results["engine_executable_sha256_before"] = engine_executable_before
+    results["engine_executable_sha256_after"] = sha256(engine_executable)
     results["harness_sources"] = harness_sources
     results["reference_sources_before"] = reference_sources_before
     results["reference_sources_after"] = {name: sha256(ROOT / name) for name in paths}
@@ -207,6 +217,7 @@ def main() -> int:
                                 for name in results["sources"]}
     results["checked_run"] = checked
     unchanged = (results["binary_sha256_after"] == binary_before and results["engine_sha256_after"] == engine_before
+                 and results["engine_executable_sha256_after"] == engine_executable_before
                  and results["sources_after"] == results["sources"]
                  and results["reference_sources_after"] == reference_sources_before
                  and all(sha256(ROOT / name) == digest for name, digest in harness_sources.items()))

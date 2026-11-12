@@ -5,6 +5,9 @@ description: Launch, inspect and drive the running OpenRC simulator from the she
 
 # Drive the running app
 
+On enrolled shared hosts follow [host admission](../../../tools/testqueue/README.md).
+Use the returned `OPENRC_TESTQUEUE_HANDLE` for every CLI control; MCP retains its own.
+
 The tool and its full command reference live in [tools/debug/README.md](../../../tools/debug/README.md): start at
 its "I want to…" table. `python3 tools/debug/debugctl.py --help` lists the client commands offline. For any other
 task (tests, traces, flight-test battery, captures) use the `openrc-tools` skill.

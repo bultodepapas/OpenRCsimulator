@@ -11366,6 +11366,9 @@ msgstr "请在起降台重新开始以再次飞行。"
 msgid "No controller: connect or check the controller."
 msgstr "无控制器：请连接或检查控制器。"
 
+msgid "Race records unreadable and not kept aside: records are not saved this session."
+msgstr "无法读取比赛记录且未能另存：本次会话不保存记录。"
+
 msgid "Best %s"
 msgstr "最佳 %s"
 
@@ -12133,3 +12136,267 @@ msgstr "线性：请在遥控器上调整响应"
 
 msgid "conflict"
 msgstr "冲突"
+
+msgid "The vehicle struck the driver. Keep it away from where you stand."
+msgstr "车辆撞到了驾驶者。让它远离你站立的位置。"
+
+msgid "Identify"
+msgstr "识别"
+
+msgid "Mode"
+msgstr "模式"
+
+msgid "Calibrate"
+msgstr "校准"
+
+msgid "Test"
+msgstr "测试"
+
+msgid "Switches"
+msgstr "开关"
+
+msgid "Airplane"
+msgstr "固定翼"
+
+msgid "Helicopter"
+msgstr "直升机"
+
+msgid "Skip"
+msgstr "跳过"
+
+msgid "Assigned"
+msgstr "已分配"
+
+msgid "Detected"
+msgstr "已检测"
+
+msgid "Reverse"
+msgstr "反向"
+
+msgid "Assign"
+msgstr "分配"
+
+msgid "Ailerons"
+msgstr "副翼"
+
+msgid "done"
+msgstr "已完成"
+
+msgid "Mode 1"
+msgstr "日本手（模式 1）"
+
+msgid "Mode 2"
+msgstr "美国手（模式 2）"
+
+msgid "RC transmitter in USB joystick mode: EdgeTX, OpenTX, JETI and others."
+msgstr "处于 USB 摇杆模式的遥控器：EdgeTX、OpenTX、JETI 等。"
+
+msgid "Xbox, PlayStation, Nintendo or another game controller."
+msgstr "Xbox、PlayStation、Nintendo 或其他游戏手柄。"
+
+msgid "Flight stick or other USB joystick. It is calibrated like a radio."
+msgstr "飞行摇杆或其他 USB 摇杆。校准方式与遥控器相同。"
+
+msgid "Triggers throttle"
+msgstr "扳机控制油门"
+
+msgid "Throttle and roll on the right stick; pitch and yaw on the left."
+msgstr "右摇杆控制油门和横滚；左摇杆控制俯仰和偏航。"
+
+msgid "Throttle and yaw on the left stick; pitch and roll on the right. The most common layout."
+msgstr "左摇杆控制油门和偏航；右摇杆控制俯仰和横滚。最常见的布局。"
+
+msgid "The right trigger sets the throttle; the sticks fly yaw, pitch and roll."
+msgstr "右扳机设定油门；摇杆控制偏航、俯仰和横滚。"
+
+msgid "Arm motors"
+msgstr "解锁电机"
+
+msgid "FPV quad"
+msgstr "FPV 四轴"
+
+msgid "EdgeTX / OpenTX: select USB Joystick (Classic) for this model."
+msgstr "EdgeTX / OpenTX：为此模型选择 USB 摇杆（经典）。"
+
+msgid "Turn the internal and external RF modules off while the radio is a joystick."
+msgstr "遥控器作为摇杆使用时，请关闭内置和外置射频模块。"
+
+msgid "Calibrate the sticks on the radio first."
+msgstr "请先在遥控器上校准摇杆。"
+
+msgid "Use expo in the radio or in the simulator, not in both."
+msgstr "指数曲线只在遥控器或模拟器其中一处使用，不要同时使用。"
+
+msgid "JETI: set USB joystick mode and your stick mode on the transmitter."
+msgstr "JETI：在遥控器上设置 USB 摇杆模式和你的摇杆模式。"
+
+msgid "Centre the stick and set any throttle lever to LOW."
+msgstr "将摇杆回中，并把油门杆放到最低。"
+
+msgid "Close other programs that use the joystick."
+msgstr "关闭其他正在使用该摇杆的程序。"
+
+msgid "Controller setup"
+msgstr "控制器设置"
+
+msgid "Changes stay in the draft until you Save."
+msgstr "更改在保存前一直是草稿。"
+
+msgid "This controller type could not be applied."
+msgstr "无法应用此控制器类型。"
+
+msgid "This stick layout could not be applied."
+msgstr "无法应用此摇杆布局。"
+
+msgid "Not assigned."
+msgstr "未分配。"
+
+msgid "Save controller settings"
+msgstr "保存控制器设置"
+
+msgid "Next step"
+msgstr "下一步"
+
+msgid "Controller settings could not be saved."
+msgstr "无法保存控制器设置。"
+
+msgid "What kind of controller is this?"
+msgstr "这是哪种控制器？"
+
+msgid "Choose the type that matches the device. A recognised device is preselected; an unknown one must be chosen before you continue."
+msgstr "请选择与设备相符的类型。已识别的设备会预先选中；未知设备必须先选择才能继续。"
+
+msgid "Not recognised. Choose its type to continue."
+msgstr "未识别。请选择类型以继续。"
+
+msgid "Detected as: %s. Change it if this is wrong."
+msgstr "检测为：%s。如有误请更改。"
+
+msgid "Which stick does what?"
+msgstr "每个摇杆控制什么？"
+
+msgid "Pick the layout you fly with. You can change it later in Controls."
+msgstr "选择你习惯的布局。之后可在控制设置中更改。"
+
+msgid "Pick your transmitter's stick mode. Calibration still detects each channel by movement."
+msgstr "选择你遥控器的摇杆模式。校准仍会通过移动识别每个通道。"
+
+msgid "The simulator measures which channel each stick sends, its centre and its endpoints. Nothing starts until you press Start calibration, and the result stays in the draft until you Save."
+msgstr "模拟器会测量每个摇杆发送的通道、中位和端点。按下“开始校准”前不会开始，结果在保存前一直是草稿。"
+
+msgid "Start calibration"
+msgstr "开始校准"
+
+msgid "Calibrate the joystick"
+msgstr "校准摇杆"
+
+msgid "Calibrate again"
+msgstr "重新校准"
+
+msgid "Calibration is running…"
+msgstr "正在校准…"
+
+msgid "Calibration finished."
+msgstr "校准完成。"
+
+msgid "Calibration did not finish."
+msgstr "校准未完成。"
+
+msgid "Calibration could not start."
+msgstr "无法开始校准。"
+
+msgid "Test the controls"
+msgstr "测试操控"
+
+msgid "Move each stick. The model should move the way you expect; if a channel works backwards, turn on Reverse next to it."
+msgstr "移动每个摇杆。模型应按你预期的方向动作；如果某个通道方向相反，请打开旁边的“反向”。"
+
+msgid "Buttons held now"
+msgstr "当前按住的按钮"
+
+msgid "Switches and buttons"
+msgstr "开关和按钮"
+
+msgid "Assign the controls you use most: press Assign, then move the switch or press the button. Skip any you do not need; you can change them later in Controls."
+msgstr "分配你最常用的控件：按“分配”，然后拨动开关或按下按钮。不需要的可以跳过；之后可在控制设置中更改。"
+
+msgid "Recovery (always available)"
+msgstr "恢复（始终可用）"
+
+msgid "Always kept"
+msgstr "始终保留"
+
+msgid "Suggested for: %s"
+msgstr "推荐用于：%s"
+
+msgid "Needed to leave menus and dialogs."
+msgstr "用于退出菜单和对话框。"
+
+msgid "Assignment could not start."
+msgstr "无法开始分配。"
+
+msgid "Waiting: move a switch or press a button. Esc or Back cancels."
+msgstr "等待中：拨动开关或按下按钮。按 Esc 或返回取消。"
+
+msgid "Check and save"
+msgstr "检查并保存"
+
+msgid "The numbers on the picture match the list. Save keeps these settings; Back changes them."
+msgstr "图中的编号与列表对应。保存将保留这些设置；返回可进行更改。"
+
+msgid "not needed for gamepads"
+msgstr "手柄无需校准"
+
+msgid "skipped; the current calibration is kept"
+msgstr "已跳过；保留当前校准"
+
+msgid "Device type: %s"
+msgstr "设备类型：%s"
+
+msgid "Stick layout: %s"
+msgstr "摇杆布局：%s"
+
+msgid "Calibration: %s"
+msgstr "校准：%s"
+
+msgid "Cancel setup"
+msgstr "取消设置"
+
+msgid "Skip this step"
+msgstr "跳过此步骤"
+
+msgid "Previous step"
+msgstr "上一步"
+
+msgid "Reverse %s"
+msgstr "反向%s"
+
+msgid "Assign %s"
+msgstr "分配%s"
+
+msgid "Seen from behind"
+msgstr "从后方看"
+
+msgid "Controller type: %s"
+msgstr "控制器类型：%s"
+
+msgid "Keyboard keys cannot be remapped yet."
+msgstr "键盘按键暂时无法重新绑定。"
+
+msgid "The keyboard uses the fixed layout shown in the picture. To edit a controller profile, select a gamepad or radio in the device list."
+msgstr "键盘使用图中所示的固定布局。要编辑控制器配置，请在设备列表中选择手柄或遥控器。"
+
+msgid "Move a stick or press a button: it lights up here and on its action."
+msgstr "移动摇杆或按下按钮：它会在这里及对应操作处亮起。"
+
+msgid "Flight keys are marked; keys you hold light up."
+msgstr "飞行按键已标出；按住的键会亮起。"
+
+msgid "Connect this controller to see its input live."
+msgstr "连接此控制器以实时查看输入。"
+
+msgid "FLIGHT KEYS"
+msgstr "飞行按键"
+
+msgid "SHORTCUTS"
+msgstr "快捷键"
