@@ -141,11 +141,17 @@ var _scheduled: Array[Dictionary] = []
 var _log_file: FileAccess
 var _log_file_seq := 0
 var _shot_index := 0
+## The FPV quad controller (read-only use of its rate-policy accumulator index, AUX_VIRTUAL_THROTTLE).
+const MultirotorFC = preload("res://physics/multirotor/flight_controller.gd")
 var _sticks := {}
 var _sticks_until_tick := -1
 var _sticks_session: Node
 var _sticks_original: Callable
 var _sticks_reader: Callable
+## The object and property holding the keyboard seam the override replaces: a flight session's `read_raw`, or the
+## FPV quad activity's input adapter `read_keys` (the quad has no session-side keyboard seam).
+var _sticks_seam: Object
+var _sticks_prop := "read_raw"
 var _step_sim: Node
 var _step_target := -1
 var _step_job := {} # each pending reply owns its result, even if another step starts before it is delivered
@@ -499,14 +505,16 @@ func _physics_process(_delta: float) -> void:
 		return
 	if not is_instance_valid(_sticks_session):
 		_sticks.clear()
+		_sticks_seam = null # the freed activity's input adapter must not stay referenced here
+		_sticks_original = Callable()
 		return
 	if _sticks_until_tick >= 0 and int(_sticks_session.sim.tick) >= _sticks_until_tick:
 		_restore_sticks()
 		return
 	# A menu closing re-installs the keyboard reader (HeldKeys): keep the override on top while it is active.
-	if _sticks_session.read_raw != _sticks_reader:
-		_sticks_original = _sticks_session.read_raw
-		_sticks_session.read_raw = _sticks_reader
+	if is_instance_valid(_sticks_seam) and _sticks_seam.get(_sticks_prop) != _sticks_reader:
+		_sticks_original = _sticks_seam.get(_sticks_prop)
+		_sticks_seam.set(_sticks_prop, _sticks_reader)
 
 
 func _forget_peer(peer_id: int) -> void:
@@ -824,7 +832,14 @@ func _run_scheduled() -> void:
 
 func _cmd_sticks(request: Dictionary) -> Dictionary:
 	var session := _session()
-	if session == null or not "read_raw" in session:
+	var seam: Object = session
+	var prop := "read_raw"
+	if session != null and not "read_raw" in session:
+		# The FPV quad: its input adapter reads the keyboard through `read_keys` (also the arm and mode keys).
+		var pilot: Variant = _vehicle().get("input")
+		seam = pilot if pilot is Object and "read_keys" in pilot else null
+		prop = "read_keys"
+	if session == null or seam == null:
 		return _fail("no flight session with a keyboard input seam")
 	if _bool(request.get("release", false)):
 		_restore_sticks()
@@ -838,7 +853,9 @@ func _cmd_sticks(request: Dictionary) -> Dictionary:
 	if _sticks_session != session:
 		_restore_sticks()
 		_sticks_session = session
-		_sticks_original = session.read_raw
+		_sticks_seam = seam
+		_sticks_prop = prop
+		_sticks_original = seam.get(prop)
 		_sticks_reader = _read_override
 	for axis: String in ["roll", "pitch", "yaw"]:
 		_sticks[axis] = clampf(values.get(axis, _sticks.get(axis, 0.0)), -1.0, 1.0)
@@ -847,9 +864,10 @@ func _cmd_sticks(request: Dictionary) -> Dictionary:
 	_sticks_until_tick = -1
 	if values.has("for_s"):
 		_sticks_until_tick = int(session.sim.tick) + maxi(1, roundi(values.for_s / session.sim.dt()))
-	session.read_raw = _sticks_reader
+	seam.set(prop, _sticks_reader)
 	var warning := ""
-	if "radio" in session and session.radio.connected:
+	var radio: Variant = session.get("radio") if "radio" in session else seam.get("radio")
+	if radio is Object and bool(radio.get("connected")):
 		warning = "a radio/gamepad is connected: it flies instead of the keyboard seam"
 	return _ok({sticks = _sticks.duplicate(), until_tick = _sticks_until_tick, warning = warning})
 
@@ -859,6 +877,8 @@ func _cmd_sticks(request: Dictionary) -> Dictionary:
 func _read_override() -> Dictionary:
 	var raw := {roll = float(_sticks.get("roll", 0.0)), pitch = float(_sticks.get("pitch", 0.0)),
 		yaw = float(_sticks.get("yaw", 0.0)), throttle = 0.0}
+	if _sticks_prop == "read_keys":
+		return _read_multirotor_override(raw)
 	if _sticks.has("throttle") and is_instance_valid(_sticks_session):
 		var current: float = float(_sticks_session.commands.throttle)
 		var per_tick: float = Spec.CONTROLS.throttle_rate * _sticks_session.sim.dt()
@@ -866,12 +886,32 @@ func _read_override() -> Dictionary:
 	return raw
 
 
+## FPV quad keyboard seam: the arm and mode keys stay live (E, M); throttle is the centred rate stick that steers the
+## controller's virtual throttle (a [0, 1] share of the limited range) toward the requested position.
+func _read_multirotor_override(raw: Dictionary) -> Dictionary:
+	var keys: Dictionary = _sticks_original.call() if _sticks_original.is_valid() else {}
+	raw.arm = bool(keys.get("arm", false))
+	raw.mode = bool(keys.get("mode", false))
+	if _sticks.has("throttle") and is_instance_valid(_sticks_session):
+		var sim: Variant = _sticks_session.sim
+		var plant: Variant = _sticks_session.get("plant")
+		var config: Variant = plant.get("config") if plant is Object else null
+		var rate := float((config as Dictionary).get("throttle_rate", 0.0)) if config is Dictionary else 0.0
+		var index := MultirotorFC.AUX_VIRTUAL_THROTTLE
+		var current: float = float(sim.aux[index]) if sim.aux.size() > index else 0.0
+		var per_tick: float = rate * sim.dt()
+		raw.throttle = clampf((float(_sticks.throttle) - current) / per_tick, -1.0, 1.0) if per_tick > 0.0 else 0.0
+	return raw
+
+
 func _restore_sticks() -> void:
-	if is_instance_valid(_sticks_session) and _sticks_session.read_raw == _sticks_reader and _sticks_original.is_valid():
-		_sticks_session.read_raw = _sticks_original
+	if is_instance_valid(_sticks_seam) and _sticks_seam.get(_sticks_prop) == _sticks_reader and _sticks_original.is_valid():
+		_sticks_seam.set(_sticks_prop, _sticks_original)
 	_sticks.clear()
 	_sticks_until_tick = -1
 	_sticks_session = null
+	_sticks_seam = null
+	_sticks_prop = "read_raw"
 
 
 func _cmd_drive(request: Dictionary) -> Dictionary:

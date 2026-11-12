@@ -63,6 +63,15 @@ const CONTACT_REACH := 0.6
 ## Pad contact refinement: pieces per tick and the CG height below which they apply (airframe radius plus margin).
 const CONTACT_SUBSTEPS := 4
 const CONTACT_SUBSTEP_HEIGHT := 0.25
+## A contact within that height is refined unless the quad is PARKED: CG speed, body rate and every rotor below
+## these bounds (a rotor below REST_ROTOR_FRACTION of the symmetric hover speed counts as stopped). A parked quad
+## takes one piece. Turning rotors keep the four pieces: at armed idle on the pad the controller and the contact
+## converge only from two pieces up (DR-18/R1, 2026-11-12).
+const REST_SPEED_MPS := 0.25
+const REST_RATE_RAD_S := 0.5
+const REST_ROTOR_FRACTION := 0.05
+## Standard gravity for the rest threshold's symmetric hover speed only (the kernel owns the gravity of the dynamics).
+const STANDARD_GRAVITY := 9.80665
 ## Crash impact law: fractions of the tangential velocity and of the body rates kept at a ground crash.
 const CRASH_TANGENT_KEEP := 0.5
 const CRASH_RATE_KEEP := 0.3
@@ -83,6 +92,8 @@ var _effective_inverse := PackedFloat64Array()
 var _points: Array[PackedFloat64Array] = []
 var _foot_count := 0
 var _body_radius := 0.0
+## Shaft speed (rad/s) above which a rotor counts as turning for the contact refinement; 0 refines any turning rotor.
+var _rest_rotor_speed := 0.0
 var _resistance := PackedFloat64Array()
 var _braking := false
 var _hub := PackedFloat64Array() # four hubs, three values each
@@ -119,6 +130,8 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 	var reach_y := 0.0
 	var rotor_inertia := 0.0
 	plant._k_t = k_t
+	var hover_speed: float = sqrt(float(data.get("mass_kg", 0.0)) * STANDARD_GRAVITY / (4.0 * k_t)) if k_t > 0.0 else NAN
+	plant._rest_rotor_speed = REST_ROTOR_FRACTION * hover_speed if is_finite(hover_speed) and hover_speed > 0.0 else 0.0
 	plant._k_q = float(data.rotor_law.torque_coefficient_n_m_s2)
 	plant._k_h = float(data.rotor_law.rotor_drag_n_s2_per_m)
 	for rotor: Dictionary in data.rotors:
@@ -406,28 +419,86 @@ func _contact_loads(body: PackedFloat64Array, attitude: PackedFloat64Array, velo
 	var stiffness: float = contacts.stiffness_n_per_m
 	var damping: float = contacts.damping_n_s_per_m
 	var friction: float = contacts.friction
-	var inverse: PackedFloat64Array = M.q_conj(attitude)
+	# DR-22/R1 scalar form of the M.* vector sequence: every value is computed by the same operations in the same
+	# order and grouping as M.q_rotate, M.add, M.cross, M.dot, M.sub, M.scale and M.norm (bit-identical results,
+	# checked against the vector form in test_mr_fast_paths), without the per-point temporary arrays.
+	var q0: float = attitude[0]
+	var q1: float = attitude[1]
+	var q2: float = attitude[2]
+	var q3: float = attitude[3]
+	var i1: float = -q1 # M.q_conj
+	var i2: float = -q2
+	var i3: float = -q3
+	var v0: float = velocity[0]
+	var v1: float = velocity[1]
+	var v2: float = velocity[2]
+	var r0: float = rates[0]
+	var r1: float = rates[1]
+	var r2: float = rates[2]
+	var fx: float = force[0]
+	var fy: float = force[1]
+	var fz: float = force[2]
+	var mx: float = moment[0]
+	var my: float = moment[1]
+	var mz: float = moment[2]
 	for point: PackedFloat64Array in _points:
-		var offset: PackedFloat64Array = M.q_rotate(attitude, point)
-		var north: float = body[RB.POS] + offset[0]
-		var east: float = body[RB.POS + 1] + offset[1]
+		var p0: float = point[0]
+		var p1: float = point[1]
+		var p2: float = point[2]
+		# offset = M.q_rotate(attitude, point)
+		var tx: float = (q2 * p2 - q3 * p1) * 2.0
+		var ty: float = (q3 * p0 - q1 * p2) * 2.0
+		var tz: float = (q1 * p1 - q2 * p0) * 2.0
+		var o0: float = (p0 + tx * q0) + (q2 * tz - q3 * ty)
+		var o1: float = (p1 + ty * q0) + (q3 * tx - q1 * tz)
+		var o2: float = (p2 + tz * q0) + (q1 * ty - q2 * tx)
+		var north: float = body[RB.POS] + o0
+		var east: float = body[RB.POS + 1] + o1
 		var surface: PackedFloat64Array = _ground_at(north, east)
-		var depth: float = body[RB.POS + 2] + offset[2] + surface[0]
+		var depth: float = body[RB.POS + 2] + o2 + surface[0]
 		if depth <= 0.0:
 			continue
 		var normal: PackedFloat64Array = Terrain.normal_from_up_slopes(surface[1], surface[2])
-		var v_world: PackedFloat64Array = M.q_rotate(attitude, M.add(velocity, M.cross(rates, point)))
-		var along: float = M.dot(v_world, normal)
-		var load: float = maxf(0.0, stiffness * depth * -normal[2] - damping * along)
+		var n0: float = normal[0]
+		var n1: float = normal[1]
+		var n2: float = normal[2]
+		# v_world = M.q_rotate(attitude, M.add(velocity, M.cross(rates, point)))
+		var a0: float = v0 + (r1 * p2 - r2 * p1)
+		var a1: float = v1 + (r2 * p0 - r0 * p2)
+		var a2: float = v2 + (r0 * p1 - r1 * p0)
+		tx = (q2 * a2 - q3 * a1) * 2.0
+		ty = (q3 * a0 - q1 * a2) * 2.0
+		tz = (q1 * a1 - q2 * a0) * 2.0
+		var w0: float = (a0 + tx * q0) + (q2 * tz - q3 * ty)
+		var w1: float = (a1 + ty * q0) + (q3 * tx - q1 * tz)
+		var w2: float = (a2 + tz * q0) + (q1 * ty - q2 * tx)
+		var along: float = w0 * n0 + w1 * n1 + w2 * n2
+		var load: float = maxf(0.0, stiffness * depth * -n2 - damping * along)
 		if load <= 0.0:
 			continue
-		var tangential: PackedFloat64Array = M.sub(v_world, M.scale(normal, along))
-		var slip: float = M.norm(tangential)
-		var f_world: PackedFloat64Array = M.add(M.scale(normal, load), M.scale(tangential, -friction * load / (slip + FRICTION_CREEP)))
-		var f_body: PackedFloat64Array = M.q_rotate(inverse, f_world)
-		force = M.add(force, f_body)
-		moment = M.add(moment, M.cross(point, f_body))
-	return {force = force, moment = moment}
+		# tangential = M.sub(v_world, M.scale(normal, along)); slip = M.norm(tangential)
+		var g0: float = w0 - n0 * along
+		var g1: float = w1 - n1 * along
+		var g2: float = w2 - n2 * along
+		var slip: float = sqrt(g0 * g0 + g1 * g1 + g2 * g2)
+		var k: float = -friction * load / (slip + FRICTION_CREEP)
+		# f_world = M.add(M.scale(normal, load), M.scale(tangential, k)); f_body = M.q_rotate(q_conj, f_world)
+		var c0: float = n0 * load + g0 * k
+		var c1: float = n1 * load + g1 * k
+		var c2: float = n2 * load + g2 * k
+		tx = (i2 * c2 - i3 * c1) * 2.0
+		ty = (i3 * c0 - i1 * c2) * 2.0
+		tz = (i1 * c1 - i2 * c0) * 2.0
+		var b0: float = (c0 + tx * q0) + (i2 * tz - i3 * ty)
+		var b1: float = (c1 + ty * q0) + (i3 * tx - i1 * tz)
+		var b2: float = (c2 + tz * q0) + (i1 * ty - i2 * tx)
+		fx = fx + b0
+		fy = fy + b1
+		fz = fz + b2
+		mx = mx + (p1 * b2 - p2 * b1)
+		my = my + (p2 * b0 - p0 * b2)
+		mz = mz + (p0 * b1 - p1 * b0)
+	return {force = M.v3(fx, fy, fz), moment = M.v3(mx, my, mz)}
 
 
 ## Pure endpoint transition: terminal adjudication on the accepted candidate. A crash or an exhausted pack sets the
@@ -486,10 +557,29 @@ func _settle_impact(body: PackedFloat64Array) -> PackedFloat64Array:
 
 
 ## Contact substeps for this tick: the stiff pad contact is integrated in CONTACT_SUBSTEPS pieces while the CG is
-## within CONTACT_SUBSTEP_HEIGHT of the terrain; free flight keeps one RK4 step per tick.
-func substeps(body: PackedFloat64Array, _continuous: PackedFloat64Array, _t: float) -> int:
+## within CONTACT_SUBSTEP_HEIGHT of the terrain, unless the quad is parked there (still, rotors stopped); a parked
+## quad and free flight keep one RK4 piece per tick. Parked, the heave, rocking and friction modes of the shipped
+## contact lie inside the RK4 stability region at 240 Hz and the static solution does not depend on the step, so
+## the four pieces only cost time (DR-18/R1: the parked pose moves 6e-7 m in 3 s against four pieces).
+func substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: float) -> int:
 	var under: PackedFloat64Array = _ground_at(body[RB.POS], body[RB.POS + 1])
-	return CONTACT_SUBSTEPS if -body[RB.POS + 2] - under[0] < CONTACT_SUBSTEP_HEIGHT else 1
+	if not (-body[RB.POS + 2] - under[0] < CONTACT_SUBSTEP_HEIGHT):
+		return 1
+	return CONTACT_SUBSTEPS if contact_is_moving(body, continuous) else 1
+
+
+## Whether a contact near the terrain needs the refined pieces (see substeps): CG speed, body rate or a turning
+## rotor. Non-finite values refine.
+func contact_is_moving(body: PackedFloat64Array, continuous: PackedFloat64Array) -> bool:
+	var speed2: float = body[RB.VEL] * body[RB.VEL] + body[RB.VEL + 1] * body[RB.VEL + 1] + body[RB.VEL + 2] * body[RB.VEL + 2]
+	var rate2: float = body[RB.RATE] * body[RB.RATE] + body[RB.RATE + 1] * body[RB.RATE + 1] \
+		+ body[RB.RATE + 2] * body[RB.RATE + 2]
+	if not (speed2 <= REST_SPEED_MPS * REST_SPEED_MPS) or not (rate2 <= REST_RATE_RAD_S * REST_RATE_RAD_S):
+		return true
+	for i in mini(4, continuous.size()):
+		if not (absf(continuous[i]) <= _rest_rotor_speed):
+			return true
+	return false
 
 
 ## "" or the terminal cause at this accepted body state: a hard impact of a foot or hull point, a spinning rotor

@@ -63,6 +63,8 @@ var mode_label: Label
 var arm_label: Label
 var timer_label: Label
 var race_label: Label
+## The race countdown seconds and GO, large in the upper centre (a pilot reads it at a glance, like a start light).
+var countdown_label: Label
 var battery_label: Label
 var throttle_label: Label
 var flight_label: Label
@@ -91,6 +93,9 @@ var _terminal := ""
 var _limit := {active = 1.0, pending = 1.0}
 ## Last drawn OSD geometry state (horizon, throttle) for the draw callback.
 var _draw_state := {}
+## Colours last applied per label: a theme override notifies a theme change (text re-layout), so it is set only when
+## the colour actually changes, not on every frame.
+var _label_colors := {}
 
 
 func _ready() -> void:
@@ -118,6 +123,10 @@ func _ready() -> void:
 	# DR-26/32: local race line under the tag (countdown, lap and gate, lap clock, finish or abort).
 	race_label = _label("Race", 30.0, Control.PRESET_CENTER_TOP, HORIZONTAL_ALIGNMENT_CENTER, Rect2(-520, m * 0.5 + 62 * s, 1040, 44))
 	race_label.visible = false
+	countdown_label = _label("Countdown", 110.0, Control.PRESET_CENTER, HORIZONTAL_ALIGNMENT_CENTER,
+		Rect2(-300, -330 * s, 600, 150 * s))
+	countdown_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	countdown_label.visible = false
 	mode_label = _label("FlightMode", 32.0, Control.PRESET_TOP_LEFT, HORIZONTAL_ALIGNMENT_LEFT, Rect2(m, m * 0.6, 700, 44))
 	arm_label = _label("ArmState", 22.0, Control.PRESET_TOP_LEFT, HORIZONTAL_ALIGNMENT_LEFT, Rect2(m, m * 0.6 + 44 * s, 760, 34))
 	timer_label = _label("Timer", 32.0, Control.PRESET_TOP_RIGHT, HORIZONTAL_ALIGNMENT_RIGHT, Rect2(-m - 300, m * 0.6, 300, 44))
@@ -375,6 +384,34 @@ func race_text(race: Variant) -> String:
 	return tr("Race: press G on the pad to start")
 
 
+## Whether the quad sits on the ground (the race start hint is offered only there).
+static func on_ground(t: Dictionary) -> bool:
+	return float(t.get("altitude_agl_m", 0.0)) < 0.3 and float(t.get("speed_mps", 0.0)) < 0.5
+
+
+## The large start count: the countdown second, then GO for the first second of the race; "" otherwise.
+func countdown_text(race: Variant) -> String:
+	match race_phase(race):
+		"COUNTDOWN":
+			return str(maxi(1, int(ceil(float((race as Dictionary).get("countdown_s_left", 0.0))))))
+		"RACING":
+			var r: Dictionary = race
+			if int(r.get("valid_laps", 0)) == 0 and int(r.get("next_gate", 0)) == 0 and float(r.get("elapsed_lap_s", 0.0)) < 1.0:
+				return tr("GO")
+	return ""
+
+
+static func race_phase(race: Variant) -> String:
+	return str((race as Dictionary).get("phase", "")) if typeof(race) == TYPE_DICTIONARY else ""
+
+
+func _set_color(label: Label, color: Color) -> void:
+	if _label_colors.get(label.name) == color:
+		return
+	_label_colors[label.name] = color
+	label.add_theme_color_override("font_color", color)
+
+
 ## The arm line: MOTORS ARMED, or MOTORS DISARMED with the controller's reason when an arm request is being refused.
 func arm_text(t: Dictionary, arm_requested: bool) -> String:
 	if bool(t.get("armed", false)):
@@ -437,9 +474,17 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	var armed := bool(t.get("armed", false))
 	var arm_requested := bool(osd_state.get("arm_requested", false))
 	arm_label.text = arm_text(t, arm_requested)
-	arm_label.add_theme_color_override("font_color", OSD_ARMED if armed else OSD_CAUTION)
+	_set_color(arm_label, OSD_ARMED if armed else OSD_CAUTION)
 	timer_label.text = format_timer(float(osd_state.get("flight_s", 0.0)))
 	var race_line := race_text(t.get("race", {}))
+	var big := countdown_text(t.get("race", {}))
+	countdown_label.visible = not big.is_empty() and not menu_visible
+	countdown_label.text = big
+	if race_phase(t.get("race", {})) == "COUNTDOWN":
+		race_line = "" # the large countdown says it
+	if not race_line.is_empty() and not on_ground(t) and race_phase(t.get("race", {})) in ["", "IDLE", "READY"]:
+		# The start hint is for the pad: in flight it would only clutter the top of the picture.
+		race_line = ""
 	race_label.visible = not race_line.is_empty()
 	race_label.text = race_line
 	var collective := clampf(float(t.get("collective", 0.0)), 0.0, 1.0)
@@ -464,7 +509,7 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 			lines.append("%.1f V" % volts)
 		lines.append("%.1f A   %d mAh" % [float(t.pack_current_a), int(round(float(t.consumed_mah)))])
 		battery_label.text = "\n".join(lines)
-		battery_label.add_theme_color_override("font_color", color)
+		_set_color(battery_label, color)
 		battery_label.visible = true
 	else:
 		battery_label.text = ""
@@ -529,12 +574,30 @@ func _draw_osd() -> void:
 	var along := Vector2(cos(angle), -sin(angle))
 	var ground := Vector2(sin(angle), cos(angle))
 	var outer := HORIZON_HALF * half_h
-	var inner := HORIZON_GAP * half_h
+	# Widen the centre gap where the line runs through the pilot hint (on the pad the horizon sits low, at the hint).
+	var inner := maxf(HORIZON_GAP * half_h, hint_clearance(p, s))
+	if inner >= outer:
+		return
 	for side: float in [-1.0, 1.0]:
 		var a := p + along * side * inner
 		var b := p + along * side * outer
 		_stroke(a, b, 3.0 * s)
 		_stroke(b, b + ground * HORIZON_TICK * s, 3.0 * s)
+
+
+## Half-width (px) the horizon's centre gap needs to stay clear of the visible hint text when the line passes
+## through its band; 0 otherwise.
+func hint_clearance(point: Vector2, s: float) -> float:
+	if hint_label == null or not hint_label.visible or hint_label.text.is_empty():
+		return 0.0
+	var band := _text_rect(hint_label)
+	var pad := 10.0 * s
+	if point.y < band.position.y - pad or point.y > band.end.y + pad:
+		return 0.0
+	var font := hint_label.get_theme_font("font")
+	var size := hint_label.get_theme_font_size("font_size")
+	var width := minf(font.get_multiline_string_size(hint_label.text, HORIZONTAL_ALIGNMENT_CENTER, band.size.x, size).x, band.size.x)
+	return 0.5 * width + 2.0 * pad
 
 
 ## A white OSD stroke with a dark outline (readable against sky and ground).

@@ -39,6 +39,9 @@ const TAPE_FULL := "Paused: the input tape is full (30 minutes); reset to fly ag
 const READY := "Ready. Cycle the arm switch OFF then ON at low throttle."
 ## Obstacle query reach beyond the airframe sphere (m); the plant decides a strike at the sphere radius.
 const OBSTACLE_SLACK_M := 0.5
+## Obstacle broad phase (DR-22/R1): index cell size (m) and the cell count above which a proxy is tested always.
+const OBSTACLE_INDEX_CELL_M := 4.0
+const OBSTACLE_INDEX_MAX_CELLS := 256
 const ENVELOPE_KEYS := ["format", "identity", "kernel", "crash", "tape_ticks", "paused", "collision_identity", "results"]
 ## DR-26: bound of the pending race-result outbox. A full outbox refuses another race start or attempt replacement
 ## until results are saved or discarded; an in-memory record is not durable before save_results() confirms it.
@@ -589,20 +592,64 @@ func collision_identity() -> String:
 	return str(_collision_world.get("identity", ""))
 
 
-## obstacle(north, east, down) -> signed clearance (m) to the nearest proxy within `reach`, else `reach`. Pure: a
-## fresh CollisionWorld.nearby query every call (no broad-phase cache), so the kernel's guarded callbacks see no
-## session memory.
-## `frames` are the race course's gate-frame boxes (few: tested directly, no broad phase).
+## obstacle(north, east, down) -> signed clearance (m) to the nearest proxy within `reach`, else `reach`. Pure: it
+## reads only an immutable index built here from the installed world (no query-time memory), so the kernel's
+## guarded callbacks see no session state. The result equals the former fresh CollisionWorld.nearby query bit for
+## bit: the index's fine cells give a superset of candidates, the world's own AABB-sphere test keeps exactly the
+## proxies that query returned, and the minimum of their clearances does not depend on order or repeats
+## (DR-22/R1 equivalence check in test_mr_fast_paths). `frames` are the race course's gate-frame boxes (few:
+## tested directly, no broad phase).
 static func _obstacle_query(world: Dictionary, frames: Array, reach: float) -> Callable:
+	var index: Dictionary = obstacle_index(world, reach)
 	return func(north: float, east: float, down: float) -> float:
 		var nearest := reach
-		if not world.is_empty():
-			for proxy: Dictionary in CollisionWorld.nearby(world, north, east, down, reach):
-				nearest = minf(nearest, _clearance(proxy, north, east, down))
+		if not index.is_empty() and is_finite(north) and is_finite(east) and is_finite(down):
+			for proxy: Dictionary in obstacle_candidates(index, north, east):
+				if CollisionWorld._aabb_sphere_overlap(proxy, north, east, down, reach):
+					nearest = minf(nearest, _clearance(proxy, north, east, down))
 		for proxy: Dictionary in frames:
 			if absf(north - float(proxy.north)) < proxy.span and absf(east - float(proxy.east)) < proxy.span:
 				nearest = minf(nearest, _clearance(proxy, north, east, down))
 		return nearest
+
+
+## Fine 2D broad phase over a validated world for queries of radius `reach`: {cell_m, cells: {key: Array of
+## proxies}, wide: proxies spanning too many cells}. Every proxy is listed in each cell its AABB, grown by `reach`,
+## touches, so the one cell holding a query point lists every proxy whose AABB the reach sphere can overlap.
+## {} for an empty world.
+static func obstacle_index(world: Dictionary, reach: float) -> Dictionary:
+	if world.is_empty() or not world.get("proxies") is Array:
+		return {}
+	var cell := OBSTACLE_INDEX_CELL_M
+	# A centimetre beyond the reach keeps rounding at a cell border from ever dropping a candidate.
+	var grow := reach + 0.01
+	var cells := {}
+	var wide: Array[Dictionary] = []
+	for proxy: Dictionary in world.proxies:
+		var n0 := floori((float(proxy.bounds_north_min) - grow) / cell)
+		var n1 := floori((float(proxy.bounds_north_max) + grow) / cell)
+		var e0 := floori((float(proxy.bounds_east_min) - grow) / cell)
+		var e1 := floori((float(proxy.bounds_east_max) + grow) / cell)
+		if (n1 - n0 + 1) * (e1 - e0 + 1) > OBSTACLE_INDEX_MAX_CELLS:
+			wide.append(proxy)
+			continue
+		for n in range(n0, n1 + 1):
+			for e in range(e0, e1 + 1):
+				var key := Vector2i(n, e)
+				if not cells.has(key):
+					cells[key] = []
+				cells[key].append(proxy)
+	return {cell_m = cell, cells = cells, wide = wide}
+
+
+## Candidate proxies for a point: the cell's list plus the wide proxies (a superset; the caller applies the exact
+## AABB-sphere test).
+static func obstacle_candidates(index: Dictionary, north: float, east: float) -> Array:
+	var key := Vector2i(floori(north / float(index.cell_m)), floori(east / float(index.cell_m)))
+	var listed: Array = index.cells.get(key, [])
+	if index.wide.is_empty():
+		return listed
+	return listed + index.wide
 
 
 ## Gate-frame boxes of a prepared course ({north, east, down, half_x along the gate normal, half_down, half_z

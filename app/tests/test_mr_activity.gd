@@ -19,6 +19,28 @@ const UiDriver = preload("res://tests/ui_driver.gd")
 
 const DT := 1.0 / 240.0
 
+## AppRoot's controller registry, reduced to what the activity reads (selection, device records, the signal).
+class FakeRegistry extends RefCounted:
+	signal selection_changed(role: String, id: int)
+	var flight := -1
+	var devices := {}
+
+	func selected_device_id(role: String) -> int:
+		return flight if role == "flight" else -1
+
+	func device_for_id(id: int) -> Dictionary:
+		return (devices.get(id, {}) as Dictionary).duplicate(true)
+
+	func select_flight(id: int) -> void:
+		flight = id
+		selection_changed.emit("flight", id)
+
+	func select_device(role: String, id: int) -> bool:
+		if role == "flight":
+			select_flight(id)
+		return true
+
+
 var _count := 0
 var _failures := 0
 
@@ -90,6 +112,7 @@ func _run() -> void:
 	await ui.close_app(app)
 	await _direct_route(ui)
 	await _fixture_and_direct_launch()
+	await _audit_fixes()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -416,3 +439,84 @@ func _fixture_and_direct_launch() -> void:
 	root.remove_child(activity)
 	activity.free()
 	_check("standalone exit restores the previous accumulation", Input.use_accumulated_input)
+
+
+## 2026-11-12 drone audit fixes: the app's selected flight device (not the first joypad) flies the quad and a changed
+## selection holds the flight; Start only from the active gamepad; a queued race action dies with the menu; telemetry
+## is evaluated once per accepted tick; the race start hint only on the ground; OSD colours set only on change.
+func _audit_fixes() -> void:
+	var registry := FakeRegistry.new()
+	registry.devices[7] = {id = 7, connected = true, name = "Test gamepad", guid = "0300test", known = true, kind = "gamepad"}
+	registry.flight = 7
+	var activity: Node3D = Activity.new()
+	activity.enable_world = false
+	activity.enable_audio = false
+	activity.departure_managed = true
+	activity.controller_registry = registry
+	activity.controller_profile_for = func(_id: int) -> Dictionary: return {}
+	root.add_child(activity)
+	await process_frame
+	_check("the app's selected flight device is the source (not the first joypad)",
+		activity.input.radio.connected and int(activity.input.radio.device_id) == 7 and activity.input.source() == "gamepad",
+		activity.input.source())
+	# Unplug: the registry drops the selection (as ControllerRegistry does); the same pad returning is adopted again.
+	registry.flight = -1
+	activity._joy_connection_changed(7, false)
+	var dropped: bool = not activity.input.radio.connected
+	activity._joy_connection_changed(7, true)
+	for i in 3:
+		await process_frame
+	_check("an unplugged gamepad that returns flies the quad again", dropped and activity.input.radio.connected
+		and int(activity.input.radio.device_id) == 7 and registry.flight == 7)
+	activity.handle_action("resume")
+	var generation: int = activity.input.source_generation
+	registry.select_flight(-1)
+	await process_frame
+	await process_frame
+	_check("selecting the keyboard drops the device, holds the flight and says so", activity.input.source() == "keyboard"
+		and activity.input.source_generation > generation and activity.session.paused and activity.hud.menu_visible
+		and "disconnected" in activity.hud.menu_reason.text, activity.hud.menu_reason.text)
+	activity.handle_action("resume")
+	var start := InputEventJoypadButton.new()
+	start.device = 3
+	start.button_index = JOY_BUTTON_START
+	start.pressed = true
+	activity._unhandled_input(start)
+	_check("Start from a device that is not the active gamepad does not pause", not activity.session.paused
+		and not activity.hud.menu_visible)
+	activity.request_race()
+	var queued: int = activity._race_action
+	activity._open_menu("test hold")
+	_check("a race action queued before a hold is dropped with the menu", queued != 0 and activity._race_action == 0,
+		"queued %d" % queued)
+	var first: Dictionary = activity._current_telemetry()
+	_check("telemetry is evaluated once per accepted tick", is_same(first, activity._current_telemetry()))
+	activity.restart_on_pad()
+	_check("a pad restart drops the cached telemetry", not is_same(first, activity._current_telemetry()))
+	var hud: CanvasLayer = activity.hud
+	var t: Dictionary = activity._current_telemetry().duplicate(true)
+	t.race = {phase = "IDLE"}
+	t.altitude_agl_m = 0.02
+	t.speed_mps = 0.0
+	hud.update(t, {})
+	var on_pad: bool = hud.race_label.visible
+	t.altitude_agl_m = 12.0
+	t.speed_mps = 8.0
+	hud.update(t, {})
+	_check("the race start hint shows on the ground and hides in flight", on_pad and not hud.race_label.visible)
+	t.race = {phase = "RACING", laps = [{}, {}, {}], valid_laps = 0, next_gate = 1, gate_count = 6, elapsed_lap_s = 3.0}
+	hud.update(t, {})
+	_check("a race in progress keeps its line in flight", hud.race_label.visible and "Lap" in hud.race_label.text, hud.race_label.text)
+	_check("OSD colours are cached per label", hud._label_colors.has("ArmState"))
+	hud.hide_menu() # the start count stays clear of an open menu
+	t.race = {phase = "COUNTDOWN", countdown_s_left = 2.4}
+	hud.update(t, {})
+	var counting: bool = hud.countdown_label.visible and hud.countdown_label.text == "3" and not hud.race_label.visible
+	t.race = {phase = "RACING", laps = [{}, {}, {}], valid_laps = 0, next_gate = 0, gate_count = 6, elapsed_lap_s = 0.4}
+	hud.update(t, {})
+	var go: bool = hud.countdown_label.visible and hud.countdown_label.text == "GO"
+	t.race.elapsed_lap_s = 1.5
+	hud.update(t, {})
+	_check("the race start count is large: 3 2 1, then GO for one second", counting and go and not hud.countdown_label.visible)
+	root.remove_child(activity)
+	activity.free()

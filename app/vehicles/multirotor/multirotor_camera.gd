@@ -27,6 +27,8 @@ const CHASE_BACK_M := 1.2
 const CHASE_UP_M := 0.3
 const CHASE_AIM_UP_M := 0.12
 const CHASE_VFOV_DEG := 60.0
+## Chase heading follow rate (1/s): exponential, so the swing behind the quad is the same at 60, 120 or 240 fps.
+const CHASE_HEADING_RATE := 3.0
 ## Minimum eye clearance above the terrain in the inspection views (m).
 const EYE_CLEARANCE_M := 0.15
 ## Pilot (line of sight) zoom: the vertical FOV keeps PILOT_FRAME_M of scene height across the picture at the quad's
@@ -194,7 +196,8 @@ func update(pose: PackedFloat64Array, mount_frd: PackedFloat64Array, delta: floa
 		"chase":
 			var nose := -Frames.quat_to_render(attitude).z
 			var heading := atan2(nose.x, -nose.z) if Vector2(nose.x, nose.z).length() > 0.05 else _chase_heading
-			_chase_heading = heading if _snap else lerp_angle(_chase_heading, heading, clampf(delta * 3.0, 0.0, 1.0))
+			_chase_heading = heading if _snap else lerp_angle(_chase_heading, heading,
+				1.0 - exp(-CHASE_HEADING_RATE * maxf(delta, 0.0)))
 			var placed := chase_placement(target, _chase_heading)
 			var eye: Vector3 = placed.eye
 			eye.y = maxf(eye.y, _ground_at(ground, eye) + EYE_CLEARANCE_M)

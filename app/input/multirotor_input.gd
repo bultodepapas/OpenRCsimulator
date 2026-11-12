@@ -54,6 +54,9 @@ var _keyboard_sticks := {roll = 0.0, pitch = 0.0, yaw = 0.0}
 var _source_key := ""
 ## Pilot-chosen throttle limit per source kind ("radio", "gamepad", "keyboard"); absent = the kind's default.
 var _throttle_limits := {}
+## Key names for `raw` and the OSD bindings, looked up once (the sample runs every 240 Hz tick).
+var _arm_key_name := OS.get_keycode_string(ARM_KEY)
+var _mode_key_name := OS.get_keycode_string(MODE_KEY)
 
 
 func _init() -> void:
@@ -107,8 +110,8 @@ func bindings() -> Dictionary:
 		"gamepad":
 			return {arm = "LB", arm_switch = false, throttle_up = ""}
 		"radio":
-			return {arm = OS.get_keycode_string(ARM_KEY), arm_switch = arm_from_switch(), throttle_up = ""}
-	return {arm = OS.get_keycode_string(ARM_KEY), arm_switch = false, throttle_up = "W"}
+			return {arm = _arm_key_name, arm_switch = arm_from_switch(), throttle_up = ""}
+	return {arm = _arm_key_name, arm_switch = false, throttle_up = "W"}
 
 
 func connect_first_device() -> void:
@@ -139,6 +142,15 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	radio.connect_device(id, info, saved)
 	_source_changed()
 	message = "%s connected." % radio.device_name
+
+
+## Fly from the keyboard (the app selected no flight device): drop a connected device as a source change.
+func use_keyboard() -> void:
+	if not radio.connected:
+		return
+	radio.disconnect_device()
+	_source_changed()
+	message = "Keyboard selected: the motors are disarmed."
 
 
 ## Activate another profile on the connected device; a different mapping is a new source generation.
@@ -292,7 +304,7 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	pilot[FC.IN_ACTIONS] = float(actions)
 	var raw := {roll = pilot[FC.IN_ROLL], pitch = pilot[FC.IN_PITCH], yaw = pilot[FC.IN_YAW], throttle = throttle,
 		arm = arm_level, arm_source = arm_source, mode = "angle" if _mode == FC.FLIGHT_ANGLE else "acro",
-		arm_key = OS.get_keycode_string(ARM_KEY), mode_key = OS.get_keycode_string(MODE_KEY),
+		arm_key = _arm_key_name, mode_key = _mode_key_name,
 		arm_button = int(ARM_BUTTON), mode_button = int(MODE_BUTTON)}
 	return {pilot = pilot, source = kind, ready = ready, error = error, throttle_policy = policy, raw = raw,
 		source_generation = source_generation}

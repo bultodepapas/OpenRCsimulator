@@ -8,6 +8,7 @@ const Session = preload("res://sim/multirotor/session.gd")
 const MultirotorLog = preload("res://sim/multirotor/flight_log.gd")
 const FC = preload("res://physics/multirotor/flight_controller.gd")
 const PilotInput = preload("res://input/multirotor_input.gd")
+const RcInput = preload("res://input/rc_input.gd")
 const Visual = preload("res://vehicles/multirotor/multirotor_visual.gd")
 const ViewController = preload("res://vehicles/multirotor/multirotor_camera.gd")
 const Hud = preload("res://vehicles/multirotor/multirotor_hud.gd")
@@ -41,7 +42,11 @@ signal home_requested
 
 var startup_error := ""
 var departure_managed := false
+## AppRoot's controller registry: the device selected for the "flight" role flies the quad (none = keyboard). Without
+## a registry (direct test routes) the first connected joypad is used.
 var controller_registry: RefCounted
+## AppRoot hook: device id -> the saved/active profile the controller service resolved for it ({} = not configured).
+var controller_profile_for := Callable()
 var vehicle_id: String = Catalog.ID
 var field_path: String = FieldLoader.DEFAULT_PATH
 var lighting_config: Dictionary = LightingConfig.defaults()
@@ -89,6 +94,16 @@ var _race_action := 0
 var _gate_views: Array = []
 var _gate_next := -1
 var _gate_materials: Array[StandardMaterial3D] = []
+## Telemetry of the last accepted tick (one plant evaluation per tick, not per rendered frame); emptied by the
+## session's `resetting` signal so a pad restart, prepare or restore at the same tick is never served stale values.
+var _telemetry := {}
+var _telemetry_tick := -1
+## After a resume the drawn pose stays on the accepted frame until the next tick (no blend back to a pre-pause tick).
+var _hold_pose_until_tick := -1
+## Identity (RcInput.key_for) of the active device lost to an unplug, re-selected if it returns.
+var _lost_device_key := ""
+## Whether the keyboard flies because the pilot selected it while a controller was connected (vs. no controller).
+var _keyboard_by_choice := false
 
 
 func _enter_tree() -> void:
@@ -153,11 +168,16 @@ func _ready() -> void:
 	session.depleted.connect(_on_depleted)
 	session.race_event.connect(_on_race_event)
 	session.race_result.connect(_on_race_result)
+	session.resetting.connect(_invalidate_telemetry)
 	_build_gates()
 	session.faulted.connect(func(reason: String) -> void: _open_menu(tr("Simulation paused: %s") % reason))
-	input.connect_first_device()
+	_connect_selected_controller()
+	var none_selected: bool = _has_registry() and int(controller_registry.selected_device_id("flight")) < 0
+	_keyboard_by_choice = none_selected and not Input.get_connected_joypads().is_empty()
 	_flight_generation = input.source_generation
 	Input.joy_connection_changed.connect(_joy_connection_changed)
+	if _has_registry() and controller_registry.has_signal("selection_changed"):
+		controller_registry.selection_changed.connect(_on_controller_selection_changed)
 	if enable_audio:
 		_build_audio()
 	_open_menu(tr(READY_TEXT))
@@ -173,13 +193,16 @@ func _disable() -> void:
 ## Losing focus holds the flight behind the menu; resuming is explicit.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and session != null and session.prepared and hud != null:
-		_open_menu(tr("Paused: the window lost focus."))
+		_hold(tr("Paused: the window lost focus."))
 
 
 func _exit_tree() -> void:
 	_stop_recording("left the FPV quad activity")
 	if Input.joy_connection_changed.is_connected(_joy_connection_changed):
 		Input.joy_connection_changed.disconnect(_joy_connection_changed)
+	if _has_registry() and controller_registry.has_signal("selection_changed") \
+			and controller_registry.selection_changed.is_connected(_on_controller_selection_changed):
+		controller_registry.selection_changed.disconnect(_on_controller_selection_changed)
 	var viewport := get_viewport()
 	if viewport != null and viewport.size_changed.is_connected(_on_viewport_resized):
 		viewport.size_changed.disconnect(_on_viewport_resized)
@@ -243,13 +266,95 @@ func _input_policy() -> String:
 
 func _joy_connection_changed(id: int, connected: bool) -> void:
 	var before: int = input.source_generation
-	input.on_connection_changed(id, connected)
-	if input.source_generation == before:
-		return
-	if connected:
-		_open_menu(tr("Controller connected: the motors are disarmed. Cycle the arm switch after resuming."))
+	if _has_registry():
+		# The controller service owns adoption and the "flight" selection; only a lost active device is dropped here.
+		if not connected:
+			if input.radio.connected and int(input.radio.device_id) == id:
+				_lost_device_key = str(input.radio.device_key)
+			input.on_connection_changed(id, false)
+		else:
+			_adopt_returning_device.call_deferred(id)
+		_sync_selected_controller.call_deferred()
 	else:
-		_open_menu(tr("Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."))
+		input.on_connection_changed(id, connected)
+		if not connected and not input.radio.connected:
+			# Another joypad still plugged in takes over (none: the keyboard).
+			input.connect_first_device()
+	_announce_source_change(before)
+
+
+## AppRoot suspends automatic controller selection during this activity, so the quad itself re-selects the device it
+## lost when it comes back, or a first device when the keyboard was only the fallback (none connected at start); a
+## keyboard the pilot chose stays chosen.
+func _adopt_returning_device(id: int) -> void:
+	if not is_inside_tree() or not _has_registry() or int(controller_registry.selected_device_id("flight")) >= 0:
+		return
+	var info: Dictionary = controller_registry.device_for_id(id)
+	if not bool(info.get("connected", false)):
+		return
+	var returning := not _lost_device_key.is_empty() and RcInput.key_for(id, info) == _lost_device_key
+	if returning or not _keyboard_by_choice:
+		controller_registry.select_device("flight", id)
+
+
+func _has_registry() -> bool:
+	return controller_registry != null and controller_registry.has_method("selected_device_id")
+
+
+## The app's "flight" device with the profile the controller service resolved, or the keyboard; the first joypad
+## without a registry.
+func _connect_selected_controller() -> void:
+	if not _has_registry():
+		input.connect_first_device()
+		return
+	var id := int(controller_registry.selected_device_id("flight"))
+	if id < 0:
+		input.use_keyboard()
+		return
+	_lost_device_key = ""
+	var info: Dictionary = controller_registry.device_for_id(id)
+	if not bool(info.get("connected", false)):
+		input.use_keyboard()
+		return
+	var profile: Dictionary = controller_profile_for.call(id) if controller_profile_for.is_valid() else {}
+	input.connect_device(id, info, profile)
+
+
+## Follow a changed "flight" selection (or a hot-plug the service resolved): a different device is a new source.
+func _sync_selected_controller() -> void:
+	if not is_inside_tree() or not _has_registry():
+		return
+	var id := int(controller_registry.selected_device_id("flight"))
+	var current: int = int(input.radio.device_id) if input.radio.connected else -1
+	if id == current:
+		return
+	var before: int = input.source_generation
+	_connect_selected_controller()
+	_announce_source_change(before)
+
+
+func _on_controller_selection_changed(role: String, _id: int) -> void:
+	if role == "flight":
+		_sync_selected_controller.call_deferred()
+
+
+func _announce_source_change(before: int) -> void:
+	if input.source_generation == before or session == null or not session.prepared:
+		return
+	if input.radio.connected:
+		_hold(tr("Controller connected: the motors are disarmed. Cycle the arm switch after resuming."))
+	else:
+		_hold(tr("Controller disconnected: the motors are disarmed. Cycle the arm switch after resuming."))
+
+
+## Hold the flight behind the menu for an external reason, keeping a crash or depletion message the pilot still
+## needs (the menu already offers only the restart there).
+func _hold(reason: String) -> void:
+	if hud != null and hud.menu_visible and _terminal_state() != "":
+		if session.prepared and not session.paused:
+			session.pause(reason)
+		return
+	_open_menu(reason)
 
 
 func _input(event: InputEvent) -> void:
@@ -288,7 +393,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			_:
 				return
 		get_viewport().set_input_as_handled()
-	elif event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_START:
+	elif event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_START \
+			and input.radio.connected and input.radio.is_gamepad() and event.device == input.radio.device_id:
+		# Only the active gamepad's Start: a radio in USB mode reports raw button numbers (a switch on button 6
+		# must not pause the flight), and a second, unused controller has no say.
 		if hud.menu_visible: handle_action("resume")
 		else: _open_menu(tr("Flight paused"))
 
@@ -303,6 +411,8 @@ func _flash_view() -> void:
 
 
 func _open_menu(reason: String) -> void:
+	# A race start or cancel the pilot asked for belongs to that moment, never to a later resume.
+	_race_action = RaceDirector.ACTION_NONE
 	if session.prepared and not session.paused:
 		session.pause(reason)
 	hud.set_throttle_limit(_session_limit(), input.throttle_limit())
@@ -353,6 +463,7 @@ func handle_action(action: String) -> void:
 			if not session.resume():
 				hud.flash(str(session.pause_reason))
 				return
+			_hold_pose_until_tick = int(session.sim.tick)
 			hud.hide_menu()
 		"restart":
 			restart_on_pad()
@@ -381,15 +492,34 @@ func cycle_throttle_limit() -> void:
 ## A disarmed quad back on the pad: same configuration (a new one if the source changed the throttle policy or the
 ## pilot chose another throttle limit), no stale camera history, OSD timer or crash cause. Refusal keeps the flight.
 func restart_on_pad() -> bool:
-	_stop_recording("restarted on the pad")
+	# The session's `resetting` signal closes a recording on success; a refused restart keeps flight and log.
+	_race_action = RaceDirector.ACTION_NONE
 	var ok: bool
 	if _input_policy() != str(session.options.throttle_policy) or absf(input.throttle_limit() - _session_limit()) > 1.0e-9:
-		ok = session.prepare(field, _session_options())
+		# A fresh prepare publishes no race record: abort an attempt in progress through the pad reset first.
+		ok = true
+		if session.race != null and str(_race_phase()) in ["COUNTDOWN", "RACING"]:
+			ok = session.reset_to_pad()
+		if ok and not session.prepare(field, _session_options()):
+			# The pad reset already happened: keep the scene in step with it, then say the new settings did not apply.
+			var reason := str(session.load_error)
+			_after_pad_reset()
+			hud.flash(tr("Restart refused: %s") % reason)
+			return false
 	else:
 		ok = session.reset_to_pad()
 	if not ok:
 		hud.flash(tr("Restart refused: %s") % str(session.load_error))
 		return false
+	_after_pad_reset()
+	return true
+
+
+## Scene state after the session returned to the pad: no recording, crash cause, OSD timer, aftermath, held pose or
+## stale camera history; arm switch OFF and the menu ready to fly.
+func _after_pad_reset() -> void:
+	_stop_recording("restarted on the pad")
+	_hold_pose_until_tick = -1
 	input.reset_for_restart()
 	_flight_generation = input.source_generation
 	_arm_time = -1.0
@@ -400,7 +530,6 @@ func restart_on_pad() -> bool:
 	view.snap()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
-	return true
 
 
 func _on_crashed(reason: String) -> void:
@@ -457,9 +586,11 @@ func _physics_process(_delta: float) -> void:
 func _process(delta: float) -> void:
 	if session == null or not session.prepared or visual == null:
 		return
-	var fraction := Engine.get_physics_interpolation_fraction() if not session.paused else 1.0
+	var tick := int(session.sim.tick)
+	var held: bool = session.paused or tick <= _hold_pose_until_tick
+	var fraction := Engine.get_physics_interpolation_fraction() if not held else 1.0
 	var drawn: PackedFloat64Array = session.interpolated(fraction)
-	var t: Dictionary = session.telemetry()
+	var t: Dictionary = _current_telemetry()
 	var frame_dt := delta if not session.paused else 0.0
 	visual.pose(drawn, t.get("rotor_speed_rad_s", PackedFloat64Array()), frame_dt)
 	view.update(drawn, session.data.camera.mount_frd, delta, _ground_height_render)
@@ -476,6 +607,26 @@ func _process(delta: float) -> void:
 		bindings = input.bindings(), throttle_limit = _session_limit()})
 	_update_gates(t.get("race", {}))
 	_update_audio(t, delta)
+
+
+## Session telemetry of the accepted frame. It runs one plant evaluation (loads, contact, bus), so it is computed
+## once per accepted tick and reused by every frame drawn before the next one (high refresh rates, holds, menus).
+func _current_telemetry() -> Dictionary:
+	var tick := int(session.sim.tick)
+	if tick != _telemetry_tick or _telemetry.is_empty():
+		_telemetry = session.telemetry()
+		_telemetry_tick = tick
+	return _telemetry
+
+
+func _invalidate_telemetry() -> void:
+	_telemetry = {}
+	_hold_pose_until_tick = -1
+
+
+func _race_phase() -> String:
+	var race: Variant = _current_telemetry().get("race", {})
+	return str((race as Dictionary).get("phase", "")) if typeof(race) == TYPE_DICTIONARY else ""
 
 
 func _ground_height_render(x: float, z: float) -> float:
@@ -560,14 +711,13 @@ func _refresh_controller_ui() -> void:
 func request_race() -> void:
 	if session == null or not session.prepared or session.race == null or session.paused:
 		return
-	var phase := str(session.telemetry().get("race", {}).get("phase", ""))
-	_race_action = RaceDirector.ACTION_CANCEL if phase in ["COUNTDOWN", "RACING"] else RaceDirector.ACTION_START
+	_race_action = RaceDirector.ACTION_CANCEL if _race_phase() in ["COUNTDOWN", "RACING"] else RaceDirector.ACTION_START
 
 
 func _on_race_event(event: Dictionary) -> void:
 	match str(event.get("type", "")):
 		"race_go":
-			hud.flash(tr("GO"), 1.5)
+			pass # the OSD's large start count shows GO for the first second of the race
 		"race_refused":
 			hud.flash(tr("Race start refused: return to the pad and stop"))
 		"race_lap":

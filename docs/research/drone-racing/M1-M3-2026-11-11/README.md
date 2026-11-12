@@ -61,6 +61,8 @@ Raw per-tick elapsed time around `Simulation.step()` with the shipped build (ker
 
 The handoff's 500 µs p95 development budget is **not met**. The tick was 1.37 ms p50 before the guard reuse, the validator move and the scalar stage. No tick exceeded the 4.17 ms deadline. This is one machine, not Gate P and not a target-host qualification.
 
+**In-app audit, 2026-11-12** (same PC, rendered 1920×1080, muted, debug bridge `perf`/`frames`, unchanged physics): whole session tick `sim_step_usec` 0.87 ms in the air and **3.3–3.7 ms resting on the pad** (disarmed, armed, or in the race countdown), on the original and the audited presentation code alike. On the pad the frame rate falls to 28–58 fps against a steady 120 fps (p95 8.9 ms, no hitches) in the air. Cause: within 0.25 m of the terrain the plant integrates `CONTACT_SUBSTEPS = 4` RK4 substeps (16 evaluations per tick instead of 4). The presentation `_process` costs about 0.45 ms per frame (telemetry about 80 µs, now evaluated once per accepted tick). Reducing the pad cost needs a physics change (a resting fast path or adaptive substeps, with requalification); none was made.
+
 ## Open
 
 Selected-build measurement and pilot review (DR-38…40), advanced rotor law (DR-04), native 1080p frame pacing and input latency, real radio and gamepad acceptance, sub-tick located cut and rotor-stop events, 4:3 view, ghosts and further courses (DR-27/28), rich audio and effects (DR-33/34), the firmware-style settings workspace and rates import UI (handoff P17–P21), required CI on the full suite.

@@ -95,9 +95,10 @@ func _run() -> void:
 	await _until(func() -> bool: return _phase() == Director.PHASE_COUNTDOWN, 240)
 	await _settle()
 	_check("a race request starts the countdown: the OSD counts seconds and the first gate is highlighted",
-		_phase() == Director.PHASE_COUNTDOWN and _scene.hud.race_label.text in ["3", "2", "1"] and _scene._gate_next == 0
+		_phase() == Director.PHASE_COUNTDOWN and _scene.hud.countdown_label.visible
+		and _scene.hud.countdown_label.text in ["3", "2", "1"] and not _scene.hud.race_label.visible and _scene._gate_next == 0
 		and first_bar.material_override == _scene._gate_materials[1]
-		and (_scene._gate_views[1][0] as MeshInstance3D).material_override == _scene._gate_materials[0], _scene.hud.race_label.text)
+		and (_scene._gate_views[1][0] as MeshInstance3D).material_override == _scene._gate_materials[0], _scene.hud.countdown_label.text)
 	var racing: bool = await _until(func() -> bool: return _phase() == Director.PHASE_RACING, 1500)
 	await _settle()
 	_check("GO after the countdown with the motors armed: RACING and the lap line on the OSD", racing
