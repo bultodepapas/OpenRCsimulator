@@ -332,7 +332,7 @@ static func derive(data: Dictionary, rho: float, gravity: float, heaviness_kg: f
 	model.m_total = total
 	model.lower = factor.lower
 	model.hull_stations = _hull_stations(profile, float(data.hull_aero.crossflow_drag) * float(data.hull_aero.crossflow_efficiency))
-	model.ref_area = pow(volume, 2.0 / 3.0)
+	model.ref_area = M.pow_(volume, 2.0 / 3.0)
 	# The cancelled load uses the same lateral added mass per length as C_A: k2 * hull_scale * rho * pi * R^2.
 	var half_length: float = 0.5 * float(data.envelope.length)
 	var lateral: float = spheroid_coefficients(half_length, sqrt(3.0 * volume / (4.0 * PI * half_length))).k2 \

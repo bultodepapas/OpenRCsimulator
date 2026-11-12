@@ -614,7 +614,7 @@ static func _frame_proxies(frames: Array) -> Array:
 		var across: float = box.half_z
 		var along: float = box.half_x
 		proxies.append({shape = "box", north = float(box.north), east = float(box.east), down = float(box.down),
-			half_x = across, half_z = along, half_down = float(box.half_down), sin_heading = sin(heading), cos_heading = cos(heading),
+			half_x = across, half_z = along, half_down = float(box.half_down), sin_heading = M.sin_(heading), cos_heading = M.cos_(heading),
 			span = maxf(across, along) + 2.0})
 	return proxies
 

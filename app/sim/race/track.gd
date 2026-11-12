@@ -9,6 +9,8 @@
 # timing evidence is the chord-path policy with its declared acceleration envelope (race_director.gd). 64-bit floats.
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
+
 const FORMAT := "openrc-race-track v1"
 const RULESET := "openrc-local-race-v1"
 const PATH_POLICY := "openrc-chord-path-v1"
@@ -215,7 +217,7 @@ static func _check_layout(track: Dictionary, e: PackedStringArray) -> void:
 ## Horizontal unit normal (north, east) of a compass heading in degrees.
 static func heading_normal(heading_deg: float) -> PackedFloat64Array:
 	var radians: float = deg_to_rad(heading_deg)
-	return PackedFloat64Array([cos(radians), sin(radians)])
+	return PackedFloat64Array([M.cos_(radians), M.sin_(radians)])
 
 
 ## Resolve a parsed track on a loaded field (data/field_loader.gd result `field`) and a ground callable

@@ -138,9 +138,9 @@ static func prepare(controller: Dictionary, rates: Dictionary, allocator: Dictio
 		law = LAW, period_s = period, sample_hz = sample_hz,
 		kp = controller.kp.duplicate(), ki = controller.ki.duplicate(), kd = controller.kd.duplicate(),
 		i_max = controller.i_max.duplicate(), kaw = controller.kaw.duplicate(), tau_limit = controller.tau_limit.duplicate(),
-		gyro_alpha = 1.0 - exp(-TAU * float(controller.gyro_lpf_hz) * period),
-		dterm_alpha = 1.0 - exp(-TAU * float(controller.dterm_lpf_hz) * period),
-		kff = kff.duplicate(), setpoint_alpha = 1.0 if setpoint_cutoff == 0.0 else 1.0 - exp(-TAU * setpoint_cutoff * period),
+		gyro_alpha = 1.0 - M.exp_(-TAU * float(controller.gyro_lpf_hz) * period),
+		dterm_alpha = 1.0 - M.exp_(-TAU * float(controller.dterm_lpf_hz) * period),
+		kff = kff.duplicate(), setpoint_alpha = 1.0 if setpoint_cutoff == 0.0 else 1.0 - M.exp_(-TAU * setpoint_cutoff * period),
 		angle_max_tilt = float(controller.angle_max_tilt_rad), angle_gain = float(controller.angle_gain_per_s),
 		angle_rate_limit = float(controller.angle_rate_limit_rad_s),
 		arm_low_throttle = float(controller.arm_low_throttle), throttle_rate = float(controller.throttle_rate_per_s),
@@ -385,7 +385,7 @@ static func _angle_rate_target(config: Dictionary, body: PackedFloat64Array, rol
 	var vector_norm: float = sqrt(delta[1] * delta[1] + delta[2] * delta[2] + delta[3] * delta[3])
 	var scale: float = 2.0 * flip
 	if vector_norm > 1.0e-9:
-		scale = flip * 2.0 * atan2(vector_norm, flip * delta[0]) / vector_norm
+		scale = flip * 2.0 * M.atan2_(vector_norm, flip * delta[0]) / vector_norm
 	var limit: float = config.angle_rate_limit
 	return PackedFloat64Array([
 		clampf(float(config.angle_gain) * scale * delta[1], -limit, limit),
@@ -397,8 +397,8 @@ static func _angle_rate_target(config: Dictionary, body: PackedFloat64Array, rol
 static func heading(attitude: PackedFloat64Array) -> float:
 	var nose: PackedFloat64Array = M.q_rotate(attitude, M.v3(1.0, 0.0, 0.0))
 	if sqrt(nose[0] * nose[0] + nose[1] * nose[1]) > 0.2:
-		return atan2(nose[1], nose[0])
+		return M.atan2_(nose[1], nose[0])
 	var top: PackedFloat64Array = M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))
 	if nose[2] < 0.0: # nose up: the top side points backward
-		return atan2(-top[1], -top[0])
-	return atan2(top[1], top[0])
+		return M.atan2_(-top[1], -top[0])
+	return M.atan2_(top[1], top[0])

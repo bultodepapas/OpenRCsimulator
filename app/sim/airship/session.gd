@@ -189,7 +189,7 @@ func reset() -> bool:
 		if gear.size() >= 2:
 			var front: PackedFloat64Array = gear[0].point
 			var rear: PackedFloat64Array = gear[1].point
-			pitch = atan2(front[2] - rear[2], front[0] - rear[0])
+			pitch = M.atan2_(front[2] - rear[2], front[0] - rear[0])
 	var q := M.q_from_euler(heading, pitch, 0.0)
 	if options.start == "ground":
 		var lowest := -INF
