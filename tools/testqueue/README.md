@@ -8,6 +8,9 @@ physics. Remote distribution and native graphical qualification remain in the
 
 ## Start one authority
 
+For the configured Linux connection, use the [Linux SSH guide](../../docs/tools/linux-ssh.md).
+SSH access is preparation for TQ-02, not enrollment of a qualified remote worker.
+
 Use Python 3.11 or newer. The worker uses the standard library; no package installation
 or separate queue server is required. Run it in the intended logged-in Windows user's
 session, with the exact official engine pinned by the checkout:

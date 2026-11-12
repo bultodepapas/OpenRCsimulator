@@ -119,6 +119,8 @@ route; the key is on Linux, not in the Windows or WSL checkout. Run the Linux
 commands above after connecting with `ssh vscode-megatron`, or pass a quoted
 remote command through that host. Keep both hops' host-key verification enabled.
 Do not copy the private key merely to make Windows access direct.
+The [Linux SSH guide](linux-ssh.md) owns the dedicated `openrc-linux` alias and
+current connection-readiness procedure; historical access does not prove availability.
 
 For direct access from Windows, the owner can instead enroll a dedicated Windows
 public key on the Mac. The 2026-11-06 task created

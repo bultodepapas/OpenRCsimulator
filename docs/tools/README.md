@@ -6,6 +6,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 
 | Task | Entry point / contract |
 | --- | --- |
+| Connect to the configured Linux test host over SSH | [Linux SSH connection](linux-ssh.md): pinned identity, bounded connection checks and worker qualification boundary. |
 | Coordinate agents/worktrees on a shared Windows desktop | [Host test queue](../../tools/testqueue/README.md): explicit ownership, durable waiting, isolated inputs and fail-closed recovery; experimental local adapter. |
 | Connect to the shared M1, prepare a Mac workspace or run native checks | [M1 access and workflow](macos-m1.md): SSH, paths, installed tools, desktop requirements and retained evidence. |
 | Full app checks or a CI partition | `app/test.sh`; [suite and snapshot rules](shared.md#full-app-suite). |
