@@ -103,12 +103,19 @@ func _sync_locale() -> void:
 		if _country == "US" or _failed_countries.has("US"):
 			return
 	_pending = _identity.descriptor(_desired_country)
+	# Defer creation as well as attachment: a flag can be freed while its parent
+	# is being added, before a request has started and needs a root-owned drain.
+	_start_texture_request.call_deferred(get_tree().root, _pending.duplicate())
+
+func _start_texture_request(request_root: Node, descriptor: Dictionary) -> void:
+	if not is_instance_valid(request_root):
+		_pending.clear()
+		return
 	var request := TextureRequest.new()
 	request.name = "FlagTextureRequest"
 	request.target = weakref(self)
-	request.descriptor = _pending.duplicate()
-	# Deferral also supports _ready during a parent's child insertion.
-	get_tree().root.add_child.call_deferred(request)
+	request.descriptor = descriptor
+	request_root.add_child(request)
 
 func _texture_completed(descriptor: Dictionary, texture: Texture2D) -> void:
 	if texture != null and descriptor.country == _desired_country:

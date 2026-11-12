@@ -83,11 +83,16 @@ func _resource_request_lifecycle() -> void:
 	var detached_ref: WeakRef = weakref(detached)
 	detached.free()
 	_check("detached build is freed without a request collector", detached_ref.get_ref() == null and await _wait_no_requests())
+	var orphan_baseline := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
 	var queued: MeshInstance3D = _new_flag()
 	var queued_ref: WeakRef = weakref(queued)
 	_check("tree entry queues an asynchronous request", queued.diagnostics().pending_country == "IT")
+	_check("tree entry creates no transient orphan collector",
+		int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)) == orphan_baseline)
 	queued.free()
-	_check("free before deferred request retires its collector", queued_ref.get_ref() == null and await _wait_no_requests())
+	_check("free before deferred request leaves no orphan collector", queued_ref.get_ref() == null
+		and int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)) == orphan_baseline)
+	_check("free before deferred request leaves no collector", await _wait_no_requests())
 	var live: MeshInstance3D = _new_flag()
 	var request: Node = await _wait_request(live)
 	_check("a live collector owns an actual started resource request", request != null)
@@ -105,6 +110,19 @@ func _resource_request_lifecycle() -> void:
 	_check("same country can load after an abandoned owner", await _wait_country(replacement, "IT"))
 	replacement.free()
 	_check("completed request collectors retire", await _wait_no_requests())
+	orphan_baseline = int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+	var reentered: MeshInstance3D = _new_flag()
+	root.remove_child(reentered)
+	_check("detaching before dispatch leaves only the detached flag orphaned",
+		int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)) == orphan_baseline + 1)
+	root.add_child(reentered)
+	_check("re-entry before dispatch retains the pending request without an orphan",
+		reentered.diagnostics().pending_country == "IT"
+		and int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)) == orphan_baseline)
+	_check("the re-entered flag completes its original request", await _wait_country(reentered, "IT"))
+	reentered.free()
+	_check("the re-entered flag and collector retire", await _wait_no_requests()
+		and int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)) == orphan_baseline)
 	TranslationServer.set_locale("de")
 	var removed: MeshInstance3D = _new_flag()
 	var survivor: MeshInstance3D = _new_flag()
