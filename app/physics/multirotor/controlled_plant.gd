@@ -58,18 +58,22 @@ const FRICTION_SPEED := 30.0
 const SPEED_TOLERANCE := 5.0
 const CHARGE_TOLERANCE := 2.0
 ## Regularization speed of the contact friction (m/s) and the CG height above which no contact is evaluated.
-const FRICTION_CREEP := 0.05
+## 0.02 m/s (DR-18-R2, 2026-11-12; was 0.05): softer regularization made the friction a 0.64 N·m·s yaw damper whose
+## 3.2 ms time constant, under the motors' immediate torque response, closed the armed-idle yaw loop above unit gain
+## (a 120 Hz yaw-rate flip of ±0.021 rad/s and diagonal motor chatter on the pad); 0.02 removes it with margin and
+## cuts creep on a slope 2.5 times. Below about 0.01 the stiff friction mode needs more than four pieces.
+const FRICTION_CREEP := 0.02
 const CONTACT_REACH := 0.6
 ## Pad contact refinement: pieces per tick and the CG height below which they apply (airframe radius plus margin).
 const CONTACT_SUBSTEPS := 4
 const CONTACT_SUBSTEP_HEIGHT := 0.25
-## A contact within that height is refined unless the quad is PARKED: CG speed, body rate and every rotor below
-## these bounds (a rotor below REST_ROTOR_FRACTION of the symmetric hover speed counts as stopped). A parked quad
-## takes one piece. Turning rotors keep the four pieces: at armed idle on the pad the controller and the contact
-## converge only from two pieces up (DR-18/R1, 2026-11-12).
+## A contact within that height is refined unless the quad is RESTING: CG speed, body rate and every rotor below
+## these bounds (below REST_ROTOR_FRACTION of the symmetric hover speed a rotor lifts less than a quarter of the
+## weight share: disarmed, or armed at idle). A resting quad takes `parked_pieces` (DR-18/R1, R2, 2026-11-12: with
+## the R2 friction regularization the armed-idle pad state converges from two pieces up).
 const REST_SPEED_MPS := 0.25
 const REST_RATE_RAD_S := 0.5
-const REST_ROTOR_FRACTION := 0.05
+const REST_ROTOR_FRACTION := 0.5
 ## Standard gravity for the rest threshold's symmetric hover speed only (the kernel owns the gravity of the dynamics).
 const STANDARD_GRAVITY := 9.80665
 ## One piece is admitted for a parked quad only while h·|λ| of its stiffest parked contact mode stays at or below
@@ -101,6 +105,8 @@ var _body_radius := 0.0
 var _rest_rotor_speed := 0.0
 ## h·|λ| of the stiffest parked contact mode (see parked_stiffness); above PARKED_H_LAMBDA_LIMIT nothing is parked.
 var parked_one_piece_h_lambda := INF
+## RK4 pieces per tick for a parked quad near the terrain (1…CONTACT_SUBSTEPS; see substeps).
+var parked_pieces := CONTACT_SUBSTEPS
 var _resistance := PackedFloat64Array()
 var _braking := false
 var _hub := PackedFloat64Array() # four hubs, three values each
@@ -183,8 +189,14 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 		plant._points.append(point.duplicate())
 	var yaw_inertia: float = float(data.inertia_kg_m2[2]) - (rotor_inertia if plant.electric else 0.0)
 	plant.parked_one_piece_h_lambda = parked_stiffness(data, yaw_inertia) * PARKED_CHECK_DT
-	if not (plant.parked_one_piece_h_lambda <= PARKED_H_LAMBDA_LIMIT):
-		plant._rest_rotor_speed = -1.0 # never parked: this contact needs the refined pieces even at rest
+	# The fewest pieces that keep h·|λ| of the parked contact within the bound; more than the moving contact's
+	# CONTACT_SUBSTEPS (or no estimate) means the quad is never treated as parked.
+	var needed: float = ceilf(plant.parked_one_piece_h_lambda / PARKED_H_LAMBDA_LIMIT)
+	if is_finite(needed) and needed <= float(CONTACT_SUBSTEPS):
+		plant.parked_pieces = maxi(1, int(needed))
+	else:
+		plant.parked_pieces = CONTACT_SUBSTEPS
+		plant._rest_rotor_speed = -1.0
 	return {ok = true, errors = errors, plant = plant}
 
 
@@ -600,15 +612,14 @@ func _settle_impact(body: PackedFloat64Array) -> PackedFloat64Array:
 
 
 ## Contact substeps for this tick: the stiff pad contact is integrated in CONTACT_SUBSTEPS pieces while the CG is
-## within CONTACT_SUBSTEP_HEIGHT of the terrain, unless the quad is parked there (still, rotors stopped); a parked
-## quad and free flight keep one RK4 piece per tick. Parked, the heave, rocking and friction modes of the shipped
-## contact lie inside the RK4 stability region at 240 Hz and the static solution does not depend on the step, so
-## the four pieces only cost time (DR-18/R1: the parked pose moves 6e-7 m in 3 s against four pieces).
+## within CONTACT_SUBSTEP_HEIGHT of the terrain, unless the quad rests there (still, rotors below lift): a resting
+## quad takes `parked_pieces`, the fewest that keep its stiffest contact mode within the RK4 bound (the static
+## solution on the flat pad does not depend on the step); free flight keeps one piece (DR-18/R1, R2).
 func substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: float) -> int:
 	var under: PackedFloat64Array = _ground_at(body[RB.POS], body[RB.POS + 1])
 	if not (-body[RB.POS + 2] - under[0] < CONTACT_SUBSTEP_HEIGHT):
 		return 1
-	return CONTACT_SUBSTEPS if contact_is_moving(body, continuous) else 1
+	return CONTACT_SUBSTEPS if contact_is_moving(body, continuous) else parked_pieces
 
 
 ## Whether a contact near the terrain needs the refined pieces (see substeps): CG speed, body rate or a turning

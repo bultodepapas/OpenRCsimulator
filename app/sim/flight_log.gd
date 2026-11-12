@@ -387,8 +387,22 @@ static func read_packet(file: FileAccess) -> Dictionary:
 	return {ok = true, value = value, digest = digest}
 
 
+## Source fingerprint computed once per game process (DR-22/R1: hashing app/physics, app/sim and app/failures takes
+## about 70 ms, a visible hitch on every recorder start). A running game cannot reload its solver scripts, so the
+## first value stays the identity of the loaded code. The editor recomputes every time: its process outlives edits.
+static var _solver_identity_cache := ""
+
+
 ## Fingerprint actual source where present. Export build identity is also retained in the header.
 static func solver_identity() -> String:
+	if Engine.is_editor_hint():
+		return _solver_identity_uncached()
+	if _solver_identity_cache.is_empty():
+		_solver_identity_cache = _solver_identity_uncached()
+	return _solver_identity_cache
+
+
+static func _solver_identity_uncached() -> String:
 	var paths: Array[String] = []
 	for directory in ["res://physics", "res://sim", "res://failures"]:
 		_source_paths(directory, paths)

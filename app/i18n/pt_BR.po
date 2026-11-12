@@ -12205,6 +12205,12 @@ msgstr "Reinicie na plataforma para voar de novo."
 msgid "No controller: connect or check the controller."
 msgstr "Sem controle: conecte ou verifique o controle."
 
+msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
+msgstr "Controle não pronto: mova os dois sticks e centralize-os, ou calibre-o em Controles."
+
+msgid "Controller not ready"
+msgstr "Controle não pronto"
+
 msgid "Restart refused: %s"
 msgstr "Reinício recusado: %s"
 

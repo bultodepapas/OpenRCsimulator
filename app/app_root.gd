@@ -776,8 +776,6 @@ func start_multirotor(vehicle_id: String = "") -> void:
 		candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
 		if controllers != null:
 			candidate.controller_registry = controllers.registry
-			# The quad flies the "flight" device with the profile the controller service resolved for it.
-			candidate.controller_profile_for = controllers.profile_for_device
 		add_child(candidate)
 		error = str(candidate.get("startup_error"))
 		if error.is_empty():

@@ -12338,6 +12338,12 @@ msgstr "Redémarrez sur l’aire pour voler à nouveau."
 msgid "No controller: connect or check the controller."
 msgstr "Aucune manette : connectez ou vérifiez la manette."
 
+msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
+msgstr "Manette pas prête : bougez les deux sticks puis recentrez-les, ou calibrez-la dans Commandes."
+
+msgid "Controller not ready"
+msgstr "Manette pas prête"
+
 msgid "Restart refused: %s"
 msgstr "Redémarrage refusé : %s"
 

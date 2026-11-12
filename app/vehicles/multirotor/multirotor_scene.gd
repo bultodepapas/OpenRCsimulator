@@ -6,6 +6,7 @@ extends Node3D
 
 const Session = preload("res://sim/multirotor/session.gd")
 const MultirotorLog = preload("res://sim/multirotor/flight_log.gd")
+const FlightLogFormat = preload("res://sim/flight_log.gd")
 const FC = preload("res://physics/multirotor/flight_controller.gd")
 const PilotInput = preload("res://input/multirotor_input.gd")
 const RcInput = preload("res://input/rc_input.gd")
@@ -45,8 +46,12 @@ var departure_managed := false
 ## AppRoot's controller registry: the device selected for the "flight" role flies the quad (none = keyboard). Without
 ## a registry (direct test routes) the first connected joypad is used.
 var controller_registry: RefCounted
-## AppRoot hook: device id -> the saved/active profile the controller service resolved for it ({} = not configured).
+## AppRoot hook (or found on the parent AppRoot's ControllerService, see _adopt_app_controllers): device id -> the
+## saved/active profile the controller service resolved for it ({} = not configured).
 var controller_profile_for := Callable()
+## AppRoot hook: ControllerService._confirmed_gamepad_connection(id, expected_id, expected_generation) — a selected,
+## known, focused gamepad needs no fresh stick motion to become ready (as in the fixed-wing flight).
+var controller_confirmation := Callable()
 var vehicle_id: String = Catalog.ID
 var field_path: String = FieldLoader.DEFAULT_PATH
 var lighting_config: Dictionary = LightingConfig.defaults()
@@ -131,6 +136,9 @@ func _ready() -> void:
 		startup_error = "FPV quad obstacle inventory refused: " + "; ".join(obstacles.get("errors", []))
 		_disable()
 		return
+	# The flight is prepared for the source that will fly it (its throttle policy and limit are session options).
+	_adopt_app_controllers()
+	_connect_selected_controller()
 	_flight_generation = input.source_generation
 	if not session.prepare(field, _session_options()):
 		startup_error = "FPV quad could not be prepared: " + str(session.load_error)
@@ -170,8 +178,9 @@ func _ready() -> void:
 	session.race_result.connect(_on_race_result)
 	session.resetting.connect(_invalidate_telemetry)
 	_build_gates()
+	# Pay the solver fingerprint (about 70 ms of source hashing, once per process) while loading, not on F10.
+	FlightLogFormat.replay_identity()
 	session.faulted.connect(func(reason: String) -> void: _open_menu(tr("Simulation paused: %s") % reason))
-	_connect_selected_controller()
 	var none_selected: bool = _has_registry() and int(controller_registry.selected_device_id("flight")) < 0
 	_keyboard_by_choice = none_selected and not Input.get_connected_joypads().is_empty()
 	_flight_generation = input.source_generation
@@ -280,6 +289,7 @@ func _joy_connection_changed(id: int, connected: bool) -> void:
 		if not connected and not input.radio.connected:
 			# Another joypad still plugged in takes over (none: the keyboard).
 			input.connect_first_device()
+		_bind_gamepad_confirmation()
 	_announce_source_change(before)
 
 
@@ -297,6 +307,48 @@ func _adopt_returning_device(id: int) -> void:
 		controller_registry.select_device("flight", id)
 
 
+## A connected known gamepad is confirmed by its live connection (ControllerService through AppRoot, or the direct
+## check below without a registry) instead of waiting for motion on all four axes and a centred dwell; a radio keeps
+## its calibrated-profile and fresh-evidence rules.
+func _bind_gamepad_confirmation() -> void:
+	if not input.radio.connected:
+		return
+	var id := int(input.radio.device_id)
+	if _has_registry():
+		if controller_confirmation.is_valid() and controller_registry.has_method("connection_generation"):
+			input.radio.confirmed_gamepad_connection = controller_confirmation.bind(id,
+				int(controller_registry.connection_generation(id)))
+	else:
+		input.radio.confirmed_gamepad_connection = _confirmed_direct_gamepad
+
+
+## The direct-route check (FlightSession._confirmed_direct_gamepad): the focused window, the same connected known pad.
+func _confirmed_direct_gamepad(id: int) -> bool:
+	if not is_inside_tree() or not get_window().has_focus() or not input.radio.connected:
+		return false
+	if id != int(input.radio.device_id) or not Input.get_connected_joypads().has(id) or not Input.is_joy_known(id):
+		return false
+	var info: Dictionary = Input.get_joy_info(id)
+	info.merge({name = Input.get_joy_name(id), guid = Input.get_joy_guid(id), known = Input.is_joy_known(id)})
+	return RcInput.key_for(id, info) == str(input.radio.device_key)
+
+
+## The parent AppRoot's ControllerService supplies the profile resolver and the live gamepad confirmation when the
+## launcher did not set them (AppRoot itself sets only the registry; app_root.gd stays out of this activity's
+## wiring because the companion behavior manifest pins its bytes).
+func _adopt_app_controllers() -> void:
+	var parent := get_parent()
+	var service: Variant = parent.get("controllers") if parent != null else null
+	if not service is Object or not is_instance_valid(service):
+		return
+	if controller_registry == null and service.get("registry") is RefCounted:
+		controller_registry = service.registry
+	if not controller_profile_for.is_valid() and service.has_method("profile_for_device"):
+		controller_profile_for = Callable(service, "profile_for_device")
+	if not controller_confirmation.is_valid() and service.has_method("_confirmed_gamepad_connection"):
+		controller_confirmation = Callable(service, "_confirmed_gamepad_connection")
+
+
 func _has_registry() -> bool:
 	return controller_registry != null and controller_registry.has_method("selected_device_id")
 
@@ -306,6 +358,7 @@ func _has_registry() -> bool:
 func _connect_selected_controller() -> void:
 	if not _has_registry():
 		input.connect_first_device()
+		_bind_gamepad_confirmation()
 		return
 	var id := int(controller_registry.selected_device_id("flight"))
 	if id < 0:
@@ -318,6 +371,7 @@ func _connect_selected_controller() -> void:
 		return
 	var profile: Dictionary = controller_profile_for.call(id) if controller_profile_for.is_valid() else {}
 	input.connect_device(id, info, profile)
+	_bind_gamepad_confirmation()
 
 
 ## Follow a changed "flight" selection (or a hot-plug the service resolved): a different device is a new source.
@@ -341,6 +395,11 @@ func _on_controller_selection_changed(role: String, _id: int) -> void:
 func _announce_source_change(before: int) -> void:
 	if input.source_generation == before or session == null or not session.prepared:
 		return
+	var stale_policy: bool = _input_policy() != str(session.options.throttle_policy)
+	var stale_limit: bool = absf(input.throttle_limit() - _session_limit()) > 1.0e-9
+	if _at_start() and (stale_policy or stale_limit):
+		# Untouched on the pad: prepare the flight for the new source at once (as Restart on pad would).
+		restart_on_pad()
 	if input.radio.connected:
 		_hold(tr("Controller connected: the motors are disarmed. Cycle the arm switch after resuming."))
 	else:
@@ -438,9 +497,13 @@ func _can_resume() -> bool:
 		and _input_policy() == str(session.options.throttle_policy)
 
 
-## A centred-stick throttle frozen above zero: resuming zeroes it first (FPV/02 §6 recovery).
+## A centred-stick throttle frozen above zero across a RECOVERY (the input source changed during the hold while the
+## motors kept authority): resuming zeroes it first (FPV/02 §6). A plain hold (P, Esc, focus loss) of the same source
+## resumes at the frozen throttle: the centred stick or released key holds it, so there is no jump, and zeroing it
+## would drop a hovering quad. A changed source disarms in the controller, which zeroes the accumulator itself.
 func _rate_reset_needed() -> bool:
-	return str(session.options.throttle_policy) == "rate" and float(session.sim.aux[FC.AUX_VIRTUAL_THROTTLE]) > 0.0
+	return str(session.options.throttle_policy) == "rate" and float(session.sim.aux[FC.AUX_VIRTUAL_THROTTLE]) > 0.0 \
+		and input.source_generation != _flight_generation
 
 
 func handle_action(action: String) -> void:
@@ -455,7 +518,8 @@ func handle_action(action: String) -> void:
 			if not scripted_pilot.is_valid():
 				var sample: Dictionary = input.sample(DT, false)
 				if not sample.ready:
-					hud.flash(tr("No controller: connect or check the controller."))
+					hud.flash(tr(Hud.NOT_READY_TEXT) if input.source() != "keyboard" \
+						else tr("No controller: connect or check the controller."))
 					return
 			if _rate_reset_needed():
 				input.request_throttle_reset()
@@ -604,9 +668,16 @@ func _process(delta: float) -> void:
 	hud.update(t, {camera = view.view_name(), tilt_deg = view.tilt_deg, hfov_deg = view.hfov_deg,
 		vfov_deg = camera.fov if camera != null else 90.0, aspect = view.aspect(), attitude = drawn.slice(6, 10),
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
-		bindings = input.bindings(), throttle_limit = _session_limit()})
+		bindings = _osd_bindings(), throttle_limit = _session_limit()})
 	_update_gates(t.get("race", {}))
 	_update_audio(t, delta)
+
+
+## The source's OSD bindings plus whether its latest sample is ready (a connected controller may not be yet).
+func _osd_bindings() -> Dictionary:
+	var bindings: Dictionary = input.bindings()
+	bindings.ready = bool(_last_input.get("ready", true))
+	return bindings
 
 
 ## Session telemetry of the accepted frame. It runs one plant evaluation (loads, contact, bus), so it is computed
@@ -698,7 +769,25 @@ func _stop_recording(reason: String) -> void:
 
 
 ## AppRoot controller hooks shared with the ground activity slot.
-func apply_controller_selection(_device_id: int) -> bool:
+## AppRoot calls this after a controller profile is saved (and with the current "flight" device): the quad adopts
+## the selected device, or the saved profile of the device it already flies, as a new source (motors disarmed, the
+## flight held behind the menu). Nothing changes when the profile is the one in use.
+func apply_controller_selection(device_id: int) -> bool:
+	if session == null or not session.prepared or not _has_registry():
+		return false
+	var current: int = int(input.radio.device_id) if input.radio.connected else -1
+	if device_id != current:
+		_sync_selected_controller()
+		return true
+	if device_id < 0 or not controller_profile_for.is_valid():
+		return true
+	var profile: Dictionary = controller_profile_for.call(device_id)
+	if profile.is_empty() or profile == input.radio.profile:
+		return true
+	var before: int = input.source_generation
+	if not input.use_profile(profile, "calibrated"):
+		return false # the quad keeps flying the profile in use; the Controls screen reports the refusal
+	_announce_source_change(before)
 	return true
 
 

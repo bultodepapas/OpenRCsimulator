@@ -19,6 +19,9 @@ const BLOCK_REASONS := {
 	FC.BLOCK_SOURCE: "No controller",
 	FC.BLOCK_TERMINAL: "Reset to the pad",
 }
+## A connected controller that is not ready yet (a gamepad awaiting live evidence, a radio without calibration).
+const NOT_READY_REASON := "Controller not ready"
+const NOT_READY_TEXT := "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
 const CAMERA_NAMES := {"fpv": "FPV", "chase": "Chase", "pilot": "Pilot"}
 const HELP_LINES := [
 	"FPV QUAD CONTROLS (Mode 2)",
@@ -413,13 +416,21 @@ func _set_color(label: Label, color: Color) -> void:
 
 
 ## The arm line: MOTORS ARMED, or MOTORS DISARMED with the controller's reason when an arm request is being refused.
-func arm_text(t: Dictionary, arm_requested: bool) -> String:
+## A connected controller whose live sample is not ready (bindings from the activity: source, ready).
+static func controller_not_ready(bindings: Dictionary) -> bool:
+	return str(bindings.get("source", "keyboard")) != "keyboard" and not bool(bindings.get("ready", true))
+
+
+## controller: a connected controller that is not ready yet (named instead of the arm block).
+func arm_text(t: Dictionary, arm_requested: bool, controller := false) -> String:
 	if bool(t.get("armed", false)):
 		return tr("MOTORS ARMED")
 	var block := int(t.get("arm_block", FC.BLOCK_NONE))
 	var reason := ""
 	if bool(t.get("crashed", false)) or bool(t.get("depleted", false)) or block == FC.BLOCK_TERMINAL:
 		reason = BLOCK_REASONS[FC.BLOCK_TERMINAL]
+	elif controller:
+		reason = NOT_READY_REASON
 	elif block == FC.BLOCK_SOURCE or block == FC.BLOCK_THROTTLE:
 		reason = BLOCK_REASONS[block]
 	elif block == FC.BLOCK_SWITCH and arm_requested:
@@ -436,9 +447,13 @@ func hint_text(t: Dictionary, arm_requested: bool, bindings: Dictionary, crash_r
 		return tr("The battery is depleted. Restart on the pad to fly again.")
 	var arm := str(bindings.get("arm", "E"))
 	var use_switch := bool(bindings.get("arm_switch", false))
+	if not bool(t.get("armed", false)) and controller_not_ready(bindings):
+		return tr(NOT_READY_TEXT)
 	if not bool(t.get("armed", false)):
 		var block := int(t.get("arm_block", FC.BLOCK_NONE))
 		if block == FC.BLOCK_SOURCE:
+			if str(bindings.get("source", "keyboard")) != "keyboard":
+				return tr(NOT_READY_TEXT)
 			return tr("No controller: connect or check the controller.")
 		if block == FC.BLOCK_THROTTLE:
 			return tr("Arming refused: lower the throttle fully, then arm again.")
@@ -473,7 +488,8 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	mode_label.text = (tr("Angle") if mode == FC.FLIGHT_ANGLE else tr("Acro")).to_upper()
 	var armed := bool(t.get("armed", false))
 	var arm_requested := bool(osd_state.get("arm_requested", false))
-	arm_label.text = arm_text(t, arm_requested)
+	var bindings: Dictionary = osd_state.get("bindings", {})
+	arm_label.text = arm_text(t, arm_requested, controller_not_ready(bindings))
 	_set_color(arm_label, OSD_ARMED if armed else OSD_CAUTION)
 	timer_label.text = format_timer(float(osd_state.get("flight_s", 0.0)))
 	var race_line := race_text(t.get("race", {}))

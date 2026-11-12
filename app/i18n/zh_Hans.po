@@ -11366,6 +11366,12 @@ msgstr "请在起降台重新开始以再次飞行。"
 msgid "No controller: connect or check the controller."
 msgstr "无控制器：请连接或检查控制器。"
 
+msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
+msgstr "控制器未就绪：请活动两个摇杆后回中，或在“控制”中校准。"
+
+msgid "Controller not ready"
+msgstr "控制器未就绪"
+
 msgid "Restart refused: %s"
 msgstr "重新开始被拒绝：%s"
 

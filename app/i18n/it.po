@@ -12193,6 +12193,12 @@ msgstr "Riparti dalla piazzola per volare di nuovo."
 msgid "No controller: connect or check the controller."
 msgstr "Nessun controller: collega o controlla il controller."
 
+msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
+msgstr "Controller non pronto: muovi entrambi gli stick e poi centrali, oppure calibralo in Comandi."
+
+msgid "Controller not ready"
+msgstr "Controller non pronto"
+
 msgid "Restart refused: %s"
 msgstr "Ripartenza rifiutata: %s"
 

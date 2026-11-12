@@ -11417,6 +11417,12 @@ msgstr "再び飛ぶにはパッドから再開してください。"
 msgid "No controller: connect or check the controller."
 msgstr "コントローラーがありません。接続または確認してください。"
 
+msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
+msgstr "コントローラーの準備ができていません。両方のスティックを動かしてから中央に戻すか、「操作」で校正してください。"
+
+msgid "Controller not ready"
+msgstr "コントローラー準備未完了"
+
 msgid "Restart refused: %s"
 msgstr "再開を拒否しました：%s"
 

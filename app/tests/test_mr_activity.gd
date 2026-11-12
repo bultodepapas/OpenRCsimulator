@@ -35,6 +35,9 @@ class FakeRegistry extends RefCounted:
 		flight = id
 		selection_changed.emit("flight", id)
 
+	func connection_generation(_id: int) -> int:
+		return 1
+
 	func select_device(role: String, id: int) -> bool:
 		if role == "flight":
 			select_flight(id)
@@ -113,6 +116,8 @@ func _run() -> void:
 	await _direct_route(ui)
 	await _fixture_and_direct_launch()
 	await _audit_fixes()
+	await _pause_keeps_throttle()
+	await _radio_source()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -454,8 +459,14 @@ func _audit_fixes() -> void:
 	activity.departure_managed = true
 	activity.controller_registry = registry
 	activity.controller_profile_for = func(_id: int) -> Dictionary: return {}
+	# ControllerService._confirmed_gamepad_connection stand-in: the selected pad of this connection generation.
+	activity.controller_confirmation = func(id: int, expected_id: int, generation: int) -> bool:
+		return id == expected_id and generation == registry.connection_generation(id) and registry.flight == id
 	root.add_child(activity)
 	await process_frame
+	var first_sample: Dictionary = activity.input.sample(DT, false)
+	_check("a confirmed gamepad is ready at once, without moving the sticks", bool(first_sample.ready),
+		str(first_sample.get("error", "")))
 	_check("the app's selected flight device is the source (not the first joypad)",
 		activity.input.radio.connected and int(activity.input.radio.device_id) == 7 and activity.input.source() == "gamepad",
 		activity.input.source())
@@ -468,6 +479,18 @@ func _audit_fixes() -> void:
 		await process_frame
 	_check("an unplugged gamepad that returns flies the quad again", dropped and activity.input.radio.connected
 		and int(activity.input.radio.device_id) == 7 and registry.flight == 7)
+	# A profile saved for the device in use (AppRoot's profile_saved hook) is adopted as a new source.
+	var custom: Dictionary = activity.input.radio.profile.duplicate(true)
+	custom.roll = (custom.roll as Dictionary).duplicate(true)
+	custom.roll.deadzone = 0.2
+	activity.controller_profile_for = func(_id: int) -> Dictionary: return custom
+	var before_profile: int = activity.input.source_generation
+	activity.handle_action("resume")
+	var adopted: bool = activity.apply_controller_selection(7)
+	_check("a profile saved for the device in use is adopted as a new source", adopted
+		and activity.input.source_generation > before_profile and is_equal_approx(float(activity.input.radio.profile.roll.get("deadzone", 0.0)), 0.2)
+		and activity.session.paused, str(activity.input.radio.profile.get("roll", {})))
+	activity.controller_profile_for = func(_id: int) -> Dictionary: return {}
 	activity.handle_action("resume")
 	var generation: int = activity.input.source_generation
 	registry.select_flight(-1)
@@ -518,5 +541,65 @@ func _audit_fixes() -> void:
 	t.race.elapsed_lap_s = 1.5
 	hud.update(t, {})
 	_check("the race start count is large: 3 2 1, then GO for one second", counting and go and not hud.countdown_label.visible)
+	root.remove_child(activity)
+	activity.free()
+
+
+## A plain pause in the air resumes at the frozen keyboard throttle (no drop); the zero-throttle resume is reserved for
+## a recovery across a source change (FPV/02 §6).
+func _pause_keeps_throttle() -> void:
+	var activity: Node3D = Activity.new()
+	activity.enable_world = false
+	activity.enable_audio = false
+	activity.departure_managed = true
+	root.add_child(activity)
+	await process_frame
+	var keys := {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0, arm = false, mode = false}
+	activity.input.read_keys = func() -> Dictionary: return keys.duplicate()
+	activity.handle_action("resume")
+	_ticks(activity, 4)
+	keys.arm = true
+	_ticks(activity, 4)
+	keys.arm = false
+	keys.throttle = 1.0
+	_ticks(activity, 60)
+	keys.throttle = 0.0
+	_ticks(activity, 2)
+	var held: float = activity.session.sim.aux[FC.AUX_VIRTUAL_THROTTLE]
+	var armed: bool = activity.session.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED
+	activity._open_menu("Flight paused")
+	var label: String = activity.hud.resume_button.text
+	activity.handle_action("resume")
+	_ticks(activity, 1)
+	_check("a plain pause resumes at the frozen keyboard throttle (no drop)", armed and held > 0.1
+		and label == "Resume flight" and activity.session.sim.aux[FC.AUX_VIRTUAL_THROTTLE] == held,
+		"%s %.3f -> %.3f" % [label, held, activity.session.sim.aux[FC.AUX_VIRTUAL_THROTTLE]])
+	root.remove_child(activity)
+	activity.free()
+
+
+## A radio selected in the app: the flight is prepared for it from the start (absolute throttle, full range), so it
+## can resume without a Restart; while it is not ready the OSD says so instead of "No controller".
+func _radio_source() -> void:
+	var registry := FakeRegistry.new()
+	registry.devices[8] = {id = 8, connected = true, name = "Test radio", guid = "0300radio", known = false, kind = "radio"}
+	registry.flight = 8
+	var activity: Node3D = Activity.new()
+	activity.enable_world = false
+	activity.enable_audio = false
+	activity.departure_managed = true
+	activity.controller_registry = registry
+	activity.controller_profile_for = func(_id: int) -> Dictionary: return {}
+	root.add_child(activity)
+	await process_frame
+	_check("a selected radio prepares the flight with its own throttle policy and limit", activity.input.source() == "radio"
+		and str(activity.session.options.throttle_policy) == "absolute" and is_equal_approx(float(activity.session.options.throttle_limit), 1.0),
+		"%s %s" % [activity.session.options.throttle_policy, activity.session.options.throttle_limit])
+	activity.handle_action("resume")
+	_ticks(activity, 2)
+	activity._process(0.0)
+	_check("an uncalibrated radio is reported as not ready, not as missing", not bool(activity._last_input.get("ready", true))
+		and "not ready" in activity.hud.hint_label.text and "Controller not ready" in activity.hud.arm_label.text,
+		"%s | %s" % [activity.hud.hint_label.text, activity.hud.arm_label.text])
 	root.remove_child(activity)
 	activity.free()

@@ -6,8 +6,8 @@
 #    seeded states resting, sliding, tumbling and plunging into the default field's terrain, and is faster.
 # 3. Contact terrain law: the plant's linearized, memoized terrain is pure (memo and order never change a value)
 #    and stays within a hair of the exact field sample.
-# 4. Contact substep policy (DR-18-R1, a declared physics change): one piece only for a parked quad, and a contact
-#    too stiff for one parked piece is never parked.
+# 4. Contact substep policy (DR-18-R1/R2, declared physics changes): a resting quad takes the fewest pieces its
+#    stiffest contact mode allows, a moving or lifting one four, and a contact too stiff for four is never resting.
 # Headless software checks; no physical claim.
 extends SceneTree
 
@@ -130,9 +130,9 @@ func _terrain(field: Dictionary) -> void:
 	s.queue_free()
 
 
-## 4. DR-18-R1 contact substep policy: one piece only for a parked quad (near the ground, still, rotors stopped),
-## four pieces for turning rotors either way, motion, rates or non-finite state, one piece in free flight; and a
-## contact too stiff for one parked piece is never parked.
+## 4. DR-18-R1/R2 contact substep policy: the resting pieces for a quad near the ground that is still with its
+## rotors below lift (disarmed or at armed idle), four pieces for lifting rotors either way, motion, rates or a
+## non-finite state, one piece in free flight; and a contact too stiff for four resting pieces never rests.
 func _substeps(field: Dictionary) -> void:
 	var s: Node = Session.new()
 	root.add_child(s)
@@ -145,12 +145,16 @@ func _substeps(field: Dictionary) -> void:
 	for i in 4:
 		stopped[i] = 0.0
 	var pieces := func(b: PackedFloat64Array, c: PackedFloat64Array) -> int: return plant.substeps(b, c, 0.0)
-	_check("the shipped quad's parked contact admits one piece (h|λ| %.2f <= %.1f)" % [plant.parked_one_piece_h_lambda,
-		Plant.PARKED_H_LAMBDA_LIMIT], plant.parked_one_piece_h_lambda <= Plant.PARKED_H_LAMBDA_LIMIT)
+	var resting: int = plant.parked_pieces
+	_check("the shipped quad rests in fewer pieces than a moving contact, each within the bound (h|λ| %.2f in %d)" % [
+		plant.parked_one_piece_h_lambda, resting], resting < Plant.CONTACT_SUBSTEPS
+		and plant.parked_one_piece_h_lambda / float(resting) <= Plant.PARKED_H_LAMBDA_LIMIT)
+	var idle := stopped.duplicate()
+	idle[2] = 300.0 # armed idle: below half the hover speed
 	var turning := stopped.duplicate()
-	turning[2] = 300.0
+	turning[2] = 700.0
 	var reverse := stopped.duplicate()
-	reverse[1] = -300.0
+	reverse[1] = -700.0
 	var sliding := body.duplicate()
 	sliding[RB.VEL] = 0.3
 	var rolling := body.duplicate()
@@ -159,9 +163,9 @@ func _substeps(field: Dictionary) -> void:
 	broken[RB.VEL + 2] = NAN
 	var lifted := body.duplicate()
 	lifted[RB.POS + 2] -= 0.5
-	_check("parked on the pad: one piece", pieces.call(body, stopped) == 1)
-	_check("armed idle (a rotor turning either way): four pieces", pieces.call(body, turning) == 4
-		and pieces.call(body, reverse) == 4)
+	_check("resting on the pad, disarmed or at armed idle: the resting pieces", pieces.call(body, stopped) == resting
+		and pieces.call(body, idle) == resting)
+	_check("a rotor lifting (either way): four pieces", pieces.call(body, turning) == 4 and pieces.call(body, reverse) == 4)
 	_check("sliding, rolling or a non-finite state on the pad: four pieces", pieces.call(sliding, stopped) == 4
 		and pieces.call(rolling, stopped) == 4 and pieces.call(broken, stopped) == 4)
 	_check("free flight, rotors stopped or turning: one piece", pieces.call(lifted, stopped) == 1
@@ -173,9 +177,41 @@ func _substeps(field: Dictionary) -> void:
 	flat[RB.POS] = 0.0
 	flat[RB.POS + 1] = 0.0
 	flat[RB.POS + 2] = -0.03 # flat fixture ground (no terrain callable) at down 0
-	_check("a contact too stiff for one parked piece is never parked", made.ok
+	_check("a contact too stiff for four resting pieces never rests", made.ok
 		and made.plant.parked_one_piece_h_lambda > Plant.PARKED_H_LAMBDA_LIMIT
 		and made.plant.substeps(flat, stopped, 0.0) == 4, "h|λ| %s" % [made.plant.parked_one_piece_h_lambda if made.ok else made.errors])
+	s.queue_free()
+
+
+## 5. DR-18-R2: armed at idle on the pad the quad sits quietly. With the former friction regularization the yaw loop
+## flipped the body rate (±0.021 rad/s) and two diagonal motor pairs every tick.
+func _quiet_idle(field: Dictionary) -> void:
+	var s: Node = Session.new()
+	root.add_child(s)
+	if not s.prepare(field, {data_path = Catalog.DATA_PATH, throttle_policy = "absolute", start = "pad"}):
+		_check("the shipped quad prepares on the default field", false, str(s.load_error))
+		return
+	s.resume()
+	var pilot := FC.neutral_input(0, true)
+	for i in 4:
+		s.tick_once(pilot)
+	pilot[FC.IN_ARM] = 1.0
+	var worst_rate := 0.0
+	var worst_step := 0.0
+	var previous := PackedFloat64Array()
+	for i in 720:
+		s.tick_once(pilot)
+		if i < 240:
+			continue
+		worst_rate = maxf(worst_rate, absf(s.sim.state[RB.RATE + 2]))
+		var commands: PackedFloat64Array = s.sim.aux.slice(FC.AUX_COMMAND, FC.AUX_COMMAND + 4)
+		if not previous.is_empty():
+			for k in 4:
+				worst_step = maxf(worst_step, absf(commands[k] - previous[k]))
+		previous = commands
+	_check("armed idle on the pad is quiet: no yaw-rate flip, no motor-command chatter",
+		s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED and worst_rate < 1.0e-3 and worst_step < 1.0e-3,
+		"yaw rate %s rad/s, command step %s" % [String.num_scientific(worst_rate), String.num_scientific(worst_step)])
 	s.queue_free()
 
 
@@ -291,5 +327,6 @@ func _run() -> void:
 	_contact(field)
 	_terrain(field)
 	_substeps(field)
+	_quiet_idle(field)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

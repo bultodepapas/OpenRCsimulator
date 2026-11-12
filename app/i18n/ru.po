@@ -12167,6 +12167,12 @@ msgstr "Начните заново на площадке, чтобы снова
 msgid "No controller: connect or check the controller."
 msgstr "Нет контроллера: подключите или проверьте контроллер."
 
+msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
+msgstr "Контроллер не готов: подвигайте оба стика и верните их в центр или откалибруйте его в разделе «Управление»."
+
+msgid "Controller not ready"
+msgstr "Контроллер не готов"
+
 msgid "Restart refused: %s"
 msgstr "Перезапуск отклонён: %s"
 

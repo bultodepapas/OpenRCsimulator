@@ -12311,6 +12311,12 @@ msgstr "Am Startplatz neu starten, um wieder zu fliegen."
 msgid "No controller: connect or check the controller."
 msgstr "Kein Controller: Controller anschließen oder prüfen."
 
+msgid "Controller not ready: move both sticks, then centre them, or calibrate it in Controls."
+msgstr "Controller nicht bereit: Beide Sticks bewegen und zentrieren oder unter Steuerung kalibrieren."
+
+msgid "Controller not ready"
+msgstr "Controller nicht bereit"
+
 msgid "Restart refused: %s"
 msgstr "Neustart abgelehnt: %s"
 

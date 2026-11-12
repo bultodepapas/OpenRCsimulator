@@ -104,14 +104,14 @@ func cycle_throttle_limit() -> float:
 
 
 ## Bindings of the active source for the OSD hints: {arm: key or button name, arm_switch: the radio's AUX switch
-## arms instead, throttle_up: key name or "" when the source has a stick}.
+## arms instead, throttle_up: key name or "" when the source has a stick, source: radio, gamepad or keyboard}.
 func bindings() -> Dictionary:
 	match source():
 		"gamepad":
-			return {arm = "LB", arm_switch = false, throttle_up = ""}
+			return {arm = "LB", arm_switch = false, throttle_up = "", source = "gamepad"}
 		"radio":
-			return {arm = _arm_key_name, arm_switch = arm_from_switch(), throttle_up = ""}
-	return {arm = _arm_key_name, arm_switch = false, throttle_up = "W"}
+			return {arm = _arm_key_name, arm_switch = arm_from_switch(), throttle_up = "", source = "radio"}
+	return {arm = _arm_key_name, arm_switch = false, throttle_up = "W", source = "keyboard"}
 
 
 func connect_first_device() -> void:
