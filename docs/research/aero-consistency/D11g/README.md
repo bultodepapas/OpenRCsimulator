@@ -81,6 +81,18 @@ reports and checked-log identities. This renewal did not rerun the Windows D11g
 reconstruction locally; required release CI and native platform checks remain
 separate evidence.
 
+The subsequent v0.2.7 metadata renewal reconstructed the v0.2.6 tag
+`0cdb3cfd2cb4fca6d71cf508555501c153e15f37`. Of the same 149 inventory paths,
+148 were unchanged; only `config/version` advanced to `0.2.7`. The normalized
+aggregate is `291e82dd6530ca66dfa1a70b3c98e49fa5236ab5e9f81d51cbe8a793844c276b`.
+The Linux baseline passed, the initial candidate refused exactly the three
+historical-source leaves, and every retained numerical/provenance field matched
+exactly. Renewed checks passed; separate source/version mutations were refused
+and restored. The [v0.2.7 receipt](2026-11-12-release-v027-qualification.json)
+retains the exact comparison and command/check identities, with the same
+Linux-only scope. The failed v0.2.6 publication candidate did not invalidate its
+independent D11g comparison.
+
 This establishes model consistency only for these inputs and sampled conditions, not general equivalence of the laws or physical validation. The original 2026-10-07 values and checks below describe the earlier D11g decision, not the present R02 values.
 
 ## Decision

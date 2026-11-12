@@ -34,6 +34,10 @@ uniform float tube_m = 0.04;
 // 1 / the scene's tonemap exposure ^ gamma (race_course_visual.gd): LED emission keeps its on-screen level and hue
 // under eye adaptation. One value for every gate, set once per frame.
 global uniform float race_exposure_comp;
+global uniform float sim_clock;
+// ShaderClock wraps at 1024 seconds; whole cycles keep the animation continuous across the wrap.
+const float CLOCK_PERIOD = 1024.0;
+const float BREATHE_RATE = 6.283185307179586 * 277.0 / CLOCK_PERIOD;
 
 const vec3 PVC = vec3(0.9, 0.91, 0.93);
 const vec3 CONNECTOR = vec3(0.09, 0.09, 0.1);
@@ -111,8 +115,9 @@ void fragment() {
 		tilt = inner_leg ? dir_in : dir_out;
 	}
 	vec3 led_rgb = mix(led_color.rgb, vec3(1.0), clamp(flash, 0.0, 1.0));
-	float swell = 1.0 + breathe * 0.35 * sin(TIME * 1.7);
-	float run = 0.45 + 0.55 * smoothstep(0.35, 0.65, fract(along_led / 0.35 - TIME * chase_speed));
+	float swell = 1.0 + breathe * 0.35 * sin(sim_clock * BREATHE_RATE);
+	float rate = round(chase_speed * CLOCK_PERIOD) / CLOCK_PERIOD;
+	float run = 0.45 + 0.55 * smoothstep(0.35, 0.65, fract(along_led / 0.35 - sim_clock * rate));
 	float level = led_energy * mix(1.0, run, chase) * swell + flash * 2.0;
 	vec3 albedo;
 	vec3 emission = vec3(0.0);

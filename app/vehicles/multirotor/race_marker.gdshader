@@ -10,13 +10,17 @@ uniform int shape = 0;
 uniform float flow_speed = 0.9;
 uniform float bob_m = 0.12;
 global uniform float race_exposure_comp;
+global uniform float sim_clock;
+// Whole cycles over ShaderClock's wrap keep the bob and path wave continuous.
+const float CLOCK_PERIOD = 1024.0;
+const float BOB_RATE = 6.283185307179586 * 424.0 / CLOCK_PERIOD;
 
 varying float flow;
 varying float view_depth;
 
 void vertex() {
 	flow = COLOR.a;
-	vec3 lift = shape == 1 ? vec3(0.0, sin(TIME * 2.6) * bob_m, 0.0) : vec3(0.0);
+	vec3 lift = shape == 1 ? vec3(0.0, sin(sim_clock * BOB_RATE) * bob_m, 0.0) : vec3(0.0);
 	// Billboard: keep the instance origin, face the camera.
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2],
 		MODEL_MATRIX[3] + vec4(lift, 0.0));
@@ -34,7 +38,8 @@ void fragment() {
 	} else {
 		alpha = pow(clamp(1.0 - length(p), 0.0, 1.0), 2.0);
 	}
-	float wave = shape == 1 ? 1.0 : 0.35 + 0.65 * pow(fract(flow * 4.0 - TIME * flow_speed), 3.0);
+	float rate = round(flow_speed * CLOCK_PERIOD) / CLOCK_PERIOD;
+	float wave = shape == 1 ? 1.0 : 0.35 + 0.65 * pow(fract(flow * 4.0 - sim_clock * rate), 3.0);
 	// Path dots fade out within a few metres of the camera (a dot at the lens would fill the picture).
 	wave *= shape == 1 ? 1.0 : smoothstep(1.2, 3.5, view_depth);
 	ALBEDO = marker_color.rgb * alpha * energy * wave * race_exposure_comp;

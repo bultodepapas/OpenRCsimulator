@@ -121,9 +121,14 @@ CI: `.github/workflows/ci.yml` job `native-kernel-windows` (windows-2025) instal
 `build_windows.py`'s evidence rules, installs, and requires the stage, session, replay and helicopter native
 markers. It is informational, not yet in the required/release set, until it has run green on the hosted runner.
 
+The v0.2.6 release preparation renewed the separate companion behavior manifest after the Home/Main changes.
+Its [Linux admission receipt](../../ai-companions/AFC-02/rebinds/2026-11-12-60b34346-to-75317347-behavior.json)
+records strict profile/Home checks and a three-companion reference flight. Solver compatibility remains covered
+by the separate nine-tape rebind; these checks do not qualify Windows native companions.
+
 ## Open
 
-- Run the new CI job once on the hosted runner, then decide whether it joins the required set
+- Rerun the UTF-8-pinned hosted CI job to green, then decide whether it joins the required set
   (`tools/ci/policy.py` `PRODUCTION`) and the release dependencies.
 - Windows release packages: the export plugin, embedded manifest and package receipt are Linux-only, and the
   4.8-beta2 Windows release template is not installed on this host. Packaged qualification belongs with the
@@ -131,8 +136,25 @@ markers. It is informational, not yet in the required/release set, until it has 
 - Windows observed-start fixtures for `test_fleet.gd --require-runtime-domain` (see above).
 - Signaling-NaN inputs: inline `sqrtsd` quiets them; the engine's path may not. Ordinary arithmetic produces only
   quiet NaNs, so this is reachable only by injected bit patterns; it is not covered by the oracles.
-- Companion admission: the solver pin is renewed (receipt `AFC-02/rebinds/2026-11-12-2ac90e15-to-192efadc.json`,
-  nine identical tapes). The separate behaviour manifest pins `main.gd`/`app_root.gd`, which several tracks
-  changed on 2026-11-12; renew it at release preparation, as v0.2.4 did.
 - Fleet campaign (`fleet_campaign.py`, 1,238 cases) was not rerun on Windows; admission is capability-based and
   every family oracle passed.
+
+## Hosted CI failure (2026-11-12)
+
+[Windows CI job 131545604928](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43321824792/job/131545604928)
+at source `0cdb3cfd2cb4fca6d71cf508555501c153e15f37` failed while reading the first `stage_oracle` subprocess log
+as UTF-8. The file's encoding setting did not transcode bytes written by the child. Its retained log contains
+CP1252-compatible bytes `0xb7` and `0xd7`; the active Windows code page was not measured. The
+[retained diagnostics](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43321824792/artifacts/13992141800)
+include the original UTF-8 engine log and have seven-day retention.
+
+The retained stage report records `run_valid=true`, a passing checked run and 128,664 of 128,664 comparisons
+identical. The job failed before checking the subprocess return code, so subsequent oracle gates,
+installation and native production markers did not run. NK-4 is informational and is not a dependency of
+`required` or `export`; Windows release flight uses the reference evaluator. The separate required Windows
+ground-vehicle build and production checks passed.
+
+The candidate sets `PYTHONIOENCODING=utf-8` for the NK-4 job and its Python subprocesses; the return-code and
+evidence checks are unchanged. A disposable Windows fixture exercised the actual inline wrapper with fake Python
+children: a forced single-byte encoding reproduced the failure, UTF-8 preserved non-ASCII output, and failing-child
+and invalid-evidence controls were rejected. A complete hosted NK-4 rerun remains pending before promotion.

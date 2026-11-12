@@ -19,6 +19,25 @@
 
 Run one with the [checked runner](../../../tools/shared.md): `python tools/godot/run_checked.py --timeout 240 --label mr --require-text ' 0 failed' -- <godot> --headless --path app --audio-driver Dummy --script res://tests/test_mr_session.gd`.
 
+## Race shader clock follow-up (2026-11-12)
+
+The v0.2.6 integration guard rejected five render-clock reads in the gate, halo
+and guidance-marker shaders. The v0.2.7 candidate uses the existing simulation
+clock, with frequencies quantized to whole cycles over its 1024-second wrap.
+No simulation or controller law changed. The existing FPV activity test with
+the production world enabled now checks clock progression, pause hold and resume: `test_mr_activity`
+passed 90 checks, `test_mr_activity_race` 19 and `test_shader_clock` 7 on Linux
+with pinned Godot 4.8 beta2. The exact shader-clock source guard passed.
+
+A normal Home → Vehicles → FPV quad → Fly → G run rendered the gate panels,
+halo and marker at 1920×1080 on Xvfb/Compatibility, Mesa 25.2.8 llvmpipe. No
+shader/script error was recorded; the unsupported-VSync warning was retained.
+The app stopped unforced with zero reported leaked objects. Diagnostics and
+the screenshot remain outside Git in `D:/OpenRCsimulator-evidence/release-v027-clock`;
+the image SHA-256 is `3cdf6372334bdad6a2b28f065d5b919f1103375b33795638302955dfdcd0b469`.
+This checks shader compilation/appearance, not target-GPU performance or physical
+flight. The short CPU-driven gate-passed flash still decays during pause.
+
 ## Kernel protocol
 
 `framed-sampled-v1` is opt-in. The cache defect of the frozen source (motor duties surviving a refused tick) cannot occur under it: there is no owner cache. TX-01…10 of the handoff ledger are asserted on a generic toy model: identical resampling, rollback of body, shafts, controller memory, modes and inputs after a malformed k1/k2/k4 or sample, refusal of a sample or stage that mutates its arguments, live kernel state, mass, model identity or a callback, one held sample across substeps and step-policy trial stages, detached full-frame reset with owner, context and tamper seals, restore equal to a fresh control, checkpoint inside `stepped`, a committed observer fault. Legacy parity: the diff was reviewed line by line by an independent reviewer, and `test_golden` (4 golden flights, worst position error 7.1e-15 m), `test_sf_vehicle_model` (40), `test_endpoint_transition` (274), `test_simulation` (11), `test_checkpoint` (104), `test_checkpoint_integrity` (149), `test_continuous_state` (42), `test_sf_event_refinement` (60), `test_sf_event_protocol` (46), `test_shaft_coupled` (101), `test_wheel_coupling` (84), `test_session_guards` (32), `test_heli_session` (42), `test_airship_session` (43), `test_rcv_session` (162) and `test_dr_multirotor_kernel` (15) pass unchanged. That review demonstrated one hole (a stage writing live sampled state was committed); it is closed by the integration-spanning guard and has its own check.

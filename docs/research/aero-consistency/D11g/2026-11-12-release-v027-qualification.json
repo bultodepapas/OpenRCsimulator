@@ -1,0 +1,179 @@
+{
+  "format": "openrc-d11g-historical-provenance-requalification-v1",
+  "date_local": "2026-11-12",
+  "baseline_commit": "0cdb3cfd2cb4fca6d71cf508555501c153e15f37",
+  "candidate_base_commit": "0cdb3cfd2cb4fca6d71cf508555501c153e15f37",
+  "inventory_changes": "project config/version 0.2.6 to 0.2.7 only",
+  "platform": "Linux x86_64 under WSL2; Windows reconstruction not rerun locally",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "inventory": {
+    "baseline_count": 149,
+    "baseline_sha256": "5c83d4e5911493abce076bbf979adf7f588f21aa59fd488a80ea1faad87d5bb2",
+    "candidate_count": 149,
+    "candidate_sha256": "291e82dd6530ca66dfa1a70b3c98e49fa5236ab5e9f81d51cbe8a793844c276b",
+    "unchanged": 148,
+    "changed": {
+      "app/project.godot": {
+        "before": "728562015f078fd0be2b673eca6309f114d59bf256a754cb4a2e7c2128402c8d",
+        "after": "2823c4715ca03ea8e28f75099f4c9f09afa7822dceb72cb8fdd6c6f139e509fc"
+      }
+    }
+  },
+  "normalized_aircraft_input": {
+    "excluded_leaves": [
+      "aero.coefficients.Cmq.value",
+      "aero.coefficients.Cmq.source",
+      "aero.coefficients.CLq.value",
+      "aero.coefficients.CLq.source",
+      "aero.coefficients.Cnr.value",
+      "aero.coefficients.Cnr.source"
+    ],
+    "ok": true,
+    "scheme": "utf8-source-text-v1",
+    "sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+  },
+  "numerical_and_provenance_result": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "law": "section-plane-source-weighted-wake-velocity-v4",
+    "engine_hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "condition": {
+      "central_difference_step_rad_s": 0.05,
+      "controls": "neutral",
+      "density_kg_m3": 1.225,
+      "speed_mps": 15.0,
+      "trim_alpha_deg": 4.195979159664104,
+      "trim_alpha_rad": 0.07323365168120345,
+      "wake": "settled instantaneous Aero.wing_wake_velocity output; no ground effect"
+    },
+    "about_cg": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -7.928815588194173,
+      "Cnr": -0.1335802424533328
+    },
+    "about_arp": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -8.082101784164095,
+      "Cnr": -0.13604012801947268
+    },
+    "rounded_4_significant_digits": {
+      "CLq": 2.357,
+      "Cmq": -8.082,
+      "Cnr": -0.136
+    },
+    "provenance": {
+      "CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
+      "Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+      "Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+    },
+    "alpha_sensitivity_about_cg": [
+      {
+        "CLq": 2.465798153025895,
+        "Cmq_about_cg": -7.882827840819535,
+        "Cnr_about_cg": -0.13681305590437906,
+        "alpha_deg": 0.0
+      },
+      {
+        "CLq": 2.4103239493708846,
+        "Cmq_about_cg": -7.895873160074377,
+        "Cnr_about_cg": -0.1354648138993857,
+        "alpha_deg": 2.0
+      },
+      {
+        "CLq": 2.3617900208368128,
+        "Cmq_about_cg": -7.925095563963791,
+        "Cnr_about_cg": -0.13376507955880204,
+        "alpha_deg": 4.0
+      },
+      {
+        "CLq": 2.3206741895900262,
+        "Cmq_about_cg": -7.970108277446484,
+        "Cnr_about_cg": -0.1317326595812141,
+        "alpha_deg": 6.0
+      }
+    ]
+  },
+  "comparison": "Exact equality of every listed numerical/provenance field. Baseline source inventory and guards reconstructed from the selected Git commit. Initial candidate and both disposable mutations refused exactly three historical-source leaves; renewed generator and updater passed. Aircraft bytes unchanged; mutations restored byte for byte.",
+  "guard_source_sha256": {
+    "research/aero/d11g/derive_rate_derivatives.gd": "cc39442dab6f336286897a248389fc35abb1e3aa1121fb2eac4bd858f1b90b76",
+    "research/aero/d11g/apply_rate_derivatives.py": "9d3d03068108bdd496d8b6e14fb77862c958e4f50e44890ab293e49f225ef9aa"
+  },
+  "reports_sha256": {
+    "baseline-v026.json": "64a4302f6896e5be531d9becae7360639604f201e7239a9662a0237809d2d5ef",
+    "candidate-after.json": "5231780dd6779713fef9322508a05192db9cd81b23be23c476a046f5eefc2753",
+    "candidate-before.json": "0200eb70e3b5ca3d58f87c144847b100e44a2e2e850f2473a441323310ffb3d4",
+    "negative-physics.json": "5341ce4054598ec56e62a9fb8a46db129cd9333d83a95dd97e4d5e15df6c216f",
+    "negative-version.json": "6af33d64dc577e8439b0408320958f0dd482ec1e880dda2c1b64e50bb8882271"
+  },
+  "checks": {
+    "baseline-v026": {
+      "exit": 0,
+      "expected_exit": 0,
+      "command_output_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report_sha256": "d9c60f4bb5d2107826183a1539969db3ecf8def8ab910f6fa8d9c5f99ae17fa7",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "engine_errors": 0
+    },
+    "baseline-v026-updater": {
+      "exit": 0,
+      "expected_exit": 0,
+      "command_output_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "candidate-before": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command_output_sha256": "ac5a26fd5dc6d15b5297e4aec8326a9fe5cf0a9e8b83c73bbc2e5dbd1c16ec01",
+      "checked_report_sha256": "87e475d44114b3efaf35fc33be3e3ad9456002da18c8722db477d3bc4c7a8941",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "engine_errors": 0
+    },
+    "candidate-before-updater": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command_output_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "candidate-after": {
+      "exit": 0,
+      "expected_exit": 0,
+      "command_output_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report_sha256": "a279e4ec500bfb0f2fd65aed29d152cf747359206639d3885a0bd135eb8a0852",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "engine_errors": 0
+    },
+    "candidate-after-updater": {
+      "exit": 0,
+      "expected_exit": 0,
+      "command_output_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "negative-version": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command_output_sha256": "fe68f2bec2f3667f45590ca430e80b15fd39dd48770042d9de35f1a636664d13",
+      "checked_report_sha256": "be264e88594b9fa015a58663d5e723607f0e92467f9b932c58153248d086d512",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "engine_errors": 0
+    },
+    "negative-version-updater": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command_output_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "negative-physics": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command_output_sha256": "55e06cfa9f0371a01237c52da8c48b6c6d57f9bfa1067c4abb57aa894e1db9f9",
+      "checked_report_sha256": "20742b03d380e53e7da3e922d25a881625532824db176f929b4c2d62ed729a3e",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "engine_errors": 0
+    },
+    "negative-physics-updater": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command_output_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    }
+  },
+  "diagnostic_root": "/mnt/d/OpenRCsimulator-evidence/release-v027-d11g",
+  "limits": "Model consistency for retained sampled conditions; no physical validation, general law equivalence or native Windows qualification."
+}

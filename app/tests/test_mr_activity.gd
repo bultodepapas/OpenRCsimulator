@@ -14,6 +14,7 @@ const Catalog = preload("res://vehicles/multirotor/multirotor_catalog.gd")
 const Activity = preload("res://vehicles/multirotor/multirotor_scene.gd")
 const Visual = preload("res://vehicles/multirotor/multirotor_visual.gd")
 const Cam = preload("res://vehicles/multirotor/multirotor_camera.gd")
+const ShaderClock = preload("res://render/shader_clock.gd")
 const FC = preload("res://physics/multirotor/flight_controller.gd")
 const UiDriver = preload("res://tests/ui_driver.gd")
 
@@ -360,20 +361,39 @@ func _limit_after_flight(activity: Node) -> void:
 
 
 func _focus(activity: Node) -> void:
+	activity._process(0.0)
+	var start_clock: float = ShaderClock.last_clock
+	var start_time: float = activity.session.sim.time()
 	activity.handle_action("resume")
 	for i in 6:
 		await physics_frame
+	activity._process(0.0)
+	var running_clock: float = ShaderClock.last_clock
+	var running_time: float = activity.session.sim.time()
 	_check("resume after restart flies again", not activity.session.paused)
+	_check("FPV world advances the shader clock with simulation time", activity.enable_world
+		and activity._environment != null and running_time > start_time
+		and is_equal_approx(ShaderClock.value(running_clock - start_clock), running_time - start_time))
 	root.propagate_notification(NOTIFICATION_APPLICATION_FOCUS_OUT)
 	var held: int = activity.session.sim.tick
+	activity._process(0.0)
+	var held_clock: float = ShaderClock.last_clock
+	var held_time: float = activity.session.sim.time()
 	for i in 10:
 		await physics_frame
+	activity._process(0.016)
 	_check("losing focus holds the flight behind the menu", activity.session.paused and activity.hud.menu_visible
 		and activity.session.sim.tick == held)
+	_check("FPV shader clock holds while paused", ShaderClock.last_clock == held_clock
+		and activity.session.sim.time() == held_time)
 	activity.handle_action("resume")
 	for i in 6:
 		await physics_frame
+	activity._process(0.0)
 	_check("explicit resume continues the same flight", not activity.session.paused and activity.session.sim.tick > held)
+	var resumed_time: float = activity.session.sim.time()
+	_check("FPV shader clock resumes with simulation time", resumed_time > held_time
+		and is_equal_approx(ShaderClock.value(ShaderClock.last_clock - held_clock), resumed_time - held_time))
 
 
 func _switching(app: Node) -> void:

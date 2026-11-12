@@ -11,6 +11,9 @@ uniform float chase = 0.0;
 uniform float chase_speed = 1.6;
 uniform float flash = 0.0;
 global uniform float race_exposure_comp;
+global uniform float sim_clock;
+// Match the gate strip and ShaderClock's 1024-second wrap.
+const float CLOCK_PERIOD = 1024.0;
 
 varying vec3 edge;
 
@@ -23,7 +26,8 @@ void fragment() {
 	float d = dot(UV - vec2(0.5), edge_dir) * 2.0;
 	float falloff = pow(clamp(0.5 * (d + 1.0), 0.0, 1.0), 3.0);
 	float along = abs(edge_dir.x) > 0.5 ? UV.y : UV.x;
-	float run = 0.8 + 0.2 * smoothstep(0.2, 0.8, fract(along * edge.z - TIME * chase_speed));
+	float rate = round(chase_speed * CLOCK_PERIOD) / CLOCK_PERIOD;
+	float run = 0.8 + 0.2 * smoothstep(0.2, 0.8, fract(along * edge.z - sim_clock * rate));
 	float modulation = mix(1.0, run, chase);
 	vec3 colour = mix(glow_color.rgb, vec3(1.0), clamp(flash, 0.0, 1.0));
 	ALBEDO = colour * falloff * (energy * modulation + flash * 1.5) * race_exposure_comp;
