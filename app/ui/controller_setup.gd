@@ -834,6 +834,9 @@ func _build() -> void:
 		position_count.item_selected.connect(_on_aux_switch_count_selected.bind(aux_name))
 		switch_label.text_changed.connect(_on_aux_switch_label_changed.bind(aux_name))
 		switch_invert.toggled.connect(_on_aux_switch_invert_toggled.bind(aux_name))
+	# Keep the flap compensation explanation with its channel without pushing a
+	# following channel editor below the compact viewport.
+	aux_grid.move_child(_aux_controls.gear.row.get_parent(), _aux_controls.flaps.row.get_parent().get_index())
 
 	page = _section_pages["axes"]
 	var preview_column := VBoxContainer.new()

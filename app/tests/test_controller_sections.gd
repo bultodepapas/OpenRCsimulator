@@ -36,11 +36,11 @@ var _pressed_button := -1
 func _initialize() -> void:
 	_run.call_deferred()
 
-func _check(label: String, condition: bool) -> void:
+func _check(label: String, condition: bool, detail := "") -> void:
 	checks += 1
 	if not condition:
 		failures += 1
-		printerr("FAIL ", label)
+		printerr("FAIL ", label, " ", detail)
 
 func _settle() -> void:
 	for frame in 5:
@@ -51,6 +51,16 @@ func _joy(button: JoyButton, device := 15) -> void:
 		var event := InputEventJoypadButton.new()
 		event.device = device
 		event.button_index = button
+		event.pressed = pressed
+		Input.parse_input_event(event)
+		await process_frame
+	await _settle()
+
+func _tab() -> void:
+	for pressed in [true, false]:
+		var event := InputEventKey.new()
+		event.keycode = KEY_TAB
+		event.physical_keycode = KEY_TAB
 		event.pressed = pressed
 		Input.parse_input_event(event)
 		await process_frame
@@ -121,6 +131,49 @@ func _test_preview_lifecycle() -> void:
 	_reset_reads()
 	_preview_tick(setup)
 	_check("AUX periodic refresh excludes flight axes", _axis_reads == 1 and _button_reads == 3)
+	UiInput.set_gamepad(5)
+	setup._aux_controls.gear.type.grab_focus()
+	var reached_flaps := false
+	for step in 24:
+		if setup._aux_controls.flaps.row.is_ancestor_of(root.gui_get_focus_owner()):
+			reached_flaps = true
+			break
+		if setup.flap_mix_owner_picker.has_focus():
+			await _joy(JOY_BUTTON_DPAD_UP, 5)
+			if setup._aux_controls.flaps.row.is_ancestor_of(root.gui_get_focus_owner()):
+				reached_flaps = true
+				break
+		await _joy(JOY_BUTTON_DPAD_DOWN, 5)
+	_check("radio D-pad navigation reaches flaps after gear", reached_flaps,
+		"focus=%s" % root.gui_get_focus_owner())
+	UiInput.isolate_joypads()
+	setup._aux_controls.gear.type.grab_focus()
+	var tab_reached_flaps := false
+	for step in 24:
+		if setup._aux_controls.flaps.row.is_ancestor_of(root.gui_get_focus_owner()):
+			tab_reached_flaps = true
+			break
+		await _tab()
+	_check("keyboard Tab navigation reaches flaps after gear", tab_reached_flaps,
+		"focus=%s" % root.gui_get_focus_owner())
+	var aux_scroll := setup.find_child("ControllerSetupScroll", true, false) as ScrollContainer
+	var mix_help := setup.find_child("FlapElevatorMixHelp", true, false) as Label
+	setup.set_process(true)
+	setup.flap_mix_owner_picker.grab_focus()
+	await _settle()
+	root.size = Vector2i(960, 640)
+	await _settle()
+	_check("focused radio flap compensation remains reachable after reflow",
+		setup.flap_mix_owner_picker.has_focus() and not setup.flap_mix_owner_picker.disabled
+		and aux_scroll.get_global_rect().grow(1.0).encloses(setup.flap_mix_owner_picker.get_global_rect()),
+		"scroll=%s picker=%s" % [aux_scroll.get_global_rect(), setup.flap_mix_owner_picker.get_global_rect()])
+	aux_scroll.ensure_control_visible(mix_help)
+	await _settle()
+	_check("full flap compensation guidance remains scrollable", mix_help.is_visible_in_tree()
+		and aux_scroll.get_global_rect().encloses(mix_help.get_global_rect()) and mix_help.text.length() > 100,
+		"scroll=%s help=%s" % [aux_scroll.get_global_rect(), mix_help.get_global_rect()])
+	setup.set_process(false)
+	root.size = Vector2i(1280, 720)
 	setup.select_section("axes")
 	var before: String = setup._preview_labels.roll.text
 	var wizard := RadioCalibration.new()
@@ -244,7 +297,30 @@ func _run() -> void:
 	setup._set_draft_profile(aux_preview_profile)
 	setup.select_section("aux")
 	await _settle()
-	_check("all three configured AUX editors fit at 1280x720 in Spanish", scroll.get_global_rect().encloses(setup._aux_controls.smoke.axis.get_global_rect()) and scroll.get_global_rect().encloses(setup._aux_controls.gear.button_mode.get_global_rect()))
+	_check("all three configured AUX editors fit at 1280x720 in Spanish", scroll.get_global_rect().encloses(setup._aux_controls.smoke.axis.get_global_rect()) and scroll.get_global_rect().encloses(setup._aux_controls.gear.button_mode.get_global_rect()),
+		"scroll=%s smoke=%s flaps=%s gear=%s mix_owner=%s mix_help=%s" % [scroll.get_global_rect(),
+			setup._aux_controls.smoke.axis.get_global_rect(), setup._aux_controls.flaps.button_mode.get_global_rect(),
+			setup._aux_controls.gear.button_mode.get_global_rect(), setup.flap_mix_owner_picker.get_global_rect(),
+			(setup.find_child("FlapElevatorMixHelp", true, false) as Control).get_global_rect()])
+	_check("configured flaps editor also fits at 1280x720 in Spanish",
+		scroll.get_global_rect().encloses(setup._aux_controls.flaps.button_mode.get_global_rect()))
+	root.size = Vector2i(1920, 1080)
+	for locale in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		setup.select_section("aux")
+		await _settle()
+		var area := scroll.get_global_rect()
+		var smoke: Control = setup._aux_controls.smoke.axis
+		var flaps: Control = setup._aux_controls.flaps.button_mode
+		var gear: Control = setup._aux_controls.gear.button_mode
+		_check("%s 1080p configured AUX editors are visible and readable" % locale,
+			smoke.is_visible_in_tree() and flaps.is_visible_in_tree() and gear.is_visible_in_tree()
+			and area.encloses(smoke.get_global_rect()) and area.encloses(flaps.get_global_rect())
+			and area.encloses(gear.get_global_rect()) and smoke.size.x >= 100.0
+			and flaps.size.x >= 144.0 and gear.size.x >= 144.0,
+			"scroll=%s smoke=%s flaps=%s gear=%s" % [area, smoke.get_global_rect(), flaps.get_global_rect(), gear.get_global_rect()])
+	root.size = Vector2i(1280, 720)
+	TranslationServer.set_locale("es")
 	setup._set_draft_profile(original)
 	setup.select_section("buttons")
 	# Explicit UI membership catches a wrong category even when row counts agree.
