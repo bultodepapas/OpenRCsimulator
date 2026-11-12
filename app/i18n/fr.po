@@ -12655,3 +12655,40 @@ msgstr "PORTE"
 
 msgid "LEFT %s"
 msgstr "RESTE %s"
+
+msgid "Lens effects"
+msgstr "Effets d’objectif"
+
+msgid "Impact effects"
+msgstr "Effets d’impact"
+
+msgid "Impact color"
+msgstr "Couleur de l’impact"
+
+msgid "Rain on the lens"
+msgstr "Pluie sur l’objectif"
+
+msgid "Lens grime and damage"
+msgstr "Saleté et dégâts sur l’objectif"
+
+msgid "Keep the screen center clear"
+msgstr "Garder le centre de l’écran dégagé"
+
+msgid "Classic curtain"
+msgstr "Rideau classique"
+
+msgid "Lens splatter"
+msgstr "Éclaboussures sur l’objectif"
+
+msgid "Dark"
+msgstr "Sombre"
+
+msgid "Desaturated"
+msgstr "Désaturé"
+
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
+msgstr "Du sang à l’écran quand l’avion heurte une personne ou le pilote, des gouttes de pluie sur la caméra, ainsi que de la boue, de l’herbe et des fissures après les impacts. Désactivé, aucun effet d’objectif n’est affiché. S’applique au prochain vol."
+
+msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
+msgstr "Rideau classique : une nappe rouge descend depuis le haut de l’écran. Éclaboussures sur l’objectif : du sang seulement sur les caméras avec une vitre. Désactivé, aucun sang n’est affiché."
+

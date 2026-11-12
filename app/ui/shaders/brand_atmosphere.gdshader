@@ -3,6 +3,7 @@ render_mode unshaded;
 
 uniform float clock = 0.0;
 uniform vec2 viewport_size = vec2(1920.0, 1080.0);
+uniform float live = 0.0;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -36,6 +37,21 @@ void fragment() {
 	vec2 local = fract(dust) - vec2(hash(cell + 2.0), hash(cell + 7.0));
 	float mote = exp(-dot(local, local) * 850.0) * step(0.95, seed);
 	color += vec3(0.23, 0.48, 0.55) * mote * (0.4 + 0.3 * sin(clock + seed * 40.0)) * arrival;
+	// UI-28-R5: two slow parallax layers of soft motes while a loading owner is live.
+	// `live` stays 0 for seek() stills, reduced motion and the trailer end card.
+	if (live > 0.0) {
+		for (int layer = 0; layer < 2; layer++) {
+			float depth = 1.0 + float(layer);
+			vec2 field = p * vec2(13.0, 8.0) * depth
+				+ vec2(sin(clock * 0.07 + depth) * 0.5, -clock * 0.045 * (3.0 - depth));
+			vec2 home = floor(field);
+			float pick = hash(home + depth * 13.0);
+			vec2 offset = fract(field) - (vec2(hash(home + 3.1), hash(home + 5.7)) * 0.7 + 0.15);
+			float soft = exp(-dot(offset, offset) * 70.0 * depth) * step(0.84, pick);
+			float twinkle = 0.55 + 0.45 * sin(clock * (0.5 + pick) + pick * 50.0);
+			color += vec3(0.07, 0.24, 0.31) * soft * twinkle * live * arrival / depth;
+		}
+	}
 	float vignette = 1.0 - smoothstep(0.3, 1.15, length(p));
 	color *= 0.5 + vignette * 0.5;
 	float grain = (hash(FRAGCOORD.xy + floor(clock * 12.0)) - 0.5) / 900.0;

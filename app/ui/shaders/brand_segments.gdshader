@@ -2,6 +2,7 @@ shader_type canvas_item;
 render_mode unshaded;
 
 uniform float clock = 0.0;
+uniform float idle_clock = -1.0;
 varying vec4 tint;
 
 void vertex() {
@@ -24,6 +25,11 @@ void fragment() {
 	float solid = smoothstep(1.05, 2.5, clock);
 	float sweep_position = mix(-0.2, 1.4, clamp((clock - 2.4) / 1.6, 0.0, 1.0));
 	float sweep = exp(-pow((SCREEN_UV.x + SCREEN_UV.y * 0.14 - sweep_position) * 34.0, 2.0));
+	// UI-28-R5: while Home is prepared, a softer sweep repeats every 6.5 s (idle_clock < 0 disables it).
+	if (idle_clock >= 0.0) {
+		float idle_position = mix(-0.2, 1.4, clamp(mod(idle_clock + 4.0, 6.5) / 1.8, 0.0, 1.0));
+		sweep += 0.6 * exp(-pow((SCREEN_UV.x + SCREEN_UV.y * 0.14 - idle_position) * 34.0, 2.0));
+	}
 	vec3 blue = vec3(0.12, 0.72, 0.95);
 	vec3 base = mix(blue * 0.5, ink.rgb, solid);
 	base += sweep * vec3(0.45, 0.7, 0.8) * solid;

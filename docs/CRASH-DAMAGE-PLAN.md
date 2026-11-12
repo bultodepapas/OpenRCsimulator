@@ -40,6 +40,8 @@ CR-22c-R2 avoids repeated soft-contact feedback at the same simulation tick, reu
 
 CR-22c-R3 stops scanning resting chips, shares per-frame ballistic increments and updates particle clocks only on pause transitions. Delayed energy effects remain active. See [state parity and CPU evidence](research/crash-damage-investigations/CR-22c-R3/README.md).
 
+CR-22e moves accident valuation and archive writes off the frame (worker thread, identical results), defers them past the crash frame, holds the live report card for a 0.6 s beat with a counted-up headline, and builds scenery wreck contacts from the shared world's spatial bins over several frames. Crash-frame script time at 1080p fell from 33–171 ms to 5–12 ms across eight configurations. First-crash GPU stalls in a fresh session and contact-tick solver cost remain open. See [root cause and evidence](research/crash-damage-investigations/CR-22e/README.md).
+
 These slices do not close the broader CR-02/03/04/05 contracts, CR-07–10 structural work, or CR-19/20–27 roadmap work.
 
 ## Remaining work and dependencies

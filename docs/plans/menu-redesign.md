@@ -493,6 +493,8 @@ Keep simulation held while the candidate is incomplete. Commit only after valida
 
 Use a generation token and one transition owner. Changing route invalidates stale results. Failure restores the exact prior selection/setup, error and focus; save successful-launch preferences only after acceptance. Cancel/Back takes effect at safe checkpoints, drains pending resource work and disposes the candidate; a synchronous chunk cannot promise immediate cancellation. Loading must not expose an active flight or stale callbacks after cancellation/quit. No artificial minimum display time or fabricated overall percentage: resource progress covers only that resource, while construction uses truthful stage names.
 
+**UI-28-R5 (delivered 2026-11-12).** The loading surface and the startup intro share a bar that counts completed top-level stages. Sub-stages advance it only within their stage; a sweep shows activity. There is no number or time estimate. The intro builds the first Home through `World.build_staged` and keeps animating. The procedural aircraft build and Home's first draw remain indivisible blocks of about 1.5–2 s each on the reference host. [Evidence and limits](../research/menu-investigations/UI-28-R5/README.md).
+
 ### Reviewable implementation order
 
 | Step | Work and owned seam | Proof / status |

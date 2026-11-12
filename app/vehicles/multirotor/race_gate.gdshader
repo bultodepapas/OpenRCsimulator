@@ -55,15 +55,14 @@ void vertex() {
 	axis_y = (MODELVIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
 }
 
-// Antialiased half-duty square wave of period 1 at f (1 for fract(f) in 0.25..0.75); fw = fwidth(f).
+// Antialiased half-duty square wave of period 1 at f (1 for fract(f) in 0.25..0.75); fw = the pixel footprint in f.
 float bands(float f, float fw) {
 	return clamp((0.25 - abs(fract(f) - 0.5)) / max(fw, 1.0e-5) + 0.5, 0.0, 1.0);
 }
 
-// Antialiased thin line: 1 where |d| < half_width.
-float line(float d, float half_width) {
-	float fw = max(fwidth(d), 1.0e-5);
-	return 1.0 - smoothstep(half_width, half_width + fw, abs(d));
+// Antialiased thin line: 1 where |d| < half_width; fw = the pixel footprint in d's units.
+float line(float d, float half_width, float fw) {
+	return 1.0 - smoothstep(half_width, half_width + max(fw, 1.0e-5), abs(d));
 }
 
 void fragment() {
@@ -76,6 +75,9 @@ void fragment() {
 	bool front = abs(local_normal.z) > 0.5;
 	bool leg = p.y < frame_bottom - 1.0e-3;
 	bool vertical = post > 0.5;
+	// Pixel footprint (m), taken once outside the branches; fine details fade out before they would speckle.
+	float px = max(length(fwidth(local_pos)), 1.0e-6);
+	float detail = 1.0 - smoothstep(0.004, 0.01, px);
 	// Distance from the aperture (Chebyshev, so the LED corners close) and from the outer boundary; a leg is a post
 	// with a white tube on both sides.
 	float d_in = leg ? ax - w : max(ax - w, abs(p.y) - h);
@@ -122,14 +124,14 @@ void fragment() {
 		// A bolt in the middle of each connector's broad face.
 		vec2 centre = vec2(sign(p.x) * (x_out - 0.5 * CONNECTOR_M),
 			p.y > y_top - CONNECTOR_M ? y_top - 0.5 * CONNECTOR_M : bar_mid);
-		float bolt = front ? 1.0 - smoothstep(0.009, 0.009 + max(fwidth(p.x), 1.0e-5), length(p - centre)) : 0.0;
+		float bolt = front ? (1.0 - smoothstep(0.009, 0.009 + px, length(p - centre))) * detail : 0.0;
 		albedo = mix(albedo, METAL, bolt);
 		metallic = 0.8 * bolt;
 		tilt = vec2(0.0);
 	} else if (led_tube) {
 		// Milky diffuser over a strip of single LEDs: hot spots up close, an even line once they would alias.
 		float e = along_led * LEDS_PER_M;
-		float fade = 1.0 - smoothstep(0.25, 0.6, fwidth(e));
+		float fade = 1.0 - smoothstep(0.25, 0.6, px * LEDS_PER_M);
 		float spot = pow(1.0 - 2.0 * abs(fract(e) - 0.5), 3.0);
 		float dots = mix(1.0, 0.6 + 1.6 * spot, fade);
 		float core = 0.55 + 0.45 * (1.0 - t * t);
@@ -143,38 +145,39 @@ void fragment() {
 		// Fabric.
 		float along = vertical ? p.y : p.x;
 		if (checker) {
-			float cx = bands(p.x / (2.0 * checker_cell), fwidth(p.x / (2.0 * checker_cell)));
-			float cy = bands(p.y / (2.0 * checker_cell), fwidth(p.y / (2.0 * checker_cell)));
+			float cx = bands(p.x / (2.0 * checker_cell), px / (2.0 * checker_cell));
+			float cy = bands(p.y / (2.0 * checker_cell), px / (2.0 * checker_cell));
 			albedo = mix(vec3(0.95), vec3(0.04), cx * (1.0 - cy) + cy * (1.0 - cx));
 		} else if (!vertical && p.y > h) {
 			albedo = color_a.rgb;
 		} else {
 			float f = along / stripe_period;
-			albedo = mix(color_a.rgb, color_b.rgb, bands(f, fwidth(f)));
+			albedo = mix(color_a.rgb, color_b.rgb, bands(f, px / stripe_period));
 		}
 		// Woven vinyl mesh: a fine two-axis weave, faded out where it would alias (same mean either way).
 		vec2 fibre = p * 55.0;
-		float weave_fade = 1.0 - smoothstep(0.2, 0.5, max(fwidth(fibre.x), fwidth(fibre.y)));
+		float weave_fade = 1.0 - smoothstep(0.2, 0.5, px * 55.0);
 		float pattern = cos(TAU * fibre.x) + cos(TAU * fibre.y);
 		albedo *= 1.0 - weave * (1.0 + weave_fade * 0.5 * pattern);
 		// The sleeve folds into the tubes: darker in the seam, a stitched line beside it.
 		float from_tube = min(d_out, leg ? d_in : max(d_in, 0.0)) - tube_m;
 		albedo *= mix(0.62, 1.0, smoothstep(0.0, 0.022, from_tube));
-		float dash = bands(along / 0.018, fwidth(along / 0.018));
-		float stitch = line(from_tube - 0.009, 0.0012) * dash;
+		float dash = bands(along / 0.018, px / 0.018);
+		float stitch = line(from_tube - 0.009, 0.0012, px) * dash * detail;
 		albedo = mix(albedo, min(albedo * 1.5 + 0.12, vec3(1.0)), stitch);
 		// Eyelets along the top of the banner.
 		if (!vertical && p.y > h && !checker) {
 			vec2 q = vec2(mod(p.x + 0.21, 0.42) - 0.21, p.y - (y_top - tube_m - 0.03));
 			float r = length(q);
-			float ring = line(r - 0.010, 0.0035);
-			albedo = mix(albedo, vec3(0.05), 1.0 - smoothstep(0.006, 0.007, r));
+			float ring = line(r - 0.010, 0.0035, px) * detail;
+			albedo = mix(albedo, vec3(0.05), (1.0 - smoothstep(0.006, 0.006 + px, r)) * detail);
 			albedo = mix(albedo, METAL, ring);
 			metallic = 0.8 * ring;
 		}
 		// LED light spilling onto the fabric beside the strip (steady: a chase there reads as blocks).
 		if (!leg) {
-			emission = led_rgb * (led_energy * swell + flash * 2.0) * 0.18 * exp(-max(d_in - tube_m, 0.0) / max(led_width, 1.0e-3));
+			float steady = led_energy * swell + flash * 2.0;
+			emission = led_rgb * steady * 0.18 * exp(-max(d_in - tube_m, 0.0) / max(led_width, 1.0e-3));
 		}
 		emission += albedo * panel_glow;
 	}

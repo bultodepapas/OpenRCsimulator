@@ -1,3 +1,6 @@
+## CR-22e crash/ground-contact frame bench. Run through run.py (rendered 1920x1080, OpenGL).
+## Flags: --reference (synchronous archive/valuation, no crash-frame deferral), --sync-valuation,
+## --hide-effects, --hide-wreck, --no-ui; scenarios: hard (dive into turf), slide (belly slide).
 extends SceneTree
 ## Crash/ground-contact frame-cost bench: main.tscn, rendered, per-frame split into
 ## physics (all _physics_process), process (all _process) and the remainder (render + engine).
@@ -58,8 +61,11 @@ func _run() -> void:
 	if uargs.has("--hide-wreck"): flight._crash_director.wreck.hide()
 	if uargs.has("--no-accident"): flight._accident_report.hide()
 	var reference := uargs.has("--reference")
+	if uargs.has("--sync-valuation") and flight._accident_incident != null:
+		flight._accident_incident.async_valuation = false
 	if reference and flight._accident_incident != null:
 		flight._accident_incident.async_archive = false
+		flight._accident_incident.async_valuation = false
 	var results: Array = []
 	for run in 2:
 		for i in 120: await process_frame
@@ -99,7 +105,7 @@ func _run() -> void:
 		var impact_frame := -1
 		var stamp := Time.get_ticks_usec()
 		var tick0: int = flight.session.sim.tick
-		var n := 90 if scenario == "hard" else 600
+		var n := 240 if scenario == "hard" else 600
 		for i in n:
 			ph_sum = 0; ph_ticks = 0
 			await process_frame

@@ -5,6 +5,7 @@ extends RefCounted
 const BadSettingsBackup := preload("res://app_state/bad_settings_backup.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
+const LensSettings := preload("res://render/lens/lens_settings.gd")
 
 const DEFAULT_PATH := "user://display.cfg"
 const SCHEMA := 1
@@ -78,6 +79,14 @@ const DEFAULTS := {
 	"camera_chase_distance": CameraSettings.DEFAULTS.camera_chase_distance,
 	"camera_sensitivity": CameraSettings.DEFAULTS.camera_sensitivity,
 	"camera_invert_y": CameraSettings.DEFAULTS.camera_invert_y,
+	# LENS-01: lens and screen effects ([lens] section), validated by render/lens/lens_settings.gd.
+	"lens_effects": LensSettings.DEFAULTS.lens_effects,
+	"impact_effects": LensSettings.DEFAULTS.impact_effects,
+	"impact_colour": LensSettings.DEFAULTS.impact_colour,
+	"lens_rain": LensSettings.DEFAULTS.lens_rain,
+	"lens_glasses": LensSettings.DEFAULTS.lens_glasses,
+	"lens_grime": LensSettings.DEFAULTS.lens_grime,
+	"lens_clear_centre": LensSettings.DEFAULTS.lens_clear_centre,
 }
 const OPTIONAL_KEYS: Array[String] = [
 	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction",
@@ -86,6 +95,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
 	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness",
+	"lens_effects", "impact_effects", "impact_colour", "lens_rain", "lens_glasses", "lens_grime", "lens_clear_centre",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
@@ -107,6 +117,16 @@ const SHADOW_FILE_KEYS := {
 	"shadow_aircraft_cue": "aircraft_cue",
 	"shadow_distance": "distance",
 	"shadow_softness": "softness",
+}
+## LENS-01: additive choices retain the defaults when absent from a schema-1 file.
+const LENS_FILE_KEYS := {
+	"lens_effects": "quality",
+	"impact_effects": "impact",
+	"impact_colour": "impact_colour",
+	"lens_rain": "rain",
+	"lens_glasses": "glasses",
+	"lens_grime": "grime",
+	"lens_clear_centre": "clear_centre",
 }
 const AUDIO_LEVEL_KEYS: Array[String] = ["menu_volume", "master_volume"]
 
@@ -199,11 +219,17 @@ static func load_from(file_path: String) -> Dictionary:
 		if not _valid_shadow_value(key, raw[key]):
 			raw[key] = DEFAULTS[key]
 			result.note = _append_note(result.note, "invalid shadow %s replaced with its default" % SHADOW_FILE_KEYS[key])
+	for key: String in LENS_FILE_KEYS:
+		raw[key] = cfg.get_value("lens", LENS_FILE_KEYS[key], DEFAULTS[key])
+		if not _valid_lens_value(key, raw[key]):
+			raw[key] = DEFAULTS[key]
+			result.note = _append_note(result.note, "invalid lens %s replaced with its default" % LENS_FILE_KEYS[key])
 	# Apply the same isolation to base display, graphics, accessibility and audio
 	# values. Reuse the save validator so the accepted values cannot drift apart.
 	var recovered_base := false
 	for key: String in raw:
-		if CAMERA_FILE_KEYS.has(key) or AIRCRAFT_LIGHTING_FILE_KEYS.has(key) or SHADOW_FILE_KEYS.has(key):
+		if CAMERA_FILE_KEYS.has(key) or AIRCRAFT_LIGHTING_FILE_KEYS.has(key) or SHADOW_FILE_KEYS.has(key) \
+				or LENS_FILE_KEYS.has(key):
 			continue
 		var single := DEFAULTS.duplicate(true)
 		single[key] = raw[key]
@@ -259,6 +285,8 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 		cfg.set_value("aircraft_lighting", AIRCRAFT_LIGHTING_FILE_KEYS[key], checked.config[key])
 	for key: String in SHADOW_FILE_KEYS:
 		cfg.set_value("shadows", SHADOW_FILE_KEYS[key], checked.config[key])
+	for key: String in LENS_FILE_KEYS:
+		cfg.set_value("lens", LENS_FILE_KEYS[key], checked.config[key])
 	return cfg.save(file_path)
 
 
@@ -315,6 +343,9 @@ static func validate(raw: Variant) -> Dictionary:
 	for key: String in SHADOW_FILE_KEYS:
 		if not _valid_shadow_value(key, raw.get(key, DEFAULTS[key])):
 			errors.append("%s has an invalid shadow value" % key)
+	for key: String in LENS_FILE_KEYS:
+		if not _valid_lens_value(key, raw.get(key, DEFAULTS[key])):
+			errors.append("%s has an invalid lens effect value" % key)
 	var scale: Variant = raw.get("ui_scale")
 	if typeof(scale) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(scale)) \
 			or float(scale) < 1.0 or float(scale) > 2.0 \
@@ -356,6 +387,8 @@ static func validate(raw: Variant) -> Dictionary:
 	}
 	for key: String in SHADOW_FILE_KEYS:
 		normalized[key] = raw.get(key, DEFAULTS[key])
+	for key: String in LENS_FILE_KEYS:
+		normalized[key] = raw.get(key, DEFAULTS[key])
 	normalized.merge(CameraSettings.normalized(raw))
 	return {"ok": true, "config": normalized, "errors": errors}
 
@@ -380,6 +413,22 @@ static func _valid_aircraft_lighting_value(key: String, value: Variant) -> bool:
 			return typeof(value) == TYPE_STRING and LIGHTING_QUALITY_LEVELS.has(value)
 		"aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx":
 			return typeof(value) == TYPE_BOOL
+		_:
+			return false
+
+
+static func _valid_lens_value(key: String, value: Variant) -> bool:
+	if typeof(value) != TYPE_STRING:
+		return false
+	match key:
+		"lens_effects":
+			return value in LensSettings.QUALITIES
+		"impact_effects":
+			return value in LensSettings.IMPACT_STYLES
+		"impact_colour":
+			return value in LensSettings.IMPACT_COLOURS
+		"lens_rain", "lens_glasses", "lens_grime", "lens_clear_centre":
+			return value in LensSettings.SWITCHES
 		_:
 			return false
 

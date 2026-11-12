@@ -11683,3 +11683,40 @@ msgstr "门"
 
 msgid "LEFT %s"
 msgstr "剩余 %s"
+
+msgid "Lens effects"
+msgstr "镜头效果"
+
+msgid "Impact effects"
+msgstr "撞击效果"
+
+msgid "Impact color"
+msgstr "撞击颜色"
+
+msgid "Rain on the lens"
+msgstr "镜头上的雨滴"
+
+msgid "Lens grime and damage"
+msgstr "镜头污垢与损伤"
+
+msgid "Keep the screen center clear"
+msgstr "保持屏幕中央清晰"
+
+msgid "Classic curtain"
+msgstr "经典帘幕"
+
+msgid "Lens splatter"
+msgstr "镜头飞溅"
+
+msgid "Dark"
+msgstr "暗色"
+
+msgid "Desaturated"
+msgstr "低饱和"
+
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
+msgstr "飞机撞到人或飞手时屏幕上的血迹、摄像头上的雨滴，以及撞击后的泥土、草屑和裂纹。关闭后停用所有镜头效果。从下一次飞行起生效。"
+
+msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
+msgstr "经典帘幕：红色液幕从屏幕顶部流下。镜头飞溅：只有带玻璃的摄像头会沾上血。关闭则不显示血迹。"
+

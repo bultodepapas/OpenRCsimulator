@@ -80,6 +80,7 @@ const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const FlagQuality := preload("res://render/flag_quality.gd")
+const LensSettings := preload("res://render/lens/lens_settings.gd")
 const FlagIdentity := preload("res://app_state/flag_identity.gd")
 var _flag_identity: RefCounted = FlagIdentity.shared()
 const RunwayMeadow := preload("res://scenery/runway_meadow.gd")
@@ -164,6 +165,13 @@ var _home_flight_preparation: Node
 var _home_prefetch_suspended := false
 var _home_preparation_route_pending := false
 var _home_preparation_quit_pending := false
+## UI-28-R5: the branded startup sets this before adding AppRoot. The first Home is then built in
+## checkpointed stages under the intro, and each stage name is reported here (synchronous, may be stale).
+var startup_progress := Callable()
+## True while that first staged Home is still being built; the startup holds its intro until it clears.
+var home_build_pending := false
+var _home_build_cancelled := false
+var _home_build_yield_usec := 0
 ## UI-34c: rendered interactive launches are staged; headless callers retain their synchronous contract.
 var flight_loading_enabled := DisplayServer.get_name() != "headless"
 var last_flight_loading: Dictionary = {}
@@ -278,7 +286,9 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	Reconstruction.apply(get_viewport(), Reconstruction.startup_config())
-	if DebugBridge.requested(): # PT1h-R7: opt-in agent debug bridge; never changes the route
+	# UI-28-R5: the staged first Home attaches the bridge once Home exists, so "bridge answers" keeps
+	# meaning a usable route for agents that act right after launch.
+	if DebugBridge.requested() and not _first_home_staged_requested(): # PT1h-R7: opt-in agent debug bridge; never changes the route
 		add_child(DebugBridge.new())
 	if InputReport.requested(user_args):
 		var options: Dictionary = InputReport.options(user_args)
@@ -406,6 +416,9 @@ func _ready() -> void:
 	var persistent_statistics: bool = not statistics_path.is_empty() or \
 		(DisplayServer.get_name() != "headless" and preferences_path == Preferences.DEFAULT_PATH)
 	statistics_service.setup(statistics_path if not statistics_path.is_empty() else "user://flight_statistics", persistent_statistics)
+	if _first_home_staged_requested():
+		_show_first_home_staged()
+		return
 	show_home()
 	_start_update_check()
 
@@ -529,6 +542,118 @@ static func weather_for_aircraft(id: String, raw: Variant) -> Dictionary:
 
 
 func show_home() -> void:
+	var setup := _home_setup()
+	home_scene = HomeScene.new(setup.aircraft, field_path, setup.lighting_config, setup.night_options,
+		preferences.get("sky_config", SkyConfig.defaults()), landscape_id, _livery_for(setup.aircraft)) # still backdrop
+	_connect_home_preview(home_scene)
+	add_child(home_scene)
+	if not home_scene.field_errors.is_empty():
+		return
+	_install_home(setup)
+
+
+## UI-28-R5: the startup route builds the same Home in the flight's world stages, yielding frames so
+## the intro stays animated. The selected aircraft model loads on a worker meanwhile. Other routes
+## (End flight, landscape changes, tests and headless) keep the synchronous show_home().
+func _show_first_home_staged() -> void:
+	home_build_pending = true
+	RendererGuard.confirm_hold = true # renderer confirmation waits for the first drawn 3D Home
+	_home_build_yield_usec = Time.get_ticks_usec()
+	var setup := _home_setup()
+	var livery := _livery_for(setup.aircraft)
+	var scene := HomeScene.new(setup.aircraft, field_path, setup.lighting_config, setup.night_options,
+		preferences.get("sky_config", SkyConfig.defaults()), landscape_id, livery, true)
+	home_scene = scene
+	_connect_home_preview(scene)
+	if not scene.field_errors.is_empty():
+		add_child(scene) # reports the field error exactly as show_home() does
+		_start_update_check()
+		_finish_first_home_build()
+		return
+	var model_path := HomePreviewResources.path_for(setup.aircraft, livery)
+	var model_requested := not model_path.is_empty() \
+		and ResourceLoader.load_threaded_request(model_path, "PackedScene", false) == OK
+	# Untyped: a coroutine aborted by a script error resumes with null, which must read as a failure.
+	var outcome: Variant = await scene.build_world_staged(_first_home_checkpoint)
+	var built: bool = outcome is bool and outcome
+	var model: Resource = null
+	if model_requested:
+		# Every request is drained with frames still drawn, including after cancellation, so the
+		# engine releases its load token (the loader may need main-thread work to finish).
+		while ResourceLoader.load_threaded_get_status(model_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			if is_inside_tree() and not _home_build_cancelled and startup_progress.is_valid():
+				startup_progress.call("Preparing aircraft")
+			await RenderingServer.frame_post_draw
+		model = ResourceLoader.load_threaded_get(model_path)
+		_home_build_yield_usec = Time.get_ticks_usec()
+	if built:
+		# Present the stage before the indivisible aircraft build.
+		outcome = await _first_home_checkpoint("Preparing aircraft", true)
+		built = outcome is bool and outcome
+	if not built or not is_inside_tree():
+		if home_scene == scene:
+			home_scene = null
+		scene.free()
+		if not is_inside_tree():
+			_finish_first_home_build()
+			return
+		if _home_build_cancelled:
+			_finish_first_home_build()
+			if not renderer_guard_path.is_empty():
+				RendererGuard.confirm(renderer_guard_path) # a deliberate quit is not a renderer failure
+			get_tree().quit()
+			return
+		# Any other staged failure keeps the former synchronous route, so Home is never left empty.
+		push_warning("Staged Home construction failed; building Home synchronously.")
+		show_home()
+		_start_update_check()
+		_finish_first_home_build()
+		return
+	if model is PackedScene and is_instance_valid(_home_preview_resources):
+		_home_preview_resources.retain_loaded(model_path, model) # the same bounded broker as preview loads
+	scene.finish_construction()
+	add_child(scene)
+	# The 3D view's first draw (shader and texture preparation) gets its own frame, before the menu.
+	await RenderingServer.frame_post_draw
+	if not is_inside_tree():
+		_finish_first_home_build()
+		return
+	_install_home(setup)
+	_start_update_check()
+	_finish_first_home_build()
+	if _home_build_cancelled:
+		quit_app() # a close request after the last checkpoint takes the normal Home quit route
+
+
+func _finish_first_home_build() -> void:
+	home_build_pending = false
+	startup_progress = Callable()
+	RendererGuard.confirm_hold = false
+	if DebugBridge.requested() and is_inside_tree():
+		add_child(DebugBridge.new())
+
+
+## Only the branded startup's Home route; arguments select technical routes that never stage.
+func _first_home_staged_requested() -> bool:
+	return startup_progress.is_valid() and DisplayServer.get_name() != "headless" and user_args.is_empty()
+
+
+## Reports the stage and yields one drawn frame once roughly a 60 Hz frame of work has accumulated
+## (or always, before an indivisible step), so small stages batch while long ones still show progress.
+## Quit cancels at the next checkpoint.
+func _first_home_checkpoint(stage: String, always_yield := false) -> bool:
+	if _home_build_cancelled or not is_inside_tree():
+		return false
+	if startup_progress.is_valid():
+		startup_progress.call(stage)
+	if always_yield or Time.get_ticks_usec() - _home_build_yield_usec >= 12000:
+		await RenderingServer.frame_post_draw
+		_home_build_yield_usec = Time.get_ticks_usec()
+	return not _home_build_cancelled and is_inside_tree()
+
+
+## Home choices and their session side effects, shared by both Home construction routes.
+func _home_setup() -> Dictionary:
 	var aircraft: String = Preferences.resolve_player_selection(preferences)
 	# UI-32 (UI-30 AS-3): a rotorcraft only shows the weather without turbulence; the saved selection keeps it.
 	var home_weather: Dictionary = weather_for_aircraft(aircraft, preferences.get("weather_config", WeatherSettings.defaults()))
@@ -541,12 +666,15 @@ func show_home() -> void:
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
 	MoonConfig.session_config = _moon_config_from_preferences() # FW-MOON-12: before Home and Fly build their worlds
-	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults()), landscape_id,
-		_livery_for(aircraft)) # still backdrop
-	_connect_home_preview(home_scene)
-	add_child(home_scene)
-	if not home_scene.field_errors.is_empty():
-		return
+	return {aircraft = aircraft, home_weather = home_weather, night_options = night_options,
+		lighting_config = lighting_config, world_preset = world_preset}
+
+
+func _install_home(setup: Dictionary) -> void:
+	var aircraft: String = setup.aircraft
+	var home_weather: Dictionary = setup.home_weather
+	var lighting_config: Dictionary = setup.lighting_config
+	var world_preset: String = setup.world_preset
 	var home := Home.new()
 	home.statistics_service = statistics_service
 	home.ground_vehicle_id = selected_ground_vehicle_id
@@ -1682,6 +1810,8 @@ func _apply_presentation(config: Dictionary) -> void:
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
 	BirdDirector.set_preference(str(config.get("birds", DisplayPreferences.DEFAULTS.birds)))
 	FlagQuality.set_preference(str(config.get("flag_animation", "auto")))
+	# LENS-01: lens effects apply from the next flight; a running flight keeps the stack it was built with.
+	LensSettings.set_preference(config)
 	get_tree().call_group("landscape_flags", "apply_quality")
 	# L11a-R3: hiding is live; turning the meadow on builds it at the next field load.
 	RunwayMeadow.set_preference(str(config.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow)))
@@ -3793,6 +3923,12 @@ func _commit_end_flight() -> bool:
 
 
 func quit_app() -> void:
+	if home_build_pending:
+		if _home_build_cancelled:
+			get_tree().quit() # a second request: a build stopped by a script error never reaches a checkpoint
+			return
+		_home_build_cancelled = true # the staged first Home stops at its next checkpoint, then quits
+		return
 	if _loading_active:
 		_loading_quit_requested = true
 		cancel_flight_loading()

@@ -16,6 +16,8 @@
 
 [CR-22c-R3: resting chips](CR-22c-R3/README.md) records skipped scans after chips settle, shared ballistic increments and transition-only particle pause writes, with exact state comparisons and delayed-effect/reset checks.
 
+[CR-22e: crash-frame and ground-contact hitches](CR-22e/README.md) records the economics root cause, off-frame valuation and archive, the report beat, scenery contacts without a world copy, and the open first-crash and contact-tick costs.
+
 | # | Report | Scope |
 | --- | --- | --- |
 | 01 | [Damage models in simulators and games](01-simulators-games-damage-models.md) | Crash handling, structural damage patterns, and lessons from RC simulators and other games. |

@@ -36,3 +36,77 @@ This research shaped the FPV quad OSD (`app/vehicles/multirotor/osd_model.gd`, `
 ## Gate guide
 
 The next-gate marker and edge arrow follow racing-simulator practice, not flight-controller firmware. Betaflight's lap timer is GPS-based and draws no gate guide. The race-course session exposes the gate data (`race_course_visual.gd`).
+
+## DR-31d performance (2026-11-12)
+
+### Method
+
+- The test is the HUD alone in a headless Godot 4.8-beta2 process on the Windows development PC, at a 1920×1080 root with frames capped at 144.
+- Telemetry changes every frame, as in real flight. Each run lasts 600 frames per layout and reports the median per frame.
+- `update()` and every OSD canvas item's draw callback were timed directly.
+- Each version ran in its own process, alternating old and new three times. The baseline is commit `5d488a50d`. The `osd` single layer was measured before the split.
+- Interleaving two HUDs in one process is not valid: they share the text server's shaping cache.
+- Whole-frame wall time in headless runs was too noisy (±14 ms in warm-up) to use.
+
+### Findings
+
+| Layout | Draw before | Draw after | `update()` |
+| --- | --- | --- | --- |
+| Race | 88–105 µs | 22–37 µs | ~180–260 µs, unchanged within noise |
+| Freestyle | 304–377 µs | 171–304 µs | unchanged within noise |
+| Full | 503–756 µs | 231–333 µs | unchanged within noise |
+
+### What helped
+
+- **Three canvas items.**
+  - Picture-bound geometry is drawn every frame.
+  - The heading tape is drawn only when the heading moves 0.5°.
+  - Fixed-place values are drawn at 30 Hz, still above the 12 Hz default of Betaflight's `osd_framerate_hz`.
+- **A per-locale `tr()` cache.** `update()` was 15–25 µs faster in 8 of 9 paired runs.
+
+### What did not help (reverted)
+
+- **Keeping `TextLine` objects per string.** Draw time rose by about 2× when numbers change every frame; the text server's cache behind `draw_string` is cheaper.
+- **Batching tick strokes into `draw_multiline_colors`.** Sidebars took 30 → 39 µs: building the arrays in GDScript costs more than the calls it saves.
+
+### Remaining costs
+
+- `update()`, about 140 µs. It is spread evenly over 14 sections of interpreter overhead; the largest are battery (20 µs), arm/timer (18 µs) and the draw-state dictionary (18 µs).
+- The compass loop: about 90–130 µs per redraw.
+- The sidebars: about 46 µs per frame while flying.
+- Throttling label text to 30 Hz would save about 55 µs per frame but would show one-frame-stale states. It was rejected.
+
+## DR-31e performance (2026-11-12)
+
+### Research behind it
+
+| Fact | Status | Source |
+| --- | --- | --- |
+| A canvas item keeps its recorded commands until `queue_redraw` clears and re-records them; `canvas_item_set_transform` only stores a matrix | confirmed | `scene/main/canvas_item.cpp`, `servers/rendering/renderer_canvas_cull.cpp` |
+| `draw_colored_polygon` triangulates on the CPU, creates GPU buffers on every redraw and never batches | confirmed | `renderer_canvas_render_rd.cpp`, `rasterizer_canvas_gles3.cpp` |
+| `Font` keeps shaped strings in an LRU of 64 by default (`set_cache_capacity`) | confirmed | `scene/resources/font.h` |
+| Headless runs use the dummy canvas rasterizer, so they leave out batching and buffer work | confirmed | `servers/rendering/dummy/rasterizer_canvas_dummy.h` |
+| Retained or pre-rendered tapes and low-rate instrument updates are common practice | as documented | Unreal Retainer Box `PhaseCount`; Betaflight `osd_framerate_hz` 12 |
+
+### Changes
+
+- **Recorded tapes.** The heading tape (−60…420°) and the sidebar tick strips (periodic every 5 ticks) are recorded once into their own canvas item RIDs. Each sits under a clipping parent (a scissor clip, not `clip_children`, which needs an offscreen canvas group). The tapes move with one `canvas_item_set_transform` per frame, sent only when the offset changes.
+  - Only the boxed heading is redrawn, when the whole degree changes.
+  - The tapes no longer fade toward their ends.
+- **Primitives.** The triangles, the home arrow, the home icon and the gate arrow use primitives instead of polygons.
+- **Font cache.** The OSD font keeps 512 shaped strings.
+
+### Measured
+
+Each version ran in its own process against the DR-31d state, alternated three times. Figures are median draw µs per frame.
+
+| Layout | Headless | Real 1080p window |
+| --- | --- | --- |
+| Freestyle | 156–179 → 74–84 | 318–319 → 116–142 |
+| Full | 210–252 → 154–176 | 418–437 → 220–260 |
+| Race | unchanged (~21–37); it has no tapes | unchanged |
+
+- The total per frame with `update()` fell in every Freestyle and Full pair.
+- `update()` itself moved within noise (±40 µs). It now includes the tape placement.
+- In a real window the drawing cost about twice the headless figure, so headless comparisons understate both the cost and the saving.
+- A 1080p capture checked the tape geometry: heading 122° puts E, SE and S at 800, 1025 and 1250 px, predicted versus drawn within 1 px.

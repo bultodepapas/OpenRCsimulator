@@ -21,10 +21,10 @@ const DEFAULTS := {
 
 ## Per-tier budgets. Disabled tiers allocate nothing; a lower tier frees the higher one's buffers on the next flight.
 const TIERS := {
-	"low": {"drops": 24, "streaks": 1500, "stamps": 8, "trails": false, "focus_lod": 1.0},
-	"medium": {"drops": 64, "streaks": 4000, "stamps": 16, "trails": true, "focus_lod": 1.5},
-	"high": {"drops": 128, "streaks": 8000, "stamps": 24, "trails": true, "focus_lod": 1.5},
-	"ultra": {"drops": 192, "streaks": 12000, "stamps": 32, "trails": true, "focus_lod": 2.0},
+	"low": {"drops": 24, "streaks": 2000, "stamps": 8, "trails": false, "wetness": false, "focus_lod": 1.0},
+	"medium": {"drops": 64, "streaks": 5000, "stamps": 16, "trails": true, "wetness": true, "focus_lod": 1.5},
+	"high": {"drops": 128, "streaks": 9000, "stamps": 24, "trails": true, "wetness": true, "focus_lod": 1.5},
+	"ultra": {"drops": 192, "streaks": 14000, "stamps": 32, "trails": true, "wetness": true, "focus_lod": 2.0},
 }
 
 static var _preference: Dictionary = DEFAULTS.duplicate()

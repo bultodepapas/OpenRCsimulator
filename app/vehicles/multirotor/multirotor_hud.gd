@@ -82,8 +82,8 @@ const HORIZON_HALF := 0.95
 const HORIZON_GAP := 0.42
 const HORIZON_TICK := 16.0
 const THROTTLE_BAR := Vector2(16.0, 150.0)
-## The heading tape is redrawn when the heading moves by this much (deg) and fixed-place values every SLOW_REDRAW_S.
-const COMPASS_STEP_DEG := 0.25
+## Half width of the heading tape (px at 1080p: ±60° of heading) and the fixed-place values' redraw period.
+const COMPASS_HALF_WIDTH := 300.0
 const SLOW_REDRAW_S := 1.0 / 30.0
 
 var root_control: Control
@@ -92,6 +92,12 @@ var osd: Control
 var osd_compass: Control
 var osd_slow: Control
 var _compass_key := -1
+## DR-31e: recorded tapes (canvas item RIDs: compass, compass_clip, left, left_clip, right, right_clip) and the
+## screen size and UI scale they were recorded for.
+var _tapes := {}
+var _tape_key := Vector3.ZERO
+## Last visibility and offset sent to each tape RID (unchanged values send nothing).
+var _tape_state := {}
 var _slow_due := 0.0
 ## Elements of the active layout as a set (shows() runs dozens of times per frame).
 var _shown := {}
@@ -502,6 +508,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		_free_tapes()
 	if what == NOTIFICATION_TRANSLATION_CHANGED and help != null:
 		_tr_cache.clear()
 		_update_texts()
@@ -942,19 +950,25 @@ func _stats_visible() -> bool:
 
 ## DR-31d: the OSD draws on three canvas items so each is re-recorded only as often as its content moves (a canvas
 ## item keeps its last drawing until it is queued again):
-## - osd (every frame): what moves with the picture - horizon, ladder, crosshair, up/down, sidebar ticks, gate guide;
-## - osd_compass: the heading tape, only when the heading moves by COMPASS_STEP_DEG or the layout changes;
+## - osd (every frame): what moves with the picture - horizon, ladder, crosshair, up/down, gate guide;
+## - osd_compass: the boxed heading, when the whole degree changes (its tape is a recorded, moved RID: DR-31e);
 ## - osd_slow (SLOW_REDRAW_S, like a flight controller's OSD refresh): values at fixed places - readouts, battery,
 ##   timers, home, angles, G, motors, RPM, sticks, craft name, throttle bar.
+## Measured per frame against the single-layer OSD (research/drone-racing/DR-31c, "DR-31d performance"): drawing
+## Race 88-105 -> 22-37 µs, Freestyle 304-377 -> 171-304 µs, Full 503-756 -> 231-333 µs.
+## DR-31e: the heading tape and the sidebar ticks are not redrawn at all while flying: they are recorded once
+## (_ensure_tapes) and moved with one transform per frame (_place_tapes); only the boxed heading number is redrawn,
+## when the whole degree changes.
 func _redraw_layers(force: bool) -> void:
 	if force:
 		_compass_key = -1
 		_slow_due = 0.0
 	osd.queue_redraw()
+	_place_tapes()
 	var flight: Dictionary = _draw_state.get("flight", {})
 	var key := -2
 	if shows("compass") and not flight.is_empty() and not menu_visible:
-		key = int(round(float(flight.heading_deg) / COMPASS_STEP_DEG))
+		key = posmod(int(round(float(flight.heading_deg))), 360)
 	if key != _compass_key:
 		_compass_key = key
 		osd_compass.queue_redraw()
@@ -965,11 +979,94 @@ func _redraw_layers(force: bool) -> void:
 
 
 func _draw_compass() -> void:
-	var flight: Dictionary = _draw_state.get("flight", {})
-	if _compass_key < -1 or flight.is_empty():
+	if _compass_key < 0:
 		return
-	Paint.compass(osd_compass, osd_compass.size.x * 0.5, top_band(UiTheme.text_scale), 300.0 * UiTheme.text_scale,
-		float(_compass_key) * COMPASS_STEP_DEG, UiTheme.text_scale)
+	var s := UiTheme.text_scale
+	Paint.compass_box(osd_compass, osd_compass.size.x * 0.5, top_band(s) + 20.0 * s, _compass_key, s)
+
+
+## Record the heading tape and the two sidebar strips into their own canvas item RIDs, under clipping parents: once,
+## and again only when the screen size or the UI scale changes.
+func _ensure_tapes() -> void:
+	var size := osd.size
+	var s := UiTheme.text_scale
+	var key := Vector3(size.x, size.y, s)
+	if size.x <= 0.0 or size.y <= 0.0 or key == _tape_key:
+		return
+	_tape_key = key
+	var rs := RenderingServer
+	if _tapes.is_empty():
+		_tapes.compass_clip = rs.canvas_item_create()
+		rs.canvas_item_set_parent(_tapes.compass_clip, osd_compass.get_canvas_item())
+		_tapes.compass = rs.canvas_item_create()
+		rs.canvas_item_set_parent(_tapes.compass, _tapes.compass_clip)
+		for side: String in ["left", "right"]:
+			_tapes[side + "_clip"] = rs.canvas_item_create()
+			rs.canvas_item_set_parent(_tapes[side + "_clip"], osd.get_canvas_item())
+			_tapes[side] = rs.canvas_item_create()
+			rs.canvas_item_set_parent(_tapes[side], _tapes[side + "_clip"])
+	for rid: RID in _tapes.values():
+		rs.canvas_item_clear(rid)
+	var half_width := COMPASS_HALF_WIDTH * s
+	var top := top_band(s)
+	rs.canvas_item_set_custom_rect(_tapes.compass_clip, true, Rect2(size.x * 0.5 - half_width, top - 4.0 * s,
+		2.0 * half_width, 40.0 * s))
+	rs.canvas_item_set_clip(_tapes.compass_clip, true)
+	Paint.record_compass_tape(_tapes.compass, top + 20.0 * s, half_width / Paint.COMPASS_SPAN_DEG, s)
+	var half := SIDEBAR_HALF * s
+	var count := int(ceilf(half / (Paint.SIDEBAR_SPACING * s))) + 6
+	for pair: Array in [["left", -1.0], ["right", 1.0]]:
+		var x := size.x * 0.5 + float(pair[1]) * SIDEBAR_X * s
+		var clip: RID = _tapes[pair[0] + "_clip"]
+		rs.canvas_item_set_custom_rect(clip, true, Rect2(x - 40.0 * s, size.y * 0.5 - half, 80.0 * s, 2.0 * half))
+		rs.canvas_item_set_clip(clip, true)
+		Paint.record_sidebar_frame(clip, x, size.y * 0.5, half, float(pair[1]), s)
+		Paint.record_sidebar_strip(_tapes[pair[0]], x, count, float(pair[1]), s)
+
+
+## Show, hide and move the recorded tapes for this frame (a few RenderingServer calls, no drawing).
+func _place_tapes() -> void:
+	_ensure_tapes()
+	if _tapes.is_empty():
+		return
+	var s := UiTheme.text_scale
+	var flight: Dictionary = _draw_state.get("flight", {})
+	var compass := shows("compass") and not flight.is_empty() and not menu_visible
+	var sidebars := shows("sidebars") and not menu_visible
+	_tape_visible("compass_clip", compass)
+	_tape_visible("left_clip", sidebars)
+	_tape_visible("right_clip", sidebars)
+	if compass:
+		var per_deg := COMPASS_HALF_WIDTH * s / Paint.COMPASS_SPAN_DEG
+		_tape_offset("compass", Vector2(osd.size.x * 0.5 - fposmod(float(flight.heading_deg), 360.0) * per_deg, 0.0))
+	if sidebars:
+		# One tick per 5 km/h (mph) of speed and per metre (5 ft) of height; the ticks scroll with the value.
+		var imperial := str(_draw_state.get("units", "metric")) == "imperial"
+		var speed_ticks := float(_draw_state.get("speed_mps", 0.0)) * (Osd.MPS_TO_MPH if imperial else Osd.MPS_TO_KMH) / 5.0
+		var alt_ticks := float(_draw_state.get("altitude_m", 0.0)) * (Osd.M_TO_FT / 5.0 if imperial else 1.0)
+		var centre_y := osd.size.y * 0.5
+		_tape_offset("left", Vector2(0.0, centre_y + Paint.sidebar_offset(speed_ticks, s)))
+		_tape_offset("right", Vector2(0.0, centre_y + Paint.sidebar_offset(alt_ticks, s)))
+
+
+## Change a tape's visibility or position on the rendering server only when it differs from the last frame.
+func _tape_visible(name: String, shown: bool) -> void:
+	if _tape_state.get(name) != shown:
+		_tape_state[name] = shown
+		RenderingServer.canvas_item_set_visible(_tapes[name], shown)
+
+
+func _tape_offset(name: String, offset: Vector2) -> void:
+	if _tape_state.get(name) != offset:
+		_tape_state[name] = offset
+		RenderingServer.canvas_item_set_transform(_tapes[name], Transform2D(0.0, offset))
+
+
+func _free_tapes() -> void:
+	for rid: RID in _tapes.values():
+		RenderingServer.free_rid(rid)
+	_tapes.clear()
+	_tape_state.clear()
 
 
 func _draw_slow() -> void:
@@ -1067,14 +1164,6 @@ func _draw_osd() -> void:
 	var m := MARGIN * s
 	var units := str(_draw_state.get("units", "metric"))
 	var side_x := SIDEBAR_X * s
-	if shows("sidebars"):
-		# One tick per 5 km/h (mph) of speed and per metre (5 ft) of height; the ticks scroll with the value.
-		var speed := float(_draw_state.get("speed_mps", 0.0))
-		var altitude := float(_draw_state.get("altitude_m", 0.0))
-		var speed_ticks := speed * (Osd.MPS_TO_MPH if units == "imperial" else Osd.MPS_TO_KMH) / 5.0
-		var alt_ticks := altitude * (Osd.M_TO_FT / 5.0 if units == "imperial" else 1.0)
-		Paint.sidebar(osd, centre.x - side_x, centre.y, SIDEBAR_HALF * s, speed_ticks, -1.0, s)
-		Paint.sidebar(osd, centre.x + side_x, centre.y, SIDEBAR_HALF * s, alt_ticks, 1.0, s)
 	var gate: Variant = _draw_state.get("gate")
 	if shows("gate") and typeof(gate) == TYPE_VECTOR3:
 		var camera := osd.get_viewport().get_camera_3d()

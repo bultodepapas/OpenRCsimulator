@@ -12628,3 +12628,40 @@ msgstr "TOR"
 
 msgid "LEFT %s"
 msgstr "REST %s"
+
+msgid "Lens effects"
+msgstr "Linseneffekte"
+
+msgid "Impact effects"
+msgstr "Aufpralleffekte"
+
+msgid "Impact color"
+msgstr "Aufprallfarbe"
+
+msgid "Rain on the lens"
+msgstr "Regen auf der Linse"
+
+msgid "Lens grime and damage"
+msgstr "Linsenschmutz und -schäden"
+
+msgid "Keep the screen center clear"
+msgstr "Bildschirmmitte freihalten"
+
+msgid "Classic curtain"
+msgstr "Klassischer Vorhang"
+
+msgid "Lens splatter"
+msgstr "Linsenspritzer"
+
+msgid "Dark"
+msgstr "Dunkel"
+
+msgid "Desaturated"
+msgstr "Entsättigt"
+
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
+msgstr "Blut auf dem Bildschirm, wenn das Flugzeug eine Person oder den Piloten trifft, Regentropfen auf der Kamera sowie Schlamm, Gras und Risse nach Aufprallen. Bei „Aus“ sind alle Linseneffekte abgeschaltet. Gilt ab dem nächsten Flug."
+
+msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
+msgstr "Klassischer Vorhang: Ein roter Schleier läuft vom oberen Bildschirmrand herab. Linsenspritzer: Blut nur auf Kameras mit Glas. Bei „Aus“ wird kein Blut gezeigt."
+

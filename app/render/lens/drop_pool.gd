@@ -25,6 +25,7 @@ const LINGER_S := 40.0
 const FADE_OUT_S := 18.0
 const MERGE_SHARE := 0.85
 const CELL := 0.1
+const GRID_SLOTS := 256
 
 const X := 0
 const Y := 1
@@ -41,6 +42,12 @@ var count := 0
 var trails := true
 var _data := PackedFloat32Array()
 var _rng := RandomNumberGenerator.new()
+var _grid_head := PackedInt32Array()
+var _grid_next := PackedInt32Array()
+var _gone := PackedByteArray()
+## Set whenever a drop changed; write() skips the MultiMesh upload otherwise (paused or empty frames).
+var _dirty := true
+var _written_height := -1.0
 
 
 func configure(max_drops: int, seed: int, with_trails: bool) -> void:
@@ -50,10 +57,15 @@ func configure(max_drops: int, seed: int, with_trails: bool) -> void:
 	_data.resize(capacity * STRIDE)
 	_data.fill(0.0)
 	_rng.seed = seed
+	_grid_head.resize(GRID_SLOTS)
+	_grid_next.resize(capacity)
+	_gone.resize(capacity)
+	_dirty = true
 
 
 func clear() -> void:
 	count = 0
+	_dirty = true
 
 
 ## Adds a drop; a full pool replaces its smallest drop when the new one is larger.
@@ -73,6 +85,7 @@ func spawn(x: float, y: float, radius: float) -> void:
 			return
 	else:
 		count += 1
+	_dirty = true
 	var base := slot * STRIDE
 	_data[base + X] = x
 	_data[base + Y] = y
@@ -114,6 +127,7 @@ func poisson(mean: float) -> int:
 func step(dt: float, aspect: float, gravity: Vector2, focus: Vector2, air: float, lateral: Vector2, raining: bool) -> void:
 	if dt <= 0.0 or count == 0:
 		return
+	_dirty = true
 	var i := 0
 	while i < count:
 		var base := i * STRIDE
@@ -203,6 +217,10 @@ func volume() -> float:
 ## Writes the live drops into a 2D MultiMesh: a unit quad scaled to the drop, stretched and turned along its motion.
 ## Custom data: (elongation, opacity, seed, radius in pixels).
 func write(mesh: MultiMesh, height_px: float, raining: bool) -> void:
+	if not _dirty and is_equal_approx(height_px, _written_height):
+		return
+	_dirty = false
+	_written_height = height_px
 	var n := mini(count, mesh.instance_count)
 	for i in n:
 		var base := i * STRIDE
@@ -226,54 +244,62 @@ func _remove(i: int) -> void:
 			_data[i * STRIDE + k] = _data[count * STRIDE + k]
 
 
+## Merges overlapping drops through a persistent hashed grid (head/next index lists): no allocation per frame.
+## Hash collisions only add distance checks; they never merge drops that do not overlap.
 func _merge() -> void:
 	if count < 2:
 		return
-	var grid := {}
+	_grid_head.fill(-1)
+	if _grid_next.size() < capacity:
+		_grid_next.resize(capacity)
+	if _gone.size() < capacity:
+		_gone.resize(capacity)
 	for i in count:
-		var key := Vector2i(int(floorf(_data[i * STRIDE + X] / CELL)), int(floorf(_data[i * STRIDE + Y] / CELL)))
-		if grid.has(key):
-			(grid[key] as Array).append(i)
-		else:
-			grid[key] = [i]
-	var gone := {}
+		_gone[i] = 0
+		var slot := _grid_slot(int(floorf(_data[i * STRIDE + X] / CELL)), int(floorf(_data[i * STRIDE + Y] / CELL)))
+		_grid_next[i] = _grid_head[slot]
+		_grid_head[slot] = i
+	var merged := false
 	for i in count:
-		if gone.has(i):
+		if _gone[i] != 0:
 			continue
 		var bi := i * STRIDE
-		var cell := Vector2i(int(floorf(_data[bi + X] / CELL)), int(floorf(_data[bi + Y] / CELL)))
+		var cx := int(floorf(_data[bi + X] / CELL))
+		var cy := int(floorf(_data[bi + Y] / CELL))
 		for dx in range(-1, 2):
 			for dy in range(-1, 2):
-				var bucket: Variant = grid.get(cell + Vector2i(dx, dy))
-				if bucket == null:
-					continue
-				for j: int in bucket:
-					if j <= i or gone.has(j):
-						continue
-					var bj := j * STRIDE
-					var ri: float = _data[bi + R]
-					var rj: float = _data[bj + R]
-					var ddx: float = _data[bj + X] - _data[bi + X]
-					var ddy: float = _data[bj + Y] - _data[bi + Y]
-					if ddx * ddx + ddy * ddy > _square((ri + rj) * MERGE_SHARE):
-						continue
-					var vi := ri * ri * ri
-					var vj := rj * rj * rj
-					var total := vi + vj
-					_data[bi + X] = (_data[bi + X] * vi + _data[bj + X] * vj) / total
-					_data[bi + Y] = (_data[bi + Y] * vi + _data[bj + Y] * vj) / total
-					_data[bi + VX] = (_data[bi + VX] * vi + _data[bj + VX] * vj) / total
-					_data[bi + VY] = (_data[bi + VY] * vi + _data[bj + VY] * vj) / total
-					_data[bi + R] = minf(pow(total, 1.0 / 3.0), MAX_RADIUS)
-					_data[bi + AGE] = maxf(_data[bi + AGE], _data[bj + AGE])
-					gone[j] = true
-	if gone.is_empty():
+				var j: int = _grid_head[_grid_slot(cx + dx, cy + dy)]
+				while j >= 0:
+					var next_j: int = _grid_next[j]
+					if j > i and _gone[j] == 0:
+						var bj := j * STRIDE
+						var ri: float = _data[bi + R]
+						var rj: float = _data[bj + R]
+						var ddx: float = _data[bj + X] - _data[bi + X]
+						var ddy: float = _data[bj + Y] - _data[bi + Y]
+						if ddx * ddx + ddy * ddy <= _square((ri + rj) * MERGE_SHARE):
+							var vi := ri * ri * ri
+							var vj := rj * rj * rj
+							var total := vi + vj
+							_data[bi + X] = (_data[bi + X] * vi + _data[bj + X] * vj) / total
+							_data[bi + Y] = (_data[bi + Y] * vi + _data[bj + Y] * vj) / total
+							_data[bi + VX] = (_data[bi + VX] * vi + _data[bj + VX] * vj) / total
+							_data[bi + VY] = (_data[bi + VY] * vi + _data[bj + VY] * vj) / total
+							_data[bi + R] = minf(pow(total, 1.0 / 3.0), MAX_RADIUS)
+							_data[bi + AGE] = maxf(_data[bi + AGE], _data[bj + AGE])
+							_gone[j] = 1
+							merged = true
+					j = next_j
+	if not merged:
 		return
-	var removal: Array = gone.keys()
-	removal.sort()
-	removal.reverse()
-	for j: int in removal:
-		_remove(j)
+	# Remove from the end so swapped-in drops are never ones still marked.
+	for j in range(count - 1, -1, -1):
+		if _gone[j] != 0:
+			_remove(j)
+
+
+func _grid_slot(cx: int, cy: int) -> int:
+	return posmod(cx * 73856093 ^ cy * 19349663, GRID_SLOTS)
 
 
 static func _square(x: float) -> float:

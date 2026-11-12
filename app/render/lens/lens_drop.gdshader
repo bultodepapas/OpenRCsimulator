@@ -10,10 +10,12 @@ render_mode unshaded, blend_mix;
 uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap, repeat_disable;
 uniform float focus_lod = 1.5;          // blur of the scene seen through the drop (defocus)
 uniform float magnification = 2.6;      // > 1: the image inside is minified; the minus sign below inverts it
-uniform float rim_darkening = 0.55;
+uniform float rim_darkening = 0.42;
 uniform float highlight = 0.65;
 uniform float flash = 0.0;              // FW-84 lightning radiance reaching the lens, 0…1
 uniform float opacity = 1.0;
+// Physical pixels per canvas pixel: the UI may stretch the canvas (content scale) on 1440p and 4K screens.
+uniform float canvas_scale = 1.0;
 
 varying vec4 drop;
 varying vec2 local;
@@ -34,7 +36,7 @@ float sd_uneven_capsule(vec2 p, float r1, float r2, float h) {
 float drop_sdf(vec2 q, float e) {
 	float head = length(q - vec2(e, 0.0)) - 1.0;
 	if (e < 0.08) return head;
-	float tail_r = 0.38;
+	float tail_r = 0.2;
 	float tail_x = -(1.0 + e) + tail_r;
 	float body = sd_uneven_capsule(vec2(q.y, q.x - tail_x), tail_r, 1.0, e - tail_x);
 	return min(head, body);
@@ -51,7 +53,7 @@ void fragment() {
 	float radius_px = max(drop.w, 1.0);
 	vec2 q = vec2(local.x * 2.0 * (1.0 + e), local.y * 2.0);
 	float d = drop_sdf(q, e);
-	float edge_px = 1.0 / radius_px;
+	float edge_px = 1.0 / (radius_px * canvas_scale);
 	float coverage = 1.0 - smoothstep(-edge_px, edge_px, d);
 	if (coverage <= 0.0) {
 		discard;
@@ -64,10 +66,10 @@ void fragment() {
 		drop_sdf(q + vec2(0.0, eps), e) - drop_sdf(q - vec2(0.0, eps), e));
 	vec2 outward = length(grad) > 1e-5 ? normalize(grad) : vec2(0.0);
 
-	// Screen-space offset of this fragment from the head's centre (canvas pixels are viewport pixels here).
+	// Screen-space offset of this fragment from the head's centre, from canvas pixels to screen uv.
 	vec2 axis_y = vec2(-axis_x.y, axis_x.x);
 	vec2 offset_local = (q - vec2(e, 0.0)) * radius_px;
-	vec2 offset_uv = (axis_x * offset_local.x + axis_y * offset_local.y) * SCREEN_PIXEL_SIZE;
+	vec2 offset_uv = (axis_x * offset_local.x + axis_y * offset_local.y) * SCREEN_PIXEL_SIZE * canvas_scale;
 	vec2 centre_uv = SCREEN_UV - offset_uv;
 	// Ball-lens view: inverted and minified, stronger toward the rim (fisheye).
 	float mag = magnification * (1.0 + 0.6 * (1.0 - height));
@@ -75,7 +77,7 @@ void fragment() {
 	vec3 seen = textureLod(screen_texture, sample_uv, focus_lod + 0.5 * (1.0 - height)).rgb;
 
 	// Total internal reflection darkens the rim; the thin tail is mostly the background, slightly darkened.
-	float rim = smoothstep(0.55, 1.0, rel);
+	float rim = smoothstep(0.62, 1.0, rel);
 	vec3 colour = seen * mix(1.0, 1.0 - rim_darkening, rim);
 	// A sharp sky highlight on the upper-left of the cap, and a softer caustic opposite it.
 	vec2 light_dir = normalize(vec2(-0.55, -0.85));
@@ -85,6 +87,8 @@ void fragment() {
 	colour += (sky * 0.6 + vec3(0.4)) * spec * highlight;
 	colour += seen * caustic;
 	colour += vec3(0.75, 0.82, 1.0) * flash * (0.25 + 0.75 * spec);
-	float alpha = coverage * drop.y * opacity * mix(0.55, 1.0, smoothstep(0.0, 0.3, height));
+	// The head is a lens; the trail behind a running drop is a thin wet film that barely bends the image.
+	float in_head = 1.0 - smoothstep(-0.05, 0.05, length(q - vec2(e, 0.0)) - 1.0);
+	float alpha = coverage * drop.y * opacity * mix(0.28, 1.0, max(in_head, smoothstep(0.0, 0.45, height)));
 	COLOR = vec4(colour, alpha);
 }

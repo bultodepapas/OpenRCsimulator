@@ -14,6 +14,10 @@ const CAUTION := UiTheme.CAUTION
 const SHADE := Color(0.0, 0.0, 0.0, 0.42)
 ## Severity colours of HD DisplayPort fonts (normal, info, warning, critical); analog characters are all white.
 const SEVERITY := [TEXT, ARMED, CAUTION, DANGER]
+## Shaped single-line strings the OSD font keeps (Font's default is 64).
+const FONT_CACHE_LINES := 512
+## Sidebar tick spacing (px at 1080p).
+const SIDEBAR_SPACING := 22.0
 const LADDER_RUNGS: Array[int] = [-40, -30, -20, -10, 10, 20, 30, 40]
 const RUNG_LABELS := {10: "10", 20: "20", 30: "30", 40: "40"}
 const MOTOR_LABELS: Array[String] = ["1", "2", "3", "4", "5", "6", "7", "8"]
@@ -31,57 +35,44 @@ static func font() -> Font:
 			"Noto Sans Mono", "Courier New", "monospace"])
 		mono.font_weight = 700
 		mono.fallbacks = [ThemeDB.fallback_font]
+		# DR-31e: Font keeps shaped single-line strings in an LRU of 64 by default (scene/resources/font.h); the OSD
+		# cycles through more than that per second, so recent values would be shaped again.
+		mono.set_cache_capacity(FONT_CACHE_LINES, 8)
 		_font = mono
 	return _font
 
 
-## DR-31d: shaped OSD texts kept by font size, then string (a TextLine is shaped once; drawing one costs a fraction
-## of shaping the string again). Bounded: past LINE_CACHE_MAX lines the cache starts over.
-const LINE_CACHE_MAX := 768
-static var _lines := {}
-static var _line_count := 0
-
-
-static func _line(value: String, size: int) -> TextLine:
-	var by_size: Dictionary = _lines.get(size, {})
-	if by_size.is_empty() and not _lines.has(size):
-		_lines[size] = by_size
-	var line: TextLine = by_size.get(value)
-	if line == null:
-		if _line_count >= LINE_CACHE_MAX:
-			_lines.clear()
-			_line_count = 0
-			by_size = {}
-			_lines[size] = by_size
-		line = TextLine.new()
-		line.add_string(value, font(), size)
-		by_size[value] = line
-		_line_count += 1
-	return line
-
-
 ## Text with a dark outline. align: -1 left of `at`, 0 centred on it, 1 right of it ending at it; `at.y` is the
-## vertical centre of the line.
+## vertical centre of the line. draw_string uses the text server's own shaping cache: measured faster than keeping
+## TextLine objects here when numbers change every frame (DR-31d).
 static func text(ci: CanvasItem, at: Vector2, value: String, size: int, color: Color = TEXT, align := -1) -> void:
+	text_rid(ci.get_canvas_item(), at, value, size, color, align)
+
+
+## text() into a canvas item RID (also outside a draw callback: the static tapes are recorded once).
+static func text_rid(rid: RID, at: Vector2, value: String, size: int, color: Color = TEXT, align := -1) -> void:
 	if value.is_empty():
 		return
-	var line := _line(value, size)
-	var extent := line.get_size()
-	var x := at.x if align < 0 else (at.x - extent.x * 0.5 if align == 0 else at.x - extent.x)
-	var top := Vector2(x, at.y - extent.y * 0.5)
-	var canvas := ci.get_canvas_item()
-	line.draw_outline(canvas, top, maxi(3, int(round(size * 0.24))), OUTLINE)
-	line.draw(canvas, top, color)
+	var f := font()
+	var width := f.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+	var x := at.x if align < 0 else (at.x - width * 0.5 if align == 0 else at.x - width)
+	var base := Vector2(x, at.y + (f.get_ascent(size) - f.get_descent(size)) * 0.5)
+	f.draw_string_outline(rid, base, value, HORIZONTAL_ALIGNMENT_LEFT, -1, size, maxi(3, int(round(size * 0.24))), OUTLINE)
+	f.draw_string(rid, base, value, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
 
 
 static func text_width(value: String, size: int) -> float:
-	return _line(value, size).get_size().x
+	return font().get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
 
 
 ## A white stroke over a dark one (readable against sky and ground).
 static func stroke(ci: CanvasItem, a: Vector2, b: Vector2, width: float, color: Color = TEXT) -> void:
-	ci.draw_line(a, b, Color(OUTLINE, OUTLINE.a * color.a), width + 3.0, true)
-	ci.draw_line(a, b, color, width, true)
+	stroke_rid(ci.get_canvas_item(), a, b, width, color)
+
+
+static func stroke_rid(rid: RID, a: Vector2, b: Vector2, width: float, color: Color = TEXT) -> void:
+	RenderingServer.canvas_item_add_line(rid, a, b, Color(OUTLINE, OUTLINE.a * color.a), width + 3.0, true)
+	RenderingServer.canvas_item_add_line(rid, a, b, color, width, true)
 
 
 static func polyline(ci: CanvasItem, points: PackedVector2Array, width: float, color: Color = TEXT) -> void:
@@ -89,63 +80,74 @@ static func polyline(ci: CanvasItem, points: PackedVector2Array, width: float, c
 	ci.draw_polyline(points, color, width, true)
 
 
-## A filled triangle with an outline.
+## A filled triangle with an outline. DR-31e: a primitive, not draw_colored_polygon, which triangulates on the CPU and
+## creates GPU buffers on every redraw and never batches (renderer_canvas_render_rd.cpp, rasterizer_canvas_gles3.cpp).
 static func triangle(ci: CanvasItem, a: Vector2, b: Vector2, c: Vector2, color: Color = TEXT) -> void:
-	ci.draw_colored_polygon(PackedVector2Array([a, b, c]), color)
-	ci.draw_polyline(PackedVector2Array([a, b, c, a]), OUTLINE, 1.5, true)
+	triangle_rid(ci.get_canvas_item(), a, b, c, color)
 
 
-## Heading tape across the top centre: ±60° of ticks (every 5°, taller every 15°), the cardinal letters, a caret and
-## the boxed heading in degrees. The ends fade so the tape has no hard edge.
-static func compass(ci: CanvasItem, centre_x: float, top: float, half_width: float, heading: float, s: float) -> void:
-	var span := 60.0
-	var per_deg := half_width / span
-	var base := top + 20.0 * s
-	var first := int(floorf((heading - span) / 5.0)) * 5
-	var deg := first
-	while deg <= int(ceilf(heading + span)):
-		var offset := float(deg) - heading
-		if absf(offset) <= span:
-			var x := centre_x + offset * per_deg
-			var fade := 1.0 - 0.65 * pow(absf(offset) / span, 2.0)
-			var color := Color(TEXT, fade)
-			var wrapped := posmod(deg, 360)
-			if CARDINALS.has(wrapped):
-				var size := int(round((22.0 if wrapped % 90 == 0 else 17.0) * s))
-				text(ci, Vector2(x, base - 8.0 * s), CARDINALS[wrapped], size, Color(CAUTION, fade) if wrapped == 0 else color, 0)
-				stroke(ci, Vector2(x, base + 2.0 * s), Vector2(x, base + 12.0 * s), 2.0 * s, color)
-			elif wrapped % 15 == 0:
-				stroke(ci, Vector2(x, base + 4.0 * s), Vector2(x, base + 12.0 * s), 2.0 * s, color)
-			else:
-				stroke(ci, Vector2(x, base + 8.0 * s), Vector2(x, base + 12.0 * s), 1.5 * s, color)
+static func triangle_rid(rid: RID, a: Vector2, b: Vector2, c: Vector2, color: Color = TEXT) -> void:
+	RenderingServer.canvas_item_add_primitive(rid, PackedVector2Array([a, b, c]), PackedColorArray([color, color, color]),
+		PackedVector2Array(), RID())
+	RenderingServer.canvas_item_add_polyline(rid, PackedVector2Array([a, b, c, a]), PackedColorArray([OUTLINE]), 1.5, true)
+
+
+## DR-31e: the heading tape and the sidebar ticks are recorded once into their own canvas item RIDs and moved with
+## RenderingServer.canvas_item_set_transform (one call per frame) under a clipping parent, instead of re-recording
+## every tick each frame: a canvas item keeps its commands until it is cleared, and a transform change only stores
+## a matrix (scene/main/canvas_item.cpp, servers/rendering/renderer_canvas_cull.cpp). The price: the tape no longer
+## fades toward its ends; the clip gives it hard edges like a flight controller's character tape.
+const COMPASS_SPAN_DEG := 60.0
+
+
+## The heading tape in tape coordinates: degree d at x = d * per_deg, from -span to 360 + span so every heading's
+## window lies inside it (the HUD translates it by centre_x - heading * per_deg). base: y of the tick baseline.
+static func record_compass_tape(rid: RID, base: float, per_deg: float, s: float) -> void:
+	var deg := -int(COMPASS_SPAN_DEG)
+	while deg <= 360 + int(COMPASS_SPAN_DEG):
+		var x := float(deg) * per_deg
+		var wrapped := posmod(deg, 360)
+		if CARDINALS.has(wrapped):
+			var size := int(round((22.0 if wrapped % 90 == 0 else 17.0) * s))
+			text_rid(rid, Vector2(x, base - 8.0 * s), CARDINALS[wrapped], size, CAUTION if wrapped == 0 else TEXT, 0)
+			stroke_rid(rid, Vector2(x, base + 2.0 * s), Vector2(x, base + 12.0 * s), 2.0 * s)
+		elif wrapped % 15 == 0:
+			stroke_rid(rid, Vector2(x, base + 4.0 * s), Vector2(x, base + 12.0 * s), 2.0 * s)
+		else:
+			stroke_rid(rid, Vector2(x, base + 8.0 * s), Vector2(x, base + 12.0 * s), 1.5 * s)
 		deg += 5
+
+
+## The fixed part of the heading tape: the caret and the boxed heading in whole degrees (redrawn when it changes).
+static func compass_box(ci: CanvasItem, centre_x: float, base: float, heading: int, s: float) -> void:
 	var tip := Vector2(centre_x, base + 15.0 * s)
 	triangle(ci, tip, tip + Vector2(-7.0, 10.0) * s, tip + Vector2(7.0, 10.0) * s)
-	var label := "%03d" % (int(round(heading)) % 360)
-	var size := int(round(20.0 * s))
 	var box := Rect2(Vector2(centre_x - 30.0 * s, tip.y + 11.0 * s), Vector2(60.0 * s, 26.0 * s))
 	ci.draw_rect(box, SHADE, true)
 	ci.draw_rect(box, TEXT, false, 1.5 * s)
-	text(ci, box.get_center(), label, size, TEXT, 0)
+	text(ci, box.get_center(), "%03d" % posmod(heading, 360), int(round(20.0 * s)), TEXT, 0)
 
 
-## A horizon sidebar: a vertical bracket at x with ticks that scroll with the value (`value` in tick units, so one
-## unit = one tick spacing) and an inward pointer at mid-height. side: -1 left bar (ticks point right), +1 right.
-static func sidebar(ci: CanvasItem, x: float, centre_y: float, half_height: float, value: float, side: float, s: float) -> void:
-	var spacing := 22.0 * s
-	var frac := value - floorf(value)
-	var count := int(ceilf(half_height / spacing)) + 1
-	for i in range(-count, count + 1):
-		var y := centre_y + (float(i) + frac) * spacing
-		if absf(y - centre_y) > half_height:
-			continue
-		var fade := 1.0 - 0.7 * absf(y - centre_y) / half_height
-		var major := posmod(int(floorf(value)) - i, 5) == 0
-		var length := (12.0 if major else 6.0) * s
-		stroke(ci, Vector2(x, y), Vector2(x - side * length, y), (2.0 if major else 1.5) * s, Color(TEXT, fade))
-	stroke(ci, Vector2(x, centre_y - half_height), Vector2(x, centre_y + half_height), 1.5 * s, Color(TEXT, 0.55))
+## A horizon sidebar's tick strip in strip coordinates: tick j at y = j * spacing for |j| <= count, every fifth one
+## longer; the HUD scrolls it by (posmod(floor(value), 5) + frac) ticks so the pattern stays continuous.
+static func record_sidebar_strip(rid: RID, x: float, count: int, side: float, s: float) -> void:
+	var spacing := SIDEBAR_SPACING * s
+	for j in range(-count, count + 1):
+		var y := float(j) * spacing
+		var major := posmod(j, 5) == 0
+		stroke_rid(rid, Vector2(x, y), Vector2(x - side * (12.0 if major else 6.0) * s, y), (2.0 if major else 1.5) * s)
+
+
+## The fixed part of a sidebar: the bracket line and the inward pointer.
+static func record_sidebar_frame(rid: RID, x: float, centre_y: float, half_height: float, side: float, s: float) -> void:
+	stroke_rid(rid, Vector2(x, centre_y - half_height), Vector2(x, centre_y + half_height), 1.5 * s, Color(TEXT, 0.55))
 	var tip := Vector2(x - side * 16.0 * s, centre_y)
-	triangle(ci, tip, tip + Vector2(side * 12.0, -7.0) * s, tip + Vector2(side * 12.0, 7.0) * s)
+	triangle_rid(rid, tip, tip + Vector2(side * 12.0, -7.0) * s, tip + Vector2(side * 12.0, 7.0) * s)
+
+
+## The strip offset (px) that shows `value` (in tick units) at the pointer.
+static func sidebar_offset(value: float, s: float) -> float:
+	return (float(posmod(int(floorf(value)), 5)) + value - floorf(value)) * SIDEBAR_SPACING * s
 
 
 ## A readout box beside a sidebar: the value text (and an optional second, smaller line) on a translucent shade.
@@ -224,7 +226,7 @@ static func home_arrow(ci: CanvasItem, at: Vector2, relative_deg: float, size: f
 	var tail := at - fwd * size * 0.75
 	var points := PackedVector2Array([tip, at + side * size * 0.75 - fwd * size * 0.75, tail + fwd * size * 0.35,
 		at - side * size * 0.75 - fwd * size * 0.75])
-	ci.draw_colored_polygon(points, color)
+	ci.draw_primitive(points, PackedColorArray([color, color, color, color]), PackedVector2Array())
 	points.append(tip)
 	ci.draw_polyline(points, OUTLINE, 2.0, true)
 
@@ -310,7 +312,9 @@ static func icon_home(ci: CanvasItem, at: Vector2, size: float, color: Color = T
 	var h := size * 0.5
 	var points := PackedVector2Array([at + Vector2(-h, h), at + Vector2(-h, -h * 0.1), at + Vector2(0.0, -h),
 		at + Vector2(h, -h * 0.1), at + Vector2(h, h)])
-	ci.draw_colored_polygon(points, color)
+	ci.draw_rect(Rect2(points[1], points[4] - points[1]), color, true)
+	ci.draw_primitive(PackedVector2Array([points[1], points[2], points[3]]), PackedColorArray([color, color, color]),
+		PackedVector2Array())
 	points.append(points[0])
 	ci.draw_polyline(points, OUTLINE, 1.5, true)
 	ci.draw_rect(Rect2(at + Vector2(-h * 0.22, h * 0.15), Vector2(h * 0.44, h * 0.85)), OUTLINE, true)
@@ -345,6 +349,6 @@ static func gate_marker(ci: CanvasItem, size: Vector2, screen: Vector2, behind: 
 	var a := tip
 	var b := tip - toward * 26.0 * s + side * 15.0 * s
 	var c := tip - toward * 26.0 * s - side * 15.0 * s
-	ci.draw_colored_polygon(PackedVector2Array([a, b, c]), color)
+	ci.draw_primitive(PackedVector2Array([a, b, c]), PackedColorArray([color, color, color]), PackedVector2Array())
 	ci.draw_polyline(PackedVector2Array([a, b, c, a]), OUTLINE, 2.0 * s, true)
 	text(ci, tip - toward * 46.0 * s, label, int(round(18.0 * s)), color, 0)

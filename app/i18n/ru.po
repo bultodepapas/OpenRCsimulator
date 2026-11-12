@@ -12484,3 +12484,40 @@ msgstr "ВОРОТА"
 
 msgid "LEFT %s"
 msgstr "ОСТАЛОСЬ %s"
+
+msgid "Lens effects"
+msgstr "Эффекты объектива"
+
+msgid "Impact effects"
+msgstr "Эффекты удара"
+
+msgid "Impact color"
+msgstr "Цвет удара"
+
+msgid "Rain on the lens"
+msgstr "Дождь на объективе"
+
+msgid "Lens grime and damage"
+msgstr "Грязь и повреждения объектива"
+
+msgid "Keep the screen center clear"
+msgstr "Оставлять центр экрана чистым"
+
+msgid "Classic curtain"
+msgstr "Классический занавес"
+
+msgid "Lens splatter"
+msgstr "Брызги на объективе"
+
+msgid "Dark"
+msgstr "Тёмный"
+
+msgid "Desaturated"
+msgstr "Обесцвеченный"
+
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
+msgstr "Кровь на экране, когда самолёт сбивает человека или пилота, капли дождя на камере, а также грязь, трава и трещины после ударов. Если выключено, эффекты объектива не показываются. Применяется со следующего полёта."
+
+msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
+msgstr "Классический занавес: красная пелена стекает с верхнего края экрана. Брызги на объективе: кровь только на камерах со стеклом. Если выключено, крови нет."
+

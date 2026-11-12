@@ -128,7 +128,8 @@ func show_assessment(report: Dictionary, terminal: bool = true, animate: bool = 
 		_reveal_pending = {report = report.duplicate(true), terminal = terminal} # The newest value wins.
 		return
 	_reveal_pending = {}
-	_count_up_elapsed = -1.0
+	if not showing_card:
+		_count_up_elapsed = -1.0 # An update of the visible card keeps counting toward its new value.
 	var id := _incident_id(report)
 	var preserve_view: bool = not id.is_empty() and id == _incident_id(_report) and not _archived and terminal == _terminal \
 		and report.get("costing_available", false) == true and _report.get("costing_available", false) == true
@@ -389,7 +390,8 @@ func _apply_count_up() -> void:
 		for field: String in ["total_minor", "low_minor", "high_minor", "known_subtotal_minor"]:
 			var amount: Variant = _valid_minor(_report.get(field))
 			if amount != null:
-				scaled[field] = int(round(float(amount) * eased))
+				# Nonzero amounts never scale to zero: every frame keeps the final headline's form.
+				scaled[field] = signi(amount) * maxi(1, int(round(absf(float(amount)) * eased))) if amount != 0 else 0
 		var state := _headline_state(scaled)
 		if state.status == final_state.status:
 			text = state.amount
@@ -720,6 +722,8 @@ func _render_report() -> void:
 	_update_purchase_options()
 	_rebuild_details()
 	_apply_action_visibility()
+	if _count_up_elapsed >= 0.0:
+		_apply_count_up() # A re-render during the count-up keeps the counted headline.
 	_layout()
 	_layout_retry_frames = 2
 

@@ -229,7 +229,8 @@ func _test_background_valuation(session: Variant, bindings: Dictionary) -> void:
 	check("background valuation never blocks the frame path", started and background.flush() == OK and background.valuation_in_flight())
 	background.wait_for_valuation()
 	check("background valuation commits the synchronous report exactly", background.report == sync.report
-		and background._active_cost_receipt == sync._active_cost_receipt and published.size() == 1 and published[0][0] == sync.report)
+		and background._active_cost_receipt == sync._active_cost_receipt and published.size() == 1 and published[0][0] == sync.report
+		and published[0][1] == false) # The crash accepted during the pass is published by the next pass, not this one.
 	sync.observe({tick = 2, events = []}, bindings, true)
 	sync.evaluate_pending()
 	var second_started: bool = background.evaluate_in_background()

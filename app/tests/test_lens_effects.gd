@@ -9,6 +9,7 @@ const ImpactTrigger = preload("res://render/lens/impact_trigger.gd")
 const PilotStrike = preload("res://render/lens/pilot_strike.gd")
 const DropPool = preload("res://render/lens/drop_pool.gd")
 const LensStack = preload("res://render/lens/lens_stack.gd")
+const DisplayPreferences = preload("res://app_state/display_preferences.gd")
 
 var _checks := 0
 var _failures := 0
@@ -21,6 +22,7 @@ func _initialize() -> void:
 	_pilot_checks()
 	_pool_checks()
 	_shader_rule_checks()
+	_preference_file_checks()
 	await process_frame
 	await _stack_checks()
 	print("%d checks, %d failed" % [_checks, _failures])
@@ -169,6 +171,14 @@ func _pool_checks() -> void:
 	for i in 40:
 		pool.spawn_random(1.7778, 0.006)
 	_check("the pool never exceeds its capacity", pool.count <= pool.capacity)
+	var crowd := DropPool.new()
+	crowd.configure(96, 9, false)
+	for i in 90:
+		crowd.spawn(0.4 + crowd.random() * 0.2, 0.4 + crowd.random() * 0.2, 0.004)
+	var crowd_volume := crowd.volume()
+	crowd.step(1.0 / 60.0, 1.7778, Vector2.ZERO, Vector2(0.889, 0.5), 0.0, Vector2.ZERO, true)
+	_check("a crowded patch merges through the hashed grid and conserves water", crowd.count < 90
+		and absf(crowd.volume() - crowd_volume) / crowd_volume < 1e-4)
 
 
 func _shader_rule_checks() -> void:
@@ -179,6 +189,38 @@ func _shader_rule_checks() -> void:
 		var regex := RegEx.create_from_string("(?m)^\\s*[^/\\s].*\\bTIME\\b")
 		clean = clean and not source.is_empty() and regex.search(source) == null
 	_check("lens shaders never read TIME", clean)
+
+
+func _preference_file_checks() -> void:
+	var defaults: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+	_check("display defaults carry the lens defaults", defaults.lens_effects == Settings.DEFAULTS.lens_effects
+		and defaults.impact_effects == Settings.DEFAULTS.impact_effects)
+	var bad := defaults.duplicate(true)
+	bad.impact_effects = "gore"
+	_check("an unknown impact style is refused", not DisplayPreferences.validate(bad).ok)
+	var chosen := defaults.duplicate(true)
+	chosen.lens_effects = "ultra"
+	chosen.impact_effects = "splatter"
+	chosen.impact_colour = "dark"
+	chosen.lens_rain = "off"
+	chosen.lens_glasses = "on"
+	var path := "user://test_lens_display.cfg"
+	var saved := DisplayPreferences.save_to(path, chosen)
+	var loaded: Dictionary = DisplayPreferences.load_from(path)
+	_check("lens preferences survive a save and load", saved == OK and loaded.lens_effects == "ultra"
+		and loaded.impact_effects == "splatter" and loaded.impact_colour == "dark" and loaded.lens_rain == "off"
+		and loaded.lens_glasses == "on")
+	var cfg := ConfigFile.new()
+	cfg.load(path)
+	cfg.set_value("lens", "impact", 7)
+	cfg.save(path)
+	var recovered: Dictionary = DisplayPreferences.load_from(path)
+	_check("one malformed lens value falls back alone", recovered.impact_effects == Settings.DEFAULTS.impact_effects
+		and recovered.lens_effects == "ultra")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var resolved: Dictionary = Settings.resolve({}, true, loaded)
+	_check("a saved preference resolves into the flight's settings", resolved.quality == "ultra"
+		and resolved.impact == "splatter" and not resolved.rain and resolved.glasses)
 
 
 func _stack_checks() -> void:
@@ -197,8 +239,15 @@ func _stack_checks() -> void:
 	holder.add_child(stack)
 	var ok := stack.configure({"settings": Settings.resolve({}, true, Settings.DEFAULTS), "camera": camera,
 		"view_provider": func() -> String: return view[0], "seed": 3})
-	stack.advance(1.0 / 60.0, 1.0, false)
-	_check("an enabled stack with nothing to show allocates no nodes yet", ok and stack.get_child_count() == 0)
+	_check("an enabled stack warms its shaders at setup", ok and stack.get_child_count() == 1
+		and bool(stack.snapshot().nodes.film) and bool(stack.snapshot().nodes.stamps) and bool(stack.snapshot().nodes.drops))
+	for i in 4:
+		stack.advance(1.0 / 60.0, 1.0, false)
+	var layer: CanvasLayer = stack.get_node("LensLayer")
+	var shown := false
+	for child: Node in layer.get_children():
+		shown = shown or (child as CanvasItem).visible
+	_check("after the warm-up nothing is drawn until something happens", not shown)
 	stack.debug_blood(1.0)
 	stack.advance(1.0 / 60.0, 1.0, false)
 	var snap: Dictionary = stack.snapshot()

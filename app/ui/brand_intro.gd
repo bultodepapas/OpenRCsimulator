@@ -5,6 +5,7 @@ const Segments := preload("res://assets/branding/logo_segments.gd")
 const ATLAS := preload("res://assets/branding/logo-segments.svg")
 const ATMOSPHERE := preload("res://ui/shaders/brand_atmosphere.gdshader")
 const INK := preload("res://ui/shaders/brand_segments.gdshader")
+const LoadingBar := preload("res://ui/loading_bar.gd")
 const DURATION := 4.8
 const LOGO_CENTER := Vector2(847.5, 456.5)
 
@@ -20,8 +21,22 @@ var status_text := "Loading…":
 	set(value):
 		status_text = value
 		_update_status()
+## UI-28-R5: truthful preparation progress in [0, 1], set by the startup owner from completed stages.
+## Monotonic, like the bar that draws it.
+var progress := 0.0:
+	set(value):
+		if is_finite(value):
+			progress = clampf(maxf(progress, value), 0.0, 1.0)
+		if is_instance_valid(progress_bar):
+			progress_bar.value = progress
+## The current construction stage (an English source phrase, translated when drawn).
+var detail_text := "":
+	set(value):
+		detail_text = value
+		queue_redraw()
 var status_label: Label
 var skip_button: Button
+var progress_bar: Control
 var _footer: HBoxContainer
 var _background: ColorRect
 var _mark: Node2D
@@ -47,6 +62,10 @@ func _ready() -> void:
 	_mark.material = _ink
 	_mark.draw.connect(_draw_mark)
 	add_child(_mark)
+	progress_bar = LoadingBar.new()
+	progress_bar.name = "StartupProgress"
+	progress_bar.value = progress
+	add_child(progress_bar)
 	_build_footer()
 	resized.connect(_on_resized)
 	_layout_footer()
@@ -77,12 +96,25 @@ func seek(seconds: float) -> void:
 	_refresh()
 
 
+## UI-28-R5: resolve the lockup while Home is prepared, but keep the atmosphere and bar alive.
+## Reduced motion and review stills keep their frozen seek() frame.
+func settle() -> void:
+	elapsed = maxf(elapsed, DURATION)
+	_refresh()
+
+
 func _refresh() -> void:
 	if _mark == null:
 		return
 	_atmosphere.set_shader_parameter("clock", elapsed)
 	_atmosphere.set_shader_parameter("viewport_size", size)
 	_ink.set_shader_parameter("clock", elapsed)
+	# Live-only decoration stays out of seek() stills, reduced motion and the trailer end card.
+	_atmosphere.set_shader_parameter("live", 1.0 if playing else 0.0)
+	_ink.set_shader_parameter("idle_clock", elapsed - DURATION if playing and elapsed > DURATION else -1.0)
+	if is_instance_valid(progress_bar):
+		progress_bar.reduced_motion = not playing
+		progress_bar.modulate = Color(1.0, 1.0, 1.0, self_modulate.a * smoothstep(0.5, 1.2, elapsed))
 	# The trailer hides this control's caption/footer with self_modulate while retaining the logo.
 	if _footer != null and _footer.modulate != self_modulate:
 		_footer.modulate = self_modulate
@@ -159,6 +191,10 @@ func _layout_footer() -> void:
 	_footer.offset_right = -margin
 	_footer.offset_bottom = -margin
 	_footer.offset_top = -margin - maxf(56.0, font_size * 3.0)
+	if is_instance_valid(progress_bar):
+		var bar_size := Vector2(minf(size.x - margin * 2.0, 560.0 * fit), maxf(5.0, roundf(8.0 * fit)))
+		progress_bar.size = bar_size
+		progress_bar.position = Vector2((size.x - bar_size.x) * 0.5, size.y * 0.765)
 
 
 func _draw_mark() -> void:
@@ -200,11 +236,11 @@ func _draw() -> void:
 	var width := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, small).x
 	draw_string(font, Vector2((size.x - width) * 0.5, size.y * 0.70), caption,
 		HORIZONTAL_ALIGNMENT_LEFT, -1, small, muted)
-	var margin := maxf(24.0, 64.0 * fit)
-	var baseline := size.y - margin
-	var footer_color := Color(0.55, 0.64, 0.69, smoothstep(0.5, 1.2, elapsed))
-	var rail := Rect2(margin, baseline + 15.0 * fit, 180.0 * fit, 1.0 * fit)
-	draw_rect(rail, Color(0.12, 0.22, 0.27, footer_color.a))
-	var runner := fmod(elapsed * 0.35, 1.0)
-	draw_rect(Rect2(rail.position + Vector2(runner * rail.size.x * 0.7, 0.0),
-		Vector2(rail.size.x * 0.3, maxf(1.0, fit))), Color(0.1, 0.72, 0.85, footer_color.a))
+	# UI-28-R5: the current stage sits under the bar; the footer keeps the accessible status.
+	if detail_text != "" and is_instance_valid(progress_bar):
+		var detail := tr(detail_text)
+		var detail_size := maxi(13, roundi(15.0 * fit * clampf(text_scale, 1.0, 2.0)))
+		var detail_width := font.get_string_size(detail, HORIZONTAL_ALIGNMENT_LEFT, -1, detail_size).x
+		var top := progress_bar.position.y + progress_bar.size.y + 18.0 * fit + detail_size
+		draw_string(font, Vector2((size.x - detail_width) * 0.5, top), detail, HORIZONTAL_ALIGNMENT_LEFT, -1,
+			detail_size, Color(0.55, 0.70, 0.76, smoothstep(0.5, 1.2, elapsed)))

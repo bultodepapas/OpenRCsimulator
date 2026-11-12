@@ -22,10 +22,13 @@ uniform float fade = 1.0;
 uniform float seed = 0.0;
 uniform float clear_centre = 0.0;
 uniform float columns = 30.0;           // drip columns across a 16:9 screen
-uniform vec3 sigma = vec3(0.55, 7.5, 8.5);
-uniform vec3 albedo = vec3(0.30, 0.012, 0.010);
+uniform vec3 sigma = vec3(1.8, 9.0, 10.0);
+uniform vec3 albedo = vec3(0.19, 0.009, 0.008);
 uniform vec3 dry_albedo = vec3(0.16, 0.022, 0.014);
 
+uniform float wetness = 0.0;            // fine beads covering a wet lens, 0…1
+uniform float wet_clock = 0.0;          // presentation seconds: beads appear and evaporate in turn
+uniform float wet_focus = 1.5;
 uniform float dust = 0.0;
 uniform vec3 dust_tint = vec3(0.62, 0.55, 0.45);
 uniform float dust_seed = 0.0;
@@ -58,37 +61,85 @@ float value_noise(vec2 p, int salt) {
 	return mix(mix(a, b, s.x), mix(c, d, s.x), s.y);
 }
 
-// Film thickness of the curtain at a screen point (y = 0 at the top). Continuous across drip columns.
+// Film thickness of the curtain at a screen point (y = 0 at the top, lengths in screen heights). The sheet's lower
+// edge is a slow wave; from some columns hang runners: a narrow channel widening into a meniscus where it leaves the
+// sheet and ending in a round bead, the way a liquid film drains down glass. Runners stay inside their column, so
+// the field is continuous across columns.
 float curtain_height(vec2 uv, float aspect) {
 	float t = curtain_t;
 	int salt = int(seed * 997.0);
 	float sheet = min(t * speed, depth);
 	float x = uv.x * aspect;
-	float wave = 0.03 * sin(x * 6.3 + seed * 11.0) + 0.018 * sin(x * 15.1 + seed * 5.0);
-	float front = sheet + wave * smoothstep(0.0, 0.15, sheet);
-	float column_coord = x * columns / 1.7778;
-	float cell = floor(column_coord);
-	float f = fract(column_coord);
-	int c = int(cell);
+	float y = uv.y;
+	float wave = 0.022 * sin(x * 5.1 + seed * 11.0) + 0.012 * sin(x * 13.7 + seed * 5.0) + 0.006 * sin(x * 31.0 + seed);
+	float edge = sheet + wave * smoothstep(0.0, 0.15, sheet);
+	// Sheet: thick at the top, thinner toward the edge, a slightly fuller rim held by surface tension.
+	float in_sheet = 1.0 - smoothstep(edge - 0.004, edge + 0.002, y);
+	float profile = mix(1.0, 0.5, clamp(y / max(edge, 1e-3), 0.0, 1.0));
+	float rim = exp(-pow((edge - y - 0.006) / 0.008, 2.0)) * 0.35;
+	float h = in_sheet * (profile + rim);
+	// Runners.
+	float column_width = 1.7778 / columns;
+	float column_coord = x / column_width;
+	int c = int(floor(column_coord));
+	float dx = (fract(column_coord) - 0.5) * column_width;
 	float r = hash01(c, salt);
-	float width = mix(0.22, 0.62, hash01(c, salt + 7));
-	float lobe = max(0.0, 1.0 - pow(abs(f - 0.5) / (0.5 * width), 2.0));
-	// A few long runners keep creeping during the hold; most columns only bulge.
-	float growth = smoothstep(0.15, 1.4, t) + 0.06 * max(t - 1.4, 0.0);
-	float drip = (0.04 + 0.42 * pow(r, 3.0)) * growth * smoothstep(0.02, 0.12, sheet);
-	front += drip * lobe;
-	float inside = 1.0 - smoothstep(front - 0.012, front, uv.y);
+	if (r > 0.3 && sheet > 0.02) {
+		float growth = smoothstep(0.1, 1.3, t) + 0.05 * max(t - 1.3, 0.0);
+		float reach = (0.015 + 0.38 * pow((r - 0.3) / 0.7, 2.2)) * growth;
+		float w0 = mix(0.0035, 0.0095, hash01(c, salt + 7));
+		float centre_shift = (hash01(c, salt + 13) - 0.5) * (column_width * 0.5 - 2.0 * w0);
+		float px = dx - centre_shift;
+		float local_edge = edge - 0.004;
+		float yy = y - local_edge;
+		float d = 1e3;
+		if (yy > -0.01 && yy < reach) {
+			float meniscus = 1.0 + 2.2 * exp(-max(yy, 0.0) / 0.012);
+			d = abs(px) - w0 * meniscus;
+		}
+		d = min(d, length(vec2(px, yy - reach) * vec2(1.0, 0.85)) - w0 * 1.45);
+		float runner = 1.0 - smoothstep(-0.0012, 0.0012, d);
+		float bead = 1.0 - smoothstep(0.0, w0 * 1.5, length(vec2(px, yy - reach)));
+		h = max(h, runner * (0.55 + 0.45 * bead + 0.3 * (1.0 - clamp(-d / w0, 0.0, 1.0))));
+	}
+	// Flow streaks inside the film.
+	h *= 0.9 + 0.12 * value_noise(vec2(x * 22.0, y * 1.6 + seed * 3.0), 11) + 0.06 * value_noise(vec2(x * 61.0, y * 4.0), 17);
+	// Draining empties the top and leaves a faint residue: a few thin rivulets, not a pattern.
 	float drained = max(t - drain_start, 0.0) * drain_rate;
-	inside *= smoothstep(drained, drained + 0.07, uv.y);
-	float profile = mix(1.0, 0.45, clamp(uv.y / max(front, 1e-3), 0.0, 1.0));
-	float bead = (1.0 - smoothstep(0.0, 0.022, abs(uv.y - (front - 0.014)))) * (0.35 + 0.65 * lobe) * 0.75;
-	float thin = 1.0 - 0.6 * clamp((t - drain_start) / 4.0, 0.0, 1.0);
-	float h = inside * (profile + bead) * thin;
+	float rivulet_coord = x * 26.0 + 0.4 * sin(y * 9.0 + x * 3.0);
+	float rivulet = smoothstep(0.82, 0.97, hash01(int(floor(rivulet_coord)), salt + 29))
+		* (1.0 - smoothstep(0.08, 0.32, abs(fract(rivulet_coord) - 0.5)));
+	float residue = (0.03 + 0.09 * rivulet) * step(y, drained) * (1.0 - smoothstep(0.0, 3.0, (drained - y) / max(drain_rate, 1e-3)));
+	float kept = drained > 0.0 ? smoothstep(drained, drained + 0.06, y) : 1.0;
+	h = h * kept + residue * in_sheet;
+	h *= 1.0 - 0.55 * clamp((t - drain_start) / 4.0, 0.0, 1.0);
 	if (clear_centre > 0.0) {
 		float radial = length((uv - vec2(0.5)) * vec2(aspect, 1.0));
 		h *= mix(1.0, smoothstep(0.18, 0.42, radial), clear_centre);
 	}
 	return h;
+}
+
+// Fine static beads on a wet lens, after StaticDrops in "Rain on Glass" by Gerardo LCDF (MIT, see
+// IMPACT_GLASS_LICENSE.txt): one bead per grid cell at a hashed offset, fading in and out on its own phase.
+vec3 n13(float p) {
+	vec3 p3 = fract(vec3(p) * vec3(0.1031, 0.11369, 0.13787));
+	p3 += dot(p3, p3.yzx + 19.19);
+	return fract(vec3((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y, (p3.y + p3.z) * p3.x));
+}
+
+float saw(float b, float t) {
+	return smoothstep(0.0, b, t) * (1.0 - smoothstep(b, 1.0, t));
+}
+
+float static_drops(vec2 uv, float t) {
+	uv *= 40.0;
+	vec2 id = floor(uv);
+	vec3 n = n13(id.x * 106.45 + id.y * 3543.654);
+	vec2 centre = (n.xy - 0.5) * 0.6;
+	uv = fract(uv) - 0.5;
+	float drop = 1.0 - smoothstep(0.0, 0.3, length(uv - centre));
+	return drop * saw(0.10, fract(t + n.y)) * fract(n.z * 27.0);
 }
 
 void over(inout vec4 acc, vec3 colour, float alpha) {
@@ -111,6 +162,20 @@ void fragment() {
 		vec3 bloom = max(blurred - vec3(0.62), vec3(0.0)) * 2.2 * vec3(1.0, 0.94, 0.82);
 		float smear = 0.6 + 0.4 * value_noise(vec2(uv.x * aspect * 3.0, uv.y * 0.8), 3);
 		over(acc, blurred + bloom, oil * 0.55 * smear);
+	}
+	if (wetness > 0.0) {
+		vec2 wet_uv = vec2(uv.x * aspect, uv.y);
+		float t = wet_clock * 0.05;
+		float c = static_drops(wet_uv, t) * 2.0 * wetness;
+		vec2 e = SCREEN_PIXEL_SIZE.yy * 0.5;
+		float cx = static_drops(wet_uv + vec2(e.x, 0.0), t) * 2.0 * wetness;
+		float cy = static_drops(wet_uv + vec2(0.0, e.y), t) * 2.0 * wetness;
+		float bead = smoothstep(0.3, 1.0, c);
+		if (bead > 0.0) {
+			vec2 slope = vec2(cx - c, cy - c);
+			vec3 seen = textureLod(screen_texture, clamp(uv + slope * 0.6, vec2(0.0), vec2(1.0)), wet_focus).rgb;
+			over(acc, seen * 1.05, bead);
+		}
 	}
 	if (dust > 0.0) {
 		vec3 wide = textureLod(screen_texture, uv, 4.5).rgb;
@@ -135,7 +200,7 @@ void fragment() {
 				+ film_albedo * (1.0 - exp(-2.4 * density)) * (0.35 + 0.65 * luminance(ambient)) * 1.6;
 			vec3 normal = normalize(vec3(-grad * 70.0, 1.0));
 			float spec = pow(max(dot(normal, normalize(vec3(-0.35, -0.55, 0.76))), 0.0), 36.0);
-			colour += vec3(0.55, 0.45, 0.42) * spec * (0.35 + 0.65 * luminance(ambient)) * (1.0 - dry * 0.7);
+			colour += vec3(0.5, 0.42, 0.4) * 0.6 * spec * (0.35 + 0.65 * luminance(ambient)) * (1.0 - dry * 0.7);
 			over(acc, colour, clamp(h * 4.0, 0.0, 1.0) * fade);
 		}
 	}

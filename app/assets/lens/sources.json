@@ -1,0 +1,25 @@
+{
+  "author": "Dino0040",
+  "license": "CC0-1.0",
+  "page": "https://opengameart.org/content/100-grunge-brushstrokes-and-splatters-set",
+  "download": "https://opengameart.org/sites/default/files/grunge_brushes.zip",
+  "retrieved": "2026-11-12",
+  "archive_sha256": "ce17c54ed6ca8b3ecfb92e46a68a46b1c0d52f77fcdae5bfa310fc3afc092d2a",
+  "modifications": "Alpha channels of eight brushes cropped, scaled and packed into one 8-bit atlas by tools/lens/build_splat_atlas.py (4 x 2 cells: liquid row, clumpy row).",
+  "files": [
+    {
+      "path": "splats.png",
+      "sha256": "535735810a8fb52cb87c7b24c9b161530321ba1e38ba5571e0e10960709bb43a",
+      "source_members": [
+        "grunge_brushes/increased_opacity/brush079.png",
+        "grunge_brushes/increased_opacity/brush081.png",
+        "grunge_brushes/increased_opacity/brush086.png",
+        "grunge_brushes/increased_opacity/brush092.png",
+        "grunge_brushes/increased_opacity/brush053.png",
+        "grunge_brushes/increased_opacity/brush058.png",
+        "grunge_brushes/increased_opacity/brush062.png",
+        "grunge_brushes/increased_opacity/brush024.png"
+      ]
+    }
+  ]
+}

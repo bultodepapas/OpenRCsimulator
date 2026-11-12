@@ -11734,3 +11734,40 @@ msgstr "ゲート"
 
 msgid "LEFT %s"
 msgstr "残り %s"
+
+msgid "Lens effects"
+msgstr "レンズ効果"
+
+msgid "Impact effects"
+msgstr "衝突効果"
+
+msgid "Impact color"
+msgstr "衝突の色"
+
+msgid "Rain on the lens"
+msgstr "レンズの雨粒"
+
+msgid "Lens grime and damage"
+msgstr "レンズの汚れと損傷"
+
+msgid "Keep the screen center clear"
+msgstr "画面中央を見やすく保つ"
+
+msgid "Classic curtain"
+msgstr "クラシックカーテン"
+
+msgid "Lens splatter"
+msgstr "レンズへの飛び散り"
+
+msgid "Dark"
+msgstr "暗い"
+
+msgid "Desaturated"
+msgstr "低彩度"
+
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
+msgstr "機体が人やパイロットに当たったときの画面の血、カメラの雨粒、衝突後の泥・草・ひび。オフにするとレンズ効果をすべて無効にします。次のフライトから適用されます。"
+
+msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
+msgstr "クラシックカーテン: 画面上部から赤い幕が流れ落ちます。レンズへの飛び散り: ガラスのあるカメラにだけ血が付きます。オフでは血を表示しません。"
+

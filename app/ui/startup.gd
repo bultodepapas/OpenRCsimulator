@@ -5,6 +5,12 @@ const Languages := preload("res://i18n/languages.gd")
 const APP_SCENE := "res://app_root.tscn"
 const Intro := preload("res://ui/brand_intro.gd")
 const SceneLoad := preload("res://ui/flight_scene_load.gd")
+## UI-28-R5: the staged first Home reports these top-level stages in order (World.build_staged, then
+## the aircraft). The bar position counts completed milestones: the shell scene load and each stage;
+## Home ready fills it. Other stage names are sub-stages and only advance within the current segment.
+const HOME_STAGES := ["Preparing world", "Building landscape", "Preparing sky", "Preparing field lighting",
+	"Finalizing world", "Preparing aircraft"]
+const MILESTONES := 7.0 # scene load + HOME_STAGES
 signal _frame_ready
 
 var intro: Control
@@ -23,6 +29,8 @@ var _owns_quit_policy := false
 var _auto_accept_quit_before := true
 var _handoff_app: WeakRef
 var _handoff_process_mode: Node.ProcessMode = Node.PROCESS_MODE_INHERIT
+var _home_milestone := 0
+var _home_stage := ""
 
 
 func _ready() -> void:
@@ -84,6 +92,7 @@ func _process(_delta: float) -> void:
 		if _packed_scene == null:
 			_fail()
 			return
+		intro.progress = 1.0 / MILESTONES
 	if _packed_scene != null and (_skip or intro.elapsed >= Intro.DURATION):
 		_committing = true
 		intro.status_text = "Preparing home…"
@@ -126,8 +135,12 @@ func _joy_connection_changed(device: int, connected: bool) -> void:
 
 
 func _commit() -> void:
-	# Freeze at the resolved lockup while synchronous Home scene construction runs.
-	intro.seek(maxf(intro.elapsed, Intro.DURATION))
+	# Resolve the lockup. UI-28-R5: the atmosphere, logo sweep and bar keep moving while Home is
+	# prepared; reduced motion keeps its still frame.
+	if _reduced_motion or not intro.playing:
+		intro.seek(maxf(intro.elapsed, Intro.DURATION))
+	else:
+		intro.settle()
 	await _presentation_frame()
 	if _closing or not is_inside_tree():
 		return
@@ -137,6 +150,10 @@ func _commit() -> void:
 		_fail()
 		return
 	var app := packed.instantiate()
+	# UI-28-R5: an AppRoot that supports it builds the first Home in stages under this intro.
+	var staged_home := app.get("startup_progress") is Callable
+	if staged_home:
+		app.set("startup_progress", _on_home_stage)
 	# AppRoot now captures the original policy and owns every later close request.
 	_release_quit_policy()
 	get_tree().root.add_child(app)
@@ -144,6 +161,13 @@ func _commit() -> void:
 	_handoff_app = weakref(app)
 	_handoff_process_mode = app.process_mode
 	app.process_mode = Node.PROCESS_MODE_DISABLED
+	# AppRoot handles a close request itself; it cancels the build at its next checkpoint.
+	while staged_home and is_instance_valid(app) and bool(app.get("home_build_pending")) and is_inside_tree():
+		await _owned_frame(get_tree().process_frame)
+	if _closing or not is_inside_tree():
+		return
+	intro.detail_text = ""
+	intro.progress = 1.0
 	await _presentation_frame()
 	await _owned_frame(get_tree().process_frame)
 	while true:
@@ -163,6 +187,23 @@ func _commit() -> void:
 		intro.modulate.a = 1.0
 	_release_handoff_pause()
 	queue_free()
+
+
+## Synchronous stage report from the staged first Home (UI-28-R5). Each sub-stage report is one real
+## chunk of work; repeated top-level reports (the aircraft-model wait) are ignored.
+func _on_home_stage(stage: String) -> void:
+	var index := HOME_STAGES.find(stage)
+	if intro == null or (index >= 0 and stage == _home_stage):
+		return
+	_home_stage = stage
+	intro.detail_text = stage
+	if index >= _home_milestone:
+		_home_milestone = index + 1
+		intro.progress = (1.0 + index) / MILESTONES
+	elif index < 0:
+		# A sub-stage: part of the way toward the end of the current segment, never reaching it.
+		var limit := (2.0 + maxi(_home_milestone - 1, 0)) / MILESTONES
+		intro.progress = intro.progress + (limit - intro.progress) * 0.08
 
 
 func _animate_requested() -> bool:

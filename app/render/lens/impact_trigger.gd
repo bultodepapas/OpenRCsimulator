@@ -11,6 +11,7 @@ const PROPELLER_BONUS := 0.25
 ## Ground and obstacle contacts slower than this leave no grime.
 const GRIME_MIN_SPEED_MPS := 2.5
 const MAX_SEEN := 512
+const TRIM_TO := 384
 
 
 ## One event → {kind, strength, speed_mps, point_ned, tick, id} or {} when it means nothing to the lens.
@@ -103,9 +104,10 @@ static func admit(snapshot: Dictionary, seen: Dictionary, floor_tick: int, mass_
 		if not record.is_empty():
 			out.append(record)
 	if seen.size() > MAX_SEEN:
+		# Trim to TRIM_TO at once, so the sort runs once per 128 new events, not on every call.
 		var oldest: Array = seen.keys()
-		oldest.sort_custom(func(a: Variant, b: Variant) -> bool: return int(seen[a]) < int(seen[b]))
-		for index in seen.size() - MAX_SEEN:
+		oldest.sort_custom(func(x: Variant, y: Variant) -> bool: return int(seen[x]) < int(seen[y]))
+		for index in seen.size() - TRIM_TO:
 			seen.erase(oldest[index])
 	return out
 

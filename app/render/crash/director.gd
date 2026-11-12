@@ -66,6 +66,9 @@ var _configured := false
 var _hull_capture_ready := false
 ## CR-01e: the last CrashCause.HISTORY_S of flight, sampled every SAMPLE_INTERVAL_S of sim time (oldest first).
 var history: Array = []
+## CR-22e: scenery wreck contacts created in the crash frame, then per frame (nearest first; 160 in ~7 frames).
+const SCENERY_CONTACTS_FIRST := 16
+const SCENERY_CONTACTS_PER_FRAME := 24
 const TOUCH_TRAIL_S := 0.12
 const TOUCH_SLIDE_MPS := 1.5
 
@@ -77,6 +80,7 @@ func configure(next_context: PresentationContext, audio_enabled: bool = true) ->
 	wreck = Wreck.new()
 	add_child(wreck)
 	wreck.prepare(context.model_bindings.root)
+	SceneryBodies.prepare(context.collision_world) # CR-22e: one world scan at setup, not at the crash.
 	scuffs.prepare(context.model_bindings.root)
 	wreck.secondary_impact.connect(_secondary)
 	effects = Effects.new()
@@ -176,6 +180,8 @@ func update(delta: float) -> void:
 			_age += minf(delta, 0.1)
 		last_update_usec = Time.get_ticks_usec()-began
 		return
+	if _scenery_contacts != null and _scenery_contacts.has_meta("pending"):
+		SceneryBodies.continue_build(_scenery_contacts, SCENERY_CONTACTS_PER_FRAME)
 	# Main refreshes the source-airplane shadow each frame before this call.
 	# Only the moving wreck's own contact shadows belong in the aftermath.
 	_hide_source_shadow()
@@ -247,8 +253,10 @@ func _start() -> void:
 		report["response_class"] = str(impact.response_class)
 		report["mass_basis"] = "rigid-body effective mass at the swept contact; material transfer remains estimated"
 		# CR-22e: the installed world without its per-call deep copy; broken proxies are skipped as before.
-		_scenery_contacts = SceneryBodies.build_near(context.collision_world, point, context.session.scenery_damage()) \
-			if not context.collision_world.is_empty() else SceneryBodies.build_near(context.session.collision_world(true), point)
+		# The nearest contacts exist now; update() adds the farther ones over the next frames.
+		_scenery_contacts = SceneryBodies.build_near_staged(context.collision_world, point, context.session.scenery_damage(),
+			SCENERY_CONTACTS_FIRST) if not context.collision_world.is_empty() \
+			else SceneryBodies.build_near_staged(context.session.collision_world(true), point, {}, SCENERY_CONTACTS_FIRST)
 		add_child(_scenery_contacts)
 	report["trigger"] = impact.trigger
 	# E3d1: the soft-contact rule ends a flight only at C2 energy (transfer-free), so it never shows as a scrape.
@@ -812,6 +820,8 @@ func stats() -> Dictionary:
 		effects=effects.stats() if is_instance_valid(effects) else {},
 		wreck=wreck.stats() if is_instance_valid(wreck) else {},
 		shader_warmup=shader_warmup.duplicate(),
+		scenery_contacts=_scenery_contacts.get_meta("bodies", 0) if is_instance_valid(_scenery_contacts) else 0,
+		scenery_contacts_omitted=_scenery_contacts.get_meta("omitted", 0) if is_instance_valid(_scenery_contacts) else 0,
 		water=water_state, report=report.duplicate(true)}
 
 

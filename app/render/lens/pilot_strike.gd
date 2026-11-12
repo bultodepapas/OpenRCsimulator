@@ -23,6 +23,12 @@ func reset() -> void:
 	_armed = true
 
 
+## Drops the previous sample: the aircraft left the watch radius, far beyond REARM_DISTANCE_M, so it also re-arms.
+func forget() -> void:
+	_previous = PackedFloat64Array()
+	_armed = true
+
+
 ## Hull points (body FRD triples about the CG) placed in the world for a position (NED) and attitude quaternion.
 static func hull_world(position_ned: PackedFloat64Array, attitude: PackedFloat64Array, hull: PackedFloat64Array) -> PackedFloat64Array:
 	var out := PackedFloat64Array()

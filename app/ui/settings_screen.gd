@@ -12,6 +12,17 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
 ## Settings pages, in tab order. CAM-17 added Camera.
 const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera", "Lighting"]
+const LensSettings := preload("res://render/lens/lens_settings.gd")
+## LENS-01 rows at the end of the Lighting page: node name, preference key, choices, caption. "Glasses in pilot
+## view" (lens_glasses) stays a display.cfg / --lens-glasses preference: the page has no room for a seventh row at 1080p.
+const LENS_ROWS := [
+	["LensEffects", "lens_effects", LensSettings.QUALITIES, "Lens effects"],
+	["ImpactEffects", "impact_effects", LensSettings.IMPACT_STYLES, "Impact effects"],
+	["ImpactColor", "impact_colour", LensSettings.IMPACT_COLOURS, "Impact color"],
+	["LensRain", "lens_rain", LensSettings.SWITCHES, "Rain on the lens"],
+	["LensGrime", "lens_grime", LensSettings.SWITCHES, "Lens grime and damage"],
+	["LensClearCentre", "lens_clear_centre", LensSettings.SWITCHES, "Keep the screen center clear"],
+]
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
@@ -72,6 +83,8 @@ var _fsr2_sharpness_value: Label
 var _fsr2_sharpness_dragging := false
 var _scene_detail_picker: OptionButton
 var _flag_animation_picker: OptionButton
+## LENS-01: one OptionButton per lens preference, by DisplayPreferences key.
+var _lens_pickers: Dictionary = {}
 var _birds_picker: OptionButton
 var _runway_meadow_picker: OptionButton
 var _rc_track_picker: OptionButton
@@ -473,6 +486,12 @@ func _build() -> void:
 		_sync_controls()
 		_on_presentation_option_changed())
 	lighting_page.add_child(lighting_defaults)
+	# LENS-01: lens and screen effects; presentation only, applied from the next flight.
+	for entry: Array in LENS_ROWS:
+		var lens_picker := _lens_picker(str(entry[0]), str(entry[1]), entry[2])
+		_add_row(lighting_page, str(entry[3]), lens_picker)
+	_set_localized_tooltip(_lens_pickers.lens_effects, "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight.")
+	_set_localized_tooltip(_lens_pickers.impact_effects, "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood.")
 
 	_language_picker = OptionButton.new()
 	_language_picker.name = "Language"
@@ -673,6 +692,12 @@ func _camera_picker(node_name: String, key: String, values: Array) -> OptionButt
 	return picker
 
 
+func _lens_picker(node_name: String, key: String, values: Array) -> OptionButton:
+	var picker := _camera_picker(node_name, key, values)
+	_lens_pickers[key] = picker
+	return picker
+
+
 func _shadow_picker(node_name: String, key: String, values: Array) -> OptionButton:
 	var picker := OptionButton.new()
 	picker.name = node_name
@@ -736,6 +761,11 @@ func _choice_caption(key: String, value: Variant) -> String:
 			far = tr("Far (600 m)")}.get(value, str(value))
 		"shadow_softness": return {auto = tr("Automatic"), hard = tr("Hard"), soft = tr("Soft")}.get(value, str(value))
 		"aircraft_lighting_quality": return {low = tr("Low"), standard = tr("Standard"), high = tr("High")}.get(value, str(value))
+		"lens_effects": return {off = tr("Off"), low = tr("Low"), medium = tr("Medium"), high = tr("High"),
+			ultra = tr("Ultra")}.get(value, str(value))
+		"impact_effects": return {off = tr("Off"), curtain = tr("Classic curtain"), splatter = tr("Lens splatter")}.get(value, str(value))
+		"impact_colour": return {red = tr("Red"), dark = tr("Dark"), desaturated = tr("Desaturated")}.get(value, str(value))
+		"lens_rain", "lens_grime", "lens_glasses", "lens_clear_centre": return {off = tr("Off"), on = tr("On")}.get(value, str(value))
 		"camera_magnifier": return {off = tr("Off"), auto = tr("Automatic"), on = tr("On")}.get(value, str(value))
 		"camera_aids": return {off = tr("Off"), horizon = tr("Keep the horizon in view"), overhead = tr("Smooth overhead passes"),
 			both = tr("Both")}.get(value, str(value))
@@ -1064,6 +1094,8 @@ func _sync_controls() -> void:
 	_sync_reflex_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_flag_animation_picker, _draft.get("flag_animation", DisplayPreferences.DEFAULTS.flag_animation))
+	for key: String in _lens_pickers:
+		_select_metadata(_lens_pickers[key], _draft.get(key, DisplayPreferences.DEFAULTS[key]))
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
 	_select_metadata(_runway_meadow_picker, _draft.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow))
 	_refresh_rc_track_captions()
@@ -1351,6 +1383,10 @@ func _refresh_translated_text() -> void:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
+	for key: String in _lens_pickers:
+		var lens_picker: OptionButton = _lens_pickers[key]
+		for index: int in lens_picker.item_count:
+			lens_picker.set_item_text(index, _choice_caption(key, lens_picker.get_item_metadata(index)))
 	_refresh_graphics_info()
 	_refresh_rc_track_captions()
 	_refresh_shadow_group_button()

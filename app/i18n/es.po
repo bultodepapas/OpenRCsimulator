@@ -11275,3 +11275,40 @@ msgstr "PUERTA"
 
 msgid "LEFT %s"
 msgstr "QUEDAN %s"
+
+msgid "Lens effects"
+msgstr "Efectos de lente"
+
+msgid "Impact effects"
+msgstr "Efectos de impacto"
+
+msgid "Impact color"
+msgstr "Color del impacto"
+
+msgid "Rain on the lens"
+msgstr "Lluvia en la lente"
+
+msgid "Lens grime and damage"
+msgstr "Suciedad y daños en la lente"
+
+msgid "Keep the screen center clear"
+msgstr "Mantener despejado el centro de la pantalla"
+
+msgid "Classic curtain"
+msgstr "Cortina clásica"
+
+msgid "Lens splatter"
+msgstr "Salpicadura en la lente"
+
+msgid "Dark"
+msgstr "Oscuro"
+
+msgid "Desaturated"
+msgstr "Desaturado"
+
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
+msgstr "Sangre en la pantalla cuando la aeronave golpea a una persona o al piloto, gotas de lluvia en la cámara, y barro, hierba y grietas tras los impactos. Si se desactiva, se apagan todos los efectos de lente. Se aplica desde el siguiente vuelo."
+
+msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
+msgstr "Cortina clásica: una lámina roja baja desde la parte superior de la pantalla. Salpicadura en la lente: sangre solo en las cámaras con cristal. Si se desactiva, no se muestra sangre."
+

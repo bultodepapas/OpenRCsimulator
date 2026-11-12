@@ -19,10 +19,11 @@ void fragment() {
 	vec2 q = abs(p) - (0.5 * plate_size - corner_m);
 	// Rounded-rectangle distance, negative inside.
 	float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - corner_m;
+	// Derivative before the discard (undefined after it on GLSL ES).
+	float fw = max(fwidth(d), 1.0e-5);
 	if (d > 0.0) {
 		discard;
 	}
-	float fw = max(fwidth(d), 1.0e-5);
 	float rim = smoothstep(-rim_m - fw, -rim_m, d);
 	ALBEDO = mix(plate_color.rgb, rim_color.rgb, rim);
 	ROUGHNESS = mix(0.6, 0.4, rim);

@@ -130,7 +130,8 @@ var _valuation_job: Dictionary = {}
 ## Never copied into a valuation clone: session caches, worker bookkeeping and pass-local memo.
 const _VALUATION_SKIP: Array[String] = ["_catalog_cache", "_catalog_cache_key", "_recipe_cache",
 	"_recipe_cache_loaded", "_recipe_cache_hash", "async_archive", "async_valuation", "_archive_task_id", "_archive_job",
-	"_valuation_task_id", "_valuation_job", "_prepare_memo_active", "_prepare_memo"]
+	"_valuation_task_id", "_valuation_job", "_prepare_memo_active", "_prepare_memo",
+	"report", "last_report", "_clone_fields"] # _recalculate assigns report before reading it and never reads last_report.
 ## Outputs of one _recalculate() that a background valuation hands back.
 const _VALUATION_OUTPUTS: Array[String] = ["report", "_active_cost_receipt", "_costing_error",
 	"_purchase_options_key", "_purchase_options_cache"]
@@ -979,13 +980,19 @@ func wait_for_valuation() -> void:
 	_collect_valuation_job(true)
 
 
+## Script variables a valuation clone receives; fixed for the loaded script, listed once.
+static var _clone_fields: Array[StringName] = []
+
+
 func _valuation_clone() -> RefCounted:
+	if _clone_fields.is_empty():
+		for property: Dictionary in get_property_list():
+			if int(property.usage) & PROPERTY_USAGE_SCRIPT_VARIABLE and not _VALUATION_SKIP.has(str(property.name)):
+				_clone_fields.append(StringName(property.name))
 	var clone: RefCounted = get_script().new()
-	for property: Dictionary in get_property_list():
-		if not (int(property.usage) & PROPERTY_USAGE_SCRIPT_VARIABLE) or _VALUATION_SKIP.has(str(property.name)):
-			continue
-		var value: Variant = get(property.name)
-		clone.set(property.name, value.duplicate(true) if value is Dictionary or value is Array else value)
+	for field: StringName in _clone_fields:
+		var value: Variant = get(field)
+		clone.set(field, value.duplicate(true) if value is Dictionary or value is Array else value)
 	return clone
 
 
@@ -1007,7 +1014,8 @@ func _collect_valuation_job(wait: bool) -> void:
 	_dirty = true
 	_evidence_only_dirty = false
 	_report_serial += 1
-	assessment_changed.emit(report.duplicate(true), terminal)
+	# The pass's own terminal state: a crash accepted after its snapshot is valued by the next pass.
+	assessment_changed.emit(report.duplicate(true), bool(clone.terminal))
 
 
 func _discard_valuation_job() -> void:
@@ -1377,22 +1385,24 @@ func _purchase_options() -> Array:
 ## Called outside accepted-tick callbacks. Persistence is a single bounded latest-report snapshot.
 func flush(force_retry := false) -> Error:
 	_collect_archive_job(force_retry)
-	if _valuation_task_id >= 0 and not force_retry:
-		return _flush_error as Error # The report is being revalued; it is written after it lands.
-	evaluate_pending()
-	if not _dirty or report.is_empty() or (_persisted_revision == _revision and not _evidence_only_dirty):
+	# While a background pass revalues newer evidence, the last committed report (with its own
+	# revision) is still the one to persist: continuous contact never starves the archive.
+	if _valuation_task_id < 0 or force_retry:
+		evaluate_pending()
+	var revision := int(report.get("revision", _revision))
+	if not _dirty or report.is_empty() or (_persisted_revision == revision and not _evidence_only_dirty):
 		return OK
 	if _evidence_only_dirty and not terminal and not force_retry and _last_archive_tick >= 0 \
 		and _last_tick - _last_archive_tick < EVIDENCE_FLUSH_INTERVAL_TICKS:
 		return OK
-	if _flush_attempt_revision == _revision and _flush_error != OK and not force_retry:
+	if _flush_attempt_revision == revision and _flush_error != OK and not force_retry:
 		return _flush_error as Error
 	# A previous failure stays reported until a write succeeds, as with synchronous writes.
 	if _archive_task_id >= 0:
 		return _flush_error as Error # One write in flight; a later frame writes the newest report.
-	_flush_attempt_revision = _revision
+	_flush_attempt_revision = revision
 	if async_archive and not force_retry:
-		_archive_job = {report = report.duplicate(true), path = archive_path, revision = _revision,
+		_archive_job = {report = report.duplicate(true), path = archive_path, revision = revision,
 			last_tick = _last_tick, serial = _report_serial, result = {}}
 		# A script-level callable: the worker never touches this ledger, only its own copy.
 		_archive_task_id = WorkerThreadPool.add_task(Callable(get_script(), "_archive_worker").bind(_archive_job),

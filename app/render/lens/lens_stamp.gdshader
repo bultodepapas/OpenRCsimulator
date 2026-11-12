@@ -1,15 +1,25 @@
-// LENS-04/10/11 (docs/plans/lens-screen-effects.md §5.2, §7.2). Ours, MIT. Things stuck on the lens, one instance of a
-// unit quad each in a MultiMeshInstance2D: procedural shapes, so no texture memory and nothing to license.
-// Custom data: x kind (0 blood splat, 1 mud splat, 2 grass blade, 3 cracked lens), y seed, z opacity, w radius (px).
-// Liquids absorb and refract the live image; mud is mostly opaque; grass is out of focus; a crack splits the image
-// chromatically along its line. No TIME: the CPU ages every stamp.
+// LENS-04/10/11 (docs/plans/lens-screen-effects.md §5.2, §7.2). Things stuck on the lens, one instance of a unit quad
+// each in a MultiMeshInstance2D. Custom data: x kind (0 blood splat, 1 mud splat, 2 grass blade, 3 cracked lens),
+// y seed, z opacity, w radius in pixels. No TIME: the CPU ages every stamp.
+//
+// Splat shapes are real photographed ink splatters (app/assets/lens/splats.png, CC0, Dino0040 via OpenGameArt; built by
+// tools/lens/build_splat_atlas.py): the top row liquid splats for blood, the bottom row clumpy splats for mud. The
+// atlas's blurred mips give each splat a dome of thickness, so blood absorbs and refracts the live image by its depth.
+// The cracked lens follows the radial Voronoi technique of "Impact Glass Shader" by Lord0Sanz (MIT, see
+// IMPACT_GLASS_LICENSE.txt): feature points scattered around the impact at growing radii; the difference between the
+// nearest and second-nearest distances draws the cracks, and each shard refracts the image away from its point.
 shader_type canvas_item;
 render_mode unshaded, blend_mix;
 
 uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap, repeat_disable;
-uniform vec3 blood_sigma = vec3(0.55, 7.5, 8.5);
-uniform vec3 blood_albedo = vec3(0.30, 0.012, 0.010);
+uniform sampler2D splat_atlas : filter_linear_mipmap, repeat_disable;
+uniform vec3 blood_sigma = vec3(1.8, 9.0, 10.0);
+uniform vec3 blood_albedo = vec3(0.19, 0.009, 0.008);
 uniform float blood_dry = 0.0;
+uniform vec2 crack_points[32];
+uniform int crack_point_count = 0;
+// Physical pixels per canvas pixel: the UI may stretch the canvas (content scale) on 1440p and 4K screens.
+uniform float canvas_scale = 1.0;
 
 varying vec4 stamp;
 varying vec2 local;
@@ -28,66 +38,43 @@ float hash01(int a, int b) {
 	return float(lowbias32(uint(a) * 1597334677u ^ uint(b) * 3812015801u) >> 8u) / 16777215.0;
 }
 
-// A splat: a noisy disc with spikes thrown outward and satellite droplets. Distance in quad half-sizes.
-float splat_sdf(vec2 q, int salt) {
-	float angle = atan(q.y, q.x);
-	float radius = 0.42;
-	for (int k = 0; k < 5; k++) {
-		float freq = float(k + 2);
-		radius += 0.05 / freq * sin(angle * freq + hash01(salt, k) * 6.2831);
-	}
-	for (int k = 0; k < 7; k++) {
-		float at = hash01(salt, 20 + k) * 6.2831;
-		float delta = abs(mod(angle - at + 3.14159, 6.28318) - 3.14159);
-		radius += (0.12 + 0.3 * hash01(salt, 40 + k)) * exp(-pow(delta / (0.06 + 0.08 * hash01(salt, 60 + k)), 2.0));
-	}
-	float d = length(q) - radius;
-	for (int k = 0; k < 6; k++) {
-		float at = hash01(salt, 80 + k) * 6.2831;
-		float far = 0.6 + 0.32 * hash01(salt, 100 + k);
-		float r = 0.025 + 0.06 * hash01(salt, 120 + k);
-		d = min(d, length(q - far * vec2(cos(at), sin(at))) - r);
-	}
-	return d;
+float value_noise(vec2 p, int salt) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	vec2 s = f * f * (3.0 - 2.0 * f);
+	int x = int(i.x) + salt * 131;
+	int y = int(i.y);
+	return mix(mix(hash01(x, y), hash01(x + 1, y), s.x), mix(hash01(x, y + 1), hash01(x + 1, y + 1), s.x), s.y);
 }
 
-// Distance to segment ab.
-float segment(vec2 p, vec2 a, vec2 b) {
-	vec2 pa = p - a;
-	vec2 ba = b - a;
-	float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-6), 0.0, 1.0);
-	return length(pa - ba * h);
+// Atlas coverage of cell (column, row) at local q in [-1, 1]², with a blur level (mip).
+float atlas(vec2 q, int column, int row, float lod) {
+	vec2 uv = (clamp(q * 0.5 + 0.5, vec2(0.0), vec2(1.0)) + vec2(float(column), float(row))) / vec2(4.0, 2.0);
+	return textureLod(splat_atlas, uv, lod).r;
 }
 
-// A radial crack network from an impact point: kinked rays and a few concentric arcs. Distance in half-sizes.
-float crack_sdf(vec2 q, int salt, out vec2 along) {
-	float best = 1e3;
-	along = vec2(1.0, 0.0);
-	for (int k = 0; k < 9; k++) {
-		float at = (float(k) + hash01(salt, k)) * 6.2831 / 9.0;
-		float len1 = 0.18 + 0.25 * hash01(salt, 30 + k);
-		float len2 = len1 + 0.2 + 0.45 * hash01(salt, 60 + k);
-		float bend = (hash01(salt, 90 + k) - 0.5) * 0.7;
-		vec2 a = vec2(0.0);
-		vec2 b = len1 * vec2(cos(at), sin(at));
-		vec2 c = len2 * vec2(cos(at + bend), sin(at + bend));
-		float d1 = segment(q, a, b);
-		float d2 = segment(q, b, c);
-		if (d1 < best) { best = d1; along = normalize(b - a); }
-		if (d2 < best) { best = d2; along = normalize(c - b); }
-	}
-	for (int k = 0; k < 3; k++) {
-		float ring = 0.16 + 0.22 * float(k) + 0.06 * hash01(salt, 150 + k);
-		float start = hash01(salt, 170 + k) * 6.2831;
-		float span = 0.8 + 1.4 * hash01(salt, 190 + k);
-		float angle = atan(q.y, q.x);
-		float delta = mod(angle - start, 6.28318);
-		if (delta < span) {
-			float d = abs(length(q) - ring);
-			if (d < best) { best = d; along = normalize(vec2(-q.y, q.x)); }
+// Radial Voronoi crack field around the impact at the origin (after Impact Glass Shader, MIT). The feature points are
+// computed once per crack on the CPU (lens_stack.gd _crack_points): the loop is plain distances. Lengths in half-sizes.
+float crack_field(vec2 q, out float nearest_distance, out vec2 nearest_point) {
+	float first = 1e3;
+	float second = 1e3;
+	nearest_point = q;
+	for (int i = 0; i < 32; i++) {
+		if (i >= crack_point_count) {
+			break;
+		}
+		vec2 point = crack_points[i];
+		float d = distance(q, point);
+		if (d < first) {
+			second = first;
+			first = d;
+			nearest_point = point;
+		} else if (d < second) {
+			second = d;
 		}
 	}
-	return best;
+	nearest_distance = first;
+	return second - first;
 }
 
 void vertex() {
@@ -99,74 +86,86 @@ void vertex() {
 void fragment() {
 	int kind = int(stamp.x + 0.5);
 	int salt = int(stamp.y * 65521.0);
+	int column = int(stamp.y * 3.999);
 	float radius_px = max(stamp.w, 1.0);
+	vec2 px_uv = SCREEN_PIXEL_SIZE * canvas_scale; // one canvas pixel in screen uv
 	vec2 q = local * 2.0;
 	vec2 axis_y = vec2(-axis_x.y, axis_x.x);
-	float px = 1.0 / radius_px;
+	vec3 ambient = textureLod(screen_texture, SCREEN_UV, 5.0).rgb;
+	float lum = dot(ambient, vec3(0.2126, 0.7152, 0.0722));
 	vec3 colour = vec3(0.0);
 	float alpha = 0.0;
 	if (kind <= 1) {
-		float d = splat_sdf(q, salt);
-		float coverage = 1.0 - smoothstep(-px * 1.5, px * 1.5, d);
-		if (coverage <= 0.0) {
+		int row = kind;
+		float coverage = atlas(q, column, row, 0.0);
+		if (coverage <= 0.004) {
 			discard;
 		}
-		float h = clamp(-d * 4.0, 0.0, 1.0);
-		const float e = 0.02;
-		vec2 g = vec2(splat_sdf(q + vec2(e, 0.0), salt) - splat_sdf(q - vec2(e, 0.0), salt),
-			splat_sdf(q + vec2(0.0, e), salt) - splat_sdf(q - vec2(0.0, e), salt));
-		vec2 screen_g = (axis_x * g.x + axis_y * g.y);
-		vec3 behind = textureLod(screen_texture, clamp(SCREEN_UV + screen_g * SCREEN_PIXEL_SIZE * 40.0 * (1.0 - h), vec2(0.0), vec2(1.0)), 1.0 + 1.5 * h).rgb;
-		vec3 ambient = textureLod(screen_texture, SCREEN_UV, 5.0).rgb;
-		float lum = dot(ambient, vec3(0.2126, 0.7152, 0.0722));
-		vec3 normal = normalize(vec3(-screen_g * 8.0 * (1.0 - h), 1.0));
-		float spec = pow(max(dot(normal, normalize(vec3(-0.35, -0.55, 0.76))), 0.0), 30.0);
+		// Thickness: the blurred coverage is a dome over each blob; its gradient is the liquid surface's slope.
+		float h = atlas(q, column, row, 3.0);
+		const float e = 0.03;
+		vec2 g = vec2(atlas(q + vec2(e, 0.0), column, row, 3.0) - atlas(q - vec2(e, 0.0), column, row, 3.0),
+			atlas(q + vec2(0.0, e), column, row, 3.0) - atlas(q - vec2(0.0, e), column, row, 3.0));
+		vec2 screen_g = axis_x * g.x + axis_y * g.y;
+		vec3 normal = normalize(vec3(-screen_g * 4.0, 1.0));
+		float spec = pow(max(dot(normal, normalize(vec3(-0.35, -0.55, 0.76))), 0.0), 34.0);
 		if (kind == 0) {
-			float density = 1.5 * h + 0.25;
+			vec3 behind = textureLod(screen_texture, clamp(SCREEN_UV + screen_g * px_uv * radius_px * 0.12,
+				vec2(0.0), vec2(1.0)), 0.8 + 1.6 * h).rgb;
+			float density = 1.6 * h + 0.3;
 			vec3 film_albedo = mix(blood_albedo, blood_albedo * 0.55, blood_dry);
 			colour = behind * exp(-blood_sigma * density) + film_albedo * (1.0 - exp(-2.4 * density)) * (0.35 + 0.65 * lum) * 1.6;
 			colour += vec3(0.5, 0.42, 0.4) * spec * (0.3 + 0.7 * lum) * (1.0 - blood_dry * 0.7);
 			alpha = coverage;
 		} else {
-			vec3 mud = mix(vec3(0.20, 0.14, 0.085), vec3(0.32, 0.24, 0.15), hash01(salt, 7)) * (0.45 + 0.75 * lum);
-			colour = mix(behind * vec3(0.55, 0.45, 0.35), mud, smoothstep(0.0, 0.35, h));
-			colour += vec3(0.35) * spec * 0.6;
-			alpha = coverage * mix(0.75, 1.0, h);
+			// Mud: wet dark body, paler gritty patches where it dries, a wet glint on the lumps.
+			float grit = value_noise(q * 9.0, salt) * 0.6 + value_noise(q * 23.0, salt + 3) * 0.4;
+			vec3 behind = textureLod(screen_texture, SCREEN_UV, 2.5).rgb;
+			vec3 wet = mix(vec3(0.075, 0.052, 0.032), vec3(0.15, 0.108, 0.066), hash01(salt, 7)) * (0.5 + 1.1 * lum);
+			vec3 mud = mix(wet, wet * vec3(1.35, 1.3, 1.25), smoothstep(0.55, 0.9, grit)) * (0.75 + 0.35 * grit);
+			colour = mix(behind * vec3(0.45, 0.38, 0.3), mud, smoothstep(0.15, 0.6, h))
+				+ vec3(0.6, 0.58, 0.55) * spec * (1.0 - smoothstep(0.5, 0.9, grit)) * (0.25 + 0.75 * lum);
+			alpha = coverage * mix(0.65, 1.0, smoothstep(0.1, 0.5, h));
 		}
 	} else if (kind == 2) {
 		// A grass blade lying across the lens, out of focus: a curved tapering strip with a paler midrib.
 		float x = q.x;
 		float bend = (hash01(salt, 3) - 0.5) * 0.9;
 		float centre = bend * (x * x - 0.6) * 0.5;
-		float half_width = 0.11 * (1.0 - x * x) + 0.01;
+		float half_width = 0.13 * (1.0 - x * x) + 0.012;
 		float d = abs(q.y - centre) - half_width;
-		float soft = 0.05;
-		float coverage = (1.0 - smoothstep(-soft, soft, d)) * (1.0 - smoothstep(0.9, 1.0, abs(x)));
+		float coverage = (1.0 - smoothstep(-0.05, 0.05, d)) * (1.0 - smoothstep(0.88, 1.0, abs(x)));
 		if (coverage <= 0.0) {
 			discard;
 		}
-		vec3 ambient = textureLod(screen_texture, SCREEN_UV, 5.0).rgb;
-		float lum = dot(ambient, vec3(0.2126, 0.7152, 0.0722));
-		vec3 green = mix(vec3(0.16, 0.30, 0.07), vec3(0.32, 0.44, 0.12), hash01(salt, 9));
+		vec3 green = mix(vec3(0.10, 0.20, 0.045), vec3(0.22, 0.32, 0.08), hash01(salt, 9));
 		float rib = 1.0 - smoothstep(0.0, 0.25, abs(q.y - centre) / max(half_width, 1e-3));
-		colour = green * (0.35 + 0.8 * lum) * (1.0 + 0.35 * rib);
-		alpha = coverage * 0.92;
+		colour = green * (0.35 + 0.8 * lum) * (1.0 + 0.3 * rib);
+		alpha = coverage * 0.9;
 	} else {
-		vec2 along;
-		float d = crack_sdf(q, salt, along);
-		float d_px = d * radius_px;
-		float line = 1.0 - smoothstep(0.6, 2.2, d_px);
-		float halo = 1.0 - smoothstep(2.0, 9.0, d_px);
-		if (halo <= 0.0) {
+		float reach = length(q);
+		float fade = 1.0 - smoothstep(0.7, 1.0, reach);
+		if (fade <= 0.0) {
 			discard;
 		}
-		vec2 normal_local = vec2(-along.y, along.x);
-		vec2 n = (axis_x * normal_local.x + axis_y * normal_local.y) * SCREEN_PIXEL_SIZE * 3.0;
-		float r = textureLod(screen_texture, clamp(SCREEN_UV + n, vec2(0.0), vec2(1.0)), 0.0).r;
-		float g = textureLod(screen_texture, SCREEN_UV, 0.0).g;
-		float b = textureLod(screen_texture, clamp(SCREEN_UV - n, vec2(0.0), vec2(1.0)), 0.0).b;
-		colour = mix(vec3(r, g, b), vec3(0.92, 0.95, 1.0), line * 0.55) * (1.0 - 0.25 * (halo - line));
-		alpha = max(line, halo * 0.85);
+		float nearest_distance;
+		vec2 nearest_point;
+		float edge = crack_field(q, nearest_distance, nearest_point) * radius_px * canvas_scale;
+		float line = (1.0 - smoothstep(0.4, 1.6, edge + value_noise(q * 40.0, salt) * 0.8)) * fade;
+		// Each shard bends the image a little away from its own point; the shift grows near the impact.
+		vec2 shard = normalize(q - nearest_point + vec2(1e-5));
+		float strength = 1.0 - smoothstep(0.0, 0.6, reach);
+		vec2 shift_local = shard * (2.0 + 6.0 * strength) + (q - nearest_point) * 2.5 * strength;
+		vec2 shift = (axis_x * shift_local.x + axis_y * shift_local.y) * px_uv;
+		vec2 split = (axis_x * shard.x + axis_y * shard.y) * px_uv * 1.5 * line;
+		vec2 uv = clamp(SCREEN_UV + shift * fade, vec2(0.0), vec2(1.0));
+		vec3 seen = vec3(textureLod(screen_texture, clamp(uv + split, vec2(0.0), vec2(1.0)), 0.0).r,
+			textureLod(screen_texture, uv, 0.0).g, textureLod(screen_texture, clamp(uv - split, vec2(0.0), vec2(1.0)), 0.0).b);
+		// Crack faces catch light; the crushed core at the impact is frosted.
+		float core = 1.0 - smoothstep(0.0, 0.12, reach);
+		vec3 frost = textureLod(screen_texture, SCREEN_UV, 3.0).rgb * 1.15 + vec3(0.08);
+		colour = mix(seen, frost, core * 0.8) + vec3(0.75, 0.8, 0.85) * line * (0.35 + 0.65 * lum);
+		alpha = fade;
 	}
 	COLOR = vec4(colour, alpha * stamp.z);
 }

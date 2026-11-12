@@ -21,6 +21,19 @@ const DROP_SHADER := preload("res://render/lens/lens_drop.gdshader")
 const STAMP_SHADER := preload("res://render/lens/lens_stamp.gdshader")
 const FILM_SHADER := preload("res://render/lens/lens_film.gdshader")
 const STREAK_SHADER := preload("res://render/lens/rain_streaks.gdshader")
+## Real ink splatters (CC0, Dino0040 via OpenGameArt): app/assets/lens/sources.json, tools/lens/build_splat_atlas.py.
+## Loaded only when the stamp channel is built: a disabled stack holds no atlas in memory.
+const SPLAT_ATLAS_PATH := "res://assets/lens/splats.png"
+## Frames the warmed-up nodes draw invisibly at flight setup, so the first strike or raindrop compiles nothing.
+const WARMUP_FRAMES := 3
+const CRACK_POINTS := 30
+## Rain streaks fall faster than the number-weighted mean drop: what the eye reads as rain are the large, fast drops.
+## Art factor on the mean fall speed for the streaks only; arrivals on the lens use the physical mean.
+const STREAK_SPEED_FACTOR := 2.6
+const WET_RISE_S := 6.0
+const WET_DRY_S := 40.0
+## The pilot-strike sweep runs only while the aircraft is this close to the station (horizontal metres).
+const PILOT_WATCH_RADIUS_M := 15.0
 
 const LAYER := -9
 const CURTAIN_SPEED := 0.8
@@ -32,6 +45,9 @@ const OIL_FULL_S := 900.0
 const OIL_MAX := 0.55
 const CRACK_SPEED_MPS := 12.0
 const STREAK_BOX := Vector3(36.0, 24.0, 36.0)
+## Spec.CAMERA.fov_deg: the unzoomed vertical field of view the streak volume is sized for.
+const BASE_FOV_DEG := 50.0
+const STREAK_ZOOM_DENSITY := 4.0
 ## Drop arrivals per view: art gain on the physical sweep (RainModel), and the drop radius per millimetre of diameter
 ## (screen heights). A fixed tripod catches only what falls on it; a moving camera sweeps the rain.
 const VIEW_RAIN := {
@@ -45,7 +61,7 @@ const VIEW_RAIN := {
 ## Art ceiling on arrivals: past it a fast camera in a downpour only floods the pool's capacity.
 const MAX_ARRIVALS_PER_S := 28.0
 const COLOURS := {
-	"red": {"sigma": Vector3(0.55, 7.5, 8.5), "albedo": Vector3(0.30, 0.012, 0.010), "dry": Vector3(0.16, 0.022, 0.014)},
+	"red": {"sigma": Vector3(1.8, 9.0, 10.0), "albedo": Vector3(0.19, 0.009, 0.008), "dry": Vector3(0.09, 0.016, 0.011)},
 	"dark": {"sigma": Vector3(2.4, 3.0, 3.3), "albedo": Vector3(0.08, 0.05, 0.04), "dry": Vector3(0.05, 0.035, 0.03)},
 	"desaturated": {"sigma": Vector3(2.0, 2.0, 2.0), "albedo": Vector3(0.18, 0.18, 0.18), "dry": Vector3(0.1, 0.1, 0.1)},
 }
@@ -105,6 +121,14 @@ var _dust := 0.0
 var _oil := 0.0
 var _cracked := false
 var _crash_seen := false
+var _wetness := 0.0
+var _wet_clock := 0.0
+var _last_surface_tick := -1000000
+## Accumulated fall of the rain streaks (render metres): integrating the changing fall velocity keeps every streak
+## continuous when wind or the rain rate changes, instead of jumping by Δv × clock.
+var _streak_travel := Vector3.ZERO
+var _warmup_frames := 0
+var _canvas_scale := -1.0
 
 var _camera_previous := Vector3.ZERO
 var _camera_velocity := Vector3.ZERO
@@ -141,7 +165,28 @@ func configure(ctx: Dictionary) -> bool:
 	_rng.seed = hash([_seed, "LENS"])
 	_blood_seed = _rng.randf()
 	configured = true
+	_warm_up()
 	return true
+
+
+## CR-22c-R1's lesson: a loaded material is not a compiled draw. Build the enabled channels' nodes now, during flight
+## setup, and draw each once with nothing visible (opacity 0, every film off), so no shader compiles at the first
+## strike or raindrop. Disabled channels still build nothing.
+func _warm_up() -> void:
+	if not is_inside_tree():
+		return
+	if str(settings.get("impact", "off")) != "off" or bool(settings.get("grime", false)):
+		_ensure_stamps()
+		_ensure_film()
+		_stamps_node.multimesh.set_instance_transform_2d(0, Transform2D(0.0, Vector2(4.0, 4.0), 0.0, Vector2(8.0, 8.0)))
+		_stamps_node.multimesh.set_instance_custom_data(0, Color(0.0, 0.0, 0.0, 2.0))
+		_stamps_node.multimesh.visible_instance_count = 1
+	if bool(settings.get("rain", false)) and _ensure_pool():
+		_drops_node.multimesh.set_instance_transform_2d(0, Transform2D(0.0, Vector2(4.0, 4.0), 0.0, Vector2(8.0, 8.0)))
+		_drops_node.multimesh.set_instance_custom_data(0, Color(0.0, 0.0, 0.0, 2.0))
+		_drops_node.multimesh.visible_instance_count = 1
+	_warmup_frames = WARMUP_FRAMES
+	_apply_visibility()
 
 
 ## True when a session event, crash or rain can still draw something this flight.
@@ -157,8 +202,12 @@ func reset(floor_tick: int = -1) -> void:
 	_pulse = 0.0
 	_dust = 0.0
 	_oil = 0.0
+	_wetness = 0.0
+	_blood_dry = 0.0
 	_cracked = false
 	_crash_seen = false
+	_last_surface_tick = -1000000
+	_streak_travel = Vector3.ZERO
 	_stamps.clear()
 	_seen.clear()
 	_pilot.reset()
@@ -175,6 +224,10 @@ func reset(floor_tick: int = -1) -> void:
 func on_contacts() -> void:
 	if not wants_contacts() or _session == null:
 		return
+	# The signal fires on every committed tick; a tick without events needs no detached deep copy.
+	var pending: Variant = _session.get("_contact_events")
+	if pending is Array and (pending as Array).is_empty():
+		return
 	var records := ImpactTrigger.admit(_session.contact_events(), _seen, _floor_tick, _mass_kg)
 	for record: Dictionary in records:
 		var point := Frames.ned_to_render(Array(record.point_ned))
@@ -182,15 +235,18 @@ func on_contacts() -> void:
 			var player := _near_station(record.point_ned, 1.2)
 			if player:
 				_pilot.reset() # The proximity detector must not fire a second time for the same strike.
-			strike_person(float(record.strength), point, player)
+			strike_person(float(record.strength), point, player, record.id)
 		else:
-			strike_surface(str(record.kind), float(record.strength), point, float(record.speed_mps))
+			_last_surface_tick = int(record.tick)
+			strike_surface(str(record.kind), float(record.strength), point, float(record.speed_mps), record.id)
 
 
-## A person was struck. `player` marks the pilot (the player): always a full strike.
-func strike_person(strength: float, point: Vector3 = Vector3.INF, player: bool = false) -> void:
+## A person was struck. `player` marks the pilot (the player): always a full strike. `event_key` (the contact event id
+## or another accepted identity) reseeds the random stream, so one event always draws the same splats and drips.
+func strike_person(strength: float, point: Vector3 = Vector3.INF, player: bool = false, event_key: Variant = null) -> void:
 	if not configured or str(settings.get("impact", "off")) == "off":
 		return
+	_reseed(event_key)
 	var view := _view()
 	var distance := 0.0 if point == Vector3.INF or _camera == null else _camera.global_position.distance_to(point)
 	var s := clampf(strength, 0.0, 1.0)
@@ -214,6 +270,7 @@ func strike_person(strength: float, point: Vector3 = Vector3.INF, player: bool =
 		var spread := Vector2(_rng.randf_range(-0.22, 0.22), _rng.randf_range(-0.16, 0.16))
 		var at: Vector2 = screen + spread if screen.x >= 0.0 else Vector2(_rng.randf_range(0.15, 1.6), _rng.randf_range(0.0, 0.25))
 		_add_stamp(STAMP_BLOOD, at, _rng.randf_range(0.06, 0.15) * (0.6 + 0.6 * s), SPLATTER_LIFE_S + (0.0 if splatter_only else -2.0))
+	_blood_dry = 0.0
 	if not splatter_only:
 		_ensure_film()
 		_blood_active = true
@@ -227,9 +284,10 @@ func strike_person(strength: float, point: Vector3 = Vector3.INF, player: bool =
 
 
 ## The aircraft hit something solid near the camera. kind: ground, foliage, obstacle, water, mud.
-func strike_surface(kind: String, strength: float, point: Vector3, speed_mps: float = 0.0) -> void:
+func strike_surface(kind: String, strength: float, point: Vector3, speed_mps: float = 0.0, event_key: Variant = null) -> void:
 	if not configured or not bool(settings.get("grime", false)):
 		return
+	_reseed(event_key)
 	var view := _view()
 	var distance := 0.0 if _camera == null else _camera.global_position.distance_to(point)
 	var reach := 1.0 - smoothstep(4.0, 15.0, distance)
@@ -252,25 +310,46 @@ func strike_surface(kind: String, strength: float, point: Vector3, speed_mps: fl
 			if near_lens:
 				_ensure_stamps()
 				for i in 1 + int(round(2.0 * s)):
-					_add_stamp(STAMP_MUD, _scatter(screen), _rng.randf_range(0.03, 0.09) * (0.6 + s), INF)
-				for i in int(round(2.0 * s)):
-					_add_stamp(STAMP_GRASS, _scatter(screen), _rng.randf_range(0.08, 0.16), INF)
+					_add_stamp(STAMP_MUD, _scatter(screen), _rng.randf_range(0.05, 0.12) * (0.7 + 0.6 * s), INF)
+				for i in int(round(1.5 * s)):
+					_add_stamp(STAMP_GRASS, _scatter(screen), _rng.randf_range(0.03, 0.06), INF)
 		"mown", "foliage":
 			_dust = maxf(_dust, 0.12 * s)
 			if near_lens:
 				_ensure_stamps()
-				for i in 2 + int(round(3.0 * s)):
-					_add_stamp(STAMP_GRASS, _scatter(screen), _rng.randf_range(0.08, 0.2), INF)
+				for i in 1 + int(round(2.0 * s)):
+					_add_stamp(STAMP_GRASS, _scatter(screen), _rng.randf_range(0.035, 0.07), INF)
 		_:
 			_dust = maxf(_dust, 0.45 * s)
 	if near_lens and view in ["closeup", "fpv"] and speed_mps >= CRACK_SPEED_MPS and not _cracked:
 		_ensure_stamps()
 		_cracked = true
 		_add_stamp(STAMP_CRACK, Vector2(_rng.randf_range(0.5, 1.2), _rng.randf_range(0.3, 0.7)), 0.8, INF)
+		_stamp_material.set_shader_parameter("crack_points", _crack_points())
+		_stamp_material.set_shader_parameter("crack_point_count", CRACK_POINTS)
 	if _dust > 0.0:
 		_ensure_film()
 		_film_material.set_shader_parameter("dust_seed", _rng.randf())
 	_apply_visibility()
+
+
+## One accepted event, one random stream: placement still follows the camera, but sizes, shapes and drips repeat.
+func _reseed(event_key: Variant) -> void:
+	if event_key != null:
+		_rng.seed = hash([_seed, event_key, "LENS"])
+
+
+## Feature points of the cracked lens (after Impact Glass Shader, MIT): scattered at growing radii around the impact,
+## computed once per crack on the CPU so the shader loop is plain distances. Quad half-size units.
+func _crack_points() -> PackedVector2Array:
+	var points := PackedVector2Array()
+	points.resize(CRACK_POINTS)
+	for i in CRACK_POINTS:
+		var t := float(i) / float(CRACK_POINTS - 1)
+		var radius := 1.05 * pow(t, 1.2)
+		var angle := _rng.randf() * TAU + _rng.randf_range(-0.5, 0.5)
+		points[i] = Vector2(cos(angle), sin(angle)) * radius
+	return points
 
 
 ## Water thrown onto the lens (a splash-down, a ditching, spray from a wet field).
@@ -319,7 +398,7 @@ func snapshot() -> Dictionary:
 		"configured": configured, "view": _view(), "rain_mmph": last_rain_mmph,
 		"drops": _pool.count if _pool != null else 0, "stamps": _stamps.size(),
 		"blood": _blood_active, "blood_t": _blood_t, "blood_depth": _blood_depth, "pulse": _pulse,
-		"dust": _dust, "oil": _oil, "cracked": _cracked,
+		"dust": _dust, "oil": _oil, "cracked": _cracked, "wetness": _wetness,
 		"nodes": {"layer": _layer != null, "drops": _drops_node != null, "stamps": _stamps_node != null,
 			"film": _film != null, "streaks": _streaks != null},
 	}
@@ -339,7 +418,28 @@ func advance(delta: float, clock_s: float, paused: bool) -> void:
 	_advance_blood(dt)
 	_advance_grime(dt)
 	_write_stamps()
+	_apply_canvas_scale()
+	if _warmup_frames > 0:
+		_warmup_frames -= 1
 	_apply_visibility()
+
+
+## Physical pixels per canvas pixel. The UI stretches the canvas on large screens (canvas_items content scale), and
+## the drop and stamp shaders turn canvas-pixel offsets into screen uv with it.
+func _apply_canvas_scale() -> void:
+	if not is_inside_tree():
+		return
+	var viewport := get_viewport()
+	var logical := viewport.get_visible_rect().size
+	var physical := Vector2(viewport.size) if not (viewport is Window) else Vector2((viewport as Window).size)
+	var scale := physical.y / maxf(logical.y, 1.0) if physical.y > 0.0 else 1.0
+	if is_equal_approx(scale, _canvas_scale):
+		return
+	_canvas_scale = scale
+	if _drop_material != null:
+		_drop_material.set_shader_parameter("canvas_scale", scale)
+	if _stamp_material != null:
+		_stamp_material.set_shader_parameter("canvas_scale", scale)
 
 
 func _view() -> String:
@@ -370,7 +470,7 @@ func _scatter(screen: Vector2) -> Vector2:
 	var aspect := _aspect()
 	if screen.x < 0.0:
 		return Vector2(_rng.randf() * aspect, _rng.randf())
-	return Vector2(clampf(screen.x + _rng.randf_range(-0.3, 0.3), 0.0, aspect), clampf(screen.y + _rng.randf_range(-0.25, 0.25), 0.0, 1.0))
+	return Vector2(clampf(screen.x + _rng.randf_range(-0.55, 0.55), 0.0, aspect), clampf(screen.y + _rng.randf_range(-0.38, 0.38), 0.0, 1.0))
 
 
 func _near_station(point_ned: PackedFloat64Array, radius_m: float) -> bool:
@@ -422,13 +522,17 @@ func _observe_pilot(clock_s: float) -> void:
 	var state: PackedFloat64Array = sim.state
 	if state.size() < RB.SIZE:
 		return
+	# Far from the pilot nothing can strike: skip the hull transform and forget the sweep's start.
+	if Vector2(state[RB.POS] - _station[0], state[RB.POS + 1] - _station[1]).length() > PILOT_WATCH_RADIUS_M:
+		_pilot.forget()
+		return
 	var points := PilotStrike.hull_world(state.slice(RB.POS, RB.POS + 3), state.slice(RB.ATT, RB.ATT + 4), _hull)
 	if dt <= 0.0:
 		_pilot.observe(points, _station, _eye_height, 1.0)
 		return
 	var hit: Dictionary = _pilot.observe(points, _station, _eye_height, dt)
 	if not hit.is_empty():
-		strike_person(1.0, Frames.ned_to_render(Array(hit.point_ned)), true)
+		strike_person(1.0, Frames.ned_to_render(Array(hit.point_ned)), true, "pilot:%d" % int(sim.tick))
 
 
 func _observe_crash() -> void:
@@ -441,11 +545,15 @@ func _observe_crash() -> void:
 	var impact: Object = (crash as Dictionary).get("impact") as Object
 	if impact == null or not bool(impact.get("has_kinematics")):
 		return
+	# Scenery and lake impacts already arrived as contact events; a ground event at the same tick did too.
+	var tick := int(impact.get("tick"))
+	if str(impact.get("trigger")) in ["scenery", "water", "lake_bank"] or absi(tick - _last_surface_tick) <= 4:
+		return
 	var point_ned: PackedFloat64Array = impact.get("point_ned")
 	if point_ned.size() != 3:
 		return
 	var speed := float(impact.get("speed_mps"))
-	strike_surface("ground", clampf(speed / 20.0, 0.0, 1.0), Frames.ned_to_render(Array(point_ned)), speed)
+	strike_surface("ground", clampf(speed / 20.0, 0.0, 1.0), Frames.ned_to_render(Array(point_ned)), speed, "crash:%d" % tick)
 
 
 func _advance_rain(dt: float, clock_s: float) -> void:
@@ -462,21 +570,41 @@ func _advance_rain(dt: float, clock_s: float) -> void:
 		_ensure_streaks()
 	var flash := clampf(float(_flash_provider.call()), 0.0, 1.0) if _flash_provider.is_valid() else 0.0
 	var wind := _wind_provider.call(clock_s) as Vector3 if _wind_provider.is_valid() else Vector3.ZERO
-	var fall := Vector3(wind.x, -maxf(RainModel.mean_fall_speed(maxf(rate, 0.5)), 2.0) * 2.6, wind.z)
+	var fall_speed := maxf(RainModel.mean_fall_speed(maxf(rate, 0.5)), 2.0)
+	var fall := Vector3(wind.x, -fall_speed, wind.z)
+	var streak_fall := Vector3(wind.x, -fall_speed * STREAK_SPEED_FACTOR, wind.z)
+	_streak_travel += streak_fall * dt
 	if _streaks != null:
 		_streaks.visible = raining
 		if raining:
+			# A zoomed view (the pilot's auto-zoom down to 6°) sees a narrow, deep cone: the rain volume grows in powers
+			# of two with the zoom and moves ahead along the view, so the frustum stays filled. Steps, not a continuous
+			# scale, keep every streak's world trajectory fixed between steps.
+			var zoom := tan(deg_to_rad(BASE_FOV_DEG) * 0.5) / tan(deg_to_rad(clampf(_camera.fov, 1.0, 120.0)) * 0.5)
+			var scale := clampf(pow(2.0, round(log(maxf(zoom, 1.0)) / log(2.0))), 1.0, 8.0)
+			var box := STREAK_BOX * scale
+			# A larger volume needs more drops for the same visible density in its narrower cone (vertex cost only:
+			# drops outside the view are clipped). Up to STREAK_ZOOM_DENSITY × the tier's base count.
 			var count := int(_streaks.multimesh.instance_count)
-			_streaks.multimesh.visible_instance_count = clampi(int(count * clampf(rate / 18.0, 0.12, 1.0)), 1, count)
-			_streaks.global_position = _camera.global_position
-			_streak_material.set_shader_parameter("clock_s", fposmod(clock_s, 600.0))
-			_streak_material.set_shader_parameter("box_centre", _camera.global_position)
-			_streak_material.set_shader_parameter("fall_velocity", fall)
+			var base := float(count) / STREAK_ZOOM_DENSITY
+			var wanted := base * minf(scale * scale, STREAK_ZOOM_DENSITY) * clampf(rate / 18.0, 0.12, 1.0)
+			_streaks.multimesh.visible_instance_count = clampi(int(wanted), 1, count)
+			var centre := _camera.global_position - _camera.global_basis.z * (box.z * 0.4 if scale > 1.0 else 0.0)
+			# Moving the box never moves a streak inside the overlap: the wrap is invariant to its origin.
+			_streaks.global_position = centre
+			_streaks.custom_aabb = AABB(-box * 0.5, box)
+			_streak_material.set_shader_parameter("box_size", box)
+			_streak_material.set_shader_parameter("near_fade_m", 1.2 * scale)
+			_streak_material.set_shader_parameter("far_fade_m", box.z * (0.85 if scale > 1.0 else 0.46))
+			_streak_material.set_shader_parameter("travel", _streak_travel)
+			_streak_material.set_shader_parameter("box_centre", centre)
+			_streak_material.set_shader_parameter("fall_velocity", streak_fall)
 			_streak_material.set_shader_parameter("camera_velocity", _camera_velocity)
 			_streak_material.set_shader_parameter("flash", flash)
 	var view := _view()
 	var profile: Dictionary = VIEW_RAIN.get(view, VIEW_RAIN.chase)
 	var lens := view != "pilot" or bool(settings.get("glasses", false))
+	_advance_wetness(dt, rate, lens)
 	if not lens:
 		if _pool != null:
 			_pool.clear()
@@ -514,14 +642,37 @@ func _advance_rain(dt: float, clock_s: float) -> void:
 	_pool.write(_drops_node.multimesh, _viewport_size().y, raining)
 
 
+## Fine beads cover a lens in the rain within seconds and evaporate slowly after it; airflow at speed thins them.
+func _advance_wetness(dt: float, rate: float, lens: bool) -> void:
+	var target := 0.0
+	if lens and rate > 0.0 and bool(_tier.get("wetness", true)):
+		var v_cam := _camera.global_basis.inverse() * _camera_velocity
+		var air := clampf(pow(maxf(-v_cam.z, 0.0) / 30.0, 2.0), 0.0, 1.0)
+		target = clampf(rate / 10.0, 0.25, 1.0) * (1.0 - 0.6 * air)
+	if not lens:
+		_wetness = 0.0
+	elif _wetness < target:
+		_wetness = minf(_wetness + dt / WET_RISE_S, target)
+	else:
+		_wetness = maxf(_wetness - dt / WET_DRY_S, target)
+	_wet_clock += dt
+	if _wetness > 0.0:
+		_ensure_film()
+
+
 func _advance_blood(dt: float) -> void:
 	_pulse = maxf(_pulse - dt / PULSE_DECAY_S * _pulse, 0.0) if _pulse > 0.002 else 0.0
 	if _blood_active:
 		_blood_t += dt
 		if _blood_t >= _blood_end:
 			_blood_active = false
-	_blood_dry = clampf((_blood_t - _blood_drain_start) / 3.5, 0.0, 1.0) if _blood_active else _blood_dry
-	if _film_material == null:
+	if _blood_active:
+		_blood_dry = clampf((_blood_t - _blood_drain_start) / 3.5, 0.0, 1.0)
+	elif not _stamps.is_empty():
+		# Lens splatter has no curtain clock: its splats darken over their own life.
+		_blood_dry = minf(_blood_dry + dt / SPLATTER_LIFE_S, 1.0)
+	# A hidden film needs no uniforms: nothing it would draw is active.
+	if _film_material == null or not (_blood_active or _pulse > 0.002 or _dust > 0.002 or _oil > 0.002 or _wetness > 0.002):
 		return
 	var colour: Dictionary = COLOURS.get(str(settings.get("colour", "red")), COLOURS.red)
 	_film_material.set_shader_parameter("curtain_on", 1.0 if _blood_active else 0.0)
@@ -537,6 +688,9 @@ func _advance_blood(dt: float) -> void:
 	_film_material.set_shader_parameter("albedo", colour.albedo)
 	_film_material.set_shader_parameter("dry_albedo", colour.dry)
 	_film_material.set_shader_parameter("pulse", _pulse)
+	_film_material.set_shader_parameter("wetness", _wetness)
+	_film_material.set_shader_parameter("wet_clock", fposmod(_wet_clock, 1000.0))
+	_film_material.set_shader_parameter("wet_focus", float(VIEW_RAIN.get(_view(), VIEW_RAIN.chase).focus))
 	_film_material.set_shader_parameter("dust", _dust)
 	_film_material.set_shader_parameter("oil", _oil)
 
@@ -583,7 +737,7 @@ func _add_stamp(kind: int, at: Vector2, size: float, life: float) -> void:
 
 
 func _write_stamps() -> void:
-	if _stamps_node == null:
+	if _stamps_node == null or (_stamps.is_empty() and (_warmup_frames > 0 or _stamps_node.multimesh.visible_instance_count == 0)):
 		return
 	var mesh := _stamps_node.multimesh
 	var height := _viewport_size().y
@@ -602,12 +756,13 @@ func _write_stamps() -> void:
 
 
 func _apply_visibility() -> void:
+	var warming := _warmup_frames > 0
 	if _film != null:
-		_film.visible = _blood_active or _pulse > 0.002 or _dust > 0.002 or _oil > 0.002
+		_film.visible = warming or _blood_active or _pulse > 0.002 or _dust > 0.002 or _oil > 0.002 or _wetness > 0.002
 	if _stamps_node != null:
-		_stamps_node.visible = not _stamps.is_empty()
+		_stamps_node.visible = warming or not _stamps.is_empty()
 	if _drops_node != null:
-		_drops_node.visible = _pool != null and _pool.count > 0
+		_drops_node.visible = warming or (_pool != null and _pool.count > 0)
 
 
 func _ensure_layer() -> void:
@@ -642,6 +797,7 @@ func _ensure_stamps() -> void:
 	_ensure_layer()
 	_stamp_material = ShaderMaterial.new()
 	_stamp_material.shader = STAMP_SHADER
+	_stamp_material.set_shader_parameter("splat_atlas", load(SPLAT_ATLAS_PATH))
 	_stamps_node = _quad_instances("LensStamps", int(_tier.get("stamps", 16)), _stamp_material)
 	_layer.add_child(_stamps_node)
 	if _film != null:
@@ -666,7 +822,7 @@ func _ensure_film() -> void:
 func _ensure_streaks() -> void:
 	if _streaks != null:
 		return
-	var count := int(_tier.get("streaks", 4000))
+	var count := int(_tier.get("streaks", 4000)) * int(STREAK_ZOOM_DENSITY)
 	if count <= 0:
 		return
 	var quad := QuadMesh.new()
@@ -676,13 +832,11 @@ func _ensure_streaks() -> void:
 	multimesh.mesh = quad
 	multimesh.instance_count = count
 	# Positions come from the shader; every instance keeps the identity transform (12 floats each).
-	var buffer := PackedFloat32Array()
+	# Built by doubling, not a per-instance loop: no hitch when the first rain starts mid-flight.
+	var buffer := PackedFloat32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0])
+	while buffer.size() < count * 12:
+		buffer.append_array(buffer)
 	buffer.resize(count * 12)
-	buffer.fill(0.0)
-	for i in count:
-		buffer[i * 12] = 1.0
-		buffer[i * 12 + 5] = 1.0
-		buffer[i * 12 + 10] = 1.0
 	multimesh.buffer = buffer
 	_streak_material = ShaderMaterial.new()
 	_streak_material.shader = STREAK_SHADER

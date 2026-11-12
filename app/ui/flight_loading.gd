@@ -2,6 +2,8 @@ extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const LoadingBar := preload("res://ui/loading_bar.gd")
+const ATMOSPHERE := preload("res://ui/shaders/brand_atmosphere.gdshader")
 
 signal cancel_requested
 
@@ -11,6 +13,16 @@ const CANCEL_TEXT := "Cancel"
 const CANCELLING_TEXT := "Cancelling…"
 const PANEL_MAX_WIDTH := 760.0
 const OUTER_GUTTER := 36.0
+## UI-28-R5: top-level preparation stages in the order AppRoot and Main report them (UI-34c). The bar
+## counts completed stages; a stage that a route skips is passed over, and any other name (field and
+## scenery sub-stages) advances only within the current stage. It is not a time estimate or percentage.
+const STAGES := ["Preparing resources", "Preparing flight scene", "Checking landscape", "Preparing aircraft",
+	"Preparing world", "Building landscape", "Preparing sky", "Preparing field lighting", "Finalizing world",
+	"Preparing aircraft lighting", "Preparing instruments", "Checking flight", "Preparing flight model",
+	"Preparing contacts", "Preparing start", "Preparing effects", "Preparing sound", "Preparing companions",
+	"Finishing flight"]
+## The brand atmosphere's one-time ignition has passed by this clock; dust and motes keep drifting.
+const ATMOSPHERE_CLOCK := 6.0
 
 var surface: Control
 var backdrop: ColorRect
@@ -18,12 +30,16 @@ var title_label: Label
 var summary_label: Label
 var stage_label: Label
 var cancel_button: Button
+var progress_bar: Control
 
 var _panel: PanelContainer
 var _stage_source := ""
 var _cancelling := false
 var _cancel_emitted := false
 var _committing := false
+var _stage_index := -1
+var _atmosphere: ShaderMaterial
+var _clock := ATMOSPHERE_CLOCK
 
 
 ## ScreenStack calls open() after adding its wrapper. Skip the standard entrance tween so the opaque
@@ -51,6 +67,12 @@ func _init(existing_theme: Theme = null) -> void:
 	backdrop.color = UiTheme.PANEL
 	backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# UI-28-R5: the opaque brand atmosphere (the same shader as the startup intro) instead of a flat fill.
+	_atmosphere = ShaderMaterial.new()
+	_atmosphere.shader = ATMOSPHERE
+	_atmosphere.set_shader_parameter("clock", _clock)
+	_atmosphere.set_shader_parameter("live", 0.0 if UiTheme.reduced_motion else 1.0)
+	backdrop.material = _atmosphere
 	screen.add_child(backdrop)
 
 	var center := CenterContainer.new()
@@ -84,22 +106,14 @@ func _init(existing_theme: Theme = null) -> void:
 	stage_label.visible = false
 	content.add_child(stage_label)
 
-	# Native activity feedback stays alive while numeric preparation yields. It is not a percentage.
-	# Reduced motion keeps the truthful stage text and cancel action without animated decoration.
-	if not UiTheme.reduced_motion:
-		var activity := ProgressBar.new()
-		activity.name = "LoadingActivity"
-		activity.custom_minimum_size.y = 4.0
-		activity.show_percentage = false
-		activity.indeterminate = true
-		activity.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var track := StyleBoxFlat.new()
-		track.bg_color = UiTheme.EDGE
-		var fill := StyleBoxFlat.new()
-		fill.bg_color = UiTheme.FOCUS
-		activity.add_theme_stylebox_override("background", track)
-		activity.add_theme_stylebox_override("fill", fill)
-		content.add_child(activity)
+	# UI-28-R5: completed stages fill the bar; its sweep shows activity while a stage works (the
+	# threaded scene load included). It is not a percentage. Reduced motion shows the same position
+	# without sweep or easing.
+	progress_bar = LoadingBar.new()
+	progress_bar.name = "LoadingActivity"
+	progress_bar.custom_minimum_size.y = 8.0
+	progress_bar.reduced_motion = UiTheme.reduced_motion
+	content.add_child(progress_bar)
 
 	var actions := HBoxContainer.new()
 	actions.alignment = BoxContainer.ALIGNMENT_END
@@ -128,6 +142,13 @@ func _ready() -> void:
 	_resize_panel()
 
 
+func _process(delta: float) -> void:
+	if UiTheme.reduced_motion or not surface.is_visible_in_tree():
+		return
+	_clock += minf(delta, 0.1)
+	_atmosphere.set_shader_parameter("clock", _clock)
+
+
 func _focus_cancel() -> void:
 	if is_inside_tree() and surface.is_visible_in_tree() and not cancel_button.disabled:
 		cancel_button.grab_focus()
@@ -143,7 +164,17 @@ func set_stage(stage: String) -> void:
 	if _cancelling:
 		return
 	_stage_source = stage
+	_advance_progress(stage)
 	_apply_stage()
+
+
+func _advance_progress(stage: String) -> void:
+	var index := STAGES.find(stage)
+	if index > _stage_index:
+		_stage_index = index
+		progress_bar.value = float(index) / STAGES.size()
+	elif index < 0 and _stage_index >= 0:
+		progress_bar.nudge(float(_stage_index + 1) / STAGES.size(), 0.08)
 
 
 func set_cancelling() -> void:
@@ -151,6 +182,7 @@ func set_cancelling() -> void:
 		return
 	_cancelling = true
 	cancel_button.disabled = true
+	progress_bar.active = false
 	_stage_source = CANCELLING_TEXT
 	_apply_stage()
 
@@ -192,6 +224,7 @@ func _apply_stage() -> void:
 func _resize_panel() -> void:
 	if _panel == null or surface == null or surface.size.x <= 0.0:
 		return
+	_atmosphere.set_shader_parameter("viewport_size", surface.size)
 	_panel.custom_minimum_size.x = minf(PANEL_MAX_WIDTH, maxf(0.0, surface.size.x - OUTER_GUTTER * 2.0))
 
 

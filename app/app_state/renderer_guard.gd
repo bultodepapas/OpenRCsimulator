@@ -24,6 +24,9 @@ static var _metalfx_armed := false
 static var _metalfx_activation := 0
 static var _metalfx_configuration := {}
 static var _metalfx_confirmer: WeakRef
+## UI-28-R5: true while the startup intro still covers a staged first Home. Confirmers restart their
+## frame and time window meanwhile, so confirmation still requires the 3D Home to have been drawn.
+static var confirm_hold := false
 
 
 ## Pure decision. facts: {method, standard_method, profile, headless, build}; state: {pending, failed}.
@@ -240,6 +243,7 @@ static func confirmer_for(path: String) -> Node:
 	# Home pauses the tree while unfocused; the responsiveness timer runs independently of that pause.
 	confirmer.process_mode = Node.PROCESS_MODE_ALWAYS
 	confirmer.on_stable = func() -> void: clear_renderer_pending(path)
+	confirmer.held = func() -> bool: return confirm_hold
 	return confirmer
 
 
@@ -253,6 +257,7 @@ static func clear_renderer_pending(path: String) -> void:
 
 class Confirmer extends Node:
 	var on_stable := Callable()
+	var held := Callable()
 	var _frames := 0
 	var _start_usec := 0
 
@@ -260,6 +265,10 @@ class Confirmer extends Node:
 		_start_usec = Time.get_ticks_usec()
 
 	func _process(_delta: float) -> void:
+		if held.is_valid() and bool(held.call()):
+			_frames = 0
+			_start_usec = Time.get_ticks_usec()
+			return
 		_frames += 1
 		if _frames >= CONFIRM_FRAMES and float(Time.get_ticks_usec() - _start_usec) / 1.0e6 >= CONFIRM_SECONDS:
 			if on_stable.is_valid():

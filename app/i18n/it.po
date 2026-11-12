@@ -12510,3 +12510,40 @@ msgstr "PORTA"
 
 msgid "LEFT %s"
 msgstr "RESTANO %s"
+
+msgid "Lens effects"
+msgstr "Effetti obiettivo"
+
+msgid "Impact effects"
+msgstr "Effetti d’impatto"
+
+msgid "Impact color"
+msgstr "Colore dell’impatto"
+
+msgid "Rain on the lens"
+msgstr "Pioggia sull’obiettivo"
+
+msgid "Lens grime and damage"
+msgstr "Sporco e danni all’obiettivo"
+
+msgid "Keep the screen center clear"
+msgstr "Mantieni libero il centro dello schermo"
+
+msgid "Classic curtain"
+msgstr "Sipario classico"
+
+msgid "Lens splatter"
+msgstr "Schizzi sull’obiettivo"
+
+msgid "Dark"
+msgstr "Scuro"
+
+msgid "Desaturated"
+msgstr "Desaturato"
+
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
+msgstr "Sangue sullo schermo quando l’aereo colpisce una persona o il pilota, gocce di pioggia sulla telecamera e fango, erba e crepe dopo gli impatti. Se disattivato, nessun effetto dell’obiettivo è mostrato. Si applica dal volo successivo."
+
+msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
+msgstr "Sipario classico: un velo rosso scende dall’alto dello schermo. Schizzi sull’obiettivo: sangue solo sulle telecamere con vetro. Se disattivato, non viene mostrato sangue."
+

@@ -2,19 +2,23 @@
 // MultiMeshInstance3D. Each drop has a fixed world-anchored trajectory (its hash and the fall velocity), wrapped into a
 // box that follows the camera, so streaks never swim with the view. A streak is the drop's motion relative to the
 // camera during a short exposure: its length and angle come from the camera's own speed through the rain.
-// Lit like the scene (day, dusk and night agree); lightning adds a cool flash. The CPU passes the visual clock: no TIME.
+// Each streak is a brighter blurred copy of what lies behind it (a drop refracts its surroundings), so day, dusk and
+// night agree; lightning adds a cool flash. The CPU integrates the fall (wind and rate changes stay continuous): no TIME.
 shader_type spatial;
-render_mode blend_mix, depth_draw_never, cull_disabled, shadows_disabled, specular_disabled, diffuse_lambert;
+render_mode unshaded, blend_mix, depth_draw_never, cull_disabled, shadows_disabled, fog_disabled;
 
-uniform float clock_s = 0.0;
+uniform vec3 travel = vec3(0.0);                      // accumulated fall (render metres), integrated on the CPU
 uniform vec3 box_centre = vec3(0.0);
 uniform vec3 box_size = vec3(36.0, 24.0, 36.0);
 uniform vec3 fall_velocity = vec3(0.0, -6.5, 0.0);     // rain over the ground (wind and fall speed), render axes
 uniform vec3 camera_velocity = vec3(0.0);
-uniform float exposure_s = 0.02;
+uniform float exposure_s = 0.05;
 uniform float width_m = 0.009;
-uniform float opacity = 0.32;
+uniform float opacity = 0.6;
+uniform float near_fade_m = 0.5;
+uniform float far_fade_m = 16.0;
 uniform float flash = 0.0;
+uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap, repeat_disable;
 
 varying float fade;
 varying vec2 streak_uv;
@@ -38,7 +42,7 @@ void vertex() {
 	float jitter = 0.75 + 0.5 * hash01(id * 4u + 3u);
 	vec3 velocity = fall_velocity * jitter;
 	vec3 origin = box_centre - box_size * 0.5;
-	vec3 travelled = h * box_size + velocity * clock_s;
+	vec3 travelled = h * box_size + travel * jitter;
 	vec3 p = origin + mod(travelled - origin, box_size);
 	vec3 relative = velocity - camera_velocity;
 	float rel_speed = length(relative);
@@ -53,18 +57,19 @@ void vertex() {
 	}
 	side = normalize(side);
 	// Keep far streaks at least about a pixel wide without fattening near ones.
-	float width = max(width_m, distance_m * 0.0011);
+	float metres_per_pixel = 2.0 / (PROJECTION_MATRIX[1][1] * VIEWPORT_SIZE.y);
+	float width = max(width_m, distance_m * metres_per_pixel * 1.6);
 	vec3 world = p + side * VERTEX.x * width + axis * VERTEX.y * len;
-	fade = smoothstep(0.5, 2.2, distance_m) * (1.0 - smoothstep(box_size.x * 0.32, box_size.x * 0.5, distance_m));
+	fade = smoothstep(near_fade_m, near_fade_m * 4.0, distance_m) * (1.0 - smoothstep(far_fade_m * 0.65, far_fade_m, distance_m));
 	streak_uv = VERTEX.xy + vec2(0.5);
-	NORMAL = normalize((VIEW_MATRIX * vec4(to_camera, 0.0)).xyz);
 	POSITION = PROJECTION_MATRIX * VIEW_MATRIX * vec4(world, 1.0);
 }
 
 void fragment() {
-	float across = 1.0 - abs(streak_uv.x * 2.0 - 1.0);
+	float across = sqrt(max(1.0 - abs(streak_uv.x * 2.0 - 1.0), 0.0));
 	float along = smoothstep(0.0, 0.25, streak_uv.y) * (1.0 - smoothstep(0.75, 1.0, streak_uv.y));
-	ALBEDO = vec3(0.78, 0.82, 0.88);
-	EMISSION = vec3(0.7, 0.8, 1.0) * flash * 0.6;
+	// A falling drop refracts and reflects its surroundings: a streak is a brighter, blurred copy of what lies behind.
+	vec3 behind = textureLod(screen_texture, SCREEN_UV, 2.0).rgb;
+	ALBEDO = behind * 1.5 + vec3(0.035) + vec3(0.7, 0.8, 1.0) * flash * 0.6;
 	ALPHA = opacity * fade * across * along;
 }

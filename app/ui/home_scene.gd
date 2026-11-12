@@ -73,10 +73,13 @@ var camera: Camera3D
 var _shadow: MeshInstance3D
 var _environment: Environment
 var _presentation: Dictionary = {}
+## UI-28-R5: construction inputs retained between a staged _init and build_world_staged/finish_construction.
+var _staged_build: Dictionary = {}
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
-func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID, livery := "") -> void:
+## `staged` (UI-28-R5) validates only; the owner then awaits build_world_staged() and calls finish_construction().
+func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID, livery := "", staged := false) -> void:
 	name = "HomeScene"
 	_source_field_path = field_path
 	_source_landscape = landscape_id
@@ -109,8 +112,44 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	sky_config = checked_sky.config
 	Atmosphere.configure_appearance(sky_config)
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
+	_staged_build = {aircraft = aircraft, livery = livery, landscape = landscape_id, snapshot = snapshot}
+	if staged:
+		return
 	var build_field := func() -> void: add_child(Landscapes.build(landscape_id, field, snapshot))
 	_world = World.build(self, field, build_field, {}, snapshot, night_options)
+	finish_construction()
+
+
+## UI-28-R5: the same world in the flight's checkpointed stages, so a loading owner keeps drawing.
+## `checkpoint(stage: String)` may await; returning anything but true cancels. The detached partial
+## scene then stays unusable: the owner frees it. Call finish_construction() after success.
+func build_world_staged(checkpoint: Callable) -> bool:
+	if not field_errors.is_empty() or _staged_build.is_empty() or not _world.is_empty():
+		return false
+	var landscape_id: String = _staged_build.landscape
+	var snapshot: Dictionary = _staged_build.snapshot
+	Atmosphere.configure_appearance(sky_config) # nothing may have reconfigured the shared sky since _init
+	var build_field := func() -> Dictionary:
+		var node: Node3D = await Landscapes.build_staged(landscape_id, field, snapshot, checkpoint)
+		if node == null:
+			return {cancelled = true}
+		add_child(node)
+		return {cancelled = false, field_build_ms = float(node.get_meta("field_build_ms", 0.0))}
+	var built: Dictionary = await World.build_staged(self, field, build_field, {}, snapshot, night_options, checkpoint)
+	if built.get("cancelled", false):
+		return false
+	built.erase("cancelled") # the same shape as World.build()
+	_world = built
+	return true
+
+
+## Shadow, aircraft and camera after the world exists (synchronous; the aircraft is one indivisible build).
+func finish_construction() -> void:
+	if _staged_build.is_empty() or _world.is_empty():
+		return
+	var aircraft: String = _staged_build.aircraft
+	var livery: String = _staged_build.livery
+	_staged_build = {}
 	_world.field = get_node_or_null("Field")
 	_environment = _world.environment
 

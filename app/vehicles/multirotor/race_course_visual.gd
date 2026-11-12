@@ -15,10 +15,11 @@
 ## previous gate to it, and the gate after it turns amber. A gate flashes white when it is passed. Outside a race
 ## every gate is calm and gently breathing. Presentation only: nothing here feeds the session.
 ##
-## Cost (DR-32 R1, 2026-11-12): the compatibility renderer pays per draw call, so each gate's four panels are one
-## merged mesh (one draw, one shadow caster) and its four halo quads another; feet, number plates and start lamps
-## are MultiMeshes for the whole course; calm halos are not drawn by day; the exposure compensation is one global
-## shader parameter set once per frame. A six-gate course drew 79 calls before, about 30 after.
+## Cost (DR-32 R1, 2026-11-12): the compatibility renderer pays per draw call, so each gate's four panels are one merged
+## mesh (one draw, one shadow caster) and its four halo quads another; feet, sandbags, number plates and start lamps are
+## MultiMeshes for the whole course; calm halos are not drawn by day; the exposure compensation is one global shader
+## parameter set once per frame. A six-gate course drew 79 calls before, 21 after (with the detail pass). Detail is
+## shaded, not modelled.
 extends RefCounted
 
 const Frames = preload("res://render/frames.gd")
@@ -36,7 +37,8 @@ const PANEL_NEXT := Color(0.5, 1.0, 0.08)
 const PANEL_AFTER := Color(1.0, 0.68, 0.05)
 const PLATE_DARK := Color(0.05, 0.05, 0.07)
 const PLATE_BACK := Color(0.42, 0.03, 0.03)
-const PLATE_MARGIN_M := 0.03
+## Plate margin inside the banner: clear of the 0.04 m tubes on its edges.
+const PLATE_MARGIN_M := 0.045
 const STRIPE_DARK := Color(0.07, 0.07, 0.09)
 const LED_CALM := Color(0.75, 0.92, 1.0)
 const LED_NEXT := Color(0.3, 1.0, 0.2)
@@ -48,6 +50,9 @@ const FOOT_TUBE_LENGTH_M := 0.7
 ## Sandbag size: along the foot tube, across it, height.
 const SANDBAG_SIZE := Vector3(0.16, 0.3, 0.09)
 const SANDBAG_OFFSET_M := 0.2
+## Positions go through float32 transforms (about 1e-6 m of rounding tens of metres out): a post is cut by a bar
+## that covers it within this tolerance, and no sliver thinner than it is kept.
+const CUT_TOLERANCE_M := 1.0e-4
 const PAD_SIZE_M := 1.4
 const NUMBER_PIXEL_SIZE := 0.0032
 const NUMBER_FONT_SIZE := 96
@@ -83,6 +88,7 @@ const FLASH_S := 0.45
 enum GateState { CALM, NEXT, AFTER }
 
 static var _pad_texture: ImageTexture
+static var _exposure_param_added := false
 
 var root: Node3D
 ## Per gate: [the merged panel MeshInstance3D] (one mesh, the four collision boxes).
@@ -153,7 +159,7 @@ func build(parent: Node3D, course: Dictionary, night_factor := 0.0) -> void:
 		var along: Vector3 = foot.basis.y
 		# Pillow axes: x across the tube (its length), y up, z along the tube.
 		var across: Vector3 = Vector3.UP.cross(along).normalized()
-		var flat := Basis(across, Vector3.UP, along).scaled_local(Vector3(SANDBAG_SIZE.y, SANDBAG_SIZE.z, SANDBAG_SIZE.x))
+		var flat := Basis(across, Vector3.UP, along)
 		for side: float in [-1.0, 1.0]:
 			var at: Vector3 = foot.origin + along * side * SANDBAG_OFFSET_M
 			bag_transforms.append(Transform3D(flat, at + Vector3.UP * (0.5 * SANDBAG_SIZE.z - FOOT_TUBE_RADIUS_M)))
@@ -171,10 +177,13 @@ func build(parent: Node3D, course: Dictionary, night_factor := 0.0) -> void:
 	set_next(-1)
 
 
-## The global shader parameter exists once per process (materials compile against it).
+## The global shader parameter exists once per process (materials compile against it). Outside the editor the
+## server's parameter list reads empty (and logs an error), so this script remembers that it added it.
 static func _ensure_exposure_param() -> void:
-	if not RenderingServer.global_shader_parameter_get_list().has(EXPOSURE_PARAM):
-		RenderingServer.global_shader_parameter_add(EXPOSURE_PARAM, RenderingServer.GLOBAL_VAR_TYPE_FLOAT, 1.0)
+	if _exposure_param_added:
+		return
+	RenderingServer.global_shader_parameter_add(EXPOSURE_PARAM, RenderingServer.GLOBAL_VAR_TYPE_FLOAT, 1.0)
+	_exposure_param_added = true
 
 
 func _build_gate(index: int, gate: Dictionary, foot_transforms: Array[Transform3D], plate_rows: Array,
@@ -268,7 +277,9 @@ static func _panel_mesh(boxes: Array, frame: Transform3D, drawn: Array, extent :
 		var segments: Array = [[local.y - 0.5 * size.y, local.y + 0.5 * size.y]]
 		if vertical:
 			for bar: Array in bars:
-				if float(bar[0]) <= local.x - 0.5 * size.x + 1.0e-6 and float(bar[1]) >= local.x + 0.5 * size.x - 1.0e-6:
+				var covers: bool = float(bar[0]) <= local.x - 0.5 * size.x + CUT_TOLERANCE_M \
+					and float(bar[1]) >= local.x + 0.5 * size.x - CUT_TOLERANCE_M
+				if covers:
 					segments = _cut(segments, float(bar[2]), float(bar[3]))
 		for segment: Array in segments:
 			var shape := BoxMesh.new()
@@ -302,9 +313,9 @@ static func _cut(segments: Array, lo: float, hi: float) -> Array:
 		if hi <= a or lo >= b:
 			kept.append(segment)
 			continue
-		if lo > a + 1.0e-6:
+		if lo > a + CUT_TOLERANCE_M:
 			kept.append([a, lo])
-		if hi < b - 1.0e-6:
+		if hi < b - CUT_TOLERANCE_M:
 			kept.append([hi, b])
 	return kept
 
@@ -364,7 +375,8 @@ static func _foot_mesh() -> CylinderMesh:
 	return mesh
 
 
-## A sandbag: a unit pillow (a superellipsoid, boxy in plan and rounded on top; scaled per instance), olive canvas.
+## A sandbag: a pillow (a superellipsoid, boxy in plan and rounded on top) of SANDBAG_SIZE, its length on x and the
+## foot tube's direction on z, olive canvas. The size is baked in: instances stay rigid, so normals stay right.
 static func _sandbag_mesh() -> ArrayMesh:
 	var sphere := SphereMesh.new()
 	sphere.radius = 0.5
@@ -383,7 +395,9 @@ static func _sandbag_mesh() -> ArrayMesh:
 		for axis in 3:
 			p[axis] = signf(v[axis]) * pow(absf(v[axis]), e[axis])
 			n[axis] = signf(v[axis]) * pow(absf(v[axis]), 2.0 - e[axis])
-		vertices[i] = 0.5 * p
+		var scale := Vector3(SANDBAG_SIZE.y, SANDBAG_SIZE.z, SANDBAG_SIZE.x)
+		vertices[i] = 0.5 * p * scale
+		n /= scale
 		normals[i] = n.normalized() if n.length_squared() > 1.0e-12 else normals[i]
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	arrays[Mesh.ARRAY_NORMAL] = normals
@@ -742,7 +756,7 @@ func _update_lamps(race: Dictionary) -> void:
 	var level := exposure_comp * (1.0 + 2.0 * night)
 	_lamp_shown.resize(_lamp_instances.size())
 	for k in _lamp_instances.size():
-		# An unlit lens is a dark surface: fully compensated (exposure ^ -1), so it stays dark at night.
+		# An unlit lens is a dark surface: compensated twice (exposure ^ -1 at the default gamma 0.5), so it stays dark.
 		var shown: Color = colour * level if k < lit else LAMP_OFF * exposure_comp * exposure_comp
 		_lamp_shown[k] = shown
 		for i: int in _lamp_instances[k]:

@@ -1,8 +1,8 @@
 # Lens and screen effects: impact blood, rain on the lens, impact grime
 
-2026-11-12 · Revision 2 · **Proposed plan** · Step prefix: **LENS-** (camera subtrack; to be registered in the [track registry](../README.md#tracks-plans-and-step-ids) before implementation) · Gate: **LENS**
+2026-11-12 · Revision 3 · **Active plan** · Step prefix: **LENS-** (camera subtrack, [registered](../README.md#tracks-plans-and-step-ids)) · Gate: **LENS**
 
-**Status:** proposal. Nothing in this plan is implemented. The research below was done against the working tree on 2026-11-12; line references may drift.
+**Status:** first implementation delivered 2026-11-12; see [§16](#16-implementation-status-2026-11-12) for what exists, how it was verified and what remains open. Sections 0–15 keep the design and research; line references may drift.
 
 **Revision 2** follows an independent Good Enemy review (2026-11-12, read-only, no shared context). The lead verified its main claims against the source and corrected the plan:
 
@@ -37,7 +37,7 @@ Phase 1 touches neither `app/sim/` nor `app/physics/`. For **fixed-wing** flight
 
 - **Readable and beautiful first, then realistic.** The blood curtain is deliberately stylised and nostalgic. Rain and grime follow physical drivers (rain rate, drop size distribution, relative airspeed, surface material) and then an explicit art gain.
 - **Zero cost when off.** Disabled channels allocate no nodes, materials, textures or per-frame work ([AGENTS.md](../../AGENTS.md) graphics rule).
-- **Deterministic.** Shaders read `sim_clock`, never `TIME` (the [shader clock](../../app/render/shader_clock.gd) rule, enforced by `app/test.sh`). Random choices are seeded from the session seed and the simulation tick, like [storm events](../../app/environment/storm_events.gd). The same `.orfl` replay produces the same blood, drops and splats.
+- **Deterministic where it matters.** Shaders never read `TIME` (the [shader clock](../../app/render/shader_clock.gd) rule, enforced by `app/test.sh`); the CPU passes presentation time as uniforms, so pause holds every effect. Each accepted event reseeds the random stream with its own identity, like [storm events](../../app/environment/storm_events.gd); see §4.2 for what a replay repeats.
 - **1080p first.** Budgets and acceptance are set at 1920×1080, then 1440p/4K, then 720p ([display priorities](../../AGENTS.md#display-resolution-priorities)).
 - **Player choice.** Every channel has its own switch. Blood has a content switch independent of graphics quality.
 
@@ -127,7 +127,7 @@ Repository rule: do not create what can be downloaded. Candidates for LENS-00 in
 | The FPV quad builds the same obstacle inventory but reports a strike only as `crashed(reason)` with the text "Obstacle strike". There is no obstacle id, kind, point or speed. | [multirotor_scene.gd:136](../../app/vehicles/multirotor/multirotor_scene.gd#L136), [multirotor/session.gd:60](../../app/sim/multirotor/session.gd#L60), [controlled_plant.gd:567-572](../../app/physics/multirotor/controlled_plant.gd#L567-L572) | Quad blood and grime need **LENS-02b**: a typed strike record agreed with the multirotor and physics owners. Those files are pinned, so the change is theirs. Phase 1 is fixed-wing only. |
 | Camera views: `pilot`, `chase`, `flyby`, `orbit`, `closeup`; FPV camera for the quad. CAM-12 proposes an FPV barrel warp in a supersampled `SubViewport` and requires **no screen-texture copy** on that path. | [camera_rig.gd:20](../../app/render/camera/camera_rig.gd#L20), [multirotor_camera.gd](../../app/vehicles/multirotor/multirotor_camera.gd), [camera-views plan](camera-views.md) | View policy table in §6. With CAM-12, drops must be drawn **after** the warp and on a layer above wherever the warped image is displayed. CAM-12's no-copy rule is about the warp itself; lens drops add one deliberate read. Agree on this with CAM before LENS-08. |
 | Weather: nine sky presets; FW-83/84 distant storm towers, rain **curtains** anchored ~9 km away, lightning flash radiance; **no local precipitation at the field**; tornado FW-89 pending | [weather_presets.json](../../app/data/sky/weather_presets.json), [storm_events.gd](../../app/environment/storm_events.gd), [rain_curtain.gdshader](../../app/render/weather/rain_curtain.gdshader), [sky plan](sky-clouds-weather.md) | Rain on the lens needs a **local precipitation channel** that does not exist yet. LENS-06 asks the FW owner for it; until then a debug/CLI override drives it. |
-| Shaders may not read `TIME` | [shader_clock.gd](../../app/render/shader_clock.gd) | All animation uses `sim_clock` and start-clock uniforms. |
+| Shaders may not read `TIME` | [shader_clock.gd](../../app/render/shader_clock.gd) | Animation runs on CPU-driven presentation time (curtain age, wet clock, integrated rain travel) passed as uniforms. |
 | Particles: crash effects use `CPUParticles3D` (bounded, hundreds); smoke uses `GPUParticles3D` | [effects.gd](../../app/render/crash/effects.gd), [smoke/exhaust.gd](../../app/render/smoke/exhaust.gd) | There is no precedent for thousands of particles in Compatibility. LENS-07 must measure `GPUParticles3D` streaks against a `MultiMesh` streak field before choosing. |
 | Physics source bytes are pinned | project memory and [STACK.md](../STACK.md#boundaries-and-data-flow) | Phase 1 adds **no** collision proxy for the player. |
 
@@ -166,10 +166,10 @@ render frame  ──► interpolated camera pose  ──► DropPool.advance(ren
 render frame  ──► sim_clock (global)        ──► Curtain shader (start_clock, strength, impact_uv)
 ```
 
-- **Replay-identical:** blood and grime events. Their identity is `hash(session_seed, tick, contact_id, "LENS")`, so the same replay gives the same splats in the same places.
+- **Replay-identical:** which blood and grime events happen, their strength, and their random draws: each accepted event reseeds the stream with `hash(seed, event id, "LENS")`. Splat placement still follows the active camera (the impact's screen projection), so another view places the same splats elsewhere.
 - **Not replay-identical:** rain drops. Arrivals depend on the active view's camera motion, and motion integrates per render frame. View switches and frame cadence change the drop pattern, but not its statistics. This is acceptable for presentation and is stated in captures.
 - Drop motion advances by the **interpolated visual clock** (the same presentation time CAM-25 uses), not by raw 240 Hz tick deltas, so drops neither judder between ticks nor run during pause. Some routes fall back to wall time ([main.gd:1377-1379](../../app/main.gd#L1377-L1379)); there, drops follow that clock as the rest of the presentation does.
-- Reset, checkpoint restore and aircraft change clear all channels (connect to `session.resetting`). Restoring a checkpoint does not replay old blood.
+- Reset, checkpoint restore and aircraft change clear all channels (`main.gd` `_on_resetting` and the restore path; the quad scene connects `session.resetting`). Restoring a checkpoint passes its tick as the admission floor, so it does not replay old blood.
 - Captures, traces and scripted routes: off unless `--lens-effects=on` is passed explicitly. CLI: `--lens-effects=off|on`, `--impact-fx=off|curtain|splatter`, `--lens-rain-mmph=<value>` (debug override until LENS-06).
 
 ### 4.3 Render-boundary types
@@ -412,7 +412,7 @@ Lens drops without visible falling rain look wrong. A particle box (about 30 × 
 | --- | --- | --- |
 | Lens effects (master) | Off / On | On |
 | Lens effects quality | Low / Medium / High / Ultra | From the graphics preset recommendation |
-| Impact effects | Off / Classic curtain / Lens splatter | **Off until owner decision D1** is recorded; then the chosen default |
+| Impact effects | Off / Classic curtain / Lens splatter | Classic curtain (owner decision D1, 2026-11-12) |
 | Impact colour | Red / Dark / Desaturated | Red |
 | Rain on lens | Off / On | On |
 | Glasses in pilot view | Off / On | Off |
@@ -540,7 +540,7 @@ Follow the repository's [verification scope](../tools/shared.md#verification-sco
 
 | ID | Question | Proposal |
 | --- | --- | --- |
-| D1 | Is blood on by default? | Off until decided. Owner's stated wish: "Classic curtain" with an Off switch in Settings → Effects; record the choice in DECISIONS.md |
+| D1 | Is blood on by default? | **Decided by the owner, 2026-11-12:** on, "Classic curtain", with an Off switch (Settings → Lighting → Impact effects) |
 | D2 | Does striking the pilot end the flight? | Phase 1: no (presentation only). Phase 2 with LENS-05b: yes, as a terminal contact |
 | D3 | Glasses in pilot view by default? | Off |
 | D4 | Safety line after a person strike? | Yes, with a cited safety code |
@@ -557,3 +557,67 @@ Follow the repository's [verification scope](../tools/shared.md#verification-sco
 - **Focus of expansion** — the screen point the camera is moving toward; drops stream away from it.
 - **Pinning** — a drop staying put on glass until its driving force overcomes surface hysteresis.
 - **Art gain** — an explicit, documented multiplier from a physical driver to what reads well on screen.
+
+---
+
+## 16. Implementation status (2026-11-12)
+
+### What exists
+
+| Step | Delivered | Where |
+| --- | --- | --- |
+| LENS-01 | Lens stack on `CanvasLayer` −9 with lazy nodes (nothing allocated until a channel draws), reset/restore floor tick, pause hold, CLI flags, debug helpers (`debug_blood`, `debug_rain`, `debug_grime`, `debug_oil`, `snapshot`) | [lens_stack.gd](../../app/render/lens/lens_stack.gd), [lens_settings.gd](../../app/render/lens/lens_settings.gd) |
+| LENS-02 | Pure admission of fixed-wing contact events (person, ground, foliage, obstacle, lake) | [impact_trigger.gd](../../app/render/lens/impact_trigger.gd) |
+| LENS-02b (interim) | The FPV quad still reports only `crashed(reason)`. Presentation asks the installed obstacle inventory, read-only, what lies at the accepted crash position (`CollisionWorld.nearby`). A typed strike record from the multirotor and physics owners remains open. | [multirotor_scene.gd](../../app/vehicles/multirotor/multirotor_scene.gd) `_lens_crash` |
+| LENS-03/04 | Classic curtain (sheet, meniscus runners with round beads, Beer–Lambert absorption, refraction, drain residue, drying) and lens splatter; red/dark/desaturated; clear-centre option | [lens_film.gdshader](../../app/render/lens/lens_film.gdshader), [lens_stamp.gdshader](../../app/render/lens/lens_stamp.gdshader) |
+| LENS-05 | Presentation-only pilot strike: swept segment against the pilot capsule, active within 15 m of the station | [pilot_strike.gd](../../app/render/lens/pilot_strike.gd) |
+| LENS-06 (interim) | Local rain rate per sky preset, owned here until the FW precipitation channel exists: `prestorm` 1.6 mm/h, `electrical_storm` 14 mm/h, others dry; `--lens-rain-mmph` overrides | [rain_model.gd](../../app/render/lens/rain_model.gd) |
+| LENS-07 | World-anchored rain streaks (MultiMesh, refracting the scene behind them); the volume grows in powers of two with the pilot view's auto-zoom | [rain_streaks.gdshader](../../app/render/lens/rain_streaks.gdshader) |
+| LENS-08 | CPU drop pool (pinning, gravity on the image plane, airflow from the focus of expansion, merging, trails, blow-off, drying), ball-lens drop shader, and a fine-bead wetness layer | [drop_pool.gd](../../app/render/lens/drop_pool.gd), [lens_drop.gdshader](../../app/render/lens/lens_drop.gdshader) |
+| LENS-09 | Lightning level (FW-84) brightens drops and streaks | `_lens_flash` in [main.gd](../../app/main.gd) |
+| LENS-10/11 | Mud, grass, dust veil, lake spray, cracked lens (close-up/FPV, ≥ 12 m/s), glow oil film (close-up view) | [lens_stamp.gdshader](../../app/render/lens/lens_stamp.gdshader), [lens_film.gdshader](../../app/render/lens/lens_film.gdshader) |
+| Settings | Six rows at the end of Settings → Lighting, saved in `display.cfg` `[lens]`; "Glasses in pilot view" stays a file/CLI preference because the page has no room for a seventh row at 1080p | [display_preferences.gd](../../app/app_state/display_preferences.gd), [settings_screen.gd](../../app/ui/settings_screen.gd) |
+
+### Reused work and licences
+
+Following the owner's instruction not to reinvent proven techniques:
+
+- **Splat shapes:** real photographed ink splatters from "~100 grunge brushstrokes and splatters set" by Dino0040 ([OpenGameArt](https://opengameart.org/content/100-grunge-brushstrokes-and-splatters-set), CC0). Eight brushes are packed into one 8-bit atlas (184 KB) by [build_splat_atlas.py](../../tools/lens/build_splat_atlas.py) with a recorded archive hash; provenance in [sources.json](../../app/assets/lens/sources.json). The Kenney Splat Pack (CC0) was the first choice, but its download requires a browser session and was not automated.
+- **Cracked lens:** the radial Voronoi technique of "Impact Glass Shader" by Lord0Sanz ([godotshaders](https://godotshaders.com/shader/impact-glass-shader/), MIT).
+- **Fine wet beads:** the `StaticDrops` layer of "Rain on Glass" by Gerardo LCDF ([godotshaders](https://godotshaders.com/shader/rain-on-glass/), MIT). Both MIT notices are in [IMPACT_GLASS_LICENSE.txt](../../app/render/lens/IMPACT_GLASS_LICENSE.txt).
+- **Drop shape:** Inigo Quilez's 2D uneven-capsule distance function (MIT).
+- **Behaviour:** drops bead, run and are pushed outward at speed, as in Shawn Hargreaves' MotoGP write-up; the ball-lens inversion follows the Codrops study. BigWings' *Heartfelt* (CC BY-NC-SA) was not used.
+
+### Verification (2026-11-12, Windows, Godot 4.8-beta2, Compatibility, RTX 3090, 1920×1080)
+
+| Check | Result |
+| --- | --- |
+| [test_lens_effects.gd](../../app/tests/test_lens_effects.gd) | 59 checks, 0 failed. Covers settings, the rain law and worked example, triggers, pilot sweep at 20/60/144 FPS, drop-pool conservation and pinning, the no-TIME rule, preference save/load and lifecycle |
+| [test_lens_person_strike.gd](../../app/tests/test_lens_person_strike.gd) | 8 checks, 0 failed. A real FlightSession flies into a spectator capsule; the accepted event starts the curtain once; a restored tick does not replay it |
+| Affected suites | `test_settings_ui`, `test_ui_language` (all eight catalogues), `test_display_preferences`, `test_lighting_settings_ui`, `test_shadow_settings_ui`, `test_ui_settings_integration`, `test_advanced_graphics_settings`, `test_camera_settings`, `test_ui_pause`, `test_mr_activity`, `test_mr_activity_race`, `test_mr_camera`, `test_mr_osd`, `test_accident_integration`, `test_crash`: all passed |
+| Visual review in the running app | Curtain (strike and drain), lens splatter, rain in the electrical-storm preset (pilot, chase and FPV), mud and grass, cracked lens. Screenshots stay under `tmp/` and are not committed |
+| Cost, FPV in 14 mm/h rain | GPU median 2.04 ms with the lens vs 1.92 ms without (+0.13 ms). Root CPU 2.5 ms vs 2.0 ms. Both were measured before the review fixes: hidden-film skip, pilot watch radius, allocation-free drop grid, skipped uploads and the CPU-computed crack points. Vsync makes both readings noisy. A cracked lens and weaker GPUs are not yet measured |
+| Physics | No file under `app/sim/` or `app/physics/` changed |
+
+### Independent review (2026-11-12)
+
+A second Good Enemy pass reviewed the code read-only. The fixes below were verified against the source:
+
+- Rain streaks no longer jump when wind or the rain rate changes: the fall is integrated on the CPU.
+- The cracked lens uses CPU-computed Voronoi points; it no longer runs a trigonometric and noise loop per pixel.
+- Drop and stamp refraction now account for the UI's canvas stretch on 1440p and 4K screens (`canvas_scale`).
+- Each event reseeds the random stream. The plan's determinism text now says what a replay repeats.
+- The splat atlas loads only with the stamp channel.
+- Enabled channels warm their shaders at flight setup with an invisible draw.
+- The drop grid allocates nothing per frame, and the pool skips MultiMesh uploads when nothing moved.
+- Ticks without contact events skip the detached copy, and the admitted-event set is trimmed with hysteresis.
+- Crash grime no longer fires twice. Splatter dries, and reset clears dryness.
+- The streaks' art speed factor is separate from the physical arrival law.
+- Smoothstep edges are ordered, the German tooltip is fixed, and Inigo Quilez is credited in the licence file.
+
+### Still open
+
+- LENS-06: the Field World precipitation channel (rate and coverage per preset) replaces the interim mapping.
+- LENS-02b and LENS-05b: a typed quad strike record, and a physical pilot proxy; both belong to the physics owners.
+- Qualification on Mobile (Apple Silicon) and Forward+ (Product High); 1440p/4K and 720p captures; a low-end GPU budget run.
+- Tornado coupling (after FW-89), the AUD stinger (D7), and a safety-code line after a person strike (D4).

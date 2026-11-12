@@ -91,6 +91,34 @@ func _run() -> void:
 		var detached_ids := detached.get_children().map(func(body: Node) -> String: return str(body.get_meta("obstacle_id")))
 		check("shared collision world selects the same wreck contacts as the detached copy: " + kind,
 			not director.context.collision_world.is_empty() and shared_ids == detached_ids and not shared_ids.is_empty())
+		# CR-22e: the native sort keeps the original comparator's order (distance, then ID) and cap.
+		var legacy: Array[Dictionary] = []
+		for proxy: Dictionary in flight.session.collision_world(true).proxies:
+			var margin := maxf(float(proxy.get("radius", 0.0)), maxf(float(proxy.get("half_x", 0.0)), float(proxy.get("half_z", 0.0))))
+			if str(proxy.get("response_class", "")) != "soft_foliage_impulse" \
+					and absf(float(proxy.north) - impact.point_ned[0]) <= SceneryBodies.RANGE_M + margin \
+					and absf(float(proxy.east) - impact.point_ned[1]) <= SceneryBodies.RANGE_M + margin:
+				legacy.append({proxy = proxy, distance_squared = SceneryBodies._distance_squared(proxy, impact.point_ned)})
+		legacy.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			var da: float = a.distance_squared
+			var db: float = b.distance_squared
+			return str(a.proxy.id) < str(b.proxy.id) if da == db else da < db)
+		var legacy_ids := legacy.slice(0, SceneryBodies.MAX_BODIES).map(func(item: Dictionary) -> String: return str(item.proxy.id))
+		check("native contact ordering equals the original comparator: " + kind, legacy_ids == detached_ids)
+		# CR-22e: staged creation adds the same bodies, nearest first, without a 160-body frame.
+		var staged := SceneryBodies.build_near_staged(director.context.collision_world, impact.point_ned,
+			flight.session.scenery_damage(), 4)
+		var first_ids := staged.get_children().map(func(body: Node) -> String: return str(body.get_meta("obstacle_id")))
+		var steps := 0
+		while not SceneryBodies.continue_build(staged, 5) and steps < 100:
+			steps += 1
+		var staged_ids := staged.get_children().map(func(body: Node) -> String: return str(body.get_meta("obstacle_id")))
+		check("staged wreck contacts start with the nearest and end with the full selection: " + kind,
+			first_ids == detached_ids.slice(0, mini(4, detached_ids.size())) and staged_ids == detached_ids
+			and int(staged.get_meta("bodies")) == detached_ids.size() and not staged.has_meta("pending"))
+		check("the director's contacts include the struck obstacle in the crash frame: " + kind,
+			bodies.get_children().any(func(body: Node) -> bool: return str(body.get_meta("obstacle_id")) == str(impact.obstacle_id)))
+		staged.free()
 		shared.free()
 		detached.free()
 		check("wall/tree normal reaches severity report: " + kind, director.report.get("surface", "") == impact.obstacle_kind and director.report.get("obstacle_id", "") == impact.obstacle_id)

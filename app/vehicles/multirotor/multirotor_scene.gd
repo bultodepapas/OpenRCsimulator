@@ -27,6 +27,10 @@ const CollisionSetup = preload("res://scenery/collision_setup.gd")
 const Track = preload("res://sim/race/track.gd")
 const RaceDirector = preload("res://sim/race/race_director.gd")
 const CourseVisual = preload("res://vehicles/multirotor/race_course_visual.gd")
+const LensStack = preload("res://render/lens/lens_stack.gd")
+const LensSettings = preload("res://render/lens/lens_settings.gd")
+const CollisionWorld = preload("res://scenery/collision_world.gd")
+const RB = preload("res://physics/rigid_body.gd")
 
 const DT := 1.0 / 240.0
 ## CC0 quadcopter recording already shipped for the blimp's electric motors (assets/audio/powertrains/LICENSE.txt).
@@ -90,6 +94,10 @@ var _armed_ticks := 0
 var _aftermath_until := -1.0
 var _terminal_text := ""
 var _crash_cause := ""
+## LENS-01 (docs/plans/lens-screen-effects.md): rain on the FPV lens, impact blood and grime. Null when disabled.
+var _lens: LensStack
+## The installed obstacle inventory, read-only: names what an "Obstacle strike" hit, for the lens only.
+var _obstacle_world: Dictionary = {}
 var _audio: AudioStreamPlayer3D
 var _audio_level := 0.0
 var _hover_speed := 1.0
@@ -138,6 +146,7 @@ func _ready() -> void:
 		startup_error = "FPV quad obstacle inventory refused: " + "; ".join(obstacles.get("errors", []))
 		_disable()
 		return
+	_obstacle_world = obstacles.world
 	# The flight is prepared for the source that will fly it (its throttle policy and limit are session options).
 	_adopt_app_controllers()
 	_connect_selected_controller()
@@ -196,6 +205,7 @@ func _ready() -> void:
 		controller_registry.selection_changed.connect(_on_controller_selection_changed)
 	if enable_audio:
 		_build_audio()
+	_start_lens()
 	_open_menu(tr(READY_TEXT))
 	_process(0.0)
 
@@ -635,6 +645,64 @@ func _on_crashed(reason: String) -> void:
 	_terminal_text = tr("Crashed: %s. Press R to reset.") % reason
 	_aftermath_until = float(session.sim.time()) + AFTERMATH_S
 	# The OSD hint already names the cause (no duplicate flash).
+	_lens_crash(reason)
+
+
+## LENS-01: the quad session reports a strike only as a reason. Presentation names what was hit by asking the installed
+## obstacle inventory (read-only) what lies at the accepted crash position: a person draws blood, the ground grime.
+func _start_lens() -> void:
+	if camera == null or not enable_world:
+		return
+	var resolved: Dictionary = LensSettings.resolve({}, not scripted_pilot.is_valid())
+	if not resolved.enabled:
+		return
+	_lens = LensStack.new()
+	_lens.name = "LensStack"
+	add_child(_lens)
+	var pilot: Dictionary = field.pilot
+	var ok := _lens.configure({
+		"settings": resolved,
+		"camera": camera,
+		"session": session,
+		"view_provider": func() -> String: return view.view_name(),
+		"sky_provider": func() -> String: return str(sky_config.get("preset", "classic")),
+		"field": field,
+		# The quad is small: its centre is its hull for the pilot-strike sweep.
+		"hull": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"station": PackedFloat64Array([float(pilot.north), float(pilot.east), float(pilot.down)]),
+		"eye_height": float(pilot.eye_height),
+		"mass_kg": float(session.data.get("mass_kg", 0.6)),
+		"seed": int(sky_config.get("seed", 1)),
+	})
+	if ok:
+		session.resetting.connect(func() -> void: _lens.reset())
+	else:
+		_lens.queue_free()
+		_lens = null
+
+
+func _lens_crash(reason: String) -> void:
+	if _lens == null:
+		return
+	var state: PackedFloat64Array = session.sim.state
+	if state.size() < RB.SIZE:
+		return
+	var north := state[RB.POS]
+	var east := state[RB.POS + 1]
+	var down := state[RB.POS + 2]
+	var speed := Vector3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]).length()
+	var point := Frames.ned_to_render([north, east, down])
+	var strength := clampf(speed / 20.0, 0.0, 1.0)
+	var key := "quad:%d" % int(session.sim.tick)
+	if reason == "Obstacle strike" and not _obstacle_world.is_empty():
+		for proxy: Dictionary in CollisionWorld.nearby(_obstacle_world, north, east, down, 0.6):
+			if str(proxy.get("kind", "")) == "person":
+				var energy := 0.5 * float(session.data.get("mass_kg", 0.6)) * speed * speed
+				_lens.strike_person(sqrt(clampf(energy / 60.0, 0.0, 1.0)) + 0.25, point, false, key)
+				return
+		_lens.strike_surface("obstacle", strength, point, speed, key)
+		return
+	_lens.strike_surface("ground", strength, point, speed, key)
 
 
 func _on_depleted() -> void:
@@ -692,6 +760,8 @@ func _process(delta: float) -> void:
 	var frame_dt := delta if not session.paused else 0.0
 	visual.pose(drawn, t.get("rotor_speed_rad_s", PackedFloat64Array()), frame_dt)
 	view.update(drawn, session.data.camera.mount_frd, delta, _ground_height_render)
+	if _lens != null:
+		_lens.advance(delta, float(session.sim.time()), session.paused)
 	if _environment != null:
 		World.update(_environment, 37.0 + float(session.sim.time()), Vector3.ZERO, visual.root.position, camera)
 	var flight_s := float(_armed_ticks) * DT
