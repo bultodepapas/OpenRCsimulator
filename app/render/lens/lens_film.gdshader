@@ -29,6 +29,8 @@ uniform vec3 dry_albedo = vec3(0.16, 0.022, 0.014);
 uniform float wetness = 0.0;            // fine beads covering a wet lens, 0…1
 uniform float wet_clock = 0.0;          // presentation seconds: beads appear and evaporate in turn
 uniform float wet_focus = 1.5;
+uniform vec2 sun_uv = vec2(-1.0);       // the sun (or moon) on screen; x < 0 when behind the camera
+uniform float sun_strength = 0.0;
 uniform float dust = 0.0;
 uniform vec3 dust_tint = vec3(0.62, 0.55, 0.45);
 uniform float dust_seed = 0.0;
@@ -177,6 +179,14 @@ void fragment() {
 			vec3 seen = textureLod(screen_texture, clamp(uv + slope * 0.6, vec2(0.0), vec2(1.0)), wet_focus).rgb;
 			over(acc, seen * 1.05, bead);
 		}
+	}
+	if (wetness > 0.0 && sun_uv.x >= 0.0 && sun_strength > 0.0) {
+		// A wet lens scatters a bright source: a soft warm halo and a vertical smear along the water film.
+		vec2 d = (uv - sun_uv) * vec2(aspect, 1.0);
+		float halo = exp(-dot(d, d) / 0.018);
+		float smear = exp(-d.x * d.x / 0.0006) * exp(-d.y * d.y / 0.09);
+		float glare = wetness * sun_strength * (0.55 * halo + 0.35 * smear);
+		over(acc, vec3(1.0, 0.93, 0.8), clamp(glare, 0.0, 0.75));
 	}
 	if (dust > 0.0) {
 		vec3 wide = textureLod(screen_texture, uv, 4.5).rgb;

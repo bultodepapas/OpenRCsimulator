@@ -592,7 +592,7 @@ Following the owner's instruction not to reinvent proven techniques:
 
 | Check | Result |
 | --- | --- |
-| [test_lens_effects.gd](../../app/tests/test_lens_effects.gd) | 64 checks, 0 failed (one buffer-layout check is skipped under the headless dummy renderer and was verified with the real renderer). Covers settings, the rain law and worked example, triggers, pilot sweep at 20/60/144 FPS, drop-pool conservation and pinning, the no-TIME rule, preference save/load and lifecycle |
+| [test_lens_effects.gd](../../app/tests/test_lens_effects.gd) | 68 checks, 0 failed (one buffer-layout check is skipped under the headless dummy renderer and was verified with the real renderer). Covers settings, the rain law and worked example, triggers, pilot sweep at 20/60/144 FPS, drop-pool conservation and pinning, the no-TIME rule, preference save/load and lifecycle |
 | [test_lens_person_strike.gd](../../app/tests/test_lens_person_strike.gd) | 8 checks, 0 failed. A real FlightSession flies into a spectator capsule; the accepted event starts the curtain once; a restored tick does not replay it |
 | Affected suites | `test_settings_ui`, `test_ui_language` (all eight catalogues), `test_display_preferences`, `test_lighting_settings_ui`, `test_shadow_settings_ui`, `test_ui_settings_integration`, `test_advanced_graphics_settings`, `test_camera_settings`, `test_ui_pause`, `test_mr_activity`, `test_mr_activity_race`, `test_mr_camera`, `test_mr_osd`, `test_accident_integration`, `test_crash`: all passed |
 | Visual review in the running app | Curtain (strike and drain), lens splatter, rain in the electrical-storm preset (pilot, chase and FPV), mud and grass, cracked lens. Screenshots stay under `tmp/` and are not committed |
@@ -640,6 +640,20 @@ A second read-only Good Enemy pass reviewed this round. It found no crasher and 
 - The derivative-based curtain slope was checked visually on Compatibility only; Mobile and Forward+ remain part of LENS-12.
 
 Cost benchmarking was deferred: other tracks' Godot sessions were sharing the GPU (AGENTS.md: no benchmarks alongside competing workloads). A first run also left `time_scale` at 0.05, which produced a misleading 1 fps reading. [tools/lens/bench.py](../../tools/lens/bench.py) drives the debug bridge, so the 1080p table can be filled on an idle machine.
+
+### Third round: physics and detail (2026-11-12)
+
+| Effect | Change |
+| --- | --- |
+| Drops | Inertia: the camera's acceleration acts on the glass as a pseudo-gravity, so punch-outs, flips and hard turns throw the drops against the motion. Pinning is patchy (value noise over the glass), so running drops stall and lurch (stick-slip). Arrivals faster than 8 m/s may burst into a crown of satellite beads. Heavy beaded drops sag along screen gravity into a pear shape. The contact line wobbles by a few percent (seeded harmonics). Highlights turn toward the sun and carry a pin-point glint when it shines into the lens. |
+| Blood | Most splats bleed one or two viscous runners: a meandering rivulet with a meniscus and a tip bead. A runner creeps along screen gravity, slows exponentially, and stops as the blood sets. Each splat dries on its own clock, rim first, to dark matte. Rain keeps it wet and rinses it sooner. Lens-splatter blood stays 22 s. |
+| Grime | Mud dries to pale clay over about 25 s of dry air and opens a Voronoi crackle of shrinkage cracks. Rain keeps it wet and washes it off within 35 s. Airspeed scours dust about three times faster at 30 m/s. |
+| Glare | A wet lens scatters the sun into a warm halo and a vertical smear along the water film. |
+| Fixes | The crack now draws first. Drawn last, it refracted the pre-stamp screen copy and painted the clean scene over mud and blood. Stamp caps were raised (12/24/36/48) for runners. |
+
+Verification: `test_lens_effects` gained checks for inertia, splash crowns, runner creep and set, and mud kept wet and rinsed by rain (68 checks, 0 failed). A rendered probe compiles every lens shader without errors. In the running app, a real ground crash in chase view left mud and a grass blade from accepted contact events. The wet-sun glare was not caught on screen in this session.
+
+`test_mr_activity` failed on its race-countdown HUD check, which drives `MultirotorHud` directly with the world and the lens disabled. Another track was editing race code at the time. The failure is outside this plan's files.
 
 ### Still open
 

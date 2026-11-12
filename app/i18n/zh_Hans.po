@@ -11366,6 +11366,117 @@ msgstr "请在起降台重新开始以再次飞行。"
 msgid "No controller: connect or check the controller."
 msgstr "无控制器：请连接或检查控制器。"
 
+msgid "Best %s"
+msgstr "最佳 %s"
+
+msgid "No finish yet. Bronze target %s"
+msgstr "尚未完赛。铜牌目标 %s"
+
+msgid "NEW RECORD!"
+msgstr "新纪录！"
+
+msgid "FIRST FINISH!"
+msgstr "首次完赛！"
+
+msgid "FINISHED"
+msgstr "完赛"
+
+msgid "Total %s"
+msgstr "总计 %s"
+
+msgid "Previous best %s (%s)"
+msgstr "此前最佳 %s（%s）"
+
+msgid "Medal: %s"
+msgstr "奖牌：%s"
+
+msgid "ATTEMPT OVER"
+msgstr "本次尝试结束"
+
+msgid "best lap"
+msgstr "最快圈"
+
+msgid "Lap %d  %s"
+msgstr "第 %d 圈  %s"
+
+msgid "%s target %s"
+msgstr "%s目标 %s"
+
+msgid "Top medal: beat your best time"
+msgstr "最高奖牌：挑战你的最佳时间"
+
+msgid "G: race again   R: back to the pad"
+msgstr "G：再赛一次   R：回到起飞台"
+
+msgid "Crashed: the attempt ends."
+msgstr "坠毁：本次尝试结束。"
+
+msgid "Battery empty: the attempt ends."
+msgstr "电池耗尽：本次尝试结束。"
+
+msgid "Race cancelled (G)."
+msgstr "比赛已取消（G）。"
+
+msgid "The attempt ended."
+msgstr "本次尝试已结束。"
+
+msgid "Silver"
+msgstr "银牌"
+
+msgid "Bronze"
+msgstr "铜牌"
+
+msgid "ARM NOW (%s)"
+msgstr "立即解锁 (%s)"
+
+msgid "THROTTLE LOW UNTIL GO"
+msgstr "GO 之前保持低油门"
+
+msgid "PB lap %s"
+msgstr "个人最快圈 %s"
+
+msgid "Race: press G to return to the pad"
+msgstr "比赛：按 G 回到起飞台"
+
+msgid "Race: arm (%s), then press G"
+msgstr "比赛：先解锁 (%s)，再按 G"
+
+msgid "Race: press G to start, throttle low until GO"
+msgstr "比赛：按 G 开始，GO 之前保持低油门"
+
+msgid "PB %s"
+msgstr "个人最佳 %s"
+
+msgid "RACE: arm on the pad, press G, keep the throttle low until GO, then fly the gates in order for three laps."
+msgstr "比赛：在起飞台解锁，按 G，GO 之前保持低油门，然后按顺序穿过各门，共三圈。"
+
+msgid "G: race (anywhere else it first returns you to the pad); during a race G cancels it. Best times and medals are kept."
+msgstr "G：比赛（在其他位置会先回到起飞台）；比赛中按 G 取消。最佳成绩和奖牌会被保存。"
+
+msgid "Race records unreadable: a new record book starts (the old file is kept)."
+msgstr "无法读取比赛记录：将开始新的记录册（旧文件已保留）。"
+
+msgid "Start from the pad: press G to return to it."
+msgstr "从起飞台出发：按 G 回到起飞台。"
+
+msgid "Hold still on the pad, then press G."
+msgstr "在起飞台上保持静止，然后按 G。"
+
+msgid "Crashed: press G or R to return to the pad."
+msgstr "坠毁：按 G 或 R 回到起飞台。"
+
+msgid "False start: arm before GO (%s)."
+msgstr "抢跑：请在 GO 之前解锁 (%s)。"
+
+msgid "Jump start: keep the throttle low until GO."
+msgstr "抢跑：GO 之前请保持低油门。"
+
+msgid "Controller not ready at GO: check the controller, then press G."
+msgstr "GO 时控制器未就绪：请检查控制器后按 G。"
+
+msgid "Race record not saved"
+msgstr "比赛记录未保存"
+
 msgid "T: next race course (back on the pad)."
 msgstr "T：下一条比赛赛道（回到起飞台）。"
 
@@ -11965,3 +12076,60 @@ msgstr "飞行模式（FPV 四轴）"
 
 msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
 msgstr "此配置使用起落架开关解锁四轴。请分配“解锁”使其明确。"
+
+msgid "Flight keys"
+msgstr "飞行按键"
+
+msgid "Radio transmitter picture"
+msgstr "遥控器示意图"
+
+msgid "Keyboard picture"
+msgstr "键盘示意图"
+
+msgid "Gamepad picture"
+msgstr "手柄示意图"
+
+msgid "Connected"
+msgstr "已连接"
+
+msgid "Disconnected"
+msgstr "已断开"
+
+msgid "Calibrated"
+msgstr "已校准"
+
+msgid "Needs setup"
+msgstr "需要设置"
+
+msgid "Menus"
+msgstr "菜单"
+
+msgid "Unnamed device"
+msgstr "未命名设备"
+
+msgid "selected"
+msgstr "已选择"
+
+msgid "not selected"
+msgstr "未选择"
+
+msgid "Stick"
+msgstr "摇杆"
+
+msgid "Output"
+msgstr "输出"
+
+msgid "Deadzone %d %% · Expo %d %%"
+msgstr "死区 %d %% · 指数 %d %%"
+
+msgid "Inverted"
+msgstr "已反向"
+
+msgid "Absolute throttle: no deadzone or expo"
+msgstr "绝对油门：无死区和指数"
+
+msgid "Linear: shape the response on the radio"
+msgstr "线性：请在遥控器上调整响应"
+
+msgid "conflict"
+msgstr "冲突"

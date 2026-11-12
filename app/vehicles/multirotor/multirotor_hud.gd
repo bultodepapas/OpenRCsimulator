@@ -117,12 +117,12 @@ var throttle_label: Label
 var warning_label: Label
 ## Post-flight statistics screen (centre, after a disarm).
 var stats_panel: PanelContainer
-## DR-37: the race results card (centre, after a finish or an abort until the next start or pad reset): title, medal,
+## DR-37/40: the race results card (centre, after a finish or an abort until the next start or pad reset): title, medal,
 ## times against the pilot's best, the next medal target and how to race again.
 var race_card: PanelContainer
 var race_card_title: Label
 var race_card_body: Label
-## DR-37: under the Course button, the prepared course's best total and medal or its first target.
+## DR-40: under the Course button, the prepared course's best total and medal or its first target.
 var race_note: Label
 ## {best_total_s, best_lap_s, medal, targets {gold, silver, bronze}} of the prepared course (set_race_info).
 var _race_info := {}
@@ -332,7 +332,7 @@ func _build_stats(s: float) -> void:
 	stats_panel.add_child(stats_label)
 
 
-## DR-37: the race results card, the statistics screen's goggle style: a large title line (coloured by the medal)
+## DR-37/40: the race results card, the statistics screen's goggle style: a large title line (coloured by the medal)
 ## and monospaced rows.
 func _build_race_card(s: float) -> void:
 	race_card = PanelContainer.new()
@@ -341,7 +341,11 @@ func _build_race_card(s: float) -> void:
 	race_card.set_anchors_preset(Control.PRESET_CENTER)
 	race_card.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	race_card.grow_vertical = Control.GROW_DIRECTION_BOTH
-	race_card.add_theme_stylebox_override("panel", stats_panel.get_theme_stylebox("panel"))
+	# Over the OSD layers (the crosshair and horizon cross the centre) on a darker panel than the statistics.
+	var style := (stats_panel.get_theme_stylebox("panel") as StyleBoxFlat).duplicate() as StyleBoxFlat
+	style.bg_color.a = 0.94
+	race_card.add_theme_stylebox_override("panel", style)
+	race_card.z_index = 10
 	race_card.visible = false
 	root_control.add_child(race_card)
 	var box := VBoxContainer.new()

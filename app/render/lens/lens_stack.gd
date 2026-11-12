@@ -845,6 +845,8 @@ func _advance_blood(dt: float) -> void:
 	_film_material.set_shader_parameter("dry_albedo", colour.dry)
 	_film_material.set_shader_parameter("pulse", _pulse)
 	_film_material.set_shader_parameter("wetness", _wetness)
+	if _wetness > 0.002:
+		_apply_sun_glint(_film_material)
 	_film_material.set_shader_parameter("wet_clock", fposmod(_wet_clock, 1000.0))
 	_film_material.set_shader_parameter("wet_focus", float(VIEW_RAIN.get(_view(), VIEW_RAIN.chase).focus))
 	_film_material.set_shader_parameter("dust", _dust)

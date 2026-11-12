@@ -210,8 +210,7 @@ func _picture_tests(host: Control) -> void:
 	_check("keyboard caps are KeyCaps named in the layout", w_cap != null and w_cap.get_child(0) is Label
 		and (w_cap.get_child(0) as Label).text == "W")
 	_check("keyboard cap sits on its rect", w_cap != null and Rect2(w_cap.position, w_cap.size).is_equal_approx(picture.control_rect("key:%d" % KEY_W)),
-		"%s %s %s" % [Rect2(w_cap.position, w_cap.size) if w_cap else null, picture.control_rect("key:%d" % KEY_W),
-		w_cap.get_combined_minimum_size() if w_cap else null])
+		str(picture.control_rect("key:%d" % KEY_W)))
 	picture.set_vehicle_type(ControlsReference.ROTORCRAFT)
 	_check("rotorcraft marks its own flight keys", picture.cap_state(KEY_W) == "flight" and picture.cap_state(KEY_B) == "normal")
 	picture.queue_free()
@@ -263,7 +262,7 @@ func _curve_tests(host: Control) -> void:
 		var x := curve.input_at(index)
 		worst = maxf(worst, absf(curve.sample_output(index) - ControllerProfile.condition_axis(x, profile.roll, "gamepad")))
 	_check("curve equals ControllerProfile.condition_axis (deadzone + expo)", worst < 1e-12, str(worst))
-	var middle := curve.sample_count() / 2
+	var middle := int(curve.sample_count() / 2.0)
 	_check("deadzone flattens the centre", is_zero_approx(curve.sample_output(middle))
 		and is_zero_approx(curve.sample_output(middle + 2)))
 	_check("full deflection is full output", is_equal_approx(curve.sample_output(curve.sample_count() - 1), 1.0)

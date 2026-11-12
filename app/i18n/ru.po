@@ -12167,6 +12167,117 @@ msgstr "Начните заново на площадке, чтобы снова
 msgid "No controller: connect or check the controller."
 msgstr "Нет контроллера: подключите или проверьте контроллер."
 
+msgid "Best %s"
+msgstr "Лучшее %s"
+
+msgid "No finish yet. Bronze target %s"
+msgstr "Финишей пока нет. Цель на бронзу %s"
+
+msgid "NEW RECORD!"
+msgstr "НОВЫЙ РЕКОРД!"
+
+msgid "FIRST FINISH!"
+msgstr "ПЕРВЫЙ ФИНИШ!"
+
+msgid "FINISHED"
+msgstr "ФИНИШ"
+
+msgid "Total %s"
+msgstr "Итого %s"
+
+msgid "Previous best %s (%s)"
+msgstr "Прежний рекорд %s (%s)"
+
+msgid "Medal: %s"
+msgstr "Медаль: %s"
+
+msgid "ATTEMPT OVER"
+msgstr "ПОПЫТКА ОКОНЧЕНА"
+
+msgid "best lap"
+msgstr "лучший круг"
+
+msgid "Lap %d  %s"
+msgstr "Круг %d  %s"
+
+msgid "%s target %s"
+msgstr "Цель «%s» %s"
+
+msgid "Top medal: beat your best time"
+msgstr "Высшая медаль: побейте свой рекорд"
+
+msgid "G: race again   R: back to the pad"
+msgstr "G: ещё заезд   R: на площадку"
+
+msgid "Crashed: the attempt ends."
+msgstr "Крушение: попытка окончена."
+
+msgid "Battery empty: the attempt ends."
+msgstr "Батарея разряжена: попытка окончена."
+
+msgid "Race cancelled (G)."
+msgstr "Заезд отменён (G)."
+
+msgid "The attempt ended."
+msgstr "Попытка окончена."
+
+msgid "Silver"
+msgstr "Серебро"
+
+msgid "Bronze"
+msgstr "Бронза"
+
+msgid "ARM NOW (%s)"
+msgstr "ВЗВЕДИТЕ СЕЙЧАС (%s)"
+
+msgid "THROTTLE LOW UNTIL GO"
+msgstr "ГАЗ ВНИЗУ ДО GO"
+
+msgid "PB lap %s"
+msgstr "ЛР круг %s"
+
+msgid "Race: press G to return to the pad"
+msgstr "Заезд: нажмите G, чтобы вернуться на площадку"
+
+msgid "Race: arm (%s), then press G"
+msgstr "Заезд: взведите (%s), затем нажмите G"
+
+msgid "Race: press G to start, throttle low until GO"
+msgstr "Заезд: G — старт, газ внизу до GO"
+
+msgid "PB %s"
+msgstr "ЛР %s"
+
+msgid "RACE: arm on the pad, press G, keep the throttle low until GO, then fly the gates in order for three laps."
+msgstr "ЗАЕЗД: взведите на площадке, нажмите G, держите газ внизу до GO, затем пролетите ворота по порядку три круга."
+
+msgid "G: race (anywhere else it first returns you to the pad); during a race G cancels it. Best times and medals are kept."
+msgstr "G: заезд (в другом месте сначала вернёт на площадку); во время заезда G отменяет его. Рекорды и медали сохраняются."
+
+msgid "Race records unreadable: a new record book starts (the old file is kept)."
+msgstr "Рекорды заездов не читаются: начата новая книга (старый файл сохранён)."
+
+msgid "Start from the pad: press G to return to it."
+msgstr "Старт с площадки: нажмите G, чтобы вернуться на неё."
+
+msgid "Hold still on the pad, then press G."
+msgstr "Замрите на площадке, затем нажмите G."
+
+msgid "Crashed: press G or R to return to the pad."
+msgstr "Крушение: нажмите G или R, чтобы вернуться на площадку."
+
+msgid "False start: arm before GO (%s)."
+msgstr "Фальстарт: взведите до GO (%s)."
+
+msgid "Jump start: keep the throttle low until GO."
+msgstr "Ранний старт: держите газ внизу до GO."
+
+msgid "Controller not ready at GO: check the controller, then press G."
+msgstr "Контроллер не готов к GO: проверьте его и нажмите G."
+
+msgid "Race record not saved"
+msgstr "Рекорд заезда не сохранён"
+
 msgid "T: next race course (back on the pad)."
 msgstr "T: следующая гоночная трасса (возврат на площадку)."
 
@@ -12766,3 +12877,60 @@ msgstr "Режим полёта (FPV-квадрокоптер)"
 
 msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
 msgstr "Этот профиль взводит квадрокоптер переключателем шасси. Назначьте «Взвод», чтобы сделать это явным."
+
+msgid "Flight keys"
+msgstr "Клавиши полёта"
+
+msgid "Radio transmitter picture"
+msgstr "Изображение аппаратуры"
+
+msgid "Keyboard picture"
+msgstr "Изображение клавиатуры"
+
+msgid "Gamepad picture"
+msgstr "Изображение геймпада"
+
+msgid "Connected"
+msgstr "Подключено"
+
+msgid "Disconnected"
+msgstr "Отключено"
+
+msgid "Calibrated"
+msgstr "Откалибровано"
+
+msgid "Needs setup"
+msgstr "Нужна настройка"
+
+msgid "Menus"
+msgstr "Меню"
+
+msgid "Unnamed device"
+msgstr "Безымянное устройство"
+
+msgid "selected"
+msgstr "выбрано"
+
+msgid "not selected"
+msgstr "не выбрано"
+
+msgid "Stick"
+msgstr "Стик"
+
+msgid "Output"
+msgstr "Выход"
+
+msgid "Deadzone %d %% · Expo %d %%"
+msgstr "Мёртвая зона %d %% · Экспонента %d %%"
+
+msgid "Inverted"
+msgstr "Инвертировано"
+
+msgid "Absolute throttle: no deadzone or expo"
+msgstr "Абсолютный газ: без мёртвой зоны и экспоненты"
+
+msgid "Linear: shape the response on the radio"
+msgstr "Линейно: настройте отклик на аппаратуре"
+
+msgid "conflict"
+msgstr "конфликт"

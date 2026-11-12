@@ -11417,6 +11417,117 @@ msgstr "再び飛ぶにはパッドから再開してください。"
 msgid "No controller: connect or check the controller."
 msgstr "コントローラーがありません。接続または確認してください。"
 
+msgid "Best %s"
+msgstr "ベスト %s"
+
+msgid "No finish yet. Bronze target %s"
+msgstr "まだ完走なし。ブロンズ目標 %s"
+
+msgid "NEW RECORD!"
+msgstr "新記録！"
+
+msgid "FIRST FINISH!"
+msgstr "初完走！"
+
+msgid "FINISHED"
+msgstr "完走"
+
+msgid "Total %s"
+msgstr "合計 %s"
+
+msgid "Previous best %s (%s)"
+msgstr "前回のベスト %s（%s）"
+
+msgid "Medal: %s"
+msgstr "メダル: %s"
+
+msgid "ATTEMPT OVER"
+msgstr "トライ終了"
+
+msgid "best lap"
+msgstr "ベストラップ"
+
+msgid "Lap %d  %s"
+msgstr "ラップ %d  %s"
+
+msgid "%s target %s"
+msgstr "%s目標 %s"
+
+msgid "Top medal: beat your best time"
+msgstr "最高メダル：ベストタイムを更新しよう"
+
+msgid "G: race again   R: back to the pad"
+msgstr "G: 再挑戦   R: パッドに戻る"
+
+msgid "Crashed: the attempt ends."
+msgstr "墜落：トライ終了です。"
+
+msgid "Battery empty: the attempt ends."
+msgstr "バッテリー切れ：トライ終了です。"
+
+msgid "Race cancelled (G)."
+msgstr "レースを中止しました (G)。"
+
+msgid "The attempt ended."
+msgstr "トライが終了しました。"
+
+msgid "Silver"
+msgstr "シルバー"
+
+msgid "Bronze"
+msgstr "ブロンズ"
+
+msgid "ARM NOW (%s)"
+msgstr "今すぐアーム (%s)"
+
+msgid "THROTTLE LOW UNTIL GO"
+msgstr "GOまでスロットル最低"
+
+msgid "PB lap %s"
+msgstr "自己ベストラップ %s"
+
+msgid "Race: press G to return to the pad"
+msgstr "レース: G でパッドに戻る"
+
+msgid "Race: arm (%s), then press G"
+msgstr "レース: アーム (%s) してから G"
+
+msgid "Race: press G to start, throttle low until GO"
+msgstr "レース: G でスタート、GO まではスロットル最低"
+
+msgid "PB %s"
+msgstr "自己ベスト %s"
+
+msgid "RACE: arm on the pad, press G, keep the throttle low until GO, then fly the gates in order for three laps."
+msgstr "レース: パッドでアームして G を押し、GO までスロットルを最低に保ち、ゲートを順番に3周通過します。"
+
+msgid "G: race (anywhere else it first returns you to the pad); during a race G cancels it. Best times and medals are kept."
+msgstr "G: レース（他の場所ではまずパッドに戻ります）。レース中の G は中止。ベストタイムとメダルは保存されます。"
+
+msgid "Race records unreadable: a new record book starts (the old file is kept)."
+msgstr "レース記録を読めません：新しい記録帳を開始します（古いファイルは保持されます）。"
+
+msgid "Start from the pad: press G to return to it."
+msgstr "スタートはパッドから：G でパッドに戻ります。"
+
+msgid "Hold still on the pad, then press G."
+msgstr "パッド上で静止してから G を押してください。"
+
+msgid "Crashed: press G or R to return to the pad."
+msgstr "墜落：G または R でパッドに戻ります。"
+
+msgid "False start: arm before GO (%s)."
+msgstr "フライング：GO の前にアームしてください (%s)。"
+
+msgid "Jump start: keep the throttle low until GO."
+msgstr "フライング：GO まではスロットルを最低に。"
+
+msgid "Controller not ready at GO: check the controller, then press G."
+msgstr "GO の時点でコントローラー未準備：確認してから G を押してください。"
+
+msgid "Race record not saved"
+msgstr "レース記録を保存できませんでした"
+
 msgid "T: next race course (back on the pad)."
 msgstr "T: 次のレースコース（パッドに戻ります）。"
 
@@ -12016,3 +12127,60 @@ msgstr "フライトモード（FPVクワッド）"
 
 msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
 msgstr "このプロファイルは着陸装置スイッチでクワッドをアームします。明示するにはアームを割り当ててください。"
+
+msgid "Flight keys"
+msgstr "飛行キー"
+
+msgid "Radio transmitter picture"
+msgstr "送信機の図"
+
+msgid "Keyboard picture"
+msgstr "キーボードの図"
+
+msgid "Gamepad picture"
+msgstr "ゲームパッドの図"
+
+msgid "Connected"
+msgstr "接続済み"
+
+msgid "Disconnected"
+msgstr "切断"
+
+msgid "Calibrated"
+msgstr "校正済み"
+
+msgid "Needs setup"
+msgstr "要設定"
+
+msgid "Menus"
+msgstr "メニュー"
+
+msgid "Unnamed device"
+msgstr "名前のないデバイス"
+
+msgid "selected"
+msgstr "選択中"
+
+msgid "not selected"
+msgstr "未選択"
+
+msgid "Stick"
+msgstr "スティック"
+
+msgid "Output"
+msgstr "出力"
+
+msgid "Deadzone %d %% · Expo %d %%"
+msgstr "デッドゾーン %d %% · EXPO %d %%"
+
+msgid "Inverted"
+msgstr "反転"
+
+msgid "Absolute throttle: no deadzone or expo"
+msgstr "絶対スロットル：デッドゾーン・EXPOなし"
+
+msgid "Linear: shape the response on the radio"
+msgstr "リニア：応答は送信機で調整してください"
+
+msgid "conflict"
+msgstr "競合"

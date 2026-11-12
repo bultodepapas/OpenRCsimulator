@@ -12193,6 +12193,117 @@ msgstr "Riparti dalla piazzola per volare di nuovo."
 msgid "No controller: connect or check the controller."
 msgstr "Nessun controller: collega o controlla il controller."
 
+msgid "Best %s"
+msgstr "Migliore %s"
+
+msgid "No finish yet. Bronze target %s"
+msgstr "Nessun arrivo ancora. Obiettivo bronzo %s"
+
+msgid "NEW RECORD!"
+msgstr "NUOVO RECORD!"
+
+msgid "FIRST FINISH!"
+msgstr "PRIMO ARRIVO!"
+
+msgid "FINISHED"
+msgstr "ARRIVATO"
+
+msgid "Total %s"
+msgstr "Totale %s"
+
+msgid "Previous best %s (%s)"
+msgstr "Migliore precedente %s (%s)"
+
+msgid "Medal: %s"
+msgstr "Medaglia: %s"
+
+msgid "ATTEMPT OVER"
+msgstr "TENTATIVO CONCLUSO"
+
+msgid "best lap"
+msgstr "giro migliore"
+
+msgid "Lap %d  %s"
+msgstr "Giro %d  %s"
+
+msgid "%s target %s"
+msgstr "Obiettivo %s %s"
+
+msgid "Top medal: beat your best time"
+msgstr "Medaglia massima: batti il tuo miglior tempo"
+
+msgid "G: race again   R: back to the pad"
+msgstr "G: corri di nuovo   R: torna alla piazzola"
+
+msgid "Crashed: the attempt ends."
+msgstr "Schianto: il tentativo finisce."
+
+msgid "Battery empty: the attempt ends."
+msgstr "Batteria scarica: il tentativo finisce."
+
+msgid "Race cancelled (G)."
+msgstr "Gara annullata (G)."
+
+msgid "The attempt ended."
+msgstr "Il tentativo è finito."
+
+msgid "Silver"
+msgstr "Argento"
+
+msgid "Bronze"
+msgstr "Bronzo"
+
+msgid "ARM NOW (%s)"
+msgstr "ARMA ORA (%s)"
+
+msgid "THROTTLE LOW UNTIL GO"
+msgstr "GAS BASSO FINO AL GO"
+
+msgid "PB lap %s"
+msgstr "PB giro %s"
+
+msgid "Race: press G to return to the pad"
+msgstr "Gara: premi G per tornare alla piazzola"
+
+msgid "Race: arm (%s), then press G"
+msgstr "Gara: arma (%s), poi premi G"
+
+msgid "Race: press G to start, throttle low until GO"
+msgstr "Gara: premi G per partire, gas basso fino al GO"
+
+msgid "PB %s"
+msgstr "PB %s"
+
+msgid "RACE: arm on the pad, press G, keep the throttle low until GO, then fly the gates in order for three laps."
+msgstr "GARA: arma sulla piazzola, premi G, tieni il gas basso fino al GO, poi attraversa le porte in ordine per tre giri."
+
+msgid "G: race (anywhere else it first returns you to the pad); during a race G cancels it. Best times and medals are kept."
+msgstr "G: gara (altrove ti riporta prima alla piazzola); durante una gara G la annulla. Migliori tempi e medaglie vengono salvati."
+
+msgid "Race records unreadable: a new record book starts (the old file is kept)."
+msgstr "Record di gara illeggibili: inizia un nuovo registro (il vecchio file viene conservato)."
+
+msgid "Start from the pad: press G to return to it."
+msgstr "Partenza dalla piazzola: premi G per tornarci."
+
+msgid "Hold still on the pad, then press G."
+msgstr "Resta fermo sulla piazzola, poi premi G."
+
+msgid "Crashed: press G or R to return to the pad."
+msgstr "Schianto: premi G o R per tornare alla piazzola."
+
+msgid "False start: arm before GO (%s)."
+msgstr "Falsa partenza: arma prima del GO (%s)."
+
+msgid "Jump start: keep the throttle low until GO."
+msgstr "Partenza anticipata: tieni il gas basso fino al GO."
+
+msgid "Controller not ready at GO: check the controller, then press G."
+msgstr "Controller non pronto al GO: controllalo, poi premi G."
+
+msgid "Race record not saved"
+msgstr "Record di gara non salvato"
+
 msgid "T: next race course (back on the pad)."
 msgstr "T: percorso di gara successivo (di nuovo sulla piazzola)."
 
@@ -12792,3 +12903,60 @@ msgstr "Modalità di volo (quad FPV)"
 
 msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
 msgstr "Questo profilo arma il quad con l’interruttore del carrello. Assegna Armamento per renderlo esplicito."
+
+msgid "Flight keys"
+msgstr "Tasti di volo"
+
+msgid "Radio transmitter picture"
+msgstr "Immagine del radiocomando"
+
+msgid "Keyboard picture"
+msgstr "Immagine della tastiera"
+
+msgid "Gamepad picture"
+msgstr "Immagine del gamepad"
+
+msgid "Connected"
+msgstr "Connesso"
+
+msgid "Disconnected"
+msgstr "Disconnesso"
+
+msgid "Calibrated"
+msgstr "Calibrato"
+
+msgid "Needs setup"
+msgstr "Da configurare"
+
+msgid "Menus"
+msgstr "Menu"
+
+msgid "Unnamed device"
+msgstr "Dispositivo senza nome"
+
+msgid "selected"
+msgstr "selezionato"
+
+msgid "not selected"
+msgstr "non selezionato"
+
+msgid "Stick"
+msgstr "Stick"
+
+msgid "Output"
+msgstr "Uscita"
+
+msgid "Deadzone %d %% · Expo %d %%"
+msgstr "Zona morta %d %% · Expo %d %%"
+
+msgid "Inverted"
+msgstr "Invertito"
+
+msgid "Absolute throttle: no deadzone or expo"
+msgstr "Gas assoluto: niente zona morta né expo"
+
+msgid "Linear: shape the response on the radio"
+msgstr "Lineare: regola la risposta sul radiocomando"
+
+msgid "conflict"
+msgstr "conflitto"

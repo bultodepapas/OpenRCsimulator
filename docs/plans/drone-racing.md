@@ -226,7 +226,7 @@ Each row is a reviewable change or splits into named suffixes without renumberin
 | DR-31 | CAM FPV view/mount and minimal OSD | Projection/roll/tilt/reset at 30/60/144 fps; replay unchanged; open. |
 | DR-35 | HUD/help/localization and basic audio integration | en/es 720p/1080p, truthful telemetry, licensed sound; open. |
 | DR-36 | 36a EXPERIMENTAL free flight; 36b race entry | Home/direct launch, vehicle switch, malformed data refusal, fresh-package smoke; open. |
-| DR-37 | Crash labels/presentation and restart UX | Cause/rearm clarity; M2 open, elaborate wrecks deferred. |
+| DR-37 | Crash labels/presentation and restart UX | Cause/rearm clarity. Race flow done in software (2026-11-12): contextual start hints, reason-specific refusals, one-key retry (G/R); elaborate wrecks deferred. |
 
 ### Racing and validation
 
@@ -243,6 +243,7 @@ Each row is a reviewable change or splits into named suffixes without renumberin
 | DR-34 | Wash/grass/particles | Zero-load/observational guards; deferred. |
 | DR-38 | Held-out model/data comparison | Exact configuration, frames, splits, regime residuals; M4 open. |
 | DR-39 | Experienced FPV pilot review | Rates/hardware recorded, baseline/candidate maneuver card; open. |
+| DR-40 | Local race records and medals | Record book per course identity, geometry-derived medal targets, results card; pilot review open. |
 | DR-40 | Selected-build physical validation | Mass/CG/inertia, thrust/torque/RPM/current, steps, Blackbox and independent motion with uncertainty; open. |
 | DR-41 | Capability expansion | Separate revision after evidence; deferred. |
 

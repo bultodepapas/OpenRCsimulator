@@ -106,7 +106,7 @@ var _hover_speed := 1.0
 var _accumulation_owned := false
 var _accumulation_before := true
 var _race_option := ""
-## DR-37: the pilot's race record book (race_records.gd), read once from results_directory.
+## DR-40: the pilot's race record book (race_records.gd), read once from results_directory.
 var _records := {}
 var _records_loaded := false
 ## RC-TRACK: the club field's RC car circuit when the pilot shows it (Settings > Graphics), else {}; one decision per
@@ -1023,7 +1023,7 @@ func race_refusal_text(reason: String) -> String:
 
 
 ## A finished or aborted attempt: write the pending records at once (bounded, on request of this activity); a failed
-## write keeps them in the session outbox and says so. DR-37: the attempt also enters the record book (best total,
+## write keeps them in the session outbox and says so. DR-40: the attempt also enters the record book (best total,
 ## best lap, medal), and the results card shows it against the pilot's best. A pad reset during a race is no attempt
 ## for the book (the pilot chose to leave it).
 func _on_race_result(result: Dictionary) -> void:
@@ -1071,7 +1071,7 @@ func _refresh_course_choice() -> void:
 	_push_race_info()
 
 
-## DR-37: the record book lives beside the per-attempt result files.
+## DR-40: the record book lives beside the per-attempt result files.
 func records_path() -> String:
 	return results_directory.path_join(RaceRecords.FILE_NAME)
 

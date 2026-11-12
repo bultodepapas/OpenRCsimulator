@@ -10,6 +10,7 @@ const FC := preload("res://physics/multirotor/flight_controller.gd")
 const RaceModel := preload("res://sim/race/race_model.gd")
 const CourseVisual = preload("res://vehicles/multirotor/race_course_visual.gd")
 const Director := preload("res://sim/race/race_director.gd")
+const RaceRecords := preload("res://vehicles/multirotor/race_records.gd")
 
 const DIR := "user://test_mr_activity_race"
 
@@ -103,15 +104,18 @@ func _run() -> void:
 	_scene.handle_action("resume")
 	await _until(func() -> bool: return int(s.sim.tick) >= 8, 240)
 	await _settle()
-	_check("free flight in the race session shows the start hint on the OSD", _phase() == Director.PHASE_IDLE
-		and _scene.hud.race_label.visible and _scene.hud.race_label.text == "Race: press G on the pad to start",
+	_check("DR-37 on the pad, armed, the OSD says how to start (G, throttle low until GO)", _phase() == Director.PHASE_IDLE
+		and _scene.hud.race_label.visible and _scene.hud.race_label.text == "Race: press G to start, throttle low until GO",
 		_scene.hud.race_label.text)
+	_check("DR-40 the pause menu shows the course's first medal target before any finish", _scene.hud.race_note.visible
+		and _scene.hud.race_note.text.begins_with("No finish yet. Bronze target "), _scene.hud.race_note.text)
 	_scene.request_race()
 	await _until(func() -> bool: return _phase() == Director.PHASE_COUNTDOWN, 240)
 	await _settle()
 	_check("a race request starts the countdown: the OSD counts seconds and the first gate is highlighted",
 		_phase() == Director.PHASE_COUNTDOWN and _scene.hud.countdown_label.visible
-		and _scene.hud.countdown_label.text in ["3", "2", "1"] and not _scene.hud.race_label.visible and _scene._gate_next == 0
+		and _scene.hud.countdown_label.text in ["3", "2", "1"] and _scene.hud.race_label.text == "THROTTLE LOW UNTIL GO"
+		and _scene._gate_next == 0
 		and _scene.course_visual.gate_states[0] == CourseVisual.GateState.NEXT
 		and _scene.course_visual.gate_states[1] == CourseVisual.GateState.AFTER
 		and _scene.course_visual.gate_states[2] == CourseVisual.GateState.CALM, _scene.hud.countdown_label.text)
@@ -136,7 +140,11 @@ func _run() -> void:
 	_scene.request_race()
 	await _until(func() -> bool: return _phase() == Director.PHASE_ABORTED, 240)
 	await _settle()
-	var files := DirAccess.get_files_at(DIR) if DirAccess.dir_exists_absolute(DIR) else PackedStringArray()
+	var files := PackedStringArray()
+	if DirAccess.dir_exists_absolute(DIR):
+		for file: String in DirAccess.get_files_at(DIR):
+			if file.begins_with("race-"):
+				files.append(file)
 	_check("a second request cancels the race: ABORTED on the OSD, the record written once to the results folder",
 		_phase() == Director.PHASE_ABORTED and _scene.hud.race_label.text == "Race aborted" and files.size() == 1
 		and s.results.is_empty() and _scene._gate_next == -1, "%s, %d files" % [_scene.hud.race_label.text, files.size()])
@@ -144,6 +152,27 @@ func _run() -> void:
 		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DIR.path_join(files[0])))
 		_check("the saved record is the aborted attempt of this course", typeof(parsed) == TYPE_DICTIONARY and parsed.get("valid") == false
 			and parsed.get("phase") == "ABORTED" and parsed.get("course_identity") == str(s.course.identity) and parsed.get("saved") == true)
+	var book: Dictionary = RaceRecords.load_file(_scene.records_path())
+	var entry: Dictionary = book.records.get(str(s.course.identity), {})
+	_check("DR-40 the attempt enters the record book: one attempt, no finish, no best total", book.ok
+		and int(entry.get("attempts", 0)) == 1 and int(entry.get("finishes", -1)) == 0 and float(entry.get("best_total_s", -1.0)) == 0.0,
+		str(entry))
+	_check("DR-37 the results card shows why the attempt ended and how to race again", _scene.hud.race_card.visible
+		and _scene.hud.race_card_title.text == "ATTEMPT OVER" and _scene.hud.race_card_body.text.contains("Race cancelled (G).")
+		and _scene.hud.race_card_body.text.contains("G: race again"), _scene.hud.race_card_body.text)
+	_check("DR-37 every start refusal names what the pilot must do", _scene.race_refusal_text("go_refused_not_armed").begins_with("False start")
+		and _scene.race_refusal_text("go_refused_throttle").begins_with("Jump start")
+		and _scene.race_refusal_text("start_refused_moving").begins_with("Hold still"))
+	# DR-37 one-key retry: off the pad, G returns the quad to the pad, flies on and stages the start.
+	s.sim.state[0] += 6.0
+	_scene._invalidate_telemetry()
+	var off_pad: bool = not _scene._on_race_pad()
+	_scene.request_race()
+	var retried: bool = await _until(func() -> bool: return _phase() == Director.PHASE_COUNTDOWN, 240)
+	_check("DR-37 G off the pad returns to the pad and starts the countdown at once", off_pad and retried and not s.paused
+		and _scene._on_race_pad() and not _scene.hud.race_card.visible, "phase %d paused %s" % [_phase(), s.paused])
+	_scene.request_race()
+	await _until(func() -> bool: return _phase() == Director.PHASE_IDLE, 240)
 	# DR-28/32: T switches to the next course of this field; the quad is back on the pad and the new gates are drawn.
 	var oval: String = str(s.course.identity)
 	_scene.cycle_course()

@@ -1,4 +1,4 @@
-## DR-37: the pilot's local race record book, one entry per prepared course (its identity: a moved gate or another
+## DR-40: the pilot's local race record book, one entry per prepared course (its identity: a moved gate or another
 ## field is another course): best three-lap total and its lap times, best single lap, best medal, finishes and attempts.
 ## Medal targets are game targets derived from the course geometry (the gate-to-gate path flown three times from the
 ## pad at a mean speed per medal), not measured pilot data. Presentation state only: nothing here feeds a session, and
@@ -20,8 +20,9 @@ const MEDAL_RANK := {"": 0, "bronze": 1, "silver": 2, "gold": 3}
 static func load_file(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {ok = true, records = {}, error = ""}
-	var text := FileAccess.get_file_as_string(path)
-	var parsed: Variant = JSON.parse_string(text)
+	# A JSON instance reports a parse error by its return value (JSON.parse_string would also log an engine error).
+	var json := JSON.new()
+	var parsed: Variant = json.data if json.parse(FileAccess.get_file_as_string(path)) == OK else null
 	if typeof(parsed) != TYPE_DICTIONARY or str(parsed.get("format", "")) != FORMAT or typeof(parsed.get("courses")) != TYPE_DICTIONARY:
 		return {ok = false, records = {}, error = "unreadable record book %s" % path}
 	var records := {}

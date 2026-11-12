@@ -529,7 +529,9 @@ func _audit_fixes() -> void:
 	hud.hide_menu() # the start count stays clear of an open menu
 	t.race = {phase = "COUNTDOWN", countdown_s_left = 2.4}
 	hud.update(t, {})
-	var counting: bool = hud.countdown_label.visible and hud.countdown_label.text == "3" and not hud.race_label.visible
+	# DR-37: under the large count the race line says what GO needs (armed here: keep the throttle low).
+	var counting: bool = hud.countdown_label.visible and hud.countdown_label.text == "3" \
+		and hud.race_label.text == ("THROTTLE LOW UNTIL GO" if bool(t.get("armed", false)) else "ARM NOW (E)")
 	t.race = {phase = "RACING", laps = [{}, {}, {}], valid_laps = 0, next_gate = 0, gate_count = 6, elapsed_lap_s = 0.4}
 	hud.update(t, {})
 	var go: bool = hud.countdown_label.visible and hud.countdown_label.text == "GO"
