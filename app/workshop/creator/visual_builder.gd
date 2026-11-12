@@ -315,13 +315,10 @@ static func _unexpected_class(scene: Node) -> String:
 
 
 ## glTF node index -> generated node, for every node of the shown scene.
-## `GLTFState.get_scene_node` cannot be used alone: the importer replaces each mesh node after
-## recording it, leaving a freed object there. The map therefore follows the importer's own node
-## list (`GLTFState.get_nodes`: parent, children, mesh, final unique name) from the scene roots,
-## child by child, and every step is verified: the importer's tree must equal the tree read from
-## the file (`visual_parts.gd`), each generated node must carry the importer's name for that
-## index, be a mesh instance exactly when the glTF node has a mesh, have as many children as the
-## glTF node, and agree with `get_scene_node` wherever that still holds a live node.
+## Never call `GLTFState.get_scene_node` here: the pinned importer replaces and frees mesh nodes
+## after recording raw pointers, so even asking whether the returned object is valid can read freed
+## memory. Follow the importer's parsed node list (parent, children, mesh, unique name and local
+## transform) from the scene roots instead, checking it against the admitted file and live tree.
 static func _map_nodes(source: InspectedSource, scene: Node3D, state: GLTFState) -> Dictionary:
 	var refused: Dictionary = R.fail(R.BUILD_INVALID,
 		"The parts of this GLB model could not be matched to the model on screen. Export it again as a self-contained GLB and bind the parts again.",
@@ -347,10 +344,8 @@ static func _map_nodes(source: InspectedSource, scene: Node3D, state: GLTFState)
 		if nodes.has(index) or not node is Node3D or str(node.name) != str(described.resource_name) \
 				or (node is MeshInstance3D) != (described.mesh >= 0) or (described.mesh >= 0) != (tree.mesh[index] >= 0) \
 				or described.parent != tree.parent[index] or children != (tree.children[index] as PackedInt32Array) \
-				or node.get_child_count() != children.size():
-			return refused
-		var recorded: Variant = state.get_scene_node(index)
-		if is_instance_valid(recorded) and recorded != node:
+				or node.get_child_count() != children.size() \
+				or not (node as Node3D).transform.is_equal_approx(described.xform):
 			return refused
 		nodes[index] = node
 		for slot: int in children.size():

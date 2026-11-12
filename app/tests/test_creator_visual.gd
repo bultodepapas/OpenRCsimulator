@@ -50,6 +50,7 @@ func _initialize() -> void:
 	tetra = _admit(_tetra_glb(), "tetra.glb")
 	stl = _admit(_plane_stl(), "plane.stl")
 	if plane != null and tetra != null and stl != null:
+		_replaced_scene_nodes()
 		_parts()
 		_binding_refusals()
 		_suggestions()
@@ -61,6 +62,50 @@ func _initialize() -> void:
 	check("no orphan nodes are left behind", Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT) == orphans)
 	print("Creator visual: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+## GLTFState retains its parsed graph after the generated nodes have been freed or replaced.
+## Mapping a separate, equivalent live scene must not resolve the stale node pointers.
+func _replaced_scene_nodes() -> void:
+	var document := GLTFDocument.new()
+	var state := GLTFState.new()
+	var err := document.append_from_buffer(plane.source_bytes(), "", state)
+	check("replacement fixture parses", err == OK)
+	if err != OK:
+		return
+	var generated := document.generate_scene(state) as Node3D
+	check("replacement fixture generates a scene", generated != null)
+	if generated == null:
+		return
+	var live := generated.duplicate() as Node3D
+	generated.free()
+	check("replacement scene remains live", live != null)
+	if live == null:
+		return
+	var mapped: Dictionary = Builder._map_nodes(plane, live, state)
+	check("scene mapping succeeds after original nodes are freed", mapped.ok)
+	if mapped.ok:
+		var rig := live.get_child(0)
+		check("replacement maps nested, uniquely renamed mesh nodes by index",
+			mapped.value[0] == rig and mapped.value[2] == rig.get_node("wing")
+			and mapped.value[3] == rig.get_node("wing/aileron")
+			and mapped.value[4] == rig.get_node("wing/aileron2")
+			and mapped.value[5] == rig.get_node("tail/elevator_l")
+			and mapped.value[6] == rig.get_node("tail/elevator_r")
+			and mapped.value[7] == rig.get_node("rudder") and mapped.value[8] == rig.get_node("prop"))
+		var left := mapped.value[3] as Node3D
+		var original: Transform3D = left.transform
+		var altered := original
+		altered.origin += Vector3(0.125, 0.0, 0.0)
+		left.transform = altered
+		check("a changed local transform is refused", not Builder._map_nodes(plane, live, state).ok)
+		left.transform = original
+		var wing := mapped.value[2] as Node
+		var wing_slot := wing.get_index()
+		rig.move_child(wing, 0)
+		check("reordered children are refused", not Builder._map_nodes(plane, live, state).ok)
+		rig.move_child(wing, wing_slot)
+	live.free()
 
 
 # --- parts --------------------------------------------------------------------------------------
