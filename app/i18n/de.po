@@ -12490,3 +12490,141 @@ msgstr "Verbraucht"
 
 msgid "Efficiency"
 msgstr "Effizienz"
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full, Custom). Pause menu > OSD settings: elements, units, style, crosshair."
+msgstr "O: OSD-Layout (Aus, Rennen, Freestyle, Voll, Eigenes). Pausenmenü > OSD-Einstellungen: Elemente, Einheiten, Stil, Fadenkreuz."
+
+msgid "OSD settings"
+msgstr "OSD-Einstellungen"
+
+msgid "OSD style: %s"
+msgstr "OSD-Stil: %s"
+
+msgid "Crosshair: %s"
+msgstr "Fadenkreuz: %s"
+
+msgid "Elements (a change selects the Custom layout)"
+msgstr "Elemente (eine Änderung wählt das eigene Layout)"
+
+msgid "HD"
+msgstr "HD"
+
+msgid "Analog"
+msgstr "Analog"
+
+msgid "Default"
+msgstr "Standard"
+
+msgid "Aircraft symbol"
+msgstr "Flugzeugsymbol"
+
+msgid "Dot"
+msgstr "Punkt"
+
+msgid "Crosshair"
+msgstr "Fadenkreuz"
+
+msgid "Pitch ladder"
+msgstr "Nickleiter"
+
+msgid "Horizon sidebars"
+msgstr "Horizont-Seitenleisten"
+
+msgid "Compass bar"
+msgstr "Kompassleiste"
+
+msgid "Up/down reference"
+msgstr "Oben/unten-Referenz"
+
+msgid "Altitude"
+msgstr "Höhe"
+
+msgid "Vario"
+msgstr "Variometer"
+
+msgid "Speed"
+msgstr "Geschwindigkeit"
+
+msgid "G-force"
+msgstr "G-Kraft"
+
+msgid "Home arrow and distance"
+msgstr "Heimpfeil und Entfernung"
+
+msgid "Next gate"
+msgstr "Nächstes Tor"
+
+msgid "Battery voltage"
+msgstr "Akkuspannung"
+
+msgid "Current and mAh"
+msgstr "Strom und mAh"
+
+msgid "Remaining time"
+msgstr "Restzeit"
+
+msgid "Motor outputs"
+msgstr "Motorausgänge"
+
+msgid "Motor RPM"
+msgstr "Motordrehzahl"
+
+msgid "Stick overlay"
+msgstr "Stick-Anzeige"
+
+msgid "Pitch and roll angles"
+msgstr "Nick- und Rollwinkel"
+
+msgid "Flight timer"
+msgstr "Flugtimer"
+
+msgid "On timer"
+msgstr "Einschaltzeit"
+
+msgid "Flight mode"
+msgstr "Flugmodus"
+
+msgid "Craft name"
+msgstr "Fluggerätename"
+
+msgid "Post-flight statistics"
+msgstr "Statistik nach dem Flug"
+
+msgid "ARM SWITCH"
+msgstr "ARMSCHALTER"
+
+msgid "RXLOSS"
+msgstr "RX-VERLUST"
+
+msgid "CRASH"
+msgstr "ABSTURZ"
+
+msgid "BATT EMPTY"
+msgstr "AKKU LEER"
+
+msgid "BATT < FULL"
+msgstr "AKKU < VOLL"
+
+msgid "End battery"
+msgstr "Akku am Ende"
+
+msgid "Max G-force"
+msgstr "Max. G-Kraft"
+
+msgid "Max motor RPM"
+msgstr "Max. Motordrehzahl"
+
+msgid "Avg throttle"
+msgstr "Mittleres Gas"
+
+msgid "Full throttle time"
+msgstr "Zeit mit Vollgas"
+
+msgid "Throttle or pitch forward to close"
+msgstr "Gas oder Nicken vor zum Schließen"
+
+msgid "GATE"
+msgstr "TOR"
+
+msgid "LEFT %s"
+msgstr "REST %s"

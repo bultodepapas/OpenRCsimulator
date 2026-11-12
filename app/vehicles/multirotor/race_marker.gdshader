@@ -9,8 +9,7 @@ uniform float energy = 1.0;
 uniform int shape = 0;
 uniform float flow_speed = 0.9;
 uniform float bob_m = 0.12;
-// 1 / the scene's tonemap exposure.
-uniform float exposure_comp = 1.0;
+global uniform float race_exposure_comp;
 
 varying float flow;
 varying float view_depth;
@@ -38,5 +37,5 @@ void fragment() {
 	float wave = shape == 1 ? 1.0 : 0.35 + 0.65 * pow(fract(flow * 4.0 - TIME * flow_speed), 3.0);
 	// Path dots fade out within a few metres of the camera (a dot at the lens would fill the picture).
 	wave *= shape == 1 ? 1.0 : smoothstep(1.2, 3.5, view_depth);
-	ALBEDO = marker_color.rgb * alpha * energy * wave * exposure_comp;
+	ALBEDO = marker_color.rgb * alpha * energy * wave * race_exposure_comp;
 }

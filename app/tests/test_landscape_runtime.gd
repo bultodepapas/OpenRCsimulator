@@ -4,6 +4,7 @@ const Flight := preload("res://main.gd")
 const Frames := preload("res://render/frames.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const WreckScene := preload("res://render/crash/wreck.gd")
+const SceneryBodies := preload("res://render/landscape_upgrade/scenery_bodies.gd")
 var failures := 0
 var checks := 0
 var out := ""
@@ -82,6 +83,16 @@ func _run() -> void:
 		check("scenery starts existing crash director: " + kind, director != null and director.active)
 		var bodies: Node = director.get_node_or_null("SceneryWreckContacts")
 		check("secondary contacts are present and bounded: " + kind, bodies != null and bodies.get_child_count() > 0 and bodies.get_child_count() <= 160)
+		# CR-22e: the director reads the installed world without a deep copy; skipping broken proxies
+		# must select exactly the bodies the detached active-only copy selects.
+		var shared := SceneryBodies.build_near(director.context.collision_world, impact.point_ned, flight.session.scenery_damage())
+		var detached := SceneryBodies.build_near(flight.session.collision_world(true), impact.point_ned)
+		var shared_ids := shared.get_children().map(func(body: Node) -> String: return str(body.get_meta("obstacle_id")))
+		var detached_ids := detached.get_children().map(func(body: Node) -> String: return str(body.get_meta("obstacle_id")))
+		check("shared collision world selects the same wreck contacts as the detached copy: " + kind,
+			not director.context.collision_world.is_empty() and shared_ids == detached_ids and not shared_ids.is_empty())
+		shared.free()
+		detached.free()
 		check("wall/tree normal reaches severity report: " + kind, director.report.get("surface", "") == impact.obstacle_kind and director.report.get("obstacle_id", "") == impact.obstacle_id)
 		check("impact presentation preserves altitude: " + kind, absf(director._impact_point.y + impact.point_ned[2]) < 0.0001)
 		await physics_frame

@@ -10,6 +10,9 @@
 ## armed), attitude angles, motor outputs, stick overlay, blinking pack warnings and a post-flight statistics screen.
 ## Four layouts (Off, Race, Freestyle, Full: O or the pause menu) and metric/imperial units; the choice is saved only
 ## on the interactive route (osd_model.gd).
+## DR-31c: firmware conventions (research/drone-racing/DR-31c): one warning slot by priority with 2 Hz blink and HD
+## severity colours, ACRO/ANGL, alarms, G-force, ON and remaining time, efficiency, RPM, up/down, craft name, the next
+## race gate, Betaflight-style statistics, and an OSD settings panel (Custom layout, HD/analog style, crosshairs).
 extends CanvasLayer
 
 const UiTheme = preload("res://ui/ui_theme.gd")
@@ -42,7 +45,7 @@ const HELP_LINES := [
 	"Gamepad stick and keyboard throttle: hold up to add power, down to reduce it.",
 	"Throttle limit (pause menu): full stick reaches only that share of the motor range. 45% for gamepad and keyboard, 100% for a radio at start.",
 	"C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view",
-	"O: OSD layout (Off, Race, Freestyle, Full). Units in the pause menu.",
+	"O: OSD layout (Off, Race, Freestyle, Full, Custom). Pause menu > OSD settings: elements, units, style, crosshair.",
 	"P or Esc: pause   R: restart on the pad   H: this help",
 	"G: start a three-lap race from the pad (fly the gates in order); G again cancels it.",
 	"T: next race course (back on the pad).",

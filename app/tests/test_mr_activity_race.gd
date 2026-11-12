@@ -76,16 +76,30 @@ func _run() -> void:
 	if s == null or not s.prepared or s.race == null:
 		_finish()
 		return
-	var bars := 0
-	for gate: Array in _scene._gate_views:
-		bars += gate.size()
-	_check("every gate is drawn from its four solid frame boxes", _scene._gate_views.size() == s.course.gates.size()
-		and bars == 4 * s.course.gates.size(), "%d gates, %d bars" % [_scene._gate_views.size(), bars])
-	var first_bar: MeshInstance3D = _scene._gate_views[0][0]
-	var box: Dictionary = s.course.gates[0].frames[0]
-	_check("a gate bar sits at its collision box with the box's size", first_bar.position.is_equal_approx(
-		Vector3(float(box.east), -float(box.down), -float(box.north)))
-		and is_equal_approx((first_bar.mesh as BoxMesh).size.y, 2.0 * float(box.half_down)))
+	# DR-32: each gate is one merged mesh drawing its four collision boxes; every drawn box is its collision box, and
+	# the mesh's bounds are exactly the union of the boxes (nothing drawn outside a solid, no solid undrawn).
+	var cv0: RefCounted = _scene.course_visual
+	var exact: bool = _scene._gate_views.size() == s.course.gates.size()
+	var detail := ""
+	for g in s.course.gates.size():
+		var frames: Array = s.course.gates[g].frames
+		var drawn: Array = cv0.gate_boxes[g]
+		exact = exact and drawn.size() == 4 and frames.size() == 4
+		var view: MeshInstance3D = _scene._gate_views[g][0]
+		var union := AABB()
+		for k in mini(drawn.size(), frames.size()):
+			var box: Dictionary = frames[k]
+			var size := Vector3(2.0 * float(box.half_z), 2.0 * float(box.half_down), 2.0 * float(box.half_x))
+			var at := Vector3(float(box.east), -float(box.down), -float(box.north))
+			exact = exact and (drawn[k].position as Vector3).is_equal_approx(at) and (drawn[k].size as Vector3).is_equal_approx(size)
+			var local := view.transform.affine_inverse() * at
+			var part := AABB(local - 0.5 * size, size)
+			union = part if k == 0 else union.merge(part)
+		var bounds: AABB = view.mesh.get_aabb()
+		if not (bounds.position.is_equal_approx(union.position) and bounds.size.is_equal_approx(union.size)):
+			exact = false
+			detail = "gate %d mesh %s against boxes %s" % [g, bounds, union]
+	_check("every gate is drawn as exactly its four solid frame boxes (one merged mesh per gate)", exact, detail)
 	_scene.handle_action("resume")
 	await _until(func() -> bool: return int(s.sim.tick) >= 8, 240)
 	await _settle()
@@ -102,9 +116,9 @@ func _run() -> void:
 		and _scene.course_visual.gate_states[1] == CourseVisual.GateState.AFTER
 		and _scene.course_visual.gate_states[2] == CourseVisual.GateState.CALM, _scene.hud.countdown_label.text)
 	var cv: RefCounted = _scene.course_visual
-	var red: Color = cv.lamp_materials[0].albedo_color
-	_check("DR-32 the countdown shows the guidance: chevron and light at gate 1, a dotted path from the pad, red start lamps",
-		cv.chevron.visible and cv.gate_light.visible and cv.path.visible and cv.path.multimesh.visible_instance_count > 2
+	var red: Color = cv.lamp_color(0)
+	_check("DR-32 the countdown shows the guidance: chevron at gate 1 (its light only from dusk), a dotted path from the pad, red start lamps",
+		cv.chevron.visible and cv.gate_light.visible == (cv.night >= cv.GATE_LIGHT_NIGHT) and cv.path.visible and cv.path.multimesh.visible_instance_count > 2
 		and cv.chevron.position.distance_to((cv.gate_frames[0].top as Vector3) + (cv.gate_frames[0].up as Vector3) * cv.CHEVRON_LIFT_M) < 1.0e-4
 		and red.r > 4.0 * red.g, "lamp %s, %d dots" % [red, cv.path.multimesh.visible_instance_count])
 	_check("DR-28 the pause menu offers the field's other course", _scene.hud.course_button.visible
@@ -139,7 +153,7 @@ func _run() -> void:
 	_check("T switches to the tower sprint: prepared on the pad, its seven gates drawn at their collision boxes", tower
 		and int(s.sim.tick) == 0 and s.paused and _phase() == Director.PHASE_IDLE
 		and _scene.course_visual.course_identity == str(s.course.identity) and _scene._gate_views.size() == 7
-		and (_scene._gate_views[2][0] as MeshInstance3D).position.is_equal_approx(Vector3(float(s.course.gates[2].frames[0].east),
+		and (_scene.course_visual.gate_boxes[2][0].position as Vector3).is_equal_approx(Vector3(float(s.course.gates[2].frames[0].east),
 			-float(s.course.gates[2].frames[0].down), -float(s.course.gates[2].frames[0].north)))
 		and _scene.find_children("RaceCourse", "Node3D", false, false).size() == 1,
 		"%s, %d gates, tick %d paused %s phase %d visual %s roots %d" % [s.course.track_id, _scene._gate_views.size(), s.sim.tick,

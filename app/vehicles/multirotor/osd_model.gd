@@ -45,7 +45,7 @@ const UNIT_NAMES := {"metric": "Metric", "imperial": "Imperial"}
 const STYLES: Array[String] = ["hd", "analog"]
 const STYLE_NAMES := {"hd": "HD", "analog": "Analog"}
 const CROSSHAIRS: Array[String] = ["default", "aircraft", "cross", "dot"]
-const CROSSHAIR_NAMES := {"default": "Default", "aircraft": "Aircraft", "cross": "Cross", "dot": "Dot"}
+const CROSSHAIR_NAMES := {"default": "Default", "aircraft": "Aircraft symbol", "cross": "Cross", "dot": "Dot"}
 const DEFAULTS := {"layout": "freestyle", "units": "metric", "style": "hd", "crosshair": "default",
 	"custom": ["crosshair", "horizon", "sidebars", "compass", "updown", "altitude", "vario", "speed", "home", "gate",
 		"battery", "battery_detail", "throttle", "timer", "mode", "stats"]}

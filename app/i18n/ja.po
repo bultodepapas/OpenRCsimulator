@@ -11596,3 +11596,141 @@ msgstr "消費"
 
 msgid "Efficiency"
 msgstr "効率"
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full, Custom). Pause menu > OSD settings: elements, units, style, crosshair."
+msgstr "O: OSDレイアウト（なし、レース、フリースタイル、フル、カスタム）。一時停止メニュー > OSD設定：要素、単位、スタイル、照準。"
+
+msgid "OSD settings"
+msgstr "OSD設定"
+
+msgid "OSD style: %s"
+msgstr "OSDスタイル: %s"
+
+msgid "Crosshair: %s"
+msgstr "照準: %s"
+
+msgid "Elements (a change selects the Custom layout)"
+msgstr "要素（変更するとカスタムレイアウトになります）"
+
+msgid "HD"
+msgstr "HD"
+
+msgid "Analog"
+msgstr "アナログ"
+
+msgid "Default"
+msgstr "標準"
+
+msgid "Aircraft symbol"
+msgstr "機体シンボル"
+
+msgid "Dot"
+msgstr "ドット"
+
+msgid "Crosshair"
+msgstr "照準"
+
+msgid "Pitch ladder"
+msgstr "ピッチラダー"
+
+msgid "Horizon sidebars"
+msgstr "水平線サイドバー"
+
+msgid "Compass bar"
+msgstr "コンパスバー"
+
+msgid "Up/down reference"
+msgstr "上下リファレンス"
+
+msgid "Altitude"
+msgstr "高度"
+
+msgid "Vario"
+msgstr "バリオ"
+
+msgid "Speed"
+msgstr "速度"
+
+msgid "G-force"
+msgstr "Gフォース"
+
+msgid "Home arrow and distance"
+msgstr "ホーム方向と距離"
+
+msgid "Next gate"
+msgstr "次のゲート"
+
+msgid "Battery voltage"
+msgstr "バッテリー電圧"
+
+msgid "Current and mAh"
+msgstr "電流とmAh"
+
+msgid "Remaining time"
+msgstr "残り時間"
+
+msgid "Motor outputs"
+msgstr "モーター出力"
+
+msgid "Motor RPM"
+msgstr "モーター回転数"
+
+msgid "Stick overlay"
+msgstr "スティック表示"
+
+msgid "Pitch and roll angles"
+msgstr "ピッチ角とロール角"
+
+msgid "Flight timer"
+msgstr "飛行タイマー"
+
+msgid "On timer"
+msgstr "通電時間"
+
+msgid "Flight mode"
+msgstr "フライトモード"
+
+msgid "Craft name"
+msgstr "機体名"
+
+msgid "Post-flight statistics"
+msgstr "飛行後の統計"
+
+msgid "ARM SWITCH"
+msgstr "アームスイッチ"
+
+msgid "RXLOSS"
+msgstr "受信ロスト"
+
+msgid "CRASH"
+msgstr "クラッシュ"
+
+msgid "BATT EMPTY"
+msgstr "電池切れ"
+
+msgid "BATT < FULL"
+msgstr "電池 < 満充電"
+
+msgid "End battery"
+msgstr "終了時バッテリー"
+
+msgid "Max G-force"
+msgstr "最大Gフォース"
+
+msgid "Max motor RPM"
+msgstr "最大モーター回転数"
+
+msgid "Avg throttle"
+msgstr "平均スロットル"
+
+msgid "Full throttle time"
+msgstr "フルスロットル時間"
+
+msgid "Throttle or pitch forward to close"
+msgstr "スロットルかピッチ前で閉じる"
+
+msgid "GATE"
+msgstr "ゲート"
+
+msgid "LEFT %s"
+msgstr "残り %s"

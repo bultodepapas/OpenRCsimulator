@@ -9,6 +9,7 @@ extends SceneTree
 const Osd := preload("res://vehicles/multirotor/osd_model.gd")
 const Hud := preload("res://vehicles/multirotor/multirotor_hud.gd")
 const Paint := preload("res://vehicles/multirotor/osd_painter.gd")
+const FC := preload("res://physics/multirotor/flight_controller.gd")
 
 const EPS := 1.0e-6
 const CONFIG := "user://test_mr_osd.cfg"
@@ -43,6 +44,7 @@ static func _body(north: float, east: float, down: float, w_body: float, q: Pack
 func _run() -> void:
 	_model()
 	_config()
+	_firmware()
 	_stats()
 	await _hud()
 	print("%d checks, %d failed" % [_count, _failures])
@@ -83,19 +85,68 @@ func _model() -> void:
 
 
 func _config() -> void:
-	_check("layouts cycle Off -> Race -> Freestyle -> Full -> Off", Osd.next_in(Osd.LAYOUTS, "off") == "race"
+	_check("layouts cycle Off -> Race -> Freestyle -> Full -> Custom -> Off", Osd.next_in(Osd.LAYOUTS, "off") == "race"
 		and Osd.next_in(Osd.LAYOUTS, "race") == "freestyle" and Osd.next_in(Osd.LAYOUTS, "freestyle") == "full"
-		and Osd.next_in(Osd.LAYOUTS, "full") == "off")
+		and Osd.next_in(Osd.LAYOUTS, "full") == "custom" and Osd.next_in(Osd.LAYOUTS, "custom") == "off")
 	_check("Full shows every element; Off none", Osd.ELEMENTS.all(func(e: String) -> bool: return Osd.shows("full", e))
 		and Osd.ELEMENTS.all(func(e: String) -> bool: return not Osd.shows("off", e)))
-	_check("every layout element is a known element", Osd.LAYOUTS.all(func(l: String) -> bool:
-		return (Osd.LAYOUT_ELEMENTS[l] as Array).all(func(e: Variant) -> bool: return e in Osd.ELEMENTS)))
-	_check("invalid saved values fall back to the defaults", Osd.sanitize({layout = "huge", units = 3}) == Osd.DEFAULTS)
+	_check("every layout element is a known element with a name", Osd.LAYOUT_ELEMENTS.keys().all(func(l: String) -> bool:
+		return (Osd.LAYOUT_ELEMENTS[l] as Array).all(func(e: Variant) -> bool: return e in Osd.ELEMENTS))
+		and Osd.ELEMENTS.all(func(e: String) -> bool: return Osd.ELEMENT_NAMES.has(e)))
+	_check("invalid saved values fall back to the defaults", Osd.sanitize({layout = "huge", units = 3, style = "neon",
+		crosshair = 7, custom = ["nope", 4]}) == Osd.DEFAULTS.merged({custom = []}, true))
 	_check("no path: nothing is saved", not Osd.save_config("", {layout = "full", units = "imperial"}))
 	_check("no path: the defaults load", Osd.load_config("") == Osd.DEFAULTS)
-	_check("a saved choice loads back", Osd.save_config(CONFIG, {layout = "race", units = "imperial"})
-		and Osd.load_config(CONFIG) == {layout = "race", units = "imperial"}, str(Osd.load_config(CONFIG)))
+	var saved := {layout = "custom", units = "imperial", style = "analog", crosshair = "dot", custom = ["gforce", "rpm"]}
+	_check("a saved choice loads back", Osd.save_config(CONFIG, saved) and Osd.load_config(CONFIG) == saved, str(Osd.load_config(CONFIG)))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(CONFIG))
+	var custom := Osd.toggled(Osd.sanitize({layout = "race"}), "gforce", true)
+	_check("switching an element on starts Custom from the current layout", custom.layout == "custom"
+		and "gforce" in Osd.elements_of(custom) and "timer" in Osd.elements_of(custom) and not "horizon" in Osd.elements_of(custom))
+	_check("switching it off again removes only it", not "gforce" in Osd.elements_of(Osd.toggled(custom, "gforce", false))
+		and "timer" in Osd.elements_of(Osd.toggled(custom, "gforce", false)))
+
+
+## DR-31c: the flight controller conventions (warnings, blink, G, estimates, up/down).
+func _firmware() -> void:
+	var w := func(s: Dictionary) -> String: return str(Osd.warning(s).text)
+	_check("arming refusals show only while the arm switch is on", w.call({arm_requested = true, block = FC.BLOCK_THROTTLE}) == "THROTTLE"
+		and w.call({arm_requested = false, block = FC.BLOCK_THROTTLE}) == ""
+		and w.call({arm_requested = true, block = FC.BLOCK_SWITCH}) == "ARM SWITCH"
+		and w.call({arm_requested = true, not_ready = true}) == "RXLOSS")
+	_check("a crash outranks the pack; an empty pack outranks LAND NOW", w.call({crashed = true, cell_v = 3.0}) == "CRASH"
+		and w.call({depleted = true, cell_v = 3.0}) == "BATT EMPTY" and w.call({cell_v = 3.3}) == "LAND NOW")
+	var low: Dictionary = Osd.warning({cell_v = 3.5, armed = true, armed_notice = true})
+	_check("LOW BATTERY is a blinking warning and outranks ARMED", low.text == "LOW BATTERY" and low.severity == Osd.WARNING
+		and bool(low.blink))
+	_check("BATT < FULL only before the first arm", w.call({cell_v = 4.0}) == "BATT < FULL" and w.call({cell_v = 4.0, ever_armed = true}) == ""
+		and w.call({cell_v = 4.2}) == "")
+	var armed: Dictionary = Osd.warning({armed = true, armed_notice = true, cell_v = 4.1, ever_armed = true})
+	_check("ARMED is a green info notice", armed.text == "ARMED" and armed.severity == Osd.INFO and not bool(armed.blink))
+	_check("blink: 2 Hz at 50 %", Osd.blink_on(0.1) and not Osd.blink_on(0.3) and Osd.blink_on(0.6))
+	var g := Osd.GForce.new()
+	for tick in 240:
+		g.sample(tick, _body(0, 0, -5, 0, PackedFloat64Array([1, 0, 0, 0])), 1.0 / 240.0)
+	var rest := g.value
+	for tick in range(240, 720):
+		# 1 g of acceleration north: the body speed grows by g/240 per tick.
+		var u := float(tick - 240) * Osd.G / 240.0
+		var b := _body(0, 0, -5, 0, PackedFloat64Array([1, 0, 0, 0]))
+		b[3] = u
+		g.sample(tick, b, 1.0 / 240.0)
+	_check("G: 1.00 at rest, 1.41 accelerating at 1 g level", absf(rest - 1.0) < 1.0e-9 and absf(g.value - sqrt(2.0)) < 1.0e-3,
+		"%.4f %.4f" % [rest, g.value])
+	g.sample(10, _body(0, 0, -5, 0, PackedFloat64Array([1, 0, 0, 0])), 1.0 / 240.0)
+	_check("G resets on a restart (the tick goes back)", g.value == 1.0)
+	_check("remaining time: 500 mAh to the 80 % mark at 2.5 mAh/s is 200 s", absf(Osd.remaining_s(0.7, 1000.0, 300.0, 120.0) - 200.0) < 1.0e-9
+		and Osd.remaining_s(0.95, 1000.0, 50.0, 20.0) < 0.0 and Osd.remaining_s(0.7, 0.0, 300.0, 120.0) < 0.0)
+	_check("live efficiency: 18 A at 10 m/s is 500 mAh/km; slow reads ---", Osd.efficiency_text(18.0, 10.0, "metric") == "500 MAH/KM"
+		and Osd.efficiency_text(18.0, 0.5, "metric") == "--- MAH/KM", Osd.efficiency_text(18.0, 10.0, "metric"))
+	_check("up/down reference: D looking straight down, U straight up, none level",
+		Osd.updown(_q_axis(Vector3(0, 1, 0), -90.0), 0.0) == "D" and Osd.updown(_q_axis(Vector3(0, 1, 0), 80.0), deg_to_rad(20.0)) == "U"
+		and Osd.updown(PackedFloat64Array([1, 0, 0, 0]), deg_to_rad(30.0)) == "")
+	_check("clock and rpm texts", Osd.clock_text(-1.0) == "--:--" and Osd.clock_text(125.0) == "02:05"
+		and Osd.rpm_text(24000.0 * TAU / 60.0) == "24.0K")
 
 
 func _stats() -> void:
@@ -121,13 +172,62 @@ func _stats() -> void:
 		and "Efficiency" in labels and str(rows[0][1]) == "01:01", str(rows))
 	var no_pack := Osd.Stats.new()
 	no_pack.sample({speed_mps = 3.0}, Vector2.INF, INF, 0, 2.0)
-	_check("no pack: no battery rows", no_pack.rows("metric", 0).size() == 5 and is_inf(no_pack.max_distance_m) == false)
+	_check("no pack: no battery rows (flight rows, average and full throttle)", no_pack.rows("metric", 0).size() == 7
+		and is_inf(no_pack.max_distance_m) == false, str(no_pack.rows("metric", 0)))
+	var thr := Osd.Stats.new()
+	thr.sample({collective = 1.0, rotor_speed_rad_s = PackedFloat64Array([2000.0, 2100.0, 1900.0, 2050.0])}, Vector2.INF, INF, 0, 0.0, 1.2)
+	thr.sample({collective = 1.0}, Vector2.INF, INF, 0, 2.0, 2.5)
+	thr.sample({collective = 0.0}, Vector2.INF, INF, 0, 4.0, 1.0)
+	_check("throttle statistics: 2 s at full of 4 s, average 50 %, max G and RPM", absf(thr.full_throttle_s - 2.0) < EPS
+		and absf(thr.average_throttle() - 0.5) < EPS and thr.max_g == 2.5 and thr.max_rpm_rad_s == 2100.0,
+		"%s %s %s" % [thr.full_throttle_s, thr.average_throttle(), thr.max_g])
 
 
 func _telemetry(armed: bool, volts := 16.4) -> Dictionary:
 	return {armed = armed, crashed = false, depleted = false, arm_block = 0, flight_mode = 0, collective = 0.4,
 		altitude_agl_m = 8.0, speed_mps = 10.0, has_battery = true, bus_voltage_v = volts, pack_current_a = 18.0,
 		consumed_mah = 220.0, soc = 0.7, commands = PackedFloat64Array([0.4, 0.5, 0.45, 0.42]), time_s = 0.0}
+
+
+## DR-31c HUD behaviour: the settings panel, the analog style, arming warnings, the timer alarm, G and the mode name.
+func _hud_c(hud: CanvasLayer, state: Dictionary) -> void:
+	hud.show_menu("paused", true)
+	hud.toggle_osd_settings()
+	var panel: PanelContainer = hud.settings_panel
+	_check("OSD settings open beside the menu", panel.visible and hud.osd_button.text == "OSD settings"
+		and panel.get_global_rect().position.x > hud.menu.get_global_rect().end.x - 1.0,
+		"%s %s" % [panel.get_global_rect(), hud.menu.get_global_rect()])
+	(panel.checks["gforce"] as CheckBox).button_pressed = true
+	_check("checking an element selects Custom with it", hud.osd_config.layout == "custom" and hud.shows("gforce")
+		and "Custom" in hud.layout_button.text)
+	panel.style_button.pressed.emit()
+	panel.crosshair_button.pressed.emit()
+	_check("style and crosshair cycle", hud.osd_config.style == "analog" and hud.osd_config.crosshair == "aircraft"
+		and "Analog" in panel.style_button.text and "Aircraft" in panel.crosshair_button.text)
+	hud.hide_menu()
+	_check("closing the menu closes the settings", not panel.visible)
+	var t := _telemetry(true)
+	t.time_s = 50.0
+	hud.update(t, state)
+	_check("analog style: every value white", hud.arm_label.get_theme_color("font_color") == Paint.TEXT)
+	panel.style_button.pressed.emit()
+	var refused := _telemetry(false)
+	refused.arm_block = FC.BLOCK_THROTTLE
+	var arming := state.duplicate()
+	arming.arm_requested = true
+	hud.update(refused, arming)
+	_check("an arm request at high throttle shows THROTTLE in amber", hud.warning_label.text == "THROTTLE"
+		and hud.warning_label.get_theme_color("font_color") == Paint.CAUTION, hud.warning_label.text)
+	var late := state.duplicate()
+	late.flight_s = 601.0
+	late.pilot_mode = FC.FLIGHT_ANGLE
+	late.accepted = _body(0, 0, -5, 0, PackedFloat64Array([1, 0, 0, 0]))
+	t.tick = 7
+	hud.update(t, late)
+	_check("past 10 min the flight timer turns red", hud.timer_label.get_theme_color("font_color") == Paint.DANGER)
+	_check("the mode reads ANGL and G reads 1.00 at rest", hud.mode_label.text == "ANGL" and float(hud._draw_state.g) == 1.0,
+		"%s %s" % [hud.mode_label.text, hud._draw_state.g])
+	await process_frame # draw the Custom layout with every new element path
 
 
 func _hud() -> void:
@@ -182,8 +282,11 @@ func _hud() -> void:
 	_check("Freestyle -> Full shows angles, motors and sticks", hud.osd_config.layout == "full" and hud.shows("motors")
 		and hud.shows("sticks") and hud.shows("ladder") and "Full" in hud.layout_button.text)
 	hud.update(t, state)
-	_check("Full adds the power line", hud.battery_label.text.ends_with(" W"), hud.battery_label.text)
+	_check("Full adds the power and efficiency line (imperial: per mile)", " W  " in hud.battery_label.text and "MAH/MI" in hud.battery_label.text,
+		hud.battery_label.text)
 	await process_frame # the draw callback runs every element without engine errors
+	hud.cycle_layout()
+	_check("Full -> Custom (the saved custom set)", hud.osd_config.layout == "custom" and hud._elements == Osd.DEFAULTS.custom)
 	hud.cycle_layout()
 	hud.update(t, state)
 	_check("Off hides the layout but keeps the arm state", hud.osd_config.layout == "off" and not hud.mode_label.visible
@@ -216,7 +319,7 @@ func _hud() -> void:
 	hud.update(pad, pad_state)
 	_check("an arm-and-wait on the pad shows no statistics", not hud._stats_ready and not hud.stats_panel.visible,
 		"flight_s %s" % hud.stats.flight_s)
-	# A real flight, then a disarmed roll stick dismisses its statistics.
+	# A real flight, then (as on Betaflight) a disarmed roll stick keeps the statistics and pitch forward closes them.
 	var hop := _telemetry(true)
 	for i in 4:
 		hop.time_s = 30.0 + float(i)
@@ -225,13 +328,19 @@ func _hud() -> void:
 	hud.update(hop, state)
 	var shown: bool = hud.stats_panel.visible
 	var moved := state.duplicate()
-	moved.sticks = {roll = 0.8, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	moved.sticks = {roll = 0.9, pitch = 0.0, yaw = 0.0, throttle = 0.0}
 	hud.update(hop, moved)
-	_check("a disarmed roll stick dismisses the statistics", shown and not hud.stats_panel.visible)
+	var kept: bool = hud.stats_panel.visible
+	moved.sticks = {roll = 0.0, pitch = -0.8, yaw = 0.0, throttle = 0.0}
+	hud.update(hop, moved)
+	_check("roll keeps the statistics; pitch forward closes them", shown and kept and not hud.stats_panel.visible)
+	_check("a high throttle closes them too (after the sticks were low)", hud.stats_stick_high({throttle = 0.9, pitch = 0.0}, "absolute")
+		and not hud.stats_stick_high({throttle = 0.6, pitch = 0.0}, "absolute") and hud.stats_stick_high({throttle = 0.6}, "rate"))
 	var scripted := state.duplicate()
 	scripted.sticks = {arm = true}
 	hud.update(hop, scripted)
 	_check("a sample without sticks draws no stick overlay", (hud._draw_state.sticks as Dictionary).is_empty())
+	await _hud_c(hud, state)
 	_check("nothing was saved without a path", not FileAccess.file_exists(CONFIG))
 	hud.update(t, {}) # no optional keys: still updates
 	await process_frame

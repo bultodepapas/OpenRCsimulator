@@ -11545,3 +11545,141 @@ msgstr "已用"
 
 msgid "Efficiency"
 msgstr "效率"
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full, Custom). Pause menu > OSD settings: elements, units, style, crosshair."
+msgstr "O：OSD 布局（关闭、竞速、花飞、完整、自定义）。暂停菜单 > OSD 设置：元素、单位、样式、准星。"
+
+msgid "OSD settings"
+msgstr "OSD 设置"
+
+msgid "OSD style: %s"
+msgstr "OSD 样式：%s"
+
+msgid "Crosshair: %s"
+msgstr "准星：%s"
+
+msgid "Elements (a change selects the Custom layout)"
+msgstr "元素（修改后切换为自定义布局）"
+
+msgid "HD"
+msgstr "HD"
+
+msgid "Analog"
+msgstr "模拟"
+
+msgid "Default"
+msgstr "默认"
+
+msgid "Aircraft symbol"
+msgstr "飞机符号"
+
+msgid "Dot"
+msgstr "点"
+
+msgid "Crosshair"
+msgstr "准星"
+
+msgid "Pitch ladder"
+msgstr "俯仰刻度"
+
+msgid "Horizon sidebars"
+msgstr "地平线侧栏"
+
+msgid "Compass bar"
+msgstr "罗盘条"
+
+msgid "Up/down reference"
+msgstr "上下参考"
+
+msgid "Altitude"
+msgstr "高度"
+
+msgid "Vario"
+msgstr "升降速度"
+
+msgid "Speed"
+msgstr "速度"
+
+msgid "G-force"
+msgstr "G 值"
+
+msgid "Home arrow and distance"
+msgstr "返航箭头和距离"
+
+msgid "Next gate"
+msgstr "下一个门"
+
+msgid "Battery voltage"
+msgstr "电池电压"
+
+msgid "Current and mAh"
+msgstr "电流和 mAh"
+
+msgid "Remaining time"
+msgstr "剩余时间"
+
+msgid "Motor outputs"
+msgstr "电机输出"
+
+msgid "Motor RPM"
+msgstr "电机转速"
+
+msgid "Stick overlay"
+msgstr "摇杆显示"
+
+msgid "Pitch and roll angles"
+msgstr "俯仰和横滚角"
+
+msgid "Flight timer"
+msgstr "飞行计时"
+
+msgid "On timer"
+msgstr "通电时间"
+
+msgid "Flight mode"
+msgstr "飞行模式"
+
+msgid "Craft name"
+msgstr "飞行器名称"
+
+msgid "Post-flight statistics"
+msgstr "飞行后统计"
+
+msgid "ARM SWITCH"
+msgstr "解锁开关"
+
+msgid "RXLOSS"
+msgstr "接收丢失"
+
+msgid "CRASH"
+msgstr "坠机"
+
+msgid "BATT EMPTY"
+msgstr "电池耗尽"
+
+msgid "BATT < FULL"
+msgstr "电池未满"
+
+msgid "End battery"
+msgstr "结束电量"
+
+msgid "Max G-force"
+msgstr "最大 G 值"
+
+msgid "Max motor RPM"
+msgstr "最大电机转速"
+
+msgid "Avg throttle"
+msgstr "平均油门"
+
+msgid "Full throttle time"
+msgstr "满油门时间"
+
+msgid "Throttle or pitch forward to close"
+msgstr "推油门或前推俯仰以关闭"
+
+msgid "GATE"
+msgstr "门"
+
+msgid "LEFT %s"
+msgstr "剩余 %s"

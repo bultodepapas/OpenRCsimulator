@@ -235,8 +235,11 @@ func _test_background_valuation(session: Variant, bindings: Dictionary) -> void:
 	background.wait_for_valuation()
 	check("a revision accepted during the pass is valued next", second_started and background.report == sync.report
 		and background.terminal and published.size() == 2 and not background.valuation_in_flight())
-	background.evaluate_in_background()
-	check("the synchronous entry points wait for an in-flight pass", background.checkpoint(2, bindings) != {} and not background.valuation_in_flight())
+	background._queue_assessment(3)
+	var third_started: bool = background.evaluate_in_background()
+	background.evaluate_pending() # Synchronous entry points (setters, checkpoint, archive) wait for the pass.
+	check("the synchronous entry points wait for an in-flight pass", third_started and not background.valuation_in_flight()
+		and background.report.get("revision") == background._revision and published.size() == 3)
 	background.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
 	check("a new incident discards no state into the next ledger", background.report.is_empty() and not background.valuation_in_flight())
 

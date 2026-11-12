@@ -293,6 +293,8 @@ static func icon_home(ci: CanvasItem, at: Vector2, size: float, color: Color = T
 static func gate_marker(ci: CanvasItem, size: Vector2, screen: Vector2, behind: bool, label: String, margin: float,
 		s: float, color: Color) -> void:
 	var centre := size * 0.5
+	if size.x <= margin * 2.0 or size.y <= margin * 2.0:
+		return # a window smaller than the margins (headless runs) has no room for the guide
 	var inner := Rect2(Vector2(margin, margin), size - Vector2(margin, margin) * 2.0)
 	if not behind and inner.has_point(screen):
 		var r := 13.0 * s

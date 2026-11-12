@@ -12372,3 +12372,141 @@ msgstr "Consumati"
 
 msgid "Efficiency"
 msgstr "Efficienza"
+
+msgid "O: OSD layout (Off, Race, Freestyle, Full, Custom). Pause menu > OSD settings: elements, units, style, crosshair."
+msgstr "O: layout OSD (Nessuno, Gara, Freestyle, Completo, Personalizzato). Menu di pausa > Impostazioni OSD: elementi, unità, stile, mirino."
+
+msgid "OSD settings"
+msgstr "Impostazioni OSD"
+
+msgid "OSD style: %s"
+msgstr "Stile OSD: %s"
+
+msgid "Crosshair: %s"
+msgstr "Mirino: %s"
+
+msgid "Elements (a change selects the Custom layout)"
+msgstr "Elementi (una modifica seleziona il layout Personalizzato)"
+
+msgid "HD"
+msgstr "HD"
+
+msgid "Analog"
+msgstr "Analogico"
+
+msgid "Default"
+msgstr "Predefinito"
+
+msgid "Aircraft symbol"
+msgstr "Simbolo aereo"
+
+msgid "Dot"
+msgstr "Punto"
+
+msgid "Crosshair"
+msgstr "Mirino"
+
+msgid "Pitch ladder"
+msgstr "Scala di beccheggio"
+
+msgid "Horizon sidebars"
+msgstr "Barre laterali dell'orizzonte"
+
+msgid "Compass bar"
+msgstr "Barra bussola"
+
+msgid "Up/down reference"
+msgstr "Riferimento su/giù"
+
+msgid "Altitude"
+msgstr "Altitudine"
+
+msgid "Vario"
+msgstr "Variometro"
+
+msgid "Speed"
+msgstr "Velocità"
+
+msgid "G-force"
+msgstr "Forza G"
+
+msgid "Home arrow and distance"
+msgstr "Freccia e distanza da casa"
+
+msgid "Next gate"
+msgstr "Prossima porta"
+
+msgid "Battery voltage"
+msgstr "Tensione batteria"
+
+msgid "Current and mAh"
+msgstr "Corrente e mAh"
+
+msgid "Remaining time"
+msgstr "Tempo rimanente"
+
+msgid "Motor outputs"
+msgstr "Uscite motori"
+
+msgid "Motor RPM"
+msgstr "Giri motore"
+
+msgid "Stick overlay"
+msgstr "Stick a schermo"
+
+msgid "Pitch and roll angles"
+msgstr "Angoli di beccheggio e rollio"
+
+msgid "Flight timer"
+msgstr "Timer di volo"
+
+msgid "On timer"
+msgstr "Tempo acceso"
+
+msgid "Flight mode"
+msgstr "Modalità di volo"
+
+msgid "Craft name"
+msgstr "Nome del velivolo"
+
+msgid "Post-flight statistics"
+msgstr "Statistiche dopo il volo"
+
+msgid "ARM SWITCH"
+msgstr "INTERRUTTORE ARM"
+
+msgid "RXLOSS"
+msgstr "PERDITA RX"
+
+msgid "CRASH"
+msgstr "SCHIANTO"
+
+msgid "BATT EMPTY"
+msgstr "BATT VUOTA"
+
+msgid "BATT < FULL"
+msgstr "BATT < PIENA"
+
+msgid "End battery"
+msgstr "Batteria finale"
+
+msgid "Max G-force"
+msgstr "Forza G max"
+
+msgid "Max motor RPM"
+msgstr "Giri motore max"
+
+msgid "Avg throttle"
+msgstr "Gas medio"
+
+msgid "Full throttle time"
+msgstr "Tempo a tutto gas"
+
+msgid "Throttle or pitch forward to close"
+msgstr "Gas o beccheggio avanti per chiudere"
+
+msgid "GATE"
+msgstr "PORTA"
+
+msgid "LEFT %s"
+msgstr "RESTANO %s"
