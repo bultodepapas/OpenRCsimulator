@@ -12,6 +12,33 @@ The generator always recomputes the v4 result. Its historical admission is restr
 
 For v0.2.3, the complete 140-file normalized inventory was compared against `c912ee8e774d8439e6c9a31b6d6ab325421cbcde`: 139 inputs were identical, and `app/project.godot` changed only `config/version` from `0.2.2` to `0.2.3`. The previous aggregate was `f676516ffbad54911a4fead1daf0d1cf5fc4351819761ed5566b6f59226cb57f`; the metadata-only renewal is `b0c8111473cc50a3ce28751a801f1981e1011325047ca45506985de4307d5946`. Before renewal, both Windows and Linux correctly refused the old provenance; their newly calculated trim, unrounded and rounded derivatives, sensitivity rows, and generated provenance exactly matched the earlier qualified reports. After renewal, both platforms passed; an isolated version-only change to `0.2.4` was refused by the generator and updater on both platforms. The v3/v4 numerical qualification above remains the basis for admission.
 
+### 2026-11-11 release provenance renewal
+
+For v0.2.5, isolated Windows and Linux projects reconstructed baseline
+`4dd64ed5c84c8933bf9cb218c122b79dc1b22b62` and candidate
+`f29a42c2f45c23ec96254b4146aeb0724720568e` using pinned Godot 4.8 beta2.
+Of the 140 prior inventory files, 139 were unchanged and `app/project.godot`
+changed only version `0.2.3` to `0.2.5`. Nine airship and multirotor physics
+scripts were added; none of the prior physics inputs was removed or modified.
+The new complete 149-file normalized aggregate is
+`8091f2bc5c168f16558c09b59a6d7582a68387dd00683c4de259593d1d815443`.
+
+On each host, the baseline generator and updater passed; the unmodified
+candidate refused only the three historical-source checks. The aircraft input,
+trim condition, unrounded CG and ARP derivatives, rounded values, four
+sensitivity rows and generated provenance matched exactly between baseline and
+candidate. After renewing the two exact-inventory guards, fresh generator and
+updater checks passed on both hosts and in the Windows working tree. Separate
+mutations of an added physics script and the project version were refused by
+both guards on both hosts. All mutations were restored; the aircraft bytes and
+historical source strings were not changed. The
+[qualification receipt](2026-11-11-release-v025-qualification.json) records the
+source, report and checked-log identities.
+
+The initial concurrent Windows imports of copied caches reported engine errors
+and were not used as passes. Subsequent sequential checked imports completed
+without engine errors, as did both Linux imports and the derivation checks.
+
 This establishes model consistency only for these inputs and sampled conditions, not general equivalence of the laws or physical validation. The original 2026-10-07 values and checks below describe the earlier D11g decision, not the present R02 values.
 
 ## Decision

@@ -1,0 +1,313 @@
+{
+  "format": "openrc-d11g-historical-provenance-requalification-v1",
+  "date_local": "2026-11-11",
+  "baseline_commit": "4dd64ed5c84c8933bf9cb218c122b79dc1b22b62",
+  "candidate_commit": "f29a42c2f45c23ec96254b4146aeb0724720568e",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "executable_sha256": {
+      "Godot_v4.8-beta2_win64_console.exe": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "Godot_v4.8-beta2_win64.exe": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+      "Godot_v4.8-beta2_linux.x86_64": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+    }
+  },
+  "aircraft_raw_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+  "normalized_aircraft_input_sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79",
+  "inventory": {
+    "baseline_count": 140,
+    "baseline_sha256": "b0c8111473cc50a3ce28751a801f1981e1011325047ca45506985de4307d5946",
+    "candidate_count": 149,
+    "candidate_sha256": "8091f2bc5c168f16558c09b59a6d7582a68387dd00683c4de259593d1d815443",
+    "unchanged_prior_files": 139,
+    "changed_prior_file": "app/project.godot: config/version 0.2.3 to 0.2.5 only",
+    "removed": [],
+    "added": {
+      "app/physics/airship/airship_data.gd": "25cdfbbd0764b5c2f137c6cc6c27cfae7df701e7cae967f776f80090e866329a",
+      "app/physics/airship/airship_dynamics.gd": "bd7e41681caa293f3912ad2a5dcf9be17b6a40bfd4763ee768a70c6df02d55ef",
+      "app/physics/multirotor/actuator_map.gd": "d09b54a80890fef231bd09bb57050ec5a1f0fb9992ed4c221bf563614a89148d",
+      "app/physics/multirotor/allocator.gd": "754befccc91dd1ac25684cefeb523bfc12dc16c436e7a84040975a4337a4dcfc",
+      "app/physics/multirotor/controlled_plant.gd": "f70bcc80bd6844830de1a10e741be13234248d007235c1bdddfa25fc9294105e",
+      "app/physics/multirotor/electric_bus.gd": "e7a29eecf04e28b8fcbc1561b36cbc11eda8fb71f09956e58830aaeb58f05839",
+      "app/physics/multirotor/flight_controller.gd": "5f4c570e19da1494fe724042e6d3afd5e07cf7e5b5accfb1dd519004704b8211",
+      "app/physics/multirotor/rates.gd": "8cc80a83290fdadfdf656aeeb0caca0f13c7b4117b2992523c81b27b690eb1fc",
+      "app/physics/multirotor_data.gd": "65faf73e24e4abe3bbfd9efaecfb76c0216b0d0e09f56a26037b3d4250d70af5"
+    },
+    "normalization": "UTF-8 script and data bytes with CRLF normalized to LF; sorted path, tab, SHA-256 and LF; generator excluded from aggregate but included in derivation report"
+  },
+  "current_guard_source_sha256": {
+    "research/aero/d11g/derive_rate_derivatives.gd": "5d0c36409dd87f015f6c80a7f1318e633b0b3133b065899736144ea770889bd9",
+    "research/aero/d11g/apply_rate_derivatives.py": "707fde20ab9811790c2cd6581f341a69dc28142f73279b77212eeedd6b8f857f"
+  },
+  "numerical_and_provenance_result": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "engine_hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "law": "section-plane-source-weighted-wake-velocity-v4",
+    "condition": {
+      "central_difference_step_rad_s": 0.05,
+      "controls": "neutral",
+      "density_kg_m3": 1.225,
+      "speed_mps": 15.0,
+      "trim_alpha_deg": 4.195979159664104,
+      "trim_alpha_rad": 0.07323365168120345,
+      "wake": "settled instantaneous Aero.wing_wake_velocity output; no ground effect"
+    },
+    "about_cg": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -7.928815588194173,
+      "Cnr": -0.1335802424533328
+    },
+    "about_arp": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -8.082101784164095,
+      "Cnr": -0.13604012801947268
+    },
+    "rounded_4_significant_digits": {
+      "CLq": 2.357,
+      "Cmq": -8.082,
+      "Cnr": -0.136
+    },
+    "alpha_sensitivity_about_cg": [
+      {
+        "CLq": 2.465798153025895,
+        "Cmq_about_cg": -7.882827840819535,
+        "Cnr_about_cg": -0.13681305590437906,
+        "alpha_deg": 0.0
+      },
+      {
+        "CLq": 2.4103239493708846,
+        "Cmq_about_cg": -7.895873160074377,
+        "Cnr_about_cg": -0.1354648138993857,
+        "alpha_deg": 2.0
+      },
+      {
+        "CLq": 2.3617900208368128,
+        "Cmq_about_cg": -7.925095563963791,
+        "Cnr_about_cg": -0.13376507955880204,
+        "alpha_deg": 4.0
+      },
+      {
+        "CLq": 2.3206741895900262,
+        "Cmq_about_cg": -7.970108277446484,
+        "Cnr_about_cg": -0.1317326595812141,
+        "alpha_deg": 6.0
+      }
+    ],
+    "provenance": {
+      "CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
+      "Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+      "Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+    }
+  },
+  "checks": {
+    "windows": {
+      "derivations": {
+        "baseline-before": {
+          "derivation_report_sha256": "df9dabeeea63eb4f07586c83a3581bf11324b8d5431f337b791bffe430f361ea",
+          "generator": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+            "checked_report_sha256": "2ce8ccfbd31bb1718908c541b60b54b30852322106aaf26ba4b70409f3357b73"
+          },
+          "updater_exit": 0,
+          "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+        },
+        "candidate-before": {
+          "derivation_report_sha256": "0d9a592c814ac740a29440f85241f30219baa4c880c3f0e8e85014e56ad8dcbc",
+          "generator": {
+            "process_exit": 1,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+            "checked_report_sha256": "3f15aad8fdeef7dcc2bd0da15fa595a723cce46d08446b061107be9264d508b9"
+          },
+          "updater_exit": 1,
+          "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5"
+        },
+        "candidate-after": {
+          "derivation_report_sha256": "f99f44ecf79dace9b2ea9aff0a7ac42b6aa7ef2283e3545ec052cec06ad70eb2",
+          "generator": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+            "checked_report_sha256": "1ae318e588a7d9838869731863199d4fe6e8816fcf41a372a223cfcccab7d6cc"
+          },
+          "updater_exit": 0,
+          "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+        }
+      },
+      "human_check": {
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "log_sha256": "001bf0c81d62a5801007ef7194e604efa061d856daa34f564fdbdfb9d5d09d56",
+        "checked_report_sha256": "937c98772d3bd865ec14af61d4ad52857a3868e31a59ed90520e295e5ff972eb"
+      },
+      "mutation_refusals": {
+        "added-physics": {
+          "derivation_report_sha256": "6e5cc894ff0b1cad8dc435ff632459496540caa8f00aa00bbdd1296e481e0498",
+          "generator": {
+            "process_exit": 1,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+            "checked_report_sha256": "ed12162edf6cb5b774f65c4841a233ac8e73333b0e3b6fe936b214b51376cb41"
+          },
+          "updater_exit": 1,
+          "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5",
+          "source_restored_byte_for_byte": true
+        },
+        "project-version": {
+          "derivation_report_sha256": "d4a1c9fa4f4240672e0ac4de2bb703df5093599ebb4ce50525c0e42152f901b4",
+          "generator": {
+            "process_exit": 1,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+            "checked_report_sha256": "d287101f15af60b0a1e33a9858e673dc5ce0205f2c73e83008f6b25203ca60a5"
+          },
+          "updater_exit": 1,
+          "updater_log_sha256": "0fc8dd64068105a747f06aa0fd8e5c545e1e471f285bd3b8a345c64eb42fd3d5",
+          "source_restored_byte_for_byte": true
+        }
+      },
+      "imports": {
+        "baseline": {
+          "process_exit": 0,
+          "engine_errors": 0,
+          "warnings": 0,
+          "log_sha256": "54fd56fdd0cf3318d2ad4266d939d574119085dd0fe962d8392cae7cf562303f",
+          "checked_report_sha256": "3d074fa35417d2a405943336e961c569b28a6697ac79f92999a6dec6706a01fc"
+        },
+        "candidate": {
+          "process_exit": 0,
+          "engine_errors": 0,
+          "warnings": 0,
+          "log_sha256": "54fd56fdd0cf3318d2ad4266d939d574119085dd0fe962d8392cae7cf562303f",
+          "checked_report_sha256": "965a2b0944f9a4eacaff5580695e667a81ccf776d27fb8d37c02d1e0841d6c73"
+        }
+      },
+      "initial_cache_copy_import_baseline": {
+        "process_exit": 0,
+        "engine_errors": 3,
+        "warnings": 0,
+        "log_sha256": "dbe23fccdfbb7d5acdb1f025a0ba207111f276bf2c1d2e608c72125874ebaed9",
+        "checked_report_sha256": "c6dad7f5366cd9a28ce43395bb47d19d6b8f27a95ce87ea9e110a3aa1fb7302f"
+      },
+      "initial_cache_copy_import_candidate": {
+        "process_exit": 0,
+        "engine_errors": 2,
+        "warnings": 0,
+        "log_sha256": "8d859dcbb421c77289c9a39fd36978405ddb5c96c4f1fff21eb8e5c03c04ac45",
+        "checked_report_sha256": "7a72444c04b6c779cbcb1fb861572cded81c3a66bac2bbb1a8ea9b6fa940b3a1"
+      },
+      "working_tree_after": {
+        "derivation_report_sha256": "b24dead9fa44debbf6528e9f1f2187e8f6ce36be40d5c4afd98ade63f9a62353",
+        "generator": {
+          "process_exit": 0,
+          "engine_errors": 0,
+          "warnings": 0,
+          "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+          "checked_report_sha256": "88e314aa7636678e13181880f9085c008d5a4ac32224ff51c425f35c3456401c"
+        },
+        "updater_exit": 0,
+        "updater_log_sha256": "33b1f7766dab6645aca5486aae680931ef4f7f2d50c7371478f4b25236ad0dcf"
+      }
+    },
+    "linux": {
+      "derivations": {
+        "baseline-before": {
+          "derivation_report_sha256": "737a1383d6ea1b0078d2e6c67e7bb3fc44530d7b4691231c3347e03adacca4d0",
+          "generator": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+            "checked_report_sha256": "e943e43fd874f3225a8fca4ab11c405c62a111cb5796fb03930a65104f272364"
+          },
+          "updater_exit": 0,
+          "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+        },
+        "candidate-before": {
+          "derivation_report_sha256": "a7ab0aecb020d3a00781b3d5e9792bd82f8b41526bfc2d445092feb71f8fcf51",
+          "generator": {
+            "process_exit": 1,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+            "checked_report_sha256": "bdcf9b154798e8567dc80691517f373457f5f002285f4736371c019af5caeec5"
+          },
+          "updater_exit": 1,
+          "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+        },
+        "candidate-after": {
+          "derivation_report_sha256": "75bd05e561674d7d034f8038a12004950a9e6ae573e22e4abc932d0c40cd0f76",
+          "generator": {
+            "process_exit": 0,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+            "checked_report_sha256": "952494f648b6b2988883f391a3ee42fcb49b52961e36a7bfd58ce41568a0bfee"
+          },
+          "updater_exit": 0,
+          "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+        }
+      },
+      "human_check": {
+        "process_exit": 0,
+        "engine_errors": 0,
+        "warnings": 0,
+        "log_sha256": "fc3488fc277c62ce1a7301ae1bc22faaf460b66c2cbdffeffc8072d9ad1e1f1f",
+        "checked_report_sha256": "adb796c3d01930ae45bf6991dd539421a8df205f6f76126b04d9aabc7c6a57b4"
+      },
+      "mutation_refusals": {
+        "added-physics": {
+          "derivation_report_sha256": "0023c9232836cd609c9e381c6aa1de44876958d970fb975393bafa35d1ecd7f0",
+          "generator": {
+            "process_exit": 1,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+            "checked_report_sha256": "9f4ed00967133d20b1a21422551d68e1210f3c24e6bc84eb4a7ebb584a4946a5"
+          },
+          "updater_exit": 1,
+          "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+          "source_restored_byte_for_byte": true
+        },
+        "project-version": {
+          "derivation_report_sha256": "28ead9afac5dbeadabcd889bbfbde5bf8c7c6530363606944a3d33a7f97bede1",
+          "generator": {
+            "process_exit": 1,
+            "engine_errors": 0,
+            "warnings": 0,
+            "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+            "checked_report_sha256": "1bff8c257aae4c1d1e25d1d83dd31f5ca620f76bb9185a09fc01eb5e3febe3c1"
+          },
+          "updater_exit": 1,
+          "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+          "source_restored_byte_for_byte": true
+        }
+      },
+      "imports": {
+        "baseline": {
+          "process_exit": 0,
+          "engine_errors": 0,
+          "warnings": 0,
+          "log_sha256": "e4fb5899664d53535aa8986e765733e02d3efd72af3408ee830a8121124d377b",
+          "checked_report_sha256": "aa28181d5abb5ddebec907aed3f0a4994a2e7db6e844efc4a6b2f3e93d7af24e"
+        },
+        "candidate": {
+          "process_exit": 0,
+          "engine_errors": 0,
+          "warnings": 0,
+          "log_sha256": "0c2aaaf084979d7b33a38db185fa3639e16600bb1c386a51dd46c3dd277bd36b",
+          "checked_report_sha256": "f6ef39f15ecd423a2f0f069bcf7142ed9ccca3444628a4f95b5ea92285aba3df"
+        }
+      }
+    }
+  },
+  "limits": "Model consistency for the tested Stik and sampled conditions, not physical validation or general law equivalence."
+}
