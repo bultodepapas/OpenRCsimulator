@@ -20,6 +20,13 @@ uniform float panel_glow = 0.0;
 uniform bool checker = false;
 uniform bool solid = false;
 uniform float checker_cell = 0.09;
+// LED animation: chase runs segments along the strip (the next gate); flash is a short white burst (a gate passed);
+// breathe is a slow calm-state swell; weave is the fabric mesh texture strength.
+uniform float chase = 0.0;
+uniform float chase_speed = 1.6;
+uniform float flash = 0.0;
+uniform float breathe = 0.0;
+uniform float weave = 0.05;
 
 varying vec3 local_pos;
 
@@ -40,11 +47,18 @@ void fragment() {
 		float stripe = step(0.5, fract(along / stripe_period));
 		base = mix(color_a.rgb, color_b.rgb, stripe);
 	}
+	// Woven vinyl mesh: a fine two-axis grid darkens the fabric slightly (reads only up close).
+	vec2 fibre = fract(vec2(along, across) * 55.0);
+	base *= 1.0 - weave * (step(0.5, fibre.x) + step(0.5, fibre.y));
 	float led = step(half_across - led_width, across);
 	float piping = step(half_across - piping_width, -across);
 	vec3 albedo = mix(base, vec3(0.97), piping);
-	albedo = mix(albedo, led_color.rgb, led);
+	vec3 led_rgb = mix(led_color.rgb, vec3(1.0), clamp(flash, 0.0, 1.0));
+	albedo = mix(albedo, led_rgb, led);
+	float run = 0.45 + 0.55 * smoothstep(0.35, 0.65, fract(along / 0.35 - TIME * chase_speed));
+	float swell = 1.0 + breathe * 0.35 * sin(TIME * 1.7);
+	float level = led_energy * mix(1.0, run, chase) * swell + flash * 2.0;
 	ALBEDO = albedo;
 	ROUGHNESS = mix(0.75, 0.35, led);
-	EMISSION = led_color.rgb * led * led_energy + base * panel_glow;
+	EMISSION = led_rgb * led * level + base * panel_glow;
 }

@@ -701,7 +701,7 @@ func _process(delta: float) -> void:
 		body = drawn, sticks = raw, stick_policy = str(_last_input.get("throttle_policy", "")),
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
 		bindings = _osd_bindings(), throttle_limit = _session_limit()})
-	_update_gates(t.get("race", {}))
+	_update_gates(t.get("race", {}), delta)
 	_update_audio(t, delta)
 
 
@@ -841,6 +841,9 @@ func _on_race_event(event: Dictionary) -> void:
 			pass # the OSD's large start count shows GO for the first second of the race
 		"race_refused":
 			hud.flash(tr("Race start refused: return to the pad and stop"))
+		"race_gate":
+			if course_visual != null:
+				course_visual.gate_passed(int(event.get("gate", -1)))
 		"race_lap":
 			hud.flash("%s %d  %s" % [tr("Lap"), int(event.get("lap", 0)), Hud.format_lap(float(event.get("duration_s", 0.0)))], 3.0)
 
@@ -875,15 +878,17 @@ func _build_gates() -> void:
 	if session.race == null:
 		return
 	course_visual = CourseVisual.new()
-	course_visual.build(self, session.course)
+	# Light-only course elements (neon halos, guidance) brighten as the sun's energy falls.
+	var night: float = 1.0 - clampf(float(_lighting.get("sun_energy", 1.0)), 0.0, 1.0)
+	course_visual.build(self, session.course, night)
 	_gate_views = course_visual.gate_views
 
 
 ## Highlight the next required gate (and the one after it) while a race is counting down or under way.
-func _update_gates(race: Variant) -> void:
+func _update_gates(race: Variant, delta := 0.0) -> void:
 	if course_visual == null or typeof(race) != TYPE_DICTIONARY:
 		return
-	course_visual.update(Time.get_ticks_msec() / 1000.0)
+	course_visual.update(delta, race)
 	var next: int = int(race.get("next_gate", 0)) if str(race.get("phase", "")) in ["COUNTDOWN", "RACING"] else -1
 	if next == _gate_next:
 		return

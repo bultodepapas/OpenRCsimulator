@@ -92,7 +92,9 @@ func _run() -> void:
 	enabled._on_accident_contacts()
 	enabled._update_accident_report()
 	check("repeated notification cannot bill the prop twice", incident.report.get("revision") == revision and incident.report.get("known_subtotal_minor") == before_comparison.known_subtotal_minor and _component_count(incident.report, "propeller") == 1)
-	check("snapshot persists outside accepted physics callbacks", incident.flush() == OK and FileAccess.file_exists(ARCHIVE))
+	check("flight writes the archive off the frame (CR-22e)", incident.async_archive)
+	check("snapshot persists outside accepted physics callbacks", incident.flush() == OK and incident.wait_for_archive() == OK and FileAccess.file_exists(ARCHIVE))
+	check("background archive bytes equal the synchronous encoding", FileAccess.get_file_as_string(ARCHIVE) == Incident.ReportArchive.encode(incident.report).text)
 	var reader := Incident.new()
 	reader.archive_path = ARCHIVE
 	check("stored report reopens with frozen catalog identity", reader.load_archive().get("catalog_hash") == incident.report.get("catalog_hash"))
@@ -209,6 +211,32 @@ func _test_archive_integrity(incident: RefCounted, reader: RefCounted) -> void:
 	check("refused corrupt reads preserve the saved valid quote", not reader.load_archive().is_empty() and reader.archive_load_error.is_empty())
 
 
+## CR-22e: the runtime writes on a worker thread from a copy; failure, retry and dirty tracking keep the synchronous contract.
+func _test_async_archive(session: Variant, bindings: Dictionary) -> void:
+	var ledger := Incident.new()
+	ledger.async_archive = true
+	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
+	ledger.observe({tick = 1, events = [_strike(1, bindings)]}, bindings, false)
+	ledger.archive_path = "user://missing_accident_directory_%d/report.json" % Time.get_ticks_usec()
+	var started: bool = ledger.flush() == OK and ledger._archive_task_id >= 0
+	check("background archive failure is reported once, not retried every frame", started and ledger.wait_for_archive() != OK
+		and ledger.flush() != OK and ledger._archive_task_id < 0 and ledger._dirty)
+	ledger.archive_path = ARCHIVE
+	DirAccess.remove_absolute(ARCHIVE)
+	check("explicit archival retries a failed background write synchronously", not ledger.archive().is_empty()
+		and ledger.load_archive().get("revision") == ledger.report.revision and not ledger._dirty)
+	ledger.observe({tick = 2, events = []}, bindings, true) # Terminal: a new full revision.
+	var second_started: bool = ledger.flush() == OK and ledger._archive_task_id >= 0
+	var written_revision: int = ledger.report.revision
+	ledger._queue_assessment(3) # A newer accepted revision arrives while the copy is being written.
+	ledger.evaluate_pending()
+	check("a report changed during a background write stays dirty and is written next", second_started
+		and ledger.wait_for_archive() == OK and ledger._dirty and ledger.load_archive().get("revision") == written_revision
+		and ledger.flush() == OK and ledger.wait_for_archive() == OK and not ledger._dirty
+		and ledger.load_archive().get("revision") == ledger.report.revision)
+	ledger.archive()
+
+
 func _test_bounds(session: Variant) -> void:
 	var ledger := Incident.new()
 	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
@@ -243,6 +271,7 @@ func _test_bounds(session: Variant) -> void:
 	ledger.archive_path = ARCHIVE
 	ledger.archive()
 	check("explicit archival retries a previous failed write", ledger.flush() == OK and not ledger.load_archive().is_empty())
+	_test_async_archive(session, bindings)
 	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
 	ledger.observe({tick = 1, events = [{invalid = true}]}, bindings, true)
 	ledger.evaluate_pending()

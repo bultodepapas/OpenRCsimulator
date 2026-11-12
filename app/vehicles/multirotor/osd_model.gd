@@ -2,6 +2,9 @@
 ## state and the session telemetry: attitude angles, heading, climb rate, home vector (home = where the quad was last
 ## armed, as a flight controller sets it), unit formatting, OSD layouts and the post-flight statistics. Nothing here
 ## writes simulation state, and nothing is invented: an element whose source is absent is simply not shown.
+## References: the height is the session's height above the ground below the quad (not above the arm point, as on a
+## barometer OSD), the vario the inertial climb rate, PITCH/ROLL the body attitude, and the ladder rungs elevation
+## from the camera (with uptilt θ, the θ rung crosses the crosshair in level flight).
 extends RefCounted
 
 const FC = preload("res://physics/multirotor/flight_controller.gd")
@@ -30,6 +33,8 @@ const MPS_TO_KMH := 3.6
 const MPS_TO_MPH := 2.236936
 ## A flight shorter than this (armed seconds) leaves no statistics screen (an arm-disarm on the pad is not a flight).
 const STATS_MIN_FLIGHT_S := 1.0
+const STATS_MIN_HEIGHT_M := 0.5
+const STATS_MIN_PATH_M := 2.0
 ## Efficiency (mAh/km) is listed only after this much horizontal path (m): shorter hops give meaningless figures.
 const EFFICIENCY_MIN_M := 200.0
 
@@ -167,6 +172,10 @@ class Stats extends RefCounted:
 	var used_mah := 0.0
 	var _start_mah := -1.0
 	var _last := Vector2.INF
+
+	## A real flight: armed long enough and it left the pad (an arm-and-wait on the ground shows no statistics).
+	func was_flight() -> bool:
+		return flight_s >= STATS_MIN_FLIGHT_S and (max_altitude_m > STATS_MIN_HEIGHT_M or total_distance_m > STATS_MIN_PATH_M)
 
 	func reset() -> void:
 		flight_s = 0.0

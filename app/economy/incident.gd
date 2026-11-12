@@ -1345,6 +1345,12 @@ static func _archive_worker(job: Dictionary) -> void:
 	job.result["error"] = _store_archive(job.report, job.path)
 
 
+## Block until a background write started by flush() has finished; returns the last write result.
+func wait_for_archive() -> Error:
+	_collect_archive_job(true)
+	return _flush_error as Error
+
+
 ## Apply a finished background write. `wait` blocks for one still in flight (reset, restore, exit).
 func _collect_archive_job(wait := false) -> void:
 	if _archive_task_id < 0:

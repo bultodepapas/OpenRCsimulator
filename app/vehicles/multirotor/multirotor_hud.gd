@@ -63,6 +63,8 @@ const SIDEBAR_X := 270.0
 const SIDEBAR_HALF := 110.0
 ## Closer than this (m) the home arrow is hidden and only the distance shows.
 const HOME_ARROW_MIN_M := 2.0
+## A disarmed roll or pitch stick beyond this share dismisses the statistics screen.
+const STATS_DISMISS_STICK := 0.5
 ## Edge margin of the OSD (logical px at 1080p, scaled with the UI text scale).
 const MARGIN := 36.0
 ## Artificial horizon: half-length and centre gap in half-picture-height units, end ticks toward the ground in px.
@@ -647,25 +649,26 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	throttle_label.visible = shows("throttle")
 	var units := str(osd_config.units)
 	var body: Variant = osd_state.get("body")
-	var flight := Osd.flight_values(body) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY else {}
-	_track_flight(t, flight, armed, float(t.get("time_s", flight_s)))
+	# The Off layout draws no flight element: skip the derivations (home and statistics wait for a layout).
+	var flight := Osd.flight_values(body) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY and str(osd_config.layout) != "off" else {}
+	_track_flight(t, flight, armed, float(t.get("time_s", flight_s)), osd_state.get("sticks"))
 	var home_info := {}
 	if not flight.is_empty() and home.is_finite():
 		home_info = Osd.home_vector(float(flight.north), float(flight.east), float(flight.heading_deg), home)
-	var land := false
-	var low := false
+	# Pack warnings are not layout: LAND NOW and LOW BATTERY follow the cells in every layout, Off included.
+	var has_pack := bool(t.get("has_battery", false))
+	var cell_v := float(t.bus_voltage_v) / float(cells) if has_pack and cells > 0 else INF
+	var land := cell_v < CELL_LAND_V
+	var low := cell_v < CELL_CAUTION_V
 	var soc := -1.0
-	if bool(t.get("has_battery", false)) and shows("battery"):
+	if has_pack and shows("battery"):
 		var volts := float(t.bus_voltage_v)
 		soc = clampf(float(t.get("soc", -1.0)), -1.0, 1.0)
 		var lines := PackedStringArray()
 		var color := OSD_TEXT
 		var first := "%d%%  " % int(round(100.0 * soc)) if soc >= 0.0 else ""
 		if cells > 0:
-			var cell_v := volts / float(cells)
 			color = cell_color(cell_v)
-			land = cell_v < CELL_LAND_V
-			low = cell_v < CELL_CAUTION_V
 			lines.append(first + "%.1f V  %s" % [volts, tr("%.2f V/cell") % cell_v])
 		else:
 			lines.append(first + "%.1f V" % volts)
@@ -685,21 +688,28 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 		message.text = ""
 	var horizon := {}
 	var vfov_deg := float(osd_state.get("vfov_deg", 90.0))
-	if str(osd_state.get("camera", "fpv")) == "fpv" and typeof(osd_state.get("attitude")) == TYPE_PACKED_FLOAT64_ARRAY:
+	if (shows("horizon") or shows("crosshair")) and str(osd_state.get("camera", "fpv")) == "fpv" \
+			and typeof(osd_state.get("attitude")) == TYPE_PACKED_FLOAT64_ARRAY:
 		horizon = Cam.horizon_line(osd_state.attitude, deg_to_rad(float(osd_state.get("tilt_deg", 0.0))),
 			deg_to_rad(vfov_deg), float(osd_state.get("aspect", 16.0 / 9.0)))
 	var sticks: Variant = osd_state.get("sticks")
+	# Only a sample that carries the four sticks is drawn (the scripted pilot reports none).
+	var has_sticks := typeof(sticks) == TYPE_DICTIONARY and (sticks as Dictionary).has_all(["roll", "pitch", "yaw", "throttle"])
 	_draw_state = {horizon = horizon, throttle = collective, vfov_deg = vfov_deg, flight = flight, home = home_info,
 		units = units, soc = soc, speed_mps = float(t.get("speed_mps", 0.0)), altitude_m = float(t.get("altitude_agl_m", 0.0)),
-		commands = t.get("commands", PackedFloat64Array()), sticks = sticks if typeof(sticks) == TYPE_DICTIONARY else {},
+		commands = t.get("commands", PackedFloat64Array()), sticks = sticks if has_sticks else {},
 		stick_policy = str(osd_state.get("stick_policy", "absolute"))}
 	_refresh_visibility()
 
 
 ## Home, the armed notice and the statistics follow the arm state like a flight controller: arming sets home, resets
 ## the statistics and shows ARMED; armed frames feed the statistics; the disarm after a real flight shows them.
-## clock_s: the simulation clock (armed time = clock since the arm).
-func _track_flight(t: Dictionary, flight: Dictionary, armed: bool, clock_s: float) -> void:
+## clock_s: the simulation clock (armed time = clock since the arm). A roll or pitch stick pushed past half while
+## disarmed dismisses the statistics, as on a flight controller.
+func _track_flight(t: Dictionary, flight: Dictionary, armed: bool, clock_s: float, sticks: Variant) -> void:
+	if _stats_ready and not armed and typeof(sticks) == TYPE_DICTIONARY \
+			and maxf(absf(float(sticks.get("roll", 0.0))), absf(float(sticks.get("pitch", 0.0)))) > STATS_DISMISS_STICK:
+		_stats_ready = false
 	var position := Vector2(float(flight.north), float(flight.east)) if not flight.is_empty() else Vector2.INF
 	if armed and not _was_armed:
 		stats.reset()
@@ -711,7 +721,7 @@ func _track_flight(t: Dictionary, flight: Dictionary, armed: bool, clock_s: floa
 	if armed:
 		var home_m := position.distance_to(home) if position.is_finite() and home.is_finite() else INF
 		stats.sample(t, position, home_m, cells, maxf(0.0, clock_s - _arm_clock_s))
-	elif _was_armed and stats.flight_s >= Osd.STATS_MIN_FLIGHT_S:
+	elif _was_armed and stats.was_flight():
 		_stats_ready = true
 		stats_label.text = stats_text()
 	_was_armed = armed
@@ -723,7 +733,9 @@ func _update_warning(t: Dictionary, armed: bool, land: bool, low: bool) -> void:
 	var text := ""
 	var color := OSD_DANGER
 	var blink := false
-	if land and not bool(t.get("depleted", false)):
+	if _stats_visible():
+		pass # the statistics own the centre after a flight; the pack colour still shows a low cell
+	elif land and not bool(t.get("depleted", false)):
 		text = tr("LAND NOW")
 		blink = true
 	elif low and armed:

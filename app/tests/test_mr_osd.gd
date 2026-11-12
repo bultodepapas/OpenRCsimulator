@@ -168,6 +168,10 @@ func _hud() -> void:
 	hud.update(t, state)
 	_check("the disarm after a flight shows the statistics", hud.stats_panel.visible and "FLIGHT STATISTICS" in hud.stats_label.text
 		and "MAX DISTANCE" in hud.stats_label.text and "29 M" in hud.stats_label.text, hud.stats_label.text)
+	hud.update(_telemetry(false, 13.2), state)
+	_check("the statistics own the centre: no warning over them", hud.stats_panel.visible and hud.warning_label.text.is_empty(),
+		hud.warning_label.text)
+	hud.update(t, state)
 	hud.show_menu("paused", true)
 	_check("the menu hides the statistics", not hud.stats_panel.visible)
 	hud.hide_menu()
@@ -185,6 +189,11 @@ func _hud() -> void:
 	_check("Off hides the layout but keeps the arm state", hud.osd_config.layout == "off" and not hud.mode_label.visible
 		and not hud.timer_label.visible and not hud.battery_label.visible and not hud.throttle_label.visible
 		and hud.arm_label.text.begins_with("MOTORS DISARMED") and not hud.stats_panel.visible)
+	var low_cell := _telemetry(true, 13.2)
+	low_cell.time_s = 9.0
+	hud.update(low_cell, state)
+	_check("Off still warns LAND NOW on a low cell", hud.warning_label.text == "LAND NOW", hud.warning_label.text)
+	hud.update(t, state)
 	await process_frame
 	hud.cycle_layout()
 	hud.update(t, state)
@@ -194,6 +203,35 @@ func _hud() -> void:
 	t.time_s = 10.0
 	hud.update(t, state)
 	_check("arming again resets the statistics and hides them", not hud.stats_panel.visible and hud.stats.flight_s == 0.0)
+	# Armed on the ground for 3 s (no height, no path): not a flight, so no statistics.
+	var pad := _telemetry(true)
+	pad.altitude_agl_m = 0.0
+	var pad_state := state.duplicate()
+	pad_state.body = _body(0.0, 0.0, 0.0, 0.0, PackedFloat64Array([1, 0, 0, 0]))
+	hud.stats.reset()
+	for i in 4:
+		pad.time_s = 20.0 + float(i)
+		hud.update(pad, pad_state)
+	pad.armed = false
+	hud.update(pad, pad_state)
+	_check("an arm-and-wait on the pad shows no statistics", not hud._stats_ready and not hud.stats_panel.visible,
+		"flight_s %s" % hud.stats.flight_s)
+	# A real flight, then a disarmed roll stick dismisses its statistics.
+	var hop := _telemetry(true)
+	for i in 4:
+		hop.time_s = 30.0 + float(i)
+		hud.update(hop, state)
+	hop.armed = false
+	hud.update(hop, state)
+	var shown: bool = hud.stats_panel.visible
+	var moved := state.duplicate()
+	moved.sticks = {roll = 0.8, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	hud.update(hop, moved)
+	_check("a disarmed roll stick dismisses the statistics", shown and not hud.stats_panel.visible)
+	var scripted := state.duplicate()
+	scripted.sticks = {arm = true}
+	hud.update(hop, scripted)
+	_check("a sample without sticks draws no stick overlay", (hud._draw_state.sticks as Dictionary).is_empty())
 	_check("nothing was saved without a path", not FileAccess.file_exists(CONFIG))
 	hud.update(t, {}) # no optional keys: still updates
 	await process_frame
