@@ -56,10 +56,100 @@ func run() -> void:
 				print("checked ",lang," ",scale," ",route)
 				screen.free()
 				if manager != null: manager.free()
+	await check_workshop_header_focus()
 	for result in records:
 		printerr("FAIL responsive ",JSON.stringify(result))
 	print("Responsive modals: %d cases, %d failures" % [checks,records.size()])
 	quit(0 if records.is_empty() else 1)
+
+func check_workshop_header_focus() -> void:
+	TranslationServer.set_locale("ru")
+	ThemeSpec.text_scale = 2.0
+	ThemeSpec.compact_layout = false
+	vp.size = Vector2i(1920, 1080)
+	var workshop: CanvasLayer = load("res://ui/workshop.gd").new()
+	vp.add_child(workshop)
+	await settle()
+	var library: Button = workshop.find_child("OpenLibrary", true, false)
+	var creator: Button = workshop.find_child("OpenCreator", true, false)
+	var back: Button = workshop.find_child("CloseWorkshop", true, false)
+	var title: Label = workshop.find_child("WorkshopTitle", true, false)
+	var title_width := title.get_theme_font("font").get_string_size(tr(title.text), HORIZONTAL_ALIGNMENT_LEFT, -1, title.get_theme_font_size("font_size")).x
+	checks += 1
+	if title.size.x < title_width:
+		records.append({"route":"workshop", "page":"1080p title", "lang":"ru", "scale":2.0,
+			"size":"(1920, 1080)", "title_width":title.size.x, "needed_width":title_width})
+	vp.size = Vector2i(2560, 1440)
+	await settle()
+	library.grab_focus()
+	vp.size = Vector2i(960, 540)
+	ThemeSpec.compact_layout = true
+	workshop.get_child(0).theme = ThemeSpec.build()
+	await settle()
+	checks += 1
+	if not (library.get_parent() == workshop._identity_line and library.has_focus()
+			and creator.is_visible_in_tree() and back.is_visible_in_tree() and title.size.x >= 140.0):
+		records.append({"route":"workshop", "page":"compact header focus", "lang":"ru", "scale":2.0,
+			"size":"(960, 540)", "focus":str(vp.gui_get_focus_owner()), "title_width":title.size.x})
+	var selector: Control = workshop.find_child("WorkshopPage", true, false)
+	var view: Control = workshop.find_child("CompactPreview", true, false)
+	var first: Control = workshop.find_child("StartingPreset", true, false)
+	selector.grab_focus()
+	await workshop_tab(false)
+	var forward_view := view.has_focus()
+	await workshop_tab(false)
+	var forward_library := library.has_focus()
+	await workshop_tab(false)
+	checks += 1
+	if not (forward_view and forward_library and first.has_focus()):
+		records.append({"route":"workshop", "page":"compact tab order", "lang":"ru", "scale":2.0,
+			"size":"(960, 540)", "focus":str(vp.gui_get_focus_owner())})
+	await workshop_tab(true)
+	var reverse_library := library.has_focus()
+	await workshop_tab(true)
+	var reverse_view := view.has_focus()
+	await workshop_tab(true)
+	checks += 1
+	if not (reverse_library and reverse_view and selector.has_focus()):
+		records.append({"route":"workshop", "page":"compact reverse tab order", "lang":"ru", "scale":2.0,
+			"size":"(960, 540)", "focus":str(vp.gui_get_focus_owner())})
+	view.grab_focus()
+	await workshop_dpad(JOY_BUTTON_DPAD_RIGHT)
+	var right_library := library.has_focus()
+	await workshop_dpad(JOY_BUTTON_DPAD_LEFT)
+	checks += 1
+	if not (right_library and view.has_focus()):
+		records.append({"route":"workshop", "page":"compact gamepad order", "lang":"ru", "scale":2.0,
+			"size":"(960, 540)", "focus":str(vp.gui_get_focus_owner())})
+	library.grab_focus()
+	vp.size = Vector2i(2560, 1440)
+	ThemeSpec.compact_layout = false
+	workshop.get_child(0).theme = ThemeSpec.build()
+	await settle()
+	checks += 1
+	if not (library.get_parent() == workshop._header and library.has_focus() and creator.is_visible_in_tree() and back.is_visible_in_tree()):
+		records.append({"route":"workshop", "page":"wide header focus", "lang":"ru", "scale":2.0,
+			"size":"(2560, 1440)", "focus":str(vp.gui_get_focus_owner())})
+	workshop.free()
+
+func workshop_tab(reverse: bool) -> void:
+	for pressed in [true, false]:
+		var event := InputEventKey.new()
+		event.keycode = KEY_TAB
+		event.physical_keycode = KEY_TAB
+		event.shift_pressed = reverse
+		event.pressed = pressed
+		vp.push_input(event)
+	await settle()
+
+func workshop_dpad(button: JoyButton) -> void:
+	for pressed in [true, false]:
+		var event := InputEventJoypadButton.new()
+		event.device = 15
+		event.button_index = button
+		event.pressed = pressed
+		vp.push_input(event)
+	await settle()
 
 func walk(node: Node, bounds: Rect2, issues: Array, in_scroll := false) -> void:
 	if node is Control and not node.is_visible_in_tree(): return

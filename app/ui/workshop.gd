@@ -623,7 +623,8 @@ func _build_ui() -> void:
 func _resize_layout() -> void:
 	if not is_inside_tree(): return
 	var old_focus: Control = get_viewport().gui_get_focus_owner()
-	Widgets.fit_title(find_child("WorkshopTitle", true, false) as Label, UiTheme._font_size(UiTheme.SIZE.body))
+	var title := find_child("WorkshopTitle", true, false) as Label
+	Widgets.fit_title(title, UiTheme._font_size(UiTheme.SIZE.body))
 	Widgets.fit_title(_build_identity, UiTheme._font_size(UiTheme.SIZE.small), UiTheme._font_size(UiTheme.SIZE.card_title))
 	var available := _screen.size - Vector2(48, 36)
 	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
@@ -641,6 +642,17 @@ func _resize_layout() -> void:
 	back.custom_minimum_size.x = (200 if available.x < 1100 else 380) if enlarged else 200
 	back.text = tr("Back") if available.x < 1100 and enlarged else tr("Back to Pause" if return_destination == "Pause" else "Back to Home")
 	back.tooltip_text = tr("Back to Pause" if return_destination == "Pause" else "Back to Home")
+	# Keep the full-sized header actions and a readable title when translations
+	# need more width: the compact navigation row can also hold Library.
+	var header_width := available.x - _layout_panel.get_theme_stylebox("panel").get_minimum_size().x
+	var title_width := title.get_theme_font("font").get_string_size(tr(title.text), HORIZONTAL_ALIGNMENT_LEFT, -1, title.get_theme_font_size("font_size")).x
+	var needed_width := maxf(160.0, title_width) + _library_button.get_combined_minimum_size().x \
+		+ _creator_button.get_combined_minimum_size().x + back.get_combined_minimum_size().x + 48.0
+	var library_parent: Node = _identity_line if _compact and not _header.vertical and header_width < needed_width else _header
+	if _library_button.get_parent() != library_parent:
+		_library_button.reparent(library_parent)
+		if library_parent == _header: _header.move_child(_library_button, 1)
+		if old_focus == _library_button and _library_button.is_visible_in_tree(): _library_button.grab_focus()
 	for tab: Button in _page_buttons.values(): tab.visible = not _compact
 	_page_selector.visible = _compact and not inspecting
 	_library_button.visible = not inspecting
@@ -2378,6 +2390,10 @@ func _section(parent: VBoxContainer, node_name: String, title: String) -> VBoxCo
 
 func _wire_page_navigation() -> void:
 	var first: Control = _first_editor_control(_page_nodes.get(_active_page))
+	_library_button.focus_next = NodePath()
+	_library_button.focus_previous = NodePath()
+	_view_button.focus_next = NodePath()
+	_view_button.focus_previous = NodePath()
 	for index: int in PAGE_IDS.size():
 		var tab: Button = _page_buttons[PAGE_IDS[index]]
 		tab.focus_next = NodePath()
@@ -2388,8 +2404,18 @@ func _wire_page_navigation() -> void:
 			if tab.button_pressed: tab.focus_next = tab.get_path_to(first)
 	if first != null:
 		var navigation: Control = _page_selector if _compact else _page_buttons[_active_page]
-		navigation.focus_next = navigation.get_path_to(first)
-		first.focus_previous = first.get_path_to(navigation)
+		if _compact and _library_button.get_parent() == _identity_line and _library_button.is_visible_in_tree():
+			# The selector normally jumps straight into the editor. Include the
+			# relocated actions so Tab and Shift+Tab can still reach them.
+			navigation.focus_next = navigation.get_path_to(_view_button)
+			_view_button.focus_previous = _view_button.get_path_to(navigation)
+			_view_button.focus_next = _view_button.get_path_to(_library_button)
+			_library_button.focus_previous = _library_button.get_path_to(_view_button)
+			_library_button.focus_next = _library_button.get_path_to(first)
+			first.focus_previous = first.get_path_to(_library_button)
+		else:
+			navigation.focus_next = navigation.get_path_to(first)
+			first.focus_previous = first.get_path_to(navigation)
 		_page_selector.focus_neighbor_bottom = _page_selector.get_path_to(first)
 
 
