@@ -10,6 +10,7 @@ const PilotStrike = preload("res://render/lens/pilot_strike.gd")
 const DropPool = preload("res://render/lens/drop_pool.gd")
 const LensStack = preload("res://render/lens/lens_stack.gd")
 const DisplayPreferences = preload("res://app_state/display_preferences.gd")
+const CollisionWorld = preload("res://scenery/collision_world.gd")
 
 var _checks := 0
 var _failures := 0
@@ -41,6 +42,8 @@ func _settings_checks() -> void:
 	_check("defaults enable the stack on interactive flights", interactive.enabled and interactive.impact == "curtain" and interactive.rain and interactive.grime)
 	var scripted: Dictionary = Settings.resolve({}, false, Settings.DEFAULTS)
 	_check("scripted, capture and trace routes get nothing by default", not scripted.enabled)
+	_check("Automatic is the default and resolves to a real tier", Settings.DEFAULTS.lens_effects == "auto"
+		and interactive.requested_quality == "auto" and interactive.quality in ["low", "medium", "high", "ultra"])
 	var forced: Dictionary = Settings.resolve({"lens-effects": "high"}, false, Settings.DEFAULTS)
 	_check("an explicit --lens-effects enables a non-interactive route", forced.enabled and forced.quality == "high")
 	var off: Dictionary = Settings.resolve({"lens-effects": "off"}, true, Settings.DEFAULTS)
@@ -171,6 +174,41 @@ func _pool_checks() -> void:
 	for i in 40:
 		pool.spawn_random(1.7778, 0.006)
 	_check("the pool never exceeds its capacity", pool.count <= pool.capacity)
+	var layout := DropPool.new()
+	layout.configure(4, 2, false)
+	layout.spawn(0.5, 0.25, 0.02)
+	layout.step(1.0 / 60.0, 1.7778, Vector2(0.6, 0.8), Vector2(0.889, 0.5), 0.0, Vector2.ZERO, true)
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_2D
+	mm.use_custom_data = true
+	mm.instance_count = 4
+	layout.write(mm, 1080.0, true)
+	var velocity := layout.drop_velocity(0)
+	var elongation := clampf(velocity.length() * 4.0, 0.0, 1.6)
+	var diameter := 2.0 * layout.drop_radius(0) * 1080.0
+	var expected := Transform2D(velocity.angle(), Vector2(diameter * (1.0 + elongation), diameter), 0.0, layout.drop_position(0) * 1080.0)
+	var written := mm.get_instance_transform_2d(0)
+	# The headless dummy renderer stores no MultiMesh data; the layout is then checked in the rendered app only.
+	var probe := MultiMesh.new()
+	probe.transform_format = MultiMesh.TRANSFORM_2D
+	probe.instance_count = 1
+	probe.set_instance_transform_2d(0, Transform2D(0.0, Vector2(2.0, 2.0), 0.0, Vector2(3.0, 4.0)))
+	if probe.get_instance_transform_2d(0).origin != Vector2(3.0, 4.0):
+		print("skip the packed buffer layout (dummy renderer keeps no MultiMesh data)")
+	else:
+		_check("the packed buffer matches the engine's 2D instance layout", written.x.is_equal_approx(expected.x)
+			and written.y.is_equal_approx(expected.y) and written.origin.is_equal_approx(expected.origin)
+			and mm.visible_instance_count == 1)
+	var thrown := DropPool.new()
+	thrown.configure(8, 6, false)
+	thrown.spawn(0.9, 0.5, 0.018)
+	for i in 30:
+		thrown.step(1.0 / 60.0, 1.7778, Vector2.ZERO, Vector2(0.889, 0.5), 0.0, Vector2.ZERO, true, Vector2(3.0, 0.0))
+	_check("a hard acceleration throws a drop across the glass (inertia)", thrown.count == 1 and thrown.drop_position(0).x > 0.92)
+	var crown := DropPool.new()
+	crown.configure(16, 7, false)
+	crown.splash(0.9, 0.5, 0.01, 4)
+	_check("a fast impact leaves a crown of smaller beads around it", crown.count == 4 and crown.drop_radius(0) < 0.01)
 	var crowd := DropPool.new()
 	crowd.configure(96, 9, false)
 	for i in 90:
@@ -269,6 +307,53 @@ func _stack_checks() -> void:
 	_check("the pilot's eye has no drops without glasses", stack.snapshot().drops == 0)
 	stack.debug_grime("rough", 18.0)
 	stack.debug_oil(0.3)
+	var struck := [0, 0]
+	stack.person_struck.connect(func(player: bool) -> void: struck[1 if player else 0] += 1)
+	var crash_world: Dictionary = CollisionWorld.build({pilot = {north = -60.0, east = 0.0, down = 0.0}, objects = []},
+		{groups = [{id = "spectators", prefab = "person_standing", placements = [{north = 10.0, east = 0.0, heading = 0.0}]}]})
+	stack.reset()
+	stack.strike_from_crash(PackedFloat64Array([10.0, 0.0, -0.9]), 14.0, crash_world.world, "test:1")
+	_check("a crash at a spectator draws blood and announces it", bool(stack.snapshot().blood) and struck[0] == 1)
+	stack.reset()
+	stack.strike_from_crash(PackedFloat64Array([40.0, 0.0, 0.0]), 14.0, crash_world.world, "test:2")
+	_check("a crash in the open is ground, not blood", not bool(stack.snapshot().blood) and struck[0] == 1)
+	stack.reset()
+	stack.settings["impact"] = "splatter"
+	view[0] = "chase"
+	stack.advance(1.0 / 60.0, 30.0, false)
+	stack.strike_person(1.0, Vector3.INF, false, "runner:1")
+	var runners: Array = stack._stamps.filter(func(s: Dictionary) -> bool: return int(s.kind) == LensStack.STAMP_RUNNER)
+	for i in 120:
+		stack.advance(1.0 / 60.0, 30.0 + i / 60.0, false)
+	var early: float = runners[0].grow if not runners.is_empty() else -1.0
+	for i in 600:
+		stack.advance(1.0 / 60.0, 32.0 + i / 60.0, false)
+	var late: float = runners[0].grow if not runners.is_empty() else -1.0
+	_check("blood splats bleed runners that creep down and stop as they set", not runners.is_empty()
+		and early > 0.3 and late > early and late < 1.0)
+	stack.reset()
+	stack.debug_grime("rough", 10.0)
+	var mud: Array = stack._stamps.filter(func(s: Dictionary) -> bool: return int(s.kind) == LensStack.STAMP_MUD)
+	stack.debug_rain(12.0)
+	for i in 60:
+		stack.advance(1.0 / 60.0, 40.0 + i / 60.0, false)
+	_check("rain keeps mud wet and rinses it off within half a minute", not mud.is_empty()
+		and float(mud[0].dry_t) < 0.05 and is_finite(float(mud[0].life)) and float(mud[0].life) <= LensStack.MUD_RINSE_S + 2.0)
+	stack.debug_rain(0.0)
+	stack.settings["impact"] = "curtain"
+	var pilot_stack := LensStack.new()
+	holder.add_child(pilot_stack)
+	pilot_stack.configure({"settings": Settings.resolve({}, true, Settings.DEFAULTS), "camera": camera,
+		"view_provider": func() -> String: return "pilot", "station": PackedFloat64Array([10.0, 0.0, 0.0]), "seed": 4})
+	var pilot_hits := [0]
+	pilot_stack.person_struck.connect(func(player: bool) -> void: pilot_hits[0] += 1 if player else 0)
+	pilot_stack.show_message("caption first")
+	pilot_stack.strike_person(1.0, Vector3.INF, true, "pilot:1")
+	pilot_stack.strike_from_crash(PackedFloat64Array([10.0, 0.0, -0.9]), 14.0, crash_world.world, "crash:2")
+	_check("a crash at the pilot after the sweep fired is not a second strike", pilot_hits[0] == 1)
+	var pilot_layer: CanvasLayer = pilot_stack.get_node("LensLayer")
+	_check("the caption stays above the curtain", pilot_layer.get_child(pilot_layer.get_child_count() - 1).name == "LensMessage")
+	pilot_stack.queue_free()
 	stack.reset()
 	snap = stack.snapshot()
 	_check("reset clears blood, stamps, dust, oil and drops", not snap.blood and snap.stamps == 0 and snap.dust == 0.0 and snap.oil == 0.0 and snap.drops == 0)

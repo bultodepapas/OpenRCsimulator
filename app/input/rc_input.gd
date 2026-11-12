@@ -48,9 +48,11 @@ var input_error := ""
 var armed := false
 var axes := PackedFloat64Array()
 var smoke_aux = SmokeAux.new()
-## These are input requests, not simulated flap/gear actuator positions.
-var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new()}
-var _aux_action_values := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0}
+## These are input requests, not simulated flap/gear actuator positions. D6-UX-01: "arm" and "flight_mode" are the
+## FPV quad's arm and Angle/Acro switches (read by multirotor_input.gd); they have no semantic toggle actions.
+var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new(), "arm": SmokeAux.new(), "flight_mode": SmokeAux.new()}
+const _AUX_ACTION_DEFAULTS := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0, "arm": 0.0, "flight_mode": 0.0}
+var _aux_action_values := _AUX_ACTION_DEFAULTS.duplicate()
 var _auxiliary_enabled := true
 
 var _seen: Dictionary = {}
@@ -152,7 +154,7 @@ func disconnect_device() -> void:
 	device_id = -1
 	smoke_aux.disconnect_device()
 	for channel in _extra_aux.values(): channel.disconnect_device()
-	_aux_action_values = {"smoke": 0.0, "flaps": 0.0, "gear": 0.0}
+	_aux_action_values = _AUX_ACTION_DEFAULTS.duplicate()
 	_reset_controls(false)
 	_pressed_buttons.clear()
 	input_error = ""
@@ -331,7 +333,7 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			var axis: int = int(profile[channel_name].axis)
 			_seen[axis] = true
 	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
-		for channel in [smoke_aux, _extra_aux.flaps, _extra_aux.gear]:
+		for channel in [smoke_aux] + _extra_aux.values():
 			var binding: Dictionary = channel.binding
 			if binding.get("type", "") == "axis":
 				channel.sample_axis(axes[int(binding.axis)])
@@ -437,7 +439,7 @@ func smoke_amount() -> float:
 	return auxiliary_amount("smoke")
 
 
-## Normalized requests: flaps 0=retracted/1=full, gear 0=down/1=up.
+## Normalized requests: flaps 0=retracted/1=full, gear 0=down/1=up, arm 0=OFF/1=ON, flight_mode 0=Angle/1=Acro.
 ## Activity adapters apply requests only to supported vehicle equipment.
 func auxiliary_amount(channel_name: String) -> float:
 	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return 0.0
@@ -610,7 +612,7 @@ func _configure_smoke_aux() -> void:
 	var aux: Dictionary = profile.get("aux", {}) if profile.get("aux", {}) is Dictionary else {}
 	for channel_name in _extra_aux:
 		_extra_aux[channel_name].configure(aux.get(channel_name, {}), axes_in_use)
-	_aux_action_values = {"smoke": 0.0, "flaps": 0.0, "gear": 0.0}
+	_aux_action_values = _AUX_ACTION_DEFAULTS.duplicate()
 
 
 func _smoke_binding() -> Dictionary:

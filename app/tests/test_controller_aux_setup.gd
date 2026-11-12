@@ -148,7 +148,7 @@ func _test_validation_feedback(setup) -> void:
 	}
 	setup._set_draft_profile(invalid_profile)
 	setup._save_profile()
-	_check("Save explains when an AUX mapping overlaps a flight axis", setup.status_label.text.contains("aux.smoke is invalid or overlaps a flight axis"))
+	_check("Save explains when an AUX mapping overlaps a flight axis", setup.status_label.text.contains("Check the Smoke extra channel: its input is incomplete or uses a flight stick axis."))
 	_check("AUX overlap marks the auxiliary source and the reserved flight axis", setup._aux_controls.smoke.axis.get_line_edit().has_theme_stylebox_override("normal") and setup._axis_controls.roll.axis.get_line_edit().has_theme_stylebox_override("normal"))
 
 	var conflicting_profile: Dictionary = setup.current_profile()
@@ -161,7 +161,7 @@ func _test_validation_feedback(setup) -> void:
 	event.button_index = JOY_BUTTON_RIGHT_STICK
 	event.pressed = true
 	setup._capture_binding(event)
-	_check("Remap explains when an action conflicts with an AUX input", setup.status_label.text.contains("Action camera_previous conflicts with aux.smoke"))
+	_check("Remap explains when an action conflicts with an AUX input", setup.status_label.text.contains("“Previous camera” uses the same control as the Smoke extra channel."))
 
 	var endpoints := ControllerProfile.defaults()
 	endpoints.aux = {"smoke": {"type": "axis", "axis": 9, "off": 0.0, "on": 0.1, "invert": false}}

@@ -141,6 +141,9 @@ func _commit() -> void:
 		intro.seek(maxf(intro.elapsed, Intro.DURATION))
 	else:
 		intro.settle()
+	# UI-28-R5b: nothing is left to skip once Home is being prepared; a visible Skip would promise an
+	# action that no longer exists. Skip inputs are still held below so Home cannot receive them.
+	intro.skip_button.visible = false
 	await _presentation_frame()
 	if _closing or not is_inside_tree():
 		return
@@ -167,6 +170,7 @@ func _commit() -> void:
 	if _closing or not is_inside_tree():
 		return
 	intro.detail_text = ""
+	intro.subdetail_text = ""
 	intro.progress = 1.0
 	await _presentation_frame()
 	await _owned_frame(get_tree().process_frame)
@@ -196,7 +200,11 @@ func _on_home_stage(stage: String) -> void:
 	if intro == null or (index >= 0 and stage == _home_stage):
 		return
 	_home_stage = stage
-	intro.detail_text = stage
+	if index >= 0 or intro.detail_text == "":
+		intro.detail_text = stage # the stable stage line
+		intro.subdetail_text = ""
+	else:
+		intro.subdetail_text = stage
 	if index >= _home_milestone:
 		_home_milestone = index + 1
 		intro.progress = (1.0 + index) / MILESTONES

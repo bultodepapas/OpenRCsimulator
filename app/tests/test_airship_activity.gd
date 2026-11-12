@@ -1,4 +1,4 @@
-# BL-10/BL-12: Home -> Garage "RC blimp" choice -> Fly RC blimp -> airship activity -> Home. Checks the
+# BL-10/BL-12: Home -> Vehicles catalog "RC blimp" (UI-39) -> FLY -> airship activity -> Home. Checks the
 # exclusive activity slot, skin selection, paused safe start, resume/arming, accepted ticks and the return route.
 extends SceneTree
 
@@ -38,17 +38,23 @@ func _run() -> void:
 		await ui.close_app(app)
 		quit(1)
 		return
-	app.home._page_buttons[3].pressed.emit()
+	# UI-39: the RC blimp is one Vehicles catalog entry; its skins are its paints.
+	app.home._page_buttons[1].pressed.emit()
 	await process_frame
-	var choice: OptionButton = app.home.ground_vehicle_choice
-	check(choice.item_count == GroundCatalog.IDS.size() + Catalog.SKIN_IDS.size() + 1, "Garage lists the RC cars, every blimp skin and the FPV quad")
-	var historic := GroundCatalog.IDS.size() + Catalog.SKIN_IDS.find("historico")
-	choice.select(historic)
-	choice.item_selected.emit(historic)
-	check(app.home.ground_vehicle_button.text == "Fly RC blimp" and app.home.airship_skin_id == "historico", "a blimp skin turns the Garage action into Fly RC blimp")
+	var blimp: int = app.home._catalog_ids.find(Catalog.STOCK_ID)
+	check(blimp >= 0 and app.home._catalog_ids.count(Catalog.STOCK_ID) == 1, "the Vehicles catalog lists the RC blimp once")
+	app.home._catalog_buttons[blimp].pressed.emit()
+	await process_frame
+	var paints: Array = app.home.livery_choices().map(func(choice: Dictionary) -> String: return choice.id)
+	check(app.home.activity_id == Catalog.STOCK_ID and paints == Catalog.SKIN_IDS and app.home.livery_button.is_visible_in_tree(),
+		"selecting the blimp offers every skin as a paint (%s)" % [paints])
+	app.set_livery("historico")
+	check(app.home.airship_skin_id == "historico" and app.home.livery_id == "historico" and app.preferences.airship_skin == "historico"
+		and app.preferences.get("liveries", {}).is_empty(), "a blimp paint is its skin and never an aircraft livery")
+	check(app.home_scene.requested_aircraft == Catalog.STOCK_ID and app.home_scene.requested_livery == "historico", "the backdrop shows the chosen skin")
 	var car_requests := [0]
 	app.home.ground_vehicle_requested.connect(func() -> void: car_requests[0] += 1)
-	app.home.ground_vehicle_button.pressed.emit()
+	app.home.fly_button.pressed.emit()
 	for i in 4:
 		await process_frame
 	var activity: Node = app.ground_vehicle
@@ -83,8 +89,8 @@ func _run() -> void:
 		await process_frame
 	check(app.ground_vehicle == null and app.home != null, "Home returns after the blimp activity")
 	if app.home != null:
-		check(app.home.airship_selected and app.home.airship_skin_id == "historico" and app.home.ground_vehicle_button.text == "Fly RC blimp",
-			"Garage remembers the blimp and its skin (%s %s %s)" % [app.home.airship_selected, app.home.airship_skin_id, app.home.ground_vehicle_button.text])
+		check(app.home.activity_id == Catalog.STOCK_ID and app.home.airship_skin_id == "historico" and app.home.livery_id == "historico",
+			"Home remembers the blimp and its skin (%s %s %s)" % [app.home.activity_id, app.home.airship_skin_id, app.home.livery_id])
 	await ui.close_app(app)
 	print("Airship activity: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)

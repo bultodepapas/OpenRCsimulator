@@ -3,14 +3,17 @@
 ## command-line overrides (resolve). Scripted, capture and trace routes get nothing unless --lens-effects is explicit.
 extends RefCounted
 
-const QUALITIES: Array[String] = ["off", "low", "medium", "high", "ultra"]
+const QUALITIES: Array[String] = ["off", "auto", "low", "medium", "high", "ultra"]
+const SceneDetail := preload("res://render/scene_detail.gd")
+## Automatic follows Scene detail (itself Automatic from the detected GPU by default), like flags and birds.
+const AUTO_TIER := {"low": "low", "medium": "medium", "high": "high", "extreme": "ultra"}
 const IMPACT_STYLES: Array[String] = ["off", "curtain", "splatter"]
 const IMPACT_COLOURS: Array[String] = ["red", "dark", "desaturated"]
 const SWITCHES: Array[String] = ["off", "on"]
 
 ## Owner decision D1 (2026-11-12): the classic curtain is on by default and can be switched off.
 const DEFAULTS := {
-	"lens_effects": "medium",
+	"lens_effects": "auto",
 	"impact_effects": "curtain",
 	"impact_colour": "red",
 	"lens_rain": "on",
@@ -21,10 +24,10 @@ const DEFAULTS := {
 
 ## Per-tier budgets. Disabled tiers allocate nothing; a lower tier frees the higher one's buffers on the next flight.
 const TIERS := {
-	"low": {"drops": 24, "streaks": 2000, "stamps": 8, "trails": false, "wetness": false, "focus_lod": 1.0},
-	"medium": {"drops": 64, "streaks": 5000, "stamps": 16, "trails": true, "wetness": true, "focus_lod": 1.5},
-	"high": {"drops": 128, "streaks": 9000, "stamps": 24, "trails": true, "wetness": true, "focus_lod": 1.5},
-	"ultra": {"drops": 192, "streaks": 14000, "stamps": 32, "trails": true, "wetness": true, "focus_lod": 2.0},
+	"low": {"drops": 24, "streaks": 2000, "stamps": 12, "trails": false, "wetness": false, "focus_lod": 1.0},
+	"medium": {"drops": 64, "streaks": 5000, "stamps": 24, "trails": true, "wetness": true, "focus_lod": 1.5},
+	"high": {"drops": 128, "streaks": 9000, "stamps": 36, "trails": true, "wetness": true, "focus_lod": 1.5},
+	"ultra": {"drops": 192, "streaks": 14000, "stamps": 48, "trails": true, "wetness": true, "focus_lod": 2.0},
 }
 
 static var _preference: Dictionary = DEFAULTS.duplicate()
@@ -61,7 +64,7 @@ static func resolve(args: Dictionary, automatic_route: bool, saved: Dictionary =
 	var quality: String = pref.lens_effects
 	if args.has("lens-effects"):
 		var requested := str(args["lens-effects"])
-		quality = pref.lens_effects if requested == "on" and pref.lens_effects != "off" else ("medium" if requested == "on" else requested)
+		quality = pref.lens_effects if requested == "on" and pref.lens_effects != "off" else ("auto" if requested == "on" else requested)
 		if quality not in QUALITIES:
 			quality = "off"
 	elif not automatic_route:
@@ -77,10 +80,14 @@ static func resolve(args: Dictionary, automatic_route: bool, saved: Dictionary =
 		var text := str(args["lens-rain-mmph"])
 		if text.is_valid_float():
 			rain_override = clampf(text.to_float(), 0.0, 200.0)
+	var requested_quality := quality
+	if quality == "auto":
+		quality = str(AUTO_TIER.get(SceneDetail.level(), "medium"))
 	var enabled := quality != "off"
 	return {
 		"enabled": enabled and (impact != "off" or rain or grime),
 		"quality": quality,
+		"requested_quality": requested_quality,
 		"tier": TIERS.get(quality, TIERS.medium),
 		"impact": impact if enabled else "off",
 		"colour": colour,

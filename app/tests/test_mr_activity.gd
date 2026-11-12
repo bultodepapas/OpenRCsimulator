@@ -1,4 +1,4 @@
-# DR-14/20/31/36a/37 (ROUTE-01…06, VIS-05…07 headless parts): Home -> Garage "FPV quad" -> Fly FPV quad -> the
+# DR-14/20/31/36a/37 (ROUTE-01…06, VIS-05…07 headless parts): Home -> Vehicles catalog "FPV quad" (UI-39) -> FLY -> the
 # multirotor activity in the exclusive slot -> Home. Paused, disarmed start on the pad; a held-high arm switch does
 # not arm and the OSD says why; OFF then ON at low throttle arms; climb, flight, crash or landing; truthful OSD
 # (EXPERIMENTAL, arm state, battery only with a pack); focus loss holds; restart on the pad returns a disarmed quad
@@ -109,8 +109,8 @@ func _run() -> void:
 		and root.find_child("MultirotorActivity", true, false) == null)
 	_check("Input.use_accumulated_input is restored on return", Input.use_accumulated_input == accumulated_before)
 	if app.home != null:
-		_check("Garage remembers the FPV quad", app.home.multirotor_selected and app.home.ground_vehicle_button.text == "Fly FPV quad",
-			"%s %s" % [app.home.multirotor_selected, app.home.ground_vehicle_button.text])
+		_check("Home returns with the FPV quad still selected", app.home.activity_id == Catalog.ID and app.home.fly_button.text == "FLY",
+			"%s %s" % [app.home.activity_id, app.home.fly_button.text])
 		await _switching(app)
 	await ui.close_app(app)
 	await _direct_route(ui)
@@ -122,51 +122,46 @@ func _run() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
+## UI-39: the RC cars, the RC blimp and the FPV quad are Vehicles catalog entries after the aircraft; Fly starts the
+## selected one. (The former RC garage page is gone.)
 func _garage(app: Node) -> void:
-	app.home._page_buttons[3].pressed.emit()
+	app.home._page_buttons[1].pressed.emit()
 	await process_frame
-	var choice: OptionButton = app.home.ground_vehicle_choice
-	var cars := GroundCatalog.IDS.size()
-	var skins := AirshipCatalog.SKIN_IDS.size()
-	_check("Garage lists the RC cars, the blimp skins and the FPV quad last", choice.item_count == cars + skins + 1)
-	var unchanged := true
-	for i in cars:
-		unchanged = unchanged and choice.get_item_text(i) == GroundCatalog.entry(GroundCatalog.IDS[i]).name
-	for i in skins:
-		var skin: Dictionary = AirshipCatalog.skins()[i]
-		unchanged = unchanged and choice.get_item_text(cars + i) == "%s — %s" % [TranslationServer.translate("RC blimp (experimental)"), skin.name]
-	_check("car and blimp items keep their order and labels", unchanged)
-	_check("the FPV quad item is named", choice.get_item_text(cars + skins) == TranslationServer.translate(Catalog.DISPLAY_NAME),
-		choice.get_item_text(cars + skins))
-	var requests := {car = 0, blimp = 0, quad = 0}
+	var ids: PackedStringArray = app.home._catalog_ids
+	var quad: int = ids.find(Catalog.ID)
+	_check("the Vehicles catalog lists the FPV quad, the RC blimp and every RC car",
+		quad >= 0 and ids.has(AirshipCatalog.STOCK_ID) and GroundCatalog.IDS.all(func(id: String) -> bool: return ids.has(id)), str(ids))
+	var requests := {car = 0, blimp = 0, quad = 0, flight = 0}
 	app.home.ground_vehicle_requested.disconnect(app.start_ground_vehicle)
 	app.home.airship_requested.disconnect(app.start_airship)
+	app.home.fly_requested.disconnect(app.start_flight)
 	app.home.ground_vehicle_requested.connect(func() -> void: requests.car += 1)
 	app.home.airship_requested.connect(func() -> void: requests.blimp += 1)
 	app.home.multirotor_requested.connect(func() -> void: requests.quad += 1)
-	choice.select(0)
-	choice.item_selected.emit(0)
-	_check("a car keeps \"Open RC car garage\"", app.home.ground_vehicle_button.text == "Open RC car garage" and not app.home.multirotor_selected)
-	app.home.ground_vehicle_button.pressed.emit()
-	choice.select(cars + 1)
-	choice.item_selected.emit(cars + 1)
-	_check("a blimp skin keeps \"Fly RC blimp\"", app.home.ground_vehicle_button.text == "Fly RC blimp"
-		and app.home.airship_skin_id == AirshipCatalog.SKIN_IDS[1] and not app.home.multirotor_selected)
-	app.home.ground_vehicle_button.pressed.emit()
-	choice.select(cars + skins)
-	choice.item_selected.emit(cars + skins)
-	_check("the FPV quad turns the action into \"Fly FPV quad\"", app.home.ground_vehicle_button.text == "Fly FPV quad"
-		and app.home.multirotor_selected and not app.home.airship_selected and app.home._garage_index() == cars + skins)
-	_check("car and blimp actions still request their own activities", requests.car == 1 and requests.blimp == 1 and requests.quad == 0,
-		str(requests))
+	app.home.fly_requested.connect(func() -> void: requests.flight += 1)
+	app.home._catalog_buttons[ids.find(GroundCatalog.IDS[0])].pressed.emit()
+	await process_frame
+	_check("a car turns Fly into DRIVE", app.home.fly_button.text == "DRIVE" and app.home.activity_id == GroundCatalog.IDS[0])
+	app.home.fly_button.pressed.emit()
+	app.home._catalog_buttons[ids.find(AirshipCatalog.STOCK_ID)].pressed.emit()
+	await process_frame
+	_check("the RC blimp flies", app.home.fly_button.text == "FLY" and app.home.activity_id == AirshipCatalog.STOCK_ID)
+	app.home.fly_button.pressed.emit()
+	app.home._catalog_buttons[quad].pressed.emit()
+	await process_frame
+	_check("the FPV quad is selected like an aircraft", app.home.fly_button.text == "FLY" and app.home.activity_id == Catalog.ID
+		and app.home._catalog_buttons[quad].button_pressed and not app.home.fly_button.disabled)
+	_check("car and blimp Fly request their own activities, never a flight", requests.car == 1 and requests.blimp == 1
+		and requests.quad == 0 and requests.flight == 0, str(requests))
 	app.home.ground_vehicle_requested.connect(app.start_ground_vehicle)
 	app.home.airship_requested.connect(app.start_airship)
+	app.home.fly_requested.connect(app.start_flight)
 
 
 func _launch(app: Node) -> Node:
 	var before_car := [0]
 	app.home.ground_vehicle_requested.connect(func() -> void: before_car[0] += 1)
-	app.home.ground_vehicle_button.pressed.emit()
+	app.home.fly_button.pressed.emit()
 	for i in 4:
 		await process_frame
 	var activity: Node = app.ground_vehicle
@@ -384,7 +379,7 @@ func _focus(activity: Node) -> void:
 func _switching(app: Node) -> void:
 	var counts: Array[int] = []
 	for cycle in 2:
-		app.home.ground_vehicle_button.pressed.emit()
+		app.home.fly_button.pressed.emit()
 		for i in 4:
 			await process_frame
 		var activity: Node = app.ground_vehicle

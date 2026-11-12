@@ -8,7 +8,11 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 	"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer",
 	"restart_flight", "trim_yaw_left", "trim_yaw_right",
 ]
-const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
+## D6-UX-01 adds the FPV quad's "arm" and "flight_mode" after the airplane channels. A profile without a key
+## leaves that channel unbound; unlisted keys are ignored as before.
+const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear", "arm", "flight_mode"]
+## D6-UX-01: the vehicle capability each AUX channel serves (presentation only, like required_capability).
+const AUX_CHANNEL_CAPABILITIES := {"smoke": "smoke", "flaps": "flaps", "gear": "gear", "arm": "multirotor", "flight_mode": "multirotor"}
 ## Product defaults on standardized gamepads, scoped to implemented vehicle capabilities.
 ## Profile/setup validation reserves equipment candidates; flight passes its actual capabilities.
 const AUTOMATIC_BUTTONS := {
@@ -24,6 +28,9 @@ const AUTOMATIC_BUTTONS := {
 }
 const AIRPLANE_CAPABILITIES := {"gear": true, "smoke": true, "flaps": true, "rates": true}
 const HELICOPTER_CAPABILITIES := {"helicopter": true}
+const MULTIROTOR_CAPABILITIES := {"multirotor": true}
+## UI-15-UX-02c: vehicle capabilities of actions that AUTOMATIC_BUTTONS does not already name.
+const ACTION_CAPABILITY_EXTRAS := {"flaps_up": "flaps", "flaps_down": "flaps"}
 static var _definition_cache: Dictionary = {}
 
 ## Semantic gamepad actions are data, not synthetic keyboard events. The owning input router
@@ -404,6 +411,29 @@ static func matches_binding(binding: Dictionary, event: InputEvent, selected_dev
 
 static func action_definition(action_id: String) -> Dictionary:
 	return _definition_map().get(action_id, {}).duplicate(true)
+
+
+## UI-15-UX-02c: the vehicle capability an action needs ("" when it applies to every vehicle).
+## Presentation only: bindings, defaults and validation never depend on it.
+static func required_capability(action_id: String) -> String:
+	if AUTOMATIC_BUTTONS.has(action_id):
+		return str(AUTOMATIC_BUTTONS[action_id].channel)
+	return str(ACTION_CAPABILITY_EXTRAS.get(action_id, ""))
+
+
+## Whether an action means anything for a vehicle with these capabilities (helicopter_* needs
+## `helicopter`, gear_toggle `gear`, smoke_toggle `smoke`, flap actions `flaps`, rates_toggle `rates`).
+static func action_applies(action_id: String, capabilities: Dictionary) -> bool:
+	var needed := required_capability(action_id)
+	return needed.is_empty() or bool(capabilities.get(needed, false))
+
+
+## D6-UX-01: whether an AUX channel means anything for a vehicle with these capabilities (smoke, flaps and gear
+## need their equipment; arm and flight_mode need `multirotor`). An unknown channel applies everywhere.
+## Presentation only: AUX validation, conflicts and runtime never depend on it.
+static func aux_applies(channel: String, capabilities: Dictionary) -> bool:
+	var needed := str(AUX_CHANNEL_CAPABILITIES.get(channel, ""))
+	return needed.is_empty() or bool(capabilities.get(needed, false))
 
 
 ## Releases and presses share one source, including synthetic logical-only keys.

@@ -28,7 +28,8 @@ if SPEC is None or SPEC.loader is None:
 locked = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(locked)
 
-TOOL_ROOT = ROOT / "tmp/native-kernel"
+# NK-4: OPENRC_NK_TOOL_ROOT relocates the toolchain/build root (e.g. off a nearly full system drive).
+TOOL_ROOT = Path(os.environ.get("OPENRC_NK_TOOL_ROOT", ROOT / "tmp/native-kernel"))
 locked.LOCK_PATH = HERE / "toolchain-lock.json"
 locked.TOOL_ROOT = TOOL_ROOT
 locked.SOURCES = HERE / "src"
@@ -1102,7 +1103,8 @@ def main() -> int:
     compiler_version = locked.run(["g++", "-dumpfullversion", "-dumpversion"], capture=True).strip()
     if compiler_version != platform_lock["compiler_version"]:
         raise SystemExit(f"Expected locked g++ {platform_lock['compiler_version']}, got {compiler_version}.")
-    if shutil.disk_usage(ROOT).free < 6 * 1024**3:
+    TOOL_ROOT.mkdir(parents=True, exist_ok=True)
+    if shutil.disk_usage(TOOL_ROOT).free < 6 * 1024**3:  # the drive the build writes to
         raise SystemExit("Less than 6 GB free; refusing to build.")
 
     scons = locked.ensure_scons(lock)
@@ -1153,8 +1155,8 @@ def main() -> int:
         "[libraries]\n"
         f'linux.x86_64 = "lib/lib{library_name}.so"\n', encoding="utf-8")
     receipt = {
-        "library": str(library.relative_to(ROOT)),
-        "descriptor": str(descriptor.relative_to(ROOT)),
+        "library": (str(library.relative_to(ROOT)) if library.is_relative_to(ROOT) else str(library)),
+        "descriptor": (str(descriptor.relative_to(ROOT)) if descriptor.is_relative_to(ROOT) else str(descriptor)),
         "mutant": args.mutant,
         "binary_sha256": sha256_file(library),
         "source_sha256": source_digest(),

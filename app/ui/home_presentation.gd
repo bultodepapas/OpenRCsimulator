@@ -151,8 +151,10 @@ static func _visible(root: Node3D, node: Node) -> bool:
 	return true
 
 
+## `min_distance` keeps the camera clear of the field; UI-39 RC vehicles (a 0.25 m quad, a 0.5 m truck) use a shorter
+## one than aircraft so they are not framed as specks.
 static func fit(camera: Camera3D, aircraft_root: Node3D, bounds: AABB, viewport_size: Vector2,
-		azimuth_degrees := 32.0, fov_degrees := 40.0) -> Rect2:
+		azimuth_degrees := 32.0, fov_degrees := 40.0, min_distance := 1.5) -> Rect2:
 	var aspect := maxf(viewport_size.x / maxf(viewport_size.y, 1.0), 0.1)
 	camera.fov = fov_degrees
 	camera.keep_aspect = Camera3D.KEEP_HEIGHT
@@ -162,7 +164,7 @@ static func fit(camera: Camera3D, aircraft_root: Node3D, bounds: AABB, viewport_
 	var up := right.cross(forward).normalized()
 	var center := aircraft_root.transform * bounds.get_center()
 	var tangent := tan(deg_to_rad(fov_degrees) * 0.5)
-	var distance := 1.5
+	var distance := min_distance
 	for i in 8:
 		var offset := aircraft_root.transform * bounds.get_endpoint(i) - center
 		var depth := offset.dot(forward)

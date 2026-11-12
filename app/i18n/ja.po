@@ -11765,9 +11765,254 @@ msgstr "暗い"
 msgid "Desaturated"
 msgstr "低彩度"
 
-msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
-msgstr "機体が人やパイロットに当たったときの画面の血、カメラの雨粒、衝突後の泥・草・ひび。オフにするとレンズ効果をすべて無効にします。次のフライトから適用されます。"
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Automatic follows Scene detail. Off turns every lens effect off. Changes apply at once."
+msgstr "機体が人やパイロットに当たったときの画面の血、カメラの雨粒、衝突後の泥・草・ひび。自動はシーンの描画品質に従います。オフにするとレンズ効果をすべて無効にします。変更はすぐに適用されます。"
 
 msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
 msgstr "クラシックカーテン: 画面上部から赤い幕が流れ落ちます。レンズへの飛び散り: ガラスのあるカメラにだけ血が付きます。オフでは血を表示しません。"
 
+# Home vehicle roster: RC cars, FPV quad and RC blimp in the Home catalog
+msgid "Vehicles"
+msgstr "乗り物"
+
+msgid "VEHICLE CATALOG"
+msgstr "乗り物カタログ"
+
+msgid "Choose a vehicle for the next session."
+msgstr "次のセッションで使用する乗り物を選択してください。"
+
+msgid "OTHER RC VEHICLES"
+msgstr "その他のRC乗り物"
+
+msgid "RC monster truck · electric 4WD"
+msgstr "RCモンスタートラック · 電動4WD"
+
+msgid "Experimental: estimated electric 4WD model; mass, suspension and tires are estimates, not measured. The car setup opens before you drive."
+msgstr "実験段階：推定の電動4WDモデルです。質量、サスペンション、タイヤは推定値で、実測ではありません。運転前にカーのセットアップが開きます。"
+
+msgid "RC monster truck · nitro 4WD"
+msgstr "RCモンスタートラック · ニトロ4WD"
+
+msgid "Experimental: supplied nitro 4WD estimate; engine, clutch, fuel and tires are simulated estimates, not measured. The car setup opens before you drive."
+msgstr "実験段階：提供されたニトロ4WDの推定です。エンジン、クラッチ、燃料、タイヤはシミュレーションによる推定値で、実測ではありません。運転前にカーのセットアップが開きます。"
+
+msgid "FPV quad 5\""
+msgstr "FPVクアッド 5\""
+
+msgid "FPV racing quad · 5 in propellers · 6S electric"
+msgstr "FPVレーシングクアッド · 5インチプロペラ · 6S電動"
+
+msgid "Experimental: estimated FPV quad physics from component data; not flight-validated."
+msgstr "実験段階：部品データから推定したFPVクアッドの物理モデルです。飛行による検証は行われていません。"
+
+msgid "RC blimp"
+msgstr "RC飛行船"
+
+msgid "RC blimp · 5 m envelope · electric vectored rotors"
+msgstr "RC飛行船 · 5 mエンベロープ · 電動ベクタードローター"
+
+msgid "Experimental: estimated buoyancy and hull aerodynamics; not flight-validated. Wind and start are chosen in the blimp menu."
+msgstr "実験段階：浮力と船体の空気力学は推定値です。飛行による検証は行われていません。風とスタートは飛行船メニューで選択します。"
+
+msgid "DRIVE"
+msgstr "運転開始"
+
+msgid "Next drive: %s"
+msgstr "次の運転：%s"
+
+msgid "Start: set up in the activity"
+msgstr "スタート：アクティビティで設定"
+
+msgid "This vehicle is set up and started from its own activity menu."
+msgstr "この乗り物は、専用のアクティビティメニューで設定して開始します。"
+
+msgid "Wind and air settings apply to airplanes and helicopters only."
+msgstr "風と大気の設定は、飛行機とヘリコプターにのみ適用されます。"
+
+
+msgid "The aircraft struck a person. Never fly over or toward people."
+msgstr "機体が人に当たりました。人の上空や人に向かって飛ばさないでください。"
+
+msgid "The aircraft struck the pilot. Keep it in front of you and away from the flight line."
+msgstr "機体がパイロットに当たりました。機体は常に自分の前方に置き、パイロットラインから離してください。"
+
+# UI-15-UX controls setup (2026-11-12)
+msgid "Centre the sticks EXCEPT the THROTTLE: leave the THROTTLE fully DOWN (LOW). Keep these positions."
+msgstr "スロットル以外のスティックを中央にし、スロットルは一番下（最小）にしてください。その位置を保ってください。"
+
+msgid "Move the THROTTLE to FULL and back to LOW."
+msgstr "スロットルを最大まで上げ、最小まで戻してください。"
+
+msgid "Hold the ROLL stick (aileron) fully RIGHT."
+msgstr "ロールスティック（エルロン）を右いっぱいに保持してください。"
+
+msgid "Hold the PITCH stick (elevator) fully BACK."
+msgstr "ピッチスティック（エレベーター）を手前いっぱいに保持してください。"
+
+msgid "Hold the YAW stick (rudder) fully RIGHT."
+msgstr "ヨースティック（ラダー）を右いっぱいに保持してください。"
+
+msgid "Move the ROLL stick (aileron) fully LEFT, then centre."
+msgstr "ロールスティック（エルロン）を左いっぱいに動かし、中央に戻してください。"
+
+msgid "Move the PITCH stick (elevator) fully FORWARD, then centre."
+msgstr "ピッチスティック（エレベーター）を奥いっぱいに動かし、中央に戻してください。"
+
+msgid "Move the YAW stick (rudder) fully LEFT, then centre."
+msgstr "ヨースティック（ラダー）を左いっぱいに動かし、中央に戻してください。"
+
+msgid "the stick did not return to centre before you continued (or moved only one way); try again"
+msgstr "続行する前にスティックが中央に戻りませんでした（または一方向にしか動いていません）。もう一度試してください"
+
+msgid "Rest"
+msgstr "静止"
+
+msgid "Verify"
+msgstr "確認"
+
+msgid "RIGHT"
+msgstr "右"
+
+msgid "LEFT"
+msgstr "左"
+
+msgid "BACK"
+msgstr "手前"
+
+msgid "FORWARD"
+msgstr "奥"
+
+msgid "FULL"
+msgstr "最大"
+
+msgid "LOW"
+msgstr "最小"
+
+msgid "CENTRE"
+msgstr "中央"
+
+msgid "Before you start"
+msgstr "始める前に"
+
+msgid "EdgeTX/OpenTX: select USB Joystick (Classic) on the model, turn RF off, calibrate the sticks on the radio first, and use expo either on the radio or in the simulator, not both."
+msgstr "EdgeTX/OpenTX：モデルでUSBジョイスティック（Classic）を選び、RFをオフにし、先に送信機でスティックを校正してください。EXPOは送信機かシミュレーターのどちらか一方だけで使ってください。"
+
+msgid "JETI: use USB joystick mode and check the stick mode."
+msgstr "JETI：USBジョイスティックモードを使い、スティックモードを確認してください。"
+
+msgid "Channel monitor"
+msgstr "チャンネルモニター"
+
+msgid "Detected: axis %d"
+msgstr "検出：軸 %d"
+
+msgid "Reached FULL"
+msgstr "最大に到達"
+
+msgid "Back to LOW"
+msgstr "最小に戻した"
+
+msgid "Discard"
+msgstr "破棄"
+
+msgid "Your controller changes are not saved. Save them, discard them, or keep editing."
+msgstr "コントローラーの変更は保存されていません。保存、破棄、または編集を続けてください。"
+
+msgid "Controller details"
+msgstr "コントローラーの詳細"
+
+msgid "Extra channels help"
+msgstr "追加チャンネルのヘルプ"
+
+msgid "Full message"
+msgstr "全文"
+
+msgid "Show actions for all vehicles"
+msgstr "すべての機体の操作を表示"
+
+msgid "Show channels for all vehicles"
+msgstr "すべての機体のチャンネルを表示"
+
+msgid "%s source axis"
+msgstr "%sの入力軸"
+
+msgid "%s deadzone"
+msgstr "%sのデッドゾーン"
+
+msgid "%s expo"
+msgstr "%sのEXPO"
+
+msgid "Invert %s"
+msgstr "%sを反転"
+
+msgid "%s input type"
+msgstr "%sの入力の種類"
+
+msgid "%s Off endpoint"
+msgstr "%sのOFF端"
+
+msgid "%s On endpoint"
+msgstr "%sのON端"
+
+msgid "%s button"
+msgstr "%sのボタン"
+
+msgid "%s button mode"
+msgstr "%sのボタンモード"
+
+msgid "%s switch positions"
+msgstr "%sのスイッチ位置"
+
+msgid "%s switch name"
+msgstr "%sのスイッチ名"
+
+msgid "Reverse %s request"
+msgstr "%sの要求を反転"
+
+msgid "Capture %s position"
+msgstr "%sの位置を取得"
+
+msgid "Clear %s"
+msgstr "%sを解除"
+
+msgid "Learn axis for %s"
+msgstr "%sの軸を学習"
+
+msgid "Remap %s"
+msgstr "%sを再割り当て"
+
+msgid "“%s” and “%s” use the same control. Change one of them."
+msgstr "「%s」と「%s」が同じ操作を使っています。どちらかを変更してください。"
+
+msgid "“%s” needs a control so you can always go back or pause. Assign one."
+msgstr "いつでも戻る・一時停止できるよう、「%s」には操作が必要です。割り当ててください。"
+
+msgid "“%s” uses the same control as the %s extra channel. Change one of them."
+msgstr "「%s」は追加チャンネル %s と同じ操作を使っています。どちらかを変更してください。"
+
+msgid "“%s” and the %s extra channel do the same job. Use only one of them."
+msgstr "「%s」と追加チャンネル %s は同じ役割です。どちらか一方だけを使ってください。"
+
+msgid "“%s” uses a flight stick axis. Choose another control."
+msgstr "「%s」は飛行用スティックの軸を使っています。別の操作を選んでください。"
+
+msgid "The %s and %s extra channels use the same control. Change one of them."
+msgstr "追加チャンネル %s と %s が同じ操作を使っています。どちらかを変更してください。"
+
+msgid "Check the %s extra channel: its input is incomplete or uses a flight stick axis."
+msgstr "追加チャンネル %s を確認してください。入力が不完全か、飛行用スティックの軸を使っています。"
+
+msgid "“%s” has an invalid control. Remap it."
+msgstr "「%s」の操作が無効です。再割り当てしてください。"
+
+msgid "%s and %s use the same source axis. Change one of them."
+msgstr "%sと%sが同じ入力軸を使っています。どちらかを変更してください。"
+
+msgid "Arm (FPV quad)"
+msgstr "アーム（FPVクワッド）"
+
+msgid "Flight mode (FPV quad)"
+msgstr "フライトモード（FPVクワッド）"
+
+msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
+msgstr "このプロファイルは着陸装置スイッチでクワッドをアームします。明示するにはアームを割り当ててください。"

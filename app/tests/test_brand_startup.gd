@@ -458,6 +458,7 @@ func _late_press_checks() -> void:
 			break
 		await process_frame
 	check("late-Skip fixture starts handoff", app != null)
+	check("Skip is hidden once Home is being prepared", not startup.intro.skip_button.visible)
 	if app == null:
 		startup.free()
 		return

@@ -12515,9 +12515,254 @@ msgstr "Тёмный"
 msgid "Desaturated"
 msgstr "Обесцвеченный"
 
-msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
-msgstr "Кровь на экране, когда самолёт сбивает человека или пилота, капли дождя на камере, а также грязь, трава и трещины после ударов. Если выключено, эффекты объектива не показываются. Применяется со следующего полёта."
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Automatic follows Scene detail. Off turns every lens effect off. Changes apply at once."
+msgstr "Кровь на экране, когда самолёт сбивает человека или пилота, капли дождя на камере, а также грязь, трава и трещины после ударов. Автоматически следует за детализацией сцены. Если выключено, эффекты объектива не показываются. Изменения применяются сразу."
 
 msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
 msgstr "Классический занавес: красная пелена стекает с верхнего края экрана. Брызги на объективе: кровь только на камерах со стеклом. Если выключено, крови нет."
 
+# Home vehicle roster: RC cars, FPV quad and RC blimp in the Home catalog
+msgid "Vehicles"
+msgstr "Транспорт"
+
+msgid "VEHICLE CATALOG"
+msgstr "КАТАЛОГ ТРАНСПОРТА"
+
+msgid "Choose a vehicle for the next session."
+msgstr "Выберите транспорт для следующей сессии."
+
+msgid "OTHER RC VEHICLES"
+msgstr "ДРУГОЙ RC-ТРАНСПОРТ"
+
+msgid "RC monster truck · electric 4WD"
+msgstr "RC-монстр-трак · электрический 4WD"
+
+msgid "Experimental: estimated electric 4WD model; mass, suspension and tires are estimates, not measured. The car setup opens before you drive."
+msgstr "Экспериментально: расчётная электрическая модель 4WD; масса, подвеска и шины являются оценками, а не измерениями. Настройка машины откроется перед поездкой."
+
+msgid "RC monster truck · nitro 4WD"
+msgstr "RC-монстр-трак · нитро 4WD"
+
+msgid "Experimental: supplied nitro 4WD estimate; engine, clutch, fuel and tires are simulated estimates, not measured. The car setup opens before you drive."
+msgstr "Экспериментально: предоставленная оценка нитро 4WD; двигатель, сцепление, топливо и шины — это смоделированные оценки, а не измерения. Настройка машины откроется перед поездкой."
+
+msgid "FPV quad 5\""
+msgstr "FPV-квадрокоптер 5\""
+
+msgid "FPV racing quad · 5 in propellers · 6S electric"
+msgstr "Гоночный FPV-квадрокоптер · винты 5 дюймов · электрический 6S"
+
+msgid "Experimental: estimated FPV quad physics from component data; not flight-validated."
+msgstr "Экспериментально: физика FPV-квадрокоптера оценена по данным компонентов; не проверена в полёте."
+
+msgid "RC blimp"
+msgstr "RC-дирижабль"
+
+msgid "RC blimp · 5 m envelope · electric vectored rotors"
+msgstr "RC-дирижабль · оболочка 5 м · электрические поворотные роторы"
+
+msgid "Experimental: estimated buoyancy and hull aerodynamics; not flight-validated. Wind and start are chosen in the blimp menu."
+msgstr "Экспериментально: плавучесть и аэродинамика корпуса оценены; не проверены в полёте. Ветер и старт выбираются в меню дирижабля."
+
+msgid "DRIVE"
+msgstr "ЕХАТЬ"
+
+msgid "Next drive: %s"
+msgstr "Следующая поездка: %s"
+
+msgid "Start: set up in the activity"
+msgstr "Старт: настраивается в активности"
+
+msgid "This vehicle is set up and started from its own activity menu."
+msgstr "Этот транспорт настраивается и запускается из собственного меню активности."
+
+msgid "Wind and air settings apply to airplanes and helicopters only."
+msgstr "Настройки ветра и воздуха применяются только к самолётам и вертолётам."
+
+
+msgid "The aircraft struck a person. Never fly over or toward people."
+msgstr "Самолёт сбил человека. Никогда не летайте над людьми и в их сторону."
+
+msgid "The aircraft struck the pilot. Keep it in front of you and away from the flight line."
+msgstr "Самолёт ударил пилота. Держите его перед собой и подальше от линии пилотов."
+
+# UI-15-UX controls setup (2026-11-12)
+msgid "Centre the sticks EXCEPT the THROTTLE: leave the THROTTLE fully DOWN (LOW). Keep these positions."
+msgstr "Поставьте стики в центр, КРОМЕ ГАЗА: оставьте ГАЗ полностью ВНИЗУ (МИНИМУМ). Держите их так."
+
+msgid "Move the THROTTLE to FULL and back to LOW."
+msgstr "Переведите ГАЗ на МАКСИМУМ и обратно на МИНИМУМ."
+
+msgid "Hold the ROLL stick (aileron) fully RIGHT."
+msgstr "Удерживайте стик КРЕНА (элероны) полностью ВПРАВО."
+
+msgid "Hold the PITCH stick (elevator) fully BACK."
+msgstr "Удерживайте стик ТАНГАЖА (руль высоты) полностью НА СЕБЯ."
+
+msgid "Hold the YAW stick (rudder) fully RIGHT."
+msgstr "Удерживайте стик РЫСКАНИЯ (руль направления) полностью ВПРАВО."
+
+msgid "Move the ROLL stick (aileron) fully LEFT, then centre."
+msgstr "Отведите стик КРЕНА (элероны) полностью ВЛЕВО, затем верните в центр."
+
+msgid "Move the PITCH stick (elevator) fully FORWARD, then centre."
+msgstr "Отведите стик ТАНГАЖА (руль высоты) полностью ОТ СЕБЯ, затем верните в центр."
+
+msgid "Move the YAW stick (rudder) fully LEFT, then centre."
+msgstr "Отведите стик РЫСКАНИЯ (руль направления) полностью ВЛЕВО, затем верните в центр."
+
+msgid "the stick did not return to centre before you continued (or moved only one way); try again"
+msgstr "стик не вернулся в центр перед продолжением (или двигался только в одну сторону); попробуйте ещё раз"
+
+msgid "Rest"
+msgstr "Покой"
+
+msgid "Verify"
+msgstr "Проверка"
+
+msgid "RIGHT"
+msgstr "ВПРАВО"
+
+msgid "LEFT"
+msgstr "ВЛЕВО"
+
+msgid "BACK"
+msgstr "НА СЕБЯ"
+
+msgid "FORWARD"
+msgstr "ОТ СЕБЯ"
+
+msgid "FULL"
+msgstr "МАКСИМУМ"
+
+msgid "LOW"
+msgstr "МИНИМУМ"
+
+msgid "CENTRE"
+msgstr "ЦЕНТР"
+
+msgid "Before you start"
+msgstr "Перед началом"
+
+msgid "EdgeTX/OpenTX: select USB Joystick (Classic) on the model, turn RF off, calibrate the sticks on the radio first, and use expo either on the radio or in the simulator, not both."
+msgstr "EdgeTX/OpenTX: выберите в модели USB Joystick (Classic), выключите ВЧ, сначала откалибруйте стики на аппаратуре и используйте экспоненту либо на аппаратуре, либо в симуляторе, но не там и там."
+
+msgid "JETI: use USB joystick mode and check the stick mode."
+msgstr "JETI: используйте режим USB-джойстика и проверьте режим стиков."
+
+msgid "Channel monitor"
+msgstr "Монитор каналов"
+
+msgid "Detected: axis %d"
+msgstr "Обнаружено: ось %d"
+
+msgid "Reached FULL"
+msgstr "МАКСИМУМ достигнут"
+
+msgid "Back to LOW"
+msgstr "Снова МИНИМУМ"
+
+msgid "Discard"
+msgstr "Отменить изменения"
+
+msgid "Your controller changes are not saved. Save them, discard them, or keep editing."
+msgstr "Изменения управления не сохранены. Сохраните их, отмените или продолжите редактирование."
+
+msgid "Controller details"
+msgstr "Сведения об устройстве"
+
+msgid "Extra channels help"
+msgstr "Справка о дополнительных каналах"
+
+msgid "Full message"
+msgstr "Полное сообщение"
+
+msgid "Show actions for all vehicles"
+msgstr "Показать действия для всех машин"
+
+msgid "Show channels for all vehicles"
+msgstr "Показать каналы для всех машин"
+
+msgid "%s source axis"
+msgstr "Исходная ось: %s"
+
+msgid "%s deadzone"
+msgstr "Мёртвая зона: %s"
+
+msgid "%s expo"
+msgstr "Экспонента: %s"
+
+msgid "Invert %s"
+msgstr "Инверсия: %s"
+
+msgid "%s input type"
+msgstr "Тип входа: %s"
+
+msgid "%s Off endpoint"
+msgstr "Конечная точка «Выкл»: %s"
+
+msgid "%s On endpoint"
+msgstr "Конечная точка «Вкл»: %s"
+
+msgid "%s button"
+msgstr "Кнопка: %s"
+
+msgid "%s button mode"
+msgstr "Режим кнопки: %s"
+
+msgid "%s switch positions"
+msgstr "Положения переключателя: %s"
+
+msgid "%s switch name"
+msgstr "Имя переключателя: %s"
+
+msgid "Reverse %s request"
+msgstr "Обратить запрос: %s"
+
+msgid "Capture %s position"
+msgstr "Захватить положение: %s"
+
+msgid "Clear %s"
+msgstr "Очистить: %s"
+
+msgid "Learn axis for %s"
+msgstr "Обучить ось: %s"
+
+msgid "Remap %s"
+msgstr "Переназначить: %s"
+
+msgid "“%s” and “%s” use the same control. Change one of them."
+msgstr "«%s» и «%s» используют один и тот же орган управления. Измените одно из них."
+
+msgid "“%s” needs a control so you can always go back or pause. Assign one."
+msgstr "Для «%s» нужен орган управления, чтобы всегда можно было вернуться или поставить паузу. Назначьте его."
+
+msgid "“%s” uses the same control as the %s extra channel. Change one of them."
+msgstr "«%s» использует тот же орган управления, что и дополнительный канал %s. Измените одно из них."
+
+msgid "“%s” and the %s extra channel do the same job. Use only one of them."
+msgstr "«%s» и дополнительный канал %s выполняют одну и ту же задачу. Используйте только одно."
+
+msgid "“%s” uses a flight stick axis. Choose another control."
+msgstr "«%s» использует ось полётного стика. Выберите другой орган управления."
+
+msgid "The %s and %s extra channels use the same control. Change one of them."
+msgstr "Дополнительные каналы %s и %s используют один и тот же орган управления. Измените один из них."
+
+msgid "Check the %s extra channel: its input is incomplete or uses a flight stick axis."
+msgstr "Проверьте дополнительный канал %s: его вход не задан полностью или использует ось полётного стика."
+
+msgid "“%s” has an invalid control. Remap it."
+msgstr "У «%s» недопустимый орган управления. Переназначьте его."
+
+msgid "%s and %s use the same source axis. Change one of them."
+msgstr "%s и %s используют одну и ту же исходную ось. Измените одну из них."
+
+msgid "Arm (FPV quad)"
+msgstr "Взвод (FPV-квадрокоптер)"
+
+msgid "Flight mode (FPV quad)"
+msgstr "Режим полёта (FPV-квадрокоптер)"
+
+msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
+msgstr "Этот профиль взводит квадрокоптер переключателем шасси. Назначьте «Взвод», чтобы сделать это явным."

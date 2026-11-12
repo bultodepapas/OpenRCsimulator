@@ -124,6 +124,8 @@ func _startup_stage_checks() -> void:
 	check("a top-level stage sets its milestone", is_equal_approx(intro.progress, 2.0 / steps))
 	for _chunk in 60:
 		startup._on_home_stage("Building field scenery")
+	check("sub-stages fill the secondary line and keep the stage line stable",
+		intro.detail_text == "Building landscape" and intro.subdetail_text == "Building field scenery")
 	check("repeated sub-stages advance only within their segment", intro.progress > 2.0 / steps
 		and intro.progress < 3.0 / steps)
 	startup._on_home_stage("Preparing aircraft")
@@ -147,9 +149,15 @@ func _flight_stage_checks() -> void:
 	loading.set_stage("Building landscape")
 	for _chunk in 80:
 		loading.set_stage("Near grass")
+	check("flight sub-stages fill the detail line and keep the stage line stable",
+		loading.stage_label.text == "Building landscape" and loading.detail_label.text == "Near grass"
+		and loading.detail_label.visible)
 	var landscape := FlightLoading.STAGES.find("Building landscape")
 	check("flight sub-stages stay inside their stage", loading.progress_bar.value > landscape / count
 		and loading.progress_bar.value < (landscape + 1.0) / count)
+	loading.set_stage("Preparing sky")
+	check("a new stage clears the detail but keeps its height", loading.stage_label.text == "Preparing sky"
+		and loading.detail_label.visible and loading.detail_label.text.strip_edges() == "")
 	loading.set_stage("Finishing flight")
 	var finishing: float = loading.progress_bar.value
 	loading.set_stage("Preparing sky")
@@ -166,6 +174,21 @@ func _flight_stage_checks() -> void:
 	UiTheme.reduced_motion = false
 	for stage: String in WORLD_STAGES:
 		check("flight surface knows world stage " + stage, FlightLoading.STAGES.has(stage))
+	check("the return-to-Home surface and the startup share one stage order", FlightLoading.HOME_STAGES == Startup.HOME_STAGES)
+	var home_surface: CanvasLayer = FlightLoading.new()
+	var cancels := [0]
+	home_surface.cancel_requested.connect(func() -> void: cancels[0] += 1)
+	home_surface.configure_home("Club field")
+	home_surface.cancel_button.pressed.emit()
+	home_surface.surface.close_requested.emit()
+	check("the return-to-Home surface is titled for Home and cannot be cancelled",
+		home_surface.title_label.text == TranslationServer.translate("Preparing home…")
+		and not home_surface.cancel_button.visible and cancels[0] == 0 and home_surface.summary_label.text == "Club field")
+	home_surface.set_stage("Building landscape")
+	var home_landscape := FlightLoading.HOME_STAGES.find("Building landscape")
+	check("Home stages map onto the Home stage order", is_equal_approx(home_surface.progress_bar.value,
+		float(home_landscape) / FlightLoading.HOME_STAGES.size()))
+	home_surface.free()
 
 
 func _renderer_guard_hold_checks() -> void:
@@ -215,6 +238,21 @@ func _staged_home_checks() -> void:
 		staged.get_children().filter(func(child: Node) -> bool: return child is Camera3D).size() == 1)
 	sync.free()
 	staged.free()
+	for landscape: Dictionary in HomeScene.Landscapes.ADAPTERS.map(func(adapter: Variant) -> Dictionary:
+			return HomeScene.Landscapes.entry(str(adapter.ID))):
+		if landscape.id == HomeScene.Landscapes.DEFAULT_ID:
+			continue # compared above, with its stage order
+		var plain: Node3D = HomeScene.new(HomeScene.AirplaneBuilder.STIK_ID, landscape.field_path, {}, {}, {}, landscape.id, "")
+		var stepped: Node3D = HomeScene.new(HomeScene.AirplaneBuilder.STIK_ID, landscape.field_path, {}, {}, {},
+			landscape.id, "", true)
+		var stepped_ok: bool = await stepped.build_world_staged(func(_stage: String) -> bool: return true)
+		stepped.finish_construction()
+		var plain_tree := _signature(plain)
+		var stepped_tree := _signature(stepped)
+		check("staged and synchronous Home match on " + str(landscape.id), stepped_ok and plain_tree == stepped_tree,
+			_first_difference(plain_tree, stepped_tree))
+		plain.free()
+		stepped.free()
 	var cancelled: Node3D = HomeScene.new(HomeScene.AirplaneBuilder.STIK_ID, HomeScene.FieldLoader.DEFAULT_PATH, {}, {}, {},
 		HomeScene.Landscapes.DEFAULT_ID, "", true)
 	var stop := func(stage: String) -> bool:

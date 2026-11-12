@@ -127,9 +127,13 @@ func _run() -> void:
 				await settle()
 				check("refused conditions preserve setup summary and correction action", summary_matches(home) and home.launch_warning.visible and home.review_conditions_button.visible and fits(home._fly_caption) and fits(home.review_conditions_button))
 				home.set_weather_config(Weather.defaults())
-				home._select_page(3)
+				# UI-39: an RC car shows its own caption (Next drive), never the helicopter's refused conditions.
+				home.set_activity("mt8-bisonte")
+				home._select_page(1)
 				await settle()
-				check("Garage has no ordinary-flight caption", not home._fly_caption.is_visible_in_tree())
+				check("an RC car caption names the car and drops the conditions warning",
+					home._fly_caption.text.begins_with(home.tr("Next drive: %s") % "Bisonte MT8") and not home.launch_warning.visible
+					and fits(home._fly_caption))
 				home._select_page(page)
 				home.set_aircraft("jensen-das-ugly-stik-60")
 				home.set_start_choice("runway")

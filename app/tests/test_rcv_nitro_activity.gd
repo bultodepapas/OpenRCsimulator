@@ -39,13 +39,12 @@ func _run() -> void:
 		quit(1)
 		return
 	var aircraft_id: String = app.home.aircraft_id
-	# BL-10: the RC blimp skins follow the two cars in the same Garage choice.
-	check(app.home.ground_vehicle_choice.item_count >= 2 and app.home.ground_vehicle_choice.get_item_text(0) == "Bisonte MT8" \
-		and app.home.ground_vehicle_choice.get_item_text(1) == "MONSTER CAR 2", "Home exposes both cars first")
-	app.home.ground_vehicle_choice.select(1)
-	app.home.ground_vehicle_choice.item_selected.emit(1)
-	check(app.home.ground_vehicle_id == "monster-car-2", "second choice resolves nitro identity")
-	app.home.ground_vehicle_button.pressed.emit()
+	# UI-39: both cars are Vehicles catalog entries.
+	check(app.home._catalog_ids.has("mt8-bisonte") and app.home._catalog_ids.has("monster-car-2"), "Home lists both cars")
+	app.home._catalog_buttons[app.home._catalog_ids.find("monster-car-2")].pressed.emit()
+	await process_frame
+	check(app.home.ground_vehicle_id == "monster-car-2" and app.home.activity_id == "monster-car-2", "catalog entry resolves nitro identity")
+	app.home.fly_button.pressed.emit()
 	await process_frame
 	await process_frame
 	var activity: Node3D = app.ground_vehicle

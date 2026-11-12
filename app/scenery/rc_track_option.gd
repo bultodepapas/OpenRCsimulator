@@ -1,6 +1,8 @@
-## RC-TRACK: the "RC car circuit" setting for airplane flights on the club field (Settings > Graphics).
+## RC-TRACK: the "RC car circuit" setting for airplane and FPV quad flights on the club field (Settings > Graphics).
 ## One decision per flight feeds the rendered circuit, the wheels' terrain and the collision world, so the
-## circuit is never visible without its physics or the reverse. Helicopters and the car activity never ask.
+## circuit is never visible without its physics or the reverse (the quad: its terrain and obstacle inventory too).
+## Helicopters and the car activity never ask. The quad's command-line route takes no extra arguments: use
+## OPENRC_RC_TRACK there.
 ## Precedence: --rc_track=<auto|on|off> after --, then OPENRC_RC_TRACK, then the saved preference, which only
 ## menu-launched (interactive) flights read. Traces, captures and tests stay without it unless asked explicitly.
 ## Automatic selects the same circuit-free scenario on all hardware and detail levels.

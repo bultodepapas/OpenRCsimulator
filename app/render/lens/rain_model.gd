@@ -80,17 +80,17 @@ static func sample_diameter(rate_mmph: float, u: float) -> float:
 
 
 ## Rain is bursty: a smooth seeded modulation (0.45…1.55) of the nominal rate over tens of seconds of visual time.
-static func burst(clock_s: float, seed: int) -> float:
-	var x := clock_s / BURST_PERIOD_S + float(posmod(seed, 997)) * 0.37
+static func burst(clock_s: float, stream: int) -> float:
+	var x := clock_s / BURST_PERIOD_S + float(posmod(stream, 997)) * 0.37
 	var i := floorf(x)
 	var f := x - i
-	var a := _hash01(int(i), seed)
-	var b := _hash01(int(i) + 1, seed)
+	var a := _hash01(int(i), stream)
+	var b := _hash01(int(i) + 1, stream)
 	var s := f * f * (3.0 - 2.0 * f)
 	return 0.45 + 1.1 * lerpf(a, b, s)
 
 
-static func _hash01(n: int, seed: int) -> float:
-	var h := (n * 374761393 + seed * 668265263) & 0x7FFFFFFF
+static func _hash01(n: int, stream: int) -> float:
+	var h := (n * 374761393 + stream * 668265263) & 0x7FFFFFFF
 	h = ((h ^ (h >> 13)) * 1274126177) & 0x7FFFFFFF
 	return float(h & 0xFFFF) / 65535.0

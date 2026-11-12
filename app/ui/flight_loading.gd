@@ -21,6 +21,11 @@ const STAGES := ["Preparing resources", "Preparing flight scene", "Checking land
 	"Preparing aircraft lighting", "Preparing instruments", "Checking flight", "Preparing flight model",
 	"Preparing contacts", "Preparing start", "Preparing effects", "Preparing sound", "Preparing companions",
 	"Finishing flight"]
+## UI-28-R5b: the stages of a staged Home rebuild (World.build_staged, then the aircraft).
+const HOME_STAGES := ["Preparing world", "Building landscape", "Preparing sky", "Preparing field lighting",
+	"Finalizing world", "Preparing aircraft"]
+const HOME_TITLE_TEXT := "Preparing home…"
+const SEE_THROUGH_OPACITY := 0.8
 ## The brand atmosphere's one-time ignition has passed by this clock; dust and motes keep drifting.
 const ATMOSPHERE_CLOCK := 6.0
 
@@ -29,15 +34,20 @@ var backdrop: ColorRect
 var title_label: Label
 var summary_label: Label
 var stage_label: Label
+## UI-28-R5b: the current sub-stage (field and scenery chunks), dimmer and below the stable stage line.
+var detail_label: Label
 var cancel_button: Button
 var progress_bar: Control
 
 var _panel: PanelContainer
 var _stage_source := ""
+var _detail_source := ""
 var _cancelling := false
 var _cancel_emitted := false
 var _committing := false
 var _stage_index := -1
+var _stages: Array = STAGES
+var _title_source := TITLE_TEXT
 var _atmosphere: ShaderMaterial
 var _clock := ATMOSPHERE_CLOCK
 
@@ -106,6 +116,12 @@ func _init(existing_theme: Theme = null) -> void:
 	stage_label.visible = false
 	content.add_child(stage_label)
 
+	detail_label = _label("LoadingDetail", "SectionLabel", "")
+	detail_label.custom_minimum_size.x = 0.0
+	detail_label.modulate.a = 0.55 # same type as the stage line, visibly secondary
+	detail_label.visible = false
+	content.add_child(detail_label)
+
 	# UI-28-R5: completed stages fill the bar; its sweep shows activity while a stage works (the
 	# threaded scene load included). It is not a percentage. Reduced motion shows the same position
 	# without sweep or easing.
@@ -154,6 +170,31 @@ func _focus_cancel() -> void:
 		cancel_button.grab_focus()
 
 
+## UI-28-R5b: the same surface while Home is rebuilt after an activity. It cannot be cancelled: the
+## activity has already ended, so there is nothing to return to.
+## `see_through` (a landscape change): the previous Home view stays visible, dimmed, and the surface
+## fades in briefly, so a short rebuild reads as a transition rather than a full-screen flash.
+func configure_home(summary: String, see_through := false) -> void:
+	_title_source = HOME_TITLE_TEXT
+	_stages = HOME_STAGES
+	_committing = true
+	cancel_button.visible = false
+	summary_label.text = summary
+	_refresh_text()
+	if see_through:
+		_atmosphere.set_shader_parameter("opacity", SEE_THROUGH_OPACITY)
+		# The card itself stays solid over the dimmed view so its text keeps full contrast.
+		var card: StyleBox = _panel.get_theme_stylebox("panel", "Notice")
+		if card is StyleBoxFlat:
+			var solid := card.duplicate() as StyleBoxFlat
+			solid.bg_color.a = 1.0
+			_panel.add_theme_stylebox_override("panel", solid)
+		if not UiTheme.reduced_motion:
+			surface.modulate.a = 0.0
+			surface.ready.connect(func() -> void:
+				surface.create_tween().tween_property(surface, "modulate:a", 1.0, 0.18), CONNECT_ONE_SHOT)
+
+
 func configure(summary: String) -> void:
 	## Summary is caller-formatted and localized because it contains dynamic aircraft/field/start values.
 	summary_label.text = summary
@@ -163,18 +204,24 @@ func set_stage(stage: String) -> void:
 	## The coordinator supplies a truthful English source phrase; translations remain in the owning catalog.
 	if _cancelling:
 		return
-	_stage_source = stage
+	# Top-level stages hold the main line; anything else is a sub-stage of the current one, so the
+	# main line stays readable instead of flickering through chunk names.
+	if _stages.has(stage) or _stage_source == "":
+		_stage_source = stage
+		_detail_source = ""
+	else:
+		_detail_source = stage
 	_advance_progress(stage)
 	_apply_stage()
 
 
 func _advance_progress(stage: String) -> void:
-	var index := STAGES.find(stage)
+	var index := _stages.find(stage)
 	if index > _stage_index:
 		_stage_index = index
-		progress_bar.value = float(index) / STAGES.size()
+		progress_bar.value = float(index) / _stages.size()
 	elif index < 0 and _stage_index >= 0:
-		progress_bar.nudge(float(_stage_index + 1) / STAGES.size(), 0.08)
+		progress_bar.nudge(float(_stage_index + 1) / _stages.size(), 0.08)
 
 
 func set_cancelling() -> void:
@@ -184,6 +231,7 @@ func set_cancelling() -> void:
 	cancel_button.disabled = true
 	progress_bar.active = false
 	_stage_source = CANCELLING_TEXT
+	_detail_source = ""
 	_apply_stage()
 
 
@@ -208,7 +256,7 @@ func _notification(what: int) -> void:
 
 func _refresh_text() -> void:
 	if title_label != null:
-		title_label.text = tr(TITLE_TEXT)
+		title_label.text = tr(_title_source)
 	if cancel_button != null:
 		cancel_button.text = tr(CANCEL_TEXT)
 		cancel_button.disabled = _cancelling or _committing
@@ -219,6 +267,13 @@ func _apply_stage() -> void:
 		return
 	stage_label.text = tr(_stage_source) if _stage_source != "" else ""
 	stage_label.visible = _stage_source != ""
+	# Once shown, the detail line keeps its height (a space) so the panel does not jump between chunks.
+	if _detail_source != "":
+		detail_label.text = tr(_detail_source)
+		detail_label.visible = true
+	elif detail_label.visible:
+		detail_label.text = " "
+	detail_label.accessibility_name = detail_label.text.strip_edges()
 
 
 func _resize_panel() -> void:

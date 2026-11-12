@@ -27,9 +27,11 @@ const CollisionSetup = preload("res://scenery/collision_setup.gd")
 const Track = preload("res://sim/race/track.gd")
 const RaceDirector = preload("res://sim/race/race_director.gd")
 const CourseVisual = preload("res://vehicles/multirotor/race_course_visual.gd")
+const RaceRecords = preload("res://vehicles/multirotor/race_records.gd")
 const LensStack = preload("res://render/lens/lens_stack.gd")
 const LensSettings = preload("res://render/lens/lens_settings.gd")
-const CollisionWorld = preload("res://scenery/collision_world.gd")
+const RcTrackOption = preload("res://scenery/rc_track_option.gd")
+const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const RB = preload("res://physics/rigid_body.gd")
 
 const DT := 1.0 / 240.0
@@ -104,6 +106,12 @@ var _hover_speed := 1.0
 var _accumulation_owned := false
 var _accumulation_before := true
 var _race_option := ""
+## DR-37: the pilot's race record book (race_records.gd), read once from results_directory.
+var _records := {}
+var _records_loaded := false
+## RC-TRACK: the club field's RC car circuit when the pilot shows it (Settings > Graphics), else {}; one decision per
+## activity feeds the drawn circuit, the quad's terrain and its obstacle inventory together.
+var _rc_track := {}
 var _race_action := 0
 var _gate_views: Array = []
 var _gate_next := -1
@@ -141,7 +149,10 @@ func _ready() -> void:
 	session = Session.new()
 	session.name = "MultirotorSession"
 	add_child(session)
-	var obstacles: Dictionary = CollisionSetup.build(field)
+	# A menu-launched activity follows the saved preference; tests and command-line runs (--multirotor=, which the app
+	# also starts departure-managed) stay without it unless OPENRC_RC_TRACK asks.
+	_rc_track = RcTrackOption.resolve(field, departure_managed and not _command_line_launch())
+	var obstacles: Dictionary = CollisionSetup.build(field, _rc_track)
 	if not obstacles.ok or not session.set_collision_world(obstacles.world):
 		startup_error = "FPV quad obstacle inventory refused: " + "; ".join(obstacles.get("errors", []))
 		_disable()
@@ -281,18 +292,47 @@ func cycle_course() -> void:
 
 
 func _build_field() -> void:
-	var field_node: Node3D = FieldBuilder.build(field, _lighting, [])
+	var field_node: Node3D = FieldBuilder.build(field, _lighting, _pad_grass_exclusions(), _rc_track)
 	var lake_error := str(field_node.get_meta("lake_error", ""))
 	if not lake_error.is_empty():
 		push_warning("FPV quad field lake refused: " + lake_error)
 	add_child(field_node)
 
 
+## True when the app was started straight into this activity from the command line (--multirotor=<id>).
+static func _command_line_launch() -> bool:
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--multirotor"):
+			return true
+	return false
+
+
+## Grass stays off the race pad (painted on the open field, away from the mown rotorcraft pad): every shipped course of
+## this field shares one pad, so one record covers a course change.
+func _pad_grass_exclusions() -> Array:
+	var records: Array = []
+	for path: String in RACE_TRACKS:
+		var loaded: Dictionary = Track.load_file(path)
+		if not loaded.ok or str(loaded.track.field_id) != str(field.get("id", "")):
+			continue
+		var pad: Dictionary = loaded.track.pad
+		var n := float(pad.north_m)
+		var e := float(pad.east_m)
+		var half := 0.5 * CourseVisual.PAD_SIZE_M + 0.15
+		var key := "race-pad-%.2f-%.2f" % [float(pad.north_m), float(pad.east_m)]
+		if records.any(func(record: Dictionary) -> bool: return record.id == key):
+			continue
+		records.append(GrassMask._record(key, "race_pad", PackedVector2Array([Vector2(n - half, e - half),
+			Vector2(n + half, e - half), Vector2(n + half, e + half), Vector2(n - half, e + half)])))
+	return records
+
+
 ## The throttle policy follows the input source and is fixed for the flight it prepares; so is the pilot's throttle
 ## limit (a session option: changing it takes a fresh prepare on the pad, never a change mid-flight).
 func _session_options() -> Dictionary:
 	return {data_path = Catalog.DATA_PATH, throttle_policy = _input_policy(), start = "pad",
-		source_generation = input.source_generation, throttle_limit = input.throttle_limit(), race_track = _race_option}
+		source_generation = input.source_generation, throttle_limit = input.throttle_limit(), race_track = _race_option,
+		rc_track = _rc_track}
 
 
 ## The prepared flight's throttle limit.
@@ -464,7 +504,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				if hud.menu_visible: handle_action("resume")
 				else: _open_menu(tr("Flight paused"))
 			KEY_R:
-				handle_action("restart")
+				# DR-37: straight back to flying on the pad (the menu's Restart on pad keeps the menu open).
+				quick_restart()
 			KEY_C:
 				view.cycle_view()
 				_flash_view()
@@ -651,6 +692,10 @@ func _on_crashed(reason: String) -> void:
 ## LENS-01: the quad session reports a strike only as a reason. Presentation names what was hit by asking the installed
 ## obstacle inventory (read-only) what lies at the accepted crash position: a person draws blood, the ground grime.
 func _start_lens() -> void:
+	if _lens != null:
+		remove_child(_lens)
+		_lens.queue_free()
+		_lens = null
 	if camera == null or not enable_world:
 		return
 	var resolved: Dictionary = LensSettings.resolve({}, not scripted_pilot.is_valid())
@@ -674,11 +719,26 @@ func _start_lens() -> void:
 		"mass_kg": float(session.data.get("mass_kg", 0.6)),
 		"seed": int(sky_config.get("seed", 1)),
 	})
-	if ok:
-		session.resetting.connect(func() -> void: _lens.reset())
-	else:
+	if not ok:
 		_lens.queue_free()
 		_lens = null
+	else:
+		_lens.person_struck.connect(func(player: bool) -> void:
+			hud.flash(tr("The aircraft struck the pilot. Keep it in front of you and away from the flight line.") if player
+				else tr("The aircraft struck a person. Never fly over or toward people."), 5.0))
+		if not session.resetting.is_connected(_on_lens_resetting):
+			session.resetting.connect(_on_lens_resetting)
+
+
+func _on_lens_resetting() -> void:
+	if _lens != null:
+		_lens.reset()
+
+
+## Settings changed during the flight: rebuild the lens from the new preference (presentation only).
+func apply_lens_preferences() -> void:
+	if session != null and session.prepared:
+		_start_lens()
 
 
 func _lens_crash(reason: String) -> void:
@@ -687,22 +747,10 @@ func _lens_crash(reason: String) -> void:
 	var state: PackedFloat64Array = session.sim.state
 	if state.size() < RB.SIZE:
 		return
-	var north := state[RB.POS]
-	var east := state[RB.POS + 1]
-	var down := state[RB.POS + 2]
 	var speed := Vector3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]).length()
-	var point := Frames.ned_to_render([north, east, down])
-	var strength := clampf(speed / 20.0, 0.0, 1.0)
-	var key := "quad:%d" % int(session.sim.tick)
-	if reason == "Obstacle strike" and not _obstacle_world.is_empty():
-		for proxy: Dictionary in CollisionWorld.nearby(_obstacle_world, north, east, down, 0.6):
-			if str(proxy.get("kind", "")) == "person":
-				var energy := 0.5 * float(session.data.get("mass_kg", 0.6)) * speed * speed
-				_lens.strike_person(sqrt(clampf(energy / 60.0, 0.0, 1.0)) + 0.25, point, false, key)
-				return
-		_lens.strike_surface("obstacle", strength, point, speed, key)
-		return
-	_lens.strike_surface("ground", strength, point, speed, key)
+	# Only an obstacle strike can have hit a person; a ground crash next to one is still a ground crash.
+	_lens.strike_from_crash(state.slice(RB.POS, RB.POS + 3), speed,
+		_obstacle_world if reason == "Obstacle strike" else {}, "quad:%d" % int(session.sim.tick))
 
 
 func _on_depleted() -> void:
@@ -774,7 +822,7 @@ func _process(delta: float) -> void:
 		body = drawn, sticks = raw, stick_policy = str(_last_input.get("throttle_policy", "")),
 		accepted = session.sim.state, tick_dt = DT, gate = _osd_gate(_osd_gate_index(t)), gate_number = _osd_gate_index(t) + 1,
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
-		bindings = _osd_bindings(), throttle_limit = _session_limit()})
+		bindings = _osd_bindings(), throttle_limit = _session_limit(), race_on_pad = _on_race_pad()})
 	_update_gates(t.get("race", {}), delta)
 	_update_audio(t, delta)
 
@@ -920,9 +968,27 @@ func _refresh_controller_ui() -> void:
 ## DR-36b: G starts a race from the pad, or cancels a countdown or a race in progress. The action is sampled with the
 ## next accepted tick (one pulse); the session refuses a start while its result outbox is full.
 func request_race() -> void:
-	if session == null or not session.prepared or session.race == null or session.paused:
+	if session == null or not session.prepared or session.race == null:
 		return
-	_race_action = RaceDirector.ACTION_CANCEL if _race_phase() in ["COUNTDOWN", "RACING"] else RaceDirector.ACTION_START
+	var racing: bool = _race_phase() in ["COUNTDOWN", "RACING"]
+	if not racing and (not _on_race_pad() or not session.crash.is_empty()):
+		# DR-37 one-key retry: anywhere off the pad (after a finish, a crash or free flight) G first puts the quad back
+		# on the pad, resumes and stages the start (the countdown then asks to arm).
+		if quick_restart():
+			_race_action = RaceDirector.ACTION_START
+		return
+	if session.paused:
+		return
+	_race_action = RaceDirector.ACTION_CANCEL if racing else RaceDirector.ACTION_START
+
+
+## DR-37: R and G's retry: back on the pad and flying again at once (no menu). When the flight cannot resume (a
+## controller not ready, a changed throttle policy) the menu stays open with the reason, as after Restart on pad.
+func quick_restart() -> bool:
+	if not restart_on_pad():
+		return false
+	handle_action("resume")
+	return not session.paused
 
 
 func _on_race_event(event: Dictionary) -> void:
@@ -930,7 +996,7 @@ func _on_race_event(event: Dictionary) -> void:
 		"race_go":
 			pass # the OSD's large start count shows GO for the first second of the race
 		"race_refused":
-			hud.flash(tr("Race start refused: return to the pad and stop"))
+			hud.flash(race_refusal_text(str(event.get("reason", ""))), 5.0)
 		"race_gate":
 			if course_visual != null:
 				course_visual.gate_passed(int(event.get("gate", -1)))
@@ -938,14 +1004,45 @@ func _on_race_event(event: Dictionary) -> void:
 			hud.flash("%s %d  %s" % [tr("Lap"), int(event.get("lap", 0)), Hud.format_lap(float(event.get("duration_s", 0.0)))], 3.0)
 
 
+## DR-37: what a refused start or GO needs from the pilot, by the race director's reason (translated).
+func race_refusal_text(reason: String) -> String:
+	match reason:
+		"start_refused_not_on_pad":
+			return tr("Start from the pad: press G to return to it.")
+		"start_refused_moving":
+			return tr("Hold still on the pad, then press G.")
+		"start_refused_terminal":
+			return tr("Crashed: press G or R to return to the pad.")
+		"go_refused_not_armed":
+			return tr("False start: arm before GO (%s).") % str(input.bindings().get("arm", "E"))
+		"go_refused_throttle":
+			return tr("Jump start: keep the throttle low until GO.")
+		"go_refused_source":
+			return tr("Controller not ready at GO: check the controller, then press G.")
+	return tr("Race start refused: return to the pad and stop")
+
+
 ## A finished or aborted attempt: write the pending records at once (bounded, on request of this activity); a failed
-## write keeps them in the session outbox and says so.
-func _on_race_result(_result: Dictionary) -> void:
+## write keeps them in the session outbox and says so. DR-37: the attempt also enters the record book (best total,
+## best lap, medal), and the results card shows it against the pilot's best. A pad reset during a race is no attempt
+## for the book (the pilot chose to leave it).
+func _on_race_result(result: Dictionary) -> void:
 	var report: Dictionary = session.save_results(results_directory)
 	if int(report.failed) > 0:
 		hud.flash(tr("Race result not saved"))
-	elif int(report.saved) > 0:
-		hud.flash(tr("Race result saved"))
+	if str(result.get("reason", "")) == "pad_reset" or session.race == null:
+		return
+	_load_records()
+	var summary: Dictionary = RaceRecords.apply(_records, session.course, result)
+	_records = summary.records
+	if RaceRecords.save_file(_records, records_path()) != OK:
+		hud.flash(tr("Race record not saved"))
+	var card: Dictionary = result.duplicate(true)
+	card.merge(summary, true)
+	card.erase("records")
+	card.next_medal = RaceRecords.next_medal(str((summary.entry as Dictionary).get("medal", "")), RaceRecords.targets(session.course))
+	hud.show_race_result(card)
+	_push_race_info()
 
 
 ## A prepared course that differs from the drawn one (a course change through a fresh prepare) is drawn anew.
@@ -971,6 +1068,48 @@ func _refresh_course_choice() -> void:
 		if not _course_option(path).is_empty():
 			offered += 1
 	hud.set_course(str(session.course.get("track_name", "")) if session.race != null else "", offered > 1)
+	_push_race_info()
+
+
+## DR-37: the record book lives beside the per-attempt result files.
+func records_path() -> String:
+	return results_directory.path_join(RaceRecords.FILE_NAME)
+
+
+## Read the record book once; an unreadable book is set aside (kept, never overwritten) and a new one starts.
+func _load_records() -> void:
+	if _records_loaded:
+		return
+	_records_loaded = true
+	var loaded: Dictionary = RaceRecords.load_file(records_path())
+	_records = loaded.records
+	if not loaded.ok:
+		RaceRecords.set_aside(records_path())
+		hud.flash(tr("Race records unreadable: a new record book starts (the old file is kept)."), 6.0)
+
+
+## The prepared course's best total, best lap, best medal and medal targets for the OSD and the pause menu.
+func _push_race_info() -> void:
+	if hud == null or session == null:
+		return
+	if session.race == null:
+		hud.set_race_info({})
+		return
+	_load_records()
+	var entry: Dictionary = _records.get(str(session.course.get("identity", "")), {})
+	hud.set_race_info({best_total_s = float(entry.get("best_total_s", 0.0)), best_lap_s = float(entry.get("best_lap_s", 0.0)),
+		medal = str(entry.get("medal", "")), targets = RaceRecords.targets(session.course)})
+
+
+## Whether the quad sits on the course's start pad (the race rules' radius) - what G needs to start.
+func _on_race_pad() -> bool:
+	if session == null or session.race == null:
+		return false
+	var pad: Dictionary = session.course.get("pad", {})
+	var rules: Dictionary = Track.ruleset()
+	var dn: float = session.sim.state[RB.POS] - float(pad.get("north", 0.0))
+	var de: float = session.sim.state[RB.POS + 1] - float(pad.get("east", 0.0))
+	return sqrt(dn * dn + de * de) <= float(rules.pad_radius_m) and session.crash.is_empty()
 
 
 ## The course as drawn (race_course_visual.gd): panels at the same boxes the session collides with, LED states,

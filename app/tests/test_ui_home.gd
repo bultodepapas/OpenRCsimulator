@@ -7,6 +7,7 @@ const Home := preload("res://ui/home.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Roster := preload("res://app_state/vehicle_roster.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
@@ -90,20 +91,23 @@ func _run() -> void:
 	_check("Home uses a transparent bounded rail without a full-width footer",
 		home.get_node_or_null("Sidebar") == null and home.get_node_or_null("HomeFooter") == null
 		and left_rail.size.x <= home.get_viewport_rect().size.x * 0.25)
-	_check("navigation keeps five destinations, with Workshop routed as an action",
-		nav.get_child_count() == 5 and home.workshop_button.get_parent() == nav
-		and home._pages.size() == 4)
+	# UI-39: the RC garage page is gone; its vehicles are Vehicles catalog entries.
+	_check("navigation keeps four destinations, with Workshop routed as an action",
+		nav.get_child_count() == 4 and home.workshop_button.get_parent() == nav
+		and home._pages.size() == 3 and home.get_node_or_null("HomeRail/HomeNavigation/NavGarage") == null)
 	_check("Fly is full width in the pinned primary action strip", fly.get_parent() == primary_actions
 		and fly.size_flags_horizontal == Control.SIZE_EXPAND_FILL
 		and absf(fly.size.x - primary_actions.size.x) < 1.0
-		and fly.visible and not home.ground_vehicle_button.visible
+		and fly.visible
 		and primary_actions.get_global_rect().end.y <= utilities.get_global_rect().position.y)
 	_check("aircraft arrows stay in the compact Flight destination",
 		home.previous_button.get_parent() == home.get_node("HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading")
 		and home.next_button.get_parent() == home.previous_button.get_parent())
-	_check("Aircraft destination lists every catalog entry with proper-name capability text",
-		home.get_node("HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftCatalog").get_child_count() == Catalog.player_ids().size()
-		and home._catalog_buttons.size() == Catalog.player_ids().size())
+	var catalog_list: Control = home.get_node("HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftCatalog")
+	_check("Vehicles destination lists every aircraft, then the other RC vehicles under their own heading",
+		catalog_list.get_child_count() == Roster.ids().size() + 1
+		and home._catalog_buttons.size() == Roster.ids().size() and home._catalog_ids == Roster.ids()
+		and catalog_list.get_node("OtherVehiclesHeading").get_index() == Catalog.player_ids().size())
 	var selected_catalog_index: int = home._catalog_ids.find(home.aircraft_id)
 	var selected_catalog_button: Button = home._catalog_buttons[selected_catalog_index]
 	var selected_catalog_style := selected_catalog_button.get_theme_stylebox("pressed") as StyleBoxFlat
@@ -117,8 +121,6 @@ func _run() -> void:
 	_check("selected catalog row has a persistent accent and pressed state",
 		selected_catalog_button.button_pressed and selected_catalog_style.border_width_left >= 3
 		and selected_catalog_style.border_color == UiTheme.FOCUS)
-	_check("garage selector and entry are integrated into the Home column",
-		home.ground_vehicle_choice.get_parent() == home._pages[3] and home.ground_vehicle_button.get_parent() == primary_actions)
 	var practice_summary: Label = home.get_node("HomeRail/HomeContentScroll/HomePages/PracticePage/PracticeSummary")
 	_check("Practice distinguishes random setups from next-flight failure practice",
 		practice_summary.text.contains("random setup") and practice_summary.text.contains("system failures")
@@ -208,7 +210,7 @@ func _run() -> void:
 	_check("Down from start choice -> Fly", ui.focus_name() == "Fly", ui.focus_name())
 	await ui.tap(KEY_DOWN)
 	_check("Down from Fly -> Controls", ui.focus_name() == "ControllerSettings", ui.focus_name())
-	for section in range(4):
+	for section in range(home._page_buttons.size()):
 		home._page_buttons[section].grab_focus()
 		await ui.tap(KEY_ENTER)
 		_check("keyboard opens section %d without launching" % section, home._pages[section].visible
@@ -269,11 +271,10 @@ func _run() -> void:
 			practice_page.size, scroll.get_v_scroll_bar().visible, all_visible_inside])
 		root.size = Vector2i(1280, 720)
 		await ui.settle()
-		home._select_page(3)
+		home._select_page(1)
 		await ui.settle()
-		_check("Garage preserves the compact rail and visible action in " + locale,
-			home.get_node("HomeRail").size.x <= 304.5 and home.ground_vehicle_button.is_visible_in_tree()
-			and not scroll.get_v_scroll_bar().visible)
+		_check("Vehicles catalog preserves the compact rail and visible action in " + locale,
+			home.get_node("HomeRail").size.x <= 304.5 and home.fly_button.is_visible_in_tree())
 	TranslationServer.set_locale("en")
 	home._select_page(0)
 	var saved_aircraft: String = home.aircraft_id
@@ -333,14 +334,15 @@ func _run() -> void:
 	async_home.set_aircraft("sebart-avanti-s-a200-p100rx")
 	async_home._select_page(1)
 	for frame in 4: await process_frame
-	var requested_catalog_id: String = async_home._catalog_ids[async_home._catalog_ids.size() - 1]
+	# UI-39: the last aircraft row (the RC vehicles follow it in the same list).
+	var requested_catalog_id: String = Catalog.player_ids()[Catalog.player_ids().size() - 1]
 	var requested_catalog_index: int = async_home._catalog_ids.find(requested_catalog_id)
 	var requested_catalog_button: Button = async_home._catalog_buttons[requested_catalog_index]
 	var async_scroll: ScrollContainer = async_home.get_node("HomeRail/HomeContentScroll")
 	var requested_ids := PackedStringArray()
 	async_home.aircraft_requested.connect(func(id: String) -> void: requested_ids.append(id))
 	requested_catalog_button.grab_focus()
-	async_home._request_aircraft(requested_catalog_id)
+	async_home._request_vehicle(requested_catalog_id)
 	_check("catalog request immediately selects and focuses its row", requested_catalog_button.has_focus()
 		and requested_catalog_button.button_pressed and requested_ids == PackedStringArray([requested_catalog_id]))
 	await process_frame # model preview may still be loading when the aircraft choice is committed
@@ -359,27 +361,43 @@ func _run() -> void:
 	fly.grab_focus()
 	_check("navigating did not start a flight", app.flight == null and _sessions(root) == 0)
 
-	# The Garage destination swaps the pinned action and keeps the keyboard route on the car signal.
+	# UI-39: an RC car is selected like an aircraft; the pinned action becomes DRIVE and keeps the keyboard route on
+	# the car signal. Airplane-only launch details step aside.
 	var garage_home: Control = Home.new()
 	root.add_child(garage_home)
 	await ui.settle()
 	var garage_requests := [0]
 	var garage_flight_requests := [0]
+	var garage_selections: Array[String] = []
 	garage_home.ground_vehicle_requested.connect(func() -> void: garage_requests[0] += 1)
 	garage_home.fly_requested.connect(func() -> void: garage_flight_requests[0] += 1)
-	garage_home._page_buttons[3].grab_focus()
+	garage_home.activity_requested.connect(func(id: String) -> void: garage_selections.append(id))
+	garage_home.aircraft_requested.connect(func(id: String) -> void: garage_selections.append(id))
+	garage_home._select_page(1)
+	garage_home._catalog_buttons[garage_home._catalog_ids.find("monster-car-2")].grab_focus()
 	await ui.tap(KEY_ENTER)
-	_check("Garage replaces the pinned FLY action with Open RC car garage",
-		garage_home._pages[3].visible and garage_home.ground_vehicle_button.visible
-		and garage_home._page_buttons[3].button_pressed
-		and not garage_home.fly_button.visible and garage_home.ground_vehicle_button.text == "Open RC car garage")
-	await ui.tap(KEY_DOWN)
-	_check("Garage keyboard navigation enters on the vehicle choice", garage_home.ground_vehicle_choice.has_focus())
-	await ui.tap(KEY_DOWN)
-	_check("Garage keyboard navigation reaches Open garage", garage_home.ground_vehicle_button.has_focus())
+	_check("a car catalog row requests the car selection, not an aircraft",
+		garage_selections.size() == 1 and garage_selections[0] == "monster-car-2", str(garage_selections))
+	garage_home.set_activity("monster-car-2")
+	await ui.settle()
+	_check("a selected car shows DRIVE, its own card and no airplane launch details",
+		garage_home.fly_button.visible and garage_home.fly_button.text == "DRIVE" and not garage_home.fly_button.disabled
+		and garage_home.aircraft_name_label.text == "MONSTER CAR 2" and garage_home.start_button.disabled
+		and not garage_home.battery_button.visible and not garage_home.fuel_button.visible
+		and garage_home.failures_button.disabled and garage_home.trim_practice_button.disabled
+		and garage_home.companions_button.disabled and not garage_home.keys_legend.visible
+		and garage_home.ground_vehicle_id == "monster-car-2" and garage_home.aircraft_id == Catalog.DEFAULT_ID)
+	garage_home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
-	_check("keyboard Open garage emits the car route without emitting Fly",
+	_check("keyboard DRIVE emits the car route without emitting Fly",
 		garage_requests[0] == 1 and garage_flight_requests[0] == 0)
+	garage_home._step_vehicle(1)
+	garage_home._step_vehicle(-1)
+	_check("the Flight arrows step through the whole vehicle roster", garage_selections.size() == 3
+		and garage_selections[1] == Roster.step("monster-car-2", 1) and garage_selections[2] == Roster.step("monster-car-2", -1))
+	garage_home.set_aircraft(Catalog.DEFAULT_ID)
+	_check("choosing an aircraft restores FLY and the airplane card", garage_home.activity_id.is_empty()
+		and garage_home.fly_button.text == "FLY" and not garage_home.start_button.disabled)
 	garage_home.free()
 	await process_frame
 	fly.grab_focus()
@@ -682,7 +700,7 @@ func _probe_home_resolutions() -> void:
 							if control_rect.position.x < body_rect.position.x - 1.0 or control_rect.end.x > body_rect.end.x + 1.0:
 								page_content_fits = false
 								break
-						var action: Control = responsive_home.ground_vehicle_button if page_index == 3 else responsive_home.fly_button
+						var action: Control = responsive_home.fly_button
 						_check("Home page %d fits the bounded rail at %.0f%% / %s" % [page_index, scale * 100.0, locale],
 							page_rect.position.x >= body_rect.position.x - 1.0
 							and page_rect.end.x <= body_rect.end.x + 1.0 and page_content_fits

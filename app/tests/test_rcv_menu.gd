@@ -46,17 +46,25 @@ func _run() -> void:
 	var home_field: Dictionary = original_background.field.duplicate(true)
 	var home_lighting: Dictionary = original_background.lighting_config.duplicate(true)
 	var home_sky: Dictionary = original_background.sky_config.duplicate(true)
-	app.home._page_buttons[3].pressed.emit()
+	# UI-39: the RC car is a Vehicles catalog entry; Fly (DRIVE) starts it.
+	app.home._page_buttons[1].pressed.emit()
 	await process_frame
-	check(app.home.ground_vehicle_choice.is_visible_in_tree() and app.home.ground_vehicle_button.is_visible_in_tree(), "RC vehicle choice is visible on the Garage page")
+	var car_index: int = app.home._catalog_ids.find("mt8-bisonte")
+	check(car_index >= 0 and app.home._catalog_buttons[car_index].is_visible_in_tree(), "RC car is listed in the Vehicles catalog")
+	app.home._catalog_buttons[car_index].pressed.emit()
+	await process_frame
+	check(app.home.activity_id == "mt8-bisonte" and app.home.fly_button.text == "DRIVE" and app.home.fly_button.is_visible_in_tree()
+		and not app.home.fly_button.disabled, "selecting the car turns the pinned action into DRIVE")
+	check(app.home.aircraft_id == initial_aircraft, "the remembered aircraft is kept while a car is selected")
 	app.ground_vehicle_factory = func(): return RejectedActivity.new()
-	app.home.ground_vehicle_requested.emit()
+	app.home.fly_button.pressed.emit()
 	await process_frame
 	await process_frame
 	check(app.ground_vehicle == null and app.home == original_home and app.home_scene == original_background, "rejected truck restores exact Home and backdrop")
 	check(app.home_scene.camera.is_current(), "rejected startup restores Home camera")
+	check(app.home.activity_id == "mt8-bisonte" and not app.home.fly_button.disabled, "a rejected start leaves the car selected and DRIVE usable")
 	app.ground_vehicle_factory = _factory
-	app.home.ground_vehicle_requested.emit()
+	app.home.fly_button.pressed.emit()
 	await process_frame
 	await process_frame
 	check(app.ground_vehicle != null and app.flight == null and app.home == null, "Home routes to ground session only")
@@ -95,6 +103,8 @@ func _run() -> void:
 	check(app.ground_vehicle == null and app.home != null, "truck returns to Home")
 	check(app.UiInput.selected_gamepad_id() == app.controllers.registry.selected_device_id("ui"), "returning Home restores its controller navigation ownership")
 	check(app.home.aircraft_id == initial_aircraft, "aircraft selection survives RC visit")
+	check(app.home.activity_id == "mt8-bisonte" and str(app.home_scene.airplane.get("aircraft_id", "")) == "mt8-bisonte",
+		"Home returns with the car still selected and shown")
 	await ui.close_app(app)
 	var direct := AppRoot.new()
 	# A shifted field makes hard-coded default terrain/spawn/pilot coordinates observable.

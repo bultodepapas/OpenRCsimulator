@@ -34,6 +34,11 @@ var detail_text := "":
 	set(value):
 		detail_text = value
 		queue_redraw()
+## UI-28-R5b: the current sub-stage, drawn smaller and dimmer under the stable stage line.
+var subdetail_text := "":
+	set(value):
+		subdetail_text = value
+		queue_redraw()
 var status_label: Label
 var skip_button: Button
 var progress_bar: Control
@@ -244,3 +249,9 @@ func _draw() -> void:
 		var top := progress_bar.position.y + progress_bar.size.y + 18.0 * fit + detail_size
 		draw_string(font, Vector2((size.x - detail_width) * 0.5, top), detail, HORIZONTAL_ALIGNMENT_LEFT, -1,
 			detail_size, Color(0.55, 0.70, 0.76, smoothstep(0.5, 1.2, elapsed)))
+		if subdetail_text != "":
+			var sub := tr(subdetail_text)
+			var sub_size := maxi(12, roundi(detail_size * 0.82))
+			var sub_width := font.get_string_size(sub, HORIZONTAL_ALIGNMENT_LEFT, -1, sub_size).x
+			draw_string(font, Vector2((size.x - sub_width) * 0.5, top + detail_size * 0.4 + sub_size), sub,
+				HORIZONTAL_ALIGNMENT_LEFT, -1, sub_size, Color(0.42, 0.55, 0.61, 0.85 * smoothstep(0.5, 1.2, elapsed)))

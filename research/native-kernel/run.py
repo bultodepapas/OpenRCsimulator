@@ -13,6 +13,7 @@ import configparser
 import hashlib
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -21,8 +22,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-TOOL_ROOT = ROOT / "tmp/native-kernel"
-GODOT = ROOT / ".tools/Godot_v4.8-beta2_linux.x86_64"
+# NK-4: OPENRC_NK_TOOL_ROOT points at a build_windows.py tool root (kept off a full system drive).
+TOOL_ROOT = Path(os.environ.get("OPENRC_NK_TOOL_ROOT", ROOT / "tmp/native-kernel"))
+PLATFORM_KEY = "windows.x86_64" if sys.platform == "win32" else "linux.x86_64"
+GODOT = ROOT / (".tools/Godot_v4.8-beta2_win64_console.exe" if sys.platform == "win32" else ".tools/Godot_v4.8-beta2_linux.x86_64")
 HARNESS_OPTIONS = {
     "oracle.gd": set(), "stage_oracle.gd": set(),
     "propeller_oracle.gd": set(),
@@ -68,7 +71,7 @@ def checked_run_matches(report: dict, mutant: bool) -> bool:
 def selected_binary(descriptor: Path) -> Path:
     config = configparser.ConfigParser(interpolation=None)
     config.read(descriptor)
-    name = config["libraries"]["linux.x86_64"].strip('"')
+    name = config["libraries"][PLATFORM_KEY].strip('"')
     return ((ROOT / "app" / name.removeprefix("res://")) if name.startswith("res://")
             else descriptor.parent / name).resolve()
 
@@ -212,7 +215,7 @@ def main() -> int:
     output.write_text(json.dumps(results, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(render(results))
     print(f"\nverdict={results['verdict']} compared={results['total']['compared']} "
-          f"identical={results['total']['identical']} results={output.relative_to(ROOT)}")
+          f"identical={results['total']['identical']} results={output}")
     expected = "fail" if args.mutant else "pass"
     if not results["run_valid"]:
         print("Run rejected: incomplete/erroring Godot process or sources/binary changed during the run.", file=sys.stderr)

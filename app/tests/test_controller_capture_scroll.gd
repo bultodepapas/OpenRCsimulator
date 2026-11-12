@@ -157,6 +157,7 @@ func _test_capture(tag: String) -> void:
 	await _settle()
 	_check(tag + " programmatic capture reveals hidden row", setup._selected_section == "buttons" and setup.action_filter.selected == 0 and target.is_visible_in_tree() and target.has_focus())
 	_escape()
+	await _settle() # Escape cancels this capture; it must not arrive after navigation already did.
 	# All AUX channels are populated so the last switch is below the fold.
 	for index in 3:
 		var aux_name: String = ["smoke", "flaps", "gear"][index]

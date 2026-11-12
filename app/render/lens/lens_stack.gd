@@ -17,6 +17,7 @@ const ImpactTrigger := preload("res://render/lens/impact_trigger.gd")
 const PilotStrike := preload("res://render/lens/pilot_strike.gd")
 const Frames := preload("res://render/frames.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const CollisionWorld := preload("res://scenery/collision_world.gd")
 const DROP_SHADER := preload("res://render/lens/lens_drop.gdshader")
 const STAMP_SHADER := preload("res://render/lens/lens_stamp.gdshader")
 const FILM_SHADER := preload("res://render/lens/lens_film.gdshader")
@@ -26,6 +27,10 @@ const STREAK_SHADER := preload("res://render/lens/rain_streaks.gdshader")
 const SPLAT_ATLAS_PATH := "res://assets/lens/splats.png"
 ## Frames the warmed-up nodes draw invisibly at flight setup, so the first strike or raindrop compiles nothing.
 const WARMUP_FRAMES := 3
+const MESSAGE_S := 5.0
+const STREAK_TRAVEL_REBASE_M := 50000.0
+## Closing speed above which arriving drops may burst into satellite beads.
+const SPLASH_SPEED_MPS := 8.0
 const CRACK_POINTS := 30
 ## Rain streaks fall faster than the number-weighted mean drop: what the eye reads as rain are the large, fast drops.
 ## Art factor on the mean fall speed for the streaks only; arrivals on the lens use the physical mean.
@@ -40,6 +45,7 @@ const CURTAIN_SPEED := 0.8
 const CURTAIN_DRAIN_RATE := 0.42
 const PULSE_DECAY_S := 0.35
 const SPLATTER_LIFE_S := 7.0
+const SPLATTER_STAY_S := 22.0
 const DUST_DECAY_S := 14.0
 const OIL_FULL_S := 900.0
 const OIL_MAX := 0.55
@@ -69,6 +75,19 @@ const STAMP_BLOOD := 0
 const STAMP_MUD := 1
 const STAMP_GRASS := 2
 const STAMP_CRACK := 3
+const STAMP_RUNNER := 4
+## Blood runner quad height / length (lens_stamp.gdshader RUNNER_ASPECT) and how fast a runner creeps toward its reach:
+## blood is viscous, so it slows exponentially and stops as it sets.
+const RUNNER_ASPECT := 0.12
+const RUNNER_TAU_S := 2.2
+## Seconds of dry air for a splat to set: blood dries in seconds, mud takes longer. Rain keeps both wet.
+const BLOOD_DRY_S := 7.0
+const MUD_DRY_S := 25.0
+## Steady rain rinses mud off the glass within this many seconds.
+const MUD_RINSE_S := 35.0
+
+## A person (player = the pilot) was struck hard enough to draw blood. The flight shows a short safety note.
+signal person_struck(player: bool)
 
 ## The resolved settings (LensSettings.resolve); empty until configured.
 var settings: Dictionary = {}
@@ -128,12 +147,19 @@ var _last_surface_tick := -1000000
 ## continuous when wind or the rain rate changes, instead of jumping by Δv × clock.
 var _streak_travel := Vector3.ZERO
 var _warmup_frames := 0
+var _frame_view := ""
+## Gravity on the image plane (screen axes, y down), refreshed every frame; runners creep along it.
+var _screen_gravity := Vector2(0.0, 1.0)
+var _camera_acceleration := Vector3.ZERO
+var _sun: DirectionalLight3D
+var _player_struck := false
+var _message: Label
+var _message_left := 0.0
 var _canvas_scale := -1.0
 
 var _camera_previous := Vector3.ZERO
 var _camera_velocity := Vector3.ZERO
 var _camera_primed := false
-var _last_clock := NAN
 var _pilot_clock := NAN
 
 
@@ -161,6 +187,9 @@ func configure(ctx: Dictionary) -> bool:
 	_mass_kg = maxf(float(ctx.get("mass_kg", 1.0)), 0.05)
 	_glow = bool(ctx.get("glow", false))
 	_seed = int(ctx.get("seed", 1))
+	_sun = ctx.get("sun") as DirectionalLight3D
+	if _sun == null and get_parent() != null:
+		_sun = get_parent().get_node_or_null("Sun") as DirectionalLight3D
 	_tier = settings.get("tier", Settings.TIERS.medium)
 	_rng.seed = hash([_seed, "LENS"])
 	_blood_seed = _rng.randf()
@@ -207,9 +236,12 @@ func reset(floor_tick: int = -1) -> void:
 	_cracked = false
 	_crash_seen = false
 	_last_surface_tick = -1000000
+	_player_struck = false
 	_streak_travel = Vector3.ZERO
 	_stamps.clear()
 	_seen.clear()
+	if _message != null:
+		_message.visible = false
 	_pilot.reset()
 	_pilot_clock = NAN
 	_camera_primed = false
@@ -258,6 +290,9 @@ func strike_person(strength: float, point: Vector3 = Vector3.INF, player: bool =
 		_apply_visibility()
 		return
 	_pulse = 1.0
+	if player:
+		_player_struck = true
+	person_struck.emit(player)
 	var screen := _screen_point(point)
 	var splatter_only := str(settings.impact) == "splatter"
 	if splatter_only and view == "pilot" and not bool(settings.get("glasses", false)):
@@ -269,7 +304,13 @@ func strike_person(strength: float, point: Vector3 = Vector3.INF, player: bool =
 	for i in splats:
 		var spread := Vector2(_rng.randf_range(-0.22, 0.22), _rng.randf_range(-0.16, 0.16))
 		var at: Vector2 = screen + spread if screen.x >= 0.0 else Vector2(_rng.randf_range(0.15, 1.6), _rng.randf_range(0.0, 0.25))
-		_add_stamp(STAMP_BLOOD, at, _rng.randf_range(0.06, 0.15) * (0.6 + 0.6 * s), SPLATTER_LIFE_S + (0.0 if splatter_only else -2.0))
+		var splat_size := _rng.randf_range(0.06, 0.15) * (0.6 + 0.6 * s)
+		# Splatter stays on the glass and dries in view; with the curtain, the splats leave with it.
+		var splat_life := SPLATTER_STAY_S if splatter_only else SPLATTER_LIFE_S - 2.0
+		_add_stamp(STAMP_BLOOD, at, splat_size, splat_life)
+		# Most splats bleed a runner or two down the glass before they set.
+		for _runner in int(_rng.randf() < 0.7) + int(_rng.randf() < 0.25):
+			_add_runner(at, splat_size, splat_life)
 	_blood_dry = 0.0
 	if not splatter_only:
 		_ensure_film()
@@ -333,6 +374,34 @@ func strike_surface(kind: String, strength: float, point: Vector3, speed_mps: fl
 	_apply_visibility()
 
 
+## Routes whose sessions report a crash only as a reason and a position (FPV quad, helicopter) name what was hit here:
+## the installed obstacle inventory is asked, read-only, what lies within `radius_m` of the accepted crash point. A
+## person draws blood; another obstacle or the ground leaves grime. Nothing is written back to the session.
+func strike_from_crash(point_ned: PackedFloat64Array, speed_mps: float, obstacle_world: Dictionary, event_key: Variant,
+		radius_m: float = 0.6) -> void:
+	if not configured or point_ned.size() != 3:
+		return
+	var point := Frames.ned_to_render(Array(point_ned))
+	var strength := clampf(speed_mps / 20.0, 0.0, 1.0)
+	var obstacle := false
+	if not obstacle_world.is_empty():
+		for proxy: Dictionary in CollisionWorld.nearby(obstacle_world, point_ned[0], point_ned[1], point_ned[2], radius_m):
+			if str(proxy.get("kind", "")) == "person":
+				var player := _near_station(point_ned, 1.2)
+				if player and _player_struck:
+					return # the pilot-strike sweep already showed this strike
+				var energy := 0.5 * _mass_kg * speed_mps * speed_mps
+				strike_person(ImpactTrigger.person_strength(energy, false), point, player, event_key)
+				return
+			obstacle = true
+	strike_surface("obstacle" if obstacle else "ground", strength, point, speed_mps, event_key)
+
+
+## A rebuilt stack (settings changed mid-flight) must not replay the crash it was rebuilt after.
+func mark_crash_shown() -> void:
+	_crash_seen = true
+
+
 ## One accepted event, one random stream: placement still follows the camera, but sizes, shapes and drips repeat.
 func _reseed(event_key: Variant) -> void:
 	if event_key != null:
@@ -359,6 +428,33 @@ func _spray(strength: float) -> void:
 	var aspect := _aspect()
 	for i in 6 + int(round(30.0 * strength)):
 		_pool.spawn_random(aspect, _rng.randf_range(0.004, 0.022))
+
+
+## A short caption over the lens (above the curtain, under the HUD): built on first use, fades out by itself.
+func show_message(text: String, seconds: float = MESSAGE_S) -> void:
+	if not configured or text.is_empty():
+		return
+	_ensure_layer()
+	if _message == null:
+		_message = Label.new()
+		_message.name = "LensMessage"
+		_message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_message.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_message.add_theme_color_override("font_color", Color(1.0, 0.96, 0.92))
+		_message.add_theme_color_override("font_outline_color", Color(0.05, 0.0, 0.0, 0.9))
+		_layer.add_child(_message)
+	_layer.move_child(_message, -1)
+	var size := _viewport_size()
+	_message.add_theme_font_size_override("font_size", int(round(clampf(size.y * 0.03, 16.0, 64.0))))
+	_message.add_theme_constant_override("outline_size", int(round(clampf(size.y * 0.006, 3.0, 12.0))))
+	_message.position = Vector2(size.x * 0.15, size.y * 0.70)
+	_message.size = Vector2(size.x * 0.7, size.y * 0.12)
+	_message.text = text
+	_message_left = seconds
+	_message.modulate.a = 1.0
+	_message.visible = true
 
 
 ## Debug-bridge helpers (`debugctl.py call node=… method=debug_blood`): presentation only.
@@ -410,18 +506,51 @@ func advance(delta: float, clock_s: float, paused: bool) -> void:
 	if not configured or _camera == null or not is_instance_valid(_camera):
 		return
 	var dt := 0.0 if paused else clampf(delta, 0.0, 0.1)
+	_frame_view = _query_view()
 	_track_camera(delta, paused)
+	var g_cam := _camera.global_basis.inverse() * Vector3.DOWN
+	if Vector2(g_cam.x, -g_cam.y).length() > 0.25:
+		_screen_gravity = Vector2(g_cam.x, -g_cam.y).normalized()
 	if not paused:
 		_observe_pilot(clock_s)
 		_observe_crash()
 	_advance_rain(dt, clock_s)
 	_advance_blood(dt)
 	_advance_grime(dt)
+	if _message != null and _message.visible:
+		_message_left -= dt
+		_message.modulate.a = clampf(_message_left / 0.8, 0.0, 1.0)
+		_message.visible = _message_left > 0.0
 	_write_stamps()
 	_apply_canvas_scale()
 	if _warmup_frames > 0:
 		_warmup_frames -= 1
 	_apply_visibility()
+
+
+## Drops and wet splats catch the sun (or moon): their highlight turns toward its screen position and brightens when
+## it shines into the lens. Reads the scene's DirectionalLight3D; never changes it.
+func _apply_sun_glint(material: ShaderMaterial) -> void:
+	if material == null:
+		return
+	var uv := Vector2(-1.0, -1.0)
+	var strength := 0.0
+	if is_instance_valid(_sun) and _sun.visible:
+		var toward := _sun.global_basis.z.normalized()
+		var target := _camera.global_position + toward * 1000.0
+		if not _camera.is_position_behind(target):
+			var size := _viewport_size()
+			uv = _camera.unproject_position(target) / size
+			var facing := clampf(toward.dot(-_camera.global_basis.z), 0.0, 1.0)
+			strength = clampf(_sun.light_energy, 0.0, 2.0) * facing * facing
+	material.set_shader_parameter("sun_uv", uv)
+	material.set_shader_parameter("sun_strength", strength)
+
+
+## A material created after the scale was measured gets it at once (lazy channels, debug calls).
+func _push_canvas_scale(material: ShaderMaterial) -> void:
+	if material != null and _canvas_scale > 0.0:
+		material.set_shader_parameter("canvas_scale", _canvas_scale)
 
 
 ## Physical pixels per canvas pixel. The UI stretches the canvas on large screens (canvas_items content scale), and
@@ -442,7 +571,14 @@ func _apply_canvas_scale() -> void:
 		_stamp_material.set_shader_parameter("canvas_scale", scale)
 
 
+## The active view, read once per frame (advance) and between frames on demand.
 func _view() -> String:
+	if not _frame_view.is_empty():
+		return _frame_view
+	return _query_view()
+
+
+func _query_view() -> String:
 	if _view_provider.is_valid():
 		return str(_view_provider.call())
 	return "pilot"
@@ -505,8 +641,12 @@ func _track_camera(delta: float, paused: bool) -> void:
 	_camera_previous = position
 	if raw.length() > 150.0:
 		_camera_velocity = Vector3.ZERO # a view change or reset is a cut, not motion
+		_camera_acceleration = Vector3.ZERO
 		return
+	var previous_velocity := _camera_velocity
 	_camera_velocity = _camera_velocity.lerp(raw, clampf(delta * 8.0, 0.0, 1.0))
+	var raw_acceleration := (_camera_velocity - previous_velocity) / delta
+	_camera_acceleration = _camera_acceleration.lerp(raw_acceleration.limit_length(80.0), clampf(delta * 6.0, 0.0, 1.0))
 
 
 func _observe_pilot(clock_s: float) -> void:
@@ -574,6 +714,9 @@ func _advance_rain(dt: float, clock_s: float) -> void:
 	var fall := Vector3(wind.x, -fall_speed, wind.z)
 	var streak_fall := Vector3(wind.x, -fall_speed * STREAK_SPEED_FACTOR, wind.z)
 	_streak_travel += streak_fall * dt
+	# float32 uniforms lose millimetres past ~1e5 m (hours of rain): rebase rarely; the one-off reshuffle is invisible.
+	if _streak_travel.length() > STREAK_TRAVEL_REBASE_M:
+		_streak_travel = Vector3.ZERO
 	if _streaks != null:
 		_streaks.visible = raining
 		if raining:
@@ -618,9 +761,16 @@ func _advance_rain(dt: float, clock_s: float) -> void:
 		var forward := -_camera.global_basis.z
 		var closing := -(fall - _camera_velocity).dot(forward)
 		var expected := minf(RainModel.arrival_rate(rate, closing, float(profile.gain)), MAX_ARRIVALS_PER_S) * dt
+		# A fast drop does not just land: it bursts into a crown of beads (more likely the harder it hits).
+		var splash_chance := clampf((closing - SPLASH_SPEED_MPS) / 25.0, 0.0, 0.7)
 		for i in _pool.poisson(expected):
 			var diameter := RainModel.sample_diameter(rate, _pool.random())
-			_pool.spawn_random(aspect, diameter * float(profile.scale))
+			var radius := diameter * float(profile.scale)
+			var x := _pool.random() * aspect
+			var y := _pool.random()
+			_pool.spawn(x, y, radius)
+			if _pool.random() < splash_chance:
+				_pool.splash(x, y, radius, 2 + int(_pool.random() * 4.0))
 	# Gravity on the image plane, the focus of expansion and the air shear, in screen axes (y down).
 	var to_camera := _camera.global_basis.inverse()
 	var g_cam := to_camera * Vector3.DOWN
@@ -636,10 +786,14 @@ func _advance_rain(dt: float, clock_s: float) -> void:
 			focus = _camera.unproject_position(_camera.global_position + _camera_velocity.normalized() * 10.0) / maxf(size.y, 1.0)
 		air = clampf(pow(maxf(forward_speed, 0.0) / 30.0, 2.0), 0.0, 1.5)
 		lateral = Vector2(-v_cam.x, v_cam.y) / 30.0 * 0.4
-	_pool.step(dt, aspect, gravity, focus, air, lateral, raining)
+	# The glass is carried by the camera: its acceleration is a pseudo-gravity the other way (g units, image plane).
+	var a_cam := to_camera * _camera_acceleration
+	var inertia := Vector2(-a_cam.x, a_cam.y) / 9.81 if bool(profile.air) or view == "flyby" else Vector2.ZERO
+	_pool.step(dt, aspect, gravity, focus, air, lateral, raining, inertia.limit_length(4.0))
 	_drop_material.set_shader_parameter("focus_lod", float(profile.focus) * float(_tier.get("focus_lod", 1.5)) / 1.5)
 	_drop_material.set_shader_parameter("flash", flash)
-	_pool.write(_drops_node.multimesh, _viewport_size().y, raining)
+	_apply_sun_glint(_drop_material)
+	_pool.write(_drops_node.multimesh, _viewport_size().y, raining, gravity)
 
 
 ## Fine beads cover a lens in the rain within seconds and evaporate slowly after it; airflow at speed thins them.
@@ -662,8 +816,10 @@ func _advance_wetness(dt: float, rate: float, lens: bool) -> void:
 
 func _advance_blood(dt: float) -> void:
 	_pulse = maxf(_pulse - dt / PULSE_DECAY_S * _pulse, 0.0) if _pulse > 0.002 else 0.0
+	# Rain on the glass washes blood away: the curtain runs and drains faster, up to 1.6× in a downpour.
+	var wash := 1.0 + clampf(last_rain_mmph / 20.0, 0.0, 0.6) if _view() != "pilot" or bool(settings.get("glasses", false)) else 1.0
 	if _blood_active:
-		_blood_t += dt
+		_blood_t += dt * wash
 		if _blood_t >= _blood_end:
 			_blood_active = false
 	if _blood_active:
@@ -698,7 +854,10 @@ func _advance_blood(dt: float) -> void:
 func _advance_grime(dt: float) -> void:
 	if dt <= 0.0:
 		return
-	_dust = maxf(_dust - dt / DUST_DECAY_S, 0.0)
+	var v_air := _camera.global_basis.inverse() * _camera_velocity
+	# Airspeed scours dust off the glass: at 30 m/s it clears about three times faster.
+	_dust = maxf(_dust - dt / DUST_DECAY_S * (1.0 + maxf(-v_air.z, 0.0) / 15.0), 0.0)
+	var wet_lens := last_rain_mmph > 0.0 and (_view() != "pilot" or bool(settings.get("glasses", false)))
 	if _glow and _view() == "closeup" and _engine_running.is_valid() and bool(_engine_running.call()):
 		_oil = minf(_oil + dt / OIL_FULL_S, OIL_MAX)
 		if _oil > 0.0:
@@ -708,7 +867,18 @@ func _advance_grime(dt: float) -> void:
 	var i := 0
 	while i < _stamps.size():
 		var stamp: Dictionary = _stamps[i]
-		stamp.age = float(stamp.age) + dt
+		var kind := int(stamp.kind)
+		var bloody := kind == STAMP_BLOOD or kind == STAMP_RUNNER
+		# Rain rinses blood off the glass sooner, keeps every splat wet, and washes mud away over half a minute.
+		var rinse := 1.0 + clampf(last_rain_mmph / 10.0, 0.0, 1.5) if bloody else 1.0
+		stamp.age = float(stamp.age) + dt * rinse
+		if not wet_lens:
+			stamp.dry_t = float(stamp.dry_t) + dt
+		elif kind == STAMP_MUD:
+			stamp.life = minf(float(stamp.life), float(stamp.age) + MUD_RINSE_S)
+		if kind == STAMP_RUNNER:
+			# Creeps fast while fresh, slows as it thins and stops once the blood sets.
+			stamp.grow = 1.0 - exp(-minf(float(stamp.age), BLOOD_DRY_S + float(stamp.age) - float(stamp.dry_t)) / RUNNER_TAU_S)
 		var life: float = stamp.life
 		var alpha := clampf(float(stamp.age) / 0.06, 0.0, 1.0)
 		if is_finite(life):
@@ -722,6 +892,15 @@ func _advance_grime(dt: float) -> void:
 		i += 1
 
 
+## A viscous blood runner leaving a splat along screen gravity (a little off it, as real drips wander).
+func _add_runner(at: Vector2, splat_size: float, life: float) -> void:
+	var direction := _screen_gravity.rotated(_rng.randf_range(-0.18, 0.18))
+	var start := at + direction * splat_size * _rng.randf_range(0.15, 0.4) + direction.orthogonal() * splat_size * _rng.randf_range(-0.3, 0.3)
+	_add_stamp(STAMP_RUNNER, start, splat_size * _rng.randf_range(1.0, 3.2), life)
+	if not _stamps.is_empty() and int(_stamps[-1].kind) == STAMP_RUNNER:
+		_stamps[-1].angle = direction.angle()
+
+
 func _add_stamp(kind: int, at: Vector2, size: float, life: float) -> void:
 	var limit := int(_tier.get("stamps", 16))
 	if _stamps.size() >= limit:
@@ -733,7 +912,7 @@ func _add_stamp(kind: int, at: Vector2, size: float, life: float) -> void:
 		if _stamps.size() >= limit:
 			return
 	_stamps.append({"kind": kind, "x": at.x, "y": at.y, "size": size, "angle": _rng.randf() * TAU,
-		"seed": _rng.randf(), "age": 0.0, "life": life, "alpha": 0.0})
+		"seed": _rng.randf(), "age": 0.0, "life": life, "alpha": 0.0, "dry_t": 0.0, "grow": 0.0})
 
 
 func _write_stamps() -> void:
@@ -742,12 +921,35 @@ func _write_stamps() -> void:
 	var mesh := _stamps_node.multimesh
 	var height := _viewport_size().y
 	var n := mini(_stamps.size(), mesh.instance_count)
+	# The crack refracts the whole region it covers from the screen copy taken before the stamps: drawn last it would
+	# paint the clean scene over mud and blood. It is the glass itself, so it goes first and everything sits on it.
+	var order: Array[Dictionary] = []
+	for stamp: Dictionary in _stamps:
+		if int(stamp.kind) == STAMP_CRACK:
+			order.push_front(stamp)
+		else:
+			order.append(stamp)
 	for i in n:
-		var stamp: Dictionary = _stamps[i]
+		var stamp: Dictionary = order[i]
+		var kind := int(stamp.kind)
+		var dry := 0.0
+		if kind == STAMP_BLOOD or kind == STAMP_RUNNER:
+			dry = clampf(float(stamp.dry_t) / BLOOD_DRY_S, 0.0, 1.0)
+		elif kind == STAMP_MUD:
+			dry = clampf(float(stamp.dry_t) / MUD_DRY_S, 0.0, 1.0)
+		# The kind and this stamp's dryness share x: integer part and fraction (lens_stamp.gdshader).
+		var packed_kind := float(kind) + dry * 0.9
+		if kind == STAMP_RUNNER:
+			var length_px := float(stamp.size) * height
+			var direction := Vector2.from_angle(float(stamp.angle))
+			var centre := Vector2(float(stamp.x), float(stamp.y)) * height + direction * length_px * 0.5
+			mesh.set_instance_transform_2d(i, Transform2D(float(stamp.angle), Vector2(length_px, length_px * RUNNER_ASPECT), 0.0, centre))
+			mesh.set_instance_custom_data(i, Color(packed_kind, float(stamp.grow), float(stamp.alpha), length_px * 0.5))
+			continue
 		var size_px := float(stamp.size) * 2.0 * height
-		var aspect_scale := Vector2(size_px * (2.6 if int(stamp.kind) == STAMP_GRASS else 1.0), size_px)
+		var aspect_scale := Vector2(size_px * (2.6 if kind == STAMP_GRASS else 1.0), size_px)
 		mesh.set_instance_transform_2d(i, Transform2D(float(stamp.angle), aspect_scale, 0.0, Vector2(float(stamp.x), float(stamp.y)) * height))
-		mesh.set_instance_custom_data(i, Color(float(stamp.kind), float(stamp.seed), float(stamp.alpha), size_px * 0.5))
+		mesh.set_instance_custom_data(i, Color(packed_kind, float(stamp.seed), float(stamp.alpha), size_px * 0.5))
 	mesh.visible_instance_count = n
 	_stamp_material.set_shader_parameter("blood_dry", _blood_dry)
 	var colour: Dictionary = COLOURS.get(str(settings.get("colour", "red")), COLOURS.red)
@@ -788,6 +990,7 @@ func _ensure_pool() -> bool:
 	_drops_node = _quad_instances("LensDrops", capacity, _drop_material)
 	_layer.add_child(_drops_node)
 	_layer.move_child(_drops_node, 0)
+	_push_canvas_scale(_drop_material)
 	return true
 
 
@@ -802,6 +1005,9 @@ func _ensure_stamps() -> void:
 	_layer.add_child(_stamps_node)
 	if _film != null:
 		_layer.move_child(_film, -1)
+	if _message != null:
+		_layer.move_child(_message, -1)
+	_push_canvas_scale(_stamp_material)
 
 
 func _ensure_film() -> void:
@@ -817,6 +1023,8 @@ func _ensure_film() -> void:
 	_film.material = _film_material
 	_film.visible = false
 	_layer.add_child(_film)
+	if _message != null:
+		_layer.move_child(_message, -1)
 
 
 func _ensure_streaks() -> void:

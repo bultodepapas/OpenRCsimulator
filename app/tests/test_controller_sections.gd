@@ -336,6 +336,8 @@ func _run() -> void:
 	]
 	for index in range(1, expected.size()):
 		expected[0].append_array(expected[index])
+	# UI-15-UX-02c: category membership is checked with every vehicle's rows shown.
+	setup.show_all_vehicle_actions.button_pressed = true
 	for index in expected.size():
 		setup.action_filter.select(index)
 		setup._on_action_filter_selected(index)

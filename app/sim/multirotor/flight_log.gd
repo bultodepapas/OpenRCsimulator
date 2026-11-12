@@ -360,7 +360,10 @@ static func _replay(session: Node, field: Dictionary, head: Dictionary, read: Di
 		report.error = "Recorded header is malformed."
 		return report
 	if not str(head.get("collision_identity", "")).is_empty():
-		var built: Dictionary = CollisionSetup.build(field)
+		# RC-TRACK: a flight recorded with the RC car circuit had its dressing in the obstacle inventory; a candidate
+		# that overrides the circuit gets the matching inventory (terrain and obstacles stay one decision).
+		var recorded_track: Variant = overrides.get("rc_track", head.options.get("rc_track", {}))
+		var built: Dictionary = CollisionSetup.build(field, recorded_track if typeof(recorded_track) == TYPE_DICTIONARY else {})
 		if not built.ok or str(built.world.get("identity", "")) != str(head.collision_identity) or not session.set_collision_world(built.world):
 			report.error = "Recorded obstacle inventory differs from the current field."
 			return report

@@ -120,7 +120,7 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 		# switch groups must not silently turn into a different saved configuration.
 		var aux_value: Variant = normalized.value.get("aux", {})
 		if aux_value is Dictionary:
-			for aux_id in ["smoke", "flaps", "gear"]:
+			for aux_id in ControllerActions.AUX_CHANNEL_IDS:
 				var aux_binding: Variant = aux_value.get(aux_id, {})
 				if _string_field(aux_binding, "type") == "switch" and not SmokeAux.valid_binding(aux_binding):
 					return {}
@@ -207,7 +207,7 @@ static func merge_radio_calibration(existing: Dictionary, calibration: Dictionar
 	var aux: Variant = result.get("aux", {})
 	if typeof(aux) == TYPE_DICTIONARY:
 		var flight_axes := SmokeAux.flight_axes(result)
-		for aux_name in ["smoke", "flaps", "gear"]:
+		for aux_name in ControllerActions.AUX_CHANNEL_IDS:
 			var binding: Variant = aux.get(aux_name)
 			if typeof(binding) == TYPE_DICTIONARY and binding.get("type", "") == "axis" \
 					and typeof(binding.get("axis")) == TYPE_INT and flight_axes.has(binding.axis):
@@ -216,7 +216,7 @@ static func merge_radio_calibration(existing: Dictionary, calibration: Dictionar
 		# together with calibration. Preserve that supported, validated handoff.
 		var measured_aux: Variant = measured.get("aux", {})
 		if typeof(measured_aux) == TYPE_DICTIONARY:
-			for aux_name in ["smoke", "flaps", "gear"]:
+			for aux_name in ControllerActions.AUX_CHANNEL_IDS:
 				if measured_aux.has(aux_name) and SmokeAux.valid_binding(measured_aux[aux_name], flight_axes):
 					aux[aux_name] = measured_aux[aux_name].duplicate(true)
 		result["aux"] = aux

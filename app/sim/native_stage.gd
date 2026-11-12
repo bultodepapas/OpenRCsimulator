@@ -40,6 +40,21 @@ const EXPECTED_DESCRIPTOR := (
 	+ "[libraries]\n"
 	+ "linux.x86_64 = \"res://native/kernel/libopenrc_native_kernel.so\"\n"
 )
+## NK-4: the Windows source-tree installation (MinGW-w64 build with the engine's msvcrt/libmingwex math). Its own
+## descriptor and receipt live beside the Linux ones, so neither installation can replace the other's identity.
+const WINDOWS_EXTENSION_PATH := "res://native/kernel/openrc_native_kernel_windows.gdextension"
+const WINDOWS_RECEIPT_PATH := "res://native/kernel/build-receipt-windows.json"
+const WINDOWS_LIBRARY_FILE := "openrc_native_kernel.dll"
+const EXPECTED_WINDOWS_DESCRIPTOR := (
+	"; NK-4 native stage, installed by research/native-kernel/build_windows.py --install-app.\n"
+	+ "; .gdignore prevents discovery; app/sim/native_stage.gd loads it after receipt checks.\n"
+	+ "[configuration]\n"
+	+ "entry_symbol = \"openrc_native_kernel_library_init\"\n"
+	+ "compatibility_minimum = \"4.7\"\n"
+	+ "reloadable = false\n\n"
+	+ "[libraries]\n"
+	+ "windows.x86_64 = \"res://native/kernel/openrc_native_kernel.dll\"\n"
+)
 const EXPECTED_PACKAGE_DESCRIPTOR := (
 	"; NK-3 packaged stage; loaded explicitly after embedded identity verification.\n"
 	+ "[configuration]\n"
@@ -302,32 +317,46 @@ func _refuse(why: String) -> Dictionary:
 	return {ok = false, reason = why}
 
 
+## "linux" or "windows" for an x86_64 source/debug process; "" where no native stage is built.
+static func _source_platform() -> String:
+	if Engine.get_architecture_name() != "x86_64":
+		return ""
+	match OS.get_name():
+		"Linux": return "linux"
+		"Windows": return "windows"
+	return ""
+
+
 static func _load_library() -> String:
-	if OS.get_name() != "Linux" or Engine.get_architecture_name() != "x86_64":
-		return "native stage: Linux x86_64 only"
+	var platform := _source_platform()
+	if platform.is_empty():
+		return "native stage: Linux or Windows x86_64 only"
 	if OS.has_feature("template_release"):
-		return _load_package_library()
-	if not FileAccess.file_exists(EXTENSION_PATH) or not FileAccess.file_exists(RECEIPT_PATH):
+		# Release packages embed a verified Linux sidecar; Windows packages are not built yet.
+		return _load_package_library() if platform == "linux" else "native stage packages: Linux x86_64 only"
+	var extension_path := WINDOWS_EXTENSION_PATH if platform == "windows" else EXTENSION_PATH
+	var receipt_path := WINDOWS_RECEIPT_PATH if platform == "windows" else RECEIPT_PATH
+	if not FileAccess.file_exists(extension_path) or not FileAccess.file_exists(receipt_path):
 		return "native stage library not installed"
 	var receipt := JSON.new()
-	if receipt.parse(FileAccess.get_file_as_string(RECEIPT_PATH)) != OK:
+	if receipt.parse(FileAccess.get_file_as_string(receipt_path)) != OK:
 		return "native stage receipt is malformed or for another backend version or ABI"
-	var row := _platform_row(receipt.data)
+	var row := _platform_row(receipt.data, platform)
 	if row.is_empty():
 		return "native stage receipt is malformed or for another backend version or ABI"
 	if row.get("engine_version") != Engine.get_version_info().string \
 			or str(row.get("engine_sha256", "")).length() != 64 \
 			or FileAccess.get_sha256(OS.get_executable_path()) != row.engine_sha256:
 		return "native stage requires the exact verified Godot executable; reinstall after verification"
-	var descriptor_error := _descriptor_error()
+	var descriptor_error := _descriptor_error(platform)
 	if not descriptor_error.is_empty():
 		return descriptor_error
-	if not _binary_matches(str(row.binary_sha256)):
+	if not _binary_matches(str(row.binary_sha256), platform):
 		return "native stage binary does not match its receipt"
 	var source_error := _source_error(row)
 	if not source_error.is_empty():
 		return source_error
-	return _initialize_library(EXTENSION_PATH, row)
+	return _initialize_library(extension_path, row)
 
 
 static func _load_package_library() -> String:
@@ -366,19 +395,23 @@ static func _initialize_library(descriptor: String, row: Dictionary) -> String:
 
 
 ## Only the one checked file may be loaded. Extra feature entries or dependencies could select other code.
-static func _descriptor_error() -> String:
-	return "" if FileAccess.get_file_as_string(EXTENSION_PATH) == EXPECTED_DESCRIPTOR \
+static func _descriptor_error(platform := "linux") -> String:
+	var path := WINDOWS_EXTENSION_PATH if platform == "windows" else EXTENSION_PATH
+	var expected := EXPECTED_WINDOWS_DESCRIPTOR if platform == "windows" else EXPECTED_DESCRIPTOR
+	return "" if FileAccess.get_file_as_string(path) == expected \
 			else "native stage descriptor differs from the verified loader contract"
 
 
-static func _platform_row(value: Variant) -> Dictionary:
+static func _platform_row(value: Variant, platform := "linux") -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY or value.get("format") != RECEIPT_FORMAT or value.get("backend") != BACKEND_NATIVE \
 			or value.get("backend_version") != BACKEND_VERSION or not _abi_matches(value.get("abi_version")) \
 			or typeof(value.get("platforms")) != TYPE_DICTIONARY:
 		return {}
-	var row: Variant = value.platforms.get("linux")
+	var row: Variant = value.platforms.get(platform)
 	if typeof(row) != TYPE_DICTIONARY or row.get("backend_version") != BACKEND_VERSION \
 			or not _abi_matches(row.get("abi_version")) or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY:
+		return {}
+	if platform == "windows" and (row.get("platform") != "windows" or row.get("architecture") != "x86_64"):
 		return {}
 	for key: String in ["binary_sha256", "source_sha256", "lock_sha256"]:
 		var digest: String = str(row.get(key, ""))
@@ -403,8 +436,8 @@ static func _abi_matches(value: Variant) -> bool:
 	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and value == ABI_VERSION
 
 
-static func _binary_matches(expected_sha256: String) -> bool:
-	var path := "res://native/kernel/" + LIBRARY_FILE
+static func _binary_matches(expected_sha256: String, platform := "linux") -> bool:
+	var path := "res://native/kernel/" + (WINDOWS_LIBRARY_FILE if platform == "windows" else LIBRARY_FILE)
 	return FileAccess.file_exists(path) and FileAccess.get_sha256(path) == expected_sha256
 
 

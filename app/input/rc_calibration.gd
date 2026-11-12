@@ -1,5 +1,5 @@
 # Radio calibration wizard (D6b): "move the stick" channel assignment, per-side endpoints, inversion. Pure state
-# machine (the caller feeds raw axes, −1…+1, once per tick, and calls advance() when the pilot presses Enter).
+# machine (the caller feeds raw axes, −1…+1, once per tick, and calls advance() when the pilot confirms the step).
 # Steps: rest (sticks centred, throttle low) → throttle → aileron → elevator → rudder. Each centered stick's
 # requested direction is confirmed while held, before measuring the opposite endpoint. Profiles are saved per device
 # key in a ConfigFile (save/load below).
@@ -9,18 +9,26 @@ const RcInput := preload("res://input/rc_input.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 
 const STEPS := ["rest", "throttle", "roll", "pitch", "yaw"]
+# UI-15-UX-01: prompts name the function first (Roll/Pitch/Yaw/Throttle) with the RC word second, and never a key:
+# each host shows its own Next button or key hint.
 const PROMPTS := {
-	rest = "Centre the sticks EXCEPT the THROTTLE: leave it fully DOWN (minimum). Keep these positions, then press Enter",
-	throttle = "Move the THROTTLE to FULL and back to LOW. Press Enter",
-	roll = "Hold the AILERON stick fully RIGHT and press Enter",
-	pitch = "Hold the ELEVATOR stick fully BACK and press Enter",
-	yaw = "Hold the RUDDER stick fully RIGHT and press Enter",
+	rest = "Centre the sticks EXCEPT the THROTTLE: leave the THROTTLE fully DOWN (LOW). Keep these positions.",
+	throttle = "Move the THROTTLE to FULL and back to LOW.",
+	roll = "Hold the ROLL stick (aileron) fully RIGHT.",
+	pitch = "Hold the PITCH stick (elevator) fully BACK.",
+	yaw = "Hold the YAW stick (rudder) fully RIGHT.",
 }
 const OPPOSITE_PROMPTS := {
-	roll = "Move the AILERON stick fully LEFT, then centre. Press Enter",
-	pitch = "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter",
-	yaw = "Move the RUDDER stick fully LEFT, then centre. Press Enter",
+	roll = "Move the ROLL stick (aileron) fully LEFT, then centre.",
+	pitch = "Move the PITCH stick (elevator) fully FORWARD, then centre.",
+	yaw = "Move the YAW stick (rudder) fully LEFT, then centre.",
 }
+## Requested direction per centred function: the held endpoint first, then the opposite one (read-only queries).
+const HELD_DIRECTIONS := { roll = "right", pitch = "back", yaw = "right" }
+const OPPOSITE_DIRECTIONS := { roll = "left", pitch = "forward", yaw = "left" }
+## AUX channels other than smoke that a recalibration keeps when they do not overlap the new flight axes. Mirrors
+## ControllerActions.AUX_CHANNEL_IDS without "smoke" (checked by tests/test_multirotor_arm_mode_aux.gd).
+const EXTRA_AUX_CHANNELS: PackedStringArray = ["flaps", "gear", "arm", "flight_mode"]
 ## An axis must sweep at least this much (of the −1…+1 range) to count as moved.
 const MIN_SWEEP := 0.5
 ## A second moving channel or a stick left away from its starting position makes an assignment ambiguous.
@@ -53,7 +61,7 @@ func _init(existing_profile: Dictionary = {}) -> void:
 		var smoke: Variant = aux.get("smoke", {})
 		if SmokeAux.valid_binding(smoke, SmokeAux.flight_axes(clean)):
 			_preserved_smoke = smoke.duplicate(true)
-		for channel_name in ["flaps", "gear"]:
+		for channel_name in EXTRA_AUX_CHANNELS:
 			if SmokeAux.valid_binding(aux.get(channel_name), SmokeAux.flight_axes(clean)):
 				_preserved_extra_aux[channel_name] = aux[channel_name].duplicate(true)
 	for a in [_rest, _lo, _hi]:
@@ -74,6 +82,63 @@ func instruction() -> String:
 		return ""
 	var name: String = STEPS[step]
 	return str(OPPOSITE_PROMPTS[name]) if _direction_axis >= 0 else str(PROMPTS[name])
+
+
+## Read-only presentation queries (UI-15-UX-01). They never change a step, a sweep or the profile.
+
+## The function the current step calibrates ("rest", "throttle", "roll", "pitch", "yaw"), or "" when done.
+func current_function() -> String:
+	return "" if done() else str(STEPS[step])
+
+
+## What the pilot is asked to do now: {function, direction, phase}. Phases: "rest" (direction "centre"), "sweep"
+## (throttle, direction "full_low"), "hold" (held endpoint), "opposite" (opposite endpoint, then centre), "done".
+func requested_target() -> Dictionary:
+	if done():
+		return { function = "", direction = "", phase = "done" }
+	var name: String = STEPS[step]
+	if name == "rest":
+		return { function = name, direction = "centre", phase = "rest" }
+	if name == "throttle":
+		return { function = name, direction = "full_low", phase = "sweep" }
+	if _direction_axis >= 0:
+		return { function = name, direction = str(OPPOSITE_DIRECTIONS[name]), phase = "opposite" }
+	return { function = name, direction = str(HELD_DIRECTIONS[name]), phase = "hold" }
+
+
+## The raw axis assigned to `function` so far ("throttle", "roll", "pitch", "yaw"), or -1.
+func assigned_axis(function: String) -> int:
+	var channel: Variant = profile.get(function)
+	return int(channel.get("axis", -1)) if typeof(channel) == TYPE_DICTIONARY else -1
+
+
+## True once the rest sample has been taken (after the first step).
+func has_rest() -> bool:
+	return step > 0
+
+
+## The rest reading of one raw axis (0.0 before the rest step or for an out-of-range axis).
+func rest_value(axis: int) -> float:
+	return _rest[axis] if has_rest() and axis >= 0 and axis < RcInput.AXES else 0.0
+
+
+## The axis confirmed by the held direction of the current centred step, or -1.
+func held_axis() -> int:
+	return _direction_axis
+
+
+## +1/−1 for the raw sign of the held (requested) direction, 0 before it is confirmed.
+func held_sign() -> float:
+	return _direction_sign
+
+
+## The current step's measured sweep of one raw axis (the rest value when nothing moved yet).
+func sweep_min(axis: int) -> float:
+	return _lo[axis] if axis >= 0 and axis < RcInput.AXES else 0.0
+
+
+func sweep_max(axis: int) -> float:
+	return _hi[axis] if axis >= 0 and axis < RcInput.AXES else 0.0
 
 
 ## Feed the latest raw axes, once per tick.
@@ -138,7 +203,7 @@ func advance(axes: PackedFloat64Array) -> bool:
 	else:
 		var c := _rest[best]
 		if c - lo < 0.2 * (hi - lo) or hi - c < 0.2 * (hi - lo) or absf(axes[best] - c) > CENTER_RETURN_FRACTION * minf(c - lo, hi - c):
-			error = "the stick did not return to centre before Enter (or moved only one way); try again"
+			error = "the stick did not return to centre before you continued (or moved only one way); try again"
 			_reset_sweep()
 			return false
 		# The captured held direction is positive: aileron RIGHT, elevator BACK, rudder RIGHT.

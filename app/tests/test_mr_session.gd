@@ -15,6 +15,8 @@ const Rates := preload("res://physics/multirotor/rates.gd")
 const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
+const AirfieldTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
+const CollisionSetup := preload("res://scenery/collision_setup.gd")
 
 var _count := 0
 var _failures := 0
@@ -103,6 +105,7 @@ func _finite_values(value: Variant) -> bool:
 
 func _run() -> void:
 	await _default_field()
+	await _rc_circuit()
 	_holds_and_refusals()
 	_flight_crash_and_reset()
 	_tx06()
@@ -144,6 +147,59 @@ func _default_field() -> void:
 		and float(t.speed_mps) < 0.01 and s.crash.is_empty(), "agl %.4f speed %.4f" % [t.altitude_agl_m, t.speed_mps])
 	_check("the electrical document reports its pack", t.has_battery and float(t.soc) > 0.99)
 	s.queue_free()
+
+
+
+## RC-TRACK: with the club's RC car circuit shown, the quad's ground is the circuit's relief (the same float64 overlay
+## the airplanes and cars use) and its obstacle inventory holds the circuit dressing; bad circuit data refuses.
+func _rc_circuit() -> void:
+	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
+	var circuit: Dictionary = AirfieldTrack.load_default().track
+	# The highest point of the tabletop ramp on the south straight.
+	var at := Vector2(39.0, -6.0)
+	var best := -INF
+	for i in 81:
+		var east: float = -6.0 + 0.05 * float(i)
+		var lift: float = AirfieldTrack.composed(PackedFloat64Array([0.0, 0.0, 0.0]), circuit, 39.0, east)[0]
+		if lift > best:
+			best = lift
+			at = Vector2(39.0, east)
+	var options := {north_offset_m = at.x, east_offset_m = at.y}
+	var plain := _session(field, options)
+	var with_options := options.duplicate()
+	with_options.rc_track = circuit
+	var s := _session(field, with_options)
+	var lift := 0.0
+	if s.prepared and plain.prepared:
+		lift = s.environment.ground(at.x, at.y)[0] - plain.environment.ground(at.x, at.y)[0]
+	_check("RC-TRACK the circuit raises the quad's ground by its relief (tabletop deck)", s.prepared and lift > 0.4
+		and absf(lift - best) < 1e-9 and str(s.identity().environment.get("rc_track", "")) == AirfieldTrack.identity(circuit),
+		"lift %.3f m (overlay %.3f m)" % [lift, best])
+	if s.prepared:
+		var rest: float = s.data.start.rest_height_m
+		s.resume()
+		var settled := _fly(s, FC.neutral_input(), 240)
+		var t: Dictionary = s.telemetry()
+		var height: float = -s.sim.state[RB.POS + 2]
+		_check("RC-TRACK the disarmed quad stands on the ramp deck, not the field under it", settled and s.crash.is_empty()
+			and absf(float(t.altitude_agl_m) - rest) < 0.004 and height > plain.environment.ground(at.x, at.y)[0] + 0.4,
+			"agl %.4f height %.3f" % [t.altitude_agl_m, height])
+	var world: Dictionary = CollisionSetup.build(field, circuit)
+	var dressed := 0
+	if world.ok:
+		for proxy: Dictionary in world.world.proxies:
+			dressed += 1 if str(proxy.get("id", "")).contains("rc_track:") else 0
+	# Installed before a flight (the flown session above refuses an inventory change mid-flight).
+	_check("RC-TRACK the obstacle inventory with the circuit holds its barriers and signs and installs",
+		world.ok and dressed > 0 and plain.set_collision_world(world.world), "%d circuit proxies" % dressed)
+	var bad := options.duplicate()
+	bad.rc_track = {format = "openrc-airfield-track v0"}
+	var refused := _session(field, bad)
+	var flat := _session({}, {rc_track = circuit})
+	_check("RC-TRACK an invalid circuit, or one on another field, refuses", not refused.prepared and not flat.prepared
+		and refused.load_error.contains("rc_track") and flat.load_error.contains("rc_track"), refused.load_error)
+	for node: Node in [plain, s, refused, flat]:
+		node.queue_free()
 
 
 func _holds_and_refusals() -> void:

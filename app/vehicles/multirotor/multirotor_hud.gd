@@ -48,7 +48,8 @@ const HELP_LINES := [
 	"C: camera (FPV, chase, pilot)   [ and ]: camera tilt   - and =: field of view",
 	"O: OSD layout (Off, Race, Freestyle, Full, Custom). Pause menu > OSD settings: elements, units, style, crosshair.",
 	"P or Esc: pause   R: restart on the pad   H: this help",
-	"G: start a three-lap race from the pad (fly the gates in order); G again cancels it.",
+	"RACE: arm on the pad, press G, keep the throttle low until GO, then fly the gates in order for three laps.",
+	"G: race (anywhere else it first returns you to the pad); during a race G cancels it. Best times and medals are kept.",
 	"T: next race course (back on the pad).",
 	"F10: start/stop the flight log   F11: log marker",
 	"Estimated, unvalidated physics: not a model of a real quad.",
@@ -116,6 +117,17 @@ var throttle_label: Label
 var warning_label: Label
 ## Post-flight statistics screen (centre, after a disarm).
 var stats_panel: PanelContainer
+## DR-37: the race results card (centre, after a finish or an abort until the next start or pad reset): title, medal,
+## times against the pilot's best, the next medal target and how to race again.
+var race_card: PanelContainer
+var race_card_title: Label
+var race_card_body: Label
+## DR-37: under the Course button, the prepared course's best total and medal or its first target.
+var race_note: Label
+## {best_total_s, best_lap_s, medal, targets {gold, silver, bronze}} of the prepared course (set_race_info).
+var _race_info := {}
+## The last terminal attempt (show_race_result): the record-book summary plus the result record.
+var _race_result := {}
 var stats_label: Label
 ## DR-31c: the pause menu's "OSD settings" button and the panel it opens beside the menu (layout_button and
 ## units_button are the panel's).
@@ -225,6 +237,7 @@ func _ready() -> void:
 		Rect2(-360, 64 * s, 720, 56 * s))
 	warning_label.add_theme_color_override("font_color", OSD_DANGER)
 	_build_stats(s)
+	_build_race_card(s)
 	hint_label = _label("Hint", 26.0, Control.PRESET_CENTER_BOTTOM, HORIZONTAL_ALIGNMENT_CENTER,
 		Rect2(-560, -m - 150 * s, 1120, 96 * s))
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -319,6 +332,130 @@ func _build_stats(s: float) -> void:
 	stats_panel.add_child(stats_label)
 
 
+## DR-37: the race results card, the statistics screen's goggle style: a large title line (coloured by the medal)
+## and monospaced rows.
+func _build_race_card(s: float) -> void:
+	race_card = PanelContainer.new()
+	race_card.name = "RaceResults"
+	race_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	race_card.set_anchors_preset(Control.PRESET_CENTER)
+	race_card.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	race_card.grow_vertical = Control.GROW_DIRECTION_BOTH
+	race_card.add_theme_stylebox_override("panel", stats_panel.get_theme_stylebox("panel"))
+	race_card.visible = false
+	root_control.add_child(race_card)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", int(round(10.0 * s)))
+	race_card.add_child(box)
+	for index in 2:
+		var label := Label.new()
+		label.name = "RaceTitle" if index == 0 else "RaceBody"
+		label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if index == 0 else HORIZONTAL_ALIGNMENT_LEFT
+		label.add_theme_font_override("font", Paint.font())
+		label.add_theme_font_size_override("font_size", int(round((40.0 if index == 0 else 21.0) * s)))
+		label.add_theme_color_override("font_color", OSD_TEXT)
+		label.add_theme_color_override("font_outline_color", OSD_OUTLINE)
+		label.add_theme_constant_override("outline_size", maxi(3, int(round(4.0 * s))))
+		box.add_child(label)
+		if index == 0:
+			race_card_title = label
+		else:
+			race_card_body = label
+
+
+## Medal colours of the results card and the menu note.
+const MEDAL_COLORS := {"gold": Color(1.0, 0.82, 0.25), "silver": Color(0.84, 0.88, 0.94), "bronze": Color(0.9, 0.58, 0.32)}
+const MEDAL_NAMES := {"gold": "Gold", "silver": "Silver", "bronze": "Bronze"}
+
+
+## The prepared course's record-book facts: {best_total_s, best_lap_s, medal, targets {gold, silver, bronze}} ({} in
+## free flight). Shown under the Course button and on the race line.
+func set_race_info(info: Dictionary) -> void:
+	_race_info = info.duplicate(true)
+	_update_race_note()
+
+
+## The last terminal attempt: the record book's summary (race_records.gd apply()) merged with the result record. The
+## card shows while the race telemetry stays FINISHED or ABORTED.
+func show_race_result(summary: Dictionary) -> void:
+	_race_result = summary.duplicate(true)
+	_refresh_race_card()
+
+
+func _update_race_note() -> void:
+	if race_note == null:
+		return
+	race_note.visible = not _race_info.is_empty() and not _course_name.is_empty()
+	var best := float(_race_info.get("best_total_s", 0.0))
+	var goals: Dictionary = _race_info.get("targets", {})
+	if best > 0.0:
+		var medal := str(_race_info.get("medal", ""))
+		race_note.text = _tr("Best %s") % format_lap(best) + ("   " + _tr(MEDAL_NAMES[medal]) if MEDAL_NAMES.has(medal) else "")
+	elif goals.has("bronze"):
+		race_note.text = _tr("No finish yet. Bronze target %s") % format_lap(float(goals.bronze))
+	else:
+		race_note.text = ""
+
+
+## The card's title and rows for the last attempt ("" title: nothing to show).
+func race_card_text() -> Dictionary:
+	if _race_result.is_empty():
+		return {title = "", body = "", medal = ""}
+	var rows := PackedStringArray()
+	var title: String
+	var medal := str(_race_result.get("medal", ""))
+	var laps: Array = _race_result.get("laps", [])
+	if bool(_race_result.get("finished", false)):
+		var previous := float(_race_result.get("previous_total_s", 0.0))
+		var total := float(_race_result.get("total_s", 0.0))
+		if bool(_race_result.get("new_best_total", false)):
+			title = _tr("NEW RECORD!") if previous > 0.0 else _tr("FIRST FINISH!")
+		else:
+			title = _tr("FINISHED")
+		rows.append(_tr("Total %s") % format_lap(total))
+		if previous > 0.0:
+			var delta := total - previous
+			rows.append(_tr("Previous best %s (%s)") % [format_lap(previous), ("+" if delta >= 0.0 else "-") + format_lap(absf(delta))])
+		if MEDAL_NAMES.has(medal):
+			rows.append(_tr("Medal: %s") % _tr(MEDAL_NAMES[medal]).to_upper())
+	else:
+		title = _tr("ATTEMPT OVER")
+		rows.append(_tr(abort_reason_text(str(_race_result.get("reason", "")))))
+	for i in laps.size():
+		var mark := "  < " + _tr("best lap") if i == int(_race_result.get("best_lap_index", -1)) and laps.size() > 1 else ""
+		rows.append(_tr("Lap %d  %s") % [i + 1, format_lap(float((laps[i] as Dictionary).get("duration_s", 0.0)))] + mark)
+	var next: Dictionary = _race_result.get("next_medal", {})
+	if not next.is_empty():
+		rows.append(_tr("%s target %s") % [_tr(MEDAL_NAMES.get(str(next.medal), "")), format_lap(float(next.total_s))])
+	elif bool(_race_result.get("finished", false)) and medal == "gold":
+		rows.append(_tr("Top medal: beat your best time"))
+	rows.append("")
+	rows.append(_tr("G: race again   R: back to the pad"))
+	return {title = title, body = "\n".join(rows), medal = medal}
+
+
+## Why an attempt ended, for the card (source strings: translated by the caller).
+static func abort_reason_text(reason: String) -> String:
+	match reason:
+		"crash":
+			return "Crashed: the attempt ends."
+		"pack_depleted":
+			return "Battery empty: the attempt ends."
+		"cancelled":
+			return "Race cancelled (G)."
+	return "The attempt ended."
+
+
+func _refresh_race_card() -> void:
+	if race_card == null:
+		return
+	var text := race_card_text()
+	race_card_title.text = str(text.title)
+	race_card_body.text = str(text.body)
+	_set_color(race_card_title, MEDAL_COLORS.get(str(text.medal), OSD_TEXT))
+
+
 ## The statistics screen text like a flight controller's: a "--- … ---" title, then label : value rows with the colons
 ## aligned (labels translated and upper case, values in OSD units) and how to leave it.
 func stats_text() -> String:
@@ -383,6 +520,14 @@ func _build_menu(s: float) -> void:
 	course_button.name = "Course"
 	course_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	course_button.visible = false
+	race_note = Label.new()
+	race_note.name = "RaceNote"
+	race_note.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	race_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	race_note.add_theme_font_size_override("font_size", int(round(17.0 * s)))
+	race_note.add_theme_color_override("font_color", UiTheme.TEXT_2)
+	race_note.visible = false
+	box.add_child(race_note)
 	_button(box, "Controls help", "help")
 	home_button = _button(box, "Back to Home", "home")
 	# The OSD settings open to the right of the menu (the menu stays, so pausing and resuming work as before).
@@ -534,6 +679,8 @@ func _update_texts() -> void:
 	limit_note.visible = absf(float(_limit.pending) - float(_limit.active)) > 1.0e-6
 	osd_button.text = _tr("OSD settings")
 	course_button.text = _tr("Course: %s") % _tr(_course_name)
+	_update_race_note()
+	_refresh_race_card()
 	if _stats_ready:
 		stats_label.text = stats_text()
 
@@ -543,6 +690,7 @@ func set_course(course_name: String, choice: bool) -> void:
 	_course_name = course_name
 	course_button.visible = choice and not course_name.is_empty()
 	_update_texts()
+	_update_race_note()
 
 
 ## The vehicle and variant id, shown in the menu and the help (the OSD tag stays short).
@@ -641,26 +789,37 @@ static func format_lap(seconds: float) -> String:
 	return "%d:%02d.%02d" % [hundredths / 6000, (hundredths / 100) % 60, hundredths % 100]
 
 
-## The race line from the session's race telemetry ("" in free flight without a course): the start hint, the
-## countdown second, lap/gate progress with the running lap clock, the finish total with the lap times, or the abort.
-func race_text(race: Variant) -> String:
+## The race line from the session's race telemetry ("" in free flight without a course). facts: {armed, on_pad,
+## arm_key} of the frame. On the pad it says what to do next (arm, then G; or G to return to the pad) with the course
+## best; during the countdown what the start needs (armed, throttle low until GO); while racing the lap and gate with
+## the lap clock and the best lap; after the attempt the finish total or why it ended (the results card has the rest).
+func race_text(race: Variant, facts: Dictionary = {}) -> String:
 	if typeof(race) != TYPE_DICTIONARY or race.is_empty():
 		return ""
+	var best_lap := float(_race_info.get("best_lap_s", 0.0))
 	match str(race.get("phase", "")):
 		"COUNTDOWN":
-			return str(int(ceil(float(race.get("countdown_s_left", 0.0)))))
+			if not bool(facts.get("armed", true)):
+				return _tr("ARM NOW (%s)") % str(facts.get("arm_key", "E"))
+			return _tr("THROTTLE LOW UNTIL GO")
 		"RACING":
-			return _tr("Lap %d/%d   Gate %d/%d   %s") % [mini(int(race.get("valid_laps", 0)) + 1, int(race.get("laps", []).size())),
+			var line: String = _tr("Lap %d/%d   Gate %d/%d   %s") % [mini(int(race.get("valid_laps", 0)) + 1, int(race.get("laps", []).size())),
 				int(race.get("laps", []).size()), int(race.get("next_gate", 0)) + 1, int(race.get("gate_count", 0)),
 				format_lap(float(race.get("elapsed_lap_s", 0.0)))]
+			return line + ("   " + _tr("PB lap %s") % format_lap(best_lap) if best_lap > 0.0 else "")
 		"FINISHED":
-			var laps := PackedStringArray()
-			for lap: Variant in race.get("laps", []):
-				laps.append(format_lap(float(lap.duration_s)))
-			return _tr("Finished in %s") % format_lap(float(race.get("elapsed_total_s", 0.0))) + "   (" + " / ".join(laps) + ")"
+			return _tr("Finished in %s") % format_lap(float(race.get("elapsed_total_s", 0.0)))
 		"ABORTED":
 			return _tr("Race aborted")
-	return _tr("Race: press G on the pad to start")
+	var hint: String
+	if not bool(facts.get("on_pad", true)):
+		hint = _tr("Race: press G to return to the pad")
+	elif not bool(facts.get("armed", false)):
+		hint = _tr("Race: arm (%s), then press G") % str(facts.get("arm_key", "E"))
+	else:
+		hint = _tr("Race: press G to start, throttle low until GO")
+	var best := float(_race_info.get("best_total_s", 0.0))
+	return hint + ("   " + _tr("PB %s") % format_lap(best) if best > 0.0 else "")
 
 
 ## Whether the quad sits on the ground (the race start hint is offered only there).
@@ -772,6 +931,16 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	var flight := Osd.flight_values(body) if typeof(body) == TYPE_PACKED_FLOAT64_ARRAY else {}
 	var sticks: Variant = osd_state.get("sticks")
 	_track_flight(t, flight, armed, float(t.get("time_s", flight_s)), sticks, str(osd_state.get("stick_policy", "")), now)
+	# DR-37: the results card follows the race phase every frame (also between the analog OSD's refreshes); a new
+	# start forgets the last attempt.
+	var phase := race_phase(t.get("race", {}))
+	if phase in ["COUNTDOWN", "RACING"] and not _race_result.is_empty():
+		_race_result = {}
+		_refresh_race_card()
+	var card: bool = not _race_result.is_empty() and phase in ["FINISHED", "ABORTED"] and not menu_visible
+	if race_card.visible != card:
+		race_card.visible = card
+		stats_panel.visible = _stats_visible()
 	# Analog style: a flight controller's character OSD refreshes at about 12 Hz; frames in between keep the picture.
 	if str(osd_config.style) == "analog":
 		if now < _next_refresh:
@@ -792,12 +961,11 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	var timer_alarm := flight_s >= Osd.TIMER_ALARM_S
 	_set_color(timer_label, _tone(Osd.CRITICAL) if timer_alarm else OSD_TEXT)
 	timer_label.modulate.a = 0.0 if timer_alarm and not Osd.blink_on(now) else 1.0
-	var race_line := race_text(t.get("race", {}))
+	var race_line := race_text(t.get("race", {}), {armed = armed, on_pad = bool(osd_state.get("race_on_pad", true)),
+		arm_key = str(bindings.get("arm", "E"))})
 	var big := countdown_text(t.get("race", {}))
 	countdown_label.visible = not big.is_empty() and not menu_visible
 	countdown_label.text = big
-	if race_phase(t.get("race", {})) == "COUNTDOWN":
-		race_line = "" # the large countdown says it
 	if not race_line.is_empty() and not on_ground(t) and race_phase(t.get("race", {})) in ["", "IDLE", "READY"]:
 		# The start hint is for the pad: in flight it would only clutter the top of the picture.
 		race_line = ""
@@ -945,7 +1113,8 @@ func _show_warning(warn: Dictionary, now: float) -> void:
 
 ## The statistics screen shows after a flight until the next arm, never over the menu, a start count or a race.
 func _stats_visible() -> bool:
-	return _stats_ready and not menu_visible and shows("stats") and not countdown_label.visible and not _racing
+	return _stats_ready and not menu_visible and shows("stats") and not countdown_label.visible and not _racing \
+		and not (race_card != null and race_card.visible)
 
 
 ## DR-31d: the OSD draws on three canvas items so each is re-recorded only as often as its content moves (a canvas

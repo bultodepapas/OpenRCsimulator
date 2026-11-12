@@ -206,6 +206,16 @@ func _test_same_frame_remap() -> void:
 	UiInput.isolate_joypads()
 
 
+## UI-15-UX-02b: answer an open unsaved-changes question with Discard. True when it was asked.
+func _discard_asked(setup: Node) -> bool:
+	var dialog: ConfirmationDialog = setup.get("unsaved_dialog")
+	if dialog == null or not dialog.visible:
+		return false
+	(setup.get("_unsaved_discard_button") as Button).pressed.emit()
+	await process_frame
+	return true
+
+
 func _key(code: Key, character := 0, control := false) -> void:
 	var event := InputEventKey.new()
 	event.keycode = code
@@ -284,6 +294,8 @@ func _test_editing_keys(shell: RoutingShell, service: FixtureService) -> void:
 		check("modified editing key stays in the editor", editor.text.length() < 7 and shell.screens.is_top("controls"))
 		setup.save_button.grab_focus()
 		await _key(KEY_X, 120)
+		# UI-15-UX-02b: the edited name makes the draft dirty, so Back asks first; Discard closes.
+		check("saved Back with an edited draft asks before closing", await _discard_asked(setup))
 		check("saved Back works again outside the editor", shell.screens.is_top("pause"))
 		# Capture owns its keyboard event even when that key is also Back.
 		shell.open_controls()
@@ -337,6 +349,7 @@ func _test_editing_keys(shell: RoutingShell, service: FixtureService) -> void:
 		check("Escape leaves active text editing before closing", was_editing and shell.screens.is_top("controls"))
 		if shell.screens.is_top("controls"):
 			await _key(KEY_ESCAPE)
+			check("Escape with an edited draft asks before closing", await _discard_asked(setup))
 			check("Escape still closes Controls after editing", shell.screens.is_top("pause"), str(root.gui_get_focus_owner()))
 		if shell.screens.is_top("pause"):
 			shell.open_controls()

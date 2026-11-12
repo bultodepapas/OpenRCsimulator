@@ -7,6 +7,8 @@ const PreferencesFile := preload("res://app_state/preferences_file.gd")
 
 const BadSettingsBackup := preload("res://app_state/bad_settings_backup.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
+const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const Conditions := preload("res://render/world/conditions.gd")
@@ -41,6 +43,10 @@ const DEFAULTS := {
 	# UI-16: Home may ask GitHub once a day whether a newer release is published ([updates] check in the file).
 	check_updates = true,
 	aircraft = Catalog.DEFAULT_ID,
+	# UI-39: additive [flight] keys. Home's selected RC vehicle (a VehicleRoster activity id; "" = the aircraft above)
+	# and the RC blimp's skin. Older builds ignore them; `aircraft` always stays an aircraft.
+	home_vehicle = "",
+	airship_skin = AirshipCatalog.DEFAULT_SKIN,
 	landscape = Landscapes.DEFAULT_ID,
 	start_choice = "runway",
 	# UI-32: additive [flight] keys, no schema change. Rotorcraft keep their own start ("runway" is the pad), so
@@ -128,6 +134,12 @@ static func _load_locked(path: String) -> Dictionary:
 	var aircraft: Variant = cfg.get_value("flight", "aircraft", DEFAULTS.aircraft)
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
 		prefs.aircraft = Catalog.canonical_id(aircraft)
+	var home_vehicle: Variant = cfg.get_value("flight", "home_vehicle", DEFAULTS.home_vehicle)
+	if typeof(home_vehicle) == TYPE_STRING and VehicleRoster.is_activity(home_vehicle):
+		prefs.home_vehicle = home_vehicle
+	var airship_skin: Variant = cfg.get_value("flight", "airship_skin", DEFAULTS.airship_skin)
+	if typeof(airship_skin) == TYPE_STRING and AirshipCatalog.contains(airship_skin):
+		prefs.airship_skin = airship_skin
 	var landscape: Variant = cfg.get_value("flight", "landscape", DEFAULTS.landscape)
 	if typeof(landscape) == TYPE_STRING and Landscapes.has(landscape):
 		prefs.landscape = landscape
@@ -321,6 +333,10 @@ static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -
 	cfg.set_value("updates", "check", prefs.get("check_updates", DEFAULTS.check_updates))
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft) if commit_aircraft \
 		else prefs.get("_retained_aircraft", prefs.get("aircraft", DEFAULTS.aircraft)))
+	var home_vehicle := str(prefs.get("home_vehicle", DEFAULTS.home_vehicle))
+	cfg.set_value("flight", "home_vehicle", home_vehicle if VehicleRoster.is_activity(home_vehicle) else "")
+	var airship_skin := str(prefs.get("airship_skin", DEFAULTS.airship_skin))
+	cfg.set_value("flight", "airship_skin", airship_skin if AirshipCatalog.contains(airship_skin) else DEFAULTS.airship_skin)
 	cfg.set_value("flight", "landscape", prefs.get("landscape", DEFAULTS.landscape))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	cfg.set_value("flight", "rotorcraft_start_choice", prefs.get("rotorcraft_start_choice", DEFAULTS.rotorcraft_start_choice))

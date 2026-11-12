@@ -39,8 +39,10 @@ const PROFILE_KIND_CHOICES: Array[Dictionary] = [
 ]
 const CHANNELS: Array[String] = ["roll", "pitch", "yaw", "throttle"]
 const CHANNEL_LABELS: Dictionary = {"roll": "Roll", "pitch": "Pitch", "yaw": "Yaw", "throttle": "Throttle"}
-const AUX_CHANNELS: Array[String] = ["smoke", "flaps", "gear"]
-const AUX_CHANNEL_LABELS: Dictionary = {"smoke": "Smoke", "flaps": "Flaps", "gear": "Landing gear"}
+const AUX_CHANNELS: Array[String] = ["smoke", "flaps", "gear", "arm", "flight_mode"]
+const AUX_CHANNEL_LABELS: Dictionary = {"smoke": "Smoke", "flaps": "Flaps", "gear": "Landing gear",
+	"arm": "Arm (FPV quad)", "flight_mode": "Flight mode (FPV quad)"}
+const AUX_LEGACY_ARM_HINT := "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
 
 var registry: Object
 var profile_store: Object
@@ -167,6 +169,28 @@ var _status_is_error := false
 var _rejected_issues: Array = []
 var _rejected_message := ""
 var _rejected_errors: Array = []
+# UI-15-UX-02: full text for help and messages that are clipped to one or a few lines.
+var aux_help_info_button: Button
+var device_summary_info_button: Button
+var status_info_button: Button
+var _info_dialog: AcceptDialog
+var _info_return_focus: Control
+# UI-15-UX-02b: what Save last committed (or what was loaded) per draft context, and the device roles.
+var unsaved_dialog: ConfirmationDialog
+var _unsaved_discard_button: Button
+var _unsaved_pending := false
+var _unsaved_return_focus: Control
+var _unsaved_marker: Label
+var _clean_snapshots: Dictionary = {}
+var _clean_flight_device_id := -1
+var _clean_ui_device_id := -1
+var _unsaved_calibration: Dictionary = {}
+var _dirty_marker_queued := false
+# UI-15-UX-02c: rows for other vehicles stay bound and validated, only hidden.
+var show_all_vehicle_actions: CheckBox
+# D6-UX-01: the same filter for the Extra channels page (ControllerActions.aux_applies).
+var show_all_vehicle_aux: CheckBox
+var aux_legacy_arm_hint: Label
 
 
 func _init() -> void:
@@ -197,22 +221,175 @@ func configure(controller_registry: Object, store: Object, flight_device_id := -
 	_refresh_devices()
 	_load_profile_for_device(_draft_flight_device_id)
 	_connect_registry()
+	_clean_flight_device_id = _draft_flight_device_id
+	_clean_ui_device_id = _draft_ui_device_id
+	_queue_dirty_marker()
 
 
-## Parent-facing surface API used by the screen stack and the active flight owner.
+## Parent-facing surface API used by the screen stack and the active flight owner: Close, Escape and Back.
+## An open popover or unsaved-changes question is answered first ("Keep editing"), then an active capture is
+## cancelled; a dirty draft asks Save / Discard / Keep editing before it closes.
 func request_close() -> void:
+	if _dismiss_own_dialogs():
+		return
 	if _is_capture_active():
 		_cancel_capture()
 		return
+	if is_inside_tree() and has_unsaved_changes():
+		_ask_unsaved_changes()
+		return
+	close_without_prompt()
+
+
+## Closes now and discards the draft, without asking. For the explicit Cancel and Discard choices and for
+## owners that must close programmatically (device loss, hand-offs); nothing is saved.
+func close_without_prompt() -> void:
+	_hide_unsaved_dialog()
+	if is_instance_valid(_info_dialog) and _info_dialog.visible:
+		_info_dialog.hide()
+	if _is_capture_active():
+		_capture_done()
 	_reset_validation()
 	close_requested.emit()
 
 
 func _cancel_edits() -> void:
-	if _is_capture_active():
-		_capture_done()
-	_reset_validation()
-	close_requested.emit()
+	close_without_prompt()
+
+
+## UI-15-UX-02b: the draft differs from what was loaded or last saved: profile fields, device roles, the menu
+## preference, or a calibration applied to the draft (even one that measured the same ranges).
+func has_unsaved_changes() -> bool:
+	if _draft_profile.is_empty():
+		return false
+	if _draft_flight_device_id != _clean_flight_device_id or _draft_ui_device_id != _clean_ui_device_id:
+		return true
+	if _unsaved_calibration.has(_draft_context_key) or not _clean_snapshots.has(_draft_context_key):
+		return true
+	return _clean_snapshots[_draft_context_key] != _dirty_fingerprint()
+
+
+## What Save would commit, without the device association (that follows the device role, tracked separately).
+func _dirty_fingerprint() -> Dictionary:
+	if _draft_profile.is_empty():
+		return {}
+	var candidate := _profile_candidate()
+	candidate.erase("association")
+	return candidate
+
+
+func _mark_clean() -> void:
+	if not _draft_profile.is_empty():
+		_clean_snapshots[_draft_context_key] = _dirty_fingerprint()
+	_unsaved_calibration.erase(_draft_context_key)
+	_clean_flight_device_id = _draft_flight_device_id
+	_clean_ui_device_id = _draft_ui_device_id
+	_queue_dirty_marker()
+
+
+func _queue_dirty_marker() -> void:
+	if _dirty_marker_queued:
+		return
+	_dirty_marker_queued = true
+	_refresh_dirty_marker.call_deferred()
+
+
+## "Controls •" and a worded "Unsaved changes" beside Save, never colour alone.
+func _refresh_dirty_marker() -> void:
+	_dirty_marker_queued = false
+	if _settings_title == null or _unsaved_marker == null:
+		return
+	var dirty := has_unsaved_changes()
+	_settings_title.text = tr("Controls") + " •" if dirty else "Controls"
+	_settings_title.tooltip_text = _settings_title.text
+	_unsaved_marker.text = tr("Unsaved changes")
+	_unsaved_marker.visible = dirty
+	save_button.accessibility_description = tr("Unsaved changes") if dirty else ""
+
+
+func _ask_unsaved_changes() -> void:
+	var focused := get_viewport().gui_get_focus_owner()
+	_unsaved_return_focus = focused if focused != null and _screen.is_ancestor_of(focused) else null
+	if unsaved_dialog == null:
+		unsaved_dialog = ConfirmationDialog.new()
+		unsaved_dialog.name = "UnsavedControlsDialog"
+		unsaved_dialog.dialog_autowrap = true
+		unsaved_dialog.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		_unsaved_discard_button = unsaved_dialog.add_button("Discard", true, "discard")
+		_unsaved_discard_button.name = "DiscardControls"
+		unsaved_dialog.confirmed.connect(_on_unsaved_choice.bind("save"))
+		unsaved_dialog.canceled.connect(_on_unsaved_choice.bind("keep"))
+		unsaved_dialog.custom_action.connect(func(action: StringName) -> void:
+			if action != &"discard": return
+			# Hiding may emit `canceled`; that is not the player's answer.
+			var waiting := _unsaved_pending
+			_unsaved_pending = false
+			unsaved_dialog.hide()
+			_unsaved_pending = waiting
+			_on_unsaved_choice("discard"))
+		add_child(unsaved_dialog)
+	unsaved_dialog.title = tr("Unsaved changes")
+	unsaved_dialog.dialog_text = tr("Your controller changes are not saved. Save them, discard them, or keep editing.")
+	unsaved_dialog.get_ok_button().text = tr("Save")
+	unsaved_dialog.get_ok_button().name = "SaveControls"
+	unsaved_dialog.get_cancel_button().text = tr("Keep editing")
+	unsaved_dialog.get_cancel_button().name = "KeepEditingControls"
+	_unsaved_discard_button.text = tr("Discard")
+	_unsaved_pending = true
+	unsaved_dialog.popup_centered_clamped(Vector2i(620, 200), 0.9)
+	_focus_if_shown.call_deferred(unsaved_dialog.get_ok_button())
+
+
+## Save goes through the transactional Save and closes only on success; Discard closes like Cancel;
+## Keep editing (also Escape in the question, a window close or a second Back) restores focus.
+func _on_unsaved_choice(choice: String) -> void:
+	if not _unsaved_pending:
+		return
+	_unsaved_pending = false
+	match choice:
+		"save":
+			if not _save_profile(true):
+				_restore_unsaved_focus.call_deferred(true)
+		"discard":
+			close_without_prompt()
+		_:
+			_restore_unsaved_focus.call_deferred(false)
+
+
+func _restore_unsaved_focus(only_if_lost: bool) -> void:
+	if not is_inside_tree():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if only_if_lost and focused != null and focused.is_visible_in_tree():
+		return
+	var target := _unsaved_return_focus
+	_unsaved_return_focus = null
+	if not is_instance_valid(target) or not target.is_visible_in_tree() or target.focus_mode == Control.FOCUS_NONE \
+			or (target is BaseButton and target.disabled):
+		target = save_button
+	target.grab_focus()
+
+
+func _hide_unsaved_dialog() -> void:
+	_unsaved_pending = false
+	if is_instance_valid(unsaved_dialog) and unsaved_dialog.visible:
+		unsaved_dialog.hide()
+
+
+## A Back/Escape routed to this screen while one of its own questions is open answers that question.
+func _dismiss_own_dialogs() -> bool:
+	if is_instance_valid(unsaved_dialog) and unsaved_dialog.visible:
+		var waiting := _unsaved_pending
+		_unsaved_pending = false
+		unsaved_dialog.hide()
+		_unsaved_pending = waiting
+		_on_unsaved_choice("keep")
+		return true
+	if is_instance_valid(_info_dialog) and _info_dialog.visible:
+		_info_dialog.hide()
+		_restore_info_focus()
+		return true
+	return false
 
 
 func current_profile() -> Dictionary:
@@ -234,6 +411,7 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 	_draft_profile["aux"] = calibrated.get("aux", {}).duplicate(true)
 	_calibration_origins[_draft_context_key] = {"id": device_id, "generation": generation,
 		"mapping": _radio_mapping(_draft_profile)}
+	_unsaved_calibration[_draft_context_key] = true
 	_update_axis_controls()
 	_update_aux_controls()
 	_update_preview()
@@ -393,6 +571,12 @@ func _build() -> void:
 	_device_summary.max_lines_visible = 1
 	_device_summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	shell.add_child(_device_summary)
+	# The one-line device summary keeps its full text (and JETI metadata) one focus stop away, in the header.
+	device_summary_info_button = _info_button("DeviceSummaryInfo", "Controller details")
+	device_summary_info_button.pressed.connect(func() -> void:
+		_show_info(tr("Controller details"), _device_summary.tooltip_text if not _device_summary.tooltip_text.is_empty() else _device_summary.text, device_summary_info_button))
+	header.add_child(device_summary_info_button)
+	header.move_child(device_summary_info_button, close_button.get_index())
 	_device_details_label = _label("", "SecondaryLabel", true)
 	_device_details_label.name = "ControllerDeviceDetails"
 	_device_details_label.visible = false
@@ -642,7 +826,23 @@ func _build() -> void:
 	aux_help_label = _label("Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Availability depends on the selected aircraft. Axis endpoints need at least 0.5 travel.", "SecondaryLabel", true)
 	aux_help_label.name = "AuxiliaryHelp"
 	aux_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	page.add_child(aux_help_label)
+	var aux_help_row := HBoxContainer.new()
+	aux_help_row.name = "AuxiliaryHelpRow"
+	aux_help_row.add_theme_constant_override("separation", 8)
+	aux_help_row.add_child(aux_help_label)
+	aux_help_info_button = _info_button("AuxiliaryHelpInfo", "Extra channels help")
+	aux_help_info_button.visible = false
+	aux_help_info_button.pressed.connect(func() -> void:
+		_show_info(tr("Extra channels"), tr(aux_help_label.text), aux_help_info_button))
+	aux_help_row.add_child(aux_help_info_button)
+	# D6-UX-01: beside the help text, so the page gains no row (the 1280x720 AUX editors must still fit).
+	show_all_vehicle_aux = CheckBox.new()
+	show_all_vehicle_aux.name = "ShowAllVehicleAuxChannels"
+	show_all_vehicle_aux.text = "Show channels for all vehicles"
+	show_all_vehicle_aux.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	show_all_vehicle_aux.toggled.connect(func(_pressed: bool) -> void: _update_aux_controls())
+	aux_help_row.add_child(show_all_vehicle_aux)
+	page.add_child(aux_help_row)
 	aux_grid = VBoxContainer.new()
 	aux_grid.sort_children.connect(_queue_mapping_focus_visibility)
 	aux_grid.name = "AuxiliaryMappings"
@@ -796,6 +996,11 @@ func _build() -> void:
 			var mix_help := _label("Simulator compensation follows actual flap position. Choose Transmitter when your radio already adds flap-to-elevator compensation; the simulator will not add its own.", "SecondaryLabel", true)
 			mix_help.name = "FlapElevatorMixHelp"
 			channel_block.add_child(mix_help)
+		if aux_name == "arm":
+			aux_legacy_arm_hint = _label(AUX_LEGACY_ARM_HINT, "SecondaryLabel", true)
+			aux_legacy_arm_hint.name = "AuxLegacyArmHint"
+			aux_legacy_arm_hint.visible = false
+			channel_block.add_child(aux_legacy_arm_hint)
 		channel_block.add_child(HSeparator.new())
 		_aux_controls[aux_name] = {
 			"type": type_picker,
@@ -893,6 +1098,12 @@ func _build() -> void:
 	action_filter.item_selected.connect(_on_action_filter_selected)
 	filter_row.add_child(action_filter)
 	page.add_child(filter_row)
+	show_all_vehicle_actions = CheckBox.new()
+	show_all_vehicle_actions.name = "ShowAllVehicleActions"
+	show_all_vehicle_actions.text = "Show actions for all vehicles"
+	show_all_vehicle_actions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	show_all_vehicle_actions.toggled.connect(_on_show_all_vehicle_actions)
+	page.add_child(show_all_vehicle_actions)
 	page.add_child(_label("Bindings are saved by physical control. A different device cannot trigger them.", "SecondaryLabel", true))
 	page.add_child(_label("Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Flap actions depend on the selected aircraft. Existing assignments take priority; remap other joysticks to choose their buttons.", "SecondaryLabel", true))
 	action_grid = GridContainer.new()
@@ -951,11 +1162,29 @@ func _build() -> void:
 	status_label.visible = false
 	status_label.max_lines_visible = 3
 	status_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	shell.add_child(status_label)
+	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	status_label.resized.connect(_update_status_info_button)
+	var status_row := HBoxContainer.new()
+	status_row.name = "ControllerStatusRow"
+	status_row.add_theme_constant_override("separation", 8)
+	status_row.add_child(status_label)
+	status_info_button = _info_button("StatusInfo", "Full message")
+	status_info_button.visible = false
+	status_info_button.pressed.connect(func() -> void:
+		_show_info(tr("Full message"), status_label.text, status_info_button))
+	status_row.add_child(status_info_button)
+	status_row.visible = false
+	shell.add_child(status_row)
 	var footer := HBoxContainer.new()
 	footer.name = "ControllerSetupFooter"
 	footer.add_theme_constant_override("separation", 8)
 	footer.alignment = BoxContainer.ALIGNMENT_END
+	_unsaved_marker = _label("Unsaved changes", "SecondaryLabel")
+	_unsaved_marker.name = "UnsavedChangesMarker"
+	_unsaved_marker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_unsaved_marker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_unsaved_marker.visible = false
+	footer.add_child(_unsaved_marker)
 	var cancel_button := _button("Cancel", "", "Cancel")
 	cancel_button.pressed.connect(_cancel_edits)
 	footer.add_child(cancel_button)
@@ -963,6 +1192,7 @@ func _build() -> void:
 	save_button.pressed.connect(_save_profile)
 	footer.add_child(save_button)
 	shell.add_child(footer)
+	_update_accessible_names()
 	select_section("devices")
 	_screen.resized.connect(_resize_panel)
 	_screen.theme_changed.connect(_resize_panel)
@@ -1008,6 +1238,11 @@ func _resize_panel() -> void:
 		aux_help_label.max_lines_visible = 0
 		aux_help_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		aux_help_label.tooltip_text = ""
+	# UX-02: the one-line help is readable in full from a focusable button, not only a mouse tooltip.
+	var help_had_focus := aux_help_info_button.has_focus()
+	aux_help_info_button.visible = effective_width >= 1100.0
+	if help_had_focus and not aux_help_info_button.visible and is_inside_tree():
+		_aux_controls.smoke.type.grab_focus()
 	var use_axis_table := effective_width >= 1100.0
 	_axis_columns.vertical = not use_axis_table
 	_set_axis_grid_layout(use_axis_table)
@@ -1129,7 +1364,28 @@ func _keep_mapping_focus_visible() -> void:
 		or (_selected_section == "aux" and aux_grid.is_ancestor_of(focused)) \
 		or (_selected_section == "axes" and _section_pages.axes.is_ancestor_of(focused)) \
 		or (_section_navigation.get_parent() == _section_body and _section_navigation.is_ancestor_of(focused)):
-		(_section_body.get_parent() as ScrollContainer).ensure_control_visible(focused)
+		_ensure_whole_control_visible(focused)
+
+
+## ScrollContainer.ensure_control_visible truncates fractional row offsets, which can leave a focused row a
+## fraction of a pixel outside the viewport (for example after a longer footer message). Finish that last pixel.
+func _ensure_whole_control_visible(control: Control) -> void:
+	if not is_instance_valid(control) or not control.is_visible_in_tree():
+		return
+	var scroll := _section_body.get_parent() as ScrollContainer
+	var area := scroll.get_global_rect()
+	var bounds := control.get_global_rect()
+	var before := scroll.scroll_vertical
+	scroll.ensure_control_visible(control)
+	if bounds.size.y > area.size.y:
+		return
+	var moved := float(scroll.scroll_vertical - before)
+	var below := bounds.end.y - moved - area.end.y
+	var above := area.position.y - (bounds.position.y - moved)
+	if below > 0.0:
+		scroll.scroll_vertical += int(ceil(below))
+	elif above > 0.0:
+		scroll.scroll_vertical -= int(ceil(above))
 
 
 ## Expose the existing radio prerequisite without choosing or saving a profile.
@@ -1220,6 +1476,7 @@ func _update_device_summary() -> void:
 	_device_details_label.tooltip_text = metadata
 	_device_summary.tooltip_text = _device_summary.text if metadata.is_empty() else "%s\n%s" % [_device_summary.text, metadata]
 	_empty_device_label.visible = not _devices.any(func(device: Dictionary) -> bool: return bool(device.get("connected", true)))
+	_queue_dirty_marker()
 
 
 static func _is_jeti_device(device: Dictionary) -> bool:
@@ -1281,7 +1538,9 @@ func _notification(what: int) -> void:
 	_update_aux_controls()
 	_update_action_controls()
 	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
+	_update_accessible_names()
 	_refresh_validation_feedback()
+	_queue_dirty_marker()
 
 
 ## The OFF confirmation transfers focus to our own native popup. Resolve that
@@ -1627,8 +1886,13 @@ func _remember_current_draft() -> void:
 
 func _switch_draft_profile(profile: Dictionary, context_key: String) -> void:
 	_remember_current_draft()
+	var remembered := _drafts_by_context.has(context_key)
 	var target: Dictionary = _drafts_by_context.get(context_key, profile)
 	_set_draft_profile(target, context_key)
+	# UX-02b: a context's first load is its clean reference; a remembered draft keeps the earlier one.
+	if not remembered and not _clean_snapshots.has(context_key):
+		_clean_snapshots[context_key] = _dirty_fingerprint()
+		_queue_dirty_marker()
 
 
 func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
@@ -1665,6 +1929,7 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	_update_preview()
 	_update_menu_controls()
 	draft_changed.emit()
+	_queue_dirty_marker()
 
 
 func _update_profile_options() -> void:
@@ -1766,7 +2031,7 @@ func _apply_clean_radio_actions_to_draft() -> void:
 		return
 	var validation: Dictionary = ControllerProfile.validate(candidate)
 	if not bool(validation.get("ok", false)):
-		_set_status(tr("Could not prepare the safe radio action map: %s") % "; ".join(validation.get("errors", [])), true)
+		_set_status(tr("Could not prepare the safe radio action map: %s") % _friendly_validation_text(validation.get("issues", []), validation.get("errors", [])), true)
 		return
 	_set_draft_profile(candidate, _draft_context_key)
 	_set_status(tr("Safe radio actions are in the draft. Save keeps them; Cancel discards them."), false)
@@ -1911,7 +2176,7 @@ func _apply_jeti_mode2_preset() -> void:
 	replacement["name"] = profile_name_edit.text.strip_edges() if not profile_name_edit.text.strip_edges().is_empty() else str(replacement.get("name", "JETI USB Mode 2"))
 	var validation: Dictionary = ControllerProfile.validate(replacement)
 	if not bool(validation.get("ok", false)):
-		_set_status(tr("Could not restore the JETI Mode 2 preset: %s") % "; ".join(validation.get("errors", [])), true)
+		_set_status(tr("Could not restore the JETI Mode 2 preset: %s") % _friendly_validation_text(validation.get("issues", []), validation.get("errors", [])), true)
 		return
 	_set_draft_profile(replacement)
 	_set_status(tr("JETI Mode 2 mapping is in the draft. Confirm your own switch installation, then Save to keep it."), false)
@@ -1965,8 +2230,10 @@ func _update_aux_controls() -> void:
 	flap_mix_owner_picker.disabled = str(_draft_profile.get("kind", "")) not in ["radio", "joystick"]
 	var aux_value: Variant = _draft_profile.get("aux", {})
 	var aux: Dictionary = aux_value.duplicate(true) if aux_value is Dictionary else {}
+	aux_legacy_arm_hint.visible = _legacy_gear_arms_quad()
 	for aux_name in AUX_CHANNELS:
 		var controls: Dictionary = _aux_controls[aux_name]
+		(controls.row.get_parent() as Control).visible = _aux_row_shown(aux_name)
 		var binding_value: Variant = aux.get(aux_name, {})
 		var binding: Dictionary = binding_value if binding_value is Dictionary else {}
 		var binding_type := str(binding.get("type", ""))
@@ -2032,6 +2299,28 @@ func _update_aux_controls() -> void:
 		if mode_id == 0:
 			preview.text = tr("Unbound")
 	_update_aux_preview()
+
+
+## D6-UX-01: an Extra channels row shows when its channel serves the active vehicle (ControllerActions.aux_applies)
+## or "Show channels for all vehicles" is on; for the FPV quad a bound Landing gear row that still arms it (legacy)
+## stays visible too. Hidden rows keep their bindings and still take part in validation.
+func _aux_row_shown(aux_name: String) -> bool:
+	if show_all_vehicle_aux.button_pressed or ControllerActions.aux_applies(aux_name, action_capabilities):
+		return true
+	return aux_name == "gear" and _legacy_gear_arms_quad()
+
+
+## The FPV quad is active and this radio/joystick draft arms it from the Landing gear AUX because Arm is unbound
+## (multirotor_input.gd keeps that legacy fallback; gamepads never used it).
+func _legacy_gear_arms_quad() -> bool:
+	if not ControllerActions.aux_applies("arm", action_capabilities) or str(_draft_profile.get("kind", "")) not in ["radio", "joystick"]:
+		return false
+	var aux_value: Variant = _draft_profile.get("aux", {})
+	if not aux_value is Dictionary:
+		return false
+	var gear: Variant = aux_value.get("gear", {})
+	var arm: Variant = aux_value.get("arm", {})
+	return gear is Dictionary and not gear.is_empty() and not (arm is Dictionary and not arm.is_empty())
 
 
 func _on_flap_mix_owner_selected(index: int) -> void:
@@ -2445,6 +2734,8 @@ func _update_action_controls() -> void:
 	var device := _device_for_id(_draft_flight_device_id)
 	var child_index := 3
 	var last_change_button: Button
+	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var focus_in_rows := focused != null and action_grid.is_ancestor_of(focused)
 	for definition in ControllerActions.ACTIONS:
 		var action_id := str(definition.id)
 		var label_control: Label = action_grid.get_child(child_index)
@@ -2484,7 +2775,7 @@ func _update_action_controls() -> void:
 		clear_button.focus_mode = Control.FOCUS_NONE if clear_button.disabled else Control.FOCUS_ALL
 		if clear_had_focus and clear_button.disabled and capture_button.is_visible_in_tree():
 			capture_button.grab_focus()
-		var row_visible := action_filter.selected <= 0 or _action_category(definition) == action_filter.selected
+		var row_visible := _action_row_shown(definition)
 		label_control.visible = row_visible
 		binding_cell.visible = row_visible
 		capture_button.visible = row_visible
@@ -2496,7 +2787,40 @@ func _update_action_controls() -> void:
 	# regardless of the Cancel button's relative width in the current language.
 	if is_inside_tree() and last_change_button != null:
 		last_change_button.focus_neighbor_bottom = last_change_button.get_path_to(save_button)
+	# A filter change may hide the focused row; keep keyboard/gamepad focus on a visible control nearby.
+	if focus_in_rows and is_instance_valid(focused) and not focused.is_visible_in_tree():
+		for target: Control in [show_all_vehicle_actions, action_filter]:
+			if target.is_visible_in_tree():
+				target.grab_focus()
+				break
 	_repaint_validation_feedback()
+
+
+## UI-15-UX-02c: the category filter and the active vehicle together choose the rows; hidden rows keep
+## their bindings and still take part in validation.
+func _action_row_shown(definition: Dictionary) -> bool:
+	if action_filter.selected > 0 and _action_category(definition) != action_filter.selected:
+		return false
+	return show_all_vehicle_actions.button_pressed or ControllerActions.action_applies(str(definition.id), action_capabilities)
+
+
+## Make one action's row visible (public capture requests and validation focus may target a hidden row).
+func _reveal_action_row(action_id: String) -> void:
+	var definition := ControllerActions.action_definition(action_id)
+	if definition.is_empty() or _action_row_shown(definition):
+		return
+	if action_filter.selected > 0 and _action_category(definition) != action_filter.selected:
+		action_filter.select(0)
+	if not ControllerActions.action_applies(action_id, action_capabilities):
+		show_all_vehicle_actions.set_pressed_no_signal(true)
+	_update_action_controls()
+
+
+func _on_show_all_vehicle_actions(_pressed: bool) -> void:
+	if not _capturing_action.is_empty():
+		_cancel_capture()
+	_update_action_controls()
+	_refresh_validation_feedback()
 
 
 func _update_glyph_family_picker() -> void:
@@ -2548,10 +2872,9 @@ func _start_capture(action_id: String, button: Button) -> void:
 	# A row edit is not navigation: keep its viewport and keyboard/gamepad focus.
 	if _selected_section != "buttons":
 		select_section("buttons")
-	# Public callers may request an action currently hidden by the category filter.
+	# Public callers may request an action currently hidden by the category or vehicle filter.
 	if not button.visible:
-		action_filter.select(0)
-		_update_action_controls()
+		_reveal_action_row(action_id)
 	_capturing_aux_name = ""
 	_capturing_aux_position = -1
 	_capturing_action = action_id
@@ -2570,6 +2893,9 @@ func _start_aux_capture(aux_name: String, row_index: int, button: Button) -> voi
 	if _is_capture_active(): _capture_done()
 	if _selected_section != "aux":
 		select_section("aux")
+	if not _aux_row_shown(aux_name):
+		show_all_vehicle_aux.set_pressed_no_signal(true)
+		_update_aux_controls()
 	_capturing_action = ""
 	_capturing_aux_name = aux_name
 	_capturing_aux_position = row_index
@@ -2916,6 +3242,7 @@ func _save_profile(close_on_success := true) -> bool:
 		menu_origin["actions"] = RadioMenu.action_fingerprint(saved)
 		_menu_verification_origins[str(saved.profile_id)] = menu_origin
 	_replace_saved_profile(saved)
+	_unsaved_calibration.erase(_draft_context_key)
 	var saved_context := _profile_context_key(saved)
 	if _draft_context_key != saved_context:
 		# A committed New draft is now an Update target. Free its device slot
@@ -2928,6 +3255,7 @@ func _save_profile(close_on_success := true) -> bool:
 	_set_draft_profile(saved, _draft_context_key)
 	_drafts_by_context[_draft_context_key] = saved.duplicate(true)
 	_refresh_devices()
+	_mark_clean()
 	profile_saved.emit(saved.duplicate(true))
 	if close_on_success:
 		close_requested.emit()
@@ -3032,6 +3360,9 @@ func _set_status(text: String, is_error: bool) -> void:
 	status_label.add_theme_color_override("font_color", ScreenTheme.ERROR if is_error else Color(0.86, 0.9, 0.94))
 	if is_error and not text.is_empty():
 		status_label.text = tr("Problem: %s") % text
+	status_label.get_parent().visible = status_label.visible
+	_update_status_info_button()
+	_queue_dirty_marker()
 
 
 func _register_validation_field(path: String, section: String, control: Control, labels: Array, caption: String) -> void:
@@ -3082,10 +3413,11 @@ func _draft_validation_changed() -> void:
 
 
 func _refresh_validation_feedback() -> void:
+	_queue_dirty_marker()
 	if not _rejected_issues.is_empty():
 		_render_validation_fields(_rejected_issues, false, true)
 		if status_label.text == _validation_status:
-			_set_status(tr(_rejected_message) % "; ".join(_rejected_errors), true)
+			_set_status(tr(_rejected_message) % _friendly_validation_text(_rejected_issues, _rejected_errors), true)
 			_validation_status = status_label.text
 	elif _validation_active and not _draft_profile.is_empty():
 		_show_validation(_validate_candidate(_profile_candidate()), false)
@@ -3099,6 +3431,8 @@ func _repaint_validation_feedback() -> void:
 
 
 func _show_validation(report: Dictionary, focus_error: bool) -> void:
+	if focus_error:
+		_reveal_vehicle_rows_for(report.get("issues", []))
 	_render_validation_fields(report.get("issues", []), focus_error)
 	# An unrelated storage/disconnection error owns the footer until explicitly retried.
 	if not focus_error and status_label.text != _validation_status and _status_is_error:
@@ -3108,7 +3442,7 @@ func _show_validation(report: Dictionary, focus_error: bool) -> void:
 			_set_status("", false)
 	else:
 		var errors: Array = report.get("errors", [])
-		var text := tr("Profile cannot be saved: %s") % "; ".join(errors)
+		var text := tr("Profile cannot be saved: %s") % _friendly_validation_text(report.get("issues", []), errors)
 		if profile_name_edit.text.strip_edges().is_empty():
 			text = tr("Enter a profile name before saving.")
 		_set_status(text, true)
@@ -3119,9 +3453,95 @@ func _show_rejected_validation(report: Dictionary, message: String) -> void:
 	_rejected_issues = report.get("issues", []).duplicate(true)
 	_rejected_message = message
 	_rejected_errors = report.get("errors", []).duplicate()
+	_reveal_vehicle_rows_for(_rejected_issues)
 	_render_validation_fields(_rejected_issues, false, true)
-	_set_status(tr(message) % "; ".join(report.get("errors", [])), true)
+	_set_status(tr(message) % _friendly_validation_text(_rejected_issues, _rejected_errors), true)
 	_validation_status = status_label.text
+
+
+## UX-02c: an error on another vehicle's action shows that row, so the message never points at hidden fields.
+func _reveal_vehicle_rows_for(issues: Array) -> void:
+	for issue: Variant in issues:
+		if not issue is Dictionary:
+			continue
+		for path: Variant in issue.get("paths", []):
+			var text := str(path)
+			if not show_all_vehicle_actions.button_pressed and text.begins_with("actions.") \
+					and not ControllerActions.action_applies(text.trim_prefix("actions."), action_capabilities):
+				show_all_vehicle_actions.set_pressed_no_signal(true)
+				_update_action_controls()
+			# D6-UX-01: the same for an Extra channels row hidden for this vehicle.
+			var parts := text.split(".")
+			if text.begins_with("aux.") and parts.size() > 1 and _aux_controls.has(parts[1]) \
+					and not _aux_row_shown(parts[1]):
+				show_all_vehicle_aux.set_pressed_no_signal(true)
+				_update_aux_controls()
+
+
+## UX-02: validator issues as sentences naming actions, extra channels and axes by their labels. Codes without
+## a sentence keep the validator's own text; with no structured issue the raw errors are shown as before.
+func _friendly_validation_text(issues: Array, errors: Array) -> String:
+	var sentences: Array[String] = []
+	for issue: Variant in issues:
+		if not issue is Dictionary:
+			continue
+		var sentence := _friendly_issue_text(issue)
+		if not sentence.is_empty() and not sentences.has(sentence):
+			sentences.append(sentence)
+	if sentences.is_empty():
+		for error: Variant in errors:
+			sentences.append(str(error))
+	return " ".join(sentences)
+
+
+func _friendly_issue_text(issue: Dictionary) -> String:
+	var actions: Array[String] = []
+	var aux: Array[String] = []
+	var channels: Array[String] = []
+	for path: Variant in issue.get("paths", []):
+		var parts := str(path).split(".")
+		var caption := ""
+		if parts[0] == "actions" and parts.size() > 1:
+			var definition := ControllerActions.action_definition(parts[1])
+			caption = tr(str(definition.label)) if not definition.is_empty() else parts[1]
+			if not actions.has(caption): actions.append(caption)
+		elif parts[0] == "aux" and parts.size() > 1 and AUX_CHANNEL_LABELS.has(parts[1]):
+			caption = tr(str(AUX_CHANNEL_LABELS[parts[1]]))
+			if not aux.has(caption): aux.append(caption)
+		elif parts[0] in CHANNELS:
+			caption = tr(str(CHANNEL_LABELS[parts[0]]))
+			if not channels.has(caption): channels.append(caption)
+	match str(issue.get("code", "")):
+		"binding_conflict":
+			if actions.size() >= 2:
+				return tr("“%s” and “%s” use the same control. Change one of them.") % [actions[0], actions[1]]
+		"recovery_binding_missing":
+			if not actions.is_empty():
+				return tr("“%s” needs a control so you can always go back or pause. Assign one.") % actions[0]
+		"action_aux_source_conflict":
+			if not actions.is_empty() and not aux.is_empty():
+				return tr("“%s” uses the same control as the %s extra channel. Change one of them.") % [actions[0], aux[0]]
+		"action_aux_conflict":
+			if not actions.is_empty() and not aux.is_empty():
+				return tr("“%s” and the %s extra channel do the same job. Use only one of them.") % [actions[0], aux[0]]
+		"action_flight_axis_conflict":
+			if not actions.is_empty():
+				return tr("“%s” uses a flight stick axis. Choose another control.") % actions[0]
+		"aux_conflict":
+			if aux.size() >= 2:
+				return tr("The %s and %s extra channels use the same control. Change one of them.") % [aux[0], aux[1]]
+		"aux_invalid":
+			if not aux.is_empty():
+				return tr("Check the %s extra channel: its input is incomplete or uses a flight stick axis.") % aux[0]
+		"binding_invalid", "action_unknown":
+			if not actions.is_empty():
+				return tr("“%s” has an invalid control. Remap it.") % actions[0]
+		"axis_conflict":
+			if channels.size() >= 2:
+				return tr("%s and %s use the same source axis. Change one of them.") % [channels[0], channels[1]]
+		"name_invalid":
+			return tr("Enter a profile name before saving.")
+	return str(issue.get("message", ""))
 
 
 func _validation_field_keys(path: String) -> Array[String]:
@@ -3220,16 +3640,15 @@ func _focus_validation_field(key: String) -> bool:
 	var entry: Dictionary = _validation_fields[key]
 	select_section(str(entry.section))
 	var control: Control = entry.control
-	if entry.section == "buttons" and not control.is_visible_in_tree():
-		action_filter.select(0)
-		_update_action_controls()
+	if entry.section == "buttons" and not control.is_visible_in_tree() and key.begins_with("actions."):
+		_reveal_action_row(key.trim_prefix("actions."))
 	if control is SpinBox:
 		control = control.get_line_edit()
 	if not control.is_visible_in_tree() or (control is BaseButton and control.disabled) or (control is LineEdit and not control.editable):
 		return false
 	_initial_focus_wait_frames = 0
 	control.grab_focus()
-	(_section_body.get_parent() as ScrollContainer).ensure_control_visible.call_deferred(control)
+	_ensure_whole_control_visible.call_deferred(control)
 	return true
 
 
@@ -3269,6 +3688,112 @@ func _clear_field_errors() -> void:
 	for label: Label in _validation_label_captions:
 		if is_instance_valid(label):
 			label.text = tr(str(_validation_label_captions[label]))
+
+
+## UX-02: a small focusable "?" beside clipped text; keyboard, gamepad and pointer open the full text.
+func _info_button(node_name: String, accessible: String) -> Button:
+	var button := _button("?", "", node_name)
+	button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.custom_minimum_size.x = 36.0
+	button.set_meta("accessible_caption", accessible)
+	button.tooltip_text = tr(accessible)
+	button.accessibility_name = tr(accessible)
+	return button
+
+
+func _show_info(title: String, text: String, from: Control) -> void:
+	if not is_inside_tree():
+		return
+	if _info_dialog == null:
+		_info_dialog = AcceptDialog.new()
+		_info_dialog.name = "ControllerInfoDialog"
+		_info_dialog.dialog_autowrap = true
+		_info_dialog.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		_info_dialog.confirmed.connect(_restore_info_focus)
+		_info_dialog.canceled.connect(_restore_info_focus)
+		add_child(_info_dialog)
+	_info_return_focus = from
+	_info_dialog.title = title
+	_info_dialog.dialog_text = text
+	_info_dialog.get_ok_button().text = tr("Close")
+	_info_dialog.popup_centered_clamped(Vector2i(640, 220), 0.9)
+	_focus_if_shown.call_deferred(_info_dialog.get_ok_button())
+
+
+## A question answered (or the screen closed) in the same frame must not take focus afterwards.
+## Untyped: the control may have been freed (screen closed) before the deferred call runs.
+static func _focus_if_shown(control: Variant) -> void:
+	if is_instance_valid(control) and control is Control and control.is_inside_tree() and control.is_visible_in_tree():
+		(control as Control).grab_focus()
+
+
+func _restore_info_focus() -> void:
+	var target := _info_return_focus
+	_info_return_focus = null
+	if is_instance_valid(target) and target.is_inside_tree() and target.is_visible_in_tree():
+		_focus_if_shown.call_deferred(target)
+
+
+## The footer shows one to three lines; "?" appears only when the message does not fit.
+func _update_status_info_button() -> void:
+	if status_info_button == null:
+		return
+	var clipped := status_label.visible and status_label.max_lines_visible > 0 \
+		and status_label.get_line_count() > status_label.max_lines_visible
+	if status_info_button.visible != clipped:
+		var had_focus := status_info_button.has_focus()
+		status_info_button.visible = clipped
+		if had_focus and not clipped and save_button.is_visible_in_tree():
+			save_button.grab_focus()
+
+
+## UX-02 (A9): every per-row control names its action or channel, so assistive technology and the debug
+## bridge never list dozens of identical "Clear", "Remap" or "Invert" entries.
+func _update_accessible_names() -> void:
+	for button: Button in [aux_help_info_button, device_summary_info_button, status_info_button]:
+		if button != null:
+			button.tooltip_text = tr(str(button.get_meta("accessible_caption", "")))
+			button.accessibility_name = button.tooltip_text
+	for channel: String in CHANNELS:
+		var caption := tr(str(CHANNEL_LABELS[channel]))
+		var controls: Dictionary = _axis_controls[channel]
+		_name_control(controls.axis, tr("%s source axis") % caption)
+		_name_control(controls.deadzone, tr("%s deadzone") % caption)
+		_name_control(controls.expo, tr("%s expo") % caption)
+		_name_control(controls.invert, tr("Invert %s") % caption)
+	for aux_name: String in AUX_CHANNELS:
+		var caption := tr(str(AUX_CHANNEL_LABELS[aux_name]))
+		var controls: Dictionary = _aux_controls[aux_name]
+		_name_control(controls.type, tr("%s input type") % caption)
+		_name_control(controls.axis, tr("%s source axis") % caption)
+		_name_control(controls.off, tr("%s Off endpoint") % caption)
+		_name_control(controls.on, tr("%s On endpoint") % caption)
+		_name_control(controls.invert, tr("Invert %s") % caption)
+		_name_control(controls.button, tr("%s button") % caption)
+		_name_control(controls.button_mode, tr("%s button mode") % caption)
+		_name_control(controls.switch_count, tr("%s switch positions") % caption)
+		_name_control(controls.switch_label, tr("%s switch name") % caption)
+		_name_control(controls.switch_invert, tr("Reverse %s request") % caption)
+		for row_index in 3:
+			var position := "%s %s" % [caption, tr(_switch_position_name(row_index))]
+			_name_control(controls.switch_button_spins[row_index], tr("%s button") % position)
+			_name_control(controls.switch_capture_buttons[row_index], tr("Capture %s position") % position)
+	for definition in ControllerActions.ACTIONS:
+		var action_id := str(definition.id)
+		var caption := tr(str(definition.label))
+		_name_control(_clear_action_buttons[action_id], tr("Clear %s") % caption)
+		_name_control(_axis_capture_buttons[action_id], tr("Learn axis for %s") % caption)
+		var remap_button := action_grid.find_child("Remap_%s" % action_id, false, false) as Control
+		if remap_button != null:
+			_name_control(remap_button, tr("Remap %s") % caption)
+
+
+static func _name_control(control: Control, accessible: String) -> void:
+	control.accessibility_name = accessible
+	# A SpinBox is edited through its inner LineEdit; name both so either reports the field.
+	if control is SpinBox:
+		(control as SpinBox).get_line_edit().accessibility_name = accessible
 
 
 static func _section_label(text: String) -> Label:

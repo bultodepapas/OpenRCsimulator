@@ -3,6 +3,7 @@ extends SceneTree
 const Home := preload("res://ui/home.gd")
 const FailureMenu := preload("res://ui/failures_menu.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Wind := preload("res://physics/wind_config.gd")
 const Driver := preload("res://tests/ui_driver.gd")
@@ -37,8 +38,14 @@ func _run() -> void:
 			home.set_failure_config(config)
 			await settle()
 			check("enabled reminder does not steal focus", home.fly_button.has_focus())
+			# UI-39: index 3 stands for an RC vehicle selection (the former Garage page): no airplane failure reminder.
 			for page: int in [0, 1, 2, 3, 0]:
-				home._select_page(page)
+				if page == 3:
+					home.set_activity("mt8-bisonte")
+					home._select_page(1)
+				else:
+					home.set_aircraft(Catalog.DEFAULT_ID)
+					home._select_page(page)
 				home.set_note("Could not save settings (error 13).")
 				await settle()
 				var label: Label = home.failure_launch_notice

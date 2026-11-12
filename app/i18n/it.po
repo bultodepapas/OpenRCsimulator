@@ -12541,9 +12541,254 @@ msgstr "Scuro"
 msgid "Desaturated"
 msgstr "Desaturato"
 
-msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
-msgstr "Sangue sullo schermo quando l’aereo colpisce una persona o il pilota, gocce di pioggia sulla telecamera e fango, erba e crepe dopo gli impatti. Se disattivato, nessun effetto dell’obiettivo è mostrato. Si applica dal volo successivo."
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Automatic follows Scene detail. Off turns every lens effect off. Changes apply at once."
+msgstr "Sangue sullo schermo quando l’aereo colpisce una persona o il pilota, gocce di pioggia sulla telecamera e fango, erba e crepe dopo gli impatti. Automatico segue il Dettaglio della scena. Se disattivato, nessun effetto dell’obiettivo è mostrato. Le modifiche si applicano subito."
 
 msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
 msgstr "Sipario classico: un velo rosso scende dall’alto dello schermo. Schizzi sull’obiettivo: sangue solo sulle telecamere con vetro. Se disattivato, non viene mostrato sangue."
 
+# Home vehicle roster: RC cars, FPV quad and RC blimp in the Home catalog
+msgid "Vehicles"
+msgstr "Veicoli"
+
+msgid "VEHICLE CATALOG"
+msgstr "CATALOGO VEICOLI"
+
+msgid "Choose a vehicle for the next session."
+msgstr "Scegli un veicolo per la prossima sessione."
+
+msgid "OTHER RC VEHICLES"
+msgstr "ALTRI VEICOLI RC"
+
+msgid "RC monster truck · electric 4WD"
+msgstr "Monster truck RC · elettrico 4WD"
+
+msgid "Experimental: estimated electric 4WD model; mass, suspension and tires are estimates, not measured. The car setup opens before you drive."
+msgstr "Sperimentale: modello elettrico 4WD stimato; massa, sospensioni e pneumatici sono stime, non misurate. La configurazione dell’auto si apre prima di guidare."
+
+msgid "RC monster truck · nitro 4WD"
+msgstr "Monster truck RC · nitro 4WD"
+
+msgid "Experimental: supplied nitro 4WD estimate; engine, clutch, fuel and tires are simulated estimates, not measured. The car setup opens before you drive."
+msgstr "Sperimentale: stima nitro 4WD fornita; motore, frizione, carburante e pneumatici sono stime simulate, non misurate. La configurazione dell’auto si apre prima di guidare."
+
+msgid "FPV quad 5\""
+msgstr "Quadricottero FPV 5\""
+
+msgid "FPV racing quad · 5 in propellers · 6S electric"
+msgstr "Quad da corsa FPV · eliche da 5 pollici · elettrico 6S"
+
+msgid "Experimental: estimated FPV quad physics from component data; not flight-validated."
+msgstr "Sperimentale: fisica del quad FPV stimata dai dati dei componenti; non convalidata in volo."
+
+msgid "RC blimp"
+msgstr "Dirigibile RC"
+
+msgid "RC blimp · 5 m envelope · electric vectored rotors"
+msgstr "Dirigibile RC · involucro da 5 m · rotori elettrici orientabili"
+
+msgid "Experimental: estimated buoyancy and hull aerodynamics; not flight-validated. Wind and start are chosen in the blimp menu."
+msgstr "Sperimentale: galleggiamento e aerodinamica dello scafo stimati; non convalidati in volo. Vento e partenza si scelgono nel menu del dirigibile."
+
+msgid "DRIVE"
+msgstr "GUIDA"
+
+msgid "Next drive: %s"
+msgstr "Prossima guida: %s"
+
+msgid "Start: set up in the activity"
+msgstr "Partenza: impostata nell’attività"
+
+msgid "This vehicle is set up and started from its own activity menu."
+msgstr "Questo veicolo si imposta e si avvia dal proprio menu di attività."
+
+msgid "Wind and air settings apply to airplanes and helicopters only."
+msgstr "Le impostazioni di vento e aria valgono solo per aerei ed elicotteri."
+
+
+msgid "The aircraft struck a person. Never fly over or toward people."
+msgstr "L’aereo ha colpito una persona. Non volare mai sopra le persone o verso di loro."
+
+msgid "The aircraft struck the pilot. Keep it in front of you and away from the flight line."
+msgstr "L’aereo ha colpito il pilota. Tienilo davanti a te e lontano dalla linea dei piloti."
+
+# UI-15-UX controls setup (2026-11-12)
+msgid "Centre the sticks EXCEPT the THROTTLE: leave the THROTTLE fully DOWN (LOW). Keep these positions."
+msgstr "Centra gli stick TRANNE il GAS: lascia il GAS tutto in BASSO (MINIMO). Mantieni queste posizioni."
+
+msgid "Move the THROTTLE to FULL and back to LOW."
+msgstr "Porta il GAS al MASSIMO e poi di nuovo al MINIMO."
+
+msgid "Hold the ROLL stick (aileron) fully RIGHT."
+msgstr "Tieni lo stick del ROLLIO (alettoni) tutto a DESTRA."
+
+msgid "Hold the PITCH stick (elevator) fully BACK."
+msgstr "Tieni lo stick del BECCHEGGIO (elevatore) tutto INDIETRO."
+
+msgid "Hold the YAW stick (rudder) fully RIGHT."
+msgstr "Tieni lo stick dell’IMBARDATA (timone) tutto a DESTRA."
+
+msgid "Move the ROLL stick (aileron) fully LEFT, then centre."
+msgstr "Porta lo stick del ROLLIO (alettoni) tutto a SINISTRA, poi al centro."
+
+msgid "Move the PITCH stick (elevator) fully FORWARD, then centre."
+msgstr "Porta lo stick del BECCHEGGIO (elevatore) tutto AVANTI, poi al centro."
+
+msgid "Move the YAW stick (rudder) fully LEFT, then centre."
+msgstr "Porta lo stick dell’IMBARDATA (timone) tutto a SINISTRA, poi al centro."
+
+msgid "the stick did not return to centre before you continued (or moved only one way); try again"
+msgstr "lo stick non è tornato al centro prima di continuare (o si è mosso in un solo verso); riprova"
+
+msgid "Rest"
+msgstr "Riposo"
+
+msgid "Verify"
+msgstr "Verifica"
+
+msgid "RIGHT"
+msgstr "DESTRA"
+
+msgid "LEFT"
+msgstr "SINISTRA"
+
+msgid "BACK"
+msgstr "INDIETRO"
+
+msgid "FORWARD"
+msgstr "AVANTI"
+
+msgid "FULL"
+msgstr "MASSIMO"
+
+msgid "LOW"
+msgstr "MINIMO"
+
+msgid "CENTRE"
+msgstr "CENTRO"
+
+msgid "Before you start"
+msgstr "Prima di iniziare"
+
+msgid "EdgeTX/OpenTX: select USB Joystick (Classic) on the model, turn RF off, calibrate the sticks on the radio first, and use expo either on the radio or in the simulator, not both."
+msgstr "EdgeTX/OpenTX: seleziona Joystick USB (Classic) sul modello, spegni la RF, calibra prima gli stick sulla radio e usa l’expo o sulla radio o nel simulatore, non in entrambi."
+
+msgid "JETI: use USB joystick mode and check the stick mode."
+msgstr "JETI: usa la modalità joystick USB e controlla il modo degli stick."
+
+msgid "Channel monitor"
+msgstr "Monitor dei canali"
+
+msgid "Detected: axis %d"
+msgstr "Rilevato: asse %d"
+
+msgid "Reached FULL"
+msgstr "MASSIMO raggiunto"
+
+msgid "Back to LOW"
+msgstr "Di nuovo al MINIMO"
+
+msgid "Discard"
+msgstr "Scarta"
+
+msgid "Your controller changes are not saved. Save them, discard them, or keep editing."
+msgstr "Le modifiche ai controlli non sono salvate. Salvale, scartale o continua a modificare."
+
+msgid "Controller details"
+msgstr "Dettagli del controller"
+
+msgid "Extra channels help"
+msgstr "Guida ai canali aggiuntivi"
+
+msgid "Full message"
+msgstr "Messaggio completo"
+
+msgid "Show actions for all vehicles"
+msgstr "Mostra le azioni di tutti i veicoli"
+
+msgid "Show channels for all vehicles"
+msgstr "Mostra i canali di tutti i veicoli"
+
+msgid "%s source axis"
+msgstr "Asse sorgente di %s"
+
+msgid "%s deadzone"
+msgstr "Zona morta di %s"
+
+msgid "%s expo"
+msgstr "Expo di %s"
+
+msgid "Invert %s"
+msgstr "Inverti %s"
+
+msgid "%s input type"
+msgstr "Tipo di ingresso di %s"
+
+msgid "%s Off endpoint"
+msgstr "Estremo Off di %s"
+
+msgid "%s On endpoint"
+msgstr "Estremo On di %s"
+
+msgid "%s button"
+msgstr "Pulsante di %s"
+
+msgid "%s button mode"
+msgstr "Modalità pulsante di %s"
+
+msgid "%s switch positions"
+msgstr "Posizioni dell’interruttore di %s"
+
+msgid "%s switch name"
+msgstr "Nome dell’interruttore di %s"
+
+msgid "Reverse %s request"
+msgstr "Inverti la richiesta di %s"
+
+msgid "Capture %s position"
+msgstr "Acquisisci posizione %s"
+
+msgid "Clear %s"
+msgstr "Cancella %s"
+
+msgid "Learn axis for %s"
+msgstr "Acquisisci asse per %s"
+
+msgid "Remap %s"
+msgstr "Rimappa %s"
+
+msgid "“%s” and “%s” use the same control. Change one of them."
+msgstr "«%s» e «%s» usano lo stesso comando. Cambiane uno."
+
+msgid "“%s” needs a control so you can always go back or pause. Assign one."
+msgstr "«%s» ha bisogno di un comando per poter sempre tornare indietro o mettere in pausa. Assegnane uno."
+
+msgid "“%s” uses the same control as the %s extra channel. Change one of them."
+msgstr "«%s» usa lo stesso comando del canale aggiuntivo %s. Cambiane uno."
+
+msgid "“%s” and the %s extra channel do the same job. Use only one of them."
+msgstr "«%s» e il canale aggiuntivo %s fanno la stessa cosa. Usane solo uno."
+
+msgid "“%s” uses a flight stick axis. Choose another control."
+msgstr "«%s» usa un asse degli stick di volo. Scegli un altro comando."
+
+msgid "The %s and %s extra channels use the same control. Change one of them."
+msgstr "I canali aggiuntivi %s e %s usano lo stesso comando. Cambiane uno."
+
+msgid "Check the %s extra channel: its input is incomplete or uses a flight stick axis."
+msgstr "Controlla il canale aggiuntivo %s: l’ingresso è incompleto o usa un asse degli stick di volo."
+
+msgid "“%s” has an invalid control. Remap it."
+msgstr "«%s» ha un comando non valido. Rimappalo."
+
+msgid "%s and %s use the same source axis. Change one of them."
+msgstr "%s e %s usano lo stesso asse sorgente. Cambiane uno."
+
+msgid "Arm (FPV quad)"
+msgstr "Armamento (quad FPV)"
+
+msgid "Flight mode (FPV quad)"
+msgstr "Modalità di volo (quad FPV)"
+
+msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
+msgstr "Questo profilo arma il quad con l’interruttore del carrello. Assegna Armamento per renderlo esplicito."

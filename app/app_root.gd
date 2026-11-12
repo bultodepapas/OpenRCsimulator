@@ -45,6 +45,7 @@ const UpdateCheck := preload("res://app_state/update_check.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const Conditions := preload("res://render/world/conditions.gd")
@@ -81,6 +82,8 @@ const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const FlagQuality := preload("res://render/flag_quality.gd")
 const LensSettings := preload("res://render/lens/lens_settings.gd")
+## LENS-01: the lens tier last applied, so a Scene detail change rebuilds an Automatic lens.
+var _lens_tier_applied := ""
 const FlagIdentity := preload("res://app_state/flag_identity.gd")
 var _flag_identity: RefCounted = FlagIdentity.shared()
 const RunwayMeadow := preload("res://scenery/runway_meadow.gd")
@@ -172,6 +175,9 @@ var startup_progress := Callable()
 var home_build_pending := false
 var _home_build_cancelled := false
 var _home_build_yield_usec := 0
+var _home_build_progress := Callable()
+var _home_rebuild_after_build := false
+var _debug_bridge_deferred := false
 ## UI-34c: rendered interactive launches are staged; headless callers retain their synchronous contract.
 var flight_loading_enabled := DisplayServer.get_name() != "headless"
 var last_flight_loading: Dictionary = {}
@@ -193,12 +199,9 @@ var _home_rebuild_queued := false
 var _home_rebuild_source: WeakRef
 var flight: Node
 var ground_vehicle: Node3D
+## The RC car and blimp skin last started; Home's own selection persists in preferences.home_vehicle (UI-39).
 var selected_ground_vehicle_id := "mt8-bisonte"
 var selected_airship_skin := "tiburon-blanco"
-## The Garage choice returns to the vehicle flown last (an RC car or the RC blimp).
-var selected_airship_last := false
-## DR-36a: the Garage choice returns to the FPV quad when it was flown last.
-var selected_multirotor_last := false
 ## Test seam: custom ground activity factory, default remains the packaged scene script.
 var ground_vehicle_factory := Callable()
 var pause_menu: CanvasLayer:
@@ -288,7 +291,8 @@ func _ready() -> void:
 	Reconstruction.apply(get_viewport(), Reconstruction.startup_config())
 	# UI-28-R5: the staged first Home attaches the bridge once Home exists, so "bridge answers" keeps
 	# meaning a usable route for agents that act right after launch.
-	if DebugBridge.requested() and not _first_home_staged_requested(): # PT1h-R7: opt-in agent debug bridge; never changes the route
+	_debug_bridge_deferred = DebugBridge.requested() and _first_home_staged_requested()
+	if DebugBridge.requested() and not _debug_bridge_deferred: # PT1h-R7: opt-in agent debug bridge; never changes the route
 		add_child(DebugBridge.new())
 	if InputReport.requested(user_args):
 		var options: Dictionary = InputReport.options(user_args)
@@ -381,7 +385,7 @@ func _ready() -> void:
 		if feedback and id != "home":
 			menu_audio.play(&"pause" if id == "pause" else &"open"))
 	screens.surface_closed.connect(func(id: String, restoring_focus: bool) -> void:
-		if restoring_focus and id not in ["home", "pause"]:
+		if restoring_focus and id not in ["home", "pause", "loading"]:
 			menu_audio.play(&"back"))
 	_apply_presentation(display_preferences.config)
 	controllers = ControllerService.new()
@@ -439,10 +443,11 @@ func _process(_delta: float) -> void:
 
 func _tick_home_flight_preparation() -> void:
 	var enabled := home_flight_prefetch_mode in ["scene", "trim", "scene_trim"]
-	var eligible := enabled and not _home_prefetch_suspended and not _loading_active and not _quit_audio_pending \
+	var eligible: bool = enabled and not _home_prefetch_suspended and not _loading_active and not _quit_audio_pending \
 		and not _home_preparation_route_pending and flight == null and ground_vehicle == null \
 		and not _home_preparation_quit_pending and has_home and home != null and screens.is_top("home") \
-		and is_instance_valid(home_scene) and Catalog.can_fly(home.aircraft_id) and not Catalog.is_rotorcraft(home.aircraft_id)
+		and is_instance_valid(home_scene) and home.activity_id.is_empty() \
+		and Catalog.can_fly(home.aircraft_id) and not Catalog.is_rotorcraft(home.aircraft_id)
 	if not is_instance_valid(_home_flight_preparation):
 		if not eligible:
 			return
@@ -543,8 +548,8 @@ static func weather_for_aircraft(id: String, raw: Variant) -> Dictionary:
 
 func show_home() -> void:
 	var setup := _home_setup()
-	home_scene = HomeScene.new(setup.aircraft, field_path, setup.lighting_config, setup.night_options,
-		preferences.get("sky_config", SkyConfig.defaults()), landscape_id, _livery_for(setup.aircraft)) # still backdrop
+	home_scene = HomeScene.new(setup.vehicle, field_path, setup.lighting_config, setup.night_options,
+		preferences.get("sky_config", SkyConfig.defaults()), landscape_id, setup.vehicle_livery) # still backdrop
 	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
@@ -553,103 +558,154 @@ func show_home() -> void:
 
 
 ## UI-28-R5: the startup route builds the same Home in the flight's world stages, yielding frames so
-## the intro stays animated. The selected aircraft model loads on a worker meanwhile. Other routes
-## (End flight, landscape changes, tests and headless) keep the synchronous show_home().
+## the intro stays animated. Renderer confirmation waits for the first drawn 3D Home. Tests, headless
+## and argument routes keep the synchronous show_home().
 func _show_first_home_staged() -> void:
+	RendererGuard.confirm_hold = true
+	await _build_home_staged(startup_progress, Callable())
+
+
+## UI-28-R5b: ending an activity rebuilds Home in the same stages under the opaque loading surface,
+## instead of holding the last activity frame. `after` runs once Home exists (for example the debrief).
+## Headless routes, and a request while a staged build is already running, stay synchronous.
+func _return_home(after: Callable = Callable()) -> void:
+	if not flight_loading_enabled or home_build_pending or not is_inside_tree():
+		show_home()
+		if after.is_valid():
+			after.call()
+		return
+	home_build_pending = true # claimed before the first frame: no second route may start meanwhile
+	var surface: CanvasLayer = FlightLoading.new()
+	surface.name = "HomeLoading"
+	surface.configure_home(tr(Landscapes.entry(landscape_id).get("name", "")))
+	screens.push("loading", surface, null, false)
+	await _flight_loading_draw() # the surface is visible before construction starts
+	if not is_inside_tree():
+		home_build_pending = false
+		return
+	var close_surface := func() -> void:
+		if screens.is_top("loading") and ScreenStack._surface(screens.top()) == surface.surface:
+			screens.pop(true, false)
+	await _build_home_staged(surface.set_stage, close_surface)
+	close_surface.call()
+	if home != null and after.is_valid():
+		after.call()
+
+
+## Shared staged construction. `progress(stage)` receives each stage name; `before_install` runs just
+## before the Home menu is pushed (the loading surface leaves first). The selected aircraft model
+## loads on a worker meanwhile. Quit cancels at the next checkpoint; any other failure falls back to
+## the synchronous show_home(), so Home is never left empty.
+func _build_home_staged(progress: Callable, before_install: Callable) -> void:
 	home_build_pending = true
-	RendererGuard.confirm_hold = true # renderer confirmation waits for the first drawn 3D Home
+	_home_build_progress = progress
 	_home_build_yield_usec = Time.get_ticks_usec()
 	var setup := _home_setup()
-	var livery := _livery_for(setup.aircraft)
-	var scene := HomeScene.new(setup.aircraft, field_path, setup.lighting_config, setup.night_options,
+	var livery: String = setup.vehicle_livery
+	var scene := HomeScene.new(setup.vehicle, field_path, setup.lighting_config, setup.night_options,
 		preferences.get("sky_config", SkyConfig.defaults()), landscape_id, livery, true)
 	home_scene = scene
 	_connect_home_preview(scene)
 	if not scene.field_errors.is_empty():
+		if before_install.is_valid():
+			before_install.call()
 		add_child(scene) # reports the field error exactly as show_home() does
 		_start_update_check()
-		_finish_first_home_build()
+		_finish_home_build()
 		return
-	var model_path := HomePreviewResources.path_for(setup.aircraft, livery)
+	var model_path := HomePreviewResources.path_for(setup.vehicle, livery)
 	var model_requested := not model_path.is_empty() \
 		and ResourceLoader.load_threaded_request(model_path, "PackedScene", false) == OK
 	# Untyped: a coroutine aborted by a script error resumes with null, which must read as a failure.
-	var outcome: Variant = await scene.build_world_staged(_first_home_checkpoint)
+	var outcome: Variant = await scene.build_world_staged(_home_build_checkpoint)
 	var built: bool = outcome is bool and outcome
 	var model: Resource = null
 	if model_requested:
 		# Every request is drained with frames still drawn, including after cancellation, so the
 		# engine releases its load token (the loader may need main-thread work to finish).
 		while ResourceLoader.load_threaded_get_status(model_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-			if is_inside_tree() and not _home_build_cancelled and startup_progress.is_valid():
-				startup_progress.call("Preparing aircraft")
-			await RenderingServer.frame_post_draw
+			if is_inside_tree() and not _home_build_cancelled and _home_build_progress.is_valid():
+				_home_build_progress.call("Preparing aircraft")
+			await _flight_loading_draw()
 		model = ResourceLoader.load_threaded_get(model_path)
 		_home_build_yield_usec = Time.get_ticks_usec()
 	if built:
 		# Present the stage before the indivisible aircraft build.
-		outcome = await _first_home_checkpoint("Preparing aircraft", true)
+		outcome = await _home_build_checkpoint("Preparing aircraft", true)
 		built = outcome is bool and outcome
 	if not built or not is_inside_tree():
 		if home_scene == scene:
 			home_scene = null
 		scene.free()
 		if not is_inside_tree():
-			_finish_first_home_build()
+			_finish_home_build()
 			return
 		if _home_build_cancelled:
-			_finish_first_home_build()
+			_finish_home_build()
 			if not renderer_guard_path.is_empty():
 				RendererGuard.confirm(renderer_guard_path) # a deliberate quit is not a renderer failure
-			get_tree().quit()
+			await shutdown_home_flight_preparation() # drain workers, as the normal quit does
+			if is_inside_tree():
+				get_tree().quit()
 			return
 		# Any other staged failure keeps the former synchronous route, so Home is never left empty.
 		push_warning("Staged Home construction failed; building Home synchronously.")
+		if before_install.is_valid():
+			before_install.call()
 		show_home()
 		_start_update_check()
-		_finish_first_home_build()
+		_finish_home_build()
 		return
 	if model is PackedScene and is_instance_valid(_home_preview_resources):
 		_home_preview_resources.retain_loaded(model_path, model) # the same bounded broker as preview loads
 	scene.finish_construction()
 	add_child(scene)
 	# The 3D view's first draw (shader and texture preparation) gets its own frame, before the menu.
-	await RenderingServer.frame_post_draw
+	await _flight_loading_draw()
 	if not is_inside_tree():
-		_finish_first_home_build()
+		_finish_home_build()
 		return
+	if before_install.is_valid():
+		before_install.call()
 	_install_home(setup)
 	_start_update_check()
-	_finish_first_home_build()
-	if _home_build_cancelled:
+	var quit_requested := _home_build_cancelled
+	_finish_home_build()
+	if quit_requested:
 		quit_app() # a close request after the last checkpoint takes the normal Home quit route
 
 
-func _finish_first_home_build() -> void:
+func _finish_home_build() -> void:
 	home_build_pending = false
+	_home_build_cancelled = false
+	if _home_rebuild_after_build:
+		_home_rebuild_after_build = false
+		_queue_home_scene_rebuild.call_deferred()
+	_home_build_progress = Callable()
 	startup_progress = Callable()
 	RendererGuard.confirm_hold = false
-	if DebugBridge.requested() and is_inside_tree():
+	if _debug_bridge_deferred and is_inside_tree():
+		_debug_bridge_deferred = false
 		add_child(DebugBridge.new())
-
-
-## Only the branded startup's Home route; arguments select technical routes that never stage.
-func _first_home_staged_requested() -> bool:
-	return startup_progress.is_valid() and DisplayServer.get_name() != "headless" and user_args.is_empty()
 
 
 ## Reports the stage and yields one drawn frame once roughly a 60 Hz frame of work has accumulated
 ## (or always, before an indivisible step), so small stages batch while long ones still show progress.
 ## Quit cancels at the next checkpoint.
-func _first_home_checkpoint(stage: String, always_yield := false) -> bool:
+func _home_build_checkpoint(stage: String, always_yield := false) -> bool:
 	if _home_build_cancelled or not is_inside_tree():
 		return false
-	if startup_progress.is_valid():
-		startup_progress.call(stage)
+	if _home_build_progress.is_valid():
+		_home_build_progress.call(stage)
 	if always_yield or Time.get_ticks_usec() - _home_build_yield_usec >= 12000:
-		await RenderingServer.frame_post_draw
+		await _flight_loading_draw()
 		_home_build_yield_usec = Time.get_ticks_usec()
 	return not _home_build_cancelled and is_inside_tree()
+
+
+## Only the branded startup's Home route; arguments select technical routes that never stage.
+func _first_home_staged_requested() -> bool:
+	return startup_progress.is_valid() and DisplayServer.get_name() != "headless" and user_args.is_empty()
 
 
 ## Home choices and their session side effects, shared by both Home construction routes.
@@ -666,8 +722,15 @@ func _home_setup() -> Dictionary:
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
 	MoonConfig.session_config = _moon_config_from_preferences() # FW-MOON-12: before Home and Fly build their worlds
-	return {aircraft = aircraft, home_weather = home_weather, night_options = night_options,
-		lighting_config = lighting_config, world_preset = world_preset}
+	# UI-39: a saved RC vehicle (car, quad, blimp) is Home's selection and backdrop; the aircraft stays remembered.
+	selected_airship_skin = VehicleRoster.resolve_skin("rc-blimp-5m", str(preferences.get("airship_skin", selected_airship_skin)))
+	var activity := str(preferences.get("home_vehicle", ""))
+	if not VehicleRoster.is_activity(activity):
+		activity = ""
+	var vehicle := activity if not activity.is_empty() else aircraft
+	var vehicle_livery := VehicleRoster.resolve_skin(activity, selected_airship_skin) if not activity.is_empty() else _livery_for(aircraft)
+	return {aircraft = aircraft, activity = activity, vehicle = vehicle, vehicle_livery = vehicle_livery,
+		home_weather = home_weather, night_options = night_options, lighting_config = lighting_config, world_preset = world_preset}
 
 
 func _install_home(setup: Dictionary) -> void:
@@ -679,8 +742,6 @@ func _install_home(setup: Dictionary) -> void:
 	home.statistics_service = statistics_service
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.airship_skin_id = selected_airship_skin
-	home.airship_selected = selected_airship_last
-	home.multirotor_selected = selected_multirotor_last
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
@@ -690,6 +751,8 @@ func _install_home(setup: Dictionary) -> void:
 	home.set_aircraft(aircraft)
 	home.set_start_preferences(preferences.get("start_choice", Preferences.DEFAULTS.start_choice),
 		preferences.get("rotorcraft_start_choice", Preferences.DEFAULTS.rotorcraft_start_choice))
+	if not str(setup.get("activity", "")).is_empty():
+		home.set_activity(setup.activity)
 	home.set_weather_config(home_weather)
 	home.set_lighting_config(lighting_config)
 	home.set_sky_config(preferences.get("sky_config", SkyConfig.defaults()))
@@ -705,6 +768,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
 	home.aircraft_requested.connect(set_aircraft)
+	home.activity_requested.connect(set_vehicle)
 	home.livery_picker_requested.connect(open_livery_picker)
 	home.landscape_requested.connect(set_landscape)
 	home.start_requested.connect(set_start_choice)
@@ -733,7 +797,7 @@ func _install_home(setup: Dictionary) -> void:
 
 ## Ground vehicles have their own data/session contract; aircraft catalog and preferences stay aircraft-only.
 func start_ground_vehicle(vehicle_id: String = "") -> void:
-	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active:
+	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active or home_build_pending:
 		return
 	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
 		_home_preparation_route_pending = true
@@ -781,8 +845,6 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_ground_vehicle_id = vehicle_id
-			selected_airship_last = false
-			selected_multirotor_last = false
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
@@ -805,7 +867,7 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 ## BL-10: the RC blimp activity occupies the same exclusive activity slot as ground vehicles, so every existing
 ## "no activity running" guard, controller hook and exit request also covers it. Its physics/data are its own.
 func start_airship(skin_id: String = "") -> void:
-	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active:
+	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active or home_build_pending:
 		return
 	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
 		_home_preparation_route_pending = true
@@ -843,8 +905,6 @@ func start_airship(skin_id: String = "") -> void:
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_airship_skin = skin_id
-			selected_airship_last = true
-			selected_multirotor_last = false
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
@@ -868,7 +928,7 @@ func start_airship(skin_id: String = "") -> void:
 ## so every "no activity running" guard, controller hook and exit request also covers it. Its physics/data are its own.
 func start_multirotor(vehicle_id: String = "") -> void:
 	const MultirotorCatalog := preload("res://vehicles/multirotor/multirotor_catalog.gd")
-	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active:
+	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active or home_build_pending:
 		return
 	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
 		_home_preparation_route_pending = true
@@ -909,8 +969,6 @@ func start_multirotor(vehicle_id: String = "") -> void:
 		if error.is_empty():
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
-			selected_airship_last = false
-			selected_multirotor_last = true
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
@@ -947,7 +1005,7 @@ func _commit_end_ground_vehicle() -> void:
 	_complete_exit_request()
 	if controllers != null:
 		_controller_ui_changed(controllers.registry.selected_device_id("ui"))
-	show_home()
+	_return_home()
 
 
 ## Applies a language at once and remembers it. A failed save keeps the language for this session and says so.
@@ -979,6 +1037,7 @@ func set_aircraft(id: String) -> bool:
 		return false
 	id = Catalog.canonical_id(id)
 	preferences.aircraft = id
+	preferences.home_vehicle = "" # UI-39: an aircraft replaces a selected RC vehicle
 	home.set_aircraft(id) # shows the start remembered for this vehicle class (UI-32, UI-30 AS-7)
 	# UI-32 (UI-30 AS-3): show and fly a rotorcraft without turbulence; never remove it from the saved weather.
 	home.set_weather_config(weather_for_aircraft(id, preferences.get("weather_config", WeatherSettings.defaults())))
@@ -991,10 +1050,54 @@ func set_aircraft(id: String) -> bool:
 	return true
 
 
+## UI-39: selects any Home vehicle (a VehicleRoster id): an aircraft through set_aircraft(), or an RC car, the FPV
+## quad or the RC blimp, which Home's Fly then starts as its activity. Remembered like the aircraft; the aircraft
+## preference itself is never overwritten by a vehicle. Same return contract as set_aircraft().
+func set_vehicle(id: String) -> bool:
+	if not VehicleRoster.is_activity(id):
+		return set_aircraft(id)
+	if _loading_active or home == null:
+		return false
+	preferences.home_vehicle = id
+	home.set_activity(id)
+	if home_scene != null:
+		home_scene.request_aircraft(id, home.livery_id)
+	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
+	return true
+
+
+## UI-39: the model a rebuilt Home backdrop shows: Home's selected vehicle (an RC vehicle or the aircraft).
+func _home_backdrop_vehicle() -> String:
+	if home != null:
+		return home.selected_id()
+	var activity := str(preferences.get("home_vehicle", ""))
+	return activity if VehicleRoster.is_activity(activity) else str(preferences.get("aircraft", Preferences.DEFAULTS.aircraft))
+
+
+func _home_backdrop_livery() -> String:
+	if home != null:
+		return home.livery_id
+	var vehicle := _home_backdrop_vehicle()
+	return VehicleRoster.resolve_skin(vehicle, selected_airship_skin) if VehicleRoster.is_activity(vehicle) else _livery_for(vehicle)
+
+
 ## F4U-16: the paint scheme of Home's aircraft. The default paint keeps no [liveries] entry.
+## UI-39: with the RC blimp selected, the paint is its skin ([flight] airship_skin).
 func set_livery(livery: String) -> void:
 	if _loading_active: return
 	if home == null:
+		return
+	if not home.activity_id.is_empty():
+		var vehicle: String = home.activity_id
+		var skin: String = home.set_livery(livery)
+		if skin.is_empty():
+			return
+		selected_airship_skin = skin
+		preferences.airship_skin = skin
+		if home_scene != null:
+			home_scene.request_aircraft(vehicle, skin)
+		_report_selection_save(Preferences.save_to(preferences_path, preferences))
 		return
 	var id: String = home.aircraft_id
 	var resolved: String = home.set_livery(livery)
@@ -1012,15 +1115,19 @@ func set_livery(livery: String) -> void:
 func open_livery_picker(from: Control = null) -> void:
 	if _loading_active or home == null or not screens.is_top("home"): return
 	var choices: Array = home.livery_choices()
-	if choices.size() < 2 and not CustomSkin.supports(home.aircraft_id): return
-	var aircraft_id: String = home.aircraft_id
-	var dialog := LiveryPicker.new(choices, home.livery_id, tr(Catalog.short_name(home.aircraft_id)), home.livery_preview_cache, home.theme, CustomSkin.supports(aircraft_id))
+	var vehicle_id: String = home.selected_id() # UI-39: the RC blimp's skins use the same gallery
+	var custom_skins: bool = home.activity_id.is_empty() and CustomSkin.supports(vehicle_id)
+	if choices.size() < 2 and not custom_skins: return
+	var dialog := LiveryPicker.new(choices, home.livery_id, tr(VehicleRoster.short_name(vehicle_id)), home.livery_preview_cache, home.theme, custom_skins)
 	dialog.close_requested.connect(close_livery_picker)
 	dialog.create_skin_requested.connect(open_skin_tools)
 	dialog.load_skin_requested.connect(open_skin_tools.bind(true))
 	dialog.selected.connect(func(id: String) -> void:
 		close_livery_picker()
-		if home != null and home.aircraft_id == aircraft_id and AirplaneBuilder.resolve_livery_choice(choices, id) != home.livery_id:
+		if home == null or home.selected_id() != vehicle_id:
+			return
+		var resolved: String = id if not home.activity_id.is_empty() else AirplaneBuilder.resolve_livery_choice(choices, id)
+		if resolved != home.livery_id:
 			set_livery(id)
 	)
 	if not screens.push("liveries", dialog, from): dialog.free()
@@ -1085,7 +1192,7 @@ func _connect_home_preview(scene: Node3D) -> void:
 
 
 func _on_home_preview_state(id: String, state: String, scene: Node3D) -> void:
-	if scene == home_scene and home != null and home.aircraft_id == id:
+	if scene == home_scene and home != null and home.selected_id() == id:
 		home.set_preview_state(state)
 		if state == "failed":
 			_menu_feedback(&"reject")
@@ -1150,7 +1257,7 @@ func _night_options_from_preferences() -> Dictionary:
 
 ## Interactive rendering gets explicit loading checkpoints; direct/headless entry retains same-frame construction.
 func start_flight(request: Dictionary = {}) -> void:
-	if _home_preparation_route_pending or _home_preparation_quit_pending:
+	if _home_preparation_route_pending or _home_preparation_quit_pending or home_build_pending:
 		return
 	if flight != null or _loading_active or _quit_audio_pending:
 		return
@@ -1172,6 +1279,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		if Catalog.is_rotorcraft(str(request.get("aircraft_id", ""))):
 			natural_random_screen.show_error(tr("Natural Random currently supports airplanes only."))
 			return
+	elif home != null and not home.activity_id.is_empty():
+		return # UI-39: Home's Fly starts the selected RC vehicle as its own activity, never the hidden aircraft
 	# Retain the exact briefing through failed startup, including its draft and focus.
 	var departing_random: CanvasLayer = null
 	var departing_home: Control = home
@@ -1810,8 +1919,17 @@ func _apply_presentation(config: Dictionary) -> void:
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
 	BirdDirector.set_preference(str(config.get("birds", DisplayPreferences.DEFAULTS.birds)))
 	FlagQuality.set_preference(str(config.get("flag_animation", "auto")))
-	# LENS-01: lens effects apply from the next flight; a running flight keeps the stack it was built with.
+	# LENS-01: a running flight (airplane, helicopter or FPV quad) rebuilds its lens stack at once; presentation only.
+	var lens_changed: bool = LensSettings.validate(config) != LensSettings.preference()
 	LensSettings.set_preference(config)
+	# Automatic follows Scene detail (applied above): a Scene detail change can change the lens tier too.
+	var lens_tier: String = str(LensSettings.resolve({}, true).quality)
+	lens_changed = lens_changed or (not _lens_tier_applied.is_empty() and lens_tier != _lens_tier_applied)
+	_lens_tier_applied = lens_tier
+	if lens_changed:
+		for activity: Node in [flight, ground_vehicle]:
+			if is_instance_valid(activity) and activity.has_method("apply_lens_preferences"):
+				activity.apply_lens_preferences()
 	get_tree().call_group("landscape_flags", "apply_quality")
 	# L11a-R3: hiding is live; turning the meadow on builds it at the next field load.
 	RunwayMeadow.set_preference(str(config.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow)))
@@ -1922,6 +2040,8 @@ func open_controls(from: Control = null) -> void:
 	if flight != null and flight.has_method("controller_capabilities"):
 		capabilities = flight.controller_capabilities()
 		setup.diagnostic_capabilities = capabilities.duplicate()
+	elif _controls_show_multirotor():
+		capabilities = ControllerActions.MULTIROTOR_CAPABILITIES
 	elif home != null and Catalog.is_rotorcraft(home.aircraft_id):
 		capabilities = ControllerActions.HELICOPTER_CAPABILITIES
 	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"), capabilities)
@@ -2032,6 +2152,17 @@ func _open_radio_menu_verification(setup: Node) -> void:
 		setup._set_status(reason, false)
 		_restore_calibration_controls_focus.call_deferred(setup))
 	if not screens.push("radio_menu_verification", wizard, setup.verify_menus_button): wizard.free()
+
+
+## D6-UX-01: Controls lists the FPV quad's Arm and Flight mode channels while the quad is flying or selected on Home.
+## Presentation only: flight routing keeps its own capabilities (_controller_bindings). `activity_id` is read
+## tolerantly because older Home builds do not have it.
+func _controls_show_multirotor() -> bool:
+	const MultirotorCatalog := preload("res://vehicles/multirotor/multirotor_catalog.gd")
+	if ground_vehicle != null and ground_vehicle.get_script() == preload("res://vehicles/multirotor/multirotor_scene.gd"):
+		return true
+	var selected: Variant = home.get("activity_id") if home != null else null
+	return typeof(selected) == TYPE_STRING and not str(selected).is_empty() and MultirotorCatalog.contains(str(selected))
 
 
 func _controller_bindings(id: int, flight_context := false) -> Dictionary:
@@ -2593,7 +2724,7 @@ func close_natural_random() -> void:
 	if screens.is_top("natural_random"):
 		screens.pop()
 		if home_scene != null and home != null:
-			home_scene.request_aircraft(home.aircraft_id, home.livery_id) # UI-34c: Home shows its own selection again
+			home_scene.request_aircraft(home.selected_id(), home.livery_id) # UI-34c: Home shows its own selection again
 
 
 func _draw_random_scenario() -> void:
@@ -3691,6 +3822,9 @@ func _weather_keeping_saved_turbulence(aircraft_id: String, applied: Dictionary)
 ## Apply the latest menu selection once per event batch. Rebuilding the complete
 ## backdrop for intermediate selections stalls input without displaying those worlds.
 func _queue_home_scene_rebuild() -> void:
+	if home_build_pending:
+		_home_rebuild_after_build = true # UI-28-R5b: applied once the staged Home exists
+		return
 	if not is_instance_valid(home_scene):
 		return
 	_home_rebuild_source = weakref(home_scene)
@@ -3708,11 +3842,18 @@ func _flush_home_scene_rebuild() -> void:
 	_home_rebuild_source = null
 	# A flight or landscape transition may have already replaced this world.
 	if not _loading_active and source != null and source == home_scene and source.is_inside_tree():
-		_rebuild_home_scene()
+		if flight_loading_enabled and screens.is_top("home") \
+				and not source.can_refresh_presentation(field_path, landscape_id):
+			_rebuild_home_scene_staged() # UI-28-R5b: a deferred landscape change is staged too
+		else:
+			_rebuild_home_scene()
 
 
 ## Rebuild Home's single still world with its applied lighting after the old world leaves the tree.
 func _rebuild_home_scene() -> bool:
+	if home_build_pending:
+		_home_rebuild_after_build = true # UI-28-R5b: never replace a world that is being built
+		return true
 	if home_scene == null:
 		return false
 	var previous: Node3D = home_scene
@@ -3721,8 +3862,7 @@ func _rebuild_home_scene() -> bool:
 			return true
 	previous.retain_resources_on_exit = is_instance_valid(_home_flight_preparation)
 	remove_child(previous)
-	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id, _livery_for(aircraft))
+	var replacement: Node3D = HomeScene.new(_home_backdrop_vehicle(), field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id, _home_backdrop_livery())
 	if not replacement.field_errors.is_empty():
 		replacement.free()
 		add_child(previous)
@@ -3739,6 +3879,86 @@ func _rebuild_home_scene() -> bool:
 	previous.queue_free()
 	home_scene.camera.make_current()
 	return true
+
+
+## UI-28-R5b: the same rebuild for a landscape change on rendered routes, in World.build_staged stages
+## under a see-through loading surface instead of one frozen frame. The selection is already accepted.
+## The previous world stays visible (dimmed) until the replacement is ready; both were alive in the
+## synchronous rebuild too, which kept the previous world until the replacement existed. Rebuild requests
+## made meanwhile wait (_home_rebuild_after_build). If construction fails, the previous landscape is
+## selected again.
+func _rebuild_home_scene_staged() -> void:
+	var previous: Node3D = home_scene
+	if previous == null or home_build_pending or not is_inside_tree() or not screens.is_top("home"):
+		return
+	if previous.can_refresh_presentation(field_path, landscape_id):
+		_rebuild_home_scene() # a lighting-only refresh is already immediate
+		return
+	var old_landscape: String = previous.get("_source_landscape")
+	home_build_pending = true
+	var surface: CanvasLayer = FlightLoading.new(home.theme if home != null else null)
+	surface.name = "HomeLoading"
+	surface.configure_home(tr(Landscapes.entry(landscape_id).get("name", "")), true)
+	screens.push("loading", surface, null, false)
+	var close_surface := func() -> void:
+		if screens.is_top("loading") and ScreenStack._surface(screens.top()) == surface.surface:
+			screens.pop(true, true) # Home's control (the landscape selector) gets its focus back
+	_home_build_progress = surface.set_stage
+	_home_build_yield_usec = Time.get_ticks_usec()
+	await _flight_loading_draw() # the surface is visible before construction starts
+	var vehicle := _home_backdrop_vehicle()
+	var livery := _home_backdrop_livery()
+	var replacement: Node3D = null
+	var built: bool = is_inside_tree() and home_scene == previous
+	if built:
+		replacement = HomeScene.new(vehicle, field_path, preferences.lighting_config,
+			_night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id,
+			livery, true)
+		built = replacement.field_errors.is_empty()
+	if built:
+		var outcome: Variant = await replacement.build_world_staged(_home_build_checkpoint)
+		built = outcome is bool and outcome
+	if built:
+		var stage: Variant = await _home_build_checkpoint("Preparing aircraft", true) # before the indivisible build
+		built = stage is bool and stage
+	if not is_inside_tree() or home_scene != previous:
+		if is_instance_valid(replacement):
+			replacement.free()
+		close_surface.call()
+		_finish_home_build()
+		return
+	if not built:
+		if is_instance_valid(replacement):
+			replacement.free()
+		close_surface.call()
+		var cancelled := _home_build_cancelled
+		_finish_home_build()
+		if cancelled:
+			quit_app() # the close request that stopped construction takes the normal quit route
+			return
+		if home != null:
+			home.set_note(tr("Could not update Home lighting; the previous view remains active."))
+		_menu_feedback(&"reject")
+		if not old_landscape.is_empty() and old_landscape != landscape_id:
+			set_landscape(old_landscape) # the selection follows the view that remains (a fast refresh)
+		return
+	replacement.finish_construction()
+	previous.retain_resources_on_exit = is_instance_valid(_home_flight_preparation)
+	remove_child(previous)
+	home_scene = replacement
+	_connect_home_preview(home_scene)
+	add_child(home_scene)
+	move_child(home_scene, 0) # keep the backdrop beneath the Home controls
+	previous.queue_free()
+	home_scene.camera.make_current()
+	if home != null and (_home_backdrop_vehicle() != vehicle or _home_backdrop_livery() != livery):
+		home_scene.request_aircraft(_home_backdrop_vehicle(), _home_backdrop_livery()) # changed meanwhile
+	await _flight_loading_draw() # the new view's first draw stays behind the surface
+	close_surface.call()
+	var quit_requested := _home_build_cancelled
+	_finish_home_build()
+	if quit_requested:
+		quit_app()
 
 
 ## Landscape changes create a fresh Home world; a running flight keeps its accepted field and contacts.
@@ -3762,6 +3982,8 @@ func set_landscape(id: String) -> bool:
 	if _home_scene_preparation_busy():
 		# Accept the launch intent now; defer only resource-building the backdrop.
 		_queue_home_scene_rebuild()
+	elif flight_loading_enabled and not home_scene.can_refresh_presentation(field_path, landscape_id):
+		_rebuild_home_scene_staged() # UI-28-R5b: accepted now; built in stages under the loading surface
 	elif not _rebuild_home_scene():
 		landscape_id = old_id
 		field_path = old_path
@@ -3916,9 +4138,9 @@ func _commit_end_flight() -> bool:
 	flight = null
 	_flight_companions_available = false
 	_complete_exit_request()
-	show_home()
-	if home != null and not last_failure_status.is_empty():
-		home.set_failure_debrief(last_failure_status)
+	_return_home(func() -> void:
+		if home != null and not last_failure_status.is_empty():
+			home.set_failure_debrief(last_failure_status))
 	return true
 
 

@@ -25,7 +25,12 @@ const LINGER_S := 40.0
 const FADE_OUT_S := 18.0
 const MERGE_SHARE := 0.85
 const CELL := 0.1
+const SURFACE_CELL := 0.035
+const PIN_PATCH_MIN := 0.55
+const PIN_PATCH_SPAN := 0.9
 const GRID_SLOTS := 256
+## MultiMesh buffer floats per 2D instance with custom data: 8 transform + 4 custom.
+const BUFFER_STRIDE := 12
 
 const X := 0
 const Y := 1
@@ -48,15 +53,18 @@ var _gone := PackedByteArray()
 ## Set whenever a drop changed; write() skips the MultiMesh upload otherwise (paused or empty frames).
 var _dirty := true
 var _written_height := -1.0
+var _buffer := PackedFloat32Array()
+var _surface_seed := 0
 
 
-func configure(max_drops: int, seed: int, with_trails: bool) -> void:
+func configure(max_drops: int, stream: int, with_trails: bool) -> void:
 	capacity = maxi(max_drops, 0)
 	trails = with_trails
 	count = 0
 	_data.resize(capacity * STRIDE)
 	_data.fill(0.0)
-	_rng.seed = seed
+	_rng.seed = stream
+	_surface_seed = posmod(stream, 65521)
 	_grid_head.resize(GRID_SLOTS)
 	_grid_next.resize(capacity)
 	_gone.resize(capacity)
@@ -124,7 +132,10 @@ func poisson(mean: float) -> int:
 ## Advances the pool. `gravity` is gravity on the image plane (screen axes, |g| ≤ 1), `focus` the focus of expansion
 ## (screen space), `air` the shear strength (0 still, 1 ≈ 30 m/s), `lateral` a uniform sideways shear (screen axes),
 ## `raining` keeps drops from drying.
-func step(dt: float, aspect: float, gravity: Vector2, focus: Vector2, air: float, lateral: Vector2, raining: bool) -> void:
+## `inertia` is the camera's acceleration felt by the glass, as a pseudo-gravity on the image plane (g units): a punch-out,
+## a flip or a hard turn throws the drops against the motion, like gravity, in proportion to their mass.
+func step(dt: float, aspect: float, gravity: Vector2, focus: Vector2, air: float, lateral: Vector2, raining: bool,
+		inertia: Vector2 = Vector2.ZERO) -> void:
 	if dt <= 0.0 or count == 0:
 		return
 	_dirty = true
@@ -137,8 +148,10 @@ func step(dt: float, aspect: float, gravity: Vector2, focus: Vector2, air: float
 		var velocity := Vector2(_data[base + VX], _data[base + VY])
 		var away := position - focus
 		var radial := away.normalized() if away.length_squared() > 1e-8 else Vector2.ZERO
-		var force := gravity * GRAVITY_FORCE * rho * rho * rho + (radial * air + lateral) * AIR_FORCE * rho * rho
-		var pin := PIN_FORCE * rho
+		var force := (gravity + inertia) * GRAVITY_FORCE * rho * rho * rho + (radial * air + lateral) * AIR_FORCE * rho * rho
+		# Real glass is not uniform: dust and coating wear make the pinning patchy, so running drops stall and lurch
+		# (stick-slip) instead of gliding at a constant speed.
+		var pin := PIN_FORCE * rho * (PIN_PATCH_MIN + PIN_PATCH_SPAN * _surface(position))
 		var magnitude := force.length()
 		if magnitude > pin:
 			var net := force * ((magnitude - pin) / magnitude)
@@ -216,24 +229,49 @@ func volume() -> float:
 
 ## Writes the live drops into a 2D MultiMesh: a unit quad scaled to the drop, stretched and turned along its motion.
 ## Custom data: (elongation, opacity, seed, radius in pixels).
-func write(mesh: MultiMesh, height_px: float, raining: bool) -> void:
+## `gravity` (screen axes): a large drop held by pinning still sags along it into a pear shape.
+func write(mesh: MultiMesh, height_px: float, raining: bool, gravity: Vector2 = Vector2(0.0, 1.0)) -> void:
 	if not _dirty and is_equal_approx(height_px, _written_height):
 		return
 	_dirty = false
 	_written_height = height_px
 	var n := mini(count, mesh.instance_count)
+	# One buffer upload instead of two engine calls per drop. 2D layout per instance (no colours, custom data):
+	# x.x, y.x, 0, origin.x, x.y, y.y, 0, origin.y, then custom r, g, b, a.
+	if _buffer.size() != mesh.instance_count * BUFFER_STRIDE:
+		_buffer.resize(mesh.instance_count * BUFFER_STRIDE)
+		_buffer.fill(0.0)
 	for i in n:
 		var base := i * STRIDE
 		var r: float = _data[base + R]
-		var velocity := Vector2(_data[base + VX], _data[base + VY])
-		var speed := velocity.length()
+		var vx: float = _data[base + VX]
+		var vy: float = _data[base + VY]
+		var speed := sqrt(vx * vx + vy * vy)
 		var elongation := clampf(speed * 4.0, 0.0, 1.6)
-		var angle := velocity.angle() if speed > 1e-4 else _data[base + SEED] * TAU
+		var angle := atan2(vy, vx) if speed > 1e-4 else _data[base + SEED] * TAU
+		var sag := clampf((r / R0 - 0.9) * 0.18, 0.0, 0.35) * clampf(gravity.length(), 0.0, 1.0)
+		if sag > elongation and gravity.length_squared() > 0.01:
+			# At rest a heavy drop hangs: its body slides a little down the glass, the head stays pinned.
+			elongation = sag
+			angle = gravity.angle()
 		var diameter_px := 2.0 * r * height_px
-		var transform := Transform2D(angle, Vector2(diameter_px * (1.0 + elongation), diameter_px), 0.0,
-			Vector2(_data[base + X], _data[base + Y]) * height_px)
-		mesh.set_instance_transform_2d(i, transform)
-		mesh.set_instance_custom_data(i, Color(elongation, alpha(i, raining), _data[base + SEED], r * height_px))
+		var sx := diameter_px * (1.0 + elongation)
+		var c := cos(angle)
+		var s := sin(angle)
+		var o := i * BUFFER_STRIDE
+		_buffer[o] = c * sx
+		_buffer[o + 1] = -s * diameter_px
+		_buffer[o + 2] = 0.0
+		_buffer[o + 3] = _data[base + X] * height_px
+		_buffer[o + 4] = s * sx
+		_buffer[o + 5] = c * diameter_px
+		_buffer[o + 6] = 0.0
+		_buffer[o + 7] = _data[base + Y] * height_px
+		_buffer[o + 8] = elongation
+		_buffer[o + 9] = alpha(i, raining)
+		_buffer[o + 10] = _data[base + SEED]
+		_buffer[o + 11] = r * height_px
+	mesh.buffer = _buffer
 	mesh.visible_instance_count = n
 
 
@@ -300,6 +338,37 @@ func _merge() -> void:
 
 func _grid_slot(cx: int, cy: int) -> int:
 	return posmod(cx * 73856093 ^ cy * 19349663, GRID_SLOTS)
+
+
+## Smooth value noise in [0, 1] over the glass (cells of SURFACE_CELL screen heights), fixed per pool seed.
+func _surface(at: Vector2) -> float:
+	var gx := at.x / SURFACE_CELL
+	var gy := at.y / SURFACE_CELL
+	var ix := int(floorf(gx))
+	var iy := int(floorf(gy))
+	var fx := gx - float(ix)
+	var fy := gy - float(iy)
+	fx = fx * fx * (3.0 - 2.0 * fx)
+	fy = fy * fy * (3.0 - 2.0 * fy)
+	var a := _cell_noise(ix, iy)
+	var b := _cell_noise(ix + 1, iy)
+	var c := _cell_noise(ix, iy + 1)
+	var d := _cell_noise(ix + 1, iy + 1)
+	return lerpf(lerpf(a, b, fx), lerpf(c, d, fx), fy)
+
+
+func _cell_noise(ix: int, iy: int) -> float:
+	var h := (ix * 374761393 + iy * 668265263 + _surface_seed * 1274126177) & 0x7FFFFFFF
+	h = ((h ^ (h >> 13)) * 1274126177) & 0x7FFFFFFF
+	return float(h & 0xFFFF) / 65535.0
+
+
+## A drop striking the lens at speed breaks into a crown: a few satellite beads thrown around it.
+func splash(x: float, y: float, radius: float, beads: int) -> void:
+	for k in beads:
+		var angle := _rng.randf() * TAU
+		var distance := radius * _rng.randf_range(1.6, 3.2)
+		spawn(x + cos(angle) * distance, y + sin(angle) * distance, radius * _rng.randf_range(0.18, 0.35))
 
 
 static func _square(x: float) -> float:

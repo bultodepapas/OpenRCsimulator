@@ -60,6 +60,15 @@ func settle() -> void:
 		await process_frame
 
 
+## UI-28-R5b: a rendered landscape change builds Home in stages under its loading surface.
+func settle_home(app: Node) -> void:
+	for _i in 3000:
+		if not app.home_build_pending:
+			break
+		await process_frame
+	await settle()
+
+
 func wait_loading_idle(app: Node) -> bool:
 	for _i in 1500:
 		if not app._loading_active:
@@ -106,6 +115,7 @@ func _run() -> void:
 		for row: Array in cases:
 			app.set_aircraft(row[0])
 			app.set_landscape(row[1])
+			await settle_home(app)
 			app.home.set_start_choice(row[2])
 			await settle()
 			var name := "%s %s %s %s" % [locale, row[0], row[1], row[2]]
@@ -132,6 +142,7 @@ func _run() -> void:
 	TranslationServer.set_locale("en")
 	app.set_aircraft("xcell-60-research")
 	app.set_landscape("club_field")
+	await settle_home(app)
 	app.home.set_start_choice("runway")
 	await settle()
 	app.random_seed_source = func() -> int: return 12345

@@ -26,6 +26,7 @@ const WindFieldLaw := preload("res://physics/wind_field.gd")
 const WindSettings := preload("res://physics/wind_config.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const Track := preload("res://sim/race/track.gd")
+const AirfieldTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
 const RaceModel := preload("res://sim/race/race_model.gd")
 const RaceDirector := preload("res://sim/race/race_director.gd")
 
@@ -106,7 +107,7 @@ func _init() -> void:
 static func default_options() -> Dictionary:
 	return {data_path = DEFAULT_DATA, rates = {}, throttle_policy = "absolute", start = "pad", altitude_m = 3.0,
 		north_offset_m = 12.0, east_offset_m = 0.0, heading_deg = 0.0, wind_speed_mps = 0.0, wind_from_deg = 0.0,
-		initial_soc = -1.0, source_generation = 0, throttle_limit = 1.0, race_track = ""}
+		initial_soc = -1.0, source_generation = 0, throttle_limit = 1.0, race_track = "", rc_track = {}}
 
 
 ## Build every derived object detached, then replace the running configuration. Refusal keeps the old session,
@@ -222,6 +223,14 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	var candidate_env := SimEnvironment.new()
 	candidate_env.surfaces = surfaces
 	candidate_env.weather = built_weather.field
+	# RC-TRACK: the club field's RC car circuit, when the pilot shows it, is solid relief for the quad as for the
+	# airplanes and cars (the same float64 overlay on the field terrain); {} keeps the plain field.
+	if typeof(opts.get("rc_track")) != TYPE_DICTIONARY:
+		return _refused("option rc_track must be the RC circuit or empty")
+	if not opts.rc_track.is_empty():
+		if not AirfieldTrack.valid(opts.rc_track) or not AirfieldTrack.matches_field(field):
+			return _refused("option rc_track is not a valid circuit for this field")
+		candidate_env.terrain_overlay = opts.rc_track
 	# Start pose: the pilot station plus the option offsets, on the terrain under it.
 	var pilot: Dictionary = field.get("pilot", {north = 0.0, east = 0.0, down = 0.0})
 	var north := float(pilot.north) + float(opts.north_offset_m)

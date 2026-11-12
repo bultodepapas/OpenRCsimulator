@@ -50,3 +50,44 @@ A read-only Good Enemy review found four defects in the first candidate. All are
 Not changed: the 12 ms yield budget was measured on a 120 Hz display only. At 60 Hz VSync each yield can cost up to one refresh, so time to Home there is unmeasured.
 
 Open: exported-package check, Forward+ comparison, macOS RD launch with a pending guard marker, and owner visual review on the target display.
+
+## UI-28-R5b — returning to Home and changing landscape (2026-11-12)
+
+**Problem.** End flight, End ground vehicle and a landscape change in Home each rebuilt Home synchronously. The last frame stayed frozen and the menu ignored input. A windowed scratch probe timed `HomeScene.new()` for the club field at 3.7 s cold and 1.8 s warm, and for green paradise at 0.5 s.
+
+**Behavior.**
+
+- **Shared surface.** On rendered routes these three paths push the flight loading surface in Home mode (`configure_home`). It has the title "Preparing home…", the landscape as summary and no Cancel, because the activity has already ended. Construction follows the same `World.build_staged` stages as the startup through the shared `_build_home_staged`, or `_rebuild_home_scene_staged` for a landscape change.
+- **Landscape change.** The change is accepted at once, as the existing busy-preparation branch already did. The surface is see-through: the previous view stays visible, dimmed to 80 % atmosphere, under a solid card that fades in over 0.18 s. A short rebuild therefore reads as a transition, not a full-screen flash. The synchronous rebuild also kept the previous world alive until the replacement existed, so peak memory is unchanged. Focus returns to the landscape selector. If construction fails, the previous landscape is selected again through the immediate refresh path.
+- **Requests during a build.** Rebuild requests made during a build (time of day, sky, a queued landscape) are recorded and applied once the build ends. A vehicle or livery changed meanwhile is requested on the new world. Flights, ground vehicles, the blimp and the quad cannot start while Home is being built. A landscape change deferred by Home's flight preparation is staged too.
+- **Stage text.** Both surfaces keep the top-level stage on a stable line and show sub-stages ("Near grass", "Building field scenery") on a dimmer line beneath. The text no longer flickers through chunk names several times a second.
+- **Skip.** The intro hides Skip once Home is being prepared, because nothing is left to skip. Skip inputs are still held.
+- **Headless and tooling.** Headless routes stay synchronous. Rendered routes yield through `_flight_loading_draw()`, so tests that enable the rendered path in headless mode do not wait for draws that never come. `start_flight` refuses while Home is being built. The debug bridge's `home` and `setup` commands wait for the staged Home instead of failing after 120 frames.
+
+**Measurements** (debug-bridge session at 1920×1080 on the reference host):
+
+| Transition | Before | After |
+| --- | --- | --- |
+| End flight → Home | one synchronous block (≈1.8 s warm build, plus menu and first draw) | 2.5 s with the surface animated; longest frame 716 ms. Repeated three times: 0 orphans, node count unchanged |
+| Landscape → club field | 1.8–3.7 s frozen Home | Surface animated; longest frame 447 ms |
+| Landscape → green paradise | 0.5 s frozen Home | Surface for about 0.8 s; longest frame 432 ms |
+| Landscape → club field (see-through) | as above | 2.6 s with the dimmed view and solid card; longest frame 555 ms; focus back on the selector |
+
+**Independent review.** A second read-only review found these defects; all are fixed.
+
+- **P1.** A time-of-day change landing during a landscape build ran the synchronous rebuild and left the opaque surface up for good. Rebuild requests now wait for the build.
+- **P2.** Lost keyboard and controller focus after a landscape change.
+- **P2.** Selection changes dropped during a build.
+- **P3.** A quit during the return route skipped draining Home's preparation workers.
+- **P3.** A failed landscape build left the selection on the new landscape.
+- **P3.** Vehicle routes could start mid-build.
+- **UX.** A full-screen flash for a 0.5 s rebuild, answered with the see-through mode.
+
+**Verification.**
+
+- New `test_home_staged_routes.gd` (12 checks) drives the rendered routes headless:
+  - a landscape change with a time-of-day request in flight;
+  - focus restoration;
+  - a return from an activity with its debrief after Home exists;
+  - a close request during a build.
+- `test_loading_start_label.gd` now waits for the staged landscape before flying, as a player would.

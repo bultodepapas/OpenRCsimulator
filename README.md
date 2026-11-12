@@ -195,7 +195,7 @@ Handling, takeoffs/landings, controller compatibility and target-machine perform
     <td width="33%" align="center" valign="top">
       <a href="research/rc-monster-truck/README.md"><img src="docs/media/studio-mt8-bisonte.png" alt="Bisonte MT8 RC monster truck, studio model view" width="288"></a><br>
       <a href="research/rc-monster-truck/README.md"><strong>Bisonte MT8</strong></a><br>
-      A separate RC garage and driving course, with keyboard or gamepad controls.
+      Selectable in Home beside the aircraft, with its own driving course and keyboard or gamepad controls.
     </td>
     <td width="33%" align="center" valign="top">
       <a href="research/rc-monster-truck/README.md"><img src="docs/media/studio-monster-car-2.png" alt="MONSTER CAR 2 RC truck, studio model view" width="288"></a><br>
@@ -205,7 +205,7 @@ Handling, takeoffs/landings, controller compatibility and target-machine perform
   </tr>
 </table>
 
-The advanced HX-700 helicopter candidate remains a laboratory project. The RC Garage also offers an experimental [5 m RC blimp](docs/research/rc-airship/BL-12/README.md) and [FPV quad with a local three-lap gate race](docs/research/drone-racing/M1-M3-2026-11-11/README.md). Their flight models use estimated data; physical, pilot and target-hardware qualification remain open.
+The advanced HX-700 helicopter candidate remains a laboratory project. Home's vehicle catalog also offers an experimental [5 m RC blimp](docs/research/rc-airship/BL-12/README.md) and [FPV quad with a local three-lap gate race](docs/research/drone-racing/M1-M3-2026-11-11/README.md). Their flight models use estimated data; physical, pilot and target-hardware qualification remain open.
 
 ## Roadmap and donations
 

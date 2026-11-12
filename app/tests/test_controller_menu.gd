@@ -199,6 +199,9 @@ func _run() -> void:
 	await button(JOY_BUTTON_B)
 	check("wizard cancel restores the uncommitted Controls draft", session.calibration == null and session.radio.profile.kind == "gamepad" and app.screens.is_top("controls") and session.sim.paused)
 	setup.request_close()
+	# UI-15-UX-02b: the changed draft (radio selected) asks first; Discard closes like before.
+	check("closing a changed draft asks before discarding", setup.unsaved_dialog != null and setup.unsaved_dialog.visible and app.screens.is_top("controls"))
+	setup._unsaved_discard_button.pressed.emit()
 	check("closing the draft restores Pause without resuming", app.screens.is_top("pause") and session.sim.paused)
 	app.pause_menu.exit_options_button.grab_focus()
 	await button(JOY_BUTTON_A) # reveal End inside Exit options

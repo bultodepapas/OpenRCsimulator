@@ -4,6 +4,7 @@ extends Node
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const HX700 := preload("res://aircraft/hx700_model.gd")
+const VehiclePreview := preload("res://ui/home_vehicle_preview.gd")
 const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const ModelOverlay := preload("res://aircraft/model_overlay_registry.gd")
 const RESOURCE_LIMIT := 2
@@ -21,6 +22,8 @@ func _init() -> void:
 ## Only a loading hint. The normal builder still checks all provenance and data.
 ## `livery` names a non-default paint scheme (F4U-16); its own GLB is preloaded instead of the default asset.
 static func path_for(id: String, livery := "") -> String:
+	if VehiclePreview.handles(id): # UI-39: RC cars, FPV quad and RC blimp (livery = the blimp skin)
+		return VehiclePreview.resource_path(id, livery)
 	if Catalog.is_rotorcraft(id):
 		return HX700.SCENE_PATH if id == "xcell-60-research" else ""
 	var family := Catalog.visual_family(id)

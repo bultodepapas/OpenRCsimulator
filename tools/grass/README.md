@@ -58,7 +58,7 @@ New-Item -ItemType Directory tmp/grass-pack-new/empty
 
 The checker mounts the pack itself, loads grass resources and compares them with the source project's imported textures. It does not start the packaged application's native extensions or qualify GPU output. Check the export and probe logs as well as exit codes.
 
-`check_lifecycle.gd` exercises the actual Home buttons, fixed-wing End flight and both RC garage routes using private preferences. It checks rendered surface bindings, scene-owned material isolation, source geometry, released scene references and stable node/object counts. It captures only the first cycle's four startup/paused views, not driving or flight acceptance:
+`check_lifecycle.gd` exercises the actual Home buttons, fixed-wing End flight and both RC car routes (Home Vehicles catalog, then DRIVE) using private preferences. It checks rendered surface bindings, scene-owned material isolation, source geometry, released scene references and stable node/object counts. It captures only the first cycle's four startup/paused views, not driving or flight acceptance:
 
 ```powershell
 & .tools/Godot_v4.8-beta2_win64_console.exe --path app `

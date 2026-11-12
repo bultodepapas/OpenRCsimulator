@@ -9,7 +9,7 @@ const RadioMenu := preload("res://input/radio_menu.gd")
 const FORMAT := "openrc-controller-diagnostics v1"
 const LOCK_SUFFIX := ".openrc-controller-diagnostics-lock"
 const CHANNELS := ["roll", "pitch", "yaw", "throttle"]
-const ACTIVITY_CAPABILITIES := ["gear", "smoke", "flaps", "rates", "helicopter"]
+const ACTIVITY_CAPABILITIES := ["gear", "smoke", "flaps", "rates", "helicopter", "multirotor"]
 const TRANSPORTS := ["usb", "bluetooth", "wireless", "wired"]
 const LAYOUTS := ["classic", "advanced", "gamepad", "joystick", "unknown"]
 

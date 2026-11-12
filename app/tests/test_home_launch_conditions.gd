@@ -232,8 +232,6 @@ func check_tab_cycle(h: Control, ui: RefCounted, page: int, notice: bool, blocke
 			expected.append_array([h._catalog_buttons[0], h._catalog_buttons[-1]])
 		2:
 			expected.append_array([h.statistics_button, h.natural_random_button, h.failures_button, h.trim_practice_button])
-		3:
-			expected.append_array([h.ground_vehicle_choice, h.ground_vehicle_button])
 	if notice:
 		expected.append(h._scroll)
 	var missing := PackedStringArray()
@@ -260,7 +258,7 @@ func run() -> void:
 		focus_home.theme = UiTheme.build()
 		root.add_child(focus_home)
 		await frames(8)
-		for page in range(4):
+		for page in range(focus_home._pages.size()):
 			for notice in [false, true]:
 				await check_tab_cycle(focus_home, ui, page, notice, false, false)
 				await check_tab_cycle(focus_home, ui, page, notice, false, true)
@@ -312,10 +310,13 @@ func run() -> void:
 			check("supported correction enables Fly",not h.fly_button.disabled and not h.launch_warning.visible and not h.review_conditions_button.visible)
 			h.cancel_start()
 			check("cancel message differs from failure",h.note_label.text == h.tr("Flight preparation cancelled.") and h.fly_button.has_focus())
-			h._select_page(3)
+			# UI-39: with an RC vehicle selected the same pinned action starts it; focus still falls back to it.
+			h.set_activity("openrc-fpv5-x1")
+			h._select_page(1)
 			h.get_viewport().gui_release_focus()
 			h.ensure_focus()
-			check("Garage has visible fallback focus",h.ground_vehicle_button.has_focus())
+			check("a selected RC vehicle keeps visible fallback focus on Fly", h.fly_button.has_focus() and not h.fly_button.disabled
+				and not h.launch_warning.visible)
 			h.free()
 			await frames(1)
 	# Long catalog descriptions must also fit when the 200% detail card is widened.

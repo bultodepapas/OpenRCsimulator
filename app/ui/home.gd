@@ -1,6 +1,9 @@
-# Home screen (UI-25): focused flight setup, separate practice/garage/details pages, pinned Fly and utility bar.
-# The selected aircraft and field remain the visual backdrop (ui/home_scene.gd). The catalog owns availability; an
+# Home screen (UI-25): focused flight setup, separate vehicle catalog/practice/details pages, pinned Fly and utility bar.
+# The selected vehicle and field remain the visual backdrop (ui/home_scene.gd). The catalog owns availability; an
 # aircraft can be previewed without being flyable. Containers keep the sidebar usable when text or the viewport grows.
+# UI-39: the catalog lists the stock aircraft and then the other RC vehicles (app_state/vehicle_roster.gd: FPV quad,
+# RC blimp, RC cars), selected like any aircraft; Fly starts them as their own activities. `aircraft_id` always keeps
+# the last aircraft for aircraft-only systems; `activity_id` is the selected non-aircraft vehicle ("" for none).
 # Texts are English source
 # strings: Labels and Buttons translate themselves when the locale changes (res://i18n/*.po); sentences built at
 # runtime use tr() and are rebuilt on NOTIFICATION_TRANSLATION_CHANGED. Proper names are never translated.
@@ -23,7 +26,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
-const MultirotorCatalog := preload("res://vehicles/multirotor/multirotor_catalog.gd")
+const Roster := preload("res://app_state/vehicle_roster.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const OutOfTrim := preload("res://sim/out_of_trim.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
@@ -36,11 +39,14 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 signal fly_requested
 ## Actual launch setup changed; repeated setters do not restart idle preparation.
 signal launch_setup_changed
+## UI-39: Fly with an RC car selected (ground_vehicle_id).
 signal ground_vehicle_requested
-## BL-10: the experimental RC blimp, with the skin selected in airship_skin_id.
+## BL-10, UI-39: Fly with the experimental RC blimp selected, with the skin in airship_skin_id.
 signal airship_requested
-## DR-36a: the experimental FPV quad (MultirotorCatalog.ID).
+## DR-36a, UI-39: Fly with the experimental FPV quad selected.
 signal multirotor_requested
+## UI-39: the player chose a non-aircraft vehicle (a roster id); the owner remembers it and calls set_activity().
+signal activity_requested(id: String)
 signal workshop_requested(from: Control)
 signal natural_random_requested(from: Control)
 signal failures_requested(from: Control)
@@ -120,23 +126,11 @@ var livery_preview_cache: Dictionary = {} # small UI textures for the current ai
 var _livery_preferences: Dictionary = {}
 
 var fly_button: Button
-var ground_vehicle_button: Button
-var ground_vehicle_choice: OptionButton
+## UI-39: the selected non-aircraft vehicle (a Roster activity id), "" while an aircraft is selected.
+var activity_id := ""
+## The RC car Fly drives (the last car selected) and the blimp skin it flies (its "paint").
 var ground_vehicle_id := GroundCatalog.DEFAULT_ID
-var airship_skin_id := AirshipCatalog.DEFAULT_SKIN:
-	set(value):
-		airship_skin_id = value
-		_refresh_garage_choice()
-## True when the Garage choice holds an RC blimp skin; the Garage action then flies the blimp.
-var airship_selected := false:
-	set(value):
-		airship_selected = value
-		_refresh_garage_choice()
-## True when the Garage choice holds the FPV quad; the Garage action then flies it. Takes precedence over the blimp.
-var multirotor_selected := false:
-	set(value):
-		multirotor_selected = value
-		_refresh_garage_choice()
+var airship_skin_id := AirshipCatalog.DEFAULT_SKIN
 var workshop_button: Button
 var natural_random_button: Button
 var failures_button: Button
@@ -311,13 +305,12 @@ func _init() -> void:
 	_left_layout.add_child(nav)
 	var flight_nav := _nav_button("Flight", "Flight", 0)
 	nav.add_child(flight_nav)
-	var aircraft_nav := _nav_button("Aircraft", "Aircraft", 1)
+	# UI-39: the catalog page lists every vehicle; the former RC garage page is gone (node name kept for tools).
+	var aircraft_nav := _nav_button("Vehicles", "Aircraft", 1)
 	nav.add_child(aircraft_nav)
 	var practice_nav := _nav_button("Practice", "Practice", 2)
 	nav.add_child(practice_nav)
-	var garage_nav := _nav_button("RC garage", "Garage", 3)
-	nav.add_child(garage_nav)
-	# UI-33 (UI-30 HN-2): the four destinations above are pages; Workshop opens its own editor, last and marked.
+	# UI-33 (UI-30 HN-2): the destinations above are pages; Workshop opens its own editor, last and marked.
 	workshop_button = _button("Workshop", "HomeNav")
 	workshop_button.name = "Workshop"
 	workshop_button.custom_minimum_size.y = 38
@@ -363,10 +356,10 @@ func _init() -> void:
 	aircraft_count_label.name = "AircraftCount"
 	heading.add_child(aircraft_count_label)
 	previous_button = _arrow_button("PreviousAircraft", "left")
-	previous_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.player_step(aircraft_id, -1)))
+	previous_button.pressed.connect(_step_vehicle.bind(-1))
 	heading.add_child(previous_button)
 	next_button = _arrow_button("NextAircraft", "right")
-	next_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.player_step(aircraft_id, 1)))
+	next_button.pressed.connect(_step_vehicle.bind(1))
 	heading.add_child(next_button)
 	flight_page.add_child(heading)
 	var flight_card := PanelContainer.new()
@@ -530,8 +523,8 @@ func _init() -> void:
 	aircraft_page.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_page_host.add_child(aircraft_page)
 	_pages.append(aircraft_page)
-	aircraft_page.add_child(_label("AIRCRAFT CATALOG", "SectionTitle"))
-	var catalog_intro := _label("Choose a model for the next flight.", "SecondaryLabel")
+	aircraft_page.add_child(_label("VEHICLE CATALOG", "SectionTitle"))
+	var catalog_intro := _label("Choose a vehicle for the next session.", "SecondaryLabel")
 	catalog_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	catalog_intro.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aircraft_page.add_child(catalog_intro)
@@ -570,10 +563,15 @@ func _init() -> void:
 	catalog_list.name = "AircraftCatalog"
 	catalog_list.add_theme_constant_override("separation", 6)
 	aircraft_page.add_child(catalog_list)
-	for entry: Dictionary in Catalog.player_entries():
-		var id: String = entry.id
+	for id: String in Roster.ids():
+		var entry: Dictionary = Roster.entry(id)
+		var activity := Roster.is_activity(id)
+		if activity and _catalog_ids.size() == Catalog.player_ids().size():
+			var group := _label("OTHER RC VEHICLES", "SectionLabel")
+			group.name = "OtherVehiclesHeading"
+			catalog_list.add_child(group)
 		var item := _button("", "HomeAction")
-		item.name = "Aircraft_%s" % id.replace("-", "_")
+		item.name = ("Vehicle_%s" if activity else "Aircraft_%s") % id.replace("-", "_")
 		item.toggle_mode = true
 		item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		item.custom_minimum_size.y = 54
@@ -591,7 +589,7 @@ func _init() -> void:
 		item.add_theme_color_override("font_pressed_color", UiTheme.FOCUS)
 		item.add_theme_color_override("font_hover_pressed_color", UiTheme.FOCUS)
 		item.tooltip_text = "%s\n%s" % [tr(entry.summary), tr(entry.status_note)]
-		item.pressed.connect(_request_aircraft.bind(id))
+		item.pressed.connect(_request_vehicle.bind(id))
 		catalog_list.add_child(item)
 		_catalog_buttons.append(item)
 		_catalog_ids.append(id)
@@ -665,43 +663,6 @@ func _init() -> void:
 	trim_practice_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	practice_page.add_child(trim_practice_summary_label)
 
-	var garage_page := VBoxContainer.new()
-	garage_page.name = "GaragePage"
-	garage_page.add_theme_constant_override("separation", 6)
-	garage_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	garage_page.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_page_host.add_child(garage_page)
-	_pages.append(garage_page)
-	garage_page.add_child(_label("RC garage", "SectionTitle"))
-	var garage_intro := _label("Select a vehicle before opening the garage.", "SecondaryLabel")
-	garage_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	garage_page.add_child(garage_intro)
-	ground_vehicle_choice = OptionButton.new()
-	ground_vehicle_choice.name = "GroundVehicleChoice"
-	ground_vehicle_choice.tooltip_text = "RC car"
-	ground_vehicle_choice.fit_to_longest_item = false
-	ground_vehicle_choice.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	ground_vehicle_choice.custom_minimum_size.y = 40
-	ground_vehicle_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	# BL-10: the experimental RC blimp shares the Garage choice; its skins follow the RC cars. DR-36a: then the FPV quad.
-	for entry: Dictionary in _garage_entries():
-		match entry.family:
-			GARAGE_CAR: ground_vehicle_choice.add_item(GroundCatalog.entry(entry.id).name)
-			GARAGE_BLIMP: ground_vehicle_choice.add_item("%s — %s" % [tr("RC blimp (experimental)"), AirshipCatalog.SKINS[entry.id].name])
-			GARAGE_MULTIROTOR: ground_vehicle_choice.add_item(tr(MultirotorCatalog.DISPLAY_NAME))
-	ground_vehicle_choice.select(_garage_index())
-	ground_vehicle_choice.item_selected.connect(_select_garage_vehicle)
-	garage_page.add_child(ground_vehicle_choice)
-	ground_vehicle_button = _button(_garage_action_text(), "CompactPrimaryButton")
-	ground_vehicle_button.name = "GroundVehicles"
-	ground_vehicle_button.custom_minimum_size.y = 56
-	ground_vehicle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	ground_vehicle_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	ground_vehicle_button.pressed.connect(func() -> void:
-		if multirotor_selected: multirotor_requested.emit()
-		elif airship_selected: airship_requested.emit()
-		else: ground_vehicle_requested.emit())
-
 	var primary_actions := VBoxContainer.new()
 	primary_actions.name = "PrimaryActions"
 	primary_actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -743,7 +704,6 @@ func _init() -> void:
 	_fly_caption.visible = false
 	primary_actions.add_child(_fly_caption)
 	primary_actions.add_child(fly_button)
-	primary_actions.add_child(ground_vehicle_button)
 	# Long translated labels wrap as whole buttons while preserving the text size.
 	var utility_row := HFlowContainer.new()
 	utility_row.name = "HomeUtilities"
@@ -808,8 +768,8 @@ func _build_catalog_detail() -> void:
 func _update_catalog_detail() -> void:
 	if _catalog_detail == null:
 		return
-	var shown_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else aircraft_id
-	var entry: Dictionary = Catalog.entry(shown_id)
+	var shown_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else selected_id()
+	var entry: Dictionary = Roster.entry(shown_id)
 	_detail_name_label.text = tr(entry.get("name", ""))
 	_detail_capability_label.text = tr("Flyable") if entry.get("status") == Catalog.FLYABLE \
 		else tr("Experimental") if entry.get("status") == Catalog.EXPERIMENTAL else tr("Preview only")
@@ -838,8 +798,8 @@ func _nav_button(label: String, node_name: String, page_index: int) -> Button:
 	return button
 
 
-func _request_aircraft(id: String) -> void:
-	if not Catalog.is_player_selectable(id):
+func _request_vehicle(id: String) -> void:
+	if not Roster.has(id):
 		return
 	id = Catalog.canonical_id(id)
 	_requested_aircraft_id = id
@@ -849,7 +809,40 @@ func _request_aircraft(id: String) -> void:
 		_catalog_buttons[selected_index].grab_focus()
 	if is_inside_tree() and _pages[1].visible:
 		_schedule_selected_aircraft_reveal()
-	aircraft_requested.emit(id)
+	_emit_vehicle_request(id)
+
+
+## UI-39: the Flight page arrows step through every vehicle, aircraft first.
+func _step_vehicle(delta: int) -> void:
+	var id := Roster.step(selected_id(), delta)
+	if not id.is_empty():
+		_emit_vehicle_request(id)
+
+
+func _emit_vehicle_request(id: String) -> void:
+	if Roster.is_activity(id):
+		activity_requested.emit(id)
+	else:
+		aircraft_requested.emit(id)
+
+
+## The selected vehicle: the activity when one is selected, else the aircraft.
+func selected_id() -> String:
+	return activity_id if not activity_id.is_empty() else aircraft_id
+
+
+## True when Fly launches an ordinary airplane flight (not a helicopter or another RC vehicle).
+func _airplane_selected() -> bool:
+	return activity_id.is_empty() and not Catalog.is_rotorcraft(aircraft_id)
+
+
+func _selection_can_launch() -> bool:
+	return not activity_id.is_empty() or Catalog.can_fly(aircraft_id)
+
+
+## The pinned action: cars drive, everything else flies.
+func _fly_text() -> String:
+	return "DRIVE" if Roster.family(activity_id) == Roster.GROUND else "FLY"
 
 
 static func _gradient_rect(rect_name: String, vertical: bool) -> TextureRect:
@@ -877,15 +870,15 @@ static func _gradient_rect(rect_name: String, vertical: bool) -> TextureRect:
 func _update_catalog_texts() -> void:
 	_update_catalog_detail()
 	_update_launch_caption()
-	var selected_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else aircraft_id
+	var shown_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else selected_id()
 	for index in _catalog_ids.size():
 		var id: String = _catalog_ids[index]
 		var item := _catalog_buttons[index]
-		var entry: Dictionary = Catalog.entry(id)
+		var entry: Dictionary = Roster.entry(id)
 		var capability := tr("Flyable") if entry.status == Catalog.FLYABLE else tr("Experimental") if entry.status == Catalog.EXPERIMENTAL else tr("Preview only")
-		item.text = "%s\n%s" % [tr(Catalog.short_name(id)), capability]
+		item.text = "%s\n%s" % [tr(Roster.short_name(id)), capability]
 		item.tooltip_text = "%s\n%s\n%s" % [tr(entry.name), tr(entry.summary), tr(entry.status_note)]
-		item.set_pressed_no_signal(id == selected_id)
+		item.set_pressed_no_signal(id == shown_id)
 
 
 
@@ -893,18 +886,19 @@ func _update_catalog_texts() -> void:
 func _update_launch_caption() -> void:
 	if _fly_caption == null or start_button == null:
 		return
+	var next := tr("Next drive: %s") if Roster.family(activity_id) == Roster.GROUND else tr("Next flight: %s")
 	_fly_caption.text = "%s\n%s · %s" % [
-		tr("Next flight: %s") % _aircraft_display_name(),
+		next % _aircraft_display_name(),
 		tr(Landscapes.entry(landscape_id).name), start_button.text]
 
 
 ## UI-34b (UI-30 AS-9, SP-7): the catalog's one-line name; the full name stays in the tooltip and the details card.
 func _aircraft_display_name() -> String:
-	return tr(Catalog.short_name(aircraft_id))
+	return tr(Roster.short_name(selected_id()))
 
 
 func _update_flight_capability() -> void:
-	var entry: Dictionary = Catalog.entry(aircraft_id)
+	var entry: Dictionary = Roster.entry(selected_id())
 	if entry.status == Catalog.FLYABLE:
 		_flight_status_label.text = tr("Flyable")
 	elif entry.status == Catalog.EXPERIMENTAL:
@@ -930,7 +924,7 @@ func _ready() -> void:
 	get_viewport().gui_focus_changed.connect(_on_gui_focus_changed)
 	_apply_responsive_layout()
 	_select_page(0)
-	var page_first_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button, ground_vehicle_choice]
+	var page_first_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button]
 	for index in _page_buttons.size():
 		var tab := _page_buttons[index]
 		tab.focus_neighbor_top = tab.get_path_to(_page_buttons[posmod(index - 1, _page_buttons.size())])
@@ -962,74 +956,11 @@ func _ready() -> void:
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
-	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
-	ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
-	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(ground_vehicle_choice)
-	ground_vehicle_button.focus_previous = ground_vehicle_button.get_path_to(ground_vehicle_choice)
-	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(controls_button)
-	ground_vehicle_button.focus_next = ground_vehicle_button.get_path_to(controls_button)
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_update_texts()
 	# Keyboard focus starts on Fly and remains usable when the selected aircraft is preview-only.
 	(review_conditions_button if review_conditions_button.visible else fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
 	set_process(true)
-
-
-const GARAGE_CAR := "car"
-const GARAGE_BLIMP := "blimp"
-const GARAGE_MULTIROTOR := "multirotor"
-
-
-## The Garage choice in display order: RC cars, blimp skins, then the FPV quad, as {family, id}.
-static func _garage_entries() -> Array[Dictionary]:
-	var entries: Array[Dictionary] = []
-	for id: String in GroundCatalog.IDS:
-		entries.append({family = GARAGE_CAR, id = id})
-	for id: String in AirshipCatalog.SKIN_IDS:
-		entries.append({family = GARAGE_BLIMP, id = id})
-	entries.append({family = GARAGE_MULTIROTOR, id = MultirotorCatalog.ID})
-	return entries
-
-
-func _garage_index() -> int:
-	var family := GARAGE_MULTIROTOR if multirotor_selected else (GARAGE_BLIMP if airship_selected else GARAGE_CAR)
-	var id := MultirotorCatalog.ID if multirotor_selected else (airship_skin_id if airship_selected else ground_vehicle_id)
-	var entries := _garage_entries()
-	var first_of_family := -1
-	for i in entries.size():
-		if entries[i].family == family:
-			if entries[i].id == id:
-				return i
-			if first_of_family < 0:
-				first_of_family = i
-	return maxi(0, first_of_family)
-
-
-func _select_garage_vehicle(index: int) -> void:
-	var entries := _garage_entries()
-	if index < 0 or index >= entries.size():
-		return
-	var entry: Dictionary = entries[index]
-	match entry.family:
-		GARAGE_CAR: ground_vehicle_id = entry.id
-		GARAGE_BLIMP: airship_skin_id = entry.id
-	multirotor_selected = entry.family == GARAGE_MULTIROTOR
-	airship_selected = entry.family == GARAGE_BLIMP
-	_refresh_garage_choice()
-
-
-func _garage_action_text() -> String:
-	if multirotor_selected:
-		return "Fly FPV quad"
-	return "Fly RC blimp" if airship_selected else "Open RC car garage"
-
-
-## Keeps the Garage choice and its action in step with selections assigned after the page was built.
-func _refresh_garage_choice() -> void:
-	if ground_vehicle_choice != null and ground_vehicle_choice.selected != _garage_index():
-		ground_vehicle_choice.select(_garage_index())
-	if ground_vehicle_button != null:
-		ground_vehicle_button.text = _garage_action_text()
 
 
 func _select_page(index: int) -> void:
@@ -1048,8 +979,6 @@ func _select_page(index: int) -> void:
 	_page_host.queue_sort()
 	_scroll.queue_sort()
 	_scroll.scroll_vertical = 0
-	fly_button.visible = selected != 3
-	ground_vehicle_button.visible = selected == 3
 	_fly_caption.visible = selected == 1 or selected == 2
 	_update_failure_summary()
 	_update_launch_admission()
@@ -1060,19 +989,16 @@ func _select_page(index: int) -> void:
 		_schedule_selected_aircraft_reveal()
 	# Focus stays on the selected destination's content; it never skips into another section.
 	if is_inside_tree():
-		var primary_action: Control = ground_vehicle_button if selected == 3 else review_conditions_button if review_conditions_button.visible else fly_button
-		var action_previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
+		var primary_action: Control = review_conditions_button if review_conditions_button.visible else fly_button
+		var action_previous: Control = start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
 		primary_action.focus_neighbor_top = primary_action.get_path_to(action_previous)
 		if selected == 0 and not fly_button.disabled:
 			start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
-		var catalog_selection := maxi(0, _catalog_ids.find(aircraft_id))
-		var first_controls: Array[Control] = [previous_button, _catalog_buttons[catalog_selection], natural_random_button, ground_vehicle_choice]
+		var catalog_selection := maxi(0, _catalog_ids.find(selected_id()))
+		var first_controls: Array[Control] = [previous_button, _catalog_buttons[catalog_selection], natural_random_button]
 		_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(first_controls[selected])
 		if selected == 1 and livery_button.is_visible_in_tree():
 			_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(livery_button)
-		if selected == 3:
-			ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
-			ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
 		if has_focus():
 			_page_buttons[selected].grab_focus()
 		_update_notice_focus_links()
@@ -1085,7 +1011,7 @@ func open_aircraft_catalog() -> void:
 	if not is_inside_tree():
 		return
 	_select_page(1)
-	var selected := _catalog_ids.find(aircraft_id)
+	var selected := _catalog_ids.find(selected_id())
 	if selected >= 0:
 		_catalog_buttons[selected].grab_focus()
 	_schedule_selected_aircraft_reveal()
@@ -1093,7 +1019,7 @@ func open_aircraft_catalog() -> void:
 
 func _reveal_selected_aircraft() -> void:
 	if not is_inside_tree() or not _pages[1].visible: return
-	var selected := _catalog_ids.find(aircraft_id)
+	var selected := _catalog_ids.find(selected_id())
 	if selected >= 0:
 		if _launch_notices.get_parent() == _page_host and not _catalog_buttons[selected].has_focus():
 			return # Keep new notices at the top unless opening the focused aircraft explicitly.
@@ -1146,7 +1072,7 @@ func _apply_responsive_layout() -> void:
 		_navigation_in_scroll = navigation_in_scroll
 		if restore_navigation_focus:
 			focused.grab_focus()
-		var first_page_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button, ground_vehicle_choice]
+		var first_page_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button]
 		for index in _page_buttons.size():
 			_page_buttons[index].focus_neighbor_bottom = _page_buttons[index].get_path_to(first_page_controls[index])
 	# Long concurrent notices can otherwise force the pinned actions below the viewport. Put the whole
@@ -1274,8 +1200,8 @@ func _update_notice_focus_links() -> void:
 		if _pages[index].visible:
 			selected = index
 			break
-	var action: Control = ground_vehicle_button if selected == 3 else review_conditions_button if review_conditions_button.visible else fly_button if not fly_button.disabled else _page_buttons[selected]
-	var previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and (review_conditions_button.visible or not fly_button.disabled) else _page_buttons[selected]
+	var action: Control = review_conditions_button if review_conditions_button.visible else fly_button if not fly_button.disabled else _page_buttons[selected]
+	var previous: Control = start_button if selected == 0 and (review_conditions_button.visible or not fly_button.disabled) else _page_buttons[selected]
 	if previous == action:
 		previous = _page_buttons[selected - 1] if selected > 0 else language_button
 	if _launch_notices.get_parent() == _page_host:
@@ -1418,7 +1344,7 @@ func _refresh_statistics_summary(selected: String = "") -> void:
 	if statistics_service == null or not is_instance_valid(_statistics_aircraft_summary):
 		return
 	var selected_id := selected if not selected.is_empty() else aircraft_id
-	var supported := str(Catalog.entry(selected_id).get("vehicle", "fixed_wing")) != "rotorcraft"
+	var supported := Catalog.has(selected_id) and not Catalog.is_rotorcraft(selected_id)
 	var own: Dictionary = statistics_service.query(selected_id, "lifetime")
 	var all: Dictionary = statistics_service.query("", "lifetime")
 	_statistics_aircraft_summary.text = tr("Lifetime · %s airborne · %d completed · %d crashes") % [
@@ -1445,25 +1371,45 @@ func set_aircraft(id: String) -> void:
 	id = Catalog.canonical_id(id)
 	if not Catalog.is_player_selectable(id):
 		return
-	if id != aircraft_id:
+	if id != aircraft_id or not activity_id.is_empty():
 		_clear_launch_note()
-	_refresh_statistics_summary(id)
+	aircraft_id = id if Catalog.has(id) else Catalog.DEFAULT_ID
+	activity_id = ""
+	_refresh_selection()
+
+
+## UI-39: selects a non-aircraft vehicle (a Roster activity id); the remembered aircraft stays in aircraft_id.
+func set_activity(id: String) -> void:
+	if not Roster.is_activity(id):
+		return
+	if id != activity_id:
+		_clear_launch_note()
+	activity_id = id
+	if Roster.family(id) == Roster.GROUND:
+		ground_vehicle_id = id
+	_refresh_selection()
+
+
+## Shows the selected vehicle on the card, catalog and launch controls.
+func _refresh_selection() -> void:
+	_refresh_statistics_summary(selected_id())
 	var focused_catalog_index := -1
 	for index in _catalog_buttons.size():
 		if _catalog_buttons[index].has_focus():
 			focused_catalog_index = index
 			break
-	aircraft_id = id if Catalog.has(id) else Catalog.DEFAULT_ID
-	_livery_choices_aircraft = "" # refresh at aircraft boundaries, retain metadata across paint selections
+	_livery_choices_aircraft = "" # refresh at vehicle boundaries, retain metadata across paint selections
 	_requested_aircraft_id = ""
 	reapply_start_preference()
 	set_battery_mode(_battery_preference)
 	set_fuel_fill(_fuel_preference)
 	_update_livery()
-	var e := Catalog.entry(aircraft_id)
-	var flyable := Catalog.can_fly(aircraft_id)
-	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
+	var e := Roster.entry(selected_id())
+	var flyable := _selection_can_launch()
+	var rotorcraft: bool = not _airplane_selected() # airplane-only practice and companions
 	var had_focus := fly_button.has_focus()
+	if not _fly_sent:
+		fly_button.text = _fly_text()
 	_fill_legend()
 	aircraft_name_label.text = _aircraft_display_name()
 	aircraft_name_label.tooltip_text = tr(e.name)
@@ -1548,6 +1494,14 @@ func fuel_preference() -> float:
 
 func _show_start_choice(choice: String) -> void:
 	var previous := start_choice
+	if not activity_id.is_empty():
+		# UI-39: the activity owns its start and setup; the aircraft's remembered start stays untouched.
+		start_button.disabled = true
+		start_button.text = tr("Start: set up in the activity")
+		start_button.tooltip_text = tr("This vehicle is set up and started from its own activity menu.")
+		limits_label.text = "This vehicle is set up and started from its own activity menu."
+		_update_launch_caption()
+		return
 	if Catalog.is_rotorcraft(aircraft_id):
 		start_choice = "airborne" if choice == "airborne" or not rotorcraft_pad_available else "runway"
 		start_button.disabled = not rotorcraft_pad_available
@@ -1601,7 +1555,7 @@ func set_battery_mode(mode: String) -> void:
 	if mode in Catalog.BATTERY_MODES:
 		_battery_preference = mode
 	battery_mode = _battery_preference if Catalog.has_battery_mode(aircraft_id, _battery_preference) else "ideal"
-	battery_button.visible = not Catalog.battery_data(aircraft_id).is_empty() and not Catalog.is_rotorcraft(aircraft_id)
+	battery_button.visible = not Catalog.battery_data(aircraft_id).is_empty() and _airplane_selected()
 	battery_button.text = tr("Battery: finite pack (experimental)") if battery_mode == "pack" else tr("Battery: ideal (never runs flat)")
 	battery_button.tooltip_text = tr("Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage.")
 	if battery_mode != previous:
@@ -1619,7 +1573,7 @@ func set_fuel_fill(fill: float) -> void:
 		_fuel_preference = fill
 	var finite: bool = Catalog.has_finite_fuel(aircraft_id)
 	fuel_start_fill = _fuel_preference if finite else 1.0
-	fuel_button.visible = finite
+	fuel_button.visible = finite and activity_id.is_empty()
 	fuel_button.text = tr("Fuel: full tank") if fuel_start_fill == 1.0 \
 		else tr("Fuel: %d %% of the tank") % roundi(fuel_start_fill * 100.0)
 	fuel_button.tooltip_text = tr("Start fill of the engine's tank. Fuel burns in flight: the airplane gets lighter and its balance moves aft as the tank empties.")
@@ -1633,9 +1587,14 @@ func set_livery_preferences(preferences: Dictionary) -> void:
 	_update_livery()
 
 
-## Records `livery` for the current aircraft and shows it; an ID the aircraft does not offer shows its default paint.
+## Records `livery` for the current vehicle and shows it; an ID the vehicle does not offer shows its default paint.
+## UI-39: the RC blimp's skins are its paints (airship_skin_id); they never enter the aircraft [liveries].
 func set_livery(livery: String) -> String:
-	_livery_preferences[aircraft_id] = livery
+	if not activity_id.is_empty():
+		if Roster.family(activity_id) == Roster.AIRSHIP:
+			airship_skin_id = Roster.resolve_skin(activity_id, livery)
+	else:
+		_livery_preferences[aircraft_id] = livery
 	_update_livery()
 	return livery_id
 
@@ -1643,12 +1602,16 @@ func set_livery(livery: String) -> String:
 func _update_livery() -> void:
 	if livery_button == null:
 		return
-	if _livery_choices_aircraft != aircraft_id:
-		_livery_choices = AirplaneBuilder.livery_choices(aircraft_id)
-		_livery_choices_aircraft = aircraft_id
+	var id := selected_id()
+	if _livery_choices_aircraft != id:
+		_livery_choices = Roster.skin_choices(id) if not activity_id.is_empty() else AirplaneBuilder.livery_choices(id)
+		_livery_choices_aircraft = id
 		livery_preview_cache = {}
-	livery_id = AirplaneBuilder.resolve_livery_choice(_livery_choices, str(_livery_preferences.get(aircraft_id, "")))
-	livery_button.visible = _livery_choices.size() > 1 or CustomSkin.supports(aircraft_id)
+	if not activity_id.is_empty():
+		livery_id = Roster.resolve_skin(id, airship_skin_id)
+	else:
+		livery_id = AirplaneBuilder.resolve_livery_choice(_livery_choices, str(_livery_preferences.get(id, "")))
+	livery_button.visible = _livery_choices.size() > 1 or activity_id.is_empty() and CustomSkin.supports(id)
 	_update_livery_row()
 	if not livery_button.visible:
 		return
@@ -1667,7 +1630,7 @@ func _update_livery_row() -> void:
 	_livery_row.visible = _pages[1].visible and livery_button.visible
 	if not is_inside_tree():
 		return
-	var selected: Button = _catalog_buttons[maxi(0, _catalog_ids.find(aircraft_id))]
+	var selected: Button = _catalog_buttons[maxi(0, _catalog_ids.find(selected_id()))]
 	_page_buttons[1].focus_neighbor_bottom = _page_buttons[1].get_path_to(livery_button if _livery_row.visible else selected)
 	livery_button.focus_neighbor_top = livery_button.get_path_to(_page_buttons[1])
 	livery_button.focus_neighbor_bottom = livery_button.get_path_to(selected)
@@ -1693,6 +1656,8 @@ func _cycle_fuel_fill() -> void:
 
 
 func _cycle_start_choice() -> void:
+	if not activity_id.is_empty():
+		return
 	if Catalog.is_rotorcraft(aircraft_id):
 		start_requested.emit("runway" if start_choice == "airborne" else "airborne")
 		return
@@ -1744,8 +1709,7 @@ func set_time_of_day(preset: String) -> void:
 ## A rejected launch leaves the same usable Home, including keyboard focus.
 func reject_start(message: String) -> void:
 	_fly_sent = false
-	fly_button.text = "FLY"
-	set_aircraft(aircraft_id)
+	_refresh_selection()
 	set_note(message)
 	_launch_note_key = message
 	var action: Control = review_conditions_button if review_conditions_button.visible else fly_button
@@ -1755,9 +1719,8 @@ func reject_start(message: String) -> void:
 
 func refuse_conditions() -> void:
 	_fly_sent = false
-	fly_button.text = "FLY"
 	_clear_launch_note()
-	set_aircraft(aircraft_id)
+	_refresh_selection()
 	_focus_launch_action()
 
 
@@ -1789,7 +1752,7 @@ func _clear_launch_note() -> void:
 
 ## A dialog may hide its own invoking action by correcting the launch conditions.
 func _focus_launch_action() -> void:
-	for action: Control in [review_conditions_button, fly_button, ground_vehicle_button, next_button, _page_buttons[0]]:
+	for action: Control in [review_conditions_button, fly_button, next_button, _page_buttons[0]]:
 		if can_focus(action):
 			action.grab_focus()
 			return
@@ -1903,7 +1866,7 @@ func set_out_of_trim_config(config: Dictionary) -> void:
 func _update_trim_practice_summary() -> void:
 	if trim_practice_summary_label == null:
 		return
-	if Catalog.is_rotorcraft(aircraft_id):
+	if not _airplane_selected():
 		trim_practice_summary_label.text = tr("Next flight trim: Airplanes only")
 	elif not bool(out_of_trim_config.get("enabled", false)):
 		trim_practice_summary_label.text = tr("Next flight trim: Off")
@@ -1930,11 +1893,11 @@ func _update_failure_summary() -> void:
 	if failure_launch_notice != null:
 		var was_visible := failure_launch_notice.visible
 		failure_launch_notice.text = tr("Failure practice: %d%%") % probability
-		failure_launch_notice.visible = probability > 0 and not Catalog.is_rotorcraft(aircraft_id) \
+		failure_launch_notice.visible = probability > 0 and _airplane_selected() \
 			and Catalog.can_fly(aircraft_id) and fly_button.visible
 		if was_visible != failure_launch_notice.visible and is_node_ready():
 			_apply_responsive_layout.call_deferred()
-	if Catalog.is_rotorcraft(aircraft_id):
+	if not _airplane_selected():
 		failure_summary_label.text = tr("Next flight failures: Airplanes only")
 		return
 	var customized := not FailureConfig.uses_default_selection(failure_config)
@@ -1957,7 +1920,7 @@ func _update_companions_text() -> void:
 	var count := int(companion_config.get("count", 1))
 	var seed := int(companion_config.get("seed", 1))
 	var engine_qualified := CompanionConfig.engine_qualified()
-	var available := engine_qualified and not Catalog.is_rotorcraft(aircraft_id) and landscape_id == Landscapes.DEFAULT_ID
+	var available := engine_qualified and _airplane_selected() and landscape_id == Landscapes.DEFAULT_ID
 	companions_button.text = tr("Flight companions: %s · %d") % [
 		tr("On") if enabled else tr("Off"), count,
 	]
@@ -2009,13 +1972,15 @@ func _update_texts() -> void:
 	_refresh_launch_note()
 	set_stock_selection_notice(_retained_stock_id)
 	language_button.text = tr("Language: %s") % Preferences.LANGUAGES[current_language()]
-	var aircraft_position := Catalog.player_ids().find(aircraft_id) + 1
-	aircraft_count_label.text = "%d / %d" % [aircraft_position, Catalog.player_ids().size()]
-	aircraft_count_label.tooltip_text = tr("Aircraft %d of %d") % [aircraft_position, Catalog.player_ids().size()]
+	var roster := Roster.ids()
+	var aircraft_position := roster.find(selected_id()) + 1
+	aircraft_count_label.text = "%d / %d" % [aircraft_position, roster.size()]
+	aircraft_count_label.tooltip_text = tr("Aircraft %d of %d") % [aircraft_position, roster.size()]
+	var shown := Roster.entry(selected_id())
 	aircraft_name_label.text = _aircraft_display_name()
-	aircraft_name_label.tooltip_text = tr(Catalog.entry(aircraft_id).name)
-	aircraft_summary_label.text = tr(Catalog.entry(aircraft_id).summary)
-	aircraft_status_label.text = tr(Catalog.entry(aircraft_id).status_note)
+	aircraft_name_label.tooltip_text = tr(shown.name)
+	aircraft_summary_label.text = tr(shown.summary)
+	aircraft_status_label.text = tr(shown.status_note)
 	_update_flight_capability()
 	_update_catalog_texts()
 	_update_details_disclosure()
@@ -2113,7 +2078,9 @@ func _update_weather_text() -> void:
 	if standard_column_active:
 		weather_help += "\n" + tr("Standard dry ISA density varies with geometric altitude from −500 to 11,000 m. This is a reference profile, not measured weather.")
 	var helicopter_weather_eligible: bool = not turbulence and not standard_column_active and not spatial
-	if Catalog.is_rotorcraft(aircraft_id):
+	if not activity_id.is_empty():
+		weather_help = tr("Wind and air settings apply to airplanes and helicopters only.")
+	elif Catalog.is_rotorcraft(aircraft_id):
 		if not helicopter_weather_eligible:
 			var unsupported: PackedStringArray = []
 			if spatial:
@@ -2135,7 +2102,8 @@ func _update_weather_text() -> void:
 
 ## Show the explicit flight selection. A connected device alone never takes control.
 func _update_control() -> void:
-	keys_legend.visible = _flight_device_name.is_empty()
+	# The legend shows airplane/helicopter keys; other vehicles show their own controls in their activity.
+	keys_legend.visible = _flight_device_name.is_empty() and activity_id.is_empty()
 	if _flight_device_name.is_empty():
 		control_label.text = tr("Flight input: Keyboard")
 		control_label.tooltip_text = tr("Flight: keyboard (no controller selected).")
@@ -2152,7 +2120,16 @@ func _update_control() -> void:
 
 
 func _on_fly() -> void:
-	if _fly_sent or not Catalog.can_fly(aircraft_id):
+	if _fly_sent:
+		return
+	if not activity_id.is_empty():
+		# UI-39: AppRoot starts the activity in its exclusive slot (and keeps this Home usable if it cannot).
+		match Roster.family(activity_id):
+			Roster.GROUND: ground_vehicle_requested.emit()
+			Roster.AIRSHIP: airship_requested.emit()
+			Roster.MULTIROTOR: multirotor_requested.emit()
+		return
+	if not Catalog.can_fly(aircraft_id):
 		return
 	if not _update_launch_admission():
 		review_conditions_button.grab_focus()
@@ -2170,7 +2147,7 @@ func _update_launch_admission() -> bool:
 	if launch_warning == null or fly_button == null:
 		return true
 	var error := ""
-	if Catalog.is_rotorcraft(aircraft_id):
+	if activity_id.is_empty() and Catalog.is_rotorcraft(aircraft_id):
 		var session_script: Script = load("res://sim/helicopter_flight_session.gd")
 		var admission: Dictionary = session_script.validate_weather_selection(weather_config)
 		error = str(admission.error)
@@ -2180,14 +2157,14 @@ func _update_launch_admission() -> bool:
 	launch_warning.text = tr(error) if not error.is_empty() else ""
 	launch_warning.visible = showing_fly and not error.is_empty()
 	review_conditions_button.visible = launch_warning.visible
-	fly_button.disabled = _fly_sent or not Catalog.can_fly(aircraft_id) or not error.is_empty()
+	fly_button.disabled = _fly_sent or not _selection_can_launch() or not error.is_empty()
 	fly_button.focus_mode = Control.FOCUS_NONE if fly_button.disabled else Control.FOCUS_ALL
 	if review_conditions_button.visible:
 		review_conditions_button.focus_neighbor_top = review_conditions_button.get_path_to(start_button if _pages[0].visible else _page_buttons[1] if _pages[1].visible else _page_buttons[2])
 		review_conditions_button.focus_neighbor_bottom = review_conditions_button.get_path_to(controls_button)
 		if fly_had_focus:
 			review_conditions_button.grab_focus()
-	var primary_action: Control = review_conditions_button if review_conditions_button.visible else fly_button if showing_fly else ground_vehicle_button
+	var primary_action: Control = review_conditions_button if review_conditions_button.visible else fly_button
 	for utility: Control in [controls_button, help_button, quit_button]:
 		utility.focus_neighbor_top = utility.get_path_to(primary_action)
 	start_button.focus_neighbor_bottom = start_button.get_path_to(primary_action)

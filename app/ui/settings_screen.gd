@@ -490,7 +490,7 @@ func _build() -> void:
 	for entry: Array in LENS_ROWS:
 		var lens_picker := _lens_picker(str(entry[0]), str(entry[1]), entry[2])
 		_add_row(lighting_page, str(entry[3]), lens_picker)
-	_set_localized_tooltip(_lens_pickers.lens_effects, "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight.")
+	_set_localized_tooltip(_lens_pickers.lens_effects, "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Automatic follows Scene detail. Off turns every lens effect off. Changes apply at once.")
 	_set_localized_tooltip(_lens_pickers.impact_effects, "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood.")
 
 	_language_picker = OptionButton.new()
@@ -761,8 +761,8 @@ func _choice_caption(key: String, value: Variant) -> String:
 			far = tr("Far (600 m)")}.get(value, str(value))
 		"shadow_softness": return {auto = tr("Automatic"), hard = tr("Hard"), soft = tr("Soft")}.get(value, str(value))
 		"aircraft_lighting_quality": return {low = tr("Low"), standard = tr("Standard"), high = tr("High")}.get(value, str(value))
-		"lens_effects": return {off = tr("Off"), low = tr("Low"), medium = tr("Medium"), high = tr("High"),
-			ultra = tr("Ultra")}.get(value, str(value))
+		"lens_effects": return {off = tr("Off"), auto = tr("Automatic"), low = tr("Low"), medium = tr("Medium"),
+			high = tr("High"), ultra = tr("Ultra")}.get(value, str(value))
 		"impact_effects": return {off = tr("Off"), curtain = tr("Classic curtain"), splatter = tr("Lens splatter")}.get(value, str(value))
 		"impact_colour": return {red = tr("Red"), dark = tr("Dark"), desaturated = tr("Desaturated")}.get(value, str(value))
 		"lens_rain", "lens_grime", "lens_glasses", "lens_clear_centre": return {off = tr("Off"), on = tr("On")}.get(value, str(value))

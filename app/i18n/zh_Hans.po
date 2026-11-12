@@ -11714,9 +11714,254 @@ msgstr "暗色"
 msgid "Desaturated"
 msgstr "低饱和"
 
-msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Off turns every lens effect off. Applies from the next flight."
-msgstr "飞机撞到人或飞手时屏幕上的血迹、摄像头上的雨滴，以及撞击后的泥土、草屑和裂纹。关闭后停用所有镜头效果。从下一次飞行起生效。"
+msgid "Blood on the screen when the aircraft strikes a person or the pilot, rain drops on the camera, and mud, grass and cracks after impacts. Automatic follows Scene detail. Off turns every lens effect off. Changes apply at once."
+msgstr "飞机撞到人或飞手时屏幕上的血迹、摄像头上的雨滴，以及撞击后的泥土、草屑和裂纹。自动跟随场景细节。关闭后停用所有镜头效果。更改立即生效。"
 
 msgid "Classic curtain: a red sheet runs down from the top of the screen. Lens splatter: blood only on cameras with glass. Off shows no blood."
 msgstr "经典帘幕：红色液幕从屏幕顶部流下。镜头飞溅：只有带玻璃的摄像头会沾上血。关闭则不显示血迹。"
 
+# Home vehicle roster: RC cars, FPV quad and RC blimp in the Home catalog
+msgid "Vehicles"
+msgstr "载具"
+
+msgid "VEHICLE CATALOG"
+msgstr "载具目录"
+
+msgid "Choose a vehicle for the next session."
+msgstr "为下一次体验选择载具。"
+
+msgid "OTHER RC VEHICLES"
+msgstr "其他遥控载具"
+
+msgid "RC monster truck · electric 4WD"
+msgstr "遥控大脚车 · 电动四驱"
+
+msgid "Experimental: estimated electric 4WD model; mass, suspension and tires are estimates, not measured. The car setup opens before you drive."
+msgstr "实验性：估算的电动四驱模型；质量、悬挂和轮胎均为估算值，并非实测。驾驶前会打开车辆设置。"
+
+msgid "RC monster truck · nitro 4WD"
+msgstr "遥控大脚车 · 硝基四驱"
+
+msgid "Experimental: supplied nitro 4WD estimate; engine, clutch, fuel and tires are simulated estimates, not measured. The car setup opens before you drive."
+msgstr "实验性：提供的硝基四驱估算；发动机、离合器、燃料和轮胎均为模拟估算值，并非实测。驾驶前会打开车辆设置。"
+
+msgid "FPV quad 5\""
+msgstr "FPV 四轴 5\""
+
+msgid "FPV racing quad · 5 in propellers · 6S electric"
+msgstr "FPV 竞速四轴 · 5 英寸螺旋桨 · 6S 电动"
+
+msgid "Experimental: estimated FPV quad physics from component data; not flight-validated."
+msgstr "实验性：根据部件数据估算的 FPV 四轴物理模型；未经飞行验证。"
+
+msgid "RC blimp"
+msgstr "遥控飞艇"
+
+msgid "RC blimp · 5 m envelope · electric vectored rotors"
+msgstr "遥控飞艇 · 5 m 气囊 · 电动矢量旋翼"
+
+msgid "Experimental: estimated buoyancy and hull aerodynamics; not flight-validated. Wind and start are chosen in the blimp menu."
+msgstr "实验性：浮力和艇身空气动力学为估算值；未经飞行验证。风和起点在飞艇菜单中选择。"
+
+msgid "DRIVE"
+msgstr "驾驶"
+
+msgid "Next drive: %s"
+msgstr "下一次驾驶：%s"
+
+msgid "Start: set up in the activity"
+msgstr "起点：在活动中设置"
+
+msgid "This vehicle is set up and started from its own activity menu."
+msgstr "此载具通过其专属的活动菜单进行设置和启动。"
+
+msgid "Wind and air settings apply to airplanes and helicopters only."
+msgstr "风和空气设置仅适用于飞机和直升机。"
+
+
+msgid "The aircraft struck a person. Never fly over or toward people."
+msgstr "飞机撞到了人。切勿在人群上方或朝向人群飞行。"
+
+msgid "The aircraft struck the pilot. Keep it in front of you and away from the flight line."
+msgstr "飞机撞到了飞手。让它保持在你前方，并远离飞手线。"
+
+# UI-15-UX controls setup (2026-11-12)
+msgid "Centre the sticks EXCEPT the THROTTLE: leave the THROTTLE fully DOWN (LOW). Keep these positions."
+msgstr "除油门外，将摇杆回中：油门保持在最低（LOW）。保持这些位置。"
+
+msgid "Move the THROTTLE to FULL and back to LOW."
+msgstr "将油门推到最大，再拉回最低。"
+
+msgid "Hold the ROLL stick (aileron) fully RIGHT."
+msgstr "将横滚摇杆（副翼）保持在最右。"
+
+msgid "Hold the PITCH stick (elevator) fully BACK."
+msgstr "将俯仰摇杆（升降舵）保持在最后（拉杆到底）。"
+
+msgid "Hold the YAW stick (rudder) fully RIGHT."
+msgstr "将偏航摇杆（方向舵）保持在最右。"
+
+msgid "Move the ROLL stick (aileron) fully LEFT, then centre."
+msgstr "将横滚摇杆（副翼）推到最左，然后回中。"
+
+msgid "Move the PITCH stick (elevator) fully FORWARD, then centre."
+msgstr "将俯仰摇杆（升降舵）推到最前，然后回中。"
+
+msgid "Move the YAW stick (rudder) fully LEFT, then centre."
+msgstr "将偏航摇杆（方向舵）推到最左，然后回中。"
+
+msgid "the stick did not return to centre before you continued (or moved only one way); try again"
+msgstr "继续前摇杆没有回中（或只向一个方向移动）；请重试"
+
+msgid "Rest"
+msgstr "静止"
+
+msgid "Verify"
+msgstr "验证"
+
+msgid "RIGHT"
+msgstr "右"
+
+msgid "LEFT"
+msgstr "左"
+
+msgid "BACK"
+msgstr "后"
+
+msgid "FORWARD"
+msgstr "前"
+
+msgid "FULL"
+msgstr "最大"
+
+msgid "LOW"
+msgstr "最低"
+
+msgid "CENTRE"
+msgstr "中间"
+
+msgid "Before you start"
+msgstr "开始之前"
+
+msgid "EdgeTX/OpenTX: select USB Joystick (Classic) on the model, turn RF off, calibrate the sticks on the radio first, and use expo either on the radio or in the simulator, not both."
+msgstr "EdgeTX/OpenTX：在模型中选择 USB 摇杆（经典），关闭射频，先在遥控器上校准摇杆；指数曲线只在遥控器或模拟器其中一处使用，不要同时使用。"
+
+msgid "JETI: use USB joystick mode and check the stick mode."
+msgstr "JETI：使用 USB 摇杆模式，并检查摇杆模式（美国手/日本手）。"
+
+msgid "Channel monitor"
+msgstr "通道监视"
+
+msgid "Detected: axis %d"
+msgstr "已检测：轴 %d"
+
+msgid "Reached FULL"
+msgstr "已到最大"
+
+msgid "Back to LOW"
+msgstr "已回到最低"
+
+msgid "Discard"
+msgstr "放弃"
+
+msgid "Your controller changes are not saved. Save them, discard them, or keep editing."
+msgstr "控制器更改尚未保存。请保存、放弃或继续编辑。"
+
+msgid "Controller details"
+msgstr "控制器详情"
+
+msgid "Extra channels help"
+msgstr "额外通道帮助"
+
+msgid "Full message"
+msgstr "完整信息"
+
+msgid "Show actions for all vehicles"
+msgstr "显示所有载具的操作"
+
+msgid "Show channels for all vehicles"
+msgstr "显示所有载具的通道"
+
+msgid "%s source axis"
+msgstr "%s来源轴"
+
+msgid "%s deadzone"
+msgstr "%s死区"
+
+msgid "%s expo"
+msgstr "%s指数响应"
+
+msgid "Invert %s"
+msgstr "反向%s"
+
+msgid "%s input type"
+msgstr "%s输入类型"
+
+msgid "%s Off endpoint"
+msgstr "%s关闭端点"
+
+msgid "%s On endpoint"
+msgstr "%s开启端点"
+
+msgid "%s button"
+msgstr "%s按钮"
+
+msgid "%s button mode"
+msgstr "%s按钮模式"
+
+msgid "%s switch positions"
+msgstr "%s开关档位"
+
+msgid "%s switch name"
+msgstr "%s开关名称"
+
+msgid "Reverse %s request"
+msgstr "反转%s请求"
+
+msgid "Capture %s position"
+msgstr "捕获%s位置"
+
+msgid "Clear %s"
+msgstr "清除%s"
+
+msgid "Learn axis for %s"
+msgstr "为%s学习轴"
+
+msgid "Remap %s"
+msgstr "重新绑定%s"
+
+msgid "“%s” and “%s” use the same control. Change one of them."
+msgstr "“%s”和“%s”使用了同一个控件。请更改其中一个。"
+
+msgid "“%s” needs a control so you can always go back or pause. Assign one."
+msgstr "“%s”需要一个控件，以便随时返回或暂停。请分配一个。"
+
+msgid "“%s” uses the same control as the %s extra channel. Change one of them."
+msgstr "“%s”与额外通道 %s 使用了同一个控件。请更改其中一个。"
+
+msgid "“%s” and the %s extra channel do the same job. Use only one of them."
+msgstr "“%s”与额外通道 %s 作用相同。请只使用其中一个。"
+
+msgid "“%s” uses a flight stick axis. Choose another control."
+msgstr "“%s”使用了飞行摇杆的轴。请选择其他控件。"
+
+msgid "The %s and %s extra channels use the same control. Change one of them."
+msgstr "额外通道 %s 和 %s 使用了同一个控件。请更改其中一个。"
+
+msgid "Check the %s extra channel: its input is incomplete or uses a flight stick axis."
+msgstr "请检查额外通道 %s：其输入不完整或使用了飞行摇杆的轴。"
+
+msgid "“%s” has an invalid control. Remap it."
+msgstr "“%s”的控件无效。请重新绑定。"
+
+msgid "%s and %s use the same source axis. Change one of them."
+msgstr "%s和%s使用了同一个来源轴。请更改其中一个。"
+
+msgid "Arm (FPV quad)"
+msgstr "解锁（FPV 四轴）"
+
+msgid "Flight mode (FPV quad)"
+msgstr "飞行模式（FPV 四轴）"
+
+msgid "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
+msgstr "此配置使用起落架开关解锁四轴。请分配“解锁”使其明确。"

@@ -64,7 +64,19 @@ constexpr double kGd1eMinus30 = 0x1.4484bfeebc29fp-100;
 inline R sin_(R a) { return ::sin(a.v); }
 inline R cos_(R a) { return ::cos(a.v); }
 inline R atan2_(R y, R x) { return ::atan2(y.v, x.v); }
+#if defined(NK_ENGINE_SQRT_SSE2)
+// NK-4: MinGW-w64 GCC emits out-of-line calls to libmingwex sqrt, which uses x87 fsqrt (extended precision, then a
+// second rounding to double): occasionally 1 ulp from the correctly rounded value the engine's GDScript sqrt returns
+// (pinned Windows binary). SSE2 sqrtsd is the IEEE-754 correctly rounded square root, including the default NaN for
+// a negative operand and quiet propagation of a NaN operand. Defined only by build_windows.py.
+inline R sqrt_(R a) {
+	double r;
+	__asm__("sqrtsd %1, %0" : "=x"(r) : "x"(a.v));
+	return r;
+}
+#else
 inline R sqrt_(R a) { return ::sqrt(a.v); }
+#endif
 inline R tanh_(R a) { return ::tanh(a.v); }
 
 inline R pow_(R base, R exponent) {
@@ -87,7 +99,14 @@ inline R absf(R x) { return x.v == 0 ? R(0.0) : (x.v < 0 ? -x : x); }
 // Godot Math::lerp is from + (to - from) * weight, but it is engine C++, not the GDScript evaluator: the pinned
 // binary's NaN priority (probed by the oracle) is weight-first for the product and product-first for the sum.
 // Finite results are unchanged by this operand order (IEEE + and * commute exactly).
+#if defined(NK_ENGINE_LERP_SOURCE_ORDER)
+// NK-4: the pinned Windows (MinGW) engine binary evaluates the product before `from` and keeps `(to - from)`
+// left of `weight` (math_shim oracle probe on Windows, two-NaN priority). Defined only by build_windows.py;
+// Linux preprocesses unchanged.
+inline R lerpf(R from, R to, R weight) { return (to - from) * weight + from; }
+#else
 inline R lerpf(R from, R to, R weight) { return weight * (to - from) + from; }
+#endif
 
 inline bool is_zero_approx(R v) { return absf(v).v < kCmpEpsilon; }
 inline bool is_equal_approx(R left, R right) {

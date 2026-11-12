@@ -14,6 +14,8 @@ const Fixtures := preload("res://tests/mr_fixtures.gd")
 const FC := preload("res://physics/multirotor/flight_controller.gd")
 const Rates := preload("res://physics/multirotor/rates.gd")
 const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
+const AirfieldTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
+const CollisionSetup := preload("res://scenery/collision_setup.gd")
 
 const DIR := "user://test_mr_flight_log"
 
@@ -220,9 +222,32 @@ func _run() -> void:
 	_check("starting on a faulted flight is refused", MultirotorLog.new(s).start(context, DIR + "/x.orfl") == ERR_UNAVAILABLE)
 	_check("stop on a recorder that never started is a no-op", MultirotorLog.new(s).stop() == OK)
 	s.queue_free()
+	_rc_circuit_replay(field, context)
 	_clean()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## RC-TRACK: a flight with the RC car circuit shown (its relief under the quad, its dressing in the obstacle inventory)
+## records the circuit in its options and inventory identity and replays exactly; a hop on the tabletop ramp.
+func _rc_circuit_replay(field: Dictionary, context: Dictionary) -> void:
+	var circuit: Dictionary = AirfieldTrack.load_default().track
+	var s: Node = Session.new()
+	root.add_child(s)
+	var built: Dictionary = CollisionSetup.build(field, circuit)
+	var prepared: bool = built.ok and s.set_collision_world(built.world) \
+		and s.prepare(field, {north_offset_m = 39.0, east_offset_m = -4.5, rc_track = circuit})
+	var path := DIR + "/rc_circuit.orfl"
+	var recorder := MultirotorLog.new(s)
+	var ok: bool = prepared and recorder.start(context, path) == OK
+	s.resume()
+	ok = ok and _arm(s) and _fly(s, Fixtures.pilot(0.0, 0.0, 0.0, 0.4, 1), 90)
+	ok = ok and _fly(s, Fixtures.pilot(0.0, 0.3, 0.0, 0.0, 1), 240)
+	ok = ok and recorder.stop("test end") == OK
+	var report := MultirotorLog.verify(path)
+	_check("RC-TRACK a flight over the RC car circuit replays exactly with its relief and obstacle inventory", ok
+		and report.ok and report.exact and report.identity_match, _report(report) if ok else s.load_error)
+	s.queue_free()
 
 
 ## Re-encode an inspected log with a chosen header: valid packets, digests, chain and footer.

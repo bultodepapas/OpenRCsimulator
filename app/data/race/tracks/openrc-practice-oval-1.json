@@ -6,13 +6,13 @@
 	"ruleset": "openrc-local-race-v1",
 	"laps": 3,
 	"origin": "pilot",
-	"pad": {"north_m": 6.0, "east_m": 0.0, "heading_deg": 90.0},
+	"pad": {"north_m": 28.0, "east_m": 38.0, "heading_deg": 90.0},
 	"gates": [
-		{"id": "south-west", "north_m": 13.0, "east_m": 5.0, "center_height_m": 2.0, "heading_deg": 90.0, "width_m": 3.0, "height_m": 2.0},
-		{"id": "south-east", "north_m": 13.0, "east_m": 33.0, "center_height_m": 2.0, "heading_deg": 90.0, "width_m": 3.0, "height_m": 2.0},
-		{"id": "east-turn", "north_m": 21.0, "east_m": 43.0, "center_height_m": 2.0, "heading_deg": 0.0, "width_m": 3.0, "height_m": 2.0},
-		{"id": "north-east", "north_m": 29.0, "east_m": 33.0, "center_height_m": 2.0, "heading_deg": 270.0, "width_m": 3.0, "height_m": 2.0},
-		{"id": "north-west", "north_m": 29.0, "east_m": 5.0, "center_height_m": 2.0, "heading_deg": 270.0, "width_m": 3.0, "height_m": 2.0},
-		{"id": "west-finish", "north_m": 21.0, "east_m": -5.0, "center_height_m": 2.0, "heading_deg": 180.0, "width_m": 3.0, "height_m": 2.0}
+		{"id": "south-west", "north_m": 35.0, "east_m": 43.0, "center_height_m": 2.0, "heading_deg": 90.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "south-east", "north_m": 35.0, "east_m": 71.0, "center_height_m": 2.0, "heading_deg": 90.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "east-turn", "north_m": 43.0, "east_m": 81.0, "center_height_m": 2.0, "heading_deg": 0.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "north-east", "north_m": 51.0, "east_m": 71.0, "center_height_m": 2.0, "heading_deg": 270.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "north-west", "north_m": 51.0, "east_m": 43.0, "center_height_m": 2.0, "heading_deg": 270.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "west-finish", "north_m": 43.0, "east_m": 33.0, "center_height_m": 2.0, "heading_deg": 180.0, "width_m": 3.0, "height_m": 2.0}
 	]
 }

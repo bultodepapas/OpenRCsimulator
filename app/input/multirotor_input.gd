@@ -24,10 +24,21 @@ const ARM_KEY := KEY_E
 const MODE_KEY := KEY_M
 const ARM_BUTTON := JOY_BUTTON_LEFT_SHOULDER
 const MODE_BUTTON := JOY_BUTTON_RIGHT_SHOULDER
-## A radio/joystick profile with a calibrated switch bound to this AUX function arms from that switch level.
+## D6-UX-01: a controller profile with the explicit "arm" AUX channel bound arms from that switch level (any source).
+const ARM_AUX := "arm"
+## Legacy fallback, kept exactly: a radio/joystick profile with no "arm" binding but a calibrated switch on this AUX
+## function (Controls "Landing gear") arms from that switch level, as before D6-UX-01.
 const RADIO_ARM_AUX := "gear"
+## D6-UX-01: a profile with the "flight_mode" AUX channel bound takes Angle/Acro from that switch; the M key and the
+## gamepad mode button are then ignored (the switch wins, as the arm switch disables the arm toggle).
+const MODE_AUX := "flight_mode"
 ## A switch position at or above this AUX amount is ON.
 const ARM_SWITCH_ON := 0.5
+## Flight-mode switch: a request at or above this amount is Acro, below it Angle. The AUX OFF position (amount 0,
+## also the position its fresh-OFF arming needs) is the self-levelling Angle mode; a 2-position switch is OFF Angle /
+## ON Acro, and a 3-position switch (0, 0.5, 1) is Angle in its first position and Acro in the other two. The
+## controller has no third mode (no Horizon), so the middle detent cannot mean anything else.
+const MODE_SWITCH_ACRO := 0.5
 ## Throttle limit choices (pilot preference: the share of the command range a full throttle stick reaches). The
 ## 5-inch quad hovers near 15 % and climbs at tens of m/s from a third of the range, so the centred-stick sources
 ## (keyboard, gamepad) start limited; a radio flies the full range. The value is a session option: a change takes a
@@ -103,15 +114,20 @@ func cycle_throttle_limit() -> float:
 	return next
 
 
-## Bindings of the active source for the OSD hints: {arm: key or button name, arm_switch: the radio's AUX switch
-## arms instead, throttle_up: key name or "" when the source has a stick, source: radio, gamepad or keyboard}.
+## Bindings of the active source for the OSD hints: {arm: key or button name, arm_switch: an AUX switch arms instead,
+## throttle_up: key name or "" when the source has a stick, source: radio, gamepad or keyboard}. D6-UX-01 adds
+## (additively) arm_aux: the AUX channel that arms ("arm", legacy "gear" or ""), mode: the mode toggle's key or
+## button name, mode_switch: the "flight_mode" AUX switch sets the mode instead.
 func bindings() -> Dictionary:
-	match source():
+	var result := {arm = _arm_key_name, arm_switch = arm_from_switch(), arm_aux = arm_aux(), throttle_up = "",
+		source = source(), mode = _mode_key_name, mode_switch = mode_from_switch()}
+	match result.source:
 		"gamepad":
-			return {arm = "LB", arm_switch = false, throttle_up = "", source = "gamepad"}
-		"radio":
-			return {arm = _arm_key_name, arm_switch = arm_from_switch(), throttle_up = "", source = "radio"}
-	return {arm = _arm_key_name, arm_switch = false, throttle_up = "W", source = "keyboard"}
+			result.arm = "LB"
+			result.mode = "RB"
+		"keyboard":
+			result.throttle_up = "W"
+	return result
 
 
 func connect_first_device() -> void:
@@ -185,13 +201,32 @@ func throttle_policy() -> String:
 	return "absolute"
 
 
-## Whether the arm level comes from the radio's AUX switch rather than a latched toggle.
+## Whether the arm level comes from an AUX switch rather than a latched toggle.
 func arm_from_switch() -> bool:
-	if not radio.connected or radio.is_gamepad():
-		return false
+	return not arm_aux().is_empty()
+
+
+## The AUX channel the arm level comes from: "arm" when the profile binds it (any connected source), else the legacy
+## radio "gear" switch (radio/joystick profiles only, exactly as before D6-UX-01), else "" (the arm toggle).
+func arm_aux() -> String:
+	if not radio.connected:
+		return ""
+	if _aux_bound(ARM_AUX):
+		return ARM_AUX
+	if not radio.is_gamepad() and _aux_bound(RADIO_ARM_AUX):
+		return RADIO_ARM_AUX
+	return ""
+
+
+## Whether the flight mode comes from the "flight_mode" AUX switch rather than the M key / gamepad toggle.
+func mode_from_switch() -> bool:
+	return radio.connected and _aux_bound(MODE_AUX)
+
+
+func _aux_bound(channel_name: String) -> bool:
 	var aux: Variant = radio.profile.get("aux", {})
-	return typeof(aux) == TYPE_DICTIONARY and typeof(aux.get(RADIO_ARM_AUX)) == TYPE_DICTIONARY \
-		and not (aux[RADIO_ARM_AUX] as Dictionary).is_empty()
+	return typeof(aux) == TYPE_DICTIONARY and typeof(aux.get(channel_name)) == TYPE_DICTIONARY \
+		and not (aux[channel_name] as Dictionary).is_empty()
 
 
 ## Rate policy: the next integrating sample asks the controller to zero its virtual throttle first.
@@ -219,12 +254,14 @@ func _current_source_key() -> String:
 	return "%s|%d|%s" % [source(), int(radio.device_id), str(radio.profile.get("profile_id", ""))]
 
 
-## Every connection change or source switch: new generation, arm latch OFF, the new source's default mode.
+## Every connection change or source switch: new generation, arm latch OFF, the new source's default mode. With a
+## flight-mode switch bound the mode starts at Angle (the switch's OFF position) until the switch reports a valid
+## position after its fresh-OFF arming.
 func _source_changed() -> void:
 	source_generation += 1
 	_source_key = _current_source_key()
 	_arm_latch = false
-	_mode = default_mode(source())
+	_mode = FC.FLIGHT_ANGLE if mode_from_switch() else default_mode(source())
 	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
 
 
@@ -271,18 +308,27 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	# Toggles: rising edges only, and only while flying (a hold cannot queue an arm request).
 	var arm_pressed := bool(keys.get("arm", false)) or button_arm
 	var mode_pressed := bool(keys.get("mode", false)) or button_mode
-	if integrate and arm_pressed and not _arm_input_held and not arm_from_switch():
+	var arm_channel := arm_aux()
+	var mode_switch := mode_from_switch()
+	if integrate and arm_pressed and not _arm_input_held and arm_channel.is_empty():
 		_arm_latch = not _arm_latch
-	if integrate and mode_pressed and not _mode_input_held:
+	if integrate and mode_pressed and not _mode_input_held and not mode_switch:
 		_mode = FC.FLIGHT_ANGLE if _mode == FC.FLIGHT_ACRO else FC.FLIGHT_ACRO
 	_arm_input_held = arm_pressed
 	_mode_input_held = mode_pressed
 	var arm_level := _arm_latch
 	var arm_source := "toggle"
-	if arm_from_switch():
-		arm_source = "switch:" + RADIO_ARM_AUX
-		arm_level = ready and radio.auxiliary_request_valid(RADIO_ARM_AUX) \
-			and float(radio.auxiliary_amount(RADIO_ARM_AUX)) >= ARM_SWITCH_ON
+	if not arm_channel.is_empty():
+		arm_source = "switch:" + arm_channel
+		arm_level = ready and radio.auxiliary_request_valid(arm_channel) \
+			and float(radio.auxiliary_amount(arm_channel)) >= ARM_SWITCH_ON
+	var mode_source := "toggle"
+	if mode_switch:
+		mode_source = "switch:" + MODE_AUX
+		# A position consumer: without a valid request (before fresh-OFF evidence, after a pause, focus or menu
+		# boundary, or while the source is not ready) the last accepted mode is kept, never snapped to Angle.
+		if ready and radio.auxiliary_request_valid(MODE_AUX):
+			_mode = FC.FLIGHT_ACRO if float(radio.auxiliary_amount(MODE_AUX)) >= MODE_SWITCH_ACRO else FC.FLIGHT_ANGLE
 	var policy := throttle_policy()
 	if not ready:
 		roll = 0.0
@@ -303,7 +349,7 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	pilot[FC.IN_MODE] = float(_mode)
 	pilot[FC.IN_ACTIONS] = float(actions)
 	var raw := {roll = pilot[FC.IN_ROLL], pitch = pilot[FC.IN_PITCH], yaw = pilot[FC.IN_YAW], throttle = throttle,
-		arm = arm_level, arm_source = arm_source, mode = "angle" if _mode == FC.FLIGHT_ANGLE else "acro",
+		arm = arm_level, arm_source = arm_source, mode = "angle" if _mode == FC.FLIGHT_ANGLE else "acro", mode_source = mode_source,
 		arm_key = _arm_key_name, mode_key = _mode_key_name,
 		arm_button = int(ARM_BUTTON), mode_button = int(MODE_BUTTON)}
 	return {pilot = pilot, source = kind, ready = ready, error = error, throttle_policy = policy, raw = raw,

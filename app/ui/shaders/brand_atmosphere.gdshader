@@ -4,6 +4,8 @@ render_mode unshaded;
 uniform float clock = 0.0;
 uniform vec2 viewport_size = vec2(1920.0, 1080.0);
 uniform float live = 0.0;
+// UI-28-R5b: below 1, the previous Home view stays visible, dimmed, behind a landscape rebuild.
+uniform float opacity = 1.0;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -55,5 +57,5 @@ void fragment() {
 	float vignette = 1.0 - smoothstep(0.3, 1.15, length(p));
 	color *= 0.5 + vignette * 0.5;
 	float grain = (hash(FRAGCOORD.xy + floor(clock * 12.0)) - 0.5) / 900.0;
-	COLOR = vec4(max(vec3(0.0), color + grain), 1.0);
+	COLOR = vec4(max(vec3(0.0), color + grain), opacity);
 }

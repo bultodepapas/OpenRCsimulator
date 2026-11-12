@@ -1,6 +1,7 @@
 ## DR-36a: the experimental FPV quad entry and its command-line route. One physical configuration. It is deliberately
 ## not an entry of the fixed-wing aircraft catalog (that would route it through airplane trim, preview and Workshop
-## code); Home lists it in the RC garage and AppRoot starts it in the exclusive activity slot.
+## code); Home lists it in its vehicle catalog (app_state/vehicle_roster.gd, UI-39) and AppRoot starts it in the
+## exclusive activity slot.
 extends RefCounted
 
 const ID := "openrc-fpv5-x1"

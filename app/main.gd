@@ -297,6 +297,13 @@ func _render_wind(time_s: float) -> Vector3:
 ## LENS-01: the lens stack reads accepted contact events, the accepted state and the camera; it never writes back.
 ## Scripted, capture and trace routes get nothing unless --lens-effects is passed explicitly.
 func _start_lens_effects(args: Dictionary) -> void:
+	_lens_args = args
+	if _lens != null:
+		if session != null and session.contact_events_changed.is_connected(_lens.on_contacts):
+			session.contact_events_changed.disconnect(_lens.on_contacts)
+		remove_child(_lens) # free the name at once: the rebuilt stack is "LensStack" for tools too
+		_lens.queue_free()
+		_lens = null
 	var automatic := not _scripted and not args.has("capture") and not args.has("trace")
 	var resolved: Dictionary = LensSettings.resolve(args, automatic)
 	if not resolved.enabled or _camera == null or session == null or not session.aircraft.get("ok", false):
@@ -322,12 +329,27 @@ func _start_lens_effects(args: Dictionary) -> void:
 		"mass_kg": float(session.sim.mass),
 		"glow": str(model.get("propulsion", {}).get("kind", "")) == "glow_prop",
 		"seed": int(sky_config.get("seed", 1)),
+		"sun": _sun,
 	})
 	if ok:
+		if session.sim.tick > 0:
+			_lens.reset(session.sim.tick) # rebuilt mid-flight: never admit an event that was already shown
+		if not session.crash.is_empty():
+			_lens.mark_crash_shown()
 		session.contact_events_changed.connect(_lens.on_contacts)
+		_lens.person_struck.connect(func(player: bool) -> void:
+			_lens.show_message(tr(PILOT_STRUCK_NOTE if player else PERSON_STRUCK_NOTE)))
 	else:
 		_lens.queue_free()
 		_lens = null
+
+
+## Settings changed during the flight (Pause → Settings): rebuild the lens stack from the new preference. Presentation
+## only; scripted, capture and trace routes keep what their arguments chose.
+func apply_lens_preferences() -> void:
+	if _scripted or session == null:
+		return
+	_start_lens_effects(_lens_args)
 
 
 ## FW-84 lightning level currently presented (0…1), for drops and rain streaks; 0 without an electrical storm.
@@ -421,6 +443,9 @@ var _accident_paired_history := false
 var _crash_director: CrashDirector
 ## LENS-01 (docs/plans/lens-screen-effects.md): impact blood, rain on the lens and impact grime. Null when disabled.
 var _lens: LensStack
+var _lens_args: Dictionary = {}
+const PERSON_STRUCK_NOTE := "The aircraft struck a person. Never fly over or toward people."
+const PILOT_STRUCK_NOTE := "The aircraft struck the pilot. Keep it in front of you and away from the flight line."
 var _history_crash_camera_active := false
 var _people_crash_clock_s := 0.0 # SC-HUM-05 presentation time since the player's crash
 ## VQ-01c-R1: the windsock/people and profile-smoke observers advance once per rendered frame.

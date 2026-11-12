@@ -24,6 +24,7 @@ const Preferences := preload("res://app_state/preferences.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Presentation := preload("res://ui/home_presentation.gd")
 const PreviewGeometry := preload("res://ui/home_preview_geometry.gd")
+const VehiclePreview := preload("res://ui/home_vehicle_preview.gd") # UI-39: RC cars, FPV quad, RC blimp
 const Conditions := preload("res://render/world/conditions.gd")
 
 ## Render-only parked presentation. Contact points come from the visual wheels/skids;
@@ -176,7 +177,8 @@ func _parking_position(lift: float) -> Vector3:
 
 func _frame_aircraft() -> void:
 	if not is_inside_tree() or camera == null or _presentation.is_empty(): return
-	Presentation.fit(camera, airplane.root, _presentation.bounds, get_viewport().get_visible_rect().size)
+	Presentation.fit(camera, airplane.root, _presentation.bounds, get_viewport().get_visible_rect().size,
+		32.0, 40.0, 0.6 if airplane.has("vehicle") else 1.5)
 	World.update(_environment, CLOCK, Vector3.ZERO, airplane.root.position, camera)
 	_update_aircraft_lights()
 
@@ -195,9 +197,10 @@ func _ready() -> void:
 func show_aircraft(id: String, livery := "") -> bool:
 	var key := _preview_key(id, livery)
 	var retained := _preview_models.has(key)
-	var built: Dictionary = _preview_models[key] if retained else AirplaneBuilder.build(id, NAN, {}, livery)
+	var built: Dictionary = _preview_models[key] if retained else _build_model(id, livery)
 	if built.is_empty():
 		return false
+	var vehicle: bool = built.has("vehicle")
 	if not airplane.is_empty():
 		airplane.root.hide()
 		airplane.root.process_mode = Node.PROCESS_MODE_DISABLED
@@ -219,12 +222,14 @@ func show_aircraft(id: String, livery := "") -> bool:
 		obsolete.queue_free()
 	var rotorcraft: bool = Catalog.is_rotorcraft(id)
 	if not retained:
-		_preview_geometry[key] = {presentation = Presentation.prepare(airplane)}
+		_preview_geometry[key] = {presentation = _prepare_presentation(airplane)}
 	_presentation = _preview_geometry[key].presentation
 	var basis := Frames.attitude_to_render(deg_to_rad(PARKED_YAW_DEG), 0.0, 0.0) * (_presentation.alignment as Basis)
 	var pos := _parking_position(_presentation.lift)
 	airplane.root.transform = Transform3D(basis, pos)
-	if rotorcraft:
+	if vehicle:
+		pass # RC cars, quad and blimp park as built: no propeller or rotor head to place
+	elif rotorcraft:
 		var main_pivot: Node3D = airplane.get("main_rotor_pivot") as Node3D
 		if main_pivot != null:
 			main_pivot.rotation.z = PROP_ANGLE
@@ -252,8 +257,19 @@ func show_aircraft(id: String, livery := "") -> bool:
 	return true
 
 
+## Aircraft come from their builder; UI-39 RC vehicles from their activity's visual (VehiclePreview).
+static func _build_model(id: String, livery: String) -> Dictionary:
+	return VehiclePreview.build(id, livery) if VehiclePreview.handles(id) else AirplaneBuilder.build(id, NAN, {}, livery)
+
+
+static func _prepare_presentation(model: Dictionary) -> Dictionary:
+	if model.has("vehicle"):
+		return VehiclePreview.prepare(model, Presentation.mesh_bounds(model.root, model.root))
+	return Presentation.prepare(model)
+
+
 func _update_aircraft_lights() -> void:
-	if airplane.is_empty(): return
+	if airplane.is_empty() or airplane.has("vehicle"): return # UI-39: aircraft navigation kits only
 	var kit: Node3D = airplane.root.get_node_or_null("HelicopterNightKit")
 	if kit != null:
 		kit.update_visual(HeliNightLights.sun_elevation(_lighting, Atmosphere.state), World.Exposure.last, {}, 0.0, 0.0, false,
@@ -421,20 +437,23 @@ func _build_requested_preview(id: String, livery: String, generation: int) -> vo
 	while preview_geometry.busy():
 		await _preview_frame
 		if not _current_preview(id, livery, generation): return
-	var built: Dictionary = AirplaneBuilder.build(id, NAN, {}, livery)
+	var built: Dictionary = _build_model(id, livery)
 	if built.is_empty():
 		_finish_preview(false)
 		return
+	var vehicle: bool = built.has("vehicle")
 	_preview_candidate = built.root
 	var current := func() -> bool: return _current_preview(id, livery, generation) and is_instance_valid(built.get("root"))
 	await _preview_frame
 	if not current.call():
 		_release_candidate(built.get("root"))
 		return
-	var presentation: Dictionary = Presentation.prepare(built)
+	var presentation: Dictionary = _prepare_presentation(built)
 	var basis := Frames.attitude_to_render(deg_to_rad(PARKED_YAW_DEG), 0.0, 0.0) * (presentation.alignment as Basis)
 	built.root.transform = Transform3D(basis, _parking_position(presentation.lift))
-	if Catalog.is_rotorcraft(id):
+	if vehicle:
+		pass
+	elif Catalog.is_rotorcraft(id):
 		var pivot: Node3D = built.get("main_rotor_pivot") as Node3D
 		if pivot != null: pivot.rotation.z = PROP_ANGLE
 	else:
@@ -446,7 +465,7 @@ func _build_requested_preview(id: String, livery: String, generation: int) -> vo
 	presentation.bounds = Presentation.mesh_bounds(built.root, built.root)
 	var geometry := {presentation = presentation, extent = Shadow.model_extent(built.root), shape = ProjectedShadow.collect(built.root)}
 	if Catalog.is_rotorcraft(id): HeliNightLights.attach(built)
-	if not Catalog.is_rotorcraft(id) and _needs_night_layout(lighting_config, Conditions.resolve()):
+	if not vehicle and not Catalog.is_rotorcraft(id) and _needs_night_layout(lighting_config, Conditions.resolve()):
 		var layout: Dictionary = await _prepare_light_layout(built.root, current)
 		if not current.call():
 			_release_candidate(built.get("root"))
@@ -532,7 +551,7 @@ func refresh_presentation(selected_lighting: Dictionary, selected_night: Diction
 
 
 func _presentation_needs_layout() -> bool:
-	if airplane.is_empty() or Catalog.is_rotorcraft(str(airplane.get("aircraft_id", ""))): return false
+	if airplane.is_empty() or airplane.has("vehicle") or Catalog.is_rotorcraft(str(airplane.get("aircraft_id", ""))): return false
 	if airplane.root.get_node_or_null("NightKit") != null: return false
 	var geometry: Dictionary = _preview_geometry[_preview_order.back()]
 	return not geometry.has("light_layout") and _needs_night_layout(_pending_presentation.config, _pending_presentation.conditions)

@@ -576,7 +576,7 @@ Follow the repository's [verification scope](../tools/shared.md#verification-sco
 | LENS-08 | CPU drop pool (pinning, gravity on the image plane, airflow from the focus of expansion, merging, trails, blow-off, drying), ball-lens drop shader, and a fine-bead wetness layer | [drop_pool.gd](../../app/render/lens/drop_pool.gd), [lens_drop.gdshader](../../app/render/lens/lens_drop.gdshader) |
 | LENS-09 | Lightning level (FW-84) brightens drops and streaks | `_lens_flash` in [main.gd](../../app/main.gd) |
 | LENS-10/11 | Mud, grass, dust veil, lake spray, cracked lens (close-up/FPV, ≥ 12 m/s), glow oil film (close-up view) | [lens_stamp.gdshader](../../app/render/lens/lens_stamp.gdshader), [lens_film.gdshader](../../app/render/lens/lens_film.gdshader) |
-| Settings | Six rows at the end of Settings → Lighting, saved in `display.cfg` `[lens]`; "Glasses in pilot view" stays a file/CLI preference because the page has no room for a seventh row at 1080p | [display_preferences.gd](../../app/app_state/display_preferences.gd), [settings_screen.gd](../../app/ui/settings_screen.gd) |
+| Settings | Six rows at the end of Settings → Lighting (quality Automatic by default), saved in `display.cfg` `[lens]`; "Glasses in pilot view" stays a file/CLI preference because the page has no room for a seventh row at 1080p | [display_preferences.gd](../../app/app_state/display_preferences.gd), [settings_screen.gd](../../app/ui/settings_screen.gd) |
 
 ### Reused work and licences
 
@@ -592,7 +592,7 @@ Following the owner's instruction not to reinvent proven techniques:
 
 | Check | Result |
 | --- | --- |
-| [test_lens_effects.gd](../../app/tests/test_lens_effects.gd) | 59 checks, 0 failed. Covers settings, the rain law and worked example, triggers, pilot sweep at 20/60/144 FPS, drop-pool conservation and pinning, the no-TIME rule, preference save/load and lifecycle |
+| [test_lens_effects.gd](../../app/tests/test_lens_effects.gd) | 64 checks, 0 failed (one buffer-layout check is skipped under the headless dummy renderer and was verified with the real renderer). Covers settings, the rain law and worked example, triggers, pilot sweep at 20/60/144 FPS, drop-pool conservation and pinning, the no-TIME rule, preference save/load and lifecycle |
 | [test_lens_person_strike.gd](../../app/tests/test_lens_person_strike.gd) | 8 checks, 0 failed. A real FlightSession flies into a spectator capsule; the accepted event starts the curtain once; a restored tick does not replay it |
 | Affected suites | `test_settings_ui`, `test_ui_language` (all eight catalogues), `test_display_preferences`, `test_lighting_settings_ui`, `test_shadow_settings_ui`, `test_ui_settings_integration`, `test_advanced_graphics_settings`, `test_camera_settings`, `test_ui_pause`, `test_mr_activity`, `test_mr_activity_race`, `test_mr_camera`, `test_mr_osd`, `test_accident_integration`, `test_crash`: all passed |
 | Visual review in the running app | Curtain (strike and drain), lens splatter, rain in the electrical-storm preset (pilot, chase and FPV), mud and grass, cracked lens. Screenshots stay under `tmp/` and are not committed |
@@ -614,6 +614,32 @@ A second Good Enemy pass reviewed the code read-only. The fixes below were verif
 - Crash grime no longer fires twice. Splatter dries, and reset clears dryness.
 - The streaks' art speed factor is separate from the physical arrival law.
 - Smoothstep edges are ordered, the German tooltip is fixed, and Inigo Quilez is credited in the licence file.
+
+### Second round (2026-11-12)
+
+| Area | Change |
+| --- | --- |
+| Coverage | The helicopter route now has the lens (rain, grime, and blood when a crash point lies at a person). The quad and helicopter share `LensStack.strike_from_crash`. |
+| Options | Lens quality **Automatic** is the default. It follows Scene detail: low → Low, medium → Medium, high → High, extreme → Ultra. Settings changes made during a flight rebuild the lens at once on the airplane, quad and helicopter routes. |
+| Feedback | A person or pilot strike shows a five-second caption on the lens layer with a safety lesson ("Never fly over or toward people."), in all eight languages. |
+| Detail | Rain on the glass washes blood away: the curtain drains up to 1.6× faster and splats rinse off sooner. |
+| Performance | The curtain's slope comes from screen derivatives (one curtain evaluation per pixel instead of three). Wet-bead slopes are computed only inside a bead. Drops reach the GPU in one MultiMesh buffer upload instead of two engine calls per drop; the layout was verified against `get_instance_transform_2d` with the real renderer. The active view is read once per frame. |
+| Hygiene | The GDScript compiler warnings in the lens files are fixed (parameters named `seed`, an unused variable). |
+
+A second read-only Good Enemy pass reviewed this round. It found no crasher and no simulation write; the fixes below are applied and tested:
+
+- The caption always draws above the curtain.
+- Lazily created materials receive the canvas scale.
+- A lens rebuilt after a crash does not replay it.
+- An Automatic lens rebuilds when Scene detail changes.
+- A pilot strike already shown by the sweep is not repeated by the helicopter's crash lookup.
+- The airplane caption no longer duplicates into the diagnostics line.
+- The helicopter grades the strike by the impact's normal speed.
+- The accumulated rain travel is rebased before float32 precision suffers.
+- The bench's off baseline hides the lens layer.
+- The derivative-based curtain slope was checked visually on Compatibility only; Mobile and Forward+ remain part of LENS-12.
+
+Cost benchmarking was deferred: other tracks' Godot sessions were sharing the GPU (AGENTS.md: no benchmarks alongside competing workloads). A first run also left `time_scale` at 0.05, which produced a misleading 1 fps reading. [tools/lens/bench.py](../../tools/lens/bench.py) drives the debug bridge, so the 1080p table can be filled on an idle machine.
 
 ### Still open
 

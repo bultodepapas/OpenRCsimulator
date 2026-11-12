@@ -30,6 +30,8 @@ const ControllerActions = preload("res://input/controller_actions.gd")
 const Prompts = preload("res://ui/controller_prompts.gd")
 const HelicopterAudio = preload("res://audio/helicopter_audio.gd")
 const SmokeSystem = preload("res://render/smoke/smoke_system.gd")
+const LensStack = preload("res://render/lens/lens_stack.gd")
+const LensSettings = preload("res://render/lens/lens_settings.gd")
 signal pause_requested
 ## UI-31 (UI-30 PS-7): R uses the shell's restart transaction, like the airplane route.
 signal restart_requested
@@ -57,6 +59,10 @@ var _camera: Camera3D
 var _rig: RefCounted
 var _magnifier: Magnifier # CAM-18
 var _camera_obstacles: Dictionary={} # CAM-09: the scenery the cameras keep clear of
+## LENS-01 (docs/plans/lens-screen-effects.md): impact blood, lens rain and grime. Null when disabled.
+var _lens: LensStack
+var _lens_args: Dictionary={}
+var _lens_crash_seen := false
 var _airplane: Dictionary={}
 var _rotors: Node3D
 var _night_kit: Node3D
@@ -177,6 +183,8 @@ func _ready() -> void:
  _night_kit.set_mode(str(args.get("heli-lights","auto")))
  _crash_presentation.set_night_kit(_night_kit)
  _build_hud()
+ _lens_args=args
+ _start_lens()
  if str(args.get("soundscape","on")) != "off" and not args.has("trace") and not args.has("capture"):
   _soundscape_audio=HelicopterAudio.new()
   add_child(_soundscape_audio)
@@ -246,6 +254,53 @@ func apply_camera_preferences(config: Dictionary) -> void:
 func _process(dt: float) -> void:
  CameraRig.release_cursor_if_up()
  if not _capture: _present(minf(dt,.1))
+ if _lens!=null and session!=null:
+  if not _lens_crash_seen and not session.crash.is_empty(): _lens_crash()
+  _lens.advance(dt,session.sim.time(),_aftermath_paused or not session.holds.is_empty())
+
+
+## LENS-01: the helicopter session reports a crash as a reason and a point; the lens asks the installed obstacle
+## inventory (read-only) what was hit there. A rotor disc is large, so the search radius is wider than the quad's.
+func _start_lens() -> void:
+ if _lens!=null:
+  remove_child(_lens)
+  _lens.queue_free()
+  _lens=null
+ var resolved: Dictionary=LensSettings.resolve(_lens_args,not _lens_args.has("trace") and not _lens_args.has("capture"))
+ if not resolved.enabled or _camera==null or session==null: return
+ _lens=LensStack.new()
+ _lens.name="LensStack"
+ add_child(_lens)
+ var pilot: Dictionary=field.pilot
+ var ok: bool=_lens.configure({"settings":resolved,"camera":_camera,"session":session,
+  "view_provider":func() -> String: return str(_rig.view) if _rig!=null else "pilot",
+  "field":field,"hull":PackedFloat64Array([0.0,0.0,0.0]),
+  "station":PackedFloat64Array([float(pilot.north),float(pilot.east),float(pilot.down)]),
+  "eye_height":float(pilot.get("eye_height",1.7)),"mass_kg":float(session.sim.mass),"seed":hash(landscape_id)})
+ if not ok:
+  _lens.queue_free()
+  _lens=null
+  return
+ _lens.person_struck.connect(func(player: bool) -> void:
+  _lens.show_message(tr("The aircraft struck the pilot. Keep it in front of you and away from the flight line.") if player
+   else tr("The aircraft struck a person. Never fly over or toward people.")))
+
+
+## Settings changed during a paused flight: rebuild the lens from the new preference (presentation only).
+func apply_lens_preferences() -> void:
+ if _lens!=null or LensSettings.resolve(_lens_args,true).enabled: _start_lens()
+
+
+func _lens_crash() -> void:
+ _lens_crash_seen=true
+ var point: Variant=session.crash.get("point_world_ned")
+ if not point is PackedFloat64Array: return
+ # The impact's normal speed grades the strike; a sliding contact's CG speed would overstate it.
+ var speed: float=float(session.crash.get("normal_speed_mps",0.0))
+ var body: Variant=session.crash.get("body",PackedFloat64Array())
+ if speed<=0.0 and body is PackedFloat64Array and (body as PackedFloat64Array).size()>=6:
+  speed=Vector3(body[3],body[4],body[5]).length()
+ _lens.strike_from_crash(point,speed,_camera_obstacles,"heli:%d" % int(session.crash.get("tick",0)),1.2)
 
 func _present(dt: float, requested_fraction: float=-1.0) -> void:
  if session==null or session.sim.state.is_empty(): return
@@ -319,6 +374,8 @@ func _ground_height(x: float,z: float) -> float:
  return height
 
 func _on_session_resetting() -> void:
+ _lens_crash_seen=false
+ if _lens!=null: _lens.reset()
  if _night_kit!=null: _night_kit.set_mode("auto")
  World.flow_to(0.0)
  if recorder!=null and recorder.recording: recorder.stop()

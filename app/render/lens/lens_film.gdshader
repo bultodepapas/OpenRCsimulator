@@ -167,11 +167,12 @@ void fragment() {
 		vec2 wet_uv = vec2(uv.x * aspect, uv.y);
 		float t = wet_clock * 0.05;
 		float c = static_drops(wet_uv, t) * 2.0 * wetness;
-		vec2 e = SCREEN_PIXEL_SIZE.yy * 0.5;
-		float cx = static_drops(wet_uv + vec2(e.x, 0.0), t) * 2.0 * wetness;
-		float cy = static_drops(wet_uv + vec2(0.0, e.y), t) * 2.0 * wetness;
 		float bead = smoothstep(0.3, 1.0, c);
+		// Most pixels hold no bead: the slope (two more evaluations) is paid only inside one.
 		if (bead > 0.0) {
+			vec2 e = SCREEN_PIXEL_SIZE.yy * 0.5;
+			float cx = static_drops(wet_uv + vec2(e.x, 0.0), t) * 2.0 * wetness;
+			float cy = static_drops(wet_uv + vec2(0.0, e.y), t) * 2.0 * wetness;
 			vec2 slope = vec2(cx - c, cy - c);
 			vec3 seen = textureLod(screen_texture, clamp(uv + slope * 0.6, vec2(0.0), vec2(1.0)), wet_focus).rgb;
 			over(acc, seen * 1.05, bead);
@@ -186,11 +187,10 @@ void fragment() {
 	}
 	if (curtain_on > 0.0) {
 		float h = curtain_height(uv, aspect);
+		// The film's slope from screen derivatives (per two pixels, as the refraction and highlight expect): one
+		// evaluation of the curtain per pixel instead of three. The field is continuous, so 2×2 quads stay smooth.
+		vec2 grad = vec2(dFdx(h), dFdy(h)) * 2.0;
 		if (h > 0.0005) {
-			vec2 px = SCREEN_PIXEL_SIZE * 2.0;
-			float hx = curtain_height(uv + vec2(px.x, 0.0), aspect);
-			float hy = curtain_height(uv + vec2(0.0, px.y), aspect);
-			vec2 grad = vec2(hx - h, hy - h);
 			vec3 behind = textureLod(screen_texture, clamp(uv - grad * 0.6, vec2(0.0), vec2(1.0)), 0.6 + 2.2 * min(h, 1.0)).rgb;
 			vec3 ambient = textureLod(screen_texture, uv, 5.0).rgb;
 			float density = 1.35 * h;

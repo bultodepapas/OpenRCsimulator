@@ -5,6 +5,7 @@ extends SceneTree
 
 const Track := preload("res://sim/race/track.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
+const AirfieldTrack := preload("res://physics/ground_vehicle/airfield_track.gd")
 
 const SHIPPED := "res://data/race/tracks/openrc-practice-oval-1.json"
 const TOWER := "res://data/race/tracks/openrc-tower-sprint-1.json"
@@ -41,6 +42,7 @@ func _run() -> void:
 	_identity(field)
 	_frames(field)
 	_tower(field)
+	_venue(field)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -80,8 +82,9 @@ func _shipped(field: Dictionary) -> void:
 	var pad: Dictionary = course.pad
 	var first: Dictionary = gates[0]
 	var setback: float = first.n[0] * (pad.north - first.c[0]) + first.n[1] * (pad.east - first.c[1])
-	_check("the pad lies on the field's rotorcraft pad, at least 4 m behind gate 0", setback <= -4.0
-		and pad.north == float(field.rotorcraft_pad.north) and pad.east == float(field.rotorcraft_pad.east), "setback %.2f m" % setback)
+	var from_rotor_pad := Vector2(pad.north - float(field.rotorcraft_pad.north), pad.east - float(field.rotorcraft_pad.east))
+	_check("the pad lies at least 4 m behind gate 0, away from the field's rotorcraft pad", setback <= -4.0
+		and from_rotor_pad.length() > 10.0, "setback %.2f m" % setback)
 	print("    minimum horizontal clearance to field objects: %.3f m (%s)" % [course.min_object_clearance_m, course.nearest_object])
 	_check("every gate frame and the pad zone clear the listed field objects by at least 1 m",
 		course.min_object_clearance_m >= Track.OBJECT_CLEARANCE_M)
@@ -127,13 +130,13 @@ func _refusals(field: Dictionary) -> void:
 	m.gates[4].center_height_m = 1.2
 	_refuses("a lower edge below 0.3 m", m, "gates[4]: lower aperture edge")
 	m = raw.duplicate(true)
-	m.gates[1].east_m = 9.0
+	m.gates[1].east_m = 47.0
 	_refuses("consecutive gates closer than 6 m", m, "gates[0]->gates[1]: centres")
 	m = raw.duplicate(true)
-	m.pad = {north_m = 29.0, east_m = 33.5, heading_deg = 270.0}
+	m.pad = {north_m = 51.0, east_m = 71.5, heading_deg = 270.0}
 	_refuses("a pad on a gate's aperture plane", m, "within 1.0 m of gates[3]")
 	m = raw.duplicate(true)
-	m.pad.east_m = 2.0
+	m.pad.east_m = 40.0
 	_refuses("a pad less than 4 m behind gate 0", m, "pad: -3.000 m from gates[0]")
 	m = raw.duplicate(true)
 	m.ruleset = "openrc-local-race-v2"
@@ -173,9 +176,12 @@ func _refusals(field: Dictionary) -> void:
 	_check("RACE-01 a post base on rising ground that breaks the lower-edge clearance refuses", not prepared.ok
 		and "; ".join(prepared.errors).contains("at a post"), "; ".join(prepared.errors).left(200))
 	m = raw.duplicate(true)
+	# Back beside the pilot station, 6 m south of where the oval first stood: onto the field's listed objects.
 	for gate: Dictionary in m.gates:
-		gate.north_m = float(gate.north_m) - 6.0
+		gate.north_m = float(gate.north_m) - 28.0
+		gate.east_m = float(gate.east_m) - 38.0
 	m.pad.north_m = 0.0
+	m.pad.east_m = 0.0
 	prepared = Track.prepare(Track.load_document(m).track, field, _flat)
 	_check("RACE-01 a course moved onto listed field objects refuses with the object named", not prepared.ok
 		and "; ".join(prepared.errors).contains("field object"), "; ".join(prepared.errors).left(200))
@@ -186,7 +192,7 @@ func _identity(field: Dictionary) -> void:
 	var raw: Dictionary = _raw()
 	var base: Dictionary = Track.prepare(Track.load_document(raw).track, field, _flat)
 	var edited: Dictionary = raw.duplicate(true)
-	edited.gates[4].east_m = 5.5
+	edited.gates[4].east_m = 43.5
 	var moved: Dictionary = Track.prepare(Track.load_document(edited).track, field, _flat)
 	var renamed: Dictionary = raw.duplicate(true)
 	renamed.gates[1].id = "south-east-b"
@@ -268,3 +274,51 @@ func _tower(field: Dictionary) -> void:
 	_check("DR-28 the tower sprint varies height and size: a low hurdle, a raised tower, three gate widths",
 		gates.size() == 7 and lowest < 0.4 and highest > 4.0 and widths.size() == 3 and prepared.course.frames.size() == 28,
 		"lowest edge %.2f m, highest centre %.2f m, widths %s" % [lowest, highest, widths.keys()])
+
+
+## RC-TRACK venue: every shipped course keeps its gate frames and its pad off the airplane runway and outside the RC car
+## circuit (its lane, shoulders, banks, access lane and dressing), with a margin, so the field reads as three areas.
+func _venue(field: Dictionary) -> void:
+	var circuit: Dictionary = AirfieldTrack.load_default()
+	_check("RC-TRACK the club circuit loads", circuit.ok)
+	if not circuit.ok:
+		return
+	var bounds: PackedFloat64Array = AirfieldTrack.bounds_ne(circuit.track)
+	var runway: Dictionary = {}
+	for surface: Dictionary in field.surfaces:
+		if str(surface.id) == str(field.runway):
+			runway = surface
+	var runway_north := [float(runway.center_north) - 0.5 * float(runway.width_north_south),
+		float(runway.center_north) + 0.5 * float(runway.width_north_south)]
+	var runway_east := [float(runway.center_east) - 0.5 * float(runway.length_east_west),
+		float(runway.center_east) + 0.5 * float(runway.length_east_west)]
+	for path: String in [SHIPPED, TOWER]:
+		var prepared: Dictionary = Track.prepare(Track.load_file(path).track, field, _flat)
+		if not prepared.ok:
+			_check("RC-TRACK %s prepares" % path.get_file(), false, str(prepared.errors))
+			continue
+		var circuit_gap := INF
+		var runway_gap := INF
+		var points: Array = []
+		for box: Dictionary in prepared.course.frames:
+			var reach: float = maxf(float(box.half_x), float(box.half_z))
+			points.append([float(box.north), float(box.east), reach])
+		points.append([float(prepared.course.pad.north), float(prepared.course.pad.east), 1.0])
+		for point: Array in points:
+			circuit_gap = minf(circuit_gap, _rect_gap(point, bounds[0], bounds[1], bounds[2], bounds[3]))
+			# Its dressing (signs, tape, tyres) stands partly outside the surface bounds.
+			for item: Dictionary in AirfieldTrack.dressing(circuit.track):
+				var half: float = 0.5 * maxf(float(item.width), float(item.length))
+				circuit_gap = minf(circuit_gap, _rect_gap(point, float(item.north) - half, float(item.north) + half,
+					float(item.east) - half, float(item.east) + half))
+			runway_gap = minf(runway_gap, _rect_gap(point, runway_north[0], runway_north[1], runway_east[0], runway_east[1]))
+		_check("RC-TRACK %s stays 5 m clear of the RC car circuit and the runway" % prepared.course.track_id,
+			circuit_gap >= 5.0 and runway_gap >= 5.0, "circuit %.2f m, runway %.2f m" % [circuit_gap, runway_gap])
+
+
+## Horizontal gap (m) from a disc [north, east, radius] to a north/east rectangle (negative inside).
+func _rect_gap(point: Array, north_min: float, north_max: float, east_min: float, east_max: float) -> float:
+	var dn: float = maxf(north_min - float(point[0]), float(point[0]) - north_max)
+	var de: float = maxf(east_min - float(point[1]), float(point[1]) - east_max)
+	var outside: float = Vector2(maxf(dn, 0.0), maxf(de, 0.0)).length()
+	return (outside if dn > 0.0 or de > 0.0 else maxf(dn, de)) - float(point[2])

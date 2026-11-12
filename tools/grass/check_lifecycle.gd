@@ -171,14 +171,17 @@ func _run() -> void:
 				_fail("Home control exists before opening RC vehicle")
 				_abort_run = true
 				break
-			home_control.set("ground_vehicle_id", str(vehicle_id))
-			var choice := home_control.get("ground_vehicle_choice") as OptionButton
-			var garage_button := home_control.get("ground_vehicle_button") as Button
-			if choice == null or garage_button == null:
-				_fail("Home garage exposes vehicle selector and launch button")
+			# UI-39: the RC cars are Home Vehicles catalog entries; the pinned Fly (DRIVE) starts the selected one.
+			var catalog_ids: PackedStringArray = home_control.get("_catalog_ids")
+			var catalog_buttons: Array = home_control.get("_catalog_buttons")
+			var garage_button := home_control.get("fly_button") as Button
+			var row := catalog_ids.find(str(vehicle_id))
+			if row < 0 or garage_button == null:
+				_fail("Home Vehicles catalog lists RC vehicle %s and the launch button" % vehicle_id)
 				_abort_run = true
 				break
-			choice.select(GroundCatalog.IDS.find(str(vehicle_id)))
+			(catalog_buttons[row] as Button).pressed.emit()
+			await _settle(2)
 			garage_button.pressed.emit()
 			var rc_scene := _app.get("ground_vehicle") as Node3D
 			if rc_scene == null:
@@ -188,7 +191,7 @@ func _run() -> void:
 			home_owner = null
 			home_field = null
 			home_control = null
-			choice = null
+			catalog_buttons = []
 			garage_button = null
 			_check("AppRoot selected requested RC vehicle %s" % vehicle_id,
 				str(rc_scene.get("vehicle_id")) == str(vehicle_id))

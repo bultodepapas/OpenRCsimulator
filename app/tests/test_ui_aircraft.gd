@@ -5,6 +5,7 @@
 extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Roster := preload("res://app_state/vehicle_roster.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
@@ -71,13 +72,14 @@ func _tab_until(target: String, max_presses := 32) -> bool:
 	return ui.focus_name() == target
 
 
+## UI-39: Home counts the whole vehicle roster (aircraft, then the RC vehicles).
 func _aircraft_counter(id: String) -> String:
-	var ids: PackedStringArray = Catalog.player_ids()
+	var ids: PackedStringArray = Roster.ids()
 	return "%d / %d" % [ids.find(id) + 1, ids.size()]
 
 
 func _aircraft_counter_tooltip(id: String) -> String:
-	var ids: PackedStringArray = Catalog.player_ids()
+	var ids: PackedStringArray = Roster.ids()
 	return tr("Aircraft %d of %d") % [ids.find(id) + 1, ids.size()]
 
 
@@ -172,13 +174,28 @@ func _run() -> void:
 		and not home.natural_random_button.disabled, "%s / %s" % [home.aircraft_id, home.aircraft_count_label.text])
 	_check("helicopter selection is saved without starting a session",
 		Preferences.load_from(PREFS).aircraft == HELI and app.flight == null)
+	# UI-39: after the aircraft the arrow steps through the RC vehicles; the saved aircraft stays the helicopter.
+	for vehicle: Dictionary in Roster.ACTIVITIES:
+		await ui.tap(KEY_ENTER)
+		await _preview(app)
+		_check("next reaches the RC vehicle %s on the card and in the backdrop" % vehicle.id,
+			home.activity_id == vehicle.id and home.aircraft_id == HELI and home.aircraft_count_label.text == _aircraft_counter(vehicle.id)
+			and str(app.home_scene.airplane.get("aircraft_id", "")) == vehicle.id and not home.fly_button.disabled
+			and Preferences.load_from(PREFS).aircraft == HELI and app.flight == null and app.ground_vehicle == null,
+			"%s / %s" % [home.activity_id, home.aircraft_count_label.text])
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK)
+	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK and home.activity_id.is_empty())
 	await ui.tap(KEY_LEFT)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("previous arrow from the Stik reaches the last helicopter", home.aircraft_id == HELI, home.aircraft_id)
+	_check("previous arrow from the Stik reaches the last RC vehicle", home.activity_id == Roster.ACTIVITIES[-1].id, home.selected_id())
+	for i in Roster.ACTIVITIES.size() - 1:
+		await ui.tap(KEY_ENTER)
+		await _preview(app)
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("previous through the RC vehicles reaches the last helicopter", home.aircraft_id == HELI and home.activity_id.is_empty(), home.selected_id())
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("previous from the helicopter returns to the X8", home.aircraft_id == X8, home.aircraft_id)
@@ -213,7 +230,7 @@ func _run() -> void:
 	app.set_aircraft("skywalker-x8")
 	await _preview(app)
 	_check("app selection normalizes the historical stock alias", home.aircraft_id == X8 and app.preferences.aircraft == X8)
-	home._request_aircraft("skywalker-x8")
+	home._request_vehicle("skywalker-x8")
 	await _preview(app)
 	_check("catalog requests normalize the historical stock alias", home.aircraft_id == X8 and app.preferences.aircraft == X8)
 	app.set_aircraft(X8)

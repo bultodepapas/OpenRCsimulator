@@ -16,6 +16,7 @@ const ViewportColor := preload("res://render/viewport_color.gd")
 const Spec := preload("res://spec.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const VehicleRoster := preload("res://app_state/vehicle_roster.gd")
 const ControlsReference := preload("res://ui/controls_reference.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const ScreenStack := preload("res://ui/screen_stack.gd")
@@ -55,7 +56,7 @@ const COMMANDS := {
 	"look": "all=<bool>: START HERE. route, screens, flight summary, every visible control as {ref, role, name, value, options}, next steps",
 	"choose": "ref=|field=|text=|path= value=<item | on/off | number | text>: set any widget by its field name, as a player would",
 	"catalog": "valid ids: aircraft (with their starts), landscapes, time_of_day, languages, screens, camera views",
-	"setup": "aircraft= start= landscape= time_of_day= language=: Home choices, validated and read back (then fly)",
+	"setup": "aircraft= vehicle= start= landscape= time_of_day= language=: Home choices, validated and read back (then fly; vehicle= also selects an RC car, the FPV quad or the RC blimp, which Home's Fly starts)",
 	"ping": "liveness: pid, engine version, frame, fps",
 	"state": "route, screens, focus, fps, log counts; flight: aircraft, tick, pause/holds/crash, pose, commands",
 	"fly": "aircraft=<catalog id> start=<runway|airborne|...>: from Home, select and fly (no menu navigation)",
@@ -1230,6 +1231,8 @@ func _cmd_fly(request: Dictionary) -> Dictionary:
 		var id := str(request.aircraft)
 		if not app.set_aircraft(id):
 			return _fail("aircraft selection was refused; flight not started")
+	elif not str(app.home.get("activity_id")).is_empty():
+		return _fail("Home has the RC vehicle %s selected: fly aircraft=<id>, or press text=FLY / DRIVE to start the vehicle" % app.home.activity_id)
 	if request.has("start"):
 		# A supported vocabulary value may normalize for the chosen aircraft/field.
 		# Keep the existing fallback contract and report the effective selection below.
@@ -1256,7 +1259,8 @@ func _cmd_home(_request: Dictionary) -> Dictionary:
 	return {pending = func() -> Variant:
 		if app.get("flight") == null and app.get("home") != null:
 			return _ok({route = _route(), screens = _screen_ids()})
-		if Engine.get_process_frames() - started > 120:
+		# UI-28-R5b: Home is rebuilt in stages after the flight ends; only a flight that stays is a failure.
+		if app.get("flight") != null and Engine.get_process_frames() - started > 120:
 			return _fail("still in flight after 120 frames; screens %s (a recorder may be asking: check ui)" % [_screen_ids()])
 		return null,
 		timeout_s = 60.0}
@@ -2882,8 +2886,11 @@ func _cmd_catalog(_request: Dictionary) -> Dictionary:
 			if Catalog.hand_launch_supported(id):
 				starts.append("hand_launch")
 		aircraft.append({id = id, name = Catalog.short_name(id), rotorcraft = Catalog.is_rotorcraft(id), starts = starts})
+	var vehicles: Array = []
+	for entry: Dictionary in VehicleRoster.ACTIVITIES:
+		vehicles.append({id = entry.id, name = entry.name, family = entry.family})
 	var home: Variant = app.get("home") if app != null else null
-	return _ok({aircraft = aircraft, technical_aircraft_ids = Array(Catalog.ids()), landscapes = Array(Landscapes.ids()), time_of_day = Array(Conditions.HOME_CHOICES),
+	return _ok({aircraft = aircraft, vehicles = vehicles, technical_aircraft_ids = Array(Catalog.ids()), landscapes = Array(Landscapes.ids()), time_of_day = Array(Conditions.HOME_CHOICES),
 		languages = Preferences.LANGUAGES, screens = SCREEN_OPENERS.keys(), camera_views = CameraViews,
 		gizmo_layers = FlightGizmos.LAYERS, selected = _home_selection() if home != null else {},
 		notes = ["start: a runway-less landscape or aircraft falls back (see setup's read-back)",
@@ -2893,7 +2900,9 @@ func _cmd_catalog(_request: Dictionary) -> Dictionary:
 func _home_selection() -> Dictionary:
 	var home: Variant = app.get("home")
 	var prefs: Variant = app.get("preferences")
-	return {aircraft = home.get("aircraft_id") if home != null else null, start = home.get("start_choice") if home != null else null,
+	return {aircraft = home.get("aircraft_id") if home != null else null,
+		vehicle = home.call("selected_id") if home != null and home.has_method("selected_id") else null,
+		start = home.get("start_choice") if home != null else null,
 		landscape = app.get("landscape_id"), time_of_day = prefs.get("time_of_day") if prefs != null else null,
 		language = TranslationServer.get_locale()}
 
@@ -2906,13 +2915,15 @@ func _cmd_setup(request: Dictionary) -> Dictionary:
 	if not errors.is_empty():
 		return _fail("nothing changed: " + "; ".join(errors))
 	var adjusted := PackedStringArray()
-	for key: String in ["language", "aircraft", "landscape", "time_of_day", "start"]:
+	if bool(app.get("home_build_pending")):
+		return _fail("Home is still being prepared: retry when the loading surface closes")
+	for key: String in ["language", "aircraft", "vehicle", "landscape", "time_of_day", "start"]:
 		if request.has(key):
 			var applied: bool = app.call("set_" + ("start_choice" if key == "start" else key), str(request[key]))
 			if not applied:
 				adjusted.append(key)
 	var wanted := {}
-	for key: String in ["aircraft", "start", "landscape", "time_of_day", "language"]:
+	for key: String in ["aircraft", "vehicle", "start", "landscape", "time_of_day", "language"]:
 		if request.has(key):
 			wanted[key] = Catalog.canonical_id(str(request[key])) if key == "aircraft" else str(request[key])
 	return {pending = func() -> Variant:
@@ -2922,6 +2933,8 @@ func _cmd_setup(request: Dictionary) -> Dictionary:
 			if str(now.get(key)) != wanted[key]:
 				differs[key] = {asked = wanted[key], got = now.get(key)}
 		if differs.has("landscape") and _screen_ids().has("loading"):
+			return null
+		if bool(app.get("home_build_pending")): # UI-28-R5b: a staged Home backdrop is still being built
 			return null
 		var out := {selected = now}
 		if not adjusted.is_empty():
@@ -2942,6 +2955,10 @@ func _home_request_errors(request: Dictionary) -> PackedStringArray:
 		errors.append("language '%s' unknown; one of %s" % [request.language, Preferences.LANGUAGES.keys()])
 	if request.has("aircraft") and (not Catalog.is_player_selectable(str(request.aircraft)) or not Catalog.can_fly(str(request.aircraft))):
 		errors.append("aircraft '%s' is not a selectable stock flight; see catalog (technical IDs require direct CLI)" % request.aircraft)
+	if request.has("vehicle") and not VehicleRoster.has(str(request.vehicle)):
+		errors.append("vehicle '%s' unknown; one of %s" % [request.vehicle, VehicleRoster.ids()])
+	if request.has("vehicle") and request.has("aircraft"):
+		errors.append("give aircraft= or vehicle=, not both")
 	if request.has("landscape") and not Landscapes.has(str(request.landscape)):
 		errors.append("landscape '%s' unknown; one of %s" % [request.landscape, Landscapes.ids()])
 	if request.has("time_of_day") and not Conditions.HOME_CHOICES.has(str(request.time_of_day)):

@@ -312,6 +312,8 @@ func _capture_tests(screen: CanvasLayer, registry: RefCounted, store: RefCounted
 
 
 func _spanish_action_bounds(screen: CanvasLayer) -> void:
+	# UI-15-UX-02c hides other vehicles' rows by default; this layout check covers every row.
+	screen.show_all_vehicle_actions.button_pressed = true
 	TranslationServer.set_locale("es")
 	for i in 4:
 		await process_frame
@@ -376,9 +378,9 @@ func _menu_validation_test() -> void:
 			"Axis switch learned. Save, then move away from OFF and back to OFF before use.",
 			"More than one switch axis moved. Capture one switch at a time.", "Invalid switch range. The binding is unchanged.",
 			"Calibrate this new radio before saving. A device name cannot verify its channel mapping.",
-			"Hold the AILERON stick fully RIGHT and press Enter", "Hold the ELEVATOR stick fully BACK and press Enter",
-			"Hold the RUDDER stick fully RIGHT and press Enter", "Move the AILERON stick fully LEFT, then centre. Press Enter",
-			"Move the ELEVATOR stick fully FORWARD, then centre. Press Enter", "Move the RUDDER stick fully LEFT, then centre. Press Enter",
+			"Hold the ROLL stick (aileron) fully RIGHT.", "Hold the PITCH stick (elevator) fully BACK.",
+			"Hold the YAW stick (rudder) fully RIGHT.", "Move the ROLL stick (aileron) fully LEFT, then centre.",
+			"Move the PITCH stick (elevator) fully FORWARD, then centre.", "Move the YAW stick (rudder) fully LEFT, then centre.",
 			"Hold the requested direction away from centre before continuing; then try again."]:
 		_check("Spanish switch-learning text is translated: " + original, TranslationServer.translate(original) != original)
 	TranslationServer.set_locale("en")
