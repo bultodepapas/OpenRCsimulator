@@ -319,6 +319,31 @@ neither this test nor a headless result qualifies 1080p rendering or physical re
 `--physics-backend=native` instead runs the normal observer-on/off study with native;
 the default remains `gdscript_reference`.
 
+Use `--compare-identical` for an A/A control: both roles use the selected backend
+with observation enabled, in alternating a/b order. For an experimental Mac
+source install, for example:
+
+```sh
+python3 research/performance/session_baseline.py --godot "$OPENRC_GODOT" \
+  --project "$PREPARED_APP" --out tmp/mac-source-aa \
+  --aircraft jensen-das-ugly-stik-60 --case trim --physics-backend native \
+  --experimental-native-macos --compare-identical \
+  --warmup-ticks 2400 --sample-ticks 14400 --repeats 5
+```
+
+This writes the separate `session_identical.json` format
+`openrc-session-identical-campaign v1`. It reports paired callback-mean ratios
+and absolute differences as variation, with the same completion, fingerprint,
+native-coverage and artifact guards. Existing backend-campaign readers refuse
+this format. A/A does not establish a speedup or an acceptance threshold; retain
+its raw reports and the observer-on/off controls without subtracting noise from
+individual ticks. The ordinary observer and backend report formats are unchanged.
+
+The fixed probe selects `Catalog.entry(id).data`. For an electrical aircraft this
+can be the ideal-supply profile rather than Home's finite-pack default. Name the
+actual input hash/profile in results; these timings cannot stand for an unmeasured
+battery mode. Fleet correctness covers its separately declared modes.
+
 ### FlightAudio sound-speed accessor microprobe
 
 `sound_speed_probe.gd` instantiates and freezes the production `main.tscn` flight scene for Stik,

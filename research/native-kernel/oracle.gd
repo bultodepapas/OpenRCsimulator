@@ -25,6 +25,9 @@ const WingPolarFixture := preload("res://tests/wing_polar_fixture.gd")
 
 const AIRCRAFT := "jensen-das-ugly-stik-60"
 const MAX_EXAMPLES := 6
+# AArch64 FPCR controls: AHP, DN, FZ, RMode, FZ16, IDE, EBF, exception enables, NEP, AH and FIZ.
+# Excludes reserved fields, the AArch32-only Len/Stride fields, and FPSR exception status.
+const MACOS_FPCR_CONTROL_MASK := 0x07c8bf07
 
 var _extension := ""
 var _output := ""
@@ -32,12 +35,15 @@ var _seed := 20261027
 var _states := 12000
 var _variant_states := 1500
 var _timing_rounds := 15
+var _experimental_native_macos := false
 var _rng := RandomNumberGenerator.new()
 var _native: Object
 var _report := {}
 var _failures := PackedStringArray()
 var _specials := PackedFloat64Array()
 var _options := {}
+var _macos_fpcr_baseline := 0
+var _macos_fpcr_ready := false
 
 
 func _initialize() -> void:
@@ -57,6 +63,7 @@ func _run() -> void:
 	var started := Time.get_ticks_msec()
 	_report = {
 		format = "openrc-nk3-oracle v1", seed = _seed, states = _states, variant_states = _variant_states,
+		experimental_native_macos = _experimental_native_macos,
 		engine = Engine.get_version_info().string, processor = OS.get_processor_name(),
 		identity = _native.backend_identity(), sources = _source_hashes(), components = {}, coverage = {},
 		refusals = {}, timing = {},
@@ -64,9 +71,21 @@ func _run() -> void:
 	if not _self_test():
 		_finish(started)
 		return
+	# Only the base oracle performs the explicit boundary probe. Derived family
+	# oracles keep their existing state, counters and coverage unchanged.
+	var macos_boundary: bool = OS.get_name() == "macOS" and Engine.get_architecture_name() == "arm64" \
+		and get_script().resource_path.get_file() == "oracle.gd"
+	if macos_boundary and not _check_macos_boundary():
+		_finish(started)
+		return
 	_check_law_identity()
 	_check_literals()
+	if macos_boundary and not _observe_macos_fpcr("before_checks"):
+		_finish(started)
+		return
 	_checks()
+	if macos_boundary:
+		_observe_macos_fpcr("after_checks")
 	_finish(started)
 
 
@@ -106,6 +125,7 @@ func _extra_option_names() -> PackedStringArray:
 
 
 func _parse() -> bool:
+	var saw_experimental_native_macos := false
 	for arg: String in OS.get_cmdline_user_args():
 		var pair := arg.trim_prefix("--").split("=", true, 1)
 		if pair.size() != 2:
@@ -118,6 +138,12 @@ func _parse() -> bool:
 			"states": _states = pair[1].to_int()
 			"variant-states": _variant_states = pair[1].to_int()
 			"timing-rounds": _timing_rounds = pair[1].to_int()
+			"experimental-native-macos":
+				if saw_experimental_native_macos or pair[1] not in ["true", "false"]:
+					_failures.append("experimental-native-macos must occur once with true or false")
+				else:
+					_experimental_native_macos = pair[1] == "true"
+				saw_experimental_native_macos = true
 			_:
 				if pair[0] in _extra_option_names(): _options[pair[0]] = pair[1]
 				else: _failures.append("unknown option " + pair[0])
@@ -169,6 +195,200 @@ func _special_values() -> PackedFloat64Array:
 		1, -9223372036854775807, # +-min subnormal
 		0x7fefffffffffffff, -4503599627370497, # +-DBL_MAX
 	]))
+
+
+## FPCR is a control register; FPSR exception status is intentionally not read or compared.
+static func _macos_controls_equal(left: int, right: int) -> bool:
+	return ((left ^ right) & MACOS_FPCR_CONTROL_MASK) == 0
+
+
+func _observe_macos_fpcr(label: String) -> bool:
+	var state: Variant = _native.math_control_state()
+	if not (state is Dictionary) or state.get("available") != true or typeof(state.get("fpcr")) != TYPE_INT:
+		_report.macos_boundary.control_unchanged = false
+		_failures.append("macOS boundary probe cannot read FPCR at " + label)
+		return false
+	var fpcr: int = state.fpcr
+	_report.macos_boundary.fpcr[label] = {raw = "0x%016x" % fpcr,
+		control = "0x%08x" % (fpcr & MACOS_FPCR_CONTROL_MASK)}
+	_report.coverage.macos_fpcr.observations += 1
+	if not _macos_fpcr_ready:
+		_macos_fpcr_baseline = fpcr
+		_macos_fpcr_ready = true
+		return true
+	if not _macos_controls_equal(_macos_fpcr_baseline, fpcr):
+		_report.macos_boundary.control_unchanged = false
+		_report.coverage.macos_fpcr.changed += 1
+		_failures.append("macOS FPCR controls changed at " + label)
+		return false
+	return true
+
+
+## Values are assembled from integer bits at runtime; no signaling NaN is claimed.
+func _check_macos_float64_transport() -> bool:
+	var bits := PackedInt64Array([
+		0, -9223372036854775808, # both zeros
+		1, -9223372036854775807, 0x000fffffffffffff, 0x0010000000000000, # subnormal and boundary
+		0x7ff8000000000000, 0x7ff8000000000001, -2251799813685247, # quiet NaNs, signs and payloads
+		0x3ff0000000000001, -4616189618054758399, # values separated from float32 by one binary64 ULP
+		0x7ff0000000000000, -4503599627370496, # infinities
+	])
+	var values := _from_bits(bits)
+	var original := values.to_byte_array()
+	for i in bits.size():
+		var row: Variant = _native.float64_transport(values[i], values)
+		if not (row is Dictionary) or typeof(row.get("scalar")) != TYPE_FLOAT \
+				or not (row.get("values") is PackedFloat64Array):
+			_failures.append("macOS float64 transport returned malformed scalar or packed data")
+			return false
+		var returned: PackedFloat64Array = row.values
+		_compare("macos_float64_scalar_transport", PackedInt64Array([bits[i]]),
+			PackedInt64Array([_bits(row.scalar)]), i)
+		_compare("macos_float64_packed_transport", original, returned.to_byte_array(), i)
+		_report.coverage.macos_float64_transport.scalar_cases += 1
+		_report.coverage.macos_float64_transport.packed_cases += 1
+	var first: Dictionary = _native.float64_transport(values[0], values)
+	var second: Dictionary = _native.float64_transport(values[1], values)
+	if not (first.get("values") is PackedFloat64Array) or not (second.get("values") is PackedFloat64Array):
+		_failures.append("macOS float64 transport did not retain packed results")
+		return false
+	var first_values: PackedFloat64Array = first.values
+	var second_values: PackedFloat64Array = second.values
+	values[0] = 17.0
+	var changed_input := values.to_byte_array()
+	_report.macos_boundary.retained_after_input_change = _compare("macos_float64_input_isolation", original,
+		first_values.to_byte_array())
+	first_values[1] = 42.0
+	_report.macos_boundary.independent_results = _compare("macos_float64_result_isolation", original,
+		second_values.to_byte_array())
+	_report.macos_boundary.caller_unchanged_by_result = _compare("macos_float64_caller_isolation", changed_input,
+		values.to_byte_array())
+	var repeated: Dictionary = _native.float64_transport(values[1], values)
+	if not (repeated.get("values") is PackedFloat64Array):
+		_failures.append("macOS float64 repeated transport returned malformed data")
+		return false
+	var repeated_values: PackedFloat64Array = repeated.values
+	_report.macos_boundary.repeated_call = _compare("macos_float64_repeated_transport", changed_input,
+		repeated_values.to_byte_array())
+	_report.macos_boundary.retained_after_repeat = _compare("macos_float64_retained_transport", original,
+		second_values.to_byte_array())
+	_report.coverage.macos_float64_transport.retention_checks = 5
+	# Deliberately round the adjacent binary64 value through Godot's float32
+	# container; prove the comparator notices the real narrowing. Do not read or write FPSR.
+	var exact := _from_bits(PackedInt64Array([0x3ff0000000000001]))
+	var narrowed: float = PackedFloat32Array([exact[0]]).to_byte_array().decode_float(0)
+	var detected := not _compare("_macos_float32_detector", exact, PackedFloat64Array([narrowed]))
+	var detector: Dictionary = _report.components["_macos_float32_detector"]
+	_report.components.erase("_macos_float32_detector")
+	_report.macos_boundary.float32_detector_input = "%016x" % _bits(exact[0])
+	_report.macos_boundary.float32_detector_result = "%016x" % _bits(narrowed)
+	_report.macos_boundary.float32_narrowing_detected = detected and detector.finite_ulp == 1 \
+		and _bits(narrowed) != _bits(exact[0])
+	if not _report.macos_boundary.float32_narrowing_detected:
+		_failures.append("macOS float32 narrowing detector did not activate")
+		return false
+	return true
+
+
+func _check_macos_boundary() -> bool:
+	_report.macos_boundary = {
+		format = "openrc-nk3-macos-boundary-probe v1", control_mask = "0x%08x" % MACOS_FPCR_CONTROL_MASK,
+		control_unchanged = true, fpcr = {}, fpsr = "not_observed", signaling_nan = "not_tested",
+		float32_narrowing_detected = false, control_detector = false,
+		retained_after_input_change = false, independent_results = false, caller_unchanged_by_result = false,
+		repeated_call = false, retained_after_repeat = false, stage_prepared = false,
+		tick_context_accepted = false, stage_shaped = false, refusal_observed = false,
+	}
+	_report.coverage.macos_float64_transport = {scalar_cases = 0, packed_cases = 0, retention_checks = 0,
+		quiet_nan_encodings = 3, signaling_nan_tested = false, beyond_float32_cases = 2}
+	_report.coverage.macos_fpcr = {observations = 0, changed = 0, fpsr_tested = false}
+	if not _native.has_method("float64_transport") or not _native.has_method("math_control_state"):
+		_failures.append("macOS float64 or FPCR diagnostic method is unavailable")
+		return false
+	# The detector flips a saved control-bit value, not the host environment. A
+	# reserved-bit change must not be mistaken for an FPCR control change.
+	_report.macos_boundary.control_detector = not _macos_controls_equal(0, 1 << 22) \
+		and _macos_controls_equal(0, 1 << 40)
+	if not _report.macos_boundary.control_detector:
+		_failures.append("macOS FPCR control-bit detector did not activate")
+		return false
+	if not _observe_macos_fpcr("before_transport"):
+		return false
+	if not _check_macos_float64_transport() or not _observe_macos_fpcr("after_transport"):
+		return false
+	if not _observe_macos_fpcr("before_math"):
+		return false
+	var math_result: PackedFloat64Array = _native.math_probe(4, PackedFloat64Array([-1.25]),
+		PackedFloat64Array([0.0]), PackedFloat64Array([0.0]))
+	_compare("macos_fpcr_math_witness", PackedFloat64Array([1.25]), math_result)
+	if not _observe_macos_fpcr("after_math"):
+		return false
+	var session: Node = Session.new()
+	session.experimental_native_macos = _experimental_native_macos
+	session.soft_hull_contacts = true
+	session.setup(str(Catalog.entry(AIRCRAFT).data), AIRCRAFT)
+	if not session.is_flyable():
+		_failures.append("macOS FPCR witness aircraft setup failed")
+		session.free()
+		return false
+	var field: Dictionary = FieldLoader.load_from()
+	var lake: Dictionary = LakeLoader.load_from(LakeLoader.DEFAULT_PATH)
+	if not field.ok or not lake.ok or not session.set_field(field.field) or not session.set_lake_context(lake.lake):
+		_failures.append("macOS FPCR witness field/lake setup failed")
+		session.free()
+		return false
+	session.start_choice = Session.START_RUNWAY
+	session.reset()
+	if not session.sim.fault_reason.is_empty() or session.sim.paused or not session.crash.is_empty():
+		_failures.append("macOS FPCR witness reset failed")
+		session.free()
+		return false
+	var config: Dictionary = Session.NativeStage.config_for(session)
+	if not _observe_macos_fpcr("before_prepare"):
+		session.free()
+		return false
+	var prepared: Dictionary = _native.prepare_stage(config)
+	_report.macos_boundary.stage_prepared = prepared.get("ok") == true
+	var prepare_fpcr := _observe_macos_fpcr("after_prepare")
+	if not _report.macos_boundary.stage_prepared or not prepare_fpcr:
+		_failures.append("macOS FPCR witness stage preparation failed: " + str(prepared.get("error", "")))
+		session.free()
+		return false
+	var aux: PackedFloat64Array = session.sim.aux
+	var deflections: Dictionary = session._deflections(aux)
+	var controls := PackedFloat64Array([deflections.elevator, deflections.aileron_right,
+		deflections.aileron_left, deflections.rudder])
+	if not _observe_macos_fpcr("before_context"):
+		session.free()
+		return false
+	_report.macos_boundary.tick_context_accepted = _native.set_tick_context(aux, session.sim.inputs, controls, session.sim.time())
+	var context_fpcr := _observe_macos_fpcr("after_context")
+	if not _report.macos_boundary.tick_context_accepted or not context_fpcr:
+		_failures.append("macOS FPCR witness tick context failed")
+		session.free()
+		return false
+	if not _observe_macos_fpcr("before_stage"):
+		session.free()
+		return false
+	var stage: Dictionary = _native.stage(session.sim.state, session.sim.continuous, session.sim.time())
+	_report.macos_boundary.stage_shaped = stage.has("loads") and stage.has("derivative") and stage.has("rotor_momentum")
+	var stage_fpcr := _observe_macos_fpcr("after_stage")
+	if not _report.macos_boundary.stage_shaped or not stage_fpcr:
+		_failures.append("macOS FPCR witness stage evaluation failed")
+		session.free()
+		return false
+	if not _observe_macos_fpcr("before_refusal"):
+		session.free()
+		return false
+	var refusal: Dictionary = _native.prepare_stage({})
+	_report.macos_boundary.refusal_observed = typeof(refusal.get("ok")) == TYPE_BOOL and not refusal.ok \
+		and not str(refusal.get("error", "")).is_empty()
+	var refusal_fpcr := _observe_macos_fpcr("after_refusal")
+	session.free()
+	if not _report.macos_boundary.refusal_observed or not refusal_fpcr:
+		_failures.append("macOS FPCR witness did not observe an explicit prepare refusal")
+		return false
+	return true
 
 
 func _component(name: String) -> Dictionary:
@@ -382,6 +602,7 @@ func _check_math_shim() -> void:
 
 func _session_context() -> Dictionary:
 	var session: Node = Session.new()
+	session.experimental_native_macos = _experimental_native_macos
 	session.soft_hull_contacts = true
 	session.setup(str(Catalog.entry(AIRCRAFT).data), AIRCRAFT)
 	if not session.is_flyable():

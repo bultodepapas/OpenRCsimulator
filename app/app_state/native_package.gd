@@ -196,6 +196,119 @@ static func mac_reference_identity(executable: String, architecture: String, arg
 		probe_sha256 = values.probe_sha256, architecture = architecture}
 
 
+## The native receipt is separate from, and binds, the final reference bundle
+## receipt. Its manifest is inside the PCK; no signed bundle bytes are rewritten.
+const MAC_NATIVE_RECEIPT_FORMAT := "openrc-macos-native-bundle-v1"
+const MAC_NATIVE_IDENTITY_KIND := "macos-arm64-native-bundle-v1"
+const MAC_NATIVE_RECEIPT_SUFFIX := ".openrc-native-receipt"
+const MAC_NATIVE_MANIFEST_PATH := "res://native/kernel/package-macos.json"
+const MAC_NATIVE_MANIFEST_FORMAT := "openrc-macos-native-kernel-package-v1"
+const MAC_NATIVE_LIBRARY := "Contents/Frameworks/libopenrc_native_kernel.dylib"
+const MAC_NATIVE_DESCRIPTOR := "Contents/Resources/openrc_native_kernel_macos.gdextension"
+const MAC_NATIVE_LICENSE := "Contents/Resources/LICENSE.godot-cpp.md"
+const MAC_NATIVE_SCOPE := "macos-arm64-fixed-wing-experimental-v1"
+const MAC_NATIVE_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd"]
+
+
+static func mac_native_identity(executable: String, architecture: String, arguments := PackedStringArray()) -> Dictionary:
+	if architecture != "arm64":
+		return _refuse("Mac native package requires an arm64 process")
+	var reference := mac_reference_identity(executable, architecture, arguments)
+	if not reference.get("ok", false): return reference
+	var bundle := executable.get_base_dir().get_base_dir().get_base_dir()
+	var parent := DirAccess.open(bundle.get_base_dir())
+	var path := bundle + MAC_NATIVE_RECEIPT_SUFFIX
+	if parent == null or parent.is_link(path.get_file()):
+		return _refuse("Mac native bundle receipt is redirected")
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null or file.get_length() <= 0 or file.get_length() > MAC_MAX_RECEIPT:
+		return _refuse("Mac native bundle receipt is missing or oversized")
+	var raw := file.get_buffer(file.get_length())
+	var text := raw.get_string_from_utf8()
+	if text.to_utf8_buffer() != raw or not text.ends_with("\n") or text.contains("\r"):
+		return _refuse("Mac native bundle receipt is malformed")
+	var lines := text.trim_suffix("\n").split("\n")
+	var fields := ["bundle", "architecture", "reference_receipt_sha256", "manifest_sha256", "descriptor_sha256", "library_sha256"]
+	if lines.size() != fields.size() + 1 or lines[0] != MAC_NATIVE_RECEIPT_FORMAT:
+		return _refuse("Mac native bundle receipt version or fields are invalid")
+	var values := {}
+	for index in fields.size():
+		var row := lines[index + 1].split("\t")
+		if row.size() != 2 or row[0] != fields[index] or not _mac_text(row[1]):
+			return _refuse("Mac native bundle receipt field is invalid")
+		values[fields[index]] = row[1]
+	if values.bundle != bundle.get_file() or values.architecture != "arm64" \
+			or values.reference_receipt_sha256 != reference.receipt_sha256:
+		return _refuse("Mac native receipt identifies another bundle or reference receipt")
+	for key: String in ["reference_receipt_sha256", "manifest_sha256", "descriptor_sha256", "library_sha256"]:
+		if not _sha256(values[key]) or values[key] != values[key].to_lower():
+			return _refuse("Mac native receipt digest is invalid")
+	if FileAccess.get_sha256(MAC_NATIVE_MANIFEST_PATH) != values.manifest_sha256 \
+			or FileAccess.get_sha256(bundle.path_join(MAC_NATIVE_DESCRIPTOR)) != values.descriptor_sha256 \
+			or FileAccess.get_sha256(bundle.path_join(MAC_NATIVE_LIBRARY)) != values.library_sha256:
+		return _refuse("Mac native manifest, descriptor or library differs from its receipt")
+	var license_path := bundle.path_join(MAC_NATIVE_LICENSE)
+	if not FileAccess.file_exists(license_path):
+		return _refuse("Mac native licence is missing")
+	var license_hash := FileAccess.get_sha256(license_path)
+	var manifest_file := FileAccess.open(MAC_NATIVE_MANIFEST_PATH, FileAccess.READ)
+	if manifest_file == null or manifest_file.get_length() <= 0 or manifest_file.get_length() > MAC_MAX_RECEIPT:
+		return _refuse("Mac native manifest is missing or oversized")
+	var manifest := _read_object(MAC_NATIVE_MANIFEST_PATH)
+	if not _mac_native_manifest_valid(manifest, reference.probe_sha256, values.library_sha256, license_hash):
+		return _refuse("Mac native manifest or fixed diagnostics are invalid")
+	var receipt_hash := FileAccess.get_sha256(path)
+	if not _sha256(receipt_hash) or receipt_hash != text.sha256_text():
+		return _refuse("Mac native bundle receipt could not be hashed")
+	return {ok = true, reason = "", kind = MAC_NATIVE_IDENTITY_KIND,
+		sha256 = (receipt_hash + "\n" + architecture).sha256_text(), receipt_sha256 = receipt_hash,
+		reference_receipt_sha256 = reference.receipt_sha256, manifest = manifest,
+		library_path = bundle.path_join(MAC_NATIVE_LIBRARY), descriptor_path = bundle.path_join(MAC_NATIVE_DESCRIPTOR)}
+
+
+static func _mac_native_manifest_valid(manifest: Dictionary, reference_probe: String, library_hash: String, license_hash: String) -> bool:
+	if not _mac_native_manifest_schema_valid(manifest, reference_probe, library_hash, license_hash): return false
+	for name: String in MAC_NATIVE_DIAGNOSTICS:
+		if FileAccess.get_sha256("res://native/kernel/qualification/" + name) != manifest.qualification_sources[name]:
+			return false
+	return true
+
+
+static func _mac_native_manifest_schema_valid(manifest: Dictionary, reference_probe: String, library_hash: String, license_hash: String) -> bool:
+	if manifest.get("format") != MAC_NATIVE_MANIFEST_FORMAT or manifest.get("platform") != "macos" \
+			or manifest.get("architecture") != "arm64" or manifest.get("engine_version") != Engine.get_version_info().string \
+			or not _sha256(manifest.get("solver_sha256")) or not _sha256(manifest.get("license_sha256")) \
+			or manifest.get("license_sha256") != license_hash or typeof(manifest.get("native_receipt")) != TYPE_DICTIONARY \
+			or typeof(manifest.get("qualification_sources")) != TYPE_DICTIONARY:
+		return false
+	var receipt: Dictionary = manifest.native_receipt
+	if receipt.get("format") != "openrc-native-kernel-receipt" or not _backend(receipt) \
+			or typeof(receipt.get("platforms")) != TYPE_DICTIONARY:
+		return false
+	var row: Variant = receipt.platforms.get("macos")
+	if typeof(row) != TYPE_DICTIONARY or not _backend(row) or row.get("platform") != "macos" \
+			or row.get("architecture") != "arm64" or row.get("qualification_scope") != MAC_NATIVE_SCOPE \
+			or row.get("engine_version") != manifest.engine_version or row.get("binary_sha256") != library_hash \
+			or typeof(row.get("runtime_os_version")) != TYPE_STRING or str(row.runtime_os_version).is_empty() \
+			or typeof(row.get("runtime_os_build")) != TYPE_STRING or str(row.runtime_os_build).is_empty() \
+			or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY or row.mirrored_sources.is_empty() \
+			or typeof(row.get("verification")) != TYPE_DICTIONARY or row.verification.is_empty():
+		return false
+	for key: String in ["binary_sha256", "source_sha256", "lock_sha256", "engine_sha256"]:
+		if not _sha256(row.get(key)): return false
+	for name: Variant in row.mirrored_sources:
+		if typeof(name) != TYPE_STRING or not name.begins_with("app/") or not _mac_relative(name.trim_prefix("app/")) \
+				or not _sha256(row.mirrored_sources[name]):
+			return false
+	var diagnostics: Dictionary = manifest.qualification_sources
+	if diagnostics.size() != MAC_NATIVE_DIAGNOSTICS.size() or diagnostics.get("session_probe.gd") != reference_probe:
+		return false
+	for name: String in MAC_NATIVE_DIAGNOSTICS:
+		var expected: Variant = diagnostics.get(name)
+		if not _sha256(expected): return false
+	return true
+
+
 static func _mac_text(value: String) -> bool:
 	return not value.is_empty() and not value.contains("\t") and not value.contains("\r") \
 		and not value.contains("\n") and not value.contains("\\")

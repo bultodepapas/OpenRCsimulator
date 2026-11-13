@@ -42,6 +42,8 @@ var checks := 0
 var failures := 0
 var _native_exercised := false
 var _finished := false
+var _experimental_native_macos := false
+var _initialization_started := false
 var field := {}
 var alternate_field := {}
 var lake := {}
@@ -54,13 +56,20 @@ func check(label: String, condition: bool, detail := "") -> void:
 		printerr("FAIL ", label, " ", detail)
 
 
+func set_experimental_native_macos(enabled: bool) -> void:
+	if not _initialization_started:
+		_experimental_native_macos = enabled
+
+
 func _initialize() -> void:
+	_initialization_started = true
 	Engine.physics_ticks_per_second = 240
 	call_deferred("run_all")
 
 
 func runway(mode: String, id := STIK, probe := false) -> Node:
 	var session: Node = RestoreProbe.new() if probe else Flight.new()
+	session.experimental_native_macos = _experimental_native_macos
 	session.input_enabled = true
 	session.crash_auto_restart = false
 	session.soft_hull_contacts = true
@@ -113,6 +122,7 @@ func same_steps(native: Node, reference: Node, count: int, label: String) -> voi
 
 func selection() -> void:
 	var session := Flight.new()
+	session.experimental_native_macos = _experimental_native_macos
 	check("default selects reference", session.stage_backend_status().requested == NativeStage.BACKEND_REFERENCE
 		and session.stage_backend_identity() == NativeStage.reference_identity())
 	session.input_enabled = false
@@ -129,6 +139,7 @@ func selection() -> void:
 		and session.sim.model == old_model and session.sim.model.stage == old_stage and physical(session) == before)
 	session.free()
 	var choice := Flight.new()
+	choice.experimental_native_macos = _experimental_native_macos
 	check("unknown selection is refused", not choice.setup_stage_backend("unknown")
 		and choice.stage_backend_status().requested == NativeStage.BACKEND_REFERENCE)
 	check("valid choices can change before setup", choice.setup_stage_backend(NativeStage.BACKEND_NATIVE)
@@ -579,7 +590,7 @@ func run_all() -> void:
 	selection()
 	var reference := runway(NativeStage.BACKEND_REFERENCE)
 	var probe := NativeStage.new()
-	var status: Dictionary = NativeStage.library_status()
+	var status: Dictionary = NativeStage.library_status(_experimental_native_macos)
 	var prepared: Dictionary = probe.prepare(reference)
 	var native := runway(NativeStage.BACKEND_NATIVE)
 	var actual: Dictionary = native.stage_backend_status()

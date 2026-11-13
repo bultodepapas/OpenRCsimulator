@@ -517,6 +517,53 @@ class FlightLogCommandTests(unittest.TestCase):
         sidecar.write_bytes(b"native contents")
         self.assertNotEqual(run_case("mac-receipt-change", "receipt"), 0)
 
+    def test_mac_native_replay_requires_opt_in_and_matching_native_receipt(self) -> None:
+        source = self.directory / "native.orfl"
+        source.write_bytes(b"orfl")
+        reference = {"kind": flight_log.MAC_RECEIPT.KIND, "identities": {"arm64": "a" * 64}}
+        native = {"kind": flight_log.MAC_RECEIPT.NATIVE_KIND, "identities": {"arm64": "b" * 64},
+                  "library_sha256": "c" * 64}
+
+        def run_case(name: str, kind: str, flag: str | None, mutate_receipt: bool = False,
+                     wrong_stage: bool = False) -> int:
+            output = self.directory / name
+            chosen = native if kind == native["kind"] else reference
+            identity = chosen["identities"]["arm64"]
+
+            def fake_run(command: list[str], **_kwargs: object) -> object:
+                if flag is not None:
+                    self.assertIn("--experimental-native-macos=" + flag, command)
+                write_debrief_csv(output / "flight.csv", 0, 2, 0.1)
+                report = exact_replay_report(source, row_count=2)
+                report.update({"baseline_solver_sha256": identity, "current_solver_sha256": identity,
+                               "baseline_solver_identity_kind": kind, "current_solver_identity_kind": kind})
+                if kind == native["kind"]:
+                    stage = {"backend": "native", "backend_version": "openrc-native-kernel-stage-v2", "abi_version": 2,
+                             "binary_sha256": native["library_sha256"], "source_sha256": "d" * 64, "lock_sha256": "e" * 64}
+                    if wrong_stage:
+                        stage["binary_sha256"] = "f" * 64
+                    report.update({"baseline_stage_backend": stage, "current_stage_backend": stage})
+                (output / "replay.json").write_text(json.dumps(report), encoding="utf-8")
+                return type("Result", (), {"returncode": 0})()
+
+            native_results = [native, {**native, "receipt_changed": True}] if mutate_receipt else [native, native]
+            args = ["replay", str(source), "--out", str(output), "--release-executable", str(self.godot)]
+            if flag is not None:
+                args += ["--experimental-native-macos", flag]
+            with mock.patch.object(flight_log.MAC_RECEIPT, "looks_like_bundle_executable", return_value=True), \
+                    mock.patch.object(flight_log.MAC_RECEIPT, "verify_for_launch", return_value=reference), \
+                    mock.patch.object(flight_log.MAC_RECEIPT, "verify_native_for_launch", side_effect=native_results), \
+                    mock.patch.object(flight_log.subprocess, "run", side_effect=fake_run), \
+                    contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+                return flight_log.main(args)
+
+        self.assertEqual(run_case("native-explicit", native["kind"], "true"), 0)
+        self.assertEqual(run_case("reference-explicit", reference["kind"], "true"), 0)
+        self.assertNotEqual(run_case("native-default", native["kind"], None), 0)
+        self.assertNotEqual(run_case("native-false", native["kind"], "false"), 0)
+        self.assertNotEqual(run_case("native-changed", native["kind"], "true", True), 0)
+        self.assertNotEqual(run_case("native-wrong-stage", native["kind"], "true", wrong_stage=True), 0)
+
     def test_release_executable_and_editor_options_are_mutually_exclusive(self) -> None:
         source = self.directory / "flight.orfl"
         source.write_bytes(b"orfl")

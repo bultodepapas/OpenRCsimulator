@@ -16,6 +16,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <cstdint>
 #include <initializer_list>
 #include <limits>
 #include <string>
@@ -1080,6 +1081,8 @@ protected:
 		godot::ClassDB::bind_method(D_METHOD("aero_loads", "s", "wind", "rho", "d", "downwash_cl", "ground_up"),
 			&OpenRCNativeKernel::aero_loads);
 		godot::ClassDB::bind_method(D_METHOD("math_probe", "fn", "a", "b", "c"), &OpenRCNativeKernel::math_probe);
+		godot::ClassDB::bind_method(D_METHOD("float64_transport", "scalar", "values"), &OpenRCNativeKernel::float64_transport);
+		godot::ClassDB::bind_method(D_METHOD("math_control_state"), &OpenRCNativeKernel::math_control_state);
 		godot::ClassDB::bind_method(D_METHOD("literal_table"), &OpenRCNativeKernel::literal_table);
 		godot::ClassDB::bind_method(D_METHOD("bench_wheels", "s", "steer", "anchors", "speeds", "brake", "iterations"),
 			&OpenRCNativeKernel::bench_wheels);
@@ -1484,6 +1487,27 @@ public:
 	PackedFloat64Array aero_loads(const PackedFloat64Array &s, const PackedFloat64Array &wind, double rho,
 			const PackedFloat64Array &d, double downwash_cl, double ground_up) const {
 		return aero_component(0, s, wind, rho, d, downwash_cl, ground_up);
+	}
+
+	// Diagnostic boundary witnesses only: no arithmetic, global FP changes, or retained caller storage.
+	Dictionary float64_transport(double scalar, const PackedFloat64Array &values) const {
+		Dictionary out;
+		out["scalar"] = scalar;
+		out["values"] = values.duplicate();
+		return out;
+	}
+
+	Dictionary math_control_state() const {
+		Dictionary out;
+#if defined(NK_MATH_APPLE_ARM64)
+		std::uint64_t fpcr = 0;
+		__asm__ __volatile__("mrs %0, fpcr" : "=r"(fpcr) : : "memory");
+		out["available"] = true;
+		out["fpcr"] = static_cast<std::int64_t>(fpcr);
+#else
+		out["available"] = false;
+#endif
+		return out;
 	}
 
 	// Element-wise shim probe for the oracle's semantic checks (NaN signs, signed zeros, clamps, wrapf seams).

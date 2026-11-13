@@ -173,10 +173,11 @@ const X8_TERMINAL_SNAPSHOT_FIELDS := ["trigger", "tick", "point_index", "compone
 ## The production loader must verify the receipt before the class is initialized.
 ## The generic oracle loader deliberately cannot be used for this check.
 func _load_native_extension() -> bool:
-	if _extension != NativeStage.EXTENSION_PATH:
+	var descriptor: String = NativeStage.MACOS_EXTENSION_PATH if OS.get_name() == "macOS" else NativeStage.EXTENSION_PATH
+	if _extension != descriptor:
 		printerr("NK3_FLEET requires --app-library and the canonical production descriptor")
 		return false
-	var status: Dictionary = NativeStage.library_status()
+	var status: Dictionary = NativeStage.library_status(_experimental_native_macos)
 	if not status.get("ok", false):
 		printerr("NK3_FLEET production library refused: " + str(status.get("reason", "unknown")))
 		return false
@@ -188,7 +189,7 @@ func _load_native_extension() -> bool:
 
 
 func _extra_option_names() -> PackedStringArray:
-	return PackedStringArray(["warmup", "samples", "aircraft", "weather", "soft-hull"])
+	return PackedStringArray(["warmup", "samples", "aircraft", "weather", "soft-hull", "vehicle"])
 
 
 ## Declare the complete stock catalog/preset matrix before applying any scope filters.
@@ -263,17 +264,20 @@ static func _fleet_selected_rows(rows: Array[Dictionary], aircraft: String, weat
 func _checks() -> void:
 	_report.format = "openrc-nk3-fleet v2"
 	_report.fleet = []
-	_report.library = NativeStage.library_status()
+	_report.library = NativeStage.library_status(_experimental_native_macos)
 	var warmup: int = int(_options.get("warmup", "600"))
 	var samples: int = int(_options.get("samples", "2400"))
 	var aircraft := str(_options.get("aircraft", ""))
 	var weather := str(_options.get("weather", ""))
 	var soft_hull := str(_options.get("soft-hull", ""))
+	var vehicle := str(_options.get("vehicle", ""))
 	var declared := _fleet_declared_rows()
 	var selected := _fleet_selected_rows(declared, aircraft, weather, soft_hull)
-	var scoped := not aircraft.is_empty() or not weather.is_empty() or not soft_hull.is_empty()
+	if not vehicle.is_empty():
+		selected = selected.filter(func(row: Dictionary) -> bool: return row.vehicle == vehicle)
+	var scoped := not aircraft.is_empty() or not weather.is_empty() or not soft_hull.is_empty() or not vehicle.is_empty()
 	_report.fleet_scope = {scope = "scoped" if scoped else "full-declared-matrix",
-		filters = {aircraft = aircraft, weather = weather, soft_hull = soft_hull},
+		filters = {aircraft = aircraft, weather = weather, soft_hull = soft_hull, vehicle = vehicle},
 		declared_rows = declared.size(), selected_rows = selected.size(),
 		declared_aircraft = Catalog.flyable_ids(), warmup_requested = warmup, samples_requested = samples,
 		matrix_complete = false, flight_passed = 0, reference_refused = 0, runtime_refused = 0, physical_terminal = 0, failed = 0,
@@ -281,9 +285,12 @@ func _checks() -> void:
 	if warmup <= 0 or samples <= 0:
 		_failures.append("fleet warmup and samples must be positive")
 		return
+	if OS.get_name() == "macOS" and vehicle != "fixed-wing":
+		_failures.append("experimental Mac fleet requires an explicit fixed-wing scope; rotorcraft are unqualified")
+		return
 	if (not aircraft.is_empty() and not Catalog.flyable_ids().has(aircraft)) \
 			or (not weather.is_empty() and WindConfig.preset(weather).is_empty()) \
-			or soft_hull not in ["", "on", "off"] or selected.is_empty():
+			or soft_hull not in ["", "on", "off"] or vehicle not in ["", "fixed-wing", "rotorcraft"] or selected.is_empty():
 		_failures.append("fleet filters select no supported rows or contain an unknown aircraft, weather or soft-hull option")
 		return
 	if not _report.library.ok:
@@ -312,6 +319,8 @@ func _checks() -> void:
 func _build_fleet_session(row: Dictionary, requested_backend: String) -> Dictionary:
 	var rotorcraft: bool = row.vehicle == "rotorcraft"
 	var session: Node = HelicopterSession.new() if rotorcraft else Session.new()
+	if not rotorcraft:
+		session.experimental_native_macos = _experimental_native_macos
 	if not session.setup_stage_backend(requested_backend):
 		var reason := str(session.stage_backend_error)
 		session.free()

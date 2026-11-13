@@ -129,6 +129,10 @@ UUID project/user-data identity, its own import cache, Standard effects and star
 multi-bounce occlusion disabled. The helper verifies copied file hashes and writes
 `research-preparation.json` only after successful validation. It never replaces an
 existing destination. Failed preparations retain their partial files for inspection.
+On APFS, `--copy-mode=clone` requires native `clonefile(2)` copy-on-write files;
+the default `copy` mode remains portable. Clone mode fails if cloning is unavailable
+and never silently falls back to a full copy. Both modes verify the same per-file
+hashes and record the mode in the preparation receipt. Import caches are excluded.
 Sibling `assets/` is a link to the source, not an immutable copy: freeze that source
 and retain its identity throughout the campaign. Windows requires permission to
 create directory symlinks. Native M1 research copies were exercised in the

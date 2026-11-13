@@ -3,6 +3,7 @@ extends SceneTree
 const Flight := preload("res://sim/flight_session.gd")
 const Log := preload("res://sim/flight_log.gd")
 const Reader := preload("res://tools/flight_log_cli.gd")
+const ReaderHost := preload("res://tools/flight_log_cli_host.gd")
 const Weather := preload("res://physics/wind_config.gd")
 const Package := preload("res://app_state/native_package.gd")
 var checks := 0
@@ -30,6 +31,7 @@ func check(label: String, passed: bool) -> void:
 
 func _run() -> void:
 	_mac_identity_tests()
+	_mac_native_schema_tests()
 	_boundary_snapshot_tests()
 	for path in ["res://data/aircraft/jensen_ugly_stik_60.json", "res://data/aircraft/gp_extra_300s_60.json", "res://data/aircraft/p51d_mustang_120.json", "res://data/aircraft/sebart_avanti_s_a200.json", "res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/stik_glow_61fx_2t.json", "res://data/aircraft/stik_electric_6s.json", "res://data/aircraft/battery/stik_electric_6s_pack.json"]:
 		if not FileAccess.file_exists(path):
@@ -211,6 +213,62 @@ func _mac_identity_tests() -> void:
 		solver_identity_kind = Package.MAC_IDENTITY_KIND, stage_backend = native, checkpoint = {}}).ok)
 	check("different package kind is a solver change", Reader.solver_changed(legacy.sha256, mac.sha256,
 		{backend = "gdscript_reference"}, {backend = "gdscript_reference"}, legacy.kind, mac.kind))
+
+
+func _mac_native_schema_tests() -> void:
+	var digest := "a".repeat(64)
+	var native := {backend = "native", backend_version = "openrc-native-kernel-stage-v2", abi_version = 2,
+		binary_sha256 = digest, source_sha256 = digest, lock_sha256 = digest}
+	var row := native.duplicate(true)
+	row.merge({platform = "macos", architecture = "arm64", qualification_scope = Package.MAC_NATIVE_SCOPE,
+		engine_version = Engine.get_version_info().string, engine_sha256 = digest, runtime_os_version = "27.0.1",
+		runtime_os_build = "26A434", mirrored_sources = {"app/physics/aero.gd": digest}, verification = {oracle = digest}})
+	var sources := {}
+	for name: String in Package.MAC_NATIVE_DIAGNOSTICS: sources[name] = digest
+	var manifest := {format = Package.MAC_NATIVE_MANIFEST_FORMAT, platform = "macos", architecture = "arm64",
+		engine_version = Engine.get_version_info().string, solver_sha256 = digest, license_sha256 = digest,
+		qualification_sources = sources,
+		native_receipt = {format = "openrc-native-kernel-receipt", backend = "native",
+			backend_version = native.backend_version, abi_version = 2, platforms = {"macos": row}}}
+	check("Mac native schema accepts valid scoped identities", Package._mac_native_manifest_schema_valid(manifest, digest, digest, digest))
+	for change: Array in [["architecture", "x86_64"], ["qualification_scope", "other"],
+			["binary_sha256", "b".repeat(64)], ["runtime_os_build", ""], ["verification", {}],
+			["mirrored_sources", {"app/../escape": digest}]]:
+		var altered := manifest.duplicate(true)
+		altered.native_receipt.platforms.macos[change[0]] = change[1]
+		check("Mac native schema rejects " + str(change[0]),
+			not Package._mac_native_manifest_schema_valid(altered, digest, digest, digest))
+	var missing := manifest.duplicate(true)
+	missing.qualification_sources.erase("test_native_replay.gd")
+	check("Mac native schema rejects incomplete diagnostics", not Package._mac_native_manifest_schema_valid(missing, digest, digest, digest))
+	var bad_license := manifest.duplicate(true)
+	bad_license.erase("license_sha256")
+	check("Mac native schema rejects missing licence hash", not Package._mac_native_manifest_schema_valid(bad_license, digest, digest, digest))
+	bad_license.license_sha256 = "b".repeat(64)
+	check("Mac native schema rejects a changed licence", not Package._mac_native_manifest_schema_valid(bad_license, digest, digest, digest))
+	var native_id := Reader.recorded_replay_identity({solver_sha256 = digest, solver_identity_kind = Package.MAC_NATIVE_IDENTITY_KIND})
+	check("Mac native identity uses its distinct kind", native_id.ok and native_id.kind != Package.MAC_IDENTITY_KIND)
+	check("Mac native identity refuses reference backend", not Reader.recorded_stage_backend({
+		solver_identity_kind = Package.MAC_NATIVE_IDENTITY_KIND, stage_backend = {backend = "gdscript_reference"}, checkpoint = {}}).ok)
+	var wrapped := {format = "openrc-flight-checkpoint v14", stage_physics_format = "fixture", stage_backend = native}
+	check("Mac native identity accepts matching native checkpoint", Reader.recorded_stage_backend({
+		solver_identity_kind = Package.MAC_NATIVE_IDENTITY_KIND, stage_backend = native, checkpoint = wrapped}).ok)
+	var options := PackedStringArray(["--flight-log-cli", "--log=a", "--csv=b", "--report=c", "--replay"])
+	check("packaged replay defaults unchanged", ReaderHost._options_error(options).is_empty())
+	for value: String in ["true", "false"]:
+		var args := options.duplicate()
+		args.append("--experimental-native-macos=" + value)
+		check("packaged replay accepts explicit " + value, ReaderHost._options_error(args).is_empty())
+	for value: String in ["", "1", "TRUE"]:
+		var args := options.duplicate()
+		args.append("--experimental-native-macos=" + value)
+		check("packaged replay rejects malformed " + value, not ReaderHost._options_error(args).is_empty())
+	var duplicate := options.duplicate()
+	duplicate.append_array(PackedStringArray(["--experimental-native-macos=true", "--experimental-native-macos=false"]))
+	check("packaged replay rejects duplicate opt-in", not ReaderHost._options_error(duplicate).is_empty())
+	var arbitrary := options.duplicate()
+	arbitrary.append("--script=other.gd")
+	check("packaged replay rejects arbitrary scripts", not ReaderHost._options_error(arbitrary).is_empty())
 
 
 func _write_text(path: String, value: String) -> void:

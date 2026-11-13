@@ -12,6 +12,7 @@ const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
 var options := {}
 var report := {status = "error", error = "Not started", format = "openrc-flight-log-report v1"}
 var _completed := false
+var _experimental_native_macos := false
 
 
 ## Current tools can be rebound to older solvers whose FlightSession has no backend API.
@@ -47,6 +48,8 @@ static func recorded_stage_backend(header: Dictionary) -> Dictionary:
 	var identity_kind: Variant = header.get("solver_identity_kind")
 	if identity_kind is String and identity_kind == "macos-reference-bundle-v1" and identity.backend != REFERENCE_STAGE_BACKEND:
 		return {ok = false, error = "Mac reference bundle cannot identify a native stage backend."}
+	if identity_kind is String and identity_kind == "macos-arm64-native-bundle-v1" and identity.backend != NATIVE_STAGE_BACKEND:
+		return {ok = false, error = "Mac native bundle requires a native stage backend."}
 	var checkpoint: Variant = header.get("checkpoint")
 	if not checkpoint is Dictionary:
 		return {ok = false, error = "Missing stage checkpoint."}
@@ -73,10 +76,13 @@ static func solver_changed(recorded_solver: String, current_solver: String,
 
 ## The reader is also rebound to older source trees whose FlightLog predates
 ## package replay identities. Their historical source fingerprint still works.
-static func _current_replay_identity() -> Dictionary:
+static func _current_replay_identity(backend := REFERENCE_STAGE_BACKEND) -> Dictionary:
 	var script: Script = Log
 	if script.has_method("replay_identity"):
-		var identity: Variant = script.call("replay_identity")
+		var accepts_backend := false
+		for method: Dictionary in script.get_script_method_list():
+			if method.name == "replay_identity": accepts_backend = method.args.size() > 0
+		var identity: Variant = script.call("replay_identity", backend) if accepts_backend else script.call("replay_identity")
 		if identity is Dictionary and typeof(identity.get("sha256")) == TYPE_STRING \
 				and typeof(identity.get("kind")) == TYPE_STRING:
 			return identity
@@ -94,7 +100,7 @@ static func _current_replay_identity() -> Dictionary:
 static func recorded_replay_identity(header: Dictionary) -> Dictionary:
 	var kind: Variant = header.get("solver_identity_kind", "source-tree-v1")
 	var digest: Variant = header.get("solver_sha256")
-	if typeof(kind) != TYPE_STRING or kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"] \
+	if typeof(kind) != TYPE_STRING or kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1", "macos-arm64-native-bundle-v1"] \
 			or typeof(digest) != TYPE_STRING:
 		return {ok = false, error = "Invalid recorded solver identity."}
 	if digest == "unavailable-export":
@@ -104,10 +110,36 @@ static func recorded_replay_identity(header: Dictionary) -> Dictionary:
 	return {ok = true, kind = kind, sha256 = digest}
 
 
+static func _experimental_native_macos_option(args: PackedStringArray) -> Dictionary:
+	var seen := false
+	var enabled := false
+	for argument: String in args:
+		var pair := argument.trim_prefix("--").split("=", true, 1)
+		if pair[0] != "experimental-native-macos": continue
+		if seen or not argument.begins_with("--") or pair.size() != 2 or pair[1] not in ["true", "false"]:
+			return {ok = false, enabled = false, error = "--experimental-native-macos must occur once with true or false"}
+		seen = true
+		enabled = pair[1] == "true"
+	return {ok = true, enabled = enabled, present = seen}
+
+
 func _initialize() -> void:
-	for argument in OS.get_cmdline_user_args():
+	var args := OS.get_cmdline_user_args()
+	var mac_option := _experimental_native_macos_option(args)
+	if not mac_option.ok:
+		printerr(mac_option.error)
+		_completed = true
+		quit(2)
+		return
+	for argument in args:
 		var pair := argument.trim_prefix("--").split("=", true, 1)
 		options[pair[0]] = pair[1] if pair.size() > 1 else true
+	if mac_option.present and not options.has("replay"):
+		printerr("--experimental-native-macos requires --replay")
+		_completed = true
+		quit(2)
+		return
+	_experimental_native_macos = mac_option.enabled
 	call_deferred("_run")
 
 
@@ -128,7 +160,8 @@ func _run() -> void:
 		_completed = true
 		quit(1)
 		return
-	if options.has("candidate") and (not options.has("replay") or typeof(options.candidate) != TYPE_STRING):
+	if options.has("candidate") and (not options.has("replay") or typeof(options.candidate) != TYPE_STRING \
+			or str(options.candidate).is_empty()):
 		_finish("--candidate requires --replay and a JSON path.")
 		return
 	if options.has("recover") and options.has("replay"):
@@ -143,7 +176,9 @@ func _run() -> void:
 		report.control_profile = header.get("control_profile", {})
 		report.flap_mix_contract = header.flap_mix_contract
 	var recorded_backend: Dictionary = recorded_stage_backend(header).identity
-	var current_identity := _current_replay_identity()
+	var identity_backend: String = str(recorded_backend.backend) if options.has("replay") and not options.has("candidate") \
+			else REFERENCE_STAGE_BACKEND
+	var current_identity := _current_replay_identity(identity_backend)
 	var recorded_identity := recorded_replay_identity(header)
 	var current_solver: String = current_identity.sha256
 	# Export does not run a flight; compare to this tool's reference default until
@@ -161,7 +196,7 @@ func _run() -> void:
 		observer_usec = checked.footer.observer_usec, peak_buffer_rows = checked.footer.peak_buffer_rows}, true)
 	var flight: Node = null
 	if options.has("replay"):
-		var prepared := prepare_replay(header, str(options.get("candidate", "")))
+		var prepared := prepare_replay(header, str(options.get("candidate", "")), _experimental_native_macos)
 		if not prepared.ok:
 			_finish(prepared.error)
 			return
@@ -232,9 +267,10 @@ func _run() -> void:
 	if flight != null: flight.free()
 	if error.is_empty() and FileAccess.get_sha256(options.log) != report.source_sha256:
 		error = "Source changed during export/replay. Discard CSV."
-	if error.is_empty() and options.has("replay") and current_identity.kind == "macos-reference-bundle-v1" \
-			and _current_replay_identity() != current_identity:
-		error = "Mac reference bundle changed during replay. Discard CSV."
+	if error.is_empty() and options.has("replay") \
+			and current_identity.kind in ["macos-reference-bundle-v1", "macos-arm64-native-bundle-v1"] \
+			and _current_replay_identity(identity_backend) != current_identity:
+		error = "Mac bundle changed during replay. Discard CSV."
 	_finish(error)
 
 
@@ -376,7 +412,7 @@ static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 	return ""
 
 
-static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
+static func prepare_replay(header: Dictionary, candidate := "", experimental_native_macos := false) -> Dictionary:
 	var mix_error := flap_mix_contract_error(header)
 	if not mix_error.is_empty(): return {ok = false, error = mix_error}
 	var recorded_backend := recorded_stage_backend(header)
@@ -385,9 +421,10 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	if not recorded_identity.ok: return recorded_identity
 	if header.engine != Engine.get_version_info().string:
 		return {ok = false, error = "Engine version differs; use the recorded engine."}
-	var current_identity := _current_replay_identity()
+	var identity_backend: String = str(recorded_backend.identity.backend) if candidate.is_empty() else REFERENCE_STAGE_BACKEND
+	var current_identity := _current_replay_identity(identity_backend)
 	if recorded_identity.sha256 == "unavailable-export" or current_identity.sha256 == "unavailable-export" \
-			or current_identity.kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"] \
+			or current_identity.kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1", "macos-arm64-native-bundle-v1"] \
 			or current_identity.sha256.length() != 64 or not current_identity.sha256.is_valid_hex_number():
 		return {ok = false, error = "Solver fingerprint unavailable. Replay requires the recorded and current verified source or package."}
 	if candidate.is_empty() and (recorded_identity.kind != current_identity.kind \
@@ -398,6 +435,22 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	var aircraft: Dictionary = header.aircraft if candidate.is_empty() else Data.load_file(candidate)
 	if not aircraft.get("ok", false): return {ok = false, error = "Candidate aircraft data invalid."}
 	var flight := Flight.new()
+	# This tool can be rebound to older FlightSession sources. Do not require a
+	# new property on that route unless the caller explicitly opts in.
+	if experimental_native_macos:
+		var supports_opt_in := false
+		for property: Dictionary in flight.get_property_list():
+			if str(property.get("name", "")) == "experimental_native_macos":
+				supports_opt_in = true
+				break
+		if not supports_opt_in:
+			flight.free()
+			return {ok = false, error = "Selected solver does not support experimental Mac native admission."}
+		flight.set("experimental_native_macos", true)
+		var admitted: Variant = flight.get("experimental_native_macos")
+		if typeof(admitted) != TYPE_BOOL or not admitted:
+			flight.free()
+			return {ok = false, error = "Selected solver refused experimental Mac native admission."}
 	if header.has("flap_mix_contract") and not flight.has_method("restore_input_mix_owner"):
 		flight.free()
 		return {ok = false, error = "Selected solver does not support recorded flap mix ownership."}

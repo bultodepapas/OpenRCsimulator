@@ -29,6 +29,7 @@ var _world: Dictionary = {}
 var _lake: Dictionary = {}
 var _input_reads := 0
 var _backend_requested := "gdscript_reference"
+var _experimental_native_macos := false
 var _backend_identity: Dictionary = {}
 var _backend_stage := Callable()
 var _native: Object = null
@@ -66,6 +67,10 @@ func _parse() -> bool:
 				if pair[1] not in ["gdscript_reference", "native"]:
 					return _fail("physics-backend must be gdscript_reference or native")
 				_backend_requested = pair[1]
+			"experimental-native-macos":
+				if pair[1] not in ["true", "false"]:
+					return _fail("experimental-native-macos must be true or false")
+				_experimental_native_macos = pair[1] == "true"
 			"observer":
 				if pair[1] not in ["on", "off"]: return _fail("observer must be on or off")
 				_observer = pair[1] == "on"
@@ -101,6 +106,7 @@ func _prepare() -> bool:
 	_world = built.world
 	if _world.get("proxies", []).is_empty(): return _fail("full scenery inventory is required")
 	_session = Session.new()
+	_session.experimental_native_macos = _experimental_native_macos
 	if not _session.setup_stage_backend(_backend_requested):
 		return _fail("backend selection failed: " + str(_session.stage_backend_error))
 	# Never attach to the tree: real devices and scheduler cannot interfere with the declared input sequence.
@@ -224,12 +230,16 @@ func _run() -> void:
 				_hash_tick(digest)
 			elapsed = Time.get_ticks_usec() - started
 	var log_script: Script = FlightLog
-	var replay_identity: Dictionary = log_script.call("replay_identity") if log_script.has_method("replay_identity") else {
+	var accepts_backend := false
+	for method: Dictionary in log_script.get_script_method_list():
+		if method.name == "replay_identity": accepts_backend = method.args.size() > 0
+	var replay_identity: Dictionary = (log_script.call("replay_identity", str(_backend_identity.get("backend", "gdscript_reference"))) \
+		if accepts_backend else log_script.call("replay_identity")) if log_script.has_method("replay_identity") else {
 		sha256 = str(log_script.call("replay_solver_identity")) if log_script.has_method("replay_solver_identity") else FlightLog.solver_identity(),
 		kind = str(log_script.call("replay_identity_kind")) if log_script.has_method("replay_identity_kind") else "source-tree-v1"}
 	var solver_identity: String = str(replay_identity.get("sha256", "unavailable-export"))
 	var solver_kind: String = str(replay_identity.get("kind", "unavailable"))
-	if solver_kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"] \
+	if solver_kind not in ["source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1", "macos-arm64-native-bundle-v1"] \
 			or solver_identity.length() != 64 or not solver_identity.is_valid_hex_number():
 		_failure = "verified solver identity unavailable"
 	var own_script: Script = get_script()
@@ -237,6 +247,7 @@ func _run() -> void:
 		and FileAccess.file_exists(own_script.resource_path) else ""
 	var report := {
 		format = "openrc-session-cost v2", complete = _failure.is_empty(), failure = _failure,
+		experimental_native_macos = _experimental_native_macos,
 		aircraft_id = _aircraft, case_id = _case, observer = _observer,
 		requested = {warmup_ticks = _warmup, sample_ticks = _samples},
 		completed = {warmup_ticks = _warmup_done, sample_ticks = _sample_done},

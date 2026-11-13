@@ -20,6 +20,8 @@ var checks := 0
 var failures := 0
 var _native_exercised := false
 var _finished := false
+var _experimental_native_macos := false
+var _initialization_started := false
 
 
 func check(label: String, condition: bool, detail := "") -> void:
@@ -29,13 +31,20 @@ func check(label: String, condition: bool, detail := "") -> void:
 		printerr("FAIL ", label, " ", detail)
 
 
+func set_experimental_native_macos(enabled: bool) -> void:
+	if not _initialization_started:
+		_experimental_native_macos = enabled
+
+
 func _initialize() -> void:
+	_initialization_started = true
 	call_deferred("run_all")
 
 
 ## A detached runway session (default field, near_runway lake, soft hull) with a deterministic take-off-roll tape.
 func runway(id: String) -> Node:
 	var session: Node = Flight.new()
+	session.experimental_native_macos = _experimental_native_macos
 	session.input_enabled = true
 	session.physics_enabled = true
 	session.crash_auto_restart = false
@@ -154,7 +163,7 @@ func run_all() -> void:
 	var new_wing_hash := "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c"
 	check("native source gate accepts the current data hash",
 		NativeStage._source_error({mirrored_sources = {new_wing_source: new_wing_hash}}).is_empty())
-	var status: Dictionary = NativeStage.library_status()
+	var status: Dictionary = NativeStage.library_status(_experimental_native_macos)
 	check("library status carries a reason when absent", status.ok or not str(status.reason).is_empty(), str(status))
 	var stik := runway(STIK)
 	var reference_stage: Callable = stik.sim.model.stage

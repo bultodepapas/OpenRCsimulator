@@ -560,7 +560,8 @@ def _validate_exact_replay_report(report: dict[str, Any], log_path: Path) -> tup
         raise FlightLogError("exact replay solver identities differ")
     kinds = (report.get("baseline_solver_identity_kind"), report.get("current_solver_identity_kind"))
     if kinds != (None, None) and (kinds[0] != kinds[1] or kinds[0] not in
-                                  ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1")):
+                                  ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1",
+                                   "macos-arm64-native-bundle-v1")):
         raise FlightLogError("exact replay solver identity kinds differ or are unsupported")
     if report["source_sha256"].lower() != _sha256_file(log_path):
         raise FlightLogError("flight log changed during replay")
@@ -1065,7 +1066,8 @@ def _check_godot_report(
             raise FlightLogError("candidate replay report must include boolean solver_changed")
         baseline_kind = document.get("baseline_solver_identity_kind", "source-tree-v1")
         current_kind = document.get("current_solver_identity_kind", "source-tree-v1")
-        allowed_kinds = ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1")
+        allowed_kinds = ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1",
+                         "macos-arm64-native-bundle-v1")
         if baseline_kind not in allowed_kinds or current_kind not in allowed_kinds:
             raise FlightLogError("candidate replay report contains an unsupported solver identity kind")
         if (baseline_kind != current_kind or document["baseline_solver_sha256"] != document["current_solver_sha256"]) \
@@ -1111,11 +1113,22 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     godot = _resolve_release_executable(release_value) if using_release else _resolve_godot(args.godot)
     executable_sha256 = _sha256_file(Path(godot)) if using_release else ""
     mac_identity = None
+    experimental = getattr(args, "experimental_native_macos", None)
+    if experimental not in (None, "true", "false"):
+        raise FlightLogError("experimental Mac native admission must be true or false")
+    mac_native_identity = None
     if using_release and MAC_RECEIPT.looks_like_bundle_executable(Path(godot)):
         try:
             mac_identity = MAC_RECEIPT.verify_for_launch(Path(godot))
         except (OSError, ValueError) as error:
             raise FlightLogError(f"Mac release bundle identity refused: {error}") from error
+        if replay and experimental == "true" and not getattr(args, "candidate", None):
+            try:
+                mac_native_identity = MAC_RECEIPT.verify_native_for_launch(Path(godot))
+            except (OSError, ValueError):
+                # A reference log can still replay with the opt-in present. Native
+                # results require an independently valid receipt below.
+                mac_native_identity = None
     timeout = _check_timeout(args.timeout)
     candidate: Path | None = None
     candidate_value = getattr(args, "candidate", None)
@@ -1136,6 +1149,8 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     ]
     if replay:
         command.append("--replay")
+        if experimental is not None:
+            command.append(f"--experimental-native-macos={experimental}")
         if candidate is not None:
             command.append(f"--candidate={candidate}")
     elif getattr(args, "recover", False):
@@ -1148,6 +1163,8 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
         try:
             if MAC_RECEIPT.verify_for_launch(Path(godot)) != mac_identity:
                 raise FlightLogError("Mac release bundle changed during export/replay")
+            if mac_native_identity is not None and MAC_RECEIPT.verify_native_for_launch(Path(godot)) != mac_native_identity:
+                raise FlightLogError("Mac native bundle changed during replay")
         except (OSError, ValueError) as error:
             raise FlightLogError(f"Mac release bundle changed during export/replay: {error}") from error
     report = _check_godot_report(
@@ -1157,14 +1174,24 @@ def _godot_export(args: argparse.Namespace, replay: bool, *, debrief: bool = Fal
     )
     if using_release and replay and candidate is None:
         _validate_exact_replay_report(report, log_path)
-        kind = MAC_RECEIPT.KIND if mac_identity is not None else "packaged-executable-v1"
-        allowed = set(mac_identity["identities"].values()) if mac_identity is not None else {executable_sha256}
+        selected_mac = mac_native_identity if report.get("current_solver_identity_kind") == MAC_RECEIPT.NATIVE_KIND else mac_identity
+        kind = selected_mac["kind"] if selected_mac is not None else "packaged-executable-v1"
+        allowed = set(selected_mac["identities"].values()) if selected_mac is not None else {executable_sha256}
         if report.get("baseline_solver_identity_kind") != kind \
                 or report.get("current_solver_identity_kind") != kind \
                 or report.get("current_solver_sha256") not in allowed:
             raise FlightLogError("exact replay did not identify the selected release artifact")
+        if kind == MAC_RECEIPT.NATIVE_KIND:
+            baseline_stage = report.get("baseline_stage_backend")
+            current_stage = report.get("current_stage_backend")
+            if not isinstance(baseline_stage, dict) or baseline_stage != current_stage \
+                    or baseline_stage.get("backend") != "native" \
+                    or baseline_stage.get("backend_version") != "openrc-native-kernel-stage-v2" \
+                    or type(baseline_stage.get("abi_version")) is not int or baseline_stage["abi_version"] != 2 \
+                    or baseline_stage.get("binary_sha256") != selected_mac["library_sha256"]:
+                raise FlightLogError("exact replay did not identify the verified Mac native stage")
     if mac_identity is not None and replay and candidate is not None:
-        if report.get("current_solver_identity_kind") != MAC_RECEIPT.KIND \
+        if report.get("current_solver_identity_kind") != mac_identity["kind"] \
                 or report.get("current_solver_sha256") not in mac_identity["identities"].values():
             raise FlightLogError("candidate replay did not identify the selected Mac release artifact")
     # Validate the output now so a successful exit never advertises a malformed
@@ -1241,6 +1268,7 @@ def _make_parser() -> argparse.ArgumentParser:
     replay_executable.add_argument("--godot", help="Godot executable (or set GODOT)")
     replay_executable.add_argument("--release-executable", help="exported executable that recorded the flight")
     replay.add_argument("--candidate", help="candidate aircraft JSON")
+    replay.add_argument("--experimental-native-macos", choices=("true", "false"), help="explicit Mac native admission")
     replay.add_argument("--timeout", type=float, default=300.0, help="maximum run time in seconds (default: 300)")
     replay.set_defaults(handler=lambda args: _godot_export(args, replay=True))
 
@@ -1252,6 +1280,7 @@ def _make_parser() -> argparse.ArgumentParser:
     debrief_executable.add_argument("--godot", help="Godot executable (or set GODOT)")
     debrief_executable.add_argument("--release-executable", help="exported executable that recorded the flight")
     debrief.add_argument("--timeout", type=float, default=300.0, help="maximum run time in seconds (default: 300)")
+    debrief.add_argument("--experimental-native-macos", choices=("true", "false"), help="explicit Mac native admission")
     debrief.set_defaults(handler=lambda args: _godot_export(args, replay=True, debrief=True))
 
     summarize = subparsers.add_parser("summarize", help="summarize a CSV flight log")

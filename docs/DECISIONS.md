@@ -40,6 +40,21 @@ Curated architecture and product choices, with the reasons worth preserving. Rev
 
 The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29) records the original adoption and its qualified expansion. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) remains the broader qualification reference; its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#normal-flight-backend-selection).
 
+**DT-MAC-04n1–n4, experimental implementation.** The Apple ARM64 port retains that
+stage boundary and float64 authority. Require explicit fixed-wing opt-in before
+consulting the process-wide loader cache, including in release diagnostics; a
+normal Mac launch retains reference. Use a distinct native Mac bundle identity
+that binds the signed dylib, qualification manifest and final reference-bundle
+receipt. Reusing the reference-only identity would make exact replay ambiguous.
+The [Mac native guide](../research/native-kernel/README.md#experimental-macos-arm64)
+owns the implemented contracts and the [implementation evidence](research/native-kernel/DT-MAC-04n1/README.md)
+records remaining target-hardware and promotion gates.
+
+The bounded M1 assessment retains this explicit experiment and defers automatic
+Mac admission and production delivery. Two complete source cases show material
+callback CPU savings, while 42 stock fleet rows, normal hardened signing/loading,
+sanitizer controls, required CI and live/sustained product gates remain open.
+
 ### Preserve each event law's valid continuation
 
 **SF-04 / SF-04b / SF-05.** Share the declared-event protocol where its trial continuation is valid, and retain the rotorcraft domain-guarded locator where negative trial speed would invalidate the law. A whole-tick policy cannot also request kernel contact substeps. Full-load substeps preserve their tested integration semantics; forcing every route through one locator or splitting only selected forces would change them. [SF-04b](research/simulation-foundation/SF-04b/README.md) supersedes the earlier single-locator direction; [SF-05](research/simulation-foundation/SF-05/README.md) owns substep evidence.

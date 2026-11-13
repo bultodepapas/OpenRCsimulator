@@ -4,6 +4,8 @@ extends EditorExportPlugin
 
 const FlightLog := preload("res://sim/flight_log.gd")
 const MANIFEST := "res://native/kernel/package.json"
+const MAC_MANIFEST := "res://native/kernel/package-macos.json"
+const MAC_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd"]
 const SOURCES := {
 	"session_probe.gd": "../research/performance/session_probe.gd",
 	"test_native_stage.gd": "tests/test_native_stage.gd",
@@ -14,6 +16,7 @@ const SOURCES := {
 }
 var _manifest: Dictionary = {}
 var _mac_probe_sha256 := ""
+var _mac_manifest: Dictionary = {}
 
 
 func _get_name() -> String:
@@ -23,6 +26,7 @@ func _get_name() -> String:
 func _export_begin(features: PackedStringArray, is_debug: bool, _path: String, _flags: int) -> void:
 	_manifest = {}
 	_mac_probe_sha256 = ""
+	_mac_manifest = {}
 	if features.has("macos") and not is_debug:
 		# The Mac reference benchmark needs only this fixed probe, not an NK-3 receipt.
 		var probe := ProjectSettings.globalize_path("res://").path_join(SOURCES["session_probe.gd"])
@@ -31,6 +35,23 @@ func _export_begin(features: PackedStringArray, is_debug: bool, _path: String, _
 			push_error("Cannot read the Mac reference session probe")
 			return
 		add_file("res://native/kernel/qualification/session_probe.gd", FileAccess.get_file_as_bytes(probe), false)
+		# Ordinary Mac exports remain reference-only. This switch is for an
+		# explicitly prepared experimental package on the qualified editor.
+		if OS.get_environment("OPENRC_EXPERIMENTAL_NATIVE_MACOS_PACKAGE") == "1":
+			var parser := JSON.new()
+			if not FileAccess.file_exists(MAC_MANIFEST) or parser.parse(FileAccess.get_file_as_string(MAC_MANIFEST)) != OK \
+					or typeof(parser.data) != TYPE_DICTIONARY:
+				_fail("Prepare the experimental Mac native package before export")
+				return
+			_mac_manifest = parser.data
+			if not _mac_inputs_match():
+				_fail("Experimental Mac native package inputs differ from the verified manifest")
+				return
+			add_file(MAC_MANIFEST, FileAccess.get_file_as_bytes(MAC_MANIFEST), false)
+			for name: String in MAC_DIAGNOSTICS:
+				if name == "session_probe.gd": continue
+				var path := ProjectSettings.globalize_path("res://").path_join(SOURCES[name])
+				add_file("res://native/kernel/qualification/" + name, FileAccess.get_file_as_bytes(path), false)
 		return
 	if not features.has("linux") or not features.has("x86_64") or is_debug:
 		return
@@ -77,13 +98,45 @@ func _inputs_match() -> bool:
 	return true
 
 
+func _mac_inputs_match() -> bool:
+	if _mac_manifest.get("format") != "openrc-macos-native-kernel-package-v1" \
+			or _mac_manifest.get("platform") != "macos" or _mac_manifest.get("architecture") != "arm64" \
+			or _mac_manifest.get("engine_version") != Engine.get_version_info().string \
+			or _mac_manifest.get("solver_sha256") != FlightLog.solver_identity():
+		return false
+	var receipt: Variant = _mac_manifest.get("native_receipt")
+	if typeof(receipt) != TYPE_DICTIONARY or typeof(receipt.get("platforms")) != TYPE_DICTIONARY:
+		return false
+	var row: Variant = receipt.platforms.get("macos")
+	if typeof(row) != TYPE_DICTIONARY or row.get("qualification_scope") != "macos-arm64-fixed-wing-experimental-v1" \
+			or row.get("platform") != "macos" or row.get("architecture") != "arm64" \
+			or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY or row.mirrored_sources.is_empty() \
+			or row.get("engine_sha256") != FileAccess.get_sha256(OS.get_executable_path()) \
+			or row.get("binary_sha256") != FileAccess.get_sha256("res://native/kernel/libopenrc_native_kernel.dylib"):
+		return false
+	for name: Variant in row.mirrored_sources:
+		if typeof(name) != TYPE_STRING or not name.begins_with("app/") \
+				or FileAccess.get_sha256("res://" + name.trim_prefix("app/")) != row.mirrored_sources[name]:
+			return false
+	var diagnostics: Variant = _mac_manifest.get("qualification_sources")
+	if typeof(diagnostics) != TYPE_DICTIONARY or diagnostics.size() != MAC_DIAGNOSTICS.size():
+		return false
+	for name: String in MAC_DIAGNOSTICS:
+		var path := ProjectSettings.globalize_path("res://").path_join(SOURCES[name])
+		if diagnostics.get(name) != FileAccess.get_sha256(path): return false
+	return true
+
+
 func _export_end() -> void:
 	if not _mac_probe_sha256.is_empty() and FileAccess.get_sha256(ProjectSettings.globalize_path("res://").path_join(SOURCES["session_probe.gd"])) != _mac_probe_sha256:
 		push_error("Mac reference session probe changed during export")
 	_mac_probe_sha256 = ""
 	if not _manifest.is_empty() and not _inputs_match():
 		_fail("NK-3 source or binary changed during export")
+	if not _mac_manifest.is_empty() and not _mac_inputs_match():
+		_fail("Experimental Mac native sources or binary changed during export")
 	_manifest = {}
+	_mac_manifest = {}
 
 
 func _fail(message: String) -> void:

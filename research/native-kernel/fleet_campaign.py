@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import fnmatch
 import hashlib
 import importlib.util
 import json
 import math
 import os
 from pathlib import Path
+import plistlib
 import re
 import signal
 import subprocess
@@ -178,8 +180,23 @@ def load_build() -> Any:
     return module
 
 
-def snapshot() -> dict[str, Any]:
+def load_macos_builder() -> Any:
+    spec = importlib.util.spec_from_file_location("nk3_campaign_macos_builder", HERE / "build_macos.py")
+    require(spec is not None and spec.loader is not None, "cannot load Mac builder")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def macos_system_version() -> dict[str, Any]:
+    with Path("/System/Library/CoreServices/SystemVersion.plist").open("rb") as stream:
+        return plistlib.load(stream)
+
+
+def snapshot(context: dict[str, Any] | None = None) -> dict[str, Any]:
     """Pin the installed binary, source roster and declaration before and after all work."""
+    if context is not None:
+        return macos_snapshot(context)
     runner = load_runner()
     build = load_build()
     receipt_data = json.loads(RECEIPT.read_text(encoding="utf-8"))
@@ -213,6 +230,88 @@ def snapshot() -> dict[str, Any]:
         "fleet_sha256": sha256(FLEET),
         "campaign_sha256": sha256(Path(__file__).resolve()),
     }
+
+
+def macos_snapshot(context: dict[str, Any]) -> dict[str, Any]:
+    """Bind the selected Mac source project and its exact experimental installation."""
+    runner = load_runner()
+    build = load_build()
+    require(runner.host_platform_key() == "macos.arm64", "Mac fleet requires a native ARM64 process")
+    project = Path(context["project"]).resolve()
+    engine = Path(context["godot"]).resolve()
+    tool_root = Path(context["tool_root"]).resolve()
+    qualification_root = Path(context["qualification_root"]).resolve()
+    require(project.is_dir() and (project / "project.godot").is_file(), "project is missing")
+    require(tool_root.is_relative_to((ROOT / "tmp").resolve()) and tool_root != (ROOT / "tmp").resolve(),
+            "Mac tool root must be inside tmp/")
+    require(qualification_root.is_relative_to((ROOT / "tmp").resolve()) and qualification_root != (ROOT / "tmp").resolve()
+            and qualification_root.is_dir(), "Mac qualification root must be an existing directory inside tmp/")
+    proof = runner.validate_project(project)
+    require(isinstance(proof, dict) and (project == (ROOT / "app").resolve() or bool(proof)),
+            "prepared project inventory proof is missing")
+    native = project / "native/kernel"
+    require(not (project / "native").is_symlink() and not native.is_symlink()
+            and native.resolve() == project / "native/kernel", "native project directory is symlinked")
+    descriptor = native / "openrc_native_kernel_macos.gdextension"
+    receipt_file = native / "build-receipt-macos.json"
+    library = native / "libopenrc_native_kernel.dylib"
+    for path in (descriptor, receipt_file, library, engine):
+        require(not path.is_symlink() and path.is_file(), f"missing regular Mac artifact: {path}")
+    mac_builder = load_macos_builder()
+    require(descriptor.read_text(encoding="utf-8") == mac_builder.SOURCE_DESCRIPTOR,
+            "Mac descriptor differs from the source loader contract")
+    binary = runner.selected_binary(descriptor, project)
+    require(binary == library.resolve(), "Mac descriptor does not select the project dylib")
+    envelope = json.loads(receipt_file.read_text(encoding="utf-8"))
+    require(isinstance(envelope, dict) and envelope.get("format") == build.RECEIPT_FORMAT
+            and envelope.get("backend") == "native" and envelope.get("backend_version") == build.BACKEND_VERSION
+            and envelope.get("abi_version") == build.ABI_VERSION and isinstance(envelope.get("platforms"), dict),
+            "invalid Mac receipt envelope")
+    receipt = envelope["platforms"].get("macos")
+    require(isinstance(receipt, dict) and receipt.get("platform") == "macos" and receipt.get("architecture") == "arm64"
+            and receipt.get("backend") == "native" and receipt.get("backend_version") == build.BACKEND_VERSION
+            and receipt.get("abi_version") == build.ABI_VERSION
+            and receipt.get("qualification_scope") == "macos-arm64-fixed-wing-experimental-v1"
+            and receipt.get("mutant", False) is False
+            and "-DNK_MUTATION=1" not in receipt.get("cxxflags_appended", []), "invalid experimental Mac receipt")
+    references = {name: sha256(runner.project_file(ROOT / name, project)) for name in runner.reference_source_paths()}
+    binary_hash, engine_hash = sha256(binary), sha256(engine)
+    require(receipt.get("binary_sha256") == binary_hash and receipt.get("engine_sha256") == engine_hash
+            and isinstance(receipt.get("engine"), dict) and receipt["engine"].get("sha256") == engine_hash
+            and receipt["engine"].get("version") == receipt.get("engine_cli_version")
+            and receipt.get("engine_version") == mac_builder._engine_display(receipt["engine"]["version"])
+            and isinstance(receipt["engine"].get("architectures"), list)
+            and "arm64" in receipt["engine"]["architectures"]
+            and receipt.get("mirrored_sources") == references and receipt.get("source_sha256") == build.source_digest()
+            and receipt.get("lock_sha256") == sha256(build.locked.LOCK_PATH)
+            and receipt.get("builder_sha256") == sha256(HERE / "build_macos.py")
+            and receipt.get("linux_builder_sha256") == sha256(HERE / "build.py")
+            and receipt.get("shared_builder_sha256") == sha256(build.SHARED_BUILDER),
+            "Mac engine, binary, sources or build identity differs from the selected project receipt")
+    system = macos_system_version()
+    require(isinstance(system, dict) and isinstance(receipt.get("toolchain"), dict)
+            and receipt["toolchain"].get("os_version") == receipt.get("runtime_os_version")
+            and receipt["toolchain"].get("os_build") == receipt.get("runtime_os_build")
+            and receipt.get("runtime_os_version") == system.get("ProductVersion")
+            and receipt.get("runtime_os_build") == system.get("ProductBuildVersion")
+            and isinstance(system.get("ProductVersion"), str) and bool(system["ProductVersion"])
+            and isinstance(system.get("ProductBuildVersion"), str) and bool(system["ProductBuildVersion"]),
+            "Mac runtime qualification tuple differs from this host")
+    harness_names = ["research/native-kernel/" + name for name in (
+        "oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd", "fleet.gd", "propeller_oracle.gd",
+        "build.py", "run.py", "build_macos.py")]
+    harness_names += ["app/sim/native/" + name for name in (
+        "stage_config.gd", "weather_adapter.gd", "native_weather.gd", "native_configuration.gd",
+        "electric_stage_adapter.gd", "liquid_stage_adapter.gd", "glow_stage_adapter.gd", "helicopter_stage_adapter.gd",
+        "prescribed_stage_adapter.gd")]
+    harness_names += ["app/sim/native_stage.gd", "tools/godot/run_checked.py"]
+    harness = {name: sha256(runner.project_file(ROOT / name, project)) for name in harness_names}
+    return {"platform": "macos", "architecture": "arm64", "project": str(project), "project_inventory": proof,
+            "godot": str(engine), "tool_root": str(tool_root), "qualification_root": str(qualification_root),
+            "binary_sha256": binary_hash,
+            "engine_sha256": engine_hash, "descriptor_sha256": sha256(descriptor), "receipt_sha256": sha256(receipt_file),
+            "receipt": receipt, "reference_sources": references, "harness_sources": harness,
+            "fleet_sha256": sha256(FLEET), "campaign_sha256": sha256(Path(__file__).resolve())}
 
 
 def write_manifest_script(path: Path, output: Path) -> None:
@@ -277,16 +376,18 @@ func _initialize() -> void:
                     .replace("OUTPUT_PATH", json.dumps(str(output))), encoding="utf-8")
 
 
-def make_manifest(out: Path) -> dict[str, Any]:
+def make_manifest(out: Path, context: dict[str, Any] | None = None) -> dict[str, Any]:
     script = out / "manifest.gd"
     output = out / "manifest.json"
     write_manifest_script(script, output)
     script_hash = sha256(script)
     runner = load_runner()
+    project = Path(context["project"]) if context is not None else ROOT / "app"
+    godot = Path(context["godot"]) if context is not None else runner.GODOT
     command = [sys.executable, str(CHECKED), "--out-dir", str(out / "manifest-checks"),
                "--label", "nk3-fleet-manifest", "--timeout", "120",
                "--require-text", "NK3_FLEET_MANIFEST verdict=pass", "--",
-               str(runner.GODOT), "--headless", "--path", str(ROOT / "app"), "--script", str(script)]
+               str(godot), "--headless", "--path", str(project), "--script", str(script)]
     completed = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                text=True, check=False)
     (out / "manifest-run.log").write_text(completed.stdout, encoding="utf-8")
@@ -411,6 +512,45 @@ def manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict
             encountered.append(row["aircraft"])
     require(aircraft == encountered, "manifest aircraft list does not match rows")
     return index, aircraft
+
+
+def macos_manifest_index(manifest: dict[str, Any]) -> tuple[dict[tuple[Any, ...], dict[str, Any]], list[str]]:
+    """Retain the complete declaration, without promoting historical Linux observations."""
+    require(isinstance(manifest, dict) and manifest.get("format") == "openrc-nk3-fleet-manifest v1",
+            "invalid fleet manifest format")
+    rows, aircraft = manifest.get("rows"), manifest.get("aircraft")
+    require(isinstance(rows, list) and rows and isinstance(aircraft, list) and aircraft
+            and all(isinstance(name, str) and re.fullmatch(r"[a-z0-9][a-z0-9-]*", name) for name in aircraft)
+            and len(set(aircraft)) == len(aircraft),
+            "invalid or empty fleet declaration")
+    index: dict[tuple[Any, ...], dict[str, Any]] = {}
+    seen_aircraft: list[str] = []
+    for row in rows:
+        key = row_key(row)
+        require(key not in index, "duplicate manifest row")
+        require(row.get("expected", "flight") in
+                ("flight", "unqualified", "reference-refusal", "runtime-domain-refusal", "physical-terminal"),
+                "invalid manifest expectation")
+        if row.get("expected") == "reference-refusal":
+            require(isinstance(row.get("expected_refusal_reason"), str) and bool(row["expected_refusal_reason"]),
+                    "expected refusal has no declared reason")
+        index[key] = row
+        if row["aircraft"] not in seen_aircraft:
+            seen_aircraft.append(row["aircraft"])
+    require(aircraft == seen_aircraft, "manifest aircraft list does not match rows")
+    return index, aircraft
+
+
+def macos_pending_reason(row: dict[str, Any]) -> str:
+    """No Linux-pinned observation or previously unqualified row establishes a Mac boundary."""
+    if moonrunner_unqualified(row) or row.get("expected") == "unqualified":
+        return MOONRUNNER_UNQUALIFIED_REASON
+    runtime = (row.get("aircraft") in RUNTIME_CASES and row.get("vehicle") == "fixed-wing"
+               and row.get("battery") == "ideal" and row.get("case") == "runway" and row.get("weather") == "gusty")
+    if (row.get("expected", "flight") != "flight" or runway_start_boundary(row) or trim_start_boundary(row)
+            or physical_terminal_boundary(row) or runtime):
+        return "host-specific boundary requires separate Mac qualification"
+    return ""
 
 
 def validate_components(report: dict[str, Any], flights: int, refusals: int, runtime_refusals: int = 0,
@@ -818,7 +958,8 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
         scope, rows = report.get("fleet_scope"), report.get("fleet")
         shard_keys = {key for key in expected if key[0] == aircraft_id}
         require(isinstance(scope, dict) and scope.get("scope") == "scoped"
-                and scope.get("filters") == {"aircraft": aircraft_id, "weather": "", "soft_hull": ""}
+                and scope.get("filters") in ({"aircraft": aircraft_id, "weather": "", "soft_hull": ""},
+                                             {"aircraft": aircraft_id, "weather": "", "soft_hull": "", "vehicle": ""})
                 and scope.get("declared_aircraft") == aircraft and type(scope.get("declared_rows")) is int
                 and scope["declared_rows"] == len(expected) and type(scope.get("selected_rows")) is int
                 and scope["selected_rows"] == len(shard_keys) and scope.get("matrix_complete") is False
@@ -880,17 +1021,269 @@ def validate_live_sources(report: dict[str, Any]) -> None:
                     f"captured source no longer matches: {name}")
 
 
+def validate_macos_live_sources(report: dict[str, Any], project: Path) -> None:
+    runner = load_runner()
+    for prefix, mapping in (("res://", report["sources"]), ("", report["harness_sources"])):
+        require(isinstance(mapping, dict) and mapping, "missing source inventory")
+        for name, expected in mapping.items():
+            require(isinstance(name, str) and name.startswith(prefix) and hash_string(expected), "invalid source entry")
+            base = ROOT / "app" if prefix else ROOT
+            relative = name.removeprefix(prefix)
+            require("\\" not in relative and all(part not in ("", ".", "..") for part in relative.split("/")),
+                    "invalid source path")
+            canonical = (base / relative).resolve()
+            require(canonical.is_relative_to(base.resolve()), "source path escapes its repository")
+            actual = runner.project_file(canonical, project)
+            require(actual.is_file() and sha256(actual) == expected, f"captured source no longer matches: {name}")
+
+
+def validate_macos_base_boundary(guard: dict[str, Any]) -> dict[str, Any]:
+    """Bind the installed receipt's exact base oracle; it observed FPCR in its own process."""
+    mac = load_macos_builder()
+    root = Path(guard["qualification_root"]).resolve()
+    require(root.is_relative_to((ROOT / "tmp").resolve()) and root != (ROOT / "tmp").resolve() and root.is_dir(),
+            "Mac qualification root must be an existing directory inside tmp/")
+    installed = guard["receipt"]
+    record = installed.get("verification", {}).get("base_oracle")
+    require(isinstance(record, dict) and set(record) == {"results", "results_sha256", "verdict", "compared"},
+            "missing or malformed installed Mac base-oracle citation")
+    name, expected_hash = record["results"], record["results_sha256"]
+    require(isinstance(name, str) and bool(name) and "/" not in name and "\\" not in name
+            and not any(ord(char) < 32 or ord(char) == 127 for char in name)
+            and Path(name).name == name and fnmatch.fnmatchcase(name, mac.verification_roster()["base_oracle"])
+            and "_mutant" not in name and hash_string(expected_hash) and record["verdict"] == "pass"
+            and positive_int(record["compared"]), "invalid installed Mac base-oracle citation")
+    path = root / name
+    candidate_path = root / "build-receipt.json"
+    for artifact in (path, candidate_path):
+        require(not artifact.is_symlink() and artifact.is_file() and artifact.resolve().parent == root,
+                f"missing or redirected Mac base evidence: {artifact}")
+    report_hash, candidate_hash = sha256(path), sha256(candidate_path)
+    require(report_hash == expected_hash, "installed Mac base-oracle report changed")
+    lock = mac.locked.load_lock()
+    toolchain = mac.host_toolchain()
+    engine = mac.godot_identity(Path(guard["godot"]), lock)
+    candidate = mac.validate_build(root, False, mac._identity(), toolchain, engine, lock)
+    require(isinstance(candidate, dict) and json.loads(candidate_path.read_text(encoding="utf-8")) == candidate
+            and candidate.get("binary_sha256") == guard["binary_sha256"]
+            and candidate.get("engine") == installed.get("engine") == engine
+            and candidate.get("engine_sha256") == guard["engine_sha256"]
+            and candidate.get("toolchain") == installed.get("toolchain") == toolchain
+            and candidate.get("reference_sources_sha256") == guard["reference_sources"] == installed.get("mirrored_sources")
+            and all(key in candidate and key in installed and candidate[key] == installed[key] for key in
+                    ("source_sha256", "lock_sha256", "builder_sha256", "linux_builder_sha256",
+                     "shared_builder_sha256", "godot_cpp_commit", "extension_api_sha256",
+                     "binding_precision", "cxxflags_appended", "repository_head")),
+            "Mac base-oracle build differs from the installed fleet identity")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    require(isinstance(data, dict), "installed Mac base-oracle report is not an object")
+    mac._check_oracle_identity(data, path, "base_oracle", candidate, {}, load_runner())
+    require(data.get("total", {}).get("compared") == record["compared"],
+            "installed Mac base-oracle comparison count differs")
+    checked = data["checked_run"]
+    checked_path, log_path = Path(checked["report"]), Path(checked["log"])
+    checked_hash, log_hash = sha256(checked_path), sha256(log_path)
+    require(log_hash == checked["log_sha256"] and json.loads(checked_path.read_text(encoding="utf-8")) == checked
+            and sha256(path) == report_hash and sha256(candidate_path) == candidate_hash
+            and sha256(checked_path) == checked_hash and sha256(log_path) == log_hash,
+            "Mac base-oracle evidence changed during verification")
+    return {"scope": "separate-base-oracle-process", "report": str(path), "report_sha256": report_hash,
+            "candidate_receipt": str(candidate_path), "candidate_receipt_sha256": candidate_hash,
+            "checked_report": str(checked_path), "checked_report_sha256": checked_hash,
+            "checked_log": str(log_path), "checked_log_sha256": log_hash,
+            "binary_sha256": guard["binary_sha256"], "engine_sha256": guard["engine_sha256"],
+            "compared": record["compared"]}
+
+
+def _validate_macos_shard(aircraft_id: str, report: dict[str, Any], path: Path,
+                           expected: dict[tuple[Any, ...], dict[str, Any]], catalog: list[str],
+                           guard: dict[str, Any], warmup: int, samples: int) -> dict[tuple[Any, ...], dict[str, Any]]:
+    """Check a finished passing or failing shard before crediting any individual flight."""
+    require(isinstance(report, dict) and report.get("format") == "openrc-nk3-fleet v2"
+            and report.get("verdict") in ("pass", "fail") and report.get("self_test", {}).get("passed") is True
+            and report.get("experimental_native_macos") is True, f"{aircraft_id}: invalid Mac oracle report")
+    law = report.get("law_identity")
+    require(isinstance(law, dict) and all(isinstance(law.get(name), str) and bool(law[name]) for name in
+            ("aero_reference", "aero_native", "rolling_reference", "rolling_native"))
+            and law["aero_reference"] == law["aero_native"] and law["rolling_reference"] == law["rolling_native"],
+            f"{aircraft_id}: reference/native law identity differs")
+    # Real fleet.gd shards do not run the base-only boundary probe. If a future
+    # shard reports such evidence, do not accept a partial or invalid probe.
+    if "macos_boundary" in report:
+        boundary_error = load_macos_builder()._macos_boundary_error(report)
+        require(not boundary_error, f"{aircraft_id}: {boundary_error}")
+    passed = report["verdict"] == "pass"
+    checked = report.get("checked_run")
+    require(isinstance(checked, dict) and checked.get("format") == "openrc-godot-check v1"
+            and checked.get("complete") is True and checked.get("ok") is passed
+            and checked.get("reason") == ("passed" if passed else "process_exit")
+            and type(checked.get("process_exit")) is int and checked["process_exit"] == (0 if passed else 1)
+            and type(checked.get("counts", {}).get("error")) is int and checked["counts"]["error"] == 0
+            and checked.get("required_text") == ["NK3_ORACLE verdict=pass"]
+            and checked.get("missing_required_text") == ([] if passed else ["NK3_ORACLE verdict=pass"])
+            and report.get("run_valid") is passed, f"{aircraft_id}: checked shard did not finish cleanly")
+    log, checked_path = Path(checked.get("log", "")), Path(checked.get("report", ""))
+    check_root = Path(guard["tool_root"]) / "checks"
+    require(log.is_file() and checked_path.is_file() and not log.is_symlink() and not checked_path.is_symlink()
+            and checked_path.resolve().is_relative_to(check_root.resolve()) and log.resolve().parent == checked_path.resolve().parent
+            and json.loads(checked_path.read_text(encoding="utf-8")) == checked and sha256(log) == checked.get("log_sha256")
+            and f"NK3_ORACLE verdict={'pass' if passed else 'fail'}" in log.read_text(encoding="utf-8", errors="replace"),
+            f"{aircraft_id}: checked shard log or report differs")
+    command = checked.get("command")
+    require(isinstance(command, list) and all(isinstance(arg, str) for arg in command) and command
+            and Path(command[0]).resolve() == Path(guard["godot"]).resolve()
+            and command.count("--path") == 1 and Path(command[command.index("--path") + 1]).resolve() == Path(guard["project"])
+            and command.count("--script") == 1 and Path(command[command.index("--script") + 1]).resolve() == FLEET.resolve()
+            and command.count("--extension=res://native/kernel/openrc_native_kernel_macos.gdextension") == 1
+            and command.count("--experimental-native-macos=true") == 1 and command.count("--vehicle=fixed-wing") == 1
+            and command.count("--seed=20261027") == 1 and report.get("seed") == 20261027
+            and command.count(f"--aircraft={aircraft_id}") == 1 and command.count(f"--warmup={warmup}") == 1
+            and command.count(f"--samples={samples}") == 1 and command.count(f"--output={path}") == 1
+            and not any(arg.startswith("--weather=") or arg.startswith("--soft-hull=") for arg in command),
+            f"{aircraft_id}: checked command differs from the Mac fixed-wing shard")
+    require(report.get("library", {}).get("ok") is True and report["library"].get("reason") == ""
+            and report.get("identity", {}).get("backend") == "native"
+            and report["identity"].get("abi_version") == 2 and report["identity"].get("backend_version") == guard["receipt"]["backend_version"]
+            and report.get("build_receipt") == guard["receipt"]
+            and report.get("engine") == guard["receipt"]["engine_version"]
+            and all(report.get(name) == guard["engine_sha256"] for name in
+                    ("engine_sha256_before", "engine_sha256_after", "engine_executable_sha256_before", "engine_executable_sha256_after"))
+            and all(report.get(name) == guard["binary_sha256"] for name in ("binary_sha256_before", "binary_sha256_after"))
+            and report.get("reference_sources_before") == guard["reference_sources"]
+            and report.get("reference_sources_after") == guard["reference_sources"]
+            and report.get("harness_sources") == guard["harness_sources"]
+            and isinstance(report.get("sources"), dict) and report["sources"] and report.get("sources_after") == report["sources"]
+            and report.get("project") == guard["project"]
+            and report.get("project_inventory_before") == guard["project_inventory"]
+            and report.get("project_inventory_after") == guard["project_inventory"],
+            f"{aircraft_id}: Mac source, engine, binary, harness or project identity differs")
+    validate_macos_live_sources(report, Path(guard["project"]))
+    selected = {key for key in expected if key[0] == aircraft_id and key[1] == "fixed-wing"}
+    scope, rows = report.get("fleet_scope"), report.get("fleet")
+    require(selected and isinstance(scope, dict) and scope.get("scope") == "scoped"
+            and scope.get("filters") == {"aircraft": aircraft_id, "weather": "", "soft_hull": "", "vehicle": "fixed-wing"}
+            and scope.get("declared_aircraft") == catalog and type(scope.get("declared_rows")) is int
+            and scope["declared_rows"] == len(expected) and type(scope.get("selected_rows")) is int
+            and scope["selected_rows"] == len(selected) and scope.get("matrix_complete") is False
+            and type(scope.get("warmup_requested")) is int and scope["warmup_requested"] == warmup
+            and type(scope.get("samples_requested")) is int and scope["samples_requested"] == samples
+            and isinstance(rows, list) and len(rows) == len(selected), f"{aircraft_id}: incomplete Mac shard scope")
+    indexed: dict[tuple[Any, ...], dict[str, Any]] = {}
+    counts = {"flight_passed": 0, "reference_refused": 0, "runtime_refused": 0, "physical_terminal": 0, "failed": 0}
+    status_fields = {"pass": "flight_passed", "reference-refused": "reference_refused",
+                     "runtime-domain-refused": "runtime_refused", "physical-terminal": "physical_terminal", "fail": "failed"}
+    for row in rows:
+        key = row_key(row)
+        require(key in selected and key not in indexed and row.get("status") in status_fields,
+                f"{aircraft_id}: duplicate or unexpected Mac row")
+        declared = expected[key]
+        require(row["default_battery"] == declared["default_battery"]
+                and row.get("expected", "flight") == declared.get("expected", "flight")
+                and row.get("expected_runtime_tick") == declared.get("expected_runtime_tick")
+                and row.get("expected_terminal_tick") == declared.get("expected_terminal_tick"),
+                f"{aircraft_id}: declared row metadata differs")
+        counts[status_fields[row["status"]]] += 1
+        indexed[key] = row
+    require(set(indexed) == selected and all(type(scope.get(name)) is int and scope[name] == value
+                                             for name, value in counts.items()), f"{aircraft_id}: row totals differ")
+    components = report.get("components")
+    require(isinstance(components, dict) and components, f"{aircraft_id}: oracle comparisons missing")
+    require(positive_int(components.get("literals", {}).get("count")), f"{aircraft_id}: literal probe is missing")
+    count = identical = 0
+    fleet_components = {"fleet_pair", "fleet_reference_refusal", "fleet_runtime_domain_refusal", "fleet_physical_terminal"}
+    for name, component in components.items():
+        require(isinstance(component, dict) and positive_int(component.get("count"))
+                and type(component.get("identical")) is int and 0 <= component["identical"] <= component["count"]
+                and (name in fleet_components or component["identical"] == component["count"]),
+                f"{aircraft_id}: non-fleet comparison failed")
+        count += component["count"]
+        identical += component["identical"]
+    if counts["flight_passed"]:
+        require(components.get("fleet_pair", {}).get("count", 0) >= counts["flight_passed"]
+                and components.get("fleet_pair", {}).get("identical", 0) >= counts["flight_passed"],
+                f"{aircraft_id}: passing flights lack paired comparisons")
+    require(report.get("total") == {"compared": count, "identical": identical, "mismatched": count - identical}
+            and isinstance(report.get("failures"), list)
+            and all(isinstance(message, str) and (message.startswith("fleet ") or message == MOONRUNNER_UNQUALIFIED_REASON)
+                    for message in report["failures"])
+            and ((passed and report["failures"] == [] and count == identical and counts["failed"] == 0)
+                 or (not passed and bool(report["failures"]) and counts["failed"] > 0)),
+            f"{aircraft_id}: shard verdict or comparison totals differ")
+    return indexed
+
+
+def validate_macos_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]],
+                            paths: dict[str, Path], selected_aircraft: list[str], errors: dict[str, str],
+                            guard: dict[str, Any], warmup: int, samples: int) -> dict[str, Any]:
+    require(positive_int(warmup) and positive_int(samples), "durations must be positive integers")
+    base_boundary = validate_macos_base_boundary(guard)
+    expected, catalog = macos_manifest_index(manifest)
+    fixed = {key: row for key, row in expected.items() if key[1] == "fixed-wing"}
+    names = list(dict.fromkeys(key[0] for key in fixed))
+    require(fixed and len(set(selected_aircraft)) == len(selected_aircraft)
+            and set(selected_aircraft).issubset(names) and set(reports).issubset(selected_aircraft)
+            and set(paths) == set(reports) and set(errors).issubset(selected_aircraft)
+            and not (set(errors) & set(reports)), "invalid Mac fixed-wing shard set")
+    rows: list[dict[str, Any]] = []
+    checked_rows: dict[str, dict[tuple[Any, ...], dict[str, Any]]] = {}
+    shard_errors = dict(errors)
+    for name in selected_aircraft:
+        if name not in reports:
+            shard_errors.setdefault(name, "selected shard produced no report")
+            continue
+        try:
+            checked_rows[name] = _validate_macos_shard(name, reports[name], paths[name], expected, catalog,
+                                                       guard, warmup, samples)
+        except (CampaignError, OSError, ValueError, KeyError, TypeError, IndexError, AttributeError) as error:
+            shard_errors[name] = str(error)
+    verified = 0
+    for key, declared in fixed.items():
+        name = key[0]
+        pending = macos_pending_reason(declared)
+        item = {field: declared[field] for field in KEY_FIELDS}
+        item.update(default_battery=declared["default_battery"], declared_expectation=declared.get("expected", "flight"),
+                    status="open", reason="")
+        if pending:
+            item["reason"] = pending
+        elif name not in selected_aircraft:
+            item["reason"] = "aircraft was not selected"
+        elif name not in checked_rows:
+            item["reason"] = "shard unavailable or invalid: " + shard_errors[name]
+        else:
+            row = checked_rows[name][key]
+            try:
+                validate_flight(row, warmup, samples, guard)
+            except (CampaignError, KeyError, TypeError) as error:
+                item["reason"] = "flight failed: " + str(error)
+            else:
+                item.update(status="verified-flight", reason="", shard_verdict=reports[name]["verdict"])
+                verified += 1
+        rows.append(item)
+    complete = verified == len(fixed) and not shard_errors and set(selected_aircraft) == set(names)
+    return {"scope": "macos-arm64-fixed-wing-experimental", "full_catalog": False,
+            "base_oracle_boundary": base_boundary,
+            "catalog_declared_rows": len(expected), "catalog_aircraft": catalog, "fixed_wing_aircraft": names,
+            "selected_aircraft": selected_aircraft, "fixed_wing_declared_rows": len(fixed),
+            "verified_flight_rows": verified, "open_rows": len(fixed) - verified,
+            "fixed_wing_complete": complete, "shard_errors": shard_errors, "rows": rows}
+
+
 async def run_shard(aircraft: str, out: Path, semaphore: asyncio.Semaphore, warmup: int, samples: int,
-                    timeout: int) -> tuple[str, Path]:
+                    timeout: int, context: dict[str, Any] | None = None) -> tuple[str, Path]:
     async with semaphore:
         log_path = out / f"{aircraft}.log"
         command = [sys.executable, str(RUNNER), "--app-library", "--script", "fleet.gd",
                    "--option", f"aircraft={aircraft}", "--option", f"warmup={warmup}",
                    "--option", f"samples={samples}", "--timeout", str(timeout)]
+        env = None
+        if context is not None:
+            command += ["--project", context["project"], "--godot", context["godot"],
+                        "--experimental-native-macos", "--option", "vehicle=fixed-wing"]
+            env = dict(os.environ, OPENRC_NK_TOOL_ROOT=context["tool_root"])
         print(f"Starting fleet shard: {aircraft}", flush=True)
         with log_path.open("wb") as log:
             proc = await asyncio.create_subprocess_exec(*command, cwd=ROOT, stdout=log,
-                                                        stderr=subprocess.STDOUT, start_new_session=True)
+                                                        stderr=subprocess.STDOUT, start_new_session=True, env=env)
             try:
                 code = await proc.wait()
             except asyncio.CancelledError:
@@ -909,16 +1302,18 @@ async def run_shard(aircraft: str, out: Path, semaphore: asyncio.Semaphore, warm
                     await proc.wait()
                 raise
         text = log_path.read_text(encoding="utf-8", errors="replace")
-        matches = re.findall(r"^verdict=(?:pass|fail) .* results=(\S+)$", text, flags=re.MULTILINE)
-        require(code == 0 and len(matches) == 1, f"{aircraft}: shard failed; see {log_path}")
+        matches = re.findall(r"^verdict=(?:pass|fail) .* results=(.+)$", text, flags=re.MULTILINE)
+        require((code == 0 or (context is not None and code == 1)) and len(matches) == 1,
+                f"{aircraft}: shard failed; see {log_path}")
         result_path = (ROOT / matches[0]).resolve()
-        require(result_path.is_relative_to((ROOT / "tmp/native-kernel").resolve()) and result_path.is_file(),
+        result_root = Path(context["tool_root"]).resolve() if context is not None else (ROOT / "tmp/native-kernel").resolve()
+        require(result_path.is_relative_to(result_root) and result_path.is_file(),
                 f"{aircraft}: result path is invalid")
         print(f"Completed fleet shard: {aircraft}", flush=True)
         return aircraft, result_path
 
 
-async def wait_reused_report(aircraft: str, path: Path, timeout: int) -> tuple[str, Path]:
+async def wait_reused_report(aircraft: str, path: Path, timeout: int, allow_failed: bool = False) -> tuple[str, Path]:
     """Wait for run.py's final checked metadata; the Godot report is written before it."""
     deadline = asyncio.get_running_loop().time() + timeout
     print(f"Waiting for reused fleet shard: {aircraft}", flush=True)
@@ -929,7 +1324,8 @@ async def wait_reused_report(aircraft: str, path: Path, timeout: int) -> tuple[s
             except (json.JSONDecodeError, OSError):
                 result = None  # run.py may be writing its final enriched report
             if isinstance(result, dict) and "run_valid" in result:
-                require(result.get("run_valid") is True and result.get("verdict") == "pass",
+                require((result.get("run_valid") is True and result.get("verdict") == "pass")
+                        or (allow_failed and result.get("run_valid") is False and result.get("verdict") == "fail"),
                         f"{aircraft}: reused shard did not complete successfully: {path}")
                 print(f"Collected reused fleet shard: {aircraft}", flush=True)
                 return aircraft, path
@@ -937,14 +1333,14 @@ async def wait_reused_report(aircraft: str, path: Path, timeout: int) -> tuple[s
     raise CampaignError(f"{aircraft}: timed out waiting for reused shard: {path}")
 
 
-def drift_reason(guard: dict[str, Any]) -> str:
+def drift_reason(guard: dict[str, Any], context: dict[str, Any] | None = None) -> str:
     """Explain changes even when snapshot rejects an installed receipt as stale."""
     try:
-        current = snapshot()
+        current = snapshot(context) if context is not None else snapshot()
     except (CampaignError, OSError, ValueError, KeyError, TypeError) as error:
         changed = []
         for name, digest in guard.get("reference_sources", {}).items():
-            path = ROOT / name
+            path = load_runner().project_file(ROOT / name, Path(context["project"])) if context is not None else ROOT / name
             try:
                 if not path.is_file() or sha256(path) != digest:
                     changed.append(name)
@@ -958,10 +1354,10 @@ def drift_reason(guard: dict[str, Any]) -> str:
     return "frozen source/binary/engine snapshot changed: " + ", ".join(changed_fields) if changed_fields else ""
 
 
-async def monitor_snapshot(guard: dict[str, Any], interval: float = 5.0) -> None:
+async def monitor_snapshot(guard: dict[str, Any], interval: float = 5.0, context: dict[str, Any] | None = None) -> None:
     while True:
         await asyncio.sleep(interval)
-        reason = drift_reason(guard)
+        reason = drift_reason(guard, context) if context is not None else drift_reason(guard)
         if reason:
             raise CampaignError(reason)
 
@@ -969,14 +1365,19 @@ async def monitor_snapshot(guard: dict[str, Any], interval: float = 5.0) -> None
 async def run_shards(aircraft: list[str], out: Path, jobs: int, warmup: int, samples: int,
                      timeout: int, reused: dict[str, Path] | None = None,
                      guard: dict[str, Any] | None = None, monitor_interval: float = 5.0,
-                     keep_going: bool = False) -> dict[str, Path]:
+                     keep_going: bool = False, context: dict[str, Any] | None = None,
+                     partial: bool = False) -> dict[str, Any]:
     semaphore = asyncio.Semaphore(jobs)
     reused = reused or {}
-    tasks = [asyncio.create_task(wait_reused_report(name, reused[name], timeout) if name in reused
-                                 else run_shard(name, out, semaphore, warmup, samples, timeout))
-             for name in aircraft]
+    def shard(name: str):
+        if name in reused:
+            return wait_reused_report(name, reused[name], timeout, allow_failed=True) if context else wait_reused_report(name, reused[name], timeout)
+        return (run_shard(name, out, semaphore, warmup, samples, timeout, context=context) if context
+                else run_shard(name, out, semaphore, warmup, samples, timeout))
+    tasks = [asyncio.create_task(shard(name)) for name in aircraft]
     collected = asyncio.gather(*tasks, return_exceptions=keep_going)
-    monitor = asyncio.create_task(monitor_snapshot(guard, monitor_interval)) if guard is not None else None
+    monitor = (asyncio.create_task(monitor_snapshot(guard, monitor_interval, context)) if context else
+               asyncio.create_task(monitor_snapshot(guard, monitor_interval))) if guard is not None else None
     try:
         if monitor is not None:
             finished, _pending = await asyncio.wait((collected, monitor), return_when=asyncio.FIRST_COMPLETED)
@@ -984,9 +1385,12 @@ async def run_shards(aircraft: list[str], out: Path, jobs: int, warmup: int, sam
                 await monitor
         results = await collected
         failures = [(name, result) for name, result in zip(aircraft, results) if isinstance(result, BaseException)]
-        if failures:
+        if failures and not partial:
             raise CampaignError("fleet shards failed after independent work finished: "
                                 + "; ".join(f"{name}: {error}" for name, error in failures))
+        if partial:
+            return {"paths": dict(result for result in results if not isinstance(result, BaseException)),
+                    "errors": {name: str(error) for name, error in failures}}
         return dict(results)
     except BaseException:
         for task in tasks:
@@ -1000,6 +1404,90 @@ async def run_shards(aircraft: list[str], out: Path, jobs: int, warmup: int, sam
             await asyncio.gather(monitor, return_exceptions=True)
 
 
+def macos_context(args: argparse.Namespace, out: Path) -> dict[str, str]:
+    context = {"project": str(args.project.expanduser().resolve()), "godot": str(args.godot.expanduser().resolve()),
+               "tool_root": str(args.tool_root.expanduser().resolve()),
+               "qualification_root": str(args.qualification_root.expanduser().resolve())}
+    project, tool_root, qualification_root = (Path(context[key]) for key in ("project", "tool_root", "qualification_root"))
+    require(qualification_root.is_relative_to((ROOT / "tmp").resolve()) and qualification_root != (ROOT / "tmp").resolve()
+            and qualification_root.is_dir(), "Mac qualification root must be an existing directory inside tmp/")
+    require(not out.is_relative_to(project) and not tool_root.is_relative_to(project)
+            and not project.is_relative_to(tool_root) and not out.is_relative_to(tool_root)
+            and not tool_root.is_relative_to(out) and not qualification_root.is_relative_to(project)
+            and not project.is_relative_to(qualification_root) and not out.is_relative_to(qualification_root)
+            and not qualification_root.is_relative_to(out),
+            "project, campaign output and evidence roots must be separate")
+    return context
+
+
+def run_macos_campaign(args: argparse.Namespace, out: Path) -> int:
+    context = macos_context(args, out)
+    tool_root = Path(context["tool_root"])
+    guard = snapshot(context)
+    base_boundary = validate_macos_base_boundary(guard)
+    manifest = make_manifest(out, context)
+    expected, _catalog = macos_manifest_index(manifest)
+    fixed = [row for row in expected.values() if row["vehicle"] == "fixed-wing"]
+    all_aircraft = list(dict.fromkeys(row["aircraft"] for row in fixed))
+    selected = args.aircraft or all_aircraft
+    require(fixed and len(set(selected)) == len(selected) and set(selected).issubset(all_aircraft),
+            "selected aircraft must be distinct declared fixed-wing aircraft")
+    reused: dict[str, Path] = {}
+    for item in args.reuse_report:
+        name, separator, value = item.partition("=")
+        require(bool(separator) and name in selected and name not in reused and bool(value),
+                "invalid or duplicate reused aircraft report")
+        path = Path(value).expanduser().resolve()
+        require(path.is_relative_to(tool_root) and path.name.startswith("fleet-") and path.suffix == ".json",
+                "reused report must be a fleet JSON in the selected tool root")
+        reused[name] = path
+    manifest_hash, manifest_script_hash = sha256(out / "manifest.json"), sha256(out / "manifest.gd")
+    require(snapshot(context) == guard, "source, binary or engine changed during manifest generation")
+    print(f"Declared fleet: {len(expected)} total rows, {len(fixed)} fixed-wing rows across "
+          f"{len(all_aircraft)} aircraft; selected {len(selected)}", flush=True)
+    pending = any(macos_pending_reason(row) for row in fixed)
+    paths: dict[str, Path] = {}
+    reports: dict[str, dict[str, Any]] = {}
+    report_hashes: dict[str, str] = {}
+    errors: dict[str, str] = {}
+    if pending and not args.keep_going:
+        errors = {name: "known unqualified rows require --keep-going to collect partial evidence" for name in selected}
+    else:
+        collected = asyncio.run(run_shards(selected, out, args.jobs, args.warmup, args.samples, args.timeout,
+                                           reused, guard, monitor_interval=60.0, keep_going=args.keep_going,
+                                           context=context, partial=True))
+        paths, errors = collected["paths"], collected["errors"]
+        for name, path in list(paths.items()):
+            try:
+                raw = path.read_bytes()
+                report = json.loads(raw)
+                require(isinstance(report, dict), "shard report is not an object")
+                reports[name] = report
+                report_hashes[name] = hashlib.sha256(raw).hexdigest()
+            except (CampaignError, OSError, ValueError) as error:
+                errors[name] = f"cannot read shard report: {error}"
+                del paths[name]
+    result = validate_macos_reports(manifest, reports, paths, selected, errors, guard, args.warmup, args.samples)
+    require(result["base_oracle_boundary"] == base_boundary, "Mac base-oracle evidence changed during the campaign")
+    require(sha256(out / "manifest.json") == manifest_hash and sha256(out / "manifest.gd") == manifest_script_hash
+            and all(sha256(path) == report_hashes[name] for name, path in paths.items()),
+            "manifest or report changed during validation")
+    require(snapshot(context) == guard, "source, binary or engine changed during the campaign")
+    failed = bool(result["shard_errors"]) or any(row["reason"].startswith("flight failed:") for row in result["rows"])
+    verdict = "pass" if result["fixed_wing_complete"] else "fail" if failed and not (pending and not args.keep_going) else "open"
+    result.update(format="openrc-nk3-fleet-campaign-macos-experimental v1", verdict=verdict,
+                  warmup=args.warmup, samples=args.samples, keep_going=args.keep_going,
+                  manifest_sha256=manifest_hash, manifest_script_sha256=manifest_script_hash,
+                  guard={**guard, "base_oracle_boundary": base_boundary},
+                  reports={name: {"path": str(path), "sha256": report_hashes[name]} for name, path in paths.items()})
+    evidence = out / "campaign.json"
+    evidence.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(f"NK3_FLEET_CAMPAIGN verdict={verdict} scope=macos-arm64-fixed-wing-experimental "
+          f"verified_flights={result['verified_flight_rows']} open_rows={result['open_rows']} evidence={evidence}",
+          flush=True)
+    return 0 if verdict == "pass" else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True, help="new evidence directory")
@@ -1011,13 +1499,31 @@ def main() -> int:
                         help="reuse a current full-aircraft run.py report, waiting if it is still running")
     parser.add_argument("--keep-going", action="store_true",
                         help="finish independent shards after a shard failure; the campaign still fails")
+    parser.add_argument("--experimental-native-macos", action="store_true",
+                        help="run the scoped experimental Mac ARM64 fixed-wing campaign")
+    parser.add_argument("--project", type=Path, help="verified prepared Mac project")
+    parser.add_argument("--godot", type=Path, help="Mac engine bound to the project receipt")
+    parser.add_argument("--tool-root", type=Path, help="Mac runner's evidence and checks directory under tmp/")
+    parser.add_argument("--qualification-root", type=Path, help="exact Mac build and cited oracle evidence under tmp/")
+    parser.add_argument("--aircraft", action="append", default=[], metavar="ID",
+                        help="select one fixed-wing Mac aircraft (repeatable); omitted aircraft remain open")
     args = parser.parse_args()
     if not 1 <= args.jobs <= MAX_JOBS or args.warmup < MIN_WARMUP or args.samples < MIN_SAMPLES or args.timeout <= 0:
         parser.error("jobs must be 1–4, warmup >= 600, samples >= 2400, and timeout positive")
+    if args.experimental_native_macos:
+        if args.project is None or args.godot is None or args.tool_root is None or args.qualification_root is None:
+            parser.error("--experimental-native-macos requires --project, --godot, --tool-root and --qualification-root")
+    elif args.project is not None or args.godot is not None or args.tool_root is not None \
+            or args.qualification_root is not None or args.aircraft:
+        parser.error("--project, --godot, --tool-root, --qualification-root and --aircraft require --experimental-native-macos")
     out = args.out.resolve()
     try:
         require(out.is_relative_to((ROOT / "tmp").resolve()), "evidence directory must be under tmp/")
+        if args.experimental_native_macos:
+            macos_context(args, out)
         out.mkdir(parents=True, exist_ok=False)
+        if args.experimental_native_macos:
+            return run_macos_campaign(args, out)
         guard = snapshot()
         manifest = make_manifest(out)
         expected, aircraft = manifest_index(manifest)

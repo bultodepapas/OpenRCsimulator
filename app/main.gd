@@ -582,6 +582,16 @@ func _startup_cancel_requested() -> bool:
 ## Freeze the same foreground setup as the historical path; selected weather/fuel still apply later.
 func _new_flight_setup(args: Dictionary) -> Dictionary:
 	var next_session := FlightSession.new()
+	var mac_native := _experimental_native_macos_option(args)
+	if not mac_native.ok:
+		startup_error = mac_native.error
+		printerr(startup_error)
+		next_session.free()
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return {}
+	next_session.experimental_native_macos = mac_native.enabled
 	# The app requests native physics by default; tools and replay retain their reference default.
 	if (not _scripted or args.has("physics-backend")) \
 			and (not next_session.setup_stage_backend(_requested_stage_backend(args)) or _scripted):
@@ -3330,6 +3340,16 @@ func _creator_trial() -> bool:
 	if _creator_trial_state < 0:
 		_creator_trial_state = 1 if CreatorTrial.verify(workshop_trial).get("ok", false) else 0
 	return _creator_trial_state == 1
+
+
+## Mac admission is an explicit per-session launch choice, frozen before setup.
+static func _experimental_native_macos_option(args: Dictionary) -> Dictionary:
+	var value: Variant = args.get("experimental-native-macos", false)
+	if typeof(value) == TYPE_BOOL:
+		return {ok = true, enabled = value, error = ""}
+	if typeof(value) == TYPE_STRING and value in ["true", "false"]:
+		return {ok = true, enabled = value == "true", error = ""}
+	return {ok = false, enabled = false, error = "--experimental-native-macos must be true or false"}
 
 
 ## The app requests native physics by default. A Creator trial pins the reference evaluator instead:

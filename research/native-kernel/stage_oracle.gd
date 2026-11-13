@@ -36,6 +36,7 @@ var _world_cache: Dictionary = {}
 
 func _build_session(aircraft_id: String, case: String, world: bool, weather: Dictionary = {}, soft_hull := true) -> Node:
 	var session: Node = Session.new()
+	session.experimental_native_macos = _experimental_native_macos
 	session.input_enabled = true
 	session.physics_enabled = true
 	session.crash_auto_restart = false

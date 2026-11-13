@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import struct
 import tempfile
+from types import SimpleNamespace
 import unittest
 import zlib
 from unittest import mock
@@ -1194,6 +1195,494 @@ class FleetCampaignTests(unittest.TestCase):
             self.assertGreater(check.call_count, 0)
 
         asyncio.run(scenario())
+
+
+def macos_fixture(root: Path, failed: bool = False):
+    """A checked fixed-wing shard and the full declaration, including rotorcraft."""
+    manifest, reports, guard = fixtures()
+    report = reports["fixed"]
+    if failed:
+        manifest["rows"][1]["expected"] = "unqualified"
+        manifest["rows"][1].pop("expected_refusal_reason")
+        report["fleet"][1].update(expected="unqualified", status="fail", reason=campaign.MOONRUNNER_UNQUALIFIED_REASON)
+        report["failures"] = [campaign.MOONRUNNER_UNQUALIFIED_REASON]
+        report["verdict"], report["run_valid"] = "fail", False
+        report["fleet_scope"].update(reference_refused=0, failed=1)
+        report["components"].pop("fleet_reference_refusal")
+    project = (root / "prepared-app").resolve()
+    engine = (root / "Godot").resolve()
+    tool_root = (root / "tools").resolve()
+    qualification_root = (root / "tmp/build").resolve()
+    qualification_root.mkdir(parents=True)
+    check_dir = tool_root / "checks/checked-1"
+    check_dir.mkdir(parents=True)
+    output = tool_root / "fleet-result.json"
+    log, check_path = check_dir / "engine.log", check_dir / "report.json"
+    log.write_text("NK3_ORACLE verdict=" + report["verdict"] + "\n", encoding="utf-8")
+    checked = report["checked_run"]
+    checked.update(format="openrc-godot-check v1", log=str(log), report=str(check_path), log_sha256=campaign.sha256(log),
+                   command=[str(engine), "--headless", "--path", str(project), "--script", str(campaign.FLEET),
+                            "--extension=res://native/kernel/openrc_native_kernel_macos.gdextension",
+                            "--experimental-native-macos=true", "--vehicle=fixed-wing", "--aircraft=fixed",
+                            "--seed=20261027", "--warmup=2", "--samples=3", f"--output={output}"])
+    if failed:
+        checked.update(ok=False, reason="process_exit", process_exit=1,
+                       missing_required_text=["NK3_ORACLE verdict=pass"])
+    check_path.write_text(json.dumps(checked), encoding="utf-8")
+    receipt = guard["receipt"]
+    receipt.update(backend_version="openrc-native-kernel-stage-v2", engine_version="4.8-beta2 (official)")
+    inventory = {"canonical_manifest_sha256": "f" * 64}
+    guard.update(project=str(project), godot=str(engine), tool_root=str(tool_root),
+                 qualification_root=str(qualification_root), project_inventory=inventory,
+                 harness_sources=copy.deepcopy(report["harness_sources"]))
+    report.update(experimental_native_macos=True, seed=20261027, build_receipt=copy.deepcopy(receipt),
+                  engine=receipt["engine_version"], project=str(project),
+                  project_inventory_before=inventory, project_inventory_after=inventory,
+                  engine_executable_sha256_before=guard["engine_sha256"],
+                  engine_executable_sha256_after=guard["engine_sha256"],
+                  law_identity={"aero_reference": "a", "aero_native": "a", "rolling_reference": "r", "rolling_native": "r"})
+    report["identity"]["backend_version"] = receipt["backend_version"]
+    report["fleet_scope"]["filters"]["vehicle"] = "fixed-wing"
+    # Real fleet.gd shards do not contain the base oracle's boundary fields.
+    compared = sum(component["count"] for component in report["components"].values())
+    identical = sum(component["identical"] for component in report["components"].values())
+    report["total"] = {"compared": compared, "identical": identical, "mismatched": compared - identical}
+    return manifest, {"fixed": report}, {"fixed": output}, guard
+
+
+class MacosExperimentalCampaignTests(unittest.TestCase):
+    def aggregate(self, manifest, reports, paths, guard):
+        with mock.patch.object(campaign, "validate_macos_live_sources"), \
+                mock.patch.object(campaign, "validate_macos_base_boundary", return_value={"scope": "separate-base-oracle-process"}):
+            return campaign.validate_macos_reports(manifest, reports, paths, ["fixed"], {}, guard, 2, 3)
+
+    def test_full_declaration_keeps_host_boundary_open(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            manifest, reports, paths, guard = macos_fixture(Path(temporary))
+            self.assertNotIn("macos_boundary", reports["fixed"])
+            result = self.aggregate(manifest, reports, paths, guard)
+            self.assertEqual((result["catalog_declared_rows"], result["fixed_wing_declared_rows"]), (3, 2))
+            self.assertEqual((result["verified_flight_rows"], result["open_rows"]), (1, 1))
+            self.assertEqual(result["base_oracle_boundary"]["scope"], "separate-base-oracle-process")
+            self.assertFalse(result["full_catalog"] or result["fixed_wing_complete"])
+            self.assertIn("host-specific", result["rows"][1]["reason"])
+            self.assertEqual(result["rows"][0]["shard_verdict"], "pass")
+
+    def test_finished_failing_shard_still_proves_its_independent_healthy_flight(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            manifest, reports, paths, guard = macos_fixture(Path(temporary), failed=True)
+            result = self.aggregate(manifest, reports, paths, guard)
+            self.assertEqual((result["verified_flight_rows"], result["open_rows"]), (1, 1))
+            self.assertEqual(result["rows"][0]["shard_verdict"], "fail")
+            self.assertIn("requalification", result["rows"][1]["reason"])
+
+    def test_unselected_aircraft_and_shard_failure_stay_open(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            manifest, reports, paths, guard = macos_fixture(Path(temporary))
+            with mock.patch.object(campaign, "validate_macos_base_boundary", return_value={"scope": "separate-base-oracle-process"}):
+                result = campaign.validate_macos_reports(manifest, {}, {}, [], {}, guard, 2, 3)
+                self.assertEqual(result["verified_flight_rows"], 0)
+                self.assertEqual(result["rows"][0]["reason"], "aircraft was not selected")
+                result = campaign.validate_macos_reports(manifest, {}, {}, ["fixed"], {"fixed": "runner failed"}, guard, 2, 3)
+                self.assertEqual(result["shard_errors"], {"fixed": "runner failed"})
+                self.assertFalse(result["fixed_wing_complete"])
+
+    def test_tampered_identity_boundary_and_process_never_qualify(self):
+        def alter_command(r): r["checked_run"]["command"].remove("--vehicle=fixed-wing")
+        def drift_project(r): r["project_inventory_after"] = {}
+        def drift_engine(r): r["engine_executable_sha256_after"] = "0" * 64
+        def no_boundary(r): r["macos_boundary"] = {"control_unchanged": False}
+        def wrong_law(r): r["law_identity"]["aero_native"] = "other"
+        def source_fallback(r): r["fleet"][0]["native"]["actual"] = "gdscript_reference"
+        def missing_coverage(r): r["fleet"][0]["native"]["stage_calls"] = 0
+        def nonfleet_failure(r): r["failures"].append("law identity differs")
+        for mutate in (alter_command, drift_project, drift_engine, no_boundary, wrong_law,
+                       source_fallback, missing_coverage, nonfleet_failure):
+            with self.subTest(mutation=mutate.__name__), tempfile.TemporaryDirectory() as temporary:
+                manifest, reports, paths, guard = macos_fixture(Path(temporary))
+                mutate(reports["fixed"])
+                # Keep independently recorded checked metadata consistent when exercising command validation.
+                Path(reports["fixed"]["checked_run"]["report"]).write_text(json.dumps(reports["fixed"]["checked_run"]))
+                result = self.aggregate(manifest, reports, paths, guard)
+                self.assertEqual(result["verified_flight_rows"], 0)
+                self.assertFalse(result["fixed_wing_complete"])
+
+    def test_linux_accepts_only_blank_vehicle_filter(self):
+        manifest, reports, guard = fixtures()
+        for report in reports.values():
+            report["fleet_scope"]["filters"]["vehicle"] = ""
+        self.assertEqual(campaign.validate_reports(manifest, reports, guard, 2, 3)["flight_passed"], 2)
+        reports["fixed"]["fleet_scope"]["filters"]["vehicle"] = "fixed-wing"
+        with self.assertRaises(campaign.CampaignError):
+            campaign.validate_reports(manifest, reports, guard, 2, 3)
+
+    def test_keep_going_returns_independent_mac_shards_and_failures(self):
+        async def scenario():
+            async def shard(aircraft, *args, **kwargs):
+                if aircraft == "bad":
+                    raise campaign.CampaignError("bad shard")
+                return aircraft, Path(aircraft)
+            with mock.patch.object(campaign, "run_shard", side_effect=shard):
+                result = await campaign.run_shards(["bad", "good"], Path("."), 1, 2, 3, 5,
+                                                   keep_going=True, context={"project": "x"}, partial=True)
+            self.assertEqual(result, {"paths": {"good": Path("good")}, "errors": {"bad": "bad shard"}})
+        asyncio.run(scenario())
+
+    def test_command_forwards_project_engine_opt_in_and_fixed_wing_scope(self):
+        async def scenario():
+            with tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                tool = root / "tool"
+                tool.mkdir()
+                result_path = tool / "fleet-sample.json"
+                result_path.write_text("{}")
+                context = {"project": str(root / "project"), "godot": str(root / "godot"), "tool_root": str(tool)}
+                captured = {}
+                async def launch(*command, **kwargs):
+                    captured.update(command=command, env=kwargs["env"])
+                    kwargs["stdout"].write(f"verdict=pass compared=1 identical=1 results={result_path}\n".encode())
+                    return SimpleNamespace(wait=lambda: asyncio.sleep(0, result=0))
+                with mock.patch.object(campaign.asyncio, "create_subprocess_exec", side_effect=launch):
+                    aircraft, path = await campaign.run_shard("fixed", root, asyncio.Semaphore(1), 2, 3, 5, context)
+                self.assertEqual((aircraft, path), ("fixed", result_path))
+                self.assertIn("--experimental-native-macos", captured["command"])
+                for value in ("vehicle=fixed-wing", "aircraft=fixed", context["project"], context["godot"]):
+                    self.assertIn(value, captured["command"])
+                self.assertEqual(captured["env"]["OPENRC_NK_TOOL_ROOT"], str(tool))
+        asyncio.run(scenario())
+
+    def test_campaign_writes_partial_evidence_and_requires_keep_going_for_known_open_rows(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest, reports, paths, guard = macos_fixture(root)
+            paths["fixed"].write_text(json.dumps(reports["fixed"]))
+            args = SimpleNamespace(project=Path(guard["project"]), godot=Path(guard["godot"]),
+                tool_root=Path(guard["tool_root"]), qualification_root=Path(guard["qualification_root"]),
+                aircraft=["fixed"], reuse_report=[], jobs=1,
+                warmup=2, samples=3, timeout=10, keep_going=True)
+            async def completed(*_args, **_kwargs):
+                return {"paths": paths, "errors": {}}
+            def manifest_from_project(out, _context):
+                (out / "manifest.json").write_text(json.dumps(manifest))
+                (out / "manifest.gd").write_text("manifest script")
+                return manifest
+            with mock.patch.object(campaign, "ROOT", root), mock.patch.object(campaign, "snapshot", return_value=guard), \
+                    mock.patch.object(campaign, "make_manifest", side_effect=manifest_from_project), \
+                    mock.patch.object(campaign, "run_shards", side_effect=completed) as run, \
+                    mock.patch.object(campaign, "validate_macos_live_sources"), \
+                    mock.patch.object(campaign, "validate_macos_base_boundary", return_value={"scope": "separate-base-oracle-process"}):
+                out = root / "campaign-1"
+                out.mkdir()
+                self.assertEqual(campaign.run_macos_campaign(args, out), 1)
+                result = json.loads((out / "campaign.json").read_text())
+                self.assertEqual((result["verdict"], result["verified_flight_rows"], result["open_rows"]), ("open", 1, 1))
+                self.assertEqual(result["guard"]["base_oracle_boundary"]["scope"], "separate-base-oracle-process")
+                run.assert_called_once()
+                args.keep_going = False
+                out2 = root / "campaign-2"
+                out2.mkdir()
+                self.assertEqual(campaign.run_macos_campaign(args, out2), 1)
+                self.assertEqual(json.loads((out2 / "campaign.json").read_text())["verdict"], "open")
+                self.assertEqual(run.call_count, 1)
+
+    def test_campaign_rejects_base_evidence_changed_during_run(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest, reports, paths, guard = macos_fixture(root)
+            paths["fixed"].write_text(json.dumps(reports["fixed"]))
+            args = SimpleNamespace(project=Path(guard["project"]), godot=Path(guard["godot"]),
+                tool_root=Path(guard["tool_root"]), qualification_root=Path(guard["qualification_root"]),
+                aircraft=["fixed"], reuse_report=[], jobs=1,
+                warmup=2, samples=3, timeout=10, keep_going=True)
+            async def completed(*_args, **_kwargs):
+                return {"paths": paths, "errors": {}}
+            def manifest_from_project(out, _context):
+                (out / "manifest.json").write_text(json.dumps(manifest))
+                (out / "manifest.gd").write_text("manifest script")
+                return manifest
+            out = root / "changed-base"
+            out.mkdir()
+            with mock.patch.object(campaign, "ROOT", root), mock.patch.object(campaign, "snapshot", return_value=guard), \
+                    mock.patch.object(campaign, "make_manifest", side_effect=manifest_from_project), \
+                    mock.patch.object(campaign, "run_shards", side_effect=completed), \
+                    mock.patch.object(campaign, "validate_macos_live_sources"), \
+                    mock.patch.object(campaign, "validate_macos_base_boundary", side_effect=[{"hash": "before"}, {"hash": "after"}]):
+                with self.assertRaisesRegex(campaign.CampaignError, "base-oracle evidence changed"):
+                    campaign.run_macos_campaign(args, out)
+                self.assertFalse((out / "campaign.json").exists())
+
+
+class MacosSelectedProjectTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        root = Path(self.temporary.name).resolve()
+        here, self.project = root / "research/native-kernel", root / "prepared-app"
+        here.mkdir(parents=True)
+        self.project.mkdir()
+        (self.project / "project.godot").write_text("isolated project")
+        self.engine = root / "Godot"
+        self.engine.write_bytes(b"engine")
+        native = self.project / "native/kernel"
+        native.mkdir(parents=True)
+        self.descriptor, self.library, self.receipt_file = (native / "openrc_native_kernel_macos.gdextension",
+            native / "libopenrc_native_kernel.dylib", native / "build-receipt-macos.json")
+        self.descriptor.write_text("exact descriptor")
+        self.library.write_bytes(b"signed library")
+        self.source = self.project / "sim/proof.gd"
+        self.source.parent.mkdir(parents=True)
+        self.source.write_text("actual selected project source")
+        names = ["research/native-kernel/" + name for name in (
+            "oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "trajectory.gd", "fleet.gd", "propeller_oracle.gd",
+            "build.py", "run.py", "build_macos.py")]
+        names += ["app/sim/native/" + name for name in ("stage_config.gd", "weather_adapter.gd", "native_weather.gd",
+            "native_configuration.gd", "electric_stage_adapter.gd", "liquid_stage_adapter.gd", "glow_stage_adapter.gd",
+            "helicopter_stage_adapter.gd", "prescribed_stage_adapter.gd")]
+        names += ["app/sim/native_stage.gd", "tools/godot/run_checked.py"]
+        for name in names:
+            path = self.project / name.removeprefix("app/") if name.startswith("app/") else root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(name)
+        lock, shared = root / "lock.json", root / "shared.py"
+        lock.write_text("lock")
+        shared.write_text("shared")
+        builder = SimpleNamespace(RECEIPT_FORMAT="receipt-v1", BACKEND_VERSION="stage-v2", ABI_VERSION=2,
+                                  source_digest=lambda: "a" * 64, locked=SimpleNamespace(LOCK_PATH=lock),
+                                  SHARED_BUILDER=shared)
+        self.runner = SimpleNamespace(host_platform_key=mock.Mock(return_value="macos.arm64"),
+            validate_project=mock.Mock(return_value={"proof": "prepared"}),
+            selected_binary=lambda _descriptor, _project: self.library.resolve(),
+            reference_source_paths=lambda: ["app/sim/proof.gd"],
+            project_file=lambda path, project: project / path.relative_to(root / "app")
+                if path.is_relative_to(root / "app") else path)
+        self.mac_builder = SimpleNamespace(SOURCE_DESCRIPTOR="exact descriptor", _engine_display=lambda _v: "official")
+        engine_hash = campaign.sha256(self.engine)
+        row = {"platform": "macos", "architecture": "arm64", "backend": "native", "backend_version": "stage-v2",
+               "abi_version": 2, "qualification_scope": "macos-arm64-fixed-wing-experimental-v1",
+               "binary_sha256": campaign.sha256(self.library), "source_sha256": "a" * 64,
+               "lock_sha256": campaign.sha256(lock), "builder_sha256": campaign.sha256(here / "build_macos.py"),
+               "linux_builder_sha256": campaign.sha256(here / "build.py"), "shared_builder_sha256": campaign.sha256(shared),
+               "mirrored_sources": {"app/sim/proof.gd": campaign.sha256(self.source)}, "engine_sha256": engine_hash,
+               "engine": {"sha256": engine_hash, "version": "pinned", "architectures": ["arm64"]},
+               "engine_version": "official", "engine_cli_version": "pinned", "runtime_os_version": "27.0.1",
+               "runtime_os_build": "26A434", "toolchain": {"os_version": "27.0.1", "os_build": "26A434"}}
+        self.envelope = {"format": "receipt-v1", "backend": "native", "backend_version": "stage-v2", "abi_version": 2,
+                         "platforms": {"macos": row}}
+        self.write_receipt()
+        qualification_root = root / "tmp/qualification"
+        qualification_root.mkdir(parents=True)
+        self.context = {"project": str(self.project), "godot": str(self.engine), "tool_root": str(root / "tmp/tool"),
+                        "qualification_root": str(qualification_root)}
+        for key, value in (("ROOT", root), ("HERE", here), ("FLEET", here / "fleet.gd")):
+            patcher = mock.patch.object(campaign, key, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        for key, value in (("load_runner", lambda: self.runner), ("load_build", lambda: builder),
+                           ("load_macos_builder", lambda: self.mac_builder),
+                           ("macos_system_version", lambda: {"ProductVersion": "27.0.1", "ProductBuildVersion": "26A434"})):
+            patcher = mock.patch.object(campaign, key, side_effect=value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+    def write_receipt(self):
+        self.receipt_file.write_text(json.dumps(self.envelope))
+
+    def test_snapshot_binds_selected_project_and_live_helpers(self):
+        before = campaign.macos_snapshot(self.context)
+        self.runner.validate_project.assert_called_with(self.project)
+        self.assertEqual(before["reference_sources"]["app/sim/proof.gd"], campaign.sha256(self.source))
+        self.assertEqual(before["project_inventory"], {"proof": "prepared"})
+        self.assertEqual(before["qualification_root"], self.context["qualification_root"])
+        (self.project / "sim/native/stage_config.gd").write_text("changed")
+        self.assertNotEqual(campaign.macos_snapshot(self.context), before)
+
+    def test_qualification_root_must_be_explicit_existing_and_inside_tmp(self):
+        args = SimpleNamespace(project=Path(self.context["project"]), godot=Path(self.context["godot"]),
+                               tool_root=Path(self.context["tool_root"]),
+                               qualification_root=Path(self.context["qualification_root"]))
+        out = campaign.ROOT / "tmp/new-campaign"
+        self.assertEqual(campaign.macos_context(args, out)["qualification_root"], str(args.qualification_root))
+        for path in (campaign.ROOT, campaign.ROOT / "tmp", campaign.ROOT / "tmp/missing"):
+            with self.subTest(path=path):
+                args.qualification_root = path
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.macos_context(args, out)
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.macos_snapshot(dict(self.context, qualification_root=str(path)))
+        args.qualification_root = Path(self.context["qualification_root"])
+        with self.assertRaises(campaign.CampaignError):
+            campaign.macos_context(args, args.qualification_root / "nested-output")
+
+    def test_qualification_root_is_required_only_for_explicit_mac_mode(self):
+        mac_without_root = ["fleet_campaign.py", "--out", str(campaign.ROOT / "tmp/out"),
+                            "--experimental-native-macos", "--project", str(self.project),
+                            "--godot", str(self.engine), "--tool-root", self.context["tool_root"]]
+        linux_with_root = ["fleet_campaign.py", "--out", str(campaign.ROOT / "tmp/out"),
+                           "--qualification-root", self.context["qualification_root"]]
+        for argv in (mac_without_root, linux_with_root):
+            with self.subTest(argv=argv), mock.patch.object(campaign.sys, "argv", argv), \
+                    mock.patch.object(campaign.sys, "stderr"):
+                with self.assertRaises(SystemExit) as error:
+                    campaign.main()
+                self.assertEqual(error.exception.code, 2)
+
+    def test_invalid_project_engine_receipt_and_source_are_refused(self):
+        def no_proof(): self.runner.validate_project.return_value = {}
+        def wrong_platform(): self.runner.host_platform_key.return_value = "linux.x86_64"
+        def wrong_engine(): self.engine.write_bytes(b"different engine")
+        def wrong_library(): self.library.write_bytes(b"different library")
+        def wrong_source(): self.source.write_text("changed")
+        def wrong_os():
+            self.envelope["platforms"]["macos"]["runtime_os_build"] = "different"
+            self.write_receipt()
+        def wrong_descriptor(): self.descriptor.write_text("different")
+        for mutate in (no_proof, wrong_platform, wrong_engine, wrong_library, wrong_source, wrong_os, wrong_descriptor):
+            with self.subTest(mutation=mutate.__name__):
+                original_receipt = copy.deepcopy(self.envelope)
+                original_files = {path: path.read_bytes() for path in (self.engine, self.library, self.source, self.descriptor)}
+                try:
+                    mutate()
+                    with self.assertRaises(campaign.CampaignError):
+                        campaign.macos_snapshot(self.context)
+                finally:
+                    self.runner.validate_project.return_value = {"proof": "prepared"}
+                    self.runner.host_platform_key.return_value = "macos.arm64"
+                    self.envelope = original_receipt
+                    self.write_receipt()
+                    for path, content in original_files.items():
+                        path.write_bytes(content)
+
+
+class MacosBaseBoundaryEvidenceTests(unittest.TestCase):
+    """Exercise the campaign link with the builder's real offline oracle verifier."""
+
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("fleet_base_fixture", HERE / "test_build_macos.py")
+        fixture_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fixture_module)
+        scratch = tempfile.TemporaryDirectory(prefix="fleet-fix-base-")
+        self.addCleanup(scratch.cleanup)
+        fixture_module.SCRATCH = Path(scratch.name) / "repo/tmp/builds"
+        self.fixture = fixture_module.ExperimentalEvidence("test_complete_base_evidence_and_detector_requirements")
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.doCleanups)
+        self.mac = fixture_module.mac
+        self.toolchain = {"os_version": "27.0.1", "os_build": "26A434"}
+        self.candidate = self.fixture.built
+        self.candidate.update(engine_sha256=self.fixture.engine["sha256"], toolchain=self.toolchain,
+                              source_sha256="1" * 64, lock_sha256="2" * 64, builder_sha256="3" * 64,
+                              linux_builder_sha256="4" * 64, shared_builder_sha256="5" * 64,
+                              godot_cpp_commit="6" * 40, extension_api_sha256="7" * 64,
+                              binding_precision="single", cxxflags_appended=["-ffp-contract=off"],
+                              repository_head="8" * 40)
+        self.candidate_path = self.fixture.root / "build-receipt.json"
+        self.candidate_path.write_text(json.dumps(self.candidate), encoding="utf-8")
+        self.data = self.fixture.evidence()
+        self.fixture.seal(self.data)
+        self.fixture.result.write_text(json.dumps(self.data), encoding="utf-8")
+        self.record = {"results": self.fixture.result.name, "results_sha256": campaign.sha256(self.fixture.result),
+                       "verdict": "pass", "compared": self.data["total"]["compared"]}
+        installed = {key: copy.deepcopy(self.candidate[key]) for key in (
+            "engine", "toolchain", "source_sha256", "lock_sha256", "builder_sha256", "linux_builder_sha256",
+            "shared_builder_sha256", "godot_cpp_commit", "extension_api_sha256", "binding_precision",
+            "cxxflags_appended", "repository_head")}
+        installed.update(mirrored_sources=copy.deepcopy(self.candidate["reference_sources_sha256"]),
+                         verification={"base_oracle": self.record})
+        fleet_root = Path(scratch.name) / "repo/tmp/fleet-runs"
+        fleet_root.mkdir(parents=True)
+        self.guard = {"tool_root": str(fleet_root), "qualification_root": str(self.fixture.root),
+                      "godot": self.fixture.engine["path"],
+                      "binary_sha256": self.candidate["binary_sha256"], "engine_sha256": self.fixture.engine["sha256"],
+                      "reference_sources": copy.deepcopy(self.candidate["reference_sources_sha256"]),
+                      "receipt": installed}
+        for patcher in (
+                mock.patch.object(campaign, "ROOT", Path(scratch.name) / "repo"),
+                mock.patch.object(campaign, "load_macos_builder", return_value=self.mac),
+                mock.patch.object(campaign, "load_runner", return_value=self.fixture.Runner()),
+                mock.patch.object(self.mac.locked, "load_lock", return_value={}),
+                mock.patch.object(self.mac, "host_toolchain", return_value=self.toolchain),
+                mock.patch.object(self.mac, "godot_identity", return_value=self.fixture.engine),
+                mock.patch.object(self.mac, "_identity", return_value={}),
+                mock.patch.object(self.mac, "validate_build", return_value=self.candidate)):
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+    def test_cited_base_uses_real_verifier_and_records_separate_bound_artifacts(self):
+        (self.fixture.root / "results-99999999.json").write_text("newer invalid report", encoding="utf-8")
+        with mock.patch.object(self.mac, "_check_oracle_identity", wraps=self.mac._check_oracle_identity) as verify:
+            result = campaign.validate_macos_base_boundary(self.guard)
+        self.assertNotEqual(self.guard["qualification_root"], self.guard["tool_root"])
+        self.assertEqual(self.mac.validate_build.call_args.args[0], Path(self.guard["qualification_root"]))
+        self.assertEqual(verify.call_count, 1)
+        self.assertEqual(verify.call_args.args[2], "base_oracle")
+        self.assertEqual(result["scope"], "separate-base-oracle-process")
+        self.assertEqual(result["report_sha256"], self.record["results_sha256"])
+        self.assertEqual(result["checked_log_sha256"], self.data["checked_run"]["log_sha256"])
+        self.assertEqual(result["candidate_receipt_sha256"], campaign.sha256(self.candidate_path))
+
+    def test_missing_or_wrong_qualification_root_does_not_fall_back_to_tool_root(self):
+        original = self.guard["qualification_root"]
+        for path in (self.guard["tool_root"], str(campaign.ROOT), str(campaign.ROOT / "tmp"),
+                     str(campaign.ROOT / "tmp/missing")):
+            with self.subTest(path=path):
+                self.guard["qualification_root"] = path
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.validate_macos_base_boundary(self.guard)
+        self.guard["qualification_root"] = original
+
+    def test_missing_changed_or_replaced_citations_never_validate(self):
+        for change in ({"results": "../results-20261112.json"}, {"results": "fleet-20261112.json"},
+                       {"results_sha256": "0" * 64}, {"compared": True}, {"verdict": "fail"}):
+            original = copy.deepcopy(self.record)
+            with self.subTest(change=change):
+                self.record.update(change)
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.validate_macos_base_boundary(self.guard)
+                self.record.clear()
+                self.record.update(original)
+        self.fixture.result.write_text("{}", encoding="utf-8")
+        with self.assertRaises(campaign.CampaignError):
+            campaign.validate_macos_base_boundary(self.guard)
+        self.fixture.result.unlink()
+        with self.assertRaises(campaign.CampaignError):
+            campaign.validate_macos_base_boundary(self.guard)
+
+    def test_real_base_verifier_refuses_wrong_probe_engine_sources_and_checked_log(self):
+        for mutation in (
+                lambda row: row.pop("macos_boundary"),
+                lambda row: row["macos_boundary"].update(control_unchanged=False),
+                lambda row: row.update(engine_sha256_after="f" * 64),
+                lambda row: row.update(binary_sha256_before="f" * 64),
+                lambda row: row["reference_sources_after"].clear(),
+                lambda row: row["harness_sources"].pop("research/native-kernel/oracle.gd")):
+            with self.subTest(mutation=mutation):
+                changed = copy.deepcopy(self.data)
+                mutation(changed)
+                self.fixture.result.write_text(json.dumps(changed), encoding="utf-8")
+                self.record["results_sha256"] = campaign.sha256(self.fixture.result)
+                with self.assertRaises(ValueError):
+                    campaign.validate_macos_base_boundary(self.guard)
+        self.fixture.result.write_text(json.dumps(self.data), encoding="utf-8")
+        self.record["results_sha256"] = campaign.sha256(self.fixture.result)
+        Path(self.data["checked_run"]["log"]).write_text("changed log", encoding="utf-8")
+        with self.assertRaises(ValueError):
+            campaign.validate_macos_base_boundary(self.guard)
+
+    def test_install_identity_and_live_base_sources_must_match(self):
+        for key in ("binary_sha256", "engine_sha256"):
+            with self.subTest(key=key):
+                original = self.guard[key]
+                self.guard[key] = "f" * 64
+                with self.assertRaises(campaign.CampaignError):
+                    campaign.validate_macos_base_boundary(self.guard)
+                self.guard[key] = original
+        self.guard["receipt"]["source_sha256"] = "f" * 64
+        with self.assertRaises(campaign.CampaignError):
+            campaign.validate_macos_base_boundary(self.guard)
+        self.guard["receipt"]["source_sha256"] = self.candidate["source_sha256"]
+        (self.fixture.app / "sim/proof.gd").write_text("changed source", encoding="utf-8")
+        with self.assertRaises(ValueError):
+            campaign.validate_macos_base_boundary(self.guard)
 
 
 if __name__ == "__main__":

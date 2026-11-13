@@ -62,6 +62,30 @@ func _initialize() -> void:
 		DirAccess.remove_absolute(probe_path)
 		DirAccess.remove_absolute(output_dir.path_join("finish-engine.log"))
 	DirAccess.remove_absolute(output_path)
+	# An empty candidate must fail before inspecting a log or selecting a backend.
+	# A nonempty path reaches log inspection instead, preserving candidate mode.
+	for candidate: String in ["", output_dir.path_join("candidate.json")]:
+		var stem: String = "empty-candidate" if candidate.is_empty() else "candidate-path"
+		var candidate_report: String = output_dir.path_join(stem + ".json")
+		var candidate_csv: String = output_dir.path_join(stem + ".csv")
+		var candidate_output: Array = []
+		var candidate_exit: int = OS.execute(OS.get_executable_path(), PackedStringArray([
+			"--headless", "--path", ProjectSettings.globalize_path("res://"),
+			"--log-file", output_dir.path_join(stem + "-engine.log"),
+			"--script", "res://tools/flight_log_cli.gd", "--",
+			"--log=" + output_dir.path_join("missing.orfl"), "--csv=" + candidate_csv,
+			"--report=" + candidate_report, "--replay", "--candidate=" + candidate
+		]), candidate_output, true)
+		var candidate_result: Variant = JSON.parse_string(FileAccess.get_file_as_string(candidate_report))
+		_check(stem + " exits nonzero", candidate_exit != 0)
+		_check(stem + " cannot create replay CSV", not FileAccess.file_exists(candidate_csv))
+		_check(stem + " reports refusal", candidate_result is Dictionary and candidate_result.get("status") == "error")
+		if candidate_result is Dictionary:
+			var expected_error: String = "--candidate requires --replay and a JSON path." if candidate.is_empty() else "Cannot open flight log."
+			_check(stem + " distinguishes candidate validation from log inspection",
+				str(candidate_result.get("error", "")) == expected_error)
+		DirAccess.remove_absolute(candidate_report)
+		DirAccess.remove_absolute(output_dir.path_join(stem + "-engine.log"))
 	DirAccess.remove_absolute(blocker_path)
 	DirAccess.remove_absolute(output_dir.path_join("cli-engine.log"))
 	DirAccess.remove_absolute(output_dir)

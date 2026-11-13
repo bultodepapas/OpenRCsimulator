@@ -3,10 +3,16 @@
 from __future__ import annotations
 
 import contextlib
+import ctypes
+import errno
 import io
 import json
+import os
 from pathlib import Path
+import shutil
+import stat
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest import mock
 
@@ -46,9 +52,9 @@ class PrepareResearchTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.temporary.cleanup()
 
-    def prepare_or_skip_symlink(self) -> dict:
+    def prepare_or_skip_symlink(self, **kwargs) -> dict:
         try:
-            return prepare_research.prepare(self.source, self.destination)
+            return prepare_research.prepare(self.source, self.destination, **kwargs)
         except prepare_research.PreparationError as error:
             if "cannot create the sibling assets symlink" in str(error):
                 self.skipTest(str(error))
@@ -78,9 +84,168 @@ class PrepareResearchTests(unittest.TestCase):
         self.assertEqual(receipt["destination"]["project_sha256"], prepare_research._sha256(copied_app / "project.godot"))
         self.assertEqual(receipt, json.loads((self.destination / prepare_research.RECEIPT).read_text(encoding="utf-8")))
         self.assertTrue(receipt["complete"])
+        self.assertEqual(receipt["copy_mode"], "copy")
         self.assertIn("linked, not copied or hashed", receipt["scope"])
         validated = launch._research_project(str(copied_app), cwd=self.root)
         self.assertEqual(validated["project_name"], receipt["destination"]["project_name"])
+
+    def test_explicit_copy_matches_default_copy(self) -> None:
+        second = self.root / "output" / "explicit"
+        with mock.patch.object(prepare_research.uuid, "uuid4", return_value=SimpleNamespace(hex="a" * 32)):
+            default = self.prepare_or_skip_symlink()
+            explicit = prepare_research.prepare(self.source, second, copy_mode="copy")
+        self.assertEqual(default["copy_mode"], "copy")
+        self.assertEqual(explicit["copy_mode"], "copy")
+        self.assertEqual(default["source"], explicit["source"])
+        for key in ("project_sha256", "profile_sha256", "copied_app_manifest_sha256",
+                    "copy_manifest_sha256_before_project_edits", "project_name"):
+            self.assertEqual(default["destination"][key], explicit["destination"][key])
+
+    def test_clone_mode_uses_native_ffi_and_retains_verified_contract(self) -> None:
+        copied_paths: list[Path] = []
+        nested_cache = self.app / "render" / "__pycache__"
+        nested_cache.mkdir()
+        (nested_cache / "excluded.pyc").write_bytes(b"excluded cache")
+
+        def fake_clone(source: bytes, destination: bytes, flags: int) -> int:
+            self.assertEqual(flags, prepare_research._CLONE_NOFOLLOW | prepare_research._CLONE_NOOWNERCOPY)
+            source_path, destination_path = Path(os.fsdecode(source)), Path(os.fsdecode(destination))
+            copied_paths.append(source_path.relative_to(self.app))
+            # A portable stand-in for the syscall; the actual APFS operation is tested on macOS.
+            with source_path.open("rb") as source_stream, destination_path.open("xb") as destination_stream:
+                shutil.copyfileobj(source_stream, destination_stream)
+            return 0
+
+        function = mock.Mock(side_effect=fake_clone)
+        library = SimpleNamespace(clonefile=function)
+        original = self.project.read_bytes()
+        with mock.patch.object(prepare_research.sys, "platform", "darwin"), \
+                mock.patch.object(ctypes, "CDLL", return_value=library) as loader, \
+                mock.patch.object(prepare_research.shutil, "copy2", side_effect=AssertionError("copy fallback")) as copy2:
+            receipt = self.prepare_or_skip_symlink(copy_mode="clone")
+        loader.assert_called_once_with(None, use_errno=True)
+        copy2.assert_not_called()
+        self.assertEqual(function.argtypes, (ctypes.c_char_p, ctypes.c_char_p, ctypes.c_uint32))
+        self.assertIs(function.restype, ctypes.c_int)
+        self.assertEqual(set(copied_paths), {Path("main.gd"), Path("project.godot"),
+                                             Path("render/high_graphics_profile.gd"), Path("assets/runtime.txt")})
+        self.assertEqual(receipt["copy_mode"], "clone")
+        self.assertTrue(receipt["complete"])
+        self.assertEqual(receipt["source"]["copied_app_manifest_sha256"],
+                         receipt["destination"]["copy_manifest_sha256_before_project_edits"])
+        self.assertEqual(receipt["destination"]["project_sha256"],
+                         prepare_research._sha256(self.destination / "app" / "project.godot"))
+        self.assertEqual(self.project.read_bytes(), original)
+        self.assertEqual((self.destination / "app" / "main.gd").read_bytes(), (self.app / "main.gd").read_bytes())
+        self.assertEqual(stat.S_IMODE((self.destination / "app" / "main.gd").stat().st_mode),
+                         stat.S_IMODE((self.app / "main.gd").stat().st_mode))
+        self.assertEqual((self.destination / "app" / "main.gd").stat().st_mtime_ns,
+                         (self.app / "main.gd").stat().st_mtime_ns)
+        self.assertTrue((self.destination / "assets").is_symlink())
+        for name in (".godot", ".tools", "captures", "tmp"):
+            self.assertFalse((self.destination / "app" / name).exists())
+
+    def test_clone_mode_refuses_other_platforms_before_destination_creation(self) -> None:
+        errors = io.StringIO()
+        with mock.patch.object(prepare_research.sys, "platform", "linux"), \
+                mock.patch.object(ctypes, "CDLL") as loader, contextlib.redirect_stderr(errors):
+            code = prepare_research.main(["--source", str(self.source), "--dest", str(self.destination),
+                                          "--copy-mode=clone"])
+        self.assertEqual(code, 1)
+        self.assertIn("clone copy mode requires macOS", errors.getvalue())
+        self.assertFalse(self.destination.exists())
+        loader.assert_not_called()
+
+    def test_clonefile_errors_never_fall_back_or_publish_a_receipt(self) -> None:
+        for code in (errno.ENOTSUP, errno.EXDEV, errno.EEXIST):
+            destination = self.root / "output" / f"clone-error-{code}"
+            attempted: list[Path] = []
+
+            def fail_clone(_source: bytes, target: bytes, _flags: int) -> int:
+                target_path = Path(os.fsdecode(target))
+                attempted.append(target_path)
+                if code == errno.EEXIST:
+                    target_path.write_bytes(b"existing destination sentinel")
+                ctypes.set_errno(code)
+                return -1
+
+            function = mock.Mock(side_effect=fail_clone)
+            with self.subTest(code=code), mock.patch.object(prepare_research.sys, "platform", "darwin"), \
+                    mock.patch.object(ctypes, "CDLL", return_value=SimpleNamespace(clonefile=function)), \
+                    mock.patch.object(prepare_research.shutil, "copy2", side_effect=AssertionError("copy fallback")) as copy2:
+                with self.assertRaises(prepare_research.PreparationError) as error:
+                    prepare_research.prepare(self.source, destination, copy_mode="clone")
+            if "cannot create the sibling assets symlink" in str(error.exception):
+                self.skipTest(str(error.exception))
+            self.assertIn("clonefile failed; copy fallback is disabled", str(error.exception))
+            self.assertIn(os.strerror(code), str(error.exception))
+            self.assertTrue(destination.is_dir())
+            self.assertFalse((destination / prepare_research.RECEIPT).exists())
+            self.assertTrue(attempted)
+            if code == errno.EEXIST:
+                self.assertTrue(all(path.read_bytes() == b"existing destination sentinel" for path in attempted))
+            copy2.assert_not_called()
+
+    def test_corrupt_clone_fails_hash_verification(self) -> None:
+        def corrupt(source: bytes, destination: bytes, _flags: int) -> int:
+            Path(os.fsdecode(destination)).write_bytes(Path(os.fsdecode(source)).read_bytes() + b"corrupt")
+            return 0
+
+        library = SimpleNamespace(clonefile=mock.Mock(side_effect=corrupt))
+        with mock.patch.object(prepare_research.sys, "platform", "darwin"), \
+                mock.patch.object(ctypes, "CDLL", return_value=library), \
+                mock.patch.object(prepare_research.shutil, "copy2", side_effect=AssertionError("copy fallback")):
+            with self.assertRaises(prepare_research.PreparationError) as error:
+                prepare_research.prepare(self.source, self.destination, copy_mode="clone")
+        if "cannot create the sibling assets symlink" in str(error.exception):
+            self.skipTest(str(error.exception))
+        self.assertIn("source changed or copy verification failed", str(error.exception))
+        self.assertFalse((self.destination / prepare_research.RECEIPT).exists())
+
+    def test_source_change_during_clone_fails_hash_verification(self) -> None:
+        changed = False
+
+        def changing(source: bytes, destination: bytes, _flags: int) -> int:
+            nonlocal changed
+            source_path = Path(os.fsdecode(source))
+            Path(os.fsdecode(destination)).write_bytes(source_path.read_bytes())
+            if source_path.name == "main.gd":
+                source_path.write_bytes(b"# changed during cloning\n")
+                changed = True
+            return 0
+
+        library = SimpleNamespace(clonefile=mock.Mock(side_effect=changing))
+        with mock.patch.object(prepare_research.sys, "platform", "darwin"), \
+                mock.patch.object(ctypes, "CDLL", return_value=library):
+            with self.assertRaises(prepare_research.PreparationError) as error:
+                prepare_research.prepare(self.source, self.destination, copy_mode="clone")
+        if "cannot create the sibling assets symlink" in str(error.exception):
+            self.skipTest(str(error.exception))
+        self.assertTrue(changed)
+        self.assertIn("source changed or copy verification failed", str(error.exception))
+        self.assertFalse((self.destination / prepare_research.RECEIPT).exists())
+
+    def test_clone_rejects_a_symlink_destination(self) -> None:
+        def fake_link(source: bytes, destination: bytes, _flags: int) -> int:
+            Path(os.fsdecode(destination)).symlink_to(Path(os.fsdecode(source)))
+            return 0
+
+        library = SimpleNamespace(clonefile=mock.Mock(side_effect=fake_link))
+        with mock.patch.object(prepare_research.sys, "platform", "darwin"), \
+                mock.patch.object(ctypes, "CDLL", return_value=library):
+            with self.assertRaises(prepare_research.PreparationError) as error:
+                prepare_research.prepare(self.source, self.destination, copy_mode="clone")
+        if "cannot create the sibling assets symlink" in str(error.exception):
+            self.skipTest(str(error.exception))
+        self.assertIn("clone is not a regular file", str(error.exception))
+        self.assertFalse((self.destination / prepare_research.RECEIPT).exists())
+
+    def test_missing_clonefile_symbol_fails_before_creating_destination(self) -> None:
+        with mock.patch.object(prepare_research.sys, "platform", "darwin"), \
+                mock.patch.object(ctypes, "CDLL", return_value=SimpleNamespace()):
+            with self.assertRaisesRegex(prepare_research.PreparationError, "macOS clonefile is unavailable"):
+                prepare_research.prepare(self.source, self.destination, copy_mode="clone")
+        self.assertFalse(self.destination.exists())
 
     def test_existing_destination_and_source_subdirectories_are_never_overwritten(self) -> None:
         self.destination.mkdir(parents=True)

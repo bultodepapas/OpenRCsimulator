@@ -1,7 +1,8 @@
 ## Native continuous aircraft stages. Discrete tick, event and collision policies
 ## remain owned by each session. A source-bound receipt and exact preparation
 ## guards are required before a native evaluator replaces its reference.
-## Linux x86_64; the owner retains this helper for the installed callback lifetime.
+## Linux/Windows x86_64; macOS ARM64 requires fixed-wing experimental opt-in.
+## The owner retains this helper for the installed callback lifetime.
 extends RefCounted
 
 const Aero := preload("res://physics/aero.gd")
@@ -55,6 +56,22 @@ const EXPECTED_WINDOWS_DESCRIPTOR := (
 	+ "[libraries]\n"
 	+ "windows.x86_64 = \"res://native/kernel/openrc_native_kernel.dll\"\n"
 )
+const MACOS_EXTENSION_PATH := "res://native/kernel/openrc_native_kernel_macos.gdextension"
+const MACOS_RECEIPT_PATH := "res://native/kernel/build-receipt-macos.json"
+const MACOS_LIBRARY_FILE := "libopenrc_native_kernel.dylib"
+const MACOS_QUALIFICATION_SCOPE := "macos-arm64-fixed-wing-experimental-v1"
+const MACOS_SYSTEM_VERSION_PATH := "/System/Library/CoreServices/SystemVersion.plist"
+const MACOS_SYSTEM_VERSION_MAX_BYTES := 65536
+const EXPECTED_MACOS_DESCRIPTOR := (
+	"; DT-MAC native stage, installed by research/native-kernel/build_macos.py --install-app.\n"
+	+ "; .gdignore prevents discovery; app/sim/native_stage.gd loads it after receipt checks.\n"
+	+ "[configuration]\n"
+	+ "entry_symbol = \"openrc_native_kernel_library_init\"\n"
+	+ "compatibility_minimum = \"4.7\"\n"
+	+ "reloadable = false\n\n"
+	+ "[libraries]\n"
+	+ "macos.arm64 = \"res://native/kernel/libopenrc_native_kernel.dylib\"\n"
+)
 const EXPECTED_PACKAGE_DESCRIPTOR := (
 	"; NK-3 packaged stage; loaded explicitly after embedded identity verification.\n"
 	+ "[configuration]\n"
@@ -63,6 +80,15 @@ const EXPECTED_PACKAGE_DESCRIPTOR := (
 	+ "reloadable = false\n\n"
 	+ "[libraries]\n"
 	+ "linux.x86_64 = \"libopenrc_native_kernel.so\"\n"
+)
+const EXPECTED_MACOS_PACKAGE_DESCRIPTOR := (
+	"; DT-MAC packaged stage; loaded explicitly after embedded identity verification.\n"
+	+ "[configuration]\n"
+	+ "entry_symbol = \"openrc_native_kernel_library_init\"\n"
+	+ "compatibility_minimum = \"4.7\"\n"
+	+ "reloadable = false\n\n"
+	+ "[libraries]\n"
+	+ "macos.arm64 = \"../Frameworks/libopenrc_native_kernel.dylib\"\n"
 )
 
 static var _library_checked := false
@@ -87,7 +113,14 @@ var _family := ""
 
 
 ## {ok, reason}: the library is installed, matches its receipt and loaded (checked once per process).
-static func library_status() -> Dictionary:
+static func library_status(allow_experimental_macos := false) -> Dictionary:
+	return _library_status_for_os(OS.get_name(), allow_experimental_macos)
+
+
+## The opt-in refusal is per request, never a process-wide cached failure or success.
+static func _library_status_for_os(os_name: String, allow_experimental_macos: bool) -> Dictionary:
+	if os_name == "macOS" and not allow_experimental_macos:
+		return {ok = false, reason = "native stage on macOS requires explicit experimental fixed-wing opt-in"}
 	if not _library_checked:
 		_library_checked = true
 		_library_error = _load_library()
@@ -171,7 +204,11 @@ func stage_stats() -> Dictionary:
 func prepare(session: Node) -> Dictionary:
 	_prepared = false
 	if _installed: return _refuse("uninstall before preparing again")
-	var status := library_status()
+	var is_macos := OS.get_name() == "macOS"
+	if is_macos:
+		var session_error := _macos_session_error(session)
+		if not session_error.is_empty(): return _refuse(session_error)
+	var status := library_status(is_macos)
 	if not status.ok: return _refuse(status.reason)
 	var source_error := _mirrored_source_error()
 	if not source_error.is_empty(): return _refuse(source_error)
@@ -317,25 +354,46 @@ func _refuse(why: String) -> Dictionary:
 	return {ok = false, reason = why}
 
 
-## "linux" or "windows" for an x86_64 source/debug process; "" where no native stage is built.
+## Reject before consulting or populating the process-wide library cache.
+static func _macos_session_error(session: Node) -> String:
+	if not is_instance_valid(session) or session.get_script() != load("res://sim/flight_session.gd"):
+		return "native stage on macOS supports experimental fixed-wing sessions only"
+	var opt_in: Variant = session.get("experimental_native_macos")
+	if typeof(opt_in) != TYPE_BOOL or not opt_in:
+		return "native stage on macOS requires explicit experimental fixed-wing opt-in"
+	return ""
+
+
+## Return the supported source/debug process target; unknown targets refuse.
 static func _source_platform() -> String:
-	if Engine.get_architecture_name() != "x86_64":
-		return ""
-	match OS.get_name():
-		"Linux": return "linux"
-		"Windows": return "windows"
+	return _source_platform_for(OS.get_name(), Engine.get_architecture_name())
+
+
+static func _source_platform_for(os_name: String, architecture: String) -> String:
+	if architecture == "x86_64":
+		match os_name:
+			"Linux": return "linux"
+			"Windows": return "windows"
+	if os_name == "macOS" and architecture == "arm64":
+		return "macos"
 	return ""
 
 
 static func _load_library() -> String:
 	var platform := _source_platform()
 	if platform.is_empty():
-		return "native stage: Linux or Windows x86_64 only"
+		return "native stage: Linux/Windows x86_64 or experimental macOS ARM64 source only"
 	if OS.has_feature("template_release"):
-		# Release packages embed a verified Linux sidecar; Windows packages are not built yet.
-		return _load_package_library() if platform == "linux" else "native stage packages: Linux x86_64 only"
-	var extension_path := WINDOWS_EXTENSION_PATH if platform == "windows" else EXTENSION_PATH
-	var receipt_path := WINDOWS_RECEIPT_PATH if platform == "windows" else RECEIPT_PATH
+		if platform == "macos": return _load_macos_package_library()
+		return _load_package_library() if platform == "linux" else "native stage packages: Linux x86_64 or experimental macOS ARM64 only"
+	var extension_path := EXTENSION_PATH
+	var receipt_path := RECEIPT_PATH
+	if platform == "windows":
+		extension_path = WINDOWS_EXTENSION_PATH
+		receipt_path = WINDOWS_RECEIPT_PATH
+	elif platform == "macos":
+		extension_path = MACOS_EXTENSION_PATH
+		receipt_path = MACOS_RECEIPT_PATH
 	if not FileAccess.file_exists(extension_path) or not FileAccess.file_exists(receipt_path):
 		return "native stage library not installed"
 	var receipt := JSON.new()
@@ -344,6 +402,9 @@ static func _load_library() -> String:
 	var row := _platform_row(receipt.data, platform)
 	if row.is_empty():
 		return "native stage receipt is malformed or for another backend version or ABI"
+	if platform == "macos":
+		var os_error := _macos_runtime_os_error(row)
+		if not os_error.is_empty(): return os_error
 	if row.get("engine_version") != Engine.get_version_info().string \
 			or str(row.get("engine_sha256", "")).length() != 64 \
 			or FileAccess.get_sha256(OS.get_executable_path()) != row.engine_sha256:
@@ -376,6 +437,26 @@ static func _load_package_library() -> String:
 	return _initialize_library(descriptor, row)
 
 
+static func _load_macos_package_library() -> String:
+	var package := NativePackage.mac_native_identity(OS.get_executable_path(), Engine.get_architecture_name(),
+		OS.get_cmdline_args() + OS.get_cmdline_user_args())
+	if not package.get("ok", false): return str(package.get("reason", "Mac native package unavailable"))
+	var row := _platform_row(package.manifest.native_receipt, "macos")
+	if row.is_empty() or row.get("engine_version") != Engine.get_version_info().string:
+		return "Mac native package has no valid verified ARM64 receipt"
+	var os_error := _macos_runtime_os_error(row)
+	if not os_error.is_empty(): return os_error
+	var bundle := OS.get_executable_path().get_base_dir().get_base_dir().get_base_dir()
+	var descriptor := bundle.path_join(NativePackage.MAC_NATIVE_DESCRIPTOR)
+	var library := bundle.path_join(NativePackage.MAC_NATIVE_LIBRARY)
+	if package.descriptor_path != descriptor or package.library_path != library \
+			or FileAccess.get_file_as_string(descriptor) != EXPECTED_MACOS_PACKAGE_DESCRIPTOR:
+		return "Mac native package descriptor differs from the verified loader contract"
+	if FileAccess.get_sha256(library) != row.binary_sha256:
+		return "Mac native package binary differs from its embedded identity"
+	return _initialize_library(descriptor, row)
+
+
 static func _initialize_library(descriptor: String, row: Dictionary) -> String:
 	# An already loaded extension ran initialization before these checks, and Godot does not identify its loaded
 	# binary. Do not select it even if the present files match: restart after removing the stale cache registration.
@@ -398,6 +479,9 @@ static func _initialize_library(descriptor: String, row: Dictionary) -> String:
 static func _descriptor_error(platform := "linux") -> String:
 	var path := WINDOWS_EXTENSION_PATH if platform == "windows" else EXTENSION_PATH
 	var expected := EXPECTED_WINDOWS_DESCRIPTOR if platform == "windows" else EXPECTED_DESCRIPTOR
+	if platform == "macos":
+		path = MACOS_EXTENSION_PATH
+		expected = EXPECTED_MACOS_DESCRIPTOR
 	return "" if FileAccess.get_file_as_string(path) == expected \
 			else "native stage descriptor differs from the verified loader contract"
 
@@ -412,6 +496,11 @@ static func _platform_row(value: Variant, platform := "linux") -> Dictionary:
 			or not _abi_matches(row.get("abi_version")) or typeof(row.get("mirrored_sources")) != TYPE_DICTIONARY:
 		return {}
 	if platform == "windows" and (row.get("platform") != "windows" or row.get("architecture") != "x86_64"):
+		return {}
+	if platform == "macos" and (row.get("platform") != "macos" or row.get("architecture") != "arm64" \
+			or row.get("backend") != BACKEND_NATIVE or row.get("qualification_scope") != MACOS_QUALIFICATION_SCOPE \
+			or typeof(row.get("runtime_os_version")) != TYPE_STRING or str(row.runtime_os_version).is_empty() \
+			or typeof(row.get("runtime_os_build")) != TYPE_STRING or str(row.runtime_os_build).is_empty()):
 		return {}
 	for key: String in ["binary_sha256", "source_sha256", "lock_sha256"]:
 		var digest: String = str(row.get(key, ""))
@@ -436,8 +525,126 @@ static func _abi_matches(value: Variant) -> bool:
 	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and value == ABI_VERSION
 
 
+## The observed SystemVersion.plist is XML. Unknown formats fail closed; no child process is started.
+static func _macos_runtime_os_error(row: Dictionary) -> String:
+	var file := FileAccess.open(MACOS_SYSTEM_VERSION_PATH, FileAccess.READ)
+	if file == null:
+		return "native stage cannot read the macOS system version"
+	var size := file.get_length()
+	if size <= 0 or size > MACOS_SYSTEM_VERSION_MAX_BYTES:
+		return "native stage cannot read the macOS system version"
+	var bytes := file.get_buffer(size)
+	if bytes.size() != size:
+		return "native stage cannot read the macOS system version"
+	return _macos_os_identity_error(row, _parse_macos_system_version(bytes))
+
+
+static func _macos_os_identity_error(row: Dictionary, actual: Dictionary) -> String:
+	if actual.is_empty():
+		return "native stage cannot parse the macOS system version"
+	if row.get("runtime_os_version") != actual.get("version") or row.get("runtime_os_build") != actual.get("build"):
+		return "native stage requires the exact verified macOS version and build"
+	return ""
+
+
+## Parse only a bounded XML plist with one top-level ProductVersion and ProductBuildVersion string.
+## Product values have deliberately narrow ASCII forms; unknown forms require new qualification.
+static func _parse_macos_system_version(bytes: PackedByteArray) -> Dictionary:
+	if bytes.is_empty() or bytes.size() > MACOS_SYSTEM_VERSION_MAX_BYTES:
+		return {}
+	var parser := XMLParser.new()
+	if parser.open_buffer(bytes) != OK:
+		return {}
+	var stack: Array[String] = []
+	var root_seen := false
+	var dict_seen := false
+	var expecting_key := true
+	var reading_key := false
+	var reading_target := false
+	var current_key := ""
+	var content := ""
+	var targets := {}
+	var result := parser.read()
+	while result == OK:
+		match parser.get_node_type():
+			XMLParser.NODE_ELEMENT:
+				var name := parser.get_node_name()
+				if stack.is_empty():
+					if root_seen or name != "plist": return {}
+					root_seen = true
+				elif stack == ["plist"]:
+					if dict_seen or name != "dict": return {}
+					dict_seen = true
+				elif stack == ["plist", "dict"]:
+					if expecting_key:
+						if name != "key" or parser.is_empty(): return {}
+						reading_key = true
+						content = ""
+					else:
+						if name not in ["string", "integer", "real", "true", "false", "data", "date", "array", "dict"]:
+							return {}
+						if current_key in ["ProductVersion", "ProductBuildVersion"]:
+							if name != "string" or parser.is_empty(): return {}
+							reading_target = true
+							content = ""
+						expecting_key = true
+				elif reading_key or reading_target:
+					return {}
+				if parser.is_empty():
+					if name == "plist" or (name == "dict" and stack == ["plist"]): return {}
+				else:
+					stack.append(name)
+			XMLParser.NODE_ELEMENT_END:
+				var name := parser.get_node_name()
+				if stack.is_empty() or stack.back() != name: return {}
+				stack.pop_back()
+				if reading_key and stack == ["plist", "dict"]:
+					reading_key = false
+					current_key = content.strip_edges()
+					if current_key.is_empty(): return {}
+					if current_key in ["ProductVersion", "ProductBuildVersion"] and targets.has(current_key): return {}
+					expecting_key = false
+				elif reading_target and stack == ["plist", "dict"]:
+					reading_target = false
+					targets[current_key] = content
+			XMLParser.NODE_TEXT, XMLParser.NODE_CDATA:
+				var data := parser.get_node_data()
+				if reading_key or reading_target:
+					content += data
+				elif (stack.is_empty() or stack == ["plist"] or stack == ["plist", "dict"]) \
+						and not data.strip_edges().is_empty():
+					return {}
+			XMLParser.NODE_UNKNOWN:
+				if root_seen: return {}
+		result = parser.read()
+	if result != ERR_FILE_EOF or not root_seen or not dict_seen or not stack.is_empty() or not expecting_key \
+			or reading_key or reading_target or targets.size() != 2:
+		return {}
+	var version: String = targets.get("ProductVersion", "")
+	var build: String = targets.get("ProductBuildVersion", "")
+	var pieces := version.split(".", true)
+	if version.length() > 32 or pieces.size() < 2 or pieces.size() > 3 or build.is_empty() or build.length() > 32:
+		return {}
+	for piece: String in pieces:
+		if piece.is_empty() or not _ascii_digits(piece): return {}
+	for i in build.length():
+		var code := build.unicode_at(i)
+		if not ((code >= 48 and code <= 57) or (code >= 65 and code <= 90) or (code >= 97 and code <= 122)):
+			return {}
+	return {version = version, build = build}
+
+
+static func _ascii_digits(value: String) -> bool:
+	for i in value.length():
+		var code := value.unicode_at(i)
+		if code < 48 or code > 57: return false
+	return true
+
+
 static func _binary_matches(expected_sha256: String, platform := "linux") -> bool:
-	var path := "res://native/kernel/" + (WINDOWS_LIBRARY_FILE if platform == "windows" else LIBRARY_FILE)
+	var filename := WINDOWS_LIBRARY_FILE if platform == "windows" else LIBRARY_FILE
+	if platform == "macos": filename = MACOS_LIBRARY_FILE
+	var path := "res://native/kernel/" + filename
 	return FileAccess.file_exists(path) and FileAccess.get_sha256(path) == expected_sha256
 
 
@@ -446,9 +653,23 @@ static func _mirrored_source_error() -> String:
 	if OS.has_feature("template_release"):
 		# The embedded manifest was checked against the oracle-qualified sources at export. Compiled resources
 		# are bound by the exact final executable hash, rather than pretending loose .gd files still exist.
+		if OS.get_name() == "macOS":
+			var mac_package := NativePackage.mac_native_identity(OS.get_executable_path(), Engine.get_architecture_name(),
+				OS.get_cmdline_args() + OS.get_cmdline_user_args())
+			return _macos_package_source_error(mac_package, _receipt_row)
 		var package := NativePackage.identity()
 		return "" if package.ok else str(package.reason)
 	return _source_error(_receipt_row)
+
+
+## Revalidate the exact admitted row at a packaged reset/restore boundary.
+static func _macos_package_source_error(package: Dictionary, expected: Dictionary) -> String:
+	if typeof(package.get("ok")) != TYPE_BOOL or not package.ok:
+		return str(package.get("reason", "Mac native package identity unavailable"))
+	if package.get("kind") != NativePackage.MAC_NATIVE_IDENTITY_KIND or typeof(package.get("manifest")) != TYPE_DICTIONARY:
+		return "Mac native package identity kind or manifest differs"
+	var row := _platform_row(package.manifest.get("native_receipt"), "macos")
+	return "" if not row.is_empty() and row == expected else "Mac native package receipt changed after admission"
 
 
 static func _source_error(row: Dictionary) -> String:

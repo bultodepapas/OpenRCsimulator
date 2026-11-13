@@ -28,6 +28,7 @@ from typing import Any, Iterable, Sequence
 FORMAT = "openrc-session-cost v2"
 LEGACY_FORMAT = "openrc-session-cost v1"
 BASELINE_FORMAT = "openrc-session-baseline v1"
+IDENTICAL_FORMAT = "openrc-session-identical-campaign v1"
 REQUIRED_GODOT_VERSION = "4.8-beta2"
 REQUIRED_GODOT_BUILD = "4.8.beta2.official.cafc17a19"
 REQUIRED_GODOT_REPORT = "4.8-beta2 (official)"
@@ -156,6 +157,8 @@ def validate_probe_report(
     if type(observer) is not bool:
         errors.append("observer must be a boolean")
         observer = None
+    if "experimental_native_macos" in report and type(report["experimental_native_macos"]) is not bool:
+        errors.append("experimental_native_macos must be a boolean")
 
     requested = _count_object(report, "requested", errors, positive_sample=True)
     completed = _count_object(report, "completed", errors)
@@ -300,9 +303,11 @@ def validate_probe_report(
 
     if report_format == FORMAT:
         kind = report.get("solver_identity_kind")
-        if kind is not None and kind not in ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1"):
+        if kind is not None and kind not in ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1",
+                                              MAC_RECEIPT.NATIVE_KIND):
             errors.append("solver_identity_kind is unsupported")
-        if report.get("template_release") is True and kind not in ("packaged-executable-v1", "macos-reference-bundle-v1"):
+        if report.get("template_release") is True and kind not in ("packaged-executable-v1", "macos-reference-bundle-v1",
+                                                                    MAC_RECEIPT.NATIVE_KIND):
             errors.append("release report requires a supported package identity")
         for field in ("solver_sha256", "aircraft_sha256"):
             value = report.get(field)
@@ -343,6 +348,17 @@ def validate_probe_report(
                         errors.append("native internal stage timing must be disabled")
                 elif actual != {"backend": "gdscript_reference"} or stats:
                     errors.append("reference backend identity/stats are invalid")
+        if kind == MAC_RECEIPT.NATIVE_KIND:
+            actual = backend.get("actual") if isinstance(backend, dict) else None
+            if (report.get("template_release") is not True or report.get("experimental_native_macos") is not True
+                    or not isinstance(machine, dict) or machine.get("os") != "macOS"
+                    or machine.get("architecture") != "arm64" or not isinstance(backend, dict)
+                    or backend.get("requested") != "native" or not isinstance(actual, dict)
+                    or actual.get("backend") != "native" or actual.get("abi_version") != 2
+                    or actual.get("backend_version") != "openrc-native-kernel-stage-v2"):
+                errors.append("Mac native package identity requires the opted-in ARM64 ABI 2 native release")
+        if (kind == MAC_RECEIPT.KIND and isinstance(backend, dict) and backend.get("requested") == "native"):
+            errors.append("Mac reference bundle identity cannot identify the native backend")
 
     if expected:
         for key in ("aircraft_id", "case_id", "observer"):
@@ -361,18 +377,33 @@ def validate_probe_report(
     return errors
 
 
-def parse_probe_file(path: Path) -> tuple[dict[str, Any] | None, str | None]:
-    """Read one raw probe report without treating malformed JSON as success."""
+def _parse_probe_bytes(raw: bytes) -> tuple[dict[str, Any] | None, str | None]:
     try:
-        with path.open("r", encoding="utf-8") as stream:
-            value = json.load(stream, parse_constant=_json_constant)
-    except FileNotFoundError:
-        return None, "probe did not create its report"
-    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
+        value = json.loads(raw.decode("utf-8"), parse_constant=_json_constant)
+    except (UnicodeError, json.JSONDecodeError, ValueError) as error:
         return None, f"probe report is unreadable or malformed: {error}"
     if not isinstance(value, dict):
         return None, "probe report must be a JSON object"
     return value, None
+
+
+def read_probe_capture(path: Path) -> tuple[dict[str, Any] | None, str | None, str | None]:
+    """Parse and hash the same captured bytes; callers can then check the live file."""
+    try:
+        raw = path.read_bytes()
+    except FileNotFoundError:
+        return None, "probe did not create its report", None
+    except OSError as error:
+        return None, f"probe report is unreadable or malformed: {error}", None
+    digest = hashlib.sha256(raw).hexdigest()
+    report, error = _parse_probe_bytes(raw)
+    return report, error, digest
+
+
+def parse_probe_file(path: Path) -> tuple[dict[str, Any] | None, str | None]:
+    """Read one raw probe report without treating malformed JSON as success."""
+    report, error, _digest = read_probe_capture(path)
+    return report, error
 
 
 def percentile_nearest_rank(values: Iterable[int | float], percentile: float) -> int | float:
@@ -458,7 +489,33 @@ def reduce_pair(on_report: dict[str, Any] | None, off_report: dict[str, Any] | N
     }
 
 
-def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any] | None) -> dict[str, Any]:
+def mac_release_identity_error(reference: Any, native: Any) -> str:
+    """Validate the relationship returned by the reference and native bundle verifiers."""
+    if not isinstance(reference, dict) or not isinstance(native, dict):
+        return "Mac release bundle identities are missing"
+    if (reference.get("kind") != MAC_RECEIPT.KIND or reference.get("architecture") != "arm64"
+            or native.get("kind") != MAC_RECEIPT.NATIVE_KIND or native.get("architecture") != "arm64"):
+        return "Mac release bundle kind or architecture differs"
+    ref_fields = ("sha256", "receipt_sha256", "executable_sha256", "pack_sha256", "probe_sha256",
+                  "source_worktree_sha256")
+    native_fields = ("sha256", "receipt_sha256", "reference_receipt_sha256", "manifest_sha256",
+                     "descriptor_sha256", "library_sha256")
+    if any(not isinstance(identity.get(field), str) or not re.fullmatch(r"[0-9a-f]{64}", identity[field])
+           for identity, fields in ((reference, ref_fields), (native, native_fields)) for field in fields):
+        return "Mac release bundle identity digest is malformed"
+    if any(not isinstance(reference.get(field), str) or not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", reference[field])
+           for field in ("source_commit", "source_tree")):
+        return "Mac release source commit or tree identity is malformed"
+    if (native["reference_receipt_sha256"] != reference["receipt_sha256"]
+            or any(identity["sha256"] != hashlib.sha256((identity["receipt_sha256"] + "\narm64").encode()).hexdigest()
+                   for identity in (reference, native))):
+        return "Mac release receipts are not linked to their architecture identities"
+    return ""
+
+
+def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any] | None, *,
+                        mac_reference_identity: dict[str, Any] | None = None,
+                        mac_native_identity: dict[str, Any] | None = None) -> dict[str, Any]:
     """Compare production backends only after a complete, identical trajectory."""
     reasons: list[str] = []
     for label, report in (("reference", reference), ("native", native)):
@@ -474,12 +531,32 @@ def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any]
             if not isinstance(report.get("backend"), dict) or report["backend"].get("requested") != expected:
                 reasons.append(f"{label}: requested backend is not {expected}")
     if isinstance(reference, dict) and isinstance(native, dict):
-        for key in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "solver_identity_kind",
-                    "template_release", "probe_sha256", "aircraft_sha256",
+        for key in ("fingerprint", "fingerprint_boundaries", "template_release", "probe_sha256", "aircraft_sha256",
                     "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads",
                     "world", "machine", "tick_hz"):
             if reference.get(key) != native.get(key):
                 reasons.append(f"backends differ in {key}")
+        mac_release = mac_reference_identity is not None or mac_native_identity is not None
+        if mac_release:
+            error = mac_release_identity_error(mac_reference_identity, mac_native_identity)
+            if error:
+                reasons.append(error)
+            else:
+                assert mac_reference_identity is not None and mac_native_identity is not None
+                actual = native.get("backend", {}).get("actual", {}) if isinstance(native.get("backend"), dict) else {}
+                if (reference.get("solver_identity_kind") != MAC_RECEIPT.KIND
+                        or reference.get("solver_sha256") != mac_reference_identity["sha256"]
+                        or native.get("solver_identity_kind") != MAC_RECEIPT.NATIVE_KIND
+                        or native.get("solver_sha256") != mac_native_identity["sha256"]
+                        or reference.get("probe_sha256") != mac_reference_identity["probe_sha256"]
+                        or not isinstance(actual, dict) or actual.get("binary_sha256") != mac_native_identity["library_sha256"]
+                        or reference.get("experimental_native_macos") is not True
+                        or native.get("experimental_native_macos") is not True):
+                    reasons.append("backends do not match their linked Mac release identities")
+        else:
+            for key in ("solver_sha256", "solver_identity_kind"):
+                if reference.get(key) != native.get(key):
+                    reasons.append(f"backends differ in {key}")
     comparable = not reasons
     result: dict[str, Any] = {"comparable": comparable, "reasons": reasons,
                               "reference_usec_per_tick": None, "native_usec_per_tick": None,
@@ -492,6 +569,51 @@ def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any]
             result[f"{label}_simulation_usec_per_tick"] = sum(report["simulation_usec"]) / ticks
         if result["native_usec_per_tick"] > 0:
             result["reference_over_native"] = result["reference_usec_per_tick"] / result["native_usec_per_tick"]
+    return result
+
+
+def reduce_identical_pair(a: dict[str, Any] | None, b: dict[str, Any] | None, backend: str) -> dict[str, Any]:
+    """Compare two observer-on runs of the same backend without an optimization claim."""
+    reasons: list[str] = []
+    if backend not in ("gdscript_reference", "native"):
+        reasons.append("unsupported requested backend")
+    for role, report in (("a", a), ("b", b)):
+        if not isinstance(report, dict):
+            reasons.append(f"role {role} report unavailable")
+            continue
+        reasons.extend(f"role {role}: {error}" for error in validate_probe_report(
+            report, expected={"observer": True, "physics_backend": backend}))
+        if report.get("format") != FORMAT:
+            reasons.append(f"role {role}: identical comparisons require v2 fingerprints")
+        if not isinstance(report.get("solver_identity_kind"), str) or not report["solver_identity_kind"]:
+            reasons.append(f"role {role}: solver identity kind is missing")
+    if isinstance(a, dict) and isinstance(b, dict):
+        for key in ("fingerprint", "fingerprint_boundaries", "template_release", "probe_sha256", "aircraft_sha256",
+                    "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads", "world",
+                    "machine", "tick_hz", "solver_sha256", "solver_identity_kind"):
+            if a.get(key) != b.get(key):
+                reasons.append(f"identical roles differ in {key}")
+        if a.get("experimental_native_macos", False) != b.get("experimental_native_macos", False):
+            reasons.append("identical roles differ in experimental_native_macos")
+        a_backend, b_backend = a.get("backend"), b.get("backend")
+        if (not isinstance(a_backend, dict) or not isinstance(b_backend, dict)
+                or a_backend.get("actual") != b_backend.get("actual")):
+            reasons.append("identical roles use different backend identities")
+    result: dict[str, Any] = {"comparable": False, "reasons": reasons,
+                              "a_callback_mean_usec_per_tick": None, "b_callback_mean_usec_per_tick": None,
+                              "a_over_b_callback_mean_ratio": None, "absolute_callback_mean_difference_usec_per_tick": None,
+                              "absolute_ratio_deviation_percent": None}
+    if not reasons:
+        assert a is not None and b is not None
+        ticks = a["requested"]["sample_ticks"]
+        a_mean, b_mean = sum(a["tick_usec"]) / ticks, sum(b["tick_usec"]) / ticks
+        if b_mean <= 0:
+            reasons.append("role b inclusive callback mean is zero; ratio is undefined")
+        else:
+            result.update(comparable=True, a_callback_mean_usec_per_tick=a_mean, b_callback_mean_usec_per_tick=b_mean,
+                          a_over_b_callback_mean_ratio=a_mean / b_mean,
+                          absolute_callback_mean_difference_usec_per_tick=abs(a_mean - b_mean),
+                          absolute_ratio_deviation_percent=abs(a_mean / b_mean - 1.0) * 100.0)
     return result
 
 
@@ -508,6 +630,18 @@ def _sha256_file(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def verify_macos_release_identities(executable: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Recheck both linked release receipts and the executable bytes on this probe."""
+    reference = MAC_RECEIPT.verify(executable, "arm64")
+    native = MAC_RECEIPT.verify_native(executable, "arm64")
+    error = mac_release_identity_error(reference, native)
+    if error:
+        raise ValueError(error)
+    if _sha256_file(executable) != reference["executable_sha256"]:
+        raise ValueError("Mac release executable differs from the reference receipt")
+    return reference, native
 
 
 def native_source_digest(root: Path) -> str:
@@ -532,6 +666,54 @@ def app_source_digest(app: Path) -> str:
     for path in paths:
         digest.update(path.relative_to(app).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
     return digest.hexdigest()
+
+
+def load_project_validator(root: Path):
+    """Use the native oracle's canonical prepared-project inventory contract."""
+    path = root / "research/native-kernel/run.py"
+    spec = importlib.util.spec_from_file_location("openrc_session_project_validator", path)
+    if spec is None or spec.loader is None:
+        raise ValueError(f"Cannot load prepared-project verifier: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def mac_source_install_identity(app: Path, engine_sha256: str, source_sha256: str) -> dict[str, Any]:
+    """Bind a source-editor Mac measurement to its checked receipt and selected dylib."""
+    native = app / "native/kernel"
+    if (app / "native").is_symlink() or native.is_symlink() or native.resolve() != app.resolve() / "native/kernel":
+        raise ValueError("Mac native source directory is symlinked or outside the selected project")
+    library = native / "libopenrc_native_kernel.dylib"
+    descriptor = native / "openrc_native_kernel_macos.gdextension"
+    receipt_file = native / "build-receipt-macos.json"
+    for path in (library, descriptor, receipt_file):
+        if path.is_symlink() or not path.is_file():
+            raise ValueError(f"Missing regular Mac source native artifact: {path}")
+    receipt = json.loads(receipt_file.read_text(encoding="utf-8"), parse_constant=_json_constant)
+    row = receipt.get("platforms", {}).get("macos") if isinstance(receipt, dict) and isinstance(receipt.get("platforms"), dict) else None
+    if (not isinstance(row, dict) or receipt.get("format") != "openrc-native-kernel-receipt"
+            or receipt.get("backend") != "native" or row.get("backend") != "native"
+            or row.get("platform") != "macos" or row.get("architecture") != "arm64"
+            or row.get("qualification_scope") != "macos-arm64-fixed-wing-experimental-v1"
+            or row.get("engine_sha256") != engine_sha256 or row.get("source_sha256") != source_sha256
+            or not isinstance(row.get("engine"), dict) or row["engine"].get("sha256") != engine_sha256
+            or not isinstance(row.get("lock_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", row["lock_sha256"])
+            or not isinstance(row.get("backend_version"), str) or not row["backend_version"]
+            or not _is_int(row.get("abi_version")) or row["abi_version"] < 1
+            or receipt.get("backend_version") != row["backend_version"]
+            or receipt.get("abi_version") != row["abi_version"]
+            or not isinstance(row.get("runtime_os_version"), str) or not row["runtime_os_version"]
+            or not isinstance(row.get("runtime_os_build"), str) or not row["runtime_os_build"]):
+        raise ValueError("Mac source native receipt does not match the engine, sources or experimental scope")
+    binary_sha256 = _sha256_file(library)
+    if row.get("binary_sha256") != binary_sha256:
+        raise ValueError("Mac source native dylib differs from its receipt")
+    return {"library": str(library), "binary_sha256": binary_sha256,
+            "descriptor_sha256": _sha256_file(descriptor), "receipt_sha256": _sha256_file(receipt_file),
+            "source_sha256": source_sha256, "engine_sha256": engine_sha256,
+            "lock_sha256": row["lock_sha256"], "backend_version": row["backend_version"],
+            "abi_version": row["abi_version"]}
 
 
 def _git(root: Path, *args: str) -> bytes:
@@ -579,6 +761,30 @@ def capture_workspace_identity(root: Path) -> dict[str, Any]:
         "dirty_tracked_code": file_records(changed_tracked, True),
         "untracked_code": file_records(untracked, False),
     }
+
+
+def capture_mac_release_source(root: Path) -> dict[str, Any]:
+    """Use the release input's real Git/worktree declaration for this checkout."""
+    release_tools = str(Path(MAC_RECEIPT.__file__).resolve().parent)
+    sys.path.insert(0, release_tools)
+    try:
+        manifest = MAC_RECEIPT._manifest()
+    finally:
+        sys.path.remove(release_tools)
+    commit = manifest.git(root, "rev-parse", "HEAD").decode("ascii").strip()
+    tree = manifest.git(root, "rev-parse", "HEAD^{tree}").decode("ascii").strip()
+    dirty, worktree = manifest.worktree_identity(root)
+    if (manifest.git(root, "rev-parse", "HEAD").decode("ascii").strip() != commit
+            or manifest.git(root, "rev-parse", "HEAD^{tree}").decode("ascii").strip() != tree):
+        raise ValueError("Git commit or tree changed while checking the Mac release source")
+    return {"commit": commit, "tree": tree, "worktree_sha256": worktree, "dirty": dirty}
+
+
+def mac_release_source_matches(reference: dict[str, Any], source: Any) -> bool:
+    return (isinstance(source, dict) and type(source.get("dirty")) is bool
+            and source.get("commit") == reference.get("source_commit")
+            and source.get("tree") == reference.get("source_tree")
+            and source.get("worktree_sha256") == reference.get("source_worktree_sha256"))
 
 
 def capture_system_identity() -> dict[str, Any]:
@@ -668,6 +874,9 @@ def _run_probe(
     executable_sha256: str = "",
     probe_sha256: str = "",
     mac_identity: dict[str, Any] | None = None,
+    mac_native_identity: dict[str, Any] | None = None,
+    experimental_native_macos: bool = False,
+    mac_source_identity: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
                 "--native-qualification=session"] if release_executable else
@@ -681,20 +890,41 @@ def _run_probe(
         f"--observer={'on' if observer else 'off'}",
         f"--physics-backend={physics_backend}",
     ]
+    if experimental_native_macos:
+        command.append("--experimental-native-macos=true")
+    def refused(reason: str) -> dict[str, Any]:
+        return {"observer": "on" if observer else "off", "command": command, "exit_code": None,
+                "timed_out": False, "engine_errors": [], "log": str(log_path), "report_file": str(output_json),
+                "report": None, "validation_errors": [], "failures": [reason], "accepted": False}
+    if mac_native_identity is not None and (not release_executable or not experimental_native_macos
+                                            or mac_identity is None or mac_source_identity is not None):
+        return refused("Mac native release requires explicit opt-in and both linked bundle identities")
+    if experimental_native_macos and release_executable and mac_native_identity is None:
+        return refused("Experimental Mac release requires verified native and reference bundles")
+    if experimental_native_macos and not release_executable and physics_backend == "native" and mac_source_identity is None:
+        return refused("Mac native source measurement requires a verified source installation")
+    if mac_source_identity is not None:
+        try:
+            if (not experimental_native_macos or _sha256_file(godot) != executable_sha256
+                    or mac_source_install_identity(app_dir, executable_sha256, native_source_sha256) != mac_source_identity):
+                raise ValueError("Mac native source installation or engine changed before the probe")
+        except (OSError, ValueError, TypeError) as error:
+            return refused(str(error))
     timed_out = False
     exit_code: int | None = None
     launch_error: str | None = None
     executable_before = _sha256_file(godot) if release_executable else ""
     if mac_identity is not None:
         try:
-            if physics_backend != "gdscript_reference" or MAC_RECEIPT.verify_for_launch(godot) != mac_identity:
+            if mac_native_identity is not None:
+                if verify_macos_release_identities(godot) != (mac_identity, mac_native_identity):
+                    raise ValueError("Mac release bundle identities changed before the probe")
+            elif physics_backend != "gdscript_reference" or MAC_RECEIPT.verify_for_launch(godot) != mac_identity:
                 raise ValueError("Mac release requires the unchanged reference bundle")
-        except (OSError, ValueError) as error:
-            return {"observer": "on" if observer else "off", "command": command, "exit_code": None,
-                    "timed_out": False, "engine_errors": [], "log": str(log_path), "report_file": str(output_json),
-                    "report": None, "validation_errors": [], "failures": [str(error)], "accepted": False}
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            return refused(str(error))
     native_library = godot.parent / "native/kernel/libopenrc_native_kernel.so"
-    library_before = (_sha256_file(native_library) if release_executable and physics_backend == "native"
+    library_before = (_sha256_file(native_library) if release_executable and mac_native_identity is None and physics_backend == "native"
                       and native_library.is_file() else "")
     with log_path.open("w", encoding="utf-8", errors="replace") as log_stream:
         try:
@@ -715,7 +945,9 @@ def _run_probe(
         except OSError as error:
             launch_error = f"could not launch Godot: {error}"
 
-    log_text = log_path.read_text(encoding="utf-8", errors="replace")
+    log_bytes = log_path.read_bytes()
+    log_sha256 = hashlib.sha256(log_bytes).hexdigest()
+    log_text = log_bytes.decode("utf-8", errors="replace")
     engine_errors = _engine_error_lines(log_text)
     expected = {
         "aircraft_id": aircraft_id,
@@ -725,20 +957,33 @@ def _run_probe(
         "godot": REQUIRED_GODOT_REPORT,
         "requested": {"warmup_ticks": warmup_ticks, "sample_ticks": sample_ticks},
     }
-    report, report_error = parse_probe_file(output_json)
+    report, report_error, report_sha256 = read_probe_capture(output_json)
     validation_errors: list[str] = []
     if report is not None:
         validation_errors = validate_probe_report(report, expected=expected)
+        if report.get("experimental_native_macos", False) is not experimental_native_macos:
+            validation_errors.append("session did not report the requested experimental Mac opt-in")
+        if mac_source_identity is not None:
+            machine = report.get("machine")
+            if (not isinstance(machine, dict) or machine.get("os") != "macOS" or machine.get("architecture") != "arm64"
+                    or report.get("solver_identity_kind") != "source-tree-v1" or report.get("template_release") is not False):
+                validation_errors.append("session did not run the experimental source project on native Mac ARM64")
         if release_executable:
             if report.get("template_release") is not True:
                 validation_errors.append("session did not run in a release template")
             if mac_identity is not None:
                 machine = report.get("machine")
                 architecture = machine.get("architecture") if isinstance(machine, dict) else None
-                if report.get("solver_identity_kind") != MAC_RECEIPT.KIND \
+                expected_identity = (mac_native_identity if physics_backend == "native" else mac_identity) \
+                    if mac_native_identity is not None else None
+                expected_kind = (MAC_RECEIPT.NATIVE_KIND if physics_backend == "native" else MAC_RECEIPT.KIND) \
+                    if mac_native_identity is not None else MAC_RECEIPT.KIND
+                expected_hash = expected_identity.get("sha256") if expected_identity is not None else \
+                    mac_identity.get("identities", {}).get(architecture)
+                if report.get("solver_identity_kind") != expected_kind \
                         or not isinstance(machine, dict) or machine.get("os") != "macOS" \
-                        or architecture not in mac_identity["identities"] \
-                        or report.get("solver_sha256") != mac_identity["identities"].get(architecture):
+                        or (mac_native_identity is not None and architecture != "arm64") \
+                        or report.get("solver_sha256") != expected_hash:
                     validation_errors.append("session did not identify the verified Mac bundle and architecture")
                 if mac_identity["probe_sha256"] != probe_sha256:
                     validation_errors.append("Mac receipt probe differs from the recorded source")
@@ -752,21 +997,44 @@ def _run_probe(
             actual = backend.get("actual", {}) if isinstance(backend, dict) else {}
             if not isinstance(actual, dict) or actual.get("source_sha256") != native_source_sha256:
                 validation_errors.append("installed native source identity differs from the current C++ sources")
-            if release_executable and (not library_before or not isinstance(actual, dict)
-                                       or actual.get("binary_sha256") != library_before):
+            if mac_source_identity is not None and (not isinstance(actual, dict) or any(
+                    actual.get(field) != mac_source_identity[field]
+                    for field in ("binary_sha256", "source_sha256", "lock_sha256", "backend_version", "abi_version"))):
+                validation_errors.append("native backend identity differs from the measured Mac source dylib")
+            if mac_native_identity is not None and (not isinstance(actual, dict)
+                    or actual.get("binary_sha256") != mac_native_identity.get("library_sha256")
+                    or actual.get("abi_version") != 2 or actual.get("backend_version") != "openrc-native-kernel-stage-v2"):
+                validation_errors.append("native identity differs from the verified Mac release dylib or ABI 2")
+            if release_executable and mac_native_identity is None and (not library_before or not isinstance(actual, dict)
+                                                                         or actual.get("binary_sha256") != library_before):
                 validation_errors.append("native identity differs from the release sibling library")
     failures: list[str] = []
+    try:
+        if (_sha256_file(log_path) != log_sha256 or (report_sha256 is not None
+                and _sha256_file(output_json) != report_sha256)):
+            failures.append("probe report or log changed during validation")
+    except OSError as error:
+        failures.append(f"probe report or log unavailable during validation: {error}")
     if launch_error:
         failures.append(launch_error)
     if release_executable and (executable_before != executable_sha256 or _sha256_file(godot) != executable_sha256):
         failures.append("release executable changed before or during the probe")
     if mac_identity is not None:
         try:
-            if MAC_RECEIPT.verify_for_launch(godot) != mac_identity:
+            verified = (verify_macos_release_identities(godot) == (mac_identity, mac_native_identity)
+                        if mac_native_identity is not None else MAC_RECEIPT.verify_for_launch(godot) == mac_identity)
+            if not verified:
                 failures.append("Mac release bundle changed during the probe")
-        except (OSError, ValueError) as error:
+        except (OSError, ValueError, KeyError, TypeError) as error:
             failures.append(f"Mac release bundle changed during the probe: {error}")
-    if release_executable and physics_backend == "native" and (not library_before or not native_library.is_file()
+    if mac_source_identity is not None:
+        try:
+            if (_sha256_file(godot) != executable_sha256
+                    or mac_source_install_identity(app_dir, executable_sha256, native_source_sha256) != mac_source_identity):
+                failures.append("Mac native source installation or engine changed during the probe")
+        except (OSError, ValueError, TypeError) as error:
+            failures.append(f"Mac native source installation or engine changed during the probe: {error}")
+    if release_executable and mac_native_identity is None and physics_backend == "native" and (not library_before or not native_library.is_file()
                                                                   or _sha256_file(native_library) != library_before):
         failures.append("release native library is missing or changed during the probe")
     if timed_out:
@@ -789,7 +1057,9 @@ def _run_probe(
         "timed_out": timed_out,
         "engine_errors": engine_errors,
         "log": str(log_path),
+        "log_sha256": log_sha256,
         "report_file": str(output_json),
+        "report_sha256": report_sha256,
         "report": report,
         "validation_errors": validation_errors,
         "failures": failures,
@@ -806,6 +1076,10 @@ def _safe_report_view(run: dict[str, Any]) -> dict[str, Any]:
     wall_per_tick = wall / sample_ticks if _is_int(wall) and _is_int(sample_ticks) and sample_ticks > 0 else None
     return {
         "accepted": run["accepted"],
+        "command": run.get("command"),
+        "exit_code": run.get("exit_code"),
+        "timed_out": run.get("timed_out"),
+        "engine_errors": run.get("engine_errors"),
         "observer": report.get("observer"),
         "complete": report.get("complete"),
         "failure": report.get("failure"),
@@ -868,6 +1142,9 @@ def build_parser() -> argparse.ArgumentParser:
                         help="use --godot as the actual exported Linux or verified Mac release executable")
     parser.add_argument("--out", type=Path, required=True, help="new or empty output directory")
     parser.add_argument("--probe", type=Path, help="probe script; defaults beside this runner")
+    parser.add_argument("--project", type=Path, help="canonical app or a verified isolated research project")
+    parser.add_argument("--experimental-native-macos", action="store_true",
+                        help="explicit opt-in to the experimental Mac ARM64 native source or release backend")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
     parser.add_argument("--case", action="append", help="trim, maneuver, runway, or lake; repeat or comma-separate")
     parser.add_argument("--warmup-ticks", type=int, default=2400)
@@ -875,17 +1152,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--timeout", type=float, default=1800.0, help="per-probe timeout in seconds")
     parser.add_argument("--physics-backend", choices=("gdscript_reference", "native"), default="gdscript_reference",
-                        help="backend for the default observer-on/off pairs")
-    parser.add_argument("--compare-backends", action="store_true",
+                        help="backend for observer pairs or both identical-control roles")
+    comparisons = parser.add_mutually_exclusive_group()
+    comparisons.add_argument("--compare-backends", action="store_true",
                         help="alternate observer-on reference/native pairs instead of observer pairs")
-    parser.add_argument("--compare-campaigns", nargs=2, type=Path, metavar=("BEFORE", "AFTER"),
-                        help="compare two completed backend campaign JSON files")
+    comparisons.add_argument("--compare-identical", action="store_true",
+                        help="alternate observer-on A/A roles with the selected backend; report variation only")
+    comparisons.add_argument("--compare-campaigns", nargs=2, type=Path, metavar=("BEFORE", "AFTER"),
+                        help="compare completed backend campaigns; distinct Mac native release bundles are refused")
     return parser
 
 
-def _failure_report(config: dict[str, Any], reason: str) -> dict[str, Any]:
+def _failure_report(config: dict[str, Any], reason: str, *, report_format: str = BASELINE_FORMAT) -> dict[str, Any]:
     return {
-        "format": BASELINE_FORMAT,
+        "format": report_format,
         "complete": False,
         "status": "failed",
         "failure": reason,
@@ -898,9 +1178,14 @@ def _failure_report(config: dict[str, Any], reason: str) -> dict[str, Any]:
 
 def run_campaign(args: argparse.Namespace) -> int:
     root = Path(__file__).resolve().parents[2]
-    app_dir = root / "app"
+    identical = getattr(args, "compare_identical", False)
+    report_format = IDENTICAL_FORMAT if identical else BASELINE_FORMAT
+    report_name = "session_identical.json" if identical else "session_baseline.json"
+    app_dir = (args.project.expanduser().resolve() if args.project is not None else (root / "app").resolve())
     probe = (args.probe or Path(__file__).with_name("session_probe.gd")).resolve()
     output_dir = args.out.expanduser().resolve()
+    if output_dir == app_dir or output_dir.is_relative_to(app_dir) or app_dir.is_relative_to(output_dir):
+        raise RuntimeError("campaign output and executed project must not overlap")
     if output_dir.exists():
         if not output_dir.is_dir() or any(output_dir.iterdir()):
             raise RuntimeError(f"output must be a fresh or empty directory: {output_dir}")
@@ -918,9 +1203,10 @@ def run_campaign(args: argparse.Namespace) -> int:
         "warmup_ticks": args.warmup_ticks,
         "sample_ticks": args.sample_ticks,
         "repeats": args.repeats,
-        "pair_type": "backends" if args.compare_backends else "observer",
+        "pair_type": "identical" if identical else "backends" if args.compare_backends else "observer",
         "physics_backend": args.physics_backend,
         "release_executable": args.release_executable,
+        "experimental_native_macos": args.experimental_native_macos,
         "timeout_seconds_per_probe": args.timeout,
         "tick_hz": 240,
         "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
@@ -930,34 +1216,69 @@ def run_campaign(args: argparse.Namespace) -> int:
     summaries: list[dict[str, Any]] = []
     metadata: dict[str, Any] = {"system": capture_system_identity()}
     native_identities: set[str] = set()
-    solver_identities: set[str] = set()
+    solver_identities: dict[str, set[str]] = {"gdscript_reference": set(), "native": set()}
+    project_validator = None
+    project_proof: dict[str, Any] | None = None
     try:
         try:
             metadata["workspace"] = capture_workspace_identity(root)
             godot = resolve_executable(args.godot)
             if args.release_executable and MAC_RECEIPT.looks_like_bundle_executable(godot):
-                if args.physics_backend != "gdscript_reference" or args.compare_backends:
+                wants_native = args.physics_backend == "native" or args.compare_backends
+                if wants_native and not args.experimental_native_macos:
                     raise RuntimeError("Mac release benchmarks support the reference backend only")
                 try:
-                    metadata["mac_reference_bundle"] = MAC_RECEIPT.verify_for_launch(godot)
+                    if args.experimental_native_macos:
+                        if (not wants_native or metadata["system"].get("system") != "Darwin"
+                                or metadata["system"].get("machine", "").lower() not in ("arm64", "aarch64")):
+                            raise ValueError("Mac native release requires a native ARM64 host and native measurement")
+                        reference, native = verify_macos_release_identities(godot)
+                        metadata["mac_reference_bundle"], metadata["mac_native_bundle"] = reference, native
+                        source = capture_mac_release_source(root)
+                        if not mac_release_source_matches(reference, source):
+                            raise ValueError("current Git/worktree source differs from the Mac release declaration")
+                        metadata["mac_release_source"] = {"before": source,
+                            "scope": "Checked release source declaration; no source-to-binary reproducibility claim."}
+                    else:
+                        metadata["mac_reference_bundle"] = MAC_RECEIPT.verify_for_launch(godot)
                 except (OSError, ValueError) as error:
                     raise RuntimeError(f"Mac release bundle identity refused: {error}") from error
+            elif args.release_executable and args.experimental_native_macos:
+                raise RuntimeError("Experimental Mac native release requires a verified Mac app bundle")
             metadata["engine"] = inspect_godot(godot, args.timeout)
             metadata["native_source_sha256"] = native_source_digest(root)
+            if not app_dir.is_dir() or not (app_dir / "project.godot").is_file():
+                raise RuntimeError(f"app project directory not found: {app_dir}")
+            if args.project is not None:
+                validator_path = root / "research/native-kernel/run.py"
+                validator_sha256 = _sha256_file(validator_path)
+                project_validator = load_project_validator(root)
+                project_proof = project_validator.validate_project(app_dir)
+                if not isinstance(project_proof, dict) or (app_dir != (root / "app").resolve() and not project_proof):
+                    raise ValueError("Prepared project has no verified inventory proof")
+                if _sha256_file(validator_path) != validator_sha256:
+                    raise ValueError("Prepared-project verifier changed during validation")
+                metadata["project"] = {"path": str(app_dir), "inventory_before": project_proof,
+                                       "validator_sha256": validator_sha256}
             metadata["app_source_sha256"] = app_source_digest(app_dir)
+            if args.experimental_native_macos and not args.release_executable \
+                    and (args.compare_backends or args.physics_backend == "native"):
+                metadata["mac_source_install"] = mac_source_install_identity(
+                    app_dir, metadata["engine"]["sha256"], metadata["native_source_sha256"])
             metadata["probe"] = {
                 "path": str(probe),
                 "sha256": _sha256_file(probe) if probe.is_file() else None,
             }
             if not probe.is_file():
                 raise RuntimeError(f"probe script not found: {probe}")
-            if not app_dir.is_dir():
-                raise RuntimeError(f"app project directory not found: {app_dir}")
-        except (OSError, RuntimeError, subprocess.SubprocessError) as error:
+            if "mac_native_bundle" in metadata and (metadata["mac_reference_bundle"]["probe_sha256"] != metadata["probe"]["sha256"]
+                    or metadata["mac_reference_bundle"]["executable_sha256"] != metadata["engine"]["sha256"]):
+                raise RuntimeError("Mac release receipt differs from the probe or executable")
+        except (OSError, ValueError, TypeError, RuntimeError, subprocess.SubprocessError) as error:
             failures.append(str(error))
-            report = _failure_report(config, str(error))
+            report = _failure_report(config, str(error), report_format=report_format)
             report["metadata"] = metadata
-            _write_json(output_dir / "session_baseline.json", report)
+            _write_json(output_dir / report_name, report)
             print(f"session baseline failed: {error}", file=sys.stderr)
             return 1
 
@@ -966,17 +1287,18 @@ def run_campaign(args: argparse.Namespace) -> int:
             for case_id in args.case_ids:
                 case_pairs: list[dict[str, Any]] = []
                 for repeat_index in range(1, args.repeats + 1):
-                    modes = ("reference", "native") if args.compare_backends else ("on", "off")
+                    modes = ("a", "b") if identical else ("reference", "native") if args.compare_backends else ("on", "off")
                     reports: dict[str, dict[str, Any] | None] = {mode: None for mode in modes}
                     runs: dict[str, dict[str, Any]] = {}
                     order = modes if repeat_index % 2 == 1 else tuple(reversed(modes))
                     run_dir = output_dir / "runs" / aircraft_id / case_id
                     run_dir.mkdir(parents=True, exist_ok=True)
                     for mode in order:
-                        observer = True if args.compare_backends else mode == "on"
+                        observer = True if identical or args.compare_backends else mode == "on"
                         physics_backend = ("gdscript_reference" if mode == "reference" else "native") \
                             if args.compare_backends else args.physics_backend
-                        stem = f"repeat-{repeat_index:02d}-{'backend' if args.compare_backends else 'observer'}-{mode}"
+                        role_label = "identical" if identical else "backend" if args.compare_backends else "observer"
+                        stem = f"repeat-{repeat_index:02d}-{role_label}-{mode}"
                         json_path = run_dir / f"{stem}.json"
                         log_path = run_dir / f"{stem}.log"
                         run = _run_probe(
@@ -997,27 +1319,46 @@ def run_campaign(args: argparse.Namespace) -> int:
                             executable_sha256=metadata["engine"]["sha256"],
                             probe_sha256=metadata["probe"]["sha256"],
                             mac_identity=metadata.get("mac_reference_bundle"),
+                            mac_native_identity=metadata.get("mac_native_bundle"),
+                            experimental_native_macos=args.experimental_native_macos,
+                            mac_source_identity=metadata.get("mac_source_install"),
                         )
+                        if ("mac_native_bundle" in metadata or identical) and run["accepted"]:
+                            try:
+                                if (not json_path.is_file() or not log_path.is_file()
+                                        or _sha256_file(json_path) != run.get("report_sha256")
+                                        or _sha256_file(log_path) != run.get("log_sha256")):
+                                    raise ValueError("probe report or log changed after validation")
+                            except (OSError, ValueError) as error:
+                                run["accepted"] = False
+                                run["failures"].append(str(error))
                         reports[mode] = run["report"] if run["accepted"] else None
                         if run["accepted"] and isinstance(run["report"], dict):
                             accepted_report = run["report"]
-                            solver_identities.add(accepted_report["solver_sha256"])
+                            solver_identities[physics_backend].add(accepted_report["solver_sha256"])
                             if physics_backend == "native":
                                 native_identities.add(json.dumps(accepted_report["backend"]["actual"], sort_keys=True))
                         runs[mode] = _safe_report_view(run)
                         runs[mode]["report_relative_path"] = json_path.relative_to(output_dir).as_posix()
-                        runs[mode]["report_sha256"] = _sha256_file(json_path) if json_path.is_file() else None
+                        runs[mode]["report_sha256"] = (run.get("report_sha256") if "mac_native_bundle" in metadata or identical
+                                                       else _sha256_file(json_path) if json_path.is_file() else None)
+                        runs[mode]["log_relative_path"] = log_path.relative_to(output_dir).as_posix()
+                        runs[mode]["log_sha256"] = (run.get("log_sha256") if "mac_native_bundle" in metadata or identical
+                                                    else _sha256_file(log_path) if log_path.is_file() else None)
                         print(f"{aircraft_id}/{case_id}/{stem}: {'accepted' if run['accepted'] else 'failed'}", flush=True)
                         all_run_count += 1
                         for message in run["failures"]:
                             failures.append(f"{aircraft_id}/{case_id}/repeat-{repeat_index:02d}/{mode}: {message}")
-                    reduced = (reduce_backend_pair(reports["reference"], reports["native"]) if args.compare_backends
+                    reduced = (reduce_identical_pair(reports["a"], reports["b"], args.physics_backend) if identical else
+                               reduce_backend_pair(reports["reference"], reports["native"],
+                                mac_reference_identity=metadata.get("mac_reference_bundle") if "mac_native_bundle" in metadata else None,
+                                mac_native_identity=metadata.get("mac_native_bundle")) if args.compare_backends
                                else reduce_pair(reports["on"], reports["off"]))
                     pair_record = {
                         "aircraft_id": aircraft_id,
                         "case_id": case_id,
                         "repeat": repeat_index,
-                        "backend_order" if args.compare_backends else "observer_order": list(order),
+                        "role_order" if identical else "backend_order" if args.compare_backends else "observer_order": list(order),
                         "runs": runs,
                         **reduced,
                     }
@@ -1029,35 +1370,91 @@ def run_campaign(args: argparse.Namespace) -> int:
                     pairs.append(pair_record)
                     case_pairs.append(pair_record)
 
-                metric = "reference_over_native" if args.compare_backends else "observer_overhead_usec_per_tick"
+                metric = ("a_over_b_callback_mean_ratio" if identical else "reference_over_native" if args.compare_backends
+                          else "observer_overhead_usec_per_tick")
                 values = [pair[metric] for pair in case_pairs if pair["comparable"] and pair[metric] is not None]
                 summaries.append({
                     "aircraft_id": aircraft_id,
                     "case_id": case_id,
                     "requested_pairs": args.repeats,
                     "comparable_pairs": len(values),
-                    ("reference_over_native_nearest_rank" if args.compare_backends else "overhead_usec_per_tick_nearest_rank"): {
+                    ("a_over_b_callback_mean_ratio_nearest_rank" if identical else "reference_over_native_nearest_rank"
+                     if args.compare_backends else "overhead_usec_per_tick_nearest_rank"): {
                         f"p{percentile}": percentile_nearest_rank(values, percentile) if values else None
                         for percentile in (50, 95, 99)
                     },
                 })
 
-        if native_source_digest(root) != metadata["native_source_sha256"]:
-            failures.append("native C++ source changed during the campaign")
-        if app_source_digest(app_dir) != metadata["app_source_sha256"]:
-            failures.append("application code or text data changed during the campaign")
-        if _sha256_file(probe) != metadata["probe"]["sha256"]:
-            failures.append("probe changed during the campaign")
-        if _sha256_file(godot) != metadata["engine"]["sha256"]:
-            failures.append("Godot executable changed during the campaign")
-        if len(solver_identities) > 1:
+        final_checks = (
+            ("native C++ source", lambda: native_source_digest(root), metadata["native_source_sha256"]),
+            ("application code or text data", lambda: app_source_digest(app_dir), metadata["app_source_sha256"]),
+            ("probe", lambda: _sha256_file(probe), metadata["probe"]["sha256"]),
+            ("Godot executable", lambda: _sha256_file(godot), metadata["engine"]["sha256"]),
+        )
+        for label, observe, original in final_checks:
+            try:
+                if observe() != original:
+                    failures.append(f"{label} changed during the campaign")
+            except (OSError, RuntimeError, ValueError) as error:
+                failures.append(f"{label} unavailable after the campaign: {error}")
+        if project_validator is not None:
+            try:
+                final_proof = project_validator.validate_project(app_dir)
+                metadata["project"]["inventory_after"] = final_proof
+                if (final_proof != project_proof
+                        or _sha256_file(root / "research/native-kernel/run.py") != metadata["project"]["validator_sha256"]):
+                    failures.append("prepared project or its inventory verifier changed during the campaign")
+            except (OSError, ValueError, TypeError) as error:
+                failures.append(f"prepared project validation failed after the campaign: {error}")
+        if "mac_source_install" in metadata:
+            try:
+                if mac_source_install_identity(app_dir, metadata["engine"]["sha256"],
+                                               metadata["native_source_sha256"]) != metadata["mac_source_install"]:
+                    failures.append("Mac native source installation changed during the campaign")
+            except (OSError, ValueError, TypeError) as error:
+                failures.append(f"Mac native source installation changed during the campaign: {error}")
+        if "mac_reference_bundle" in metadata:
+            try:
+                if "mac_native_bundle" in metadata:
+                    valid_bundle = verify_macos_release_identities(godot) == (metadata["mac_reference_bundle"], metadata["mac_native_bundle"])
+                else:
+                    valid_bundle = MAC_RECEIPT.verify_for_launch(godot) == metadata["mac_reference_bundle"]
+                if not valid_bundle:
+                    failures.append("Mac release bundle changed during the campaign")
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                failures.append(f"Mac release bundle changed during the campaign: {error}")
+        if "mac_native_bundle" in metadata:
+            try:
+                source_after = capture_mac_release_source(root)
+                metadata["mac_release_source"]["after"] = source_after
+                if (source_after != metadata["mac_release_source"]["before"]
+                        or not mac_release_source_matches(metadata["mac_reference_bundle"], source_after)):
+                    failures.append("current Git/worktree source changed or differs from the Mac release declaration")
+            except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+                failures.append(f"Mac release source declaration unavailable after the campaign: {error}")
+        if "mac_native_bundle" in metadata or identical:
+            for pair in pairs:
+                for run in pair["runs"].values():
+                    if not run["accepted"]:
+                        continue
+                    try:
+                        raw_path = output_dir / run["report_relative_path"]
+                        log_path = output_dir / run["log_relative_path"]
+                        if (_sha256_file(raw_path) != run["report_sha256"]
+                                or _sha256_file(log_path) != run["log_sha256"]):
+                            label = "identical" if identical else "Mac release"
+                            failures.append(f"{label} probe report or log changed during the campaign")
+                    except (OSError, ValueError, KeyError) as error:
+                        label = "identical" if identical else "Mac release"
+                        failures.append(f"{label} probe evidence unavailable after the campaign: {error}")
+        if any(len(identities) > 1 for identities in solver_identities.values()):
             failures.append("solver source identity changed between runs")
         if len(native_identities) > 1:
             failures.append("installed native backend identity changed between runs")
         complete = not failures and all(len([p for p in pairs if p["aircraft_id"] == a and p["case_id"] == c and p["comparable"]]) == args.repeats
                                        for a in args.aircraft_ids for c in args.case_ids)
         report = {
-            "format": BASELINE_FORMAT,
+            "format": report_format,
             "complete": complete,
             "status": "complete" if complete else "failed",
             "failure": "" if complete else "one or more runs failed or paired trajectories were not comparable",
@@ -1067,11 +1464,15 @@ def run_campaign(args: argparse.Namespace) -> int:
             "summary": summaries,
             "failures": failures,
         }
-        _write_json(output_dir / "session_baseline.json", report)
+        if identical:
+            report["scope"] = ("Same-backend observer-on paired measurements; the inclusive callback mean ratio and "
+                               "absolute difference describe observed variation, not a speedup or acceptance threshold. "
+                               "Timing noise is not subtracted.")
+        _write_json(output_dir / report_name, report)
         if complete:
-            print(f"session baseline complete: {all_run_count} probes; report {output_dir / 'session_baseline.json'}")
+            print(f"session baseline complete: {all_run_count} probes; report {output_dir / report_name}")
             return 0
-        print(f"session baseline failed: {len(failures)} issue(s); report {output_dir / 'session_baseline.json'}", file=sys.stderr)
+        print(f"session baseline failed: {len(failures)} issue(s); report {output_dir / report_name}", file=sys.stderr)
         return 1
     finally:
         try:
@@ -1090,6 +1491,40 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
     if not isinstance(config, dict) or config.get("pair_type") != "backends" or not isinstance(metadata, dict) or not isinstance(pairs, list):
         raise ValueError(f"{path}: backend campaign metadata or pairs are missing")
     aircraft, cases, repeats = config.get("aircraft"), config.get("cases"), config.get("repeats")
+    experimental = config.get("experimental_native_macos", False)
+    if type(experimental) is not bool:
+        raise ValueError(f"{path}: malformed experimental Mac opt-in")
+    release = config.get("release_executable", False)
+    if type(release) is not bool:
+        raise ValueError(f"{path}: malformed release mode")
+    project = metadata.get("project")
+    if project is not None and (not isinstance(project, dict) or not isinstance(project.get("path"), str)
+                                or not isinstance(project.get("inventory_before"), dict)
+                                or project.get("inventory_after") != project.get("inventory_before")
+                                or not isinstance(project.get("validator_sha256"), str)):
+        raise ValueError(f"{path}: prepared project evidence is incomplete")
+    mac_source = metadata.get("mac_source_install")
+    mac_reference, mac_native = metadata.get("mac_reference_bundle"), metadata.get("mac_native_bundle")
+    mac_release = experimental and release
+    if mac_release:
+        error = mac_release_identity_error(mac_reference, mac_native)
+        engine, probe = metadata.get("engine"), metadata.get("probe")
+        source = metadata.get("mac_release_source")
+        if (error or mac_source is not None or project is not None or not isinstance(engine, dict)
+                or not isinstance(engine.get("path"), str) or not isinstance(probe, dict)
+                or engine.get("sha256") != mac_reference.get("executable_sha256")
+                or probe.get("sha256") != mac_reference.get("probe_sha256")
+                or not isinstance(source, dict) or source.get("before") != source.get("after")
+                or not mac_release_source_matches(mac_reference, source.get("before"))):
+            raise ValueError(f"{path}: invalid Mac release receipt or source/editor evidence: {error}")
+        if verify_macos_release_identities(Path(engine["path"])) != (mac_reference, mac_native):
+            raise ValueError(f"{path}: Mac release bundle differs from retained evidence")
+    elif mac_native is not None:
+        raise ValueError(f"{path}: native Mac release identity requires release mode and explicit opt-in")
+    elif release and mac_reference is not None:
+        raise ValueError(f"{path}: reference-only Mac release cannot claim a backend comparison")
+    if experimental and not release and not isinstance(mac_source, dict):
+        raise ValueError(f"{path}: experimental Mac source identity is missing")
     if (not isinstance(aircraft, list) or not aircraft or not isinstance(cases, list) or not cases
             or not _is_int(repeats) or repeats < 1 or any(not isinstance(item, str) for item in aircraft + cases)):
         raise ValueError(f"{path}: invalid campaign configuration")
@@ -1097,6 +1532,7 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
     runs: dict[tuple[str, str, int], dict[str, Any]] = {}
     native_ids: set[str] = set()
     solver_ids: set[str] = set()
+    captured_files: list[tuple[Path, str]] = []
     for pair in pairs:
         if not isinstance(pair, dict) or pair.get("comparable") is not True or not isinstance(pair.get("runs"), dict):
             raise ValueError(f"{path}: invalid or incomparable pair")
@@ -1109,13 +1545,44 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
             if not isinstance(item, dict) or item.get("accepted") is not True or not isinstance(item.get("report_relative_path"), str):
                 raise ValueError(f"{path}: missing accepted {mode} report")
             raw_path = (path.parent / item["report_relative_path"]).resolve()
-            if not raw_path.is_relative_to(path.parent.resolve()) or not raw_path.is_file() or _sha256_file(raw_path) != item.get("report_sha256"):
+            if not raw_path.is_relative_to(path.parent.resolve()) or not raw_path.is_file():
                 raise ValueError(f"{path}: missing or changed {mode} raw report")
-            report, error = parse_probe_file(raw_path)
+            if mac_release:
+                command = item.get("command")
+                requested_backend = "gdscript_reference" if mode == "reference" else "native"
+                expected_command = [metadata["engine"]["path"], "--headless", "--audio-driver", "Dummy", "--",
+                    "--quick-flight", "--native-qualification=session", f"--output={raw_path}", f"--aircraft={key[0]}",
+                    f"--case={key[1]}", f"--warmup-ticks={config.get('warmup_ticks')}",
+                    f"--sample-ticks={config.get('sample_ticks')}", "--observer=on",
+                    f"--physics-backend={requested_backend}", "--experimental-native-macos=true"]
+                log_relative = item.get("log_relative_path")
+                if (command != expected_command or type(item.get("exit_code")) is not int or item["exit_code"] != 0
+                        or item.get("timed_out") is not False or item.get("engine_errors") != []
+                        or item.get("validation_errors") != [] or item.get("failures") != []
+                        or not isinstance(log_relative, str)):
+                    raise ValueError(f"{path}: invalid Mac release probe command or process outcome")
+                log_path = (path.parent / log_relative).resolve()
+                if not log_path.is_relative_to(path.parent.resolve()) or not log_path.is_file():
+                    raise ValueError(f"{path}: missing or changed Mac release probe log")
+                log_bytes = log_path.read_bytes()
+                log_digest = hashlib.sha256(log_bytes).hexdigest()
+                if log_digest != item.get("log_sha256"):
+                    raise ValueError(f"{path}: missing or changed Mac release probe log")
+                captured_files.append((log_path, log_digest))
+                log_text = log_bytes.decode("utf-8", errors="replace")
+                if "NATIVE_QUALIFICATION mode=session verdict=pass" not in log_text or _engine_error_lines(log_text):
+                    raise ValueError(f"{path}: Mac release probe log lacks a clean completion marker")
+            report, error, report_digest = read_probe_capture(raw_path)
+            if report_digest != item.get("report_sha256"):
+                raise ValueError(f"{path}: missing or changed {mode} raw report")
             if error or report is None:
                 raise ValueError(f"{raw_path}: {error}")
+            if mac_release:
+                captured_files.append((raw_path, report_digest))
             raw[mode] = report
-        reduced = reduce_backend_pair(raw["reference"], raw["native"])
+        reduced = reduce_backend_pair(raw["reference"], raw["native"],
+                                      mac_reference_identity=mac_reference if mac_release else None,
+                                      mac_native_identity=mac_native if mac_release else None)
         if not reduced["comparable"]:
             raise ValueError(f"{path}: raw pair is not comparable: {reduced['reasons']}")
         for report in raw.values():
@@ -1123,19 +1590,33 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
                 "warmup_ticks": config.get("warmup_ticks"), "sample_ticks": config.get("sample_ticks")
             }:
                 raise ValueError(f"{path}: raw report differs from campaign configuration")
+            if report.get("experimental_native_macos", False) is not experimental:
+                raise ValueError(f"{path}: raw report differs from the Mac opt-in")
+            if mac_release and report.get("machine", {}).get("godot") != REQUIRED_GODOT_REPORT:
+                raise ValueError(f"{path}: raw report does not identify the pinned release engine")
         identity = raw["native"]["backend"]["actual"]
         if identity["source_sha256"] != metadata.get("native_source_sha256"):
             raise ValueError(f"{path}: native binary does not match campaign source")
+        if experimental and not release and (any(identity.get(field) != mac_source.get(field) for field in
+                                 ("binary_sha256", "source_sha256", "lock_sha256", "backend_version", "abi_version"))
+                             or any(report.get("machine", {}).get("os") != "macOS"
+                                    or report.get("machine", {}).get("architecture") != "arm64"
+                                    for report in raw.values())):
+            raise ValueError(f"{path}: raw pair does not match the measured Mac native source identity")
         native_ids.add(json.dumps(identity, sort_keys=True))
         solver_ids.add(raw["reference"]["solver_sha256"])
         runs[key] = {"raw": raw, "reduced": reduced}
     if set(runs) != expected_keys or len(native_ids) != 1 or len(solver_ids) != 1:
         raise ValueError(f"{path}: missing pairs or inconsistent native/solver identity")
+    if mac_release and any(_sha256_file(file) != digest for file, digest in captured_files):
+        raise ValueError(f"{path}: Mac release probe evidence changed while rereading")
+    if mac_release and verify_macos_release_identities(Path(metadata["engine"]["path"])) != (mac_reference, mac_native):
+        raise ValueError(f"{path}: Mac release bundle changed while rereading evidence")
     return campaign, runs
 
 
 def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> int:
-    """Compare separate native builds only when their reference trajectories and inputs match."""
+    """Compare matching inputs; distinct Mac release bundles have no independent reference identity."""
     output_dir = output_dir.expanduser().resolve()
     if output_dir.exists() and (not output_dir.is_dir() or any(output_dir.iterdir())):
         raise ValueError(f"output must be a fresh or empty directory: {output_dir}")
@@ -1146,10 +1627,21 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
         before_path, after_path = before_path.expanduser().resolve(), after_path.expanduser().resolve()
         before, old_runs = _campaign_runs(before_path)
         after, new_runs = _campaign_runs(after_path)
+        old_meta, new_meta = before["metadata"], after["metadata"]
+        old_mac, new_mac = old_meta.get("mac_native_bundle"), new_meta.get("mac_native_bundle")
+        if old_mac is not None or new_mac is not None:
+            old_reference, new_reference = old_meta.get("mac_reference_bundle"), new_meta.get("mac_reference_bundle")
+            if (not isinstance(old_mac, dict) or not isinstance(new_mac, dict)
+                    or not isinstance(old_reference, dict) or not isinstance(new_reference, dict)
+                    or old_mac.get("sha256") != new_mac.get("sha256")
+                    or old_reference.get("sha256") != new_reference.get("sha256")):
+                raise ValueError("Mac native release campaigns cannot compare different bundles; "
+                                 "the reference identity includes native bundle artifacts")
         for key in ("aircraft", "cases", "warmup_ticks", "sample_ticks", "repeats", "tick_hz", "pair_type"):
             if before["configuration"].get(key) != after["configuration"].get(key):
                 failures.append(f"campaign configuration differs in {key}")
-        old_meta, new_meta = before["metadata"], after["metadata"]
+        if before["configuration"].get("experimental_native_macos", False) != after["configuration"].get("experimental_native_macos", False):
+            failures.append("campaign configuration differs in experimental_native_macos")
         for key in ("app_source_sha256", "system"):
             if not old_meta.get(key) or old_meta.get(key) != new_meta.get(key):
                 failures.append(f"campaign metadata differs in {key}")
@@ -1192,7 +1684,9 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
     result = {"format": "openrc-session-campaign-comparison v1", "complete": not failures,
               "before": str(before_path), "after": str(after_path), "pairs": rows if not failures else [],
               "summary": summary, "failures": failures,
-              "scope": "Separate build campaigns, not interleaved across builds; host variation can bias the comparison. Raw callback stopwatch excludes fingerprint and guard work, which can perturb subsequent ticks."}
+              "scope": "Separate build campaigns, not interleaved across builds; host variation can bias the comparison. "
+                       "Distinct Mac native release bundles cannot be compared because the reference identity includes native artifacts. "
+                       "Raw callback stopwatch excludes fingerprint and guard work, which can perturb subsequent ticks."}
     _write_json(output_dir / "session_comparison.json", result)
     print(f"session campaign comparison: {'complete' if not failures else 'failed'}; report {output_dir / 'session_comparison.json'}")
     return 0 if not failures else 1
@@ -1205,11 +1699,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.compare_campaigns:
             if args.release_executable:
                 raise ValueError("--release-executable applies to a new campaign, not a campaign comparison")
+            if args.project is not None or args.experimental_native_macos:
+                raise ValueError("--project and --experimental-native-macos apply to a new campaign")
             return compare_campaigns(*args.compare_campaigns, args.out)
         if not args.godot:
             raise ValueError("--godot is required for a campaign")
         if args.release_executable and args.probe:
             raise ValueError("--release-executable uses the fixed embedded probe; --probe is not permitted")
+        if args.release_executable and args.project is not None:
+            raise ValueError("--project requires a source-editor campaign")
+        if args.release_executable and args.experimental_native_macos and (
+                not MAC_RECEIPT.looks_like_bundle_executable(Path(args.godot).expanduser().resolve())
+                or not (args.compare_backends or args.physics_backend == "native")):
+            raise ValueError("experimental native release requires a Mac app bundle and native measurement")
         if args.warmup_ticks < 0 or args.warmup_ticks > 72000:
             raise ValueError("warmup ticks must be within 0..72000")
         if args.sample_ticks < 1 or args.sample_ticks > 72000:

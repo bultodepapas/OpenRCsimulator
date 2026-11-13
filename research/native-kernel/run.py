@@ -14,6 +14,8 @@ import hashlib
 import importlib.util
 import json
 import os
+import platform
+import re
 import subprocess
 import sys
 import tempfile
@@ -22,10 +24,38 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-# NK-4: OPENRC_NK_TOOL_ROOT points at a build_windows.py tool root (kept off a full system drive).
+# Platform builders share the oracle protocol and keep their output roots independent.
 TOOL_ROOT = Path(os.environ.get("OPENRC_NK_TOOL_ROOT", ROOT / "tmp/native-kernel"))
-PLATFORM_KEY = "windows.x86_64" if sys.platform == "win32" else "linux.x86_64"
-GODOT = ROOT / (".tools/Godot_v4.8-beta2_win64_console.exe" if sys.platform == "win32" else ".tools/Godot_v4.8-beta2_linux.x86_64")
+
+
+def host_platform_key(system: str | None = None, architecture: str | None = None) -> str:
+    """Select the real process slice; never treat Darwin or an unknown CPU as Linux."""
+    system = sys.platform if system is None else system
+    architecture = platform.machine().lower() if architecture is None else architecture.lower()
+    if system == "darwin" and architecture in {"arm64", "aarch64"}:
+        return "macos.arm64"
+    if architecture in {"amd64", "x86_64"}:
+        if system == "win32":
+            return "windows.x86_64"
+        if system.startswith("linux"):
+            return "linux.x86_64"
+    raise ValueError(f"No qualified native oracle target for {system}/{architecture}")
+
+
+def default_godot(platform_key: str) -> Path:
+    paths = {
+        "windows.x86_64": ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "linux.x86_64": ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "macos.arm64": ".tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+    }
+    return ROOT / paths[platform_key]
+
+
+try:
+    PLATFORM_KEY = host_platform_key()
+except ValueError:
+    PLATFORM_KEY = ""  # Reading existing evidence is still useful on an unsupported host.
+GODOT = default_godot(PLATFORM_KEY) if PLATFORM_KEY else ROOT / ".tools/no-native-oracle-engine"
 HARNESS_OPTIONS = {
     "oracle.gd": set(), "stage_oracle.gd": set(),
     "propeller_oracle.gd": set(),
@@ -37,7 +67,7 @@ HARNESS_OPTIONS = {
     "prescribed_stage_oracle.gd": {"ticks"},
     "legacy_ground_oracle.gd": {"ticks"},
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
-    "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull"},
+    "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull", "vehicle"},
 }
 
 
@@ -68,12 +98,131 @@ def checked_run_matches(report: dict, mutant: bool) -> bool:
             and (mutant or report.get("ok") is True))
 
 
-def selected_binary(descriptor: Path) -> Path:
+def selected_binary(descriptor: Path, project: Path | None = None) -> Path:
     config = configparser.ConfigParser(interpolation=None)
     config.read(descriptor)
     name = config["libraries"][PLATFORM_KEY].strip('"')
-    return ((ROOT / "app" / name.removeprefix("res://")) if name.startswith("res://")
+    app = ROOT / "app" if project is None else project
+    return ((app / name.removeprefix("res://")) if name.startswith("res://")
             else descriptor.parent / name).resolve()
+
+
+def macos_engine_matches(receipt: dict, executable_sha256: str) -> bool:
+    """A research Mac receipt binds the exact host, not only its version label."""
+    engine = receipt.get("engine")
+    return (receipt.get("platform") == "macos" and receipt.get("architecture") == "arm64"
+            and isinstance(engine, dict) and engine.get("sha256") == executable_sha256
+            and receipt.get("engine_sha256") == executable_sha256)
+
+
+def _project_inventory(app: Path) -> list[dict]:
+    entries = []
+    for path in sorted(app.rglob("*")):
+        relative = path.relative_to(app)
+        if any(part in {".godot", ".tools", "__pycache__"} for part in relative.parts) \
+                or relative.parts[0] in {"captures", "tmp"}:
+            continue
+        if path.is_symlink():
+            raise ValueError(f"Project inventory contains a link: {relative}")
+        if path.is_file():
+            entries.append({"path": relative.as_posix(), "bytes": path.stat().st_size, "sha256": sha256(path)})
+    entries.sort(key=lambda item: item["path"])
+    return entries
+
+
+def _inventory_hash(entries: list[dict]) -> str:
+    return hashlib.sha256(json.dumps(entries, ensure_ascii=True,
+                                     separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+NATIVE_INSTALL_OUTPUTS = {"native/kernel/" + name for name in (
+    ".gdignore", "LICENSE.godot-cpp.md", "libopenrc_native_kernel.so", "openrc_native_kernel.dll", "libopenrc_native_kernel.dylib",
+    "openrc_native_kernel.gdextension", "openrc_native_kernel_windows.gdextension", "openrc_native_kernel_macos.gdextension",
+    "build-receipt.json", "build-receipt-windows.json", "build-receipt-macos.json", "package.json", "package-macos.json")}
+
+
+def _prepared_source_inventory(canonical: list[dict], source: dict) -> list[dict]:
+    """Installation outputs may advance in the canonical app; the executed copy stays frozen."""
+    if "native_kernel_inventory" not in source:
+        return canonical  # Historical receipts retain their original, stricter comparison.
+    retained = source["native_kernel_inventory"]
+    if not isinstance(retained, list) or len(retained) > 4096:
+        raise ValueError("Malformed prepared native-kernel inventory")
+    paths = []
+    for item in retained:
+        if (not isinstance(item, dict) or set(item) != {"path", "bytes", "sha256"}
+                or not isinstance(item["path"], str) or not item["path"].startswith("native/kernel/")
+                or "\\" in item["path"] or any(part in {"", ".", ".."} for part in item["path"].split("/"))
+                or type(item["bytes"]) is not int or item["bytes"] < 0
+                or not isinstance(item["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", item["sha256"])):
+            raise ValueError("Malformed prepared native-kernel inventory entry")
+        paths.append(item["path"])
+    if paths != sorted(set(paths)):
+        raise ValueError("Repeated or unordered prepared native-kernel inventory")
+    # The original full preparation hash still proves every retained entry. No
+    # target file is omitted: the prepared copy must contain exactly its original
+    # native artifacts, and its complete execution inventory is checked on both sides.
+    return sorted([item for item in canonical if item["path"] not in NATIVE_INSTALL_OUTPUTS]
+                  + [item for item in retained if item["path"] in NATIVE_INSTALL_OUTPUTS], key=lambda item: item["path"])
+
+
+def validate_project(project: Path) -> dict:
+    """An isolated run may change only the existing research tool's two settings."""
+    if project == (ROOT / "app").resolve():
+        return {}
+    receipt = json.loads((project.parent / "research-preparation.json").read_text(encoding="utf-8"))
+    if not isinstance(receipt, dict) or not isinstance(receipt.get("destination"), dict):
+        raise ValueError("Malformed research preparation receipt")
+    destination = receipt.get("destination", {})
+    name = destination.get("project_name", "")
+    if (receipt.get("format") != "openrc-graphics-research-preparation v1"
+            or receipt.get("complete") is not True
+            or Path(destination.get("app", "")).resolve() != project
+            or not re.fullmatch(r"OpenRC-Research-[0-9a-f]{32}", name)):
+        raise ValueError("Project is not an identified isolated research preparation")
+    original = (ROOT / "app/project.godot").read_bytes()
+    name_line = b'config/name="OpenRC Simulator"'
+    if original.count(name_line) != 1:
+        raise ValueError("Canonical project name changed")
+    expected = original.replace(name_line, f'config/name="{name}"'.encode(), 1)
+    expected = expected.replace(b"lights_and_shadows/multi_bounce_occlusion/enabled=true",
+                                b"lights_and_shadows/multi_bounce_occlusion/enabled=false", 1)
+    actual = (project / "project.godot").read_bytes()
+    if (actual != expected or sha256(project / "project.godot") != destination.get("project_sha256")
+            or any((project / name).exists() for name in ("override.cfg", "project.binary"))):
+        raise ValueError("Isolated project settings differ from the verified research edits")
+    canonical = _project_inventory(ROOT / "app")
+    source = receipt.get("source", {})
+    if not isinstance(source, dict):
+        raise ValueError("Malformed preparation source identity")
+    canonical = _prepared_source_inventory(canonical, source)
+    if _inventory_hash(canonical) != source.get("copied_app_manifest_sha256"):
+        raise ValueError("Canonical app changed since isolated research preparation")
+    # Importers can regenerate UID/import descriptors. Their imported outputs
+    # live in .godot and remain outside this source/content comparison; all
+    # executed code, fixtures, scenes, data and asset payloads must still match.
+    generated = {".uid", ".import"}
+    expected_entries = []
+    for item in canonical:
+        if Path(item["path"]).suffix in generated:
+            continue
+        item = dict(item)
+        if item["path"] == "project.godot":
+            item.update(bytes=len(expected), sha256=hashlib.sha256(expected).hexdigest())
+        expected_entries.append(item)
+    observed = [item for item in _project_inventory(project) if Path(item["path"]).suffix not in generated]
+    if expected_entries != observed:
+        raise ValueError("Isolated project content differs from its prepared canonical app")
+    return {"canonical_manifest_sha256": _inventory_hash(canonical),
+            "executed_project_content_sha256": _inventory_hash(observed),
+            "checked_files": len(observed), "excluded_generated_suffixes": sorted(generated),
+            "canonical_native_artifacts_from_preparation": "native_kernel_inventory" in source}
+
+
+def project_file(path: Path, project: Path) -> Path:
+    """Keep logical repository keys while hashing the files actually executed."""
+    app = ROOT / "app"
+    return project / path.relative_to(app) if path.is_relative_to(app) else path
 
 
 def validate_options(script: str, options: list[str]) -> None:
@@ -113,6 +262,10 @@ def main() -> int:
     parser.add_argument("--timeout", type=float, default=1800)
     parser.add_argument("--mutant", action="store_true", help="run the negative-control library; expect failure")
     parser.add_argument("--godot", type=Path, default=GODOT)
+    parser.add_argument("--project", type=Path, default=ROOT / "app",
+                        help="canonical app or a verified isolated research preparation")
+    parser.add_argument("--experimental-native-macos", action="store_true",
+                        help="explicitly opt fixed-wing research sessions into qualified Mac source admission")
     parser.add_argument("--app-library", action="store_true",
                         help="use the installed res://native/kernel library (build.py --install-app) instead of tmp/")
     parser.add_argument("--render", type=Path, help="only render tables from an existing results JSON")
@@ -128,12 +281,21 @@ def main() -> int:
     if args.render:
         print(render(json.loads(args.render.read_text(encoding="utf-8"))))
         return 0
+    if not PLATFORM_KEY:
+        parser.error("This process has no supported native oracle target")
+    project = args.project.expanduser().resolve()
+    try:
+        project_identity_before = validate_project(project)
+    except (OSError, ValueError, TypeError) as error:
+        parser.error(str(error))
     variant = "_mutant" if args.mutant else ""
     descriptor = TOOL_ROOT / f"openrc_native_kernel{variant}.gdextension"
-    # NK-4: the Windows installation keeps its own descriptor and receipt beside the Linux ones.
-    app_suffix = "_windows" if sys.platform == "win32" else ""
-    app_descriptor = ROOT / f"app/native/kernel/openrc_native_kernel{app_suffix}.gdextension"
-    app_receipt = ROOT / ("app/native/kernel/build-receipt-windows.json" if app_suffix else "app/native/kernel/build-receipt.json")
+    # Each platform has a distinct manual descriptor/receipt beside the Linux installation.
+    platform_name = PLATFORM_KEY.split(".", 1)[0]
+    app_suffix = "" if platform_name == "linux" else "_" + platform_name
+    app_descriptor = project / f"native/kernel/openrc_native_kernel{app_suffix}.gdextension"
+    receipt_suffix = "" if platform_name == "linux" else "-" + platform_name
+    app_receipt = project / f"native/kernel/build-receipt{receipt_suffix}.json"
     if args.app_library:
         if args.mutant:
             parser.error("--app-library never holds the mutant")
@@ -143,11 +305,11 @@ def main() -> int:
     elif not descriptor.is_file():
         raise SystemExit(f"Missing {descriptor}; run build.py{' --mutant' if args.mutant else ''} first.")
     descriptor_file = app_descriptor if args.app_library else descriptor
-    binary = selected_binary(descriptor_file)
+    binary = selected_binary(descriptor_file, project)
     receipt_path = app_receipt if args.app_library else TOOL_ROOT / f"build-receipt{variant}.json"
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if args.app_library:
-        receipt = receipt["platforms"]["windows" if app_suffix else "linux"]
+        receipt = receipt["platforms"][platform_name]
     binary_before = sha256(binary)
     engine_before = sha256(args.godot)
     # NK-4: on Windows the console wrapper starts the sibling GUI executable, which is the engine that runs the
@@ -155,10 +317,12 @@ def main() -> int:
     engine_executable = args.godot.with_name(args.godot.name.replace("_console.exe", ".exe")) \
         if args.godot.name.endswith("_console.exe") else args.godot
     engine_executable_before = sha256(engine_executable)
+    if platform_name == "macos" and not macos_engine_matches(receipt, engine_executable_before):
+        raise SystemExit("Mac oracle requires the exact ARM64 Godot executable bound by the build receipt.")
     if binary_before != receipt["binary_sha256"]:
         raise SystemExit("The descriptor's binary differs from its build receipt; rebuild/reinstall first.")
     paths = reference_source_paths()
-    reference_sources_before = {name: sha256(ROOT / name) for name in paths}
+    reference_sources_before = {name: sha256(project_file(ROOT / name, project)) for name in paths}
     built_sources = receipt.get("reference_sources_sha256", receipt.get("mirrored_sources", {}))
     if reference_sources_before != built_sources:
         raise SystemExit("Current mirrored sources differ from the selected build receipt; rebuild/reinstall first.")
@@ -177,7 +341,9 @@ def main() -> int:
     if args.script == "electric_stage_oracle.gd":
         harness_paths += [HERE / "electric_oracle.gd"]
     harness_paths += [ROOT / "app/sim/native_stage.gd", ROOT / "tools/godot/run_checked.py"]
-    harness_sources = {str(path.relative_to(ROOT)): sha256(path) for path in harness_paths}
+    if platform_name == "macos":
+        harness_paths.append(HERE / "build_macos.py")
+    harness_sources = {str(path.relative_to(ROOT)): sha256(project_file(path, project)) for path in harness_paths}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     stem = {"oracle.gd": "results", "stage_oracle.gd": "stage", "trajectory.gd": "trajectory",
             "fleet.gd": "fleet", "propeller_oracle.gd": "propeller",
@@ -193,9 +359,11 @@ def main() -> int:
     check_directory = Path(tempfile.mkdtemp(prefix=f"{stem}{variant}-", dir=checks))
     command = [sys.executable, str(ROOT / "tools/godot/run_checked.py"), "--out-dir", str(check_directory),
                "--label", f"nk3-{stem}{variant}", "--timeout", str(args.timeout), "--require-text", marker, "--",
-               str(args.godot), "--headless", "--path", str(ROOT / "app"), "--script", str(HERE / args.script), "--",
+               str(args.godot), "--headless", "--path", str(project), "--audio-driver", "Dummy",
+               "--script", str(HERE / args.script), "--",
                f"--extension={descriptor}", f"--output={output}", f"--seed={args.seed}", f"--states={args.states}",
                f"--variant-states={args.variant_states}", f"--timing-rounds={args.timing_rounds}",
+               f"--experimental-native-macos={'true' if args.experimental_native_macos else 'false'}",
                *[f"--{option}" for option in args.option]]
     completed = subprocess.run(command, cwd=ROOT)
     if not output.is_file():
@@ -212,15 +380,23 @@ def main() -> int:
     results["engine_executable_sha256_after"] = sha256(engine_executable)
     results["harness_sources"] = harness_sources
     results["reference_sources_before"] = reference_sources_before
-    results["reference_sources_after"] = {name: sha256(ROOT / name) for name in paths}
-    results["sources_after"] = {name: sha256(ROOT / "app" / name.removeprefix("res://"))
-                                for name in results["sources"]}
     results["checked_run"] = checked
+    results["project"] = str(project)
+    results["project_inventory_before"] = project_identity_before
+    results["reference_sources_after"] = {
+        name: sha256(project_file(ROOT / name, project)) for name in paths}
+    results["sources_after"] = {name: sha256(project / name.removeprefix("res://"))
+                                for name in results["sources"]}
     unchanged = (results["binary_sha256_after"] == binary_before and results["engine_sha256_after"] == engine_before
                  and results["engine_executable_sha256_after"] == engine_executable_before
                  and results["sources_after"] == results["sources"]
                  and results["reference_sources_after"] == reference_sources_before
-                 and all(sha256(ROOT / name) == digest for name, digest in harness_sources.items()))
+                 and all(sha256(project_file(ROOT / name, project)) == digest for name, digest in harness_sources.items()))
+    try:
+        results["project_inventory_after"] = validate_project(project)
+        unchanged = unchanged and results["project_inventory_after"] == project_identity_before
+    except (OSError, ValueError, TypeError):
+        unchanged = False
     run_ok = checked_run_matches(checked, args.mutant) and completed.returncode == (1 if args.mutant else 0)
     results["run_valid"] = unchanged and run_ok
     output.write_text(json.dumps(results, indent=1, sort_keys=True) + "\n", encoding="utf-8")

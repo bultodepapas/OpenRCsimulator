@@ -4,11 +4,16 @@
 
 **Repository assessed:** `0cdb3cfd2cb4fca6d71cf508555501c153e15f37`; working tree initially clean.
 
-**Status:** implementation specification with bounded M1 primitive experiments in section 3.9; no production native-evaluator implementation or qualification.
+**Status:** experimental implementation and bounded M1 assessment completed; production qualification deferred. The scalar ARM64 builder, guarded fixed-wing admission, distinct native package/replay identity and real M1 evidence are recorded in [DT-MAC-04n1](docs/research/native-kernel/DT-MAC-04n1/README.md). Ordinary Mac launches retain reference. The source screen found 45.5–55.9% less callback CPU in two completed cases; 42 fleet rows, required CI, distribution trust and product-performance promotion remain open.
 
 **Owners:** DT/PT for Mac delivery and measurement; SF/NK/FL for evaluator semantics, admission and replay; each vehicle owner retains its validation gates.
 
 This document supplies the detailed feasibility assessment and implementation specification for **DT-MAC-04n1–04n4** in [the Apple Silicon master plan, phase 10](docs/plans/apple-silicon-performance.md#13-phase-10--conditional-nk-3-arm64-project). The master plan remains authoritative for cross-track priority, current status and promotion. [STACK](docs/STACK.md#boundaries-and-data-flow), [SF-08](docs/research/simulation-foundation/README.md#6-backend-policy-sf-08) and the [native evaluator guide](research/native-kernel/README.md) remain authoritative contracts. This investigation neither changes those policies nor records an adopted implementation decision.
+
+Sections 1–7 retain the dated preimplementation assessment and proposal. Their
+statements about then-missing Mac support and measurements describe that source
+pin. The current implementation record linked above owns observed progress and
+limitations; unchecked items below remain required before their stated adoption.
 
 ## 1. Executive summary
 
@@ -307,7 +312,7 @@ Public notarized distribution requires the appropriate Developer ID signing and 
 
 ## 7. Detailed phased implementation roadmap
 
-All implementation phases below remain **pending**. Section 3.9 supplies partial primitive evidence, not a completed phase. The six phases expand the existing four DT-MAC native substeps; they do not create a new track. Estimates are person-days for experienced engineers with access to the required hardware, excluding procurement and prolonged external service delays.
+The phases below are the required scope, not completed milestones. [DT-MAC-04n1 implementation evidence](docs/research/native-kernel/DT-MAC-04n1/README.md) records the first scalar build and exact component/stage results; admission, broad qualification and delivery remain in progress. The six phases expand the existing four DT-MAC native substeps; they do not create a new track. Estimates are person-days for experienced engineers with access to the required hardware, excluding procurement and prolonged external service delays.
 
 ### Phase 1 — Research and baseline
 
@@ -610,17 +615,18 @@ Keep Metal focused on the existing rendering pipeline. NEON and Accelerate are o
 
 ## 15. Actionable engineering task checklist
 
-All boxes below denote future implementation work. Completion of this planning document does not complete them.
+Checked boxes identify completed scoped work in the dated evidence. Unchecked
+requirements remain open; partial implementation does not satisfy their full gate.
 
 - [ ] **Baseline / DT/PT:** freeze current checkout, engine, data, harness, hardware/tool and display identities; isolate the host/settings and reserve ownership.
 - [ ] **Baseline / SF/NK:** run reference complete-session and live attribution; retain raw distributions, observer controls and Gate P statistic definition.
 - [ ] **Entry decision / SF/NK:** demonstrate optimized target budget miss and evaluator cause, or record deferral.
-- [ ] **DT-MAC-04n1:** pin Apple Clang/SDK/deployment target and verify locked bindings/API without dependency upgrades.
-- [ ] **DT-MAC-04n1:** characterize ARM64 math/literals/NaNs/subnormals/libm and FP control state against the exact native engine.
-- [ ] **DT-MAC-04n1:** compile one isolated existing stage, prove numerical mutation detection and stop if exactness is infeasible.
-- [ ] **DT-MAC-04n2:** extend current builder/runner/devtools for dylib/Mach-O/dSYM and fresh target-bound receipts.
+- [x] **DT-MAC-04n1:** pin Apple Clang/SDK/deployment target and verify locked bindings/API without dependency upgrades.
+- [x] **DT-MAC-04n1:** characterize ARM64 math/literals/quiet NaNs/subnormals/libm and FP control state against the exact native engine; signaling NaNs/FPSR are outside the observed scope.
+- [x] **DT-MAC-04n1:** compile the existing stage and prove numerical mutation detection; the current same-host corpus is exact.
+- [x] **DT-MAC-04n2:** extend current builder/runner/devtools for dylib/Mach-O/dSYM and fresh target-bound receipts; source10 exercised the actual M1 route.
 - [ ] **DT-MAC-04n2:** qualify shared scalar laws and context/result ownership; retain x86 behavior.
-- [ ] **DT-MAC-04n2:** execute ≥10,000 malformed-inclusive stage comparisons and full applicable trajectory/family prerequisite tapes.
+- [x] **DT-MAC-04n2:** execute ≥10,000 malformed-inclusive stage comparisons and full applicable trajectory/family prerequisite tapes; source10's 17 applicable positive oracles passed exactly.
 - [ ] **DT-MAC-04n3:** extend guarded Mac admission and enforce the actual qualified capability/domain surface.
 - [ ] **DT-MAC-04n3:** verify reset/reload/restore/recording identity, absence/corruption/wrong-slice/staleness and no midflight solver change.
 - [ ] **DT-MAC-04n3:** complete current-source fleet accounting and actual native coverage; retain refusals and terminals distinctly.
@@ -630,7 +636,7 @@ All boxes below denote future implementation work. Completion of this planning d
 - [ ] **DT-MAC-04n4 / DT:** prepare signed final package/receipt, qualify ARM64 and Intel/Rosetta reference behavior, and test downloaded quarantine/sidecar access.
 - [ ] **DT-MAC-04n4 / FL:** prove exact backend-pinned replay and complete, marked candidate replay on the same tape.
 - [ ] **DT-MAC-04n4 / PT/VQ:** retain actual 1080p-first product pacing/memory/thermal evidence; leave unavailable display/energy gates explicitly open.
-- [ ] **Promotion / owners:** adopt or defer based on measured criteria, update canonical docs/decision, retain rollback artifacts and assign maintenance/requalification ownership.
+- [x] **Promotion / owners:** retain the explicit experiment and defer automatic admission/production delivery; the dated assessment records measured criteria, rollback artifacts, owners and remaining requalification gates. This decision does not complete the unchecked production work.
 - [ ] **I01–I04 / SF/NK:** extend existing numerical oracles with FMA/FP controls, threshold neighbors and quiet-NaN/zero helper mutations; freeze legal short-vector/stride/alias cases for any SIMD/library optimization actually attempted.
 - [ ] **I05–I08 / PT/DT/NK:** freeze inclusive timing, A/A/observer/sample-cap design, actual tool/thermal/energy channels and ownership/lifecycle controls.
 - [ ] **I09–I10 / GDU/DT/NK:** prove binding precision, floor/slices/dependencies, signed-host loading and receipt accessibility early; sign/qualify the dylib before its embedded native receipt, then sign/notarize/staple the app before the final external bundle receipt.

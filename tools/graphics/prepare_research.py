@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import hashlib
 import json
 import os
@@ -27,6 +28,10 @@ _EXCLUDED_ANY = {".godot", ".tools", "__pycache__"}
 _NAME_LINE = b'config/name="OpenRC Simulator"'
 _MULTI_BOUNCE_ON = b"lights_and_shadows/multi_bounce_occlusion/enabled=true"
 _MULTI_BOUNCE_OFF = b"lights_and_shadows/multi_bounce_occlusion/enabled=false"
+# <sys/clonefile.h>: clone a symlink itself rather than its target, and do not
+# preserve source ownership when run with elevated privileges.
+_CLONE_NOFOLLOW = 0x0001
+_CLONE_NOOWNERCOPY = 0x0002
 
 
 class PreparationError(ValueError):
@@ -46,6 +51,30 @@ def _is_link(path: Path) -> bool:
         return True
     attributes = getattr(path.lstat(), "st_file_attributes", 0)
     return bool(attributes & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
+
+
+def _macos_clonefile():
+    """Load the exclusive clone syscall; unlike cp -c, it cannot fall back to a copy."""
+    if sys.platform != "darwin":
+        raise PreparationError("clone copy mode requires macOS")
+    try:
+        import ctypes  # Standard-library FFI is needed only by the opt-in clone mode.
+        library = ctypes.CDLL(None, use_errno=True)
+        function = library.clonefile
+        function.argtypes = (ctypes.c_char_p, ctypes.c_char_p, ctypes.c_uint32)
+        function.restype = ctypes.c_int
+    except (ImportError, OSError, AttributeError) as error:
+        raise PreparationError(f"macOS clonefile is unavailable: {error}") from error
+
+    def clone(source: Path, destination: Path) -> None:
+        ctypes.set_errno(0)
+        if library.clonefile(os.fsencode(source), os.fsencode(destination),
+                             _CLONE_NOFOLLOW | _CLONE_NOOWNERCOPY) != 0:
+            code = ctypes.get_errno() or errno.EIO
+            raise OSError(code, f"clonefile failed; copy fallback is disabled: {os.strerror(code)}",
+                          str(source), None, str(destination))
+
+    return clone
 
 
 def _inside(path: Path, parent: Path) -> bool:
@@ -105,8 +134,11 @@ def _preflight(source: Path, destination: Path) -> tuple[Path, Path, bytes]:
     return source_app, source_assets, original
 
 
-def prepare(source: Path, destination: Path) -> dict:
+def prepare(source: Path, destination: Path, *, copy_mode: str = "copy") -> dict:
     """Create an exclusive copy, validate it, and publish the receipt last."""
+    if copy_mode not in ("copy", "clone"):
+        raise PreparationError(f"unsupported copy mode: {copy_mode}")
+    clone = _macos_clonefile() if copy_mode == "clone" else None
     try:
         source = source.expanduser().resolve()
         raw_destination = destination.expanduser()
@@ -150,7 +182,17 @@ def prepare(source: Path, destination: Path) -> dict:
             if not stat.S_ISREG(source_file.stat().st_mode):
                 raise PreparationError(f"source app contains a non-regular file: {source_file}")
             before = _sha256(source_file)
-            shutil.copy2(source_file, copied_file)
+            if clone is None:
+                shutil.copy2(source_file, copied_file)
+            else:
+                if _is_link(source_file):
+                    raise PreparationError(f"source app contains a link; refusing to clone it: {source_file}")
+                clone(source_file, copied_file)
+                if _is_link(copied_file) or not stat.S_ISREG(copied_file.lstat().st_mode):
+                    raise PreparationError(f"clone is not a regular file: {copied_file}")
+                if _is_link(source_file):
+                    raise PreparationError(f"source became a link while cloning: {source_file}")
+                shutil.copystat(source_file, copied_file, follow_symlinks=False)
             after = _sha256(source_file)
             copied = _sha256(copied_file)
             if before != after or before != copied:
@@ -211,10 +253,12 @@ def prepare(source: Path, destination: Path) -> dict:
         destination_manifest = json.dumps(verified_copy, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
         destination_manifest_sha256 = hashlib.sha256(destination_manifest).hexdigest()
         receipt = {
-            "format": FORMAT, "complete": True,
+            "format": FORMAT, "complete": True, "copy_mode": copy_mode,
             "source": {"root": str(source), "app": str(source_app), "git": source_git,
                        "project_sha256": hashlib.sha256(original_project).hexdigest(),
                        "copied_app_manifest_sha256": manifest_sha256,
+                       "native_kernel_inventory": [dict(item) for item in entries
+                                                   if item["path"].startswith("native/kernel/")],
                        "copied_files": len(entries), "copied_bytes": sum(item["bytes"] for item in entries),
                        "excluded_top_level": sorted(_EXCLUDED_TOP), "excluded_anywhere": sorted(_EXCLUDED_ANY)},
             "destination": {"root": str(destination), "app": str(copied_app),
@@ -249,9 +293,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=launch.REPO_ROOT, help="source repository (default: this checkout)")
     parser.add_argument("--dest", type=Path, required=True, help="new destination directory; never overwritten")
+    parser.add_argument("--copy-mode", choices=("copy", "clone"), default="copy",
+                        help="copy files (default) or require macOS copy-on-write clones without fallback")
     options = parser.parse_args(argv)
     try:
-        receipt = prepare(options.source, options.dest)
+        receipt = prepare(options.source, options.dest, copy_mode=options.copy_mode)
     except PreparationError as error:
         print(f"Research preparation failed: {error}", file=sys.stderr)
         return 1

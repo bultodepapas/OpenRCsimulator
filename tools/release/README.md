@@ -83,6 +83,54 @@ strict signature verification, the packaged session probe and exact flight repla
 The complete release pipeline and downloaded/quarantined launch remain open in the
 [Apple Silicon plan](../../docs/plans/apple-silicon-performance.md#dt-mac-02h--reference-release-identity-independent-of-nk-3).
 
+## Experimental native Mac bundle identity (DT-MAC-04n3)
+
+The native experiment retains the reference receipt above and adds a separate
+`.openrc-native-receipt`. Its `macos-arm64-native-bundle-v1` identity binds that
+reference receipt, the embedded `package-macos.json`, the descriptor at
+`Contents/Resources/openrc_native_kernel_macos.gdextension` and the signed ARM64
+dylib at `Contents/Frameworks/libopenrc_native_kernel.dylib`. The descriptor uses
+`../Frameworks/libopenrc_native_kernel.dylib`. A reference flight still uses
+`macos-reference-bundle-v1`. The fixed packaged diagnostics are session cost,
+native stage, lifecycle and replay; helicopter diagnostics are outside this scope.
+
+On the frozen Mac source and verified installation, `package.py prepare-macos`
+revalidates the exact oracle reports cited by its installed receipt. Export with
+`OPENRC_EXPERIMENTAL_NATIVE_MACOS_PACKAGE=1`, then use `package.py stage-macos`
+before signing the outer app. Preserve the qualified dylib bytes. Capture source
+inputs before export; finish signing/notarization/stapling before writing either
+external receipt. The [native guide](../../research/native-kernel/README.md#experimental-macos-arm64)
+owns build and admission prerequisites.
+
+`macos_reference_receipt.py finalize-native` / `verify-native` operate on a final
+extracted bundle. `package-native-zip` / `verify-native-zip` handle the separately
+versioned ZIP containing both sibling receipts. They refuse altered artifacts,
+unsafe paths and incorrect slices. Runtime independently checks the actual
+PCK-embedded manifest and diagnostics before loading the dylib. Missing or
+changed evidence cannot establish exact native replay.
+
+For a Developer ID candidate, separately audit the final ARM64 host and dylib
+before trusting a same-team loading claim:
+
+```sh
+python3 tools/release/macos_reference_receipt.py verify-native-signing \
+  "/path/to/OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator" \
+  --team-id "$TEAM_ID" --dylib-certificate-sha1 "$CERT_SHA1"
+```
+
+This macOS-only audit requires actual Developer ID Application signatures, the
+same Team ID, the pinned dylib certificate and Hardened Runtime. It rejects
+library-validation disabling and either `get-task-allow` entitlement. The receipt
+readers remain integrity checks. The signing audit does not check secure
+timestamps, notarization or quarantine, and never substitutes for executing the
+exact signed package. The builder separately requires a secure timestamp for its
+Developer ID dylib; the app's timestamp and distribution gates remain required.
+
+This is an experimental artifact contract. The existing reference ZIP verifier
+and public six-file release manifest retain their original scope. Ad-hoc signing
+and portable fixtures do not establish Developer ID, notarization, quarantine,
+Intel/Rosetta, display or performance qualification.
+
 ## Static Linux inspection
 
 ```sh

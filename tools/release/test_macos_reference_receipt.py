@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 from pathlib import Path
+import plistlib
 import stat
 import struct
 import subprocess
@@ -110,6 +112,296 @@ class ReceiptTests(unittest.TestCase):
         self.assertEqual(identity["sha256"], receipt.verify_for_launch(self.exe)["identities"]["arm64"])
         self.assertFalse(self.receipt.is_relative_to(self.bundle))
 
+    def _signing_fixture(self):
+        library = self.bundle / receipt.NATIVE_LIBRARY
+        descriptor = self.bundle / receipt.NATIVE_DESCRIPTOR
+        notice = self.bundle / receipt.NATIVE_LICENSE
+        library.write_bytes(struct.pack("<II", 0xFEEDFACF, 0x0100000C) + bytes(56))
+        descriptor.write_bytes(receipt.NATIVE_DESCRIPTOR_TEXT.encode())
+        notice.write_bytes(b"fixture dependency licence\n")
+        self.receipt.unlink()
+        with patch.object(receipt, "_source_snapshot", return_value=self.source):
+            self.receipt = receipt.create(self.bundle, self.snapshot, self.root)
+        files = receipt._files(self.bundle)
+        reference = receipt.verify(self.exe, "arm64")
+        native = self.bundle.with_name(self.bundle.name + receipt.NATIVE_SUFFIX)
+        native.write_bytes(receipt._native_receipt_bytes(self.bundle.name, reference["receipt_sha256"], "f" * 64, files))
+        return library
+
+    def _mock_codesign(self, *, app_team="ABCDE12345", library_team="ABCDE12345", flags="0x10000",
+                       entitlement=None, diagnostics=b"", adhoc=False, on_entitlements=None):
+        def run(command, *, check, capture_output, timeout):
+            self.assertEqual(command[0], "/usr/bin/codesign")
+            self.assertTrue(check and capture_output)
+            self.assertEqual(timeout, 120)
+            self.assertEqual(command[command.index("--arch") + 1], "arm64")
+            is_library = command[-1] == str(self.bundle / receipt.NATIVE_LIBRARY)
+            if "--verify" in command:
+                self.assertIn("--strict", command)
+                requirement = command[command.index("-R") + 1]
+                self.assertIn('certificate leaf[subject.OU] = "ABCDE12345"', requirement)
+                self.assertIn("anchor apple generic", requirement)
+                self.assertIn("1.2.840.113635.100.6.1.13", requirement)
+                self.assertIn("1.2.840.113635.100.6.2.6", requirement)
+                self.assertEqual('certificate leaf = H"' + "A" * 40 + '"' in requirement, is_library)
+                if adhoc and is_library:
+                    raise subprocess.CalledProcessError(1, command)
+                return subprocess.CompletedProcess(command, 0, stdout=b"", stderr=b"")
+            if "--entitlements" in command:
+                self.assertIn("--xml", command)
+                if on_entitlements:
+                    on_entitlements()
+                return subprocess.CompletedProcess(command, 0, stdout=entitlement or b"", stderr=diagnostics)
+            team = library_team if is_library else app_team
+            name = "Library" if is_library else "App"
+            data = (f"Executable=/fixture/{name}\nCodeDirectory v=20500 size=100 flags={flags}(runtime)\n"
+                    f"Authority=Developer ID Application: {name} ({team})\n"
+                    f"Authority=Developer ID Certification Authority\nTeamIdentifier={team}\n").encode()
+            return subprocess.CompletedProcess(command, 0, stdout=b"", stderr=data)
+        return run
+
+    def test_native_signing_accepts_matching_team_and_absent_or_false_exception(self):
+        self._signing_fixture()
+        for entitlements, expected in ((b"", "absent"), (plistlib.dumps({}), "absent"),
+                                       (plistlib.dumps({"com.apple.security.cs.disable-library-validation": False}), "false")):
+            with self.subTest(expected=expected, length=len(entitlements)), \
+                    patch.object(receipt.sys, "platform", "darwin"), \
+                    patch.object(receipt.subprocess, "run", side_effect=self._mock_codesign(entitlement=entitlements)) as run:
+                result = receipt.verify_native_signing(self.exe, "ABCDE12345", "a" * 40)
+                self.assertEqual(result["native_identity"]["kind"], receipt.NATIVE_KIND)
+                self.assertFalse(result["disable_library_validation"])
+                self.assertEqual(result["disable_library_validation_present"], expected == "false")
+                self.assertEqual(result["dylib_certificate_sha1"], "A" * 40)
+                self.assertTrue(result["app_hardened_runtime"])
+                self.assertFalse(result["get_task_allow"])
+                self.assertEqual(result["get_task_allow_keys_present"], [])
+                self.assertFalse(result["secure_timestamp_checked"])
+                self.assertFalse(result["notarization_checked"])
+                self.assertFalse(result["quarantine_checked"])
+                self.assertEqual(run.call_count, 5)
+
+    def test_native_signing_refuses_wrong_team_adhoc_and_missing_runtime(self):
+        self._signing_fixture()
+        for kwargs in ({"library_team": "FGHIJ67890"}, {"app_team": "FGHIJ67890"},
+                       {"adhoc": True}, {"flags": "0x0"}):
+            with self.subTest(kwargs=kwargs), patch.object(receipt.sys, "platform", "darwin"), \
+                    patch.object(receipt.subprocess, "run", side_effect=self._mock_codesign(**kwargs)):
+                with self.assertRaises((ValueError, subprocess.CalledProcessError)):
+                    receipt.verify_native_signing(self.exe, "ABCDE12345", "A" * 40)
+
+    def test_native_signing_refuses_malformed_or_ambiguous_signature_metadata(self):
+        valid = (b"CodeDirectory v=20500 flags=0x10000(runtime)\n"
+                 b"Authority=Developer ID Application: Example (ABCDE12345)\n"
+                 b"Authority=Developer ID Certification Authority\nTeamIdentifier=ABCDE12345\n")
+        receipt._signing_metadata(valid, "ABCDE12345", require_runtime=True)
+        for bad in (valid + b"TeamIdentifier=ABCDE12345\n", valid.replace(b" Application:", b" Installer:"),
+                    valid.replace(b"Authority=Developer ID Certification Authority\n", b""),
+                    valid.replace(b"flags=0x10000", b"flags=invalid"), valid + b"warning: malformed\n",
+                    valid + b"\xff"):
+            with self.subTest(data=bad), self.assertRaises(ValueError):
+                receipt._signing_metadata(bad, "ABCDE12345", require_runtime=True)
+
+    def test_native_signing_refuses_enabled_malformed_or_ambiguous_entitlements(self):
+        self._signing_fixture()
+        key = "com.apple.security.cs.disable-library-validation"
+        duplicate = (b'<?xml version="1.0"?><plist version="1.0"><dict><key>' + key.encode()
+                     + b'</key><true/><key>' + key.encode() + b'</key><false/></dict></plist>')
+        cases = ((plistlib.dumps({key: True}), b""), (plistlib.dumps({key: "false"}), b""),
+                 (plistlib.dumps({key: 0}), b""), (plistlib.dumps({}, fmt=plistlib.FMT_BINARY), b""),
+                 (duplicate, b""), (b"<plist>", b""), (b"x" * (1024 * 1024 + 1), b""),
+                 (b"", b"warning: invalid entitlements blob\n"))
+        for entitlement, diagnostics in cases:
+            with self.subTest(data=entitlement[:70], diagnostics=diagnostics), \
+                    patch.object(receipt.sys, "platform", "darwin"), \
+                    patch.object(receipt.subprocess, "run", side_effect=self._mock_codesign(
+                        entitlement=entitlement, diagnostics=diagnostics)):
+                with self.assertRaises(ValueError):
+                    receipt.verify_native_signing(self.exe, "ABCDE12345", "A" * 40)
+
+    def test_native_signing_refuses_both_get_task_allow_spellings_when_enabled_or_not_boolean(self):
+        self._signing_fixture()
+        keys = ("get-task-allow", "com.apple.security.get-task-allow")
+        for key in keys:
+            for value in (True, "false", 0):
+                with self.subTest(key=key, value=value), patch.object(receipt.sys, "platform", "darwin"), \
+                        patch.object(receipt.subprocess, "run", side_effect=self._mock_codesign(
+                            entitlement=plistlib.dumps({key: value}))):
+                    with self.assertRaisesRegex(ValueError, "forbidden or malformed entitlement"):
+                        receipt.verify_native_signing(self.exe, "ABCDE12345", "A" * 40)
+        both_false = plistlib.dumps({key: False for key in keys})
+        with patch.object(receipt.sys, "platform", "darwin"), \
+                patch.object(receipt.subprocess, "run", side_effect=self._mock_codesign(entitlement=both_false)):
+            result = receipt.verify_native_signing(self.exe, "ABCDE12345", "A" * 40)
+            self.assertFalse(result["get_task_allow"])
+            self.assertEqual(result["get_task_allow_keys_present"], list(keys))
+
+    def test_app_entitlement_helper_enforces_its_own_output_bound(self):
+        with self.assertRaisesRegex(ValueError, "oversized"):
+            receipt._audit_app_entitlements(b"x" * (1024 * 1024 + 1), b"")
+        with self.assertRaisesRegex(ValueError, "oversized"):
+            receipt._audit_app_entitlements(b"", b"x" * (1024 * 1024 + 1))
+
+    def test_native_signing_requires_macos_well_formed_pins_and_unchanged_bundle(self):
+        library = self._signing_fixture()
+        with patch.object(receipt.sys, "platform", "win32"), patch.object(receipt.subprocess, "run") as run:
+            with self.assertRaisesRegex(ValueError, "requires macOS"):
+                receipt.verify_native_signing(self.exe, "ABCDE12345", "A" * 40)
+            run.assert_not_called()
+        for team, certificate in (("bad", "A" * 40), ("ABCDE12345", "A" * 39),
+                                  ('ABCDE12345" or true', "A" * 40)):
+            with self.subTest(team=team, certificate=certificate), patch.object(receipt.sys, "platform", "darwin"), \
+                    patch.object(receipt.subprocess, "run") as run:
+                with self.assertRaises(ValueError):
+                    receipt.verify_native_signing(self.exe, team, certificate)
+                run.assert_not_called()
+        original = library.read_bytes()
+        library.write_bytes(b"changed before audit")
+        with patch.object(receipt.sys, "platform", "darwin"), patch.object(receipt.subprocess, "run") as run:
+            with self.assertRaises(ValueError):
+                receipt.verify_native_signing(self.exe, "ABCDE12345", "A" * 40)
+            run.assert_not_called()
+        library.write_bytes(original)
+        with patch.object(receipt.sys, "platform", "darwin"), patch.object(receipt.subprocess, "run",
+                side_effect=self._mock_codesign(on_entitlements=lambda: library.write_bytes(b"changed"))):
+            with self.assertRaises(ValueError):
+                receipt.verify_native_signing(self.exe, "ABCDE12345", "A" * 40)
+
+    def test_native_signing_cli_is_explicit(self):
+        args = ["receipt", "verify-native-signing", str(self.exe), "--team-id", "ABCDE12345",
+                "--dylib-certificate-sha1", "A" * 40]
+        with patch.object(receipt.sys, "argv", args), patch.object(receipt, "verify_native_signing",
+                return_value={"result": "fixture"}) as audit, patch.object(receipt.sys, "stdout", new_callable=io.StringIO):
+            receipt.main()
+            audit.assert_called_once_with(self.exe, "ABCDE12345", "A" * 40)
+
+    def test_native_receipt_binds_reference_manifest_library_and_descriptor(self):
+        library = self.bundle / receipt.NATIVE_LIBRARY
+        descriptor = self.bundle / receipt.NATIVE_DESCRIPTOR
+        license_file = self.bundle / receipt.NATIVE_LICENSE
+        library.write_bytes(struct.pack("<II", 0xFEEDFACF, 0x0100000C) + bytes(56))
+        descriptor.write_bytes(receipt.NATIVE_DESCRIPTOR_TEXT.encode())
+        license_file.write_bytes(b"fixture dependency licence\n")
+        self.receipt.unlink()
+        with patch.object(receipt, "_source_snapshot", return_value=self.source):
+            self.receipt = receipt.create(self.bundle, self.snapshot, self.root)
+        binary = hashlib.sha256(library.read_bytes()).hexdigest()
+        probe = hashlib.sha256(self.probe.read_bytes()).hexdigest()
+        row = {"platform": "macos", "architecture": "arm64", "backend": "native",
+               "backend_version": "openrc-native-kernel-stage-v2", "abi_version": 2,
+               "qualification_scope": receipt.NATIVE_SCOPE, "binary_sha256": binary,
+               "source_sha256": "1" * 64, "lock_sha256": "2" * 64, "engine_sha256": "3" * 64,
+               "engine_version": "fixture", "runtime_os_version": "27.0.1", "runtime_os_build": "26A434",
+               "mirrored_sources": {"app/physics/aero.gd": "4" * 64}, "verification": {"oracle": "fixture"}}
+        manifest = {"format": receipt.NATIVE_MANIFEST_FORMAT, "platform": "macos", "architecture": "arm64",
+                    "engine_version": "fixture", "solver_sha256": "5" * 64,
+                    "license_sha256": hashlib.sha256(license_file.read_bytes()).hexdigest(),
+                    "native_receipt": {"format": "openrc-native-kernel-receipt", "backend": "native",
+                        "backend_version": "openrc-native-kernel-stage-v2", "abi_version": 2,
+                        "platforms": {"macos": row}},
+                    "qualification_sources": {name: probe if name == "session_probe.gd" else "6" * 64
+                                              for name in receipt.NATIVE_DIAGNOSTICS}}
+        manifest_path = self.root / "manifest.json"
+        manifest_path.write_text(json.dumps(manifest))
+        native_receipt = receipt.create_native(self.bundle, manifest_path)
+        identity = receipt.verify_native(self.exe, "arm64")
+        self.assertEqual(identity["kind"], receipt.NATIVE_KIND)
+        self.assertEqual(identity["library_sha256"], binary)
+        self.assertEqual(identity["license_sha256"], manifest["license_sha256"])
+        self.assertEqual(identity["manifest_sha256"], hashlib.sha256(manifest_path.read_bytes()).hexdigest())
+        self.assertNotEqual(identity["sha256"], receipt.verify(self.exe, "arm64")["sha256"])
+        with self.assertRaises(ValueError):
+            receipt.verify_native(self.exe, "x86_64")
+        with self.assertRaises(FileExistsError):
+            receipt.create_native(self.bundle, manifest_path)
+        original = native_receipt.read_bytes()
+        self.assertEqual(len(original.splitlines()), 7)  # Reference/native receipt layout remains unchanged.
+        native_receipt.write_bytes(original + b"duplicate\n")
+        with self.assertRaises(ValueError):
+            receipt.verify_native(self.exe, "arm64")
+        native_receipt.write_bytes(original)
+        for path in (library, descriptor, license_file, self.receipt):
+            before = path.read_bytes()
+            path.write_bytes(before + b"tampered")
+            with self.assertRaises(ValueError):
+                receipt.verify_native(self.exe, "arm64")
+            path.unlink()
+            with self.assertRaises((OSError, ValueError)):
+                receipt.verify_native(self.exe, "arm64")
+            path.write_bytes(before)
+        expected_descriptor = descriptor.read_bytes()
+        old_location = self.bundle / "Contents/Frameworks/openrc_native_kernel_macos.gdextension"
+        for defect in ("old-library-path", "old-descriptor-location"):
+            native_receipt.unlink()
+            if defect == "old-library-path":
+                descriptor.write_bytes(expected_descriptor.replace(b"../Frameworks/", b""))
+            else:
+                descriptor.rename(old_location)
+            self.receipt.unlink()
+            with patch.object(receipt, "_source_snapshot", return_value=self.source):
+                self.receipt = receipt.create(self.bundle, self.snapshot, self.root)
+            self.assertEqual(receipt.verify(self.exe, "arm64")["kind"], receipt.KIND)
+            with self.assertRaises(ValueError):
+                receipt.create_native(self.bundle, manifest_path)
+            if defect == "old-library-path":
+                descriptor.write_bytes(expected_descriptor)
+            else:
+                old_location.rename(descriptor)
+            self.receipt.unlink()
+            with patch.object(receipt, "_source_snapshot", return_value=self.source):
+                self.receipt = receipt.create(self.bundle, self.snapshot, self.root)
+            native_receipt = receipt.create_native(self.bundle, manifest_path)
+            self.assertEqual(receipt.verify_native(self.exe, "arm64")["kind"], receipt.NATIVE_KIND)
+        staged_zip = self.root / "native-staged.zip"
+        with zipfile.ZipFile(staged_zip, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for path in self.bundle.rglob("*"):
+                if path.is_file():
+                    name = self.bundle.name + "/" + path.relative_to(self.bundle).as_posix()
+                    info = zipfile.ZipInfo(name)
+                    info.create_system = 3
+                    info.external_attr = (stat.S_IFREG | (0o755 if "/MacOS/" in name else 0o644)) << 16
+                    info.compress_type = zipfile.ZIP_DEFLATED
+                    archive.writestr(info, path.read_bytes())
+        final_zip = self.root / "native-final.zip"
+        with patch.object(receipt, "_source_snapshot", return_value=self.source):
+            zipped = receipt.package_native_zip(staged_zip, final_zip, self.snapshot, self.root, manifest_path)
+        self.assertEqual(zipped["kind"], receipt.NATIVE_KIND)
+        self.assertEqual(zipped["manifest_sha256"], identity["manifest_sha256"])
+        self.assertEqual(receipt.verify_native_zip(final_zip)["sha256"], zipped["sha256"])
+        with self.assertRaises(ValueError):
+            receipt.verify_zip(final_zip)  # The reference-only contract stays unchanged.
+        rewrite_zip(final_zip, lambda name, data: data + b"tampered" if name.endswith(receipt.NATIVE_SUFFIX) else data)
+        with self.assertRaises(ValueError):
+            receipt.verify_native_zip(final_zip)
+        rewrite_zip(staged_zip, lambda name, data: None if name.endswith("/" + receipt.NATIVE_LICENSE) else data)
+        with patch.object(receipt, "_source_snapshot", return_value=self.source), self.assertRaises(ValueError):
+            receipt.package_native_zip(staged_zip, self.root / "missing-license.zip", self.snapshot, self.root, manifest_path)
+        altered_license = dict(manifest)
+        altered_license["license_sha256"] = "0" * 64
+        manifest_path.write_text(json.dumps(altered_license))
+        native_receipt.unlink()
+        with self.assertRaises(ValueError):
+            receipt.create_native(self.bundle, manifest_path)
+        manifest["native_receipt"]["platforms"]["macos"]["binary_sha256"] = "0" * 64
+        manifest_path.write_text(json.dumps(manifest))
+        with self.assertRaises(ValueError):
+            receipt.create_native(self.bundle, manifest_path)
+        manifest["native_receipt"]["platforms"]["macos"]["binary_sha256"] = binary
+        manifest_path.write_text(json.dumps(manifest))
+        license_file.write_bytes(b"different dependency notice\n")
+        self.receipt.unlink()
+        with patch.object(receipt, "_source_snapshot", return_value=self.source):
+            self.receipt = receipt.create(self.bundle, self.snapshot, self.root)
+        self.assertEqual(receipt.verify(self.exe, "arm64")["kind"], receipt.KIND)
+        with self.assertRaises(ValueError):
+            receipt.create_native(self.bundle, manifest_path)
+        license_file.unlink()
+        self.receipt.unlink()
+        with patch.object(receipt, "_source_snapshot", return_value=self.source):
+            self.receipt = receipt.create(self.bundle, self.snapshot, self.root)
+        self.assertEqual(receipt.verify(self.exe, "arm64")["kind"], receipt.KIND)
+        with self.assertRaises(ValueError):
+            receipt.create_native(self.bundle, manifest_path)
+
     def test_missing_or_changed_bundle_contents_and_receipt_are_refused(self):
         for path in (self.exe, self.pack, self.sidecar, self.signature):
             with self.subTest(path=path):
@@ -152,7 +444,7 @@ class ReceiptTests(unittest.TestCase):
         before = receipt.verify(self.exe, "arm64")["sha256"]
         contents = self.receipt.read_text().replace("source_receipt_sha256\t" + hashlib.sha256(self.snapshot.read_bytes()).hexdigest(),
                                                     "source_receipt_sha256\t" + "d" * 64)
-        self.receipt.write_text(contents)
+        self.receipt.write_bytes(contents.encode("utf-8"))
         self.assertNotEqual(before, receipt.verify(self.exe, "arm64")["sha256"])
         # A receipt proves consistency, not the trustworthiness of its declared origin.
 

@@ -5,6 +5,7 @@ const Flight := preload("res://sim/flight_session.gd")
 const Log := preload("res://sim/flight_log.gd")
 const Reader := preload("res://tools/flight_log_cli.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const NativePackage := preload("res://app_state/native_package.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 
 
@@ -18,6 +19,8 @@ var checks := 0
 var failures := 0
 var _native_exercised := false
 var _finished := false
+var _experimental_native_macos := false
+var _initialization_started := false
 var destination := ""
 var reference_only := false
 
@@ -29,7 +32,13 @@ func check(label: String, passed: bool, detail := "") -> void:
 		printerr("FAIL ", label, " ", detail)
 
 
+func set_experimental_native_macos(enabled: bool) -> void:
+	if not _initialization_started:
+		_experimental_native_macos = enabled
+
+
 func _initialize() -> void:
+	_initialization_started = true
 	Engine.physics_ticks_per_second = 240
 	reference_only = OS.get_cmdline_user_args().has("--reference-only")
 	var output_root := "user://" if OS.has_feature("template_release") else "res://../tmp/"
@@ -40,6 +49,7 @@ func _initialize() -> void:
 
 func flight(mode: String, aircraft_path := STIK) -> Node:
 	var session := Flight.new()
+	session.experimental_native_macos = _experimental_native_macos
 	session.input_enabled = false
 	session.crash_auto_restart = false
 	if session.has_method("setup_stage_backend"):
@@ -67,9 +77,11 @@ func record(session: Node, name: String) -> Dictionary:
 
 
 func exact_replay(header: Dictionary, path: String, label: String) -> void:
-	var replay: Dictionary = Reader.prepare_replay(header)
+	var replay: Dictionary = Reader.prepare_replay(header, "", _experimental_native_macos)
 	check(label + " prepares", replay.get("ok", false), str(replay.get("error", "")))
 	if not replay.get("ok", false): return
+	check(label + " replay receives the explicit Mac admission choice",
+		replay.flight.experimental_native_macos == _experimental_native_macos)
 	var stream := FileAccess.open(path, FileAccess.READ)
 	stream.seek(8)
 	Log.read_packet(stream)
@@ -113,8 +125,9 @@ func inspect_header(header: Dictionary, name: String) -> Dictionary:
 
 
 func changing_backend_stops_log() -> void:
-	for phase: String in ["before-tick", "during-tick"]:
+	for phase: String in ["before-tick", "during-tick", "before-stop"]:
 		var session := BackendIdentityFlight.new()
+		session.experimental_native_macos = _experimental_native_macos
 		session.input_enabled = false
 		session.setup(STIK)
 		var writer := Log.new(session)
@@ -122,6 +135,12 @@ func changing_backend_stops_log() -> void:
 		check(phase + " backend-switch logger starts", writer.start(path) == OK, writer.failure)
 		var changed := {backend = "native", backend_version = "test-stage-v1", abi_version = 1,
 			binary_sha256 = "1".repeat(64), source_sha256 = "2".repeat(64), lock_sha256 = "3".repeat(64)}
+		if phase == "before-stop":
+			session.identity_for_test = changed
+			check("backend switch immediately before stop is refused", writer.stop() != OK and not writer.recording)
+			check("backend switch before stop cannot complete the log", not Reader.inspect(path).ok)
+			session.free()
+			continue
 		if phase == "before-tick":
 			session.identity_for_test = changed
 		else:
@@ -189,6 +208,10 @@ func run_all() -> void:
 	var fake := {backend = "native", backend_version = "test-stage-v1", abi_version = 1,
 		binary_sha256 = "1".repeat(64), source_sha256 = "2".repeat(64), lock_sha256 = "3".repeat(64)}
 	var native_header: Dictionary = header.duplicate(true)
+	if native_header.get("solver_identity_kind") == NativePackage.MAC_IDENTITY_KIND:
+		# This synthetic native wrapper is a candidate-only fixture. A real Mac
+		# reference-kind recording must never claim the native stage.
+		native_header.solver_identity_kind = NativePackage.MAC_NATIVE_IDENTITY_KIND
 	native_header.stage_backend = fake.duplicate(true)
 	native_header.checkpoint.stage_physics_format = native_header.checkpoint.format
 	native_header.checkpoint.format = "openrc-flight-checkpoint v14"
@@ -226,11 +249,13 @@ func run_all() -> void:
 			var actual_header: Dictionary = native_run.inspected.header
 			check("native header identifies the installed binary", actual_header.stage_backend == identity)
 			check("native header and checkpoint agree", Reader.recorded_stage_backend(actual_header).ok)
+			if OS.get_name() == "macOS":
+				check("native replay refuses without explicit Mac opt-in", not Reader.prepare_replay(actual_header).ok)
 			exact_replay(actual_header, native_run.path, "native")
 			var changed: Dictionary = actual_header.duplicate(true)
 			changed.stage_backend.binary_sha256 = "0".repeat(64) if identity.binary_sha256 != "0".repeat(64) else "1".repeat(64)
 			changed.checkpoint.stage_backend = changed.stage_backend.duplicate(true)
-			check("different native binary refuses exact replay", not Reader.prepare_replay(changed).ok)
+			check("different native binary refuses exact replay", not Reader.prepare_replay(changed, "", _experimental_native_macos).ok)
 		catalog_replay()
 	else:
 		print("NK3_NATIVE_REPLAY_SKIP native library unavailable or not yet verified")

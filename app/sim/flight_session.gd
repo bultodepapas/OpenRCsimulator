@@ -726,6 +726,11 @@ const NativeStage := preload("res://sim/native_stage.gd")
 const NATIVE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 
 var _stage_backend_requested := "gdscript_reference"
+## Explicit launch-time Mac research admission; never enabled by the default native request.
+var experimental_native_macos := false:
+	set(enabled):
+		if sim == null and not _reject_reset_publication_reentry():
+			experimental_native_macos = enabled
 var _native_stage: RefCounted = null
 var stage_backend_error := ""
 

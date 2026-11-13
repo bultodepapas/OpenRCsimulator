@@ -161,9 +161,11 @@ The [consolidated Apple technical background, 2026-11-02](../APPLE-SILICON-TECHN
 
 [Apple Silicon comparable projects, 2026-11-12](native-kernel/apple-silicon-comparables-2026-11-12.md) records primary CPU-library, GPU-physics, rendering and energy measurements, their numerical/workload limits and their implications for the conditional native evaluator plan. These are external results, not measured OpenRC Mac gains.
 
-[Twelve investigations reinforcing the native Apple plan, 2026-11-12](native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md) records source-backed findings, concrete plan changes, negative controls and stop conditions for numerics, measurement, ownership, ABI, distribution, replay and CI. It records the completed desk-research stage; subsequent bounded hardware evidence follows below and implementation remains pending.
+[Twelve investigations reinforcing the native Apple plan, 2026-11-12](native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md) records source-backed findings, concrete plan changes, negative controls and stop conditions for numerics, measurement, ownership, ABI, distribution, replay and CI. It records the completed desk-research stage before the subsequent hardware work and implementation below.
 
 [M1 access and isolated numerical experiments, 2026-11-12](native-kernel/apple-silicon-m1-experiments-2026-11-12.md) follows that desk research with successful SSH, checked math tests and a standalone ARM64 build. It records a NaN odd-tail counterexample in disposable NEON/vDSP code, a differing max helper and exploratory timing limits; no native evaluator or product qualification is claimed.
+
+[DT-MAC-04n1 implementation evidence](native-kernel/DT-MAC-04n1/README.md) records the scalar ARM64 port, strict experimental builder, exact numerical corpus, 1,386 verified stock flight cases with 42 open rows, source CPU screen and package controls. The bounded assessment retains explicit experimentation and defers automatic admission and production delivery; full fleet, normal hardened-package and product-performance gates remain open.
 
 ### Roadmap knowledge base (all phases)
 

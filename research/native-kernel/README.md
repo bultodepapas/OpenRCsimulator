@@ -11,6 +11,81 @@ Evidence and timings: [docs/research/native-kernel/NK-3](../../docs/research/nat
 The [promotion record](../../docs/research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29)
 defines the supported Linux scope and separates backend qualification from display and hardware acceptance.
 
+## Experimental macOS ARM64
+
+The scalar Apple Clang port uses the existing evaluator ABI and float64 state.
+It is a fixed-wing experiment, with separate source and package receipts; it is
+not the qualified Linux fleet surface. Ordinary Mac launches retain reference.
+See [DT-MAC implementation evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
+for the exact host, candidate and completed gates.
+
+`build_macos.py` pins Apple Clang/SDK and the existing bindings/API. It checks every
+translation unit, effective strict FP options, Mach-O slice/dependencies/imports,
+dSYM UUID and the selected signature. Build candidate and `--mutant` into a new
+`--tool-root` under `tmp/`. Before `--install-app`, execute the complete applicable
+roster from `verification_roster()` using `run.py` and its declared counts/tapes.
+The installer revalidates the actual reports, checked logs, source, binary and
+engine; an old report or matching fallback cannot qualify a native install.
+
+Ad-hoc signing is the development default. A Developer ID build requires an
+available Developer ID Application certificate selected by its exact SHA-1 and
+Team ID; candidate and mutant must use the same selection:
+
+```sh
+python3 research/native-kernel/build_macos.py --godot "$OPENRC_GODOT" \
+  --tool-root "$FRESH_TOOL_ROOT" --signing-identity "$CERT_SHA1" --team-id "$TEAM_ID"
+# Repeat with --mutant and the same selection, then execute the full oracle roster.
+```
+
+The builder verifies the certificate type, Apple chain, Team ID, leaf fingerprint
+and secure timestamp before recording signed bytes. Re-signing invalidates that
+binary's proofs. The final hardened app must use the same Team ID and normal
+library validation. An ad-hoc dylib can be refused by a normally hardened app;
+the observed local diagnostic entitlement exception does not qualify delivery.
+The [release signing audit](../../tools/release/README.md#experimental-native-mac-bundle-identity-dt-mac-04n3)
+is separate from receipt consistency and actual loader execution remains required.
+
+After a verified installation, opt in per launch:
+
+```sh
+"$OPENRC_GODOT" --path app -- --quick-flight \
+  --aircraft=jensen-das-ugly-stik-60 --physics-backend=native \
+  --experimental-native-macos=true
+```
+
+The choice is frozen before session setup. Intel/Rosetta, helicopter and unknown
+targets do not select this evaluator. Missing, stale or changed artifacts refuse
+admission and retain reference. There is no saved global Mac-native preference.
+
+Use `run.py --project` and `session_baseline.py --project` with a fresh verified
+[research preparation](../../tools/graphics/README.md#isolated-mac-renderer-trials-dt-mac).
+`--experimental-native-macos` on those Python runners forwards the explicit
+boolean to fixed-wing sessions. The preparation records the original native
+inventory: only named canonical installer outputs may subsequently advance;
+every executed copy, ordinary source, fixture and asset remains checked.
+
+For a Mac fleet campaign, additionally pass `--qualification-root` with the
+verified build/oracle directory and `--tool-root` with the separate fleet-report
+directory. The campaign verifies the installed receipt's exact base-oracle
+citation and its FPCR observations in that separate process; fleet shards keep
+their own typed-flight and native-coverage checks. Known open rows require
+`--keep-going` to retain partial evidence and cannot produce a full-fleet pass.
+
+`fpcr_control_probe.py` compiles a disposable FPCR mutant and requires the real
+Godot oracle to detect the changed control and its restoration.
+`macos_diagnostics.py --mode ubsan|asan` uses disposable instrumented libraries
+and positive controls through the same loader. Neither tool modifies the signed
+candidate or engine. Their coverage excludes uninstrumented Godot and prebuilt
+bindings; a host/runtime failure is an unproven diagnostic, never a pass.
+
+Experimental packaging uses `package.py prepare-macos` / `stage-macos` and the
+separate native bundle and ZIP receipt commands in
+[release tools](../../tools/release/README.md). Its identity is
+`macos-arm64-native-bundle-v1`; reference retains `macos-reference-bundle-v1`.
+The public six-file release contract has not adopted the experimental ZIP.
+Developer ID, notarization, downloaded/quarantined launch and product performance
+remain separate target-hardware gates.
+
 ## Qualified aircraft coverage (NK-3)
 
 The owner expanded the goal on 2026-10-28 to every currently simulatable aircraft and supported flight condition

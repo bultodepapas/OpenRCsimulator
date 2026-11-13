@@ -495,6 +495,20 @@ The [twelve-investigation reinforcement, 2026-11-12](../research/native-kernel/a
 
 The subsequent [isolated M1 experiments](../research/native-kernel/apple-silicon-m1-experiments-2026-11-12.md) prove access, a focused math test and standalone compilation, while exposing a NaN odd-tail mismatch in naive NEON/vDSP candidates and substantial short-vector repeat variation. They add lane/tail permutation controls; they do not qualify the native evaluator, close a phase or establish complete-session gains.
 
+**2026-11-13 implementation:** the user selected the experimental port. The
+[dated implementation evidence](../research/native-kernel/DT-MAC-04n1/README.md)
+records the scalar ARM64 builder, guarded fixed-wing source/package routes,
+separate native replay identity and actual M1 checks. Ordinary Mac launches
+remain reference. This testing route can exercise unqualified fixed-wing
+configurations; it is not a promoted or runtime-enforced qualified fleet.
+The bounded M1 assessment verified 1,386 healthy stock fleet cases with 42 rows
+open. Five source pairs per completed case measured 45.5–46.0% less callback CPU
+for Jensen and 55.6–55.9% for ideal-supply Electric 6S; the Extra long case failed.
+These detached source results do not qualify FPS, final packages or sustained
+product behavior. Sanitizer loading, required native CI and distribution trust
+remain open. Automatic admission and production delivery are deferred; historical
+research below is not a claim that the implemented routes are absent.
+
 **Priority/size:** P2/large. **Entry:** M1 reference still misses the relevant budget after justified script/observer work, the evaluator is a material limiter, and SF/NK owners explicitly select a port under existing backend policy. **Benefit:** possible evaluator cost reduction; no extrapolation from Linux ratios. This branch can stay deferred while renderer and diagnostics ship.
 
 ### DT-MAC-04n1 — math/toolchain feasibility, outside app

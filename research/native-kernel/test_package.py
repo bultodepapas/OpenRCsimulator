@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -32,6 +33,7 @@ def load_module(name: str, path: Path):
 
 package = load_module("nk3_package_tests", HERE / "package.py")
 verification_tests = load_module("nk3_package_evidence", HERE / "test_verification.py")
+macos_evidence_tests = load_module("nk3_package_macos_evidence", HERE / "test_build_macos.py")
 builder = package.builder
 
 
@@ -359,6 +361,306 @@ class PackageAdmissionTests(unittest.TestCase):
             expected.update(name.replace("app/", "res://", 1).encode())
             expected.update((self.root / name).read_bytes())
         self.assertEqual(package.solver_identity(), expected.hexdigest())
+
+class MacPackagePortableTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="nk3-mac-package-test-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.install = self.root / "app/native/kernel"
+        self.install.mkdir(parents=True)
+        (self.install / "LICENSE.godot-cpp.md").write_bytes(b"dependency licence")
+        for directory in ("physics", "sim", "failures"):
+            path = self.root / "app" / directory / "fixture.gd"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("fixture")
+        self.editor = self.root / "editor"
+        self.editor.write_bytes(b"editor fixture")
+        self.qualification = {}
+        for name in package.MAC_QUALIFICATION:
+            path = self.root / "diagnostics" / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(name)
+            self.qualification[name] = path
+        for owner, name, value in ((package, "ROOT", self.root), (builder, "APP_DESTINATION", self.install)):
+            mocked = patch.object(owner, name, value)
+            mocked.start()
+            self.addCleanup(mocked.stop)
+
+    def test_mac_staging_binds_prepared_signed_bytes_and_refuses_stale_inputs(self):
+        library = self.install / "libopenrc_native_kernel.dylib"
+        library.write_bytes(b"fixture signed dylib bytes")
+        manifest_path = self.install / "package-macos.json"
+        mac_receipt = {"platforms": {"macos": {"engine_version": "fixture",
+                                               "binary_sha256": package.sha(library)}}}
+        diagnostics = {name: self.qualification[name] for name in
+                       ("session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd")}
+        tool_root = self.root / "tmp/candidate"
+        godot = self.editor
+        bundle = self.root / "OpenRC.app"
+        (bundle / "Contents/Resources").mkdir(parents=True)
+        with patch.object(package, "MAC_MANIFEST", manifest_path), \
+                patch.object(package, "MAC_QUALIFICATION", diagnostics), \
+                patch.object(package, "verified_mac_install", return_value=mac_receipt):
+            prepared = package.prepare_macos(tool_root, godot)
+            self.assertEqual(prepared["manifest_sha256"], package.sha(manifest_path))
+            manifest = json.loads(manifest_path.read_text())
+            installed_license = self.install / "LICENSE.godot-cpp.md"
+            self.assertEqual(manifest["license_sha256"], package.sha(installed_license))
+            with self.assertRaises(FileExistsError):
+                package.prepare_macos(tool_root, godot)
+            staged = package.stage_macos(bundle, tool_root, godot)
+            self.assertEqual(staged["library_sha256"], package.sha(library))
+            self.assertEqual((bundle / "Contents/Frameworks" / library.name).read_bytes(), library.read_bytes())
+            descriptor = bundle / "Contents/Resources/openrc_native_kernel_macos.gdextension"
+            self.assertEqual(descriptor.read_bytes(),
+                             package.MAC_DESCRIPTOR.encode())
+            self.assertEqual((descriptor.parent / "../Frameworks/libopenrc_native_kernel.dylib").resolve(),
+                             (bundle / "Contents/Frameworks" / library.name).resolve())
+            receipt_tool = load_module("nk3_mac_release_receipt", HERE.parents[1] / "tools/release/macos_reference_receipt.py")
+            self.assertEqual(package.MAC_DESCRIPTOR, receipt_tool.NATIVE_DESCRIPTOR_TEXT)
+            self.assertEqual(descriptor.relative_to(bundle).as_posix(), receipt_tool.NATIVE_DESCRIPTOR)
+            self.assertEqual((bundle / "Contents/Resources/LICENSE.godot-cpp.md").read_bytes(),
+                             installed_license.read_bytes())
+            self.assertEqual(staged["license_sha256"], manifest["license_sha256"])
+            with self.assertRaises(ValueError):
+                package.stage_macos(bundle, tool_root, godot)
+            missing_license_bundle = self.root / "MissingLicence.app"
+            (missing_license_bundle / "Contents/Resources").mkdir(parents=True)
+            license_bytes = installed_license.read_bytes()
+            installed_license.unlink()
+            with self.assertRaises(OSError):
+                package.stage_macos(missing_license_bundle, tool_root, godot)
+            self.assertFalse((missing_license_bundle / "Contents/Frameworks").exists())
+            installed_license.write_bytes(license_bytes + b" changed")
+            with self.assertRaises(ValueError):
+                package.stage_macos(missing_license_bundle, tool_root, godot)
+            self.assertFalse((missing_license_bundle / "Contents/Frameworks").exists())
+            installed_license.write_bytes(license_bytes)
+            changed_bundle = self.root / "Changed.app"
+            (changed_bundle / "Contents/Resources").mkdir(parents=True)
+            diagnostics["test_native_replay.gd"].write_bytes(b"changed test")
+            with self.assertRaises(ValueError):
+                package.stage_macos(changed_bundle, tool_root, godot)
+            self.assertFalse((changed_bundle / "Contents/Frameworks").exists())
+
+    def test_mac_verified_install_rejects_changed_receipt_or_library(self):
+        library = self.install / "libopenrc_native_kernel.dylib"
+        library.write_bytes(b"signed fixture")
+        ignore = self.install / ".gdignore"
+        ignore.touch()
+        binary = package.sha(library)
+        descriptor = self.install / "openrc_native_kernel_macos.gdextension"
+        descriptor.write_bytes(b"source descriptor\n")
+        identity = {"source_sha256": "1" * 64, "lock_sha256": "2" * 64,
+                    "reference_sources_sha256": {"app/physics/fixture.gd": "3" * 64}}
+        toolchain = {"os_version": "27.0.1", "os_build": "26A434"}
+        engine = {"version": "engine", "sha256": "4" * 64}
+        candidate = {"binary_sha256": binary, "extension_api_sha256": "5" * 64}
+        mutant = {"binary_sha256": "6" * 64, "extension_api_sha256": "5" * 64}
+        evidence = {}
+        roster = {"base_oracle": "results-[0-9]*.json", "negative_control": "stage_mutant-[0-9]*.json"}
+
+        def check_oracle(data, report, key, built, _cache, _runner):
+            expected = mutant if key == "negative_control" else candidate
+            if built != expected or data.get("binary_sha256") != expected["binary_sha256"] or data.get("valid") is not True:
+                raise ValueError("oracle identity refused")
+
+        fake = SimpleNamespace(
+            locked=SimpleNamespace(load_lock=lambda: {}), host_toolchain=lambda: toolchain,
+            godot_identity=lambda _godot, _lock: engine, _identity=lambda: identity,
+            validate_build=lambda _root, is_mutant, *_args: mutant if is_mutant else candidate,
+            validate_signing_pair=lambda _candidate, _mutant: None,
+            _runner=lambda: None, verification_roster=lambda: roster, _check_oracle_identity=check_oracle,
+            SOURCE_SCOPE="macos-arm64-fixed-wing-experimental-v1", _engine_display=lambda version: version,
+            SOURCE_DESCRIPTOR="source descriptor\n")
+        row = {"platform": "macos", "architecture": "arm64", "backend": "native",
+               "backend_version": builder.BACKEND_VERSION, "abi_version": builder.ABI_VERSION,
+               "qualification_scope": fake.SOURCE_SCOPE, "binary_sha256": binary,
+               "source_sha256": identity["source_sha256"], "lock_sha256": identity["lock_sha256"],
+               "mirrored_sources": identity["reference_sources_sha256"], "runtime_os_version": toolchain["os_version"],
+               "runtime_os_build": toolchain["os_build"], "engine_version": engine["version"],
+               "engine_sha256": engine["sha256"], "verification": evidence}
+        envelope = {"format": builder.RECEIPT_FORMAT, "backend": "native", "backend_version": builder.BACKEND_VERSION,
+                    "abi_version": builder.ABI_VERSION, "platforms": {"macos": row}}
+        path = self.install / "build-receipt-macos.json"
+        tool_root = self.root / "tmp/native"
+        tool_root.mkdir(parents=True)
+        for key, name, build, verdict in (("base_oracle", "results-2026111201.json", candidate, "pass"),
+                                           ("negative_control", "stage_mutant-2026111201.json", mutant, "fail")):
+            report = tool_root / name
+            report.write_text(json.dumps({"binary_sha256": build["binary_sha256"], "valid": True, "total": {"compared": 15}}))
+            evidence[key] = {"results": name, "results_sha256": package.sha(report), "verdict": verdict, "compared": 15}
+        path.write_text(json.dumps(envelope))
+        verified_license = tool_root / "work/candidate/dependencies/godot-cpp/LICENSE.md"
+        verified_license.parent.mkdir(parents=True)
+        verified_license.write_bytes((self.install / "LICENSE.godot-cpp.md").read_bytes())
+        with patch.object(package, "_mac_builder", return_value=fake):
+            self.assertEqual(package.verified_mac_install(tool_root, self.editor), envelope)
+            with patch.object(fake, "validate_signing_pair", side_effect=ValueError("signing pair mismatch")) as signing:
+                with self.assertRaisesRegex(ValueError, "signing pair mismatch"):
+                    package.verified_mac_install(tool_root, self.editor)
+                signing.assert_called_once_with(candidate, mutant)
+            installed_license = self.install / "LICENSE.godot-cpp.md"
+            original_license = installed_license.read_bytes()
+            installed_license.write_bytes(original_license + b" tampered")
+            with self.assertRaises(ValueError):
+                package.verified_mac_install(tool_root, self.editor)
+            installed_license.unlink()
+            with self.assertRaises(ValueError):
+                package.verified_mac_install(tool_root, self.editor)
+            installed_license.write_bytes(original_license)
+            (tool_root / "results-9999999999.json").write_bytes(
+                (tool_root / evidence["base_oracle"]["results"]).read_bytes())
+            self.assertEqual(package.verified_mac_install(tool_root, self.editor), envelope)
+            ignore.unlink()
+            with self.assertRaises(ValueError):
+                package.verified_mac_install(tool_root, self.editor)
+            ignore.mkdir()
+            with self.assertRaises(ValueError):
+                package.verified_mac_install(tool_root, self.editor)
+            ignore.rmdir()
+            ignore.touch()
+            original_is_symlink = Path.is_symlink
+            with patch.object(Path, "is_symlink", autospec=True,
+                              side_effect=lambda item: item == ignore or original_is_symlink(item)):
+                with self.assertRaises(ValueError):
+                    package.verified_mac_install(tool_root, self.editor)
+            for key in ("base_oracle", "negative_control"):
+                cited_report = tool_root / evidence[key]["results"]
+                saved_report = cited_report.read_bytes()
+                cited_report.unlink()
+                with self.assertRaises(ValueError):
+                    package.verified_mac_install(tool_root, self.editor)
+                cited_report.write_bytes(saved_report + b" ")
+                with self.assertRaises(ValueError):
+                    package.verified_mac_install(tool_root, self.editor)
+                cited_report.write_bytes(saved_report)
+                with patch.object(Path, "is_symlink", autospec=True,
+                                  side_effect=lambda item: item == cited_report or original_is_symlink(item)):
+                    with self.assertRaises(ValueError):
+                        package.verified_mac_install(tool_root, self.editor)
+            original_report = tool_root / evidence["base_oracle"]["results"]
+            report_bytes = original_report.read_bytes()
+            for key, field, value in (("base_oracle", "results", "../results-2026111201.json"),
+                                      ("base_oracle", "results", "not-the-oracle.json"),
+                                      ("base_oracle", "compared", 16),
+                                      ("base_oracle", "compared", True),
+                                      ("base_oracle", "results_sha256", "A" * 64),
+                                      ("negative_control", "results", "results-2026111201.json"),
+                                      ("negative_control", "verdict", "pass")):
+                altered = copy.deepcopy(envelope)
+                altered["platforms"]["macos"]["verification"][key][field] = value
+                path.write_text(json.dumps(altered))
+                with self.assertRaises(ValueError):
+                    package.verified_mac_install(tool_root, self.editor)
+            for mutation in ("missing", "extra", "record-extra"):
+                altered = copy.deepcopy(envelope)
+                citations = altered["platforms"]["macos"]["verification"]
+                if mutation == "missing": citations.pop("negative_control")
+                elif mutation == "extra": citations["unrecognized"] = {}
+                else: citations["base_oracle"]["unexpected"] = "x"
+                path.write_text(json.dumps(altered))
+                with self.assertRaises(ValueError):
+                    package.verified_mac_install(tool_root, self.editor)
+            path.write_text(json.dumps(envelope))
+            invalid = json.loads(report_bytes)
+            invalid["valid"] = False
+            original_report.write_text(json.dumps(invalid))
+            altered = copy.deepcopy(envelope)
+            altered["platforms"]["macos"]["verification"]["base_oracle"]["results_sha256"] = package.sha(original_report)
+            path.write_text(json.dumps(altered))
+            with self.assertRaisesRegex(ValueError, "oracle identity refused"):
+                package.verified_mac_install(tool_root, self.editor)
+            original_report.write_bytes(report_bytes)
+            for field, value in (("runtime_os_build", "changed"), ("verification", {}), ("binary_sha256", "0" * 64)):
+                altered = copy.deepcopy(envelope)
+                altered["platforms"]["macos"][field] = value
+                path.write_text(json.dumps(altered))
+                with self.assertRaises(ValueError):
+                    package.verified_mac_install(tool_root, self.editor)
+            path.write_text(json.dumps(envelope))
+            library.write_bytes(b"changed library")
+            with self.assertRaises(ValueError):
+                package.verified_mac_install(tool_root, self.editor)
+
+
+class MacCitedEvidenceTests(unittest.TestCase):
+    def test_cited_reports_reuse_full_oracle_verification_and_ignore_newer_runs(self):
+        fixture = macos_evidence_tests.ExperimentalEvidence(methodName="runTest")
+        fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        mac = macos_evidence_tests.mac
+        base = fixture.evidence()
+        fixture.seal(base)
+        fixture.result.write_text(json.dumps(base))
+
+        mutant = copy.deepcopy(fixture.built)
+        mutant["binary_sha256"] = "b" * 64
+        mutant["descriptor"] = str(fixture.root / "mutant.gdextension")
+        mutant["library"] = str(fixture.root / "lib/libopenrc_native_kernel_mutant.dylib")
+        negative_path = fixture.root / "stage_mutant-20261112.json"
+        negative = copy.deepcopy(base)
+        negative.update({"format": "openrc-nk3-stage-oracle v1", "verdict": "fail", "build_receipt": mutant,
+                         "binary_sha256_before": mutant["binary_sha256"], "binary_sha256_after": mutant["binary_sha256"]})
+        stage = verification_tests.evidence("stage_oracle")
+        negative["components"] = stage["components"]
+        negative["coverage"] = stage["coverage"]
+        negative["components"]["stage_bytes"]["identical"] -= 1
+        compared = sum(item["count"] for item in negative["components"].values())
+        negative["total"] = {"compared": compared, "identical": compared - 1, "mismatched": 1}
+        checked = negative["checked_run"]
+        checked.update(ok=False, reason="process_exit", process_exit=1, required_text=["NK3_ORACLE verdict=fail"])
+        command = checked["command"]
+        command[command.index("--script") + 1] = str(fixture.here / "stage_oracle.gd")
+        checked["command"] = [f"--extension={mutant['descriptor']}" if arg.startswith("--extension=")
+                              else f"--output={negative_path}" if arg.startswith("--output=") else arg for arg in command]
+        fixture.seal(negative, negative_path, marker="NK3_ORACLE verdict=fail")
+        negative_path.write_text(json.dumps(negative))
+        roster = {"base_oracle": "results-[0-9]*.json", "negative_control": "stage_mutant-[0-9]*.json"}
+        cited = {"base_oracle": {"results": fixture.result.name, "results_sha256": package.sha(fixture.result),
+                                  "verdict": "pass", "compared": base["total"]["compared"]},
+                 "negative_control": {"results": negative_path.name, "results_sha256": package.sha(negative_path),
+                                      "verdict": "fail", "compared": compared}}
+        with patch.object(mac, "verification_roster", return_value=roster), \
+                patch.object(mac, "_runner", return_value=fixture.Runner()):
+            package._validate_mac_cited_evidence(fixture.root, cited, fixture.built, mutant, mac)
+            newer = fixture.root / "results-9999999999.json"
+            later = copy.deepcopy(base)
+            later["checked_run"]["command"] = [f"--output={newer}" if arg.startswith("--output=") else arg
+                                                 for arg in later["checked_run"]["command"]]
+            fixture.seal(later, newer)
+            newer.write_text(json.dumps(later))
+            mac._check_oracle_identity(later, newer, "base_oracle", fixture.built, {}, fixture.Runner())
+            package._validate_mac_cited_evidence(fixture.root, cited, fixture.built, mutant, mac)
+
+            original_log = Path(base["checked_run"]["log"])
+            saved_log = original_log.read_bytes()
+            original_log.write_bytes(b"corrupted checked log")
+            with self.assertRaises(ValueError):
+                package._validate_mac_cited_evidence(fixture.root, cited, fixture.built, mutant, mac)
+            original_log.write_bytes(saved_log)
+
+            saved_report = fixture.result.read_bytes()
+            original_check = mac._check_oracle_identity
+
+            def mutate_after_check(data, result, key, built, cache, runner):
+                original_check(data, result, key, built, cache, runner)
+                if result == fixture.result:
+                    result.write_bytes(saved_report + b" ")
+
+            with patch.object(mac, "_check_oracle_identity", side_effect=mutate_after_check):
+                with self.assertRaisesRegex(ValueError, "count or bytes changed"):
+                    package._validate_mac_cited_evidence(fixture.root, cited, fixture.built, mutant, mac)
+            fixture.result.write_bytes(saved_report)
+
+            changed = copy.deepcopy(base)
+            changed["engine_sha256_after"] = "0" * 64
+            fixture.result.write_text(json.dumps(changed))
+            changed_citation = copy.deepcopy(cited)
+            changed_citation["base_oracle"]["results_sha256"] = package.sha(fixture.result)
+            with self.assertRaises(ValueError):
+                package._validate_mac_cited_evidence(fixture.root, changed_citation, fixture.built, mutant, mac)
 
 
 if __name__ == "__main__":

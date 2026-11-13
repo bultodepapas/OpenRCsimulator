@@ -54,11 +54,15 @@ func _checks() -> void:
 	_report.load_average.end = _load_average()
 
 
-## Host load (1, 5, 15 min) from /proc/loadavg; FileAccess reads /proc files as empty, so ask the shell.
+## Host load is metadata outside the measured loop; retain an explicit unavailable result.
 static func _load_average() -> String:
 	var output: Array = []
-	OS.execute("cat", ["/proc/loadavg"], output)
-	return str(output[0]).strip_edges() if not output.is_empty() else ""
+	var status := -1
+	if OS.get_name() == "Linux":
+		status = OS.execute("cat", ["/proc/loadavg"], output)
+	elif OS.get_name() == "macOS":
+		status = OS.execute("/usr/sbin/sysctl", ["-n", "vm.loadavg"], output)
+	return str(output[0]).strip_edges() if status == 0 and not output.is_empty() else "unavailable"
 
 
 
