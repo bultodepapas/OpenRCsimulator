@@ -737,6 +737,28 @@ and timestamps, accompanying counters, and memory start/end/peak changes. It
 preserves errors and warnings with log context. `--budget-ms` is an explicit
 investigation threshold, not an automatic performance acceptance gate.
 
+`sustained_resources.py` reduces checked process counters to polls strictly inside
+the measured flight window. It reports CPU core-seconds, clock and poll-boundary
+uncertainty, omitted edges, sampled RSS and available host context. CPU covers the
+whole Godot process, including benchmark observation; it is separate from the
+headless callback stopwatch. The reader does not add an admission gate or qualify
+GPU, energy or performance gains.
+
+```sh
+python3 research/performance/sustained_resources.py \
+  --run "$reference/run-1.json" --run "$native/run-1.json" \
+  --out "$new_resource_summary"
+```
+
+Retain each run's frame stream, health receipt, copied checked report and log,
+plus the original `checks/godot-*/` directory with `report.json`, `engine.log`,
+`resources.json` and `host-state.jsonl`. The copied report must equal its original;
+the reader verifies telemetry hashes, capture/process identity and clock evidence
+without rewriting receipts. Missing host channels stay unknown. Memory peaks are
+sampled, and thermal/low-power transitions near uncertain boundaries remain
+visible. The focused reader tests run with
+`python3 research/performance/test_sustained_resources.py`.
+
 Reducer limits: `--top` defaults to 10 (1–1,000); `--max-input-bytes` defaults to
 `64MiB` combined report/sidecar/log input (maximum `1GiB`, plus one overflow-detection byte).
 It refuses an existing diagnosis destination. Exit 0 means valid source data,
