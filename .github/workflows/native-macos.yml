@@ -1,0 +1,70 @@
+name: Native kernel correctness (macOS ARM64)
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  native-macos:
+    name: Experimental fixed-wing source correctness
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      # The image default can advance independently; the existing builder
+      # still verifies the exact Apple Clang and SDK versions and fails closed.
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          # 3.12.15 has no Darwin ARM64 build in actions/python-versions.
+          python-version: '3.12.10'
+          architecture: arm64
+      - name: Check orchestration and obtain the pinned editor
+        run: |
+          python3 -c 'import platform, sys; assert sys.version_info[:3] == (3, 12, 10) and sys.platform == "darwin" and platform.machine() == "arm64"'
+          python3 research/native-kernel/test_ci_macos.py
+          mkdir -p tmp/nk-macos-ci-bootstrap
+          app/get-godot.sh > tmp/nk-macos-ci-bootstrap/godot-path.txt
+      - name: Run the Mac source correctness gates
+        run: |
+          python3 research/native-kernel/ci_macos.py \
+            --godot "$(cat tmp/nk-macos-ci-bootstrap/godot-path.txt)" \
+            --out "$PWD/tmp/nk-macos-ci" --jobs 2
+      - name: Retain reports and diagnostic outputs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-macos-correctness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            tmp/nk-macos-ci-bootstrap/
+            tmp/nk-macos-ci/logs/
+            tmp/nk-macos-ci/before/research-preparation*.json
+            tmp/nk-macos-ci/after/research-preparation*.json
+            tmp/nk-macos-ci/build/*.json
+            tmp/nk-macos-ci/build/*.gdextension
+            tmp/nk-macos-ci/build/lib/*.dylib
+            tmp/nk-macos-ci/build/checks/
+            tmp/nk-macos-ci/build/work/*/build.log
+            tmp/nk-macos-ci/build/work/*/compile_commands.json
+            tmp/nk-macos-ci/checks/
+            tmp/nk-macos-ci/guard-check/
+            tmp/nk-macos-ci/fpcr/*.json
+            tmp/nk-macos-ci/fpcr/*.log
+            tmp/nk-macos-ci/fpcr/*.cpp
+            tmp/nk-macos-ci/fpcr/*.o
+            tmp/nk-macos-ci/fpcr/*.dylib
+            tmp/nk-macos-ci/fpcr/*.gdextension
+            tmp/nk-macos-ci/fpcr/checks/
+            app/native/kernel/build-receipt-macos.json
+          if-no-files-found: warn
+          retention-days: 7
