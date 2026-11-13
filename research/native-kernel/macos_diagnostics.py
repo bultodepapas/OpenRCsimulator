@@ -41,6 +41,9 @@ SCRIPT_COMPONENTS = {
     "glow_oracle.gd": ("openrc-nk3-glow-oracle v1", "glow_source_values"),
 }
 DEFAULT_SCRIPTS = ("oracle.gd", "stage_oracle.gd", "propeller_oracle.gd")
+DOMAIN_GUARD_SCRIPT = "test_macos_domain_guard.gd"
+DOMAIN_GUARD_PROFILE_SCOPE = "isolated guard-call loop only; not inclusive tick or product performance"
+DOMAIN_GUARD_KINDS = frozenset(("byte", "int32", "int64", "float32", "float64"))
 
 
 def _arm64_text_identity(path: Path) -> dict:
@@ -247,6 +250,79 @@ def oracle_error(script: str, data: dict, report: dict, log: str, seed: int, sta
     return ""
 
 
+def domain_guard_result(report: dict, log: str) -> dict:
+    """Validate the real guard harness, including its controls and stock-world profile."""
+    if (report.get("ok") is not True or report.get("complete") is not True
+            or report.get("reason") != "passed" or report.get("process_exit") != 0
+            or report.get("counts", {}).get("error") != 0 or report.get("missing_required_text") != []
+            or SIGNATURE.search(log)):
+        raise ValueError("checked domain-guard execution failed or emitted a sanitizer diagnostic")
+    lines = log.splitlines()
+    verdicts = [line for line in lines if line.startswith("MACOS_DOMAIN_GUARD ")]
+    if len(verdicts) != 1 or any(line.startswith("FAIL ") for line in lines):
+        raise ValueError("domain-guard verdict is missing, duplicated or contains failures")
+    match = re.fullmatch(r"MACOS_DOMAIN_GUARD verdict=pass checks=(\d+)", verdicts[0])
+    if match is None or int(match.group(1)) < 72:
+        raise ValueError("domain-guard harness did not pass at least 72 checks")
+
+    def object_for(line: str, prefix: str) -> dict:
+        def unique(pairs: list[tuple[str, object]]) -> dict:
+            value = {}
+            for key, item in pairs:
+                if key in value:
+                    raise ValueError("domain-guard control has duplicate JSON keys")
+                value[key] = item
+            return value
+
+        def invalid_constant(_value: str) -> None:
+            raise ValueError("domain-guard control has non-finite JSON")
+
+        value = json.loads(line[len(prefix):], object_pairs_hook=unique, parse_constant=invalid_constant)
+        if not isinstance(value, dict):
+            raise ValueError("domain-guard control is not an object")
+        return value
+
+    resize_prefix = "MACOS_DOMAIN_RESIZE "
+    resize_lines = [line for line in lines if line.startswith(resize_prefix)]
+    resize = [object_for(line, resize_prefix) for line in resize_lines]
+    if (len(resize) != len(DOMAIN_GUARD_KINDS)
+            or any(type(row.get("kind")) is not str or row.get("alias_resized") is not True
+                   or row.get("live_changed") is not True for row in resize)
+            or {row["kind"] for row in resize} != DOMAIN_GUARD_KINDS):
+        raise ValueError("domain-guard packed resize controls are missing, duplicated or did not mutate the live leaf")
+    direct_prefix = "MACOS_DOMAIN_DIRECT_RESIZE "
+    direct_lines = [line for line in lines if line.startswith(direct_prefix)]
+    if len(direct_lines) != 1:
+        raise ValueError("domain-guard direct resize control is missing or duplicated")
+    direct = object_for(direct_lines[0], direct_prefix)
+    if direct.get("live_changed") is not True or type(direct.get("size")) is not int or direct["size"] != 1024:
+        raise ValueError("domain-guard direct resize control did not resize the live leaf")
+
+    profile_prefix = "MACOS_DOMAIN_STOCK_GUARD_DIAGNOSTIC "
+    profiles = [line for line in lines if line.startswith(profile_prefix)]
+    if len(profiles) != 1:
+        raise ValueError("domain-guard stock profile is missing or duplicated")
+    profile = object_for(profiles[0], profile_prefix)
+    if (profile.get("scope") != DOMAIN_GUARD_PROFILE_SCOPE or profile.get("all_match") is not True
+            or type(profile.get("warmup_calls")) is not int or profile["warmup_calls"] != 16
+            or type(profile.get("calls")) is not int or profile["calls"] != 2400
+            or type(profile.get("proxies")) is not int or profile["proxies"] != 6092
+            or any(type(profile.get(key)) is not int or profile[key] <= 0
+                   for key in ("nodes", "packed_leaves", "packed_bytes"))
+            or type(profile.get("elapsed_usec")) is not int or not 0 <= profile["elapsed_usec"] <= 2**53
+            or type(profile.get("mean_usec")) not in (int, float)
+            or (type(profile["mean_usec"]) is int and abs(profile["mean_usec"]) > 2**53)
+            or not math.isfinite(profile["mean_usec"]) or profile["mean_usec"] < 0
+            or not math.isclose(profile["mean_usec"], profile["elapsed_usec"] / 2400.0, rel_tol=1e-5, abs_tol=1e-6)
+            or not isinstance(profile.get("world_identity"), str)
+            or re.fullmatch(r"[0-9a-f]{64}", profile["world_identity"]) is None
+            or not all(isinstance(profile.get(key), str) and profile[key] for key in ("cpu", "model"))):
+        raise ValueError("domain-guard stock profile is incomplete or inconsistent")
+    return {"checks": int(match.group(1)), "resize_controls": resize, "direct_resize": direct,
+            "stock_profile": profile,
+            "scope": "Sanitizer diagnostics only; stock guard timings are not a performance result."}
+
+
 @contextmanager
 def sanitizer_environment(mode: str, runtime: Path | None):
     """Only the checked child inherits sanitizer settings, never the user's shell."""
@@ -322,6 +398,9 @@ def run(args: argparse.Namespace) -> dict:
     scripts = args.script or list(DEFAULT_SCRIPTS)
     if len(scripts) != len(set(scripts)) or any(script not in SCRIPT_COMPONENTS for script in scripts):
         raise ValueError("Unknown or repeated oracle script")
+    domain_guard = getattr(args, "domain_guard", False)
+    if type(domain_guard) is not bool or (domain_guard and not set(DEFAULT_SCRIPTS).issubset(scripts)):
+        raise ValueError("Domain-guard diagnostics require the base, stage and propeller oracles")
     spec = importlib.util.spec_from_file_location("openrc_macos_diagnostic_helpers", HERE / "fpcr_control_probe.py")
     if spec is None or spec.loader is None:
         raise ValueError("Cannot load the shared diagnostic helpers")
@@ -345,6 +424,8 @@ def run(args: argparse.Namespace) -> dict:
                "scope": "Only nk_kernel.cpp and inline code compiled into that translation unit are instrumented; "
                         "the Godot executable and prebuilt godot-cpp archive are uninstrumented.",
                "archive_scope": "Retained archives are hashed before/after; their bytes are not bound by the candidate receipt."}
+    if domain_guard:
+        summary["domain_guard"] = {"requested": True, "covered": False}
     diagnostic_before = None
     original_signature = None
     diagnostic_path = getattr(args, "diagnostic_godot", None)
@@ -383,7 +464,12 @@ def run(args: argparse.Namespace) -> dict:
         summary["project_inventory"] = project_proof
         harness = [*HERE.glob("*.gd"), HERE / "run.py", HERE / "build_macos.py", HERE / "fpcr_control_probe.py",
                    HERE / "macos_diagnostics.py", ROOT / "tools/godot/run_checked.py"]
+        guard_script = HERE / DOMAIN_GUARD_SCRIPT
+        if domain_guard and (guard_script.is_symlink() or not guard_script.is_file() or guard_script not in harness):
+            raise ValueError("Domain-guard diagnostic harness is missing or redirected")
         harness_hashes = {str(path): helper._sha(path) for path in harness}
+        if domain_guard:
+            summary["domain_guard"]["harness_sha256"] = harness_hashes[str(guard_script)]
         inputs = None
 
         def build_variant(kind: str, control: bool) -> tuple[Path, dict, dict]:
@@ -405,7 +491,8 @@ def run(args: argparse.Namespace) -> dict:
                                                        old_obj, obj, library)
             link_args.extend(sanitizer_flags(args.mode))
             current = {str(path): helper._sha(path) for path in
-                       [source, old_obj, database, root / "build-receipt.json", *archives]}
+                       [source, old_obj, database, root / "build-receipt.json", *archives,
+                        *([guard_script] if domain_guard else [])]}
             if inputs is None: inputs = current
             if inputs != current:
                 raise ValueError("Candidate inputs changed before diagnostic compilation")
@@ -468,6 +555,18 @@ def run(args: argparse.Namespace) -> dict:
                                        "total": data.get("total"), "coverage": data.get("coverage")}
             if error:
                 raise ValueError(f"{script}: {error}")
+        if domain_guard:
+            command = [str(selected_godot), "--headless", "--path", str(project), "--audio-driver", "Dummy",
+                       "--script", str(guard_script), "--", f"--extension={descriptor}"]
+            checked, log = _checked(checked_runner, command, out / "checks", "domain-guard",
+                                    args.timeout, ["MACOS_DOMAIN_GUARD verdict=pass"], args.mode, runtime)
+            summary["domain_guard"].update(checked=checked, command=command)
+            try:
+                guard_result = domain_guard_result(checked, log)
+            except (ValueError, TypeError, KeyError) as error:
+                summary["domain_guard"]["error"] = str(error)
+                raise ValueError(f"{DOMAIN_GUARD_SCRIPT}: {error}") from error
+            summary["domain_guard"].update(**guard_result)
         if (inputs != {name: helper._sha(Path(name)) for name in inputs} or mac._identity() != identity
                 or mac.godot_identity(args.godot, lock) != engine or runner.validate_project(project) != project_proof
                 or harness_hashes != {name: helper._sha(Path(name)) for name in harness_hashes}
@@ -488,6 +587,8 @@ def run(args: argparse.Namespace) -> dict:
                     raise ValueError("Diagnostic build changed during oracle execution")
         summary["input_sha256"] = inputs
         summary["harness_sha256"] = harness_hashes
+        if domain_guard:
+            summary["domain_guard"]["covered"] = True
         summary["status"] = "passed"
     except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as error:
         detail = str(error)
@@ -527,6 +628,8 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--script", action="append", choices=tuple(SCRIPT_COMPONENTS),
                         help="repeat to select oracles; default is base, stage and propeller")
+    parser.add_argument("--domain-guard", action="store_true",
+                        help="also exercise the real Mac domain guard after the three default oracles")
     parser.add_argument("--states", type=int, default=64)
     parser.add_argument("--variant-states", type=int, default=16)
     parser.add_argument("--seed", type=int, default=20261027)

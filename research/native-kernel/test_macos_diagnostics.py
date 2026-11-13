@@ -32,7 +32,66 @@ def thin_arm64(text=b"test executable code", identity=b"a" * 16):
     return (header + uuid_command + segment + section).ljust(offset, b"\0") + text
 
 
+def domain_guard_log():
+    controls = ["MACOS_DOMAIN_RESIZE " + json.dumps({"kind": kind, "alias_resized": True,
+                                                      "live_changed": True})
+                for kind in ("byte", "int32", "int64", "float32", "float64")]
+    profile = {"scope": diag.DOMAIN_GUARD_PROFILE_SCOPE, "world_identity": "a" * 64, "proxies": 6092,
+               "warmup_calls": 16, "calls": 2400, "elapsed_usec": 12000, "mean_usec": 5.0,
+               "all_match": True, "nodes": 10, "packed_leaves": 3, "packed_bytes": 40,
+               "cpu": "Apple M1", "model": "MacBookAir10,1"}
+    controls.append("MACOS_DOMAIN_DIRECT_RESIZE " + json.dumps({"live_changed": True, "size": 1024}))
+    controls.append("MACOS_DOMAIN_STOCK_GUARD_DIAGNOSTIC " + json.dumps(profile))
+    controls.append("MACOS_DOMAIN_GUARD verdict=pass checks=72")
+    return "\n".join(controls) + "\n"
+
+
+def passed_checked():
+    return {"ok": True, "complete": True, "reason": "passed", "process_exit": 0,
+            "counts": {"error": 0}, "missing_required_text": []}
+
+
 class DiagnosticPolicyTests(unittest.TestCase):
+    def test_domain_guard_requires_real_complete_unique_controls_and_profile(self):
+        log = domain_guard_log()
+        result = diag.domain_guard_result(passed_checked(), log)
+        self.assertEqual(result["checks"], 72)
+        self.assertEqual(len(result["resize_controls"]), 5)
+        self.assertEqual(result["stock_profile"]["calls"], 2400)
+        self.assertIn("not a performance", result["scope"])
+        lines = log.splitlines()
+        malformed = [
+            log.replace("checks=72", "checks=71"),
+            log.replace("verdict=pass", "verdict=fail"),
+            log + lines[-1] + "\n",
+            "\n".join(lines[1:]),
+            "\n".join(lines[:1] + lines[:1] + lines[2:]),
+            log.replace('"live_changed": true', '"live_changed": false', 1),
+            log.replace('"live_changed": true, "size": 1024', '"live_changed": false, "size": 1024'),
+            log.replace('"size": 1024', '"size": 2'),
+            "\n".join(line for line in lines if not line.startswith("MACOS_DOMAIN_DIRECT_RESIZE ")),
+            "\n".join(line for line in lines if not line.startswith("MACOS_DOMAIN_STOCK_GUARD_DIAGNOSTIC ")),
+            log + lines[-2] + "\n",
+            log.replace('"calls": 2400', '"calls": 2399'),
+            log.replace('"all_match": true', '"all_match": false'),
+            log.replace('"mean_usec": 5.0', '"mean_usec": 9.0'),
+            log.replace('"packed_bytes": 40', '"packed_bytes": 40, "packed_bytes": 40'),
+            log + "runtime error: signed integer overflow\n",
+            log + "FAIL unexpected control\n",
+        ]
+        for sample in malformed:
+            with self.subTest(sample=sample[-100:]), self.assertRaises(ValueError):
+                diag.domain_guard_result(passed_checked(), sample)
+        for report in ({**passed_checked(), "ok": False}, {**passed_checked(), "counts": {"error": 1}},
+                       {**passed_checked(), "complete": False}):
+            with self.subTest(report=report), self.assertRaises(ValueError):
+                diag.domain_guard_result(report, log)
+
+    def test_domain_guard_requires_all_three_base_oracles(self):
+        args = SimpleNamespace(timeout=60, states=1, variant_states=1, script=["stage_oracle.gd"], domain_guard=True)
+        with self.assertRaisesRegex(ValueError, "base, stage and propeller"):
+            diag.run(args)
+
     def test_macho_text_identity_and_invalid_layouts(self):
         with tempfile.TemporaryDirectory() as temporary:
             host = Path(temporary) / "Godot"
@@ -125,7 +184,9 @@ class DiagnosticPolicyTests(unittest.TestCase):
             source.parent.mkdir(parents=True)
             source.write_text('#include <cstdint>\n\t\t__asm__ __volatile__("mrs %0, fpcr" : "=r"(fpcr) : : "memory");\n')
             for path in (here / "run.py", here / "build_macos.py", here / "fpcr_control_probe.py",
-                         here / "macos_diagnostics.py", here / "stage_oracle.gd", root / "tools/godot/run_checked.py"):
+                         here / "macos_diagnostics.py", here / "stage_oracle.gd", here / "oracle.gd",
+                         here / "propeller_oracle.gd", here / "test_macos_domain_guard.gd",
+                         root / "tools/godot/run_checked.py"):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("fixture")
             tmp = root / "tmp"
@@ -139,8 +200,10 @@ class DiagnosticPolicyTests(unittest.TestCase):
             project.mkdir(parents=True)
             official = root / "official-godot"
             clone = tmp / "clone-godot"
+            asan_runtime = tmp / "libclang_rt.asan_osx_dynamic.dylib"
             official.write_bytes(thin_arm64())
             clone.write_bytes(thin_arm64() + b"adhoc signature")
+            asan_runtime.write_bytes(b"asan runtime")
 
             def sha(path):
                 return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -158,7 +221,7 @@ class DiagnosticPolicyTests(unittest.TestCase):
             runner = SimpleNamespace(validate_project=lambda _: {"prepared": True})
 
             def log_command(command, _cwd, _env, log, _timeout):
-                Path(log).write_text("ubsan" if "nm" in command else "")
+                Path(log).write_text("ubsan asan" if "nm" in command else "")
                 if command[0] in ("compile", "link"):
                     Path(command[1]).write_bytes(command[0].encode())
 
@@ -169,12 +232,18 @@ class DiagnosticPolicyTests(unittest.TestCase):
                 _run_to_log=log_command)
             spec = SimpleNamespace(loader=SimpleNamespace(exec_module=lambda _: None))
             commands = []
+            checked_modes = []
 
             def checked(_runner, command, _out, label, _timeout, _required, _mode, _runtime):
                 commands.append(command)
+                checked_modes.append((_mode, _runtime, label))
                 if label == "sanitizer-control":
-                    log = "OPENRC_MAC_SANITIZER_CONTROL mode=ubsan\nnk_kernel.cpp: runtime error: signed integer overflow"
+                    detail = "runtime error: signed integer overflow" if _mode == "ubsan" \
+                        else "AddressSanitizer: heap-buffer-overflow"
+                    log = f"OPENRC_MAC_SANITIZER_CONTROL mode={_mode}\nnk_kernel.cpp: {detail}"
                     return {"complete": True, "reason": "process_exit", "process_exit": 1}, log
+                if label == "domain-guard":
+                    return passed_checked(), domain_guard_log()
                 output = next(value.split("=", 1)[1] for value in command if value.startswith("--output="))
                 Path(output).write_text("{}")
                 return {}, ""
@@ -187,14 +256,33 @@ class DiagnosticPolicyTests(unittest.TestCase):
                     patch.object(diag.importlib.util, "module_from_spec", return_value=helper), \
                     patch.object(diag, "_official_engine", return_value="official signature"), \
                     patch.object(diag, "_diagnostic_signature", return_value={"flags": "0x2"}), \
+                    patch.object(diag, "_asan_runtime", return_value=asan_runtime), \
                     patch.object(diag, "_sign", return_value="adhoc"), patch.object(diag, "_checked", side_effect=checked), \
                     patch.object(diag, "oracle_error", return_value=""):
                 summary = diag.run(args)
+                args.script = list(diag.DEFAULT_SCRIPTS)
+                args.domain_guard = True
+                args.out = tmp / "result-domain"
+                guarded = diag.run(args)
+                args.mode = "asan"
+                args.out = tmp / "result-domain-asan"
+                asan_guarded = diag.run(args)
             self.assertEqual(summary["status"], "passed")
             self.assertFalse(summary["official_engine_parity"] or summary["installable"])
             self.assertTrue(summary["official_host_unchanged"] and summary["diagnostic_host_unchanged"])
-            self.assertEqual([command[0] for command in commands], [str(clone), str(clone)])
+            self.assertEqual([command[0] for command in commands], [str(clone)] * 12)
             self.assertEqual(validate.call_args.args[4], engine)
+            self.assertTrue(guarded["domain_guard"]["covered"])
+            self.assertEqual(guarded["domain_guard"]["checks"], 72)
+            self.assertEqual(guarded["domain_guard"]["harness_sha256"], sha(here / "test_macos_domain_guard.gd"))
+            self.assertEqual(guarded["input_sha256"][str(here / "test_macos_domain_guard.gd")],
+                             guarded["domain_guard"]["harness_sha256"])
+            self.assertEqual(checked_modes[6], ("ubsan", None, "domain-guard"))
+            self.assertEqual(checked_modes[-1], ("asan", asan_runtime, "domain-guard"))
+            self.assertTrue(asan_guarded["domain_guard"]["covered"])
+            self.assertEqual(commands[-1][0], str(clone))
+            self.assertIn(str(here / "test_macos_domain_guard.gd"), commands[-1])
+            self.assertIn(f"--extension={tmp / 'result-domain-asan/candidate/diagnostic.gdextension'}", commands[-1])
 
     def test_compile_defines_match_instrumentation_for_candidate_and_control(self):
         for mode, expected, excluded in (

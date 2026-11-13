@@ -96,7 +96,7 @@ func _record_and_replay(main: Node, identity: Dictionary) -> void:
 	var writer: RefCounted = main.flight_log
 	_check(writer != null, "production Main provides its flight recorder")
 	if writer == null: return
-	var started := writer.start(path) == OK
+	var started: bool = writer.start(path) == OK
 	_check(started, "recorder starts on automatic native flight", writer.failure)
 	if not started: return
 	_check(writer.header.get("stage_backend") == identity and writer.header.checkpoint.get("stage_backend") == identity,
