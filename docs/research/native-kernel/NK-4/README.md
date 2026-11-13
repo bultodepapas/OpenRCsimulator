@@ -119,7 +119,7 @@ variant of these fixtures is an NK-track decision.
 CI: `.github/workflows/ci.yml` job `native-kernel-windows` (windows-2025) installs the pinned nuwen MinGW
 `components-20.0.7z` by SHA-256, builds the library and mutant, runs every installer gate, accepts them through
 `build_windows.py`'s evidence rules, installs, and requires the stage, session, replay and helicopter native
-markers. It is informational, not yet in the required/release set, until it has run green on the hosted runner.
+markers. It remains informational and outside the required/release set; promotion remains a separate decision.
 
 The v0.2.6 release preparation renewed the separate companion behavior manifest after the Home/Main changes.
 Its [Linux admission receipt](../../ai-companions/AFC-02/rebinds/2026-11-12-60b34346-to-75317347-behavior.json)
@@ -128,7 +128,7 @@ by the separate nine-tape rebind; these checks do not qualify Windows native com
 
 ## Open
 
-- Rerun the UTF-8-pinned hosted CI job to green, then decide whether it joins the required set
+- Decide whether the green hosted NK-4 job joins the required set
   (`tools/ci/policy.py` `PRODUCTION`) and the release dependencies.
 - Windows release packages: the export plugin, embedded manifest and package receipt are Linux-only, and the
   4.8-beta2 Windows release template is not installed on this host. Packaged qualification belongs with the
@@ -154,7 +154,23 @@ installation and native production markers did not run. NK-4 is informational an
 `required` or `export`; Windows release flight uses the reference evaluator. The separate required Windows
 ground-vehicle build and production checks passed.
 
-The candidate sets `PYTHONIOENCODING=utf-8` for the NK-4 job and its Python subprocesses; the return-code and
+The v0.2.7 workflow sets `PYTHONIOENCODING=utf-8` for the NK-4 job and its Python subprocesses; the return-code and
 evidence checks are unchanged. A disposable Windows fixture exercised the actual inline wrapper with fake Python
 children: a forced single-byte encoding reproduced the failure, UTF-8 preserved non-ASCII output, and failing-child
-and invalid-evidence controls were rejected. A complete hosted NK-4 rerun remains pending before promotion.
+and invalid-evidence controls were rejected. The hosted rerun subsequently passed, as recorded below.
+
+## Hosted CI follow-up (2026-11-12)
+
+[Windows CI job 131568079298](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43328373987/job/131568079298)
+passed at source `e766561c7cebc6b0d69b650449ace66f8b225cc2` with the UTF-8 setting. Its retained oracle log
+contains the non-ASCII warning as valid UTF-8. The job accepted all 19 installer evidence entries: `stage_oracle`,
+`trajectory`, `propeller`, `electric`, `electric_stage`, `liquid`, `liquid_stage`, `glow`, `glow_stage`,
+`helicopter`, `helicopter_stage`, `weather`, `weather_stage`, `wake`, `wake_spatial`, `gear`, `prescribed_stage`,
+`legacy_ground` and `negative_control`. The stage had 128,664/128,664 identical comparisons; the mutant failed as
+required, with 100,349/128,664 identical.
+
+The verified library installed with SHA-256 `5e5c47ca48f4282c94e5c806706612c54be2d1ff01831c4c35519327c05a6706`.
+Installed-native markers passed for stage (97 checks), session (343), replay (170) and helicopter (399;
+`native exercised=true`), each with zero failures. The [CI diagnostics](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43328373987/artifacts/13993918385)
+expire on 2026-11-19. This source/debug job does not establish a Windows packaged-native backend or release-wide CI
+success; Windows release flight remains on the reference evaluator. Promotion to required CI remains open.
