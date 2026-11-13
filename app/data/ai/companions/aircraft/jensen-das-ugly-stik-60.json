@@ -15,7 +15,7 @@
     }
   },
   "solver": {
-    "sha256": "192efadc00c92259d1e2d0f1c5e0c48a6b570992f927ef33732a8594c6d4d937",
+    "sha256": "f60ac8ed1339556c996e395a6167da3e502d56376310c44c7b3a13f56e8f2867",
     "normalization": "utf8-lf"
   },
   "engine_version": "4.8.beta2.official.cafc17a19",
@@ -59,6 +59,6 @@
     "path": "res://data/ai/companions/behavior-manifest.json",
     "format": "openrc-ai-behavior-manifest v1",
     "normalization": "utf8-lf",
-    "sha256": "154ea821e1ab726618accdf213b85c69c79bf5409445ae012b8b2063b34d01ac"
+    "sha256": "0e3daf99ac0bdd76f799986cfd6c73ebad87324808fa34f92a674ce55425955d"
   }
 }

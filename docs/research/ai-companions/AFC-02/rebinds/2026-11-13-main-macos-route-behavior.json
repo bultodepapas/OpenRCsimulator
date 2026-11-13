@@ -1,0 +1,1434 @@
+{
+  "format": "openrc-afc-02-behavior-requalification v1",
+  "date": "2026-11-13",
+  "created_utc": "2026-11-13T15:19:29.839987+00:00",
+  "platform": "Apple M1 MacBookAir10,1; macOS 27.0.1 26A434; official native ARM64 Godot 4.8.beta2.official.cafc17a19",
+  "head_at_collection": "84fa8ba0774878cf02ea3479b2865ebee8594069",
+  "engine_sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80",
+  "scope": "Bounded software renewal of the existing fixed-wing Stik/Club companion profile; companion-enabled automatic Mac sessions retain reference.",
+  "previous_behavior_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-12-60b34346-to-75317347-behavior.json",
+  "solver_rebind_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-13-192efadc-to-f60ac8ed.json",
+  "solver_rebind_receipt_sha256": "423492a91dbf5479c29822264d55a80f168ffa2523b22c073c3ef04fa65224aa",
+  "review": {
+    "changed_sources": {
+      "res://main.gd": {
+        "previous_normalized_sha256": "9e6d45984b09ecb3f43628e44150cfc140078dd5fa07094de780e00eaf79f81b",
+        "candidate_normalized_sha256": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09",
+        "candidate_raw_sha256": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09"
+      }
+    },
+    "unchanged_manifest_sources": 15,
+    "analysis": "Main adds guarded source-editor Mac selection and an explicit opt-out. Automatic native selection is disabled when companions are enabled. No companion controller, route or shared numerical solver changed in this behavior renewal.",
+    "all_source_normalized_sha256": {
+      "res://ai/companions/agent.gd": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+      "res://ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+      "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+      "res://ai/companions/config.gd": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+      "res://ai/companions/manager.gd": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+      "res://ai/companions/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+      "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+      "res://ai/companions/profile_loader.gd": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+      "res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+      "res://ai/companions/static_trajectory.gd": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+      "res://app_root.gd": "eafe1598fb98ee4623ccf70abf6b41ac638005c3cac354295d29a74acf64433e",
+      "res://data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+      "res://main.gd": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09",
+      "res://scenery/collision_world.gd": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+      "res://workshop/strict_json.gd": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+    }
+  },
+  "manifest_before": "154ea821e1ab726618accdf213b85c69c79bf5409445ae012b8b2063b34d01ac",
+  "manifest_candidate": "0e3daf99ac0bdd76f799986cfd6c73ebad87324808fa34f92a674ce55425955d",
+  "profile_candidate_raw_sha256": "1c9da247c6bad647bacd0450d3b3e36e05740c82f19a84c633916cefb11670ec",
+  "solver_qualification_sha256": "f60ac8ed1339556c996e395a6167da3e502d56376310c44c7b3a13f56e8f2867",
+  "home_shell_test": {
+    "source_normalized_sha256": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb",
+    "derived_normalized_sha256": "7c4ef043e4a8e7fdd4fd52466564e202138c5d4f382f455091f68c285ef88118",
+    "derivation": "Remove exactly the single solver-test override call from a disposable normalized copy; preserve all assertions."
+  },
+  "checks": [
+    {
+      "label": "behavior01-import",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-import-o1x862t8/report.json",
+      "report_sha256": "7b5606a1398a8da5ddcc80fe433e919a301176d81ab44668cfe71c63bc68c6b8",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-import",
+        "--timeout",
+        "900",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c1dfbd96-2025-427e-96bf-43dad05122a6",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--import"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:07.193722+00:00",
+        "label": "behavior01-import",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-import-o1x862t8/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-import-o1x862t8/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.542336,
+        "log_bytes": 1326,
+        "log_sha256": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4"
+      }
+    },
+    {
+      "label": "behavior01-stale",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-stale-71os1qnl/report.json",
+      "report_sha256": "8248e237b64128a2bed3b139646ca2426f4a00a5a44dd5966171db7f4c3937a2",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-stale",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_behavior_manifest.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a7983c3a-3cef-477c-8c1c-08bcf91617ed",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_behavior_manifest.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:11.772180+00:00",
+        "label": "behavior01-stale",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-stale-71os1qnl/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-stale-71os1qnl/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.192743,
+        "log_bytes": 118,
+        "log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd"
+      }
+    },
+    {
+      "label": "behavior01-profiles",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-profiles-hsinketz/report.json",
+      "report_sha256": "b2abd4ceb9d2053e978f9eda84fb784bb5b8b89a2c3ca9d4dfe08a825e45d46c",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-profiles",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "77ade34f-cf02-420b-83c5-2918dfd106e9",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_profiles.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:16.929768+00:00",
+        "label": "behavior01-profiles",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-profiles-hsinketz/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-profiles-hsinketz/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.492983,
+        "log_bytes": 3002,
+        "log_sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d"
+      }
+    },
+    {
+      "label": "behavior01-behavior_manifest",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-behavior_manifest-lekl90ts/report.json",
+      "report_sha256": "ed0d2e1f663ad5ec7319244b65300d80a48b3d3654aa0ea1e8e4cd5d1a71db34",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-behavior_manifest",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_behavior_manifest.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "1f9697b7-8acb-4b5e-9c16-07a94de56b8b",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_behavior_manifest.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:21.458171+00:00",
+        "label": "behavior01-behavior_manifest",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-behavior_manifest-lekl90ts/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-behavior_manifest-lekl90ts/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.870723,
+        "log_bytes": 365,
+        "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59"
+      }
+    },
+    {
+      "label": "behavior01-airspace",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-airspace-qvfljgpj/report.json",
+      "report_sha256": "a47f1caa865b8a4d70a48647fd6eb48852b464e777a93b9351a661aaa38867ba",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-airspace",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_airspace.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4fe72b61-4756-40af-9b40-9c7f2695b47d",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_airspace.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:25.362368+00:00",
+        "label": "behavior01-airspace",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-airspace-qvfljgpj/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-airspace-qvfljgpj/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.944583,
+        "log_bytes": 5032,
+        "log_sha256": "a2d01fdb51278384ebc61a410245ae0817a80a50d9607ee51eaad0c60c0305a4"
+      }
+    },
+    {
+      "label": "behavior01-manager",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-manager-6o492s6o/report.json",
+      "report_sha256": "14c70b73e0fa5e9a554bde58c1e2aca44a4ae9628d2b2ee03b56c8f4988af985",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-manager",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_manager.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "38f27c1a-37c7-416e-b12b-5b4c5fe720c3",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_manager.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:28.340621+00:00",
+        "label": "behavior01-manager",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-manager-6o492s6o/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-manager-6o492s6o/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 14.82423,
+        "log_bytes": 1412,
+        "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d"
+      }
+    },
+    {
+      "label": "behavior01-draft_refresh",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-draft_refresh-supms63j/report.json",
+      "report_sha256": "d93471b53260a8a12137eff3066cb15a40a4a453b5d57b15a9cb37e2797ccddb",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-draft_refresh",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_draft_refresh.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "87163469-e73c-4570-ae10-8aa8d451bf8c",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_draft_refresh.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:43.202443+00:00",
+        "label": "behavior01-draft_refresh",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-draft_refresh-supms63j/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-draft_refresh-supms63j/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 15.354976,
+        "log_bytes": 12187,
+        "log_sha256": "09727551e3f555b142c5b076e8545459d841e13db1df02d9013fc2ecd9b1556a"
+      }
+    },
+    {
+      "label": "behavior01-presentation",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-presentation-8onlcf9v/report.json",
+      "report_sha256": "2ff024e7de0ecdaef72e2fab6678d1821dd0139d65528fb3891f27f3defc6603",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-presentation",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_presentation.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e25d6970-61e7-46da-853c-2bbd036382f0",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_presentation.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:01:58.594820+00:00",
+        "label": "behavior01-presentation",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-presentation-8onlcf9v/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-presentation-8onlcf9v/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.516595,
+        "log_bytes": 300,
+        "log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0"
+      }
+    },
+    {
+      "label": "behavior01-observation",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-observation-ep4ibqkj/report.json",
+      "report_sha256": "2c7225f73e99c43b7555e1a07e8dda4305fb849daecb974d775f029067d00590",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-observation",
+        "--timeout",
+        "900",
+        "--require-text",
+        "AFC COMPANION OBSERVATION TEST COMPLETE",
+        "--require-text",
+        "FAILED 0",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_observation.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "15735cae-480c-4b3c-9d42-a98f534dde3b",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_observation.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:02:03.159763+00:00",
+        "label": "behavior01-observation",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-observation-ep4ibqkj/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-observation-ep4ibqkj/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "AFC COMPANION OBSERVATION TEST COMPLETE",
+          "FAILED 0"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 9.147458,
+        "log_bytes": 2520,
+        "log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25"
+      }
+    },
+    {
+      "label": "behavior01-config",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-config-ktr348ih/report.json",
+      "report_sha256": "7922a14a30707b9026eaa1bc1a9e5a11b6e81746dd40f9086dbc5df49b15cf4b",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-config",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_config.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a1c984d4-8598-4439-92e3-2facff27e4d5",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_config.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:02:12.349891+00:00",
+        "label": "behavior01-config",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-config-ktr348ih/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-config-ktr348ih/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.887393,
+        "log_bytes": 2171,
+        "log_sha256": "885f1a2571a58cd887f13aff461e8c79f7d43a825b0a33e2f10d02ca439da2e5"
+      }
+    },
+    {
+      "label": "behavior01-dialog",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-dialog-ksfapve6/report.json",
+      "report_sha256": "9901ac0efb6fc1020b9e332cf485d894c945245a8d429b45a7442685b558c849",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-dialog",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_dialog.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ec405dee-d090-444d-9be2-b74dd80ed661",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_dialog.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:02:13.275380+00:00",
+        "label": "behavior01-dialog",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-dialog-ksfapve6/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-dialog-ksfapve6/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.198714,
+        "log_bytes": 2299,
+        "log_sha256": "9f85bac7d9c895ad2bdc87a6763f5e6b0ea230e38203199a0137410a6eb7e74a"
+      }
+    },
+    {
+      "label": "behavior01-external_rejection",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-external_rejection-9eyja18q/report.json",
+      "report_sha256": "71e3833b91f51adbfb11fd3e2afacc7f7d429017841241c10b4cce6161f2da6a",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-external_rejection",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_external_rejection.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2ad4f979-416b-47a3-b064-75737b9e6461",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_external_rejection.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:02:14.512908+00:00",
+        "label": "behavior01-external_rejection",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-external_rejection-9eyja18q/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-external_rejection-9eyja18q/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.381499,
+        "log_bytes": 1928,
+        "log_sha256": "53ae2ef6e571307728efb1a07f933b5dc5e5f5a57cb7a423b3865b49d79b9e23"
+      }
+    },
+    {
+      "label": "behavior01-layout",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-layout-fgsdo3bp/report.json",
+      "report_sha256": "05298fcf41d1b027e520ccb5107160b1740dc5fb6607333dec62e8227dc7f0e8",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-layout",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_layout.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "0ff46cbc-d47c-4ba2-9f68-7571edb7eb5b",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_layout.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:02:17.929745+00:00",
+        "label": "behavior01-layout",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-layout-fgsdo3bp/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-layout-fgsdo3bp/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.400066,
+        "log_bytes": 109,
+        "log_sha256": "82c923f746b8b6ec59b82fcde0f45c274b4496da4190730e6d209c16f9bf846b"
+      }
+    },
+    {
+      "label": "behavior01-lifecycle",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-lifecycle-vzew58ei/report.json",
+      "report_sha256": "132794ddfed9be5955eb885b3852e30332f9cfae2fd77d4b9ee2c4df8fd168b7",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-lifecycle",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_lifecycle.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4d34ee3a-4649-48aa-a88f-c1292caae6df",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_lifecycle.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:02:21.382569+00:00",
+        "label": "behavior01-lifecycle",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-lifecycle-vzew58ei/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-lifecycle-vzew58ei/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 35.283518,
+        "log_bytes": 10945,
+        "log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f"
+      }
+    },
+    {
+      "label": "behavior01-seeds_timing",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-seeds_timing-3rauj8i7/report.json",
+      "report_sha256": "e976192a46a122d7dc3abfa378e6ce60b9cb8d3419fc3589c19d3509761849c7",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-seeds_timing",
+        "--timeout",
+        "900",
+        "--require-text",
+        "0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_seeds_timing.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "1c34df83-a764-4b41-b8e2-1c2605952517",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_seeds_timing.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:02:56.701118+00:00",
+        "label": "behavior01-seeds_timing",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-seeds_timing-3rauj8i7/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-seeds_timing-3rauj8i7/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.607929,
+        "log_bytes": 3896,
+        "log_sha256": "29ddc60ee47b9532aef026f11d1862319d62835235b18f73f5e8ebe4c746c115"
+      }
+    },
+    {
+      "label": "behavior01-home-no-override",
+      "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-home-no-override-g3zbuycm/report.json",
+      "report_sha256": "bbb0221db083534cc0ecd297bc03209205efd01e3c9409732754a8b7dc10cbc3",
+      "command": [
+        "/Users/gius/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tools/godot/run_checked.py",
+        "--out-dir",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence",
+        "--label",
+        "behavior01-home-no-override",
+        "--timeout",
+        "900",
+        "--require-text",
+        "ok   the manager starts three real AI pilots",
+        "--require-text",
+        "Companions shell: 0 failed",
+        "--",
+        "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-home-no-override.gd"
+      ],
+      "result": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "8202c5b3-14d0-4f34-a00f-124038c83465",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source/tmp/macos-default/behavior01/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-home-no-override.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/source",
+        "started_utc": "2026-11-13T15:03:02.343364+00:00",
+        "label": "behavior01-home-no-override",
+        "log": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-home-no-override-g3zbuycm/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/behavior01-home-no-override-g3zbuycm/report.json",
+        "timeout_seconds": 900.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "ok   the manager starts three real AI pilots",
+          "Companions shell: 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 18.867381,
+        "log_bytes": 6545,
+        "log_sha256": "563fd48d11c58249bb4ac593355e7d204858440a52bd8aa075b7f6a1f107d5ab"
+      }
+    }
+  ],
+  "visible_source_inventory_unchanged": true,
+  "debug_admission": {
+    "artifact": "/Users/gius/OpenRC-m1-work/macos-native-default-20261113T125500Z/evidence/companion-admission01-results.json",
+    "artifact_sha256": "36d7a4a048e03da39e46c5d17624614cdd328b7582edf8a20562d1d75d0eeeac",
+    "result": {
+      "companions": {
+        "active": 3,
+        "airborne": 3,
+        "requested": 3,
+        "faulted": 0,
+        "crashed": 0,
+        "seed": 1,
+        "error": "",
+        "removed": false,
+        "last_tick_usec": 1804,
+        "ticks": 31,
+        "observation_batches": 8,
+        "timing": {
+          "format": "openrc-companion-timing v1",
+          "detailed": false,
+          "paired_tick_usec": 1804,
+          "before_usec": 1,
+          "after_usec": 1803
+        },
+        "config": {
+          "enabled": true,
+          "count": 3,
+          "seed": 1,
+          "aircraft_id": "jensen-das-ugly-stik-60",
+          "activity": "circuits",
+          "pilot": "experienced",
+          "incidents_enabled": false,
+          "engine_volume": 1.0,
+          "show_labels": false,
+          "label_distance_m": 250.0
+        },
+        "profile_identity": {
+          "format": "openrc-ai-profile-identity v2",
+          "aircraft_id": "jensen-das-ugly-stik-60",
+          "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+          "aircraft_data_format": "openrc-aircraft v2",
+          "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+          "controller_path": "res://ai/companions/pilot.gd",
+          "controller_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+          "controller_dependencies": {
+            "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+          },
+          "behavior_manifest_path": "res://data/ai/companions/behavior-manifest.json",
+          "behavior_manifest_format": "openrc-ai-behavior-manifest v1",
+          "behavior_manifest_sha256": "0e3daf99ac0bdd76f799986cfd6c73ebad87324808fa34f92a674ce55425955d",
+          "behavior_normalization": "utf8-lf",
+          "solver_sha256": "f60ac8ed1339556c996e395a6167da3e502d56376310c44c7b3a13f56e8f2867",
+          "solver_qualification_sha256": "f60ac8ed1339556c996e395a6167da3e502d56376310c44c7b3a13f56e8f2867",
+          "solver_normalization": "utf8-lf",
+          "engine_version": "4.8.beta2.official.cafc17a19",
+          "field_profile_id": "club-default",
+          "field_data_path": "res://data/fields/default.json",
+          "field_data_format": "openrc-field v1",
+          "field_data_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+          "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+          "aircraft_profile_sha256": "1c9da247c6bad647bacd0450d3b3e36e05740c82f19a84c633916cefb11670ec",
+          "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+          "field_profile_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611"
+        },
+        "seed_allocation": {
+          "format": "openrc-companion-seeds v1",
+          "domain": "openrc/companions/turbulence/v1",
+          "player_seed": 0,
+          "traffic_seed": 1,
+          "count": 3,
+          "allocations": [
+            {
+              "actor_id": "companion-0",
+              "slot": 0,
+              "seed": 3269300042,
+              "nonce": 0,
+              "initial_rng_state_hex": "943f24df9e1a9efa"
+            },
+            {
+              "actor_id": "companion-1",
+              "slot": 1,
+              "seed": 3688718101,
+              "nonce": 0,
+              "initial_rng_state_hex": "437b58614da858c0"
+            },
+            {
+              "actor_id": "companion-2",
+              "slot": 2,
+              "seed": 2424114590,
+              "nonce": 0,
+              "initial_rng_state_hex": "5820bd9ab14d91ed"
+            }
+          ]
+        },
+        "seed_weather": {
+          "weather_has_seed": false,
+          "turbulence_active": false
+        },
+        "airspace_report": {
+          "policy": "openrc-ai-static-circuit v1",
+          "scope": "nominal_circuit_corridor",
+          "count": 3,
+          "center_north_m": 199.0,
+          "center_east_m": 0.0,
+          "radius_m": 80.0,
+          "inner_radius_m": 67.09490265185313,
+          "outer_radius_m": 92.90509734814687,
+          "corridors": [
+            {
+              "slot": 0,
+              "center_height_m": 35.0,
+              "min_height_m": 30.094902651853136,
+              "max_height_m": 39.90509734814686
+            },
+            {
+              "slot": 1,
+              "center_height_m": 55.0,
+              "min_height_m": 50.09490265185314,
+              "max_height_m": 59.90509734814686
+            },
+            {
+              "slot": 2,
+              "center_height_m": 75.0,
+              "min_height_m": 70.09490265185313,
+              "max_height_m": 79.90509734814687
+            }
+          ],
+          "aircraft_radius_m": 0.9050973481468628,
+          "radial_allowance_m": 10.0,
+          "vertical_allowance_m": 2.0,
+          "obstacle_clearance_m": 2.0,
+          "exclusion_margin_m": 30.0,
+          "ground_upper_m": 0.007,
+          "collision_enabled": true,
+          "collision_world_identity": "ea0bdec4c9ae6307f0c6a1cac39c89c950526ef4288556169b36a283335e1048",
+          "geometry_sha256": "7c8f06575df66af7366b28db9d1c6a7285439d7bfd54e4966a3cbdf6073a34cb",
+          "proxy_count": 6092,
+          "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "protected_proxy_count": 62,
+          "minimum_vertical_gap_after_allowances_m": 28.294902651853135,
+          "identity": "7b52e808a2e82ec616e6f7fca1c5899cb7e24ca1473e68051f69625d050b0ac1"
+        },
+        "recording": {
+          "active": false,
+          "complete": false,
+          "error": "",
+          "directory": ""
+        },
+        "requested_count": 3,
+        "admitted_count": 3,
+        "pending_count": 3,
+        "pending_restart": false,
+        "requested_config": {
+          "enabled": true,
+          "count": 3,
+          "seed": 1,
+          "aircraft_id": "jensen-das-ugly-stik-60",
+          "activity": "circuits",
+          "pilot": "experienced",
+          "incidents_enabled": false,
+          "engine_volume": 1.0,
+          "show_labels": false,
+          "label_distance_m": 250.0
+        },
+        "admitted_config": {
+          "enabled": true,
+          "count": 3,
+          "seed": 1,
+          "aircraft_id": "jensen-das-ugly-stik-60",
+          "activity": "circuits",
+          "pilot": "experienced",
+          "incidents_enabled": false,
+          "engine_volume": 1.0,
+          "show_labels": false,
+          "label_distance_m": 250.0
+        },
+        "in_flight": true
+      },
+      "backend": {
+        "requested": "native",
+        "identity": {
+          "backend": "gdscript_reference"
+        },
+        "reason": "Mac native default qualification is unavailable; explicit experimental fixed-wing opt-in remains available"
+      },
+      "state_first": {
+        "frame": 7,
+        "fps": 1.0,
+        "time_scale": 1.0,
+        "tree_paused": false,
+        "log_seq": 9,
+        "route": "flight",
+        "screens": [],
+        "focus": "",
+        "sticks_override": {},
+        "log_counts": {
+          "info": 6,
+          "event": 3
+        },
+        "realtime_factor": -1.0,
+        "bridge_usec": 10.976993625,
+        "flight": {
+          "aircraft": "jensen-das-ugly-stik-60",
+          "tick": 47,
+          "time_s": 0.19583333333333333,
+          "paused": false,
+          "fault": "",
+          "pause_reason": "",
+          "holds": [],
+          "crashed": false,
+          "radio_connected": false,
+          "commands": {
+            "roll": 0.0,
+            "pitch": 0.0,
+            "yaw": 0.0,
+            "throttle": 0.49999999945363965
+          },
+          "raw": {
+            "roll": 0.0,
+            "pitch": 0.0,
+            "yaw": 0.0,
+            "throttle": 0.0
+          },
+          "position_ned_m": [
+            60.008095227807054,
+            -35.96641529348384,
+            -30.0
+          ],
+          "height_m": 30.0,
+          "velocity_body_mps": [
+            20.588961610822984,
+            -0.041337333482127384,
+            0.5763975270506206
+          ],
+          "speed_mps": 20.597069769660735,
+          "attitude_deg": {
+            "roll": 0.0,
+            "pitch": 1.6036030629260973,
+            "heading": 90.0
+          },
+          "rates_body_degps": [
+            -5.92840406758049e-15,
+            -2.024320118461061e-15,
+            -1.8291674491489573e-15
+          ]
+        },
+        "snapshot_frame": 7,
+        "snapshot_age_ms": 48
+      },
+      "state_second": {
+        "frame": 13,
+        "fps": 1.0,
+        "time_scale": 1.0,
+        "tree_paused": false,
+        "log_seq": 9,
+        "route": "flight",
+        "screens": [],
+        "focus": "",
+        "sticks_override": {},
+        "log_counts": {
+          "info": 6,
+          "event": 3
+        },
+        "realtime_factor": -1.0,
+        "bridge_usec": 16.103561715929825,
+        "flight": {
+          "aircraft": "jensen-das-ugly-stik-60",
+          "tick": 60,
+          "time_s": 0.25,
+          "paused": false,
+          "fault": "",
+          "pause_reason": "",
+          "holds": [],
+          "crashed": false,
+          "radio_connected": false,
+          "commands": {
+            "roll": 0.0,
+            "pitch": 0.0,
+            "yaw": 0.0,
+            "throttle": 0.49999999945363965
+          },
+          "raw": {
+            "roll": 0.0,
+            "pitch": 0.0,
+            "yaw": 0.0,
+            "throttle": 0.0
+          },
+          "position_ned_m": [
+            60.01033433337071,
+            -34.85074292785171,
+            -30.0
+          ],
+          "height_m": 30.0,
+          "velocity_body_mps": [
+            20.588961610822984,
+            -0.041337333482127384,
+            0.5763975270506206
+          ],
+          "speed_mps": 20.597069769660735,
+          "attitude_deg": {
+            "roll": 0.0,
+            "pitch": 1.6036030629260973,
+            "heading": 90.0
+          },
+          "rates_body_degps": [
+            -6.09083646202856e-15,
+            -2.0876233207959646e-15,
+            -2.3575978736103993e-15
+          ]
+        },
+        "snapshot_frame": 13,
+        "snapshot_age_ms": 42
+      }
+    },
+    "stop": {
+      "stopped": true,
+      "pid": 22044,
+      "forced": false,
+      "launcher_exit_code": null,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "teardown_note": "Quick Flight has no Home return route; Home refused while retaining the session. Official debugctl stop closed the owned process gracefully with zero leaked objects."
+  },
+  "limits": "No physical validation, exact replay, native companion acceleration, rendered performance or public distribution claim. Nine same-host reference tapes have their own solver-rebind receipt."
+}

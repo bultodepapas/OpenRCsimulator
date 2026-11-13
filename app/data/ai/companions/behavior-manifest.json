@@ -15,7 +15,7 @@
     "res://app_root.gd": "eafe1598fb98ee4623ccf70abf6b41ac638005c3cac354295d29a74acf64433e",
     "res://data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
     "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
-    "res://main.gd": "9e6d45984b09ecb3f43628e44150cfc140078dd5fa07094de780e00eaf79f81b",
+    "res://main.gd": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09",
     "res://scenery/collision_world.gd": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
     "res://workshop/strict_json.gd": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
   }
