@@ -454,6 +454,7 @@ fi
 if [[ "$TEST_PART" != all && "$TEST_PART" != integration && "$TEST_PART" != integration-runtime ]]; then exit 0; fi
 
 echo "== H7: exact one-ulp math sensitivity and golden branch signatures"
+python3 "$HERE/tests/test_check_math_sensitivity_imports.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
 
 echo "== L5: invalid field files fail before Home or flight can start"

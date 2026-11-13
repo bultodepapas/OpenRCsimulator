@@ -13,6 +13,7 @@ import struct
 import subprocess
 import tempfile
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 
 APP_ROOT = Path(__file__).resolve().parents[1]
@@ -335,23 +336,67 @@ def mutate_branch(project: Path) -> None:
     path.write_text(source, encoding="utf-8")
 
 
+def scene_image_resources(source: Path, resource: str) -> set[str]:
+    """Find external images that Godot's imported glTF scene still references."""
+    scene = source / resource
+    if scene.suffix.lower() == ".gltf":
+        document = json.loads(scene.read_text(encoding="utf-8"))
+    else:
+        with scene.open("rb") as stream:
+            header = stream.read(20)
+            if len(header) != 20:
+                raise RuntimeError(f"truncated glTF binary: {scene}")
+            magic, version, length, json_length, chunk = struct.unpack("<4sIII4s", header)
+            if (magic != b"glTF" or version != 2 or chunk != b"JSON" or length != scene.stat().st_size
+                    or json_length > length - 20 or json_length > 16 * 1024 * 1024):
+                raise RuntimeError(f"invalid glTF binary header: {scene}")
+            document = json.loads(stream.read(json_length).decode("utf-8"))
+    result = set()
+    for image in document.get("images", []):
+        uri = image.get("uri")
+        if uri is None or (isinstance(uri, str) and uri.lower().startswith("data:")):
+            continue  # Embedded buffer views and data URIs need no external cache.
+        if not isinstance(uri, str):
+            raise RuntimeError(f"invalid glTF image URI in {scene}")
+        parsed = urlsplit(uri)
+        name = unquote(parsed.path, errors="strict")
+        if (not name or parsed.scheme or parsed.netloc or parsed.query or parsed.fragment
+                or "\\" in name or "\0" in name or Path(name).is_absolute()):
+            raise RuntimeError(f"unsupported glTF image URI in {scene}: {uri}")
+        image_path = (scene.parent / name).resolve()
+        if not image_path.is_relative_to(source.resolve()) or not image_path.is_file():
+            raise RuntimeError(f"glTF image is missing or outside the project: {uri}")
+        result.add(image_path.relative_to(source.resolve()).as_posix())
+    return result
+
+
 def stage_render_imports(source: Path, destination: Path) -> None:
-    """Copy imported caches for static render/scenery resource references.
+    """Copy imported caches for static render, scenery and font references.
 
     H7 copies a clean source tree for each mutation and intentionally excludes the
     editor cache. FlightSession still preloads scenery/render scripts, whose image
-    resources resolve through `.import` remaps, so stage only those referenced
-    imported outputs rather than copying the full `.godot` directory.
+    resources resolve through `.import` remaps. Imported glTF scenes can also
+    reference external images; stage their remaps and outputs as well.
     """
     resources: set[str] = set()
-    for folder in ("render", "scenery"):
+    for folder in ("render", "scenery", "i18n"):
         for script in (source / folder).rglob("*.gd"):
             text = script.read_text(encoding="utf-8")
             resources.update(RESOURCE_PRELOAD.findall(text))
 
+    scene_images: set[str] = set()
+    for resource in sorted(resources):
+        if Path(resource).suffix.lower() in (".gltf", ".glb"):
+            scene_images.update(scene_image_resources(source, resource))
+    resources.update(scene_images)
+    required_imports = scene_images | {resource for resource in resources
+                                       if Path(resource).suffix.lower() in (".gltf", ".glb", ".otf", ".ttf")}
+
     for resource in sorted(resources):
         import_relative = Path(f"{resource}.import")
         source_import = source / import_relative
+        if resource in required_imports and (not (source / resource).is_file() or not source_import.is_file()):
+            raise RuntimeError(f"required imported resource or remap is missing for {resource}: {source_import}")
         if not source_import.is_file():
             continue
 
