@@ -46,6 +46,8 @@ def main() -> int:
                         help="also check an installed verified Linux native backend and isolated refusal cases")
     parser.add_argument("--battery-guards", action="store_true",
                         help="also check explicit Electric 6S ideal/pack data and unsupported-mode refusals")
+    parser.add_argument("--trim-guards", action="store_true",
+                        help="also check explicit source trim profiles and invalid selector refusal")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     probe = Path(__file__).with_name("session_probe.gd")
@@ -161,6 +163,45 @@ def main() -> int:
                         and isinstance(ideal.get("data_sha256"), str) and isinstance(pack.get("data_sha256"), str)
                         and ideal["data_sha256"] != pack["data_sha256"] and ideal.get("data_path") != pack.get("data_path"))
             results.append({"case": "battery-identities-distinct", "passed": distinct})
+        if args.trim_guards:
+            for profile, expected_success in (("production", True), ("reference", True), ("invalid", False)):
+                name = "trim-" + profile
+                path = out / (name + ".json")
+                command = [str(engine), "--headless", "--path", str(root / "app"), "--script", str(probe), "--",
+                           f"--output={path}", "--warmup-ticks=2", "--sample-ticks=8", "--observer=on",
+                           "--physics-backend=gdscript_reference", f"--trim-profile={profile}"]
+                run = subprocess.run(command, capture_output=True, timeout=120)
+                log = run.stdout + run.stderr
+                (out / (name + ".log")).write_bytes(log)
+                report = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+                clean = not ENGINE_ERROR_RE.search(log.decode("utf-8", errors="replace"))
+                if expected_success:
+                    passed = (clean and run.returncode == 0 and isinstance(report, dict)
+                              and report.get("complete") is True
+                              and not validate_probe_report(report, expected={"trim_profile": profile}))
+                else:
+                    passed = (clean and run.returncode != 0 and report is None
+                              and "trim-profile must be reference or production" in log.decode("utf-8", errors="replace"))
+                results.append({"case": name, "passed": bool(passed), "exit_code": run.returncode, "command": command})
+            needle = 'if _trim_explicit and _trim_profile == "production": _session.trim_throttle = 0.5'
+            if source.count(needle) != 1:
+                raise RuntimeError("production trim mutation seam changed")
+            mutated_script = temporary_path / "trim-selector-mutated.gd"
+            mutated_script.write_text(source.replace(needle, needle.replace("= 0.5", "= 0.4"), 1), encoding="utf-8")
+            path = out / "trim-selector-mutated.json"
+            command = [str(engine), "--headless", "--path", str(root / "app"), "--script", str(mutated_script), "--",
+                       f"--output={path}", "--warmup-ticks=2", "--sample-ticks=8", "--observer=on",
+                       "--physics-backend=gdscript_reference", "--trim-profile=production"]
+            run = subprocess.run(command, capture_output=True, timeout=120)
+            log = run.stdout + run.stderr
+            (out / "trim-selector-mutated.log").write_bytes(log)
+            report = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+            passed = (run.returncode != 0 and not ENGINE_ERROR_RE.search(log.decode("utf-8", errors="replace"))
+                      and isinstance(report, dict) and report.get("complete") is False
+                      and "production start did not select and solve for 0.5 throttle" in report.get("failure", ""))
+            results.append({"case": "trim-selector-mutated", "passed": bool(passed),
+                            "exit_code": run.returncode, "command": command,
+                            "script_sha256": hashlib.sha256(mutated_script.read_bytes()).hexdigest()})
     for name, left, right, expected in (
         ("unchanged-observer-parity", "control-on", "control-off", True),
         ("altered-observer-rejected", "altered-observer", "control-off", False),
@@ -181,6 +222,8 @@ def main() -> int:
     }
     if args.battery_guards:
         verification["battery_guards_requested"] = True
+    if args.trim_guards:
+        verification["trim_guards_requested"] = True
     (out / "verification.json").write_text(json.dumps(verification, indent=2) + "\n", encoding="utf-8")
     print(f"session probe verification: {sum(c['passed'] for c in results)}/{len(results)} passed")
     return 0 if complete else 1

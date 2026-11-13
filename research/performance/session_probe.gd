@@ -9,12 +9,20 @@ const LakeLoader := preload("res://data/lake_loader.gd")
 const CollisionSetup := preload("res://scenery/collision_setup.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
+const MacosDomain := preload("res://sim/native_macos_domain.gd")
 
 var _session: Node
 var _case := "trim"
 var _aircraft := Catalog.DEFAULT_ID
 var _battery_mode := "ideal"
 var _battery_explicit := false
+var _trim_profile := "reference"
+var _trim_explicit := false
+var _start_sha256 := ""
+var _selected_trim_value: Variant = null
+var _requested_trim_value: Variant = null
+var _domain_guard_checks := 0
+var _domain_guard_final := false
 var _aircraft_data := ""
 var _aircraft_data_sha256 := ""
 var _battery_dynamic := false
@@ -72,6 +80,10 @@ func _parse() -> bool:
 				if pair[1] not in ["ideal", "pack"]: return _fail("battery must be ideal or pack")
 				_battery_mode = pair[1]
 				_battery_explicit = true
+			"trim-profile":
+				if pair[1] not in ["reference", "production"]: return _fail("trim-profile must be reference or production")
+				_trim_profile = pair[1]
+				_trim_explicit = true
 			"case": _case = pair[1]
 			"physics-backend":
 				if pair[1] not in ["gdscript_reference", "native"]:
@@ -126,6 +138,7 @@ func _prepare() -> bool:
 	if _world.get("proxies", []).is_empty(): return _fail("full scenery inventory is required")
 	_session = Session.new()
 	_session.experimental_native_macos = _experimental_native_macos
+	if _trim_explicit and _trim_profile == "production": _session.trim_throttle = 0.5
 	if not _session.setup_stage_backend(_backend_requested):
 		return _fail("backend selection failed: " + str(_session.stage_backend_error))
 	# Never attach to the tree: real devices and scheduler cannot interfere with the declared input sequence.
@@ -159,6 +172,15 @@ func _prepare() -> bool:
 	_session.reset()
 	_setup_usec.environment_and_reset = Time.get_ticks_usec() - started
 	if not _healthy(): return false
+	if _trim_explicit and _trim_profile == "production":
+		if _session.selected_trim_throttle() != 0.5 or _session.start.get("requested_throttle") != 0.5:
+			return _fail("production start did not select and solve for 0.5 throttle")
+		_start_sha256 = MacosDomain.start_sha256(_session.start, true)
+		if _start_sha256.is_empty(): return _fail("production solved start identity is unavailable")
+		_selected_trim_value = _session.selected_trim_throttle()
+		_requested_trim_value = _session.start.get("requested_throttle")
+	elif _trim_explicit and not is_nan(_session.selected_trim_throttle()):
+		return _fail("reference trim unexpectedly selected a throttle")
 	var status: Dictionary = _session.stage_backend_status()
 	_backend_identity = status.identity
 	if status.requested != _backend_requested or _backend_identity.get("backend") != _backend_requested:
@@ -220,7 +242,19 @@ func _advance(measure: bool) -> bool:
 func _backend_healthy() -> bool:
 	if _session.sim.model.stage != _backend_stage or _session.stage_backend_identity() != _backend_identity:
 		return _fail("stage backend changed during the run")
+	if _trim_explicit and _trim_profile == "production":
+		var guard := _domain_guard_active()
+		if guard != (_backend_requested == "native"):
+			return _fail("production Mac domain guard is missing or changed")
+		_domain_guard_checks += 1
 	return true
+
+
+func _domain_guard_active() -> bool:
+	if _session == null or _session._native_stage == null or not is_instance_valid(_session._native_stage): return false
+	if _session._native_stage._native == null or not is_instance_valid(_session._native_stage._native): return false
+	return not _session._native_stage._macos_domain_context.is_empty() \
+		and _session._native_stage._macos_domain_matches(_session)
 
 
 func _healthy() -> bool:
@@ -259,6 +293,12 @@ func _run() -> void:
 				or str(_session.aircraft.get("input_identity", {}).get("sha256", "")) != _aircraft_data_sha256 \
 				or _session.battery_is_dynamic() != _battery_dynamic or _session.battery_is_pack() != _battery_pack:
 			_fail("selected aircraft data or battery mode changed during the probe")
+	if _trim_explicit and _trim_profile == "production" and _failure.is_empty():
+		_domain_guard_final = _domain_guard_active()
+		if _session.selected_trim_throttle() != 0.5 or _session.start.get("requested_throttle") != 0.5 \
+				or MacosDomain.start_sha256(_session.start, true) != _start_sha256 \
+				or _domain_guard_final != (_backend_requested == "native"):
+			_fail("production start or Mac domain guard changed during the probe")
 	var log_script: Script = FlightLog
 	var accepts_backend := false
 	for method: Dictionary in log_script.get_script_method_list():
@@ -302,6 +342,12 @@ func _run() -> void:
 	if _battery_explicit:
 		report["battery"] = {mode = _battery_mode, data_path = _aircraft_data, data_sha256 = _aircraft_data_sha256,
 			dynamic = _battery_dynamic, pack = _battery_pack}
+	if _trim_explicit:
+		report["trim_profile"] = _trim_profile
+		if _trim_profile == "production":
+			report["trim_start"] = {selected_throttle = _selected_trim_value,
+				requested_throttle = _requested_trim_value, start_sha256 = _start_sha256,
+				backend_domain_guard = _domain_guard_final, domain_guard_checks = _domain_guard_checks}
 	var file := FileAccess.open(_output, FileAccess.WRITE)
 	if file == null:
 		_failure = "cannot open output: " + str(FileAccess.get_open_error())

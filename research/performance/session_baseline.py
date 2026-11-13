@@ -320,6 +320,38 @@ def validate_probe_report(
                 elif complete is True and (battery["pack"] != (mode == "pack")
                                             or (battery["pack"] and not battery["dynamic"])):
                     errors.append("battery mode does not match the actual session")
+        trim = report.get("trim_profile")
+        if "trim_profile" not in report:
+            if "trim_start" in report:
+                errors.append("trim start proof requires an explicit trim profile")
+        elif trim not in ("reference", "production"):
+            errors.append("trim profile must be reference or production")
+        elif trim == "reference":
+            if "trim_start" in report:
+                errors.append("reference trim must not claim production start proof")
+        elif complete is True:
+            start = report.get("trim_start")
+            fields = {"selected_throttle", "requested_throttle", "start_sha256", "backend_domain_guard", "domain_guard_checks"}
+            if not isinstance(start, dict) or set(start) != fields:
+                errors.append("production trim requires exact start and domain guard proof")
+            else:
+                for field in ("selected_throttle", "requested_throttle"):
+                    if type(start.get(field)) not in (float, int) or start[field] != 0.5:
+                        errors.append(f"production trim {field} must equal 0.5")
+                digest = start.get("start_sha256")
+                if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+                    errors.append("production trim start SHA-256 is invalid")
+                backend_proof = report.get("backend")
+                role = backend_proof.get("requested") if isinstance(backend_proof, dict) else None
+                guard = start.get("backend_domain_guard")
+                if type(guard) is not bool or role not in ("native", "gdscript_reference") or guard != (role == "native"):
+                    errors.append("production trim domain guard does not match the requested backend")
+                if role == "native" and (not isinstance(machine, dict) or machine.get("os") != "macOS"
+                        or machine.get("architecture") != "arm64" or report.get("experimental_native_macos") is not True):
+                    errors.append("production native domain proof requires opted-in Mac ARM64")
+                count = start.get("domain_guard_checks")
+                if not _is_int(count) or completed is None or count < 1 + 2 * sum(completed.values()):
+                    errors.append("production domain guard checks must cover both boundaries of every tick")
         kind = report.get("solver_identity_kind")
         if kind is not None and kind not in ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1",
                                               MAC_RECEIPT.NATIVE_KIND):
@@ -393,6 +425,11 @@ def validate_probe_report(
                     or (expected["battery"] is not None and
                         (not isinstance(battery, dict) or battery.get("mode") != expected["battery"]))):
                 errors.append("battery mode does not match requested run")
+        if "trim_profile" in expected:
+            trim = expected["trim_profile"]
+            if ((trim is None and ("trim_profile" in report or "trim_start" in report))
+                    or (trim is not None and report.get("trim_profile") != trim)):
+                errors.append("trim profile does not match requested run")
         if "godot" in expected and (not isinstance(machine, dict) or machine.get("godot") != expected["godot"]):
             errors.append("machine.godot does not match requested run")
 
@@ -493,7 +530,7 @@ def reduce_pair(on_report: dict[str, Any] | None, off_report: dict[str, Any] | N
         if not machine_equal:
             reasons.append("observer modes reported different machines")
 
-        for key in ("format", "aircraft_id", "case_id", "requested", "completed", "final_tick", "backend", "battery",
+        for key in ("format", "aircraft_id", "case_id", "requested", "completed", "final_tick", "backend", "battery", "trim_profile", "trim_start",
                     "fingerprint_boundaries", "solver_sha256", "solver_identity_kind", "template_release",
                     "probe_sha256", "aircraft_sha256"):
             if on_report.get(key) != off_report.get(key):
@@ -557,9 +594,15 @@ def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any]
     if isinstance(reference, dict) and isinstance(native, dict):
         for key in ("fingerprint", "fingerprint_boundaries", "template_release", "probe_sha256", "aircraft_sha256",
                     "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads",
-                    "world", "machine", "tick_hz", "battery"):
+                    "world", "machine", "tick_hz", "battery", "trim_profile"):
             if reference.get(key) != native.get(key):
                 reasons.append(f"backends differ in {key}")
+        if reference.get("trim_profile") == "production" and native.get("trim_profile") == "production":
+            left, right = reference.get("trim_start"), native.get("trim_start")
+            if isinstance(left, dict) and isinstance(right, dict):
+                for field in ("selected_throttle", "requested_throttle", "start_sha256"):
+                    if left.get(field) != right.get(field):
+                        reasons.append(f"backends differ in production start {field}")
         mac_release = mac_reference_identity is not None or mac_native_identity is not None
         if mac_release:
             error = mac_release_identity_error(mac_reference_identity, mac_native_identity)
@@ -614,7 +657,7 @@ def reduce_identical_pair(a: dict[str, Any] | None, b: dict[str, Any] | None, ba
     if isinstance(a, dict) and isinstance(b, dict):
         for key in ("fingerprint", "fingerprint_boundaries", "template_release", "probe_sha256", "aircraft_sha256",
                     "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads", "world",
-                    "machine", "tick_hz", "solver_sha256", "solver_identity_kind", "battery"):
+                    "machine", "tick_hz", "solver_sha256", "solver_identity_kind", "battery", "trim_profile", "trim_start"):
             if a.get(key) != b.get(key):
                 reasons.append(f"identical roles differ in {key}")
         if a.get("experimental_native_macos", False) != b.get("experimental_native_macos", False):
@@ -902,6 +945,7 @@ def _run_probe(
     experimental_native_macos: bool = False,
     mac_source_identity: dict[str, Any] | None = None,
     battery: str | None = None,
+    trim_profile: str | None = None,
 ) -> dict[str, Any]:
     command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
                 "--native-qualification=session"] if release_executable else
@@ -917,6 +961,8 @@ def _run_probe(
     ]
     if battery is not None:
         command.append(f"--battery={battery}")
+    if trim_profile is not None:
+        command.append(f"--trim-profile={trim_profile}")
     if experimental_native_macos:
         command.append("--experimental-native-macos=true")
     def refused(reason: str) -> dict[str, Any]:
@@ -925,6 +971,10 @@ def _run_probe(
                 "report": None, "validation_errors": [], "failures": [reason], "accepted": False}
     if battery not in (None, "ideal", "pack"):
         return refused("battery mode must be ideal or pack")
+    if trim_profile not in (None, "reference", "production"):
+        return refused("trim profile must be reference or production")
+    if release_executable and trim_profile is not None:
+        return refused("explicit trim profile requires a source-editor campaign")
     if mac_native_identity is not None and (not release_executable or not experimental_native_macos
                                             or mac_identity is None or mac_source_identity is not None):
         return refused("Mac native release requires explicit opt-in and both linked bundle identities")
@@ -984,6 +1034,7 @@ def _run_probe(
         "observer": observer,
         "physics_backend": physics_backend,
         "battery": battery,
+        "trim_profile": trim_profile,
         "godot": REQUIRED_GODOT_REPORT,
         "requested": {"warmup_ticks": warmup_ticks, "sample_ticks": sample_ticks},
     }
@@ -1145,6 +1196,9 @@ def _safe_report_view(run: dict[str, Any]) -> dict[str, Any]:
     }
     if "battery" in report:
         view["battery"] = report["battery"]
+    for field in ("trim_profile", "trim_start"):
+        if field in report:
+            view[field] = report[field]
     return view
 
 
@@ -1194,6 +1248,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--case", action="append", help="trim, maneuver, runway, or lake; repeat or comma-separate")
     parser.add_argument("--battery", choices=("ideal", "pack"),
                         help="explicit catalog data mode; without this option the historical ideal profile is used")
+    parser.add_argument("--trim-profile", choices=("reference", "production"),
+                        help="explicit source trim profile; production selects 0.5 throttle before setup")
     parser.add_argument("--warmup-ticks", type=int, default=2400)
     parser.add_argument("--sample-ticks", type=int, default=14400)
     parser.add_argument("--repeats", type=int, default=3)
@@ -1260,6 +1316,8 @@ def run_campaign(args: argparse.Namespace) -> int:
     }
     if args.battery is not None:
         config["battery"] = args.battery
+    if args.trim_profile is not None:
+        config["trim_profile"] = args.trim_profile
     failures: list[str] = []
     pairs: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
@@ -1372,6 +1430,7 @@ def run_campaign(args: argparse.Namespace) -> int:
                             experimental_native_macos=args.experimental_native_macos,
                             mac_source_identity=metadata.get("mac_source_install"),
                             battery=args.battery,
+                            trim_profile=args.trim_profile,
                         )
                         if ("mac_native_bundle" in metadata or identical) and run["accepted"]:
                             try:
@@ -1544,12 +1603,17 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
     battery = config.get("battery")
     if "battery" in config and battery not in ("ideal", "pack"):
         raise ValueError(f"{path}: invalid battery mode")
+    trim_profile = config.get("trim_profile")
+    if "trim_profile" in config and trim_profile not in ("reference", "production"):
+        raise ValueError(f"{path}: invalid trim profile")
     experimental = config.get("experimental_native_macos", False)
     if type(experimental) is not bool:
         raise ValueError(f"{path}: malformed experimental Mac opt-in")
     release = config.get("release_executable", False)
     if type(release) is not bool:
         raise ValueError(f"{path}: malformed release mode")
+    if release and trim_profile is not None:
+        raise ValueError(f"{path}: explicit trim profile requires source-editor mode")
     project = metadata.get("project")
     if project is not None and (not isinstance(project, dict) or not isinstance(project.get("path"), str)
                                 or not isinstance(project.get("inventory_before"), dict)
@@ -1652,6 +1716,9 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
             if ((battery is None and "battery" in report) or (battery is not None
                     and (not isinstance(report_battery, dict) or report_battery.get("mode") != battery))):
                 raise ValueError(f"{path}: raw report differs from the requested battery mode")
+            if ((trim_profile is None and ("trim_profile" in report or "trim_start" in report))
+                    or (trim_profile is not None and report.get("trim_profile") != trim_profile)):
+                raise ValueError(f"{path}: raw report differs from the requested trim profile")
             if mac_release and report.get("machine", {}).get("godot") != REQUIRED_GODOT_REPORT:
                 raise ValueError(f"{path}: raw report does not identify the pinned release engine")
         identity = raw["native"]["backend"]["actual"]
@@ -1704,6 +1771,8 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
             failures.append("campaign configuration differs in experimental_native_macos")
         if before["configuration"].get("battery") != after["configuration"].get("battery"):
             failures.append("campaign configuration differs in battery")
+        if before["configuration"].get("trim_profile") != after["configuration"].get("trim_profile"):
+            failures.append("campaign configuration differs in trim_profile")
         for key in ("app_source_sha256", "system"):
             if not old_meta.get(key) or old_meta.get(key) != new_meta.get(key):
                 failures.append(f"campaign metadata differs in {key}")
@@ -1718,7 +1787,7 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
             old, new = old_runs[key], new_runs[key]
             for field in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "solver_identity_kind",
                           "template_release", "probe_sha256", "aircraft_sha256",
-                          "world", "machine", "requested", "completed", "final_tick", "input_reads", "battery"):
+                          "world", "machine", "requested", "completed", "final_tick", "input_reads", "battery", "trim_profile", "trim_start"):
                 if old["raw"]["reference"].get(field) != new["raw"]["reference"].get(field):
                     failures.append(f"{key}: reference reports differ in {field}")
             old_id = old["raw"]["native"]["backend"]["actual"]
@@ -1761,11 +1830,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.compare_campaigns:
             if args.release_executable:
                 raise ValueError("--release-executable applies to a new campaign, not a campaign comparison")
-            if args.project is not None or args.experimental_native_macos or args.battery is not None:
-                raise ValueError("--project, --experimental-native-macos and --battery apply to a new campaign")
+            if args.project is not None or args.experimental_native_macos or args.battery is not None or args.trim_profile is not None:
+                raise ValueError("--project, --experimental-native-macos, --battery and --trim-profile apply to a new campaign")
             return compare_campaigns(*args.compare_campaigns, args.out)
         if not args.godot:
             raise ValueError("--godot is required for a campaign")
+        if args.release_executable and args.trim_profile is not None:
+            raise ValueError("--trim-profile requires a source-editor campaign")
         if args.release_executable and args.probe:
             raise ValueError("--release-executable uses the fixed embedded probe; --probe is not permitted")
         if args.release_executable and args.project is not None:

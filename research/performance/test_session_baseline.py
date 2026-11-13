@@ -1365,7 +1365,8 @@ class BatteryModeTests(unittest.TestCase):
         self.assertFalse(reduce_backend_pair(reference, missing)["comparable"])
 
     def source_campaign(self, root: Path, mode: str | None, *, identical: bool = False,
-                        mismatch: bool = False, file_drift: bool = False):
+                        mismatch: bool = False, file_drift: bool = False, trim_profile: str | None = None,
+                        bad_trim: str = ""):
         app, executable, library, _receipt = PreparedMacSourceTests._installation(self, root)
         (app / "project.godot").write_text("config_version=5\n")
         data_dir = app / "data/aircraft/battery"
@@ -1394,6 +1395,14 @@ class BatteryModeTests(unittest.TestCase):
                 report["experimental_native_macos"] = True
                 if backend == "native":
                     report["backend"]["actual"]["binary_sha256"] = source_identity["binary_sha256"]
+                if trim_profile is not None:
+                    report["trim_profile"] = trim_profile
+                    if trim_profile == "production":
+                        report["trim_start"] = TrimProfileTests.start(backend)
+                        if backend == "native" and bad_trim == "guard":
+                            report["trim_start"]["backend_domain_guard"] = False
+                        if backend == "native" and bad_trim == "drift":
+                            report["trim_start"]["start_sha256"] = "8" * 64
                 output.write_text(json.dumps(report))
             def wait(self, timeout): return 0
         output = root / "campaign"
@@ -1404,6 +1413,8 @@ class BatteryModeTests(unittest.TestCase):
             args += ["--physics-backend", "native"]
         if mode is not None:
             args += ["--battery", mode]
+        if trim_profile is not None:
+            args += ["--trim-profile", trim_profile]
         with patch.object(baseline, "capture_workspace_identity", return_value={}), \
              patch.object(baseline, "capture_system_identity", return_value={"system": "Darwin", "machine": "arm64"}), \
              patch.object(baseline, "inspect_godot", return_value={"sha256": _sha256_file(executable)}), \
@@ -1499,6 +1510,117 @@ class BatteryModeTests(unittest.TestCase):
                 self.assertEqual(baseline.main(["--compare-campaigns", "one.json", "two.json", "--battery", "pack",
                                                 "--out", str(Path(directory) / "out")]), 1)
                 compare.assert_not_called()
+
+
+class TrimProfileTests(unittest.TestCase):
+    @staticmethod
+    def start(backend: str) -> dict:
+        return {"selected_throttle": 0.5, "requested_throttle": 0.5, "start_sha256": "9" * 64,
+                "backend_domain_guard": backend == "native", "domain_guard_checks": 19}
+
+    @classmethod
+    def report(cls, backend: str) -> dict:
+        report = valid_current_report(backend)
+        report["machine"].update(os="macOS", architecture="arm64")
+        report["experimental_native_macos"] = True
+        report.update(template_release=False, solver_identity_kind="source-tree-v1", trim_profile="production",
+                      trim_start=cls.start(backend))
+        return report
+
+    def test_production_proof_requires_start_guard_and_tick_coverage(self):
+        for backend in ("gdscript_reference", "native"):
+            report = self.report(backend)
+            self.assertEqual(validate_probe_report(report, expected={"trim_profile": "production"}), [])
+            mutations = (
+                lambda r: r.pop("trim_start"),
+                lambda r: r["trim_start"].update(selected_throttle=True),
+                lambda r: r["trim_start"].update(requested_throttle=0.6),
+                lambda r: r["trim_start"].update(start_sha256="bad"),
+                lambda r: r["trim_start"].update(backend_domain_guard=backend != "native"),
+                lambda r: r["trim_start"].update(domain_guard_checks=18),
+                lambda r: r["trim_start"].update(domain_guard_checks=True),
+                lambda r: r["trim_start"].update(extra=True),
+                lambda r: r["backend"]["actual"].update(backend="fallback"),
+            )
+            for mutation in mutations:
+                changed = copy.deepcopy(report)
+                mutation(changed)
+                with self.subTest(backend=backend, changed=changed):
+                    self.assertTrue(validate_probe_report(changed, expected={"trim_profile": "production"}))
+        native = self.report("native")
+        native["machine"]["architecture"] = "x86_64"
+        self.assertTrue(validate_probe_report(native))
+        native = self.report("native")
+        native["experimental_native_macos"] = False
+        self.assertTrue(validate_probe_report(native))
+
+    def test_legacy_absence_and_explicit_reference_are_distinct(self):
+        legacy = valid_current_report()
+        self.assertEqual(validate_probe_report(legacy, expected={"trim_profile": None}), [])
+        self.assertTrue(validate_probe_report(legacy, expected={"trim_profile": "production"}))
+        explicit = copy.deepcopy(legacy)
+        explicit["trim_profile"] = "reference"
+        self.assertEqual(validate_probe_report(explicit, expected={"trim_profile": "reference"}), [])
+        self.assertTrue(validate_probe_report(explicit, expected={"trim_profile": None}))
+        explicit["trim_start"] = self.start("gdscript_reference")
+        self.assertTrue(validate_probe_report(explicit))
+
+    def test_pair_rejects_changed_start_or_missing_guard(self):
+        reference, native = self.report("gdscript_reference"), self.report("native")
+        self.assertTrue(reduce_backend_pair(reference, native)["comparable"])
+        self.assertTrue(baseline.reduce_identical_pair(native, copy.deepcopy(native), "native")["comparable"])
+        changed = copy.deepcopy(native)
+        changed["trim_start"]["start_sha256"] = "8" * 64
+        self.assertEqual(validate_probe_report(changed), [])
+        self.assertFalse(reduce_backend_pair(reference, changed)["comparable"])
+        self.assertFalse(baseline.reduce_identical_pair(native, changed, "native")["comparable"])
+        changed = copy.deepcopy(native)
+        changed["trim_start"]["backend_domain_guard"] = False
+        self.assertFalse(reduce_backend_pair(reference, changed)["comparable"])
+
+    def test_source_campaign_forwards_profiles_and_rereader_rejects_downgrade(self):
+        helper = BatteryModeTests()
+        with tempfile.TemporaryDirectory(prefix="session-trim-source-") as directory:
+            code, campaign, commands, output = helper.source_campaign(Path(directory), "pack", trim_profile="production")
+            self.assertEqual(code, 0, campaign["failures"])
+            self.assertEqual(campaign["configuration"]["trim_profile"], "production")
+            self.assertTrue(all("--trim-profile=production" in command for command in commands))
+            self.assertTrue(campaign["pairs"][0]["runs"]["native"]["trim_start"]["backend_domain_guard"])
+            path = output / "session_baseline.json"
+            self.assertEqual(len(baseline._campaign_runs(path)[1]), 1)
+            campaign["configuration"]["trim_profile"] = "reference"
+            path.write_text(json.dumps(campaign))
+            with self.assertRaisesRegex(ValueError, "requested trim profile"):
+                baseline._campaign_runs(path)
+        with tempfile.TemporaryDirectory(prefix="session-trim-reference-") as directory:
+            code, campaign, commands, output = helper.source_campaign(Path(directory), "pack", trim_profile="reference")
+            self.assertEqual(code, 0, campaign["failures"])
+            self.assertTrue(all("--trim-profile=reference" in command for command in commands))
+            self.assertEqual(len(baseline._campaign_runs(output / "session_baseline.json")[1]), 1)
+        with tempfile.TemporaryDirectory(prefix="session-trim-identical-") as directory:
+            code, campaign, commands, _output = helper.source_campaign(Path(directory), "pack", identical=True,
+                                                                       trim_profile="production")
+            self.assertEqual(code, 0, campaign["failures"])
+            self.assertTrue(all("--trim-profile=production" in command for command in commands))
+        for bad in ("guard", "drift"):
+            with self.subTest(bad=bad), tempfile.TemporaryDirectory(prefix="session-trim-bad-") as directory:
+                code, campaign, _commands, _output = helper.source_campaign(Path(directory), "pack", trim_profile="production", bad_trim=bad)
+                self.assertEqual(code, 1)
+                self.assertFalse(campaign["complete"])
+        with tempfile.TemporaryDirectory(prefix="session-trim-default-") as directory:
+            code, campaign, commands, _output = helper.source_campaign(Path(directory), None)
+            self.assertEqual(code, 0, campaign["failures"])
+            self.assertNotIn("trim_profile", campaign["configuration"])
+            self.assertTrue(all(not any(arg.startswith("--trim-profile=") for arg in command) for command in commands))
+            self.assertTrue(all("trim_profile" not in item and "trim_start" not in item
+                                for item in campaign["pairs"][0]["runs"].values()))
+
+    def test_release_and_comparison_do_not_silently_ignore_explicit_profile(self):
+        with patch.object(baseline, "run_campaign") as campaign, patch.object(baseline, "compare_campaigns") as compare:
+            self.assertEqual(baseline.main(["--godot", "fake", "--out", "out", "--release-executable", "--trim-profile", "production"]), 1)
+            self.assertEqual(baseline.main(["--compare-campaigns", "one", "two", "--out", "out", "--trim-profile", "reference"]), 1)
+            campaign.assert_not_called()
+            compare.assert_not_called()
 
 
 if __name__ == "__main__":

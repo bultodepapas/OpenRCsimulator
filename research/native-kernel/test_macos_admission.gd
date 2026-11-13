@@ -36,6 +36,11 @@ func _initialize() -> void:
 		check(not Admission.identity_error(changed, sha, row, sha, "Apple M1").is_empty(), "changed " + key)
 	check(not Admission.identity_error(marker, sha, row, sha, "Apple M2").is_empty(), "other chip")
 	check(Admission.selection_allowed(marker, selection, false), "exact selection")
+	var json_marker: Variant = JSON.parse_string(JSON.stringify(marker))
+	check(json_marker is Dictionary and Admission.identity_error(json_marker, sha, row, sha, "Apple M1").is_empty(),
+		"JSON marker identity round-trip")
+	check(json_marker is Dictionary and Admission.selection_allowed(json_marker, selection, false),
+		"JSON marker selection round-trip")
 	check(not Admission.selection_allowed(marker, selection, true), "other hull")
 	for key: String in ["aircraft", "battery", "start", "weather", "profile", "start_sha256"]:
 		var changed := selection.duplicate(true)
