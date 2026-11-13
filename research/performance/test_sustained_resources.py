@@ -7,11 +7,15 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools" / "godot"))
 
 from research.performance import sustained_resources as reducer
+from research.performance import test_native_summary as frame_fixtures
 from research.performance.test_native_summary import save_benchmark_report, write_backend_benchmark_run
 from test_perfetto_export import resource_report
 from test_macos_host_state import raw_rows, encode as host_encode
@@ -21,10 +25,44 @@ def encoded(value):
     return (json.dumps(value, allow_nan=False) + "\n").encode()
 
 
+def edge_fixture(measured_seconds: int):
+    """Independent 1 Hz frame/counter series spanning an explicitly measured interval."""
+    base = 1_700_000_000_000_000
+    end = (5 + measured_seconds) * 1_000_000
+    frames = {
+        "clock": {"source": "godot_ticks_usec", "origin_usec": 0,
+                  "start": {"monotonic_usec": 1_000_000, "unix_usec": base + 1_000_000,
+                            "uncertainty_usec": 20_000},
+                  "end": {"monotonic_usec": end + 1_000_000, "unix_usec": base + end + 1_000_000,
+                          "uncertainty_usec": 20_000}},
+        "frame_end_monotonic_usec": [(6 + i) * 1_000_000 for i in range(measured_seconds)],
+        "frame_wall_usec": [1_000_000] * measured_seconds,
+        "raw_metrics": {"sim_tick": [float(i * 240) for i in range(measured_seconds)],
+                        "sim_time_s": [float(i) for i in range(measured_seconds)]},
+    }
+    count = measured_seconds + 11
+    clock = {"source": "python_perf_counter", "origin_usec": 0,
+             "start": {"monotonic_usec": 0, "unix_usec": base, "uncertainty_usec": 20_000},
+             "end": {"monotonic_usec": count * 1_000_000, "unix_usec": base + count * 1_000_000,
+                     "uncertainty_usec": 20_000}}
+    resources = resource_report(capture_id="edge-fixture", clock=clock, elapsed=tuple(range(count)))
+    resources.update(identity_status="verified", interval_seconds=1.0, max_samples=count + 10,
+                     required_coverage="complete", summary={"counter_resets": []},
+                     tool_source_sha256={"run_checked.py": "a" * 64, "resource_samples.py": "b" * 64})
+    resources["required_field_counts"] = {field: count for field in (
+        "rss_bytes", "cpu_user_seconds", "cpu_system_seconds", "virtual_memory_available_bytes")}
+    for index, sample in enumerate(resources["samples"]):
+        sample["poll_overhead_usec"] = 1_000
+        sample["cpu_user_seconds"] = index * 0.1 + max(0, index - 305) * 0.5
+        sample["cpu_system_seconds"] = index * 0.02
+    reducer._validate_resource_series(resources)
+    return frames, resources, resources["samples"]
+
+
 class ResourceFixture:
     """A checked v3 flight plus independent one-second cumulative CPU polls."""
 
-    def __init__(self, directory: Path):
+    def __init__(self, directory: Path, *, poll_count: int = 56):
         self.root = directory
         self.run, self.health_path, health = write_backend_benchmark_run(directory, "run-1", "native", long=True)
         frame = json.loads(self.run.read_text())
@@ -41,21 +79,22 @@ class ResourceFixture:
         self.checked = json.loads(self.checked_path.read_text())
         self.checked.update(report="/evidence/checks/godot-fixture/report.json",
                             log="/evidence/checks/godot-fixture/engine.log", cwd="/frozen",
-                            started_utc="2023-11-14T22:13:20+00:00", elapsed_seconds=56.0)
+                            started_utc="2023-11-14T22:13:20+00:00", elapsed_seconds=float(poll_count))
         self.capture = directory / "checks" / "godot-fixture"
         self.capture.mkdir(parents=True)
         (self.capture / "engine.log").write_bytes(self.run.with_suffix(".log").read_bytes())
         rc = {"source": "python_perf_counter", "origin_usec": 0,
               "start": {"monotonic_usec": 0, "unix_usec": base, "uncertainty_usec": 20_000},
-              "end": {"monotonic_usec": 56_000_000, "unix_usec": base + 56_000_000, "uncertainty_usec": 20_000}}
-        self.resource = resource_report(capture_id=self.capture_id, clock=rc, elapsed=tuple(range(56)))
+              "end": {"monotonic_usec": poll_count * 1_000_000, "unix_usec": base + poll_count * 1_000_000,
+                      "uncertainty_usec": 20_000}}
+        self.resource = resource_report(capture_id=self.capture_id, clock=rc, elapsed=tuple(range(poll_count)))
         self.resource.update(pid=42, process_create_time=1_700_000_000.0, identity_status="verified",
-                             interval_seconds=1.0, max_samples=100, required_coverage="complete",
+                             interval_seconds=1.0, max_samples=poll_count + 44, required_coverage="complete",
                              summary={"counter_resets": []},
                              tool_source_sha256={"run_checked.py": "a" * 64, "resource_samples.py": "b" * 64})
         for sample in self.resource["samples"]:
             sample["poll_overhead_usec"] = 1000
-        self.resource["required_field_counts"] = {field: 56 for field in (
+        self.resource["required_field_counts"] = {field: poll_count for field in (
             "rss_bytes", "cpu_user_seconds", "cpu_system_seconds", "virtual_memory_available_bytes")}
         self.resource["invocation"] = {k: self.checked[k] for k in (
             "capture_id", "command", "cwd", "started_utc", "process_exit", "reason", "log_sha256", "elapsed_seconds")}
@@ -276,6 +315,97 @@ class SustainedResourcesTests(unittest.TestCase):
         self.assertEqual(reducer.main(["--run", str(self.fixture.run), "--run", str(self.fixture.run),
                                        "--out", str(other)]), 1)
         self.assertFalse(other.exists())
+
+    def test_opt_in_short_capture_is_unavailable_without_changing_full_result(self):
+        original = reducer.reduce_run(self.fixture.run)
+        self.assertNotIn("edge_windows", original)
+        requested = reducer.reduce_run(self.fixture.run, window_seconds=300)
+        comparison = dict(requested)
+        edge = comparison.pop("edge_windows")
+        self.assertEqual(comparison, original)
+        self.assertEqual(edge["status"], "unavailable")
+        self.assertLess(edge["measured_flight_seconds"], 600)
+        self.assertIsNone(edge["early"])
+        self.assertIsNone(edge["final"])
+        for invalid in (0, 299, 301, True, 300.0):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                reducer.reduce_run(self.fixture.run, window_seconds=invalid)
+
+    def test_first_and_final_windows_use_distinct_bounded_polls_and_metrics(self):
+        frames, resources, samples = edge_fixture(620)
+        args = (frames, resources, samples, self.fixture.root, {}, {}, {})
+        full = reducer._window_section(*args)
+        edge = reducer._edge_windows(*args, full, 300)
+        self.assertEqual(edge["status"], "available")
+        early, final = edge["early"], edge["final"]
+        a, b = early["window"], final["window"]
+        self.assertEqual(a["frame_bounds_usec"], [1_700_000_005_000_000, 1_700_000_305_000_000])
+        self.assertEqual(b["frame_bounds_usec"], [1_700_000_325_000_000, 1_700_000_625_000_000])
+        self.assertGreaterEqual(a["poll_start_usec"] - a["margin_usec"], a["frame_bounds_usec"][0])
+        self.assertLessEqual(a["poll_end_usec"] + a["margin_usec"], a["frame_bounds_usec"][1])
+        self.assertGreaterEqual(b["poll_start_usec"] - b["margin_usec"], b["frame_bounds_usec"][0])
+        self.assertLessEqual(b["poll_end_usec"] + b["margin_usec"], b["frame_bounds_usec"][1])
+        self.assertLess(a["last_index"], b["first_index"])
+        self.assertGreater(a["omitted_frame_start_usec_upper_bound"], 0)
+        self.assertGreater(b["omitted_frame_end_usec_upper_bound"], 0)
+        self.assertGreater(final["cpu"]["percent_of_one_core"], early["cpu"]["percent_of_one_core"])
+        self.assertLess(early["process_memory"]["rss_bytes"]["sampled_peak"],
+                        final["process_memory"]["rss_bytes"]["sampled_peak"])
+        self.assertEqual(early["host_state"]["status"], "unknown")
+
+    def test_long_checked_flight_emits_sections_and_keeps_original_receipts(self):
+        original_builder = frame_fixtures.valid_report
+        def long_frames(**kwargs):
+            kwargs.update(interval_usec=100_000, ticks=[240 + 24 * i for i in range(6001)])
+            return original_builder(**kwargs)
+        directory = self.fixture.root / "long"
+        directory.mkdir()
+        with mock.patch.object(frame_fixtures, "valid_report", side_effect=long_frames):
+            fixture = ResourceFixture(directory, poll_count=604)
+        original = (fixture.capture / "report.json").read_bytes()
+        result = reducer.reduce_run(fixture.run, window_seconds=300)
+        self.assertEqual(result["edge_windows"]["status"], "available")
+        self.assertEqual(result["edge_windows"]["requested_seconds"], 300)
+        self.assertGreaterEqual(result["edge_windows"]["measured_flight_seconds"], 600)
+        self.assertEqual((fixture.capture / "report.json").read_bytes(), original)
+        self.assertEqual(result["checked_report_sha256"], hashlib.sha256(original).hexdigest())
+        out = directory / "summary.json"
+        self.assertEqual(reducer.main(["--run", str(fixture.run), "--window-seconds", "300", "--out", str(out)]), 0)
+        self.assertEqual(json.loads(out.read_text())["runs"][0]["edge_windows"]["status"], "available")
+
+    def test_exactly_six_hundred_seconds_is_disjoint_but_shorter_is_unavailable(self):
+        for duration, status in ((599, "unavailable"), (600, "available")):
+            with self.subTest(duration=duration):
+                frames, resources, samples = edge_fixture(duration)
+                args = (frames, resources, samples, self.fixture.root, {}, {}, {})
+                full = reducer._window_section(*args)
+                edge = reducer._edge_windows(*args, full, 300)
+                self.assertEqual(edge["status"], status)
+                if status == "available":
+                    early, final = edge["early"]["window"], edge["final"]["window"]
+                    self.assertEqual(early["frame_bounds_usec"][1], final["frame_bounds_usec"][0])
+                    self.assertLess(early["poll_end_usec"] + early["margin_usec"],
+                                    final["poll_start_usec"] - final["margin_usec"])
+                else:
+                    self.assertIsNone(edge["early"])
+                    self.assertIsNone(edge["final"])
+
+    def test_edge_window_fails_closed_on_bad_bounds_or_missing_simulation_progress(self):
+        frames, resources, samples = edge_fixture(620)
+        args = (frames, resources, samples, self.fixture.root, {}, {}, {})
+        full = reducer._window_section(*args)
+        start, end = full["window"]["frame_bounds_usec"]
+        for bounds in ((start - 1, start + 1), (start, end + 1), (end, start), (start, start)):
+            with self.subTest(bounds=bounds), self.assertRaisesRegex(ValueError, "outside"):
+                reducer._window(frames, resources, samples, bounds=bounds)
+        for index in range(301):
+            frames["raw_metrics"]["sim_time_s"][index] = 0.0
+            frames["raw_metrics"]["sim_tick"][index] = 0.0
+        edge = reducer._edge_windows(*args, full, 300)
+        self.assertEqual(edge["status"], "unavailable")
+        self.assertIn("does not advance", edge["reason"])
+        self.assertIsNone(edge["early"])
+        self.assertIsNone(edge["final"])
 
 
 if __name__ == "__main__":

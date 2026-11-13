@@ -30,6 +30,11 @@ FORMAT = "openrc-sustained-process-resources v1"
 MAX_RESOURCE_BYTES = 32 * 1024 * 1024
 MAX_CLOCK_DRIFT_MS = 50.0
 CPU_FIELDS = ("cpu_user_seconds", "cpu_system_seconds")
+EDGE_WINDOW_SECONDS = 300
+
+
+class WindowUnavailable(ValueError):
+    """The requested interior has insufficient polls or simulation progress."""
 
 
 def _read(path: Path, limit: int) -> bytes:
@@ -149,7 +154,8 @@ def _validate_resource_series(resources: dict[str, Any]) -> list[dict[str, Any]]
     return samples
 
 
-def _window(frames: dict[str, Any], resources: dict[str, Any], samples: list[dict[str, Any]]) -> dict[str, Any]:
+def _window(frames: dict[str, Any], resources: dict[str, Any], samples: list[dict[str, Any]],
+            *, bounds: tuple[int, int] | None = None) -> dict[str, Any]:
     frame_clock = perfetto._frame_clock(frames)
     resource_clock = perfetto._resource_clock(resources)
     if frame_clock is None or resource_clock is None:
@@ -163,33 +169,40 @@ def _window(frames: dict[str, Any], resources: dict[str, Any], samples: list[dic
     aligned = [t + resource_offset for t in times]
     starts = [t - s["poll_overhead_usec"] - 1 for t, s in zip(aligned, samples)]
     finishes = [t + 1 for t in aligned]
-    frame_start, frame_end = ends[0] - walls[0] + frame_offset, ends[-1] + frame_offset
-    if finishes[0] + margin > frame_start or starts[-1] - margin < frame_end:
+    full_start, full_end = ends[0] - walls[0] + frame_offset, ends[-1] + frame_offset
+    if finishes[0] + margin > full_start or starts[-1] - margin < full_end:
         raise ValueError("resource polls do not bracket the complete measured flight")
+    frame_start, frame_end = full_start, full_end
+    if bounds is not None:
+        if (not isinstance(bounds, tuple) or len(bounds) != 2
+                or any(type(value) is not int for value in bounds)
+                or not full_start <= bounds[0] < bounds[1] <= full_end):
+            raise ValueError("requested bounds are outside the measured frame window")
+        frame_start, frame_end = bounds
     max_gap = max(b - a for a, b in zip(aligned, aligned[1:]))
     gap_limit = round(max(2 * resources["interval_seconds"], resources["interval_seconds"] + .25) * 1_000_000)
     if max_gap > gap_limit:
         raise ValueError("resource poll gap exceeds the bounded coverage allowance")
     eligible = [i for i in range(len(samples)) if starts[i] - margin >= frame_start and finishes[i] + margin <= frame_end]
     if len(eligible) < 2:
-        raise ValueError("fewer than two resource polls lie wholly inside flight")
+        raise WindowUnavailable("fewer than two resource polls lie wholly inside flight")
     first, last = eligible[0], eligible[-1]
     first_frame = bisect_left(ends, finishes[first] + margin - frame_offset)
     last_frame = bisect_right(ends, starts[last] - margin - frame_offset) - 1
     if not 0 <= first_frame < last_frame < len(ends):
-        raise ValueError("resource endpoints do not enclose a matched simulation interval")
+        raise WindowUnavailable("resource endpoints do not enclose a matched simulation interval")
     sim = frames["raw_metrics"]["sim_time_s"]
     ticks = frames["raw_metrics"]["sim_tick"]
     sim_seconds = sim[last_frame] - sim[first_frame]
     if not _finite(sim_seconds) or sim_seconds <= 0 or ticks[last_frame] <= ticks[first_frame]:
-        raise ValueError("matched simulation interval does not advance")
+        raise WindowUnavailable("matched simulation interval does not advance")
     selected = samples[first:last + 1]
     cpu = sum(samples[last][field] - samples[first][field] for field in CPU_FIELDS)
     wall = (aligned[last] - aligned[first]) / 1_000_000
     wall_min = (starts[last] - finishes[first]) / 1_000_000
     wall_max = (finishes[last] - starts[first]) / 1_000_000
     if wall_min <= 0:
-        raise ValueError("resource poll intervals overlap")
+        raise WindowUnavailable("resource poll intervals overlap")
     return {"first_index": first, "last_index": last, "samples": selected,
             "clock": clock, "margin_usec": margin, "frame_bounds_usec": [frame_start, frame_end],
             "poll_start_usec": starts[first], "poll_end_usec": finishes[last],
@@ -300,7 +313,59 @@ def _host_context(directory: Path, checked: dict[str, Any], report: dict[str, An
     return result
 
 
-def reduce_run(run: Path) -> dict[str, Any]:
+def _window_section(frames: dict[str, Any], resources: dict[str, Any], samples: list[dict[str, Any]],
+                    directory: Path, checked: dict[str, Any], report: dict[str, Any], retained: dict[Path, str],
+                    *, bounds: tuple[int, int] | None = None) -> dict[str, Any]:
+    window = _window(frames, resources, samples, bounds=bounds)
+    context = _host_context(directory, checked, report, window, retained)
+    cpu, wall, sim = window["cpu_core_seconds"], window["wall_seconds"], window["simulation_seconds"]
+    selected = window.pop("samples")
+    return {"clock": window.pop("clock"), "window": window,
+            "cpu": {"core_seconds": cpu, "wall_seconds": wall, "percent_of_one_core": 100 * cpu / wall,
+                    "percent_range_from_poll_timing_only": [100 * cpu / window["wall_seconds_poll_bracket"][1],
+                                                            100 * cpu / window["wall_seconds_poll_bracket"][0]],
+                    "per_matched_simulated_second_estimate": cpu / sim,
+                    "simulation_denominator_scope": "frame endpoints strictly inside CPU polls; boundary mismatch retained in window"},
+            "process_memory": {"rss_bytes": _metric(selected, "rss_bytes"),
+                               "footprint_bytes": {"status": "unknown", "value": None}},
+            "host_memory": {key: _metric(selected, key) for key in
+                            ("virtual_memory_available_bytes", "virtual_memory_percent", "swap_used_bytes", "swap_total_bytes")},
+            "host_state": context}
+
+
+def _edge_windows(frames: dict[str, Any], resources: dict[str, Any], samples: list[dict[str, Any]],
+                  directory: Path, checked: dict[str, Any], report: dict[str, Any], retained: dict[Path, str],
+                  full: dict[str, Any], seconds: int) -> dict[str, Any]:
+    """Return disjoint, interior-poll portions of the first and final windows."""
+    if type(seconds) is not int or seconds != EDGE_WINDOW_SECONDS:
+        raise ValueError("window seconds must be 300")
+    full_start, full_end = full["window"]["frame_bounds_usec"]
+    span = seconds * 1_000_000
+    result: dict[str, Any] = {"requested_seconds": seconds,
+                              "measured_flight_seconds": (full_end - full_start) / 1_000_000,
+                              "status": "unavailable", "early": None, "final": None}
+    if full_end - full_start < 2 * span:
+        result["reason"] = "measured flight is shorter than two nonoverlapping requested windows"
+        return result
+    try:
+        early = _window_section(frames, resources, samples, directory, checked, report, retained,
+                                bounds=(full_start, full_start + span))
+        final = _window_section(frames, resources, samples, directory, checked, report, retained,
+                                bounds=(full_end - span, full_end))
+    except WindowUnavailable as error:
+        result["reason"] = str(error)
+        return result
+    a, b = early["window"], final["window"]
+    if a["poll_end_usec"] + a["margin_usec"] > b["poll_start_usec"] - b["margin_usec"]:
+        result["reason"] = "selected early and final polls overlap within their clock uncertainty"
+        return result
+    result.update(status="available", reason=None, early=early, final=final)
+    return result
+
+
+def reduce_run(run: Path, *, window_seconds: int | None = None) -> dict[str, Any]:
+    if window_seconds is not None and (type(window_seconds) is not int or window_seconds != EDGE_WINDOW_SECONDS):
+        raise ValueError("window seconds must be 300")
     run = Path(run)
     retained: dict[Path, str] = {}
     def keep(path: Path, limit: int) -> bytes:
@@ -356,10 +421,7 @@ def reduce_run(run: Path) -> dict[str, Any]:
     frames, stream = native._hydrate_stream_report(report, run)
     stream_path = run.with_name(stream["file"])
     retained[stream_path] = stream["sha256"]
-    window = _window(frames, resources, samples)
-    context = _host_context(directory, checked, report, window, retained)
-    cpu, wall, sim = window["cpu_core_seconds"], window["wall_seconds"], window["simulation_seconds"]
-    selected = window.pop("samples")
+    section = _window_section(frames, resources, samples, directory, checked, report, retained)
     output = {"capture_id": capture_id, "pid": resources["pid"], "process_create_time": resources["process_create_time"],
               "report": str(run), "report_sha256": _sha(report_bytes), "checked_report_sha256": _sha(original),
               "resources_sha256": _sha(raw), "stream_sha256": stream["sha256"],
@@ -374,21 +436,14 @@ def reduce_run(run: Path) -> dict[str, Any]:
               "backend": health.get("backend_proof", {}).get("requested", "gdscript_reference"),
               "scope": ("direct whole Godot process including benchmark observation, all process threads; "
                         "excludes runner, sampler, helper, descendants, GPU and energy"),
-              "clock": window.pop("clock"), "window": window,
-              "cpu": {"core_seconds": cpu, "wall_seconds": wall, "percent_of_one_core": 100 * cpu / wall,
-                      "percent_range_from_poll_timing_only": [100 * cpu / window["wall_seconds_poll_bracket"][1],
-                                                              100 * cpu / window["wall_seconds_poll_bracket"][0]],
-                      "per_matched_simulated_second_estimate": cpu / sim,
-                      "simulation_denominator_scope": "frame endpoints strictly inside CPU polls; boundary mismatch retained in window"},
-              "process_memory": {"rss_bytes": _metric(selected, "rss_bytes"),
-                                 "footprint_bytes": {"status": "unknown", "value": None}},
-              "host_memory": {key: _metric(selected, key) for key in
-                              ("virtual_memory_available_bytes", "virtual_memory_percent", "swap_used_bytes", "swap_total_bytes")},
-              "host_state": context,
+              **section,
               "limitations": ["CPU is cumulative process user+system time, not callback elapsed time",
                               "CPU denominator uses poll completion timestamps; per-poll overhead and clock margins are retained",
                               "sampled memory peaks can miss brief spikes; host-wide memory is not process attribution",
                               "no GPU, energy, child-process or physical-validation claim"]}
+    if window_seconds is not None:
+        output["edge_windows"] = _edge_windows(frames, resources, samples, directory, checked, report, retained,
+                                               section, window_seconds)
     for path, digest in retained.items():
         limit = native.STREAM_MAX_BYTES if path == stream_path else max(MAX_RESOURCE_BYTES, native.MAX_BENCHMARK_HEALTH_BYTES)
         if _sha(_read(path, limit)) != digest:
@@ -399,10 +454,12 @@ def reduce_run(run: Path) -> dict[str, Any]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, action="append", required=True, help="flight run-N.json; repeat for each run")
+    parser.add_argument("--window-seconds", type=int, choices=[EDGE_WINDOW_SECONDS],
+                        help="also report the first and final 300 seconds of flights at least 600 seconds long")
     parser.add_argument("--out", type=Path, required=True, help="new JSON output path")
     args = parser.parse_args(argv)
     try:
-        runs = [reduce_run(path) for path in args.run]
+        runs = [reduce_run(path, window_seconds=args.window_seconds) for path in args.run]
         if len({run["capture_id"] for run in runs}) != len(runs):
             raise ValueError("capture IDs must be distinct")
         result = {"format": FORMAT, "runs": runs, "qualification": "research-only; no admission or performance claim"}

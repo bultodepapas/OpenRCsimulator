@@ -744,6 +744,11 @@ whole Godot process, including benchmark observation; it is separate from the
 headless callback stopwatch. The reader does not add an admission gate or qualify
 GPU, energy or performance gains.
 
+Add `--window-seconds 300` to also summarize polls inside the first and final
+five minutes of a measured flight. The capture must contain at least 600 seconds
+of measured flight; shorter captures report these windows as unavailable. Each
+window retains its own clock uncertainty, omitted edges and sampled host context.
+
 ```sh
 python3 research/performance/sustained_resources.py \
   --run "$reference/run-1.json" --run "$native/run-1.json" \
