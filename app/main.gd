@@ -593,7 +593,8 @@ func _new_flight_setup(args: Dictionary) -> Dictionary:
 		return {}
 	next_session.experimental_native_macos = mac_native.enabled
 	next_session.automatic_native_macos = OS.get_name() == "macOS" \
-		and Engine.get_architecture_name() == "arm64" and not args.has("experimental-native-macos")
+		and Engine.get_architecture_name() == "arm64" and not args.has("experimental-native-macos") \
+		and not companion_config.enabled # Fleet interaction keeps its separate qualification route.
 	# The app requests native physics by default; tools and replay retain their reference default.
 	if (not _scripted or args.has("physics-backend")) \
 			and (not next_session.setup_stage_backend(_requested_stage_backend(args)) or _scripted):
