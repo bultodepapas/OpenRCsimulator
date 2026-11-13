@@ -13,6 +13,7 @@ var options := {}
 var report := {status = "error", error = "Not started", format = "openrc-flight-log-report v1"}
 var _completed := false
 var _experimental_native_macos := false
+var _automatic_native_macos_allowed := true
 
 
 ## Current tools can be rebound to older solvers whose FlightSession has no backend API.
@@ -140,6 +141,7 @@ func _initialize() -> void:
 		quit(2)
 		return
 	_experimental_native_macos = mac_option.enabled
+	_automatic_native_macos_allowed = not mac_option.present or mac_option.enabled
 	call_deferred("_run")
 
 
@@ -196,7 +198,8 @@ func _run() -> void:
 		observer_usec = checked.footer.observer_usec, peak_buffer_rows = checked.footer.peak_buffer_rows}, true)
 	var flight: Node = null
 	if options.has("replay"):
-		var prepared := prepare_replay(header, str(options.get("candidate", "")), _experimental_native_macos)
+		var prepared := prepare_replay(header, str(options.get("candidate", "")), _experimental_native_macos,
+			_automatic_native_macos_allowed)
 		if not prepared.ok:
 			_finish(prepared.error)
 			return
@@ -412,7 +415,31 @@ static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 	return ""
 
 
-static func prepare_replay(header: Dictionary, candidate := "", experimental_native_macos := false) -> Dictionary:
+## Ordinary source-editor Mac replay may use only the same bounded stock selection
+## recorded by Main. The live native loader still checks the marker's exact start.
+static func _automatic_macos_replay_selection(header: Dictionary) -> Dictionary:
+	var metadata: Variant = header.get("metadata")
+	var aircraft: Variant = header.get("aircraft")
+	var path: Variant = header.get("aircraft_path")
+	if not metadata is Dictionary or not aircraft is Dictionary or not aircraft.get("ok", false) \
+			or not aircraft.get("model") is Dictionary or typeof(path) != TYPE_STRING \
+			or not str(path).begins_with("res://data/aircraft/") or not FileAccess.file_exists(path):
+		return {ok = false, error = "Automatic Mac replay requires the recorded stock aircraft and launch metadata."}
+	var choice: Variant = metadata.get("selected_start_choice")
+	var trim: Variant = metadata.get("launch_trim_throttle")
+	var id: Variant = aircraft.model.get("id")
+	if typeof(choice) != TYPE_STRING or choice not in ["airborne", "airborne_half_power", "runway", "hand_launch"] \
+			or typeof(trim) != TYPE_STRING or not trim.is_valid_float() or float(trim) != 0.5 \
+			or typeof(id) != TYPE_STRING or id.is_empty():
+		return {ok = false, error = "Automatic Mac replay requires a recorded stock start and 0.5 trim."}
+	var stock: Dictionary = Data.load_file(path)
+	if not stock.get("ok", false) or var_to_bytes(stock) != var_to_bytes(aircraft):
+		return {ok = false, error = "Recorded aircraft differs from the current stock input."}
+	return {ok = true, aircraft_id = id, start_choice = choice}
+
+
+static func prepare_replay(header: Dictionary, candidate := "", experimental_native_macos := false,
+		automatic_native_macos_allowed := true) -> Dictionary:
 	var mix_error := flap_mix_contract_error(header)
 	if not mix_error.is_empty(): return {ok = false, error = mix_error}
 	var recorded_backend := recorded_stage_backend(header)
@@ -434,6 +461,16 @@ static func prepare_replay(header: Dictionary, candidate := "", experimental_nat
 		return {ok = false, error = "Physics tick rate differs."}
 	var aircraft: Dictionary = header.aircraft if candidate.is_empty() else Data.load_file(candidate)
 	if not aircraft.get("ok", false): return {ok = false, error = "Candidate aircraft data invalid."}
+	var mac_source_native: bool = OS.get_name() == "macOS" and Engine.get_architecture_name() == "arm64" \
+		and not OS.has_feature("template_release") and candidate.is_empty() \
+		and recorded_identity.kind == "source-tree-v1" and recorded_backend.identity.backend == NATIVE_STAGE_BACKEND
+	if mac_source_native and not experimental_native_macos and not automatic_native_macos_allowed:
+		return {ok = false, error = "Automatic Mac native replay was explicitly disabled."}
+	var automatic_macos: bool = mac_source_native and not experimental_native_macos
+	var selection := {}
+	if automatic_macos:
+		selection = _automatic_macos_replay_selection(header)
+		if not selection.ok: return selection
 	var flight := Flight.new()
 	# This tool can be rebound to older FlightSession sources. Do not require a
 	# new property on that route unless the caller explicitly opts in.
@@ -451,6 +488,21 @@ static func prepare_replay(header: Dictionary, candidate := "", experimental_nat
 		if typeof(admitted) != TYPE_BOOL or not admitted:
 			flight.free()
 			return {ok = false, error = "Selected solver refused experimental Mac native admission."}
+	if automatic_macos:
+		var supports_automatic := false
+		for property: Dictionary in flight.get_property_list():
+			if str(property.get("name", "")) == "automatic_native_macos":
+				supports_automatic = true
+				break
+		if not supports_automatic:
+			flight.free()
+			return {ok = false, error = "Selected solver does not support qualified Mac native admission."}
+		flight.set("automatic_native_macos", true)
+		if flight.get("automatic_native_macos") != true:
+			flight.free()
+			return {ok = false, error = "Selected solver refused qualified Mac native admission."}
+		flight.start_choice = selection.start_choice
+		flight.trim_throttle = 0.5
 	if header.has("flap_mix_contract") and not flight.has_method("restore_input_mix_owner"):
 		flight.free()
 		return {ok = false, error = "Selected solver does not support recorded flap mix ownership."}
@@ -465,14 +517,35 @@ static func prepare_replay(header: Dictionary, candidate := "", experimental_nat
 	flight.input_enabled = false
 	flight.crash_auto_restart = false
 	flight.soft_hull_contacts = header.soft_hull_contacts
-	flight.setup(header.aircraft_path, "", aircraft)
-	flight.ground_surfaces = header.ground_surfaces.duplicate()
-	# GP-07c: by name, so this shared CLI still compiles against an older accepted solver (tools/companions/rebind.py
-	# replays the current tools with app/sim from the accepted revision, which has no airframe table).
-	flight.set("airframe_surfaces", header.get("airframe_surfaces", PackedFloat64Array()))
-	flight.ground_field_id = header.ground_field_id
-	var ready: bool = flight.setup_shaft_integrator(header.shaft_integrator) \
-		and flight.setup_weather(header.weather) and flight.set_collision_world(header.collision_world) and flight.set_lake_context(header.lake)
+	if automatic_macos:
+		# Use live stock data, not the frozen replay payload: the automatic domain
+		# independently checks the stock file, model, field and exact start hash.
+		flight.setup(header.aircraft_path, selection.aircraft_id)
+	else:
+		flight.setup(header.aircraft_path, "", aircraft)
+	var ready := true
+	if automatic_macos:
+		var loader: Script = load("res://data/field_loader.gd")
+		var field: Variant = loader.call("load_from") if loader != null and loader.has_method("load_from") else null
+		ready = flight.aircraft.get("ok", false) and var_to_bytes(flight.aircraft) == var_to_bytes(aircraft) \
+			and flight.shaft_integrator() == header.shaft_integrator and field is Dictionary \
+			and field.get("ok", false) and flight.set_field(field.field)
+		if ready:
+			ready = flight.ground_field_id == header.ground_field_id \
+				and var_to_bytes(flight.ground_surfaces) == var_to_bytes(header.ground_surfaces) \
+				and var_to_bytes(flight.get("airframe_surfaces")) == var_to_bytes(header.get("airframe_surfaces", PackedFloat64Array()))
+	else:
+		flight.ground_surfaces = header.ground_surfaces.duplicate()
+		# GP-07c: keep the historical reader compatible with older solver sources.
+		flight.set("airframe_surfaces", header.get("airframe_surfaces", PackedFloat64Array()))
+		flight.ground_field_id = header.ground_field_id
+		ready = flight.setup_shaft_integrator(header.shaft_integrator)
+	if ready:
+		ready = flight.setup_weather(header.weather) and flight.set_collision_world(header.collision_world) \
+			and flight.set_lake_context(header.lake)
+	if automatic_macos and not ready:
+		flight.free()
+		return {ok = false, error = "Recorded Mac flight differs from the qualified stock configuration."}
 	# RC-TRACK: by name, like airframe_surfaces; a recorded circuit needs a solver that can install it.
 	if ready and header.has("rc_track"):
 		ready = flight.has_method("set_rc_track") and flight.call("set_rc_track", header.rc_track)
