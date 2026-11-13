@@ -272,11 +272,12 @@ def _copy_function(mode: str):
     return clone_copy
 
 
-def _extract_archive_stream(base: Path, rev: str, paths: list[str]) -> None:
+def _extract_archive_stream(base: Path, rev: str, paths: list[str], *, prefix: str = "",
+                            env: dict | None = None) -> None:
     """Extract the trusted Git archive without a second full-sized tar on disk."""
     with tempfile.TemporaryFile() as errors:
-        process = subprocess.Popen(["git", "archive", rev, *paths], cwd=ROOT,
-                                   stdout=subprocess.PIPE, stderr=errors)
+        command = ["git", "archive", *([f"--prefix={prefix}"] if prefix else []), rev, *paths]
+        process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=errors)
         try:
             assert process.stdout is not None
             with tarfile.open(fileobj=process.stdout, mode="r|") as archive:
@@ -295,6 +296,30 @@ def _extract_archive_stream(base: Path, rev: str, paths: list[str]) -> None:
         if code:
             errors.seek(0)
             raise SetupError(f"git archive {rev}: {errors.read().decode(errors='replace').strip()}")
+
+
+def _scoped_solver_archive(base: Path, rev: str, directories: list[str]) -> None:
+    """Archive only requested trees; reject attributes lost by changing the tree root."""
+    for path in directories:
+        if not re.fullmatch(r"[A-Za-z0-9_./-]+", path) or path.startswith("/") \
+                or any(part in ("", ".", "..") for part in path.split("/")):
+            raise SetupError(f"invalid solver directory: {path}")
+        tree = f"{rev}:{path}"
+        listing = subprocess.run(["git", "ls-tree", "-r", "--name-only", "-z", tree], cwd=ROOT,
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if listing.returncode:
+            raise SetupError(f"cannot inspect accepted solver tree {tree}: {listing.stderr.decode(errors='replace').strip()}")
+        names = [name for name in listing.stdout.split(b"\0") if name]
+        if not names:
+            raise SetupError(f"accepted solver tree is empty: {tree}")
+        inputs = b"\0".join(path.encode("utf-8") + b"/" + name for name in names) + b"\0"
+        attributes = subprocess.run(["git", "check-attr", f"--source={rev}", "--all", "-z", "--stdin"],
+                                    cwd=ROOT, input=inputs, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if attributes.returncode:
+            raise SetupError(f"cannot inspect accepted solver attributes: {attributes.stderr.decode(errors='replace').strip()}")
+        if attributes.stdout:
+            raise SetupError(f"accepted solver tree has attributes requiring a full-root archive: {path}")
+        _extract_archive_stream(base, tree, [], prefix=path + "/")
 
 
 def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str = "solver",
@@ -341,7 +366,7 @@ def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str
         shutil.rmtree(base / directory)
     paths = list(directories)
     if copy_mode == "clone":
-        _extract_archive_stream(base, rev, paths)
+        _scoped_solver_archive(base, rev, paths)
     else:
         archive = workspace / "base-solver.tar"
         with archive.open("wb") as handle:

@@ -4,13 +4,16 @@ The AI companion profile ([jensen-das-ugly-stik-60.json](../../app/data/ai/compa
 
 ## When a physics edit lands
 
-`tests/test_companions_profiles.gd` is the only gate. It fails with:
+`tests/test_companions_profiles.gd` detects a stale solver pin, for example:
 
 ```text
 FAIL companion qualification pins the current physics/sim/failures identity  pinned 69bf5c78, current 3a8ebbc5: … run python3 tools/companions/rebind.py
 ```
 
-The other companion suites call `accept_current_solver_for_tests()` and keep testing companion logic. The override works only in editor builds; exports always enforce the pin.
+Some companion suites use `accept_current_solver_for_tests()` to exercise their
+logic independently of the solver pin. The override works only in editor builds;
+exports enforce the pin. The separately pinned behavior manifest and admission
+checks still apply and are not renewed by the solver re-bind.
 
 ```sh
 python3 tools/companions/rebind.py            # report: identical or changed, per tape
@@ -18,9 +21,19 @@ git commit ...                                # commit the physics edit first
 python3 tools/companions/rebind.py --accept   # re-pin and write a receipt
 ```
 
-The tool replays the [retained tapes](qualification.json) in candidate mode on two disposable copies under `tmp/`. The copies differ only in the solver directories: the accepted revision and the current tree. Byte-identical CSVs re-pin the profile, update `qualification.json` and write a receipt under [AFC-02/rebinds](../../docs/research/ai-companions/AFC-02/rebinds/). Commit all three together. A run takes about a minute.
+The tool replays the [retained tapes](qualification.json) in candidate mode against the current tree and a disposable baseline under `tmp/`. By default the baseline takes the accepted solver directories and current non-solver files. Byte-identical CSVs permit `--accept` to re-pin the profile, update `qualification.json` and write a receipt under [AFC-02/rebinds](../../docs/research/ai-companions/AFC-02/rebinds/). Commit all three together.
 
-If the base copy fails to compile (`replay of … in base failed: … Compilation failed`), current non-solver code calls solver API newer than the accepted revision. Use `--baseline full`: the base then also takes every other tracked `app/` file and the replay tooling from the accepted revision. Identical tapes are a stricter result; a difference may come from non-solver code and still needs requalification. The receipt records the `baseline` used. First use: the RC track's scenery dressing (2026-11-04).
+If the base copy fails to compile (`replay of … in base failed: … Compilation failed`), current non-solver code may call a solver API newer than the accepted revision. Use `--baseline full`: the base is built from the accepted revision's tracked `app/` and replay tools. Only the current `.godot/imported` asset cache is retained; current extension lists, class caches, native libraries and added source files are excluded. The accepted solver identity is still checked before replay. Identical tapes are a stricter result; a difference may come from non-solver code and still needs requalification. The receipt records the `baseline` used.
+
+On macOS with APFS, `--copy-mode clone` uses the exclusive `clonefile` operation for the
+disposable copy, including the optional import cache. It requires a supported
+same-volume filesystem; an unavailable clone fails without a normal-copy or
+hardlink fallback. `--copy-mode copy` remains the default. The full baseline
+streams the Git archive, avoiding a second full-sized temporary tar. Both modes
+still need enough free space for extracted historical files, tapes and results.
+The receipt records the copy mode; a clone or reused asset cache does not prove
+source or import compatibility. Use a real checkout containing the accepted
+revision and retained tapes, not an archive with a fabricated Git HEAD.
 
 ## When the engine pin changes
 

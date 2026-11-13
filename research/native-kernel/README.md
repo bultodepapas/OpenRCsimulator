@@ -14,10 +14,32 @@ defines the supported Linux scope and separates backend qualification from displ
 ## Experimental macOS ARM64
 
 The scalar Apple Clang port uses the existing evaluator ABI and float64 state.
-It is a fixed-wing experiment, with separate source and package receipts; it is
-not the qualified Linux fleet surface. Ordinary Mac launches retain reference.
-See [DT-MAC implementation evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
-for the exact host, candidate and completed gates.
+It is a fixed-wing source experiment, with separate source and package receipts;
+the Linux fleet qualification does not transfer to Mac. The automatic source-editor
+route is implemented but requires a matching default-admission marker. Without it,
+or when the selected flight is outside its admitted rows, the session retains the
+reference evaluator. The [dated DT-MAC evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
+describes earlier candidates, not qualification of the current source.
+
+The marker binds the exact installed receipt, binary, sources, domain guard,
+Godot executable, macOS version/build, Apple M1 CPU and `MacBookAir10,1` model.
+The observed test host used macOS 27.0.1 (`26A434`) and official Godot
+`4.8.beta2.official.cafc17a19`; a different binary or OS is not covered by that
+host's evidence. Each admitted stock fixed-wing row also binds aircraft and
+battery bytes, start, weather, contact mode and the exact solved production
+start. The runtime checks the stock field, lake and collision context and guards
+the installed context on live ticks. Custom or changed selections fail admission.
+
+`macos_promotion.py` revalidates the installed candidate, host preflight, a
+production-trim fleet campaign and matched live-circuit evidence before writing
+a new marker under `tmp/`. It requires five pairs with at least 120 measured
+seconds per role and three 30-minute pairs; only independently verified fleet
+rows are included. Run `python3 research/native-kernel/macos_promotion.py --help`
+for its evidence arguments. After those checks pass and Godot is stopped, copy
+the resulting marker unchanged to `app/native/kernel/default-admission-macos.json`
+for the source editor. The marker is an artifact-consistency receipt, not
+a signature or proof of physical realism. No current marker or campaign pass is
+assumed by this guide.
 
 `build_macos.py` pins Apple Clang/SDK and the existing bindings/API. It checks every
 translation unit, effective strict FP options, Mach-O slice/dependencies/imports,
@@ -53,9 +75,13 @@ After a verified installation, opt in per launch:
   --experimental-native-macos=true
 ```
 
-The choice is frozen before session setup. Intel/Rosetta, helicopter and unknown
-targets do not select this evaluator. Missing, stale or changed artifacts refuse
-admission and retain reference. There is no saved global Mac-native preference.
+The explicit research choice is frozen before session setup and does not create
+an automatic marker. Intel/Rosetta, helicopter and unknown targets do not select
+this evaluator. Missing, stale or changed artifacts refuse admission and retain
+reference. To roll back a launch explicitly, use
+`--physics-backend=gdscript_reference`. After replacing a loaded dylib or receipt,
+restart Godot: a changed on-disk marker cannot qualify the library cached by the
+running process. There is no saved global Mac-native preference.
 
 Use `run.py --project` and `session_baseline.py --project` with a fresh verified
 [research preparation](../../tools/graphics/README.md#isolated-mac-renderer-trials-dt-mac).
@@ -83,6 +109,7 @@ separate native bundle and ZIP receipt commands in
 [release tools](../../tools/release/README.md). Its identity is
 `macos-arm64-native-bundle-v1`; reference retains `macos-reference-bundle-v1`.
 The public six-file release contract has not adopted the experimental ZIP.
+Public distribution of a native Mac bundle remains deferred.
 Developer ID, notarization, downloaded/quarantined launch and product performance
 remain separate target-hardware gates.
 

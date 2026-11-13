@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import gzip
 import hashlib
+import io
 import json
 import os
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -106,6 +108,71 @@ class Workspace(unittest.TestCase):
 
 
 class CloneBaseline(unittest.TestCase):
+    def test_scoped_solver_ignores_a_missing_unrelated_promisor_blob(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            directories = ["app/physics", "app/sim", "app/failures"]
+            for name in directories:
+                path = root / name / "fixture.gd"
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((name + "\n").encode())
+            (root / "unrelated.txt").write_bytes(b"unrelated retained evidence\n")
+            def git(*args, **kwargs):
+                return subprocess.run(["git", "-C", str(root), *args], check=True, stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE, **kwargs).stdout
+            git("init", "-q")
+            git("add", ".")
+            git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.test",
+                "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+            expected_bytes = {}
+            for name in directories:
+                whole = git("archive", "HEAD", name)
+                scoped = git("archive", f"--prefix={name}/", f"HEAD:{name}")
+                def members(data):
+                    with tarfile.open(fileobj=io.BytesIO(data)) as archive:
+                        return {item.name: (item.mode, archive.extractfile(item).read())
+                                for item in archive if item.isfile()}
+                self.assertEqual(members(whole), members(scoped))
+                expected_bytes[name] = members(whole)[name + "/fixture.gd"][1]
+            missing = git("rev-parse", "HEAD:unrelated.txt").decode().strip()
+            blob = root / ".git" / "objects" / missing[:2] / missing[2:]
+            self.assertTrue(blob.is_file())
+            os.chmod(blob, 0o666)
+            blob.unlink()  # Only the unrelated loose blob in this disposable fixture.
+            git("config", "core.repositoryformatversion", "1")
+            git("config", "extensions.partialClone", "origin")
+            git("config", "remote.origin.promisor", "true")
+            git("config", "remote.origin.url", "file:///nonexistent-openrc-promisor")
+            base = Path(directory) / "base"
+            base.mkdir()
+            with patch.object(rebind, "ROOT", root), patch.dict(os.environ, {"GIT_NO_LAZY_FETCH": "1"}):
+                absent = subprocess.run(["git", "-C", str(root), "cat-file", "-e", "HEAD:unrelated.txt"],
+                                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                self.assertNotEqual(absent.returncode, 0)
+                rebind._scoped_solver_archive(base, "HEAD", directories)
+            for name in directories:
+                self.assertEqual((base / name / "fixture.gd").read_bytes(), expected_bytes[name])
+            self.assertFalse(blob.exists())
+
+    def test_scoped_solver_refuses_parent_attributes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            path = root / "app/physics/fixture.gd"
+            path.parent.mkdir(parents=True)
+            path.write_bytes(b"first\nsecond\n")
+            (root / ".gitattributes").write_text("/app/physics/*.gd text eol=crlf\n", encoding="utf-8")
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root), "-c", "user.name=Fixture", "-c", "user.email=fixture@example.test",
+                            "-c", "commit.gpgsign=false", "commit", "-qm", "base"], check=True)
+            base = Path(directory) / "base"
+            base.mkdir()
+            with patch.object(rebind, "ROOT", root):
+                with self.assertRaisesRegex(rebind.SetupError, "attributes requiring a full-root archive"):
+                    rebind._scoped_solver_archive(base, "HEAD", ["app/physics"])
+            self.assertFalse((base / "app/physics/fixture.gd").exists())
+
     @unittest.skipIf(sys.platform == "darwin", "the non-Mac refusal applies to other hosts")
     def test_clone_is_unavailable_off_macos(self) -> None:
         with self.assertRaisesRegex(rebind.SetupError, "requires macOS"):

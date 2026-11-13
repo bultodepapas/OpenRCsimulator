@@ -290,6 +290,17 @@ source commit. `app/test.sh` calls the getter directly, needs a proper checkout
 and its prerequisites, and does not honor `OPENRC_GODOT` as an engine override;
 follow the [full-suite contract](shared.md#full-app-suite) when that gate is needed.
 
+History-dependent work such as the [companion re-bind](../../tools/companions/README.md)
+needs a real task-owned checkout containing the accepted revision and tapes. On a
+space-constrained Mac, allow for Git's temporary pack files as well as the working
+tree and test outputs. In a Mac shell, set `M1_REPO` to the new private task
+checkout. Before fetching, disable Git's automatic housekeeping for that repository
+with `git -C "$M1_REPO" config --local gc.auto 0` and
+`git -C "$M1_REPO" config --local maintenance.auto false`. Record the local setting
+and available space; do not change global settings or another checkout.
+Preserve failed operation evidence and inspect any task-owned temporary files before
+cleanup. A successful transfer or clone does not by itself establish qualification.
+
 ## 4. Import and run focused native checks
 
 In a **Mac shell**, enter the new task path printed/selected above, then:

@@ -346,10 +346,13 @@ this format. A/A does not establish a speedup or an acceptance threshold; retain
 its raw reports and the observer-on/off controls without subtracting noise from
 individual ticks. The ordinary observer and backend report formats are unchanged.
 
-The fixed probe selects `Catalog.entry(id).data`. For an electrical aircraft this
-can be the ideal-supply profile rather than Home's finite-pack default. Name the
-actual input hash/profile in results; these timings cannot stand for an unmeasured
-battery mode. Fleet correctness covers its separately declared modes.
+Without a battery option, the probe retains its historical `Catalog.entry(id).data`
+selection, which can be ideal supply rather than Home's finite-pack default.
+`session_baseline.py --battery=ideal|pack` explicitly selects an available catalog
+mode. For example, `--aircraft=stik-electric-6s --battery=pack` selects the finite
+6S pack; `--battery=ideal` selects its ideal supply. Reports bind the mode, data
+path and hash, and actual dynamic/pack flags. Unsupported combinations refuse.
+Keep the modes separate: timings for one do not establish the other.
 
 ### FlightAudio sound-speed accessor microprobe
 
@@ -478,9 +481,9 @@ checks and measurements: [geometry-audit evidence](../../docs/research/visual-qu
 ### Repeatable active flight (DT-MAC-03)
 
 `sustained_flight.gd` reuses the existing companion circuit pilot through the
-player session's normal rate-limited keyboard input. It runs the reference Stik
-at Club in calm weather, starting from the accepted 15 m/s airborne trim with
-seed 20261021. The production session retains automatic 240 Hz physics; the
+player session's normal rate-limited keyboard input. Its legacy reference route
+flies the Stik at Club in calm weather, starting from the accepted 15 m/s airborne
+trim with seed 20261021. The production session retains automatic 240 Hz physics; the
 fixture does not reposition the aircraft or manually step the solver. It selects
 native reconstruction and 4x MSAA, redirects accident/controller files beside
 its receipt, and labels the route `benchmark-input-circuit`.
@@ -512,6 +515,27 @@ capture_status=$?
 cp "$run/checks"/*/engine.log "$run/run-1.log"
 cp "$run/checks"/*/report.json "$run/checked-run-1.json"
 ```
+
+For a matched Mac source-editor backend pair, add
+`--sustained-backend=gdscript_reference` or `--sustained-backend=native` and
+`--experimental-native-macos=true` after the final `--`. Keep the single
+`--sustained-hash` already present in the example. Both roles require the same
+verified installation and enabled observation. The `openrc-benchmark-health v2`
+route selects the production 0.5-throttle airborne trim; its solved airspeed is
+bounded by the actual trim search, not fixed at 15 m/s. It records the full
+solved-start hash, installation and backend identity. Every accepted native tick
+and checkpoint must retain the actual Mac domain guard and context/stage coverage;
+the reference role must remain reference. Run
+`python3 research/performance/native_summary.py --compare-circuit <reference.json> <native.json> --out <new-summary.json>`
+to revalidate both reports and match their start, scenario and complete 6,000-tick
+state/input windows. A fallback, missing guard or unmatched window is not a native
+pass. Observation itself adds work and must be included in timing interpretation.
+
+Automatic source admission requires five matched short pairs and three matched
+30-minute pairs as inputs to the [marker generator](../native-kernel/README.md#experimental-macos-arm64).
+Those are required evidence, not a claim that the current candidate has completed
+them. The legacy `openrc-benchmark-health v1` reference and v2 production-trim
+receipts describe different workloads and must not be combined.
 
 Use the resource tool's pinned Python environment. Optional
 `--host-state-helper <frozen binary>` belongs before the runner's `--`; follow
