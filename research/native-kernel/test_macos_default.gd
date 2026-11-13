@@ -73,9 +73,29 @@ func _same_native(session: Node, writer: RefCounted, helper: RefCounted, stage: 
 		and after.stage_calls == counters.stage_calls and after.context_calls == counters.context_calls
 
 
-func _record_and_replay(session: Node, identity: Dictionary) -> void:
-	var path := "user://macos-default-%d-%d.orfl" % [OS.get_process_id(), Time.get_ticks_usec()]
-	var writer := Log.new(session)
+func _recording_path() -> String:
+	var explicit := ""
+	for argument: String in OS.get_cmdline_user_args():
+		if not argument.begins_with("--macos-default-log="): continue
+		if not explicit.is_empty():
+			_check(false, "recording output appears more than once")
+			return ""
+		explicit = argument.trim_prefix("--macos-default-log=")
+		if explicit.is_empty() or not explicit.is_absolute_path() or explicit.simplify_path() != explicit \
+				or not explicit.contains("/tmp/") or not explicit.ends_with(".orfl") \
+				or not DirAccess.dir_exists_absolute(explicit.get_base_dir()) or FileAccess.file_exists(explicit):
+			_check(false, "recording output must be a new absolute .orfl under tmp with an existing parent")
+			return ""
+	return explicit if not explicit.is_empty() else "user://macos-default-%d-%d.orfl" % [OS.get_process_id(), Time.get_ticks_usec()]
+
+
+func _record_and_replay(main: Node, identity: Dictionary) -> void:
+	var session: Node = main.session
+	var path := _recording_path()
+	if path.is_empty(): return
+	var writer: RefCounted = main.flight_log
+	_check(writer != null, "production Main provides its flight recorder")
+	if writer == null: return
 	var started := writer.start(path) == OK
 	_check(started, "recorder starts on automatic native flight", writer.failure)
 	if not started: return
@@ -135,15 +155,44 @@ func _record_and_replay(session: Node, identity: Dictionary) -> void:
 	var inspected: Dictionary = Reader.inspect(path)
 	_check(inspected.get("ok", false) and inspected.get("complete", false), "recorded native file inspects", str(inspected.get("error", "")))
 	if not advanced or not inspected.get("ok", false): return
+	if inspected.get("complete", false):
+		print("MACOS_DEFAULT_RECORDING path=", ProjectSettings.globalize_path(path))
 	var header: Dictionary = inspected.header
 	var recorded: Dictionary = Reader.recorded_stage_backend(header)
 	_check(recorded.get("ok", false) and recorded.get("identity", {}) == identity,
 		"recorded identity names the installed binary")
-	# Replay is an explicit research action; it keeps its independent Mac opt-in.
-	var replay: Dictionary = Reader.prepare_replay(header, "", true)
+	var metadata: Variant = header.get("metadata")
+	_check(metadata is Dictionary and metadata.get("selected_start_choice") == session.start_choice \
+		and typeof(metadata.get("launch_trim_throttle")) == TYPE_STRING \
+		and str(metadata.launch_trim_throttle).is_valid_float() and float(metadata.launch_trim_throttle) == 0.5,
+		"real Main recording retains its production launch selection")
+	var unknown_header: Dictionary = header.duplicate(true)
+	unknown_header.metadata.selected_start_choice = "unknown"
+	var unknown: Dictionary = Reader.prepare_replay(unknown_header)
+	_check(not unknown.get("ok", false), "unknown recorded start refuses automatic replay")
+	if unknown.get("ok", false): unknown.flight.free()
+	var disabled: Dictionary = Reader.prepare_replay(header, "", false, false)
+	_check(not disabled.get("ok", false), "explicitly disabled automatic replay refuses")
+	if disabled.get("ok", false): disabled.flight.free()
+	var changed_aircraft: Dictionary = header.duplicate(true)
+	changed_aircraft.aircraft.input_identity.sha256 = "0".repeat(64)
+	var aircraft_refusal: Dictionary = Reader.prepare_replay(changed_aircraft)
+	_check(not aircraft_refusal.get("ok", false), "changed recorded stock aircraft refuses automatic replay")
+	if aircraft_refusal.get("ok", false): aircraft_refusal.flight.free()
+	var changed_binary: Dictionary = header.duplicate(true)
+	var different_sha := "0".repeat(64) if identity.binary_sha256 != "0".repeat(64) else "1".repeat(64)
+	changed_binary.stage_backend.binary_sha256 = different_sha
+	changed_binary.checkpoint.stage_backend.binary_sha256 = different_sha
+	var binary_refusal: Dictionary = Reader.prepare_replay(changed_binary)
+	_check(not binary_refusal.get("ok", false), "different recorded native binary refuses automatic replay")
+	if binary_refusal.get("ok", false): binary_refusal.flight.free()
+	var replay: Dictionary = Reader.prepare_replay(header)
 	_check(replay.get("ok", false), "recorded native replay prepares", str(replay.get("error", "")))
 	if not replay.get("ok", false): return
-	_check(replay.flight.stage_backend_identity() == identity, "replay owns the recorded native identity")
+	_check(replay.flight.stage_backend_identity() == identity and replay.flight.automatic_native_macos \
+		and not replay.flight.experimental_native_macos and replay.flight._native_stage != null \
+		and replay.flight._native_stage.configuration_matches(replay.flight),
+		"replay owns the recorded marker-qualified native identity")
 	var stream := FileAccess.open(path, FileAccess.READ)
 	if stream == null:
 		_check(false, "recorded replay stream opens")
@@ -374,7 +423,7 @@ func _run() -> void:
 					var after: Dictionary = session._native_stage.stage_stats()
 					_check(after.stage_calls > before.stage_calls and after.context_calls > before.context_calls,
 						"native stage and tick context actually executed")
-					_record_and_replay(session, identity)
+					_record_and_replay(main, identity)
 					_lifecycle(session, identity)
 					_reject_mutated_start(session)
 					_reject_mutated_packed_world(session)
