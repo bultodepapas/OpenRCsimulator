@@ -509,6 +509,11 @@ product behavior. Sanitizer loading, required native CI and distribution trust
 remain open. Automatic admission and production delivery are deferred; historical
 research below is not a claim that the implemented routes are absent.
 
+The [2026-11-13 gap audit](../../APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md#16-plan-gap-and-performance-audit--2026-11-13)
+orders the remaining internal work: backend-aware live fixture/reducer, a valid
+pilot, CPU/GPU attribution, representative complete cases and sustained trials.
+Source-editor performance work is independent of deferred public distribution.
+
 **Priority/size:** P2/large. **Entry:** M1 reference still misses the relevant budget after justified script/observer work, the evaluator is a material limiter, and SF/NK owners explicitly select a port under existing backend policy. **Benefit:** possible evaluator cost reduction; no extrapolation from Linux ratios. This branch can stay deferred while renderer and diagnostics ship.
 
 ### DT-MAC-04n1 — math/toolchain feasibility, outside app

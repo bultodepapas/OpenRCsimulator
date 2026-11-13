@@ -14,6 +14,9 @@ Sections 1–7 retain the dated preimplementation assessment and proposal. Their
 statements about then-missing Mac support and measurements describe that source
 pin. The current implementation record linked above owns observed progress and
 limitations; unchecked items below remain required before their stated adoption.
+The [2026-11-13 gap audit](#16-plan-gap-and-performance-audit--2026-11-13)
+reconciles those requirements with the implementation and orders the remaining
+internal performance work separately from deferred public distribution.
 
 ## 1. Executive summary
 
@@ -312,7 +315,7 @@ Public notarized distribution requires the appropriate Developer ID signing and 
 
 ## 7. Detailed phased implementation roadmap
 
-The phases below are the required scope, not completed milestones. [DT-MAC-04n1 implementation evidence](docs/research/native-kernel/DT-MAC-04n1/README.md) records the first scalar build and exact component/stage results; admission, broad qualification and delivery remain in progress. The six phases expand the existing four DT-MAC native substeps; they do not create a new track. Estimates are person-days for experienced engineers with access to the required hardware, excluding procurement and prolonged external service delays.
+The phases below retain the required scope, not completed milestones. [DT-MAC-04n1 implementation evidence](docs/research/native-kernel/DT-MAC-04n1/README.md) records the scalar port, experimental admission/replay, numerical and fleet results, source CPU screen and package controls. Broad qualification remains open and public distribution is deferred. The six phases expand the existing four DT-MAC native substeps; they do not create a new track. Estimates are person-days for experienced engineers with access to the required hardware, excluding procurement and prolonged external service delays.
 
 ### Phase 1 — Research and baseline
 
@@ -629,7 +632,7 @@ requirements remain open; partial implementation does not satisfy their full gat
 - [x] **DT-MAC-04n2:** execute ≥10,000 malformed-inclusive stage comparisons and full applicable trajectory/family prerequisite tapes; source10's 17 applicable positive oracles passed exactly.
 - [ ] **DT-MAC-04n3:** extend guarded Mac admission and enforce the actual qualified capability/domain surface.
 - [ ] **DT-MAC-04n3:** verify reset/reload/restore/recording identity, absence/corruption/wrong-slice/staleness and no midflight solver change.
-- [ ] **DT-MAC-04n3:** complete current-source fleet accounting and actual native coverage; retain refusals and terminals distinctly.
+- [x] **DT-MAC-04n3:** account for source10's full fixed-wing row union and actual native coverage: 1,386 verified healthy cases and 42 explicitly open rows, with the failed aggregate retained. This completes accounting, not full-fleet qualification or the runtime-domain gate above.
 - [ ] **Optimization / PT/NK:** measure complete scalar cost, trial one exact memory/SIMD/Accelerate candidate at a time and reject unsupported gains.
 - [ ] **Validation / SF/NK:** run sanitizer positive controls, focused consumers and required cross-platform CI on the stable candidate.
 - [ ] **DT-MAC-04n4:** collect at least five paired complete-session comparisons and final sustained named-hardware trials without competing work.
@@ -641,3 +644,142 @@ requirements remain open; partial implementation does not satisfy their full gat
 - [ ] **I05–I08 / PT/DT/NK:** freeze inclusive timing, A/A/observer/sample-cap design, actual tool/thermal/energy channels and ownership/lifecycle controls.
 - [ ] **I09–I10 / GDU/DT/NK:** prove binding precision, floor/slices/dependencies, signed-host loading and receipt accessibility early; sign/qualify the dylib before its embedded native receipt, then sign/notarize/staple the app before the final external bundle receipt.
 - [ ] **I11–I12 / SF/FL/DT:** complete the admission/replay consumer matrix, same-loader diagnostic controls, required native CI markers and change-based requalification policy.
+
+## 16. Plan-gap and performance audit — 2026-11-13
+
+**Reviewed source:** clean commit `67a2023080f4e371ec98925f33c2f9ec3299a656`.
+**Scope:** review only; no new hardware measurements or runtime changes. The
+original research/architecture/Markdown deliverable exists. The later authorized
+implementation delivered an experimental port and a bounded assessment, not all
+six implementation phases. Public distribution is deferred by owner instruction.
+That decision does not block source-editor performance work with the verified
+official host; it does not qualify a normally hardened final app either.
+
+### 16.1 Phase disposition
+
+| Original phase | Evidence now available | Remaining obligation |
+| --- | --- | --- |
+| 1. Research and baseline | Architecture, primary references, isolated M1 identities, paired source CPU data and Jensen controls | Current-candidate live baseline, CPU/GPU critical-path attribution and the owning Gate P statistic/regimes |
+| 2. Proof of concept | Strict scalar ARM64 build, 17 exact positive oracles, numerical mutant and FPCR detector | Supported sanitizer positive controls; normal signed-host acceptance remains a delivery gate |
+| 3. Native integration | Explicit fixed-wing opt-in, source lifecycle/replay, distinct package identity and diagnostic package tests | Enforced qualified runtime domain and final-candidate consumer/package migration proof |
+| 4. Optimization | Scalar-port benefit; naive NEON/vDSP candidates rejected for byte mismatches | Profile boundary/allocation/cache costs, then test one justified exact optimization and confirm on fresh runs |
+| 5. Validation | 1,323,114 identical comparisons and 1,386 completed stock cases; all 1,428 fixed-wing rows accounted for | 42 open rows or an enforced narrower domain, complete representative performance cases, sanitizers, required CI and live/sustained trials |
+| 6. Production readiness | Build/replay/receipt tooling and documented rollback/owners | Final signed package, supported OS/hardware matrix, downloaded/quarantined behavior and product acceptance; public distribution remains deferred |
+
+The source10 reports retain their own frozen identity. The reviewed commit also
+contains the later empty-candidate CLI correction and fleet reducer repair; it
+does not acquire a new full hardware qualification simply by containing the
+earlier tested files. Source10, package11's source09 diagnostic app and a future
+final package must remain separate evidence tuples.
+
+### 16.2 Performance obligations still open
+
+| Requested metric | What the M1 assessment establishes | What is missing |
+| --- | --- | --- |
+| Execution latency | Jensen 528.701 → 287.157 µs; ideal Electric 701.580 → 310.396 µs, medians of five run means; individual-tick tails retained | Live callback tails and setup/first-use/reload costs on the current candidate |
+| Simulation throughput | Two complete detached trim cases; native coverage and matching fingerprints | Real-time sim/wall, catch-up behavior, completed representative manoeuvre/contact/weather/family cases |
+| CPU use | Short direct-process diagnostics and a material callback reduction | Symbolicated attribution of evaluator, Godot/C++ boundary, guards, observers, allocation and scheduling costs |
+| GPU use | Historical renderer evidence only | Matched current native/reference Metal workload, queue/wait/presentation attribution and CPU/GPU overlap |
+| Memory | Sampled peaks of 539.7 MiB reference / 543.7 MiB native in separate short probes | Allocation rate, footprint, warm lifecycle retention, pressure/compression/swap and sustained headroom; no RAM-saving claim follows |
+| Bandwidth | No qualified result | Supported counters or explicitly scoped byte-traffic evidence; unified memory is not a measured bandwidth benefit |
+| Frame consistency | No source10 rendered qualification | Actual viewport/drawable/internal/output dimensions, frame p50/p95/p99, hitch counts, pacing and input/audio interaction |
+| Energy | No measured watts, joules or battery gain | Supported Mac channels and matched completed-work/real-time protocols; CPU savings cannot be relabelled energy savings |
+| Numerical accuracy | Strong same-host corpus and finite-tape evidence | Open boundaries, current admitted domain and independent physical validation remain distinct |
+| Scalability/compatibility | One named M1/8 GiB/OS/toolchain; no performance scaling sweep | Increasing supported law/contact/weather complexity, another named Apple Silicon host before broad family claims, and actual compatibility/fallback coverage |
+
+The three-case CPU campaign failed overall: Extra 300S hit the same **simulation
+fixture crash** at tick 7,524 in all ten runs. Godot did not thereby demonstrate
+an engine crash, and matching prefixes do not qualify completed performance.
+Electric timing used **ideal supply**, not Home's finite battery pack. Jensen
+has three A/A pairs per backend; Electric has no separate A/A control.
+
+The original [Gate P method](docs/research/simulation-state/Gate-P/README.md)
+reports p95 of 120-tick batch averages across named regimes. Source10 run means
+and individual-tick p95 are different statistics. Neither closes that gate by
+itself. Likewise, 14,400 detached ticks are 60 seconds of **simulated** time,
+not a 30-minute thermal or real-time test. The CPU reduction establishes an
+opportunity; its effect on FPS can be limited by an unchanged GPU critical path.
+
+### 16.3 Next internal work, in order
+
+1. **DT/PT + SF/NK: make one live pair measurable.** Freeze a fresh candidate and
+   preflight the current M1 tools, space, power, renderer and dimensions. The
+   existing `research/performance/sustained_flight.gd` forces reference, and
+   `native_summary.py` independently requires reference. Extend that fixture,
+   reducer and their tests together with explicit backend selection, actual
+   native identity/coverage and matching input/state observations. Preserve
+   existing reference receipts/defaults and reject fallback, identity drift and
+   failed tapes. Do not change physics or manually step a claimed live run.
+2. **DT/PT: validate a short pilot before the campaign.** Use the known Jensen
+   circuit in the isolated source app with normal automatic physics, rendering
+   and observers. Proposed pilot: 30 s wall warmup and 120 s wall sample per
+   role, serially. Verify both real backends, healthy progress, source identities,
+   input/state windows, frame records and sim/wall. This pilot is not a promotion
+   result. Then freeze five alternating paired cases, A/A/observer controls and
+   sample caps; keep uncapped throughput separate from paced/VSync measurements.
+3. **PT/NK: attribute, then optimize.** Profile separately from acceptance timing.
+   Measure preparation, receipt/hash I/O, packed-array/dictionary crossings,
+   allocation, evaluator, transaction/observers, CPU waiting and GPU work. The
+   1,004-second diagnostic lifecycle suite ran concurrently with other work and
+   is not a measured cold-start time or proof of a hashing bottleneck. Choose
+   scratch reuse/locality, NEON or an Accelerate primitive only for a demonstrated
+   hotspot, including conversion and ownership costs. Preserve strict FP and
+   float64; retain a change only after exactness and fresh complete-workload gains.
+4. **SF/NK/vehicle owners: complete the workload/domain.** Diagnose Extra using
+   its unchanged failed tape; do not shorten it or tune physics to pass timing.
+   Use a separately identified validated flight fixture for new measurements.
+   Measure finite-pack Electric, finite glow, liquid/turbine and applicable
+   manoeuvre/ground/weather workloads when claiming them. Complete the 42 open
+   rows or enforce a smaller qualified domain in runtime admission. Add the
+   missing discriminating selector/case to an existing tool only where needed.
+5. **DT/PT: test sustained cost and resources.** After a valid finalist, run at
+   least three 30-minute wall trials per role: at least three hours of samples,
+   plus warmups. Compare early/final-five-minute behavior, frame/sim-wall tails,
+   continuous thermal/power context and lifecycle memory. Record actual display
+   pixels; the authorized built-in-display exception does not establish 1080p
+   output. Unavailable energy/bandwidth channels stay unknown.
+6. **SF/NK/FL + DT: close adoption prerequisites separately.** Demonstrate real
+   sanitizer positive controls on an identified compatible diagnostic host,
+   establish native Mac CI markers and current required cross-platform results,
+   and recheck product Home/Fly/reset/reload/input/audio/replay on the claimed
+   artifact. The general UI smoke's scroll assertion and shared audio-exit
+   observations remain visible; focused success does not erase them. Developer
+   ID, normal hardened loading, notarization and downloaded-package checks stay
+   in the deferred distribution branch.
+
+NEON, Accelerate, extra workers, Swift and GPU compute are not mandatory missing
+features. Evaluate an option only when a measured, suitable consumer warrants it;
+adoption requires the applicable exactness and complete-workload evidence. Keep
+the live flight serial. A Metal/MPS rewrite of the
+float64 evaluator remains outside this port; renderer optimization follows GPU
+attribution and its existing owner.
+
+### 16.4 Apple tool applicability and CI snapshot
+
+Apple recommends actual-hardware measurement and appropriate QoS rather than
+hardware assumptions. Preflight installed profiling capabilities and preserve
+symbols; the last M1 inventory lacked full Xcode/Instruments. Time Profiler,
+System Trace and Game Performance/Metal traces are candidate diagnostics where
+available, with lightweight existing collectors for the pilot. Apple combines
+thread, thermal, memory, GPU and display tracks in its
+[Metal performance workflow](https://developer.apple.com/documentation/xcode/analyzing-the-performance-of-your-metal-app).
+Use a separate unprofiled acceptance run. Resolve redundant work and memory
+management before instruction-level tuning, following
+[Apple's CPU guidance](https://developer.apple.com/documentation/xcode/addressing-cpu-bottlenecks)
+and [Apple Silicon scheduling guidance](https://developer.apple.com/documentation/apple-silicon/tuning-your-code-s-performance-for-apple-silicon).
+
+Two tools must not be promised on this M1: Apple documents
+[Processor Trace recording](https://developer.apple.com/documentation/xcode/analyzing-cpu-usage-with-processor-trace)
+for Macs with M4 or later, and its current
+[Power Profiler](https://developer.apple.com/documentation/xcode/measuring-your-app-s-power-use-with-power-profiler)
+for iPhone/iPad with OS 26 or later. These are not established M1 energy/trace
+channels. A tool name or a nominal thermal enum is not measurement capability.
+
+At inspection on 2026-11-13, the reviewed commit's
+[CI run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43421812108)
+was **in progress**, including native Linux/Windows qualification and app units.
+This is not an absent or failed run, nor a completed pass. The workflow exports
+Mac packages on Ubuntu but has no native Mac evaluator job. Even a later green
+cross-platform run cannot substitute for the missing Mac qualification or named
+hardware/product evidence. Refresh that run's final result before adoption;
+this review neither reruns nor publishes it.

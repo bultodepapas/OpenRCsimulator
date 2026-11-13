@@ -316,6 +316,13 @@ to the reference trajectory, workload, application sources, engine, probe, machi
 native ABI/lock. Only native source and binary identities may differ. Campaigns occur
 in separate blocks, so drift and other host activity can bias before/after results;
 neither this test nor a headless result qualifies 1080p rendering or physical realism.
+Mac release comparisons require the same linked native and reference bundle
+identities. Different Mac release bundles are deliberately refused because the
+reference identity includes native artifacts; `--compare-campaigns` cannot qualify
+two separately packaged Mac candidates. Use the same bundle's reference/native
+`--compare-backends` study, or a separately scoped source-mode before/after study
+whose existing comparability checks pass. Repeating the command with a new bundle
+does not relax those checks.
 `--physics-backend=native` instead runs the normal observer-on/off study with native;
 the default remains `gdscript_reference`.
 
