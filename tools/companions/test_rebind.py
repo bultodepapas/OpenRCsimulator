@@ -106,6 +106,11 @@ class Workspace(unittest.TestCase):
 
 
 class CloneBaseline(unittest.TestCase):
+    @unittest.skipIf(sys.platform == "darwin", "the non-Mac refusal applies to other hosts")
+    def test_clone_is_unavailable_off_macos(self) -> None:
+        with self.assertRaisesRegex(rebind.SetupError, "requires macOS"):
+            rebind._copy_function("clone")
+
     def test_clone_requires_the_existing_macos_clonefile_helper(self) -> None:
         with patch.object(rebind, "_macos_clonefile", side_effect=rebind.PreparationError("requires macOS")):
             with self.assertRaisesRegex(rebind.SetupError, "requires macOS"):
@@ -148,6 +153,7 @@ class CloneBaseline(unittest.TestCase):
             root = Path(directory) / "repo"
             root.mkdir()
             contents = {"app/physics/example.gd": "old solver", "app/main.gd": "old main",
+                        "app/obsolete.gd": "tracked only in accepted revision",
                         "tools/flight_log/flight_log.py": "old replay",
                         "tools/release/macos_reference_receipt.py": "old helper"}
             for name, content in contents.items():
@@ -159,7 +165,20 @@ class CloneBaseline(unittest.TestCase):
             subprocess.run(["git", "-C", str(root), "-c", "user.name=Fixture", "-c", "user.email=fixture@example.test",
                             "-c", "commit.gpgsign=false", "commit", "-qm", "base"], check=True)
             for name in contents:
-                (root / name).write_text("current " + name, encoding="utf-8")
+                if name != "app/obsolete.gd":
+                    (root / name).write_text("current " + name, encoding="utf-8")
+            (root / "app/obsolete.gd").unlink()
+            extras = ("app/new_tracked.gd", "app/native/kernel/current.dylib", "tools/flight_log/new_tool.py")
+            for name in extras:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("new current-only input", encoding="utf-8")
+            subprocess.run(["git", "-C", str(root), "add", "app/new_tracked.gd", "tools/flight_log/new_tool.py"], check=True)
+            cache = root / "app/.godot/imported/texture.ctex"
+            cache.parent.mkdir(parents=True)
+            cache.write_bytes(b"cache")
+            (cache.parent.parent / "extension_list.cfg").write_text("current native descriptor", encoding="utf-8")
+            (cache.parent.parent / "global_script_class_cache.cfg").write_text("current classes", encoding="utf-8")
             workspace = Path(directory) / "workspace"
             workspace.mkdir()
             with patch.object(rebind, "ROOT", root), \
@@ -167,8 +186,40 @@ class CloneBaseline(unittest.TestCase):
                 base = rebind.build_baseline(workspace, "HEAD", ["app/physics"], "full", "clone")
             for name, content in contents.items():
                 self.assertEqual((base / name).read_text(encoding="utf-8"), content)
-                self.assertEqual((root / name).read_text(encoding="utf-8"), "current " + name)
+                if name != "app/obsolete.gd":
+                    self.assertEqual((root / name).read_text(encoding="utf-8"), "current " + name)
+            for name in extras:
+                self.assertFalse((base / name).exists(), name)
+                self.assertTrue((root / name).exists(), name)
+            self.assertEqual((base / "app/.godot/imported/texture.ctex").read_bytes(), b"cache")
+            self.assertFalse((base / "app/.godot/extension_list.cfg").exists())
+            self.assertFalse((base / "app/.godot/global_script_class_cache.cfg").exists())
             self.assertFalse((workspace / "base-solver.tar").exists())
+            copy_workspace = Path(directory) / "copy-workspace"
+            copy_workspace.mkdir()
+            with patch.object(rebind, "ROOT", root):
+                copied_base = rebind.build_baseline(copy_workspace, "HEAD", ["app/physics"], "full")
+            for name, content in contents.items():
+                self.assertEqual((copied_base / name).read_text(encoding="utf-8"), content)
+            for name in extras:
+                self.assertFalse((copied_base / name).exists(), name)
+            self.assertEqual((copied_base / "app/.godot/imported/texture.ctex").read_bytes(), b"cache")
+            self.assertFalse((copy_workspace / "base-solver.tar").exists())
+
+            # Even an exact archive cannot be used if it does not reproduce
+            # the accepted solver identity; no replay may run in that case.
+            qualification = {"accepted": {"rev": "HEAD", "solver_sha256": "0" * 64},
+                             "solver_directories": ["app/physics"], "tapes": [], "candidate_aircraft": "fixture"}
+            def identity(_godot, app):
+                self.assertEqual((app / "physics/example.gd").read_text(encoding="utf-8"), "old solver")
+                return hashlib.sha256(b"old solver").hexdigest()
+            with patch.object(rebind, "ROOT", root), \
+                    patch.object(rebind, "_macos_clonefile", return_value=lambda src, dst: shutil.copy2(src, dst)), \
+                    patch.object(rebind, "solver_identity", side_effect=identity), \
+                    patch.object(rebind, "replay") as replay:
+                with self.assertRaisesRegex(rebind.SetupError, "not the accepted"):
+                    rebind.compare("godot", qualification, 1, False, workspace, "full", copy_mode="clone")
+                replay.assert_not_called()
 
     def test_streamed_archive_failure_is_not_success(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -178,6 +229,30 @@ class CloneBaseline(unittest.TestCase):
             with patch.object(rebind, "ROOT", root):
                 with self.assertRaisesRegex(rebind.SetupError, "git archive"):
                     rebind._extract_archive_stream(root, "missing-revision", ["app"])
+
+    def test_clone_mode_is_forwarded_and_recorded(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            profile = root / "profile.json"
+            profile.write_text(json.dumps({"solver": {"sha256": OLD}}), encoding="utf-8")
+            (root / "tape.orfl").write_bytes(b"fixture")
+            qualification = {"profile": "profile.json", "accepted": {"rev": "base", "solver_sha256": OLD},
+                             "tapes": ["tape.orfl"], "solver_directories": [], "candidate_aircraft": "aircraft.json"}
+            qual_path = root / "qualification.json"
+            qual_path.write_text(json.dumps(qualification), encoding="utf-8")
+            report = root / "report.json"
+            results = [{"identical": True, "tape": "tape.orfl", "rows": 1}]
+            with patch.object(rebind, "ROOT", root), patch.object(rebind, "QUALIFICATION", qual_path), \
+                    patch.object(rebind, "_macos_clonefile", return_value=lambda _a, _b: None), \
+                    patch.object(rebind, "validate_engine"), patch.object(rebind, "solver_identity", return_value=NEW), \
+                    patch.object(rebind, "compare", return_value=(results, str(root / "workspace"))) as compare, \
+                    patch.object(rebind, "git", return_value="c" * 40), \
+                    patch.object(rebind, "solver_tree_is_committed", return_value=True), \
+                    patch.object(sys, "argv", ["rebind.py", "--godot", "godot", "--copy-mode", "clone",
+                                               "--report", str(report)]):
+                self.assertEqual(rebind.main(), 0)
+            self.assertEqual(compare.call_args.args[-1], "clone")
+            self.assertEqual(json.loads(report.read_text(encoding="utf-8"))["copy_mode"], "clone")
 
 
 class EngineAndTapeGuards(unittest.TestCase):
@@ -672,6 +747,7 @@ class GzipTapeTransport(unittest.TestCase):
         self.assertFalse(inspected[0].exists())
         receipt = json.loads(report.read_text(encoding="utf-8"))
         self.assertTrue(receipt["identical"])
+        self.assertEqual(receipt["copy_mode"], "copy")
         self.assertEqual(receipt["tapes"][0]["orfl_sha256"], hashlib.sha256(self.data).hexdigest())
         self.assertEqual(receipt["tapes"][0]["stored_sha256"], qualification["tape_identities"]["one.orfl.gz"]["stored_sha256"])
         self.assertEqual(receipt["tapes"][0]["tape_encoding"], "gzip")

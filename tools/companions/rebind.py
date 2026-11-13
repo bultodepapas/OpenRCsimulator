@@ -299,10 +299,38 @@ def _extract_archive_stream(base: Path, rev: str, paths: list[str]) -> None:
 
 def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str = "solver",
                    copy_mode: str = "copy") -> Path:
-    """Current project with the solver directories (or, for scope "full", every tracked app and replay
-    tooling file) taken from the accepted revision. The current import cache is reused."""
+    """Build the accepted solver hybrid or an exact tracked historical app and replay tree."""
     base = workspace / "base"
     copy = _copy_function(copy_mode)
+    if scope not in ("solver", "full"):
+        raise SetupError(f"unsupported baseline scope: {scope}")
+    if scope == "full":
+        paths = [path for path in FULL_BASELINE_PATHS
+                 if subprocess.run(["git", "cat-file", "-e", f"{rev}:{path}"], cwd=ROOT,
+                                   stderr=subprocess.DEVNULL).returncode == 0]
+        if "app" not in paths or "tools/flight_log" not in paths:
+            raise SetupError("accepted revision lacks the tracked app or replay tooling")
+        base.mkdir()
+        # Only imported assets may come from the current tree. In particular,
+        # do not retain current extension lists, class caches or native binaries.
+        imported = ROOT / "app" / ".godot" / "imported"
+        if os.path.lexists(imported):
+            if imported.is_symlink() or not imported.is_dir():
+                raise SetupError("import cache must be a regular directory")
+
+            def no_cache_links(parent, names):
+                for name in names:
+                    item = Path(parent) / name
+                    if item.is_symlink() or (hasattr(item, "is_junction") and item.is_junction()):
+                        raise SetupError(f"import cache link is not supported: {item}")
+                return ()
+
+            destination = base / "app" / ".godot" / "imported"
+            destination.parent.mkdir(parents=True)
+            shutil.copytree(imported, destination, symlinks=True, ignore=no_cache_links, copy_function=copy)
+        _extract_archive_stream(base, rev, paths)
+        return base
+
     shutil.copytree(ROOT / "app", base / "app", symlinks=True, ignore=COPY_IGNORE, copy_function=copy)
     shutil.copytree(ROOT / "tools" / "flight_log", base / "tools" / "flight_log", symlinks=True, copy_function=copy)
     # tools/flight_log/flight_log.py loads the Mac receipt helper by path at import time.
@@ -312,10 +340,6 @@ def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str
     for directory in directories:
         shutil.rmtree(base / directory)
     paths = list(directories)
-    if scope == "full":
-        paths = [path for path in FULL_BASELINE_PATHS
-                 if subprocess.run(["git", "cat-file", "-e", f"{rev}:{path}"], cwd=ROOT,
-                                   stderr=subprocess.DEVNULL).returncode == 0]
     if copy_mode == "clone":
         _extract_archive_stream(base, rev, paths)
     else:

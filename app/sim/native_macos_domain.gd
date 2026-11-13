@@ -59,17 +59,20 @@ static func _start_bytes(start: Variant) -> PackedByteArray:
 		return PackedByteArray()
 	var estimated_bytes: int = 128 + start.size() * 48
 	for key: Variant in start:
-		if typeof(key) != TYPE_STRING or key.length() > 128: return PackedByteArray()
-		estimated_bytes += key.length() * 4
+		if typeof(key) not in [TYPE_STRING, TYPE_STRING_NAME]: return PackedByteArray()
+		var key_text := str(key)
+		if key_text.length() > 128: return PackedByteArray()
+		estimated_bytes += key_text.length() * 4
 		var value: Variant = start[key]
 		match typeof(value):
 			TYPE_BOOL, TYPE_INT, TYPE_FLOAT:
 				pass
-			TYPE_STRING:
-				if value.length() > 1024: return PackedByteArray()
-				estimated_bytes += value.length() * 4
+			TYPE_STRING, TYPE_STRING_NAME:
+				var value_text := str(value)
+				if value_text.length() > 1024: return PackedByteArray()
+				estimated_bytes += value_text.length() * 4
 			TYPE_PACKED_FLOAT64_ARRAY:
-				if key != "state" or value.size() != 13: return PackedByteArray()
+				if key_text != "state" or value.size() != 13: return PackedByteArray()
 				estimated_bytes += value.size() * 8
 			_:
 				return PackedByteArray()

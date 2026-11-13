@@ -169,6 +169,19 @@ func _initialize() -> void:
 	var start_hash := Domain.start_sha256(initial, true)
 	_check(start_hash.length() == 64 and start_hash == Domain.start_sha256(initial.duplicate(true), true),
 		"exact production start identity is deterministic")
+	var named := {}
+	named[&"ok"] = true
+	named[&"requested_throttle"] = 0.5
+	named[&"mode"] = &"level"
+	named[&"state"] = initial.state.duplicate()
+	var named_bytes := Domain._start_bytes(named)
+	var named_hash := Domain.start_sha256(named, true)
+	_check(not named_bytes.is_empty() and named_bytes == var_to_bytes(named) and named_hash.length() == 64,
+		"StringName keys and values keep their original typed encoding")
+	var named_changed: Dictionary = named.duplicate(true)
+	named_changed[&"mode"] = "level"
+	_check(Domain.start_sha256(named_changed, true) != named_hash,
+		"StringName and String values have distinct start identities")
 	var changed: Dictionary = initial.duplicate(true)
 	changed.V += 0.01
 	_check(Domain.start_sha256(changed, true) != start_hash, "custom trim metadata changes the start hash")
