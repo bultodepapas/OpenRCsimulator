@@ -56,6 +56,15 @@ func _physical(session: Node) -> PackedByteArray:
 		session.sim.continuous, session.sim.inputs, session.sim.last_loads, session.sim.modes])
 
 
+func _changed_surface(source: PackedFloat64Array) -> PackedFloat64Array:
+	var changed := source.duplicate()
+	for index: int in changed.size():
+		if is_finite(changed[index]):
+			changed[index] += 1.0
+			return changed
+	return PackedFloat64Array()
+
+
 func _step(session: Node, label: String) -> bool:
 	var tick: int = session.sim.tick
 	session.sim.step()
@@ -135,6 +144,59 @@ func _record_and_replay(main: Node, identity: Dictionary) -> void:
 	_check(not session.set_field(changed_field) and is_same(session._runway_field, old_field) \
 		and _same_native(session, writer, helper, stage, identity, physical_before, counters),
 		"changed field provenance is refused without replacing the owner")
+	var fuel_before := var_to_bytes([session.fuel_start_fill, session.get("_fuel_start_fill_known"),
+		session.get("_trim_density")])
+	var fuel_noop: bool = session.set_fuel_start_fill(1.0)
+	var fuel_change: bool = session.set_fuel_start_fill(0.75)
+	_check(fuel_noop and not fuel_change and var_to_bytes([session.fuel_start_fill,
+		session.get("_fuel_start_fill_known"), session.get("_trim_density")]) == fuel_before \
+		and _same_native(session, writer, helper, stage, identity, physical_before, counters),
+		"live fuel selection refuses a changed fill without modifying its recorder owner")
+	var start_before := var_to_bytes(session.start)
+	var ground_before: PackedByteArray = session.ground_surfaces.to_byte_array()
+	var airframe_before: PackedByteArray = session.airframe_surfaces.to_byte_array()
+	var hull_before: bool = session.soft_hull_contacts
+	var cache_before: int = session.get("_soft_contacts_cache_tick")
+	var start_error_before: String = session.start_error
+	var backend_error_before: String = session.stage_backend_error
+	var hull_object_before: Variant = session.get("_hull_contact")
+	var same_ground: PackedFloat64Array = session.ground_surfaces.duplicate()
+	var same_airframe: PackedFloat64Array = session.airframe_surfaces.duplicate()
+	session.set_start_altitude(-float(session.start.state[2]))
+	session.soft_hull_contacts = hull_before
+	session.ground_surfaces = same_ground
+	session.airframe_surfaces = same_airframe
+	_check(var_to_bytes(session.start) == start_before and session.ground_surfaces.to_byte_array() == ground_before \
+		and session.airframe_surfaces.to_byte_array() == airframe_before and session.soft_hull_contacts == hull_before \
+		and session.get("_soft_contacts_cache_tick") == cache_before and session.start_error == start_error_before \
+		and session.stage_backend_error == backend_error_before and is_same(session.get("_hull_contact"), hull_object_before) \
+		and _same_native(session, writer, helper, stage, identity, physical_before, counters),
+		"equal launch-context setters preserve recorder and all accepted owner state")
+	session.set_start_altitude(-float(session.start.state[2]) + 1.0)
+	_check(var_to_bytes(session.start) == start_before and "new flight" in session.start_error \
+		and _same_native(session, writer, helper, stage, identity, physical_before, counters),
+		"changed start altitude is refused before mutating the live owner")
+	session.soft_hull_contacts = not hull_before
+	_check(session.soft_hull_contacts == hull_before and session.get("_soft_contacts_cache_tick") == cache_before \
+		and "hull contact" in session.stage_backend_error \
+		and _same_native(session, writer, helper, stage, identity, physical_before, counters),
+		"changed hull contact mode is refused before mutating the live owner")
+	var changed_ground := _changed_surface(same_ground)
+	_check(not changed_ground.is_empty(), "ground surface fixture has a finite value")
+	if not changed_ground.is_empty():
+		session.ground_surfaces = changed_ground
+		_check(session.ground_surfaces.to_byte_array() == ground_before and "ground surfaces" in session.stage_backend_error \
+			and _same_native(session, writer, helper, stage, identity, physical_before, counters),
+			"changed ground surfaces are refused before mutating the live owner")
+	var changed_airframe := _changed_surface(same_airframe)
+	_check(not changed_airframe.is_empty(), "airframe surface fixture has a finite value")
+	if not changed_airframe.is_empty():
+		session.airframe_surfaces = changed_airframe
+		_check(session.airframe_surfaces.to_byte_array() == airframe_before \
+			and is_same(session.get("_hull_contact"), hull_object_before) \
+			and "airframe surfaces" in session.stage_backend_error \
+			and _same_native(session, writer, helper, stage, identity, physical_before, counters),
+			"changed airframe surfaces are refused before rebuilding the hull")
 	var old_lake: Dictionary = session.get("_lake")
 	var lake_ok: bool = session.set_lake_context(session.lake_context())
 	_check(lake_ok and is_same(session.get("_lake"), old_lake) \
@@ -151,6 +213,10 @@ func _record_and_replay(main: Node, identity: Dictionary) -> void:
 		session.sim.inputs[0] = 0.02 if tick < 2 else -0.02
 		session.sim.inputs[3] = 0.4
 		advanced = _step(session, "recorded native tick %d" % tick) and advanced
+		if tick == 0:
+			_check(advanced and writer.recording and session.stage_backend_identity() == identity \
+				and session._native_stage == helper and helper.owns_stage(session) \
+				and helper.configuration_matches(session), "native recording advances after fuel refusal")
 	_check(writer.stop() == OK, "recorder seals its native flight", writer.failure)
 	var inspected: Dictionary = Reader.inspect(path)
 	_check(inspected.get("ok", false) and inspected.get("complete", false), "recorded native file inspects", str(inspected.get("error", "")))

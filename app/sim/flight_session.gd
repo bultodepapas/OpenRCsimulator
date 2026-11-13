@@ -322,6 +322,10 @@ func set_fuel_start_fill(fill: float) -> bool:
 		return false
 	if glow_is_active() and fill * float(aircraft.model.propulsion.glow.capacity_fuel_kg) <= float(aircraft.model.propulsion.glow.unusable_fuel_kg):
 		return false
+	# A qualified automatic Mac flight keeps its accepted start policy until a
+	# new flight. Changing it here would invalidate the guard before the next tick.
+	if _guarded_automatic_macos_live():
+		return fill == fuel_start_fill
 	fuel_start_fill = fill
 	_fuel_start_fill_known = true
 	_trim_density = NAN # the selected launch inventory needs its own equilibrium on reset
@@ -806,6 +810,13 @@ func _refresh_stage_backend() -> void:
 		return
 	if sim != null and not _reset_transaction_active and _stage_backend_requested == NativeStage.BACKEND_NATIVE:
 		_prepare_stage_backend()
+
+
+## Changing the qualified automatic launch context requires a new flight.
+func _guarded_automatic_macos_live() -> bool:
+	return OS.get_name() == "macOS" and automatic_native_macos and not experimental_native_macos \
+		and sim != null and sim.tick > 0 \
+		and _native_stage != null and _native_stage.owns_stage(self)
 
 
 const Scenarios := preload("res://sim/scenarios.gd")
@@ -1366,6 +1377,10 @@ var _soft_contacts_cache_state := PackedFloat64Array()
 var soft_hull_contacts := false:
 	set(value):
 		if _reject_reset_publication_reentry(): return
+		if _guarded_automatic_macos_live():
+			if value != soft_hull_contacts:
+				stage_backend_error = "changing hull contact mode requires a new flight"
+			return
 		soft_hull_contacts = value
 		_soft_contacts_cache_tick = -1
 		_refresh_stage_backend()
@@ -1409,6 +1424,10 @@ var ground_surfaces: PackedFloat64Array:
 		return environment.surfaces
 	set(value):
 		if _reject_reset_publication_reentry(): return
+		if _guarded_automatic_macos_live():
+			if value.to_byte_array() != environment.surfaces.to_byte_array():
+				stage_backend_error = "changing ground surfaces requires a new flight"
+			return
 		environment.surfaces = value
 		_refresh_stage_backend()
 ## H2: last deflections built by _deflections() and the servo positions they belong to (cleared with each aircraft).
@@ -1422,8 +1441,9 @@ var airframe_surfaces: PackedFloat64Array:
 		return _airframe_surfaces
 	set(value):
 		if _reject_reset_publication_reentry(): return
-		if automatic_native_macos and _native_stage != null and sim != null and sim.tick > 0 \
-				and value == _airframe_surfaces:
+		if _guarded_automatic_macos_live():
+			if value.to_byte_array() != _airframe_surfaces.to_byte_array():
+				stage_backend_error = "changing airframe surfaces requires a new flight"
 			return
 		_airframe_surfaces = value.duplicate()
 		if sim != null and aircraft.get("ok", false):
@@ -2904,6 +2924,11 @@ func _trim_at_start_candidate(speed: float, mode: String) -> Dictionary:
 ## Moves the start above the NED datum. reset() re-trims if the selected atmosphere changes with altitude.
 func set_start_altitude(altitude: float) -> void:
 	if _reject_reset_publication_reentry(): return
+	if _guarded_automatic_macos_live():
+		if start.get("ok", false) and is_finite(altitude) and Sim.state_is_valid(start.state) \
+				and start.state[RB.POS + 2] != -altitude:
+			start_error = "changing start altitude requires a new flight"
+		return
 	if start.get("ok", false) and is_finite(altitude) and Sim.state_is_valid(start.state):
 		var s: PackedFloat64Array = start.state
 		s[RB.POS + 2] = -altitude
