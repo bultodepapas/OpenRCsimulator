@@ -8,6 +8,14 @@ owns measurements. Historical inventory below was checked on **2026-11-03**;
 the Windows-through-Linux route and reusable beta2 engine were rechecked on
 **2026-11-06**.
 
+**2026-11-12 follow-up:** strict direct Windows SSH to ANGELA_AIR succeeded. The
+[isolated M1 experiment record](../research/native-kernel/apple-silicon-m1-experiments-2026-11-12.md)
+binds current host/engine identities, a checked math test, standalone compilation
+and the SDK C++ header-path issue. The old checkout remains absent; preserve the
+reused engine and new frozen evidence. This does not qualify a native evaluator
+or renew the historical rendered campaign. The separate `angel` mDNS alias did
+not resolve in that session.
+
 ## Select the Mac first
 
 These are separate machines, accounts and SSH identities. Sections 1–6 below

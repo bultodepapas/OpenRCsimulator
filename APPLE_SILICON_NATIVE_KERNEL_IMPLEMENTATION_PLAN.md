@@ -4,7 +4,7 @@
 
 **Repository assessed:** `0cdb3cfd2cb4fca6d71cf508555501c153e15f37`; working tree initially clean.
 
-**Status:** research and proposed engineering work only; no implementation or native Mac qualification performed by this investigation.
+**Status:** implementation specification with bounded M1 primitive experiments in section 3.9; no production native-evaluator implementation or qualification.
 
 **Owners:** DT/PT for Mac delivery and measurement; SF/NK/FL for evaluator semantics, admission and replay; each vehicle owner retains its validation gates.
 
@@ -39,7 +39,7 @@ The following labels apply throughout:
 | Proposed | Interface refinement, experiment, target or task requiring future implementation and verification |
 | Unknown | Native hardware observation or compatibility evidence still required |
 
-No Mac connection, compiler invocation, runtime benchmark or production modification was performed for this document. Performance figures below are explicitly retained evidence. Estimates in section 12 are engineering effort, not predicted speedups.
+The original architecture assessment did not connect to a Mac or compile/benchmark code. The separately identified follow-up in section 3.9 now supplies isolated M1 primitive measurements at a newer source pin; it does not refresh the whole architecture audit or qualify an evaluator. No production code changed. Estimates in section 12 are engineering effort, not predicted speedups.
 
 ### 2.2 Runtime, dependencies and delivery
 
@@ -126,6 +126,8 @@ Use an ARM64-specific oracle against the **same pinned native Godot executable**
 
 Require `-fno-fast-math` and explicit `-ffp-contract=off`, with effective compile/link flag verification and disassembly of sensitive primitives. Clang documents that disabling fast math can still leave within-expression contraction enabled; “strict enough” source appearance is insufficient. Verify the selected Apple Clang version rather than assuming upstream defaults are identical. [Clang floating-point controls](https://clang.llvm.org/docs/UsersManual.html#controlling-floating-point-behavior).
 
+Extend the existing oracle with observable witnesses, not flag checks alone. With runtime operands under verified round-to-nearest, `(1+2^-27)*(1-2^-27)-1` distinguishes separate binary64 operations (`+0`) from FMA (`-2^-54`). Observe the engine first: use the opposite evaluation as the detector mutant, and resolve an unexpected fused reference against the strict-FP design before continuing. Retain effective settings per translation unit and inspect the final linked candidate, including relevant pragmas/LTO. Verify calling-thread FPCR controls across prepare/stage/refusal without assuming FPSR exception-status preservation. Add adjacent representable values around actual literals/thresholds and bind math qualification to the tested OS/toolchain tuple. Signaling-NaN transport/coverage remains an explicit scope question, not an inferred success. [I01–I02 findings and controls](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i01).
+
 ### 3.4 Accelerate and Apple SIMD libraries
 
 Accelerate supplies CPU vector processing, vDSP array arithmetic, vForce vector transcendental functions, and BLAS/LAPACK. Apple's `simd` facilities address small vectors/matrices. Reuse those implementations where a matching workload and numeric policy exist; avoid writing a replacement BLAS, FFT or general solver. [Accelerate overview](https://developer.apple.com/accelerate/).
@@ -133,6 +135,10 @@ Accelerate supplies CPU vector processing, vDSP array arithmetic, vForce vector 
 vForce includes double-precision vector functions, but matching precision is not a byte-identity guarantee against scalar engine math. Treat vector transcendental substitution as an independently gated numerical candidate. [vForce documentation](https://developer.apple.com/documentation/accelerate/vforce).
 
 The simulator's tiny vectors, branchy laws and ordered sums make function-call overhead and reduction order material questions. This is a workload inference requiring measurement, not a limitation claimed for Accelerate. Keep scalar operations for three-component quantities until an experiment shows otherwise. Evaluate larger offline linear algebra separately from authoritative live-flight evaluation.
+
+The first SIMD experiment should target independent lanes, such as the final six-component `fade` multiply in `nk_wake.hpp`, preserving preceding reduction order. Test the comparison shim's quiet-NaN and signed-zero operand behavior before replacing any min/max helper. For a public vDSP candidate, freeze actual/neighboring lengths, legal aliases, stride, tails, symbol availability and deployment floor; include packing/scratch/call costs and complete-stage timing. No private matrix instruction dependency or universal size crossover is assumed. [NEON investigation](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i03), [Accelerate investigation](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i04).
+
+Permute special values through every vector lane and scalar tail at each actual length. The M1 follow-up found that a 289-pair matrix could pass while a changed odd-tail position exposed a NaN-payload difference in both disposable NEON and vDSP candidates. Those candidates are not generally byte-equivalent. Compare ordinary compiler vectorization as well as explicit intrinsics; manual NEON was not always the fastest observed primitive.
 
 ### 3.5 Metal, MPS and unified memory
 
@@ -157,6 +163,18 @@ Godot supports GDExtension C++ bindings and custom API descriptions. The reposit
 ### 3.7 Comparable projects and measured benefits
 
 The [2026-11-12 comparable-project review](docs/research/native-kernel/apple-silicon-comparables-2026-11-12.md) adds primary measurements from MATLAB, AppleAccelerate.jl, elastic-wave simulation, Blender, neutron transport and OpenMM, plus MuJoCo and Dolphin architecture/numerical counterexamples. It records hardware, workload, precision, baseline, measurement scope and missing evidence. CPU-library, GPU-grid, rendering, energy and batch results are kept distinct. No external ratio is an OpenRC Mac forecast; the review maps each useful finding to DT-MAC-04n1–n4 and illustrates how evaluator savings are diluted in complete ticks and frames.
+
+### 3.8 Twelve investigations reinforcing the implementation gates
+
+The [twelve-investigation review, 2026-11-12](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md) checks numerical controls, library semantics, timing/statistics, thermal/energy tooling, ownership, ABI, distribution, replay and CI against primary sources and targeted current source at `40751b55188226e69143881c7c58f16bc0a3cfff`. Its desk research is complete, with a subsequent bounded hardware follow-up below. Its controls are integrated into the architecture, six phases, benchmark protocol, qualification matrix and checklist. It does not refresh every claim of the original architecture audit or change the conditional entry/promotion policy.
+
+### 3.9 Bounded M1 experiments and a rejected naive optimization
+
+The [M1 experiment report, 2026-11-12](docs/research/native-kernel/apple-silicon-m1-experiments-2026-11-12.md) records successful strict SSH access to ANGELA_AIR, checked Godot math tests (20 checks, zero failures), a standalone ARM64/Accelerate build, runtime FMA witnesses and two short-vector timing repetitions. The build required an explicit path to libc++ headers already present in SDK 27.0; path discovery alone had not established compiler readiness.
+
+Seventeen scalar/packed-double fixtures retained their bits. An initial 289-pair multiplication corpus matched Godot, but moving a quiet NaN into the odd tail produced one byte mismatch each for the disposable NEON and vDSP candidates. `std::fmax` also differed from Godot `maxf` in 33/289 cases. These observations make lane/tail permutations and helper controls concrete requirements. They do not qualify the native extension, all arithmetic or any aircraft.
+
+Small-length timings varied substantially between processes. Ordinary C++ beat explicit NEON at eight elements in both runs, while vDSP had lower observed cost at 64/256; none establishes a stable crossover or complete-workload benefit. Preserve the reference backend and conditional entry gate. No implementation phase, 500 µs budget, energy, package or 1080p qualification was completed.
 
 ## 4. Feasibility analysis
 
@@ -217,7 +235,7 @@ These are representative common fixed-wing calls, not the complete family ABI. P
 
 Keep ABI 2 if only its implementation and platform receipt support change. If any public data shape or meaning must change, version it explicitly with paired old/new rejection tests; do not silently stretch ABI 2. A new general host-to-device message layer is unnecessary.
 
-**Experimental admission must be explicit.** Main and helicopter routes already request `native` by default; removing the current Mac platform refusal would therefore enable product admission immediately. Before promotion, require a dedicated source/debug opt-in gate (proposed `--experimental-native-macos`, propagated through session setup), alongside the native request and verified artifacts. Leave it off for ordinary Home/direct-flight launches. Enforce the qualified fixed-wing family/domain allowlist in the runtime helper and reject helicopter/other unqualified families even if they share the loader. Test both explicit opt-in and ordinary default routes. Only DT-MAC-04n4 promotion may remove that Mac opt-in requirement for the adopted surface.
+**Experimental admission must be explicit.** Main and helicopter routes already request `native` by default; removing the current Mac platform refusal would therefore enable product admission immediately. Before promotion, require a dedicated opt-in gate for source/debug and packaged qualification (proposed `--experimental-native-macos`, propagated through session setup), alongside the native request and verified artifacts. Leave it off for ordinary Home/direct-flight launches. The exact final packaged executable must support explicit opt-in for its prepromotion tests; do not rebuild or patch receipts to enable those tests. Enforce the qualified fixed-wing family/domain allowlist in the runtime helper and reject helicopter/other unqualified families even if they share the loader. Test both explicit opt-in and ordinary default routes. Only DT-MAC-04n4 promotion may remove that Mac opt-in requirement for the adopted surface; any resulting artifact change invalidates its affected qualification gates.
 
 ```mermaid
 flowchart LR
@@ -240,6 +258,8 @@ Treat GDExtension packed-array pointers as scoped views. Do not retain raw point
 The thirteen-double rigid body occupies 104 payload bytes; additional blocks and object/container overhead must be measured. There is no reason to allocate Metal buffers or upload CPU physics state in the recommended design. Keep graphics allocations and visual settings independent of the simulation's representation and numerical behavior.
 
 Prefer the existing prepared layout initially. Consider structure-of-arrays only for a measured loop/batch benefit; include transposition and unused-lane costs. Use alignment guaranteed by the chosen allocation API, and verify it before any aligned intrinsic access. Avoid padding every small vector or keeping duplicate CPU/GPU copies without evidence.
+
+Ownership tests must retain an output across later calls, mutate an independent caller copy, replace/resize temporary inputs and interleave two evaluator instances. Measure warm lifecycle retention separately from allocator/library caches. A future no-copy Metal consumer cannot wrap arbitrary Godot array pointers: it must prove eligible allocation/alignment, one-region ownership and lifetime through completion. Reference/refusal paths must avoid candidate-only scratch/GPU allocations. The initial CPU evaluator needs no Metal buffer. [I08 ownership findings](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i08).
 
 ### 6.3 Threading and synchronization
 
@@ -269,11 +289,15 @@ Extend the existing builder with a native Mac ARM64 route and a pinned macOS too
 
 Build the locked godot-cpp/API configuration, preserve the engine-matching binding precision, emit a compilation database and inspect final effective FP flags. Initially disable unqualified LTO or other transformations; evaluate each later toolchain change independently. Produce a dylib, descriptor, source/toolchain receipt and matching dSYM/UUID in fresh ignored output directories. No runtime compiler or downloaded code is needed by players.
 
+Before family/fleet work, prove scalar and packed float64 round trips through the actual late-loaded extension, using signed zero and values that expose float32 narrowing. Record the API JSON hash/origin and selected API/override, engine/binding precision, per-slice architecture/load commands/dependencies and delivered minimum OS. Simulation float64 does not justify selecting double `real_t` bindings against a single-precision engine. Inspect the exact editor/release host's signatures, entitlements and Team ID, then prove that it loads the candidate under its actual library-validation policy; an official signed editor is not an automatic loading pass. [I09 binding gate](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i09), [I10 distribution gate](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i10).
+
 Proposed source/debug installation names are `openrc_native_kernel_macos.gdextension` and `build-receipt-macos.json`, alongside the existing platform files, with an explicit `macos`/`arm64` receipt row and architecture-matched dylib mapping. Keep Mac paths separate from Linux/Windows and preserve the current guarded manual-loading policy. These names and the associated runner flags do not exist as a qualified Mac route today.
 
 An ARM64 dylib cannot serve an x86_64 process. The first Mac native deliverable may qualify only ARM64 while Intel/Rosetta explicitly retains reference. Alternatively build separate validated slices before assembling a universal library; `lipo` assembly alone does not qualify either slice. Apple's universal-binary guidance requires architecture-compatible components. [Apple Silicon porting guidance](https://developer.apple.com/documentation/apple-silicon/porting-your-macos-apps-to-apple-silicon).
 
-Reuse the current Mac reference-bundle identity and release tooling rather than embedding a self-referential hash. Apply all byte-changing transformations before final receipts: finish dylib slices/install names, sign nested code, then sign the enclosing app; record exact final package artifacts through the release identity owner. Verify signatures/dependencies, downloaded quarantine behavior, sibling receipt/sidecar access and native-success/fallback on the actual package. Confirm notarization/stapling implications with the delivery owner and never mutate signed contents after sealing a receipt.
+Reuse the existing receipt/release mechanisms as a starting point, preserving the reference-only identity and defining a separately versioned native identity rather than embedding a self-referential hash. Finalize dylib slices/install names and sign the library, then run its oracles/fleet gates and generate the native qualification receipt. Embed that receipt/manifest into the PCK and verify that packaging and outer signing preserve the qualified dylib bytes. For a notarized ZIP route, finish nested/app signing, submit the staging archive, inspect acceptance/logs, staple and validate the app/items, then generate the final external bundle receipt and seal the distribution ZIP. ZIPs cannot themselves be stapled. Re-signing or changing the dylib invalidates its binary-bound proofs; do not rewrite an unsigned precursor's hash. Keep submitted and final archive hashes distinct and qualify the final package bytes. No byte-changing operation follows final receipt/package qualification. [Apple notarization workflow](https://developer.apple.com/documentation/security/customizing-the-notarization-workflow).
+
+Prove receipt-location feasibility early: the current sibling receipt may become inaccessible when a quarantined app is translocated. Test downloaded Finder launch, offline launch, the supported installation route and moving the app alone. No quarantine stripping, library-validation bypass or unsupported recovery of an original path qualifies the design. If a supported launch cannot access required identity, resolve a reviewed installation/identity design and usable reference behavior before fleet work; preserve explicit recording/replay refusal where identity is unavailable. A custom product engine or new trust architecture requires a scope/effort reassessment. [I10 evidence and stop condition](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i10).
 
 The current native package verifier is Linux-only, while `mac_reference_identity()` deliberately identifies a reference-only Mac bundle. Add a separately versioned Mac native bundle identity or an explicitly reviewed schema extension through those existing owners; do not reinterpret the reference-only kind as native qualification or weaken the Linux allowlist. Bind the final signed bundle/PCK, native descriptor/library, toolchain/oracle receipt and embedded diagnostic sources without a circular receipt hash.
 
@@ -283,7 +307,7 @@ Public notarized distribution requires the appropriate Developer ID signing and 
 
 ## 7. Detailed phased implementation roadmap
 
-All tasks below are **pending**. The six phases expand the existing four DT-MAC native substeps; they do not create a new track. Estimates are person-days for experienced engineers with access to the required hardware, excluding procurement and prolonged external service delays.
+All implementation phases below remain **pending**. Section 3.9 supplies partial primitive evidence, not a completed phase. The six phases expand the existing four DT-MAC native substeps; they do not create a new track. Estimates are person-days for experienced engineers with access to the required hardware, excluding procurement and prolonged external service delays.
 
 ### Phase 1 — Research and baseline
 
@@ -296,6 +320,7 @@ Tasks:
 - Run the existing reference complete-session probes and selected live rendered cases. Collect per-tick and batch distributions separately, setup cost, allocation/memory evidence, CPU stacks and GPU attribution.
 - Confirm the 500 µs regime/statistic definition with SF/NK. Identify the evaluator fraction and test a small exact GDScript fix first if profiling identifies one.
 - Freeze practical benefit, regression, memory and sustained-run criteria before testing candidates. Record unknown channels as unknown.
+- Freeze A/A/observer controls, pair/block ordering, primary metrics, exclusions and a sample cap. Preflight the actual Mac tool/channel matrix and inspect host signatures/receipt-location assumptions before committing to expensive integration.
 
 **Deliverables:** source-bound baseline manifest, raw reports, attribution table, benchmark protocol and go/defer decision. **Risks:** noisy host, wrong pixels, observer overhead, stale inputs. **Acceptance:** completed comparable reference workloads and attribution justify the port under SF-08, or a documented deferral. Do not infer the trigger from historical Linux results.
 
@@ -309,6 +334,7 @@ Tasks:
 - Characterize scalar finite arithmetic, two-NaN operand selection, signed zero, subnormal/overflow/underflow behavior, comparisons/clamps, conversions and transcendental/literal semantics against native GDScript.
 - Implement only the minimal platform primitives needed to compile one representative existing stage; retain shared laws and the x86 implementation.
 - Verify effective strict FP flags, library dependencies and dSYM identity. Run a deliberate numerical mutation that fails the expected comparison.
+- Execute FMA/control-state, literal-neighbor and double-transport witnesses through the exact late-loading seam; characterize quiet/signaling-NaN coverage explicitly. Prove minimal signed-host loading and the intended receipt/installation route before fleet work.
 - Measure a small end-to-end crossing as a feasibility screen; do not use its cost as the production benefit claim.
 
 **Deliverables:** reproducible research dylib/probe receipts, primitive compatibility table, exactness failures and stop/go report. **Risks:** engine/libm mismatch, default-NaN behavior, compiler folding and unbounded shim complexity. **Acceptance:** required same-host math semantics and minimal stage equivalence achievable without changing physics/tolerances; negative control fails for the intended cause. Otherwise stop with reference intact.
@@ -322,8 +348,9 @@ Tasks:
 - Extend builder/runner/devtools for Mach-O, Apple toolchain receipts, separate Mac descriptor/install paths, scoped environments and current exact-engine checks.
 - Qualify existing family adapters incrementally. Start with one representative fixed-wing family; reference fallback outside a narrowed qualified surface must be enforced in runtime admission.
 - Extend loader/platform/package identity through existing owners, preserving `.gdignore`, guarded explicit loading, source freshness and already-loaded refusal.
-- Keep Mac source/debug admission behind explicit experimental opt-in until promotion. Enforce the qualified fixed-wing domain and helicopter exclusion; the existing default `native` request alone must not enable Mac execution.
+- Keep Mac source/debug and packaged-qualification admission behind explicit experimental opt-in until promotion. Enforce the qualified fixed-wing domain and helicopter exclusion; the existing default `native` request alone must not enable Mac execution.
 - Extend recording/replay, native qualification and benchmark identity allowlists for the separately versioned Mac native kind, retaining all reference-kind/native refusals.
+- Execute the admission/replay route matrix in section 10.4 as one coordinated migration; bind the supported OS/software scope and preserve historical reference recordings.
 - Exercise prepare/context/stage, body-only callbacks, reset/reload/restore, mutation refusal and checkpoint/log identity.
 - Add native-success markers and validate actual stage/context coverage. An oracle that falls back to reference cannot qualify Mac native code.
 
@@ -338,6 +365,7 @@ Tasks:
 - Profile the scalar port, including preparation, dictionaries, packed-array crossings, tick context, transaction and observers. Compare with optimized reference.
 - Inspect compiler output. Test one change at a time: safe scratch reuse, data locality, independent-lane NEON, then a matching Accelerate primitive if warranted.
 - Include lane packing, data conversion and library overhead; preserve each reduction's order and test malformed inputs after vectorization.
+- Start with one independent-lane candidate and a legal short-length/stride/alias matrix, permuting special values into every lane/tail position. Compare compiler vectorization and reject helper substitutions, operand reordering or fusion that change required behavior. Confirm selected gains on fresh runs rather than selecting and accepting on the same samples.
 - Compare independent offline CPU batch scaling only if a real consumer needs it. Keep the live flight serial.
 - Record a paper feasibility result for Metal/MPS under the unchanged float64 contract. A GPU prototype is not required to rediscover the `double` restriction; any separate visual/batch experiment needs its own authorized consumer and budget.
 
@@ -354,6 +382,7 @@ Tasks:
 - Run current-source fleet cases with exact row-union accounting and explicit completed/refused/terminal classification. Narrow claims if rows remain excluded; historical X8 reports do not qualify a different current aircraft.
 - Run native loader/session/replay, source/config mutation, absent/stale/corrupt/wrong-ABI/wrong-slice/already-loaded, callback aliasing and resource-limit tests.
 - Use isolated supported sanitizers and positive controls. Verify required Linux/Windows consumers after shared math/build changes and required CI on the stable candidate.
+- Prove detector activation through the actual loader, preflight macOS CI resources and require native-success markers; a diagnostic engine or VM timing never replaces product-engine or real-display evidence.
 - Execute native complete-session A/B timing and final live 1080p/thermal cases with the exact candidate artifacts.
 
 **Deliverables:** verification matrix, source-bound reports, coverage/refusal manifest, regression results and performance verdict. **Risks:** false native coverage, truncated tapes, cross-platform golden confusion, incomplete fleet or display proof. **Acceptance:** section-13 gates pass for the exact claimed surface; unknown or failed gates remain open, not waived.
@@ -365,6 +394,7 @@ Tasks:
 Tasks:
 
 - Package the verified ARM64 artifact through existing exporters/receipts, document Intel/Rosetta reference fallback and validate exact final signed bytes.
+- Follow the finalization sequence in section 6.6, preserving submitted/final ZIP identities and testing the final stapled app with its external receipt. Do not silently rebind unsigned-library proof to a signed library.
 - Test downloaded/quarantined installation, native selection, missing/tampered sidecar, replay refusal, crash diagnostics and explicit recovery.
 - Run final product-route checks including Home/Fly/pause/reset/reload/audio/input transitions and sustained paired trials. A source-editor pass does not qualify the ZIP.
 - Update canonical build/admission/troubleshooting docs and evidence; record an adopted promotion decision only after owner selection and passed gates.
@@ -423,6 +453,10 @@ Report per-case paired ratios and absolute differences with run variation and ob
 
 For finalists, run at least three 30-minute trials per role on the final named configuration, including warm lifecycle/product routes as required by the master plan. Compare early and final-five-minute behavior, thermal state and memory growth. Maintain separate uncapped throughput and VSync/paced latency experiments. Never add overlapping CPU/GPU durations to invent frame time.
 
+Before the first candidate, freeze a campaign contract: per-case primary metric and practical threshold, warmup/sample windows, seeded or balanced pair/block order, environmental eligibility/exclusions, uncertainty method and maximum extra pairs. Use same-binary A/A and observer-on/off controls. Preserve time order and analyze uncertainty over paired runs/appropriate blocks; adjacent evolving ticks are not automatically independent samples. Keep all outcomes, including candidate-induced heating and regressions. Accept only demonstrated practical benefit beyond A/A/observer variation and the other gates; reject a sufficiently precise regression or result that rules out the practical threshold. If uncertainty still permits conflicting decisions at the declared sample cap, report inconclusive and improve controls or defer. Do not extend the cap until a favorable result appears. Five pairs remain a screen. Confirm selected finalists on fresh runs. [I06 statistical design](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i06).
+
+Separate setup/first-use, tick-context, inclusive stage, complete callback and product-frame cost. Retain actual stage/context counts and contact/event regime in diagnostic evidence without assuming four calls describe every accepted tick. Minimum native coverage is not complete cost attribution. Preserve the inclusive production callback metric for adoption; profiling work and nonoverlapping timings cannot be silently substituted or subtracted. [I05 timing boundary](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i05).
+
 ### 9.4 Metrics and instruments
 
 | Metric | Method and reporting requirement |
@@ -441,6 +475,8 @@ For finalists, run at least three 30-minute trials per role on the final named c
 Use Apple Instruments/Game Performance for combined CPU/thread/thermal/Metal evidence and GPU counters for attribution when the selected hardware/tools support them. Counter captures can perturb or serialize work; repeat acceptance timing without heavy instrumentation. No replacement profiler is needed. [Apple Metal performance analysis](https://developer.apple.com/documentation/xcode/analyzing-the-performance-of-your-metal-app/), [GPU counter limitations](https://developer.apple.com/documentation/xcode/analyzing-apple-gpu-performance-using-counter-statistics).
 
 Command Line Tools do not imply full Instruments/`xctrace` availability. Recheck tools and recording permissions before scheduling. Use existing nonprivileged collectors first; optional privileged power diagnostics require an explicitly arranged host session and are not a reason to escalate automatically. Where only proxy energy data is available, label it a proxy rather than joules.
+
+Preflight concrete availability rather than requiring a generic “latest profiler”: M1 uses Time Profiler/`sample` and supported counters; Processor Trace recording is an optional supported-newer-device channel, not an M1 prerequisite. Current Power Profiler documentation describes iPhone/iPad support, so do not assume a Mac energy channel. Retain available/estimated/relative/unsupported/unknown status, units, measured domain and clock/coverage for each channel. When a watt series exists, integrate `sum(P_i * delta_t_i)` over the declared interval and divide by completed ticks or simulated time; distinguish whole-system estimates from app-only energy and keep any idle-subtracted estimate separately labelled. Thermal nominal/absent pressure events do not establish reliable awareness or zero pressure. No physics-rate reduction is allowed to pass thermal tests. [I07 availability and energy scope](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i07).
 
 **Resolution policy:** 1080p is primary; higher output resolutions are secondary; 720p is fallback last. A Retina run with 1080p-class internal pixels cannot establish actual 1080p output/presentation qualification. If the available display cannot produce the required mode, retain its useful named evidence and leave that acceptance gate open.
 
@@ -474,6 +510,33 @@ Use isolated ASan/UBSan modes supported by the actual engine/loader/toolchain; p
 Cross-platform byte identity is **not assumed**. Preserve the existing H9/cross-platform numerical budgets where applicable and exact same-backend replay rules; never weaken same-host native parity into a toleranced test. An OS/math-library update can change observed numerical behavior: rerun the relevant evidence and keep unqualified combinations on reference.
 
 Byte agreement proves software equivalence to the current reference, not RC physical realism. Existing analytic/refinement/law-property checks and independent flight validation remain separate. An intended change of laws, timestep, event policy or numerical precision is outside this port.
+
+### 10.4 Qualification tuple, route coverage and invalidation
+
+Before automatic Mac admission, define the supported qualification tuple: actual product/editor engine and API JSON hashes/origin, binding commit/precision, compiler/SDK/effective flags, exact OS build and evidenced runtime scope, ABI/law/domain, mirrored data/source/harness hashes, final native artifact/slices and final bundle identity. Record loaded math-image identity where public tools expose it. Specify runtime rejection/requalification for stale or unqualified combinations; do not add surprise launch-time stress tests. Tooling records broader evidence than the existing six-field checkpoint backend identity: keep that identity stable unless a separately versioned migration is required.
+
+| Route / condition | Required verdict before promotion |
+| --- | --- |
+| Ordinary Home/direct flight before adoption; explicit reference | Reference; existing default native requests do not bypass the experimental Mac gate |
+| Explicit native + experimental opt-in + qualified tuple/fixed-wing domain | Actual native calls and identity, with exactness/lifecycle proof |
+| Missing opt-in, unsupported family/helicopter, wrong slice/API/precision or stale tuple | Bounded refusal/reference; no native-success credit |
+| Historical reference Mac kind and reference log | Existing exact replay behavior; native use under that kind stays refused |
+| New native Mac identity, matching final artifacts | Separate exact native recording/replay; all GDScript/Python/player/benchmark consumers agree |
+| Different backend, missing identity, changed library/backend during recording | Exact replay refuses incompatibility; affected recording becomes incomplete; no hidden solver substitution |
+| Cross-backend candidate | Marked `solver_changed`, complete same tape and explicit configuration rewrite; preserve current supported native-baseline-to-reference direction unless the inverse is separately implemented |
+| Downloaded/quarantined/offline/moved app | Supported identity/launch behavior or documented bounded reference/refusal; no security bypass credited |
+
+The same-loader sanitizer control must demonstrate its marker and expected diagnostic. An instrumented diagnostic host, if needed, is separately identified and never substitutes for the exact product engine's oracle. Keep sanitizer dependencies out of releases. A macOS CI job must preflight actual architecture/image/disk/RAM/tools and require positive native markers in the existing required/export chain. Resource refusal or a skipped native branch is not a green qualification. Hosted correctness does not qualify sustained M1/1080p performance. [I09–I12 integration findings](docs/research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md#i09).
+
+| Changed input | Required scope to refresh |
+| --- | --- |
+| Arithmetic shim, compiler/FP flags/LTO, SDK, OS/math runtime | Primitive/transport and applicable stage oracles, trajectory/fleet consumers and target cost; re-establish supported tuple |
+| Engine executable, API JSON, binding commit/precision | Loader/binding and exactness gates, affected sessions/replay/package identities and required cross-platform consumers |
+| Aircraft/data/domain/admission or identity schema | Applicable family/fleet union, refusal/reset/restore/recording routes and every changed identity consumer |
+| Mach-O slices, signing, stapling, bundle layout or receipt | Trace final artifact identities; rerun every invalidated binary-bound gate under existing verifier rules, plus final load/signature/quarantine/offline/package replay checks; never rewrite old proof hashes |
+| Instrumentation, reducer or workload/tape | Detector/reducer controls, comparable baseline and affected timing/coverage reports; old sample statistics do not qualify the changed method |
+
+This matrix selects checks by changed inputs and dependencies. It does not require unrelated full-suite reruns after each local edit; stable shared candidates still satisfy required CI and owning gates.
 
 ## 11. Risks, dependencies and mitigations
 
@@ -514,6 +577,8 @@ Phase 1 can end the project at 3–5 days. Phase 2 creates a further bounded sto
 
 Broader helicopter/ground/multirotor admission, a Swift or engine rewrite, a general parallel simulation service, and GPU double emulation are **not included**. Estimate separately only after a new consumer and scope decision. Budget an extra 5–10 person-days only if phase 4 identifies a justified deeper SIMD/Accelerate/batch experiment; do not spend it automatically. If arithmetic parity needs a substantial math library, stop and reassess rather than quietly extending the estimate.
 
+The twelve-investigation follow-up keeps the 29–52 day total scoped to this route and moves host-loading/receipt feasibility earlier. It does not absorb a custom product engine, a redesigned trust scheme or unavailable CI/device infrastructure into the estimate. If any is necessary, stop before fleet investment and issue a revised scope/estimate. Diagnostic-only instrumentation is separately identified; it cannot become a product dependency implicitly.
+
 ## 13. Acceptance criteria and success metrics
 
 These are gates/targets, not achieved results. Preserve stricter requirements from the canonical owners.
@@ -523,14 +588,16 @@ These are gates/targets, not achieved results. Preserve stricter requirements fr
 | Entry | Optimized target reference still misses the owning 500 µs budget for a representative regime; material evaluator attribution; explicit SF/NK selection of the port |
 | Architecture | No vehicle/platform branch in `Simulation`; unchanged 240 Hz/RK4/state layout/transaction semantics; scalar float64 throughout authoritative state |
 | Same-host equivalence | ≥10,000 actual malformed-inclusive stage comparisons, exact qualified trajectories/fleet/lifecycle and working mutation controls; no widened tolerance/golden rewrite |
+| Observable numerics and binding | FMA/control-state, threshold-neighbor and float64 transport witnesses through the real loader; exact coverage/exclusions stated; scalar controls and applicable controls for each SIMD/library candidate actually attempted are detected |
 | Identity and coverage | Exact final engine/source/toolchain/library/harness receipts, actual native calls, complete case unions; fallback never counted as native coverage |
+| Comparable experiment | Frozen campaign contract, A/A and observer controls, run-level uncertainty, complete tapes and bounded sample selection; unresolved variation/instrumentation is inconclusive |
 | Performance | p50/p95 reported under the original Gate P/H15 regime/statistic definition and ≤500 µs target assessed as such; individual complete-tick p50/p95/p99 reported separately. A batch mean or stage timer cannot close a tail gate. |
 | Practical benefit | Predeclared screen: ≥5% reduction in the affected complete-session workload beyond observed run/observer variation, or removal of a named reproducible gate failure/hitch; no unexplained >5% required-case regression. This is a proposed application of the master plan's adoption screen, not a promise of gain. |
 | Live behavior | Unpaused simulation/wall ratio 0.99–1.01 and unchanged input/lifecycle behavior; a headless throughput result alone cannot satisfy this |
 | Display qualification | Actual 1920×1080 first, unchanged rendering/settings, paced and uncapped evidence plus sustained thermal/product-route checks under the master plan; higher/720p coverage labelled separately |
 | Memory and energy | Phase-1 justified floor-host memory ceiling met; no candidate-attributable pressure/swap or unexplained retained growth. Report energy/tick and thermal drift where measurable; do not claim energy efficiency when unavailable. |
 | Compatibility | Qualified ARM64 Mac configurations pass, unsupported Mac/Intel/Rosetta paths retain usable reference, and shared changes preserve required Linux/Windows tests/CI |
-| Delivery and recovery | Exact signed/downloaded package loads expected native code, missing/tampered artifacts recover to reference at admission, exact replay refuses incompatible identity and explicit restart/reset recovery works |
+| Delivery and recovery | Exact final signed/stapled/downloaded package and receipt work on supported Finder/offline/installation routes; required identity remains accessible or yields bounded reference/refusal; incompatible exact replay and explicit recovery remain correct |
 | Promotion | Owner records adopted scope and evidence in canonical status/decision homes; no catalog vehicle requires the native backend |
 
 A CPU benefit can justify a scoped evaluator improvement without improving a GPU-limited FPS result, provided that is the declared objective. Conversely, this does not permit a whole-product FPS claim or a claim that the full Apple performance plan is complete. Separate software parity, tick-budget, package, display, energy and physical-validation verdicts.
@@ -564,3 +631,7 @@ All boxes below denote future implementation work. Completion of this planning d
 - [ ] **DT-MAC-04n4 / FL:** prove exact backend-pinned replay and complete, marked candidate replay on the same tape.
 - [ ] **DT-MAC-04n4 / PT/VQ:** retain actual 1080p-first product pacing/memory/thermal evidence; leave unavailable display/energy gates explicitly open.
 - [ ] **Promotion / owners:** adopt or defer based on measured criteria, update canonical docs/decision, retain rollback artifacts and assign maintenance/requalification ownership.
+- [ ] **I01–I04 / SF/NK:** extend existing numerical oracles with FMA/FP controls, threshold neighbors and quiet-NaN/zero helper mutations; freeze legal short-vector/stride/alias cases for any SIMD/library optimization actually attempted.
+- [ ] **I05–I08 / PT/DT/NK:** freeze inclusive timing, A/A/observer/sample-cap design, actual tool/thermal/energy channels and ownership/lifecycle controls.
+- [ ] **I09–I10 / GDU/DT/NK:** prove binding precision, floor/slices/dependencies, signed-host loading and receipt accessibility early; sign/qualify the dylib before its embedded native receipt, then sign/notarize/staple the app before the final external bundle receipt.
+- [ ] **I11–I12 / SF/FL/DT:** complete the admission/replay consumer matrix, same-loader diagnostic controls, required native CI markers and change-based requalification policy.
