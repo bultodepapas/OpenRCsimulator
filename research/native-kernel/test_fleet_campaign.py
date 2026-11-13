@@ -1284,9 +1284,13 @@ class MacosExperimentalCampaignTests(unittest.TestCase):
             self.assertEqual(self.aggregate(manifest, reports, paths, guard)["verified_flight_rows"], 0)
             report["fleet"][0]["reference"]["start_sha256"] = "c" * 64
             report["fleet"][0]["native"]["start_sha256"] = "c" * 64
+            self.assertEqual(self.aggregate(manifest, reports, paths, guard)["verified_flight_rows"], 0)
+            report["fleet"][0]["reference"]["automatic_domain_guarded"] = False
+            report["fleet"][0]["native"]["automatic_domain_guarded"] = True
             result = self.aggregate(manifest, reports, paths, guard)
             self.assertEqual(result["verified_flight_rows"], 1)
             self.assertEqual(result["rows"][0]["start_sha256"], "c" * 64)
+            self.assertIs(result["rows"][0]["automatic_domain_guarded"], True)
             guard["trim_profile"] = "reference"
             self.assertEqual(self.aggregate(manifest, reports, paths, guard)["verified_flight_rows"], 0)
             guard["trim_profile"] = "production"
@@ -1307,6 +1311,7 @@ class MacosExperimentalCampaignTests(unittest.TestCase):
                 Path(checked["report"]).write_text(json.dumps(checked))
                 for backend in ("reference", "native"):
                     report["fleet"][0][backend]["start_sha256"] = "c" * 64
+                    report["fleet"][0][backend]["automatic_domain_guarded"] = backend == "native"
                 if value is None:
                     del report["fleet"][0][name]["start_sha256"]
                 else:
@@ -1315,6 +1320,33 @@ class MacosExperimentalCampaignTests(unittest.TestCase):
                 self.assertEqual(result["verified_flight_rows"], 0)
                 self.assertEqual(result["rows"][0]["status"], "open")
                 self.assertNotIn("start_sha256", result["rows"][0])
+
+    def test_production_guard_boolean_is_required_but_false_retains_numeric_evidence(self):
+        for backend, value in (("native", False), ("native", None), ("native", 1),
+                               ("reference", None), ("reference", True), ("reference", 0)):
+            with self.subTest(backend=backend, value=value), tempfile.TemporaryDirectory() as temporary:
+                manifest, reports, paths, guard = macos_fixture(Path(temporary))
+                report = reports["fixed"]
+                guard["trim_profile"] = "production"
+                report["fleet_scope"]["trim_profile"] = "production"
+                checked = report["checked_run"]
+                checked["command"].append("--trim-profile=production")
+                Path(checked["report"]).write_text(json.dumps(checked))
+                for name in ("reference", "native"):
+                    report["fleet"][0][name]["start_sha256"] = "c" * 64
+                    report["fleet"][0][name]["automatic_domain_guarded"] = name == "native"
+                if value is None:
+                    del report["fleet"][0][backend]["automatic_domain_guarded"]
+                else:
+                    report["fleet"][0][backend]["automatic_domain_guarded"] = value
+                result = self.aggregate(manifest, reports, paths, guard)
+                if backend == "native" and value is False:
+                    self.assertEqual(result["verified_flight_rows"], 1)
+                    self.assertIs(result["rows"][0]["automatic_domain_guarded"], False)
+                else:
+                    self.assertEqual(result["verified_flight_rows"], 0)
+                    self.assertNotIn("automatic_domain_guarded", result["rows"][0])
+
     def test_finished_failing_shard_still_proves_its_independent_healthy_flight(self):
         with tempfile.TemporaryDirectory() as temporary:
             manifest, reports, paths, guard = macos_fixture(Path(temporary), failed=True)

@@ -23,7 +23,8 @@ def write_json(path: Path, value: object) -> str:
 
 def row(**changes: object) -> dict:
     value = {"aircraft": "jensen", "vehicle": "fixed-wing", "battery": "ideal", "case": "trim",
-             "weather": "calm", "soft_hull": False, "status": "verified-flight", "start_sha256": "a" * 64}
+             "weather": "calm", "soft_hull": False, "status": "verified-flight", "start_sha256": "a" * 64,
+             "automatic_domain_guarded": True}
     value.update(changes)
     return value
 
@@ -38,7 +39,7 @@ class SelectionTests(unittest.TestCase):
                 self.assertIsNotNone(promotion.module(name, path))
 
     def test_only_verified_rows_are_allowed_and_case_maps_to_start(self) -> None:
-        result = promotion.selection_rows([row(status="open"), row()])
+        result = promotion.selection_rows([row(status="open"), row(automatic_domain_guarded=False), row()])
         self.assertEqual(result, [{"aircraft": "jensen", "battery": "ideal", "start": "airborne",
                                    "weather": "calm", "soft_hull": False, "trim_profile": "production",
                                    "start_sha256": "a" * 64}])
@@ -46,9 +47,15 @@ class SelectionTests(unittest.TestCase):
     def test_unknown_case_duplicate_nonfixed_and_empty_refused(self) -> None:
         for rows in ([row(case="unknown")], [row(case="airborne")], [row(), row(start_sha256="b" * 64)],
                      [row(vehicle="helicopter")], [row(status="open")], [row(start_sha256="A" * 64)],
-                     [row(soft_hull=1)]):
+                     [row(soft_hull=1)], [row(automatic_domain_guarded=False)], [row(automatic_domain_guarded=1)]):
             with self.subTest(rows=rows), self.assertRaises(promotion.AdmissionError):
                 promotion.selection_rows(rows)
+
+    def test_verified_row_without_guard_field_is_refused(self) -> None:
+        missing = row()
+        del missing["automatic_domain_guarded"]
+        with self.assertRaises(promotion.AdmissionError):
+            promotion.selection_rows([row(), missing])
 
     def test_duplicate_and_nonfinite_json_refused(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

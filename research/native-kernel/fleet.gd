@@ -609,6 +609,7 @@ func _fleet_run_session(session: Node, requested: String, warmup: int, samples: 
 		result.error = "initial session is unhealthy or not at tick zero"
 		return result
 	if bind_start:
+		result.automatic_domain_guarded = false
 		result.start_sha256 = MacosDomain.start_sha256(session.get("start"), true)
 		if result.start_sha256.is_empty():
 			result.error = "production trim start is missing or invalid"
@@ -628,6 +629,15 @@ func _fleet_run_session(session: Node, requested: String, warmup: int, samples: 
 	if not error.is_empty():
 		result.error = error + (": " + result.reason if not result.reason.is_empty() else "")
 		return result
+	var domain_context: Variant = null
+	var domain_guard: Variant = null
+	if bind_start and requested == NativeStage.BACKEND_NATIVE and helper.has_method("_macos_domain_matches"):
+		var context: Variant = helper.get("_macos_domain_context")
+		if context is Dictionary and not context.is_empty() and typeof(context.get("ok")) == TYPE_BOOL and context.ok \
+				and context.get("guard") != null and bool(helper.call("_macos_domain_matches", session)):
+			domain_context = context
+			domain_guard = context.guard
+			result.automatic_domain_guarded = true
 	var previous_stats := {}
 	if native != null:
 		native.reset_stage_stats(false)
@@ -655,6 +665,12 @@ func _fleet_run_session(session: Node, requested: String, warmup: int, samples: 
 			var advanced := _advance(session)
 			var current_stats: Dictionary = helper.stage_stats() if native != null else {}
 			error = _fleet_backend_error(session, requested, identity, expected, helper, native)
+			if error.is_empty() and bind_start and result.automatic_domain_guarded:
+				var current_context: Variant = helper.get("_macos_domain_context")
+				if not current_context is Dictionary or not is_same(current_context, domain_context) \
+						or typeof(current_context.get("ok")) != TYPE_BOOL or not current_context.ok \
+						or not is_same(current_context.get("guard"), domain_guard):
+					error = "automatic Mac domain guard changed during the flight"
 			if error.is_empty() and (not advanced or session.sim.tick != tick + 1 or _input_reads != reads + 1):
 				error = "tick or input did not advance exactly once"
 			if error.is_empty() and native != null and (not _fleet_stats_valid(current_stats) \
@@ -753,6 +769,9 @@ static func _fleet_pair_error(reference: Dictionary, native: Dictionary, warmup:
 	if reference.aircraft_sha256 != native.aircraft_sha256:
 		return "reference and native aircraft identities differ"
 	if bind_start:
+		if typeof(reference.get("automatic_domain_guarded")) != TYPE_BOOL \
+				or reference.automatic_domain_guarded or typeof(native.get("automatic_domain_guarded")) != TYPE_BOOL:
+			return "production domain guard evidence is missing or malformed"
 		var reference_start: Variant = reference.get("start_sha256")
 		var native_start: Variant = native.get("start_sha256")
 		if typeof(reference_start) != TYPE_STRING or reference_start.length() != 64 \

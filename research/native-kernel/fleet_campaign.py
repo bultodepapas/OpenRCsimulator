@@ -599,6 +599,9 @@ def validate_flight(row: dict[str, Any], warmup: int, samples: int, guard: dict[
         require(hash_string(reference.get("start_sha256")) and hash_string(native.get("start_sha256"))
                 and reference["start_sha256"] == native["start_sha256"],
                 "backend production start identities differ or are missing")
+        require(reference.get("automatic_domain_guarded") is False
+                and type(native.get("automatic_domain_guarded")) is bool,
+                "production domain guard evidence is missing or malformed")
     require(native["identity"].get("abi_version") == 2
             and native["identity"].get("binary_sha256") == guard["binary_sha256"]
             and native["identity"].get("source_sha256") == guard["receipt"].get("source_sha256")
@@ -1270,6 +1273,7 @@ def validate_macos_reports(manifest: dict[str, Any], reports: dict[str, dict[str
                 item.update(status="verified-flight", reason="", shard_verdict=reports[name]["verdict"])
                 if guard.get("trim_profile", "reference") == "production":
                     item["start_sha256"] = row["reference"]["start_sha256"]
+                    item["automatic_domain_guarded"] = row["native"]["automatic_domain_guarded"]
                 verified += 1
         rows.append(item)
     complete = verified == len(fixed) and not shard_errors and set(selected_aircraft) == set(names)

@@ -73,6 +73,8 @@ class FakeStartSelection:
 class FakeHelper:
 	extends RefCounted
 	var _native: FakeNative
+	var _macos_domain_context := {}
+	var guard_matches := false
 
 	func owns_stage(session: Node) -> bool:
 		return session.sim.model.stage == Callable(_native, "stage") \
@@ -81,6 +83,9 @@ class FakeHelper:
 
 	func stage_stats() -> Dictionary:
 		return _native.stage_stats()
+
+	func _macos_domain_matches(_session: Node) -> bool:
+		return guard_matches
 
 
 class RefusalFleet:
@@ -181,6 +186,7 @@ class FakeSimulation:
 				"fault": fault_reason = "rejected"
 				"pause": paused = true
 				"crash": session.crash = {reason = "crashed"}
+				"clear_domain": session._native_stage._macos_domain_context.clear()
 
 
 class FakeSession:
@@ -253,6 +259,9 @@ func _run_fake(fleet: Object, requested: String, failure := "", fail_at := -1,
 	if requested == "native" and failure != "fallback":
 		var helper := FakeHelper.new()
 		helper._native = FakeNative.new()
+		if failure in ["guarded", "clear_domain"]:
+			helper._macos_domain_context = {ok = true, guard = RefCounted.new()}
+			helper.guard_matches = true
 		session._native_stage = helper
 		session.sim.native = helper._native
 		if body:
@@ -352,8 +361,23 @@ func _initialize() -> void:
 	var production_native := _run_fake(fleet, "native", "", -1, 2, 3, false, false, true)
 	_check(production_reference.start_sha256.length() == 64 \
 		and production_reference.start_sha256 == production_native.start_sha256 \
+		and not production_reference.automatic_domain_guarded and not production_native.automatic_domain_guarded \
 		and Fleet._fleet_pair_error(production_reference, production_native, 2, 3, true).is_empty(),
 		"production trials bind the same initial start")
+	var guarded := _run_fake(fleet, "native", "guarded", -1, 2, 3, false, false, true)
+	_check(guarded.complete and guarded.automatic_domain_guarded \
+		and Fleet._fleet_pair_error(production_reference, guarded, 2, 3, true).is_empty(),
+		"owned and matching automatic domain guard is recorded")
+	var lost_guard := _run_fake(fleet, "native", "clear_domain", 1, 2, 3, false, false, true)
+	_check(not lost_guard.complete and "guard changed" in lost_guard.error,
+		"in-place guard context removal during flight fails qualification")
+	var malformed_guard := guarded.duplicate(true)
+	malformed_guard.erase("automatic_domain_guarded")
+	_check(not Fleet._fleet_pair_error(production_reference, malformed_guard, 2, 3, true).is_empty(),
+		"missing production guard evidence is refused")
+	malformed_guard.automatic_domain_guarded = 1
+	_check(not Fleet._fleet_pair_error(production_reference, malformed_guard, 2, 3, true).is_empty(),
+		"malformed production guard evidence is refused")
 	var wrong_start := production_native.duplicate(true)
 	wrong_start.start_sha256 = "f".repeat(64)
 	_check(not Fleet._fleet_pair_error(production_reference, wrong_start, 2, 3, true).is_empty(),

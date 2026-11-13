@@ -26,10 +26,10 @@ class MacosDomainGuard {
 	using Dictionary = godot::Dictionary;
 	using Array = godot::Array;
 
+	// Experimental retained-leaf candidate: only real-engine mutation and resize
+	// controls can establish that this reference follows every live packed edit.
 	struct Watch {
-		Variant parent;
-		Variant key;
-		int64_t index = -1;
+		Variant live;
 		Variant::Type type = Variant::NIL;
 		std::vector<uint8_t> bytes;
 	};
@@ -78,7 +78,7 @@ class MacosDomainGuard {
 		return watch.bytes.empty() || std::memcmp(packed.ptr(), watch.bytes.data(), watch.bytes.size()) == 0;
 	}
 
-	bool visit(const Variant &value, const Variant &parent, const Variant &key, int64_t index, int depth) {
+	bool visit(const Variant &value, int depth) {
 		if (depth > kMaxDepth || ++nodes_ > kMaxNodes) return false;
 		if (value.get_type() == Variant::DICTIONARY) {
 			const Dictionary dict = value;
@@ -87,7 +87,7 @@ class MacosDomainGuard {
 			const Array keys = dict.keys(); // Only during preparation.
 			for (int64_t i = 0; i < keys.size(); ++i) {
 				const Variant child_key = keys[i];
-				if (!scalar_key(child_key) || !visit(dict[child_key], value, child_key, -1, depth + 1)) return false;
+				if (!scalar_key(child_key) || !visit(dict[child_key], depth + 1)) return false;
 			}
 			return true;
 		}
@@ -96,16 +96,14 @@ class MacosDomainGuard {
 			if (!array.is_read_only()) return false;
 			if (array.size() < 0 || static_cast<std::size_t>(array.size()) > kMaxNodes - nodes_) return false;
 			for (int64_t i = 0; i < array.size(); ++i) {
-				if (!visit(array[i], value, Variant(), i, depth + 1)) return false;
+				if (!visit(array[i], depth + 1)) return false;
 			}
 			return true;
 		}
 		if (scalar_key(value)) return true;
 		if (watches_.size() >= kMaxPackedLeaves) return false;
 		Watch watch;
-		watch.parent = parent;
-		watch.key = key;
-		watch.index = index;
+		watch.live = value;
 		watch.type = value.get_type();
 		bool ok = false;
 		switch (watch.type) {
@@ -116,21 +114,13 @@ class MacosDomainGuard {
 			case Variant::PACKED_FLOAT64_ARRAY: ok = capture_packed<godot::PackedFloat64Array, double>(value, watch); break;
 			default: return false; // Objects, unsupported packed types, etc. never qualify.
 		}
-		if (!ok || (parent.get_type() != Variant::DICTIONARY && parent.get_type() != Variant::ARRAY)) return false;
+		if (!ok) return false;
 		watches_.push_back(std::move(watch));
 		return true;
 	}
 
 	static bool watch_matches(const Watch &watch) {
-		Variant current;
-		if (watch.parent.get_type() == Variant::DICTIONARY) {
-			const Dictionary parent = watch.parent;
-			current = parent.get(watch.key, Variant());
-		} else if (watch.parent.get_type() == Variant::ARRAY) {
-			const Array parent = watch.parent;
-			if (watch.index < 0 || watch.index >= parent.size()) return false;
-			current = parent[watch.index];
-		} else return false;
+		const Variant &current = watch.live;
 		if (current.get_type() != watch.type) return false;
 		switch (watch.type) {
 			case Variant::PACKED_BYTE_ARRAY: return packed_matches<godot::PackedByteArray, uint8_t>(current, watch);
@@ -150,8 +140,7 @@ public:
 		candidate.world_ = world;
 		candidate.field_ = field;
 		Dictionary result;
-		if (!candidate.visit(candidate.world_, Variant(), Variant(), -1, 0) ||
-				!candidate.visit(candidate.field_, Variant(), Variant(), -1, 0)) {
+		if (!candidate.visit(candidate.world_, 0) || !candidate.visit(candidate.field_, 0)) {
 			result["ok"] = false;
 			result["reason"] = "domain context is mutable, unsupported, cyclic or exceeds guard limits";
 			return result;

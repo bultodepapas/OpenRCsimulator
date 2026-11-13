@@ -114,7 +114,10 @@ def selection_rows(rows: Any) -> list[dict[str, Any]]:
         require(row.get("vehicle") == "fixed-wing" and row.get("case") in STARTS
                 and all(isinstance(row.get(key), str) and row[key] for key in ("aircraft", "battery", "weather"))
                 and type(row.get("soft_hull")) is bool and isinstance(row.get("start_sha256"), str)
-                and re.fullmatch(r"[0-9a-f]{64}", row["start_sha256"]) is not None, "invalid verified selection")
+                and re.fullmatch(r"[0-9a-f]{64}", row["start_sha256"]) is not None
+                and type(row.get("automatic_domain_guarded")) is bool, "invalid verified selection")
+        if not row["automatic_domain_guarded"]:
+            continue
         item = {"aircraft": row["aircraft"], "battery": row["battery"], "start": STARTS[row["case"]],
                 "weather": row["weather"], "soft_hull": row["soft_hull"], "trim_profile": "production",
                 "start_sha256": row["start_sha256"]}
@@ -167,10 +170,11 @@ def validate_fleet(fleet: Any, campaign_path: Path, context: dict[str, str], gua
             "campaign base oracle identity changed")
     require(sha(campaign_path) == campaign_sha and sha(manifest_path) == manifest_sha
             and all(sha(paths[name]) == digest for name, digest in hashes.items()), "fleet evidence changed during validation")
+    selections = selection_rows(checked["rows"])
     provenance = {"campaign": str(campaign_path), "campaign_sha256": campaign_sha,
                   "manifest_sha256": manifest_sha, "verified_rows": checked["verified_flight_rows"],
-                  "open_rows": checked["open_rows"]}
-    return selection_rows(checked["rows"]), provenance
+                  "open_rows": checked["open_rows"], "admitted_guarded_rows": len(selections)}
+    return selections, provenance
 
 
 def _live_install(run: dict[str, Any]) -> dict[str, Any]:
