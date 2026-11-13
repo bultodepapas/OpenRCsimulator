@@ -5,6 +5,7 @@ import copy
 import gzip
 import hashlib
 import json
+import re
 import struct
 import subprocess
 from pathlib import Path
@@ -54,6 +55,20 @@ V4_EVIDENCE = {
 }
 V4_PAIRS_SHA256 = '097a50dd2111e6ce24fc7f171fa01b59c0b84c87e6126399c08c273a304c2fa0'
 
+# The next rebind preserves the complete current pack. It admits only a changed
+# Session source after both retained platform captures reproduce exactly.
+SOURCE_REBIND_PRIOR = '842bfddfbbdd677114b9e4d9a9c74da5a06961c76c0a6e52a7bf3fb32cf5f86f'
+SOURCE_REBIND_BASE = '676be5351357c981d6500b17569aa38615a0c8cb'
+SOURCE_REBIND_SESSION = 'sim/flight_session.gd'
+SOURCE_REBIND_ENGINES = {
+    'Windows': '1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b',
+    'Linux': '34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564',
+}
+SOURCE_REBIND_EXECUTABLES = {
+    'Windows': '9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2',
+    'Linux': SOURCE_REBIND_ENGINES['Linux'],
+}
+
 
 def load(name):
     return json.loads((ROOT / name).read_text(encoding='utf-8'))
@@ -81,6 +96,295 @@ def pack(items):
     compressed = gzip.compress(raw, compresslevel=9, mtime=0)
     assert gzip.decompress(compressed) == raw
     return base64.b64encode(compressed).decode('ascii')
+
+
+def source_rebind_git_bytes(repo, commit, path, mode):
+    blob = subprocess.check_output(['git', 'show', commit + ':app/' + path], cwd=repo)
+    if mode == 'script-lf':
+        return blob.replace(b'\r\n', b'\n')
+    if mode != 'exact':
+        raise ValueError('unsupported source pin mode: ' + path)
+    attr = subprocess.check_output(['git', 'check-attr', '--source', commit, 'eol',
+                                    '--', 'app/' + path], cwd=repo, text=True).strip().rsplit(': ', 1)[-1]
+    if attr == 'crlf':
+        if b'\r\n' in blob:
+            raise ValueError('noncanonical Git blob: ' + path)
+        blob = blob.replace(b'\n', b'\r\n')
+    return blob
+
+
+def source_rebind_git_normalized(repo, commit, path):
+    blob = subprocess.check_output(['git', 'show', commit + ':' + path], cwd=repo)
+    return blob.replace(b'\r\n', b'\n')
+
+
+def _rebind_artifact(directory, relative):
+    if not isinstance(relative, str) or not relative or '\\' in relative:
+        raise ValueError('invalid rebind artifact path')
+    path = Path(relative)
+    if path.is_absolute() or any(part in ('', '.', '..') for part in path.parts):
+        raise ValueError('invalid rebind artifact path')
+    resolved = (directory / path).resolve()
+    if not resolved.is_relative_to(directory.resolve()) or not resolved.is_file():
+        raise ValueError('missing or escaped rebind artifact: ' + relative)
+    return resolved.read_bytes()
+
+
+def _rebind_hex(value, length=64):
+    return isinstance(value, str) and re.fullmatch('[0-9a-f]{%d}' % length, value) is not None
+
+
+def _rebind_command_path(value, platform):
+    if not isinstance(value, str) or not value:
+        raise ValueError('missing checked command path')
+    value = value.replace('\\', '/')
+    return value.casefold() if platform == 'Windows' else value
+
+
+def source_rebind_tree(repo, commit):
+    raw = subprocess.check_output(['git', 'ls-tree', '-rz', '--full-tree', commit, '--', 'app'], cwd=repo)
+    tree = {}
+    for row in raw.split(b'\0'):
+        if not row:
+            continue
+        metadata, name = row.split(b'\t', 1)
+        mode, kind, oid = metadata.decode('ascii').split()
+        path = name.decode('utf-8')
+        if (kind != 'blob' or mode not in ('100644', '100755') or not _rebind_hex(oid, 40)
+                or not path.startswith('app/') or path in tree):
+            raise ValueError('unsupported or duplicate committed app entry')
+        tree[path] = {'git_blob': oid, 'mode': mode}
+    if not tree:
+        raise ValueError('committed app inventory is empty')
+    return tree
+
+
+def source_rebind_inventory(raw, commit, tree, pinned_bytes, pins, attributes_sha256):
+    inventory = json.loads(raw)
+    if (not isinstance(inventory, dict) or set(inventory) != {'format', 'commit', 'files', 'attributes_sha256'}
+            or inventory['format'] != 'openrc-publication-source-inventory-v1' or inventory['commit'] != commit
+            or inventory['attributes_sha256'] != attributes_sha256
+            or not isinstance(inventory['files'], dict) or set(inventory['files']) != set(tree)):
+        raise ValueError('source inventory does not cover the committed app')
+    for path, entry in inventory['files'].items():
+        if (not isinstance(entry, dict) or set(entry) != {'git_blob', 'mode', 'sha256', 'size'}
+                or entry['git_blob'] != tree[path]['git_blob'] or entry['mode'] != tree[path]['mode']
+                or not _rebind_hex(entry['sha256']) or type(entry['size']) is not int or entry['size'] < 0):
+            raise ValueError('source inventory entry differs: ' + path)
+    for path, expected in pinned_bytes.items():
+        item = inventory['files'].get('app/' + path)
+        if item is None:
+            raise ValueError('source inventory omits pinned file: ' + path)
+        allowed = [expected]
+        if pins[path]['mode'] == 'script-lf':
+            allowed.append(expected.replace(b'\n', b'\r\n'))
+        if not any(item['sha256'] == digest(data) and item['size'] == len(data) for data in allowed):
+            raise ValueError('source inventory does not match pinned bytes: ' + path)
+
+
+def source_rebind_capture(raw, expected, platform, family, prior):
+    if digest(raw) != expected:
+        raise ValueError(f'{platform} {family}: retained capture differs')
+    capture = json.loads(raw)
+    cases = prior['families'][family][platform]
+    if (capture.get('format') != f'ci-audit-{family}-capture-v1' or capture.get('os') != platform
+            or capture.get('engine', {}).get('hash') != ENGINE2 or set(capture.get('cases', {})) != set(cases)):
+        raise ValueError(f'{platform} {family}: capture identity or roster differs')
+    for name, item in capture['cases'].items():
+        fixture = cases[name]
+        try:
+            frames = [bytes.fromhex(value) for value in item['frames']]
+            events = [bytes.fromhex(value) for value in item['events']]
+            bytes.fromhex(item['configuration'])
+        except (KeyError, TypeError, ValueError) as error:
+            raise ValueError(f'{platform} {family} {name}: malformed typed capture') from error
+        if (len(frames) != 25 or len(events) != 25 or not all(frames) or not all(events)
+                or digest(b''.join(frames)) != item.get('sha256')
+                or item['sha256'] != fixture['current_sha256']
+                or digest(b''.join(events)) != fixture['events_sha256']):
+            raise ValueError(f'{platform} {family} {name}: typed frames or events differ')
+
+
+def source_rebind_report(raw, log, platform, family, run):
+    report = json.loads(raw)
+    if (report.get('format') != 'openrc-godot-check v1' or report.get('ok') is not True
+            or report.get('complete') is not True or type(report.get('process_exit')) is not int
+            or report.get('process_exit') != 0 or type(report.get('exit_code')) is not int
+            or report.get('exit_code') != 0 or report.get('reason') != 'passed'
+            or report.get('warnings_as_errors') is not True or report.get('counts') != {'error': 0, 'warning': 0}
+            or report.get('missing_required_text') != [] or report.get('log_sha256') != digest(log)):
+        raise ValueError(f'{platform} {family}: checked report is incomplete or failed')
+    marker = f'CI_AUDIT_{family.upper()}_CAPTURE'
+    count = 2 if family == 'shaft' else 4
+    checks = 55 if family == 'shaft' else 109
+    text = log.decode('utf-8', errors='strict')
+    lines = [line.strip() for line in text.splitlines() if line.startswith(marker)]
+    if len(lines) != 1 or lines[0] != f'{marker} checks={checks} failures=0 cases={count}':
+        raise ValueError(f'{platform} {family}: missing or ambiguous positive marker')
+    command = report.get('command')
+    if (not isinstance(command, list) or not all(isinstance(part, str) for part in command)
+            or not command or '--path' not in command or command.count('--path') != 1
+            or '--script' not in command or command.count('--script') != 1):
+        raise ValueError(f'{platform} {family}: checked command is invalid')
+    path_index, script_index = command.index('--path'), command.index('--script')
+    if (path_index + 1 >= len(command) or script_index + 1 >= len(command)
+            or _rebind_command_path(command[0], platform) != _rebind_command_path(run.get('engine_path'), platform)
+            or _rebind_command_path(command[path_index + 1], platform) != _rebind_command_path(run.get('project_path'), platform)
+            or not command[script_index + 1].replace('\\', '/').endswith(f'audit_fixture_{family}_capture.gd')):
+        raise ValueError(f'{platform} {family}: checked command does not identify the declared inputs')
+    engine = _rebind_command_path(run.get('engine_path'), platform)
+    executable = _rebind_command_path(run.get('engine_executable'), platform)
+    expected_executable = engine.removesuffix('_console.exe') + '.exe' if platform == 'Windows' and engine.endswith('_console.exe') else engine
+    if executable != expected_executable:
+        raise ValueError(f'{platform} {family}: process executable differs from the checked engine')
+    identity = report.get('capture_id')
+    if not isinstance(identity, str) or not identity:
+        raise ValueError(f'{platform} {family}: missing checked capture identity')
+    return identity
+
+
+def rebind_source(capture_dir, prior_fixture, output, receipt_path, candidate):
+    """Preserve all typed frames while binding a reviewed Session-only source change."""
+    repo = Path(__file__).resolve().parents[2]
+    if not _rebind_hex(candidate, 40) or candidate == SOURCE_REBIND_BASE:
+        raise ValueError('candidate must identify a distinct committed source')
+    raw = prior_fixture.read_bytes().replace(b'\r\n', b'\n')
+    if digest(raw) != SOURCE_REBIND_PRIOR:
+        raise ValueError('prior fixture identity differs')
+    prior = json.loads(raw)
+    pins = prior.get('source_pins')
+    if (prior.get('format') != 'openrc-publication-bridge-v1' or prior.get('current_engine') != ENGINE2
+            or prior.get('candidate_commit') != SOURCE_REBIND_BASE or not isinstance(pins, dict) or len(pins) != 19
+            or not _rebind_hex(pins.get(SOURCE_REBIND_SESSION, {}).get('sha256'))
+            or prior.get('candidate_overlays', {}).get(SOURCE_REBIND_SESSION) != pins[SOURCE_REBIND_SESSION]['sha256']):
+        raise ValueError('prior fixture source contract differs')
+    old_pins, new_pins, old_bytes, new_bytes = {}, {}, {}, {}
+    for path, pin in pins.items():
+        if not isinstance(path, str) or not isinstance(pin, dict) or set(pin) != {'mode', 'sha256'} or not _rebind_hex(pin['sha256']):
+            raise ValueError('invalid source pin')
+        old = source_rebind_git_bytes(repo, SOURCE_REBIND_BASE, path, pin['mode'])
+        new = source_rebind_git_bytes(repo, candidate, path, pin['mode'])
+        current = (repo / 'app' / path).read_bytes()
+        if pin['mode'] == 'script-lf':
+            current = current.replace(b'\r\n', b'\n')
+        if digest(old) != pin['sha256'] or current != new:
+            raise ValueError('baseline or current committed source differs: ' + path)
+        old_pins[path], new_pins[path] = digest(old), digest(new)
+        old_bytes[path], new_bytes[path] = old, new
+        if path != SOURCE_REBIND_SESSION and old != new:
+            raise ValueError('unexpected source change: ' + path)
+    if old_pins[SOURCE_REBIND_SESSION] == new_pins[SOURCE_REBIND_SESSION]:
+        raise ValueError('Session source is unchanged')
+    attributes = {role: digest(source_rebind_git_normalized(repo, commit, '.gitattributes')) for role, commit in
+                  (('baseline', SOURCE_REBIND_BASE), ('candidate', candidate))}
+    script_sha = {}
+    for family in ('shaft', 'weather'):
+        path = f'tools/godot/audit_fixture_{family}_capture.gd'
+        old, new = (source_rebind_git_normalized(repo, commit, path) for commit in (SOURCE_REBIND_BASE, candidate))
+        if old != new or (repo / path).read_bytes().replace(b'\r\n', b'\n') != new:
+            raise ValueError('capture script changed: ' + path)
+        script_sha[family] = digest(new)
+    runner_path = 'tools/godot/run_checked.py'
+    runner = source_rebind_git_normalized(repo, candidate, runner_path)
+    if (repo / runner_path).read_bytes().replace(b'\r\n', b'\n') != runner:
+        raise ValueError('checked runner differs from candidate commit')
+    runner_sha = digest(runner)
+    observations, manifests, capture_ids = {}, {}, set()
+    trees = {role: source_rebind_tree(repo, commit) for role, commit in
+             (('baseline', SOURCE_REBIND_BASE), ('candidate', candidate))}
+    for platform in ('Windows', 'Linux'):
+        directory = capture_dir / platform.lower()
+        manifest_bytes = (directory / 'manifest.json').read_bytes()
+        manifests[platform.lower()] = digest(manifest_bytes)
+        manifest = json.loads(manifest_bytes)
+        runs = manifest.get('runs')
+        expected_runs = {f'{role}-{family}' for role in ('baseline', 'candidate') for family in ('shaft', 'weather')}
+        if (manifest.get('format') != 'openrc-publication-rebind-capture-v1' or manifest.get('platform') != platform
+                or manifest.get('mode_validation') != ('git-index-only-windows' if platform == 'Windows' else 'git-and-posix-executable')
+                or not isinstance(runs, dict) or set(runs) != expected_runs):
+            raise ValueError(platform + ': capture manifest differs')
+        seen_files, inventories, projects = set(), {}, {}
+        for name in sorted(expected_runs):
+            role, family = name.split('-')
+            run = runs[name]
+            if not isinstance(run, dict):
+                raise ValueError(platform + ': malformed run')
+            before, after = run.get('before'), run.get('after')
+            expected_pins = old_pins if role == 'baseline' else new_pins
+            expected_commit = SOURCE_REBIND_BASE if role == 'baseline' else candidate
+            composition = {'kind': 'baseline-commit-v1' if role == 'baseline' else 'candidate-commit-v1',
+                           'base_commit': expected_commit, 'overlay_commit': None,
+                           'overlay_paths': [], 'overlay_tree_ids': {}}
+            if (run.get('commit') != expected_commit or run.get('composition') != composition
+                    or not isinstance(before, dict) or before != after
+                    or set(before) != {'engine_sha256', 'engine_executable_sha256', 'source_inventory_sha256',
+                                       'source_pins', 'capture_script_sha256', 'checked_runner_sha256'}
+                    or before.get('engine_sha256') != SOURCE_REBIND_ENGINES[platform]
+                    or before.get('engine_executable_sha256') != SOURCE_REBIND_EXECUTABLES[platform]
+                    or before.get('capture_script_sha256') != script_sha[family]
+                    or before.get('checked_runner_sha256') != runner_sha
+                    or run.get('capture_script_sha256') != script_sha[family]
+                    or run.get('checked_runner_sha256') != runner_sha
+                    or not isinstance(run.get('engine_executable'), str) or not run['engine_executable']
+                    or before.get('source_pins') != expected_pins or not _rebind_hex(before.get('source_inventory_sha256'))):
+                raise ValueError(platform + ' ' + name + ': source or engine observation differs')
+            project = _rebind_command_path(run.get('project_path'), platform)
+            if role in inventories and (inventories[role] != before['source_inventory_sha256'] or projects[role] != project):
+                raise ValueError(platform + ' ' + role + ': project changed between captures')
+            inventories[role], projects[role] = before['source_inventory_sha256'], project
+            paths = [run.get(key) for key in ('capture', 'report', 'log', 'inventory_before', 'inventory_after')]
+            prefix = platform.lower() + '/'
+            if (any(not isinstance(path, str) or not path.startswith(prefix) or path in seen_files for path in paths)
+                    or len(set(paths)) != len(paths)):
+                raise ValueError(platform + ': capture evidence paths are reused or missing')
+            seen_files.update(paths)
+            capture, report, log, inventory_before, inventory_after = (_rebind_artifact(capture_dir, path) for path in paths)
+            if (inventory_before != inventory_after or digest(inventory_before) != before['source_inventory_sha256']):
+                raise ValueError(platform + ' ' + name + ': source inventory changed or differs from its hash')
+            source_rebind_inventory(inventory_before, expected_commit, trees[role],
+                                    old_bytes if role == 'baseline' else new_bytes, pins, attributes[role])
+            if any(run.get(key + '_sha256') != digest(data) for key, data in
+                   (('capture', capture), ('report', report), ('log', log))):
+                raise ValueError(platform + ' ' + name + ': retained artifact identity differs')
+            expected_hash = V4_EVIDENCE[(platform.lower(), family)][1]
+            source_rebind_capture(capture, expected_hash, platform, family, prior)
+            capture_id = source_rebind_report(report, log, platform, family, run)
+            if capture_id in capture_ids:
+                raise ValueError('checked capture identity was reused')
+            capture_ids.add(capture_id)
+            observations[platform.lower() + '-' + name] = {
+                'capture_sha256': digest(capture), 'checked_report_sha256': digest(report),
+                'engine_log_sha256': digest(log), 'capture_id': capture_id,
+                'source_inventory_sha256': before['source_inventory_sha256'], 'composition': composition,
+                'engine_sha256': before['engine_sha256'], 'engine_executable_sha256': before['engine_executable_sha256'],
+                'project_path': run['project_path'], 'capture': run['capture'], 'report': run['report'], 'log': run['log'],
+            }
+        if projects['baseline'] == projects['candidate']:
+            raise ValueError(platform + ': baseline and candidate projects must be separate')
+    updated = copy.deepcopy(prior)
+    updated['candidate_commit'] = candidate
+    updated['candidate_overlays'][SOURCE_REBIND_SESSION] = new_pins[SOURCE_REBIND_SESSION]
+    updated['source_pins'][SOURCE_REBIND_SESSION]['sha256'] = new_pins[SOURCE_REBIND_SESSION]
+    data = (json.dumps(updated, sort_keys=True, separators=(',', ':')) + '\n').encode('utf-8')
+    result = {'format': 'openrc-publication-source-requalification-v1', 'baseline_commit': SOURCE_REBIND_BASE,
+              'candidate_commit': candidate, 'prior_fixture_sha256': SOURCE_REBIND_PRIOR,
+              'candidate_fixture_sha256': digest(data), 'source_pin_changes': {SOURCE_REBIND_SESSION:
+                  {'before': old_pins[SOURCE_REBIND_SESSION], 'after': new_pins[SOURCE_REBIND_SESSION]}},
+              'capture_manifests_sha256': manifests, 'captures': observations,
+              'preserved': ['families', 'reference_commit', 'requalification'],
+              'scope': 'Collector-verified complete historical app baseline and committed candidate; '
+                       '25 typed endpoints and event frames per case, not physical or general equivalence.'}
+    if (output.resolve() == receipt_path.resolve() or output.exists() or receipt_path.exists()
+            or not output.parent.is_dir() or not receipt_path.parent.is_dir()
+            or output.resolve().is_relative_to((repo / 'app').resolve())
+            or receipt_path.resolve().is_relative_to((repo / 'app').resolve())):
+        raise ValueError('outputs must be distinct fresh paths outside app')
+    with output.open('xb') as file:
+        file.write(data)
+    with receipt_path.open('x', encoding='utf-8', newline='\n') as file:
+        json.dump(result, file, indent=2, sort_keys=True)
+        file.write('\n')
+    print(output, 'bytes=', len(data), 'sha256=', digest(data), 'verified_captures=', len(observations))
 
 
 def requalify_v4(capture_dir, prior_fixture, output):
@@ -192,8 +496,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--capture-dir', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
-    parser.add_argument('--requalify-v4-from', type=Path, help='preserve this verified prior fixture and admit the reviewed v4 identity')
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--requalify-v4-from', type=Path, help='preserve this verified prior fixture and admit the reviewed v4 identity')
+    modes.add_argument('--rebind-source-from', type=Path, help='preserve the prior fixture after exact cross-platform source requalification')
+    parser.add_argument('--rebind-candidate', help='full candidate commit SHA for the source rebind')
+    parser.add_argument('--rebind-receipt', type=Path, help='fresh receipt path for the source rebind')
     args = parser.parse_args()
+    if args.rebind_source_from is not None:
+        if not args.rebind_candidate or args.rebind_receipt is None:
+            parser.error('--rebind-source-from requires --rebind-candidate and --rebind-receipt')
+        rebind_source(args.capture_dir.resolve(), args.rebind_source_from.resolve(), args.output,
+                      args.rebind_receipt, args.rebind_candidate)
+        return
+    if args.rebind_candidate is not None or args.rebind_receipt is not None:
+        parser.error('--rebind-candidate and --rebind-receipt require --rebind-source-from')
     if args.requalify_v4_from is not None:
         requalify_v4(args.capture_dir.resolve(), args.requalify_v4_from.resolve(), args.output)
         return

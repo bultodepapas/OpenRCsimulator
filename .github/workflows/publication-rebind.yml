@@ -1,0 +1,75 @@
+name: Collect publication rebind evidence
+
+on:
+  workflow_call:
+    inputs:
+      baseline-ref:
+        description: Previously accepted publication source commit
+        type: string
+        required: false
+        default: '676be5351357c981d6500b17569aa38615a0c8cb'
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    name: Publication captures (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {platform: linux, runner: ubuntu-24.04}
+          - {platform: windows, runner: windows-2025}
+    defaults:
+      run:
+        shell: bash
+    env:
+      BASELINE_REF: ${{ inputs.baseline-ref }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_TERMINAL_PROMPT: '0'
+      # Set before checkout, including on Windows. Explicit eol=crlf attributes
+      # still govern the exact-byte aircraft data pins.
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12.10'
+          architecture: x64
+      - name: Verify collector and obtain the baseline tree
+        run: |
+          test "$BASELINE_REF" = 676be5351357c981d6500b17569aa38615a0c8cb
+          python tools/godot/test_collect_publication_rebind.py
+          # Fetch the commit and trees only. checkout-index lazily requests only
+          # changed historical blobs; unrelated historical assets stay absent.
+          git config --local remote.origin.promisor true
+          git config --local remote.origin.partialclonefilter blob:none
+          git fetch --no-tags --depth=1 --filter=blob:none origin "$BASELINE_REF"
+      - name: Collect checked captures
+        run: |
+          godot="$(app/get-godot.sh)"
+          python tools/godot/collect_publication_rebind.py --godot "$godot" \
+            --candidate "$GITHUB_SHA" --out "$PWD/tmp/publication-rebind/${{ matrix.platform }}"
+      - name: Retain captures and diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: publication-rebind-${{ matrix.platform }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            tmp/publication-rebind/${{ matrix.platform }}/manifest.json
+            tmp/publication-rebind/${{ matrix.platform }}/*-inventory-before.json
+            tmp/publication-rebind/${{ matrix.platform }}/*-inventory-after.json
+            tmp/publication-rebind/${{ matrix.platform }}/*-shaft.json
+            tmp/publication-rebind/${{ matrix.platform }}/*-weather.json
+            tmp/publication-rebind/${{ matrix.platform }}/*-checked/
+          if-no-files-found: warn
+          retention-days: 7

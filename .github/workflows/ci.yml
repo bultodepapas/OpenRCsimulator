@@ -12,6 +12,11 @@ on:
         type: boolean
         required: false
         default: false
+      publication_rebind:
+        description: 'Collect checked Windows/Linux publication source-rebind evidence'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -52,6 +57,11 @@ jobs:
           path: tmp/ci-selection.json
           if-no-files-found: error
           retention-days: 7
+
+  publication-fixture-evidence:
+    name: Publication source rebind evidence
+    if: github.event_name == 'workflow_dispatch' && inputs.publication_rebind
+    uses: ./.github/workflows/publication-rebind.yml
 
   site:
     name: Website source and download checks
