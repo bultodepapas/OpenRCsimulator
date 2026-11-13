@@ -67,7 +67,7 @@ HARNESS_OPTIONS = {
     "prescribed_stage_oracle.gd": {"ticks"},
     "legacy_ground_oracle.gd": {"ticks"},
     "trajectory.gd": {"ticks", "pairs", "warmup", "samples", "timing-cases", "skip-timing", "only", "repeats"},
-    "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull", "vehicle"},
+    "fleet.gd": {"warmup", "samples", "aircraft", "weather", "soft-hull", "vehicle", "trim-profile"},
 }
 
 
@@ -138,7 +138,8 @@ def _inventory_hash(entries: list[dict]) -> str:
 NATIVE_INSTALL_OUTPUTS = {"native/kernel/" + name for name in (
     ".gdignore", "LICENSE.godot-cpp.md", "libopenrc_native_kernel.so", "openrc_native_kernel.dll", "libopenrc_native_kernel.dylib",
     "openrc_native_kernel.gdextension", "openrc_native_kernel_windows.gdextension", "openrc_native_kernel_macos.gdextension",
-    "build-receipt.json", "build-receipt-windows.json", "build-receipt-macos.json", "package.json", "package-macos.json")}
+    "build-receipt.json", "build-receipt-windows.json", "build-receipt-macos.json", "package.json", "package-macos.json",
+    "default-admission-macos.json")}
 
 
 def _prepared_source_inventory(canonical: list[dict], source: dict) -> list[dict]:

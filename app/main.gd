@@ -592,6 +592,8 @@ func _new_flight_setup(args: Dictionary) -> Dictionary:
 		set_process_unhandled_input(false)
 		return {}
 	next_session.experimental_native_macos = mac_native.enabled
+	next_session.automatic_native_macos = OS.get_name() == "macOS" \
+		and Engine.get_architecture_name() == "arm64" and not args.has("experimental-native-macos")
 	# The app requests native physics by default; tools and replay retain their reference default.
 	if (not _scripted or args.has("physics-backend")) \
 			and (not next_session.setup_stage_backend(_requested_stage_backend(args)) or _scripted):
@@ -3342,7 +3344,7 @@ func _creator_trial() -> bool:
 	return _creator_trial_state == 1
 
 
-## Mac admission is an explicit per-session launch choice, frozen before setup.
+## Explicit research admission overrides the separately qualified automatic source route.
 static func _experimental_native_macos_option(args: Dictionary) -> Dictionary:
 	var value: Variant = args.get("experimental-native-macos", false)
 	if typeof(value) == TYPE_BOOL:

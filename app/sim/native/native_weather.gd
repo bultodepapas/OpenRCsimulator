@@ -228,7 +228,8 @@ static func _capture_watch(parent: Variant, key: Variant, child: Variant, watche
 
 
 ## Dictionary and Array are reference types. Make each detached container
-## read-only; packed arrays retain Godot's copy-on-write value semantics.
+## read-only. Packed leaves need independent value guards: extracted aliases
+## can still mutate their contents on the pinned engine.
 static func _freeze_containers(value: Variant) -> void:
 	if value is Dictionary:
 		for key: Variant in value:

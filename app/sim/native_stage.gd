@@ -1,7 +1,7 @@
 ## Native continuous aircraft stages. Discrete tick, event and collision policies
 ## remain owned by each session. A source-bound receipt and exact preparation
 ## guards are required before a native evaluator replaces its reference.
-## Linux/Windows x86_64; macOS ARM64 requires fixed-wing experimental opt-in.
+## Linux/Windows x86_64; macOS ARM64 uses a qualified source default or explicit research opt-in.
 ## The owner retains this helper for the installed callback lifetime.
 extends RefCounted
 
@@ -19,6 +19,8 @@ const PrescribedAdapter := preload("res://sim/native/prescribed_stage_adapter.gd
 const HelicopterAdapter := preload("res://sim/native/helicopter_stage_adapter.gd")
 const StageConfig := preload("res://sim/native/stage_config.gd")
 const NativePackage := preload("res://app_state/native_package.gd")
+const MacosAdmission := preload("res://sim/native_macos_admission.gd")
+const MacosDomain := preload("res://sim/native_macos_domain.gd")
 
 const EXTENSION_PATH := "res://native/kernel/openrc_native_kernel.gdextension"
 const RECEIPT_PATH := "res://native/kernel/build-receipt.json"
@@ -94,6 +96,7 @@ const EXPECTED_MACOS_PACKAGE_DESCRIPTOR := (
 static var _library_checked := false
 static var _library_error := ""
 static var _receipt_row: Dictionary = {}
+static var _macos_loaded_receipt_sha256 := ""
 
 var reason := "not prepared"
 var _native: Object = null
@@ -109,6 +112,8 @@ var _config := {}
 var _configuration_identity: RefCounted
 var _weather_identity: RefCounted
 var _family := ""
+var _macos_domain_context: Dictionary = {}
+var _macos_automatic_marker: Dictionary = {}
 
 
 
@@ -171,11 +176,25 @@ func restore_reference_callback(session: Node) -> void:
 			_installed_model.pre_tick = _reference_pre_tick
 
 
-## Once per tick, no serialization, hashing or native decoding. Detect bypassed configuration setters and
+## Once per tick, no native decoding or large-context serialization. Automatic Mac admission
+## also checks a bounded start identity and the frozen context's packed leaves. Detect bypassed setters and
 ## in-place model edits before the prepared native equations can read stale data. Normal setters rebuild once.
 func configuration_matches(session: Node) -> bool:
 	return owns_stage(session) and _native.weather_guard_matches(session) \
-		and _native.configuration_guard_matches(session)
+		and _native.configuration_guard_matches(session) and _macos_domain_matches(session)
+
+
+func _macos_domain_matches(session: Node) -> bool:
+	if _macos_domain_context.is_empty(): return true
+	return MacosDomain.guard_matches(session, _macos_domain_context.guard) \
+		and _native.macos_domain_guard_matches(session._collision_world, session._runway_field)
+
+
+## A refused start restores the accepted selection as well as the physical endpoint.
+func restore_macos_selection_after_refusal(session: Node) -> void:
+	if _macos_domain_context.is_empty(): return
+	session.start_choice = _macos_domain_context.guard.start_choice
+	session.trim_throttle = _macos_domain_context.guard.trim_throttle
 
 
 ## A refused transaction may restore equal values into new containers. Rebind
@@ -204,12 +223,34 @@ func stage_stats() -> Dictionary:
 func prepare(session: Node) -> Dictionary:
 	_prepared = false
 	if _installed: return _refuse("uninstall before preparing again")
+	_macos_domain_context = {}
+	_macos_automatic_marker = {}
 	var is_macos := OS.get_name() == "macOS"
 	if is_macos:
 		var session_error := _macos_session_error(session)
 		if not session_error.is_empty(): return _refuse(session_error)
+		if not session.experimental_native_macos:
+			var marker := MacosAdmission.read_marker()
+			_macos_automatic_marker = marker
+			var selected := MacosDomain.screen_session(session, true)
+			if not MacosAdmission.selection_allowed(marker, selected, session.soft_hull_contacts):
+				return _refuse("Mac native default has no qualification for this stock selection")
+			_macos_domain_context = MacosDomain.freeze_for_session(session, true)
+			if not _macos_domain_context.get("ok", false):
+				return _refuse(str(_macos_domain_context.get("reason", "Mac stock context refused")))
+		else:
+			# Exercise the same context guard in explicitly selected stock research flights.
+			# Unsupported experiments retain their explicit research scope, never automatic admission.
+			var screened := MacosDomain.screen_session(session, true)
+			if screened.get("ok", false):
+				_macos_domain_context = MacosDomain.freeze_for_session(session, true)
+				if not _macos_domain_context.get("ok", false):
+					return _refuse("screened Mac stock context could not be frozen")
 	var status := library_status(is_macos)
 	if not status.ok: return _refuse(status.reason)
+	if not _macos_automatic_marker.is_empty():
+		var cached_error := MacosAdmission.loaded_identity_error(_macos_automatic_marker, _macos_loaded_receipt_sha256, _receipt_row)
+		if not cached_error.is_empty(): return _refuse(cached_error)
 	var source_error := _mirrored_source_error()
 	if not source_error.is_empty(): return _refuse(source_error)
 	if session == null or session.get("sim") == null or not session.aircraft.get("ok", false):
@@ -257,6 +298,13 @@ func prepare(session: Node) -> Dictionary:
 	var configuration_guard: Dictionary = _native.prepare_configuration_guard(session, _configuration_identity)
 	if not weather_guard.get("ok", false) or not configuration_guard.get("ok", false):
 		return _refuse("native preparation identity changed before installation")
+	if not _macos_domain_context.is_empty():
+		if not _native.has_method("prepare_macos_domain_guard"):
+			return _refuse("Mac stock packed context guard is unavailable")
+		var domain_guard: Dictionary = _native.prepare_macos_domain_guard(_macos_domain_context.world, _macos_domain_context.field)
+		if not domain_guard.get("ok", false):
+			return _refuse("Mac stock packed context guard refused")
+		_macos_domain_context["native_guard"] = domain_guard.duplicate(true)
 	_prepared = true
 	reason = ""
 	return {ok = true, reason = ""}
@@ -301,6 +349,9 @@ func install(session: Node) -> Callable:
 			reason = "cannot retain the native tick handoff owner"
 			return Callable()
 	if not _body_only: model.stage = Callable(_native, "stage")
+	if not _macos_domain_context.is_empty():
+		session._collision_world = _macos_domain_context.world
+		session._runway_field = _macos_domain_context.field
 	_installed_model = model
 	_installed = true
 	return _reference_stage
@@ -359,9 +410,9 @@ static func _macos_session_error(session: Node) -> String:
 	if not is_instance_valid(session) or session.get_script() != load("res://sim/flight_session.gd"):
 		return "native stage on macOS supports experimental fixed-wing sessions only"
 	var opt_in: Variant = session.get("experimental_native_macos")
-	if typeof(opt_in) != TYPE_BOOL or not opt_in:
-		return "native stage on macOS requires explicit experimental fixed-wing opt-in"
-	return ""
+	if typeof(opt_in) == TYPE_BOOL and opt_in: return ""
+	if session.get("automatic_native_macos") == true and not MacosAdmission.read_marker().is_empty(): return ""
+	return "Mac native default qualification is unavailable; explicit experimental fixed-wing opt-in remains available"
 
 
 ## Return the supported source/debug process target; unknown targets refuse.
@@ -417,7 +468,10 @@ static func _load_library() -> String:
 	var source_error := _source_error(row)
 	if not source_error.is_empty():
 		return source_error
-	return _initialize_library(extension_path, row)
+	var load_error := _initialize_library(extension_path, row)
+	if platform == "macos" and load_error.is_empty():
+		_macos_loaded_receipt_sha256 = FileAccess.get_sha256(receipt_path)
+	return load_error
 
 
 static func _load_package_library() -> String:

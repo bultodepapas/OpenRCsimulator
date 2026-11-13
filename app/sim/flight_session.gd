@@ -38,6 +38,7 @@ func setup_failures(config: Dictionary, seed_value: int) -> bool:
 		return false
 	_failures = candidate if checked.config.probability_percent > 0 else null
 	failure_error = ""
+	if automatic_native_macos: _refresh_stage_backend()
 	return true
 
 
@@ -91,8 +92,12 @@ func setup_out_of_trim(config: Dictionary, seed_value: int, airframes: Dictionar
 		out_of_trim_error = "; ".join(checked.errors)
 		return false
 	if not checked.config.enabled:
+		if automatic_native_macos and _native_stage != null and sim != null and sim.tick > 0 and not _out_of_trim.is_empty():
+			out_of_trim_error = "Out-of-trim changes require a new flight."
+			return false
 		_out_of_trim = {}
 		out_of_trim_error = ""
+		if automatic_native_macos: _refresh_stage_backend()
 		return true
 	if sim == null or sim.tick != 0 or not physics_enabled or not _flight_ready():
 		out_of_trim_error = "Out-of-trim settings require a valid physics flight at tick zero."
@@ -108,6 +113,7 @@ func setup_out_of_trim(config: Dictionary, seed_value: int, airframes: Dictionar
 			_out_of_trim.unit = record.unit
 			_set_trims_from_start(record.pilot_trim)
 	out_of_trim_error = ""
+	if automatic_native_macos: _refresh_stage_backend()
 	return true
 
 
@@ -726,11 +732,16 @@ const NativeStage := preload("res://sim/native_stage.gd")
 const NATIVE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 
 var _stage_backend_requested := "gdscript_reference"
-## Explicit launch-time Mac research admission; never enabled by the default native request.
+## Explicit launch-time Mac research admission; separate from qualified automatic admission.
 var experimental_native_macos := false:
 	set(enabled):
 		if sim == null and not _reject_reset_publication_reentry():
 			experimental_native_macos = enabled
+## Set only by the normal app launch. Low-level tools/replay retain their reference default.
+var automatic_native_macos := false:
+	set(enabled):
+		if sim == null and not _reject_reset_publication_reentry():
+			automatic_native_macos = enabled
 var _native_stage: RefCounted = null
 var stage_backend_error := ""
 
@@ -789,6 +800,10 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 
 
 func _refresh_stage_backend() -> void:
+	# Automatic admission occurs before the first tick or in the explicit reset/restore
+	# transaction. Live setters cannot silently promote or demote a recorded solver.
+	if automatic_native_macos and sim != null and sim.tick > 0:
+		return
 	if sim != null and not _reset_transaction_active and _stage_backend_requested == NativeStage.BACKEND_NATIVE:
 		_prepare_stage_backend()
 
@@ -1137,7 +1152,8 @@ func _begin_start_transaction() -> Dictionary:
 	var owner := {}
 	for field: String in _START_OWNER_FIELDS:
 		owner[field] = Sim._guard_copy(get(field))
-	var transaction := {active = true, committed = false, owner = owner, kernel = sim._capture_endpoint_guard()}
+	var transaction := {active = true, committed = false, owner = owner, kernel = sim._capture_endpoint_guard(),
+		macos_world = _collision_world, macos_field = _runway_field}
 	var closing: Dictionary = checkpoint()
 	transaction.closing = {tick = sim.tick, checkpoint_available = not closing.is_empty(), checkpoint = closing.duplicate(true)}
 	return transaction
@@ -1158,6 +1174,11 @@ func _refuse_start_transaction(transaction: Dictionary, message: String, status 
 		sim._endpoint_guard_unchanged(transaction.kernel)
 		for field: String in _START_OWNER_FIELDS:
 			set(field, Sim._guard_copy(transaction.owner[field]))
+		# Automatic Mac admission retains immutable context roots, not duplicated aliases.
+		_collision_world = transaction.macos_world
+		_runway_field = transaction.macos_field
+		if _native_stage != null:
+			_native_stage.restore_macos_selection_after_refusal(self)
 		if _native_stage != null and not _native_stage.restore_configuration_guard(self):
 			stage_backend_error = "native configuration differs after transaction rollback; reset required"
 		_end_start_transaction(transaction)
@@ -1401,6 +1422,9 @@ var airframe_surfaces: PackedFloat64Array:
 		return _airframe_surfaces
 	set(value):
 		if _reject_reset_publication_reentry(): return
+		if automatic_native_macos and _native_stage != null and sim != null and sim.tick > 0 \
+				and value == _airframe_surfaces:
+			return
 		_airframe_surfaces = value.duplicate()
 		if sim != null and aircraft.get("ok", false):
 			_hull_contact = _prepare_hull_contact()
@@ -1944,6 +1968,8 @@ func set_controller_cut(held: bool) -> void:
 ## Accepted installation emits no reset; call reset() afterwards to restart on it.
 func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:
 	if _reject_reset_publication_reentry(): return false
+	if automatic_native_macos and _native_stage != null and sim != null and sim.tick > 0:
+		return table_path == GroundSurfaces.DEFAULT_PATH and var_to_bytes(field) == var_to_bytes(_runway_field)
 	var table := GroundSurfaces.load_table(table_path)
 	var built := GroundSurfaces.build(table.table, field) if table.ok else table
 	var airframe := GroundSurfaces.build_airframe(table.table, field) if built.ok else built
@@ -1978,6 +2004,8 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 ## Installs one normalized lake at a launch/reset boundary. Invalid or stale identities leave the current lake intact.
 func set_lake_context(normalized_lake: Dictionary) -> bool:
 	if _reject_reset_publication_reentry(): return false
+	if automatic_native_macos and _native_stage != null and sim != null and sim.tick > 0:
+		return var_to_bytes(normalized_lake) == var_to_bytes(_lake)
 	var next_lake: Dictionary = {}
 	if not normalized_lake.is_empty():
 		if not LakeSurface.is_valid_definition(normalized_lake):
@@ -2079,6 +2107,9 @@ func _prepare_hull_contact() -> Dictionary:
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
 func set_collision_world(world: Dictionary) -> bool:
 	if _reject_reset_publication_reentry(): return false
+	if automatic_native_macos and _native_stage != null and sim != null and sim.tick > 0:
+		# Keep an admitted flight's immutable context and solver ownership until reset.
+		return var_to_bytes(world) == var_to_bytes(_collision_world)
 	if world.is_empty():
 		if sim != null and sim.tick > 0 and not _collision_world.is_empty():
 			return false
@@ -2089,6 +2120,7 @@ func set_collision_world(world: Dictionary) -> bool:
 		if had_world:
 			_clear_scenery_damage()
 		_sync_post_step()
+		if automatic_native_macos: _refresh_stage_backend()
 		return true
 	if typeof(world.get("format")) != TYPE_STRING or str(world.get("format")) != CollisionWorld.FORMAT \
 			or typeof(world.get("identity")) != TYPE_STRING or str(world.get("identity")).is_empty() \
@@ -2108,6 +2140,7 @@ func set_collision_world(world: Dictionary) -> bool:
 		if identity != old_identity:
 			_clear_scenery_damage()
 		_sync_post_step()
+		if automatic_native_macos: _refresh_stage_backend()
 		return true
 	_collision_world = world.duplicate(true)
 	_last_scenery_event = null
@@ -2115,6 +2148,7 @@ func set_collision_world(world: Dictionary) -> bool:
 		_clear_pending_scenery_damage()
 		_clear_scenery_damage()
 	_sync_post_step()
+	if automatic_native_macos: _refresh_stage_backend()
 	return true
 
 

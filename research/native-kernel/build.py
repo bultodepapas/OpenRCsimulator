@@ -42,6 +42,7 @@ REFERENCE_SOURCES = [
     "app/physics/ground_effect.gd", "app/physics/aero.gd", "app/physics/propulsion.gd", "app/physics/dynamics.gd",
     "app/physics/hull_contact.gd", "app/physics/wind_field.gd", "app/sim/environment.gd", "app/sim/flight_session.gd",
     "app/sim/simulation.gd", "app/sim/native_stage.gd", "app/app_state/native_package.gd",
+    "app/sim/native_macos_domain.gd", "app/sim/native_macos_admission.gd",
     "app/data/aircraft/jensen_ugly_stik_60.json",
     "app/physics/flaps.gd", "app/physics/wing_polar.gd", "app/physics/aircraft_data.gd",
     "app/physics/wind_config.gd", "app/physics/atmosphere.gd", "app/physics/wind_turbulence.gd",

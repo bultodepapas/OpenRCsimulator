@@ -38,6 +38,7 @@
 #include "nk_weather_guard.hpp"
 #include "nk_point_sampler.hpp"
 #include "nk_configuration_guard.hpp"
+#include "nk_macos_domain_guard.hpp"
 #include "nk_stage_snapshot.hpp"
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/classes/ref.hpp>
@@ -919,6 +920,7 @@ class OpenRCNativeKernel : public godot::RefCounted {
 	nk::LiveHullBinding live_hull_;
 	nk::WeatherGuard weather_guard_;
 	nk::ConfigurationGuard configuration_guard_;
+	nk::MacosDomainGuard macos_domain_guard_;
 	bool heli_stage_ready_ = false;
 	nk::LakeTerrain no_lake_; // Environment.terrain (the ground-effect height) samples without the lake
 	nk::StageModel stage_;
@@ -1013,6 +1015,8 @@ protected:
 		using godot::D_METHOD;
 		godot::ClassDB::bind_method(D_METHOD("prepare_configuration_guard", "session", "identity"), &OpenRCNativeKernel::prepare_configuration_guard);
 		godot::ClassDB::bind_method(D_METHOD("configuration_guard_matches", "session"), &OpenRCNativeKernel::configuration_guard_matches);
+		godot::ClassDB::bind_method(D_METHOD("prepare_macos_domain_guard", "world", "field"), &OpenRCNativeKernel::prepare_macos_domain_guard);
+		godot::ClassDB::bind_method(D_METHOD("macos_domain_guard_matches", "world", "field"), &OpenRCNativeKernel::macos_domain_guard_matches);
 		godot::ClassDB::bind_method(D_METHOD("prepare_heli_stage", "snapshot", "weather"), &OpenRCNativeKernel::prepare_heli_stage);
 		godot::ClassDB::bind_method(D_METHOD("set_heli_tick_context", "tick"), &OpenRCNativeKernel::set_heli_tick_context);
 		godot::ClassDB::bind_method(D_METHOD("heli_last_failure"), &OpenRCNativeKernel::heli_last_failure);
@@ -1329,6 +1333,8 @@ public:
 
 	Dictionary prepare_configuration_guard(godot::Object *session, godot::Object *identity) { return configuration_guard_.prepare_configuration_guard(session, identity); }
 	bool configuration_guard_matches(godot::Object *session) const { return configuration_guard_.configuration_guard_matches(session); }
+	Dictionary prepare_macos_domain_guard(const Dictionary &world, const Dictionary &field) { return macos_domain_guard_.prepare(world, field); }
+	bool macos_domain_guard_matches(const Dictionary &world, const Dictionary &field) const { return macos_domain_guard_.matches(world, field); }
 	Dictionary prepare_heli_stage(const Dictionary &snapshot, const Dictionary &weather) {
 		if (rejection_diagnostics_enabled_) {
 			clear_stage_rejection();
