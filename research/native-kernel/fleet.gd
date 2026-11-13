@@ -10,6 +10,7 @@
 extends "trajectory.gd"
 
 const NativeStage := preload("res://sim/native_stage.gd")
+const MacosDomain := preload("res://sim/native_macos_domain.gd")
 const WindConfig := preload("res://physics/wind_config.gd")
 const HelicopterSession := preload("res://sim/helicopter_flight_session.gd")
 const RuntimeSimulation := preload("res://sim/simulation.gd")
@@ -189,7 +190,7 @@ func _load_native_extension() -> bool:
 
 
 func _extra_option_names() -> PackedStringArray:
-	return PackedStringArray(["warmup", "samples", "aircraft", "weather", "soft-hull", "vehicle"])
+	return PackedStringArray(["warmup", "samples", "aircraft", "weather", "soft-hull", "vehicle", "trim-profile"])
 
 
 ## Declare the complete stock catalog/preset matrix before applying any scope filters.
@@ -271,6 +272,7 @@ func _checks() -> void:
 	var weather := str(_options.get("weather", ""))
 	var soft_hull := str(_options.get("soft-hull", ""))
 	var vehicle := str(_options.get("vehicle", ""))
+	var trim_profile := str(_options.get("trim-profile", "reference"))
 	var declared := _fleet_declared_rows()
 	var selected := _fleet_selected_rows(declared, aircraft, weather, soft_hull)
 	if not vehicle.is_empty():
@@ -282,6 +284,11 @@ func _checks() -> void:
 		declared_aircraft = Catalog.flyable_ids(), warmup_requested = warmup, samples_requested = samples,
 		matrix_complete = false, flight_passed = 0, reference_refused = 0, runtime_refused = 0, physical_terminal = 0, failed = 0,
 		conditions = "Stock catalog battery/start/contact options and named compatible weather presets; startup refusals, runtime-domain refusals and observed physical terminals are counted separately from healthy flights. Custom configurations and arbitrary input histories require separate evidence."}
+	if trim_profile == "production":
+		_report.fleet_scope.trim_profile = trim_profile
+	elif trim_profile != "reference":
+		_failures.append("unknown fleet trim profile")
+		return
 	if warmup <= 0 or samples <= 0:
 		_failures.append("fleet warmup and samples must be positive")
 		return
@@ -321,6 +328,8 @@ func _build_fleet_session(row: Dictionary, requested_backend: String) -> Diction
 	var session: Node = HelicopterSession.new() if rotorcraft else Session.new()
 	if not rotorcraft:
 		session.experimental_native_macos = _experimental_native_macos
+		if str(_options.get("trim-profile", "reference")) == "production":
+			session.trim_throttle = Session.CRUISE_TRIM_THROTTLE
 	if not session.setup_stage_backend(requested_backend):
 		var reason := str(session.stage_backend_error)
 		session.free()
@@ -385,7 +394,7 @@ func _build_fleet_session(row: Dictionary, requested_backend: String) -> Diction
 			live_configuration = _fleet_live_configuration(session), frame = _fleet_frame(session), model = session.sim.model,
 			callbacks = _fleet_callbacks(session), status = session.stage_backend_status(),
 			reference_callbacks = _fleet_reference_callbacks_match(session),
-			selection_valid = _fleet_start_selection_valid(session, row, weather, field.field),
+			selection_valid = _fleet_start_selection_valid(session, row, weather, field.field, str(_options.get("trim-profile", "reference"))),
 			helper = session.get("_native_stage"),
 			configuration = var_to_bytes([config_row, session.aircraft.get("input_identity", {}), weather, field.field])}
 	var reset_ok := true
@@ -408,7 +417,7 @@ func _build_fleet_session(row: Dictionary, requested_backend: String) -> Diction
 			var after_config := var_to_bytes([config_row, session.aircraft.get("input_identity", {}), weather, field.field])
 			var after_live_config := _fleet_live_configuration(session)
 			var after_reference_callbacks := _fleet_reference_callbacks_match(session)
-			var after_selection_valid := _fleet_start_selection_valid(session, row, weather, field.field)
+			var after_selection_valid := _fleet_start_selection_valid(session, row, weather, field.field, str(_options.get("trim-profile", "reference")))
 			# These are the same non-mutating guards used by the reset transaction.
 			# reset() intentionally publishes start_error after a refused transaction.
 			var owner_guard_retained: bool = _fleet_owner_matches(session, before.owner_guard) and str(session.start_error) == reason
@@ -501,7 +510,8 @@ static func _fleet_live_configuration(session: Node) -> PackedByteArray:
 		session.start_choice, session.soft_hull_contacts, session.trim_throttle, session.selected_trim_throttle()])
 
 
-static func _fleet_start_selection_valid(session: Node, row: Dictionary, weather: Dictionary, field: Dictionary) -> bool:
+static func _fleet_start_selection_valid(session: Node, row: Dictionary, weather: Dictionary, field: Dictionary,
+		trim_profile: String = "reference") -> bool:
 	var normalized: Dictionary = WindConfig.validate(weather)
 	if not normalized.get("ok", false) or not RuntimeSimulation._guard_values_equal(session.weather_configuration(), normalized.config) \
 			or not RuntimeSimulation._guard_values_equal(session.get("_runway_field"), field) \
@@ -511,7 +521,8 @@ static func _fleet_start_selection_valid(session: Node, row: Dictionary, weather
 	if _fleet_is_trim_boundary(row):
 		return session.start_choice == Session.START_HALF_POWER \
 			and RuntimeSimulation._guard_values_equal(session.selected_trim_throttle(), 0.5)
-	return session.start_choice == Session.START_RUNWAY and is_nan(session.selected_trim_throttle())
+	return session.start_choice == Session.START_RUNWAY and (is_nan(session.selected_trim_throttle()) \
+		if trim_profile == "reference" else trim_profile == "production" and session.selected_trim_throttle() == 0.5)
 
 
 static func _fleet_encoded_sha256(bytes: PackedByteArray) -> String:
@@ -581,7 +592,7 @@ static func _fleet_backend_owner_error(session: Node, requested: String, identit
 ## Run without timing. The fingerprint includes the initial frame and every
 ## accepted warm-up/sample tick; a partial digest never becomes passing evidence.
 func _fleet_run_session(session: Node, requested: String, warmup: int, samples: int,
-		replay := false) -> Dictionary:
+		replay := false, bind_start := false) -> Dictionary:
 	var status: Dictionary = session.stage_backend_status()
 	var identity: Dictionary = status.get("identity", {}) if status.get("identity", {}) is Dictionary else {}
 	var result := {complete = false, error = "", requested = requested, actual = str(identity.get("backend", "")),
@@ -597,6 +608,11 @@ func _fleet_run_session(session: Node, requested: String, warmup: int, samples: 
 	if not _fleet_end_ok(result.end, 0):
 		result.error = "initial session is unhealthy or not at tick zero"
 		return result
+	if bind_start:
+		result.start_sha256 = MacosDomain.start_sha256(session.get("start"), true)
+		if result.start_sha256.is_empty():
+			result.error = "production trim start is missing or invalid"
+			return result
 	var expected := {stage = session.sim.model.stage, loads = session.sim.model.loads,
 		rotor_momentum = session.sim.model.rotor_momentum, block_loads = session.sim.model.block_loads,
 		block_derivative = session.sim.model.block_derivative, stage_rotor_momentum = session.sim.model.stage_rotor_momentum}
@@ -699,7 +715,8 @@ func _fleet_run_session(session: Node, requested: String, warmup: int, samples: 
 	return result
 
 
-static func _fleet_pair_error(reference: Dictionary, native: Dictionary, warmup: int, samples: int) -> String:
+static func _fleet_pair_error(reference: Dictionary, native: Dictionary, warmup: int, samples: int,
+		bind_start := false) -> String:
 	if warmup <= 0 or samples <= 0:
 		return "warmup and samples must be positive"
 	for pair: Array in [[native, NativeStage.BACKEND_NATIVE], [reference, NativeStage.BACKEND_REFERENCE]]:
@@ -735,6 +752,13 @@ static func _fleet_pair_error(reference: Dictionary, native: Dictionary, warmup:
 			return "native checkpoint replay lacked per-tick coverage"
 	if reference.aircraft_sha256 != native.aircraft_sha256:
 		return "reference and native aircraft identities differ"
+	if bind_start:
+		var reference_start: Variant = reference.get("start_sha256")
+		var native_start: Variant = native.get("start_sha256")
+		if typeof(reference_start) != TYPE_STRING or reference_start.length() != 64 \
+				or not reference_start.is_valid_hex_number() or reference_start != reference_start.to_lower() \
+				or typeof(native_start) != TYPE_STRING or native_start != reference_start:
+			return "reference and native production start identities differ or are invalid"
 	if reference.fingerprint != native.fingerprint:
 		return "reference and native typed state fingerprints differ"
 	return ""
@@ -745,7 +769,8 @@ func _fleet_execute(row: Dictionary, requested: String, warmup: int, samples: in
 	if not built.ok:
 		return {complete = false, requested = requested, error = built.reason}
 	var session: Node = built.session
-	var result := _fleet_run_session(session, requested, warmup, samples, row.vehicle == "rotorcraft")
+	var bind_start: bool = row.vehicle == "fixed-wing" and str(_options.get("trim-profile", "reference")) == "production"
+	var result := _fleet_run_session(session, requested, warmup, samples, row.vehicle == "rotorcraft", bind_start)
 	session.free()
 	return result
 
@@ -1686,7 +1711,8 @@ func _fleet_case(row: Dictionary, warmup: int, samples: int) -> void:
 	var native := _fleet_execute(row, NativeStage.BACKEND_NATIVE, warmup, samples)
 	var reference := _fleet_execute(row, NativeStage.BACKEND_REFERENCE, warmup, samples) if native.get("complete", false) \
 		else {complete = false, requested = NativeStage.BACKEND_REFERENCE, error = "not run: native run incomplete"}
-	var error := _fleet_pair_error(reference, native, warmup, samples)
+	var bind_start: bool = row.vehicle == "fixed-wing" and str(_options.get("trim-profile", "reference")) == "production"
+	var error := _fleet_pair_error(reference, native, warmup, samples, bind_start)
 	var result: Dictionary = row.duplicate(true)
 	result.status = "pass" if error.is_empty() else "fail"
 	result.reason = error

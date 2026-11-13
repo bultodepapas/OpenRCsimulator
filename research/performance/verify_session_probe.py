@@ -44,6 +44,8 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--native-guards", action="store_true",
                         help="also check an installed verified Linux native backend and isolated refusal cases")
+    parser.add_argument("--battery-guards", action="store_true",
+                        help="also check explicit Electric 6S ideal/pack data and unsupported-mode refusals")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     probe = Path(__file__).with_name("session_probe.gd")
@@ -125,6 +127,40 @@ def main() -> int:
             results.append({"case": name, "passed": passed, "exit_code": run.returncode,
                             "failure": report.get("failure"), "command": command,
                             "script_sha256": hashlib.sha256(script.read_bytes()).hexdigest()})
+        if args.battery_guards:
+            for name, aircraft, battery, expected_success, expected_message in (
+                ("battery-ideal", "stik-electric-6s", "ideal", True, ""),
+                ("battery-pack", "stik-electric-6s", "pack", True, ""),
+                ("battery-unsupported", "jensen-das-ugly-stik-60", "pack", False, "unsupported battery mode"),
+                ("battery-unknown", "stik-electric-6s", "invalid", False, "battery must be ideal or pack"),
+            ):
+                path = out / (name + ".json")
+                command = [str(engine), "--headless", "--path", str(root / "app"), "--script", str(probe), "--",
+                           f"--output={path}", "--warmup-ticks=2", "--sample-ticks=8", "--observer=on",
+                           "--physics-backend=gdscript_reference", f"--aircraft={aircraft}", f"--battery={battery}"]
+                run = subprocess.run(command, capture_output=True, timeout=120)
+                log = run.stdout + run.stderr
+                (out / (name + ".log")).write_bytes(log)
+                report = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+                passed = not ENGINE_ERROR_RE.search(log.decode("utf-8", errors="replace"))
+                if expected_success:
+                    passed = (passed and run.returncode == 0 and isinstance(report, dict) and report.get("complete") is True
+                              and not validate_probe_report(report, expected={"battery": battery})
+                              and report["battery"]["pack"] is (battery == "pack")
+                              and (battery != "pack" or report["battery"]["dynamic"] is True))
+                    if isinstance(report, dict):
+                        reports[name] = report
+                else:
+                    passed = (passed and run.returncode != 0 and report is None
+                              and expected_message in log.decode("utf-8", errors="replace"))
+                results.append({"case": name, "passed": bool(passed), "exit_code": run.returncode,
+                                "command": command})
+            ideal = reports.get("battery-ideal", {}).get("battery", {})
+            pack = reports.get("battery-pack", {}).get("battery", {})
+            distinct = (ideal.get("mode") == "ideal" and pack.get("mode") == "pack"
+                        and isinstance(ideal.get("data_sha256"), str) and isinstance(pack.get("data_sha256"), str)
+                        and ideal["data_sha256"] != pack["data_sha256"] and ideal.get("data_path") != pack.get("data_path"))
+            results.append({"case": "battery-identities-distinct", "passed": distinct})
     for name, left, right, expected in (
         ("unchanged-observer-parity", "control-on", "control-off", True),
         ("altered-observer-rejected", "altered-observer", "control-off", False),
@@ -137,12 +173,15 @@ def main() -> int:
         pair = reduce_backend_pair(reports["control-on"], reports["native-control"])
         results.append({"case": "production-backend-parity", "passed": pair["comparable"], "pair": pair})
     complete = all(case["passed"] for case in results)
-    (out / "verification.json").write_text(json.dumps({
+    verification = {
         "format": "openrc-session-probe-verification v1", "complete": complete,
         "native_guards_requested": args.native_guards,
         "probe_sha256": hashlib.sha256(probe.read_bytes()).hexdigest(), "cases": results,
         "scope": "Disposable external scripts only; no runtime or golden mutation. Software guard checks, not performance samples.",
-    }, indent=2) + "\n", encoding="utf-8")
+    }
+    if args.battery_guards:
+        verification["battery_guards_requested"] = True
+    (out / "verification.json").write_text(json.dumps(verification, indent=2) + "\n", encoding="utf-8")
     print(f"session probe verification: {sum(c['passed'] for c in results)}/{len(results)} passed")
     return 0 if complete else 1
 

@@ -11,14 +11,20 @@ from __future__ import annotations
 
 import argparse
 from contextlib import contextmanager
+import hashlib
 import importlib.util
 import json
 import math
 import os
 from pathlib import Path
+import plistlib
 import re
+import stat
+import struct
 import subprocess
 import sys
+import uuid
+from xml.parsers.expat import ExpatError
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -35,6 +41,118 @@ SCRIPT_COMPONENTS = {
     "glow_oracle.gd": ("openrc-nk3-glow-oracle v1", "glow_source_values"),
 }
 DEFAULT_SCRIPTS = ("oracle.gd", "stage_oracle.gd", "propeller_oracle.gd")
+
+
+def _arm64_text_identity(path: Path) -> dict:
+    """Hash the executable's actual ARM64 __TEXT,__text, excluding its signature."""
+    with path.open("rb") as stream:
+        size = os.fstat(stream.fileno()).st_size
+        header = stream.read(32)
+        if len(header) != 32:
+            raise ValueError("Truncated diagnostic host Mach-O header")
+        magic, cpu, subtype, kind, count, commands_size, _flags, _reserved = struct.unpack("<IiiIIIII", header)
+        if magic != 0xFEEDFACF or cpu != 0x0100000C or kind != 2:
+            raise ValueError("Diagnostic host must be a thin ARM64 Mach-O executable")
+        if not 0 < count <= 4096 or not 0 < commands_size <= 16 * 1024 * 1024 or 32 + commands_size > size:
+            raise ValueError("Invalid diagnostic host Mach-O command table")
+        commands = stream.read(commands_size)
+        position = 0
+        identity_uuid = None
+        text_section = None
+        for _ in range(count):
+            if position + 8 > len(commands):
+                raise ValueError("Truncated diagnostic host Mach-O command")
+            command, command_size = struct.unpack_from("<II", commands, position)
+            if command_size < 8 or position + command_size > len(commands):
+                raise ValueError("Invalid diagnostic host Mach-O command size")
+            if command == 0x1B:  # LC_UUID
+                if command_size != 24 or identity_uuid is not None:
+                    raise ValueError("Invalid or duplicate diagnostic host UUID")
+                identity_uuid = str(uuid.UUID(bytes=commands[position + 8:position + 24])).upper()
+            elif command == 0x19:  # LC_SEGMENT_64
+                if command_size < 72:
+                    raise ValueError("Truncated diagnostic host segment")
+                segment = struct.unpack_from("<II16sQQQQIIII", commands, position)
+                segment_name = segment[2].split(b"\0", 1)[0]
+                file_offset, file_size, section_count = segment[5], segment[6], segment[9]
+                if section_count > (command_size - 72) // 80 or file_offset + file_size > size:
+                    raise ValueError("Invalid diagnostic host segment bounds")
+                for index in range(section_count):
+                    section = struct.unpack_from("<16s16sQQIIIIIIII", commands, position + 72 + index * 80)
+                    section_name, owner = (part.split(b"\0", 1)[0] for part in section[:2])
+                    if segment_name == b"__TEXT" and owner == b"__TEXT" and section_name == b"__text":
+                        address, length, offset = section[2], section[3], section[4]
+                        if (text_section is not None or not length or offset < file_offset
+                                or offset + length > file_offset + file_size or offset + length > size):
+                            raise ValueError("Invalid or duplicate diagnostic host text section")
+                        text_section = (address, length, offset)
+            position += command_size
+        if position != len(commands) or identity_uuid is None or text_section is None:
+            raise ValueError("Diagnostic host UUID or text section is missing")
+        address, length, offset = text_section
+        stream.seek(offset)
+        digest = hashlib.sha256()
+        remaining = length
+        while remaining:
+            chunk = stream.read(min(remaining, 1024 * 1024))
+            if not chunk:
+                raise ValueError("Truncated diagnostic host text section")
+            digest.update(chunk)
+            remaining -= len(chunk)
+    return {"architecture": "arm64", "cpu_subtype": subtype, "uuid": identity_uuid,
+            "text_address": address, "text_bytes": length, "text_sha256": digest.hexdigest()}
+
+
+def _diagnostic_signature(path: Path, env: dict[str, str]) -> dict:
+    """Verify and record the clone's actual ad-hoc, non-hardened signature."""
+    verify = ["codesign", "--verify", "--strict", "--arch", "arm64", str(path)]
+    display = ["codesign", "--display", "--verbose=4", "--arch", "arm64", str(path)]
+    entitlements = ["codesign", "--display", "--entitlements", "-", "--xml", "--arch", "arm64", str(path)]
+    subprocess.run(verify, check=True, capture_output=True, env=env)
+    detail = subprocess.run(display, check=True, capture_output=True, text=True, env=env).stderr
+    if len(detail) > 1024 * 1024:
+        raise ValueError("Oversized diagnostic host signature output")
+    flags = re.findall(r"^CodeDirectory\b.*\bflags=(0x[0-9a-fA-F]+)\b", detail, re.MULTILINE)
+    lines = detail.splitlines()
+    teams = [line.split("=", 1)[1] for line in lines if line.startswith("TeamIdentifier=")]
+    if (len(flags) != 1 or not int(flags[0], 16) & 0x2 or int(flags[0], 16) & 0x10000
+            or "Signature=adhoc" not in lines or teams not in ([], ["not set"])
+            or any(line.startswith("Authority=") for line in lines)):
+        raise ValueError("Diagnostic host must be ad-hoc signed without hardened runtime")
+    observed = subprocess.run(entitlements, check=True, capture_output=True, env=env)
+    if len(observed.stdout) > 1024 * 1024 or len(observed.stderr) > 1024 * 1024:
+        raise ValueError("Oversized diagnostic host entitlements")
+    try:
+        xml = observed.stdout.decode("utf-8")
+        if xml.strip() and not isinstance(plistlib.loads(observed.stdout), dict):
+            raise ValueError("Entitlements are not a dictionary")
+        diagnostics = observed.stderr.decode("utf-8")
+    except (UnicodeDecodeError, plistlib.InvalidFileException, ExpatError, ValueError, TypeError, OverflowError) as error:
+        raise ValueError("Invalid diagnostic host entitlement output") from error
+    return {"flags": flags[0], "details": detail.strip(), "entitlements_xml": xml,
+            "entitlements_sha256": hashlib.sha256(observed.stdout).hexdigest(),
+            "entitlement_diagnostics": diagnostics.strip(),
+            "verify_command": verify, "display_command": display, "entitlements_command": entitlements}
+
+
+def _diagnostic_host(original: Path, clone: Path, mac, lock: dict, env: dict[str, str],
+                     tmp: Path, forbidden: tuple[Path, ...]) -> dict:
+    raw = clone.expanduser()
+    if raw.is_symlink() or not raw.is_file() or not stat.S_ISREG(raw.stat().st_mode):
+        raise ValueError("Diagnostic host must be a regular non-symlink file")
+    host = raw.resolve()
+    if (not host.is_relative_to(tmp) or host == original.resolve() or os.path.samefile(host, original)
+            or any(host.is_relative_to(path) for path in forbidden)):
+        raise ValueError("Diagnostic host must be a separate task-owned tmp/ executable")
+    source_code = _arm64_text_identity(original)
+    clone_code = _arm64_text_identity(host)
+    if source_code != clone_code:
+        raise ValueError("Diagnostic host ARM64 UUID or text differs from official Godot")
+    signing = _diagnostic_signature(host, env)
+    engine = mac.godot_identity(host, lock)
+    return {"scope": "resigned diagnostic clone; not official-host or installable evidence",
+            "engine": engine, "official_code": source_code, "diagnostic_code": clone_code,
+            "signing": signing}
 
 
 def sanitizer_flags(mode: str) -> tuple[str, ...]:
@@ -227,6 +345,9 @@ def run(args: argparse.Namespace) -> dict:
                "scope": "Only nk_kernel.cpp and inline code compiled into that translation unit are instrumented; "
                         "the Godot executable and prebuilt godot-cpp archive are uninstrumented.",
                "archive_scope": "Retained archives are hashed before/after; their bytes are not bound by the candidate receipt."}
+    diagnostic_before = None
+    original_signature = None
+    diagnostic_path = getattr(args, "diagnostic_godot", None)
     try:
         lock = mac.locked.load_lock()
         toolchain = mac.host_toolchain()
@@ -245,7 +366,15 @@ def run(args: argparse.Namespace) -> dict:
             raise ValueError("Compilation database must contain exactly one kernel TU")
         env = mac.clean_build_environment(Path(toolchain["compiler"]), Path(toolchain["sdk_path"]))
         env["CC"] = toolchain["c_compiler"]
-        summary["godot_signature"] = _official_engine(Path(engine["path"]), env)
+        original_signature = _official_engine(Path(engine["path"]), env)
+        summary["godot_signature"] = original_signature
+        selected_godot = Path(engine["path"])
+        if diagnostic_path is not None:
+            diagnostic_before = _diagnostic_host(selected_godot, diagnostic_path, mac, lock, env, tmp,
+                                                  (root, project, out))
+            selected_godot = Path(diagnostic_before["engine"]["path"])
+            summary["diagnostic_host"] = diagnostic_before
+            summary["official_engine_parity"] = False
         runtime = _asan_runtime(Path(toolchain["compiler"]), env) if args.mode == "asan" else None
         summary["asan_runtime"] = {"path": str(runtime), "sha256": helper._sha(runtime)} if runtime else None
         summary["engine_sha256"] = engine["sha256"]
@@ -306,7 +435,7 @@ def run(args: argparse.Namespace) -> dict:
         control_descriptor, control_info, _ = build_variant("positive-control", True)
         summary["positive_control_build"] = control_info
         control_result = out / "positive-control/oracle.json"
-        command = [str(args.godot.resolve()), "--headless", "--path", str(project), "--audio-driver", "Dummy",
+        command = [str(selected_godot), "--headless", "--path", str(project), "--audio-driver", "Dummy",
                    "--script", str(HERE / "oracle.gd"), "--", f"--extension={control_descriptor}",
                    f"--output={control_result}", f"--seed={args.seed}", "--states=1", "--variant-states=1",
                    "--timing-rounds=1", "--experimental-native-macos=false"]
@@ -317,12 +446,13 @@ def run(args: argparse.Namespace) -> dict:
             out / "positive-control/libopenrc_native_kernel.dylib")}
         summary["positive_control"] = control
         if not control["detected"]:
-            raise ValueError("Sanitizer detector was not demonstrated in the official Godot loader; inspect its retained log")
+            loader = "diagnostic" if diagnostic_before is not None else "official"
+            raise ValueError(f"Sanitizer detector was not demonstrated in the {loader} Godot loader; inspect its retained log")
         descriptor, candidate_info, _ = build_variant("candidate", False)
         summary["instrumented_build"] = candidate_info
         for script in scripts:
             output = out / (Path(script).stem + "-oracle.json")
-            command = [str(args.godot.resolve()), "--headless", "--path", str(project), "--audio-driver", "Dummy",
+            command = [str(selected_godot), "--headless", "--path", str(project), "--audio-driver", "Dummy",
                        "--script", str(HERE / script), "--", f"--extension={descriptor}", f"--output={output}",
                        f"--seed={args.seed}", f"--states={args.states}", f"--variant-states={args.variant_states}",
                        "--timing-rounds=1", "--experimental-native-macos=false"]
@@ -343,6 +473,13 @@ def run(args: argparse.Namespace) -> dict:
                 or harness_hashes != {name: helper._sha(Path(name)) for name in harness_hashes}
                 or (runtime and helper._sha(runtime) != summary["asan_runtime"]["sha256"])):
             raise ValueError("Candidate, runtime, engine, harness or project changed during diagnostics")
+        if diagnostic_before is not None:
+            after = _diagnostic_host(Path(engine["path"]), diagnostic_path, mac, lock, env, tmp,
+                                     (root, project, out))
+            if after != diagnostic_before or _official_engine(Path(engine["path"]), env) != original_signature:
+                raise ValueError("Official or diagnostic host changed during diagnostics")
+            summary["diagnostic_host_unchanged"] = True
+            summary["official_host_unchanged"] = True
         for directory, info in ((out / "positive-control", control_info), (out / "candidate", candidate_info)):
             for name, key in (("nk_kernel.cpp", "source_sha256"), ("nk_kernel.o", "object_sha256"),
                               ("libopenrc_native_kernel.dylib", "binary_sha256"),
@@ -353,9 +490,28 @@ def run(args: argparse.Namespace) -> dict:
         summary["harness_sha256"] = harness_hashes
         summary["status"] = "passed"
     except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as error:
-        summary["error"] = str(error)
+        detail = str(error)
+        if diagnostic_path is not None and original_signature is not None:
+            try:
+                summary["official_host_unchanged"] = (mac.godot_identity(args.godot, lock) == engine
+                    and _official_engine(Path(engine["path"]), env) == original_signature)
+            except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as host_error:
+                summary["official_host_unchanged"] = False
+                summary["official_host_recheck_error"] = str(host_error)
+            if not summary["official_host_unchanged"]:
+                detail += "; official host changed or recheck failed"
+        if diagnostic_before is not None:
+            try:
+                summary["diagnostic_host_unchanged"] = (_diagnostic_host(
+                    Path(engine["path"]), diagnostic_path, mac, lock, env, tmp, (root, project, out)) == diagnostic_before)
+            except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as host_error:
+                summary["diagnostic_host_unchanged"] = False
+                summary["diagnostic_host_recheck_error"] = str(host_error)
+            if not summary["diagnostic_host_unchanged"]:
+                detail += "; diagnostic host changed or recheck failed"
+        summary["error"] = detail
         _json(out / "diagnostic-summary.json", summary)
-        raise ValueError(f"Diagnostic not qualified: {error}; details: {out / 'diagnostic-summary.json'}") from error
+        raise ValueError(f"Diagnostic not qualified: {detail}; details: {out / 'diagnostic-summary.json'}") from error
     _json(out / "diagnostic-summary.json", summary)
     return summary
 
@@ -365,6 +521,8 @@ def main() -> int:
     parser.add_argument("--mode", choices=("ubsan", "asan"), required=True)
     parser.add_argument("--tool-root", type=Path, required=True)
     parser.add_argument("--godot", type=Path, required=True)
+    parser.add_argument("--diagnostic-godot", type=Path,
+                        help="separate ad-hoc, non-hardened clone used only for disposable diagnostics")
     parser.add_argument("--project", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--script", action="append", choices=tuple(SCRIPT_COMPONENTS),

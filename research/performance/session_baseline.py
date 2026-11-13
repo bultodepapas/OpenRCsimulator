@@ -302,6 +302,24 @@ def validate_probe_report(
             errors.append("fingerprint must be a 64-digit SHA-256 hex string")
 
     if report_format == FORMAT:
+        if "battery" in report:
+            battery = report.get("battery")
+            if not isinstance(battery, dict) or set(battery) != {"mode", "data_path", "data_sha256", "dynamic", "pack"}:
+                errors.append("battery must identify the selected mode, data and actual session flags")
+            else:
+                mode, path, digest = battery.get("mode"), battery.get("data_path"), battery.get("data_sha256")
+                if mode not in ("ideal", "pack") or not isinstance(path, str) or not re.fullmatch(
+                        r"res://data/aircraft/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.json", path):
+                    errors.append("battery mode or aircraft data path is invalid")
+                if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+                    errors.append("battery aircraft data SHA-256 is invalid")
+                elif complete is True and digest != report.get("aircraft_sha256"):
+                    errors.append("battery aircraft data does not match the loaded aircraft identity")
+                if type(battery.get("dynamic")) is not bool or type(battery.get("pack")) is not bool:
+                    errors.append("battery dynamic and pack flags must be booleans")
+                elif complete is True and (battery["pack"] != (mode == "pack")
+                                            or (battery["pack"] and not battery["dynamic"])):
+                    errors.append("battery mode does not match the actual session")
         kind = report.get("solver_identity_kind")
         if kind is not None and kind not in ("source-tree-v1", "packaged-executable-v1", "macos-reference-bundle-v1",
                                               MAC_RECEIPT.NATIVE_KIND):
@@ -369,6 +387,12 @@ def validate_probe_report(
         if "physics_backend" in expected and (report_format != FORMAT or not isinstance(report.get("backend"), dict)
                                                or report["backend"].get("requested") != expected["physics_backend"]):
             errors.append("backend does not match requested run")
+        if "battery" in expected:
+            battery = report.get("battery")
+            if ((expected["battery"] is None and "battery" in report)
+                    or (expected["battery"] is not None and
+                        (not isinstance(battery, dict) or battery.get("mode") != expected["battery"]))):
+                errors.append("battery mode does not match requested run")
         if "godot" in expected and (not isinstance(machine, dict) or machine.get("godot") != expected["godot"]):
             errors.append("machine.godot does not match requested run")
 
@@ -469,7 +493,7 @@ def reduce_pair(on_report: dict[str, Any] | None, off_report: dict[str, Any] | N
         if not machine_equal:
             reasons.append("observer modes reported different machines")
 
-        for key in ("format", "aircraft_id", "case_id", "requested", "completed", "final_tick", "backend",
+        for key in ("format", "aircraft_id", "case_id", "requested", "completed", "final_tick", "backend", "battery",
                     "fingerprint_boundaries", "solver_sha256", "solver_identity_kind", "template_release",
                     "probe_sha256", "aircraft_sha256"):
             if on_report.get(key) != off_report.get(key):
@@ -533,7 +557,7 @@ def reduce_backend_pair(reference: dict[str, Any] | None, native: dict[str, Any]
     if isinstance(reference, dict) and isinstance(native, dict):
         for key in ("fingerprint", "fingerprint_boundaries", "template_release", "probe_sha256", "aircraft_sha256",
                     "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads",
-                    "world", "machine", "tick_hz"):
+                    "world", "machine", "tick_hz", "battery"):
             if reference.get(key) != native.get(key):
                 reasons.append(f"backends differ in {key}")
         mac_release = mac_reference_identity is not None or mac_native_identity is not None
@@ -590,7 +614,7 @@ def reduce_identical_pair(a: dict[str, Any] | None, b: dict[str, Any] | None, ba
     if isinstance(a, dict) and isinstance(b, dict):
         for key in ("fingerprint", "fingerprint_boundaries", "template_release", "probe_sha256", "aircraft_sha256",
                     "aircraft_id", "case_id", "requested", "completed", "final_tick", "input_reads", "world",
-                    "machine", "tick_hz", "solver_sha256", "solver_identity_kind"):
+                    "machine", "tick_hz", "solver_sha256", "solver_identity_kind", "battery"):
             if a.get(key) != b.get(key):
                 reasons.append(f"identical roles differ in {key}")
         if a.get("experimental_native_macos", False) != b.get("experimental_native_macos", False):
@@ -877,6 +901,7 @@ def _run_probe(
     mac_native_identity: dict[str, Any] | None = None,
     experimental_native_macos: bool = False,
     mac_source_identity: dict[str, Any] | None = None,
+    battery: str | None = None,
 ) -> dict[str, Any]:
     command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
                 "--native-qualification=session"] if release_executable else
@@ -890,12 +915,16 @@ def _run_probe(
         f"--observer={'on' if observer else 'off'}",
         f"--physics-backend={physics_backend}",
     ]
+    if battery is not None:
+        command.append(f"--battery={battery}")
     if experimental_native_macos:
         command.append("--experimental-native-macos=true")
     def refused(reason: str) -> dict[str, Any]:
         return {"observer": "on" if observer else "off", "command": command, "exit_code": None,
                 "timed_out": False, "engine_errors": [], "log": str(log_path), "report_file": str(output_json),
                 "report": None, "validation_errors": [], "failures": [reason], "accepted": False}
+    if battery not in (None, "ideal", "pack"):
+        return refused("battery mode must be ideal or pack")
     if mac_native_identity is not None and (not release_executable or not experimental_native_macos
                                             or mac_identity is None or mac_source_identity is not None):
         return refused("Mac native release requires explicit opt-in and both linked bundle identities")
@@ -954,6 +983,7 @@ def _run_probe(
         "case_id": case_id,
         "observer": observer,
         "physics_backend": physics_backend,
+        "battery": battery,
         "godot": REQUIRED_GODOT_REPORT,
         "requested": {"warmup_ticks": warmup_ticks, "sample_ticks": sample_ticks},
     }
@@ -963,6 +993,18 @@ def _run_probe(
         validation_errors = validate_probe_report(report, expected=expected)
         if report.get("experimental_native_macos", False) is not experimental_native_macos:
             validation_errors.append("session did not report the requested experimental Mac opt-in")
+        if battery is not None and not release_executable and report.get("complete") is True:
+            selected = report.get("battery")
+            try:
+                data_path = selected.get("data_path") if isinstance(selected, dict) else None
+                if not isinstance(data_path, str) or not data_path.startswith("res://data/aircraft/"):
+                    raise ValueError("selected aircraft data path is invalid")
+                file = app_dir / data_path.removeprefix("res://")
+                if (file.is_symlink() or not file.is_file() or not file.resolve().is_relative_to(app_dir.resolve())
+                        or _sha256_file(file) != selected.get("data_sha256")):
+                    raise ValueError("selected aircraft data differs from the measured project")
+            except (OSError, ValueError) as error:
+                validation_errors.append(str(error))
         if mac_source_identity is not None:
             machine = report.get("machine")
             if (not isinstance(machine, dict) or machine.get("os") != "macOS" or machine.get("architecture") != "arm64"
@@ -1074,7 +1116,7 @@ def _safe_report_view(run: dict[str, Any]) -> dict[str, Any]:
     sample_ticks = report.get("requested", {}).get("sample_ticks") if isinstance(report.get("requested"), dict) else None
     wall = report.get("measured_wall_usec")
     wall_per_tick = wall / sample_ticks if _is_int(wall) and _is_int(sample_ticks) and sample_ticks > 0 else None
-    return {
+    view = {
         "accepted": run["accepted"],
         "command": run.get("command"),
         "exit_code": run.get("exit_code"),
@@ -1101,6 +1143,9 @@ def _safe_report_view(run: dict[str, Any]) -> dict[str, Any]:
         "report_file": run["report_file"],
         "log": run["log"],
     }
+    if "battery" in report:
+        view["battery"] = report["battery"]
+    return view
 
 
 def _write_json(path: Path, value: Any) -> None:
@@ -1147,6 +1192,8 @@ def build_parser() -> argparse.ArgumentParser:
                         help="explicit opt-in to the experimental Mac ARM64 native source or release backend")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
     parser.add_argument("--case", action="append", help="trim, maneuver, runway, or lake; repeat or comma-separate")
+    parser.add_argument("--battery", choices=("ideal", "pack"),
+                        help="explicit catalog data mode; without this option the historical ideal profile is used")
     parser.add_argument("--warmup-ticks", type=int, default=2400)
     parser.add_argument("--sample-ticks", type=int, default=14400)
     parser.add_argument("--repeats", type=int, default=3)
@@ -1211,6 +1258,8 @@ def run_campaign(args: argparse.Namespace) -> int:
         "tick_hz": 240,
         "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
     }
+    if args.battery is not None:
+        config["battery"] = args.battery
     failures: list[str] = []
     pairs: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
@@ -1322,6 +1371,7 @@ def run_campaign(args: argparse.Namespace) -> int:
                             mac_native_identity=metadata.get("mac_native_bundle"),
                             experimental_native_macos=args.experimental_native_macos,
                             mac_source_identity=metadata.get("mac_source_install"),
+                            battery=args.battery,
                         )
                         if ("mac_native_bundle" in metadata or identical) and run["accepted"]:
                             try:
@@ -1491,6 +1541,9 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
     if not isinstance(config, dict) or config.get("pair_type") != "backends" or not isinstance(metadata, dict) or not isinstance(pairs, list):
         raise ValueError(f"{path}: backend campaign metadata or pairs are missing")
     aircraft, cases, repeats = config.get("aircraft"), config.get("cases"), config.get("repeats")
+    battery = config.get("battery")
+    if "battery" in config and battery not in ("ideal", "pack"):
+        raise ValueError(f"{path}: invalid battery mode")
     experimental = config.get("experimental_native_macos", False)
     if type(experimental) is not bool:
         raise ValueError(f"{path}: malformed experimental Mac opt-in")
@@ -1554,7 +1607,10 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
                     "--quick-flight", "--native-qualification=session", f"--output={raw_path}", f"--aircraft={key[0]}",
                     f"--case={key[1]}", f"--warmup-ticks={config.get('warmup_ticks')}",
                     f"--sample-ticks={config.get('sample_ticks')}", "--observer=on",
-                    f"--physics-backend={requested_backend}", "--experimental-native-macos=true"]
+                    f"--physics-backend={requested_backend}"]
+                if battery is not None:
+                    expected_command.append(f"--battery={battery}")
+                expected_command.append("--experimental-native-macos=true")
                 log_relative = item.get("log_relative_path")
                 if (command != expected_command or type(item.get("exit_code")) is not int or item["exit_code"] != 0
                         or item.get("timed_out") is not False or item.get("engine_errors") != []
@@ -1592,6 +1648,10 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
                 raise ValueError(f"{path}: raw report differs from campaign configuration")
             if report.get("experimental_native_macos", False) is not experimental:
                 raise ValueError(f"{path}: raw report differs from the Mac opt-in")
+            report_battery = report.get("battery")
+            if ((battery is None and "battery" in report) or (battery is not None
+                    and (not isinstance(report_battery, dict) or report_battery.get("mode") != battery))):
+                raise ValueError(f"{path}: raw report differs from the requested battery mode")
             if mac_release and report.get("machine", {}).get("godot") != REQUIRED_GODOT_REPORT:
                 raise ValueError(f"{path}: raw report does not identify the pinned release engine")
         identity = raw["native"]["backend"]["actual"]
@@ -1642,6 +1702,8 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
                 failures.append(f"campaign configuration differs in {key}")
         if before["configuration"].get("experimental_native_macos", False) != after["configuration"].get("experimental_native_macos", False):
             failures.append("campaign configuration differs in experimental_native_macos")
+        if before["configuration"].get("battery") != after["configuration"].get("battery"):
+            failures.append("campaign configuration differs in battery")
         for key in ("app_source_sha256", "system"):
             if not old_meta.get(key) or old_meta.get(key) != new_meta.get(key):
                 failures.append(f"campaign metadata differs in {key}")
@@ -1656,7 +1718,7 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
             old, new = old_runs[key], new_runs[key]
             for field in ("fingerprint", "fingerprint_boundaries", "solver_sha256", "solver_identity_kind",
                           "template_release", "probe_sha256", "aircraft_sha256",
-                          "world", "machine", "requested", "completed", "final_tick", "input_reads"):
+                          "world", "machine", "requested", "completed", "final_tick", "input_reads", "battery"):
                 if old["raw"]["reference"].get(field) != new["raw"]["reference"].get(field):
                     failures.append(f"{key}: reference reports differ in {field}")
             old_id = old["raw"]["native"]["backend"]["actual"]
@@ -1699,8 +1761,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.compare_campaigns:
             if args.release_executable:
                 raise ValueError("--release-executable applies to a new campaign, not a campaign comparison")
-            if args.project is not None or args.experimental_native_macos:
-                raise ValueError("--project and --experimental-native-macos apply to a new campaign")
+            if args.project is not None or args.experimental_native_macos or args.battery is not None:
+                raise ValueError("--project, --experimental-native-macos and --battery apply to a new campaign")
             return compare_campaigns(*args.compare_campaigns, args.out)
         if not args.godot:
             raise ValueError("--godot is required for a campaign")

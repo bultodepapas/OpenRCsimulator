@@ -33,12 +33,17 @@ func _initialize() -> void:
 		check("malformed value %s" % str(value), not result.ok and not result.enabled)
 	var session := Session.new()
 	check("low-level session default disabled", not session.experimental_native_macos)
+	check("low-level automatic default disabled", not session.automatic_native_macos)
+	session.automatic_native_macos = true
+	check("automatic choice before setup", session.automatic_native_macos)
 	session.experimental_native_macos = true
 	check("explicit choice before setup", session.experimental_native_macos)
 	var sim := Simulation.new()
 	session.sim = sim
 	session.experimental_native_macos = false
 	check("live session cannot change admission", session.experimental_native_macos)
+	session.automatic_native_macos = false
+	check("live session cannot change automatic choice", session.automatic_native_macos)
 	session.sim = null
 	sim.free()
 	session.free()

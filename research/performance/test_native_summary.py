@@ -14,6 +14,7 @@ from unittest.mock import patch
 from pathlib import Path
 
 try:
+    from . import native_summary as reducer
     from .native_summary import (
         BENCHMARK_FORCED_OPTIONS,
         BENCHMARK_PROVENANCE_SOURCES,
@@ -28,6 +29,7 @@ try:
         validate_native_report,
     )
 except ImportError:  # Also support direct execution from this directory.
+    import native_summary as reducer
     from native_summary import (
         BENCHMARK_FORCED_OPTIONS,
         BENCHMARK_PROVENANCE_SOURCES,
@@ -296,17 +298,20 @@ def set_cloud_observation(receipt: dict, snapshot: dict) -> None:
                                                                 "after_snapshot": generation}}
 
 
-def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Path, dict]:
+def write_benchmark_run(directory: Path, name: str = "run-1", *, long: bool = False) -> tuple[Path, Path, dict]:
     """An independently constructed complete v3 capture and its health receipt."""
-    report = valid_report(route="benchmark-input-circuit")
+    report = valid_report(route="benchmark-input-circuit", ticks=[240 + 3 * index for index in range(4201)] if long else None)
+    duration_text = str(report["sample_s"]) if long else "0.0375"
     capture_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, name))
     report["capture_id"] = capture_id
     sources = {key: hashlib.sha256(key.encode("ascii")).hexdigest() for key in BENCHMARK_REQUIRED_SOURCES}
     identity = "".join(f"{key}:{sources[key]}\n" for key in sorted(sources))
     report["case_id"] = "benchmark-input-circuit-" + hashlib.sha256(identity.encode("ascii")).hexdigest()
     report["code_provenance"] = {"source_sha256": {key: sources[key] for key in BENCHMARK_PROVENANCE_SOURCES}}
-    report["clock"] = {"start": {"monotonic_usec": 900_000}, "end": {"monotonic_usec": 1_100_000}}
-    report["simulation"].update(start_tick=240, end_tick=249)
+    end_tick = report["measured_simulation"]["end_tick"]
+    clock_end = report["frame_end_monotonic_usec"][-1] + 100_000
+    report["clock"] = {"start": {"monotonic_usec": 900_000}, "end": {"monotonic_usec": clock_end}}
+    report["simulation"].update(start_tick=240, end_tick=end_tick)
     report["session_at_report"] = {
         "scope": "end of collection only", "crashed": False, "holds": [],
         "pause_reason": "", "window_focused": True,
@@ -314,9 +319,10 @@ def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Pat
     report_path, _ = write_stream_run(directory, name, report)
     sealed = json.loads(report_path.read_text())
     report_hash = hashlib.sha256(report_path.read_bytes()).hexdigest()
+    sample_ticks = [0, *range(240, end_tick, 240), end_tick]
     samples = [{"tick": tick, "time_s": tick / 240.0, "north_m": 2.0, "east_m": -1.0,
                 "altitude_m": 25.0, "ground_clearance_m": 24.0, "radius_error_m": 0.5}
-               for tick in (0, 240, 249)]
+               for tick in sample_ticks]
     receipt = {
         "format": "openrc-benchmark-health v1", "route": "benchmark-input-circuit",
         "capture_id": capture_id, "report": report_path.name, "frame_report": "/evidence/" + report_path.name,
@@ -340,19 +346,19 @@ def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Pat
             "input_enabled": True, "physics_enabled": True, "external_driver_enabled": False,
             "fixed_fps_diagnostic": False, "observation_mode": "on", "state_input_hashing": False,
             "arguments": ["--view=pilot", "--scene_detail=medium", "--frametimes=/evidence/" + report_path.name,
-                          "--frametimes-stream", "--case=" + report["case_id"], "--t=0.0375", "--warmup=0.0"]
+                          "--frametimes-stream", "--case=" + report["case_id"], f"--t={duration_text}", "--warmup=0.0"]
                          + [f"--{key}={value}" for key, value in BENCHMARK_FORCED_OPTIONS.items()],
         },
         "observation": {
-            "start_monotonic_usec": 800_000, "end_monotonic_usec": 1_200_000,
-            "start_tick": 0, "end_tick": 249, "accepted_ticks": 249,
-            "input_reads": 249, "observer_calls": 249,
+            "start_monotonic_usec": 800_000, "end_monotonic_usec": clock_end + 100_000,
+            "start_tick": 0, "end_tick": end_tick, "accepted_ticks": end_tick,
+            "input_reads": end_tick, "observer_calls": end_tick,
             "physics_enabled_throughout": True, "input_enabled_throughout": True,
             "external_driver_disabled_throughout": True, "automatic_callbacks_throughout": True,
         },
         "violations": {key: 0 for key in BENCHMARK_VIOLATIONS},
-        "health": {"samples_1hz": samples, "accepted_ticks": 249, "input_reads": 249,
-                   "observer_calls": 249, "last_read_tick": 248, "pilot_updates": 63, "pilot_failure": "",
+        "health": {"samples_1hz": samples, "accepted_ticks": end_tick, "input_reads": end_tick,
+                   "observer_calls": end_tick, "last_read_tick": end_tick - 1, "pilot_updates": (end_tick + 3) // 4, "pilot_failure": "",
                    "min_altitude_m": 25.0, "min_ground_clearance_m": 24.0, "max_abs_radius_error_m": 0.5},
         "checkpoints": [],
     }
@@ -372,11 +378,68 @@ def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Pat
         "command": ["/Applications/Godot", "--path", "/frozen/app", "--rendering-method", "gl_compatibility",
                     "--rendering-driver", "opengl3", "--script",
                     "/frozen/research/performance/sustained_flight.gd", "--",
-                    "--warmup=0", "--t=0.0375", "--view=pilot", "--scene_detail=medium",
+                    "--warmup=0", f"--t={duration_text}", "--view=pilot", "--scene_detail=medium",
                     "--frametimes=/evidence/" + report_path.name,
                     "--sustained-receipt=/evidence/" + health_path.name],
     }
     report_path.with_name("checked-" + report_path.name).write_text(json.dumps(check), encoding="utf-8")
+    return report_path, health_path, receipt
+
+
+def write_backend_benchmark_run(directory: Path, name: str, backend: str, *, long: bool = False) -> tuple[Path, Path, dict]:
+    report_path, health_path, receipt = write_benchmark_run(directory, name, long=long)
+    report = json.loads(report_path.read_text())
+    report.update(os="macOS", architecture="arm64")
+    identity = {"backend": "native", "backend_version": "openrc-native-kernel-stage-v2", "abi_version": 2,
+                "binary_sha256": "c" * 64, "source_sha256": "d" * 64, "lock_sha256": "e" * 64}
+    installation = {"ok": True, "identity": identity, "engine_sha256": "f" * 64,
+                    "receipt_sha256": "1" * 64, "descriptor_sha256": "2" * 64, "native_source_sha256": "d" * 64}
+    sources = receipt["source_sha256"]
+    sources.update({"res://native/kernel/build-receipt-macos.json": installation["receipt_sha256"],
+                    "res://native/kernel/openrc_native_kernel_macos.gdextension": installation["descriptor_sha256"],
+                    "res://native/kernel/libopenrc_native_kernel.dylib": identity["binary_sha256"]})
+    canonical = "".join(f"{key}:{sources[key]}\n" for key in sorted(sources))
+    report["case_id"] = "benchmark-input-circuit-" + hashlib.sha256(canonical.encode()).hexdigest()
+    scenario = receipt["scenario"]
+    actual = identity if backend == "native" else {"backend": "gdscript_reference"}
+    scenario.update(stage_backend={"requested": backend, "reason": "", "identity": actual},
+                    state_input_hashing=True, initial_simulation_checkpoint_sha256="3" * 64,
+                    trim_speed_m_s=22.5, trim_throttle=0.500000005, selected_trim_throttle=0.5,
+                    solved_start_requested_throttle=0.5, solved_start_reference_speed_m_s=15.0,
+                    solved_start_max_speed_m_s=37.5, solved_start_sha256="4" * 64)
+    scenario["arguments"] = ["--case=" + report["case_id"] if arg.startswith("--case=") else
+                             "--physics-backend=" + backend if arg.startswith("--physics-backend=") else arg
+                             for arg in scenario["arguments"]]
+    scenario["arguments"].append("--experimental-native-macos=true")
+    end_tick = receipt["observation"]["end_tick"]
+    points = []
+    for start in range(1, end_tick + 1, 6000):
+        end = min(start + 5999, end_tick)
+        count = end - start + 1
+        point = {"start_tick": start, "end_tick": end,
+                 "sha256": hashlib.sha256(f"fixture state/input {start}-{end}".encode()).hexdigest(),
+                 "backend_domain_guard": backend == "native"}
+        if count < 6000:
+            point["partial"] = True
+        if backend == "native":
+            point.update(native_context_calls=count, native_stage_calls=4 * count, native_checked_ticks=count)
+        points.append(point)
+    receipt.update(format="openrc-benchmark-health v2", checkpoints=points)
+    receipt["violations"]["backend"] = 0
+    receipt["backend_proof"] = {"format": "openrc-sustained-backend-proof v1", "requested": backend,
+        "experimental_native_macos": True, "identity": actual, "installation_before": installation,
+        "installation_after": copy.deepcopy(installation), "identity_checks": end_tick,
+        "native_coverage_checks": end_tick if backend == "native" else 0,
+        "native_context_calls": end_tick if backend == "native" else 0,
+        "native_stage_calls": 4 * end_tick if backend == "native" else 0, "native_internal_timing": False,
+        "initial_simulation_checkpoint_sha256": "3" * 64, "backend_domain_guard": backend == "native",
+        "backend_unchanged": True}
+    save_benchmark_report(report_path, receipt, report)
+    health_path.write_text(json.dumps(receipt), encoding="utf-8")
+    check_path = report_path.with_name("checked-" + report_path.name)
+    check = json.loads(check_path.read_text())
+    check["command"].extend(["--sustained-backend=" + backend, "--experimental-native-macos=true", "--sustained-hash"])
+    check_path.write_text(json.dumps(check), encoding="utf-8")
     return report_path, health_path, receipt
 
 
@@ -2315,6 +2378,191 @@ func _init() -> void:
             self.assertEqual(status, 1)
             self.assertFalse(summary["benchmark_capture_ids_distinct"])
             self.assertIn("benchmark capture IDs are missing or repeated", summary["campaign_reasons"])
+
+
+class BackendCircuitTests(unittest.TestCase):
+    def test_explicit_v2_roles_validate_and_preserve_legacy_reference_receipts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for role in ("gdscript_reference", "native"):
+                path, _health, _receipt = write_backend_benchmark_run(root, "run-" + role, role)
+                run = summarize_run(path, SHORT_POLICY)
+                self.assertTrue(run["benchmark_health"]["eligible"], run["benchmark_health"]["reasons"])
+                self.assertTrue(run["benchmark_checked_runner"]["eligible"], run["benchmark_checked_runner"]["reasons"])
+                self.assertTrue(run["active_flight_qualifier"], run["active_flight_reasons"])
+                self.assertEqual(run["benchmark_health"]["format"], "openrc-benchmark-health v2")
+                self.assertEqual(run["benchmark_health"]["scenario"]["selected_trim_throttle"], 0.5)
+                self.assertEqual(run["benchmark_health"]["scenario"]["trim_speed_m_s"], 22.5)
+                self.assertEqual(run["benchmark_health"]["scenario"]["solved_start_sha256"], "4" * 64)
+                self.assertIs(run["benchmark_health"]["scenario"]["backend_proof"]["backend_domain_guard"],
+                              role == "native")
+            path, _health, _receipt = write_benchmark_run(root, "run-legacy")
+            legacy = summarize_run(path, SHORT_POLICY)
+            self.assertTrue(legacy["benchmark_health"]["eligible"], legacy["benchmark_health"]["reasons"])
+            self.assertNotIn("format", legacy["benchmark_health"])
+            self.assertNotIn("selected_trim_throttle", legacy["benchmark_health"]["scenario"])
+
+    def test_v2_rejects_wrong_trim_and_missing_or_wrong_guard_for_each_role(self):
+        changes = (
+            ("missing trim", lambda r: r["scenario"].pop("selected_trim_throttle"), "0.5 trim throttle"),
+            ("wrong trim", lambda r: r["scenario"].update(selected_trim_throttle=0.3), "0.5 trim throttle"),
+            ("boolean trim", lambda r: r["scenario"].update(selected_trim_throttle=True), "0.5 trim throttle"),
+            ("missing seal guard", lambda r: r["backend_proof"].pop("backend_domain_guard"), "domain guard at seal"),
+            ("wrong seal guard", lambda r: r["backend_proof"].update(
+                backend_domain_guard=not r["backend_proof"]["backend_domain_guard"]), "domain guard at seal"),
+            ("non-boolean seal guard", lambda r: r["backend_proof"].update(backend_domain_guard=1), "domain guard at seal"),
+            ("missing window guard", lambda r: r["checkpoints"][0].pop("backend_domain_guard"), "checkpoint"),
+            ("wrong window guard", lambda r: r["checkpoints"][0].update(
+                backend_domain_guard=not r["checkpoints"][0]["backend_domain_guard"]), "checkpoint"),
+            ("non-boolean window guard", lambda r: r["checkpoints"][0].update(backend_domain_guard=1), "checkpoint"),
+        )
+        for role in ("gdscript_reference", "native"):
+            for label, change, expected in changes:
+                with self.subTest(role=role, change=label), tempfile.TemporaryDirectory() as directory:
+                    path, health_path, receipt = write_backend_benchmark_run(Path(directory), "run-1", role)
+                    change(receipt)
+                    health_path.write_text(json.dumps(receipt))
+                    run = summarize_run(path, SHORT_POLICY)
+                    self.assertFalse(run["benchmark_health"]["eligible"])
+                    self.assertTrue(any(expected in reason for reason in run["benchmark_health"]["reasons"]),
+                                    run["benchmark_health"]["reasons"])
+                    self.assertFalse(run["active_flight_qualifier"])
+
+    def test_v2_rejects_unbounded_or_unidentified_solved_starts_but_v1_keeps_15_mps(self):
+        changes = (
+            ("wrong requested throttle", lambda s: s.update(solved_start_requested_throttle=0.4)),
+            ("boolean requested throttle", lambda s: s.update(solved_start_requested_throttle=True)),
+            ("zero reference speed", lambda s: s.update(solved_start_reference_speed_m_s=0)),
+            ("wrong search cap", lambda s: s.update(solved_start_max_speed_m_s=80)),
+            ("speed below search", lambda s: s.update(trim_speed_m_s=14.0)),
+            ("speed above search", lambda s: s.update(trim_speed_m_s=37.6)),
+            ("speed above global cap", lambda s: s.update(trim_speed_m_s=80.1)),
+            ("boolean speed", lambda s: s.update(trim_speed_m_s=True)),
+            ("wrong solved throttle", lambda s: s.update(trim_throttle=0.6)),
+            ("missing solved start digest", lambda s: s.pop("solved_start_sha256")),
+            ("invalid solved start digest", lambda s: s.update(solved_start_sha256="x" * 64)),
+        )
+        for role in ("gdscript_reference", "native"):
+            for label, change in changes:
+                with self.subTest(role=role, change=label), tempfile.TemporaryDirectory() as directory:
+                    path, health_path, receipt = write_backend_benchmark_run(Path(directory), "run-1", role)
+                    change(receipt["scenario"])
+                    health_path.write_text(json.dumps(receipt))
+                    health = summarize_run(path, SHORT_POLICY)["benchmark_health"]
+                    self.assertFalse(health["eligible"])
+                    self.assertTrue(any("solved 0.5-throttle start" in reason for reason in health["reasons"]),
+                                    health["reasons"])
+        with tempfile.TemporaryDirectory() as directory:
+            path, health_path, receipt = write_benchmark_run(Path(directory), "run-legacy")
+            receipt["scenario"]["trim_speed_m_s"] = 22.5
+            health_path.write_text(json.dumps(receipt))
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+
+    def test_v2_rejects_guard_drift_in_a_later_window(self):
+        for role in ("gdscript_reference", "native"):
+            with self.subTest(role=role), tempfile.TemporaryDirectory() as directory:
+                path, health_path, receipt = write_backend_benchmark_run(Path(directory), "run-1", role, long=True)
+                self.assertGreater(len(receipt["checkpoints"]), 1)
+                receipt["checkpoints"][-1]["backend_domain_guard"] = role != "native"
+                health_path.write_text(json.dumps(receipt))
+                run = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(run["benchmark_health"]["eligible"])
+                self.assertTrue(any("checkpoint" in reason for reason in run["benchmark_health"]["reasons"]))
+
+    def test_v2_rejects_fallback_drift_missing_counters_and_unverified_identity(self):
+        changes = (
+            lambda r: r["backend_proof"].update(experimental_native_macos=False),
+            lambda r: r["backend_proof"].update(backend_unchanged=False),
+            lambda r: r["backend_proof"].update(identity_checks=248),
+            lambda r: r["backend_proof"].update(native_coverage_checks=248),
+            lambda r: r["backend_proof"].update(native_context_calls=248),
+            lambda r: r["backend_proof"].update(native_stage_calls=995),
+            lambda r: r["backend_proof"].update(native_internal_timing=True),
+            lambda r: r["backend_proof"]["installation_after"].update(engine_sha256="0" * 64),
+            lambda r: r["backend_proof"]["installation_after"].update(native_source_sha256="0" * 64),
+            lambda r: (r["backend_proof"]["installation_before"].update(native_source_sha256="0" * 64),
+                       r["backend_proof"]["installation_after"].update(native_source_sha256="0" * 64)),
+            lambda r: r["backend_proof"]["installation_before"]["identity"].update(binary_sha256="0" * 64),
+            lambda r: r["scenario"]["stage_backend"].update(identity={"backend": "gdscript_reference"}),
+            lambda r: r["scenario"].update(state_input_hashing=False),
+            lambda r: r["scenario"].update(initial_simulation_checkpoint_sha256="0" * 64),
+            lambda r: r["checkpoints"][0].update(native_checked_ticks=248),
+            lambda r: r["checkpoints"][0].update(native_context_calls=248),
+            lambda r: r["checkpoints"][0].update(native_stage_calls=995),
+            lambda r: r["violations"].update(backend=1),
+        )
+        for change in changes:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                path, health_path, receipt = write_backend_benchmark_run(Path(directory), "run-1", "native")
+                change(receipt)
+                health_path.write_text(json.dumps(receipt))
+                run = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(run["benchmark_health"]["eligible"], receipt)
+                self.assertFalse(run["active_flight_qualifier"])
+
+    def test_checked_command_requires_matching_backend_opt_in_and_hash_flag(self):
+        for option in ("--sustained-backend=native", "--experimental-native-macos=true", "--sustained-hash"):
+            with self.subTest(option=option), tempfile.TemporaryDirectory() as directory:
+                path, _health, _receipt = write_backend_benchmark_run(Path(directory), "run-1", "native")
+                checked_path = path.with_name("checked-" + path.name)
+                checked = json.loads(checked_path.read_text())
+                checked["command"].remove(option)
+                checked_path.write_text(json.dumps(checked))
+                run = summarize_run(path, SHORT_POLICY)
+                self.assertTrue(run["benchmark_health"]["eligible"], run["benchmark_health"]["reasons"])
+                self.assertFalse(run["benchmark_checked_runner"]["eligible"])
+                self.assertFalse(run["active_flight_qualifier"])
+
+    def test_pair_requires_same_initial_frame_and_matching_full_measured_windows(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ref, _ref_health, _ref_receipt = write_backend_benchmark_run(root, "run-reference", "gdscript_reference", long=True)
+            native, native_health, native_receipt = write_backend_benchmark_run(root, "run-native", "native", long=True)
+            result, status = reducer.compare_circuit(ref, native, root / "matched.json", SHORT_POLICY)
+            self.assertEqual(status, 0, result["reasons"])
+            self.assertEqual([(window["start_tick"], window["end_tick"]) for window in result["matched_windows"]],
+                             [(6001, 12000)])
+            self.assertEqual(result["matched_windows"][0]["native_context_calls"], 6000)
+            self.assertEqual(result["matched_windows"][0]["native_stage_calls"], 24000)
+            changed = copy.deepcopy(native_receipt)
+            changed["checkpoints"][1]["sha256"] = "0" * 64
+            native_health.write_text(json.dumps(changed))
+            result, status = reducer.compare_circuit(ref, native, root / "different-state.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertTrue(any("state/input window" in reason for reason in result["reasons"]))
+            self.assertEqual(result["matched_windows"], [])
+            changed = copy.deepcopy(native_receipt)
+            changed["scenario"]["initial_simulation_checkpoint_sha256"] = "0" * 64
+            changed["backend_proof"]["initial_simulation_checkpoint_sha256"] = "0" * 64
+            native_health.write_text(json.dumps(changed))
+            result, status = reducer.compare_circuit(ref, native, root / "different-initial.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertTrue(any("initial simulation" in reason for reason in result["reasons"]))
+            changed = copy.deepcopy(native_receipt)
+            changed["scenario"]["solved_start_sha256"] = "5" * 64
+            native_health.write_text(json.dumps(changed))
+            result, status = reducer.compare_circuit(ref, native, root / "different-solved-start.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertTrue(any("scenario" in reason for reason in result["reasons"]))
+            changed = copy.deepcopy(native_receipt)
+            changed["scenario"]["trim_speed_m_s"] = 23.0
+            native_health.write_text(json.dumps(changed))
+            result, status = reducer.compare_circuit(ref, native, root / "different-solved-speed.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertTrue(any("scenario" in reason for reason in result["reasons"]))
+
+    def test_pair_refuses_legacy_roles_and_short_unmatched_windows(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ref, _health, _receipt = write_backend_benchmark_run(root, "run-ref", "gdscript_reference")
+            native, _health, _receipt = write_backend_benchmark_run(root, "run-native", "native")
+            result, status = reducer.compare_circuit(ref, native, root / "short.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertTrue(any("no full 6000-tick" in reason for reason in result["reasons"]))
+            legacy, _health, _receipt = write_benchmark_run(root, "run-legacy")
+            result, status = reducer.compare_circuit(legacy, native, root / "legacy.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertTrue(any("v2 backend proof" in reason for reason in result["reasons"]))
 
 
 if __name__ == "__main__":

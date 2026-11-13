@@ -4,6 +4,8 @@ extends SceneTree
 ## Required: --frametimes=<new absolute JSON> --sustained-receipt=<new absolute JSON>.
 ## Optional: --warmup=<wall seconds> --t=<wall seconds> --sustained-hash.
 ## --sustained-observation=off is an ineligible observer-cost control.
+## Matched Mac source-backend proof: --sustained-backend=gdscript_reference|native
+## --experimental-native-macos=true --sustained-hash (observer must remain on).
 ## Headless fixed-fps diagnostics may add --sustained-diagnostic-ticks=<1..432000>.
 ## DT-MAC-03b attribution sweeps may add --sustained-render-scale=<0.25..1> (bilinear
 ## 3D scale), --sustained-msaa=<0..3> (Viewport.MSAA) and/or --sustained-reconstruction=<Reconstruction
@@ -17,6 +19,7 @@ extends SceneTree
 
 const Simulation := preload("res://sim/simulation.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
+const PowerTrim := preload("res://physics/cruise_trim.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const CloudShadowMap := preload("res://render/cloud_shadow_map.gd")
 const CloudShaderVariants := preload("res://render/cloud_shader_variants.gd")
@@ -82,6 +85,23 @@ var frame_path := ""
 var receipt_path := ""
 var capture_id := ""
 var diagnostic_ticks := 0
+var backend_proof_enabled := false
+var requested_backend := "gdscript_reference"
+var requested_macos_opt_in := false
+var backend_identity: Dictionary = {}
+var backend_stage: Callable
+var backend_native: Object = null
+var backend_native_stats: Dictionary = {}
+var backend_identity_checks := 0
+var backend_coverage_checks := 0
+var backend_window_context_start := 0
+var backend_window_stage_start := 0
+var backend_window_checks_start := 0
+var backend_installation: Dictionary = {}
+var backend_initial_simulation_sha256 := ""
+var backend_sealed_stable := false
+var backend_guard_throughout := true
+var backend_sealed_domain_guard := false
 var hashes_enabled := false
 var observation_enabled := true
 var render_override: Variant = null
@@ -142,6 +162,9 @@ func _run() -> void:
 	frame_path = parsed.frame_path
 	receipt_path = parsed.receipt_path
 	diagnostic_ticks = parsed.diagnostic_ticks
+	backend_proof_enabled = parsed.backend_proof_enabled
+	requested_backend = parsed.requested_backend
+	requested_macos_opt_in = parsed.requested_macos_opt_in
 	hashes_enabled = parsed.hashes_enabled
 	observation_enabled = parsed.observation_enabled
 	render_override = parsed.render_override
@@ -203,6 +226,8 @@ func _run() -> void:
 		_fail_start("cannot instantiate the production Main scene")
 		return
 	scene.external_controller_selection = true
+	if backend_proof_enabled:
+		scene.trim_throttle = 0.5 # Match Home's selected operating point in the new v2 route.
 	scene.frametimes_auto_quit = false
 	scene.frametimes_route = ROUTE
 	scene.accident_archive_path = receipt_path + ".accident.json"
@@ -221,10 +246,33 @@ func _run() -> void:
 	# This route selects no device; keep even a later accidental profile access
 	# inside the run-owned directory instead of the player's calibration path.
 	session.profiles_path = receipt_path + ".controls.cfg"
-	if session.stage_backend_identity().get("backend") != "gdscript_reference" \
+	if session.stage_backend_identity().get("backend") != requested_backend \
 			or not session.sim.is_physics_processing() or not session.is_physics_processing():
-		_fail_start("reference backend and automatic physics callbacks are required")
+		_fail_start("requested backend and automatic physics callbacks are required")
 		return
+	if backend_proof_enabled:
+		var status: Dictionary = session.stage_backend_status()
+		backend_identity = session.stage_backend_identity().duplicate(true)
+		backend_stage = session.sim.model.stage
+		backend_installation = _mac_installation_identity()
+		if status.get("requested") != requested_backend or not str(status.get("reason", "")).is_empty() \
+				or not backend_installation.get("ok", false):
+			_fail_start("Mac backend status or source installation is not verified")
+			return
+		if requested_backend == "native":
+			if session._native_stage == null or session._native_stage._native == null:
+				_fail_start("native backend has no owned stage object")
+				return
+			backend_native = session._native_stage._native
+			if backend_identity != backend_installation.identity:
+				_fail_start("native backend identity differs from the installed receipt")
+				return
+			backend_native.reset_stage_stats(false)
+			backend_native_stats = backend_native.stage_stats()
+		if _backend_domain_guard_active(session) != (requested_backend == "native"):
+			_fail_start("requested backend does not own the expected Mac domain guard")
+			return
+		violations["backend"] = 0
 	if not adapter.configure(session, scene.field, SEED):
 		_fail_start("input adapter refused launch: " + adapter.failure)
 		return
@@ -245,6 +293,25 @@ func _run() -> void:
 			or str(initial_checkpoint.get("collision_world_identity", "")).length() != 64 \
 			or str(initial_checkpoint.get("lake_identity", "")).length() != 64:
 		_fail_start("validated tick-zero checkpoint, collision world and lake identities are required")
+		return
+	if backend_proof_enabled:
+		backend_initial_simulation_sha256 = _hash_bytes(var_to_bytes(initial_checkpoint.simulation))
+		var selected_throttle: float = session.selected_trim_throttle()
+		var requested_throttle: float = float(session.start.get("requested_throttle", NAN))
+		var reference_speed: float = float(session.start.get("reference_speed_mps", NAN))
+		var maximum_speed: float = float(session.start.get("max_speed_mps", NAN))
+		var solved_speed: float = float(session.start.get("V", NAN))
+		var solved_throttle: float = float(session.start.get("throttle", NAN))
+		if not session.start.get("ok", false) or session.start.get("mode") != "level" \
+				or selected_throttle != 0.5 or requested_throttle != 0.5 \
+				or not is_finite(reference_speed) or reference_speed <= 0.0 \
+				or not is_finite(maximum_speed) or maximum_speed != minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * reference_speed) \
+				or not is_finite(solved_speed) or solved_speed < reference_speed or solved_speed > maximum_speed \
+				or not is_finite(solved_throttle) or absf(solved_throttle - requested_throttle) > PowerTrim.THROTTLE_TOLERANCE:
+			_fail_start("selected 0.5-throttle Stik trim is invalid or outside its bounded speed search")
+			return
+	elif absf(float(session.start.V) - 15.0) > 1e-9:
+		_fail_start("reference Stik trim must be 15 m/s")
 		return
 	scenario = {aircraft_id = scene.aircraft_id, field_id = scene.field.id, seed = SEED,
 		start_choice = session.start_choice, trim_speed_m_s = float(session.start.V),
@@ -267,9 +334,13 @@ func _run() -> void:
 			if render_override == null else "direct technical Main; DT-MAC-03b render_override diagnostic; private accident archive",
 		render_override = render_override,
 		accident_archive_path = scene.accident_archive_path, controller_profile_path = session.profiles_path}
-	if absf(float(session.start.V) - 15.0) > 1e-9:
-		_fail_start("reference Stik trim must be 15 m/s")
-		return
+	if backend_proof_enabled:
+		scenario["initial_simulation_checkpoint_sha256"] = backend_initial_simulation_sha256
+		scenario["selected_trim_throttle"] = session.selected_trim_throttle()
+		scenario["solved_start_requested_throttle"] = session.start.requested_throttle
+		scenario["solved_start_reference_speed_m_s"] = session.start.reference_speed_mps
+		scenario["solved_start_max_speed_m_s"] = session.start.max_speed_mps
+		scenario["solved_start_sha256"] = _hash_bytes(var_to_bytes(session.start))
 	if not hide_shaders.is_empty():
 		_hide_shader_geometry(scene)
 		scenario["hidden_shader_geometry"] = {shaders = Array(hide_shaders), instances_at_start = hidden_instances.size()}
@@ -321,6 +392,9 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 	var duration := 1800.0
 	var warmup := 30.0
 	var requested_ticks := 0
+	var proof_enabled := false
+	var backend := "gdscript_reference"
+	var mac_opt_in := false
 	var use_hash := false
 	var use_observation := true
 	var override := {}
@@ -338,6 +412,16 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 			if value != str(FORCED_OPTIONS[key]): return {ok = false, reason = "conflicting workload option --" + key}
 			continue
 		match key:
+			"sustained-backend":
+				if value not in ["gdscript_reference", "native"]:
+					return {ok = false, reason = "sustained backend must be gdscript_reference or native"}
+				backend = value
+				proof_enabled = true
+			"experimental-native-macos":
+				if value not in ["true", "false"]:
+					return {ok = false, reason = "experimental-native-macos must be true or false"}
+				mac_opt_in = value == "true"
+				forwarded.append(arg)
 			"sustained-receipt": receipt = value
 			"sustained-diagnostic-ticks":
 				if not value.is_valid_int(): return {ok = false, reason = "diagnostic ticks must be an integer"}
@@ -399,13 +483,21 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 		return {ok = false, reason = "duration must be (0,1800] and warmup [0,300] seconds"}
 	if not use_observation and (use_hash or requested_ticks > 0):
 		return {ok = false, reason = "observer-off control cannot request hashes or diagnostic tick stopping"}
-	for key: String in FORCED_OPTIONS: forwarded.append("--%s=%s" % [key, FORCED_OPTIONS[key]])
+	if proof_enabled and (not use_hash or not use_observation or not mac_opt_in \
+			or OS.get_name() != "macOS" or Engine.get_architecture_name() != "arm64" \
+			or OS.has_feature("template_release")):
+		return {ok = false, reason = "backend proof requires source Mac ARM64, explicit opt-in, hashing and observation"}
+	if proof_enabled and backend != "gdscript_reference" and seen.has("physics-backend"):
+		return {ok = false, reason = "conflicting workload option --physics-backend"}
+	for key: String in FORCED_OPTIONS:
+		forwarded.append("--%s=%s" % [key, backend if key == "physics-backend" and proof_enabled else FORCED_OPTIONS[key]])
 	forwarded.append("--frametimes=" + path)
 	forwarded.append("--frametimes-stream")
 	forwarded.append("--t=" + str(duration))
 	forwarded.append("--warmup=" + str(warmup))
 	return {ok = true, frame_path = path, receipt_path = receipt, scene_args = forwarded,
 		diagnostic_ticks = requested_ticks, hashes_enabled = use_hash, observation_enabled = use_observation,
+		backend_proof_enabled = proof_enabled, requested_backend = backend, requested_macos_opt_in = mac_opt_in,
 		render_override = override if not override.is_empty() else null, hide_shaders = hide,
 		shader_params = params}
 
@@ -547,6 +639,7 @@ func _on_stepped(tick: int, _time: float, state: PackedFloat64Array, _loads: Pac
 		_mark_failure("tick_discontinuity", "accepted tick discontinuity: %d after %d" % [tick, last_tick])
 	last_tick = tick
 	var session: Node = scene.session
+	if backend_proof_enabled: _check_backend_tick(session, tick)
 	if not Simulation.state_is_valid(state) or not _finite(inputs) or not _finite(aux) \
 			or not _finite(session.sim.continuous):
 		_mark_failure("nonfinite", "nonfinite or invalid accepted state")
@@ -608,14 +701,63 @@ func _new_checkpoint() -> void:
 	checkpoint_hash.start(HashingContext.HASH_SHA256)
 
 
+func _backend_domain_guard_active(session: Node) -> bool:
+	if session._native_stage == null or not is_instance_valid(session._native_stage): return false
+	if session._native_stage._native == null or not is_instance_valid(session._native_stage._native): return false
+	return not session._native_stage._macos_domain_context.is_empty() \
+		and session._native_stage._macos_domain_matches(session)
+
+
+func _check_backend_tick(session: Node, tick: int) -> void:
+	if session.stage_backend_identity() != backend_identity or session.stage_backend_status().get("requested") != requested_backend \
+			or not str(session.stage_backend_status().get("reason", "")).is_empty() or session.sim.model.stage != backend_stage:
+		_mark_failure("backend", "backend ownership or identity changed at tick %d" % tick)
+		return
+	if _backend_domain_guard_active(session) != (requested_backend == "native"):
+		backend_guard_throughout = false
+		_mark_failure("backend", "Mac domain guard changed at tick %d" % tick)
+		return
+	backend_identity_checks += 1
+	if requested_backend != "native": return
+	if session._native_stage == null or session._native_stage._native != backend_native or not is_instance_valid(backend_native):
+		_mark_failure("backend", "native stage owner changed at tick %d" % tick)
+		return
+	var current: Dictionary = backend_native.stage_stats()
+	if typeof(current.get("context_calls")) != TYPE_INT or typeof(current.get("stage_calls")) != TYPE_INT \
+			or current.get("timing") != false \
+			or int(current.context_calls) - int(backend_native_stats.get("context_calls", 0)) < 1 \
+			or int(current.stage_calls) - int(backend_native_stats.get("stage_calls", 0)) < 4:
+		_mark_failure("backend", "native context or four stage calls did not cover tick %d" % tick)
+		return
+	backend_native_stats = current
+	backend_coverage_checks += 1
+
+
+func _append_checkpoint(tick: int, partial: bool) -> void:
+	var point := {start_tick = checkpoint_start_tick, end_tick = tick, sha256 = checkpoint_hash.finish().hex_encode()}
+	if partial: point["partial"] = true
+	if backend_proof_enabled:
+		point["backend_domain_guard"] = _backend_domain_guard_active(scene.session)
+		if point.backend_domain_guard != (requested_backend == "native"):
+			backend_guard_throughout = false
+			_mark_failure("backend", "Mac domain guard changed at checkpoint %d" % tick)
+	if backend_proof_enabled and requested_backend == "native":
+		point["native_context_calls"] = int(backend_native_stats.get("context_calls", 0)) - backend_window_context_start
+		point["native_stage_calls"] = int(backend_native_stats.get("stage_calls", 0)) - backend_window_stage_start
+		point["native_checked_ticks"] = backend_coverage_checks - backend_window_checks_start
+		backend_window_context_start = int(backend_native_stats.get("context_calls", 0))
+		backend_window_stage_start = int(backend_native_stats.get("stage_calls", 0))
+		backend_window_checks_start = backend_coverage_checks
+	checkpoints.append(point)
+
+
 func _update_checkpoint(tick: int, state: PackedFloat64Array, inputs: PackedFloat64Array,
 		aux: PackedFloat64Array, continuous: PackedFloat64Array, modes: PackedInt64Array) -> void:
 	checkpoint_hash.update(PackedInt64Array([tick]).to_byte_array())
 	for values: PackedFloat64Array in [state, inputs, aux, continuous]: checkpoint_hash.update(values.to_byte_array())
 	checkpoint_hash.update(modes.to_byte_array())
 	if tick % CHECKPOINT_TICKS == 0:
-		checkpoints.append({start_tick = checkpoint_start_tick, end_tick = tick,
-			sha256 = checkpoint_hash.finish().hex_encode()})
+		_append_checkpoint(tick, false)
 		checkpoint_start_tick = tick + 1
 		_new_checkpoint()
 
@@ -698,6 +840,17 @@ func _finish_diagnostic() -> void:
 
 func _on_sealed(exit_code: int) -> void:
 	if sealed: return
+	if backend_proof_enabled:
+		backend_sealed_domain_guard = _backend_domain_guard_active(scene.session)
+		backend_sealed_stable = scene.session.stage_backend_identity() == backend_identity \
+				and scene.session.stage_backend_status().get("requested") == requested_backend \
+				and str(scene.session.stage_backend_status().get("reason", "")).is_empty() \
+				and scene.session.sim.model.stage == backend_stage \
+				and backend_sealed_domain_guard == (requested_backend == "native")
+		if requested_backend == "native":
+			backend_sealed_stable = backend_sealed_stable and is_instance_valid(backend_native) \
+					and scene.session._native_stage != null and scene.session._native_stage._native == backend_native
+			if backend_sealed_stable: backend_sealed_stable = backend_native.stage_stats() == backend_native_stats
 	_observe_render(true)
 	scenario["effective_render"] = render_observation.duplicate(true)
 	scenario["cloud_cache"] = cloud_observation.duplicate(true)
@@ -717,8 +870,7 @@ func _on_sealed(exit_code: int) -> void:
 	sealed_tick = last_tick
 	seal_usec = Time.get_ticks_usec()
 	if hashes_enabled and checkpoint_start_tick <= sealed_tick:
-		checkpoints.append({start_tick = checkpoint_start_tick, end_tick = sealed_tick,
-			sha256 = checkpoint_hash.finish().hex_encode(), partial = true})
+		_append_checkpoint(sealed_tick, true)
 
 
 func _render_snapshot() -> Dictionary:
@@ -818,6 +970,76 @@ func _observe_render(final := false) -> void:
 	cloud_previous_generation = CloudShadowMap.diagnostics_generation()
 
 
+func _current_native_source_sha256() -> String:
+	# Use the builder's sorted name/NUL/bytes/NUL digest for the current checkout.
+	var own_script: Script = get_script()
+	if own_script == null: return ""
+	var base: String = own_script.resource_path.get_base_dir().get_base_dir().path_join("native-kernel/src")
+	var dir := DirAccess.open(base)
+	if dir == null or dir.list_dir_begin() != OK: return ""
+	var names := PackedStringArray()
+	var name := dir.get_next()
+	while not name.is_empty():
+		if name.ends_with(".cpp") or name.ends_with(".hpp"):
+			if dir.current_is_dir() or dir.is_link(name):
+				dir.list_dir_end()
+				return ""
+			names.append(name)
+		name = dir.get_next()
+	dir.list_dir_end()
+	if names.is_empty(): return ""
+	names.sort()
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	for source_name: String in names:
+		var source := FileAccess.open(base.path_join(source_name), FileAccess.READ)
+		if source == null or source.get_length() > 16 * 1024 * 1024: return ""
+		var length := source.get_length()
+		var bytes := source.get_buffer(length)
+		if bytes.size() != length or source.get_error() not in [OK, ERR_FILE_EOF]: return ""
+		hash.update(source_name.to_utf8_buffer())
+		hash.update(PackedByteArray([0]))
+		hash.update(bytes)
+		hash.update(PackedByteArray([0]))
+	return hash.finish().hex_encode()
+
+
+func _mac_installation_identity() -> Dictionary:
+	var base := "res://native/kernel/"
+	var receipt_pathname := base + "build-receipt-macos.json"
+	var library := base + "libopenrc_native_kernel.dylib"
+	var descriptor := base + "openrc_native_kernel_macos.gdextension"
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(receipt_pathname))
+	if not parsed is Dictionary or parsed.get("format") != "openrc-native-kernel-receipt" \
+			or parsed.get("backend") != "native" or not parsed.get("platforms") is Dictionary:
+		return {ok = false}
+	var row: Variant = parsed.platforms.get("macos")
+	if not row is Dictionary or row.get("platform") != "macos" or row.get("architecture") != "arm64" \
+			or row.get("backend") != "native" \
+			or row.get("qualification_scope") != "macos-arm64-fixed-wing-experimental-v1" \
+			or row.get("backend_version") != "openrc-native-kernel-stage-v2" or row.get("abi_version") != 2 \
+			or parsed.get("backend_version") != row.backend_version or parsed.get("abi_version") != row.abi_version:
+		return {ok = false}
+	var engine_sha := FileAccess.get_sha256(OS.get_executable_path())
+	var library_sha := FileAccess.get_sha256(library)
+	var receipt_sha := FileAccess.get_sha256(receipt_pathname)
+	var descriptor_sha := FileAccess.get_sha256(descriptor)
+	var source_sha := _current_native_source_sha256()
+	if engine_sha.length() != 64 or library_sha.length() != 64 or receipt_sha.length() != 64 \
+			or descriptor_sha.length() != 64 or row.get("binary_sha256") != library_sha \
+			or source_sha.length() != 64 or row.get("source_sha256") != source_sha \
+			or row.get("engine_sha256") != engine_sha or not row.get("engine") is Dictionary \
+			or row.engine.get("sha256") != engine_sha:
+		return {ok = false}
+	for key: String in ["source_sha256", "lock_sha256"]:
+		if typeof(row.get(key)) != TYPE_STRING or str(row[key]).length() != 64 or not str(row[key]).is_valid_hex_number():
+			return {ok = false}
+	return {ok = true, receipt_sha256 = receipt_sha, descriptor_sha256 = descriptor_sha, engine_sha256 = engine_sha,
+		native_source_sha256 = source_sha,
+		identity = {backend = "native", backend_version = row.backend_version, abi_version = int(row.abi_version),
+			binary_sha256 = row.binary_sha256, source_sha256 = row.source_sha256, lock_sha256 = row.lock_sha256}}
+
+
 func _source_hashes(input_path: String) -> Dictionary:
 	# Include the visible application resource tree, including rendering scripts,
 	# shaders, authored assets, import recipes and project settings. Hidden engine
@@ -882,15 +1104,24 @@ func _write_receipt_and_exit() -> void:
 		and observation_end_usec >= observation_start_usec
 	var coverage_ok: bool = observation_enabled and observer_calls == sealed_tick and input_coverage_ok
 	var source_unchanged: bool = _source_hashes(input_script_path) == source_hashes
-	var valid: bool = failure.is_empty() and coverage_ok and source_unchanged and (timing_complete or diagnostic_complete)
+	var installation_after := {}
+	var backend_ok := true
+	if backend_proof_enabled:
+		installation_after = _mac_installation_identity()
+		backend_ok = installation_after == backend_installation and backend_identity_checks == sealed_tick \
+			and backend_sealed_stable and backend_guard_throughout
+		if requested_backend == "native":
+			backend_ok = backend_ok and backend_coverage_checks == sealed_tick
+	var valid: bool = failure.is_empty() and coverage_ok and source_unchanged and backend_ok and (timing_complete or diagnostic_complete)
 	var control_complete: bool = not observation_enabled and frame_collection_complete and input_coverage_ok \
 		and source_unchanged and failure.is_empty()
-	var report := {format = "openrc-benchmark-health v1", capture_id = capture_id, route = ROUTE,
+	var report := {format = "openrc-benchmark-health v2" if backend_proof_enabled else "openrc-benchmark-health v1",
+		capture_id = capture_id, route = ROUTE,
 		complete = valid, timing_complete = timing_complete, diagnostic_complete = diagnostic_complete,
 		frame_collection_complete = frame_collection_complete, observer_off_control_complete = control_complete,
 		timing_eligible = valid and timing_complete and DisplayServer.get_name() != "headless",
 		timing_eligibility_scope = "fixture checks only; checked runner must separately establish the engine command and normal clocks",
-		failure = failure if not failure.is_empty() else ("incomplete tick observation" if not coverage_ok and not control_complete else ("source changed" if not source_unchanged else "")),
+		failure = failure if not failure.is_empty() else ("incomplete tick observation" if not coverage_ok and not control_complete else ("source changed" if not source_unchanged else ("backend proof changed" if not backend_ok else ""))),
 		report = frame_path.get_file(), report_sha256 = FileAccess.get_sha256(frame_path),
 		frame_report = frame_path, frame_report_sha256 = FileAccess.get_sha256(frame_path),
 		frame_stream_sha256 = str(frame.get("stream", {}).get("sha256", "")) if frame is Dictionary else "",
@@ -918,6 +1149,17 @@ func _write_receipt_and_exit() -> void:
 		checkpoints = checkpoints, hash_scope = "independent 6000-tick accepted state/input/aux/mode windows" if hashes_enabled else "disabled",
 		dwell_after_frame_seal_s = float(Time.get_ticks_usec() - seal_usec) / 1000000.0,
 		note = "Rate-limited synthetic keyboard input; complete physics flight is not physical validation. Compare observer overhead separately."}
+	if backend_proof_enabled:
+		report["backend_proof"] = {format = "openrc-sustained-backend-proof v1", requested = requested_backend,
+			experimental_native_macos = requested_macos_opt_in, identity = backend_identity,
+			installation_before = backend_installation, installation_after = installation_after,
+			identity_checks = backend_identity_checks, native_coverage_checks = backend_coverage_checks,
+			native_context_calls = int(backend_native_stats.get("context_calls", 0)),
+			native_stage_calls = int(backend_native_stats.get("stage_calls", 0)),
+			native_internal_timing = backend_native_stats.get("timing", false),
+			initial_simulation_checkpoint_sha256 = backend_initial_simulation_sha256,
+			backend_domain_guard = backend_sealed_domain_guard,
+			backend_unchanged = backend_ok}
 	if FileAccess.file_exists(receipt_path):
 		printerr("Sustained receipt appeared during capture; refusing overwrite")
 		quit(1)

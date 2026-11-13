@@ -308,6 +308,7 @@ def macos_snapshot(context: dict[str, Any]) -> dict[str, Any]:
     harness = {name: sha256(runner.project_file(ROOT / name, project)) for name in harness_names}
     return {"platform": "macos", "architecture": "arm64", "project": str(project), "project_inventory": proof,
             "godot": str(engine), "tool_root": str(tool_root), "qualification_root": str(qualification_root),
+            "trim_profile": context.get("trim_profile", "reference"),
             "binary_sha256": binary_hash,
             "engine_sha256": engine_hash, "descriptor_sha256": sha256(descriptor), "receipt_sha256": sha256(receipt_file),
             "receipt": receipt, "reference_sources": references, "harness_sources": harness,
@@ -594,6 +595,10 @@ def validate_flight(row: dict[str, Any], warmup: int, samples: int, guard: dict[
                 f"{requested} lacks typed-state or aircraft identity")
     require(reference["fingerprint"] == native["fingerprint"]
             and reference["aircraft_sha256"] == native["aircraft_sha256"], "backend flight identities differ")
+    if guard.get("trim_profile", "reference") == "production" and row["vehicle"] == "fixed-wing":
+        require(hash_string(reference.get("start_sha256")) and hash_string(native.get("start_sha256"))
+                and reference["start_sha256"] == native["start_sha256"],
+                "backend production start identities differ or are missing")
     require(native["identity"].get("abi_version") == 2
             and native["identity"].get("binary_sha256") == guard["binary_sha256"]
             and native["identity"].get("source_sha256") == guard["receipt"].get("source_sha256")
@@ -927,7 +932,7 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
                 and command.count("--extension=res://native/kernel/openrc_native_kernel.gdextension") == 1
                 and command.count(f"--aircraft={aircraft_id}") == 1
                 and command.count(f"--warmup={warmup}") == 1 and command.count(f"--samples={samples}") == 1
-                and not any(arg.startswith("--weather=") or arg.startswith("--soft-hull=") for arg in command),
+                and not any(arg.startswith(("--weather=", "--soft-hull=", "--trim-profile=")) for arg in command),
                 f"{aircraft_id}: checked command was not the expected full shard")
         require(report.get("library", {}).get("ok") is True and report["library"].get("reason") == ""
                 and report.get("identity", {}).get("backend") == "native"
@@ -958,6 +963,7 @@ def validate_reports(manifest: dict[str, Any], reports: dict[str, dict[str, Any]
         scope, rows = report.get("fleet_scope"), report.get("fleet")
         shard_keys = {key for key in expected if key[0] == aircraft_id}
         require(isinstance(scope, dict) and scope.get("scope") == "scoped"
+                and scope.get("trim_profile", "reference") == "reference"
                 and scope.get("filters") in ({"aircraft": aircraft_id, "weather": "", "soft_hull": ""},
                                              {"aircraft": aircraft_id, "weather": "", "soft_hull": "", "vehicle": ""})
                 and scope.get("declared_aircraft") == aircraft and type(scope.get("declared_rows")) is int
@@ -1130,6 +1136,8 @@ def _validate_macos_shard(aircraft_id: str, report: dict[str, Any], path: Path,
             and f"NK3_ORACLE verdict={'pass' if passed else 'fail'}" in log.read_text(encoding="utf-8", errors="replace"),
             f"{aircraft_id}: checked shard log or report differs")
     command = checked.get("command")
+    trim_profile = guard.get("trim_profile", "reference")
+    require(trim_profile in ("reference", "production"), f"{aircraft_id}: unknown fleet trim profile")
     require(isinstance(command, list) and all(isinstance(arg, str) for arg in command) and command
             and Path(command[0]).resolve() == Path(guard["godot"]).resolve()
             and command.count("--path") == 1 and Path(command[command.index("--path") + 1]).resolve() == Path(guard["project"])
@@ -1139,6 +1147,8 @@ def _validate_macos_shard(aircraft_id: str, report: dict[str, Any], path: Path,
             and command.count("--seed=20261027") == 1 and report.get("seed") == 20261027
             and command.count(f"--aircraft={aircraft_id}") == 1 and command.count(f"--warmup={warmup}") == 1
             and command.count(f"--samples={samples}") == 1 and command.count(f"--output={path}") == 1
+            and [arg for arg in command if arg.startswith("--trim-profile=")]
+                == ([] if trim_profile == "reference" else ["--trim-profile=production"])
             and not any(arg.startswith("--weather=") or arg.startswith("--soft-hull=") for arg in command),
             f"{aircraft_id}: checked command differs from the Mac fixed-wing shard")
     require(report.get("library", {}).get("ok") is True and report["library"].get("reason") == ""
@@ -1161,6 +1171,7 @@ def _validate_macos_shard(aircraft_id: str, report: dict[str, Any], path: Path,
     selected = {key for key in expected if key[0] == aircraft_id and key[1] == "fixed-wing"}
     scope, rows = report.get("fleet_scope"), report.get("fleet")
     require(selected and isinstance(scope, dict) and scope.get("scope") == "scoped"
+            and scope.get("trim_profile", "reference") == trim_profile
             and scope.get("filters") == {"aircraft": aircraft_id, "weather": "", "soft_hull": "", "vehicle": "fixed-wing"}
             and scope.get("declared_aircraft") == catalog and type(scope.get("declared_rows")) is int
             and scope["declared_rows"] == len(expected) and type(scope.get("selected_rows")) is int
@@ -1257,6 +1268,8 @@ def validate_macos_reports(manifest: dict[str, Any], reports: dict[str, dict[str
                 item["reason"] = "flight failed: " + str(error)
             else:
                 item.update(status="verified-flight", reason="", shard_verdict=reports[name]["verdict"])
+                if guard.get("trim_profile", "reference") == "production":
+                    item["start_sha256"] = row["reference"]["start_sha256"]
                 verified += 1
         rows.append(item)
     complete = verified == len(fixed) and not shard_errors and set(selected_aircraft) == set(names)
@@ -1279,6 +1292,8 @@ async def run_shard(aircraft: str, out: Path, semaphore: asyncio.Semaphore, warm
         if context is not None:
             command += ["--project", context["project"], "--godot", context["godot"],
                         "--experimental-native-macos", "--option", "vehicle=fixed-wing"]
+            if context.get("trim_profile", "reference") == "production":
+                command += ["--option", "trim-profile=production"]
             env = dict(os.environ, OPENRC_NK_TOOL_ROOT=context["tool_root"])
         print(f"Starting fleet shard: {aircraft}", flush=True)
         with log_path.open("wb") as log:
@@ -1407,7 +1422,9 @@ async def run_shards(aircraft: list[str], out: Path, jobs: int, warmup: int, sam
 def macos_context(args: argparse.Namespace, out: Path) -> dict[str, str]:
     context = {"project": str(args.project.expanduser().resolve()), "godot": str(args.godot.expanduser().resolve()),
                "tool_root": str(args.tool_root.expanduser().resolve()),
-               "qualification_root": str(args.qualification_root.expanduser().resolve())}
+               "qualification_root": str(args.qualification_root.expanduser().resolve()),
+               "trim_profile": str(getattr(args, "trim_profile", "reference"))}
+    require(context["trim_profile"] in ("reference", "production"), "unknown Mac fleet trim profile")
     project, tool_root, qualification_root = (Path(context[key]) for key in ("project", "tool_root", "qualification_root"))
     require(qualification_root.is_relative_to((ROOT / "tmp").resolve()) and qualification_root != (ROOT / "tmp").resolve()
             and qualification_root.is_dir(), "Mac qualification root must be an existing directory inside tmp/")
@@ -1477,6 +1494,7 @@ def run_macos_campaign(args: argparse.Namespace, out: Path) -> int:
     verdict = "pass" if result["fixed_wing_complete"] else "fail" if failed and not (pending and not args.keep_going) else "open"
     result.update(format="openrc-nk3-fleet-campaign-macos-experimental v1", verdict=verdict,
                   warmup=args.warmup, samples=args.samples, keep_going=args.keep_going,
+                  trim_profile=context["trim_profile"],
                   manifest_sha256=manifest_hash, manifest_script_sha256=manifest_script_hash,
                   guard={**guard, "base_oracle_boundary": base_boundary},
                   reports={name: {"path": str(path), "sha256": report_hashes[name]} for name, path in paths.items()})
@@ -1505,6 +1523,8 @@ def main() -> int:
     parser.add_argument("--godot", type=Path, help="Mac engine bound to the project receipt")
     parser.add_argument("--tool-root", type=Path, help="Mac runner's evidence and checks directory under tmp/")
     parser.add_argument("--qualification-root", type=Path, help="exact Mac build and cited oracle evidence under tmp/")
+    parser.add_argument("--trim-profile", choices=("reference", "production"), default="reference",
+                        help="Mac fleet trim profile; production selects the Home/Quick Flight 0.5 trim")
     parser.add_argument("--aircraft", action="append", default=[], metavar="ID",
                         help="select one fixed-wing Mac aircraft (repeatable); omitted aircraft remain open")
     args = parser.parse_args()
@@ -1514,8 +1534,8 @@ def main() -> int:
         if args.project is None or args.godot is None or args.tool_root is None or args.qualification_root is None:
             parser.error("--experimental-native-macos requires --project, --godot, --tool-root and --qualification-root")
     elif args.project is not None or args.godot is not None or args.tool_root is not None \
-            or args.qualification_root is not None or args.aircraft:
-        parser.error("--project, --godot, --tool-root, --qualification-root and --aircraft require --experimental-native-macos")
+            or args.qualification_root is not None or args.aircraft or args.trim_profile != "reference":
+        parser.error("Mac project, roots, aircraft and production trim require --experimental-native-macos")
     out = args.out.resolve()
     try:
         require(out.is_relative_to((ROOT / "tmp").resolve()), "evidence directory must be under tmp/")

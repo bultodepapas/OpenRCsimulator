@@ -4,6 +4,7 @@ extends SceneTree
 const Fleet := preload("fleet.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
+const WindConfig := preload("res://physics/wind_config.gd")
 
 # Captured typed values from the real FS64V rejecting midpoint (not decimal re-serialization).
 const FS64V_TRIAL_HEX := (
@@ -51,6 +52,22 @@ class FakeNative:
 
 	func stage_stats() -> Dictionary:
 		return {stage_calls = stage_calls, context_calls = context_calls}
+
+
+class FakeStartSelection:
+	extends Node
+	var _runway_field := {id = "default"}
+	var ground_field_id := "default"
+	var soft_hull_contacts := false
+	var start_choice := "runway"
+	var selected := NAN
+	var weather := {}
+
+	func weather_configuration() -> Dictionary:
+		return weather
+
+	func selected_trim_throttle() -> float:
+		return selected
 
 
 class FakeHelper:
@@ -177,6 +194,8 @@ class FakeSession:
 	var actual := "gdscript_reference"
 	var _native_stage: FakeHelper
 	var aircraft := {input_identity = {sha256 = "a".repeat(64)}}
+	var start := {ok = true, requested_throttle = 0.5,
+		state = PackedFloat64Array([60.0, -40.0, -30.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])}
 	var restore_failure := ""
 
 	func _init() -> void:
@@ -219,8 +238,9 @@ func _check(condition: bool, label: String) -> void:
 
 
 func _run_fake(fleet: Object, requested: String, failure := "", fail_at := -1,
-		warmup := 2, samples := 3, replay := false, body := false) -> Dictionary:
+		warmup := 2, samples := 3, replay := false, body := false, bind_start := false) -> Dictionary:
 	var session := FakeSession.new()
+	if failure == "invalid_start": session.start.requested_throttle = 0.25
 	session.requested = requested
 	session.actual = requested
 	session.sim.failure = failure
@@ -245,7 +265,7 @@ func _run_fake(fleet: Object, requested: String, failure := "", fail_at := -1,
 	session.read_raw = func() -> Dictionary:
 		fleet._input_reads += 1
 		return {}
-	var result: Dictionary = fleet._fleet_run_session(session, requested, warmup, samples, replay)
+	var result: Dictionary = fleet._fleet_run_session(session, requested, warmup, samples, replay, bind_start)
 	session.free()
 	return result
 
@@ -307,12 +327,42 @@ func _replace_runtime_payload(proof: Dictionary, field: String, payload: Variant
 
 func _initialize() -> void:
 	var fleet := Fleet.new()
+	var selected := FakeStartSelection.new()
+	var weather := WindConfig.preset("calm")
+	selected.weather = WindConfig.validate(weather).config
+	var selected_row := {aircraft = "jensen-das-ugly-stik-60", vehicle = "fixed-wing", case = "runway",
+		weather = "calm", soft_hull = false, battery = "ideal", default_battery = true}
+	_check(Fleet._fleet_start_selection_valid(selected, selected_row, weather, selected._runway_field),
+		"reference runway retains the legacy NaN trim")
+	_check(not Fleet._fleet_start_selection_valid(selected, selected_row, weather, selected._runway_field, "production"),
+		"production runway refuses a reference trim")
+	selected.selected = 0.5
+	_check(Fleet._fleet_start_selection_valid(selected, selected_row, weather, selected._runway_field, "production"),
+		"production runway requires the Home trim")
+	_check(not Fleet._fleet_start_selection_valid(selected, selected_row, weather, selected._runway_field),
+		"reference runway refuses the Home trim")
+	selected.free()
 	var reference := _run_fake(fleet, "gdscript_reference")
 	var native := _run_fake(fleet, "native")
 	_check(reference.complete and native.complete and Fleet._fleet_pair_error(reference, native, 2, 3).is_empty(),
 		"healthy production-shaped native/reference pair succeeds")
 	_check(reference.fingerprint_boundaries == 6 and native.fingerprint_boundaries == 6 \
 		and reference.fingerprint == native.fingerprint, "initial, warmup and sample state boundaries are hashed")
+	var production_reference := _run_fake(fleet, "gdscript_reference", "", -1, 2, 3, false, false, true)
+	var production_native := _run_fake(fleet, "native", "", -1, 2, 3, false, false, true)
+	_check(production_reference.start_sha256.length() == 64 \
+		and production_reference.start_sha256 == production_native.start_sha256 \
+		and Fleet._fleet_pair_error(production_reference, production_native, 2, 3, true).is_empty(),
+		"production trials bind the same initial start")
+	var wrong_start := production_native.duplicate(true)
+	wrong_start.start_sha256 = "f".repeat(64)
+	_check(not Fleet._fleet_pair_error(production_reference, wrong_start, 2, 3, true).is_empty(),
+		"production start mismatch is refused")
+	wrong_start.start_sha256 = 1
+	_check(not Fleet._fleet_pair_error(production_reference, wrong_start, 2, 3, true).is_empty(),
+		"malformed production start is refused")
+	_check(not _run_fake(fleet, "native", "invalid_start", -1, 2, 3, false, false, true).complete,
+		"production run refuses a different requested trim before ticking")
 	var zero := _run_fake(fleet, "gdscript_reference", "", -1, 2, 0)
 	_check(not zero.complete and "positive" in zero.error and zero.fingerprint.is_empty(), "zero samples fail closed")
 	zero = _run_fake(fleet, "native", "", -1, 0, 3)

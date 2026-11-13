@@ -28,6 +28,7 @@ import math
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -36,6 +37,10 @@ import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from tools.graphics.prepare_research import _macos_clonefile, PreparationError  # noqa: E402
+
 QUALIFICATION = ROOT / "tools" / "companions" / "qualification.json"
 IDENTITY_SCRIPT = ROOT / "tools" / "companions" / "solver_identity.gd"
 RECEIPT_FORMAT = "openrc-ai-solver-rebind v1"
@@ -244,15 +249,66 @@ def _check_materialized_tapes(tapes: tuple[PreparedTape, ...]) -> None:
 FULL_BASELINE_PATHS = ("app", "tools/flight_log", "tools/release/macos_reference_receipt.py")
 
 
-def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str = "solver") -> Path:
+def _copy_function(mode: str):
+    if mode == "copy":
+        return shutil.copy2
+    if mode != "clone":
+        raise SetupError(f"unsupported copy mode: {mode}")
+    try:
+        clone = _macos_clonefile()
+    except PreparationError as error:
+        raise SetupError(str(error)) from error
+
+    def clone_copy(source, destination):
+        clone(Path(source), Path(destination))
+        original = os.stat(source, follow_symlinks=False)
+        copied = os.stat(destination, follow_symlinks=False)
+        if (not stat.S_ISREG(original.st_mode) or not stat.S_ISREG(copied.st_mode)
+                or copied.st_nlink != 1 or (original.st_dev, original.st_ino) == (copied.st_dev, copied.st_ino)):
+            raise SetupError("clone copy must create an independent regular file")
+        shutil.copystat(source, destination, follow_symlinks=False)
+        return destination
+
+    return clone_copy
+
+
+def _extract_archive_stream(base: Path, rev: str, paths: list[str]) -> None:
+    """Extract the trusted Git archive without a second full-sized tar on disk."""
+    with tempfile.TemporaryFile() as errors:
+        process = subprocess.Popen(["git", "archive", rev, *paths], cwd=ROOT,
+                                   stdout=subprocess.PIPE, stderr=errors)
+        try:
+            assert process.stdout is not None
+            with tarfile.open(fileobj=process.stdout, mode="r|") as archive:
+                archive.extractall(base, filter="data")
+        except (OSError, tarfile.TarError) as error:
+            if process.stdout is not None:
+                process.stdout.close()
+            if process.poll() is None:
+                process.kill()
+            process.wait()
+            errors.seek(0)
+            detail = errors.read().decode(errors="replace").strip() or str(error)
+            raise SetupError(f"git archive {rev} or extraction failed: {detail}") from error
+        process.stdout.close()
+        code = process.wait()
+        if code:
+            errors.seek(0)
+            raise SetupError(f"git archive {rev}: {errors.read().decode(errors='replace').strip()}")
+
+
+def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str = "solver",
+                   copy_mode: str = "copy") -> Path:
     """Current project with the solver directories (or, for scope "full", every tracked app and replay
     tooling file) taken from the accepted revision. The current import cache is reused."""
     base = workspace / "base"
-    shutil.copytree(ROOT / "app", base / "app", symlinks=True, ignore=COPY_IGNORE)
-    shutil.copytree(ROOT / "tools" / "flight_log", base / "tools" / "flight_log", symlinks=True)
+    copy = _copy_function(copy_mode)
+    shutil.copytree(ROOT / "app", base / "app", symlinks=True, ignore=COPY_IGNORE, copy_function=copy)
+    shutil.copytree(ROOT / "tools" / "flight_log", base / "tools" / "flight_log", symlinks=True, copy_function=copy)
     # tools/flight_log/flight_log.py loads the Mac receipt helper by path at import time.
     (base / "tools" / "release").mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "tools" / "release" / "macos_reference_receipt.py", base / "tools" / "release")
+    copy(ROOT / "tools" / "release" / "macos_reference_receipt.py",
+         base / "tools" / "release" / "macos_reference_receipt.py")
     for directory in directories:
         shutil.rmtree(base / directory)
     paths = list(directories)
@@ -260,14 +316,17 @@ def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str
         paths = [path for path in FULL_BASELINE_PATHS
                  if subprocess.run(["git", "cat-file", "-e", f"{rev}:{path}"], cwd=ROOT,
                                    stderr=subprocess.DEVNULL).returncode == 0]
-    archive = workspace / "base-solver.tar"
-    with archive.open("wb") as handle:
-        result = subprocess.run(["git", "archive", rev, *paths], cwd=ROOT, stdout=handle, stderr=subprocess.PIPE)
-    if result.returncode:
-        raise SetupError(f"git archive {rev}: {result.stderr.decode(errors='replace').strip()}")
-    with tarfile.open(archive) as tar:
-        tar.extractall(base, filter="data")
-    archive.unlink()
+    if copy_mode == "clone":
+        _extract_archive_stream(base, rev, paths)
+    else:
+        archive = workspace / "base-solver.tar"
+        with archive.open("wb") as handle:
+            result = subprocess.run(["git", "archive", rev, *paths], cwd=ROOT, stdout=handle, stderr=subprocess.PIPE)
+        if result.returncode:
+            raise SetupError(f"git archive {rev}: {result.stderr.decode(errors='replace').strip()}")
+        with tarfile.open(archive) as tar:
+            tar.extractall(base, filter="data")
+        archive.unlink()
     return base
 
 
@@ -333,14 +392,15 @@ def repin_profile(profile: Path, old: str, new: str) -> None:
 
 def compare(godot: str, qualification: dict, jobs: int, keep: bool,
             workspace_root: Path | None = None, scope: str = "solver",
-            prepared_tapes: tuple[PreparedTape, ...] | None = None) -> tuple[list[dict], str]:
+            prepared_tapes: tuple[PreparedTape, ...] | None = None,
+            copy_mode: str = "copy") -> tuple[list[dict], str]:
     accepted = qualification["accepted"]
     directories = qualification["solver_directories"]
     parent = (workspace_root if workspace_root is not None else ROOT / "tmp").resolve()
     parent.mkdir(parents=True, exist_ok=True)
     workspace = Path(tempfile.mkdtemp(prefix="companion-rebind-", dir=parent))
     try:
-        base = build_baseline(workspace, accepted["rev"], directories, scope)
+        base = build_baseline(workspace, accepted["rev"], directories, scope, copy_mode)
         base_identity = solver_identity(godot, base / "app")
         if base_identity != accepted["solver_sha256"]:
             raise SetupError(f"accepted rev {accepted['rev'][:8]} reproduces {base_identity[:8]}, "
@@ -396,10 +456,14 @@ def main() -> int:
     parser.add_argument("--baseline", choices=("solver", "full"), default="solver",
                         help="accepted-revision content in the base copy: solver directories (default) or "
                              "every tracked app file and the replay tooling")
+    parser.add_argument("--copy-mode", choices=("copy", "clone"), default="copy",
+                        help="clone uses exclusive macOS clonefile without copy fallback (default: copy)")
     parser.add_argument("--workspace-root", type=Path,
                         help="parent for disposable project copies (default: repository tmp/)")
     args = parser.parse_args()
     try:
+        if args.copy_mode == "clone":
+            _copy_function(args.copy_mode)  # Refuse unsupported hosts even if no rebind is needed.
         qualification = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
         profile = ROOT / qualification["profile"]
         godot = args.godot or default_godot()
@@ -424,7 +488,7 @@ def main() -> int:
             print(f"Solver identity changed: accepted {pinned[:8]} -> current {current[:8]}. "
                   f"Replaying {len(qualification['tapes'])} tapes on both sides...", flush=True)
             results, workspace = compare(godot, qualification, args.jobs, args.keep, args.workspace_root,
-                                         args.baseline, tapes)
+                                         args.baseline, tapes, args.copy_mode)
             _check_materialized_tapes(tapes)
     except (SetupError, OSError, KeyError, ValueError, subprocess.TimeoutExpired) as error:
         print(f"rebind: setup error: {error}", file=sys.stderr)
@@ -443,7 +507,7 @@ def main() -> int:
               "head": git("rev-parse", "HEAD"), "solver_tree_committed": solver_tree_is_committed(
                   qualification["solver_directories"]), "changed_sources": changed_sources,
               "candidate_aircraft": qualification["candidate_aircraft"], "identical": identical, "tapes": results,
-              "baseline": args.baseline,
+              "baseline": args.baseline, "copy_mode": args.copy_mode,
               "method": ("Candidate replays of the retained tapes on two disposable copies differing only in the "
                          "solver directories (accepted rev vs current tree); CSV bytes compared."
                          if args.baseline == "solver" else

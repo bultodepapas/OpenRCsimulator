@@ -1317,5 +1317,189 @@ class IdenticalCampaignTests(unittest.TestCase):
             self.assertEqual(calls, (0, 0))
 
 
+class BatteryModeTests(unittest.TestCase):
+    @staticmethod
+    def report(backend: str, mode: str, *, data_sha: str = "f" * 64) -> dict:
+        report = valid_current_report(backend)
+        report["aircraft_id"] = "stik-electric-6s"
+        report["aircraft_sha256"] = data_sha
+        report.update(template_release=False, solver_identity_kind="source-tree-v1")
+        report["battery"] = {"mode": mode,
+            "data_path": "res://data/aircraft/battery/stik_electric_6s_pack.json" if mode == "pack"
+                         else "res://data/aircraft/stik_electric_6s.json",
+            "data_sha256": data_sha, "dynamic": mode == "pack", "pack": mode == "pack"}
+        return report
+
+    def test_explicit_data_identity_and_actual_session_mode_are_required(self):
+        for mode in ("ideal", "pack"):
+            report = self.report("native", mode)
+            self.assertEqual(validate_probe_report(report, expected={"battery": mode}), [])
+            self.assertTrue(validate_probe_report(report, expected={"battery": None}))
+            for change in (lambda b: b.update(data_sha256="0" * 64),
+                           lambda b: b.update(data_path="res://data/aircraft/../outside.json"),
+                           lambda b: b.update(dynamic=1), lambda b: b.update(pack=not b["pack"]),
+                           lambda b: b.update(mode="unknown"), lambda b: b.update(extra=True)):
+                changed = copy.deepcopy(report)
+                change(changed["battery"])
+                with self.subTest(mode=mode, changed=changed["battery"]):
+                    self.assertTrue(validate_probe_report(changed, expected={"battery": mode}))
+        pack = self.report("native", "pack")
+        pack["battery"]["dynamic"] = False
+        self.assertTrue(validate_probe_report(pack))
+        legacy = valid_current_report()
+        self.assertEqual(validate_probe_report(legacy, expected={"battery": None}), [])
+        self.assertTrue(validate_probe_report(legacy, expected={"battery": "pack"}))
+
+    def test_pair_reducers_do_not_mix_pack_ideal_or_data_paths(self):
+        reference, native = self.report("gdscript_reference", "pack"), self.report("native", "pack")
+        self.assertTrue(reduce_backend_pair(reference, native)["comparable"])
+        self.assertTrue(baseline.reduce_identical_pair(native, copy.deepcopy(native), "native")["comparable"])
+        changed = copy.deepcopy(native)
+        changed["battery"]["data_path"] = "res://data/aircraft/battery/other.json"
+        self.assertEqual(validate_probe_report(changed), [])
+        self.assertFalse(reduce_backend_pair(reference, changed)["comparable"])
+        self.assertFalse(baseline.reduce_identical_pair(native, changed, "native")["comparable"])
+        self.assertFalse(reduce_backend_pair(reference, self.report("native", "ideal"))["comparable"])
+        missing = copy.deepcopy(native)
+        del missing["battery"]
+        self.assertFalse(reduce_backend_pair(reference, missing)["comparable"])
+
+    def source_campaign(self, root: Path, mode: str | None, *, identical: bool = False,
+                        mismatch: bool = False, file_drift: bool = False):
+        app, executable, library, _receipt = PreparedMacSourceTests._installation(self, root)
+        (app / "project.godot").write_text("config_version=5\n")
+        data_dir = app / "data/aircraft/battery"
+        data_dir.mkdir(parents=True)
+        data = data_dir / "stik_electric_6s_pack.json"
+        data.write_bytes(b"finite-pack aircraft data")
+        source_identity = mac_source_install_identity(app, _sha256_file(executable), "c" * 64)
+        proof = {"canonical_manifest_sha256": "a" * 64, "executed_project_content_sha256": "b" * 64,
+                 "checked_files": 2, "excluded_generated_suffixes": [".import", ".uid"]}
+        validator = SimpleNamespace(validate_project=unittest.mock.Mock(side_effect=[proof, proof]))
+        commands = []
+        class Process:
+            returncode = 0
+            def __init__(self, command, **_kwargs):
+                commands.append(command)
+                output = Path(next(arg.removeprefix("--output=") for arg in command if arg.startswith("--output=")))
+                backend = next(arg.removeprefix("--physics-backend=") for arg in command if arg.startswith("--physics-backend="))
+                actual_mode = "ideal" if mismatch and backend == "native" else mode
+                data_sha = "0" * 64 if file_drift and backend == "native" else _sha256_file(data)
+                report = BatteryModeTests.report(backend, actual_mode or "ideal", data_sha=data_sha)
+                if mode is None:
+                    del report["battery"]
+                elif actual_mode == "ideal":
+                    report["battery"]["data_path"] = "res://data/aircraft/battery/stik_electric_6s_pack.json"
+                report["machine"].update(os="macOS", architecture="arm64")
+                report["experimental_native_macos"] = True
+                if backend == "native":
+                    report["backend"]["actual"]["binary_sha256"] = source_identity["binary_sha256"]
+                output.write_text(json.dumps(report))
+            def wait(self, timeout): return 0
+        output = root / "campaign"
+        args = ["--godot", str(executable), "--project", str(app), "--out", str(output),
+                "--aircraft", "stik-electric-6s", "--case", "trim", "--warmup-ticks", "4", "--sample-ticks", "5",
+                "--repeats", "1", "--experimental-native-macos", "--compare-identical" if identical else "--compare-backends"]
+        if identical:
+            args += ["--physics-backend", "native"]
+        if mode is not None:
+            args += ["--battery", mode]
+        with patch.object(baseline, "capture_workspace_identity", return_value={}), \
+             patch.object(baseline, "capture_system_identity", return_value={"system": "Darwin", "machine": "arm64"}), \
+             patch.object(baseline, "inspect_godot", return_value={"sha256": _sha256_file(executable)}), \
+             patch.object(baseline, "native_source_digest", return_value="c" * 64), \
+             patch.object(baseline, "app_source_digest", return_value="app-digest"), \
+             patch.object(baseline, "load_project_validator", return_value=validator), patch("subprocess.Popen", Process):
+            code = baseline.main(args)
+        name = "session_identical.json" if identical else "session_baseline.json"
+        return code, json.loads((output / name).read_text()), commands, output
+
+    def test_source_campaign_forwards_battery_and_rereader_rejects_downgrade(self):
+        with tempfile.TemporaryDirectory(prefix="session-battery-source-") as directory:
+            code, campaign, commands, output = self.source_campaign(Path(directory), "pack")
+            self.assertEqual(code, 0, campaign["failures"])
+            self.assertEqual(campaign["configuration"]["battery"], "pack")
+            self.assertTrue(all("--battery=pack" in command for command in commands))
+            for item in campaign["pairs"][0]["runs"].values():
+                self.assertTrue(item["battery"]["dynamic"])
+                self.assertTrue(item["battery"]["pack"])
+            campaign_path = output / "session_baseline.json"
+            _loaded, rows = baseline._campaign_runs(campaign_path)
+            self.assertEqual(len(rows), 1)
+            campaign["configuration"]["battery"] = "ideal"
+            campaign_path.write_text(json.dumps(campaign))
+            with self.assertRaisesRegex(ValueError, "requested battery mode"):
+                baseline._campaign_runs(campaign_path)
+        with tempfile.TemporaryDirectory(prefix="session-battery-identical-") as directory:
+            code, campaign, commands, _output = self.source_campaign(Path(directory), "pack", identical=True)
+            self.assertEqual(code, 0, campaign["failures"])
+            self.assertTrue(all("--battery=pack" in command for command in commands))
+            self.assertEqual(campaign["configuration"]["battery"], "pack")
+        with tempfile.TemporaryDirectory(prefix="session-battery-default-") as directory:
+            code, campaign, commands, _output = self.source_campaign(Path(directory), None)
+            self.assertEqual(code, 0, campaign["failures"])
+            self.assertNotIn("battery", campaign["configuration"])
+            self.assertTrue(all(not any(arg.startswith("--battery=") for arg in command) for command in commands))
+
+    def test_wrong_runtime_battery_fails_the_campaign(self):
+        with tempfile.TemporaryDirectory(prefix="session-battery-fallback-") as directory:
+            code, campaign, _commands, _output = self.source_campaign(Path(directory), "pack", mismatch=True)
+            self.assertEqual(code, 1)
+            self.assertFalse(campaign["complete"])
+            self.assertTrue(any("battery mode does not match requested run" in item for item in campaign["failures"]))
+        with tempfile.TemporaryDirectory(prefix="session-battery-data-drift-") as directory:
+            code, campaign, _commands, _output = self.source_campaign(Path(directory), "pack", file_drift=True)
+            self.assertEqual(code, 1)
+            self.assertTrue(any("aircraft data differs from the measured project" in item for item in campaign["failures"]))
+
+    def test_release_pair_rereader_requires_battery_in_exact_command(self):
+        with tempfile.TemporaryDirectory(prefix="session-battery-release-") as directory:
+            root = Path(directory)
+            executable, _probe, reference, native = mac_release_fixture(root)
+            engine = {"path": str(executable), "sha256": reference["executable_sha256"],
+                      "runtime_binary_sha256": reference["executable_sha256"]}
+            commands = []
+            class Process:
+                returncode = 0
+                def __init__(self, command, **kwargs):
+                    commands.append(command)
+                    output = Path(next(arg.removeprefix("--output=") for arg in command if arg.startswith("--output=")))
+                    backend = next(arg.removeprefix("--physics-backend=") for arg in command if arg.startswith("--physics-backend="))
+                    report = mac_release_report(backend, reference, native)
+                    report["aircraft_id"] = "stik-electric-6s"
+                    report["battery"] = {"mode": "pack", "data_path": "res://data/aircraft/battery/stik_electric_6s_pack.json",
+                                         "data_sha256": report["aircraft_sha256"], "dynamic": True, "pack": True}
+                    output.write_text(json.dumps(report))
+                    kwargs["stdout"].write("NATIVE_QUALIFICATION mode=session verdict=pass\n")
+                def wait(self, timeout): return 0
+            output = root / "campaign"
+            args = ["--godot", str(executable), "--out", str(output), "--release-executable", "--compare-backends",
+                    "--experimental-native-macos", "--aircraft", "stik-electric-6s", "--battery", "pack", "--case", "trim",
+                    "--warmup-ticks", "4", "--sample-ticks", "5", "--repeats", "1"]
+            with patch.object(baseline, "capture_workspace_identity", return_value={}), \
+                 patch.object(baseline, "capture_system_identity", return_value={"system": "Darwin", "machine": "arm64"}), \
+                 patch.object(baseline, "capture_mac_release_source", return_value=mac_release_source_fixture(reference)), \
+                 patch.object(baseline, "inspect_godot", return_value=engine), \
+                 patch.object(baseline, "native_source_digest", return_value="c" * 64), \
+                 patch.object(baseline, "app_source_digest", return_value="app-digest"), \
+                 patch.object(MAC_RECEIPT, "verify", return_value=reference), \
+                 patch.object(MAC_RECEIPT, "verify_native", return_value=native), patch("subprocess.Popen", Process):
+                self.assertEqual(baseline.main(args), 0)
+                campaign_path = output / "session_baseline.json"
+                campaign, _rows = baseline._campaign_runs(campaign_path)
+                self.assertTrue(all("--battery=pack" in command for command in commands))
+                campaign["pairs"][0]["runs"]["native"]["command"].remove("--battery=pack")
+                campaign_path.write_text(json.dumps(campaign))
+                with self.assertRaisesRegex(ValueError, "invalid Mac release probe command"):
+                    baseline._campaign_runs(campaign_path)
+
+    def test_comparison_command_does_not_ignore_battery_mode(self):
+        with tempfile.TemporaryDirectory(prefix="session-battery-compare-") as directory:
+            with patch.object(baseline, "compare_campaigns") as compare:
+                self.assertEqual(baseline.main(["--compare-campaigns", "one.json", "two.json", "--battery", "pack",
+                                                "--out", str(Path(directory) / "out")]), 1)
+                compare.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

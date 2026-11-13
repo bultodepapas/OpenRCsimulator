@@ -1268,6 +1268,53 @@ class MacosExperimentalCampaignTests(unittest.TestCase):
             self.assertIn("host-specific", result["rows"][1]["reason"])
             self.assertEqual(result["rows"][0]["shard_verdict"], "pass")
 
+    def test_production_trim_profile_requires_its_own_report_and_checked_command(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            manifest, reports, paths, guard = macos_fixture(Path(temporary))
+            report = reports["fixed"]
+            guard["trim_profile"] = "production"
+            result = self.aggregate(manifest, reports, paths, guard)
+            self.assertEqual(result["verified_flight_rows"], 0)  # Legacy source10 cannot count.
+            report["fleet_scope"]["trim_profile"] = "production"
+            result = self.aggregate(manifest, reports, paths, guard)
+            self.assertEqual(result["verified_flight_rows"], 0)  # The command is independently required.
+            checked = report["checked_run"]
+            checked["command"].append("--trim-profile=production")
+            Path(checked["report"]).write_text(json.dumps(checked))
+            self.assertEqual(self.aggregate(manifest, reports, paths, guard)["verified_flight_rows"], 0)
+            report["fleet"][0]["reference"]["start_sha256"] = "c" * 64
+            report["fleet"][0]["native"]["start_sha256"] = "c" * 64
+            result = self.aggregate(manifest, reports, paths, guard)
+            self.assertEqual(result["verified_flight_rows"], 1)
+            self.assertEqual(result["rows"][0]["start_sha256"], "c" * 64)
+            guard["trim_profile"] = "reference"
+            self.assertEqual(self.aggregate(manifest, reports, paths, guard)["verified_flight_rows"], 0)
+            guard["trim_profile"] = "production"
+            checked["command"].append("--trim-profile=reference")
+            Path(checked["report"]).write_text(json.dumps(checked))
+            self.assertEqual(self.aggregate(manifest, reports, paths, guard)["verified_flight_rows"], 0)
+
+    def test_production_requires_exact_valid_start_from_both_trials(self):
+        for name, value in (("reference", None), ("native", None), ("native", "d" * 64),
+                            ("reference", "A" * 64), ("native", "a" * 63), ("native", 1)):
+            with self.subTest(backend=name, value=value), tempfile.TemporaryDirectory() as temporary:
+                manifest, reports, paths, guard = macos_fixture(Path(temporary))
+                report = reports["fixed"]
+                guard["trim_profile"] = "production"
+                report["fleet_scope"]["trim_profile"] = "production"
+                checked = report["checked_run"]
+                checked["command"].append("--trim-profile=production")
+                Path(checked["report"]).write_text(json.dumps(checked))
+                for backend in ("reference", "native"):
+                    report["fleet"][0][backend]["start_sha256"] = "c" * 64
+                if value is None:
+                    del report["fleet"][0][name]["start_sha256"]
+                else:
+                    report["fleet"][0][name]["start_sha256"] = value
+                result = self.aggregate(manifest, reports, paths, guard)
+                self.assertEqual(result["verified_flight_rows"], 0)
+                self.assertEqual(result["rows"][0]["status"], "open")
+                self.assertNotIn("start_sha256", result["rows"][0])
     def test_finished_failing_shard_still_proves_its_independent_healthy_flight(self):
         with tempfile.TemporaryDirectory() as temporary:
             manifest, reports, paths, guard = macos_fixture(Path(temporary), failed=True)
@@ -1315,6 +1362,10 @@ class MacosExperimentalCampaignTests(unittest.TestCase):
         reports["fixed"]["fleet_scope"]["filters"]["vehicle"] = "fixed-wing"
         with self.assertRaises(campaign.CampaignError):
             campaign.validate_reports(manifest, reports, guard, 2, 3)
+        reports["fixed"]["fleet_scope"]["filters"]["vehicle"] = ""
+        reports["fixed"]["fleet_scope"]["trim_profile"] = "production"
+        with self.assertRaises(campaign.CampaignError):
+            campaign.validate_reports(manifest, reports, guard, 2, 3)
 
     def test_keep_going_returns_independent_mac_shards_and_failures(self):
         async def scenario():
@@ -1349,6 +1400,11 @@ class MacosExperimentalCampaignTests(unittest.TestCase):
                 for value in ("vehicle=fixed-wing", "aircraft=fixed", context["project"], context["godot"]):
                     self.assertIn(value, captured["command"])
                 self.assertEqual(captured["env"]["OPENRC_NK_TOOL_ROOT"], str(tool))
+                self.assertNotIn("trim-profile=production", captured["command"])
+                context["trim_profile"] = "production"
+                with mock.patch.object(campaign.asyncio, "create_subprocess_exec", side_effect=launch):
+                    await campaign.run_shard("fixed", root, asyncio.Semaphore(1), 2, 3, 5, context)
+                self.assertIn("trim-profile=production", captured["command"])
         asyncio.run(scenario())
 
     def test_campaign_writes_partial_evidence_and_requires_keep_going_for_known_open_rows(self):

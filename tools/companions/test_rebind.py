@@ -5,6 +5,8 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -87,7 +89,7 @@ class Workspace(unittest.TestCase):
             sentinel.write_text("preserve")
             created = []
 
-            def fail_build(workspace, _revision, _directories, _scope="solver"):
+            def fail_build(workspace, _revision, _directories, _scope="solver", _copy_mode="copy"):
                 self.assertEqual(workspace.parent, parent.resolve())
                 self.assertTrue(workspace.is_dir())
                 (workspace / "partial.txt").write_text("partial copy")
@@ -101,6 +103,81 @@ class Workspace(unittest.TestCase):
             self.assertEqual(len(created), 1)
             self.assertFalse(created[0].exists())
             self.assertEqual(sentinel.read_text(), "preserve")
+
+
+class CloneBaseline(unittest.TestCase):
+    def test_clone_requires_the_existing_macos_clonefile_helper(self) -> None:
+        with patch.object(rebind, "_macos_clonefile", side_effect=rebind.PreparationError("requires macOS")):
+            with self.assertRaisesRegex(rebind.SetupError, "requires macOS"):
+                rebind._copy_function("clone")
+
+    def test_clone_error_never_falls_back_to_a_copy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            target = root / "target"
+            source.write_bytes(b"unchanged")
+            def refused(_source, _target):
+                raise OSError("clone unavailable")
+            with patch.object(rebind, "_macos_clonefile", return_value=refused), \
+                    patch.object(rebind.shutil, "copy2") as ordinary_copy:
+                clone_copy = rebind._copy_function("clone")
+                with self.assertRaisesRegex(OSError, "clone unavailable"):
+                    clone_copy(source, target)
+                ordinary_copy.assert_not_called()
+            self.assertFalse(target.exists())
+            self.assertEqual(source.read_bytes(), b"unchanged")
+
+    def test_clone_rejects_hardlinks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, target = root / "source", root / "target"
+            source.write_bytes(b"shared")
+            def fake_clone(first, second):
+                try:
+                    os.link(first, second)
+                except OSError as error:
+                    self.skipTest(f"hardlink fixture unavailable: {error}")
+            with patch.object(rebind, "_macos_clonefile", return_value=fake_clone):
+                with self.assertRaisesRegex(rebind.SetupError, "independent regular file"):
+                    rebind._copy_function("clone")(source, target)
+            self.assertEqual(source.read_bytes(), b"shared")
+
+    def test_full_baseline_streams_real_git_archive_and_retains_source(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            contents = {"app/physics/example.gd": "old solver", "app/main.gd": "old main",
+                        "tools/flight_log/flight_log.py": "old replay",
+                        "tools/release/macos_reference_receipt.py": "old helper"}
+            for name, content in contents.items():
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(content, encoding="utf-8")
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root), "-c", "user.name=Fixture", "-c", "user.email=fixture@example.test",
+                            "-c", "commit.gpgsign=false", "commit", "-qm", "base"], check=True)
+            for name in contents:
+                (root / name).write_text("current " + name, encoding="utf-8")
+            workspace = Path(directory) / "workspace"
+            workspace.mkdir()
+            with patch.object(rebind, "ROOT", root), \
+                    patch.object(rebind, "_macos_clonefile", return_value=lambda src, dst: shutil.copy2(src, dst)):
+                base = rebind.build_baseline(workspace, "HEAD", ["app/physics"], "full", "clone")
+            for name, content in contents.items():
+                self.assertEqual((base / name).read_text(encoding="utf-8"), content)
+                self.assertEqual((root / name).read_text(encoding="utf-8"), "current " + name)
+            self.assertFalse((workspace / "base-solver.tar").exists())
+
+    def test_streamed_archive_failure_is_not_success(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            with patch.object(rebind, "ROOT", root):
+                with self.assertRaisesRegex(rebind.SetupError, "git archive"):
+                    rebind._extract_archive_stream(root, "missing-revision", ["app"])
 
 
 class EngineAndTapeGuards(unittest.TestCase):

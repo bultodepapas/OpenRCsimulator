@@ -13,6 +13,12 @@ const FlightLog := preload("res://sim/flight_log.gd")
 var _session: Node
 var _case := "trim"
 var _aircraft := Catalog.DEFAULT_ID
+var _battery_mode := "ideal"
+var _battery_explicit := false
+var _aircraft_data := ""
+var _aircraft_data_sha256 := ""
+var _battery_dynamic := false
+var _battery_pack := false
 var _output := ""
 var _warmup := 2400
 var _samples := 14400
@@ -62,6 +68,10 @@ func _parse() -> bool:
 				if pair[1] != "session": return _fail("native-qualification must select session")
 			"output": _output = pair[1]
 			"aircraft": _aircraft = pair[1]
+			"battery":
+				if pair[1] not in ["ideal", "pack"]: return _fail("battery must be ideal or pack")
+				_battery_mode = pair[1]
+				_battery_explicit = true
 			"case": _case = pair[1]
 			"physics-backend":
 				if pair[1] not in ["gdscript_reference", "native"]:
@@ -87,6 +97,15 @@ func _parse() -> bool:
 	var entry: Dictionary = Catalog.entry(_aircraft)
 	if entry.is_empty() or not Catalog.can_fly(_aircraft) or Catalog.is_rotorcraft(_aircraft):
 		return _fail("expected a flyable fixed-wing catalog aircraft")
+	if _battery_explicit:
+		if not Catalog.has_battery_mode(_aircraft, _battery_mode):
+			return _fail("unsupported battery mode for selected aircraft")
+		_aircraft_data = Catalog.data_for(_aircraft, _battery_mode)
+		_aircraft_data_sha256 = FileAccess.get_sha256(_aircraft_data)
+		if _aircraft_data_sha256.length() != 64:
+			return _fail("selected aircraft data identity is unavailable")
+	else:
+		_aircraft_data = str(entry.data)
 	if _case == "runway" and not Session.runway_aircraft_supported(_aircraft):
 		return _fail("aircraft does not support runway start")
 	return true
@@ -116,9 +135,15 @@ func _prepare() -> bool:
 	_session.soft_hull_contacts = true
 	_session.read_raw = Callable(self, "_read_raw")
 	started = Time.get_ticks_usec()
-	_session.setup(str(Catalog.entry(_aircraft).data), _aircraft)
+	_session.setup(_aircraft_data, _aircraft)
 	_setup_usec.aircraft_setup = Time.get_ticks_usec() - started
 	if not _session.is_flyable(): return _fail("aircraft setup: " + str(_session.pause_reason))
+	if _battery_explicit:
+		_battery_dynamic = _session.battery_is_dynamic()
+		_battery_pack = _session.battery_is_pack()
+		if str(_session.aircraft.get("input_identity", {}).get("sha256", "")) != _aircraft_data_sha256 \
+				or _battery_pack != (_battery_mode == "pack") or (_battery_pack and not _battery_dynamic):
+			return _fail("selected aircraft data or battery mode differs from the installed session")
 	started = Time.get_ticks_usec()
 	if not _session.set_field(field.field): return _fail("ground surface setup failed")
 	if not _session.set_collision_world(_world): return _fail("collision installation failed")
@@ -229,6 +254,11 @@ func _run() -> void:
 				_sample_done += 1
 				_hash_tick(digest)
 			elapsed = Time.get_ticks_usec() - started
+	if _battery_explicit and _failure.is_empty():
+		if FileAccess.get_sha256(_aircraft_data) != _aircraft_data_sha256 \
+				or str(_session.aircraft.get("input_identity", {}).get("sha256", "")) != _aircraft_data_sha256 \
+				or _session.battery_is_dynamic() != _battery_dynamic or _session.battery_is_pack() != _battery_pack:
+			_fail("selected aircraft data or battery mode changed during the probe")
 	var log_script: Script = FlightLog
 	var accepts_backend := false
 	for method: Dictionary in log_script.get_script_method_list():
@@ -269,6 +299,9 @@ func _run() -> void:
 		tick_hz = Engine.physics_ticks_per_second,
 		scope = "CPU only: deterministic raw-input seam, FlightSession._physics_process then Simulation._physics_process including collision and accepted-step callbacks. Detached session, no render/audio/OS input/scheduler. Durations are simulated ticks, not wall-clock warmup/sample. Hashing, backend and native counter checks run outside per-tick timing and can perturb later ticks; the sample loop wall time includes them. Fingerprint covers types, shapes and numeric simulation arrays at the initial boundary and every warmup and sample tick, not all Session/event/checkpoint state. No Gate P or native frame qualification claim.",
 	}
+	if _battery_explicit:
+		report["battery"] = {mode = _battery_mode, data_path = _aircraft_data, data_sha256 = _aircraft_data_sha256,
+			dynamic = _battery_dynamic, pack = _battery_pack}
 	var file := FileAccess.open(_output, FileAccess.WRITE)
 	if file == null:
 		_failure = "cannot open output: " + str(FileAccess.get_open_error())

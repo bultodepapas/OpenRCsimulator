@@ -39,6 +39,8 @@ MAX_LOG_BYTES = 64 * 1024 * 1024
 SUMMARY_FORMAT = "openrc-native-frame-summary v1"
 BENCHMARK_ROUTE = "benchmark-input-circuit"
 BENCHMARK_HEALTH_FORMAT = "openrc-benchmark-health v1"
+BENCHMARK_BACKEND_HEALTH_FORMAT = "openrc-benchmark-health v2"
+BENCHMARK_BACKEND_PROOF_FORMAT = "openrc-sustained-backend-proof v1"
 BENCHMARK_DIMENSION_SCOPE = "per_frame_viewport_estimate_v1"
 MAX_BENCHMARK_HEALTH_BYTES = 4 * 1024 * 1024
 MAX_BENCHMARK_CHECK_BYTES = 1024 * 1024
@@ -900,6 +902,111 @@ def _hydrate_stream_report(report: dict[str, Any], report_path: Path, *, include
                       "write_max_usec": stream["write_max_usec"], "write_timing_scope": stream["write_timing_scope"]}
 
 
+def _backend_proof_reasons(receipt: dict[str, Any], report: dict[str, Any], sources: Any) -> list[str]:
+    """Check the explicitly selected Mac source path without changing the v1 contract."""
+    errors: list[str] = []
+    proof = receipt.get("backend_proof")
+    scenario = receipt.get("scenario")
+    observation = receipt.get("observation")
+    if not isinstance(proof, dict) or not isinstance(scenario, dict) or not isinstance(observation, dict):
+        return ["backend proof, scenario or observation is missing"]
+    requested = proof.get("requested")
+    identity = proof.get("identity")
+    stage = scenario.get("stage_backend")
+    install = proof.get("installation_before")
+    if (proof.get("format") != BENCHMARK_BACKEND_PROOF_FORMAT
+            or requested not in ("gdscript_reference", "native")
+            or proof.get("experimental_native_macos") is not True or proof.get("backend_unchanged") is not True
+            or report.get("os") != "macOS" or report.get("architecture") != "arm64"
+            or scenario.get("state_input_hashing") is not True or not isinstance(stage, dict)
+            or stage.get("requested") != requested or stage.get("reason") != "" or stage.get("identity") != identity):
+        errors.append("backend proof does not identify the explicit unchanged Mac ARM64 source backend")
+    if (not _is_number(scenario.get("selected_trim_throttle"))
+            or scenario["selected_trim_throttle"] != 0.5):
+        errors.append("backend proof does not identify the selected 0.5 trim throttle")
+    reference_speed = scenario.get("solved_start_reference_speed_m_s")
+    maximum_speed = scenario.get("solved_start_max_speed_m_s")
+    solved_speed = scenario.get("trim_speed_m_s")
+    solved_throttle = scenario.get("trim_throttle")
+    solved_digest = scenario.get("solved_start_sha256")
+    if (not _is_number(scenario.get("solved_start_requested_throttle"))
+            or scenario["solved_start_requested_throttle"] != 0.5
+            or not _is_number(reference_speed) or reference_speed <= 0.0
+            or not _is_number(maximum_speed) or maximum_speed != min(80.0, 2.5 * reference_speed)
+            or not _is_number(solved_speed) or not reference_speed <= solved_speed <= maximum_speed
+            or not _is_number(solved_throttle) or abs(solved_throttle - 0.5) > 1.0e-8
+            or not isinstance(solved_digest, str) or re.fullmatch(r"[0-9a-f]{64}", solved_digest) is None):
+        errors.append("backend proof lacks a bounded solved 0.5-throttle start identity")
+    if requested in ("gdscript_reference", "native") and proof.get("backend_domain_guard") is not (requested == "native"):
+        errors.append("backend proof does not identify the expected Mac domain guard at seal")
+    initial = proof.get("initial_simulation_checkpoint_sha256")
+    if (not isinstance(initial, str) or re.fullmatch(r"[0-9a-f]{64}", initial) is None
+            or scenario.get("initial_simulation_checkpoint_sha256") != initial):
+        errors.append("backend proof lacks the initial simulation checkpoint identity")
+    if not isinstance(install, dict) or install != proof.get("installation_after") or install.get("ok") is not True:
+        errors.append("backend proof installation changed or is missing")
+        install = {}
+    native_identity = install.get("identity")
+    digests = ("receipt_sha256", "descriptor_sha256", "engine_sha256", "native_source_sha256")
+    if (any(not isinstance(install.get(key), str) or re.fullmatch(r"[0-9a-f]{64}", install[key]) is None
+            for key in digests) or not isinstance(native_identity, dict)
+            or native_identity.get("backend") != "native"
+            or native_identity.get("backend_version") != "openrc-native-kernel-stage-v2"
+            or type(native_identity.get("abi_version")) is not int or native_identity["abi_version"] != 2
+            or any(not isinstance(native_identity.get(key), str) or re.fullmatch(r"[0-9a-f]{64}", native_identity[key]) is None
+                   for key in ("binary_sha256", "source_sha256", "lock_sha256"))):
+        errors.append("backend proof installed native identity is malformed")
+        native_identity = {}
+    if (not isinstance(sources, dict) or sources.get("res://native/kernel/build-receipt-macos.json") != install.get("receipt_sha256")
+            or sources.get("res://native/kernel/openrc_native_kernel_macos.gdextension") != install.get("descriptor_sha256")
+            or sources.get("res://native/kernel/libopenrc_native_kernel.dylib") != native_identity.get("binary_sha256")
+            or install.get("native_source_sha256") != native_identity.get("source_sha256")):
+        errors.append("backend proof installation differs from the retained source inventory")
+    if ((requested == "native" and identity != native_identity)
+            or (requested == "gdscript_reference" and identity != {"backend": "gdscript_reference"})):
+        errors.append("backend proof identity differs from the requested installed backend")
+    end_tick = observation.get("end_tick")
+    identity_checks, coverage_checks = proof.get("identity_checks"), proof.get("native_coverage_checks")
+    context_calls, stage_calls = proof.get("native_context_calls"), proof.get("native_stage_calls")
+    if (not _is_int(end_tick) or end_tick < 1 or not _is_int(identity_checks) or identity_checks != end_tick
+            or not _is_int(coverage_checks) or not _is_int(context_calls) or not _is_int(stage_calls)
+            or proof.get("native_internal_timing") is not False):
+        errors.append("backend proof does not observe every accepted tick")
+        return errors
+    points = receipt.get("checkpoints")
+    if (not isinstance(points, list) or requested not in ("gdscript_reference", "native")
+            or any(not isinstance(point, dict) or point.get("backend_domain_guard") is not (requested == "native")
+                   for point in points)):
+        errors.append("backend checkpoint does not identify the expected Mac domain guard")
+    if requested == "native":
+        if coverage_checks != end_tick or context_calls < end_tick or stage_calls < 4 * end_tick or not isinstance(points, list):
+            errors.append("native context and stage coverage does not span every accepted tick")
+        else:
+            total_context = total_stage = total_checked = 0
+            for point in points:
+                if not isinstance(point, dict) or not _is_int(point.get("start_tick")) or not _is_int(point.get("end_tick")):
+                    errors.append("native window coverage is malformed")
+                    break
+                ticks = point["end_tick"] - point["start_tick"] + 1
+                checked, context, stages = (point.get("native_checked_ticks"), point.get("native_context_calls"),
+                                             point.get("native_stage_calls"))
+                if (ticks < 1 or not _is_int(checked) or checked != ticks or not _is_int(context) or context < ticks
+                        or not _is_int(stages) or stages < 4 * ticks):
+                    errors.append("native window lacks complete context or stage coverage")
+                    break
+                total_context += context
+                total_stage += stages
+                total_checked += checked
+            else:
+                if (total_context, total_stage, total_checked) != (context_calls, stage_calls, coverage_checks):
+                    errors.append("native window coverage does not match its total counters")
+    elif (coverage_checks != 0 or context_calls != 0 or stage_calls != 0
+          or not isinstance(points, list) or any(not isinstance(point, dict) or any(
+              key in point for key in ("native_checked_ticks", "native_context_calls", "native_stage_calls")) for point in points)):
+        errors.append("reference backend proof claims native coverage")
+    return errors
+
+
 def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict[str, Any],
                      stream: dict[str, Any] | None) -> dict[str, Any]:
     """Validate the separate, bounded circuit observer receipt for this frame stream.
@@ -934,7 +1041,8 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
                 pending.extend(item.values())
             elif isinstance(item, list):
                 pending.extend(item)
-        if receipt.get("format") != BENCHMARK_HEALTH_FORMAT or receipt.get("route") != BENCHMARK_ROUTE:
+        backend_proof = receipt.get("format") == BENCHMARK_BACKEND_HEALTH_FORMAT
+        if receipt.get("format") not in (BENCHMARK_HEALTH_FORMAT, BENCHMARK_BACKEND_HEALTH_FORMAT) or receipt.get("route") != BENCHMARK_ROUTE:
             reasons.append("health format or route is incorrect")
         for key in ("complete", "timing_complete", "frame_collection_complete", "timing_eligible", "source_unchanged",
                     "frame_capture_id_matches"):
@@ -1009,7 +1117,7 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
                 or scenario.get("field_id") != "default" or scenario.get("seed") != 20261021
                 or type(scenario.get("seed")) is not int or scenario.get("start_choice") != "airborne"
                 or not _is_number(scenario.get("trim_speed_m_s"))
-                or scenario.get("trim_speed_m_s") != 15.0 or scenario.get("rate_profile") != "full"
+                or (not backend_proof and scenario.get("trim_speed_m_s") != 15.0) or scenario.get("rate_profile") != "full"
                 or not _is_number(scenario.get("trim_throttle")) or not 0 <= scenario.get("trim_throttle", -1) <= 1
                 or type(scenario.get("physics_hz")) is not int or scenario.get("physics_hz") != 240
                 or type(scenario.get("control_update_ticks")) is not int or scenario.get("control_update_ticks") != 4
@@ -1040,9 +1148,11 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
             reasons.append("health scenario does not identify calm weather")
         stage = scenario.get("stage_backend")
         stage_identity = stage.get("identity") if isinstance(stage, dict) else None
-        if (not isinstance(stage, dict) or stage.get("requested") != "gdscript_reference"
-                or stage.get("reason") != "" or not isinstance(stage_identity, dict)
-                or stage_identity.get("backend") != "gdscript_reference"):
+        if backend_proof:
+            reasons.extend(_backend_proof_reasons(receipt, report, sources))
+        elif (not isinstance(stage, dict) or stage.get("requested") != "gdscript_reference"
+              or stage.get("reason") != "" or not isinstance(stage_identity, dict)
+              or stage_identity.get("backend") != "gdscript_reference"):
             reasons.append("health scenario does not identify the reference physics backend")
         solver = scenario.get("solver_identity")
         checkpoint = scenario.get("initial_checkpoint_sha256")
@@ -1091,7 +1201,8 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
             reasons.append("health observation does not bracket the full frame capture ticks")
 
         violations = receipt.get("violations")
-        if (not isinstance(violations, dict) or set(violations) != BENCHMARK_VIOLATIONS
+        expected_violations = BENCHMARK_VIOLATIONS | ({"backend"} if backend_proof else set())
+        if (not isinstance(violations, dict) or set(violations) != expected_violations
                 or any(not _is_int(value) or value != 0 for value in violations.values())):
             reasons.append("health violation counters must all be present and zero")
         endpoint = report.get("session_at_report")
@@ -1158,7 +1269,7 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
                 if samples[0]["tick"] != start_tick or samples[-1]["tick"] != end_tick:
                     reasons.append("health diagnostic samples do not cover observation endpoints")
 
-    return {
+    result = {
         "receipt": path.name,
         "receipt_sha256": _sha256_bytes(receipt_bytes) if receipt_bytes is not None else None,
         "eligible": not reasons,
@@ -1179,6 +1290,21 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
             if isinstance(receipt, dict) and not reasons else None),
         "scope": "technical benchmark circuit; not normal product-route, package or pilot acceptance",
     }
+    if isinstance(receipt, dict) and receipt.get("format") == BENCHMARK_BACKEND_HEALTH_FORMAT:
+        result["format"] = BENCHMARK_BACKEND_HEALTH_FORMAT
+        result["checkpoints"] = receipt.get("checkpoints") if not reasons else None
+        measured = report.get("measured_simulation")
+        result["measured_ticks"] = ({"start": measured.get("start_tick"), "end": measured.get("end_tick")}
+                                    if isinstance(measured, dict) and not reasons else None)
+        if result["scenario"] is not None:
+            proof = receipt["backend_proof"]
+            result["scenario"]["initial_simulation_checkpoint_sha256"] = scenario["initial_simulation_checkpoint_sha256"]
+            for key in ("selected_trim_throttle", "solved_start_requested_throttle", "solved_start_reference_speed_m_s",
+                        "solved_start_max_speed_m_s", "solved_start_sha256"):
+                result["scenario"][key] = scenario[key]
+            result["scenario"]["backend_proof"] = {key: proof[key] for key in
+                ("format", "requested", "experimental_native_macos", "installation_before", "backend_domain_guard")}
+    return result
 
 
 def _cloud_observations_valid(scenario: dict[str, Any]) -> bool:
@@ -1427,7 +1553,20 @@ def _benchmark_arguments_match(user: list[str], scenario: dict[str, Any], report
         return False
     requested, user_order = parsed_user
     effective, scene_order = parsed_scene
+    proof = scenario.get("backend_proof")
+    if proof is not None:
+        if (not isinstance(proof, dict) or proof.get("format") != BENCHMARK_BACKEND_PROOF_FORMAT
+                or proof.get("requested") not in ("gdscript_reference", "native")
+                or requested.get("sustained-backend") != proof.get("requested")
+                or requested.get("experimental-native-macos") != "true"
+                or effective.get("experimental-native-macos") != "true"
+                or (proof.get("requested") == "native" and "physics-backend" in requested)):
+            return False
+    elif "sustained-backend" in requested:
+        return False
     for key, expected in BENCHMARK_FORCED_OPTIONS.items():
+        if key == "physics-backend" and isinstance(proof, dict):
+            expected = proof["requested"]
         if effective.get(key) != expected or (key in requested and requested[key] != expected):
             return False
     if (any(key in requested for key in BENCHMARK_REJECTED_OPTIONS | {"sustained-diagnostic-ticks"})
@@ -1454,6 +1593,8 @@ def _benchmark_arguments_match(user: list[str], scenario: dict[str, Any], report
                 or not _close(actual, float(report[report_key]), tolerance=1e-9)):
             return False
     ignore = BENCHMARK_INTERNAL_OPTIONS | BENCHMARK_FORCED_OPTIONS.keys()
+    if isinstance(proof, dict):
+        ignore = ignore | {"sustained-backend"}
     return ([raw for key, raw in user_order if key not in ignore]
             == [raw for key, raw in scene_order if key not in ignore])
 
@@ -1921,9 +2062,116 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
     return summary, exit_code
 
 
+def _checked_evidence_unchanged(path: Path, run: dict[str, Any]) -> bool:
+    health, checked, stream = run.get("benchmark_health"), run.get("benchmark_checked_runner"), run.get("stream")
+    if not all(isinstance(item, dict) for item in (health, checked, stream)):
+        return False
+    stream_name = stream.get("file")
+    if not isinstance(stream_name, str) or not stream_name or Path(stream_name).name != stream_name:
+        return False
+    files = ((path, run.get("report_sha256")), (path.with_suffix(".log"), run.get("log_sha256")),
+             (path.with_name("health-" + path.name), health.get("receipt_sha256")),
+             (path.with_name("checked-" + path.name), checked.get("receipt_sha256")),
+             (path.with_name(stream_name), stream.get("sha256")))
+    for file, expected in files:
+        if file.is_symlink() or not file.is_file() or not isinstance(expected, str):
+            return False
+        digest = hashlib.sha256()
+        try:
+            with file.open("rb") as data:
+                for chunk in iter(lambda: data.read(1024 * 1024), b""):
+                    digest.update(chunk)
+        except OSError:
+            return False
+        if digest.hexdigest() != expected:
+            return False
+    return True
+
+
+def compare_circuit(reference_path: Path, native_path: Path, output_file: Path, policy: dict[str, Any],
+                    *, require_1080p: bool = False) -> tuple[dict[str, Any], int]:
+    """Match checked source runs and full accepted-state windows; do not infer a speedup."""
+    reference_path, native_path, output_file = reference_path.resolve(), native_path.resolve(), output_file.resolve()
+    if reference_path == native_path or output_file in (reference_path, native_path) or output_file.exists():
+        raise ValueError("comparison requires distinct input reports and a new output file")
+    reference, native = summarize_run(reference_path, policy), summarize_run(native_path, policy)
+    reasons: list[str] = []
+    matched_windows: list[dict[str, Any]] = []
+    for label, run in (("reference", reference), ("native", native)):
+        if (run.get("collection_valid") is not True or run.get("active_flight_qualifier") is not True
+                or not isinstance(run.get("duration_eligibility"), dict) or run["duration_eligibility"].get("eligible") is not True
+                or not isinstance(run.get("rendering_eligibility"), dict) or run["rendering_eligibility"].get("eligible") is not True
+                or (require_1080p and run.get("primary_1080p", {}).get("eligible") is not True)):
+            reasons.append(f"{label} run lacks checked active rendered-flight or requested duration evidence")
+        health = run.get("benchmark_health")
+        if not isinstance(health, dict) or health.get("eligible") is not True \
+                or health.get("format") != BENCHMARK_BACKEND_HEALTH_FORMAT:
+            reasons.append(f"{label} run lacks an eligible v2 backend proof")
+        if not _checked_evidence_unchanged(reference_path if label == "reference" else native_path, run):
+            reasons.append(f"{label} retained evidence changed or is unavailable")
+    if reference.get("capture_id") == native.get("capture_id"):
+        reasons.append("comparison requires distinct capture IDs")
+    if reference.get("measurement_identity") != native.get("measurement_identity"):
+        reasons.append("frame measurement identities differ")
+    ref_health, nat_health = reference.get("benchmark_health"), native.get("benchmark_health")
+    if isinstance(ref_health, dict) and isinstance(nat_health, dict) and ref_health.get("eligible") and nat_health.get("eligible"):
+        if ref_health.get("source_identity_sha256") != nat_health.get("source_identity_sha256"):
+            reasons.append("application and fixture source inventories differ")
+        ref_scenario, nat_scenario = ref_health.get("scenario"), nat_health.get("scenario")
+        if not isinstance(ref_scenario, dict) or not isinstance(nat_scenario, dict):
+            reasons.append("backend scenarios are missing")
+        else:
+            ref_proof, nat_proof = ref_scenario.get("backend_proof"), nat_scenario.get("backend_proof")
+            if (not isinstance(ref_proof, dict) or not isinstance(nat_proof, dict)
+                    or ref_proof.get("requested") != "gdscript_reference" or nat_proof.get("requested") != "native"
+                    or ref_proof.get("installation_before") != nat_proof.get("installation_before")):
+                reasons.append("reference/native roles or installed binary identities differ")
+            def comparable_scenario(scenario: dict[str, Any]) -> dict[str, Any]:
+                excluded = {"stage_backend", "backend_proof", "initial_checkpoint_sha256", "checkpoint_configuration", "arguments"}
+                normalized = {key: value for key, value in scenario.items() if key not in excluded}
+                normalized["arguments"] = [arg for arg in scenario.get("arguments", [])
+                                           if not arg.startswith("--physics-backend=")]
+                return normalized
+            if comparable_scenario(ref_scenario) != comparable_scenario(nat_scenario):
+                reasons.append("backend-independent scenario or initial simulation identities differ")
+        ref_ticks, nat_ticks = ref_health.get("measured_ticks"), nat_health.get("measured_ticks")
+        ref_points, nat_points = ref_health.get("checkpoints"), nat_health.get("checkpoints")
+        if not isinstance(ref_ticks, dict) or not isinstance(nat_ticks, dict) or not isinstance(ref_points, list) or not isinstance(nat_points, list):
+            reasons.append("measured tick windows are unavailable")
+        else:
+            lower, upper = max(ref_ticks["start"], nat_ticks["start"]), min(ref_ticks["end"], nat_ticks["end"])
+            native_windows = {(point["start_tick"], point["end_tick"]): point for point in nat_points
+                              if point["end_tick"] - point["start_tick"] + 1 == 6000}
+            for point in ref_points:
+                key = (point["start_tick"], point["end_tick"])
+                if key[1] - key[0] + 1 != 6000 or key[0] < lower or key[1] > upper:
+                    continue
+                other = native_windows.get(key)
+                if other is None or other.get("sha256") != point.get("sha256"):
+                    reasons.append(f"accepted state/input window {key[0]}..{key[1]} differs or is missing")
+                else:
+                    matched_windows.append({"start_tick": key[0], "end_tick": key[1], "sha256": point["sha256"],
+                                            "native_context_calls": other["native_context_calls"],
+                                            "native_stage_calls": other["native_stage_calls"]})
+            if not matched_windows:
+                reasons.append("no full 6000-tick state/input window lies in both measured intervals")
+    if not _checked_evidence_unchanged(reference_path, reference) or not _checked_evidence_unchanged(native_path, native):
+        reasons.append("retained evidence changed while comparing")
+    result = {"format": "openrc-sustained-backend-comparison v1", "complete": not reasons,
+              "reference": reference, "native": native, "matched_windows": matched_windows if not reasons else [],
+              "reasons": reasons,
+              "scope": "Matched technical circuit windows on the recorded source host; no speedup, pilot, hardware or package acceptance is asserted."}
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    _write_json(output_file, result)
+    return result, 0 if not reasons else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, required=True, help="directory containing run-*.json and same-stem logs")
+    inputs = parser.add_mutually_exclusive_group(required=True)
+    inputs.add_argument("--input", type=Path, help="directory containing run-*.json and same-stem logs")
+    inputs.add_argument("--compare-circuit", type=Path, nargs=2, metavar=("REFERENCE", "NATIVE"),
+                        help="match checked v2 source circuit reports and accepted state/input windows")
     parser.add_argument("--out", type=Path, required=True, help="new summary JSON path")
     parser.add_argument("--require-1080p", action="store_true",
                         help="also require a 1920x1080 window/render-target estimate and identified installed worlds")
@@ -1962,6 +2210,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     if policy["simulation_wall_ratio_min"] <= 0 or policy["simulation_wall_ratio_max"] < policy["simulation_wall_ratio_min"]:
         parser.error("simulation wall ratio limits must satisfy 0 < minimum <= maximum")
     try:
+        if args.compare_circuit:
+            result, status = compare_circuit(*args.compare_circuit, args.out, policy, require_1080p=args.require_1080p)
+            print(f"sustained backend comparison: {'matched' if result['complete'] else 'refused'}; report {args.out.resolve()}")
+            return status
         summary, status = summarize_directory(args.input, args.out, policy, require_1080p=args.require_1080p)
     except (OSError, ValueError) as error:
         print(f"native frame summary: {error}", file=sys.stderr)
