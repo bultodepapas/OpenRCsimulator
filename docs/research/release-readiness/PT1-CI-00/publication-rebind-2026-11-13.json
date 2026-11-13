@@ -1,0 +1,185 @@
+{
+  "baseline_commit": "676be5351357c981d6500b17569aa38615a0c8cb",
+  "candidate_commit": "05e01598d2261cea86af3e2ec6024c88ed7530d1",
+  "candidate_fixture_sha256": "2bd4b25090a2681a79ad9f6c3f5902af60bc289c0c14fcb33cfc3781ede49818",
+  "capture_manifests_sha256": {
+    "linux": "ad2f435badabd9e738ec01d04413dc36c4f560e1ef46cd8bf179921f47fd9078",
+    "windows": "0bc5841ffba10ddb5c1127c7ea6bc81aa6e53a1d41cdab71b4b07aa45a1f9265"
+  },
+  "captures": {
+    "linux-baseline-shaft": {
+      "capture": "linux/baseline-shaft.json",
+      "capture_id": "f847be88-f6b0-45c0-a761-78fe911c6393",
+      "capture_sha256": "8fd77590d5ac162777f305530cfe0390fd51187c515f26304bdd0c28f7943456",
+      "checked_report_sha256": "81400652aa55c83489b74b23c1512c6644f3c40b30d7a704820e08b8fa929f97",
+      "composition": {
+        "base_commit": "676be5351357c981d6500b17569aa38615a0c8cb",
+        "kind": "baseline-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "engine_log_sha256": "b2118a6cfdf8583e0ce538e235539e05549b209493d80c1743133e2cf24f4bf8",
+      "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "log": "linux/baseline-shaft-checked/baseline-shaft-p3kllpee/engine.log",
+      "project_path": "/home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/publication-rebind/linux/baseline/app",
+      "report": "linux/baseline-shaft-checked/baseline-shaft-p3kllpee/report.json",
+      "source_inventory_sha256": "7f3d1ebb6f8b8884435d9c00db872e54b01d0ecee2a85b00b418f62def95ea0d"
+    },
+    "linux-baseline-weather": {
+      "capture": "linux/baseline-weather.json",
+      "capture_id": "18b1d2f4-4f2c-45c1-a62e-474f7ee1c9ac",
+      "capture_sha256": "bdf1ca4517ab62bbedef15f9c577d7ee33e6550244ea92718199f8532c9a28ac",
+      "checked_report_sha256": "b6164a7b599d1946baddfa838b281280935fc8ba2714060eda0961c92d771e6e",
+      "composition": {
+        "base_commit": "676be5351357c981d6500b17569aa38615a0c8cb",
+        "kind": "baseline-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "engine_log_sha256": "6d0280fda6a025878faaf2bc0f499555ddd2982cb346cb528fc911f3ecc6d09a",
+      "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "log": "linux/baseline-weather-checked/baseline-weather-x5a63l45/engine.log",
+      "project_path": "/home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/publication-rebind/linux/baseline/app",
+      "report": "linux/baseline-weather-checked/baseline-weather-x5a63l45/report.json",
+      "source_inventory_sha256": "7f3d1ebb6f8b8884435d9c00db872e54b01d0ecee2a85b00b418f62def95ea0d"
+    },
+    "linux-candidate-shaft": {
+      "capture": "linux/candidate-shaft.json",
+      "capture_id": "84427708-a7fc-4c6b-a3ba-6f71d6a10717",
+      "capture_sha256": "8fd77590d5ac162777f305530cfe0390fd51187c515f26304bdd0c28f7943456",
+      "checked_report_sha256": "8a5c03a0d23388b2c7f5c13301aa6975eba5ef7ddd28ea0a9e73d53547c25544",
+      "composition": {
+        "base_commit": "05e01598d2261cea86af3e2ec6024c88ed7530d1",
+        "kind": "candidate-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "engine_log_sha256": "b2118a6cfdf8583e0ce538e235539e05549b209493d80c1743133e2cf24f4bf8",
+      "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "log": "linux/candidate-shaft-checked/candidate-shaft-udba3xef/engine.log",
+      "project_path": "/home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/publication-rebind/linux/candidate/app",
+      "report": "linux/candidate-shaft-checked/candidate-shaft-udba3xef/report.json",
+      "source_inventory_sha256": "b3c12f149d98f9bbadd52bed641253d5a633b935352e9a979051930201b79e52"
+    },
+    "linux-candidate-weather": {
+      "capture": "linux/candidate-weather.json",
+      "capture_id": "b1c6e469-3306-467f-b777-07ca43a81671",
+      "capture_sha256": "bdf1ca4517ab62bbedef15f9c577d7ee33e6550244ea92718199f8532c9a28ac",
+      "checked_report_sha256": "fc6c78a18f9a86a56cc71fe7377efb43d0b099b6fc5867f2015c1ee3b5aa53d3",
+      "composition": {
+        "base_commit": "05e01598d2261cea86af3e2ec6024c88ed7530d1",
+        "kind": "candidate-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "engine_log_sha256": "6d0280fda6a025878faaf2bc0f499555ddd2982cb346cb528fc911f3ecc6d09a",
+      "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+      "log": "linux/candidate-weather-checked/candidate-weather-cn7q7d1g/engine.log",
+      "project_path": "/home/runner/work/OpenRCsimulator/OpenRCsimulator/tmp/publication-rebind/linux/candidate/app",
+      "report": "linux/candidate-weather-checked/candidate-weather-cn7q7d1g/report.json",
+      "source_inventory_sha256": "b3c12f149d98f9bbadd52bed641253d5a633b935352e9a979051930201b79e52"
+    },
+    "windows-baseline-shaft": {
+      "capture": "windows/baseline-shaft.json",
+      "capture_id": "eca53b41-918b-440f-b407-7a5c5ee4cc2a",
+      "capture_sha256": "b0b7a8c1962d42b763ece51e7fddcba7a3a06a6c9af941480e0d920930ab4440",
+      "checked_report_sha256": "98dc331082cb008c7ec533ac2f4d274f6acdb4013722dc0a0ad11a72788c7791",
+      "composition": {
+        "base_commit": "676be5351357c981d6500b17569aa38615a0c8cb",
+        "kind": "baseline-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+      "engine_log_sha256": "938bb4668e2fa83282f217612a9462ce1558781ffa11de0b7ab09b9906e10e88",
+      "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "log": "windows/baseline-shaft-checked/baseline-shaft-_lcdx0y0/engine.log",
+      "project_path": "D:\\a\\OpenRCsimulator\\OpenRCsimulator\\tmp\\publication-rebind\\windows\\baseline\\app",
+      "report": "windows/baseline-shaft-checked/baseline-shaft-_lcdx0y0/report.json",
+      "source_inventory_sha256": "7f3d1ebb6f8b8884435d9c00db872e54b01d0ecee2a85b00b418f62def95ea0d"
+    },
+    "windows-baseline-weather": {
+      "capture": "windows/baseline-weather.json",
+      "capture_id": "55c08c78-832f-42f0-bd88-96ce834bc99b",
+      "capture_sha256": "486dde6965fe8f8284dd502d3cde5ca4fe70e90590053cc9102e48b1a3d5bd18",
+      "checked_report_sha256": "af3e4ea6c0b264578afe2505d01c27b8c128585b729250c80557cf537ca17b56",
+      "composition": {
+        "base_commit": "676be5351357c981d6500b17569aa38615a0c8cb",
+        "kind": "baseline-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+      "engine_log_sha256": "61fa42b3851b4d9828e43882faa452ac3ac2e4e9e4cbb9e55af7c3adbf5c1e98",
+      "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "log": "windows/baseline-weather-checked/baseline-weather-ygea0j4p/engine.log",
+      "project_path": "D:\\a\\OpenRCsimulator\\OpenRCsimulator\\tmp\\publication-rebind\\windows\\baseline\\app",
+      "report": "windows/baseline-weather-checked/baseline-weather-ygea0j4p/report.json",
+      "source_inventory_sha256": "7f3d1ebb6f8b8884435d9c00db872e54b01d0ecee2a85b00b418f62def95ea0d"
+    },
+    "windows-candidate-shaft": {
+      "capture": "windows/candidate-shaft.json",
+      "capture_id": "d1838ea5-c91c-4a50-a186-1d6f2c1bfecc",
+      "capture_sha256": "b0b7a8c1962d42b763ece51e7fddcba7a3a06a6c9af941480e0d920930ab4440",
+      "checked_report_sha256": "4653f05d926e58ce3b381735506925debf7f5058e62dcedc40be4d8a585c5ef7",
+      "composition": {
+        "base_commit": "05e01598d2261cea86af3e2ec6024c88ed7530d1",
+        "kind": "candidate-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+      "engine_log_sha256": "938bb4668e2fa83282f217612a9462ce1558781ffa11de0b7ab09b9906e10e88",
+      "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "log": "windows/candidate-shaft-checked/candidate-shaft-babyzqew/engine.log",
+      "project_path": "D:\\a\\OpenRCsimulator\\OpenRCsimulator\\tmp\\publication-rebind\\windows\\candidate\\app",
+      "report": "windows/candidate-shaft-checked/candidate-shaft-babyzqew/report.json",
+      "source_inventory_sha256": "b3c12f149d98f9bbadd52bed641253d5a633b935352e9a979051930201b79e52"
+    },
+    "windows-candidate-weather": {
+      "capture": "windows/candidate-weather.json",
+      "capture_id": "cbd9566a-8e68-40e0-94b4-cc746da2a848",
+      "capture_sha256": "486dde6965fe8f8284dd502d3cde5ca4fe70e90590053cc9102e48b1a3d5bd18",
+      "checked_report_sha256": "dd3e3231e2b2d17764e495037a75d221a5eda9e004c8d3545e7c160abc828ab5",
+      "composition": {
+        "base_commit": "05e01598d2261cea86af3e2ec6024c88ed7530d1",
+        "kind": "candidate-commit-v1",
+        "overlay_commit": null,
+        "overlay_paths": [],
+        "overlay_tree_ids": {}
+      },
+      "engine_executable_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+      "engine_log_sha256": "61fa42b3851b4d9828e43882faa452ac3ac2e4e9e4cbb9e55af7c3adbf5c1e98",
+      "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "log": "windows/candidate-weather-checked/candidate-weather-2dytnhoc/engine.log",
+      "project_path": "D:\\a\\OpenRCsimulator\\OpenRCsimulator\\tmp\\publication-rebind\\windows\\candidate\\app",
+      "report": "windows/candidate-weather-checked/candidate-weather-2dytnhoc/report.json",
+      "source_inventory_sha256": "b3c12f149d98f9bbadd52bed641253d5a633b935352e9a979051930201b79e52"
+    }
+  },
+  "format": "openrc-publication-source-requalification-v1",
+  "preserved": [
+    "families",
+    "reference_commit",
+    "requalification"
+  ],
+  "prior_fixture_sha256": "842bfddfbbdd677114b9e4d9a9c74da5a06961c76c0a6e52a7bf3fb32cf5f86f",
+  "scope": "Collector-verified complete historical app baseline and committed candidate; 25 typed endpoints and event frames per case, not physical or general equivalence.",
+  "source_pin_changes": {
+    "sim/flight_session.gd": {
+      "after": "50913fcc9d66dd6b39099f0bf887996bedd18241ab5ce4413aa9642a6eced76f",
+      "before": "0fd7ec186bc879e4a2a4e711cf698596801a161ab31c53fea7e5da04aab487ef"
+    }
+  }
+}

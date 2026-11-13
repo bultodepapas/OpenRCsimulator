@@ -84,3 +84,27 @@ checks, one failure, no engine errors; the source was restored byte for byte.
 The four imports each reported eight asset-material warnings and no errors.
 The event arrays in these short traces are empty, so this establishes bounded
 software preservation, not event-producing behavior or physical validation.
+
+## 2026-11-13 guarded Mac route source renewal
+
+The [receipt](publication-rebind-2026-11-13.json) binds the closed baseline
+`676be5351357c981d6500b17569aa38615a0c8cb` and capture candidate
+`05e01598d2261cea86af3e2ec6024c88ed7530d1` from
+[CI run 43474335487](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43474335487).
+All eight Windows/Linux shaft/weather captures reproduced their exact retained
+hashes. Full Git app inventories, engine binaries, the 19 source pins, capture
+scripts and checked logs were verified before and after each capture. The
+strict packer passed; no numerical expectation, event tape or tolerance changed.
+Only the Session source pin and overlay, candidate commit and helper fixture
+identity were renewed. The fixture SHA-256 is
+`2bd4b25090a2681a79ad9f6c3f5902af60bc289c0c14fcb33cfc3781ede49818`.
+
+These captures describe commit `05e01598`, before the separately qualified
+companion profile solver-pin renewal. They do not claim a whole-app capture of
+that later metadata change. The complete final app receives separate native
+qualification and CI. An earlier hosted Windows cohort at `4832cdd7` produced
+matching baseline/candidate traces that differed slightly from the retained
+Windows turbulent trace; the strict packer refused it. Its cause remains
+unknown and its values were not admitted. Two physical Windows queue attempts
+failed before producing a runner verdict or Godot capture; neither is numerical
+evidence. The original fixture branches remain unchanged.
