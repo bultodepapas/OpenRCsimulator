@@ -322,6 +322,125 @@ def _scoped_solver_archive(base: Path, rev: str, directories: list[str]) -> None
         _extract_archive_stream(base, tree, [], prefix=path + "/")
 
 
+def _scoped_full_archive(base: Path, rev: str, paths: list[str]) -> None:
+    """Archive selected trees with their historical attributes, not the whole commit."""
+    entries: set[bytes] = set()
+    helper = "tools/release/macos_reference_receipt.py"
+    for path in paths:
+        if path == helper:
+            listing = subprocess.run(["git", "ls-tree", "-z", rev, "--", path], cwd=ROOT,
+                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            records = [item for item in listing.stdout.split(b"\0") if item]
+            if listing.returncode or len(records) != 1:
+                raise SetupError(f"cannot inspect accepted replay helper: {listing.stderr.decode(errors='replace').strip()}")
+            try:
+                metadata, name = records[0].split(b"\t", 1)
+                mode, kind, _oid = metadata.split()
+            except ValueError as error:
+                raise SetupError("malformed accepted replay helper tree entry") from error
+            if name != path.encode() or kind != b"blob" or mode not in (b"100644", b"100755"):
+                raise SetupError("accepted replay helper must be a regular tracked file")
+            entries.add(name)
+            continue
+        if path not in ("app", "tools/flight_log"):
+            raise SetupError(f"unexpected full baseline path: {path}")
+        tree = f"{rev}:{path}"
+        listing = subprocess.run(["git", "ls-tree", "-r", "-t", "-z", tree], cwd=ROOT,
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if listing.returncode:
+            raise SetupError(f"cannot inspect accepted tree {tree}: {listing.stderr.decode(errors='replace').strip()}")
+        entries.add(path.encode())
+        for record in (item for item in listing.stdout.split(b"\0") if item):
+            try:
+                metadata, name = record.split(b"\t", 1)
+                _mode, kind, _oid = metadata.split()
+            except ValueError as error:
+                raise SetupError(f"malformed accepted tree entry in {path}") from error
+            if kind not in (b"blob", b"tree"):
+                raise SetupError(f"unsupported accepted tree entry in {path}: {name!r}")
+            entries.add(path.encode() + b"/" + name)
+
+    # Directory attributes can suppress an entire subtree even when the child
+    # files themselves have no matching attribute.
+    for entry in tuple(entries):
+        parts = entry.split(b"/")
+        entries.update(b"/".join(parts[:end]) for end in range(1, len(parts)))
+    attribute_input = b"\0".join(sorted(entries)) + b"\0"
+    attributes = subprocess.run(["git", "check-attr", f"--source={rev}", "-z", "--stdin",
+                                 "export-ignore", "export-subst"], cwd=ROOT, input=attribute_input,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if attributes.returncode:
+        raise SetupError(f"cannot inspect accepted archive attributes: {attributes.stderr.decode(errors='replace').strip()}")
+    values = attributes.stdout.split(b"\0")
+    if not values or values[-1] != b"" or (len(values) - 1) != len(entries) * 6:
+        raise SetupError("incomplete accepted archive attribute results")
+    for index in range(0, len(values) - 1, 3):
+        name, attribute, value = values[index:index + 3]
+        if value not in (b"unspecified", b"unset"):
+            raise SetupError(f"accepted full baseline has archive-affecting attribute {attribute!r} on {name!r}")
+
+    # Git archive can apply text/eol conversion from ancestor attributes.  A
+    # subtree archive or cat-file would therefore change legacy full-mode bytes.
+    # Construct a tiny temporary tree that retains just the selected entries
+    # and the ancestor .gitattributes needed by the original root archive.
+    def selected(tree: str, names: list[str]) -> dict[bytes, bytes]:
+        result = subprocess.run(["git", "ls-tree", "-z", tree, "--", *names], cwd=ROOT,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode:
+            raise SetupError(f"cannot inspect archive ancestors: {result.stderr.decode(errors='replace').strip()}")
+        found = {}
+        for record in (item for item in result.stdout.split(b"\0") if item):
+            try:
+                _metadata, name = record.split(b"\t", 1)
+            except ValueError as error:
+                raise SetupError("malformed archive ancestor tree") from error
+            if name not in {item.encode() for item in names} or name in found:
+                raise SetupError("unexpected archive ancestor tree entry")
+            found[name] = record
+        return found
+
+    root_entries = selected(rev, [".gitattributes", "app"])
+    tool_entries = selected(f"{rev}:tools", [".gitattributes", "flight_log"])
+    if b"app" not in root_entries or b"flight_log" not in tool_entries:
+        raise SetupError("accepted revision lacks the tracked app or replay tooling")
+    release_entries = selected(f"{rev}:tools/release", [".gitattributes", "macos_reference_receipt.py"]) \
+        if helper in paths else None
+    if release_entries is not None and b"macos_reference_receipt.py" not in release_entries:
+        raise SetupError("accepted replay helper disappeared")
+    object_path = subprocess.run(["git", "rev-parse", "--git-path", "objects"], cwd=ROOT,
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if object_path.returncode:
+        raise SetupError(f"cannot locate accepted Git objects: {object_path.stderr.decode(errors='replace').strip()}")
+    objects = Path(os.fsdecode(object_path.stdout.rstrip(b"\r\n")))
+    if not objects.is_absolute():
+        objects = ROOT / objects
+    with tempfile.TemporaryDirectory(prefix="openrc-rebind-tree-") as temporary:
+        object_directory = Path(temporary) / "objects"
+        object_directory.mkdir()
+        environment = os.environ.copy()
+        environment["GIT_OBJECT_DIRECTORY"] = str(object_directory)
+        alternates = [str(objects.resolve())]
+        if environment.get("GIT_ALTERNATE_OBJECT_DIRECTORIES"):
+            alternates.append(environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"])
+        environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = os.pathsep.join(alternates)
+
+        def make_tree(records: list[bytes]) -> bytes:
+            result = subprocess.run(["git", "mktree", "-z"], cwd=ROOT, env=environment,
+                                    input=b"\0".join(records) + b"\0", stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            if result.returncode:
+                raise SetupError(f"cannot build scoped archive tree: {result.stderr.decode(errors='replace').strip()}")
+            return result.stdout.strip()
+
+        if release_entries is not None:
+            release_oid = make_tree(list(release_entries.values()))
+            tool_entries[b"release"] = b"040000 tree " + release_oid + b"\trelease"
+        tools_oid = make_tree(list(tool_entries.values()))
+        root_entries[b"tools"] = b"040000 tree " + tools_oid + b"\ttools"
+        root_oid = make_tree(list(root_entries.values())).decode("ascii")
+        _extract_archive_stream(base, root_oid, paths, env=environment)
+
+
 def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str = "solver",
                    copy_mode: str = "copy") -> Path:
     """Build the accepted solver hybrid or an exact tracked historical app and replay tree."""
@@ -353,7 +472,10 @@ def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str
             destination = base / "app" / ".godot" / "imported"
             destination.parent.mkdir(parents=True)
             shutil.copytree(imported, destination, symlinks=True, ignore=no_cache_links, copy_function=copy)
-        _extract_archive_stream(base, rev, paths)
+        if copy_mode == "clone":
+            _scoped_full_archive(base, rev, paths)
+        else:
+            _extract_archive_stream(base, rev, paths)
         return base
 
     shutil.copytree(ROOT / "app", base / "app", symlinks=True, ignore=COPY_IGNORE, copy_function=copy)

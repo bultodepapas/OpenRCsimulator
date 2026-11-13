@@ -288,6 +288,117 @@ class CloneBaseline(unittest.TestCase):
                     rebind.compare("godot", qualification, 1, False, workspace, "full", copy_mode="clone")
                 replay.assert_not_called()
 
+    def test_scoped_full_matches_complete_git_archive_with_text_attributes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            contents = {".gitattributes": "*.gd text eol=crlf\n",
+                        "app/.gitattributes": "*.gd -export-ignore -export-subst\n",
+                        "app/physics/example.gd": "first\nsecond\n",
+                        "app/main.gd": "main\n",
+                        "tools/flight_log/flight_log.py": "flight\n",
+                        "tools/release/macos_reference_receipt.py": "receipt $Format:%H$\n",
+                        "tools/release/unrelated.py": "not requested\n",
+                        "outside.txt": "also not requested\n"}
+            for name, content in contents.items():
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(content.encode())
+            def git(*args):
+                return subprocess.run(["git", "-C", str(root), *args], check=True,
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
+            git("init", "-q")
+            git("config", "core.autocrlf", "false")
+            git("add", ".")
+            git("update-index", "--chmod=+x", "tools/release/macos_reference_receipt.py")
+            git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.test",
+                "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+            paths = list(rebind.FULL_BASELINE_PATHS)
+            reference, actual = Path(directory) / "reference", Path(directory) / "actual"
+            reference.mkdir()
+            actual.mkdir()
+            with tarfile.open(fileobj=io.BytesIO(git("archive", "HEAD", *paths))) as archive:
+                archive.extractall(reference, filter="data")
+            with patch.object(rebind, "ROOT", root):
+                rebind._scoped_full_archive(actual, "HEAD", paths)
+            def files(folder):
+                return {item.relative_to(folder).as_posix(): item.read_bytes()
+                        for item in folder.rglob("*") if item.is_file()}
+            self.assertEqual(files(actual), files(reference))
+            self.assertEqual(git("show", "HEAD:app/physics/example.gd"), b"first\nsecond\n")
+            self.assertEqual((actual / "app/physics/example.gd").read_bytes(), b"first\r\nsecond\r\n")
+            self.assertNotIn("tools/release/unrelated.py", files(actual))
+            if os.name != "nt":
+                for name in files(reference):
+                    self.assertEqual((actual / name).stat().st_mode & 0o777,
+                                     (reference / name).stat().st_mode & 0o777, name)
+
+    def test_scoped_full_refuses_export_attributes_including_ancestor(self) -> None:
+        cases = ((".gitattributes", "app/physics export-ignore\n"),
+                 (".gitattributes", "app/main.gd export-subst\n"),
+                 ("app/.gitattributes", "physics/*.gd export-ignore\n"))
+        for attribute_path, attribute in cases:
+            with self.subTest(attribute_path=attribute_path, attribute=attribute), \
+                    tempfile.TemporaryDirectory() as directory:
+                root = Path(directory) / "repo"
+                for name in ("app/physics/fixture.gd", "app/main.gd", "tools/flight_log/replay.py"):
+                    path = root / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text("fixture\n", encoding="utf-8")
+                (root / attribute_path).write_text(attribute, encoding="utf-8")
+                def git(*args):
+                    subprocess.run(["git", "-C", str(root), *args], check=True,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                git("init", "-q")
+                git("add", ".")
+                git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.test",
+                    "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+                base = Path(directory) / "base"
+                base.mkdir()
+                with patch.object(rebind, "ROOT", root):
+                    with self.assertRaisesRegex(rebind.SetupError, "archive-affecting attribute"):
+                        rebind._scoped_full_archive(base, "HEAD", ["app", "tools/flight_log"])
+                self.assertFalse(any(base.iterdir()))
+
+    def test_scoped_full_tolerates_unrelated_missing_objects_but_not_selected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            for name in ("app/physics/selected.gd", "tools/flight_log/replay.py",
+                         "tools/release/macos_reference_receipt.py", "tools/release/unrelated.py",
+                         "unrelated.txt"):
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((name + "\n").encode())
+            def git(*args):
+                return subprocess.run(["git", "-C", str(root), *args], check=True,
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
+            git("init", "-q")
+            git("add", ".")
+            git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.test",
+                "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+            def remove_blob(name):
+                oid = git("rev-parse", "HEAD:" + name).decode().strip()
+                blob = root / ".git/objects" / oid[:2] / oid[2:]
+                os.chmod(blob, 0o666)
+                blob.unlink()
+                return blob
+            missing = [remove_blob("unrelated.txt"), remove_blob("tools/release/unrelated.py")]
+            git("config", "core.repositoryformatversion", "1")
+            git("config", "extensions.partialClone", "origin")
+            git("config", "remote.origin.promisor", "true")
+            git("config", "remote.origin.url", "file:///nonexistent-openrc-promisor")
+            base = Path(directory) / "base"
+            base.mkdir()
+            with patch.object(rebind, "ROOT", root), patch.dict(os.environ, {"GIT_NO_LAZY_FETCH": "1"}):
+                rebind._scoped_full_archive(base, "HEAD", list(rebind.FULL_BASELINE_PATHS))
+                self.assertTrue((base / "app/physics/selected.gd").is_file())
+                self.assertTrue((base / "tools/release/macos_reference_receipt.py").is_file())
+                self.assertTrue(all(not path.exists() for path in missing))
+                remove_blob("app/physics/selected.gd")
+                incomplete = Path(directory) / "incomplete"
+                incomplete.mkdir()
+                with self.assertRaisesRegex(rebind.SetupError, "git archive"):
+                    rebind._scoped_full_archive(incomplete, "HEAD", list(rebind.FULL_BASELINE_PATHS))
+
     def test_streamed_archive_failure_is_not_success(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
