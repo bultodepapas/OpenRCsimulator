@@ -14,11 +14,13 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+from pathlib import PureWindowsPath
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+from urllib.parse import unquote, urlsplit
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -76,6 +78,30 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def gltf_dependencies(app: Path, source: Path) -> list[str]:
+    """Copy external glTF buffers and images alongside each staged scene."""
+    document = json.loads(source.read_text(encoding="utf-8"))
+    root = app.resolve()
+    dependencies = []
+    for section in ("buffers", "images"):
+        for entry in document.get(section, []):
+            uri = entry.get("uri")
+            if uri is None or (isinstance(uri, str) and uri.startswith("data:")):
+                continue  # GLB buffer views and embedded data do not name files.
+            if not isinstance(uri, str):
+                raise ValueError(f"Invalid glTF {section} URI in {source}")
+            parsed = urlsplit(uri)
+            name = unquote(parsed.path, errors="strict")
+            if (parsed.scheme or parsed.netloc or parsed.query or parsed.fragment or not name
+                    or "\\" in name or "\0" in name or Path(name).is_absolute() or PureWindowsPath(name).drive):
+                raise ValueError(f"Unsupported glTF dependency URI in {source}: {uri}")
+            dependency = (source.parent / name).resolve()
+            if not dependency.is_relative_to(root):
+                raise ValueError(f"glTF dependency escapes app: {uri}")
+            dependencies.append(dependency.relative_to(root).as_posix())
+    return dependencies
+
+
 def copy_preload_dependencies(project: Path, roots: tuple[str, ...]) -> None:
     """Stage the real fixed diagnostics' static resources into the disposable project."""
     app = ROOT / "app"
@@ -95,6 +121,8 @@ def copy_preload_dependencies(project: Path, roots: tuple[str, ...]) -> None:
         copied.add(relative)
         if source.suffix == ".gd":
             pending.extend(re.findall(r'''preload\(\s*["']res://([^"']+)["']''', source.read_text()))
+        elif source.suffix == ".gltf":
+            pending.extend(gltf_dependencies(app, source))
 
 
 def checked(project: Path, engine: Path, checks: Path, label: str, args: list[str], marker: str = "",

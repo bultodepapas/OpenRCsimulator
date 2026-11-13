@@ -2,6 +2,7 @@
 import copy
 import json
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import unittest
@@ -354,6 +355,38 @@ class PolicyTests(unittest.TestCase):
                     broken[name]["result"] = outcome
                     with self.assertRaises(ValueError):
                         self.verify(receipt, broken)
+
+    def test_macos_native_gate_is_required_and_cannot_be_removed_or_skipped(self):
+        receipt = self.receipt(self.commit("app/change.gd", "runtime"))
+        self.assertIn("native-kernel-macos", policy.PRODUCTION)
+        self.assertIs(receipt["required"].get("native-kernel-macos"), True)
+        needs = {name: {"result": "success"} for name in ("scope", *policy.JOBS)}
+        self.verify(receipt, needs)
+        for outcome in ("failure", "cancelled", "skipped", None):
+            with self.subTest(outcome=outcome), self.assertRaises(ValueError):
+                broken = copy.deepcopy(needs)
+                broken["native-kernel-macos"]["result"] = outcome
+                self.verify(receipt, broken)
+        del needs["native-kernel-macos"]
+        with self.assertRaises(ValueError):
+            self.verify(receipt, needs)
+        receipt["required"]["native-kernel-macos"] = False
+        with self.assertRaises(ValueError):
+            self.validate(receipt)
+
+    def test_workflow_calls_macos_gate_and_always_includes_it_in_required(self):
+        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        jobs = dict(re.findall(r"^  ([\w-]+):\n(.*?)(?=^  [\w-]+:|\Z)", workflow, re.M | re.S))
+        gate = jobs["native-kernel-macos"]
+        self.assertRegex(gate, r"(?m)^    needs: scope$")
+        self.assertRegex(gate, r"(?m)^    if: needs\.scope\.outputs\.app == 'true'$")
+        self.assertRegex(gate, r"(?m)^    uses: \./\.github/workflows/native-macos\.yml$")
+        self.assertNotRegex(gate, r"(?m)^\s*continue-on-error:")
+        required = jobs["required"]
+        self.assertRegex(required, r"(?m)^    if: always\(\)$")
+        needs = re.search(r"(?m)^    needs: \[([^\]]+)\]$", required)
+        self.assertIsNotNone(needs)
+        self.assertIn("native-kernel-macos", [name.strip() for name in needs.group(1).split(",")])
 
     def test_intentional_site_skip_and_no_export_on_pr(self):
         receipt = self.receipt(self.commit("docs/TOOLS.md", "docs"))

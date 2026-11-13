@@ -289,6 +289,12 @@ jobs:
             .tools/native-ground-vehicle/parity-linux-latest.log
             .tools/native-ground-vehicle/godot-cpp/LICENSE.md
 
+  native-kernel-macos:
+    name: NK-3 native kernel qualification (macOS ARM64)
+    needs: scope
+    if: needs.scope.outputs.app == 'true'
+    uses: ./.github/workflows/native-macos.yml
+
   native-kernel-linux:
     needs: scope
     if: needs.scope.outputs.app == 'true'
@@ -962,7 +968,7 @@ jobs:
   required:
     name: CI required
     if: always()
-    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-rc-runtime, export]
+    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-kernel-macos, native-rc-runtime, export]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
