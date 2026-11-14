@@ -1,0 +1,120 @@
+## L10c: one low, open flightline cue; estimated visual layout, not a restraint or safety standard.
+extends RefCounted
+
+const Frames = preload("res://render/frames.gd")
+const MeshKit = preload("res://scenery/mesh_kit.gd")
+const DamageBatches = preload("res://scenery/damage_batches.gd")
+const Detail = preload("res://render/flightline_barrier_detail.gd")
+const Finish = preload("res://render/flightline_barrier.gdshader")
+const Planting = preload("res://render/flightline_barrier_planting.gd")
+const POST_WIDTH_M: float = 0.08
+const POST_DEPTH_M: float = 0.08
+const FOOT_HEIGHT_M: float = 0.02
+const CAP_HEIGHT_M: float = 0.02
+const SLAT_HEIGHT_M: float = 0.065
+const TOP_SLAT_HEIGHT_M: float = 0.08
+const SLAT_DEPTH_M: float = 0.045
+const FIRST_SLAT_CENTRE_M: float = 0.24
+const TOP_SLAT_MARGIN_M: float = 0.06
+const MAX_BAY_SPAN_M: float = 2.4
+const SLAT_COUNT: int = 4
+const STEEL: Color = Color("#969b99")
+const ORANGE: Color = Color("#c87740")
+const FOOTING: Color = Color("#8e9186")
+
+
+## Shared local post centres for the barrier mesh and per-post contact shadows.
+## The array contains the west-to-gap and gap-to-east banks as separate ordered runs.
+static func post_positions(cue: Dictionary) -> PackedVector3Array:
+	var result: PackedVector3Array = PackedVector3Array()
+	var width: float = float(cue.get("width", 0.0))
+	var gap_width: float = float(cue.get("gap_width", 0.0))
+	if not is_finite(width) or not is_finite(gap_width) or width <= gap_width + POST_WIDTH_M:
+		return result
+	var outer_centre: float = width * 0.5 - POST_WIDTH_M * 0.5
+	var inner_centre: float = gap_width * 0.5 + POST_WIDTH_M * 0.5
+	var bay_span: float = outer_centre - inner_centre
+	if bay_span <= 0.0:
+		return result
+	var bay_count: int = maxi(1, int(ceil(bay_span / MAX_BAY_SPAN_M)))
+	for bank: int in 2:
+		for index: int in range(bay_count + 1):
+			var amount: float = float(index) / float(bay_count)
+			var east_offset: float
+			if bank == 0:
+				east_offset = lerpf(-outer_centre, -inner_centre, amount)
+			else:
+				east_offset = lerpf(inner_centre, outer_centre, amount)
+			result.append(Vector3(east_offset, 0.0, 0.0))
+	return result
+
+
+## CR-17a: shared source dimensions; the gap and spaces between rails remain open.
+static func parts(cue: Dictionary) -> Array[Dictionary]:
+	var parts: Array[Dictionary] = []
+	var positions: PackedVector3Array = post_positions(cue)
+	var posts_per_bank: int = positions.size() / 2
+	var bay_count: int = posts_per_bank - 1
+	var height: float = float(cue.height)
+	var row_pitch: float = (height - TOP_SLAT_MARGIN_M - FIRST_SLAT_CENTRE_M) / float(SLAT_COUNT - 1)
+	var cap_base_y: float = height - CAP_HEIGHT_M
+	var post_body_height: float = height - FOOT_HEIGHT_M - CAP_HEIGHT_M
+	for index: int in positions.size():
+		var position: Vector3 = positions[index]
+		var id := "barrier:%s:post:%02d" % [cue.id, index]
+		parts.append({id = id, size = Vector3(POST_WIDTH_M, FOOT_HEIGHT_M, POST_DEPTH_M), base = Vector3(position.x, 0.0, 0.0), color = FOOTING, profile = "metal"})
+		parts.append({id = id, size = Vector3(POST_WIDTH_M, post_body_height, POST_DEPTH_M), base = Vector3(position.x, FOOT_HEIGHT_M, 0.0), color = STEEL, profile = "metal"})
+		parts.append({id = id, size = Vector3(POST_WIDTH_M, CAP_HEIGHT_M, POST_DEPTH_M), base = Vector3(position.x, cap_base_y, 0.0), color = STEEL.lightened(0.08), profile = "metal"})
+	for bank: int in 2:
+		var bank_start: int = bank * posts_per_bank
+		for bay: int in bay_count:
+			var left: Vector3 = positions[bank_start + bay]
+			var right: Vector3 = positions[bank_start + bay + 1]
+			var span: float = absf(right.x - left.x)
+			var centre_east: float = (right.x + left.x) * 0.5
+			for slat: int in SLAT_COUNT:
+				var fraction: float = float(slat) / float(SLAT_COUNT - 1)
+				var centre_y: float = lerpf(FIRST_SLAT_CENTRE_M, height - TOP_SLAT_MARGIN_M, fraction)
+				var nominal_height: float = TOP_SLAT_HEIGHT_M if slat == SLAT_COUNT - 1 else SLAT_HEIGHT_M
+				var rail_height: float = minf(nominal_height, row_pitch - 0.025)
+				parts.append({id = "barrier:%s:rail:%d:%02d:%d" % [cue.id, bank, bay, slat],
+					size = Vector3(span, rail_height, SLAT_DEPTH_M),
+					base = Vector3(centre_east, centre_y - rail_height * 0.5, 0.0), color = ORANGE, profile = "wood"})
+	return parts
+
+
+static func build(cue: Dictionary) -> Node3D:
+	var root: Node3D = Node3D.new()
+	root.name = str(cue.id)
+	root.position = Frames.ned_to_render([cue.north, cue.east, 0.0])
+	root.set_process(false)
+	var kit := MeshKit.new()
+	var index := 0
+	for part: Dictionary in parts(cue):
+		var first := kit.verts.size()
+		Detail.append(kit, part, index)
+		kit.tag_damage(first, part.id)
+		index += 1
+	var material := ShaderMaterial.new()
+	material.shader = Finish
+	material.set_shader_parameter("barrier_height_m", float(cue.height))
+	material.set_shader_parameter("wood_color", preload("res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg"))
+	material.set_shader_parameter("wood_normal", preload("res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("wood_roughness", preload("res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("metal_color", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg"))
+	material.set_shader_parameter("metal_normal", preload("res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("metal_roughness", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("metalness", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg"))
+	material.set_shader_parameter("zinc_color", preload("res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg"))
+	material.set_shader_parameter("zinc_normal", preload("res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("zinc_roughness", preload("res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("zinc_metalness", preload("res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg"))
+	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.name = "Barrier"
+	mesh_instance.mesh = kit.to_mesh(material)
+	DamageBatches.capture(mesh_instance, kit.damage_ranges)
+	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mesh_instance.set_process(false)
+	root.add_child(mesh_instance)
+	root.add_child(Planting.build(cue, post_positions(cue)))
+	return root

@@ -1,0 +1,1051 @@
+# UI-FS-05/06: player-facing statistics, scoped rollups, bounded history pages and safe management entry points.
+extends CanvasLayer
+
+const Screen := preload("res://ui/screen.gd")
+const Widgets := preload("res://ui/widgets.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
+const ResetDialog := preload("res://ui/statistics_reset_dialog.gd")
+const Units := preload("res://render/overlays/units.gd")
+const AircraftIdentity := preload("res://statistics/aircraft_identity.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const RecordView := preload("res://statistics/record_view.gd")
+const FailureCatalog := preload("res://failures/catalog.gd")
+const TimeOfDay := preload("res://environment/time_of_day_config.gd")
+const RECIPE_LABELS := {"calm_air": "Calm air", "gentle_breeze": "Gentle breeze", "lively_afternoon": "Lively breeze", "windy_day": "Windy day"}
+const ONSET_LABELS := {"early": "Early (20–60 s)", "standard": "Standard (20–120 s)", "late": "Late (60–240 s)"}
+
+signal back_requested
+
+const PERIODS := ["session", "lifetime", "counters"]
+const PERIOD_LABELS := ["This session", "Lifetime history", "Since counter reset"]
+const HISTORY_PAGE_SIZE := 50
+
+var _service: Object
+var _unit_system := "metric"
+var _screen: Control
+var _panel: PanelContainer
+var _filter_row: BoxContainer
+var _body_grid: GridContainer
+var _scope_picker: OptionButton
+var _period_picker: OptionButton
+var _metadata_label: Label
+var _coverage_label: Label
+var _touchdown_label: Label
+var _clean_stop_label: Label
+var _more_button: Button
+var _more_box: VBoxContainer
+var _history_button: Button
+var _history_box: VBoxContainer
+var _history_rows: VBoxContainer
+var _history_page_label: Label
+var _previous_page: Button
+var _next_page: Button
+var _manage_note: Label
+var _session_reset_button: Button
+var _aircraft_reset_button: Button
+var _pilot_reset_button: Button
+var _aircraft_delete_button: Button
+var _pilot_delete_button: Button
+var _history: Array = []
+var _rendered_history: Array = []
+var _rendered_history_context: Dictionary = {}
+var _expanded_history_ids: Dictionary = {}
+var _stats: Dictionary = {}
+var _aircraft_ids: Array[String] = [""]
+var _aircraft_names: Array[String] = ["All aircraft"]
+var _selected_aircraft := ""
+var _period := "session"
+var _history_page := 0
+var _more_open := false
+var _history_open := false
+var _history_rendered := false
+var _refreshing := false
+var _data_available := true
+var _last_delete_revision := -1
+var _active_dialog: ConfirmationDialog
+
+
+func _init() -> void:
+	name = "StatisticsScreen"
+	var surface := Screen.mount(self, "StatisticsSurface")
+	_screen = surface
+	surface.escape_before_gui = true
+	surface.dismiss_option_popup_first = true
+	surface.close_requested.connect(_request_back)
+	surface.dim(0.56, "StatisticsDim")
+	var center: CenterContainer = surface.center(18.0)
+	_panel = PanelContainer.new()
+	_panel.name = "StatisticsPanel"
+	_panel.theme_type_variation = "Sidebar"
+	center.add_child(_panel)
+	_build()
+	surface.resized.connect(_resize_layout)
+	surface.theme_changed.connect(_resize_layout)
+
+
+func configure(statistics_service: Object, initial_aircraft: String = "", unit_system: String = "metric") -> void:
+	if is_instance_valid(_service) and _service.has_signal("changed") and _service.is_connected("changed", _refresh):
+		_service.disconnect("changed", _refresh)
+	_service = statistics_service
+	_last_delete_revision = int(_last_delete_outcome().get("revision", -1))
+	if is_instance_valid(_service) and _service.has_signal("changed"):
+		_service.connect("changed", _refresh, CONNECT_DEFERRED)
+	_unit_system = Units.resolve(unit_system, TranslationServer.get_locale())
+	_selected_aircraft = initial_aircraft
+	_build_aircraft_choices()
+	_select_aircraft(initial_aircraft)
+	_refresh()
+
+
+func _build() -> void:
+	var shell := VBoxContainer.new()
+	shell.name = "StatisticsShell"
+	shell.add_theme_constant_override("separation", 12)
+	_panel.add_child(shell)
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 18)
+	shell.add_child(header)
+	var title_column := VBoxContainer.new()
+	title_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_column.add_theme_constant_override("separation", 2)
+	header.add_child(title_column)
+	var title := Widgets.label(tr("Statistics"), "TitleLabel", true, false)
+	title.name = "StatisticsTitle"
+	title_column.add_child(title)
+	_metadata_label = Widgets.label("", "SecondaryLabel", true, false)
+	_metadata_label.name = "StatisticsMetadata"
+	title_column.add_child(_metadata_label)
+	var back := Widgets.button(tr("Back"), "QuietButton", "Back")
+	back.custom_minimum_size.x = 140
+	back.pressed.connect(_request_back)
+	header.add_child(back)
+
+	_filter_row = BoxContainer.new()
+	_filter_row.name = "StatisticsFilters"
+	_filter_row.add_theme_constant_override("separation", 18)
+	shell.add_child(_filter_row)
+	var scope_column := VBoxContainer.new()
+	scope_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scope_column.add_child(Widgets.label(tr("Aircraft scope"), "SecondaryLabel", false, false))
+	_scope_picker = OptionButton.new()
+	_scope_picker.name = "AircraftScope"
+	_scope_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_scope_picker.item_selected.connect(_on_aircraft_selected)
+	scope_column.add_child(_scope_picker)
+	_filter_row.add_child(scope_column)
+	var period_column := VBoxContainer.new()
+	period_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	period_column.add_child(Widgets.label(tr("Statistics period"), "SecondaryLabel", false, false))
+	_period_picker = OptionButton.new()
+	_period_picker.name = "StatisticsPeriod"
+	_period_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for period_label: String in PERIOD_LABELS:
+		_period_picker.add_item(tr(period_label))
+	_period_picker.item_selected.connect(_on_period_selected)
+	period_column.add_child(_period_picker)
+	_filter_row.add_child(period_column)
+
+	var scroll := ScrollContainer.new()
+	scroll.name = "StatisticsScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.focus_mode = Control.FOCUS_ALL
+	shell.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.name = "StatisticsContent"
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 14)
+	scroll.add_child(content)
+	_body_grid = GridContainer.new()
+	_body_grid.name = "SummaryCards"
+	_body_grid.columns = 3
+	_body_grid.add_theme_constant_override("h_separation", 12)
+	_body_grid.add_theme_constant_override("v_separation", 12)
+	_body_grid.add_child(_summary_card("Airborne time", "AirborneValue", ""))
+	_body_grid.add_child(_summary_card("Completed flights", "CompletedValue", ""))
+	_body_grid.add_child(_summary_card("Successful landings", "LandingsValue", ""))
+	content.add_child(_body_grid)
+
+	var outcome_section := _section(content, "Landing outcomes")
+	_touchdown_label = Widgets.label("", "BodyLabel", true, false)
+	_touchdown_label.name = "TouchdownSuccess"
+	outcome_section.add_child(_touchdown_label)
+	_clean_stop_label = Widgets.label("", "BodyLabel", true, false)
+	_clean_stop_label.name = "CleanStopFlights"
+	outcome_section.add_child(_clean_stop_label)
+	_coverage_label = Widgets.label("", "SecondaryLabel", true, false)
+	_coverage_label.name = "StatisticsCoverage"
+	outcome_section.add_child(_coverage_label)
+
+	var more_section := _section(content, "More statistics")
+	_more_button = Widgets.button(tr("More statistics"), "", "MoreStatistics")
+	_more_button.toggle_mode = true
+	_more_button.toggled.connect(_on_more_toggled)
+	more_section.add_child(_more_button)
+	_more_box = VBoxContainer.new()
+	_more_box.name = "MoreStatisticsDetails"
+	_more_box.add_theme_constant_override("separation", 4)
+	_more_box.visible = false
+	more_section.add_child(_more_box)
+
+	var history_section := _section(content, "Flight history")
+	_history_button = Widgets.button(tr("Flight history"), "", "FlightHistory")
+	_history_button.toggle_mode = true
+	_history_button.toggled.connect(_on_history_toggled)
+	history_section.add_child(_history_button)
+	_history_box = VBoxContainer.new()
+	_history_box.name = "FlightHistoryDetails"
+	_history_box.visible = false
+	_history_box.add_theme_constant_override("separation", 8)
+	history_section.add_child(_history_box)
+	_history_rows = VBoxContainer.new()
+	_history_rows.name = "FlightHistoryRows"
+	_history_rows.add_theme_constant_override("separation", 6)
+	_history_box.add_child(_history_rows)
+	var page_controls := HBoxContainer.new()
+	page_controls.add_theme_constant_override("separation", 12)
+	_previous_page = Widgets.button(tr("Previous"), "QuietButton", "PreviousHistoryPage")
+	_previous_page.pressed.connect(func() -> void: _set_history_page(_history_page - 1))
+	page_controls.add_child(_previous_page)
+	_history_page_label = Widgets.label("", "SecondaryLabel", false, false)
+	_history_page_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_history_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	page_controls.add_child(_history_page_label)
+	_next_page = Widgets.button(tr("Next"), "QuietButton", "NextHistoryPage")
+	_next_page.pressed.connect(func() -> void: _set_history_page(_history_page + 1))
+	page_controls.add_child(_next_page)
+	_history_box.add_child(page_controls)
+
+	var management := _section(content, "Manage statistics")
+	_manage_note = Widgets.label("", "SecondaryLabel", true, false)
+	_manage_note.name = "StatisticsManagementStatus"
+	management.add_child(_manage_note)
+	var counter_heading := Widgets.label(tr("Manage counters"), "SectionLabel", false, false)
+	management.add_child(counter_heading)
+	_session_reset_button = Widgets.button(tr("Reset session counters…"), "QuietButton", "ResetSessionCounters")
+	_session_reset_button.pressed.connect(func() -> void: _open_reset("session", "", "session"))
+	management.add_child(_session_reset_button)
+	_aircraft_reset_button = Widgets.button(tr("Reset this aircraft's counters…"), "QuietButton", "ResetAircraftCounters")
+	_aircraft_reset_button.pressed.connect(func() -> void: _open_reset("aircraft", _selected_aircraft, "counters"))
+	management.add_child(_aircraft_reset_button)
+	_pilot_reset_button = Widgets.button(tr("Reset pilot counters…"), "QuietButton", "ResetPilotCounters")
+	_pilot_reset_button.pressed.connect(func() -> void: _open_reset("account", "", "counters"))
+	management.add_child(_pilot_reset_button)
+	var history_heading := Widgets.label(tr("Manage history"), "SectionLabel", false, false)
+	management.add_child(history_heading)
+	_aircraft_delete_button = Widgets.button(tr("Delete this aircraft's history…"), "DestructiveButton", "DeleteAircraftHistory")
+	_aircraft_delete_button.pressed.connect(func() -> void: _open_delete(_selected_aircraft))
+	management.add_child(_aircraft_delete_button)
+	_pilot_delete_button = Widgets.button(tr("Delete all pilot history…"), "DestructiveButton", "DeletePilotHistory")
+	_pilot_delete_button.pressed.connect(func() -> void: _open_delete(""))
+	management.add_child(_pilot_delete_button)
+	_refresh_manage_controls()
+
+
+func _summary_card(caption: String, value_name: String, note: String) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = value_name + "Card"
+	card.theme_type_variation = "Card"
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(220, 112)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 4)
+	card.add_child(column)
+	column.add_child(Widgets.label(tr(caption), "SectionLabel", true, false))
+	var value := Widgets.label("—", "CardTitleLabel", true, false)
+	value.name = value_name
+	column.add_child(value)
+	if not note.is_empty():
+		column.add_child(Widgets.label(tr(note), "SecondaryLabel", true, false))
+	return card
+
+
+func _section(parent: VBoxContainer, title: String) -> VBoxContainer:
+	var section := VBoxContainer.new()
+	section.add_theme_constant_override("separation", 5)
+	section.add_child(Widgets.label(tr(title), "SectionLabel", false, false))
+	parent.add_child(section)
+	return section
+
+
+func _ready() -> void:
+	_build_aircraft_choices()
+	_refresh()
+	_resize_layout()
+	if DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS):
+		_scope_picker.get_popup().force_native = true
+		_period_picker.get_popup().force_native = true
+	_scope_picker.grab_focus.call_deferred()
+
+
+func _resize_layout() -> void:
+	if not is_inside_tree():
+		return
+	var available := _screen.size - Vector2(36.0, 36.0)
+	_panel.custom_minimum_size = Vector2(minf(1500.0, available.x), minf(1040.0, available.y))
+	var stacked := available.x < 820.0 or UiTheme.text_scale > 1.25
+	_filter_row.vertical = stacked
+	_body_grid.columns = 1 if stacked else 3
+	for child: Control in _body_grid.get_children():
+		child.custom_minimum_size.x = 0 if stacked else minf(220.0, (available.x - 80.0) / 3.0)
+
+
+func _build_aircraft_choices(preserve_unseen := true) -> void:
+	if _scope_picker == null:
+		return
+	_scope_picker.clear()
+	_aircraft_ids = [""]
+	_aircraft_names = [tr("All aircraft")]
+	_scope_picker.add_item(tr("All aircraft"))
+	if _service != null and _service.has_method("aircraft_choices"):
+		var choices: Variant = _service.call("aircraft_choices")
+		if choices is Array:
+			for choice: Variant in choices:
+				if not choice is Dictionary:
+					continue
+				var id := str(choice.get("id", ""))
+				if id.is_empty() or _aircraft_ids.has(id):
+					continue
+				var display_name := str(choice.get("name", id))
+				_aircraft_ids.append(id)
+				_aircraft_names.append(display_name)
+				_scope_picker.add_item(display_name)
+	if not _selected_aircraft.is_empty() and _matching_scope(_selected_aircraft).is_empty():
+		if preserve_unseen:
+			_aircraft_ids.append(_selected_aircraft)
+			var display_name := _display_aircraft_name(_selected_aircraft, _selected_aircraft)
+			_aircraft_names.append(display_name)
+			_scope_picker.add_item(display_name)
+		else:
+			_selected_aircraft = ""
+	_select_aircraft(_selected_aircraft)
+
+
+func _matching_scope(id: String) -> String:
+	if id.is_empty(): return ""
+	for candidate: String in _aircraft_ids:
+		if not candidate.is_empty() and AircraftIdentity.matches(id, candidate):
+			return candidate
+	return ""
+
+
+func _select_aircraft(id: String) -> void:
+	_selected_aircraft = _matching_scope(id)
+	var index := _aircraft_ids.find(_selected_aircraft)
+	if _scope_picker != null and index >= 0:
+		_scope_picker.select(index)
+
+
+func _on_aircraft_selected(index: int) -> void:
+	if index < 0 or index >= _aircraft_ids.size():
+		return
+	_selected_aircraft = _aircraft_ids[index]
+	_history_page = 0
+	_refresh()
+
+
+func _on_period_selected(index: int) -> void:
+	if index < 0 or index >= PERIODS.size():
+		return
+	_period = PERIODS[index]
+	_history_page = 0
+	_refresh()
+
+
+func _on_more_toggled(open: bool) -> void:
+	_more_open = open
+	_more_box.visible = open
+	_more_button.text = tr("Fewer statistics") if open else tr("More statistics")
+	if open:
+		_fill_more_statistics()
+
+
+func _on_history_toggled(open: bool) -> void:
+	_history_open = open
+	_history_box.visible = open
+	_history_button.text = tr("Hide flight history") if open else tr("Flight history")
+	if open:
+		if _data_available: _render_history()
+		else: _clear_unavailable_history()
+
+
+func _refresh() -> void:
+	if _refreshing:
+		return
+	_refreshing = true
+	if _service != null and _service.has_method("query"):
+		var result: Variant = _service.call("query", _selected_aircraft, _period)
+		_stats = result if result is Dictionary else {}
+	else:
+		_stats = {}
+	var was_available := _data_available
+	var deletion := _last_delete_outcome()
+	var receipt_revision := int(deletion.get("revision", -1))
+	var new_deletion: bool = receipt_revision >= 0 and receipt_revision != _last_delete_revision
+	if receipt_revision >= 0: _last_delete_revision = receipt_revision
+	_data_available = bool(_stats.get("available", true))
+	if not _data_available:
+		_history = []
+		_expanded_history_ids.clear()
+		_clear_unavailable_history()
+		_selected_aircraft = ""
+		_aircraft_ids = [""]
+		_aircraft_names = [tr("All aircraft")]
+		_scope_picker.clear()
+		_scope_picker.add_item(tr("All aircraft"))
+		_scope_picker.select(0)
+		_scope_picker.disabled = true
+	else:
+		_scope_picker.disabled = false
+		var deletion_status := str(deletion.get("status", ""))
+		if not was_available or (new_deletion and deletion_status in ["completed", "committed_pending"]):
+			var previous_aircraft := _selected_aircraft
+			_build_aircraft_choices(false)
+			if previous_aircraft != _selected_aircraft and _service != null and _service.has_method("query"):
+				var refreshed: Variant = _service.call("query", _selected_aircraft, _period)
+				_stats = refreshed if refreshed is Dictionary else {}
+		var history_value: Variant = _stats.get("history", [])
+		_history = _newest_first_history(history_value if history_value is Array else [])
+	if _period_picker != null:
+		_period_picker.select(PERIODS.find(_period))
+	_update_summary()
+	if _more_open:
+		_fill_more_statistics()
+	if _history_open and _data_available:
+		_render_history()
+	_refresh_manage_controls()
+	_refreshing = false
+
+
+func _last_delete_outcome() -> Dictionary:
+	if _service == null: return {}
+	for property: Dictionary in _service.get_property_list():
+		if str(property.get("name", "")) == "last_delete_outcome":
+			var value: Variant = _service.get("last_delete_outcome")
+			return value if value is Dictionary else {}
+	return {}
+
+
+func _clear_unavailable_history() -> void:
+	if _history_rows == null: return
+	var focus := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var restore_focus: bool = focus != null and _history_rows.is_ancestor_of(focus)
+	for child: Node in _history_rows.get_children():
+		_history_rows.remove_child(child)
+		child.queue_free()
+	_history_rows.add_child(Widgets.label(tr("Statistics unavailable"), "SecondaryLabel", true, false))
+	_history_page = 0
+	_history_page_label.text = tr("Statistics unavailable")
+	_previous_page.disabled = true
+	_next_page.disabled = true
+	_rendered_history.clear()
+	_rendered_history_context.clear()
+	_history_rendered = false
+	if restore_focus: _history_button.grab_focus()
+
+
+func _update_summary() -> void:
+	var aircraft_text := tr("All aircraft") if _selected_aircraft.is_empty() else _selected_aircraft_name()
+	var period_text := tr(str(_stats.get("period_label", tr(PERIOD_LABELS[PERIODS.find(_period)]))))
+	_metadata_label.text = "%s · %s · %s" % [tr("Local pilot"), aircraft_text, period_text]
+	_metadata_label.tooltip_text = tr("Lifetime history remains available after counter resets.")
+	if not bool(_stats.get("available", true)):
+		for key: String in ["AirborneValue", "CompletedValue", "LandingsValue"]:
+			var unavailable_label := _panel.find_child(key, true, false) as Label
+			if unavailable_label != null: unavailable_label.text = "—"
+		_touchdown_label.text = tr("Statistics unavailable")
+		_clean_stop_label.text = ""
+		_coverage_label.text = tr(str(_service.get("note"))) if _service != null else ""
+		_more_button.disabled = true
+		_more_box.visible = false
+		return
+	_more_button.disabled = false
+	_more_box.visible = _more_open
+	var airborne := _number(_stats.get("airborne_seconds", 0.0))
+	var started := _count(_stats.get("started", 0))
+	var completed := _count(_stats.get("completed", 0))
+	var landings := _count(_stats.get("landings", 0))
+	var card_values := {
+		"AirborneValue": _duration(airborne),
+		"CompletedValue": str(completed),
+		"LandingsValue": "%d (%d %s · %d %s)" % [landings, _count(_stats.get("full_stops", 0)), tr("stops"),
+			_count(_stats.get("touch_and_go", 0)), tr("touch-and-go")],
+	}
+	for key: String in card_values:
+		var label := _panel.find_child(key, true, false) as Label
+		if label != null:
+			label.text = card_values[key]
+	var resolved := landings + _count(_stats.get("failed_landings", 0))
+	var rate := float(_stats.get("landing_rate", -1.0))
+	if resolved > 0 and is_finite(rate) and rate >= 0.0:
+		_touchdown_label.text = tr("Touchdown success: %d / %d resolved touchdowns · %d%%") % [landings, resolved, roundi(rate * 100.0)]
+	else:
+		_touchdown_label.text = tr("Touchdown success: no resolved touchdowns yet")
+	var closed := _closed_count(_stats)
+	if closed >= 0:
+		_clean_stop_label.text = tr("Flights brought to a clean stop: %d / %d ended flights") % [completed, closed]
+	else:
+		_clean_stop_label.text = tr("Flights brought to a clean stop: %d · ended-flight total unavailable") % completed
+	var current_streak := _count(_stats.get("current_streak", 0))
+	var best_streak := _count(_stats.get("best_streak", 0))
+	var crash_free := _duration(_number(_stats.get("current_clean_seconds", 0.0)))
+	var best_crash_free := _duration(_number(_stats.get("best_clean_seconds", 0.0)))
+	var empty := started == 0 and completed == 0 and landings == 0 and _count(_stats.get("crashes", 0)) == 0 \
+		and _count(_stats.get("restarts", 0)) == 0 and _history.is_empty()
+	var coverage := _coverage_text(_stats)
+	if empty:
+		var has_lifetime_history := bool(_stats.get("has_lifetime_history", false))
+		if not _stats.has("has_lifetime_history"):
+			has_lifetime_history = not str(_stats.get("tracking_started_utc", "")).is_empty()
+		coverage = tr("No flight records in this view.") if has_lifetime_history else tr("Tracking begins with your next flight.")
+	elif coverage.is_empty():
+		coverage = tr("Completed in a row: %d · best %d · crash-free airborne time: %s · best %s") \
+			% [current_streak, best_streak, crash_free, best_crash_free]
+	else:
+		coverage += "\n" + tr("Completed in a row: %d · best %d · crash-free airborne time: %s · best %s") \
+			% [current_streak, best_streak, crash_free, best_crash_free]
+	var note := str(_service.get("note")) if _service != null else ""
+	if not note.is_empty():
+		coverage += "\n" + tr(note)
+	_coverage_label.text = coverage
+	
+
+func _fill_more_statistics() -> void:
+	for child: Node in _more_box.get_children():
+		child.queue_free()
+	var average := float(_stats.get("average_seconds", -1.0))
+	var average_count := _count(_stats.get("average_count", 0))
+	_add_detail(_more_box, tr("Flights started"), str(_count(_stats.get("started", 0))))
+	_add_detail(_more_box, tr("Average airborne duration"), _duration(average) if average >= 0.0 else "—")
+	_add_detail(_more_box, tr("Average duration includes %d closed flights") % average_count, "")
+	_add_detail(_more_box, tr("Maximum valid airspeed (TAS)"), _speed(_stats.get("max_tas_mps", NAN)))
+	_add_detail(_more_box, tr("Maximum horizontal groundspeed"), _speed(_stats.get("max_groundspeed_mps", NAN)))
+	_add_detail(_more_box, tr("Full-stop landings"), str(_count(_stats.get("full_stops", 0))))
+	_add_detail(_more_box, tr("Touch-and-go landings"), str(_count(_stats.get("touch_and_go", 0))))
+	_add_detail(_more_box, tr("Failed touchdown episodes"), str(_count(_stats.get("failed_landings", 0))))
+	_add_detail(_more_box, tr("Unknown touchdown episodes"), str(_count(_stats.get("unknown_landings", 0))))
+	_add_detail(_more_box, tr("Crashes"), str(_count(_stats.get("crashes", 0))))
+	_add_detail(_more_box, tr("Restarts"), str(_count(_stats.get("restarts", 0))))
+	_add_detail(_more_box, tr("Active flights"), _active_text(_stats.get("active", 0)))
+	_add_detail(_more_box, tr("Partial records"), _partial_text(_stats.get("partial", 0)))
+	_add_detail(_more_box, tr("Touchdown success counts resolved surface contacts; the clean-stop fraction includes the end of each flight."), "")
+
+
+func _add_detail(parent: VBoxContainer, caption: String, value: String) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	var name_label := Widgets.label(caption, "SecondaryLabel", true, false)
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(name_label)
+	if not value.is_empty():
+		var value_label := Widgets.label(value, "BodyLabel", true, false)
+		value_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		row.add_child(value_label)
+	parent.add_child(row)
+
+
+func _render_history() -> void:
+	if _history_rows == null:
+		return
+	var page_count := maxi(1, ceili(float(_history.size()) / float(HISTORY_PAGE_SIZE)))
+	_history_page = clampi(_history_page, 0, page_count - 1)
+	var render_context := {
+		"aircraft_id": _selected_aircraft,
+		"aircraft_name": _selected_aircraft_name(),
+		"period": _period,
+		"page": _history_page,
+		"unit_system": _unit_system,
+		"locale": TranslationServer.get_locale(),
+	}
+	if _history_rendered and _rendered_history == _history and _rendered_history_context == render_context:
+		return
+	var focus_owner: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var restore_history_focus: bool = focus_owner != null and _history_rows.is_ancestor_of(focus_owner)
+	var focused_record_id: String = _history_record_id_for_control(focus_owner) if restore_history_focus else ""
+	_capture_expanded_history_ids()
+	_prune_expanded_history_ids()
+	if restore_history_focus:
+		focus_owner.release_focus()
+	for child: Node in _history_rows.get_children():
+		_history_rows.remove_child(child)
+		child.queue_free()
+	var start := _history_page * HISTORY_PAGE_SIZE
+	var finish := mini(_history.size(), start + HISTORY_PAGE_SIZE)
+	if _history.is_empty():
+		_history_rows.add_child(Widgets.label(tr("No flight records in this view."), "SecondaryLabel", true, false))
+	else:
+		for index in range(start, finish):
+			var record: Variant = _history[index]
+			if record is Dictionary:
+				var row := _history_row(record, index)
+				_history_rows.add_child(row)
+				var record_id := _history_record_id(record)
+				if _expanded_history_ids.has(record_id):
+					var toggle := row.get_child(0) as Button
+					var detail := row.get_child(1) as Control
+					toggle.set_pressed_no_signal(true)
+					detail.visible = true
+					toggle.text = "⌄ " + toggle.text
+	_history_page_label.text = tr("Page %d of %d · %d records") % [_history_page + 1, page_count, _history.size()]
+	_previous_page.disabled = _history_page <= 0
+	_next_page.disabled = _history_page >= page_count - 1
+	_rendered_history = _history.duplicate(true)
+	_rendered_history_context = render_context
+	_history_rendered = true
+	if restore_history_focus:
+		var focus_target := _history_toggle_for_id(focused_record_id)
+		if focus_target != null:
+			focus_target.grab_focus()
+		else:
+			_history_button.grab_focus()
+
+
+func _capture_expanded_history_ids() -> void:
+	for child: Node in _history_rows.get_children():
+		if not child is VBoxContainer or child.get_child_count() < 2:
+			continue
+		var row := child as VBoxContainer
+		var toggle := row.get_child(0) as Button
+		var detail := row.get_child(1) as Control
+		var record_id := str(row.get_meta("statistics_history_id", ""))
+		if record_id.is_empty():
+			continue
+		if toggle.button_pressed or detail.visible:
+			_expanded_history_ids[record_id] = true
+		else:
+			_expanded_history_ids.erase(record_id)
+
+
+func _prune_expanded_history_ids() -> void:
+	var available_ids: Dictionary = {}
+	for record: Variant in _history:
+		if record is Dictionary:
+			var record_id := _history_record_id(record)
+			if not record_id.is_empty():
+				available_ids[record_id] = true
+	for record_id: Variant in _expanded_history_ids.keys():
+		if not available_ids.has(record_id):
+			_expanded_history_ids.erase(record_id)
+
+
+func _history_record_id(record: Dictionary) -> String:
+	var record_id := str(record.get("id", "")).strip_edges()
+	if not record_id.is_empty():
+		return record_id
+	var sequence: Variant = record.get("seq", null)
+	if typeof(sequence) == TYPE_INT:
+		return "sequence:%d" % int(sequence)
+	var flight_id := str(record.get("flight_id", "")).strip_edges()
+	var record_kind := str(record.get("kind", "")).strip_edges()
+	if flight_id.is_empty() or record_kind.is_empty():
+		return ""
+	return "%s:flight:%s" % [record_kind, flight_id]
+
+
+func _history_record_id_for_control(control: Control) -> String:
+	var current: Node = control
+	while current != null and current != _history_rows:
+		if current is Control and current.has_meta("statistics_history_id"):
+			return str(current.get_meta("statistics_history_id", ""))
+		current = current.get_parent()
+	return ""
+
+
+func _history_toggle_for_id(record_id: String) -> Button:
+	if record_id.is_empty():
+		return null
+	for child: Node in _history_rows.get_children():
+		if str(child.get_meta("statistics_history_id", "")) == record_id and child.get_child_count() > 0:
+			return child.get_child(0) as Button
+	return null
+
+
+func _history_row(record: Dictionary, index: int) -> VBoxContainer:
+	var row := VBoxContainer.new()
+	var record_id := _history_record_id(record)
+	row.set_meta("statistics_history_id", record_id)
+	row.add_theme_constant_override("separation", 4)
+	var record_kind := str(record.get("kind", ""))
+	if record_kind.is_empty():
+		record_kind = "flight" if record.has("flight_id") or record.has("outcome") else "record"
+	var raw_outcome := str(record.get("outcome", record.get("status", "Unknown")))
+	var metadata_value: Variant = record.get("metadata", {})
+	var metadata: Dictionary = metadata_value if metadata_value is Dictionary else {}
+	var reason := str(metadata.get("cause", record.get("reason", "")))
+	var outcome := _history_record_label(record_kind, raw_outcome, metadata, reason)
+	var date := _record_date(record)
+	if date.is_empty():
+		date = (tr("Flight %d") % (index + 1)) if record_kind == "flight" else (tr("Record %d") % (index + 1))
+	var record_aircraft_id := str(record.get("aircraft_id", ""))
+	var aircraft := _display_aircraft_name(record_aircraft_id,
+		str(record.get("aircraft_name", record.get("aircraft_id", _selected_aircraft_name()))))
+	var title_parts: PackedStringArray = [date, aircraft]
+	var context := RecordView.from_record(record) if record_kind == "flight" else {}
+	if record_kind == "flight":
+		title_parts.append(_duration(_number(record.get("airborne_seconds", NAN))))
+		if context.scenario_kind == "natural_random": title_parts.append(tr("Natural Random"))
+		if context.practice_known and int(context.practice.probability_percent) > 0: title_parts.append(tr("Failure practice enabled"))
+	title_parts.append(outcome)
+	var toggle := Widgets.button(" · ".join(title_parts), "QuietButton", "HistoryRow%d" % index)
+	toggle.set_meta("statistics_history_id", record_id)
+	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	toggle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	toggle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	toggle.toggle_mode = true
+	row.add_child(toggle)
+	var detail := VBoxContainer.new()
+	detail.visible = false
+	detail.add_theme_constant_override("separation", 2)
+	row.add_child(detail)
+	if record_kind == "flight":
+		var takeoffs := _count(record.get("takeoffs", 0))
+		if record.has("start_kind"):
+			takeoffs = 1 if str(record.get("start_kind", "")) == "takeoff" else 0
+		var breakdown := tr("Takeoffs %d · Full stops %d · Touch-and-go %d") % [
+			takeoffs, _count(record.get("full_stops", 0)), _count(record.get("touch_and_go", 0))
+		]
+		_add_detail(detail, breakdown, "")
+		_add_detail(detail, tr("Max valid airspeed (TAS)"), _speed(record.get("max_tas_mps", NAN)))
+		_add_detail(detail, tr("Coverage"), _coverage_text(record))
+		_add_flight_context(detail, record, context)
+	elif record_kind == "crash" and metadata.has("ground"):
+		_add_detail(detail, tr("Crash context"), tr("On ground") if bool(metadata.ground) else tr("In flight"))
+	elif record_kind == "restart" and not reason.is_empty():
+		_add_detail(detail, tr("Restart reason"), _history_event_value("reason", reason))
+	var started_utc := str(record.get("utc", ""))
+	var started := started_utc if not started_utc.is_empty() else str(record.get("started_at", record.get("timestamp", "")))
+	if not started.is_empty():
+		_add_detail(detail, tr("Started (UTC)") if not started_utc.is_empty() else tr("Started"), started)
+	var ended_utc := str(record.get("ended_utc", ""))
+	var ended := ended_utc if not ended_utc.is_empty() else str(record.get("ended_at", ""))
+	if not ended.is_empty():
+		_add_detail(detail, tr("Ended (UTC)") if not ended_utc.is_empty() else tr("Ended"), ended)
+	var events := _history_events(record)
+	for event: Variant in events:
+		if event is Dictionary and str(event.get("type", "")) == "failure_activated": continue
+		var event_text := _history_event_text(event)
+		if not event_text.is_empty():
+			_add_detail(detail, tr("Events"), event_text)
+	var omitted := _count(metadata.get("events_omitted", 0))
+	if omitted > 0:
+		_add_detail(detail, tr("More events omitted: %d") % omitted, "")
+	toggle.toggled.connect(func(open: bool) -> void:
+		detail.visible = open
+		toggle.text = ("⌄ " if open else "› ") + " · ".join(title_parts)
+		if not record_id.is_empty():
+			if open:
+				_expanded_history_ids[record_id] = true
+			else:
+				_expanded_history_ids.erase(record_id)
+	)
+	return row
+
+
+func _add_flight_context(detail: VBoxContainer, record: Dictionary, context: Dictionary) -> void:
+	var seconds := _number(record.get("airborne_seconds", NAN))
+	if seconds >= 0.0: _add_detail(detail, tr("Airborne seconds"), JSON.stringify(seconds, "", true, true))
+	match str(context.scenario_kind):
+		"natural_random":
+			var scenario: Dictionary = context.scenario
+			var title := "Custom from Natural Random" if scenario.provenance == "customized" else "Natural Random"
+			_add_detail(detail, tr("Launch scenario"), tr(title))
+			_add_detail(detail, tr("Scenario seed"), str(scenario.seed))
+			_add_detail(detail, tr("Weather recipe"), tr(str(RECIPE_LABELS.get(scenario.recipe_id, scenario.recipe_id))))
+			_add_detail(detail, tr("Local time at launch"), TimeOfDay.format_time(int(scenario.lighting_config.local_seconds)))
+			_add_detail(detail, tr("Wind at launch"), tr("%s from %d°") % [_speed(scenario.weather_config.speed_mps), roundi(float(scenario.weather_config.from_deg))])
+		"ordinary": _add_detail(detail, tr("Launch scenario"), tr("Ordinary flight"))
+		_: _add_detail(detail, tr("Launch scenario"), tr("Unknown"))
+	_add_detail(detail, tr("Practice settings at launch"), "")
+	if bool(context.practice_known):
+		var practice: Dictionary = context.practice
+		var enabled: bool = int(practice.probability_percent) > 0
+		_add_detail(detail, tr("Failure practice"), tr("Enabled") if enabled else tr("Disabled"))
+		_add_detail(detail, tr("Probability of failure per flight"), "%d%%" % int(practice.probability_percent))
+		if enabled: _add_detail(detail, tr("Failure seed"), str(context.practice_seed))
+		_add_detail(detail, tr("Severity"), tr(str(practice.severity).capitalize()))
+		_add_detail(detail, tr("When a failure can start"), tr(str(ONSET_LABELS.get(practice.onset, practice.onset))))
+		_add_detail(detail, tr("Include catastrophic failures"), tr("On") if practice.include_catastrophic else tr("Off"))
+		_add_detail(detail, tr("Notify when a failure occurs"), tr("On") if practice.notify else tr("Off"))
+		var exclusions := PackedStringArray()
+		for id: String in practice.excluded_ids:
+			var definition: Dictionary = FailureCatalog.definition(id)
+			exclusions.append(tr(str(definition.get("label", id))))
+		_add_detail(detail, tr("Excluded failure types"), tr("None") if exclusions.is_empty() else ", ".join(exclusions))
+	else:
+		_add_detail(detail, tr("Failure practice"), tr("Unknown"))
+	var failures: Array = context.failure_events
+	if failures.is_empty():
+		_add_detail(detail, tr("Recorded failures"), tr("No failure event recorded; occurrence is unknown."))
+	else:
+		for event: Dictionary in failures:
+			var definition: Dictionary = FailureCatalog.definition(str(event.failure_id))
+			var label := tr(str(definition.get("label", event.failure_id)))
+			_add_detail(detail, tr("Recorded failure"), tr("%s · tick %d") % [label, int(event.tick)])
+
+
+func _history_record_label(kind: String, outcome: String, metadata: Dictionary, reason: String) -> String:
+	match kind:
+		"crash":
+			if metadata.has("ground"):
+				return tr("Ground crash") if bool(metadata.ground) else tr("Flight crash")
+			return tr("Crash")
+		"restart":
+			return tr("Restart: %s") % tr(reason.replace("_", " ").capitalize()) if not reason.is_empty() else tr("Restart")
+		"flight":
+			if outcome == "failed_stop": return tr("Uncontrolled stop")
+			return tr(outcome.replace("_", " ").capitalize())
+	return tr(kind.replace("_", " ").capitalize())
+
+
+func _history_events(record: Dictionary) -> Array:
+	var metadata: Variant = record.get("metadata", {})
+	if metadata is Dictionary:
+		var observed: Variant = metadata.get("events", [])
+		if observed is Array and not observed.is_empty():
+			return observed
+	var legacy: Variant = record.get("timeline", record.get("events", []))
+	return legacy if legacy is Array else []
+
+
+func _history_event_text(event: Variant) -> String:
+	if not event is Dictionary:
+		return tr(str(event))
+	var parts := PackedStringArray()
+	for key: String in ["type", "kind", "outcome", "reason"]:
+		var value := str(event.get(key, ""))
+		if value.is_empty():
+			continue
+		value = _history_event_value(key, value)
+		match key:
+			"type": parts.append(tr("Type: %s") % value)
+			"kind": parts.append(tr("Kind: %s") % value)
+			"outcome": parts.append(tr("Outcome: %s") % value)
+			"reason": parts.append(tr("Reason: %s") % value)
+	if event.has("tick"):
+		parts.append(tr("Tick: %d") % int(event.tick))
+	if event.has("first_contact_tick"):
+		parts.append(tr("First contact tick: %d") % int(event.first_contact_tick))
+	if event.has("start_kind"):
+		var start_kind := _history_event_value("start_kind", str(event.start_kind))
+		parts.append(tr("Start kind: %s") % tr(start_kind))
+	return " · ".join(parts)
+
+
+func _history_event_value(field: String, value: String) -> String:
+	match field:
+		"type":
+			match value:
+				"started": return tr("Flight started")
+				"landing": return tr("Landing event")
+				"closed": return tr("Flight ended")
+		"kind":
+			match value:
+				"full_stop": return tr("Full stop")
+				"touch_and_go": return tr("Touch-and-go")
+		"outcome":
+			if value == "failed_stop": return tr("Uncontrolled stop")
+			if value == "success": return tr("Successful")
+		"reason":
+			match value:
+				"stable_support": return tr("Stable support")
+				"ended_before_resolution": return tr("Ended before resolution")
+		"start_kind":
+			match value:
+				"air_start": return tr("Airborne start")
+				"takeoff": return tr("Takeoff")
+	return tr(value.replace("_", " ").capitalize())
+
+
+func _set_history_page(page: int) -> void:
+	var page_count := maxi(1, ceili(float(_history.size()) / float(HISTORY_PAGE_SIZE)))
+	_history_page = clampi(page, 0, page_count - 1)
+	_render_history()
+
+
+func _refresh_manage_controls() -> void:
+	if _session_reset_button == null:
+		return
+	var can_manage := _data_available and _service != null and _service.has_method("can_manage") and bool(_service.call("can_manage"))
+	var has_aircraft := not _selected_aircraft.is_empty()
+	for button: Button in [_session_reset_button, _pilot_reset_button, _pilot_delete_button]:
+		button.disabled = not can_manage
+	for button: Button in [_aircraft_reset_button, _aircraft_delete_button]:
+		button.disabled = not can_manage or not has_aircraft
+	if can_manage:
+		_manage_note.text = tr("Counters and history management are available while no flight is active.")
+	else:
+		var note := str(_service.get("note")) if _service != null else ""
+		_manage_note.text = tr(note) if not note.is_empty() else tr("End the active flight before changing counters or history.")
+	
+
+func _open_reset(scope: String, aircraft_id: String, period: String) -> void:
+	_open_management_dialog("reset", scope, aircraft_id, period)
+
+
+func _open_delete(aircraft_id: String) -> void:
+	_open_management_dialog("delete", "history", aircraft_id, "lifetime")
+
+
+func _open_management_dialog(action: String, scope: String, aircraft_id: String, period: String) -> void:
+	if not _data_available or _service == null or not _service.has_method("can_manage") or not bool(_service.call("can_manage")):
+		_refresh_manage_controls()
+		return
+	var preview: Dictionary = _service.call("query", aircraft_id, period)
+	var opener: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	_active_dialog = ResetDialog.new()
+	_active_dialog.theme = _screen.theme
+	add_child(_active_dialog)
+	_active_dialog.connect("operation_completed", func(_succeeded: bool) -> void:
+		_active_dialog.queue_free()
+		_active_dialog = null
+		_build_aircraft_choices(action != "delete")
+		_refresh()
+		_restore_management_focus.call_deferred(opener)
+	)
+	_active_dialog.connect("operation_cancelled", func() -> void:
+		if is_instance_valid(_active_dialog):
+			_active_dialog.queue_free()
+		_active_dialog = null
+		_restore_management_focus.call_deferred(opener)
+	)
+	_active_dialog.call("configure", _service, action, scope, aircraft_id, period, preview,
+		_aircraft_name_for_id(aircraft_id))
+	_active_dialog.popup_centered()
+
+
+func _restore_management_focus(opener: Control) -> void:
+	if not is_inside_tree(): return
+	if is_instance_valid(opener) and opener.is_visible_in_tree() \
+			and opener.get_focus_mode_with_override() != Control.FOCUS_NONE \
+			and not (opener is BaseButton and opener.disabled):
+		opener.grab_focus()
+	elif is_instance_valid(_history_button) and _history_button.is_visible_in_tree() and not _history_button.disabled:
+		_history_button.grab_focus()
+
+
+func _request_back() -> void:
+	back_requested.emit()
+
+
+func _selected_aircraft_name() -> String:
+	var index := _aircraft_ids.find(_selected_aircraft)
+	return _aircraft_names[index] if index >= 0 and index < _aircraft_names.size() else _selected_aircraft
+
+
+func _aircraft_name_for_id(id: String) -> String:
+	var index := _aircraft_ids.find(_matching_scope(id))
+	if not id.is_empty() and index > 0 and index < _aircraft_names.size():
+		return _aircraft_names[index]
+	return _display_aircraft_name(id, id)
+
+
+func _display_aircraft_name(id: String, fallback: String) -> String:
+	# Only the two explicitly registered identity pairs share this catalog label.
+	# Other aircraft and Workshop variants keep their recorded names.
+	if not AircraftIdentity.matches("skywalker-x8", id) \
+			and not AircraftIdentity.matches("stock:skywalker-x8", id):
+		return fallback
+	var catalog_id := "moonrunner-x99" if Catalog.has("moonrunner-x99") else "skywalker-x8"
+	var display_name := str(Catalog.entry(catalog_id).get("name", fallback))
+	if id.begins_with("stock:"):
+		display_name += " · " + id
+	return display_name
+
+
+func _record_date(record: Dictionary) -> String:
+	for key: String in ["utc", "started_at", "timestamp", "ended_utc", "ended_at", "date"]:
+		var value := str(record.get(key, ""))
+		if not value.is_empty():
+			if key in ["utc", "started_at", "timestamp"] and value.length() >= 16 and value[10] == "T":
+				return value.substr(0, 16).replace("T", " ") + ("Z" if value.ends_with("Z") else "")
+			return value
+	return ""
+
+
+static func _newest_first_history(history: Array) -> Array:
+	var result := history.duplicate(true)
+	var has_sequence := false
+	for record: Variant in result:
+		if record is Dictionary and typeof(record.get("seq", null)) in [TYPE_INT, TYPE_FLOAT]:
+			has_sequence = true
+			break
+	if not has_sequence:
+		return result
+	result.sort_custom(func(left: Variant, right: Variant) -> bool:
+		if not left is Dictionary: return false
+		if not right is Dictionary: return true
+		var left_seq := float(left.get("seq", -1))
+		var right_seq := float(right.get("seq", -1))
+		return left_seq > right_seq
+	)
+	return result
+
+
+func _closed_count(data: Dictionary) -> int:
+	var value: Variant = data.get("closed", null)
+	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
+		return _count(value)
+	var history: Variant = data.get("history", [])
+	if not history is Array:
+		return -1
+	var closed := 0
+	for record: Variant in history:
+		if not record is Dictionary: continue
+		var outcome := str(record.get("outcome", record.get("status", ""))).to_lower()
+		if outcome in ["completed", "crashed", "restarted", "abandoned", "damaged_stop", "failed_stop", "interrupted"]:
+			closed += 1
+	return closed
+
+
+func _coverage_text(data: Dictionary) -> String:
+	var partial := _partial_text(data.get("partial", 0))
+	var active := _active_text(data.get("active", 0))
+	var pieces: PackedStringArray = []
+	if not partial.is_empty(): pieces.append(partial)
+	if not active.is_empty(): pieces.append(active)
+	return " · ".join(pieces)
+
+
+func _partial_text(value: Variant) -> String:
+	if typeof(value) == TYPE_BOOL:
+		return tr("Some records are partial.") if value else ""
+	var count := _count(value)
+	return tr("Partial records: %d") % count if count > 0 else ""
+
+
+func _active_text(value: Variant) -> String:
+	if typeof(value) == TYPE_BOOL:
+		return tr("A flight is in progress.") if value else ""
+	var count := _count(value)
+	return tr("Flights in progress: %d") % count if count > 0 else ""
+
+
+func _speed(value: Variant) -> String:
+	var speed := _number(value)
+	return "—" if speed < 0.0 else Units.format(Units.speed(speed, _unit_system))
+
+
+func _duration(seconds: float) -> String:
+	if not is_finite(seconds) or seconds < 0.0:
+		return "—"
+	var total := maxi(0, roundi(seconds))
+	if seconds == 0.0: return tr("%d min") % 0
+	if total < 60: return tr("<1 min")
+	var hours := floori(float(total) / 3600.0)
+	var minutes := int((total % 3600) / 60)
+	if hours > 0: return tr("%d h %02d min") % [hours, minutes]
+	return tr("%d min") % minutes
+
+
+func _number(value: Variant) -> float:
+	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
+		var number := float(value)
+		return number if is_finite(number) else -1.0
+	return -1.0
+
+
+func _count(value: Variant) -> int:
+	var number := _number(value)
+	return maxi(0, roundi(number)) if number >= 0.0 else 0

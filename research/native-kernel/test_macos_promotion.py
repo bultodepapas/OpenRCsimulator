@@ -294,6 +294,7 @@ class GeneratorTests(unittest.TestCase):
         self.args.research_engine_build_receipt = self.root / "build-editor.json"
         self.args.research_engine_archive = self.root / "source.zip"
         self.args.research_engine_extension_api = self.root / "godot-cpp/gdextension/extension_api-4-7.json"
+        self.args.research_engine_reference_godot = self.root / "official-godot"
         self.args.research_engine_patch = [self.root / "0001.patch"]
         selection = promotion.ENGINE_POLICY.selection_from_args(self.args)
         self.package.verified_mac_install = unittest.mock.Mock(return_value=self.installed)

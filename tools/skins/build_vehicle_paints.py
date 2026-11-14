@@ -909,6 +909,603 @@ def build_jet(atlas: str):
     return to_image(colour), to_image(glow_rgb), to_image(rough_rgb).convert("L")
 
 
+# ---------------------------------------------------------------------------------------------
+# Sebart Avanti S jet: "Sabre Plata". A natural-metal tribute to early-1950s USAF day fighters with fictional
+# FU-861 / 20861 markings: aluminium panels of varying temper and polish, flush-rivet rows, screwed hatches, a
+# gun-blast panel, a heat-stained tail, Korea-style yellow ID bands and a chequered nose ring. Four maps per atlas:
+# albedo, roughness, metallic (bare metal vs paint) and a tangent-space normal map baked from a height field
+# (panel grooves, rivet dimples, oil-canned skins). Same scene-space bake as Verde Neón Carbono above.
+# ---------------------------------------------------------------------------------------------
+SABRE_ATLASES = {
+    "wing": (("paint_wing",), (2048, 2048)),
+    "doors": (("paint_doors_ala",), (1024, 1024)),
+    "fuselage": (("paint_fuselage",), (2048, 4096)),
+    "stab": (("paint_stab",), (1024, 1024)),
+    "fin": (("paint_fin",), (2048, 1024)),
+}
+SILVER_ACE_SOURCES = ROOT / "tools/skins/sources/silver-ace"  # public-domain USAF insignia (see its README.md)
+# Art-directed aluminium reflectance (sRGB) and roughness per panel: temper, polish and age differ panel to panel.
+ALU_TONES = np.array([(214, 218, 222), (199, 206, 213), (226, 226, 221), (189, 196, 204),
+                      (207, 209, 205), (220, 223, 228), (182, 188, 194), (232, 233, 233)], dtype=np.float64) / 255.0
+ALU_ROUGH = np.array([0.26, 0.34, 0.22, 0.42, 0.31, 0.27, 0.47, 0.19])
+# Metallic share per panel. Compatibility flight and Home scenes disable sky reflections (atmosphere.gd), where a
+# fully metallic skin keeps only sun highlights and reads near-black; a partial share keeps a diffuse silver body
+# under ambient light and still reflects where the High profile enables sky reflections.
+ALU_METAL = np.array([0.60, 0.52, 0.66, 0.46, 0.56, 0.60, 0.44, 0.70])
+SABRE_INK = hex_rgb("#1d1f22")
+SABRE_WHITE = hex_rgb("#ebe9e2")
+SABRE_YELLOW = hex_rgb("#e3b21f")
+SABRE_OLIVE = hex_rgb("#2f3229")
+SABRE_RED = hex_rgb("#b3262a")
+FUS_NOSE, FUS_LEN = -0.938, 2.221
+_SABRE_ART: dict = {}
+
+
+def _hash(*ints, seed: int = 0) -> np.ndarray:
+    """Deterministic 0..1 hash of integer arrays (panel, rivet and noise lattice ids)."""
+    with np.errstate(over="ignore"):
+        v = np.full(np.shape(ints[0]), np.uint64(seed) * np.uint64(0x9E3779B97F4A7C15) + np.uint64(0x632BE5AB),
+                    dtype=np.uint64)
+        for value in ints:
+            v = (v ^ np.asarray(value).astype(np.int64).astype(np.uint64)) * np.uint64(0x100000001B3)
+            v ^= v >> np.uint64(29)
+            v *= np.uint64(0xBF58476D1CE4E5B9)
+            v ^= v >> np.uint64(32)
+    return (v >> np.uint64(40)).astype(np.float64) / float(1 << 24)
+
+
+def noise3(p, scale, seed: int):
+    """Smooth value noise in scene space (continuous across UV seams); `scale` may be per axis."""
+    q = p / np.asarray(scale, dtype=np.float64)
+    i = np.floor(q)
+    f = q - i
+    f = f * f * (3.0 - 2.0 * f)
+    i = i.astype(np.int64)
+    out = np.zeros(len(p))
+    for dx in (0, 1):
+        for dy in (0, 1):
+            for dz in (0, 1):
+                w = (f[:, 0] if dx else 1 - f[:, 0]) * (f[:, 1] if dy else 1 - f[:, 1]) * (f[:, 2] if dz else 1 - f[:, 2])
+                out += w * _hash(i[:, 0] + dx, i[:, 1] + dy, i[:, 2] + dz, seed=seed)
+    return out
+
+
+def fbm(p, scale, seed: int, octaves: int = 3):
+    total, norm, amp = np.zeros(len(p)), 0.0, 1.0
+    for octave in range(octaves):
+        total += amp * noise3(p, np.asarray(scale, dtype=np.float64) / (2.0 ** octave), seed + octave * 31)
+        norm += amp
+        amp *= 0.5
+    return total / norm
+
+
+def _nearest(v, lines):
+    """Signed distance from v to the nearest line value, the interval index and the fraction across it."""
+    lines = np.asarray(lines, dtype=np.float64)
+    k = np.searchsorted(lines, v)
+    lo = lines[np.clip(k - 1, 0, len(lines) - 1)]
+    hi = lines[np.clip(k, 0, len(lines) - 1)]
+    d = np.where(np.abs(v - lo) < np.abs(v - hi), v - lo, v - hi)
+    frac = np.where(hi > lo, (v - lo) / np.maximum(hi - lo, 1e-9), 0.5)
+    return d, k, np.clip(frac, 0.0, 1.0)
+
+
+def rivets(d, t, offsets, pitch, radius=0.0007):
+    """Mask of flush rivets in rows parallel to a seam: d = signed distance from the seam, t = position along it."""
+    best = np.full(np.shape(d), np.inf)
+    for n, offset in enumerate(offsets):
+        phase = (t + n * pitch * 0.5) % pitch - pitch * 0.5  # neighbouring rows stagger
+        best = np.minimum(best, np.hypot(d - offset, phase))
+    return 1.0 - smoothstep(radius * 0.55, radius, best)
+
+
+def scratches(a, b, cell, density, seed, width=0.0006):
+    """Short random hairline scratches in surface coordinates (metres): one candidate stroke per cell."""
+    out = np.zeros(np.shape(a))
+    for layer in range(2):
+        shift = layer * cell * 0.5
+        ia, ib = np.floor((a + shift) / cell), np.floor((b + shift) / cell)
+        present = _hash(ia, ib, seed=seed + layer * 7) < density
+        angle = _hash(ia, ib, seed=seed + layer * 7 + 1) * np.pi
+        strength = _hash(ia, ib, seed=seed + layer * 7 + 2)
+        da, db = a + shift - (ia + 0.5) * cell, b + shift - (ib + 0.5) * cell
+        along = da * np.cos(angle) + db * np.sin(angle)
+        across = -da * np.sin(angle) + db * np.cos(angle)
+        dist = np.hypot(across, np.maximum(np.abs(along) - (0.2 + 0.25 * strength) * cell, 0.0))
+        out = np.maximum(out, present * (1.0 - smoothstep(width * 0.5, width, dist)) * (0.45 + 0.55 * strength))
+    return out
+
+
+def _sabre_text(text: str, aspect: float, lines: int = 1) -> np.ndarray:
+    """Upright block lettering mask (1 = ink), USAF style; several lines for stencil placards."""
+    key = ("text", text, round(aspect, 3), lines)
+    if key not in _SABRE_ART:
+        from PIL import ImageDraw, ImageFont
+        height = 128 * lines
+        width = int(round(height * aspect))
+        canvas = Image.new("L", (width, height), 0)
+        draw = ImageDraw.Draw(canvas)
+        rows = text.split("\n")
+        font = ImageFont.truetype(str(FONT), int(height / len(rows) * 0.78))
+        stroke = 6 if lines == 1 else 2
+        widest = max(draw.textbbox((0, 0), row, font=font, stroke_width=stroke)[2] for row in rows)
+        if widest > width * 0.97:
+            font = ImageFont.truetype(str(FONT), int(height / len(rows) * 0.78 * width * 0.97 / widest))
+        for n, row in enumerate(rows):
+            draw.text((width * 0.5, height * (n + 0.5) / len(rows)), row, fill=255, font=font, anchor="mm",
+                      stroke_width=stroke, stroke_fill=255)
+        _SABRE_ART[key] = np.asarray(canvas, dtype=np.float64) / 255.0
+    return _SABRE_ART[key]
+
+
+def _sabre_insignia() -> np.ndarray:
+    if "insignia" not in _SABRE_ART:
+        art = Image.open(SILVER_ACE_SOURCES / "usaf-roundel.png").convert("RGBA")
+        _SABRE_ART["insignia"] = np.asarray(art, dtype=np.float64) / 255.0
+    return _SABRE_ART["insignia"]
+
+
+def _rescue_arrow() -> np.ndarray:
+    if "rescue" not in _SABRE_ART:
+        from PIL import ImageDraw, ImageFont
+        img = Image.new("RGBA", (560, 160), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        red = tuple(int(c * 255) for c in SABRE_RED) + (255,)
+        d.polygon([(8, 52), (420, 52), (420, 14), (552, 80), (420, 146), (420, 108), (8, 108)], fill=red)
+        font = ImageFont.truetype(str(FONT), 46)
+        d.text((214, 80), "RESCUE", fill=(240, 238, 230, 255), font=font, anchor="mm", stroke_width=2,
+               stroke_fill=(240, 238, 230, 255))
+        _SABRE_ART["rescue"] = np.asarray(img, dtype=np.float64) / 255.0
+    return _SABRE_ART["rescue"]
+
+
+def _side_uv(p, n, z0, z1, y0, y1):
+    """Box coordinates on a fuselage or fin side that read left-to-right from both sides, and the side weight."""
+    z, y = p[:, 2], p[:, 1]
+    u = np.where(n[:, 0] >= 0.0, (z1 - z) / (z1 - z0), (z - z0) / (z1 - z0))
+    v = (y1 - y) / (y1 - y0)
+    inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1)
+    return u, v, inside * smoothstep(0.35, 0.6, np.abs(n[:, 0]))
+
+
+class _Skin:
+    """Per-texel material channels of a natural-metal skin, built up layer by layer."""
+
+    def __init__(self, count: int):
+        self.colour = np.zeros((count, 3))
+        self.rough = np.zeros(count)
+        self.metal = np.ones(count)
+        self.height = np.zeros(count)  # metres, + out of the surface
+        self.paint = np.zeros(count)  # coverage by paint or decal (0..1)
+
+    def panels(self, panel_id, grain_a, grain_b, p, seed):
+        tone = np.minimum((_hash(panel_id, seed=seed) * len(ALU_TONES)).astype(int), len(ALU_TONES) - 1)
+        self.colour = ALU_TONES[tone].copy()
+        self.rough = ALU_ROUGH[tone].copy()
+        self.metal = ALU_METAL[tone].copy()
+        # Directional polishing grain (ambientCG Metal009) along the panel, each panel offset; some turned 90 deg.
+        grain = _brushed()
+        turned = _hash(panel_id, seed=seed + 5) < 0.3
+        ga = np.where(turned, grain_b, grain_a) + _hash(panel_id, seed=seed + 6)
+        gb = np.where(turned, grain_a, grain_b) * 4.0 + _hash(panel_id, seed=seed + 7)
+        g = _bilinear(grain, (ga / 0.22) % 1.0, (gb / 0.22) % 1.0) - _BRUSHED_MEAN
+        self.rough = self.rough + 0.30 * g
+        self.colour = self.colour * (1.0 + 0.05 * g)[:, None]
+        # Oxidation and handling blotches.
+        blotch = fbm(p, 0.09, seed + 11)
+        self.colour = self.colour * (0.95 + 0.07 * blotch)[:, None]
+        self.rough = self.rough + 0.10 * (fbm(p, 0.05, seed + 13) - 0.5)
+        return tone
+
+    def groove(self, distance, width=0.0010, depth=0.00025, wash=0.06):
+        line = _line(distance, width)
+        near = 1.0 - smoothstep(0.0, 0.004, np.abs(distance))
+        self.colour = self.colour * (1.0 - 0.24 * line - wash * near)[:, None]
+        self.rough = np.maximum(self.rough, 0.5 * line) + 0.05 * near
+        self.height -= depth * line
+        return line
+
+    def rivet(self, mask, depth=0.00006):
+        self.colour = self.colour * (1.0 - 0.16 * mask)[:, None]
+        self.rough = self.rough + 0.16 * mask
+        self.height -= depth * mask
+
+    def screw(self, mask):
+        self.colour = mix(self.colour, hex_rgb("#8b8e92"), mask)
+        self.rough = self.rough + (0.40 - self.rough) * mask
+        self.height += 0.00005 * mask
+
+    def paint_over(self, colour, alpha, rough=0.42, chips=None):
+        """Lacquer or decal over the metal; `chips` (0..1) wears it back to the bare skin."""
+        alpha = np.clip(alpha, 0.0, 1.0)
+        if chips is not None:
+            alpha = alpha * (1.0 - chips)
+        self.colour = mix(self.colour, colour, alpha)
+        self.rough = self.rough + (rough - self.rough) * alpha
+        self.metal = self.metal * (1.0 - alpha)
+        self.paint = np.maximum(self.paint, alpha)
+
+    def grime(self, amount, tint=(0.36, 0.33, 0.29), rough=0.55, metal_loss=0.5):
+        amount = np.clip(amount, 0.0, 1.0)
+        self.colour = mix(self.colour, self.colour * np.asarray(tint) * 1.6, amount)
+        self.rough = self.rough + (rough - self.rough) * amount
+        self.metal = self.metal * (1.0 - metal_loss * amount)
+
+    def scratch(self, mask):
+        # Bare skin shows through paint; on metal a scratch catches the light as a duller, brighter hairline.
+        self.colour = mix(self.colour, np.minimum(self.colour * 1.08 + 0.04, 1.0), mask * (1.0 - self.paint))
+        self.colour = mix(self.colour, ALU_TONES[0], mask * self.paint)
+        self.metal = np.maximum(self.metal, 0.6 * mask * self.paint)
+        self.rough = self.rough + 0.08 * mask
+
+
+_BRUSHED = None
+_BRUSHED_MEAN = 0.0
+
+
+def _brushed():
+    global _BRUSHED, _BRUSHED_MEAN
+    if _BRUSHED is None:
+        _BRUSHED = np.asarray(Image.open(APP / "assets/vehicle-paints/shared/brushed_metal_roughness.jpg").convert("L"),
+                              dtype=np.float64) / 255.0
+        _BRUSHED_MEAN = float(_BRUSHED.mean())
+    return _BRUSHED
+
+
+_SECTION = None
+
+
+def _fuselage_centre(zn):
+    """Height of the fuselage cross-section centre along its length (smoothed over the canopy deck step)."""
+    global _SECTION
+    if _SECTION is None:
+        bins = 64
+        pts = np.concatenate([prim[1] for prim in scene_primitives(JET_GLB, ("paint_fuselage",))])
+        k = np.clip(((pts[:, 2] - FUS_NOSE) / FUS_LEN * bins).astype(int), 0, bins - 1)
+        lo, hi = np.full(bins, np.inf), np.full(bins, -np.inf)
+        np.minimum.at(lo, k, pts[:, 1])
+        np.maximum.at(hi, k, pts[:, 1])
+        good = np.isfinite(lo)
+        idx = np.arange(bins)
+        centre = (np.interp(idx, idx[good], lo[good]) + np.interp(idx, idx[good], hi[good])) * 0.5
+        centre = np.convolve(np.pad(centre, 4, mode="edge"), np.ones(9) / 9.0, mode="valid")
+        _SECTION = ((idx + 0.5) / bins, centre)
+    return np.interp(zn, *_SECTION)
+
+
+FUS_STATIONS = [0.062, 0.130, 0.200, 0.270, 0.335, 0.400, 0.470, 0.535, 0.600, 0.665, 0.730, 0.790, 0.850,
+                0.905, 0.955]
+FUS_SEAMS = np.radians([40.0, 84.0, 130.0, 180.0])
+FUS_STRINGERS = np.radians([20.0, 62.0, 107.0, 155.0])
+FUS_HATCHES = [(0.470, 0.545, 0.175, 0.225), (0.620, 0.680, 0.150, 0.200), (0.860, 0.905, 0.125, 0.165)]
+GUN_PANEL = (0.092, 0.178, -0.004, 0.100)
+GUN_SLOTS = (0.022, 0.046, 0.070)
+
+
+def sabre_fuselage(p, n):
+    x, y, z = p[:, 0], p[:, 1], p[:, 2]
+    zn = (z - FUS_NOSE) / FUS_LEN
+    zm = zn * FUS_LEN
+    dy = y - _fuselage_centre(zn)
+    r = np.hypot(x, dy)
+    phi = np.arctan2(x, dy)  # 0 on top, +-pi under the belly
+    a = np.abs(phi)
+    arc = r * phi
+    side = smoothstep(0.45, 0.65, np.abs(n[:, 0]))
+    skin = _Skin(len(p))
+
+    d_station, k_station, f_station = _nearest(zn, FUS_STATIONS)
+    d_seam, k_seam, _ = _nearest(a, FUS_SEAMS)
+    k_seam = np.where(k_seam == 0, 0, k_seam + 10 * (x < 0))  # the top panel spans the spine
+    panel = k_station * 64 + k_seam
+    skin.panels(panel, zm, arc, p, seed=101)
+    # Oil-canned skins: each panel bows in or out a fraction of a millimetre between frames.
+    across = np.where(a < FUS_SEAMS[0], (phi + FUS_SEAMS[0]) / (2 * FUS_SEAMS[0]), _nearest(a, FUS_SEAMS)[2])
+    bow = np.sin(np.pi * f_station) * np.sin(np.pi * np.clip(across, 0, 1))
+    skin.height += 0.00028 * bow * np.where(_hash(panel, seed=7) < 0.5, -1.0, 1.0)
+
+    # Seams, frame joints and their rivet rows; single rows along the stringers and mid-frames.
+    skin.groove(d_station * FUS_LEN)
+    skin.groove(d_seam * r)
+    major = np.abs(zn - 0.730) * FUS_LEN  # the aft-fuselage break: a heavier joint with a triple rivet row
+    skin.groove(major, width=0.0016, depth=0.00035)
+    rivet = rivets(d_station * FUS_LEN, arc, (-0.0035, 0.0035), 0.007)
+    rivet = np.maximum(rivet, rivets((zn - 0.730) * FUS_LEN, arc, (-0.0065, 0.0065), 0.007))
+    rivet = np.maximum(rivet, rivets(d_seam * r, zm, (-0.0035, 0.0035), 0.007))
+    rivet = np.maximum(rivet, rivets(_nearest(a, FUS_STRINGERS)[0] * r, zm, (0.0,), 0.009))
+    mids = (np.asarray(FUS_STATIONS[:-1]) + np.asarray(FUS_STATIONS[1:])) * 0.5
+    rivet = np.maximum(rivet, rivets(_nearest(zn, mids)[0] * FUS_LEN, arc, (0.0,), 0.009))
+    skin.rivet(rivet * (zn > 0.062))
+
+    # Screwed access hatches on both sides.
+    for z0, z1, y0, y1 in FUS_HATCHES:
+        box = _box_distance(zm, y, z0 * FUS_LEN, z1 * FUS_LEN, y0, y1)
+        skin.groove(np.where(side > 0.5, box, 1.0), width=0.0013)
+        along = np.where(np.minimum(np.abs(y - y0), np.abs(y - y1)) < np.minimum(np.abs(zm - z0 * FUS_LEN),
+                                                                                 np.abs(zm - z1 * FUS_LEN)), zm, y)
+        phase = (along % 0.011) - 0.0055
+        skin.screw((1.0 - smoothstep(0.0007, 0.0011, np.hypot(box + 0.004, phase))) * (box < 0) * side)
+
+    # Gun-blast panel: darker stainless with three ports and their soot.
+    gz0, gz1, gy0, gy1 = GUN_PANEL
+    gun_box = _box_distance(zm, y, gz0 * FUS_LEN, gz1 * FUS_LEN, gy0, gy1)
+    gun = (gun_box < 0) * side
+    skin.colour = mix(skin.colour, hex_rgb("#b2ada3") * (0.97 + 0.06 * fbm(p, 0.02, 41))[:, None], gun)
+    skin.rough = skin.rough + (0.30 - skin.rough) * gun
+    skin.groove(np.where(side > 0.5, gun_box, 1.0), width=0.0013)
+    phase = (np.where(np.abs(y - gy0) < 0.004, zm, np.where(np.abs(y - gy1) < 0.004, zm, y)) % 0.010) - 0.005
+    skin.screw((1.0 - smoothstep(0.0007, 0.0011, np.hypot(gun_box + 0.0035, phase))) * (gun_box < 0) * side)
+    slot_z0, slot_z1 = 0.100 * FUS_LEN, 0.136 * FUS_LEN
+    soot = np.zeros(len(p))
+    for yc in GUN_SLOTS:
+        capsule = np.hypot(np.maximum(np.maximum(slot_z0 - zm, zm - slot_z1), 0.0), y - yc) - 0.0042
+        port = (1.0 - smoothstep(-0.0004, 0.0003, capsule)) * side
+        rim = _line(capsule - 0.0009, 0.0012) * side
+        skin.colour = mix(skin.colour, hex_rgb("#d9dbdc"), rim * 0.6)
+        skin.rough = skin.rough + (0.12 - skin.rough) * rim * 0.6
+        skin.paint_over(hex_rgb("#131415"), port, rough=0.85)
+        skin.height -= 0.0008 * port
+        aft = np.maximum(zm - slot_z1, 0.0)
+        spread = 0.0045 + aft * 0.22
+        streak = 0.6 + 0.4 * noise3(p, (0.004, 0.003, 0.06), 43)
+        soot = np.maximum(soot, np.exp(-aft / 0.12) * (1.0 - smoothstep(spread * 0.5, spread, np.abs(y - yc)))
+                          * (zm > slot_z0) * streak * side)
+    skin.grime(soot * 0.85, tint=(0.25, 0.24, 0.23), rough=0.6, metal_loss=0.6)
+
+    # Dielectric radome, chequered ring and the olive-drab anti-glare panel.
+    radome = 1.0 - smoothstep(0.0615, 0.0625, zn)
+    skin.paint_over(hex_rgb("#2b2d29"), radome, rough=0.45)
+    ring = (zn > 0.064) & (zn < 0.088)
+    checks = ((np.floor((phi + np.pi) / (2 * np.pi / 24)) + np.floor((zn - 0.064) / 0.008)) % 2) < 1
+    chips = smoothstep(0.70, 0.80, fbm(p, 0.010, 47)) * 0.7
+    skin.paint_over(np.where(checks[:, None], SABRE_INK, SABRE_WHITE), ring.astype(float), rough=0.38, chips=chips * 0.4)
+    for edge in (0.064, 0.088):
+        skin.paint_over(SABRE_INK, _line((zn - edge) * FUS_LEN, 0.003), rough=0.4)
+    glare_limit = np.radians(np.interp(zn, [0.088, 0.12, 0.165], [28.0, 50.0, 64.0]))
+    glare = (1.0 - smoothstep(-0.001, 0.001, (a - glare_limit) * r)) * (zn > 0.088) * (1.0 - smoothstep(0.163, 0.167, zn))
+    skin.paint_over(SABRE_OLIVE, glare, rough=0.72, chips=chips)
+
+    # Korea-style yellow ID band with black borders.
+    band = (zn > 0.705) & (zn < 0.738)
+    skin.paint_over(SABRE_YELLOW, band.astype(float), rough=0.4, chips=chips)
+    for edge in (0.705, 0.738):
+        skin.paint_over(SABRE_INK, _line((zn - edge) * FUS_LEN, 0.006), rough=0.4, chips=chips)
+
+    # Markings: U.S. AIR FORCE, the national insignia, the buzz number, pilot, rescue arrow and stencils.
+    def side_mask(mask, z0, z1, y0, y1):
+        u, v, weight = _side_uv(p, n, FUS_NOSE + z0 * FUS_LEN, FUS_NOSE + z1 * FUS_LEN, y0, y1)
+        return np.where(weight > 0, _bilinear(mask, u, v), 0.0) * weight
+
+    def side_rgba(art, z0, z1, y0, y1):
+        u, v, weight = _side_uv(p, n, FUS_NOSE + z0 * FUS_LEN, FUS_NOSE + z1 * FUS_LEN, y0, y1)
+        sample = _bilinear(art, u, v)
+        return sample[:, :3], np.where(weight > 0, sample[:, 3], 0.0) * weight
+
+    def lettering(text, z0, z1, y0, y1, colour=SABRE_INK, rows=1):
+        aspect = (z1 - z0) * FUS_LEN / (y1 - y0)
+        skin.paint_over(colour, side_mask(_sabre_text(text, aspect, rows), z0, z1, y0, y1), rough=0.45, chips=chips * 0.5)
+
+    lettering("U.S. AIR FORCE", 0.190, 0.385, 0.072, 0.106)
+    insignia_rgb, insignia_alpha = side_rgba(_sabre_insignia(), 0.765, 0.845, 0.058, 0.152)
+    skin.paint_over(insignia_rgb, insignia_alpha, rough=0.42, chips=chips * 0.5)
+    lettering("FU-861", 0.855, 0.952, 0.030, 0.078)
+    lettering("CAPT. M. ORTEGA", 0.215, 0.300, 0.114, 0.126)
+    rescue_rgb, rescue_alpha = side_rgba(_rescue_arrow(), 0.322, 0.366, 0.112, 0.127)
+    skin.paint_over(rescue_rgb, rescue_alpha, rough=0.42)
+    lettering("USAF F-86 SPORT\nSERIAL NO. 52-0861\nFUEL JP-4", 0.432, 0.500, 0.064, 0.094, rows=3)
+    lettering("EXT. POWER\n28V DC", 0.612, 0.650, 0.074, 0.092, rows=2)
+    lettering("NO STEP", 0.560, 0.598, 0.196, 0.206)
+
+    # Fuel filler cap on the spine.
+    top = smoothstep(0.55, 0.7, n[:, 1])
+    cap = np.hypot(x, (zn - 0.53) * FUS_LEN)
+    skin.colour = mix(skin.colour, hex_rgb("#a7aaad"), (1.0 - smoothstep(0.010, 0.011, cap)) * top)
+    skin.groove(np.where(top > 0, cap - 0.0112, 1.0), width=0.0012)
+    skin.paint_over(SABRE_RED, _line(cap - 0.0145, 0.003) * top, rough=0.4)
+
+    # Weathering: heat-stained tail, exhaust soot, belly oil streaks, handling scratches.
+    heat = smoothstep(0.935, 0.99, zn)
+    temper = np.interp(zn, [0.935, 0.96, 0.98, 1.0], [0.0, 0.33, 0.66, 1.0])
+    heat_tint = np.stack([np.interp(temper, [0, 0.33, 0.66, 1], c) for c in
+                          ([0.80, 0.74, 0.55, 0.42], [0.78, 0.66, 0.45, 0.46], [0.76, 0.50, 0.38, 0.60])], axis=1)
+    skin.colour = mix(skin.colour, heat_tint, heat * (1.0 - skin.paint))
+    skin.rough = skin.rough + (0.34 - skin.rough) * heat
+    exhaust = smoothstep(0.90, 1.0, zn) * (1.0 - smoothstep(0.05, 0.17, y))
+    streaks = 0.5 + 0.5 * noise3(p, (0.006, 0.006, 0.12), 53)
+    skin.grime(exhaust * streaks * 0.8, tint=(0.24, 0.23, 0.22), rough=0.55)
+    belly = smoothstep(np.radians(115), np.radians(150), a)
+    oil = np.exp(-np.mod(zn - 0.20, 0.135) * FUS_LEN / 0.16) * smoothstep(0.55, 0.85, noise3(p, (0.005, 0.005, 0.2), 59))
+    skin.grime(oil * belly * 0.7, tint=(0.40, 0.34, 0.26), rough=0.5, metal_loss=0.35)
+    skin.colour = skin.colour * (1.0 - 0.07 * smoothstep(np.radians(70), np.radians(170), a))[:, None]
+    sill = (zn > 0.13) & (zn < 0.42) & (y > 0.08)
+    walk = (zn > 0.42) & (zn < 0.70) & (n[:, 1] > 0.5)
+    density = np.where(sill, 0.22, np.where(walk, 0.18, 0.03))
+    skin.scratch(0.6 * scratches(zm, arc, 0.018, 1.0, 61) * (_hash(np.floor(zm / 0.018), np.floor(arc / 0.018), seed=63) < density))
+    return skin
+
+
+def sabre_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len):
+    """Wings, gear doors and stabiliser: panels between span joints and spars, rivets on ribs, ID band, insignia."""
+    x, z = np.abs(p[:, 0]), p[:, 2]
+    s = span_norm * span_hi  # metres from the centre line
+    top = n[:, 1] >= 0.0
+    skin_face = smoothstep(0.3, 0.6, np.abs(n[:, 1]))
+    chord_m = chord_len
+    joints = [0.14, 0.42, 0.70] if atlas != "stab" else [0.17, 0.32]
+    spars = [0.14, 0.63] if atlas != "stab" else [0.16, 0.62]
+    ribs = np.arange(0.10, span_hi, 0.075 if atlas != "stab" else 0.055)
+    skin = _Skin(len(p))
+    d_joint, k_joint, f_joint = _nearest(s, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, spars)
+    panel = k_joint * 16 + k_spar * 2 + top
+    skin.panels(panel, s, z, p, seed=211 if atlas != "stab" else 223)
+    skin.height += 0.00025 * np.sin(np.pi * f_joint) * np.sin(np.pi * f_spar) * np.where(_hash(panel, seed=9) < 0.5, -1, 1)
+    # Slats and leading edges: polished, eroded aluminium.
+    slat = 1.0 - smoothstep(0.135, 0.145, frac)
+    skin.colour = mix(skin.colour, ALU_TONES[7], slat * 0.6)
+    skin.rough = skin.rough + (0.12 - skin.rough) * slat * 0.7
+    erosion = (1.0 - smoothstep(0.0, 0.035, frac)) * smoothstep(0.55, 0.85, fbm(p, 0.004, 71))
+    skin.rough = skin.rough + 0.2 * erosion
+    skin.groove(np.where(skin_face > 0.5, d_joint, 1.0))
+    skin.groove(np.where(skin_face > 0.5, d_spar * chord_m, 1.0))
+    rivet = rivets(d_joint, z, (-0.0035, 0.0035), 0.007)
+    rivet = np.maximum(rivet, rivets(d_spar * chord_m, s, (-0.0035, 0.0035), 0.007))
+    rivet = np.maximum(rivet, rivets(_nearest(s, ribs)[0], z, (0.0,), 0.008))
+    stringers = [0.28, 0.40, 0.52] if atlas != "stab" else [0.40]
+    rivet = np.maximum(rivet, rivets(_nearest(frac, stringers)[0] * chord_m, s, (0.0,), 0.010) * (frac > 0.15) * (frac < 0.62))
+    skin.rivet(rivet * skin_face)
+    chips = smoothstep(0.70, 0.80, fbm(p, 0.010, 73)) * 0.7 + 0.6 * (1.0 - smoothstep(0.0, 0.02, frac))
+    if atlas != "stab":
+        # Yellow ID band, wrapped round the wing, with black borders.
+        b0, b1 = 0.74 * span_hi, 0.82 * span_hi
+        skin.paint_over(SABRE_YELLOW, ((s > b0) & (s < b1)).astype(float), rough=0.4, chips=chips)
+        for edge in (b0, b1):
+            skin.paint_over(SABRE_INK, _line(s - edge, 0.006), rough=0.4, chips=chips)
+        # National insignia on the upper surfaces, star point forward.
+        art = _sabre_insignia()
+        x0, x1 = 0.36, 0.60
+        width = x1 - x0
+        height = width * art.shape[0] / art.shape[1]
+        zc = z - (frac - 0.40) * chord_m  # centre the insignia on the 40 % chord line, following the sweep
+        u = (s - x0) / width
+        v = (z - (zc - height * 0.5)) / height
+        inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1) & top
+        sample = _bilinear(art, u, v)
+        skin.paint_over(sample[:, :3], np.where(inside, sample[:, 3], 0.0) * skin_face, rough=0.42, chips=chips * 0.4)
+        # Black walkway outline at the root and a filler cap outboard.
+        walk = _box_distance(s, frac * chord_m, 0.12, 0.30, 0.26 * chord_m, 0.58 * chord_m)
+        skin.paint_over(SABRE_INK, _line(walk, 0.003) * top * skin_face, rough=0.45, chips=chips)
+        cap = np.hypot(s - 0.66, (frac - 0.36) * chord_m)
+        skin.colour = mix(skin.colour, hex_rgb("#a7aaad"), (1.0 - smoothstep(0.009, 0.010, cap)) * top)
+        skin.groove(np.where(top, cap - 0.0102, 1.0), width=0.0012)
+        skin.paint_over(SABRE_RED, _line(cap - 0.013, 0.0028) * top, rough=0.4)
+        inside_walk = (walk < 0) & top
+        skin.scratch(0.6 * scratches(s, z, 0.016, 1.0, 79) * np.where(inside_walk, 0.35, 0.03))
+        # Undersides: duller, with streaks from the gear bays and drains.
+        streak = smoothstep(0.55, 0.85, noise3(p, (0.2, 0.006, 0.006), 83)) * (frac > 0.3)
+        skin.grime(np.where(top, 0.0, 0.35 * streak), tint=(0.40, 0.35, 0.28), rough=0.5, metal_loss=0.3)
+    else:
+        # Stabiliser roots sit beside the exhaust: soot on the inboard aft part.
+        soot = (1.0 - smoothstep(0.10, 0.22, s)) * smoothstep(0.3, 0.9, frac)
+        skin.grime(soot * (0.5 + 0.5 * noise3(p, (0.2, 0.01, 0.01), 89)) * 0.6, tint=(0.25, 0.24, 0.23))
+    skin.rough = skin.rough + np.where(top, 0.0, 0.06)
+    # Gap and edge faces read as plain dull metal.
+    skin.colour = mix(ALU_TONES[6] * 0.8, skin.colour, skin_face)
+    return skin
+
+
+def sabre_fin(p, n, frac, height_norm):
+    y, z = p[:, 1], p[:, 2]
+    chord_m = 0.36
+    skin = _Skin(len(p))
+    joints = [0.212 + 0.365 * h for h in (0.30, 0.62)]
+    d_joint, k_joint, f_joint = _nearest(y, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, [0.12, 0.62])
+    panel = k_joint * 8 + k_spar
+    skin.panels(panel, y, z, p, seed=307)
+    skin.height += 0.00025 * np.sin(np.pi * f_joint) * np.sin(np.pi * f_spar) * np.where(_hash(panel, seed=11) < 0.5, -1, 1)
+    side = smoothstep(0.35, 0.6, np.abs(n[:, 0]))
+    skin.groove(np.where(side > 0.5, d_joint, 1.0))
+    skin.groove(np.where(side > 0.5, d_spar * chord_m, 1.0))
+    rivet = rivets(d_joint, z, (-0.0035, 0.0035), 0.007)
+    rivet = np.maximum(rivet, rivets(d_spar * chord_m, y, (-0.0035, 0.0035), 0.007))
+    rivet = np.maximum(rivet, rivets(_nearest(y, np.arange(0.24, 0.58, 0.045))[0], z, (0.0,), 0.008))
+    rivet = np.maximum(rivet, rivets(_nearest(frac, [0.30, 0.45])[0] * chord_m, y, (0.0,), 0.010))
+    skin.rivet(rivet * side)
+    chips = smoothstep(0.70, 0.80, fbm(p, 0.010, 97)) * 0.7
+    # Chequered fin cap with a black keyline under it.
+    cap = height_norm > 0.83
+    checks = ((np.floor(z / 0.016) + np.floor(y / 0.016)) % 2) < 1
+    skin.paint_over(np.where(checks[:, None], SABRE_INK, SABRE_WHITE), cap.astype(float) * side, rough=0.38, chips=chips * 0.5)
+    skin.paint_over(SABRE_INK, _line((height_norm - 0.83) * 0.365, 0.004) * side, rough=0.4)
+
+    def lettering(text, z0, z1, y0, y1, rows=1):
+        u, v, weight = _side_uv(p, n, z0, z1, y0, y1)
+        mask = _sabre_text(text, (z1 - z0) / (y1 - y0), rows)
+        skin.paint_over(SABRE_INK, np.where(weight > 0, _bilinear(mask, u, v), 0.0) * weight, rough=0.45, chips=chips * 0.5)
+
+    lettering("U.S. AIR FORCE", 0.905, 1.035, 0.352, 0.366)
+    lettering("20861", 0.885, 1.045, 0.300, 0.342)
+    # Exhaust haze at the fin root's trailing edge.
+    soot = (1.0 - smoothstep(0.0, 0.12, height_norm)) * smoothstep(0.4, 0.9, frac)
+    skin.grime(soot * 0.4, tint=(0.25, 0.24, 0.23))
+    skin.colour = mix(ALU_TONES[6] * 0.8, skin.colour, side)
+    return skin
+
+
+def chord_length(pos, span_axis: int, table, lo: float, hi: float):
+    """Local chord (metres) of a lifting surface, interpolated like chord_fraction."""
+    le, te = table
+    centres = lo + (np.arange(len(le)) + 0.5) * (hi - lo) / len(le)
+    s = pos[..., span_axis]
+    return np.maximum(np.interp(s, centres, te) - np.interp(s, centres, le), 1e-3)
+
+
+def height_to_normal(height, pos, covered, strength=1.0):
+    """Tangent-space normal map (OpenGL / Godot convention, green = up the image) from a height field in metres.
+    Slopes use the true texel size from the scene positions; neighbours more than 1 cm apart are UV-island seams."""
+    h = dilate(height[..., None], covered)[..., 0]
+    pp = dilate(pos, covered)
+    slopes = []
+    for axis in (1, 0):
+        dp = (np.roll(pp, -1, axis) - np.roll(pp, 1, axis)) * 0.5
+        length = np.linalg.norm(dp, axis=2)
+        dh = (np.roll(h, -1, axis) - np.roll(h, 1, axis)) * 0.5
+        valid = (length > 1e-6) & (length < 0.005)
+        slopes.append(np.where(valid, dh / np.maximum(length, 1e-6), 0.0) * strength)
+    normal = np.stack([-slopes[0], slopes[1], np.ones_like(h)], axis=-1)
+    normal /= np.linalg.norm(normal, axis=-1, keepdims=True)
+    return normal * 0.5 + 0.5
+
+
+def build_sabre(atlas: str):
+    materials, size = SABRE_ATLASES[atlas]
+    skin_axis = {"wing": 1, "stab": 1, "doors": 1, "fin": 0}.get(atlas, -1)
+    pos, nrm, _mat, covered = bake_scene(JET_GLB, materials, size, symmetric=atlas in ("wing", "stab", "doors"),
+                                         skin_axis=skin_axis)
+    p, n = pos[covered], nrm[covered]
+    if atlas == "fuselage":
+        skin = sabre_fuselage(p, n)
+    elif atlas in ("wing", "stab", "doors"):
+        span_hi = 0.443 if atlas == "stab" else 0.998
+        lifting = ("paint_stab",) if atlas == "stab" else ("paint_wing",)
+        table = chord_table(JET_GLB, lifting, 0, 28 if atlas == "stab" else 48, -span_hi, span_hi)
+        frac = chord_fraction(p, 0, table, -span_hi, span_hi)
+        if atlas == "doors":
+            n = n.copy()
+            n[:, 1] = -np.maximum(np.abs(n[:, 1]), 0.7)
+        skin = sabre_lifting(p, n, frac, np.abs(p[:, 0]) / span_hi, span_hi, atlas,
+                             chord_length(p, 0, table, -span_hi, span_hi))
+    else:
+        table = chord_table(JET_GLB, ("paint_fin",), 1, 20, 0.212, 0.577)
+        frac = chord_fraction(p, 1, table, 0.212, 0.577)
+        skin = sabre_fin(p, n, frac, (p[:, 1] - 0.212) / (0.577 - 0.212))
+    height, width = covered.shape
+
+    def full(values, channels):
+        out = np.zeros((height, width, channels))
+        out[covered] = values.reshape(len(values), channels)
+        return dilate(out, covered)
+
+    to_image = lambda a: Image.fromarray(np.clip(a * 255.0 + 0.5, 0, 255).astype(np.uint8), "RGB")
+    colour = full(np.clip(skin.colour, 0, 1), 3)
+    rough = full(np.repeat(np.clip(skin.rough, 0.06, 1.0)[:, None], 3, axis=1), 3)
+    metal = full(np.repeat(np.clip(skin.metal, 0, 1)[:, None], 3, axis=1), 3)
+    height_map = np.zeros((height, width))
+    height_map[covered] = skin.height
+    normal = height_to_normal(height_map, pos, covered)
+    return (to_image(colour), to_image(rough).convert("L"), to_image(metal).convert("L"), to_image(normal))
+
+
+_SABRE_CACHE: dict = {}
+
+
+def _sabre_cached(atlas: str):
+    if atlas not in _SABRE_CACHE:
+        _SABRE_CACHE[atlas] = build_sabre(atlas)
+    return _SABRE_CACHE[atlas]
+
+
 def outputs() -> dict:
     """Output path -> zero-argument builder returning encoded bytes (built only when selected)."""
     # shared/ holds unchanged CC0 maps from ambientCG (see shared/LICENSES.txt); this tool does not write them.
@@ -924,6 +1521,12 @@ def outputs() -> dict:
         files[f"avanti-s-a200/verde_neon_carbono_{atlas}.jpg"] = lambda a=atlas: encode(_jet_cached(a)[0], ".jpg")
         files[f"avanti-s-a200/verde_neon_carbono_{atlas}_emission.png"] = lambda a=atlas: encode(_jet_cached(a)[1], ".png")
         files[f"avanti-s-a200/verde_neon_carbono_{atlas}_roughness.png"] = lambda a=atlas: encode(_jet_cached(a)[2], ".png")
+    for atlas in SABRE_ATLASES:
+        stem = f"avanti-s-a200/sabre_plata_{atlas}"
+        files[stem + ".jpg"] = lambda a=atlas: encode(_sabre_cached(a)[0], ".jpg")
+        files[stem + "_roughness.jpg"] = lambda a=atlas: encode(_sabre_cached(a)[1], ".jpg")
+        files[stem + "_metallic.png"] = lambda a=atlas: encode(_sabre_cached(a)[2], ".png")
+        files[stem + "_normal.png"] = lambda a=atlas: encode(_sabre_cached(a)[3], ".png")
     return files
 
 

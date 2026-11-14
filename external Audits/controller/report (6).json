@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+MODE_MISMATCH assistant=mode1 wizard_mode=2 left=["yaw", "throttle"] right=["roll", "pitch"]
+JOYSTICK_CALIBRATION refusal=Joysticks are set up with Detect in Flight axes; skip this step.
+Calibration UI audit: 5 checks, 0 failed

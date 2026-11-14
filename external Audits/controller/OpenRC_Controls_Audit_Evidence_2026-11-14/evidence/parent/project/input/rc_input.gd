@@ -1,0 +1,640 @@
+# RC transmitter / joystick / gamepad reader. A pure sampling seam: the caller
+# supplies input events and the axis reader; this class owns mapping, shaping,
+# arming evidence, and the fixed-tick rate-throttle integrator.
+extends RefCounted
+
+const SmokeAux := preload("res://input/smoke_aux.gd")
+const ControllerProfile := preload("res://input/controller_profile.gd")
+const JetiRadio := preload("res://input/jeti_radio.gd")
+const AXES := 10
+const ARM_THROTTLE := 0.05
+
+## Legacy EdgeTX AETR mapping, retained for calibration/migration callers.
+const DEFAULT_PROFILE := {
+	"kind": "radio",
+	"roll": {"axis": 0, "invert": false, "min": -1.0, "center": 0.0, "max": 1.0},
+	"pitch": {"axis": 1, "invert": true, "min": -1.0, "center": 0.0, "max": 1.0},
+	"throttle": {"axis": 2, "invert": false, "min": -1.0, "center": 0.0, "max": 1.0},
+	"yaw": {"axis": 3, "invert": false, "min": -1.0, "center": 0.0, "max": 1.0},
+}
+
+## Legacy spring-centred SDL gamepad profile, kept as an import fixture.
+const GAMEPAD_PROFILE := {
+	"kind": "gamepad",
+	"roll": {"axis": 2, "invert": false, "min": -1.0, "center": 0.0, "max": 1.0},
+	"pitch": {"axis": 3, "invert": false, "min": -1.0, "center": 0.0, "max": 1.0},
+	"throttle": {"axis": 1, "invert": true, "min": -1.0, "center": 0.0, "max": 1.0},
+	"yaw": {"axis": 0, "invert": false, "min": -1.0, "center": 0.0, "max": 1.0},
+	"deadzone": 0.08,
+	"expo": 0.3,
+	"throttle_rate": 0.5,
+}
+
+const RADIO_NAMES := ["edgetx", "opentx", "frsky", "radiomaster", "jumper", "taranis", "betafpv", "flysky", "ethos"]
+
+var profile: Dictionary = DEFAULT_PROFILE.duplicate(true)
+var connected := false
+var device_id := -1
+var device_key := ""
+var device_name := ""
+var profile_source := "default"
+## Optional engine proof for a live, focused, standardized gamepad connection.
+## Pure readers and radios still require axis events; a zero alone proves nothing.
+var confirmed_gamepad_connection: Callable
+## A rejected draft is not an active-profile fault; existing controls stay live.
+var profile_rejection_error := ""
+var profile_error := ""
+var input_error := ""
+var armed := false
+var axes := PackedFloat64Array()
+var smoke_aux = SmokeAux.new()
+## These are input requests, not simulated flap/gear actuator positions. D6-UX-01: "arm" and "flight_mode" are the
+## FPV quad's arm and Angle/Acro switches (read by multirotor_input.gd); they have no semantic toggle actions.
+var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new(), "arm": SmokeAux.new(), "flight_mode": SmokeAux.new()}
+const _AUX_ACTION_DEFAULTS := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0, "arm": 0.0, "flight_mode": 0.0}
+var _aux_action_values := _AUX_ACTION_DEFAULTS.duplicate()
+var _auxiliary_enabled := true
+
+var _seen: Dictionary = {}
+var _throttle_low_seen := false
+var _rate_throttle := 0.0
+var _neutral_elapsed := 0.0
+var _pressed_buttons: Dictionary = {}
+var _neutral_release_pending := false
+var _focus_rearm_pending := false
+var _profile_ready := false
+var _profile_snapshot: Dictionary = {}
+var _verified_gamepad_poll_used := false
+
+
+func _init() -> void:
+	axes.resize(AXES)
+	_profile_ready = _activate_profile(DEFAULT_PROFILE, "default", false)
+
+
+## info: {guid,name,vendor_id,product_id,known}; saved may be a V2 or legacy profile.
+func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
+	connected = true
+	_verified_gamepad_poll_used = false
+	device_id = id
+	device_name = str(info.get("name", "joystick %d" % id))
+	device_key = key_for(id, info)
+	input_error = ""
+	profile_error = ""
+	profile_rejection_error = ""
+	_focus_rearm_pending = false
+	_pressed_buttons.clear()
+	# Historical radio data permits a malformed optional smoke binding to be
+	# discarded without discarding its otherwise valid primary calibration.
+	# Leave V2 handling unchanged and still validate the complete cleaned legacy
+	# primary mapping before it can drive the aircraft.
+	var candidate: Dictionary = saved
+	if not saved.is_empty() and not saved.has("schema_version") and str(saved.get("kind", "")) == "radio":
+		candidate = SmokeAux.sanitize_profile(saved, false)
+	var upgraded: Dictionary = ControllerProfile.upgrade_legacy(candidate) if not candidate.is_empty() else {}
+	var jeti_claim := JetiRadio.has_jeti_identity_claim(info)
+	var radio_hint := JetiRadio.matches(info) or str(info.get("kind", "")) == "radio" \
+		or (looks_like_radio(device_name) and not jeti_claim)
+	if not upgraded.is_empty():
+		_activate_profile(upgraded, "calibrated", false)
+	elif bool(info.get("known", false)) and not radio_hint and not jeti_claim:
+		_activate_profile(ControllerProfile.defaults("gamepad", "mode2"), "gamepad", false)
+	else:
+		profile = ControllerProfile.unconfigured()
+		if radio_hint:
+			profile.kind = "radio" # Role hint permits calibration; it is not a flight mapping.
+		_profile_ready = false
+		_profile_snapshot.clear()
+		profile_source = "unconfigured"
+		profile_error = "Radio primary controls require calibration before flight." if radio_hint else "Controller role and flight channels are not configured."
+		_reset_controls(false)
+		_configure_smoke_aux()
+	smoke_aux.connect_device(id)
+	for channel in _extra_aux.values(): channel.connect_device(id)
+	_auxiliary_enabled = true
+	_reset_controls(false)
+	if _profile_ready:
+		profile_error = ""
+
+
+## "guid|vid:pid|name", retained only as legacy lookup evidence.
+static func key_for(id: int, info: Dictionary) -> String:
+	return "%s|%04x:%04x|%s" % [info.get("guid", ""), int(info.get("vendor_id", 0)), int(info.get("product_id", 0)), str(info.get("raw_name", info.get("name", "joystick %d" % id)))]
+
+
+static func looks_like_radio(name: String) -> bool:
+	var lowered := name.to_lower()
+	for token in RADIO_NAMES:
+		if token in lowered:
+			return true
+	return false
+
+
+## Activates only a wholly valid candidate. Profile changes clear stale samples and arming evidence.
+func use_profile(candidate: Dictionary, source: String) -> bool:
+	var upgraded := ControllerProfile.upgrade_legacy(candidate)
+	if upgraded.is_empty():
+		profile_rejection_error = "Profile is invalid and was not applied."
+		if typeof(candidate.get("schema_version")) == TYPE_INT and candidate.get("schema_version") == ControllerProfile.SCHEMA_VERSION:
+			var validation := ControllerProfile.validate(candidate)
+			if not validation.errors.is_empty():
+				profile_rejection_error += " " + "; ".join(validation.errors)
+		return false
+	if not _activate_profile(upgraded, source, false, true):
+		profile_rejection_error = "Profile is invalid and was not applied."
+		return false
+	profile_error = ""
+	profile_rejection_error = ""
+	return true
+
+
+func disconnect_device() -> void:
+	connected = false
+	_verified_gamepad_poll_used = false
+	device_id = -1
+	smoke_aux.disconnect_device()
+	for channel in _extra_aux.values(): channel.disconnect_device()
+	_aux_action_values = _AUX_ACTION_DEFAULTS.duplicate()
+	_reset_controls(false)
+	_pressed_buttons.clear()
+	input_error = ""
+	profile_rejection_error = ""
+	_focus_rearm_pending = false
+
+
+func is_gamepad() -> bool:
+	return _profile_ready and profile.get("kind", "radio") == "gamepad"
+
+
+## Only standard mapped axes can use the engine's verified stationary sample.
+func can_confirm_gamepad_poll() -> bool:
+	if not connected or not is_gamepad() or not confirmed_gamepad_connection.is_valid():
+		return false
+	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+		if int(profile[channel_name].axis) > JOY_AXIS_TRIGGER_RIGHT:
+			return false
+	return bool(confirmed_gamepad_connection.call(device_id))
+
+
+func is_rate_throttle() -> bool:
+	if not _profile_ready:
+		return false
+	return profile.get("throttle_mode", "stick_rate" if profile.get("kind", "radio") == "gamepad" else "radio_absolute") == "stick_rate"
+
+
+## Ordinary menus keep the connection's axis evidence and virtual throttle.
+## Focus recovery requires new axis events independently of preserving throttle.
+func require_neutral(preserve_throttle: bool = true, fresh_samples: bool = false) -> void:
+	_neutral_elapsed = 0.0
+	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
+	if is_gamepad():
+		armed = false
+		if is_rate_throttle() and not preserve_throttle:
+			_rate_throttle = 0.0
+		if not is_rate_throttle():
+			_rate_throttle = 0.0
+	elif not preserve_throttle or fresh_samples:
+		# Radios keep their absolute-throttle contract; a full ownership change
+		# asks for fresh low-throttle evidence but not centered-stick dwell.
+		armed = false
+		_throttle_low_seen = false
+		_focus_rearm_pending = fresh_samples and preserve_throttle
+	if not preserve_throttle or fresh_samples:
+		_seen.clear()
+		axes.fill(0.0)
+	input_error = ""
+	if not preserve_throttle or fresh_samples:
+		_configure_smoke_aux()
+
+
+## Explicit scenario-start boundary for a spring-centred gamepad.
+func set_rate_throttle_for_start(position: float) -> bool:
+	if not is_gamepad() or not is_rate_throttle() or not is_finite(position) or position < 0.0 or position > 1.0:
+		return false
+	_rate_throttle = position
+	return true
+
+
+func has_axis_sample(axis: int) -> bool:
+	return connected and axis >= 0 and axis < AXES and _seen.has(axis)
+
+
+func on_motion(id: int, axis: int, value: float) -> void:
+	if not connected or id != device_id or axis < 0 or axis >= AXES:
+		return
+	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
+		smoke_aux.on_motion(id, axis, value)
+		for channel in _extra_aux.values(): channel.on_motion(id, axis, value)
+	if not is_finite(value):
+		_invalidate_input("Non-finite axis sample; controls require fresh neutral evidence.")
+		return
+	if not _profile_ready and profile_source == "unconfigured":
+		# Raw values remain available to calibration; no mapping freshness can
+		# carry over into the eventual configured profile.
+		axes[axis] = clampf(value, -1.0, 1.0)
+		return
+	_seen[axis] = true
+	axes[axis] = clampf(value, -1.0, 1.0)
+	if is_gamepad():
+		_revoke_paused_gamepad_readiness()
+	elif axis == _throttle_axis() and not is_rate_throttle():
+		var throttle_is_low := _normalized_throttle(axes[axis]) <= _idle_threshold()
+		if _focus_rearm_pending:
+			if throttle_is_low:
+				_throttle_low_seen = true
+			else:
+				_throttle_low_seen = false
+				armed = false
+		elif not armed:
+			_throttle_low_seen = throttle_is_low
+
+
+func on_button(id: int, button: int, pressed: bool) -> void:
+	if not connected or id != device_id or button < 0 or button >= JOY_BUTTON_MAX:
+		return
+	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
+		smoke_aux.on_button(id, button, pressed)
+		for channel in _extra_aux.values(): channel.on_button(id, button, pressed)
+	if pressed:
+		_pressed_buttons[button] = true
+	else:
+		_pressed_buttons.erase(button)
+		_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
+
+
+## Synchronizes held-button evidence from the selected device on focus/selection return.
+func observe_pressed_buttons(buttons: Array) -> void:
+	_pressed_buttons.clear()
+	for button in buttons:
+		if typeof(button) == TYPE_INT and int(button) >= 0 and int(button) < JOY_BUTTON_MAX:
+			_pressed_buttons[int(button)] = true
+	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
+
+
+## Samples all axes and optional smoke AUX. `integrate=false` still collects fresh
+## neutral evidence, but cannot move a rate throttle during a hold/menu.
+func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), integrate: bool = true) -> void:
+	if not connected:
+		return
+	set_auxiliary_enabled(integrate)
+	if not _profile_ready and profile_source == "unconfigured" and profile.get("configured", true) == false:
+		_poll_unconfigured(read_axis, dt)
+		return
+	if not _profile_ready or profile != _profile_snapshot:
+		var validation := ControllerProfile.validate(profile)
+		if not validation.ok:
+			_profile_ready = false
+			_profile_snapshot.clear()
+			profile_error = "Invalid active profile: " + "; ".join(validation.errors)
+			_invalidate_input("Invalid profile; flight commands are disabled.")
+			return
+		# Direct mutation is an activation boundary too: no low-throttle or
+		# centered-axis evidence collected under the previous mapping can arm it.
+		if not _activate_profile(profile, profile_source, false):
+			return
+	if not is_finite(dt) or dt < 0.0 or not read_axis.is_valid():
+		_invalidate_input("Invalid input sample interval or axis reader.")
+		return
+	for axis in AXES:
+		var value: float = float(read_axis.call(device_id, axis))
+		if not is_finite(value):
+			_invalidate_input("Non-finite polled axis sample; controls require fresh neutral evidence.")
+			return
+		axes[axis] = clampf(value, -1.0, 1.0)
+	# A callback can also be bound for a user-configured raw device that must use
+	# event evidence, so an initial refusal alone cannot reject that device.
+	# Once this mapping has relied on verified live polling, a verifier refusal
+	# cannot fall back to the axis history that polling itself just established.
+	# In an active flight report lost continuity to the session; during a hold,
+	# retain the staged rate throttle but require proof again before Continue.
+	var confirmed_poll := can_confirm_gamepad_poll()
+	if _verified_gamepad_poll_used and not confirmed_poll:
+		if integrate:
+			_invalidate_input("Gamepad connection or focus could not be verified.")
+		else:
+			armed = false
+			_neutral_elapsed = 0.0
+			_seen.clear()
+			axes.fill(0.0)
+		return
+	if read_button.is_valid():
+		var held_buttons: Array[int] = []
+		for button in 128:
+			if bool(read_button.call(device_id, button)):
+				held_buttons.append(button)
+		observe_pressed_buttons(held_buttons)
+	# A verified standard gamepad is ready from its live sample. Do not require
+	# a stick gesture, centered dwell or button release to enable flight controls.
+	# Session pause/Continue still owns when the simulation may advance.
+	var live_gamepad := input_error.is_empty() and read_button.is_valid() and confirmed_poll
+	if live_gamepad:
+		_verified_gamepad_poll_used = true
+		for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+			var axis: int = int(profile[channel_name].axis)
+			_seen[axis] = true
+	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
+		for channel in [smoke_aux] + _extra_aux.values():
+			var binding: Dictionary = channel.binding
+			if binding.get("type", "") == "axis":
+				channel.sample_axis(axes[int(binding.axis)])
+			elif binding.get("type", "") == "button" and read_button.is_valid():
+				channel.sample_button(bool(read_button.call(device_id, int(binding.button))))
+			elif binding.get("type", "") == "switch":
+				# Evaluate one coherent snapshot, never transient per-button event order.
+				var positions: Array = []
+				if read_button.is_valid():
+					for button in binding.buttons:
+						positions.append(bool(read_button.call(device_id, int(button))))
+				channel.sample_switch(positions)
+	if is_gamepad():
+		if live_gamepad:
+			armed = true
+		else:
+			_update_neutral_gate(dt)
+		if is_rate_throttle() and armed and integrate:
+			var rate: float = float(profile.get("throttle_rate", ControllerProfile.DEFAULT_THROTTLE_RATE))
+			_rate_throttle = clampf(_rate_throttle + _stick("throttle") * rate * dt, 0.0, 1.0)
+	else:
+		var throttle_is_low := _normalized_throttle(axes[_throttle_axis()]) <= _idle_threshold()
+		if _focus_rearm_pending:
+			if not throttle_is_low:
+				_throttle_low_seen = false
+				armed = false
+			elif not armed and _throttle_low_seen:
+				armed = true
+				input_error = ""
+			if integrate and armed and throttle_is_low:
+				_focus_rearm_pending = false
+		elif not armed and _throttle_low_seen and throttle_is_low:
+			armed = true
+			input_error = ""
+
+
+## Direct-flight calibration needs raw readings even without a trusted mapping.
+## This path never arms or emits a flight command and never establishes axis evidence.
+func _poll_unconfigured(read_axis: Callable, dt: float) -> void:
+	if not is_finite(dt) or dt < 0.0 or not read_axis.is_valid():
+		_invalidate_input("Invalid input sample interval or axis reader.")
+		return
+	for axis in AXES:
+		var value: float = float(read_axis.call(device_id, axis))
+		if not is_finite(value):
+			_invalidate_input("Non-finite polled axis sample; controls require fresh neutral evidence.")
+			return
+		axes[axis] = clampf(value, -1.0, 1.0)
+	armed = false
+	input_error = ""
+
+
+## Compatibility helpers for radio calibration scripts and old fixtures.
+static func normalize(value: float, channel: Dictionary) -> float:
+	return ControllerProfile.normalize_axis(value, channel)
+
+
+static func normalize_throttle(value: float, channel: Dictionary) -> float:
+	return ControllerProfile.normalize_absolute(value, channel)
+
+
+func _stick(name: String) -> float:
+	if not _profile_ready:
+		return 0.0
+	var channel: Variant = profile.get(name, {})
+	if typeof(channel) != TYPE_DICTIONARY:
+		return 0.0
+	return ControllerProfile.channel_value(axes[int(channel.get("axis", -1))], name, profile) if int(channel.get("axis", -1)) in range(AXES) else 0.0
+
+
+func _shaped(value: float) -> float:
+	# Legacy helper used by a few diagnostics; channel-specific shaping is used in flight output.
+	var channel: Dictionary = {"deadzone": float(profile.get("deadzone", ControllerProfile.DEFAULT_DEADZONE)), "expo": float(profile.get("expo", ControllerProfile.DEFAULT_EXPO))}
+	return ControllerProfile.condition_axis(value, channel, str(profile.get("kind", "radio")))
+
+
+func _normalized_throttle(value: float) -> float:
+	return ControllerProfile.channel_value(value, "throttle", profile)
+
+
+func throttle_position() -> float:
+	if not _profile_ready or not input_error.is_empty() or not profile_error.is_empty():
+		return 0.0
+	if is_rate_throttle():
+		return _rate_throttle
+	return _normalized_throttle(axes[_throttle_axis()])
+
+
+func sticks() -> Dictionary:
+	if not connected or not _profile_ready or not input_error.is_empty() or not profile_error.is_empty():
+		return {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}
+	if is_gamepad() and not armed:
+		return {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}
+	return {
+		"roll": _stick("roll"),
+		"pitch": _stick("pitch"),
+		"yaw": _stick("yaw"),
+		"throttle": throttle_position() if armed else 0.0,
+	}
+
+
+func smoke_amount() -> float:
+	return auxiliary_amount("smoke")
+
+
+## Normalized requests: flaps 0=retracted/1=full, gear 0=down/1=up, arm 0=OFF/1=ON, flight_mode 0=Angle/1=Acro.
+## Activity adapters apply requests only to supported vehicle equipment.
+func auxiliary_amount(channel_name: String) -> float:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return 0.0
+	var channel = smoke_aux if channel_name == "smoke" else _extra_aux.get(channel_name)
+	if channel == null: return 0.0
+	return channel.amount() if not channel.binding.is_empty() else float(_aux_action_values.get(channel_name, 0.0))
+
+
+## Whether auxiliary_amount(channel_name) is a pilot command now (external audit A6 F2). A pause, menu or focus
+## boundary clears a bound channel's arming, and it reports 0.0 until fresh OFF evidence arms it again. That 0.0
+## means "no valid command yet", not "the pilot commanded zero": a position consumer (flap and gear targets) must
+## keep its last accepted request instead. Smoke keeps its own pump semantics (off at the boundary).
+func auxiliary_request_valid(channel_name: String) -> bool:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return false
+	var channel = smoke_aux if channel_name == "smoke" else _extra_aux.get(channel_name)
+	if channel == null: return false
+	return channel.binding.is_empty() or channel.is_armed()
+
+
+func auxiliary_action(action: String) -> bool:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return false
+	var channel_name := "smoke" if action == "smoke_toggle" else ("gear" if action == "gear_toggle" else "flaps")
+	if not action in ["smoke_toggle", "gear_toggle", "flaps_up", "flaps_down", "flaps_cycle"]: return false
+	var channel = smoke_aux if channel_name == "smoke" else _extra_aux[channel_name]
+	if not channel.binding.is_empty(): return false # one source per function
+	match action:
+		"flaps_up": _aux_action_values.flaps = 0.0
+		"flaps_down": _aux_action_values.flaps = 1.0
+		"flaps_cycle":
+			var current_flaps := float(_aux_action_values.flaps)
+			_aux_action_values.flaps = 0.4 if current_flaps < 0.2 else (1.0 if current_flaps < 0.7 else 0.0)
+		_: _aux_action_values[channel_name] = 1.0 - float(_aux_action_values[channel_name])
+	return true
+
+
+## Set the semantic action request to an exact detent without taking over a bound radio AUX channel.
+func set_flaps_action_amount(amount: float) -> bool:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty():
+		return false
+	if not is_finite(amount) or not _extra_aux.flaps.binding.is_empty():
+		return false
+	_aux_action_values.flaps = clampf(amount, 0.0, 1.0)
+	return true
+
+
+## Menu/focus input cannot queue toggles to be applied after resume.
+func set_auxiliary_enabled(enabled: bool) -> void:
+	if enabled == _auxiliary_enabled: return
+	_auxiliary_enabled = enabled
+	_configure_smoke_aux()
+
+
+func smoke_is_armed() -> bool:
+	return smoke_aux.is_armed()
+
+
+func _activate_profile(candidate: Dictionary, source: String, preserve_rate: bool, preserve_radio_history: bool = false) -> bool:
+	var upgraded := ControllerProfile.upgrade_legacy(candidate)
+	if upgraded.is_empty():
+		_profile_ready = false
+		profile_error = "Profile is invalid and cannot drive flight commands."
+		return false
+	var keep_radio_history := preserve_radio_history and _profile_ready and connected and str(profile.get("kind", "")) == "radio" and str(upgraded.get("kind", "")) == "radio"
+	var old_rate := _rate_throttle
+	var previous_axes: PackedFloat64Array = axes.duplicate()
+	var previous_seen: Dictionary = _seen.duplicate(true)
+	profile = upgraded
+	_profile_ready = true
+	_verified_gamepad_poll_used = false
+	_profile_snapshot = profile.duplicate(true)
+	profile_source = source
+	input_error = ""
+	profile_error = ""
+	profile_rejection_error = ""
+	_focus_rearm_pending = false
+	_rate_throttle = old_rate if preserve_rate and profile.get("throttle_mode", "") == "stick_rate" else 0.0
+	if keep_radio_history:
+		armed = false
+		_throttle_low_seen = false
+		_neutral_elapsed = 0.0
+		_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
+		axes = previous_axes
+		_seen = previous_seen
+	else:
+		_reset_controls(preserve_rate)
+	_configure_smoke_aux()
+	return true
+
+
+func _reset_controls(preserve_rate: bool) -> void:
+	armed = false
+	_throttle_low_seen = false
+	_neutral_elapsed = 0.0
+	_focus_rearm_pending = false
+	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
+	_seen.clear()
+	axes.fill(0.0)
+	if not preserve_rate:
+		_rate_throttle = 0.0
+
+
+func _invalidate_input(message: String) -> void:
+	input_error = message
+	armed = false
+	_throttle_low_seen = false
+	_neutral_elapsed = 0.0
+	_seen.clear()
+	axes.fill(0.0)
+	_rate_throttle = 0.0
+	_configure_smoke_aux()
+
+
+func _update_neutral_gate(dt: float) -> void:
+	if armed:
+		# The pause/menu gate may become ready before Continue is pressed. Keep
+		# that readiness only while mapped flight controls remain neutral; menu
+		# buttons remain available to operate the UI.
+		if not _auxiliary_enabled and not _fresh_neutral_sample():
+			armed = false
+			_neutral_elapsed = 0.0
+		return
+	if _neutral_release_pending or not _fresh_neutral_sample():
+		_neutral_elapsed = 0.0
+		return
+	_neutral_elapsed += dt
+	var required: float = float(profile.get("neutral_duration_ms", 200)) / 1000.0
+	if _neutral_elapsed + 1e-12 >= required:
+		armed = true
+		_neutral_elapsed = required
+		input_error = ""
+
+
+func _revoke_paused_gamepad_readiness() -> void:
+	if can_confirm_gamepad_poll():
+		return
+	if is_gamepad() and armed and not _auxiliary_enabled and not _fresh_neutral_sample():
+		armed = false
+		_neutral_elapsed = 0.0
+
+
+func _fresh_neutral_sample() -> bool:
+	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+		var channel: Dictionary = profile[channel_name]
+		var axis: int = int(channel.axis)
+		if not _seen.has(axis):
+			return false
+		var normalized: float = ControllerProfile.normalize_axis(axes[axis], channel)
+		if channel_name == "throttle" and not is_rate_throttle():
+			if _normalized_throttle(axes[axis]) > _idle_threshold():
+				return false
+		else:
+			var deadzone: float = float(channel.get("deadzone", ControllerProfile.DEFAULT_DEADZONE))
+			if absf(normalized) > deadzone:
+				return false
+	return true
+
+
+func _throttle_axis() -> int:
+	var throttle: Variant = profile.get("throttle", {})
+	return int(throttle.get("axis", 0)) if typeof(throttle) == TYPE_DICTIONARY else 0
+
+
+func _idle_threshold() -> float:
+	return float(profile.get("idle_threshold", ARM_THROTTLE))
+
+
+func _configure_smoke_aux() -> void:
+	var axes_in_use := SmokeAux.flight_axes(profile)
+	smoke_aux.configure(_smoke_binding(), axes_in_use)
+	var aux: Dictionary = profile.get("aux", {}) if profile.get("aux", {}) is Dictionary else {}
+	for channel_name in _extra_aux:
+		_extra_aux[channel_name].configure(aux.get(channel_name, {}), axes_in_use)
+	_aux_action_values = _AUX_ACTION_DEFAULTS.duplicate()
+
+
+func _smoke_binding() -> Dictionary:
+	var aux: Variant = profile.get("aux", {})
+	if typeof(aux) != TYPE_DICTIONARY:
+		return {}
+	var binding: Variant = aux.get("smoke", {})
+	return binding if typeof(binding) == TYPE_DICTIONARY else {}
+
+
+func _describe_state() -> String:
+	if not profile_error.is_empty():
+		return "UNCONFIGURED - set a controller role and controls"
+	if not input_error.is_empty():
+		return "SAFE - " + input_error
+	if is_gamepad():
+		return "READY" if armed else "WAITING - check controller connection and mapping"
+	return "ARMED" if armed else "SAFE - move throttle to low to arm"
+
+
+func describe() -> String:
+	if not connected:
+		return "input: keyboard"
+	var what := str(profile.get("kind", "joystick"))
+	return "input: %s \"%s\" (%s profile) %s" % [what, device_name, profile_source, _describe_state()]

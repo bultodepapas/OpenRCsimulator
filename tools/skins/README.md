@@ -180,6 +180,26 @@ detail. Dorsal/hatch/underside overlaps are retained. Validate with
 `test_vehicle_paint.gd`, the two Stik families in `test_skin_fleet.gd` and native
 1920 × 1080 review of the metal under changing view angles.
 
+### Ugly Stik: BLACKBIRD (US-V21)
+
+`build_stik_blackbird.py` generates an SR-71/A-12-inspired charcoal tribute for
+all five Stiks. Four 2048-square maps describe dark thermal panels, flush rivets,
+subtle titanium scuffs and sparse muted-red safety marks. The black coating is
+dielectric; only exposed scuffs have metallic response. No emission or clearcoat.
+Panel roughness varies; Low substitutes the recorded mean and omits normals.
+
+Run with the pinned visual venv; `--check` verifies PNG bytes, authoring source
+hashes, roughness mean and a coarse atlas red-area limit. The visual review must
+still inspect visible red coverage. It reuses `MetalAtlas` authoring utilities,
+the shared CC0 Metal009 roughness and bundled OFL Noto font. The inherited USAF
+source is verified but no insignia is painted on BLACKBIRD.
+
+Keep text on the separately mapped fuselage flanks. Wing and fin UVs are shared
+and use geometric marks; stabiliser tops and some edges retain uniform charcoal
+patches. Clearing height before an overlapping region is repainted keeps its
+normal map consistent. Validate with `test_vehicle_paint.gd` and native
+1920 × 1080 review of both sides and Low detail.
+
 ## Export and check
 
 From an extracted kit, edit the paint images and run standard-library Python 3:

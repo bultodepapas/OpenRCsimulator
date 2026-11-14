@@ -1,0 +1,7 @@
+config_version=5
+[application]
+config/name="OpenRC Calibration Audit Disposable"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="OpenRCCalibrationAudit"
+[rendering]
+renderer/rendering_method="gl_compatibility"

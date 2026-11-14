@@ -23,7 +23,9 @@ import uuid
 
 
 ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
-DIAGNOSTIC = re.compile(r"^\s*((?:(?:SCRIPT|SHADER)\s+)?ERROR|WARNING):\s*(.*)")
+# API validation prints failures through print_error(), with this own prefix,
+# and the pinned editor can still exit zero. Treat those records as errors too.
+DIAGNOSTIC = re.compile(r"^\s*((?:(?:SCRIPT|SHADER)\s+)?ERROR|WARNING|Validate extension JSON):\s*(.*)")
 DEFAULT_OUT = Path(__file__).resolve().parents[2] / "tmp" / "godot-checks"
 
 

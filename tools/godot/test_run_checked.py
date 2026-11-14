@@ -44,6 +44,25 @@ class CheckedRunnerTests(RunnerFixture):
         report = self.run_code("print('expected ERROR: example\\n0 errors, error 0\\nSCRIPT ERROR count: 0')")
         self.assertTrue(report["ok"])
 
+    def test_api_validation_diagnostics_fail_despite_zero_exit(self):
+        # These are Python diagnostic producers, not shared-host Godot jobs.
+        queue = mock.patch("tools.testqueue.common.enabled", return_value=False)
+        queue.start()
+        self.addCleanup(queue.stop)
+        messages = ["Error: Field changed value in new API",
+                    "API was removed: classes/Example/methods/method",
+                    "JSON file: Field was added in a way that breaks compatibility",
+                    "Could not open file 'missing.json'"]
+        for message in messages:
+            with self.subTest(message=message):
+                report = self.run_code(f"print({'Validate extension JSON: ' + message!r})")
+                self.assertEqual(report["reason"], "engine_error")
+                self.assertEqual(report["process_exit"], 0)
+                self.assertEqual(report["counts"]["error"], 1)
+                self.assertEqual(report["diagnostics"][0]["kind"], "Validate extension JSON")
+        report = self.run_code("print('example Validate extension JSON: Error: ordinary payload')")
+        self.assertTrue(report["ok"])
+
     def test_warnings_are_visible_and_optionally_fatal(self):
         code = "print('WARNING: ObjectDB instances leaked at exit')"
         report = self.run_code(code)

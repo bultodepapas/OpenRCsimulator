@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fd482057-0fef-43b3-951f-676dfbcd2ec1",
+  "command": [
+    "env",
+    "XDG_DATA_HOME=/workspace/scratch/a1128d42a6f8/evidence/calibration/xdg-data",
+    "XDG_CONFIG_HOME=/workspace/scratch/a1128d42a6f8/evidence/calibration/xdg-config",
+    "/workspace/scratch/912e78c5574d/repo_current/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/a1128d42a6f8/evidence/calibration/project",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "/workspace/scratch/a1128d42a6f8/openrc-audit",
+  "started_utc": "2026-11-14T15:00:42.221061+00:00",
+  "label": "calibration-ui-import",
+  "log": "/workspace/scratch/a1128d42a6f8/evidence/calibration/runs/calibration-ui-import-toeb0wbj/engine.log",
+  "report": "/workspace/scratch/a1128d42a6f8/evidence/calibration/runs/calibration-ui-import-toeb0wbj/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.190364,
+  "log_bytes": 2237,
+  "log_sha256": "1a0d365fa4bd203f6e5efc202bc94d49eb770ebb219c15f35191d9196b6c4266"
+}

@@ -1,0 +1,12 @@
+config_version=5
+[application]
+config/name="OpenRC Controls Audit Parent"
+config/features=PackedStringArray("4.8")
+[display]
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+[rendering]
+renderer/rendering_method="gl_compatibility"
+
+[internationalization]
+locale/translations=PackedStringArray("res://i18n/es.po")

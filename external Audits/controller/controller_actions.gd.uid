@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8a5c256c-abeb-46f6-a9c6-54ae04bc400d",
+  "command": [
+    "/workspace/scratch/912e78c5574d/repo_current/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/a1128d42a6f8/deliverables/OpenRC_Controls_Audit_Evidence_2026-11-14/evidence/profiles/repro",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://concurrent_writer.gd"
+  ],
+  "cwd": "/workspace/scratch/a1128d42a6f8/deliverables/OpenRC_Controls_Audit_Evidence_2026-11-14/evidence/profiles",
+  "started_utc": "2026-11-14T15:26:27.791063+00:00",
+  "label": "race-portable-writer-B",
+  "log": "/workspace/scratch/a1128d42a6f8/deliverables/OpenRC_Controls_Audit_Evidence_2026-11-14/evidence/profiles/checks/race-portable-writer-B-4pcumcla/engine.log",
+  "report": "/workspace/scratch/a1128d42a6f8/deliverables/OpenRC_Controls_Audit_Evidence_2026-11-14/evidence/profiles/checks/race-portable-writer-B-4pcumcla/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "WRITER_DONE name=B ok=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.547733,
+  "log_bytes": 104,
+  "log_sha256": "7721d16607eaefba2f2c3048a8a2d2cdf5c15078aa6486155bf980376ab48a0b"
+}

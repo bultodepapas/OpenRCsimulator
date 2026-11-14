@@ -232,6 +232,15 @@ func _frame_alignment(activity: Node) -> void:
 	_check("authored bells and tri-blades replace stand-ins, with the physical disc radii", imported)
 	_check("ION R5 is named in its menu and OSD", activity.hud.menu_title.text == "ION R5" \
 		and activity.hud.craft_name == "ION R5")
+	var source := (load(Visual.MODEL_PATH) as PackedScene).instantiate() as Node3D
+	_check("the shipped ION export has complete camera and rotor geometry", Visual.has_complete_rotors(source))
+	source.find_child("camera_mount", true, false).free()
+	_check("a partial export cannot put the FPV view at the body origin", not Visual.has_complete_rotors(source))
+	source.free()
+	source = (load(Visual.MODEL_PATH) as PackedScene).instantiate() as Node3D
+	source.find_child("ION_R5_blades_2", true, false).free()
+	_check("an export missing a blade assembly is refused", not Visual.has_complete_rotors(source))
+	source.free()
 
 
 func _held_switch(activity: Node) -> void:

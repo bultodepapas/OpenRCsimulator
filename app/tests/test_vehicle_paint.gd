@@ -38,6 +38,7 @@ func _run() -> void:
 	_check_stik_gear()
 	_check_jet_livery()
 	_check_stik_metal()
+	_check_stik_blackbird()
 	print("Vehicle paint: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -153,6 +154,50 @@ func _check_stik_metal() -> void:
 	var mask := Image.load_from_file("res://assets/vehicle-paints/ugly-stik/silver_ace_metallic.png")
 	check("painted bands are dielectric while unpainted panels are metallic", mask.get_pixel(40, 40).r > 0.99
 		and mask.get_pixel(250, 150).r < 0.01)
+
+
+func _check_stik_blackbird() -> void:
+	var ids := ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "stik-electric-6s"]
+	for id: String in ids:
+		check(id + " resolves BLACKBIRD", AirplaneBuilder.resolve_livery(id, "blackbird") == "blackbird")
+		var built: Dictionary = AirplaneBuilder.build(id, NAN, {}, "blackbird")
+		check(id + " builds BLACKBIRD", not built.is_empty())
+		if built.is_empty(): continue
+		var finishes := _materials_named(built.root, "classic-covering-v4")
+		check(id + " has one thermal coating finish", finishes.size() == 1)
+		if finishes.size() == 1:
+			var finish: StandardMaterial3D = finishes[0]
+			check(id + " uses its own charcoal coating and exposure mask", finish.albedo_texture.resource_path.ends_with("blackbird_albedo.png")
+				and finish.metallic_texture != null and finish.metallic_texture.resource_path.ends_with("blackbird_metallic.png"))
+			check(id + " has no glow or lacquer", not finish.emission_enabled and not finish.clearcoat_enabled)
+			if VehiclePaint.detail_enabled():
+				check(id + " uses thermal panel normals and coating roughness", finish.normal_enabled
+					and finish.normal_texture.resource_path.ends_with("blackbird_normal.png")
+					and finish.roughness_texture.resource_path.ends_with("blackbird_roughness.png"))
+		var ventral := _materials_named(built.root, "skin:b00e28ff")
+		check(id + " keeps the ventral fin charcoal and matte", not ventral.is_empty()
+			and ventral[0].albedo_color.is_equal_approx(Color("202226")) and ventral[0].metallic == 0.0)
+		# Repaint after neon to catch inherited glow or stale maps on an existing instance.
+		VehiclePaint.apply(built.root, id, "neon_ronin")
+		VehiclePaint.apply(built.root, id, "blackbird")
+		check(id + " removes neon emission when repainted BLACKBIRD", not _materials_named(built.root, "classic-covering-v4")[0].emission_enabled)
+		built.root.free()
+	var mask := Image.load_from_file("res://assets/vehicle-paints/ugly-stik/blackbird_metallic.png")
+	check("BLACKBIRD coating is dielectric over the panels", mask.get_pixel(40, 40).r < 0.01
+		and mask.get_pixel(600, 100).r < 0.01)
+	var previous := SceneDetail._preference
+	var forced := not OS.get_environment("OPENRC_SCENE_DETAIL").is_empty()
+	for argument: String in OS.get_cmdline_user_args():
+		forced = forced or argument.begins_with("--scene_detail=")
+	if not forced: SceneDetail.set_preference("low")
+	if not VehiclePaint.detail_enabled():
+		var built: Dictionary = AirplaneBuilder.build(ids[0], NAN, {}, "blackbird")
+		var sample: StandardMaterial3D = _materials_named(built.root, "classic-covering-v4")[0]
+		check("Low BLACKBIRD omits panel detail and retains coating identity", sample.roughness_texture == null
+			and sample.normal_texture == null and not sample.normal_enabled and sample.metallic_texture != null
+			and is_equal_approx(sample.roughness, VehiclePaint._detail_means()["res://assets/vehicle-paints/ugly-stik/blackbird_roughness.png"]))
+		built.root.free()
+	SceneDetail.set_preference(previous)
 
 
 func _check_stik_cyberpunk() -> void:

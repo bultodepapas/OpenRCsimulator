@@ -31,6 +31,11 @@ class ResearchIdentityTests(unittest.TestCase):
         self.binary = self.root / "build-source-editor/bin/godot.macos.editor.arm64"
         self.binary.parent.mkdir(parents=True)
         self.binary.write_bytes(b"fixture editor")
+        self.reference = self.root / "official-godot"
+        self.reference.write_bytes(b"fixture official editor")
+        official_pin = patch.object(policy, "OFFICIAL_ARM64_SHA256", policy._sha(self.reference))
+        official_pin.start()
+        self.addCleanup(official_pin.stop)
         self.archive = self.root / "source.zip"
         self.archive.write_bytes(b"fixture source")
         self.api = self.root / "godot-cpp/gdextension/extension_api-4-7.json"
@@ -48,6 +53,7 @@ class ResearchIdentityTests(unittest.TestCase):
         self.selection = {"sha256": policy._sha(self.binary), "cli_version": policy.RESEARCH_CLI,
                           "runtime_version": policy.RESEARCH_RUNTIME, "receipt": str(self.receipt),
                           "archive": str(self.archive), "extension_api": str(self.api),
+                          "reference_godot": str(self.reference),
                           "patches": [str(self.patch1), str(self.patch2)]}
         sdk = "/SDK"
         self.record = {"schema": "fixture", "status": "built", "returncode": 0, "target": "editor",
@@ -73,6 +79,11 @@ class ResearchIdentityTests(unittest.TestCase):
                      "godot_cpp": {"commit": policy.GODOT_CPP_COMMIT}}
         self.api_proof = {"checkout": str(self.api.parent.parent), "commit": policy.GODOT_CPP_COMMIT,
                           "blob": "b" * 40, "sha256": policy._sha(self.api)}
+        self.dump = {"header": {"version_major": 4, "version_minor": 8, "version_patch": 0,
+                                "version_status": "beta2", "version_build": "official", "precision": "single"}}
+        self.dump.update({name: [{"name": "fixture"}] for name in (
+            "global_constants", "global_enums", "utility_functions", "builtin_classes",
+            "classes", "singletons", "native_structures")})
 
     def verify_intake(self, archive, root, patches):
         if (archive, root, patches) != (self.archive, self.root, [self.patch1, self.patch2]):
@@ -82,12 +93,26 @@ class ResearchIdentityTests(unittest.TestCase):
     def write_record(self):
         self.receipt.write_text(json.dumps(self.record), encoding="utf-8")
 
-    def identify(self, selection=None, arch=None, version=None):
+    def output(self, command, *, cwd=None):
+        if "--version" in command:
+            return policy.OFFICIAL_VERSION if command[0] == str(self.reference) else policy.RESEARCH_CLI
+        if "--dump-extension-api" in command:
+            self.assertIsNotNone(cwd)
+            (Path(cwd) / "extension_api.json").write_text(json.dumps(self.dump), encoding="utf-8")
+            return "Dumping Extension API"
+        self.assertIn("--validate-extension-api", command)
+        return ""
+
+    def identify(self, selection=None, arch=None, version=None, output=None):
+        def commands(command, *, cwd=None):
+            if version is not None and command == [str(self.binary), "--version"]:
+                return version
+            return self.output(command, cwd=cwd)
         with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
              patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             return policy.identify(self.binary, self.lock, self.selection if selection is None else selection,
                                    architectures=lambda _p: arch if arch is not None else ["arm64"],
-                                   output=lambda _args: version if version is not None else policy.RESEARCH_CLI)
+                                   output=output or commands)
 
     def test_explicit_pin_and_retained_build_are_checked(self):
         result = self.identify()
@@ -95,12 +120,27 @@ class ResearchIdentityTests(unittest.TestCase):
         self.assertEqual(result["research_engine"]["scope"], policy.SCOPE)
         self.assertEqual(result["research_engine"]["runtime_version"], policy.RESEARCH_RUNTIME)
         self.assertEqual(result["research_engine"]["build_receipt_sha256"], policy._sha(self.receipt))
+        self.assertEqual(result["research_engine"]["binding_api_4_7"], self.api_proof)
+        compatibility = result["research_engine"]["compatibility_api_4_8"]
+        self.assertEqual(compatibility["reference"]["sha256"], policy.OFFICIAL_ARM64_SHA256)
+        self.assertEqual(compatibility["validation"], "passed without diagnostics")
         self.assertIn("not an attestation", policy.__doc__)
 
     def test_pins_are_all_or_nothing_and_exact(self):
         self.assertIsNone(policy.selection_from_args(argparse.Namespace()))
         with self.assertRaises(ValueError):
             policy.selection_from_args(argparse.Namespace(research_engine_sha256="a" * 64))
+        parser = argparse.ArgumentParser()
+        policy.add_arguments(parser)
+        without_reference = ["--research-engine-sha256", self.selection["sha256"],
+                             "--research-engine-cli-version", policy.RESEARCH_CLI,
+                             "--research-engine-runtime-version", policy.RESEARCH_RUNTIME,
+                             "--research-engine-build-receipt", str(self.receipt),
+                             "--research-engine-archive", str(self.archive),
+                             "--research-engine-extension-api", str(self.api),
+                             "--research-engine-patch", str(self.patch1)]
+        with self.assertRaisesRegex(ValueError, "official reference"):
+            policy.selection_from_args(parser.parse_args(without_reference))
         for field, value in (("sha256", "f" * 64), ("cli_version", "4.8.beta2.official.cafc17a19"),
                              ("runtime_version", "4.8-beta2 (official)")):
             altered = copy.deepcopy(self.selection)
@@ -155,9 +195,9 @@ class ResearchIdentityTests(unittest.TestCase):
             self.identify()
 
     def test_input_changes_during_executable_version_check_are_refused(self):
-        def mutate(_args):
+        def mutate(command, *, cwd=None):
             self.log.write_text("changed during version check", encoding="utf-8")
-            return policy.RESEARCH_CLI
+            return self.output(command, cwd=cwd)
         with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
              patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             with self.assertRaisesRegex(ValueError, "changed during validation"):
@@ -196,16 +236,83 @@ class ResearchIdentityTests(unittest.TestCase):
             self.identify()
         self.helper.patch_paths = lambda _patches: {"servers/rendering/renderer.cpp"}
         calls = []
-        def checked(command):
+        def checked(command, *, cwd=None):
             calls.append(command)
             if "--validate-extension-api" in command:
                 raise subprocess.CalledProcessError(1, command)
-            return policy.RESEARCH_CLI
+            return self.output(command, cwd=cwd)
         with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
              patch.object(policy, "extension_api_identity", return_value=self.api_proof):
-            with self.assertRaisesRegex(ValueError, "rejected the pinned 4.7"):
+            with self.assertRaisesRegex(ValueError, "4.8 extension API compatibility check failed"):
                 policy.identify(self.binary, self.lock, self.selection, architectures=lambda _p: ["arm64"], output=checked)
-        self.assertEqual(calls[-1], [str(self.binary), "--headless", "--validate-extension-api", str(self.api)])
+        self.assertEqual(calls[-1][:3], [str(self.binary), "--headless", "--validate-extension-api"])
+        self.assertEqual(Path(calls[-1][3]).name, "extension_api.json")
+
+    def test_reference_pin_version_and_architecture_are_independent(self):
+        self.reference.write_bytes(b"wrong official editor")
+        with self.assertRaisesRegex(ValueError, "independent macOS SHA-256"):
+            self.identify()
+        self.reference.write_bytes(b"fixture official editor")
+        def wrong_version(command, *, cwd=None):
+            return "4.8.beta2.official.other" if command == [str(self.reference), "--version"] else self.output(command, cwd=cwd)
+        with self.assertRaisesRegex(ValueError, "Official reference Godot architecture or version"):
+            self.identify(output=wrong_version)
+        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
+             patch.object(policy, "extension_api_identity", return_value=self.api_proof):
+            with self.assertRaisesRegex(ValueError, "Official reference Godot architecture or version"):
+                policy.identify(self.binary, self.lock, self.selection,
+                                architectures=lambda path: ["x86_64"] if path == self.reference else ["arm64"],
+                                output=self.output)
+
+    def test_fresh_official_dump_and_zero_exit_incompatibilities(self):
+        generated = []
+        def checked(command, *, cwd=None):
+            if "--dump-extension-api" in command:
+                generated.append(Path(cwd))
+                self.assertFalse((Path(cwd) / "extension_api.json").exists())
+            if "--validate-extension-api" in command:
+                self.assertEqual(command[0], str(self.binary))
+                self.assertEqual(Path(command[-1]).parent, generated[-1])
+                return "Validate extension JSON: API was removed: classes/Example"
+            return self.output(command, cwd=cwd)
+        for _ in range(2):
+            with self.assertRaisesRegex(ValueError, "incompatibility or engine error"):
+                self.identify(output=checked)
+        self.assertNotEqual(generated[0], generated[1])
+        self.assertTrue(all(not path.exists() for path in generated))
+
+    def test_missing_invalid_oversized_and_changed_dumps_are_refused(self):
+        def no_dump(command, *, cwd=None):
+            return "Dumping Extension API" if "--dump-extension-api" in command else self.output(command, cwd=cwd)
+        with self.assertRaisesRegex(ValueError, "missing, redirected or oversized"):
+            self.identify(output=no_dump)
+        self.dump["header"]["version_minor"] = 7
+        with self.assertRaisesRegex(ValueError, "Invalid official 4.8"):
+            self.identify()
+        self.dump["header"]["version_minor"] = 8
+        self.dump["classes"] = []
+        with self.assertRaisesRegex(ValueError, "Invalid official 4.8"):
+            self.identify()
+        self.dump["classes"] = [{"name": "fixture"}]
+        with patch.object(policy, "MAX_API_BYTES", 8), self.assertRaisesRegex(ValueError, "oversized"):
+            self.identify()
+        def mutate_dump(command, *, cwd=None):
+            if "--validate-extension-api" in command:
+                path = Path(command[-1])
+                path.write_text(path.read_text(encoding="utf-8") + " ", encoding="utf-8")
+                return ""
+            return self.output(command, cwd=cwd)
+        with self.assertRaisesRegex(ValueError, "dump changed during validation"):
+            self.identify(output=mutate_dump)
+
+    def test_reference_replacement_during_validation_is_refused(self):
+        def replace_reference(command, *, cwd=None):
+            if "--validate-extension-api" in command:
+                self.reference.write_bytes(b"changed official editor")
+                return ""
+            return self.output(command, cwd=cwd)
+        with self.assertRaisesRegex(ValueError, "provenance changed during validation"):
+            self.identify(output=replace_reference)
 
     def test_dyld_overrides_are_rejected_and_children_are_cleaned(self):
         with patch.dict(policy.os.environ, {"DYLD_INSERT_LIBRARIES": "/tmp/inject", "ASAN_OPTIONS": "bad"}):
@@ -240,7 +347,8 @@ class ResearchIdentityTests(unittest.TestCase):
         receipt = intake_root / "build-editor.json"
         selection = {"sha256": policy._sha(binary), "cli_version": policy.RESEARCH_CLI,
                      "runtime_version": policy.RESEARCH_RUNTIME, "receipt": str(receipt),
-                     "archive": str(archive), "extension_api": str(self.api), "patches": [str(patch_path)]}
+                     "archive": str(archive), "extension_api": str(self.api),
+                     "reference_godot": str(self.reference), "patches": [str(patch_path)]}
         record = copy.deepcopy(self.record)
         record.update(schema=helper.SCHEMA, intake=intake, log_sha256=policy._sha(log),
                       artifacts=[{"name": binary.name, "sha256": selection["sha256"],
@@ -249,7 +357,7 @@ class ResearchIdentityTests(unittest.TestCase):
         with patch.object(policy, "_helper", return_value=helper), patch.object(policy.os, "access", return_value=True), \
              patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             args = (binary, self.lock, selection)
-            kwargs = {"architectures": lambda _p: ["arm64"], "output": lambda _c: policy.RESEARCH_CLI}
+            kwargs = {"architectures": lambda _p: ["arm64"], "output": self.output}
             self.assertEqual(policy.identify(*args, **kwargs)["research_engine"]["source_commit"], policy.SOURCE_COMMIT)
             (build_source / "engine/source.cpp").write_text("changed\n", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "source drift"):

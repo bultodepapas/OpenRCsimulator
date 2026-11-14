@@ -227,6 +227,21 @@ class BuildPolicy(ScratchCase):
             self.assertIs(identify.call_args.kwargs["architectures"], mac.architectures)
             self.assertIs(identify.call_args.kwargs["output"], mac._research_engine_output)
 
+    def test_research_engine_output_checks_both_streams_and_scrubs_loader_environment(self):
+        for stdout, stderr in (("Validate extension JSON: API was removed", ""),
+                               ("", "\x1b[31mValidate extension JSON: API was removed\x1b[0m"),
+                               ("", "ERROR: engine failure")):
+            with self.subTest(stdout=stdout, stderr=stderr), \
+                 patch.object(mac.subprocess, "run", return_value=SimpleNamespace(stdout=stdout, stderr=stderr)), \
+                 self.assertRaisesRegex(ValueError, "incompatibility or engine error"):
+                mac._research_engine_output(["godot", "--headless"])
+        with patch.dict(mac.os.environ, {"DYLD_INSERT_LIBRARIES": "bad", "ASAN_OPTIONS": "bad", "UBSAN_OPTIONS": "bad"}), \
+             patch.object(mac.subprocess, "run", return_value=SimpleNamespace(stdout="ok\n", stderr="")) as run:
+            self.assertEqual(mac._research_engine_output(["godot"], cwd="/fresh"), "ok")
+        self.assertEqual(run.call_args.kwargs["cwd"], "/fresh")
+        for name in ("DYLD_INSERT_LIBRARIES", "ASAN_OPTIONS", "UBSAN_OPTIONS"):
+            self.assertNotIn(name, run.call_args.kwargs["env"])
+
 
 class MachOPolicy(ScratchCase):
     def test_undefined_symbols_accepts_actual_apple_names_and_bsd_columns(self):

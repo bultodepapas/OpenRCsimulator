@@ -1,0 +1,426 @@
+extends RefCounted
+## Versioned, transactional storage for controller profiles.
+
+const ControllerProfile := preload("res://input/controller_profile.gd")
+const RcCalibration := preload("res://input/rc_calibration.gd")
+const SmokeAux := preload("res://input/smoke_aux.gd")
+
+const DEFAULT_PATH := "user://controller_profiles.cfg"
+const LEGACY_PATH := "user://rc_calibration.cfg"
+const STORAGE_SECTION := "controller_profiles"
+const BACKUP_SUFFIX := ".rollback"
+const TEMP_SUFFIX := ".tmp"
+## ConfigFile text does not encode every float losslessly; see _storage_form(). Measured on
+## Godot 4.7.2–4.8-beta2, every value settles within two passes; the bound only fails closed.
+const STORAGE_FORM_PASS_LIMIT := 8
+
+var path: String
+var legacy_path: String
+
+
+func _init(storage_path: String = DEFAULT_PATH, legacy_storage_path: String = LEGACY_PATH) -> void:
+	path = storage_path
+	legacy_path = legacy_storage_path
+
+
+## Loads all profiles as candidates. A bad version or bad member rejects the file as a whole.
+func load_all() -> Dictionary:
+	var primary := _read_file(path)
+	if primary.ok:
+		return {"ok": true, "profiles": primary.profiles, "ui_preference": primary.ui_preference, "errors": []}
+	var backup_path := path + BACKUP_SUFFIX
+	var backup_exists := FileAccess.file_exists(backup_path)
+	if backup_exists:
+		var backup := _read_file(backup_path)
+		if backup.ok:
+			return {"ok": true, "profiles": backup.profiles, "ui_preference": backup.ui_preference, "errors": ["Recovered profiles from rollback copy; primary storage is unreadable: " + str(primary.error)], "recovered_from_backup": true}
+		if primary.missing:
+			return {"ok": false, "profiles": [], "errors": ["Primary profile storage is missing and its rollback copy is unreadable: " + backup.error]}
+	if primary.missing:
+		return {"ok": true, "profiles": [], "ui_preference": {}, "errors": []}
+	return {"ok": false, "profiles": [], "errors": [primary.error]}
+
+
+## Validates and atomically replaces one profile by profile_id. A failed write keeps the previous file.
+func save_profile(candidate: Variant) -> Dictionary:
+	return _save_profile(candidate)
+
+
+## Profile and menu preference share one validated ConfigFile transaction.
+## The preference stores a profile identity, never an OS connection handle.
+func save_profile_with_ui_preference(candidate: Variant, preference: Dictionary) -> Dictionary:
+	if not _valid_ui_preference(preference):
+		return {"ok": false, "profile": {}, "error": "Invalid menu controller preference."}
+	return _save_profile(candidate, preference)
+
+
+func _save_profile(candidate: Variant, preference: Variant = null) -> Dictionary:
+	var validation := ControllerProfile.validate(candidate)
+	if not validation.ok:
+		return {"ok": false, "profile": {}, "error": "Invalid controller profile: " + "; ".join(validation.errors)}
+	var loaded := load_all()
+	if not loaded.ok:
+		return {"ok": false, "profile": {}, "error": "Existing controller profile storage is unreadable: " + "; ".join(loaded.errors)}
+	var profiles: Array = loaded.profiles.duplicate(true)
+	var saved_profile: Dictionary = candidate.duplicate(true)
+	var found := false
+	for index in profiles.size():
+		if profiles[index].profile_id == saved_profile.profile_id:
+			profiles[index] = saved_profile
+			found = true
+			break
+	if not found:
+		profiles.append(saved_profile)
+	var ui_preference: Dictionary = loaded.get("ui_preference", {}) if preference == null else preference
+	var transaction := _write_transaction(profiles, bool(loaded.get("recovered_from_backup", false)), ui_preference)
+	if not transaction.ok:
+		return {"ok": false, "profile": {}, "error": transaction.error}
+	# Return the committed form, not the candidate, so the runtime applies exactly what reloads.
+	for stored: Dictionary in transaction.profiles:
+		if stored.profile_id == saved_profile.profile_id:
+			saved_profile = stored
+			break
+	return {"ok": true, "profile": saved_profile.duplicate(true), "error": "", "warning": transaction.warning}
+
+
+## Restores a previously returned load_all() snapshot after a runtime activation refusal.
+## The current store is checked first so this cannot overwrite a newly damaged file.
+func restore_snapshot(snapshot: Dictionary) -> Dictionary:
+	if not bool(snapshot.get("ok", false)) or typeof(snapshot.get("profiles")) != TYPE_ARRAY:
+		return {"ok": false, "error": "The previous controller profile snapshot is invalid."}
+	var profiles: Array = snapshot.profiles.duplicate(true)
+	var identifiers: Dictionary = {}
+	for candidate in profiles:
+		var validation := ControllerProfile.validate(candidate)
+		if not validation.ok:
+			return {"ok": false, "error": "The previous controller profile snapshot is invalid: " + "; ".join(validation.errors)}
+		var profile_id: String = candidate.profile_id
+		if identifiers.has(profile_id):
+			return {"ok": false, "error": "The previous controller profile snapshot contains duplicate IDs."}
+		identifiers[profile_id] = true
+	var current := load_all()
+	if not current.ok:
+		return {"ok": false, "error": "Could not restore controller profiles because current storage is unreadable: " + "; ".join(current.errors)}
+	var preference: Variant = snapshot.get("ui_preference", {})
+	if not _valid_ui_preference(preference):
+		return {"ok": false, "error": "The previous menu controller preference is invalid."}
+	var transaction := _write_transaction(profiles, bool(current.get("recovered_from_backup", false)), preference)
+	if not transaction.ok:
+		return {"ok": false, "error": transaction.error}
+	return {"ok": true, "error": "", "warning": transaction.warning}
+
+
+## Read-only import candidates from rc_calibration.cfg. Imported profiles remain radio profiles.
+func import_legacy_radio(source_path: String = "") -> Dictionary:
+	var effective_path := legacy_path if source_path.is_empty() else source_path
+	if not FileAccess.file_exists(effective_path):
+		return {"ok": true, "profiles": [], "errors": []}
+	var cfg := ConfigFile.new()
+	var err: Error = cfg.load(effective_path)
+	if err != OK:
+		return {"ok": false, "profiles": [], "errors": ["Legacy radio calibration file could not be read (%s)." % str(err)]}
+	var candidates: Array[Dictionary] = []
+	var errors: Array[String] = []
+	for section in cfg.get_sections():
+		var device_key: Variant = cfg.get_value(section, "device_key", "")
+		var raw_profile: Variant = cfg.get_value(section, "profile", {})
+		if typeof(device_key) != TYPE_STRING or device_key.is_empty() or device_key.md5_text() != section:
+			errors.append("Skipped legacy section with mismatched device identity: " + str(section))
+			continue
+		if not RcCalibration.valid(raw_profile):
+			errors.append("Skipped invalid legacy radio profile for " + _redacted_key(device_key))
+			continue
+		var sanitized: Dictionary = SmokeAux.sanitize_profile(raw_profile, false)
+		var imported := ControllerProfile.upgrade_legacy(sanitized, {"legacy_device_key": device_key})
+		if imported.is_empty():
+			errors.append("Skipped legacy radio profile that could not be represented by schema 2 for " + _redacted_key(device_key))
+			continue
+		imported["name"] = "Imported radio profile"
+		candidates.append(imported)
+	return {"ok": true, "profiles": candidates, "errors": errors}
+
+
+## A legacy key contains no serial and can only identify one currently connected
+## handle. Requiring that handle in the snapshot prevents a stale observation
+## from borrowing the calibration of another connected device.
+static func legacy_identity_is_unique(info: Dictionary, connected_devices: Array) -> bool:
+	var id: Variant = info.get("id")
+	if typeof(id) != TYPE_INT or int(id) < 0:
+		return false
+	var key := _legacy_key(info)
+	var matches := 0
+	var includes_target := false
+	for device in connected_devices:
+		if typeof(device) != TYPE_DICTIONARY or not bool(device.get("connected", false)):
+			continue
+		if _legacy_key(device) == key:
+			matches += 1
+			if typeof(device.get("id")) == TYPE_INT and int(device.id) == int(id):
+				includes_target = true
+	return matches == 1 and includes_target
+
+
+## Standalone sessions do not own a registry; construct the same active snapshot
+## from their connection enumerator before loading or saving a legacy key.
+static func legacy_identity_is_unique_for_ids(id: int, info: Dictionary, ids: Array, read_info: Callable) -> bool:
+	if not read_info.is_valid():
+		return false
+	var target := info.duplicate(true)
+	target["id"] = id
+	var devices: Array[Dictionary] = []
+	for current in ids:
+		if typeof(current) != TYPE_INT or int(current) < 0:
+			return false
+		var observed: Variant = info if int(current) == id else read_info.call(int(current))
+		if typeof(observed) != TYPE_DICTIONARY:
+			return false
+		var device: Dictionary = observed.duplicate(true)
+		device["id"] = int(current)
+		device["connected"] = true
+		devices.append(device)
+	return legacy_identity_is_unique(target, devices)
+
+
+## Returns saved profiles whose recorded identity evidence matches this observed device.
+func profiles_for_device(info: Dictionary) -> Array[Dictionary]:
+	var loaded := load_all()
+	if not loaded.ok:
+		return []
+	var matches: Array[Dictionary] = []
+	for profile in loaded.profiles:
+		var association: Dictionary = profile.get("association", {})
+		if _association_matches(info, association):
+			matches.append(profile.duplicate(true))
+	return matches
+
+
+## Returns one unambiguous association suggestion or {}. It never selects a flight/UI device.
+func match_profile(info: Dictionary, connected_devices: Array = []) -> Dictionary:
+	if connected_devices.is_empty():
+		return {}
+	var matches := profiles_for_device(info)
+	if matches.size() != 1:
+		return {}
+	var association: Dictionary = matches[0].get("association", {})
+	if association.has("serial_number") and not str(association.serial_number).is_empty():
+		var serial_matches := 0
+		for device in connected_devices:
+			if typeof(device) != TYPE_DICTIONARY or not bool(device.get("connected", false)):
+				continue
+			if str(device.get("serial_number", "")) != str(association.serial_number):
+				continue
+			if association.has("vendor_id") and _metadata_int(device.get("vendor_id", 0)) != _metadata_int(association.vendor_id):
+				continue
+			if association.has("product_id") and _metadata_int(device.get("product_id", 0)) != _metadata_int(association.product_id):
+				continue
+			serial_matches += 1
+		if serial_matches != 1:
+			return {}
+		return matches[0]
+	var association_guid: String = str(association.get("guid", ""))
+	var association_vendor: int = _metadata_int(association.get("vendor_id", 0))
+	var association_product: int = _metadata_int(association.get("product_id", 0))
+	var identity_matches := 0
+	if not association_guid.is_empty() and association_vendor > 0 and association_product > 0:
+		for device in connected_devices:
+			if typeof(device) != TYPE_DICTIONARY or not bool(device.get("connected", false)):
+				continue
+			if str(device.get("guid", "")) == association_guid and _metadata_int(device.get("vendor_id", 0)) == association_vendor and _metadata_int(device.get("product_id", 0)) == association_product:
+				identity_matches += 1
+		return matches[0] if identity_matches == 1 else {}
+	var legacy_key := str(association.get("legacy_device_key", ""))
+	if legacy_key.is_empty():
+		return {}
+	for device in connected_devices:
+		if typeof(device) == TYPE_DICTIONARY and bool(device.get("connected", false)) and _legacy_key(device) == legacy_key:
+			identity_matches += 1
+	return matches[0] if identity_matches == 1 else {}
+
+
+func _read_file(target_path: String) -> Dictionary:
+	if not FileAccess.file_exists(target_path):
+		return {"ok": false, "missing": true, "profiles": [], "error": "Profile file is missing."}
+	var cfg := ConfigFile.new()
+	var err: Error = cfg.load(target_path)
+	if err != OK:
+		return {"ok": false, "missing": false, "profiles": [], "error": "Could not read controller profile storage (%s)." % str(err)}
+	if not cfg.has_section_key(STORAGE_SECTION, "schema_version") or not cfg.has_section_key(STORAGE_SECTION, "profiles"):
+		return {"ok": false, "missing": false, "profiles": [], "error": "Controller profile storage is missing required fields."}
+	var version: Variant = cfg.get_value(STORAGE_SECTION, "schema_version")
+	if typeof(version) != TYPE_INT or version != ControllerProfile.SCHEMA_VERSION:
+		return {"ok": false, "missing": false, "profiles": [], "error": "Controller profile storage schema version is unsupported."}
+	var stored: Variant = cfg.get_value(STORAGE_SECTION, "profiles")
+	if typeof(stored) != TYPE_ARRAY:
+		return {"ok": false, "missing": false, "profiles": [], "error": "Controller profile list must be an Array."}
+	var profiles: Array[Dictionary] = []
+	var identifiers: Dictionary = {}
+	for candidate in stored:
+		var validation := ControllerProfile.validate(candidate)
+		if not validation.ok:
+			return {"ok": false, "missing": false, "profiles": [], "error": "Invalid profile in storage: " + "; ".join(validation.errors)}
+		var profile_id: String = candidate.profile_id
+		if identifiers.has(profile_id):
+			return {"ok": false, "missing": false, "profiles": [], "error": "Duplicate profile_id in storage."}
+		identifiers[profile_id] = true
+		profiles.append(candidate.duplicate(true))
+	var preference: Variant = cfg.get_value(STORAGE_SECTION, "ui_preference", {})
+	if not _valid_ui_preference(preference):
+		return {"ok": false, "missing": false, "profiles": [], "error": "Invalid menu controller preference in storage."}
+	return {"ok": true, "missing": false, "profiles": profiles, "ui_preference": preference.duplicate(true), "error": ""}
+
+
+static func _valid_ui_preference(value: Variant) -> bool:
+	if not value is Dictionary: return false
+	if value.is_empty(): return true
+	if typeof(value.get("mode")) != TYPE_STRING: return false
+	if value.get("mode", "") == "keyboard": return value.size() == 1
+	return value.get("mode", "") == "profile" and value.size() == 2 \
+		and typeof(value.get("profile_id")) == TYPE_STRING and not str(value.profile_id).is_empty() \
+		and str(value.profile_id).length() <= 128
+
+
+## Returns the value storage will reload for `profiles`: the ConfigFile encode/parse fixed point.
+## Godot writes a float32-exact double (every Input.get_joy_axis reading) with float32 digits,
+## e.g. -0.999969482421875 as "-0.9999695", and its parser can miss the last bit of a 17-digit
+## value, so raw calibration endpoints never compare equal after a reload. Committing the
+## fixed point keeps memory, disk and the read-back check identical; the change is below
+## float32 resolution. Uses the same writer and parser as save() and load().
+func _storage_form(profiles: Array) -> Dictionary:
+	# A plain Array keeps the file text independent of whether the list came from load_all().
+	var untyped: Array = []
+	untyped.assign(profiles)
+	var current: Variant = untyped
+	for _pass in STORAGE_FORM_PASS_LIMIT:
+		var encoder := ConfigFile.new()
+		encoder.set_value(STORAGE_SECTION, "profiles", current)
+		var decoder := ConfigFile.new()
+		var parse_error: Error = decoder.parse(encoder.encode_to_text())
+		if parse_error != OK or not decoder.has_section_key(STORAGE_SECTION, "profiles"):
+			return {"ok": false, "profiles": [], "error": "Controller profiles could not be encoded for storage (%s)." % str(parse_error)}
+		var decoded: Variant = decoder.get_value(STORAGE_SECTION, "profiles")
+		if typeof(decoded) != TYPE_ARRAY:
+			return {"ok": false, "profiles": [], "error": "Controller profiles changed type when encoded for storage."}
+		# Array equality is type-strict and exact, the same test the read-back applies.
+		if decoded == current:
+			for stored: Variant in decoded:
+				var validation := ControllerProfile.validate(stored)
+				if not validation.ok:
+					return {"ok": false, "profiles": [], "error": "Controller profile is invalid in its stored form: " + "; ".join(validation.errors)}
+			return {"ok": true, "profiles": decoded, "error": ""}
+		current = decoded
+	return {"ok": false, "profiles": [], "error": "Controller profiles did not reach a stable stored form."}
+
+
+## Commits `profiles` in their storage form; on success returns that form as `profiles`.
+func _write_transaction(candidate_profiles: Array, recovered_from_backup := false, ui_preference: Dictionary = {}) -> Dictionary:
+	if not _valid_ui_preference(ui_preference):
+		return {"ok": false, "error": "Invalid menu controller preference.", "warning": ""}
+	var storage_form := _storage_form(candidate_profiles)
+	if not storage_form.ok:
+		return {"ok": false, "error": storage_form.error, "warning": ""}
+	var profiles: Array = storage_form.profiles
+	var parent_dir := ProjectSettings.globalize_path(path).get_base_dir()
+	var dir_error: Error = DirAccess.make_dir_recursive_absolute(parent_dir)
+	if dir_error != OK:
+		return {"ok": false, "error": "Could not create controller profile directory (%s)." % str(dir_error), "warning": ""}
+	var temporary := path + TEMP_SUFFIX
+	var backup := path + BACKUP_SUFFIX
+	if FileAccess.file_exists(temporary):
+		var remove_temp: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+		if remove_temp != OK:
+			return {"ok": false, "error": "Could not clear stale profile temporary file (%s)." % str(remove_temp), "warning": ""}
+	var cfg := ConfigFile.new()
+	cfg.set_value(STORAGE_SECTION, "schema_version", ControllerProfile.SCHEMA_VERSION)
+	cfg.set_value(STORAGE_SECTION, "profiles", profiles)
+	cfg.set_value(STORAGE_SECTION, "ui_preference", ui_preference)
+	var write_error: Error = cfg.save(temporary)
+	if write_error != OK:
+		return {"ok": false, "error": "Could not write temporary controller profiles (%s)." % str(write_error), "warning": ""}
+	var verify := _read_file(temporary)
+	if not verify.ok:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+		return {"ok": false, "error": "Temporary controller profiles failed validation: " + str(verify.error), "warning": ""}
+	if verify.profiles != profiles or verify.ui_preference != ui_preference:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+		return {"ok": false, "error": "Temporary controller profiles did not read back identically.", "warning": ""}
+	var target_exists := FileAccess.file_exists(path)
+	var preserve_recovery_copy := recovered_from_backup and FileAccess.file_exists(backup)
+	if target_exists:
+		if preserve_recovery_copy:
+			var remove_corrupt: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+			if remove_corrupt != OK:
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+				return {"ok": false, "error": "Could not replace unreadable controller storage while preserving its valid rollback copy (%s)." % str(remove_corrupt), "warning": ""}
+		elif FileAccess.file_exists(backup):
+			var remove_backup: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(backup))
+			if remove_backup != OK:
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+				return {"ok": false, "error": "Could not clear stale profile rollback file (%s)." % str(remove_backup), "warning": ""}
+		if not preserve_recovery_copy:
+			var backup_error: Error = DirAccess.rename_absolute(ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup))
+			if backup_error != OK:
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+				return {"ok": false, "error": "Could not stage existing controller profiles for rollback (%s)." % str(backup_error), "warning": ""}
+	var commit_error: Error = DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary), ProjectSettings.globalize_path(path))
+	if commit_error != OK:
+		var restore_error: Error = OK
+		if preserve_recovery_copy:
+			restore_error = DirAccess.copy_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(path))
+		elif target_exists and FileAccess.file_exists(backup):
+			restore_error = DirAccess.rename_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(path))
+		if FileAccess.file_exists(temporary):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+		var restore_message := "; previous data was restored." if target_exists and restore_error == OK else ("; rollback data remains available at the rollback path (%s)." % str(restore_error) if restore_error != OK else "; no previous primary file was replaced.")
+		return {"ok": false, "error": "Could not commit controller profiles (%s)%s" % [str(commit_error), restore_message], "warning": ""}
+	var warning := ""
+	if FileAccess.file_exists(backup):
+		var clean_error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(backup))
+		if clean_error != OK:
+			warning = "Profiles were saved, but the rollback copy could not be removed (%s)." % str(clean_error)
+	return {"ok": true, "error": "", "warning": warning, "profiles": profiles.duplicate(true)}
+
+
+func _association_matches(info: Dictionary, association: Dictionary) -> bool:
+	if association.is_empty():
+		return false
+	var stored_serial := str(association.get("serial_number", ""))
+	var observed_serial := str(info.get("serial_number", ""))
+	var stored_guid := str(association.get("guid", ""))
+	var observed_guid := str(info.get("guid", ""))
+	var stored_vendor := _metadata_int(association.get("vendor_id", 0))
+	var stored_product := _metadata_int(association.get("product_id", 0))
+	var observed_vendor := _metadata_int(info.get("vendor_id", 0))
+	var observed_product := _metadata_int(info.get("product_id", 0))
+	if not stored_serial.is_empty():
+		return stored_serial == observed_serial and (stored_vendor == 0 or stored_vendor == observed_vendor) and (stored_product == 0 or stored_product == observed_product)
+	if not stored_guid.is_empty() and not observed_guid.is_empty() and stored_guid != observed_guid:
+		return false
+	if stored_vendor > 0 and observed_vendor > 0 and stored_vendor != observed_vendor:
+		return false
+	if stored_product > 0 and observed_product > 0 and stored_product != observed_product:
+		return false
+	if not stored_guid.is_empty() and stored_vendor > 0 and stored_product > 0:
+		return stored_guid == observed_guid and stored_vendor == observed_vendor and stored_product == observed_product
+	if association.has("legacy_device_key"):
+		var legacy_key: String = str(association.legacy_device_key)
+		return not legacy_key.is_empty() and _legacy_key(info) == legacy_key
+	return false
+
+
+static func _legacy_key(info: Dictionary) -> String:
+	if info.has("device_key") and typeof(info.device_key) == TYPE_STRING:
+		return info.device_key
+	var name := str(info.get("raw_name", info.get("name", "")))
+	return "%s|%04x:%04x|%s" % [str(info.get("guid", "")), _metadata_int(info.get("vendor_id", 0)), _metadata_int(info.get("product_id", 0)), name]
+
+
+static func _metadata_int(value: Variant) -> int:
+	if typeof(value) == TYPE_INT:
+		return int(value)
+	if typeof(value) == TYPE_STRING and value.strip_edges().is_valid_int():
+		return value.strip_edges().to_int()
+	return 0
+
+
+func _redacted_key(key: String) -> String:
+	return "device-" + key.md5_text().substr(0, 8)

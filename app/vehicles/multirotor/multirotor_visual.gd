@@ -2,7 +2,7 @@
 ## presentations at the PHYSICS hub positions (prepared data, FRD converted to render once), each spun by its
 ## ACHIEVED shaft speed from telemetry (never the commands) in its own direction, with the shared propeller-blur
 ## cross-fade (render/propeller_blur.gd: solid blades when stopped or slow, a translucent disc above the blade-passing
-## threshold). The airframe is the downloaded 5-inch frame GLB (frame and canopy only; Godot axes +Y up, nose −Z,
+## threshold). The default airframe is the supplied ION R5 GLB (Godot axes +Y up, nose −Z,
 ## right +X; nodes airframe_root, motor_1…4, propeller_1…4, camera_mount; origin = motor-mount centre in the arm-top
 ## plane). If it cannot be loaded, a deliberately plain LAB FIXTURE of primitive meshes stands in and the OSD says so.
 ## The supplied ION R5 includes its own bells and blades; those are reparented onto the same RPM-driven pivots.
@@ -89,7 +89,27 @@ func _load_frame(path: String, prepared_rotors: Array) -> Node3D:
 	frame.name = "Model"
 	frame.position = frame_offset(prepared_rotors, empties)
 	complete_rotors = frame.find_child("ION_R5_body", true, false) != null
+	if complete_rotors and not has_complete_rotors(frame):
+		complete_rotors = false
+		fallback_reason = "ION R5 model lacks its camera, bells or blades: " + path
+		frame.free()
+		return null
 	return frame
+
+
+## Refuse partial complete-aircraft exports before moving their meshes or positioning the onboard view.
+static func has_complete_rotors(frame: Node3D) -> bool:
+	if not frame.find_child("camera_mount", true, false) is Node3D:
+		return false
+	for id in range(1, 5):
+		var marker := frame.find_child("propeller_%d" % id, true, false) as Node3D
+		if marker == null:
+			return false
+		for part: String in ["bell", "blades"]:
+			var mesh := marker.find_child("ION_R5_%s_%d" % [part, id], true, false) as MeshInstance3D
+			if mesh == null or mesh.mesh == null:
+				return false
+	return true
 
 
 ## Model position (render-body axes, from the CG) that puts the propeller empties' centroid MOTOR_HEIGHT_M below the
@@ -179,6 +199,7 @@ func _import_rotor(rotor: Dictionary) -> Dictionary:
 	# Keep the original mount marker for alignment audits, moving only its meshes to the spinning pivot.
 	for child: Node3D in assembly.get_children():
 		var at := PropellerBlur.relative(root, child)
+		child.owner = null
 		assembly.remove_child(child)
 		pivot.add_child(child)
 		child.transform = pivot.transform.affine_inverse() * at

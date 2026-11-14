@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+HOTPATH_COUNT {"binding_resolutions":7,"event":"selected_gamepad_axis","generic_identities":30,"profile_deep_copy_requests":8}
+HOTPATH_COUNT {"binding_resolutions":7,"event":"unselected_gamepad_axis","generic_identities":30,"profile_deep_copy_requests":8}
+HOTPATH_TIMING {"cached_maps_only_us_per_event":[292.0475,278.922,295.728,303.569,282.147,282.805,303.596],"cpu":"AMD EPYC 9V74 80-Core Processor","engine":"4.8-beta2 (official)","iterations":2000,"os":"Linux","production_us_per_event":[1210.72,1189.0575,1187.403,1239.7555,1227.202,1223.8475,1217.2535],"rounds":7,"scope":"Exact AppRoot methods with inert app fixtures; no renderer, physics, SDL or USB delivery"}
+HOTPATH_AUDIT_COMPLETE

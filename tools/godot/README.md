@@ -9,6 +9,8 @@ qualification. Standalone commands below remain available on unenrolled/private 
 fails on engine, script and shader error records even when Godot exits zero. No
 code is installed in the game or simulation loop. Import resources before running
 project scripts; the wrapper does not change engine options or project settings.
+`Validate extension JSON:` failure records also fail the verdict: the pinned
+editor can report incompatible APIs with that prefix and still return exit zero.
 
 From the repository root, PowerShell:
 

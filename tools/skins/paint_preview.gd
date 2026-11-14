@@ -3,7 +3,10 @@ extends SceneTree
 ## Run windowed (a real renderer is needed), from the repository root:
 ##   .tools/Godot_v4.8-beta2_win64_console.exe --path app --audio-driver Dummy --windowed --resolution 320x200 \
 ##     --script ../tools/skins/paint_preview.gd -- --vehicle=sebart-avanti-s-a200-p100rx --skin=verde_neon_carbono \
-##     --out=<absolute dir> [--views=front34,right,left,top,below,rear34] [--zoom=1.0]
+##     --out=<absolute dir> [--views=front34,right,left,top,below,rear34] [--zoom=1.0] [--env=flight|sky]
+## --env=flight (default) lights like the Compatibility flight and Home scenes: constant ambient colour and no sky
+## reflections (atmosphere.gd), so bare metal shows its diffuse share. --env=sky adds sky reflections (High profile).
+## --focus=x,y,z aims at a point in the vehicle's model space (glTF axes) for decal close-ups; combine with --zoom.
 ## Ids: aircraft catalog ids (the HX-700 is xcell-60-research) or RC cars (mt8-bisonte, monster-car-2).
 ## Add OPENRC_SCENE_DETAIL=low to check the Low preset. Output: <out>/<vehicle>_<skin>_<view>.png at 1600x1000.
 
@@ -16,6 +19,7 @@ const VIEW_DIRECTIONS := {
 }
 var _viewport: SubViewport
 var _camera: Camera3D
+var _environment: Environment
 
 
 func _init() -> void:
@@ -35,6 +39,7 @@ func _init() -> void:
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	_environment = environment
 	environment.tonemap_mode = Environment.TONE_MAPPER_AGX
 	var world := WorldEnvironment.new()
 	world.environment = environment
@@ -98,6 +103,10 @@ func _run() -> void:
 		push_error("paint_preview: pass --vehicle=<id> and --out=<absolute dir>")
 		quit(2)
 		return
+	if _option("env", "flight") == "flight":
+		_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+		_environment.ambient_light_color = Color(0.60, 0.66, 0.74)
+		_environment.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
 	DirAccess.make_dir_recursive_absolute(out)
 	var node := _build(vehicle, skin)
 	if node == null:
@@ -110,6 +119,9 @@ func _run() -> void:
 	await process_frame
 	var box := _bounds(node)
 	var centre := box.get_center()
+	var focus := _option("focus", "").split(",")
+	if focus.size() == 3:
+		centre = node.to_global(Vector3(float(focus[0]), float(focus[1]), float(focus[2])))
 	var distance := box.size.length() * 1.25 / zoom
 	for view: String in views:
 		if not VIEW_DIRECTIONS.has(view):

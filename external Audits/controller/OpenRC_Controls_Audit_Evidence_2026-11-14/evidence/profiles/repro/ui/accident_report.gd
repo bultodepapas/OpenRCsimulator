@@ -1,0 +1,1725 @@
+extends CanvasLayer
+
+const UiTheme := preload("res://ui/ui_theme.gd")
+const RepairDetails := preload("res://economy/repair_details.gd")
+
+signal restart_requested
+signal inspect_requested
+signal costing_mode_requested(mode: String)
+signal purchase_package_requested(package_id: String)
+
+const LAYER := 9 # above the flight HUD; the pause menu and report screens stay above it
+const TOAST_SECONDS := 5.0
+const MAX_MINOR_AMOUNT := 9000000000000000000
+const COMPONENT_LABELS := {
+	"preview_game_parts_estimate": "Preview game parts estimate",
+	"central_aileron_servo": "Central aileron servo",
+	"covered_airframe_and_installation_hardware": "Airframe and installation hardware",
+	"engine_and_muffler": "Engine and muffler",
+	"final_assembly_and_commissioning": "Final assembly and commissioning",
+	"fuselage_servos": "Fuselage servos",
+	"onboard_fuel": "Onboard fuel system",
+	"propeller": "Propeller",
+	"receiver": "Receiver",
+	"receiver_battery": "Receiver battery",
+}
+const TIMBER_COMPONENT_LABELS := {
+	"wing_main": "Wing, flaps, ailerons and servos",
+	"fuselage_main": "Fuselage, canopy and fittings",
+	"tail_surfaces": "Horizontal and vertical tail",
+	"gear_main": "Main landing gear and wheels",
+	"gear_tail": "Tailwheel and fork",
+	"propeller_main": "Propeller assembly",
+	"spinner": "Spinner",
+	"spinner_main": "Spinner",
+	"motor_main": "800 Kv motor",
+	"esc_main": "70 A speed controller",
+	"receiver_radio": "Receiver",
+	"tail_servos": "Elevator and rudder servos",
+	"wiring_lighting": "Wiring and navigation lights",
+	"battery_main": "4S 3200 mAh battery",
+}
+
+var _surface: Control
+var _report_panel: PanelContainer
+var _toast_panel: PanelContainer
+var _restore_button: Button
+var _title_label: Label
+var _outcome_label: Label
+var _status_label: Label
+var _amount_label: Label
+var _caption_label: Label
+var _details_button: Button
+var _report_column: VBoxContainer
+var _report_actions: HFlowContainer
+var _inspect_button: Button
+var _restart_button: Button
+var _hide_archived_button: Button
+var _details_scroll: ScrollContainer
+var _details_content: VBoxContainer
+var _toast_status: Label
+var _toast_amount: Label
+var _aircraft_identity: Label
+var _cost_actions: HFlowContainer
+var _diy_button: Button
+var _shop_button: Button
+var _purchase_selector: OptionButton
+var _purchase_label: Label
+var _purchase_ids: Array[String] = []
+
+var _report: Dictionary = {}
+var _terminal := false
+var _archived := false
+var _settled_report := false
+var _auto_settled := false
+var _reopen_only := false
+var _expanded := false
+var _minimized := false
+var _suspended := false
+var _content_visible := false
+var _toast_remaining := 0.0
+var _layout_retry_frames := 0
+var _evidence_warning := false
+var _archive_unavailable := false
+## CR-22e presentation beat: a held terminal card and the headline count-up clock (-1 = idle).
+const REVEAL_DELAY_S := 0.6
+const COUNT_UP_S := 0.9
+var _reveal_pending: Dictionary = {}
+var _reveal_remaining := 0.0
+var _count_up_elapsed := -1.0
+
+
+func mark_evidence_unavailable() -> void:
+	_evidence_warning = true
+	if not _report.is_empty() and _surface != null:
+		_render_report()
+
+
+func _init() -> void:
+	name = "AccidentReport"
+	layer = LAYER
+
+
+func _ready() -> void:
+	_build_ui()
+	set_process(true)
+	set_process_unhandled_input(true)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and not _report.is_empty() and _surface != null:
+		_render_report()
+	elif what == NOTIFICATION_TRANSLATION_CHANGED and _archive_unavailable and _surface != null:
+		_restore_button.text = tr("Saved accident report unavailable")
+		_layout()
+
+
+## Shows a copied assessment. Incomplete values stay labeled as a range, subtotal, or unknown amount.
+## CR-22e: `animate` (live flight only) holds a new terminal card for a short beat while the camera
+## shows the wreck, then counts its headline up; the values and their labels are unchanged.
+func show_assessment(report: Dictionary, terminal: bool = true, animate: bool = false) -> void:
+	if _surface == null:
+		_build_ui()
+	var showing_card: bool = _content_visible and _terminal and not _archived \
+		and not _incident_id(report).is_empty() and _incident_id(report) == _incident_id(_report)
+	if animate and terminal and not showing_card:
+		if _reveal_pending.is_empty():
+			_reveal_remaining = REVEAL_DELAY_S
+		_reveal_pending = {report = report.duplicate(true), terminal = terminal} # The newest value wins.
+		return
+	_reveal_pending = {}
+	if not showing_card:
+		_count_up_elapsed = -1.0 # An update of the visible card keeps counting toward its new value.
+	var id := _incident_id(report)
+	var preserve_view: bool = not id.is_empty() and id == _incident_id(_report) and not _archived and terminal == _terminal \
+		and report.get("costing_available", false) == true and _report.get("costing_available", false) == true
+	var was_expanded := _expanded
+	var was_settled := _settled_report
+	var was_minimized := _minimized
+	_report = report.duplicate(true)
+	_terminal = terminal
+	_archived = false
+	_settled_report = preserve_view and was_settled
+	_auto_settled = false
+	_reopen_only = _settled_report
+	_expanded = was_expanded if preserve_view else terminal and _is_timber_report()
+	_minimized = preserve_view and was_minimized
+	_content_visible = true
+	_toast_remaining = TOAST_SECONDS if not terminal else 0.0
+	_render_report()
+	_report_panel.visible = (terminal or _settled_report) and not _minimized
+	_toast_panel.visible = not terminal and not _settled_report and not _minimized
+	_restore_button.visible = _minimized
+	_details_button.set_pressed_no_signal(_expanded)
+	_details_scroll.visible = _expanded
+	_details_scroll.custom_minimum_size.y = 0.0
+	_surface.mouse_filter = Control.MOUSE_FILTER_STOP if terminal and not _minimized else Control.MOUSE_FILTER_IGNORE
+	_surface.visible = not _suspended
+	_layout()
+	_layout_retry_frames = 2
+	if terminal and not _suspended and not preserve_view:
+		_focus_inspect.call_deferred()
+
+
+func _update_purchase_options() -> void:
+	_purchase_selector.get_popup().hide()
+	_purchase_selector.clear()
+	_purchase_ids.clear()
+	_purchase_label.text = tr("Purchase plan")
+	_purchase_selector.add_item(tr("Recommended parts"))
+	_purchase_ids.append("")
+	var selected := 0
+	var values: Variant = _report.get("purchase_options", [])
+	if values is Array:
+		for option: Variant in values:
+			if not option is Dictionary or not option.get("id") is String or _purchase_ids.has(option.id) or _purchase_ids.size() >= 9:
+				continue
+			var label := tr("One package plus individual parts: %s") % _humanize_identifier(str(option.get("label", option.id)))
+			var amount: Variant = _valid_minor(option.get("total_minor"))
+			if amount != null:
+				label += " · " + _format_money(int(amount), _currency_code(_report.get("currency")), true)
+			_purchase_selector.add_item(label)
+			_purchase_ids.append(option.id)
+			if _report.get("purchase_package_id", "") == option.id:
+				selected = _purchase_ids.size() - 1
+	var current_id := str(_report.get("purchase_package_id", ""))
+	if not current_id.is_empty() and not _purchase_ids.has(current_id):
+		_purchase_selector.add_item(tr("Previous package (needs review)"))
+		_purchase_ids.append(current_id)
+		selected = _purchase_ids.size() - 1
+	_purchase_selector.select(selected)
+	_purchase_selector.visible = _purchase_ids.size() > 1 or not str(_report.get("purchase_package_id", "")).is_empty()
+	_purchase_label.visible = _purchase_selector.visible
+
+
+func _on_purchase_selected(index: int) -> void:
+	if index >= 0 and index < _purchase_ids.size() and not _archived and _report.get("costing_available", false):
+		purchase_package_requested.emit(_purchase_ids[index])
+
+
+static func _incident_id(value: Dictionary) -> String:
+	var identity: Variant = value.get("identity", {})
+	return str(value.get("incident_id", identity.get("incident_id", "") if identity is Dictionary else ""))
+
+
+## Restores an immutable previous assessment behind a small reopen control, without taking focus or input.
+func show_archived(report: Dictionary) -> void:
+	_reveal_pending = {} # CR-22e: another presentation supersedes a held or counting card.
+	_count_up_elapsed = -1.0
+	if _surface == null:
+		_build_ui()
+	_report = report.duplicate(true)
+	_terminal = false
+	_archived = true
+	_settled_report = false
+	_auto_settled = false
+	_reopen_only = true
+	_expanded = false
+	_details_button.set_pressed_no_signal(false)
+	_details_scroll.visible = false
+	_minimized = true
+	_content_visible = true
+	_toast_remaining = 0.0
+	_render_report()
+	_report_panel.visible = false
+	_toast_panel.visible = false
+	_restore_button.visible = true
+	_release_report_focus()
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_surface.visible = not _suspended
+	_apply_action_visibility()
+	_layout()
+	_layout_retry_frames = 2
+
+
+## A failed saved report leaves a passive notice without taking flight input.
+func show_archive_unavailable() -> void:
+	if _surface == null:
+		_build_ui()
+	clear_report()
+	_archive_unavailable = true
+	_content_visible = true
+	_restore_button.text = tr("Saved accident report unavailable")
+	_restore_button.disabled = true
+	_restore_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_restore_button.visible = true
+	_surface.visible = not _suspended
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_layout()
+	_layout_retry_frames = 2
+
+
+## Shows a prominent read-only report when a nonterminal incident settles on the ground.
+func show_settled(report: Dictionary) -> void:
+	_reveal_pending = {} # CR-22e: another presentation supersedes a held or counting card.
+	_count_up_elapsed = -1.0
+	if _surface == null:
+		_build_ui()
+	_report = report.duplicate(true)
+	_terminal = false
+	_archived = false
+	_settled_report = true
+	_auto_settled = true
+	_reopen_only = true
+	_expanded = false
+	_details_button.set_pressed_no_signal(false)
+	_details_scroll.visible = false
+	_minimized = false
+	_content_visible = true
+	_toast_remaining = 0.0
+	_render_report()
+	_report_panel.visible = true
+	_toast_panel.visible = false
+	_restore_button.visible = false
+	_release_report_focus()
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_surface.visible = not _suspended
+	_apply_action_visibility()
+	_layout()
+	_layout_retry_frames = 2
+
+
+## Collapses only the automatically presented settled card and keeps its passive reopen control.
+func dismiss_settled() -> void:
+	if not _auto_settled:
+		return
+	_auto_settled = false
+	if not _settled_report or not _reopen_only or _report_panel == null or not _report_panel.visible:
+		return
+	_hide_read_only_report()
+
+
+## Removes the current report after an intentional caller action, such as restarting the incident.
+func clear_report() -> void:
+	_reveal_pending = {} # CR-22e: another presentation supersedes a held or counting card.
+	_count_up_elapsed = -1.0
+	_archive_unavailable = false
+	_evidence_warning = false
+	_report.clear()
+	_content_visible = false
+	_terminal = false
+	_archived = false
+	_settled_report = false
+	_auto_settled = false
+	_reopen_only = false
+	_expanded = false
+	_minimized = false
+	_toast_remaining = 0.0
+	if _surface != null:
+		_purchase_selector.get_popup().hide()
+		_surface.visible = false
+		_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_report_panel.visible = false
+		_toast_panel.visible = false
+		_restore_button.visible = false
+		_restore_button.disabled = false
+		_restore_button.mouse_filter = Control.MOUSE_FILTER_STOP
+		_details_button.button_pressed = false
+		_details_scroll.visible = false
+		_details_scroll.custom_minimum_size.y = 0.0
+		for child: Node in _details_content.get_children():
+			_details_content.remove_child(child)
+			child.queue_free()
+
+
+## Hides the report while pause or another screen owns input, preserving its display state for resume.
+func suspend(on: bool) -> void:
+	if _suspended == on:
+		return
+	_suspended = on
+	if _surface == null:
+		return
+	if on:
+		_purchase_selector.get_popup().hide()
+		var focused := get_viewport().gui_get_focus_owner()
+		if focused in _interactive_controls():
+			focused.release_focus()
+		for button: Control in _interactive_controls():
+			button.focus_mode = Control.FOCUS_NONE
+		_surface.visible = false
+		_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	else:
+		for button: Control in _interactive_controls():
+			button.focus_mode = Control.FOCUS_ALL
+		_surface.visible = _content_visible
+		_surface.mouse_filter = Control.MOUSE_FILTER_STOP if _terminal else Control.MOUSE_FILTER_IGNORE
+		_layout()
+		_layout_retry_frames = 2
+
+
+func _process(delta: float) -> void:
+	if not _suspended and not _reveal_pending.is_empty():
+		_reveal_remaining -= delta
+		if _reveal_remaining <= 0.0:
+			var held := _reveal_pending
+			_reveal_pending = {}
+			show_assessment(held.report, held.terminal)
+			_count_up_elapsed = 0.0 if COUNT_UP_S > 0.0 else -1.0
+			_apply_count_up()
+	elif not _suspended and _count_up_elapsed >= 0.0:
+		_count_up_elapsed += delta
+		_apply_count_up()
+	if not _suspended and _content_visible and _layout_retry_frames > 0:
+		_layout()
+		_layout_retry_frames -= 1
+	if _suspended or _terminal or _toast_remaining <= 0.0:
+		return
+	_toast_remaining = maxf(0.0, _toast_remaining - delta)
+	if _toast_remaining == 0.0 and _toast_panel != null:
+		_toast_panel.visible = false
+		_minimized = true
+		_reopen_only = true
+		_restore_button.visible = true
+		_restore_button.text = tr("View damage report")
+		_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_apply_action_visibility()
+		_layout()
+
+
+## Headline count-up: the same formatter on proportionally scaled amounts (ease-out). A frame whose
+## scaled state would read differently (status, range kind) shows the final text instead.
+func _apply_count_up() -> void:
+	if _count_up_elapsed < 0.0 or _amount_label == null:
+		return
+	var final_state := _headline_state(_report)
+	var t := clampf(_count_up_elapsed / COUNT_UP_S, 0.0, 1.0)
+	var text: String = final_state.amount
+	if t < 1.0:
+		var scaled := _report.duplicate() # Shallow: only the four headline amounts are replaced.
+		var eased := 1.0 - pow(1.0 - t, 3.0)
+		for field: String in ["total_minor", "low_minor", "high_minor", "known_subtotal_minor"]:
+			var amount: Variant = _valid_minor(_report.get(field))
+			if amount != null:
+				# Nonzero amounts never scale to zero: every frame keeps the final headline's form.
+				scaled[field] = signi(amount) * maxi(1, int(round(absf(float(amount)) * eased))) if amount != 0 else 0
+		var state := _headline_state(scaled)
+		if state.status == final_state.status:
+			text = state.amount
+	else:
+		_count_up_elapsed = -1.0
+	_amount_label.text = text
+	_toast_amount.text = text
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _terminal or _archived or _suspended or _minimized or _surface == null or not _surface.visible:
+		return
+	if event is InputEventKey:
+		var key := (event as InputEventKey).physical_keycode
+		if key == KEY_NONE:
+			key = (event as InputEventKey).keycode
+		# The app root owns pause (Escape) and explicit restart (R); other flight/camera keys are safe to ignore
+		# while the terminal card is open. Inspect minimizes the card and lets all camera input through.
+		if key != KEY_ESCAPE and key != KEY_R:
+			get_viewport().set_input_as_handled()
+
+
+func _build_ui() -> void:
+	if _surface != null:
+		return
+	_surface = Control.new()
+	_surface.name = "AccidentReportSurface"
+	_surface.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_surface.visible = false
+	_surface.theme = UiTheme.build()
+	_surface.resized.connect(_layout)
+	add_child(_surface)
+
+	_report_panel = PanelContainer.new()
+	_report_panel.name = "AccidentReportCard"
+	_report_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_report_panel.visible = false
+	_report_panel.add_theme_stylebox_override("panel", _card_style())
+	_surface.add_child(_report_panel)
+	var column := VBoxContainer.new()
+	_report_column = column
+	column.name = "ReportColumn"
+	column.add_theme_constant_override("separation", _scaled(9))
+	_report_panel.add_child(column)
+
+	# TT-20: identify this aircraft's estimate without changing its economic fields.
+	_aircraft_identity = _label("", Color("#f1b0a7"), _scaled(15))
+	_aircraft_identity.name = "AircraftIdentity"
+	_aircraft_identity.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_aircraft_identity.visible = false
+
+	var heading := HBoxContainer.new()
+	heading.add_theme_constant_override("separation", _scaled(14))
+	column.add_child(heading)
+	_title_label = _label("ACCIDENT REPORT", UiTheme.TEXT, _scaled(30))
+	_title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_title_label.theme_type_variation = "TitleLabel"
+	heading.add_child(_title_label)
+	_outcome_label = _label("", UiTheme.TEXT_2, _scaled(16))
+	_outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_outcome_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	heading.add_child(_outcome_label)
+
+	_status_label = _label("", UiTheme.FOCUS, _scaled(18))
+	column.add_child(_status_label)
+	_amount_label = _label("", UiTheme.TEXT, _scaled(56))
+	_amount_label.name = "ReportAmount"
+	_amount_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(_amount_label)
+	_caption_label = _label("", UiTheme.TEXT_2, _scaled(18))
+	_caption_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(_caption_label)
+	column.add_child(_aircraft_identity)
+
+	var actions := HFlowContainer.new()
+	_report_actions = actions
+	actions.name = "ReportActions"
+	actions.add_theme_constant_override("h_separation", _scaled(10))
+	actions.add_theme_constant_override("v_separation", _scaled(8))
+	column.add_child(actions)
+	_inspect_button = _button("Inspect wreck", "PrimaryButton")
+	_inspect_button.name = "InspectWreck"
+	_inspect_button.pressed.connect(_on_inspect_pressed)
+	actions.add_child(_inspect_button)
+	_details_button = _button("Show damage breakdown")
+	_details_button.name = "DamageBreakdown"
+	_details_button.toggle_mode = true
+	_details_button.toggled.connect(_set_expanded)
+	actions.add_child(_details_button)
+	_restart_button = _button("Restart flight")
+	_restart_button.name = "RestartFlight"
+	_restart_button.pressed.connect(_on_restart_pressed)
+	actions.add_child(_restart_button)
+	_hide_archived_button = _button("Hide accident report")
+	_hide_archived_button.name = "HideArchivedReport"
+	_hide_archived_button.visible = false
+	_hide_archived_button.pressed.connect(_hide_read_only_report)
+	actions.add_child(_hide_archived_button)
+	_cost_actions = HFlowContainer.new()
+	_cost_actions.name = "CostEstimateActions"
+	_cost_actions.add_theme_constant_override("h_separation", _scaled(10))
+	_cost_actions.visible = false
+	column.add_child(_cost_actions)
+	var cost_modes := ButtonGroup.new()
+	cost_modes.allow_unpress = false
+	_diy_button = _button("DIY estimate")
+	_diy_button.name = "CostDIY"
+	_diy_button.toggle_mode = true
+	_diy_button.button_group = cost_modes
+	_diy_button.pressed.connect(func() -> void: costing_mode_requested.emit("diy"))
+	_cost_actions.add_child(_diy_button)
+	_shop_button = _button("Include shop labor")
+	_shop_button.name = "CostShopLabor"
+	_shop_button.toggle_mode = true
+	_shop_button.button_group = cost_modes
+	_shop_button.pressed.connect(func() -> void: costing_mode_requested.emit("paid"))
+	_cost_actions.add_child(_shop_button)
+	_purchase_label = _label("Purchase plan", UiTheme.TEXT_2, _scaled(15))
+	_cost_actions.add_child(_purchase_label)
+	_purchase_selector = OptionButton.new()
+	_purchase_selector.name = "CostPurchasePlan"
+	_purchase_selector.focus_mode = Control.FOCUS_ALL
+	_purchase_selector.clip_text = true
+	_purchase_selector.fit_to_longest_item = false
+	_purchase_selector.custom_minimum_size.x = _scaled(280)
+	_purchase_selector.tooltip_text = tr("Choose a frozen parts package estimate. Extra supplied parts receive no sale credit.")
+	_purchase_selector.item_selected.connect(_on_purchase_selected)
+	_cost_actions.add_child(_purchase_selector)
+
+	_details_scroll = ScrollContainer.new()
+	_details_scroll.name = "DamageDetailsScroll"
+	_details_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_details_scroll.follow_focus = true
+	_details_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_details_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_details_scroll.visible = false
+	column.add_child(_details_scroll)
+	_details_content = VBoxContainer.new()
+	_details_content.name = "DamageDetails"
+	_details_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_details_content.add_theme_constant_override("separation", _scaled(6))
+	_details_scroll.add_child(_details_content)
+
+	var estimate_note := _label(tr("Estimated prices and repair outcomes may differ."), UiTheme.TEXT_2, _scaled(14))
+	estimate_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(estimate_note)
+
+	_toast_panel = PanelContainer.new()
+	_toast_panel.name = "AccidentToast"
+	_toast_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_toast_panel.visible = false
+	_toast_panel.add_theme_stylebox_override("panel", _toast_style())
+	_surface.add_child(_toast_panel)
+	var toast_column := VBoxContainer.new()
+	toast_column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_column.add_theme_constant_override("separation", _scaled(4))
+	_toast_panel.add_child(toast_column)
+	_toast_status = _label("DAMAGE REPORTED", UiTheme.TEXT_2, _scaled(15))
+	_toast_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_column.add_child(_toast_status)
+	_toast_amount = _label("", UiTheme.TEXT, _scaled(24))
+	_toast_amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_toast_amount.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	toast_column.add_child(_toast_amount)
+
+	_restore_button = _button("Show accident report", "PrimaryButton")
+	_restore_button.name = "ReopenAccidentReport"
+	_restore_button.custom_minimum_size.y = _scaled(52)
+	_restore_button.visible = false
+	_restore_button.pressed.connect(_reopen_report)
+	_surface.add_child(_restore_button)
+	for button: Button in [_inspect_button, _details_button, _restart_button, _hide_archived_button, _restore_button]:
+		button.custom_minimum_size.y = _scaled(54)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.focus_mode = Control.FOCUS_ALL
+	_layout()
+
+
+func _layout() -> void:
+	if _surface == null or _report_panel == null:
+		return
+	var viewport_size := _surface.size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		viewport_size = get_viewport().get_visible_rect().size
+	var metrics := layout_metrics(viewport_size, UiTheme.text_scale)
+	var gutter := float(metrics.gutter)
+	var width := float(metrics.panel_width)
+	var identity_value: Variant = _report.get("identity", {})
+	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
+	var timber := str(identity.get("aircraft_id", _report.get("aircraft_id", ""))) == "turbo-lumber-evolution"
+	var compact_timber := timber and viewport_size.y <= 800.0 and UiTheme.text_scale > 1.25
+	if _report_column != null:
+		_report_column.add_theme_constant_override("separation", _scaled(4) if compact_timber else _scaled(9))
+	if _report_actions != null:
+		_report_actions.add_theme_constant_override("h_separation", _scaled(4) if compact_timber else _scaled(10))
+		_report_actions.add_theme_constant_override("v_separation", _scaled(4) if compact_timber else _scaled(8))
+		for button: Button in [_inspect_button, _details_button, _restart_button, _hide_archived_button]:
+			if compact_timber:
+				button.custom_minimum_size.y = _scaled(48)
+				button.add_theme_font_size_override("font_size", _scaled(20))
+			else:
+				button.custom_minimum_size.y = _scaled(54)
+				button.remove_theme_font_size_override("font_size")
+			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if _restore_button != null:
+		_restore_button.custom_minimum_size.y = _scaled(48) if compact_timber else _scaled(54)
+	if _title_label != null:
+		_title_label.add_theme_font_size_override("font_size", _scaled(26) if compact_timber else _scaled(30))
+	if _status_label != null:
+		_status_label.add_theme_font_size_override("font_size", _scaled(16) if compact_timber else _scaled(18))
+	if _caption_label != null:
+		_caption_label.add_theme_font_size_override("font_size", _scaled(16) if compact_timber else _scaled(18))
+	if _aircraft_identity != null:
+		_aircraft_identity.add_theme_font_size_override("font_size", _scaled(14) if compact_timber else _scaled(15))
+	if _amount_label != null:
+		var headline_size := int(metrics.headline_size)
+		if compact_timber:
+			headline_size = maxi(64, roundi(float(headline_size) * 0.86))
+		_amount_label.add_theme_font_size_override("font_size", headline_size)
+	var card_style := _report_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if card_style != null:
+		var vertical_padding := _scaled(14) if compact_timber else _scaled(22)
+		card_style.content_margin_top = vertical_padding
+		card_style.content_margin_bottom = vertical_padding
+	_report_panel.custom_minimum_size.x = width
+	var details_height := float(metrics.details_max_height)
+	if timber and not compact_timber:
+		# The affected parts fit above provenance on ordinary desktop displays.
+		details_height = minf(340.0 * clampf(UiTheme.text_scale, 0.8, 1.5), maxf(180.0, viewport_size.y - 560.0))
+	if compact_timber:
+		details_height = 180.0
+	_details_scroll.custom_minimum_size.y = details_height if _expanded else 0.0
+	_details_scroll.custom_maximum_size.y = details_height
+	_report_panel.size = _report_panel.get_combined_minimum_size()
+	_report_panel.size.x = width
+	var max_height := float(metrics.max_panel_height)
+	_report_panel.size.y = minf(_report_panel.size.y, max_height)
+	_report_panel.position = Vector2((viewport_size.x - width) * 0.5,
+		maxf(gutter, viewport_size.y - gutter - _report_panel.size.y))
+	var toast_width := minf(_scaled(470), maxf(0.0, viewport_size.x - gutter * 2.0))
+	_toast_panel.position = Vector2(viewport_size.x - gutter - toast_width, gutter)
+	_toast_panel.size = Vector2(toast_width, _toast_panel.get_combined_minimum_size().y)
+	_restore_button.size = _restore_button.get_combined_minimum_size()
+	_restore_button.position = Vector2((viewport_size.x - _restore_button.size.x) * 0.5,
+		viewport_size.y - gutter - _restore_button.size.y)
+
+
+static func layout_metrics(viewport_size: Vector2, ui_scale: float = 1.0) -> Dictionary:
+	var safe_scale := 1.0
+	if is_finite(ui_scale):
+		safe_scale = clampf(ui_scale, 0.8, 1.5)
+	var gutter := clampf(28.0 * safe_scale, 20.0, 48.0)
+	var max_width := minf(920.0 * safe_scale, maxf(0.0, viewport_size.x - gutter * 2.0))
+	var max_height := maxf(0.0, viewport_size.y - gutter * 2.0)
+	# Keep the details pane scrollable on short displays so the full card and its actions fit.
+	var details_capacity := 108.0 + maxf(0.0, viewport_size.y - 720.0) * 0.25
+	var details_height := minf(180.0 * safe_scale, maxf(96.0, details_capacity))
+	return {
+		"panel_width": max_width,
+		"gutter": gutter,
+		"max_panel_height": max_height,
+		"details_max_height": details_height,
+		"headline_size": clampi(roundi(56.0 * safe_scale), 32, 84),
+	}
+
+
+func _render_report() -> void:
+	_archive_unavailable = false
+	_restore_button.disabled = false
+	_restore_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	if _surface == null:
+		return
+	var identity_value: Variant = _report.get("identity", {})
+	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
+	var timber := str(identity.get("aircraft_id", _report.get("aircraft_id", ""))) == "turbo-lumber-evolution"
+	_aircraft_identity.visible = timber
+	_aircraft_identity.text = tr("Turbo Lumber Evolution") if timber else ""
+	var card := _card_style()
+	var toast := _toast_style()
+	if timber:
+		card.border_color = Color("#a83d32")
+		card.border_width_top = _scaled(3)
+		toast.border_color = Color("#a83d32")
+		toast.border_width_left = _scaled(3)
+	_report_panel.add_theme_stylebox_override("panel", card)
+	_toast_panel.add_theme_stylebox_override("panel", toast)
+	_title_label.text = tr("DAMAGE REPORT") if _settled_report else tr("ACCIDENT REPORT")
+	var state := _headline_state(_report)
+	_outcome_label.text = _outcome_text(_report.get("outcome", "unavailable"))
+	_status_label.text = state.status
+	_amount_label.text = state.amount
+	_amount_label.add_theme_font_size_override("font_size", int(layout_metrics(_surface.size, UiTheme.text_scale).headline_size))
+	_caption_label.text = state.caption
+	if _report.get("valuation_kind") == "preview_game_parts_estimate":
+		_caption_label.text = tr("Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded.")
+		if _report.get("costing_available", false):
+			_caption_label.text = tr("Local game estimate. Other damage may be unassessed. DIY time, tax and shipping are excluded.")
+		if not _report.get("repair_choices", []).is_empty():
+			_caption_label.text = tr("Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed.")
+		_status_label.text = tr("LOCAL GAME REPAIR ESTIMATE") if _report.get("complete", false) else state.status
+		if _report.get("costing_mode") == "paid":
+			_caption_label.text = tr("Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed.")
+	if _archived and _report.get("archive_legacy_unverified", false) == true:
+		_status_label.text = tr("HISTORICAL REPORT · UNVERIFIED")
+		_caption_label.text = tr("Saved amounts could not be verified. This historical report is for reference.")
+	if _evidence_warning and not _archived:
+		_status_label.text = tr("COST EVIDENCE INCOMPLETE")
+		_caption_label.text = tr("Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing.")
+	_details_button.text = tr("Hide damage breakdown") if _expanded else tr("Show damage breakdown")
+	if timber:
+		_details_button.text = tr("Hide parts and prices") if _expanded else tr("Show parts and prices")
+	_inspect_button.text = tr("Inspect aircraft") if _settled_report else tr("Inspect wreck")
+	_restart_button.text = tr("Restart flight")
+	_hide_archived_button.text = tr("Hide damage report") if _settled_report else tr("Hide accident report")
+	if _archived:
+		_restore_button.text = tr("View archived accident report")
+	elif _reopen_only:
+		_restore_button.text = tr("View damage report")
+	else:
+		_restore_button.text = tr("Show accident report")
+	_toast_status.text = tr("DAMAGE REPORTED")
+	_toast_amount.text = state.amount
+	_diy_button.text = tr("DIY estimate")
+	_shop_button.text = tr("Include shop labor")
+	_diy_button.set_pressed_no_signal(_report.get("costing_mode", "diy") == "diy")
+	_shop_button.set_pressed_no_signal(_report.get("costing_mode") == "paid")
+	_update_purchase_options()
+	_rebuild_details()
+	_apply_action_visibility()
+	if _count_up_elapsed >= 0.0:
+		_apply_count_up() # A re-render during the count-up keeps the counted headline.
+	_layout()
+	_layout_retry_frames = 2
+
+
+func _headline_state(report: Dictionary) -> Dictionary:
+	var complete: bool = typeof(report.get("complete", false)) == TYPE_BOOL and bool(report.get("complete", false))
+	var currency := _currency_code(report.get("currency", "USD"))
+	var total: Variant = _valid_minor(report.get("total_minor"))
+	var low: Variant = _valid_minor(report.get("low_minor"))
+	var high: Variant = _valid_minor(report.get("high_minor"))
+	var subtotal: Variant = _valid_minor(report.get("known_subtotal_minor"))
+	var has_priced_action := _has_priced_action(report)
+	if complete and total != null:
+		return {
+			"status": _complete_status(str(report.get("outcome", "unavailable"))),
+			"amount": _format_headline_money(int(total), currency),
+			"caption": tr("Estimated total. Expand for cents, line items, and price assumptions."),
+		}
+	if not complete and high != null and report.get("range_basis") == "complete_build_replacement_ceiling":
+		# CR-39c: pending inspection under a whole-aircraft replacement ceiling; a range, never a total.
+		var floor_minor: int = int(low) if low != null else 0
+		return {
+			"status": tr("ESTIMATED LOSS · PROVISIONAL"),
+			"amount": tr("Up to %s") % _format_headline_money(int(high), currency) if floor_minor <= 0 \
+				else "%s – %s" % [_format_headline_money(mini(floor_minor, int(high)), currency), _format_headline_money(int(high), currency)],
+			"caption": tr("Upper limit: replacing the whole aircraft. Inspection is pending."),
+		}
+	if not complete:
+		if low != null and high != null and (int(low) != 0 or int(high) != 0 or has_priced_action):
+			var low_value := mini(int(low), int(high))
+			var high_value := maxi(int(low), int(high))
+			return {
+				"status": tr("INCOMPLETE ESTIMATE RANGE"),
+				"amount": "%s – %s" % [_format_headline_money(low_value, currency), _format_headline_money(high_value, currency)],
+				"caption": tr("Range only. Some required costs or inspection results are unresolved."),
+			}
+		if low != null and (int(low) != 0 or has_priced_action):
+			return {
+				"status": tr("INCOMPLETE ESTIMATE · LOWER BOUND"),
+				"amount": tr("At least %s") % _format_headline_money(int(low), currency),
+				"caption": tr("This is a lower bound; unresolved costs are excluded."),
+			}
+		if high != null and (int(high) != 0 or has_priced_action):
+			return {
+				"status": tr("INCOMPLETE ESTIMATE · UPPER BOUND"),
+				"amount": tr("Up to %s") % _format_headline_money(int(high), currency),
+				"caption": tr("This is an upper bound; unresolved costs may change the result."),
+			}
+		if subtotal != null and (int(subtotal) != 0 or _has_priced_action(report)):
+			return {
+				"status": tr("KNOWN SUBTOTAL · INCOMPLETE"),
+				"amount": _format_headline_money(int(subtotal), currency),
+				"caption": tr("Known subtotal only. It is not the complete cost."),
+			}
+		if _has_timber_pending_inspection(report):
+			return {
+				"status": tr("INSPECTION REQUIRED"),
+				"amount": tr("Inspection pending"),
+				"caption": tr("Inspect the affected parts to determine repair costs."),
+			}
+		return {
+			"status": tr("AMOUNT UNKNOWN"),
+			"amount": tr("Cost unavailable"),
+			"caption": tr("No complete amount or priced subtotal is available."),
+		}
+	if subtotal != null and (int(subtotal) != 0 or _has_priced_action(report)):
+		return {
+			"status": tr("KNOWN SUBTOTAL · INCOMPLETE"),
+			"amount": _format_headline_money(int(subtotal), currency),
+			"caption": tr("Known subtotal only. It is not the complete cost."),
+		}
+	return {
+		"status": _complete_status(str(report.get("outcome", "unavailable"))),
+		"amount": tr("Amount unavailable"),
+		"caption": tr("A complete amount was not supplied for this assessment."),
+	}
+
+
+func _complete_status(outcome: String) -> String:
+	match outcome:
+		"repair": return tr("REPAIR ESTIMATE")
+		"total_loss": return tr("ESTIMATED LOSS")
+		"inspection": return tr("INSPECTION REQUIRED")
+		_: return tr("COST UNAVAILABLE")
+
+
+func _outcome_text(value: Variant) -> String:
+	match str(value):
+		"repair": return tr("OUTCOME · REPAIR")
+		"total_loss": return tr("OUTCOME · TOTAL LOSS")
+		"inspection": return tr("OUTCOME · INSPECTION")
+		_: return tr("OUTCOME · UNAVAILABLE")
+
+
+func _rebuild_details() -> void:
+	if _details_content == null:
+		return
+	for child: Node in _details_content.get_children():
+		_details_content.remove_child(child)
+		child.queue_free()
+	if not _expanded:
+		return
+	_add_game_cost_scope()
+	_add_selected_price_range()
+	if _is_timber_report():
+		_rebuild_timber_details()
+		return
+	var currency := _currency_code(_report.get("currency", "USD"))
+	var identity_value: Variant = _report.get("identity", {})
+	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
+	var price_date: Variant = _report.get("price_date")
+	_add_detail_text(tr("Catalog snapshot: %s") % (str(price_date) if price_date != null and str(price_date) != "" else tr("unavailable")), true)
+	var valuation: Variant = _report.get("valuation_kind")
+	_add_detail_text(tr("Valuation: %s") % (_humanize_identifier(str(valuation)) if valuation != null and str(valuation) != "" else tr("method unavailable")), true)
+	var aircraft_name := str(_report.get("aircraft_name", identity.get("aircraft_id", "")))
+	if aircraft_name != "":
+		_add_detail_text(tr("Aircraft: %s") % _display_identifier(aircraft_name), true)
+	var incident_id := str(_report.get("incident_id", identity.get("incident_id", "")))
+	if incident_id != "":
+		_add_detail_text(tr("Incident: %s") % incident_id, true)
+	_add_detail_text(tr("All amounts are estimates. Market prices, labor, and repair outcomes may differ."), true)
+	_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
+	var complete: bool = typeof(_report.get("complete", false)) == TYPE_BOOL and bool(_report.get("complete", false))
+	if complete:
+		_add_detail_money(tr("Selected local game estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
+	_add_detail_money(tr("Salvage value reported"), _report.get("salvage_minor"), currency)
+	_add_detail_money(tr("Replacement reference reported"), _report.get("replacement_minor"), currency)
+	var replacement_quote_low: Variant = _valid_minor(_report.get("replacement_quote_low_minor"))
+	var replacement_quote_high: Variant = _valid_minor(_report.get("replacement_quote_high_minor"))
+	if replacement_quote_low != null or replacement_quote_high != null:
+		_add_detail_section(tr("Complete-build replacement quote comparison (reference only)"))
+		if replacement_quote_low != null:
+			_add_detail_money(tr("Low reference"), replacement_quote_low, currency)
+		if replacement_quote_high != null:
+			_add_detail_money(tr("High reference"), replacement_quote_high, currency)
+	_add_replacement_comparison(currency)
+	_add_detail_section(tr("Parts and actions"))
+	var lines: Variant = _report.get("lines", [])
+	var line_count := 0
+	if lines is Array:
+		for line_value: Variant in lines:
+			if not line_value is Dictionary:
+				continue
+			var line: Dictionary = line_value
+			var descriptor := _cost_line_name(line)
+			var action := _action_text(line.get("action", ""))
+			if action != "":
+				descriptor += " · " + action
+			var quantity := _quantity_text(line.get("quantity"))
+			if quantity != "":
+				descriptor += " × " + quantity
+			_add_detail_money(descriptor, line.get("amount_minor"), currency)
+			var price_basis := str(line.get("price_basis", ""))
+			if price_basis != "":
+				_add_detail_text(tr("Price basis: %s") % _humanize_identifier(price_basis), true)
+			var observed_on := str(line.get("observed_on", ""))
+			if observed_on != "":
+				_add_detail_text(tr("Observed: %s") % observed_on, true)
+			var availability := str(line.get("availability", ""))
+			if availability != "":
+				_add_detail_text(tr("Availability when observed: %s") % availability, true)
+			var source_url := str(line.get("source_url", ""))
+			if source_url.begins_with("https://"):
+				_add_detail_source(source_url)
+			var notes := str(line.get("notes", ""))
+			if notes != "":
+				_add_detail_text(notes, true)
+			_add_cost_line_scope(line)
+			line_count += 1
+	if line_count == 0:
+		_add_detail_text(tr("No priced line items were supplied."), true)
+	_add_repair_details(RepairDetails.normalize(_report), currency)
+	var unresolved: Variant = _report.get("unresolved", [])
+	if unresolved is Array and not unresolved.is_empty():
+		_add_detail_section(tr("Unresolved items"))
+		for item: Variant in unresolved:
+			_add_detail_text("• " + _unresolved_text(item), true)
+	elif not complete:
+		_add_detail_text(tr("Some costs or inspection results remain unresolved."), true)
+	var assumptions: Variant = _report.get("assumptions", [])
+	if assumptions is Array and not assumptions.is_empty():
+		_add_detail_section(tr("Assumptions"))
+		for assumption: Variant in assumptions:
+			_add_detail_text("• " + _unresolved_text(assumption), true)
+
+
+func _add_selected_price_range() -> void:
+	var low: Variant = _valid_minor(_report.get("low_minor"))
+	var high: Variant = _valid_minor(_report.get("high_minor"))
+	if low == null or high == null or low == high:
+		return
+	var currency := _currency_code(_report.get("currency", "USD"))
+	_add_detail_section(tr("Selected-plan price range"))
+	_add_detail_money(tr("Low estimate"), low, currency)
+	_add_detail_money(tr("High estimate"), high, currency)
+	_add_detail_text(tr("Price variation and modeled alternatives are bounds, not confidence probabilities."), true)
+	for reason: Variant in _report.get("range_reasons", []):
+		_add_detail_text(_unresolved_text(reason), true)
+
+
+func _add_game_cost_scope() -> void:
+	var selected: Variant = _report.get("selected_cost_plan")
+	if not selected is Dictionary or selected.is_empty():
+		if not str(_report.get("costing_error", "")).is_empty():
+			_add_detail_section(tr("Cost plan unavailable"))
+			_add_detail_text(tr("The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."), true)
+		_add_game_scope_outcomes(true)
+		return
+	_add_detail_section(tr("Selected cost plan"))
+	_add_detail_text(tr("Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."), true)
+	_add_detail_text(tr("Quantities identify purchase or service scope, not a count of physically confirmed failed units."), true)
+	if _report.get("costing_mode") == "paid":
+		_add_detail_text(tr("Shop labor uses an authored game rate and duration, not a repair shop quote."), true)
+	else:
+		_add_detail_text(tr("DIY cash cost does not charge for owner time."), true)
+	var error := str(_report.get("costing_error", ""))
+	if not error.is_empty():
+		_add_detail_text(tr("The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."), true)
+	_add_game_scope_outcomes(false)
+
+
+func _add_game_scope_outcomes(separate_section: bool) -> void:
+	var assessment: Variant = _report.get("game_assessment", {})
+	var outcomes: Variant = assessment.get("current_outcomes", {}) if assessment is Dictionary else {}
+	var heading_added := false
+	if outcomes is Dictionary:
+		for id: Variant in outcomes:
+			var outcome: Variant = outcomes[id]
+			if outcome is Dictionary and outcome.get("action") == "scope_clear":
+				if separate_section and not heading_added:
+					_add_detail_section(tr("Assessed game scope"))
+					heading_added = true
+				_add_detail_text(tr("No additional game charge within the assessed scope: %s. This does not certify physical health or salvage.") % _humanize_identifier(str(id)), true)
+
+
+func _cost_line_name(line: Dictionary) -> String:
+	var action := str(line.get("action", ""))
+	if action == "selected_purchase":
+		var names := PackedStringArray()
+		for token: Variant in line.get("allocated_ids", []):
+			var id := str(token)
+			if id.rfind(":") > 0:
+				id = id.substr(0, id.rfind(":"))
+			var display := _humanize_identifier(id)
+			if not names.has(display):
+				names.append(display)
+		return tr("Replacement package") + (": " + ", ".join(names) if not names.is_empty() else "")
+	if action in ["repair_labor", "game_labor"]:
+		var label := str(line.get("label", ""))
+		return tr("Shared setup") if label == "shared_setup" else tr("Labor: %s") % _humanize_identifier(label)
+	if action == "repair_material":
+		return tr("Repair materials") + ": " + _humanize_identifier(str(line.get("label", "")))
+	return _humanize_identifier(str(line.get("id", ""))) if not str(line.get("id", "")).is_empty() else tr("Unspecified item")
+
+
+func _add_cost_line_scope(line: Dictionary) -> void:
+	if line.has("surplus_ids") and line.surplus_ids is Array and not line.surplus_ids.is_empty():
+		_add_detail_text(tr("Included surplus units: %d. No sale credit is assumed.") % line.surplus_ids.size(), true)
+	if line.has("overlap_ids") and line.overlap_ids is Array and not line.overlap_ids.is_empty():
+		_add_detail_text(tr("Additional duplicate supplied units: %d. They are unvalued and receive no sale credit.") % line.overlap_ids.size(), true)
+	if line.get("action") in ["repair_labor", "game_labor"]:
+		var minutes: Variant = line.get("labor_minutes")
+		_add_detail_text(tr("Active work: unknown") if minutes == null else tr("Active work: %d min") % int(minutes), true)
+	if line.has("provenance"):
+		_add_detail_text(str(line.provenance), true)
+	if line.get("action") in ["repair_material", "repair_labor"] and line.get("source") is Dictionary:
+		_add_repair_source(line.source)
+
+
+func _is_timber_report() -> bool:
+	var identity: Variant = _report.get("identity", {})
+	return identity is Dictionary and str(identity.get("aircraft_id", _report.get("aircraft_id", ""))) == "turbo-lumber-evolution"
+
+
+func _has_timber_pending_inspection(report: Dictionary) -> bool:
+	var identity: Variant = report.get("identity", {})
+	if not identity is Dictionary or str(identity.get("aircraft_id", report.get("aircraft_id", ""))) != "turbo-lumber-evolution" \
+		or report.get("ok") != true or report.get("outcome") != "inspection":
+		return false
+	var lines: Variant = report.get("lines", [])
+	if lines is Array:
+		for line: Variant in lines:
+			if line is Dictionary and str(line.get("action", "")) in ["inspection", "inspect"]:
+				return true
+	return false
+
+
+func _rebuild_timber_details() -> void:
+	var currency := _currency_code(_report.get("currency", "USD"))
+	_add_detail_section(tr("Affected parts"))
+	var lines: Array[Dictionary] = []
+	var raw_lines: Variant = _report.get("lines", [])
+	if raw_lines is Array:
+		for value: Variant in raw_lines:
+			if value is Dictionary:
+				lines.append(value)
+	# Prioritize known charges, then inspection. Sort only this local list; archived
+	# reports and the incident ledger keep their original ordering and values.
+	lines.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return _timber_line_order(a) < _timber_line_order(b))
+	_add_timber_part_row({}, currency, true)
+	for line: Dictionary in lines:
+		_add_timber_part_row(line, currency)
+		_add_cost_line_scope(line)
+	if lines.is_empty():
+		_add_detail_text(tr("No assessed parts yet."), true)
+	_details_content.add_child(HSeparator.new())
+	if _has_timber_pending_inspection(_report) and _valid_minor(_report.get("known_subtotal_minor")) == 0 \
+		and not _has_priced_action(_report):
+		_add_detail_text(tr("No confirmed charges yet."), true)
+	else:
+		_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
+	if _report.get("complete") == true:
+		_add_detail_money(tr("Selected local game estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
+	else:
+		_add_detail_text(tr("Pending inspections and unpriced items are excluded from the subtotal."), true)
+	if str(_report.get("outcome", "")) == "total_loss":
+		_add_detail_money(tr("Replacement reference reported"), _report.get("replacement_minor"), currency)
+		_add_detail_money(tr("Salvage value reported"), _report.get("salvage_minor"), currency)
+	var quote_low: Variant = _valid_minor(_report.get("replacement_quote_low_minor"))
+	var quote_high: Variant = _valid_minor(_report.get("replacement_quote_high_minor"))
+	if quote_low != null or quote_high != null:
+		_add_detail_section(tr("Complete-build replacement quote comparison (reference only)"))
+		if quote_low != null:
+			_add_detail_money(tr("Low reference"), quote_low, currency)
+		if quote_high != null:
+			_add_detail_money(tr("High reference"), quote_high, currency)
+	_add_repair_details(RepairDetails.normalize(_report), currency)
+	_add_detail_section(tr("Price references"))
+	_add_detail_text(tr("Commercial reference parts for this fictional aircraft; fit and installed hardware are unverified."), true)
+	for line: Dictionary in lines:
+		_add_detail_text(_timber_part_name(line), false)
+		var product_name := str(line.get("product_name", ""))
+		var sku := str(line.get("product_sku", ""))
+		if not product_name.is_empty():
+			_add_detail_text(product_name + (" · " + sku if not sku.is_empty() else ""), true)
+		var price_basis := str(line.get("price_basis", ""))
+		if not price_basis.is_empty():
+			_add_detail_text(tr("Price basis: %s") % _humanize_identifier(price_basis), true)
+		var package := str(line.get("package_description", ""))
+		if not package.is_empty():
+			_add_detail_text(tr("Sold package: %s") % package, true)
+		if _valid_minor(line.get("offer_amount_minor")) != null:
+			_add_detail_money(tr("Listed package price (reference only)"), line.offer_amount_minor, currency)
+		var observed := str(line.get("observed_on", ""))
+		if not observed.is_empty():
+			_add_detail_text(tr("Observed: %s") % observed, true)
+		var availability := str(line.get("availability", ""))
+		if not availability.is_empty():
+			_add_detail_text(tr("Availability when observed: %s") % availability, true)
+		var source_url := str(line.get("source_url", ""))
+		if source_url.begins_with("https://"):
+			_add_detail_source(source_url)
+		var notes := str(line.get("notes", ""))
+		if not notes.is_empty():
+			_add_detail_text(notes, true)
+	_add_replacement_comparison(currency)
+	var unresolved: Variant = _report.get("unresolved", [])
+	if unresolved is Array and not unresolved.is_empty():
+		_add_detail_section(tr("Unresolved items"))
+		for item: Variant in unresolved:
+			if item is String and String(item).begins_with("Candidate offer references are not attached to a component"):
+				_add_detail_text("• " + tr("Some reference parts are excluded until fit and package contents are verified."), true)
+			else:
+				_add_detail_text("• " + _unresolved_text(item), true)
+	_add_detail_section(tr("Report assumptions"))
+	var price_date := str(_report.get("price_date", ""))
+	_add_detail_text(tr("Catalog snapshot: %s") % (price_date if not price_date.is_empty() else tr("unavailable")), true)
+	var identity: Dictionary = _report.get("identity", {})
+	_add_detail_text(tr("Incident: %s") % str(_report.get("incident_id", identity.get("incident_id", ""))), true)
+	var assumptions: Variant = _report.get("assumptions", [])
+	if assumptions is Array:
+		for assumption: Variant in assumptions:
+			_add_detail_text("• " + _unresolved_text(assumption), true)
+
+
+func _timber_line_order(line: Dictionary) -> int:
+	var amount: Variant = _valid_minor(line.get("amount_minor"))
+	return 0 if amount != null and int(amount) != 0 else (1 if str(line.get("action", "")) in ["inspection", "inspect"] else 2)
+
+
+func _timber_part_name(line: Dictionary) -> String:
+	if line.get("action") in ["selected_purchase", "repair_material", "repair_labor", "game_labor", "incurred_fee"]:
+		return _cost_line_name(line)
+	if str(line.get("id", "")) == "propeller_main":
+		# Old immutable reports priced a combined assembly under the same ID.
+		# Use the frozen offer identity, never today's catalog, to name blade-only rows.
+		if str(line.get("product_sku", "")) == "EFL5962" \
+			or str(line.get("offer_id", "")).begins_with("timber_evolution_propeller_efl5962_"):
+			return tr("Three-blade propeller")
+		if str(line.get("notes", "")).to_lower().contains("spinner"):
+			return tr("Propeller and spinner")
+	return _humanize_identifier(str(line.get("id", "")))
+
+
+func _add_timber_part_row(line: Dictionary, currency: String, header: bool = false) -> void:
+	var row := HBoxContainer.new()
+	row.name = "PartsTableHeader" if header else "PartLine%d" % _details_content.get_child_count()
+	row.add_theme_constant_override("separation", _scaled(12))
+	_details_content.add_child(row)
+	var item := VBoxContainer.new()
+	item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	item.add_theme_constant_override("separation", _scaled(2))
+	row.add_child(item)
+	var part := _label(tr("Part") if header else _timber_part_name(line), UiTheme.TEXT_2 if header else UiTheme.TEXT, _scaled(14 if header else 17))
+	part.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	item.add_child(part)
+	var sku := str(line.get("product_sku", ""))
+	if not header and not sku.is_empty():
+		var reference := _label(tr("Reference: %s") % sku, UiTheme.TEXT_2, _scaled(13))
+		reference.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		item.add_child(reference)
+	var action := _label(tr("Action") if header else _action_text(line.get("action", "")), UiTheme.TEXT_2 if header else UiTheme.FOCUS, _scaled(14 if header else 15))
+	action.custom_minimum_size.x = _scaled(116)
+	action.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(action)
+	var quantity := _label(tr("Qty") if header else _quantity_text(line.get("quantity")), UiTheme.TEXT_2, _scaled(14 if header else 15))
+	quantity.custom_minimum_size.x = _scaled(36)
+	quantity.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	quantity.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(quantity)
+	var amount: Variant = _valid_minor(line.get("amount_minor"))
+	var amount_text := _format_money(int(amount), currency, true) if amount != null else tr("Not priced")
+	if not header and amount == null and str(line.get("action", "")) in ["inspect", "inspection"]:
+		amount_text = tr("Pending")
+	var price := _label(tr("Estimate") if header else amount_text, UiTheme.TEXT_2 if header else UiTheme.TEXT, _scaled(14 if header else 17))
+	price.custom_minimum_size.x = _scaled(125)
+	price.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	price.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(price)
+
+
+func _add_repair_details(rows: Array[Dictionary], currency: String) -> void:
+	if rows.is_empty():
+		return
+	_add_detail_section(tr("Selected repair details"))
+	for row: Dictionary in rows:
+		if rows.size() > 1:
+			_add_detail_text("%s · %s" % [
+				_humanize_identifier(str(row.get("component_id", ""))), str(row.get("recipe_label", ""))], false)
+		_add_detail_money(tr("Selected repair subtotal"), row.get("repair_minor"), currency)
+		if bool(row.get("inspection_fee_itemized", false)):
+			_add_detail_money(tr("Inspection fee"), row.get("inspection_minor"), currency)
+		else:
+			_add_detail_text(tr("No separate inspection fee was itemized."), true)
+	_add_detail_text(tr("Already included in the repair line above; not added again."), true)
+	for row: Dictionary in rows:
+		var component_name := _humanize_identifier(str(row.get("component_id", "")))
+		var recipe_label := str(row.get("recipe_label", ""))
+		_add_detail_text("%s · %s" % [component_name, recipe_label], false)
+		var costing_basis := tr("Cash purchase") if row.get("costing_basis") == "cash" else tr("Consumption allocation")
+		_add_detail_text(tr("Costing basis: %s") % costing_basis, true)
+		var labor_label := tr("DIY") if row.get("labor_mode") == "diy" else tr("Paid")
+		var minutes: Variant = row.get("labor_minutes")
+		_add_detail_text(tr("Labor: %s · duration unknown") % labor_label if minutes == null else tr("Labor: %s · %d min") % [labor_label, int(minutes)], true)
+		_add_detail_money(tr("Labor cost"), row.get("labor_minor"), currency)
+		var materials: Variant = row.get("materials", [])
+		if materials is Array:
+			for material_value: Variant in materials:
+				if not material_value is Dictionary:
+					continue
+				var material: Dictionary = material_value
+				_add_detail_text(tr("Material: %s") % _humanize_identifier(str(material.get("material_id", ""))), false)
+				var unit := str(material.get("unit", ""))
+				var required := _format_repair_units(int(material.get("required_units", 0)), unit)
+				_add_detail_text(tr("Required: %s") % required, true)
+				var package_price := _format_money(int(material.get("package_price_minor", 0)), currency, true)
+				var package_units := _format_repair_units(int(material.get("package_units", 0)), unit)
+				_add_detail_text(tr("Package: %s at %s each") % [package_units, package_price], true)
+				_add_detail_money(tr("Cash for %d packages") % int(material.get("package_count", 0)), material.get("purchase_minor"), currency)
+				_add_detail_money(tr("Consumed material allocation"), material.get("consumption_minor"), currency)
+		_add_detail_text(tr("Full-package cash and consumed allocation are alternate material views."), true)
+		var inspection_basis := tr("Inspection") if row.get("inspection_basis") == "inspection" else tr("Scenario assumption")
+		_add_detail_text(tr("Inspection basis: %s") % inspection_basis, true)
+		_add_detail_text(tr("Inspection evidence: %s") % str(row.get("inspection_evidence", "")), true)
+		var measurements: Variant = row.get("inspection_measurements", {})
+		if measurements is Dictionary:
+			var measurement_keys: Array[String] = []
+			for key: Variant in measurements.keys():
+				measurement_keys.append(str(key))
+			measurement_keys.sort()
+			for key: String in measurement_keys:
+				var display_key := key.trim_suffix("_milli_sq_in")
+				var measurement_value := _format_milli_square_inches(int(measurements[key])) if key.ends_with("_milli_sq_in") else str(measurements[key])
+				_add_detail_text(tr("Measurement: %s = %s") % [_humanize_identifier(display_key), measurement_value], true)
+		_add_repair_source(row.get("labor_source", {}))
+		if materials is Array:
+			for material_value: Variant in materials:
+				if material_value is Dictionary:
+					_add_repair_source((material_value as Dictionary).get("source", {}))
+
+
+func _format_repair_units(value: int, unit: String) -> String:
+	if unit == "milli_square_inch":
+		return _format_milli_square_inches(value)
+	return "%s %s" % [str(value), _humanize_identifier(unit)]
+
+
+func _format_milli_square_inches(value: int) -> String:
+	var whole: int = value / 1000
+	var remainder: int = value % 1000
+	var result := str(whole)
+	if remainder > 0:
+		var fraction := "%03d" % remainder
+		while fraction.ends_with("0"):
+			fraction = fraction.left(fraction.length() - 1)
+		result += "." + fraction
+	return result + " in²"
+
+
+func _add_repair_source(value: Variant) -> void:
+	if not value is Dictionary:
+		return
+	var source: Dictionary = value
+	var source_name: Variant = source.get("source_name")
+	if source_name is String and not String(source_name).is_empty():
+		_add_detail_text(tr("Source: %s") % String(source_name), true)
+	var product: Variant = source.get("product")
+	if product is String and not String(product).is_empty():
+		_add_detail_text(tr("Product: %s") % String(product), true)
+	var observed_on: Variant = source.get("observed_on")
+	if observed_on is String and not String(observed_on).is_empty():
+		_add_detail_text(tr("Observed: %s") % String(observed_on), true)
+	var availability: Variant = source.get("availability")
+	if availability is String and not String(availability).is_empty():
+		_add_detail_text(tr("Availability when observed: %s") % String(availability), true)
+	var source_url: Variant = source.get("source_url")
+	if source_url is String and String(source_url).begins_with("https://"):
+		_add_detail_source(String(source_url))
+	var evidence: Variant = source.get("evidence", source.get("description", ""))
+	if evidence is String and not String(evidence).is_empty():
+		_add_detail_text(tr("Source note: %s") % String(evidence), true)
+
+
+func _add_replacement_comparison(currency: String) -> void:
+	var value: Variant = _report.get("replacement_comparison")
+	if not value is Dictionary:
+		return
+	var status: Variant = value.get("status")
+	if status not in ["optimal", "unknown_cost", "unknown_eligibility", "search_limit", "infeasible", "cost_out_of_range"]:
+		return
+	_add_detail_section(tr("Replacement parts comparison"))
+	_add_detail_text(tr("Parts only. Inspection, repairs and labor are separate; this comparison is not added to the accident total."), true)
+	var proven: bool = value.get("optimality_proven") == true and status == "optimal" and _valid_minor(value.get("total_cost_cents")) != null
+	var legacy: bool = value.get("format") == "openrc-replacement-comparison v1"
+	proven = proven and not legacy
+	_add_detail_money(tr("Lowest priced combination for these parts") if proven else tr("Provisional parts estimate"), value.get("total_cost_cents"), currency)
+	if not proven:
+		var explanation := tr("Some package prices are unknown; the cheapest option is unresolved.")
+		if status == "search_limit":
+			explanation = tr("Comparison is incomplete; a cheaper combination may exist.")
+		elif status == "unknown_eligibility":
+			explanation = tr("Package availability or eligibility is unresolved; no cheapest purchase is confirmed.")
+		elif status == "infeasible":
+			explanation = tr("No compatible combination covers all requested parts.")
+		elif status == "cost_out_of_range":
+			explanation = tr("Parts estimate exceeds the supported amount range.")
+		if legacy:
+			explanation = tr("Historical estimate; itemized package coverage was not saved.")
+		_add_detail_text(explanation, true)
+	if value.get("assessment_complete") != true:
+		_add_detail_text(tr("Other damage or inspection costs remain unresolved."), true)
+	_add_detail_text(tr("Catalog estimates; availability and physical fit require confirmation."), true)
+	var surplus := 0
+	for coverage: Variant in value.get("selected_coverage", []):
+		if coverage is Dictionary and coverage.get("surplus_ids") is Array:
+			surplus += coverage.surplus_ids.size()
+	if surplus > 0:
+		_add_detail_text(tr("Included surplus units: %d. No sale credit is assumed.") % surplus, true)
+
+
+func _add_detail_section(text: String) -> void:
+	var label := _label(text, UiTheme.FOCUS, _scaled(16))
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_details_content.add_child(label)
+
+
+func _add_detail_text(text: String, secondary: bool) -> void:
+	var label := _label(text, UiTheme.TEXT_2 if secondary else UiTheme.TEXT, _scaled(15))
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_details_content.add_child(label)
+
+
+func _add_detail_source(source_url: String) -> void:
+	var label := RichTextLabel.new()
+	label.text = tr("Source: %s") % source_url
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.selection_enabled = true
+	label.scroll_active = false
+	label.fit_content = true
+	label.add_theme_color_override("default_color", UiTheme.TEXT_2)
+	label.add_theme_font_size_override("normal_font_size", _scaled(14))
+	_details_content.add_child(label)
+
+
+func _add_detail_money(label_text: String, value: Variant, currency: String) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", _scaled(12))
+	_details_content.add_child(row)
+	var label := _label(label_text, UiTheme.TEXT_2, _scaled(15))
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row.add_child(label)
+	var amount: Variant = _valid_minor(value)
+	var value_label := _label(_format_money(int(amount), currency, true) if amount != null else tr("Not priced"), UiTheme.TEXT, _scaled(15))
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	row.add_child(value_label)
+
+
+func _set_expanded(expanded: bool) -> void:
+	_expanded = expanded
+	if _details_scroll == null:
+		return
+	_details_scroll.visible = expanded
+	_rebuild_details()
+	_layout()
+	_details_button.text = tr("Hide damage breakdown") if expanded else tr("Show damage breakdown")
+	if _is_timber_report():
+		_details_button.text = tr("Hide parts and prices") if expanded else tr("Show parts and prices")
+	_layout_retry_frames = 2
+
+
+func _on_inspect_pressed() -> void:
+	if not _terminal or _reopen_only:
+		return
+	_minimized = true
+	_report_panel.visible = false
+	_restore_button.visible = true
+	_restore_button.grab_focus()
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_layout()
+	inspect_requested.emit()
+
+
+func _reopen_report() -> void:
+	if (not _terminal and not _reopen_only) or _suspended:
+		return
+	_auto_settled = false
+	_minimized = false
+	_restore_button.visible = false
+	_report_panel.visible = true
+	_surface.mouse_filter = Control.MOUSE_FILTER_STOP if _terminal and not _archived else Control.MOUSE_FILTER_IGNORE
+	_apply_action_visibility()
+	if _terminal and not _reopen_only:
+		_inspect_button.grab_focus()
+	else:
+		_hide_archived_button.grab_focus()
+	_layout()
+	# Hidden containers may still report their narrow pre-layout minimum height.
+	# Reflow after showing the card before accepting that height as its size.
+	_layout_retry_frames = 2
+
+
+func _hide_read_only_report() -> void:
+	if not _reopen_only:
+		return
+	_auto_settled = false
+	_minimized = true
+	_report_panel.visible = false
+	_restore_button.visible = true
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_release_report_focus()
+	_layout()
+
+
+func _on_restart_pressed() -> void:
+	if _terminal and not _reopen_only and _report_panel.visible:
+		restart_requested.emit()
+
+
+## Routes controller actions without forcing callers to depend on the current button layout.
+## Supported actions are next, previous, accept, cancel, inspect, restart, details, and reopen.
+func controller_action(action: String) -> bool:
+	if _suspended or _report.is_empty() or not _content_visible or _surface == null or not _surface.visible:
+		return false
+	match action:
+		"navigate_right", "navigate_down": action = "next"
+		"navigate_left", "navigate_up": action = "previous"
+		"back": action = "cancel"
+		"pause": return false # Escape/pause belongs to app_root, even while this card is open.
+	var controls := _visible_action_controls()
+	if action == "next" or action == "previous":
+		if controls.is_empty():
+			return false
+		var focused := get_viewport().gui_get_focus_owner()
+		var index := controls.find(focused)
+		if index < 0:
+			index = controls.size() - 1 if action == "previous" else 0
+		else:
+			index = posmod(index + (-1 if action == "previous" else 1), controls.size())
+		controls[index].grab_focus()
+		return true
+	if action == "accept":
+		var focused := get_viewport().gui_get_focus_owner()
+		if focused == _diy_button and _cost_actions.visible:
+			costing_mode_requested.emit("diy")
+			return true
+		if focused == _shop_button and _cost_actions.visible:
+			costing_mode_requested.emit("paid")
+			return true
+		if focused == _purchase_selector and _purchase_selector.visible and _cost_actions.visible:
+			var next := posmod(_purchase_selector.selected + 1, _purchase_selector.item_count)
+			_purchase_selector.select(next)
+			_on_purchase_selected(next)
+			return true
+		if focused == _inspect_button and _terminal and not _reopen_only and _report_panel.visible:
+			_on_inspect_pressed()
+			return true
+		if focused == _restart_button and _terminal and not _reopen_only and _report_panel.visible:
+			restart_requested.emit()
+			return true
+		if focused == _details_button and _report_panel.visible:
+			_set_expanded(not _expanded)
+			return true
+		if focused == _hide_archived_button and _reopen_only and _report_panel.visible:
+			_hide_read_only_report()
+			return true
+		if focused == _restore_button and _restore_button.visible:
+			_reopen_report()
+			return true
+		return false
+	if action == "cancel":
+		if _reopen_only and _report_panel.visible:
+			_hide_read_only_report()
+			return true
+		if _terminal and not _reopen_only and _report_panel.visible:
+			_minimize_terminal_report()
+			return true
+		return false
+	if action == "inspect" and _terminal and not _reopen_only and _report_panel.visible:
+		_on_inspect_pressed()
+		return true
+	if action == "restart" and _terminal and not _reopen_only and _report_panel.visible:
+		restart_requested.emit()
+		return true
+	if action == "details" and _report_panel.visible:
+		_set_expanded(not _expanded)
+		return true
+	if action == "reopen" and _restore_button.visible:
+		_reopen_report()
+		return true
+	return false
+
+
+## The app routes controller UI actions here only while the report owns a full interactive card.
+func wants_controller_menu() -> bool:
+	return not _suspended and _surface != null and _surface.visible and _report_panel != null \
+		and _report_panel.visible and not _minimized and (_terminal or _reopen_only)
+
+
+func _minimize_terminal_report() -> void:
+	if not _terminal or _reopen_only:
+		return
+	_minimized = true
+	_report_panel.visible = false
+	_restore_button.visible = true
+	_restore_button.grab_focus()
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_layout()
+
+
+func _visible_action_controls() -> Array[Control]:
+	var controls: Array[Control] = []
+	if _restore_button.visible:
+		controls.append(_restore_button)
+	elif _report_panel.visible:
+		if _reopen_only:
+			controls.append(_details_button)
+			controls.append(_hide_archived_button)
+		else:
+			controls.append(_inspect_button)
+			controls.append(_details_button)
+			controls.append(_restart_button)
+		if _cost_actions.visible:
+			controls.append(_diy_button)
+			controls.append(_shop_button)
+			if _purchase_selector.visible:
+				controls.append(_purchase_selector)
+	return controls
+
+
+func _apply_action_visibility() -> void:
+	if _inspect_button == null:
+		return
+	_inspect_button.visible = not _reopen_only
+	_restart_button.visible = not _reopen_only
+	_details_button.visible = not _minimized
+	_hide_archived_button.visible = _reopen_only and not _minimized
+	_cost_actions.visible = not _archived and not _minimized and _report.get("costing_available", false) == true
+
+
+func _focus_inspect() -> void:
+	if _terminal and not _suspended and _report_panel != null and _report_panel.visible:
+		_inspect_button.grab_focus()
+
+
+func _button(text: String, variation: String = "") -> Button:
+	var button := Button.new()
+	button.text = tr(text)
+	button.focus_mode = Control.FOCUS_ALL
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	if variation != "":
+		button.theme_type_variation = variation
+	return button
+
+
+func _label(text: String, color: Color, font_size: int) -> Label:
+	var label := Label.new()
+	label.text = tr(text)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_font_size_override("font_size", font_size)
+	return label
+
+
+func _card_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(UiTheme.PANEL, 0.98)
+	style.border_color = UiTheme.EDGE
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(16)
+	var padding := _scaled(22)
+	style.content_margin_left = padding
+	style.content_margin_right = padding
+	style.content_margin_top = padding
+	style.content_margin_bottom = padding
+	return style
+
+
+func _toast_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(UiTheme.PANEL, 0.96)
+	style.border_color = UiTheme.EDGE
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(12)
+	var padding := _scaled(14)
+	style.content_margin_left = padding
+	style.content_margin_right = padding
+	style.content_margin_top = padding
+	style.content_margin_bottom = padding
+	return style
+
+
+func _scaled(value: float) -> int:
+	var factor := 1.0
+	if is_finite(UiTheme.text_scale):
+		factor = clampf(UiTheme.text_scale, 0.8, 1.5)
+	return maxi(1, roundi(value * factor))
+
+
+func _interactive_controls() -> Array[Control]:
+	return [_inspect_button, _details_button, _restart_button, _hide_archived_button, _restore_button, _diy_button, _shop_button, _purchase_selector]
+
+
+func _release_report_focus() -> void:
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused in _interactive_controls():
+		focused.release_focus()
+
+
+func _currency_code(value: Variant) -> String:
+	if typeof(value) != TYPE_STRING:
+		return "USD"
+	var code := String(value).strip_edges().to_upper()
+	if code.is_empty() or code.length() > 8:
+		return "USD"
+	return code
+
+
+func _valid_minor(value: Variant) -> Variant:
+	if typeof(value) == TYPE_INT:
+		var integer_value := int(value)
+		return integer_value if integer_value >= -MAX_MINOR_AMOUNT and integer_value <= MAX_MINOR_AMOUNT else null
+	if typeof(value) == TYPE_FLOAT:
+		var float_value := float(value)
+		if is_finite(float_value) and float_value == floor(float_value) and absf(float_value) <= float(MAX_MINOR_AMOUNT):
+			return int(float_value)
+	return null
+
+
+func _format_headline_money(minor: int, currency: String) -> String:
+	return _format_money(minor, currency, _is_timber_report() or absi(minor) < 10000)
+
+
+func _has_priced_action(report: Dictionary) -> bool:
+	var lines: Variant = report.get("lines", [])
+	if not lines is Array:
+		return false
+	for line_value: Variant in lines:
+		if not line_value is Dictionary:
+			continue
+		var line: Dictionary = line_value
+		if _valid_minor(line.get("amount_minor")) != null and str(line.get("action", "")).strip_edges() != "":
+			return true
+	return false
+
+
+func _format_money(minor: int, currency: String, cents: bool) -> String:
+	var negative := minor < 0
+	var absolute_minor := absi(minor)
+	var amount_text: String
+	if cents:
+		var dollars: int = absolute_minor / 100
+		var remainder := absolute_minor % 100
+		amount_text = _group_digits(str(dollars)) + _decimal_separator() + "%02d" % remainder
+	else:
+		var dollars_rounded: int = (absolute_minor + 50) / 100
+		amount_text = _group_digits(str(dollars_rounded))
+	var prefix := "US$" if currency == "USD" else currency + " "
+	return ("-" if negative else "") + prefix + amount_text
+
+
+func _group_digits(digits: String) -> String:
+	var thousands := "." if TranslationServer.get_locale().begins_with("es") else ","
+	var groups: Array[String] = []
+	var remaining := digits
+	while remaining.length() > 3:
+		groups.push_front(remaining.substr(remaining.length() - 3, 3))
+		remaining = remaining.substr(0, remaining.length() - 3)
+	groups.push_front(remaining)
+	return thousands.join(PackedStringArray(groups))
+
+
+func _decimal_separator() -> String:
+	return "," if TranslationServer.get_locale().begins_with("es") else "."
+
+
+func _quantity_text(value: Variant) -> String:
+	if typeof(value) == TYPE_INT:
+		return str(value)
+	if typeof(value) == TYPE_FLOAT and is_finite(float(value)):
+		return str(float(value))
+	return ""
+
+
+func _action_text(value: Variant) -> String:
+	match str(value):
+		"selected_purchase": return tr("Replacement package")
+		"repair_material": return tr("Repair materials")
+		"repair_labor", "game_labor": return tr("Labor")
+		"incurred_fee": return tr("Incurred fee")
+		"repair": return tr("Repair")
+		"replace": return tr("Replace")
+		"replacement": return tr("Replacement")
+		"inspect": return tr("Inspect")
+		"inspection": return tr("Inspection")
+		"salvage": return tr("Salvage")
+		"credit": return tr("Credit")
+		"salvage_credit": return tr("Salvage credit")
+		"reuse": return tr("Reuse")
+		_: return str(value).strip_edges()
+
+
+func _unresolved_text(value: Variant) -> String:
+	if value is Dictionary:
+		var item_id: String = str(value.get("id", ""))
+		var reason: String = str(value.get("reason", ""))
+		if reason != "":
+			var localized_reason := _localize_reason(reason)
+			if item_id != "":
+				var item_label := _humanize_identifier(item_id)
+				if not localized_reason.begins_with(item_label + " · "):
+					return "%s · %s" % [item_label, localized_reason]
+			return localized_reason
+		if item_id != "":
+			return _humanize_identifier(item_id)
+		return tr("Unresolved item")
+	if str(value).strip_edges() == "":
+		return tr("Unresolved item")
+	return _localize_reason(str(value))
+
+
+func _localize_reason(value: String) -> String:
+	var translated := tr(value)
+	if translated != value:
+		return translated
+	var parts := value.split(": ", true, 1)
+	if parts.size() == 2:
+		return "%s · %s" % [_humanize_identifier(parts[0]), tr(parts[1])]
+	return translated
+
+
+func _humanize_identifier(value: String) -> String:
+	var identifier := value.strip_edges()
+	if identifier.is_empty():
+		return tr("Unresolved item")
+	var display := str(COMPONENT_LABELS.get(identifier, identifier.replace("_", " ").replace("-", " ")))
+	if _is_timber_report():
+		display = str(TIMBER_COMPONENT_LABELS.get(identifier, display))
+		if _report.get("valuation_kind") == "preview_game_parts_estimate" and identifier == "wing_main":
+			display = "Wing, flaps and ailerons (servos excluded)"
+	if not display.is_empty():
+		display = display.left(1).to_upper() + display.substr(1)
+	return tr(display)
+
+
+func _display_identifier(value: String) -> String:
+	if value.contains("_") or (value.contains("-") and not value.contains(" ")):
+		return _humanize_identifier(value)
+	return value

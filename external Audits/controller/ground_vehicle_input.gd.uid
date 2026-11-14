@@ -1,0 +1,138 @@
+{
+  "commit": "f41d0fd2eb5483c609bcd858bcf22776eb311e14",
+  "files": [
+    {
+      "path": "app_state/build_info.gd",
+      "sha256": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174"
+    },
+    {
+      "path": "input/controller_actions.gd",
+      "sha256": "96d484dcca792b91e01f1238d5fb1c2c3f920d1cac331fb57cf6aaa114b06083"
+    },
+    {
+      "path": "input/controller_diagnostics.gd",
+      "sha256": "62b5fdd9ca0546a2e9ee997e42537c1d75ce018d3a65594fe7d882daadc4bc51"
+    },
+    {
+      "path": "input/controller_profile.gd",
+      "sha256": "9a302494e1449224195f2f7f57db85ac7806be23f3e675b56a428984684a16bb"
+    },
+    {
+      "path": "input/controller_profile_store.gd",
+      "sha256": "c407b17f0fe67af364a58cb1c228c95ca42cb4070c55e9c2db927e4cea425016"
+    },
+    {
+      "path": "input/controller_registry.gd",
+      "sha256": "2e5ff50676de07e9ce31b30c8acebb64f387359b60042ecd797ec508d585811b"
+    },
+    {
+      "path": "input/controller_service.gd",
+      "sha256": "876273106015c77dac637ba4f4a99a9ec85df58be7b92336165c06cef7d6f353"
+    },
+    {
+      "path": "input/input_report_data.gd",
+      "sha256": "c534d825f6cef42c3197a3947ce43d37fa33676d6f073c0428b022c280615db1"
+    },
+    {
+      "path": "input/jeti_radio.gd",
+      "sha256": "4af27e19a3dc32792f4f85087aff84b508b3b1d00861ffc7882d438af6fa80ef"
+    },
+    {
+      "path": "input/radio_menu.gd",
+      "sha256": "7ad01a984120a594dc6b26e40bdabdca6bc6ce7744077d837809a66f1f5d2d41"
+    },
+    {
+      "path": "input/rc_calibration.gd",
+      "sha256": "5522b2e46dd302a9d3906acc56c372408ceaca70a739ceef5898eaf0dbb15b0a"
+    },
+    {
+      "path": "input/rc_input.gd",
+      "sha256": "c9d31b457b1be783465fe0651756059eb7c2e93daa991e67f313225f21c99d01"
+    },
+    {
+      "path": "input/smoke_aux.gd",
+      "sha256": "365d456ea8807acff13081acd40d76b1c5092d98d17fa41b03887b4873e5e560"
+    },
+    {
+      "path": "tests/test_controller_actions.gd",
+      "sha256": "199bcc128dd0c3faa8336cbb4726083d56757356a42ca5f8a452e4e5e693e259"
+    },
+    {
+      "path": "tests/test_controller_auto_defaults.gd",
+      "sha256": "ac8364cee1a841927e2c3fa455f9678d331b7a5bff82f991786b9dfc48d08a3d"
+    },
+    {
+      "path": "tests/test_controller_conditioning.gd",
+      "sha256": "62d694d1eef04dd1fa90fdebe79f296300c00dcbdb139fc9373fb1efafc1d003"
+    },
+    {
+      "path": "tests/test_controller_diagnostics.gd",
+      "sha256": "b137b662b975825509bffd1cb96983bb24eaa4ead8484ed3919dbaf943bf5b93"
+    },
+    {
+      "path": "tests/test_controller_profile.gd",
+      "sha256": "cec4e29a315478f4aed2829107e0ae171214eb93b94d616bf7685832c3ca6f29"
+    },
+    {
+      "path": "tests/test_controller_profile_hardening.gd",
+      "sha256": "f8d5b3f63c198583dd07e0cd9e38085106b88c5824adf700ce2568c2164d6561"
+    },
+    {
+      "path": "tests/test_controller_registry.gd",
+      "sha256": "f484c1a3261a88c71bd3f358ab81ed6f2d403628f70b55ee4f24ca834c8d5d45"
+    },
+    {
+      "path": "tests/test_controller_store.gd",
+      "sha256": "258891ce162ea492f0511496788786d98e74476d2349d242816ade01f200be6a"
+    },
+    {
+      "path": "tests/test_input_report_buttons.gd",
+      "sha256": "8011119cc2e0665fb381df6f7f63801be52c973251edc925a0bfac61830b01d9"
+    },
+    {
+      "path": "tests/test_jeti_identity.gd",
+      "sha256": "b89975a69d9d734267fdcf7a77e98d848c389602348cd58072e1c41b99cc7edb"
+    },
+    {
+      "path": "tests/test_jeti_runtime.gd",
+      "sha256": "d0a8a6295bc1958a760c425b2bf95631b59a33e93e39103e2ddfdd84a9919222"
+    },
+    {
+      "path": "tests/test_radio_menu.gd",
+      "sha256": "1dfb71a614f27a9c5fd41edf73387b6ab82c76fa88f47fb8a731b3dd789a8205"
+    },
+    {
+      "path": "tests/test_rc_calibration.gd",
+      "sha256": "fa84157197e8eba3b5be187a3453ec80a7bbe26ba2093dc9ca5a791304a6e70b"
+    },
+    {
+      "path": "tests/test_rc_input.gd",
+      "sha256": "62a47ae30038192fbd960ee13377aa74438fb626c447c5cde202ab360aa3ace6"
+    },
+    {
+      "path": "ui/radio_menu_input.gd",
+      "sha256": "7cd0c54c800463c48aa7f97e2b651e17dc8d1311ba4da55016a939d4bbfba7dd"
+    },
+    {
+      "path": "ui/ui_input.gd",
+      "sha256": "8204f534723a196d8d9109e092f284c65a510cc97d1cf1d3dffd476b041ab6d9"
+    }
+  ],
+  "tests": [
+    "test_controller_conditioning",
+    "test_controller_profile",
+    "test_controller_actions",
+    "test_rc_input",
+    "test_rc_calibration",
+    "test_jeti_runtime",
+    "test_jeti_identity",
+    "test_controller_registry",
+    "test_radio_menu",
+    "test_controller_store",
+    "test_controller_profile_hardening",
+    "test_controller_diagnostics",
+    "test_input_report_buttons",
+    "test_controller_auto_defaults"
+  ],
+  "missing": []
+}

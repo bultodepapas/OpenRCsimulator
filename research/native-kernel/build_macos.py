@@ -247,12 +247,12 @@ def architectures(binary: Path) -> list[str]:
     return sorted(result)
 
 
-def _research_engine_output(command: list[str]) -> str:
-    env = {name: value for name, value in os.environ.items() if not name.startswith("DYLD_")}
+def _research_engine_output(command: list[str], *, cwd: str | None = None) -> str:
+    env = engine_policy.clean_child_environment()
     env["LC_ALL"] = "C"
-    result = subprocess.run(command, check=True, text=True, capture_output=True, timeout=120, env=env)
-    if re.search(r"\b(?:SCRIPT\s+)?ERROR(?:\s*:|\b)", result.stdout + "\n" + result.stderr, flags=re.IGNORECASE):
-        raise ValueError("Research engine inspection emitted an engine error")
+    result = subprocess.run(command, check=True, text=True, capture_output=True, timeout=120, env=env, cwd=cwd)
+    combined = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", result.stdout + "\n" + result.stderr)
+    engine_policy._reject_api_diagnostics(combined)
     return result.stdout.strip()
 
 
@@ -706,7 +706,7 @@ def validate_build(root: Path, mutant: bool, identity: dict, toolchain: dict, en
     api = cpp / "gdextension/extension_api-4-7.json"
     _verified_path(Path(built["extension_api_path"]), api, built["extension_api_sha256"])
     if ("research_engine" in engine
-            and engine["research_engine"]["extension_api"]["sha256"] != built["extension_api_sha256"]):
+            and engine["research_engine"]["binding_api_4_7"]["sha256"] != built["extension_api_sha256"]):
         raise ValueError("Research engine validated a different GDExtension API than the native bindings")
     _verified_path(work / "build_profile.json", work / "build_profile.json", built["build_profile_sha256"])
     wheel = dependencies_root / "downloads" / lock["scons"]["wheel_filename"]
@@ -1066,7 +1066,7 @@ def build(args: argparse.Namespace) -> int:
     api = godot_cpp / "gdextension" / "extension_api-4-7.json"
     api_sha256 = nk.sha256_file(api)
     if (research_engine is not None
-            and engine["research_engine"]["extension_api"]["sha256"] != api_sha256):
+            and engine["research_engine"]["binding_api_4_7"]["sha256"] != api_sha256):
         raise ValueError("Research engine validated a different GDExtension API than the native bindings")
     profile = lock["godot_cpp"]["build_profile"]
     profile_content = json.dumps(profile["content"], sort_keys=True, separators=(",", ":")) + "\n"

@@ -36,3 +36,10 @@ https://commons.wikimedia.org/wiki/File:Roundel_of_the_USAF.svg
 Black Ops One stencil lettering uses Google Fonts commit d50a0d29b (SIL OFL 1.1).
 Exact sources, hashes, licence and modification notes:
 tools/skins/sources/silver-ace/README.md and sources.json.
+
+ugly-stik/blackbird_*.png: BLACKBIRD SR-71/A-12-inspired RC tribute, authored by
+tools/skins/build_stik_blackbird.py (verify with --check). Original charcoal
+panels, thermal joints, flush rivets and sparse muted-red geometric marks.
+Reuses MetalAtlas utilities, shared ambientCG Metal009 brushing (CC0) and the
+bundled NotoSansCJKjp-Regular.otf (SIL OFL 1.1). No third-party insignia used.
+Albedo, roughness, metallic and OpenGL normal maps use the unchanged stock UVs.

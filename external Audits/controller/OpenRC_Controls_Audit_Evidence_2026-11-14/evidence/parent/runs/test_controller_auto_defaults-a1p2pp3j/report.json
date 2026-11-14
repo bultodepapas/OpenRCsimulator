@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5c7f87cf-58e3-4298-9e18-8d07c9461aa5",
+  "command": [
+    "/workspace/scratch/912e78c5574d/repo_current/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/a1128d42a6f8/evidence/parent/project",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_controller_auto_defaults.gd"
+  ],
+  "cwd": "/workspace/scratch/a1128d42a6f8/openrc-audit",
+  "started_utc": "2026-11-14T14:59:28.408426+00:00",
+  "label": "test_controller_auto_defaults",
+  "log": "/workspace/scratch/a1128d42a6f8/evidence/parent/runs/test_controller_auto_defaults-a1p2pp3j/engine.log",
+  "report": "/workspace/scratch/a1128d42a6f8/evidence/parent/runs/test_controller_auto_defaults-a1p2pp3j/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.46424,
+  "log_bytes": 121,
+  "log_sha256": "b1553ba1829281e2a0626aa8a84259884bfdcab60a3349b285ad1f55559f17d9"
+}

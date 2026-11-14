@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+Keyboard before pause: throttle=0.5
+Keyboard 5s S while paused: throttle=0.5 resume=false reason=Lower the throttle to resume.
+Keyboard before pause: yaw=1.0
+Keyboard 5s released yaw while paused: yaw=1.0 resume=false reason=Centre the yaw stick to resume.
+Gamepad before pause: armed=true throttle=0.5
+Gamepad 5s down while paused: armed=true throttle=0.5 resume=false reason=Lower the throttle to resume.
+airship pause probe complete

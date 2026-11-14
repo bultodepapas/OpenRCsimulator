@@ -1,0 +1,59 @@
+{
+  "engine": "4.8.beta2.official.cafc17a19",
+  "group": "all",
+  "invocations": [
+    {
+      "label": "import-calibration",
+      "returncode": 0
+    },
+    {
+      "label": "calibration-audit_probe",
+      "returncode": 0
+    },
+    {
+      "label": "calibration-ui_probe",
+      "returncode": 0
+    },
+    {
+      "label": "import-profiles",
+      "returncode": 0
+    },
+    {
+      "label": "profiles-probe",
+      "returncode": 0
+    },
+    {
+      "label": "profiles-capture_probe",
+      "returncode": 0
+    },
+    {
+      "label": "import-routing",
+      "returncode": 0
+    },
+    {
+      "label": "routing-probe",
+      "returncode": 0
+    },
+    {
+      "label": "routing-quad_fc",
+      "returncode": 0
+    },
+    {
+      "label": "routing-airship_pause",
+      "returncode": 0
+    },
+    {
+      "label": "import-parent",
+      "returncode": 0
+    },
+    {
+      "label": "hotpath-audit_hotpath",
+      "returncode": 0
+    },
+    {
+      "label": "controlled-two-writer-race",
+      "returncode": 0
+    }
+  ],
+  "scope": "Synthetic fixtures, not hardware or full application qualification"
+}

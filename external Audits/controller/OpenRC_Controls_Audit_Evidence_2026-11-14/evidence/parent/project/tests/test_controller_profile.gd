@@ -1,0 +1,256 @@
+extends SceneTree
+
+const Profile := preload("res://input/controller_profile.gd")
+const RcInput := preload("res://input/rc_input.gd")
+const SmokeAux := preload("res://input/smoke_aux.gd")
+const Actions := preload("res://input/controller_actions.gd")
+
+var _checks := 0
+var _failures := 0
+
+
+func _check(label: String, condition: bool, detail: String = "") -> void:
+	_checks += 1
+	if not condition:
+		_failures += 1
+		printerr("FAIL ", label, " ", detail)
+
+
+func _has_issue(report: Dictionary, code: String, expected_paths: Array[String]) -> bool:
+	for issue in report.get("issues", []):
+		if issue.get("code") == code and issue.get("paths", []) == expected_paths:
+			return true
+	return false
+
+
+func _initialize() -> void:
+	var mode2 := Profile.defaults()
+	var mode1 := Profile.defaults("gamepad", "mode1")
+	var trigger := Profile.defaults("gamepad", "trigger_absolute")
+	var radio := Profile.defaults("radio", "custom")
+	var valid_report := Profile.validate(mode2)
+	_check("default Mode 2 is complete V2", valid_report.ok and valid_report.issues.is_empty())
+	_check("Mode 2 axes", [mode2.roll.axis, mode2.pitch.axis, mode2.yaw.axis, mode2.throttle.axis] == [2, 3, 0, 1])
+	_check("Mode 1 axes", [mode1.roll.axis, mode1.pitch.axis, mode1.yaw.axis, mode1.throttle.axis] == [2, 1, 0, 3])
+	_check("trigger preset is absolute and gamepad kind", trigger.kind == "gamepad" and trigger.throttle_mode == "trigger_absolute" and trigger.throttle.range_kind == "absolute" and trigger.throttle.axis == 5)
+	_check("radio custom uses absolute radio throttle", radio.kind == "radio" and radio.throttle_mode == "radio_absolute" and Profile.validate(radio).ok)
+	var joystick := Profile.defaults("joystick", "custom")
+	_check("new radio and joystick starters use clean actions", radio.actions == Actions.clean_radio_bindings() and joystick.actions == Actions.clean_radio_bindings())
+	_check("UUIDs are distinct", mode1.profile_id != mode2.profile_id)
+	_check("unknown preset rejected", Profile.defaults("gamepad", "future") == {})
+
+	var invalid := mode2.duplicate(true)
+	invalid.schema_version = 3
+	_check("unsupported schema rejected", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.profile_id = "not-a-uuid"
+	_check("invalid UUID rejected", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.name = "   "
+	var name_report := Profile.validate(invalid)
+	_check("blank name rejected with compatible error", not name_report.ok and name_report.errors == ["name must contain 1 to 80 characters"])
+	_check("blank name has a field diagnostic", _has_issue(name_report, "name_invalid", ["name"]))
+	invalid = mode2.duplicate(true)
+	invalid.pitch.axis = invalid.roll.axis
+	var axis_report := Profile.validate(invalid)
+	_check("duplicate source axis rejected", not axis_report.ok)
+	_check("two-channel axis conflict identifies both fields", _has_issue(axis_report, "axis_conflict", ["roll.axis", "pitch.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.pitch.axis = invalid.roll.axis
+	invalid.yaw.axis = invalid.roll.axis
+	var triple_axis_report := Profile.validate(invalid)
+	_check("three-channel axis conflict includes every participant", \
+		_has_issue(triple_axis_report, "axis_conflict", ["roll.axis", "pitch.axis", "yaw.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.yaw = null
+	var channel_report := Profile.validate(invalid)
+	_check("missing required channel rejected", not channel_report.ok)
+	_check("missing required channel has a field diagnostic", _has_issue(channel_report, "channel_invalid", ["yaw"]))
+	invalid = mode2.duplicate(true)
+	invalid.roll.deadzone = 1.0
+	var deadzone_report := Profile.validate(invalid)
+	_check("deadzone at one rejected", not deadzone_report.ok)
+	_check("invalid deadzone has a field diagnostic", _has_issue(deadzone_report, "deadzone_invalid", ["roll.deadzone"]))
+	invalid = mode2.duplicate(true)
+	invalid.pitch.expo = -0.01
+	var expo_report := Profile.validate(invalid)
+	_check("negative expo rejected", not expo_report.ok)
+	_check("invalid expo has a field diagnostic", _has_issue(expo_report, "expo_invalid", ["pitch.expo"]))
+	invalid = mode2.duplicate(true)
+	invalid.throttle_rate = INF
+	_check("non-finite rate rejected", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.throttle.center = invalid.throttle.min
+	_check("rate throttle cannot place center at an endpoint", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.throttle.center = invalid.throttle.max
+	_check("rate throttle needs travel on both sides", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.presentation.extension = NAN
+	_check("nested non-finite extension rejected", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.roll.axis = 1.5
+	var bad_axis_report := Profile.validate(invalid)
+	_check("non-integer axis rejected", not bad_axis_report.ok)
+	_check("invalid axis has a field diagnostic", _has_issue(bad_axis_report, "axis_invalid", ["roll.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = []
+	_check("wrong actions container rejected", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"accept": {"type": "button", "button": 128}}
+	_check("out-of-range semantic action button rejected", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"pause": {"type": "axis", "axis": 0, "sign": 1, "threshold": NAN}}
+	_check("non-finite action threshold rejected", not Profile.validate(invalid).ok)
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"back": {"type": "button", "button": 7}, "pause": {"type": "button", "button": 7}}
+	_check("conflicting recovery action bindings rejected", not Profile.validate(invalid).ok)
+	var partial_actions: Dictionary = mode2.duplicate(true)
+	partial_actions.actions = {"accept": {"type": "button", "button": 30}}
+	_check("partial action overrides merge with validated defaults", Profile.validate(partial_actions).ok)
+	partial_actions.actions = {"accept": {"type": "button", "button": 1}}
+	_check("action overrides are checked against merged defaults", not Profile.validate(partial_actions).ok)
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"mystery_action": {"type": "button", "button": 1}}
+	var unknown_action_report := Profile.validate(invalid)
+	_check("unknown semantic action rejected", not unknown_action_report.ok)
+	_check("unknown semantic action has a propagated diagnostic", _has_issue(unknown_action_report, "action_unknown", ["actions.mystery_action"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"pause": {"type": "axis", "axis": 0, "sign": 1, "threshold": NAN}}
+	var malformed_action_report := Profile.validate(invalid)
+	_check("malformed action binding has a field diagnostic", _has_issue(malformed_action_report, "binding_invalid", ["actions.pause"]))
+	_check("malformed nested value points to its metadata field", _has_issue(malformed_action_report, "profile_invalid", ["actions.pause.threshold"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"back": {"type": "button", "button": 7}, "pause": {"type": "button", "button": 7}}
+	var action_conflict_report := Profile.validate(invalid)
+	_check("action conflict identifies both remap rows", _has_issue(action_conflict_report, "binding_conflict", ["actions.back", "actions.pause"]))
+	invalid = mode2.duplicate(true)
+	invalid.throttle_mode = "radio_absolute"
+	_check("gamepad cannot use radio throttle mode", not Profile.validate(invalid).ok)
+	invalid = joystick.duplicate(true)
+	invalid.throttle_mode = "stick_rate"
+	invalid.throttle.range_kind = "centered"
+	var unsupported_joystick := Profile.validate(invalid)
+	_check("joystick rate throttle has a specific unsupported diagnostic", not unsupported_joystick.ok \
+		and _has_issue(unsupported_joystick, "throttle_mode_unsupported", ["throttle_mode"]) \
+		and "stick_rate" in "; ".join(unsupported_joystick.errors))
+	var reject_input := RcInput.new()
+	_check("unsupported joystick rate cannot activate and reports why", not reject_input.use_profile(invalid, "test") \
+		and "stick_rate" in reject_input.profile_rejection_error)
+	invalid = mode2.duplicate(true)
+	invalid.aux = {"smoke": {"type": "axis", "axis": mode2.roll.axis, "invert": false, "off": -1.0, "on": 1.0}}
+	var aux_overlap_report := Profile.validate(invalid)
+	_check("AUX cannot overlap a flight axis", not aux_overlap_report.ok)
+	_check("AUX overlap identifies the AUX and flight axis", _has_issue(aux_overlap_report, "aux_invalid", ["aux.smoke.axis", "roll.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"camera_previous": {"type": "axis", "axis": mode2.roll.axis, "sign": 1}}
+	var flight_action_report := Profile.validate(invalid)
+	_check("flight action cannot reuse a primary axis", _has_issue(flight_action_report, "action_flight_axis_conflict", ["actions.camera_previous", "roll.axis"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"camera_previous": {"type": "button", "button": 8}}
+	invalid.aux = {"smoke": {"type": "button", "button": 8, "mode": "level"}}
+	var action_aux_report := Profile.validate(invalid)
+	_check("action and AUX physical conflict identifies both editors", _has_issue(action_aux_report, "action_aux_source_conflict", ["actions.camera_previous", "aux.smoke.button"]))
+	invalid = mode2.duplicate(true)
+	invalid.actions = {"smoke_toggle": {"type": "button", "button": 9}}
+	invalid.aux = {"smoke": {"type": "button", "button": 8, "mode": "level"}}
+	var semantic_aux_report := Profile.validate(invalid)
+	_check("semantic action and AUX conflict is reported across distinct sources", \
+		_has_issue(semantic_aux_report, "action_aux_conflict", ["actions.smoke_toggle", "aux.smoke.button"]))
+	invalid = mode2.duplicate(true)
+	invalid.aux = {
+		"smoke": {"type": "button", "button": 8, "mode": "level"},
+		"gear": {"type": "button", "button": 8, "mode": "toggle_edge"},
+	}
+	var aux_conflict_report := Profile.validate(invalid)
+	_check("AUX conflict identifies both fields", _has_issue(aux_conflict_report, "aux_conflict", ["aux.smoke.button", "aux.gear.button"]))
+	_check("valid distinct smoke AUX remains accepted", SmokeAux.valid_binding({"type": "axis", "axis": 9, "invert": false, "off": -1.0, "on": 1.0}, [0, 1, 2, 3]))
+
+	var channel: Dictionary = mode2.roll
+	var shaped := Profile.conditioned_axis(0.05, channel, "gamepad")
+	_check("scalar inside deadzone is zero", shaped == 0.0)
+	var dz: float = channel.deadzone
+	var expo: float = channel.expo
+	var scaled := (0.5 - dz) / (1.0 - dz)
+	var expected := (1.0 - expo) * scaled + expo * scaled * scaled * scaled
+	_check("positive conditioning follows deadzone then expo", absf(Profile.condition_axis(0.5, channel, "gamepad") - expected) < 1e-12)
+	_check("negative endpoint remains full throw", Profile.condition_axis(-1.0, channel, "gamepad") == -1.0)
+	_check("positive endpoint remains full throw", Profile.condition_axis(1.0, channel, "gamepad") == 1.0)
+	_check("radio bypasses gamepad shaping", Profile.condition_axis(0.05, channel, "radio") == 0.05)
+	var linear_channel := {"deadzone": 0.0, "expo": 0.0}
+	_check("zero expo is linear", Profile.condition_axis(-0.4, linear_channel, "gamepad") == -0.4)
+	var cubic_channel := {"deadzone": 0.0, "expo": 1.0}
+	_check("full expo is cubic", absf(Profile.condition_axis(0.4, cubic_channel, "gamepad") - 0.064) < 1e-12)
+	_check("non-finite conditioned input fails to neutral", Profile.condition_axis(NAN, channel, "gamepad") == 0.0)
+	var absolute_channel: Dictionary = trigger.throttle
+	_check("absolute trigger endpoints map directly", Profile.normalize_axis(0.0, absolute_channel) == 0.0 and Profile.normalize_axis(1.0, absolute_channel) == 1.0)
+	absolute_channel.invert = true
+	_check("absolute trigger inversion preserves endpoints", Profile.normalize_axis(0.0, absolute_channel) == 1.0 and Profile.normalize_axis(1.0, absolute_channel) == 0.0)
+
+	var legacy: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	legacy["throttle"]["axis"] = 2
+	legacy["aux"] = {"smoke": {"type": "axis", "axis": 9, "invert": false, "off": -1.0, "on": 1.0}}
+	var migrated := Profile.upgrade_legacy(legacy, {"legacy_device_key": "legacy-key"})
+	_check("legacy radio profile upgrades", Profile.validate(migrated).ok and migrated.kind == "radio", str(migrated))
+	_check("legacy mapping stays intact", [migrated.roll.axis, migrated.pitch.axis, migrated.throttle.axis, migrated.yaw.axis] == [0, 1, 2, 3])
+	_check("legacy radio output matches prior scalar mapping", absf(Profile.normalize_axis(-0.4, migrated.pitch) - RcInput.normalize(-0.4, legacy.pitch)) < 1e-12)
+	_check("legacy radio throttle mapping stays identical", Profile.normalize_axis(-1.0, migrated.throttle) == RcInput.normalize_throttle(-1.0, legacy.throttle) and Profile.normalize_axis(1.0, migrated.throttle) == RcInput.normalize_throttle(1.0, legacy.throttle))
+	_check("legacy smoke AUX survives upgrade", migrated.get("aux", {}).get("smoke", {}).get("axis", -1) == 9)
+	var legacy_actions: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	legacy_actions.actions = {"camera_cycle": {"type": "button", "button": 30}}
+	legacy_actions.aux = {"smoke": {"type": "button", "button": JOY_BUTTON_START, "mode": "level"}}
+	var migrated_actions := Profile.upgrade_legacy(legacy_actions)
+	_check("legacy upgrade preserves inherited and explicit effective actions with AUX", not migrated_actions.is_empty() \
+		and Actions.effective_bindings(legacy_actions) == Actions.effective_bindings(migrated_actions) \
+		and Actions.effective_bindings(legacy_actions, Actions.HELICOPTER_CAPABILITIES) == Actions.effective_bindings(migrated_actions, Actions.HELICOPTER_CAPABILITIES))
+	var saved_v2 := radio.duplicate(true)
+	saved_v2.actions = {"camera_cycle": {"type": "button", "button": 30}}
+	var loaded_v2 := Profile.upgrade_legacy(saved_v2)
+	_check("existing V2 partial overrides retain inherited effective actions", not loaded_v2.is_empty() \
+		and Actions.effective_bindings(saved_v2) == Actions.effective_bindings(loaded_v2) \
+		and Actions.effective_bindings(loaded_v2).pause.type == "button")
+	_check("migration does not mutate source", not legacy.has("schema_version") and not legacy.roll.has("range_kind"))
+	var unknown_schema: Dictionary = mode2.duplicate(true)
+	unknown_schema.schema_version = 1
+	_check("unknown version is not mistaken for legacy", Profile.upgrade_legacy(unknown_schema).is_empty())
+	var legacy_stringname: Dictionary = {
+		kind = "radio",
+		roll = {axis = 0, invert = false, min = -1.0, center = 0.0, max = 1.0},
+		pitch = {axis = 1, invert = true, min = -1.0, center = 0.0, max = 1.0},
+		throttle = {axis = 2, invert = false, min = -1.0, center = -1.0, max = 1.0},
+		yaw = {axis = 3, invert = false, min = -1.0, center = 0.0, max = 1.0},
+	}
+	var normalized_legacy := Profile.upgrade_legacy(legacy_stringname)
+	_check("old StringName dictionaries migrate to strict string-key V2", Profile.validate(normalized_legacy).ok and typeof(normalized_legacy.roll.get("axis")) == TYPE_INT)
+	var invalid_current := mode2.duplicate(true)
+	invalid_current[&"extra"] = true
+	_check("schema V2 StringName key is rejected", not Profile.validate(invalid_current).ok)
+	var runtime_v2 := Profile.defaults("radio", "radio_custom")
+	runtime_v2.aux = {&"smoke": {&"type": "button", &"button": 7, &"mode": "level"}}
+	var normalized_runtime_v2 := Profile.upgrade_legacy(runtime_v2)
+	_check("V2 activation normalizes StringName binding keys", Profile.validate(normalized_runtime_v2).ok and normalized_runtime_v2.aux.smoke.button == 7, str(normalized_runtime_v2))
+
+	var existing := Profile.defaults("radio", "radio_custom")
+	existing.roll.expo = 0.35
+	existing.roll.deadzone = 0.12
+	existing.roll.extension = {"label": "keep"}
+	existing.presentation.glyph_family = "generic"
+	existing.aux = {"smoke": {"type": "axis", "axis": 9, "off": -1.0, "on": 1.0, "invert": false}, \
+		"gear": {"type": "axis", "axis": 8, "off": -1.0, "on": 1.0, "invert": false}}
+	var existing_before := existing.duplicate(true)
+	var measured: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	measured.roll = {"axis": 9, "invert": true, "min": -0.7, "center": 0.01, "max": 0.9}
+	var merged := Profile.merge_radio_calibration(existing, measured)
+	_check("calibration merges measured fields but preserves metadata", not merged.is_empty() \
+		and merged.roll.axis == 9 and merged.roll.invert and merged.roll.expo == 0.35 \
+		and merged.roll.deadzone == 0.12 and merged.roll.extension == {"label": "keep"} \
+		and merged.profile_id == existing.profile_id and merged.presentation == existing.presentation)
+	_check("calibration removes only newly overlapping AUX", not merged.is_empty() and not merged.aux.has("smoke") and merged.aux.gear == existing.aux.gear and existing == existing_before)
+	measured.aux = {"smoke": {"type": "button", "button": 7, "mode": "level"}}
+	var merged_new_aux := Profile.merge_radio_calibration(existing, measured)
+	_check("calibration preserves supported explicit AUX handoff", not merged_new_aux.is_empty() and merged_new_aux.aux.smoke == measured.aux.smoke and merged_new_aux.aux.gear == existing.aux.gear)
+	measured.yaw.axis = measured.roll.axis
+	_check("invalid calibration leaves existing profile unchanged", Profile.merge_radio_calibration(existing, measured).is_empty() and existing == existing_before)
+
+	print("Controller profile: %d checks, %d failed" % [_checks, _failures])
+	quit(1 if _failures > 0 else 0)

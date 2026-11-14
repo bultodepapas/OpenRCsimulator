@@ -16,6 +16,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -23,10 +24,12 @@ HELPER = ROOT / "tools/graphics/metalfx/engine.py"
 SOURCE_COMMIT = "cafc17a192acf67903910a68aeb3c076c0907a4b"
 GODOT_CPP_COMMIT = "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5"
 OFFICIAL_VERSION = "4.8.beta2.official.cafc17a19"
+OFFICIAL_ARM64_SHA256 = "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80"
 RESEARCH_CLI = "4.8.beta2.openrc_metalfx"
 RESEARCH_RUNTIME = "4.8-beta2 (openrc_metalfx)"
 SCOPE = "source-editor-local-custom-engine-research-v1"
 APPLE_CLANG = "Apple clang version 21.0.0 (clang-2100.3.34.2)"
+MAX_API_BYTES = 64 * 1024 * 1024
 CONTROLLED = ("CC", "CXX", "CCFLAGS", "CXXFLAGS", "CFLAGS", "LDFLAGS", "SCONSFLAGS",
               "CPATH", "CPLUS_INCLUDE_PATH", "LIBRARY_PATH", "SDKROOT", "ARCHFLAGS",
               "MACOSX_DEPLOYMENT_TARGET", "CCACHE", "CUSTOM_MODULES", "GODOT_VERSION_STATUS", "BUILD_NAME",
@@ -49,7 +52,9 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
     group.add_argument("--research-engine-build-receipt", action=_Once, type=Path, help="original build-editor.json")
     group.add_argument("--research-engine-archive", action=_Once, type=Path, help="pinned upstream source ZIP")
     group.add_argument("--research-engine-extension-api", action=_Once, type=Path,
-                       help="4.7 API JSON in the clean pinned godot-cpp checkout")
+                       help="4.7 bindings API JSON in the clean pinned godot-cpp checkout")
+    group.add_argument("--research-engine-reference-godot", action=_Once, type=Path,
+                       help="independently pinned official macOS Godot editor for the 4.8 API comparison")
     group.add_argument("--research-engine-patch", type=Path, action="append", default=[],
                        help="exact source patch, in build order; repeat")
 
@@ -57,13 +62,13 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
 def selection_from_args(args: argparse.Namespace) -> dict[str, Any] | None:
     names = ("research_engine_sha256", "research_engine_cli_version", "research_engine_runtime_version",
              "research_engine_build_receipt", "research_engine_archive", "research_engine_extension_api",
-             "research_engine_patch")
+             "research_engine_reference_godot", "research_engine_patch")
     values = [getattr(args, name, None) for name in names]
     if not any(values):
         return None
     if any(not value for value in values):
-        raise ValueError("All local research-engine pins, receipt, archive and ordered patches are required")
-    digest, cli, runtime, receipt, archive, extension_api, patches = values
+        raise ValueError("All local research-engine pins, receipt, archive, official reference and ordered patches are required")
+    digest, cli, runtime, receipt, archive, extension_api, reference, patches = values
     reject_dyld_environment()
     if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
         raise ValueError("Research engine SHA-256 must be 64 lowercase hexadecimal digits")
@@ -77,7 +82,8 @@ def selection_from_args(args: argparse.Namespace) -> dict[str, Any] | None:
     return {"sha256": digest, "cli_version": cli, "runtime_version": runtime,
             "receipt": str(Path(receipt).expanduser().absolute()),
             "archive": str(Path(archive).expanduser().absolute()),
-            "extension_api": str(Path(extension_api).expanduser().absolute()), "patches": paths}
+            "extension_api": str(Path(extension_api).expanduser().absolute()),
+            "reference_godot": str(Path(reference).expanduser().absolute()), "patches": paths}
 
 
 def reject_dyld_environment() -> None:
@@ -172,22 +178,56 @@ def extension_api_identity(api: Path, lock: dict) -> dict[str, str]:
     return {"checkout": str(checkout.resolve()), "commit": head, "blob": expected_blob, "sha256": before}
 
 
+def _reference_api_dump(path: Path) -> dict[str, Any]:
+    """Read a fresh official 4.8 API dump, with a bound independent of the receipt."""
+    if path.is_symlink() or not path.is_file() or not 0 < path.stat().st_size <= MAX_API_BYTES:
+        raise ValueError("Official 4.8 extension API dump is missing, redirected or oversized")
+    with path.open("rb") as stream:
+        raw = stream.read(MAX_API_BYTES + 1)
+    if len(raw) > MAX_API_BYTES:
+        raise ValueError("Official 4.8 extension API dump exceeds its size limit")
+    try:
+        data = json.loads(raw)
+        header = data["header"]
+        if (not isinstance(header, dict) or type(header.get("version_major")) is not int
+                or type(header.get("version_minor")) is not int or type(header.get("version_patch")) is not int
+                or (header["version_major"], header["version_minor"], header["version_patch"]) != (4, 8, 0)
+                or header.get("version_status") != "beta2" or header.get("version_build") != "official"
+                or header.get("precision") != "single"
+                or any(not isinstance(data.get(name), list) or not data[name] for name in (
+                    "global_constants", "global_enums", "utility_functions", "builtin_classes",
+                    "classes", "singletons", "native_structures"))):
+            raise ValueError("header or API collections differ")
+    except (KeyError, TypeError, json.JSONDecodeError, UnicodeDecodeError, ValueError) as error:
+        raise ValueError(f"Invalid official 4.8 extension API dump: {error}") from error
+    return {"version": "4.8", "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)}
+
+
+def _reject_api_diagnostics(output: str) -> None:
+    # The pinned validator has printed these incompatibilities with exit status 0.
+    if re.search(r"Validate\s+extension\s+JSON:|\b(?:SCRIPT\s+|SHADER\s+)?ERROR(?:\s*:|\b)",
+                 output, flags=re.IGNORECASE):
+        raise ValueError("Research engine extension API check emitted an incompatibility or engine error")
+
+
 def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
-             architectures: Callable[[Path], list[str]], output: Callable[[list[str]], str]) -> dict[str, Any]:
+             architectures: Callable[[Path], list[str]], output: Callable[..., str]) -> dict[str, Any]:
     """Recheck the caller's pins and the real retained local build inputs/outputs."""
     if not isinstance(selection, dict) or set(selection) != {
-            "sha256", "cli_version", "runtime_version", "receipt", "archive", "extension_api", "patches"}:
+            "sha256", "cli_version", "runtime_version", "receipt", "archive", "extension_api", "reference_godot", "patches"}:
         raise ValueError("Malformed local research-engine selection")
     checked = selection_from_args(argparse.Namespace(
         research_engine_sha256=selection["sha256"], research_engine_cli_version=selection["cli_version"],
         research_engine_runtime_version=selection["runtime_version"],
         research_engine_build_receipt=Path(selection["receipt"]), research_engine_archive=Path(selection["archive"]),
         research_engine_extension_api=Path(selection["extension_api"]),
+        research_engine_reference_godot=Path(selection["reference_godot"]),
         research_engine_patch=[Path(p) for p in selection["patches"]]))
     if checked != selection or lock.get("godot", {}).get("version") != OFFICIAL_VERSION \
             or lock["godot"].get("extension_api") != "4.7":
         raise ValueError("Research engine selection or pinned upstream ABI differs")
     receipt_path, archive, extension_api = (Path(selection[name]) for name in ("receipt", "archive", "extension_api"))
+    reference = Path(selection["reference_godot"])
     patches = [Path(p) for p in selection["patches"]]
     executable = godot.absolute()
     if executable.is_symlink() or not executable.is_file() or not os.access(executable, os.X_OK):
@@ -199,8 +239,12 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
         raise ValueError("Research engine must be the editor artifact selected by its build receipt")
     log = intake_root / "build-editor.log"
     intake_path = intake_root / "intake.json"
-    inputs = [receipt_path, intake_path, archive, extension_api, *patches, log, HELPER, Path(__file__), executable]
+    if reference.is_symlink() or not reference.is_file() or not os.access(reference, os.X_OK):
+        raise ValueError("Official reference Godot must be an ordinary executable")
+    inputs = [receipt_path, intake_path, archive, extension_api, reference, *patches, log, HELPER, Path(__file__), executable]
     before = {str(path): _sha(path) for path in inputs}
+    if before[str(reference)] != OFFICIAL_ARM64_SHA256:
+        raise ValueError("Official reference Godot differs from the independent macOS SHA-256 pin")
     receipt = _json(receipt_path)
     intake_record = _json(intake_path)
     helper = _helper()
@@ -258,14 +302,26 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
     try:
         actual_architectures = architectures(executable)
         actual_version = output([str(executable), "--version"])
+        reference_architectures = architectures(reference)
+        reference_version = output([str(reference), "--version"])
     except subprocess.SubprocessError as error:
         raise ValueError(f"Research engine executable inspection failed: {error}") from error
     if actual_architectures != ["arm64"] or actual_version != selection["cli_version"]:
         raise ValueError("Research engine architecture or CLI version differs from its independent pin")
+    if "arm64" not in reference_architectures or reference_version != OFFICIAL_VERSION:
+        raise ValueError("Official reference Godot architecture or version differs from its independent pin")
     try:
-        output([str(executable), "--headless", "--validate-extension-api", str(extension_api)])
+        with tempfile.TemporaryDirectory(prefix="openrc-godot-api-") as directory:
+            api_dump = Path(directory) / "extension_api.json"
+            dump_output = output([str(reference), "--headless", "--dump-extension-api"], cwd=directory)
+            _reject_api_diagnostics(dump_output)
+            compatibility = _reference_api_dump(api_dump)
+            validation_output = output([str(executable), "--headless", "--validate-extension-api", str(api_dump)])
+            _reject_api_diagnostics(validation_output)
+            if _reference_api_dump(api_dump) != compatibility:
+                raise ValueError("Official 4.8 extension API dump changed during validation")
     except subprocess.SubprocessError as error:
-        raise ValueError(f"Research engine rejected the pinned 4.7 extension API: {error}") from error
+        raise ValueError(f"Research engine 4.8 extension API compatibility check failed: {error}") from error
     if extension_api_identity(extension_api, lock) != api_identity:
         raise ValueError("Pinned extension API changed during validation")
     helper.verify_source(intake_root / "source", expected, strict=True)
@@ -281,7 +337,10 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
                                 "intake_sha256": before[str(intake_path)],
                                 "source_archive_sha256": before[str(archive)],
                                 "ordered_patches": [{"path": str(path), "sha256": before[str(path)]} for path in patches],
-                                "extension_api": {**api_identity, "validation": "Godot --validate-extension-api passed"},
+                                "binding_api_4_7": api_identity,
+                                "compatibility_api_4_8": {**compatibility, "validation": "passed without diagnostics",
+                                    "reference": {"path": str(reference.resolve()), "sha256": before[str(reference)],
+                                                  "version": reference_version, "architectures": reference_architectures}},
                                 "intake_helper_sha256": before[str(HELPER)],
                                 "identity_helper_sha256": before[str(Path(__file__))],
                                 "build_log_sha256": before[str(log)]}}
