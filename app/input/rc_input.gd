@@ -664,4 +664,5 @@ func _describe_state() -> String:
 func describe() -> String:
 	if not connected:
 		return "input: keyboard"
-	var what := str(profile.get("kind",
+	var what := str(profile.get("kind", "joystick"))
+	return "input: %s \"%s\" (%s profile) %s" % [what, device_name, profile_source, _describe_state()]

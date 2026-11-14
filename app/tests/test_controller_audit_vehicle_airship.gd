@@ -152,7 +152,7 @@ func _ownership() -> void:
 	var devices := [
 		{id = 3, name = "Foreign pad", guid = "foreign", known = true, kind = "gamepad"},
 		{id = 7, name = "Selected pad", guid = "selected", known = true, kind = "gamepad"},
-		{id = 9, name = "Synthetic radio", guid = "radio", known = false, kind = "radio"},
+		{id = 9, name = "Synthetic radio", guid = "radio", serial_number = "receiver-a", known = false, kind = "radio"},
 	]
 	registry.update_devices(devices)
 	var pad := Profile.defaults("gamepad", "mode2")
@@ -228,18 +228,26 @@ func _ownership() -> void:
 	activity._input(_button(9, 20, true))
 	check("focus loss invalidates the raw Pause switch's earlier OFF evidence", not activity.session.paused)
 	registry.disconnect_device(9)
-	check("loss of the selected radio pauses and releases its ownership", activity.session.paused \
-		and activity.input.source() == "keyboard")
+	check("loss of the selected radio pauses, selects keyboard and explains how to choose a controller", activity.session.paused \
+		and activity.input.source() == "keyboard" and "return Home" in activity.hud.menu_reason)
 	activity._joy_connection_changed(3, true)
 	check("an unrelated controller does not take over after loss", activity.input.source() == "keyboard")
 	check("an explicit Keyboard choice acknowledges the lost controller", activity.apply_controller_selection(-1))
+	devices[2].serial_number = "receiver-b" # same model and reused handle, different physical unit
 	registry.update_devices(devices)
 	activity._joy_connection_changed(9, true)
 	await process_frame
-	check("a returned radio cannot override an explicit Keyboard choice", activity.input.source() == "keyboard")
+	check("a same-model radio with another serial cannot take ownership", activity.input.source() == "keyboard" \
+		and registry.selected_device_id("flight") == -1)
 	registry.select_device("flight", 9)
 	check("explicitly reselected radio requires fresh readiness", activity.input.radio.connected \
 		and activity.input.radio.device_id == 9 and not activity.input.sample(DT, false).armed)
+	activity.input.radio.on_motion(9, 2, -1.0)
+	activity.handle_action("resume")
+	devices[2].serial_number = "receiver-c"
+	registry.update_devices(devices)
+	check("identity replacement on the same handle releases authority and explains recovery", activity.session.paused \
+		and activity.input.source() == "keyboard" and "return Home" in activity.hud.menu_reason)
 	_dispose(activity)
 
 

@@ -1179,6 +1179,143 @@
 							"roughness": 0.62
 						}
 					}
+				},
+				{
+					"id": "steampunk_cobre",
+					"label": "Steampunk Cobre",
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage.jpg",
+							"emission": "#ffffff",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage_emission.png",
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing.jpg",
+							"emission": "#ffffff",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing_emission.png",
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_doors_ala": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors.jpg",
+							"emission": "#ffffff",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors_emission.png",
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab.jpg",
+							"emission": "#ffffff",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_emission.png",
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin.jpg",
+							"emission": "#ffffff",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_emission.png",
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_doors": {
+							"albedo": "#4e5052",
+							"metallic": 0.5,
+							"roughness": 0.45
+						},
+						"paint_fence": {
+							"albedo": "#c9a24a",
+							"metallic": 0.62,
+							"roughness": 0.26
+						},
+						"paint_fence_lower": {
+							"albedo": "#b8744a",
+							"metallic": 0.6,
+							"roughness": 0.32
+						},
+						"paint_fillets": {
+							"albedo": "#b8744a",
+							"metallic": 0.6,
+							"roughness": 0.32
+						},
+						"paint_trim_carbono": {
+							"albedo": "#c9a24a",
+							"metallic": 0.62,
+							"roughness": 0.26,
+							"albedo_texture": null,
+							"emission_texture": null
+						},
+						"thrust_tube_gold": {
+							"albedo": "#6f5c4a",
+							"metallic": 0.62,
+							"roughness": 0.3
+						},
+						"metal": {
+							"albedo": "#b8923e",
+							"metallic": 0.6,
+							"roughness": 0.3
+						},
+						"mk_ply": {
+							"albedo": "#4a3020",
+							"metallic": 0.0,
+							"roughness": 0.6
+						},
+						"canopy_glass": {
+							"albedo": "#8a6a3070",
+							"metallic": 0.25,
+							"roughness": 0.03,
+							"specular": 0.6,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.02
+						},
+						"cockpit_tub_grey": {
+							"albedo": "#3a2a1e",
+							"roughness": 0.6
+						},
+						"seat_tan": {
+							"albedo": "#5b2620",
+							"roughness": 0.55
+						},
+						"seat_cushion": {
+							"albedo": "#4a1e18",
+							"roughness": 0.7
+						},
+						"glare_shield_black": {
+							"albedo": "#2a1c14",
+							"roughness": 0.8
+						}
+					}
 				}
 			]
 		}

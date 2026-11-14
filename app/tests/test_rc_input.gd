@@ -72,6 +72,17 @@ func _initialize() -> void:
 	_check("6 % does not arm", not r.armed)
 	r = _radio({ 2: -1.0 }, [0, 1, 3])
 	_check("a low reading without a throttle event does not arm", not r.armed)
+	var fresh := RcInput.new()
+	fresh.connect_device(3, INFO, RcInput.DEFAULT_PROFILE)
+	fresh.on_motion(3, 2, -1.0)
+	fresh.poll(func(_device: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
+	fresh.poll(func(_device: int, axis: int) -> float: return -1.0 if axis == 2 else 0.0, DT)
+	_check("a high poll invalidates stale LOW event evidence", not fresh.armed)
+	fresh.on_motion(3, 2, -1.0)
+	fresh.poll(func(_device: int, axis: int) -> float: return -1.0 if axis == 2 else 0.0, DT)
+	_check("fresh LOW event and matching poll arm", fresh.armed)
+	fresh.poll(func(_device: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
+	_check("throttle movement after arming stays enabled", fresh.armed and fresh.throttle_position() == 1.0)
 
 	# Unipolar throttle (an SDL gamepad trigger: 0 at rest … 1 full) = a calibration with endpoints 0…1.
 	var unipolar: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)

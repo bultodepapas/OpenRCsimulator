@@ -128,7 +128,7 @@ func _run() -> void:
 	result["triangle_query"] = available
 	_check(not rd.has_feature(RenderingDevice.SUPPORTS_RAY_QUERY), "full_ray_query_claimed")
 	_check(not rd.has_feature(RenderingDevice.SUPPORTS_RAYTRACING_PIPELINE), "ray_pipeline_claimed")
-	if case_name not in ["off", "happy", "bad_bounds", "bad_stride", "bad_capacity", "bad_id", "bad_mask", "empty", "rebuild", "stale_direct", "stale_indirect"]:
+	if case_name not in ["off", "happy", "bad_bounds", "bad_stride", "bad_offset", "bad_capacity", "bad_id", "bad_mask", "bad_transform", "bad_sbt", "bad_flags", "empty", "rebuild", "pipeline", "sbt", "ray_list", "stale_direct", "stale_indirect", "rebuild_stale"]:
 		failures.append("unknown_case")
 		_finish()
 		return
@@ -138,6 +138,19 @@ func _run() -> void:
 		return
 	if not available:
 		failures.append("triangle_query_unavailable")
+		_finish()
+		return
+
+	if case_name == "pipeline":
+		_check(not rd.raytracing_pipeline_create([], [], [], 1).is_valid(), "ray_pipeline_accepted")
+		_finish()
+		return
+	if case_name == "sbt":
+		_check(not rd.hit_sbt_create(RID(), 1).is_valid(), "sbt_accepted")
+		_finish()
+		return
+	if case_name == "ray_list":
+		_check(rd.raytracing_list_begin() == -1, "ray_list_accepted")
 		_finish()
 		return
 
@@ -157,6 +170,11 @@ func _run() -> void:
 	if case_name == "bad_stride":
 		geometry.vertex_stride = 10
 		_check(not rd.blas_create([geometry], 0).is_valid(), "bad_stride_accepted")
+		_finish()
+		return
+	if case_name == "bad_offset":
+		geometry.vertex_offset = 4294967296
+		_check(not rd.blas_create([geometry], 0).is_valid(), "wrapped_offset_accepted")
 		_finish()
 		return
 	if case_name == "bad_capacity":
@@ -179,6 +197,16 @@ func _run() -> void:
 	if case_name == "bad_mask":
 		instance.mask = 256
 		_check(rd.tlas_build(tlas, [instance]) != OK, "out_of_range_mask_accepted")
+		_finish()
+		return
+	if case_name in ["bad_transform", "bad_sbt", "bad_flags"]:
+		if case_name == "bad_transform":
+			instance.transform = Transform3D(Basis.from_scale(Vector3(0.0, 1.0, 1.0)), Vector3.ZERO)
+		elif case_name == "bad_sbt":
+			instance.hit_sbt_range = 1
+		else:
+			instance.flags = RenderingDevice.ACCELERATION_STRUCTURE_INSTANCE_FORCE_NO_OPAQUE_BIT
+		_check(rd.tlas_build(tlas, [instance]) != OK, "invalid_instance_accepted")
 		_finish()
 		return
 	if case_name == "empty":
@@ -230,9 +258,12 @@ func _run() -> void:
 			_check(data.decode_u32(offset) == 1 and data.decode_u32(offset + 4) == i and data.decode_u32(offset + 8) == 0x234567 and absf(data.decode_float(offset + 12) - 5.0) < 0.001, "hit_" + str(i))
 		_check(data.decode_u32(32) == 0 and data.decode_u32(48) == 0, "miss_or_tmax")
 		result.cases["readback"] = {"hit0_primitive": data.decode_u32(4), "hit1_primitive": data.decode_u32(20), "instance_id": data.decode_u32(8), "distance": data.decode_float(12), "miss": data.decode_u32(32), "bounded_miss": data.decode_u32(48)}
-	if case_name in ["stale_direct", "stale_indirect"]:
-		rd.free_rid(blas)
-		blas = RID()
+	if case_name in ["stale_direct", "stale_indirect", "rebuild_stale"]:
+		if case_name == "rebuild_stale":
+			_check(rd.tlas_build(tlas, [instance]) != OK, "tlas_rebuild_accepted")
+		else:
+			rd.free_rid(blas)
+			blas = RID()
 		_check(rd.buffer_update(output, 0, 64, initial.to_byte_array()) == OK, "reset_output")
 		_dispatch(case_name == "stale_indirect")
 		data = rd.buffer_get_data(output)

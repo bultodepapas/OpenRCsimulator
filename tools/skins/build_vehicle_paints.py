@@ -1016,9 +1016,9 @@ def scratches(a, b, cell, density, seed, width=0.0006):
     return out
 
 
-def _sabre_text(text: str, aspect: float, lines: int = 1) -> np.ndarray:
-    """Upright block lettering mask (1 = ink), USAF style; several lines for stencil placards."""
-    key = ("text", text, round(aspect, 3), lines)
+def _sabre_text(text: str, aspect: float, lines: int = 1, font=None, stroke=None) -> np.ndarray:
+    """Upright lettering mask (1 = ink), USAF block style by default; several lines for stencil placards."""
+    key = ("text", text, round(aspect, 3), lines, str(font), stroke)
     if key not in _SABRE_ART:
         from PIL import ImageDraw, ImageFont
         height = 128 * lines
@@ -1026,11 +1026,12 @@ def _sabre_text(text: str, aspect: float, lines: int = 1) -> np.ndarray:
         canvas = Image.new("L", (width, height), 0)
         draw = ImageDraw.Draw(canvas)
         rows = text.split("\n")
-        font = ImageFont.truetype(str(FONT), int(height / len(rows) * 0.78))
-        stroke = 6 if lines == 1 else 2
+        face = str(font or FONT)
+        font = ImageFont.truetype(face, int(height / len(rows) * 0.78))
+        stroke = (6 if lines == 1 else 2) if stroke is None else stroke
         widest = max(draw.textbbox((0, 0), row, font=font, stroke_width=stroke)[2] for row in rows)
         if widest > width * 0.97:
-            font = ImageFont.truetype(str(FONT), int(height / len(rows) * 0.78 * width * 0.97 / widest))
+            font = ImageFont.truetype(face, int(height / len(rows) * 0.78 * width * 0.97 / widest))
         for n, row in enumerate(rows):
             draw.text((width * 0.5, height * (n + 0.5) / len(rows)), row, fill=255, font=font, anchor="mm",
                       stroke_width=stroke, stroke_fill=255)
@@ -1063,12 +1064,13 @@ class _Skin:
         self.metal = np.ones(count)
         self.height = np.zeros(count)  # metres, + out of the surface
         self.paint = np.zeros(count)  # coverage by paint or decal (0..1)
+        self.glow = np.zeros((count, 3))  # emission RGB (0..1)
 
-    def panels(self, panel_id, grain_a, grain_b, p, seed):
-        tone = np.minimum((_hash(panel_id, seed=seed) * len(ALU_TONES)).astype(int), len(ALU_TONES) - 1)
-        self.colour = ALU_TONES[tone] * (0.96 + 0.08 * _hash(panel_id, seed=seed + 3))[:, None]
-        self.rough = ALU_ROUGH[tone].copy()
-        self.metal = ALU_METAL[tone].copy()
+    def panels(self, panel_id, grain_a, grain_b, p, seed, tones=ALU_TONES, roughs=ALU_ROUGH, metals=ALU_METAL):
+        tone = np.minimum((_hash(panel_id, seed=seed) * len(tones)).astype(int), len(tones) - 1)
+        self.colour = tones[tone] * (0.96 + 0.08 * _hash(panel_id, seed=seed + 3))[:, None]
+        self.rough = roughs[tone].copy()
+        self.metal = metals[tone].copy()
         # Directional polishing grain (ambientCG Metal009) along the panel, each panel offset; some turned 90 deg.
         grain = _brushed()
         turned = _hash(panel_id, seed=seed + 5) < 0.3
@@ -1082,6 +1084,13 @@ class _Skin:
         self.colour = self.colour * (0.95 + 0.07 * blotch)[:, None]
         self.rough = self.rough + 0.10 * (fbm(p, 0.05, seed + 13) - 0.5)
         return tone
+
+    def lay(self, colour, alpha, rough, metal):
+        """A part or material over the skin (brass, glass, iron): colour, roughness and metallic share together."""
+        alpha = np.clip(alpha, 0.0, 1.0)
+        self.colour = mix(self.colour, colour, alpha)
+        self.rough = self.rough + (rough - self.rough) * alpha
+        self.metal = self.metal + (metal - self.metal) * alpha
 
     def groove(self, distance, width=0.0010, depth=0.00025, wash=0.06):
         line = _line(distance, width)
@@ -1319,7 +1328,7 @@ def sabre_fuselage(p, n):
     return skin
 
 
-def sabre_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len):
+def sabre_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len, table=None):
     """Wings, gear doors and stabiliser: panels between span joints and spars, rivets on ribs, ID band, insignia."""
     x, z = np.abs(p[:, 0]), p[:, 2]
     s = span_norm * span_hi  # metres from the centre line
@@ -1456,13 +1465,18 @@ def height_to_normal(height, pos, covered, strength=1.0):
 
 
 def build_sabre(atlas: str):
-    materials, size = SABRE_ATLASES[atlas]
+    return build_metal_skin(atlas, SABRE_ATLASES, sabre_fuselage, sabre_lifting, sabre_fin)
+
+
+def build_metal_skin(atlas: str, atlases: dict, fuselage, lifting_design, fin, glow: bool = False):
+    """Bake one atlas of a scene-space metal skin: albedo, roughness, metallic, normal (and emission)."""
+    materials, size = atlases[atlas]
     skin_axis = {"wing": 1, "stab": 1, "doors": 1, "fin": 0}.get(atlas, -1)
     pos, nrm, _mat, covered = bake_scene(JET_GLB, materials, size, symmetric=atlas in ("wing", "stab", "doors"),
                                          skin_axis=skin_axis)
     p, n = pos[covered], nrm[covered]
     if atlas == "fuselage":
-        design = lambda pc, nc: sabre_fuselage(pc, nc)
+        design = fuselage
     elif atlas in ("wing", "stab", "doors"):
         span_hi = 0.443 if atlas == "stab" else 0.998
         lifting = ("paint_stab",) if atlas == "stab" else ("paint_wing",)
@@ -1470,13 +1484,13 @@ def build_sabre(atlas: str):
         if atlas == "doors":
             n = n.copy()
             n[:, 1] = -np.maximum(np.abs(n[:, 1]), 0.7)
-        design = lambda pc, nc: sabre_lifting(pc, nc, chord_fraction(pc, 0, table, -span_hi, span_hi),
-                                              np.abs(pc[:, 0]) / span_hi, span_hi, atlas,
-                                              chord_length(pc, 0, table, -span_hi, span_hi))
+        design = lambda pc, nc: lifting_design(pc, nc, chord_fraction(pc, 0, table, -span_hi, span_hi),
+                                               np.abs(pc[:, 0]) / span_hi, span_hi, atlas,
+                                               chord_length(pc, 0, table, -span_hi, span_hi), table)
     else:
         table = chord_table(JET_GLB, ("paint_fin",), 1, 20, 0.212, 0.577)
-        design = lambda pc, nc: sabre_fin(pc, nc, chord_fraction(pc, 1, table, 0.212, 0.577),
-                                          (pc[:, 1] - 0.212) / (0.577 - 0.212))
+        design = lambda pc, nc: fin(pc, nc, chord_fraction(pc, 1, table, 0.212, 0.577),
+                                    (pc[:, 1] - 0.212) / (0.577 - 0.212))
     # Every layer is per texel, so chunks give identical bytes with a bounded memory peak.
     parts = [design(p[k:k + 1_000_000], n[k:k + 1_000_000]) for k in range(0, len(p), 1_000_000)]
     skin = _Skin(0)
@@ -1484,6 +1498,7 @@ def build_sabre(atlas: str):
     skin.rough = np.concatenate([part.rough for part in parts])
     skin.metal = np.concatenate([part.metal for part in parts])
     skin.height = np.concatenate([part.height for part in parts])
+    skin.glow = np.concatenate([part.glow for part in parts])
     del parts
     height, width = covered.shape
 
@@ -1499,7 +1514,8 @@ def build_sabre(atlas: str):
     height_map = np.zeros((height, width))
     height_map[covered] = skin.height
     normal = height_to_normal(height_map, pos, covered)
-    return (to_image(colour), to_image(rough).convert("L"), to_image(metal).convert("L"), to_image(normal))
+    maps = (to_image(colour), to_image(rough).convert("L"), to_image(metal).convert("L"), to_image(normal))
+    return maps + (to_image(full(np.clip(skin.glow, 0, 1), 3)),) if glow else maps
 
 
 _SABRE_CACHE: dict = {}
@@ -1509,6 +1525,460 @@ def _sabre_cached(atlas: str):
     if atlas not in _SABRE_CACHE:
         _SABRE_CACHE[atlas] = build_sabre(atlas)
     return _SABRE_CACHE[atlas]
+
+
+# ---------------------------------------------------------------------------------------------
+# Sebart Avanti S jet: "Steampunk Cobre". An original Victorian steam-age airframe fitted to the jet's own lines:
+# riveted copper and blackened-iron plates, brass hoops at the fuselage frames, copper steam pipes with brass
+# couplings, a working-looking gear train driven by a piston and connecting rod, pressure gauges, portholes, a
+# glowing firebox grille, a brass clock on the fin, verdigris in the seams and heat-blued tail steel. Same maps
+# as Sabre Plata plus an emission map (firebox embers, porthole and dial glow). Gear teeth share one circular
+# pitch, so meshing wheels really mesh.
+# ---------------------------------------------------------------------------------------------
+STEAM_ATLASES = dict(SABRE_ATLASES)
+STEAM_FONT = ROOT / "tools/skins/sources/steampunk/IMFeENsc28P.ttf"  # SIL OFL 1.1 (see that folder's README.md)
+COPPER_TONES = np.array([(200, 122, 78), (178, 101, 63), (152, 84, 53), (214, 144, 102), (188, 113, 71),
+                         (166, 93, 59)], dtype=np.float64) / 255.0
+COPPER_ROUGH = np.array([0.28, 0.36, 0.44, 0.24, 0.32, 0.40])
+COPPER_METAL = np.array([0.62, 0.56, 0.50, 0.66, 0.60, 0.54])
+IRON_TONES = np.array([(80, 82, 84), (67, 68, 70), (92, 89, 83), (73, 75, 79), (86, 83, 80)], dtype=np.float64) / 255.0
+IRON_ROUGH = np.array([0.42, 0.50, 0.38, 0.46, 0.44])
+IRON_METAL = np.array([0.56, 0.50, 0.60, 0.52, 0.55])
+BRASS_BRIGHT = hex_rgb("#e3c26c")
+BRASS_DARK = hex_rgb("#93722f")
+VERDIGRIS = hex_rgb("#5b9c86")
+CREAM = hex_rgb("#efe4c7")
+STEEL = hex_rgb("#a3a8ad")
+ENGRAVE = hex_rgb("#2b2117")
+EMBER = np.array([1.0, 0.42, 0.08])
+GEAR_PITCH = 0.0126  # circular pitch shared by every gear (metres per tooth)
+STEAM_HOOPS = [0.064, 0.300, 0.470, 0.700, 0.860]
+
+
+def _engraved(text: str, aspect: float) -> np.ndarray:
+    return _sabre_text(text, aspect, 1, font=STEAM_FONT, stroke=1)
+
+
+def _view(p, n, ca, cb):
+    """Side coordinates (metres) as a viewer sees them on either side: +a towards the nose, +b up."""
+    a = np.where(n[:, 0] >= 0.0, ca - p[:, 2], p[:, 2] - ca)
+    return a, p[:, 1] - cb
+
+
+def gear(a, b, ca, cb, teeth: int, phase: float, spokes: int = 6):
+    """Spur gear relief in surface coordinates: solid metal, see-through windows, axle cap, distance, pitch radius."""
+    radius = teeth * GEAR_PITCH / (2.0 * np.pi)
+    da, db = a - ca, b - cb
+    d = np.hypot(da, db)
+    th = np.arctan2(db, da)
+    tooth = smoothstep(-0.35, 0.35, np.cos(teeth * th + phase))
+    outer = radius + 0.0044 * (tooth - 0.5)
+    body = 1.0 - smoothstep(-0.0004, 0.0004, d - outer)
+    rim = radius - 0.0022 - 0.16 * radius
+    hub = 0.30 * radius
+    k = 2.0 * np.pi / spokes
+    spoke_gap = d * np.abs(np.sin(np.mod(th - phase / teeth + k * 0.5, k) - k * 0.5))
+    window = body * (1.0 - smoothstep(rim - 0.0008, rim, d)) * smoothstep(hub, hub + 0.0008, d) \
+        * smoothstep(0.09 * radius, 0.09 * radius + 0.0008, spoke_gap)
+    solid = np.clip(body - window, 0.0, 1.0)
+    axle = 1.0 - smoothstep(0.08 * radius, 0.08 * radius + 0.0006, d)
+    return solid, window, axle, d, radius
+
+
+def mesh_phase(teeth_a: int, phase_a: float, angle: float, teeth_b: int) -> float:
+    """Phase of gear b, centred at `angle` from gear a, so a's tooth phase at the contact meets a gap of b."""
+    return np.pi - (teeth_a * angle + phase_a) - teeth_b * (angle + np.pi)
+
+
+def steam_gear(skin, p, a, b, ca, cb, teeth, phase, weight, seed):
+    solid, window, axle, d, radius = gear(a, b, ca, cb, teeth, phase)
+    solid, window, axle = solid * weight, window * weight, axle * weight
+    tarnish = smoothstep(0.35, 0.8, fbm(p, 0.02, seed))
+    brass = mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.7)
+    tips = smoothstep(radius - 0.001, radius + 0.002, d)
+    skin.lay(mix(brass, BRASS_BRIGHT * 1.05, tips * 0.6), solid, rough=0.22 + 0.1 * tarnish, metal=0.66)
+    skin.lay(hex_rgb("#1d1b19"), window, rough=0.8, metal=0.1)
+    skin.lay(STEEL, axle, rough=0.25, metal=0.62)
+    edge = solid * (1.0 - smoothstep(0.0, 0.0012, np.abs(d - (radius - 0.0022 - 0.16 * radius))))
+    skin.height += 0.0009 * solid - 0.0007 * window + 0.0005 * axle - 0.0002 * edge
+
+
+def steam_pipe(skin, p, d, t, t0, t1, radius, weight, colour, seed, coupling_pitch=0.09):
+    """A pipe along t (metres) at signed distance d from its centre line, with brass couplings and bolts."""
+    along = (t > t0) & (t < t1)
+    phase = np.mod(t - t0, coupling_pitch) - coupling_pitch * 0.5
+    coupling = (np.abs(phase) < 0.004) & along
+    r = np.where(coupling, radius * 1.35, radius)
+    section = np.sqrt(np.clip(1.0 - (d / r) ** 2, 0.0, 1.0))
+    mask = (1.0 - smoothstep(r * 0.9, r, np.abs(d))) * along * weight
+    polish = smoothstep(0.3, 0.9, noise3(p, (0.004, 0.004, 0.15), seed))
+    body = mix(np.broadcast_to(colour, (len(p), 3)), colour * 1.18, polish * 0.5)
+    body = np.where(coupling[:, None], mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, 0.25), body)
+    shade = 0.55 + 0.45 * section  # contact shadow where the pipe meets the skin
+    skin.lay(body * shade[:, None], mask, rough=np.where(coupling, 0.22, 0.30), metal=0.64)
+    bolt = (1.0 - smoothstep(0.0007, 0.0011, np.hypot(phase, np.abs(d) - r * 0.55))) * coupling * weight
+    skin.lay(STEEL * 0.8, bolt, rough=0.35, metal=0.6)
+    skin.height += 0.75 * r * section * mask + 0.0003 * bolt
+
+
+def steam_dial(skin, p, a, b, ca, cb, r, reading, weight, seed):
+    """Pressure gauge: brass bezel with screws, cream dial, ticks, red zone, needle and glass glint."""
+    da, db = a - ca, b - cb
+    d = np.hypot(da, db)
+    psi = np.arctan2(da, db)  # 0 = up, + towards the viewer's right
+    face = (1.0 - smoothstep(r - 0.0005, r, d)) * weight
+    bezel = smoothstep(r - 0.0004, r, d) * (1.0 - smoothstep(r * 1.3 - 0.0005, r * 1.3, d)) * weight
+    tarnish = smoothstep(0.3, 0.8, fbm(p, 0.01, seed))
+    skin.lay(mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.6), bezel, rough=0.22, metal=0.66)
+    skin.height += 0.0010 * bezel - 0.0004 * face
+    for k in range(6):
+        ang = k * np.pi / 3.0 + 0.3
+        screw = 1.0 - smoothstep(0.0005, 0.0008, np.hypot(da - np.sin(ang) * r * 1.15, db - np.cos(ang) * r * 1.15))
+        skin.lay(STEEL * 0.75, screw * weight, rough=0.35, metal=0.6)
+    skin.lay(CREAM, face, rough=0.35, metal=0.0)
+    step = np.radians(27.0)
+    nearest = np.clip(np.round(psi / step), -5, 5) * step
+    tick = (np.abs(psi) < np.radians(137)) * (d > r * 0.68) * (d < r * 0.9) \
+        * (1.0 - smoothstep(0.0003, 0.0005, d * np.abs(np.sin(psi - nearest))))
+    red = (psi > np.radians(80)) * (psi < np.radians(135)) * (d > r * 0.78) * (d < r * 0.9)
+    skin.lay(hex_rgb("#a82b22"), red * face, rough=0.4, metal=0.0)
+    skin.lay(ENGRAVE, tick * face, rough=0.4, metal=0.0)
+    needle_angle = np.radians(-135.0 + 270.0 * reading)
+    ux, uy = np.sin(needle_angle), np.cos(needle_angle)
+    along = np.clip(da * ux + db * uy, -0.15 * r, 0.85 * r)
+    needle = 1.0 - smoothstep(0.00025, 0.00045, np.hypot(da - along * ux, db - along * uy))
+    skin.lay(hex_rgb("#141210"), needle * face, rough=0.4, metal=0.0)
+    cap = (1.0 - smoothstep(r * 0.1, r * 0.1 + 0.0004, d)) * weight
+    skin.lay(BRASS_BRIGHT, cap, rough=0.2, metal=0.66)
+    skin.glow = skin.glow + (EMBER * 0.12)[None, :] * (face * (1.0 - tick) * (1.0 - needle))[:, None]
+    glint = face * smoothstep(0.55, 0.8, (-da + db) / max(r, 1e-6)) * (d > r * 0.55)
+    skin.colour = mix(skin.colour, np.minimum(skin.colour + 0.18, 1.0), glint * 0.5)
+    skin.rough = skin.rough - 0.25 * glint
+
+
+def steam_plaque(skin, p, a, b, ca, cb, width, height, text, weight, seed):
+    """Brass name plate with a raised border, corner screws and engraved lettering."""
+    da, db = a - ca, b - cb
+    box = np.maximum(np.abs(da) - width * 0.5, np.abs(db) - height * 0.5)
+    plate = (1.0 - smoothstep(-0.0004, 0.0, box)) * weight
+    tarnish = smoothstep(0.35, 0.8, fbm(p, 0.015, seed))
+    skin.lay(mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.5), plate, rough=0.24, metal=0.66)
+    border = plate * (1.0 - smoothstep(0.0004, 0.0008, np.abs(box + 0.0022)))
+    skin.lay(ENGRAVE, border, rough=0.5, metal=0.1)
+    u = (da + width * 0.5 - 0.004) / (width - 0.008)
+    v = (height * 0.5 - 0.0035 - db) / (height - 0.007)
+    inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1)
+    mask = _engraved(text, (width - 0.008) / (height - 0.007))
+    ink = np.where(inside, _bilinear(mask, u, v), 0.0) * plate
+    skin.lay(ENGRAVE, ink, rough=0.55, metal=0.1)
+    for sa in (-1, 1):
+        for sb in (-1, 1):
+            screw = 1.0 - smoothstep(0.0006, 0.0009, np.hypot(da - sa * (width * 0.5 - 0.0025), db - sb * (height * 0.5 - 0.0022)))
+            skin.lay(STEEL * 0.8, screw * plate, rough=0.35, metal=0.6)
+            skin.height += 0.0002 * screw * plate
+    skin.height += 0.0005 * plate - 0.0002 * ink - 0.0002 * border
+
+
+def steam_porthole(skin, p, a, b, ca, cb, r, weight):
+    da, db = a - ca, b - cb
+    d = np.hypot(da, db)
+    glass = (1.0 - smoothstep(r - 0.0005, r, d)) * weight
+    ring = smoothstep(r - 0.0004, r, d) * (1.0 - smoothstep(r * 1.32 - 0.0005, r * 1.32, d)) * weight
+    skin.lay(mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, 0.3), ring, rough=0.22, metal=0.66)
+    th = np.arctan2(db, da)
+    rivet = (1.0 - smoothstep(0.0008, 0.0012, d * np.abs(np.sin(np.mod(th, np.pi / 4) - np.pi / 8)) +
+                              np.abs(d - r * 1.16))) * ring
+    skin.lay(BRASS_BRIGHT * 1.05, rivet, rough=0.2, metal=0.66)
+    skin.lay(hex_rgb("#101619"), glass, rough=0.05, metal=0.0)
+    glint = glass * smoothstep(0.45, 0.8, (-da + db) / r) * (d > r * 0.5)
+    skin.colour = mix(skin.colour, hex_rgb("#7f9aa3"), glint * 0.6)
+    skin.glow = skin.glow + (EMBER * 0.35)[None, :] * (glass * (1.0 - smoothstep(0.0, r, d)) * (1.0 - glint))[:, None]
+    skin.height += 0.0011 * ring + 0.0003 * rivet - 0.0006 * glass
+
+
+def steam_plates(skin, p, panel, grain_a, grain_b, copper_weight, seed):
+    """Copper and blackened-iron plates: both palettes per panel, blended by zone."""
+    skin.panels(panel, grain_a, grain_b, p, seed, COPPER_TONES, COPPER_ROUGH, COPPER_METAL)
+    iron = _Skin(len(p))
+    iron.panels(panel, grain_a, grain_b, p, seed + 1, IRON_TONES, IRON_ROUGH, IRON_METAL)
+    skin.lay(iron.colour, 1.0 - copper_weight, rough=iron.rough, metal=iron.metal)
+
+
+def steam_patina(skin, p, crevice, copper_weight, seed):
+    """Verdigris collects in copper seams and round rivet heads; soot-dark rust on iron."""
+    noise = smoothstep(0.4, 0.75, fbm(p, 0.012, seed))
+    green = np.clip(crevice * noise * copper_weight * 0.75, 0.0, 1.0)
+    skin.lay(VERDIGRIS * (0.85 + 0.3 * fbm(p, 0.004, seed + 1))[:, None], green, rough=0.75, metal=0.08)
+    rust = np.clip(crevice * noise * (1.0 - copper_weight) * 0.5, 0.0, 1.0)
+    skin.lay(hex_rgb("#5a3a26"), rust, rough=0.8, metal=0.1)
+
+
+def domed_rivets(skin, mask, colour_gain=1.12):
+    skin.colour = np.minimum(skin.colour * (1.0 + (colour_gain - 1.0) * mask)[:, None], 1.0)
+    skin.rough = skin.rough - 0.06 * mask
+    skin.height += 0.00028 * mask
+
+
+def steam_fuselage(p, n):
+    x, y, z = p[:, 0], p[:, 1], p[:, 2]
+    zn = (z - FUS_NOSE) / FUS_LEN
+    zm = zn * FUS_LEN
+    dy = y - _fuselage_centre(zn)
+    r = np.hypot(x, dy)
+    phi = np.arctan2(x, dy)
+    a = np.abs(phi)
+    arc = r * phi
+    side = smoothstep(0.45, 0.65, np.abs(n[:, 0]))
+    skin = _Skin(len(p))
+    d_station, k_station, f_station = _nearest(zn, FUS_STATIONS)
+    d_seam, k_seam, _ = _nearest(a, FUS_SEAMS)
+    k_seam = np.where(k_seam == 0, 0, k_seam + 10 * (x < 0))
+    panel = k_station * 64 + k_seam
+    copper = 1.0 - smoothstep(0.299, 0.301, zn) * (1.0 - smoothstep(0.699, 0.701, zn))
+    steam_plates(skin, p, panel, zm, arc, copper, seed=401)
+    across = np.where(a < FUS_SEAMS[0], (phi + FUS_SEAMS[0]) / (2 * FUS_SEAMS[0]), _nearest(a, FUS_SEAMS)[2])
+    skin.height += 0.0003 * np.sin(np.pi * f_station) * np.sin(np.pi * np.clip(across, 0, 1)) \
+        * np.where(_hash(panel, seed=13) < 0.5, -1.0, 1.0)
+    # Lap joints and big domed boiler rivets.
+    skin.groove(d_station * FUS_LEN, width=0.0012, depth=0.0003, wash=0.08)
+    skin.groove(d_seam * r, width=0.0012, depth=0.0003, wash=0.08)
+    rivet = rivets(d_station * FUS_LEN, arc, (-0.0045, 0.0045), 0.010, radius=0.0012)
+    rivet = np.maximum(rivet, rivets(d_seam * r, zm, (-0.0045, 0.0045), 0.010, radius=0.0012))
+    domed_rivets(skin, rivet * (zn > 0.07))
+    crevice = np.maximum(1.0 - smoothstep(0.0, 0.004, np.minimum(np.abs(d_station * FUS_LEN), np.abs(d_seam * r))),
+                         rivets(d_station * FUS_LEN, arc, (-0.0045, 0.0045), 0.010, radius=0.0019) - rivet)
+    steam_patina(skin, p, crevice, copper, seed=409)
+
+    # Brass nose cone with engraved rings.
+    cone = 1.0 - smoothstep(0.0615, 0.0625, zn)
+    tarnish = smoothstep(0.3, 0.8, fbm(p, 0.02, 411))
+    skin.lay(mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.5), cone, rough=0.18, metal=0.68)
+    for ring in (0.016, 0.031, 0.046):
+        skin.groove(np.where(cone > 0.5, (zn - ring) * FUS_LEN, 1.0), width=0.0009, depth=0.0002, wash=0.03)
+
+    # Heat-blued tail steel behind the last hoop.
+    tail = smoothstep(0.859, 0.861, zn)
+    temper = np.interp(zn, [0.86, 0.92, 0.97, 1.0], [0.0, 0.35, 0.7, 1.0])
+    heat = np.stack([np.interp(temper, [0, 0.35, 0.7, 1], c) for c in
+                     ([0.55, 0.62, 0.40, 0.30], [0.50, 0.48, 0.34, 0.36], [0.46, 0.30, 0.30, 0.52])], axis=1)
+    skin.lay(heat * (0.9 + 0.2 * fbm(p, 0.03, 413))[:, None], tail, rough=0.32, metal=0.62)
+
+    # Brass hoops at the frames, raised, with a domed rivet row along both edges.
+    for hoop in STEAM_HOOPS:
+        dist = np.abs(zn - hoop) * FUS_LEN
+        band = 1.0 - smoothstep(0.0095, 0.0105, dist)
+        skin.lay(mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.6), band, rough=0.22, metal=0.66)
+        skin.height += 0.0007 * band * smoothstep(0.0105, 0.008, dist)
+        domed_rivets(skin, rivets((zn - hoop) * FUS_LEN, arc, (-0.0065, 0.0065), 0.011, radius=0.0011) * band, 1.15)
+    # Dorsal brass spine strap from the wing to the tail.
+    strap = (np.abs(x) < 0.012) * (n[:, 1] > 0.7) * (zn > 0.47) * (zn < 0.86)
+    skin.lay(mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.6), strap, rough=0.22, metal=0.66)
+    domed_rivets(skin, rivets(np.abs(x) - 0.012, zm, (-0.004,), 0.011, radius=0.0011) * strap)
+    skin.height += 0.0005 * strap
+
+    # Steam pipes along both flanks, the gear train, piston and connecting rod.
+    steam_pipe(skin, p, y - 0.150, zm, 0.31 * FUS_LEN, 0.855 * FUS_LEN, 0.006, side, hex_rgb("#c27a4c"), 421)
+    steam_pipe(skin, p, y - 0.180, zm, 0.48 * FUS_LEN, 0.69 * FUS_LEN, 0.0035, side, BRASS_BRIGHT * 0.95, 423, 0.07)
+    big = (0.585 * FUS_LEN, 0.095)
+    teeth = (20, 11, 8)
+    phase_big = 0.0
+    small_angle, tiny_angle = np.radians(15.0), np.radians(-35.0)
+    radius = [t * GEAR_PITCH / (2 * np.pi) for t in teeth]
+    small = (big[0] + (radius[0] + radius[1]) * np.cos(small_angle), big[1] + (radius[0] + radius[1]) * np.sin(small_angle))
+    tiny = (big[0] + (radius[0] + radius[2]) * np.cos(tiny_angle), big[1] + (radius[0] + radius[2]) * np.sin(tiny_angle))
+    steam_gear(skin, p, zm, y, big[0], big[1], teeth[0], phase_big, side, 431)
+    steam_gear(skin, p, zm, y, small[0], small[1], teeth[1], mesh_phase(teeth[0], phase_big, small_angle, teeth[1]), side, 433)
+    steam_gear(skin, p, zm, y, tiny[0], tiny[1], teeth[2], mesh_phase(teeth[0], phase_big, tiny_angle, teeth[2]), side, 435)
+    # Piston: a finned cylinder whose rod and crosshead drive a crank pin on the big wheel.
+    cyl0, cyl1, cyl_y = 0.490 * FUS_LEN, 0.535 * FUS_LEN, 0.104
+    cyl = ((zm > cyl0) & (zm < cyl1) & (np.abs(y - cyl_y) < 0.012)) * side
+    fins = 0.5 + 0.5 * np.cos((zm - cyl0) / 0.004 * 2 * np.pi)
+    skin.lay(IRON_TONES[1] * (0.8 + 0.4 * fins)[:, None], cyl, rough=0.45, metal=0.55)
+    skin.height += (0.0010 + 0.0005 * fins) * cyl
+    for flange in (cyl0, cyl1):
+        ring = (np.abs(zm - flange) < 0.003) * (np.abs(y - cyl_y) < 0.0145) * side
+        skin.lay(BRASS_BRIGHT, ring, rough=0.22, metal=0.66)
+        skin.height += 0.0016 * ring
+    crank = (big[0] - 0.026 * np.cos(np.radians(30)), big[1] + 0.026 * np.sin(np.radians(30)))
+    cross = (cyl1 + 0.012, cyl_y)
+    rod = ((zm > cyl1) & (zm < cross[0]) & (np.abs(y - cyl_y) < 0.0022)) * side
+    skin.lay(STEEL * 1.1, rod, rough=0.15, metal=0.66)
+    skin.height += 0.0012 * rod
+    head = ((np.abs(zm - cross[0]) < 0.0045) & (np.abs(y - cyl_y) < 0.005)) * side
+    skin.lay(BRASS_DARK, head, rough=0.3, metal=0.62)
+    skin.height += 0.0018 * head
+    ux, uy = crank[0] - cross[0], crank[1] - cross[1]
+    length = np.hypot(ux, uy)
+    t = np.clip(((zm - cross[0]) * ux + (y - cross[1]) * uy) / length, 0.0, length)
+    con = (1.0 - smoothstep(0.0025, 0.003, np.hypot(zm - cross[0] - t * ux / length, y - cross[1] - t * uy / length))) * side
+    skin.lay(IRON_TONES[0] * 0.8, con, rough=0.35, metal=0.58)
+    skin.height += 0.0022 * con
+    pin = (1.0 - smoothstep(0.0028, 0.0034, np.hypot(zm - crank[0], y - crank[1]))) * side
+    skin.lay(STEEL, pin, rough=0.2, metal=0.64)
+    skin.height += 0.0026 * pin
+
+    # Cockpit instruments, name plate, portholes and the firebox.
+    va, vb = _view(p, n, 0.0, 0.0)
+    for zc, reading in ((0.226, 0.62), (0.264, 0.84)):
+        ca = np.where(n[:, 0] >= 0.0, -(FUS_NOSE + zc * FUS_LEN), FUS_NOSE + zc * FUS_LEN)
+        steam_dial(skin, p, va, vb, ca, 0.112, 0.0085, reading, side, 441)
+    plaque_z = FUS_NOSE + 0.225 * FUS_LEN
+    pa, pb = _view(p, n, plaque_z, 0.085)
+    steam_plaque(skin, p, pa, pb, 0.0, 0.0, 0.25, 0.026, "AETHER-JET  No. VII", side, 443)
+    for zc in (0.752, 0.806):
+        steam_porthole(skin, p, zm, y, zc * FUS_LEN, 0.122, 0.013, side)
+    fz0, fz1, fy0, fy1 = 0.885 * FUS_LEN, 0.935 * FUS_LEN, 0.034, 0.076
+    frame = _box_distance(zm, y, fz0, fz1, fy0, fy1)
+    inside = (frame < -0.003) * side
+    border = (frame < 0.0) * (frame >= -0.003) * side
+    skin.lay(BRASS_DARK, border, rough=0.28, metal=0.64)
+    slots = (np.abs(np.mod(zm - fz0, 0.0085) - 0.00425) < 0.0024) * inside
+    skin.lay(IRON_TONES[1] * 0.5, inside * (1.0 - slots), rough=0.5, metal=0.5)
+    ember = (0.55 + 0.45 * (1.0 - (y - fy0) / (fy1 - fy0))) * (0.75 + 0.5 * noise3(p, 0.004, 447))
+    skin.lay(np.array([0.55, 0.16, 0.04]), slots, rough=0.6, metal=0.0)
+    skin.glow = skin.glow + EMBER[None, :] * (slots * np.clip(ember, 0, 1.2))[:, None]
+    skin.height += 0.0006 * border - 0.0008 * slots
+    above = np.clip((y - fy1) / 0.05, 0.0, 1.0)
+    soot = (y > fy1) * (zm > fz0 - 0.005) * np.exp(-above * 3.0) * (1.0 - smoothstep(fz1, fz1 + 0.08, zm)) * side
+    skin.grime(soot * 0.7 * (0.6 + 0.4 * noise3(p, (0.02, 0.004, 0.02), 449)), tint=(0.25, 0.24, 0.23), rough=0.6)
+    exhaust = smoothstep(0.92, 1.0, zn) * (1.0 - smoothstep(0.05, 0.17, y))
+    skin.grime(exhaust * (0.5 + 0.5 * noise3(p, (0.006, 0.006, 0.12), 451)) * 0.7, tint=(0.24, 0.23, 0.22), rough=0.55)
+    return skin
+
+
+def steam_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len, table=None):
+    s, z = span_norm * span_hi, p[:, 2]
+    top = n[:, 1] >= 0.0
+    face = smoothstep(0.3, 0.6, np.abs(n[:, 1]))
+    chord_m = chord_len
+    joints = [0.14, 0.42, 0.70] if atlas != "stab" else [0.17, 0.32]
+    spars = [0.14, 0.63] if atlas != "stab" else [0.16, 0.62]
+    d_joint, k_joint, f_joint = _nearest(s, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, spars)
+    panel = k_joint * 16 + k_spar * 2 + top
+    skin = _Skin(len(p))
+    copper = top.astype(float)
+    steam_plates(skin, p, panel, s, z, copper, seed=461 if atlas != "stab" else 467)
+    skin.height += 0.0003 * np.sin(np.pi * f_joint) * np.sin(np.pi * f_spar) * np.where(_hash(panel, seed=17) < 0.5, -1, 1)
+    skin.groove(np.where(face > 0.5, d_joint, 1.0), width=0.0012, depth=0.0003, wash=0.08)
+    skin.groove(np.where(face > 0.5, d_spar * chord_m, 1.0), width=0.0012, depth=0.0003, wash=0.08)
+    rivet = rivets(d_joint, z, (-0.0045, 0.0045), 0.010, radius=0.0012)
+    rivet = np.maximum(rivet, rivets(d_spar * chord_m, s, (-0.0045, 0.0045), 0.010, radius=0.0012))
+    domed_rivets(skin, rivet * face)
+    crevice = 1.0 - smoothstep(0.0, 0.004, np.minimum(np.abs(d_joint), np.abs(d_spar * chord_m)))
+    steam_patina(skin, p, crevice, copper, seed=471)
+    tarnish = smoothstep(0.3, 0.8, fbm(p, 0.02, 473))
+    brass = mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.6)
+    # Polished brass leading edge with its rivet row, brass tips.
+    edge = 1.0 - smoothstep(0.062, 0.068, frac)
+    skin.lay(brass, edge, rough=0.18, metal=0.68)
+    domed_rivets(skin, rivets((frac - 0.078) * chord_m, s, (0.0,), 0.010, radius=0.0011) * face)
+    tip = smoothstep(0.95, 0.955, span_norm)
+    skin.lay(brass, tip, rough=0.2, metal=0.66)
+    if atlas != "stab":
+        b0, b1 = 0.76 * span_hi, 0.79 * span_hi
+        band = ((s > b0) & (s < b1)).astype(float)
+        skin.lay(brass, band, rough=0.22, metal=0.66)
+        skin.height += 0.0006 * band
+        for edge_s in (b0 + 0.0055, b1 - 0.0055):
+            domed_rivets(skin, rivets(s - edge_s, z, (0.0,), 0.011, radius=0.0011) * band, 1.15)
+    if atlas == "wing":
+        steam_pipe(skin, p, (frac - 0.33) * chord_m, s, 0.14, 0.70, 0.0045, top * face, hex_rgb("#c27a4c"), 475)
+        le, te = table
+        centres = -span_hi + (np.arange(len(le)) + 0.5) * (2.0 * span_hi) / len(le)
+
+        def at(s0, f0):
+            l0, t0 = np.interp(s0, centres, le), np.interp(s0, centres, te)
+            return s0, l0 + f0 * (t0 - l0)
+
+        big = at(0.43, 0.50)
+        teeth = (21, 12)
+        r0, r1 = (t * GEAR_PITCH / (2 * np.pi) for t in teeth)
+        angle = np.radians(-15.0)
+        small = (big[0] + (r0 + r1) * np.cos(angle), big[1] + (r0 + r1) * np.sin(angle))
+        steam_gear(skin, p, s, z, big[0], big[1], teeth[0], 0.0, top * face, 477)
+        steam_gear(skin, p, s, z, small[0], small[1], teeth[1], mesh_phase(teeth[0], 0.0, angle, teeth[1]), top * face, 479)
+        streak = smoothstep(0.55, 0.85, noise3(p, (0.2, 0.006, 0.006), 481)) * (frac > 0.3)
+        skin.grime(np.where(top, 0.0, 0.25 * streak), tint=(0.36, 0.33, 0.29), rough=0.55, metal_loss=0.3)
+    else:
+        soot = (1.0 - smoothstep(0.10, 0.22, s)) * smoothstep(0.3, 0.9, frac)
+        skin.grime(soot * (0.5 + 0.5 * noise3(p, (0.2, 0.01, 0.01), 483)) * 0.6, tint=(0.25, 0.24, 0.23))
+    skin.colour = mix(IRON_TONES[1] * 0.8, skin.colour, face)
+    return skin
+
+
+def steam_fin(p, n, frac, height_norm):
+    y, z = p[:, 1], p[:, 2]
+    chord_m = 0.36
+    skin = _Skin(len(p))
+    joints = [0.212 + 0.365 * h for h in (0.30, 0.62)]
+    d_joint, k_joint, f_joint = _nearest(y, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, [0.12, 0.62])
+    panel = k_joint * 8 + k_spar
+    copper = smoothstep(0.615, 0.625, frac)  # copper rudder on an iron fin
+    steam_plates(skin, p, panel, y, z, copper, seed=491)
+    side = smoothstep(0.35, 0.6, np.abs(n[:, 0]))
+    skin.groove(np.where(side > 0.5, d_joint, 1.0), width=0.0012, depth=0.0003, wash=0.08)
+    skin.groove(np.where(side > 0.5, d_spar * chord_m, 1.0), width=0.0012, depth=0.0003, wash=0.08)
+    rivet = rivets(d_joint, z, (-0.0045, 0.0045), 0.010, radius=0.0012)
+    rivet = np.maximum(rivet, rivets(d_spar * chord_m, y, (-0.0045, 0.0045), 0.010, radius=0.0012))
+    domed_rivets(skin, rivet * side)
+    crevice = 1.0 - smoothstep(0.0, 0.004, np.minimum(np.abs(d_joint), np.abs(d_spar * chord_m)))
+    steam_patina(skin, p, crevice, copper, seed=493)
+    tarnish = smoothstep(0.3, 0.8, fbm(p, 0.02, 495))
+    brass = mix(np.broadcast_to(BRASS_BRIGHT, (len(p), 3)), BRASS_DARK, tarnish * 0.6)
+    skin.lay(brass, 1.0 - smoothstep(0.075, 0.082, frac), rough=0.18, metal=0.68)
+    cap = smoothstep(0.875, 0.885, height_norm)
+    skin.lay(brass, cap, rough=0.2, metal=0.66)
+    domed_rivets(skin, rivets((height_norm - 0.895) * 0.365, z, (0.0,), 0.010, radius=0.0011) * side, 1.15)
+    # The fin clock: a gear wheel behind a brass-bezelled dial with Roman numerals, hands at ten past ten.
+    zc, yc = 0.990, 0.348
+    va, vb = _view(p, n, zc, yc)
+    steam_gear(skin, p, va, vb, 0.0, 0.0, 19, 0.2, side, 497)
+    rc = 0.031
+    d = np.hypot(va, vb)
+    psi = np.arctan2(va, vb)
+    face = (1.0 - smoothstep(rc - 0.0005, rc, d)) * side
+    bezel = smoothstep(rc - 0.0004, rc, d) * (1.0 - smoothstep(rc * 1.18 - 0.0005, rc * 1.18, d)) * side
+    skin.lay(brass, bezel, rough=0.2, metal=0.66)
+    skin.lay(CREAM, face, rough=0.35, metal=0.0)
+    skin.height += 0.0012 * bezel + 0.0006 * face
+    step = np.pi / 6.0
+    tick = (d > rc * 0.86) * (d < rc * 0.95) * (1.0 - smoothstep(0.0003, 0.0005, d * np.abs(np.sin(psi - np.round(psi / step) * step))))
+    skin.lay(ENGRAVE, tick * face, rough=0.4, metal=0.0)
+    for numeral, ang in (("XII", 0.0), ("III", 90.0), ("VI", 180.0), ("IX", 270.0)):
+        ca, cb = np.sin(np.radians(ang)) * rc * 0.66, np.cos(np.radians(ang)) * rc * 0.66
+        w, h = 0.011, 0.0075
+        u = (va - ca + w * 0.5) / w
+        v = (cb + h * 0.5 - vb) / h
+        inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1)
+        skin.lay(ENGRAVE, np.where(inside, _bilinear(_engraved(numeral, w / h), u, v), 0.0) * face, rough=0.4, metal=0.0)
+    for ang, length, width in ((-60.0, 0.55, 0.0009), (60.0, 0.8, 0.0006)):
+        ux, uy = np.sin(np.radians(ang)), np.cos(np.radians(ang))
+        along = np.clip(va * ux + vb * uy, -0.1 * rc, length * rc)
+        hand = 1.0 - smoothstep(width * 0.6, width, np.hypot(va - along * ux, vb - along * uy))
+        skin.lay(hex_rgb("#141210"), hand * face, rough=0.35, metal=0.2)
+    skin.lay(BRASS_BRIGHT, (1.0 - smoothstep(0.0015, 0.002, d)) * side, rough=0.2, metal=0.66)
+    skin.glow = skin.glow + (EMBER * 0.10)[None, :] * (face * (1.0 - tick))[:, None]
+    pa, pb = _view(p, n, 0.990, 0.299)
+    steam_plaque(skin, p, pa, pb, 0.0, 0.0, 0.066, 0.015, "No. VII", side, 499)
+    soot = (1.0 - smoothstep(0.0, 0.12, height_norm)) * smoothstep(0.4, 0.9, frac)
+    skin.grime(soot * 0.4, tint=(0.25, 0.24, 0.23))
+    skin.colour = mix(IRON_TONES[1] * 0.8, skin.colour, side)
+    return skin
+
+
+def build_steam(atlas: str):
+    return build_metal_skin(atlas, STEAM_ATLASES, steam_fuselage, steam_lifting, steam_fin, glow=True)
+
+
+_STEAM_CACHE: dict = {}
+
+
+def _steam_cached(atlas: str):
+    if atlas not in _STEAM_CACHE:
+        _STEAM_CACHE[atlas] = build_steam(atlas)
+    return _STEAM_CACHE[atlas]
 
 
 def outputs() -> dict:
@@ -1532,6 +2002,13 @@ def outputs() -> dict:
         files[stem + "_roughness.jpg"] = lambda a=atlas: encode(_sabre_cached(a)[1], ".jpg")
         files[stem + "_metallic.png"] = lambda a=atlas: encode(_sabre_cached(a)[2], ".png")
         files[stem + "_normal.png"] = lambda a=atlas: encode(_sabre_cached(a)[3], ".png")
+    for atlas in STEAM_ATLASES:
+        stem = f"avanti-s-a200/steampunk_cobre_{atlas}"
+        files[stem + ".jpg"] = lambda a=atlas: encode(_steam_cached(a)[0], ".jpg")
+        files[stem + "_roughness.jpg"] = lambda a=atlas: encode(_steam_cached(a)[1], ".jpg")
+        files[stem + "_metallic.png"] = lambda a=atlas: encode(_steam_cached(a)[2], ".png")
+        files[stem + "_normal.png"] = lambda a=atlas: encode(_steam_cached(a)[3], ".png")
+        files[stem + "_emission.png"] = lambda a=atlas: encode(_steam_cached(a)[4], ".png")
     return files
 
 

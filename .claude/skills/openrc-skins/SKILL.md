@@ -13,7 +13,8 @@ damage and custom paint kits. Home lists stock skins from the registry.
 ## Authoring workflow
 
 1. **Inspect existing schemes and the actual asset.** Check the registry and source
-   generators for suitable work to reuse, preserving any request for a distinct design. Use `tools/skins/glb_inspect.py` for GLBs and
+   generators for suitable work to reuse, preserving requests for a distinct design.
+   Use `tools/skins/glb_inspect.py` for GLBs and
    `paint_audit.py` for UV density, stretch and conflicts. For procedural aircraft,
    inspect a built instance and its UV source. Material names can be shared by
    unrelated parts; use node bindings when a finish belongs only to one part.
@@ -33,7 +34,8 @@ damage and custom paint kits. Home lists stock skins from the registry.
    small accents on the visible aircraft. Atlas-area percentages alone cannot
    establish visible coverage when UVs repeat. Independent render review is useful.
 5. **Verify new skin bindings and affected behavior.** New registry/material
-   bindings merit the targeted paint test even when loader code is unchanged. Run the checked
+   bindings merit the targeted paint test even when loader code is unchanged. Run
+   the checked
    `app/tests/test_vehicle_paint.gd` and relevant livery, picker, custom-skin and
    vehicle tests. Cover variant registration, repainting and Low when affected.
    Colour-only edits do not justify broad physics suites or new tests that repeat

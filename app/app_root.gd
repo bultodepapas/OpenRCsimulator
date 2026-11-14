@@ -2088,6 +2088,10 @@ func open_controls(from: Control = null) -> void:
 					and _has_property(flight.session, "pending_controller_calibration") \
 					and flight.session.pending_controller_calibration == pending:
 				flight.session.pending_controller_calibration = {})
+		setup.drafts_discarded.connect(func() -> void:
+			if flight != null and _has_property(flight.session, "pending_controller_calibration") \
+					and flight.session.pending_controller_calibration == pending:
+				flight.session.pending_controller_calibration = {})
 	setup.close_requested.connect(func() -> void:
 		if screens.is_top("controls"): screens.pop())
 	_update_controller_calibration_button(setup)

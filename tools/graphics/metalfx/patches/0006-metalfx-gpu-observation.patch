@@ -1,0 +1,509 @@
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.cpp b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+index 7afa7895247b26db4200117e0b3d05855616c5d0..4b23f50ad1ef4345caaffdf5d0efef4661d94fb4 100644
+--- a/servers/rendering/renderer_rd/effects/metal_fx.cpp
++++ b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+@@ -38,15 +38,43 @@
+ 
+ #include "drivers/metal/pixel_formats.h"
+ #include "drivers/metal/rendering_device_driver_metal3.h"
++#include "servers/rendering/renderer_compositor.h"
+ #include "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h"
++#include "servers/rendering/rendering_server_globals.h"
+ #ifdef MACOS_ENABLED
+ #include "drivers/metal/metalfx_frame_bridge.h"
+ #endif
+ 
+ #include <MetalFX/MetalFX.hpp>
++#include <chrono>
+ 
+ using namespace RendererRD;
+ 
++// Registered only by an explicit per-viewport observation request. Capture no
++// Godot owner or driver pointer: the shared generation may outlive its viewport.
++static void mfx_observe_gpu(MTL::CommandBuffer *p_command, const std::shared_ptr<MetalFXGPUObservation> &p_state,
++		uint64_t p_frame, uint64_t p_epoch = 0, uint64_t p_reset_serial = 0) {
++	if (!p_state || !p_command) {
++		return;
++	}
++	MetalFXGPUObservation::Sample sample = p_state->encoded(p_frame, p_epoch, p_reset_serial);
++	if (!sample.ticket) {
++		return;
++	}
++	p_command->addCompletedHandler([state = p_state, sample](MTL::CommandBuffer *command) {
++		MTL::CommandBufferStatus status = command->status();
++		NS::Error *error = command->error();
++		bool terminal = status == MTL::CommandBufferStatusCompleted || status == MTL::CommandBufferStatusError;
++		bool succeeded = status == MTL::CommandBufferStatusCompleted && !error;
++		double gpu_start = succeeded ? command->GPUStartTime() : 0;
++		double gpu_end = succeeded ? command->GPUEndTime() : 0;
++		auto ticks = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
++		uint64_t observer_usec = ticks > 0 && uint64_t(ticks) <= MetalFXGPUObservation::MAX_COUNTER ? uint64_t(ticks) : 0;
++		state->completed(sample, terminal, succeeded, int64_t(status), error != nullptr,
++				error ? int64_t(error->code()) : 0, gpu_start, gpu_end, observer_usec);
++	});
++}
++
+ #ifdef DEBUG_ENABLED
+ // Debug qualification only. Read once; each injected case must use a fresh process.
+ static bool mfx_debug_failure(const char *p_failure) {
+@@ -83,6 +111,7 @@ void MFXSpatialEffect::callback(RDD *p_driver, RDD::CommandBufferID p_command_bu
+ 	MTLFX::SpatialScaler *s = static_cast<MTLFX::SpatialScaler *>(scaler);
+ 	MTL3::MDCommandBuffer *cmd = (MTL3::MDCommandBuffer *)(p_command_buffer.id);
+ 	s->encodeToCommandBuffer(cmd->get_command_buffer());
++	mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->gpu, p_userdata->frame);
+ 	obj->retain_resource(scaler);
+ 	scaler->release(); // Release the reference held from enqueue until callback.
+ 	memdelete(p_userdata);
+@@ -104,6 +133,8 @@ bool MFXSpatialEffect::try_process(Ref<RenderSceneBuffersRD> p_render_buffers, R
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_src)),
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_dst)),
+ 			*ctx));
++	userdata->gpu = p_render_buffers->ensure_metalfx_gpu_observation();
++	userdata->frame = userdata->gpu ? RSG::rasterizer->get_frame_number() : 0;
+ 	RD::CallbackResource res[2] = {
+ 		{ .rid = p_src, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 		{ .rid = p_dst, .usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE }
+@@ -249,6 +280,8 @@ bool MFXTemporalEffect::process(RendererRD::MFXTemporalContext *p_ctx, RendererR
+ 			p_params.reset,
+ 			p_params.history,
+ 			p_params.reset_serial));
++	userdata->gpu = p_params.gpu;
++	userdata->frame = userdata->gpu ? RSG::rasterizer->get_frame_number() : 0;
+ 	RD::CallbackResource res[5] = {
+ 		{ .rid = p_params.src, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 		{ .rid = p_params.depth, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+@@ -306,6 +339,8 @@ void MFXTemporalEffect::callback(RDD *p_driver, RDD::CommandBufferID p_command_b
+ 	MTL3::MDCommandBuffer *cmd = (MTL3::MDCommandBuffer *)(p_command_buffer.id);
+ 	s->encodeToCommandBuffer(cmd->get_command_buffer());
+ 	// This is a CPU-side SDK encoding acknowledgement, not GPU completion.
++	mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->gpu, p_userdata->frame, 0,
++			p_userdata->reset ? p_userdata->reset_serial : 0);
+ 	if (p_userdata->reset && p_userdata->history) {
+ 		p_userdata->history->initial_reset_encoded.store(true, std::memory_order_release);
+ 		if (p_userdata->reset_serial != 0) {
+@@ -363,6 +398,8 @@ bool MFXFrameEffect::process(MFXFrameContext *p_ctx, const Params &p_params) con
+ 	args->history = p_ctx->history;
+ 	args->serial = p_ctx->history->submitted.load(std::memory_order_relaxed) + 1;
+ 	args->epoch = p_params.epoch;
++	args->gpu = p_params.gpu;
++	args->frame = args->gpu ? RSG::rasterizer->get_frame_number() : 0;
+ 	args->scale_x = p_params.motion_scale.x; args->scale_y = p_params.motion_scale.y;
+ 	args->jitter_x = p_params.jitter.x; args->jitter_y = p_params.jitter.y;
+ 	args->delta = p_params.delta; args->fov = p_params.fov;
+@@ -404,6 +441,7 @@ void MFXFrameEffect::callback(RDD *p_driver, RDD::CommandBufferID p_command_buff
+ 				p_userdata->scale_x, p_userdata->scale_y, p_userdata->jitter_x, p_userdata->jitter_y,
+ 				p_userdata->delta, p_userdata->fov, p_userdata->z_near, p_userdata->z_far, p_userdata->aspect);
+ 		if (result == MFX_FRAME_OK) {
++			mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->gpu, p_userdata->frame, p_userdata->epoch);
+ 			obj->retain_resource((CFTypeRef)p_userdata->effect);
+ 			if (p_userdata->reset) {
+ 				history->encoded_in_epoch.store(1, std::memory_order_relaxed);
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.h b/servers/rendering/renderer_rd/effects/metal_fx.h
+index c6ca3a2e01dcdfec5959ede8cb4eb66780788fe7..be87545c6ed81ef2b4e1415521eb9503f38a4535 100644
+--- a/servers/rendering/renderer_rd/effects/metal_fx.h
++++ b/servers/rendering/renderer_rd/effects/metal_fx.h
+@@ -90,6 +90,8 @@ class MFXSpatialEffect : public SpatialUpscaler {
+ 		MTLFX::SpatialScalerBase *scaler = nullptr;
+ 		RDD::TextureID src;
+ 		RDD::TextureID dst;
++		std::shared_ptr<MetalFXGPUObservation> gpu;
++		uint64_t frame = 0;
+ 
+ 		CallbackArgs(RDD::TextureID p_src, RDD::TextureID p_dst, const MFXSpatialContext &p_ctx) :
+ 				scaler(p_ctx.scaler), src(p_src), dst(p_dst) {}
+@@ -140,6 +142,8 @@ class MFXTemporalEffect {
+ 		bool reset = false;
+ 		std::shared_ptr<MetalFXTemporalHistoryState> history;
+ 		uint64_t reset_serial = 0;
++		std::shared_ptr<MetalFXGPUObservation> gpu;
++		uint64_t frame = 0;
+ 
+ 		CallbackArgs(
+ 				RDD::TextureID p_src,
+@@ -195,6 +199,7 @@ public:
+ 		bool reset = false;
+ 		std::shared_ptr<MetalFXTemporalHistoryState> history;
+ 		uint64_t reset_serial = 0;
++		std::shared_ptr<MetalFXGPUObservation> gpu;
+ 	};
+ 
+ 	bool process(MFXTemporalContext *p_ctx, Params p_params);
+@@ -246,6 +251,8 @@ class MFXFrameEffect {
+ 		RDD::TextureID color, previous, depth, motion, output;
+ 		std::shared_ptr<MetalFXFrameHistoryState> history;
+ 		uint64_t serial = 0, epoch = 0;
++		std::shared_ptr<MetalFXGPUObservation> gpu;
++		uint64_t frame = 0;
+ 		float scale_x = 0, scale_y = 0, jitter_x = 0, jitter_y = 0;
+ 		float delta = 0, fov = 0, z_near = 0, z_far = 0, aspect = 0;
+ 		bool reset = false;
+@@ -263,6 +270,7 @@ public:
+ 		float delta = 0, fov = 0, z_near = 0, z_far = 0, aspect = 0;
+ 		bool reset = false;
+ 		uint64_t epoch = 0;
++		std::shared_ptr<MetalFXGPUObservation> gpu;
+ 	};
+ 	MFXFrameContext *create_context(const CreateParams &p_params) const;
+ 	bool process(MFXFrameContext *p_ctx, const Params &p_params) const;
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+index d991a38f9289a91a8bba1ab26bedbd4d00c04e32..9eb104fe73e40b47e4bb70308134ce936d9c1a79 100644
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -170,6 +170,7 @@ void RenderForwardClustered::_process_metalfx_frame(const RenderDataRD *p_render
+ 	params.jitter = jitter;
+ 	params.delta = delta; params.fov = fov; params.z_near = z_near; params.z_far = z_far; params.aspect = aspect;
+ 	params.reset = reset; params.epoch = ctx->epoch;
++	params.gpu = p_buffers->ensure_metalfx_gpu_observation(true);
+ 	if (!effect.process(ctx, params)) {
+ 		ctx->history->callback_error.store(MFX_FRAME_ENQUEUE_FAILED, std::memory_order_release);
+ 		return;
+@@ -2781,6 +2782,7 @@ void RenderForwardClustered::_render_scene(RenderDataRD *p_render_data, const Co
+ 				params.jitter_offset = jitter;
+ 				params.reset = reset || reset_generation || reset_serial != 0;
+ 				params.history = history;
++				params.gpu = rb->ensure_metalfx_gpu_observation();
+ 				params.reset_serial = reset_serial;
+ 
+ 				submitted = mfx_temporal_effect->process(context, params);
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+index 1a2c5d2239bc9314b3a6323d1176ca076a75bfa9..ddff07aa102aeab558513697cdd360e8c3d4f70a 100644
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -129,6 +129,7 @@ void RenderSceneBuffersRD::update_samplers() {
+ }
+ 
+ void RenderSceneBuffersRD::clear_metalfx_frame() {
++	clear_metalfx_frame_gpu_observation();
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ 	if (mfx_frame_context) {
+ 		memdelete(mfx_frame_context);
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+index b6acdf4890e16368a79556122e711c648afd235d..0d84acb1644b084341574969234b01d607a89ebe 100644
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -323,6 +323,7 @@ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
+ 			p_viewport->render_buffers->configure(&rb_config);
+ 			p_viewport->render_buffers->set_metalfx_configured_mode(int(scaling_3d_mode));
+ 			p_viewport->render_buffers->set_metalfx_frame_requested(p_viewport->metal_fx_frame_requested);
++			p_viewport->render_buffers->set_metalfx_gpu_observation_requested(p_viewport->metal_fx_gpu_observation_requested);
+ 		}
+ 	}
+ }
+@@ -1630,6 +1631,32 @@ Dictionary RendererViewport::viewport_request_temporal_history_reset(RID p_viewp
+ 	return receipt;
+ }
+ 
++void RendererViewport::viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled) {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL(viewport);
++	if (viewport->metal_fx_gpu_observation_requested == p_enabled) {
++		return;
++	}
++	viewport->metal_fx_gpu_observation_requested = p_enabled;
++	if (viewport->render_buffers.is_valid()) {
++		viewport->render_buffers->set_metalfx_gpu_observation_requested(p_enabled);
++	}
++}
++
++Dictionary RendererViewport::viewport_get_metalfx_gpu_status(RID p_viewport) const {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL_V(viewport, Dictionary());
++	Dictionary result;
++	if (viewport->render_buffers.is_valid()) {
++		result = viewport->render_buffers->get_metalfx_gpu_status();
++	}
++	result["requested_by_caller"] = viewport->metal_fx_gpu_observation_requested;
++	result["viewport_generation"] = int64_t(viewport->metal_fx_generation);
++	result["frame_generation"] = int64_t(viewport->metal_fx_frame_generation);
++	result["render_buffers_available"] = viewport->render_buffers.is_valid();
++	return result;
++}
++
+ void RendererViewport::viewport_set_metalfx_frame_requested(RID p_viewport, bool p_enabled) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+index 6a70346df9ff189d33a2ea3eedcc940f10778220..4b1a1275651628857db2291aa5b42b06c11dfc24 100644
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -70,6 +70,7 @@ public:
+ 		uint64_t metal_fx_reset_serial = 0;
+ 		uint64_t metal_fx_frame_generation = 0; // Independent of Temporal reset receipts.
+ 		bool metal_fx_frame_requested = false;
++		bool metal_fx_gpu_observation_requested = false;
+ 
+ 		RSE::ViewportMSAA msaa_2d = RSE::VIEWPORT_MSAA_DISABLED;
+ 		RSE::ViewportMSAA msaa_3d = RSE::VIEWPORT_MSAA_DISABLED;
+@@ -292,6 +293,8 @@ public:
+ 
+ 	Dictionary viewport_request_temporal_history_reset(RID p_viewport);
+ 	Dictionary viewport_get_metalfx_status(RID p_viewport) const;
++	void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled);
++	Dictionary viewport_get_metalfx_gpu_status(RID p_viewport) const;
+ 	void viewport_set_metalfx_frame_requested(RID p_viewport, bool p_enabled);
+ 	Dictionary viewport_get_metalfx_frame_status(RID p_viewport) const;
+ 	Dictionary viewport_read_metalfx_frame(RID p_viewport);
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+index b77acccb50059a751bdacfddf52993303e80786c..0a1d13a7064be48cfd67712f7a0ad1aea500ffb3 100644
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -2927,6 +2927,8 @@ void RenderingServer::_bind_methods() {
+ 	ClassDB::bind_method(D_METHOD("viewport_request_temporal_history_reset", "viewport"), &RenderingServer::viewport_request_temporal_history_reset);
+ 	ClassDB::bind_method(D_METHOD("get_temporal_history_reset_providers"), &RenderingServer::get_temporal_history_reset_providers);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_status", "viewport"), &RenderingServer::viewport_get_metalfx_status);
++	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_gpu_observation_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_gpu_observation_requested);
++	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_gpu_status", "viewport"), &RenderingServer::viewport_get_metalfx_gpu_status);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_frame_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_frame_requested);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_frame_status", "viewport"), &RenderingServer::viewport_get_metalfx_frame_status);
+ 	ClassDB::bind_method(D_METHOD("viewport_read_metalfx_frame", "viewport"), &RenderingServer::viewport_read_metalfx_frame);
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+index d4d1f4e55989ae2b0103703f3eba1b4a82d8be60..0590bf6b72d2f19f4d056f24a10eddc7760ad3da 100644
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -623,6 +623,8 @@ public:
+ 	virtual Dictionary viewport_request_temporal_history_reset(RID p_viewport) = 0;
+ 	PackedStringArray get_temporal_history_reset_providers() const;
+ 	virtual Dictionary viewport_get_metalfx_status(RID p_viewport) const = 0;
++	virtual void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled) = 0;
++	virtual Dictionary viewport_get_metalfx_gpu_status(RID p_viewport) const = 0;
+ 	virtual void viewport_set_metalfx_frame_requested(RID p_viewport, bool p_enabled) = 0;
+ 	virtual Dictionary viewport_get_metalfx_frame_status(RID p_viewport) const = 0;
+ 	virtual Dictionary viewport_read_metalfx_frame(RID p_viewport) = 0;
+diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/rendering_server_default.h
+index b6d722bf9356638f0fe2fe17684015c2ac4ccfc8..1fe44bcdd2593556f3a7c0abaaf301f84e944447 100644
+--- a/servers/rendering/rendering_server_default.h
++++ b/servers/rendering/rendering_server_default.h
+@@ -809,6 +809,8 @@ public:
+ 
+ 	FUNC1R(Dictionary, viewport_request_temporal_history_reset, RID)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_status, RID)
++	FUNC2(viewport_set_metalfx_gpu_observation_requested, RID, bool)
++	FUNC1RC(Dictionary, viewport_get_metalfx_gpu_status, RID)
+ 	FUNC2(viewport_set_metalfx_frame_requested, RID, bool)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_frame_status, RID)
+ 	FUNC1R(Dictionary, viewport_read_metalfx_frame, RID)
+diff --git a/servers/rendering/storage/metalfx_gpu_observation.h b/servers/rendering/storage/metalfx_gpu_observation.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..b829c0632f716ce875106b0d89ee66080140be91
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_gpu_observation.h
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: MIT
++// Optional command-buffer observations. No viewport, renderer or Metal object
++// is retained here; completion handlers hold only this generation's shared state.
++#pragma once
++
++#include <cmath>
++#include <cstdint>
++#include <limits>
++#include <mutex>
++
++struct MetalFXGPUObservation {
++	static constexpr uint64_t MAX_COUNTER = uint64_t(std::numeric_limits<int64_t>::max());
++	struct Sample {
++		uint64_t ticket = 0;
++		uint64_t frame = 0;
++		uint64_t epoch = 0;
++		uint64_t reset_serial = 0;
++		int64_t command_status = 0;
++		bool error_present = false;
++		int64_t error_code = 0;
++		bool succeeded = false;
++		bool gpu_timing_available = false;
++		double gpu_start_seconds = 0;
++		double gpu_end_seconds = 0;
++		uint64_t callback_observer_usec = 0;
++	};
++	struct Snapshot {
++		Sample encoded;
++		Sample completed;
++		Sample first_observed_failure;
++		uint64_t reset_completed_serial = 0;
++		bool counter_exhausted = false;
++		bool unexpected_callback = false;
++	};
++
++private:
++	mutable std::mutex mutex;
++	Snapshot observation;
++
++public:
++	Sample encoded(uint64_t p_frame, uint64_t p_epoch = 0, uint64_t p_reset_serial = 0) {
++		std::lock_guard<std::mutex> guard(mutex);
++		if (observation.counter_exhausted || observation.encoded.ticket == MAX_COUNTER || p_frame > MAX_COUNTER || p_epoch > MAX_COUNTER || p_reset_serial > MAX_COUNTER) {
++			observation.counter_exhausted = true;
++			return Sample();
++		}
++		Sample sample;
++		sample.ticket = observation.encoded.ticket + 1;
++		sample.frame = p_frame;
++		sample.epoch = p_epoch;
++		sample.reset_serial = p_reset_serial;
++		observation.encoded = sample;
++		return sample;
++	}
++
++	// A later callback may arrive first. The greatest observed ticket is not a
++	// count of all completed buffers or a contiguous completion fence. Failures
++	// remain latched even when an earlier ticket arrives after a later success.
++	bool completed(Sample p_sample, bool p_terminal, bool p_succeeded, int64_t p_status,
++			bool p_error_present, int64_t p_error_code, double p_gpu_start, double p_gpu_end, uint64_t p_callback_usec) {
++		std::lock_guard<std::mutex> guard(mutex);
++		if (!p_sample.ticket || p_sample.ticket > observation.encoded.ticket) {
++			return false;
++		}
++		if (!p_terminal) {
++			observation.unexpected_callback = true;
++			return false;
++		}
++		p_sample.command_status = p_status;
++		p_sample.error_present = p_error_present;
++		p_sample.error_code = p_error_code;
++		p_sample.succeeded = p_succeeded && !p_error_present;
++		p_sample.callback_observer_usec = p_callback_usec <= MAX_COUNTER ? p_callback_usec : 0;
++		p_sample.gpu_timing_available = p_sample.succeeded && std::isfinite(p_gpu_start) && std::isfinite(p_gpu_end) &&
++				p_gpu_start > 0 && p_gpu_end >= p_gpu_start && std::isfinite(p_gpu_end - p_gpu_start);
++		if (p_sample.gpu_timing_available) {
++			p_sample.gpu_start_seconds = p_gpu_start;
++			p_sample.gpu_end_seconds = p_gpu_end;
++		}
++		if (!p_sample.succeeded && !observation.first_observed_failure.ticket) {
++			observation.first_observed_failure = p_sample;
++		}
++		if (p_sample.succeeded && p_sample.reset_serial > observation.reset_completed_serial) {
++			observation.reset_completed_serial = p_sample.reset_serial;
++		}
++		if (p_sample.ticket > observation.completed.ticket) {
++			observation.completed = p_sample;
++		}
++		return true;
++	}
++
++	Snapshot snapshot() const {
++		std::lock_guard<std::mutex> guard(mutex);
++		return observation;
++	}
++};
+diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/rendering/storage/render_scene_buffers.h
+index 14c61a9b61251f58fdf00073d080f2e3ecd732c4..00dda12c9324c267b92d659f3ddbe5209c724617 100644
+--- a/servers/rendering/storage/render_scene_buffers.h
++++ b/servers/rendering/storage/render_scene_buffers.h
+@@ -33,6 +33,7 @@
+ #include "core/object/ref_counted.h"
+ #include "core/variant/dictionary.h"
+ #include "servers/rendering/rendering_server_enums.h"
++#include "servers/rendering/storage/metalfx_gpu_observation.h"
+ 
+ #include <atomic>
+ #include <memory>
+@@ -145,6 +146,60 @@ class RenderSceneBuffers : public RefCounted {
+ 	int metal_fx_configured_mode = -1;
+ 	std::shared_ptr<MetalFXTemporalHistoryState> metal_fx_history;
+ 	bool metal_fx_frame_requested = false;
++	bool metal_fx_gpu_observation_requested = false;
++	uint64_t metal_fx_gpu_observation_generation = 0;
++	std::shared_ptr<MetalFXGPUObservation> metal_fx_scaler_gpu;
++	std::shared_ptr<MetalFXGPUObservation> metal_fx_frame_gpu;
++
++	bool invalidate_metalfx_gpu_observation() {
++		metal_fx_scaler_gpu.reset();
++		metal_fx_frame_gpu.reset();
++		if (metal_fx_gpu_observation_generation == MetalFXGPUObservation::MAX_COUNTER) {
++			metal_fx_gpu_observation_requested = false;
++			return false;
++		}
++		++metal_fx_gpu_observation_generation;
++		return true;
++	}
++	static Dictionary metal_fx_gpu_sample(const MetalFXGPUObservation::Sample &p_sample) {
++		Dictionary sample;
++		sample["ticket"] = int64_t(p_sample.ticket);
++		sample["render_frame"] = int64_t(p_sample.frame);
++		sample["epoch"] = int64_t(p_sample.epoch);
++		sample["reset_serial"] = int64_t(p_sample.reset_serial);
++		sample["command_status"] = p_sample.command_status;
++		sample["error_present"] = p_sample.error_present;
++		sample["error_code"] = p_sample.error_code;
++		sample["succeeded"] = p_sample.succeeded;
++		sample["gpu_timing_available"] = p_sample.gpu_timing_available;
++		sample["gpu_start_seconds"] = p_sample.gpu_timing_available ? Variant(p_sample.gpu_start_seconds) : Variant();
++		sample["gpu_end_seconds"] = p_sample.gpu_timing_available ? Variant(p_sample.gpu_end_seconds) : Variant();
++		sample["gpu_duration_ms"] = p_sample.gpu_timing_available ? Variant((p_sample.gpu_end_seconds - p_sample.gpu_start_seconds) * 1000.0) : Variant();
++		sample["callback_observer_usec"] = int64_t(p_sample.callback_observer_usec);
++		return sample;
++	}
++	static Dictionary metal_fx_gpu_snapshot(const std::shared_ptr<MetalFXGPUObservation> &p_state) {
++		MetalFXGPUObservation::Snapshot observed = p_state ? p_state->snapshot() : MetalFXGPUObservation::Snapshot();
++		Dictionary status;
++		status["state_allocated"] = bool(p_state);
++		const char *state = "unobserved";
++		if (observed.counter_exhausted) {
++			state = "observation_exhausted";
++		} else if (observed.unexpected_callback) {
++			state = "invalid_callback";
++		} else if (observed.first_observed_failure.ticket) {
++			state = "failed";
++		} else if (observed.encoded.ticket) {
++			state = observed.completed.ticket == observed.encoded.ticket && observed.completed.succeeded ? "completed" : "pending";
++		}
++		status["state"] = state;
++		status["encoded"] = metal_fx_gpu_sample(observed.encoded);
++		status["completed"] = metal_fx_gpu_sample(observed.completed);
++		status["first_observed_failure"] = metal_fx_gpu_sample(observed.first_observed_failure);
++		status["reset_completed_serial"] = int64_t(observed.reset_completed_serial);
++		status["completion_order"] = "greatest_callback_ticket_not_contiguous_fence_or_completed_count";
++		return status;
++	}
+ 
+ protected:
+ 	static void _bind_methods();
+@@ -155,6 +210,7 @@ public:
+ 
+ 	void reset_metalfx_observation() {
+ 		clear_metalfx_frame();
++		invalidate_metalfx_gpu_observation();
+ 		metal_fx_history.reset();
+ 		metal_fx_provider = "none";
+ 		metal_fx_allocation = "not_attempted";
+@@ -197,6 +253,41 @@ public:
+ 		status["temporal_attempts"] = int64_t(metal_fx_history ? metal_fx_history->temporal_attempts.load(std::memory_order_acquire) : 0);
+ 		return status;
+ 	}
++	void set_metalfx_gpu_observation_requested(bool p_enabled) {
++		if (metal_fx_gpu_observation_requested != p_enabled && invalidate_metalfx_gpu_observation()) {
++			metal_fx_gpu_observation_requested = p_enabled;
++		}
++	}
++	std::shared_ptr<MetalFXGPUObservation> ensure_metalfx_gpu_observation(bool p_frame = false) {
++		if (!metal_fx_gpu_observation_requested) {
++			return nullptr;
++		}
++		std::shared_ptr<MetalFXGPUObservation> &state = p_frame ? metal_fx_frame_gpu : metal_fx_scaler_gpu;
++		if (!state) {
++			state = std::make_shared<MetalFXGPUObservation>();
++		}
++		return state;
++	}
++	void clear_metalfx_frame_gpu_observation() { metal_fx_frame_gpu.reset(); }
++	Dictionary get_metalfx_gpu_status() const {
++		Dictionary result;
++		result["schema_version"] = 1;
++		result["requested"] = metal_fx_gpu_observation_requested;
++		result["observation_generation"] = int64_t(metal_fx_gpu_observation_generation);
++		result["scope"] = "metal_command_buffer_completion_not_effect_only_duration_or_presentation";
++		result["gpu_timestamp_clock"] = "system_mach_seconds";
++		result["callback_timestamp_clock"] = "std_chrono_steady_microseconds";
++		result["snapshot_scope"] = "independent_per_role_not_atomic_pair";
++		result["duration_scope"] = "whole_command_buffer_may_be_shared_between_roles_do_not_sum";
++		result["provider"] = metal_fx_provider;
++		result["configured_mode"] = metal_fx_configured_mode;
++		result["current_reset_requested_serial"] = int64_t(metal_fx_history ? metal_fx_history->requested.load(std::memory_order_acquire) : 0);
++		Dictionary frame_status = get_metalfx_frame_status();
++		result["current_frame_epoch"] = frame_status.get("requested_epoch", 0);
++		result["scaler"] = metal_fx_gpu_snapshot(metal_fx_scaler_gpu);
++		result["frame_interpolation"] = metal_fx_gpu_snapshot(metal_fx_frame_gpu);
++		return result;
++	}
+ 
+ 	virtual void clear_metalfx_frame() {}
+ 	void set_metalfx_frame_requested(bool p_enabled) {

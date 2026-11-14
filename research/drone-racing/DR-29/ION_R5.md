@@ -48,6 +48,9 @@ supplied-source scope; it does not invent a redistribution licence.
   It adds no procedural motors or blades to this complete model. The shared
   propeller blur measures the actual tri-blades; motor hardware stays opaque.
   Legacy frame-only imports and the missing-model lab fixture remain supported.
+  Partial complete-model exports without the camera or a bell/blade mesh also
+  select the labelled lab fixture. Imported mesh ownership is cleared before
+  reparenting so the instantiated scene remains consistent.
 - `camera_mount` is at the adapted front optical element, with 2 mm forward/up
   clearance. The activity uses that visual mount for FPV, with existing adjustable
   tilt/FOV and its single interpolated pose. The previous data camera pivot is
@@ -59,12 +62,31 @@ supplied-source scope; it does not invent a redistribution licence.
 
 ## Verification and limits
 
-The focused acceptance set is `test_home_vehicle_roster.gd`,
-`test_mr_activity.gd`, `test_mr_activity_race.gd`, `test_mr_camera.gd` and
-`test_mr_osd.gd`, through the checked runner, plus generator `--check` and
-native 1920×1080 Home/pad/chase/FPV review through an owned debug session.
-The activity test checks individual hub alignment, the presented camera mount,
-authored bells/tri-blades, measured radii, RPM/spin/blur, restart and route flow.
+Verified on **2026-11-14**, Windows x86_64, Godot
+`4.8.beta2.official.cafc17a19`, Compatibility/OpenGL 3.3, GeForce RTX 3090:
+
+- Generator `--check`: byte-identical GLB and manifest; original blend unchanged.
+- `test_mr_activity.gd`: **96 checks, 0 failed**, with warnings treated as errors.
+  Includes Home/direct routing, every hub, camera, authored bells/tri-blades,
+  disc radii, achieved RPM/spin/blur, missing geometry, controls and restart.
+- `test_mr_activity_race.gd`: **19 checks, 0 failed**, also without warnings.
+- Owned rendered debug session: **1920×1080** Home preview, pad, unobstructed
+  FPV, stopped and powered chase views. Four achieved speeds around
+  1,842–1,858 rad/s drove the imported rotor presentations; no fixture was used.
+  Day and evening were reviewed. Normal Quit: no crash, zero leaked objects.
+
+The final admitted source digest was
+`74dee3d1a254a0b0c0d37fff9f9e9a327f8f8755ebcb6a8776ac792ff4df8367`.
+Retained local snapshots, checked reports and captures are under
+`D:\OpenRCsimulator-evidence\ion-r5-20261114\` (host-local evidence, not CI).
+Scope is the visual adapter and its Home/free-flight/race consumers. This
+integration does not change camera projection math, input laws or the solver.
+Concurrent controller/focus changes were retained in the shared tree after the
+capture; the results bind the recorded snapshot. The ION visual, HUD, catalog,
+roster, activity test, flight data and GLB matched the live files; the activity's
+separate focus-loss handler had changed, while its ION camera mount was intact.
+The broad suite,
+fresh export/package checks and required CI were not run in this local pass.
 
 This is a visual integration over the existing estimated FPV flight model.
 It does not establish ION R5 mass/inertia, powertrain, controller tuning,

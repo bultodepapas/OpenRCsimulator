@@ -108,6 +108,9 @@ metallic share (0.44-0.70) instead of 1.0, which would read near-black there.
 `"albedo_texture": null` and `"emission_texture": null` remove a stock map (the
 tiled carbon trim, the stock glow). Its design layers are per texel, so the
 builder evaluates them in chunks to bound memory.
+"Steampunk Cobre" reuses that bake (`build_metal_skin`) with an emission map. Its
+gears share one circular pitch and `mesh_phase` aligns each tooth with the
+neighbouring gap, so the drawn gear train meshes.
 
 Fixed-wing families may have entries too. `AirplaneBuilder.build` applies a
 family's base right after model validation, before lighting, customization or

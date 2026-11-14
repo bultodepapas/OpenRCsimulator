@@ -1,3 +1,17 @@
+diff --git a/doc/classes/RenderingDevice.xml b/doc/classes/RenderingDevice.xml
+--- a/doc/classes/RenderingDevice.xml
++++ b/doc/classes/RenderingDevice.xml
+@@ -2853,6 +2853,10 @@
+ 		<constant name="SUPPORTS_RASTERIZATION_RATE_MAP" value="14" enum="Features">
+ 			Support for rasterization rate maps. The current implementation targets Metal on Apple platforms. This allows for foveated rendering, which is used by the visionOS XR module.
+ 		</constant>
++		<constant name="SUPPORTS_METAL_TRIANGLE_QUERY" value="16" enum="Features" experimental="">
++			Experimental Metal 3 compute-only queries against immutable opaque triangle acceleration structures. This capability is narrower than [constant SUPPORTS_RAY_QUERY] and [constant SUPPORTS_RAYTRACING_PIPELINE]. It requires a supported macOS device and the process opt-in [code]GODOT_METAL_TRIANGLE_QUERY=1[/code], which selects native hazard tracking for the Metal driver.
++			Only one non-indexed float3 triangle geometry per BLAS, build-once BLAS/TLAS, nonempty TLAS instances with zero hit SBT range, and 24-bit custom instance IDs are admitted. Create new acceleration structures to replace an existing build.
++		</constant>
+ 		<constant name="LIMIT_MAX_BOUND_UNIFORM_SETS" value="0" enum="Limit">
+ 			Maximum number of uniform sets that can be bound at a given time.
+ 		</constant>
 diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
 --- a/drivers/metal/metal3_objects.cpp
 +++ b/drivers/metal/metal3_objects.cpp
@@ -307,7 +321,7 @@ diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/ren
  }
  
  // ----- PIPELINE -----
-@@ -2416,11 +2492,56 @@
+@@ -2416,11 +2492,57 @@
  // ----- COMMANDS -----
  
  void RenderingDeviceDriverMetal::command_build_blas(CommandBufferID p_cmd_buffer, AccelerationStructureID p_acceleration_structure, BufferID p_scratch_buffer) {
@@ -361,12 +375,13 @@ diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/ren
 +	desc->setInstanceDescriptorBuffer(instances->buffer.get());
 +	desc->setInstanceDescriptorBufferOffset(p_instance_offset);
 +	desc->setInstanceCount(p_instance_count);
++	NS::SharedPtr<NS::AutoreleasePool> pool = NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
 +	desc->setInstancedAccelerationStructures(NS::Array::array(blases.ptr(), blases.size()));
 +	cmd->acceleration_structure_build(accel, scratch->buffer.get());
  }
  
  void RenderingDeviceDriverMetal::command_bind_raytracing_pipeline(CommandBufferID p_cmd_buffer, RaytracingPipelineID p_pipeline) {
-@@ -2780,6 +2901,8 @@
+@@ -2780,6 +2902,8 @@
  			return true;
  		case API_TRAIT_TEXTURE_CLEARS_WITH_COPY_ENGINE:
  			return false;
@@ -375,7 +390,7 @@ diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/ren
  		case API_TRAIT_TEXTURES_REQUIRE_LAYOUT_TRANSITIONS:
  			return false;
  		default:
-@@ -2817,6 +2940,8 @@
+@@ -2817,6 +2941,8 @@
  #endif
  			return is_supported;
  		}
@@ -655,7 +670,7 @@ diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/renderin
  #endif
  }
  
-+bool RenderingDevice::_compute_list_triangle_query_sets_valid() const {
++bool RenderingDevice::_compute_list_triangle_query_sets_valid() {
 +	if (!has_feature(SUPPORTS_METAL_TRIANGLE_QUERY)) {
 +		return true;
 +	}
@@ -758,7 +773,7 @@ diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_
  
  	ComputeList compute_list;
  	ComputeList::State compute_list_barrier_state;
-+	bool _compute_list_triangle_query_sets_valid() const;
++	bool _compute_list_triangle_query_sets_valid();
  
  public:
  	ComputeListID compute_list_begin();

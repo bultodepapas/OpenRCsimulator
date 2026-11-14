@@ -16,6 +16,11 @@ with --check) from assets already in this repository:
   the same scene space. Albedo, roughness, metallic mask and a normal map baked from a height
   field; reuses the shared ambientCG CC0 brushed-metal grain, the public-domain USAF insignia in
   tools/skins/sources/silver-ace/ (see its README.md) and Noto lettering.
+- avanti-s-a200/steampunk_cobre_*: the "Steampunk Cobre" original Victorian steam-age livery
+  (riveted copper and iron plates, brass hoops, pipes, a meshing gear train with piston and
+  connecting rod, gauges, portholes, firebox, fin clock), designed in the same scene space with
+  the same four maps as Sabre Plata plus an emission map. Plaque lettering is rasterized from
+  IM FELL English SC (SIL OFL 1.1; tools/skins/sources/steampunk/).
 - avanti-s-a200/sponsors/: Jumper RC and JETI model logos (trademarks, used as sponsor decals;
   see that folder's SOURCE.txt). Godot ignores the folder (.gdignore); the builder bakes them in.
 - monster-car-2/*_livery.jpg and *_emission.png: the green body colour of the

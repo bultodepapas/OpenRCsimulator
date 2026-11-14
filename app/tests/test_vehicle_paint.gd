@@ -38,6 +38,7 @@ func _run() -> void:
 	_check_stik_gear()
 	_check_jet_livery()
 	_check_sabre_livery()
+	_check_steam_livery()
 	_check_stik_metal()
 	_check_stik_blackbird()
 	print("Vehicle paint: %d checks, %d failed" % [checks, failures])
@@ -508,3 +509,24 @@ func _check_sabre_livery() -> void:
 	check("the delivered carbon trim keeps its texture without the livery", stock_trim.size() >= 1
 		and stock_trim[0].albedo_texture != null and stock_trim[0].emission_enabled)
 	plain.root.free()
+
+
+func _check_steam_livery() -> void:
+	var jet_id := "sebart-avanti-s-a200-p100rx"
+	var ids: Array = AirplaneBuilder.livery_choices(jet_id).map(func(choice: Dictionary) -> String: return str(choice.id))
+	check("the jet lists Steampunk Cobre", ids.has("steampunk_cobre"), str(ids))
+	var jet: Dictionary = AirplaneBuilder.build(jet_id, NAN, {}, "steampunk_cobre")
+	check("the jet builds with Steampunk Cobre", not jet.is_empty())
+	if jet.is_empty():
+		return
+	for part: String in ["fuselage", "wing", "doors", "stab", "fin"]:
+		var material_name := "paint_doors_ala" if part == "doors" else "paint_" + part
+		var finish := _materials_named(jet.root, material_name)
+		check("Steampunk Cobre %s: copper/brass maps, metal mask and its own ember glow" % part, finish.size() == 1
+			and finish[0].albedo_texture.resource_path.ends_with("steampunk_cobre_%s.jpg" % part)
+			and finish[0].metallic_texture != null and finish[0].metallic_texture.resource_path.ends_with("steampunk_cobre_%s_metallic.png" % part)
+			and finish[0].emission_enabled and finish[0].emission_texture.resource_path.ends_with("steampunk_cobre_%s_emission.png" % part))
+	var trim := _materials_named(jet.root, "paint_trim_carbono")
+	check("the carbon trim becomes plain brass", trim.size() >= 1 and trim[0].albedo_texture == null
+		and trim[0].albedo_color.r > trim[0].albedo_color.b + 0.3)
+	jet.root.free()

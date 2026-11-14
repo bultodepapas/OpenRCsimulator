@@ -27,6 +27,7 @@ const RcCalibration := preload("res://input/rc_calibration.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 
 signal close_requested
+signal drafts_discarded
 signal profile_saved(profile: Dictionary)
 signal draft_changed
 signal calibration_requested
@@ -363,6 +364,7 @@ func close_without_prompt() -> void:
 
 
 func _cancel_edits() -> void:
+	drafts_discarded.emit()
 	close_without_prompt()
 
 
@@ -498,6 +500,7 @@ func _on_unsaved_choice(choice: String) -> void:
 			if not _save_profile(true):
 				_restore_unsaved_focus.call_deferred(true)
 		"discard":
+			drafts_discarded.emit()
 			close_without_prompt()
 		_:
 			_restore_unsaved_focus.call_deferred(false)

@@ -10,6 +10,8 @@ The 8 November controller audit produced a focused correctness revision under D6
 
 ## Ownership and delivered scope
 
+The [14 November external audit corrections](../research/controller-support-2026-10-14/README.md#external-controls-audit-corrections-2026-11-14) address fifteen confirmed source findings across quad/airship authority, connection-bound drafts and capture, calibration, persistence and event routing. Final combined checks are in progress through the shared host queue; physical qualification remains open.
+
 Use the existing [track registry](../README.md#tracks-plans-and-step-ids). Input owns D6/F1/F3/F4/F6 steps and `app/input/`; the product shell owns UI-10/UI-12/UI-15 and `app/ui/`, `app/app_root.gd`, localization and focus. Session changes coordinate with fixed-wing, HELI and RCV owners; exported package checks coordinate with DT/PT. No aircraft physics ownership transfers to this work.
 
 | Steps | Implemented source contract | Acceptance still open |

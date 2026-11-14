@@ -89,7 +89,6 @@ var _mechanical: Node3D
 var _servo_anchors: Array = []
 var _servo_anchor_visual := 0
 var _pilot_position := Vector3.ZERO
-var _lost_device_key := ""
 var _controller_generation := 0
 var _pause_bindings := {}
 var _pause_held := {}
@@ -339,7 +338,6 @@ func _connect_selected_controller() -> void:
 		info.known = false
 	input.connect_device(id, info, profile)
 	_controller_generation = int(controller_registry.connection_generation(id))
-	_lost_device_key = ""
 	_bind_gamepad_confirmation()
 
 
@@ -372,10 +370,15 @@ func _sync_selected_controller() -> void:
 	var generation := int(controller_registry.connection_generation(id)) if id >= 0 else 0
 	if id == current and generation == _controller_generation:
 		return
+	var before: int = input.source_generation
 	if current >= 0 and id < 0:
 		var previous: Dictionary = controller_registry.device_for_id(current)
-		_lost_device_key = str(input.radio.device_key) if not bool(previous.get("connected", false)) else ""
-	var before: int = input.source_generation
+		if not bool(previous.get("connected", false)) \
+				or int(previous.get("generation", 0)) != _controller_generation:
+			input.on_connection_changed(current, false)
+			_controller_generation = 0
+			_source_changed(before)
+			return
 	_connect_selected_controller()
 	_source_changed(before)
 
@@ -399,26 +402,14 @@ func _joy_connection_changed(id: int, connected: bool) -> void:
 	var before: int = input.source_generation
 	if _has_registry():
 		if not connected and input.radio.connected and int(input.radio.device_id) == id:
-			_lost_device_key = str(input.radio.device_key)
 			input.on_connection_changed(id, false)
-		elif connected:
-			_adopt_returning_device.call_deferred(id)
+		# Registry selection is explicit; a new connection, even with the same
+		# name or handle, cannot take over the flight role automatically.
 		_sync_selected_controller.call_deferred()
 	else:
 		input.on_connection_changed(id, connected)
 		_bind_gamepad_confirmation()
 	_source_changed(before)
-
-
-func _adopt_returning_device(id: int) -> void:
-	if not is_inside_tree() or not _has_registry() or int(controller_registry.selected_device_id("flight")) >= 0:
-		return
-	var info: Dictionary = controller_registry.device_for_id(id)
-	if not bool(info.get("connected", false)):
-		return
-	var returning := not _lost_device_key.is_empty() and RcInput.key_for(id, info) == _lost_device_key
-	if returning:
-		controller_registry.select_device("flight", id)
 
 
 ## Cache the Pause binding for each selected role. A raw device has no inherited
@@ -843,10 +834,6 @@ func apply_controller_selection(device_id: int) -> bool:
 		return false
 	if device_id != int(controller_registry.selected_device_id("flight")):
 		return false
-	if device_id < 0:
-		# A deliberate Keyboard choice after a disconnect overrides the old
-		# device's automatic-return preference, even when the role was already -1.
-		_lost_device_key = ""
 	var current: int = int(input.radio.device_id) if input.radio.connected else -1
 	if device_id != current:
 		_sync_selected_controller()

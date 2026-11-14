@@ -44,7 +44,7 @@ func on_connection_changed(id: int, connected: bool) -> void:
 		radio.disconnect_device()
 		source_generation += 1
 		keyboard_commands = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
-		message = "Controller disconnected: flight paused."
+		message = "Controller disconnected. Keyboard is selected; return Home to select a controller again."
 
 
 ## The managed activity supplies the selected connection and the service-resolved profile.
