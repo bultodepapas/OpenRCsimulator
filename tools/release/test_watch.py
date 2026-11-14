@@ -174,6 +174,18 @@ class WatchTests(unittest.TestCase):
                 self.assertEqual((result, sleeps), (2, []))
                 self.assertIn("ERROR", errors)
 
+    def test_tag_move_before_completed_result_is_rejected(self):
+        class MovingTag(GitHub):
+            def __call__(self, endpoint, timeout):
+                if "/git/tags/" in endpoint and self.index == 1:
+                    self.tag["object"]["sha"] = "c" * 40
+                return super().__call__(endpoint, timeout)
+
+        result, _, output, errors = self.observe(MovingTag([(run("completed", "success"), gates())]), once=True)
+        self.assertEqual(result, 2)
+        self.assertNotIn("SUCCESS", output)
+        self.assertIn("tag does not point to expected commit", errors)
+
     def test_attempt_change_is_rejected(self):
         changed = run()
         changed["run_attempt"] = 2
