@@ -86,6 +86,12 @@ func _run() -> void:
 	var sanitized := Preferences.load_from(PREFS)
 	check("invalid values fall back to the aircraft and the default skin", str(sanitized.home_vehicle).is_empty()
 		and sanitized.airship_skin == AirshipCatalog.DEFAULT_SKIN)
+	# RC car stock paints: one per car in [vehicle_skins]; stale or foreign entries are dropped, never fatal.
+	var car_paint := str(Roster.skin_choices("monster-car-2")[1].id)
+	sanitized.vehicle_skins = {"monster-car-2": car_paint, "mt8-bisonte": "retired", "rc-blimp-5m": "historico"}
+	check("RC car paints save", Preferences.save_to(PREFS, sanitized) == OK)
+	var painted := Preferences.load_from(PREFS)
+	check("only the valid RC car paint loads back", painted.vehicle_skins == {"monster-car-2": car_paint}, str(painted.vehicle_skins))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("Home vehicle roster: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)
