@@ -597,6 +597,16 @@ static func _normalize_centered(value: float, lo: float, center: float, hi: floa
 ## Roll, pitch and yaw are signed commands regardless of an old V2 range_kind.
 ## A legacy absolute channel without travel on both sides cannot be interpreted
 ## safely as a centered stick, so it produces neutral until repaired.
+static func signed_channel_error(profile: Dictionary) -> String:
+	for name in ["roll", "pitch", "yaw"]:
+		var channel: Variant = profile.get(name)
+		if typeof(channel) != TYPE_DICTIONARY or not _is_number(channel.get("min")) \
+				or not _is_number(channel.get("center")) or not _is_number(channel.get("max")) \
+				or not (float(channel.min) < float(channel.center) and float(channel.center) < float(channel.max)):
+			return "%s needs travel on both sides of center. Repair its mapping in Controls or recalibrate the radio." % str(name).capitalize()
+	return ""
+
+
 static func normalize_signed_axis(value: float, channel: Dictionary) -> float:
 	if not is_finite(value) or not _is_number(channel.get("min")) or not _is_number(channel.get("center")) or not _is_number(channel.get("max")) \
 			or not (float(channel.min) < float(channel.center) and float(channel.center) < float(channel.max)):

@@ -2339,6 +2339,8 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 
 func _on_flight_device_selected(index: int) -> void:
 	var selected_id := flight_device_picker.get_item_id(index)
+	if selected_id != _draft_flight_device_id or not _lease_matches(_draft_connections.get(_draft_context_key, {}), selected_id):
+		_calibration_stick_mode = 0
 	var capture_cancelled := selected_id != _draft_flight_device_id and _is_assignment_busy()
 	if capture_cancelled:
 		_capture_done(false, tr("The flight controller changed; remapping was cancelled."))
@@ -2457,6 +2459,7 @@ func _switch_draft_profile(profile: Dictionary, context_key: String) -> void:
 
 func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	_reset_validation()
+	var previous_context := _draft_context_key
 	var previous_profile_id := str(_draft_profile.get("profile_id", ""))
 	_draft_profile = profile.duplicate(true)
 	if not _draft_profile.is_empty() and not _draft_profile.has("flap_elevator_mix_owner"):
@@ -2468,6 +2471,8 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 		_draft_context_key = _profile_context_key(_draft_profile)
 	if not _draft_connections.has(_draft_context_key):
 		_draft_connections[_draft_context_key] = _connection_lease(_draft_flight_device_id)
+	if previous_context != _draft_context_key:
+		_calibration_stick_mode = 0
 	profile_name_edit.text = str(_draft_profile.get("name", "Controller profile"))
 	var profile_kind := str(_draft_profile.get("kind", "gamepad"))
 	joystick_enabled.visible = profile_kind == "joystick"

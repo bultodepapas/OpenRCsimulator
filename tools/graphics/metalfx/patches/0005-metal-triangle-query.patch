@@ -1,0 +1,840 @@
+diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
+--- a/drivers/metal/metal3_objects.cpp
++++ b/drivers/metal/metal3_objects.cpp
+@@ -1735,8 +1735,27 @@
+ 	}
+ }
+ 
++bool MDCommandBuffer::triangle_query_resources_ready() const {
++	for (const MDUniformSet *set : compute.uniform_sets) {
++		if (!set) {
++			continue;
++		}
++		for (const RDD::BoundUniform &uniform : set->uniforms) {
++			if (uniform.type != RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE) {
++				continue;
++			}
++			const MDAccelerationStructure *accel = (const MDAccelerationStructure *)uniform.ids[0].id;
++			if (!accel || !accel->build_encoded || !device_driver->acceleration_structure_build_is_valid(RDD::AccelerationStructureID(uint64_t(accel)))) {
++				return false;
++			}
++		}
++	}
++	return true;
++}
++
+ void MDCommandBuffer::compute_dispatch(uint32_t p_x_groups, uint32_t p_y_groups, uint32_t p_z_groups) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Compute);
++	ERR_FAIL_COND_MSG(!triangle_query_resources_ready(), "Metal triangle-query resources failed or were not built.");
+ 
+ 	_compute_set_dirty_state();
+ 
+@@ -1748,6 +1767,7 @@
+ 
+ void MDCommandBuffer::compute_dispatch_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Compute);
++	ERR_FAIL_COND_MSG(!triangle_query_resources_ready(), "Metal triangle-query resources failed or were not built.");
+ 
+ 	_compute_set_dirty_state();
+ 
+@@ -1755,6 +1775,32 @@
+ 
+ 	MTL::ComputeCommandEncoder *enc = compute.encoder.get();
+ 	enc->dispatchThreadgroups(indirectBuffer->buffer.get(), p_offset, compute.pipeline->compute_state.local);
++}
++
++void MDCommandBuffer::acceleration_structure_build(MDAccelerationStructure *p_acceleration_structure, MTL::Buffer *p_scratch_buffer) {
++	ERR_FAIL_COND_MSG(sync_mode != RDM::SyncMode::HazardTracking, "Metal triangle-query builds require native hazard tracking.");
++	end();
++	MTL::CommandBuffer *cb = command_buffer();
++	NS::SharedPtr<MTL::AccelerationStructureCommandEncoder> encoder = NS::RetainPtr(cb->accelerationStructureCommandEncoder());
++	if (!encoder) {
++		p_acceleration_structure->build_failed->store(true, std::memory_order_release);
++		ERR_FAIL_MSG("Failed to create a Metal acceleration-structure encoder.");
++	}
++	if (!p_acceleration_structure->resident_blases.is_empty()) {
++		encoder->useResources(reinterpret_cast<const MTL::Resource *const *>(p_acceleration_structure->resident_blases.ptr()), p_acceleration_structure->resident_blases.size(), MTL::ResourceUsageRead);
++	}
++	encoder->buildAccelerationStructure(p_acceleration_structure->accel.get(), p_acceleration_structure->descriptor.get(), p_scratch_buffer, 0);
++	encoder->endEncoding();
++	auto failure = p_acceleration_structure->build_failed;
++	cb->addCompletedHandler([failure](MTL::CommandBuffer *p_cb) {
++		if (p_cb->status() != MTL::CommandBufferStatusCompleted) {
++			failure->store(true, std::memory_order_release);
++		}
++	});
++	p_acceleration_structure->build_encoded = true;
++	retain_resource(reinterpret_cast<CFTypeRef>(p_acceleration_structure->descriptor.get()));
++	retain_resource(reinterpret_cast<CFTypeRef>(p_acceleration_structure->accel.get()));
++	retain_resource(reinterpret_cast<CFTypeRef>(p_scratch_buffer));
+ }
+ 
+ void MDCommandBuffer::reset() {
+@@ -2036,6 +2082,21 @@
+ 				const MetalBufferDynamicInfo *buf_info = (const MetalBufferDynamicInfo *)uniform.ids[0].id;
+ 				p_enc.set(buf_info->buffer.get(), frame_idx * buf_info->size_bytes, indexes.buffer);
+ 			} break;
++			case RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE: {
++				ERR_FAIL_COND_MSG(p_enc.mode != DirectEncoder::COMPUTE, "Metal triangle queries require a compute encoder.");
++				MDAccelerationStructure *accel = (MDAccelerationStructure *)uniform.ids[0].id;
++				MTL::ComputeCommandEncoder *enc = static_cast<MTL::ComputeCommandEncoder *>(p_enc.encoder);
++				enc->setAccelerationStructure(accel->accel.get(), indexes.buffer);
++				p_enc.cache.invalidate_buffer(indexes.buffer);
++				enc->useResource(accel->accel.get(), MTL::ResourceUsageRead);
++				if (!accel->resident_blases.is_empty()) {
++					enc->useResources(reinterpret_cast<const MTL::Resource *const *>(accel->resident_blases.ptr()), accel->resident_blases.size(), MTL::ResourceUsageRead);
++				}
++				retain_resource(reinterpret_cast<CFTypeRef>(accel->accel.get()));
++				for (MTL::Resource *blas : accel->resident_blases) {
++					retain_resource(reinterpret_cast<CFTypeRef>(blas));
++				}
++			} break;
+ 			case RDD::UNIFORM_TYPE_INPUT_ATTACHMENT: {
+ 				size_t count = uniform.ids.size();
+ 				MTL::Texture **objects = ALLOCA_ARRAY(MTL::Texture *, count);
+@@ -2058,6 +2119,19 @@
+ 
+ 	MTL::ComputeCommandEncoder *enc = compute.encoder.get();
+ 	compute.resource_tracker.merge_from(p_set->usage_to_resources);
++	for (const RDD::BoundUniform &uniform : p_set->uniforms) {
++		if (uniform.type != RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE) {
++			continue;
++		}
++		MDAccelerationStructure *accel = (MDAccelerationStructure *)uniform.ids[0].id;
++		if (!accel->resident_blases.is_empty()) {
++			enc->useResources(reinterpret_cast<const MTL::Resource *const *>(accel->resident_blases.ptr()), accel->resident_blases.size(), MTL::ResourceUsageRead);
++		}
++		retain_resource(reinterpret_cast<CFTypeRef>(accel->accel.get()));
++		for (MTL::Resource *blas : accel->resident_blases) {
++			retain_resource(reinterpret_cast<CFTypeRef>(blas));
++		}
++	}
+ 
+ 	const UniformSet &shader_set = p_shader->sets[p_set_index];
+ 	if (!shader_set.active_stages.has_flag(RDD::SHADER_STAGE_COMPUTE_BIT)) {
+diff --git a/drivers/metal/metal3_objects.h b/drivers/metal/metal3_objects.h
+--- a/drivers/metal/metal3_objects.h
++++ b/drivers/metal/metal3_objects.h
+@@ -618,8 +618,10 @@
+ 	void compute_begin_pass() override;
+ 	void compute_end_pass() override;
+ 	void compute_bind_uniform_sets(VectorView<RDD::UniformSetID> p_uniform_sets, RDD::ShaderID p_shader, uint32_t p_first_set_index, uint32_t p_set_count, uint32_t p_dynamic_offsets) override;
++	bool triangle_query_resources_ready() const;
+ 	void compute_dispatch(uint32_t p_x_groups, uint32_t p_y_groups, uint32_t p_z_groups) override;
+ 	void compute_dispatch_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset) override;
++	void acceleration_structure_build(MDAccelerationStructure *p_acceleration_structure, MTL::Buffer *p_scratch_buffer) override;
+ 
+ #pragma mark - Transfer
+ 
+diff --git a/drivers/metal/metal_objects_shared.h b/drivers/metal/metal_objects_shared.h
+--- a/drivers/metal/metal_objects_shared.h
++++ b/drivers/metal/metal_objects_shared.h
+@@ -43,10 +43,12 @@
+ 
+ #include <CoreFoundation/CoreFoundation.h>
+ 
++#include <atomic>
+ #include <memory>
+ #include <optional>
+ 
+ class RenderingDeviceDriverMetal;
++class MDAccelerationStructure;
+ 
+ using RDC = RenderingDeviceCommons;
+ 
+@@ -714,6 +716,11 @@
+ 	virtual void compute_dispatch(uint32_t p_x_groups, uint32_t p_y_groups, uint32_t p_z_groups) = 0;
+ 	virtual void compute_dispatch_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset) = 0;
+ 
++	// Only Metal 3 admits the experimental lane; other encoders reject it.
++	virtual void acceleration_structure_build(MDAccelerationStructure *, MTL::Buffer *) {
++		ERR_FAIL_MSG("Metal acceleration-structure builds require the Metal 3 triangle-query lane.");
++	}
++
+ #pragma mark - Transfer
+ 
+ 	virtual void resolve_texture(RDD::TextureID p_src_texture, RDD::TextureLayout p_src_texture_layout, uint32_t p_src_layer, uint32_t p_src_mipmap, RDD::TextureID p_dst_texture, RDD::TextureLayout p_dst_texture_layout, uint32_t p_dst_layer, uint32_t p_dst_mipmap) = 0;
+@@ -1140,3 +1147,36 @@
+ 			MDPipeline(MDPipelineType::Compute), state(std::move(p_state)) {}
+ 	~MDComputePipeline() override = default;
+ };
++
++#pragma mark - Experimental immutable triangle-query acceleration structures
++
++class API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0), visionos(2.0)) MDAccelerationStructure {
++public:
++	enum class Type : uint8_t { BLAS, TLAS };
++	Type type;
++	NS::SharedPtr<MTL::AccelerationStructureDescriptor> descriptor;
++	NS::SharedPtr<MTL::AccelerationStructure> accel;
++	uint32_t scratch_size = 0;
++	uint32_t max_instances = 0;
++	bool build_encoded = false;
++	std::shared_ptr<std::atomic_bool> build_failed = std::make_shared<std::atomic_bool>(false);
++	Vector<std::shared_ptr<std::atomic_bool>> resident_failures;
++	// Owned by the retained TLAS descriptor's instancedAccelerationStructures array.
++	LocalVector<MTL::Resource *> resident_blases;
++
++	MDAccelerationStructure(Type p_type, MTL::AccelerationStructureDescriptor *p_desc, MTL::AccelerationStructure *p_accel, uint32_t p_scratch_size, uint32_t p_max_instances = 0) :
++			type(p_type), descriptor(NS::RetainPtr(p_desc)), accel(NS::TransferPtr(p_accel)), scratch_size(p_scratch_size), max_instances(p_max_instances) {}
++};
++
++// Metal's 68-byte user-ID descriptor is followed by a backend BLAS handle.
++// A 128-byte stride preserves the required 64-byte suballocation alignment.
++struct MDAccelerationStructureInstance {
++	MTL::AccelerationStructureUserIDInstanceDescriptor native = {};
++	uint32_t padding = 0;
++	MDAccelerationStructure *blas = nullptr;
++	uint8_t reserved[48] = {};
++};
++static_assert(sizeof(MTL::AccelerationStructureUserIDInstanceDescriptor) == 68);
++static_assert(offsetof(MDAccelerationStructureInstance, native) == 0);
++static_assert(offsetof(MTL::AccelerationStructureUserIDInstanceDescriptor, userID) == 64);
++static_assert(sizeof(MDAccelerationStructureInstance) == 128);
+diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/rendering_device_driver_metal.cpp
+--- a/drivers/metal/rendering_device_driver_metal.cpp
++++ b/drivers/metal/rendering_device_driver_metal.cpp
+@@ -1474,6 +1474,15 @@
+ 						ADD_USAGE(texture, ui.active_stages, ui.usage);
+ 					}
+ 				} break;
++				case UNIFORM_TYPE_ACCELERATION_STRUCTURE: {
++					const MDAccelerationStructure *accel = (const MDAccelerationStructure *)uniform.ids[0].id;
++					if (!accel || !accel->accel || accel->type != MDAccelerationStructure::Type::TLAS) {
++						memdelete(set);
++						ERR_FAIL_V_MSG(UniformSetID(), "Metal triangle-query uniform requires a TLAS.");
++					}
++					*(MTL::ResourceID *)(ptr + idx.buffer) = accel->accel->gpuResourceID();
++					ADD_USAGE(accel->accel.get(), ui.active_stages, MTL::ResourceUsageRead);
++				} break;
+ 				case UNIFORM_TYPE_UNIFORM_BUFFER_DYNAMIC:
+ 				case UNIFORM_TYPE_STORAGE_BUFFER_DYNAMIC: {
+ 					// Encode the base GPU address (frame 0); it will be updated at bind time.
+@@ -2379,24 +2388,91 @@
+ 
+ // ----- ACCELERATION STRUCTURE -----
+ 
++RDD::AccelerationStructureID RenderingDeviceDriverMetal::_triangle_query_create(MDAccelerationStructure::Type p_type, MTL::AccelerationStructureDescriptor *p_desc, uint32_t p_max_instances) {
++	ERR_FAIL_COND_V_MSG(!triangle_query_enabled || sync_mode != HazardTracking, AccelerationStructureID(), "Metal triangle queries are unavailable.");
++	const MTL::AccelerationStructureSizes sizes = device->accelerationStructureSizes(p_desc);
++	ERR_FAIL_COND_V_MSG(sizes.accelerationStructureSize == 0 || sizes.buildScratchBufferSize == 0 || sizes.buildScratchBufferSize > UINT32_MAX, AccelerationStructureID(), "Invalid Metal acceleration-structure allocation sizes.");
++	MTL::AccelerationStructure *accel = device->newAccelerationStructure(sizes.accelerationStructureSize);
++	ERR_FAIL_NULL_V_MSG(accel, AccelerationStructureID(), "Metal acceleration-structure allocation failed.");
++	return AccelerationStructureID(memnew(MDAccelerationStructure(p_type, p_desc, accel, uint32_t(sizes.buildScratchBufferSize), p_max_instances)));
++}
++
+ RDD::AccelerationStructureID RenderingDeviceDriverMetal::blas_create(VectorView<AccelerationStructureGeometry> p_geometries, BitField<AccelerationStructureFlagBits> p_flags) {
+-	ERR_FAIL_V_MSG(AccelerationStructureID(), "Ray tracing is not currently supported by the Metal driver.");
++	ERR_FAIL_COND_V_MSG(!triangle_query_enabled || p_geometries.size() != 1 || !p_flags.is_empty(), AccelerationStructureID(), "Metal triangle-query BLAS requires one immutable geometry.");
++	const AccelerationStructureGeometry &g = p_geometries[0];
++	ERR_FAIL_COND_V_MSG(static_cast<uint64_t>(g.flags) != ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT || g.index_buffer || g.index_offset || g.index_count || g.vertex_format != DATA_FORMAT_R32G32B32_SFLOAT || !g.vertex_buffer || g.vertex_count == 0 || (g.vertex_count % 3) || g.vertex_count / 3 > (1u << 28) || g.vertex_stride < 12 || (g.vertex_stride % 4) || (g.vertex_offset % 4), AccelerationStructureID(), "Invalid Metal triangle-query geometry.");
++	const BufferInfo *vertex = (const BufferInfo *)g.vertex_buffer.id;
++	const uint64_t end = uint64_t(g.vertex_offset) + uint64_t(g.vertex_count - 1) * g.vertex_stride + 12;
++	ERR_FAIL_COND_V_MSG(!vertex->buffer || end > vertex->buffer->length(), AccelerationStructureID(), "Metal triangle vertices exceed the vertex buffer.");
++	NS::SharedPtr<NS::AutoreleasePool> pool = NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
++	MTL::AccelerationStructureTriangleGeometryDescriptor *triangle = MTL::AccelerationStructureTriangleGeometryDescriptor::descriptor();
++	triangle->setVertexBuffer(vertex->buffer.get());
++	triangle->setVertexBufferOffset(g.vertex_offset);
++	triangle->setVertexStride(g.vertex_stride);
++	triangle->setTriangleCount(g.vertex_count / 3);
++	triangle->setOpaque(true);
++	MTL::PrimitiveAccelerationStructureDescriptor *desc = MTL::PrimitiveAccelerationStructureDescriptor::descriptor();
++	NS::Object *geometry[] = { triangle };
++	desc->setGeometryDescriptors(NS::Array::array(geometry, 1));
++	return _triangle_query_create(MDAccelerationStructure::Type::BLAS, desc);
+ }
+ 
+ RDD::AccelerationStructureID RenderingDeviceDriverMetal::tlas_create(uint32_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) {
+-	ERR_FAIL_V_MSG(AccelerationStructureID(), "Ray tracing is not currently supported by the Metal driver.");
++	ERR_FAIL_COND_V_MSG(!triangle_query_enabled || !p_flags.is_empty() || p_max_instance_count == 0 || p_max_instance_count > 65536, AccelerationStructureID(), "Invalid Metal triangle-query TLAS capacity or flags.");
++	NS::SharedPtr<NS::AutoreleasePool> pool = NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
++	MTL::InstanceAccelerationStructureDescriptor *desc = MTL::InstanceAccelerationStructureDescriptor::descriptor();
++	desc->setInstanceCount(p_max_instance_count);
++	desc->setInstanceDescriptorStride(sizeof(MDAccelerationStructureInstance));
++	if (__builtin_available(macOS 12.0, iOS 15.0, tvOS 15.0, *)) {
++		desc->setInstanceDescriptorType(MTL::AccelerationStructureInstanceDescriptorTypeUserID);
++	} else {
++		ERR_FAIL_V_MSG(AccelerationStructureID(), "Metal triangle-query user IDs require macOS 12 or newer.");
++	}
++	return _triangle_query_create(MDAccelerationStructure::Type::TLAS, desc, p_max_instance_count);
+ }
+ 
+ void RenderingDeviceDriverMetal::acceleration_structure_instance_write(uint8_t *r_driver_instance, const AccelerationStructureInstance &p_instance) {
+-	ERR_FAIL_MSG("Ray tracing is not currently supported by the Metal driver.");
++	ERR_FAIL_NULL(r_driver_instance);
++	MDAccelerationStructureInstance instance;
++	MDAccelerationStructure *blas = (MDAccelerationStructure *)p_instance.blas.id;
++	ERR_FAIL_COND_MSG(!blas || blas->type != MDAccelerationStructure::Type::BLAS || p_instance.id > 0xFFFFFF || p_instance.hit_sbt_offset != 0 || !p_instance.flags.is_empty() || !p_instance.transform.is_finite(), "Invalid Metal triangle-query instance.");
++	for (uint32_t column = 0; column < 3; column++) {
++		for (uint32_t row = 0; row < 3; row++) {
++			instance.native.transformationMatrix[column][row] = p_instance.transform.basis.rows[row][column];
++		}
++	}
++	for (uint32_t row = 0; row < 3; row++) {
++		instance.native.transformationMatrix[3][row] = p_instance.transform.origin[row];
++	}
++	instance.native.mask = p_instance.mask;
++	instance.native.userID = p_instance.id;
++	instance.blas = blas;
++	memcpy(r_driver_instance, &instance, sizeof(instance));
+ }
+ 
+ void RenderingDeviceDriverMetal::acceleration_structure_free(RDD::AccelerationStructureID p_acceleration_structure) {
+-	ERR_FAIL_MSG("Ray tracing is not currently supported by the Metal driver.");
++	MDAccelerationStructure *accel = (MDAccelerationStructure *)p_acceleration_structure.id;
++	ERR_FAIL_NULL(accel);
++	memdelete(accel);
+ }
+ 
+ uint32_t RenderingDeviceDriverMetal::acceleration_structure_get_scratch_size_bytes(AccelerationStructureID p_acceleration_structure) {
+-	ERR_FAIL_V_MSG(0, "Ray tracing is not currently supported by the Metal driver.");
++	const MDAccelerationStructure *accel = (const MDAccelerationStructure *)p_acceleration_structure.id;
++	ERR_FAIL_NULL_V(accel, 0);
++	return accel->scratch_size;
++}
++
++bool RenderingDeviceDriverMetal::acceleration_structure_build_is_valid(AccelerationStructureID p_acceleration_structure) const {
++	const MDAccelerationStructure *accel = (const MDAccelerationStructure *)p_acceleration_structure.id;
++	if (!accel || accel->build_failed->load(std::memory_order_acquire)) {
++		return false;
++	}
++	for (const auto &failure : accel->resident_failures) {
++		if (failure->load(std::memory_order_acquire)) {
++			return false;
++		}
++	}
++	return true;
+ }
+ 
+ // ----- PIPELINE -----
+@@ -2416,11 +2492,56 @@
+ // ----- COMMANDS -----
+ 
+ void RenderingDeviceDriverMetal::command_build_blas(CommandBufferID p_cmd_buffer, AccelerationStructureID p_acceleration_structure, BufferID p_scratch_buffer) {
+-	ERR_FAIL_MSG("Ray tracing is not currently supported by the Metal driver.");
++	MDCommandBufferBase *cmd = (MDCommandBufferBase *)p_cmd_buffer.id;
++	MDAccelerationStructure *accel = (MDAccelerationStructure *)p_acceleration_structure.id;
++	const BufferInfo *scratch = (const BufferInfo *)p_scratch_buffer.id;
++	ERR_FAIL_NULL(accel);
++	if (!triangle_query_enabled || !cmd || accel->type != MDAccelerationStructure::Type::BLAS || accel->build_encoded || !scratch || !scratch->buffer || scratch->buffer->length() < accel->scratch_size) {
++		accel->build_failed->store(true, std::memory_order_release);
++		ERR_FAIL_MSG("Invalid Metal triangle-query BLAS build.");
++	}
++	cmd->acceleration_structure_build(accel, scratch->buffer.get());
+ }
+ 
+ void RenderingDeviceDriverMetal::command_build_tlas(CommandBufferID p_cmd_buffer, AccelerationStructureID p_acceleration_structure, BufferID p_scratch_buffer, BufferID p_instance_buffer, uint32_t p_instance_offset, uint32_t p_instance_count) {
+-	ERR_FAIL_MSG("Ray tracing is not currently supported by the Metal driver.");
++	MDCommandBufferBase *cmd = (MDCommandBufferBase *)p_cmd_buffer.id;
++	MDAccelerationStructure *accel = (MDAccelerationStructure *)p_acceleration_structure.id;
++	const BufferInfo *scratch = (const BufferInfo *)p_scratch_buffer.id;
++	const BufferInfo *instances = (const BufferInfo *)p_instance_buffer.id;
++	ERR_FAIL_NULL(accel);
++	if (!triangle_query_enabled || !cmd || accel->type != MDAccelerationStructure::Type::TLAS || accel->build_encoded || !scratch || !scratch->buffer || scratch->buffer->length() < accel->scratch_size || !instances || !instances->buffer || !instances->buffer->contents() || p_instance_count == 0 || p_instance_count > accel->max_instances || (p_instance_offset % 64) != 0) {
++		accel->build_failed->store(true, std::memory_order_release);
++		ERR_FAIL_MSG("Invalid Metal triangle-query TLAS build.");
++	}
++	const uint64_t bytes = uint64_t(p_instance_count) * sizeof(MDAccelerationStructureInstance);
++	if (p_instance_offset > instances->buffer->length() || bytes > instances->buffer->length() - p_instance_offset) {
++		accel->build_failed->store(true, std::memory_order_release);
++		ERR_FAIL_MSG("Metal triangle-query instance buffer is out of bounds.");
++	}
++	uint8_t *records = static_cast<uint8_t *>(instances->buffer->contents()) + p_instance_offset;
++	LocalVector<NS::Object *> blases;
++	blases.resize(p_instance_count);
++	accel->resident_blases.resize(p_instance_count);
++	accel->resident_failures.clear();
++	for (uint32_t i = 0; i < p_instance_count; i++) {
++		MDAccelerationStructureInstance instance;
++		memcpy(&instance, records + uint64_t(i) * sizeof(instance), sizeof(instance));
++		if (!instance.blas || instance.blas->type != MDAccelerationStructure::Type::BLAS || !instance.blas->accel || !instance.blas->build_encoded || !acceleration_structure_build_is_valid(AccelerationStructureID(instance.blas))) {
++			accel->build_failed->store(true, std::memory_order_release);
++			ERR_FAIL_MSG("Metal triangle-query TLAS references an unbuilt BLAS.");
++		}
++		instance.native.accelerationStructureIndex = i;
++		blases[i] = instance.blas->accel.get();
++		accel->resident_blases[i] = instance.blas->accel.get();
++		accel->resident_failures.push_back(instance.blas->build_failed);
++		memcpy(records + uint64_t(i) * sizeof(instance), &instance, sizeof(instance));
++	}
++	MTL::InstanceAccelerationStructureDescriptor *desc = static_cast<MTL::InstanceAccelerationStructureDescriptor *>(accel->descriptor.get());
++	desc->setInstanceDescriptorBuffer(instances->buffer.get());
++	desc->setInstanceDescriptorBufferOffset(p_instance_offset);
++	desc->setInstanceCount(p_instance_count);
++	desc->setInstancedAccelerationStructures(NS::Array::array(blases.ptr(), blases.size()));
++	cmd->acceleration_structure_build(accel, scratch->buffer.get());
+ }
+ 
+ void RenderingDeviceDriverMetal::command_bind_raytracing_pipeline(CommandBufferID p_cmd_buffer, RaytracingPipelineID p_pipeline) {
+@@ -2780,6 +2901,8 @@
+ 			return true;
+ 		case API_TRAIT_TEXTURE_CLEARS_WITH_COPY_ENGINE:
+ 			return false;
++		case API_TRAIT_ACCELERATION_STRUCTURE_INSTANCE_SIZE:
++			return triangle_query_enabled ? sizeof(MDAccelerationStructureInstance) : 0;
+ 		case API_TRAIT_TEXTURES_REQUIRE_LAYOUT_TRANSITIONS:
+ 			return false;
+ 		default:
+@@ -2817,6 +2940,8 @@
+ #endif
+ 			return is_supported;
+ 		}
++		case SUPPORTS_METAL_TRIANGLE_QUERY:
++			return triangle_query_enabled && sync_mode == HazardTracking;
+ 		case SUPPORTS_GPU_MAPPABLE_BUFFER:
+ 			return true;
+ 		default:
+diff --git a/drivers/metal/rendering_device_driver_metal.h b/drivers/metal/rendering_device_driver_metal.h
+--- a/drivers/metal/rendering_device_driver_metal.h
++++ b/drivers/metal/rendering_device_driver_metal.h
+@@ -163,6 +163,7 @@
+ 
+ 	SyncMode sync_mode = Barriers;
+ 	MTL::ResourceOptions base_hazard_tracking = MTL::ResourceHazardTrackingModeTracked;
++	bool triangle_query_enabled = false;
+ 
+ 	/// Textures imported via texture_create_from_extension. They are not heap-backed,
+ 	/// so barriers mode must make them resident explicitly at encoder creation time.
+@@ -492,11 +493,13 @@
+ 
+ 	// ----- ACCELERATION STRUCTURE -----
+ 
++	AccelerationStructureID _triangle_query_create(MDAccelerationStructure::Type p_type, MTL::AccelerationStructureDescriptor *p_desc, uint32_t p_max_instances = 0);
+ 	virtual AccelerationStructureID blas_create(VectorView<AccelerationStructureGeometry> p_geometries, BitField<AccelerationStructureFlagBits> p_flags) override final;
+ 	virtual AccelerationStructureID tlas_create(uint32_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) override final;
+ 	virtual void acceleration_structure_instance_write(uint8_t *r_driver_instance, const AccelerationStructureInstance &p_instance) override final;
+ 	virtual void acceleration_structure_free(AccelerationStructureID p_acceleration_structure) override final;
+ 	virtual uint32_t acceleration_structure_get_scratch_size_bytes(AccelerationStructureID p_acceleration_structure) override final;
++	virtual bool acceleration_structure_build_is_valid(AccelerationStructureID p_acceleration_structure) const override final;
+ 
+ 	// ----- PIPELINE -----
+ 
+diff --git a/drivers/metal/rendering_device_driver_metal3.cpp b/drivers/metal/rendering_device_driver_metal3.cpp
+--- a/drivers/metal/rendering_device_driver_metal3.cpp
++++ b/drivers/metal/rendering_device_driver_metal3.cpp
+@@ -88,6 +88,16 @@
+ }
+ 
+ void RenderingDeviceDriverMetal::_resolve_sync_mode() {
++#if TARGET_OS_OSX
++	if (__builtin_available(macOS 12.0, *)) {
++		if (OS::get_singleton()->get_environment("GODOT_METAL_TRIANGLE_QUERY") == "1" && device->supportsRaytracing()) {
++			// AS encoders are not covered by the existing level-fence implementation.
++			// Select tracked, non-heap resources before the allocator is created.
++			triangle_query_enabled = true;
++			sync_mode = HazardTracking;
++		}
++	}
++#endif
+ 	if (sync_mode == Barriers) {
+ 		print_verbose("Metal 3: Barrier synchronization enabled.");
+ 		base_hazard_tracking = MTL::ResourceHazardTrackingModeUntracked;
+diff --git a/drivers/metal/rendering_shader_container_metal.cpp b/drivers/metal/rendering_shader_container_metal.cpp
+--- a/drivers/metal/rendering_shader_container_metal.cpp
++++ b/drivers/metal/rendering_shader_container_metal.cpp
+@@ -562,6 +562,12 @@
+ 						found->get_indexes(UniformData::IndexType::SLOT).texture = next_index(Texture, binding_stride);
+ 						found->get_indexes(UniformData::IndexType::ARG).texture = next_arg_index(binding_stride);
+ 						rb.basetype = SPIRType::BaseType::Image;
++					} break;
++					case RDC::UNIFORM_TYPE_ACCELERATION_STRUCTURE: {
++						found->data_type = MTL::DataTypeInstanceAccelerationStructure;
++						found->get_indexes(UniformData::IndexType::SLOT).buffer = next_index(Buffer, binding_stride);
++						found->get_indexes(UniformData::IndexType::ARG).buffer = next_arg_index(binding_stride);
++						rb.basetype = SPIRType::BaseType::AccelerationStructure;
+ 					} break;
+ 					case RDC::UNIFORM_TYPE_MAX:
+ 					default:
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -350,7 +350,14 @@
+ }
+ 
+ RID RenderingDevice::blas_create(Span<AccelerationStructureGeometry> p_geometries, BitField<AccelerationStructureFlagBits> p_flags) {
+-	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY), RID(), "The current rendering device has neither raytracing pipeline nor ray query support.");
++	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY) && !has_feature(SUPPORTS_METAL_TRIANGLE_QUERY), RID(), "The current rendering device has neither raytracing pipeline nor ray query support.");
++
++	const bool triangle_query = has_feature(SUPPORTS_METAL_TRIANGLE_QUERY);
++	if (triangle_query) {
++		ERR_FAIL_COND_V_MSG(p_geometries.size() != 1 || !p_flags.is_empty(), RID(), "Metal triangle queries require exactly one immutable geometry and zero build flags.");
++		const AccelerationStructureGeometry &g = p_geometries[0];
++		ERR_FAIL_COND_V_MSG(static_cast<uint64_t>(g.flags) != ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT || g.index_buffer.is_valid() || g.index_offset != 0 || g.index_count != 0 || g.vertex_format != DATA_FORMAT_R32G32B32_SFLOAT || g.vertex_count == 0 || (g.vertex_count % 3) != 0 || g.vertex_count / 3 > (1u << 28) || g.vertex_stride < 12 || (g.vertex_stride % 4) != 0 || (g.vertex_offset % 4) != 0, RID(), "Metal triangle queries require non-indexed opaque float3 triangles with aligned offsets and stride.");
++	}
+ 
+ 	thread_local LocalVector<RDD::AccelerationStructureGeometry> rdd_geometries;
+ 	rdd_geometries.resize(p_geometries.size());
+@@ -360,6 +367,7 @@
+ 
+ 	for (uint64_t i = 0; i < p_geometries.size(); i++) {
+ 		const AccelerationStructureGeometry &rd_geometry = p_geometries[i];
++		ERR_FAIL_COND_V_MSG(rd_geometry.vertex_offset < 0 || rd_geometry.vertex_stride < 0 || rd_geometry.vertex_count < 0 || rd_geometry.index_offset < 0 || rd_geometry.index_count < 0 || rd_geometry.vertex_offset > UINT32_MAX || rd_geometry.vertex_stride > UINT32_MAX || rd_geometry.vertex_count > UINT32_MAX || rd_geometry.index_offset > UINT32_MAX || rd_geometry.index_count > UINT32_MAX, RID(), "Acceleration-structure geometry fields must fit uint32.");
+ 		if (rd_geometry.index_buffer.is_valid()) {
+ 			ERR_FAIL_COND_V_MSG((rd_geometry.index_count % 3) != 0, RID(), "An indexed geometry must have an index count that is a multiple of 3.");
+ 		} else {
+@@ -373,13 +381,19 @@
+ 		Buffer *vertex_buffer = vertex_buffer_owner.get_or_null(rd_geometry.vertex_buffer);
+ 		ERR_FAIL_NULL_V(vertex_buffer, RID());
+ 
+-		ERR_FAIL_COND_V_MSG((rd_geometry.vertex_offset + rd_geometry.vertex_count * rd_geometry.vertex_stride) > vertex_buffer->size, RID(), "The specified vertex offset and count are outside the range of the vertex buffer.");
++		if (triangle_query) {
++			ERR_FAIL_COND_V_MSG(!vertex_buffer->usage.has_flag(RDD::BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT) || vertex_buffer->usage.has_flag(RDD::BUFFER_USAGE_DYNAMIC_PERSISTENT_BIT), RID(), "Metal triangle geometry requires a non-dynamic build-input vertex buffer.");
++			const uint64_t end = uint64_t(rd_geometry.vertex_offset) + uint64_t(rd_geometry.vertex_count - 1) * rd_geometry.vertex_stride + 12;
++			ERR_FAIL_COND_V_MSG(end > vertex_buffer->size, RID(), "Metal triangle vertices exceed the vertex buffer.");
++		} else {
++			ERR_FAIL_COND_V_MSG((uint64_t(rd_geometry.vertex_offset) + uint64_t(rd_geometry.vertex_count) * uint64_t(rd_geometry.vertex_stride)) > vertex_buffer->size, RID(), "The specified vertex offset and count are outside the range of the vertex buffer.");
++		}
+ 		ERR_FAIL_COND_V_MSG(rd_geometry.vertex_format >= DataFormat::DATA_FORMAT_MAX, RID(), "An invalid vertex format was specified.");
+ 
+ 		rdd_geometry.vertex_buffer = vertex_buffer->driver_id;
+-		rdd_geometry.vertex_offset = rd_geometry.vertex_offset;
+-		rdd_geometry.vertex_stride = rd_geometry.vertex_stride;
+-		rdd_geometry.vertex_count = rd_geometry.vertex_count;
++		rdd_geometry.vertex_offset = static_cast<uint32_t>(rd_geometry.vertex_offset);
++		rdd_geometry.vertex_stride = static_cast<uint32_t>(rd_geometry.vertex_stride);
++		rdd_geometry.vertex_count = static_cast<uint32_t>(rd_geometry.vertex_count);
+ 		rdd_geometry.vertex_format = rd_geometry.vertex_format;
+ 
+ 		if (vertex_buffer->draw_tracker != nullptr) {
+@@ -395,13 +409,13 @@
+ 			ERR_FAIL_NULL_V(index_buffer, RID());
+ 
+ 			uint32_t index_stride = (index_buffer->format == INDEX_BUFFER_FORMAT_UINT32 ? sizeof(uint32_t) : sizeof(uint16_t));
+-			ERR_FAIL_COND_V_MSG((rd_geometry.index_offset + rd_geometry.index_count * index_stride) > index_buffer->size, RID(), "The specified index offset and count are outside the range of the index buffer.");
++			ERR_FAIL_COND_V_MSG((uint64_t(rd_geometry.index_offset) + uint64_t(rd_geometry.index_count) * index_stride) > index_buffer->size, RID(), "The specified index offset and count are outside the range of the index buffer.");
+ #ifdef DEBUG_ENABLED
+ 			ERR_FAIL_COND_V_MSG(index_buffer->max_index != 0xFFFFFFFF && index_buffer->max_index >= rd_geometry.vertex_count, RID(), "The index buffer contains an index that is outside the specified vertex range.");
+ #endif
+ 			rdd_geometry.index_buffer = index_buffer->driver_id;
+-			rdd_geometry.index_offset = rd_geometry.index_offset;
+-			rdd_geometry.index_count = rd_geometry.index_count;
++			rdd_geometry.index_offset = static_cast<uint32_t>(rd_geometry.index_offset);
++			rdd_geometry.index_count = static_cast<uint32_t>(rd_geometry.index_count);
+ 			rdd_geometry.index_format = index_buffer->format;
+ 
+ 			if (index_buffer->draw_tracker != nullptr) {
+@@ -461,7 +475,7 @@
+ 
+ 	if (p_creation_bits.has_flag(BUFFER_CREATION_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT)) {
+ #ifdef DEBUG_ENABLED
+-		ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY), 0,
++		ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY) && !has_feature(SUPPORTS_METAL_TRIANGLE_QUERY), 0,
+ 				"The GPU doesn't support acceleration structure build input flag.");
+ #endif
+ 		usage.set_flag(RDD::BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT);
+@@ -470,12 +484,16 @@
+ 	return usage;
+ }
+ 
+-RID RenderingDevice::tlas_create(uint32_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) {
+-	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY), RID(), "The current rendering device has neither raytracing pipeline nor ray query support.");
+-
++RID RenderingDevice::tlas_create(int64_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) {
++	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY) && !has_feature(SUPPORTS_METAL_TRIANGLE_QUERY), RID(), "The current rendering device has neither raytracing pipeline nor ray query support.");
++
++	ERR_FAIL_COND_V_MSG(p_max_instance_count < 0 || p_max_instance_count > UINT32_MAX, RID(), "TLAS capacity must fit uint32.");
++	if (has_feature(SUPPORTS_METAL_TRIANGLE_QUERY)) {
++		ERR_FAIL_COND_V_MSG(p_max_instance_count == 0 || p_max_instance_count > 65536 || uint64_t(p_max_instance_count) * 128 > UINT32_MAX || !p_flags.is_empty(), RID(), "Metal triangle-query TLAS requires a bounded nonzero instance capacity and zero build flags.");
++	}
+ 	AccelerationStructure acceleration_structure;
+ 	acceleration_structure.type = RDD::ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL;
+-	acceleration_structure.driver_id = driver->tlas_create(p_max_instance_count, p_flags);
++	acceleration_structure.driver_id = driver->tlas_create(static_cast<uint32_t>(p_max_instance_count), p_flags);
+ 	ERR_FAIL_COND_V_MSG(!acceleration_structure.driver_id, RID(), "Failed to create TLAS.");
+ 
+ 	acceleration_structure.draw_tracker = RDG::resource_tracker_create();
+@@ -483,7 +501,7 @@
+ 	// Assume we are going to build this acceleration structure
+ 	acceleration_structure.draw_tracker->usage = RDG::RESOURCE_USAGE_ACCELERATION_STRUCTURE_READ_WRITE;
+ 
+-	acceleration_structure.max_instance_count = p_max_instance_count;
++	acceleration_structure.max_instance_count = static_cast<uint32_t>(p_max_instance_count);
+ 
+ 	RID id = acceleration_structure_owner.make_rid(acceleration_structure);
+ #ifdef DEV_ENABLED
+@@ -501,6 +519,11 @@
+ 
+ 	AccelerationStructure *blas = acceleration_structure_owner.get_or_null(p_blas);
+ 	ERR_FAIL_NULL_V_MSG(blas, ERR_INVALID_PARAMETER, "BLAS argument is not valid.");
++	if (has_feature(SUPPORTS_METAL_TRIANGLE_QUERY)) {
++		ERR_FAIL_COND_V_MSG(blas->type != RDD::ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL, ERR_INVALID_PARAMETER, "Metal triangle-query build requires a BLAS.");
++		blas->invalidated = true;
++		ERR_FAIL_COND_V_MSG(blas->immutable_build_queued, ERR_INVALID_PARAMETER, "Metal triangle-query BLAS can be built only once.");
++	}
+ 
+ 	Error err = _acceleration_structure_scratch_buffer_create(blas);
+ 	ERR_FAIL_COND_V(err != OK, err);
+@@ -508,6 +531,7 @@
+ 	draw_graph.add_blas_build(blas->driver_id, blas->scratch_buffer, blas->draw_tracker, blas->draw_trackers);
+ 
+ 	blas->invalidated = false;
++	blas->immutable_build_queued = has_feature(SUPPORTS_METAL_TRIANGLE_QUERY);
+ 	_blas_remove_tlas_dependencies(blas, p_blas);
+ 
+ 	return OK;
+@@ -522,6 +546,18 @@
+ 
+ 	AccelerationStructure *tlas = acceleration_structure_owner.get_or_null(p_tlas);
+ 	ERR_FAIL_NULL_V_MSG(tlas, ERR_INVALID_PARAMETER, "TLAS argument is not valid.");
++	const bool triangle_query = has_feature(SUPPORTS_METAL_TRIANGLE_QUERY);
++	if (triangle_query) {
++		ERR_FAIL_COND_V_MSG(tlas->type != RDD::ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL, ERR_INVALID_PARAMETER, "Metal triangle-query build requires a TLAS.");
++		tlas->invalidated = true; // A failed rebuild must not leave an old TLAS eligible.
++		ERR_FAIL_COND_V_MSG(tlas->immutable_build_queued || p_instances.is_empty() || p_instances.size() > tlas->max_instance_count, ERR_INVALID_PARAMETER, "Metal triangle-query TLAS is nonempty and can be built only once.");
++		// Validate the complete request before allocating upload memory or changing dependencies.
++		for (const AccelerationStructureInstance &instance : p_instances) {
++			ERR_FAIL_COND_V_MSG(!instance.blas.is_valid() || instance.hit_sbt_range != 0 || !instance.flags.is_empty() || instance.id < 0 || instance.id > 0xFFFFFF || instance.mask < 0 || instance.mask > 0xFF || !instance.transform.is_finite() || !Math::is_finite(instance.transform.basis.determinant()) || instance.transform.basis.determinant() == 0, ERR_INVALID_PARAMETER, "Invalid Metal triangle-query instance (BLAS, zero SBT, flags, ID, mask, or transform).");
++			AccelerationStructure *instance_blas = acceleration_structure_owner.get_or_null(instance.blas);
++			ERR_FAIL_COND_V_MSG(instance_blas == nullptr || instance_blas->type != RDD::ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL || instance_blas->invalidated || !driver->acceleration_structure_build_is_valid(instance_blas->driver_id), ERR_INVALID_PARAMETER, "Metal triangle-query instance requires a built BLAS.");
++		}
++	}
+ 	ERR_FAIL_COND_V_MSG(p_instances.size() > tlas->max_instance_count, ERR_INVALID_PARAMETER, "Exceeded the maximum amount of instances allowed in the TLAS.");
+ 
+ 	Error err = _acceleration_structure_scratch_buffer_create(tlas);
+@@ -584,13 +620,13 @@
+ 
+ 		RDD::AccelerationStructureInstance rdd_instance;
+ 		rdd_instance.transform = rd_instance.transform;
+-		rdd_instance.id = rd_instance.id;
+-		rdd_instance.mask = rd_instance.mask;
++		rdd_instance.id = static_cast<uint32_t>(rd_instance.id);
++		rdd_instance.mask = static_cast<uint8_t>(rd_instance.mask);
+ 		rdd_instance.hit_sbt_offset = _decode_hit_sbt_range_offset(rd_instance.hit_sbt_range);
+ 		rdd_instance.flags = rd_instance.flags;
+ 
+ 		if (rd_instance.blas.is_valid()) {
+-			ERR_FAIL_COND_V_MSG(!rd_instance.hit_sbt_range, ERR_INVALID_PARAMETER, "Instance " + itos(i) + " has an invalid hit shader binding table range.");
++			ERR_FAIL_COND_V_MSG(!triangle_query && !rd_instance.hit_sbt_range, ERR_INVALID_PARAMETER, "Instance " + itos(i) + " has an invalid hit shader binding table range.");
+ 
+ 			AccelerationStructure *blas = acceleration_structure_owner.get_or_null(rd_instance.blas);
+ 			ERR_FAIL_NULL_V(blas, ERR_INVALID_PARAMETER);
+@@ -614,6 +650,7 @@
+ 	draw_graph.add_tlas_build(tlas->driver_id, tlas->scratch_buffer, instance_buffer.driver_id, instance_buffer_offset, p_instances.size(), tlas->draw_tracker, draw_trackers);
+ 
+ 	tlas->invalidated = false;
++	tlas->immutable_build_queued = triangle_query;
+ 
+ 	return OK;
+ }
+@@ -690,7 +727,7 @@
+ }
+ 
+ RID RenderingDevice::hit_sbt_create(RID p_raytracing_pipeline, uint32_t p_initial_hit_group_capacity) {
+-	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY), RID(), "The current rendering device has neither raytracing pipeline nor ray query support.");
++	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE), RID(), "The current rendering device has no raytracing pipeline support.");
+ 
+ 	RaytracingPipeline *raytracing_pipeline = raytracing_pipeline_owner.get_or_null(p_raytracing_pipeline);
+ 	ERR_FAIL_NULL_V(raytracing_pipeline, RID());
+@@ -1538,7 +1575,7 @@
+ 	}
+ 	if (p_creation_bits.has_flag(BUFFER_CREATION_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT)) {
+ #ifdef DEBUG_ENABLED
+-		ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY), RID(),
++		ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY) && !has_feature(SUPPORTS_METAL_TRIANGLE_QUERY), RID(),
+ 				"The GPU doesn't support acceleration structure build input flag.");
+ #endif
+ 		buffer.usage.set_flag(RDD::BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT);
+@@ -4868,6 +4905,7 @@
+ 				RID accel_id = uniform.get_id(0);
+ 				AccelerationStructure *accel = acceleration_structure_owner.get_or_null(accel_id);
+ 				ERR_FAIL_NULL_V_MSG(accel, RID(), "Acceleration Structure supplied (binding: " + itos(uniform.binding) + ") is invalid.");
++				ERR_FAIL_COND_V_MSG(has_feature(SUPPORTS_METAL_TRIANGLE_QUERY) && (shader->pipeline_type != PIPELINE_TYPE_COMPUTE || accel->type != RDD::ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL), RID(), "Metal triangle queries require a compute shader and a TLAS uniform.");
+ 
+ 				if (accel->draw_tracker != nullptr) {
+ 					draw_trackers.push_back(accel->draw_tracker);
+@@ -5265,7 +5303,7 @@
+ }
+ 
+ RID RenderingDevice::raytracing_pipeline_create(Span<PipelineShader> p_raygen_shaders, Span<PipelineShader> p_miss_shaders, Span<HitGroup> p_hit_groups, uint32_t p_max_trace_recursion_depth) {
+-	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY), RID(), "The current rendering device has neither raytracing pipeline nor ray query support.");
++	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE), RID(), "The current rendering device has no raytracing pipeline support.");
+ 
+ 	struct PipelineShaderKey : PipelineShader {
+ 		ShaderStage shader_stage = {};
+@@ -6928,11 +6966,41 @@
+ #endif
+ }
+ 
++bool RenderingDevice::_compute_list_triangle_query_sets_valid() const {
++	if (!has_feature(SUPPORTS_METAL_TRIANGLE_QUERY)) {
++		return true;
++	}
++	for (uint32_t i = 0; i < compute_list.state.set_count; i++) {
++		const ComputeList::SetState &set = compute_list.state.sets[i];
++		if (set.pipeline_expected_format == 0) {
++			continue;
++		}
++		const UniformSet *uniform_set = uniform_set_owner.get_or_null(set.uniform_set);
++		if (!uniform_set || set.pipeline_expected_format != set.uniform_set_format) {
++			return false;
++		}
++		for (RID id : uniform_set->acceleration_structures) {
++			const AccelerationStructure *tlas = acceleration_structure_owner.get_or_null(id);
++			if (!tlas || tlas->type != RDD::ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL || tlas->invalidated || !driver->acceleration_structure_build_is_valid(tlas->driver_id)) {
++				return false;
++			}
++			for (RID blas_id : tlas->acceleration_structure_dependencies) {
++				const AccelerationStructure *blas = acceleration_structure_owner.get_or_null(blas_id);
++				if (!blas || blas->invalidated || !driver->acceleration_structure_build_is_valid(blas->driver_id)) {
++					return false;
++				}
++			}
++		}
++	}
++	return true;
++}
++
+ void RenderingDevice::compute_list_dispatch(ComputeListID p_list, uint32_t p_x_groups, uint32_t p_y_groups, uint32_t p_z_groups) {
+ 	ERR_RENDER_THREAD_GUARD();
+ 
+ 	ERR_FAIL_COND(p_list != ID_TYPE_COMPUTE_LIST);
+ 	ERR_FAIL_COND(!compute_list.active);
++	ERR_FAIL_COND_MSG(!_compute_list_triangle_query_sets_valid(), "Metal triangle-query compute dispatch has an invalid or stale TLAS uniform set.");
+ 
+ #ifdef DEBUG_ENABLED
+ 	ERR_FAIL_COND_MSG(p_x_groups == 0, "Dispatch amount of X compute groups (" + itos(p_x_groups) + ") is zero.");
+@@ -7078,6 +7146,7 @@
+ 
+ 	ERR_FAIL_COND(p_list != ID_TYPE_COMPUTE_LIST);
+ 	ERR_FAIL_COND(!compute_list.active);
++	ERR_FAIL_COND_MSG(!_compute_list_triangle_query_sets_valid(), "Metal triangle-query compute dispatch has an invalid or stale TLAS uniform set.");
+ 
+ 	Buffer *buffer = storage_buffer_owner.get_or_null(p_buffer);
+ 	ERR_FAIL_NULL(buffer);
+@@ -10027,6 +10096,7 @@
+ 	BIND_ENUM_CONSTANT(SUPPORTS_BUFFER_DEVICE_ADDRESS);
+ 	BIND_ENUM_CONSTANT(SUPPORTS_IMAGE_ATOMIC_32_BIT);
+ 	BIND_ENUM_CONSTANT(SUPPORTS_RAY_QUERY);
++	BIND_ENUM_CONSTANT(SUPPORTS_METAL_TRIANGLE_QUERY);
+ 	BIND_ENUM_CONSTANT(SUPPORTS_RAYTRACING_PIPELINE);
+ 	BIND_ENUM_CONSTANT(SUPPORTS_HDR_OUTPUT);
+ 	BIND_ENUM_CONSTANT(SUPPORTS_RASTERIZATION_RATE_MAP);
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -1342,6 +1342,7 @@
+ 		// BLAS/TLAS are weakly linked, as opposed to RD dependencies.
+ 		HashSet<RID> acceleration_structure_dependencies;
+ 		bool invalidated = true;
++		bool immutable_build_queued = false; // Metal triangle-query lane only.
+ 
+ 		// Scratch buffer used during build, owned by the AS.
+ 		RDD::BufferID scratch_buffer;
+@@ -1373,24 +1374,25 @@
+ 	struct AccelerationStructureGeometry {
+ 		BitField<AccelerationStructureGeometryFlagBits> flags = {};
+ 		RID vertex_buffer;
+-		uint32_t vertex_offset = 0;
+-		uint32_t vertex_stride = 0;
+-		uint32_t vertex_count = 0;
++		int64_t vertex_offset = 0;
++		int64_t vertex_stride = 0;
++		int64_t vertex_count = 0;
+ 		DataFormat vertex_format = DATA_FORMAT_MAX;
+ 		RID index_buffer;
+-		uint32_t index_offset = 0;
+-		uint32_t index_count = 0;
++		int64_t index_offset = 0;
++		int64_t index_count = 0;
+ 	};
+ 
+ 	RID blas_create(Span<AccelerationStructureGeometry> p_geometries, BitField<AccelerationStructureFlagBits> p_flags);
+-	RID tlas_create(uint32_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags);
++	RID tlas_create(int64_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags);
+ 
+ 	typedef int64_t HitShaderBindingTableRange;
+ 
+ 	struct AccelerationStructureInstance {
+ 		Transform3D transform;
+-		uint32_t id = 0;
+-		uint8_t mask = 0xFF;
++		// Preserve script inputs until the query-only lane has checked their range.
++		int64_t id = 0;
++		int64_t mask = 0xFF;
+ 		HitShaderBindingTableRange hit_sbt_range = 0;
+ 		BitField<AccelerationStructureInstanceFlagBits> flags = {};
+ 		RID blas;
+@@ -1682,6 +1684,7 @@
+ 
+ 	ComputeList compute_list;
+ 	ComputeList::State compute_list_barrier_state;
++	bool _compute_list_triangle_query_sets_valid() const;
+ 
+ public:
+ 	ComputeListID compute_list_begin();
+diff --git a/servers/rendering/rendering_device_binds.h b/servers/rendering/rendering_device_binds.h
+--- a/servers/rendering/rendering_device_binds.h
++++ b/servers/rendering/rendering_device_binds.h
+@@ -754,13 +754,13 @@
+ public:
+ 	RD_SETGET(BitField<RD::AccelerationStructureGeometryFlagBits>, flags)
+ 	RD_SETGET(RID, vertex_buffer)
+-	RD_SETGET(uint32_t, vertex_offset)
+-	RD_SETGET(uint32_t, vertex_stride)
+-	RD_SETGET(uint32_t, vertex_count)
++	RD_SETGET(int64_t, vertex_offset)
++	RD_SETGET(int64_t, vertex_stride)
++	RD_SETGET(int64_t, vertex_count)
+ 	RD_SETGET(RD::DataFormat, vertex_format)
+ 	RD_SETGET(RID, index_buffer)
+-	RD_SETGET(uint32_t, index_offset)
+-	RD_SETGET(uint32_t, index_count)
++	RD_SETGET(int64_t, index_offset)
++	RD_SETGET(int64_t, index_count)
+ 
+ protected:
+ 	static void _bind_methods() {
+@@ -783,8 +783,8 @@
+ 
+ public:
+ 	RD_SETGET(Transform3D, transform)
+-	RD_SETGET(uint32_t, id)
+-	RD_SETGET(uint8_t, mask)
++	RD_SETGET(int64_t, id)
++	RD_SETGET(int64_t, mask)
+ 	RD_SETGET(RD::HitShaderBindingTableRange, hit_sbt_range)
+ 	RD_SETGET(BitField<RD::AccelerationStructureInstanceFlagBits>, flags)
+ 	RD_SETGET(RID, blas)
+diff --git a/servers/rendering/rendering_device_commons.h b/servers/rendering/rendering_device_commons.h
+--- a/servers/rendering/rendering_device_commons.h
++++ b/servers/rendering/rendering_device_commons.h
+@@ -1038,6 +1038,8 @@
+ 		SUPPORTS_HDR_OUTPUT,
+ 		SUPPORTS_RASTERIZATION_RATE_MAP,
+ 		SUPPORTS_GPU_MAPPABLE_BUFFER,
++		// Experimental Metal 3 compute-only, immutable opaque triangle queries.
++		SUPPORTS_METAL_TRIANGLE_QUERY,
+ 	};
+ 
+ 	enum SubgroupOperations {
+diff --git a/servers/rendering/rendering_device_driver.h b/servers/rendering/rendering_device_driver.h
+--- a/servers/rendering/rendering_device_driver.h
++++ b/servers/rendering/rendering_device_driver.h
+@@ -778,6 +778,8 @@
+ 
+ 	virtual void acceleration_structure_free(AccelerationStructureID p_acceleration_structure) = 0;
+ 	virtual uint32_t acceleration_structure_get_scratch_size_bytes(AccelerationStructureID p_acceleration_structure) = 0;
++	// Async backend failures may invalidate a previously queued build.
++	virtual bool acceleration_structure_build_is_valid(AccelerationStructureID p_acceleration_structure) const { return true; }
+ 
+ 	// ----- PIPELINE -----
+ 
+diff --git a/thirdparty/spirv-cross/spirv_msl.cpp b/thirdparty/spirv-cross/spirv_msl.cpp
+--- a/thirdparty/spirv-cross/spirv_msl.cpp
++++ b/thirdparty/spirv-cross/spirv_msl.cpp
+@@ -101,6 +101,7 @@
+ 		case SPIRType::Half:
+ 		case SPIRType::Float:
+ 		case SPIRType::Double:
++		case SPIRType::AccelerationStructure:
+ 			ADD_ARG_IDX_TO_BINDING_NUM_LOOKUP(buffer);
+ 			break;
+ 		case SPIRType::Image:
+@@ -19763,6 +19764,7 @@
+ 					case SPIRType::Half:
+ 					case SPIRType::Float:
+ 					case SPIRType::Double:
++					case SPIRType::AccelerationStructure:
+ 						add_argument_buffer_padding_buffer_type(buffer_type, member_index, next_arg_buff_index, rez_bind);
+ 						break;
+ 					case SPIRType::Image:

@@ -77,6 +77,13 @@ func _direction_case(center: float, requested: float, opposite: float) -> void:
 
 
 func _quality_cases() -> void:
+	var repeated := RcCalibration.new()
+	var one_reading := PackedFloat64Array()
+	one_reading.resize(RcInput.AXES)
+	repeated.sample(one_reading)
+	for _i in 10: repeated.advance(one_reading)
+	_check("repeated confirmations cannot manufacture stable samples", repeated.step == 0 \
+		and repeated._window.size() == 1 and not repeated.stable_axis(0).ok)
 	for inverted in [false, true]:
 		var cal := RcCalibration.new()
 		var rest := PackedFloat64Array()

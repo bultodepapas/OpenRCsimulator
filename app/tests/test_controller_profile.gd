@@ -296,6 +296,26 @@ func _initialize() -> void:
 	uncenterable.roll.center = uncenterable.roll.min
 	_check("old absolute endpoint center loads but signed command fails safe", Profile.validate(uncenterable).ok \
 		and not Profile.upgrade_legacy(uncenterable).is_empty() and Profile.channel_value(1.0, "roll", uncenterable) == 0.0)
+	for kind in ["radio", "gamepad"]:
+		var old := Profile.defaults(kind, "radio_custom" if kind == "radio" else "mode2")
+		old.roll.range_kind = "absolute"
+		old.roll.center = old.roll.min
+		var original_old := old.duplicate(true)
+		var reader := RcInput.new()
+		reader.connect_device(33, {"name": "Fixture", "known": kind == "gamepad"}, old)
+		for axis: int in [int(old.roll.axis), int(old.pitch.axis), int(old.yaw.axis), int(old.throttle.axis)]:
+			reader.on_motion(33, axis, 0.0)
+		for _tick in 60:
+			reader.poll(func(_device: int, axis: int) -> float: return -1.0 if kind == "radio" and axis == int(old.throttle.axis) else 0.0,
+				1.0 / 240.0)
+		_check("uncenterable %s stays loadable but cannot arm" % kind, Profile.validate(old).ok and not reader.armed \
+			and not reader._profile_ready and "Roll" in reader.profile_error and old == original_old \
+			and reader.axes[int(old.throttle.axis)] == (-1.0 if kind == "radio" else 0.0))
+		var fixed := old.duplicate(true)
+		fixed.roll.center = 0.0
+		fixed.roll.range_kind = "centered"
+		_check("repairing %s enables a fresh profile without old arming evidence" % kind,
+			reader.use_profile(fixed, "repaired") and reader._profile_ready and not reader.armed)
 	measured.yaw.axis = measured.roll.axis
 	_check("invalid calibration leaves existing profile unchanged", Profile.merge_radio_calibration(existing, measured).is_empty() and existing == existing_before)
 

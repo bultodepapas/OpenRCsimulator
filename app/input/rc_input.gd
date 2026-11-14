@@ -96,7 +96,16 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	var radio_hint := JetiRadio.matches(info) or str(info.get("kind", "")) == "radio" \
 		or (looks_like_radio(device_name) and not jeti_claim)
 	if not upgraded.is_empty():
-		_activate_profile(upgraded, "calibrated", false)
+		if not _activate_profile(upgraded, "calibrated", false):
+			# Keep a repairable radio draft and raw readings, but never arm it.
+			profile = upgraded.duplicate(true)
+			profile["configured"] = false
+			_profile_ready = false
+			_profile_snapshot.clear()
+			profile_source = "unconfigured"
+			profile_error = ControllerProfile.signed_channel_error(upgraded)
+			_reset_controls(false)
+			_configure_smoke_aux()
 	elif bool(info.get("known", false)) and not radio_hint and not jeti_claim:
 		_activate_profile(ControllerProfile.defaults("gamepad", "mode2"), "gamepad", false)
 	else:
@@ -139,6 +148,10 @@ func use_profile(candidate: Dictionary, source: String) -> bool:
 			var validation := ControllerProfile.validate(candidate)
 			if not validation.errors.is_empty():
 				profile_rejection_error += " " + "; ".join(validation.errors)
+		return false
+	var semantics_error := ControllerProfile.signed_channel_error(upgraded)
+	if not semantics_error.is_empty():
+		profile_rejection_error = semantics_error
 		return false
 	if not _activate_profile(upgraded, source, false, true):
 		profile_rejection_error = "Profile is invalid and was not applied."
@@ -291,6 +304,12 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 		# Direct mutation is an activation boundary too: no low-throttle or
 		# centered-axis evidence collected under the previous mapping can arm it.
 		if not _activate_profile(profile, profile_source, false):
+			_profile_ready = false
+			_profile_snapshot.clear()
+			profile_error = ControllerProfile.signed_channel_error(profile)
+			profile["configured"] = false
+			profile_source = "unconfigured"
+			_invalidate_input("Invalid profile; flight commands are disabled.")
 			return
 	if not is_finite(dt) or dt < 0.0 or not read_axis.is_valid():
 		_invalidate_input("Invalid input sample interval or axis reader.")
@@ -365,9 +384,13 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 				input_error = ""
 			if integrate and armed and throttle_is_low:
 				_focus_rearm_pending = false
-		elif not armed and _throttle_low_seen and throttle_is_low:
-			armed = true
-			input_error = ""
+		elif not armed:
+			if not throttle_is_low:
+				# A contradictory live reading invalidates an older LOW event.
+				_throttle_low_seen = false
+			elif _throttle_low_seen:
+				armed = true
+				input_error = ""
 
 
 ## Direct-flight calibration needs raw readings even without a trusted mapping.
@@ -501,6 +524,10 @@ func _activate_profile(candidate: Dictionary, source: String, preserve_rate: boo
 	if upgraded.is_empty():
 		_profile_ready = false
 		profile_error = "Profile is invalid and cannot drive flight commands."
+		return false
+	var semantics_error := ControllerProfile.signed_channel_error(upgraded)
+	if not semantics_error.is_empty():
+		profile_rejection_error = semantics_error
 		return false
 	var keep_radio_history := preserve_radio_history and _profile_ready and connected and str(profile.get("kind", "")) == "radio" and str(upgraded.get("kind", "")) == "radio"
 	var old_rate := _rate_throttle
@@ -637,5 +664,4 @@ func _describe_state() -> String:
 func describe() -> String:
 	if not connected:
 		return "input: keyboard"
-	var what := str(profile.get("kind", "joystick"))
-	return "input: %s \"%s\" (%s profile) %s" % [what, device_name, profile_source, _describe_state()]
+	var what := str(profile.get("kind",

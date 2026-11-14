@@ -93,7 +93,7 @@ var _lost_device_key := ""
 var _controller_generation := 0
 var _pause_bindings := {}
 var _pause_held := {}
-var _pause_axis_ready := {}
+var _pause_off_seen := {}
 
 
 func _ready() -> void:
@@ -243,6 +243,8 @@ func _disable() -> void:
 ## Losing focus pauses the flight behind the menu; resuming is explicit and re-arms the controls.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and session != null and session.prepared and hud != null:
+		_pause_held.clear()
+		_pause_off_seen.clear()
 		input.reset_throttle()
 		_open_menu(Session.FOCUS_PAUSE)
 
@@ -440,11 +442,11 @@ func _refresh_pause_bindings() -> void:
 		if profile.get("kind", "") != "gamepad" and not actions.has("pause"):
 			continue
 		var binding: Dictionary = ControllerActions.effective_bindings(profile, {}).get("pause", {})
-		_pause_bindings[role] = {id = id, generation = generation, binding = binding}
+		_pause_bindings[role] = {id = id, generation = generation, kind = str(profile.get("kind", "")), binding = binding}
 
 
 ## Observe the actual selected role and its saved Pause binding, including release
-## and axis hysteresis. A new axis mapping must first be observed OFF.
+## and axis hysteresis. Raw button and axis mappings must first be observed OFF.
 func _route_controller_pause(event: InputEvent) -> bool:
 	if not event is InputEventJoypadButton and not event is InputEventJoypadMotion and not event is InputEventKey:
 		return false
@@ -479,10 +481,11 @@ func _route_controller_pause(event: InputEvent) -> bool:
 		active = (event as InputEventKey).pressed and active
 	if not active:
 		_pause_held.erase(key)
-		if kind == "axis":
-			_pause_axis_ready[key] = true
+		if kind in ["axis", "button"]:
+			_pause_off_seen[key] = true
 		return false
-	if kind == "axis" and not bool(_pause_axis_ready.get(key, false)):
+	var needs_off := kind == "axis" or (kind == "button" and entry.kind in ["radio", "joystick"])
+	if needs_off and not bool(_pause_off_seen.get(key, false)):
 		return false
 	if not was_held:
 		_pause_held[key] = true

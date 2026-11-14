@@ -11,6 +11,11 @@ with --check) from assets already in this repository:
 - avanti-s-a200/verde_neon_carbono_*: the "Verde Neón Carbono" jet livery, designed in the
   scene space of assets/aircraft/avanti-s-a200/avanti_s.glb (owner-supplied model) and baked
   through each paint material's UVs, with the shared CC0 twill carbon and Noto lettering.
+- avanti-s-a200/sabre_plata_*: the "Sabre Plata" natural-metal tribute to early-1950s USAF
+  fighters (fictional FU-861 / 20861 markings; no official affiliation implied), designed in
+  the same scene space. Albedo, roughness, metallic mask and a normal map baked from a height
+  field; reuses the shared ambientCG CC0 brushed-metal grain, the public-domain USAF insignia in
+  tools/skins/sources/silver-ace/ (see its README.md) and Noto lettering.
 - avanti-s-a200/sponsors/: Jumper RC and JETI model logos (trademarks, used as sponsor decals;
   see that folder's SOURCE.txt). Godot ignores the folder (.gdignore); the builder bakes them in.
 - monster-car-2/*_livery.jpg and *_emission.png: the green body colour of the

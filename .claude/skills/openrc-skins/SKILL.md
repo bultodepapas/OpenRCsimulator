@@ -1,59 +1,111 @@
 ---
 name: openrc-skins
-description: Create or improve stock paint schemes (skins, liveries, decals, sponsor logos, material finishes) for OpenRC vehicles — aircraft, the HX-700 helicopter and RC cars — through data/vehicle_paints.json, render/vehicle_paint.gd and the texture builder tools/skins/build_vehicle_paints.py. Covers GLB inspection, 3D-designed liveries baked through stock UVs, lettering and decals, PBR material tuning, import settings, previews, audits and verification. Use for any skin, livery, decal, logo, paint, texture-colour or material-finish task on a vehicle; player paint kits (.orskin) are a different system (tools/skins/README.md, docs/AIRCRAFT-SKINS.md).
+description: Author and verify stock skins, liveries, decals and material finishes for OpenRC aircraft, helicopters and RC cars through the paint registry and source texture generators. Use for vehicle appearance work; player-created .orskin packages have a separate pipeline.
 ---
 
 # Vehicle skins in OpenRC
 
-Authoritative reference: [tools/skins/README.md](../../../tools/skins/README.md) ("Stock vehicle paints"). Skins are render-only:
-never edit GLBs, generated geometry or `app/physics`/`app/sim`. Runtime: per-instance `StandardMaterial3D` copies
-matched by glTF material name and, optionally, mesh-node glob, applied by each builder before lights, rotor blur,
-damage, grime or paint kits copy materials. Home's paint gallery lists the skins automatically.
+[tools/skins/README.md](../../../tools/skins/README.md) owns the stock-paint workflow.
+Keep skins render-only: preserve generated geometry, UVs, node/hinge names and physics.
+Runtime bindings make per-instance `StandardMaterial3D` copies before lights, blur,
+damage and custom paint kits. Home lists stock skins from the registry.
 
-## Workflow
+## Authoring workflow
 
-1. **Inspect** the model: `.tools/visual-venv/Scripts/python.exe tools/skins/glb_inspect.py <glb>` — materials,
-   textures, mesh nodes, scene-space bounds and warnings (UVs outside 0..1, mirrored left/right UVs, images shared
-   by several materials, emission textures). Procedural models (Ugly Stik) have no GLB: list nodes and `profile:colour`
-   material names from a built instance.
-2. **Choose the cheapest layer that works:** colour/finish bindings in JSON (`base`, a skin's `materials`), per-part
-   rules by node glob (`base_nodes` always, `default_nodes`/skin `nodes` per scheme, `layers` on request), shared CC0
-   detail maps (twill carbon, brushed metal, rubber in `assets/vehicle-paints/shared/`), and only then baked textures.
-3. **Design baked liveries in 3D scene space** (all node transforms applied) in the builder and bake through the stock
-   UVs. Measure first: `tools/skins/paint_audit.py <glb> <materials> <WxH>` (texel density, stretch, conflicts).
-4. **Preview** through the real builders, both sides and the Low preset:
-   `.tools/Godot_v4.8-beta2_win64_console.exe --path app --audio-driver Dummy --windowed --resolution 320x200 --script ../tools/skins/paint_preview.gd -- --vehicle=<id> --skin=<id> --out=<abs dir>`
-   (prefix `OPENRC_SCENE_DETAIL=low`). Look at every image; audit orientation, resolution, logic and aesthetics,
-   ideally with an independent reviewer given only the renders.
-5. **Verify:** `build_vehicle_paints.py --check` (byte-exact), `app/tests/test_vehicle_paint.gd` plus
-   `test_aircraft_liveries`, `test_livery_picker`, `test_custom_skin` and the vehicle's own suites; add checks for new skins.
+1. **Inspect existing schemes and the actual asset.** Check the registry and source
+   generators for suitable work to reuse, preserving any request for a distinct design. Use `tools/skins/glb_inspect.py` for GLBs and
+   `paint_audit.py` for UV density, stretch and conflicts. For procedural aircraft,
+   inspect a built instance and its UV source. Material names can be shared by
+   unrelated parts; use node bindings when a finish belongs only to one part.
+2. **Choose the cheapest sufficient layer.** Start with registry colours/finishes,
+   node rules and shared CC0 maps. Bake a new atlas when the design needs unique
+   panels, lettering or wear. A new Stik skin can reuse its stock atlas directly;
+   a Blender export is unnecessary for a paint-only task.
+3. **Generate reproducibly.** Use the pinned visual venv and the owning generator,
+   not hand-edited PNGs. Record sources, licences and hashes. Read-modify-write
+   `app/data/vehicle_paints.json` to preserve parallel work. Regenerate the recorded
+   roughness mean whenever its map changes; run the actual generator's `--check`.
+4. **Review the production builders.** Inspect Home and flight at 1920x1080 first,
+   both flanks, top and underside, then Low scene detail. Studio/atlas previews
+   support authoring; their default dimensions do not establish native 1080p review.
+   Record the actual viewport dimensions and renderer from the running app.
+   Check lettering at its actual screen size, reflections at multiple angles and
+   small accents on the visible aircraft. Atlas-area percentages alone cannot
+   establish visible coverage when UVs repeat. Independent render review is useful.
+5. **Verify new skin bindings and affected behavior.** New registry/material
+   bindings merit the targeted paint test even when loader code is unchanged. Run the checked
+   `app/tests/test_vehicle_paint.gd` and relevant livery, picker, custom-skin and
+   vehicle tests. Cover variant registration, repainting and Low when affected.
+   Colour-only edits do not justify broad physics suites or new tests that repeat
+   the implementation. Read engine errors/warnings and completion markers as well
+   as assertion counts. Keep captures in ignored evidence, not tracked image folders.
 
-## Baking rules learned the hard way
+## UV and raster rules
 
-- Stock UVs **repeat** outside 0..1: wrap texel indices like the sampler, never clip.
-- Left/right parts often **share mirrored UVs**: fold about X = 0 (`symmetric`), keep lettering and asymmetric marks
-  (nav-light colours, "NO STEP") off them; put text on separately mapped surfaces (fuselage sides, fin).
-- Hidden cove/edge faces share texels with the skin: let the face that best faces the skin axis own the texel
-  (`skin_axis`, winner takes all), and keep white keylines off gap faces.
-- Parts reusing another material's image over its UVs (Avanti wing doors) get their own texture; force underside
-  design on parts whose inner faces point up.
-- Replace emission maps with the design (the old pattern keeps glowing); add a gloss map + `detail_map_means` entry.
-- Chord-based designs: smooth the leading/trailing-edge table and interpolate between span bins.
-- Lettering/decals: choose the side from the normal, sample bilinearly, letters ≥ 20 px tall (bake a larger atlas —
-  UVs are normalised), keep them inside one surface and clear of creases, wing roots and control-surface hinges.
+- UVs may repeat outside 0..1: wrap texels as the runtime sampler does.
+- Shared/mirrored faces cannot carry independently readable lettering. Use symmetric
+  marks there and put text on separately unwrapped faces; a fin is not automatically
+  safe. For the Stik, read the [atlas rules](../../../tools/skins/README.md#procedural-stik-atlas)
+  before placing any artwork. Do not change its stock/custom-kit identity to fix a decal.
+- In scene-space bakes, apply all node transforms. Let the face best aligned with
+  the paint direction own shared edge/cove texels (`skin_axis`); keep bright keylines
+  off hidden gaps. Avanti wing doors need their own texture over the reused UVs.
+- Keep letters at least 20 actual atlas pixels tall, bilinearly sampled and clear of
+  folds, wing roots and hinges. Smooth/interpolate chord-based boundary tables.
+- Repainting an overlapping atlas region must replace its albedo, roughness,
+  metallic mask and height/normal information together. A flat hatch must not keep
+  a buried seam from the previous grid. Pillow drawing can include the far edge
+  while a crop excludes it; cover the complete stroke to prevent bright mip bleed.
 
-## Materials
+## Material decisions
 
-- No pure black: charcoal plastic/rubber ≈ sRGB `#19`–`#20`. Lacquer and carbon resin get clearcoat; with a
-  `roughness_texture`, `roughness` is a multiplier (Low preset uses multiplier × map mean).
-- Compatibility renderer: everything but subsurface scattering works; `compress/high_quality` is ignored.
-- Every new texture: `compress/mode=2`, `mipmaps/generate=true`, normal maps `compress/normal_map=1`, set in the
-  `.import` (Godot detects 3D use only in the editor), then `--headless --path app --import`; restore unrelated sidecars.
-- Do not bind the articulated HX-700 gear's `Plastico_Grafito` (dummy-renderer teardown error).
+- Use charcoal rather than pure black for coated surfaces. Black paint is mostly
+  dielectric; do not make every black panel metallic. Exposed scuffs may reveal
+  metal. Bare aluminium needs alloy-colour, roughness and metal/paint boundaries,
+  not a flat silver fill. Treat these as art-directed estimates, not measured BRDFs.
+- Compatibility flight and Home disable sky reflections (`render/atmosphere.gd`):
+  fully metallic paint keeps only sun highlights and reads near-black. Give bare
+  metal a partial metallic share (about 0.45-0.7) and compare `paint_preview.gd`
+  `--env=flight` (default) with `--env=sky`; `--focus=x,y,z --zoom=N` frames decals.
+- `"albedo_texture": null` / `"emission_texture": null` remove a stock map.
+- `roughness_texture` multiplies `roughness`; Low uses multiplier times the recorded
+  map mean. A `metallic_texture` also needs the intended multiplier (usually 1.0)
+  and grayscale channel. Its paint/metal boundaries remain at Low.
+- Replacement normal maps must not expose the source film normals when Low skips
+  detail. Skins that do not replace normals can retain their original finish.
+- Emission's additive colour can wash out an otherwise sparse map. Use black
+  emission colour when only the map should glow; repainting must remove stale
+  emission. Match clearcoat to a coating/resin, not automatically to every metal.
+- Repainting starts from the immutable source, stays one copy deep and preserves
+  mesh resources. Test neon -> nonemissive -> factory when those finishes interact.
+- New textures need `compress/mode=2`, mipmaps and normal-map mode 1 where applicable.
+  Import with the pinned engine through admitted tooling; retain only intended
+  sidecar changes. Compatibility does not support subsurface scattering and ignores
+  the high-quality compression flag. Avoid the HX-700 gear's `Plastico_Grafito`
+  binding because its copied surface has a dummy-renderer teardown error.
 
-## Assets and provenance
+## Shared-host verification
 
-Reuse before inventing: ambientCG CC0 via its API, bundled Noto fonts (OFL). Record sources in `SOURCE.txt`/`LICENSES.txt`.
-Trademarked sponsor logos need the owner's confirmation of permission: keep originals unchanged in a `.gdignore`d
-folder with a SOURCE note and bake them in. Another session may edit `vehicle_paints.json`: read-modify-write, never
-overwrite blindly. Python patches with `'''` break bash heredocs — write them to a file first.
+Read [testqueue](../../../tools/testqueue/README.md) and
+[debug bridge](../../../tools/debug/README.md) before engine work. Use admitted
+sessions and their owning handles; a port alone is not ownership. When the host is
+busy, leave the work queued, check its state patiently and advance generators,
+provenance, visual/source review or documentation. Preserve other sessions; do not
+ask the user to close them by default merely to accelerate a skin task.
+
+Budget disk space for frozen inputs, materialized copies and imports before
+launching. Reuse a complete, source-compatible import cache when appropriate.
+Allow the job deadline to cover import plus the actual check. A submission timeout
+can occur after registration: recover from its durable receipt with
+`testctl.py resubmit <receipt>` before making a new request. Do not confuse an
+infrastructure timeout with a failed skin assertion. Retain logs and restore any
+owned temporary storage changes before handing back the workspace.
+
+## Sources and permissions
+
+Reuse suitable ambientCG CC0 maps, bundled OFL fonts and public-domain artwork.
+Record exact source URLs, licences, hashes and transformations in the existing
+SOURCE/LICENSE files. Keep downloaded originals separate from generated textures.
+Trademarked sponsor artwork requires the owner's confirmation of permission; keep
+its original bytes and provenance. Do not turn a paint task into a geometry,
+lighting, simulation or host-configuration change.

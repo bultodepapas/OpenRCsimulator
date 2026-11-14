@@ -100,6 +100,15 @@ precautions, all in the builder:
 The stock wing doors reuse the wing image over the wing's leading edge, so the
 skin gives them their own texture.
 
+"Sabre Plata" adds a metallic mask and a normal map baked from a height field
+(panel grooves, flush-rivet dimples, oil-canned skins); slopes use each texel's
+scene-space size and stop at UV-island borders. Compatibility flight and Home
+disable sky reflections (`render/atmosphere.gd`), so its bare panels use a partial
+metallic share (0.44-0.70) instead of 1.0, which would read near-black there.
+`"albedo_texture": null` and `"emission_texture": null` remove a stock map (the
+tiled carbon trim, the stock glow). Its design layers are per texel, so the
+builder evaluates them in chunks to bound memory.
+
 Fixed-wing families may have entries too. `AirplaneBuilder.build` applies a
 family's base right after model validation, before lighting, customization or
 paint kits copy materials. The procedural Ugly Stik materials are named
@@ -139,6 +148,49 @@ the canopy's model space and baked through its plan-projected UVs:
 another Pillow/FreeType build may anti-alias the lettering differently.
 Import new outputs once with Godot `--headless --path app --import`. A colour-only
 skin (all MT8 schemes) needs no texture: edit the JSON only.
+
+### Procedural Stik atlas
+
+The basic Stik, its three glow variants and electric 6S use generated covering,
+not a paint GLB. Inspect `app/aircraft/ugly_stik_finish.gd` and the source
+`assets/aircraft/ugly-stik-60/appearance.json` before authoring. The following
+coordinates are in the 1024-unit design space of the 2048-square texture:
+
+| Region | Atlas coordinates | Constraint |
+| --- | --- | --- |
+| Wing | x 0..1024, y 16..240 | Upper and lower faces share UVs; use geometric marks, not lettering. |
+| Fuselage | x 8..1016, y 280..520 | Nose to tail; opposite flanks are separately mapped about y=400. |
+| Fin | x 32..480, y 544..976 | Both sides share UVs; use symmetric insignia or chevrons. |
+| Dorsal | x 544..1008, y 544..1008 | Overlaps the hatch and stabiliser underside. |
+| Stabiliser underside / hatch | `stab_unwrap` / `hatch` in appearance.json | Keep all maps consistent when these regions overwrite the dorsal design. |
+| Uniform faces | (512,10), fin edges near (41,553) | Stabiliser tops and some caps cannot carry independent panel detail. |
+
+Mirror complete fuselage label boxes around y=400 (`y0,y1 -> 800-y1,800-y0`)
+and rotate opposite-flank lettering 180 degrees. Mirroring only each text image
+can reverse the vertical label order. Review both flanks without wing occlusion.
+Letter heights refer to actual atlas pixels, not the 1024-unit design space.
+
+Bind the main artwork to `classic-covering-v4`, the matching dark gap atlas to
+`classic-covering-gap-v1`, and recolour the solid ventral fin `skin:b00e28ff`.
+Preserve the gap's dark, nonmetallic finish. `same_as` shares the electric
+family's base finishes, not its selectable skin records: register a new skin in
+both `jensen-das-ugly-stik-60` and `stik-electric-6s`. Never change geometry,
+UVs or the source livery merely to add a stock paint; custom kits pin that identity.
+
+Layering must replace height as well as colour: clear old relief before painting
+a flat hatch or a replacement panel grid. Inclusive drawn borders must also be
+included in recolouring crops, or their old bright pixels bleed through mipmaps.
+For bare metal, keep dielectric paint separate in the metallic map. For black
+coating, keep most of the mask nonmetallic and reserve exposed metal for scuffs.
+At Low, retain metal/paint boundaries, use the roughness mean and omit replacement
+normal detail rather than inheriting the stock film's sagging normal map.
+
+Use the owning `build_stik_*.py --check`, native Home/flight review at 1920x1080,
+and the affected paint/skin tests. On shared hosts follow
+[admission](../testqueue/README.md): wait patiently behind other sessions and use
+the time for authoring/review. Import time counts toward a job's deadline;
+complete compatible caches avoid repeated full-scene imports. Recover a timed-out
+submission from its saved receipt before registering another job.
 
 ### Ugly Stik: NEON RONIN (US-V19)
 

@@ -191,9 +191,13 @@ func advance(axes: PackedFloat64Array) -> bool:
 		return false
 	# Confirmation never counts as another observation. The owner must sample
 	# each poll/tick once; a repeated button press cannot manufacture a window.
-	if _window.is_empty() or _window.back() != axes:
+	if _window.is_empty():
 		error = "Wait for the current radio reading before continuing."
 		return false
+	for i in RcInput.AXES:
+		if absf(_window.back()[i] - axes[i]) > STABLE_SPREAD:
+			error = "Wait for the current radio reading before continuing."
+			return false
 	if step == 0:
 		for i in RcInput.AXES:
 			var neutral := stable_axis(i)

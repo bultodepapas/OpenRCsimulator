@@ -122,7 +122,7 @@ func _process(delta: float) -> void:
 		_refresh()
 
 
-func _sample() -> PackedFloat64Array:
+func _read_axes() -> PackedFloat64Array:
 	var axes: PackedFloat64Array = PackedFloat64Array()
 	if not _check_connection():
 		return axes
@@ -132,6 +132,13 @@ func _sample() -> PackedFloat64Array:
 			_cancel(tr("The radio returned an invalid axis reading. Calibration was cancelled; the draft is unchanged."))
 			return PackedFloat64Array()
 		axes.append(float(value))
+	return axes
+
+
+func _sample() -> PackedFloat64Array:
+	var axes := _read_axes()
+	if axes.is_empty():
+		return axes
 	_wizard.sample(axes)
 	_last_axes = axes
 	if _wizard.done():
@@ -152,7 +159,9 @@ func _sample() -> PackedFloat64Array:
 func advance() -> void:
 	if _finished or not _surface.visible:
 		return
-	var axes: PackedFloat64Array = _sample()
+	# A confirmation is not a sampling tick. Read fresh values for safety but
+	# do not let repeated presses manufacture the wizard's stable window.
+	var axes: PackedFloat64Array = _read_axes()
 	if axes.is_empty():
 		return
 	if _wizard.done():

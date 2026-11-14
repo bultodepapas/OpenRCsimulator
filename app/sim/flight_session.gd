@@ -1950,14 +1950,20 @@ func release(reason: String) -> void:
 
 
 ## Compatibility preflight before a profile is persisted or activated.
-func controller_profile_rejection(_profile: Dictionary) -> String:
-	return ""
+func controller_profile_rejection(profile: Dictionary) -> String:
+	return ControllerProfile.signed_channel_error(profile)
 
 
 ## Called only at a paused, explicit shell selection boundary; never by device enumeration.
 func apply_controller_selection(device: int, info: Dictionary, profile: Dictionary, initial_start := false) -> bool:
 	if external_driver_enabled:
 		return false
+	if device >= 0 and not profile.is_empty():
+		var normalized := ControllerProfile.upgrade_legacy(profile)
+		var rejection := controller_profile_rejection(normalized) if not normalized.is_empty() else "Invalid controller profile."
+		if not rejection.is_empty():
+			pause_reason = rejection
+			return false
 	controller_cut_held = false
 	pending_controller_calibration.clear()
 	var staged_throttle: float = float(commands.throttle) if initial_start else 0.0
@@ -1990,7 +1996,6 @@ func controller_disconnected() -> void:
 
 
 func controller_focus_lost() -> void:
-	pending_controller_calibration.clear()
 	if external_controller_selection and radio.connected:
 		radio.set_auxiliary_enabled(false)
 		radio.require_neutral(true, true)

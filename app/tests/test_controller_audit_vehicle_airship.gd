@@ -159,6 +159,7 @@ func _ownership() -> void:
 	pad.roll.deadzone = 0.2
 	pad.actions.pause = {type = "button", button = JOY_BUTTON_X}
 	var radio := Profile.defaults("radio", "radio_custom")
+	radio.actions.pause = {type = "button", button = 20}
 	var profiles := {7: pad, 9: radio}
 	activity.controller_registry = registry
 	activity.controller_profile_for = func(id: int) -> Dictionary: return profiles.get(id, {}).duplicate(true)
@@ -215,6 +216,17 @@ func _ownership() -> void:
 	activity.handle_action("resume")
 	activity._input(_button(9, JOY_BUTTON_START, true))
 	check("raw transmitter button 6 is not an inherited Pause", not activity.session.paused)
+	activity._input(_button(9, 20, true))
+	check("a raw mapped Pause held ON at selection has no authority", not activity.session.paused)
+	activity._input(_button(9, 20, false))
+	activity._input(_button(9, 20, true))
+	check("a raw mapped Pause works only after its OFF event", activity.session.paused)
+	activity.handle_action("resume")
+	activity._notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
+	activity.input.radio.on_motion(9, 2, -1.0)
+	activity.handle_action("resume")
+	activity._input(_button(9, 20, true))
+	check("focus loss invalidates the raw Pause switch's earlier OFF evidence", not activity.session.paused)
 	registry.disconnect_device(9)
 	check("loss of the selected radio pauses and releases its ownership", activity.session.paused \
 		and activity.input.source() == "keyboard")

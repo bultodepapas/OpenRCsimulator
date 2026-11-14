@@ -404,3 +404,15 @@ func _preflight_tests() -> void:
 		and cancelled[0] == "Calibration cancelled. The draft is unchanged.")
 	other.queue_free()
 	await _frames(Calibration.STABLE_SAMPLES)
+
+	var one_poll := RadioCalibration.new()
+	one_poll.configure(registry, 5, {"kind": "radio"})
+	one_poll.read_axis = func(_id: int, axis: int) -> float: return _raw[axis]
+	root.add_child(one_poll)
+	one_poll.set_process(false)
+	one_poll._sample()
+	for _press in 10: one_poll.advance()
+	_check("repeated Next presses do not create sample observations", one_poll._wizard.step == 0 \
+		and one_poll._wizard._window.size() == 1)
+	one_poll.queue_free()
+	await _frames(1)

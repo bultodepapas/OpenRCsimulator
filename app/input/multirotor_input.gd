@@ -275,6 +275,7 @@ func _source_changed() -> void:
 	source_generation += 1
 	_source_key = _current_source_key()
 	_arm_latch = false
+	_actions &= ~FC.ACTION_RECOVERY
 	_mode = FC.FLIGHT_ANGLE if mode_from_switch() else default_mode(source())
 	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
 

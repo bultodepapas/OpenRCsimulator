@@ -371,6 +371,9 @@ func validate_profile_for_session(candidate: Variant) -> Dictionary:
 	var profile: Dictionary = Profile.upgrade_legacy(candidate)
 	if profile.is_empty():
 		return {"ok": false, "profile": {}, "error": "Invalid controller profile."}
+	var signed_error := Profile.signed_channel_error(profile)
+	if not signed_error.is_empty():
+		return {"ok": false, "profile": {}, "error": signed_error}
 	if is_instance_valid(session) and session.has_method("controller_profile_rejection"):
 		var rejection: Variant = session.call("controller_profile_rejection", profile)
 		if typeof(rejection) != TYPE_STRING:

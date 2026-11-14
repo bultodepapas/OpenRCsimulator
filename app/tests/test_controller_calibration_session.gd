@@ -33,6 +33,14 @@ func _initialize() -> void:
 		var info := {"name": "Calibration fixture", "guid": "fixture-radio", "known": false}
 		var original := Profile.defaults("radio", "radio_custom")
 		session.radio.connect_device(7, info, original)
+		var bad := original.duplicate(true)
+		bad.roll.range_kind = "absolute"
+		bad.roll.center = bad.roll.min
+		var before: Dictionary = session.radio.profile.duplicate(true)
+		session.pending_controller_calibration = {"sentinel": true}
+		check(kind + " refuses uncenterable selection without changing active profile or pending draft", \
+			not session.apply_controller_selection(7, info, bad) and session.radio.profile == before \
+			and session.pending_controller_calibration == {"sentinel": true} and "Roll" in session.pause_reason)
 		check(kind + " rejects managed calibration without a generation lease", not session.start_calibration())
 		var lease := {"value": 12, "calls": 0}
 		session.controller_connection_generation = func(_id: int) -> int: return lease.value
@@ -45,12 +53,15 @@ func _initialize() -> void:
 		var old_profile: Dictionary = session.radio.profile.duplicate(true)
 		session.calibration = CompletedCalibration.new(measured)
 		session.advance_calibration()
-		var pending: Dictionary = session.pending_controller_calibration
+		var pending: Dictionary = session.pending_controller_calibration.duplicate(true)
 		check(kind + " retains measured work and complete source lease after refusal", session.calibration == null \
 			and pending.get("profile", {}) == measured and pending.get("device_id", -1) == 7 \
 			and pending.get("device_key", "") == session.radio.device_key and pending.get("generation", -1) == 12)
 		check(kind + " reports action and all AUX conflicts while old profile remains active", session.radio.profile == old_profile \
 			and "camera_cycle" in session.pause_reason and "gear" in session.pause_reason and "smoke" in session.pause_reason)
+		session.controller_focus_lost()
+		check(kind + " keeps generation-bound measurements through focus loss", session.pending_controller_calibration == pending \
+			and not session.radio.armed)
 		check(kind + " starts another calibration explicitly", session.start_calibration())
 		session.calibration = CompletedCalibration.new(measured)
 		lease.value = 13

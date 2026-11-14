@@ -2077,13 +2077,16 @@ func open_controls(from: Control = null) -> void:
 	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"), capabilities)
 	if flight != null and _has_property(flight.session, "pending_controller_calibration"):
 		var pending: Dictionary = flight.session.pending_controller_calibration
+		var pending_owner_id := str(setup.current_profile().get("profile_id", ""))
 		var selected_id: int = controllers.registry.selected_device_id("flight")
 		if not pending.is_empty() and selected_id == int(pending.device_id) \
 				and int(pending.get("generation", -1)) == controllers.registry.connection_generation(selected_id) \
 				and flight.session.radio.device_key == str(pending.device_key):
 			setup.apply_calibration_draft(pending.profile, selected_id, controllers.registry.connection_generation(selected_id), str(pending.get("warning", "")))
-		setup.profile_saved.connect(func(_profile: Dictionary) -> void:
-			if flight != null and _has_property(flight.session, "pending_controller_calibration"):
+		setup.profile_saved.connect(func(saved_profile: Dictionary) -> void:
+			if str(saved_profile.get("profile_id", "")) == pending_owner_id and flight != null \
+					and _has_property(flight.session, "pending_controller_calibration") \
+					and flight.session.pending_controller_calibration == pending:
 				flight.session.pending_controller_calibration = {})
 	setup.close_requested.connect(func() -> void:
 		if screens.is_top("controls"): screens.pop())

@@ -1015,13 +1015,14 @@ func advance_calibration() -> void:
   if not warning.is_empty(): pause_reason+=" "+warning
 
 func controller_profile_rejection(profile: Dictionary) -> String:
- return "Choose a stick-rate or calibrated radio profile for helicopter collective." if profile.get("throttle_mode","")=="trigger_absolute" else ""
+ if profile.get("throttle_mode","")=="trigger_absolute": return "Choose a stick-rate or calibrated radio profile for helicopter collective."
+ return ControllerProfile.signed_channel_error(profile)
 
 func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_initial_start: bool=false) -> bool:
  if _transition_reentry(): return false
  _clear_mode_confirmation()
- pending_controller_calibration.clear()
  if id<0:
+  pending_controller_calibration.clear()
   calibration=null
   radio.disconnect_device()
   _controller_lost=false
@@ -1030,10 +1031,10 @@ func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_in
   return true
  var normalized: Dictionary=ControllerProfile.upgrade_legacy(profile)
  if normalized.is_empty() or not controller_profile_rejection(normalized).is_empty():
-  _controller_lost=true
   sim.set_paused(true)
-  pause_reason="Choose a stick-rate or calibrated radio profile for helicopter collective."
+  pause_reason="Invalid controller profile." if normalized.is_empty() else controller_profile_rejection(normalized)
   return false
+ pending_controller_calibration.clear()
  calibration=null
  radio.disconnect_device()
  _controller_lost=false
@@ -1061,7 +1062,6 @@ func controller_disconnected() -> void:
 func controller_focus_lost() -> void:
  if _transition_reentry(): return
  _clear_mode_confirmation()
- pending_controller_calibration.clear()
  if external_controller_selection and radio.connected:
   radio.set_auxiliary_enabled(false)
   radio.require_neutral(true,true)

@@ -144,6 +144,22 @@ func _run() -> void:
 		wizard.free()
 		setup._assistant.cancel()
 		await process_frame
+	# Keep several measured conflicts reviewable and resolve them one at a time.
+	radio.actions = {camera_cycle = {type = "axis", axis = 5, sign = 1, threshold = 0.65},
+		camera_previous = {type = "axis", axis = 6, sign = 1, threshold = 0.65}}
+	setup._set_draft_profile(radio)
+	var measured: Dictionary = preload("res://input/rc_input.gd").DEFAULT_PROFILE.duplicate(true)
+	measured.roll.axis = 5
+	measured.pitch.axis = 6
+	check("calibration retains measurements with several conflicts", setup.apply_calibration_draft(measured, 5, registry.connection_generation(5)))
+	check("conflicted calibration cannot save", not setup._save_profile(false))
+	setup._clear_action_binding("camera_cycle")
+	check("first explicit repair keeps the remaining conflict editable", setup.current_profile().actions.camera_cycle.type == "unbound" and setup.current_profile().roll.axis == 5)
+	setup._clear_action_binding("camera_previous")
+	check("all repairs retain measurements and produce a valid profile", Profile.validate(setup._profile_candidate()).ok and setup.current_profile().pitch.axis == 6)
+	setup._calibration_stick_mode = 1
+	setup._set_draft_profile(Profile.defaults("radio", "radio_custom"))
+	check("a different profile does not inherit the previous calibration mode", setup._calibration_stick_mode == 0)
 	setup.free()
 
 	registry = Registry.new()

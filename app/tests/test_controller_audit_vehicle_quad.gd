@@ -91,12 +91,14 @@ func _raw_source(kind: String, inverted: bool) -> void:
 	axes[2] = high
 	s = _tick(sim, input)
 	check("after proper arming full throttle reaches the controller", s.ready and sim.aux[FC.AUX_COLLECTIVE] > 0.99)
+	input.attest_recovery()
 	input.on_connection_changed(0, false)
 	input.connect_device(0, {name = "Synthetic raw", kind = kind}, profile)
 	axes[2] = low
 	s = _tick(sim, input)
-	check("reconnect discards prior-generation low evidence and motor authority", not s.ready \
-		and sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED and sim.modes[FC.MODE_OFF_OBSERVED] == 0)
+	check("reconnect discards prior-generation low evidence, recovery and motor authority", not s.ready \
+		and sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED and sim.modes[FC.MODE_OFF_OBSERVED] == 0 \
+		and int(s.pilot[FC.IN_ACTIONS]) & FC.ACTION_RECOVERY == 0)
 	input.radio.on_motion(0, 2, low)
 	s = _tick(sim, input)
 	check("new generation requires a new low event", s.ready)
