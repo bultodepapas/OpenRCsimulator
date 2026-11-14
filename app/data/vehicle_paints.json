@@ -677,7 +677,34 @@
 		"jensen-das-ugly-stik-60": {
 			"default_label": "",
 			"base": {},
-			"skins": [],
+			"skins": [
+				{
+					"id": "neon_ronin",
+					"label": "NEON RONIN · Cyberpunk",
+					"materials": {
+						"skin:b00e28ff": {
+							"albedo": "#16e5f4",
+							"roughness": 0.28,
+							"clearcoat": 0.8,
+							"clearcoat_roughness": 0.12
+						},
+						"classic-covering-v4": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_albedo.png",
+							"emission": "#000000",
+							"emission_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_emission.png",
+							"roughness_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png",
+							"roughness": 1.0,
+							"metallic": 0.12,
+							"clearcoat": 0.8,
+							"clearcoat_roughness": 0.12
+						},
+						"classic-covering-gap-v1": {
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_albedo.png"
+						}
+					}
+				}
+			],
 			"base_nodes": {
 				"gear_left": {
 					"rubber:202124ff": {
@@ -781,11 +808,142 @@
 			"same_as": "jensen-das-ugly-stik-60",
 			"default_label": "",
 			"base": {},
-			"skins": []
+			"skins": [
+				{
+					"id": "neon_ronin",
+					"label": "NEON RONIN · Cyberpunk",
+					"materials": {
+						"skin:b00e28ff": {
+							"albedo": "#16e5f4",
+							"roughness": 0.28,
+							"clearcoat": 0.8,
+							"clearcoat_roughness": 0.12
+						},
+						"classic-covering-v4": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_albedo.png",
+							"emission": "#000000",
+							"emission_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_emission.png",
+							"roughness_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png",
+							"roughness": 1.0,
+							"metallic": 0.12,
+							"clearcoat": 0.8,
+							"clearcoat_roughness": 0.12
+						},
+						"classic-covering-gap-v1": {
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/neon_ronin_albedo.png"
+						}
+					}
+				}
+			]
+		},
+		"sebart-avanti-s-a200-p100rx": {
+			"default_label": "",
+			"base": {},
+			"skins": [
+				{
+					"id": "verde_neon_carbono",
+					"label": "Verde Neón Carbono",
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage.jpg",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage_emission.png",
+							"metallic": 0.0,
+							"roughness": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage_roughness.png"
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_wing.jpg",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_wing_emission.png",
+							"metallic": 0.0,
+							"roughness": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_wing_roughness.png"
+						},
+						"paint_doors_ala": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_doors.jpg",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_doors_emission.png",
+							"metallic": 0.0,
+							"roughness": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_doors_roughness.png"
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_stab.jpg",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_stab_emission.png",
+							"metallic": 0.0,
+							"roughness": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_stab_roughness.png"
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin.jpg",
+							"emission_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin_emission.png",
+							"metallic": 0.0,
+							"roughness": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin_roughness.png"
+						},
+						"paint_doors": {
+							"albedo": "#f2f5f7",
+							"metallic": 0.0,
+							"roughness": 0.16,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03
+						},
+						"paint_fence": {
+							"albedo": "#4cf02a",
+							"metallic": 0.0,
+							"roughness": 0.16,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03
+						},
+						"paint_fence_lower": {
+							"albedo": "#16181b",
+							"metallic": 0.0,
+							"roughness": 0.16,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03
+						},
+						"paint_fillets": {
+							"albedo": "#f2f5f7",
+							"metallic": 0.0,
+							"roughness": 0.16,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03
+						},
+						"canopy_glass": {
+							"albedo": "#c08e2ec4",
+							"metallic": 0.75,
+							"roughness": 0.02,
+							"specular": 0.8,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.01
+						}
+					}
+				}
+			]
 		}
 	},
 	"detail_map_means": {
+		"res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png": 0.4474937915802002,
 		"res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg": 0.234,
-		"res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg": 0.469
+		"res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg": 0.469,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage_roughness.png": 0.1801,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_wing_roughness.png": 0.1862,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_doors_roughness.png": 0.2115,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_stab_roughness.png": 0.1831,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin_roughness.png": 0.1621
 	}
 }

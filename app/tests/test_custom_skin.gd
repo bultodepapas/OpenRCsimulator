@@ -60,7 +60,9 @@ func _run() -> void:
 	_check("empty skin directories offer no custom paints", CustomPaint.choices("jensen-das-ugly-stik-60").is_empty()
 		and CustomPaint.choices("moonrunner-x99").is_empty())
 	var empty_stock_choices := Builder.livery_choices("jensen-das-ugly-stik-60")
-	_check("empty skin directories retain the stock paint choice", empty_stock_choices.size() == 1
+	# Registry stock paints (render/vehicle_paint.gd) may follow the default; no custom entry may appear.
+	var registry_paints: int = preload("res://render/vehicle_paint.gd").choices("jensen-das-ugly-stik-60").slice(1).size()
+	_check("empty skin directories retain the stock paint choice", empty_stock_choices.size() == 1 + registry_paints
 		and empty_stock_choices[0].id == "")
 	var stock: Dictionary = Registry.describe(X8)
 	_check("stock model is verified", stock.get("ok", false))

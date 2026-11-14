@@ -14,10 +14,13 @@
 
 static constexpr NSUInteger IW = 1280, IH = 720, OW = 1920, OH = 1080;
 static constexpr NSUInteger FRAMES = 4;
+static NSDictionary *pipeline_diagnostics = nil;
 
 static NSDictionary *failure(NSString *stage, NSString *detail) {
-    return @{ @"status": stage ?: @"unknown_failure", @"detail": detail ?: @"",
-              @"scope": @"standalone Metal3 RT producer and denoiser; not Godot or performance qualification" };
+    NSMutableDictionary *result = [@{ @"status": stage ?: @"unknown_failure", @"detail": detail ?: @"",
+        @"scope": @"standalone Metal3 RT producer and denoiser; not Godot or performance qualification" } mutableCopy];
+    if (pipeline_diagnostics) result[@"producer_pipelines"] = pipeline_diagnostics;
+    return result;
 }
 
 static bool finish(id<MTLCommandBuffer> command, NSString **why) {
@@ -65,15 +68,54 @@ static NSDictionary *run(id<MTLDevice> device, NSString *shader_path) {
         id<MTLFunction> fragment_fn = [lib newFunctionWithName:@"depth_fragment"];
         if (!trace_fn || !clear_fn || !vertex_fn || !fragment_fn)
             return failure(@"shader_entry_missing", @"one or more shader functions are nil");
-        id<MTLComputePipelineState> trace = [device newComputePipelineStateWithFunction:trace_fn error:&error];
+        MTLComputePipelineDescriptor *trace_desc = [MTLComputePipelineDescriptor new];
+        trace_desc.label = @"openrc-rt-trace"; trace_desc.computeFunction = trace_fn;
+        id<MTLComputePipelineState> trace = [device newComputePipelineStateWithDescriptor:trace_desc
+            options:MTLPipelineOptionNone reflection:nil error:&error];
         if (!trace) return failure(@"trace_pipeline_failed", error.localizedDescription);
-        id<MTLComputePipelineState> clear = [device newComputePipelineStateWithFunction:clear_fn error:&error];
+        MTLComputePipelineDescriptor *clear_desc = [MTLComputePipelineDescriptor new];
+        clear_desc.label = @"openrc-rt-clear"; clear_desc.computeFunction = clear_fn;
+        id<MTLComputePipelineState> clear = [device newComputePipelineStateWithDescriptor:clear_desc
+            options:MTLPipelineOptionNone reflection:nil error:&error];
         if (!clear) return failure(@"clear_pipeline_failed", error.localizedDescription);
         MTLRenderPipelineDescriptor *depth_desc = [MTLRenderPipelineDescriptor new];
+        depth_desc.label = @"openrc-rt-depth";
         depth_desc.vertexFunction = vertex_fn; depth_desc.fragmentFunction = fragment_fn;
         depth_desc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
         id<MTLRenderPipelineState> depth_pipe = [device newRenderPipelineStateWithDescriptor:depth_desc error:&error];
         if (!depth_pipe) return failure(@"depth_pipeline_failed", error.localizedDescription);
+        // These are queried pipeline-state properties, not a claim that MetalFX's
+        // internal pipelines are instrumented or that validation found no faults.
+        id trace_validation = [NSNull null], clear_validation = [NSNull null], depth_validation = [NSNull null];
+        if (@available(macOS 15.0, *)) {
+            trace_validation = @(trace.shaderValidation);
+            clear_validation = @(clear.shaderValidation);
+            depth_validation = @(depth_pipe.shaderValidation);
+        }
+        NSDictionary *environment = [NSProcessInfo processInfo].environment;
+        MTLSize max_device = device.maxThreadsPerThreadgroup;
+        pipeline_diagnostics = @{
+            @"trace": @{ @"label": trace.label ?: (id)[NSNull null], @"shader_validation_raw": trace_validation,
+                @"max_threads_per_threadgroup": @(trace.maxTotalThreadsPerThreadgroup),
+                @"thread_execution_width": @(trace.threadExecutionWidth) },
+            @"clear": @{ @"label": clear.label ?: (id)[NSNull null], @"shader_validation_raw": clear_validation,
+                @"max_threads_per_threadgroup": @(clear.maxTotalThreadsPerThreadgroup),
+                @"thread_execution_width": @(clear.threadExecutionWidth) },
+            @"depth_vertex_fragment": @{ @"label": depth_pipe.label ?: (id)[NSNull null],
+                @"shader_validation_raw": depth_validation,
+                @"max_threads_per_threadgroup": @"not applicable to vertex/fragment rendering" },
+            @"device_max_threads_per_threadgroup": @[@(max_device.width),@(max_device.height),@(max_device.depth)],
+            @"compute_dispatch_threads_per_group": @[@8,@8,@1],
+            @"environment": @{
+                @"MTL_SHADER_VALIDATION": environment[@"MTL_SHADER_VALIDATION"] ?: (id)[NSNull null],
+                @"MTL_SHADER_VALIDATION_DEFAULT_STATE": environment[@"MTL_SHADER_VALIDATION_DEFAULT_STATE"] ?: (id)[NSNull null],
+                @"MTL_SHADER_VALIDATION_ENABLE_PIPELINES": environment[@"MTL_SHADER_VALIDATION_ENABLE_PIPELINES"] ?: (id)[NSNull null],
+                @"MTL_SHADER_VALIDATION_DISABLE_PIPELINES": environment[@"MTL_SHADER_VALIDATION_DISABLE_PIPELINES"] ?: (id)[NSNull null],
+                @"MTL_SHADER_VALIDATION_REPORT_TO_STDERR": environment[@"MTL_SHADER_VALIDATION_REPORT_TO_STDERR"] ?: (id)[NSNull null],
+                @"MTL_SHADER_VALIDATION_ABORT_ON_FAULT": environment[@"MTL_SHADER_VALIDATION_ABORT_ON_FAULT"] ?: (id)[NSNull null],
+                @"MTL_DEBUG_LAYER": environment[@"MTL_DEBUG_LAYER"] ?: (id)[NSNull null] },
+            @"state_values": @"0=default, 1=enabled, 2=disabled; null=unavailable",
+            @"scope": @"producer pipeline state only; MetalFX SDK internal pipelines are not covered" };
         MTLDepthStencilDescriptor *ds_desc = [MTLDepthStencilDescriptor new];
         ds_desc.depthWriteEnabled = YES; ds_desc.depthCompareFunction = MTLCompareFunctionAlways;
         id<MTLDepthStencilState> depth_state = [device newDepthStencilStateWithDescriptor:ds_desc];
@@ -285,6 +327,7 @@ static NSDictionary *run(id<MTLDevice> device, NSString *shader_path) {
             @"output_roi_mean_absolute_error": @(output_mae), @"output_roi_sanity_limit": @0.4,
             @"quality_note": @"loose analytic static ROI sanity only; output/input resolutions differ; no quality or speedup gate",
             @"conventions": @"orthographic +Z, depth z/4, world normals, linear albedo/roughness, zero motion and jitter, exposure automatic, reflected distance in scene units, uniform zero denoise mask",
+            @"producer_pipelines": pipeline_diagnostics,
             @"scope": @"standalone Metal3 RT producer and denoiser; not Godot or performance qualification" };
     }
     return failure(@"os_unavailable", @"MetalFX denoising requires macOS 26 or later");

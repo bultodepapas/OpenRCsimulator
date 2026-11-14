@@ -1,0 +1,107 @@
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.cpp b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+--- a/servers/rendering/renderer_rd/effects/metal_fx.cpp
++++ b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+@@ -31,15 +31,27 @@
+ #ifdef METAL_ENABLED
+ 
+ #include "metal_fx.h"
+ 
++#ifdef DEBUG_ENABLED
++#include "core/os/os.h"
++#endif
++
+ #include "drivers/metal/pixel_formats.h"
+ #include "drivers/metal/rendering_device_driver_metal3.h"
+ #include "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h"
+ 
+ #include <MetalFX/MetalFX.hpp>
+ 
+ using namespace RendererRD;
++
++#ifdef DEBUG_ENABLED
++// Debug qualification only. Read once; each injected case must use a fresh process.
++static bool mfx_debug_failure(const char *p_failure) {
++	static const String failure = OS::get_singleton()->get_environment("OPENRC_METALFX_TEST_FAILURE");
++	return failure == p_failure;
++}
++#endif
+ 
+ #pragma mark - Spatial Scaler
+ 
+ MFXSpatialContext::~MFXSpatialContext() {
+@@ -93,9 +105,18 @@
+ 		{ .rid = p_src, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 		{ .rid = p_dst, .usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE }
+ 	};
+ 	ctx->scaler->retain();
+-	Error error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXSpatialEffect::callback, userdata, VectorView<RD::CallbackResource>(res, 2));
++	Error error;
++#ifdef DEBUG_ENABLED
++	if (mfx_debug_failure("spatial_enqueue")) {
++		WARN_PRINT_ONCE("OPENRC_METALFX_TEST_FAILURE=spatial_enqueue: injected debug-only callback admission failure.");
++		error = ERR_CANT_CREATE;
++	} else
++#endif
++	{
++		error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXSpatialEffect::callback, userdata, VectorView<RD::CallbackResource>(res, 2));
++	}
+ 	if (error != OK) {
+ 		ctx->scaler->release();
+ 		memdelete(userdata);
+ 		ctx->submission_status = MFXSubmissionStatus::ENQUEUE_FAILED;
+@@ -134,9 +155,16 @@
+ 	desc->setOutputTextureFormat((MTL::PixelFormat)pf.getMTLPixelFormat(p_params.output_format));
+ 	desc->setColorProcessingMode(MTLFX::SpatialScalerColorProcessingModeLinear);
+ 
+ 	context->allocation_status = MFXAllocationStatus::SCALER_UNAVAILABLE;
+-	context->scaler = desc->newSpatialScaler(dev);
++#ifdef DEBUG_ENABLED
++	if (mfx_debug_failure("spatial_factory")) {
++		WARN_PRINT_ONCE("OPENRC_METALFX_TEST_FAILURE=spatial_factory: injected debug-only scaler allocation failure.");
++	} else
++#endif
++	{
++		context->scaler = desc->newSpatialScaler(dev);
++	}
+ 	if (context->scaler) {
+ 		context->allocation_status = MFXAllocationStatus::SCALER_CREATED;
+ 	}
+ 	return context;
+@@ -185,9 +213,16 @@
+ 
+ 	desc->setOutputTextureFormat((MTL::PixelFormat)pf.getMTLPixelFormat(p_params.output_format));
+ 
+ 	context->allocation_status = MFXAllocationStatus::SCALER_UNAVAILABLE;
+-	context->scaler = desc->newTemporalScaler(dev);
++#ifdef DEBUG_ENABLED
++	if (mfx_debug_failure("temporal_factory")) {
++		WARN_PRINT_ONCE("OPENRC_METALFX_TEST_FAILURE=temporal_factory: injected debug-only scaler allocation failure.");
++	} else
++#endif
++	{
++		context->scaler = desc->newTemporalScaler(dev);
++	}
+ 	if (!context->scaler) {
+ 		return context;
+ 	}
+ 	context->allocation_status = MFXAllocationStatus::SCALER_CREATED;
+@@ -219,9 +254,18 @@
+ 		{ .rid = p_params.exposure, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 	};
+ 	uint32_t res_count = p_params.exposure.is_valid() ? 5 : 4;
+ 	p_ctx->scaler->retain();
+-	Error error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXTemporalEffect::callback, userdata, VectorView<RD::CallbackResource>(res, res_count));
++	Error error;
++#ifdef DEBUG_ENABLED
++	if (mfx_debug_failure("temporal_enqueue")) {
++		WARN_PRINT_ONCE("OPENRC_METALFX_TEST_FAILURE=temporal_enqueue: injected debug-only callback admission failure.");
++		error = ERR_CANT_CREATE;
++	} else
++#endif
++	{
++		error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXTemporalEffect::callback, userdata, VectorView<RD::CallbackResource>(res, res_count));
++	}
+ 	if (error != OK) {
+ 		p_ctx->scaler->release();
+ 		memdelete(userdata);
+ 		p_ctx->submission_status = MFXSubmissionStatus::ENQUEUE_FAILED;

@@ -103,6 +103,27 @@ class IntakeTests(unittest.TestCase):
             engine.prepare(self.archive, self.output, [patch])
         self.assertFalse(self.output.exists())
 
+    def test_new_regular_source_is_part_of_verified_catalog(self):
+        patch = self.root / "new.patch"
+        patch.write_text("diff --git a/engine/new.mm b/engine/new.mm\nnew file mode 100644\n"
+                         "--- /dev/null\n+++ b/engine/new.mm\n@@ -0,0 +1 @@\n+native_source\n",
+                         encoding="utf-8", newline="\n")
+        receipt = engine.prepare(self.archive, self.output, [patch])
+        self.assertEqual(receipt["source_files"], 3)
+        self.assertEqual(engine.verify_intake(self.archive, self.output, [patch]), receipt)
+        (self.output / "source/engine/new.mm").write_text("changed")
+        with self.assertRaisesRegex(ValueError, "source drift"):
+            engine.verify_intake(self.archive, self.output, [patch])
+
+    def test_new_symlink_and_executable_modes_rejected(self):
+        for mode in ("120000", "100755"):
+            patch = self.root / (mode + ".patch")
+            patch.write_text(f"diff --git a/link b/link\nnew file mode {mode}\n"
+                             "--- /dev/null\n+++ b/link\n@@ -0,0 +1 @@\n+target\n", newline="\n")
+            with self.assertRaisesRegex(ValueError, "regular non-executable"):
+                engine.prepare(self.archive, self.output, [patch])
+            self.assertFalse(self.output.exists())
+
     def test_non_native_build_rejected_without_receipt(self):
         with mock.patch.object(engine.sys, "platform", "win32"):
             with self.assertRaisesRegex(ValueError, "ARM64 macOS"):

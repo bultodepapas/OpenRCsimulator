@@ -122,7 +122,9 @@ func _test_manifest_contract(manifest: Dictionary) -> void:
 	var choices: Array = AirplaneBuilder.livery_choices(CORSAIR)
 	_check("menus list every scheme with the author's names", choices.size() == ORDER.size() and choices[0].label == "Naval 308 — Midnight"
 		and choices.back().label == "Carbon 12 / Aero Sport", str(choices))
-	_check("single-paint families expose their stock choice", AirplaneBuilder.livery_choices(STIK).size() == 1)
+	# Families without delivered liveries expose their stock choice, then any registry stock paints.
+	_check("single-paint families expose their stock choice", AirplaneBuilder.livery_choices(STIK).size()
+		== 1 + VehiclePaint.choices(STIK).slice(1).size() and AirplaneBuilder.livery_choices(STIK)[0].id == "")
 	var heli_choices: Array = AirplaneBuilder.livery_choices("xcell-60-research")
 	var heli_stock: Array = VehiclePaint.choices("xcell-60-research")
 	_check("the HX-700 lists its stock paints, default first, then any custom kits",

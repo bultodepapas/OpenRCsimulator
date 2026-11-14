@@ -8,6 +8,9 @@ already in this repository:
   is rasterized from assets/fonts/NotoSansCJKjp-Regular.otf (SIL OFL 1.1,
   assets/fonts/OFL-NotoSansCJK.txt).
 - hx-700/*_boom.png: recoloured from assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png.
+- avanti-s-a200/verde_neon_carbono_*: the "Verde Neón Carbono" jet livery, designed in the
+  scene space of assets/aircraft/avanti-s-a200/avanti_s.glb (owner-supplied model) and baked
+  through each paint material's UVs, with the shared CC0 twill carbon and Noto lettering.
 - monster-car-2/*_livery.jpg and *_emission.png: the green body colour of the
   owner-supplied Monster Car 2 livery and emission map, re-tinted.
 
@@ -15,3 +18,8 @@ shared/ holds CC0 material maps from ambientCG (twill carbon, brushed metal,
 rubber); provenance in shared/LICENSES.txt. The generator does not write them.
 
 Bindings: app/data/vehicle_paints.json. Runtime: app/render/vehicle_paint.gd.
+
+ugly-stik/neon_ronin_*.png: NEON RONIN cyberpunk artwork authored by
+tools/skins/build_stik_cyberpunk.py (verify with --check). Reuses the shared
+ambientCG CC0 twill weave and bundled NotoSansCJKjp-Regular.otf (SIL OFL 1.1).
+Albedo, selective emission and roughness share the unchanged Stik covering atlas.

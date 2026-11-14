@@ -104,12 +104,17 @@ diff --git a/servers/rendering/renderer_rd/effects/metal_fx.h b/servers/renderin
 diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
 --- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
 +++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
-@@ -2613,8 +2613,13 @@
+@@ -2613,8 +2613,18 @@
  #ifdef METAL_MFXTEMPORAL_ENABLED
  			// This return value means first context creation, not successful allocation.
  			bool reset = rb_data->ensure_mfx_temporal(mfx_temporal_effect);
  			RendererRD::MFXTemporalContext *context = rb_data->get_mfx_temporal_context();
 +			std::shared_ptr<MetalFXTemporalHistoryState> history = rb->ensure_metalfx_history_state();
++			// One count per actual Temporal pass, independent of allocation or enqueue outcome.
++			uint64_t attempts = history->temporal_attempts.load(std::memory_order_relaxed);
++			if (attempts < uint64_t(INT64_MAX)) {
++				history->temporal_attempts.store(attempts + 1, std::memory_order_release);
++			}
 +			uint64_t requested_serial = history->requested.load(std::memory_order_acquire);
 +			uint64_t submitted_serial = history->submitted.load(std::memory_order_acquire);
 +			uint64_t reset_serial = requested_serial > submitted_serial ? requested_serial : 0;
@@ -118,7 +123,7 @@ diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clus
  			RID exposure;
  			if (RSG::camera_attributes->camera_attributes_uses_auto_exposure(p_render_data->camera_attributes)) {
  				exposure = luminance->get_current_luminance_buffer(rb);
-@@ -2633,9 +2638,11 @@
+@@ -2633,9 +2643,11 @@
  				params.motion = rb->get_velocity_buffer(false, v);
  				params.exposure = exposure;
  				params.dst = rb->get_upscaled_texture(v);
@@ -179,7 +184,7 @@ diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/rendere
  		RSG::scene->scenario_remove_viewport_visibility_mask(viewport->scenario, p_viewport);
  	}
  
-@@ -1571,8 +1591,26 @@
+@@ -1571,8 +1591,34 @@
  	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
  	ERR_FAIL_NULL(viewport);
  
@@ -193,12 +198,20 @@ diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/rendere
 +	receipt["accepted"] = false;
 +	receipt["generation"] = int64_t(viewport->metal_fx_generation);
 +	receipt["serial"] = int64_t(0);
++	receipt["reset_request_attempt"] = int64_t(0);
 +	if (viewport->disable_3d || viewport->view_count != 1 || !viewport->render_buffers.is_valid() ||
 +			!viewport->render_buffers->is_metalfx_temporal_ready() || viewport->metal_fx_reset_serial >= uint64_t(INT64_MAX)) {
 +		return receipt;
 +	}
++	std::shared_ptr<MetalFXTemporalHistoryState> history = viewport->render_buffers->get_metalfx_history_state();
++	uint64_t attempts = history->temporal_attempts.load(std::memory_order_acquire);
++	// Leave room to observe the two render attempts used by the caller's bound.
++	if (attempts > uint64_t(INT64_MAX) - 2) {
++		return receipt;
++	}
 +	uint64_t serial = ++viewport->metal_fx_reset_serial;
-+	viewport->render_buffers->get_metalfx_history_state()->requested.store(serial, std::memory_order_release);
++	history->requested.store(serial, std::memory_order_release);
++	receipt["reset_request_attempt"] = int64_t(attempts);
 +	receipt["accepted"] = true;
 +	receipt["serial"] = int64_t(serial);
 +	return receipt;
@@ -206,7 +219,7 @@ diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/rendere
  
  Dictionary RendererViewport::viewport_get_metalfx_status(RID p_viewport) const {
  	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
-@@ -1584,8 +1622,12 @@
+@@ -1584,8 +1630,13 @@
  		result["provider"] = "none";
  		result["allocation"] = "not_attempted";
  		result["submission"] = "not_attempted";
@@ -215,6 +228,7 @@ diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/rendere
 +		result["reset_submitted_serial"] = int64_t(0);
 +		result["reset_encoded_serial"] = int64_t(0);
 +		result["reset_gpu_completion"] = "unobserved";
++		result["temporal_attempts"] = int64_t(0);
  	}
  	result["generation"] = int64_t(viewport->metal_fx_generation);
  	result["requested_mode"] = int(viewport->scaling_3d_mode);
@@ -303,7 +317,7 @@ diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/re
 diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/rendering/storage/render_scene_buffers.h
 --- a/servers/rendering/storage/render_scene_buffers.h
 +++ b/servers/rendering/storage/render_scene_buffers.h
-@@ -32,8 +32,27 @@
+@@ -32,8 +32,28 @@
  
  #include "core/object/ref_counted.h"
  #include "core/variant/dictionary.h"
@@ -318,6 +332,7 @@ diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/renderin
 +	std::atomic<uint64_t> requested{ 0 };
 +	std::atomic<uint64_t> submitted{ 0 }; // Admitted to the RD callback graph, not GPU submission.
 +	std::atomic<uint64_t> encoded{ 0 }; // The CPU-side MetalFX encode call returned, not GPU completion.
++	std::atomic<uint64_t> temporal_attempts{ 0 }; // Actual entries into the Temporal render branch.
 +	// A reused scaler still needs a reset after its viewport generation changes.
 +	std::atomic<bool> initial_reset_encoded{ false };
 +
@@ -331,7 +346,7 @@ diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/renderin
  class RenderSceneBuffersConfiguration : public RefCounted {
  	GDCLASS(RenderSceneBuffersConfiguration, RefCounted);
  
-@@ -103,8 +122,9 @@
+@@ -103,8 +123,9 @@
  	String metal_fx_provider = "none";
  	String metal_fx_allocation = "not_attempted";
  	String metal_fx_submission = "not_attempted";
@@ -341,7 +356,7 @@ diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/renderin
  protected:
  	static void _bind_methods();
  
-@@ -112,8 +132,9 @@
+@@ -112,8 +133,9 @@
  	RenderSceneBuffers() {}
  	virtual ~RenderSceneBuffers() {}
  
@@ -351,7 +366,7 @@ diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/renderin
  		metal_fx_allocation = "not_attempted";
  		metal_fx_submission = "not_attempted";
  	}
-@@ -121,8 +142,19 @@
+@@ -121,8 +143,19 @@
  		reset_metalfx_observation();
  		metal_fx_configured_mode = -1;
  	}
@@ -371,7 +386,7 @@ diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/renderin
  		if (metal_fx_provider == p_provider && metal_fx_allocation == p_allocation && metal_fx_submission == p_submission) {
  			return;
  		}
-@@ -135,8 +167,12 @@
+@@ -135,8 +168,13 @@
  		status["provider"] = metal_fx_provider;
  		status["allocation"] = metal_fx_allocation;
  		status["submission"] = metal_fx_submission;
@@ -380,6 +395,7 @@ diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/renderin
 +		status["reset_submitted_serial"] = int64_t(metal_fx_history ? metal_fx_history->submitted.load(std::memory_order_acquire) : 0);
 +		status["reset_encoded_serial"] = int64_t(metal_fx_history ? metal_fx_history->encoded.load(std::memory_order_acquire) : 0);
 +		status["reset_gpu_completion"] = "unobserved";
++		status["temporal_attempts"] = int64_t(metal_fx_history ? metal_fx_history->temporal_attempts.load(std::memory_order_acquire) : 0);
  		return status;
  	}
  

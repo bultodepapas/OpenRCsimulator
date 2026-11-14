@@ -20,30 +20,38 @@ MetalFX APIs. The current native experiment uses SDK 27; compiling a macOS 13
 deployment target does not establish execution on macOS 13. No Developer ID is
 required for local raw executables. Public signed distribution remains deferred.
 
-Prepare **separate fresh intakes** for editor and release template:
+Prepare **separate fresh intakes** for editor and release template. Bash/zsh:
 
 ```sh
+patches=(
+  --patch tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch
+  --patch tools/graphics/metalfx/patches/0002-metalfx-history-reset.patch
+  --patch tools/graphics/metalfx/patches/0003-metalfx-debug-faults.patch
+)
 python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip \
-  --out tmp/metalfx-editor \
-  --patch tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch
+  --out tmp/metalfx-editor "${patches[@]}"
 python tools/graphics/metalfx/engine.py build --archive /cache/godot.zip \
-  --out tmp/metalfx-editor --target editor --jobs 4 \
-  --patch tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch
+  --out tmp/metalfx-editor --target editor --jobs 4 "${patches[@]}"
 python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip \
-  --out tmp/metalfx-template \
-  --patch tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch
+  --out tmp/metalfx-template "${patches[@]}"
 python tools/graphics/metalfx/engine.py build --archive /cache/godot.zip \
-  --out tmp/metalfx-template --target template_release --jobs 4 \
-  --patch tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch
+  --out tmp/metalfx-template --target template_release --jobs 4 "${patches[@]}"
 python tools/graphics/metalfx/engine.py pair --archive /cache/godot.zip \
-  --out tmp/metalfx-editor --template tmp/metalfx-template \
-  --patch tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch \
-  >tmp/metalfx-pair.json
+  --out tmp/metalfx-editor --template tmp/metalfx-template "${patches[@]}" >tmp/metalfx-pair.json
 ```
+
+0001 adds allocation/submission guards and per-viewport state; 0002 adds Temporal
+reset serials, render-attempt bounds and lifecycle fences. 0003 is an opt-in
+diagnostic source patch: `DEBUG_ENABLED` builds accept
+`OPENRC_METALFX_TEST_FAILURE=spatial_factory|temporal_factory|spatial_enqueue|temporal_enqueue`.
+Its environment is latched on first lookup, so use one fresh process per case.
+The controls are absent from release-template code. Normal launches leave it unset.
 
 Intake freezes and hashes archive/ordered patch copies, reconstructs the expected
 patched catalog, rejects unknown source edits, extra inputs, unsafe paths and
-symlinks, and records helper identity. `source/` stays pristine; each target builds
+symlinks, and records helper identity. New source files require regular mode
+100644 and enter the verified catalog; executable/symlink additions are refused.
+`source/` stays pristine; each target builds
 in its own disposable `build-source-<target>/`. Native builds use Metal and
 Compatibility, without Vulkan, AccessKit, LTO or debug symbols. They record exact
 commands, SDK, clang, controlled environment, logs, architecture and artifact
@@ -59,7 +67,7 @@ export's actual template identity bound to the later package receipt.
 ```sh
 python -m unittest discover -s tools/graphics/metalfx -p test_engine.py
 OPENRC_METALFX_SOURCE_ARCHIVE=/cache/godot.zip \
-  python -m unittest discover -s tools/graphics/metalfx -p test_engine_patch.py
+  python -m unittest discover -s tools/graphics/metalfx -p 'test_engine*_patch.py'
 ```
 
 The second suite compiles selected patched functions with fake rendering/SDK
@@ -70,3 +78,6 @@ and [host admission](../../testqueue/README.md).
 
 The [native API fixture](../../../research/engine-upgrade/metalfx/README.md)
 checks the real device independently. Neither fixture is a second profiler.
+The verified 0001–0003 pair and the later intake-helper revision are identified
+separately in the dated evidence; a helper update deliberately invalidates an
+older intake's helper identity until its original frozen helper is restored.

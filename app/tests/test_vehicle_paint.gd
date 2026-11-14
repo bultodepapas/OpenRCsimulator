@@ -34,6 +34,9 @@ func _run() -> void:
 	_check_inspection_layer()
 	_check_suspension()
 	_check_cars()
+	_check_stik_cyberpunk()
+	_check_stik_gear()
+	_check_jet_livery()
 	print("Vehicle paint: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -79,6 +82,62 @@ func _shared_material(root: Node, material_name: String) -> StandardMaterial3D:
 			if shared != null and shared.resource_name == material_name:
 				return shared
 	return null
+
+
+func _check_stik_cyberpunk() -> void:
+	var ids := ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "stik-electric-6s"]
+	for id: String in ids:
+		var offered := false
+		for choice: Dictionary in AirplaneBuilder.livery_choices(id):
+			offered = offered or choice.id == "neon_ronin"
+		check(id + " offers NEON RONIN", offered)
+		var plain: Dictionary = AirplaneBuilder.build(id)
+		var painted: Dictionary = AirplaneBuilder.build(id, NAN, {}, "neon_ronin")
+		check(id + " builds both paints", not plain.is_empty() and not painted.is_empty())
+		if plain.is_empty() or painted.is_empty():
+			if not plain.is_empty(): plain.root.free()
+			if not painted.is_empty(): painted.root.free()
+			continue
+		var original := _materials_named(plain.root, "classic-covering-v4")
+		var finish := _materials_named(painted.root, "classic-covering-v4")
+		check(id + " applies the actual atlas to instance-owned film", original.size() == 1 and finish.size() == 1
+			and finish[0] != original[0] and finish[0].albedo_texture != original[0].albedo_texture
+			and finish[0].albedo_texture.resource_path.ends_with("neon_ronin_albedo.png"))
+		if original.size() == 1 and finish.size() == 1:
+			check(id + " preserves film normals with selective luminous traces", finish[0].normal_texture == original[0].normal_texture
+				and finish[0].normal_scale == original[0].normal_scale and finish[0].emission_enabled
+				and finish[0].emission_operator == BaseMaterial3D.EMISSION_OP_ADD and finish[0].emission == Color.BLACK
+				and finish[0].emission_texture.resource_path.ends_with("neon_ronin_emission.png"))
+			check(id + " keeps factory paint unmodified", not original[0].emission_enabled
+				and not original[0].has_meta(VehiclePaint.ORIGIN_META))
+		for mesh: MeshInstance3D in plain.root.find_children("*", "MeshInstance3D", true, false):
+			# Anonymous Godot node names contain a process-wide counter. Pair by
+			# hierarchy position and check authored names separately.
+			var route: Array[int] = []
+			var ancestor: Node = mesh
+			while ancestor != plain.root:
+				route.push_front(ancestor.get_index())
+				ancestor = ancestor.get_parent()
+			var paired: Node = painted.root
+			for child_index in route:
+				paired = paired.get_child(child_index) if paired != null and child_index < paired.get_child_count() else null
+			var other := paired as MeshInstance3D
+			check(id + " retains mesh and hinge paths: " + str(mesh.name), other != null
+				and (str(mesh.name).begins_with("@") or other.name == mesh.name)
+				and other.transform == mesh.transform and other.mesh.get_surface_count() == mesh.mesh.get_surface_count())
+			if other == null: continue
+			for surface in mesh.mesh.get_surface_count():
+				check(id + " retains paint geometry: " + str(mesh.name), other.mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]
+					== mesh.mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX])
+		var gaps := _materials_named(painted.root, "classic-covering-gap-v1")
+		var ventral := _materials_named(painted.root, "skin:b00e28ff")
+		check(id + " recolours the solid ventral fin", not ventral.is_empty()
+			and ventral[0].albedo_color.is_equal_approx(Color("16e5f4")))
+		check(id + " hinge slots use the matching dark atlas", not gaps.is_empty()
+			and gaps[0].albedo_texture.resource_path.ends_with("neon_ronin_albedo.png")
+			and gaps[0].albedo_color.get_luminance() < 0.11 and not gaps[0].emission_enabled)
+		plain.root.free()
+		painted.root.free()
 
 
 func _check_helicopter() -> void:
@@ -248,3 +307,53 @@ func _check_cars() -> void:
 		and wash_blue.light_color.b > wash_blue.light_color.g)
 	green.root.free()
 	blue.root.free()
+
+
+func _check_stik_gear() -> void:
+	for stik_id: String in ["jensen-das-ugly-stik-60", "stik-electric-6s"]:
+		var stik: Dictionary = AirplaneBuilder.build(stik_id)
+		if stik.is_empty():
+			check("%s builds" % stik_id, false)
+			continue
+		var tyre := _node_material(stik.root, "gear_left", "rubber:202124ff")
+		var hub := _node_material(stik.root, "gear_left", "aluminum:858d91ff")
+		var strap := _node_material(stik.root, "main_gear_structure", "aluminum:a3aaadff")
+		var wire := _node_material(stik.root, "nose_gear_strut", "steel:c0c3c3ff")
+		check("%s tyres are anthracite rubber, not pure black" % stik_id, tyre != null
+			and tyre.albedo_color.get_luminance() > 0.1 and tyre.roughness > 0.8)
+		check("%s hubs are brushed aluminium apart from the engine case" % stik_id, hub != null
+			and hub.albedo_color.get_luminance() > 0.6 and hub.has_meta(VehiclePaint.ORIGIN_META))
+		check("%s gear strap and piano-wire nose leg have their own finishes" % stik_id, strap != null and wire != null
+			and strap.metallic > 0.85 and wire.albedo_color.get_luminance() < 0.7)
+		stik.root.free()
+
+
+func _check_jet_livery() -> void:
+	var jet_id := "sebart-avanti-s-a200-p100rx"
+	var choices: Array = AirplaneBuilder.livery_choices(jet_id)
+	var ids: Array = choices.map(func(choice: Dictionary) -> String: return str(choice.id))
+	check("the jet lists its delivered paint first, then Verde Neón Carbono", ids.size() >= 2 and ids[0] == ""
+		and ids.has("verde_neon_carbono"), str(ids))
+	check("the jet livery resolves; a stale id is the default", AirplaneBuilder.resolve_livery(jet_id, "verde_neon_carbono") == "verde_neon_carbono"
+		and AirplaneBuilder.resolve_livery(jet_id, "retired") == "")
+	var jet: Dictionary = AirplaneBuilder.build(jet_id, NAN, {}, "verde_neon_carbono")
+	check("the jet builds with Verde Neón Carbono", not jet.is_empty())
+	if jet.is_empty():
+		return
+	var fuselage := _materials_named(jet.root, "paint_fuselage")
+	var doors := _materials_named(jet.root, "paint_doors_ala")
+	var canopy := _materials_named(jet.root, "canopy_glass")
+	check("the livery replaces the paint and its glow maps", fuselage.size() == 1
+		and fuselage[0].albedo_texture.resource_path.contains("verde_neon_carbono_fuselage")
+		and fuselage[0].emission_texture.resource_path.contains("verde_neon_carbono_fuselage_emission") and fuselage[0].clearcoat_enabled)
+	check("the wing doors get their own texture (the stock doors overlap the wing's leading edge)", doors.size() == 1
+		and doors[0].albedo_texture.resource_path.contains("verde_neon_carbono_doors"))
+	check("the canopy has an F-22-style gold tint and stays see-through", canopy.size() == 1
+		and canopy[0].albedo_color.r > canopy[0].albedo_color.b + 0.3 and canopy[0].albedo_color.a < 0.9
+		and canopy[0].transparency != BaseMaterial3D.TRANSPARENCY_DISABLED)
+	jet.root.free()
+	var plain: Dictionary = AirplaneBuilder.build(jet_id)
+	var stock := _materials_named(plain.root, "paint_fuselage")
+	check("the delivered jet paint is untouched without the livery", stock.size() == 1
+		and not stock[0].albedo_texture.resource_path.contains("vehicle-paints"))
+	plain.root.free()

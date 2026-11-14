@@ -65,7 +65,9 @@ Apple's [feature table](https://developer.apple.com/metal/Metal-Feature-Set-Tabl
 lists M1 as Apple7, interpolation from Apple5, temporal from Apple7 and denoised
 upscaling from Apple9 (October 23, 2026 table, page 4). The actual M1/macOS 27.0.1
 fixture returned denoised `supportsDevice=true` and created a denoised object;
-it did not encode denoising. Preserve this runtime/documentation disagreement
+a later standalone real-RT/denoising witness also encoded and read back output.
+Its producer shaders passed selective validation; the SDK-wide instrumentation
+run failed a threadgroup limit. Preserve this runtime/documentation disagreement
 instead of enforcing an Apple9/model-name rejection. These are distinct from
 execution and qualification.
 Check symbol availability, descriptor support and successful instance creation

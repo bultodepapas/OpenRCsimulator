@@ -74,6 +74,19 @@ arms or red urethane bump stops); give it finishes, not colours a skin changes.
 skin, for parts that carry a scheme's own colours, for example the MT8's
 machined shock bodies and anodised caps.
 
+A fixed-wing skin from this registry appears in Home's paint gallery after the
+delivered liveries and repaints the default asset (no livery GLB of its own). The
+Avanti jet's "Verde Neón Carbono" is designed in the jet's scene space (all node
+transforms applied) and baked through the stock UVs. Those UVs need three
+precautions, all in the builder:
+- They repeat outside 0..1, and the bake wraps them as the sampler does.
+- Left and right parts share mirrored UVs, so the bake folds about X = 0.
+- Cove and edge faces share texels with the skin, so the face that best faces the
+  skin direction owns each texel.
+
+The stock wing doors reuse the wing image over the wing's leading edge, so the
+skin gives them their own texture.
+
 Fixed-wing families may have entries too. `AirplaneBuilder.build` applies a
 family's base right after model validation, before lighting, customization or
 paint kits copy materials. The procedural Ugly Stik materials are named
@@ -113,6 +126,23 @@ the canopy's model space and baked through its plan-projected UVs:
 another Pillow/FreeType build may anti-alias the lettering differently.
 Import new outputs once with Godot `--headless --path app --import`. A colour-only
 skin (all MT8 schemes) needs no texture: edit the JSON only.
+
+### Ugly Stik: NEON RONIN
+
+`build_stik_cyberpunk.py` authors the cyberpunk covering for the basic Stik, its
+three glow configurations and electric 6S. Run it with the visual venv; `--check`
+compares the three 2048-square PNGs byte for byte. It reuses the shared CC0 carbon
+weave and the bundled OFL Noto font. The registry binds albedo, selective emission
+and roughness to instance-owned film materials, retaining the stock film normals.
+The stock material adds its emission colour to the map: black emission colour
+keeps the carbon dark while the map alone supplies the luminous traces.
+Low scene detail skips the roughness map and uses its recorded mean instead.
+
+The stock atlas and custom-kit identity stay unchanged. Both wing faces share UVs;
+the acid-yellow belly keel and striped stabiliser underside provide the underside
+markings. Fin lettering shares UVs and mirrors on the opposite face. Rebuild the
+paint from this source, never edit the generated PNGs. Review Home and flight at
+1920 × 1080 and run `test_vehicle_paint.gd` plus the Stik skin-fleet checks.
 
 ## Export and check
 

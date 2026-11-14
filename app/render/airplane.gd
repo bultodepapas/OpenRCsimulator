@@ -92,7 +92,10 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	if custom_livery and not CustomSkin.supports(id):
 		push_warning("Custom aircraft paint is unavailable for this aircraft.")
 		return {}
-	var stock_livery: String = "" if custom_livery else livery_id
+	# Stock paints from data/vehicle_paints.json repaint the default asset (no livery GLB of their own).
+	var paint_skin: String = livery_id if not custom_livery and not livery_id.is_empty() \
+			and VehiclePaint.contains(family, livery_id) else ""
+	var stock_livery: String = "" if custom_livery or not paint_skin.is_empty() else livery_id
 	var livery: Dictionary = registry.livery(manifest, stock_livery)
 	if not livery.get("ok", false):
 		push_error("Aircraft livery: " + str(livery.get("errors", [])))
@@ -120,7 +123,7 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	# Render-only part finishes (data/vehicle_paints.json, e.g. the Ugly Stik landing gear) on the validated model,
 	# before lighting, customization and paint kits copy its materials.
 	if VehiclePaint.has_family(family):
-		VehiclePaint.apply(airplane.root, family)
+		VehiclePaint.apply(airplane.root, family, paint_skin)
 	airplane.model_manifest = manifest.duplicate(true)
 	airplane.model_manifest_sha256 = resolved.manifest_sha256
 	airplane._model_builder = builder
@@ -284,6 +287,12 @@ static func livery_choices(id: String) -> Array:
 				var thumbnail := "res://assets/ui/liveries/%s/%s-%s.png" % [family, record.id, record.get("sha256", "")]
 				if ResourceLoader.exists(thumbnail): choice.thumbnail = thumbnail
 				choices.append(choice)
+	# Fixed-wing stock paints (data/vehicle_paints.json) follow the delivered liveries; the default stays first.
+	var stock_paints: Array = [] if Catalog.is_rotorcraft(id) else VehiclePaint.choices(family).slice(1)
+	if not stock_paints.is_empty():
+		if choices.is_empty():
+			choices.append({id = "", label = Catalog.short_name(id)})
+		choices.append_array(stock_paints)
 	if choices.is_empty() and CustomSkin.supports(id):
 		choices.append({id = "", label = Catalog.short_name(id)})
 	choices.append_array(CustomSkin.choices(id))

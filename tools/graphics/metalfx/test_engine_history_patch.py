@@ -91,14 +91,16 @@ int main() {
     TestBuffers buffers; state.render_buffers.value = &buffers; buffers.set_metalfx_configured_mode(4);
     assert(!buffers.get_metalfx_history_state());
     assert(!std::get<bool>(viewport.viewport_request_temporal_history_reset({}).at("accepted")));
-    buffers.ensure_metalfx_history_state(); buffers.set_metalfx_status("temporal", "created", "enqueued");
+    buffers.ensure_metalfx_history_state()->temporal_attempts.store(7); buffers.set_metalfx_status("temporal", "created", "enqueued");
     auto first = viewport.viewport_request_temporal_history_reset({});
     auto second = viewport.viewport_request_temporal_history_reset({});
     assert(std::get<bool>(first.at("accepted")) && std::get<int64_t>(first.at("generation")) == 7);
     assert(std::get<int64_t>(first.at("serial")) == 1 && std::get<int64_t>(second.at("serial")) == 2);
+    assert(std::get<int64_t>(first.at("reset_request_attempt")) == 7 && std::get<int64_t>(second.at("reset_request_attempt")) == 7);
     auto old = buffers.get_metalfx_history_state();
     auto status = viewport.viewport_get_metalfx_status({});
-    assert(std::get<int64_t>(status.at("reset_requested_serial")) == 2);
+    assert(std::get<int64_t>(status.at("reset_requested_serial")) == 2 && std::get<int64_t>(status.at("temporal_attempts")) == 7);
+    for (int i = 0; i < 100; ++i) assert(std::get<int64_t>(viewport.viewport_get_metalfx_status({}).at("temporal_attempts")) == 7);
     assert(std::get<int64_t>(status.at("reset_submitted_serial")) == 0 && std::get<int64_t>(status.at("reset_encoded_serial")) == 0);
     MetalFXTemporalHistoryState::advance(old->submitted, 2);
     MetalFXTemporalHistoryState::advance(old->encoded, 2);
@@ -111,10 +113,15 @@ int main() {
     assert(!buffers.get_metalfx_history_state());
     MetalFXTemporalHistoryState::advance(old->encoded, 3);
     status = viewport.viewport_get_metalfx_status({});
-    assert(std::get<int64_t>(status.at("generation")) == 8 && std::get<int64_t>(status.at("reset_encoded_serial")) == 0);
+    assert(std::get<int64_t>(status.at("generation")) == 8 && std::get<int64_t>(status.at("reset_encoded_serial")) == 0 && std::get<int64_t>(status.at("temporal_attempts")) == 0);
     assert(!std::get<bool>(viewport.viewport_request_temporal_history_reset({}).at("accepted")));
     buffers.ensure_metalfx_history_state(); buffers.set_metalfx_status("temporal", "created", "enqueued");
     auto fourth = viewport.viewport_request_temporal_history_reset({}); assert(std::get<int64_t>(fourth.at("serial")) == 4);
+    auto current = buffers.get_metalfx_history_state(); current->temporal_attempts.store(uint64_t(INT64_MAX) - 2);
+    auto boundary = viewport.viewport_request_temporal_history_reset({});
+    assert(std::get<bool>(boundary.at("accepted")) && std::get<int64_t>(boundary.at("reset_request_attempt")) == INT64_MAX - 2);
+    current->temporal_attempts.store(uint64_t(INT64_MAX) - 1);
+    assert(!std::get<bool>(viewport.viewport_request_temporal_history_reset({}).at("accepted")));
     state.view_count = 2; assert(!std::get<bool>(viewport.viewport_request_temporal_history_reset({}).at("accepted")));
     state.view_count = 1; state.disable_3d = true; assert(!std::get<bool>(viewport.viewport_request_temporal_history_reset({}).at("accepted")));
     return 0;
@@ -248,8 +255,8 @@ int main() {
         RendererRD::MFXTemporalContext *context = data.mfx_temporal_context;
 """ + history + loop + r"""
     };
-    run(); assert(effect.submitted.size() == 1 && effect.submitted.back().reset && effect.submitted.back().reset_serial == 0);
-    effect.submitted.clear(); run(); assert(effect.submitted.back().reset); // no callback returned yet
+    run(); assert(effect.submitted.size() == 1 && effect.submitted.back().reset && effect.submitted.back().reset_serial == 0 && rb->history->temporal_attempts.load() == 1);
+    effect.submitted.clear(); run(); assert(effect.submitted.back().reset && rb->history->temporal_attempts.load() == 2); // no callback returned yet
     rb->history->initial_reset_encoded.store(true);
     effect.submitted.clear(); run(); assert(!effect.submitted.back().reset);
     effect.submitted.clear(); rb->history->requested.store(1); rb->history->requested.store(2);
@@ -257,11 +264,14 @@ int main() {
     assert(rb->history->submitted.load() == 2 && rb->history->encoded.load() == 0);
     effect.submitted.clear(); run(); assert(!effect.submitted.back().reset && effect.submitted.back().reset_serial == 0);
     effect.submitted.clear(); rb->history = std::make_shared<MetalFXTemporalHistoryState>(); // disable then enable, same scaler
-    run(); assert(effect.submitted.back().reset && effect.submitted.back().reset_serial == 0 && effect.allocations == 1);
+    run(); assert(effect.submitted.back().reset && effect.submitted.back().reset_serial == 0 && effect.allocations == 1 && rb->history->temporal_attempts.load() == 1);
     effect.submitted.clear(); run(); assert(effect.submitted.back().reset);
     rb->history->initial_reset_encoded.store(true); effect.submitted.clear(); run(); assert(!effect.submitted.back().reset);
     effect.submitted.clear(); rb->history->requested.store(3); effect.fail_view = 40;
-    run(); assert(effect.submitted.empty() && rb->history->submitted.load() == 0 && copy.calls.size() == 1);
+    run(); assert(effect.submitted.empty() && rb->history->submitted.load() == 0 && rb->history->temporal_attempts.load() == 4 && copy.calls.size() == 1);
+    run(); assert(effect.submitted.empty() && rb->history->temporal_attempts.load() == 5 && copy.calls.size() == 2); // failed allocation/context still counts
+    good.usable = true; effect.fail_view = -1; rb->history->temporal_attempts.store(uint64_t(INT64_MAX) - 1);
+    run(); run(); assert(rb->history->temporal_attempts.load() == uint64_t(INT64_MAX));
     return 0;
 }
 """

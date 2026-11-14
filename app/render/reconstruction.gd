@@ -259,8 +259,11 @@ static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictiona
 	viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	viewport.set_meta(POLICY_META, policy)
 	viewport.set_meta(CONFIG_META, config.duplicate(true))
-	if provider != "metalfx_temporal" and viewport.has_meta(METALFX_RESET_META):
-		_finish_metalfx_reset(viewport, "superseded")
+	if provider != "metalfx_temporal":
+		var history: Variant = viewport.get_meta(HISTORY_RESET_META, {})
+		if viewport.has_meta(METALFX_RESET_META) \
+				or (typeof(history) == TYPE_DICTIONARY and history.get("reset_state") == "encoded"):
+			_finish_metalfx_reset(viewport, "superseded")
 	if provider in MetalFX.PROVIDERS:
 		_track_metalfx_status(viewport, policy, status_before, mode_changed)
 	elif viewport.has_meta(METALFX_STATUS_META):
@@ -338,6 +341,7 @@ static func _track_metalfx_status(viewport: Viewport, policy: Dictionary, before
 	var after := _metalfx_status(viewport)
 	if typeof(after.get("generation")) == TYPE_INT and int(after.generation) >= generation:
 		generation = int(after.generation)
+	_expire_metalfx_reset_receipt(viewport, after)
 	viewport.set_meta(METALFX_STATUS_META, {"rid": viewport.get_viewport_rid(),
 		"provider": policy.get("provider", ""), "mode": policy.get("scaling_3d_mode"), "generation": generation})
 
@@ -356,6 +360,7 @@ static func _guard_metalfx_failure(viewport: Viewport, policy: Dictionary, capab
 	if viewport.has_meta(METALFX_RESET_META) \
 			and _poll_metalfx_reset(viewport, status, int(actual_mode), scope, capabilities):
 		return true
+	_expire_metalfx_reset_receipt(viewport, status)
 	# The engine explicitly configures Bilinear when Temporal cannot support the
 	# view layout. Do not leave the application claiming a Temporal selection.
 	if provider == "metalfx_temporal" and _metalfx_configured_native(status, int(actual_mode), int(scope.generation)):
@@ -458,8 +463,10 @@ static func _metalfx_reset_ready(status: Dictionary, mode: int, minimum_generati
 			or typeof(status.get("requested_mode")) != TYPE_INT or int(status.requested_mode) != mode \
 			or typeof(status.get("configured_mode")) != TYPE_INT or int(status.configured_mode) != mode \
 			or typeof(status.get("render_buffers_available")) != TYPE_BOOL or not status.render_buffers_available \
-			or status.get("provider") != "temporal" or status.get("allocation") != "created" \
-			or status.get("submission") != "enqueued" or status.get("reset_gpu_completion") != "unobserved":
+			or typeof(status.get("provider")) != TYPE_STRING or status.provider != "temporal" \
+			or typeof(status.get("allocation")) != TYPE_STRING or status.allocation != "created" \
+			or typeof(status.get("submission")) != TYPE_STRING or status.submission != "enqueued" \
+			or typeof(status.get("reset_gpu_completion")) != TYPE_STRING or status.reset_gpu_completion != "unobserved":
 		return false
 	for key: String in ["reset_requested_serial", "reset_submitted_serial", "reset_encoded_serial", "temporal_attempts"]:
 		if typeof(status.get(key)) != TYPE_INT or int(status[key]) < 0:
@@ -506,13 +513,24 @@ static func _finish_metalfx_reset(viewport: Viewport, state: String) -> void:
 		viewport.remove_meta(METALFX_RESET_META)
 
 
+static func _expire_metalfx_reset_receipt(viewport: Viewport, status: Dictionary) -> void:
+	if viewport.has_meta(METALFX_RESET_META):
+		return
+	var receipt: Variant = viewport.get_meta(HISTORY_RESET_META, {})
+	if typeof(receipt) == TYPE_DICTIONARY and receipt.get("reset_state") == "encoded" \
+			and (typeof(receipt.get("generation")) != TYPE_INT or typeof(status.get("generation")) != TYPE_INT \
+			or int(receipt.generation) != int(status.generation)):
+		_finish_metalfx_reset(viewport, "superseded")
+
+
 static func _poll_metalfx_reset(viewport: Viewport, status: Dictionary, mode: int,
 		scope: Dictionary, capabilities: Dictionary = {}) -> bool:
 	var request: Variant = viewport.get_meta(METALFX_RESET_META, {})
 	if typeof(request) != TYPE_DICTIONARY or request.get("rid") != viewport.get_viewport_rid() \
 			or typeof(request.get("mode")) != TYPE_INT or int(request.mode) != mode \
 			or typeof(request.get("generation")) != TYPE_INT or int(request.generation) < int(scope.generation) \
-			or typeof(request.get("serial")) != TYPE_INT or typeof(request.get("reset_request_attempt")) != TYPE_INT:
+			or typeof(request.get("serial")) != TYPE_INT or int(request.serial) <= 0 \
+			or typeof(request.get("reset_request_attempt")) != TYPE_INT or int(request.reset_request_attempt) < 0:
 		return _fallback_metalfx_reset(viewport, capabilities)
 	var state := _metalfx_reset_state(status, request)
 	if state == "unavailable":

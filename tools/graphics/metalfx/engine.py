@@ -87,8 +87,11 @@ def patch_paths(patches: list[Path]) -> set[str]:
     paths = set()
     for patch in patches:
         content = patch.read_text(encoding="utf-8")
-        if re.search(r"^(?:rename |copy |.*file mode|GIT binary patch|Binary files)", content, re.M):
+        if re.search(r"^(?:rename |copy |old mode |new mode |GIT binary patch|Binary files)", content, re.M):
             raise ValueError("Only ordinary text patches are accepted")
+        for mode in re.findall(r"^(?:new|deleted) file mode (\S+)$", content, re.M):
+            if mode != "100644":
+                raise ValueError("New/deleted engine source must be a regular non-executable file")
         headers = re.findall(r"^(?:---|\+\+\+) (.+)$", content, re.M)
         if not headers:
             raise ValueError("Patch contains no text file headers")
