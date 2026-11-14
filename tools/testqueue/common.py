@@ -146,7 +146,7 @@ def wait(job: str, *, root: Path | None = None, timeout: float = 600, ready: boo
     deadline = time.monotonic() + timeout
     while True:
         result = rpc("status", root=root, job=job)
-        if result["state"] == "FINISHED" or (ready and result.get("session")):
+        if result["state"] in {"FINISHED", "UNKNOWN"} or (ready and result["state"] == "RUNNING" and result.get("session")):
             return result
         if time.monotonic() >= deadline:
             return result  # leaving a waiter never cancels work

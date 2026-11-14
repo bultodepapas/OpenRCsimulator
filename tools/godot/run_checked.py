@@ -120,6 +120,9 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
         from tools.testqueue.integration import checked
         return checked(command, timeout=timeout, required=required, max_log_bytes=max_log_bytes,
                        warnings_as_errors=warnings_as_errors, label=label)
+    if enabled() and (resources or host_state_helper is not None):
+        if not inherited("performance"):
+            raise ValueError("resource/performance checks require an exclusive inherited attempt")
     if type(resources) is not bool:
         raise ValueError("resources must be a boolean")
     if (not command or type(timeout) not in (int, float) or not math.isfinite(timeout)

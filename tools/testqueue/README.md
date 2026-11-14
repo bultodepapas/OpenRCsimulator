@@ -1,7 +1,7 @@
 # Shared-host test admission
 
 The experimental local worker owns each admitted process tree until verified teardown.
-It queues competing rendered jobs across worktrees, isolates writable projects and
+It classifies exclusive and parallel work across worktrees, isolates writable projects and
 profiles, and preserves uncertain attempts as `UNKNOWN`. It does not change simulator
 physics. Remote distribution and native graphical qualification remain in the
 [implementation gates](../../docs/plans/agent-test-orchestrator.md).
@@ -57,9 +57,12 @@ python tools/debug/debugctl.py look
 python tools/debug/debugctl.py stop
 ```
 
-`launch` waits up to ten minutes for readiness. If still queued, it returns the job and
-handle; the request remains queued. Use `status` and `wait` to follow it, or `cancel`
-with its owning handle. An MCP server retains the handle from its own launch. A fresh
+CLI `launch` waits up to ten minutes for readiness. If still queued, it returns a
+successful accepted result with `ready: false`, the job and handle; the request remains
+queued. Ownership is retained before waiting. Use `status` and `wait` to follow it, or
+`cancel` with its owning handle. Managed MCP `sim_launch` returns after acceptance;
+use `sim_session_status` until `ready: true`, or `sim_stop` to cancel queued/running work.
+An MCP server retains the handle from its own launch. A fresh
 MCP client does not silently acquire the last session. Session controls, including
 read operations and stop, require that handle. The service brokers the bridge token.
 
@@ -92,9 +95,69 @@ Submission writes a private receipt **before** the RPC. After a lost response,
 Reusing an ID with different inputs or credentials is refused, and the original
 receipt survives. Status/result never return owner or inherited secrets.
 
-`wait` timing out or a client disconnecting does not cancel a job. Finite execution
+`wait` returns immediately for `UNKNOWN` so callers can see the required reconciliation.
+Timing out or a client disconnecting does not cancel a job. Finite execution
 has a monotonic deadline. Interactive sessions default to a thirty-minute maximum;
 all jobs are bounded to six hours. Queued requests have no automatic expiry.
+
+## Parallel and exclusive admission
+
+Every submission and status includes `scheduling`: policy version, selected mode,
+workload, reason and resource claims. Callers submit typed preset options, never their
+own resource amounts. Classification is deterministic; it does not inspect arbitrary
+GDScript and prove that it is safe to run concurrently.
+
+| Request | Mode | Admission contract |
+| --- | --- | --- |
+| `godtest`, `suite`, `ci`, `capture`, `landscape` | Exclusive | Composite work can include timing or shared-desktop operations. |
+| `debug-session`, `debug-smoke`, including headless sessions | Exclusive | The unrestricted bridge can start profiling or focus-sensitive work later. |
+| `checked`, default `workload: auto` | Exclusive | Unknown scripts are conservative by default. |
+| `checked`, `headless: true`, `workload: functional` | Parallel | A trusted developer declares a reviewed functional check with no timing or shared-device dependency. |
+| Recognized benchmark/performance/profile/latency/soak/stress/memory script names, or `workload: performance` | Exclusive | Performance classification overrides a functional declaration. A filename alone is not a proof about arbitrary script semantics. |
+| `aircraft-screenshot` | Parallel | Fixed studio still renderer, one catalog aircraft, 1920×1080, no flight window, debug port, arbitrary arguments or animation. |
+
+An exclusive attempt waits for **all** managed claims to drain and blocks all other
+dispatch through preparation, execution, teardown and evidence collection. Any
+`UNKNOWN` attempt quarantines new execution across the host, including records made
+by an earlier queue version without an exclusive marker. An eligible exclusive waiter
+blocks younger work from continually refilling slots. Requests that cannot run because
+the desktop is locked or reserved do not prevent eligible functional headless work.
+Human reservations also block headless exclusive performance work.
+
+Headless slots and studio-capture slots both default to one. To allow two independent
+studio renders after checking native GPU/RAM/disk headroom:
+
+```powershell
+python tools/testqueue/testctl.py serve --engine .tools/Godot_v4.8-beta2_win64_console.exe --headless-slots 2 --capture-slots 2
+```
+
+Create a fresh frozen snapshot as above, then submit a studio capture:
+
+```powershell
+python tools/testqueue/testctl.py submit --preset aircraft-screenshot --owner aircraft-agent --snapshot D:/OpenRC-queue-inputs/check-001 --options '{"aircraft":"jensen-das-ugly-stik-60","timeout":300}'
+```
+
+The worker verifies the studio script and Python launch dependencies against its
+startup identity, including added package initializers/shadow modules. It rechecks
+the materialized copy before execution, so a queued job cannot silently use an older
+adapter after an authority upgrade. All clients must use matching reviewed tooling.
+The aircraft/project inputs remain the candidate being tested; this is a trusted
+development workflow, not a sandbox for untrusted code. The still and its manifest
+must agree on aircraft, source identity, checksum and actual 1920×1080 PNG data.
+An exit-zero runner or completion marker alone cannot pass. Studio screenshots
+establish model presentation only, not flight behavior or frame-rate performance.
+
+For a reviewed functional script, add `"workload":"functional"` to the `checked`
+options. Resource sampling through `run_checked(..., resources=True)` also validates
+an actual exclusive inherited grant. Unknown wrappers or tests with timing assertions
+must remain exclusive. Do not label a benchmark functional to increase throughput.
+
+The exclusivity guarantee covers admitted attempt execution. Client-side snapshot
+creation and submission-time snapshot verification still happen outside resource
+claims; direct/unwrapped research launchers and unrelated host applications can also
+compete. Prepare snapshots before a timing campaign and keep that host otherwise
+quiet. Per-copy disk checks are not atomic reservations across concurrent copies.
+Increasing slot counts is an opt-in capacity setting, not hardware qualification.
 
 ## Recovery and evidence
 
@@ -140,9 +203,10 @@ performance, radio or Mac qualification.
 `reserve --owner <name>` reserves a free desktop and returns a release handle;
 `release <handle>` removes that reservation. Reservations do not expire automatically.
 `drain on` stops new dispatch while existing jobs finish; `drain off` resumes it.
-Headless slots default to one. CPU/memory units are conservative configured admission
+CPU/memory units are conservative configured admission
 slots, not measured hardware limits; do not increase concurrency before measuring
-headroom and qualifying adapters. The initial scheduler is FIFO among feasible jobs.
+headroom and qualifying adapters. The scheduler is FIFO among feasible jobs with
+an eligible-exclusive waiting barrier.
 There is no remote-host substitution, priority override or owner transfer.
 
 ## Verification
@@ -156,7 +220,7 @@ python -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
 Fake runners measure actual Windows process creation/exit times for contention,
-orphan children and headless overlap. Contract fixtures cover ownership, delayed
+orphan children and declared headless/studio-capture overlap. Contract fixtures cover ownership, delayed
 cancellation, restart quarantine, lost acknowledgements, snapshot mutation and
 missing evidence. POSIX process-group fixtures establish only their weaker cooperative
 boundary; the scheduler does not advertise a qualified Linux/macOS worker.
@@ -167,6 +231,10 @@ Set `OPENRC_TESTQUEUE_NATIVE_ENGINE` to the pinned console executable and
 active desktop with no unmanaged Godot sessions, uses two real 1920×1080 sessions,
 and retains evidence outside the checkout. It stops only its own attempts and worker.
 The default suite skips this campaign.
+
+The dedicated `Windows test queue regressions` workflow runs process, queue, MCP and
+checked-runner fixtures on a hosted Windows runner when their sources change. It
+does not run the graphical campaign or qualify simultaneous real studio captures.
 
 Local evidence and outstanding platform gates live in the
 [TQ plan](../../docs/plans/agent-test-orchestrator.md). Keep generated logs/images

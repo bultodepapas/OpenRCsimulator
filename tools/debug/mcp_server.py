@@ -19,6 +19,7 @@ import math
 import os
 import sys
 import time
+import uuid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -34,7 +35,8 @@ INSTRUCTIONS = (
     "sim_command reaches any other bridge command (help lists them). Stop the app with sim_stop when done.")
 INSTRUCTIONS += (" On an enrolled shared host, launch and control use the host test queue. This server retains "
                  "its own session handle; a fresh client must launch its own session or explicitly provide "
-                 "OPENRC_TESTQUEUE_HANDLE. A bridge port alone is not ownership.")
+                 "OPENRC_TESTQUEUE_HANDLE. A bridge port alone is not ownership. A queued launch stays owned: "
+                 "use sim_session_status to check readiness and sim_stop to cancel it.")
 
 LOOKUP = {"ref": {"type": "string", "description": "control ref from the latest sim_look, e.g. e12"},
           "field": {"type": "string", "description": "a field's name as sim_look shows it, e.g. Window resolution"},
@@ -55,6 +57,9 @@ TOOLS = [
      "inputSchema": _schema({"headless": {"type": "boolean"}, "resolution": {"type": "string", "description": "WxH"},
                              "sound": {"type": "boolean", "description": "play audio (default: muted)"}})},
     {"name": "sim_stop", "description": "Quit the simulator this server launched (or the session it targets).",
+     "inputSchema": _schema()},
+    {"name": "sim_session_status", "description": "Check the status of this server's admitted shared-host "
+     "session, including a queued launch. The returned handle can recover ownership in another client.",
      "inputSchema": _schema()},
     {"name": "sim_look", "description": "What is on screen now: route, screens, flight summary, every visible control "
      "as ref/role/name/value/options, and next steps. Refs stay valid while their control exists.",
@@ -171,20 +176,45 @@ def call_tool(name: str, args: dict) -> list[dict]:
             argv += ["--resolution", str(args["resolution"])]
         if not args.get("sound"):
             argv += ["--mute"]  # agent-driven sessions run on someone's desk: silent unless asked
-        status, printed = _captured(debugctl.launch, argv)
+        engine_argv = argv[:argv.index("--")] if "--" in argv else argv
+        if debugctl.admission.enabled() and not debugctl.admission.inherited(
+                "headless" if "--headless" in engine_argv else "rendered"):
+            from tools.testqueue.integration import open_debug
+            # The stdio server handles one message at a time. Return after
+            # acceptance so status and cancellation can be requested promptly.
+            launch = lambda values: open_debug(values, debugctl.REPO, wait_timeout=0)
+        else:
+            launch = debugctl.launch
+        before = os.environ.get("OPENRC_TESTQUEUE_HANDLE")
+        try:
+            status, printed = _captured(launch, argv)
+        except Exception as error:
+            handle = os.environ.get("OPENRC_TESTQUEUE_HANDLE")
+            if handle and handle != before:
+                raise ToolError(f"launch was accepted but status is unavailable ({error}); "
+                                f"use sim_session_status or sim_stop with handle {handle}") from None
+            raise
         if status != 0:
             raise ToolError("launch failed: " + printed[-2000:])
+        launched = None
         for line in printed.splitlines():
             with contextlib.suppress(ValueError):
-                launched = json.loads(line)
-                if isinstance(launched, dict) and "port" in launched:
-                    os.environ["OPENRC_DEBUG_BRIDGE"] = str(launched["port"])  # this server's own session
+                parsed = json.loads(line)
+                if isinstance(parsed, dict):
+                    launched = parsed
+                    if "port" in parsed:
+                        os.environ["OPENRC_DEBUG_BRIDGE"] = str(parsed["port"])  # this server's own session
+        if launched and "job" in launched and "port" not in launched:
+            return [_text(json.dumps(launched, ensure_ascii=False))]
         return _then_look(printed.strip().splitlines()[-1] if printed.strip() else "launched")
     if name == "sim_stop":
         status, printed = _captured(debugctl.stop, [])
         if status != 0:
             raise ToolError(f"stop failed (exit {status}): " + printed.strip()[-2000:])
         return [_text(printed.strip() or f"stop exited {status}")]
+    if name == "sim_session_status":
+        from tools.testqueue.integration import debug_status
+        return [_text(json.dumps(debug_status(), ensure_ascii=False))]
     if name == "sim_look":
         return [_text(debugctl.format_look(_bridge("look", {"all": bool(args.get("all"))})))]
     if name == "sim_press":
@@ -221,7 +251,7 @@ def call_tool(name: str, args: dict) -> list[dict]:
     if name == "sim_screenshot":
         folder = debugctl.RUNS / "mcp"
         folder.mkdir(parents=True, exist_ok=True)
-        path = folder / f"shot-{time.strftime('%Y%m%d-%H%M%S')}-{os.getpid()}.jpg"
+        path = folder / f"shot-{time.strftime('%Y%m%d-%H%M%S')}-{os.getpid()}-{uuid.uuid4().hex}.jpg"
         shot = _bridge("screenshot", {"path": str(path), "format": "jpg", "max_width": int(args.get("max_width", 1280))})
         data = Path(shot["path"]).read_bytes()
         return [{"type": "image", "data": base64.b64encode(data).decode("ascii"), "mimeType": "image/jpeg"},

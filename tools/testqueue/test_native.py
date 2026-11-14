@@ -62,7 +62,7 @@ class NativeSessionTests(unittest.TestCase):
             if waiting["reason"].startswith("EXTERNAL_SIMULATOR"):
                 evidence.update(partial=True, blocked_reason=waiting["reason"], first=rpc("status", job=first["job"]))
                 self.skipTest("unmanaged simulator appeared during campaign; retained partial evidence")
-            self.assertIn("rendered", waiting["reason"])
+            self.assertIn("exclusive", waiting["reason"].lower())
             rpc("cancel", handle=first["handle"])
             stopped = wait(first["job"], timeout=30)
             self.assertEqual(stopped.get("cleanup"), "CONFIRMED", stopped)

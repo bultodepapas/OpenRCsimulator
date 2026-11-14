@@ -22,6 +22,8 @@ def parser():
     serve = sub.add_parser("serve")
     serve.add_argument("--engine", required=True, type=Path)
     serve.add_argument("--headless-slots", type=int, default=1)
+    serve.add_argument("--capture-slots", type=int, default=1,
+                       help="parallel studio capture capacity (1..4); qualify GPU/RAM/disk headroom before increasing")
     snapshot = sub.add_parser("snapshot")
     snapshot.add_argument("--source", type=Path, default=REPO)
     snapshot.add_argument("--out", required=True, type=Path)
@@ -56,8 +58,10 @@ def main(argv=None):
     if args.command == "serve":
         if not 1 <= args.headless_slots <= 8:
             raise ValueError("headless slots must be in 1..8 (qualify isolation before increasing)")
+        if not 1 <= args.capture_slots <= 4:
+            raise ValueError("capture slots must be in 1..4 (qualify graphics headroom before increasing)")
         from tools.testqueue.worker import Worker
-        worker = Worker(state_root(), REPO, args.engine, slots=args.headless_slots)
+        worker = Worker(state_root(), REPO, args.engine, slots=args.headless_slots, capture_slots=args.capture_slots)
         write_json(state_root() / "enrollment.json", {"mode": "enforced", "host": worker.host_id})
         worker.serve()
         return 0

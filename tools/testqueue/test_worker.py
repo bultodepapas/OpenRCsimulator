@@ -64,12 +64,12 @@ while not (d / 'release-child').exists() and time.monotonic() < until:
     (directory / "launcher-returning").write_text("yes")
     sys.exit(7 if failed else 0)
 
-if owner.startswith("headless"):
-    (root / (owner + ".ready")).write_text("yes")
+if owner.startswith(("headless", "capture-shared")):
+    (root / ("parallel-" + owner + ".ready")).write_text("yes")
     until = time.monotonic() + 8
-    while len(list(root.glob("headless-*.ready"))) < 2 and time.monotonic() < until:
+    while len(list(root.glob("parallel-*.ready"))) < 2 and time.monotonic() < until:
         time.sleep(0.02)
-    (directory / "barrier.json").write_text(json.dumps({"joined": len(list(root.glob("headless-*.ready"))) >= 2}))
+    (directory / "barrier.json").write_text(json.dumps({"joined": len(list(root.glob("parallel-*.ready"))) >= 2}))
     time.sleep(0.25)
 elif owner.startswith("long"):
     time.sleep(30)
@@ -108,7 +108,7 @@ class WorkerFixture(unittest.TestCase):
         self._git("commit", "-qm", "fixture")
         self.snapshot = self.base / "frozen"
         snapshots.capture(self.repo, self.snapshot, scope=("app", "tools"))
-        self.worker = Worker(self.base / "worker", self.repo, Path(sys.executable), slots=2, fixture=True)
+        self.worker = Worker(self.base / "worker", self.repo, Path(sys.executable), slots=2, capture_slots=2, fixture=True)
         self.handles = []
         self.scheduler = threading.Thread(target=self.worker.schedule, daemon=True)
         self.scheduler.start()
@@ -125,8 +125,14 @@ class WorkerFixture(unittest.TestCase):
     def _call(self, operation, **args):
         return self.worker.dispatch({"auth": self.worker.auth, "operation": operation, **args})
 
-    def _submit(self, owner, *, headless=False):
-        result = self._call("submit", owner=owner, preset="debug-session", options={"headless": headless, "timeout": 40},
+    def _submit(self, owner, *, headless=False, capture=False):
+        preset = "aircraft-screenshot" if capture else "checked" if headless else "debug-session"
+        options = {"headless": headless, "timeout": 40}
+        if capture:
+            options["aircraft"] = "fixture-plane"
+        elif headless:
+            options.update(script="res://tests/test_fixture.gd", workload="functional")
+        result = self._call("submit", owner=owner, preset=preset, options=options,
                             source=str(self.repo), snapshot=str(self.snapshot),
                             request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex)
         self.handles.append(result)
@@ -252,6 +258,17 @@ class WorkerFixture(unittest.TestCase):
 
     def test_two_headless_jobs_overlap_with_independent_writable_state(self):
         jobs = [self._submit(f"headless-{index}", headless=True) for index in range(2)]
+        self._assert_parallel_attempts(jobs)
+
+    def test_two_studio_capture_jobs_overlap_with_independent_writable_state(self):
+        jobs = [self._submit(f"capture-shared-{index}", capture=True) for index in range(2)]
+        self._assert_parallel_attempts(jobs)
+
+    def test_studio_capture_and_functional_check_can_overlap(self):
+        jobs = [self._submit("capture-shared-0", capture=True), self._submit("headless-0", headless=True)]
+        self._assert_parallel_attempts(jobs)
+
+    def _assert_parallel_attempts(self, jobs):
         statuses = [self._finish(item["job"]) for item in jobs]
         self.assertTrue(all(status.get("outcome") == "PASSED" for status in statuses), statuses)
         observations = []
@@ -372,6 +389,25 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(status.get("outcome"), "INFRA_FAILED", status)
         self.assertEqual(status.get("cleanup"), "CONFIRMED")
         self.assertIn("EXTERNAL_SIMULATOR", status["error"])
+
+    def test_queued_studio_job_is_rechecked_after_authority_upgrade(self):
+        self.worker.draining = True
+        self._write("tools/readme/capture_aircraft.gd", "# old reviewed studio script\n")
+        self.snapshot = self.base / "studio-snapshot"
+        snapshots.capture(self.repo, self.snapshot, scope=("app", "tools"))
+        accepted = self._submit("queued-studio", capture=True)
+        attempt = self.worker.store.allocate(accepted["job"], {"rendered": 1}, {"rendered": 1})
+        self.worker.studio_adapter_identity = self.worker._studio_identity(self.repo)
+        self.worker.studio_adapter_identity["tools/testqueue/adapter.py"] = "upgraded-authority"
+        self.worker.fixture = False
+        self.worker.engine_identity = {"binaries_sha256": {}}
+        with mock.patch.object(processes, "OwnedProcess") as process:
+            self.worker.execute(accepted["job"], attempt)
+        process.assert_not_called()
+        status = self._status(accepted["job"])
+        self.assertEqual(status.get("outcome"), "INFRA_FAILED")
+        self.assertIn("ADAPTER_MISMATCH", status.get("error", ""))
+        self.assertEqual(status.get("cleanup"), "CONFIRMED")
 
 
 if __name__ == "__main__":

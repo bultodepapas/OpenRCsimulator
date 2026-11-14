@@ -5,13 +5,15 @@ import math
 from pathlib import Path
 import re
 
-PRESETS = {"debug-session", "debug-smoke", "checked", "godtest", "suite", "capture", "landscape", "ci"}
+PRESETS = {"debug-session", "debug-smoke", "checked", "godtest", "suite", "capture", "landscape", "ci", "aircraft-screenshot"}
+POLICY_VERSION = 1
+_TIMING_SCRIPT = re.compile(r"(?:^|[/_.-])(?:bench(?:mark)?|perf(?:ormance)?|profile|timing|latency|soak|stress|memory)(?:[/_.-]|$)", re.I)
 
 
 def validate(preset: str, options: dict) -> dict:
     if preset not in PRESETS:
         raise ValueError("unsupported preset: " + preset)
-    if not isinstance(options, dict) or set(options) - {"argv", "headless", "timeout", "require", "script", "settings"}:
+    if not isinstance(options, dict) or set(options) - {"argv", "headless", "timeout", "require", "script", "settings", "workload", "aircraft"}:
         raise ValueError("unknown preset options")
     result = dict(options)
     argv = result.setdefault("argv", [])
@@ -24,7 +26,7 @@ def validate(preset: str, options: dict) -> dict:
     if type(headless) is not bool:
         raise ValueError("headless must be boolean")
     # The comprehensive GOD TEST includes rendering. Never infer it is headless.
-    if preset in {"capture", "landscape", "godtest"}:
+    if preset in {"capture", "landscape", "godtest", "aircraft-screenshot"}:
         result["headless"] = False
     if preset in {"suite", "ci"}:
         # Suites include rendered child fixtures, despite most checks being headless.
@@ -46,7 +48,7 @@ def validate(preset: str, options: dict) -> dict:
             elif value not in allowed:
                 raise ValueError("unsupported managed debug option: " + value)
             index += 1
-        if headless and "--headless" not in argv:
+        if headless and "--headless" not in engine_argv:
             result["argv"] = ["--headless", *argv]
     if preset == "checked":
         script = result.get("script", "")
@@ -103,8 +105,52 @@ def validate(preset: str, options: dict) -> dict:
     if preset == "capture":
         if argv and (len(argv) != 2 or argv[0] != "--group" or argv[1] not in {"core", "ui", "quality", "terrain-atmosphere", "ground", "vegetation", "scenario"}):
             raise ValueError("capture accepts only --group; outputs belong to the worker")
+    workload = result.get("workload", "auto")
+    if not isinstance(workload, str) or workload not in {"auto", "functional", "performance"}:
+        raise ValueError("workload must be auto, functional or performance")
+    if workload == "functional" and (preset != "checked" or not result["headless"]):
+        raise ValueError("functional sharing requires a reviewed headless checked script")
+    if preset == "aircraft-screenshot":
+        aircraft = result.get("aircraft")
+        if not isinstance(aircraft, str) or len(aircraft) > 128 or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", aircraft):
+            raise ValueError("aircraft-screenshot requires one safe aircraft ID")
+        if argv:
+            raise ValueError("aircraft-screenshot accepts an aircraft ID, not arbitrary arguments")
+    elif "aircraft" in result:
+        raise ValueError("aircraft is an aircraft-screenshot-only option")
     return result
 
 
 def claims(preset: str, options: dict) -> dict[str, int]:
-    return {"cpu": 1, "memory": 1, **({"headless": 1} if options["headless"] else {"rendered": 1})}
+    return scheduling(preset, options)["resources"]
+
+
+def scheduling(preset: str, options: dict) -> dict:
+    """Classify by reviewed adapter contract; unknown work stays exclusive.
+
+    A functional declaration is a trusted developer assertion, not a static
+    analysis of arbitrary GDScript. Known timing scripts cannot be downgraded.
+    Never accept raw caller-provided resource claims.
+    """
+    workload = options.get("workload", "auto")
+    exclusive = True
+    if workload == "performance" or (preset == "checked" and _TIMING_SCRIPT.search(options.get("script", ""))):
+        category, reason = "performance", "Timing/resource measurements require all managed execution to drain"
+    elif preset == "aircraft-screenshot":
+        exclusive = False
+        category, reason = "aircraft-screenshot", "Fixed studio still adapter; isolated viewport, source, profile and output"
+    elif preset == "checked" and options["headless"] and workload == "functional":
+        exclusive = False
+        category, reason = "functional", "Caller declares a reviewed headless check with no timing or shared-device dependency"
+    elif preset in {"debug-session", "debug-smoke"}:
+        category, reason = "interactive", "Debug controls can start profiling, focus-sensitive or otherwise undeclared work"
+    elif preset in {"godtest", "suite", "ci", "capture", "landscape"}:
+        category, reason = "mixed", "Composite adapter can include performance or shared-desktop work"
+    else:
+        category, reason = "unclassified", "No reviewed parallel contract; conservative exclusive execution"
+    resources = {"cpu": 1, "memory": 1,
+                 **({"headless": 1} if options["headless"] else {"rendered": 1})}
+    if exclusive:
+        resources["exclusive"] = 1
+    return {"policy_version": POLICY_VERSION, "mode": "exclusive" if exclusive else "parallel",
+            "workload": category, "reason": reason, "resources": resources}

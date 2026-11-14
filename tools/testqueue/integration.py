@@ -38,23 +38,46 @@ def submit(preset: str, options: dict, source: Path) -> dict:
     return rpc("submit", **request)
 
 
-def open_debug(argv: list[str], source: Path) -> int:
+def open_debug(argv: list[str], source: Path, *, wait_timeout: float = 600) -> int:
     previous = os.environ.get("OPENRC_TESTQUEUE_HANDLE")
     if previous:
         status = rpc("status", job=previous.partition(":")[0])
         if status["state"] != "FINISHED":
             raise ValueError("this client already owns a pending/live session; close or cancel it before launching another")
     accepted = submit("debug-session", {"argv": argv}, source)
-    status = wait(accepted["job"], timeout=600, ready=True)
-    if not status.get("session"):
-        print(json.dumps({**accepted, "state": status["state"], "reason": status.get("reason"), "output": status.get("output")}))
-        return 1
-    session = status["session"]
+    # Ownership starts at acceptance, not readiness. The job can remain queued
+    # after this caller stops waiting, or the worker may become unreachable.
     os.environ["OPENRC_TESTQUEUE_HANDLE"] = accepted["handle"]
+    os.environ.pop("OPENRC_DEBUG_BRIDGE", None)
+    print(json.dumps({"ok": True, **accepted, "state": "ACCEPTED", "ready": False,
+                      "use": "Keep the handle for status or cancellation"}), file=sys.stderr, flush=True)
+    status = wait(accepted["job"], timeout=wait_timeout, ready=True)
+    ready = status["state"] == "RUNNING" and bool(status.get("session")) and not status.get("canceled")
+    if not ready:
+        pending = status["state"] in {"QUEUED", "DISPATCHING", "RUNNING", "CLEANING"}
+        print(json.dumps({"ok": pending, **accepted, "state": status["state"], "ready": False,
+                          "reason": status.get("reason"),
+                          "outcome": status.get("outcome"), "cleanup": status.get("cleanup"),
+                          "error": status.get("error"), "output": status.get("output"),
+                          "use": "Use the handle for status or cancellation; waiting does not cancel the job"}))
+        return 0 if pending else 1
+    session = status["session"]
     os.environ["OPENRC_DEBUG_BRIDGE"] = str(session["port"])
-    print(json.dumps({"ok": True, **session, **accepted,
+    print(json.dumps({"ok": True, **session, **accepted, "state": status["state"], "ready": True,
                       "use": "Set OPENRC_TESTQUEUE_HANDLE to the returned handle on each command"}))
     return 0
+
+
+def debug_status() -> dict:
+    """Inspect this client's admitted session, including one not yet ready."""
+    handle = os.environ.get("OPENRC_TESTQUEUE_HANDLE", "")
+    job, separator, secret = handle.partition(":")
+    if not separator or not job or not secret:
+        raise ValueError("explicit OPENRC_TESTQUEUE_HANDLE required; launch your own session or supply its handle")
+    status = rpc("status", job=job)
+    fields = ("state", "reason", "outcome", "cleanup", "session", "canceled", "error", "output", "session_failure", "scheduling")
+    ready = status["state"] == "RUNNING" and bool(status.get("session")) and not status.get("canceled")
+    return {"job": job, "handle": handle, "ready": ready, **{key: status[key] for key in fields if key in status}}
 
 
 def close_debug() -> int:
