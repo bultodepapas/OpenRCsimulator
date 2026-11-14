@@ -39,6 +39,8 @@ func device_info() -> Dictionary:
 	var requested_family := str(presentation.get("glyph_family", "auto")) if presentation is Dictionary else "auto"
 	info["family"] = ControllerPrompts.resolve_family(requested_family, device)
 	info["stick_mode"] = 1 if str(draft.get("preset", "")) == "mode1" else CalibrationView.presentation_stick_mode(setup)
+	if str(draft.get("kind", "")) != "gamepad" and setup._calibration_stick_mode in [1, 2]:
+		info["stick_mode"] = setup._calibration_stick_mode
 	return info
 
 
@@ -77,7 +79,7 @@ func apply_preset(preset_id: String) -> bool:
 	if kind != "gamepad":
 		# Radios and joysticks: Mode 1/2 only names the stick layout; calibration detects the channels.
 		if preset_id not in ["mode1", "mode2"]: return false
-		setup._live_stick_mode = 1 if preset_id == "mode1" else 2
+		setup._calibration_stick_mode = 1 if preset_id == "mode1" else 2
 		return true
 	if preset_id not in ["mode1", "mode2", "trigger_absolute"]:
 		_error = tr("This stick layout could not be applied.")

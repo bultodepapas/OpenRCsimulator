@@ -165,6 +165,13 @@ func _run() -> void:
 	var overlapping_aux: Dictionary = overlapping_profile.get("aux", {})
 	_check("calibration drops a flap AUX that overlaps the new primary axis", overlapping.done and not overlapping_aux.has("flaps") and overlapping_aux.has("gear") and overlapping_aux.has("smoke"), str(overlapping.get("warning", "")))
 	_check("overlapping calibrated profile still activates with the remaining AUX", Profile.upgrade_legacy(overlapping_profile).size() > 0)
+	var multiple_source := _profile({"flaps": _axis_binding(9), "smoke": _axis_binding(5),
+		"gear": _button_binding(127, "level")})
+	var multiple := _calibrate(multiple_source, 9)
+	_check("all removed AUX controls are reported and unrelated gear survives", multiple.done \
+		and multiple.removals.size() == 2 and "flaps" in multiple.warning and "smoke" in multiple.warning \
+		and not multiple.profile.aux.has("flaps") and not multiple.profile.aux.has("smoke") \
+		and multiple.profile.aux.has("gear"), str(multiple))
 
 	print("Controller auxiliary runtime: %d/%d checks passed" % [_checks - _failures, _checks])
 	quit(1 if _failures > 0 else 0)
@@ -213,16 +220,18 @@ func _calibrate(existing_profile: Dictionary, roll_axis: int) -> Dictionary:
 	var rest := PackedFloat64Array()
 	rest.resize(RcInput.AXES)
 	rest[2] = -1.0 # throttle stays at LOW; the sticks rest at centre
+	for _tick in Calibration.STABLE_SAMPLES: wizard.sample(rest)
 	wizard.advance(rest) # centre / throttle-low rest sample
 	var selected_axes := [2, roll_axis, 5, 6] # throttle, roll, pitch, yaw
 	for axis in selected_axes:
 		var samples := rest.duplicate()
 		if axis != 2:
 			samples[axis] = 1.0
-			wizard.sample(samples)
+			for _tick in Calibration.STABLE_SAMPLES: wizard.sample(samples)
 			wizard.advance(samples) # confirm the requested direction while held
 		for value in ([1.0, -1.0] if axis == 2 else [-1.0, 0.0]):
 			samples[axis] = value
-			wizard.sample(samples)
+			for _tick in Calibration.STABLE_SAMPLES: wizard.sample(samples)
 		wizard.advance(samples)
-	return {"profile": wizard.profile.duplicate(true), "warning": wizard.aux_warning, "done": wizard.done()}
+	return {"profile": wizard.profile.duplicate(true), "warning": wizard.aux_warning,
+		"removals": wizard.aux_removals.duplicate(true), "done": wizard.done()}

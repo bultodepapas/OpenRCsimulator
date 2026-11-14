@@ -240,6 +240,19 @@ func attest_recovery() -> void:
 	_actions |= FC.ACTION_RECOVERY
 
 
+## Focus loss is a new authority boundary. A queued recovery cannot bridge it;
+## the controller must see this generation disarmed before a fresh arm request.
+func invalidate_for_focus() -> void:
+	if radio.connected:
+		radio.require_neutral(true, true)
+	source_generation += 1
+	_arm_latch = false
+	_arm_input_held = true
+	_mode_input_held = true
+	_actions &= ~FC.ACTION_RECOVERY
+	_keyboard_sticks = {roll = 0.0, pitch = 0.0, yaw = 0.0}
+
+
 ## A pad restart: the virtual arm switch returns to OFF and the keyboard sticks to centre. The flight mode is kept.
 func reset_for_restart() -> void:
 	_arm_latch = false

@@ -56,7 +56,7 @@ func _axes(throttle: float, roll: float, pitch: float, yaw: float) -> PackedFloa
 
 
 func _feed(view: CalibrationView, wizard: Calibration, axes: PackedFloat64Array) -> void:
-	wizard.sample(axes)
+	for _tick in Calibration.STABLE_SAMPLES: wizard.sample(axes)
 	view.update(wizard, axes)
 
 
@@ -125,6 +125,7 @@ func _wizard_tests(host: Control) -> void:
 		and view.channel_bars[0].highlight == ChannelBarView.Highlight.IDLE)
 	_check("unassigned channels read Axis N", view.channel_bars[6].label == "Axis 6")
 
+	_feed(view, wizard, rest)
 	wizard.advance(rest)
 	view.update(wizard, rest)
 	_check("throttle step hides the checklist and advances the strip", not view.checklist.visible
@@ -254,6 +255,7 @@ func _mode_tests(host: Control) -> void:
 		and view.right_gimbal.one_ended_y and view.left_gimbal.caption == "Pitch · Yaw"
 		and view.right_gimbal.caption == "Throttle · Roll")
 	var wizard := Calibration.new()
+	for _tick in Calibration.STABLE_SAMPLES: wizard.sample(_axes(0, 0, 0, 0))
 	wizard.advance(_axes(0, 0, 0, 0))
 	view.update(wizard, _axes(0, 0, 0, 0))
 	_check("Mode 1 throttle step targets the right stick", view.right_gimbal.target() == Vector2(0, -1)
@@ -300,6 +302,7 @@ func _card_tests() -> void:
 			all_ignore = false
 			printerr("card control takes input: ", control.get_path())
 	_check("every card control ignores the mouse and focus", all_ignore)
+	for _tick in Calibration.STABLE_SAMPLES: session.calibration.sample(session.radio.axes)
 	session.calibration.advance(session.radio.axes)
 	session.radio.axes = _axes(1, 0, 0, 0)
 	await process_frame
@@ -324,12 +327,17 @@ func _preflight_tests() -> void:
 	_raw = _axes(0, 0, 0, 0)
 	var registry := RadioRegistry.new()
 	var setup := RadioCalibration.new()
-	_check("preflight accepts the connected radio", setup.configure(registry, 5, {"kind": "radio"}))
+	var original := RcInput.DEFAULT_PROFILE.duplicate(true)
+	original.pitch.axis = 8
+	original.aux = {"gear": {"type": "axis", "axis": 6, "off": -1.0, "on": 1.0, "invert": false},
+		"smoke": {"type": "axis", "axis": 1, "off": -1.0, "on": 1.0, "invert": false},
+		"flaps": {"type": "button", "button": 11, "mode": "level"}}
+	_check("preflight accepts the connected radio", setup.configure(registry, 5, original))
 	setup.read_axis = func(_id: int, axis: int) -> float: return _raw[axis]
 	var finished: Array = []
 	setup.completed.connect(func(profile: Dictionary, _warning: String) -> void: finished.append(profile))
 	root.add_child(setup)
-	await _frames(2)
+	await _frames(Calibration.STABLE_SAMPLES)
 	_check("preflight keeps its node names", setup.find_child("RadioCalibrationCard", true, false) != null
 		and setup.find_child("NextCalibrationStep", true, false) == setup.next_button
 		and setup.find_child("CancelCalibration", true, false) == setup.cancel_button)
@@ -337,55 +345,62 @@ func _preflight_tests() -> void:
 	_check("preflight hosts the shared view", setup.view != null and setup._prompt == setup.view.instruction_label
 		and setup._device_label.text == "Fixture radio" and setup.view.checklist.visible)
 	setup.advance() # rest
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)
 	setup.advance() # throttle without a sweep
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)
 	_check("missing sweep shows the error banner", setup._error_label.visible and setup.view.error_banner.visible
 		and setup._wizard.step == 1)
 	for value: float in [0.5, 1.0, 0.5, 0.0]:
 		_raw = _axes(value, 0, 0, 0)
-		await _frames(1)
+		await _frames(Calibration.STABLE_SAMPLES)
 	setup.advance()
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)
 	_check("throttle step accepted through Next", setup._wizard.assigned_axis("throttle") == 4 and not setup._error_label.visible)
 	for move: Array in [[1, 1.0], [2, 1.0], [3, -1.0]]:
 		var function: int = move[0]
 		var held := [0.0, 0.0, 0.0, 0.0]
 		held[function] = move[1]
 		_raw = _axes(held[0], held[1], held[2], held[3])
-		await _frames(1)
+		await _frames(Calibration.STABLE_SAMPLES)
 		setup.advance()
-		await _frames(1)
+		await _frames(Calibration.STABLE_SAMPLES)
 		_check("held direction asks for the opposite endpoint (%d)" % function, "then centre" in setup._prompt.text, setup._prompt.text)
 		for value: float in [-move[1], 0.0]:
 			held[function] = value
 			_raw = _axes(held[0], held[1], held[2], held[3])
-			await _frames(1)
+			await _frames(Calibration.STABLE_SAMPLES)
 		setup.advance()
-		await _frames(1)
+		await _frames(Calibration.STABLE_SAMPLES)
 	_check("preflight wizard finished, Next waits for throttle verification", setup._wizard.done() and setup.next_button.disabled
 		and setup.view.verify_panel.visible and "throttle 4" in setup._result_label.text)
+	_check("calibration review names every removed AUX", "gear" in setup._result_label.text and "smoke" in setup._result_label.text \
+		and setup._wizard.profile.aux.has("flaps"), setup._result_label.text)
 	_raw = _axes(1, 0, 0, 0)
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)
 	_check("FULL is checked", setup.view.verify_panel.find_child("ReachedFull", true, false).checked and setup.next_button.disabled)
+	_raw = _axes(0.04, 0, 0, 0)
+	await _frames(Calibration.STABLE_SAMPLES)
+	_check("a four-percent idle offset cannot pass final verification", setup.next_button.disabled \
+		and not setup.view.verify_panel.find_child("BackToLow", true, false).checked)
 	_raw = _axes(0, 0, 0, 0)
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)
 	_check("back to LOW enables Use calibration", setup.view.verify_panel.find_child("BackToLow", true, false).checked
 		and not setup.next_button.disabled and setup.next_button.text == "Use calibration")
 	setup.advance()
 	_check("Use calibration completes with a valid profile", finished.size() == 1 and Calibration.valid(finished[0]))
 	setup.queue_free()
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)
 
 	var cancelled: Array = []
 	var other := RadioCalibration.new()
-	other.configure(registry, 5, {"kind": "radio"})
+	other.configure(registry, 5, {"kind": "radio"}, 1)
 	other.read_axis = func(_id: int, axis: int) -> float: return _raw[axis]
 	other.cancelled.connect(func(reason: String) -> void: cancelled.append(reason))
 	root.add_child(other)
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)
+	_check("explicit setup Mode 1 overrides presentation fallback", other.view.stick_mode == 1)
 	other.cancel_button.pressed.emit()
 	_check("Cancel still cancels with the unchanged-draft reason", cancelled.size() == 1
 		and cancelled[0] == "Calibration cancelled. The draft is unchanged.")
 	other.queue_free()
-	await _frames(1)
+	await _frames(Calibration.STABLE_SAMPLES)

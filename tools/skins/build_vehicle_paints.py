@@ -925,8 +925,8 @@ SABRE_ATLASES = {
 }
 SILVER_ACE_SOURCES = ROOT / "tools/skins/sources/silver-ace"  # public-domain USAF insignia (see its README.md)
 # Art-directed aluminium reflectance (sRGB) and roughness per panel: temper, polish and age differ panel to panel.
-ALU_TONES = np.array([(214, 218, 222), (199, 206, 213), (226, 226, 221), (189, 196, 204),
-                      (207, 209, 205), (220, 223, 228), (182, 188, 194), (232, 233, 233)], dtype=np.float64) / 255.0
+ALU_TONES = np.array([(216, 220, 224), (196, 203, 211), (230, 229, 223), (180, 188, 197),
+                      (206, 207, 201), (222, 225, 231), (170, 176, 183), (236, 237, 236)], dtype=np.float64) / 255.0
 ALU_ROUGH = np.array([0.26, 0.34, 0.22, 0.42, 0.31, 0.27, 0.47, 0.19])
 # Metallic share per panel. Compatibility flight and Home scenes disable sky reflections (atmosphere.gd), where a
 # fully metallic skin keeps only sun highlights and reads near-black; a partial share keeps a diffuse silver body
@@ -934,7 +934,7 @@ ALU_ROUGH = np.array([0.26, 0.34, 0.22, 0.42, 0.31, 0.27, 0.47, 0.19])
 ALU_METAL = np.array([0.60, 0.52, 0.66, 0.46, 0.56, 0.60, 0.44, 0.70])
 SABRE_INK = hex_rgb("#1d1f22")
 SABRE_WHITE = hex_rgb("#ebe9e2")
-SABRE_YELLOW = hex_rgb("#e3b21f")
+SABRE_YELLOW = hex_rgb("#e8bb24")
 SABRE_OLIVE = hex_rgb("#2f3229")
 SABRE_RED = hex_rgb("#b3262a")
 FUS_NOSE, FUS_LEN = -0.938, 2.221
@@ -1045,20 +1045,6 @@ def _sabre_insignia() -> np.ndarray:
     return _SABRE_ART["insignia"]
 
 
-def _rescue_arrow() -> np.ndarray:
-    if "rescue" not in _SABRE_ART:
-        from PIL import ImageDraw, ImageFont
-        img = Image.new("RGBA", (560, 160), (0, 0, 0, 0))
-        d = ImageDraw.Draw(img)
-        red = tuple(int(c * 255) for c in SABRE_RED) + (255,)
-        d.polygon([(8, 52), (420, 52), (420, 14), (552, 80), (420, 146), (420, 108), (8, 108)], fill=red)
-        font = ImageFont.truetype(str(FONT), 46)
-        d.text((214, 80), "RESCUE", fill=(240, 238, 230, 255), font=font, anchor="mm", stroke_width=2,
-               stroke_fill=(240, 238, 230, 255))
-        _SABRE_ART["rescue"] = np.asarray(img, dtype=np.float64) / 255.0
-    return _SABRE_ART["rescue"]
-
-
 def _side_uv(p, n, z0, z1, y0, y1):
     """Box coordinates on a fuselage or fin side that read left-to-right from both sides, and the side weight."""
     z, y = p[:, 2], p[:, 1]
@@ -1080,7 +1066,7 @@ class _Skin:
 
     def panels(self, panel_id, grain_a, grain_b, p, seed):
         tone = np.minimum((_hash(panel_id, seed=seed) * len(ALU_TONES)).astype(int), len(ALU_TONES) - 1)
-        self.colour = ALU_TONES[tone].copy()
+        self.colour = ALU_TONES[tone] * (0.96 + 0.08 * _hash(panel_id, seed=seed + 3))[:, None]
         self.rough = ALU_ROUGH[tone].copy()
         self.metal = ALU_METAL[tone].copy()
         # Directional polishing grain (ambientCG Metal009) along the panel, each panel offset; some turned 90 deg.
@@ -1134,8 +1120,8 @@ class _Skin:
     def scratch(self, mask):
         # Bare skin shows through paint; on metal a scratch catches the light as a duller, brighter hairline.
         self.colour = mix(self.colour, np.minimum(self.colour * 1.08 + 0.04, 1.0), mask * (1.0 - self.paint))
-        self.colour = mix(self.colour, ALU_TONES[0], mask * self.paint)
-        self.metal = np.maximum(self.metal, 0.6 * mask * self.paint)
+        self.colour = mix(self.colour, ALU_TONES[0], 0.5 * mask * self.paint)
+        self.metal = np.maximum(self.metal, 0.3 * mask * self.paint)
         self.rough = self.rough + 0.08 * mask
 
 
@@ -1199,6 +1185,10 @@ def sabre_fuselage(p, n):
     k_seam = np.where(k_seam == 0, 0, k_seam + 10 * (x < 0))  # the top panel spans the spine
     panel = k_station * 64 + k_seam
     skin.panels(panel, zm, arc, p, seed=101)
+    # Engine-bay and tail-pipe skins are darker, harder alloys and steel than the forward fuselage.
+    tail_bay = smoothstep(0.845, 0.86, zn)
+    skin.colour = mix(skin.colour, skin.colour * np.array([0.86, 0.85, 0.83]), tail_bay)
+    skin.rough = skin.rough + 0.05 * tail_bay
     # Oil-canned skins: each panel bows in or out a fraction of a millimetre between frames.
     across = np.where(a < FUS_SEAMS[0], (phi + FUS_SEAMS[0]) / (2 * FUS_SEAMS[0]), _nearest(a, FUS_SEAMS)[2])
     bow = np.sin(np.pi * f_station) * np.sin(np.pi * np.clip(across, 0, 1))
@@ -1266,9 +1256,9 @@ def sabre_fuselage(p, n):
     skin.paint_over(SABRE_OLIVE, glare, rough=0.72, chips=chips)
 
     # Korea-style yellow ID band with black borders.
-    band = (zn > 0.705) & (zn < 0.738)
+    band = (zn > 0.684) & (zn < 0.718)
     skin.paint_over(SABRE_YELLOW, band.astype(float), rough=0.4, chips=chips)
-    for edge in (0.705, 0.738):
+    for edge in (0.684, 0.718):
         skin.paint_over(SABRE_INK, _line((zn - edge) * FUS_LEN, 0.006), rough=0.4, chips=chips)
 
     # Markings: U.S. AIR FORCE, the national insignia, the buzz number, pilot, rescue arrow and stencils.
@@ -1290,8 +1280,13 @@ def sabre_fuselage(p, n):
     skin.paint_over(insignia_rgb, insignia_alpha, rough=0.42, chips=chips * 0.5)
     lettering("FU-861", 0.855, 0.952, 0.030, 0.078)
     lettering("CAPT. M. ORTEGA", 0.215, 0.300, 0.114, 0.126)
-    rescue_rgb, rescue_alpha = side_rgba(_rescue_arrow(), 0.322, 0.366, 0.112, 0.127)
-    skin.paint_over(rescue_rgb, rescue_alpha, rough=0.42)
+    # Red RESCUE arrow pointing forward to the canopy release on both sides (drawn in scene space so the tip
+    # does not flip with the reading direction), white lettering in its shaft.
+    rz0, rz1, ry = 0.322 * FUS_LEN, 0.366 * FUS_LEN, 0.1195
+    shaft = (zm > rz0 + 0.011) & (zm < rz1) & (np.abs(y - ry) < 0.0042)
+    head = (zm >= rz0) & (zm <= rz0 + 0.012) & (np.abs(y - ry) < 0.008 * (zm - rz0) / 0.012)
+    skin.paint_over(SABRE_RED, (shaft | head) * side, rough=0.42)
+    lettering("RESCUE", 0.331, 0.363, 0.1162, 0.1228, colour=SABRE_WHITE)
     lettering("USAF F-86 SPORT\nSERIAL NO. 52-0861\nFUEL JP-4", 0.432, 0.500, 0.064, 0.094, rows=3)
     lettering("EXT. POWER\n28V DC", 0.612, 0.650, 0.074, 0.092, rows=2)
     lettering("NO STEP", 0.560, 0.598, 0.196, 0.206)
@@ -1317,9 +1312,9 @@ def sabre_fuselage(p, n):
     oil = np.exp(-np.mod(zn - 0.20, 0.135) * FUS_LEN / 0.16) * smoothstep(0.55, 0.85, noise3(p, (0.005, 0.005, 0.2), 59))
     skin.grime(oil * belly * 0.4, tint=(0.44, 0.41, 0.36), rough=0.45, metal_loss=0.25)
     skin.colour = skin.colour * (1.0 - 0.07 * smoothstep(np.radians(70), np.radians(170), a))[:, None]
-    sill = (zn > 0.13) & (zn < 0.42) & (y > 0.08)
+    sill = (zn > 0.165) & (zn < 0.42) & (y > 0.08)
     walk = (zn > 0.42) & (zn < 0.70) & (n[:, 1] > 0.5)
-    density = np.where(sill, 0.22, np.where(walk, 0.18, 0.03))
+    density = np.where(sill, 0.22, np.where(walk, 0.18, 0.03)) * (glare < 0.5) * (radome < 0.5)
     skin.scratch(0.6 * scratches(zm, arc, 0.018, 1.0, 61) * (_hash(np.floor(zm / 0.018), np.floor(arc / 0.018), seed=63) < density))
     return skin
 
@@ -1374,7 +1369,7 @@ def sabre_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len):
         skin.paint_over(sample[:, :3], np.where(inside, sample[:, 3], 0.0) * skin_face, rough=0.42, chips=chips * 0.4)
         # Black walkway outline at the root and a filler cap outboard.
         walk = _box_distance(s, frac * chord_m, 0.12, 0.30, 0.26 * chord_m, 0.58 * chord_m)
-        skin.paint_over(SABRE_INK, _line(walk, 0.003) * top * skin_face, rough=0.45, chips=chips)
+        skin.paint_over(SABRE_INK, _line(walk, 0.0018) * top * skin_face, rough=0.45, chips=chips)
         cap = np.hypot(s - 0.66, (frac - 0.36) * chord_m)
         skin.colour = mix(skin.colour, hex_rgb("#a7aaad"), (1.0 - smoothstep(0.009, 0.010, cap)) * top)
         skin.groove(np.where(top, cap - 0.0102, 1.0), width=0.0012)
@@ -1389,6 +1384,8 @@ def sabre_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len):
         soot = (1.0 - smoothstep(0.10, 0.22, s)) * smoothstep(0.3, 0.9, frac)
         skin.grime(soot * (0.5 + 0.5 * noise3(p, (0.2, 0.01, 0.01), 89)) * 0.6, tint=(0.25, 0.24, 0.23))
     skin.rough = skin.rough + np.where(top, 0.0, 0.06)
+    # Horizontal skins face the sun and read whiter than the fuselage sides: match the overall value.
+    skin.colour = skin.colour * 0.93
     # Gap and edge faces read as plain dull metal.
     skin.colour = mix(ALU_TONES[6] * 0.8, skin.colour, skin_face)
     return skin
@@ -1424,7 +1421,7 @@ def sabre_fin(p, n, frac, height_norm):
         mask = _sabre_text(text, (z1 - z0) / (y1 - y0), rows)
         skin.paint_over(SABRE_INK, np.where(weight > 0, _bilinear(mask, u, v), 0.0) * weight, rough=0.45, chips=chips * 0.5)
 
-    lettering("U.S. AIR FORCE", 0.905, 1.035, 0.352, 0.366)
+    lettering("U.S. AIR FORCE", 0.932, 1.032, 0.352, 0.364)
     lettering("20861", 0.885, 1.045, 0.300, 0.342)
     # Exhaust haze at the fin root's trailing edge.
     soot = (1.0 - smoothstep(0.0, 0.12, height_norm)) * smoothstep(0.4, 0.9, frac)

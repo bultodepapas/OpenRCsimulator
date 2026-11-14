@@ -839,6 +839,8 @@ func _build_calibrate(parent: Control) -> void:
 func _refresh_calibrate() -> void:
 	var joystick := _kind == "joystick"
 	_calibrate_heading.text = "Assign the joystick axes" if joystick else "Calibrate the radio"
+	var intro := pages.calibrate.get_node("Intro") as Label
+	intro.text = tr("Open Flight axes and use Detect to assign each control. Detect uses assumed endpoint ranges; verify direction and travel, then explicitly enable the mapping in Profile before Save.") if joystick else tr("The simulator measures which channel each stick sends, its centre and its endpoints. Nothing starts until you press Start calibration, and the result stays in the draft until you Save.")
 	var lines := JOYSTICK_CHECKLIST if joystick else RADIO_CHECKLIST
 	if _checklist.get_child_count() != lines.size() or str(_checklist.get_meta("kind", "")) != _kind:
 		for child in _checklist.get_children():
@@ -855,6 +857,7 @@ func _refresh_calibrate() -> void:
 	start_calibration_button.text = "Calibrate again" if _calibration == "ok" else "Start calibration"
 	if joystick: start_calibration_button.text = "Open Flight axes"
 	start_calibration_button.accessibility_name = tr("Calibrate again") if _calibration == "ok" else tr("Start calibration")
+	if joystick: start_calibration_button.accessibility_name = tr("Open Flight axes")
 	var text := ""
 	if joystick: text = tr("Continue in Flight axes: use Detect for each axis, verify the mapping, and explicitly enable it before Save.")
 	var color := UiTheme.FOCUS

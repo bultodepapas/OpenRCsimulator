@@ -2139,7 +2139,7 @@ func _open_radio_calibration(setup: Node) -> void:
 	var device_id: int = setup.selected_flight_device_id()
 	var generation: int = controllers.registry.connection_generation(device_id)
 	var wizard: CanvasLayer = RadioCalibrationSetup.new()
-	if not wizard.configure(controllers.registry, device_id, setup.current_profile(), setup._live_stick_mode):
+	if not wizard.configure(controllers.registry, device_id, setup.current_profile(), setup._calibration_stick_mode):
 		wizard.free()
 		_update_controller_calibration_button(setup)
 		# Always answer the request: the Setup assistant waits for a result (UI-15-UX-07).

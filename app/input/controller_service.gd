@@ -63,11 +63,16 @@ func refresh() -> void:
 	_profile_misses.clear()
 	_refreshing = true
 	registry.update_devices(enumerate_devices.call())
+	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not held.ok:
+		_refreshing = false
+		return # A busy store is unknown, never proof that an existing role became ineligible.
 	var ui_id: int = registry.selected_device_id("ui")
 	if ui_id >= 0 and not is_ui_device(ui_id):
 		registry.select_device("ui", -1)
 	_refreshing = false
 	_apply_automatic_defaults()
+	if store.has_method("release_write"): store.release_write()
 
 
 ## Selection is automatic only before flight. It never writes profiles or arms controls.
@@ -222,6 +227,14 @@ func select_devices(flight_id: int, ui_id: int) -> bool:
 
 
 func is_ui_gamepad(id: int) -> bool:
+	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not held.ok: return false
+	var eligible := _is_ui_gamepad_locked(id)
+	if store.has_method("release_write"): store.release_write()
+	return eligible
+
+
+func _is_ui_gamepad_locked(id: int) -> bool:
 	var info: Dictionary = registry.device_for_id(id)
 	if not bool(info.get("connected", false)) or JetiRadio.has_jeti_identity_claim(info) \
 			or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
@@ -235,6 +248,14 @@ func is_ui_gamepad(id: int) -> bool:
 
 
 func is_ui_device(id: int) -> bool:
+	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not held.ok: return false
+	var eligible := _is_ui_device_locked(id)
+	if store.has_method("release_write"): store.release_write()
+	return eligible
+
+
+func _is_ui_device_locked(id: int) -> bool:
 	var info: Dictionary = registry.device_for_id(id)
 	if not bool(info.get("connected", false)): return false
 	var saved: Dictionary = store.match_profile(info, registry.get_devices())

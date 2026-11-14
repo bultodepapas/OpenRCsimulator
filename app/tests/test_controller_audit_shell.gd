@@ -23,7 +23,10 @@ class FixtureService extends Node:
 	var registry := Registry.new()
 	var profile := Profile.defaults("radio", "radio_custom")
 	var ui_profile := Profile.defaults()
-	func profile_for_device(id: int) -> Dictionary: return (ui_profile if id == 8 else profile).duplicate(true)
+	var profile_requests := 0
+	func profile_for_device(id: int) -> Dictionary:
+		profile_requests += 1
+		return (ui_profile if id == 8 else profile).duplicate(true)
 
 func check(label: String, ok: bool) -> void:
 	checks += 1
@@ -64,6 +67,7 @@ func _run() -> void:
 	shell.flight = flight
 	root.add_child(shell)
 	shell._input(button(false))
+	check("one event reuses the selected profile snapshot", service.profile_requests == 1)
 	shell._input(button(true))
 	check("radio Pause reaches flight with keyboard menus", flight.received.count("pause") == 1)
 	var pause := Screen.new()

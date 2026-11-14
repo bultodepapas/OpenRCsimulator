@@ -41,6 +41,12 @@ func request_calibration() -> bool:
 	return false
 
 
+## Generic joysticks explicitly leave the assistant for Detect and enablement in Flight axes.
+## This handoff preserves the draft; ordinary Cancel still restores the opening draft.
+func open_flight_axes() -> bool:
+	return false
+
+
 ## Step 4, polled each frame only while the Test step is visible. Keys: roll, pitch, yaw (−1…1, conditioned;
 ## pitch +1 = stick back), throttle (0…1, or −1…1 when throttle_centered), throttle_centered: bool (a rate
 ## throttle stick), throttle_level: 0…1 (optional, the aircraft throttle bar), buttons: pressed JoyButton indices,

@@ -135,8 +135,9 @@ func _run() -> void:
 	for mode: int in [1, 2]:
 		setup.open_setup_assistant()
 		setup._assistant_bridge.apply_preset("mode%d" % mode)
+		setup._on_registry_devices_changed()
 		var wizard := Wizard.new()
-		check("wizard accepts explicit mode", wizard.configure(registry, 5, radio, setup._live_stick_mode))
+		check("wizard accepts explicit mode after registry refresh", wizard.configure(registry, 5, radio, setup._calibration_stick_mode))
 		root.add_child(wizard)
 		await process_frame
 		check("assistant mode reaches calibration diagram", wizard.view.stick_mode == mode)

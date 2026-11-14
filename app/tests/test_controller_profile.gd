@@ -276,12 +276,13 @@ func _initialize() -> void:
 		and conflict_result.profile.actions == actions_profile.actions and actions_profile == actions_before, str(conflict_result))
 	var resolved: Dictionary = conflict_result.profile.duplicate(true)
 	resolved.actions.camera_cycle = {"type": "unbound"}
-	resolved.actions.pause = {"type": "unbound"}
+	resolved.actions.pause = {"type": "button", "button": 31}
 	_check("remapping resolves conflicts without measuring again", Profile.validate(resolved).ok \
 		and resolved.roll.axis == 5 and resolved.pitch.axis == 6 and actions_profile == actions_before)
 	for channel_name in ["roll", "pitch", "yaw"]:
 		var old := Profile.defaults("radio", "radio_custom")
 		old[channel_name].range_kind = "absolute"
+		old[channel_name].invert = false
 		_check("old V2 %s remains loadable and uses signed semantics" % channel_name, Profile.validate(old).ok \
 			and not Profile.upgrade_legacy(old).is_empty() and Profile.channel_value(-1.0, channel_name, old) == -1.0 \
 			and Profile.channel_value(0.0, channel_name, old) == 0.0 and Profile.channel_value(1.0, channel_name, old) == 1.0)

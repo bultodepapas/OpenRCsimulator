@@ -256,6 +256,7 @@ var _axis_gimbals: Array[GimbalView] = []
 var _response_curve: ResponseCurve
 var _curve_channel := "roll"
 var _live_stick_mode := 2
+var _calibration_stick_mode := 0
 var _axis_raw := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 var _axis_out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 var _page_editables: Dictionary = {} # section -> wrapper of the profile editors
@@ -588,7 +589,7 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 		message += " " + tr("Measurements are retained. Resolve these action bindings before saving: %s") % "; ".join(merged.errors)
 	_set_status(message, not merged.ok)
 	_draft_validation_changed()
-	calibration_finished.emit(true, tr(warning) if not warning.is_empty() else "")
+	calibration_finished.emit(true, message)
 	return true
 
 
@@ -1900,7 +1901,7 @@ func open_setup_assistant() -> bool:
 		"profile": _draft_profile.duplicate(true), "context": _draft_context_key,
 		"unsaved_calibration": _unsaved_calibration.duplicate(true), "calibration_origins": _calibration_origins.duplicate(true),
 		"menu_origins": _menu_verification_origins.duplicate(true), "ui_device": _draft_ui_device_id,
-		"ui_connection": _ui_connection.duplicate(true), "stick_mode": _live_stick_mode,
+		"ui_connection": _ui_connection.duplicate(true), "stick_mode": _calibration_stick_mode,
 	}
 	_assistant_axes_handoff = false
 	_assistant_bridge = SetupAssistantBridge.new(self)
@@ -1949,7 +1950,7 @@ func _on_calibration_finished_for_assistant(ok: bool, message: String) -> void:
 func _on_assistant_finished(saved: bool) -> void:
 	if saved or _assistant_axes_handoff or _assistant_restore.is_empty():
 		return
-	_live_stick_mode = int(_assistant_restore.stick_mode)
+	_calibration_stick_mode = int(_assistant_restore.stick_mode)
 	_ui_connection = _assistant_restore.ui_connection
 	_unsaved_calibration = _assistant_restore.unsaved_calibration
 	_calibration_origins = _assistant_restore.calibration_origins
@@ -3596,7 +3597,7 @@ func _accept_captured_binding(binding: Dictionary) -> void:
 	var candidate_profile := _draft_profile.duplicate(true)
 	candidate_profile["actions"] = candidate
 	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
-	var accepted := bool(validation.get("ok", false))
+	var accepted := bool(validation.get("ok", false)) or _calibration_conflicts_reduced(validation)
 	if accepted:
 		_base_actions = candidate
 		_draft_profile["actions"] = _base_actions.duplicate(true)
@@ -3640,6 +3641,25 @@ func _capture_aux_button(button_index: int) -> void:
 	get_viewport().set_input_as_handled()
 
 
+## Retained measurements can expose several old actions on new flight axes.
+## Let each explicit edit remove one conflict while Save still requires a valid whole profile.
+func _calibration_conflicts_reduced(report: Dictionary) -> bool:
+	if not _unsaved_calibration.has(_draft_context_key): return false
+	var previous := ControllerActions.validate_profile_bindings(_profile_candidate(), action_capabilities)
+	var old_actions: Array[String] = []
+	for issue: Dictionary in previous.get("issues", []):
+		if issue.get("code", "") == "action_flight_axis_conflict":
+			var paths: Array = issue.get("paths", [])
+			if not paths.is_empty(): old_actions.append(str(paths[0]))
+	var remaining := 0
+	for issue: Dictionary in report.get("issues", []):
+		if issue.get("code", "") != "action_flight_axis_conflict": return false
+		var paths: Array = issue.get("paths", [])
+		if paths.is_empty() or str(paths[0]) not in old_actions: return false
+		remaining += 1
+	return remaining < old_actions.size()
+
+
 func _clear_action_binding(action_id: String) -> void:
 	if action_id in ["back", "pause"]:
 		return
@@ -3648,7 +3668,7 @@ func _clear_action_binding(action_id: String) -> void:
 	var candidate_profile := _draft_profile.duplicate(true)
 	candidate_profile["actions"] = candidate
 	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
-	if not bool(validation.get("ok", false)):
+	if not bool(validation.get("ok", false)) and not _calibration_conflicts_reduced(validation):
 		_show_rejected_validation(validation, "Binding was not changed: %s")
 		return
 	_base_actions = candidate
@@ -3959,6 +3979,8 @@ func _profile_candidate() -> Dictionary:
 
 
 func _associate_candidate(candidate: Dictionary) -> Dictionary:
+	if _draft_connections.has(_draft_context_key) and not _lease_matches(_draft_connections[_draft_context_key], _draft_flight_device_id):
+		return candidate
 	var selected_device := _device_for_id(_draft_flight_device_id)
 	if not selected_device.is_empty():
 		var serial := str(selected_device.get("serial_number", ""))

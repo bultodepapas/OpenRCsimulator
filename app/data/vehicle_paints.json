@@ -1172,6 +1172,11 @@
 						"glare_shield_black": {
 							"albedo": "#1a1b1d",
 							"roughness": 0.85
+						},
+						"mk_ply": {
+							"albedo": "#9b9d97",
+							"metallic": 0.0,
+							"roughness": 0.62
 						}
 					}
 				}

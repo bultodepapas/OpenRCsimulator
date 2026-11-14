@@ -20,6 +20,7 @@ class FocusActivity extends Activity:
 var failures := 0
 var checks := 0
 var axes := {}
+var buttons := {}
 var keys := {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0, arm = false, mode = false}
 var verifier := true
 
@@ -37,7 +38,7 @@ func _initialize() -> void:
 func _pilot() -> RefCounted:
 	var input := PilotInput.new()
 	input.read_axis = func(_id: int, axis: int) -> float: return float(axes.get(axis, 0.0))
-	input.read_button = func(_id: int, _button: int) -> bool: return false
+	input.read_button = func(_id: int, button: int) -> bool: return bool(buttons.get(button, false))
 	input.read_keys = func() -> Dictionary: return keys.duplicate()
 	return input
 
@@ -118,11 +119,15 @@ func _focus_and_pad() -> void:
 	activity.input.connect_device(0, {name = "Synthetic radio", kind = "radio"}, profile)
 	activity.input.radio.on_motion(0, 2, -1.0)
 	check("radio is ready before focus loss", activity.input.sample(DT, true).ready)
+	var generation: int = activity.input.source_generation
+	activity.input.attest_recovery()
 	activity._notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
 	check("focus loss holds and discards raw low evidence", not activity.held_reason.is_empty() \
-		and not activity.input.sample(DT, false).ready)
+		and activity.input.source_generation == generation + 1 and not activity.input.sample(DT, false).ready)
 	activity.input.radio.on_motion(0, 2, -1.0)
-	check("a fresh low event permits radio readiness after focus", activity.input.sample(DT, false).ready)
+	var recovered: Dictionary = activity.input.sample(DT, true)
+	check("a fresh low event permits radio readiness but discards queued recovery", recovered.ready \
+		and int(recovered.pilot[FC.IN_ACTIONS]) & FC.ACTION_RECOVERY == 0)
 	activity.session.free()
 	activity.hud.free()
 	activity.free()
@@ -138,10 +143,51 @@ func _focus_and_pad() -> void:
 	check("re-verification restores the trusted pad path", pad.sample(DT, false).ready)
 
 
+func _focus_switch_controller() -> void:
+	keys.arm = false
+	buttons = {20: false}
+	axes = {0: 0.0, 1: 0.0, 2: -1.0, 3: 0.0}
+	var profile := Profile.defaults("radio", "radio_custom")
+	profile.aux = {arm = {type = "button", button = 20, mode = "level"}}
+	var input := _pilot()
+	input.connect_device(0, {name = "Synthetic radio", kind = "radio"}, profile)
+	var h: Dictionary = Fixtures.install(root, Fixtures.lab())
+	var sim: Node = h.sim
+	var message: String = Fixtures.reset(sim, h.plant.initial_frame(Fixtures.body(20.0)), FC.neutral_input())
+	check("focus switch fixture prepared", h.ok and message.is_empty())
+	input.radio.on_motion(0, 2, -1.0)
+	input.radio.on_button(0, 20, false)
+	_tick(sim, input)
+	buttons[20] = true
+	input.radio.on_button(0, 20, true)
+	_tick(sim, input)
+	check("fresh low and arm switch OFF then ON arm the controlled plant", sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED)
+	input.attest_recovery()
+	input.invalidate_for_focus()
+	var s := _tick(sim, input)
+	check("focus revokes motor authority without carrying recovery", not s.ready \
+		and sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED and sim.aux[FC.AUX_COMMAND] == 0.0 \
+		and int(s.pilot[FC.IN_ACTIONS]) & FC.ACTION_RECOVERY == 0)
+	input.radio.on_motion(0, 2, -1.0)
+	s = _tick(sim, input)
+	check("fresh throttle low cannot rearm with the physical arm switch still ON", s.ready \
+		and s.pilot[FC.IN_ARM] == 0.0 and sim.modes[FC.MODE_MOTOR] == FC.MOTOR_DISARMED)
+	buttons[20] = false
+	input.radio.on_button(0, 20, false)
+	_tick(sim, input)
+	buttons[20] = true
+	input.radio.on_button(0, 20, true)
+	_tick(sim, input)
+	check("post-focus OFF then ON re-arms after fresh low evidence", sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED)
+	check("focus-switch ticks did not fault", str(sim.fault_reason).is_empty())
+	sim.free()
+
+
 func _run() -> void:
 	for kind in ["radio", "joystick"]:
 		for inverted in [false, true]:
 			_raw_source(kind, inverted)
 	_focus_and_pad()
+	_focus_switch_controller()
 	print("vehicle quad audit: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

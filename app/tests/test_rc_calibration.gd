@@ -42,10 +42,10 @@ func _advance(cal: RcCalibration, axes: PackedFloat64Array) -> bool:
 ## Feeds a sweep through `points` (each [throttle, roll, pitch, yaw]) in small steps, like a pilot moving a stick.
 func _sweep(cal: RcCalibration, points: Array) -> void:
 	for k in range(1, points.size()):
+		var p: Array = points[k - 1]
+		var q: Array = points[k]
 		for i in 20:
 			var t := float(i + 1) / 20.0
-			var p: Array = points[k - 1]
-			var q: Array = points[k]
 			cal.sample(_axes(lerpf(p[0], q[0], t), lerpf(p[1], q[1], t), lerpf(p[2], q[2], t), lerpf(p[3], q[3], t)))
 		_hold(cal, _axes(q[0], q[1], q[2], q[3]))
 

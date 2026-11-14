@@ -232,8 +232,7 @@ func _disable() -> void:
 ## Losing focus holds the flight behind the menu; resuming is explicit.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and session != null and session.prepared and hud != null:
-		if input.radio.connected:
-			input.radio.require_neutral(true, true)
+		input.invalidate_for_focus()
 		_hold(tr("Paused: the window lost focus."))
 
 
@@ -582,9 +581,9 @@ func _can_resume() -> bool:
 
 
 ## A centred-stick throttle frozen above zero across a RECOVERY (the input source changed during the hold while the
-## motors kept authority): resuming zeroes it first (FPV/02 §6). A plain hold (P, Esc, focus loss) of the same source
+## motors kept authority): resuming zeroes it first (FPV/02 §6). A plain hold (P, Esc) of the same source
 ## resumes at the frozen throttle: the centred stick or released key holds it, so there is no jump, and zeroing it
-## would drop a hovering quad. A changed source disarms in the controller, which zeroes the accumulator itself.
+## would drop a hovering quad. Focus loss and a changed source disarm in the controller, which zeroes the accumulator.
 func _rate_reset_needed() -> bool:
 	return str(session.options.throttle_policy) == "rate" and float(session.sim.aux[FC.AUX_VIRTUAL_THROTTLE]) > 0.0 \
 		and input.source_generation != _flight_generation

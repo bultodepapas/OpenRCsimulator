@@ -189,8 +189,11 @@ func advance(axes: PackedFloat64Array) -> bool:
 		if step > 0:
 			_reset_sweep()
 		return false
-	# Include the confirmation sample even when a caller has not sampled this frame.
-	sample(axes)
+	# Confirmation never counts as another observation. The owner must sample
+	# each poll/tick once; a repeated button press cannot manufacture a window.
+	if _window.is_empty() or _window.back() != axes:
+		error = "Wait for the current radio reading before continuing."
+		return false
 	if step == 0:
 		for i in RcInput.AXES:
 			var neutral := stable_axis(i)

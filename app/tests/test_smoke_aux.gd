@@ -35,16 +35,18 @@ func _calibration_with_aux(aux_axis: int) -> RcCalibration:
 	var rest := PackedFloat64Array()
 	rest.resize(RcInput.AXES)
 	rest[0] = -1.0 # throttle (axis 0) stays at LOW; the sticks rest at centre
+	for _tick in RcCalibration.STABLE_SAMPLES: calibration.sample(rest)
 	calibration.advance(rest)
 	for axis in [0, 5, 6, 7]:
 		var low := rest.duplicate()
 		var high := rest.duplicate()
 		low[axis] = -1.0
 		high[axis] = 1.0
-		calibration.sample(high)
+		for _tick in RcCalibration.STABLE_SAMPLES: calibration.sample(high)
 		if axis != 0:
 			calibration.advance(high)
-		calibration.sample(low)
+		for _tick in RcCalibration.STABLE_SAMPLES: calibration.sample(low)
+		for _tick in RcCalibration.STABLE_SAMPLES: calibration.sample(rest)
 		calibration.advance(rest)
 	return calibration
 

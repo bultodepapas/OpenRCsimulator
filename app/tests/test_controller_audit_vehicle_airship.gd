@@ -195,9 +195,20 @@ func _ownership() -> void:
 	check("the selected UI role's Pause resumes after release", not activity.session.paused)
 	var changed := pad.duplicate(true)
 	changed.roll.deadzone = 0.3
+	changed.actions.pause = {type = "key", physical_keycode = KEY_K}
 	profiles[7] = changed
 	check("saved profile is adopted and flight is held", activity.apply_controller_selection(7) \
 		and activity.session.paused and is_equal_approx(float(activity.input.radio.profile.roll.deadzone), 0.3))
+	activity.handle_action("resume")
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_K
+	key.pressed = true
+	activity._input(key)
+	check("the saved keyboard Pause binding is honored", activity.session.paused)
+	registry.select_device("flight", 3) # no service-resolved profile for this otherwise known pad
+	check("an unresolved managed pad does not acquire a guessed default mapping", \
+		activity.input.radio.connected and activity.input.radio.device_id == 3 \
+		and not activity.input.sample(DT, false).armed and not str(activity.input.radio.profile_error).is_empty())
 	registry.select_device("flight", 9)
 	axes = {0: 0.0, 1: 0.0, 2: -1.0, 3: 0.0}
 	activity.input.radio.on_motion(9, 2, -1.0)
@@ -209,10 +220,13 @@ func _ownership() -> void:
 		and activity.input.source() == "keyboard")
 	activity._joy_connection_changed(3, true)
 	check("an unrelated controller does not take over after loss", activity.input.source() == "keyboard")
+	check("an explicit Keyboard choice acknowledges the lost controller", activity.apply_controller_selection(-1))
 	registry.update_devices(devices)
 	activity._joy_connection_changed(9, true)
 	await process_frame
-	check("the same returned radio is reselected with fresh readiness", activity.input.radio.connected \
+	check("a returned radio cannot override an explicit Keyboard choice", activity.input.source() == "keyboard")
+	registry.select_device("flight", 9)
+	check("explicitly reselected radio requires fresh readiness", activity.input.radio.connected \
 		and activity.input.radio.device_id == 9 and not activity.input.sample(DT, false).armed)
 	_dispose(activity)
 

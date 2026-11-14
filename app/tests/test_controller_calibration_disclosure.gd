@@ -142,23 +142,27 @@ func run() -> void:
 	var wizard: Node = app.screens.top()
 	var raw: Array = [0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 	wizard.read_axis = func(_id: int, axis: int) -> float: return float(raw[axis])
+	for _tick in 5: wizard._sample()
 	wizard.advance() # rest: centered sticks and low throttle
 	raw[2] = 1.0
-	wizard._sample()
+	for _tick in 5: wizard._sample()
 	raw[2] = -1.0
+	for _tick in 5: wizard._sample()
 	wizard.advance()
 	for axis: int in [4, 1, 3]:
 		raw[axis] = 1.0
+		for _tick in 5: wizard._sample()
 		wizard.advance() # confirm requested direction while held
 		raw[axis] = -1.0
-		wizard._sample()
+		for _tick in 5: wizard._sample()
 		raw[axis] = 0.0
+		for _tick in 5: wizard._sample()
 		wizard.advance()
 	check(wizard._wizard.done() and app.controllers.store.load_all() == initial_store, "wizard measurement remains draft-only")
 	raw[2] = 1.0
-	wizard._sample()
+	for _tick in 5: wizard._sample()
 	raw[2] = -1.0
-	wizard._sample()
+	for _tick in 5: wizard._sample()
 	wizard.advance() # use verified full-to-low calibration, still without saving
 	await settle()
 	check(app.screens.is_top("controls") and setup.current_profile().roll.axis == 4 and app.controllers.store.load_all() == initial_store \

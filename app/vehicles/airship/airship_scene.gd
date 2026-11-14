@@ -7,7 +7,6 @@ const Session = preload("res://sim/airship/session.gd")
 const PilotInput = preload("res://input/airship_input.gd")
 const RcInput = preload("res://input/rc_input.gd")
 const ControllerActions = preload("res://input/controller_actions.gd")
-const ControllerProfile = preload("res://input/controller_profile.gd")
 const Visual = preload("res://vehicles/airship/airship_visual.gd")
 const Hud = preload("res://vehicles/airship/airship_hud.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -330,6 +329,12 @@ func _connect_selected_controller() -> void:
 		_controller_generation = 0
 		return
 	var profile: Dictionary = controller_profile_for.call(id) if controller_profile_for.is_valid() else {}
+	if profile.is_empty():
+		# The managed resolver returns the standard pad default when authorized.
+		# An empty result can instead mean a storage or identity refusal; do not
+		# let RcInput infer a gamepad mapping from that failure.
+		info = info.duplicate(true)
+		info.known = false
 	input.connect_device(id, info, profile)
 	_controller_generation = int(controller_registry.connection_generation(id))
 	_lost_device_key = ""
@@ -429,10 +434,6 @@ func _refresh_pause_bindings() -> void:
 			profile = input.radio.profile
 		elif controller_profile_for.is_valid():
 			profile = controller_profile_for.call(id)
-		if profile.is_empty() and _has_registry():
-			var info: Dictionary = controller_registry.device_for_id(id)
-			if bool(info.get("known", false)) and info.get("kind", "") == "gamepad":
-				profile = ControllerProfile.defaults("gamepad", "mode2")
 		if profile.is_empty() or not bool(profile.get("configured", false)):
 			continue
 		var actions: Dictionary = profile.get("actions", {})
@@ -445,11 +446,13 @@ func _refresh_pause_bindings() -> void:
 ## Observe the actual selected role and its saved Pause binding, including release
 ## and axis hysteresis. A new axis mapping must first be observed OFF.
 func _route_controller_pause(event: InputEvent) -> bool:
-	if not event is InputEventJoypadButton and not event is InputEventJoypadMotion:
+	if not event is InputEventJoypadButton and not event is InputEventJoypadMotion and not event is InputEventKey:
 		return false
 	var role := "ui" if hud != null and hud.menu_visible else "flight"
 	var entry: Dictionary = _pause_bindings.get(role, {})
-	if entry.is_empty() or event.device != int(entry.id):
+	if entry.is_empty():
+		return false
+	if (event is InputEventJoypadButton or event is InputEventJoypadMotion) and event.device != int(entry.id):
 		return false
 	var binding: Dictionary = entry.binding
 	var kind := str(binding.get("type", ""))
@@ -459,11 +462,21 @@ func _route_controller_pause(event: InputEvent) -> bool:
 	elif kind == "axis":
 		if not event is InputEventJoypadMotion or event.axis != int(binding.get("axis", -1)) or not is_finite(event.axis_value):
 			return false
+	elif kind == "key":
+		if not event is InputEventKey or event.echo:
+			return false
+		var physical := int(binding.get("physical_keycode", 0))
+		if (event.physical_keycode != physical if physical != 0 else event.keycode != int(binding.get("keycode", 0))):
+			return false
 	else:
 		return false
 	var key := "%d:%d:%s" % [int(entry.id), int(entry.generation), var_to_str(binding)]
 	var was_held := bool(_pause_held.get(key, false))
-	var active := bool(event.pressed) if kind == "button" else ControllerActions.matches_binding(binding, event, int(entry.id), was_held)
+	var active := ControllerActions.matches_binding(binding, event, int(entry.id), was_held)
+	if kind == "button":
+		active = (event as InputEventJoypadButton).pressed
+	elif kind == "key":
+		active = (event as InputEventKey).pressed and active
 	if not active:
 		_pause_held.erase(key)
 		if kind == "axis":
@@ -827,6 +840,10 @@ func apply_controller_selection(device_id: int) -> bool:
 		return false
 	if device_id != int(controller_registry.selected_device_id("flight")):
 		return false
+	if device_id < 0:
+		# A deliberate Keyboard choice after a disconnect overrides the old
+		# device's automatic-return preference, even when the role was already -1.
+		_lost_device_key = ""
 	var current: int = int(input.radio.device_id) if input.radio.connected else -1
 	if device_id != current:
 		_sync_selected_controller()

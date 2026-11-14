@@ -82,12 +82,13 @@ func _conflicts_and_persistence() -> void:
 	var rest := PackedFloat64Array()
 	rest.resize(RcInput.AXES)
 	rest[2] = -1.0
+	for _tick in Calibration.STABLE_SAMPLES: wizard.sample(rest)
 	wizard.advance(rest)
 	for axis in [2, 0, 1, 3]:
 		var samples := rest.duplicate()
 		for value in ([1.0, -1.0] if axis == 2 else [1.0, -1.0, 0.0]):
 			samples[axis] = value
-			wizard.sample(samples)
+			for _tick in Calibration.STABLE_SAMPLES: wizard.sample(samples)
 			if axis != 2 and value == 1.0:
 				wizard.advance(samples)
 		wizard.advance(samples)

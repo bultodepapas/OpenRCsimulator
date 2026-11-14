@@ -179,6 +179,10 @@ func _run() -> void:
 	await _finish()
 
 
+func _hold_calibration_position() -> void:
+	for _tick in 3: await ui.settle()
+
+
 func _open_wizard(inverted: bool = false) -> void:
 	selection_at_start = app.controllers.registry.selected_device_id("flight")
 	raw.resize(10)
@@ -193,13 +197,13 @@ func _open_wizard(inverted: bool = false) -> void:
 	# Report float32 like Input.get_joy_axis: exact doubles hid a Save failure on real radios.
 	app.screens.top().read_axis = func(id: int, axis: int) -> float: return PackedFloat32Array([raw[axis]])[0] if id == 15 else NAN
 	setup.axis_preview_provider = func(id: int, axis: int) -> float: return raw[axis] if id == 15 else NAN
-	await ui.settle()
+	await _hold_calibration_position()
 
 
 func _sweep(axis: int, values: Array) -> void:
 	for value: float in values:
 		raw[axis] = value
-		await ui.settle()
+		await _hold_calibration_position()
 		if axis != 4 and value == float(values[0]):
 			await ui.tap(KEY_ENTER)
 			check("direction confirmation requests the opposite endpoint", "then centre" in app.screens.top()._prompt.text)
@@ -218,18 +222,18 @@ func _complete_wizard(inverted: bool = false) -> void:
 	app.screens.top().advance()
 	check("direct completion cannot skip throttle verification", app.screens.is_top("radio_calibration") and "Verify throttle" in app.screens.top()._error_label.text)
 	raw[4] = -0.6 if inverted else 0.6
-	await ui.settle()
+	await _hold_calibration_position()
 	check("completion throttle percentage follows the live stick", "100%" in app.screens.top()._result_label.text and app.screens.top().next_button.disabled)
 	raw[4] = 0.6 if inverted else -0.6
-	await ui.settle()
+	await _hold_calibration_position()
 	check("full-to-low verification enables Use calibration and clears the error", not app.screens.top().next_button.disabled and app.screens.top()._error_label.text.is_empty())
 	raw[4] = -0.6 if inverted else 0.6
-	await ui.settle()
+	await _hold_calibration_position()
 	check("Use calibration disables while throttle is raised", app.screens.top().next_button.disabled and "LOW" in app.screens.top()._prompt.text)
 	app.screens.top().advance()
 	check("direct completion refuses raised throttle", app.screens.is_top("radio_calibration") and "LOW" in app.screens.top()._error_label.text)
 	raw[4] = 0.6 if inverted else -0.6
-	await ui.settle()
+	await _hold_calibration_position()
 	check("returning to LOW clears the warning", app.screens.top()._error_label.text.is_empty() and not app.screens.top().next_button.disabled)
 	await ui.tap(KEY_ENTER)
 	check("using calibration does not commit device selection", app.controllers.registry.selected_device_id("flight") == selection_at_start)
