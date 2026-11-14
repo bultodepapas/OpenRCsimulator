@@ -388,6 +388,7 @@ headless test proves software behavior, not native GPU performance.
 | CPU/RSS/system-memory samples with checked launch | [Resource sampler](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4); use the pinned Python above |
 | Optional thermal/power/pressure series and raw-clock join | [Host companion build and runner integration](../../tools/godot/README.md#optional-macos-host-state-companion-dt-mac-02e) |
 | Repeatable active flight and health/hash receipts | [Sustained fixture](../../research/performance/README.md#repeatable-active-flight-dt-mac-03) |
+| Native evaluator build, admission, replay and source-default qualification | [Native evaluator guide](../../research/native-kernel/README.md); [dated source-default ledger](../research/native-kernel/DT-MAC-04n4/README.md) |
 | Long stream and explicit 30/1,800-second reducer minima | [Long capture contract](../../research/performance/README.md#long-continuous-captures-dt-mac-02b) |
 | Completed three-pair M1 comparison and known limits | [Round-6 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) |
 | Export/signature/package replay | [Release tools](../../tools/release/README.md); a historical ZIP is not a new candidate |

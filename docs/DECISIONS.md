@@ -40,20 +40,29 @@ Curated architecture and product choices, with the reasons worth preserving. Rev
 
 The [NK-3 promotion](research/native-kernel/NK-3/README.md#expanded-linux-qualification-2026-10-29) records the original adoption and its qualified expansion. The original [SF-08 policy](research/simulation-foundation/README.md#6-backend-policy-sf-08) remains the broader qualification reference; its target-host evidence must not be presented as satisfied by the local promotion. Admission and packaging details live in the [native guide](../research/native-kernel/README.md#normal-flight-backend-selection).
 
-**DT-MAC-04n1–n4, experimental implementation.** The Apple ARM64 port retains that
-stage boundary and float64 authority. Require explicit fixed-wing opt-in before
-consulting the process-wide loader cache, including in release diagnostics; a
-normal Mac launch retains reference. Use a distinct native Mac bundle identity
+**DT-MAC-04n1–n4, source-editor admission.** The Apple ARM64 port retains that
+stage boundary and float64 authority. The owner subsequently requested a native
+source default. Permit automatic selection only through the exact host, engine,
+receipt, binary and stock-selection marker; otherwise retain reference. Keep
+explicit research opt-in and release diagnostics separate. A changed on-disk
+receipt cannot qualify a different library already loaded in the process. Use a distinct native Mac bundle identity
 that binds the signed dylib, qualification manifest and final reference-bundle
 receipt. Reusing the reference-only identity would make exact replay ambiguous.
 The [Mac native guide](../research/native-kernel/README.md#experimental-macos-arm64)
-owns the implemented contracts and the [implementation evidence](research/native-kernel/DT-MAC-04n1/README.md)
-records remaining target-hardware and promotion gates.
+owns the implemented contracts and the [source-default evidence](research/native-kernel/DT-MAC-04n4/README.md)
+records the current source-default qualification and its remaining gates.
 
-The bounded M1 assessment retains this explicit experiment and defers automatic
-Mac admission and production delivery. Two complete source cases show material
-callback CPU savings, while 42 stock fleet rows, normal hardened signing/loading,
-sanitizer controls, required CI and live/sustained product gates remain open.
+The initial assessment deferred automatic admission. The later source-default
+work enforces a smaller verified domain instead of treating failed fleet rows as
+qualified. Source-editor adoption does not establish normal hardened signing,
+downloaded-package trust, physical realism, FPS or energy gains. Public native
+distribution remains deferred by owner instruction.
+
+On November 14, B5 source `9386f5e5...` was adopted on the qualified M1 after
+current-source numerical, fleet, sustained/resource and required CI gates.
+The ledger binds actual canonical Main/replay and prepared Home/flight checks.
+Technical Home checks used headless/Dummy with scenery audio off; normal
+audio-enabled shutdown remains open and was not silently accepted as clean.
 
 ### Preserve each event law's valid continuation
 

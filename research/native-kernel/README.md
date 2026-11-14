@@ -20,6 +20,16 @@ route is implemented but requires a matching default-admission marker. Without i
 or when the selected flight is outside its admitted rows, the session retains the
 reference evaluator. The [dated DT-MAC evidence](../../docs/research/native-kernel/DT-MAC-04n1/README.md)
 describes earlier candidates, not qualification of the current source.
+The [source-default ledger](../../docs/research/native-kernel/DT-MAC-04n4/README.md)
+records the November 14 adoption on the qualified M1, its actual installed
+identities and remaining product gates. Its headless/Dummy audio-off Home checks
+do not qualify normal audio-enabled shutdown.
+
+Omit `--experimental-native-macos` to use automatic source-editor admission.
+An explicit `false` disables that route; `true` selects the separate research
+route. Companion-enabled automatic sessions retain reference. These choices
+freeze before session setup, and the normal `--physics-backend=gdscript_reference`
+override remains available.
 
 The marker binds the exact installed receipt, binary, sources, domain guard,
 Godot executable, macOS version/build, Apple M1 CPU and `MacBookAir10,1` model.
@@ -29,6 +39,10 @@ host's evidence. Each admitted stock fixed-wing row also binds aircraft and
 battery bytes, start, weather, contact mode and the exact solved production
 start. The runtime checks the stock field, lake and collision context and guards
 the installed context on live ticks. Custom or changed selections fail admission.
+During an admitted flight, protected launch-configuration setters refuse a
+changed value and require a new flight. Bypassed mutations fault before the next
+accepted tick. Reference recovery for an unqualified selection happens during
+preparation; the accepted flight keeps its backend identity.
 
 `macos_promotion.py` revalidates the installed candidate, host preflight, a
 production-trim fleet campaign and matched live-circuit evidence before writing
@@ -40,6 +54,16 @@ the resulting marker unchanged to `app/native/kernel/default-admission-macos.jso
 for the source editor. The marker is an artifact-consistency receipt, not
 a signature or proof of physical realism. No current marker or campaign pass is
 assumed by this guide.
+
+Default adoption also requires successful CI for the qualified source, including
+the native Mac job, and actual private-marker installation/fallback, Main,
+backend-pinned exact replay and Home/restart/reload/re-entry checks. Validate
+the original checked resource attachments after each measured process exits;
+retain failed attempts and explicitly identify any replacement pair. Recheck
+the complete corpus and source/tool identities before publishing the canonical
+marker last, with an exclusive write of complete bytes. The source-default
+ledger records the named candidate and adoption result. Public signed delivery
+has separate gates.
 
 `build_macos.py` pins Apple Clang/SDK and the existing bindings/API. It checks every
 translation unit, effective strict FP options, Mach-O slice/dependencies/imports,

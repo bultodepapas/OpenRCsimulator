@@ -489,29 +489,46 @@ Use three separate ledger columns: **launch**, **software/visual correctness**, 
 
 ## 13. Phase 10 — conditional NK-3 ARM64 project
 
-The [native kernel feasibility and implementation specification](../../APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md) expands DT-MAC-04n1–n4 with the source assessment, primary references, six-phase work breakdown, effort estimates and benchmark/test matrix. This master plan retains priority, status and promotion ownership; the specification does not authorize or claim implementation.
+The [native kernel feasibility and implementation specification](../../APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md) expands DT-MAC-04n1–n4 with the source assessment, primary references, six-phase work breakdown, effort estimates and benchmark/test matrix. This master plan retains priority, status and promotion ownership; dated evidence identifies the implementation actually tested.
 
 The [twelve-investigation reinforcement, 2026-11-12](../research/native-kernel/apple-silicon-plan-reinforcement-2026-11-12.md) adds observable numerical/binding controls, A/A and run-level comparison rules, actual M1 tool/energy availability, early signed-host/translocation feasibility, final stapling/receipt order and a coordinated identity/CI requalification matrix. These requirements are integrated into the specification; evaluator and product hardware qualification remain pending. Resolve host loading and supported receipt access before fleet investment, and re-estimate if a custom product engine or trust redesign is required.
 
 The subsequent [isolated M1 experiments](../research/native-kernel/apple-silicon-m1-experiments-2026-11-12.md) prove access, a focused math test and standalone compilation, while exposing a NaN odd-tail mismatch in naive NEON/vDSP candidates and substantial short-vector repeat variation. They add lane/tail permutation controls; they do not qualify the native evaluator, close a phase or establish complete-session gains.
 
-**2026-11-13 implementation:** the user selected the experimental port. The
+**2026-11-13 initial implementation:** the user selected the experimental port. The
 [dated implementation evidence](../research/native-kernel/DT-MAC-04n1/README.md)
 records the scalar ARM64 builder, guarded fixed-wing source/package routes,
 separate native replay identity and actual M1 checks. Ordinary Mac launches
 remain reference. This testing route can exercise unqualified fixed-wing
 configurations; it is not a promoted or runtime-enforced qualified fleet.
 The bounded M1 assessment verified 1,386 healthy stock fleet cases with 42 rows
-open. Five source pairs per completed case measured 45.5–46.0% less callback CPU
-for Jensen and 55.6–55.9% for ideal-supply Electric 6S; the Extra long case failed.
+open. Five source pairs per completed case measured 45.5–46.0% shorter callback elapsed time
+for Jensen and 55.6–55.9% for ideal-supply Electric 6S; these are elapsed callback
+times, not process CPU savings. The Extra long case failed.
 These detached source results do not qualify FPS, final packages or sustained
 product behavior. Sanitizer loading, required native CI and distribution trust
 remain open. Automatic admission and production delivery are deferred; historical
 research below is not a claim that the implemented routes are absent.
 
+**2026-11-14 source-editor adoption:** the owner subsequently requested the
+five-area implementation and native default. The [source-default ledger](../research/native-kernel/DT-MAC-04n4/README.md)
+records B5 source `9386f5e5...` and the actual canonical marker. Admission is
+restricted to 1,382 freshly verified stock rows, configuration mutations are
+guarded, and missing/stale/unqualified inputs retain reference. Forty-six rows
+remain open and the aggregate fleet verdict remains fail. All 17 positive
+oracles, diagnostic-host ASan/UBSan controls, three callback cases, five short
+and three 30-minute pairs, independent resource reductions and required native
+Mac/Linux/Windows CI passed. The canonical automatic route and exact replay,
+technical Home lifecycle and full marked native/reference candidate tape passed.
+Home/replay technical controls used headless/Dummy with scenery audio disabled;
+audio-enabled shutdown retains four audio objects with both evaluated backends
+and remains open. Source-editor physics adoption on this M1 does not qualify
+public signed distribution, physical display/control acceptance, broad Apple
+hardware, energy savings or a stable complete-product performance gain.
+
 The [2026-11-13 gap audit](../../APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md#16-plan-gap-and-performance-audit--2026-11-13)
-orders the remaining internal work: backend-aware live fixture/reducer, a valid
-pilot, CPU/GPU attribution, representative complete cases and sustained trials.
+retains the historical work order. The linked source-default ledger distinguishes
+completed implementation from the remaining product and distribution gates.
 Source-editor performance work is independent of deferred public distribution.
 
 **Priority/size:** P2/large. **Entry:** M1 reference still misses the relevant budget after justified script/observer work, the evaluator is a material limiter, and SF/NK owners explicitly select a port under existing backend policy. **Benefit:** possible evaluator cost reduction; no extrapolation from Linux ratios. This branch can stay deferred while renderer and diagnostics ship.
@@ -538,7 +555,7 @@ Extend loader/package identity only after target gates exist. Keep missing/corru
 
 Build optimized ARM64 sidecar with exact engine/source/data/harness receipt. Validate each delivered universal slice or safe reference fallback for absent slices, dependencies, final signatures and downloaded package. Run five reference/native paired complete live-session cases, not only research-stage timing; check p95/tails, input/audio/render observers and sim/wall. Reuse phase-9 campaign results only when they cover the same final signed artifact and configuration. If this port changes a previously qualified artifact, rerun affected final gates. A cross-backend `.orfl` comparison is a candidate with `solver_changed`, never an exact replay. The current candidate CLI selects reference: compare a native recording to a reference candidate on the same tick/input tape, preserving each backend's own exact replay. The inverse direction needs an explicitly implemented and tested candidate backend selector.
 
-**Tests:** T9 for the ABI/platform integration plus exact package replay/fallback; T8 final 1080p/thermal acceptance. **Exit:** material complete-workload benefit, same-host exactness, stable package and no cross-platform regressions. Only then consider automatic Mac admission through a recorded owner decision. No catalog item may require NK-3 to fly.
+**Tests:** T9 for the ABI/platform integration plus exact package replay/fallback; T8 final 1080p/thermal acceptance. **Exit for product/distribution admission:** material complete-workload benefit, same-host exactness, stable package and no cross-platform regressions. Only then consider automatic admission of a distributed Mac product through a recorded owner decision. The separately recorded source-editor adoption above does not satisfy these product gates. No catalog item may require NK-3 to fly.
 
 ## 14. Phase 11 — separate iOS/iPadOS feasibility and delivery
 

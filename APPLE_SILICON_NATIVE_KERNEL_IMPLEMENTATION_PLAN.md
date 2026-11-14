@@ -4,7 +4,7 @@
 
 **Repository assessed:** `0cdb3cfd2cb4fca6d71cf508555501c153e15f37`; working tree initially clean.
 
-**Status:** experimental implementation and bounded M1 assessment completed; production qualification deferred. The scalar ARM64 builder, guarded fixed-wing admission, distinct native package/replay identity and real M1 evidence are recorded in [DT-MAC-04n1](docs/research/native-kernel/DT-MAC-04n1/README.md). Ordinary Mac launches retain reference. The source screen found 45.5–55.9% less callback CPU in two completed cases; 42 fleet rows, required CI, distribution trust and product-performance promotion remain open.
+**Status:** the guarded native physics source-editor default is adopted on the qualified M1 for B5 source `9386f5e5...`. The [source-default ledger](docs/research/native-kernel/DT-MAC-04n4/README.md) binds 1,323,114 identical numerical comparisons, sanitizer controls, 1,382 freshly verified guarded fleet rows, three complete callback cases, five short/three sustained pairs and successful native Mac/Linux/Windows CI. Callback elapsed time fell 36.04–51.45%; this is not a whole-process CPU, FPS or energy saving. Canonical automatic Main/exact replay and the full marked flight/candidate tape passed. Technical Home/replay checks used headless/Dummy with scenery audio disabled; audio-enabled shutdown still reports four retained audio objects with both evaluated backends. Forty-six fleet rows, broader product/hardware gates and public signed distribution remain outside this adoption.
 
 **Owners:** DT/PT for Mac delivery and measurement; SF/NK/FL for evaluator semantics, admission and replay; each vehicle owner retains its validation gates.
 
@@ -621,31 +621,38 @@ Keep Metal focused on the existing rendering pipeline. NEON and Accelerate are o
 Checked boxes identify completed scoped work in the dated evidence. Unchecked
 requirements remain open; partial implementation does not satisfy their full gate.
 
-- [ ] **Baseline / DT/PT:** freeze current checkout, engine, data, harness, hardware/tool and display identities; isolate the host/settings and reserve ownership.
+- [x] **Baseline / DT/PT:** freeze B5 source, engine, data, harness and named M1/tool identities; isolate the research profile and reserve serial ownership. Requested/window dimensions are recorded; physical 1080p remains unqualified.
 - [ ] **Baseline / SF/NK:** run reference complete-session and live attribution; retain raw distributions, observer controls and Gate P statistic definition.
 - [ ] **Entry decision / SF/NK:** demonstrate optimized target budget miss and evaluator cause, or record deferral.
 - [x] **DT-MAC-04n1:** pin Apple Clang/SDK/deployment target and verify locked bindings/API without dependency upgrades.
 - [x] **DT-MAC-04n1:** characterize ARM64 math/literals/quiet NaNs/subnormals/libm and FP control state against the exact native engine; signaling NaNs/FPSR are outside the observed scope.
 - [x] **DT-MAC-04n1:** compile the existing stage and prove numerical mutation detection; the current same-host corpus is exact.
 - [x] **DT-MAC-04n2:** extend current builder/runner/devtools for dylib/Mach-O/dSYM and fresh target-bound receipts; source10 exercised the actual M1 route.
-- [ ] **DT-MAC-04n2:** qualify shared scalar laws and context/result ownership; retain x86 behavior.
+- [x] **DT-MAC-04n2:** qualify the admitted scalar laws and context/result ownership through B5's 17 exact oracles and focused installed consumers; required native Linux/Windows CI also passed.
 - [x] **DT-MAC-04n2:** execute ≥10,000 malformed-inclusive stage comparisons and full applicable trajectory/family prerequisite tapes; source10's 17 applicable positive oracles passed exactly.
-- [ ] **DT-MAC-04n3:** extend guarded Mac admission and enforce the actual qualified capability/domain surface.
-- [ ] **DT-MAC-04n3:** verify reset/reload/restore/recording identity, absence/corruption/wrong-slice/staleness and no midflight solver change.
+- [x] **DT-MAC-04n3:** implement exact marker admission and the live configuration guard for B5's 1,382 freshly verified stock rows; the 46 open rows and companion-enabled automatic route retain reference.
+- [x] **DT-MAC-04n3:** verify installed lifecycle/restore/recording identity, nine absence/corruption/wrong-slice/staleness cases and no midflight backend change. Technical Home restart/F5/re-entry passed under the explicitly recorded scenery-audio-off configuration; normal audio shutdown remains open.
 - [x] **DT-MAC-04n3:** account for source10's full fixed-wing row union and actual native coverage: 1,386 verified healthy cases and 42 explicitly open rows, with the failed aggregate retained. This completes accounting, not full-fleet qualification or the runtime-domain gate above.
-- [ ] **Optimization / PT/NK:** measure complete scalar cost, trial one exact memory/SIMD/Accelerate candidate at a time and reject unsupported gains.
-- [ ] **Validation / SF/NK:** run sanitizer positive controls, focused consumers and required cross-platform CI on the stable candidate.
-- [ ] **DT-MAC-04n4:** collect at least five paired complete-session comparisons and final sustained named-hardware trials without competing work.
+- [x] **Optimization / PT/NK:** reduce the measured configuration-guard cost and retain the exact scalar route. B5's three complete callback cases and A/A/observer controls are retained. Naive NEON/vDSP candidates were rejected; no SIMD, GPU, whole-process CPU or energy gain is inferred.
+- [x] **Validation / SF/NK:** B5 sanitizer positive controls, instrumented candidate checks, focused consumers and required native Mac/Linux/Windows CI passed. The diagnostic clone's uninstrumented engine/bindings limitation remains explicit.
+- [x] **DT-MAC-04n4:** B5 completed three five-pair callback cases, five selected short live pairs and three 30-minute pairs on the named M1 without competing test work. All selected checked resources and independent retained-data reductions passed; collector cohorts remain separate.
 - [ ] **DT-MAC-04n4 / DT:** prepare signed final package/receipt, qualify ARM64 and Intel/Rosetta reference behavior, and test downloaded quarantine/sidecar access.
-- [ ] **DT-MAC-04n4 / FL:** prove exact backend-pinned replay and complete, marked candidate replay on the same tape.
+- [x] **DT-MAC-04n4 / FL:** actual canonical Main/backend-pinned exact replay and the prepared-source 2,620-row native exact/reference candidate tape passed. The candidate is complete and marked `solver_changed`; it is not physical validation or cross-solver exactness of every internal state.
 - [ ] **DT-MAC-04n4 / PT/VQ:** retain actual 1080p-first product pacing/memory/thermal evidence; leave unavailable display/energy gates explicitly open.
-- [x] **Promotion / owners:** retain the explicit experiment and defer automatic admission/production delivery; the dated assessment records measured criteria, rollback artifacts, owners and remaining requalification gates. This decision does not complete the unchecked production work.
+- [x] **Promotion / owners:** adopt the exact guarded source-editor M1 tuple and retain explicit reference recovery and research opt-in. The ledger records artifact identities, measured criteria and remaining requalification gates. Normal audio-enabled shutdown, physical product acceptance, broader Apple hardware and public distribution are not promoted by this source-editor decision.
 - [ ] **I01–I04 / SF/NK:** extend existing numerical oracles with FMA/FP controls, threshold neighbors and quiet-NaN/zero helper mutations; freeze legal short-vector/stride/alias cases for any SIMD/library optimization actually attempted.
 - [ ] **I05–I08 / PT/DT/NK:** freeze inclusive timing, A/A/observer/sample-cap design, actual tool/thermal/energy channels and ownership/lifecycle controls.
 - [ ] **I09–I10 / GDU/DT/NK:** prove binding precision, floor/slices/dependencies, signed-host loading and receipt accessibility early; sign/qualify the dylib before its embedded native receipt, then sign/notarize/staple the app before the final external bundle receipt.
 - [ ] **I11–I12 / SF/FL/DT:** complete the admission/replay consumer matrix, same-loader diagnostic controls, required native CI markers and change-based requalification policy.
 
 ## 16. Plan-gap and performance audit — 2026-11-13
+
+This section retains the audit of `67a202...` before the follow-up implementation.
+Its then-open work is being reconciled in the [source-default ledger](docs/research/native-kernel/DT-MAC-04n4/README.md);
+the tables below are historical, not the current candidate's result. In particular,
+native Mac CI now exists and the current Mac, Linux and Windows native jobs,
+eight unit partitions, integration, visual captures and release exports passed
+in completed CI run `43538072599` for B5 candidate `9386f5e5...`.
 
 **Reviewed source:** clean commit `67a2023080f4e371ec98925f33c2f9ec3299a656`.
 **Scope:** review only; no new hardware measurements or runtime changes. The
@@ -700,7 +707,10 @@ itself. Likewise, 14,400 detached ticks are 60 seconds of **simulated** time,
 not a 30-minute thermal or real-time test. The CPU reduction establishes an
 opportunity; its effect on FPS can be limited by an unchanged GPU critical path.
 
-### 16.3 Next internal work, in order
+### 16.3 Historical work order at the audit date
+
+The following list is the original audit's work order. The linked source-default
+ledger records subsequent implementation, completed checks and remaining scope.
 
 1. **DT/PT + SF/NK: make one live pair measurable.** Freeze a fresh candidate and
    preflight the current M1 tools, space, power, renderer and dimensions. The
@@ -754,7 +764,7 @@ the live flight serial. A Metal/MPS rewrite of the
 float64 evaluator remains outside this port; renderer optimization follows GPU
 attribution and its existing owner.
 
-### 16.4 Apple tool applicability and CI snapshot
+### 16.4 Apple tool applicability and historical CI snapshot
 
 Apple recommends actual-hardware measurement and appropriate QoS rather than
 hardware assumptions. Preflight installed profiling capabilities and preserve

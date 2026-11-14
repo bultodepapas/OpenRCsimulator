@@ -167,6 +167,8 @@ The [consolidated Apple technical background, 2026-11-02](../APPLE-SILICON-TECHN
 
 [DT-MAC-04n1 implementation evidence](native-kernel/DT-MAC-04n1/README.md) records the scalar ARM64 port, strict experimental builder, exact numerical corpus, 1,386 verified stock flight cases with 42 open rows, source CPU screen and package controls. The bounded assessment retains explicit experimentation and defers automatic admission and production delivery; full fleet, normal hardened-package and product-performance gates remain open.
 
+[DT-MAC-04n4 source-default ledger](native-kernel/DT-MAC-04n4/README.md) records the adopted guarded source-editor M1 route, current-source numerical/CI qualification, actual paired callback/live/resource observations and canonical/prepared replay consumers. It distinguishes retained B4 results from B5, explicitly limits the audio-off technical Home check and retains the audio-enabled shutdown failure; public signed distribution remains deferred.
+
 ### Roadmap knowledge base (all phases)
 
 [Roadmap investigations](roadmap-investigations/README.md) collects pre-work research for numerics, aerodynamics, propulsion, ground handling, radio, weather, validation, aircraft data and presentation. Read the relevant phase brief before starting its implementation step.
