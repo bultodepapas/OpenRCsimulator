@@ -5,13 +5,14 @@
 ## threshold). The airframe is the downloaded 5-inch frame GLB (frame and canopy only; Godot axes +Y up, nose −Z,
 ## right +X; nodes airframe_root, motor_1…4, propeller_1…4, camera_mount; origin = motor-mount centre in the arm-top
 ## plane). If it cannot be loaded, a deliberately plain LAB FIXTURE of primitive meshes stands in and the OSD says so.
-## Motor bells and blades are drawn here in both cases. Rendering never feeds back into physics.
+## The supplied ION R5 includes its own bells and blades; those are reparented onto the same RPM-driven pivots.
+## Legacy frame-only assets and the lab fixture retain procedural rotors. Rendering never feeds back into physics.
 extends RefCounted
 
 const Frames = preload("res://render/frames.gd")
 const PropellerBlur = preload("res://render/propeller_blur.gd")
 
-const MODEL_PATH := "res://assets/multirotors/openrc-fpv5/openrc_fpv5_frame.glb"
+const MODEL_PATH := "res://assets/multirotors/ion-r5/ion_r5.glb"
 ## Prop plane above the frame's arm-top (motor-mount) plane. Estimated; motors are not in the downloaded frame.
 const MOTOR_HEIGHT_M := 0.020
 const MOTOR_RADIUS_M := 0.0115
@@ -27,6 +28,9 @@ var fixture := false
 var fallback_reason := ""
 var error := ""
 var model_path := ""
+var complete_rotors := false
+## Onboard lens in FRD, metres from CG. Visual mount only: never changes session data/replay identity.
+var fpv_mount_frd := PackedFloat64Array()
 ## Per rotor: {spin (+1 counter-clockwise from above), pivot (propeller node, local +Z = spin axis), base (Basis),
 ## phase (rad), blur (PropellerBlur node or null), speed (last achieved rad/s)}.
 var rotors: Array[Dictionary] = []
@@ -48,12 +52,17 @@ func build(data: Dictionary, frame_model: String = MODEL_PATH) -> bool:
 		fixture = true
 		model = _build_fixture(prepared_rotors, data.get("camera", {}))
 	root.add_child(model)
+	fpv_mount_frd = (data.camera.mount_frd as PackedFloat64Array).duplicate()
+	if complete_rotors:
+		var mount := model.find_child("camera_mount", true, false) as Node3D
+		var at := PropellerBlur.relative(root, mount).origin
+		fpv_mount_frd = PackedFloat64Array([-at.z, at.x, -at.y])
 	var motor_material := StandardMaterial3D.new()
 	motor_material.albedo_color = Color(0.55, 0.57, 0.6)
 	motor_material.metallic = 0.6
 	motor_material.roughness = 0.4
 	for rotor: Dictionary in prepared_rotors:
-		rotors.append(_build_rotor(rotor, motor_material))
+		rotors.append(_import_rotor(rotor) if complete_rotors else _build_rotor(rotor, motor_material))
 	# No cut-radius root: the motor bell ends below the blade plane, and the canopy or a neighbouring rotor must not
 	# be mistaken for hub hardware that hides the inner disc.
 	for rotor: Dictionary in rotors:
@@ -79,6 +88,7 @@ func _load_frame(path: String, prepared_rotors: Array) -> Node3D:
 		return null
 	frame.name = "Model"
 	frame.position = frame_offset(prepared_rotors, empties)
+	complete_rotors = frame.find_child("ION_R5_body", true, false) != null
 	return frame
 
 
@@ -155,6 +165,24 @@ static func _mesh(parent: Node3D, node_name: String, mesh: Mesh, material: Mater
 	instance.transform = at
 	parent.add_child(instance)
 	return instance
+
+
+## Complete supplied assembly: retain its own handed blades and motor bell, without adding stand-in geometry.
+## Convert the imported +Y spin axis to PropellerBlur's local +Z once, preserving every mesh's model-space pose.
+func _import_rotor(rotor: Dictionary) -> Dictionary:
+	var assembly := model.find_child("propeller_%d" % int(rotor.id), true, false) as Node3D
+	var pivot := Node3D.new()
+	pivot.name = "Rotor%d" % int(rotor.id)
+	var base := Basis(Vector3.RIGHT, Vector3.FORWARD, Vector3.UP)
+	pivot.transform = Transform3D(base, body_point(rotor.hub_frd))
+	root.add_child(pivot)
+	# Keep the original mount marker for alignment audits, moving only its meshes to the spinning pivot.
+	for child: Node3D in assembly.get_children():
+		var at := PropellerBlur.relative(root, child)
+		assembly.remove_child(child)
+		pivot.add_child(child)
+		child.transform = pivot.transform.affine_inverse() * at
+	return {spin = signf(float(rotor.spin)), pivot = pivot, base = base, phase = 0.0, blur = null, speed = 0.0}
 
 
 ## One rotor view: a fixed motor bell from the arm-top plane up to the prop plane, and a pivot at the physics hub

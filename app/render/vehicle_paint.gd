@@ -143,11 +143,18 @@ static func _paint(source: StandardMaterial3D, binding: Dictionary, textures: Di
 	painted.set_meta(COPY_META, painted.get_instance_id())
 	if binding.has("albedo"):
 		painted.albedo_color = Color(str(binding.albedo))
-	if binding.has("albedo_texture"):
+	# A null texture removes the imported one: a plain finish over a part the stock model maps with a pattern
+	# (the Avanti's tiled carbon trim), or no glow where the stock paint has an emission map.
+	if binding.has("albedo_texture") and binding.albedo_texture == null:
+		painted.albedo_texture = null
+	elif binding.has("albedo_texture"):
 		var albedo_texture := _texture(str(binding.albedo_texture), textures)
 		if albedo_texture != null:
 			painted.albedo_texture = albedo_texture
-	if binding.has("emission_texture"):
+	if binding.has("emission_texture") and binding.emission_texture == null:
+		painted.emission_enabled = false
+		painted.emission_texture = null
+	elif binding.has("emission_texture"):
 		var emission_texture := _texture(str(binding.emission_texture), textures)
 		if emission_texture != null:
 			painted.emission_texture = emission_texture

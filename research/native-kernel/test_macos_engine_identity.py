@@ -33,6 +33,9 @@ class ResearchIdentityTests(unittest.TestCase):
         self.binary.write_bytes(b"fixture editor")
         self.archive = self.root / "source.zip"
         self.archive.write_bytes(b"fixture source")
+        self.api = self.root / "godot-cpp/gdextension/extension_api-4-7.json"
+        self.api.parent.mkdir(parents=True)
+        self.api.write_text("{}", encoding="utf-8")
         self.patch1, self.patch2 = self.root / "0001.patch", self.root / "0002.patch"
         self.patch1.write_text("first", encoding="utf-8")
         self.patch2.write_text("second", encoding="utf-8")
@@ -44,7 +47,8 @@ class ResearchIdentityTests(unittest.TestCase):
         (self.root / "intake.json").write_text(json.dumps(self.intake), encoding="utf-8")
         self.selection = {"sha256": policy._sha(self.binary), "cli_version": policy.RESEARCH_CLI,
                           "runtime_version": policy.RESEARCH_RUNTIME, "receipt": str(self.receipt),
-                          "archive": str(self.archive), "patches": [str(self.patch1), str(self.patch2)]}
+                          "archive": str(self.archive), "extension_api": str(self.api),
+                          "patches": [str(self.patch1), str(self.patch2)]}
         sdk = "/SDK"
         self.record = {"schema": "fixture", "status": "built", "returncode": 0, "target": "editor",
                        "intake": self.intake, "process_arch": "arm64", "log_sha256": policy._sha(self.log),
@@ -64,8 +68,11 @@ class ResearchIdentityTests(unittest.TestCase):
         self.helper = SimpleNamespace(COMMIT=policy.SOURCE_COMMIT, SOURCE_URL="fixture-url", SOURCE_SHA256=policy._sha(self.archive),
                                       SCHEMA="fixture", SCONS_VERSION="4.10.1", ZSTANDARD_VERSION="0.25.0",
                                       verify_intake=self.verify_intake, expected_catalog=lambda *_a: {"file": "hash"},
-                                      verify_source=lambda *_a, **_k: None)
-        self.lock = {"godot": {"version": policy.OFFICIAL_VERSION, "extension_api": "4.7"}}
+                                      verify_source=lambda *_a, **_k: None, patch_paths=lambda _p: {"render/file.cpp"})
+        self.lock = {"godot": {"version": policy.OFFICIAL_VERSION, "extension_api": "4.7"},
+                     "godot_cpp": {"commit": policy.GODOT_CPP_COMMIT}}
+        self.api_proof = {"checkout": str(self.api.parent.parent), "commit": policy.GODOT_CPP_COMMIT,
+                          "blob": "b" * 40, "sha256": policy._sha(self.api)}
 
     def verify_intake(self, archive, root, patches):
         if (archive, root, patches) != (self.archive, self.root, [self.patch1, self.patch2]):
@@ -76,7 +83,8 @@ class ResearchIdentityTests(unittest.TestCase):
         self.receipt.write_text(json.dumps(self.record), encoding="utf-8")
 
     def identify(self, selection=None, arch=None, version=None):
-        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True):
+        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
+             patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             return policy.identify(self.binary, self.lock, self.selection if selection is None else selection,
                                    architectures=lambda _p: arch if arch is not None else ["arm64"],
                                    output=lambda _args: version if version is not None else policy.RESEARCH_CLI)
@@ -150,16 +158,65 @@ class ResearchIdentityTests(unittest.TestCase):
         def mutate(_args):
             self.log.write_text("changed during version check", encoding="utf-8")
             return policy.RESEARCH_CLI
-        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True):
+        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
+             patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             with self.assertRaisesRegex(ValueError, "changed during validation"):
                 policy.identify(self.binary, self.lock, self.selection, architectures=lambda _p: ["arm64"], output=mutate)
 
     def test_timed_out_executable_is_a_bounded_refusal(self):
         def timeout(_args):
             raise subprocess.TimeoutExpired("engine --version", 30)
-        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True):
+        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
+             patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             with self.assertRaisesRegex(ValueError, "inspection failed"):
                 policy.identify(self.binary, self.lock, self.selection, architectures=lambda _p: ["arm64"], output=timeout)
+
+    def test_api_checkout_binds_commit_blob_and_clean_state(self):
+        blob = "c" * 40
+        def command(_checkout, *args):
+            return {("rev-parse", "--show-toplevel"): str(self.api.parent.parent),
+                    ("rev-parse", "--verify", "HEAD"): policy.GODOT_CPP_COMMIT,
+                    ("status", "--porcelain", "--untracked-files=no"): "",
+                    ("rev-parse", f"{policy.GODOT_CPP_COMMIT}:gdextension/extension_api-4-7.json"): blob,
+                    ("hash-object", "--no-filters", str(self.api)): blob}[args]
+        with patch.object(policy, "_git_text", side_effect=command):
+            self.assertEqual(policy.extension_api_identity(self.api, self.lock)["blob"], blob)
+        def dirty(_checkout, *args):
+            return " M gdextension/extension_api-4-7.json" if args[0] == "status" else command(_checkout, *args)
+        with patch.object(policy, "_git_text", side_effect=dirty), self.assertRaisesRegex(ValueError, "checkout"):
+            policy.extension_api_identity(self.api, self.lock)
+        def wrong_blob(_checkout, *args):
+            return "d" * 40 if args[0] == "hash-object" else command(_checkout, *args)
+        with patch.object(policy, "_git_text", side_effect=wrong_blob), self.assertRaisesRegex(ValueError, "blob"):
+            policy.extension_api_identity(self.api, self.lock)
+
+    def test_c_interface_delta_and_failed_api_validation_refuse(self):
+        self.helper.patch_paths = lambda _patches: {"core/extension/gdextension_interface.json"}
+        with self.assertRaisesRegex(ValueError, "core/extension"):
+            self.identify()
+        self.helper.patch_paths = lambda _patches: {"servers/rendering/renderer.cpp"}
+        calls = []
+        def checked(command):
+            calls.append(command)
+            if "--validate-extension-api" in command:
+                raise subprocess.CalledProcessError(1, command)
+            return policy.RESEARCH_CLI
+        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
+             patch.object(policy, "extension_api_identity", return_value=self.api_proof):
+            with self.assertRaisesRegex(ValueError, "rejected the pinned 4.7"):
+                policy.identify(self.binary, self.lock, self.selection, architectures=lambda _p: ["arm64"], output=checked)
+        self.assertEqual(calls[-1], [str(self.binary), "--headless", "--validate-extension-api", str(self.api)])
+
+    def test_dyld_overrides_are_rejected_and_children_are_cleaned(self):
+        with patch.dict(policy.os.environ, {"DYLD_INSERT_LIBRARIES": "/tmp/inject", "ASAN_OPTIONS": "bad"}):
+            with self.assertRaisesRegex(ValueError, "without DYLD"):
+                policy.reject_dyld_environment()
+            clean = policy.clean_child_environment()
+            self.assertNotIn("DYLD_INSERT_LIBRARIES", clean)
+            self.assertNotIn("ASAN_OPTIONS", clean)
+            with policy.clean_process_environment():
+                self.assertNotIn("DYLD_INSERT_LIBRARIES", policy.os.environ)
+            self.assertEqual(policy.os.environ["DYLD_INSERT_LIBRARIES"], "/tmp/inject")
 
     def test_real_intake_rebuilds_ordered_catalog_and_rejects_build_source_drift(self):
         helper = policy._helper()
@@ -183,13 +240,14 @@ class ResearchIdentityTests(unittest.TestCase):
         receipt = intake_root / "build-editor.json"
         selection = {"sha256": policy._sha(binary), "cli_version": policy.RESEARCH_CLI,
                      "runtime_version": policy.RESEARCH_RUNTIME, "receipt": str(receipt),
-                     "archive": str(archive), "patches": [str(patch_path)]}
+                     "archive": str(archive), "extension_api": str(self.api), "patches": [str(patch_path)]}
         record = copy.deepcopy(self.record)
         record.update(schema=helper.SCHEMA, intake=intake, log_sha256=policy._sha(log),
                       artifacts=[{"name": binary.name, "sha256": selection["sha256"],
                                   "bytes": binary.stat().st_size, "architectures": ["arm64"]}])
         receipt.write_text(json.dumps(record), encoding="utf-8")
-        with patch.object(policy, "_helper", return_value=helper), patch.object(policy.os, "access", return_value=True):
+        with patch.object(policy, "_helper", return_value=helper), patch.object(policy.os, "access", return_value=True), \
+             patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             args = (binary, self.lock, selection)
             kwargs = {"architectures": lambda _p: ["arm64"], "output": lambda _c: policy.RESEARCH_CLI}
             self.assertEqual(policy.identify(*args, **kwargs)["research_engine"]["source_commit"], policy.SOURCE_COMMIT)

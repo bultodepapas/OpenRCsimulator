@@ -105,8 +105,10 @@ Current OpenRC facts, verified in source:
   patched engine's viewport/generation status; injected policy/rollback checks
   passed on M1. Official beta2 lacks that API and returns unknown. Native patch
   compilation, fault injection and GPU/lifecycle qualification remain distinct.
-  `request_history_reset()` deliberately refuses to treat MetalFX Temporal
-  submission as SDK acknowledgement and latches Native on discontinuity.
+  `request_history_reset()` consumes the patched engine's generation/serial
+  acknowledgement after the SDK encode call returns. It bounds pending requests
+  by actual Temporal attempts and falls back on a missing or expired receipt.
+  This acknowledgement does not establish GPU completion.
 - The pinned [viewport source](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L126-L213)
   admits Spatial on Mobile/Forward+ and Temporal on Forward+ only. A menu enum
   does not establish scaler execution, FG or a ray-tracing backend.

@@ -213,10 +213,25 @@ func _frame_alignment(activity: Node) -> void:
 	var hub_y := Visual.hub_centroid(rotors).y
 	var empty_y: float = (empties.propeller_centroid as Vector3).y + offset.y
 	_check("the frame sits MOTOR_HEIGHT_M below the prop plane", absf(hub_y - empty_y - Visual.MOTOR_HEIGHT_M) < 1.0e-6)
-	var mount := Visual.body_point(activity.session.data.camera.mount_frd)
+	var mount := Visual.body_point(visual.fpv_mount_frd)
 	var pivot: Vector3 = empties.camera_mount + offset if empties.camera_mount != null else Vector3.INF
-	_check("camera_mount agrees with the physics camera mount within 3 mm", mount.distance_to(pivot) <= 0.003,
+	_check("camera_mount agrees with the presented onboard lens within 3 mm", mount.distance_to(pivot) <= 0.003,
 		"%s vs %s" % [mount, pivot])
+	_check("the supplied ION R5 body is used with its own four rotor assemblies", visual.complete_rotors
+		and visual.model.find_child("ION_R5_body", true, false) != null and visual.rotors.size() == 4)
+	var imported := true
+	for i in 4:
+		var rotor: Dictionary = visual.rotors[i]
+		var blur: Node3D = rotor.blur
+		imported = imported and rotor.pivot.find_child("ION_R5_bell_%d" % (i + 1), true, false) != null \
+			and rotor.pivot.find_child("ION_R5_blades_%d" % (i + 1), true, false) != null \
+			and visual.root.find_child("Motor%d" % (i + 1), true, false) == null and blur != null
+		if blur != null:
+			imported = imported and int(blur.measured.blades) == 3 \
+				and absf(float(blur.measured.radius) - float(rotors[i].diameter_m) * 0.5) < 0.001
+	_check("authored bells and tri-blades replace stand-ins, with the physical disc radii", imported)
+	_check("ION R5 is named in its menu and OSD", activity.hud.menu_title.text == "ION R5" \
+		and activity.hud.craft_name == "ION R5")
 
 
 func _held_switch(activity: Node) -> void:
@@ -329,7 +344,7 @@ func _restart(activity: Node) -> void:
 	_check("the menu leads with resume again on a flyable quad", activity.hud.resume_button.visible
 		and activity.hud.resume_button.get_index() < activity.hud.restart_button.get_index())
 	var pose: PackedFloat64Array = activity.session.interpolated(1.0)
-	var expected := Cam.fpv_transform(pose.slice(0, 3), pose.slice(6, 10), activity.session.data.camera.mount_frd,
+	var expected := Cam.fpv_transform(pose.slice(0, 3), pose.slice(6, 10), activity.visual.fpv_mount_frd,
 		deg_to_rad(activity.view.tilt_deg))
 	_check("the camera is snapped to the reset pose", activity.camera.global_transform.is_equal_approx(expected))
 	var stopped := true

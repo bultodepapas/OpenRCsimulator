@@ -22,6 +22,7 @@ const Osd = preload("res://vehicles/multirotor/osd_model.gd")
 const Paint = preload("res://vehicles/multirotor/osd_painter.gd")
 const SettingsPanel = preload("res://vehicles/multirotor/osd_settings_panel.gd")
 const Frames = preload("res://render/frames.gd")
+const Catalog = preload("res://vehicles/multirotor/multirotor_catalog.gd")
 
 signal action_requested(action: String)
 
@@ -494,7 +495,7 @@ func _build_menu(s: float) -> void:
 	menu.add_child(box)
 	menu_title = Label.new()
 	menu_title.name = "Title"
-	menu_title.text = "FPV quad 5\" (experimental)"
+	menu_title.text = Catalog.DISPLAY_NAME
 	menu_title.add_theme_font_size_override("font_size", int(round(26.0 * s)))
 	box.add_child(menu_title)
 	menu_variant = Label.new()
@@ -704,9 +705,7 @@ func set_course(course_name: String, choice: bool) -> void:
 ## The vehicle and variant id, shown in the menu and the help (the OSD tag stays short).
 func set_variant(text: String) -> void:
 	variant_text = text
-	# The craft name element: the maker and model of the variant id ("openrc-fpv5-…" -> "OPENRC FPV5").
-	var parts := text.split("-", false)
-	craft_name = " ".join(parts.slice(0, mini(2, parts.size()))).to_upper()
+	craft_name = Catalog.DISPLAY_NAME.to_upper()
 	_update_texts()
 
 

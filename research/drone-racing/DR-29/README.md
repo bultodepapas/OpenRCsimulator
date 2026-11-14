@@ -1,5 +1,8 @@
 # DR-29: OpenRacer frame intake for `openrc-fpv5`
 
+The default racer visual now uses the owner-supplied [ION R5](ION_R5.md).
+This page records the earlier OpenRacer frame, retained as a separate asset.
+
 Download-first visual for the experimental 5-inch FPV build, converted reproducibly from [OpenRacer](https://github.com/OpenRacer/OpenRacer) at commit `15477b200a569dad9d4107e77fdb7cac5acfffd9` (GPL-3.0). Full evidence: [receipt.json](receipt.json). Licence notice: [NOTICE.md](../../../app/assets/multirotors/openrc-fpv5/NOTICE.md).
 
 ## What was taken in

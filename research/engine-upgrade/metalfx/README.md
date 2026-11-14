@@ -40,3 +40,82 @@ or infer hardware ray-intersection acceleration from `supportsRaytracing`.
 The fixture intentionally does not encode denoising without a real RT producer.
 Its synthetic color/depth observations cannot qualify that producer. See the
 [dated implementation evidence](../../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md).
+
+## Interpolation controls
+
+Compile `frame_interpolation.mm` with the same flags/frameworks as `probe.mm`.
+It uses independently checked hard edges, a direct analytic midpoint and endpoint,
+crossfade, zero-motion and reversed-motion controls. Run each case separately;
+each native process has a twenty-second deadline. Preserve the no-option baseline
+before testing warmup or the independent SDK-27 matrix option.
+
+```sh
+cases=(uniform crossfade zero reverse-color reverse-input color-pixels input-pixels)
+mkdir -p tmp/metalfx-api/frame-warm
+for name in "${cases[@]}"; do
+  MTL_DEBUG_LAYER=1 tmp/metalfx-api/frame_interpolation "$name" --warmup-static=3 \
+    >"tmp/metalfx-api/frame-warm/$name.json" \
+    2>"tmp/metalfx-api/frame-warm/$name.stderr" || exit 1
+done
+reports=()
+for name in "${cases[@]}"; do reports+=("tmp/metalfx-api/frame-warm/$name.json"); done
+tmp/metalfx-api/frame_interpolation compare "${reports[@]}" \
+  >tmp/metalfx-api/frame-warm/comparison.json
+```
+
+The comparison requires every matching case/configuration and a predeclared
+margin against incorrect controls. On the observed M1, three additional static
+encodes made input-grid motion distinguish the midpoint. The first two encodes
+alone returned an endpoint; they did not qualify interpolation. This synthetic
+result does not fix the convention for Godot's actual motion/depth/jitter inputs.
+`--matrices-27`, `--single-edge` and `--small-shift=4` are independent diagnostic
+options. Matrix properties are availability-guarded and are not required on 26.
+
+## Ray-traced denoising witness
+
+Compile `denoised_rt.mm` with the same flags and frameworks, then pass
+`denoised_rt.metal` as its sole argument. The Metal shader compiles at runtime;
+the optional offline `metal` command is not required. This fixture builds a real
+two-triangle BLAS, traces primary/reflected rays and supplies real guide textures.
+CPU analytic checks validate hits, distances, auxiliary inputs and finite output
+after sentinel initialization. Its loose static ROI bound is a sanity control,
+not a quality or speedup measurement.
+
+```sh
+MTL_DEBUG_LAYER=1 \
+MTL_SHADER_VALIDATION=1 \
+MTL_SHADER_VALIDATION_DEFAULT_STATE=none \
+MTL_SHADER_VALIDATION_ENABLE_PIPELINES=openrc-rt-trace,openrc-rt-clear,openrc-rt-depth \
+MTL_SHADER_VALIDATION_REPORT_TO_STDERR=1 \
+MTL_SHADER_VALIDATION_ABORT_ON_FAULT=1 \
+tmp/metalfx-api/denoised_rt research/engine-upgrade/metalfx/denoised_rt.metal \
+  >tmp/metalfx-api/denoised.json 2>tmp/metalfx-api/denoised.stderr
+```
+
+Inspect both the exit code and stderr, and confirm each reported producer
+pipeline's actual `shaderValidation` state. The selective run excludes SDK
+internal pipelines. Global shader instrumentation aborted on the observed SDK
+with an internal 1,024-thread dispatch above the instrumented pipeline limit;
+API-only and selectively instrumented controls passed. Retain that failure.
+Neither control is a clean full-SDK shader-validation claim or Godot integration.
+
+## Real engine boundaries
+
+Build the selected ordered patches with the
+[engine intake helper](../../../tools/graphics/metalfx/README.md). Copy each
+GDScript fixture into a task-owned project's `tools/` directory and run through
+`tools/godot/run_checked.py`; retain its report and exact fixture/engine hashes.
+Never put these drafts or deliberate fault controls in the production app.
+
+- `status_probe.gd`: actual Spatial/Mobile or Temporal/Forward+ allocation,
+  submission, output sanity, resize generation and viewport isolation.
+- `history_probe.gd`: actual Temporal reset/cut coalescing, paused render-attempt
+  accounting and camera/scenario/resize lifecycle. GPU completion remains unknown
+  even when the SDK encode callback acknowledges the reset serial.
+- `fault_probe.gd`: four fresh debug processes with patch 0003's factory/enqueue
+  faults. Compare the first failed frame against a changed Native reference and
+  stale-image negative control before invoking the production recovery adapter.
+
+Keep the normal full product, its physical backend and audio/HID/effects activation
+separate from these bounded fixtures. The owning plan retains moving-image,
+presentation, latency, end-to-end performance and package gates.

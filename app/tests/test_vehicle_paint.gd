@@ -58,7 +58,7 @@ func _check_data() -> void:
 		for group: Dictionary in groups:
 			for material_name: String in group:
 				for field: String in ["albedo_texture", "emission_texture", "normal_texture", "roughness_texture", "metallic_texture"]:
-					if group[material_name].has(field):
+					if group[material_name].has(field) and group[material_name][field] != null:  # null removes the map
 						check("texture exists: " + str(group[material_name][field]), ResourceLoader.exists(str(group[material_name][field])))
 	check("unknown vehicles and skins fall back", VehiclePaint.choices("ugly-stik-60").is_empty()
 		and VehiclePaint.resolve("mt8-bisonte", "nope") == "" and not VehiclePaint.contains("mt8-bisonte", "nope"))

@@ -157,9 +157,10 @@ Godot commit `cafc17a192acf67903910a68aeb3c076c0907a4b`, source ZIP SHA-256
 `83cf257bc53427f2b1ea07015dbad298252c20546e916c5daa30a1cf78c45c1e`, ordered
 patches and complete expected source catalog. It freezes inputs, rejects drift,
 keeps pristine source separate from target build trees and records actual
-toolchain/environment/artifacts. Thirteen intake/verifier negative-control tests
-passed on Windows and native M1. Pair tests use explicitly synthetic receipts;
-a real matching editor/template pair is still pending.
+toolchain/environment/artifacts. The initial thirteen intake/verifier controls
+passed on Windows and native M1; later regular-file intake controls increased
+that set to fifteen. Synthetic pair controls and the real pair below have
+separate evidence.
 
 The later 0001–0003 pair is now built and verified:
 
@@ -203,8 +204,8 @@ created/enqueued status for the correct viewport, 1920×1080 scene readback,
 resize to 1921×1081 with increasing generation, isolation from another Native
 viewport, and clearing provider state on return to Native. GPU readback has
 center/background sanity checks; it is not an independent per-pass GPU trace or
-a product flight/physical-presentation qualification. A full 0001–0003 build
-follows for reset/fault tests.
+a product flight/physical-presentation qualification. The later 0001–0003 build
+supplied the reset/fault results below.
 
 The 07a2 patch adds actual SDK encode-call acknowledgements, per-generation
 reset serials, cut coalescing, explicit multiview downgrade, lifecycle invalidation
@@ -242,6 +243,53 @@ The four affected consumer tests passed on both the official and modified editor
 unique compiled patch controls passed natively; two intentionally unused mock
 variables needed `[[maybe_unused]]` under clang's release/debug branches. Actual
 engine source and strict warning policy were unchanged by those test-only fixes.
+
+The experimental scene-input patch 0004
+(`2cfc1c4b466dfba51ae940d4c0529d290bf5a4502cd562d52edc4c4712e1ce18`)
+also compiled in a fresh native ARM64 editor intake. Editor SHA-256:
+`312892e8d53b8d5fd17ed063115e06b52bcaaf5902123d7288d3ecc47da7ba07`,
+113,704,856 bytes. Its 14,438-file source catalog is
+`3de40ee5b64bcc0a949a0400808dd96005cb5e3fcfa1a34a2370ff9eb1b2fd57`;
+intake helper: `f659dec8be4092c20b2889d664634100449ba99bc0f8731319f28254a8399d09`.
+The build took 10m34.86s and strict local code-sign verification passed.
+This is compilation evidence, not a presenter or interpolation-correctness pass.
+
+## Frozen full product and normal baseline
+
+The complete original source at `5e52336bf5b41e532045c8c03726518568f688b0`
+was transferred separately from the reduced fixtures. TAR identity:
+`1f9376991e574669260d976f1a54ac0cdf000c2e892c2fd3df62880d409fdfec`,
+7,524,587,520 bytes. All 49,569 regular files passed per-file size/hash comparison;
+the manifest SHA-256 is
+`32dfc79795984139fc9283fc9e43c5903afad6515b40efa2e11678b7dbf14801`.
+The twelve aircraft descriptors were current. Source remains at
+`/Users/gius/OpenRC-m1-work/metalfx-product-5e52336-20261114`.
+
+The retained, previously qualified official-engine native kernel was restored
+unchanged into that source: dylib SHA-256
+`b7852b6d9b8abfdd0edafb2ffd390e9d97e2666bc8cedb7b5ae8dca2451b2c25`.
+Its existing marker selects official editor SHA-256
+`2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80`.
+It does not admit either modified editor. Fresh engine-specific qualification
+is required before a custom-engine native default can be issued.
+
+A verified isolated full-product baseline imported successfully: zero errors,
+eight known OBJ ambient/PBR warnings. An audio-enabled rendered debug session
+then reached Home, flew the stock Ugly Stik from the runway and returned Home.
+Its live log reported the admitted **native** physical backend. Actual root
+render target was 1920×1080, Mobile/Metal on Apple M1, VSync enabled, scale 1.0
+and saved 4× MSAA. A short diagnostic sample was about 56 real callback FPS;
+cold scene/shader hitches were retained. This is a functional baseline, not a
+controlled performance comparison or independently observed presentation rate.
+The session stopped gracefully without a crash or leaked objects; no process
+exit code was reported by the launcher.
+
+The candidate app overlay is frozen separately:
+`a7d29a2395183b1ee021b8948238879facee3df8f88ecc1d5cd6867a8dadb638`.
+Only its eight app paths were applied to the unused candidate source after
+checking each original against the full-source manifest. Its original research
+preparation receipt is superseded; a fresh runtime preparation records the
+augmented app. The baseline and its linked author assets remain unchanged.
 
 ## RT producer port boundary
 

@@ -963,6 +963,7 @@ def _run_probe(
     battery: str | None = None,
     trim_profile: str | None = None,
     expected_engine_display: str = REQUIRED_GODOT_REPORT,
+    research_environment: bool = False,
 ) -> dict[str, Any]:
     command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
                 "--native-qualification=session"] if release_executable else
@@ -1024,6 +1025,7 @@ def _run_probe(
                       and native_library.is_file() else "")
     with log_path.open("w", encoding="utf-8", errors="replace") as log_stream:
         try:
+            child_environment = ({"env": ENGINE_POLICY.clean_child_environment()} if research_environment else {})
             process = subprocess.Popen(
                 command,
                 cwd=app_dir.parent,
@@ -1031,6 +1033,7 @@ def _run_probe(
                 stderr=subprocess.STDOUT,
                 start_new_session=(os.name != "nt"),
                 creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0),
+                **child_environment,
             )
             try:
                 exit_code = process.wait(timeout=timeout)
@@ -1299,6 +1302,7 @@ def _failure_report(config: dict[str, Any], reason: str, *, report_format: str =
 
 def run_campaign(args: argparse.Namespace) -> int:
     root = Path(__file__).resolve().parents[2]
+    research_engine = ENGINE_POLICY.selection_from_args(args)
     identical = getattr(args, "compare_identical", False)
     report_format = IDENTICAL_FORMAT if identical else BASELINE_FORMAT
     report_name = "session_identical.json" if identical else "session_baseline.json"
@@ -1340,7 +1344,6 @@ def run_campaign(args: argparse.Namespace) -> int:
     pairs: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
     metadata: dict[str, Any] = {"system": capture_system_identity()}
-    research_engine = ENGINE_POLICY.selection_from_args(args)
     native_identities: set[str] = set()
     solver_identities: dict[str, set[str]] = {"gdscript_reference": set(), "native": set()}
     project_validator = None
@@ -1457,6 +1460,7 @@ def run_campaign(args: argparse.Namespace) -> int:
                             trim_profile=args.trim_profile,
                             expected_engine_display=(research_engine["runtime_version"] if research_engine is not None
                                                      else REQUIRED_GODOT_REPORT),
+                            research_environment=research_engine is not None,
                         )
                         if ("mac_native_bundle" in metadata or identical) and run["accepted"]:
                             try:

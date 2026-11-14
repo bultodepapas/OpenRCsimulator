@@ -3,6 +3,7 @@
 import copy
 import importlib.util
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -376,6 +377,17 @@ class PromotionEvidence(unittest.TestCase):
 
 
 class CheckedRunner(unittest.TestCase):
+    def test_custom_engine_child_refuses_loader_injection_and_clears_sanitizer_options(self):
+        receipt = {"engine": {"research_engine": {"scope": "source-editor-local-custom-engine-research-v1"}}}
+        with patch.dict(os.environ, {"DYLD_INSERT_LIBRARIES": "/tmp/injected"}, clear=True):
+            self.assertIsNone(runner.research_child_environment({"engine": {}}))
+            with self.assertRaisesRegex(ValueError, "without DYLD"):
+                runner.research_child_environment(receipt)
+        with patch.dict(os.environ, {"ASAN_OPTIONS": "bad", "HOME": "/fixture"}, clear=True):
+            child = runner.research_child_environment(receipt)
+            self.assertEqual(child["HOME"], "/fixture")
+            self.assertNotIn("ASAN_OPTIONS", child)
+
     def test_options_cannot_override_artifact_identity_or_repeat_a_setting(self):
         runner.validate_options("trajectory.gd", ["ticks=960", "skip-timing=true"])
         for options in (["extension=other.gdextension"], ["output=other.json"], ["states=0"],

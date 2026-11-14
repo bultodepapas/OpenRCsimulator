@@ -809,7 +809,7 @@ func _process(delta: float) -> void:
 	var t: Dictionary = _current_telemetry()
 	var frame_dt := delta if not session.paused else 0.0
 	visual.pose(drawn, t.get("rotor_speed_rad_s", PackedFloat64Array()), frame_dt)
-	view.update(drawn, session.data.camera.mount_frd, delta, _ground_height_render)
+	view.update(drawn, visual.fpv_mount_frd, delta, _ground_height_render)
 	if _lens != null:
 		_lens.advance(delta, float(session.sim.time()), session.paused)
 	if _environment != null:

@@ -1,0 +1,63 @@
+{
+  "step": "DR-29/30 ION R5 visual integration",
+  "blender": "5.2.2 LTS",
+  "source": "FPV/ION_R5.blend",
+  "source_sha256": "7c9e6cdc5500f5667f16193c6568dd742c34bd27652c1cd8a2a1d3cb4ac346a5",
+  "physics": "app/data/multirotors/openrc-fpv5-x1.json",
+  "physics_sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+  "output": "app/assets/multirotors/ion-r5/ion_r5.glb",
+  "sha256": "5ce43742b48cbd1f21f490fd7db69d954b041689621f9abcdc3427796468f455",
+  "bytes": 2024476,
+  "source_diagonal_m": 0.219999995,
+  "horizontal_scale": 0.933272725,
+  "vertical_scale": 0.675388294,
+  "source_blade_plane_m": 0.029473854,
+  "source_lowest_m": -0.0031,
+  "motor_height_m": 0.02,
+  "triangles": 56548,
+  "materials": 32,
+  "meshes": {
+    "body": {
+      "triangles": 43876,
+      "surfaces": 31
+    },
+    "bell_1": {
+      "triangles": 1584,
+      "surfaces": 5
+    },
+    "blades_1": {
+      "triangles": 1584,
+      "surfaces": 1
+    },
+    "bell_2": {
+      "triangles": 1584,
+      "surfaces": 5
+    },
+    "blades_2": {
+      "triangles": 1584,
+      "surfaces": 1
+    },
+    "bell_3": {
+      "triangles": 1584,
+      "surfaces": 5
+    },
+    "blades_3": {
+      "triangles": 1584,
+      "surfaces": 1
+    },
+    "bell_4": {
+      "triangles": 1584,
+      "surfaces": 5
+    },
+    "blades_4": {
+      "triangles": 1584,
+      "surfaces": 1
+    }
+  },
+  "camera_mount_blender_m": [
+    -0.0,
+    0.048326395,
+    0.019004503
+  ],
+  "limits": "Owner-supplied illustrative visual adapted to existing estimated physics; no ION R5 physical validation or new asset licence inferred. Procedural shading reduced to PBR constants."
+}

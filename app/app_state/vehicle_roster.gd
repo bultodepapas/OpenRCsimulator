@@ -21,7 +21,7 @@ const AIRSHIP := "airship"
 const ACTIVITIES := [
 	{
 		id = "openrc-fpv5-x1", family = MULTIROTOR,
-		name = "FPV quad 5\" (experimental)", short_name = "FPV quad 5\"",
+		name = MultirotorCatalog.DISPLAY_NAME, short_name = MultirotorCatalog.DISPLAY_NAME,
 		summary = "FPV racing quad · 5 in propellers · 6S electric",
 		status_note = "Experimental: estimated FPV quad physics from component data; not flight-validated.",
 	},

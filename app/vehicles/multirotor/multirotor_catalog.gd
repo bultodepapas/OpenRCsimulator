@@ -6,7 +6,7 @@ extends RefCounted
 
 const ID := "openrc-fpv5-x1"
 const DATA_PATH := "res://data/multirotors/openrc-fpv5-x1.json"
-const DISPLAY_NAME := "FPV quad 5\" (experimental)"
+const DISPLAY_NAME := "ION R5"
 const VEHICLE := "multirotor"
 const ARGUMENT := "--multirotor="
 

@@ -1,0 +1,23 @@
+ION R5 visual (DR-29/30)
+
+Source: FPV/ION_R5.blend, supplied by the project owner for this integration.
+The delivery's ION R5 - BUILD NOTES describes an original illustrative visual
+assembly, native materials and markings, and no flight or production claims.
+No additional third-party assets were downloaded or incorporated.
+No separate redistribution licence was supplied or is inferred here.
+
+Generator: research/drone-racing/DR-29/build_ion_r5.py (Blender 5.2.2 LTS).
+Source and output SHA-256, budgets and adaptation measurements: manifest.json.
+Reproduction, presentation contract and limits:
+research/drone-racing/DR-29/ION_R5.md
+
+Changes: exclude studio and sweep gauges; evaluate/merge geometry; reduce to
+56,548 triangles; retain constant PBR material values; adapt frame/motor spacing
+and ground support to the existing experimental FPV data; adapt blade diameter
+and handedness; export separate moving bells and blades with named markers.
+Procedural Blender material patterns are not baked. No simulation law, mass,
+inertia, powertrain, controller, collision data or replay identity is changed.
+
+The OpenRacer GPL notice beside the older frame applies to that older asset,
+not to this independently supplied model. The current model remains an
+experimental visual over estimated, unvalidated vehicle physics.

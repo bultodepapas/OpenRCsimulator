@@ -700,6 +700,20 @@ class ExperimentalEvidence(ScratchCase):
         self.seal(report)
         mac._check_oracle_identity(report, self.result, "base_oracle", self.built, {}, self.Runner())
 
+    def test_custom_oracle_requires_clean_child_environment_evidence(self):
+        self.engine["version"] = "4.8.beta2.openrc_metalfx"
+        self.engine["research_engine"] = {"scope": "local"}
+        report = self.evidence()
+        report["engine"] = "4.8-beta2 (openrc_metalfx)"
+        with self.assertRaisesRegex(ValueError, "clean child environment"):
+            self.check(report)
+        report["research_engine_environment"] = {"scope": "ordinary-local-research", "dyld_overrides": False,
+                                                 "inherited_sanitizer_options": False}
+        self.check(report)
+        report["research_engine_environment"]["dyld_overrides"] = True
+        with self.assertRaisesRegex(ValueError, "clean child environment"):
+            self.check(report)
+
     def test_complete_base_evidence_and_detector_requirements(self):
         good = self.evidence()
         self.check(good)

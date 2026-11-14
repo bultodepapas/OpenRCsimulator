@@ -115,6 +115,23 @@ def macos_engine_matches(receipt: dict, executable_sha256: str) -> bool:
             and receipt.get("engine_sha256") == executable_sha256)
 
 
+def research_child_environment(receipt: dict) -> dict[str, str] | None:
+    """Do not run a local ad-hoc research engine with inherited loader injection."""
+    engine = receipt.get("engine")
+    if not isinstance(engine, dict) or "research_engine" not in engine:
+        return None
+    spec = importlib.util.spec_from_file_location("openrc_oracle_research_engine", HERE / "macos_engine_identity.py")
+    if spec is None or spec.loader is None:
+        raise ValueError("Missing Mac research engine policy")
+    policy = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(policy)
+    provenance = engine["research_engine"]
+    if not isinstance(provenance, dict) or provenance.get("scope") != policy.SCOPE:
+        raise ValueError("Malformed Mac research engine provenance")
+    policy.reject_dyld_environment()
+    return policy.clean_child_environment()
+
+
 def _project_inventory(app: Path) -> list[dict]:
     entries = []
     for path in sorted(app.rglob("*")):
@@ -311,6 +328,10 @@ def main() -> int:
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if args.app_library:
         receipt = receipt["platforms"][platform_name]
+    try:
+        research_env = research_child_environment(receipt) if platform_name == "macos" else None
+    except (OSError, ValueError, TypeError) as error:
+        raise SystemExit(f"Mac research engine environment refused: {error}") from error
     binary_before = sha256(binary)
     engine_before = sha256(args.godot)
     # NK-4: on Windows the console wrapper starts the sibling GUI executable, which is the engine that runs the
@@ -366,13 +387,17 @@ def main() -> int:
                f"--variant-states={args.variant_states}", f"--timing-rounds={args.timing_rounds}",
                f"--experimental-native-macos={'true' if args.experimental_native_macos else 'false'}",
                *[f"--{option}" for option in args.option]]
-    completed = subprocess.run(command, cwd=ROOT)
+    completed = (subprocess.run(command, cwd=ROOT, env=research_env) if research_env is not None
+                 else subprocess.run(command, cwd=ROOT))
     if not output.is_file():
         raise SystemExit(f"Oracle wrote no results ({completed.returncode}); see {TOOL_ROOT / 'checks'}.")
     results = json.loads(output.read_text(encoding="utf-8"))
     reports = list(check_directory.glob("*/report.json"))
     checked = json.loads(reports[0].read_text()) if len(reports) == 1 else {}
     results["build_receipt"] = receipt
+    if research_env is not None:
+        results["research_engine_environment"] = {"scope": "ordinary-local-research", "dyld_overrides": False,
+                                                   "inherited_sanitizer_options": False}
     results["binary_sha256_before"] = binary_before
     results["binary_sha256_after"] = sha256(binary)
     results["engine_sha256_before"] = engine_before

@@ -25,3 +25,14 @@ ugly-stik/neon_ronin_*.png: NEON RONIN cyberpunk artwork authored by
 tools/skins/build_stik_cyberpunk.py (verify with --check). Reuses the shared
 ambientCG CC0 twill weave and bundled NotoSansCJKjp-Regular.otf (SIL OFL 1.1).
 Albedo, selective emission and roughness share the unchanged Stik covering atlas.
+
+ugly-stik/silver_ace_*.png: SILVER ACE natural-metal USAF tribute, authored by
+tools/skins/build_stik_silver_ace.py (verify with --check). Albedo, roughness,
+metallic and OpenGL normal maps share the stock atlas. Panel/rivet/wear artwork
+is original; brushing reuses ambientCG Metal009 (CC0, shared/LICENSES.txt).
+The public-domain USAF roundel is from Wikimedia Commons (original: United
+States Army Institute of Heraldry; vectorisation: Zscout370 and contributors):
+https://commons.wikimedia.org/wiki/File:Roundel_of_the_USAF.svg
+Black Ops One stencil lettering uses Google Fonts commit d50a0d29b (SIL OFL 1.1).
+Exact sources, hashes, licence and modification notes:
+tools/skins/sources/silver-ace/README.md and sources.json.

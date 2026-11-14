@@ -179,6 +179,9 @@ class MetalAtlas:
             draw.line(self.points([(x, y), (x + length, y - self.rng.uniform(0, 8))]),
                       fill=(74, 63, 47, int(self.rng.uniform(8, 28))), width=int(self.rng.integers(1, 4)))
         self.albedo = Image.alpha_composite(self.albedo.convert("RGBA"), overlay).convert("RGB")
+        residue = overlay.getchannel("A")
+        self.metal.paste(0, (0, 0), residue)
+        self.rough.paste(150, (0, 0), residue)
 
     def maps(self):
         dy, dx = np.gradient(self.height)

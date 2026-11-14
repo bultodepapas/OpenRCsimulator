@@ -57,7 +57,20 @@ white unbaked procedural) and named skins chosen in Home's paint gallery.
 `app/render/vehicle_paint.gd` applies them as per-instance `StandardMaterial3D`
 copies matched by glTF material name, before lights, rotor blur and damage copy
 the materials. Saved choices: `[liveries]` for the helicopter, `[vehicle_skins]`
-for the cars.
+for the cars. The agent workflow is the `openrc-skins` skill.
+
+Helper tools (Python from `.tools/visual-venv`, Godot windowed for renders):
+
+```sh
+python tools/skins/glb_inspect.py <model.glb> [--material <name>]   # materials, nodes, bounds, UV traps
+python tools/skins/paint_audit.py <model.glb> <mat>[,<mat>] <W>x<H>  # texel density, stretch, conflicts
+<godot> --path app --audio-driver Dummy --windowed --resolution 320x200 \
+  --script ../tools/skins/paint_preview.gd -- --vehicle=<id> --skin=<id> --out=<abs dir> [--views=...] [--zoom=1]
+```
+
+`paint_preview.gd` builds the vehicle through the game's builders (aircraft ids,
+`xcell-60-research` for the HX-700, or an RC car id). It saves 1600×1000 studio
+views. Prefix `OPENRC_SCENE_DETAIL=low` to check the Low preset.
 
 Bindings may set albedo/emission colours and maps, metallic, roughness,
 clearcoat, and object-space triplanar detail: the shared CC0 twill-carbon,
@@ -143,6 +156,29 @@ the acid-yellow belly keel and striped stabiliser underside provide the undersid
 markings. Fin lettering shares UVs and mirrors on the opposite face. Rebuild the
 paint from this source, never edit the generated PNGs. Review Home and flight at
 1920 × 1080 and run `test_vehicle_paint.gd` plus the Stik skin-fleet checks.
+
+### Ugly Stik: SILVER ACE (US-V20)
+
+`build_stik_silver_ace.py` generates a fictional early-USAF natural-metal scheme
+for the basic, glow and electric Stiks. Run it with the visual venv; `--check`
+verifies four 2048-square PNGs, source hashes and the recorded roughness mean.
+The public-domain USAF roundel, OFL stencil font and their provenance are in
+`sources/silver-ace/`; the brushed roughness reuses the shared CC0 Metal009 map.
+
+Albedo supplies alloy tones, markings and wear. Independent metallic and roughness
+maps separate bare, polished and oxidised panels from dielectric paint and grip
+strips; an OpenGL normal map supplies flush rivets and recessed panel joints.
+These are artistic finish estimates. The skin adds no mesh geometry or emission.
+At Low, metal/paint boundaries remain while normal and roughness detail are omitted;
+the recorded roughness mean keeps the overall sheen. Returning to factory or
+NEON RONIN restores its own material finish.
+
+The stock wing and fin UV sharing still applies. Fin insignia are symmetric;
+readable serials are on the two unwrapped fuselage flanks. Stabiliser tops and
+some end caps sample a constant metal patch, so they cannot show separate rivet
+detail. Dorsal/hatch/underside overlaps are retained. Validate with
+`test_vehicle_paint.gd`, the two Stik families in `test_skin_fleet.gd` and native
+1920 × 1080 review of the metal under changing view angles.
 
 ## Export and check
 

@@ -40,6 +40,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Physical measurements | [Mass, inertia, thrust and video reducers](../TOOLS.md#aircraft-measurement-reducers). |
 | Audio | [Audio tool contracts and dependencies](../../tools/audio/README.md). |
 | Blender scene inspection or authoring | [Blender bridge and setup](../../tools/blender/README.md); apply `openrc-blender` first. |
+| Vehicle skins, liveries, decals or material finishes | [Stock vehicle paints](../../tools/skins/README.md#stock-vehicle-paints-hx-700-and-rc-cars) (`glb_inspect.py`, `paint_audit.py`, `paint_preview.gd`, `build_vehicle_paints.py`); apply `openrc-skins` first. |
 | Startup or public logos | [Startup source](../../app/assets/branding/README.md), [public identity](../../site/BRANDS.md#openrc-identity); use their generator `--check` first. |
 | Website languages and metadata | [Website workflow](../../site/README.md#search-metadata-and-static-languages-web-0811). |
 | GitHub visits and release download history | [Local analytics collector and daily task](../../tools/analytics/README.md); country attribution is limited to website requests. |

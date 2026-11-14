@@ -397,8 +397,10 @@ def make_manifest(out: Path, context: dict[str, Any] | None = None) -> dict[str,
                "--label", "nk3-fleet-manifest", "--timeout", "120",
                "--require-text", "NK3_FLEET_MANIFEST verdict=pass", "--",
                str(godot), "--headless", "--path", str(project), "--script", str(script)]
+    environment = ({"env": ENGINE_POLICY.clean_child_environment()}
+                   if context is not None and context.get("research_engine") is not None else {})
     completed = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                               text=True, check=False)
+                               text=True, check=False, **environment)
     (out / "manifest-run.log").write_text(completed.stdout, encoding="utf-8")
     reports = list((out / "manifest-checks").glob("*/report.json"))
     require(completed.returncode == 0 and output.is_file() and len(reports) == 1 and sha256(script) == script_hash,
@@ -1308,7 +1310,9 @@ async def run_shard(aircraft: str, out: Path, semaphore: asyncio.Semaphore, warm
                         "--experimental-native-macos", "--option", "vehicle=fixed-wing"]
             if context.get("trim_profile", "reference") == "production":
                 command += ["--option", "trim-profile=production"]
-            env = dict(os.environ, OPENRC_NK_TOOL_ROOT=context["tool_root"])
+            env = (ENGINE_POLICY.clean_child_environment() if context.get("research_engine") is not None
+                   else dict(os.environ))
+            env["OPENRC_NK_TOOL_ROOT"] = context["tool_root"]
         print(f"Starting fleet shard: {aircraft}", flush=True)
         with log_path.open("wb") as log:
             proc = await asyncio.create_subprocess_exec(*command, cwd=ROOT, stdout=log,

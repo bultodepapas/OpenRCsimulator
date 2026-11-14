@@ -250,7 +250,10 @@ def architectures(binary: Path) -> list[str]:
 def _research_engine_output(command: list[str]) -> str:
     env = {name: value for name, value in os.environ.items() if not name.startswith("DYLD_")}
     env["LC_ALL"] = "C"
-    return subprocess.run(command, check=True, text=True, capture_output=True, timeout=30, env=env).stdout.strip()
+    result = subprocess.run(command, check=True, text=True, capture_output=True, timeout=120, env=env)
+    if re.search(r"\b(?:SCRIPT\s+)?ERROR(?:\s*:|\b)", result.stdout + "\n" + result.stderr, flags=re.IGNORECASE):
+        raise ValueError("Research engine inspection emitted an engine error")
+    return result.stdout.strip()
 
 
 def godot_identity(godot: Path, lock: dict, research_engine: dict | None = None) -> dict:
@@ -702,6 +705,9 @@ def validate_build(root: Path, mutant: bool, identity: dict, toolchain: dict, en
         raise ValueError("godot-cpp checkout differs from the pinned clean revision")
     api = cpp / "gdextension/extension_api-4-7.json"
     _verified_path(Path(built["extension_api_path"]), api, built["extension_api_sha256"])
+    if ("research_engine" in engine
+            and engine["research_engine"]["extension_api"]["sha256"] != built["extension_api_sha256"]):
+        raise ValueError("Research engine validated a different GDExtension API than the native bindings")
     _verified_path(work / "build_profile.json", work / "build_profile.json", built["build_profile_sha256"])
     wheel = dependencies_root / "downloads" / lock["scons"]["wheel_filename"]
     _verified_path(wheel, wheel, lock["scons"]["wheel_sha256"])
@@ -776,6 +782,9 @@ def _check_oracle_identity(data: dict, result_path: Path, key: str, built: dict,
                    ("engine_sha256_before", "engine_sha256_after", "engine_executable_sha256_before", "engine_executable_sha256_after"))
             or any(data.get(field) != built["binary_sha256"] for field in ("binary_sha256_before", "binary_sha256_after"))):
         raise ValueError("Evidence does not bind the current engine and exact signed build")
+    if "research_engine" in expected_engine and data.get("research_engine_environment") != {
+            "scope": "ordinary-local-research", "dyld_overrides": False, "inherited_sanitizer_options": False}:
+        raise ValueError("Local research engine oracle did not use a clean child environment")
     native = data.get("identity")
     if (not isinstance(native, dict) or native.get("backend") != "native"
             or native.get("backend_version") != nk.BACKEND_VERSION or native.get("abi_version") != nk.ABI_VERSION):
@@ -1056,6 +1065,9 @@ def build(args: argparse.Namespace) -> int:
     free_before_build = check_free_space(root, args.min_free_gib)
     api = godot_cpp / "gdextension" / "extension_api-4-7.json"
     api_sha256 = nk.sha256_file(api)
+    if (research_engine is not None
+            and engine["research_engine"]["extension_api"]["sha256"] != api_sha256):
+        raise ValueError("Research engine validated a different GDExtension API than the native bindings")
     profile = lock["godot_cpp"]["build_profile"]
     profile_content = json.dumps(profile["content"], sort_keys=True, separators=(",", ":")) + "\n"
     if hashlib.sha256(profile_content.encode()).hexdigest() != profile["sha256"]:

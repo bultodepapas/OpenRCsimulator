@@ -432,9 +432,9 @@ def scene_primitives(path: Path, materials):
             normal_matrix = np.linalg.inv(world[:3, :3]).T
             for prim in doc["meshes"][node["mesh"]]["primitives"]:
                 name = names[prim["material"]]
-                if name not in wanted:
-                    continue
                 attrs = prim["attributes"]
+                if name not in wanted or "TEXCOORD_0" not in attrs:  # untextured parts cannot carry a bake
+                    continue
                 pos = accessor(attrs["POSITION"]).astype(np.float64)
                 nrm = accessor(attrs["NORMAL"]).astype(np.float64)
                 pos = pos @ world[:3, :3].T + world[:3, 3]

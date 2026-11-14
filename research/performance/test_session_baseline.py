@@ -5,6 +5,7 @@ import hashlib
 import tempfile
 import unittest
 import json
+import os
 import shutil
 import struct
 import subprocess
@@ -568,12 +569,14 @@ class PreparedMacSourceTests(unittest.TestCase):
             report["backend"]["actual"]["binary_sha256"] = identity["binary_sha256"]
             report["machine"].update(os="macOS", architecture="arm64")
             report.update(experimental_native_macos=True, template_release=False, solver_identity_kind="source-tree-v1")
+            environments = []
 
             def run_case(candidate, *, requested=True, source=identity, backend="native", change_library=False,
-                         engine_display=baseline.REQUIRED_GODOT_REPORT):
+                         engine_display=baseline.REQUIRED_GODOT_REPORT, research_environment=False):
                 class Process:
                     returncode = 0
                     def __init__(self, command, **_kwargs):
+                        environments.append(_kwargs.get("env"))
                         output.write_text(json.dumps(candidate))
                     def wait(self, timeout):
                         if change_library:
@@ -585,7 +588,7 @@ class PreparedMacSourceTests(unittest.TestCase):
                                       warmup_ticks=4, sample_ticks=5, timeout=5, physics_backend=backend,
                                       native_source_sha256="c" * 64, executable_sha256=engine_sha,
                                       experimental_native_macos=requested, mac_source_identity=source,
-                                      expected_engine_display=engine_display)
+                                      expected_engine_display=engine_display, research_environment=research_environment)
 
             accepted = run_case(report)
             self.assertTrue(accepted["accepted"], accepted["failures"])
@@ -595,6 +598,11 @@ class PreparedMacSourceTests(unittest.TestCase):
             self.assertFalse(run_case(custom)["accepted"])
             self.assertTrue(run_case(custom, engine_display=custom["machine"]["godot"])["accepted"])
             self.assertFalse(run_case(report, engine_display=custom["machine"]["godot"])["accepted"])
+            with patch.dict(os.environ, {"DYLD_INSERT_LIBRARIES": "/tmp/injected", "ASAN_OPTIONS": "bad"}):
+                self.assertTrue(run_case(custom, engine_display=custom["machine"]["godot"],
+                                         research_environment=True)["accepted"])
+                self.assertNotIn("DYLD_INSERT_LIBRARIES", environments[-1])
+                self.assertNotIn("ASAN_OPTIONS", environments[-1])
             self.assertFalse(run_case(dict(report, experimental_native_macos=False))["accepted"])
             self.assertFalse(run_case(report, source=None)["accepted"])
             fallback = dict(report, backend={"requested": "native", "actual": {"backend": "gdscript_reference"},

@@ -252,8 +252,13 @@ def run(args: argparse.Namespace) -> dict:
                "--script", str(HERE / "oracle.gd"), "--", f"--extension={descriptor}",
                f"--output={result_path}", "--seed=20261027", "--states=1", "--variant-states=1",
                "--timing-rounds=1", "--experimental-native-macos=false"]
-    checked = checked_runner.run_checked(command, out / "checks", timeout=args.timeout,
-                                         required=["NK3_ORACLE verdict=fail", MARKER], label="fpcr-control")
+    if research_engine is not None:
+        with ENGINE_POLICY.clean_process_environment():
+            checked = checked_runner.run_checked(command, out / "checks", timeout=args.timeout,
+                                                 required=["NK3_ORACLE verdict=fail", MARKER], label="fpcr-control")
+    else:
+        checked = checked_runner.run_checked(command, out / "checks", timeout=args.timeout,
+                                             required=["NK3_ORACLE verdict=fail", MARKER], label="fpcr-control")
     result = json.loads(result_path.read_text(encoding="utf-8"))
     log = Path(checked["log"]).read_text(encoding="utf-8", errors="replace")
     observed = control_result(result, checked, log)
