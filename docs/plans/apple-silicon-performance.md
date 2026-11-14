@@ -4,6 +4,14 @@ Updated 2026-11-06 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4))
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
+**Four-technology work order, 2026-11-14:** the [MetalFX implementation subplan](apple-metalfx.md)
+owns the detailed Spatial/Temporal, frame-interpolation and denoised/RT substeps
+under phases 7 and 12. The owner requested planning all four, including newer
+supported Macs. That feature scope supersedes the older parked/consumer-absent
+deferral for those named substeps only; it establishes neither implementation nor
+hardware qualification. This master retains platform/default, sustained-performance
+and release gates; public signed distribution remains deferred.
+
 The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
 The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.
@@ -403,6 +411,11 @@ Attribute shader versus pipeline work with existing counters and short native tr
 
 ## 9. Phase 7 — qualify existing MetalFX trials conditionally
 
+Detailed work packages DT-MAC-07a1/a2, -07b1/b2 and -07c1 live in the
+[four-technology subplan](apple-metalfx.md#5-ordered-implementation-work-packages).
+They extend the existing policy/history/lifecycle boundaries below instead of
+creating another reconstruction system.
+
 **Priority/size:** P1 for Spatial when pixel-bound; P2 for missing engine reset/failure seams. **Dependency:** verified Metal renderer/parity, actual GPU-pixel limit and Native 1080p baseline. **Benefit:** less internal pixel work only if scaler/history overhead and visual cost permit it. Existing policy, options and localization are already implemented.
 
 ### DT-MAC-07a — effective execution and creation/failure contract
@@ -587,6 +600,13 @@ Compare eligible Mobile/Metal and other supported paths at fixed features and ac
 
 ## 15. Phase 12 — upstream-first advanced engine opportunities
 
+The [MetalFX subplan](apple-metalfx.md) owns DT-MAC-11a, -12a–c and -13d1–d3.
+For those user-requested feature branches, a missing current consumer is a scoped
+implementation dependency, not a completed trigger-absent exit. Denoised scaling
+includes a bounded real RT producer and supported-device qualification; a sample,
+disabled control or M1 rejection does not finish it. Other advanced experiments
+retain the conditional entry rules below.
+
 **Priority/size:** P2/large. **Entry:** a supported consumer and attributed bottleneck that app-level work cannot adequately solve. **Benefit:** uncertain until a prototype proves it. These are independent optional branches, not prerequisites for first Metal or MetalFX qualification.
 
 | Subphase | Concrete work | Validation and completion |
@@ -594,7 +614,7 @@ Compare eligible Mobile/Metal and other supported paths at fixed features and ac
 | DT-MAC-10 Metal 4 | Inspect latest upstream source/issues; pin one implementation/patch set with editor/templates/symbols. Review allocator reuse after GPU completion, residency, barriers, cross-queue events, native callbacks, drawable/presentation and teardown. Name maintainer/upstream removal path before accepting a fork. | Engine correctness/API validation and resource/barrier tests; all OpenRC shaders/lifecycle; same OS/hardware/common-effect MTL3/MTL4 pairs, then uninstrumented M1/newer-host release. Keep MTL3 when unsupported/no meaningful benefit. |
 | DT-MAC-11 newer temporal APIs | Check exact SDK/runtime/device descriptor support and engine exposure for new neural/input/subrectangle/motion conventions. | Compare identical inputs, verify actual scaler path, motion/reset/failure and net cost. No feature claim from enum, OS, chip label or marketing demonstration. |
 | DT-MAC-12 interpolation | Separate engine presentation feasibility: correct depth/motion/history, UI composition, drawable scheduling, VRR, cut/reset bypass and queue depth. | Real rendered rate remains independently qualified; measure control-to-photon/latency by a valid method, presented/generated counts separately, plus fallback and sustained power. Generated frames never advance simulation or inflate the real-frame gate. |
-| DT-MAC-13 advanced memory/rendering | One measured engine consumer for memoryless attachments, loading/submission, tile/mesh/indirect work, ray-traced denoising or ML; reuse supported implementation first. | Prove lifetime/synchronization/visibility/quality and whole-frame gain on supported hardware, preserving M1/M2 baseline. If current raster app has no consumer, record trigger absent and do not create one. |
+| DT-MAC-13 advanced memory/rendering | One measured engine consumer for memoryless attachments, loading/submission, tile/mesh/indirect work or ML; reuse supported implementation first. The separately requested denoised/RT feature is scoped by [DT-MAC-13d1–d3](apple-metalfx.md#8-denoised-upscaling-and-its-rt-prerequisite). | Prove lifetime/synchronization/visibility/quality and whole-frame benefit on supported hardware, preserving M1/M2 raster baseline. Consumer-absent deferral remains valid for the other experiments; denoised/RT completion follows its feature-specific integration and qualification gates. |
 
 **Tests:** changed engine/API focused tests first; T3–T7 relevant app checks; T9 once after a chosen engine candidate integrates; T8 full final hardware qualification. No full app campaign for every abandoned engine prototype. A custom engine with no maintenance/update owner is not an accepted performance strategy.
 
