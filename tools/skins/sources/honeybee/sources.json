@@ -1,0 +1,17 @@
+[
+  {
+    "file": "bee.svg",
+    "url": "https://openclipart.org/download/174161",
+    "sha256": "e10655146c994170eae28f1eb3a4e48a24e765e6f72a827281b0868884a689c6"
+  },
+  {
+    "file": "bee.png",
+    "url": "https://openclipart.org/image/2000px/174161",
+    "sha256": "0aa396599e502ddae6e9a519c23cf81a2dfb402b2a2840297475eb07d1df8e0c"
+  },
+  {
+    "file": "CC0-1.0.txt",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+  }
+]

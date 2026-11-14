@@ -457,6 +457,11 @@ static func _disc_material(source: Material) -> StandardMaterial3D:
 	return m
 
 
+func _ready() -> void:
+	# Manually driven observers (the quad and captures) have no automatic source to sample.
+	set_process(_session != null)
+
+
 func _process(_dt: float) -> void:
 	if _session == null or not is_instance_valid(_session) or _session.get("sim") == null:
 		return

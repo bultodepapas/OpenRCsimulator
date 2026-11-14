@@ -38,7 +38,8 @@ var rotors: Array[Dictionary] = []
 
 ## data: the session's prepared multirotor document (rotors[].hub_frd/spin/diameter_m, camera.mount_frd).
 ## model: the frame scene to load (tests point it at a missing path to exercise the fixture).
-func build(data: Dictionary, frame_model: String = MODEL_PATH) -> bool:
+## Home's parked preview disables rotor blur: retain the same solid geometry without measuring or building observers.
+func build(data: Dictionary, frame_model: String = MODEL_PATH, with_rotor_blur := true) -> bool:
 	var prepared_rotors: Variant = data.get("rotors")
 	if typeof(prepared_rotors) != TYPE_ARRAY or prepared_rotors.size() != 4:
 		error = "FPV quad visual: the prepared data has no four rotors"
@@ -57,16 +58,19 @@ func build(data: Dictionary, frame_model: String = MODEL_PATH) -> bool:
 		var mount := model.find_child("camera_mount", true, false) as Node3D
 		var at := PropellerBlur.relative(root, mount).origin
 		fpv_mount_frd = PackedFloat64Array([-at.z, at.x, -at.y])
-	var motor_material := StandardMaterial3D.new()
-	motor_material.albedo_color = Color(0.55, 0.57, 0.6)
-	motor_material.metallic = 0.6
-	motor_material.roughness = 0.4
+	var motor_material: StandardMaterial3D
+	if not complete_rotors:
+		motor_material = StandardMaterial3D.new()
+		motor_material.albedo_color = Color(0.55, 0.57, 0.6)
+		motor_material.metallic = 0.6
+		motor_material.roughness = 0.4
 	for rotor: Dictionary in prepared_rotors:
 		rotors.append(_import_rotor(rotor) if complete_rotors else _build_rotor(rotor, motor_material))
 	# No cut-radius root: the motor bell ends below the blade plane, and the canopy or a neighbouring rotor must not
 	# be mistaken for hub hardware that hides the inner disc.
-	for rotor: Dictionary in rotors:
-		rotor.blur = PropellerBlur.attach({propeller = rotor.pivot, root = null, has_propeller = true}, null, root)
+	if with_rotor_blur:
+		for rotor: Dictionary in rotors:
+			rotor.blur = PropellerBlur.attach({propeller = rotor.pivot, root = null, has_propeller = true}, null, root)
 	return true
 
 

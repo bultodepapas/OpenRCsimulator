@@ -53,3 +53,12 @@ panels, thermal joints, flush rivets and sparse muted-red geometric marks.
 Reuses MetalAtlas utilities, shared ambientCG Metal009 brushing (CC0) and the
 bundled NotoSansCJKjp-Regular.otf (SIL OFL 1.1). No third-party insignia used.
 Albedo, roughness, metallic and OpenGL normal maps use the unchanged stock UVs.
+
+ugly-stik/honeybee_*.png: HONEYBEE honey-yellow/charcoal artwork authored by
+tools/skins/build_stik_honeybee.py (verify with --check). Uses shared ambientCG
+CC0 carbon twill, bundled NotoSansCJKjp-Regular.otf (SIL OFL 1.1), and "Simple bee
+from above" by matzekatze, Openclipart (CC0 1.0):
+https://openclipart.org/detail/174161/simple-bee-from-above
+The original bee is aspect-preserving, monochrome-recoloured and baked into the
+stock atlas. Original SVG/PNG, licence, hashes and changes are recorded under
+tools/skins/sources/honeybee/. No geometry or physics changes.

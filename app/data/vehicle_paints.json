@@ -755,6 +755,31 @@
 							"clearcoat": 0.0
 						}
 					}
+				},
+				{
+					"id": "honeybee",
+					"label": "HONEYBEE · 07",
+					"materials": {
+						"classic-covering-v4": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/honeybee_albedo.png",
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/ugly-stik/honeybee_roughness.png",
+							"metallic": 0.0,
+							"clearcoat": 0.45,
+							"clearcoat_roughness": 0.28
+						},
+						"classic-covering-gap-v1": {
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/honeybee_albedo.png"
+						},
+						"skin:b00e28ff": {
+							"albedo": "#ffc844",
+							"metallic": 0.0,
+							"roughness": 0.35,
+							"clearcoat": 0.45,
+							"clearcoat_roughness": 0.28
+						}
+					}
 				}
 			],
 			"base_nodes": {
@@ -936,6 +961,31 @@
 							"metallic": 0.0,
 							"roughness": 0.62,
 							"clearcoat": 0.0
+						}
+					}
+				},
+				{
+					"id": "honeybee",
+					"label": "HONEYBEE · 07",
+					"materials": {
+						"classic-covering-v4": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/honeybee_albedo.png",
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/ugly-stik/honeybee_roughness.png",
+							"metallic": 0.0,
+							"clearcoat": 0.45,
+							"clearcoat_roughness": 0.28
+						},
+						"classic-covering-gap-v1": {
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/honeybee_albedo.png"
+						},
+						"skin:b00e28ff": {
+							"albedo": "#ffc844",
+							"metallic": 0.0,
+							"roughness": 0.35,
+							"clearcoat": 0.45,
+							"clearcoat_roughness": 0.28
 						}
 					}
 				}
@@ -1336,10 +1386,11 @@
 		"res://assets/vehicle-paints/avanti-s-a200/sabre_plata_stab_roughness.jpg": 0.3093,
 		"res://assets/vehicle-paints/avanti-s-a200/sabre_plata_fin_roughness.jpg": 0.2873,
 		"res://assets/vehicle-paints/ugly-stik/blackbird_roughness.png": 0.61291223413804,
-		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage_roughness.jpg": 0.3687,
-		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing_roughness.jpg": 0.3854,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage_roughness.jpg": 0.3727,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing_roughness.jpg": 0.3957,
 		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors_roughness.jpg": 0.462,
-		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_roughness.jpg": 0.3817,
-		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_roughness.jpg": 0.3582
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_roughness.jpg": 0.3802,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_roughness.jpg": 0.3515,
+		"res://assets/vehicle-paints/ugly-stik/honeybee_roughness.png": 0.4319722951627245
 	}
 }

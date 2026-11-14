@@ -41,6 +41,7 @@ func _run() -> void:
 	_check_steam_livery()
 	_check_stik_metal()
 	_check_stik_blackbird()
+	_check_stik_honeybee()
 	print("Vehicle paint: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -200,6 +201,41 @@ func _check_stik_blackbird() -> void:
 			and is_equal_approx(sample.roughness, VehiclePaint._detail_means()["res://assets/vehicle-paints/ugly-stik/blackbird_roughness.png"]))
 		built.root.free()
 	SceneDetail.set_preference(previous)
+
+
+func _check_stik_honeybee() -> void:
+	for id: String in ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "stik-electric-6s"]:
+		check(id + " resolves HONEYBEE", AirplaneBuilder.resolve_livery(id, "honeybee") == "honeybee")
+		var plain: Dictionary = AirplaneBuilder.build(id)
+		var built: Dictionary = AirplaneBuilder.build(id, NAN, {}, "honeybee")
+		check(id + " builds HONEYBEE", not plain.is_empty() and not built.is_empty())
+		if plain.is_empty() or built.is_empty():
+			if not plain.is_empty(): plain.root.free()
+			if not built.is_empty(): built.root.free()
+			continue
+		var factory: StandardMaterial3D = _materials_named(plain.root, "classic-covering-v4")[0]
+		var finish: StandardMaterial3D = _materials_named(built.root, "classic-covering-v4")[0]
+		check(id + " uses honey-yellow artwork and a coated dielectric finish", finish.albedo_texture.resource_path.ends_with("honeybee_albedo.png")
+			and finish.metallic == 0.0 and finish.metallic_texture == null and finish.clearcoat_enabled and not finish.emission_enabled)
+		check(id + " keeps the original film structure", finish.normal_enabled and finish.normal_texture == factory.normal_texture)
+		if VehiclePaint.detail_enabled():
+			check(id + " uses the satin-band roughness map", finish.roughness_texture != null
+				and finish.roughness_texture.resource_path.ends_with("honeybee_roughness.png"))
+		else:
+			check(id + " Low uses the measured map mean", finish.roughness_texture == null
+				and is_equal_approx(finish.roughness, VehiclePaint._detail_means()["res://assets/vehicle-paints/ugly-stik/honeybee_roughness.png"]))
+		var gap := _materials_named(built.root, "classic-covering-gap-v1")
+		var keel := _materials_named(built.root, "skin:b00e28ff")
+		check(id + " matches the dark hinge slots and honey-yellow keel", not gap.is_empty() and not keel.is_empty()
+			and gap[0].albedo_texture.resource_path.ends_with("honeybee_albedo.png") and gap[0].roughness == 1.0
+			and keel[0].albedo_color.is_equal_approx(Color("ffc844")))
+		VehiclePaint.apply(built.root, id, "blackbird")
+		VehiclePaint.apply(built.root, id, "honeybee")
+		var repainted: StandardMaterial3D = _materials_named(built.root, "classic-covering-v4")[0]
+		check(id + " repaint restores film instead of inheriting blackbird panels", repainted.normal_texture == factory.normal_texture
+			and repainted.metallic_texture == null and not repainted.emission_enabled)
+		plain.root.free()
+		built.root.free()
 
 
 func _check_stik_cyberpunk() -> void:

@@ -1538,8 +1538,8 @@ def _sabre_cached(atlas: str):
 STEAM_ATLASES = dict(SABRE_ATLASES)
 STEAM_FONT = ROOT / "tools/skins/sources/steampunk/IMFeENsc28P.ttf"  # SIL OFL 1.1 (see that folder's README.md)
 # Bright, rosy, aged and dark-brown copper: plates of different age and polish.
-COPPER_TONES = np.array([(206, 124, 82), (178, 101, 63), (140, 76, 50), (222, 152, 112), (190, 112, 72),
-                         (158, 88, 58), (120, 69, 47)], dtype=np.float64) / 255.0
+COPPER_TONES = np.array([(206, 124, 82), (178, 101, 63), (152, 86, 57), (222, 152, 112), (190, 112, 72),
+                         (164, 94, 62), (146, 84, 56)], dtype=np.float64) / 255.0
 COPPER_ROUGH = np.array([0.26, 0.36, 0.46, 0.22, 0.32, 0.40, 0.50])
 COPPER_METAL = np.array([0.64, 0.56, 0.48, 0.68, 0.60, 0.54, 0.46])
 IRON_TONES = np.array([(80, 82, 84), (67, 68, 70), (92, 89, 83), (73, 75, 79), (86, 83, 80)], dtype=np.float64) / 255.0

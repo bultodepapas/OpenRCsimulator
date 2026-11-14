@@ -421,7 +421,7 @@ func _refresh_pause_bindings() -> void:
 			else (int(input.radio.device_id) if input.radio.connected else -1)
 		if id < 0:
 			continue
-		var generation := int(controller_registry.connection_generation(id)) if _has_registry() else input.source_generation
+		var generation: int = int(controller_registry.connection_generation(id)) if _has_registry() else int(input.source_generation)
 		var profile: Dictionary = {}
 		if input.radio.connected and int(input.radio.device_id) == id:
 			profile = input.radio.profile
@@ -475,7 +475,7 @@ func _route_controller_pause(event: InputEvent) -> bool:
 		if kind in ["axis", "button"]:
 			_pause_off_seen[key] = true
 		return false
-	var needs_off := kind == "axis" or (kind == "button" and entry.kind in ["radio", "joystick"])
+	var needs_off: bool = kind == "axis" or (kind == "button" and str(entry.get("kind", "")) in ["radio", "joystick"])
 	if needs_off and not bool(_pause_off_seen.get(key, false)):
 		return false
 	if not was_held:

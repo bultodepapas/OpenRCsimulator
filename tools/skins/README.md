@@ -172,6 +172,12 @@ Mirror complete fuselage label boxes around y=400 (`y0,y1 -> 800-y1,800-y0`)
 and rotate opposite-flank lettering 180 degrees. Mirroring only each text image
 can reverse the vertical label order. Review both flanks without wing occlusion.
 Letter heights refer to actual atlas pixels, not the 1024-unit design space.
+Logos also need UV-density compensation to retain their proportions on the mesh.
+The fin has 448/0.31 U units per metre and 432/0.215 V units per metre: an emblem
+with its original raster aspect appears about 1.39 times too wide. Compress its
+atlas width by their ratio (about 0.719) relative to height. Keep a whole emblem
+clear of the relieved fin/rudder hinge near x=318; sharing a texture does not make
+the two moving surfaces one decal surface.
 
 Bind the main artwork to `classic-covering-v4`, the matching dark gap atlas to
 `classic-covering-gap-v1`, and recolour the solid ventral fin `skin:b00e28ff`.
@@ -254,6 +260,29 @@ and use geometric marks; stabiliser tops and some edges retain uniform charcoal
 patches. Clearing height before an overlapping region is repainted keeps its
 normal map consistent. Validate with `test_vehicle_paint.gd` and native
 1920 × 1080 review of both sides and Low detail.
+
+### Ugly Stik: HONEYBEE (US-V22)
+
+`build_stik_honeybee.py` generates honey-yellow film, charcoal abdomen bands,
+subtle honeycomb artwork and a bee emblem for all five Stiks. Two 2048-square
+maps cover albedo and roughness. The finish is dielectric with a protective
+clearcoat; the satin black bands have different roughness from the yellow film.
+It retains the original film normals, including when returning from BLACKBIRD.
+There is no emission. Low uses the recorded roughness mean.
+
+The bee is the CC0 Openclipart artwork "Simple bee from above" by matzekatze;
+unaltered source downloads, licence and hashes are in `sources/honeybee/`.
+The builder compensates the fin's UV density to preserve its on-aircraft aspect
+and keeps the whole emblem on the fixed fin. It recolours inverse luminance times
+alpha, retaining the original negative-space stripes. Dark bands reuse the
+shared CC0 carbon texture; lettering uses the bundled OFL Noto font.
+
+Wing marks are geometric because the two faces share UVs. The bee emblem is
+bilaterally symmetric for the shared fin; readable lettering stays on the two
+fuselage flanks. Uniform tail-top patches and overlapping dorsal/hatch/underside
+regions retain the stock mapping. Run the owning generator with `--check`,
+`test_vehicle_paint.gd` and native 1920x1080 review once admitted by the shared
+queue. Do not regenerate geometry for this paint.
 
 ## Export and check
 

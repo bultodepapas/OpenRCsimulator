@@ -17,6 +17,10 @@ var _checks := 0
 var _failures := 0
 
 
+class FakeSession extends Node:
+	var sim := {aux = PackedFloat64Array([0.0])}
+
+
 func _check(label: String, passed: bool, detail: String = "") -> void:
 	_checks += 1
 	if not passed:
@@ -57,6 +61,7 @@ func _run() -> void:
 	_blur_fraction()
 	for id in BLADES:
 		await _aircraft(id)
+	await _automatic_session()
 	_no_propeller()
 	print("propeller blur: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -128,6 +133,7 @@ func _aircraft(id: String) -> void:
 	var node: Node3D = Blur.attach(airplane, null, holder)
 	_check(id + " attaches", node != null and node.get_parent() == holder and node.name == "PropellerBlur")
 	await process_frame
+	_check(id + " manually driven blur schedules no automatic callback", not node.is_processing())
 	_check(id + " attach leaves the model untouched", _snapshot(airplane.root) == before)
 	_check(id + " no node was added inside the model", airplane.root.find_child("PropellerBlur", true, false) == null and airplane.root.find_child("disc", true, false) == null)
 	node.update(0.0)
@@ -209,6 +215,29 @@ func _aircraft(id: String) -> void:
 	node.update(mid_rpm)
 	_check(id + " retired observer remains hidden on repeated update", not node._disc.visible)
 	holder.free()
+
+
+func _automatic_session() -> void:
+	var airplane: Dictionary = AirplaneBuilder.build(AirplaneBuilder.STIK_ID)
+	root.add_child(airplane.root)
+	var session := FakeSession.new()
+	root.add_child(session)
+	var node: Node3D = Blur.attach(airplane, session, root)
+	await process_frame
+	_check("session-driven blur retains automatic processing", node.is_processing())
+	session.sim.aux[0] = 6000.0
+	await process_frame
+	await process_frame
+	_check("session-driven blur still samples achieved RPM automatically", node.rpm == 6000.0 and node.blur == 1.0)
+	root.remove_child(node)
+	root.add_child(node)
+	await process_frame
+	await process_frame
+	_check("session-driven reattachment resumes without a manual update", node.is_processing() and node._disc.visible
+		and node._originals.all(func(original: MeshInstance3D) -> bool: return not original.visible))
+	node.free()
+	session.free()
+	airplane.root.free()
 
 
 func _no_propeller() -> void:

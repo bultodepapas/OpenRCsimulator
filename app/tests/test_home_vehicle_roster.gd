@@ -62,6 +62,10 @@ func _run() -> void:
 		check("%s preview builds" % id, not model.is_empty() and model.root is Node3D and model.aircraft_id == id)
 		if model.is_empty():
 			continue
+		if id == "openrc-fpv5-x1":
+			check("parked ION preview keeps four rotors without blur observers", model.visual.rotors.size() == 4
+				and model.visual.rotors.all(func(rotor: Dictionary) -> bool: return rotor.blur == null)
+				and model.root.find_children("PropellerBlur*", "", true, false).is_empty())
 		var bounds := HomeBounds.of(model.root)
 		var presentation := VehiclePreview.prepare(model, bounds)
 		check("%s preview rests on its lowest point" % id, bounds.size.length() > 0.1

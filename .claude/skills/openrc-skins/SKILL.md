@@ -54,6 +54,9 @@ damage and custom paint kits. Home lists stock skins from the registry.
   off hidden gaps. Avanti wing doors need their own texture over the reused UVs.
 - Keep letters at least 20 actual atlas pixels tall, bilinearly sampled and clear of
   folds, wing roots and hinges. Smooth/interpolate chord-based boundary tables.
+- Compensate unequal U/V texel density so logos retain their aspect on the mesh,
+  not only in the PNG. Keep complete emblems clear of articulated hinge cuts unless
+  a split is intentional, and review them with the control surface deflected.
 - Repainting an overlapping atlas region must replace its albedo, roughness,
   metallic mask and height/normal information together. A flat hatch must not keep
   a buried seam from the previous grid. Pillow drawing can include the far edge

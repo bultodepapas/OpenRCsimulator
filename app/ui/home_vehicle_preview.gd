@@ -48,7 +48,8 @@ static func build(id: String, skin := "") -> Dictionary:
 			var loaded: Dictionary = MultirotorData.load_file(MultirotorCatalog.DATA_PATH)
 			var prepared: Dictionary = MultirotorData.prepare(loaded.data, str(loaded.sha256)) if loaded.get("ok", false) else {}
 			var visual := MultirotorVisual.new()
-			if not prepared.get("ok", false) or not visual.build(prepared.prepared):
+			# The parked quad never spins. Keep its blades, avoiding four unused profiles and blur mesh/material sets.
+			if not prepared.get("ok", false) or not visual.build(prepared.prepared, MultirotorVisual.MODEL_PATH, false):
 				push_warning("Home preview: the FPV quad model could not be built %s" % visual.error)
 				if visual.root != null: visual.root.free()
 				return {}
