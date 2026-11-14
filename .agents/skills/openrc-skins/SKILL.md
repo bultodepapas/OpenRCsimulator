@@ -103,11 +103,12 @@ ask the user to close them by default merely to accelerate a skin task.
 
 Budget disk space for frozen inputs, materialized copies and imports before
 launching. Reuse a complete, source-compatible import cache when appropriate.
-Allow the job deadline to cover import plus the actual check. A submission timeout
-can occur after registration: recover from its durable receipt with
-`testctl.py resubmit <receipt>` before making a new request. Do not confuse an
-infrastructure timeout with a failed skin assertion. Retain logs and restore any
-owned temporary storage changes before handing back the workspace.
+Allow the job deadline to cover import plus the actual check. For a known job,
+use infrequent status requests with only one in flight; slow status is not a reason
+to submit it again. If a submission acknowledgment is lost after registration,
+recover once from its durable receipt with `testctl.py resubmit <receipt>` before
+creating another request. Do not confuse infrastructure failure with a failed skin
+assertion. Retain logs and restore owned temporary storage changes before handoff.
 
 ## Sources and permissions
 

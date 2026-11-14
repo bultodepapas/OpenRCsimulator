@@ -225,8 +225,10 @@ func _sparse_identity(label: String, observation: Dictionary, ambiguous := false
 			screen._on_flight_device_selected(b_index)
 			check("saved name-only A profile can be loaded onto B", screen.load_selected_profile(saved_a.profile_id))
 			check("distinct name-only B cannot inherit A proof or lease", not Menu.is_verified(screen.current_profile()) \
-				and screen.menu_verification_lease(screen.current_profile()).is_empty() \
-				and Menu.mapping_fingerprint(screen._profile_candidate()) != Menu.mapping_fingerprint(saved_a))
+				and screen.menu_verification_lease(screen.current_profile()).is_empty())
+			check("loading saved A on B preserves A association and original connection lease", \
+				screen._profile_candidate().association == saved_a.association \
+				and int(screen.connection_leases().flight.get("id", -1)) == RADIO_A)
 			var b_ui: int = screen.ui_device_picker.get_item_index(RADIO_B)
 			check("unverified name-only B is disabled for UI", b_ui < 0 or screen.ui_device_picker.is_item_disabled(b_ui))
 			var before_transfer: Dictionary = service.store.load_all()

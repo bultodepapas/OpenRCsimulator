@@ -157,9 +157,10 @@ func _ownership() -> void:
 	registry.update_devices(devices)
 	var pad := Profile.defaults("gamepad", "mode2")
 	pad.roll.deadzone = 0.2
-	pad.actions.pause = {type = "button", button = JOY_BUTTON_X}
+	pad.actions = {"pause": {"type": "button", "button": JOY_BUTTON_X}, "overlay_preset": {"type": "unbound"}}
+	check("remapped gamepad fixture is a valid V2 profile", Profile.validate(pad).ok)
 	var radio := Profile.defaults("radio", "radio_custom")
-	radio.actions.pause = {type = "button", button = 20}
+	radio.actions["pause"] = {"type": "button", "button": 20}
 	var profiles := {7: pad, 9: radio}
 	activity.controller_registry = registry
 	activity.controller_profile_for = func(id: int) -> Dictionary: return profiles.get(id, {}).duplicate(true)
@@ -196,7 +197,7 @@ func _ownership() -> void:
 	check("the selected UI role's Pause resumes after release", not activity.session.paused)
 	var changed := pad.duplicate(true)
 	changed.roll.deadzone = 0.3
-	changed.actions.pause = {type = "key", physical_keycode = KEY_K}
+	changed.actions["pause"] = {"type": "key", "physical_keycode": KEY_K}
 	profiles[7] = changed
 	check("saved profile is adopted and flight is held", activity.apply_controller_selection(7) \
 		and activity.session.paused and is_equal_approx(float(activity.input.radio.profile.roll.deadzone), 0.3))

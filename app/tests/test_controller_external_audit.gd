@@ -212,11 +212,12 @@ func _run() -> void:
 	var counted := CountingStore.new(store.path)
 	cache.store = counted
 	cache.registry.update_devices([device(91, "Cache-raw", "joystick"), device(92, "Cache-pad"), device(93, "Retry-pad")])
-	cache.profile_for_device(91)
+	check("unknown raw mapping remains unavailable", cache.profile_for_device(91).is_empty())
 	var after_miss := counted.acquisitions
 	for repeat in 10: cache.profile_for_device(91)
 	check("negative cache avoids repeated filesystem lock acquisition", counted.acquisitions == after_miss)
-	cache.profile_for_device(92)
+	var cached_pad: Dictionary = cache.profile_for_device(92)
+	check("mapped gamepad resolves before exercising positive cache", not cached_pad.is_empty() and cached_pad.get("kind", "") == "gamepad")
 	var after_hit := counted.acquisitions
 	for repeat in 10: cache.profile_for_device(92)
 	check("positive cache avoids repeated filesystem lock acquisition", counted.acquisitions == after_hit)

@@ -631,6 +631,7 @@ func selected_ui_device_id() -> int:
 func apply_menu_verification(profile: Dictionary, device_id: int, generation: int) -> bool:
 	if str(profile.get("profile_id", "")) != str(_draft_profile.get("profile_id", "")) \
 		or _draft_flight_device_id != device_id or not _calibration_connection_matches(device_id, generation) \
+		or not _lease_matches(_draft_connections.get(_draft_context_key, {}), device_id) \
 		or not RadioMenu.is_verified(profile) or RadioMenu.mapping_fingerprint(profile) != RadioMenu.mapping_fingerprint(_profile_candidate()) \
 		or RadioMenu.action_fingerprint(profile) != RadioMenu.action_fingerprint(_profile_candidate()):
 		_set_status(tr("Menu verification no longer matches this radio. Verify again; the draft is unchanged."), true)
@@ -3886,7 +3887,12 @@ func _update_menu_controls() -> void:
 
 
 func _invalidate_menu_evidence() -> void:
-	if not _draft_profile.has("ui_navigation") or RadioMenu.is_verified(_associate_candidate(_draft_profile.duplicate(true))): return
+	if not _draft_profile.has("ui_navigation"): return
+	var candidate := _associate_candidate(_draft_profile.duplicate(true))
+	var identity_matches := _lease_matches(_draft_connections.get(_draft_context_key, {}), _draft_flight_device_id)
+	if profile_store != null and profile_store.has_method("_association_matches"):
+		identity_matches = bool(profile_store._association_matches(_device_for_id(_draft_flight_device_id), candidate.get("association", {})))
+	if identity_matches and RadioMenu.is_verified(candidate): return
 	_draft_profile.erase("ui_navigation")
 	_menu_verification_origins.erase(str(_draft_profile.get("profile_id", "")))
 	if _draft_ui_device_id == _draft_flight_device_id:
