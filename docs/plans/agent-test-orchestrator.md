@@ -16,6 +16,9 @@ Physics, hosted CI policy and other tracks' acceptance gates remain with their o
 
 ## Scheduling review candidate, 14 November 2026
 
+Detailed findings, reproducible evidence and the native acceptance sequence are in
+the [Windows queue and MCP audit](../research/testqueue/2026-11-14-windows-queue-mcp-audit.md).
+
 The review against `95fe1177f26929a12bd032c12e7ac3352eef304d` adds explicit
 exclusive/parallel admission, an eligible-exclusive waiting barrier, global UNKNOWN
 quarantine (including legacy claims), a restricted aircraft studio-still preset and
