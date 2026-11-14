@@ -50,9 +50,14 @@ var _rng := RandomNumberGenerator.new()
 var _grid_head := PackedInt32Array()
 var _grid_next := PackedInt32Array()
 var _gone := PackedByteArray()
-## Set whenever a drop changed; write() skips the MultiMesh upload otherwise (paused or empty frames).
+## Drop data and every input to the last output must match before an upload can be skipped.
 var _dirty := true
 var _written_height := -1.0
+var _written_raining := false
+var _written_gravity := Vector2.ZERO
+var _written_mesh: WeakRef
+var _written_instance_count := -1
+var _written_generation := 0
 var _buffer := PackedFloat32Array()
 var _surface_seed := 0
 
@@ -230,11 +235,14 @@ func volume() -> float:
 ## Writes the live drops into a 2D MultiMesh: a unit quad scaled to the drop, stretched and turned along its motion.
 ## Custom data: (elongation, opacity, seed, radius in pixels).
 ## `gravity` (screen axes): a large drop held by pinning still sags along it into a pear shape.
-func write(mesh: MultiMesh, height_px: float, raining: bool, gravity: Vector2 = Vector2(0.0, 1.0)) -> void:
-	if not _dirty and is_equal_approx(height_px, _written_height):
+## A caller that reallocates the same MultiMesh must increment `mesh_generation`.
+func write(mesh: MultiMesh, height_px: float, raining: bool, gravity: Vector2 = Vector2(0.0, 1.0),
+		mesh_generation: int = 0) -> void:
+	var same_mesh: bool = _written_mesh != null and _written_mesh.get_ref() == mesh
+	if not _dirty and same_mesh and _written_instance_count == mesh.instance_count \
+			and _written_generation == mesh_generation and _written_height == height_px \
+			and _written_raining == raining and _written_gravity == gravity:
 		return
-	_dirty = false
-	_written_height = height_px
 	var n := mini(count, mesh.instance_count)
 	# One buffer upload instead of two engine calls per drop. 2D layout per instance (no colours, custom data):
 	# x.x, y.x, 0, origin.x, x.y, y.y, 0, origin.y, then custom r, g, b, a.
@@ -273,6 +281,14 @@ func write(mesh: MultiMesh, height_px: float, raining: bool, gravity: Vector2 = 
 		_buffer[o + 11] = r * height_px
 	mesh.buffer = _buffer
 	mesh.visible_instance_count = n
+	_dirty = false
+	_written_height = height_px
+	_written_raining = raining
+	_written_gravity = gravity
+	if not same_mesh:
+		_written_mesh = weakref(mesh)
+	_written_instance_count = mesh.instance_count
+	_written_generation = mesh_generation
 
 
 func _remove(i: int) -> void:

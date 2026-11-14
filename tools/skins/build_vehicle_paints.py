@@ -1,7 +1,7 @@
 """Build the stock paint textures of the HX-700 helicopter and the RC cars.
 
 Every output is derived from assets already in the repository (the HX-700 GLB and
-its paint masks, the Monster Car 2 livery and carbon weave), so the result is
+its paint masks and the Monster Car 2 livery and emission map), so the result is
 reproducible byte for byte:
 
     .tools/visual-venv/Scripts/python.exe tools/skins/build_vehicle_paints.py
@@ -29,7 +29,6 @@ OUT = APP / "assets" / "vehicle-paints"
 HX_GLB = APP / "assets/aircraft/hx-700/hx-700.glb"
 HX_BOOM = APP / "assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png"
 MC_LIVERY = APP / "assets/vehicles/monster-car-2/monster_truck_nitro_1_carroceria_color.jpg"
-MC_CARBON = APP / "assets/vehicles/monster-car-2/monster_truck_nitro_1_fibra_carbono.png"
 
 CANOPY_SIZE = (2048, 1024)  # the HX-700 skin-kit canopy atlas size
 BOOM_SIZE = (4096, 440)  # the HX-700 skin-kit boom atlas size
@@ -165,40 +164,115 @@ def band(s, h, start_h, slope, half_width, soft=0.012):
     return 1.0 - smoothstep(half_width - soft, half_width + soft, np.abs(h - centre))
 
 
+def _screen_distance(s, h):
+    return ((s - 0.80) / 0.20) ** 2 + ((h - 0.66) / 0.30) ** 2
+
+
 def windscreen(s, h, nrm):
     """Smoked screen on the forward upper canopy, shaped like the factory mask."""
-    d = ((s - 0.80) / 0.20) ** 2 + ((h - 0.66) / 0.30) ** 2
     upper = smoothstep(0.32, 0.40, h)
-    return (1.0 - smoothstep(0.92, 1.0, d)) * upper * (nrm[..., 1] > -0.2)
+    return (1.0 - smoothstep(0.92, 1.0, _screen_distance(s, h))) * upper * (nrm[..., 1] > -0.2)
+
+
+def screen_keyline(s, h, nrm, inner=1.0, outer=1.16):
+    """A painted border just outside the screen, as on real moulded canopies."""
+    d = _screen_distance(s, h)
+    ring = smoothstep(inner - 0.02, inner + 0.02, d) * (1.0 - smoothstep(outer - 0.03, outer + 0.03, d))
+    return ring * smoothstep(0.30, 0.38, h) * (nrm[..., 1] > -0.2)
+
+
+def body_shading(colour, h):
+    """Bake a gentle occlusion falloff toward the belly; flat paint reads as plastic, graded paint as a shell."""
+    return colour * (0.86 + 0.14 * smoothstep(0.0, 0.55, h))[..., None]
+
+
+FONT = APP / "assets/fonts/NotoSansCJKjp-Regular.otf"  # SIL OFL 1.1 (assets/fonts/OFL-NotoSansCJK.txt)
+_LETTERING_CACHE: dict = {}
+
+
+def _lettering_image(text: str, aspect: float) -> np.ndarray:
+    """Italic, heavy lettering mask (1 = ink) on a canvas whose aspect matches the target box."""
+    key = (text, round(aspect, 3))
+    if key in _LETTERING_CACHE:
+        return _LETTERING_CACHE[key]
+    from PIL import ImageDraw, ImageFont
+    height = 256
+    width = int(round(height * aspect))
+    canvas = Image.new("L", (width * 2, height), 0)
+    draw = ImageDraw.Draw(canvas)
+    font = ImageFont.truetype(str(FONT), int(height * 0.78))
+    box = draw.textbbox((0, 0), text, font=font, stroke_width=10)
+    x = (width * 2 - (box[2] - box[0])) // 2 - box[0]
+    y = (height - (box[3] - box[1])) // 2 - box[1]
+    draw.text((x, y), text, fill=255, font=font, stroke_width=10, stroke_fill=255)
+    shear = 0.22  # forward-leaning racing italic
+    canvas = canvas.transform(canvas.size, Image.AFFINE, (1, shear, -shear * height * 0.5, 0, 1, 0), Image.BICUBIC)
+    bbox = canvas.getbbox() or (0, 0, width, height)
+    ink = canvas.crop(bbox)
+    scale = min(width / ink.width, height / ink.height) * 0.94
+    ink = ink.resize((max(1, int(ink.width * scale)), max(1, int(ink.height * scale))), Image.LANCZOS)
+    final = Image.new("L", (width, height), 0)
+    final.paste(ink, ((width - ink.width) // 2, (height - ink.height) // 2))
+    mask = np.asarray(final, dtype=np.float64) / 255.0
+    _LETTERING_CACHE[key] = mask
+    return mask
+
+
+def lettering(s, h, z, nrm, text, s0, s1, h0, h1):
+    """Side lettering that reads left-to-right from both sides (mirrored on the left, -Z, side)."""
+    # Physical aspect of the box: canopy length 0.490 m by height 0.193 m.
+    aspect = ((s1 - s0) * 0.490) / ((h1 - h0) * 0.193)
+    mask = _lettering_image(text, aspect)
+    rows, cols = mask.shape
+    x = np.where(z >= 0.0, (s - s0) / (s1 - s0), (s1 - s) / (s1 - s0))
+    y = (h1 - h) / (h1 - h0)
+    inside = (x >= 0.0) & (x < 1.0) & (y >= 0.0) & (y < 1.0)
+    xi = np.clip((x * cols).astype(int), 0, cols - 1)
+    yi = np.clip((y * rows).astype(int), 0, rows - 1)
+    side = smoothstep(0.30, 0.50, np.abs(nrm[..., 2]))
+    return np.where(inside, mask[yi, xi], 0.0) * side
 
 
 def design_blanco_artico(s, h, z, nrm):
-    base = np.broadcast_to(hex_rgb("#f2f4f6"), s.shape + (3,)).copy()
-    sweep = band(s, h, 0.18, 0.52, 0.10 + 0.06 * s)
+    # Pearl white with a cooler underside, a cyan sweep edged by navy pinstripes, navy belly and screen keyline.
+    base = mix(np.broadcast_to(hex_rgb("#e9edf2"), s.shape + (3,)), hex_rgb("#f8f9fb"), smoothstep(0.2, 0.8, h))
+    width = 0.10 + 0.06 * s
+    sweep = band(s, h, 0.18, 0.52, width)
+    edge = band(s, h, 0.18, 0.52, width + 0.022, soft=0.006) * (1.0 - sweep)
     pin = band(s, h, 0.03, 0.52, 0.012 + 0.008 * s, soft=0.006)
     belly = 1.0 - smoothstep(0.14, 0.18, h)
     out = mix(base, hex_rgb("#0aa3e0"), sweep * (s > 0.05))
-    out = mix(out, hex_rgb("#0b2a5b"), np.maximum(pin * (s > 0.12), belly))
+    out = mix(out, hex_rgb("#0b2a5b"), np.maximum(np.maximum(pin * (s > 0.12), edge * (s > 0.05)), belly))
+    out = mix(out, hex_rgb("#0b2a5b"), lettering(s, h, z, nrm, "HX-700", 0.10, 0.40, 0.47, 0.62))
+    out = body_shading(out, h)
+    out = mix(out, hex_rgb("#0aa3e0"), screen_keyline(s, h, nrm))
     return mix(out, hex_rgb("#11161c"), windscreen(s, h, nrm))
 
 
 def design_rojo_fuego(s, h, z, nrm):
-    base = np.broadcast_to(hex_rgb("#c4122f"), s.shape + (3,)).copy()
+    # Candy red graded to deep crimson, three flame spears with dark keylines, black belly with gold lettering.
+    base = mix(np.broadcast_to(hex_rgb("#8e0b22"), s.shape + (3,)), hex_rgb("#d0142f"), smoothstep(0.15, 0.75, h))
     out = base
-    # Three tapered spears that grow from the tail edge toward the nose, like flame tongues.
     for i, (start, colour) in enumerate(((0.62, "#ffb000"), (0.46, "#ff6a00"), (0.30, "#ffd84a"))):
         reach = 0.95 - 0.12 * i
         width = (0.055 - 0.012 * i) * np.clip((reach - s) / reach, 0.0, 1.0)
-        spear = band(s, h, start, -0.12 + 0.05 * i, width, soft=0.008) * (s < reach)
+        outline = band(s, h, start, -0.12 + 0.05 * i, width + 0.012, soft=0.005) * (s < reach + 0.02)
+        spear = band(s, h, start, -0.12 + 0.05 * i, width, soft=0.006) * (s < reach)
+        out = mix(out, hex_rgb("#3a0610"), outline * (1.0 - spear))
         out = mix(out, hex_rgb(colour), spear)
-    belly = 1.0 - smoothstep(0.16, 0.2, h)
+    belly = 1.0 - smoothstep(0.17, 0.2, h)
     out = mix(out, hex_rgb("#141414"), belly)
+    gold_line = band(s, h, 0.205, 0.0, 0.008, soft=0.004)
+    out = mix(out, hex_rgb("#ffb000"), gold_line)
+    out = mix(out, hex_rgb("#ffb000"), lettering(s, h, z, nrm, "HX-700", 0.34, 0.62, 0.035, 0.165))
+    out = body_shading(out, h)
+    out = mix(out, hex_rgb("#141414"), screen_keyline(s, h, nrm))
     return mix(out, hex_rgb("#101215"), windscreen(s, h, nrm))
 
 
 def design_negro_lima(s, h, z, nrm):
-    base = np.broadcast_to(hex_rgb("#15171b"), s.shape + (3,)).copy()
-    # A zig-zag lightning band with a white keyline.
+    # Gloss black, a lime lightning band with a white keyline, lime nose cap and white lettering.
+    base = mix(np.broadcast_to(hex_rgb("#0f1114"), s.shape + (3,)), hex_rgb("#1b1e23"), smoothstep(0.2, 0.9, h))
     zig = 0.48 + 0.10 * (2.0 * np.abs(((s * 3.0) % 1.0) - 0.5) - 0.5)
     dist = np.abs(h - zig)
     lime = 1.0 - smoothstep(0.045, 0.06, dist)
@@ -207,6 +281,9 @@ def design_negro_lima(s, h, z, nrm):
     out = mix(out, hex_rgb("#9ee21b"), lime * (s > 0.04))
     nose_cap = smoothstep(0.93, 0.95, s) * (1.0 - smoothstep(0.30, 0.34, h))
     out = mix(out, hex_rgb("#9ee21b"), nose_cap)
+    out = mix(out, hex_rgb("#f4f6f8"), lettering(s, h, z, nrm, "HX-700", 0.16, 0.46, 0.18, 0.32))
+    out = body_shading(out, h)
+    out = mix(out, hex_rgb("#9ee21b"), screen_keyline(s, h, nrm))
     return mix(out, hex_rgb("#07090b"), windscreen(s, h, nrm))
 
 
@@ -297,17 +374,6 @@ def build_monster(tint: dict, source: Path = MC_LIVERY) -> Image.Image:
     return Image.fromarray(np.clip(out * 255.0 + 0.5, 0, 255).astype(np.uint8), "RGB")
 
 
-def build_carbon() -> Image.Image:
-    """Lift the supplied weave so the material's albedo colour carries the dark tone (and the rotor blur colour)."""
-    rgb = np.asarray(Image.open(MC_CARBON).convert("RGB"), dtype=np.float64) / 255.0
-    lum = rgb.mean(-1)
-    lo, hi = np.percentile(lum, 1.0), np.percentile(lum, 99.0)
-    t = np.clip((lum - lo) / max(hi - lo, 1e-6), 0.0, 1.0)
-    out = 0.45 + 0.55 * t
-    tint = np.stack([out * 0.97, out * 0.99, out], axis=-1)
-    return Image.fromarray(np.clip(tint * 255.0 + 0.5, 0, 255).astype(np.uint8), "RGB")
-
-
 def encode(image: Image.Image, suffix: str) -> bytes:
     buffer = io.BytesIO()
     if suffix == ".jpg":
@@ -318,7 +384,8 @@ def encode(image: Image.Image, suffix: str) -> bytes:
 
 
 def outputs() -> dict[str, bytes]:
-    files: dict[str, bytes] = {"shared/carbon_weave.png": encode(build_carbon(), ".png")}
+    # shared/ holds unchanged CC0 maps from ambientCG (see shared/LICENSES.txt); this tool does not write them.
+    files: dict[str, bytes] = {}
     for skin, design in CANOPY_DESIGNS.items():
         files[f"hx-700/{skin}_canopy.png"] = encode(build_canopy(design), ".png")
         files[f"hx-700/{skin}_boom.png"] = encode(build_boom(BOOM_PALETTES[skin]), ".png")

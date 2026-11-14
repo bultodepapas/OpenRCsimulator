@@ -59,16 +59,30 @@ copies matched by glTF material name, before lights, rotor blur and damage copy
 the materials. Saved choices: `[liveries]` for the helicopter, `[vehicle_skins]`
 for the cars.
 
-Textures in `app/assets/vehicle-paints/` are generated only from assets already
-in the repository (the HX-700 GLB and paint masks, the Monster Car 2 livery,
-emission map and carbon weave). Canopy designs are evaluated in the canopy's
-model space and baked through its plan-projected UVs:
+Bindings may set albedo/emission colours and maps, metallic, roughness,
+clearcoat, and object-space triplanar detail: the shared CC0 twill-carbon,
+brushed-metal and rubber maps in `app/assets/vehicle-paints/shared/`
+(ambientCG, see its `LICENSES.txt`). With a `roughness_texture`, `roughness`
+is its multiplier. Normal and roughness maps are skipped at Low scene detail.
+Keep albedos out of pure black (charcoal plastic and rubber sit near sRGB
+`#19`–`#20`) and keep `Pala_Carbono` dark: the rotor blur samples its colour.
+
+Every texture there imports with mipmaps and high-quality VRAM compression;
+normal maps also set `compress/normal_map=1`. Godot only detects 3D use in the
+editor, so set these in the `.import` files of new textures, then reimport.
+
+Generated textures (canopy and boom liveries, re-tinted Monster Car 2 livery and
+emission maps) come only from assets already in the repository. Canopy designs,
+including the mirrored "HX-700" lettering (Noto Sans, SIL OFL), are evaluated in
+the canopy's model space and baked through its plan-projected UVs:
 
 ```powershell
 .tools/visual-venv/Scripts/python.exe tools/skins/build_vehicle_paints.py
 .tools/visual-venv/Scripts/python.exe tools/skins/build_vehicle_paints.py --check
 ```
 
+`--check` is byte-exact with the visual venv's Pillow 12.3.0 and NumPy 2.5.3;
+another Pillow/FreeType build may anti-alias the lettering differently.
 Import new outputs once with Godot `--headless --path app --import`. A colour-only
 skin (all MT8 schemes) needs no texture: edit the JSON only.
 

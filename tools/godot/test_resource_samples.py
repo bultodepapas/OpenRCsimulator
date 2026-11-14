@@ -2,6 +2,7 @@
 from contextlib import nullcontext
 import json
 import math
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -48,6 +49,9 @@ class FakeProcess:
 
     def is_running(self):
         return self.running
+
+    def status(self):
+        return "running"
 
     def oneshot(self):
         self.oneshot_calls += 1
@@ -96,6 +100,64 @@ class FakeBackend:
         return SimpleNamespace(free=1000, total=8000)
 
 
+class IdentityProcess(FakeProcess):
+    """Model psutil objects with independent identity and cached epoch values."""
+
+    def __init__(self, backend, pid):
+        super().__init__()
+        self.backend = backend
+        self.pid = pid
+        self.identity = backend.identity
+        self.epoch = backend.epoch
+
+    def create_time(self):
+        if self.backend.epoch_error:
+            raise self.backend.epoch_error
+        return self.epoch
+
+    def is_running(self):
+        if self.backend.identity_error:
+            raise self.backend.identity_error
+        if not self.backend.present:
+            return False
+        # psutil compares the retained object with a newly constructed handle.
+        return self == self.backend.Process(self.pid)
+
+    def __eq__(self, other):
+        return isinstance(other, IdentityProcess) and (self.pid, self.identity) == (other.pid, other.identity)
+
+    def status(self):
+        if self.backend.status_error:
+            raise self.backend.status_error
+        return self.backend.process_status
+
+    def memory_info(self):
+        if self.backend.on_memory:
+            self.backend.on_memory(self.backend)
+        return super().memory_info()
+
+
+class IdentityBackend(FakeBackend):
+    def __init__(self):
+        super().__init__()
+        self.identity = 1
+        self.epoch = 1234.5
+        self.present = True
+        self.identity_error = None
+        self.epoch_error = None
+        self.status_error = None
+        self.process_status = "running"
+        self.on_memory = None
+        self.handles = []
+
+    def Process(self, pid):
+        if not self.present:
+            raise ProcessLookupError(pid)
+        process = IdentityProcess(self, pid)
+        self.handles.append(process)
+        return process
+
+
 class FakeClock:
     def __init__(self, value=10.0):
         self.value = value
@@ -110,7 +172,7 @@ class ResourceSamplerTests(unittest.TestCase):
                 mock.patch("resource_samples.time.CLOCK_UPTIME_RAW", 8, create=True), \
                 mock.patch("resource_samples.time.get_clock_info", return_value=SimpleNamespace(implementation="mach_absolute_time()")), \
                 mock.patch("resource_samples.time.perf_counter_ns", side_effect=[2_000_000_000, 2_000_008_000]), \
-                mock.patch("resource_samples.time.clock_gettime_ns", return_value=42_000_005_000):
+                mock.patch("resource_samples.time.clock_gettime_ns", return_value=42_000_005_000, create=True):
             anchor = clock_anchor(raw_uptime=True)["raw_uptime"]
         self.assertEqual(anchor, {"status": "available", "domain": "darwin_mach_absolute_time",
                                   "offset_lower_usec": 39_999_995, "offset_upper_usec": 40_000_007})
@@ -127,7 +189,7 @@ class ResourceSamplerTests(unittest.TestCase):
                     mock.patch("resource_samples.time.CLOCK_UPTIME_RAW", 8, create=True), \
                     mock.patch("resource_samples.time.get_clock_info", return_value=SimpleNamespace(implementation=implementation)), \
                     mock.patch("resource_samples.time.perf_counter_ns", side_effect=pair), \
-                    mock.patch("resource_samples.time.clock_gettime_ns", return_value=raw):
+                    mock.patch("resource_samples.time.clock_gettime_ns", return_value=raw, create=True):
                 self.assertEqual(clock_anchor(raw_uptime=True)["raw_uptime"]["status"], "error")
         self.assertNotIn("raw_uptime", clock_anchor())
 
@@ -233,30 +295,138 @@ class ResourceSamplerTests(unittest.TestCase):
         self.assertTrue(enabled_report["include_threads"])
 
     def test_pid_reuse_and_exit_are_not_sampled(self):
-        reused = FakeProcess()
-        reused.create_times = [1234.5, 1235.5]
-        sampler = ResourceSampler(45, backend=FakeBackend(reused))
-        self.assertFalse(sampler.poll())
-        report = sampler.finish()
-        self.assertEqual(report["coverage"], "no_samples")
-        self.assertEqual(report["required_coverage"], "unavailable")
+        with mock.patch("resource_samples.sys.platform", "darwin"):
+            backend = IdentityBackend()
+            sampler = ResourceSampler(45, backend=backend)
+            backend.identity += 1
+            self.assertFalse(sampler.poll())
+            report = sampler.finish()
+            self.assertEqual(report["coverage"], "no_samples")
+            self.assertEqual(report["required_coverage"], "unavailable")
+            self.assertEqual(report["stop_reason"], "pid_reused")
+
+            backend = IdentityBackend()
+            sampler = ResourceSampler(46, backend=backend)
+            backend.present = False
+            self.assertFalse(sampler.poll())
+            report = sampler.finish()
+            self.assertEqual(report["stop_reason"], "process_exited")
+            self.assertEqual(report["coverage"], "no_samples")
+
+    def test_darwin_wall_clock_jump_keeps_original_process_identity(self):
+        backend = IdentityBackend()
+        with mock.patch("resource_samples.sys.platform", "darwin"):
+            sampler = ResourceSampler(44, backend=backend)
+            original = sampler._process
+            self.assertTrue(sampler.poll())
+            backend.epoch += 60.0
+            self.assertTrue(sampler.poll(force=True))
+            report = sampler.finish()
+        self.assertIs(sampler._process, original)
+        self.assertGreater(len(backend.handles), 2)
+        self.assertEqual(report["process_create_time"], 1234.5)
+        self.assertEqual(report["identity_status"], "verified")
+        self.assertEqual(report["required_coverage"], "complete")
+
+    def test_replacement_during_read_discards_partial_sample_and_counter_delta(self):
+        backend = IdentityBackend()
+        with mock.patch("resource_samples.sys.platform", "darwin"):
+            sampler = ResourceSampler(44, backend=backend)
+            self.assertTrue(sampler.poll())
+            backend.on_memory = lambda state: setattr(state, "identity", state.identity + 1)
+            self.assertFalse(sampler.poll(force=True))
+            report = sampler.finish()
+        self.assertEqual(report["sample_count"], 1)
         self.assertEqual(report["stop_reason"], "pid_reused")
-        self.assertTrue(any(error["code"] == "pid_reused" for error in report["errors"]))
+        self.assertEqual(report["required_coverage"], "partial")
+        self.assertIsNone(report["summary"]["counter_deltas"]["cpu_user_seconds"])
 
-        exited = FakeProcess()
-        exited.running = False
-        exited_sampler = ResourceSampler(46, backend=FakeBackend(exited))
-        self.assertFalse(exited_sampler.poll())
-        report = exited_sampler.finish()
+    def test_owned_child_exiting_during_read_discards_first_sample(self):
+        backend = IdentityBackend()
+        child = SimpleNamespace(pid=44, poll=mock.Mock(return_value=None))
+        backend.on_memory = lambda _state: setattr(child.poll, "return_value", 0)
+        with mock.patch("resource_samples.sys.platform", "darwin"):
+            sampler = ResourceSampler(44, backend=backend, owned_process=child)
+            self.assertFalse(sampler.poll())
+            report = sampler.finish()
+        self.assertEqual(report["sample_count"], 0)
+        self.assertEqual(report["required_coverage"], "unavailable")
         self.assertEqual(report["stop_reason"], "process_exited")
-        self.assertEqual(report["coverage"], "no_samples")
 
-        reused_after_exit = FakeProcess()
-        reused_after_exit.running = False
-        reused_after_exit.create_times = [1234.5, 1235.5]
-        reused_after_exit_sampler = ResourceSampler(53, backend=FakeBackend(reused_after_exit))
-        self.assertFalse(reused_after_exit_sampler.poll())
-        self.assertEqual(reused_after_exit_sampler.finish()["stop_reason"], "pid_reused")
+    def test_missing_or_denied_identity_and_zombies_fail_closed(self):
+        for setup in (lambda b: setattr(b, "epoch", None),
+                      lambda b: setattr(b, "identity_error", AccessDenied("denied")),
+                      lambda b: setattr(b, "status_error", AccessDenied("denied")),
+                      lambda b: setattr(b, "process_status", "zombie"),
+                      lambda b: setattr(b, "process_status", "?")):
+            backend = IdentityBackend()
+            setup(backend)
+            with mock.patch("resource_samples.sys.platform", "darwin"):
+                sampler = ResourceSampler(44, backend=backend)
+                self.assertFalse(sampler.poll())
+                self.assertNotEqual(sampler.finish()["identity_status"], "verified")
+
+    def test_owned_child_and_attached_or_self_paths_are_distinct(self):
+        backend = IdentityBackend()
+        child = SimpleNamespace(pid=44, poll=mock.Mock(return_value=None))
+        with mock.patch("resource_samples.sys.platform", "darwin"):
+            sampler = ResourceSampler(44, backend=backend, owned_process=child)
+            self.assertTrue(sampler.poll())
+            child.poll.return_value = 0
+            self.assertFalse(sampler.poll(force=True))
+            self.assertEqual(sampler.finish()["stop_reason"], "process_exited")
+            attached = ResourceSampler(44, backend=IdentityBackend())
+            self.assertTrue(attached.poll())
+            own_pid = ResourceSampler(os.getpid(), backend=IdentityBackend())
+            self.assertTrue(own_pid.poll())
+        with self.assertRaises(ValueError):
+            ResourceSampler(44, backend=backend, owned_process=SimpleNamespace(pid=45, poll=lambda: None))
+
+    def test_windows_creation_time_safeguard_refuses_replacement(self):
+        process = FakeProcess()
+        with mock.patch("resource_samples.sys.platform", "win32"):
+            sampler = ResourceSampler(44, backend=FakeBackend(process))
+            process.create_times = [1235.5]
+            self.assertFalse(sampler.poll())
+            self.assertEqual(sampler.finish()["stop_reason"], "pid_reused")
+
+    def test_latest_sample_is_detached_and_forced_poll_preserves_periodic_default(self):
+        sampler = ResourceSampler(44, backend=FakeBackend())
+        self.assertTrue(sampler.poll())
+        self.assertFalse(sampler.poll())
+        observed = sampler.latest_sample()
+        observed["field_status"]["rss_bytes"] = "changed"
+        self.assertTrue(sampler.poll(force=True))
+        report = sampler.finish()
+        self.assertEqual(report["sample_count"], 2)
+        self.assertEqual(report["samples"][0]["field_status"]["rss_bytes"], "ok")
+
+    def test_sustained_reader_accepts_verified_series_and_rejects_changed_identity(self):
+        from research.performance import sustained_resources
+
+        for change_identity in (False, True):
+            with self.subTest(change_identity=change_identity):
+                backend = IdentityBackend()
+                clock = FakeClock()
+                with mock.patch("resource_samples.sys.platform", "darwin"), \
+                        mock.patch("resource_samples.time.perf_counter", side_effect=clock.perf_counter), \
+                        mock.patch("resource_samples.time.time_ns", side_effect=[1_000_000_000_000, 1_002_000_000_000]):
+                    sampler = ResourceSampler(44, backend=backend)
+                    self.assertTrue(sampler.poll())
+                    clock.value += 1.0
+                    self.assertTrue(sampler.poll())
+                    if change_identity:
+                        backend.on_memory = lambda state: setattr(state, "identity", state.identity + 1)
+                        clock.value += 1.0
+                        self.assertFalse(sampler.poll())
+                    report = sampler.finish()
+                report["capture_id"] = "e8fb7e3c-58f3-4734-ab64-007f31268018"
+                report["tool_source_sha256"] = {"run_checked.py": "a" * 64, "resource_samples.py": "b" * 64}
+                if change_identity:
+                    with self.assertRaises(ValueError):
+                        sustained_resources._validate_resource_series(report)
+                else:
+                    self.assertEqual(len(sustained_resources._validate_resource_series(report)), 2)
 
     def test_access_denied_unsupported_missing_and_nonfinite_are_explicit_nulls(self):
         process = FakeProcess()
@@ -474,7 +644,7 @@ class ResourceSamplerTests(unittest.TestCase):
 
             try:
                 sampler = ResourceSampler(child.pid, interval=0.1, max_samples=40,
-                                          disk_paths=[temp], backend=backend)
+                                          disk_paths=[temp], backend=backend, owned_process=child)
                 deadline = time.monotonic() + 8
                 while (not ready.is_file() or sample_count == 0) and child.poll() is None:
                     poll_once()

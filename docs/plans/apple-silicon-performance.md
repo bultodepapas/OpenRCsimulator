@@ -1,6 +1,6 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-06 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Historical long-soak baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Current repair baseline:** `de19806bc`; [resumed native checks and dated performance limits](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106). **Status:** bounded observer/shader optimizations, native measurement repairs, display recovery hardening and corrected Retina dimension reporting implemented. The historical three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for that named instrumented Metal circuit, not the later source. Whole-observer and full product/release qualification remain open.
+Updated 2026-11-14 ([current work order](#17-external-handoff-work-order-2026-11-14); [historical R4 campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Historical long-soak baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Historical repair baseline:** `de19806bc`; [resumed native checks and dated performance limits](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106). **Status:** bounded observer/shader optimizations, native measurement repairs, display recovery hardening and corrected Retina dimension reporting implemented. The historical three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for that named instrumented Metal circuit, not the later source. Whole-observer and full product/release qualification remain open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
@@ -16,6 +16,13 @@ The [twenty-investigation reinforcement](../research/desktop-delivery-investigat
 adds source-proven factory/view/driver boundaries and SDK/presentation test cases
 to that subplan. It is research and fixture preparation, not new M1 performance
 or hardware qualification.
+
+**External handoff integration, 2026-11-14:** [§17](#17-external-handoff-work-order-2026-11-14)
+is the current source-reconciled work order for measurement, native/app CPU,
+audio, cache, shader and loading candidates. The [dated intake/dispositions](../research/desktop-delivery-investigations/external-handoffs-2026-11-14.md)
+retain both supplied documents' hashes, their overlap, all twenty initial entries,
+the twelve second-pass entries and the separate drop-cache correctness prerequisite.
+They do not change the four-feature MetalFX scope or convert proposals into results.
 
 The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
@@ -658,3 +665,197 @@ performance, moving-aircraft acceptance and full release/CI gates remain open.
 [Second-batch identities and evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md#dt-mac-06b-shader-work-reduction-second-batch-2026-11-02).
 
 **2026-11-03 evidence update:** the later controlled seven-file Metal campaign supersedes the missing repeated/sustained timing evidence above for its instrumented technical circuit. All six 30-minute captures passed; measured gains were 17.6–23.2%, with 15.1–22.6% retained in the final five minutes. This advances DT-MAC-02/03 and the combined DT-MAC-06 bundle, while whole-observer uncertainty, normal-product routing, physical controls/readability, the absolute pacing budget and full release/CI stay open. [Complete scope and receipts](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison).
+
+## 17. External handoff work order, 2026-11-14
+
+This section extends the existing DT-MAC steps; its external 01–20/D01–D12
+labels are provenance, not another project namespace. [Source intake and full
+dispositions](../research/desktop-delivery-investigations/external-handoffs-2026-11-14.md)
+were checked against `cfe228831dfd990b21f0c17c6251acbda5631698` and relevant
+current source. All implementation/performance entries below remain pending;
+source confirmation is not a measured gain. Existing A/F/CF, AUD, AFC, CR and
+physics owners retain their code/contracts and evidence homes.
+
+### Evidence boundary and execution order
+
+Retain the current Mobile/Metal route and source-bound native admission as the
+baseline. [B5](../research/native-kernel/DT-MAC-04n4/README.md) already records
+guarded source-editor adoption, its valid/failed fleet rows, callback gains,
+separate collector cohorts and open product/audio/display/package scope. Neither
+the old six-shader campaign nor detached callback reductions establish a current
+whole-product CPU, physical 1080p, energy or FPS gain. Never pool collector versions
+or relabel excluded captures. A source digest is not an installed-artifact check.
+
+1. **P0 measurement:** integrate/requalify stable identity in both resource and
+   process-CPU consumers, or use the exact retained source-hashed r3 apparatus
+   within its declared scope. Source-only candidate preparation can continue.
+2. **P0 correctness/lifecycle:** reproduce the drop dependency-key cases before
+   adopting more dirty caches; separately resolve actual audio-enabled retained
+   owners. Neither is assumed repaired by a performance patch.
+3. **Current product attribution:** ordinary Home/Fly/Workshop, actual selected
+   solver/renderer, audio, input/effects/observers and measured output. Name the
+   expensive eligible route before selecting an optimization.
+4. **First small candidates:** D04 local daylight sample; D02 fixed drag storage
+   only on an admitted retractable route; D03 sampled validation or D05 companion
+   arithmetic only when that actual workload matters. Keep separate diffs and
+   stop early when no complete-workload benefit is demonstrated.
+5. **Then chosen audio/cache/loading/native candidates**, followed by interaction
+   checks and the existing five-pair/three-long-run product/package gates for
+   finalists. Do not run long campaigns for already rejected candidates.
+
+The external suggestion to park advanced engine work does not cancel the user's
+explicit four-MetalFX project. Its intake/fixtures may proceed in parallel with
+these app/tool changes. Hardware builds/captures/timing on one host remain serial.
+Not every CPU candidate is a prerequisite for every MetalFX milestone; truthful
+measurement, correctness and named product acceptance are prerequisites for claims.
+
+### Measurement and product-route prerequisites
+
+**DT-MAC-02c/02e, PT/DT — external 01/02.** Review the original retained r3 source,
+derivation manifest and smoke receipt before integrating its mechanism. Repair
+both `tools/godot/resource_samples.py` and
+`research/performance/app_cpu_per_sim.py`; retain supported original-object identity
+through the interval, validate pre/post-poll identity and reject partial reads on
+exit/replacement/denial. Public epoch `create_time()` is metadata, not a stable
+macOS identity. Keep optional owned-child liveness only when the launcher owns
+the child; self/attached collectors must not invent ownership. Do not casually
+depend on psutil private internals or relax strict coverage/counter reset handling.
+
+Extend current fakes to model distinct process objects and epoch changes. Cover
+stable identity with changed epoch, replacement before/between reads, denial,
+missing identity, partial samples, self/attached/owned child and counter reset.
+Check sampler, runner, CPU wrapper and sustained-resource readers together, then
+the actual M1 smoke. Bind a new collector source/schema identity; if retained
+apparatus is unavailable, leave that integration dependency explicit.
+
+**DT-MAC-01/03/08 — external 02 and §16.10.** Freeze actual Home route, backend,
+native receipt/slice/translation state, dimensions, cap/VSync, power, cache, audio
+device/route, radio verification, cost observations, lens effects, scenery,
+recording and companions. Application arguments can select direct flight instead
+of Home; a missing-marker fallback control must follow the same route. Detached
+session probes, radio-free sustained circuits and event-bounded GOD TEST have
+different scopes/schemas. Never interchange reducers or call an effects-off
+scripted run a wet-lens/physical-controller/settlement benchmark.
+
+Keep 1920×1080 actual output first, higher resolutions second, 720p last. A built-in
+Retina test or `--require-1080p` render-target estimate cannot close physical output
+acceptance. Add A/A and whole-product observer-on/off controls, include work after
+`Simulation.step_usec` and synchronous subscribers, and retain unknown channels.
+Use the [existing protocol](#campaign-protocol-and-acceptance-budgets), not copied
+handoff shell commands. Actual allocation traces and matching symbols identify
+temporary work; RSS alone cannot. Processor Trace recording is M4+ only under
+its supported OS/Instruments versions, not an M1 prerequisite.
+
+### Native, setup, collision and input candidates
+
+Each row is one separately measured mechanism under the named existing step.
+Every native change produces a new binary/receipt and requires applicable exact
+family/mutant/trajectory/replay, installed-consumer and platform gates. Do not
+reopen completed B3 leaf comparison, rate moves, A33 math or other delivered work.
+
+| Owning step / external entry | Concrete patch boundary | Minimum discriminating checks |
+| --- | --- | --- |
+| DT-MAC-04n2/n4; 04, D01 | First transfer completed glow/liquid derivatives after last use; separately evaluate per-instance wheel-rate scratch only for separately owned results. Preserve the simple branch that moves rates into its return. | Previous result retained across later calls, empty/error/preview, interleaved instances/reentry, exact family output and arm64 allocation/callback evidence. No global scratch or returned alias. |
+| DT-MAC-04n2/n4; D02 | Fixed six-value internal retractable-drag storage with explicit empty/invalid/value shape; convert to the existing binding array contract. | Fully/partly/retracted gear, invalid/spatial delta, empty/one-NaN/six values, signed zero and original accumulation order; actual admitted gear route. |
+| DT-MAC-04n2/n4; D08 | First remove only redundant gear assignment within the same ground-copy/pose call. Broader stable-terrain reuse is a later prepared-generation candidate. | Full/partial pose, failed preparation, world/lake/surface/reset replacement and independent kernels. External warm copies allocated zero: claim copying, not an allocator leak. |
+| DT-MAC-04a/n2; 05 | One valid identical propeller result inside the same RK stage and eligible spatial wake/transport domain. | Failed spatial sampling, stopped/reverse/nonfinite inputs, family branches, no eager calculation on refusals; libm/errno/FP-status side effects explicitly addressed before skipping calls. |
+| DT-MAC-04c/n3; 06 | Detached prepared admission carrying marker/source/row/context/frozen guard state; verify the transaction's commit identity rather than redoing preparation or caching pointers. | Marker/source/live mutation during prepare, wrong slice/row/data, rollback/reset/restore; count preparation and Fly/restart time. Never weaken the active guard. |
+| DT-MAC-04a/n3; 17 | Attribute native leaves, GDScript byte encoding, binding and inclusive callback before any comparator redesign. | Same byte/type/alias/key-order/nonfinite/resize checks every tick. Complete callback cost, not the old isolated native guard mean, decides relevance. |
+| DT-MAC-04a, A3/LU-25; D03 | Public sampled wrappers enter private already-validated cores within one stable call. Preserve validations unique to nested cores. | Public sampled/unsampled invalid/no-hit/hit reasons, mass/inertia, callback purity/order, zero sampler calls on miss, TOI/ties and atomic refusal; use actual finite-fuel sampled fixtures. |
+| DT-MAC-04a, fuel/contact; D12 | Shared candidate mass-context validation/property checks without constructing its unused detached receipt; retain previous owned interpolation receipt. | Every tank/feed/model/property check and reason in original order, alias mutation, late rejection, actual contact sampler and replay. Measure separately from D03. |
+| DT-MAC-04b, CR-22e; D06 | Detached accepted support sample reused for nonterminal settlement only with full dependency/intervening-mutation proof and original-query fallback. | Same-tick state/gear/lake/track/provider mutations, reentry, reset/restore, negative airborne values, threshold/belly/dwell/events and product accident-report-on route. |
+| DT-MAC-04a, AFC/A33; D05a/b | Threat half-turn/distance hoist; separately first-saturated geometry cache with its own ready flag and distinct sinc arguments. | Byte-identical commands/controller/traces, threshold/signed-zero/vertical-kink/tie/held cases, fixed encounter tapes and behavior identities. Preserve pre-step roster ordering and current Mac companion/reference policy. |
+| DT-MAC-04a, F6/input; D07a/b | First current-pin controlled and actual-controller attribution; separately narrow detached verifier snapshot while keeping fresh engine identity checks. | Button 127 held before selection, custom/bound readers, AUX, other pad/key/action, NaN/profile/focus/pause/disconnect/reused-ID/GUID changes. Native cached-state reads are not HID transactions. An all-up shortcut remains conditional until atomic observation/equivalence is proved. |
+| DT-MAC-04b, CF-07; 18 | Frame-owned identical datum sample and angle-only render accessor as independent consumers; retain full advisory for HUD/control. | Exact state/time/weather/owner and override semantics, no interpolated smoke-clock substitution, normal/invalid/reset paths and complete render/HUD output. |
+
+Do not replace airborne compression values with zeros or a separation predicate,
+reduce radio polling/button range, drop event/guard checks, or optimize across RK
+stages. Those are different contracts, not equivalent forms of the candidates.
+Synthetic counts and the external Linux allocation witness size hypotheses only;
+they do not establish production arm64 allocation or timing.
+
+### Audio, cache and visual correctness
+
+**DT-MAC-04b/08 + AUD — external 03/07/09/10.** Keep four independent changes:
+lazy coherent snapshot/revision acquisition only before PCM synthesis; exact
+accepted-state air/wind reuse for the supported base-session adapter with original
+override fallback; fully faded logical-pause producer parking; and investigation
+of retained MP3/WAV/playback owners on audio-enabled quit. The last is not assumed
+caused or repaired by the first three.
+
+Forced publication between queue check and snapshot acquisition must preserve
+coherent data/revision and one phase anchor per revision; identical old scheduling
+or PCM under every interleaving is not presumed. Parking needs explicit priming,
+active/fading, logically-paused, resume and stop states; wake-before-join, coalesced
+signals and no lock-held wait/join. Preserve synchronous startup fallback, the
+existing 600 ms stall control, actual bank/family route, phase, underruns and
+first-audible resume. Workshop detach/re-entry is not unconditional stream
+destruction. Keep the existing multiple-crossing propagation search semantics.
+
+**VQ/FW correctness before DT-MAC-06 publication work — §16.8.** Add negative
+controls to `DropPool.write`: stationary heavy bead at dt=0 with changed gravity;
+aged bead with changed rain state; same-size replacement MultiMesh. Verify actual
+transform/custom alpha/first write. Include every output dependency and destination
+generation in invalidation before applying the pattern to other effects. This
+is source-derived risk until reproduced, not a claimed image or FPS improvement.
+
+**DT-MAC-06b + A28/FW — external 08.** Keep four-tile capacity. Compute a complete
+desired seed set for all sky slots plus shared ground/other live/prewarm owners;
+invalidate changed bindings before publication, then reclaim only obsolete entries
+under pressure. Do not trigger last-consumer cancellation midway through the
+transaction. Reject stale bake generations, including A→E→A recreation, release
+pending resources and resynchronize waiting consumers without recursive starvation.
+Test `[A,B,C,D] -> [E,A,B,C]`, shared/two skies/copied materials, >4 live seeds,
+empty sky with ground retained, failed/pending/ready entries, prewarm and re-entry.
+Retain the stable copied texture/analytic fallback; new baking/readback peaks or
+stalls may offset improved cache admission. Logical four-tile texels are 64 MiB,
+not measured physical memory or proof of a leak.
+
+| Owning step / external entry | Separate candidate and acceptance boundary |
+| --- | --- |
+| DT-MAC-04b/06b; D04 | In `SunGlare.source`, obtain the original background once and use its luminance before halo/aureole additions. Preserve the full source packet, moon/invalid/exposure/occlusion behavior; then measure normal daylight frames. No persistent cache. |
+| DT-MAC-06b; D09 | Independent exact last-published globals, initialized per owner/resource generation; preserve wrapped time, rewind, changed wind at same time and alternate writers. Do not use editor-only getter polling or approximate equality. Count CPU writes and actual dirty-region transfers separately. |
+| DT-MAC-06b; D10 | Split per-material constants, event/config state and dynamic wet-lens values; first-visible, recreated, restored and resized material must be complete. Paused camera/light and wet clock still change. |
+| DT-MAC-06b; D11 | Three patches: final splash hide, idle-lightning clear, settled crack stamp update. Preserve sink/external aircraft-root writes, sound/checkpoints, thunder and ongoing clock/weather/drying/wash state. Test real aftermath/storm/wet routes; no whole-director early return. |
+| DT-MAC-06b; 11 | Separate exact-zero cloud evaluation, zero-layer publication and final solar-zero work. Preserve ordered zero-alpha density recurrence, nonzero arithmetic, seed/transport/checkpoint/IBL and zero→epsilon transitions; a naive `continue` changes floating arithmetic. |
+| DT-MAC-06b; 12/14 | Keep unconditional derivative evaluation and later reconvergence for shore algebra. Inspect all screen/depth/pass consumers before copy/memoryless changes; ground hash/filter/anchor work needs actual generated-code and visual parity, not CPU-double substitution. |
+| DT-MAC-06c; 19 | Only measured procedural-grass all-view conservative hiding or uniform exact-zero legacy vegetation wind; preserve default batching/meadow, transforms, probes and all nonzero wind. |
+
+Tests select the actual affected owner: cloud/layer/transport/checkpoint and native
+shadow-map controls; sun/moon optics and source-packet comparisons; water/storm/lens
+fixtures/captures; and native moving 1080p cases. Shader setter counts are not
+uploads or draws; another changing value may dirty the same region. Reduced work
+is an intermediate result until complete-frame timing and required output pass.
+
+### Memory, loading, build and final acceptance
+
+**DT-MAC-04c/04d/06d — external 13/16.** Inventory packaged runtime formats,
+mips/alpha/normal/ORM, source identity, ownership/aliases, live references and
+transition peaks. Measure strong vegetation caches before adding a bounded LRU;
+keep existing proxy-LRU/ORM-sharing work complete and price reacquisition hitches.
+Preserve user-authored paints and source generation pipelines. Do not add Metal
+allocations to overlapping RSS as an independent memory pool.
+
+For loading, measure longest indivisible stage, actually displayed loading-frame
+gaps, first draw, interactive-ready, total latency and retained resources. Refactor
+only the named expensive unit with deterministic resumable staging, detached partial
+results and commit/cancel/rollback; arbitrary worker SceneTree/GPU calls are not a
+solution. Warm only needed material/mesh/pipeline combinations. Metal MIL baking
+requires the native supported export route and does not precompile final device
+pipelines; retain isolated fresh/warm/baked/unbaked controls and shared caches.
+
+**DT-MAC-08/10 + GDU — external 20.** Inspect actual final executable/loaded slices,
+runtime translation, native receipt and effective compile/link flags. Automatic
+LTO or `production=yes` labels do not prove cross-module optimization. LTO/PGO/CPU
+tuning are independent artifacts with strict FP/binding behavior, held-out family/
+weather/contact/transition workloads and the unchanged deployment floor. Do not
+assume inlining through the dynamic extension ABI. Game Mode, power/quality and
+frame caps require actual activation/presentation/latency/energy evidence and
+saved-user-override preservation. No global affinity or maximum-QoS policy.
+
+Finalists reuse the existing exact replay, paired variation/observer controls,
+sustained, real audio/input/motion, memory/lifecycle, required CI and development
+package gates. Keep failures and route exclusions in the owning ledger. Claims
+must distinguish callback time, process CPU, allocation requests, presentation,
+watts/joules and physical validation. Public signed distribution remains deferred;
+none of these documentation integrations constitutes a new measured gain.

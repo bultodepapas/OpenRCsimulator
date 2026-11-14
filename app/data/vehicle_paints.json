@@ -5,32 +5,141 @@
 		"hx-700": {
 			"default_label": "Original",
 			"base": {
-				"Fibra_de_Carbono": {"albedo": "#33363b", "albedo_texture": "res://assets/vehicle-paints/shared/carbon_weave.png", "triplanar_scale": 28.0, "metallic": 0.0, "roughness": 0.32},
-				"Pala_Carbono": {"albedo": "#2a2c30", "albedo_texture": "res://assets/vehicle-paints/shared/carbon_weave.png", "triplanar_scale": 34.0, "metallic": 0.0, "roughness": 0.26}
+				"Fibra_de_Carbono": {
+					"albedo": "#e8eaee",
+					"albedo_texture": "res://assets/vehicle-paints/shared/carbon_twill_albedo.jpg",
+					"normal_texture": "res://assets/vehicle-paints/shared/carbon_twill_normal.jpg",
+					"normal_scale": 0.55,
+					"roughness_texture": "res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg",
+					"roughness": 1.0,
+					"metallic": 0.0,
+					"clearcoat": 0.45,
+					"clearcoat_roughness": 0.14,
+					"triplanar_scale": 40.0
+				},
+				"Pala_Carbono": {
+					"albedo": "#2a2c30",
+					"normal_texture": "res://assets/vehicle-paints/shared/carbon_twill_normal.jpg",
+					"normal_scale": 0.45,
+					"roughness_texture": "res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg",
+					"roughness": 0.9,
+					"metallic": 0.0,
+					"clearcoat": 1.0,
+					"clearcoat_roughness": 0.04,
+					"triplanar_scale": 40.0
+				},
+				"Aluminio_Anodizado_Azul": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.6,
+					"triplanar_scale": 14.0
+				},
+				"Aluminio_Anodizado_Negro": {
+					"albedo": "#1c1e22",
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.75,
+					"triplanar_scale": 14.0
+				},
+				"Aluminio_Anodizado_Amarillo": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.62,
+					"triplanar_scale": 14.0
+				},
+				"Aluminio_Grafito": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.7,
+					"triplanar_scale": 14.0
+				},
+				"Acero_Pulido": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.3,
+					"triplanar_scale": 20.0
+				},
+				"Plastico_Negro": {
+					"albedo": "#19191b",
+					"roughness": 0.5
+				},
+				"Plastico_Grafito": {
+					"albedo": "#22252a",
+					"roughness": 0.42,
+					"clearcoat": 0.25,
+					"clearcoat_roughness": 0.2
+				},
+				"Caucho": {
+					"albedo": "#1d1d1e",
+					"roughness": 0.88
+				}
 			},
 			"skins": [
 				{
-					"id": "blanco_artico", "label": "Blanco Ártico",
+					"id": "blanco_artico",
+					"label": "Blanco Ártico",
 					"materials": {
-						"Pintura_Carenado": {"albedo": "#ffffff", "albedo_texture": "res://assets/vehicle-paints/hx-700/blanco_artico_canopy.png", "metallic": 0.0, "roughness": 0.16},
-						"Pintura_Botalon": {"albedo": "#ffffff", "albedo_texture": "res://assets/vehicle-paints/hx-700/blanco_artico_boom.png", "roughness": 0.22},
-						"Aluminio_Anodizado_Azul": {"albedo": "#0aa3e0"}
+						"Pintura_Carenado": {
+							"roughness": 0.1,
+							"metallic": 0.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/hx-700/blanco_artico_canopy.png"
+						},
+						"Pintura_Botalon": {
+							"roughness": 0.2,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04,
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/hx-700/blanco_artico_boom.png"
+						},
+						"Aluminio_Anodizado_Azul": {
+							"albedo": "#0aa3e0"
+						}
 					}
 				},
 				{
-					"id": "rojo_fuego", "label": "Rojo Fuego",
+					"id": "rojo_fuego",
+					"label": "Rojo Fuego",
 					"materials": {
-						"Pintura_Carenado": {"albedo": "#ffffff", "albedo_texture": "res://assets/vehicle-paints/hx-700/rojo_fuego_canopy.png", "metallic": 0.0, "roughness": 0.16},
-						"Pintura_Botalon": {"albedo": "#ffffff", "albedo_texture": "res://assets/vehicle-paints/hx-700/rojo_fuego_boom.png", "roughness": 0.22},
-						"Aluminio_Anodizado_Azul": {"albedo": "#e8a000"}
+						"Pintura_Carenado": {
+							"roughness": 0.1,
+							"metallic": 0.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/hx-700/rojo_fuego_canopy.png"
+						},
+						"Pintura_Botalon": {
+							"roughness": 0.2,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04,
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/hx-700/rojo_fuego_boom.png"
+						},
+						"Aluminio_Anodizado_Azul": {
+							"albedo": "#e8a000"
+						}
 					}
 				},
 				{
-					"id": "negro_lima", "label": "Negro Lima",
+					"id": "negro_lima",
+					"label": "Negro Lima",
 					"materials": {
-						"Pintura_Carenado": {"albedo": "#ffffff", "albedo_texture": "res://assets/vehicle-paints/hx-700/negro_lima_canopy.png", "metallic": 0.0, "roughness": 0.2},
-						"Pintura_Botalon": {"albedo": "#ffffff", "albedo_texture": "res://assets/vehicle-paints/hx-700/negro_lima_boom.png", "roughness": 0.24},
-						"Aluminio_Anodizado_Azul": {"albedo": "#8fd11a"}
+						"Pintura_Carenado": {
+							"roughness": 0.14,
+							"metallic": 0.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.03,
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/hx-700/negro_lima_canopy.png"
+						},
+						"Pintura_Botalon": {
+							"roughness": 0.2,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04,
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/hx-700/negro_lima_boom.png"
+						},
+						"Aluminio_Anodizado_Azul": {
+							"albedo": "#8fd11a"
+						}
 					}
 				}
 			]
@@ -38,67 +147,245 @@
 		"mt8-bisonte": {
 			"default_label": "Naranja Bisonte",
 			"base": {
-				"MT8_Paint_Orange": {"roughness": 0.22},
-				"MT8_Tire_Rubber": {"albedo": "#1c1c1e", "roughness": 0.92}
+				"MT8_Paint_Orange": {
+					"roughness": 0.12,
+					"clearcoat": 1.0,
+					"clearcoat_roughness": 0.03
+				},
+				"MT8_Plastic_Orange": {
+					"roughness": 0.45
+				},
+				"MT8_Glass_Dark": {
+					"albedo": "#0a0d10",
+					"roughness": 0.04,
+					"specular": 0.6
+				},
+				"MT8_Plastic_Black": {
+					"albedo": "#18181a",
+					"roughness": 0.55
+				},
+				"MT8_Plastic_Grey": {
+					"albedo": "#2a2e32",
+					"roughness": 0.5
+				},
+				"MT8_Tire_Rubber": {
+					"albedo": "#1f1f21",
+					"roughness": 0.9,
+					"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+					"normal_scale": 0.8,
+					"triplanar_scale": 18.0
+				},
+				"MT8_Alu_Teal": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.72,
+					"triplanar_scale": 14.0
+				},
+				"MT8_Alu_Raw": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.62,
+					"triplanar_scale": 14.0
+				},
+				"MT8_Steel": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.66,
+					"triplanar_scale": 18.0
+				},
+				"MT8_Rim_Bronze": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.58,
+					"triplanar_scale": 16.0
+				},
+				"MT8_Motor_Red": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.66,
+					"triplanar_scale": 14.0
+				},
+				"MT8_Chrome": {
+					"roughness": 0.06
+				}
 			},
 			"skins": [
 				{
-					"id": "azul_glaciar", "label": "Azul Glaciar",
+					"id": "azul_glaciar",
+					"label": "Azul Glaciar",
 					"materials": {
-						"MT8_Paint_Orange": {"albedo": "#1f6fd1", "roughness": 0.2},
-						"MT8_Plastic_Orange": {"albedo": "#16508f"},
-						"MT8_Alu_Teal": {"albedo": "#c9ced6", "metallic": 0.9},
-						"MT8_Rim_Bronze": {"albedo": "#d6dbe2"},
-						"MT8_Spring_Yellow": {"albedo": "#f2f4f7"},
-						"MT8_Decal_White": {"albedo": "#f7f9fb"}
+						"MT8_Paint_Orange": {
+							"albedo": "#1f6fd1"
+						},
+						"MT8_Plastic_Orange": {
+							"albedo": "#16508f"
+						},
+						"MT8_Alu_Teal": {
+							"albedo": "#c9ced6",
+							"metallic": 0.9
+						},
+						"MT8_Rim_Bronze": {
+							"albedo": "#d6dbe2"
+						},
+						"MT8_Spring_Yellow": {
+							"albedo": "#f2f4f7"
+						},
+						"MT8_Decal_White": {
+							"albedo": "#f7f9fb"
+						}
 					}
 				},
 				{
-					"id": "verde_militar", "label": "Verde Militar",
+					"id": "verde_militar",
+					"label": "Verde Militar",
 					"materials": {
-						"MT8_Paint_Orange": {"albedo": "#4d5a32", "roughness": 0.55},
-						"MT8_Plastic_Orange": {"albedo": "#3a4426"},
-						"MT8_Alu_Teal": {"albedo": "#3b3d3f", "metallic": 0.8},
-						"MT8_Rim_Bronze": {"albedo": "#2a2b2c"},
-						"MT8_Spring_Yellow": {"albedo": "#c8a24a"},
-						"MT8_Decal_White": {"albedo": "#d9cfb0"}
+						"MT8_Paint_Orange": {
+							"albedo": "#4d5a32",
+							"roughness": 0.55,
+							"clearcoat": 0.0
+						},
+						"MT8_Plastic_Orange": {
+							"albedo": "#3a4426"
+						},
+						"MT8_Alu_Teal": {
+							"albedo": "#3b3d3f",
+							"metallic": 0.8
+						},
+						"MT8_Rim_Bronze": {
+							"albedo": "#2a2b2c"
+						},
+						"MT8_Spring_Yellow": {
+							"albedo": "#c8a24a"
+						},
+						"MT8_Decal_White": {
+							"albedo": "#d9cfb0"
+						}
 					}
 				},
 				{
-					"id": "amarillo_rayo", "label": "Amarillo Rayo",
+					"id": "amarillo_rayo",
+					"label": "Amarillo Rayo",
 					"materials": {
-						"MT8_Paint_Orange": {"albedo": "#ffc400", "roughness": 0.2},
-						"MT8_Plastic_Orange": {"albedo": "#1b1b1d"},
-						"MT8_Alu_Teal": {"albedo": "#141416", "metallic": 0.85},
-						"MT8_Rim_Bronze": {"albedo": "#141416"},
-						"MT8_Spring_Yellow": {"albedo": "#d81e2a"},
-						"MT8_Decal_White": {"albedo": "#141416"},
-						"MT8_Decal_Black": {"albedo": "#141416"}
+						"MT8_Paint_Orange": {
+							"albedo": "#ffc400"
+						},
+						"MT8_Plastic_Orange": {
+							"albedo": "#1b1b1d"
+						},
+						"MT8_Alu_Teal": {
+							"albedo": "#141416",
+							"metallic": 0.85
+						},
+						"MT8_Rim_Bronze": {
+							"albedo": "#141416"
+						},
+						"MT8_Spring_Yellow": {
+							"albedo": "#d81e2a"
+						},
+						"MT8_Decal_White": {
+							"albedo": "#141416"
+						},
+						"MT8_Decal_Black": {
+							"albedo": "#141416"
+						}
 					}
 				}
 			]
 		},
 		"monster-car-2": {
 			"default_label": "Verde Locura",
-			"base": {},
+			"base": {
+				"Caucho_Llanta": {
+					"albedo": "#1f1f21",
+					"roughness": 0.9,
+					"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+					"normal_scale": 0.8,
+					"triplanar_scale": 18.0
+				},
+				"Fibra_Carbono": {
+					"albedo": "#e8eaee",
+					"albedo_texture": "res://assets/vehicle-paints/shared/carbon_twill_albedo.jpg",
+					"normal_texture": "res://assets/vehicle-paints/shared/carbon_twill_normal.jpg",
+					"normal_scale": 0.55,
+					"roughness_texture": "res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg",
+					"roughness": 1.0,
+					"triplanar_scale": 40.0
+				},
+				"Plastico_Negro_Mate": {
+					"albedo": "#1a1a1c"
+				},
+				"Plastico_Negro": {
+					"albedo": "#1c1c1e"
+				},
+				"Uretano_Tope": {
+					"albedo": "#1e1e21"
+				},
+				"Aluminio_Rojo": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.47,
+					"triplanar_scale": 14.0
+				},
+				"Aluminio_Verde": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.64,
+					"triplanar_scale": 14.0
+				},
+				"Aluminio_Anodizado": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.51,
+					"triplanar_scale": 14.0
+				},
+				"Aluminio_Amarillo": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.55,
+					"triplanar_scale": 14.0
+				},
+				"Aluminio_Chasis": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.68,
+					"triplanar_scale": 12.0
+				},
+				"Gris_Metalico": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.64,
+					"triplanar_scale": 14.0
+				}
+			},
 			"skins": [
 				{
-					"id": "azul_electrico", "label": "Azul Eléctrico",
+					"id": "azul_electrico",
+					"label": "Azul Eléctrico",
 					"materials": {
-						"Pintura_Livery": {"albedo_texture": "res://assets/vehicle-paints/monster-car-2/azul_electrico_livery.jpg", "emission_texture": "res://assets/vehicle-paints/monster-car-2/azul_electrico_emission.png"},
-						"Neon_Verde": {"albedo": "#2a8cff", "emission": "#2a8cff"},
-						"Aluminio_Verde": {"albedo": "#0b3a8a"}
+						"Pintura_Livery": {
+							"albedo_texture": "res://assets/vehicle-paints/monster-car-2/azul_electrico_livery.jpg",
+							"emission_texture": "res://assets/vehicle-paints/monster-car-2/azul_electrico_emission.png"
+						},
+						"Neon_Verde": {
+							"albedo": "#2a8cff",
+							"emission": "#2a8cff"
+						},
+						"Aluminio_Verde": {
+							"albedo": "#0b3a8a"
+						}
 					}
 				},
 				{
-					"id": "naranja_lava", "label": "Naranja Lava",
+					"id": "naranja_lava",
+					"label": "Naranja Lava",
 					"materials": {
-						"Pintura_Livery": {"albedo_texture": "res://assets/vehicle-paints/monster-car-2/naranja_lava_livery.jpg", "emission_texture": "res://assets/vehicle-paints/monster-car-2/naranja_lava_emission.png"},
-						"Neon_Verde": {"albedo": "#ff6a10", "emission": "#ff6a10"},
-						"Aluminio_Verde": {"albedo": "#8a2a06"}
+						"Pintura_Livery": {
+							"albedo_texture": "res://assets/vehicle-paints/monster-car-2/naranja_lava_livery.jpg",
+							"emission_texture": "res://assets/vehicle-paints/monster-car-2/naranja_lava_emission.png"
+						},
+						"Neon_Verde": {
+							"albedo": "#ff6a10",
+							"emission": "#ff6a10"
+						},
+						"Aluminio_Verde": {
+							"albedo": "#8a2a06"
+						}
 					}
 				}
 			]
 		}
+	},
+	"detail_map_means": {
+		"res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg": 0.234,
+		"res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg": 0.469
 	}
 }

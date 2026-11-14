@@ -13,6 +13,7 @@ const SunOptics := preload("res://render/sun/sun_optics.gd")
 const SkyMirror := preload("res://render/sun/sky_mirror.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
 const SunGlare := preload("res://render/landscape_upgrade/sun_glare.gd")
+const MoonGlare := preload("res://render/world/moon_glare.gd")
 const SKY_SHADER := preload("res://render/sky.gdshader")
 const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
@@ -250,6 +251,27 @@ func _clouds() -> void:
 	_check("no sky material, no clouds", SkyMirror.transmission(null, up) == 1.0)
 
 
+## Frozen daylight packet contract: background luminance excludes halo and aureole.
+func _daylight_source_reference(sky: ShaderMaterial, shadow_compensation: float) -> Dictionary:
+	var occluded: bool = sky.get_shader_parameter("disc_cloud_occlusion") == true
+	var direction: Vector3 = sky.get_shader_parameter("disc_dir" if occluded else "sun_dir")
+	var toward := direction.normalized()
+	var sun: Vector3 = sky.get_shader_parameter("sun_lin")
+	var disc: Variant = sky.get_shader_parameter("sun_disc")
+	var radius: Variant = sky.get_shader_parameter("sun_radius")
+	var aureole: Variant = sky.get_shader_parameter("sun_aureole_lin")
+	var strength := clampf(float(disc) if disc != null else 1.0, 0.0, 1.0)
+	var light := sun / maxf(shadow_compensation, 1e-6)
+	var disc_lin := sun * SunOptics.DISC_RADIANCE_FACTOR
+	var around := SkyMirror.background_radiance(sky, toward) + SunOptics.sky_halo(sun, 1.0) \
+		+ (SunOptics.sky_aureole(aureole, sun, 1.0, rad_to_deg(asin(clampf(toward.y, -1.0, 1.0)))) if aureole is Vector3 else Vector3.ZERO)
+	return {dir = toward, radius = float(radius) if radius != null else 0.0046251,
+		disc_lin = disc_lin, veil_lin = SunOptics.veil_colour(disc_lin, around),
+		illuminance = SunOptics.illuminance_scale(light) * strength,
+		e_over_b = SunOptics.illuminance_over_background(light, SkyMirror.background_luminance(sky, toward)) * strength,
+		kappa = SunOptics.KAPPA}
+
+
 func _source() -> void:
 	var sky := ShaderMaterial.new()
 	sky.shader = SKY_SHADER
@@ -261,6 +283,14 @@ func _source() -> void:
 	var src: Dictionary = SunGlare.source(sky)
 	_check("the glare source is the calibrated day sun", absf(float(src.illuminance) - 1.0) < 1e-6 and (src.dir as Vector3).is_normalized()
 		and float(src.e_over_b) > 0.0)
+	sky.set_shader_parameter("disc_dir", Vector3(0.2, 0.05, -0.98).normalized())
+	sky.set_shader_parameter("sun_aureole_lin", Vector3(0.9, 0.5, 0.2))
+	for mask: int in 4:
+		sky.set_shader_parameter("lobe_lin", Vector3(0.7, 0.3, 0.1) if (mask & 1) != 0 else Vector3.ZERO)
+		sky.set_shader_parameter("lobe2_lin", Vector3(0.1, 0.3, 0.7) if (mask & 2) != 0 else Vector3.ZERO)
+		sky.set_shader_parameter("disc_cloud_occlusion", mask % 2 == 1)
+		_check("the complete daylight source packet matches the original with lobe mask %d" % mask,
+			SunGlare.source(sky, 0.7) == _daylight_source_reference(sky, 0.7))
 	sky.set_shader_parameter("sun_disc", 0.0)
 	_check("no glare when the light is the moon", float(SunGlare.source(sky).e_over_b) == 0.0 and float(SunGlare.source(sky).illuminance) == 0.0)
 	# The sky mirror against hand values: straight up, the gradient is exactly the zenith.
@@ -309,12 +339,15 @@ func _source() -> void:
 	var golden := Atmosphere.sky_material()
 	_check("golden hour: limb on, slight flattening, an aureole", float(golden.get_shader_parameter("sun_limb")) == 1.0
 		and float(golden.get_shader_parameter("sun_squash")) < 1.0 and (golden.get_shader_parameter("sun_aureole_lin") as Vector3).x > 0.0)
+	_check("the complete twilight source packet matches the original",
+		SunGlare.source(golden, Atmosphere.shadow_compensation()) == _daylight_source_reference(golden, Atmosphere.shadow_compensation()))
 	when.hour = 23.5
 	when.day = 29
 	Atmosphere.state = SkyState.state(preload("res://render/world/ephemeris.gd").sky(when))
 	var night := Atmosphere.sky_material()
 	_check("no sun aureole when the moon lights", Atmosphere.state.light_source == "moon"
 		and (night.get_shader_parameter("sun_aureole_lin") as Vector3) == Vector3.ZERO, str(Atmosphere.state.light_source))
+	_check("the complete moon source packet remains delegated", SunGlare.source(night, 0.7, 1.5) == MoonGlare.source(night, 1.5))
 	Atmosphere.state = {}
 	var calibrated := Atmosphere.sky_material()
 	_check("the calibrated day: round disc, limb on, an aureole", float(calibrated.get_shader_parameter("sun_squash")) > 0.999

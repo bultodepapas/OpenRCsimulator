@@ -199,6 +199,51 @@ func _pool_checks() -> void:
 		_check("the packed buffer matches the engine's 2D instance layout", written.x.is_equal_approx(expected.x)
 			and written.y.is_equal_approx(expected.y) and written.origin.is_equal_approx(expected.origin)
 			and mm.visible_instance_count == 1)
+	# Exercise the generated buffer even when the headless renderer cannot read it back.
+	var still := DropPool.new()
+	still.configure(4, 3, false)
+	still.spawn(0.5, 0.5, 0.03)
+	var still_mesh := MultiMesh.new()
+	still_mesh.transform_format = MultiMesh.TRANSFORM_2D
+	still_mesh.use_custom_data = true
+	still_mesh.instance_count = 4
+	still.write(still_mesh, 1080.0, true, Vector2.DOWN)
+	var sag_down: PackedFloat32Array = still._buffer.duplicate()
+	still_mesh.visible_instance_count = 0
+	still.write(still_mesh, 1080.0, true, Vector2.DOWN)
+	_check("unchanged drop output skips the mesh write", still_mesh.visible_instance_count == 0)
+	still.step(0.0, 1.7778, Vector2.RIGHT, Vector2.ZERO, 0.0, Vector2.ZERO, true)
+	still.write(still_mesh, 1080.0, true, Vector2.RIGHT)
+	var sag_right: PackedFloat32Array = still._buffer.duplicate()
+	_check("paused heavy drop follows changed screen gravity", still_mesh.visible_instance_count == 1
+		and not is_equal_approx(sag_down[0], sag_right[0]) and not is_equal_approx(sag_down[4], sag_right[4]))
+	# Age the pinned drop while wet, then change only the rain flag with dt still zero.
+	still.step(DropPool.LINGER_S + DropPool.FADE_OUT_S * 0.5, 1.7778, Vector2.ZERO, Vector2.ZERO,
+		0.0, Vector2.ZERO, true)
+	still.write(still_mesh, 1080.0, true, Vector2.RIGHT)
+	var wet_alpha: float = still._buffer[9]
+	still.step(0.0, 1.7778, Vector2.ZERO, Vector2.ZERO, 0.0, Vector2.ZERO, false)
+	still.write(still_mesh, 1080.0, false, Vector2.RIGHT)
+	_check("paused aged drop updates alpha when rain stops", wet_alpha == 1.0
+		and still._buffer[9] > 0.0 and still._buffer[9] < wet_alpha)
+	var old_size: float = still._buffer[0]
+	still.write(still_mesh, 1081.0, false, Vector2.RIGHT)
+	_check("changed output height updates the drop buffer", still._buffer[0] != old_size)
+	var replacement := MultiMesh.new()
+	replacement.transform_format = MultiMesh.TRANSFORM_2D
+	replacement.use_custom_data = true
+	replacement.instance_count = 4
+	replacement.visible_instance_count = 0
+	still.write(replacement, 1081.0, false, Vector2.RIGHT)
+	_check("a replacement mesh receives unchanged drops", replacement.visible_instance_count == 1)
+	replacement.instance_count = 0
+	replacement.instance_count = 4
+	replacement.visible_instance_count = 0
+	still.write(replacement, 1081.0, false, Vector2.RIGHT, 1)
+	_check("a reallocated mesh generation receives unchanged drops", replacement.visible_instance_count == 1)
+	replacement.instance_count = 5
+	still.write(replacement, 1081.0, false, Vector2.RIGHT, 1)
+	_check("a changed mesh capacity resizes the drop buffer", still._buffer.size() == 5 * DropPool.BUFFER_STRIDE)
 	var thrown := DropPool.new()
 	thrown.configure(8, 6, false)
 	thrown.spawn(0.9, 0.5, 0.018)

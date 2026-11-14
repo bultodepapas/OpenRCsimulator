@@ -84,53 +84,27 @@ class LinuxCpuSampler:
 
 
 class DarwinCpuSampler:
-    """Use the shared resource sampler for two independent direct-PID snapshots."""
+    """Keep one process identity across the direct-PID CPU interval."""
 
     cpu_backend = f"psutil_{PSUTIL_VERSION}"
     main_thread_cpu_scope = "unsupported on darwin"
 
     def __init__(self, pid, *, backend, sampler_class=ResourceSampler):
-        self.pid = pid
-        self.backend = backend
-        self.sampler_class = sampler_class
         # Capture the launch identity before the flight and warm-up, not only
         # after a potentially lengthy delay.
-        self.sampler = self._new_sampler()
-        self.started = None
-
-    def _new_sampler(self):
-        # One poll per sampler avoids imposing its 0.1 s polling interval on the
-        # caller's sample window. Compare both creation times explicitly.
-        return self.sampler_class(self.pid, backend=self.backend, interval=0.1, max_samples=2)
+        self.sampler = sampler_class(pid, backend=backend, interval=0.1, max_samples=10000)
 
     def sample(self):
-        sampler = self.sampler if self.sampler is not None else self._new_sampler()
-        self.sampler = None
-        captured = sampler.poll()
-        report = sampler.finish()
-        if (not captured or report["sample_count"] != 1 or report["identity_status"] != "verified"
-                or report["stop_reason"] != "caller_finished"):
+        # Measurements are explicitly timed by this caller, including intervals
+        # shorter than the periodic collector's minimum cadence.
+        if not self.sampler.poll(force=True):
+            report = self.sampler.finish()
             raise MeasurementError(f"process CPU sample unavailable: {report['stop_reason']}; {report['errors']}")
-        started = report["process_create_time"]
-        if self.started is not None and started != self.started:
-            raise MeasurementError("process PID was reused during CPU measurement")
-        self.started = started
-
-        # ResourceSampler verifies identity before each poll. Check it again
-        # afterward with a fresh object, since psutil caches create_time().
-        try:
-            process = self.backend.Process(self.pid)
-            if process.is_running() is not True or process.create_time() != self.started:
-                raise MeasurementError("process exited or PID was reused during CPU measurement")
-        except MeasurementError:
-            raise
-        except Exception as error:
-            raise MeasurementError(f"cannot verify process identity after CPU sample: {error}") from error
-
-        sample = report["samples"][0]
+        sample = self.sampler.latest_sample()
         fields = ("cpu_user_seconds", "cpu_system_seconds")
         statuses = sample["field_status"]
         if any(statuses.get(field) != "ok" for field in fields):
+            self.sampler.finish()
             raise MeasurementError(f"process CPU counters unavailable: "
                                    f"{ {field: statuses.get(field, 'missing') for field in fields} }")
         return CpuReading(sample[fields[0]], sample[fields[1]], None, None)

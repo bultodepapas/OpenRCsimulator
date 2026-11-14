@@ -5,6 +5,7 @@ can therefore remain standard-library-only when resource sampling is disabled.
 """
 from __future__ import annotations
 
+import copy
 import importlib
 import math
 import os
@@ -145,13 +146,16 @@ class ResourceSampler:
 
     def __init__(self, pid, *, interval: float = 1.0, max_samples: int = 2100,
                  disk_paths=(), include_threads: bool = False, backend=None,
-                 raw_uptime: bool = False):
+                 raw_uptime: bool = False, owned_process=None):
         paths = validate_options(interval=interval, max_samples=max_samples,
                                  disk_paths=disk_paths, include_threads=include_threads)
         if type(pid) is not int or pid <= 0:
             raise ValueError("resource sampler pid must be a positive integer")
         if type(raw_uptime) is not bool:
             raise ValueError("raw_uptime must be a boolean")
+        if owned_process is not None and (getattr(owned_process, "pid", None) != pid
+                                          or not callable(getattr(owned_process, "poll", None))):
+            raise ValueError("owned process must be the launched child for this PID")
 
         self.pid = pid
         self.interval = float(interval)
@@ -165,6 +169,7 @@ class ResourceSampler:
         self._clock_end = None
         self._next_due = None
         self._process = None
+        self._owned_process = owned_process
         self._create_time = None
         self._identity_status = "unavailable"
         self._finished = False
@@ -196,7 +201,8 @@ class ResourceSampler:
             self._stop_reason = "identity_unavailable"
             return
         self._create_time = normalized
-        self._identity_status = "verified"
+        if self._verify_process_identity():
+            self._identity_status = "verified"
 
     def _record_error(self, code: str, field: str, error) -> None:
         self._error_count += 1
@@ -361,62 +367,89 @@ class ResourceSampler:
         if self._process is None or self._create_time is None:
             return False
         try:
-            # Start each poll with a fresh object. psutil caches create_time on
-            # a Process instance, so reusing the constructor's object would
-            # not independently read the PID's current identity.
-            identity_process = self.backend.Process(self.pid)
-            running = identity_process.is_running()
+            if self._owned_process is not None and self._owned_process.poll() is not None:
+                self._record_error("process_exited", "owned_process", "owned child exited during sampling")
+                self._identity_status = "process_exited"
+                self._stop_reason = "process_exited"
+                return False
+            # Keep the original psutil object: is_running() compares its saved
+            # identity with the current PID. On macOS the pinned backend uses a
+            # clock-stable start time for this comparison; create_time() is only
+            # launch metadata and can change with the wall clock.
+            running = self._process.is_running()
         except Exception as error:
             status = self._failure_status(error)
             self._record_error(status, "is_running", error)
             self._identity_status = "process_exited" if status == "process_unavailable" else "unavailable"
             self._stop_reason = "process_exited" if status == "process_unavailable" else "identity_unavailable"
             return False
-        if running is not True:
+        if running is False:
             try:
-                latest_process = self.backend.Process(self.pid)
-                latest_create_time = self._normalize(latest_process.create_time(), "seconds")
+                current = self.backend.Process(self.pid)
+                current_running = current.is_running()
+                if current_running is True:
+                    if current != self._process:
+                        self._record_error("pid_reused", "is_running", "PID now belongs to a different process")
+                        self._identity_status = "reused"
+                        self._stop_reason = "pid_reused"
+                    else:
+                        self._record_error("identity_unavailable", "is_running", "original process liveness is inconsistent")
+                        self._identity_status = "unavailable"
+                        self._stop_reason = "identity_unavailable"
+                    return False
+                if current_running is not False:
+                    raise ValueError("current process liveness was not a boolean")
             except Exception as error:
                 status = self._failure_status(error)
                 if status != "process_unavailable":
-                    self._record_error("identity_unavailable", "create_time", error)
+                    self._record_error("identity_unavailable", "is_running", error)
                     self._identity_status = "unavailable"
                     self._stop_reason = "identity_unavailable"
                     return False
-                latest_create_time = _MISSING
-            if latest_create_time is None:
-                self._record_error("identity_unavailable", "create_time", "current process creation time was invalid")
-                self._identity_status = "unavailable"
-                self._stop_reason = "identity_unavailable"
-                return False
-            if latest_create_time is not _MISSING and latest_create_time != self._create_time:
-                self._record_error("pid_reused", "create_time", "PID creation time changed; refusing to sample the new process")
-                self._identity_status = "reused"
-                self._stop_reason = "pid_reused"
-                return False
             self._record_error("process_exited", "is_running", "direct process is no longer running")
             self._identity_status = "process_exited"
             self._stop_reason = "process_exited"
             return False
-        try:
-            current = self._normalize(identity_process.create_time(), "seconds")
-        except Exception as error:
-            status = self._failure_status(error)
-            self._record_error(status, "create_time", error)
-            self._identity_status = "process_exited" if status == "process_unavailable" else "unavailable"
-            self._stop_reason = "process_exited" if status == "process_unavailable" else "identity_unavailable"
-            return False
-        if current is None:
-            self._record_error("identity_unavailable", "create_time", "current process creation time was invalid")
+        if running is not True:
+            self._record_error("identity_unavailable", "is_running", "process liveness was not a boolean")
             self._identity_status = "unavailable"
             self._stop_reason = "identity_unavailable"
             return False
-        if current != self._create_time:
-            self._record_error("pid_reused", "create_time", "PID creation time changed; refusing to sample the new process")
-            self._identity_status = "reused"
-            self._stop_reason = "pid_reused"
+        try:
+            state = self._process.status()
+            if not isinstance(state, str) or not state or state == "?":
+                raise ValueError("process status is unavailable")
+            if state in {getattr(self.backend, "STATUS_ZOMBIE", "zombie"),
+                         getattr(self.backend, "STATUS_DEAD", "dead")}:
+                self._record_error("process_exited", "status", "direct process is a zombie or dead")
+                self._identity_status = "process_exited"
+                self._stop_reason = "process_exited"
+                return False
+            # Windows psutil may construct a Process when its fast creation-time
+            # lookup is denied. Compare the public, stable Windows epoch as an
+            # additional safeguard, without replacing the original object.
+            if sys.platform == "win32":
+                current = self._normalize(self.backend.Process(self.pid).create_time(), "seconds")
+                if current is None:
+                    raise ValueError("current process creation time is unavailable")
+                if current != self._create_time:
+                    self._record_error("pid_reused", "create_time", "PID creation time changed")
+                    self._identity_status = "reused"
+                    self._stop_reason = "pid_reused"
+                    return False
+            if self._process.is_running() is not True:
+                raise ValueError("original process identity changed during verification")
+            if self._owned_process is not None and self._owned_process.poll() is not None:
+                self._record_error("process_exited", "owned_process", "owned child exited during identity check")
+                self._identity_status = "process_exited"
+                self._stop_reason = "process_exited"
+                return False
+        except Exception as error:
+            status = self._failure_status(error)
+            self._record_error(status, "process_identity", error)
+            self._identity_status = "process_exited" if status == "process_unavailable" else "unavailable"
+            self._stop_reason = "process_exited" if status == "process_unavailable" else "identity_unavailable"
             return False
-        self._process = identity_process
         return True
 
     def _read_system(self, sample: dict, statuses: dict) -> None:
@@ -479,12 +512,14 @@ class ResourceSampler:
             statuses.setdefault("cpu_percent", "unavailable")
         self._previous_counters.update(current_values)
 
-    def poll(self) -> bool:
+    def poll(self, *, force: bool = False) -> bool:
         """Append one due sample; return false when not due or capture has stopped."""
+        if type(force) is not bool:
+            raise ValueError("force must be a boolean")
         if self._finished or self._stop_reason is not None or self._capped:
             return False
         poll_started = time.perf_counter()
-        if self._next_due is not None and poll_started < self._next_due:
+        if not force and self._next_due is not None and poll_started < self._next_due:
             return False
         if not self._verify_process_identity():
             return False
@@ -508,6 +543,15 @@ class ResourceSampler:
         except Exception as error:
             self._record_error("system_sample", "system", error)
 
+        # Neither counters nor partial reads from a different or vanished PID
+        # may enter the retained series or its derived deltas.
+        if not self._verify_process_identity():
+            return False
+        if sample.pop("_process_exited", False):
+            self._identity_status = "process_exited"
+            self._stop_reason = "process_exited"
+            return False
+
         sampled_at = time.perf_counter()
         elapsed = sampled_at - self._started_at
         if not math.isfinite(elapsed) or elapsed < 0:
@@ -521,18 +565,17 @@ class ResourceSampler:
             overhead = 0
         sample["poll_overhead_usec"] = int(round(overhead))
         sample["field_status"] = statuses
-        process_exited = bool(sample.pop("_process_exited", False))
-        if process_exited:
-            self._identity_status = "process_exited"
         self._samples.append(sample)
         self._next_due = sampled_at + self.interval
 
-        if process_exited:
-            self._stop_reason = "process_exited"
         if len(self._samples) >= self.max_samples:
             self._capped = True
             self._stop_reason = "sample_limit"
         return True
+
+    def latest_sample(self):
+        """Return a detached copy of the most recent complete-identity sample."""
+        return copy.deepcopy(self._samples[-1]) if self._samples else None
 
     def _summary(self) -> dict:
         peak_fields = (

@@ -1,0 +1,22 @@
+Shared vehicle material maps — license and attribution
+
+License evidence checked: 2026-11-14
+All files below come from ambientCG and are available under CC0 1.0 Universal.
+Attribution is not required; these credits are included voluntarily.
+License: https://docs.ambientcg.com/license/
+CC0 legal text: https://creativecommons.org/publicdomain/zero/1.0/
+The ambientCG asset API lists no individual creator for these assets.
+
+Fabric 004 (2x2 twill carbon fibre) — https://ambientcg.com/view?id=Fabric004
+Archive: https://ambientcg.com/get?file=Fabric004_1K-JPG.zip (unchanged members)
+  carbon_twill_albedo.jpg     <- Fabric004_1K-JPG_Color.jpg
+  carbon_twill_normal.jpg     <- Fabric004_1K-JPG_NormalGL.jpg (OpenGL, +Y)
+  carbon_twill_roughness.jpg  <- Fabric004_1K-JPG_Roughness.jpg
+
+Metal 009 (brushed metal) — https://ambientcg.com/view?id=Metal009
+Archive: https://ambientcg.com/get?file=Metal009_1K-JPG.zip (unchanged member)
+  brushed_metal_roughness.jpg <- Metal009_1K-JPG_Roughness.jpg
+
+Rubber 004 — https://ambientcg.com/view?id=Rubber004
+Archive: https://ambientcg.com/get?file=Rubber004_1K-JPG.zip
+  rubber_normal.jpg           <- Rubber004_1K-JPG_NormalGL.jpg (OpenGL, +Y), resized to 512 px (Lanczos, JPEG q92)

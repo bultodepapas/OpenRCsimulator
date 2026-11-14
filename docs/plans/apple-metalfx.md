@@ -17,6 +17,16 @@ The [twenty-investigation reinforcement](../research/desktop-delivery-investigat
 provides exact engine seams, scoped issue/forum evidence and the prepared fixture
 cases below. I01–I20 are research IDs, not completed implementation steps.
 
+The two [external performance handoffs](../research/desktop-delivery-investigations/external-handoffs-2026-11-14.md)
+are reconciled in the [master's current work order](apple-silicon-performance.md#17-external-handoff-work-order-2026-11-14).
+Use its two-consumer process-identity repair/qualified apparatus and actual product
+route manifest for resource/performance claims. Record audio, radio, cost observers,
+lens/weather and companion activation: a detached or effects-off fixture cannot
+qualify those product paths. Include the drop-cache gravity/rain/mesh negative
+controls when the image workload exercises that pool. These prerequisites improve
+evidence; they do not replace MetalFX input/history/presentation tests or require
+every optional CPU experiment before feature implementation. All four remain in scope.
+
 ## 1. Scope and completion
 
 Deliver all four technologies as real, separately selectable, capability-gated

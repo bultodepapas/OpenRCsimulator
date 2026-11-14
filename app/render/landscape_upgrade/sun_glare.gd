@@ -142,12 +142,13 @@ static func source(sky: ShaderMaterial, shadow_compensation := 1.0, exposure := 
 	var disc_lin: Vector3 = (sun_lin as Vector3) * SunOptics.DISC_RADIANCE_FACTOR
 	# The sky the sky shader draws 1° from the disc: gradient, the L1a halo and the aureole's core.
 	var aureole: Variant = sky.get_shader_parameter("sun_aureole_lin")
-	var around: Vector3 = SkyMirror.background_radiance(sky, toward) + SunOptics.sky_halo(sun_lin, 1.0) \
+	var background: Vector3 = SkyMirror.background_radiance(sky, toward)
+	var around: Vector3 = background + SunOptics.sky_halo(sun_lin, 1.0) \
 		+ (SunOptics.sky_aureole(aureole, sun_lin, 1.0, rad_to_deg(asin(clampf(toward.y, -1.0, 1.0)))) if aureole is Vector3 else Vector3.ZERO)
 	return {dir = toward, radius = float(radius) if radius != null else 0.0046251,
 		disc_lin = disc_lin, veil_lin = SunOptics.veil_colour(disc_lin, around),
 		illuminance = SunOptics.illuminance_scale(light) * d,
-		e_over_b = SunOptics.illuminance_over_background(light, SkyMirror.background_luminance(sky, toward)) * d,
+		e_over_b = SunOptics.illuminance_over_background(light, SunOptics.luminance(background)) * d,
 		kappa = SunOptics.KAPPA}
 
 

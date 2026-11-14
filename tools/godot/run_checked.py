@@ -235,7 +235,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                                                   max_samples=resource_max_samples,
                                                   disk_paths=resource_disk_paths, backend=resource_backend,
                                                   include_threads=resource_threads,
-                                                  raw_uptime=raw_helper_identity is not None)
+                                                  raw_uptime=raw_helper_identity is not None,
+                                                  owned_process=process)
                     except Exception as error:
                         resource_failure = f"{type(error).__name__}: {error}"[:1000]
                 if host_state_helper is not None:
@@ -254,7 +255,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                         helper_sampler = ResourceSampler(host.process.pid, interval=resource_interval,
                                                          max_samples=resource_max_samples,
                                                          backend=resource_backend,
-                                                         raw_uptime=raw_helper_identity is not None)
+                                                         raw_uptime=raw_helper_identity is not None,
+                                                         owned_process=host.process)
                         runner_sampler = ResourceSampler(os.getpid(), interval=resource_interval,
                                                          max_samples=resource_max_samples,
                                                          backend=resource_backend,

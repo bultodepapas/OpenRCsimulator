@@ -13,6 +13,11 @@ from run_checked import run_checked
 
 class ResourceRunnerTests(unittest.TestCase):
     def setUp(self):
+        # These fixtures execute Python children, not Godot or a shared-host
+        # workload; queue admission itself has separate integration tests.
+        queue = mock.patch("tools.testqueue.common.enabled", return_value=False)
+        queue.start()
+        self.addCleanup(queue.stop)
         self.temp = tempfile.TemporaryDirectory(prefix="openrc resources ")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
@@ -58,6 +63,7 @@ class ResourceRunnerTests(unittest.TestCase):
         self.assertEqual(factory.call_args.kwargs["interval"], .2)
         self.assertTrue(factory.call_args.kwargs["include_threads"])
         self.assertFalse(factory.call_args.kwargs["raw_uptime"])
+        self.assertEqual(factory.call_args.kwargs["owned_process"].pid, factory.call_args.args[0])
         raw = (Path(checked["report"]).parent / "resources.json").read_bytes()
         self.assertEqual(checked["resources"]["bytes"], len(raw))
         self.assertEqual(checked["resources"]["sha256"], hashlib.sha256(raw).hexdigest())
@@ -163,6 +169,10 @@ class ResourceRunnerTests(unittest.TestCase):
         self.assertEqual(host_factory.call_args.args[1], checked["capture_id"])
         self.assertEqual(factory.call_count, 3)  # game, helper and runner
         self.assertTrue(all(call.kwargs["raw_uptime"] for call in factory.call_args_list))
+        game_call, helper_call, self_call = factory.call_args_list
+        self.assertEqual(game_call.kwargs["owned_process"].pid, game_call.args[0])
+        self.assertIs(helper_call.kwargs["owned_process"], host_factory.return_value.process)
+        self.assertNotIn("owned_process", self_call.kwargs)
         overhead_file = Path(checked["report"]).parent / checked["host_state"]["overhead"]["file"]
         self.assertEqual(json.loads(overhead_file.read_text())["capture_id"], checked["capture_id"])
 

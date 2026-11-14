@@ -21,19 +21,27 @@ class AccessDenied(Exception):
 class FakeProcess:
     def __init__(self, backend):
         self.backend = backend
+        self.identity = backend.identity
+        self.created = backend.created
 
     def create_time(self):
-        return self.backend.created
+        return self.created
 
     def is_running(self):
-        return self.backend.running
+        return self.backend.running and self.identity == self.backend.identity
+
+    def __eq__(self, other):
+        return isinstance(other, FakeProcess) and self.identity == other.identity
+
+    def status(self):
+        return "running"
 
     def cpu_times(self):
         value = self.backend.cpu
         if isinstance(value, Exception):
             raise value
         if self.backend.replace_on_cpu_read:
-            self.backend.created += 1
+            self.backend.identity += 1
         return value
 
     def memory_info(self):
@@ -48,6 +56,7 @@ class FakeBackend:
 
     def __init__(self):
         self.created = 125.0
+        self.identity = 1
         self.running = True
         self.replace_on_cpu_read = False
         self.cpu = SimpleNamespace(user=4.0, system=1.0)
@@ -138,14 +147,14 @@ class CpuSamplerTests(unittest.TestCase):
     def test_darwin_rejects_replacement_exit_and_replacement_during_read(self):
         backend = FakeBackend()
         sampler = bench.DarwinCpuSampler(42, backend=backend)
-        backend.created += 1  # Replacement after launch but before the first observation.
+        backend.identity += 1  # Replacement after launch but before the first observation.
         with self.assertRaisesRegex(bench.MeasurementError, "pid_reused"):
             sampler.sample()
 
         backend = FakeBackend()
         sampler = bench.DarwinCpuSampler(42, backend=backend)
         sampler.sample()
-        backend.created += 1
+        backend.identity += 1
         with self.assertRaisesRegex(bench.MeasurementError, "reused"):
             sampler.sample()
 
@@ -161,6 +170,18 @@ class CpuSamplerTests(unittest.TestCase):
         with self.assertRaisesRegex(bench.MeasurementError, "reused"):
             sampler.sample()
 
+    def test_darwin_keeps_identity_across_epoch_jump_and_immediate_samples(self):
+        backend = FakeBackend()
+        with mock.patch("resource_samples.sys.platform", "darwin"):
+            sampler = bench.DarwinCpuSampler(42, backend=backend)
+            original = sampler.sampler._process
+            first = sampler.sample()
+            backend.created += 60.0
+            backend.cpu = SimpleNamespace(user=5.0, system=1.5)
+            second = sampler.sample()
+        self.assertIs(sampler.sampler._process, original)
+        self.assertAlmostEqual(bench.cpu_deltas(first, second)[0], 1.5)
+
     def test_darwin_rejects_unavailable_or_invalid_cpu_fields(self):
         for cpu in (AccessDenied("denied"), NotImplementedError("unsupported"),
                     SimpleNamespace(user=1.0), SimpleNamespace(user=1.0, system=math.nan),
@@ -170,6 +191,16 @@ class CpuSamplerTests(unittest.TestCase):
                 backend.cpu = cpu
                 with self.assertRaisesRegex(bench.MeasurementError, "CPU counters unavailable"):
                     bench.DarwinCpuSampler(42, backend=backend).sample()
+
+    def test_darwin_incomplete_cpu_sample_cannot_be_retried_as_complete_interval(self):
+        backend = FakeBackend()
+        backend.cpu = SimpleNamespace(user=1.0)
+        sampler = bench.DarwinCpuSampler(42, backend=backend)
+        with self.assertRaisesRegex(bench.MeasurementError, "CPU counters unavailable"):
+            sampler.sample()
+        backend.cpu = SimpleNamespace(user=4.0, system=1.0)
+        with self.assertRaisesRegex(bench.MeasurementError, "sample unavailable"):
+            sampler.sample()
 
     def test_counter_resets_and_invalid_values_never_become_cpu_rates(self):
         start = bench.CpuReading(3.0, 2.0, 1.0, 1.0)

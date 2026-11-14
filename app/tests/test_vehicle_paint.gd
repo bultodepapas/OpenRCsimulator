@@ -9,6 +9,7 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 const Mt8Model := preload("res://vehicles/ground/mt8_model.gd")
 const MonsterCar2Model := preload("res://vehicles/ground/monster_car_2_model.gd")
 const MonsterCar2Lights := preload("res://vehicles/ground/monster_car_2_lights.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 const HELI := "xcell-60-research"
 
 var checks := 0
@@ -82,10 +83,36 @@ func _check_helicopter() -> void:
 	var carbon := _materials_named(plain.root, "Fibra_de_Carbono")
 	var shared := _shared_material(plain.root, "Fibra_de_Carbono")
 	check("the HX-700 carbon fibre is restored on every build", carbon.size() == 1 and carbon[0].albedo_texture != null
-		and carbon[0].uv1_triplanar and carbon[0].albedo_color.get_luminance() < 0.3)
+		and carbon[0].albedo_texture.resource_path.contains("carbon_twill") and carbon[0].uv1_triplanar)
+	check("carbon detail maps are drawn above Low scene detail", carbon.size() == 1 and carbon[0].normal_enabled
+		and carbon[0].normal_texture != null and carbon[0].roughness_texture != null
+		and carbon[0].texture_filter == BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC)
+	var blade := _materials_named(plain.root, "Pala_Carbono")
+	check("blades stay dark so the rotor blur keeps a carbon colour", blade.size() == 1
+		and blade[0].albedo_color.get_luminance() < 0.3 and blade[0].clearcoat_enabled)
 	check("the shared imported carbon material is untouched", shared != null and shared.albedo_texture == null
 		and shared.albedo_color.is_equal_approx(Color.WHITE))
+	var factory_canopy := _materials_named(plain.root, "Pintura_Carenado")
+	check("the Original canopy keeps the author's roughness mask", factory_canopy.size() == 1
+		and factory_canopy[0].roughness_texture != null and not factory_canopy[0].has_meta(VehiclePaint.ORIGIN_META))
 	plain.root.free()
+	# --scene_detail / OPENRC_SCENE_DETAIL outrank the saved preference; only force Low when neither is set.
+	var forced: bool = OS.get_environment("OPENRC_SCENE_DETAIL") != ""
+	for argument: String in OS.get_cmdline_user_args():
+		forced = forced or argument.begins_with("--scene_detail=")
+	if not forced:
+		var previous: String = SceneDetail._preference
+		SceneDetail.set_preference("low")
+		var modest: Dictionary = HX700.build()
+		var modest_carbon := _materials_named(modest.root, "Fibra_de_Carbono")
+		var modest_blade := _materials_named(modest.root, "Pala_Carbono")
+		check("Low scene detail skips the detail maps but keeps the carbon colour", modest_carbon.size() == 1
+			and modest_carbon[0].normal_texture == null and modest_carbon[0].roughness_texture == null
+			and modest_carbon[0].albedo_texture != null)
+		check("Low keeps the sheen: blades use multiplier x map mean, without triplanar", modest_blade.size() == 1
+			and modest_blade[0].roughness < 0.3 and not modest_blade[0].uv1_triplanar, str(modest_blade[0].roughness if modest_blade.size() == 1 else -1.0))
+		modest.root.free()
+		SceneDetail.set_preference(previous)
 	var choices: Array = VehiclePaint.choices(HELI)
 	var painted: Dictionary = AirplaneBuilder.build(HELI, NAN, {}, str(choices[1].id))
 	check("a stock HX-700 paint builds through AirplaneBuilder", not painted.is_empty()

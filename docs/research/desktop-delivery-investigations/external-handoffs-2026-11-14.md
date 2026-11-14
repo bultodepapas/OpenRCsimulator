@@ -150,3 +150,446 @@ It does not supersede the user's later explicit four-MetalFX implementation scop
 App-level preparation and feature research may progress independently; hardware
 timing remains serial. Public signed distribution stays deferred. No runtime or
 performance gate is closed by this document integration.
+
+
+## Portable claim-to-source map
+
+The following preserves the supplied reference IDs and exact targets. C references
+name the external review's immutable OpenRC source/evidence snapshots; U references
+name its pinned engine implementation; P references are its external bibliography.
+They are retained citations, not a claim that every external page or historical
+artifact was independently re-executed or requalified during this integration.
+The dispositions above govern applicability to current work.
+
+| External entry / evidence | Supplied source references |
+| --- | --- |
+| 10 | [C23], [C24], [P16] |
+| 11 | [C29], [C30], [C31], [C32], [P20] |
+| 12 | [C27] |
+| 13 | [C35], [C36], [C41], [P19] |
+| 14 | [C33], [C34], [U02], [P09], [P10], [P11], [P12], [P13] |
+| 15 | [C38], [C39], [U01], [P21], [P15] |
+| 16 | [C40], [C05], [C06], [P17], [P18] |
+| 17 | [C19], [C20], [C15] |
+| 18 | [C21], [C22], [C06] |
+| 19 | [C35], [C36], [C37] |
+| 20 | [C05], [C11], [C42], [U03], [U04], [U05], [U06], [P01], [P02], [P03], [P04], [P05], [P23], [P24], [P25], [P26], [P27], [P28] |
+| 01 | [C12], [C13], [C14], [P32], [P33] |
+| 02 | [C02], [C03], [C05], [C07], [C21], [C42], [C44], [C45], [C47] |
+| 03 | [C02], [C23], [C24] |
+| 04 | [C15], [C16], [C17], [C91] |
+| 05 | [C15], [C18] |
+| 06 | [C19], [C20], [C50] |
+| 07 | [C23], [C24], [P30], [P31] |
+| 08 | [C28], [C29], [C31] |
+| 09 | [C26], [C22] |
+| D01 | [C52], [C53], [C91] |
+| D02 | [C52], [C54], [C56] |
+| D03 | [C57], [C58], [C59], [C90] |
+| D04 | [C74], [C75], [C76], [U07] |
+| D05 | [C64], [C65], [C66], [C67] |
+| D06 | [C59], [C61], [C62], [C63], [C92] |
+| D07 | [C68], [C69], [C70], [C71], [C72], [C73], [U12], [U13] |
+| D08 | [C53], [C54], [C55] |
+| D09 | [C77], [C78], [C61], [U08], [U11] |
+| D10 | [C79], [C80], [U07], [U08] |
+| D11 | [C79], [C80], [C81], [C82], [C83], [C85], [U09], [U10] |
+| D12 | [C59], [C60] |
+| §16.8 drop cache | [C79], [C84] |
+| Allocation/CPU attribution | [P34], [P35], [P36] |
+| Review identities/fingerprints | [C01], [C08], [C09], [C43], [C51] |
+
+### Preserved source catalog
+
+| Ref | Kind | Exact supplied target |
+| --- | --- | --- |
+| C01 | OpenRC snapshot | [b80a4b214878e97313d2f93901b32174bb0713ea](https://github.com/bultodepapas/OpenRCsimulator/commit/b80a4b214878e97313d2f93901b32174bb0713ea) |
+| C02 | OpenRC snapshot | [README.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/research/native-kernel/DT-MAC-04n4/README.md) |
+| C03 | OpenRC snapshot | [apple-silicon-performance.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/plans/apple-silicon-performance.md) |
+| C04 | OpenRC snapshot | [APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md) |
+| C05 | OpenRC snapshot | [project.godot](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/project.godot) |
+| C06 | OpenRC snapshot | [CONSOLIDATED-AUDITS.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/external%20Audits/CONSOLIDATED-AUDITS.md) |
+| C07 | OpenRC snapshot | [README.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/performance/README.md) |
+| C08 | OpenRC snapshot | [build.py](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/build.py#L231-L239) |
+| C09 | OpenRC snapshot | [flight_log.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/flight_log.gd#L409-L419) |
+| C10 | OpenRC snapshot | [simulation.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/simulation.gd) |
+| C11 | OpenRC snapshot | [build_macos.py](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/build_macos.py) |
+| C12 | OpenRC snapshot | [resource_samples.py](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/tools/godot/resource_samples.py#L360-L419) |
+| C13 | OpenRC snapshot | [app_cpu_per_sim.py](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/performance/app_cpu_per_sim.py#L86-L128) |
+| C14 | OpenRC snapshot | [sustained_resources.py](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/performance/sustained_resources.py) |
+| C15 | OpenRC snapshot | [nk_stage.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_stage.hpp) |
+| C16 | OpenRC snapshot | [nk_glow_stage.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_glow_stage.hpp#L318-L325) |
+| C17 | OpenRC snapshot | [nk_liquid_stage.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_liquid_stage.hpp#L138-L147) |
+| C18 | OpenRC snapshot | [nk_prop.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_prop.hpp#L105-L129) |
+| C19 | OpenRC snapshot | [native_stage.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/native_stage.gd) |
+| C20 | OpenRC snapshot | [native_macos_domain.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/native_macos_domain.gd) |
+| C21 | OpenRC snapshot | [main.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/main.gd) |
+| C22 | OpenRC snapshot | [flight_session.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/flight_session.gd) |
+| C23 | OpenRC snapshot | [glow_audio_pump.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/audio/glow_audio_pump.gd) |
+| C24 | OpenRC snapshot | [soundscape.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/audio/soundscape.gd) |
+| C25 | OpenRC snapshot | [tests](https://github.com/bultodepapas/OpenRCsimulator/tree/b80a4b214878e97313d2f93901b32174bb0713ea/app/tests) |
+| C26 | OpenRC snapshot | [flight_audio.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/audio/flight_audio.gd) |
+| C27 | OpenRC snapshot | [water.gdshader](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/lake/water.gdshader) |
+| C28 | OpenRC snapshot | [cloud_shadow_map.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/cloud_shadow_map.gd) |
+| C29 | OpenRC snapshot | [sky.gdshader](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/sky.gdshader) |
+| C30 | OpenRC snapshot | [sky_appearance.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/weather/sky_appearance.gd) |
+| C31 | OpenRC snapshot | [atmosphere.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/atmosphere.gd) |
+| C32 | OpenRC snapshot | [sky_state.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/world/sky_state.gd) |
+| C33 | OpenRC snapshot | [grass_surface.gdshaderinc](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/grass_surface.gdshaderinc) |
+| C34 | OpenRC snapshot | [ground.gdshader](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/ground.gdshader) |
+| C35 | OpenRC snapshot | [near_grass.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/near_grass.gd) |
+| C36 | OpenRC snapshot | [runway_meadow.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/scenery/runway_meadow.gd) |
+| C37 | OpenRC snapshot | [imported_vegetation_wind.gdshader](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/scenery/imported_vegetation_wind.gdshader) |
+| C38 | OpenRC snapshot | [reconstruction.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/reconstruction.gd) |
+| C39 | OpenRC snapshot | [metalfx_policy.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/metalfx_policy.gd) |
+| C40 | OpenRC snapshot | [imported_vegetation.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/scenery/imported_vegetation.gd) |
+| C41 | OpenRC snapshot | [field.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/field.gd) |
+| C42 | OpenRC snapshot | [export.sh](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/export.sh) |
+| C43 | OpenRC snapshot | [apple-silicon-m1-experiments-2026-11-12.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/research/native-kernel/apple-silicon-m1-experiments-2026-11-12.md) |
+| C44 | OpenRC snapshot | [README.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/tools/README.md) |
+| C45 | OpenRC snapshot | [macos-m1.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/tools/macos-m1.md) |
+| C46 | OpenRC snapshot | [README.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/tools/debug/README.md) |
+| C47 | OpenRC snapshot | [README.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/tools/godtest/README.md) |
+| C48 | OpenRC snapshot | [ci_macos.py](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/ci_macos.py#L110-L128) |
+| C49 | OpenRC snapshot | [COMPLETED-AUDIT-WORK.md](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/external%20Audits/COMPLETED-AUDIT-WORK.md) |
+| C50 | OpenRC snapshot | [native_macos_admission.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/native_macos_admission.gd) |
+| C51 | OpenRC snapshot | [bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c](https://github.com/bultodepapas/OpenRCsimulator/commit/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c) |
+| C52 | OpenRC snapshot | [nk_stage.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_stage.hpp) |
+| C53 | OpenRC snapshot | [nk_wheels.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_wheels.hpp) |
+| C54 | OpenRC snapshot | [nk_retractable.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_retractable.hpp#L48-L105) |
+| C55 | OpenRC snapshot | [nk_kernel.cpp](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_kernel.cpp#L1661-L1685) |
+| C56 | OpenRC snapshot | [nk_gear_binding.hpp](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_gear_binding.hpp#L45-L72) |
+| C57 | OpenRC snapshot | [scenery_collision.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/scenery_collision.gd) |
+| C58 | OpenRC snapshot | [lake_collision.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/lake_collision.gd#L44-L110) |
+| C59 | OpenRC snapshot | [flight_session.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/flight_session.gd) |
+| C60 | OpenRC snapshot | [flight.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/physics/glow/flight.gd#L230-L253) |
+| C61 | OpenRC snapshot | [main.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/main.gd) |
+| C62 | OpenRC snapshot | [ground_wheels.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/physics/ground_wheels.gd#L216-L233) |
+| C63 | OpenRC snapshot | [aircraft_contact_events.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/aircraft_contact_events.gd#L279-L294) |
+| C64 | OpenRC snapshot | [pilot.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/ai/companions/pilot.gd) |
+| C65 | OpenRC snapshot | [agent.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/ai/companions/agent.gd#L149-L189) |
+| C66 | OpenRC snapshot | [manager.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/ai/companions/manager.gd#L167-L235) |
+| C67 | OpenRC snapshot | [performance-report-2026-11-09.md](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/performance-report-2026-11-09.md#L104-L145) |
+| C68 | OpenRC snapshot | [rc_input.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/input/rc_input.gd) |
+| C69 | OpenRC snapshot | [controller_service.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/input/controller_service.gd#L174-L190) |
+| C70 | OpenRC snapshot | [controller_registry.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/input/controller_registry.gd#L132-L151) |
+| C71 | OpenRC snapshot | [README.md](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/controller-support-2026-10-14/cost/README.md) |
+| C72 | OpenRC snapshot | [sustained_flight.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/performance/sustained_flight.gd) |
+| C73 | OpenRC snapshot | [session_probe.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/performance/session_probe.gd#L126-L149) |
+| C74 | OpenRC snapshot | [sun_glare.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/landscape_upgrade/sun_glare.gd#L129-L191) |
+| C75 | OpenRC snapshot | [sky_mirror.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/sun/sky_mirror.gd#L19-L52) |
+| C76 | OpenRC snapshot | [sun_optics.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/sun/sun_optics.gd#L172-L180) |
+| C77 | OpenRC snapshot | [shader_clock.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/shader_clock.gd#L1-L37) |
+| C78 | OpenRC snapshot | [world.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/world/world.gd) |
+| C79 | OpenRC snapshot | [lens_stack.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lens/lens_stack.gd) |
+| C80 | OpenRC snapshot | [lens_settings.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lens/lens_settings.gd#L14-L71) |
+| C81 | OpenRC snapshot | [water_effects.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lake/water_effects.gd) |
+| C82 | OpenRC snapshot | [director.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/crash/director.gd#L148-L182) |
+| C83 | OpenRC snapshot | [lightning.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/weather/lightning.gd) |
+| C84 | OpenRC snapshot | [drop_pool.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lens/drop_pool.gd#L133-L275) |
+| C85 | OpenRC snapshot | [storm_bank.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/weather/storm_bank.gd#L175-L203) |
+| C86 | OpenRC snapshot | [metalfx-frame-generation-2026-11-14.md](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/desktop-delivery-investigations/metalfx-frame-generation-2026-11-14.md) |
+| C87 | OpenRC snapshot | [detector.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/statistics/detector.gd#L614-L719) |
+| C88 | OpenRC snapshot | [service.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/statistics/service.gd#L655-L678) |
+| C89 | OpenRC snapshot | [overlay_manager.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/overlays/overlay_manager.gd) |
+| C90 | OpenRC snapshot | [stik_glow_61fx_2t.json](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/data/aircraft/stik_glow_61fx_2t.json) |
+| C91 | OpenRC snapshot | [README.md](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/native-kernel/NK-3/README.md#L194-L200) |
+| C92 | OpenRC snapshot | [ground_contact.gd](https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/physics/ground_contact.gd#L429-L440) |
+| P01 | External bibliography | [dev-snapshot-godot-4-8-beta-2](https://godotengine.org/article/dev-snapshot-godot-4-8-beta-2/) |
+| P02 | External bibliography | [dev-snapshot-godot-4-8-beta-3](https://godotengine.org/article/dev-snapshot-godot-4-8-beta-3/) |
+| P03 | External bibliography | [building-a-universal-macos-binary](https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary) |
+| P04 | External bibliography | [about-the-rosetta-translation-environment](https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment) |
+| P05 | External bibliography | [tuning-your-code-s-performance-for-apple-silicon](https://developer.apple.com/documentation/apple-silicon/tuning-your-code-s-performance-for-apple-silicon) |
+| P06 | External bibliography | [analyzing-the-performance-of-your-metal-app](https://developer.apple.com/documentation/xcode/analyzing-the-performance-of-your-metal-app) |
+| P07 | External bibliography | [large_world_coordinates.html](https://docs.godotengine.org/en/4.6/tutorials/physics/large_world_coordinates.html) |
+| P08 | External bibliography | [multiple_resolutions.html](https://docs.godotengine.org/en/4.6/tutorials/rendering/multiple_resolutions.html) |
+| P09 | External bibliography | [tailor-your-apps-for-apple-gpus-and-tile-based-deferred-rendering](https://developer.apple.com/documentation/metal/tailor-your-apps-for-apple-gpus-and-tile-based-deferred-rendering) |
+| P10 | External bibliography | [setting-load-and-store-actions](https://developer.apple.com/documentation/metal/setting-load-and-store-actions) |
+| P11 | External bibliography | [choosing-a-resource-storage-mode-for-apple-gpus](https://developer.apple.com/documentation/metal/choosing-a-resource-storage-mode-for-apple-gpus) |
+| P12 | External bibliography | [analyzing-apple-gpu-performance-using-counter-statistics](https://developer.apple.com/documentation/xcode/analyzing-apple-gpu-performance-using-counter-statistics) |
+| P13 | External bibliography | [optimizing-gpu-performance](https://developer.apple.com/documentation/xcode/optimizing-gpu-performance) |
+| P14 | External bibliography | [monitoring-your-metal-apps-graphics-performance](https://developer.apple.com/documentation/xcode/monitoring-your-metal-apps-graphics-performance) |
+| P15 | External bibliography | [understanding-metal-performance-hud-metrics](https://developer.apple.com/documentation/xcode/understanding-metal-performance-hud-metrics) |
+| P16 | External bibliography | [Timers.html](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/Timers.html) |
+| P17 | External bibliography | [importing_images.html](https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_images.html) |
+| P18 | External bibliography | [optimizing-texture-data](https://developer.apple.com/documentation/metal/optimizing-texture-data) |
+| P19 | External bibliography | [thread_safe_apis.html](https://docs.godotengine.org/en/stable/tutorials/performance/thread_safe_apis.html) |
+| P20 | External bibliography | [sky_shader.html](https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/sky_shader.html) |
+| P21 | External bibliography | [10103](https://developer.apple.com/videos/play/wwdc2022/10103/) |
+| P22 | External bibliography | [pipeline_compilations.html](https://docs.godotengine.org/en/latest/tutorials/performance/pipeline_compilations.html) |
+| P23 | External bibliography | [UsersManual.html](https://clang.llvm.org/docs/UsersManual.html) |
+| P24 | External bibliography | [ThinLTO.html](https://clang.llvm.org/docs/ThinLTO.html) |
+| P25 | External bibliography | [improving-your-games-graphics-performance-and-settings](https://developer.apple.com/documentation/metal/improving-your-games-graphics-performance-and-settings) |
+| P26 | External bibliography | [105118](https://support.apple.com/en-la/105118) |
+| P27 | External bibliography | [125124](https://github.com/godotengine/godot/issues/125124) |
+| P28 | External bibliography | [compiling_for_macos.html](https://docs.godotengine.org/en/4.6/engine_details/development/compiling/compiling_for_macos.html) |
+| P29 | External bibliography | [debugger_panel.html](https://docs.godotengine.org/en/4.6/tutorials/scripting/debug/debugger_panel.html) |
+| P30 | External bibliography | [class_audiostreamgenerator.html](https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html) |
+| P31 | External bibliography | [class_audiostreamgeneratorplayback.html](https://docs.godotengine.org/en/stable/classes/class_audiostreamgeneratorplayback.html) |
+| P32 | External bibliography | [__init__.py](https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/__init__.py) |
+| P33 | External bibliography | [_psosx.py](https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/_psosx.py) |
+| P34 | External bibliography | [gathering-information-about-memory-use](https://developer.apple.com/documentation/xcode/gathering-information-about-memory-use) |
+| P35 | External bibliography | [addressing-cpu-bottlenecks](https://developer.apple.com/documentation/xcode/addressing-cpu-bottlenecks) |
+| P36 | External bibliography | [analyzing-cpu-usage-with-processor-trace](https://developer.apple.com/documentation/xcode/analyzing-cpu-usage-with-processor-trace) |
+| U01 | Pinned engine | [renderer_viewport.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L145-L198) |
+| U02 | Pinned engine | [render_forward_mobile.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/forward_mobile/render_forward_mobile.cpp) |
+| U03 | Pinned engine | [detect.py](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/platform/macos/detect.py) |
+| U04 | Pinned engine | [SConstruct](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/SConstruct) |
+| U05 | Pinned engine | [texture_streaming.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/texture_streaming/texture_streaming.cpp#L224-L227) |
+| U06 | Pinned engine | [ProjectSettings.xml](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/ProjectSettings.xml#L3541) |
+| U07 | Pinned engine | [material.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/resources/material.cpp#L422-L461) |
+| U08 | Pinned engine | [material_storage.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/material_storage.cpp) |
+| U09 | Pinned engine | [mesh_storage.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp#L1815-L2013) |
+| U10 | Pinned engine | [multimesh.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/resources/multimesh.cpp#L258-L286) |
+| U11 | Pinned engine | [material_storage.h](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/material_storage.h#L202-L223) |
+| U12 | Pinned engine | [input.cpp](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/input/input.cpp) |
+| U13 | Pinned engine | [thread_safe.h](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/os/thread_safe.h#L30-L39) |
+
+### Preserved synthetic witness source
+
+This is the supplied source text whose hash was verified above. It is retained
+for reproducibility, without running it or adopting its replacement allocator.
+It is not a new benchmark, production test, native artifact or command to execute.
+Any later target reproduction uses a disposable, source-bound fixture and the
+existing tool/host ownership rules; production parity requires separate evidence.
+
+```cpp
+// Linux x86-64 allocation-count witness; calls OpenRC headers directly.
+// No Godot, app, native extension, target-device timing, or production changes.
+#include <cstdio>
+#include <cstdlib>
+#include <new>
+#include <vector>
+#include "nk_retractable.hpp"
+
+static bool counting = false;
+static unsigned long long allocations = 0;
+static unsigned long long requested_bytes = 0;
+
+void* operator new(std::size_t n) {
+    if (counting) { ++allocations; requested_bytes += n; }
+    if (void* p = std::malloc(n ? n : 1)) return p;
+    throw std::bad_alloc();
+}
+void* operator new[](std::size_t n) { return ::operator new(n); }
+void operator delete(void* p) noexcept { std::free(p); }
+void operator delete[](void* p) noexcept { std::free(p); }
+void operator delete(void* p, std::size_t) noexcept { std::free(p); }
+void operator delete[](void* p, std::size_t) noexcept { std::free(p); }
+
+static void start_count() { allocations = 0; requested_bytes = 0; counting = true; }
+static void stop_count(const char* label) {
+    counting = false;
+    std::printf("%s: allocations=%llu requested_bytes=%llu\n", label, allocations, requested_bytes);
+}
+int main() {
+    nk::GroundContext original;
+    original.gear.empty = false;
+    original.gear.contacts.resize(3);
+    original.gear.reach = 1.0;
+    original.surfaces.values.resize(24);
+    original.lake.present = true;
+    original.lake.shoreline.resize(40);
+    original.lake.bank.resize(40);
+    original.lake.profile_inset.resize(3);
+    original.lake.profile_depth.resize(3);
+    nk::RetractableModel model;
+    model.enabled = true;
+    model.drag_area = 0.1;
+    model.paths.resize(3);
+    for (auto &p : model.paths) p = {0.0, 0.0, 0.0, 0.1, 0.2, 0.3};
+    nk::GroundContext posed;
+    start_count();
+    posed = original;
+    bool ok = nk::retractable_pose(original.gear, model, 1.0, posed.gear);
+    stop_count("cold_ground_copy_and_down_pose");
+    if (!ok || posed.gear.contacts.size() != 3) return 1;
+    start_count();
+    for (int i=0; i<1000; ++i) {
+        posed = original;
+        if (!nk::retractable_pose(original.gear, model, (i&1) ? 0.5 : 1.0, posed.gear)) return 2;
+    }
+    stop_count("warm_ground_copy_and_pose_1000");
+    nk::R state[13] = {};
+    state[2] = -30.0;
+    state[6] = 1.0;
+    double speeds[3] = {0.0, 0.0, 0.0};
+    std::vector<nk::R> loads;
+    volatile double sink = 0.0;
+    start_count();
+    for (int i=0; i<1000; ++i) {
+        std::vector<nk::R> rates;
+        if (!nk::wheels_evaluate(state, original, 0.0, nullptr, 0, speeds, 3, 0.0, loads, rates)
+            || rates.size() != 3 || !loads.empty()) return 3;
+        sink += rates[0].v;
+    }
+    stop_count("fresh_airborne_wheel_rates_1000");
+    std::vector<nk::R> reusable_rates;
+    reusable_rates.reserve(3);
+    start_count();
+    for (int i=0; i<1000; ++i) {
+        if (!nk::wheels_evaluate(state, original, 0.0, nullptr, 0, speeds, 3, 0.0, loads, reusable_rates)
+            || reusable_rates.size() != 3 || !loads.empty()) return 4;
+        sink += reusable_rates[0].v;
+    }
+    stop_count("reused_airborne_wheel_rates_1000");
+    nk::R air[3] = {20.0, 0.0, 0.0};
+    start_count();
+    for (int i=0; i<1000; ++i) {
+        auto drag = nk::retractable_drag(state, air, model, 1.0, 1.225);
+        if (drag.size() != 6) return 5;
+        sink += drag[0].v;
+    }
+    stop_count("fully_down_drag_1000");
+    start_count();
+    for (int i=0; i<1000; ++i) {
+        auto drag = nk::retractable_drag(state, air, model, 0.0, 1.225);
+        if (!drag.empty()) return 6;
+    }
+    stop_count("fully_retracted_drag_1000");
+    std::printf("sizeof_R=%zu sizeof_WheelContact=%zu sink=%.1f\n", sizeof(nk::R), sizeof(nk::WheelContact), static_cast<double>(sink));
+}
+```
+
+[C01]: https://github.com/bultodepapas/OpenRCsimulator/commit/b80a4b214878e97313d2f93901b32174bb0713ea
+[C02]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/research/native-kernel/DT-MAC-04n4/README.md
+[C03]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/plans/apple-silicon-performance.md
+[C04]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/APPLE_SILICON_NATIVE_KERNEL_IMPLEMENTATION_PLAN.md
+[C05]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/project.godot
+[C06]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/external%20Audits/CONSOLIDATED-AUDITS.md
+[C07]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/performance/README.md
+[C08]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/build.py#L231-L239
+[C09]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/flight_log.gd#L409-L419
+[C10]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/simulation.gd
+[C11]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/build_macos.py
+[C12]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/tools/godot/resource_samples.py#L360-L419
+[C13]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/performance/app_cpu_per_sim.py#L86-L128
+[C14]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/performance/sustained_resources.py
+[C15]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_stage.hpp
+[C16]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_glow_stage.hpp#L318-L325
+[C17]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_liquid_stage.hpp#L138-L147
+[C18]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/src/nk_prop.hpp#L105-L129
+[C19]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/native_stage.gd
+[C20]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/native_macos_domain.gd
+[C21]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/main.gd
+[C22]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/flight_session.gd
+[C23]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/audio/glow_audio_pump.gd
+[C24]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/audio/soundscape.gd
+[C25]: https://github.com/bultodepapas/OpenRCsimulator/tree/b80a4b214878e97313d2f93901b32174bb0713ea/app/tests
+[C26]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/audio/flight_audio.gd
+[C27]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/lake/water.gdshader
+[C28]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/cloud_shadow_map.gd
+[C29]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/sky.gdshader
+[C30]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/weather/sky_appearance.gd
+[C31]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/atmosphere.gd
+[C32]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/world/sky_state.gd
+[C33]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/grass_surface.gdshaderinc
+[C34]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/ground.gdshader
+[C35]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/near_grass.gd
+[C36]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/scenery/runway_meadow.gd
+[C37]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/scenery/imported_vegetation_wind.gdshader
+[C38]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/reconstruction.gd
+[C39]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/metalfx_policy.gd
+[C40]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/scenery/imported_vegetation.gd
+[C41]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/render/field.gd
+[C42]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/export.sh
+[C43]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/research/native-kernel/apple-silicon-m1-experiments-2026-11-12.md
+[C44]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/tools/README.md
+[C45]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/docs/tools/macos-m1.md
+[C46]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/tools/debug/README.md
+[C47]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/tools/godtest/README.md
+[C48]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/research/native-kernel/ci_macos.py#L110-L128
+[C49]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/external%20Audits/COMPLETED-AUDIT-WORK.md
+[C50]: https://github.com/bultodepapas/OpenRCsimulator/blob/b80a4b214878e97313d2f93901b32174bb0713ea/app/sim/native_macos_admission.gd
+[C51]: https://github.com/bultodepapas/OpenRCsimulator/commit/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c
+[C52]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_stage.hpp
+[C53]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_wheels.hpp
+[C54]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_retractable.hpp#L48-L105
+[C55]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_kernel.cpp#L1661-L1685
+[C56]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/native-kernel/src/nk_gear_binding.hpp#L45-L72
+[C57]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/scenery_collision.gd
+[C58]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/lake_collision.gd#L44-L110
+[C59]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/flight_session.gd
+[C60]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/physics/glow/flight.gd#L230-L253
+[C61]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/main.gd
+[C62]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/physics/ground_wheels.gd#L216-L233
+[C63]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/sim/aircraft_contact_events.gd#L279-L294
+[C64]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/ai/companions/pilot.gd
+[C65]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/ai/companions/agent.gd#L149-L189
+[C66]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/ai/companions/manager.gd#L167-L235
+[C67]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/performance-report-2026-11-09.md#L104-L145
+[C68]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/input/rc_input.gd
+[C69]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/input/controller_service.gd#L174-L190
+[C70]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/input/controller_registry.gd#L132-L151
+[C71]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/controller-support-2026-10-14/cost/README.md
+[C72]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/performance/sustained_flight.gd
+[C73]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/research/performance/session_probe.gd#L126-L149
+[C74]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/landscape_upgrade/sun_glare.gd#L129-L191
+[C75]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/sun/sky_mirror.gd#L19-L52
+[C76]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/sun/sun_optics.gd#L172-L180
+[C77]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/shader_clock.gd#L1-L37
+[C78]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/world/world.gd
+[C79]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lens/lens_stack.gd
+[C80]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lens/lens_settings.gd#L14-L71
+[C81]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lake/water_effects.gd
+[C82]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/crash/director.gd#L148-L182
+[C83]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/weather/lightning.gd
+[C84]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/lens/drop_pool.gd#L133-L275
+[C85]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/weather/storm_bank.gd#L175-L203
+[C86]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/desktop-delivery-investigations/metalfx-frame-generation-2026-11-14.md
+[C87]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/statistics/detector.gd#L614-L719
+[C88]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/statistics/service.gd#L655-L678
+[C89]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/render/overlays/overlay_manager.gd
+[C90]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/data/aircraft/stik_glow_61fx_2t.json
+[C91]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/docs/research/native-kernel/NK-3/README.md#L194-L200
+[C92]: https://github.com/bultodepapas/OpenRCsimulator/blob/bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c/app/physics/ground_contact.gd#L429-L440
+[P01]: https://godotengine.org/article/dev-snapshot-godot-4-8-beta-2/
+[P02]: https://godotengine.org/article/dev-snapshot-godot-4-8-beta-3/
+[P03]: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
+[P04]: https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment
+[P05]: https://developer.apple.com/documentation/apple-silicon/tuning-your-code-s-performance-for-apple-silicon
+[P06]: https://developer.apple.com/documentation/xcode/analyzing-the-performance-of-your-metal-app
+[P07]: https://docs.godotengine.org/en/4.6/tutorials/physics/large_world_coordinates.html
+[P08]: https://docs.godotengine.org/en/4.6/tutorials/rendering/multiple_resolutions.html
+[P09]: https://developer.apple.com/documentation/metal/tailor-your-apps-for-apple-gpus-and-tile-based-deferred-rendering
+[P10]: https://developer.apple.com/documentation/metal/setting-load-and-store-actions
+[P11]: https://developer.apple.com/documentation/metal/choosing-a-resource-storage-mode-for-apple-gpus
+[P12]: https://developer.apple.com/documentation/xcode/analyzing-apple-gpu-performance-using-counter-statistics
+[P13]: https://developer.apple.com/documentation/xcode/optimizing-gpu-performance
+[P14]: https://developer.apple.com/documentation/xcode/monitoring-your-metal-apps-graphics-performance
+[P15]: https://developer.apple.com/documentation/xcode/understanding-metal-performance-hud-metrics
+[P16]: https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/Timers.html
+[P17]: https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_images.html
+[P18]: https://developer.apple.com/documentation/metal/optimizing-texture-data
+[P19]: https://docs.godotengine.org/en/stable/tutorials/performance/thread_safe_apis.html
+[P20]: https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/sky_shader.html
+[P21]: https://developer.apple.com/videos/play/wwdc2022/10103/
+[P22]: https://docs.godotengine.org/en/latest/tutorials/performance/pipeline_compilations.html
+[P23]: https://clang.llvm.org/docs/UsersManual.html
+[P24]: https://clang.llvm.org/docs/ThinLTO.html
+[P25]: https://developer.apple.com/documentation/metal/improving-your-games-graphics-performance-and-settings
+[P26]: https://support.apple.com/en-la/105118
+[P27]: https://github.com/godotengine/godot/issues/125124
+[P28]: https://docs.godotengine.org/en/4.6/engine_details/development/compiling/compiling_for_macos.html
+[P29]: https://docs.godotengine.org/en/4.6/tutorials/scripting/debug/debugger_panel.html
+[P30]: https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html
+[P31]: https://docs.godotengine.org/en/stable/classes/class_audiostreamgeneratorplayback.html
+[P32]: https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/__init__.py
+[P33]: https://github.com/giampaolo/psutil/blob/release-7.2.2/psutil/_psosx.py
+[P34]: https://developer.apple.com/documentation/xcode/gathering-information-about-memory-use
+[P35]: https://developer.apple.com/documentation/xcode/addressing-cpu-bottlenecks
+[P36]: https://developer.apple.com/documentation/xcode/analyzing-cpu-usage-with-processor-trace
+[U01]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L145-L198
+[U02]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/forward_mobile/render_forward_mobile.cpp
+[U03]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/platform/macos/detect.py
+[U04]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/SConstruct
+[U05]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/texture_streaming/texture_streaming.cpp#L224-L227
+[U06]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/ProjectSettings.xml#L3541
+[U07]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/resources/material.cpp#L422-L461
+[U08]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/material_storage.cpp
+[U09]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp#L1815-L2013
+[U10]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/resources/multimesh.cpp#L258-L286
+[U11]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/material_storage.h#L202-L223
+[U12]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/input/input.cpp
+[U13]: https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/os/thread_safe.h#L30-L39
+
