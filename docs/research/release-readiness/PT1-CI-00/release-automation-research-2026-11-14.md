@@ -60,6 +60,19 @@ Workflow elapsed time, queueing and summed job durations are different measureme
 
 **Decision: measure before rescheduling.** Record comparable source/run/attempt/ref, runner/cache state, queue time, setup/import/case times, critical path and total runner minutes. Reconcile one completed run against its DAG and phase summary; inspect named failed-step logs instead of repeatedly loading full artifacts.
 
+A read-only follow-up inspected [completed v0.2.7 run 43328373987](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43328373987) through its [jobs metadata](https://api.github.com/repos/bultodepapas/OpenRCsimulator/actions/runs/43328373987/jobs?per_page=100). Of 24 jobs, 22 executed and two were skipped. Durations are `(completed_at - started_at) / 60`:
+
+| Historical measurement | Minutes |
+| --- | ---: |
+| First executed job start to last executed job completion | 139.30 |
+| Sum of executed job durations, including concurrent work | 499.48 |
+| Visual captures job | 128.80 |
+| Integration job | 56.97 |
+| Desktop export job | 26.72 |
+| Publication job | 4.43 |
+
+These are one historical run's API timestamps, not billed minutes, a matched comparison, a current-run ETA or a demonstrated improvement. They support inspecting visual phase timing first. No additional live-run monitor or new workflow was started to obtain them.
+
 ## 8. Tag and release immutability
 
 **Question:** Do annotated tags and rechecks eliminate publication races?
