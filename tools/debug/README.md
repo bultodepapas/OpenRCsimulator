@@ -3,6 +3,11 @@
 On an enrolled shared host, [test-queue admission](../testqueue/README.md) owns launch
 and teardown. Retain the returned `OPENRC_TESTQUEUE_HANDLE` on CLI commands; MCP
 retains its own handle. A port or last-launch pointer alone cannot authorize control.
+Managed MCP `sim_launch` returns when the queue accepts the request; if `ready` is
+false, use `sim_session_status` to follow it and `sim_stop` to cancel it. Waiting or
+disconnecting does not abandon ownership. General debug sessions are exclusive,
+including headless ones, because their controls can start profiling or interactive
+work. For independent aircraft stills, use the queue's `aircraft-screenshot` preset.
 The standalone behavior below applies to unenrolled/private runners.
 
 Drive a **running** app from the shell, with no mouse and no editor. You can read its state and live log, use every

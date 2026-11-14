@@ -2,13 +2,17 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
+import re
+import struct
 import subprocess
 import shutil
 import sys
 import time
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -19,7 +23,7 @@ def prepare_history(preset, directory, request):
     """Preparation subprocesses also inherit the attempt's process containment."""
     if ROOT != directory.resolve() / "source":
         raise ValueError("adapter source must be inside its owned attempt directory")
-    if preset in {"suite", "ci", "godtest", "capture"}:
+    if preset in {"suite", "ci", "godtest", "capture", "aircraft-screenshot"}:
         if (ROOT / ".git").exists() or (ROOT / ".git").is_symlink():
             raise ValueError("history destination must be new inside the owned attempt")
         history = directory / "history"
@@ -41,7 +45,7 @@ def main(directory: Path) -> int:
     code = 2
     try:
         prepare_history(preset, directory, request)
-        if preset in {"debug-session", "debug-smoke", "checked", "godtest"}:
+        if preset in {"debug-session", "debug-smoke", "checked", "godtest", "aircraft-screenshot"}:
             from tools.godot.run_checked import run_checked
             manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
             if not manifest.get("import_files") or "--import" in options["argv"]:
@@ -89,6 +93,24 @@ def main(directory: Path) -> int:
                                  required=options["require"], **options.get("settings", {}))
             verdict.update(ok=result["ok"], complete=True, checked=result)
             code = 0 if result["ok"] else 1
+        elif preset == "aircraft-screenshot":
+            from tools.godot.run_checked import run_checked
+            command = [os.environ["OPENRC_GODOT"], "--path", str(ROOT / "app"),
+                       "--audio-driver", "Dummy", "--rendering-driver", "opengl3",
+                       "--resolution", "1920x1080", "--script", str(ROOT / "tools/readme/capture_aircraft.gd"),
+                       "--", "--stills-only", "--aircraft=" + options["aircraft"],
+                       "--out-dir=" + str(directory / "screenshots")]
+            result = run_checked(command, directory / "checks", timeout=options["timeout"] - 0.5,
+                                 required=["README_RENDER_OK: 1 vehicles, 0 animation frames"],
+                                 label="aircraft-screenshot")
+            verdict["checked"] = result
+            if result.get("ok") is not True or result.get("complete") is not True:
+                verdict["complete"] = result.get("complete") is True
+                code = 1
+            else:
+                evidence = validate_screenshot(directory, ROOT, options["aircraft"], request["manifest"]["commit"])
+                verdict.update(ok=True, complete=True, evidence=evidence)
+                code = 0
         else:
             scripts = {"godtest": [sys.executable, str(ROOT / "tools/godtest/godtest.py")],
                        "suite": ["bash", str(ROOT / "app/test.sh")],
@@ -101,7 +123,7 @@ def main(directory: Path) -> int:
             if preset == "godtest":
                 command += ["--godot", os.environ["OPENRC_GODOT"], "--out", str(directory / "godtest")]
             code = subprocess.call(command, cwd=ROOT)
-            complete, evidence_ok, evidence = validate_evidence(preset, directory, ROOT)
+            complete, evidence_ok, evidence = validate_evidence(preset, directory, ROOT, options)
             verdict.update(ok=code == 0 and evidence_ok, complete=complete, evidence=evidence)
             if code == 0 and complete and not evidence_ok:
                 code = 1
@@ -115,7 +137,101 @@ def main(directory: Path) -> int:
     return code
 
 
-def validate_evidence(preset, directory, root):
+def validate_screenshot(directory, root, aircraft, expected_commit):
+    """Validate the still and its source-bound manifest without an image dependency."""
+    if not isinstance(aircraft, str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", aircraft):
+        raise ValueError("invalid screenshot aircraft ID")
+    folder = directory / "screenshots"
+    if folder.is_symlink() or folder.resolve().parent != directory.resolve():
+        raise ValueError("screenshot directory must belong to the attempt")
+    manifest_path = folder / "manifest.json"
+    if manifest_path.is_symlink() or not manifest_path.is_file():
+        raise ValueError("screenshot manifest missing or linked")
+    if manifest_path.stat().st_size > 1024 * 1024:
+        raise ValueError("screenshot manifest too large")
+    raw_manifest = manifest_path.read_bytes()
+    if len(raw_manifest) > 1024 * 1024:
+        raise ValueError("screenshot manifest too large")
+    manifest = json.loads(raw_manifest)
+    if not isinstance(manifest, dict):
+        raise ValueError("invalid screenshot manifest")
+    source = manifest.get("source_start")
+    if (manifest.get("format") != "openrc-readme-renders v2"
+            or not isinstance(source, dict) or not source or source != manifest.get("source_end")
+            or manifest.get("source_changed_during_capture") is not False
+            or not isinstance(expected_commit, str) or not re.fullmatch(r"[0-9a-f]{40,64}", expected_commit)
+            or source.get("commit") != expected_commit
+            or source.get("capture_tool_sha256") != hashlib.sha256((root / "tools/readme/capture_aircraft.gd").read_bytes()).hexdigest()
+            or manifest.get("stills_size") != [1920, 1080]
+            or type(manifest.get("frame_count")) is not int or manifest["frame_count"] != 0):
+        raise ValueError("invalid screenshot source identity or manifest")
+    vehicles = manifest.get("vehicles")
+    if not isinstance(vehicles, list) or len(vehicles) != 1 or not isinstance(vehicles[0], dict):
+        raise ValueError("screenshot manifest must contain one vehicle")
+    vehicle = vehicles[0]
+    if (vehicle.get("id") != aircraft or vehicle.get("still") != aircraft + ".png"
+            or type(vehicle.get("frames")) is not int or vehicle["frames"] != 0):
+        raise ValueError("screenshot vehicle, still path or frame count differs")
+    still = folder / vehicle["still"]
+    if still.is_symlink() or still.resolve().parent != folder.resolve() or not still.is_file():
+        raise ValueError("screenshot still missing or linked")
+    if still.stat().st_size > 64 * 1024 * 1024:
+        raise ValueError("screenshot PNG too large")
+    image = still.read_bytes()
+    if len(image) > 64 * 1024 * 1024:
+        raise ValueError("screenshot PNG too large")
+    digest = hashlib.sha256(image).hexdigest()
+    if digest != vehicle.get("still_sha256"):
+        raise ValueError("screenshot checksum differs")
+    _validate_png(image)
+    return {"manifest": str(manifest_path), "manifest_sha256": hashlib.sha256(raw_manifest).hexdigest(),
+            "still": str(still), "still_sha256": digest, "size": [1920, 1080], "aircraft": aircraft,
+            "source_commit": expected_commit}
+
+
+def _validate_png(data):
+    """Check PNG chunks, CRCs and bounded 8-bit RGB/RGBA scanlines."""
+    if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValueError("screenshot is not a PNG")
+    position, chunks, header, ended = 8, [], None, False
+    while position + 12 <= len(data):
+        length = struct.unpack_from(">I", data, position)[0]
+        end = position + 12 + length
+        if end > len(data):
+            raise ValueError("truncated PNG chunk")
+        kind = data[position + 4:position + 8]
+        payload = data[position + 8:position + 8 + length]
+        checksum = struct.unpack_from(">I", data, position + 8 + length)[0]
+        if zlib.crc32(kind + payload) & 0xffffffff != checksum:
+            raise ValueError("PNG chunk checksum differs")
+        if header is None:
+            if kind != b"IHDR" or length != 13:
+                raise ValueError("invalid PNG header")
+            header = struct.unpack(">IIBBBBB", payload)
+            if header[:2] != (1920, 1080) or header[2:] not in ((8, 2, 0, 0, 0), (8, 6, 0, 0, 0)):
+                raise ValueError("unexpected PNG dimensions or pixel format")
+        elif kind == b"IHDR":
+            raise ValueError("duplicate PNG header")
+        if kind == b"IDAT":
+            chunks.append(payload)
+        if kind == b"IEND":
+            if length or end != len(data):
+                raise ValueError("invalid PNG end")
+            ended = True
+            break
+        position = end
+    if not ended or not chunks:
+        raise ValueError("incomplete PNG")
+    stride = 1920 * (3 if header[3] == 2 else 4) + 1
+    expected = stride * 1080
+    decoder = zlib.decompressobj()
+    pixels = decoder.decompress(b"".join(chunks), expected + 1)
+    if (len(pixels) != expected or not decoder.eof or decoder.unused_data or decoder.unconsumed_tail
+            or any(pixels[offset] > 4 for offset in range(0, expected, stride))):
+        raise ValueError("invalid PNG image data")
+
+
+def validate_evidence(preset, directory, root, options=None):
     """Success requires the owning runner's receipts, not merely exit status zero."""
     if preset == "godtest":
         sys.path.insert(0, str(root / "tools/godtest"))
@@ -170,14 +286,22 @@ def validate_evidence(preset, directory, root):
             ok = ok and manifest["outputs"] == verify_outputs(partial.parent, manifest["start"]["group"])
         else:
             complete = False
-    if preset in {"suite", "ci"}:
+    if preset == "ci":
+        argv = options.get("argv") if isinstance(options, dict) else None
+        if argv not in ([], ["quick"], ["full"], ["release"]):
+            return False, False, {"missing": "valid local CI mode"}
+        result = {**result, "mode": argv[0] if argv else "quick"}
+    if preset == "suite" or (preset == "ci" and result["mode"] != "quick"):
         reports = []
         for path in (directory / "checks").rglob("*.json"):
             item = json.loads(path.read_text())
             if item.get("format") == "openrc-godot-check v1":
                 reports.append(item)
-        complete = complete and bool(reports)
+        required_labels = {"local-resource-import", "nk3-trajectory-policy", "nk3-fleet-policy"} if preset == "ci" else set()
+        labels = {item.get("label") for item in reports}
+        complete = complete and bool(reports) and required_labels.issubset(labels)
         ok = ok and all(item.get("ok") is True and item.get("complete") is True for item in reports)
+        result.update(checked_reports=len(reports), missing_labels=sorted(required_labels - labels))
     return complete, ok, result
 
 

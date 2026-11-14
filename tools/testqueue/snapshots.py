@@ -56,9 +56,14 @@ def _check_no_links(path: Path) -> None:
 
 
 def _signature(metadata: os.stat_result) -> tuple:
+    # Python 3.12 Windows path stat and fstat can disagree on deprecated ctime.
+    # Both expose the same birth time. Keep inode, mtime, size, mode, attributes
+    # and before/after content checks; POSIX still uses metadata-change time.
+    identity_time = (getattr(metadata, "st_birthtime_ns", metadata.st_ctime_ns)
+                     if os.name == "nt" else metadata.st_ctime_ns)
     return (
         metadata.st_dev, metadata.st_ino, metadata.st_mode, metadata.st_size,
-        metadata.st_mtime_ns, metadata.st_ctime_ns,
+        metadata.st_mtime_ns, identity_time,
         getattr(metadata, "st_file_attributes", None),
     )
 

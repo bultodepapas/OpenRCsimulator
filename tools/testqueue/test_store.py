@@ -51,6 +51,47 @@ class DurableStoreTests(unittest.TestCase):
         finally:
             guard.close()
 
+    def test_recover_authenticates_without_creating_a_job(self):
+        self.assertIsNone(self.store.recover("missing", "s" * 32))
+        self.assertEqual(self.store.db.execute("SELECT COUNT(*) FROM jobs").fetchone()[0], 0)
+        accepted = self.store.submit("original", {"owner": "fixture"}, "s" * 32)
+        self.assertEqual(self.store.recover("original", "s" * 32), accepted)
+        for method in (self.store.recover, self.store.cancel_submission):
+            with self.assertRaisesRegex(ValueError, "another submitting client"):
+                method("original", "x" * 32)
+        self.assertFalse(self.store.get(accepted["job"])["canceled"])
+
+    def test_cancel_before_late_submit_is_durable_and_never_dispatches(self):
+        self.assertEqual(self.store.cancel_submission("late", "s" * 32), {"canceled": True})
+        self.store.db.close()
+        self.store = Store(self.root)
+        with self.assertRaisesRegex(ValueError, "another submitting client"):
+            self.store.submit("late", {}, "x" * 32)
+        accepted = self.store.submit("late", {"owner": "fixture"}, "s" * 32)
+        self.assertEqual(self.store.get(accepted["job"])["outcome"], "CANCELED")
+        self.assertIsNone(self.store.allocate(accepted["job"], {"rendered": 1}, {"rendered": 1}))
+        self.assertEqual(self.store.recover("late", "s" * 32), accepted)
+
+    def test_cancel_unacknowledged_dispatch_retains_claim_until_cleanup(self):
+        accepted = self.store.submit("dispatch", {}, "s" * 32)
+        attempt = self.store.allocate(accepted["job"], {"exclusive": 1}, {"exclusive": 1})
+        canceled = self.store.cancel_submission("dispatch", "s" * 32)
+        self.assertEqual(canceled, {"canceled": True, **accepted})
+        self.assertTrue(self.store.get(accepted["job"])["canceled"])
+        self.assertEqual(self.store.db.execute("SELECT attempt FROM claims").fetchone()[0], attempt)
+
+    def test_version_one_store_migrates_and_preserves_jobs(self):
+        job = self.submit("legacy")
+        self.store.db.execute("DROP TABLE canceled_submissions")
+        self.store.db.execute("PRAGMA user_version=1")
+        self.store.db.commit()
+        self.store.db.close()
+        self.store = Store(self.root)
+        self.assertEqual(self.store.get(job)["state"], "QUEUED")
+        self.assertEqual(self.store.db.execute("PRAGMA user_version").fetchone()[0], 2)
+        self.store.cancel_submission("legacy", "s" * 32)
+        self.assertEqual(self.store.get(job)["outcome"], "CANCELED")
+
 
 if __name__ == "__main__":
     unittest.main()

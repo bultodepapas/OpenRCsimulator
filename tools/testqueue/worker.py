@@ -18,7 +18,7 @@ import time
 import uuid
 
 from .common import LIMIT, VERSION, Singleton, HostSingleton, write_json
-from .presets import claims, validate
+from .presets import scheduling, validate
 from .store import Store
 
 
@@ -84,7 +84,9 @@ def desktop_ready() -> bool:
 
 
 class Worker:
-    def __init__(self, root: Path, repo: Path, engine: Path, *, slots: int = 1, fixture=False):
+    def __init__(self, root: Path, repo: Path, engine: Path, *, slots: int = 1, capture_slots: int = 1, fixture=False):
+        if type(slots) is not int or not 1 <= slots <= 8 or type(capture_slots) is not int or not 1 <= capture_slots <= 4:
+            raise ValueError("headless slots must be in 1..8 and capture slots in 1..4")
         self.root, self.repo, self.engine = root.resolve(), repo.resolve(), engine.resolve()
         if os.name == "nt":
             import ctypes
@@ -109,9 +111,11 @@ class Worker:
         self.reservation = None
         self._occupancy_cache = None
         self.fixture = fixture
-        self.capacities = {"rendered": 1, "headless": slots, "cpu": slots + 1, "memory": slots + 1}
+        self.capacities = {"rendered": capture_slots, "headless": slots,
+                           "cpu": slots + capture_slots, "memory": slots + capture_slots, "exclusive": 1}
         self.host_id = self._host_id()
         self.engine_identity = {} if fixture else self._engine_identity()
+        self.studio_adapter_identity = {} if fixture else self._studio_identity(self.repo)
 
     def _host_id(self):
         path = self.root / "host.json"
@@ -120,6 +124,21 @@ class Worker:
         identity = uuid.uuid4().hex
         write_json(path, {"id": identity, "hostname": socket.gethostname(), "created": time.time()})
         return identity
+
+    @staticmethod
+    def _studio_identity(root):
+        # Bind the Python launch path as well as the GDScript. Added package
+        # initializers and shadow modules can execute before an imported module.
+        paths = {root / "tools/readme/capture_aircraft.gd"}
+        for parent in (root, root / "tools"):
+            paths.update(parent.glob("*.py"))
+        for parent in (root / "tools/testqueue", root / "tools/godot"):
+            paths.update(parent.rglob("*.py"))
+        return {path.relative_to(root).as_posix(): sha256(path) for path in sorted(paths)}
+
+    def _verify_studio_adapter(self, source):
+        if self._studio_identity(source) != self.studio_adapter_identity:
+            raise ValueError("ADAPTER_MISMATCH: parallel aircraft captures require the worker's reviewed Python and studio adapters")
 
     def _external_conflicts(self, *, refresh=False):
         now = time.monotonic()
@@ -182,9 +201,13 @@ class Worker:
                         "qualified": [], "adapter": "windows-local-experimental" if os.name == "nt" else "UNSUPPORTED",
                         "remote_hosts": "UNVERIFIED", "physical_parent": "UNVERIFIED"}
             if operation in {"status", "result"}:
-                return self.store.get(request["job"])
+                return self._status(request["job"])
             if operation == "list":
-                return [self.store.get(row[0]) for row in self.store.db.execute("SELECT id FROM jobs ORDER BY submitted DESC LIMIT 100")]
+                return [self._status(row[0]) for row in self.store.db.execute("SELECT id FROM jobs ORDER BY submitted DESC LIMIT 100")]
+            if operation == "recover":
+                return self.store.recover(request["request_id"], request["request_secret"])
+            if operation == "cancel_submission":
+                return self.store.cancel_submission(request["request_id"], request["request_secret"])
             if operation == "validate":
                 return self._validate_context(request["context"], request["scope"])
             if operation == "authorize":
@@ -204,7 +227,7 @@ class Worker:
             if operation == "reserve":
                 if self.reservation:
                     raise ValueError("desktop already reserved")
-                if self.store.db.execute("SELECT 1 FROM claims WHERE resource='rendered' LIMIT 1").fetchone():
+                if self.store.db.execute("SELECT 1 FROM claims WHERE resource IN ('rendered','exclusive') LIMIT 1").fetchone():
                     raise ValueError("desktop is occupied by a managed attempt")
                 token = secrets.token_hex(32)
                 self.reservation = {"owner": request["owner"], "secret": token, "since": time.time()}
@@ -224,6 +247,13 @@ class Worker:
             return self.submit(request)
         raise ValueError("unknown worker operation")
 
+    def _status(self, job):
+        status = self.store.get(job)
+        payload = status["payload"]
+        if "preset" in payload and "headless" in payload.get("options", {}):
+            status.setdefault("scheduling", scheduling(payload["preset"], payload["options"]))
+        return status
+
     def _validate_context(self, context: str, scope: str):
         attempt, _, secret = context.partition(":")
         grant = self.contexts.get(attempt)
@@ -232,8 +262,11 @@ class Worker:
         status = self.store.get(grant[0])
         if status["state"] not in {"RUNNING", "CLEANING"}:
             raise ValueError("attempt is no longer executable")
-        if scope not in {"headless", "rendered", "control"}:
+        if scope not in {"headless", "rendered", "control", "performance"}:
             raise ValueError("invalid operation scope")
+        if scope == "performance" and not self.store.db.execute(
+                "SELECT 1 FROM claims WHERE attempt=? AND resource='exclusive'", (attempt,)).fetchone():
+            raise ValueError("performance operation requires an exclusive attempt")
         if scope == "rendered" and status["payload"]["options"]["headless"]:
             raise ValueError("headless grant cannot start rendered work")
         return {"job": grant[0], "attempt": attempt}
@@ -266,6 +299,8 @@ class Worker:
         if not self.fixture:
             pin = (snapshot / "source/app/get-godot.sh").read_text(encoding="utf-8")
             self._check_engine_pin(pin, self.engine_identity)
+            if preset == "aircraft-screenshot":
+                self._verify_studio_adapter(snapshot / "source")
         receipt = {key: value for key, value in receipt.items() if key in {"commit", "source_digest", "manifest_digest", "scope", "limitations", "adapter_digests"}}
         payload = {"preset": preset, "options": options, "owner": owner, "platform": target,
                    "snapshot": str(snapshot), "source": str(source), "manifest": receipt,
@@ -275,7 +310,7 @@ class Worker:
             raise ValueError("only suite partition environment can be submitted")
         with self.lock:
             result = self.store.submit(request["request_id"], payload, request["request_secret"])
-        return result
+        return {**result, "scheduling": scheduling(preset, options)}
 
     def _reconcile(self, request):
         job = self.store.authorize(request["handle"])
@@ -296,41 +331,69 @@ class Worker:
     def schedule(self):
         while not self.stopping.wait(0.1):
             try:
-                with self.lock:
-                    if self.draining:
-                        continue
-                    for row in self.store.db.execute("SELECT id FROM jobs WHERE state='QUEUED' ORDER BY submitted").fetchall():
-                        job = row[0]
-                        status = self.store.get(job)
-                        options, preset = status["payload"]["options"], status["payload"]["preset"]
-                        reason = ""
-                        if not self.fixture and os.name != "nt":
-                            reason = "UNSUPPORTED_ADAPTER: native containment not qualified"
-                        elif not options["headless"] and self.reservation:
-                            reason = "HUMAN_RESERVATION: " + self.reservation["owner"]
-                        elif not self.fixture and not options["headless"] and not desktop_ready():
-                            reason = "GUI_LOCKED_OR_UNAVAILABLE: active user desktop required"
-                        elif not self.fixture:
-                            try:
-                                if self._external_conflicts():
-                                    reason = "EXTERNAL_SIMULATOR: preserve unmanaged process"
-                            except (OSError, RuntimeError, subprocess.SubprocessError) as error:
-                                reason = "OCCUPANCY_UNKNOWN: " + str(error)
-                        if reason:
-                            with self.store.db:
-                                self.store.db.execute("UPDATE jobs SET reason=? WHERE id=?", (reason, job))
-                            continue
-                        from .processes import host_identity
-                        attempt = self.store.allocate(job, claims(preset, options), self.capacities,
-                                                      {"process": host_identity(), "host": self.host_id})
-                        if attempt:
-                            # Register before the thread starts: a cancel/restart cannot
-                            # see a free slot after durable dispatch intent.
-                            self.active[attempt] = None
-                            threading.Thread(target=self.execute, args=(job, attempt), daemon=True).start()
+                self.schedule_once()
             except Exception as error:
                 with self.lock, self.store.db:
                     self.store.event(None, "SCHEDULER_ERROR", {"error": str(error)})
+
+    def schedule_once(self):
+        with self.lock:
+            if self.draining:
+                return
+            barrier = None
+            rows = self.store.db.execute("SELECT id FROM jobs WHERE state='QUEUED' ORDER BY submitted,rowid").fetchall()
+            for row in rows:
+                job = row[0]
+                status = self.store.get(job)
+                options, preset = status["payload"]["options"], status["payload"]["preset"]
+                policy = scheduling(preset, options)
+                reason = ""
+                if barrier:
+                    reason = "WAITING_FOR_EXCLUSIVE: " + barrier
+                elif not self.fixture and os.name != "nt":
+                    reason = "UNSUPPORTED_ADAPTER: native containment not qualified"
+                elif self.reservation and (not options["headless"] or policy["mode"] == "exclusive"):
+                    reason = "HUMAN_RESERVATION: " + self.reservation["owner"]
+                elif not self.fixture and not options["headless"] and not desktop_ready():
+                    reason = "GUI_LOCKED_OR_UNAVAILABLE: active user desktop required"
+                elif not self.fixture:
+                    try:
+                        if self._external_conflicts():
+                            reason = "EXTERNAL_SIMULATOR: preserve unmanaged process"
+                    except (OSError, RuntimeError, subprocess.SubprocessError) as error:
+                        reason = "OCCUPANCY_UNKNOWN: " + str(error)
+                if reason:
+                    with self.store.db:
+                        self.store.db.execute("UPDATE jobs SET reason=? WHERE id=?", (reason, job))
+                    continue
+                # Once an eligible exclusive request reaches this point, younger
+                # work cannot continually refill slots while its predecessors drain.
+                # GUI-ineligible jobs above do not idle otherwise usable headless slots.
+                if policy["mode"] == "exclusive":
+                    barrier = job
+                from .processes import host_identity
+                attempt = self.store.allocate(job, policy["resources"], self.capacities,
+                                              {"process": host_identity(), "host": self.host_id, "scheduling": policy})
+                if attempt:
+                    self.active[attempt] = None
+                    threading.Thread(target=self.execute, args=(job, attempt), daemon=True).start()
+
+    def _close_process(self, attempt, process):
+        # OwnedProcess handle methods are not thread safe. Serialize teardown with
+        # occupancy observation and stop advertising the object before result I/O.
+        # The durable claim survives until verified cleanup AND collection finish.
+        with self.lock:
+            try:
+                process.close()
+            except Exception:
+                # Make uncertainty visible before another scheduler pass can
+                # admit compatible work under the old resource-only claims.
+                with self.store.db:
+                    self.store.db.execute("UPDATE attempts SET state='UNKNOWN' WHERE id=?", (attempt,))
+                    self.store.db.execute("UPDATE jobs SET state='UNKNOWN' WHERE id=(SELECT job FROM attempts WHERE id=?)", (attempt,))
+                raise
+            finally:
+                self.active.pop(attempt, None)
 
     def execute(self, job: str, attempt: str):
         from .processes import OwnedProcess, host_identity
@@ -347,6 +410,7 @@ class Worker:
             with self.lock:
                 status = self.store.get(job)
                 payload = status["payload"]
+                data["scheduling"] = scheduling(payload["preset"], payload["options"])
                 if status["canceled"]:
                     data.update(cleanup="CONFIRMED", outcome="CANCELED", finished=time.time())
                     self.store.update(job, attempt, "FINISHED", data)
@@ -378,6 +442,10 @@ class Worker:
                     or copied_receipt.get("manifest_digest") != payload["manifest"].get("manifest_digest")):
                 raise ValueError("materialized inputs changed or failed verification")
             if not self.fixture:
+                if payload["preset"] == "aircraft-screenshot":
+                    # Queued requests survive upgrades/restarts. Rebind the
+                    # materialized launch path to this authority before execution.
+                    self._verify_studio_adapter(source)
                 for name, expected in self.engine_identity["binaries_sha256"].items():
                     if sha256(self.engine.parent / name) != expected:
                         raise ValueError("ENGINE_MISMATCH: enrolled binary changed")
@@ -423,8 +491,11 @@ class Worker:
             deadline = time.monotonic() + payload["options"]["timeout"]
             reason = None
             next_desktop_check = time.monotonic() + 1
-            while process.alive():
+            while True:
                 with self.lock:
+                    if not process.alive():
+                        break
+                    root_exit = process.poll()
                     canceled = bool(self.store.get(job)["canceled"])
                     ready = directory / "ready.json"
                     if ready.exists() and "session" not in data:
@@ -432,7 +503,6 @@ class Worker:
                         data["session"] = {key: value for key, value in private_session.items() if key != "token"}
                         self.store.update(job, attempt, "RUNNING", data)
                 lost_desktop = False
-                root_exit = process.poll()
                 failed_root = root_exit is not None and root_exit != 0
                 if not self.fixture and not payload["options"]["headless"] and time.monotonic() >= next_desktop_check:
                     lost_desktop = not desktop_ready()
@@ -450,12 +520,14 @@ class Worker:
                         self.store.update(job, attempt, "CLEANING", data)
                     if (directory / "ready.json").exists():
                         self._graceful_stop(directory)
-                    process.terminate()
+                    with self.lock:
+                        process.terminate()
                     break
                 time.sleep(0.1)
-            code = process.poll()
+            with self.lock:
+                code = process.poll()
             cleanup_attempted = True
-            process.close()  # verifies all owned descendants, not just launcher exit
+            self._close_process(attempt, process)
             cleanup_verified = True
             data.update(cleanup="CONFIRMED", runner_exit_code=code, finished=time.time())
             verdict_path = directory / "verdict.json"
@@ -479,7 +551,7 @@ class Worker:
                     raise RuntimeError("prior start/cleanup did not establish process-tree teardown")
                 if not cleanup_verified and process is not None and start_attempted:
                     cleanup_attempted = True
-                    process.close()
+                    self._close_process(attempt, process)
                 with self.lock:
                     canceled = bool(self.store.get(job)["canceled"])
                 data.update(cleanup="CONFIRMED", outcome="CANCELED" if canceled else "INFRA_FAILED", evidence="INCOMPLETE", finished=time.time())

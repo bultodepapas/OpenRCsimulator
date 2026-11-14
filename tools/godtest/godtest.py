@@ -161,6 +161,10 @@ def main(argv=None) -> int:
             print(json.dumps(result, indent=2))
             return 0 if result["eligible"] else 1
         if args.command == "resume":
+            sys.path.insert(0, str(ROOT))
+            from tools.testqueue.common import enabled, inherited
+            if enabled() and not inherited("rendered"):
+                raise ValueError("resume is unsupported as a standalone command on an enrolled host; a source-bound resume adapter is not available")
             return resume_suite(args)
         cases = plan(args)
         if args.dry_run:

@@ -73,6 +73,9 @@ damage and custom paint kits. Home lists stock skins from the registry.
   metal a partial metallic share (about 0.45-0.7) and compare `paint_preview.gd`
   `--env=flight` (default) with `--env=sky`; `--focus=x,y,z --zoom=N` frames decals.
 - `"albedo_texture": null` / `"emission_texture": null` remove a stock map.
+- Metal skins reuse `build_metal_skin` (scene-space bake, height-to-normal, chunked per-texel
+  layers). Run one heavy bake at a time: with a full system disk the page file cannot grow and
+  a parallel bake or render fails with MemoryError, which is not a byte mismatch.
 - `roughness_texture` multiplies `roughness`; Low uses multiplier times the recorded
   map mean. A `metallic_texture` also needs the intended multiplier (usually 1.0)
   and grayscale channel. Its paint/metal boundaries remain at Low.

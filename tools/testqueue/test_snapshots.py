@@ -13,6 +13,18 @@ from tools.testqueue import snapshots
 
 
 class SnapshotTests(unittest.TestCase):
+    @unittest.skipUnless(os.name == "nt", "Windows path/handle timestamp compatibility")
+    def test_windows_open_handle_matches_path_after_modification(self):
+        path = self.base / "timestamp.bin"
+        path.write_bytes(b"stable bytes")
+        metadata = path.stat()
+        # Keep creation and modification times different deterministically.
+        os.utime(path, ns=(metadata.st_atime_ns, metadata.st_mtime_ns + 2_000_000_000))
+        expected = path.lstat()
+        with path.open("rb") as stream:
+            self.assertEqual(snapshots._signature(expected), snapshots._signature(os.fstat(stream.fileno())))
+        self.assertEqual(snapshots._read_hash(path, expected), __import__("hashlib").sha256(b"stable bytes").hexdigest())
+
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory(prefix="openrc-snapshot-test-")
         self.addCleanup(self.temp.cleanup)

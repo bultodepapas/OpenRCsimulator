@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -11,6 +13,8 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import debugctl  # noqa: E402
 import mcp_server  # noqa: E402
+from tools.testqueue import integration  # noqa: E402
+from tools.testqueue.store import Store  # noqa: E402
 
 LOOK = {"route": "home", "screens": ["home", "settings"], "scope": "AppRoot/Settings", "focus": "e2",
         "controls": [{"ref": "e9", "role": "option", "name": "Window resolution", "value": "Automatic",
@@ -41,7 +45,8 @@ class McpServerTests(unittest.TestCase):
                          mcp_server.PROTOCOLS[0])
         tools = self.rpc("tools/list")["result"]["tools"]
         names = {tool["name"] for tool in tools}
-        self.assertTrue({"sim_look", "sim_choose", "sim_fly", "sim_screenshot", "sim_command"} <= names)
+        self.assertTrue({"sim_look", "sim_choose", "sim_fly", "sim_screenshot", "sim_command",
+                         "sim_session_status"} <= names)
         for tool in tools:
             self.assertEqual(tool["inputSchema"]["type"], "object", tool["name"])
 
@@ -142,6 +147,168 @@ class McpServerTests(unittest.TestCase):
             result = self.rpc("tools/call", {"name": "sim_stop"})["result"]
             self.assertTrue(result["isError"])
             self.assertIn("2", result["content"][0]["text"])
+
+    def test_managed_pending_launch_can_be_checked_used_and_canceled(self) -> None:
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        pending = {"state": "QUEUED", "reason": "RESOURCE_BUSY"}
+        ready = {"state": "RUNNING", "session": {"port": 4567}}
+        finished = {"id": "owned", "state": "FINISHED", "cleanup": "CONFIRMED"}
+        operations = []
+
+        def rpc(operation, **kwargs):
+            operations.append((operation, kwargs))
+            if operation == "status":
+                # First status is the explicit poll; second guards duplicate launch.
+                return ready if sum(op == "status" for op, _ in operations) > 1 else pending
+            if operation == "bridge":
+                return {"ok": True, "result": LOOK}
+            if operation == "cancel":
+                return {"id": "owned"}
+            self.fail(f"unexpected operation: {operation}")
+
+        with patch.dict(os.environ, {}, clear=True), \
+                patch.object(debugctl.admission, "enabled", return_value=True), \
+                patch.object(debugctl.admission, "inherited", return_value=False), \
+                patch.object(integration, "submit", return_value=accepted) as submit, \
+                patch.object(integration, "wait", side_effect=[pending, finished]) as wait, \
+                patch.object(integration, "rpc", side_effect=rpc):
+            launch = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+            self.assertFalse(launch["isError"])
+            self.assertEqual(json.loads(launch["content"][0]["text"])["state"], "QUEUED")
+            self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
+            status = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
+            self.assertEqual(json.loads(status["content"][0]["text"])["handle"], accepted["handle"])
+            status = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
+            self.assertEqual(json.loads(status["content"][0]["text"])["session"]["port"], 4567)
+            duplicate = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+            self.assertTrue(duplicate["isError"])
+            self.assertIn("already owns", duplicate["content"][0]["text"])
+            look = self.rpc("tools/call", {"name": "sim_look"})["result"]
+            self.assertFalse(look["isError"])
+            stop = self.rpc("tools/call", {"name": "sim_stop"})["result"]
+            self.assertFalse(stop["isError"])
+        submit.assert_called_once()
+        self.assertEqual(wait.call_args_list[0].kwargs, {"timeout": 0, "ready": True})
+        bridge = next(kwargs for op, kwargs in operations if op == "bridge")
+        self.assertEqual(bridge["handle"], accepted["handle"])
+        self.assertIsNone(bridge["port"])
+        self.assertEqual(next(kwargs for op, kwargs in operations if op == "cancel")["handle"], accepted["handle"])
+
+    def test_managed_accepted_launch_reports_handle_if_status_fails(self) -> None:
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        with patch.dict(os.environ, {}, clear=True), \
+                patch.object(debugctl.admission, "enabled", return_value=True), \
+                patch.object(debugctl.admission, "inherited", return_value=False), \
+                patch.object(integration, "submit", return_value=accepted), \
+                patch.object(integration, "wait", side_effect=RuntimeError("worker unavailable")):
+            result = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+            self.assertTrue(result["isError"])
+            self.assertIn("owned:secret", result["content"][0]["text"])
+            self.assertIn("sim_session_status", result["content"][0]["text"])
+
+    def test_lost_submit_reply_reuses_owned_job_without_recapturing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            store = Store(root)
+            self.addCleanup(store.db.close)
+            submitted = []
+
+            def rpc(operation, **request):
+                if operation == "hosts":
+                    return {"condition": "READY"}
+                if operation == "submit":
+                    submitted.append(request)
+                    store.submit(request["request_id"], {}, request["request_secret"])
+                    raise RuntimeError("reply lost after commit")
+                if operation == "recover":
+                    return store.recover(request["request_id"], request["request_secret"])
+                if operation == "status":
+                    return store.get(request["job"])
+                self.fail(operation)
+
+            with patch.dict(os.environ, {}, clear=True), \
+                    patch.object(debugctl.admission, "enabled", return_value=True), \
+                    patch.object(debugctl.admission, "inherited", return_value=False), \
+                    patch.object(integration, "state_root", return_value=root), \
+                    patch.object(integration, "rpc", side_effect=rpc), \
+                    patch("tools.testqueue.snapshots.capture") as capture, \
+                    patch.object(integration, "wait", return_value={"state": "QUEUED"}):
+                failed = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+                self.assertTrue(failed["isError"])
+                self.assertIn("recovery receipt:", failed["content"][0]["text"])
+                receipt = Path(os.environ["OPENRC_TESTQUEUE_SUBMISSION"])
+                self.assertTrue(receipt.is_file())
+                launched = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+                self.assertFalse(launched["isError"])
+                recovered = json.loads(launched["content"][0]["text"])
+                self.assertEqual(store.recover(submitted[0]["request_id"], submitted[0]["request_secret"])["handle"], recovered["handle"])
+                duplicate = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+                self.assertTrue(duplicate["isError"])
+                self.assertIn("already owns", duplicate["content"][0]["text"])
+                self.assertNotIn("OPENRC_TESTQUEUE_SUBMISSION", os.environ)
+                capture.assert_called_once()
+                self.assertEqual(len(submitted), 1)
+            store.db.close()
+
+    def test_stop_unconfirmed_submission_never_creates_a_session(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            store = Store(root)
+            self.addCleanup(store.db.close)
+            submitted = []
+
+            def rpc(operation, **request):
+                if operation == "hosts":
+                    return {"condition": "READY"}
+                if operation == "submit":
+                    submitted.append(request)
+                    raise RuntimeError("request delivery unknown")
+                if operation == "recover":
+                    return store.recover(request["request_id"], request["request_secret"])
+                if operation == "cancel_submission":
+                    return store.cancel_submission(request["request_id"], request["request_secret"])
+                self.fail(operation)
+
+            with patch.dict(os.environ, {}, clear=True), \
+                    patch.object(debugctl.admission, "enabled", return_value=True), \
+                    patch.object(debugctl.admission, "inherited", return_value=False), \
+                    patch.object(integration, "state_root", return_value=root), \
+                    patch.object(integration, "rpc", side_effect=rpc), patch("tools.testqueue.snapshots.capture"):
+                self.assertTrue(self.rpc("tools/call", {"name": "sim_launch"})["result"]["isError"])
+                status = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
+                self.assertEqual(json.loads(status["content"][0]["text"])["state"], "SUBMISSION_UNCONFIRMED")
+                changed = self.rpc("tools/call", {"name": "sim_launch", "arguments": {"headless": True}})["result"]
+                self.assertTrue(changed["isError"])
+                self.assertIn("different inputs", changed["content"][0]["text"])
+                stopped = self.rpc("tools/call", {"name": "sim_stop"})["result"]
+                self.assertFalse(stopped["isError"])
+                self.assertTrue(json.loads(stopped["content"][0]["text"])["cancellation_recorded"])
+                self.assertEqual(len(submitted), 1)
+                self.assertEqual(store.db.execute("SELECT COUNT(*) FROM jobs").fetchone()[0], 0)
+                request = submitted[0]
+                late = store.submit(request["request_id"], {}, request["request_secret"])
+                self.assertEqual(store.get(late["job"])["outcome"], "CANCELED")
+            store.db.close()
+
+    def test_screenshots_taken_in_the_same_second_keep_distinct_files(self) -> None:
+        paths = []
+
+        def screenshot(command, args, **_kwargs):
+            self.assertEqual(command, "screenshot")
+            path = Path(args["path"])
+            path.write_bytes(f"image {len(paths)}".encode())
+            paths.append(path)
+            return {"path": str(path), "width": 1280, "height": 720}
+
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.object(debugctl, "RUNS", Path(directory)), \
+                patch.object(mcp_server.time, "strftime", return_value="same-second"), \
+                patch.object(debugctl, "result_of", side_effect=screenshot):
+            for _ in range(2):
+                result = self.rpc("tools/call", {"name": "sim_screenshot"})["result"]
+                self.assertFalse(result["isError"])
+            self.assertNotEqual(paths[0], paths[1])
+            self.assertEqual([path.read_bytes() for path in paths], [b"image 0", b"image 1"])
 
     def test_declared_argument_contracts_are_checked_before_actions(self) -> None:
         cases = [

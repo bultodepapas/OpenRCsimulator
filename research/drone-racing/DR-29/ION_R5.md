@@ -60,6 +60,26 @@ supplied-source scope; it does not invent a redistribution licence.
   colours, metal, roughness and race-state emission remain; Blender procedural
   weave/bump nodes are reduced to constants, with no added textures.
 
+## Efficiency follow-up
+
+Home requests the parked build with `with_rotor_blur = false`. It keeps the same
+rotors and original visible blades, skipping four mesh profiles and their hidden
+fade/disc geometry and materials. Flight retains the default animated build.
+The complete ION model also avoids allocating the unused procedural motor material.
+
+Null-session blur observers are driven explicitly by the activity, so their
+automatic processing is disabled in `_ready()`. Session-driven airplane observers
+retain automatic updates. The per-frame transform-following, RPM conversion,
+phase, visibility and blur laws are unchanged; profiles and mutable materials
+are not cached or shared between rotor instances.
+
+Verification of this follow-up is pending recovery of the shared test queue.
+Its TCP listener is alive, but authenticated operations block on the worker lock.
+The prepared tests cover parked/animated visible-surface and Home-bounds parity,
+independent rotor speeds, held-frame pose following, source retirement and
+automatic session reattachment. A paired warm-construction screen will report
+raw timings and instance mesh/material counts; it does not measure FPS or GPU cost.
+
 ## Verification and limits
 
 Verified on **2026-11-14**, Windows x86_64, Godot

@@ -9,15 +9,14 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import sys
 import time
 
-try:
-    from .visibility_pack import validate_capture
-except ImportError:
-    from visibility_pack import validate_capture
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.testqueue import common as admission
 
 
-def main() -> int:
+def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--godot", required=True, type=Path)
     parser.add_argument("--app", required=True, type=Path)
@@ -29,7 +28,12 @@ def main() -> int:
     parser.add_argument("--aircraft", default="jensen-das-ugly-stik-60")
     parser.add_argument("--frames", type=int, default=90)
     parser.add_argument("--timeout", type=float, default=180)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+    admission.require_exclusive("rendered")
+    try:
+        from .visibility_pack import validate_capture
+    except ImportError:
+        from visibility_pack import validate_capture
     if args.out.exists() or not args.godot.is_file() or not (args.app / "project.godot").is_file():
         parser.error("Require an existing engine/project and a new output directory")
     if args.frames < 2 or args.frames > 600 or not 0 < args.timeout <= 1800:

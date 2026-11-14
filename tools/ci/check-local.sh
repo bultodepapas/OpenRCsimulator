@@ -96,8 +96,15 @@ NODE_MAJOR="$(tr -d '[:space:]' < .nvmrc)"
 }
 mkdir -p tmp
 OUT="$(mktemp -d "$ROOT/tmp/local-checks.XXXXXXXX")"
-export OPENRC_CHECK_OUT="$OUT/godot-checks"
-export OPENRC_EXPECTED_CHECK_OUT="$OUT/godot-checks-expected"
+# The admission hook above validated the inherited context before reaching here.
+# Keep its attempt-owned evidence paths; private runs still use fresh local paths.
+if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then
+  : "${OPENRC_CHECK_OUT:?admitted checks require an owned output directory}"
+  : "${OPENRC_EXPECTED_CHECK_OUT:?admitted checks require an owned expected-output directory}"
+else
+  export OPENRC_CHECK_OUT="$OUT/godot-checks"
+  export OPENRC_EXPECTED_CHECK_OUT="$OUT/godot-checks-expected"
+fi
 # Tests must not consume or overwrite the developer's simulator preferences.
 # Preserve the caller's export-template and Playwright download cache locations.
 (

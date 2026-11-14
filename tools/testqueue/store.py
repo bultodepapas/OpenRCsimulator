@@ -17,6 +17,14 @@ def digest(value) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
 
 
+def submission_identity(request_id, request_secret):
+    if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", request_id) or ".." in request_id:
+        raise ValueError("request_id must be a safe opaque token")
+    if not isinstance(request_secret, str) or not 32 <= len(request_secret) <= 256:
+        raise ValueError("submission secret must have at least 32 characters")
+    return digest(request_secret)
+
+
 class Store:
     def __init__(self, root: Path):
         self.db = sqlite3.connect(root / "queue.sqlite3", check_same_thread=False)
@@ -24,7 +32,7 @@ class Store:
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("PRAGMA synchronous=FULL")
         version = self.db.execute("PRAGMA user_version").fetchone()[0]
-        if version not in (0, 1):
+        if version not in (0, 1, 2):
             raise ValueError(f"unsupported testqueue schema {version}")
         self.db.executescript("""
           CREATE TABLE IF NOT EXISTS jobs (
@@ -39,7 +47,9 @@ class Store:
             PRIMARY KEY(resource, attempt));
           CREATE TABLE IF NOT EXISTS events (
             seq INTEGER PRIMARY KEY, at REAL NOT NULL, job TEXT, event TEXT NOT NULL, data TEXT NOT NULL);
-          PRAGMA user_version=1;
+          CREATE TABLE IF NOT EXISTS canceled_submissions (
+            request_id TEXT PRIMARY KEY, request_secret TEXT NOT NULL);
+          PRAGMA user_version=2;
         """)
         # A lost supervisor is uncertainty, even when its recorded PID looks dead.
         with self.db:
@@ -50,10 +60,7 @@ class Store:
         self.db.execute("INSERT INTO events(at,job,event,data) VALUES(?,?,?,?)", (time.time(), job, event, json.dumps(data or {})))
 
     def submit(self, request_id: str, payload: dict, request_secret: str) -> dict:
-        if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", request_id) or ".." in request_id:
-            raise ValueError("request_id must be a safe opaque token")
-        if not isinstance(request_secret, str) or not 32 <= len(request_secret) <= 256:
-            raise ValueError("submission secret must have at least 32 characters")
+        secret_digest = submission_identity(request_id, request_secret)
         hashed = digest(payload)
         prior = self.db.execute("SELECT * FROM jobs WHERE request_id=?", (request_id,)).fetchone()
         if prior:
@@ -64,10 +71,39 @@ class Store:
             return {"job": prior["id"], "handle": prior["id"] + ":" + prior["capability"]}
         job, capability = "T-" + uuid.uuid4().hex, secrets.token_hex(32)
         with self.db:
+            canceled = self.db.execute("SELECT request_secret FROM canceled_submissions WHERE request_id=?", (request_id,)).fetchone()
+            if canceled and not secrets.compare_digest(canceled[0], secret_digest):
+                raise ValueError("request_id belongs to another submitting client")
             self.db.execute("INSERT INTO jobs(id,request_id,payload,digest,capability,request_secret,state,submitted) VALUES(?,?,?,?,?,?,'QUEUED',?)",
-                            (job, request_id, json.dumps(payload), hashed, capability, digest(request_secret), time.time()))
+                            (job, request_id, json.dumps(payload), hashed, capability, secret_digest, time.time()))
+            if canceled:
+                self.db.execute("UPDATE jobs SET canceled=1,state='FINISHED',reason='CANCELED before acceptance' WHERE id=?", (job,))
             self.event(job, "SUBMITTED", {"digest": hashed})
         return {"job": job, "handle": job + ":" + capability}
+
+    def recover(self, request_id: str, request_secret: str) -> dict | None:
+        """Recover ownership without preparing inputs or creating a job."""
+        secret_digest = submission_identity(request_id, request_secret)
+        row = self.db.execute("SELECT id,capability,request_secret FROM jobs WHERE request_id=?", (request_id,)).fetchone()
+        if row:
+            if not secrets.compare_digest(row["request_secret"], secret_digest):
+                raise ValueError("request_id belongs to another submitting client")
+            return {"job": row["id"], "handle": row["id"] + ":" + row["capability"]}
+        canceled = self.db.execute("SELECT request_secret FROM canceled_submissions WHERE request_id=?", (request_id,)).fetchone()
+        if canceled and not secrets.compare_digest(canceled[0], secret_digest):
+            raise ValueError("request_id belongs to another submitting client")
+        return None
+
+    def cancel_submission(self, request_id: str, request_secret: str) -> dict:
+        """A late submit must observe this cancellation before becoming dispatchable."""
+        accepted = self.recover(request_id, request_secret)
+        with self.db:
+            self.db.execute("INSERT OR IGNORE INTO canceled_submissions VALUES(?,?)",
+                            (request_id, submission_identity(request_id, request_secret)))
+            if accepted:
+                self._cancel(accepted["job"])
+            self.event(accepted["job"] if accepted else None, "SUBMISSION_CANCELED", {"request_id": request_id})
+        return {"canceled": True, **(accepted or {})}
 
     def get(self, job: str) -> dict:
         row = self.db.execute("SELECT * FROM jobs WHERE id=?", (job,)).fetchone()
@@ -100,6 +136,20 @@ class Store:
             if row[0] != "QUEUED" or row[1]:
                 self.db.rollback()
                 return None
+            # An exclusive attempt conflicts with *every* retained claim,
+            # including quarantined UNKNOWN attempts and legacy resource names.
+            # This decision belongs in the same transaction as allocation.
+            quarantined = self.db.execute("SELECT 1 FROM attempts WHERE state='UNKNOWN' LIMIT 1").fetchone()
+            if quarantined:
+                self.db.execute("UPDATE jobs SET reason=? WHERE id=?", ("RESOURCE_BUSY: unresolved cleanup quarantines the managed host", job))
+                self.db.commit()
+                return None
+            exclusive_busy = self.db.execute("SELECT 1 FROM claims WHERE resource='exclusive' LIMIT 1").fetchone()
+            any_busy = self.db.execute("SELECT 1 FROM claims LIMIT 1").fetchone()
+            if exclusive_busy or (resources.get("exclusive", 0) and any_busy):
+                self.db.execute("UPDATE jobs SET reason=? WHERE id=?", ("RESOURCE_BUSY: exclusive execution requires an idle managed host", job))
+                self.db.commit()
+                return None
             for resource, amount in sorted(resources.items()):
                 used = self.db.execute("SELECT COALESCE(SUM(amount),0) FROM claims WHERE resource=?", (resource,)).fetchone()[0]
                 if used + amount > capacities.get(resource, 1):
@@ -129,9 +179,12 @@ class Store:
 
     def cancel(self, job: str):
         with self.db:
-            if self.get(job)["state"] == "FINISHED":
-                return
-            # Durable cancellation before any future dispatch/start checks.
-            self.db.execute("UPDATE jobs SET canceled=1 WHERE id=?", (job,))
-            self.db.execute("UPDATE jobs SET state='FINISHED',reason='CANCELED before dispatch' WHERE id=? AND state='QUEUED'", (job,))
-            self.event(job, "CANCEL_REQUESTED")
+            self._cancel(job)
+
+    def _cancel(self, job: str):
+        if self.get(job)["state"] == "FINISHED":
+            return
+        # Durable cancellation before any future dispatch/start checks.
+        self.db.execute("UPDATE jobs SET canceled=1 WHERE id=?", (job,))
+        self.db.execute("UPDATE jobs SET state='FINISHED',reason='CANCELED before dispatch' WHERE id=? AND state='QUEUED'", (job,))
+        self.event(job, "CANCEL_REQUESTED")

@@ -24,6 +24,9 @@ import tempfile
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.testqueue import common as admission
+
 
 FORMAT = "openrc-session-cost v2"
 LEGACY_FORMAT = "openrc-session-cost v1"
@@ -889,6 +892,7 @@ def resolve_executable(value: str) -> Path:
 
 
 def inspect_godot(executable: Path, timeout: float, research_engine: dict[str, Any] | None = None) -> dict[str, Any]:
+    admission.require_exclusive("headless")
     if research_engine is not None:
         path = Path(__file__).resolve().parents[2] / "research/native-kernel/build_macos.py"
         spec = importlib.util.spec_from_file_location("openrc_session_mac_builder", path)
@@ -973,6 +977,7 @@ def _run_probe(
     expected_engine_display: str = REQUIRED_GODOT_REPORT,
     research_environment: bool = False,
 ) -> dict[str, Any]:
+    admission.require_exclusive("headless")
     command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
                 "--native-qualification=session"] if release_executable else
                [str(godot), "--headless", "--path", str(app_dir), "--script", str(probe), "--"])
@@ -1314,6 +1319,7 @@ def _failure_report(config: dict[str, Any], reason: str, *, report_format: str =
 
 
 def run_campaign(args: argparse.Namespace) -> int:
+    admission.require_exclusive("headless")
     root = Path(__file__).resolve().parents[2]
     research_engine = ENGINE_POLICY.selection_from_args(args)
     identical = getattr(args, "compare_identical", False)

@@ -185,6 +185,57 @@ class ContractFixture(unittest.TestCase):
                 verdict = json.loads((directory / "verdict.json").read_text(encoding="utf-8"))
                 self.assertFalse(verdict.get("ok") is True and verdict.get("complete") is True, verdict)
 
+    def test_local_ci_evidence_distinguishes_quick_and_full(self):
+        directory = self.base / "ci-attempt"
+        self._write(directory / "shell-receipt.json", json.dumps({"preset": "ci", "complete": True, "exit_code": 0}))
+        quick = adapter.validate_evidence("ci", directory, self.source, {"argv": ["quick"]})
+        self.assertTrue(quick[0] and quick[1], quick)
+        self.assertEqual(quick[2]["mode"], "quick")
+        self.assertFalse(adapter.validate_evidence("ci", directory, self.source, {"argv": ["full"]})[0])
+        for label in ("local-resource-import", "nk3-trajectory-policy", "nk3-fleet-policy"):
+            self._write(directory / "checks" / label / "report.json", json.dumps({
+                "format": "openrc-godot-check v1", "label": label, "ok": True, "complete": True}))
+        full = adapter.validate_evidence("ci", directory, self.source, {"argv": ["full"]})
+        self.assertTrue(full[0] and full[1], full)
+        self.assertEqual(full[2]["checked_reports"], 3)
+        self._write(directory / "checks" / "nk3-fleet-policy" / "report.json", json.dumps({
+            "format": "openrc-godot-check v1", "label": "nk3-fleet-policy", "ok": False, "complete": True}))
+        self.assertFalse(adapter.validate_evidence("ci", directory, self.source, {"argv": ["release"]})[1])
+        self.assertFalse(adapter.validate_evidence("ci", directory, self.source)[0])
+
+    @unittest.skipUnless(os.name != "nt" and Path("/bin/bash").is_file(), "Linux/WSL local preflight fixture")
+    def test_local_ci_uses_attempt_outputs_only_for_inherited_run(self):
+        from tools.ci.test_local import LocalPreflight
+        fixture = LocalPreflight(methodName="test_full_invokes_app_schema_visual_and_prototype_and_lists_gaps")
+        fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        python = fixture.root / "bin/python3"
+        script = python.read_text()
+        script = script.replace('if [[ "${1##*/}" == entry.py ]]; then exit 100; fi',
+                                'if [[ "${1##*/}" == entry.py ]]; then if [[ "${2:-}" == receipt ]]; then exit 0; fi; exit 100; fi')
+        script = script.replace('case "${0##*/} $*" in',
+                                'printf "%s|%s|%s\\n" "$*" "${OPENRC_CHECK_OUT:-}" "${OPENRC_EXPECTED_CHECK_OUT:-}" >> "$OUTPUT_LOG"\ncase "${0##*/} $*" in')
+        python.write_text(script)
+        output_log = fixture.root / "outputs"
+        checks = str(self.base / "owned-checks")
+        expected = str(self.base / "owned-expected")
+        overrides = {"OUTPUT_LOG": str(output_log), "OPENRC_CHECK_OUT": checks,
+                     "OPENRC_EXPECTED_CHECK_OUT": expected}
+        result = fixture.run_mode("full", **overrides, OPENRC_TESTQUEUE_CONTEXT="validated-fixture")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        rows = [line.split("|") for line in output_log.read_text().splitlines()]
+        selected = [row for row in rows if "local-resource-import" in row[0]]
+        self.assertEqual(len(selected), 1)
+        self.assertEqual(selected[0][1:], [checks, expected])
+        output_log.unlink()
+        result = fixture.run_mode("full", **overrides)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        rows = [line.split("|") for line in output_log.read_text().splitlines()]
+        selected = [row for row in rows if "local-resource-import" in row[0]]
+        self.assertEqual(len(selected), 1)
+        self.assertNotEqual(selected[0][1], checks)
+        self.assertNotEqual(selected[0][2], expected)
+
     def test_incomplete_runner_failure_is_infrastructure_failure(self):
         snapshot = self.base / "evidence-snapshot"
         receipt = snapshots.capture(self.source, snapshot, scope=("app", "tools"))

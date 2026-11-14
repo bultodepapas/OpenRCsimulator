@@ -14,6 +14,25 @@ Physics, hosted CI policy and other tracks' acceptance gates remain with their o
 | TQ-03 | Mac qualification | Pending actual resolved profile-path proof, preferences/calibration preservation, ARM64 engine identity and logged-in GUI adapter. GOD TEST's Darwin refusal remains. |
 | TQ-04 | Operational refinement | Basic FIFO, manual reserve/release and drain implemented; per-owner quotas, bounded aging, explicit retry history, separate queue/idle/collection policies, backup/restore campaign and durable artifact transfer remain pending. |
 
+## Scheduling review candidate, 14 November 2026
+
+The review against `95fe1177f26929a12bd032c12e7ac3352eef304d` adds explicit
+exclusive/parallel admission, an eligible-exclusive waiting barrier, global UNKNOWN
+quarantine (including legacy claims), a restricted aircraft studio-still preset and
+pending MCP session ownership/status. The operating policy and trust boundaries live
+in the [queue guide](../../tools/testqueue/README.md#parallel-and-exclusive-admission).
+It also fixes closed-process occupancy observation, quick/full CI evidence routing,
+same-second MCP screenshot overwrite and inherited resource-sampling admission.
+
+Linux candidate checks: queue 94 tests (4 skips), debug/MCP 105 (1 skip), checked
+runner 22 (1 skip), resource runner 14, GOD TEST 17 and local CI fixtures 5. These
+257 tests include 251 passes and 6 skips. A focused Windows workflow is added for
+queue/process/MCP fixtures. Hosted execution and the real Windows 1080p campaign
+remain separate gates; this entry does not claim their completion. In particular,
+two real studio captures still need qualification before increasing capture slots.
+Client-side snapshot creation/verification, coordinated disk reservations and direct
+research-launcher enrollment remain follow-up work. No hardware speedup is claimed.
+
 The native release gate requires five independent worktrees/clients, actual simulator
 lifetime exclusion, nested GOD TEST/checked flows, worker crash/cancel recovery,
 unmanaged-session preservation and complete evidence on the supported Windows desktop.

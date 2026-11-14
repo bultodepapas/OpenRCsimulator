@@ -1,4 +1,8 @@
 """Boundaries between the existing checked API and admitted focused scripts."""
+import contextlib
+import io
+import json
+import os
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -12,6 +16,79 @@ class CheckedAdmissionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already owns"):
                 integration.open_debug([], Path.cwd())
         submit.assert_not_called()
+
+    def test_pending_session_is_owned_until_canceled_and_cannot_be_duplicated(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        pending = {"state": "QUEUED", "reason": "RESOURCE_BUSY"}
+        finished = {"id": "owned", "state": "FINISHED", "cleanup": "CONFIRMED"}
+        output, diagnostics = io.StringIO(), io.StringIO()
+        with patch.dict(os.environ, {"OPENRC_DEBUG_BRIDGE": "12345"}, clear=True), \
+                patch.object(integration, "submit", return_value=accepted) as submit, \
+                patch.object(integration, "wait", side_effect=[pending, finished]) as wait, \
+                patch.object(integration, "rpc", side_effect=[pending, {"id": "owned"}]) as rpc, \
+                contextlib.redirect_stdout(output), contextlib.redirect_stderr(diagnostics):
+            self.assertEqual(integration.open_debug([], Path.cwd(), wait_timeout=0), 0)
+            self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
+            self.assertNotIn("OPENRC_DEBUG_BRIDGE", os.environ)
+            with self.assertRaisesRegex(ValueError, "already owns"):
+                integration.open_debug([], Path.cwd())
+            self.assertEqual(integration.close_debug(), 0)
+        launch_result = json.loads(output.getvalue().splitlines()[0])
+        self.assertEqual(json.loads(diagnostics.getvalue())["handle"], accepted["handle"])
+        self.assertTrue(launch_result["ok"])
+        self.assertEqual(launch_result["state"], "QUEUED")
+        self.assertFalse(launch_result["ready"])
+        self.assertEqual(launch_result["handle"], accepted["handle"])
+        submit.assert_called_once()
+        self.assertEqual(wait.call_args_list[0].kwargs, {"timeout": 0, "ready": True})
+        self.assertEqual(rpc.call_args_list[1].args, ("cancel",))
+        self.assertEqual(rpc.call_args_list[1].kwargs, {"handle": accepted["handle"]})
+
+    def test_session_ownership_survives_wait_failure(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        diagnostics = io.StringIO()
+        with patch.dict(os.environ, {}, clear=True), patch.object(integration, "submit", return_value=accepted), \
+                patch.object(integration, "wait", side_effect=RuntimeError("worker unavailable")), \
+                contextlib.redirect_stderr(diagnostics):
+            with self.assertRaisesRegex(RuntimeError, "worker unavailable"):
+                integration.open_debug([], Path.cwd())
+            self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
+        self.assertEqual(json.loads(diagnostics.getvalue())["handle"], accepted["handle"])
+
+    def test_finished_or_unknown_session_is_not_reported_as_ready(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        for state in ("FINISHED", "UNKNOWN"):
+            with self.subTest(state=state), patch.dict(os.environ, {}, clear=True), \
+                    patch.object(integration, "submit", return_value=accepted), \
+                    patch.object(integration, "wait", return_value={"state": state, "session": {"port": 4567}}), \
+                    contextlib.redirect_stdout(io.StringIO()) as output, contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(integration.open_debug([], Path.cwd()), 1)
+                self.assertNotIn("OPENRC_DEBUG_BRIDGE", os.environ)
+                self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
+                self.assertFalse(json.loads(output.getvalue().splitlines()[-1])["ok"])
+
+    def test_ready_session_and_status_keep_the_owning_handle(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        ready = {"state": "RUNNING", "session": {"port": 4567}}
+        with patch.dict(os.environ, {}, clear=True), patch.object(integration, "submit", return_value=accepted), \
+                patch.object(integration, "wait", return_value=ready), \
+                patch.object(integration, "rpc", return_value={**ready, "payload": {"secret": "not for status"}}), \
+                contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(integration.open_debug([], Path.cwd()), 0)
+            self.assertEqual(os.environ["OPENRC_DEBUG_BRIDGE"], "4567")
+            self.assertEqual(integration.debug_status(), {**accepted, **ready, "ready": True})
+
+    def test_cancel_requested_session_is_not_reported_as_ready(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        stopping = {"state": "RUNNING", "session": {"port": 4567}, "canceled": 1}
+        with patch.dict(os.environ, {}, clear=True), patch.object(integration, "submit", return_value=accepted), \
+                patch.object(integration, "wait", return_value=stopping), \
+                patch.object(integration, "rpc", return_value=stopping), \
+                contextlib.redirect_stdout(io.StringIO()) as output, contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(integration.open_debug([], Path.cwd()), 0)
+            self.assertFalse(json.loads(output.getvalue())["ready"])
+            self.assertNotIn("OPENRC_DEBUG_BRIDGE", os.environ)
+            self.assertFalse(integration.debug_status()["ready"])
 
     def run_checked(self, command):
         return integration.checked(command, timeout=90, required=["complete"], max_log_bytes=4096,

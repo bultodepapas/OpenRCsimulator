@@ -142,11 +142,17 @@ def inherited(scope: str) -> bool:
     return True
 
 
+def require_exclusive(scope: str) -> None:
+    """Research launchers have no standalone adapter on enrolled hosts."""
+    if enabled() and (not inherited(scope) or not inherited("performance")):
+        raise ValueError("enrolled research launches require an exclusive inherited attempt with " + scope + " scope; standalone execution is unsupported")
+
+
 def wait(job: str, *, root: Path | None = None, timeout: float = 600, ready: bool = False):
     deadline = time.monotonic() + timeout
     while True:
         result = rpc("status", root=root, job=job)
-        if result["state"] == "FINISHED" or (ready and result.get("session")):
+        if result["state"] in {"FINISHED", "UNKNOWN"} or (ready and result["state"] == "RUNNING" and result.get("session")):
             return result
         if time.monotonic() >= deadline:
             return result  # leaving a waiter never cancels work
