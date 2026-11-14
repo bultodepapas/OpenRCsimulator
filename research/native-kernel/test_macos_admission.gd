@@ -13,6 +13,7 @@ func check(value: bool, label: String) -> void:
 
 
 func _initialize() -> void:
+	_read_documents()
 	var sha := "a".repeat(64)
 	var row := {binary_sha256 = sha, source_sha256 = sha, lock_sha256 = sha, engine_sha256 = sha,
 		runtime_os_version = "27.0.1", runtime_os_build = "26A434"}
@@ -50,3 +51,57 @@ func _initialize() -> void:
 	check(not Admission.selection_allowed(marker, selection, false), "extra selection fields")
 	print("MAC_ADMISSION checks=%d failures=%d" % [checks, failed])
 	quit(0 if failed == 0 else 1)
+
+
+func _read_documents() -> void:
+	var path := "user://mac-admission-document-%d-%d.json" % [OS.get_process_id(), Time.get_ticks_usec()]
+	check(not FileAccess.file_exists(path), "fresh document fixture")
+	if FileAccess.file_exists(path): return
+	check(Admission._read_document(path).is_empty(), "absent document refused quietly")
+	for content: String in ["", "{", "{\"format\":", "null", "[]", "\"text\"", "123"]:
+		var file := FileAccess.open(path, FileAccess.WRITE)
+		check(file != null, "fixture writable")
+		if file == null: return
+		file.store_string(content)
+		file.close()
+		check(Admission._read_document(path).is_empty(), "invalid or non-object document: " + content)
+	var valid := "{\"format\":\"document-probe\"}"
+	for length: int in [valid.length(), Admission.MAX_BYTES, Admission.MAX_BYTES + 1]:
+		var content := valid + " ".repeat(length - valid.length())
+		var file := FileAccess.open(path, FileAccess.WRITE)
+		check(file != null, "bounded fixture writable")
+		if file == null: return
+		file.store_string(content)
+		file.close()
+		var document := Admission._read_document(path)
+		if length > Admission.MAX_BYTES:
+			check(document.is_empty(), "oversized document refused")
+		else:
+			check(document.get("data") == {format = "document-probe"}, "valid bounded object")
+			check(document.get("sha256") == FileAccess.get_sha256(path), "digest binds parsed bytes")
+	check(DirAccess.remove_absolute(path) == OK, "fixture removed")
+	check(Admission._read_document(path).is_empty(), "removed document refused quietly")
+	var prefix := "{\"format\":\"".to_utf8_buffer()
+	var suffix := "\"}".to_utf8_buffer()
+	for invalid: PackedByteArray in [PackedByteArray([0xff]), PackedByteArray([0xe2, 0x82]),
+			PackedByteArray([0xc0, 0xaf]), PackedByteArray([0xed, 0xa0, 0x80]),
+			PackedByteArray([0xf4, 0x90, 0x80, 0x80]), PackedByteArray([0x80])]:
+		var bytes := prefix + invalid + suffix
+		var file := FileAccess.open(path, FileAccess.WRITE)
+		check(file != null, "malformed UTF-8 fixture writable")
+		if file == null: return
+		file.store_buffer(bytes)
+		file.close()
+		check(not Admission._valid_utf8(bytes), "malformed UTF-8 refused before decode")
+		check(Admission._read_document(path).is_empty(), "malformed UTF-8 document refused quietly")
+	var unicode := "{\"format\":\"é€🚁\"}".to_utf8_buffer()
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	check(file != null, "Unicode fixture writable")
+	if file == null: return
+	file.store_buffer(unicode)
+	file.close()
+	var document := Admission._read_document(path)
+	check(Admission._valid_utf8(unicode), "valid two, three and four byte UTF-8")
+	check(document.get("data") == {format = "é€🚁"}, "valid Unicode preserved")
+	check(document.get("sha256") == FileAccess.get_sha256(path), "Unicode digest binds actual bytes")
+	check(DirAccess.remove_absolute(path) == OK, "Unicode fixture removed")

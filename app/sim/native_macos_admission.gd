@@ -13,20 +13,76 @@ const MAX_BYTES := 2 * 1024 * 1024
 static func read_marker() -> Dictionary:
 	if OS.has_feature("template_release") or OS.get_name() != "macOS" or Engine.get_architecture_name() != "arm64":
 		return {}
-	var file := FileAccess.open(PATH, FileAccess.READ)
-	if file == null or file.get_length() < 2 or file.get_length() > MAX_BYTES:
-		return {}
-	var marker: Variant = JSON.parse_string(file.get_as_text())
-	var receipt: Variant = JSON.parse_string(FileAccess.get_file_as_string(RECEIPT))
+	var marker_document := _read_document(PATH)
+	if marker_document.is_empty(): return {}
+	var receipt_document := _read_document(RECEIPT)
+	var marker: Variant = marker_document.get("data")
+	var receipt: Variant = receipt_document.get("data")
 	if not marker is Dictionary or not receipt is Dictionary or not receipt.get("platforms") is Dictionary:
 		return {}
 	var row: Variant = receipt.platforms.get("macos")
-	if not row is Dictionary or not identity_error(marker, FileAccess.get_sha256(RECEIPT), row,
-			FileAccess.get_sha256(DOMAIN), OS.get_processor_name()).is_empty():
+	if not row is Dictionary or not identity_error(marker, receipt_document.get("sha256", ""), row,
+			_hash_bytes(_read_bytes(DOMAIN)), OS.get_processor_name()).is_empty():
 		return {}
 	if OS.get_model_name() != marker.get("hardware_model"):
 		return {}
 	return marker
+
+
+## Optional admission artifacts fail closed without emitting JSON parser errors.
+## Parse and hash one bounded buffer, so a replacement cannot change the bytes cited.
+static func _read_document(path: String) -> Dictionary:
+	var bytes := _read_bytes(path)
+	if bytes.is_empty() or not _valid_utf8(bytes): return {}
+	var text := bytes.get_string_from_utf8()
+	if text.to_utf8_buffer() != bytes: return {}
+	var parser := JSON.new()
+	if parser.parse(text) != OK or not parser.data is Dictionary:
+		return {}
+	return {data = parser.data, sha256 = _hash_bytes(bytes)}
+
+
+## Check before decoding: Godot can log errors while replacing malformed UTF-8.
+static func _valid_utf8(bytes: PackedByteArray) -> bool:
+	var index := 0
+	while index < bytes.size():
+		var first := int(bytes[index])
+		if first < 0x80:
+			index += 1
+			continue
+		var count := 0
+		if first >= 0xc2 and first <= 0xdf: count = 2
+		elif first >= 0xe0 and first <= 0xef: count = 3
+		elif first >= 0xf0 and first <= 0xf4: count = 4
+		if count == 0 or index + count > bytes.size(): return false
+		for offset: int in range(1, count):
+			if bytes[index + offset] < 0x80 or bytes[index + offset] > 0xbf: return false
+		var second := int(bytes[index + 1])
+		if (first == 0xe0 and second < 0xa0) or (first == 0xed and second >= 0xa0) \
+				or (first == 0xf0 and second < 0x90) or (first == 0xf4 and second >= 0x90): return false
+		index += count
+	return true
+
+
+static func _read_bytes(path: String) -> PackedByteArray:
+	if not FileAccess.file_exists(path): return PackedByteArray()
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null: return PackedByteArray()
+	var length := file.get_length()
+	if length < 2 or length > MAX_BYTES:
+		file.close()
+		return PackedByteArray()
+	var bytes := file.get_buffer(length)
+	file.close()
+	return bytes if bytes.size() == length else PackedByteArray()
+
+
+static func _hash_bytes(bytes: PackedByteArray) -> String:
+	if bytes.is_empty(): return ""
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(bytes)
+	return context.finish().hex_encode()
 
 
 ## The normal NativeStage loader independently verifies actual engine, OS, library and mirrored bytes.
