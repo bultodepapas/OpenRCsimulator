@@ -10,6 +10,14 @@ const Wizard := preload("res://ui/radio_calibration_setup.gd")
 var checks := 0
 var failures := 0
 
+class CountingStore extends Store:
+	var acquisitions := 0
+	func _init(storage: String) -> void:
+		super(storage, storage + ".legacy")
+	func acquire_write() -> Dictionary:
+		acquisitions += 1
+		return super.acquire_write()
+
 func check(label: String, condition: bool) -> void:
 	checks += 1
 	if not condition:
@@ -47,6 +55,17 @@ func _run() -> void:
 	var second := Profile.defaults()
 	second.association = {serial_number = "A"}
 	second = store.save_profile(second).profile
+	var repairable := Profile.defaults()
+	repairable.roll.range_kind = "absolute"
+	var uncenterable := Profile.defaults()
+	uncenterable.pitch.range_kind = "absolute"
+	uncenterable.pitch.center = uncenterable.pitch.min
+	check("old absolute-channel profiles remain storable for repair", store.save_profile(repairable).ok and store.save_profile(uncenterable).ok)
+	var mixed := store.load_all()
+	check("mixed old and healthy profiles remain available together", mixed.ok and mixed.profiles.size() == 4)
+	var admission := Service.new()
+	check("uncenterable stored profile cannot be acknowledged for flight", not admission.validate_profile_for_session(uncenterable).ok and admission.validate_profile_for_session(first).ok)
+	admission.free()
 	var registry := Registry.new()
 	var a := device(5, "A")
 	a.profile_id = first.profile_id
@@ -175,5 +194,22 @@ func _run() -> void:
 	setup.joystick_enabled.button_pressed = true
 	check("explicitly reviewed generic mapping can save", setup._save_profile(false))
 	setup.free()
+	var cache := Service.new()
+	var counted := CountingStore.new(store.path)
+	cache.store = counted
+	cache.registry.update_devices([device(91, "Cache-raw", "joystick"), device(92, "Cache-pad"), device(93, "Retry-pad")])
+	cache.profile_for_device(91)
+	var after_miss := counted.acquisitions
+	for repeat in 10: cache.profile_for_device(91)
+	check("negative cache avoids repeated filesystem lock acquisition", counted.acquisitions == after_miss)
+	cache.profile_for_device(92)
+	var after_hit := counted.acquisitions
+	for repeat in 10: cache.profile_for_device(92)
+	check("positive cache avoids repeated filesystem lock acquisition", counted.acquisitions == after_hit)
+	check("fixture holds independent store lock", store.acquire_write().ok)
+	check("busy resolution does not enable fallback", cache.profile_for_device(93).is_empty())
+	store.release_write()
+	check("busy resolution retries without caching a miss", not cache.profile_for_device(93).is_empty())
+	cache.free()
 	print("External controller audit: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

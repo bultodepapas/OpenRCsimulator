@@ -2,10 +2,44 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://d2qqhv7y0nmrj"
+path.s3tc="res://.godot/imported/steampunk_cobre_fin_roughness.jpg-a58923000ef8c0a999e32c6b89206086.s3tc.ctex"
+path.etc2="res://.godot/imported/steampunk_cobre_fin_roughness.jpg-a58923000ef8c0a999e32c6b89206086.etc2.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
+}
+
+[deps]
+
+source_file="res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_roughness.jpg"
+dest_files=["res://.godot/imported/steampunk_cobre_fin_roughness.jpg-a58923000ef8c0a999e32c6b89206086.s3tc.ctex", "res://.godot/imported/steampunk_cobre_fin_roughness.jpg-a58923000ef8c0a999e32c6b89206086.etc2.ctex"]
 
 [params]
 
 compress/mode=2
 compress/high_quality=false
+compress/high_quality_mode=0
+compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=1
 compress/normal_map=0
+compress/channel_pack=0
 mipmaps/generate=true
+mipmaps/limit=-1
+mipmaps/preserve_alpha_test_coverage=false
+mipmaps/alpha_test_threshold=0.5
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=1

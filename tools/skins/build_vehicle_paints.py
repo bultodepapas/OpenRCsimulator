@@ -1537,10 +1537,11 @@ def _sabre_cached(atlas: str):
 # ---------------------------------------------------------------------------------------------
 STEAM_ATLASES = dict(SABRE_ATLASES)
 STEAM_FONT = ROOT / "tools/skins/sources/steampunk/IMFeENsc28P.ttf"  # SIL OFL 1.1 (see that folder's README.md)
-COPPER_TONES = np.array([(200, 122, 78), (178, 101, 63), (152, 84, 53), (214, 144, 102), (188, 113, 71),
-                         (166, 93, 59)], dtype=np.float64) / 255.0
-COPPER_ROUGH = np.array([0.28, 0.36, 0.44, 0.24, 0.32, 0.40])
-COPPER_METAL = np.array([0.62, 0.56, 0.50, 0.66, 0.60, 0.54])
+# Bright, rosy, aged and dark-brown copper: plates of different age and polish.
+COPPER_TONES = np.array([(206, 124, 82), (178, 101, 63), (140, 76, 50), (222, 152, 112), (190, 112, 72),
+                         (158, 88, 58), (120, 69, 47)], dtype=np.float64) / 255.0
+COPPER_ROUGH = np.array([0.26, 0.36, 0.46, 0.22, 0.32, 0.40, 0.50])
+COPPER_METAL = np.array([0.64, 0.56, 0.48, 0.68, 0.60, 0.54, 0.46])
 IRON_TONES = np.array([(80, 82, 84), (67, 68, 70), (92, 89, 83), (73, 75, 79), (86, 83, 80)], dtype=np.float64) / 255.0
 IRON_ROUGH = np.array([0.42, 0.50, 0.38, 0.46, 0.44])
 IRON_METAL = np.array([0.56, 0.50, 0.60, 0.52, 0.55])
@@ -1696,9 +1697,27 @@ def steam_porthole(skin, p, a, b, ca, cb, r, weight):
     skin.height += 0.0011 * ring + 0.0003 * rivet - 0.0006 * glass
 
 
+def hammered(a, b, cell, seed):
+    """Distance to the nearest hammer blow (cellular noise in surface metres), normalised by the cell size."""
+    ia, ib = np.floor(a / cell), np.floor(b / cell)
+    best = np.full(np.shape(a), np.inf)
+    for oa in (-1, 0, 1):
+        for ob in (-1, 0, 1):
+            ca, cb = ia + oa, ib + ob
+            pa = (ca + 0.15 + 0.7 * _hash(ca, cb, seed=seed)) * cell
+            pb = (cb + 0.15 + 0.7 * _hash(ca, cb, seed=seed + 1)) * cell
+            best = np.minimum(best, np.hypot(a - pa, b - pb))
+    return best / cell
+
+
 def steam_plates(skin, p, panel, grain_a, grain_b, copper_weight, seed):
-    """Copper and blackened-iron plates: both palettes per panel, blended by zone."""
+    """Copper and blackened-iron plates: both palettes per panel, blended by zone; half the copper is planished."""
     skin.panels(panel, grain_a, grain_b, p, seed, COPPER_TONES, COPPER_ROUGH, COPPER_METAL)
+    blow = hammered(grain_a, grain_b, 0.009, seed + 9)
+    dent = 1.0 - np.clip(blow / 0.75, 0.0, 1.0) ** 2
+    planished = copper_weight * (_hash(panel, seed=seed + 8) < 0.5)
+    skin.height -= 0.00016 * dent * planished
+    skin.colour = skin.colour * (1.0 - 0.05 * dent * planished)[:, None]
     iron = _Skin(len(p))
     iron.panels(panel, grain_a, grain_b, p, seed + 1, IRON_TONES, IRON_ROUGH, IRON_METAL)
     skin.lay(iron.colour, 1.0 - copper_weight, rough=iron.rough, metal=iron.metal)
@@ -1791,32 +1810,46 @@ def steam_fuselage(p, n):
     steam_gear(skin, p, zm, y, tiny[0], tiny[1], teeth[2], mesh_phase(teeth[0], phase_big, tiny_angle, teeth[2]), side, 435)
     # Piston: a finned cylinder whose rod and crosshead drive a crank pin on the big wheel.
     cyl0, cyl1, cyl_y = 0.490 * FUS_LEN, 0.535 * FUS_LEN, 0.104
-    cyl = ((zm > cyl0) & (zm < cyl1) & (np.abs(y - cyl_y) < 0.012)) * side
+    cyl = ((zm > cyl0) & (zm < cyl1) & (np.abs(y - cyl_y) < 0.0145)) * side
     fins = 0.5 + 0.5 * np.cos((zm - cyl0) / 0.004 * 2 * np.pi)
     skin.lay(IRON_TONES[1] * (0.8 + 0.4 * fins)[:, None], cyl, rough=0.45, metal=0.55)
     skin.height += (0.0010 + 0.0005 * fins) * cyl
     for flange in (cyl0, cyl1):
-        ring = (np.abs(zm - flange) < 0.003) * (np.abs(y - cyl_y) < 0.0145) * side
+        ring = (np.abs(zm - flange) < 0.003) * (np.abs(y - cyl_y) < 0.0175) * side
         skin.lay(BRASS_BRIGHT, ring, rough=0.22, metal=0.66)
         skin.height += 0.0016 * ring
     crank = (big[0] - 0.026 * np.cos(np.radians(30)), big[1] + 0.026 * np.sin(np.radians(30)))
     cross = (cyl1 + 0.012, cyl_y)
-    rod = ((zm > cyl1) & (zm < cross[0]) & (np.abs(y - cyl_y) < 0.0022)) * side
+    rod = ((zm > cyl1) & (zm < cross[0]) & (np.abs(y - cyl_y) < 0.003)) * side
     skin.lay(STEEL * 1.1, rod, rough=0.15, metal=0.66)
     skin.height += 0.0012 * rod
-    head = ((np.abs(zm - cross[0]) < 0.0045) & (np.abs(y - cyl_y) < 0.005)) * side
+    head = ((np.abs(zm - cross[0]) < 0.0055) & (np.abs(y - cyl_y) < 0.0065)) * side
     skin.lay(BRASS_DARK, head, rough=0.3, metal=0.62)
     skin.height += 0.0018 * head
     ux, uy = crank[0] - cross[0], crank[1] - cross[1]
     length = np.hypot(ux, uy)
     t = np.clip(((zm - cross[0]) * ux + (y - cross[1]) * uy) / length, 0.0, length)
-    con = (1.0 - smoothstep(0.0025, 0.003, np.hypot(zm - cross[0] - t * ux / length, y - cross[1] - t * uy / length))) * side
-    skin.lay(IRON_TONES[0] * 0.8, con, rough=0.35, metal=0.58)
+    con = (1.0 - smoothstep(0.0036, 0.0042, np.hypot(zm - cross[0] - t * ux / length, y - cross[1] - t * uy / length))) * side
+    skin.lay(STEEL * 0.95, con, rough=0.22, metal=0.64)
     skin.height += 0.0022 * con
     pin = (1.0 - smoothstep(0.0028, 0.0034, np.hypot(zm - crank[0], y - crank[1]))) * side
     skin.lay(STEEL, pin, rough=0.2, metal=0.64)
     skin.height += 0.0026 * pin
 
+    # The steam circuit: a riser from the firebox to the steam main, and a feed with a handwheel valve down to
+    # the cylinder, so the drawn machine reads as one working engine.
+    steam_pipe(skin, p, zm - 0.872 * FUS_LEN, y, 0.074, 0.150, 0.0045, side, hex_rgb("#c27a4c"), 425, 0.05)
+    feed_z = 0.512 * FUS_LEN
+    steam_pipe(skin, p, zm - feed_z, y, cyl_y + 0.016, 0.150, 0.0035, side, BRASS_BRIGHT * 0.95, 427, 0.04)
+    wheel_a, wheel_b = feed_z, 0.134
+    wd = np.hypot(zm - wheel_a, y - wheel_b)
+    wth = np.arctan2(y - wheel_b, zm - wheel_a)
+    rim = (np.abs(wd - 0.0072) < 0.0012) * side
+    spokes = (wd < 0.0072) * (wd * np.abs(np.sin(np.mod(wth, np.pi / 2) - np.pi / 4 + np.pi / 4)) < 0.0007) * side
+    hub = (wd < 0.0018) * side
+    skin.lay(hex_rgb("#8e2a22"), np.clip(rim + spokes, 0, 1), rough=0.4, metal=0.2)
+    skin.lay(BRASS_BRIGHT, hub, rough=0.2, metal=0.66)
+    skin.height += 0.0014 * np.clip(rim + spokes, 0, 1) + 0.0018 * hub
     # Cockpit instruments, name plate, portholes and the firebox.
     va, vb = _view(p, n, 0.0, 0.0)
     for zc, reading in ((0.226, 0.62), (0.264, 0.84)):

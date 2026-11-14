@@ -96,6 +96,54 @@ int main() {
 }
 '''
 
+
+GEOMETRY_STUB = r'''
+#include <cstdint>
+#include <vector>
+using RID = int;
+#define ERR_FAIL_COND_V_MSG(c,v,m) do { if (c) return false; } while (0)
+enum { SUPPORTS_METAL_TRIANGLE_QUERY, ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT=1,
+       DATA_FORMAT_R32G32B32_SFLOAT=2 };
+namespace RDD { enum { BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT=1,
+                       BUFFER_USAGE_DYNAMIC_PERSISTENT_BIT=2 }; }
+struct Flags { uint64_t value=0; bool is_empty() const { return value==0; }
+    bool has_flag(int bit) const { return (value & uint64_t(bit)) != 0; }
+    explicit operator uint64_t() const { return value; } };
+struct Handle { bool valid=false; bool is_valid() const { return valid; } };
+struct Geometry { Flags flags; Handle index_buffer; int64_t index_offset=0, index_count=0;
+    int vertex_format=DATA_FORMAT_R32G32B32_SFLOAT; int64_t vertex_offset=0, vertex_count=6, vertex_stride=16; };
+using AccelerationStructureGeometry = Geometry;
+struct Buffer { Flags usage; uint64_t size=0; };
+static bool has_feature(int) { return true; }
+bool geometry_ok(const std::vector<Geometry> &p_geometries, Flags p_flags, Buffer &buffer) {
+@ADMISSION@
+    for (uint64_t i=0;i<p_geometries.size();++i) {
+@FIELDS@
+        Buffer *vertex_buffer=&buffer;
+@BOUNDS@
+    }
+    return true;
+}
+#define CHECK(x) do { if (!(x)) return __LINE__; } while (0)
+int main() {
+    Geometry g; g.flags.value=1; g.vertex_offset=4; Buffer buffer; buffer.usage.value=1; buffer.size=96;
+    CHECK(geometry_ok({g},{0},buffer)); // last float3 ends exactly at buffer end
+    buffer.size=95; CHECK(!geometry_ok({g},{0},buffer)); buffer.size=96;
+    auto bad=g; bad.vertex_offset=5; CHECK(!geometry_ok({bad},{0},buffer));
+    bad=g; bad.vertex_stride=10; CHECK(!geometry_ok({bad},{0},buffer));
+    bad=g; bad.vertex_count=0; CHECK(!geometry_ok({bad},{0},buffer));
+    bad=g; bad.vertex_count=7; CHECK(!geometry_ok({bad},{0},buffer));
+    bad=g; bad.vertex_count=-3; CHECK(!geometry_ok({bad},{0},buffer));
+    bad=g; bad.vertex_offset=4294967296LL; CHECK(!geometry_ok({bad},{0},buffer));
+    bad=g; bad.index_buffer.valid=true; CHECK(!geometry_ok({bad},{0},buffer));
+    bad=g; bad.flags.value=0; CHECK(!geometry_ok({bad},{0},buffer));
+    CHECK(!geometry_ok({g,g},{0},buffer)); CHECK(!geometry_ok({g},{1},buffer));
+    buffer.usage.value=0; CHECK(!geometry_ok({g},{0},buffer));
+    buffer.usage.value=3; CHECK(!geometry_ok({g},{0},buffer));
+    return 0;
+}
+'''
+
 PACK_STUB = r'''
 #include <cstdint>
 #include <cstring>
@@ -213,6 +261,24 @@ class TriangleQueryPatchTests(unittest.TestCase):
             fn = CHECKS.cxx_function(self.rd, signature)
             self.assertLess(fn.index("_compute_list_triangle_query_sets_valid"), fn.index("draw_graph.add_compute_list_dispatch"))
 
+    def test_real_geometry_admission_and_exact_bounds(self) -> None:
+        start = self.rd.index("RID RenderingDevice::blas_create(")
+        admission_start = self.rd.index("\tconst bool triangle_query =", start)
+        admission_end = self.rd.index("\n\tthread_local", admission_start)
+        fields_start = self.rd.index("\t\tconst AccelerationStructureGeometry &rd_geometry", admission_end)
+        fields_end = self.rd.index("\n\t\tRDD::AccelerationStructureGeometry &", fields_start)
+        bounds_start = self.rd.index("\t\tif (triangle_query) {", fields_end)
+        bounds_end = self.rd.index("\n\t\tERR_FAIL_COND_V_MSG(rd_geometry.vertex_format", bounds_start)
+        source = (GEOMETRY_STUB.replace("@ADMISSION@", self.rd[admission_start:admission_end])
+                  .replace("@FIELDS@", self.rd[fields_start:fields_end])
+                  .replace("@BOUNDS@", self.rd[bounds_start:bounds_end]))
+        run = self.compile(source, "geometry_controls")
+        self.assertEqual(run.returncode, 0, run.stderr)
+        mutated = source.replace("end > vertex_buffer->size", "end >= vertex_buffer->size", 1)
+        self.assertNotEqual(mutated, source)
+        self.assertNotEqual(self.compile(mutated, "geometry_mutated").returncode, 0,
+                            "Control failed to detect rejection of an exact-fit buffer")
+
     def test_real_instance_packing_and_invalid_inputs(self) -> None:
         instance = "struct MDAccelerationStructureInstance " + CHECKS.cxx_block(self.shared, self.shared.index("struct MDAccelerationStructureInstance")) + ";"
         pack = CHECKS.cxx_function(self.driver, "void RenderingDeviceDriverMetal::acceleration_structure_instance_write(")
@@ -229,13 +295,20 @@ class TriangleQueryPatchTests(unittest.TestCase):
         self.assertIn("accel->resident_blases", commands)
         self.assertIn("addCompletedHandler", commands)
         self.assertGreaterEqual(spirv.count("case SPIRType::AccelerationStructure:"), 2)
+        for sig, create in (("RID RenderingDevice::blas_create(", "driver->blas_create"),
+                            ("RID RenderingDevice::tlas_create(", "driver->tlas_create")):
+            fn = CHECKS.cxx_function(self.rd, sig)
+            self.assertLess(fn.index("!has_feature(SUPPORTS_METAL_TRIANGLE_QUERY)"), fn.index(create))
         for sig in ("RID RenderingDevice::hit_sbt_create(", "RID RenderingDevice::raytracing_pipeline_create("):
             fn = CHECKS.cxx_function(self.rd, sig)
             self.assertIn("!has_feature(SUPPORTS_RAYTRACING_PIPELINE)", fn)
             self.assertNotIn("SUPPORTS_METAL_TRIANGLE_QUERY", fn[:fn.index(";")])
 
 EXPECTED = {
-    "off": None, "happy": None,
+    "off": None,
+    "off_blas": "The current rendering device has neither raytracing pipeline nor ray query support.",
+    "off_tlas": "The current rendering device has neither raytracing pipeline nor ray query support.",
+    "happy": None,
     "bad_bounds": "Metal triangle vertices exceed the vertex buffer.",
     "bad_stride": "Metal triangle queries require non-indexed opaque float3 triangles",
     "bad_offset": "Acceleration-structure geometry fields must fit uint32.",
@@ -268,17 +341,17 @@ def native_runner(binary: Path, output: Path) -> int:
         (project / "triangle_query_probe.gd").write_bytes(fixture)
         for mode in ("argument", "direct"):
             for case, expected in EXPECTED.items():
-                if case == "off" and mode == "direct":
+                if case.startswith("off") and mode == "direct":
                     continue
                 env = os.environ.copy()
                 for key in ("GODOT_METAL_TRIANGLE_QUERY", "GODOT_MTL_DISABLE_ARGUMENT_BUFFERS", "GODOT_MTL_SYNC_MODE"):
                     env.pop(key, None)
-                if case != "off":
+                if not case.startswith("off"):
                     env["GODOT_METAL_TRIANGLE_QUERY"] = "1"
                 if mode == "direct":
                     env["GODOT_MTL_DISABLE_ARGUMENT_BUFFERS"] = "1"
                 env.update(MTL_DEBUG_LAYER="1", MTL_SHADER_VALIDATION="1", MTL_SHADER_VALIDATION_REPORT_TO_STDERR="1", MTL_SHADER_VALIDATION_ABORT_ON_FAULT="1")
-                command = [str(binary), "--path", str(project), "--rendering-method", "mobile", "--rendering-driver", "metal", "--script", "res://triangle_query_probe.gd", "--", f"--case={case}"]
+                command = [str(binary), "--path", str(project), "--rendering-method", "mobile", "--rendering-driver", "metal", "--verbose", "--script", "res://triangle_query_probe.gd", "--", f"--case={case}"]
                 try:
                     proc = subprocess.run(command, env=env, capture_output=True, text=True, timeout=180)
                     log = proc.stdout + "\n" + proc.stderr
@@ -297,8 +370,9 @@ def native_runner(binary: Path, output: Path) -> int:
                 expected_list = expected if isinstance(expected, list) else ([expected] if expected else [])
                 expected_errors = len(errors) == len(expected_list) and all(want in got for want, got in zip(expected_list, errors))
                 invalid_gpu = re.search(r"(?i)(failed assertion|GPU fault|MTLCommandBufferError|shader validation error)", log) is not None
-                ok = code == 0 and verdict.get("ok") is True and verdict.get("case") == case and expected_errors and not invalid_gpu
-                records.append({"mode": mode, "case": case, "returncode": code, "verdict": verdict, "errors": errors, "ok": ok, "command": command, "environment": {key: env.get(key) for key in ("GODOT_METAL_TRIANGLE_QUERY", "GODOT_MTL_DISABLE_ARGUMENT_BUFFERS", "MTL_DEBUG_LAYER", "MTL_SHADER_VALIDATION")}})
+                binding_observed = case.startswith("off") or ("Metal triangle query binding mode: " + mode) in log
+                ok = code == 0 and verdict.get("ok") is True and verdict.get("case") == case and expected_errors and not invalid_gpu and binding_observed
+                records.append({"mode": mode, "binding_observed": binding_observed, "case": case, "returncode": code, "verdict": verdict, "errors": errors, "ok": ok, "command": command, "environment": {key: env.get(key) for key in ("GODOT_METAL_TRIANGLE_QUERY", "GODOT_MTL_DISABLE_ARGUMENT_BUFFERS", "MTL_DEBUG_LAYER", "MTL_SHADER_VALIDATION")}})
                 print(f"{name}: {'PASS' if ok else 'FAIL'}", flush=True)
     manifest = {"binary_sha256": hashlib.sha256(binary.read_bytes()).hexdigest(), "fixture_sha256": hashlib.sha256(fixture).hexdigest(), "patch_sha256": hashlib.sha256(PATCHES[-1].read_bytes()).hexdigest(), "cases": records, "ok": all(r["ok"] for r in records)}
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

@@ -284,7 +284,7 @@ index b6d722bf9356638f0fe2fe17684015c2ac4ccfc8..1fe44bcdd2593556f3a7c0abaaf301f8
  	FUNC1R(Dictionary, viewport_read_metalfx_frame, RID)
 diff --git a/servers/rendering/storage/metalfx_gpu_observation.h b/servers/rendering/storage/metalfx_gpu_observation.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..b829c0632f716ce875106b0d89ee66080140be91
+index 0000000000000000000000000000000000000000..375d5e760b04ea0f32edacdc17128860b5f4f74b
 --- /dev/null
 +++ b/servers/rendering/storage/metalfx_gpu_observation.h
 @@ -0,0 +1,96 @@
@@ -362,7 +362,7 @@ index 0000000000000000000000000000000000000000..b829c0632f716ce875106b0d89ee6608
 +		p_sample.succeeded = p_succeeded && !p_error_present;
 +		p_sample.callback_observer_usec = p_callback_usec <= MAX_COUNTER ? p_callback_usec : 0;
 +		p_sample.gpu_timing_available = p_sample.succeeded && std::isfinite(p_gpu_start) && std::isfinite(p_gpu_end) &&
-+				p_gpu_start > 0 && p_gpu_end >= p_gpu_start && std::isfinite(p_gpu_end - p_gpu_start);
++				p_gpu_start > 0 && p_gpu_end >= p_gpu_start && std::isfinite((p_gpu_end - p_gpu_start) * 1000.0);
 +		if (p_sample.gpu_timing_available) {
 +			p_sample.gpu_start_seconds = p_gpu_start;
 +			p_sample.gpu_end_seconds = p_gpu_end;

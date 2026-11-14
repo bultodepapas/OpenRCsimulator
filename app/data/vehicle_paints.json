@@ -1335,6 +1335,11 @@
 		"res://assets/vehicle-paints/avanti-s-a200/sabre_plata_doors_roughness.jpg": 0.3499,
 		"res://assets/vehicle-paints/avanti-s-a200/sabre_plata_stab_roughness.jpg": 0.3093,
 		"res://assets/vehicle-paints/avanti-s-a200/sabre_plata_fin_roughness.jpg": 0.2873,
-		"res://assets/vehicle-paints/ugly-stik/blackbird_roughness.png": 0.61291223413804
+		"res://assets/vehicle-paints/ugly-stik/blackbird_roughness.png": 0.61291223413804,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fuselage_roughness.jpg": 0.3687,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_wing_roughness.jpg": 0.3854,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors_roughness.jpg": 0.462,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_roughness.jpg": 0.3817,
+		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_roughness.jpg": 0.3582
 	}
 }

@@ -165,7 +165,7 @@ int main(int argc, char **argv) {
         assert(state->snapshot().first_observed_failure.ticket == 1 && state->snapshot().reset_completed_serial == 8);
     } else if (mode == "timing") {
         for (const auto &times : std::vector<std::pair<double, double>>{{0,0}, {-1,2}, {2,1},
-             {NAN,2}, {1,INFINITY}}) {
+             {NAN,2}, {1,INFINITY}, {1,std::numeric_limits<double>::max()}}) {
             auto state = std::make_shared<MetalFXGPUObservation>(); MTL::CommandBuffer command;
             command.start = times.first; command.end = times.second;
             mfx_observe_gpu(&command, state, 1); command.finish();

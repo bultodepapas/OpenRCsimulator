@@ -270,17 +270,6 @@ func _is_ui_device_locked(id: int) -> bool:
 
 
 func profile_for_device(id: int) -> Dictionary:
-	var key := "%d:%d" % [id, registry.connection_generation(id)]
-	if _profiles.has(key) and bool(registry.device_for_id(id).get("connected", false)):
-		return _profiles[key].duplicate(true)
-	var lease: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
-	if not lease.ok: return {}
-	var result := _profile_for_device_locked(id)
-	if store.has_method("release_write"): store.release_write()
-	return result
-
-
-func _profile_for_device_locked(id: int) -> Dictionary:
 	var info: Dictionary = registry.device_for_id(id)
 	if not info.get("connected", false): return {}
 	# The registry advances the generation when identity-matching evidence changes.
@@ -296,6 +285,15 @@ func _profile_for_device_locked(id: int) -> Dictionary:
 			and session.radio.device_key == RcInput.key_for(id, info):
 		return session.radio.profile.duplicate(true)
 	if _profile_misses.has(key): return {}
+	# Cached hits and misses require no filesystem lock in the input hot path.
+	var lease: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not lease.ok: return {}
+	var result := _resolve_stored_profile_locked(id, info, key)
+	if store.has_method("release_write"): store.release_write()
+	return result
+
+
+func _resolve_stored_profile_locked(id: int, info: Dictionary, key: String) -> Dictionary:
 	# A corrupt or unsupported V2 store must not look like an empty store and
 	# silently enable a legacy mapping or a built-in default for this device.
 	var storage := store.load_all()

@@ -128,12 +128,16 @@ func _run() -> void:
 	result["triangle_query"] = available
 	_check(not rd.has_feature(RenderingDevice.SUPPORTS_RAY_QUERY), "full_ray_query_claimed")
 	_check(not rd.has_feature(RenderingDevice.SUPPORTS_RAYTRACING_PIPELINE), "ray_pipeline_claimed")
-	if case_name not in ["off", "happy", "bad_bounds", "bad_stride", "bad_offset", "bad_capacity", "bad_id", "bad_mask", "bad_transform", "bad_sbt", "bad_flags", "empty", "rebuild", "pipeline", "sbt", "ray_list", "stale_direct", "stale_indirect", "rebuild_stale"]:
+	if case_name not in ["off", "off_blas", "off_tlas", "happy", "bad_bounds", "bad_stride", "bad_offset", "bad_capacity", "bad_id", "bad_mask", "bad_transform", "bad_sbt", "bad_flags", "empty", "rebuild", "pipeline", "sbt", "ray_list", "stale_direct", "stale_indirect", "rebuild_stale"]:
 		failures.append("unknown_case")
 		_finish()
 		return
-	if case_name == "off":
+	if case_name in ["off", "off_blas", "off_tlas"]:
 		_check(not available, "default_must_be_off")
+		if case_name == "off_blas":
+			_check(not rd.blas_create([], 0).is_valid(), "disabled_blas_accepted")
+		elif case_name == "off_tlas":
+			_check(not rd.tlas_create(1, 0).is_valid(), "disabled_tlas_accepted")
 		_finish()
 		return
 	if not available:
