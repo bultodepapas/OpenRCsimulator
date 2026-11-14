@@ -315,6 +315,40 @@ class ManifestTests(unittest.TestCase):
             with self.subTest(text=text), self.assertRaisesRegex(ValueError, "checksum"):
                 manifest.verify(target)
 
+    def test_oversized_checksum_is_rejected_with_a_bounded_read(self):
+        target = self.transferred()
+        path = target / manifest.CHECKSUMS
+        limit = path.stat().st_size + 1
+        with path.open("ab") as stream:
+            stream.write(b"\0" * 4096)  # Oversized input; no filesystem-specific sparse allocation.
+        original_open = Path.open
+        requested = []
+        case = self
+
+        class ReadBudget:
+            def __init__(self, stream):
+                self.stream = stream
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return self.stream.__exit__(*args)
+
+            def read(self, size=-1):
+                case.assertGreater(size, 0, "checksum read must have an explicit byte budget")
+                case.assertLessEqual(size, limit)
+                requested.append(size)
+                return self.stream.read(size)
+
+        def budgeted_open(selected, *args, **kwargs):
+            stream = original_open(selected, *args, **kwargs)
+            return ReadBudget(stream) if selected == path else stream
+
+        with mock.patch.object(Path, "open", budgeted_open), self.assertRaisesRegex(ValueError, "checksum"):
+            manifest.verify(target)
+        self.assertTrue(requested)
+
     def test_rejects_malformed_schema_types_names_and_qualification(self):
         data = self.finish()
         mutations = [lambda d: d.update(format="future"), lambda d: d["source"].update(dirty="false"),

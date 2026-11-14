@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Read-only, bounded watch of one explicitly identified release CI run."""
+"""Read-only, deadline-bounded watch of one explicitly identified release CI run."""
 from __future__ import annotations
 
 import argparse
+from email.utils import parsedate_to_datetime
 import json
+import math
 import os
 import re
 import subprocess
@@ -15,6 +17,7 @@ GATES = {"CI required", "Release builds (Windows, Linux, macOS)", "GitHub releas
 TAG = re.compile(r"v[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?\Z")
 SHA = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z")
 REPOSITORY = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\Z")
+MAX_OBSERVATION_SECONDS = 21600
 
 
 class InvalidData(ValueError):
@@ -24,27 +27,97 @@ class InvalidData(ValueError):
 class TransportError(Exception):
     """A bounded request failed or pagination changed while being read."""
 
+    def __init__(self, message, retry_after=0, retryable=True):
+        super().__init__(message)
+        self.retry_after = retry_after if math.isfinite(retry_after) and retry_after >= 0 else 0
+        self.retryable = retryable
+
 
 def require(condition, message):
     if not condition:
         raise InvalidData(message)
 
 
+def response_parts(raw):
+    """Read gh --include output, including a possible redirect response prefix."""
+    status, headers = None, {}
+    while raw.startswith(b"HTTP/"):
+        parts = re.split(br"\r?\n\r?\n", raw, maxsplit=1)
+        require(len(parts) == 2, "incomplete GitHub HTTP response")
+        lines = parts[0].decode("iso-8859-1").splitlines()
+        match = re.fullmatch(r"HTTP/\S+ ([1-5][0-9]{2})(?: .*)?", lines[0])
+        require(match is not None, "invalid GitHub HTTP status")
+        status, headers = int(match[1]), {}
+        for line in lines[1:]:
+            name, separator, value = line.partition(":")
+            require(bool(separator), "invalid GitHub HTTP header")
+            headers[name.strip().lower()] = value.strip()
+        raw = parts[1]
+    require(status is not None, "missing GitHub HTTP response")
+    return status, headers, raw
+
+
+def retry_delay(status, headers, now, secondary=False):
+    delays = []
+    value = headers.get("retry-after", "")
+    if value:
+        if re.fullmatch(r"[0-9]+", value):
+            digits = value.lstrip("0") or "0"
+            delay = MAX_OBSERVATION_SECONDS + 1 if len(digits) > 5 else min(int(digits), MAX_OBSERVATION_SECONDS + 1)
+        else:
+            try:
+                date = parsedate_to_datetime(value)
+                delay = date.timestamp() - now if date.tzinfo is not None else math.nan
+            except (ValueError, TypeError, OverflowError):
+                delay = math.nan
+        if math.isfinite(delay) and delay >= 0:
+            delays.append(delay)
+    if headers.get("x-ratelimit-remaining") == "0":
+        try:
+            delay = float(headers.get("x-ratelimit-reset", "")) - now
+        except ValueError:
+            delay = math.nan
+        if math.isfinite(delay) and delay > 0:
+            delays.append(delay)
+    if delays:
+        return max(delays)
+    if headers.get("x-ratelimit-remaining") == "0":
+        return None  # No safe retry time is known for exhausted primary quota.
+    return 60 if status == 429 or secondary else 0
+
+
 def gh_json(endpoint, timeout):
     env = os.environ.copy()
-    env.pop("GH_DEBUG", None)
+    for name in ("GH_DEBUG", "GH_FORCE_TTY", "CLICOLOR_FORCE", "FORCE_COLOR"):
+        env.pop(name, None)
+    env["NO_COLOR"] = "1"
+    env["CLICOLOR"] = "0"
     env["GH_PROMPT_DISABLED"] = "1"
     try:
-        result = subprocess.run(["gh", "api", "--hostname", "github.com", "--method", "GET", endpoint],
+        result = subprocess.run(["gh", "api", "--include", "--hostname", "github.com", "--method", "GET", endpoint],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env,
                                 timeout=timeout, check=False)
     except (OSError, subprocess.TimeoutExpired) as error:
         raise TransportError("GitHub request failed or timed out") from error
-    if result.returncode:
+    if not result.stdout.startswith(b"HTTP/") and result.returncode:
         # gh stderr may contain sensitive details; never copy it into this tool's output.
         raise TransportError(f"GitHub request failed (gh exit {result.returncode})")
+    status, headers, body = response_parts(result.stdout)
+    if result.returncode or status >= 400:
+        try:
+            message = json.loads(body).get("message", "")
+        except (ValueError, UnicodeDecodeError, AttributeError):
+            message = ""
+        secondary = isinstance(message, str) and any(marker in message.lower()
+                    for marker in ("secondary rate limit", "abuse detection"))
+        delay = retry_delay(status, headers, time.time(), secondary)
+        limited = status == 429 or secondary or headers.get("x-ratelimit-remaining") == "0" or bool(delay)
+        detail = f"GitHub request failed (HTTP {status})" if delay is not None else "GitHub quota exhausted without a usable reset"
+        raise TransportError(detail, retry_after=delay or 0,
+                             retryable=delay is not None and (limited or status >= 500 or status in (408, 425)))
+    require(200 <= status < 300, "unexpected GitHub HTTP status")
     try:
-        return json.loads(result.stdout)
+        return json.loads(body)
     except (UnicodeDecodeError, ValueError) as error:
         raise InvalidData("GitHub returned invalid JSON") from error
 
@@ -165,7 +238,8 @@ def alert_failures(args, jobs, alerted, err):
                 continue
             alerted.add(key)
             url = f"https://github.com/{args.repository}/actions/runs/{args.run_id}/job/{job['id']}"
-            print(f"ALERT: {clean(job['name'])} ({job['id']}) {detail}; {url}\n"
+            category = "publication gate" if job["name"] in GATES else "other job"
+            print(f"ALERT [{category}]: {clean(job['name'])} ({job['id']}) {detail}; {url}\n"
                   f"  When logs are available: gh run view {args.run_id} --repo {args.repository} "
                   f"--job {job['id']} --log", file=err, flush=True)
     return gate_failed
@@ -197,15 +271,17 @@ def watch(args, *, api=gh_json, clock=time.monotonic, sleep=time.sleep, out=sys.
         except TransportError as error:
             errors += 1
             if errors == 1:
-                print(f"ALERT: {error}; retrying within the deadline", file=err, flush=True)
-            if args.once or errors >= 3:
+                action = "retrying within the deadline" if error.retryable and not args.once else "observation unavailable"
+                print(f"ALERT: {error}; {action}", file=err, flush=True)
+            if args.once or not error.retryable or errors >= 3:
                 print("ERROR: GitHub observation unavailable; inspect authentication/network and retry",
                       file=err, flush=True)
                 return 6
             remaining = deadline - clock()
             if remaining <= 0:
                 continue
-            sleep(min(5 * 2 ** (errors - 1), remaining))
+            delay = max(5, error.retry_after) * 2 ** (errors - 1)
+            sleep(min(delay, remaining))
             continue
         if errors:
             print("GitHub observation recovered", file=out, flush=True)
@@ -287,13 +363,13 @@ Gate success does not verify the published release or its bytes.""")
     parser.add_argument("--poll-seconds", type=int, default=60, help="initial interval, at least 5 (default: 60)")
     parser.add_argument("--max-poll-seconds", type=int, default=300,
                         help="maximum interval, at most 300 (default: 300)")
-    parser.add_argument("--timeout-seconds", type=int, default=21600,
+    parser.add_argument("--timeout-seconds", type=int, default=MAX_OBSERVATION_SECONDS,
                         help="deadline, at most 21600 (default: 21600)")
     args = parser.parse_args(argv)
     if (args.run_id <= 0 or not SHA.fullmatch(args.expected_commit) or not TAG.fullmatch(args.expected_tag)
             or not REPOSITORY.fullmatch(args.repository)):
         parser.error("supply a positive run ID, full lowercase commit, release tag and owner/repository")
-    if not (5 <= args.poll_seconds <= args.max_poll_seconds <= 300 and 1 <= args.timeout_seconds <= 21600):
+    if not (5 <= args.poll_seconds <= args.max_poll_seconds <= 300 and 1 <= args.timeout_seconds <= MAX_OBSERVATION_SECONDS):
         parser.error("require 5 <= poll <= max poll <= 300 and 1 <= timeout <= 21600 seconds")
     return watch(args)
 

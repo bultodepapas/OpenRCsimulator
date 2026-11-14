@@ -114,6 +114,7 @@ class WatchTests(unittest.TestCase):
         result, sleeps, output, errors = self.observe(github)
         self.assertEqual((result, sleeps), (0, [10, 15]))
         self.assertIn("overall workflow conclusion: failure", output)
+        self.assertIn("ALERT [other job]", errors)
         self.assertEqual(errors.count("step 5: Build"), 1)
         self.assertEqual(errors.count("job conclusion: failure"), 1)
         self.assertIn("gh run view 123 --repo owner/project --job 40 --log", errors)
@@ -125,6 +126,7 @@ class WatchTests(unittest.TestCase):
         result, sleeps, _, errors = self.observe(GitHub([(run(), [active]), (run(), [failed])]))
         self.assertEqual((result, sleeps), (1, [10]))
         self.assertIn("step 4: Reject failures", errors)
+        self.assertIn("ALERT [publication gate]", errors)
         self.assertEqual(errors.count("step 4: Reject failures"), 1)
         self.assertIn("/actions/runs/123/job/41", errors)
 
@@ -244,20 +246,105 @@ class WatchTests(unittest.TestCase):
         self.assertTrue(any("page=2" in url for url, _ in github.requests))
 
     def test_subprocess_is_get_only_bounded_and_does_not_expose_stderr(self):
-        result = subprocess.CompletedProcess([], 0, stdout=json.dumps({"ok": True}).encode(), stderr=b"")
-        with mock.patch.object(watch.subprocess, "run", return_value=result) as process:
-            self.assertEqual(watch.gh_json("repos/a/b/actions/runs/1", 12), {"ok": True})
+        result = subprocess.CompletedProcess([], 0,
+                    stdout=b'HTTP/2.0 200 OK\nContent-Type: application/json\r\n\r\n{"ok": true}', stderr=b"")
+        with mock.patch.dict(watch.os.environ, {"GH_FORCE_TTY": "100%", "FORCE_COLOR": "1", "CLICOLOR_FORCE": "1"}):
+            with mock.patch.object(watch.subprocess, "run", return_value=result) as process:
+                self.assertEqual(watch.gh_json("repos/a/b/actions/runs/1", 12), {"ok": True})
+            self.assertEqual(watch.os.environ["GH_FORCE_TTY"], "100%")
         args, kwargs = process.call_args
-        self.assertEqual(args[0], ["gh", "api", "--hostname", "github.com", "--method", "GET",
+        self.assertEqual(args[0], ["gh", "api", "--include", "--hostname", "github.com", "--method", "GET",
                                    "repos/a/b/actions/runs/1"])
         self.assertEqual(kwargs["timeout"], 12)
         self.assertNotIn("GH_DEBUG", kwargs["env"])
+        self.assertEqual((kwargs["env"]["NO_COLOR"], kwargs["env"]["CLICOLOR"]), ("1", "0"))
+        for name in ("GH_FORCE_TTY", "CLICOLOR_FORCE", "FORCE_COLOR"):
+            self.assertNotIn(name, kwargs["env"])
         self.assertNotIn("shell", kwargs)
         result.returncode, result.stderr = 1, b"credential-secret"
         with mock.patch.object(watch.subprocess, "run", return_value=result):
             with self.assertRaises(watch.TransportError) as error:
                 watch.gh_json("repos/a/b/actions/runs/1", 12)
         self.assertNotIn("credential-secret", str(error.exception))
+
+    def test_http_headers_control_rate_limit_wait_without_exposing_body(self):
+        for status, headers, delay in [
+                (429, b"Retry-After: 75", 75),
+                (403, b"X-RateLimit-Remaining: 0\r\nX-RateLimit-Reset: 1090", 90),
+                (403, b"X-RateLimit-Remaining: 100", 0),
+                (429, b"Retry-After: nonsense", 60),
+                (503, b"Retry-After: 80", 80)]:
+            with self.subTest(status=status, headers=headers):
+                raw = f"HTTP/2.0 {status} Error\r\n".encode() + headers + b'\r\n\r\n{"message":"private"}'
+                result = subprocess.CompletedProcess([], 1, stdout=raw, stderr=b"credential-secret")
+                with mock.patch.object(watch.subprocess, "run", return_value=result), mock.patch.object(watch.time, "time", return_value=1000):
+                    with self.assertRaises(watch.TransportError) as error:
+                        watch.gh_json("repos/a/b/actions/runs/1", 12)
+                self.assertEqual(error.exception.retry_after, delay)
+                self.assertNotIn("private", str(error.exception))
+                self.assertNotIn("credential-secret", str(error.exception))
+
+    def test_secondary_limit_fallback_and_authorization_failure_are_distinct(self):
+        for message, retryable, delay in [("You have exceeded a secondary rate limit", True, 60),
+                                          ("Resource not accessible by integration", False, 0)]:
+            result = subprocess.CompletedProcess([], 1,
+                stdout=b"HTTP/2.0 403 Forbidden\nX-RateLimit-Remaining: 100\n\n" + json.dumps({"message": message}).encode(),
+                stderr=b"")
+            with mock.patch.object(watch.subprocess, "run", return_value=result):
+                with self.assertRaises(watch.TransportError) as error:
+                    watch.gh_json("repos/a/b/actions/runs/1", 12)
+            self.assertEqual((error.exception.retryable, error.exception.retry_after), (retryable, delay))
+        failed = mock.Mock(side_effect=watch.TransportError("HTTP 401", retryable=False))
+        result, sleeps, _, _ = self.observe(failed)
+        self.assertEqual((result, sleeps, failed.call_count), (6, [], 1))
+
+    def test_retry_after_http_date_and_malformed_dates(self):
+        self.assertEqual(watch.retry_delay(429, {"retry-after": "Thu, 01 Jan 1970 00:18:20 GMT"}, 1000), 100)
+        self.assertEqual(watch.retry_delay(429, {"retry-after": "10", "x-ratelimit-remaining": "0",
+                                               "x-ratelimit-reset": "1090"}, 1000), 90)
+        for value in ("NaN", "inf", "-3", "-0.0", "0.5", "1e-3", "invalid date"):
+            self.assertEqual(watch.retry_delay(429, {"retry-after": value}, 1000), 60)
+
+    def test_exhausted_quota_without_a_safe_reset_stops_without_retry(self):
+        for reset in (None, "invalid", "NaN"):
+            headers = b"X-RateLimit-Remaining: 0\n" + (f"X-RateLimit-Reset: {reset}\n".encode() if reset is not None else b"")
+            result = subprocess.CompletedProcess([], 1,
+                stdout=b"HTTP/2.0 403 Forbidden\n" + headers + b'\n{"message":"limit"}', stderr=b"")
+            with mock.patch.object(watch.subprocess, "run", return_value=result):
+                code, sleeps, _, errors = self.observe(watch.gh_json)
+            self.assertEqual((code, sleeps), (6, []))
+            self.assertIn("quota exhausted without a usable reset", errors)
+            self.assertNotIn("retrying", errors)
+
+    def test_server_waits_back_off_and_cannot_exceed_observation_deadline(self):
+        class LimitedGitHub(GitHub):
+            def __call__(self, endpoint, timeout):
+                if len(self.requests) < 2:
+                    self.requests.append((endpoint, timeout))
+                    raise watch.TransportError("HTTP 429", retry_after=60)
+                return super().__call__(endpoint, timeout)
+
+        result, sleeps, _, _ = self.observe(LimitedGitHub([(run("completed", "success"), gates())]))
+        self.assertEqual((result, sleeps), (0, [60, 120]))
+        limited = LimitedGitHub([(run(), [])])
+        result, sleeps, _, errors = self.observe(limited, timeout_seconds=35)
+        self.assertEqual((result, sleeps), (5, [35]))
+        self.assertEqual(len(limited.requests), 1)
+        self.assertIn("TIMEOUT", errors)
+        for value in ("99999", "9" * 5000):
+            delay = watch.retry_delay(429, {"retry-after": value}, 1000)
+            self.assertGreater(delay, watch.MAX_OBSERVATION_SECONDS)
+            huge = mock.Mock(side_effect=watch.TransportError("HTTP 429", retry_after=delay))
+            result, sleeps, _, _ = self.observe(huge, timeout_seconds=35)
+            self.assertEqual((result, sleeps, huge.call_count), (5, [35], 1))
+        self.assertEqual(watch.retry_delay(429, {"retry-after": "0" * 5000 + "75"}, 1000), 75)
+
+    def test_http_redirect_prefix_and_incomplete_headers(self):
+        raw = b'HTTP/2.0 301 Redirect\r\nLocation: /new\r\n\r\nHTTP/2.0 200 OK\nEtag: abc\n\n{"ok": true}'
+        self.assertEqual(watch.response_parts(raw), (200, {"etag": "abc"}, b'{"ok": true}'))
+        for malformed in (b"", b"HTTP/2.0 200 OK\r\nContent-Type: application/json", b"HTTP/2.0 999 Invalid\n\n{}"):
+            with self.assertRaises(watch.InvalidData):
+                watch.response_parts(malformed)
 
     def test_invalid_cli_arguments_are_rejected_before_api_access(self):
         with mock.patch.object(watch, "watch") as monitor, mock.patch("sys.stderr", new_callable=io.StringIO):

@@ -404,7 +404,10 @@ def verify(directory, *, expected_commit=None, expected_tag=None, expected_run_i
     expected_sums = "".join(f'{row["sha256"]}  {row["filename"]}\n' for row in records)
     checksum_path = directory / CHECKSUMS
     require(checksum_path.is_file() and not checksum_path.is_symlink(), "missing regular SHA256SUMS")
-    require(checksum_path.read_bytes() == expected_sums.encode("ascii"), "checksum inventory/content mismatch")
+    expected_bytes = expected_sums.encode("ascii")
+    with checksum_path.open("rb") as checksum_file:
+        actual_sums = checksum_file.read(len(expected_bytes) + 1)
+    require(actual_sums == expected_bytes, "checksum inventory/content mismatch")
     expected_names = {row["filename"] for row in records} | {CHECKSUMS}
     staging_names = {"linux", "windows", "macos", SNAPSHOT} if allow_staging else set()
     actual_names = {path.name for path in directory.iterdir()}

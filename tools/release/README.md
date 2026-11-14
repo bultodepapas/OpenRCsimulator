@@ -45,6 +45,10 @@ Use it for preparation, publication or resumption. The
 `watch.py` observes an existing tag CI run and performs no GitHub writes.
 Python 3.11+ and an authenticated `gh` CLI are sufficient. Its offline tests
 need neither GitHub access nor Godot.
+When changing this automation, consult the
+[20 dated investigations](../../docs/research/release-readiness/PT1-CI-00/release-automation-research-2026-11-14.md)
+for evidence, limits and deferred optimization experiments; ordinary releases do
+not need to load that research.
 
 ### Select and freeze
 
@@ -55,6 +59,17 @@ explicitly pinned candidate and tag. Keep unrelated edits and successful evidenc
 checkpoint in a fresh ignored `tmp/` directory: base/candidate commit, version,
 tag, required checks and evidence paths, CI run ID, download directory and the
 first unmet gate. Never record tokens, environment dumps or private credentials.
+Include the observed run attempt, nonsecret monitor owner/session handle, launch
+time, last observation and retained-output location. A checkpoint is a recovery
+hint, not proof of current GitHub or process state. Reconnect to the original
+owner before replacing a monitor; a stale/reused PID is insufficient ownership.
+If ownership is unknown, report it instead of killing or duplicating a process.
+Record an artifact's producing attempt separately when known: failed-job reruns
+can legitimately retain earlier successful outputs.
+
+Reuse evidence only after comparing the check's actual command, source/dirty
+state, data, tool/engine configuration and host scope. Keep its original identity;
+a cache hit or matching path alone does not establish a valid result.
 
 A numeric version bump changes D11g's qualified project inventory. Reconstruct
 the qualified baseline and candidate, compare the complete inventory and retained
@@ -91,6 +106,18 @@ the job/step and a command to obtain its log. An alert arrives on the next poll,
 not as an instantaneous push notification. API errors have bounded retries;
 timeout, identity mismatch and unavailable state never become successful results.
 The CLI's `--help` owns interval, deadline and exit-code details.
+HTTP-aware retries honor valid `Retry-After` and exhausted-quota reset times,
+using the later applicable wait; identified secondary limits without a usable
+wait receive at least 60 seconds. Retry waits grow within the existing finite
+budget and monotonic deadline. Ordinary HTTP authorization failures stop without a
+retry loop. Raw response bodies, headers and `gh` stderr are never printed.
+Alerts distinguish a `publication gate` from an `other job`; the latter can still
+be a required upstream dependency, so it is not automatically informational.
+
+The deadline bounds scheduled waits and individual requests; OS process creation
+can delay timeout handling. Raw `gh` stdout/stderr capture is not byte-capped.
+Interrupting observation does not cancel CI, and no descendant-process cleanup
+guarantee is made. Do not describe these waits as a strict memory/process-tree bound.
 
 For an AI client, launch one asynchronous monitor and retain its process handle.
 Wait with the client's nonblocking wait/sleep facility; consume only new bounded
@@ -107,6 +134,13 @@ retry budget and unchanged inputs. The monitor never reruns jobs, cancels anothe
 session, changes a tag, publishes assets or chooses a fallback workflow. Exhausted
 retries, a cancelled workflow or missing evidence require an explicit status
 report, not an invented pass.
+After ambiguous create/upload failure, inspect the same tag's actual draft or
+published release before retrying. Preserve incomplete drafts and evidence;
+automatic overwriting is not recovery. The publisher serializes its running
+same-tag job, but GitHub's default concurrency queue can replace an older pending
+attempt. Rechecking the peeled tag commit detects observed movement; it cannot
+prevent movement between checks. Tag rules and future release immutability are
+separate repository policies, not assumptions or automatically enabled settings.
 
 ### Finish the delivery
 

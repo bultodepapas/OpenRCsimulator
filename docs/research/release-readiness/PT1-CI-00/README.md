@@ -2,6 +2,14 @@
 
 2026-10-31. Initial source/history audit followed by implementation and verification records below. [Execution plan](../../../plans/release-ci-efficiency.md).
 
+## Release automation follow-up — 2026-11-14
+
+The [20 release-automation investigations](release-automation-research-2026-11-14.md)
+compare primary documentation with the current watcher, release verifier, skill
+and workflow. They distinguish implemented HTTP-wait/checksum safeguards and
+recovery guidance from unmeasured CI/context optimizations and deferred policies.
+The v0.2.8 tag stays pinned to its reviewed source; these are follow-up tools.
+
 ## Source identity and recovered proposal
 
 - Reviewed working source: `c4dc202d0eae01efa951e467b784453eeaf02a47`; clean at the start.
