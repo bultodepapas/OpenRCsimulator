@@ -348,9 +348,11 @@ func _check_jet_livery() -> void:
 		and fuselage[0].emission_texture.resource_path.contains("verde_neon_carbono_fuselage_emission") and fuselage[0].clearcoat_enabled)
 	check("the wing doors get their own texture (the stock doors overlap the wing's leading edge)", doors.size() == 1
 		and doors[0].albedo_texture.resource_path.contains("verde_neon_carbono_doors"))
-	check("the canopy has an F-22-style gold tint and stays see-through", canopy.size() == 1
-		and canopy[0].albedo_color.r > canopy[0].albedo_color.b + 0.3 and canopy[0].albedo_color.a < 0.9
-		and canopy[0].transparency != BaseMaterial3D.TRANSPARENCY_DISABLED)
+	check("the canopy is F-22-style reflective gold, mostly opaque but not solid", canopy.size() == 1
+		and canopy[0].albedo_color.r > canopy[0].albedo_color.b + 0.3 and canopy[0].metallic > 0.8
+		and canopy[0].albedo_color.a < 0.95 and canopy[0].transparency != BaseMaterial3D.TRANSPARENCY_DISABLED)
+	var tub := _materials_named(jet.root, "cockpit_tub_grey")
+	check("the cockpit behind the gold canopy is dark and neutral", tub.size() >= 1 and tub[0].albedo_color.get_luminance() < 0.2)
 	jet.root.free()
 	var plain: Dictionary = AirplaneBuilder.build(jet_id)
 	var stock := _materials_named(plain.root, "paint_fuselage")

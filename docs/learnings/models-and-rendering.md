@@ -26,6 +26,8 @@ Lessons that change how to inspect aircraft, scenes and rendered evidence. Repor
 
 ## Rendering and visual evidence
 
+- **Check how an emission map combines with its constant colour.** In Godot 4.8-beta2 Compatibility, `StandardMaterial3D.EMISSION_OP_ADD` adds the material's emission colour to every texel. White emission washed the Stik's masked neon paint white even though texture-binding tests passed. Use black constant emission when the additive map supplies the light, and inspect both daylight and night pixels. [US-V19](../../tools/skins/README.md#ugly-stik-neon-ronin-us-v19).
+
 - **Emission and unshaded colours ride the eye-adapted exposure.** At night the World's exposure reached about 2500. The FPV race gates' emissive LEDs, additive halos and unshaded start lamps were all multiplied by it and burned to white. Dividing by the full exposure made them nearly invisible, and scaling them by exposure^-0.5 (measured on the default field under AgX) kept their hue and made them stand out. Derive light-only elements' night behaviour from the exposure actually in use, not from the sun's energy: a legacy-lit route has no sun energy at all (DR-32).
 
 - **Frame callbacks do not prove rendered frames.** An M1 Godot 4.8-beta1 Metal screen reported fast callbacks while viewport timers stayed frozen; a later instrumented run exposed intervals with no draw. Record draw-counter progress and window drawability for every measured interval, including the first, and keep collection completeness separate from rendered eligibility. Global draw counts still do not prove main-viewport presentation or GPU completion. [DT-MAC-02](../research/desktop-delivery-investigations/DT-MAC-02/README.md#mobilemetal-startup-and-frame-time-screen).

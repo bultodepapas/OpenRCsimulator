@@ -56,6 +56,11 @@ _MAC_SPEC = importlib.util.spec_from_file_location(
 assert _MAC_SPEC is not None and _MAC_SPEC.loader is not None
 MAC_RECEIPT = importlib.util.module_from_spec(_MAC_SPEC)
 _MAC_SPEC.loader.exec_module(MAC_RECEIPT)
+_ENGINE_SPEC = importlib.util.spec_from_file_location(
+    "openrc_session_engine_policy", Path(__file__).resolve().parents[2] / "research/native-kernel/macos_engine_identity.py")
+assert _ENGINE_SPEC is not None and _ENGINE_SPEC.loader is not None
+ENGINE_POLICY = importlib.util.module_from_spec(_ENGINE_SPEC)
+_ENGINE_SPEC.loader.exec_module(ENGINE_POLICY)
 
 
 class ProbeReportError(ValueError):
@@ -877,7 +882,18 @@ def resolve_executable(value: str) -> Path:
     raise RuntimeError(f"Godot executable not found: {value}")
 
 
-def inspect_godot(executable: Path, timeout: float) -> dict[str, Any]:
+def inspect_godot(executable: Path, timeout: float, research_engine: dict[str, Any] | None = None) -> dict[str, Any]:
+    if research_engine is not None:
+        path = Path(__file__).resolve().parents[2] / "research/native-kernel/build_macos.py"
+        spec = importlib.util.spec_from_file_location("openrc_session_mac_builder", path)
+        if spec is None or spec.loader is None:
+            raise ValueError("Cannot load Mac research builder")
+        mac = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mac)
+        identity = mac.godot_identity(executable, mac.locked.load_lock(), research_engine)
+        return {"path": identity["path"], "version": identity["version"], "required_version": REQUIRED_GODOT_VERSION,
+                "sha256": identity["sha256"], "runtime_binary_path": identity["path"],
+                "runtime_binary_sha256": identity["sha256"], "research_engine": identity["research_engine"]}
     result = subprocess.run(
         [str(executable), "--version"], cwd=executable.parent,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
@@ -946,6 +962,7 @@ def _run_probe(
     mac_source_identity: dict[str, Any] | None = None,
     battery: str | None = None,
     trim_profile: str | None = None,
+    expected_engine_display: str = REQUIRED_GODOT_REPORT,
 ) -> dict[str, Any]:
     command = ([str(godot), "--headless", "--audio-driver", "Dummy", "--", "--quick-flight",
                 "--native-qualification=session"] if release_executable else
@@ -1035,7 +1052,7 @@ def _run_probe(
         "physics_backend": physics_backend,
         "battery": battery,
         "trim_profile": trim_profile,
-        "godot": REQUIRED_GODOT_REPORT,
+        "godot": expected_engine_display,
         "requested": {"warmup_ticks": warmup_ticks, "sample_ticks": sample_ticks},
     }
     report, report_error, report_sha256 = read_probe_capture(output_json)
@@ -1244,6 +1261,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--project", type=Path, help="canonical app or a verified isolated research project")
     parser.add_argument("--experimental-native-macos", action="store_true",
                         help="explicit opt-in to the experimental Mac ARM64 native source or release backend")
+    ENGINE_POLICY.add_arguments(parser)
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
     parser.add_argument("--case", action="append", help="trim, maneuver, runway, or lake; repeat or comma-separate")
     parser.add_argument("--battery", choices=("ideal", "pack"),
@@ -1322,6 +1340,7 @@ def run_campaign(args: argparse.Namespace) -> int:
     pairs: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
     metadata: dict[str, Any] = {"system": capture_system_identity()}
+    research_engine = ENGINE_POLICY.selection_from_args(args)
     native_identities: set[str] = set()
     solver_identities: dict[str, set[str]] = {"gdscript_reference": set(), "native": set()}
     project_validator = None
@@ -1330,6 +1349,10 @@ def run_campaign(args: argparse.Namespace) -> int:
         try:
             metadata["workspace"] = capture_workspace_identity(root)
             godot = resolve_executable(args.godot)
+            if research_engine is not None and (args.release_executable or not args.experimental_native_macos
+                    or metadata["system"].get("system") != "Darwin"
+                    or metadata["system"].get("machine", "").lower() not in ("arm64", "aarch64")):
+                raise ValueError("Local research engine measurements require an opted-in native Mac source session")
             if args.release_executable and MAC_RECEIPT.looks_like_bundle_executable(godot):
                 wants_native = args.physics_backend == "native" or args.compare_backends
                 if wants_native and not args.experimental_native_macos:
@@ -1352,7 +1375,8 @@ def run_campaign(args: argparse.Namespace) -> int:
                     raise RuntimeError(f"Mac release bundle identity refused: {error}") from error
             elif args.release_executable and args.experimental_native_macos:
                 raise RuntimeError("Experimental Mac native release requires a verified Mac app bundle")
-            metadata["engine"] = inspect_godot(godot, args.timeout)
+            metadata["engine"] = (inspect_godot(godot, args.timeout, research_engine) if research_engine is not None
+                                  else inspect_godot(godot, args.timeout))
             metadata["native_source_sha256"] = native_source_digest(root)
             if not app_dir.is_dir() or not (app_dir / "project.godot").is_file():
                 raise RuntimeError(f"app project directory not found: {app_dir}")
@@ -1431,6 +1455,8 @@ def run_campaign(args: argparse.Namespace) -> int:
                             mac_source_identity=metadata.get("mac_source_install"),
                             battery=args.battery,
                             trim_profile=args.trim_profile,
+                            expected_engine_display=(research_engine["runtime_version"] if research_engine is not None
+                                                     else REQUIRED_GODOT_REPORT),
                         )
                         if ("mac_native_bundle" in metadata or identical) and run["accepted"]:
                             try:
@@ -1506,6 +1532,12 @@ def run_campaign(args: argparse.Namespace) -> int:
                     failures.append(f"{label} changed during the campaign")
             except (OSError, RuntimeError, ValueError) as error:
                 failures.append(f"{label} unavailable after the campaign: {error}")
+        if research_engine is not None:
+            try:
+                if inspect_godot(godot, args.timeout, research_engine) != metadata["engine"]:
+                    failures.append("local research engine provenance changed during the campaign")
+            except (OSError, ValueError, TypeError, RuntimeError, subprocess.SubprocessError) as error:
+                failures.append(f"local research engine provenance unavailable after the campaign: {error}")
         if project_validator is not None:
             try:
                 final_proof = project_validator.validate_project(app_dir)
@@ -1828,6 +1860,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.compare_campaigns:
+            if ENGINE_POLICY.selection_from_args(args) is not None:
+                raise ValueError("Research engine pins apply to a new campaign, not a campaign comparison")
             if args.release_executable:
                 raise ValueError("--release-executable applies to a new campaign, not a campaign comparison")
             if args.project is not None or args.experimental_native_macos or args.battery is not None or args.trim_profile is not None:

@@ -58,7 +58,9 @@ class MetalFXFramePatchTests(unittest.TestCase):
         cls.base_buffers = (cls.base / "servers/rendering/storage/render_scene_buffers.h").read_text(encoding="utf-8")
         cls.forward = (cls.base / "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp").read_text(encoding="utf-8")
         cls.storage = (cls.base / "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp").read_text(encoding="utf-8")
+        cls.storage_header = (cls.base / "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h").read_text(encoding="utf-8")
         cls.bridge = (cls.base / "drivers/metal/metalfx_frame_bridge.mm").read_text(encoding="utf-8")
+        cls.viewport = (cls.base / "servers/rendering/renderer_viewport.cpp").read_text(encoding="utf-8")
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -194,9 +196,145 @@ int main() {
 '''
         self.compile_and_run(src, "frame_default_off_controls")
 
+    def test_accepted_temporal_cut_immediately_invalidates_frame_output(self) -> None:
+        src = CHECKS.STATUS_STUB.split("int main() {")[0]
+        src = src.replace("#include <cassert>", "#include <cassert>\n#include <atomic>\n#include <memory>\n#include <climits>")
+        src = src.replace("enum ViewportAnisotropicFiltering { NONE };", "enum ViewportAnisotropicFiltering { NONE }; enum { VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL = 4 };")
+        buffers = self.declaration(self.base_buffers, "struct MetalFXTemporalHistoryState") + "\n"
+        buffers += "class RenderSceneBuffers : public RefCounted " + CHECKS.cxx_block(self.base_buffers, self.base_buffers.index("class RenderSceneBuffers :")) + ";"
+        src = src.replace("@RENDER_SCENE_BUFFERS@", buffers)
+        src = src.replace("struct TestBuffers : RenderSceneBuffers {", "struct TestBuffers : RenderSceneBuffers { int clears = 0; bool diagnostic = true; void clear_metalfx_frame() override { ++clears; diagnostic = false; }")
+        src = src.replace("uint64_t metal_fx_generation = 0; int scaling_3d_mode = 3;", "uint64_t metal_fx_generation = 0, metal_fx_frame_generation = 0, metal_fx_reset_serial = 0; bool disable_3d = false; uint32_t view_count = 1; int scaling_3d_mode = 4;")
+        src = src.replace("Dictionary viewport_get_metalfx_status(RID) const;", "Dictionary viewport_get_metalfx_status(RID) const; Dictionary viewport_request_temporal_history_reset(RID);")
+        src = src.replace("@VIEWPORT_GETTER@", CHECKS.cxx_function(self.viewport, "Dictionary RendererViewport::viewport_request_temporal_history_reset("))
+        src += r'''
+int main() {
+    RendererViewport viewport; RendererViewport::Viewport state; TestBuffers buffers;
+    viewport.viewport_owner.viewport = &state; state.render_buffers.value = &buffers;
+    buffers.set_metalfx_frame_requested(true); buffers.clears = 0; buffers.diagnostic = true;
+    assert(!std::get<bool>(viewport.viewport_request_temporal_history_reset({}).at("accepted")));
+    assert(buffers.diagnostic && buffers.clears == 0);
+    buffers.set_metalfx_configured_mode(4);
+    auto history = buffers.ensure_metalfx_history_state(); history->temporal_attempts.store(7);
+    buffers.set_metalfx_status("temporal", "created", "enqueued");
+    auto receipt = viewport.viewport_request_temporal_history_reset({});
+    assert(std::get<bool>(receipt.at("accepted")) && history->requested.load() == 1);
+    assert(!buffers.diagnostic && buffers.clears == 1 && buffers.is_metalfx_frame_requested());
+    assert(buffers.get_metalfx_history_state() == history);
+}
+'''
+        self.compile_and_run(src, "frame_temporal_cut_invalidation")
+
+    def test_frame_toggles_preserve_pending_temporal_receipt(self) -> None:
+        src = CHECKS.STATUS_STUB.split("int main() {")[0]
+        src = src.replace("#include <cassert>", "#include <cassert>\n#include <atomic>\n#include <memory>\n#include <climits>")
+        src = src.replace("#define ERR_FAIL_NULL_V", "#define ERR_FAIL_NULL(p) do { if (!(p)) return; } while (false)\n#define ERR_FAIL_NULL_V")
+        src = src.replace("enum ViewportAnisotropicFiltering { NONE };", "enum ViewportAnisotropicFiltering { NONE }; enum { VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL = 4 };")
+        buffers = self.declaration(self.base_buffers, "struct MetalFXTemporalHistoryState") + "\n"
+        buffers += "class RenderSceneBuffers : public RefCounted " + CHECKS.cxx_block(self.base_buffers, self.base_buffers.index("class RenderSceneBuffers :")) + ";"
+        src = src.replace("@RENDER_SCENE_BUFFERS@", buffers)
+        src = src.replace("uint64_t metal_fx_generation = 0; int scaling_3d_mode = 3;", "uint64_t metal_fx_generation = 0, metal_fx_frame_generation = 0, metal_fx_reset_serial = 0; bool metal_fx_frame_requested = false, disable_3d = false; uint32_t view_count = 1; int scaling_3d_mode = 4;")
+        src = src.replace("Dictionary viewport_get_metalfx_status(RID) const;", "Dictionary viewport_get_metalfx_status(RID) const; Dictionary viewport_request_temporal_history_reset(RID); void viewport_set_metalfx_frame_requested(RID, bool); Dictionary viewport_get_metalfx_frame_status(RID) const;")
+        signatures = ("Dictionary RendererViewport::viewport_get_metalfx_status(",
+                      "Dictionary RendererViewport::viewport_request_temporal_history_reset(",
+                      "void RendererViewport::viewport_set_metalfx_frame_requested(",
+                      "Dictionary RendererViewport::viewport_get_metalfx_frame_status(")
+        src = src.replace("@VIEWPORT_GETTER@", "\n".join(CHECKS.cxx_function(self.viewport, signature) for signature in signatures))
+        src += r'''
+int main() {
+    RendererViewport viewport; RendererViewport::Viewport state; TestBuffers buffers;
+    viewport.viewport_owner.viewport = &state; state.render_buffers.value = &buffers; state.metal_fx_generation = 42;
+    buffers.set_metalfx_configured_mode(4); buffers.set_metalfx_status("temporal", "created", "enqueued");
+    auto history = buffers.ensure_metalfx_history_state(); history->temporal_attempts.store(7);
+    auto receipt = viewport.viewport_request_temporal_history_reset({});
+    auto temporal_generation = std::get<int64_t>(receipt.at("generation"));
+    auto serial = std::get<int64_t>(receipt.at("serial"));
+    assert(std::get<bool>(receipt.at("accepted")) && temporal_generation == 42 && serial == 1);
+    auto frame_before = viewport.viewport_get_metalfx_frame_status({});
+    viewport.viewport_set_metalfx_frame_requested({}, true);
+    auto frame_on = viewport.viewport_get_metalfx_frame_status({});
+    auto pending = viewport.viewport_get_metalfx_status({});
+    assert(std::get<int64_t>(frame_on.at("generation")) == std::get<int64_t>(frame_before.at("generation")) + 1);
+    assert(std::get<int64_t>(pending.at("generation")) == temporal_generation);
+    assert(std::get<int64_t>(pending.at("reset_requested_serial")) == serial);
+    assert(std::get<int64_t>(pending.at("reset_encoded_serial")) == 0);
+    MetalFXTemporalHistoryState::advance(history->submitted, uint64_t(serial));
+    MetalFXTemporalHistoryState::advance(history->encoded, uint64_t(serial));
+    viewport.viewport_set_metalfx_frame_requested({}, false);
+    auto frame_off = viewport.viewport_get_metalfx_frame_status({});
+    auto encoded = viewport.viewport_get_metalfx_status({});
+    assert(std::get<int64_t>(frame_off.at("generation")) == std::get<int64_t>(frame_on.at("generation")) + 1);
+    assert(std::get<int64_t>(encoded.at("generation")) == temporal_generation);
+    assert(std::get<int64_t>(encoded.at("reset_requested_serial")) == serial);
+    assert(std::get<int64_t>(encoded.at("reset_submitted_serial")) == serial);
+    assert(std::get<int64_t>(encoded.at("reset_encoded_serial")) == serial);
+    assert(buffers.get_metalfx_history_state() == history);
+}
+'''
+        self.compile_and_run(src, "frame_toggle_preserves_temporal_receipt")
+
+    def test_alpha_and_non_scene_background_reject_and_invalidate(self) -> None:
+        admission = CHECKS.cxx_function(self.forward, "static const char *metalfx_frame_scene_rejection(")
+        clear = CHECKS.cxx_function(self.storage, "void RenderSceneBuffersRD::clear_metalfx_frame(")
+        reject = CHECKS.cxx_function(self.storage, "void RenderSceneBuffersRD::reject_metalfx_frame(")
+        next_epoch = CHECKS.cxx_function(self.storage_header, "bool next_metalfx_frame_epoch(")
+        src = r'''
+#include <cassert>
+#include <climits>
+#include <cstdint>
+#include <string>
+#define METAL_ENABLED
+#define MACOS_ENABLED
+#define memdelete(p) delete (p)
+namespace RSE { enum EnvironmentBG { ENV_BG_CLEAR_COLOR, ENV_BG_COLOR, ENV_BG_SKY, ENV_BG_CANVAS, ENV_BG_KEEP }; }
+const int RB_SCOPE_METALFX_FRAME = 1, RB_METALFX_FRAME_OUTPUT = 2;
+struct MFXFrameContext {};
+struct RenderSceneBuffersRD {
+    MFXFrameContext *mfx_frame_context = nullptr;
+    std::string mfx_frame_reason = "not_attempted";
+    uint64_t mfx_frame_epoch = 0;
+    bool output = false;
+    int cleared = 0;
+    bool has_texture(int, int) const { return output; }
+    void clear_context(int) { output = false; ++cleared; }
+    void clear_metalfx_frame();
+    void reject_metalfx_frame(const char *);
+'''+ next_epoch + r'''
+};
+'''+ admission + "\n" + clear + "\n" + reject + r'''
+int main() {
+    assert(!metalfx_frame_scene_rejection(false, RSE::ENV_BG_CLEAR_COLOR));
+    assert(!metalfx_frame_scene_rejection(false, RSE::ENV_BG_COLOR));
+    assert(!metalfx_frame_scene_rejection(false, RSE::ENV_BG_SKY));
+    RenderSceneBuffersRD b; uint64_t epoch = 0;
+    auto reject = [&](bool alpha, RSE::EnvironmentBG bg, const char *expected) {
+        b.mfx_frame_context = new MFXFrameContext; b.output = true;
+        const char *reason = metalfx_frame_scene_rejection(alpha, bg);
+        assert(reason && std::string(reason) == expected);
+        b.reject_metalfx_frame(reason);
+        assert(!b.mfx_frame_context && !b.output && b.mfx_frame_reason == expected);
+    };
+    assert(b.next_metalfx_frame_epoch(epoch) && epoch == 1);
+    reject(true, RSE::ENV_BG_SKY, "transparent_geometry_has_no_motion_vectors");
+    assert(b.next_metalfx_frame_epoch(epoch) && epoch == 2);
+    reject(false, RSE::ENV_BG_CANVAS, "non_scene_background");
+    assert(b.next_metalfx_frame_epoch(epoch) && epoch == 3);
+    reject(false, RSE::ENV_BG_KEEP, "non_scene_background");
+    assert(b.next_metalfx_frame_epoch(epoch) && epoch == 4 && b.cleared == 3);
+    b.mfx_frame_epoch = uint64_t(INT64_MAX) - 1;
+    assert(b.next_metalfx_frame_epoch(epoch) && epoch == uint64_t(INT64_MAX));
+    assert(!b.next_metalfx_frame_epoch(epoch) && epoch == uint64_t(INT64_MAX));
+}
+'''
+        self.compile_and_run(src, "frame_scene_admission_controls")
+
     def test_source_contract_real_inputs_and_guarded_readback(self) -> None:
         body = CHECKS.cxx_function(self.forward, "void RenderForwardClustered::_process_metalfx_frame(")
         self.assertLess(body.index("if (!p_buffers->is_metalfx_frame_requested())"), body.index("ensure_metalfx_frame_context"))
+        self.assertLess(body.index("if (!p_buffers->is_metalfx_frame_requested())"), body.index("metalfx_frame_scene_rejection("))
+        self.assertLess(body.index("p_buffers->reject_metalfx_frame(scene_rejection)"), body.index("ensure_metalfx_frame_context"))
+        self.assertIn("!render_list[RENDER_LIST_ALPHA].elements.is_empty()", body)
+        self.assertIn("environment_get_background(p_render_data->environment)", body)
         for required in ("cam_orthogonal", "get_view_count() != 1", "VIEWPORT_MSAA_DISABLED", "transparent_bg",
                          "get_upscaled_texture(0)", "get_depth_texture(0)", "get_velocity_buffer(false, 0)",
                          "copy_effects->copy_to_rect(source, captures[current]", "texture_clear(output",
@@ -205,6 +343,10 @@ int main() {
         self.assertLess(body.index("effect.process(ctx, params)"), body.index("ctx->timeline.commit"))
         self.assertIn("fx.prevColorTexture = p_reset ? color : prev", self.bridge)
         self.assertIn("fx.outputTextureUsage", self.bridge)
+        self.assertIn("(__bridge_retained void *)effect", self.bridge)
+        self.assertIn("CFRetain((CFTypeRef)p_effect)", self.bridge)
+        self.assertIn("CFRelease((CFTypeRef)p_effect)", self.bridge)
+        self.assertNotIn("[d release]", self.bridge)
         self.assertIn("get_metalfx_frame_status()", CHECKS.cxx_function(self.storage, "Dictionary RenderSceneBuffersRD::read_metalfx_frame("))
         self.assertIn("texture_get_data(output, 0)", self.storage)
         self.assertIn('result["presentable"] = false', self.base_buffers)

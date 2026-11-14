@@ -25,6 +25,11 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+_ENGINE_SPEC = importlib.util.spec_from_file_location("nk3_fleet_engine_policy", HERE / "macos_engine_identity.py")
+if _ENGINE_SPEC is None or _ENGINE_SPEC.loader is None:
+    raise RuntimeError("Cannot load Mac research engine policy")
+ENGINE_POLICY = importlib.util.module_from_spec(_ENGINE_SPEC)
+_ENGINE_SPEC.loader.exec_module(ENGINE_POLICY)
 RUNNER = HERE / "run.py"
 FLEET = HERE / "fleet.gd"
 CHECKED = ROOT / "tools/godot/run_checked.py"
@@ -306,13 +311,16 @@ def macos_snapshot(context: dict[str, Any]) -> dict[str, Any]:
         "prescribed_stage_adapter.gd")]
     harness_names += ["app/sim/native_stage.gd", "tools/godot/run_checked.py"]
     harness = {name: sha256(runner.project_file(ROOT / name, project)) for name in harness_names}
-    return {"platform": "macos", "architecture": "arm64", "project": str(project), "project_inventory": proof,
+    result = {"platform": "macos", "architecture": "arm64", "project": str(project), "project_inventory": proof,
             "godot": str(engine), "tool_root": str(tool_root), "qualification_root": str(qualification_root),
             "trim_profile": context.get("trim_profile", "reference"),
             "binary_sha256": binary_hash,
             "engine_sha256": engine_hash, "descriptor_sha256": sha256(descriptor), "receipt_sha256": sha256(receipt_file),
             "receipt": receipt, "reference_sources": references, "harness_sources": harness,
             "fleet_sha256": sha256(FLEET), "campaign_sha256": sha256(Path(__file__).resolve())}
+    if context.get("research_engine") is not None:
+        result["research_engine"] = context["research_engine"]
+    return result
 
 
 def write_manifest_script(path: Path, output: Path) -> None:
@@ -1071,7 +1079,9 @@ def validate_macos_base_boundary(guard: dict[str, Any]) -> dict[str, Any]:
     require(report_hash == expected_hash, "installed Mac base-oracle report changed")
     lock = mac.locked.load_lock()
     toolchain = mac.host_toolchain()
-    engine = mac.godot_identity(Path(guard["godot"]), lock)
+    research_engine = guard.get("research_engine")
+    engine = (mac.godot_identity(Path(guard["godot"]), lock, research_engine) if research_engine is not None
+              else mac.godot_identity(Path(guard["godot"]), lock))
     candidate = mac.validate_build(root, False, mac._identity(), toolchain, engine, lock)
     require(isinstance(candidate, dict) and json.loads(candidate_path.read_text(encoding="utf-8")) == candidate
             and candidate.get("binary_sha256") == guard["binary_sha256"]
@@ -1423,11 +1433,14 @@ async def run_shards(aircraft: list[str], out: Path, jobs: int, warmup: int, sam
             await asyncio.gather(monitor, return_exceptions=True)
 
 
-def macos_context(args: argparse.Namespace, out: Path) -> dict[str, str]:
+def macos_context(args: argparse.Namespace, out: Path) -> dict[str, Any]:
     context = {"project": str(args.project.expanduser().resolve()), "godot": str(args.godot.expanduser().resolve()),
                "tool_root": str(args.tool_root.expanduser().resolve()),
                "qualification_root": str(args.qualification_root.expanduser().resolve()),
                "trim_profile": str(getattr(args, "trim_profile", "reference"))}
+    research_engine = ENGINE_POLICY.selection_from_args(args)
+    if research_engine is not None:
+        context["research_engine"] = research_engine
     require(context["trim_profile"] in ("reference", "production"), "unknown Mac fleet trim profile")
     project, tool_root, qualification_root = (Path(context[key]) for key in ("project", "tool_root", "qualification_root"))
     require(qualification_root.is_relative_to((ROOT / "tmp").resolve()) and qualification_root != (ROOT / "tmp").resolve()
@@ -1527,11 +1540,18 @@ def main() -> int:
     parser.add_argument("--godot", type=Path, help="Mac engine bound to the project receipt")
     parser.add_argument("--tool-root", type=Path, help="Mac runner's evidence and checks directory under tmp/")
     parser.add_argument("--qualification-root", type=Path, help="exact Mac build and cited oracle evidence under tmp/")
+    ENGINE_POLICY.add_arguments(parser)
     parser.add_argument("--trim-profile", choices=("reference", "production"), default="reference",
                         help="Mac fleet trim profile; production selects the Home/Quick Flight 0.5 trim")
     parser.add_argument("--aircraft", action="append", default=[], metavar="ID",
                         help="select one fixed-wing Mac aircraft (repeatable); omitted aircraft remain open")
     args = parser.parse_args()
+    try:
+        research_engine = ENGINE_POLICY.selection_from_args(args)
+    except ValueError as error:
+        parser.error(str(error))
+    if research_engine is not None and not args.experimental_native_macos:
+        parser.error("A local research engine requires --experimental-native-macos")
     if not 1 <= args.jobs <= MAX_JOBS or args.warmup < MIN_WARMUP or args.samples < MIN_SAMPLES or args.timeout <= 0:
         parser.error("jobs must be 1–4, warmup >= 600, samples >= 2400, and timeout positive")
     if args.experimental_native_macos:

@@ -28,6 +28,11 @@ from xml.parsers.expat import ExpatError
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+_ENGINE_SPEC = importlib.util.spec_from_file_location("nk3_diagnostic_engine_policy", HERE / "macos_engine_identity.py")
+if _ENGINE_SPEC is None or _ENGINE_SPEC.loader is None:
+    raise RuntimeError("Cannot load Mac research engine policy")
+ENGINE_POLICY = importlib.util.module_from_spec(_ENGINE_SPEC)
+_ENGINE_SPEC.loader.exec_module(ENGINE_POLICY)
 FORMAT = "openrc-nk3-macos-sanitizer-diagnostic v1"
 OFFICIAL_TEAM = "6K46PWY5DM"
 SIGNATURE = re.compile(r"AddressSanitizer|UndefinedBehaviorSanitizer|LeakSanitizer|runtime error:", re.I)
@@ -139,7 +144,7 @@ def _diagnostic_signature(path: Path, env: dict[str, str]) -> dict:
 
 
 def _diagnostic_host(original: Path, clone: Path, mac, lock: dict, env: dict[str, str],
-                     tmp: Path, forbidden: tuple[Path, ...]) -> dict:
+                     tmp: Path, forbidden: tuple[Path, ...], source_engine: dict | None = None) -> dict:
     raw = clone.expanduser()
     if raw.is_symlink() or not raw.is_file() or not stat.S_ISREG(raw.stat().st_mode):
         raise ValueError("Diagnostic host must be a regular non-symlink file")
@@ -152,8 +157,20 @@ def _diagnostic_host(original: Path, clone: Path, mac, lock: dict, env: dict[str
     if source_code != clone_code:
         raise ValueError("Diagnostic host ARM64 UUID or text differs from official Godot")
     signing = _diagnostic_signature(host, env)
-    engine = mac.godot_identity(host, lock)
-    return {"scope": "resigned diagnostic clone; not official-host or installable evidence",
+    if source_engine is not None and "research_engine" in source_engine:
+        before = mac.nk.sha256_file(host)
+        slices = mac.architectures(host)
+        version = mac._output([str(host), "--version"])
+        if (slices != ["arm64"] or version != source_engine["version"]
+                or mac.nk.sha256_file(host) != before):
+            raise ValueError("Diagnostic clone identity differs from the selected research host")
+        engine = {"path": str(host), "version": version, "sha256": before, "architectures": slices}
+    else:
+        engine = mac.godot_identity(host, lock)
+    scope = ("resigned diagnostic clone of local research host; not installable evidence"
+             if source_engine is not None and "research_engine" in source_engine
+             else "resigned diagnostic clone; not official-host or installable evidence")
+    return {"scope": scope,
             "engine": engine, "official_code": source_code, "diagnostic_code": clone_code,
             "signing": signing}
 
@@ -432,7 +449,11 @@ def run(args: argparse.Namespace) -> dict:
     try:
         lock = mac.locked.load_lock()
         toolchain = mac.host_toolchain()
-        engine = mac.godot_identity(args.godot, lock)
+        research_engine = ENGINE_POLICY.selection_from_args(args)
+        def engine_check():
+            return (mac.godot_identity(args.godot, lock, research_engine) if research_engine is not None
+                    else mac.godot_identity(args.godot, lock))
+        engine = engine_check()
         identity = mac._identity()
         built = mac.validate_build(root, False, identity, toolchain, engine, lock)
         project_proof = runner.validate_project(project)
@@ -447,15 +468,25 @@ def run(args: argparse.Namespace) -> dict:
             raise ValueError("Compilation database must contain exactly one kernel TU")
         env = mac.clean_build_environment(Path(toolchain["compiler"]), Path(toolchain["sdk_path"]))
         env["CC"] = toolchain["c_compiler"]
-        original_signature = _official_engine(Path(engine["path"]), env)
+        def host_signature():
+            return (_diagnostic_signature(Path(engine["path"]), env) if research_engine is not None
+                    else _official_engine(Path(engine["path"]), env))
+        original_signature = host_signature()
+        if research_engine is not None:
+            summary["engine_scope"] = "local ad-hoc research engine; not an official Godot build or release qualification"
         summary["godot_signature"] = original_signature
         selected_godot = Path(engine["path"])
+        def diagnostic_host_check():
+            if research_engine is not None:
+                return _diagnostic_host(Path(engine["path"]), diagnostic_path, mac, lock, env, tmp,
+                                        (root, project, out), engine)
+            return _diagnostic_host(Path(engine["path"]), diagnostic_path, mac, lock, env, tmp,
+                                    (root, project, out))
         if diagnostic_path is not None:
-            diagnostic_before = _diagnostic_host(selected_godot, diagnostic_path, mac, lock, env, tmp,
-                                                  (root, project, out))
+            diagnostic_before = diagnostic_host_check()
             selected_godot = Path(diagnostic_before["engine"]["path"])
             summary["diagnostic_host"] = diagnostic_before
-            summary["official_engine_parity"] = False
+            summary["selected_engine_exact_bytes" if research_engine is not None else "official_engine_parity"] = False
         runtime = _asan_runtime(Path(toolchain["compiler"]), env) if args.mode == "asan" else None
         summary["asan_runtime"] = {"path": str(runtime), "sha256": helper._sha(runtime)} if runtime else None
         summary["engine_sha256"] = engine["sha256"]
@@ -464,6 +495,8 @@ def run(args: argparse.Namespace) -> dict:
         summary["project_inventory"] = project_proof
         harness = [*HERE.glob("*.gd"), HERE / "run.py", HERE / "build_macos.py", HERE / "fpcr_control_probe.py",
                    HERE / "macos_diagnostics.py", ROOT / "tools/godot/run_checked.py"]
+        if research_engine is not None:
+            harness.append(HERE / "macos_engine_identity.py")
         guard_script = HERE / DOMAIN_GUARD_SCRIPT
         if domain_guard and (guard_script.is_symlink() or not guard_script.is_file() or guard_script not in harness):
             raise ValueError("Domain-guard diagnostic harness is missing or redirected")
@@ -568,17 +601,16 @@ def run(args: argparse.Namespace) -> dict:
                 raise ValueError(f"{DOMAIN_GUARD_SCRIPT}: {error}") from error
             summary["domain_guard"].update(**guard_result)
         if (inputs != {name: helper._sha(Path(name)) for name in inputs} or mac._identity() != identity
-                or mac.godot_identity(args.godot, lock) != engine or runner.validate_project(project) != project_proof
+                or engine_check() != engine or runner.validate_project(project) != project_proof
                 or harness_hashes != {name: helper._sha(Path(name)) for name in harness_hashes}
                 or (runtime and helper._sha(runtime) != summary["asan_runtime"]["sha256"])):
             raise ValueError("Candidate, runtime, engine, harness or project changed during diagnostics")
         if diagnostic_before is not None:
-            after = _diagnostic_host(Path(engine["path"]), diagnostic_path, mac, lock, env, tmp,
-                                     (root, project, out))
-            if after != diagnostic_before or _official_engine(Path(engine["path"]), env) != original_signature:
-                raise ValueError("Official or diagnostic host changed during diagnostics")
+            after = diagnostic_host_check()
+            if after != diagnostic_before or host_signature() != original_signature:
+                raise ValueError("Selected or diagnostic host changed during diagnostics")
             summary["diagnostic_host_unchanged"] = True
-            summary["official_host_unchanged"] = True
+            summary["source_engine_unchanged" if research_engine is not None else "official_host_unchanged"] = True
         for directory, info in ((out / "positive-control", control_info), (out / "candidate", candidate_info)):
             for name, key in (("nk_kernel.cpp", "source_sha256"), ("nk_kernel.o", "object_sha256"),
                               ("libopenrc_native_kernel.dylib", "binary_sha256"),
@@ -594,17 +626,17 @@ def run(args: argparse.Namespace) -> dict:
         detail = str(error)
         if diagnostic_path is not None and original_signature is not None:
             try:
-                summary["official_host_unchanged"] = (mac.godot_identity(args.godot, lock) == engine
-                    and _official_engine(Path(engine["path"]), env) == original_signature)
+                key = "source_engine_unchanged" if research_engine is not None else "official_host_unchanged"
+                summary[key] = engine_check() == engine and host_signature() == original_signature
             except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as host_error:
-                summary["official_host_unchanged"] = False
-                summary["official_host_recheck_error"] = str(host_error)
-            if not summary["official_host_unchanged"]:
-                detail += "; official host changed or recheck failed"
+                key = "source_engine_unchanged" if research_engine is not None else "official_host_unchanged"
+                summary[key] = False
+                summary["source_engine_recheck_error" if research_engine is not None else "official_host_recheck_error"] = str(host_error)
+            if not summary[key]:
+                detail += "; selected host changed or recheck failed"
         if diagnostic_before is not None:
             try:
-                summary["diagnostic_host_unchanged"] = (_diagnostic_host(
-                    Path(engine["path"]), diagnostic_path, mac, lock, env, tmp, (root, project, out)) == diagnostic_before)
+                summary["diagnostic_host_unchanged"] = diagnostic_host_check() == diagnostic_before
             except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as host_error:
                 summary["diagnostic_host_unchanged"] = False
                 summary["diagnostic_host_recheck_error"] = str(host_error)
@@ -634,6 +666,7 @@ def main() -> int:
     parser.add_argument("--variant-states", type=int, default=16)
     parser.add_argument("--seed", type=int, default=20261027)
     parser.add_argument("--timeout", type=float, default=600)
+    ENGINE_POLICY.add_arguments(parser)
     try:
         result = run(parser.parse_args())
     except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as error:

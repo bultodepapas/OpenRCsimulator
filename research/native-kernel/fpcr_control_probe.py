@@ -23,6 +23,11 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+_ENGINE_SPEC = importlib.util.spec_from_file_location("nk3_fpcr_engine_policy", HERE / "macos_engine_identity.py")
+if _ENGINE_SPEC is None or _ENGINE_SPEC.loader is None:
+    raise RuntimeError("Cannot load Mac research engine policy")
+ENGINE_POLICY = importlib.util.module_from_spec(_ENGINE_SPEC)
+_ENGINE_SPEC.loader.exec_module(ENGINE_POLICY)
 FORMAT = "openrc-nk3-macos-fpcr-control v1"
 MASK = 0x07C8BF07
 FZ = 1 << 24
@@ -198,7 +203,8 @@ def run(args: argparse.Namespace) -> dict:
         raise ValueError("--tool-root must be a candidate directory inside tmp/")
     lock = mac.locked.load_lock()
     toolchain = mac.host_toolchain()
-    engine = mac.godot_identity(args.godot, lock)
+    research_engine = ENGINE_POLICY.selection_from_args(args)
+    engine = mac.godot_identity(args.godot, lock, research_engine) if research_engine is not None else mac.godot_identity(args.godot, lock)
     identity = mac._identity()
     built = mac.validate_build(root, False, identity, toolchain, engine, lock)
     project_proof = runner.validate_project(project)
@@ -251,8 +257,9 @@ def run(args: argparse.Namespace) -> dict:
     result = json.loads(result_path.read_text(encoding="utf-8"))
     log = Path(checked["log"]).read_text(encoding="utf-8", errors="replace")
     observed = control_result(result, checked, log)
+    final_engine = mac.godot_identity(args.godot, lock, research_engine) if research_engine is not None else mac.godot_identity(args.godot, lock)
     if (inputs != {name: _sha(Path(name)) for name in inputs} or mac._identity() != identity
-            or mac.godot_identity(args.godot, lock) != engine or runner.validate_project(project) != project_proof):
+            or final_engine != engine or runner.validate_project(project) != project_proof):
         raise ValueError("Candidate inputs, engine or project changed during the control")
     receipt = {"format": FORMAT, "installable": False, "result": "detected", "scope":
                "Disposable calling-thread FPCR detector control; not a qualification or candidate build",
@@ -280,6 +287,7 @@ def main() -> int:
     parser.add_argument("--project", type=Path, required=True, help="verified isolated research app")
     parser.add_argument("--out", type=Path, required=True, help="new directory under tmp/, outside the candidate")
     parser.add_argument("--timeout", type=float, default=600, help="per compile, link and checked oracle timeout")
+    ENGINE_POLICY.add_arguments(parser)
     args = parser.parse_args()
     try:
         receipt = run(args)

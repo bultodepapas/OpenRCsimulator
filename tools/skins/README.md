@@ -127,7 +127,7 @@ another Pillow/FreeType build may anti-alias the lettering differently.
 Import new outputs once with Godot `--headless --path app --import`. A colour-only
 skin (all MT8 schemes) needs no texture: edit the JSON only.
 
-### Ugly Stik: NEON RONIN
+### Ugly Stik: NEON RONIN (US-V19)
 
 `build_stik_cyberpunk.py` authors the cyberpunk covering for the basic Stik, its
 three glow configurations and electric 6S. Run it with the visual venv; `--check`
@@ -208,6 +208,17 @@ were refreshed from repeated beta2 exports. The electric kit uses its own verifi
 overlay and adapter identity, and does not accept basic Stik packages.
 
 ## Evidence
+
+US-V19, 2026-11-14: NEON RONIN was selected through the Spanish Home paint gallery
+and reviewed in Home and flight at 1920 × 1080 on Windows, Godot 4.8-beta2,
+GL Compatibility and an RTX 3090. Top, underside, opposite side and night views
+confirmed atlas placement, the cyan ventral fin and emission confined to traces.
+The visual session's final skin records match the workspace and frozen test input;
+captures are outside Git at `D:/OpenRCsimulator-evidence/neon-ronin/`. The session
+reported no error-level engine records; loading/catch-up hitches were present.
+The checked `test_vehicle_paint.gd` run passed 1,621 assertions with zero engine
+errors or warnings. The generator's three maps passed byte-exact `--check`.
+These are visual checks, not a sustained performance qualification.
 
 The original X8-only integration was checked on Windows on 2026-10-28 with Godot
 4.8-beta1 and Blender 5.2.2. It passed 36 importer, 114 dialog, 285 picker, 179

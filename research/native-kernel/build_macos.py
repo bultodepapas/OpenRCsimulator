@@ -30,6 +30,11 @@ if SPEC is None or SPEC.loader is None:
 nk = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(nk)
 locked = nk.locked
+ENGINE_SPEC = importlib.util.spec_from_file_location("openrc_macos_engine_identity", HERE / "macos_engine_identity.py")
+if ENGINE_SPEC is None or ENGINE_SPEC.loader is None:
+    raise RuntimeError("Cannot load the Mac research engine identity policy")
+engine_policy = importlib.util.module_from_spec(ENGINE_SPEC)
+ENGINE_SPEC.loader.exec_module(engine_policy)
 
 # The observed M1 toolchain; changing any member requires new qualification.
 APPLE_CLANG = "Apple clang version 21.0.0 (clang-2100.3.34.2)"
@@ -242,8 +247,10 @@ def architectures(binary: Path) -> list[str]:
     return sorted(result)
 
 
-def godot_identity(godot: Path, lock: dict) -> dict:
+def godot_identity(godot: Path, lock: dict, research_engine: dict | None = None) -> dict:
     """Identify the exact executable; a matching version alone is not release provenance."""
+    if research_engine is not None:
+        return engine_policy.identify(godot, lock, research_engine, architectures=architectures, output=_output)
     godot = godot.resolve()
     if not godot.is_file() or not os.access(godot, os.X_OK):
         raise ValueError(f"--godot must name an executable file: {godot}")
@@ -742,6 +749,8 @@ def _one_prefixed(command: list[str], option: str) -> str:
 
 
 def _engine_display(version: str) -> str:
+    if version == engine_policy.RESEARCH_CLI:
+        return engine_policy.RESEARCH_RUNTIME
     release = version.split(".official.")[0].replace(".beta", "-beta").replace(".rc", "-rc")
     return f"{release} (official)"
 
@@ -902,7 +911,8 @@ def _atomic_install(path: Path, data: bytes) -> None:
             temporary.unlink(missing_ok=True)
 
 
-def install_app(tool_root: Path, godot: Path, expected_signing: dict | None = None) -> int:
+def install_app(tool_root: Path, godot: Path, expected_signing: dict | None = None,
+                research_engine: dict | None = None) -> int:
     """Install only an evidence-bound, experimental source-tree fixed-wing candidate."""
     root = tool_root.resolve()
     tmp = (ROOT / "tmp").resolve()
@@ -910,7 +920,7 @@ def install_app(tool_root: Path, godot: Path, expected_signing: dict | None = No
         raise ValueError("--tool-root must be a directory inside this checkout's tmp/")
     lock = locked.load_lock()
     toolchain = host_toolchain()
-    engine = godot_identity(godot, lock)
+    engine = godot_identity(godot, lock, research_engine) if research_engine is not None else godot_identity(godot, lock)
     identity = _identity()
     candidate = validate_build(root, False, identity, toolchain, engine, lock)
     mutant = validate_build(root, True, identity, toolchain, engine, lock)
@@ -960,7 +970,8 @@ def install_app(tool_root: Path, godot: Path, expected_signing: dict | None = No
     final_verifications = {key: find_verification(root, key, pattern, mutant if key == "negative_control" else candidate,
                                                   final_cache, runner) for key, pattern in verification_roster().items()}
     library_bytes = Path(candidate["library"]).read_bytes()
-    if (_identity() != identity or godot_identity(godot, lock) != engine or host_toolchain() != toolchain
+    final_engine = godot_identity(godot, lock, research_engine) if research_engine is not None else godot_identity(godot, lock)
+    if (_identity() != identity or final_engine != engine or host_toolchain() != toolchain
             or hashlib.sha256(library_bytes).hexdigest() != candidate["binary_sha256"]
             or nk.sha256_file(Path(mutant["library"])) != mutant["binary_sha256"]
             or final_verifications != verifications):
@@ -997,7 +1008,8 @@ def build(args: argparse.Namespace) -> int:
     requested_signing = signing_selection(getattr(args, "signing_identity", None), getattr(args, "team_id", None))
     toolchain = host_toolchain()
     lock = locked.load_lock()
-    engine = godot_identity(args.godot, lock)
+    research_engine = engine_policy.selection_from_args(args)
+    engine = godot_identity(args.godot, lock, research_engine) if research_engine is not None else godot_identity(args.godot, lock)
     root = args.tool_root.resolve()
     tmp = (ROOT / "tmp").resolve()
     if root == tmp or not root.is_relative_to(tmp):
@@ -1071,7 +1083,9 @@ def build(args: argparse.Namespace) -> int:
     subprocess.run(sign_command, check=True, env=env)
     signature = inspect_signing(library, selected_signing, env=env)
     inspection = inspect_library(library, dwarf, work)
-    if before != _identity() or nk.sha256_file(api) != api_sha256 or nk.sha256_file(args.godot.resolve()) != engine["sha256"]:
+    if (before != _identity() or nk.sha256_file(api) != api_sha256
+            or nk.sha256_file(args.godot.resolve()) != engine["sha256"]
+            or (research_engine is not None and godot_identity(args.godot, lock, research_engine) != engine)):
         raise ValueError("Sources, API or engine changed during the build; use a fresh tool root")
     with descriptor.open("x", encoding="utf-8", newline="\n") as output:
         output.write("; Experimental signed Mac ARM64 research library; manual loading only.\n"
@@ -1114,13 +1128,16 @@ def main() -> int:
     parser.add_argument("--team-id", help="10-character Developer ID team; required with --signing-identity")
     parser.add_argument("--install-app", action="store_true",
                         help="install the evidence-bound experimental source candidate; does not qualify fleet or packages")
+    engine_policy.add_arguments(parser)
     args = parser.parse_args()
     try:
         if args.install_app and args.mutant:
             parser.error("--install-app never installs a mutant")
         requested = signing_selection(args.signing_identity, args.team_id)
+        research_engine = engine_policy.selection_from_args(args)
         return install_app(args.tool_root, args.godot,
-                           expected_signing=requested if args.signing_identity is not None else None) if args.install_app else build(args)
+                           expected_signing=requested if args.signing_identity is not None else None,
+                           research_engine=research_engine) if args.install_app else build(args)
     except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as error:
         print(f"Mac native build refused: {error}", file=sys.stderr)
         return 1

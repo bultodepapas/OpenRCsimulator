@@ -38,10 +38,10 @@ index 0000000..6703801
 +}
 diff --git a/drivers/metal/metalfx_frame_bridge.mm b/drivers/metal/metalfx_frame_bridge.mm
 new file mode 100644
-index 0000000..0b586d0
+index 0000000..908573d
 --- /dev/null
 +++ b/drivers/metal/metalfx_frame_bridge.mm
-@@ -0,0 +1,82 @@
+@@ -0,0 +1,81 @@
 +// SDK Metal 3 bridge for experimental scene-only interpolation. No presenter.
 +#include "metalfx_frame_bridge.h"
 +
@@ -56,7 +56,7 @@ index 0000000..0b586d0
 +#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
 +	@autoreleasepool {
 +		if (@available(macOS 26.0, *)) {
-+			id<MTLDevice> device = (id<MTLDevice>)p_device;
++			id<MTLDevice> device = (__bridge id<MTLDevice>)p_device;
 +			if (!device || ![MTLFXFrameInterpolatorDescriptor supportsDevice:device]) {
 +				return nullptr;
 +			}
@@ -69,17 +69,16 @@ index 0000000..0b586d0
 +			d.motionTextureFormat = (MTLPixelFormat)p_motion_format;
 +			d.outputTextureFormat = (MTLPixelFormat)p_output_format;
 +			id<MTLFXFrameInterpolator> effect = [d newFrameInterpolatorWithDevice:device];
-+			[d release];
 +			*r_result = effect ? MFX_FRAME_OK : MFX_FRAME_FACTORY_FAILED;
-+			return (void *)effect;
++			return (__bridge_retained void *)effect;
 +		}
 +	}
 +#endif
 +	return nullptr;
 +}
 +
-+void mfx_frame_retain(void *p_effect) { if (p_effect) [(id)p_effect retain]; }
-+void mfx_frame_release(void *p_effect) { if (p_effect) [(id)p_effect release]; }
++void mfx_frame_retain(void *p_effect) { if (p_effect) CFRetain((CFTypeRef)p_effect); }
++void mfx_frame_release(void *p_effect) { if (p_effect) CFRelease((CFTypeRef)p_effect); }
 +
 +int mfx_frame_encode(void *p_effect, void *p_command_buffer, void *p_fence, void *p_color, void *p_previous,
 +		void *p_depth, void *p_motion, void *p_output, bool p_reset, float p_scale_x, float p_scale_y,
@@ -87,11 +86,11 @@ index 0000000..0b586d0
 +#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
 +	@autoreleasepool {
 +		if (@available(macOS 26.0, *)) {
-+			id<MTLFXFrameInterpolator> fx = (id<MTLFXFrameInterpolator>)p_effect;
-+			id<MTLCommandBuffer> command = (id<MTLCommandBuffer>)p_command_buffer;
-+			id<MTLTexture> color = (id<MTLTexture>)p_color, prev = (id<MTLTexture>)p_previous;
-+			id<MTLTexture> depth = (id<MTLTexture>)p_depth, motion = (id<MTLTexture>)p_motion;
-+			id<MTLTexture> output = (id<MTLTexture>)p_output;
++			id<MTLFXFrameInterpolator> fx = (__bridge id<MTLFXFrameInterpolator>)p_effect;
++			id<MTLCommandBuffer> command = (__bridge id<MTLCommandBuffer>)p_command_buffer;
++			id<MTLTexture> color = (__bridge id<MTLTexture>)p_color, prev = (__bridge id<MTLTexture>)p_previous;
++			id<MTLTexture> depth = (__bridge id<MTLTexture>)p_depth, motion = (__bridge id<MTLTexture>)p_motion;
++			id<MTLTexture> output = (__bridge id<MTLTexture>)p_output;
 +			if (!fx || !command || !color || !prev || !depth || !motion || !output ||
 +					color.width != fx.outputWidth || color.height != fx.outputHeight ||
 +					prev.width != fx.outputWidth || prev.height != fx.outputHeight ||
@@ -116,7 +115,7 @@ index 0000000..0b586d0
 +			fx.jitterOffsetX = p_jitter_x; fx.jitterOffsetY = p_jitter_y;
 +			fx.deltaTime = p_delta; fx.fieldOfView = p_fov_degrees;
 +			fx.nearPlane = p_near; fx.farPlane = p_far; fx.aspectRatio = p_aspect;
-+			fx.depthReversed = YES; fx.uiTexture = nil; fx.fence = (id<MTLFence>)p_fence;
++			fx.depthReversed = YES; fx.uiTexture = nil; fx.fence = (__bridge id<MTLFence>)p_fence;
 +			[fx encodeToCommandBuffer:command];
 +			return MFX_FRAME_OK; // CPU encode returned; GPU completion is not observed.
 +		}
@@ -337,7 +336,7 @@ index 04bff87..c6ca3a2 100644
  
  #endif // METAL_ENABLED
 diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
-index cad451c..cbdb71c 100644
+index cad451c..d991a38 100644
 --- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
 +++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
 @@ -31,6 +31,7 @@
@@ -358,13 +357,29 @@ index cad451c..cbdb71c 100644
  
  #include "modules/modules_enabled.gen.h"
  
-@@ -50,6 +54,115 @@
+@@ -50,6 +54,131 @@
  
  using namespace RendererSceneRenderImplementation;
  
 +#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++static const char *metalfx_frame_scene_rejection(bool p_has_alpha, RSE::EnvironmentBG p_background) {
++	if (p_has_alpha) {
++		return "transparent_geometry_has_no_motion_vectors";
++	}
++	if (p_background == RSE::ENV_BG_CANVAS || p_background == RSE::ENV_BG_KEEP) {
++		return "non_scene_background";
++	}
++	return nullptr;
++}
++
 +void RenderForwardClustered::_process_metalfx_frame(const RenderDataRD *p_render_data, Ref<RenderSceneBuffersRD> p_buffers, bool p_temporal_submitted, bool p_temporal_reset) {
 +	if (!p_buffers->is_metalfx_frame_requested()) {
++		return;
++	}
++	RSE::EnvironmentBG background = is_environment(p_render_data->environment) ? environment_get_background(p_render_data->environment) : RSE::ENV_BG_CLEAR_COLOR;
++	const char *scene_rejection = metalfx_frame_scene_rejection(!render_list[RENDER_LIST_ALPHA].elements.is_empty(), background);
++	if (scene_rejection) {
++		p_buffers->reject_metalfx_frame(scene_rejection);
 +		return;
 +	}
 +	const Projection &projection = p_render_data->scene_data->cam_projection;
@@ -440,11 +455,11 @@ index cad451c..cbdb71c 100644
 +	float delta = decision.delta;
 +	if (reset) {
 +		delta = 1.0f / 60.0f; // first/reset frame has no usable previous pair
-+		if (ctx->epoch >= uint64_t(INT64_MAX)) {
++		if (!p_buffers->next_metalfx_frame_epoch(ctx->epoch)) {
 +			p_buffers->reject_metalfx_frame("generation_exhausted");
 +			return;
 +		}
-+		ctx->history->requested_epoch.store(++ctx->epoch, std::memory_order_release);
++		ctx->history->requested_epoch.store(ctx->epoch, std::memory_order_release);
 +	}
 +	uint32_t current = ctx->next_capture;
 +	uint32_t previous = current ^ 1;
@@ -474,7 +489,7 @@ index cad451c..cbdb71c 100644
  #define PRELOAD_PIPELINES_ON_SURFACE_CACHE_CONSTRUCTION 1
  
  #define FADE_ALPHA_PASS_THRESHOLD 0.999
-@@ -1882,6 +1995,12 @@ void RenderForwardClustered::_render_scene(RenderDataRD *p_render_data, const Co
+@@ -1882,6 +2011,12 @@ void RenderForwardClustered::_render_scene(RenderDataRD *p_render_data, const Co
  
  	bool using_upscaling = scale_type != SCALE_NONE;
  
@@ -487,7 +502,7 @@ index cad451c..cbdb71c 100644
  	// check if we need motion vectors
  	bool motion_vectors_required;
  	if (using_debug_mvs) {
-@@ -2662,6 +2781,12 @@ void RenderForwardClustered::_render_scene(RenderDataRD *p_render_data, const Co
+@@ -2662,6 +2797,12 @@ void RenderForwardClustered::_render_scene(RenderDataRD *p_render_data, const Co
  				}
  			}
  
@@ -515,7 +530,7 @@ index aff29be..94e7ae6 100644
  	RendererRD::MotionVectorsStore *motion_vectors_store = nullptr;
  
 diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
-index 3a9abdf..6bed824 100644
+index 3a9abdf..1a2c5d2 100644
 --- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
 +++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
 @@ -32,6 +32,10 @@
@@ -529,7 +544,7 @@ index 3a9abdf..6bed824 100644
  #include "servers/rendering/renderer_rd/storage_rd/texture_storage.h"
  #include "servers/rendering/rendering_device_binds.h"
  #include "servers/rendering/rendering_server.h" // IWYU pragma: keep // Needed to bind RSE enums.
-@@ -124,6 +128,95 @@ void RenderSceneBuffersRD::update_samplers() {
+@@ -124,6 +128,97 @@ void RenderSceneBuffersRD::update_samplers() {
  	samplers = material_storage->samplers_rd_allocate(computed_mipmap_bias, anisotropic_filtering_level);
  }
  
@@ -565,6 +580,8 @@ index 3a9abdf..6bed824 100644
 +	Dictionary result = RenderSceneBuffers::get_metalfx_frame_status();
 +	result["gpu_completion"] = "unobserved";
 +	result["input_color"] = "scene_hdr_before_tonemap";
++	result["motion_convention"] = "previous_minus_current_uv_scaled_to_input_pixels";
++	result["jitter_convention"] = "temporal_input_hypothesis_not_scene_verified";
 +	result["output_initialization"] = "magenta_sentinel_each_encode";
 +	result["purpose"] = "experiment_not_presentable";
 +#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
@@ -626,7 +643,7 @@ index 3a9abdf..6bed824 100644
  	reset_metalfx_status();
  	// Free our data buffers (but don't destroy them)
 diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
-index 77f306b..4e99490 100644
+index 77f306b..a5f0191 100644
 --- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
 +++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
 @@ -43,6 +43,10 @@
@@ -640,18 +657,19 @@ index 77f306b..4e99490 100644
  
  #define RB_TEXTURE SNAME("texture")
  #define RB_TEX_COLOR SNAME("color")
-@@ -90,6 +94,10 @@ private:
+@@ -90,6 +94,11 @@ private:
  #ifdef METAL_ENABLED
  	RendererRD::MFXSpatialContext *mfx_spatial_context = nullptr;
  #endif
 +#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
 +	RendererRD::MFXFrameContext *mfx_frame_context = nullptr;
 +	String mfx_frame_reason = "not_attempted";
++	uint64_t mfx_frame_epoch = 0; // Survives rejection and recreation within this buffer generation.
 +#endif
  
  	// Aliasing settings
  	RSE::ViewportMSAA msaa_3d = RSE::VIEWPORT_MSAA_DISABLED;
-@@ -207,6 +215,15 @@ public:
+@@ -207,6 +216,22 @@ public:
  	virtual void set_texture_mipmap_bias(float p_texture_mipmap_bias) override;
  	virtual void set_anisotropic_filtering_level(RSE::ViewportAnisotropicFiltering p_anisotropic_filtering_level) override;
  	virtual void set_use_debanding(bool p_use_debanding) override;
@@ -663,15 +681,30 @@ index 77f306b..4e99490 100644
 +	RendererRD::MFXFrameContext *get_metalfx_frame_context() const { return mfx_frame_context; }
 +	RendererRD::MFXFrameContext *ensure_metalfx_frame_context(RendererRD::MFXFrameEffect *p_effect, const RendererRD::MFXFrameEffect::CreateParams &p_params);
 +	void reject_metalfx_frame(const char *p_reason);
++	bool next_metalfx_frame_epoch(uint64_t &r_epoch) {
++		if (mfx_frame_epoch >= uint64_t(INT64_MAX)) {
++			return false;
++		}
++		r_epoch = ++mfx_frame_epoch;
++		return true;
++	}
 +#endif
  
  #ifdef METAL_ENABLED
  	void ensure_mfx(RendererRD::MFXSpatialEffect *p_effect);
 diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
-index d3b359b..39495e1 100644
+index d3b359b..b6acdf4 100644
 --- a/servers/rendering/renderer_viewport.cpp
 +++ b/servers/rendering/renderer_viewport.cpp
-@@ -321,6 +321,7 @@ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
+@@ -135,6 +135,7 @@ Vector<RendererViewport::Viewport *> RendererViewport::_sort_active_viewports()
+ 
+ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
+ 	++p_viewport->metal_fx_generation;
++	++p_viewport->metal_fx_frame_generation;
+ 	if (p_viewport->render_buffers.is_valid()) {
+ 		p_viewport->render_buffers->reset_metalfx_status();
+ 	}
+@@ -321,6 +322,7 @@ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
  
  			p_viewport->render_buffers->configure(&rb_config);
  			p_viewport->render_buffers->set_metalfx_configured_mode(int(scaling_3d_mode));
@@ -679,7 +712,49 @@ index d3b359b..39495e1 100644
  		}
  	}
  }
-@@ -1620,6 +1621,47 @@ Dictionary RendererViewport::viewport_request_temporal_history_reset(RID p_viewp
+@@ -1045,6 +1047,7 @@ void RendererViewport::viewport_set_use_xr(RID p_viewport, bool p_use_xr) {
+ 		// The XR buffers are configured later in draw_viewports(); do not
+ 		// expose the old generation as a result for that pending change.
+ 		++viewport->metal_fx_generation;
++		++viewport->metal_fx_frame_generation;
+ 		if (viewport->render_buffers.is_valid()) {
+ 			viewport->render_buffers->reset_metalfx_status();
+ 		}
+@@ -1320,6 +1323,7 @@ void RendererViewport::viewport_set_disable_3d(RID p_viewport, bool p_disable) {
+ 
+ 	if (viewport->disable_3d != p_disable) {
+ 		++viewport->metal_fx_generation;
++		++viewport->metal_fx_frame_generation;
+ 		if (viewport->render_buffers.is_valid()) {
+ 			viewport->render_buffers->reset_metalfx_observation();
+ 		}
+@@ -1333,6 +1337,7 @@ void RendererViewport::viewport_attach_camera(RID p_viewport, RID p_camera) {
+ 
+ 	if (viewport->camera != p_camera) {
+ 		++viewport->metal_fx_generation;
++		++viewport->metal_fx_frame_generation;
+ 		if (viewport->render_buffers.is_valid()) {
+ 			viewport->render_buffers->reset_metalfx_observation();
+ 		}
+@@ -1346,6 +1351,7 @@ void RendererViewport::viewport_set_scenario(RID p_viewport, RID p_scenario) {
+ 
+ 	if (viewport->scenario != p_scenario) {
+ 		++viewport->metal_fx_generation;
++		++viewport->metal_fx_frame_generation;
+ 		if (viewport->render_buffers.is_valid()) {
+ 			viewport->render_buffers->reset_metalfx_observation();
+ 		}
+@@ -1614,12 +1620,57 @@ Dictionary RendererViewport::viewport_request_temporal_history_reset(RID p_viewp
+ 	}
+ 	uint64_t serial = ++viewport->metal_fx_reset_serial;
+ 	history->requested.store(serial, std::memory_order_release);
++	// An already encoded diagnostic image belongs to the old temporal history.
++	// Invalidate it immediately, before the next render can recreate the producer.
++	++viewport->metal_fx_frame_generation;
++	viewport->render_buffers->clear_metalfx_frame();
+ 	receipt["reset_request_attempt"] = int64_t(attempts);
+ 	receipt["accepted"] = true;
+ 	receipt["serial"] = int64_t(serial);
  	return receipt;
  }
  
@@ -690,7 +765,7 @@ index d3b359b..39495e1 100644
 +		return;
 +	}
 +	viewport->metal_fx_frame_requested = p_enabled;
-+	++viewport->metal_fx_generation;
++	++viewport->metal_fx_frame_generation;
 +	if (viewport->render_buffers.is_valid()) {
 +		viewport->render_buffers->set_metalfx_frame_requested(p_enabled);
 +	}
@@ -709,7 +784,7 @@ index d3b359b..39495e1 100644
 +		result["ready_for_debug_readback"] = false;
 +		result["presentable"] = false;
 +	}
-+	result["generation"] = int64_t(viewport->metal_fx_generation);
++	result["generation"] = int64_t(viewport->metal_fx_frame_generation);
 +	return result;
 +}
 +
@@ -720,7 +795,7 @@ index d3b359b..39495e1 100644
 +	if (viewport->render_buffers.is_valid()) {
 +		result = viewport->render_buffers->read_metalfx_frame();
 +	}
-+	result["generation"] = int64_t(viewport->metal_fx_generation);
++	result["generation"] = int64_t(viewport->metal_fx_frame_generation);
 +	return result;
 +}
 +
@@ -728,18 +803,19 @@ index d3b359b..39495e1 100644
  	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
  	ERR_FAIL_NULL_V(viewport, Dictionary());
 diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
-index 4b1081d..c77590c 100644
+index 4b1081d..6a70346 100644
 --- a/servers/rendering/renderer_viewport.h
 +++ b/servers/rendering/renderer_viewport.h
-@@ -68,6 +68,7 @@ public:
+@@ -68,6 +68,8 @@ public:
  		Ref<RenderSceneBuffers> render_buffers;
  		uint64_t metal_fx_generation = 0;
  		uint64_t metal_fx_reset_serial = 0;
++		uint64_t metal_fx_frame_generation = 0; // Independent of Temporal reset receipts.
 +		bool metal_fx_frame_requested = false;
  
  		RSE::ViewportMSAA msaa_2d = RSE::VIEWPORT_MSAA_DISABLED;
  		RSE::ViewportMSAA msaa_3d = RSE::VIEWPORT_MSAA_DISABLED;
-@@ -290,6 +291,9 @@ public:
+@@ -290,6 +292,9 @@ public:
  
  	Dictionary viewport_request_temporal_history_reset(RID p_viewport);
  	Dictionary viewport_get_metalfx_status(RID p_viewport) const;

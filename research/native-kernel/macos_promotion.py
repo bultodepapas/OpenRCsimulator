@@ -28,6 +28,11 @@ STARTS = {"trim": "airborne", "airborne_half_power": "airborne_half_power",
           "runway": "runway", "hand_launch": "hand_launch"}
 MODEL = "MacBookAir10,1"
 CPU = "Apple M1"
+_ENGINE_SPEC = importlib.util.spec_from_file_location("nk3_promotion_engine_policy", HERE / "macos_engine_identity.py")
+if _ENGINE_SPEC is None or _ENGINE_SPEC.loader is None:
+    raise RuntimeError("Cannot load Mac research engine policy")
+ENGINE_POLICY = importlib.util.module_from_spec(_ENGINE_SPEC)
+_ENGINE_SPEC.loader.exec_module(ENGINE_POLICY)
 
 
 class AdmissionError(ValueError):
@@ -272,7 +277,13 @@ def generate(args: argparse.Namespace) -> dict[str, Any]:
     qualification_root = args.qualification_root.expanduser().resolve()
     context = {"project": str(project), "godot": str(godot), "tool_root": str(tool_root),
                "qualification_root": str(qualification_root), "trim_profile": "production"}
-    installed = package.verified_mac_install(qualification_root, godot)
+    research_engine = ENGINE_POLICY.selection_from_args(args)
+    if research_engine is not None:
+        context["research_engine"] = research_engine
+    def verified_install() -> dict:
+        return (package.verified_mac_install(qualification_root, godot, research_engine) if research_engine is not None
+                else package.verified_mac_install(qualification_root, godot))
+    installed = verified_install()
     guard = fleet.snapshot(context)
     canonical_receipt = ROOT / "app/native/kernel/build-receipt-macos.json"
     require(installed["platforms"]["macos"] == guard["receipt"]
@@ -295,7 +306,7 @@ def generate(args: argparse.Namespace) -> dict[str, Any]:
         short = validate_live(summary, args.short_pair, guard, 120, seen, work, retained, sources)
         long = validate_live(summary, args.long_pair, guard, 1800, seen, work, retained, sources)
     final_rows, final_campaign = validate_fleet(fleet, campaign_path, context, guard)
-    require(fleet.snapshot(context) == guard and package.verified_mac_install(qualification_root, godot) == installed
+    require(fleet.snapshot(context) == guard and verified_install() == installed
             and sha(preflight_path) == preflight_sha and sha(domain_path) == domain_sha
             and sha(project_domain) == domain_sha and sha(canonical_receipt) == guard["receipt_sha256"]
             and final_rows == rows and final_campaign == campaign
@@ -320,6 +331,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     for option in ("project", "godot", "tool-root", "qualification-root", "preflight", "campaign", "out"):
         parser.add_argument("--" + option, type=Path, required=True)
+    ENGINE_POLICY.add_arguments(parser)
     parser.add_argument("--short-pair", nargs=2, type=Path, action="append", default=[], metavar=("REFERENCE", "NATIVE"))
     parser.add_argument("--long-pair", nargs=2, type=Path, action="append", default=[], metavar=("REFERENCE", "NATIVE"))
     args = parser.parse_args()

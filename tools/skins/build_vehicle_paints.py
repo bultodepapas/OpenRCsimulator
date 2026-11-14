@@ -397,7 +397,7 @@ INK = hex_rgb("#0d0f12")
 # overlap the wing's leading edge, so the skin gives them their own texture.
 JET_ATLASES = {
     "wing": (("paint_wing",), (2048, 2048)),
-    "doors": (("paint_doors_ala",), (1024, 1024)),
+    "doors": (("paint_doors_ala",), (2048, 2048)),
     "fuselage": (("paint_fuselage",), (2048, 4096)),  # double the stock atlas: crisp stencils and lettering
     "stab": (("paint_stab",), (2048, 2048)),
     "fin": (("paint_fin",), (2048, 1024)),
@@ -551,6 +551,7 @@ def chord_fraction(pos, span_axis: int, table, lo: float, hi: float):
 
 
 _TWILL = None
+_TWILL_MEAN = None
 
 
 def carbon(pos, nrm, tile: float = 0.025):
@@ -558,13 +559,15 @@ def carbon(pos, nrm, tile: float = 0.025):
     global _TWILL
     if _TWILL is None:
         _TWILL = np.asarray(Image.open(CARBON_TWILL).convert("RGB"), dtype=np.float64) / 255.0
+        globals()["_TWILL_MEAN"] = _TWILL.reshape(-1, 3).mean(axis=0)
     size = _TWILL.shape[0]
     axis = np.argmax(np.abs(nrm), axis=-1)
     a = np.where(axis == 0, pos[..., 1], pos[..., 0])
     b = np.where(axis == 2, pos[..., 1], pos[..., 2])
     u = ((a / tile) % 1.0 * size).astype(int) % size
     v = ((b / tile) % 1.0 * size).astype(int) % size
-    return _TWILL[v, u] * 1.05
+    weave = _TWILL[v, u]
+    return (_TWILL_MEAN + (weave - _TWILL_MEAN) * 0.7) * 1.05
 
 
 def _bilinear(art, u, v):
@@ -615,7 +618,7 @@ def jet_fuselage(pos, nrm):
     colour = mix(colour, JET_WHITE, band(zn, np.zeros_like(zn), 0.068, 0.0, 0.0035, soft=0.0012))
     # White double pinstripe under the split line.
     d = split - y
-    pin = (1.0 - smoothstep(0.0022, 0.0034, np.abs(d - 0.007))) + (1.0 - smoothstep(0.0010, 0.0020, np.abs(d - 0.0155)))
+    pin = (1.0 - smoothstep(0.0042, 0.0056, np.abs(d - 0.009))) + (1.0 - smoothstep(0.0010, 0.0020, np.abs(d - 0.0195)))
     colour = mix(colour, JET_WHITE, np.clip(pin, 0, 1) * (zn > 0.07))
     # Speed slashes on the flanks behind the intakes.
     side = smoothstep(0.45, 0.7, np.abs(nrm[..., 0]))
@@ -624,13 +627,19 @@ def jet_fuselage(pos, nrm):
     colour = mix(colour, JET_WHITE, slash * side * (y < split - 0.03))
     # White belly with forward-pointing green chevrons.
     belly = smoothstep(-0.45, -0.65, ny)
-    chevron = (1.0 - smoothstep(0.16, 0.19, ((zn * 7.0 + np.abs(x) * 9.0) % 1.0))) * (zn > 0.12) * (zn < 0.92)
+    chevron = (1.0 - smoothstep(0.28, 0.31, ((zn * 7.0 + np.abs(x) * 9.0) % 1.0))) * (zn > 0.12) * (zn < 0.92)
     belly_colour = mix(np.broadcast_to(JET_WHITE, pos.shape).copy(), NEON, chevron)
     colour = mix(colour, belly_colour, belly)
     # Lettering: "NEO" on the rear flanks, "07" behind the radome.
     colour = mix(colour, JET_WHITE, side_text(pos, nrm, "NEO", 0.52, 0.86, 0.005, 0.085) * (1.0 - belly))
-    colour = mix(colour, INK, side_text(pos, nrm, "07", -0.72, -0.56, -0.02, 0.045) * (1.0 - belly) * (1.0 - above))
-    glow = np.clip((1.0 - above) * (1.0 - belly) * (1.0 - np.clip(pin, 0, 1)) * (zn > 0.06), 0, 1)
+    nose_number = side_text(pos, nrm, "07", -0.72, -0.56, -0.02, 0.045) * (1.0 - belly) * (1.0 - above)
+    colour = mix(colour, JET_WHITE, nose_number)
+    # Twin white pinstripes along the spine: orientation from above.
+    spine = (nrm[..., 1] > 0.7) & (zn > 0.60) & (zn < 0.97)
+    spine_lines = (1.0 - smoothstep(0.0009, 0.0016, np.abs(np.abs(x) - 0.012))) * spine
+    colour = mix(colour, JET_WHITE, spine_lines)
+    glow = np.clip((1.0 - above) * (1.0 - belly) * (1.0 - np.clip(pin, 0, 1)) * (1.0 - nose_number) * (zn > 0.06)
+                   + belly * chevron, 0, 1)
     carbon_weight = np.maximum(above, 1.0 - smoothstep(0.055, 0.06, zn)) * (1.0 - belly)
     return colour, glow, carbon_weight
 
@@ -643,12 +652,16 @@ def jet_lifting(pos, nrm, frac, span_norm, tip_from: float):
     rim = (1.0 - smoothstep(0.010, 0.016, np.abs(frac - blade_edge - 0.022)))
     tip = smoothstep(tip_from - 0.005, tip_from + 0.005, span_norm)
     tip_stripe = 1.0 - smoothstep(0.010, 0.016, np.abs(span_norm - tip_from + 0.035))
+    skin = smoothstep(0.3, 0.6, np.abs(nrm[..., 1]))
+    rim = rim * skin
+    tip_stripe = tip_stripe * skin
     upper = mix(carbon(pos, nrm), NEON, np.maximum(blade, tip))
     upper = mix(upper, JET_WHITE, np.clip(rim + tip_stripe, 0, 1) * (1.0 - tip * (1.0 - tip_stripe)))
     chevron = np.abs(frac - (0.18 + 0.75 * span_norm)) < 0.13
     lower = mix(np.broadcast_to(JET_WHITE, pos.shape).copy(), NEON, chevron.astype(float))
     lower = mix(lower, carbon(pos, nrm), tip)
     colour = np.where(top[..., None], upper, lower)
+    colour = mix(carbon(pos, nrm), colour, skin)  # gap and edge faces read as dark carbon
     glow = np.where(top, np.maximum(blade, tip) * (1.0 - np.clip(rim, 0, 1)), chevron.astype(float) * (1.0 - tip))
     carbon_weight = np.where(top, 1.0 - np.maximum(np.maximum(blade, tip), np.clip(rim, 0, 1)), tip)
     return colour, glow, carbon_weight
@@ -661,7 +674,7 @@ def jet_fin(pos, nrm, frac, height_norm):
     tip = smoothstep(0.86, 0.87, height_norm)
     colour = mix(carbon(pos, nrm), NEON, np.maximum(blade, tip))
     colour = mix(colour, JET_WHITE, np.clip(rim, 0, 1) * (1.0 - tip))
-    colour = mix(colour, JET_WHITE, side_text(pos, nrm, "07", 0.97, 1.19, 0.262, 0.352))
+    colour = mix(colour, JET_WHITE, side_text(pos, nrm, "07", 0.895, 1.04, 0.298, 0.356))
     glow = np.maximum(blade, tip) * (1.0 - np.clip(rim, 0, 1))
     return colour, glow, 1.0 - np.maximum(np.maximum(blade, tip), np.clip(rim, 0, 1))
 
@@ -700,8 +713,21 @@ def _decal(kind: str) -> np.ndarray:
         img = Image.new("RGBA", (720, 112), (0, 0, 0, 0))
         d = ImageDraw.Draw(img)
         font = ImageFont.truetype(font_path, 84)
-        d.text((360, 56), "NEO-07  SPORT JET", fill=(242, 245, 247, 255), font=font, anchor="mm",
+        d.text((360, 56), "SPORT JET", fill=(242, 245, 247, 255), font=font, anchor="mm",
                stroke_width=1, stroke_fill=(242, 245, 247, 255))
+    elif kind == "pilot":
+        img = Image.new("RGBA", (640, 112), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        font = ImageFont.truetype(font_path, 80)
+        d.text((320, 56), "CAPT. NEO", fill=(242, 245, 247, 255), font=font, anchor="mm",
+               stroke_width=1, stroke_fill=(242, 245, 247, 255))
+    elif kind == "blast":
+        img = Image.new("RGBA", (560, 112), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        d.rectangle((0, 0, 559, 111), fill=DECAL_RED)
+        font = ImageFont.truetype(font_path, 70)
+        d.text((280, 56), "JET BLAST", fill=(255, 255, 255, 255), font=font, anchor="mm",
+               stroke_width=2, stroke_fill=(255, 255, 255, 255))
     else:
         raise ValueError(kind)
     _DECALS[kind] = np.asarray(img, dtype=np.float64) / 255.0
@@ -759,7 +785,7 @@ def jet_details(atlas, pos, nrm, colour, glow, carbon_weight, frac=None, span_no
     glow = glow.copy()
     if atlas == "fuselage":
         zn = (z + 0.938) / 2.221
-        for joint in (0.30, 0.47, 0.70, 0.86):
+        for joint in (0.30, 0.47, 0.70, 0.83):  # the 0.83 joint stays ahead of the access hatch
             colour, rough, g = engrave(colour, rough, (zn - joint) * 2.221)
             glow *= 1.0 - g
         side = (np.abs(nrm[..., 0]) > 0.5).astype(float)
@@ -778,16 +804,21 @@ def jet_details(atlas, pos, nrm, colour, glow, carbon_weight, frac=None, span_no
         colour = mix(colour, hex_rgb("#2c66d8"), (1.0 - smoothstep(0.0035, 0.0042, cap)) * top)
         # Stencils and warning decals (fuselage sides have their own UVs, so text reads on both sides).
         decals = [("eject", 0.200, 0.232, 0.094, 0.124), ("danger", 0.300, 0.372, 0.014, 0.034),
-                  ("hot", 0.925, 0.958, 0.080, 0.112), ("serial", 0.690, 0.905, 0.087, 0.109)]
+                  ("serial", 0.760, 0.895, 0.087, 0.108),
+                  ("pilot", 0.245, 0.335, 0.097, 0.113), ("blast", 0.905, 0.975, 0.083, 0.101)]
         for kind, a0, a1, b0, b1 in decals:
             art, alpha = side_decal(pos, nrm, kind, -0.938 + a0 * 2.221, -0.938 + a1 * 2.221, b0, b1)
             colour = mix(colour, art, alpha)
             rough = rough + (0.32 - rough) * alpha
             glow *= 1.0 - alpha
         # Exhaust soot: a faint grey film on the tail cone.
-        soot = smoothstep(0.90, 1.0, zn) * (1.0 - smoothstep(0.05, 0.16, y))
-        colour = colour * (1.0 - 0.28 * soot)[..., None]
-        rough = np.maximum(rough, 0.4 * soot)
+        soot = smoothstep(0.86, 1.0, zn) * (1.0 - smoothstep(0.06, 0.18, y))
+        colour = colour * (1.0 - 0.45 * soot)[..., None]
+        rough = np.maximum(rough, 0.42 * soot)
+        heat = smoothstep(0.978, 0.986, zn)
+        heat_tint = mix(np.broadcast_to(hex_rgb("#c9a35a"), pos.shape), hex_rgb("#4b5c9e"), smoothstep(0.986, 0.998, zn))
+        colour = mix(colour, heat_tint, heat * 0.65)
+        glow *= 1.0 - heat
     elif atlas in ("wing", "stab", "doors"):
         # Wings and stabiliser share mirrored UVs: only symmetric details (no lettering).
         chord_m = 0.25 if atlas == "stab" else 0.45
@@ -803,7 +834,7 @@ def jet_details(atlas, pos, nrm, colour, glow, carbon_weight, frac=None, span_no
                 glow *= 1.0 - g
             # Walkway outline at the root, dashed white on the carbon.
             top = (nrm[..., 1] > 0.3).astype(float)
-            walk = _box_distance(span_norm * 0.998, frac * chord_m, 0.27, 0.40, 0.18 * chord_m, 0.55 * chord_m)
+            walk = _box_distance(span_norm * 0.998, frac * chord_m, 0.27, 0.40, 0.45 * chord_m, 0.62 * chord_m)
             dash = ((((span_norm * 0.998 + frac * chord_m) / 0.012) % 1.0) < 0.6).astype(float)
             colour = mix(colour, JET_WHITE, _line(walk, 0.0016) * top * dash)
     elif atlas == "fin":
@@ -832,6 +863,9 @@ def build_jet(atlas: str):
         table = chord_table(JET_GLB, lifting, 0, 28 if atlas == "stab" else 48, -span_hi, span_hi)
         frac = chord_fraction(pos, 0, table, -span_hi, span_hi)
         span_norm = np.abs(pos[..., 0]) / span_hi
+        if atlas == "doors":
+            nrm = nrm.copy()
+            nrm[..., 1] = -np.maximum(np.abs(nrm[..., 1]), 0.7)
         colour, glow, carb = jet_lifting(pos, nrm, frac, span_norm, 0.86 if atlas == "stab" else 0.88)
         extra = {"frac": frac, "span_norm": span_norm}
     else:

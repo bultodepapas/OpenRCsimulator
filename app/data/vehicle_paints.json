@@ -924,12 +924,28 @@
 							"clearcoat_roughness": 0.03
 						},
 						"canopy_glass": {
-							"albedo": "#c08e2ec4",
-							"metallic": 0.75,
-							"roughness": 0.02,
-							"specular": 0.8,
+							"albedo": "#c8a040e6",
+							"metallic": 0.9,
+							"roughness": 0.04,
+							"specular": 0.9,
 							"clearcoat": 1.0,
-							"clearcoat_roughness": 0.01
+							"clearcoat_roughness": 0.02
+						},
+						"cockpit_tub_grey": {
+							"albedo": "#25282d",
+							"roughness": 0.7
+						},
+						"seat_tan": {
+							"albedo": "#2a2b2e",
+							"roughness": 0.65
+						},
+						"seat_cushion": {
+							"albedo": "#1d1e21",
+							"roughness": 0.8
+						},
+						"glare_shield_black": {
+							"albedo": "#141518",
+							"roughness": 0.85
 						}
 					}
 				}
@@ -940,10 +956,10 @@
 		"res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png": 0.4474937915802002,
 		"res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg": 0.234,
 		"res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg": 0.469,
-		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage_roughness.png": 0.1801,
-		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_wing_roughness.png": 0.1862,
-		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_doors_roughness.png": 0.2115,
-		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_stab_roughness.png": 0.1831,
-		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin_roughness.png": 0.1621
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage_roughness.png": 0.1823,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_wing_roughness.png": 0.1858,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_doors_roughness.png": 0.2118,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_stab_roughness.png": 0.183,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin_roughness.png": 0.1622
 	}
 }

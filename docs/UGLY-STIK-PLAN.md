@@ -46,6 +46,7 @@ The three finite-glow Stiks retain their original technical IDs, physics, explic
 | US-V18a | Every film surface follows its Workshop paint slot (inboard trailing-edge strips, hinge-gap faces, servo hatches); coverage check; [evidence](research/ugly-stik-finish-v6.md#us-v18a--paint-slots-cover-every-film-surface) | None. |
 | US-V18b | Jensen sheet 1 servo tray (three servos on hardwood rails, outputs on the thrust line); throttle as a cable in a tube with length conservation; tail exit plates at the real skin crossing; [evidence](research/ugly-stik-finish-v6.md#us-v18b--the-plans-servo-tray-and-the-throttle-cable) | Steering linkage not modelled; servo order estimated. |
 | US-V18c | Fuel tank (capacity checked against the flight model), lines to re-placed F1 grommets, receiver battery, receiver, switch harness and leads; [evidence](research/ugly-stik-finish-v6.md#us-v18c--fuel-and-radio-installation) | Part sizes are typical commercial parts; tank 35 mm aft of the inventory point (nose wire). |
+| US-V19 | Selectable NEON RONIN cyberpunk covering, shared by the glow configurations and electric 6S; [generation and visual evidence](../tools/skins/README.md#ugly-stik-neon-ronin-us-v19) | Shared wing/fin UVs remain; sustained cost on modest hardware is unmeasured. |
 
 The [2026-10-19 recheck](research/ugly-stik-finish-v6.md#2026-10-19-documentation-recheck) records focused verification separately from original delivery results. It does not close the full-suite, pilot or hardware gates.
 
