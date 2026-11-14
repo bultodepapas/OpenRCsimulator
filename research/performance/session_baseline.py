@@ -1622,7 +1622,7 @@ def run_campaign(args: argparse.Namespace) -> int:
             pass
 
 
-def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]]]:
+def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]]]:
     """Re-read and verify retained raw reports; do not trust the campaign's summary alone."""
     with path.open(encoding="utf-8") as stream:
         campaign = json.load(stream, parse_constant=_json_constant)
@@ -1646,6 +1646,13 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
         raise ValueError(f"{path}: malformed release mode")
     if release and trim_profile is not None:
         raise ValueError(f"{path}: explicit trim profile requires source-editor mode")
+    engine_metadata = metadata.get("engine")
+    local_record = engine_metadata.get("research_engine") if isinstance(engine_metadata, dict) else None
+    if local_record is not None or research_engine is not None:
+        if (research_engine is None or release or not experimental or not isinstance(engine_metadata, dict)
+                or not isinstance(engine_metadata.get("path"), str)
+                or inspect_godot(Path(engine_metadata["path"]), 30, research_engine) != engine_metadata):
+            raise ValueError(f"{path}: independent local research-engine pin or provenance differs")
     project = metadata.get("project")
     if project is not None and (not isinstance(project, dict) or not isinstance(project.get("path"), str)
                                 or not isinstance(project.get("inventory_before"), dict)
@@ -1753,6 +1760,8 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
                 raise ValueError(f"{path}: raw report differs from the requested trim profile")
             if mac_release and report.get("machine", {}).get("godot") != REQUIRED_GODOT_REPORT:
                 raise ValueError(f"{path}: raw report does not identify the pinned release engine")
+            if research_engine is not None and report.get("machine", {}).get("godot") != research_engine["runtime_version"]:
+                raise ValueError(f"{path}: raw report does not identify the selected local research engine")
         identity = raw["native"]["backend"]["actual"]
         if identity["source_sha256"] != metadata.get("native_source_sha256"):
             raise ValueError(f"{path}: native binary does not match campaign source")
@@ -1771,10 +1780,13 @@ def _campaign_runs(path: Path) -> tuple[dict[str, Any], dict[tuple[str, str, int
         raise ValueError(f"{path}: Mac release probe evidence changed while rereading")
     if mac_release and verify_macos_release_identities(Path(metadata["engine"]["path"])) != (mac_reference, mac_native):
         raise ValueError(f"{path}: Mac release bundle changed while rereading evidence")
+    if research_engine is not None and inspect_godot(Path(engine_metadata["path"]), 30, research_engine) != engine_metadata:
+        raise ValueError(f"{path}: local research engine changed while rereading evidence")
     return campaign, runs
 
 
-def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> int:
+def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path,
+                      research_engine: dict[str, Any] | None = None) -> int:
     """Compare matching inputs; distinct Mac release bundles have no independent reference identity."""
     output_dir = output_dir.expanduser().resolve()
     if output_dir.exists() and (not output_dir.is_dir() or any(output_dir.iterdir())):
@@ -1784,8 +1796,10 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path) -> 
     rows: list[dict[str, Any]] = []
     try:
         before_path, after_path = before_path.expanduser().resolve(), after_path.expanduser().resolve()
-        before, old_runs = _campaign_runs(before_path)
-        after, new_runs = _campaign_runs(after_path)
+        before, old_runs = (_campaign_runs(before_path, research_engine) if research_engine is not None
+                            else _campaign_runs(before_path))
+        after, new_runs = (_campaign_runs(after_path, research_engine) if research_engine is not None
+                           else _campaign_runs(after_path))
         old_meta, new_meta = before["metadata"], after["metadata"]
         old_mac, new_mac = old_meta.get("mac_native_bundle"), new_meta.get("mac_native_bundle")
         if old_mac is not None or new_mac is not None:
@@ -1860,13 +1874,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.compare_campaigns:
-            if ENGINE_POLICY.selection_from_args(args) is not None:
-                raise ValueError("Research engine pins apply to a new campaign, not a campaign comparison")
+            research_engine = ENGINE_POLICY.selection_from_args(args)
             if args.release_executable:
                 raise ValueError("--release-executable applies to a new campaign, not a campaign comparison")
             if args.project is not None or args.experimental_native_macos or args.battery is not None or args.trim_profile is not None:
                 raise ValueError("--project, --experimental-native-macos, --battery and --trim-profile apply to a new campaign")
-            return compare_campaigns(*args.compare_campaigns, args.out)
+            return (compare_campaigns(*args.compare_campaigns, args.out, research_engine)
+                    if research_engine is not None else compare_campaigns(*args.compare_campaigns, args.out))
         if not args.godot:
             raise ValueError("--godot is required for a campaign")
         if args.release_executable and args.trim_profile is not None:

@@ -1,0 +1,22 @@
+[
+  {
+    "file": "BlackOpsOne-Regular.ttf",
+    "url": "https://raw.githubusercontent.com/google/fonts/d50a0d29b/ofl/blackopsone/BlackOpsOne-Regular.ttf",
+    "sha256": "282a825b5f294377387e3969f765408157dbea8da0f5d0aae68c6bc704b145b3"
+  },
+  {
+    "file": "OFL-BlackOpsOne.txt",
+    "url": "https://raw.githubusercontent.com/google/fonts/d50a0d29b/ofl/blackopsone/OFL.txt",
+    "sha256": "f67ca4a200424868ee8fcd5464d7b35ac1cbf7723f6bfdbd19a8524689fab9a8"
+  },
+  {
+    "file": "usaf-roundel.svg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Roundel_of_the_USAF.svg",
+    "sha256": "53f36db12e6561364ed221e328245c464d4a7c1d668749a3320eca09ff1d868e"
+  },
+  {
+    "file": "usaf-roundel.png",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Roundel_of_the_USAF.svg/960px-Roundel_of_the_USAF.svg.png",
+    "sha256": "efe6aac7fa7f0dc7ab424063a7011d561770d75e861ac151baf0322785ef0771"
+  }
+]

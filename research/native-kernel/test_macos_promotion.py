@@ -287,6 +287,21 @@ class GeneratorTests(unittest.TestCase):
         self.assertEqual(marker["allowed_selections"], self.rows)
         self.assertNotIn("production_qualified", marker)
 
+    def test_custom_engine_selection_reaches_install_and_fleet_verifiers(self) -> None:
+        self.args.research_engine_sha256 = "a" * 64
+        self.args.research_engine_cli_version = promotion.ENGINE_POLICY.RESEARCH_CLI
+        self.args.research_engine_runtime_version = promotion.ENGINE_POLICY.RESEARCH_RUNTIME
+        self.args.research_engine_build_receipt = self.root / "build-editor.json"
+        self.args.research_engine_archive = self.root / "source.zip"
+        self.args.research_engine_patch = [self.root / "0001.patch"]
+        selection = promotion.ENGINE_POLICY.selection_from_args(self.args)
+        self.package.verified_mac_install = unittest.mock.Mock(return_value=self.installed)
+        self.fleet.snapshot = unittest.mock.Mock(return_value=self.guard)
+        self.generate()
+        self.assertEqual(self.package.verified_mac_install.call_count, 2)
+        self.assertEqual(self.package.verified_mac_install.call_args.args[2], selection)
+        self.assertTrue(all(call.args[0]["research_engine"] == selection for call in self.fleet.snapshot.call_args_list))
+
     def test_missing_required_pair_or_mismatched_project_receipt_refused(self) -> None:
         self.args.long_pair.pop()
         with self.assertRaises(promotion.AdmissionError):

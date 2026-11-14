@@ -250,13 +250,23 @@ int main() {
     auto temporal_generation = std::get<int64_t>(receipt.at("generation"));
     auto serial = std::get<int64_t>(receipt.at("serial"));
     assert(std::get<bool>(receipt.at("accepted")) && temporal_generation == 42 && serial == 1);
+    auto retains_guard_inputs = [&](const Dictionary &status) {
+        return std::get<int64_t>(status.at("generation")) == temporal_generation &&
+            std::get<int>(status.at("requested_mode")) == 4 && std::get<int>(status.at("configured_mode")) == 4 &&
+            std::get<bool>(status.at("render_buffers_available")) &&
+            std::get<String>(status.at("provider")) == "temporal" &&
+            std::get<String>(status.at("allocation")) == "created" &&
+            std::get<String>(status.at("submission")) == "enqueued" &&
+            std::get<String>(status.at("reset_gpu_completion")) == "unobserved" &&
+            std::get<int64_t>(status.at("reset_requested_serial")) == serial &&
+            std::get<int64_t>(status.at("temporal_attempts")) == std::get<int64_t>(receipt.at("reset_request_attempt"));
+    };
     auto frame_before = viewport.viewport_get_metalfx_frame_status({});
     viewport.viewport_set_metalfx_frame_requested({}, true);
     auto frame_on = viewport.viewport_get_metalfx_frame_status({});
     auto pending = viewport.viewport_get_metalfx_status({});
     assert(std::get<int64_t>(frame_on.at("generation")) == std::get<int64_t>(frame_before.at("generation")) + 1);
-    assert(std::get<int64_t>(pending.at("generation")) == temporal_generation);
-    assert(std::get<int64_t>(pending.at("reset_requested_serial")) == serial);
+    assert(retains_guard_inputs(pending));
     assert(std::get<int64_t>(pending.at("reset_encoded_serial")) == 0);
     MetalFXTemporalHistoryState::advance(history->submitted, uint64_t(serial));
     MetalFXTemporalHistoryState::advance(history->encoded, uint64_t(serial));
@@ -264,8 +274,7 @@ int main() {
     auto frame_off = viewport.viewport_get_metalfx_frame_status({});
     auto encoded = viewport.viewport_get_metalfx_status({});
     assert(std::get<int64_t>(frame_off.at("generation")) == std::get<int64_t>(frame_on.at("generation")) + 1);
-    assert(std::get<int64_t>(encoded.at("generation")) == temporal_generation);
-    assert(std::get<int64_t>(encoded.at("reset_requested_serial")) == serial);
+    assert(retains_guard_inputs(encoded));
     assert(std::get<int64_t>(encoded.at("reset_submitted_serial")) == serial);
     assert(std::get<int64_t>(encoded.at("reset_encoded_serial")) == serial);
     assert(buffers.get_metalfx_history_state() == history);

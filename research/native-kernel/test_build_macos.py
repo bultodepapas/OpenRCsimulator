@@ -205,6 +205,17 @@ class BuildPolicy(ScratchCase):
             with self.assertRaisesRegex(ValueError, "ARM64"):
                 mac.godot_identity(exe, lock)
 
+    def test_engine_display_uses_actual_build_label(self):
+        for cli, expected in (("4.8.beta2.official.cafc17a19", "4.8-beta2 (official)"),
+                              ("4.8.beta2.openrc_metalfx", "4.8-beta2 (openrc_metalfx)"),
+                              ("4.8.beta2.mono.testing.abcdef012", "4.8-beta2 (testing)"),
+                              ("4.7.2.stable.custom_build", "4.7.2-stable (custom_build)")):
+            with self.subTest(cli=cli):
+                self.assertEqual(mac._engine_display(cli), expected)
+        for value in ("4.8.beta2", "4.8.beta2..wrong", "unrelated"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                mac._engine_display(value)
+
 
 class MachOPolicy(ScratchCase):
     def test_undefined_symbols_accepts_actual_apple_names_and_bsd_columns(self):

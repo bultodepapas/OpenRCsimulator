@@ -1708,6 +1708,12 @@ class MacosBaseBoundaryEvidenceTests(unittest.TestCase):
         self.assertEqual(result["checked_log_sha256"], self.data["checked_run"]["log_sha256"])
         self.assertEqual(result["candidate_receipt_sha256"], campaign.sha256(self.candidate_path))
 
+    def test_custom_engine_selection_is_forwarded_to_base_evidence_verifier(self):
+        selection = {"sha256": "e" * 64, "cli_version": "4.8.beta2.openrc_metalfx"}
+        self.guard["research_engine"] = selection
+        campaign.validate_macos_base_boundary(self.guard)
+        self.assertEqual(self.mac.godot_identity.call_args.args, (Path(self.guard["godot"]), {}, selection))
+
     def test_missing_or_wrong_qualification_root_does_not_fall_back_to_tool_root(self):
         original = self.guard["qualification_root"]
         for path in (self.guard["tool_root"], str(campaign.ROOT), str(campaign.ROOT / "tmp"),

@@ -749,10 +749,15 @@ def _one_prefixed(command: list[str], option: str) -> str:
 
 
 def _engine_display(version: str) -> str:
-    if version == engine_policy.RESEARCH_CLI:
-        return engine_policy.RESEARCH_RUNTIME
-    release = version.split(".official.")[0].replace(".beta", "-beta").replace(".rc", "-rc")
-    return f"{release} (official)"
+    match = re.fullmatch(r"(\d+\.\d+(?:\.\d+)?)\.(dev\d*|alpha\d*|beta\d*|rc\d*|stable)"
+                         r"((?:\.[A-Za-z0-9_-]+)+)", version)
+    if match is None:
+        raise ValueError(f"Malformed Godot CLI version: {version!r}")
+    suffix = match.group(3).removeprefix(".").split(".")
+    if len(suffix) > 1 and re.fullmatch(r"[0-9a-f]{7,40}", suffix[-1]):
+        suffix.pop()  # Godot's optional Git revision is not part of the runtime display.
+    build = suffix[-1]
+    return f"{match.group(1)}-{match.group(2)} ({build})"
 
 
 def _check_oracle_identity(data: dict, result_path: Path, key: str, built: dict,

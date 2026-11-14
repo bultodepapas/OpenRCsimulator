@@ -555,7 +555,8 @@ class PreparedMacSourceTests(unittest.TestCase):
             report["machine"].update(os="macOS", architecture="arm64")
             report.update(experimental_native_macos=True, template_release=False, solver_identity_kind="source-tree-v1")
 
-            def run_case(candidate, *, requested=True, source=identity, backend="native", change_library=False):
+            def run_case(candidate, *, requested=True, source=identity, backend="native", change_library=False,
+                         engine_display=baseline.REQUIRED_GODOT_REPORT):
                 class Process:
                     returncode = 0
                     def __init__(self, command, **_kwargs):
@@ -569,11 +570,17 @@ class PreparedMacSourceTests(unittest.TestCase):
                                       aircraft_id=report["aircraft_id"], case_id="trim", observer=True,
                                       warmup_ticks=4, sample_ticks=5, timeout=5, physics_backend=backend,
                                       native_source_sha256="c" * 64, executable_sha256=engine_sha,
-                                      experimental_native_macos=requested, mac_source_identity=source)
+                                      experimental_native_macos=requested, mac_source_identity=source,
+                                      expected_engine_display=engine_display)
 
             accepted = run_case(report)
             self.assertTrue(accepted["accepted"], accepted["failures"])
             self.assertIn("--experimental-native-macos=true", accepted["command"])
+            custom = copy.deepcopy(report)
+            custom["machine"]["godot"] = "4.8-beta2 (openrc_metalfx)"
+            self.assertFalse(run_case(custom)["accepted"])
+            self.assertTrue(run_case(custom, engine_display=custom["machine"]["godot"])["accepted"])
+            self.assertFalse(run_case(report, engine_display=custom["machine"]["godot"])["accepted"])
             self.assertFalse(run_case(dict(report, experimental_native_macos=False))["accepted"])
             self.assertFalse(run_case(report, source=None)["accepted"])
             fallback = dict(report, backend={"requested": "native", "actual": {"backend": "gdscript_reference"},
