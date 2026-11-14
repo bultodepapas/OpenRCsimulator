@@ -50,10 +50,10 @@ func _run() -> void:
 	InputMap.load_from_project_settings()
 	var store := Store.new("user://external-audit-%d/profiles.cfg" % Time.get_ticks_usec())
 	var first := Profile.defaults()
-	first.association = {serial_number = "A"}
+	first.association = {"serial_number": "A"}
 	first = store.save_profile(first).profile
 	var second := Profile.defaults()
-	second.association = {serial_number = "A"}
+	second.association = {"serial_number": "A"}
 	second = store.save_profile(second).profile
 	var repairable := Profile.defaults()
 	repairable.roll.range_kind = "absolute"
@@ -92,7 +92,7 @@ func _run() -> void:
 	for kind: String in ["gamepad", "radio"]:
 		var original := Profile.defaults(kind, "mode2" if kind == "gamepad" else "radio_custom")
 		original.configured = true
-		original.association = {serial_number = "A-" + kind}
+		original.association = {"serial_number": "A-" + kind}
 		original = store.save_profile(original).profile
 		var source := device(5, "A-" + kind, kind)
 		source.profile_id = original.profile_id
@@ -127,7 +127,7 @@ func _run() -> void:
 	await process_frame
 	var radio := Profile.defaults("radio", "radio_custom")
 	radio.configured = true
-	radio.aux.flaps = {type = "switch", buttons = [20, 21], invert = false}
+	radio["aux"]["flaps"] = {"type": "switch", "buttons": [20, 21], "invert": false}
 	setup._set_draft_profile(radio)
 	setup._aux_controls.flaps.switch_capture_buttons[0].disabled = false
 	setup._start_aux_capture("flaps", 0, setup._aux_controls.flaps.switch_capture_buttons[0])
@@ -164,8 +164,8 @@ func _run() -> void:
 		setup._assistant.cancel()
 		await process_frame
 	# Keep several measured conflicts reviewable and resolve them one at a time.
-	radio.actions = {camera_cycle = {type = "axis", axis = 5, sign = 1, threshold = 0.65},
-		camera_previous = {type = "axis", axis = 6, sign = 1, threshold = 0.65}}
+	radio.actions = {"camera_cycle": {"type": "axis", "axis": 5, "sign": 1, "threshold": 0.65},
+		"camera_previous": {"type": "axis", "axis": 6, "sign": 1, "threshold": 0.65}}
 	setup._set_draft_profile(radio)
 	var measured: Dictionary = preload("res://input/rc_input.gd").DEFAULT_PROFILE.duplicate(true)
 	measured.roll.axis = 5
@@ -176,6 +176,20 @@ func _run() -> void:
 	check("first explicit repair keeps the remaining conflict editable", setup.current_profile().actions.camera_cycle.type == "unbound" and setup.current_profile().roll.axis == 5)
 	setup._clear_action_binding("camera_previous")
 	check("all repairs retain measurements and produce a valid profile", Profile.validate(setup._profile_candidate()).ok and setup.current_profile().pitch.axis == 6)
+	check("repaired calibration saves without closing", setup._save_profile(false))
+	var saved_picker_id := setup.profile_picker.get_selected_id()
+	var reconnected := device(5, "Remap", "radio")
+	reconnected.profile_id = setup.current_profile().profile_id
+	registry.update_devices([])
+	registry.update_devices([reconnected])
+	setup._on_profile_selected(setup.profile_picker.get_item_index(saved_picker_id))
+	setup.profile_name_edit.text = "Reviewed after reconnect"
+	check("saved calibration permits an edit after explicit same-device review", setup._save_profile(false))
+	check("new unsaved calibration retains its own connection", setup.apply_calibration_draft(measured, 5, registry.connection_generation(5)))
+	registry.update_devices([])
+	registry.update_devices([reconnected])
+	setup._on_profile_selected(setup.profile_picker.get_item_index(saved_picker_id))
+	check("explicit profile review cannot renew unsaved calibration measurements", not setup._save_profile(false))
 	setup._calibration_stick_mode = 1
 	setup._set_draft_profile(Profile.defaults("radio", "radio_custom"))
 	check("a different profile does not inherit the previous calibration mode", setup._calibration_stick_mode == 0)

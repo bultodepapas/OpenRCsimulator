@@ -36,7 +36,8 @@ def parser():
     submit.add_argument("--platform", default=platform.system().lower())
     submit.add_argument("--request-id", default=None)
     submit.add_argument("--request-secret", default=None)
-    sub.add_parser("resubmit").add_argument("receipt", type=Path)
+    for name in ("resubmit", "recover", "cancel-submission"):
+        sub.add_parser(name).add_argument("receipt", type=Path)
     submit.add_argument("--options", default="{}", help="JSON preset options")
     for name in ("hosts", "list"):
         sub.add_parser(name).add_argument("--json", action="store_true")
@@ -80,8 +81,16 @@ def main(argv=None):
         receipt = submission_receipt(state_root(), request)
         print(f"testqueue submission receipt: {receipt}", file=sys.stderr)
         value = rpc("submit", **request)
-    elif args.command == "resubmit":
-        value = rpc("submit", **json.loads(args.receipt.read_text(encoding="utf-8")))
+    elif args.command in {"resubmit", "recover", "cancel-submission"}:
+        request = json.loads(args.receipt.read_text(encoding="utf-8"))
+        identity = {key: request[key] for key in ("request_id", "request_secret")}
+        if args.command == "cancel-submission":
+            value = rpc("cancel_submission", **identity)
+        else:
+            value = rpc("recover", **identity)
+            if value is None:
+                value = (rpc("submit", **request) if args.command == "resubmit"
+                         else {"state": "SUBMISSION_UNCONFIRMED", "ready": False})
     elif args.command == "wait":
         value = wait(args.job, timeout=args.timeout)
     elif args.command in {"status", "result"}:

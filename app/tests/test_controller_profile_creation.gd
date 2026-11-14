@@ -182,6 +182,9 @@ func check_calibration_context(original: Dictionary) -> void:
 		"connected": true, "profile_id": original.profile_id}]
 	var setup := open_setup(registry)
 	await process_frame
+	# This case changes flight generations; keep the menu on keyboard so its
+	# independent connection lease does not mask calibration-context behavior.
+	setup._on_ui_device_selected(setup.ui_device_picker.get_item_index(-1))
 	select_profile(setup, -1)
 	var calibration := Profile.defaults("radio", "radio_custom")
 	check("New radio accepts calibration into its draft", setup.apply_calibration_draft(calibration, 41, registry.generation))
@@ -196,7 +199,9 @@ func check_calibration_context(original: Dictionary) -> void:
 	check("same-context update retains calibration connection guard", not setup._save_profile(false))
 	select_profile(setup, -1)
 	check("next New does not inherit stale calibration provenance", setup.current_profile().profile_id != calibrated_id and not setup._save_profile(false))
-	check("next New needs and accepts its own current calibration", setup.apply_calibration_draft(calibration, 41, registry.generation) and setup._save_profile(false))
+	var current_calibration := setup.apply_calibration_draft(calibration, 41, registry.generation)
+	var current_saved := setup._save_profile(false) if current_calibration else false
+	check("next New needs and accepts its own current calibration: " + setup.status_label.text, current_calibration and current_saved)
 	check("radio creation still leaves original profile unchanged", stored(original.profile_id) == original)
 	setup.free()
 	await process_frame

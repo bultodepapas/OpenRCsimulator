@@ -94,6 +94,21 @@ Submission writes a private receipt **before** the RPC. After a lost response,
 `testctl resubmit <receipt.json>` repeats the same request, secret and snapshot.
 Reusing an ID with different inputs or credentials is refused, and the original
 receipt survives. Status/result never return owner or inherited secrets.
+`testctl recover <receipt.json>` retrieves an existing handle without verifying
+the snapshot or creating a job. `testctl cancel-submission <receipt.json>` cancels
+that request even if the first submit is still in flight. Resubmit tries recovery
+first, so an already accepted job remains recoverable after its inputs disappear.
+
+MCP retains an unresolved submission receipt before sending it. If the reply is
+lost, retrying the same `sim_launch` reuses that request; different launch inputs
+are refused until it is resolved or stopped. `sim_session_status` recovers an existing
+handle without rehashing inputs or creating a session. `sim_stop` records durable
+cancellation by request ID even before acceptance, so a delayed submit cannot start
+after stop. An unconfirmed status remains explicit when the authority has no job yet.
+Preserve the printed receipt if the client exits; another client can recover it with
+`testctl resubmit` and use the returned owning handle. The authority upgrades schema
+1 to 2 in place, preserving jobs/claims; older workers refuse schema 2. Drain before
+upgrading and preserve the existing authority root and database.
 
 `wait` returns immediately for `UNKNOWN` so callers can see the required reconciliation.
 Timing out or a client disconnecting does not cancel a job. Finite execution
@@ -158,6 +173,13 @@ claims; direct/unwrapped research launchers and unrelated host applications can 
 compete. Prepare snapshots before a timing campaign and keep that host otherwise
 quiet. Per-copy disk checks are not atomic reservations across concurrent copies.
 Increasing slot counts is an opt-in capacity setting, not hardware qualification.
+
+The named research launchers `session_baseline.py` and `run_visibility_capture.py`
+now refuse standalone execution on enrolled hosts. They require both an exclusive
+inherited grant and their actual headless/rendered scope, including engine identity
+probes. They have no standalone queue adapter. Other unwrapped research tools remain
+outside this boundary. GOD TEST `resume` also reports its unsupported standalone
+state before reading retained suites or launching retries on an enrolled host.
 
 ## Recovery and evidence
 

@@ -6,6 +6,7 @@ the host's normal temporary volume is constrained.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -13,6 +14,7 @@ import runpy
 import subprocess
 import sys
 import tempfile
+import threading
 import types
 import unittest
 from unittest import mock
@@ -80,6 +82,53 @@ class ContractFixture(unittest.TestCase):
             self.worker.store.submit(visible["request_id"], visible["payload"], "b" * 32)
         with self.assertRaises(ValueError):
             self.worker.store.submit(visible["request_id"], {"preset": "checked"}, "a" * 32)
+
+    def test_recovery_does_not_revalidate_missing_inputs(self):
+        snapshot = self.base / "recover-snapshot"
+        snapshots.capture(self.source, snapshot, scope=("app", "tools"))
+        request = dict(preset="debug-session", options={}, owner="fixture", source=str(self.source),
+                       snapshot=str(snapshot), request_id="recover", request_secret="s" * 32)
+        accepted = self._call("submit", **request)
+        (snapshot / "manifest.json").unlink()
+        self.assertEqual(self._call("recover", request_id="recover", request_secret="s" * 32),
+                         {key: accepted[key] for key in ("job", "handle")})
+
+    def test_cancel_while_original_submission_is_still_verifying(self):
+        snapshot = self.base / "late-snapshot"
+        snapshots.capture(self.source, snapshot, scope=("app", "tools"))
+        request = dict(preset="debug-session", options={}, owner="fixture", source=str(self.source),
+                       snapshot=str(snapshot), request_id="late", request_secret="s" * 32)
+        verifying, release = threading.Event(), threading.Event()
+        original = snapshots.verify
+        results, errors = [], []
+
+        def slow_verify(*args, **kwargs):
+            verifying.set()
+            if not release.wait(5):
+                raise RuntimeError("fixture verification was not released")
+            return original(*args, **kwargs)
+
+        def submit():
+            try:
+                results.append(self._call("submit", **request))
+            except Exception as error:
+                errors.append(error)
+
+        with mock.patch.object(snapshots, "verify", side_effect=slow_verify):
+            thread = threading.Thread(target=submit)
+            thread.start()
+            try:
+                self.assertTrue(verifying.wait(5))
+                canceled = self._call("cancel_submission", request_id="late", request_secret="s" * 32)
+                self.assertEqual(canceled, {"canceled": True})
+            finally:
+                release.set()
+                thread.join(10)
+        self.assertFalse(thread.is_alive())
+        self.assertEqual(errors, [])
+        status = self._call("status", job=results[0]["job"])
+        self.assertEqual(status["outcome"], "CANCELED")
+        self.assertEqual(status["attempts"], [])
 
     def test_queued_cancel_has_explicit_terminal_outcome_and_evidence(self):
         submitted = self._queue()
@@ -322,6 +371,35 @@ class ContractFixture(unittest.TestCase):
         self.assertGreaterEqual(len(receipt.get("request_secret", "")), 32)
         self.assertEqual(receipt["request_id"], sent["request_id"])
         self.assertEqual(receipt["request_secret"], sent["request_secret"])
+
+    def test_cli_receipt_recovery_and_cancel_do_not_create_jobs(self):
+        receipt = self.base / "receipt.json"
+        receipt.write_text(json.dumps({"request_id": "original", "request_secret": "s" * 32}), encoding="utf-8")
+        for command, operation, result in (("recover", "recover", None),
+                                           ("cancel-submission", "cancel_submission", {"canceled": True})):
+            with self.subTest(command=command), mock.patch.object(testctl, "rpc", return_value=result) as rpc, \
+                    mock.patch("sys.stdout", new_callable=io.StringIO):
+                self.assertEqual(testctl.main([command, str(receipt)]), 0)
+                rpc.assert_called_once_with(operation, request_id="original", request_secret="s" * 32)
+
+    def test_cli_resubmit_recovers_without_reopening_snapshot(self):
+        receipt = self.base / "receipt.json"
+        receipt.write_text(json.dumps({"request_id": "original", "request_secret": "s" * 32,
+                                       "snapshot": "absent"}), encoding="utf-8")
+        accepted = {"job": "original-job", "handle": "original-job:secret"}
+        with mock.patch.object(testctl, "rpc", return_value=accepted) as rpc, \
+                mock.patch("sys.stdout", new_callable=io.StringIO):
+            self.assertEqual(testctl.main(["resubmit", str(receipt)]), 0)
+            rpc.assert_called_once_with("recover", request_id="original", request_secret="s" * 32)
+
+    def test_cli_resubmit_missing_request_reuses_exact_receipt(self):
+        receipt = self.base / "receipt.json"
+        request = {"request_id": "original", "request_secret": "s" * 32, "snapshot": "unchanged"}
+        receipt.write_text(json.dumps(request), encoding="utf-8")
+        with mock.patch.object(testctl, "rpc", side_effect=[None, {"job": "owned"}]) as rpc, \
+                mock.patch("sys.stdout", new_callable=io.StringIO):
+            self.assertEqual(testctl.main(["resubmit", str(receipt)]), 0)
+            self.assertEqual(rpc.call_args_list[-1], mock.call("submit", **request))
 
     def test_cli_retry_does_not_replace_original_receipt_or_escape_root(self):
         def refuse(operation, **kwargs):

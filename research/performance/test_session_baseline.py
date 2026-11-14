@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import copy
+import contextlib
+import io
 import hashlib
 import tempfile
 import unittest
@@ -1784,6 +1786,51 @@ class TrimProfileTests(unittest.TestCase):
             self.assertEqual(baseline.main(["--compare-campaigns", "one", "two", "--out", "out", "--trim-profile", "reference"]), 1)
             campaign.assert_not_called()
             compare.assert_not_called()
+
+
+class LaunchAdmissionTests(unittest.TestCase):
+    def test_standalone_campaign_refuses_before_preparation_or_launch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "uncreated"
+            with patch.object(baseline.admission, "enabled", return_value=True), \
+                    patch.object(baseline.admission, "inherited", return_value=False), \
+                    patch.object(baseline, "acquire_lock") as lock, \
+                    patch.object(baseline.subprocess, "Popen") as launch, contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(baseline.main(["--godot", "missing-engine", "--out", str(output)]), 1)
+                lock.assert_not_called()
+                launch.assert_not_called()
+                self.assertFalse(output.exists())
+
+    def test_engine_inspection_and_direct_probe_cannot_bypass_admission(self):
+        with patch.object(baseline.admission, "enabled", return_value=True), \
+                patch.object(baseline.admission, "inherited", return_value=False), \
+                patch.object(baseline.subprocess, "Popen") as launch, patch.object(baseline.subprocess, "run") as run:
+            with self.assertRaisesRegex(ValueError, "exclusive inherited attempt"):
+                baseline.inspect_godot(Path("missing-engine"), 1)
+            with self.assertRaisesRegex(ValueError, "exclusive inherited attempt"):
+                baseline._run_probe(godot=Path("missing-engine"), app_dir=Path("app"), probe=Path("probe.gd"),
+                                    output_json=Path("absent.json"), log_path=Path("absent.log"),
+                                    aircraft_id="fixture", case_id="trim", observer=False, warmup_ticks=0,
+                                    sample_ticks=1, timeout=1, physics_backend="gdscript_reference", native_source_sha256="")
+            launch.assert_not_called()
+            run.assert_not_called()
+
+    def test_visibility_entry_refuses_without_creating_output(self):
+        try:
+            from . import run_visibility_capture as visibility
+        except ImportError:
+            import run_visibility_capture as visibility
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "uncreated"
+            with patch.object(visibility.admission, "enabled", return_value=True), \
+                    patch.object(visibility.admission, "inherited", return_value=False) as inherited, \
+                    patch.object(visibility.subprocess, "run") as launch:
+                with self.assertRaisesRegex(ValueError, "exclusive inherited attempt"):
+                    visibility.main(["--godot", "missing-engine", "--app", "missing-app", "--out", str(output),
+                                     "--source-commit", "a" * 40])
+                inherited.assert_called_once_with("rendered")
+                launch.assert_not_called()
+                self.assertFalse(output.exists())
 
 
 if __name__ == "__main__":

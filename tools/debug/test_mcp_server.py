@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import io
+import contextlib
 import json
 import os
 import sys
@@ -207,10 +208,10 @@ class McpServerTests(unittest.TestCase):
             self.assertIn("sim_session_status", result["content"][0]["text"])
 
     def test_lost_submit_reply_reuses_owned_job_without_recapturing(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        with tempfile.TemporaryDirectory() as temporary, contextlib.ExitStack() as cleanup:
             root = Path(temporary)
             store = Store(root)
-            self.addCleanup(store.db.close)
+            cleanup.callback(store.db.close)
             submitted = []
 
             def rpc(operation, **request):
@@ -230,6 +231,7 @@ class McpServerTests(unittest.TestCase):
                     patch.object(debugctl.admission, "enabled", return_value=True), \
                     patch.object(debugctl.admission, "inherited", return_value=False), \
                     patch.object(integration, "state_root", return_value=root), \
+                    patch.object(integration.getpass, "getuser", return_value="Fixture"), \
                     patch.object(integration, "rpc", side_effect=rpc), \
                     patch("tools.testqueue.snapshots.capture") as capture, \
                     patch.object(integration, "wait", return_value={"state": "QUEUED"}):
@@ -248,13 +250,12 @@ class McpServerTests(unittest.TestCase):
                 self.assertNotIn("OPENRC_TESTQUEUE_SUBMISSION", os.environ)
                 capture.assert_called_once()
                 self.assertEqual(len(submitted), 1)
-            store.db.close()
 
     def test_stop_unconfirmed_submission_never_creates_a_session(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        with tempfile.TemporaryDirectory() as temporary, contextlib.ExitStack() as cleanup:
             root = Path(temporary)
             store = Store(root)
-            self.addCleanup(store.db.close)
+            cleanup.callback(store.db.close)
             submitted = []
 
             def rpc(operation, **request):
@@ -273,6 +274,7 @@ class McpServerTests(unittest.TestCase):
                     patch.object(debugctl.admission, "enabled", return_value=True), \
                     patch.object(debugctl.admission, "inherited", return_value=False), \
                     patch.object(integration, "state_root", return_value=root), \
+                    patch.object(integration.getpass, "getuser", return_value="Fixture"), \
                     patch.object(integration, "rpc", side_effect=rpc), patch("tools.testqueue.snapshots.capture"):
                 self.assertTrue(self.rpc("tools/call", {"name": "sim_launch"})["result"]["isError"])
                 status = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
@@ -288,7 +290,6 @@ class McpServerTests(unittest.TestCase):
                 request = submitted[0]
                 late = store.submit(request["request_id"], {}, request["request_secret"])
                 self.assertEqual(store.get(late["job"])["outcome"], "CANCELED")
-            store.db.close()
 
     def test_screenshots_taken_in_the_same_second_keep_distinct_files(self) -> None:
         paths = []

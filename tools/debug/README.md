@@ -10,6 +10,11 @@ including headless ones, because their controls can start profiling or interacti
 work. For independent aircraft stills, use the queue's `aircraft-screenshot` preset.
 The standalone behavior below applies to unenrolled/private runners.
 
+If a launch reply is lost before a handle arrives, MCP retains the recovery receipt.
+Retry the same launch to recover it, inspect it with `sim_session_status`, or cancel
+it with `sim_stop`. Status never creates a replacement session; stop also blocks a
+delayed original submit. Different launch inputs are refused while unresolved.
+
 Drive a **running** app from the shell, with no mouse and no editor. You can read its state and live log, use every
 menu, setting, shortcut and controller action, fly with stick values or drive the RC truck, pause and step exact
 physics ticks, sample telemetry, take screenshots, record flight logs and evaluate expressions. For batch checks of

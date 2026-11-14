@@ -2537,6 +2537,15 @@ func _on_profile_selected(index: int) -> void:
 		if profile_store != null and profile_store.has_method("_association_matches") \
 				and profile_store._association_matches(_device_for_id(_draft_flight_device_id), profile.get("association", {})):
 			_draft_connections[_draft_context_key] = _connection_lease(_draft_flight_device_id)
+			var origin: Dictionary = _menu_verification_origins.get(str(profile.profile_id), {})
+			var candidate := _profile_candidate()
+			if not origin.is_empty() and not _calibration_connection_matches(int(origin.id), int(origin.generation)) \
+					and RadioMenu.is_verified(profile) \
+					and RadioMenu.mapping_fingerprint(profile) == RadioMenu.mapping_fingerprint(candidate) \
+					and RadioMenu.action_fingerprint(profile) == RadioMenu.action_fingerprint(candidate):
+				# A committed proof survives explicit review of its saved identity.
+				# It cannot seed current input; the new connection must observe OFF.
+				_menu_verification_origins.erase(str(profile.profile_id))
 
 
 func _update_profile_kind_picker() -> void:
@@ -4045,11 +4054,9 @@ func _save_profile(close_on_success := true) -> bool:
 		_set_status(tr("Profile was not saved: %s") % str(result.get("error", tr("storage error"))), true)
 		return false
 	var saved: Dictionary = result.get("profile", candidate).duplicate(true)
-	# ConfigFile canonicalizes floats. Carry the same successful measurements to
-	# their committed representation only after storage and runtime both succeed.
-	if not calibration_origin.is_empty() and calibration_origin.get("mapping", {}) == _radio_mapping(candidate):
-		calibration_origin["mapping"] = _radio_mapping(saved)
-		_calibration_origins[_draft_context_key] = calibration_origin
+	# The committed mapping is now verified by storage, rather than the draft's
+	# connection. Unsaved contexts retain their original calibration lease.
+	_calibration_origins.erase(_draft_context_key)
 	if not menu_origin.is_empty():
 		menu_origin["mapping"] = RadioMenu.mapping_fingerprint(saved)
 		menu_origin["actions"] = RadioMenu.action_fingerprint(saved)
@@ -4064,9 +4071,6 @@ func _save_profile(close_on_success := true) -> bool:
 		_draft_connections[saved_context] = _draft_connections.get(_draft_context_key, {})
 		_draft_connections.erase(_draft_context_key)
 		_clean_snapshots.erase(_draft_context_key)
-		if _calibration_origins.has(_draft_context_key):
-			_calibration_origins[saved_context] = _calibration_origins[_draft_context_key]
-			_calibration_origins.erase(_draft_context_key)
 		_draft_context_key = saved_context
 	_set_draft_profile(saved, _draft_context_key)
 	_drafts_by_context[_draft_context_key] = saved.duplicate(true)

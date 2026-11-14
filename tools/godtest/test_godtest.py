@@ -37,6 +37,15 @@ def artifacts(directory: Path, *, rendered=True, complete=True):
 
 
 class ManifestTests(unittest.TestCase):
+    def test_enrolled_resume_is_refused_before_reading_or_retrying_cases(self):
+        import godtest
+        from tools.testqueue import common
+        with mock.patch.object(common, "enabled", return_value=True), \
+                mock.patch.object(common, "inherited", return_value=False), \
+                mock.patch.object(godtest, "resume_suite") as resume:
+            self.assertEqual(godtest.main(["resume", "missing-suite", "--out", "unused"]), 2)
+            resume.assert_not_called()
+
     def test_rejects_nonfinite_bool_and_unknown_fields(self):
         for overrides in ({"timeout_s": float("nan")}, {"cycles": True}, {"surprise": 1}, {"seed": -1}, {"resolution": [720, 1280]}, {"phases": ["pretend"]}, {"id": "../outside"}, {"landscape": "green_paradise", "phases": ["flag"]}):
             with self.subTest(overrides=overrides), self.assertRaises(ValueError):

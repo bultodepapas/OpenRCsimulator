@@ -203,6 +203,17 @@ func _sparse_identity(label: String, observation: Dictionary, ambiguous := false
 		and not screen.menu_verification_lease(screen.current_profile()).is_empty())
 	check(label + ": repeat Save preserves proof and preference", screen._save_profile(false) \
 		and Menu.is_verified(screen.current_profile()) and service.store.load_all().ui_preference == preference, screen.status_label.text)
+	if label == "serial_only":
+		observations.clear()
+		service.refresh()
+		observations.append(observation.duplicate(true))
+		service.refresh()
+		screen._on_profile_selected(screen.profile_picker.selected)
+		screen._on_ui_device_selected(screen.ui_device_picker.get_item_index(RADIO_A))
+		check("reviewed saved menu proof cannot seed a new connection", screen.menu_seed_samples(screen._profile_candidate()).is_empty())
+		screen.profile_name_edit.text = "Reviewed after reconnect"
+		check("saved menu proof permits explicit same-device review after reconnect", screen._save_profile(false) \
+			and Menu.is_verified(screen.current_profile()) and service.store.load_all().ui_preference == preference, screen.status_label.text)
 	if label == "name_only":
 		var saved_a := screen.current_profile()
 		observations.append({"id": RADIO_B, "name": "Different name-only transmitter", "kind": "radio"})

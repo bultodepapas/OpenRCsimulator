@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 import subprocess
@@ -23,7 +24,7 @@ class SnapshotTests(unittest.TestCase):
         expected = path.lstat()
         with path.open("rb") as stream:
             self.assertEqual(snapshots._signature(expected), snapshots._signature(os.fstat(stream.fileno())))
-        self.assertEqual(snapshots._read_hash(path, expected), __import__("hashlib").sha256(b"stable bytes").hexdigest())
+        self.assertEqual(snapshots._read_hash(path, expected), hashlib.sha256(b"stable bytes").hexdigest())
 
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory(prefix="openrc-snapshot-test-")

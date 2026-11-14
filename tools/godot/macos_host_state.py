@@ -243,8 +243,12 @@ def validate_stream(data: bytes, capture_id: str, game_pid: int) -> dict:
 
 
 def _stat_stamp(value: os.stat_result) -> tuple[int, ...]:
+    # Windows Python 3.12 path and handle queries disagree on deprecated ctime;
+    # birth time is consistent. Darwin/POSIX retain metadata-change time.
+    identity_time = (getattr(value, "st_birthtime_ns", value.st_ctime_ns)
+                     if os.name == "nt" else value.st_ctime_ns)
     return (value.st_dev, value.st_ino, value.st_mode, value.st_size,
-            value.st_mtime_ns, value.st_ctime_ns)
+            value.st_mtime_ns, identity_time)
 
 
 def _file_identity(path: Path) -> tuple[str, tuple[int, ...]]:

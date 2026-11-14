@@ -33,6 +33,60 @@ two real studio captures still need qualification before increasing capture slot
 Client-side snapshot creation/verification, coordinated disk reservations and direct
 research-launcher enrollment remain follow-up work. No hardware speedup is claimed.
 
+## Windows audit follow-up, 14 November 2026
+
+Reviewed the [Windows queue/MCP audit](https://github.com/bultodepapas/OpenRCsimulator/blob/audit/windows-testqueue-20261114/docs/research/testqueue/2026-11-14-windows-queue-mcp-audit.md)
+and reused its implementation commit `6913c918e2664d01818526e3162e71e761263796`.
+The eight confirmed findings and legacy quarantine/studio dependency hardening are
+integrated. Additional independent review found a lost-submit-reply ownership gap:
+MCP now retains its receipt before RPC, recovers the original handle without input
+verification, and replays only the same launch request. Status never creates a job.
+Stop records cancellation by request identity before a delayed original submit can
+become dispatchable. Schema 2 preserves these cancellations across restart; migration
+retains version-1 jobs and claims. The CLI exposes recovery and submission cancellation.
+
+Native Python 3.12 also exposed Windows path/handle `ctime` disagreement that rejected
+unchanged snapshots and host-helper identities. Both comparisons use Windows birth
+time while preserving POSIX change time and the remaining file/hash checks. The two
+research launchers named in R03 now require exclusive inherited admission with their
+actual headless/rendered scope; standalone adapters remain unavailable. GOD TEST
+resume reports its unsupported enrolled standalone state before inspecting old suites.
+
+Verification used Python **3.12.12 on native Windows**, private fixture authorities
+and a fresh shared-object clone with the Windows workflow's sparse inputs plus the
+working patch over `c66df1efc`. Another session committed the production edits during
+this work; the frozen verification copy excludes unrelated concurrent controller edits.
+
+| Suite | Tests | Passed | Skipped |
+| --- | ---: | ---: | ---: |
+| Queue and Windows process containment | 106 | 103 | 3 |
+| Debug/MCP | 107 | 106 | 1 |
+| Checked runner | 22 | 21 | 1 |
+| Resource runner | 14 | 14 | 0 |
+| GOD TEST fixtures | 18 | 18 | 0 |
+| Session baseline/research admission | 64 | 64 | 0 |
+| **Total** | **331** | **326** | **5** |
+
+All suites passed. Skips cover POSIX-only fixtures and opt-in real-engine/desktop
+campaigns. Checked-runner process teardown needed execution outside the tool sandbox,
+which denied `taskkill` on its own child fixtures; the native run passed without a
+cleanup implementation change. Raw logs and the frozen candidate patch are retained
+under ignored `tmp/testqueue-audit-fix/` (`sparse-*-windows.log`, `verification.patch`).
+Shell syntax, workflow YAML parsing, 26 Python parse checks, new local document links
+and whitespace checks passed. The Windows workflow includes all six suites and pins
+the tested Python 3.12.12. No hosted run or real simulator/GPU result is claimed.
+
+The five local-CI shell fixtures also passed under WSL Ubuntu/Python 3.12.3 from a
+Linux-line-ending export of the tested shell/queue sources at `c66df1efc`; the mounted
+Windows checkout's CRLF scripts cannot represent a Linux CI checkout. Their retained
+log is `tmp/testqueue-audit-fix/local-ci-wsl.log`. Combined: **336 tests, 331 passed,
+5 skipped, no failures**. Repeated diagnostic runs are not added to this total.
+
+R01 preparation outside claims, R02 volume reservations, general unwrapped launchers,
+request-scoped MCP cancellation and the audit's other operational/hardware gates
+remain open. Keep capture capacity at one until the actual parallel 1080p campaign
+is qualified. Software fixtures establish no physical validation or measured speedup.
+
 The native release gate requires five independent worktrees/clients, actual simulator
 lifetime exclusion, nested GOD TEST/checked flows, worker crash/cancel recovery,
 unmanaged-session preservation and complete evidence on the supported Windows desktop.

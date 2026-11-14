@@ -4,6 +4,11 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+On an enrolled shared host, `session_baseline.py` and `run_visibility_capture.py`
+require an exclusive inherited test-queue attempt with headless and rendered scope,
+respectively. Standalone admission adapters are unavailable. See the
+[host admission contract](../../tools/testqueue/README.md#parallel-and-exclusive-admission).
+
 `controller_voice_probe.gd` screens the complete binding resolver and engine-voice
 renderer against explicit historical source files. Retain `git show <revision>:app/input/controller_actions.gd`
 and `git show <revision>:app/render/engine_voice.gd` as `.gd` files outside `app/`,
