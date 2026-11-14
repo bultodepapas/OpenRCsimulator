@@ -6,6 +6,7 @@ extends SceneTree
 ## ids and the shipped Corsair is checked as a one-paint aircraft. F4U-20: g2.2 ships all thirteen schemes.
 
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const VehiclePaint := preload("res://render/vehicle_paint.gd")
 const Imported := preload("res://aircraft/imported_model.gd")
 const Manifest := preload("res://aircraft/model_manifest.gd")
 const Registry := preload("res://aircraft/model_registry.gd")
@@ -121,7 +122,15 @@ func _test_manifest_contract(manifest: Dictionary) -> void:
 	var choices: Array = AirplaneBuilder.livery_choices(CORSAIR)
 	_check("menus list every scheme with the author's names", choices.size() == ORDER.size() and choices[0].label == "Naval 308 — Midnight"
 		and choices.back().label == "Carbon 12 / Aero Sport", str(choices))
-	_check("single-paint families expose their stock choice", AirplaneBuilder.livery_choices(STIK).size() == 1 and AirplaneBuilder.livery_choices("xcell-60-research").size() == 1)
+	_check("single-paint families expose their stock choice", AirplaneBuilder.livery_choices(STIK).size() == 1)
+	var heli_choices: Array = AirplaneBuilder.livery_choices("xcell-60-research")
+	var heli_stock: Array = VehiclePaint.choices("xcell-60-research")
+	_check("the HX-700 lists its stock paints, default first, then any custom kits",
+		heli_stock.size() >= 2 and heli_choices.size() >= heli_stock.size() and heli_choices[0].id == ""
+		and heli_choices.slice(0, heli_stock.size()) == heli_stock, str(heli_choices))
+	_check("an HX-700 stock paint resolves; a stale one is the default paint",
+		AirplaneBuilder.resolve_livery("xcell-60-research", str(heli_stock[1].id)) == str(heli_stock[1].id)
+		and AirplaneBuilder.resolve_livery("xcell-60-research", "retired") == "")
 	_check("resolve: a non-default scheme stays, default and stale ones are the default paint",
 		AirplaneBuilder.resolve_livery(CORSAIR, "scarlet") == "scarlet" and AirplaneBuilder.resolve_livery(CORSAIR, "midnight") == ""
 		and AirplaneBuilder.resolve_livery(CORSAIR, "retired") == "" and AirplaneBuilder.resolve_livery(STIK, "scarlet") == "")

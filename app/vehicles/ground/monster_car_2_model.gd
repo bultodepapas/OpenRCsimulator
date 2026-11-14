@@ -3,6 +3,7 @@
 extends RefCounted
 
 const Frames = preload("res://render/frames.gd")
+const VehiclePaint = preload("res://render/vehicle_paint.gd")
 const SCENE := "res://assets/vehicles/monster-car-2/monster_truck_nitro_1.glb"
 const RIG_MANIFEST := "res://assets/vehicles/monster-car-2/visual_rig.json"
 const RIG_BINARY := "res://assets/vehicles/monster-car-2/visual_rig.bin"
@@ -30,7 +31,8 @@ class TrackSampler extends RefCounted:
 	var values := PackedFloat32Array()
 
 
-static func build() -> Dictionary:
+## `skin` is a stock paint id from data/vehicle_paints.json ("" or unknown = the delivered livery).
+static func build(skin := "") -> Dictionary:
 	var packed := load(SCENE) as PackedScene
 	if packed == null:
 		return {"ok": false, "error": "Monster Car 2 GLB resource is unavailable"}
@@ -169,8 +171,11 @@ static func build() -> Dictionary:
 		root.free()
 		return {"ok": false, "error": "Monster Car 2 exhaust position metadata is malformed"}
 	var cg_source := _source_cg_offsets()
+	# Paint before the lights, damage and grime layers copy the body materials.
+	var paint: Dictionary = VehiclePaint.apply(root, "monster-car-2", skin)
 	var visual := {
 		"ok": true,
+		"skin": str(paint.get("skin", "")),
 		"error": "",
 		"root": root,
 		"nodes": nodes,

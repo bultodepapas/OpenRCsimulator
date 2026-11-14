@@ -14,6 +14,7 @@ const TimberVisualLighting := preload("res://aircraft/timber_visual_lighting.gd"
 const TimberVisualDetails := preload("res://aircraft/timber_visual_details.gd")
 const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
+const VehiclePaint := preload("res://render/vehicle_paint.gd")
 const AIRSHIP_VISUAL_PATH := "res://vehicles/airship/airship_visual.gd"
 
 const STIK_ID := "jensen-das-ugly-stik-60"
@@ -50,12 +51,16 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	# airplane manifest, propeller, control hinges, or AircraftData v2 record.
 	# Keep that visual route explicit and out of the airplane model registry.
 	if Catalog.is_rotorcraft(id):
-		if id != X_CELL_ID or family != "hx-700" or not expected_presentation.is_empty() or (not livery_id.is_empty() and not CustomSkin.is_custom_id(livery_id)): 
+		var stock_paint := not livery_id.is_empty() and VehiclePaint.contains(id, livery_id)
+		if id != X_CELL_ID or family != "hx-700" or not expected_presentation.is_empty() \
+				or (not livery_id.is_empty() and not stock_paint and not CustomSkin.is_custom_id(livery_id)):
 			push_error("render/airplane.gd: unsupported rotorcraft presentation '%s'" % id)
 			return {}
 		var helicopter: Dictionary = HX700.build()
 		if helicopter.is_empty() or not (helicopter.get("root") is Node3D):
 			return {}
+		if stock_paint:
+			VehiclePaint.apply(helicopter.root, id, livery_id)
 		if CustomSkin.is_custom_id(livery_id):
 			helicopter.root.set_meta("asset_sha256", HX700.GLB_SHA256)
 			var paint := CustomSkin.apply(id, livery_id, HX700.GLB_SHA256, helicopter.root)
@@ -265,7 +270,7 @@ static func livery_choices(id: String) -> Array:
 	if family.is_empty(): return []
 	var registry: Script = load("res://aircraft/model_registry.gd")
 	var parsed: Variant = {} if Catalog.is_rotorcraft(id) else JSON.parse_string(FileAccess.get_file_as_string(("res://data/aircraft_model_overlays/" if registry.OVERLAY_FAMILIES.has(family) else "res://data/aircraft_models/") + family + ".json"))
-	var choices := []
+	var choices := VehiclePaint.choices(id) if Catalog.is_rotorcraft(id) else []
 	if parsed is Dictionary and parsed.get("liveries") is Array:
 		for record: Variant in parsed.liveries:
 			if record is Dictionary and record.get("id") is String and record.get("label") is String:

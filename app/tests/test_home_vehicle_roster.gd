@@ -44,8 +44,12 @@ func _run() -> void:
 		return Roster.entry(entry.id).status == Catalog.EXPERIMENTAL and Roster.is_activity(entry.id) and not Catalog.has(entry.id)))
 	check("step wraps through the whole roster", Roster.step(ids[ids.size() - 1], 1) == ids[0] and Roster.step(ids[0], -1) == ids[ids.size() - 1]
 		and Roster.step("unknown", 1).is_empty())
-	check("only the blimp has paints, one per skin", Roster.skin_choices("rc-blimp-5m").size() == AirshipCatalog.SKIN_IDS.size()
-		and Roster.skin_choices("mt8-bisonte").is_empty() and Roster.skin_choices(Catalog.DEFAULT_ID).is_empty())
+	check("the blimp has one paint per skin; aircraft use their own liveries", Roster.skin_choices("rc-blimp-5m").size() == AirshipCatalog.SKIN_IDS.size()
+		and Roster.skin_choices(Catalog.DEFAULT_ID).is_empty() and Roster.skin_choices("openrc-fpv5-x1").is_empty())
+	for car_id: String in GroundCatalog.IDS:
+		var paints: Array = Roster.skin_choices(car_id)
+		check("%s offers its delivered paint first, then stock paints" % car_id, paints.size() >= 2 and paints[0].id == ""
+			and Roster.resolve_skin(car_id, str(paints[1].id)) == str(paints[1].id) and Roster.resolve_skin(car_id, "nope") == "")
 	check("an unknown blimp skin flies the default skin", Roster.resolve_skin("rc-blimp-5m", "nope") == AirshipCatalog.DEFAULT_SKIN
 		and Roster.resolve_skin("rc-blimp-5m", "historico") == "historico")
 

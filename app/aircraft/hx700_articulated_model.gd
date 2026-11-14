@@ -2,6 +2,7 @@
 # This detached preview is deliberately separate from aircraft/flight registration.
 extends RefCounted
 
+const VehiclePaint := preload("res://render/vehicle_paint.gd")
 const PROFILE_PATH := "res://assets/aircraft/hx-700/articulated/construction.json"
 const ASSET_PATH := "res://assets/aircraft/hx-700/articulated/hx-700.glb"
 const PROFILE_SHA256 := "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
@@ -140,6 +141,8 @@ static func _load_preview_with_asset_bytes(profile_path: String, raw_asset_path:
 	var preview_root := Node3D.new()
 	preview_root.name = "hx700_mechanical_preview"
 	preview_root.add_child(instance)
+	# Render-only: restore the carbon fibre the Blender export left as an unbaked procedural (white).
+	VehiclePaint.apply(preview_root, "hx-700")
 	result.root = preview_root
 	return result
 

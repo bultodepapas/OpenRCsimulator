@@ -39,7 +39,7 @@ static func build(id: String, skin := "") -> Dictionary:
 		Roster.GROUND:
 			var entry: Dictionary = GroundCatalog.entry(id)
 			var builder := load(str(entry.get("model_path", ""))) as Script
-			var built: Dictionary = builder.call("build") if builder != null else {}
+			var built: Dictionary = builder.call("build", Roster.resolve_skin(id, skin)) if builder != null else {}
 			if not bool(built.get("ok", false)):
 				push_warning("Home preview: %s" % built.get("error", "no RC car model"))
 				return {}

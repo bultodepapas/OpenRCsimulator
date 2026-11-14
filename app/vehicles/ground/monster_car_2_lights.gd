@@ -60,6 +60,14 @@ func prepare(visual: Dictionary) -> bool:
 	name = "MonsterCar2Lights"
 	if get_parent() == null: vehicle.add_child(self)
 	if get_parent() != vehicle: return false
+	# A stock paint (render/vehicle_paint.gd) may recolour the neon; its tubes and ground wash follow it.
+	var neon_color := NEON
+	for mesh_name: String in GROUPS.neon:
+		var neon_mesh := meshes[mesh_name] as MeshInstance3D
+		for surface in neon_mesh.mesh.get_surface_count():
+			var painted: Material = neon_mesh.get_active_material(surface)
+			if painted.has_meta("vehicle_paint_emission"):
+				neon_color = painted.get_meta("vehicle_paint_emission")
 	# One material copy per source/group, not one copy per LED or per frame.
 	for group: String in GROUPS:
 		var materials: Array[StandardMaterial3D] = []
@@ -73,7 +81,7 @@ func prepare(visual: Dictionary) -> bool:
 					var material := source.duplicate() as StandardMaterial3D
 					material.emission_enabled = true
 					material.emission_energy_multiplier = 0.0
-					material.emission = RED if group == "tail" else NEON if group == "neon" else WHITE
+					material.emission = RED if group == "tail" else neon_color if group == "neon" else WHITE
 					# Retain the author's blue daytime signature and warm fog lenses.
 					if group in ["running", "accent"] or mesh_name == "Antiniebla_Lente":
 						material.emission = source.emission if source.emission_enabled else source.albedo_color
@@ -92,7 +100,7 @@ func prepare(visual: Dictionary) -> bool:
 		Vector3(0, -0.08, -1), WHITE, 11.0, 24.0, 22.0, 10.0)
 	var neon_center := _center_in_vehicle(meshes.Neon_Lateral, vehicle)
 	_underglow = _spot("NeonGroundWash", neon_center + Vector3(0, -0.008, 0),
-		Vector3.DOWN, NEON, 0.8, 78.0, 6.0, 4.0)
+		Vector3.DOWN, neon_color, 0.8, 78.0, 6.0, 4.0)
 	var rear := _center_in_vehicle(meshes.Calaveras, vehicle)
 	_stop_spill = _spot("StopGroundWash", rear + Vector3(0, -0.01, 0.012),
 		Vector3(0, -0.65, 1), RED, 0.9, 65.0, 8.0, 4.0)

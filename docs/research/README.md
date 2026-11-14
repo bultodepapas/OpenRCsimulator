@@ -159,6 +159,8 @@ The [consolidated Apple technical background, 2026-11-02](../APPLE-SILICON-TECHN
 
 [MetalFX and frame-generation research, 2026-11-14](desktop-delivery-investigations/metalfx-frame-generation-2026-11-14.md) distinguishes Apple API/M1 eligibility from the pinned engine's Mobile/Forward+ integration, preserves the existing short Retina Spatial result, and separates generated cadence, control latency and shader/presentation stutter. This is desk research, with no new hardware result or default change.
 
+[Twenty MetalFX implementation investigations, 2026-11-14](desktop-delivery-investigations/metalfx-20-investigations-2026-11-14.md) examine exact engine callbacks, capabilities, motion/history/color contracts, frame presentation, synchronization, RT reuse, denoised masks, memory, compilation and deployment. Official documentation, pinned GitHub code/issues and scoped forum cases are translated into changes and prepared fixtures in the [four-technology plan](../plans/apple-metalfx.md); native checks remain unexecuted.
+
 [Apple Silicon cross-platform audit, 2026-11-06](apple-silicon-cross-platform-audit-2026-11-06.md) distinguishes optimizations already in shared game code, Apple-specific policy, remaining branch/release integration, rejected experiments and the next non-Apple qualification work. It is a source/evidence review, not a new benchmark.
 
 [Apple Silicon comparable projects, 2026-11-12](native-kernel/apple-silicon-comparables-2026-11-12.md) records primary CPU-library, GPU-physics, rendering and energy measurements, their numerical/workload limits and their implications for the conditional native evaluator plan. These are external results, not measured OpenRC Mac gains.

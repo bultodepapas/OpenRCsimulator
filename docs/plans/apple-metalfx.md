@@ -3,7 +3,7 @@
 Updated: 2026-11-14. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
 Status: implementation work order; no new runtime implementation or hardware
 qualification is claimed by this document. Source inspected at
-`bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c`; engine baseline:
+`0bc2a52e129248ed91632f02f448e7d6455f6a5f`; engine baseline:
 Godot `4.8-beta2`, `cafc17a192acf67903910a68aeb3c076c0907a4b`.
 
 This is the detailed subplan for Spatial, Temporal, Frame Interpolation and
@@ -12,6 +12,10 @@ It owns the substeps registered below; the master retains platform/default,
 performance and release gates. The [dated research](../research/desktop-delivery-investigations/metalfx-frame-generation-2026-11-14.md)
 owns earlier findings and measurements. Public signed distribution remains
 deferred by the owner; local development packaging is still required.
+
+The [twenty-investigation reinforcement](../research/desktop-delivery-investigations/metalfx-20-investigations-2026-11-14.md)
+provides exact engine seams, scoped issue/forum evidence and the prepared fixture
+cases below. I01–I20 are research IDs, not completed implementation steps.
 
 ## 1. Scope and completion
 
@@ -72,7 +76,8 @@ color where that API requires it.
 Current OpenRC facts, verified in source:
 
 - [metalfx_policy.gd](../../app/render/metalfx_policy.gd) queries driver, renderer,
-  RD features and scale limits; Spatial is a regular supported-device choice,
+  RD features and scale limits; macOS 13 bounds use engine assumptions, while
+  macOS 14+ queries the native limits. Spatial is a regular supported-device choice,
   while Temporal remains behind `OPENRC_METALFX_TRIAL=1`.
 - [reconstruction.gd](../../app/render/reconstruction.gd) already owns mode
   selection, AA restoration, requested/effective receipts and discontinuities.
@@ -113,10 +118,17 @@ Reusable leads already identified:
    and [integration session](https://developer.apple.com/videos/play/wwdc2025/211/).
    Check licenses and actual SDK declarations; reference prose is not runtime proof.
 3. The [experimental Godot Metal RT fork](https://github.com/josephsmithberger/godot-metal-path-tracing)
-   reports Metal RT and denoised scaling on `metal_rt`, based on NVIDIA's RT fork.
-   Its author explicitly warns against shipping it. Inspect ancestry, notices,
-   shader/material support and focused tests; pin a commit before reuse. Do not
-   adopt its entire engine or borrow its benchmark as OpenRC evidence.
+   advertises `metal_rt`, but that ref returned 404 during review. Inspect immutable
+   `eeac9e05dbff0b273b6e4c483c4675530ead992b` instead: 4.7-rc, divergent from our
+   4.8-beta2, and not recommended by its author for shipping. Its path replaces
+   opaque/motion rendering; it is not a drop-in hybrid pass. Audit ancestry,
+   component notices, shader/material coverage and focused tests before reuse.
+4. Open [Godot PR 114670](https://github.com/godotengine/godot/pull/114670) is an
+   upstream hook candidate, not a merged native-device or presentation solution.
+   The [comparable-port review](../research/desktop-delivery-investigations/metalfx-20-investigations-2026-11-14.md#i20--which-comparable-game-ports-offer-useful-reusable-boundaries)
+   supplies immutable MetalFX integration references with different licenses and
+   rendering architectures. Reuse appropriate source boundaries after intake;
+   do not import their engine, game assets or per-frame GPU drains wholesale.
 
 Each custom engine manifest must bind upstream SHA, ordered patch hashes, SDK
 build, deployment target, compiler/options, enabled backends, editor/template
@@ -133,17 +145,33 @@ API variants when that matches the selected engine command backend.
 Extend the current provider policy with independently represented facts:
 `compiled`, `os_available`, `device_supported`, `renderer_supported`,
 `inputs_ready`, `instance_created`, `execution_state`, `reason` and context
-generation. Unknown facts remain unknown; never map them to success.
+generation. Scale limits carry native/upscale versus Godot input/output units,
+reciprocal conversion, millionths precision and `limit_source` (`device_query`,
+`engine_assumption`, `unavailable`). Unknown facts remain unknown; never map them
+to success. Probe Metal 3 and Metal 4 descriptor support separately when both
+command backends are actually integrated.
 
 Proposed states are `unavailable -> eligible -> allocating -> warming -> active`,
 with `failed`/`suspended` and a stable fallback reason. The engine, not settings,
 owns transitions after allocation and dispatch. A context becomes active after
 successful encoding and observed error-free GPU completion for its generation;
 native capture verifies the intended pass during qualification. That still does
-not prove physical display presentation or visual acceptance.
+not prove the output changed correctly, OS presentation or visual acceptance.
+The native fixture must also verify a sentinel-prefilled output and the intended
+image; no-op or current-color copy cannot pass as interpolation. Keep operational
+status separate from qualification.
 
-Factory nil, invalid formats/bounds, incomplete inputs, asynchronous initialization,
-feature-local GPU error and stale generation must return a reason without
+Repair the actual native factory and callback boundary: the pinned Temporal
+factory result is dereferenced without a nil guard, and Spatial can return a
+wrapper with a nil scaler. Guard both before setters/dispatch and propagate a
+stable failure category; do not guess an internal failure reason the SDK omits.
+Asynchronous scaler optimization may produce valid but slower interim output.
+Separate `image_valid`, history warmup and optimized-performance readiness;
+record unknown optimization state rather than treating it as failed or waiting
+forever. Choose synchronous creation only at an appropriate load/apply boundary.
+
+Factory nil, invalid formats/bounds, incomplete inputs, feature-local GPU error
+and stale generation must return a reason without
 dereferencing invalid objects. Distinguish these from device loss, queue invalidation
 or a GPU hang: those can invalidate Native/raster too. For a device-wide failure,
 mark effective execution unknown, stop submissions and attempt bounded engine-owned
@@ -152,7 +180,8 @@ Compatibility with Native reconstruction. Retain the request and fault identity,
 allow at most one recovery restart for that fault/build, and require a usable
 diagnostic exit rather than a restart loop if fallback also fails. Test local
 provider recovery and whole-device failure separately in disposable builds.
-No per-frame blocking compilation/allocation or unlimited retries. Prepare
+Pending asynchronous optimization reports readiness without implying failure.
+No per-frame effect compilation/recreation or unlimited retries. Prepare
 at load/apply boundaries, keep the previous working path during preparation,
 cancel stale requests, and retire resources after engine-owned GPU completion.
 
@@ -179,6 +208,12 @@ Discard interpolation pairs crossing a reset, pause/resume or incompatible size.
 Warm history with valid real frames before resuming interpolation. Drain/cancel
 callbacks safely on viewport destruction and app exit.
 
+Initial Temporal admission is one view. The pinned engine shares a context across
+its view loop, so multi-view requires independent scaler/history/reset generations
+or explicit rejection until proven. Test alternating contrasting view streams and
+a cut affecting only one view. The FG/RT branches must retain that restriction
+until each has independently isolated per-view resources.
+
 Proposed diagnostic payload, added to existing receipts rather than a new service:
 
 | Group | Required fields |
@@ -186,7 +221,7 @@ Proposed diagnostic payload, added to existing receipts rather than a new servic
 | Identity | Provider/context generation; engine/SDK/patch/package hashes; viewport/view ID; requested/effective modes and fallback reason |
 | Images | Observed input/output dimensions, format/color space, HDR/exposure convention, nominal estimates explicitly labeled |
 | History | Requested/submitted/encoded/completed reset generations; last reset/failure reason; warm-history state |
-| Cadence | Real render IDs/counts, successful generated count, scheduled/presented/dropped counts, timestamp clock and observation scope |
+| Cadence | Real render IDs/counts, successful generated count, source pair, unique present instance, scheduled/OS-presented/unresolved counts, timestamp clock and observation scope |
 | Cost | Whole-frame CPU/GPU, scaler/interpolator/RT passes where available, live allocation bytes/peak and initialization time |
 
 Use a versioned optional payload so older readers reject unsupported qualification
@@ -194,6 +229,12 @@ claims without crashing. Derive rates over matching clock windows. Missing actua
 presentation feedback stays unavailable; process-loop or scheduled counts cannot
 be renamed displayed FPS. Disabled features create no scaler, RT acceleration
 structure, extra history ring, FG thread or recurring diagnostic allocation.
+
+Use `MTLDrawable` presented handlers/times for OS-reported onscreen feedback when
+supported. Timestamp zero means not yet presented or dropped; do not classify it
+as a definite drop. GPU completion, scheduled presentation, OS feedback and
+camera-observed photons remain distinct. Never block teardown for a missing
+present callback. Calibrate GPU/CPU clocks and qualify observer overhead separately.
 
 ### Product controls and valid combinations
 
@@ -252,15 +293,28 @@ Add same-input bilinear only as an attribution control: reducing pixels provides
 the opportunity; MetalFX has its own cost. Test 2/3 only after 0.85 readability.
 Do not lower the 1,000-row Auto threshold to manufacture an improvement.
 
+Before changing the descriptor's Linear color mode, inspect actual MTL formats,
+sRGB texture views, transfer functions, alpha and tone-map placement. The current
+pass is after tone mapping, but that label alone does not establish incorrect
+Linear processing. Use captured gradients, highlights, transparency and output/UI
+composition to choose compatible Linear/perceptual/HDR treatment. Every fallback
+must restore projection jitter as well as saved AA; historical engine fixes are
+regression seeds, not claims that this pin retains their defects.
+
 **Temporal:** compare Forward+ Native against Forward+ Temporal at 1.0, 0.85 and
 2/3 only when actual scale bounds admit them. Compare the winning complete
 Forward+ configuration against Mobile afterward; report renderer and AA changes
-so they are not credited to the scaler alone. Preserve millionths decoding and
-reject NaN, zero, inverted or unavailable limits.
+so they are not credited to the scaler alone. Preserve reciprocal-bound/millionths
+decoding, distinguish macOS 13 assumed limits, and reject NaN, zero, inverted or
+unavailable limits. Test both bounds and ±0.000001, independently rounded X/Y
+ratios and actual native factory acceptance.
 
-Let Godot produce depth, de-jittered camera/object motion, jitter, exposure and
-temporal AA. Verify coordinate sign/scale, reversed depth, FOV/near/far and input
-versus output sizes using captured textures and known motion. Test moving hinges,
+Use Godot's producers, with a per-signal audit of depth, de-jittered camera/object
+motion, jitter and exposure; producer presence is not correctness proof. Record
+format/usage, space, direction, sizes, optional nil inputs and exposure conversion.
+Verify coordinate sign/scale, reversed depth and projection using captured textures
+and known motion. The pinned alpha pass does not provide complete transparent
+velocity, and a reactive-format field does not prove a reactive SDK input. Test hinges,
 propellers, wind vegetation, skinned actors and particles; camera-only motion is
 not enough. Validate reactive handling where supported. Restore saved MSAA when
 leaving Temporal; do not stack TAA/MSAA or apply FSR sharpening to MetalFX.
@@ -275,18 +329,49 @@ actual interval between real rendered frames. Previous/current real images must
 belong to the same context generation. An image made by interpolation never
 becomes the next real input. Disable unsupported additional views explicitly.
 
+For macOS 26, bind real-pair seconds, vertical FOV in degrees, scalar near/far and
+depth convention, pixel-space current-to-previous motion and explicit previous
+color. A +10-pixel surface displacement has a -10-pixel previous-position vector
+when scale is one. Previous color follows the previous interpolator encode;
+skipped/discontinuous pairs require SDK reset and re-priming. Validate first/reset
+encode behavior. Projection matrices, content offsets and automatic previous-color
+storage controls are 27-only enhancements, not minimum-26 dependencies. Resolve
+descriptor/base input-dimension wording against the installed SDK and non-square
+scaled fixture; do not assume every input/output extent is equal. Bind the qualified
+Temporal scaler for the first path as an integration/performance choice, not a
+claim the SDK requires it for every mode.
+
 Reuse Apple's presentation design inside Godot's renderer/display ownership.
 If a dedicated presentation thread is needed, the engine owns its drawable
 acquisition, bounded frame ring, events and teardown. Do not block the main or
-render thread waiting for a future real frame; do not run an app-side swap chain.
+render thread indefinitely waiting for a future real frame; bound and measure
+backpressure from drawable and command-buffer pools. Do not run an app-side swap chain.
 Preserve real-intermediate-real display order with evenly spaced timestamps.
 Late generated work is dropped rather than delaying an already-due real frame.
 Handle 60/120/144 Hz, VSync/cap/VRR, focus, minimization and display changes.
+
+Choose either a coherent manual timed-drawable route or `CAMetalDisplayLink`
+updates with their supplied drawable/deadline. Respect each route's commit/present
+contract; do not combine display-link drawables with incompatible timed-present
+methods. The shown PresentThread reference is illustrative and has incomplete
+pacing-thread shutdown; design stop/join for every worker, callback, event waiter
+and drawable acquisition. An absent producer signal must not prevent shutdown.
+
+Declare resource usage from the created interpolator, not fixed example flags.
+Close conflicting active encoders before native effect dispatch. Preserve single
+CPU-thread ownership of a command buffer; use appropriate events across queues,
+with fences only in their supported hazard-tracking scope. If a Metal 4 backend
+is selected, establish residency after each command-buffer begin and preserve it
+through all consumers. Completion without a valid output image is a failed probe.
 
 Choose a single verified UI route: isolated full-output UI texture or composition
 after the scene image, matching the selected SDK/sample. Keep cursor, menus,
 radio/HUD text and overlays free from duplicate blending or interpolated text.
 Verify tone mapping and alpha exactly once; test letterboxing and Retina scaling.
+The initial reference path interpolates tone-mapped scene color. Freeze a different
+HDR ordering only with SDK/input proof and a separate test. Do not assume the
+upscaler's reactive mask can repair interpolated smoke or bright lights; test those
+effects explicitly. Avoid precomposed-UI removal as the default quality strategy.
 
 Apple's [guidance](https://developer.apple.com/videos/play/wwdc2025/211/) recommends
 at least 30 real FPS before interpolation. Developer-only 12a/12b probes report
@@ -323,6 +408,12 @@ against a bounded pass before choosing implementation. If it needs a general
 shader compiler or scene renderer rewrite, split that prerequisite explicitly and
 keep 13d1 incomplete until the required infrastructure exists.
 
+The pinned Metal driver has unsupported RT stubs even though generic RD exposes
+RT types. Intake must explicitly resolve Metal driver/compute traversal, shader
+lowering and resource declarations; this is not a feature flag. The inspected RT
+fork replaces opaque/motion passes. Demonstrate that selected pieces can support
+the proposed bounded consumer before attempting a wholesale renderer adaptation.
+
 The producer contract includes BLAS reuse and invalidation for mesh changes, TLAS
 updates for moving instances, instance/material identity, GPU completion before
 reuse/free and scene-stream cancellation. No collision mesh becomes a rendering
@@ -330,6 +421,12 @@ proxy silently. Freeze the supported material subset in the fixture; refuse or
 return to full raster for unimplemented opaque/alpha/deformation cases. Extend
 coverage to actual moving aircraft, their controls and scenery before normal-flight
 qualification. A static hangar/inspection demo alone cannot close 13d3.
+
+Classify updates explicitly: rigid instance motion updates the TLAS; same-topology
+deformation may use refit; topology/asset/LOD addition or removal requires rebuild.
+Measure scratch/AS memory and build/refit plus traversal time together; refit is
+not presumed to improve the complete frame. Validate hit/miss/instance identity
+through moving hinges, deformation, alpha cutouts and streaming replacement.
 
 Feed the [denoised scaler](https://developer.apple.com/documentation/metalfx/mtlfxtemporaldenoisedscalerbase.md)
 actual noisy HDR color, clean depth/motion, diffuse/specular albedo, world-space
@@ -345,6 +442,17 @@ or overlay composition. Avoid double-counting raster and RT lighting. Mirror/gla
 signal handling needs its own coverage before those materials are admitted.
 Apple's [neural rendering session](https://developer.apple.com/videos/play/wwdc2026/359/)
 is the primary input-quality reference; no custom neural-network training is needed.
+
+Strength-mask polarity is unresolved: the current property documentation and the
+WWDC explanation disagree. Before enabling that optional input, inspect the
+installed SDK and test no-mask versus 0/1 split-mask on noisy and clean patches;
+record actual SDK/OS/device semantics. Reactive masking is a different history
+control. Keep the optional strength mask disabled until resolved. Compare image
+correctness with validation both enabled and disabled: instrumentation can change
+behavior, not only timing. Establish high-SPP reference convergence using higher
+SPP and independent seeds. Call it a converged in-model reference and record
+bounce limits, sampling, clamping and estimator assumptions; convergence alone
+does not remove bias or establish physical ground truth.
 
 Compare: same RT workload without denoising; same low-SPP workload with denoising;
 and a high-SPP converged reference using the same lighting/materials and fixed
@@ -406,6 +514,17 @@ Additional feature decisions, frozen before collecting comparisons:
 | Denoised quality | Fixed reference clips, noise/error and temporal stability comparisons plus pilot readability; optional quality benefit is distinguished from speed. Define quantitative image tolerances from the reference before the trial; no post-hoc widening. |
 | Memory/disabled cost | Document live incremental allocations and actual floor-host headroom before runs. No candidate-attributable sustained pressure/swap or unbounded growth; disabled paths allocate none of their optional GPU work/history/RT structures. |
 
+Memory preparation inventories unique texture/buffer/AS allocations and aliases,
+extent/format/mips/sample count, queried alignment and frame-ring depth. At 1080p,
+one RGBA16F image is 15.82 MiB and three are 47.46 MiB before additional storage;
+this excludes SDK-private histories and RT structures. Track process footprint,
+Metal allocated size, RID counts and OS pressure independently; do not add aliased
+GPU allocations to RSS as separate physical RAM. Pool uniform sets/resources
+instead of allocating them each frame, and retain them until all GPU consumers
+complete. Treat `recommendedMaxWorkingSetSize` as a recommendation, not a hard
+independent VRAM budget. Separate image-valid and optimized-cost warmup when
+comparing synchronous/asynchronous initialization; retain unknown readiness.
+
 Present real FPS, generated/presented FPS, physics rate and latency separately in
 reports and any player overlay. Apple's [Metal HUD metrics](https://developer.apple.com/documentation/xcode/understanding-metal-performance-hud-metrics)
 may include interpolated frames; retain the counter's actual scope. No “2× faster
@@ -428,6 +547,16 @@ by launching below the new API floor; do not merely compile with an older target
 Preserve existing supported architecture slices, signing mode and entitlements.
 No public Developer ID/notarization claim is made without the deferred credentials.
 
+Inspect every Mach-O slice's build target, SDK/load commands and weak imports
+using existing Apple tools, not only the app plist. Optional symbols need compile
+guards for older SDKs and runtime availability guards for older systems. A new
+macOS 27 property cannot enter a minimum-26 path unguarded. Add isolated
+fresh-profile and warm-profile baked/unbaked export controls: a reported 4.7
+baked-shader startup crash is a test lead, not a proven 4.8-beta2 defect. Metal
+baking needs native non-headless export with the actual Metal target driver;
+intermediate MIL does not precompile every final device pipeline. Preserve shared
+driver caches and label process/user-profile/driver cache state separately.
+
 Each PR carries its owning substep, mechanism, exact paths, tested identities,
 focused tests, missing hardware rows and rollback. Each qualified row retains
 compact result JSON/Markdown with source/config/engine/SDK/package identities,
@@ -439,3 +568,40 @@ any incomplete integration or unsupported hardware rows. A completed M1 fallback
 a standalone Apple demo or an experimental fork's screenshot cannot close a
 supported-device implementation. Consolidate completed instructions into the
 owning runtime/tool guides and retain dated evidence before retiring this plan.
+
+## 11. Prepared fixture specification and first PR
+
+These are fixture IDs, not new track steps or completed tests. The first PR
+implements the 11a intake manifest, F01 and pure conversion/receipt cases from
+F03 using existing test infrastructure. Native nil injection F02 and actual
+factory-boundary F03 cases land with the 07a1 native guards in the next PR; the
+unsafe official baseline is never reported as a passing fault test. Any baseline
+fault reproduction is isolated in a disposable fixture and labeled an expected
+failure. Establish this boundary before attempting a presenter or RT port.
+Later PRs add only the affected cases below.
+
+| Fixture | Prepared input / discriminating result | Research |
+| --- | --- | --- |
+| F01 intake | Official and selected patched engine/templates, SDK/backend/ABI/patch/notices manifest; reject mismatched pair or unavailable ref | I01/I13/I19/I20 |
+| F02 factories | Separate unsupported support-query, nil Spatial, nil Temporal, stale callback and device-fatal injections; distinguish provider recovery from guarded restart | I02/I03 |
+| F03 bounds | Native versus Godot ratios, provenance, endpoints ± one millionth and unequal rounded dimensions; bind actual creation result | I02 |
+| F04 signals | Static/translated/rotated camera plus independent moving/deforming surface and exposure step; analytic displacement versus captured texture | I04/I12 |
+| F05 history | Alternating contrasting views, one-view reset, two rapid cuts and late completion; independent histories or explicit admission rejection | I05 |
+| F06 AA/color | Failed Temporal then Native with saved AA and zero residual jitter; Spatial gradients/HDR/alpha/texture-view interpretation and thin moving objects | I06/I07 |
+| F07 interpolation API | 26-compatible scalar inputs versus optional 27 additions, previous-encode color, reset/skip and non-square scaled extents; direct rendered midpoint reference | I08 |
+| F08 presentation | Separate selected manual/display-link route, 60/120/144/VRR, exhausted drawables and missing callbacks; bounded waits and source-ordered outputs | I09 |
+| F09 composition | Scene-only history, changing small HUD/cursor and bright particles; UI exactly once on both output kinds and no duplicate tone mapping | I10 |
+| F10 dispatch/lifetime | Nonzero sentinel, actual expected image, interrupted signal, resize/destroy while work pending, all workers/callbacks retired; Metal 4 residency after begin when applicable | I11 |
+| F11 RT scene | CPU-checked rigid/deforming/LOD/alpha geometry and material coverage; report rebuild/refit/trace plus allocation cost and raster fallback | I14 |
+| F12 denoise | Raw/no-mask/0/1 split-mask, noisy/clean patches, converged independent reference and validation on/off, then motion/disocclusion | I15 |
+| F13 resource/warmup | Repeated provider/size/Home-Fly cycles, pooled RID/resources, live allocations and sync/async creation first-use versus steady cost | I16/I17 |
+| F14 measurements | Real/generated/scheduled/OS-presented IDs, zero/missing presented timestamps, clock calibration, actual radio/physical witness and observer-overhead controls | I18 |
+| F15 package | Same-source baked/unbaked, fresh/warm isolated profiles and older-OS loader; no shared-cache deletion | I19 |
+
+Every fixture receipt carries `schema_version`, source/engine/patch/SDK/package
+identity, host/OS/device/backend, fixture/case ID, input-buffer conventions and
+generation, observation clock/scope, expected versus observed outcome, failure or
+unknown reason, and artifact hashes. Record fields unavailable to an older engine
+as unavailable. An injected fact is labeled injected and cannot qualify hardware.
+The [research ledger](../research/desktop-delivery-investigations/metalfx-20-investigations-2026-11-14.md)
+defines evidence limits and source links; this plan owns implementation status.

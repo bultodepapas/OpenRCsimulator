@@ -48,6 +48,30 @@ The Turbo Lumber and MoonRunner kits also include the original asset attribution
 and beta-specific distribution notice. Their technical paint-editing workflow
 does not itself establish permission to modify or redistribute the asset.
 
+## Stock vehicle paints (HX-700 and RC cars)
+
+The built-in paint schemes of the HX-700 and the two RC cars are separate from the
+player kits above. `app/data/vehicle_paints.json` lists them per vehicle: an
+always-on `base` (the HX-700 carbon fibre, which the Blender export left as a
+white unbaked procedural) and named skins chosen in Home's paint gallery.
+`app/render/vehicle_paint.gd` applies them as per-instance `StandardMaterial3D`
+copies matched by glTF material name, before lights, rotor blur and damage copy
+the materials. Saved choices: `[liveries]` for the helicopter, `[vehicle_skins]`
+for the cars.
+
+Textures in `app/assets/vehicle-paints/` are generated only from assets already
+in the repository (the HX-700 GLB and paint masks, the Monster Car 2 livery,
+emission map and carbon weave). Canopy designs are evaluated in the canopy's
+model space and baked through its plan-projected UVs:
+
+```powershell
+.tools/visual-venv/Scripts/python.exe tools/skins/build_vehicle_paints.py
+.tools/visual-venv/Scripts/python.exe tools/skins/build_vehicle_paints.py --check
+```
+
+Import new outputs once with Godot `--headless --path app --import`. A colour-only
+skin (all MT8 schemes) needs no texture: edit the JSON only.
+
 ## Export and check
 
 From an extracted kit, edit the paint images and run standard-library Python 3:

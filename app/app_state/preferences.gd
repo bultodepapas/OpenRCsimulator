@@ -81,6 +81,9 @@ const DEFAULTS := {
 	# F4U-16: the paint scheme chosen per catalog aircraft ([liveries] section). Additive: no schema change. Home
 	# resolves an ID the aircraft no longer offers to its default paint.
 	liveries = {},
+	# Stock paint per RC car ([vehicle_skins] section, render/vehicle_paint.gd). Additive: no schema change. The
+	# delivered paint keeps no entry; an ID the car no longer offers is dropped on load.
+	vehicle_skins = {},
 }
 
 
@@ -250,7 +253,18 @@ static func _load_locked(path: String) -> Dictionary:
 						prefs.liveries[aircraft_id] = livery
 					continue
 				prefs.liveries[canonical] = livery
+	if cfg.has_section("vehicle_skins"):
+		for vehicle_id: String in cfg.get_section_keys("vehicle_skins"):
+			var skin: Variant = cfg.get_value("vehicle_skins", vehicle_id)
+			if _valid_vehicle_skin(vehicle_id, skin):
+				prefs.vehicle_skins[vehicle_id] = skin
 	return prefs
+
+
+## A non-default stock paint that the RC car still offers.
+static func _valid_vehicle_skin(vehicle_id: Variant, skin: Variant) -> bool:
+	return typeof(vehicle_id) == TYPE_STRING and typeof(skin) == TYPE_STRING and not str(skin).is_empty() \
+		and VehicleRoster.family(vehicle_id) == VehicleRoster.GROUND and VehicleRoster.resolve_skin(vehicle_id, skin) == skin
 
 
 ## Resolve only the stock Home selection. Keep the technical ID until explicit selection/Fly persists.
@@ -385,6 +399,13 @@ static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -
 	aircraft_ids.sort()
 	for aircraft_id: String in aircraft_ids:
 		cfg.set_value("liveries", aircraft_id, liveries[aircraft_id])
+	var vehicle_skins: Variant = prefs.get("vehicle_skins", {})
+	if vehicle_skins is Dictionary:
+		var vehicle_ids: Array = vehicle_skins.keys()
+		vehicle_ids.sort()
+		for vehicle_id: Variant in vehicle_ids:
+			if _valid_vehicle_skin(vehicle_id, vehicle_skins[vehicle_id]):
+				cfg.set_value("vehicle_skins", vehicle_id, vehicle_skins[vehicle_id])
 	var error := PreferencesFile.save(path, cfg)
 	if error == OK and commit_aircraft:
 		prefs.erase("_retained_aircraft")

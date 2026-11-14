@@ -12,6 +12,11 @@ deferral for those named substeps only; it establishes neither implementation no
 hardware qualification. This master retains platform/default, sustained-performance
 and release gates; public signed distribution remains deferred.
 
+The [twenty-investigation reinforcement](../research/desktop-delivery-investigations/metalfx-20-investigations-2026-11-14.md)
+adds source-proven factory/view/driver boundaries and SDK/presentation test cases
+to that subplan. It is research and fixture preparation, not new M1 performance
+or hardware qualification.
+
 The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
 The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.

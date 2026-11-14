@@ -728,7 +728,7 @@ func _home_setup() -> Dictionary:
 	if not VehicleRoster.is_activity(activity):
 		activity = ""
 	var vehicle := activity if not activity.is_empty() else aircraft
-	var vehicle_livery := VehicleRoster.resolve_skin(activity, selected_airship_skin) if not activity.is_empty() else _livery_for(aircraft)
+	var vehicle_livery := _activity_skin(activity) if not activity.is_empty() else _livery_for(aircraft)
 	return {aircraft = aircraft, activity = activity, vehicle = vehicle, vehicle_livery = vehicle_livery,
 		home_weather = home_weather, night_options = night_options, lighting_config = lighting_config, world_preset = world_preset}
 
@@ -742,6 +742,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.statistics_service = statistics_service
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.airship_skin_id = selected_airship_skin
+	home.ground_skins = (preferences.get("vehicle_skins", {}) as Dictionary).duplicate()
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
@@ -832,6 +833,8 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 			candidate.departure_managed = true
 		if _has_property(candidate, "vehicle_id"):
 			candidate.vehicle_id = vehicle_id
+		if _has_property(candidate, "vehicle_skin"):
+			candidate.vehicle_skin = _activity_skin(vehicle_id)
 		if _has_property(candidate, "field_path"):
 			candidate.field_path = field_path
 			candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
@@ -1079,7 +1082,14 @@ func _home_backdrop_livery() -> String:
 	if home != null:
 		return home.livery_id
 	var vehicle := _home_backdrop_vehicle()
-	return VehicleRoster.resolve_skin(vehicle, selected_airship_skin) if VehicleRoster.is_activity(vehicle) else _livery_for(vehicle)
+	return _activity_skin(vehicle) if VehicleRoster.is_activity(vehicle) else _livery_for(vehicle)
+
+
+## The saved paint of a Home activity: the blimp skin, or an RC car's stock paint ("" = delivered paint).
+func _activity_skin(vehicle: String) -> String:
+	if VehicleRoster.family(vehicle) == VehicleRoster.GROUND:
+		return VehicleRoster.resolve_skin(vehicle, str(preferences.get("vehicle_skins", {}).get(vehicle, "")))
+	return VehicleRoster.resolve_skin(vehicle, selected_airship_skin)
 
 
 ## F4U-16: the paint scheme of Home's aircraft. The default paint keeps no [liveries] entry.
@@ -1091,6 +1101,18 @@ func set_livery(livery: String) -> void:
 	if not home.activity_id.is_empty():
 		var vehicle: String = home.activity_id
 		var skin: String = home.set_livery(livery)
+		if VehicleRoster.family(vehicle) == VehicleRoster.GROUND:
+			# RC cars: one stock paint per car; the delivered paint ("") keeps no entry.
+			var skins: Dictionary = (preferences.get("vehicle_skins", {}) as Dictionary).duplicate()
+			if skin.is_empty():
+				skins.erase(vehicle)
+			else:
+				skins[vehicle] = skin
+			preferences.vehicle_skins = skins
+			if home_scene != null:
+				home_scene.request_aircraft(vehicle, skin)
+			_report_selection_save(Preferences.save_to(preferences_path, preferences))
+			return
 		if skin.is_empty():
 			return
 		selected_airship_skin = skin

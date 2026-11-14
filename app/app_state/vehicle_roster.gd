@@ -10,6 +10,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const AirshipCatalog := preload("res://vehicles/airship/airship_catalog.gd")
 const MultirotorCatalog := preload("res://vehicles/multirotor/multirotor_catalog.gd")
+const VehiclePaint := preload("res://render/vehicle_paint.gd")
 
 const AIRCRAFT := "aircraft"
 const GROUND := "ground"
@@ -97,7 +98,10 @@ static func step(id: String, delta: int) -> String:
 
 
 ## Skins of a vehicle that has paint choices, as livery-picker choices [{id, label}]; [] for the others.
+## RC cars list their stock paints (data/vehicle_paints.json) with the delivered paint first as id "".
 static func skin_choices(id: String) -> Array:
+	if family(id) == GROUND:
+		return VehiclePaint.choices(id)
 	if family(id) != AIRSHIP:
 		return []
 	var out: Array = []
@@ -108,6 +112,8 @@ static func skin_choices(id: String) -> Array:
 
 ## The skin id that is actually flown for `wanted` (the default skin for an unknown one).
 static func resolve_skin(id: String, wanted: String) -> String:
+	if family(id) == GROUND:
+		return VehiclePaint.resolve(id, wanted)
 	if family(id) != AIRSHIP:
 		return ""
 	return wanted if AirshipCatalog.contains(wanted) else AirshipCatalog.DEFAULT_SKIN

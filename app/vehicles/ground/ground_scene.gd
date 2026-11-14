@@ -87,6 +87,8 @@ class DepartureRecorder extends RefCounted:
 signal home_requested
 var startup_error := ""
 var vehicle_id := VehicleCatalog.DEFAULT_ID
+## Stock paint id (data/vehicle_paints.json); "" drives the delivered paint. Render only.
+var vehicle_skin := ""
 ## Set before entering the tree when AppRoot owns window-close and departure decisions.
 var departure_managed := false
 var _departure_guard_active := false
@@ -201,7 +203,7 @@ func _ready() -> void:
 	_course = session.course_snapshot()
 	_render_road = func(north: float, east: float) -> Dictionary:
 		return Course.sample(_course, north, east) if use_practice_fixture else AirfieldCourse.sample(_course, north, east)
-	visual = _visual_adapter.build()
+	visual = _visual_adapter.build(vehicle_skin)
 	if not visual.ok:
 		startup_error = visual.error
 		set_physics_process(false)

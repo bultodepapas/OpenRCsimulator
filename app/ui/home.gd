@@ -131,6 +131,8 @@ var activity_id := ""
 ## The RC car Fly drives (the last car selected) and the blimp skin it flies (its "paint").
 var ground_vehicle_id := GroundCatalog.DEFAULT_ID
 var airship_skin_id := AirshipCatalog.DEFAULT_SKIN
+## Stock paint per RC car id ([vehicle_skins] preferences); a missing entry is the delivered paint.
+var ground_skins := {}
 var workshop_button: Button
 var natural_random_button: Button
 var failures_button: Button
@@ -1593,6 +1595,8 @@ func set_livery(livery: String) -> String:
 	if not activity_id.is_empty():
 		if Roster.family(activity_id) == Roster.AIRSHIP:
 			airship_skin_id = Roster.resolve_skin(activity_id, livery)
+		elif Roster.family(activity_id) == Roster.GROUND:
+			ground_skins[activity_id] = Roster.resolve_skin(activity_id, livery)
 	else:
 		_livery_preferences[aircraft_id] = livery
 	_update_livery()
@@ -1608,7 +1612,8 @@ func _update_livery() -> void:
 		_livery_choices_aircraft = id
 		livery_preview_cache = {}
 	if not activity_id.is_empty():
-		livery_id = Roster.resolve_skin(id, airship_skin_id)
+		var wanted: String = str(ground_skins.get(id, "")) if Roster.family(id) == Roster.GROUND else airship_skin_id
+		livery_id = Roster.resolve_skin(id, wanted)
 	else:
 		livery_id = AirplaneBuilder.resolve_livery_choice(_livery_choices, str(_livery_preferences.get(id, "")))
 	livery_button.visible = _livery_choices.size() > 1 or activity_id.is_empty() and CustomSkin.supports(id)

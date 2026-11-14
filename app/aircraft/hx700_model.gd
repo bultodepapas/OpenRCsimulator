@@ -3,6 +3,7 @@
 # simulator's model frame (+X right, +Y up, -Z nose) and exposes rotor/skid data.
 extends RefCounted
 
+const VehiclePaint := preload("res://render/vehicle_paint.gd")
 const SCENE_PATH := "res://assets/aircraft/hx-700/hx-700.glb"
 const GLB_SHA256 := "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764"
 const SOURCE_ROOT := "HX-700"
@@ -80,6 +81,9 @@ static func build() -> Dictionary:
 	tail_mount.set_meta("reference_radius_m", null)
 	tail_mount.set_meta("runtime_radius_ratio", 1.0)
 
+	# Render-only: restore the carbon fibre the Blender export left as an unbaked procedural (white). The rotor
+	# blur reads the blade colour later, so this must precede it. Stock skins are applied by AirplaneBuilder.
+	VehiclePaint.apply(root, "hx-700")
 	var skids := _skid_contacts_cg()
 	return {
 		"root": root,

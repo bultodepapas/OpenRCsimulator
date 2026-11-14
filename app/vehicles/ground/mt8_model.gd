@@ -3,10 +3,12 @@ extends RefCounted
 
 const Rig = preload("res://vehicles/ground/mt8_rig.gd")
 const Frames = preload("res://render/frames.gd")
+const VehiclePaint = preload("res://render/vehicle_paint.gd")
 const SCENE := "res://assets/vehicles/mt8-bisonte/MT8_Bisonte.glb"
 const CORNERS := ["FL", "FR", "RL", "RR"]
 
-static func build() -> Dictionary:
+## `skin` is a stock paint id from data/vehicle_paints.json ("" or unknown = the delivered orange).
+static func build(skin := "") -> Dictionary:
 	var packed := load(SCENE) as PackedScene
 	if packed == null:
 		return {"ok": false, "error": "Bisonte visual resource is unavailable"}
@@ -30,7 +32,9 @@ static func build() -> Dictionary:
 	rig.add_child(imported)
 	rig.set("root_path", rig.get_path_to(nodes.MT8_Root))
 	nodes.Collision.visible = false
-	return {"ok": true, "error": "", "root": rig, "nodes": nodes, "travel_outside_art": false}
+	var paint: Dictionary = VehiclePaint.apply(rig, "mt8-bisonte", skin)
+	return {"ok": true, "error": "", "root": rig, "nodes": nodes, "travel_outside_art": false,
+		"skin": str(paint.get("skin", ""))}
 
 static func _collect(node: Node, nodes: Dictionary) -> String:
 	if node is CollisionObject3D or node is CollisionShape3D or node is AnimationPlayer:
