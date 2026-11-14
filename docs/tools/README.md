@@ -44,6 +44,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Website languages and metadata | [Website workflow](../../site/README.md#search-metadata-and-static-languages-web-0811). |
 | GitHub visits and release download history | [Local analytics collector and daily task](../../tools/analytics/README.md); country attribution is limited to website requests. |
 | Export or release | [Release sequence](../TOOLS.md#release-sequence); `app/export.sh` reserves a fresh output directory and preserves previous runs. |
+| Prepare/resume a release and wait for CI efficiently | [Patient release automation](../../tools/release/README.md#patient-release-automation); `tools/release/watch.py` observes one pinned tag run, sleeps between polls and alerts on failures. |
 | Release artifact integrity or Linux ABI inventory | [Release tools](../../tools/release/README.md): input capture, final ZIP inspection, manifest and exact transferred-file verification. |
 
 ## Rules for every tool

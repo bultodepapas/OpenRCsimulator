@@ -93,6 +93,31 @@ retains the exact comparison and command/check identities, with the same
 Linux-only scope. The failed v0.2.6 publication candidate did not invalidate its
 independent D11g comparison.
 
+### 2026-11-14 v0.2.8 release renewal
+
+On Linux x86_64 under WSL2 with pinned Godot 4.8 beta2, isolated projects
+reconstructed the v0.2.7 tag `e766561c7cebc6b0d69b650449ace66f8b225cc2` and
+`b80a4b214878e97313d2f93901b32174bb0713ea` with version `0.2.8`. Of the 149
+qualified inventory paths, 148 were unchanged; only `config/version` changed.
+The complete normalized aggregate is
+`66bf3b51214237e1a1d0dca77014f8b7c1276c8f23248694420406e625ef4255`.
+
+The baseline passed both guards, while the initial candidate refused exactly
+the three historical-source leaves. Normalized aircraft input, trim, unrounded
+and rounded derivatives, sensitivity rows and generated provenance matched
+exactly. After renewal, fresh generator and updater checks passed; separate
+physics-source and version mutations were refused by both guards and restored
+byte for byte. A further restored check passed. The aircraft bytes and historical
+provenance remain unchanged, and the working-tree inventory and guards matched
+the checked candidate after line-ending normalization. The
+[qualification receipt](2026-11-14-release-v028-qualification.json) records
+report and checked-log identities. Both checked imports completed without engine
+errors; the baseline reported eight OBJ material warnings and the candidate had
+none. The candidate reused the baseline project's imported-resource cache; both
+imports shared an XDG profile isolated from the user's profile. This renewal did
+not rerun the Windows reconstruction; release CI and native checks remain
+separate evidence.
+
 This establishes model consistency only for these inputs and sampled conditions, not general equivalence of the laws or physical validation. The original 2026-10-07 values and checks below describe the earlier D11g decision, not the present R02 values.
 
 ## Decision

@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenRC Release"
+  short_description: "Release OpenRC with patient CI waits and verified assets"
+  default_prompt: "Use $openrc-release to prepare, publish and verify the next OpenRC Simulator release efficiently."

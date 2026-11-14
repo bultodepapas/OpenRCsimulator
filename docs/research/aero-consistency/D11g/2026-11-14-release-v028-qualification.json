@@ -1,0 +1,277 @@
+{
+  "format": "openrc-d11g-historical-provenance-requalification-v1",
+  "date_local": "2026-11-14",
+  "baseline_commit": "e766561c7cebc6b0d69b650449ace66f8b225cc2",
+  "candidate_base_commit": "b80a4b214878e97313d2f93901b32174bb0713ea",
+  "candidate_overlay": "project config/version 0.2.7 to 0.2.8, followed by the two reviewed qualification-guard renewals",
+  "platform": "Linux x86_64 under WSL2; Windows reconstruction not rerun locally",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "inventory": {
+    "baseline_count": 149,
+    "candidate_count": 149,
+    "baseline_sha256": "291e82dd6530ca66dfa1a70b3c98e49fa5236ab5e9f81d51cbe8a793844c276b",
+    "candidate_sha256": "66bf3b51214237e1a1d0dca77014f8b7c1276c8f23248694420406e625ef4255",
+    "unchanged": 148,
+    "changed": {
+      "app/project.godot": {
+        "before": "2823c4715ca03ea8e28f75099f4c9f09afa7822dceb72cb8fdd6c6f139e509fc",
+        "after": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1"
+      }
+    }
+  },
+  "normalized_aircraft_input": {
+    "excluded_leaves": [
+      "aero.coefficients.Cmq.value",
+      "aero.coefficients.Cmq.source",
+      "aero.coefficients.CLq.value",
+      "aero.coefficients.CLq.source",
+      "aero.coefficients.Cnr.value",
+      "aero.coefficients.Cnr.source"
+    ],
+    "ok": true,
+    "scheme": "utf8-source-text-v1",
+    "sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+  },
+  "aircraft_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+  "numerical_and_provenance_result": {
+    "schema": "d11g-rate-derivatives-v2",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "law": "section-plane-source-weighted-wake-velocity-v4",
+    "engine_hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "condition": {
+      "central_difference_step_rad_s": 0.05,
+      "controls": "neutral",
+      "density_kg_m3": 1.225,
+      "speed_mps": 15.0,
+      "trim_alpha_deg": 4.195979159664104,
+      "trim_alpha_rad": 0.07323365168120345,
+      "wake": "settled instantaneous Aero.wing_wake_velocity output; no ground effect"
+    },
+    "about_cg": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -7.928815588194173,
+      "Cnr": -0.1335802424533328
+    },
+    "about_arp": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -8.082101784164095,
+      "Cnr": -0.13604012801947268
+    },
+    "rounded_4_significant_digits": {
+      "CLq": 2.357,
+      "Cmq": -8.082,
+      "Cnr": -0.136
+    },
+    "provenance": {
+      "CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
+      "Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+      "Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+    },
+    "alpha_sensitivity_about_cg": [
+      {
+        "CLq": 2.465798153025895,
+        "Cmq_about_cg": -7.882827840819535,
+        "Cnr_about_cg": -0.13681305590437906,
+        "alpha_deg": 0.0
+      },
+      {
+        "CLq": 2.4103239493708846,
+        "Cmq_about_cg": -7.895873160074377,
+        "Cnr_about_cg": -0.1354648138993857,
+        "alpha_deg": 2.0
+      },
+      {
+        "CLq": 2.3617900208368128,
+        "Cmq_about_cg": -7.925095563963791,
+        "Cnr_about_cg": -0.13376507955880204,
+        "alpha_deg": 4.0
+      },
+      {
+        "CLq": 2.3206741895900262,
+        "Cmq_about_cg": -7.970108277446484,
+        "Cnr_about_cg": -0.1317326595812141,
+        "alpha_deg": 6.0
+      }
+    ],
+    "interpretation": "Reproduces this model's rate-derivative contract only; it is not physical validation.",
+    "normalized_input": {
+      "excluded_leaves": [
+        "aero.coefficients.Cmq.value",
+        "aero.coefficients.Cmq.source",
+        "aero.coefficients.CLq.value",
+        "aero.coefficients.CLq.source",
+        "aero.coefficients.Cnr.value",
+        "aero.coefficients.Cnr.source"
+      ],
+      "ok": true,
+      "scheme": "utf8-source-text-v1",
+      "sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+    }
+  },
+  "comparison": "Exact equality of the listed numerical, provenance and normalized-input fields for baseline, unrenewed and renewed candidates, both mutations and restored source. Initial candidate and disposable source/version mutations refused exactly three historical-source leaves in both guards; renewed and restored checks passed. Aircraft bytes were unchanged; mutations were restored byte for byte. Working-tree inventory and guards match the checked candidate after LF normalization.",
+  "guard_source_sha256_lf": {
+    "research/aero/d11g/derive_rate_derivatives.gd": "9c0412994b1d96f4db5ca780827ff239937551f1fbb888e2d764c442dc29498a",
+    "research/aero/d11g/apply_rate_derivatives.py": "d10834309635b7f8adf50c1f06afa26879e391b6df7450909361ed8d9634f474"
+  },
+  "reports_sha256": {
+    "baseline.json": "5231780dd6779713fef9322508a05192db9cd81b23be23c476a046f5eefc2753",
+    "candidate-before.json": "ec0b6dc42d02b022ecbddf576b0bd3f969559030ac0442709abb9467a07a2e1e",
+    "candidate-after.json": "98f5d2ddde0d4e0718ffbe80e3d1a3271614da16f6ca0127b07e2b38ee7f79d3",
+    "negative-physics.json": "906a17635fa051b450ec23358e713e316b848c96bbc2e97bb18bc0de18e53d0d",
+    "negative-version.json": "307492c05272ed9fbf76b2dfaf4bbcf10487bb36a1f957eff976f4a0c8e7309f",
+    "restored.json": "98f5d2ddde0d4e0718ffbe80e3d1a3271614da16f6ca0127b07e2b38ee7f79d3"
+  },
+  "imports": {
+    "baseline-import": {
+      "exit": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "warnings": 8,
+      "elapsed_seconds": 542.238301,
+      "checked_report_sha256": "4eb1cc9b09a7916c331ce92023e893209cae0146e5345e3e0695970034c7363a",
+      "engine_log_sha256": "8c18afd37c6f51fd3cf6cbde05c18da8a5a319901f884212dbe006aea712837c"
+    },
+    "candidate-import": {
+      "exit": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "warnings": 0,
+      "elapsed_seconds": 262.959797,
+      "checked_report_sha256": "b454590a7d226e1d71efcd102a7d11cb883bd4a65760429e40055b44aa53d5cb",
+      "engine_log_sha256": "e62a67b48cc7110f6082d12ca16f1c7f9ad4d6856bab1857e0e3eb474c4ade7a"
+    }
+  },
+  "checks": {
+    "baseline": {
+      "exit": 0,
+      "expected_exit": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "checked_report_sha256": "54a590769f3983dcc2f6bc81600593f84cb30631433f4029ea89e71a7cdd7682",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/checks/baseline-d94kd6q6/report.json"
+    },
+    "baseline-updater": {
+      "exit": 0,
+      "expected_exit": 0,
+      "command": [
+        "/usr/bin/python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/baseline/research/aero/d11g/apply_rate_derivatives.py",
+        "--report",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/baseline.json",
+        "--check"
+      ],
+      "output_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "candidate-before": {
+      "exit": 1,
+      "expected_exit": 1,
+      "complete": true,
+      "engine_errors": 0,
+      "checked_report_sha256": "c1cd776d6add051e81e24c3ce0cee1970e9781e5ecebcd4e3819997688a93449",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/checks/candidate-before-f6m_aags/report.json"
+    },
+    "candidate-before-updater": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command": [
+        "/usr/bin/python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/candidate/research/aero/d11g/apply_rate_derivatives.py",
+        "--report",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/candidate-before.json",
+        "--check"
+      ],
+      "output_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "candidate-after": {
+      "exit": 0,
+      "expected_exit": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "checked_report_sha256": "4f57d70d774d70bda4474cdf4a1654cbf3f743e38d05e815c7a412ff1a3e8750",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/checks/candidate-after-26iu_ny5/report.json"
+    },
+    "candidate-after-updater": {
+      "exit": 0,
+      "expected_exit": 0,
+      "command": [
+        "/usr/bin/python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/candidate/research/aero/d11g/apply_rate_derivatives.py",
+        "--report",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/candidate-after.json",
+        "--check"
+      ],
+      "output_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    },
+    "negative-physics": {
+      "exit": 1,
+      "expected_exit": 1,
+      "complete": true,
+      "engine_errors": 0,
+      "checked_report_sha256": "406761f1dbf771ecc594b441a0cbc18f5e2591c8dacff41567a57cb45e396479",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/checks/negative-physics-gd_t18w6/report.json"
+    },
+    "negative-physics-updater": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command": [
+        "/usr/bin/python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/candidate/research/aero/d11g/apply_rate_derivatives.py",
+        "--report",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/negative-physics.json",
+        "--check"
+      ],
+      "output_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "negative-version": {
+      "exit": 1,
+      "expected_exit": 1,
+      "complete": true,
+      "engine_errors": 0,
+      "checked_report_sha256": "c044cc6b9bbe3f0a51dba455b66cf9ce6a9a6b5bfaf3c80c185825860f26bcf3",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/checks/negative-version-ylx_isl2/report.json"
+    },
+    "negative-version-updater": {
+      "exit": 1,
+      "expected_exit": 1,
+      "command": [
+        "/usr/bin/python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/candidate/research/aero/d11g/apply_rate_derivatives.py",
+        "--report",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/negative-version.json",
+        "--check"
+      ],
+      "output_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22"
+    },
+    "restored": {
+      "exit": 0,
+      "expected_exit": 0,
+      "complete": true,
+      "engine_errors": 0,
+      "checked_report_sha256": "e97b59d6d8d8744b96c8714fa32168652faf772153c9c0ef70cb71e67f9713d1",
+      "engine_log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d",
+      "checked_report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/checks/restored-84il5tmj/report.json"
+    },
+    "restored-updater": {
+      "exit": 0,
+      "expected_exit": 0,
+      "command": [
+        "/usr/bin/python3",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/candidate/research/aero/d11g/apply_rate_derivatives.py",
+        "--report",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114/restored.json",
+        "--check"
+      ],
+      "output_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48"
+    }
+  },
+  "diagnostic_root": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v028-d11g-20261114",
+  "limits": "Model consistency for retained sampled conditions; no physical validation, general law equivalence or native Windows qualification. Candidate reused the baseline project's imported-resource cache; the imports shared an XDG profile isolated from the user's profile. Checked imports and post-import source inventory comparison passed."
+}

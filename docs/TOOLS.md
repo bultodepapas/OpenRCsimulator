@@ -71,7 +71,7 @@ Local review: `coderabbit review --agent --base main` or `--uncommitted`. Read P
 
 ## Release sequence
 
-The [local CI preflight](../tools/ci/README.md) provides quick/full/release checks without creating branches or publishing. The [PT1-CI efficiency plan](plans/release-ci-efficiency.md) tracks qualification: conservative selection remains in shadow mode and CI retains the full production suite.
+The [local CI preflight](../tools/ci/README.md) provides quick/full/release checks without creating branches or publishing. The [patient release manual](../tools/release/README.md#patient-release-automation) and [openrc-release skill](../.agents/skills/openrc-release/SKILL.md) cover resumption, bounded CI waits and failure alerts. The [PT1-CI efficiency plan](plans/release-ci-efficiency.md) tracks qualification: conservative selection remains in shadow mode and CI retains the full production suite.
 
 1. Review the selected diff and retain proof with the owning track. Run applicable schema/generator, offline, full app and visual checks on the exact source intended for release; [CI](../.github/workflows/ci.yml) defines the publication dependencies.
 2. After the last edit under `app/physics`, `app/sim` or `app/failures`, follow the [companion rebind workflow](../tools/companions/README.md) and commit the pin, qualification record and receipt together. A stale pin disables exported companions; changed behavior requires requalification.

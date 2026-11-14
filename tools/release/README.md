@@ -37,6 +37,118 @@ Use `--expected-run-id` and `--expected-repository` when independently known. Fo
 
 New exports write `openrc-release-manifest-v2`; the Linux inventory remains `openrc-linux-abi-v1`. Their executable validators are `manifest.validate_metadata` and `elf_audit.validate_report`. Generic verification still accepts historical manifest v1 sets for integrity checks, without a Mac reference-identity claim. Current publication and downloaded retry verification require v2. Unknown versions fail. The release schema fixes the three existing ZIP targets; new formats/architectures require an explicit schema/consumer change.
 
+## Patient release automation
+
+The repository skill is [openrc-release](../../.agents/skills/openrc-release/SKILL.md).
+Use it for preparation, publication or resumption. The
+[release sequence](../../docs/TOOLS.md#release-sequence) owns the gates;
+`watch.py` observes an existing tag CI run and performs no GitHub writes.
+Python 3.11+ and an authenticated `gh` CLI are sufficient. Its offline tests
+need neither GitHub access nor Godot.
+
+### Select and freeze
+
+Inspect local changes and remote main before choosing a candidate. Compare with
+the latest **published** release and all existing tags: failed tags are retained,
+so a new release needs a suitable unused version. A resumed release keeps its
+explicitly pinned candidate and tag. Keep unrelated edits and successful evidence. Record a small
+checkpoint in a fresh ignored `tmp/` directory: base/candidate commit, version,
+tag, required checks and evidence paths, CI run ID, download directory and the
+first unmet gate. Never record tokens, environment dumps or private credentials.
+
+A numeric version bump changes D11g's qualified project inventory. Reconstruct
+the qualified baseline and candidate, compare the complete inventory and retained
+numerical/provenance fields, then renew both guards and exercise positive and
+disposable source/version negative controls. The
+[D11g contract](../../docs/research/aero-consistency/D11g/README.md#r02-provenance-qualification-for-v4)
+owns that review; matching rounded values alone do not justify new hashes.
+Physics/simulation/failure edits also need the existing
+[companion rebind](../companions/README.md). Do not rerun or re-record unrelated
+flight goldens for release metadata.
+
+Use sequential checked imports on isolated projects. Reusing an imported-resource
+cache can avoid expensive unchanged asset work; it does not replace the next
+project's checked import or source-drift check. Select local checks by actual
+dependencies. A local quick pass is partial; the final tag workflow still supplies
+its required full tests, native checks, captures, export and publication gates.
+
+### Observe one exact run
+
+After the reviewed annotated tag and commit are pushed atomically, resolve its
+tag-push run once. A simultaneous `main` run can have the same commit; its success
+does not qualify publication. Pin the full commit, tag, run ID and repository:
+
+```sh
+python3 tools/release/watch.py --repository bultodepapas/OpenRCsimulator \
+  --run-id RUN_ID --expected-commit FULL_REVIEWED_COMMIT --expected-tag vX.Y.Z
+```
+
+`--once` inspects without sleeping. Repeating this command with the same identity
+resumes observation; it does not trigger another workflow. Polling uses real
+sleeps and backs off while the observed state is unchanged. Output is limited to
+state transitions, observed failures and the terminal verdict. Failures identify
+the job/step and a command to obtain its log. An alert arrives on the next poll,
+not as an instantaneous push notification. API errors have bounded retries;
+timeout, identity mismatch and unavailable state never become successful results.
+The CLI's `--help` owns interval, deadline and exit-code details.
+
+For an AI client, launch one asynchronous monitor and retain its process handle.
+Wait with the client's nonblocking wait/sleep facility; consume only new bounded
+output. Keep user updates at the active session's required cadence, using useful
+milestones. Do not fetch every job through another tool in parallel, print full
+logs into context or rerun unchanged checks because a poll was quiet. Retain a
+failing log locally and read its failing step or bounded tail first. If the user
+requests other work while waiting, preserve this candidate and its monitor.
+
+On failure, inspect the first actionable gate. A deterministic failure requires
+a reviewed fix and a new candidate identity; preserve failed tags and evidence.
+Retry only an identified transient infrastructure failure, with a stated finite
+retry budget and unchanged inputs. The monitor never reruns jobs, cancels another
+session, changes a tag, publishes assets or chooses a fallback workflow. Exhausted
+retries, a cancelled workflow or missing evidence require an explicit status
+report, not an invented pass.
+
+### Finish the delivery
+
+A successful monitor means the pinned run is terminal and its `CI required`,
+`Release builds (Windows, Linux, macOS)` and `GitHub release (v* tags)` jobs all
+succeeded. Report the overall workflow conclusion separately: informational
+jobs, including NK-4 Windows, are outside the publication dependencies and can
+fail without blocking those gates. Their alerts remain visible. A skipped,
+missing or ambiguous publication gate cannot establish success. GitHub's run
+API exposes the ref name, not an independently authenticated ref type; use the
+tag's peeled commit and the actual publication jobs as additional evidence.
+Confirm the actual release is published with the expected title/notes and exact six assets, download
+them into a fresh directory and run `manifest.py verify` with independent
+commit/tag/run/repository expectations. The existing same-run publisher remains
+responsible for idempotent publication; never replace different existing assets.
+
+```sh
+gh release download vX.Y.Z --repo bultodepapas/OpenRCsimulator --dir tmp/NEW_DOWNLOAD_DIRECTORY
+python3 tools/release/manifest.py verify --directory tmp/NEW_DOWNLOAD_DIRECTORY \
+  --expected-tag vX.Y.Z --expected-commit FULL_REVIEWED_COMMIT \
+  --expected-run-id RUN_ID --expected-repository bultodepapas/OpenRCsimulator
+python3 -c 'import json,sys; d=json.load(open(sys.argv[1],encoding="utf-8")); sys.exit(0 if d.get("format")=="openrc-release-manifest-v2" else "Current releases require manifest v2")' \
+  tmp/NEW_DOWNLOAD_DIRECTORY/release-manifest.json
+```
+
+The extra format check is intentional: generic manifest verification also accepts
+historical v1 sets, while current publication and downloaded-retry checks require
+v2. All commands above must pass. For large Windows downloads, follow the
+[temporary-storage guidance](../ci/README.md#local-entrypoint).
+
+Only after download verification, update README and the localized website links
+and release copy together. Use the existing locale generator/tests, review
+English/Spanish at 1920×1080 and publish through
+[the website publisher](../../site/README.md#preview-and-maintain). Verify public
+deployment bytes and links. On resumption, continue from the first unmet gate;
+do not repeat a completed download, import, test or publication unless its inputs
+changed, it failed or its evidence is inconclusive.
+
+Report the actual state: prepared, tag pushed, CI passed, published, downloaded
+and verified, website updated. Keep automated software/integrity proof separate
+from native-device, GPU, pilot and physical qualification.
+
 ## Mac reference bundle identity (DT-MAC-02h)
 
 `macos_reference_receipt.py` provides a separate, reference-only identity for a
