@@ -191,19 +191,29 @@ static func flap_elevator_mix_owner(profile: Variant) -> String:
 ## Merge measured radio fields without replacing the user's other channel settings.
 ## Existing AUX axes consumed by the new primary mapping cannot remain active.
 static func merge_radio_calibration(existing: Dictionary, calibration: Dictionary) -> Dictionary:
+	var merged := merge_radio_calibration_result(existing, calibration)
+	return merged.profile if merged.ok else {}
+
+
+## A reviewable merge, including the measured candidate on action-axis conflicts.
+## The caller must resolve those conflicts before saving or applying the candidate.
+static func merge_radio_calibration_result(existing: Dictionary, calibration: Dictionary) -> Dictionary:
+	var failed := {"ok": false, "profile": {}, "removed_aux": [], "conflicts": [], "errors": ["Invalid calibration."]}
 	var normalized := _normalize_schema_keys(existing, 0)
 	if not normalized.ok or typeof(normalized.value) != TYPE_DICTIONARY:
-		return {}
+		return failed
 	var result: Dictionary = normalized.value
 	var measured := upgrade_legacy(calibration)
 	if result.get("kind", "") != "radio" or measured.is_empty() or measured.get("kind", "") != "radio":
-		return {}
+		return failed
 	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
 		var channel: Variant = result.get(channel_name)
 		if typeof(channel) != TYPE_DICTIONARY:
-			return {}
+			return failed
 		for field in ["axis", "invert", "min", "center", "max"]:
 			channel[field] = measured[channel_name][field]
+		channel["range_kind"] = "absolute" if channel_name == "throttle" else "centered"
+	var removed_aux: Array[Dictionary] = []
 	var aux: Variant = result.get("aux", {})
 	if typeof(aux) == TYPE_DICTIONARY:
 		var flight_axes := SmokeAux.flight_axes(result)
@@ -211,6 +221,7 @@ static func merge_radio_calibration(existing: Dictionary, calibration: Dictionar
 			var binding: Variant = aux.get(aux_name)
 			if typeof(binding) == TYPE_DICTIONARY and binding.get("type", "") == "axis" \
 					and typeof(binding.get("axis")) == TYPE_INT and flight_axes.has(binding.axis):
+				removed_aux.append({"channel": str(aux_name), "axis": int(binding.axis), "binding": binding.duplicate(true)})
 				aux.erase(aux_name)
 		# Existing managed callers may intentionally submit a newly assigned AUX
 		# together with calibration. Preserve that supported, validated handoff.
@@ -222,7 +233,21 @@ static func merge_radio_calibration(existing: Dictionary, calibration: Dictionar
 		result["aux"] = aux
 	if result.has("ui_navigation") and not RadioMenu.is_verified(result):
 		result.erase("ui_navigation")
-	return result if validate(result).ok else {}
+	var report := validate(result)
+	var conflicts: Array[Dictionary] = []
+	var bindings := ControllerActions.effective_bindings(result)
+	var only_action_conflicts := true
+	for issue: Dictionary in report.issues:
+		if str(issue.get("code", "")) != "action_flight_axis_conflict":
+			only_action_conflicts = false
+			continue
+		var paths: Array = issue.get("paths", [])
+		var action_id := str(paths[0]).trim_prefix("actions.") if not paths.is_empty() else ""
+		var binding: Variant = bindings.get(action_id, {})
+		conflicts.append({"action": action_id, "axis": int(binding.get("axis", -1)) if binding is Dictionary else -1,
+			"message": str(issue.get("message", ""))})
+	return {"ok": bool(report.ok), "profile": result if report.ok or (only_action_conflicts and not conflicts.is_empty()) else {},
+		"removed_aux": removed_aux, "conflicts": conflicts, "errors": report.errors}
 
 
 ## Old RcCalibration profiles use StringName keys in some in-memory/ConfigFile paths.
@@ -560,9 +585,23 @@ static func normalize_axis(value: float, channel: Dictionary) -> float:
 	if channel.get("range_kind", "centered") == "absolute":
 		var absolute: float = clampf((value - lo) / maxf(hi - lo, 0.000001), 0.0, 1.0)
 		return 1.0 - absolute if channel.get("invert", false) else absolute
+	return _normalize_centered(value, lo, center, hi, bool(channel.get("invert", false)))
+
+
+static func _normalize_centered(value: float, lo: float, center: float, hi: float, invert: bool) -> float:
 	var normalized := (value - center) / maxf(hi - center, 0.000001) if value >= center else (value - center) / maxf(center - lo, 0.000001)
 	normalized = clampf(normalized, -1.0, 1.0)
-	return -normalized if channel.get("invert", false) else normalized
+	return -normalized if invert else normalized
+
+
+## Roll, pitch and yaw are signed commands regardless of an old V2 range_kind.
+## A legacy absolute channel without travel on both sides cannot be interpreted
+## safely as a centered stick, so it produces neutral until repaired.
+static func normalize_signed_axis(value: float, channel: Dictionary) -> float:
+	if not is_finite(value) or not _is_number(channel.get("min")) or not _is_number(channel.get("center")) or not _is_number(channel.get("max")) \
+			or not (float(channel.min) < float(channel.center) and float(channel.center) < float(channel.max)):
+		return 0.0
+	return _normalize_centered(value, float(channel.min), float(channel.center), float(channel.max), bool(channel.get("invert", false)))
 
 
 ## Applies scalar, rescaled deadzone then a single cubic expo stage.
@@ -605,6 +644,8 @@ static func channel_value(raw: float, channel_name: String, profile: Dictionary)
 	var mode := str(profile.get("throttle_mode", "stick_rate" if kind == "gamepad" else "radio_absolute"))
 	if channel_name == "throttle" and mode in ["trigger_absolute", "radio_absolute"]:
 		return normalize_absolute(raw, channel)
+	if channel_name in ["roll", "pitch", "yaw"]:
+		return condition_axis(normalize_signed_axis(raw, channel), channel, kind)
 	return conditioned_axis(raw, channel, kind)
 
 

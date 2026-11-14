@@ -115,6 +115,15 @@ Never put these drafts or deliberate fault controls in the production app.
 - `fault_probe.gd`: four fresh debug processes with patch 0003's factory/enqueue
   faults. Compare the first failed frame against a changed Native reference and
   stale-image negative control before invoking the production recovery adapter.
+- `frame_probe.gd`: actual scene HDR/depth/motion producer with patch 0004;
+  full 1080p finite/sentinel readback, paused cut/toggle receipts, resize and
+  orthographic/alpha/Canvas/Keep rejection. This native fixture passed; its status
+  still labels motion/jitter conventions unverified and the image not presentable.
+- `frame_motion_probe.gd`: draft moving-quad witness with independently rendered
+  midpoint/endpoints, crossfade control, static HDR-to-sRGB calibration and exactly
+  one attempted real render. ROI and margins are fixed in source. Parse and native
+  execution are pending; the Mac transfer timed out. Do not call its intended
+  comparisons a passing result.
 
 Keep the normal full product, its physical backend and audio/HID/effects activation
 separate from these bounded fixtures. The owning plan retains moving-image,

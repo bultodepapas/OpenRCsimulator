@@ -250,7 +250,16 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 	var throttle_low: bool = collective <= float(config.arm_low_throttle)
 
 	# c. Motor lifecycle at the sampled boundary. Terminal states persist until a prepared pad reset.
-	if motor == MOTOR_CRASHED or motor == MOTOR_DEPLETED:
+	if not ready:
+		# OFF while the source lacks current evidence is not an arm edge. A
+		# later ready source must supply a fresh OFF then ON of its own.
+		modes[MODE_OFF_OBSERVED] = 0
+		if motor == MOTOR_CRASHED or motor == MOTOR_DEPLETED:
+			modes[MODE_ARM_BLOCK] = BLOCK_TERMINAL
+		else:
+			motor = MOTOR_DISARMED
+			modes[MODE_ARM_BLOCK] = BLOCK_SOURCE
+	elif motor == MOTOR_CRASHED or motor == MOTOR_DEPLETED:
 		modes[MODE_ARM_BLOCK] = BLOCK_TERMINAL
 		if arm_level == 0:
 			modes[MODE_OFF_OBSERVED] = 1
@@ -259,11 +268,7 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 		motor = MOTOR_DISARMED
 		modes[MODE_ARM_BLOCK] = BLOCK_SWITCH # the next request needs a fresh ON edge
 	elif motor == MOTOR_ARMED:
-		if not ready:
-			motor = MOTOR_DISARMED
-			modes[MODE_ARM_BLOCK] = BLOCK_SOURCE
-			modes[MODE_OFF_OBSERVED] = 0
-		elif new_generation:
+		if new_generation:
 			# Recovery: only an attested OFF then ON at low throttle keeps motor authority across a reconnect.
 			if actions & ACTION_RECOVERY != 0 and throttle_low:
 				modes[MODE_OFF_OBSERVED] = 1
@@ -272,9 +277,7 @@ static func sample(config: Dictionary, frame: Dictionary, input: PackedFloat64Ar
 				modes[MODE_ARM_BLOCK] = BLOCK_SWITCH
 	else:
 		var fresh_edge: bool = modes[MODE_PREVIOUS_ARM] == 0 and modes[MODE_OFF_OBSERVED] == 1
-		if not ready:
-			modes[MODE_ARM_BLOCK] = BLOCK_SOURCE
-		elif not fresh_edge:
+		if not fresh_edge:
 			# A switch still held after a high-throttle refusal keeps that reason until it is cycled.
 			if not (modes[MODE_ARM_BLOCK] == BLOCK_THROTTLE and modes[MODE_PREVIOUS_ARM] == 1):
 				modes[MODE_ARM_BLOCK] = BLOCK_SWITCH

@@ -751,7 +751,8 @@ def load_project_validator(root: Path):
     return module
 
 
-def mac_source_install_identity(app: Path, engine_sha256: str, source_sha256: str) -> dict[str, Any]:
+def mac_source_install_identity(app: Path, engine_sha256: str, source_sha256: str, *,
+                                expected_engine: dict[str, Any] | None = None) -> dict[str, Any]:
     """Bind a source-editor Mac measurement to its checked receipt and selected dylib."""
     native = app / "native/kernel"
     if (app / "native").is_symlink() or native.is_symlink() or native.resolve() != app.resolve() / "native/kernel":
@@ -778,6 +779,11 @@ def mac_source_install_identity(app: Path, engine_sha256: str, source_sha256: st
             or not isinstance(row.get("runtime_os_version"), str) or not row["runtime_os_version"]
             or not isinstance(row.get("runtime_os_build"), str) or not row["runtime_os_build"]):
         raise ValueError("Mac source native receipt does not match the engine, sources or experimental scope")
+    if expected_engine is not None and (not isinstance(expected_engine, dict)
+                                        or expected_engine.get("sha256") != engine_sha256
+                                        or not isinstance(expected_engine.get("research_engine"), dict)
+                                        or row["engine"] != expected_engine):
+        raise ValueError("Mac source native receipt differs from the independently verified research engine")
     binary_sha256 = _sha256_file(library)
     if row.get("binary_sha256") != binary_sha256:
         raise ValueError("Mac source native dylib differs from its receipt")
@@ -893,7 +899,8 @@ def inspect_godot(executable: Path, timeout: float, research_engine: dict[str, A
         identity = mac.godot_identity(executable, mac.locked.load_lock(), research_engine)
         return {"path": identity["path"], "version": identity["version"], "required_version": REQUIRED_GODOT_VERSION,
                 "sha256": identity["sha256"], "runtime_binary_path": identity["path"],
-                "runtime_binary_sha256": identity["sha256"], "research_engine": identity["research_engine"]}
+                "runtime_binary_sha256": identity["sha256"], "research_engine": identity["research_engine"],
+                "source_engine_identity": identity}
     result = subprocess.run(
         [str(executable), "--version"], cwd=executable.parent,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
@@ -960,6 +967,7 @@ def _run_probe(
     mac_native_identity: dict[str, Any] | None = None,
     experimental_native_macos: bool = False,
     mac_source_identity: dict[str, Any] | None = None,
+    expected_source_engine: dict[str, Any] | None = None,
     battery: str | None = None,
     trim_profile: str | None = None,
     expected_engine_display: str = REQUIRED_GODOT_REPORT,
@@ -1000,10 +1008,14 @@ def _run_probe(
         return refused("Experimental Mac release requires verified native and reference bundles")
     if experimental_native_macos and not release_executable and physics_backend == "native" and mac_source_identity is None:
         return refused("Mac native source measurement requires a verified source installation")
+    if mac_source_identity is not None and ((research_environment and expected_source_engine is None)
+                                            or (expected_source_engine is not None and not research_environment)):
+        return refused("Mac research measurement requires its independently verified source-engine identity")
     if mac_source_identity is not None:
         try:
             if (not experimental_native_macos or _sha256_file(godot) != executable_sha256
-                    or mac_source_install_identity(app_dir, executable_sha256, native_source_sha256) != mac_source_identity):
+                    or mac_source_install_identity(app_dir, executable_sha256, native_source_sha256,
+                                                   expected_engine=expected_source_engine) != mac_source_identity):
                 raise ValueError("Mac native source installation or engine changed before the probe")
         except (OSError, ValueError, TypeError) as error:
             return refused(str(error))
@@ -1143,7 +1155,8 @@ def _run_probe(
     if mac_source_identity is not None:
         try:
             if (_sha256_file(godot) != executable_sha256
-                    or mac_source_install_identity(app_dir, executable_sha256, native_source_sha256) != mac_source_identity):
+                    or mac_source_install_identity(app_dir, executable_sha256, native_source_sha256,
+                                                   expected_engine=expected_source_engine) != mac_source_identity):
                 failures.append("Mac native source installation or engine changed during the probe")
         except (OSError, ValueError, TypeError) as error:
             failures.append(f"Mac native source installation or engine changed during the probe: {error}")
@@ -1380,6 +1393,10 @@ def run_campaign(args: argparse.Namespace) -> int:
                 raise RuntimeError("Experimental Mac native release requires a verified Mac app bundle")
             metadata["engine"] = (inspect_godot(godot, args.timeout, research_engine) if research_engine is not None
                                   else inspect_godot(godot, args.timeout))
+            source_engine_identity = (metadata["engine"].get("source_engine_identity")
+                                      if research_engine is not None else None)
+            if research_engine is not None and not isinstance(source_engine_identity, dict):
+                raise ValueError("Missing independently verified research source-engine identity")
             metadata["native_source_sha256"] = native_source_digest(root)
             if not app_dir.is_dir() or not (app_dir / "project.godot").is_file():
                 raise RuntimeError(f"app project directory not found: {app_dir}")
@@ -1398,7 +1415,8 @@ def run_campaign(args: argparse.Namespace) -> int:
             if args.experimental_native_macos and not args.release_executable \
                     and (args.compare_backends or args.physics_backend == "native"):
                 metadata["mac_source_install"] = mac_source_install_identity(
-                    app_dir, metadata["engine"]["sha256"], metadata["native_source_sha256"])
+                    app_dir, metadata["engine"]["sha256"], metadata["native_source_sha256"],
+                    expected_engine=source_engine_identity)
             metadata["probe"] = {
                 "path": str(probe),
                 "sha256": _sha256_file(probe) if probe.is_file() else None,
@@ -1456,6 +1474,7 @@ def run_campaign(args: argparse.Namespace) -> int:
                             mac_native_identity=metadata.get("mac_native_bundle"),
                             experimental_native_macos=args.experimental_native_macos,
                             mac_source_identity=metadata.get("mac_source_install"),
+                            expected_source_engine=source_engine_identity,
                             battery=args.battery,
                             trim_profile=args.trim_profile,
                             expected_engine_display=(research_engine["runtime_version"] if research_engine is not None
@@ -1554,7 +1573,8 @@ def run_campaign(args: argparse.Namespace) -> int:
         if "mac_source_install" in metadata:
             try:
                 if mac_source_install_identity(app_dir, metadata["engine"]["sha256"],
-                                               metadata["native_source_sha256"]) != metadata["mac_source_install"]:
+                                               metadata["native_source_sha256"],
+                                               expected_engine=source_engine_identity) != metadata["mac_source_install"]:
                     failures.append("Mac native source installation changed during the campaign")
             except (OSError, ValueError, TypeError) as error:
                 failures.append(f"Mac native source installation changed during the campaign: {error}")

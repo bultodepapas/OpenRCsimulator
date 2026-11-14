@@ -247,11 +247,20 @@ def architectures(binary: Path) -> list[str]:
     return sorted(result)
 
 
-def _research_engine_output(command: list[str], *, cwd: str | None = None) -> str:
+def _research_engine_output(command: list[str], *, cwd: str | None = None,
+                            expected_diagnostic: str | None = None) -> str:
     env = engine_policy.clean_child_environment()
     env["LC_ALL"] = "C"
-    result = subprocess.run(command, check=True, text=True, capture_output=True, timeout=120, env=env, cwd=cwd)
+    if expected_diagnostic not in (None, engine_policy.CONTROL_DIAGNOSTIC):
+        raise ValueError("Unexpected extension API validator control")
+    result = subprocess.run(command, check=expected_diagnostic is None, text=True, capture_output=True,
+                            timeout=120, env=env, cwd=cwd)
     combined = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", result.stdout + "\n" + result.stderr)
+    if expected_diagnostic is not None:
+        if result.returncode not in (0, 1):
+            raise subprocess.CalledProcessError(result.returncode, command, output=result.stdout, stderr=result.stderr)
+        engine_policy._require_control_diagnostic(combined)
+        return combined
     engine_policy._reject_api_diagnostics(combined)
     return result.stdout.strip()
 

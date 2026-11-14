@@ -51,7 +51,7 @@ const KIND_TITLES := { radio = "Radio", gamepad = "Gamepad", joystick = "Joystic
 const KIND_DESCRIPTIONS := {
 	radio = "RC transmitter in USB joystick mode: EdgeTX, OpenTX, JETI and others.",
 	gamepad = "Xbox, PlayStation, Nintendo or another game controller.",
-	joystick = "Flight stick or other USB joystick. It is calibrated like a radio.",
+	joystick = "Flight stick or other USB joystick. Assign its axes with Detect in Flight axes.",
 }
 const GAMEPAD_PRESETS: PackedStringArray = ["mode1", "mode2", "trigger_absolute"]
 const STICK_PRESETS: PackedStringArray = ["mode1", "mode2"]
@@ -508,7 +508,7 @@ func _update_footer() -> void:
 	back_button.visible = _index > 0
 	back_button.disabled = busy
 	cancel_button.disabled = busy
-	skip_button.visible = id in SKIPPABLE_STEPS
+	skip_button.visible = id in SKIPPABLE_STEPS and not (id == "calibrate" and _kind == "joystick")
 	skip_button.disabled = busy
 	next_button.text = "Save" if id == "summary" else "Next"
 	next_button.accessibility_name = tr("Save controller settings") if id == "summary" else tr("Next step")
@@ -838,7 +838,7 @@ func _build_calibrate(parent: Control) -> void:
 
 func _refresh_calibrate() -> void:
 	var joystick := _kind == "joystick"
-	_calibrate_heading.text = "Calibrate the joystick" if joystick else "Calibrate the radio"
+	_calibrate_heading.text = "Assign the joystick axes" if joystick else "Calibrate the radio"
 	var lines := JOYSTICK_CHECKLIST if joystick else RADIO_CHECKLIST
 	if _checklist.get_child_count() != lines.size() or str(_checklist.get_meta("kind", "")) != _kind:
 		for child in _checklist.get_children():
@@ -853,8 +853,10 @@ func _refresh_calibrate() -> void:
 	var busy := _busy == BUSY_CALIBRATION
 	start_calibration_button.disabled = is_busy()
 	start_calibration_button.text = "Calibrate again" if _calibration == "ok" else "Start calibration"
+	if joystick: start_calibration_button.text = "Open Flight axes"
 	start_calibration_button.accessibility_name = tr("Calibrate again") if _calibration == "ok" else tr("Start calibration")
 	var text := ""
+	if joystick: text = tr("Continue in Flight axes: use Detect for each axis, verify the mapping, and explicitly enable it before Save.")
 	var color := UiTheme.FOCUS
 	if busy:
 		text = tr("Calibration is running…")
@@ -873,6 +875,9 @@ func _refresh_calibrate() -> void:
 
 func _start_calibration() -> void:
 	if _closing or is_busy() or current_step() != "calibrate":
+		return
+	if _kind == "joystick":
+		_host_bool("open_flight_axes", [])
 		return
 	_calibration_start_error = ""
 	if not _host_bool("request_calibration", []):

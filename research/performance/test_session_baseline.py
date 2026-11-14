@@ -370,7 +370,8 @@ class EngineInspectionTests(unittest.TestCase):
                             inspect_godot(executable, 30)
 
     def test_custom_engine_requires_the_explicit_shared_identity_verifier(self):
-        selection = {"sha256": "a" * 64, "cli_version": "4.8.beta2.openrc_metalfx"}
+        selection = {"sha256": "a" * 64, "cli_version": "4.8.beta2.openrc_metalfx",
+                     "reference_godot": "/official/Godot"}
         identity = {"path": "/local/Godot", "version": "4.8.beta2.openrc_metalfx", "sha256": "a" * 64,
                     "architectures": ["arm64"], "research_engine": {"selection": selection}}
         mac = SimpleNamespace(locked=SimpleNamespace(load_lock=lambda: {"lock": "fixture"}),
@@ -381,6 +382,7 @@ class EngineInspectionTests(unittest.TestCase):
             observed = inspect_godot(Path("/local/Godot"), 30, selection)
         mac.godot_identity.assert_called_once_with(Path("/local/Godot"), {"lock": "fixture"}, selection)
         self.assertEqual(observed["research_engine"], identity["research_engine"])
+        self.assertEqual(observed["source_engine_identity"], identity)
         self.assertEqual(observed["runtime_binary_sha256"], selection["sha256"])
 
 
@@ -557,10 +559,30 @@ class PreparedMacSourceTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 mac_source_install_identity(app, engine_sha, "c" * 64)
 
+    def test_research_receipt_binds_full_verified_engine_not_only_binary(self):
+        with tempfile.TemporaryDirectory(prefix="session-mac-research-") as directory:
+            app, executable, _library, receipt = self._installation(Path(directory))
+            engine_sha = _sha256_file(executable)
+            selected = {"path": str(executable), "sha256": engine_sha, "version": "4.8.beta2.openrc_metalfx",
+                        "architectures": ["arm64"], "research_engine": {
+                            "binding_api_4_7": {"sha256": "a" * 64},
+                            "compatibility_api_4_8": {"sha256": "b" * 64}}}
+            row = receipt["platforms"]["macos"]
+            row["engine"] = copy.deepcopy(selected)
+            receipt_file = app / "native/kernel/build-receipt-macos.json"
+            receipt_file.write_text(json.dumps(receipt))
+            mac_source_install_identity(app, engine_sha, "c" * 64, expected_engine=selected)
+            for field in ("binding_api_4_7", "compatibility_api_4_8"):
+                row["engine"] = copy.deepcopy(selected)
+                row["engine"]["research_engine"][field]["sha256"] = "0" * 64
+                receipt_file.write_text(json.dumps(receipt))
+                with self.subTest(field=field), self.assertRaisesRegex(ValueError, "independently verified research engine"):
+                    mac_source_install_identity(app, engine_sha, "c" * 64, expected_engine=selected)
+
     def test_opt_in_is_explicit_and_native_fallback_or_binary_changes_fail(self):
         with tempfile.TemporaryDirectory(prefix="session-mac-probe-") as directory:
             root = Path(directory)
-            app, executable, library, _receipt = self._installation(root)
+            app, executable, library, receipt = self._installation(root)
             probe, output, log = root / "probe.gd", root / "report.json", root / "run.log"
             probe.write_text("# probe")
             engine_sha = _sha256_file(executable)
@@ -572,7 +594,8 @@ class PreparedMacSourceTests(unittest.TestCase):
             environments = []
 
             def run_case(candidate, *, requested=True, source=identity, backend="native", change_library=False,
-                         engine_display=baseline.REQUIRED_GODOT_REPORT, research_environment=False):
+                         engine_display=baseline.REQUIRED_GODOT_REPORT, research_environment=False,
+                         expected_source_engine=None, change_receipt=False):
                 class Process:
                     returncode = 0
                     def __init__(self, command, **_kwargs):
@@ -581,6 +604,9 @@ class PreparedMacSourceTests(unittest.TestCase):
                     def wait(self, timeout):
                         if change_library:
                             library.write_bytes(b"changed while measured")
+                        if change_receipt:
+                            receipt["platforms"]["macos"]["engine"]["research_engine"]["compatibility_api_4_8"] = "changed"
+                            (app / "native/kernel/build-receipt-macos.json").write_text(json.dumps(receipt))
                         return 0
                 with patch("subprocess.Popen", Process):
                     return _run_probe(godot=executable, app_dir=app, probe=probe, output_json=output, log_path=log,
@@ -588,7 +614,8 @@ class PreparedMacSourceTests(unittest.TestCase):
                                       warmup_ticks=4, sample_ticks=5, timeout=5, physics_backend=backend,
                                       native_source_sha256="c" * 64, executable_sha256=engine_sha,
                                       experimental_native_macos=requested, mac_source_identity=source,
-                                      expected_engine_display=engine_display, research_environment=research_environment)
+                                      expected_engine_display=engine_display, research_environment=research_environment,
+                                      expected_source_engine=expected_source_engine)
 
             accepted = run_case(report)
             self.assertTrue(accepted["accepted"], accepted["failures"])
@@ -598,11 +625,25 @@ class PreparedMacSourceTests(unittest.TestCase):
             self.assertFalse(run_case(custom)["accepted"])
             self.assertTrue(run_case(custom, engine_display=custom["machine"]["godot"])["accepted"])
             self.assertFalse(run_case(report, engine_display=custom["machine"]["godot"])["accepted"])
+            selected = {"path": str(executable), "sha256": engine_sha, "version": "4.8.beta2.openrc_metalfx",
+                        "architectures": ["arm64"], "research_engine": {"compatibility_api_4_8": "verified"}}
+            receipt["platforms"]["macos"]["engine"] = copy.deepcopy(selected)
+            receipt_file = app / "native/kernel/build-receipt-macos.json"
+            receipt_file.write_text(json.dumps(receipt))
+            research_identity = mac_source_install_identity(app, engine_sha, "c" * 64, expected_engine=selected)
             with patch.dict(os.environ, {"DYLD_INSERT_LIBRARIES": "/tmp/injected", "ASAN_OPTIONS": "bad"}):
                 self.assertTrue(run_case(custom, engine_display=custom["machine"]["godot"],
-                                         research_environment=True)["accepted"])
+                                         research_environment=True, source=research_identity,
+                                         expected_source_engine=selected)["accepted"])
                 self.assertNotIn("DYLD_INSERT_LIBRARIES", environments[-1])
                 self.assertNotIn("ASAN_OPTIONS", environments[-1])
+            self.assertFalse(run_case(custom, engine_display=custom["machine"]["godot"],
+                                      research_environment=True, source=research_identity)["accepted"])
+            self.assertFalse(run_case(custom, engine_display=custom["machine"]["godot"], research_environment=True,
+                                      source=research_identity, expected_source_engine=selected,
+                                      change_receipt=True)["accepted"])
+            receipt["platforms"]["macos"]["engine"] = {"sha256": engine_sha}
+            receipt_file.write_text(json.dumps(receipt))
             self.assertFalse(run_case(dict(report, experimental_native_macos=False))["accepted"])
             self.assertFalse(run_case(report, source=None)["accepted"])
             fallback = dict(report, backend={"requested": "native", "actual": {"backend": "gdscript_reference"},
@@ -616,6 +657,66 @@ class PreparedMacSourceTests(unittest.TestCase):
             self.assertNotIn("--experimental-native-macos=true", without_opt_in["command"])
             self.assertFalse(run_case(dict(reference, experimental_native_macos=True), requested=False,
                                       source=None, backend="gdscript_reference")["accepted"])
+
+    def test_research_campaign_binds_receipt_before_and_after_measurement(self):
+        with tempfile.TemporaryDirectory(prefix="session-research-campaign-") as directory:
+            root = Path(directory)
+            app, engine, library, receipt = self._installation(root)
+            (app / "project.godot").write_text("config_version=5\n")
+            digest = _sha256_file(engine)
+            selected = {"path": str(engine), "version": "4.8.beta2.openrc_metalfx", "sha256": digest,
+                        "architectures": ["arm64"], "research_engine": {"compatibility_api_4_8": "verified"}}
+            selection = {"runtime_version": "4.8-beta2 (openrc_metalfx)"}
+            metadata = {"path": str(engine), "sha256": digest, "research_engine": selected["research_engine"],
+                        "source_engine_identity": selected}
+            receipt_file = app / "native/kernel/build-receipt-macos.json"
+            proof = {"checked_files": 1}
+            seen = []
+
+            def campaign(output, mode):
+                receipt["platforms"]["macos"]["engine"] = copy.deepcopy(selected)
+                if mode == "before":
+                    receipt["platforms"]["macos"]["engine"]["research_engine"]["compatibility_api_4_8"] = "changed"
+                receipt_file.write_text(json.dumps(receipt))
+                seen.clear()
+                def probe(**kwargs):
+                    seen.append(kwargs["expected_source_engine"])
+                    report = valid_current_report(kwargs["physics_backend"])
+                    report["machine"].update(os="macOS", architecture="arm64", godot=selection["runtime_version"])
+                    report.update(experimental_native_macos=True, template_release=False, solver_identity_kind="source-tree-v1")
+                    if kwargs["physics_backend"] == "native":
+                        report["backend"]["actual"]["binary_sha256"] = _sha256_file(library)
+                    if mode == "during" and len(seen) == 1:
+                        receipt["platforms"]["macos"]["engine"]["research_engine"]["compatibility_api_4_8"] = "changed"
+                        receipt_file.write_text(json.dumps(receipt))
+                    kwargs["output_json"].write_text(json.dumps(report))
+                    return {"accepted": True, "report": report, "failures": [], "validation_errors": [],
+                            "report_file": str(kwargs["output_json"]), "log": str(kwargs["log_path"])}
+                args = ["--godot", str(engine), "--project", str(app), "--out", str(output),
+                        "--aircraft", "jensen-das-ugly-stik-60", "--case", "trim", "--warmup-ticks", "4",
+                        "--sample-ticks", "5", "--repeats", "1", "--compare-backends", "--experimental-native-macos"]
+                validator = SimpleNamespace(validate_project=unittest.mock.Mock(return_value=proof))
+                with patch.object(baseline.ENGINE_POLICY, "selection_from_args", return_value=selection), \
+                     patch.object(baseline, "capture_system_identity", return_value={"system": "Darwin", "machine": "arm64"}), \
+                     patch.object(baseline, "capture_workspace_identity", return_value={}), \
+                     patch.object(baseline, "inspect_godot", return_value=metadata), \
+                     patch.object(baseline, "native_source_digest", return_value="c" * 64), \
+                     patch.object(baseline, "app_source_digest", return_value="app-digest"), \
+                     patch.object(baseline, "load_project_validator", return_value=validator), \
+                     patch.object(baseline, "_run_probe", side_effect=probe):
+                    result = baseline.main(args)
+                return result, json.loads((output / "session_baseline.json").read_text())
+
+            code, report = campaign(root / "good", "good")
+            self.assertEqual(code, 0, report["failures"])
+            self.assertEqual(seen, [selected, selected])
+            code, report = campaign(root / "bad-before", "before")
+            self.assertEqual(code, 1)
+            self.assertEqual(seen, [])
+            self.assertIn("independently verified research engine", report["failures"][0])
+            code, report = campaign(root / "bad-during", "during")
+            self.assertEqual(code, 1)
+            self.assertTrue(any("independently verified research engine" in failure for failure in report["failures"]))
 
     def test_release_and_campaign_comparison_do_not_silently_ignore_source_flags(self):
         with tempfile.TemporaryDirectory(prefix="session-flags-") as directory:
@@ -684,7 +785,7 @@ class PreparedMacSourceTests(unittest.TestCase):
             original_campaign = campaign_path.read_bytes()
             original_raw = {}
             local_report = copy.deepcopy(report)
-            selection = {"runtime_version": "4.8-beta2 (openrc_metalfx)"}
+            selection = {"runtime_version": "4.8-beta2 (openrc_metalfx)", "reference_godot": "/official/Godot"}
             local_report["metadata"]["engine"] = {"path": str(engine), "sha256": _sha256_file(engine),
                                                    "research_engine": {"selection": selection}}
             for pair in local_report["pairs"]:

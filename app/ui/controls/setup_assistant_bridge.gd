@@ -76,7 +76,9 @@ func apply_preset(preset_id: String) -> bool:
 	var kind := str(setup.current_profile().get("kind", ""))
 	if kind != "gamepad":
 		# Radios and joysticks: Mode 1/2 only names the stick layout; calibration detects the channels.
-		return preset_id in ["mode1", "mode2"]
+		if preset_id not in ["mode1", "mode2"]: return false
+		setup._live_stick_mode = 1 if preset_id == "mode1" else 2
+		return true
 	if preset_id not in ["mode1", "mode2", "trigger_absolute"]:
 		_error = tr("This stick layout could not be applied.")
 		return false
@@ -104,6 +106,12 @@ func request_calibration() -> bool:
 		_error = tr("During a flight, recalibrate this radio from Pause → Controls.")
 		return false
 	setup.calibration_requested.emit()
+	return true
+
+
+func open_flight_axes() -> bool:
+	if str(setup.current_profile().get("kind", "")) != "joystick": return false
+	setup.handoff_assistant_to_axes()
 	return true
 
 

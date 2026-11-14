@@ -1348,6 +1348,8 @@ var profiles_path := "user://rc_calibration.cfg"
 var external_controller_selection := false
 var persist_controller_profile := Callable()
 var persist_full_controller_profile := Callable()
+var controller_connection_generation := Callable()
+var _calibration_generation := -1
 var _controller_lost := false
 var _pending_controller_start := -1.0
 var controller_cut_held := false
@@ -1356,6 +1358,8 @@ var controller_cut_held := false
 var throttle_holds := {}
 ## The calibration wizard while it runs, else null.
 var calibration: RefCounted = null
+## Measured but unapplied calibration, retained for resolving a failed managed save in Controls.
+var pending_controller_calibration: Dictionary = {}
 ## Source enable, stored with accepted simulation modes. Glow/electric shafts can coast or windmill
 ## while disabled; their continuous dynamics own RPM and passive propeller loads.
 var engine_running: bool:
@@ -1845,6 +1849,7 @@ func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 		print("radio connected: %s (%s profile)" % [radio.device_key, radio.profile_source])
 	elif not is_connected and radio.connected and device == radio.device_id:
 		calibration = null
+		pending_controller_calibration.clear()
 		radio.disconnect_device()
 		_failsafe("radio disconnected")
 
@@ -1853,6 +1858,10 @@ func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 func start_calibration() -> bool:
 	if external_driver_enabled or not radio.connected or radio.profile.get("kind", "") != "radio":
 		return false
+	_calibration_generation = int(controller_connection_generation.call(radio.device_id)) if controller_connection_generation.is_valid() else -1
+	if external_controller_selection and _calibration_generation <= 0:
+		return false
+	pending_controller_calibration.clear()
 	calibration = RcCalibration.new(radio.profile)
 	radio.set_auxiliary_enabled(false)
 	_failsafe("calibrating radio")
@@ -1863,11 +1872,26 @@ func start_calibration() -> bool:
 func advance_calibration() -> void:
 	if external_driver_enabled or calibration == null:
 		return
+	if _calibration_generation > 0 and (not controller_connection_generation.is_valid() \
+			or int(controller_connection_generation.call(radio.device_id)) != _calibration_generation):
+		calibration = null
+		pending_controller_calibration.clear()
+		pause_reason = "The radio connection changed. Calibration was cancelled."
+		return
 	if calibration.advance(radio.axes):
+		var warning_value: Variant = calibration.get("aux_warning")
+		var warning: String = str(warning_value) if warning_value != null else ""
 		if external_controller_selection and persist_controller_profile.is_valid():
 			var result: Dictionary = persist_controller_profile.call(calibration.profile)
+			if result.get("ok", false):
+				pending_controller_calibration.clear()
+			else:
+				pending_controller_calibration = {"profile": calibration.profile.duplicate(true),
+					"device_id": radio.device_id, "device_key": radio.device_key,
+					"generation": _calibration_generation, "warning": warning}
 			calibration = null
 			pause_reason = "Radio calibrated. Lower throttle again before continuing." if result.get("ok", false) else "Calibration not saved: " + str(result.get("error", "storage error"))
+			if not warning.is_empty(): pause_reason += " " + warning
 			return
 		var completed: Dictionary = calibration.profile.duplicate(true)
 		if not radio.profile.get("configured", false):
@@ -1879,6 +1903,7 @@ func advance_calibration() -> void:
 		var err := RcCalibration.save_profile(profiles_path, radio.device_key, completed) if unique_legacy else ERR_ALREADY_IN_USE
 		calibration = null
 		pause_reason = "radio calibrated%s" % ("" if err == OK else ", NOT saved (error %d)" % err)
+		if not warning.is_empty(): pause_reason += " " + warning
 		print(pause_reason, ": ", radio.device_key)
 
 
@@ -1934,6 +1959,7 @@ func apply_controller_selection(device: int, info: Dictionary, profile: Dictiona
 	if external_driver_enabled:
 		return false
 	controller_cut_held = false
+	pending_controller_calibration.clear()
 	var staged_throttle: float = float(commands.throttle) if initial_start else 0.0
 	calibration = null
 	radio.disconnect_device()
@@ -1955,6 +1981,7 @@ func apply_controller_selection(device: int, info: Dictionary, profile: Dictiona
 
 func controller_disconnected() -> void:
 	controller_cut_held = false
+	pending_controller_calibration.clear()
 	calibration = null
 	radio.disconnect_device()
 	_controller_lost = true
@@ -1963,6 +1990,7 @@ func controller_disconnected() -> void:
 
 
 func controller_focus_lost() -> void:
+	pending_controller_calibration.clear()
 	if external_controller_selection and radio.connected:
 		radio.set_auxiliary_enabled(false)
 		radio.require_neutral(true, true)

@@ -13,15 +13,15 @@ const STEPS := ["rest", "throttle", "roll", "pitch", "yaw"]
 # each host shows its own Next button or key hint.
 const PROMPTS := {
 	rest = "Centre the sticks EXCEPT the THROTTLE: leave the THROTTLE fully DOWN (LOW). Keep these positions.",
-	throttle = "Move the THROTTLE to FULL and back to LOW.",
+	throttle = "Move the THROTTLE to FULL, hold briefly, then return to LOW and hold.",
 	roll = "Hold the ROLL stick (aileron) fully RIGHT.",
 	pitch = "Hold the PITCH stick (elevator) fully BACK.",
 	yaw = "Hold the YAW stick (rudder) fully RIGHT.",
 }
 const OPPOSITE_PROMPTS := {
-	roll = "Move the ROLL stick (aileron) fully LEFT, then centre.",
-	pitch = "Move the PITCH stick (elevator) fully FORWARD, then centre.",
-	yaw = "Move the YAW stick (rudder) fully LEFT, then centre.",
+	roll = "Move the ROLL stick (aileron) fully LEFT, hold briefly, then centre and hold.",
+	pitch = "Move the PITCH stick (elevator) fully FORWARD, hold briefly, then centre and hold.",
+	yaw = "Move the YAW stick (rudder) fully LEFT, hold briefly, then centre and hold.",
 }
 ## Requested direction per centred function: the held endpoint first, then the opposite one (read-only queries).
 const HELD_DIRECTIONS := { roll = "right", pitch = "back", yaw = "right" }
@@ -33,8 +33,13 @@ const EXTRA_AUX_CHANNELS: PackedStringArray = ["flaps", "gear", "arm", "flight_m
 const MIN_SWEEP := 0.5
 ## A second moving channel or a stick left away from its starting position makes an assignment ambiguous.
 const OTHER_AXIS_THRESHOLD := 0.25
-const THROTTLE_RETURN_FRACTION := 0.05
-const CENTER_RETURN_FRACTION := 0.1
+## A bounded five-sample window estimates rest and returns; three consecutive
+## samples support an endpoint. These are sample counts, not a timing guarantee.
+const STABLE_SAMPLES := 5
+const ENDPOINT_SAMPLES := 3
+const STABLE_SPREAD := 0.02
+const REST_AGREEMENT := 0.02
+const VERIFY_IDLE_FRACTION := 0.01
 ## A held deflection must be distinguishable from small center noise. Endpoint validation still
 ## requires a full sweep and adequate travel on both sides before accepting the channel.
 const DIRECTION_THRESHOLD := 0.1
@@ -51,6 +56,8 @@ var _used := {}
 var _preserved_smoke: Dictionary = {}
 var _preserved_extra_aux: Dictionary = {}
 var aux_warning: String = ""
+var aux_removals: Array[Dictionary] = []
+var _window: Array[PackedFloat64Array] = []
 
 
 func _init(existing_profile: Dictionary = {}) -> void:
@@ -143,15 +150,33 @@ func sweep_max(axis: int) -> float:
 
 ## Feed the latest raw axes, once per tick.
 func sample(axes: PackedFloat64Array) -> void:
-	if step == 0 or done():
-		return
 	if not _valid_axis_sample(axes):
 		error = "invalid axis sample; calibration needs ten finite axes in the -1…+1 range"
 		_reset_sweep()
 		return
+	_window.append(axes.duplicate())
+	if _window.size() > STABLE_SAMPLES:
+		_window.pop_front()
+	if step == 0 or done():
+		return
 	for i in RcInput.AXES:
-		_lo[i] = minf(_lo[i], axes[i])
-		_hi[i] = maxf(_hi[i], axes[i])
+		var endpoint := stable_axis(i, ENDPOINT_SAMPLES)
+		if endpoint.ok:
+			_lo[i] = minf(_lo[i], endpoint.value)
+			_hi[i] = maxf(_hi[i], endpoint.value)
+
+
+## Median of the latest bounded window, only when its spread is small.
+func stable_axis(axis: int, count: int = STABLE_SAMPLES) -> Dictionary:
+	if axis < 0 or axis >= RcInput.AXES or count < 1 or count > STABLE_SAMPLES or _window.size() < count:
+		return {"ok": false, "value": 0.0}
+	var values: Array[float] = []
+	for index in range(_window.size() - count, _window.size()):
+		values.append(_window[index][axis])
+	values.sort()
+	if values.back() - values.front() > STABLE_SPREAD:
+		return {"ok": false, "value": 0.0}
+	return {"ok": true, "value": values[count >> 1]}
 
 
 ## The pilot pressed Enter. Returns true when the wizard finished. On a problem, sets `error` and stays on the step.
@@ -164,13 +189,18 @@ func advance(axes: PackedFloat64Array) -> bool:
 		if step > 0:
 			_reset_sweep()
 		return false
+	# Include the confirmation sample even when a caller has not sampled this frame.
+	sample(axes)
 	if step == 0:
-		_rest = axes.duplicate()
+		for i in RcInput.AXES:
+			var neutral := stable_axis(i)
+			if not neutral.ok:
+				error = "Hold the sticks and throttle LOW still before continuing."
+				return false
+			_rest[i] = neutral.value
 		_next()
 		return false
 	var name: String = STEPS[step]
-	# Include the Enter sample even when a caller has not sampled this frame.
-	sample(axes)
 	if name != "throttle" and _direction_axis < 0:
 		_capture_direction(axes)
 		return false
@@ -190,19 +220,25 @@ func advance(axes: PackedFloat64Array) -> bool:
 			error = "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
 			_reset_sweep()
 			return false
+	var returned := stable_axis(best)
+	if not returned.ok:
+		error = "Hold the stick still at LOW before continuing." if name == "throttle" else "Hold the stick still at centre before continuing."
+		return false
 	var lo := _lo[best]
 	var hi := _hi[best]
 	if name == "throttle":
 		# The pilot started at LOW (the rest reading): whichever end is nearer rest is idle.
-		var return_tolerance: float = THROTTLE_RETURN_FRACTION * (hi - lo)
-		if absf(axes[best] - _rest[best]) > return_tolerance or minf(absf(_rest[best] - lo), absf(_rest[best] - hi)) > return_tolerance:
+		if absf(float(returned.value) - _rest[best]) > REST_AGREEMENT or minf(absf(_rest[best] - lo), absf(_rest[best] - hi)) > REST_AGREEMENT:
 			error = "Return throttle to LOW before continuing; then try again."
 			_reset_sweep()
 			return false
-		profile.throttle = { axis = best, invert = absf(_rest[best] - hi) < absf(_rest[best] - lo), min = lo, center = lo, max = hi }
+		var inverted := absf(_rest[best] - hi) < absf(_rest[best] - lo)
+		if inverted: hi = returned.value
+		else: lo = returned.value
+		profile.throttle = { axis = best, invert = inverted, min = lo, center = lo, max = hi }
 	else:
-		var c := _rest[best]
-		if c - lo < 0.2 * (hi - lo) or hi - c < 0.2 * (hi - lo) or absf(axes[best] - c) > CENTER_RETURN_FRACTION * minf(c - lo, hi - c):
+		var c: float = returned.value
+		if c - lo < 0.2 * (hi - lo) or hi - c < 0.2 * (hi - lo) or absf(c - _rest[best]) > REST_AGREEMENT:
 			error = "the stick did not return to centre before you continued (or moved only one way); try again"
 			_reset_sweep()
 			return false
@@ -224,17 +260,22 @@ func _capture_direction(axes: PackedFloat64Array) -> void:
 		error = "An already assigned axis moved. Restart calibration and check each requested stick." if _assigned_axis_moved() else "Hold the requested direction away from centre before continuing; then try again."
 		_reset_sweep()
 		return
+	var held := stable_axis(best)
+	if not held.ok:
+		error = "Hold the requested direction still before continuing."
+		return
 	for i in RcInput.AXES:
 		if i != best and (_hi[i] - _lo[i] >= OTHER_AXIS_THRESHOLD or absf(axes[i] - _rest[i]) >= DIRECTION_THRESHOLD):
 			error = "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
 			_reset_sweep()
 			return
-	var direction := signf(axes[best] - _rest[best])
+	var direction := signf(float(held.value) - _rest[best])
 	# Only the explicitly held endpoint and subsequent opposite sweep form the accepted range.
 	_reset_sweep()
 	_direction_axis = best
 	_direction_sign = direction
-	sample(axes)
+	_lo[best] = minf(_lo[best], held.value)
+	_hi[best] = maxf(_hi[best], held.value)
 
 
 func _assigned_axis_moved() -> bool:
@@ -254,6 +295,7 @@ func _next() -> void:
 func _reset_sweep() -> void:
 	_direction_axis = -1
 	_direction_sign = 0.0
+	_window.clear()
 	for i in RcInput.AXES:
 		_lo[i] = _rest[i]
 		_hi[i] = _rest[i]
@@ -340,8 +382,7 @@ func _preserve_smoke_if_clear() -> void:
 		if SmokeAux.valid_binding(_preserved_extra_aux[channel_name], SmokeAux.flight_axes(profile)):
 			extra[channel_name] = _preserved_extra_aux[channel_name].duplicate(true)
 		else:
-			aux_warning = "Existing %s control overlaps a newly calibrated AETR axis; reassign that auxiliary channel." % channel_name
-			push_warning(aux_warning)
+			_record_aux_removal(channel_name, _preserved_extra_aux[channel_name])
 	if not extra.is_empty(): profile["aux"] = extra
 	if _preserved_smoke.is_empty():
 		return
@@ -349,8 +390,13 @@ func _preserve_smoke_if_clear() -> void:
 		if not profile.has("aux"): profile["aux"] = {}
 		profile.aux["smoke"] = _preserved_smoke.duplicate(true)
 		return
-	aux_warning = "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment."
-	push_warning(aux_warning)
+	_record_aux_removal("smoke", _preserved_smoke)
+
+
+func _record_aux_removal(channel_name: String, binding: Dictionary) -> void:
+	aux_removals.append({"channel": channel_name, "axis": int(binding.get("axis", -1)), "binding": binding.duplicate(true)})
+	var message := "Existing %s control on axis %d overlaps a newly calibrated flight axis; reassign it." % [channel_name, int(binding.get("axis", -1))]
+	aux_warning += (" " if not aux_warning.is_empty() else "") + message
 
 
 ## Persisted wizard profiles are radios; the built-in gamepad rate profile is not a calibration.

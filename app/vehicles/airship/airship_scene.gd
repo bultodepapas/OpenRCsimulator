@@ -5,6 +5,9 @@ extends Node3D
 
 const Session = preload("res://sim/airship/session.gd")
 const PilotInput = preload("res://input/airship_input.gd")
+const RcInput = preload("res://input/rc_input.gd")
+const ControllerActions = preload("res://input/controller_actions.gd")
+const ControllerProfile = preload("res://input/controller_profile.gd")
 const Visual = preload("res://vehicles/airship/airship_visual.gd")
 const Hud = preload("res://vehicles/airship/airship_hud.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -40,6 +43,8 @@ var startup_error := ""
 var skin_id := "tiburon-blanco"
 var departure_managed := false
 var controller_registry: RefCounted
+var controller_profile_for := Callable()
+var controller_confirmation := Callable()
 var field_path: String = FieldLoader.DEFAULT_PATH
 var lighting_config: Dictionary = LightingConfig.defaults()
 var night_options := {}
@@ -85,6 +90,11 @@ var _mechanical: Node3D
 var _servo_anchors: Array = []
 var _servo_anchor_visual := 0
 var _pilot_position := Vector3.ZERO
+var _lost_device_key := ""
+var _controller_generation := 0
+var _pause_bindings := {}
+var _pause_held := {}
+var _pause_axis_ready := {}
 
 
 func _ready() -> void:
@@ -155,8 +165,11 @@ func _ready() -> void:
 			_lens.reset())
 	_start_lens()
 	session.faulted.connect(func(reason: String) -> void: _open_menu("Simulation paused: " + reason))
-	input.connect_first_device()
+	_connect_selected_controller()
 	Input.joy_connection_changed.connect(_joy_connection_changed)
+	if _has_registry() and controller_registry.has_signal("selection_changed"):
+		controller_registry.selection_changed.connect(_on_controller_selection_changed)
+	_refresh_pause_bindings()
 	if enable_audio:
 		_build_audio()
 	_chase_heading = deg_to_rad(float(session.options.heading_deg))
@@ -241,6 +254,9 @@ func _exit_tree() -> void:
 		visual.dispose_lighting()
 	if Input.joy_connection_changed.is_connected(_joy_connection_changed):
 		Input.joy_connection_changed.disconnect(_joy_connection_changed)
+	if _has_registry() and controller_registry.has_signal("selection_changed") \
+			and controller_registry.selection_changed.is_connected(_on_controller_selection_changed):
+		controller_registry.selection_changed.disconnect(_on_controller_selection_changed)
 
 
 func _load_field() -> bool:
@@ -298,16 +314,174 @@ func _session_options() -> Dictionary:
 	return options
 
 
-func _joy_connection_changed(id: int, connected: bool) -> void:
-	input.on_connection_changed(id, connected)
-	if not session.paused:
-		_open_menu(input.message)
+func _has_registry() -> bool:
+	return controller_registry != null and controller_registry.has_method("selected_device_id")
+
+
+func _connect_selected_controller() -> void:
+	if not _has_registry():
+		input.connect_first_device()
+		_bind_gamepad_confirmation()
+		return
+	var id := int(controller_registry.selected_device_id("flight"))
+	var info: Dictionary = controller_registry.device_for_id(id)
+	if id < 0 or not bool(info.get("connected", false)):
+		input.use_keyboard()
+		_controller_generation = 0
+		return
+	var profile: Dictionary = controller_profile_for.call(id) if controller_profile_for.is_valid() else {}
+	input.connect_device(id, info, profile)
+	_controller_generation = int(controller_registry.connection_generation(id))
+	_lost_device_key = ""
+	_bind_gamepad_confirmation()
+
+
+func _bind_gamepad_confirmation() -> void:
+	input.radio.confirmed_gamepad_connection = Callable()
+	if not input.radio.connected:
+		return
+	var id := int(input.radio.device_id)
+	if _has_registry():
+		if controller_confirmation.is_valid():
+			input.radio.confirmed_gamepad_connection = controller_confirmation.bind(id, _controller_generation)
 	else:
-		hud.flash(input.message)
+		input.radio.confirmed_gamepad_connection = _confirmed_direct_gamepad
+
+
+func _confirmed_direct_gamepad(id: int) -> bool:
+	if not is_inside_tree() or not get_window().has_focus() or not input.radio.connected \
+			or id != int(input.radio.device_id) or not Input.get_connected_joypads().has(id) or not Input.is_joy_known(id):
+		return false
+	var info: Dictionary = Input.get_joy_info(id)
+	info.merge({name = Input.get_joy_name(id), guid = Input.get_joy_guid(id), known = true})
+	return RcInput.key_for(id, info) == str(input.radio.device_key)
+
+
+func _sync_selected_controller() -> void:
+	if not is_inside_tree() or not _has_registry():
+		return
+	var id := int(controller_registry.selected_device_id("flight"))
+	var current: int = int(input.radio.device_id) if input.radio.connected else -1
+	var generation := int(controller_registry.connection_generation(id)) if id >= 0 else 0
+	if id == current and generation == _controller_generation:
+		return
+	if current >= 0 and id < 0:
+		var previous: Dictionary = controller_registry.device_for_id(current)
+		_lost_device_key = str(input.radio.device_key) if not bool(previous.get("connected", false)) else ""
+	var before: int = input.source_generation
+	_connect_selected_controller()
+	_source_changed(before)
+
+
+func _on_controller_selection_changed(role: String, _id: int) -> void:
+	if role == "flight":
+		_sync_selected_controller()
+	_refresh_pause_bindings()
+
+
+func _source_changed(before: int) -> void:
+	if before == input.source_generation:
+		return
+	input.reset_virtual_for_pause()
+	_refresh_pause_bindings()
+	if session != null and session.prepared and hud != null:
+		_open_menu(input.message)
+
+
+func _joy_connection_changed(id: int, connected: bool) -> void:
+	var before: int = input.source_generation
+	if _has_registry():
+		if not connected and input.radio.connected and int(input.radio.device_id) == id:
+			_lost_device_key = str(input.radio.device_key)
+			input.on_connection_changed(id, false)
+		elif connected:
+			_adopt_returning_device.call_deferred(id)
+		_sync_selected_controller.call_deferred()
+	else:
+		input.on_connection_changed(id, connected)
+		_bind_gamepad_confirmation()
+	_source_changed(before)
+
+
+func _adopt_returning_device(id: int) -> void:
+	if not is_inside_tree() or not _has_registry() or int(controller_registry.selected_device_id("flight")) >= 0:
+		return
+	var info: Dictionary = controller_registry.device_for_id(id)
+	if not bool(info.get("connected", false)):
+		return
+	var returning := not _lost_device_key.is_empty() and RcInput.key_for(id, info) == _lost_device_key
+	if returning:
+		controller_registry.select_device("flight", id)
+
+
+## Cache the Pause binding for each selected role. A raw device has no inherited
+## SDL button layout: it may use a joystick binding only when explicitly saved.
+func _refresh_pause_bindings() -> void:
+	_pause_bindings.clear()
+	for role: String in ["flight", "ui"]:
+		var id := int(controller_registry.selected_device_id(role)) if _has_registry() \
+			else (int(input.radio.device_id) if input.radio.connected else -1)
+		if id < 0:
+			continue
+		var generation := int(controller_registry.connection_generation(id)) if _has_registry() else input.source_generation
+		var profile: Dictionary = {}
+		if input.radio.connected and int(input.radio.device_id) == id:
+			profile = input.radio.profile
+		elif controller_profile_for.is_valid():
+			profile = controller_profile_for.call(id)
+		if profile.is_empty() and _has_registry():
+			var info: Dictionary = controller_registry.device_for_id(id)
+			if bool(info.get("known", false)) and info.get("kind", "") == "gamepad":
+				profile = ControllerProfile.defaults("gamepad", "mode2")
+		if profile.is_empty() or not bool(profile.get("configured", false)):
+			continue
+		var actions: Dictionary = profile.get("actions", {})
+		if profile.get("kind", "") != "gamepad" and not actions.has("pause"):
+			continue
+		var binding: Dictionary = ControllerActions.effective_bindings(profile, {}).get("pause", {})
+		_pause_bindings[role] = {id = id, generation = generation, binding = binding}
+
+
+## Observe the actual selected role and its saved Pause binding, including release
+## and axis hysteresis. A new axis mapping must first be observed OFF.
+func _route_controller_pause(event: InputEvent) -> bool:
+	if not event is InputEventJoypadButton and not event is InputEventJoypadMotion:
+		return false
+	var role := "ui" if hud != null and hud.menu_visible else "flight"
+	var entry: Dictionary = _pause_bindings.get(role, {})
+	if entry.is_empty() or event.device != int(entry.id):
+		return false
+	var binding: Dictionary = entry.binding
+	var kind := str(binding.get("type", ""))
+	if kind == "button":
+		if not event is InputEventJoypadButton or event.button_index != int(binding.get("button", -1)):
+			return false
+	elif kind == "axis":
+		if not event is InputEventJoypadMotion or event.axis != int(binding.get("axis", -1)) or not is_finite(event.axis_value):
+			return false
+	else:
+		return false
+	var key := "%d:%d:%s" % [int(entry.id), int(entry.generation), var_to_str(binding)]
+	var was_held := bool(_pause_held.get(key, false))
+	var active := bool(event.pressed) if kind == "button" else ControllerActions.matches_binding(binding, event, int(entry.id), was_held)
+	if not active:
+		_pause_held.erase(key)
+		if kind == "axis":
+			_pause_axis_ready[key] = true
+		return false
+	if kind == "axis" and not bool(_pause_axis_ready.get(key, false)):
+		return false
+	if not was_held:
+		_pause_held[key] = true
+		if hud.menu_visible: handle_action("resume")
+		else: _open_menu("Paused")
+	return true
 
 
 func _input(event: InputEvent) -> void:
 	input.on_event(event)
+	if hud != null and _route_controller_pause(event):
+		get_viewport().set_input_as_handled()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -335,9 +509,6 @@ func _unhandled_input(event: InputEvent) -> void:
 					flight_log.mark()
 					hud.flash("Flight log marker")
 				get_viewport().set_input_as_handled()
-	elif event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_START:
-		if hud.menu_visible: handle_action("resume")
-		else: _open_menu("Paused")
 	elif event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		_orbit_yaw -= event.relative.x * 0.005
 		_orbit_pitch = clampf(_orbit_pitch + event.relative.y * 0.004, -0.2, 1.3)
@@ -348,9 +519,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _open_menu(reason: String) -> void:
 	if session.prepared and not session.paused:
+		input.reset_virtual_for_pause()
 		session.pause(reason)
 	var can_resume: bool = session.crash.is_empty() and str(session.fault_reason).is_empty()
-	hud.show_menu(reason, can_resume)
+	hud.show_menu(reason + "\nVirtual throttle and keyboard sticks reset. Lower throttle and centre yaw to resume.", can_resume)
 
 
 func handle_action(action: String) -> void:
@@ -649,10 +821,30 @@ func _servo_snapshot(paused: bool) -> Dictionary:
 		gear = {available = false, extension = 0.0, target_down = false, status = "unavailable", target = 0.0, position = Vector3.ZERO}}
 
 
-## AppRoot controller hooks shared with the ground activity slot.
-func apply_controller_selection(_device_id: int) -> bool:
+## AppRoot calls this after saving a profile for the selected flight device.
+func apply_controller_selection(device_id: int) -> bool:
+	if session == null or not session.prepared or not _has_registry():
+		return false
+	if device_id != int(controller_registry.selected_device_id("flight")):
+		return false
+	var current: int = int(input.radio.device_id) if input.radio.connected else -1
+	if device_id != current:
+		_sync_selected_controller()
+		return true
+	if device_id < 0 or not controller_profile_for.is_valid():
+		_refresh_pause_bindings()
+		return true
+	var profile: Dictionary = controller_profile_for.call(device_id)
+	if profile.is_empty() or profile == input.radio.profile:
+		_refresh_pause_bindings()
+		return true
+	var before: int = input.source_generation
+	if not input.use_profile(profile):
+		return false
+	_bind_gamepad_confirmation()
+	_source_changed(before)
 	return true
 
 
 func _refresh_controller_ui() -> void:
-	pass
+	_refresh_pause_bindings()

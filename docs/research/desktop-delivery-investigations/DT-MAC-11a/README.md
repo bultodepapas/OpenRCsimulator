@@ -254,6 +254,25 @@ intake helper: `f659dec8be4092c20b2889d664634100449ba99bc0f8731319f28254a8399d09
 The build took 10m34.86s and strict local code-sign verification passed.
 This is compilation evidence, not a presenter or interpolation-correctness pass.
 
+The actual 0004 engine producer fixture
+`90669012f14912e202869c4739d1aa2e7235be567afcd56c2accd700f00731b7`
+then passed checked parsing and a rendered Forward+/Metal run with API validation
+enabled. All **2,073,600** RGBA16F pixels were finite and none retained the magenta
+sentinel. Cut/toggle controls preserved the pending Temporal receipt, invalidated
+the old image and resumed after the encode acknowledgement. Resize and return to
+1080p passed. Orthographic, alpha geometry, Canvas/Keep backgrounds and Off refused
+readback; restoring the eligible scene recovered. The SDK warmup requirement was
+five encodes per epoch. Motion/depth/jitter remain unverified scene conventions;
+the output is explicitly not presentable. Reports: `frame-probe-parse-upobyyv9`
+and `frame-producer-native-a74si94a` under `candidate/tmp/frame-checks/`.
+
+The first four-patch release template also built (SHA-256
+`0760e39fa9255522ad5cc68ccfdb263f615dfc1dd6b79e16042d20bff8114e95`,
+51,101,808 bytes). Pair verification refused different literal Python invocation
+paths, although they resolved to the same venv. That refusal was retained; a fresh
+template used the editor's exact invocation spelling. Its compilation completed,
+but pair verification was not completed before the SSH interruption below.
+
 ## Frozen full product and normal baseline
 
 The complete original source at `5e52336bf5b41e532045c8c03726518568f688b0`
@@ -290,6 +309,38 @@ Only its eight app paths were applied to the unused candidate source after
 checking each original against the full-source manifest. Its original research
 preparation receipt is superseded; a fresh runtime preparation records the
 augmented app. The baseline and its linked author assets remain unchanged.
+
+The complete candidate imported with the four-patch editor: **zero errors** and
+the same eight OBJ warnings (`frame-editor-import-mgrvd33t`). Its normal rendered,
+audio-enabled route reached Home and flew the stock runway Stik. It correctly
+refused the official engine's old native-kernel receipt and used reference physics.
+That run cannot be a matched native-physics performance comparison. Selecting
+Spatial Quality through Settings produced `spatial/created/enqueued` for the
+real product viewport. Home/re-entry kept Spatial and advanced its generation
+from 19 to 23. Final Home and shutdown reported `forced=false`, `crash=null` and
+zero leaked objects. A saved setting's confirmation deadline and the remaining
+pause menu required normal UI actions during the test; diagnostic CLI refusals
+were retained. No radio was connected.
+
+## Extension API diagnostic correction
+
+A real custom-editor check against locked godot-cpp's full 4.7 API printed
+incompatibilities but returned process exit zero. The old checked runner also
+reported success because these records use `Validate extension JSON:` rather
+than `ERROR:`. The original report/log remain unchanged at
+`frame-editor-api47-5i877j6t`; it is **not** accepted as a compatibility pass.
+The 4.7-to-4.8 differences also require an appropriate reference, separately from
+the locked bindings input and numerical/native loader oracles.
+
+The checked runner now classifies that diagnostic prefix as an error. Four
+observed failure forms and an embedded non-error mention are regression controls.
+Native M1 tests passed: 22 checked-runner tests (one optional real-engine matrix
+skip) and 14 resource-runner tests. The new isolated Python-only regression also
+passed on Windows. A broader local Windows attempt was refused by queue admission
+for its Python fixtures; it did not launch Godot or qualify that suite. The custom
+engine identity policy is being revised to validate against an independently
+pinned official 4.8 API, preserving the clean 4.7 bindings pin and exact native
+admission. No new default marker has been issued.
 
 ## RT producer port boundary
 
@@ -329,10 +380,16 @@ The retrieved phase-1 receipt bundle SHA-256 is
 its local path is `tmp/metalfx-20261114/retained-phase1.tar.gz`. Later results are
 not retroactively included in that archive.
 
-Remaining: complete production import/required CI, independent Temporal-history
+Remaining: required CI on the stable integrated candidate, independent Temporal-history
 image/lifecycle qualification beyond the bounded reset fixtures, FG input/presenter
 integration, real engine RT/denoised consumer, moving-image/1080p workload
 comparisons, physical latency, lifecycle/endurance and local development package.
 Newer hardware remains useful for independent qualification; M1 denoising is an
 open runtime finding, not an automatic unsupported result. Public Developer ID
 distribution remains deferred. Normal reconstruction defaults are unchanged.
+
+After the fresh template compilation, SSH and Tailscale data-plane probes stopped
+responding. Tailscale still advertised the M1 online; that is not SSH availability.
+The documented Linux jump host was offline. The motion fixture was prepared
+locally, but its transfer timed out, so no native parse/motion result is claimed.
+No task-owned rendered application remained running when access was lost.

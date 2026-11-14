@@ -72,6 +72,14 @@ func refresh() -> void:
 
 ## Selection is automatic only before flight. It never writes profiles or arms controls.
 func _apply_automatic_defaults() -> void:
+	if not _defaults_pending or is_instance_valid(session): return
+	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not held.ok: return
+	_apply_automatic_defaults_locked()
+	if store.has_method("release_write"): store.release_write()
+
+
+func _apply_automatic_defaults_locked() -> void:
 	if not _defaults_pending or is_instance_valid(session):
 		return
 	if allow_automatic_selection.is_valid() and not bool(allow_automatic_selection.call()):
@@ -164,6 +172,10 @@ func attach_session(target: Node, initial_start := true) -> void:
 	session.external_controller_selection = true
 	session.persist_controller_profile = save_calibration
 	session.persist_full_controller_profile = save_profile_and_apply
+	for property: Dictionary in session.get_property_list():
+		if property.name == "controller_connection_generation":
+			session.controller_connection_generation = Callable(registry, "connection_generation")
+			break
 	var id: int = registry.selected_device_id("flight")
 	_bind_gamepad_confirmation(id)
 	# A fresh keyboard flight retains its declared launch state.
@@ -237,6 +249,17 @@ func is_ui_device(id: int) -> bool:
 
 
 func profile_for_device(id: int) -> Dictionary:
+	var key := "%d:%d" % [id, registry.connection_generation(id)]
+	if _profiles.has(key) and bool(registry.device_for_id(id).get("connected", false)):
+		return _profiles[key].duplicate(true)
+	var lease: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not lease.ok: return {}
+	var result := _profile_for_device_locked(id)
+	if store.has_method("release_write"): store.release_write()
+	return result
+
+
+func _profile_for_device_locked(id: int) -> Dictionary:
 	var info: Dictionary = registry.device_for_id(id)
 	if not info.get("connected", false): return {}
 	# The registry advances the generation when identity-matching evidence changes.
@@ -363,10 +386,16 @@ func save_calibration(legacy_profile: Dictionary) -> Dictionary:
 	var previous: Dictionary = profile_for_device(id)
 	if id < 0 or previous.get("kind", "") != "radio":
 		return {"ok": false, "error": "Select a radio profile before calibration."}
-	var profile: Dictionary = Profile.merge_radio_calibration(previous, legacy_profile)
-	if profile.is_empty():
-		return {"ok": false, "error": "Invalid calibration."}
-	return save_profile_and_apply(profile)
+	var merged: Dictionary = Profile.merge_radio_calibration_result(previous, legacy_profile)
+	if not merged.ok:
+		return {"ok": false, "error": "Calibration needs review: " + "; ".join(merged.errors),
+			"profile": merged.profile, "conflicts": merged.conflicts, "removed_aux": merged.removed_aux}
+	var saved := save_profile_and_apply(merged.profile)
+	if saved.get("ok", false) and not merged.removed_aux.is_empty():
+		var names: Array[String] = []
+		for removed: Dictionary in merged.removed_aux: names.append(str(removed.channel))
+		saved["warning"] = str(saved.get("warning", "")) + " Removed overlapping extra controls: " + ", ".join(names) + ". Reassign them in Controls."
+	return saved
 
 
 func save_profile_and_apply(candidate: Dictionary) -> Dictionary:
@@ -410,11 +439,36 @@ func save_profile_from_setup(candidate: Dictionary, flight_device_id := -1) -> D
 
 ## Saves the setup profile and commits both explicit device roles as one operation.
 ## The caller passes -1 for a deliberate keyboard choice in either role.
-func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_device_id: int) -> Dictionary:
+func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_device_id: int, leases: Dictionary = {}) -> Dictionary:
+	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not held.ok: return held
+	var result := _save_settings_from_setup_locked(candidate, flight_device_id, ui_device_id, leases)
+	if store.has_method("release_write"): store.release_write()
+	return result
+
+
+func _setup_leases_current(leases: Dictionary, flight_id: int, ui_id: int) -> bool:
+	if leases.is_empty(): return true # Trusted programmatic callers; Controls always supplies both origins.
+	for role: String in ["flight", "ui"]:
+		var id := flight_id if role == "flight" else ui_id
+		var lease: Dictionary = leases.get(role, {})
+		if int(lease.get("id", -2)) != id: return false
+		if id < 0: continue
+		var info: Dictionary = registry.device_for_id(id)
+		if not bool(info.get("connected", false)) or int(lease.get("generation", -1)) != registry.connection_generation(id): return false
+		var identity: Dictionary = lease.get("identity", {})
+		for field: String in ["guid", "vendor_id", "product_id", "serial_number", "raw_name", "backend", "transport"]:
+			if identity.get(field) != info.get(field): return false
+	return true
+
+
+func _save_settings_from_setup_locked(candidate: Dictionary, flight_device_id: int, ui_device_id: int, leases: Dictionary) -> Dictionary:
 	var old_flight_id: int = registry.selected_device_id("flight")
 	var old_ui_id: int = registry.selected_device_id("ui")
 	var flight_id := int(flight_device_id)
 	var ui_id := int(ui_device_id)
+	if not _setup_leases_current(leases, flight_id, ui_id):
+		return {"ok": false, "profile": {}, "error": "A controller connection changed. Select and review the intended devices again."}
 	if flight_id < -1 or ui_id < -1:
 		return {"ok": false, "profile": {}, "error": "Choose a connected device or keyboard for each role."}
 	for id: int in [flight_id, ui_id]:
@@ -448,6 +502,9 @@ func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_d
 		if store.has_method("save_profile_with_ui_preference") else store.save_profile(profile)
 	if not bool(saved.get("ok", false)):
 		return saved
+	if not _setup_leases_current(leases, flight_id, ui_id):
+		var restored: Dictionary = store.restore_snapshot(previous_store)
+		return {"ok": false, "profile": {}, "error": "A controller connection changed before activation. " + ("Previous stored profiles were restored." if restored.get("ok", false) else str(restored.get("error", "Storage rollback failed.")))}
 	_profile_misses.clear()
 
 	_settings_save_transaction = true
@@ -565,6 +622,14 @@ func _association_is_unambiguous(association: Dictionary) -> bool:
 
 
 func _save_and_apply(profile: Dictionary, id: int) -> Dictionary:
+	var held: Dictionary = store.acquire_write() if store.has_method("acquire_write") else {"ok": true}
+	if not held.ok: return held
+	var result := _save_and_apply_locked(profile, id)
+	if store.has_method("release_write"): store.release_write()
+	return result
+
+
+func _save_and_apply_locked(profile: Dictionary, id: int) -> Dictionary:
 	# Capture runtime selection before the write: afterwards profile_for_device()
 	# may find the candidate we just associated with this previously unknown device.
 	var previous_runtime_profile: Dictionary = profile_for_device(id)

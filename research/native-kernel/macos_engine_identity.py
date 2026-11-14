@@ -30,6 +30,8 @@ RESEARCH_RUNTIME = "4.8-beta2 (openrc_metalfx)"
 SCOPE = "source-editor-local-custom-engine-research-v1"
 APPLE_CLANG = "Apple clang version 21.0.0 (clang-2100.3.34.2)"
 MAX_API_BYTES = 64 * 1024 * 1024
+CONTROL_CLASS = "OpenRC_Validator_Control_Absent_8F97A2B6"
+CONTROL_DIAGNOSTIC = f"Validate extension JSON: API was removed: classes/{CONTROL_CLASS}"
 CONTROLLED = ("CC", "CXX", "CCFLAGS", "CXXFLAGS", "CFLAGS", "LDFLAGS", "SCONSFLAGS",
               "CPATH", "CPLUS_INCLUDE_PATH", "LIBRARY_PATH", "SDKROOT", "ARCHFLAGS",
               "MACOSX_DEPLOYMENT_TARGET", "CCACHE", "CUSTOM_MODULES", "GODOT_VERSION_STATUS", "BUILD_NAME",
@@ -210,6 +212,41 @@ def _reject_api_diagnostics(output: str) -> None:
         raise ValueError("Research engine extension API check emitted an incompatibility or engine error")
 
 
+def _require_control_diagnostic(output: str) -> None:
+    """Require the specific deliberate incompatibility and no unrelated error records."""
+    clean = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", output)
+    expected = re.compile(r"\s*(?:ERROR:\s*)?" + re.escape(CONTROL_DIAGNOSTIC) + r"\s*")
+    found = False
+    for line in clean.splitlines():
+        if re.search(r"Validate\s+extension\s+JSON:|\b(?:SCRIPT\s+|SHADER\s+)?ERROR(?:\s*:|\b)",
+                     line, flags=re.IGNORECASE):
+            if expected.fullmatch(line) is None:
+                raise ValueError("Extension API validator control emitted an unrelated diagnostic")
+            found = True
+    if not found:
+        raise ValueError("Extension API validator did not detect the deliberate missing-class control")
+
+
+def _make_control_api(api_dump: Path, control: Path) -> dict[str, Any]:
+    """Make a bounded incompatible copy; the reference dump remains untouched."""
+    with api_dump.open("rb") as stream:
+        raw = stream.read(MAX_API_BYTES + 1)
+    if len(raw) > MAX_API_BYTES:
+        raise ValueError("Official 4.8 extension API dump exceeds its size limit")
+    data = json.loads(raw)
+    classes = data["classes"]
+    if (any(not isinstance(item, dict) or not isinstance(item.get("name"), str) for item in classes)
+            or any(item["name"] == CONTROL_CLASS for item in classes)):
+        raise ValueError("Extension API missing-class control is not uniquely absent")
+    classes.append({"name": CONTROL_CLASS})
+    encoded = json.dumps(data, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode("utf-8")
+    if len(encoded) > MAX_API_BYTES:
+        raise ValueError("Extension API control exceeds its size limit")
+    with control.open("xb") as stream:
+        stream.write(encoded)
+    return _reference_api_dump(control)
+
+
 def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
              architectures: Callable[[Path], list[str]], output: Callable[..., str]) -> dict[str, Any]:
     """Recheck the caller's pins and the real retained local build inputs/outputs."""
@@ -316,10 +353,22 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
             dump_output = output([str(reference), "--headless", "--dump-extension-api"], cwd=directory)
             _reject_api_diagnostics(dump_output)
             compatibility = _reference_api_dump(api_dump)
+            control_dump = Path(directory) / "incompatible_extension_api.json"
+            control_identity = _make_control_api(api_dump, control_dump)
+            if _reference_api_dump(api_dump) != compatibility:
+                raise ValueError("Official 4.8 extension API dump changed while making the control")
+            for validator in (reference, executable):
+                control_output = output([str(validator), "--headless", "--validate-extension-api", str(control_dump)],
+                                        expected_diagnostic=CONTROL_DIAGNOSTIC)
+                _require_control_diagnostic(control_output)
+                if (_reference_api_dump(api_dump) != compatibility
+                        or _reference_api_dump(control_dump) != control_identity):
+                    raise ValueError("Extension API reference or control changed during validation")
             validation_output = output([str(executable), "--headless", "--validate-extension-api", str(api_dump)])
             _reject_api_diagnostics(validation_output)
-            if _reference_api_dump(api_dump) != compatibility:
-                raise ValueError("Official 4.8 extension API dump changed during validation")
+            if (_reference_api_dump(api_dump) != compatibility
+                    or _reference_api_dump(control_dump) != control_identity):
+                raise ValueError("Extension API reference or control changed during validation")
     except subprocess.SubprocessError as error:
         raise ValueError(f"Research engine 4.8 extension API compatibility check failed: {error}") from error
     if extension_api_identity(extension_api, lock) != api_identity:
@@ -339,6 +388,8 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
                                 "ordered_patches": [{"path": str(path), "sha256": before[str(path)]} for path in patches],
                                 "binding_api_4_7": api_identity,
                                 "compatibility_api_4_8": {**compatibility, "validation": "passed without diagnostics",
+                                    "validator_control": {"kind": "missing-class", "name": CONTROL_CLASS,
+                                                          "official": "detected", "research": "detected"},
                                     "reference": {"path": str(reference.resolve()), "sha256": before[str(reference)],
                                                   "version": reference_version, "architectures": reference_architectures}},
                                 "intake_helper_sha256": before[str(HELPER)],

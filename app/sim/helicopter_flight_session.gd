@@ -48,10 +48,13 @@ var device_info: Callable = func(id: int) -> Dictionary:
   return info
 var radio: RefCounted = RcInput.new()
 var calibration: RefCounted
+var pending_controller_calibration: Dictionary = {}
 var profiles_path: String = "user://rc_calibration.cfg"
 var external_controller_selection: bool = false
 var persist_controller_profile := Callable()
 var persist_full_controller_profile := Callable()
+var controller_connection_generation := Callable()
+var _calibration_generation: int = -1
 var _controller_lost: bool = false
 var holds: Dictionary = {}
 var pause_reason: String = ""
@@ -946,6 +949,7 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
   pause_reason="Gamepad connected: P resumes the hover collective." if radio.is_rate_throttle() else "Radio: lower collective to arm, return it to %.0f%% for hover, then P."%(commands.throttle*100.0)
  elif not connected and radio.connected and id==radio.device_id:
   _clear_mode_confirmation()
+  pending_controller_calibration.clear()
   radio.disconnect_device()
   cancel_calibration()
   sim.set_paused(true)
@@ -973,7 +977,10 @@ func _cancel_calibration_internal() -> void:
 func start_calibration() -> bool:
  if _transition_reentry(): return false
  if not radio.connected or radio.profile.get("kind","")!="radio": return false
+ _calibration_generation=int(controller_connection_generation.call(radio.device_id)) if controller_connection_generation.is_valid() else -1
+ if external_controller_selection and _calibration_generation<=0: return false
  _clear_mode_confirmation()
+ pending_controller_calibration.clear()
  calibration=RcCalibration.new(radio.profile)
  radio.set_auxiliary_enabled(false)
  sim.set_paused(true)
@@ -981,11 +988,21 @@ func start_calibration() -> bool:
  return true
 func advance_calibration() -> void:
  if _transition_reentry(): return
+ if calibration!=null and _calibration_generation>0 and (not controller_connection_generation.is_valid() or int(controller_connection_generation.call(radio.device_id))!=_calibration_generation):
+  calibration=null
+  pending_controller_calibration.clear()
+  pause_reason="The radio connection changed. Calibration was cancelled."
+  return
  if calibration!=null and calibration.advance(radio.axes):
+  var warning_value: Variant=calibration.get("aux_warning")
+  var warning: String=str(warning_value) if warning_value!=null else ""
   if external_controller_selection and persist_controller_profile.is_valid():
    var result: Dictionary=persist_controller_profile.call(calibration.profile)
+   if result.get("ok",false): pending_controller_calibration.clear()
+   else: pending_controller_calibration={"profile":calibration.profile.duplicate(true),"device_id":radio.device_id,"device_key":radio.device_key,"generation":_calibration_generation,"warning":warning}
    calibration=null
    pause_reason="Radio calibrated. Lower collective again before continuing." if result.get("ok",false) else "Calibration not saved: "+str(result.get("error","storage error"))
+   if not warning.is_empty(): pause_reason+=" "+warning
    return
   var completed: Dictionary=calibration.profile.duplicate(true)
   if not radio.profile.get("configured",false): completed["actions"]=ControllerProfile.ControllerActions.clean_radio_bindings()
@@ -995,6 +1012,7 @@ func advance_calibration() -> void:
   var err: Error=RcCalibration.save_profile(profiles_path,radio.device_key,completed) if unique_legacy else ERR_ALREADY_IN_USE
   calibration=null
   pause_reason="radio calibrated" if err==OK else "radio calibrated, NOT saved (error %d)"%err
+  if not warning.is_empty(): pause_reason+=" "+warning
 
 func controller_profile_rejection(profile: Dictionary) -> String:
  return "Choose a stick-rate or calibrated radio profile for helicopter collective." if profile.get("throttle_mode","")=="trigger_absolute" else ""
@@ -1002,6 +1020,7 @@ func controller_profile_rejection(profile: Dictionary) -> String:
 func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_initial_start: bool=false) -> bool:
  if _transition_reentry(): return false
  _clear_mode_confirmation()
+ pending_controller_calibration.clear()
  if id<0:
   calibration=null
   radio.disconnect_device()
@@ -1032,6 +1051,7 @@ func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_in
 func controller_disconnected() -> void:
  if _transition_reentry(): return
  _clear_mode_confirmation()
+ pending_controller_calibration.clear()
  radio.disconnect_device()
  calibration=null
  _controller_lost=true
@@ -1041,6 +1061,7 @@ func controller_disconnected() -> void:
 func controller_focus_lost() -> void:
  if _transition_reentry(): return
  _clear_mode_confirmation()
+ pending_controller_calibration.clear()
  if external_controller_selection and radio.connected:
   radio.set_auxiliary_enabled(false)
   radio.require_neutral(true,true)

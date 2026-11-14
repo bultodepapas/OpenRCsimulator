@@ -286,7 +286,9 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	var button_mode := false
 	if radio.connected:
 		error = str(radio.input_error) if not str(radio.input_error).is_empty() else str(radio.profile_error)
-		ready = error.is_empty() and (not radio.is_gamepad() or bool(radio.armed))
+		# RcInput owns fresh low-throttle evidence for raw radios and the verified
+		# polling/neutral gate for gamepads. Never decode throttle ahead of it.
+		ready = error.is_empty() and bool(radio.armed)
 		if ready:
 			var profile: Dictionary = radio.profile
 			roll = _centered(profile, "roll")
@@ -373,7 +375,7 @@ func _centered(profile: Dictionary, channel_name: String) -> float:
 
 ## The pre-expo stage alone (test seam): normalize_axis, then a rescaled deadzone for a gamepad.
 static func pre_expo(raw: float, channel: Dictionary, kind: String) -> float:
-	var x := ControllerProfile.normalize_axis(raw, channel)
+	var x := ControllerProfile.normalize_signed_axis(raw, channel)
 	if kind != "gamepad":
 		return x
 	var dz := float(channel.get("deadzone", ControllerProfile.DEFAULT_DEADZONE))

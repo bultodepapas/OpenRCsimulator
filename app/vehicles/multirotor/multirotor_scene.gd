@@ -232,6 +232,8 @@ func _disable() -> void:
 ## Losing focus holds the flight behind the menu; resuming is explicit.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and session != null and session.prepared and hud != null:
+		if input.radio.connected:
+			input.radio.require_neutral(true, true)
 		_hold(tr("Paused: the window lost focus."))
 
 

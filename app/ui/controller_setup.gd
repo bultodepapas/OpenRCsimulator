@@ -111,6 +111,7 @@ var setup_assistant_button: Button
 var _assistant: CanvasLayer
 var _assistant_bridge: RefCounted
 var _assistant_restore: Dictionary = {}
+var _assistant_axes_handoff := false
 ## Devices already offered the Setup assistant in this app run (one hint per device).
 static var _assistant_offered: Dictionary = {}
 var choose_radio_profile_button: Button
@@ -167,6 +168,8 @@ var _devices: Array[Dictionary] = []
 var _draft_profile: Dictionary = {}
 var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
+var _draft_connections: Dictionary = {}
+var _ui_connection: Dictionary = {}
 var _calibration_origins: Dictionary = {} # draft context -> connection that supplied its ranges
 var _menu_verification_origins: Dictionary = {}
 var verify_menus_button: Button
@@ -315,6 +318,7 @@ func configure(controller_registry: Object, store: Object, flight_device_id := -
 	_load_profiles()
 	_refresh_devices()
 	_load_profile_for_device(_draft_flight_device_id)
+	_ui_connection = _connection_lease(_draft_ui_device_id)
 	_connect_registry()
 	_clean_flight_device_id = _draft_flight_device_id
 	_clean_ui_device_id = _draft_ui_device_id
@@ -370,7 +374,45 @@ func has_unsaved_changes() -> bool:
 		return true
 	if _unsaved_calibration.has(_draft_context_key) or not _clean_snapshots.has(_draft_context_key):
 		return true
-	return _clean_snapshots[_draft_context_key] != _dirty_fingerprint()
+	if _clean_snapshots[_draft_context_key] != _dirty_fingerprint():
+		return true
+	return _other_dirty_context() != ""
+
+
+func _other_dirty_context() -> String:
+	for context: String in _drafts_by_context:
+		if context == _draft_context_key: continue
+		var candidate: Dictionary = _drafts_by_context[context].duplicate(true)
+		candidate.erase("association")
+		if _unsaved_calibration.has(context) or not _clean_snapshots.has(context) or candidate != _clean_snapshots[context]:
+			return context
+	return ""
+
+
+## A setup draft never borrows the identity of a replacement at the same numeric handle.
+func _connection_lease(id: int) -> Dictionary:
+	if id < 0: return {"id": -1}
+	var info := _device_for_id(id)
+	return {"id": id, "generation": _registry_generation(id), "identity": _connection_identity(info)}
+
+
+static func _connection_identity(info: Dictionary) -> Dictionary:
+	var identity := {}
+	for field: String in ["guid", "vendor_id", "product_id", "serial_number", "raw_name", "backend", "transport"]:
+		identity[field] = info.get(field)
+	return identity
+
+
+func _lease_matches(lease: Dictionary, id: int) -> bool:
+	if int(lease.get("id", -2)) != id: return false
+	if id < 0: return true
+	return bool(_device_for_id(id).get("connected", false)) \
+		and int(lease.get("generation", -1)) == _registry_generation(id) \
+		and lease.get("identity", {}) == _connection_identity(_device_for_id(id))
+
+
+func connection_leases() -> Dictionary:
+	return {"flight": _draft_connections.get(_draft_context_key, {}).duplicate(true), "ui": _ui_connection.duplicate(true)}
 
 
 ## What Save would commit, without the device association (that follows the device role, tracked separately).
@@ -433,8 +475,8 @@ func _ask_unsaved_changes() -> void:
 			_on_unsaved_choice("discard"))
 		add_child(unsaved_dialog)
 	unsaved_dialog.title = tr("Unsaved changes")
-	unsaved_dialog.dialog_text = tr("Your controller changes are not saved. Save them, discard them, or keep editing.")
-	unsaved_dialog.get_ok_button().text = tr("Save")
+	unsaved_dialog.dialog_text = tr("Save commits the current profile and device choices. Other unsaved profiles stay open. Discard closes and discards all unsaved changes.")
+	unsaved_dialog.get_ok_button().text = tr("Save current")
 	unsaved_dialog.get_ok_button().name = "SaveControls"
 	unsaved_dialog.get_cancel_button().text = tr("Keep editing")
 	unsaved_dialog.get_cancel_button().name = "KeepEditingControls"
@@ -515,7 +557,8 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
 		calibration_finished.emit(false, tr("The radio connection changed. Calibrate again before saving these settings."))
 		return false
-	var calibrated: Dictionary = ControllerProfile.merge_radio_calibration(_draft_profile, calibration)
+	var merged := ControllerProfile.merge_radio_calibration_result(_draft_profile, calibration)
+	var calibrated: Dictionary = merged.profile
 	if calibrated.is_empty() or calibrated.get("kind", "") != "radio":
 		_set_status(tr("Invalid calibration. The draft is unchanged."), true)
 		calibration_finished.emit(false, tr("Invalid calibration. The draft is unchanged."))
@@ -523,18 +566,27 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 	_draft_profile = calibrated
 	# The wizard retains valid AUX and reports bindings consumed by newly assigned flight axes.
 	_draft_profile["aux"] = calibrated.get("aux", {}).duplicate(true)
+	_base_actions = calibrated.get("actions", {}).duplicate(true)
+	_action_bindings = ControllerActions.effective_bindings(calibrated, action_capabilities)
 	_calibration_origins[_draft_context_key] = {"id": device_id, "generation": generation,
 		"mapping": _radio_mapping(_draft_profile)}
 	_unsaved_calibration[_draft_context_key] = true
 	_update_axis_controls()
 	_update_aux_controls()
+	_update_action_controls()
 	_update_preview()
 	_remember_current_draft()
 	draft_changed.emit()
 	var message: String = tr("Calibration is in the draft. Save controller settings to apply it; Cancel discards it.")
 	if not warning.is_empty():
 		message += " " + tr(warning)
-	_set_status(message, false)
+	if not merged.removed_aux.is_empty():
+		var removed_names: Array[String] = []
+		for removed: Dictionary in merged.removed_aux: removed_names.append(str(removed.channel))
+		message += " " + tr("Removed overlapping extra controls: %s. Reassign them in Extra channels.") % ", ".join(removed_names)
+	if not merged.conflicts.is_empty():
+		message += " " + tr("Measurements are retained. Resolve these action bindings before saving: %s") % "; ".join(merged.errors)
+	_set_status(message, not merged.ok)
 	_draft_validation_changed()
 	calibration_finished.emit(true, tr(warning) if not warning.is_empty() else "")
 	return true
@@ -585,6 +637,7 @@ func apply_menu_verification(profile: Dictionary, device_id: int, generation: in
 	_menu_verification_origins[str(profile.profile_id)] = {"id": device_id, "generation": generation,
 		"mapping": RadioMenu.mapping_fingerprint(profile), "actions": RadioMenu.action_fingerprint(profile)}
 	_draft_ui_device_id = device_id
+	_ui_connection = _connection_lease(device_id)
 	_refresh_devices()
 	_update_menu_controls()
 	_remember_current_draft()
@@ -1847,7 +1900,9 @@ func open_setup_assistant() -> bool:
 		"profile": _draft_profile.duplicate(true), "context": _draft_context_key,
 		"unsaved_calibration": _unsaved_calibration.duplicate(true), "calibration_origins": _calibration_origins.duplicate(true),
 		"menu_origins": _menu_verification_origins.duplicate(true), "ui_device": _draft_ui_device_id,
+		"ui_connection": _ui_connection.duplicate(true), "stick_mode": _live_stick_mode,
 	}
+	_assistant_axes_handoff = false
 	_assistant_bridge = SetupAssistantBridge.new(self)
 	_assistant = SetupAssistant.new()
 	_assistant.name = "SetupAssistant"
@@ -1892,8 +1947,10 @@ func _on_calibration_finished_for_assistant(ok: bool, message: String) -> void:
 
 
 func _on_assistant_finished(saved: bool) -> void:
-	if saved or _assistant_restore.is_empty():
+	if saved or _assistant_axes_handoff or _assistant_restore.is_empty():
 		return
+	_live_stick_mode = int(_assistant_restore.stick_mode)
+	_ui_connection = _assistant_restore.ui_connection
 	_unsaved_calibration = _assistant_restore.unsaved_calibration
 	_calibration_origins = _assistant_restore.calibration_origins
 	_set_draft_profile(_assistant_restore.profile, str(_assistant_restore.context))
@@ -1915,8 +1972,18 @@ func _on_assistant_closed() -> void:
 		finished_assistant.queue_free()
 	_update_device_summary()
 	_draft_validation_changed()
+	if _assistant_axes_handoff:
+		select_section("axes")
+		_set_status(tr("Use Detect for each flight axis, verify its direction and range, then enable Use this custom mapping for flight and Save."), false)
+		return
 	if is_inside_tree() and is_instance_valid(setup_assistant_button) and setup_assistant_button.is_visible_in_tree():
 		setup_assistant_button.grab_focus()
+
+
+func handoff_assistant_to_axes() -> void:
+	if not is_instance_valid(_assistant): return
+	_assistant_axes_handoff = true
+	_assistant._close(false)
 
 
 static func _is_jeti_device(device: Dictionary) -> bool:
@@ -2068,6 +2135,9 @@ func _input(event: InputEvent) -> void:
 		return
 	if not _is_capture_active():
 		return
+	if _capturing_device_id >= 0 and not _capture_connection_ok():
+		_capture_done(false, tr("The controller connection changed; remapping was cancelled."))
+		return
 	if _axis_capture_dialog != null:
 		if _axis_capture == null:
 			# OFF step: the overlay's focused Confirm OFF takes Enter/accept; Escape cancels.
@@ -2135,7 +2205,11 @@ func _input(event: InputEvent) -> void:
 			return
 		# Find control: an axis resting at an end (radio throttle at LOW, an axis switch) only counts once it moves
 		# well away from where it was when Find started, so its resting jitter is never reported as a choice.
-		if _finding and motion.axis < _find_baseline.size() 				and absf(motion.axis_value - _find_baseline[motion.axis]) < FIND_AXIS_MIN_TRAVEL:
+		if motion.axis < 0 or motion.axis >= _find_baseline.size() or not is_finite(_find_baseline[motion.axis]) \
+				or absf(motion.axis_value - _find_baseline[motion.axis]) < FIND_AXIS_MIN_TRAVEL:
+			return
+		if not _finding and motion.axis in SmokeAux.flight_axes(_draft_profile):
+			_set_status(tr("That axis controls flight. Choose a different control; remapping is still waiting."), true)
 			return
 		_track_capture_release(motion)
 		_on_capture_event(motion)
@@ -2280,6 +2354,7 @@ func _on_flight_device_selected(index: int) -> void:
 
 func _on_ui_device_selected(index: int) -> void:
 	_draft_ui_device_id = ui_device_picker.get_item_id(index)
+	_ui_connection = _connection_lease(_draft_ui_device_id)
 	_update_device_summary()
 	_set_status("", false)
 
@@ -2334,7 +2409,14 @@ func _load_profile_for_device(device_id: int) -> void:
 			if str(candidate.get("profile_id", "")) == profile_id:
 				_switch_draft_profile(candidate, _profile_context_key(candidate))
 				return
-	_switch_draft_profile(_default_profile_for_device(device_id), "device:%d" % device_id)
+	_switch_draft_profile(_default_profile_for_device(device_id), _device_draft_context(device_id))
+
+
+func _device_draft_context(device_id: int) -> String:
+	var key := "device:%d" % device_id
+	if _draft_connections.has(key) and not _lease_matches(_draft_connections[key], device_id):
+		return "%s:generation:%d" % [key, _registry_generation(device_id)]
+	return key
 
 
 func _default_profile_for_device(device_id: int) -> Dictionary:
@@ -2357,9 +2439,7 @@ func _profile_context_key(profile: Dictionary) -> String:
 func _remember_current_draft() -> void:
 	if _draft_profile.is_empty() or _draft_context_key.is_empty():
 		return
-	var snapshot := _draft_profile.duplicate(true)
-	if profile_name_edit != null:
-		snapshot["name"] = profile_name_edit.text
+	var snapshot := _profile_candidate()
 	_drafts_by_context[_draft_context_key] = snapshot
 
 
@@ -2385,6 +2465,8 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 		_draft_context_key = context_key
 	elif _draft_context_key.is_empty() or previous_profile_id != str(_draft_profile.get("profile_id", "")):
 		_draft_context_key = _profile_context_key(_draft_profile)
+	if not _draft_connections.has(_draft_context_key):
+		_draft_connections[_draft_context_key] = _connection_lease(_draft_flight_device_id)
 	profile_name_edit.text = str(_draft_profile.get("name", "Controller profile"))
 	var profile_kind := str(_draft_profile.get("kind", "gamepad"))
 	joystick_enabled.visible = profile_kind == "joystick"
@@ -2435,12 +2517,17 @@ func _on_profile_selected(index: int) -> void:
 			_cancel_capture()
 		# New and the initial device draft share one unsaved context. Returning
 		# here restores pending edits without borrowing a saved profile's UUID.
-		_switch_draft_profile(_default_profile_for_device(_draft_flight_device_id), "device:%d" % _draft_flight_device_id)
+		_switch_draft_profile(_default_profile_for_device(_draft_flight_device_id), _device_draft_context(_draft_flight_device_id))
 	elif profile_index >= 0 and profile_index < _profiles.size():
 		if _is_assignment_busy():
 			_cancel_capture()
 		var profile: Dictionary = _profiles[profile_index]
 		_switch_draft_profile(profile, _profile_context_key(profile))
+		# Explicit review can renew a connection only for the same saved identity.
+		# Copying a mapping to another identity uses Duplicate and a fresh UUID.
+		if profile_store != null and profile_store.has_method("_association_matches") \
+				and profile_store._association_matches(_device_for_id(_draft_flight_device_id), profile.get("association", {})):
+			_draft_connections[_draft_context_key] = _connection_lease(_draft_flight_device_id)
 
 
 func _update_profile_kind_picker() -> void:
@@ -3451,6 +3538,7 @@ func _start_capture(action_id: String, button: Button) -> void:
 	_capturing_device_id = _draft_flight_device_id
 	_capturing_generation = int(registry.connection_generation(_capturing_device_id)) \
 		if registry != null and registry.has_method("connection_generation") else 0
+	_find_baseline = _capture_axes()
 	_capture_button = button
 	_capture_target = action_id
 	_capture_button.grab_focus()
@@ -3473,6 +3561,7 @@ func _start_aux_capture(aux_name: String, row_index: int, button: Button) -> voi
 	_capturing_aux_name = aux_name
 	_capturing_aux_position = row_index
 	_capturing_device_id = _draft_flight_device_id
+	_capturing_generation = _registry_generation(_capturing_device_id)
 	_capture_button = button
 	_capture_target = "aux:" + aux_name
 	_capture_button.grab_focus()
@@ -3765,6 +3854,7 @@ func _invalidate_menu_evidence() -> void:
 	_menu_verification_origins.erase(str(_draft_profile.get("profile_id", "")))
 	if _draft_ui_device_id == _draft_flight_device_id:
 		_draft_ui_device_id = -1
+		_ui_connection = _connection_lease(-1)
 		_fill_device_picker(ui_device_picker, true, -1)
 	_set_status(tr("Menu control verification expired. Verify again before selecting this radio for menus."), false)
 
@@ -3772,7 +3862,9 @@ func _invalidate_menu_evidence() -> void:
 func _disable_radio_menus() -> void:
 	_draft_profile.erase("ui_navigation")
 	_menu_verification_origins.erase(str(_draft_profile.get("profile_id", "")))
-	if _draft_ui_device_id == _draft_flight_device_id: _draft_ui_device_id = -1
+	if _draft_ui_device_id == _draft_flight_device_id:
+		_draft_ui_device_id = -1
+		_ui_connection = _connection_lease(-1)
 	_refresh_devices()
 	_update_menu_controls()
 	_draft_validation_changed()
@@ -3891,6 +3983,10 @@ func _save_profile(close_on_success := true) -> bool:
 	if _draft_profile.is_empty() or profile_store == null:
 		_set_status(tr("There is no controller profile to save."), true)
 		return false
+	var leases := connection_leases()
+	if not _lease_matches(leases.flight, _draft_flight_device_id) or not _lease_matches(leases.ui, _draft_ui_device_id):
+		_set_status(tr("A controller connection changed. Your draft is preserved. Select the intended device and review its profile before saving."), true)
+		return false
 	var calibration_origin: Dictionary = _calibration_origins.get(_draft_context_key, {})
 	if not calibration_origin.is_empty() and (_draft_flight_device_id != int(calibration_origin.id) \
 		or not _calibration_connection_matches(int(calibration_origin.id), int(calibration_origin.generation))):
@@ -3935,6 +4031,9 @@ func _save_profile(close_on_success := true) -> bool:
 		# A committed New draft is now an Update target. Free its device slot
 		# only after success so the next New cannot recover this saved UUID.
 		_drafts_by_context.erase(_draft_context_key)
+		_draft_connections[saved_context] = _draft_connections.get(_draft_context_key, {})
+		_draft_connections.erase(_draft_context_key)
+		_clean_snapshots.erase(_draft_context_key)
 		if _calibration_origins.has(_draft_context_key):
 			_calibration_origins[saved_context] = _calibration_origins[_draft_context_key]
 			_calibration_origins.erase(_draft_context_key)
@@ -3944,8 +4043,10 @@ func _save_profile(close_on_success := true) -> bool:
 	_refresh_devices()
 	_mark_clean()
 	profile_saved.emit(saved.duplicate(true))
-	if close_on_success:
+	if close_on_success and _other_dirty_context().is_empty():
 		close_requested.emit()
+	elif close_on_success:
+		_set_status(tr("The current profile was saved. Other profiles still have unsaved changes; select them to review and save, or close and discard all."), false)
 	_reset_validation()
 	return true
 

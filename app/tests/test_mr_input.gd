@@ -60,7 +60,11 @@ func _radio() -> void:
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, ControllerProfile.defaults("radio", "radio_custom"))
 	var s: Dictionary = input.sample(DT, true)
-	_check("radio is a ready absolute-throttle source", s.source == "radio" and s.ready and s.throttle_policy == "absolute",
+	_check("radio polling alone is not fresh low-throttle evidence", s.source == "radio" and not s.ready
+		and s.pilot[FC.IN_THROTTLE] == 0.0 and s.throttle_policy == "absolute")
+	input.radio.on_motion(0, 2, -1.0)
+	s = input.sample(DT, true)
+	_check("radio becomes ready after a fresh low-throttle event", s.source == "radio" and s.ready and s.throttle_policy == "absolute",
 		"%s %s %s %s" % [s.source, s.ready, s.throttle_policy, s.error])
 	_check("radio defaults to Acro", s.pilot[FC.IN_MODE] == float(FC.FLIGHT_ACRO))
 	_check("radio throttle low end = 0", s.pilot[FC.IN_THROTTLE] == 0.0)
@@ -89,6 +93,7 @@ func _calibration() -> void:
 	_axes = {0: 0.1, 1: 0.0, 2: -1.0, 3: 0.45}
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, profile)
+	input.radio.on_motion(0, 2, -1.0)
 	var s: Dictionary = input.sample(DT, true)
 	_check("calibrated centre maps to 0", absf(s.pilot[FC.IN_ROLL]) < 1.0e-9, str(s.pilot[FC.IN_ROLL]))
 	_check("calibrated raw 0.45 maps to +0.5, inverted to -0.5", is_equal_approx(s.pilot[FC.IN_YAW], -0.5), str(s.pilot[FC.IN_YAW]))
@@ -262,6 +267,7 @@ func _radio_switch() -> void:
 	_keys = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0, arm = true, mode = false}
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, profile)
+	input.radio.on_motion(0, 2, -1.0)
 	_check("a radio with a Landing gear switch arms from that switch", input.arm_from_switch())
 	var s: Dictionary = input.sample(DT, true)
 	_check("a switch held ON at connection is not an arm level (no OFF evidence)", s.pilot[FC.IN_ARM] == 0.0 and s.raw.arm_source == "switch:gear")

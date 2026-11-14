@@ -249,6 +249,52 @@ func _initialize() -> void:
 	measured.aux = {"smoke": {"type": "button", "button": 7, "mode": "level"}}
 	var merged_new_aux := Profile.merge_radio_calibration(existing, measured)
 	_check("calibration preserves supported explicit AUX handoff", not merged_new_aux.is_empty() and merged_new_aux.aux.smoke == measured.aux.smoke and merged_new_aux.aux.gear == existing.aux.gear)
+	var multi_measurement: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	multi_measurement.roll.axis = 9
+	multi_measurement.pitch.axis = 8
+	var multi_result := Profile.merge_radio_calibration_result(existing, multi_measurement)
+	var removed_names: Array = []
+	for removal: Dictionary in multi_result.removed_aux:
+		removed_names.append(removal.channel)
+	_check("merge reports each removed AUX and retains original bindings", multi_result.ok \
+		and removed_names.has("smoke") and removed_names.has("gear") and removed_names.size() == 2 \
+		and multi_result.profile.aux.is_empty() and existing == existing_before, str(multi_result))
+	var actions_profile := Profile.defaults("radio", "radio_custom")
+	actions_profile.actions.camera_cycle = {"type": "axis", "axis": 5, "sign": 1}
+	actions_profile.actions.pause = {"type": "axis", "axis": 6, "sign": 1}
+	var actions_before := actions_profile.duplicate(true)
+	var actions_measurement: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	actions_measurement.roll.axis = 5
+	actions_measurement.pitch.axis = 6
+	var conflict_result := Profile.merge_radio_calibration_result(actions_profile, actions_measurement)
+	var conflict_actions: Array = []
+	for conflict: Dictionary in conflict_result.conflicts:
+		conflict_actions.append([conflict.action, conflict.axis])
+	_check("action conflicts retain measurements and identify both actions", Profile.validate(actions_profile).ok \
+		and not conflict_result.ok and not conflict_result.profile.is_empty() \
+		and conflict_actions.has(["camera_cycle", 5]) and conflict_actions.has(["pause", 6]) \
+		and conflict_result.profile.actions == actions_profile.actions and actions_profile == actions_before, str(conflict_result))
+	var resolved: Dictionary = conflict_result.profile.duplicate(true)
+	resolved.actions.camera_cycle = {"type": "unbound"}
+	resolved.actions.pause = {"type": "unbound"}
+	_check("remapping resolves conflicts without measuring again", Profile.validate(resolved).ok \
+		and resolved.roll.axis == 5 and resolved.pitch.axis == 6 and actions_profile == actions_before)
+	for channel_name in ["roll", "pitch", "yaw"]:
+		var old := Profile.defaults("radio", "radio_custom")
+		old[channel_name].range_kind = "absolute"
+		_check("old V2 %s remains loadable and uses signed semantics" % channel_name, Profile.validate(old).ok \
+			and not Profile.upgrade_legacy(old).is_empty() and Profile.channel_value(-1.0, channel_name, old) == -1.0 \
+			and Profile.channel_value(0.0, channel_name, old) == 0.0 and Profile.channel_value(1.0, channel_name, old) == 1.0)
+		old[channel_name].invert = true
+		_check("old V2 %s honors signed inversion" % channel_name, Profile.channel_value(-1.0, channel_name, old) == 1.0 \
+			and Profile.channel_value(1.0, channel_name, old) == -1.0)
+		var corrected := Profile.merge_radio_calibration(old, RcInput.DEFAULT_PROFILE)
+		_check("recalibration explicitly sets %s centered" % channel_name, not corrected.is_empty() and corrected[channel_name].range_kind == "centered")
+	var uncenterable := Profile.defaults("radio", "radio_custom")
+	uncenterable.roll.range_kind = "absolute"
+	uncenterable.roll.center = uncenterable.roll.min
+	_check("old absolute endpoint center loads but signed command fails safe", Profile.validate(uncenterable).ok \
+		and not Profile.upgrade_legacy(uncenterable).is_empty() and Profile.channel_value(1.0, "roll", uncenterable) == 0.0)
 	measured.yaw.axis = measured.roll.axis
 	_check("invalid calibration leaves existing profile unchanged", Profile.merge_radio_calibration(existing, measured).is_empty() and existing == existing_before)
 

@@ -1285,7 +1285,7 @@ def sabre_fuselage(p, n):
         aspect = (z1 - z0) * FUS_LEN / (y1 - y0)
         skin.paint_over(colour, side_mask(_sabre_text(text, aspect, rows), z0, z1, y0, y1), rough=0.45, chips=chips * 0.5)
 
-    lettering("U.S. AIR FORCE", 0.190, 0.385, 0.072, 0.106)
+    lettering("U.S. AIR FORCE", 0.192, 0.362, 0.075, 0.105)
     insignia_rgb, insignia_alpha = side_rgba(_sabre_insignia(), 0.765, 0.845, 0.058, 0.152)
     skin.paint_over(insignia_rgb, insignia_alpha, rough=0.42, chips=chips * 0.5)
     lettering("FU-861", 0.855, 0.952, 0.030, 0.078)
@@ -1315,7 +1315,7 @@ def sabre_fuselage(p, n):
     skin.grime(exhaust * streaks * 0.8, tint=(0.24, 0.23, 0.22), rough=0.55)
     belly = smoothstep(np.radians(115), np.radians(150), a)
     oil = np.exp(-np.mod(zn - 0.20, 0.135) * FUS_LEN / 0.16) * smoothstep(0.55, 0.85, noise3(p, (0.005, 0.005, 0.2), 59))
-    skin.grime(oil * belly * 0.7, tint=(0.40, 0.34, 0.26), rough=0.5, metal_loss=0.35)
+    skin.grime(oil * belly * 0.4, tint=(0.44, 0.41, 0.36), rough=0.45, metal_loss=0.25)
     skin.colour = skin.colour * (1.0 - 0.07 * smoothstep(np.radians(70), np.radians(170), a))[:, None]
     sill = (zn > 0.13) & (zn < 0.42) & (y > 0.08)
     walk = (zn > 0.42) & (zn < 0.70) & (n[:, 1] > 0.5)
@@ -1383,7 +1383,7 @@ def sabre_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len):
         skin.scratch(0.6 * scratches(s, z, 0.016, 1.0, 79) * np.where(inside_walk, 0.35, 0.03))
         # Undersides: duller, with streaks from the gear bays and drains.
         streak = smoothstep(0.55, 0.85, noise3(p, (0.2, 0.006, 0.006), 83)) * (frac > 0.3)
-        skin.grime(np.where(top, 0.0, 0.35 * streak), tint=(0.40, 0.35, 0.28), rough=0.5, metal_loss=0.3)
+        skin.grime(np.where(top, 0.0, 0.16 * streak), tint=(0.46, 0.44, 0.41), rough=0.45, metal_loss=0.2)
     else:
         # Stabiliser roots sit beside the exhaust: soot on the inboard aft part.
         soot = (1.0 - smoothstep(0.10, 0.22, s)) * smoothstep(0.3, 0.9, frac)
@@ -1465,21 +1465,29 @@ def build_sabre(atlas: str):
                                          skin_axis=skin_axis)
     p, n = pos[covered], nrm[covered]
     if atlas == "fuselage":
-        skin = sabre_fuselage(p, n)
+        design = lambda pc, nc: sabre_fuselage(pc, nc)
     elif atlas in ("wing", "stab", "doors"):
         span_hi = 0.443 if atlas == "stab" else 0.998
         lifting = ("paint_stab",) if atlas == "stab" else ("paint_wing",)
         table = chord_table(JET_GLB, lifting, 0, 28 if atlas == "stab" else 48, -span_hi, span_hi)
-        frac = chord_fraction(p, 0, table, -span_hi, span_hi)
         if atlas == "doors":
             n = n.copy()
             n[:, 1] = -np.maximum(np.abs(n[:, 1]), 0.7)
-        skin = sabre_lifting(p, n, frac, np.abs(p[:, 0]) / span_hi, span_hi, atlas,
-                             chord_length(p, 0, table, -span_hi, span_hi))
+        design = lambda pc, nc: sabre_lifting(pc, nc, chord_fraction(pc, 0, table, -span_hi, span_hi),
+                                              np.abs(pc[:, 0]) / span_hi, span_hi, atlas,
+                                              chord_length(pc, 0, table, -span_hi, span_hi))
     else:
         table = chord_table(JET_GLB, ("paint_fin",), 1, 20, 0.212, 0.577)
-        frac = chord_fraction(p, 1, table, 0.212, 0.577)
-        skin = sabre_fin(p, n, frac, (p[:, 1] - 0.212) / (0.577 - 0.212))
+        design = lambda pc, nc: sabre_fin(pc, nc, chord_fraction(pc, 1, table, 0.212, 0.577),
+                                          (pc[:, 1] - 0.212) / (0.577 - 0.212))
+    # Every layer is per texel, so chunks give identical bytes with a bounded memory peak.
+    parts = [design(p[k:k + 1_000_000], n[k:k + 1_000_000]) for k in range(0, len(p), 1_000_000)]
+    skin = _Skin(0)
+    skin.colour = np.concatenate([part.colour for part in parts])
+    skin.rough = np.concatenate([part.rough for part in parts])
+    skin.metal = np.concatenate([part.metal for part in parts])
+    skin.height = np.concatenate([part.height for part in parts])
+    del parts
     height, width = covered.shape
 
     def full(values, channels):

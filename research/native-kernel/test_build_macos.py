@@ -9,6 +9,7 @@ import io
 import json
 import os
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -241,6 +242,23 @@ class BuildPolicy(ScratchCase):
         self.assertEqual(run.call_args.kwargs["cwd"], "/fresh")
         for name in ("DYLD_INSERT_LIBRARIES", "ASAN_OPTIONS", "UBSAN_OPTIONS"):
             self.assertNotIn(name, run.call_args.kwargs["env"])
+
+    def test_expected_validator_control_checks_both_streams_and_allows_only_its_diagnostic(self):
+        diagnostic = mac.engine_policy.CONTROL_DIAGNOSTIC
+        for code in (0, 1):
+            for stdout, stderr in ((diagnostic, ""), ("", diagnostic)):
+                with self.subTest(code=code, stdout=bool(stdout)), \
+                     patch.object(mac.subprocess, "run", return_value=SimpleNamespace(
+                         stdout=stdout, stderr=stderr, returncode=code)) as run:
+                    self.assertIn(diagnostic, mac._research_engine_output(["godot"], expected_diagnostic=diagnostic))
+                    self.assertFalse(run.call_args.kwargs["check"])
+        for text in ("", diagnostic + "\nERROR: unrelated", diagnostic + "\nValidate extension JSON: other"):
+            with self.subTest(text=text), patch.object(mac.subprocess, "run", return_value=SimpleNamespace(
+                    stdout=text, stderr="", returncode=0)), self.assertRaises(ValueError):
+                mac._research_engine_output(["godot"], expected_diagnostic=diagnostic)
+        with patch.object(mac.subprocess, "run", return_value=SimpleNamespace(stdout=diagnostic, stderr="", returncode=2)), \
+             self.assertRaises(subprocess.CalledProcessError):
+            mac._research_engine_output(["godot"], expected_diagnostic=diagnostic)
 
 
 class MachOPolicy(ScratchCase):

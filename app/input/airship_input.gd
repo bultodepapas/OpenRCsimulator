@@ -20,6 +20,7 @@ var read_button: Callable = Input.is_joy_button_pressed
 var read_keys: Callable = Keyboard.read_raw
 var keyboard_commands: Dictionary = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
 var message := ""
+var source_generation := 0
 
 
 func connect_first_device() -> void:
@@ -38,13 +39,38 @@ func on_connection_changed(id: int, connected: bool) -> void:
 			return record
 		var unique: bool = ControllerStore.legacy_identity_is_unique_for_ids(id, info, Input.get_connected_joypads(), device_info)
 		var saved: Dictionary = RcCalibration.load_profile(profiles_path, RcInput.key_for(id, info)) if unique else {}
-		radio.connect_device(id, info, saved)
-		if radio.is_rate_throttle():
-			radio.set_rate_throttle_for_start(0.0)
-		message = "%s connected: lower the throttle to arm." % radio.device_name
+		connect_device(id, info, saved)
 	elif not connected and radio.connected and id == radio.device_id:
 		radio.disconnect_device()
+		source_generation += 1
+		keyboard_commands = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
 		message = "Controller disconnected: flight paused."
+
+
+## The managed activity supplies the selected connection and the service-resolved profile.
+func connect_device(id: int, info: Dictionary, profile: Dictionary = {}) -> void:
+	radio.connect_device(id, info, profile)
+	source_generation += 1
+	keyboard_commands = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	message = "%s connected: lower the throttle to arm." % radio.device_name
+
+
+func use_keyboard() -> void:
+	if not radio.connected:
+		return
+	radio.disconnect_device()
+	radio.confirmed_gamepad_connection = Callable()
+	source_generation += 1
+	keyboard_commands = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	message = "Keyboard selected: flight paused."
+
+
+func use_profile(profile: Dictionary) -> bool:
+	if not radio.use_profile(profile, "calibrated"):
+		return false
+	source_generation += 1
+	message = "Controller profile changed: lower the throttle to arm."
+	return true
 
 
 func on_event(event: InputEvent) -> void:
@@ -54,11 +80,17 @@ func on_event(event: InputEvent) -> void:
 		radio.on_button(event.device, event.button_index, event.pressed)
 
 
-## A spring-centred gamepad keeps a virtual throttle; restarting returns it to zero.
-func reset_throttle() -> void:
+## Pause clears only virtual commands. Absolute throttle and physical yaw remain
+## visible to the resume gate; no paused sample may increase virtual throttle.
+func reset_virtual_for_pause() -> void:
 	keyboard_commands = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
 	if radio.connected and radio.is_rate_throttle():
 		radio.set_rate_throttle_for_start(0.0)
+
+
+## A spring-centred gamepad keeps a virtual throttle; restarting returns it to zero.
+func reset_throttle() -> void:
+	reset_virtual_for_pause()
 	if radio.connected:
 		radio.require_neutral(false)
 

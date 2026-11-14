@@ -171,6 +171,7 @@ func _legacy_gear_radio() -> void:
 	_axes[4] = 1.0
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, profile)
+	_motion(input, 2, -1.0) # Raw radios require a fresh low-throttle event.
 	_check("legacy profile arms from the Landing gear switch", input.arm_from_switch() and input.arm_aux() == "gear"
 		and not input.mode_from_switch())
 	var s: Dictionary = input.sample(DT, true)
@@ -202,6 +203,7 @@ func _legacy_v1_radio() -> void:
 	legacy["aux"] = {"gear": {"type": "button", "button": 12, "mode": "level"}}
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, legacy)
+	_motion(input, 2, -1.0)
 	_check("a V1 radio profile with a gear button upgrades and arms from it", input.arm_aux() == "gear"
 		and input.radio.profile.get("aux", {}).get("gear", {}) == legacy.aux.gear, str(input.radio.profile.get("aux", {})))
 	var s: Dictionary = input.sample(DT, true)
@@ -216,6 +218,7 @@ func _explicit_arm_wins() -> void:
 	_reset_devices()
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, _radio_profile({"gear": _axis(4), "arm": _axis(5)}))
+	_motion(input, 2, -1.0)
 	_check("an explicit Arm binding replaces the gear fallback", input.arm_aux() == "arm" and input.bindings().arm_aux == "arm")
 	_axes[5] = 1.0
 	var s: Dictionary = input.sample(DT, true)
@@ -243,6 +246,7 @@ func _explicit_arm_wins() -> void:
 	input = _seamed()
 	var plain := _radio_profile({})
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"}, plain)
+	_motion(input, 2, -1.0)
 	_keys.arm = true
 	input.sample(DT, true)
 	_keys.arm = false
@@ -265,6 +269,7 @@ func _flight_mode_switch() -> void:
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"},
 		_radio_profile({"gear": _axis(4), "flight_mode": {"type": "switch", "buttons": buttons, "invert": false, "label": "SF"}}))
+	_motion(input, 2, -1.0)
 	_check("a flight-mode switch is reported for the OSD", input.mode_from_switch() and input.bindings().mode_switch)
 	var s: Dictionary = input.sample(DT, true)
 	_check("an unconfirmed mode switch starts in Angle (its OFF position)", s.pilot[FC.IN_MODE] == float(FC.FLIGHT_ANGLE)
@@ -301,6 +306,7 @@ func _flight_mode_three_position() -> void:
 	var input := _seamed()
 	input.connect_device(0, {name = "EdgeTX test radio", kind = "radio"},
 		_radio_profile({"flight_mode": {"type": "switch", "buttons": buttons, "invert": false}}))
+	_motion(input, 2, -1.0)
 	var s: Dictionary = input.sample(DT, true)
 	_switch_to(input, buttons, 1)
 	s = input.sample(DT, true)

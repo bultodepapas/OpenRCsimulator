@@ -27,6 +27,7 @@ patches=(
   --patch tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch
   --patch tools/graphics/metalfx/patches/0002-metalfx-history-reset.patch
   --patch tools/graphics/metalfx/patches/0003-metalfx-debug-faults.patch
+  --patch tools/graphics/metalfx/patches/0004-metalfx-frame-inputs.patch
 )
 python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip \
   --out tmp/metalfx-editor "${patches[@]}"
@@ -46,6 +47,10 @@ diagnostic source patch: `DEBUG_ENABLED` builds accept
 `OPENRC_METALFX_TEST_FAILURE=spatial_factory|temporal_factory|spatial_enqueue|temporal_enqueue`.
 Its environment is latched on first lookup, so use one fresh process per case.
 The controls are absent from release-template code. Normal launches leave it unset.
+0004 adds an explicitly requested offscreen HDR scene-input experiment, macOS 26+
+SDK bridge and synchronous diagnostic readback. It rejects unsupported scenes,
+keeps Temporal reset receipts independent and has no presenter. Its actual M1
+readback/lifecycle fixture passed; scene motion and presentation remain open.
 
 Intake freezes and hashes archive/ordered patch copies, reconstructs the expected
 patched catalog, rejects unknown source edits, extra inputs, unsafe paths and
@@ -63,6 +68,9 @@ editor/template source, patches, helper, toolchain and flags and rehashes exact
 artifacts and logs. Pair verification does not qualify rendering, export,
 signing, minimum OS compatibility, performance or a product package. Keep the
 export's actual template identity bound to the later package receipt.
+Use the same absolute Python invocation spelling for both builds. The verifier
+compares recorded command arrays and refuses differing aliases or `..` spellings
+even when they resolve to the same interpreter.
 
 ```sh
 python -m unittest discover -s tools/graphics/metalfx -p test_engine.py

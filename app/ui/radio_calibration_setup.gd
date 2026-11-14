@@ -31,6 +31,7 @@ var _last_axes: PackedFloat64Array = PackedFloat64Array()
 var _verify_full_seen := false
 var _verify_low_after_full := false
 var _finished: bool = false
+var _requested_stick_mode: int = 0
 
 
 func _init() -> void:
@@ -70,9 +71,10 @@ func _init() -> void:
 	buttons.add_child(next_button)
 
 
-func configure(registry: Object, device_id: int, profile: Dictionary) -> bool:
+func configure(registry: Object, device_id: int, profile: Dictionary, stick_mode: int = 0) -> bool:
 	_registry = registry
 	_device_id = device_id
+	_requested_stick_mode = stick_mode if stick_mode in [1, 2] else 0
 	_generation = int(registry.connection_generation(device_id))
 	if profile.get("kind", "") != "radio" or not connection_is_current():
 		return false
@@ -89,7 +91,7 @@ func connection_is_current() -> bool:
 
 
 func _ready() -> void:
-	view.stick_mode = CalibrationView.presentation_stick_mode(self)
+	view.stick_mode = _requested_stick_mode if _requested_stick_mode != 0 else CalibrationView.presentation_stick_mode(self)
 	_registry.devices_changed.connect(_check_connection)
 	next_button.grab_focus()
 	_check_connection()
@@ -134,12 +136,13 @@ func _sample() -> PackedFloat64Array:
 	_last_axes = axes
 	if _wizard.done():
 		var throttle: Dictionary = _wizard.profile.throttle
-		var amount: float = RcInput.normalize_throttle(axes[int(throttle.axis)], throttle)
-		if amount >= 0.95:
+		var stable: Dictionary = _wizard.stable_axis(int(throttle.axis))
+		var amount: float = RcInput.normalize_throttle(float(stable.value), throttle) if stable.ok else -1.0
+		if stable.ok and amount >= 0.95:
 			_verify_full_seen = true
-		elif _verify_full_seen and amount <= RcInput.ARM_THROTTLE:
+		elif stable.ok and _verify_full_seen and amount <= Calibration.VERIFY_IDLE_FRACTION:
 			_verify_low_after_full = true
-		if _verify_low_after_full and amount <= RcInput.ARM_THROTTLE:
+		if _verify_low_after_full and stable.ok and amount <= Calibration.VERIFY_IDLE_FRACTION:
 			_wizard.error = ""
 	view.set_verify_state(_verify_full_seen, _verify_low_after_full)
 	view.update(_wizard, axes)
@@ -158,8 +161,10 @@ func advance() -> void:
 			_refresh()
 			return
 		var throttle: Dictionary = _wizard.profile.throttle
-		if RcInput.normalize_throttle(axes[int(throttle.axis)], throttle) > RcInput.ARM_THROTTLE:
-			_wizard.error = "Return throttle to LOW before continuing; then try again."
+		var stable: Dictionary = _wizard.stable_axis(int(throttle.axis))
+		if not stable.ok or RcInput.normalize_throttle(float(stable.value), throttle) > Calibration.VERIFY_IDLE_FRACTION \
+				or RcInput.normalize_throttle(axes[int(throttle.axis)], throttle) > Calibration.VERIFY_IDLE_FRACTION:
+			_wizard.error = "Hold throttle at the calibrated LOW (within 1%) before continuing."
 			_refresh()
 			return
 		_finished = true
@@ -190,14 +195,19 @@ func _refresh() -> void:
 		var current: float = RcInput.normalize_throttle(_last_axes[int(throttle.axis)], throttle) if _last_axes.size() == RcInput.AXES else 0.0
 		if not _verify_low_after_full:
 			_prompt.text = tr("Verify throttle: move to FULL (100%), then back to LOW (0%) before using calibration.")
-		elif current > RcInput.ARM_THROTTLE:
+		elif current > Calibration.VERIFY_IDLE_FRACTION:
 			_prompt.text = tr("Return throttle to LOW before continuing; then try again.")
 		else:
 			_prompt.text = tr("Use these ranges, then Save controller settings. Lower the throttle before flying.")
-		view.set_result(tr("Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%.") % [
-			int(throttle.axis), int(mapping.roll.axis), int(mapping.pitch.axis), int(mapping.yaw.axis), current * 100.0])
+		var result := tr("Mapped axes: throttle %d, roll %d, pitch %d, yaw %d. Throttle now: %.0f%%.") % [
+			int(throttle.axis), int(mapping.roll.axis), int(mapping.pitch.axis), int(mapping.yaw.axis), current * 100.0]
+		if not _wizard.aux_warning.is_empty():
+			result += "\n" + str(_wizard.aux_warning)
+		view.set_result(result)
 		next_button.text = tr("Use calibration")
-		next_button.disabled = not _verify_low_after_full or current > RcInput.ARM_THROTTLE
+		var stable: Dictionary = _wizard.stable_axis(int(throttle.axis))
+		next_button.disabled = not _verify_low_after_full or not stable.ok or current > Calibration.VERIFY_IDLE_FRACTION \
+			or RcInput.normalize_throttle(float(stable.value), throttle) > Calibration.VERIFY_IDLE_FRACTION
 	else:
 		view.set_result("")
 		next_button.disabled = false

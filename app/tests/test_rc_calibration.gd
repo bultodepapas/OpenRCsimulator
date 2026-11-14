@@ -29,6 +29,16 @@ func _axes(throttle: float, roll: float, pitch: float, yaw: float) -> PackedFloa
 	return a
 
 
+func _hold(cal: RcCalibration, axes: PackedFloat64Array) -> void:
+	for _i in RcCalibration.STABLE_SAMPLES:
+		cal.sample(axes)
+
+
+func _advance(cal: RcCalibration, axes: PackedFloat64Array) -> bool:
+	_hold(cal, axes)
+	return cal.advance(axes)
+
+
 ## Feeds a sweep through `points` (each [throttle, roll, pitch, yaw]) in small steps, like a pilot moving a stick.
 func _sweep(cal: RcCalibration, points: Array) -> void:
 	for k in range(1, points.size()):
@@ -37,6 +47,7 @@ func _sweep(cal: RcCalibration, points: Array) -> void:
 			var p: Array = points[k - 1]
 			var q: Array = points[k]
 			cal.sample(_axes(lerpf(p[0], q[0], t), lerpf(p[1], q[1], t), lerpf(p[2], q[2], t), lerpf(p[3], q[3], t)))
+		_hold(cal, _axes(q[0], q[1], q[2], q[3]))
 
 
 func _direction_case(center: float, requested: float, opposite: float) -> void:
@@ -45,19 +56,19 @@ func _direction_case(center: float, requested: float, opposite: float) -> void:
 	rest.resize(RcInput.AXES)
 	rest[4] = -0.8
 	rest[6] = center
-	cal.advance(rest)
+	_advance(cal, rest)
 	var throttle := rest.duplicate()
 	throttle[4] = 0.8
-	cal.sample(throttle)
-	cal.advance(rest)
+	_hold(cal, throttle)
+	_advance(cal, rest)
 	var held := rest.duplicate()
 	held[6] = center + requested
-	cal.advance(held)
+	_advance(cal, held)
 	_check("direction confirms held axis and shows the opposite prompt", cal.step == 2 and "LEFT" in cal.instruction() and not cal.profile.has("roll"), cal.error)
 	var other := rest.duplicate()
 	other[6] = center + opposite
-	cal.sample(other)
-	cal.advance(rest)
+	_hold(cal, other)
+	_advance(cal, rest)
 	var mapped: Dictionary = cal.profile.get("roll", {})
 	_check("reduced/asymmetric held direction %s/%s at %s" % [requested, opposite, center], \
 		cal.step == 3 and not mapped.is_empty() and mapped.invert == (requested < 0.0) \
@@ -65,68 +76,137 @@ func _direction_case(center: float, requested: float, opposite: float) -> void:
 		and is_equal_approx(RcInput.normalize(center + opposite, mapped), -1.0), str(mapped))
 
 
+func _quality_cases() -> void:
+	for inverted in [false, true]:
+		var cal := RcCalibration.new()
+		var rest := PackedFloat64Array()
+		rest.resize(RcInput.AXES)
+		rest[4] = 0.8 if inverted else -0.8
+		var first := rest.duplicate()
+		first[6] = 0.05
+		cal.sample(first) # One biased first reading cannot choose the centre.
+		_advance(cal, rest)
+		_check("stable neutral replaces the first biased sample", cal.step == 1 and cal.rest_value(6) == 0.0)
+		var full := rest.duplicate()
+		full[4] = -0.8 if inverted else 0.8
+		_hold(cal, full)
+		var spike := rest.duplicate()
+		spike[4] = 0.87 if inverted else -0.87
+		cal.sample(spike)
+		_advance(cal, rest)
+		var throttle: Dictionary = cal.profile.get("throttle", {})
+		_check("isolated idle spike ignored, both throttle directions", not throttle.is_empty() \
+			and is_equal_approx(throttle.min, -0.8) and is_equal_approx(throttle.max, 0.8) \
+			and RcInput.normalize_throttle(rest[4], throttle) == 0.0, str(throttle))
+		var held := rest.duplicate()
+		held[6] = 0.7
+		_advance(cal, held)
+		var opposite := rest.duplicate()
+		opposite[6] = -0.5
+		_hold(cal, opposite)
+		spike = rest.duplicate()
+		spike[6] = -0.9
+		cal.sample(spike)
+		_advance(cal, rest)
+		var roll: Dictionary = cal.profile.get("roll", {})
+		_check("isolated endpoint spike ignored with asymmetric travel", not roll.is_empty() \
+			and is_equal_approx(roll.min, -0.5) and is_equal_approx(roll.max, 0.7) \
+			and RcInput.normalize(0.0, roll) == 0.0, str(roll))
+
+	var disagree := RcCalibration.new()
+	var biased := PackedFloat64Array()
+	biased.resize(RcInput.AXES)
+	biased[4] = -0.8
+	biased[6] = 0.05
+	_advance(disagree, biased)
+	var full := biased.duplicate()
+	full[4] = 0.8
+	_hold(disagree, full)
+	_advance(disagree, biased)
+	var held := biased.duplicate()
+	held[6] = 0.7
+	_advance(disagree, held)
+	var opposite := biased.duplicate()
+	opposite[6] = -0.5
+	_hold(disagree, opposite)
+	var actual_rest := biased.duplicate()
+	actual_rest[6] = 0.0
+	_advance(disagree, actual_rest)
+	_check("stable return disagreeing with rest is rejected", disagree.step == 2 and not disagree.profile.has("roll") and "centre" in disagree.error)
+	var jitter := RcCalibration.new()
+	var neutral := actual_rest.duplicate()
+	for offset in [-0.004, 0.003, 0.0, -0.002, 0.004]:
+		neutral[6] = offset
+		jitter.sample(neutral)
+	var estimate := jitter.stable_axis(6)
+	_check("bounded small jitter gives stable median", estimate.ok and estimate.value == 0.0)
+	for _i in 100:
+		jitter.sample(neutral)
+	_check("sample storage remains bounded", jitter._window.size() == RcCalibration.STABLE_SAMPLES)
+
+
 func _initialize() -> void:
 	var cal := RcCalibration.new()
 	var rest := _axes(0, 0, 0, 0)
 	_check("starts at the rest step", "1/5" in cal.prompt() and "EXCEPT the THROTTLE" in cal.prompt() and "fully DOWN" in cal.prompt(), cal.prompt())
-	cal.advance(rest)
+	_advance(cal, rest)
 	_sweep(cal, [[0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
-	cal.advance(rest)
+	_advance(cal, rest)
 	_check("throttle found on axis 4, reversed", cal.profile.throttle.axis == 4 and cal.profile.throttle.invert, str(cal.profile.get("throttle")))
 	# Enter without moving anything: rejected, same step.
-	cal.advance(rest)
+	_advance(cal, rest)
 	_check("no movement → error, stays on the step", cal.error != "" and "3/5" in cal.prompt(), cal.error)
 	_sweep(cal, [[0, 0, 0, 0], [0, 1, 0, 0]])
-	cal.advance(_axes(0, 1, 0, 0))
+	_advance(cal, _axes(0, 1, 0, 0))
 	_sweep(cal, [[0, 1, 0, 0], [0, -1, 0, 0], [0, 0, 0, 0]])
-	cal.advance(rest)
+	_advance(cal, rest)
 	_check("aileron on axis 6, not inverted", cal.profile.roll.axis == 6 and not cal.profile.roll.invert, str(cal.profile.get("roll")))
 	_sweep(cal, [[0, 0, 0, 0], [0, 0, 1, 0]])
-	cal.advance(_axes(0, 0, 1, 0))
+	_advance(cal, _axes(0, 0, 1, 0))
 	_sweep(cal, [[0, 0, 1, 0], [0, 0, -1, 0], [0, 0, 0, 0]])
-	cal.advance(rest)
+	_advance(cal, rest)
 	_check("elevator on axis 1, inverted (stick back reads −)", cal.profile.pitch.axis == 1 and cal.profile.pitch.invert, str(cal.profile.get("pitch")))
 	# The requested RIGHT direction reports a negative axis on this fixture.
 	_sweep(cal, [[0, 0, 0, 0], [0, 0, 0, -1]])
-	cal.advance(_axes(0, 0, 0, -1))
+	_advance(cal, _axes(0, 0, 0, -1))
 	_sweep(cal, [[0, 0, 0, -1], [0, 0, 0, 1], [0, 0, 0, 0]])
-	var finished := cal.advance(rest)
+	var finished := _advance(cal, rest)
 	_check("rudder on axis 0; right reports negative → inverted", cal.profile.yaw.axis == 0 and cal.profile.yaw.invert, str(cal.profile.get("yaw")))
 	_check("wizard finished with a valid profile", finished and cal.done() and RcCalibration.valid(cal.profile))
 
 	# A competing sweep used to silently win the throttle step (and could map yaw as throttle).
 	var mixed := RcCalibration.new()
-	mixed.advance(rest)
+	_advance(mixed, rest)
 	_sweep(mixed, [[0, 0, 0, 0], [0.5, 0, 0, 1], [0, 0, 0, 0]])
-	mixed.advance(rest)
+	_advance(mixed, rest)
 	_check("mixed throttle and yaw motion is rejected", mixed.step == 1 and not mixed.profile.has("throttle") and "one axis" in mixed.error, mixed.error)
 	mixed.sample(rest)
 	_check("a rejected step remains readable during later sampling", "one axis" in mixed.error, mixed.error)
 	var wrong_axis := RcCalibration.new()
-	wrong_axis.advance(rest)
+	_advance(wrong_axis, rest)
 	_sweep(wrong_axis, [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 0]])
-	wrong_axis.advance(rest)
+	_advance(wrong_axis, rest)
 	_sweep(wrong_axis, [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 0]])
-	wrong_axis.advance(rest)
+	_advance(wrong_axis, rest)
 	_check("reusing a mistaken throttle axis explains the conflict", wrong_axis.step == 2 and "already assigned" in wrong_axis.error, wrong_axis.error)
 	var half_throttle := RcCalibration.new()
-	half_throttle.advance(rest)
+	_advance(half_throttle, rest)
 	_sweep(half_throttle, [[0, 0, 0, 0], [1, 0, 0, 0]])
-	half_throttle.advance(_axes(0.5, 0, 0, 0))
+	_advance(half_throttle, _axes(0.5, 0, 0, 0))
 	_check("throttle must return to its recorded low before assignment", half_throttle.step == 1 and not half_throttle.profile.has("throttle") and "LOW" in half_throttle.error, half_throttle.error)
 	var short_travel := RcCalibration.new()
-	short_travel.advance(rest)
+	_advance(short_travel, rest)
 	_sweep(short_travel, [[0, 0, 0, 0], [0.5, 0, 0, 0]])
-	short_travel.advance(_axes(0.06, 0, 0, 0))
+	_advance(short_travel, _axes(0.06, 0, 0, 0))
 	_check("short-travel throttle return uses calibrated percentage", short_travel.step == 1 and not short_travel.profile.has("throttle") and "LOW" in short_travel.error, short_travel.error)
 	var off_center := RcCalibration.new()
-	off_center.advance(rest)
+	_advance(off_center, rest)
 	_sweep(off_center, [[0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
-	off_center.advance(rest)
+	_advance(off_center, rest)
 	_sweep(off_center, [[0, 0, 0, 0], [0, 1, 0, 0]])
-	off_center.advance(_axes(0, 1, 0, 0))
+	_advance(off_center, _axes(0, 1, 0, 0))
 	_sweep(off_center, [[0, 1, 0, 0], [0, -1, 0, 0]])
-	off_center.advance(_axes(0, 0.12, 0, 0))
+	_advance(off_center, _axes(0, 0.12, 0, 0))
 	_check("centered channel must return to rest before assignment", off_center.step == 2 and not off_center.profile.has("roll") and "centre" in off_center.error, off_center.error)
 
 	# The calibrated profile reproduces the pilot's sticks exactly (including the negative-reading rudder).
@@ -144,25 +224,26 @@ func _initialize() -> void:
 	_direction_case(0.0, 0.25, -0.25)
 	_direction_case(0.03, -0.22, 0.35)
 	_direction_case(-0.04, 0.22, -0.35)
+	_quality_cases()
 
 	var ambiguous := RcCalibration.new()
-	ambiguous.advance(rest)
+	_advance(ambiguous, rest)
 	_sweep(ambiguous, [[0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
-	ambiguous.advance(rest)
+	_advance(ambiguous, rest)
 	_sweep(ambiguous, [[0, 0, 0, 0], [0, -0.25, 0, 0], [0, 0.35, 0, 0], [0, 0, 0, 0]])
-	ambiguous.advance(rest)
+	_advance(ambiguous, rest)
 	_check("a completed sweep cannot replace held direction confirmation", ambiguous.step == 2 and not ambiguous.profile.has("roll") and "Hold" in ambiguous.error, ambiguous.error)
 	var competing := _axes(0, 0.5, 0.5, 0)
-	ambiguous.advance(competing)
+	_advance(ambiguous, competing)
 	_check("simultaneously held axes cannot establish direction", ambiguous.step == 2 and not ambiguous.profile.has("roll") and "one axis" in ambiguous.error, ambiguous.error)
 
 	# One-way or off-centre sweeps are rejected for centred sticks.
 	var c2 := RcCalibration.new()
-	c2.advance(rest)
+	_advance(c2, rest)
 	_sweep(c2, [[0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
-	c2.advance(rest)
+	_advance(c2, rest)
 	_sweep(c2, [[0, 0, 0, 0], [0, 1, 0, 0]]) # right only, Enter while still deflected... rest stays centred
-	c2.advance(rest)
+	_advance(c2, rest)
 	_check("aileron moved one way only → error", c2.error != "" and c2.profile.get("roll") == null, c2.error)
 
 	# Saved per device key; other devices and broken files give nothing.

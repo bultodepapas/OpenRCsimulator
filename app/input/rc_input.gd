@@ -586,7 +586,8 @@ func _fresh_neutral_sample() -> bool:
 		var axis: int = int(channel.axis)
 		if not _seen.has(axis):
 			return false
-		var normalized: float = ControllerProfile.normalize_axis(axes[axis], channel)
+		var normalized: float = ControllerProfile.normalize_signed_axis(axes[axis], channel) if channel_name != "throttle" \
+			else ControllerProfile.normalize_axis(axes[axis], channel)
 		if channel_name == "throttle" and not is_rate_throttle():
 			if _normalized_throttle(axes[axis]) > _idle_threshold():
 				return false

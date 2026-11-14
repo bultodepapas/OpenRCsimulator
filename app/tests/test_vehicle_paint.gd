@@ -37,6 +37,7 @@ func _run() -> void:
 	_check_stik_cyberpunk()
 	_check_stik_gear()
 	_check_jet_livery()
+	_check_sabre_livery()
 	_check_stik_metal()
 	_check_stik_blackbird()
 	print("Vehicle paint: %d checks, %d failed" % [checks, failures])
@@ -474,4 +475,36 @@ func _check_jet_livery() -> void:
 	var stock := _materials_named(plain.root, "paint_fuselage")
 	check("the delivered jet paint is untouched without the livery", stock.size() == 1
 		and not stock[0].albedo_texture.resource_path.contains("vehicle-paints"))
+	plain.root.free()
+
+
+func _check_sabre_livery() -> void:
+	var jet_id := "sebart-avanti-s-a200-p100rx"
+	var ids: Array = AirplaneBuilder.livery_choices(jet_id).map(func(choice: Dictionary) -> String: return str(choice.id))
+	check("the jet lists Sabre Plata", ids.has("sabre_plata") and ids[0] == "", str(ids))
+	var jet: Dictionary = AirplaneBuilder.build(jet_id, NAN, {}, "sabre_plata")
+	check("the jet builds with Sabre Plata", not jet.is_empty())
+	if jet.is_empty():
+		return
+	var detail := VehiclePaint.detail_enabled()
+	for part: String in ["fuselage", "wing", "doors", "stab", "fin"]:
+		var material_name := "paint_doors_ala" if part == "doors" else "paint_" + part
+		var finish := _materials_named(jet.root, material_name)
+		check("Sabre Plata %s: natural-metal maps, metal/paint mask and no stock glow" % part, finish.size() == 1
+			and finish[0].albedo_texture.resource_path.ends_with("sabre_plata_%s.jpg" % part)
+			and finish[0].metallic_texture != null and finish[0].metallic_texture.resource_path.ends_with("sabre_plata_%s_metallic.png" % part)
+			and finish[0].metallic_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_GRAYSCALE
+			and not finish[0].emission_enabled and finish[0].emission_texture == null
+			and (finish[0].normal_texture != null) == detail and (finish[0].roughness_texture != null) == detail)
+	var trim := _materials_named(jet.root, "paint_trim_carbono")
+	check("a null albedo texture drops the stock carbon pattern for plain metal", trim.size() >= 1
+		and trim[0].albedo_texture == null and trim[0].metallic > 0.4 and not trim[0].emission_enabled)
+	var canopy := _materials_named(jet.root, "canopy_glass")
+	check("the Sabre canopy is clear glass", canopy.size() == 1 and canopy[0].metallic < 0.1
+		and canopy[0].albedo_color.a < 0.5)
+	jet.root.free()
+	var plain: Dictionary = AirplaneBuilder.build(jet_id)
+	var stock_trim := _materials_named(plain.root, "paint_trim_carbono")
+	check("the delivered carbon trim keeps its texture without the livery", stock_trim.size() >= 1
+		and stock_trim[0].albedo_texture != null and stock_trim[0].emission_enabled)
 	plain.root.free()

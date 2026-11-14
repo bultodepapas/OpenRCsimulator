@@ -93,7 +93,7 @@ class ResearchIdentityTests(unittest.TestCase):
     def write_record(self):
         self.receipt.write_text(json.dumps(self.record), encoding="utf-8")
 
-    def output(self, command, *, cwd=None):
+    def output(self, command, *, cwd=None, expected_diagnostic=None):
         if "--version" in command:
             return policy.OFFICIAL_VERSION if command[0] == str(self.reference) else policy.RESEARCH_CLI
         if "--dump-extension-api" in command:
@@ -101,13 +101,17 @@ class ResearchIdentityTests(unittest.TestCase):
             (Path(cwd) / "extension_api.json").write_text(json.dumps(self.dump), encoding="utf-8")
             return "Dumping Extension API"
         self.assertIn("--validate-extension-api", command)
+        if expected_diagnostic is not None:
+            self.assertEqual(expected_diagnostic, policy.CONTROL_DIAGNOSTIC)
+            self.assertEqual(Path(command[-1]).name, "incompatible_extension_api.json")
+            return expected_diagnostic
         return ""
 
     def identify(self, selection=None, arch=None, version=None, output=None):
-        def commands(command, *, cwd=None):
+        def commands(command, *, cwd=None, expected_diagnostic=None):
             if version is not None and command == [str(self.binary), "--version"]:
                 return version
-            return self.output(command, cwd=cwd)
+            return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
         with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
              patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             return policy.identify(self.binary, self.lock, self.selection if selection is None else selection,
@@ -124,6 +128,8 @@ class ResearchIdentityTests(unittest.TestCase):
         compatibility = result["research_engine"]["compatibility_api_4_8"]
         self.assertEqual(compatibility["reference"]["sha256"], policy.OFFICIAL_ARM64_SHA256)
         self.assertEqual(compatibility["validation"], "passed without diagnostics")
+        self.assertEqual(compatibility["validator_control"]["official"], "detected")
+        self.assertEqual(compatibility["validator_control"]["research"], "detected")
         self.assertIn("not an attestation", policy.__doc__)
 
     def test_pins_are_all_or_nothing_and_exact(self):
@@ -195,9 +201,9 @@ class ResearchIdentityTests(unittest.TestCase):
             self.identify()
 
     def test_input_changes_during_executable_version_check_are_refused(self):
-        def mutate(command, *, cwd=None):
+        def mutate(command, *, cwd=None, expected_diagnostic=None):
             self.log.write_text("changed during version check", encoding="utf-8")
-            return self.output(command, cwd=cwd)
+            return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
         with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
              patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             with self.assertRaisesRegex(ValueError, "changed during validation"):
@@ -236,11 +242,11 @@ class ResearchIdentityTests(unittest.TestCase):
             self.identify()
         self.helper.patch_paths = lambda _patches: {"servers/rendering/renderer.cpp"}
         calls = []
-        def checked(command, *, cwd=None):
+        def checked(command, *, cwd=None, expected_diagnostic=None):
             calls.append(command)
-            if "--validate-extension-api" in command:
+            if "--validate-extension-api" in command and expected_diagnostic is None:
                 raise subprocess.CalledProcessError(1, command)
-            return self.output(command, cwd=cwd)
+            return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
         with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
              patch.object(policy, "extension_api_identity", return_value=self.api_proof):
             with self.assertRaisesRegex(ValueError, "4.8 extension API compatibility check failed"):
@@ -253,8 +259,9 @@ class ResearchIdentityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "independent macOS SHA-256"):
             self.identify()
         self.reference.write_bytes(b"fixture official editor")
-        def wrong_version(command, *, cwd=None):
-            return "4.8.beta2.official.other" if command == [str(self.reference), "--version"] else self.output(command, cwd=cwd)
+        def wrong_version(command, *, cwd=None, expected_diagnostic=None):
+            return ("4.8.beta2.official.other" if command == [str(self.reference), "--version"]
+                    else self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic))
         with self.assertRaisesRegex(ValueError, "Official reference Godot architecture or version"):
             self.identify(output=wrong_version)
         with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True), \
@@ -266,24 +273,65 @@ class ResearchIdentityTests(unittest.TestCase):
 
     def test_fresh_official_dump_and_zero_exit_incompatibilities(self):
         generated = []
-        def checked(command, *, cwd=None):
+        def checked(command, *, cwd=None, expected_diagnostic=None):
             if "--dump-extension-api" in command:
                 generated.append(Path(cwd))
                 self.assertFalse((Path(cwd) / "extension_api.json").exists())
-            if "--validate-extension-api" in command:
+            if "--validate-extension-api" in command and expected_diagnostic is None:
                 self.assertEqual(command[0], str(self.binary))
                 self.assertEqual(Path(command[-1]).parent, generated[-1])
                 return "Validate extension JSON: API was removed: classes/Example"
-            return self.output(command, cwd=cwd)
+            return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
         for _ in range(2):
             with self.assertRaisesRegex(ValueError, "incompatibility or engine error"):
                 self.identify(output=checked)
         self.assertNotEqual(generated[0], generated[1])
         self.assertTrue(all(not path.exists() for path in generated))
 
+    def test_both_validators_must_detect_the_specific_control_before_clean_validation(self):
+        calls = []
+        def checked(command, *, cwd=None, expected_diagnostic=None):
+            if "--validate-extension-api" in command:
+                calls.append((command[0], Path(command[-1]).name, expected_diagnostic))
+            return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
+        result = self.identify(output=checked)
+        self.assertEqual(calls, [
+            (str(self.reference), "incompatible_extension_api.json", policy.CONTROL_DIAGNOSTIC),
+            (str(self.binary), "incompatible_extension_api.json", policy.CONTROL_DIAGNOSTIC),
+            (str(self.binary), "extension_api.json", None)])
+        self.assertEqual(result, self.identify(output=checked))
+        for validator in (self.reference, self.binary):
+            def noop(command, *, cwd=None, expected_diagnostic=None):
+                if expected_diagnostic and command[0] == str(validator):
+                    return ""
+                return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
+            with self.subTest(validator=validator), self.assertRaisesRegex(ValueError, "did not detect"):
+                self.identify(output=noop)
+        def extra_error(command, *, cwd=None, expected_diagnostic=None):
+            result = self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
+            return result + "\nERROR: unrelated problem" if expected_diagnostic else result
+        with self.assertRaisesRegex(ValueError, "unrelated diagnostic"):
+            self.identify(output=extra_error)
+
+    def test_control_refuses_collisions_and_changes_to_either_api(self):
+        self.dump["classes"].append({"name": policy.CONTROL_CLASS})
+        with self.assertRaisesRegex(ValueError, "not uniquely absent"):
+            self.identify()
+        self.dump["classes"].pop()
+        for altered in ("extension_api.json", "incompatible_extension_api.json"):
+            def mutate(command, *, cwd=None, expected_diagnostic=None):
+                result = self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
+                if expected_diagnostic:
+                    path = Path(command[-1]).with_name(altered)
+                    path.write_text(path.read_text(encoding="utf-8") + " ", encoding="utf-8")
+                return result
+            with self.subTest(altered=altered), self.assertRaisesRegex(ValueError, "reference or control changed"):
+                self.identify(output=mutate)
+
     def test_missing_invalid_oversized_and_changed_dumps_are_refused(self):
-        def no_dump(command, *, cwd=None):
-            return "Dumping Extension API" if "--dump-extension-api" in command else self.output(command, cwd=cwd)
+        def no_dump(command, *, cwd=None, expected_diagnostic=None):
+            return ("Dumping Extension API" if "--dump-extension-api" in command
+                    else self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic))
         with self.assertRaisesRegex(ValueError, "missing, redirected or oversized"):
             self.identify(output=no_dump)
         self.dump["header"]["version_minor"] = 7
@@ -296,21 +344,21 @@ class ResearchIdentityTests(unittest.TestCase):
         self.dump["classes"] = [{"name": "fixture"}]
         with patch.object(policy, "MAX_API_BYTES", 8), self.assertRaisesRegex(ValueError, "oversized"):
             self.identify()
-        def mutate_dump(command, *, cwd=None):
-            if "--validate-extension-api" in command:
+        def mutate_dump(command, *, cwd=None, expected_diagnostic=None):
+            if "--validate-extension-api" in command and expected_diagnostic is None:
                 path = Path(command[-1])
                 path.write_text(path.read_text(encoding="utf-8") + " ", encoding="utf-8")
                 return ""
-            return self.output(command, cwd=cwd)
-        with self.assertRaisesRegex(ValueError, "dump changed during validation"):
+            return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
+        with self.assertRaisesRegex(ValueError, "reference or control changed during validation"):
             self.identify(output=mutate_dump)
 
     def test_reference_replacement_during_validation_is_refused(self):
-        def replace_reference(command, *, cwd=None):
-            if "--validate-extension-api" in command:
+        def replace_reference(command, *, cwd=None, expected_diagnostic=None):
+            if "--validate-extension-api" in command and expected_diagnostic is None:
                 self.reference.write_bytes(b"changed official editor")
                 return ""
-            return self.output(command, cwd=cwd)
+            return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
         with self.assertRaisesRegex(ValueError, "provenance changed during validation"):
             self.identify(output=replace_reference)
 
@@ -359,6 +407,12 @@ class ResearchIdentityTests(unittest.TestCase):
             args = (binary, self.lock, selection)
             kwargs = {"architectures": lambda _p: ["arm64"], "output": self.output}
             self.assertEqual(policy.identify(*args, **kwargs)["research_engine"]["source_commit"], policy.SOURCE_COMMIT)
+            def incompatible(command, *, cwd=None, expected_diagnostic=None):
+                if "--validate-extension-api" in command and expected_diagnostic is None:
+                    return "Validate extension JSON: API was removed: classes/Example"
+                return self.output(command, cwd=cwd, expected_diagnostic=expected_diagnostic)
+            with self.assertRaisesRegex(ValueError, "incompatibility or engine error"):
+                policy.identify(*args, architectures=kwargs["architectures"], output=incompatible)
             (build_source / "engine/source.cpp").write_text("changed\n", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "source drift"):
                 policy.identify(*args, **kwargs)

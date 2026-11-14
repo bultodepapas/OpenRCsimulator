@@ -73,6 +73,46 @@ roster from `verification_roster()` using `run.py` and its declared counts/tapes
 The installer revalidates the actual reports, checked logs, source, binary and
 engine; an old report or matching fallback cannot qualify a native install.
 
+The separate local MetalFX-engine lane requires explicit independent selection;
+an engine build receipt alone cannot authorize its executable. It binds the exact
+ARM64 editor hash, CLI/runtime versions, original build receipt, upstream ZIP,
+ordered patch files and clean locked godot-cpp 4.7 API. It also requires
+`--research-engine-reference-godot` pointing to the independently pinned official
+4.8-beta2 ARM64 editor. A fresh official 4.8 API dump checks custom-engine
+compatibility, while the 4.7 API remains the bindings input. Diagnostic output is
+checked on both streams even if Godot exits zero. Patches changing the pinned
+`core/extension/` interface are refused; ordinary custom-engine launches reject
+inherited `DYLD_*` overrides. Instrumented sanitizer launches use their separate
+controlled injection path.
+
+Pass the same complete selection to builder, installer, FPCR, diagnostics, fleet,
+session comparison, package and promotion commands:
+
+```sh
+R=(
+  --research-engine-sha256 "$EDITOR_SHA256"
+  --research-engine-cli-version '4.8.beta2.openrc_metalfx'
+  --research-engine-runtime-version '4.8-beta2 (openrc_metalfx)'
+  --research-engine-build-receipt "$EDITOR_INTAKE/build-editor.json"
+  --research-engine-archive "$GODOT_SOURCE_ZIP"
+  --research-engine-extension-api "$PINNED_CPP/gdextension/extension_api-4-7.json"
+  --research-engine-reference-godot "$OFFICIAL_GODOT"
+  --research-engine-patch "$PATCH_1"
+  --research-engine-patch "$PATCH_2"
+  --research-engine-patch "$PATCH_3"
+  --research-engine-patch "$PATCH_4"
+)
+```
+
+`run.py` reads that identity from the verified native build receipt instead of
+accepting this argument array. Identity checks reconstruct source catalogs and
+launch API validators; keep them outside measured intervals. These are local
+artifact-consistency checks, not cryptographic build attestation. Native loader,
+oracle, fleet, performance, CI and promotion gates remain required for every new
+engine hash. A marker issued for the official engine cannot admit a custom one.
+The [current MetalFX evidence](../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md)
+records the still-open native qualification.
+
 Ad-hoc signing is the development default. A Developer ID build requires an
 available Developer ID Application certificate selected by its exact SHA-1 and
 Team ID; candidate and mutant must use the same selection:

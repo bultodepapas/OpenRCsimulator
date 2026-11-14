@@ -243,6 +243,9 @@ var _radio_menu_delivery_targets: Dictionary = {}
 var _controller_action_edges: Dictionary = {}
 var _controller_action_require_off: Dictionary = {}
 var _controller_action_identities: Dictionary = {}
+var _controller_event_active := false
+var _controller_event_bindings: Dictionary = {}
+var _controller_event_profiles: Dictionary = {}
 var _controller_restart_edges: Dictionary = {}
 var _controller_rate_edges: Dictionary = {}
 var _controller_edge_identities: Dictionary = {}
@@ -902,6 +905,10 @@ func start_airship(skin_id: String = "") -> void:
 		candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
 		candidate.night_options = _night_options_from_preferences()
 		candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
+		if controllers != null:
+			candidate.controller_registry = controllers.registry
+			candidate.controller_profile_for = Callable(controllers, "profile_for_device")
+			candidate.controller_confirmation = Callable(controllers, "_confirmed_gamepad_connection")
 		add_child(candidate)
 		error = str(candidate.get("startup_error"))
 		if error.is_empty():
@@ -2057,7 +2064,8 @@ func open_controls(from: Control = null) -> void:
 	_clear_controller_actions(false)
 	var setup := ControllerSetup.new()
 	setup.calibration_saves_first = flight != null
-	setup.save_and_apply = controllers.save_settings_from_setup
+	setup.save_and_apply = func(candidate: Dictionary, flight_id: int, ui_id: int) -> Dictionary:
+		return controllers.save_settings_from_setup(candidate, flight_id, ui_id, setup.connection_leases())
 	var capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES
 	if flight != null and flight.has_method("controller_capabilities"):
 		capabilities = flight.controller_capabilities()
@@ -2067,6 +2075,16 @@ func open_controls(from: Control = null) -> void:
 	elif home != null and Catalog.is_rotorcraft(home.aircraft_id):
 		capabilities = ControllerActions.HELICOPTER_CAPABILITIES
 	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"), capabilities)
+	if flight != null and _has_property(flight.session, "pending_controller_calibration"):
+		var pending: Dictionary = flight.session.pending_controller_calibration
+		var selected_id: int = controllers.registry.selected_device_id("flight")
+		if not pending.is_empty() and selected_id == int(pending.device_id) \
+				and int(pending.get("generation", -1)) == controllers.registry.connection_generation(selected_id) \
+				and flight.session.radio.device_key == str(pending.device_key):
+			setup.apply_calibration_draft(pending.profile, selected_id, controllers.registry.connection_generation(selected_id), str(pending.get("warning", "")))
+		setup.profile_saved.connect(func(_profile: Dictionary) -> void:
+			if flight != null and _has_property(flight.session, "pending_controller_calibration"):
+				flight.session.pending_controller_calibration = {})
 	setup.close_requested.connect(func() -> void:
 		if screens.is_top("controls"): screens.pop())
 	_update_controller_calibration_button(setup)
@@ -2121,7 +2139,7 @@ func _open_radio_calibration(setup: Node) -> void:
 	var device_id: int = setup.selected_flight_device_id()
 	var generation: int = controllers.registry.connection_generation(device_id)
 	var wizard: CanvasLayer = RadioCalibrationSetup.new()
-	if not wizard.configure(controllers.registry, device_id, setup.current_profile()):
+	if not wizard.configure(controllers.registry, device_id, setup.current_profile(), setup._live_stick_mode):
 		wizard.free()
 		_update_controller_calibration_button(setup)
 		# Always answer the request: the Setup assistant waits for a result (UI-15-UX-07).
@@ -2191,8 +2209,25 @@ func _controls_show_multirotor() -> bool:
 
 
 func _controller_bindings(id: int, flight_context := false) -> Dictionary:
+	var key := "%d:%s" % [id, str(flight_context)]
+	if _controller_event_active and _controller_event_bindings.has(key):
+		return _controller_event_bindings[key]
+	var bindings := _resolve_controller_bindings(id, flight_context)
+	if _controller_event_active: _controller_event_bindings[key] = bindings
+	return bindings
+
+
+func _controller_profile(id: int) -> Dictionary:
+	if _controller_event_active and _controller_event_profiles.has(id):
+		return _controller_event_profiles[id]
+	var profile: Dictionary = controllers.profile_for_device(id) if controllers != null and id >= 0 else {}
+	if _controller_event_active: _controller_event_profiles[id] = profile
+	return profile
+
+
+func _resolve_controller_bindings(id: int, flight_context := false) -> Dictionary:
 	if controllers != null and id >= 0:
-		var profile: Dictionary = controllers.profile_for_device(id)
+		var profile := _controller_profile(id)
 		if profile.is_empty() or not bool(profile.get("configured", true)):
 			return ControllerActions.clean_radio_bindings()
 		if flight_context:
@@ -2392,6 +2427,8 @@ func _update_radio_menu_hint(show_hint: bool) -> void:
 
 
 func _clear_controller_actions(require_off := true) -> void:
+	_controller_event_bindings.clear()
+	_controller_event_profiles.clear()
 	_release_controller_holds()
 	if controllers == null:
 		return
@@ -2411,7 +2448,7 @@ func _clear_controller_actions(require_off := true) -> void:
 func _sync_controller_generic_actions(require_off := false) -> void:
 	var id: int = controllers.registry.selected_device_id("flight")
 	var bindings := _controller_bindings(id, true)
-	var kind := str(controllers.profile_for_device(id).get("kind", ""))
+	var kind := str(_controller_profile(id).get("kind", ""))
 	for action_id: String in bindings:
 		if ControllerActions.action_definition(action_id).get("context", "menu") not in ["flight", "both"]: continue
 		var binding: Dictionary = bindings[action_id]
@@ -2561,6 +2598,18 @@ func _update_controller_button_prompts() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# Reuse one immutable routing snapshot only for this synchronous event.
+	# Profile/selection callbacks clear it; nothing persists into the next event.
+	_controller_event_active = true
+	_controller_event_bindings.clear()
+	_controller_event_profiles.clear()
+	_route_controller_event(event)
+	_controller_event_active = false
+	_controller_event_bindings.clear()
+	_controller_event_profiles.clear()
+
+
+func _route_controller_event(event: InputEvent) -> void:
 	if controllers == null: return
 	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
 	if UiInput.is_selected_radio_action(event):
@@ -3189,6 +3238,10 @@ func _start_workshop_airship_trial(editor: Node, trial: Dictionary, chosen_start
 	candidate.lighting_config = (previous.lighting_config if previous != null else preferences.get("lighting_config", TimeOfDay.defaults())).duplicate(true)
 	candidate.night_options = (previous.night_options if previous != null else _night_options_from_preferences()).duplicate(true)
 	candidate.sky_config = (previous.sky_config if previous != null else preferences.get("sky_config", SkyConfig.defaults())).duplicate(true)
+	if controllers != null:
+		candidate.controller_registry = controllers.registry
+		candidate.controller_profile_for = Callable(controllers, "profile_for_device")
+		candidate.controller_confirmation = Callable(controllers, "_confirmed_gamepad_connection")
 	add_child(candidate)
 	var error := str(candidate.get("startup_error"))
 	if not error.is_empty():

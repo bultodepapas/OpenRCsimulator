@@ -13,7 +13,7 @@ var failures: Array[String] = []
 var result: Dictionary = {"scope": "actual_godot_motion_offscreen_not_presentation", "cases": {},
 	"bounds": {"roi": [780, 420, 360, 240], "midpoint_margin": MARGIN,
 		"max_midpoint_mae": MAX_MIDPOINT_ERROR, "max_static_calibration_mae": MAX_CALIBRATION_ERROR,
-		"endpoint_translation_output_pixels": 48, "warmup_encodes": 16}}
+		"endpoint_translation_output_pixels": 48, "warmup_encodes": 16, "static_refresh_encodes": 6}}
 var finished := false
 
 
@@ -176,16 +176,20 @@ func _run() -> void:
 	RenderingServer.call("viewport_set_metalfx_frame_requested", viewport.get_viewport_rid(), true)
 	for _frame in 16:
 		await _once(viewport)
-	var before := _status(viewport)
+	var calibration_status := _status(viewport)
 	var calibrated := _read(viewport)
-	result.cases["before"] = before
-	if calibrated == null or before.get("ready_for_debug_readback") != true:
+	result.cases["calibration"] = calibration_status
+	if calibrated == null or calibration_status.get("ready_for_debug_readback") != true:
 		failures.append("warmup_not_ready")
 		_finish()
 		return
-	var calibration_error := _mae(calibrated, references.previous, true)
-	result["static_calibration_mae"] = calibration_error
-	_check(calibration_error <= MAX_CALIBRATION_ERROR, "static_hdr_srgb_calibration")
+	# Refresh after the diagnostic GPU read. Image scans stay after the moving
+	# pair so their CPU cost cannot trigger the engine's 250 ms history fence.
+	for _frame in 6:
+		await _once(viewport)
+	var before := _status(viewport)
+	result.cases["before"] = before
+	_check(before.get("ready_for_debug_readback") == true, "refresh_not_ready")
 	mesh.position.x = 24.0 * meters_per_pixel
 	await _once(viewport)
 	var after := _status(viewport)
@@ -200,6 +204,9 @@ func _run() -> void:
 		failures.append("moving_hdr_invalid")
 		_finish()
 		return
+	var calibration_error := _mae(calibrated, references.previous, true)
+	result["static_calibration_mae"] = calibration_error
+	_check(calibration_error <= MAX_CALIBRATION_ERROR, "static_hdr_srgb_calibration")
 	var errors := {"midpoint": _mae(generated, references.midpoint, true),
 		"previous": _mae(generated, references.previous, true), "current": _mae(generated, references.current, true),
 		"crossfade": _mae(generated, crossfade, true), "actual_current": _mae(generated, actual_current, true),

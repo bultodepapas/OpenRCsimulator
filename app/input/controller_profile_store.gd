@@ -10,12 +10,17 @@ const LEGACY_PATH := "user://rc_calibration.cfg"
 const STORAGE_SECTION := "controller_profiles"
 const BACKUP_SUFFIX := ".rollback"
 const TEMP_SUFFIX := ".tmp"
+const LOCK_SUFFIX := ".openrc-lock"
+const LOCK_OWNER := "owner"
 ## ConfigFile text does not encode every float losslessly; see _storage_form(). Measured on
 ## Godot 4.7.2–4.8-beta2, every value settles within two passes; the bound only fails closed.
 const STORAGE_FORM_PASS_LIMIT := 8
 
 var path: String
 var legacy_path: String
+var _write_depth := 0
+var _owned_lock := ""
+var _lock_token := ""
 
 
 func _init(storage_path: String = DEFAULT_PATH, legacy_storage_path: String = LEGACY_PATH) -> void:
@@ -23,8 +28,77 @@ func _init(storage_path: String = DEFAULT_PATH, legacy_storage_path: String = LE
 	legacy_path = legacy_storage_path
 
 
+## Serializes storage readers, writers and service activation/rollback across processes.
+## A caller may hold this lease across several store calls on the same instance. Other
+## instances, even in the same process, must not share it. Interrupted locks are never
+## reclaimed automatically: an owner may still be running, and PID reuse is possible.
+func acquire_write() -> Dictionary:
+	var absolute_path := ProjectSettings.globalize_path(path).simplify_path()
+	var lock := absolute_path + LOCK_SUFFIX
+	if _write_depth > 0:
+		if lock != _owned_lock or not _owns_write_lock():
+			return {"ok": false, "error": "Controller profile transaction lost its storage lock."}
+		_write_depth += 1
+		return {"ok": true, "error": ""}
+	var dir_error := DirAccess.make_dir_recursive_absolute(absolute_path.get_base_dir())
+	if dir_error != OK:
+		return {"ok": false, "error": "Could not create controller profile directory (%s)." % str(dir_error)}
+	# mkdir is the atomic claim; checking whether the path exists first is not enough.
+	var claim_error := DirAccess.make_dir_absolute(lock)
+	if claim_error != OK:
+		if DirAccess.dir_exists_absolute(lock):
+			return {"ok": false, "error": "Controller profiles are locked by another or interrupted instance. After checking that no instance owns the lock, remove %s and retry." % lock}
+		return {"ok": false, "error": "Could not acquire controller profile lock (%s)." % str(claim_error)}
+	var token := "%d:%d:%d" % [OS.get_process_id(), get_instance_id(), Time.get_ticks_usec()]
+	var owner_path := lock.path_join(LOCK_OWNER)
+	var owner := FileAccess.open(owner_path, FileAccess.WRITE)
+	if owner == null:
+		DirAccess.remove_absolute(lock)
+		return {"ok": false, "error": "Could not record the controller profile lock owner."}
+	owner.store_string(token)
+	var owner_error := owner.get_error()
+	owner.close()
+	if owner_error != OK:
+		DirAccess.remove_absolute(owner_path)
+		DirAccess.remove_absolute(lock)
+		return {"ok": false, "error": "Could not record the controller profile lock owner (%s)." % str(owner_error)}
+	_owned_lock = lock
+	_lock_token = token
+	_write_depth = 1
+	return {"ok": true, "error": ""}
+
+
+func _owns_write_lock() -> bool:
+	var owner_path := _owned_lock.path_join(LOCK_OWNER)
+	return not _owned_lock.is_empty() and FileAccess.file_exists(owner_path) \
+		and FileAccess.get_file_as_string(owner_path) == _lock_token
+
+
+func release_write() -> void:
+	if _write_depth <= 0:
+		return
+	_write_depth -= 1
+	if _write_depth > 0:
+		return
+	# Do not delete a replacement owner's lease if somebody manually changed it.
+	if _owns_write_lock():
+		DirAccess.remove_absolute(_owned_lock.path_join(LOCK_OWNER))
+		DirAccess.remove_absolute(_owned_lock)
+	_owned_lock = ""
+	_lock_token = ""
+
+
 ## Loads all profiles as candidates. A bad version or bad member rejects the file as a whole.
 func load_all() -> Dictionary:
+	var claim := acquire_write()
+	if not claim.ok:
+		return {"ok": false, "profiles": [], "errors": [claim.error]}
+	var result := _load_all_locked()
+	release_write()
+	return result
+
+
+func _load_all_locked() -> Dictionary:
 	var primary := _read_file(path)
 	if primary.ok:
 		return {"ok": true, "profiles": primary.profiles, "ui_preference": primary.ui_preference, "errors": []}
@@ -55,6 +129,15 @@ func save_profile_with_ui_preference(candidate: Variant, preference: Dictionary)
 
 
 func _save_profile(candidate: Variant, preference: Variant = null) -> Dictionary:
+	var claim := acquire_write()
+	if not claim.ok:
+		return {"ok": false, "profile": {}, "error": claim.error}
+	var result := _save_profile_locked(candidate, preference)
+	release_write()
+	return result
+
+
+func _save_profile_locked(candidate: Variant, preference: Variant = null) -> Dictionary:
 	var validation := ControllerProfile.validate(candidate)
 	if not validation.ok:
 		return {"ok": false, "profile": {}, "error": "Invalid controller profile: " + "; ".join(validation.errors)}
@@ -86,6 +169,15 @@ func _save_profile(candidate: Variant, preference: Variant = null) -> Dictionary
 ## Restores a previously returned load_all() snapshot after a runtime activation refusal.
 ## The current store is checked first so this cannot overwrite a newly damaged file.
 func restore_snapshot(snapshot: Dictionary) -> Dictionary:
+	var claim := acquire_write()
+	if not claim.ok:
+		return {"ok": false, "error": claim.error}
+	var result := _restore_snapshot_locked(snapshot)
+	release_write()
+	return result
+
+
+func _restore_snapshot_locked(snapshot: Dictionary) -> Dictionary:
 	if not bool(snapshot.get("ok", false)) or typeof(snapshot.get("profiles")) != TYPE_ARRAY:
 		return {"ok": false, "error": "The previous controller profile snapshot is invalid."}
 	var profiles: Array = snapshot.profiles.duplicate(true)
