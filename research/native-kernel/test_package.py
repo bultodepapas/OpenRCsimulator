@@ -500,7 +500,11 @@ class MacPackagePortableTests(unittest.TestCase):
             selection = {"sha256": engine["sha256"], "cli_version": "4.8.beta2.openrc_metalfx"}
             with patch.object(fake, "godot_identity", return_value=engine) as selected:
                 self.assertEqual(package.verified_mac_install(tool_root, self.editor, selection), envelope)
-                selected.assert_called_once_with(self.editor, {}, selection)
+                self.assertEqual(selected.call_count, 2)
+                self.assertTrue(all(call.args == (self.editor, {}, selection) for call in selected.call_args_list))
+            with patch.object(fake, "godot_identity", side_effect=[engine, {**engine, "sha256": "f" * 64}]):
+                with self.assertRaisesRegex(ValueError, "provenance changed"):
+                    package.verified_mac_install(tool_root, self.editor, selection)
             with patch.object(fake, "validate_signing_pair", side_effect=ValueError("signing pair mismatch")) as signing:
                 with self.assertRaisesRegex(ValueError, "signing pair mismatch"):
                     package.verified_mac_install(tool_root, self.editor)

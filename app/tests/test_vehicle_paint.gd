@@ -37,6 +37,7 @@ func _run() -> void:
 	_check_stik_cyberpunk()
 	_check_stik_gear()
 	_check_jet_livery()
+	_check_stik_metal()
 	print("Vehicle paint: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -56,7 +57,7 @@ func _check_data() -> void:
 			groups.append(skin.materials)
 		for group: Dictionary in groups:
 			for material_name: String in group:
-				for field: String in ["albedo_texture", "emission_texture"]:
+				for field: String in ["albedo_texture", "emission_texture", "normal_texture", "roughness_texture", "metallic_texture"]:
 					if group[material_name].has(field):
 						check("texture exists: " + str(group[material_name][field]), ResourceLoader.exists(str(group[material_name][field])))
 	check("unknown vehicles and skins fall back", VehiclePaint.choices("ugly-stik-60").is_empty()
@@ -82,6 +83,76 @@ func _shared_material(root: Node, material_name: String) -> StandardMaterial3D:
 			if shared != null and shared.resource_name == material_name:
 				return shared
 	return null
+
+
+func _check_stik_metal() -> void:
+	var family := "jensen-das-ugly-stik-60"
+	var ids := [family, "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "stik-electric-6s"]
+	var previous := SceneDetail._preference
+	var forced := not OS.get_environment("OPENRC_SCENE_DETAIL").is_empty()
+	for argument: String in OS.get_cmdline_user_args():
+		forced = forced or argument.begins_with("--scene_detail=")
+	if not forced: SceneDetail.set_preference("medium")
+	for id: String in ids:
+		var offered := false
+		for choice: Dictionary in AirplaneBuilder.livery_choices(id):
+			offered = offered or choice.id == "silver_ace"
+		check(id + " offers SILVER ACE", offered)
+		var built: Dictionary = AirplaneBuilder.build(id, NAN, {}, "silver_ace")
+		check(id + " builds SILVER ACE", not built.is_empty())
+		if built.is_empty(): continue
+		var finishes := _materials_named(built.root, "classic-covering-v4")
+		check(id + " has a single shared metal finish per instance", finishes.size() == 1)
+		if finishes.size() == 1:
+			var finish: StandardMaterial3D = finishes[0]
+			check(id + " binds metal and paint boundaries at full multiplier", finish.metallic == 1.0
+				and finish.metallic_texture != null and finish.metallic_texture.resource_path.ends_with("silver_ace_metallic.png")
+				and finish.metallic_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_GRAYSCALE)
+			check(id + " keeps the metal finish nonemissive and UV-mapped", not finish.emission_enabled
+				and not finish.clearcoat_enabled and not finish.uv1_triplanar)
+			if VehiclePaint.detail_enabled():
+				check(id + " uses rivet normals and varying raw-metal finish", finish.normal_enabled
+					and finish.normal_texture.resource_path.ends_with("silver_ace_normal.png") and is_equal_approx(finish.normal_scale, 0.85)
+					and finish.roughness_texture.resource_path.ends_with("silver_ace_roughness.png"))
+			else:
+				check(id + " omits replacement detail at forced Low", not finish.normal_enabled
+					and finish.normal_texture == null and finish.roughness_texture == null)
+		var gaps := _materials_named(built.root, "classic-covering-gap-v1")
+		check(id + " keeps hinge slots dark and nonreflective", not gaps.is_empty()
+			and gaps[0].albedo_texture.resource_path.ends_with("silver_ace_albedo.png")
+			and gaps[0].albedo_color.get_luminance() < 0.11 and gaps[0].roughness == 1.0
+			and gaps[0].metallic == 0.0 and not gaps[0].normal_enabled)
+		var ventral := _materials_named(built.root, "skin:b00e28ff")
+		check(id + " finishes the solid ventral fin in aluminium", not ventral.is_empty() and ventral[0].metallic == 1.0)
+		built.root.free()
+	# Repainting must reset to the immutable stock resource, including emission and normals.
+	var plain: Dictionary = AirplaneBuilder.build(family)
+	var factory: StandardMaterial3D = _materials_named(plain.root, "classic-covering-v4")[0]
+	var stock_image := factory.albedo_texture
+	var stock_normal := factory.normal_texture
+	var fuselage := plain.root.get_node("fuselage") as MeshInstance3D
+	var stock_mesh := fuselage.mesh
+	VehiclePaint.apply(plain.root, family, "neon_ronin")
+	VehiclePaint.apply(plain.root, family, "silver_ace")
+	var metal: StandardMaterial3D = _materials_named(plain.root, "classic-covering-v4")[0]
+	check("changing neon to metal removes emission without editing geometry", not metal.emission_enabled and fuselage.mesh == stock_mesh)
+	VehiclePaint.apply(plain.root, family)
+	check("factory film and its normals survive repainting", _materials_named(plain.root, "classic-covering-v4")[0] == factory
+		and factory.albedo_texture == stock_image and factory.normal_texture == stock_normal and factory.metallic_texture == null)
+	if not forced or not VehiclePaint.detail_enabled():
+		if not forced: SceneDetail.set_preference("low")
+		VehiclePaint.apply(plain.root, family, "silver_ace")
+		var low: StandardMaterial3D = _materials_named(plain.root, "classic-covering-v4")[0]
+		check("Low retains the metal/paint mask and skips replacement detail", low.metallic_texture != null
+			and low.roughness_texture == null and low.normal_texture == null and not low.normal_enabled
+			and is_equal_approx(low.roughness, VehiclePaint._detail_means()["res://assets/vehicle-paints/ugly-stik/silver_ace_roughness.png"]))
+		VehiclePaint.apply(plain.root, family, "neon_ronin")
+		check("Low neon still retains the stock film normals", _materials_named(plain.root, "classic-covering-v4")[0].normal_texture == stock_normal)
+	plain.root.free()
+	SceneDetail.set_preference(previous)
+	var mask := Image.load_from_file("res://assets/vehicle-paints/ugly-stik/silver_ace_metallic.png")
+	check("painted bands are dielectric while unpainted panels are metallic", mask.get_pixel(40, 40).r > 0.99
+		and mask.get_pixel(250, 150).r < 0.01)
 
 
 func _check_stik_cyberpunk() -> void:

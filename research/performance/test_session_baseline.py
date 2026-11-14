@@ -368,6 +368,20 @@ class EngineInspectionTests(unittest.TestCase):
                         with self.assertRaisesRegex(RuntimeError, "expected Godot"):
                             inspect_godot(executable, 30)
 
+    def test_custom_engine_requires_the_explicit_shared_identity_verifier(self):
+        selection = {"sha256": "a" * 64, "cli_version": "4.8.beta2.openrc_metalfx"}
+        identity = {"path": "/local/Godot", "version": "4.8.beta2.openrc_metalfx", "sha256": "a" * 64,
+                    "architectures": ["arm64"], "research_engine": {"selection": selection}}
+        mac = SimpleNamespace(locked=SimpleNamespace(load_lock=lambda: {"lock": "fixture"}),
+                              godot_identity=unittest.mock.Mock(return_value=identity))
+        spec = SimpleNamespace(loader=SimpleNamespace(exec_module=lambda _module: None))
+        with patch.object(baseline.importlib.util, "spec_from_file_location", return_value=spec), \
+             patch.object(baseline.importlib.util, "module_from_spec", return_value=mac):
+            observed = inspect_godot(Path("/local/Godot"), 30, selection)
+        mac.godot_identity.assert_called_once_with(Path("/local/Godot"), {"lock": "fixture"}, selection)
+        self.assertEqual(observed["research_engine"], identity["research_engine"])
+        self.assertEqual(observed["runtime_binary_sha256"], selection["sha256"])
+
 
 class ReleaseProbeAdmissionTests(unittest.TestCase):
     def test_mac_release_probe_requires_bundle_architecture_probe_and_stability(self):
@@ -658,6 +672,39 @@ class PreparedMacSourceTests(unittest.TestCase):
             campaign_path = root / "good/session_baseline.json"
             _campaign, raw = baseline._campaign_runs(campaign_path)
             self.assertEqual(len(raw), 2)
+            # A retained custom-engine campaign must be reread with an independent pin.
+            original_campaign = campaign_path.read_bytes()
+            original_raw = {}
+            local_report = copy.deepcopy(report)
+            selection = {"runtime_version": "4.8-beta2 (openrc_metalfx)"}
+            local_report["metadata"]["engine"] = {"path": str(engine), "sha256": _sha256_file(engine),
+                                                   "research_engine": {"selection": selection}}
+            for pair in local_report["pairs"]:
+                for role in ("reference", "native"):
+                    item = pair["runs"][role]
+                    path = campaign_path.parent / item["report_relative_path"]
+                    original_raw[path] = path.read_bytes()
+                    payload = json.loads(original_raw[path])
+                    payload["machine"]["godot"] = selection["runtime_version"]
+                    path.write_text(json.dumps(payload))
+                    item["report_sha256"] = _sha256_file(path)
+            campaign_path.write_text(json.dumps(local_report))
+            with patch.object(baseline, "inspect_godot", return_value=local_report["metadata"]["engine"]):
+                with self.assertRaisesRegex(ValueError, "independent local research-engine pin"):
+                    baseline._campaign_runs(campaign_path)
+                self.assertEqual(len(baseline._campaign_runs(campaign_path, selection)[1]), 2)
+            stripped = copy.deepcopy(local_report)
+            stripped["metadata"]["engine"].pop("research_engine")
+            campaign_path.write_text(json.dumps(stripped))
+            with self.assertRaisesRegex(ValueError, "require the independent pin"):
+                baseline._campaign_runs(campaign_path)
+            campaign_path.write_text(json.dumps(local_report))
+            with patch.object(baseline, "inspect_godot", return_value={"sha256": "different"}):
+                with self.assertRaisesRegex(ValueError, "provenance differs"):
+                    baseline._campaign_runs(campaign_path, selection)
+            for path, payload in original_raw.items():
+                path.write_bytes(payload)
+            campaign_path.write_bytes(original_campaign)
             native_row = report["pairs"][0]["runs"]["native"]
             native_path = campaign_path.parent / native_row["report_relative_path"]
             tampered = json.loads(native_path.read_text())

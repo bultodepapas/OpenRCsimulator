@@ -1,0 +1,16 @@
+Sponsor logos on the "Verde Neón Carbono" jet livery
+
+These are trademarks of their owners, not CC0 assets. The project owner reports
+that both companies support the project. They are used as sponsor decals with
+that support. Confirm written permission before redistributing builds that show
+them, and remove them on request.
+
+jumper_rc_logo.png  - Jumper RC (Jumper Technology Changzhou Co., Ltd) logo, unchanged,
+  from https://www.jumper-rc.com/wp-content/uploads/2020/03/%E6%9C%AA%E6%A0%87%E9%A2%98-22.png
+  (site header image, retrieved 2026-11-14).
+jeti_model_logo.png - JETI model s.r.o. logo, unchanged,
+  from https://www.jetimodel.com/public/views/assets/img/logo-jeti.png
+  (site header image, retrieved 2026-11-14).
+
+tools/skins/build_vehicle_paints.py composites them as stickers into the baked
+fuselage and fin textures. They are not loaded by the game at runtime.

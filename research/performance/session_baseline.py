@@ -1760,6 +1760,8 @@ def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None) ->
                 raise ValueError(f"{path}: raw report differs from the requested trim profile")
             if mac_release and report.get("machine", {}).get("godot") != REQUIRED_GODOT_REPORT:
                 raise ValueError(f"{path}: raw report does not identify the pinned release engine")
+            if research_engine is None and report.get("machine", {}).get("godot") == ENGINE_POLICY.RESEARCH_RUNTIME:
+                raise ValueError(f"{path}: local research-engine reports require the independent pin")
             if research_engine is not None and report.get("machine", {}).get("godot") != research_engine["runtime_version"]:
                 raise ValueError(f"{path}: raw report does not identify the selected local research engine")
         identity = raw["native"]["backend"]["actual"]
@@ -1846,7 +1848,7 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path,
                          "before_native_usec_per_tick": old_rate, "after_native_usec_per_tick": new_rate,
                          "before_over_after": old_rate / new_rate if new_rate > 0 else None,
                          "before_native_identity": old_id, "after_native_identity": new_id})
-    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as error:
+    except (OSError, ValueError, KeyError, TypeError, RuntimeError, subprocess.SubprocessError, json.JSONDecodeError) as error:
         failures.append(str(error))
     summary = []
     if not failures:

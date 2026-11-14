@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import argparse
 import copy
+from contextlib import redirect_stderr
 import importlib.util
+import io
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+import zipfile
 
 HERE = Path(__file__).resolve().parent
 SPEC = importlib.util.spec_from_file_location("mac_engine_identity_test", HERE / "macos_engine_identity.py")
@@ -34,7 +39,9 @@ class ResearchIdentityTests(unittest.TestCase):
         self.log = self.root / "build-editor.log"
         self.log.write_text("fixture build", encoding="utf-8")
         self.receipt = self.root / "build-editor.json"
-        self.intake = {"source_catalog_sha256": "b" * 64}
+        self.intake = {"source_catalog_sha256": "b" * 64, "source_files": 1, "source_url": "fixture-url",
+                       "native_build": "not_run", "hardware_qualification": "not_run"}
+        (self.root / "intake.json").write_text(json.dumps(self.intake), encoding="utf-8")
         self.selection = {"sha256": policy._sha(self.binary), "cli_version": policy.RESEARCH_CLI,
                           "runtime_version": policy.RESEARCH_RUNTIME, "receipt": str(self.receipt),
                           "archive": str(self.archive), "patches": [str(self.patch1), str(self.patch2)]}
@@ -54,7 +61,7 @@ class ResearchIdentityTests(unittest.TestCase):
                        "artifacts": [{"name": self.binary.name, "sha256": self.selection["sha256"],
                                       "bytes": self.binary.stat().st_size, "architectures": ["arm64"]}]}
         self.write_record()
-        self.helper = SimpleNamespace(COMMIT=policy.SOURCE_COMMIT, SOURCE_SHA256=policy._sha(self.archive),
+        self.helper = SimpleNamespace(COMMIT=policy.SOURCE_COMMIT, SOURCE_URL="fixture-url", SOURCE_SHA256=policy._sha(self.archive),
                                       SCHEMA="fixture", SCONS_VERSION="4.10.1", ZSTANDARD_VERSION="0.25.0",
                                       verify_intake=self.verify_intake, expected_catalog=lambda *_a: {"file": "hash"},
                                       verify_source=lambda *_a, **_k: None)
@@ -96,9 +103,19 @@ class ResearchIdentityTests(unittest.TestCase):
             self.identify(arch=["x86_64"])
         with self.assertRaises(ValueError):
             self.identify(version="4.8.beta2.wrong")
+        self.lock["godot"]["extension_api"] = "4.8"
+        with self.assertRaisesRegex(ValueError, "ABI"):
+            self.identify()
+
+    def test_repeated_scalar_pin_is_rejected_instead_of_replaced(self):
+        parser = argparse.ArgumentParser()
+        policy.add_arguments(parser)
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            parser.parse_args(["--research-engine-sha256", "a" * 64, "--research-engine-sha256", "b" * 64])
 
     def test_changed_artifacts_commands_or_order_refuse(self):
         mutations = [lambda r: r.update(status="running"), lambda r: r.update(returncode=1),
+                     lambda r: r.update(returncode=False),
                      lambda r: r["artifacts"][0].update(sha256="c" * 64),
                      lambda r: r["command"].append("custom_modules=evil"),
                      lambda r: r["controlled_environment"].update(CC="other"),
@@ -128,6 +145,57 @@ class ResearchIdentityTests(unittest.TestCase):
         self.helper.verify_source = lambda *_a, **_k: (_ for _ in ()).throw(ValueError("source drift"))
         with self.assertRaisesRegex(ValueError, "source drift"):
             self.identify()
+
+    def test_input_changes_during_executable_version_check_are_refused(self):
+        def mutate(_args):
+            self.log.write_text("changed during version check", encoding="utf-8")
+            return policy.RESEARCH_CLI
+        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True):
+            with self.assertRaisesRegex(ValueError, "changed during validation"):
+                policy.identify(self.binary, self.lock, self.selection, architectures=lambda _p: ["arm64"], output=mutate)
+
+    def test_timed_out_executable_is_a_bounded_refusal(self):
+        def timeout(_args):
+            raise subprocess.TimeoutExpired("engine --version", 30)
+        with patch.object(policy, "_helper", return_value=self.helper), patch.object(policy.os, "access", return_value=True):
+            with self.assertRaisesRegex(ValueError, "inspection failed"):
+                policy.identify(self.binary, self.lock, self.selection, architectures=lambda _p: ["arm64"], output=timeout)
+
+    def test_real_intake_rebuilds_ordered_catalog_and_rejects_build_source_drift(self):
+        helper = policy._helper()
+        archive = self.root / "actual-source.zip"
+        with zipfile.ZipFile(archive, "w") as package:
+            package.writestr(helper.SOURCE_PREFIX + "/engine/source.cpp", "old\n")
+        helper.SOURCE_SHA256 = policy._sha(archive)
+        patch_path = self.root / "actual.patch"
+        patch_path.write_bytes(b"diff --git a/engine/source.cpp b/engine/source.cpp\n"
+                               b"--- a/engine/source.cpp\n+++ b/engine/source.cpp\n"
+                               b"@@ -1 +1 @@\n-old\n+new\n")
+        intake_root = self.root / "real-editor"
+        intake = helper.prepare(archive, intake_root, [patch_path])
+        build_source = intake_root / "build-source-editor"
+        shutil.copytree(intake_root / "source", build_source, ignore=shutil.ignore_patterns(".git"))
+        binary = build_source / "bin/godot.macos.editor.arm64"
+        binary.parent.mkdir()
+        binary.write_bytes(b"selected editor")
+        log = intake_root / "build-editor.log"
+        log.write_text("captured build output", encoding="utf-8")
+        receipt = intake_root / "build-editor.json"
+        selection = {"sha256": policy._sha(binary), "cli_version": policy.RESEARCH_CLI,
+                     "runtime_version": policy.RESEARCH_RUNTIME, "receipt": str(receipt),
+                     "archive": str(archive), "patches": [str(patch_path)]}
+        record = copy.deepcopy(self.record)
+        record.update(schema=helper.SCHEMA, intake=intake, log_sha256=policy._sha(log),
+                      artifacts=[{"name": binary.name, "sha256": selection["sha256"],
+                                  "bytes": binary.stat().st_size, "architectures": ["arm64"]}])
+        receipt.write_text(json.dumps(record), encoding="utf-8")
+        with patch.object(policy, "_helper", return_value=helper), patch.object(policy.os, "access", return_value=True):
+            args = (binary, self.lock, selection)
+            kwargs = {"architectures": lambda _p: ["arm64"], "output": lambda _c: policy.RESEARCH_CLI}
+            self.assertEqual(policy.identify(*args, **kwargs)["research_engine"]["source_commit"], policy.SOURCE_COMMIT)
+            (build_source / "engine/source.cpp").write_text("changed\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "source drift"):
+                policy.identify(*args, **kwargs)
 
 
 if __name__ == "__main__":

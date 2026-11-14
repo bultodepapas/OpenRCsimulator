@@ -681,6 +681,7 @@ def jet_fin(pos, nrm, frac, height_norm):
 
 # --- Detail pass: engraved panel lines, hatches, stencils and decals, vinyl edges, soot, gloss map ---------------
 DECAL_RED = (214, 32, 38, 255)
+SPONSORS = APP / "assets/vehicle-paints/avanti-s-a200/sponsors"  # trademarks used with sponsor support (SOURCE.txt)
 DECAL_YELLOW = (255, 200, 30, 255)
 _DECALS: dict = {}
 
@@ -728,6 +729,23 @@ def _decal(kind: str) -> np.ndarray:
         font = ImageFont.truetype(font_path, 70)
         d.text((280, 56), "JET BLAST", fill=(255, 255, 255, 255), font=font, anchor="mm",
                stroke_width=2, stroke_fill=(255, 255, 255, 255))
+    elif kind == "jumper":
+        # Sponsor sticker: the official red Jumper logo on a white die-cut sticker with a thin black edge,
+        # matching the JETI model badge style.
+        logo = Image.open(SPONSORS / "jumper_rc_logo.png").convert("RGBA")
+        logo = logo.crop(logo.getbbox())
+        width, height = 900, 330
+        img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle((2, 2, width - 3, height - 3), radius=42, fill=(20, 20, 22, 255))
+        d.rounded_rectangle((12, 12, width - 13, height - 13), radius=34, fill=(250, 250, 250, 255))
+        scale = min((width - 110) / logo.width, (height - 90) / logo.height)
+        logo = logo.resize((int(logo.width * scale), int(logo.height * scale)), Image.LANCZOS)
+        img.alpha_composite(logo, ((width - logo.width) // 2, (height - logo.height) // 2))
+    elif kind == "jeti":
+        # The official JETI model badge is already a white sticker with a black rounded edge.
+        img = Image.open(SPONSORS / "jeti_model_logo.png").convert("RGBA")
+        img = img.resize((img.width * 2, img.height * 2), Image.LANCZOS)
     else:
         raise ValueError(kind)
     _DECALS[kind] = np.asarray(img, dtype=np.float64) / 255.0
@@ -805,7 +823,8 @@ def jet_details(atlas, pos, nrm, colour, glow, carbon_weight, frac=None, span_no
         # Stencils and warning decals (fuselage sides have their own UVs, so text reads on both sides).
         decals = [("eject", 0.200, 0.232, 0.094, 0.124), ("danger", 0.300, 0.372, 0.014, 0.034),
                   ("serial", 0.760, 0.895, 0.087, 0.108),
-                  ("pilot", 0.245, 0.335, 0.097, 0.113), ("blast", 0.905, 0.975, 0.083, 0.101)]
+                  ("pilot", 0.245, 0.335, 0.097, 0.113), ("blast", 0.905, 0.975, 0.083, 0.101),
+                  ("jumper", 0.192, 0.242, 0.003, 0.041)]
         for kind, a0, a1, b0, b1 in decals:
             art, alpha = side_decal(pos, nrm, kind, -0.938 + a0 * 2.221, -0.938 + a1 * 2.221, b0, b1)
             colour = mix(colour, art, alpha)
@@ -840,6 +859,11 @@ def jet_details(atlas, pos, nrm, colour, glow, carbon_weight, frac=None, span_no
     elif atlas == "fin":
         colour, rough, g = engrave(colour, rough, (frac - 0.62) * 0.4)
         glow *= 1.0 - g
+        # JETI model sponsor badge under the fin number, on the carbon of the fixed fin (ahead of the rudder line).
+        art, alpha = side_decal(pos, nrm, "jeti", 0.82, 0.955, 0.245, 0.283)
+        colour = mix(colour, art, alpha)
+        rough = rough + (0.3 - rough) * alpha
+        glow *= 1.0 - alpha
         # Chequered racing band under the neon tip.
         band_mask = (height_norm > 0.79) & (height_norm < 0.85)
         checks = ((np.floor(z / 0.011) + np.floor(y / 0.011)) % 2.0) < 1.0

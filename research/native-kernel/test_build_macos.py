@@ -216,6 +216,17 @@ class BuildPolicy(ScratchCase):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 mac._engine_display(value)
 
+    def test_local_engine_identity_requires_explicit_policy_and_independent_selection(self):
+        exe = self.root / "custom-godot"
+        selection = {"sha256": "f" * 64, "cli_version": "4.8.beta2.openrc_metalfx"}
+        expected = {"path": str(exe), "research_engine": {"scope": "local"}}
+        lock = mac.locked.load_lock()
+        with patch.object(mac.engine_policy, "identify", return_value=expected) as identify:
+            self.assertEqual(mac.godot_identity(exe, lock, selection), expected)
+            self.assertEqual(identify.call_args.args, (exe, lock, selection))
+            self.assertIs(identify.call_args.kwargs["architectures"], mac.architectures)
+            self.assertIs(identify.call_args.kwargs["output"], mac._research_engine_output)
+
 
 class MachOPolicy(ScratchCase):
     def test_undefined_symbols_accepts_actual_apple_names_and_bsd_columns(self):
@@ -474,7 +485,8 @@ class Publishing(ScratchCase):
 
         args = argparse.Namespace(jobs=1, godot=engine, tool_root=tool_root, mutant=False, min_free_gib=2.0,
                                   signing_identity=fingerprint.lower(), team_id=team)
-        with patch.object(mac, "host_toolchain", return_value=toolchain), patch.object(mac, "godot_identity", return_value=engine_identity), \
+        with patch.object(mac, "check_free_space", return_value=4 * 1024**3), \
+             patch.object(mac, "host_toolchain", return_value=toolchain), patch.object(mac, "godot_identity", return_value=engine_identity), \
              patch.object(mac, "_identity", return_value=identity), patch.object(mac, "preflight", return_value={}), \
              patch.object(mac.locked, "load_lock", return_value=lock), patch.object(mac.locked, "ensure_scons", return_value=["scons"]) as scons, \
              patch.object(mac.locked, "ensure_godot_cpp", side_effect=ensure_cpp), \
@@ -555,7 +567,8 @@ class Publishing(ScratchCase):
             return {"architectures": ["arm64"]}
 
         args = argparse.Namespace(jobs=1, godot=engine, tool_root=tool_root, mutant=False, min_free_gib=2.0)
-        with patch.object(mac, "host_toolchain", return_value=toolchain), patch.object(mac, "godot_identity", return_value=engine_identity), \
+        with patch.object(mac, "check_free_space", return_value=4 * 1024**3), \
+             patch.object(mac, "host_toolchain", return_value=toolchain), patch.object(mac, "godot_identity", return_value=engine_identity), \
              patch.object(mac, "_identity", return_value=identity), patch.object(mac, "preflight", return_value={}), \
              patch.object(mac.locked, "load_lock", return_value=lock), patch.object(mac.locked, "ensure_scons", return_value=["scons"]), \
              patch.object(mac.locked, "ensure_godot_cpp", side_effect=ensure_cpp), \

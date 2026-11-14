@@ -160,7 +160,7 @@ def _diagnostic_host(original: Path, clone: Path, mac, lock: dict, env: dict[str
     if source_engine is not None and "research_engine" in source_engine:
         before = mac.nk.sha256_file(host)
         slices = mac.architectures(host)
-        version = mac._output([str(host), "--version"])
+        version = mac._research_engine_output([str(host), "--version"])
         if (slices != ["arm64"] or version != source_engine["version"]
                 or mac.nk.sha256_file(host) != before):
             raise ValueError("Diagnostic clone identity differs from the selected research host")
@@ -605,6 +605,10 @@ def run(args: argparse.Namespace) -> dict:
                 or harness_hashes != {name: helper._sha(Path(name)) for name in harness_hashes}
                 or (runtime and helper._sha(runtime) != summary["asan_runtime"]["sha256"])):
             raise ValueError("Candidate, runtime, engine, harness or project changed during diagnostics")
+        if research_engine is not None:
+            if host_signature() != original_signature:
+                raise ValueError("Local research host signature changed during diagnostics")
+            summary["source_engine_unchanged"] = True
         if diagnostic_before is not None:
             after = diagnostic_host_check()
             if after != diagnostic_before or host_signature() != original_signature:

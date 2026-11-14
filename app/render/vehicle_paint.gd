@@ -163,6 +163,12 @@ static func _paint(source: StandardMaterial3D, binding: Dictionary, textures: Di
 	if binding.has("metallic"):
 		painted.metallic = float(binding.metallic)
 		painted.metallic_texture = null
+	if binding.has("metallic_texture"):
+		# Metal/paint boundaries are part of the finish, so retain this mask at Low.
+		var metallic_texture := _texture(str(binding.metallic_texture), textures)
+		if metallic_texture != null:
+			painted.metallic_texture = metallic_texture
+			painted.metallic_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_GRAYSCALE
 	if binding.has("specular"):
 		painted.metallic_specular = float(binding.specular)
 	if binding.has("roughness"):
@@ -190,7 +196,12 @@ static func _paint(source: StandardMaterial3D, binding: Dictionary, textures: Di
 			if roughness_texture != null:
 				painted.roughness_texture = roughness_texture
 				painted.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_GRAYSCALE
-	if painted.albedo_texture != null or painted.normal_texture != null or painted.roughness_texture != null:
+	elif binding.has("normal_texture"):
+		# A replacement finish must not fall back to the source's normal map
+		# (for example, metal plates inheriting the Stik's sagging film at Low).
+		painted.normal_enabled = false
+		painted.normal_texture = null
+	if painted.albedo_texture != null or painted.normal_texture != null or painted.roughness_texture != null or painted.metallic_texture != null:
 		# Grazing views of fine weaves and lettering stay crisp instead of smearing or shimmering.
 		painted.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 	if binding.has("emission"):

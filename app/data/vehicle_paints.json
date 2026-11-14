@@ -679,6 +679,32 @@
 			"base": {},
 			"skins": [
 				{
+					"id": "silver_ace",
+					"label": "SILVER ACE · USAF",
+					"materials": {
+						"classic-covering-v4": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_albedo.png",
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_roughness.png",
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_metallic.png",
+							"normal_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_normal.png",
+							"normal_scale": 0.85,
+							"clearcoat": 0.0
+						},
+						"classic-covering-gap-v1": {
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_albedo.png"
+						},
+						"skin:b00e28ff": {
+							"albedo": "#d0d5da",
+							"metallic": 1.0,
+							"roughness": 0.33,
+							"clearcoat": 0.0
+						}
+					}
+				},
+				{
 					"id": "neon_ronin",
 					"label": "NEON RONIN · Cyberpunk",
 					"materials": {
@@ -809,6 +835,32 @@
 			"default_label": "",
 			"base": {},
 			"skins": [
+				{
+					"id": "silver_ace",
+					"label": "SILVER ACE · USAF",
+					"materials": {
+						"classic-covering-v4": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_albedo.png",
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_roughness.png",
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_metallic.png",
+							"normal_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_normal.png",
+							"normal_scale": 0.85,
+							"clearcoat": 0.0
+						},
+						"classic-covering-gap-v1": {
+							"albedo_texture": "res://assets/vehicle-paints/ugly-stik/silver_ace_albedo.png"
+						},
+						"skin:b00e28ff": {
+							"albedo": "#d0d5da",
+							"metallic": 1.0,
+							"roughness": 0.33,
+							"clearcoat": 0.0
+						}
+					}
+				},
 				{
 					"id": "neon_ronin",
 					"label": "NEON RONIN · Cyberpunk",
@@ -953,13 +1005,14 @@
 		}
 	},
 	"detail_map_means": {
+		"res://assets/vehicle-paints/ugly-stik/silver_ace_roughness.png": 0.3706802751503739,
 		"res://assets/vehicle-paints/ugly-stik/neon_ronin_roughness.png": 0.4474937915802002,
 		"res://assets/vehicle-paints/shared/carbon_twill_roughness.jpg": 0.234,
 		"res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg": 0.469,
-		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage_roughness.png": 0.1823,
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fuselage_roughness.png": 0.1826,
 		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_wing_roughness.png": 0.1858,
 		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_doors_roughness.png": 0.2118,
 		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_stab_roughness.png": 0.183,
-		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin_roughness.png": 0.1622
+		"res://assets/vehicle-paints/avanti-s-a200/verde_neon_carbono_fin_roughness.png": 0.1646
 	}
 }

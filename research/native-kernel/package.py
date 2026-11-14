@@ -251,6 +251,8 @@ def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | N
             or descriptor.read_text(encoding="utf-8") != mac.SOURCE_DESCRIPTOR:
         raise ValueError("Mac installation differs from the verified source build or evidence")
     _validate_mac_cited_evidence(root, row.get("verification"), candidate, mutant, mac)
+    if research_engine is not None and mac.godot_identity(godot, lock, research_engine) != engine:
+        raise ValueError("Research engine provenance changed during installation verification")
     return receipt
 
 

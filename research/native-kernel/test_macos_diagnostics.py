@@ -140,6 +140,27 @@ class DiagnosticPolicyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             check(detail, b"not a plist")
 
+    def test_local_research_clone_requires_identical_text_arch_and_version(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            tmp = Path(temporary).resolve()
+            original, clone = tmp / "research", tmp / "diagnostic"
+            original.write_bytes(thin_arm64())
+            clone.write_bytes(thin_arm64() + b"new signature")
+            source = {"version": "4.8.beta2.openrc_metalfx", "research_engine": {"scope": "local"}}
+            mac = SimpleNamespace(nk=SimpleNamespace(sha256_file=lambda path: hashlib.sha256(path.read_bytes()).hexdigest()),
+                                  architectures=lambda _path: ["arm64"], _research_engine_output=lambda _args: source["version"])
+            with patch.object(diag, "_diagnostic_signature", return_value={"flags": "0x2"}):
+                result = diag._diagnostic_host(original, clone, mac, {}, {}, tmp, (), source)
+                self.assertIn("local research", result["scope"])
+                self.assertEqual(result["engine"]["version"], source["version"])
+                mac._research_engine_output = lambda _args: "4.8.beta2.official.cafc17a19"
+                with self.assertRaisesRegex(ValueError, "identity differs"):
+                    diag._diagnostic_host(original, clone, mac, {}, {}, tmp, (), source)
+                mac._research_engine_output = lambda _args: source["version"]
+                clone.write_bytes(thin_arm64(b"different code"))
+                with self.assertRaisesRegex(ValueError, "UUID or text"):
+                    diag._diagnostic_host(original, clone, mac, {}, {}, tmp, (), source)
+
     def test_clone_must_be_distinct_task_owned_same_arm64_code_and_uuid(self):
         with tempfile.TemporaryDirectory() as temporary:
             tmp = Path(temporary).resolve()

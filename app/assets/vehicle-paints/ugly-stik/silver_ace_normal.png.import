@@ -1,0 +1,12 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+
+[params]
+
+compress/mode=2
+compress/high_quality=true
+compress/normal_map=1
+mipmaps/generate=true
+detect_3d/compress_to=1

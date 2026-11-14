@@ -247,10 +247,16 @@ def architectures(binary: Path) -> list[str]:
     return sorted(result)
 
 
+def _research_engine_output(command: list[str]) -> str:
+    env = {name: value for name, value in os.environ.items() if not name.startswith("DYLD_")}
+    env["LC_ALL"] = "C"
+    return subprocess.run(command, check=True, text=True, capture_output=True, timeout=30, env=env).stdout.strip()
+
+
 def godot_identity(godot: Path, lock: dict, research_engine: dict | None = None) -> dict:
     """Identify the exact executable; a matching version alone is not release provenance."""
     if research_engine is not None:
-        return engine_policy.identify(godot, lock, research_engine, architectures=architectures, output=_output)
+        return engine_policy.identify(godot, lock, research_engine, architectures=architectures, output=_research_engine_output)
     godot = godot.resolve()
     if not godot.is_file() or not os.access(godot, os.X_OK):
         raise ValueError(f"--godot must name an executable file: {godot}")

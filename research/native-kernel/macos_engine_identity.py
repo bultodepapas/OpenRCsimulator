@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import re
+import subprocess
 from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -30,13 +31,21 @@ CONTROLLED = ("CC", "CXX", "CCFLAGS", "CXXFLAGS", "CFLAGS", "LDFLAGS", "SCONSFLA
               "OSXCROSS_ROOT", "APPLE_LLVM_CROSS", "PKG_CONFIG_PATH", "PKG_CONFIG_LIBDIR")
 
 
+class _Once(argparse.Action):
+    def __call__(self, parser: argparse.ArgumentParser, namespace: argparse.Namespace,
+                 value: object, option_string: str | None = None) -> None:
+        if getattr(namespace, self.dest, None) is not None:
+            parser.error(f"{option_string} may be specified only once")
+        setattr(namespace, self.dest, value)
+
+
 def add_arguments(parser: argparse.ArgumentParser) -> None:
     group = parser.add_argument_group("explicit local MetalFX research engine")
-    group.add_argument("--research-engine-sha256", help="independently selected exact editor SHA-256")
-    group.add_argument("--research-engine-cli-version", help="independently selected exact --version output")
-    group.add_argument("--research-engine-runtime-version", help="independently selected exact runtime display")
-    group.add_argument("--research-engine-build-receipt", type=Path, help="original build-editor.json")
-    group.add_argument("--research-engine-archive", type=Path, help="pinned upstream source ZIP")
+    group.add_argument("--research-engine-sha256", action=_Once, help="independently selected exact editor SHA-256")
+    group.add_argument("--research-engine-cli-version", action=_Once, help="independently selected exact --version output")
+    group.add_argument("--research-engine-runtime-version", action=_Once, help="independently selected exact runtime display")
+    group.add_argument("--research-engine-build-receipt", action=_Once, type=Path, help="original build-editor.json")
+    group.add_argument("--research-engine-archive", action=_Once, type=Path, help="pinned upstream source ZIP")
     group.add_argument("--research-engine-patch", type=Path, action="append", default=[],
                        help="exact source patch, in build order; repeat")
 
@@ -120,24 +129,31 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
     intake_root = receipt_path.parent
     expected_executable = intake_root / "build-source-editor/bin/godot.macos.editor.arm64"
     if receipt_path.name != "build-editor.json" or executable.resolve() != expected_executable.resolve() \
-            or expected_executable.is_symlink():
+            or expected_executable.is_symlink() or expected_executable.parent.is_symlink():
         raise ValueError("Research engine must be the editor artifact selected by its build receipt")
     log = intake_root / "build-editor.log"
-    inputs = [receipt_path, archive, *patches, log, HELPER, Path(__file__), executable]
+    intake_path = intake_root / "intake.json"
+    inputs = [receipt_path, intake_path, archive, *patches, log, HELPER, Path(__file__), executable]
     before = {str(path): _sha(path) for path in inputs}
     receipt = _json(receipt_path)
+    intake_record = _json(intake_path)
     helper = _helper()
     if helper.COMMIT != SOURCE_COMMIT or helper.SOURCE_SHA256 != before[str(archive)]:
         raise ValueError("Research engine upstream source pin differs")
-    intake = helper.verify_intake(archive, intake_root, patches)
+    try:
+        intake = helper.verify_intake(archive, intake_root, patches)
+    except (RuntimeError, subprocess.SubprocessError) as error:
+        raise ValueError(f"Research engine intake verification failed: {error}") from error
     if (receipt.get("schema") != helper.SCHEMA or receipt.get("status") != "built"
-            or receipt.get("returncode") != 0 or receipt.get("target") != "editor"
-            or receipt.get("intake") != intake or receipt.get("process_arch") != "arm64"
+            or type(receipt.get("returncode")) is not int or receipt["returncode"] != 0
+            or receipt.get("target") != "editor" or receipt.get("intake") != intake or intake_record != intake
+            or receipt.get("process_arch") != "arm64"
             or receipt.get("log_sha256") != before[str(log)]
             or receipt.get("hardware_qualification") != "not_run"):
         raise ValueError("Research engine build receipt is incomplete or inconsistent")
     artifacts = receipt.get("artifacts")
     if (not isinstance(artifacts, list) or len(artifacts) != 1 or not isinstance(artifacts[0], dict)
+            or type(artifacts[0].get("bytes")) is not int
             or artifacts[0] != {"name": expected_executable.name, "sha256": selection["sha256"],
                                 "bytes": executable.stat().st_size, "architectures": ["arm64"]}
             or before[str(executable)] != selection["sha256"]):
@@ -161,12 +177,24 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
                                "accesskit=no", "generate_bundle=no", f"MACOS_SDK_PATH={sdk}",
                                f"cxxflags=-isystem {sdk}/usr/include/c++/v1"]):
         raise ValueError("Research engine build settings differ from the pinned local route")
-    expected = helper.expected_catalog(archive, patches, intake_root.parent)
+    try:
+        expected = helper.expected_catalog(archive, patches, intake_root.parent)
+    except (RuntimeError, subprocess.SubprocessError) as error:
+        raise ValueError(f"Research engine source catalog reconstruction failed: {error}") from error
+    if (type(intake.get("source_files")) is not int or intake["source_files"] != len(expected)
+            or intake.get("source_url") != helper.SOURCE_URL
+            or intake.get("native_build") != "not_run" or intake.get("hardware_qualification") != "not_run"):
+        raise ValueError("Research engine intake catalog or scope differs")
     helper.verify_source(intake_root / "build-source-editor", expected, strict=False)
-    actual_architectures = architectures(executable)
-    actual_version = output([str(executable), "--version"])
+    try:
+        actual_architectures = architectures(executable)
+        actual_version = output([str(executable), "--version"])
+    except subprocess.SubprocessError as error:
+        raise ValueError(f"Research engine executable inspection failed: {error}") from error
     if actual_architectures != ["arm64"] or actual_version != selection["cli_version"]:
         raise ValueError("Research engine architecture or CLI version differs from its independent pin")
+    helper.verify_source(intake_root / "source", expected, strict=True)
+    helper.verify_source(intake_root / "build-source-editor", expected, strict=False)
     if {str(path): _sha(path) for path in inputs} != before:
         raise ValueError("Research engine provenance changed during validation")
     return {"path": str(executable.resolve()), "version": actual_version, "sha256": selection["sha256"],
@@ -175,6 +203,9 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
                                 "runtime_version": selection["runtime_version"], "source_commit": SOURCE_COMMIT,
                                 "source_catalog_sha256": intake["source_catalog_sha256"],
                                 "build_receipt_sha256": before[str(receipt_path)],
+                                "intake_sha256": before[str(intake_path)],
+                                "source_archive_sha256": before[str(archive)],
+                                "ordered_patches": [{"path": str(path), "sha256": before[str(path)]} for path in patches],
                                 "intake_helper_sha256": before[str(HELPER)],
                                 "identity_helper_sha256": before[str(Path(__file__))],
                                 "build_log_sha256": before[str(log)]}}
