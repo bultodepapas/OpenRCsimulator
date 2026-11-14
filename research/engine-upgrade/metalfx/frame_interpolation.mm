@@ -31,17 +31,27 @@ kernel void make_color(texture2d<float, access::write> image [[texture(0)]],
     if (p.x >= image.get_width() || p.y >= image.get_height()) return;
     if (args.uniform == 1) { image.write(float4(0.25, 0.5, 0.75, 1.0), p); return; }
     if (args.uniform == 2) { image.write(float4(1.0, 0.0, 1.0, 1.0), p); return; }
+    // An opaque textured plane translates by 24 output pixels: its repeating
+    // hard edges make a crossfade leave two ghosts instead of a true midpoint.
     float x = float(p.x) + 0.5 - args.shift;
     float y = float(p.y) + 0.5;
-    float r = 0.5 + 0.3 * sin(x * 0.065 + 0.7 * sin(y * 0.013));
-    float g = 0.5 + 0.3 * cos(x * 0.045 + y * 0.008);
-    float b = 0.5 + 0.3 * sin(x * 0.028 - y * 0.011);
-    image.write(float4(r, g, b, 1.0), p);
+    float stripe = fract((x + 32.0) / 160.0) < 0.4 ? 1.0 : 0.0;
+    float detail = 0.025 * sin(y * 0.013);
+    float3 dark = float3(0.06, 0.09, 0.16) + detail;
+    float3 bright = float3(0.94, 0.87, 0.72) + detail;
+    image.write(float4(mix(dark, bright, stripe), 1.0), p);
 }
 kernel void make_motion(texture2d<float, access::write> image [[texture(0)]],
                         constant float &x [[buffer(0)]], uint2 p [[thread_position_in_grid]]) {
     if (p.x < image.get_width() && p.y < image.get_height())
         image.write(float4(x, 0.0, 0.0, 0.0), p);
+}
+kernel void make_crossfade(texture2d<float, access::read> previous [[texture(0)]],
+                           texture2d<float, access::read> current [[texture(1)]],
+                           texture2d<float, access::write> output [[texture(2)]],
+                           uint2 p [[thread_position_in_grid]]) {
+    if (p.x < output.get_width() && p.y < output.get_height())
+        output.write(0.5 * (previous.read(p) + current.read(p)), p);
 }
 )METAL";
 
@@ -99,6 +109,20 @@ static BOOL makeMotion(id<MTLCommandBuffer> buffer, id<MTLComputePipelineState> 
     return YES;
 }
 
+static BOOL makeCrossfade(id<MTLCommandBuffer> buffer, id<MTLComputePipelineState> pipeline,
+                          id<MTLTexture> previous, id<MTLTexture> current, id<MTLTexture> output) {
+    id<MTLComputeCommandEncoder> encoder = [buffer computeCommandEncoder];
+    if (!encoder) return NO;
+    [encoder setComputePipelineState:pipeline];
+    [encoder setTexture:previous atIndex:0];
+    [encoder setTexture:current atIndex:1];
+    [encoder setTexture:output atIndex:2];
+    [encoder dispatchThreads:MTLSizeMake(OUTPUT_W, OUTPUT_H, 1)
+        threadsPerThreadgroup:MTLSizeMake(8, 8, 1)];
+    [encoder endEncoding];
+    return YES;
+}
+
 static BOOL clearDepth(id<MTLCommandBuffer> buffer, id<MTLTexture> depth) {
     MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
     pass.depthAttachment.texture = depth;
@@ -121,8 +145,9 @@ static BOOL copyTexture(id<MTLBlitCommandEncoder> blit, id<MTLTexture> texture, 
 
 static NSDictionary *runCase(id<MTLDevice> device, id<MTLCommandQueue> queue,
                              id<MTLComputePipelineState> colorPipeline,
-                             id<MTLComputePipelineState> motionPipeline, BOOL moving,
-                             float motionX) API_AVAILABLE(macos(26.0)) {
+                             id<MTLComputePipelineState> motionPipeline,
+                             id<MTLComputePipelineState> crossfadePipeline,
+                             BOOL moving, float motionX, BOOL crossfadeOnly) API_AVAILABLE(macos(26.0)) {
     MTLFXFrameInterpolatorDescriptor *d = [MTLFXFrameInterpolatorDescriptor new];
     d.inputWidth = INPUT_W; d.inputHeight = INPUT_H;
     d.outputWidth = OUTPUT_W; d.outputHeight = OUTPUT_H;
@@ -175,7 +200,7 @@ static NSDictionary *runCase(id<MTLDevice> device, id<MTLCommandQueue> queue,
     fx.colorTexture = previous;
     fx.prevColorTexture = previous;
     fx.shouldResetHistory = YES;
-    [fx encodeToCommandBuffer:first];
+    if (!crossfadeOnly) [fx encodeToCommandBuffer:first];
     NSString *failure = nil;
     if (!waitForBuffer(first, &failure)) return @{ @"status": @"first_encode_failed", @"detail": failure };
 
@@ -188,7 +213,12 @@ static NSDictionary *runCase(id<MTLDevice> device, id<MTLCommandQueue> queue,
     fx.colorTexture = current;
     fx.prevColorTexture = previous;
     fx.shouldResetHistory = NO;
-    [fx encodeToCommandBuffer:second];
+    if (crossfadeOnly) {
+        if (!makeCrossfade(second, crossfadePipeline, previous, current, output))
+            return @{ @"status": @"crossfade_encoding_failed" };
+    } else {
+        [fx encodeToCommandBuffer:second];
+    }
     id<MTLBlitCommandEncoder> blit = [second blitCommandEncoder];
     BOOL copied = copyTexture(blit, output, outBytes) && copyTexture(blit, midpoint, midBytes) &&
                   copyTexture(blit, previous, prevBytes) && copyTexture(blit, current, currBytes);
@@ -201,7 +231,12 @@ static NSDictionary *runCase(id<MTLDevice> device, id<MTLCommandQueue> queue,
     const _Float16 *prev = static_cast<const _Float16 *>(prevBytes.contents);
     const _Float16 *curr = static_cast<const _Float16 *>(currBytes.contents);
     if (!out || !mid || !prev || !curr) return @{ @"status": @"readback_unavailable" };
-    double outMid = 0.0, prevMid = 0.0, currMid = 0.0, maxError = 0.0;
+    double outMid = 0.0, prevMid = 0.0, currMid = 0.0, blendMid = 0.0, outBlend = 0.0;
+    double maxError = 0.0, maxBlendError = 0.0;
+    const uint16_t *prevBits = reinterpret_cast<const uint16_t *>(prev);
+    const uint16_t *currBits = reinterpret_cast<const uint16_t *>(curr);
+    const uint16_t *midBits = reinterpret_cast<const uint16_t *>(mid);
+    uint64_t inputFingerprint = UINT64_C(14695981039346656037);
     uint64_t samples = 0;
     bool finite = true;
     // Read and check every pixel. Moving-image error excludes a border wider
@@ -210,6 +245,9 @@ static NSDictionary *runCase(id<MTLDevice> device, id<MTLCommandQueue> queue,
         for (NSUInteger x = 0; x < OUTPUT_W; ++x) {
             NSUInteger i = (y * OUTPUT_W + x) * 4;
             for (NSUInteger channel = 0; channel < 4; ++channel) {
+                uint64_t packed = uint64_t(prevBits[i + channel]) | (uint64_t(currBits[i + channel]) << 16) |
+                                  (uint64_t(midBits[i + channel]) << 32);
+                inputFingerprint = (inputFingerprint ^ packed) * UINT64_C(1099511628211);
                 float a = float(out[i + channel]), b = float(mid[i + channel]);
                 float c = float(prev[i + channel]), e = float(curr[i + channel]);
                 if (!std::isfinite(a) || !std::isfinite(b) || !std::isfinite(c) || !std::isfinite(e)) {
@@ -218,11 +256,15 @@ static NSDictionary *runCase(id<MTLDevice> device, id<MTLCommandQueue> queue,
                 }
                 if (moving && (x < 64 || x >= OUTPUT_W - 64 || y < 32 || y >= OUTPUT_H - 32)) continue;
                 double error = std::fabs(double(a) - double(b));
+                double blended = 0.5 * (double(c) + double(e));
                 maxError = std::fmax(maxError, error);
+                maxBlendError = std::fmax(maxBlendError, std::fabs(double(a) - blended));
                 if (channel < 3) {
                     outMid += error;
                     prevMid += std::fabs(double(c) - double(b));
                     currMid += std::fabs(double(e) - double(b));
+                    blendMid += std::fabs(blended - double(b));
+                    outBlend += std::fabs(double(a) - blended);
                     ++samples;
                 }
             }
@@ -230,15 +272,21 @@ static NSDictionary *runCase(id<MTLDevice> device, id<MTLCommandQueue> queue,
     }
     if (!finite || samples == 0) return @{ @"status": @"nonfinite_readback", @"finite": @NO };
     outMid /= double(samples); prevMid /= double(samples); currMid /= double(samples);
-    bool passed = moving ? (outMid + 0.005 < std::fmin(prevMid, currMid)) : (maxError < 0.025);
-    return @{ @"status": passed ? (moving ? @"midpoint_distinguished" : @"uniform_verified")
-                               : (moving ? @"midpoint_inconclusive" : @"uniform_mismatch"),
+    blendMid /= double(samples); outBlend /= double(samples);
+    NSString *status = moving ? (crossfadeOnly ? (maxBlendError < 0.001 ? @"crossfade_control_verified" : @"crossfade_mismatch")
+                                               : @"motion_readback_complete")
+                              : (maxError < 0.025 ? @"uniform_verified" : @"uniform_mismatch");
+    return @{ @"status": status,
               @"finite": @YES, @"sampled_rgb_components": @(samples),
               @"mean_error_to_analytic_midpoint": @(outMid), @"max_component_error": @(maxError),
               @"previous_to_midpoint_mean_error": @(prevMid), @"current_to_midpoint_mean_error": @(currMid),
+              @"crossfade_to_midpoint_mean_error": @(blendMid), @"output_to_crossfade_mean_error": @(outBlend),
+              @"output_to_crossfade_max_error": @(maxBlendError),
               @"comparison_region": moving ? @[@64, @32, @(OUTPUT_W - 128), @(OUTPUT_H - 64)]
                                              : @[@0, @0, @(OUTPUT_W), @(OUTPUT_H)],
-              @"motion_texture_x": @(moving ? motionX : 0.0f) };
+              @"motion_texture_x": @(moving ? motionX : 0.0f),
+              @"input_fingerprint_fnv64": [NSString stringWithFormat:@"%016llx", (unsigned long long)inputFingerprint],
+              @"interpolator_encoded": @(!crossfadeOnly), @"convention_claim_from_this_case": @NO };
 }
 
 static NSDictionary *runFixture(NSString *mode) {

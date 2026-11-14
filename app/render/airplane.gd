@@ -117,6 +117,10 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	var glow: Dictionary = model.get("propulsion", {}).get("glow", {})
 	airplane.aircraft_id = id
 	airplane.visual_family = family
+	# Render-only part finishes (data/vehicle_paints.json, e.g. the Ugly Stik landing gear) on the validated model,
+	# before lighting, customization and paint kits copy its materials.
+	if VehiclePaint.has_family(family):
+		VehiclePaint.apply(airplane.root, family)
 	airplane.model_manifest = manifest.duplicate(true)
 	airplane.model_manifest_sha256 = resolved.manifest_sha256
 	airplane._model_builder = builder

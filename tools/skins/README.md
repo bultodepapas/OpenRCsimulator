@@ -74,6 +74,14 @@ arms or red urethane bump stops); give it finishes, not colours a skin changes.
 skin, for parts that carry a scheme's own colours, for example the MT8's
 machined shock bodies and anodised caps.
 
+Fixed-wing families may have entries too. `AirplaneBuilder.build` applies a
+family's base right after model validation, before lighting, customization or
+paint kits copy materials. The procedural Ugly Stik materials are named
+`profile:colour` (`aluminum:858d91ff`) and are shared across parts (wheel hubs
+and engine case), so the Ugly Stik landing-gear finishes bind by node:
+rubber-grain tyres, brushed hubs, the brushed 2024-T3 strap, piano-wire nose leg
+and black-oxide collars. `stik-electric-6s` reuses them with `same_as`.
+
 A vehicle may also define `layers`, applied only on request
 (`VehiclePaint.apply(root, id, skin, ["inspection"])`). A layer binds by material
 name or, under `nodes`, by mesh-node glob with `"*"` for all of a node's

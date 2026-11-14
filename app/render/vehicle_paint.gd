@@ -64,6 +64,9 @@ static func apply(root: Node, vehicle_id: String, skin_id := "", layers: Array =
 	if root == null or family.is_empty():
 		return {ok = false, skin = "", materials = 0, error = "no stock paint for " + vehicle_id}
 	var entry: Dictionary = _vehicles()[family]
+	# Families built by the same generator share one definition (the glow and electric Ugly Stik gear).
+	if entry.has("same_as"):
+		entry = _vehicles().get(str(entry.same_as), {})
 	var bindings: Dictionary = (entry.get("base", {}) as Dictionary).duplicate()
 	var resolved := resolve(vehicle_id, skin_id)
 	if not resolved.is_empty():

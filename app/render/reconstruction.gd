@@ -53,6 +53,8 @@ const CONFIG_META := &"openrc_reconstruction_config"
 const RUNTIME_FAILURE_META := &"openrc_reconstruction_runtime_failure"
 const METALFX_STATUS_META := &"openrc_metalfx_status_scope"
 const METALFX_STATUS_METHOD := &"viewport_get_metalfx_status"
+const METALFX_RESET_META := &"openrc_metalfx_pending_reset"
+const METALFX_RESET_MAX_ATTEMPTS := 2
 const OUTPUT_SIZE_SCOPE := "viewport_render_target_estimate_v1"
 const NOMINAL_SIZE_SCOPE := "scaled_viewport_estimate_not_sdk_execution"
 const HISTORY_RESET_META := &"openrc_reconstruction_history_reset"
@@ -257,6 +259,8 @@ static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictiona
 	viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	viewport.set_meta(POLICY_META, policy)
 	viewport.set_meta(CONFIG_META, config.duplicate(true))
+	if provider != "metalfx_temporal" and viewport.has_meta(METALFX_RESET_META):
+		_finish_metalfx_reset(viewport, "superseded")
 	if provider in MetalFX.PROVIDERS:
 		_track_metalfx_status(viewport, policy, status_before, mode_changed)
 	elif viewport.has_meta(METALFX_STATUS_META):
@@ -342,17 +346,33 @@ static func _guard_metalfx_failure(viewport: Viewport, policy: Dictionary, capab
 		backend: Object = null) -> bool:
 	var provider := str(policy.get("provider", ""))
 	var scope: Variant = viewport.get_meta(METALFX_STATUS_META, {})
-	if typeof(scope) != TYPE_DICTIONARY or scope.is_empty():
-		return false
 	var actual_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_" + provider.to_upper())
-	if typeof(actual_mode) != TYPE_INT or not _metalfx_scope_matches(viewport, policy, scope, int(actual_mode)):
+	if typeof(scope) != TYPE_DICTIONARY or scope.is_empty() or typeof(actual_mode) != TYPE_INT \
+			or not _metalfx_scope_matches(viewport, policy, scope, int(actual_mode)):
+		if viewport.has_meta(METALFX_RESET_META):
+			return _fallback_metalfx_reset(viewport, capabilities)
 		return false
 	var status := _metalfx_status(viewport, backend)
+	if viewport.has_meta(METALFX_RESET_META) \
+			and _poll_metalfx_reset(viewport, status, int(actual_mode), scope, capabilities):
+		return true
+	# The engine explicitly configures Bilinear when Temporal cannot support the
+	# view layout. Do not leave the application claiming a Temporal selection.
+	if provider == "metalfx_temporal" and _metalfx_configured_native(status, int(actual_mode), int(scope.generation)):
+		return _rollback_runtime_failure(viewport, provider, status, capabilities)
 	var reason := MetalFX.runtime_failure(status, provider, int(actual_mode), int(scope.generation))
 	if typeof(status.get("generation")) == TYPE_INT and int(status.generation) >= int(scope.generation):
 		scope["generation"] = int(status.generation)
 		viewport.set_meta(METALFX_STATUS_META, scope)
 	return _rollback_runtime_failure(viewport, provider, status, capabilities) if not reason.is_empty() else false
+
+
+static func _metalfx_configured_native(status: Dictionary, mode: int, minimum_generation: int) -> bool:
+	return typeof(status.get("generation")) == TYPE_INT and int(status.generation) >= maxi(0, minimum_generation) \
+		and typeof(status.get("requested_mode")) == TYPE_INT and int(status.requested_mode) == mode \
+		and typeof(status.get("configured_mode")) == TYPE_INT \
+		and int(status.configured_mode) == Viewport.SCALING_3D_MODE_BILINEAR \
+		and typeof(status.get("render_buffers_available")) == TYPE_BOOL and status.render_buffers_available
 
 
 static func _metalfx_scope_matches(viewport: Viewport, policy: Dictionary, scope: Dictionary, mode: int) -> bool:
@@ -364,7 +384,7 @@ static func _metalfx_scope_matches(viewport: Viewport, policy: Dictionary, scope
 
 
 ## Discontinuities invalidate history; ordinary camera movement must not call this.
-## Submission is not SDK acknowledgement. The native backend reports successful resets.
+## A MetalFX acceptance is pending until its matching CPU-side encode is observed.
 static func request_history_reset(viewport: Viewport, reason: String, backend: Object = null) -> bool:
 	if not is_instance_valid(viewport):
 		return false
@@ -380,23 +400,140 @@ static func request_history_reset(viewport: Viewport, reason: String, backend: O
 	if supported and target.has_method("get_temporal_history_reset_providers"):
 		var providers: Variant = target.call("get_temporal_history_reset_providers")
 		provider_supported = (typeof(providers) == TYPE_PACKED_STRING_ARRAY or typeof(providers) == TYPE_ARRAY) and provider in providers
-	# Even a provider-list advertisement only acknowledges API submission, not
-	# that MetalFX reset its history. Until a real acknowledgement contract is
-	# available, fall back on every MetalFX Temporal discontinuity.
-	var submit: bool = supported and provider_supported and provider != "metalfx_temporal" \
-		and viewport.get_viewport_rid().is_valid()
+	if provider == "metalfx_temporal":
+		var scope: Variant = viewport.get_meta(METALFX_STATUS_META, {})
+		var actual_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_METALFX_TEMPORAL")
+		var request := {}
+		if supported and provider_supported and target.has_method(METALFX_STATUS_METHOD) \
+				and typeof(scope) == TYPE_DICTIONARY and typeof(actual_mode) == TYPE_INT \
+				and _metalfx_scope_matches(viewport, policy, scope, int(actual_mode)):
+			request = _request_metalfx_reset(viewport, target, int(actual_mode), int(scope.generation))
+		if not request.is_empty():
+			receipt.submitted += 1
+			_update_metalfx_reset_receipt(receipt, request, str(request.state))
+			viewport.set_meta(HISTORY_RESET_META, receipt)
+			if request.state == "pending":
+				viewport.set_meta(METALFX_RESET_META, request)
+			elif viewport.has_meta(METALFX_RESET_META):
+				viewport.remove_meta(METALFX_RESET_META)
+			return true
+		receipt["reset_state"] = "unavailable"
+		receipt["pending"] = false
+		receipt["encoded"] = false
+		receipt["gpu_completion"] = "unobserved"
+		viewport.set_meta(HISTORY_RESET_META, receipt)
+		_fallback_metalfx_reset(viewport)
+		return false
+	var submit: bool = supported and provider_supported and viewport.get_viewport_rid().is_valid()
 	if submit:
 		target.call(HISTORY_RESET_METHOD, viewport.get_viewport_rid())
 		receipt.submitted += 1
 	viewport.set_meta(HISTORY_RESET_META, receipt)
-	if provider == "metalfx_temporal" and not submit:
-		# Stock Godot has no public camera-cut reset acknowledgement. Keep a trial
-		# safe across cuts instead of reporting notification as successful SDK reset.
-		var saved: Variant = viewport.get_meta(CONFIG_META, {})
-		if typeof(saved) == TYPE_DICTIONARY and not saved.is_empty():
-			viewport.set_meta(RUNTIME_FAILURE_META, {"provider": provider, "reason": "history_reset_unavailable"})
-			apply(viewport, saved)
 	return submit
+
+
+## This helper takes an injected backend for deterministic tests. Production has
+## already verified the real engine enum, viewport property, RID and scope.
+static func _request_metalfx_reset(viewport: Viewport, backend: Object, mode: int, minimum_generation: int) -> Dictionary:
+	var before := _metalfx_status(viewport, backend)
+	if not _metalfx_reset_ready(before, mode, minimum_generation):
+		return {}
+	var raw: Variant = backend.call(HISTORY_RESET_METHOD, viewport.get_viewport_rid())
+	if typeof(raw) != TYPE_DICTIONARY or typeof(raw.get("accepted")) != TYPE_BOOL or not raw.accepted \
+			or typeof(raw.get("generation")) != TYPE_INT or int(raw.generation) != int(before.generation) \
+			or typeof(raw.get("serial")) != TYPE_INT or int(raw.serial) <= int(before.reset_requested_serial) \
+			or typeof(raw.get("reset_request_attempt")) != TYPE_INT \
+			or int(raw.reset_request_attempt) < int(before.temporal_attempts):
+		return {}
+	var request := {"rid": viewport.get_viewport_rid(), "mode": mode, "generation": int(raw.generation),
+		"serial": int(raw.serial), "reset_request_attempt": int(raw.reset_request_attempt)}
+	var after := _metalfx_status(viewport, backend)
+	request["state"] = _metalfx_reset_state(after, request)
+	request["status"] = after
+	return request if request.state in ["pending", "encoded"] else {}
+
+
+static func _metalfx_reset_ready(status: Dictionary, mode: int, minimum_generation: int) -> bool:
+	if typeof(status.get("generation")) != TYPE_INT or int(status.generation) < maxi(0, minimum_generation) \
+			or typeof(status.get("requested_mode")) != TYPE_INT or int(status.requested_mode) != mode \
+			or typeof(status.get("configured_mode")) != TYPE_INT or int(status.configured_mode) != mode \
+			or typeof(status.get("render_buffers_available")) != TYPE_BOOL or not status.render_buffers_available \
+			or status.get("provider") != "temporal" or status.get("allocation") != "created" \
+			or status.get("submission") != "enqueued" or status.get("reset_gpu_completion") != "unobserved":
+		return false
+	for key: String in ["reset_requested_serial", "reset_submitted_serial", "reset_encoded_serial", "temporal_attempts"]:
+		if typeof(status.get(key)) != TYPE_INT or int(status[key]) < 0:
+			return false
+	return int(status.reset_submitted_serial) <= int(status.reset_requested_serial) \
+		and int(status.reset_encoded_serial) <= int(status.reset_requested_serial)
+
+
+static func _metalfx_reset_state(status: Dictionary, request: Dictionary) -> String:
+	if not _metalfx_reset_ready(status, int(request.mode), int(request.generation)) \
+			or int(status.generation) != int(request.generation) \
+			or int(status.reset_requested_serial) != int(request.serial) \
+			or int(status.temporal_attempts) < int(request.reset_request_attempt):
+		return "unavailable"
+	if int(status.reset_submitted_serial) >= int(request.serial) \
+			and int(status.reset_encoded_serial) >= int(request.serial):
+		return "encoded"
+	# Only actual Temporal render attempts consume the bound; polling a paused or
+	# unrendered viewport does not. CPU encoding is not GPU completion.
+	if int(status.temporal_attempts) - int(request.reset_request_attempt) >= METALFX_RESET_MAX_ATTEMPTS:
+		return "unavailable"
+	return "pending"
+
+
+static func _update_metalfx_reset_receipt(receipt: Dictionary, request: Dictionary, state: String) -> void:
+	var status: Dictionary = request.get("status", {})
+	receipt["reset_state"] = state
+	receipt["pending"] = state == "pending"
+	receipt["encoded"] = state == "encoded"
+	receipt["generation"] = request.get("generation", -1)
+	receipt["serial"] = request.get("serial", 0)
+	receipt["reset_submitted_serial"] = status.get("reset_submitted_serial", 0)
+	receipt["reset_encoded_serial"] = status.get("reset_encoded_serial", 0)
+	receipt["gpu_completion"] = "unobserved"
+
+
+static func _finish_metalfx_reset(viewport: Viewport, state: String) -> void:
+	var receipt: Dictionary = viewport.get_meta(HISTORY_RESET_META, {})
+	receipt["reset_state"] = state
+	receipt["pending"] = false
+	receipt["encoded"] = state == "encoded"
+	viewport.set_meta(HISTORY_RESET_META, receipt)
+	if viewport.has_meta(METALFX_RESET_META):
+		viewport.remove_meta(METALFX_RESET_META)
+
+
+static func _poll_metalfx_reset(viewport: Viewport, status: Dictionary, mode: int,
+		scope: Dictionary, capabilities: Dictionary = {}) -> bool:
+	var request: Variant = viewport.get_meta(METALFX_RESET_META, {})
+	if typeof(request) != TYPE_DICTIONARY or request.get("rid") != viewport.get_viewport_rid() \
+			or typeof(request.get("mode")) != TYPE_INT or int(request.mode) != mode \
+			or typeof(request.get("generation")) != TYPE_INT or int(request.generation) < int(scope.generation) \
+			or typeof(request.get("serial")) != TYPE_INT or typeof(request.get("reset_request_attempt")) != TYPE_INT:
+		return _fallback_metalfx_reset(viewport, capabilities)
+	var state := _metalfx_reset_state(status, request)
+	if state == "unavailable":
+		return _fallback_metalfx_reset(viewport, capabilities)
+	request["status"] = status.duplicate(true)
+	var receipt: Dictionary = viewport.get_meta(HISTORY_RESET_META, {})
+	_update_metalfx_reset_receipt(receipt, request, state)
+	viewport.set_meta(HISTORY_RESET_META, receipt)
+	if state == "encoded":
+		viewport.remove_meta(METALFX_RESET_META)
+	return false
+
+
+static func _fallback_metalfx_reset(viewport: Viewport, capabilities: Dictionary = {}) -> bool:
+	_finish_metalfx_reset(viewport, "unavailable")
+	var saved: Variant = viewport.get_meta(CONFIG_META, {})
+	if typeof(saved) != TYPE_DICTIONARY or saved.is_empty():
+		return false
+	viewport.set_meta(RUNTIME_FAILURE_META, {"provider": "metalfx_temporal", "reason": "history_reset_unavailable"})
+	apply(viewport, saved, capabilities)
+	return true
 
 
 ## Estimated render-target pixels; visible_rect is the logical 2D canvas when a size override is active.

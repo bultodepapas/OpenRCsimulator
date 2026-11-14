@@ -673,6 +673,115 @@
 					}
 				}
 			}
+		},
+		"jensen-das-ugly-stik-60": {
+			"default_label": "",
+			"base": {},
+			"skins": [],
+			"base_nodes": {
+				"gear_left": {
+					"rubber:202124ff": {
+						"albedo": "#25262a",
+						"roughness": 0.86,
+						"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+						"normal_scale": 0.5,
+						"triplanar_scale": 40.0
+					},
+					"rubber:292b2eff": {
+						"albedo": "#35373b",
+						"roughness": 0.7
+					},
+					"aluminum:858d91ff": {
+						"albedo": "#c9ced3",
+						"metallic": 0.75,
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.55,
+						"triplanar_scale": 60.0
+					}
+				},
+				"gear_right": {
+					"rubber:202124ff": {
+						"albedo": "#25262a",
+						"roughness": 0.86,
+						"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+						"normal_scale": 0.5,
+						"triplanar_scale": 40.0
+					},
+					"rubber:292b2eff": {
+						"albedo": "#35373b",
+						"roughness": 0.7
+					},
+					"aluminum:858d91ff": {
+						"albedo": "#c9ced3",
+						"metallic": 0.75,
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.55,
+						"triplanar_scale": 60.0
+					}
+				},
+				"nosewheel": {
+					"rubber:202124ff": {
+						"albedo": "#25262a",
+						"roughness": 0.86,
+						"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+						"normal_scale": 0.5,
+						"triplanar_scale": 40.0
+					},
+					"rubber:292b2eff": {
+						"albedo": "#35373b",
+						"roughness": 0.7
+					},
+					"aluminum:858d91ff": {
+						"albedo": "#c9ced3",
+						"metallic": 0.75,
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.55,
+						"triplanar_scale": 60.0
+					}
+				},
+				"main_gear_structure": {
+					"aluminum:a3aaadff": {
+						"albedo": "#c4c9cd",
+						"metallic": 0.9,
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.62,
+						"triplanar_scale": 18.0
+					}
+				},
+				"nose_gear_strut": {
+					"steel:c0c3c3ff": {
+						"albedo": "#9aa0a6",
+						"metallic": 0.95,
+						"roughness": 0.3
+					},
+					"aluminum:51585bff": {
+						"albedo": "#2a2c30",
+						"metallic": 0.9,
+						"roughness": 0.4
+					}
+				},
+				"nose_spring": {
+					"steel:c0c3c3ff": {
+						"albedo": "#9aa0a6",
+						"metallic": 0.95,
+						"roughness": 0.3
+					}
+				},
+				"tail_skid": {
+					"aluminum:878e95ff": {
+						"metallic": 0.9,
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.62,
+						"triplanar_scale": 18.0
+					}
+				}
+			}
+		},
+		"stik-electric-6s": {
+			"same_as": "jensen-das-ugly-stik-60",
+			"default_label": "",
+			"base": {},
+			"skins": []
 		}
 	},
 	"detail_map_means": {

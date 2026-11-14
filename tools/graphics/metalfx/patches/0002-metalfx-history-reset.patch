@@ -316,8 +316,8 @@ diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/renderin
 +// replaces the state; late callbacks can only acknowledge their old generation.
 +struct MetalFXTemporalHistoryState {
 +	std::atomic<uint64_t> requested{ 0 };
-+	std::atomic<uint64_t> submitted{ 0 };
-+	std::atomic<uint64_t> encoded{ 0 };
++	std::atomic<uint64_t> submitted{ 0 }; // Admitted to the RD callback graph, not GPU submission.
++	std::atomic<uint64_t> encoded{ 0 }; // The CPU-side MetalFX encode call returned, not GPU completion.
 +	// A reused scaler still needs a reset after its viewport generation changes.
 +	std::atomic<bool> initial_reset_encoded{ false };
 +
