@@ -5,6 +5,7 @@ extends SceneTree
 
 const VehiclePaint := preload("res://render/vehicle_paint.gd")
 const HX700 := preload("res://aircraft/hx700_model.gd")
+const Articulated := preload("res://aircraft/hx700_articulated_model.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Mt8Model := preload("res://vehicles/ground/mt8_model.gd")
 const MonsterCar2Model := preload("res://vehicles/ground/monster_car_2_model.gd")
@@ -30,6 +31,8 @@ func check(label: String, ok: bool, detail := "") -> void:
 func _run() -> void:
 	_check_data()
 	_check_helicopter()
+	_check_inspection_layer()
+	_check_suspension()
 	_check_cars()
 	print("Vehicle paint: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -127,6 +130,94 @@ func _check_helicopter() -> void:
 		and not (blades[0].get_meta(VehiclePaint.ORIGIN_META) as Material).has_meta(VehiclePaint.ORIGIN_META))
 	painted.root.free()
 	check("a stale HX-700 paint resolves to the default", AirplaneBuilder.resolve_livery(HELI, "nope") == "")
+
+
+func _node_material(root: Node, node_name: String, material_name: String) -> StandardMaterial3D:
+	var node := root.find_child(node_name, true, false) as MeshInstance3D
+	if node == null:
+		return null
+	for surface in node.mesh.get_surface_count():
+		var active := node.get_active_material(surface) as StandardMaterial3D
+		if active != null and active.resource_name == material_name:
+			return active
+	return null
+
+
+func _check_inspection_layer() -> void:
+	var preview: Dictionary = Articulated.load_preview()
+	check("the articulated HX-700 loads with its paint", preview.ok)
+	if not preview.ok:
+		return
+	var root_node: Node3D = preview.root
+	var fixed_real := _node_material(root_node, "Plato_Exterior", "Aluminio_Anodizado_Azul")
+	var link_real := _node_material(root_node, "Bieleta_Cabeza_A_Terminal_Plato", "Plastico_Negro")
+	var servo_link_real := _node_material(root_node, "Varilla_Servo_Trasera_Terminal_Plato", "Plastico_Negro")
+	check("real finish: every ball link shares one black nylon copy", link_real != null and link_real == servo_link_real)
+	VehiclePaint.apply(root_node, "hx-700", "", ["inspection"])
+	var fixed := _node_material(root_node, "Plato_Exterior", "Aluminio_Anodizado_Azul")
+	var rotating := _node_material(root_node, "Plato_Interior", "Aluminio_Grafito")
+	var pitch_link := _node_material(root_node, "Bieleta_Cabeza_A_Terminal_Plato", "Plastico_Negro")
+	var servo_link := _node_material(root_node, "Varilla_Servo_Trasera_Terminal_Plato", "Plastico_Negro")
+	var servo_arm := _node_material(root_node, "Brazo_Servo_Trasero", "Aluminio_Anodizado_Negro")
+	var screws := _node_material(root_node, "Brazo_Servo_Trasero", "Acero_Hueco_Hexagonal")
+	check("inspection code: fixed swashplate red, rotating swashplate blue", fixed != null and rotating != null
+		and fixed.albedo_color.r > 0.6 and fixed.albedo_color.b < 0.3 and rotating.albedo_color.b > 0.8 and rotating.albedo_color.r < 0.3)
+	check("inspection code: pitch links and servo links differ, servo arms orange", pitch_link != null and servo_link != null
+		and servo_arm != null and pitch_link != servo_link and pitch_link.albedo_color.g > 0.6 and servo_arm.albedo_color.r > 0.9)
+	check("inspection code keeps real hardware: screws stay black oxide", screws != null and screws.albedo_color.get_luminance() < 0.2)
+	check("inspection code keeps the brushed-metal detail of the anodised parts", fixed != null
+		and (fixed.roughness_texture != null or not VehiclePaint.detail_enabled()))
+	VehiclePaint.apply(root_node, "hx-700")
+	var fixed_off := _node_material(root_node, "Plato_Exterior", "Aluminio_Anodizado_Azul")
+	var link_off := _node_material(root_node, "Bieleta_Cabeza_A_Terminal_Plato", "Plastico_Negro")
+	check("switching the code off restores the real finish", fixed_off != null and link_off != null
+		and fixed_off.albedo_color.is_equal_approx(fixed_real.albedo_color) and link_off.albedo_color.is_equal_approx(link_real.albedo_color))
+	# A layer on a material the base leaves alone: switching it off must return the imported material itself.
+	var layers: Dictionary = VehiclePaint._vehicles()["hx-700"]["layers"]
+	layers["test_only"] = {"materials": {"Nylon_Tuerca": {"albedo": "#ff00ff"}}}
+	var grip := root_node.find_child("Portapalas_A", true, false) as MeshInstance3D
+	var nut_surface := -1
+	for surface in grip.mesh.get_surface_count():
+		if grip.mesh.surface_get_material(surface).resource_name == "Nylon_Tuerca":
+			nut_surface = surface
+	VehiclePaint.apply(root_node, "hx-700", "", ["test_only"])
+	var painted_nut := grip.get_surface_override_material(nut_surface) if nut_surface >= 0 else null
+	VehiclePaint.apply(root_node, "hx-700")
+	check("a switched-off layer returns untouched surfaces to their imported material", nut_surface >= 0
+		and painted_nut != null and grip.get_surface_override_material(nut_surface) == null)
+	layers.erase("test_only")
+	root_node.free()
+
+
+func _check_suspension() -> void:
+	var plain: Dictionary = Mt8Model.build()
+	var shaft := _node_material(plain.root, "FL_ShockA_Shaft", "MT8_Chrome")
+	var body := _node_material(plain.root, "FL_ShockA_Body", "MT8_Alu_Teal")
+	var chassis := _node_material(plain.root, "Chassis", "MT8_Alu_Teal")
+	var spring := _node_material(plain.root, "FL_ShockA_Spring", "MT8_Spring_Yellow")
+	var arm := _node_material(plain.root, "FL_ArmLower", "MT8_Plastic_Black")
+	check("MT8 shock shafts are TiN gold", shaft != null and shaft.albedo_color.r > 0.75 and shaft.albedo_color.b < 0.55 and shaft.metallic > 0.9)
+	check("MT8 shock bodies are machined apart from the teal chassis", body != null and chassis != null and body != chassis
+		and body.albedo_color.get_luminance() > chassis.albedo_color.get_luminance() + 0.2)
+	check("MT8 springs are powder-coated and keep their colour", spring != null and spring.clearcoat_enabled
+		and spring.albedo_color.r > 0.8 and spring.albedo_color.b < 0.3)
+	check("MT8 arms are glass-filled nylon, not chassis black", arm != null and arm.roughness > 0.55
+		and arm != _node_material(plain.root, "Chassis", "MT8_Plastic_Black"))
+	plain.root.free()
+	var glacier: Dictionary = Mt8Model.build("azul_glaciar")
+	var caps := _node_material(glacier.root, "FL_ShockA_Body", "MT8_Alu_Raw")
+	var glacier_spring := _node_material(glacier.root, "FL_ShockA_Spring", "MT8_Spring_Yellow")
+	check("an MT8 skin brings its own shock caps and spring colour, keeping the coating", caps != null and glacier_spring != null
+		and caps.albedo_color.b > 0.7 and glacier_spring.albedo_color.get_luminance() > 0.9 and glacier_spring.clearcoat_enabled)
+	glacier.root.free()
+	var monster: Dictionary = MonsterCar2Model.build()
+	var rod := _node_material(monster.root, "Amort_Del_Izq_Vastago_Malla", "Cromo")
+	var exhaust := _node_material(monster.root, "Escape_Sintonizado", "Cromo")
+	var stop := _node_material(monster.root, "Amort_Del_Izq_Tope", "Uretano_Tope")
+	check("Monster Car 2 shock rods are TiN gold while the exhaust stays chrome", rod != null and exhaust != null
+		and rod.albedo_color.b < 0.55 and exhaust.albedo_color.b > 0.8)
+	check("Monster Car 2 bump stops are red urethane", stop != null and stop.albedo_color.r > 0.5 and stop.albedo_color.g < 0.25)
+	monster.root.free()
 
 
 func _check_cars() -> void:

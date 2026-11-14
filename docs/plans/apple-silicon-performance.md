@@ -24,6 +24,14 @@ retain both supplied documents' hashes, their overlap, all twenty initial entrie
 the twelve second-pass entries and the separate drop-cache correctness prerequisite.
 They do not change the four-feature MetalFX scope or convert proposals into results.
 
+**Implementation follow-up:** [DT-MAC-11a/07a1 evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md)
+records the process-identity and drop/glare repairs, focused native M1 checks,
+1080p Spatial API witness, descriptor observations and isolated engine build.
+These are bounded implementation results; four-feature product integration,
+sustained gains, lifecycle and package gates remain open. The M1 unexpectedly
+reported denoised support/allocation despite the Apple9 table floor; keep the
+runtime/input/execution gates rather than rejecting solely by GPU family.
+
 The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
 The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.

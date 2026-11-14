@@ -58,15 +58,14 @@
 					"albedo": "#19191b",
 					"roughness": 0.5
 				},
-				"Plastico_Grafito": {
-					"albedo": "#22252a",
-					"roughness": 0.42,
-					"clearcoat": 0.25,
-					"clearcoat_roughness": 0.2
-				},
 				"Caucho": {
 					"albedo": "#1d1d1e",
 					"roughness": 0.88
+				},
+				"Acero_Hueco_Hexagonal": {
+					"albedo": "#2b2e33",
+					"roughness": 0.42,
+					"metallic": 0.9
 				}
 			},
 			"skins": [
@@ -142,7 +141,146 @@
 						}
 					}
 				}
-			]
+			],
+			"layers": {
+				"inspection": {
+					"description": "Function colour code for the mechanical inspection view: orange servo input, red fixed swashplate, blue rotating parts, violet swashplate driver, yellow pitch links, green tail control.",
+					"nodes": {
+						"Brazo_Servo_*": {
+							"Aluminio_Anodizado_Negro": {
+								"albedo": "#ff7a14",
+								"metallic": 0.85
+							}
+						},
+						"Varilla_Servo_*_Terminal_*": {
+							"Plastico_Negro": {
+								"albedo": "#e0661c",
+								"metallic": 0.0,
+								"roughness": 0.38,
+								"clearcoat": 0.3,
+								"clearcoat_roughness": 0.25
+							}
+						},
+						"Varilla_Cola_Terminal_*": {
+							"Plastico_Negro": {
+								"albedo": "#e0661c",
+								"metallic": 0.0,
+								"roughness": 0.38,
+								"clearcoat": 0.3,
+								"clearcoat_roughness": 0.25
+							}
+						},
+						"Plato_Exterior": {
+							"Aluminio_Anodizado_Azul": {
+								"albedo": "#d4232f",
+								"metallic": 0.85
+							}
+						},
+						"Plato_Interior": {
+							"Aluminio_Grafito": {
+								"albedo": "#1f7bff",
+								"metallic": 0.85
+							}
+						},
+						"Arrastrador_Plato": {
+							"Aluminio_Grafito": {
+								"albedo": "#8b4dff",
+								"metallic": 0.85
+							}
+						},
+						"Bieleta_Cabeza_*_Terminal_*": {
+							"Plastico_Negro": {
+								"albedo": "#ffc21a",
+								"metallic": 0.0,
+								"roughness": 0.38,
+								"clearcoat": 0.3,
+								"clearcoat_roughness": 0.25
+							}
+						},
+						"Portapalas_?": {
+							"Aluminio_Anodizado_Azul": {
+								"albedo": "#1f7bff",
+								"metallic": 0.85
+							}
+						},
+						"Cabeza_Buje_Central": {
+							"Aluminio_Anodizado_Azul": {
+								"albedo": "#1f7bff",
+								"metallic": 0.85
+							}
+						},
+						"Palanca_Acodada_Cola": {
+							"Aluminio_Grafito": {
+								"albedo": "#20b85a",
+								"metallic": 0.85
+							}
+						},
+						"Bieleta_Palanca_Cola_Terminal_*": {
+							"Plastico_Negro": {
+								"albedo": "#20b85a",
+								"metallic": 0.0,
+								"roughness": 0.38,
+								"clearcoat": 0.3,
+								"clearcoat_roughness": 0.25
+							}
+						},
+						"Corredera_Cola": {
+							"Aluminio_Grafito": {
+								"albedo": "#20b85a",
+								"metallic": 0.85
+							}
+						},
+						"Yugo_Cola": {
+							"Aluminio_Grafito": {
+								"albedo": "#20b85a",
+								"metallic": 0.85
+							}
+						},
+						"Bieleta_Paso_Cola_*_Terminal_*": {
+							"Plastico_Negro": {
+								"albedo": "#ffc21a",
+								"metallic": 0.0,
+								"roughness": 0.38,
+								"clearcoat": 0.3,
+								"clearcoat_roughness": 0.25
+							}
+						},
+						"Portapalas_Cola_?": {
+							"Aluminio_Anodizado_Azul": {
+								"albedo": "#1f7bff",
+								"metallic": 0.85
+							}
+						},
+						"Rotor_Cola_Buje": {
+							"Aluminio_Grafito": {
+								"albedo": "#1f7bff",
+								"metallic": 0.85
+							}
+						},
+						"*_Varilla": {
+							"Acero_Pulido": {
+								"albedo": "#d3dae2",
+								"metallic": 0.75,
+								"roughness": 0.34
+							}
+						},
+						"Eje_Principal": {
+							"Acero_Pulido": {
+								"albedo": "#d3dae2",
+								"metallic": 0.75,
+								"roughness": 0.34
+							}
+						},
+						"Eje_Cola_6mm": {
+							"Acero_Pulido": {
+								"albedo": "#d3dae2",
+								"metallic": 0.75,
+								"roughness": 0.34
+							}
+						}
+					}
+				}
+			}
 		},
 		"mt8-bisonte": {
 			"default_label": "Naranja Bisonte",
@@ -228,6 +366,18 @@
 						"MT8_Decal_White": {
 							"albedo": "#f7f9fb"
 						}
+					},
+					"nodes": {
+						"*_Shock?_Body": {
+							"MT8_Alu_Teal": {
+								"albedo": "#c9d0d8",
+								"metallic": 0.95
+							},
+							"MT8_Alu_Raw": {
+								"albedo": "#1f6fd1",
+								"metallic": 0.95
+							}
+						}
 					}
 				},
 				{
@@ -254,6 +404,18 @@
 						},
 						"MT8_Decal_White": {
 							"albedo": "#d9cfb0"
+						}
+					},
+					"nodes": {
+						"*_Shock?_Body": {
+							"MT8_Alu_Teal": {
+								"albedo": "#3d4147",
+								"metallic": 0.95
+							},
+							"MT8_Alu_Raw": {
+								"albedo": "#4d5a32",
+								"metallic": 0.95
+							}
 						}
 					}
 				},
@@ -283,9 +445,89 @@
 						"MT8_Decal_Black": {
 							"albedo": "#141416"
 						}
+					},
+					"nodes": {
+						"*_Shock?_Body": {
+							"MT8_Alu_Teal": {
+								"albedo": "#1c1d20",
+								"metallic": 0.95
+							},
+							"MT8_Alu_Raw": {
+								"albedo": "#ffc400",
+								"metallic": 0.95
+							}
+						}
 					}
 				}
-			]
+			],
+			"base_nodes": {
+				"*_Shock?_Shaft": {
+					"MT8_Chrome": {
+						"albedo": "#d8b866",
+						"metallic": 1.0,
+						"roughness": 0.14
+					},
+					"MT8_Plastic_Black": {
+						"albedo": "#2a2c30",
+						"roughness": 0.45
+					}
+				},
+				"*_Shock?_Body": {
+					"MT8_Alu_Raw": {
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.6,
+						"triplanar_scale": 22.0
+					},
+					"MT8_Alu_Teal": {
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.5,
+						"triplanar_scale": 22.0
+					}
+				},
+				"*_Shock?_Spring": {
+					"MT8_Spring_Yellow": {
+						"metallic": 0.1,
+						"roughness": 0.3,
+						"clearcoat": 0.6,
+						"clearcoat_roughness": 0.08
+					}
+				},
+				"*_Arm*": {
+					"MT8_Plastic_Black": {
+						"albedo": "#25272b",
+						"metallic": 0.0,
+						"roughness": 0.62
+					},
+					"MT8_Steel": {
+						"roughness": 0.36
+					}
+				},
+				"*_Knuckle": {
+					"MT8_Plastic_Black": {
+						"albedo": "#25272b",
+						"metallic": 0.0,
+						"roughness": 0.62
+					}
+				},
+				"*_Driveshaft*": {
+					"MT8_Steel": {
+						"albedo": "#4c5058",
+						"roughness": 0.72
+					}
+				}
+			},
+			"default_nodes": {
+				"*_Shock?_Body": {
+					"MT8_Alu_Teal": {
+						"albedo": "#a7b0ba",
+						"metallic": 0.95
+					},
+					"MT8_Alu_Raw": {
+						"albedo": "#0f5d73",
+						"metallic": 0.95
+					}
+				}
+			}
 		},
 		"monster-car-2": {
 			"default_label": "Verde Locura",
@@ -381,7 +623,56 @@
 						}
 					}
 				}
-			]
+			],
+			"base_nodes": {
+				"Amort_*_Vastago_Malla": {
+					"Cromo": {
+						"albedo": "#d8b866",
+						"metallic": 1.0,
+						"roughness": 0.14
+					}
+				},
+				"Amort_*_Copa": {
+					"Aluminio_Amarillo": {
+						"albedo": "#3b3f46",
+						"metallic": 1.0,
+						"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+						"roughness": 0.66,
+						"triplanar_scale": 22.0
+					}
+				},
+				"Amort_*_Tope": {
+					"Uretano_Tope": {
+						"albedo": "#a8261c",
+						"metallic": 0.0,
+						"roughness": 0.42,
+						"clearcoat": 0.5,
+						"clearcoat_roughness": 0.15
+					}
+				},
+				"Amort_*_Resorte": {
+					"Resorte_Azul": {
+						"metallic": 0.1,
+						"roughness": 0.3,
+						"clearcoat": 0.6,
+						"clearcoat_roughness": 0.08
+					}
+				},
+				"Balancin_*": {
+					"Aluminio_Fundido": {
+						"roughness": 0.5,
+						"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+						"normal_scale": 0.25,
+						"triplanar_scale": 60.0
+					}
+				},
+				"Cardan_Central_*": {
+					"Acero_Oscuro": {
+						"albedo": "#3e4248",
+						"roughness": 0.38
+					}
+				}
+			}
 		}
 	},
 	"detail_map_means": {

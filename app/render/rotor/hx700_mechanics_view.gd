@@ -7,6 +7,18 @@ const Motion := preload("res://render/rotor/hx700_inspection_motion.gd")
 const Flex := preload("res://physics/rotorcraft/hx700_flex_bench.gd")
 const ElasticSkin := preload("res://render/rotor/hx700_elastic_skin.gd")
 const ControllerInput := preload("res://render/rotor/hx700_controller_input.gd")
+const VehiclePaint := preload("res://render/vehicle_paint.gd")
+## Inspection colour code; the colours match the "inspection" layer in data/vehicle_paints.json.
+## The colour key needs this much clear 3D width (panel 320 px plus margin), else it would cover the model.
+const LEGEND_MIN_CLEAR_WIDTH := 360.0
+const LEGEND := [
+	["#ff7a14", "Brazos de servo y rótulas: entrada de mando"],
+	["#d4232f", "Plato fijo: no gira"],
+	["#1f7bff", "Giratorio: plato, portapalas, bujes"],
+	["#8b4dff", "Arrastrador del plato"],
+	["#ffc21a", "Bieletas de paso"],
+	["#20b85a", "Mando de cola: palanca, corredera, yugo"],
+]
 const PANEL_WIDTH := 316.0
 const PANEL_LEFT := 20.0
 const CLEAR_GAP := 20.0
@@ -44,6 +56,10 @@ var _pause_button: Button
 var _step_button: Button
 var _blades_toggle: CheckBox
 var _canopy_toggle: CheckBox
+var _legend: RichTextLabel
+var _legend_panel: PanelContainer
+var _inspection_colours := true
+var _legend_room := true
 var _busy := false
 var _canvas: CanvasLayer
 var _panel: PanelContainer
@@ -97,6 +113,19 @@ func _build_stage() -> void:
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.ambient_light_color = Color("cad8eb")
 	environment.ambient_light_energy = 0.4
+	# Studio reflections: the background stays a flat colour, but metals reflect a soft light-box gradient, so
+	# polished steel, anodising and carbon resin read as real materials instead of mirrors of a dark room.
+	var studio := ProceduralSkyMaterial.new()
+	studio.sky_top_color = Color("c9d6e6")
+	studio.sky_horizon_color = Color("eef3f8")
+	studio.sky_curve = 0.12
+	studio.ground_horizon_color = Color("5d6f86")
+	studio.ground_bottom_color = Color("1b2939")
+	studio.sun_angle_max = 0.0
+	var sky := Sky.new()
+	sky.sky_material = studio
+	environment.sky = sky
+	environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	var world := WorldEnvironment.new()
 	world.environment = environment
@@ -105,12 +134,14 @@ func _build_stage() -> void:
 	key.rotation_degrees = Vector3(-38, -25, 0)
 	key.light_energy = 1.2
 	key.shadow_enabled = true
+	key.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
 	key.directional_shadow_max_distance = 4.0
 	add_child(key)
 	var fill := DirectionalLight3D.new()
 	fill.rotation_degrees = Vector3(-25, 155, 0)
 	fill.light_color = Color("8eafff")
 	fill.light_energy = 0.4
+	fill.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
 	add_child(fill)
 	var floor_mesh := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
@@ -264,6 +295,28 @@ func _build_ui() -> void:
 	materials.button_pressed = true
 	materials.toggled.connect(_technical_materials)
 	column.add_child(materials)
+	_legend = RichTextLabel.new()
+	_legend.bbcode_enabled = true
+	_legend.fit_content = true
+	_legend.scroll_active = false
+	_legend.add_theme_font_size_override("normal_font_size", 12)
+	_legend.add_theme_color_override("default_color", Color("bbcce0"))
+	var rows := PackedStringArray()
+	for entry: Array in LEGEND:
+		rows.append("[bgcolor=%s]    [/bgcolor]  %s" % [entry[0], entry[1]])
+	_legend.text = "\n".join(rows)
+	# An overlay in the clear 3D area: the colour key stays readable beside the mechanism it explains.
+	_legend_panel = PanelContainer.new()
+	var legend_style := StyleBoxFlat.new()
+	legend_style.bg_color = Color(0.07, 0.10, 0.15, 0.78)
+	legend_style.set_corner_radius_all(8)
+	legend_style.set_content_margin_all(10)
+	_legend_panel.add_theme_stylebox_override("panel", legend_style)
+	_legend_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_legend.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_legend.custom_minimum_size = Vector2(300, 0)
+	_legend_panel.add_child(_legend)
+	_canvas.add_child(_legend_panel)
 	_readout = _label(column, "", 13, Color("bbcce0"))
 	_status = _label(column, "", 12, Color("8fdbb2"))
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -408,6 +461,7 @@ func _build_elastic_controls(column: VBoxContainer) -> void:
 
 func _set_elastic_mode(enabled: bool) -> void:
 	_elastic_mode = enabled
+	_refresh_legend()
 	_mechanical_controls.visible = not enabled
 	_elastic_controls.visible = enabled
 	_readout.visible = not enabled
@@ -673,6 +727,12 @@ func _on_viewport_size_changed() -> void:
 	_hint.position = Vector2(clear_bounds.x, 24)
 	_hint.size = Vector2(clear_width, 48)
 	_hint.visible = clear_width >= 360.0
+	if _legend_panel != null:
+		# Below the (possibly wrapped) title; like the title, it yields to the model in narrow windows.
+		var title_height := _hint.get_minimum_size().y if _hint.visible else 0.0
+		_legend_panel.position = Vector2(clear_bounds.x, 24.0 + maxf(title_height, 20.0) + 12.0)
+		_legend_room = clear_width >= LEGEND_MIN_CLEAR_WIDTH
+		_refresh_legend()
 	var next_scale := _layout_zoom_scale_for_size(viewport_size)
 	if not is_equal_approx(next_scale, _layout_zoom_scale):
 		distance *= next_scale / _layout_zoom_scale
@@ -735,48 +795,31 @@ func _show_main_blades(shown: bool) -> void:
 
 
 func _technical_materials(enabled: bool) -> void:
-	# Reuse the delivered geometry. These intentionally neutral inspection colours
-	# help distinguish moving parts; they are not acceptance of source PBR conversion.
+	# Reuse the delivered geometry and its real per-surface materials (steel, nylon, carbon, black-oxide screws).
+	# The inspection colour code (data/vehicle_paints.json, layer "inspection") recolours only each functional
+	# part's anodised or nylon surface, so the control path reads at a glance:
+	# servo input -> fixed swashplate -> rotating swashplate -> pitch links -> grips. Off shows the real finish.
+	var gear := preview.bindings.get("visual.tren_de_aterrizaje") as MeshInstance3D
+	if gear != null:
+		for surface in gear.mesh.get_surface_count():
+			gear.set_surface_override_material(surface, null)
 	for id: String in preview.bindings:
 		var node: Node = preview.bindings[id]
-		if not node is MeshInstance3D:
-			continue
-		var mesh := node as MeshInstance3D
-		if id == "visual.tren_de_aterrizaje":
-			# Distinguish bending struts from the rigid rail tubes and hardware.
-			mesh.material_override = null
-			for surface in mesh.mesh.get_surface_count():
-				var material: StandardMaterial3D = null
-				if enabled:
-					material = StandardMaterial3D.new()
-					material.albedo_color = Color("548fba") if surface == 0 else Color("a5b4c4")
-					material.metallic = 0.0 if surface == 0 else 0.5
-					material.roughness = 0.65
-				mesh.set_surface_override_material(surface, material)
-			continue
-		if not enabled:
-			mesh.material_override = null
-			continue
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = Color("9ca9b8")
-		mat.metallic = 0.7
-		mat.roughness = 0.32
-		if id.contains("carbono") or id.contains("blade") or id.contains("servos") or id.contains("servo_cola"):
-			mat.albedo_color = Color("252f3a")
-			mat.roughness = 0.55
-			mat.metallic = 0.15
-		elif id.begins_with("actuator"):
-			mat.albedo_color = Color("f0b766")
-		elif id.contains("grip") or id.begins_with("swash"):
-			mat.albedo_color = Color("458cd0")
-		elif id.begins_with("linkage"):
-			mat.albedo_color = Color("768eaa")
-		elif id == "visual.carenado":
-			mat.albedo_color = Color("648ba8")
-			mat.metallic = 0
-			mat.roughness = 0.6
-		elif id == "visual.carenado_gomas":
-			mat.albedo_color = Color("252f3a")
-			mat.metallic = 0
-			mat.roughness = 0.85
-		mesh.material_override = mat
+		if node is MeshInstance3D:
+			(node as MeshInstance3D).material_override = null
+	VehiclePaint.apply(preview.root, "hx-700", "", ["inspection"] if enabled else [])
+	if enabled and gear != null:
+		# Distinguish bending struts from the rigid rail tubes and hardware.
+		for surface in gear.mesh.get_surface_count():
+			var material := StandardMaterial3D.new()
+			material.albedo_color = Color("548fba") if surface == 0 else Color("a5b4c4")
+			material.metallic = 0.0 if surface == 0 else 0.5
+			material.roughness = 0.65
+			gear.set_surface_override_material(surface, material)
+	_inspection_colours = enabled
+	_refresh_legend()
+
+
+func _refresh_legend() -> void:
+	if _legend_panel != null:
+		_legend_panel.visible = _inspection_colours and not _elastic_mode and _legend_room

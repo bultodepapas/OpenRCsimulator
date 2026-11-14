@@ -49,6 +49,10 @@ replace the standard official Godot 4.8-beta2 pin.
 
 ## Explicit startup
 
+The [Apple MetalFX engine intake](metalfx/README.md) owns the isolated macOS
+patch/build experiment and its native API fixture. It leaves the official
+product engine pin and unqualified mode defaults unchanged.
+
 ### FSR2 reconstruction (VQ-07d)
 
 In High, open **Settings → Graphics → 3D reconstruction**:

@@ -67,6 +67,26 @@ is its multiplier. Normal and roughness maps are skipped at Low scene detail.
 Keep albedos out of pure black (charcoal plastic and rubber sit near sRGB
 `#19`–`#20`) and keep `Pala_Carbono` dark: the rotor blur samples its colour.
 
+Per-part rules use the same mesh-node globs. `base_nodes` always applies (part
+finishes such as TiN shock shafts, powder-coated springs, glass-filled nylon
+arms or red urethane bump stops); give it finishes, not colours a skin changes.
+`default_nodes` applies with the delivered paint, and a skin's `nodes` with that
+skin, for parts that carry a scheme's own colours, for example the MT8's
+machined shock bodies and anodised caps.
+
+A vehicle may also define `layers`, applied only on request
+(`VehiclePaint.apply(root, id, skin, ["inspection"])`). A layer binds by material
+name or, under `nodes`, by mesh-node glob with `"*"` for all of a node's
+materials. The HX-700 `inspection` layer is the colour key of the advanced
+mechanics view (`app/tools/inspect_hx700.gd`). Orange is servo input, red the
+fixed swashplate and blue rotating parts. Violet is the swashplate driver, yellow
+the pitch links and green tail control. Steel, nylon, screws and carbon keep
+their real finish. Painting is authoritative for its own copies, so a layer
+switched off returns those surfaces to their base finish. Do not bind the
+articulated landing gear's `Plastico_Grafito`. A duplicate of that imported
+material on its surface logs a dummy-renderer error when the model is freed. The
+mechanics view's fresh technical gear materials do not.
+
 Every texture there imports with mipmaps and high-quality VRAM compression;
 normal maps also set `compress/normal_map=1`. Godot only detects 3D use in the
 editor, so set these in the `.import` files of new textures, then reimport.

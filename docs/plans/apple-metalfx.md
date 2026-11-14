@@ -1,8 +1,9 @@
 # Apple MetalFX — four-technology implementation plan
 
 Updated: 2026-11-14. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
-Status: implementation work order; no new runtime implementation or hardware
-qualification is claimed by this document. Source inspected at
+Status: implementation in progress. The [first implementation evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md)
+separates prerequisite fixes, injected checks, native API observations and the
+engine build. No four-feature product qualification is claimed. Source inspected at
 `0bc2a52e129248ed91632f02f448e7d6455f6a5f`; engine baseline:
 Godot `4.8-beta2`, `cafc17a192acf67903910a68aeb3c076c0907a4b`.
 
@@ -62,7 +63,11 @@ audio/gameplay observers or enter recorded physics/input hashes. Preserve the
 
 Apple's [feature table](https://developer.apple.com/metal/Metal-Feature-Set-Tables.pdf)
 lists M1 as Apple7, interpolation from Apple5, temporal from Apple7 and denoised
-upscaling from Apple9. These are eligibility facts, not measured execution.
+upscaling from Apple9 (October 23, 2026 table, page 4). The actual M1/macOS 27.0.1
+fixture returned denoised `supportsDevice=true` and created a denoised object;
+it did not encode denoising. Preserve this runtime/documentation disagreement
+instead of enforcing an Apple9/model-name rejection. These are distinct from
+execution and qualification.
 Check symbol availability, descriptor support and successful instance creation
 on the actual device. Never gate only on a model-name string.
 
@@ -71,7 +76,7 @@ on the actual device. Never gate only on a model-name string.
 | Spatial | 13+ | Existing Mobile/Metal and Forward+/Metal | M1; one newer supported Mac before a broader claim |
 | Temporal | 13+ | Existing Forward+/Metal integration, repaired status/reset | M1 when actual device supports it; one newer Mac |
 | Frame Interpolation | 26+ | Proposed engine-owned Forward+/Metal presentation path | Actual supported M1 if available, plus a supported Mac/display at 120 Hz or higher |
-| Temporal Denoised Upscaling | 26+ | Proposed Forward+/Metal RT input producer and SDK binding | Supported Apple9-or-later family, e.g. M3-series or later; M1 rejection/fallback |
+| Temporal Denoised Upscaling | 26+ | Proposed Forward+/Metal RT input producer and SDK binding | Actual descriptor support/allocation, real RT inputs and execution; investigate M1 result and retain newer-Mac qualification |
 
 Availability sources: [Spatial](https://developer.apple.com/documentation/metalfx/mtlfxspatialscalerdescriptor),
 [Temporal](https://developer.apple.com/documentation/metalfx/mtlfxtemporalscalerdescriptor),
@@ -94,7 +99,10 @@ Current OpenRC facts, verified in source:
   Auto uses Spatial only with at least 1,000 nominal internal rows. At 1080p it
   currently chooses Native; manual Spatial remains possible. Keep that rule until
   a separately qualified policy change.
-- `guard_runtime_failure()` currently covers FSR2/FSR3/DLSS, not MetalFX.
+- `guard_runtime_failure()` now has an allocation/enqueue-failure adapter for the
+  patched engine's viewport/generation status; injected policy/rollback checks
+  passed on M1. Official beta2 lacks that API and returns unknown. Native patch
+  compilation, fault injection and GPU/lifecycle qualification remain distinct.
   `request_history_reset()` deliberately refuses to treat MetalFX Temporal
   submission as SDK acknowledgement and latches Native on discontinuity.
 - The pinned [viewport source](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L126-L213)
@@ -492,11 +500,12 @@ clips at the actual required output.
 | Motion/quality | Distant orientation/markings, landing/gear, propellers/hinges, trees/wind, smoke, sky/water, fast pan, disocclusion, zoom, pilot/chase/flyby, night lights and readable full-output UI. Include normal flight and fixed matched motion. |
 | Lifecycle | Native/provider switch, failed creation and retry, Home/Fly, aircraft/landscape replacement, resize/fullscreen/Retina, 60↔high-refresh display switch, pause/resume, minimize, sleep/wake, shutdown with GPU work pending. |
 | Simulation | Same-host exact replay/input hashes for stable integrated candidate and observed 240 Hz behavior; retain existing cross-platform policy. No golden/tolerance changes. |
-| Negative hosts | M1 denoised rejection; missing SDK symbol/older OS, unsupported descriptor, Compatibility, non-Metal and official-engine-without-new-API paths. Windows/Linux continue launching without Apple framework dependencies. |
+| Negative hosts | Actual unsupported denoised descriptor/device and missing RT producer; missing SDK symbol/older OS, Compatibility, non-Metal and official-engine-without-new-API paths. M1 is not an automatic denoised rejection after its observed support/allocation. Windows/Linux continue launching without Apple framework dependencies. |
 
 Hardware qualification rows are independent: M1 raster/Spatial/Temporal; any
 actually supported M1 interpolation; newer supported Mac high-refresh FG;
-Apple9-or-later denoised/RT; and non-Apple regression. Test one OS below each new
+actually supported denoised/RT (including investigating the M1 observation, plus
+a newer Mac); and non-Apple regression. Test one OS below each new
 26+ API boundary and the existing project minimum using an actual compatible host
 when claiming those OS releases; fixtures alone do not establish OS compatibility.
 Do not raise the overall application deployment floor for an optional feature.

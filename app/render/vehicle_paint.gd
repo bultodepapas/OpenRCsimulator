@@ -10,6 +10,7 @@ const SceneDetail := preload("res://render/scene_detail.gd")
 const DATA_PATH := "res://data/vehicle_paints.json"
 const FORMAT := "openrc-vehicle-paints-v1"
 const ORIGIN_META := "vehicle_paint_origin"
+const COPY_META := "vehicle_paint_copy"
 
 static var _data: Dictionary = {}
 
@@ -53,8 +54,12 @@ static func label(vehicle_id: String, skin_id: String) -> String:
 
 
 ## Apply the vehicle's base fixes and then `skin_id` (an unknown id paints the default) to every mesh under
-## `root`. Returns {ok, skin, materials} where `materials` counts the prepared material copies.
-static func apply(root: Node, vehicle_id: String, skin_id := "") -> Dictionary:
+## `root`. `layers` names optional overlays from the vehicle's `layers` (for example the HX-700 "inspection"
+## colour code); a layer may bind by material name and, under `nodes`, by mesh-node glob ("Brazo_Servo_*") with
+## "*" for every material of that node. Painting is authoritative for this module's own copies: a surface whose
+## binding disappeared (a layer switched off) returns to its imported material.
+## Returns {ok, skin, materials} where `materials` counts the prepared material copies.
+static func apply(root: Node, vehicle_id: String, skin_id := "", layers: Array = []) -> Dictionary:
 	var family := family_for(vehicle_id)
 	if root == null or family.is_empty():
 		return {ok = false, skin = "", materials = 0, error = "no stock paint for " + vehicle_id}
@@ -62,11 +67,22 @@ static func apply(root: Node, vehicle_id: String, skin_id := "") -> Dictionary:
 	var bindings: Dictionary = (entry.get("base", {}) as Dictionary).duplicate()
 	var resolved := resolve(vehicle_id, skin_id)
 	if not resolved.is_empty():
-		var skin_materials: Dictionary = _skin(vehicle_id, resolved).get("materials", {})
-		for material_name: String in skin_materials:
-			var merged: Dictionary = (bindings.get(material_name, {}) as Dictionary).duplicate()
-			merged.merge(skin_materials[material_name], true)
-			bindings[material_name] = merged
+		_merge_materials(bindings, _skin(vehicle_id, resolved).get("materials", {}))
+	var node_layers: Array[Dictionary] = []
+	# Always-on part finishes (TiN shock shafts, powder-coated springs...). They merge over the material and skin
+	# bindings, so they should set finish (metallic, roughness, coating) rather than colours a skin changes.
+	if entry.has("base_nodes"):
+		node_layers.append(entry.base_nodes)
+	# A skin may give individual parts their own colours (for example shock bodies apart from the chassis).
+	var skin_nodes: Dictionary = (_skin(vehicle_id, resolved) if not resolved.is_empty() else entry).get(
+		"nodes" if not resolved.is_empty() else "default_nodes", {})
+	if not skin_nodes.is_empty():
+		node_layers.append(skin_nodes)
+	for layer_name: Variant in layers:
+		var layer: Dictionary = entry.get("layers", {}).get(str(layer_name), {})
+		_merge_materials(bindings, layer.get("materials", {}))
+		if layer.has("nodes"):
+			node_layers.append(layer.nodes)
 	var copies := {}
 	var textures := {}
 	for node: Node in root.find_children("*", "MeshInstance3D", true, false):
@@ -79,20 +95,49 @@ static func apply(root: Node, vehicle_id: String, skin_id := "") -> Dictionary:
 				continue
 			# A second apply (base, then a skin) repaints from the imported material, never from an earlier copy.
 			var source: StandardMaterial3D = active.get_meta(ORIGIN_META, active)
-			if not bindings.has(source.resource_name):
+			var binding: Dictionary = bindings.get(source.resource_name, {})
+			for nodes: Dictionary in node_layers:
+				for pattern: String in nodes:
+					if mesh_node.name.match(pattern):
+						var by_node: Dictionary = nodes[pattern]
+						binding = _merged(binding, by_node.get("*", {}))
+						binding = _merged(binding, by_node.get(source.resource_name, {}))
+			if binding.is_empty():
+				if _is_own_copy(active):
+					mesh_node.set_surface_override_material(surface, null)
 				continue
-			var key := source.get_instance_id()
+			var key := "%d:%d" % [source.get_instance_id(), hash(binding)]
 			if not copies.has(key):
-				copies[key] = _paint(source, bindings[source.resource_name], textures)
+				copies[key] = _paint(source, binding, textures)
 			mesh_node.set_surface_override_material(surface, copies[key])
 	if root is Node3D:
 		(root as Node3D).set_meta("vehicle_paint", resolved)
+		(root as Node3D).set_meta("vehicle_paint_layers", layers.duplicate())
 	return {ok = true, skin = resolved, materials = copies.size()}
+
+
+static func _merge_materials(bindings: Dictionary, overrides: Dictionary) -> void:
+	for material_name: String in overrides:
+		bindings[material_name] = _merged(bindings.get(material_name, {}), overrides[material_name])
+
+
+static func _merged(under: Dictionary, over: Dictionary) -> Dictionary:
+	if over.is_empty():
+		return under
+	var merged := under.duplicate()
+	merged.merge(over, true)
+	return merged
+
+
+## A copy this module made, not a later duplicate of it (lights and paint kits duplicate painted materials).
+static func _is_own_copy(material: Material) -> bool:
+	return material.has_meta(ORIGIN_META) and int(material.get_meta(COPY_META, 0)) == material.get_instance_id()
 
 
 static func _paint(source: StandardMaterial3D, binding: Dictionary, textures: Dictionary) -> StandardMaterial3D:
 	var painted := source.duplicate() as StandardMaterial3D
 	painted.set_meta(ORIGIN_META, source)
+	painted.set_meta(COPY_META, painted.get_instance_id())
 	if binding.has("albedo"):
 		painted.albedo_color = Color(str(binding.albedo))
 	if binding.has("albedo_texture"):

@@ -51,6 +51,8 @@ const DLSS_CAPABILITY := "STREAMLINE_CAPABILITY_DLSS"
 const POLICY_META := &"openrc_reconstruction"
 const CONFIG_META := &"openrc_reconstruction_config"
 const RUNTIME_FAILURE_META := &"openrc_reconstruction_runtime_failure"
+const METALFX_STATUS_META := &"openrc_metalfx_status_scope"
+const METALFX_STATUS_METHOD := &"viewport_get_metalfx_status"
 const OUTPUT_SIZE_SCOPE := "viewport_render_target_estimate_v1"
 const NOMINAL_SIZE_SCOPE := "scaled_viewport_estimate_not_sdk_execution"
 const HISTORY_RESET_META := &"openrc_reconstruction_history_reset"
@@ -64,7 +66,7 @@ static func available() -> bool:
 
 static func options_available(capabilities: Dictionary) -> bool:
 	return bool(capabilities.get("high", false)) or bool(capabilities.get("metalfx_spatial", false)) \
-		or bool(capabilities.get("metalfx_temporal", false))
+		or bool(capabilities.get("metalfx_temporal", false)) or bool(capabilities.get("recovery_selectable", false))
 
 
 ## Runtime gates are provider-specific. No GPU name or vendor heuristic is used.
@@ -212,12 +214,18 @@ static func capture_settle_frames(mode: int, scale: float, capabilities: Diction
 static func capabilities_for_viewport(viewport: Viewport, capabilities: Dictionary = {}) -> Dictionary:
 	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
 	var failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {}) if is_instance_valid(viewport) else {}
-	# A temporal discontinuity without an engine reset must not resurrect stale history
-	# on a settings reapply. Selecting another provider clears this per-viewport latch.
-	if typeof(failure) == TYPE_DICTIONARY and failure.get("provider", "") == "metalfx_temporal" \
-			and failure.get("reason", "") == "history_reset_unavailable":
-		gates["metalfx_temporal"] = false
-		gates["metalfx_temporal_reason"] = "metalfx_history_reset_unavailable"
+	# A failed provider stays unavailable through settings reapplication. The
+	# picker must remain usable to choose Native, even when no other provider works.
+	if typeof(failure) == TYPE_DICTIONARY:
+		var failed_provider := str(failure.get("provider", ""))
+		var reason := str(failure.get("reason", ""))
+		if failed_provider in MetalFX.PROVIDERS and reason == "backend_failed":
+			gates[failed_provider] = false
+			gates[failed_provider + "_reason"] = failed_provider + "_runtime_failure"
+			gates["recovery_selectable"] = true
+		elif failed_provider == "metalfx_temporal" and reason == "history_reset_unavailable":
+			gates["metalfx_temporal"] = false
+			gates["metalfx_temporal_reason"] = "metalfx_history_reset_unavailable"
 	return gates
 
 
@@ -232,6 +240,10 @@ static func resolve_for_viewport(viewport: Viewport, config: Dictionary, capabil
 static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
 	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
 	var policy := resolve_for_viewport(viewport, config, capabilities)
+	var provider := str(policy.get("provider", ""))
+	var status_before := _metalfx_status(viewport) if provider in MetalFX.PROVIDERS else {}
+	var mode_changed := int(viewport.scaling_3d_mode) != int(policy.scaling_3d_mode) \
+		or not is_equal_approx(viewport.scaling_3d_scale, float(policy.scale))
 	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
 	viewport.scaling_3d_mode = int(policy.scaling_3d_mode)
 	viewport.scaling_3d_scale = float(policy.scale)
@@ -245,8 +257,14 @@ static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictiona
 	viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	viewport.set_meta(POLICY_META, policy)
 	viewport.set_meta(CONFIG_META, config.duplicate(true))
+	if provider in MetalFX.PROVIDERS:
+		_track_metalfx_status(viewport, policy, status_before, mode_changed)
+	elif viewport.has_meta(METALFX_STATUS_META):
+		viewport.remove_meta(METALFX_STATUS_META)
 	if viewport.has_meta(RUNTIME_FAILURE_META) and (typeof(previous_failure) != TYPE_DICTIONARY
-			or str(previous_failure.get("provider", "")) != str(policy.get("requested_provider", ""))):
+			or (str(previous_failure.get("provider", "")) != str(policy.get("requested_provider", ""))
+			and not (str(policy.get("requested", "")) == AUTO
+			and str(previous_failure.get("provider", "")) == "metalfx_spatial"))):
 		viewport.remove_meta(RUNTIME_FAILURE_META)
 
 
@@ -260,6 +278,8 @@ static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary
 	if typeof(policy) != TYPE_DICTIONARY:
 		return false
 	var provider := str(policy.get("provider", ""))
+	if provider in MetalFX.PROVIDERS:
+		return _guard_metalfx_failure(viewport, policy, capabilities)
 	if provider not in ["fsr2", "fsr3", "dlss"]:
 		return false
 	var status := backend_status.duplicate(true)
@@ -267,22 +287,80 @@ static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary
 		status = _backend_status(provider)
 	if not bool(status.get("backend_failed", false)):
 		return false
+	return _rollback_runtime_failure(viewport, provider, status, capabilities)
+
+
+static func _rollback_runtime_failure(viewport: Viewport, provider: String, status: Dictionary,
+		capabilities: Dictionary) -> bool:
 	var saved_config: Variant = viewport.get_meta(CONFIG_META, {})
 	if typeof(saved_config) != TYPE_DICTIONARY:
 		return false
 	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
 	gates[provider] = false
 	gates[provider + "_reason"] = provider + "_runtime_failure"
+	if provider in MetalFX.PROVIDERS:
+		# Set the latch first so an Auto reapply cannot select the failed provider.
+		viewport.set_meta(RUNTIME_FAILURE_META, {"provider": provider, "reason": "backend_failed", "backend": status.duplicate(true)})
 	apply(viewport, saved_config, gates)
 	var fallback_policy: Dictionary = viewport.get_meta(POLICY_META, {})
+	fallback_policy["fallback"] = true
 	fallback_policy["fallback_reason"] = provider + "_runtime_failure"
 	viewport.set_meta(POLICY_META, fallback_policy)
 	viewport.set_meta(RUNTIME_FAILURE_META, {
 		"provider": provider,
 		"reason": "backend_failed",
-		"backend": status,
+		"backend": status.duplicate(true),
 	})
 	return true
+
+
+## The native getter is ordered after viewport setters and is scoped by this RID.
+## It returns an unknown/not-attempted state while its current buffers are pending.
+static func _metalfx_status(viewport: Viewport, backend: Object = null) -> Dictionary:
+	if not is_instance_valid(viewport):
+		return {}
+	var rid := viewport.get_viewport_rid()
+	var target: Object = RenderingServer if backend == null else backend
+	if not rid.is_valid() or not is_instance_valid(target) or not target.has_method(METALFX_STATUS_METHOD):
+		return {}
+	var status: Variant = target.call(METALFX_STATUS_METHOD, rid)
+	return status.duplicate(true) if typeof(status) == TYPE_DICTIONARY else {}
+
+
+static func _track_metalfx_status(viewport: Viewport, policy: Dictionary, before: Dictionary, changed: bool) -> void:
+	var generation := -1
+	if typeof(before.get("generation")) == TYPE_INT and int(before.generation) >= 0:
+		generation = int(before.generation) + (1 if changed else 0)
+	var after := _metalfx_status(viewport)
+	if typeof(after.get("generation")) == TYPE_INT and int(after.generation) >= generation:
+		generation = int(after.generation)
+	viewport.set_meta(METALFX_STATUS_META, {"rid": viewport.get_viewport_rid(),
+		"provider": policy.get("provider", ""), "mode": policy.get("scaling_3d_mode"), "generation": generation})
+
+
+static func _guard_metalfx_failure(viewport: Viewport, policy: Dictionary, capabilities: Dictionary,
+		backend: Object = null) -> bool:
+	var provider := str(policy.get("provider", ""))
+	var scope: Variant = viewport.get_meta(METALFX_STATUS_META, {})
+	if typeof(scope) != TYPE_DICTIONARY or scope.is_empty():
+		return false
+	var actual_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_" + provider.to_upper())
+	if typeof(actual_mode) != TYPE_INT or not _metalfx_scope_matches(viewport, policy, scope, int(actual_mode)):
+		return false
+	var status := _metalfx_status(viewport, backend)
+	var reason := MetalFX.runtime_failure(status, provider, int(actual_mode), int(scope.generation))
+	if typeof(status.get("generation")) == TYPE_INT and int(status.generation) >= int(scope.generation):
+		scope["generation"] = int(status.generation)
+		viewport.set_meta(METALFX_STATUS_META, scope)
+	return _rollback_runtime_failure(viewport, provider, status, capabilities) if not reason.is_empty() else false
+
+
+static func _metalfx_scope_matches(viewport: Viewport, policy: Dictionary, scope: Dictionary, mode: int) -> bool:
+	var rid := viewport.get_viewport_rid()
+	return rid.is_valid() and scope.get("rid") == rid and scope.get("provider") == policy.get("provider") \
+		and typeof(scope.get("mode")) == TYPE_INT and int(scope.mode) == mode \
+		and typeof(policy.get("scaling_3d_mode")) == TYPE_INT and int(policy.scaling_3d_mode) == mode \
+		and int(viewport.scaling_3d_mode) == mode and typeof(scope.get("generation")) == TYPE_INT
 
 
 ## Discontinuities invalidate history; ordinary camera movement must not call this.

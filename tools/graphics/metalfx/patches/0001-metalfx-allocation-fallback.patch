@@ -1,0 +1,652 @@
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.cpp b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+--- a/servers/rendering/renderer_rd/effects/metal_fx.cpp
++++ b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+@@ -68,30 +68,42 @@
+ 	MTLFX::SpatialScaler *s = static_cast<MTLFX::SpatialScaler *>(scaler);
+ 	MTL3::MDCommandBuffer *cmd = (MTL3::MDCommandBuffer *)(p_command_buffer.id);
+ 	s->encodeToCommandBuffer(cmd->get_command_buffer());
+ 	obj->retain_resource(scaler);
+-
+-	CallbackArgs::free(&p_userdata);
++	scaler->release(); // Release the reference held from enqueue until callback.
++	memdelete(p_userdata);
+ }
+ 
+ void MFXSpatialEffect::ensure_context(Ref<RenderSceneBuffersRD> p_render_buffers) {
+ 	p_render_buffers->ensure_mfx(this);
+ }
+ 
+ void MFXSpatialEffect::process(Ref<RenderSceneBuffersRD> p_render_buffers, RID p_src, RID p_dst) {
++	try_process(p_render_buffers, p_src, p_dst);
++}
++
++bool MFXSpatialEffect::try_process(Ref<RenderSceneBuffersRD> p_render_buffers, RID p_src, RID p_dst) {
+ 	MFXSpatialContext *ctx = p_render_buffers->get_mfx_spatial_context();
+-	DEV_ASSERT(ctx); // this should have been done by the caller via ensure_context
+-
+-	CallbackArgs *userdata = args_allocator.alloc(
+-			this,
++	ERR_FAIL_COND_V(!ctx || !ctx->is_usable(), false);
++
++	CallbackArgs *userdata = memnew(CallbackArgs(
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_src)),
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_dst)),
+-			*ctx);
++			*ctx));
+ 	RD::CallbackResource res[2] = {
+ 		{ .rid = p_src, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 		{ .rid = p_dst, .usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE }
+ 	};
+-	RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXSpatialEffect::callback, userdata, VectorView<RD::CallbackResource>(res, 2));
++	ctx->scaler->retain();
++	Error error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXSpatialEffect::callback, userdata, VectorView<RD::CallbackResource>(res, 2));
++	if (error != OK) {
++		ctx->scaler->release();
++		memdelete(userdata);
++		ctx->submission_status = MFXSubmissionStatus::ENQUEUE_FAILED;
++		return false;
++	}
++	ctx->submission_status = MFXSubmissionStatus::ENQUEUED;
++	return true;
+ }
+ 
+ MFXSpatialContext *MFXSpatialEffect::create_context(CreateParams p_params) const {
+ 	DEV_ASSERT(RD::get_singleton()->has_feature(RD::SUPPORTS_METALFX_SPATIAL));
+@@ -99,9 +111,20 @@
+ 	RenderingDeviceDriverMetal *rdd = (RenderingDeviceDriverMetal *)RD::get_singleton()->get_device_driver();
+ 	PixelFormats &pf = rdd->get_pixel_formats();
+ 	MTL::Device *dev = rdd->get_device();
+ 
+-	NS::SharedPtr<MTLFX::SpatialScalerDescriptor> desc = NS::TransferPtr(MTLFX::SpatialScalerDescriptor::alloc()->init());
++	// Keep the failed result in this render-buffer context, avoiding a new
++	// allocation attempt on every frame until the buffers are reconfigured.
++	MFXSpatialContext *context = memnew(MFXSpatialContext);
++	context->allocation_status = MFXAllocationStatus::DESCRIPTOR_UNAVAILABLE;
++	MTLFX::SpatialScalerDescriptor *allocated_desc = MTLFX::SpatialScalerDescriptor::alloc();
++	if (!allocated_desc) {
++		return context;
++	}
++	NS::SharedPtr<MTLFX::SpatialScalerDescriptor> desc = NS::TransferPtr(allocated_desc->init());
++	if (!desc) {
++		return context;
++	}
+ 	desc->setInputWidth((NS::UInteger)p_params.input_size.width);
+ 	desc->setInputHeight((NS::UInteger)p_params.input_size.height);
+ 
+ 	desc->setOutputWidth((NS::UInteger)p_params.output_size.width);
+@@ -110,11 +133,13 @@
+ 	desc->setColorTextureFormat((MTL::PixelFormat)pf.getMTLPixelFormat(p_params.input_format));
+ 	desc->setOutputTextureFormat((MTL::PixelFormat)pf.getMTLPixelFormat(p_params.output_format));
+ 	desc->setColorProcessingMode(MTLFX::SpatialScalerColorProcessingModeLinear);
+ 
+-	MFXSpatialContext *context = memnew(MFXSpatialContext);
++	context->allocation_status = MFXAllocationStatus::SCALER_UNAVAILABLE;
+ 	context->scaler = desc->newSpatialScaler(dev);
+-
++	if (context->scaler) {
++		context->allocation_status = MFXAllocationStatus::SCALER_CREATED;
++	}
+ 	return context;
+ }
+ 
+ #ifdef METAL_MFXTEMPORAL_ENABLED
+@@ -136,9 +161,18 @@
+ 	RenderingDeviceDriverMetal *rdd = (RenderingDeviceDriverMetal *)RD::get_singleton()->get_device_driver();
+ 	PixelFormats &pf = rdd->get_pixel_formats();
+ 	MTL::Device *dev = rdd->get_device();
+ 
+-	NS::SharedPtr<MTLFX::TemporalScalerDescriptor> desc = NS::TransferPtr(MTLFX::TemporalScalerDescriptor::alloc()->init());
++	MFXTemporalContext *context = memnew(MFXTemporalContext);
++	context->allocation_status = MFXAllocationStatus::DESCRIPTOR_UNAVAILABLE;
++	MTLFX::TemporalScalerDescriptor *allocated_desc = MTLFX::TemporalScalerDescriptor::alloc();
++	if (!allocated_desc) {
++		return context;
++	}
++	NS::SharedPtr<MTLFX::TemporalScalerDescriptor> desc = NS::TransferPtr(allocated_desc->init());
++	if (!desc) {
++		return context;
++	}
+ 	desc->setInputWidth((NS::UInteger)p_params.input_size.width);
+ 	desc->setInputHeight((NS::UInteger)p_params.input_size.height);
+ 
+ 	desc->setOutputWidth((NS::UInteger)p_params.output_size.width);
+@@ -150,37 +184,50 @@
+ 	desc->setAutoExposureEnabled(false);
+ 
+ 	desc->setOutputTextureFormat((MTL::PixelFormat)pf.getMTLPixelFormat(p_params.output_format));
+ 
+-	MFXTemporalContext *context = memnew(MFXTemporalContext);
++	context->allocation_status = MFXAllocationStatus::SCALER_UNAVAILABLE;
+ 	context->scaler = desc->newTemporalScaler(dev);
++	if (!context->scaler) {
++		return context;
++	}
++	context->allocation_status = MFXAllocationStatus::SCALER_CREATED;
+ 	context->scaler->setMotionVectorScaleX(p_params.motion_vector_scale.x);
+ 	context->scaler->setMotionVectorScaleY(p_params.motion_vector_scale.y);
+ 	context->scaler->setDepthReversed(true); // Godot uses reverse Z per https://github.com/godotengine/godot/pull/88328
+ 
+ 	return context;
+ }
+ 
+-void MFXTemporalEffect::process(RendererRD::MFXTemporalContext *p_ctx, RendererRD::MFXTemporalEffect::Params p_params) {
+-	CallbackArgs *userdata = args_allocator.alloc(
+-			this,
++bool MFXTemporalEffect::process(RendererRD::MFXTemporalContext *p_ctx, RendererRD::MFXTemporalEffect::Params p_params) {
++	ERR_FAIL_COND_V(!p_ctx || !p_ctx->is_usable(), false);
++	CallbackArgs *userdata = memnew(CallbackArgs(
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_params.src)),
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_params.depth)),
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_params.motion)),
+ 			p_params.exposure.is_valid() ? RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_params.exposure)) : RDD::TextureID(),
+ 			p_params.jitter_offset,
+ 			RDD::TextureID(RD::get_singleton()->get_driver_resource(RDC::DRIVER_RESOURCE_TEXTURE, p_params.dst)),
+ 			*p_ctx,
+-			p_params.reset);
++			p_params.reset));
+ 	RD::CallbackResource res[5] = {
+ 		{ .rid = p_params.src, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 		{ .rid = p_params.depth, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 		{ .rid = p_params.motion, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 		{ .rid = p_params.dst, .usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE },
+ 		{ .rid = p_params.exposure, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
+ 	};
+ 	uint32_t res_count = p_params.exposure.is_valid() ? 5 : 4;
+-	RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXTemporalEffect::callback, userdata, VectorView<RD::CallbackResource>(res, res_count));
++	p_ctx->scaler->retain();
++	Error error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXTemporalEffect::callback, userdata, VectorView<RD::CallbackResource>(res, res_count));
++	if (error != OK) {
++		p_ctx->scaler->release();
++		memdelete(userdata);
++		p_ctx->submission_status = MFXSubmissionStatus::ENQUEUE_FAILED;
++		return false;
++	}
++	p_ctx->submission_status = MFXSubmissionStatus::ENQUEUED;
++	return true;
+ }
+ 
+ void MFXTemporalEffect::callback(RDD *p_driver, RDD::CommandBufferID p_command_buffer, CallbackArgs *p_userdata) {
+ 	MDCommandBufferBase *obj = (MDCommandBufferBase *)(p_command_buffer.id);
+@@ -206,10 +253,10 @@
+ 	MTLFX::TemporalScaler *s = static_cast<MTLFX::TemporalScaler *>(scaler);
+ 	MTL3::MDCommandBuffer *cmd = (MTL3::MDCommandBuffer *)(p_command_buffer.id);
+ 	s->encodeToCommandBuffer(cmd->get_command_buffer());
+ 	obj->retain_resource(scaler);
+-
+-	CallbackArgs::free(&p_userdata);
++	scaler->release(); // Release the reference held from enqueue until callback.
++	memdelete(p_userdata);
+ }
+ 
+ #endif
+ 
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.h b/servers/rendering/renderer_rd/effects/metal_fx.h
+--- a/servers/rendering/renderer_rd/effects/metal_fx.h
++++ b/servers/rendering/renderer_rd/effects/metal_fx.h
+@@ -47,37 +47,61 @@
+ } //namespace MTLFX
+ 
+ namespace RendererRD {
+ 
++// Synchronous factory outcome only; this does not claim GPU execution or completion.
++enum class MFXAllocationStatus {
++	NOT_ATTEMPTED,
++	DESCRIPTOR_UNAVAILABLE,
++	SCALER_UNAVAILABLE,
++	SCALER_CREATED,
++};
++
++enum class MFXSubmissionStatus { NOT_ATTEMPTED, ENQUEUED, ENQUEUE_FAILED };
++
++inline const char *mfx_allocation_status_name(MFXAllocationStatus p_status) {
++	switch (p_status) {
++		case MFXAllocationStatus::DESCRIPTOR_UNAVAILABLE: return "descriptor_unavailable";
++		case MFXAllocationStatus::SCALER_UNAVAILABLE: return "scaler_unavailable";
++		case MFXAllocationStatus::SCALER_CREATED: return "created";
++		default: return "not_attempted";
++	}
++}
++inline const char *mfx_submission_status_name(MFXSubmissionStatus p_status) {
++	switch (p_status) {
++		case MFXSubmissionStatus::ENQUEUED: return "enqueued";
++		case MFXSubmissionStatus::ENQUEUE_FAILED: return "enqueue_failed";
++		default: return "not_attempted";
++	}
++}
++
+ struct MFXSpatialContext {
+ 	MTLFX::SpatialScalerBase *scaler = nullptr;
++	MFXAllocationStatus allocation_status = MFXAllocationStatus::NOT_ATTEMPTED;
++	MFXSubmissionStatus submission_status = MFXSubmissionStatus::NOT_ATTEMPTED;
++	bool is_usable() const { return allocation_status == MFXAllocationStatus::SCALER_CREATED && scaler != nullptr && submission_status != MFXSubmissionStatus::ENQUEUE_FAILED; }
+ 	MFXSpatialContext() = default;
+ 	~MFXSpatialContext();
+ };
+ 
+ class MFXSpatialEffect : public SpatialUpscaler {
+ 	struct CallbackArgs {
+-		MFXSpatialEffect *owner = nullptr;
+ 		MTLFX::SpatialScalerBase *scaler = nullptr;
+ 		RDD::TextureID src;
+ 		RDD::TextureID dst;
+ 
+-		CallbackArgs(MFXSpatialEffect *p_owner, RDD::TextureID p_src, RDD::TextureID p_dst, const MFXSpatialContext &p_ctx) :
+-				owner(p_owner), scaler(p_ctx.scaler), src(p_src), dst(p_dst) {}
++		CallbackArgs(RDD::TextureID p_src, RDD::TextureID p_dst, const MFXSpatialContext &p_ctx) :
++				scaler(p_ctx.scaler), src(p_src), dst(p_dst) {}
+ 
+-		static void free(CallbackArgs **p_args) {
+-			(*p_args)->owner->args_allocator.free(*p_args);
+-			*p_args = nullptr;
+-		}
+ 	};
+ 
+-	PagedAllocator<CallbackArgs, true, 16> args_allocator;
+ 	static void callback(RDD *p_driver, RDD::CommandBufferID p_command_buffer, CallbackArgs *p_userdata);
+ 
+ public:
+ 	virtual const Span<char> get_label() const final { return "MetalFX Spatial Upscale"; }
+ 	virtual void ensure_context(Ref<RenderSceneBuffersRD> p_render_buffers) final;
+ 	virtual void process(Ref<RenderSceneBuffersRD> p_render_buffers, RID p_src, RID p_dst) final;
++	bool try_process(Ref<RenderSceneBuffersRD> p_render_buffers, RID p_src, RID p_dst);
+ 
+ 	struct CreateParams {
+ 		Vector2i input_size;
+ 		Vector2i output_size;
+@@ -94,15 +118,17 @@
+ #ifdef METAL_MFXTEMPORAL_ENABLED
+ 
+ struct MFXTemporalContext {
+ 	MTLFX::TemporalScalerBase *scaler = nullptr;
++	MFXAllocationStatus allocation_status = MFXAllocationStatus::NOT_ATTEMPTED;
++	MFXSubmissionStatus submission_status = MFXSubmissionStatus::NOT_ATTEMPTED;
++	bool is_usable() const { return allocation_status == MFXAllocationStatus::SCALER_CREATED && scaler != nullptr && submission_status != MFXSubmissionStatus::ENQUEUE_FAILED; }
+ 	MFXTemporalContext() = default;
+ 	~MFXTemporalContext();
+ };
+ 
+ class MFXTemporalEffect {
+ 	struct CallbackArgs {
+-		MFXTemporalEffect *owner = nullptr;
+ 		MTLFX::TemporalScalerBase *scaler = nullptr;
+ 		RDD::TextureID src;
+ 		RDD::TextureID depth;
+ 		RDD::TextureID motion;
+@@ -111,18 +137,16 @@
+ 		RDD::TextureID dst;
+ 		bool reset = false;
+ 
+ 		CallbackArgs(
+-				MFXTemporalEffect *p_owner,
+ 				RDD::TextureID p_src,
+ 				RDD::TextureID p_depth,
+ 				RDD::TextureID p_motion,
+ 				RDD::TextureID p_exposure,
+ 				Vector2 p_jitter_offset,
+ 				RDD::TextureID p_dst,
+ 				const MFXTemporalContext &p_ctx,
+ 				bool p_reset) :
+-				owner(p_owner),
+ 				scaler(p_ctx.scaler),
+ 				src(p_src),
+ 				depth(p_depth),
+ 				motion(p_motion),
+@@ -130,15 +154,10 @@
+ 				jitter_offset(p_jitter_offset),
+ 				dst(p_dst),
+ 				reset(p_reset) {}
+ 
+-		static void free(CallbackArgs **p_args) {
+-			(*p_args)->owner->args_allocator.free(*p_args);
+-			*p_args = nullptr;
+-		}
+ 	};
+ 
+-	PagedAllocator<CallbackArgs, true, 16> args_allocator;
+ 
+ 	static void callback(RDD *p_driver, RDD::CommandBufferID p_command_buffer, CallbackArgs *p_userdata);
+ 
+ public:
+@@ -167,9 +186,9 @@
+ 		Vector2 jitter_offset;
+ 		bool reset = false;
+ 	};
+ 
+-	void process(MFXTemporalContext *p_ctx, Params p_params);
++	bool process(MFXTemporalContext *p_ctx, Params p_params);
+ };
+ 
+ #endif
+ 
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -2610,9 +2610,11 @@
+ 
+ 			RD::get_singleton()->draw_command_end_label();
+ 		} else if (scale_type == SCALE_MFX) {
+ #ifdef METAL_MFXTEMPORAL_ENABLED
++			// This return value means first context creation, not successful allocation.
+ 			bool reset = rb_data->ensure_mfx_temporal(mfx_temporal_effect);
++			RendererRD::MFXTemporalContext *context = rb_data->get_mfx_temporal_context();
+ 
+ 			RID exposure;
+ 			if (RSG::camera_attributes->camera_attributes_uses_auto_exposure(p_render_data->camera_attributes)) {
+ 				exposure = luminance->get_current_luminance_buffer(rb);
+@@ -2622,9 +2624,10 @@
+ 			// Scale to ±0.5.
+ 			Vector2 jitter = p_render_data->scene_data->taa_jitter * 0.5f;
+ 			jitter *= Vector2(1.0, -1.0); // Flip y-axis as bottom left is origin.
+ 
+-			for (uint32_t v = 0; v < rb->get_view_count(); v++) {
++			bool submitted = context && context->is_usable();
++			for (uint32_t v = 0; submitted && v < rb->get_view_count(); v++) {
+ 				RendererRD::MFXTemporalEffect::Params params;
+ 				params.src = rb->get_internal_texture(v);
+ 				params.depth = rb->get_depth_texture(v);
+ 				params.motion = rb->get_velocity_buffer(false, v);
+@@ -2632,9 +2635,20 @@
+ 				params.dst = rb->get_upscaled_texture(v);
+ 				params.jitter_offset = jitter;
+ 				params.reset = reset;
+ 
+-				mfx_temporal_effect->process(rb_data->get_mfx_temporal_context(), params);
++				submitted = mfx_temporal_effect->process(context, params);
++			}
++			if (context) {
++				rb->set_metalfx_status("temporal", RendererRD::mfx_allocation_status_name(context->allocation_status), RendererRD::mfx_submission_status_name(context->submission_status));
++			}
++			if (!submitted) {
++				// Copy every view, including any earlier successful enqueue, this frame.
++				WARN_PRINT_ONCE("MetalFX Temporal scaler unavailable; using bilinear fallback.");
++				for (uint32_t v = 0; v < rb->get_view_count(); v++) {
++					RID dst_fb = FramebufferCacheRD::get_singleton()->get_cache(rb->get_upscaled_texture(v));
++					copy_effects->copy_to_fb_rect(rb->get_internal_texture(v), dst_fb, Rect2i(Point2i(), rb->get_target_size()));
++				}
+ 			}
+ 
+ 			RD::get_singleton()->draw_command_end_label();
+ #endif
+diff --git a/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp b/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
+--- a/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
++++ b/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
+@@ -861,22 +861,52 @@
+ 		RD::get_singleton()->draw_command_end_label();
+ 	}
+ 
+ 	if (rb.is_valid() && using_scaling_pass) {
+-		RD::get_singleton()->draw_command_begin_label(spatial_upscaler ? spatial_upscaler->get_label() : "3D Viewport Scaling");
+-
++#ifdef METAL_ENABLED
++		const bool use_mfx_spatial = spatial_upscaler && spatial_upscaler == mfx_spatial;
++		RendererRD::MFXSpatialContext *mfx_context = nullptr;
++#endif
+ 		if (spatial_upscaler) {
+ 			spatial_upscaler->ensure_context(rb);
+-
++#ifdef METAL_ENABLED
++			if (use_mfx_spatial) {
++				mfx_context = rb->get_mfx_spatial_context();
++				if (!mfx_context || !mfx_context->is_usable()) {
++					WARN_PRINT_ONCE("MetalFX Spatial scaler unavailable; using bilinear fallback.");
++					spatial_upscaler = nullptr;
++				}
++			}
++#endif
++		}
++		RD::get_singleton()->draw_command_begin_label(spatial_upscaler ? spatial_upscaler->get_label() : "3D Viewport Scaling");
++
++		if (spatial_upscaler) {
+ 			for (uint32_t v = 0; v < rb->get_view_count(); v++) {
+ 				RID source_texture = rb->get_texture_slice(use_smaa ? SNAME("SMAA") : SNAME("Tonemapper"), SNAME("destination"), v, 0);
+ 				RID dest_texture = texture_storage->render_target_get_rd_texture_slice(render_target, v);
+ 
+-				spatial_upscaler->process(rb, source_texture, dest_texture);
+-			}
+-		} else {
+-			// If no spatial upscaler is set, we are using bilinear or nearest filtering for scaling.
+-			// This is only necessary if screen-space antialiasing is active, otherwise this happens automatically during tonemapping.
++#ifdef METAL_ENABLED
++				if (use_mfx_spatial) {
++					if (!mfx_spatial->try_process(rb, source_texture, dest_texture)) {
++						spatial_upscaler = nullptr;
++						break;
++					}
++				} else
++#endif
++				{
++					spatial_upscaler->process(rb, source_texture, dest_texture);
++				}
++			}
++		}
++#ifdef METAL_ENABLED
++		if (use_mfx_spatial && mfx_context) {
++			rb->set_metalfx_status("spatial", RendererRD::mfx_allocation_status_name(mfx_context->allocation_status), RendererRD::mfx_submission_status_name(mfx_context->submission_status));
++		}
++#endif
++		if (!spatial_upscaler) {
++			// Scale the tonemapped/antialiased intermediate, including a failed MetalFX Spatial allocation.
++			// MetalFX failure uses bilinear filtering and writes the destination on this frame.
+ 			RID source_texture = rb->get_texture(use_smaa ? SNAME("SMAA") : SNAME("Tonemapper"), SNAME("destination"));
+ 			RID dest_texture = texture_storage->render_target_get_rd_texture(render_target);
+ 
+ 			// Create an explicit pass, since the automatic pass in "framebuffer_create" can incorrectly put the texture as a resolve attachment.
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -124,8 +124,9 @@
+ 	samplers = material_storage->samplers_rd_allocate(computed_mipmap_bias, anisotropic_filtering_level);
+ }
+ 
+ void RenderSceneBuffersRD::cleanup() {
++	reset_metalfx_status();
+ 	// Free our data buffers (but don't destroy them)
+ 	for (KeyValue<StringName, Ref<RenderBufferCustomDataRD>> &E : data_buffers) {
+ 		E.value->free_data();
+ 	}
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -133,8 +133,12 @@
+ 	return result;
+ }
+ 
+ void RendererViewport::_configure_3d_render_buffers(Viewport *p_viewport) {
++	++p_viewport->metal_fx_generation;
++	if (p_viewport->render_buffers.is_valid()) {
++		p_viewport->render_buffers->reset_metalfx_status();
++	}
+ 	if (p_viewport->render_buffers.is_valid()) {
+ 		if (p_viewport->size.width == 0 || p_viewport->size.height == 0) {
+ 			p_viewport->render_buffers.unref();
+ 		} else {
+@@ -307,8 +311,9 @@
+ 			rb_config.set_use_taa(use_taa);
+ 			rb_config.set_use_debanding(p_viewport->use_debanding);
+ 
+ 			p_viewport->render_buffers->configure(&rb_config);
++			p_viewport->render_buffers->set_metalfx_configured_mode(int(scaling_3d_mode));
+ 		}
+ 	}
+ }
+ 
+@@ -1027,8 +1032,15 @@
+ 	// re-configured when enabling XR in draw_viewports().
+ 	if (!p_use_xr) {
+ 		viewport->view_count = 1;
+ 		_configure_3d_render_buffers(viewport);
++	} else {
++		// The XR buffers are configured later in draw_viewports(); do not
++		// expose the old generation as a result for that pending change.
++		++viewport->metal_fx_generation;
++		if (viewport->render_buffers.is_valid()) {
++			viewport->render_buffers->reset_metalfx_status();
++		}
+ 	}
+ }
+ #endif // !XR_DISABLED
+ 
+@@ -1297,8 +1309,14 @@
+ void RendererViewport::viewport_set_disable_3d(RID p_viewport, bool p_disable) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
++	if (viewport->disable_3d != p_disable) {
++		++viewport->metal_fx_generation;
++		if (viewport->render_buffers.is_valid()) {
++			viewport->render_buffers->reset_metalfx_observation();
++		}
++	}
+ 	viewport->disable_3d = p_disable;
+ }
+ 
+ void RendererViewport::viewport_attach_camera(RID p_viewport, RID p_camera) {
+@@ -1553,8 +1571,26 @@
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	viewport->mesh_lod_threshold = p_pixels;
++}
++
++Dictionary RendererViewport::viewport_get_metalfx_status(RID p_viewport) const {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL_V(viewport, Dictionary());
++	Dictionary result;
++	if (viewport->render_buffers.is_valid()) {
++		result = viewport->render_buffers->get_metalfx_status();
++	} else {
++		result["provider"] = "none";
++		result["allocation"] = "not_attempted";
++		result["submission"] = "not_attempted";
++		result["configured_mode"] = -1;
++	}
++	result["generation"] = int64_t(viewport->metal_fx_generation);
++	result["requested_mode"] = int(viewport->scaling_3d_mode);
++	result["render_buffers_available"] = viewport->render_buffers.is_valid();
++	return result;
+ }
+ 
+ int RendererViewport::viewport_get_render_info(RID p_viewport, RSE::ViewportRenderInfoType p_type, RSE::ViewportRenderInfo p_info) {
+ 	ERR_FAIL_INDEX_V(p_type, RSE::VIEWPORT_RENDER_INFO_TYPE_MAX, -1);
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -65,8 +65,9 @@
+ 		RSE::ViewportUpdateMode update_mode = RSE::VIEWPORT_UPDATE_WHEN_VISIBLE;
+ 		RID render_target;
+ 		RID render_target_texture;
+ 		Ref<RenderSceneBuffers> render_buffers;
++		uint64_t metal_fx_generation = 0;
+ 
+ 		RSE::ViewportMSAA msaa_2d = RSE::VIEWPORT_MSAA_DISABLED;
+ 		RSE::ViewportMSAA msaa_3d = RSE::VIEWPORT_MSAA_DISABLED;
+ 		RSE::ViewportScreenSpaceAA screen_space_aa = RSE::VIEWPORT_SCREEN_SPACE_AA_DISABLED;
+@@ -285,8 +286,9 @@
+ 	void viewport_set_occlusion_rays_per_thread(int p_rays_per_thread);
+ 	void viewport_set_occlusion_culling_build_quality(RSE::ViewportOcclusionCullingBuildQuality p_quality);
+ 	void viewport_set_mesh_lod_threshold(RID p_viewport, float p_pixels);
+ 
++	Dictionary viewport_get_metalfx_status(RID p_viewport) const;
+ 	virtual int viewport_get_render_info(RID p_viewport, RSE::ViewportRenderInfoType p_type, RSE::ViewportRenderInfo p_info);
+ 	virtual void viewport_set_debug_draw(RID p_viewport, RSE::ViewportDebugDraw p_draw);
+ 
+ 	void viewport_set_measure_render_time(RID p_viewport, bool p_enable);
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -2915,8 +2915,9 @@
+ 	ClassDB::bind_method(D_METHOD("viewport_set_use_occlusion_culling", "viewport", "enable"), &RenderingServer::viewport_set_use_occlusion_culling);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_occlusion_rays_per_thread", "rays_per_thread"), &RenderingServer::viewport_set_occlusion_rays_per_thread);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_occlusion_culling_build_quality", "quality"), &RenderingServer::viewport_set_occlusion_culling_build_quality);
+ 
++	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_status", "viewport"), &RenderingServer::viewport_get_metalfx_status);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_render_info", "viewport", "type", "info"), &RenderingServer::viewport_get_render_info);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_debug_draw", "viewport", "draw"), &RenderingServer::viewport_set_debug_draw);
+ 
+ 	ClassDB::bind_method(D_METHOD("viewport_set_measure_render_time", "viewport", "enable"), &RenderingServer::viewport_set_measure_render_time);
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -619,8 +619,9 @@
+ 	virtual void viewport_set_occlusion_rays_per_thread(int p_rays_per_thread) = 0;
+ 
+ 	virtual void viewport_set_occlusion_culling_build_quality(RSE::ViewportOcclusionCullingBuildQuality p_quality) = 0;
+ 
++	virtual Dictionary viewport_get_metalfx_status(RID p_viewport) const = 0;
+ 	virtual int viewport_get_render_info(RID p_viewport, RSE::ViewportRenderInfoType p_type, RSE::ViewportRenderInfo p_info) = 0;
+ 
+ 	virtual void viewport_set_debug_draw(RID p_viewport, RSE::ViewportDebugDraw p_draw) = 0;
+ 
+diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/rendering_server_default.h
+--- a/servers/rendering/rendering_server_default.h
++++ b/servers/rendering/rendering_server_default.h
+@@ -806,8 +806,9 @@
+ 	FUNC1(viewport_set_occlusion_rays_per_thread, int)
+ 	FUNC1(viewport_set_occlusion_culling_build_quality, RSE::ViewportOcclusionCullingBuildQuality)
+ 	FUNC2(viewport_set_mesh_lod_threshold, RID, float)
+ 
++	FUNC1RC(Dictionary, viewport_get_metalfx_status, RID)
+ 	FUNC3R(int, viewport_get_render_info, RID, RSE::ViewportRenderInfoType, RSE::ViewportRenderInfo)
+ 	FUNC2(viewport_set_debug_draw, RID, RSE::ViewportDebugDraw)
+ 
+ 	FUNC2(viewport_set_measure_render_time, RID, bool)
+diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/rendering/storage/render_scene_buffers.h
+--- a/servers/rendering/storage/render_scene_buffers.h
++++ b/servers/rendering/storage/render_scene_buffers.h
+@@ -30,8 +30,9 @@
+ 
+ #pragma once
+ 
+ #include "core/object/ref_counted.h"
++#include "core/variant/dictionary.h"
+ #include "servers/rendering/rendering_server_enums.h"
+ 
+ class RenderSceneBuffersConfiguration : public RefCounted {
+ 	GDCLASS(RenderSceneBuffersConfiguration, RefCounted);
+@@ -98,15 +99,46 @@
+ };
+ 
+ class RenderSceneBuffers : public RefCounted {
+ 	GDCLASS(RenderSceneBuffers, RefCounted);
++	String metal_fx_provider = "none";
++	String metal_fx_allocation = "not_attempted";
++	String metal_fx_submission = "not_attempted";
++	int metal_fx_configured_mode = -1;
+ 
+ protected:
+ 	static void _bind_methods();
+ 
+ public:
+ 	RenderSceneBuffers() {}
+ 	virtual ~RenderSceneBuffers() {}
++
++	void reset_metalfx_observation() {
++		metal_fx_provider = "none";
++		metal_fx_allocation = "not_attempted";
++		metal_fx_submission = "not_attempted";
++	}
++	void reset_metalfx_status() {
++		reset_metalfx_observation();
++		metal_fx_configured_mode = -1;
++	}
++	void set_metalfx_configured_mode(int p_mode) { metal_fx_configured_mode = p_mode; }
++	void set_metalfx_status(const char *p_provider, const char *p_allocation, const char *p_submission) {
++		if (metal_fx_provider == p_provider && metal_fx_allocation == p_allocation && metal_fx_submission == p_submission) {
++			return;
++		}
++		metal_fx_provider = p_provider;
++		metal_fx_allocation = p_allocation;
++		metal_fx_submission = p_submission;
++	}
++	Dictionary get_metalfx_status() const {
++		Dictionary status;
++		status["provider"] = metal_fx_provider;
++		status["allocation"] = metal_fx_allocation;
++		status["submission"] = metal_fx_submission;
++		status["configured_mode"] = metal_fx_configured_mode;
++		return status;
++	}
+ 
+ 	virtual void configure(const RenderSceneBuffersConfiguration *p_config) = 0;
+ 
+ 	// for those settings that are unlikely to require buffers to be recreated, we'll add setters

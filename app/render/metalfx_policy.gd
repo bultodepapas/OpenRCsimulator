@@ -82,6 +82,27 @@ static func scale_available(provider: String, scale: float, capabilities: Dictio
 	return valid_limits(capabilities) and is_finite(scale) \
 		and scale >= float(capabilities.metalfx_min_scale) and scale <= minf(1.0, float(capabilities.metalfx_max_scale))
 
+
+## Interpret only coherent failures for the current viewport configuration.
+## Created/enqueued and not-attempted are not evidence of GPU completion.
+static func runtime_failure(status: Dictionary, provider: String, mode: int, minimum_generation: int) -> String:
+	if provider not in PROVIDERS or typeof(status.get("generation")) != TYPE_INT \
+			or int(status.generation) < maxi(0, minimum_generation) \
+			or typeof(status.get("requested_mode")) != TYPE_INT or int(status.requested_mode) != mode \
+			or typeof(status.get("configured_mode")) != TYPE_INT or int(status.configured_mode) != mode \
+			or typeof(status.get("render_buffers_available")) != TYPE_BOOL or not status.render_buffers_available:
+		return ""
+	var expected_provider := "spatial" if provider == "metalfx_spatial" else "temporal"
+	if typeof(status.get("provider")) != TYPE_STRING or status.provider != expected_provider \
+			or typeof(status.get("allocation")) != TYPE_STRING or typeof(status.get("submission")) != TYPE_STRING:
+		return ""
+	if status.allocation in ["descriptor_unavailable", "scaler_unavailable"] and status.submission == "not_attempted":
+		return status.allocation
+	if status.allocation == "created" and status.submission == "enqueue_failed":
+		return status.submission
+	return ""
+
+
 static func _constant(type_name: String, constant_name: String) -> Variant:
 	return ClassDB.class_get_integer_constant(type_name, constant_name) \
 		if ClassDB.class_has_integer_constant(type_name, constant_name) else null

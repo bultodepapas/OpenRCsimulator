@@ -12,6 +12,13 @@ class AdvertisingBackend extends RefCounted:
 	func viewport_request_temporal_history_reset(viewport: RID) -> void:
 		requests.append(viewport)
 
+class StatusBackend extends RefCounted:
+	var statuses := {}
+	var requests: Array[RID] = []
+	func viewport_get_metalfx_status(viewport: RID) -> Dictionary:
+		requests.append(viewport)
+		return statuses.get(viewport, {})
+
 var checks := 0
 var failures := 0
 
@@ -186,11 +193,160 @@ func _run() -> void:
 	_check("choosing Native clears the latch and reopens the trial option", not view.has_meta(Reconstruction.RUNTIME_FAILURE_META)
 		and not settings._reconstruction_picker.is_item_disabled(temporal_index))
 	view.free()
+	_test_runtime_failure_adapter(mobile, forward)
 	var runtime := MetalFX.runtime_capabilities()
 	if OS.get_name() != "macOS" or DisplayServer.get_name() == "headless":
 		_check("unsupported host never offers MetalFX", not runtime.metalfx_spatial and not runtime.metalfx_temporal)
 	print("metalfx policy: %d checks, %d failed" % [checks, failures])
 	quit(0 if failures == 0 else 1)
+
+
+func _test_runtime_failure_adapter(spatial_caps: Dictionary, temporal_caps: Dictionary) -> void:
+	# All status values here are injected fixtures, not evidence of native MetalFX.
+	var view := SubViewport.new()
+	var other := SubViewport.new()
+	root.add_child(view)
+	root.add_child(other)
+	var backend := StatusBackend.new()
+	var fixture := {"generation": 12, "requested_mode": 201, "configured_mode": 201, "render_buffers_available": true,
+		"provider": "spatial", "allocation": "scaler_unavailable", "submission": "not_attempted"}
+	backend.statuses[view.get_viewport_rid()] = fixture
+	_check("status lookup uses the requested viewport RID", Reconstruction._metalfx_status(view, backend) == fixture
+		and backend.requests.back() == view.get_viewport_rid()
+		and Reconstruction._metalfx_status(other, backend).is_empty())
+	_check("missing status API remains unknown", Reconstruction._metalfx_status(view, RefCounted.new()).is_empty())
+	var detached := Reconstruction._metalfx_status(view, backend)
+	detached["generation"] = 99
+	_check("status lookup detaches backend data", backend.statuses[view.get_viewport_rid()].generation == 12)
+	for provider: String in MetalFX.PROVIDERS:
+		var mode := 201 if provider == "metalfx_spatial" else 202
+		var status := fixture.duplicate(true)
+		status.requested_mode = mode
+		status.configured_mode = mode
+		status.provider = "spatial" if provider == "metalfx_spatial" else "temporal"
+		for allocation: String in ["descriptor_unavailable", "scaler_unavailable"]:
+			status.allocation = allocation
+			status.submission = "not_attempted"
+			_check("matching injected allocation failure: " + provider + "/" + allocation,
+				MetalFX.runtime_failure(status, provider, mode, 12) == allocation)
+		status.allocation = "created"
+		status.submission = "enqueue_failed"
+		_check("matching injected submission failure: " + provider,
+			MetalFX.runtime_failure(status, provider, mode, 12) == "enqueue_failed")
+		for invalid: Array in [["generation", 11], ["generation", 12.0], ["requested_mode", mode + 1],
+				["requested_mode", float(mode)], ["configured_mode", mode + 1], ["configured_mode", -1],
+				["configured_mode", float(mode)], ["render_buffers_available", false], ["render_buffers_available", 1],
+				["provider", "none"], ["provider", "temporal" if provider == "metalfx_spatial" else "spatial"],
+				["allocation", "not_attempted"], ["submission", "not_attempted"], ["submission", "enqueued"]]:
+			var altered := status.duplicate(true)
+			altered[invalid[0]] = invalid[1]
+			_check("unknown or mismatched injected status is ignored: %s/%s" % [provider, invalid],
+				MetalFX.runtime_failure(altered, provider, mode, 12).is_empty())
+		var inconsistent := status.duplicate(true)
+		inconsistent.allocation = "scaler_unavailable"
+		_check("inconsistent injected failure is ignored: " + provider,
+			MetalFX.runtime_failure(inconsistent, provider, mode, 12).is_empty())
+		_check("missing fields are unknown: " + provider, MetalFX.runtime_failure({}, provider, mode, 12).is_empty())
+
+	var native_mode := int(view.scaling_3d_mode)
+	var scope := {"rid": view.get_viewport_rid(), "provider": "metalfx_spatial", "mode": native_mode, "generation": 12}
+	var simulated_policy := {"provider": "metalfx_spatial", "scaling_3d_mode": native_mode}
+	_check("scope helper matches only its view and mode", Reconstruction._metalfx_scope_matches(view, simulated_policy, scope, native_mode)
+		and not Reconstruction._metalfx_scope_matches(other, simulated_policy, scope, native_mode))
+	var wrong_scope := scope.duplicate(true)
+	wrong_scope.mode = native_mode + 1
+	_check("scope helper rejects mismatched mode", not Reconstruction._metalfx_scope_matches(view, simulated_policy, wrong_scope, native_mode))
+	wrong_scope = scope.duplicate(true)
+	wrong_scope.generation = 12.0
+	_check("scope helper rejects malformed generation", not Reconstruction._metalfx_scope_matches(view, simulated_policy, wrong_scope, native_mode))
+	# A forged status or capability value cannot supply a real engine enum.
+	if not ClassDB.class_has_integer_constant("Viewport", "SCALING_3D_MODE_METALFX_SPATIAL"):
+		view.set_meta(Reconstruction.POLICY_META, simulated_policy)
+		view.set_meta(Reconstruction.METALFX_STATUS_META, scope)
+		_check("missing engine enum cannot become MetalFX evidence",
+			not Reconstruction.guard_runtime_failure(view, fixture, spatial_caps))
+	elif bool(MetalFX.runtime_capabilities().get("metalfx_spatial", false)):
+		# This seam uses the engine's real enum and an injected status source. It
+		# validates the adapter, not MetalFX allocation or GPU execution.
+		var actual_mode := ClassDB.class_get_integer_constant("Viewport", "SCALING_3D_MODE_METALFX_SPATIAL")
+		view.scaling_3d_mode = actual_mode
+		var injected_policy := Reconstruction.resolve("metalfx_spatial_85", spatial_caps)
+		injected_policy.scaling_3d_mode = actual_mode
+		var injected_config := Preferences.DEFAULTS.duplicate(true)
+		injected_config.reconstruction = "metalfx_spatial_85"
+		injected_config.msaa_3d = Viewport.MSAA_8X
+		view.set_meta(Reconstruction.POLICY_META, injected_policy)
+		view.set_meta(Reconstruction.CONFIG_META, injected_config)
+		view.set_meta(Reconstruction.METALFX_STATUS_META, {"rid": view.get_viewport_rid(),
+			"provider": "metalfx_spatial", "mode": actual_mode, "generation": 12})
+		var current := fixture.duplicate(true)
+		current.requested_mode = actual_mode
+		current.configured_mode = actual_mode
+		current.generation = 11
+		backend.statuses[view.get_viewport_rid()] = current
+		_check("injected stale generation cannot roll back", not Reconstruction._guard_metalfx_failure(view, injected_policy, spatial_caps, backend))
+		current.generation = 12
+		current.configured_mode = -1
+		_check("injected stale configured mode cannot roll back", not Reconstruction._guard_metalfx_failure(view, injected_policy, spatial_caps, backend))
+		current.configured_mode = actual_mode
+		_check("matching injected status rolls back through the adapter",
+			Reconstruction._guard_metalfx_failure(view, injected_policy, spatial_caps, backend)
+			and view.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
+			and view.msaa_3d == Viewport.MSAA_8X)
+		var reset_config := injected_config.duplicate(true)
+		reset_config.reconstruction = "native"
+		Reconstruction.apply(view, reset_config, spatial_caps)
+
+	for provider: String in MetalFX.PROVIDERS:
+		var caps := spatial_caps if provider == "metalfx_spatial" else temporal_caps
+		var requested := provider + "_85"
+		var config := Preferences.DEFAULTS.duplicate(true)
+		config.reconstruction = requested
+		config.msaa_3d = Viewport.MSAA_8X
+		var original := config.duplicate(true)
+		view.set_meta(Reconstruction.POLICY_META, Reconstruction.resolve(requested, caps))
+		view.set_meta(Reconstruction.CONFIG_META, config.duplicate(true))
+		view.scaling_3d_scale = 0.85
+		view.msaa_3d = Viewport.MSAA_DISABLED
+		_check("injected rollback restores Native and AA: " + provider,
+			Reconstruction._rollback_runtime_failure(view, provider, fixture, caps)
+			and view.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
+			and view.scaling_3d_scale == 1.0 and view.msaa_3d == Viewport.MSAA_8X)
+		var report := Reconstruction.describe(view)
+		_check("injected rollback preserves request and failure evidence: " + provider,
+			report.requested == requested and report.provider == "native" and report.effective == "native"
+			and report.fallback and report.fallback_reason == provider + "_runtime_failure"
+			and report.runtime_failure.backend == fixture and config == original)
+		Reconstruction.apply(view, config, caps)
+		_check("settings reapply cannot resurrect failed provider: " + provider,
+			Reconstruction.describe(view).provider == "native" and view.has_meta(Reconstruction.RUNTIME_FAILURE_META))
+		var only_failed := caps.duplicate(true)
+		only_failed.high = false
+		only_failed["metalfx_spatial"] = provider == "metalfx_spatial"
+		only_failed["metalfx_temporal"] = provider == "metalfx_temporal"
+		_check("Native selection stays available when the only provider fails: " + provider,
+			Reconstruction.options_available(Reconstruction.capabilities_for_viewport(view, only_failed)))
+		var native := config.duplicate(true)
+		native.reconstruction = "native"
+		Reconstruction.apply(view, native, caps)
+		_check("explicit Native clears the runtime latch: " + provider,
+			not view.has_meta(Reconstruction.RUNTIME_FAILURE_META))
+
+	var auto_config := Preferences.DEFAULTS.duplicate(true)
+	auto_config.reconstruction = "auto"
+	view.set_meta(Reconstruction.POLICY_META, Reconstruction.resolve("metalfx_spatial_85", spatial_caps))
+	view.set_meta(Reconstruction.CONFIG_META, auto_config.duplicate(true))
+	_check("injected Auto failure rolls back", Reconstruction._rollback_runtime_failure(view, "metalfx_spatial", fixture, spatial_caps))
+	Reconstruction.apply(view, auto_config, spatial_caps)
+	_check("Auto retains its failed-provider latch across settings reapply", view.has_meta(Reconstruction.RUNTIME_FAILURE_META)
+		and not Reconstruction.capabilities_for_viewport(view, spatial_caps).metalfx_spatial)
+	var native_config := auto_config.duplicate(true)
+	native_config.reconstruction = "native"
+	Reconstruction.apply(view, native_config, spatial_caps)
+	_check("explicit Native clears Auto's failure latch", not view.has_meta(Reconstruction.RUNTIME_FAILURE_META))
+	view.free()
+	other.free()
+
 
 func _check(label: String, ok: bool) -> void:
 	checks += 1
