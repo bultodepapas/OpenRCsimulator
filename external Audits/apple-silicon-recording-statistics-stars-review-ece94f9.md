@@ -12,7 +12,7 @@ The executed probes used commit **`ece94f9`**. I checked the affected code again
 
 The reproducible probes, source hashes, checked logs, and detailed evidence limits are available here:
 
-[openrc-apple-silicon-review-evidence-2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_fde3_f-44b5cd1485688191a669bbc2a1e15322_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+openrc-apple-silicon-review-evidence-2026-11-06.zip (private attachment URL omitted)
 
 ## 1. Actual engine, renderer, and Mac build configuration
 

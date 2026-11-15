@@ -1,0 +1,354 @@
+{
+  "format": "openrc-performance-audit-intake-validation-v1",
+  "validated_at_utc": "2026-11-15T15:49:51.518750+00:00",
+  "base_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "branch": "audit/performance-consolidation-2026-11-15",
+  "result": "pass",
+  "scope": "Documentation, evidence integrity, relative links, and exact-byte checkout preservation. No Godot, asset import, native build, runtime test, FPS or latency benchmark.",
+  "checks": {
+    "standalone_documents_byte_identical": 5,
+    "archive_original_members_verified": 754,
+    "archive_retained_members_verified": 751,
+    "archive_retained_exact_members": 750,
+    "archive_retained_with_url_redaction": 1,
+    "private_attachment_urls_redacted": 2,
+    "archive_omitted_generated_members": 3,
+    "archives": [
+      {
+        "round": "round1",
+        "retained": 280,
+        "omitted": 3,
+        "sha256": "a2704cc143180f5819a62d4b279faa8edb4a1395094279f9f6f0c6dd93c8f301"
+      },
+      {
+        "round": "round2",
+        "retained": 471,
+        "omitted": 0,
+        "sha256": "308006fcd605f3281360c129904de8c557127caf522688c01c2ecaa7c87a714b"
+      }
+    ],
+    "round3_markdown_blocks_preserved": 148,
+    "historical_canonical_record_preserved": true,
+    "legacy_public_link_transformations": {
+      "files": 25,
+      "direct_personal_links": 54,
+      "repo_local_replacements": 3,
+      "label_preserving_omissions": 51
+    },
+    "legacy_nonlink_text_preserved_by_exact_reconstruction": true,
+    "new_relative_markdown_links_verified": 31,
+    "link_check_scope": "New relative link targets and local heading anchors, excluding unchanged historical links and external network availability.",
+    "json_files_parse": true,
+    "private_attachment_urls_absent_from_public_payloads": true,
+    "personal_link_scope": "Direct personal ChatGPT URL hosts only; unrelated citation query parameters remain unchanged.",
+    "git_diff_whitespace": "pass with scoped attributes preserving historical source whitespace",
+    "change_scope": "docs/research/ and external Audits/ only",
+    "changed_paths": [
+      "docs/research/performance-audit-intake-2026-11-15/.gitattributes",
+      "docs/research/performance-audit-intake-2026-11-15/PACKAGING.md",
+      "docs/research/performance-audit-intake-2026-11-15/README.md",
+      "docs/research/performance-audit-intake-2026-11-15/evidence-provenance.json",
+      "docs/research/performance-audit-intake-2026-11-15/integration-validation.json",
+      "docs/research/performance-audit-intake-2026-11-15/performance-evidence-round1-compact.zip",
+      "docs/research/performance-audit-intake-2026-11-15/performance-evidence-round2-public.zip",
+      "docs/research/performance-audit-intake-2026-11-15/public-link-redactions.json",
+      "docs/research/performance-audit-intake-2026-11-15/repository-state.json",
+      "docs/research/performance-report-2026-11-09.md",
+      "external Audits/COMPLETED-AUDIT-WORK.md",
+      "external Audits/CONSOLIDATED-AUDITS.md",
+      "external Audits/CRASHES.MD",
+      "external Audits/IAIMPROVMENT.MD",
+      "external Audits/TRIANGULOS.MD",
+      "external Audits/VEGETATION.MD",
+      "external Audits/apple-silicon-performance-audit-2026-11-05.md",
+      "external Audits/apple-silicon-recording-statistics-stars-review-ece94f9.md",
+      "external Audits/apple-silicon-stik-audio-cloud-ghost-optimization-probes-181d7ca.md",
+      "external Audits/ci-validation-coverage-release-audit-347905c.md",
+      "external Audits/code-simulation-recording-controls-audio-audit-b21c078.md",
+      "external Audits/cpu-mathematical-optimization-2026-11-09.md",
+      "external Audits/f4u-corsair-collision-flaps-presentation-audit-3751e35.md",
+      "external Audits/f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md",
+      "external Audits/f4u-corsair-physics-optimization-audit-84f4657.md",
+      "external Audits/helicopter-controls-contact-trim-audit-3e652a8.md",
+      "external Audits/helicopter-improvement-lab-rotor-servo-freewheel-3e652a8.md",
+      "external Audits/helicopter-rotor-actuator-drivetrain-research-plan-d0b672b.md",
+      "external Audits/performance-audit-sources-2026-11-09/.gitattributes",
+      "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance-followup.html",
+      "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance-handoff-round3.md",
+      "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance-review.html",
+      "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance.patch",
+      "external Audits/performance-audit-sources-2026-11-09/OpenRC-qualified-optimizations.patch",
+      "external Audits/performance-audit-sources-2026-11-09/README.md",
+      "external Audits/ui-ux-accessibility-audit-2026-11-06.md",
+      "external Audits/ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md",
+      "external Audits/ui-ux-player-journeys-interruptions-recovery-d0b672b.md",
+      "external Audits/ui-ux-round2-exit-settings-feedback-audit-3751e35.md",
+      "external Audits/ui-ux-workshop-launch-statistics-continuation-3751e35.md",
+      "external Audits/ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md",
+      "external Audits/wind-loads-energy-spatial-sampling-research-ece94f9.md",
+      "external Audits/wind-weather-editing-checkpoints-rotor-continuity-audit-d0b672b.md"
+    ],
+    "byte_preserving_checkout": {
+      "core.autocrlf": [
+        "false",
+        "true"
+      ],
+      "files_per_checkout": 10
+    }
+  },
+  "files": [
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/.gitattributes",
+      "bytes": 135,
+      "sha256": "7c680b5a5980604bce9087d8da36f2f466c692e9fed0522522d36880bb46bc67",
+      "git_blob_sha": "536b2f468d71b78144d6e3cb95b93421c1260fd5"
+    },
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/PACKAGING.md",
+      "bytes": 3933,
+      "sha256": "841cb92ad8a034246a6d40dc4588b0cd2b7b8af629798dd7fb5ded6f8e4f8573",
+      "git_blob_sha": "d0ec57ef29ce99dead58eaced0912b50adad0883"
+    },
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/README.md",
+      "bytes": 4436,
+      "sha256": "f7ef78f5c632ff8cd99ad020ea63430f7e29afb61065298c3de77086331ab035",
+      "git_blob_sha": "53bce01dca49910b09a7e6a1c1a24cd4bd625aaa"
+    },
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/evidence-provenance.json",
+      "bytes": 305866,
+      "sha256": "b06c31aa7b100f677a1f29e21fecd4326437560948ff5a280806d6a3d308d860",
+      "git_blob_sha": "326f47253bbfbd95666b31db8078068d73600c54"
+    },
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/performance-evidence-round1-compact.zip",
+      "bytes": 580800,
+      "sha256": "a2704cc143180f5819a62d4b279faa8edb4a1395094279f9f6f0c6dd93c8f301",
+      "git_blob_sha": "350bbcf548b2bed95b50a48de033f262b65bc5f6"
+    },
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/performance-evidence-round2-public.zip",
+      "bytes": 1248746,
+      "sha256": "308006fcd605f3281360c129904de8c557127caf522688c01c2ecaa7c87a714b",
+      "git_blob_sha": "00852b2a4ea37ad749e6d6440152823083c7c80b"
+    },
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/public-link-redactions.json",
+      "bytes": 28100,
+      "sha256": "eb7456f55a0b6e23206fae7bf58de760b6d52a1acec74c24a68d5e7c621441d2",
+      "git_blob_sha": "56f4b432818823fd4c294847e8cf0acfa6a12c20"
+    },
+    {
+      "path": "docs/research/performance-audit-intake-2026-11-15/repository-state.json",
+      "bytes": 18061,
+      "sha256": "8a8279e25239035c7939b1ed615b40b7481b2384a3a93ef98cdab3fa9c0b5420",
+      "git_blob_sha": "1835115d41427ffa3ba7995206b59b2806b0f24f"
+    },
+    {
+      "path": "docs/research/performance-report-2026-11-09.md",
+      "bytes": 27125,
+      "sha256": "e4f88107d728297f351edfe97af07457ba2779c5907932d2c817f29338469907",
+      "git_blob_sha": "a8868b7e80d8c63bbcf5d2aadb2f7db14d2271a8"
+    },
+    {
+      "path": "external Audits/COMPLETED-AUDIT-WORK.md",
+      "bytes": 100946,
+      "sha256": "1a1bf17ee973e092b79ec033224d9c189ff24933fd36b79fdcd165985c41f415",
+      "git_blob_sha": "7c04ee17125265614c9dffaf9b7094fdb75fb4ac"
+    },
+    {
+      "path": "external Audits/CONSOLIDATED-AUDITS.md",
+      "bytes": 83461,
+      "sha256": "b3ab20897de0dfecf3b2ee18f956f7f92ba602cdeb53a2ed5bf8fc7170dd4dc0",
+      "git_blob_sha": "85d29a1c64e4caf902fa43678d805940a45bf5be"
+    },
+    {
+      "path": "external Audits/CRASHES.MD",
+      "bytes": 12081,
+      "sha256": "a6c0b26ff171f3885c07a23309991d3692fec36fcd5b662759dbf7aae2f31c63",
+      "git_blob_sha": "8114242c5e3869b4f042c2c39deca1a86326ed6e"
+    },
+    {
+      "path": "external Audits/IAIMPROVMENT.MD",
+      "bytes": 61706,
+      "sha256": "29859ad3c4206581e053273a5c8a72955d3c2909ff3233579acefe84e757115b",
+      "git_blob_sha": "5c8bfce55e64140c930a06a2c217ff40f11d653f"
+    },
+    {
+      "path": "external Audits/TRIANGULOS.MD",
+      "bytes": 99054,
+      "sha256": "85ff4beb4fcb8b9119b55311d4b1f619ea1b185d1d9ca2847b68f2e1df05daef",
+      "git_blob_sha": "87435c7cb3d99216abd9b6684b7b8962102ed067"
+    },
+    {
+      "path": "external Audits/VEGETATION.MD",
+      "bytes": 82795,
+      "sha256": "de8a18725c50d22161b90076c013e0c016ee46bc8331026d2835538d2bfdbd9d",
+      "git_blob_sha": "fed9156d1fabbaaea331c0d0db4c398173325168"
+    },
+    {
+      "path": "external Audits/apple-silicon-performance-audit-2026-11-05.md",
+      "bytes": 33713,
+      "sha256": "5efe85b296b8551a17150b1fcafca92556c8beee0fd17029c440efc8376ff825",
+      "git_blob_sha": "62c8a32d6ef91dea3d5ea44393472b00a5a93e96"
+    },
+    {
+      "path": "external Audits/apple-silicon-recording-statistics-stars-review-ece94f9.md",
+      "bytes": 31933,
+      "sha256": "3ea7e918ba1491a0836f0a8f7ded7637f2f35accc080b1b21ded8e0880c7738b",
+      "git_blob_sha": "7b9a702c58ae350b2fc68b201a4da8220a1ed05b"
+    },
+    {
+      "path": "external Audits/apple-silicon-stik-audio-cloud-ghost-optimization-probes-181d7ca.md",
+      "bytes": 26196,
+      "sha256": "e4c1d40c78554f42ab115e9bc7945b0d5796bb7d964e4a11ac4dd2f42da12149",
+      "git_blob_sha": "01f7dc64361a0da960669420b3317afa37de7d2b"
+    },
+    {
+      "path": "external Audits/ci-validation-coverage-release-audit-347905c.md",
+      "bytes": 31885,
+      "sha256": "99d5d4149feb8181ecc525e36725191a9668b319c6d2ce034332471fa710cac0",
+      "git_blob_sha": "5e9d224adcc5683c1593479cec170cc4d303440f"
+    },
+    {
+      "path": "external Audits/code-simulation-recording-controls-audio-audit-b21c078.md",
+      "bytes": 29479,
+      "sha256": "7a53a56e1c4d4977b3b9d8a6264749dd9173b0ee5646cc4e179ebfd79dc48094",
+      "git_blob_sha": "6917349418774823aea2594ad178c6717697d1d5"
+    },
+    {
+      "path": "external Audits/cpu-mathematical-optimization-2026-11-09.md",
+      "bytes": 27397,
+      "sha256": "fff01d2166bea97e1d5d586fd9c083e38b558c910103b6a0a67ffc5e38d093ba",
+      "git_blob_sha": "7e91b452047376d574024822d83baee8719058ca"
+    },
+    {
+      "path": "external Audits/f4u-corsair-collision-flaps-presentation-audit-3751e35.md",
+      "bytes": 10332,
+      "sha256": "587246a2ca6e2bf7c2539d633dc314cea672bf4492b851291ee91b80f6fee8c2",
+      "git_blob_sha": "1e26d97297a41f5a3d4e2403d374089b4485dee0"
+    },
+    {
+      "path": "external Audits/f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md",
+      "bytes": 20656,
+      "sha256": "743d65e14056ec794ca937f4d53368e8df12399fd51344810ffcd8020bbf1ef8",
+      "git_blob_sha": "9939abbdd302247d5f8e86bb3444a5673f20e98c"
+    },
+    {
+      "path": "external Audits/f4u-corsair-physics-optimization-audit-84f4657.md",
+      "bytes": 23370,
+      "sha256": "38b2e905f11490bb4fb192f42b536ce4c29b3416feaff06b8c7da4507161bac0",
+      "git_blob_sha": "0e1ca81fa6a30bf1266a0f4b8bf07162282ecf8d"
+    },
+    {
+      "path": "external Audits/helicopter-controls-contact-trim-audit-3e652a8.md",
+      "bytes": 29707,
+      "sha256": "4bd3071eb27b0eda5b1985eea15f360e55a627c55e028a92e8ec2c4adbb42409",
+      "git_blob_sha": "f34758fe680792165d6f4a36182d2fc9a2c8a3f5"
+    },
+    {
+      "path": "external Audits/helicopter-improvement-lab-rotor-servo-freewheel-3e652a8.md",
+      "bytes": 21970,
+      "sha256": "a8ca16c3dc50fa40087bcfb63e3207fb5a32b8b0ee93b938a511c3059acf1831",
+      "git_blob_sha": "b8209108f99f5b1dae43737035036a77f7b73267"
+    },
+    {
+      "path": "external Audits/helicopter-rotor-actuator-drivetrain-research-plan-d0b672b.md",
+      "bytes": 29133,
+      "sha256": "8714c1787eb74de4fdc952052279fdf071ac7ac55cadaa27a00c282d474e7430",
+      "git_blob_sha": "ac30ee65360dcff1c5d646ec6148dba5d31bb0c7"
+    },
+    {
+      "path": "external Audits/performance-audit-sources-2026-11-09/.gitattributes",
+      "bytes": 146,
+      "sha256": "6822f9e9a8718d161e452332e2fba29990c17f24a7cd8050027c653e22dd7911",
+      "git_blob_sha": "1323af5cc1c13d455404f4992c24c9e94ec80540"
+    },
+    {
+      "path": "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance-followup.html",
+      "bytes": 57941,
+      "sha256": "d30094229386118ae65f1bac458e4bd0fcaa0fc02930f52490e52acc00c7e4ce",
+      "git_blob_sha": "b8b2009fd4ee282de74a6448582f4e6c26384579"
+    },
+    {
+      "path": "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance-handoff-round3.md",
+      "bytes": 43543,
+      "sha256": "0618bc9ba3329a6f05a35c534be6c37430a45f67afce7474eb1cb5b4a3f8644b",
+      "git_blob_sha": "22bd19e0f7392d6654c4257e5c194909a770621b"
+    },
+    {
+      "path": "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance-review.html",
+      "bytes": 55763,
+      "sha256": "a824538269d0116e06a3720e71b7bd5db70a9ec621cb0707c9a8b2777b944cc7",
+      "git_blob_sha": "280b86d4e1de7d80236c35be1b90706ef02bb017"
+    },
+    {
+      "path": "external Audits/performance-audit-sources-2026-11-09/OpenRC-performance.patch",
+      "bytes": 11762,
+      "sha256": "1d73932756e6ca756da61cdae7822aabf350d0d14e6b39e912e1af5492185318",
+      "git_blob_sha": "ff2edbd9bf4986105286b0217dc4a1133c3b23eb"
+    },
+    {
+      "path": "external Audits/performance-audit-sources-2026-11-09/OpenRC-qualified-optimizations.patch",
+      "bytes": 17716,
+      "sha256": "14976fdd2eed9db77269f34d3eee40f4edc3744743e82c794b6e799d834848c4",
+      "git_blob_sha": "3303628d39fb65f207ba2f2869fab6ee08804310"
+    },
+    {
+      "path": "external Audits/performance-audit-sources-2026-11-09/README.md",
+      "bytes": 2797,
+      "sha256": "3f6b5ee5822e8d37194cf6785b2bbbf877173e3f8af511e5b7ef1ee30d624461",
+      "git_blob_sha": "a07510634bf489be9651e4ce628d5dbbbc346efe"
+    },
+    {
+      "path": "external Audits/ui-ux-accessibility-audit-2026-11-06.md",
+      "bytes": 29829,
+      "sha256": "7f96ad41fdfba013c82f663804f4f667073a4c4c33dac6aa6dedcec29d200f26",
+      "git_blob_sha": "af3edde0fe1de1b31d403fde0de10e654f10e6aa"
+    },
+    {
+      "path": "external Audits/ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md",
+      "bytes": 27049,
+      "sha256": "c3ce324803c2160ff118700482b4e525d282518dabda3ba04b9ea931ca59e547",
+      "git_blob_sha": "231cec9be5cc9253f2bbe10ffad1746295c97e08"
+    },
+    {
+      "path": "external Audits/ui-ux-player-journeys-interruptions-recovery-d0b672b.md",
+      "bytes": 19565,
+      "sha256": "4b0d315d6cc1c0c57d197a2b58de18a302e86a0baf4456456720cece966d33a5",
+      "git_blob_sha": "1b69aab3a0da00497faa3ca44ecc6b5e875c7421"
+    },
+    {
+      "path": "external Audits/ui-ux-round2-exit-settings-feedback-audit-3751e35.md",
+      "bytes": 30453,
+      "sha256": "35c7a561cad6be0addc400a9c888e152221786b6aa670873e6adfa7ca6950b4f",
+      "git_blob_sha": "08a82c9753b5dc259a8ac8a8ede586b4b64c6a44"
+    },
+    {
+      "path": "external Audits/ui-ux-workshop-launch-statistics-continuation-3751e35.md",
+      "bytes": 29385,
+      "sha256": "389b54deb706583efd30eb9678e0eebec13d8172ab4e0d43c250496171d08a5b",
+      "git_blob_sha": "a8151120cc318b665f4e17c16f537c155a0db11e"
+    },
+    {
+      "path": "external Audits/ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md",
+      "bytes": 18233,
+      "sha256": "652b6dcb2f08e79afc293d6ae09344d229b848eeeed5a00f881fe5ee24f93b80",
+      "git_blob_sha": "3c7f5ac5691f10ed960958805291dceb53ce4929"
+    },
+    {
+      "path": "external Audits/wind-loads-energy-spatial-sampling-research-ece94f9.md",
+      "bytes": 28175,
+      "sha256": "b7ef3218408643459b2e9fbbb34acc591c2f77caddc998424f89f3b9efef1706",
+      "git_blob_sha": "c8436ec597d875ca2b033c01c3f59488cacc8a7d"
+    },
+    {
+      "path": "external Audits/wind-weather-editing-checkpoints-rotor-continuity-audit-d0b672b.md",
+      "bytes": 29075,
+      "sha256": "3b971f705aa8e1a152cdf5b79456b862c95c85cbc9c177b6a8ea9686eb9caf29",
+      "git_blob_sha": "01deeae7fc8404fc6f417e2faa26e11fffb11c2d"
+    }
+  ],
+  "self_hash_policy": "This receipt excludes its own hash. The Git commit identifies the complete tree."
+}

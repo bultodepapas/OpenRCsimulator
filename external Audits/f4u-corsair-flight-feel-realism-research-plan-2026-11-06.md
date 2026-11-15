@@ -4,7 +4,7 @@ The research points toward a Corsair that **tracks smoothly in ordinary flight, 
 
 I completed a detailed, approximately **7,100-word Markdown plan for the senior developer**:
 
-**[F4U-CORSAIR-FLIGHT-FEEL-REALISM-PLAN-2026-11-06.md](https://chatgpt.com/library?file_id=libfile_8e293aef58a48191b42e1741a9b0da90&account_id=personal)**
+**F4U-CORSAIR-FLIGHT-FEEL-REALISM-PLAN-2026-11-06.md (private attachment URL omitted)**
 
 It includes the research evidence, mathematical analysis, current implementation, code owners, development priorities, a 15-case handling test matrix, acceptance criteria and reproducible calculations. I cross-checked it against the consolidated audits and treated previously reported issues as prerequisites.
 

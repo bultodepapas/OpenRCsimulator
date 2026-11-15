@@ -3,10 +3,10 @@ Completed the Corsair-focused review and the detailed senior-developer handoff. 
 ## Deliverables
 
 - **Detailed Markdown report — approximately 5,000 words:**  
-  [F4U-CORSAIR-NEW-FINDINGS-3751e35-2026-11-06.md](https://chatgpt.com/library?file_id=libfile_1fa996d4f1bc8191a00e8e0a345e9e84&account_id=personal)
+  F4U-CORSAIR-NEW-FINDINGS-3751e35-2026-11-06.md (private attachment URL omitted)
 
 - **Evidence archive — report, probes, raw measurements, checked logs, hashes and replay instructions:**  
-  [F4U-CORSAIR-EVIDENCE-3751e35-2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_07398ec70af88191ab7f23e40eec9399&account_id=personal)
+  F4U-CORSAIR-EVIDENCE-3751e35-2026-11-06.zip (private attachment URL omitted)
 
 I read `external Audits/CONSOLIDATED-AUDITS.md` before the investigation and checked the expanded **A1–A11** ledger again before finalizing. The previous Corsair CF-01–04 findings are excluded from the new-finding count.
 

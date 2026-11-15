@@ -2,8 +2,8 @@ I continued the player-journey review, and the strongest new finding is **a Work
 
 The earlier walkthrough is preserved. This continuation adds a **12-page report** and its supporting evidence:
 
-- [OpenRC_Player_Journeys_Interruptions_Recovery_2026-11-06.pdf](https://chatgpt.com/library?file_id=libfile_7affe66a0bd881918df4a363759b6094&account_id=personal)
-- [OpenRC_Player_Journeys_Interruptions_Recovery_Evidence_2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_6f916099b9f081919949ab833aa64a39&account_id=personal)
+- OpenRC_Player_Journeys_Interruptions_Recovery_2026-11-06.pdf (private attachment URL omitted)
+- OpenRC_Player_Journeys_Interruptions_Recovery_Evidence_2026-11-06.zip (private attachment URL omitted)
 
 I reviewed commit [`d0b672b`](https://github.com/bultodepapas/OpenRCsimulator/commit/d0b672b09663226ff8b8ac4f43eae8643c77a8c4), cross-checking the [current A1–A14 consolidated audit](https://github.com/bultodepapas/OpenRCsimulator/blob/d0b672b09663226ff8b8ac4f43eae8643c77a8c4/external%20Audits/CONSOLIDATED-AUDITS.md) and the previous journeys.
 

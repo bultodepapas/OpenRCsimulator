@@ -2,11 +2,11 @@ I continued by walking through **seven plausible player journeys**, including th
 
 The clearest improvement is to **show the consequence of an action before the player commits to it**: what will launch, what will be saved, what Cancel can undo, and what Restart will repeat. Several of your menus already handle the underlying behavior well; the next step is making that behavior easier to predict.
 
-[OpenRC_Player_Journeys_2026-11-06.pdf](https://chatgpt.com/library?file_id=libfile_2f8b3f3c00e88191b8a0e57183ce7e88&account_id=personal)
+OpenRC_Player_Journeys_2026-11-06.pdf (private attachment URL omitted)
 
 The complete 13-page walkthrough includes the seven journeys, proposed wording, implementation priorities, acceptance tasks, and references to the reviewed code.
 
-[OpenRC_Player_Journeys_Evidence_2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_e5a55e0d27388191a007381edcc26d72&account_id=personal)
+OpenRC_Player_Journeys_Evidence_2026-11-06.zip (private attachment URL omitted)
 
 The supporting evidence contains the application transcript, logs, final test-profile settings, source identities, and reproduction guidance.
 

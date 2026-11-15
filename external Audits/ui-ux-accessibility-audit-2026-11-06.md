@@ -6,8 +6,8 @@ The project already has a substantial UI foundation: a shared theme, centralized
 
 ### Deliverables
 
-- [OpenRC_UI_UX_Audit_2026-11-06.pdf](https://chatgpt.com/library?file_id=libfile_31a747c503f4819196fd799d26818ada&account_id=personal) — the complete 18-page review, including priorities, implementation references, recommended repairs, prior-audit cross-checks, and acceptance criteria.
-- [OpenRC_UI_UX_Evidence_2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_b58414f6afe08191a27290d6aeab1023&account_id=personal) — reproduction fixtures, logs, settings-file differences, source identities, replay instructions, and a machine-readable findings register.
+- OpenRC_UI_UX_Audit_2026-11-06.pdf (private attachment URL omitted) — the complete 18-page review, including priorities, implementation references, recommended repairs, prior-audit cross-checks, and acceptance criteria.
+- OpenRC_UI_UX_Evidence_2026-11-06.zip (private attachment URL omitted) — reproduction fixtures, logs, settings-file differences, source identities, replay instructions, and a machine-readable findings register.
 
 ### Baseline and evidence
 

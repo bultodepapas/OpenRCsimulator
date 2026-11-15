@@ -4,7 +4,7 @@ I researched rotorcraft papers, experimental datasets, open-source implementatio
 
 The complete research package is here:
 
-[**OpenRC_Helicopter_Research_2026-11-06.zip**](https://chatgpt.com/library?file_id=libfile_38cafd8457fc81918306b37e365c6fad&account_id=personal)
+**OpenRC_Helicopter_Research_2026-11-06.zip** (private attachment URL omitted)
 
 It contains the full report, **27 selected primary references, nine proposed experiments, the supporting calculations, and a map of the relevant OpenRC files**.
 

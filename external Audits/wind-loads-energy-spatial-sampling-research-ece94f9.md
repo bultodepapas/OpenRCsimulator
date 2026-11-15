@@ -6,9 +6,9 @@ I also quantified one tempting target—the existing OU interpolation—and foun
 
 ### Deliverables
 
-- [OpenRC_Wind_Research_Extension_ece94f9.txt](https://chatgpt.com/library?file_id=libfile_c4bdbcff7c8881918d238bbf24a1383b&account_id=personal) — complete report, equations, affected code, proposed experiments, and source register.
-- [OpenRC_Wind_Research_Lab_ece94f9.zip](https://chatgpt.com/library?file_id=libfile_447db7314fe481918dd58108f95f9e7c&account_id=personal) — runnable Python lab, numerical results, research notes, figures, and file hashes.
-- [OpenRC_Wind_Math_References.png](https://chatgpt.com/library?file_id=libfile_16d6059735e4819183b82c5e3dcd7b09&account_id=personal) — full-size reference figure.
+- OpenRC_Wind_Research_Extension_ece94f9.txt (private attachment URL omitted) — complete report, equations, affected code, proposed experiments, and source register.
+- OpenRC_Wind_Research_Lab_ece94f9.zip (private attachment URL omitted) — runnable Python lab, numerical results, research notes, figures, and file hashes.
+- OpenRC_Wind_Math_References.png (private attachment URL omitted) — full-size reference figure.
 
 I rechecked the [consolidated audit ledger](https://github.com/bultodepapas/OpenRCsimulator/blob/ece94f9ede8c90c92652ebce68196f81eded6c70/external%20Audits/CONSOLIDATED-AUDITS.md), the completed-work register, and the existing wind reference and roadmap. Several broad research needs were already documented; the new contribution here is the mathematics, quantified examples, and concrete experiments that make those tasks actionable.
 

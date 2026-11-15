@@ -4,11 +4,11 @@ This pass is frozen at [commit `3e652a8`](https://github.com/bultodepapas/OpenRC
 
 The complete 12-page report contains reproduction steps, source references, proposed repairs, and acceptance criteria:
 
-[OpenRC_Menu_Flow_Audit_3e652a8_2026-11-06.pdf](https://chatgpt.com/library?file_id=libfile_a8a9aa52a068819196ee933ba8bd731b&account_id=personal)
+OpenRC_Menu_Flow_Audit_3e652a8_2026-11-06.pdf (private attachment URL omitted)
 
 The accompanying evidence includes the focused probes, checked logs, exact source identities, Godot research, and running-application transcript:
 
-[OpenRC_Menu_Flow_Evidence_3e652a8_2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_34c63e1383148191995363cf331639c1&account_id=personal)
+OpenRC_Menu_Flow_Evidence_3e652a8_2026-11-06.zip (private attachment URL omitted)
 
 ## Prioritized findings
 

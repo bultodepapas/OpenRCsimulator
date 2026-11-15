@@ -5,7 +5,7 @@ I found **six reproducible correctness problems in the playable helicopter path*
 I also tested two optimization candidates. Both preserved the sampled outputs, but **neither timing experiment established a reliable speedup**. They remain concrete opportunities to remove unnecessary work, with that limitation clearly recorded.
 
 **Full report, reproduction scripts, candidate code, checked logs, source identities, and replay instructions:**  
-[OpenRC_Helicopter_Audit_3e652a8_2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_a440c2f9eda88191939b6fe81aa8143e&account_id=personal)
+OpenRC_Helicopter_Audit_3e652a8_2026-11-06.zip (private attachment URL omitted)
 
 I read [`external Audits/CONSOLIDATED-AUDITS.md`](https://github.com/bultodepapas/OpenRCsimulator/blob/3e652a879ab8e928fc7d0b23d8303ac5724c3be6/external%20Audits/CONSOLIDATED-AUDITS.md) before reviewing the code. Experiments used commit **`3e652a879ab8e928fc7d0b23d8303ac5724c3be6`**. During the review, `main` advanced to `2e2e349`; I checked that change and its newly added A13 audit. The responsible helicopter files remained unchanged, and the new audit did not duplicate these findings. The [closing comparison](https://github.com/bultodepapas/OpenRCsimulator/compare/3e652a879ab8e928fc7d0b23d8303ac5724c3be6...2e2e3492e67d30635cc4e727025581e2848cdf2e) is included in the evidence.
 

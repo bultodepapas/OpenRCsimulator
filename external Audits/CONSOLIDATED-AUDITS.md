@@ -1,6 +1,6 @@
 # External audits — pending work
 
-Updated **2026-11-09**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
+Updated **2026-11-09**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries retain their findings, detailed reproductions, derivations, measurements and limits. Publication-required personal-link edits are recorded in the [link-edit manifest](../docs/research/performance-audit-intake-2026-11-15/public-link-redactions.json).
 
 **Read status carefully:** entries require implementation, investigation or qualification. Reproduce historical findings against current source before editing; an old report is not proof of a current failure. Implemented work is removed from the implementation queue even when native/physical/release gates remain; those gates are listed separately below. Concurrent unverified edits are not classified as completed.
 
@@ -117,6 +117,15 @@ Preserve the traced FROM/NED and air-relative conventions, committed OU interval
 Require current-source triage, correct output/refusal behavior and matched workload measurements. Component savings are not FPS. Preserve mutation checks, arithmetic/reduction order, signed zero and rollback; same-evaluation reuse is not permission for persistent caches.
 
 ### A33 mathematical CPU review
+
+**2026-11-15 source intake:** all three performance rounds and their retained
+evidence are now available in the [source index](performance-audit-sources-2026-11-09/README.md).
+The [current reconciliation](../docs/research/performance-report-2026-11-09.md#current-reconciliation-2026-11-15)
+pins main at `ad21070798bfb9658785576a9c0b8bfc9a71fc7f`, distinguishes completed
+companion/Timber/decoder and CR-22e work from the remaining contact-key, meadow,
+observer and wind candidates, and records current CI limits. Historical patches
+are preserved as evidence; this intake implements no new runtime optimization.
+A34 remains the separate five-finding audit.
 
 [A33][A33] reviews `8fb825a9` and reconciles successor `f7b58bd8`. The controller,
 voice and stale CI/audio roster corrections are implemented in the

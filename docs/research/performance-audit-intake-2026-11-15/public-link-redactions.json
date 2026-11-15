@@ -1,0 +1,708 @@
+{
+  "format": "openrc-public-link-redactions-v1",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "source_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "scope": "Public link rendering only; findings, measurements, and all other source text are preserved.",
+  "reproducibility": {
+    "input": "Read each original UTF-8 Git blob identified by original_path and original_git_blob_sha; do not normalize line endings.",
+    "inline_markdown_regex": "(?P<image>!?)\\[(?P<label>[^\\[\\]\\n]+)\\]\\((?P<url>https?://(?:www\\.)?chatgpt\\.com[^\\s)]+)\\)",
+    "regex_flags": [
+      "IGNORECASE"
+    ],
+    "transformation_order": "Scan matching inline links in source order. For the identified A33 file, replace the three exact labels using local_destinations. For all other matches, replace the entire inline link with the original label followed by omission_marker. Preserve all other characters and encode as UTF-8.",
+    "local_link_source_path": "external Audits/cpu-mathematical-optimization-2026-11-09.md",
+    "local_destinations": {
+      "OpenRC-performance-review.html": "performance-audit-sources-2026-11-09/OpenRC-performance-review.html",
+      "OpenRC-performance.patch": "performance-audit-sources-2026-11-09/OpenRC-performance.patch",
+      "OpenRC-performance-evidence.zip": "../docs/research/performance-audit-intake-2026-11-15/performance-evidence-round1-compact.zip"
+    },
+    "omission_marker": " (private attachment URL omitted)",
+    "ordinary_external_query_parameters": "Preserved exactly; only directly hosted personal attachments are transformed.",
+    "validation": "Verify the source SHA-256 and Git blob ID, apply the procedure, then compare public_sha256 and the individual source-order operations. No original attachment URLs are recorded here."
+  },
+  "files": [
+    {
+      "original_path": "external Audits/COMPLETED-AUDIT-WORK.md",
+      "original_git_blob_sha": "eaec2b51117634ec1b5ea002aaaaf87aa4419c83",
+      "original_bytes": 101047,
+      "original_sha256": "b5c40f401aed5cfef742e5bf347219d7cfc234f13585b3e823d7dfe242e78595",
+      "public_path": "external Audits/COMPLETED-AUDIT-WORK.md",
+      "public_bytes": 100946,
+      "public_sha256": "1a1bf17ee973e092b79ec033224d9c189ff24933fd36b79fdcd165985c41f415",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 169,
+          "label": "experiment ZIP",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 258,
+          "label": "Live Page",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/TRIANGULOS.MD",
+      "original_git_blob_sha": "a3b3420760eadf5d3dc2e84c8aff230de1a0ab29",
+      "original_bytes": 99268,
+      "original_sha256": "fd896bb0712c017cbe97cf4274b7227185b11397997ca0d8985f0cf3aaf62439",
+      "public_path": "external Audits/TRIANGULOS.MD",
+      "public_bytes": 99054,
+      "public_sha256": "85ff4beb4fcb8b9119b55311d4b1f619ea1b185d1d9ca2847b68f2e1df05daef",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 96,
+          "label": "Aircraft Creator plan, §7.2",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 746,
+          "label": "OpenRC_30_Optimization_Investigations.pdf",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/IAIMPROVMENT.MD",
+      "original_git_blob_sha": "ec2243977d85986fc59618a57431218be8b07266",
+      "original_bytes": 62134,
+      "original_sha256": "2b3482f97a01501aac9ecee6590519c1d5f70a3160a5356705f096ab10ef9344",
+      "public_path": "external Audits/IAIMPROVMENT.MD",
+      "public_bytes": 61706,
+      "public_sha256": "29859ad3c4206581e053273a5c8a72955d3c2909ff3233579acefe84e757115b",
+      "direct_private_link_count": 4,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 4,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 9,
+          "label": "OpenRC_AI_Flight_Companion_Engineering_Plan.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 13,
+          "label": "OpenRC_Companion_Review_Bundle.zip",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 3,
+          "source_line": 415,
+          "label": "OpenRC_AI_Flight_Companion_Engineering_Plan.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 4,
+          "source_line": 416,
+          "label": "OpenRC_Companion_Review_Bundle.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/VEGETATION.MD",
+      "original_git_blob_sha": "710ceae0fc24a377b3c7b5ddececdb9c0c405bef",
+      "original_bytes": 83009,
+      "original_sha256": "30af603e10b76dd8586b8ff3df14bbb1bfb325965f7ee4b13f45bb116b0e48ed",
+      "public_path": "external Audits/VEGETATION.MD",
+      "public_bytes": 82795,
+      "public_sha256": "de8a18725c50d22161b90076c013e0c016ee46bc8331026d2835538d2bfdbd9d",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 9,
+          "label": "OpenRC_Vegetation_Audit_2026-11-09.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 397,
+          "label": "OpenRC_Vegetation_24_New_Investigations_2026-11-09.pdf",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/CRASHES.MD",
+      "original_git_blob_sha": "a1a3802c857d36ede369a1ee2eec7e8b574b4193",
+      "original_bytes": 13044,
+      "original_sha256": "db1b5786a015806e442294b1f044a784d89c958fd998e0128cfc47b9dcb90832",
+      "public_path": "external Audits/CRASHES.MD",
+      "public_bytes": 12081,
+      "public_sha256": "a6c0b26ff171f3885c07a23309991d3692fec36fcd5b662759dbf7aae2f31c63",
+      "direct_private_link_count": 9,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 9,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 7,
+          "label": "OpenRC_Crash_Cost_Senior_Handoff_2026-11-09.zip",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 8,
+          "label": "OPENRC_CRASH_COST_SENIOR_HANDOFF.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 3,
+          "source_line": 14,
+          "label": "README.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 4,
+          "source_line": 15,
+          "label": "01_EXECUTION_PLAN.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 5,
+          "source_line": 16,
+          "label": "02_RUNTIME_IMPLEMENTATION_SPEC.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 6,
+          "source_line": 17,
+          "label": "03_TEST_AND_RELEASE_SPEC.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 7,
+          "source_line": 18,
+          "label": "04_FLEET_AND_PRICE_WORKBOOK.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 8,
+          "source_line": 19,
+          "label": "05_DATA_CONTRACT_AND_AUTHORING_STANDARD.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 9,
+          "source_line": 20,
+          "label": "06_RESEARCH_AND_BASELINE_NOTES.md",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/cpu-mathematical-optimization-2026-11-09.md",
+      "original_git_blob_sha": "f7ffcad6f94b2f5bb56fd3e5ec44dfb09abfd3a4",
+      "original_bytes": 27585,
+      "original_sha256": "156f8a4d9ee3f5b8ce4071a19208fc90d63963941f8c662d2dbcc2529a9d03a9",
+      "public_path": "external Audits/cpu-mathematical-optimization-2026-11-09.md",
+      "public_bytes": 27397,
+      "public_sha256": "fff01d2166bea97e1d5d586fd9c083e38b558c910103b6a0a67ffc5e38d093ba",
+      "direct_private_link_count": 3,
+      "repo_local_replacements": 3,
+      "label_preserving_omissions": 0,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 11,
+          "label": "OpenRC-performance-review.html",
+          "type": "relink_to_repository_file",
+          "relative_destination": "performance-audit-sources-2026-11-09/OpenRC-performance-review.html"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 12,
+          "label": "OpenRC-performance.patch",
+          "type": "relink_to_repository_file",
+          "relative_destination": "performance-audit-sources-2026-11-09/OpenRC-performance.patch"
+        },
+        {
+          "ordinal": 3,
+          "source_line": 13,
+          "label": "OpenRC-performance-evidence.zip",
+          "type": "relink_to_repository_file",
+          "relative_destination": "../docs/research/performance-audit-intake-2026-11-15/performance-evidence-round1-compact.zip"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/apple-silicon-recording-statistics-stars-review-ece94f9.md",
+      "original_git_blob_sha": "a9db31becdf1bd2b9f8cfa075ce8cf81c9e611a1",
+      "original_bytes": 32040,
+      "original_sha256": "54f4ffeeaa6e12debd4c36fcbadeebba0e3b96d64e94a6697d94349b5e4903d3",
+      "public_path": "external Audits/apple-silicon-recording-statistics-stars-review-ece94f9.md",
+      "public_bytes": 31933,
+      "public_sha256": "3ea7e918ba1491a0836f0a8f7ded7637f2f35accc080b1b21ded8e0880c7738b",
+      "direct_private_link_count": 1,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 1,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 15,
+          "label": "openrc-apple-silicon-review-evidence-2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/ci-validation-coverage-release-audit-347905c.md",
+      "original_git_blob_sha": "5a7d4d89d157dc8fbbe7f36ff9c9c9c2ea6b98e8",
+      "original_bytes": 32099,
+      "original_sha256": "222da23824ceab868ebc078a1b44b5b0c6fac1085c1f0a1253959f3bb9c8bfdc",
+      "public_path": "external Audits/ci-validation-coverage-release-audit-347905c.md",
+      "public_bytes": 31885,
+      "public_sha256": "99d5d4149feb8181ecc525e36725191a9668b319c6d2ce034332471fa710cac0",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 7,
+          "label": "OpenRC-CI-Audit-347905ca.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 11,
+          "label": "OpenRC-CI-Audit-Evidence-347905ca.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/apple-silicon-stik-audio-cloud-ghost-optimization-probes-181d7ca.md",
+      "original_git_blob_sha": "d5129ca3c9eae943fbbefd598ba23e7743173552",
+      "original_bytes": 26303,
+      "original_sha256": "55d53f575fad3c1a8ec7817d267156a1d0b300846bd293730a529bcc290d35eb",
+      "public_path": "external Audits/apple-silicon-stik-audio-cloud-ghost-optimization-probes-181d7ca.md",
+      "public_bytes": 26196,
+      "public_sha256": "e4c1d40c78554f42ab115e9bc7945b0d5796bb7d964e4a11ac4dd2f42da12149",
+      "direct_private_link_count": 1,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 1,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 7,
+          "label": "openrc-apple-silicon-followup-probes.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/code-simulation-recording-controls-audio-audit-b21c078.md",
+      "original_git_blob_sha": "c56544989084ba3c0aa1d92e612575ee42d42792",
+      "original_bytes": 29620,
+      "original_sha256": "20dcfd85dba34a819218a4989acee3278972c0c8c9ed1acd6add23d376c36741",
+      "public_path": "external Audits/code-simulation-recording-controls-audio-audit-b21c078.md",
+      "public_bytes": 29479,
+      "public_sha256": "7a53a56e1c4d4977b3b9d8a6264749dd9173b0ee5646cc4e179ebfd79dc48094",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 16,
+          "label": "**Complete audit report**",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 17,
+          "label": "**OpenRC_Audit_Evidence_b21c078.zip**",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/apple-silicon-performance-audit-2026-11-05.md",
+      "original_git_blob_sha": "985e93deacde6365027cb1e1b310a6f7b4a8ed5f",
+      "original_bytes": 33781,
+      "original_sha256": "db9cb4648737dc680459e29d002d7bbc7374c003865e2710cb3f8d04a1b03ea2",
+      "public_path": "external Audits/apple-silicon-performance-audit-2026-11-05.md",
+      "public_bytes": 33713,
+      "public_sha256": "5efe85b296b8551a17150b1fcafca92556c8beee0fd17029c440efc8376ff825",
+      "direct_private_link_count": 1,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 1,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 11,
+          "label": "OpenRC_Apple_Silicon_Audit_2026-11-05.pdf",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/f4u-corsair-collision-flaps-presentation-audit-3751e35.md",
+      "original_git_blob_sha": "e0313e5bd3d56ad469e30a515f6154837dc49c1f",
+      "original_bytes": 10466,
+      "original_sha256": "e25f465dcd210d9e71fccc7a2fce431cd32eef260048501551051224e9b956e9",
+      "public_path": "external Audits/f4u-corsair-collision-flaps-presentation-audit-3751e35.md",
+      "public_bytes": 10332,
+      "public_sha256": "587246a2ca6e2bf7c2539d633dc314cea672bf4492b851291ee91b80f6fee8c2",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 6,
+          "label": "F4U-CORSAIR-NEW-FINDINGS-3751e35-2026-11-06.md",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 9,
+          "label": "F4U-CORSAIR-EVIDENCE-3751e35-2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/f4u-corsair-physics-optimization-audit-84f4657.md",
+      "original_git_blob_sha": "e7343f5e99a3b42cbd7eccacd288d85bea6499ea",
+      "original_bytes": 23504,
+      "original_sha256": "5d4d4c46d13dc09e32e4a0b6cfb47de2a5c0675bcf90aad03ceb6f4f7c8bfc00",
+      "public_path": "external Audits/f4u-corsair-physics-optimization-audit-84f4657.md",
+      "public_bytes": 23370,
+      "public_sha256": "38b2e905f11490bb4fb192f42b536ce4c29b3416feaff06b8c7da4507161bac0",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 11,
+          "label": "F4U_Corsair_Audit_84f4657.txt",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 12,
+          "label": "F4U_Corsair_Evidence_84f4657.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md",
+      "original_git_blob_sha": "cd72e80c38d16551c76ab929f1077efbf12b8bde",
+      "original_bytes": 20723,
+      "original_sha256": "31efc5acf5bbe8289cb6e049e7dd2aea7b3c330efb6494f2cb977e14db92828b",
+      "public_path": "external Audits/f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md",
+      "public_bytes": 20656,
+      "public_sha256": "743d65e14056ec794ca937f4d53368e8df12399fd51344810ffcd8020bbf1ef8",
+      "direct_private_link_count": 1,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 1,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 7,
+          "label": "F4U-CORSAIR-FLIGHT-FEEL-REALISM-PLAN-2026-11-06.md",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/helicopter-rotor-actuator-drivetrain-research-plan-d0b672b.md",
+      "original_git_blob_sha": "b738df29558f4aaf6ba5eedea306dd178fa8ff2a",
+      "original_bytes": 29200,
+      "original_sha256": "ec5932ed9271bcb4e96183e7a53ef7cff174cea8d2233235fa37852901d08f75",
+      "public_path": "external Audits/helicopter-rotor-actuator-drivetrain-research-plan-d0b672b.md",
+      "public_bytes": 29133,
+      "public_sha256": "8714c1787eb74de4fdc952052279fdf071ac7ac55cadaa27a00c282d474e7430",
+      "direct_private_link_count": 1,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 1,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 7,
+          "label": "**OpenRC_Helicopter_Research_2026-11-06.zip**",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/helicopter-improvement-lab-rotor-servo-freewheel-3e652a8.md",
+      "original_git_blob_sha": "a1935be477c2b4ce95f111f12cfab3d91d970011",
+      "original_bytes": 22037,
+      "original_sha256": "14142a4e89766da8be435fb29aa56e5c77788599ca346b690cc77145fd647f93",
+      "public_path": "external Audits/helicopter-improvement-lab-rotor-servo-freewheel-3e652a8.md",
+      "public_bytes": 21970,
+      "public_sha256": "a8ca16c3dc50fa40087bcfb63e3207fb5a32b8b0ee93b938a511c3059acf1831",
+      "direct_private_link_count": 1,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 1,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 7,
+          "label": "OpenRC_Helicopter_Improvement_Lab_2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/helicopter-controls-contact-trim-audit-3e652a8.md",
+      "original_git_blob_sha": "292a27a55a753aabfe2c5de0efe945817fbb1800",
+      "original_bytes": 29774,
+      "original_sha256": "955358bcbb6811bb22addde97570555aa5fcd3f1c6223640a958cd0719c2e46e",
+      "public_path": "external Audits/helicopter-controls-contact-trim-audit-3e652a8.md",
+      "public_bytes": 29707,
+      "public_sha256": "4bd3071eb27b0eda5b1985eea15f360e55a627c55e028a92e8ec2c4adbb42409",
+      "direct_private_link_count": 1,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 1,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 8,
+          "label": "OpenRC_Helicopter_Audit_3e652a8_2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/ui-ux-round2-exit-settings-feedback-audit-3751e35.md",
+      "original_git_blob_sha": "09337a3fd9634d8eef99e76e432d8708e92ecfb2",
+      "original_bytes": 30587,
+      "original_sha256": "0742aa3d7fd0e870c8db0d96c761386101dac2ff4b1d88853691c05c399ff524",
+      "public_path": "external Audits/ui-ux-round2-exit-settings-feedback-audit-3751e35.md",
+      "public_bytes": 30453,
+      "public_sha256": "35c7a561cad6be0addc400a9c888e152221786b6aa670873e6adfa7ca6950b4f",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 11,
+          "label": "OpenRC_UI_UX_Incremental_Audit_2026-11-06.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 15,
+          "label": "OpenRC_UI_UX_Evidence_2026-11-06(1).zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/ui-ux-accessibility-audit-2026-11-06.md",
+      "original_git_blob_sha": "7a82db6502e6e5f81098a9c0918f7eea4d42abec",
+      "original_bytes": 29963,
+      "original_sha256": "a4e206488724fd9b5fc7365763b70419c3f9bb6949ba863146778802d9d07ada",
+      "public_path": "external Audits/ui-ux-accessibility-audit-2026-11-06.md",
+      "public_bytes": 29829,
+      "public_sha256": "7f96ad41fdfba013c82f663804f4f667073a4c4c33dac6aa6dedcec29d200f26",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 9,
+          "label": "OpenRC_UI_UX_Audit_2026-11-06.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 10,
+          "label": "OpenRC_UI_UX_Evidence_2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/ui-ux-player-journeys-interruptions-recovery-d0b672b.md",
+      "original_git_blob_sha": "b665309c7265d555fab740d807760979ff499d13",
+      "original_bytes": 19699,
+      "original_sha256": "5e50eda19afdfac5b67b4b481eadf22a6e918181076885bec1fb5510a3b084dd",
+      "public_path": "external Audits/ui-ux-player-journeys-interruptions-recovery-d0b672b.md",
+      "public_bytes": 19565,
+      "public_sha256": "4b0d315d6cc1c0c57d197a2b58de18a302e86a0baf4456456720cece966d33a5",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 5,
+          "label": "OpenRC_Player_Journeys_Interruptions_Recovery_2026-11-06.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 6,
+          "label": "OpenRC_Player_Journeys_Interruptions_Recovery_Evidence_2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/wind-loads-energy-spatial-sampling-research-ece94f9.md",
+      "original_git_blob_sha": "9e631ae577b0ffcd02c93c4d387848b2e9591819",
+      "original_bytes": 28376,
+      "original_sha256": "9927bad5b8506eac7cd1579634aa87475878fb0a445ea0d90adb57b4e74c7395",
+      "public_path": "external Audits/wind-loads-energy-spatial-sampling-research-ece94f9.md",
+      "public_bytes": 28175,
+      "public_sha256": "b7ef3218408643459b2e9fbbb34acc591c2f77caddc998424f89f3b9efef1706",
+      "direct_private_link_count": 3,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 3,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 9,
+          "label": "OpenRC_Wind_Research_Extension_ece94f9.txt",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 10,
+          "label": "OpenRC_Wind_Research_Lab_ece94f9.zip",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 3,
+          "source_line": 11,
+          "label": "OpenRC_Wind_Math_References.png",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md",
+      "original_git_blob_sha": "1c8b44b9e837d3d91bb2d5f57aa80c7c32c4e160",
+      "original_bytes": 18367,
+      "original_sha256": "ca0ba31f6685440adc0606ba7469d11a4ac792937073c63a41d2d9d5af73c147",
+      "public_path": "external Audits/ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md",
+      "public_bytes": 18233,
+      "public_sha256": "652b6dcb2f08e79afc293d6ae09344d229b848eeeed5a00f881fe5ee24f93b80",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 7,
+          "label": "OpenRC_Menu_Flow_Audit_3e652a8_2026-11-06.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 11,
+          "label": "OpenRC_Menu_Flow_Evidence_3e652a8_2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/ui-ux-workshop-launch-statistics-continuation-3751e35.md",
+      "original_git_blob_sha": "a792fc584e1addc8d2c88bda8e3515d20b9371ba",
+      "original_bytes": 29519,
+      "original_sha256": "315a3647d0b4c7acd617db95a9abbf234f8d0ae06c2f3c51a287b169d15b7562",
+      "public_path": "external Audits/ui-ux-workshop-launch-statistics-continuation-3751e35.md",
+      "public_bytes": 29385,
+      "public_sha256": "389b54deb706583efd30eb9678e0eebec13d8172ab4e0d43c250496171d08a5b",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 9,
+          "label": "OpenRC_UI_UX_Audit_Continuation_2026-11-06.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 10,
+          "label": "OpenRC_UI_UX_Continuation_Evidence_2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md",
+      "original_git_blob_sha": "a50c1a467b6b8e5cf56776f8891f8ce51a6d7872",
+      "original_bytes": 27183,
+      "original_sha256": "434e25e26b7efbc2211766138a07616bf27538e7b68c8eb34d421f2e43ecc428",
+      "public_path": "external Audits/ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md",
+      "public_bytes": 27049,
+      "public_sha256": "c3ce324803c2160ff118700482b4e525d282518dabda3ba04b9ea931ca59e547",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 5,
+          "label": "OpenRC_Player_Journeys_2026-11-06.pdf",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 9,
+          "label": "OpenRC_Player_Journeys_Evidence_2026-11-06.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    },
+    {
+      "original_path": "external Audits/wind-weather-editing-checkpoints-rotor-continuity-audit-d0b672b.md",
+      "original_git_blob_sha": "e8e9672041416fda8ca480746e754256831f6e4d",
+      "original_bytes": 29209,
+      "original_sha256": "08571bb98a138b98d420a153018bc968b2ff982237ec85dfaea5fd941b791ed7",
+      "public_path": "external Audits/wind-weather-editing-checkpoints-rotor-continuity-audit-d0b672b.md",
+      "public_bytes": 29075,
+      "public_sha256": "3b971f705aa8e1a152cdf5b79456b862c95c85cbc9c177b6a8ea9686eb9caf29",
+      "direct_private_link_count": 2,
+      "repo_local_replacements": 0,
+      "label_preserving_omissions": 2,
+      "transformations": [
+        {
+          "ordinal": 1,
+          "source_line": 11,
+          "label": "OpenRC_Wind_Audit_d0b672b.txt",
+          "type": "unlink_and_annotate"
+        },
+        {
+          "ordinal": 2,
+          "source_line": 12,
+          "label": "OpenRC_Wind_Evidence_d0b672b.zip",
+          "type": "unlink_and_annotate"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "files": 25,
+    "direct_personal_links": 54,
+    "repo_local_replacements": 3,
+    "label_preserving_omissions": 51
+  }
+}

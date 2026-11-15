@@ -93,7 +93,7 @@ Other constants, including botanical and hedge allowances, are recorded as metad
 
 The retained Aircraft Creator plan proposes **200,000 instantiated triangles and 600,000 expanded vertices**, together with file-size, image, memory, and concurrency limits. It explicitly labels these as development ceilings awaiting qualification.
 
-I did not find that proposed general-purpose importer enforcement in the audited production paths. It should not be presented as today’s global aircraft limit—or retroactively applied to the approved Corsair. [Aircraft Creator plan, §7.2](https://chatgpt.com/library?file_id=libfile_fde3_f-093ff2da9de48191914938f8127899d9_ac5d15b10f548191b3cb750779cf7c10&account_id=personal).
+I did not find that proposed general-purpose importer enforcement in the audited production paths. It should not be presented as today’s global aircraft limit—or retroactively applied to the approved Corsair. Aircraft Creator plan, §7.2 (private attachment URL omitted).
 
 ## 2. The most important audit findings
 
@@ -743,7 +743,7 @@ Completed **30 focused investigations**, using three specialist subagents, a syn
 
 The result is a **50-page engineering dossier** covering current limits, Godot internals, optimization mathematics, hardware differences, **13 repository assessments**, and **60 primary-source documents and pages**. Each investigation includes its application to OpenRC, a bounded experiment, likely traps, and a recommendation.
 
-**[OpenRC_30_Optimization_Investigations.pdf](https://chatgpt.com/library?file_id=libfile_fde3_f-b803dc0b3668819182b2030a4211ca86_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)**
+**OpenRC_30_Optimization_Investigations.pdf (private attachment URL omitted)**
 
 **My engineering conclusion:** our first priorities should be to verify that the existing aircraft LOD pipeline preserves its data, establish reliable measurements for complete flights, and then address parked aircraft, auxiliary views, shadows, and foliage. Those areas contain concrete opportunities. Texture streaming, terrain replacement, and virtualized geometry deserve controlled experiments once we have established their prerequisites.
 

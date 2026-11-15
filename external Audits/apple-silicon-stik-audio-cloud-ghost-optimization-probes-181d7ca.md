@@ -4,7 +4,7 @@ The strongest new investigation is **avoiding a GPU-to-CPU round trip when prepa
 
 I checked the updated [consolidated audit ledger](https://github.com/bultodepapas/OpenRCsimulator/blob/181d7ca638285f24c1ec9e5089ed07b35b7ea418/external%20Audits/CONSOLIDATED-AUDITS.md) and reviewed source at **`181d7ca`**, the v0.2.0 preparation commit. The earlier recording, statistics, wheel-query and star findings are now tracked there. This continuation focuses on different code paths and clearly identifies refinements of existing investigations.
 
-**Reproducible evidence:** [openrc-apple-silicon-followup-probes.zip](https://chatgpt.com/library?file_id=libfile_fde3_f-f9295e6b4e9c8191b99088f3e522c7a0_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+**Reproducible evidence:** openrc-apple-silicon-followup-probes.zip (private attachment URL omitted)
 
 The archive contains the probe code, relevant source snapshots, complete results, checked Godot logs, mathematical derivations and reproduction instructions.
 

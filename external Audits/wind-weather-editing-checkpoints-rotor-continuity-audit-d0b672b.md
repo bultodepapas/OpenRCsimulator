@@ -8,8 +8,8 @@ I began with `external Audits/CONSOLIDATED-AUDITS.md`, then checked the dedicate
 
 ### Deliverables
 
-- [OpenRC_Wind_Audit_d0b672b.txt](https://chatgpt.com/library?file_id=libfile_87749680674c81919ed55aae7338991e&account_id=personal) — complete report, equations, code locations, repair proposals, and verification requirements.
-- [OpenRC_Wind_Evidence_d0b672b.zip](https://chatgpt.com/library?file_id=libfile_cd6d1b0d17208191b985a7be01dc1a90&account_id=personal) — probes, raw checked logs, source hashes, reproduction instructions, closing comparison, and experimental thermal patches.
+- OpenRC_Wind_Audit_d0b672b.txt (private attachment URL omitted) — complete report, equations, code locations, repair proposals, and verification requirements.
+- OpenRC_Wind_Evidence_d0b672b.zip (private attachment URL omitted) — probes, raw checked logs, source hashes, reproduction instructions, closing comparison, and experimental thermal patches.
 
 This was a read-only review of production code.
 

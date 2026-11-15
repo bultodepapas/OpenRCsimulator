@@ -1,0 +1,4 @@
+# Preserve supplied audit bytes across checkout line-ending settings.
+OpenRC-* -text -whitespace
+README.md text eol=lf
+.gitattributes text eol=lf

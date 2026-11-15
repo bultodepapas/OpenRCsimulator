@@ -1,0 +1,352 @@
+diff --git a/app/ai/companions/pilot.gd b/app/ai/companions/pilot.gd
+index aedbfe49..0a713103 100644
+--- a/app/ai/companions/pilot.gd
++++ b/app/ai/companions/pilot.gd
+@@ -375,14 +375,23 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
+ 	var minimum_terrain_margin: float = clearance - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M
+ 	var down_rate: float = own_velocity[2]
+ 	var terrain_horizon: float = minf(PREDICTION_HORIZON_S, REACTION_MARGIN_S)
++	var saturated_turn_rate := 0.0
++	var saturated_ready := false
+ 	minimum_terrain_margin = minf(minimum_terrain_margin,
+ 		clearance - down_rate * terrain_horizon - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M)
+ 	for sample_index in range(sample_count + 1):
+ 		if sample_index > 0:
+ 			var midpoint_s: float = (float(sample_index) - 0.5) * PREDICTION_STEP_S
+ 			var ramp: float = clampf((midpoint_s - REACTION_MARGIN_S) / BANK_RESPONSE_S, 0.0, 1.0)
+-			var bank: float = lerpf(current_bank, candidate_bank, ramp)
+-			var turn_rate: float = G * tan(bank) / maxf(own_speed, 3.0)
++			var turn_rate: float
++			if ramp == 1.0 and saturated_ready:
++				turn_rate = saturated_turn_rate
++			else:
++				var bank: float = lerpf(current_bank, candidate_bank, ramp)
++				turn_rate = G * tan(bank) / maxf(own_speed, 3.0)
++				if ramp == 1.0:
++					saturated_turn_rate = turn_rate
++					saturated_ready = true
+ 			heading = wrapf(heading + turn_rate * PREDICTION_STEP_S, -PI, PI)
+ 			own_north += own_speed * cos(heading) * PREDICTION_STEP_S + _planning_wind[0] * PREDICTION_STEP_S
+ 			own_east += own_speed * sin(heading) * PREDICTION_STEP_S + _planning_wind[1] * PREDICTION_STEP_S
+@@ -396,17 +405,22 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
+ 			var north_delta: float = positions[offset] - own_north
+ 			var east_delta: float = positions[offset + 1] - own_east
+ 			var down_delta: float = positions[offset + 2] - own_down
+-			var distance: float = AvoidanceMath.sqrt_(north_delta * north_delta
++			var distance_squared: float = (north_delta * north_delta
+ 				+ east_delta * east_delta + down_delta * down_delta)
+-			minimum_by_threat[threat_index] = minf(minimum_by_threat[threat_index], distance)
+ 			if include_trace:
++				var distance: float = AvoidanceMath.sqrt_(distance_squared)
++				minimum_by_threat[threat_index] = minf(minimum_by_threat[threat_index], distance)
+ 				distance_traces[threat_index][sample_index] = distance
++			else:
++				minimum_by_threat[threat_index] = minf(minimum_by_threat[threat_index], distance_squared)
+ 	var traffic_margin: float = INF
+ 	var minimum_player_distance: float = INF
+ 	var minimum_peer_distance: float = INF
+ 	for threat_index in threats.size():
+ 		var threat: Dictionary = threats[threat_index]
+ 		var separation: float = minimum_by_threat[threat_index]
++		if not include_trace:
++			separation = AvoidanceMath.sqrt_(separation)
+ 		var margin: float = separation - float(threat.required_separation_m)
+ 		if bool(threat.is_player):
+ 			minimum_player_distance = minf(minimum_player_distance, separation)
+diff --git a/app/aircraft/custom_skin.gd b/app/aircraft/custom_skin.gd
+index 3bf9fe2a..74466da1 100644
+--- a/app/aircraft/custom_skin.gd
++++ b/app/aircraft/custom_skin.gd
+@@ -12,7 +12,7 @@ const MOONRUNNER_DERIVATIVE_ASSET_SHA256 := "54d67d9bbfe4ce4abdc4bafa523c3bf8124
+ # distributed Timber kit valid. The full new source-bound adapter identity is exact;
+ # any later source/manifest change must be reviewed again, not admitted by this pair.
+ const TIMBER_LEGACY_PAINT_IDENTITY := "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6"
+-const TIMBER_LOD_PAINT_IDENTITY := "45bd45bff9cd6617839d24b8ab84200f5edb6de82c226939df7bb2c3b280bf69"
++const TIMBER_LOD_PAINT_IDENTITY := "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c"
+ const ROOT := "user://skins/"
+ const ARCHIVE_LIMIT := 32 * 1024 * 1024
+ const MANIFEST_LIMIT := 64 * 1024
+diff --git a/app/aircraft/timber_visual_details.gd b/app/aircraft/timber_visual_details.gd
+index f660f041..0da74876 100644
+--- a/app/aircraft/timber_visual_details.gd
++++ b/app/aircraft/timber_visual_details.gd
+@@ -411,7 +411,7 @@ static func _build_paint_face_index(paint_faces: Array[Dictionary]) -> Dictionar
+ 		for x in range(min_cell.x, max_cell.x + 1):
+ 			for y in range(min_cell.y, max_cell.y + 1):
+ 				for z in range(min_cell.z, max_cell.z + 1):
+-					var key := "%d:%d:%d" % [x, y, z]
++					var key := Vector3i(x, y, z)
+ 					var bucket: Array = index.get(key, [])
+ 					bucket.append(paint_face)
+ 					index[key] = bucket
+@@ -558,7 +558,7 @@ static func _covering_paint_at(point: Vector3, normal: Vector3, paint_faces: Arr
+ 			floori(point.y / PAINT_FACE_GRID_CELL_M),
+ 			floori(point.z / PAINT_FACE_GRID_CELL_M)
+ 		)
+-		candidate_faces = paint_face_index.get("%d:%d:%d" % [cell.x, cell.y, cell.z], [])
++		candidate_faces = paint_face_index.get(cell, [])
+ 	for face_variant in candidate_faces:
+ 		var paint_face: Dictionary = face_variant
+ 		var paint_normal: Vector3 = paint_face.normal
+diff --git a/app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json b/app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json
+index d6344869..c7e69dbb 100644
+--- a/app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json
++++ b/app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json
+@@ -9,7 +9,7 @@
+   },
+   "controller": {
+     "path": "res://ai/companions/pilot.gd",
+-    "sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
++    "sha256": "c8435800538963c3313f3e2c7b769c716ffa33d3eb2ca611f669c5170d1fa41d",
+     "dependencies": {
+       "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+     }
+diff --git a/app/render/worn_ground_material.gd.uid b/app/render/worn_ground_material.gd.uid
+new file mode 100644
+index 00000000..93aa243d
+--- /dev/null
++++ b/app/render/worn_ground_material.gd.uid
+@@ -0,0 +1 @@
++uid://bjwpx81cjwi3s
+diff --git a/app/tests/test_companions_reachable_score.gd b/app/tests/test_companions_reachable_score.gd
+new file mode 100644
+index 00000000..af0a9d51
+--- /dev/null
++++ b/app/tests/test_companions_reachable_score.gd
+@@ -0,0 +1,102 @@
++## Reachable-pilot distance minima and predicted turn regression witnesses.
++extends SceneTree
++
++const Pilot := preload("res://ai/companions/pilot.gd")
++
++var _checks := 0
++var _failures := 0
++
++
++func _check(label: String, passed: bool) -> void:
++	_checks += 1
++	if not passed:
++		_failures += 1
++		printerr("FAIL ", label)
++
++
++func _initialize() -> void:
++	_run.call_deferred()
++
++
++func _positions(distance: float, moving: bool) -> PackedFloat64Array:
++	var positions := PackedFloat64Array()
++	for sample in 33:
++		positions.append_array(PackedFloat64Array([distance + (3.75 * sample if moving else 0.0), 0.0, -35.0]))
++	return positions
++
++
++func _adjacent_positive(value: float, direction: int) -> float:
++	var bytes := PackedByteArray()
++	bytes.resize(8)
++	bytes.encode_double(0, value)
++	bytes.encode_u64(0, bytes.decode_u64(0) + direction)
++	return bytes.decode_double(0)
++
++
++func _score_pair(pilot: RefCounted, state: PackedFloat64Array, velocity: PackedFloat64Array,
++		speed: float, bank: float, threats: Array[Dictionary], label: String) -> Dictionary:
++	var inputs_before := var_to_bytes([state, velocity, threats])
++	var plain: Dictionary = pilot._score_bank(state, velocity, speed, 0.0, 0.0, bank, 35.0, threats)
++	var traced: Dictionary = pilot._score_bank(state, velocity, speed, 0.0, 0.0, bank, 35.0, threats, true)
++	var reduced := traced.duplicate(true)
++	reduced.erase("distance_traces_m")
++	_check(label + ": trace and non-trace score fields are byte-identical", var_to_bytes(plain) == var_to_bytes(reduced))
++	_check(label + ": input arrays remain unchanged", inputs_before == var_to_bytes([state, velocity, threats]))
++	return traced
++
++
++func _run() -> void:
++	var pilot := Pilot.new()
++	var state := PackedFloat64Array([0.0, 0.0, -35.0, 15.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
++	var velocity := PackedFloat64Array([15.0, 0.0, 0.0])
++	var none: Array[Dictionary] = []
++	var empty := _score_pair(pilot, state, velocity, 15.0, 0.0, none, "no threats")
++	_check("no threats retain infinite traffic margin and empty trace", is_inf(float(empty.traffic_margin_m)) and empty.distance_traces_m.is_empty())
++
++	# Straight flight and co-moving traffic hold every sampled separation exactly
++	# constant, giving an explicit 33-way minimum tie and an exact zero margin.
++	var tied: Array[Dictionary] = [
++		{id = "player", is_player = true, required_separation_m = 30.0, positions = _positions(30.0, true)},
++		{id = "peer", is_player = false, required_separation_m = 15.0, positions = _positions(15.0, true)},
++		{id = "far", is_player = false, required_separation_m = 15.0, positions = _positions(50.0, true)},
++	]
++	var tie := _score_pair(pilot, state, velocity, 15.0, 0.0, tied, "three tied threats")
++	var player_trace: PackedFloat64Array = tie.distance_traces_m[0]
++	var all_tied := player_trace.size() == 33
++	for distance: float in player_trace:
++		all_tied = all_tied and distance == 30.0
++	_check("all 33 player samples share the exact 30 m minimum", all_tied)
++	_check("player and peer tie at the exact separation boundary", float(tie.minimum_player_distance_m) == 30.0 \
++		and float(tie.minimum_peer_distance_m) == 15.0 and float(tie.traffic_margin_m) == 0.0)
++
++	# Values on the two sides of the boundary differ by one binary64 ULP. A
++	# stationary direct-scorer fixture keeps these distances exactly representable.
++	var stationary := PackedFloat64Array([0.0, 0.0, 0.0])
++	for direction: int in [-1, 0, 1]:
++		var distance: float = 30.0 if direction == 0 else _adjacent_positive(30.0, direction)
++		var traffic: Array[Dictionary] = [{id = "boundary", is_player = true,
++			required_separation_m = 30.0, positions = _positions(distance, false)}]
++		var boundary := _score_pair(pilot, state, stationary, 0.0, 0.0, traffic, "boundary %d" % direction)
++		var margin: float = float(boundary.traffic_margin_m)
++		_check("one-ULP boundary retains margin sign %d" % direction,
++			(margin < 0.0 if direction < 0 else margin > 0.0 if direction > 0 else margin == 0.0))
++
++	# Independent checkpoints from the previously qualified pilot's turn trace,
++	# including before and after the bank-response ramp reaches its endpoint.
++	var target := PackedFloat64Array()
++	for sample in 33:
++		target.append_array(PackedFloat64Array([100.0, 10.0, -35.0]))
++	var turn_threats: Array[Dictionary] = [{id = "target", is_player = true,
++		required_separation_m = 30.0, positions = target}]
++	var turn := _score_pair(pilot, state, velocity, 15.0, 0.35, turn_threats, "bank response")
++	var trace: PackedFloat64Array = turn.distance_traces_m[0]
++	var checkpoints := {0: 100.498756211209, 1: 96.768086164810, 4: 85.586213843118,
++		7: 74.365090065489, 8: 70.619201976024, 16: 43.373426646457, 32: 60.207925095225}
++	_check("bank-response trace has the full 33 samples", trace.size() == 33)
++	if trace.size() == 33:
++		for index: int in checkpoints:
++			_check("bank-response reference sample %d" % index,
++				absf(trace[index] - float(checkpoints[index])) <= 1e-7)
++
++	print("companion reachable score: %d checks, %d failed" % [_checks, _failures])
++	quit(1 if _failures else 0)
+diff --git a/app/tests/test_companions_reachable_score.gd.uid b/app/tests/test_companions_reachable_score.gd.uid
+new file mode 100644
+index 00000000..98dfada7
+--- /dev/null
++++ b/app/tests/test_companions_reachable_score.gd.uid
+@@ -0,0 +1 @@
++uid://nadycuiumhgt
+diff --git a/app/tests/test_farm_tractor.gd.uid b/app/tests/test_farm_tractor.gd.uid
+new file mode 100644
+index 00000000..1ff40e58
+--- /dev/null
++++ b/app/tests/test_farm_tractor.gd.uid
+@@ -0,0 +1 @@
++uid://c3f4bwoxscfn0
+diff --git a/app/tests/test_timber_paint_grid.gd b/app/tests/test_timber_paint_grid.gd
+new file mode 100644
+index 00000000..ccaceea9
+--- /dev/null
++++ b/app/tests/test_timber_paint_grid.gd
+@@ -0,0 +1,94 @@
++extends SceneTree
++
++# Regression oracle for paint-face grid buckets and the resulting material.
++# This test accepts the historical string and current Vector3i key types.
++const Details := preload("res://aircraft/timber_visual_details.gd")
++
++var checks := 0
++var failures := 0
++
++
++func _check(condition: bool, label: String, detail: Variant = null) -> void:
++	checks += 1
++	if not condition:
++		failures += 1
++		printerr("FAIL: ", label, " ", str(detail))
++
++
++func _face(id: String, material: String, a: Vector3, b: Vector3, c: Vector3, bounds: AABB) -> Dictionary:
++	return {id = id, material = material, normal = Vector3(0, 0, 1), bounds = bounds,
++		vertices = PackedVector3Array([a, b, c])}
++
++
++func _normalize(index: Dictionary) -> Dictionary:
++	var normalized := {}
++	for key: Variant in index:
++		var label: String
++		if key is Vector3i:
++			var cell: Vector3i = key
++			label = "%d:%d:%d" % [cell.x, cell.y, cell.z]
++		elif key is String:
++			label = key
++		else:
++			_check(false, "unsupported grid key", typeof(key))
++			continue
++		var face_ids: Array[String] = []
++		for face: Dictionary in index[key]: face_ids.append(str(face.id))
++		_check(not normalized.has(label), "one bucket per cell", label)
++		normalized[label] = face_ids
++	return normalized
++
++
++func _bucket_oracle() -> void:
++	var v := Vector3.ZERO
++	var faces: Array[Dictionary] = [
++		_face("a", "red", v, v, v, AABB(Vector3(-0.009, -0.009, -0.001), Vector3(0.018, 0.018, 0.002))),
++		_face("b", "blue", v, v, v, AABB(Vector3(0.005, 0.005, -0.001), Vector3(0.001, 0.001, 0.002))),
++		_face("zero", "black", v, v, v, AABB(Vector3(0.0101, -0.0101, -0.009), Vector3.ZERO)),
++		_face("reversed", "black", v, v, v, AABB(Vector3(0.019, 0, 0), Vector3(-0.01, 0, 0))),
++	]
++	var expected := {
++		"-1:-1:-1": ["a"], "-1:-1:0": ["a"], "-1:0:-1": ["a"], "-1:0:0": ["a"],
++		"0:-1:-1": ["a"], "0:-1:0": ["a"], "0:0:-1": ["a", "b"], "0:0:0": ["a", "b"],
++		"1:-2:-1": ["zero"],
++	}
++	var actual := _normalize(Details._build_paint_face_index(faces))
++	_check(actual == expected, "signed cells and bucket insertion match explicit oracle", actual)
++	var none: Array[Dictionary] = []
++	_check(Details._build_paint_face_index(none).is_empty(), "no faces gives empty index")
++
++
++func _covering_oracle() -> void:
++	var a := Vector3(-0.03, -0.03, 0)
++	var b := Vector3(0.03, -0.03, 0)
++	var c := Vector3(0, 0.03, 0)
++	var bounds := AABB(a, Vector3.ZERO).expand(b).expand(c).grow(0.012)
++	var faces: Array[Dictionary] = [
++		_face("red", "red", a, b, c, bounds),
++		_face("blue", "blue", a, b, c, bounds),
++		_face("red-repeat", "red", a, b, c, bounds),
++	]
++	var index := Details._build_paint_face_index(faces)
++	var normal := Vector3(0, 0, 1)
++	for coordinate: float in [-0.0101, -0.01, -0.0099, 0.0, 0.0099, 0.01, 0.0101]:
++		for point: Vector3 in [Vector3(coordinate, 0, 0), Vector3(0, coordinate, 0), Vector3(0, 0, coordinate)]:
++			var indexed := Details._covering_paint_at(point, normal, faces, 0.02, 0.7, index)
++			var fallback := Details._covering_paint_at(point, normal, faces, 0.02, 0.7, {})
++			_check(indexed.keys() == ["red", "blue"], "both materials keep insertion order at " + str(point), indexed)
++			_check(indexed == fallback and indexed.keys() == fallback.keys(), "indexed lookup matches empty-index scan at " + str(point), [indexed, fallback])
++	_check(Details._fully_covered_paint(a, b, c, normal, faces, 0.02, 0.7, index) == "red", "first coincident material wins")
++	var reversed: Array[Dictionary] = [faces[1], faces[0], faces[2]]
++	_check(Details._fully_covered_paint(a, b, c, normal, reversed, 0.02, 0.7, Details._build_paint_face_index(reversed)) == "blue", "reversing faces reverses a material tie")
++	_check(Details._covering_paint_at(Vector3.ZERO, -normal, faces, 0.02, 0.7, index).is_empty(), "opposite normal is refused")
++	_check(Details._covering_paint_at(Vector3(0, 0, 0.005), normal, faces, 0.001, 0.7, index).is_empty(), "distance threshold is enforced")
++	var remote: Array[Dictionary] = [_face("remote", "remote", a, b, c, AABB(Vector3(5, 5, 5), Vector3.ZERO))]
++	_check(Details._covering_paint_at(Vector3.ZERO, normal, faces, 0.02, 0.7, Details._build_paint_face_index(remote)).is_empty(), "nonempty index with missing cell does not use full scan")
++	var degenerate: Array[Dictionary] = [_face("degenerate", "none", Vector3.ZERO, Vector3.ZERO, Vector3.ZERO, AABB(Vector3.ZERO, Vector3.ZERO))]
++	_check(Details._covering_paint_at(Vector3.ZERO, normal, degenerate, 0.02, 0.7, Details._build_paint_face_index(degenerate)).is_empty(), "zero-sized bounds do not cover a point")
++
++
++func _initialize() -> void:
++	_bucket_oracle()
++	_covering_oracle()
++	print("Timber paint grid: %d checks, %d failures" % [checks, failures])
++	quit(1 if failures else 0)
+diff --git a/app/tests/test_timber_paint_grid.gd.uid b/app/tests/test_timber_paint_grid.gd.uid
+new file mode 100644
+index 00000000..55934002
+--- /dev/null
++++ b/app/tests/test_timber_paint_grid.gd.uid
+@@ -0,0 +1 @@
++uid://4wscadfbha6l
+diff --git a/app/tests/test_timber_visual_lods.gd b/app/tests/test_timber_visual_lods.gd
+index ea56a755..1d163f05 100644
+--- a/app/tests/test_timber_visual_lods.gd
++++ b/app/tests/test_timber_visual_lods.gd
+@@ -4,7 +4,7 @@ const ProceduralSkin := preload("res://aircraft/procedural_skin.gd")
+ const CurrentDetails := preload("res://aircraft/timber_visual_details.gd")
+ const CustomPaint := preload("res://aircraft/custom_skin.gd")
+ const LEGACY_ID := "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6"
+-const LOD_ID := "45bd45bff9cd6617839d24b8ab84200f5edb6de82c226939df7bb2c3b280bf69"
++const LOD_ID := "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c"
+ 
+ var details: Script = CurrentDetails
+ var checks := 0

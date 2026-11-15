@@ -6,11 +6,11 @@ I reviewed the actual companion implementation in **`bultodepapas/OpenRCsimulato
 
 The full report contains approximately **9,800 words across 24 pages**, including findings, source links, architecture, code examples, phased delivery, a **14-PR implementation sequence**, and a detailed test matrix.
 
-[OpenRC_AI_Flight_Companion_Engineering_Plan.pdf](https://chatgpt.com/library?file_id=libfile_fde3_f-0b6d7b85903c8191aeeba660278f12a9_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+OpenRC_AI_Flight_Companion_Engineering_Plan.pdf (private attachment URL omitted)
 
 The accompanying bundle contains complete GDScript prototypes, counterexample tests, an isolated-project preparation script, source hashes, and verification records.
 
-[OpenRC_Companion_Review_Bundle.zip](https://chatgpt.com/library?file_id=libfile_fde3_f-d4ca28ff51388191966ebf1a7148c739_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+OpenRC_Companion_Review_Bundle.zip (private attachment URL omitted)
 
 **Audit baseline:** commit `ca529cb88476a22fbb1c8edf957d6917ab9b6042`.
 
@@ -412,8 +412,8 @@ The strongest direction is to give companions **clear intentions, believable coo
 
 Both updated deliverables are ready:
 
-- **[OpenRC_AI_Flight_Companion_Engineering_Plan.pdf](https://chatgpt.com/library?file_id=libfile_fde3_f-0b6d7b85903c8191aeeba660278f12a9_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)** — now **37 pages**. The new investigation begins at **Section 15, page 25**.
-- **[OpenRC_Companion_Review_Bundle.zip](https://chatgpt.com/library?file_id=libfile_fde3_f-d4ca28ff51388191966ebf1a7148c739_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)** — includes the analytic turn prototype, four focused test programs, source identities, execution evidence, and builders that reconstruct the fixtures from the pinned checkout.
+- **OpenRC_AI_Flight_Companion_Engineering_Plan.pdf (private attachment URL omitted)** — now **37 pages**. The new investigation begins at **Section 15, page 25**.
+- **OpenRC_Companion_Review_Bundle.zip (private attachment URL omitted)** — includes the analytic turn prototype, four focused test programs, source identities, execution evidence, and builders that reconstruct the fixtures from the pinned checkout.
 
 The production repository remains unchanged. The code additions are isolated review prototypes and reproducible counterexamples.
 

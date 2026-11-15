@@ -6,7 +6,7 @@ I completed the audit of **[bultodepapas/OpenRCsimulator](https://github.com/bul
 
 ### Full report
 
-[OpenRC_Vegetation_Audit_2026-11-09.pdf](https://chatgpt.com/library?file_id=libfile_fde3_f-23afa1307c348191acfe7de22953caec_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+OpenRC_Vegetation_Audit_2026-11-09.pdf (private attachment URL omitted)
 
 The **24-page report** includes a map of all 1,680 field-tree positions, annotated historical comparisons, a phased roadmap, **12 proposed implementation tasks**, acceptance criteria, and references to both external research and the relevant repository files.
 
@@ -394,7 +394,7 @@ Each investigation includes a finding, a decision for OpenRC, a proposed compari
 
 The complete **34-page supplement** contains all 24 investigations, the source register, implementation links, and a recommended sequence:
 
-[OpenRC_Vegetation_24_New_Investigations_2026-11-09.pdf](https://chatgpt.com/library?file_id=libfile_fde3_f-ea69eb669a1881919f51179d64b78815_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+OpenRC_Vegetation_24_New_Investigations_2026-11-09.pdf (private attachment URL omitted)
 
 The project review is pinned to [commit f47d1dc6cc](https://github.com/bultodepapas/OpenRCsimulator/commit/f47d1dc6cccb141936407d0217eafdc465558190). These are completed research investigations and source inspections. The rendering, GPU, and pilot-recognition experiments described below remain proposed tests; the repository has not been changed.
 

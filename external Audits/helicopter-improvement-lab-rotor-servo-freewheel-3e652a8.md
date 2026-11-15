@@ -4,7 +4,7 @@ I also built an independently checked servo-response model, an event-aware freew
 
 **The complete package is here:**
 
-[OpenRC_Helicopter_Improvement_Lab_2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_6befa7ef61248191b95d7e697600919b&account_id=personal)
+OpenRC_Helicopter_Improvement_Lab_2026-11-06.zip (private attachment URL omitted)
 
 It contains the runnable Python and GDScript experiments, input data, plots, numerical results, verification records, and implementation notes.
 

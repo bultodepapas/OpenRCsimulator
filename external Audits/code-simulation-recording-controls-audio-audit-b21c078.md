@@ -13,8 +13,8 @@ I read [`external Audits/CONSOLIDATED-AUDITS.md`](https://github.com/bultodepapa
 
 ### Deliverables
 
-- [**Complete audit report**](https://chatgpt.com/space/page_a837fc1e69288191af414d4270f9b32e) — detailed findings, source locations, coverage, mathematical analysis, and implementation plan.
-- [**OpenRC_Audit_Evidence_b21c078.zip**](https://chatgpt.com/library?file_id=libfile_fde3_f-3188360a88fc8191addf8ece3903fea9_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) — four reproduction scripts, original checked-runner logs and receipts, source/engine identities, hashes, and reproduction instructions.
+- **Complete audit report** (private attachment URL omitted) — detailed findings, source locations, coverage, mathematical analysis, and implementation plan.
+- **OpenRC_Audit_Evidence_b21c078.zip** (private attachment URL omitted) — four reproduction scripts, original checked-runner logs and receipts, source/engine identities, hashes, and reproduction instructions.
 
 The report text was read back and verified; its Page layout was not visually previewed. **No repository source was changed.**
 

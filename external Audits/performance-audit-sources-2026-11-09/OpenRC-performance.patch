@@ -1,0 +1,212 @@
+diff --git a/app/input/controller_actions.gd b/app/input/controller_actions.gd
+index dd7e73d9..1475d078 100644
+--- a/app/input/controller_actions.gd
++++ b/app/input/controller_actions.gd
+@@ -193,22 +193,33 @@ static func _add_automatic_buttons(profile: Dictionary, bindings: Dictionary, ex
+ 	if str(_dict_value(profile, "kind", "")) != "gamepad":
+ 		return
+ 	var definitions := _definition_map()
++	# effective_bindings starts automatic candidates unbound; explicit overrides
++	# are skipped below. Index the valid overlapping button reservations once,
++	# then extend that index in declaration order as defaults are admitted.
++	var occupied_buttons: Dictionary = {}
++	var buttons_indexed := false
+ 	for action_id: String in AUTOMATIC_BUTTONS:
+ 		var entry: Dictionary = AUTOMATIC_BUTTONS[action_id]
+ 		if explicit_ids.has(action_id) or (not str(entry.channel).is_empty() and not bool(capabilities.get(entry.channel, false))):
+ 			continue
++		if not buttons_indexed:
++			for other_id: Variant in bindings:
++				if not definitions.has(str(other_id)) or not _valid_binding(bindings[other_id]):
++					continue
++				var existing: Dictionary = bindings[other_id]
++				if existing.type == "button" and _contexts_overlap("flight", str(definitions[other_id].context)):
++					occupied_buttons[int(existing.button)] = true
++			buttons_indexed = true
+ 		var candidate := {"type": "button", "button": int(entry.button)}
+ 		var reserved := false
+ 		for aux_entry in aux_bindings:
+ 			if aux_entry.name == entry.channel or _same_aux_control(candidate, aux_entry.binding):
+ 				reserved = true
+-		for other_id: Variant in bindings:
+-			if not definitions.has(str(other_id)) or not _valid_binding(bindings[other_id]) or _is_unbound(bindings[other_id]):
+-				continue
+-			if _contexts_overlap("flight", str(definitions[other_id].context)) and _same_binding(candidate, bindings[other_id]):
+-				reserved = true
++		if occupied_buttons.has(int(entry.button)):
++			reserved = true
+ 		if not reserved:
+ 			bindings[action_id] = candidate
++			occupied_buttons[int(entry.button)] = true
+ 
+ 
+ ## Validate the whole calibrated profile's semantic bindings and reserved AUX sources.
+diff --git a/app/render/engine_voice.gd b/app/render/engine_voice.gd
+index c2aee49b..39bf2fa2 100644
+--- a/app/render/engine_voice.gd
++++ b/app/render/engine_voice.gd
+@@ -63,12 +63,23 @@ func render(rpm: float, max_rpm: float, frames: int) -> PackedVector2Array:
+ 	var gain := level(rpm, max_rpm)
+ 	var table := _tables[band(maxf(frequency, target), RATE)]
+ 	var alpha := 1.0 - exp(-1.0 / (SMOOTH_SECONDS * RATE))
++	# A nonnegative finite frequency and normalized phase remain in range after
++	# each existing positive-frequency fposmod; otherwise keep the original helper.
++	var fast_interpolation: bool = is_finite(phase) and phase >= 0.0 and phase < 1.0 \
++		and is_finite(frequency) and frequency >= 0.0 and table.size() >= TABLE_SIZE + 1
+ 	var out := PackedVector2Array()
+ 	out.resize(maxi(frames, 0))
+ 	for i in out.size():
+ 		frequency += alpha * (target - frequency)
+ 		amplitude += alpha * (gain - amplitude)
+-		var value := amplitude * sample(table, phase)
++		var value: float
++		if fast_interpolation:
++			var index := phase * TABLE_SIZE
++			var lo := int(index)
++			var interpolated: float = table[lo] + (table[lo + 1] - table[lo]) * (index - lo)
++			value = amplitude * interpolated
++		else:
++			value = amplitude * sample(table, phase)
+ 		out[i] = Vector2(value, value)
+ 		phase = fposmod(phase + frequency / RATE, 1.0)
+ 	return out
+diff --git a/app/tests/test_controller_button_index.gd b/app/tests/test_controller_button_index.gd
+new file mode 100644
+index 00000000..5e9b7767
+--- /dev/null
++++ b/app/tests/test_controller_button_index.gd
+@@ -0,0 +1,65 @@
++extends SceneTree
++
++const Actions := preload("res://input/controller_actions.gd")
++var checks := 0
++var failures := 0
++
++func _initialize() -> void:
++	var all_caps := {"gear": true, "smoke": true, "flaps": true, "rates": true, "helicopter": true}
++	var base := {"kind": "gamepad", "actions": {}, "aux": {}}
++	var mixed := Actions.effective_bindings(base, all_caps)
++	for pair: Array in [["gear_toggle", JOY_BUTTON_B], ["smoke_toggle", JOY_BUTTON_RIGHT_SHOULDER],
++		["flaps_cycle", JOY_BUTTON_A], ["rates_toggle", JOY_BUTTON_LEFT_STICK], ["restart_flight", JOY_BUTTON_BACK]]:
++		_check("declaration priority %s" % pair[0], mixed[pair[0]] == {"type": "button", "button": pair[1]})
++	for action: String in ["helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer"]:
++		_check("earlier default reserves %s" % action, mixed[action] == {"type": "unbound"})
++	_check("menu-only accept and back do not reserve flight buttons", mixed.accept.button == mixed.flaps_cycle.button
++		and mixed.back.button == mixed.gear_toggle.button)
++	var heli := Actions.effective_bindings(base, Actions.HELICOPTER_CAPABILITIES)
++	_check("helicopter-only A is admitted", heli.helicopter_arm == {"type": "button", "button": JOY_BUTTON_A})
++	_check("helicopter-only B is admitted", heli.helicopter_hold == {"type": "button", "button": JOY_BUTTON_B})
++	var profile: Dictionary = base.duplicate(true)
++	profile.actions.pause = {"type": "button", "button": JOY_BUTTON_A}
++	_check("both-context recovery reserves A", Actions.effective_bindings(profile, all_caps).flaps_cycle == {"type": "unbound"})
++	profile.actions = {"camera_cycle": {"type": "button", "button": JOY_BUTTON_A}}
++	_check("valid flight binding reserves A", Actions.effective_bindings(profile, all_caps).flaps_cycle == {"type": "unbound"})
++	for invalid: Variant in [{"type": "button", "button": float(JOY_BUTTON_A)},
++		{"type": StringName("button"), "button": JOY_BUTTON_A}, {"type": "button", "button": -1},
++		{"type": "button", "button": JOY_BUTTON_MAX}, {"type": "button"}, null, 4]:
++		profile.actions = {"camera_cycle": invalid}
++		var result := Actions.effective_bindings(profile, all_caps)
++		_check("malformed override does not reserve", result.flaps_cycle == {"type": "button", "button": JOY_BUTTON_A})
++		_check("malformed override remains visible for validation", var_to_bytes(result.camera_cycle) == var_to_bytes(invalid))
++	profile.actions = {"unknown_action": {"type": "button", "button": JOY_BUTTON_A}}
++	_check("unknown definition cannot reserve", Actions.effective_bindings(profile, all_caps).flaps_cycle.button == JOY_BUTTON_A)
++	profile.actions = {"camera_cycle": {StringName("type"): "button", StringName("button"): JOY_BUTTON_A}}
++	_check("StringName binding keys retain reservation", Actions.effective_bindings(profile, all_caps).flaps_cycle.type == "unbound")
++	profile.actions = {StringName("flaps_cycle"): {"type": "unbound"}}
++	var explicitly_cleared := Actions.effective_bindings(profile, all_caps)
++	_check("explicit Clear is retained", explicitly_cleared.flaps_cycle.type == "unbound")
++	_check("cleared airplane action releases A for helicopter", explicitly_cleared.helicopter_arm.button == JOY_BUTTON_A)
++	profile.actions = {}
++	profile.aux = {"gear": {"type": "switch", "buttons": [JOY_BUTTON_A, JOY_BUTTON_RIGHT_SHOULDER], "invert": false}}
++	var reserved := Actions.effective_bindings(profile, all_caps)
++	_check("same AUX channel reserves gear independently of button", reserved.gear_toggle.type == "unbound")
++	_check("every AUX switch member reserves", reserved.flaps_cycle.type == "unbound" and reserved.smoke_toggle.type == "unbound")
++	profile.aux = {}
++	profile.actions = Actions.default_bindings()
++	_check("all explicit bindings stay exact", var_to_bytes(Actions.effective_bindings(profile, all_caps)) == var_to_bytes(profile.actions))
++	profile.actions = {"camera_cycle": {"type": "button", "button": JOY_BUTTON_X}}
++	var snapshot := var_to_bytes(profile)
++	var detached := Actions.effective_bindings(profile, all_caps)
++	detached.camera_cycle.button = JOY_BUTTON_A
++	_check("nested returned bindings remain detached", var_to_bytes(profile) == snapshot)
++	profile.kind = "radio"
++	_check("radio path does not gain automatic buttons", Actions.effective_bindings(profile, all_caps).flaps_cycle.type == "unbound")
++	profile.kind = "joystick"
++	_check("joystick path does not gain automatic buttons", Actions.effective_bindings(profile, all_caps).helicopter_arm.type == "unbound")
++	print("Controller button index: %d checks, %d failed" % [checks, failures])
++	quit(1 if failures else 0)
++
++func _check(label: String, condition: bool) -> void:
++	checks += 1
++	if not condition:
++		failures += 1
++		printerr("FAIL ", label)
+diff --git a/app/tests/test_controller_button_index.gd.uid b/app/tests/test_controller_button_index.gd.uid
+new file mode 100644
+index 00000000..5ee1d99a
+--- /dev/null
++++ b/app/tests/test_controller_button_index.gd.uid
+@@ -0,0 +1 @@
++uid://cljjd25e5ehdt
+diff --git a/app/tests/test_engine_voice.gd b/app/tests/test_engine_voice.gd
+index 2fd4782b..08818b4a 100644
+--- a/app/tests/test_engine_voice.gd
++++ b/app/tests/test_engine_voice.gd
+@@ -296,6 +296,50 @@ func _runtime_voice_checks() -> void:
+ 		"changed phase=%s isolated phase=%s" % [str(changed.phase), str(isolated.phase)])
+ 
+ 
++func _interpolation_parity_checks() -> void:
++	# With settled RPM and amplitude, the independent fixed-frequency entry point
++	# uses sample() for every value. Match its PCM and final phase across wraps.
++	var maximum := 700000.0
++	for rpm: float in [2800.0, MAX_STIK_RPM, 110250.0, 661500.0]:
++		for start_phase: float in [0.0, 0.2718281828459045, 1.0 - pow(2.0, -40.0)]:
++			var voice := Voice.new()
++			voice.reset(rpm, maximum)
++			voice.phase = start_phase
++			var expected: Array = Voice.synthesize(start_phase, rpm / 60.0,
++				Voice.level(rpm, maximum), 1024, EXPECTED_RATE)
++			var mono: PackedFloat32Array = expected[0]
++			var actual: PackedVector2Array = voice.render(rpm, maximum, mono.size())
++			var matches := actual.size() == mono.size()
++			for i in mini(actual.size(), mono.size()):
++				if actual[i] != Vector2(mono[i], mono[i]):
++					matches = false
++					break
++			_check("settled runtime interpolation matches helper PCM and phase",
++				matches and voice.phase == float(expected[1]), "rpm=%s phase=%s" % [rpm, start_phase])
++
++	# Exercise changing targets and inputs that take the original helper path.
++	# The expected sample is read before rendering, at the pre-update phase.
++	var cases: Array[Dictionary] = [
++		{phase = 0.2, frequency = 100.0, rpm = 11149.0},
++		{phase = 1.0 - pow(2.0, -40.0), frequency = 90.0, rpm = 2800.0},
++		{phase = -0.5, frequency = 100.0, rpm = 2800.0},
++		{phase = 0.5, frequency = -10.0, rpm = 2800.0},
++	]
++	var alpha := 1.0 - exp(-1.0 / (SMOOTH_SECONDS * EXPECTED_RATE))
++	for item: Dictionary in cases:
++		var voice := Voice.new()
++		voice.reset(2800.0, MAX_STIK_RPM)
++		voice.phase = item.phase
++		voice.frequency = item.frequency
++		var target: float = float(item.rpm) / 60.0
++		var table: PackedFloat32Array = Voice._tables[Voice.band(maxf(voice.frequency, target), EXPECTED_RATE)]
++		var next_amplitude: float = voice.amplitude + alpha * (Voice.level(item.rpm, MAX_STIK_RPM) - voice.amplitude)
++		var expected_sample := Vector2.ONE * (next_amplitude * Voice.sample(table, voice.phase))
++		var actual: PackedVector2Array = voice.render(item.rpm, MAX_STIK_RPM, 1)
++		_check("transition and fallback interpolation match helper",
++			actual.size() == 1 and actual[0] == expected_sample, "phase=%s frequency=%s" % [item.phase, item.frequency])
++
++
+ func _vector_x(values: PackedVector2Array) -> PackedFloat32Array:
+ 	var output := PackedFloat32Array()
+ 	output.resize(values.size())
+@@ -307,5 +351,6 @@ func _vector_x(values: PackedVector2Array) -> PackedFloat32Array:
+ func _initialize() -> void:
+ 	_pure_oracle_checks()
+ 	_runtime_voice_checks()
++	_interpolation_parity_checks()
+ 	print("%d checks, %d failed" % [_checks, _failures])
+ 	quit(1 if _failures > 0 else 0)

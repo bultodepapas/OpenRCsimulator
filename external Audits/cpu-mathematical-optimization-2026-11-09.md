@@ -8,9 +8,9 @@ The most important remaining CPU opportunity is spatial wind: the actual referen
 
 ## Deliverables
 
-- [OpenRC-performance-review.html](https://chatgpt.com/library?file_id=libfile_fde3_f-1efac59579d881918613b08060b846a1_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) — the complete report, with equations, source locations, audit reconciliation, limitations, and the validation campaign.
-- [OpenRC-performance.patch](https://chatgpt.com/library?file_id=libfile_fde3_f-30e1e7b9f77081918adaf9d69816f281_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) — the two implementations and their regression tests.
-- [OpenRC-performance-evidence.zip](https://chatgpt.com/library?file_id=libfile_fde3_f-9040f2f0482881918292ed5da36c1893_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) — raw timings, comparison harnesses, checked test receipts, prototypes, source identities, negative results, and reproduction instructions.
+- [OpenRC-performance-review.html](performance-audit-sources-2026-11-09/OpenRC-performance-review.html) — the complete report, with equations, source locations, audit reconciliation, limitations, and the validation campaign.
+- [OpenRC-performance.patch](performance-audit-sources-2026-11-09/OpenRC-performance.patch) — the two implementations and their regression tests.
+- [OpenRC-performance-evidence.zip](../docs/research/performance-audit-intake-2026-11-15/performance-evidence-round1-compact.zip) — raw timings, comparison harnesses, checked test receipts, prototypes, source identities, negative results, and reproduction instructions.
 
 The changes are on the local branch **`perf/math-audit-20261109`**. They have not been pushed or merged. The patch passes an applicability check against both reviewed commits.
 

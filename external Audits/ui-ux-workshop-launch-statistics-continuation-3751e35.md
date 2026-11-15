@@ -6,8 +6,8 @@ I continued against **`main` at commit `3751e35`**, rechecked `external Audits/C
 
 ### Deliverables
 
-- **[OpenRC_UI_UX_Audit_Continuation_2026-11-06.pdf](https://chatgpt.com/library?file_id=libfile_d721f3461b488191a7c40509477bde06&account_id=personal)** — 17 pages covering the seven findings, suggested player-facing messages, implementation guidance, acceptance checks, 36 project references, and 14 official Godot documentation references.
-- **[OpenRC_UI_UX_Continuation_Evidence_2026-11-06.zip](https://chatgpt.com/library?file_id=libfile_5ddcca51a2ec81919aedd72b6e1db580&account_id=personal)** — focused reproduction scripts, six checked component runs, the full-app command transcript, diagnostic logs, source identities, and reconstruction instructions.
+- **OpenRC_UI_UX_Audit_Continuation_2026-11-06.pdf (private attachment URL omitted)** — 17 pages covering the seven findings, suggested player-facing messages, implementation guidance, acceptance checks, 36 project references, and 14 official Godot documentation references.
+- **OpenRC_UI_UX_Continuation_Evidence_2026-11-06.zip (private attachment URL omitted)** — focused reproduction scripts, six checked component runs, the full-app command transcript, diagnostic logs, source identities, and reconstruction instructions.
 
 The production checkout remains unchanged; these are review findings and concrete repair recommendations.
 

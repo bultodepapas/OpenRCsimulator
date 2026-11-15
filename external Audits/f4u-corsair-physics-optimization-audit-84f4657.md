@@ -8,8 +8,8 @@ The experiments use commit **`84f4657814c157f1556f965861c0ab8623f48d8e`** on `co
 
 ### Deliverables
 
-- [F4U_Corsair_Audit_84f4657.txt](https://chatgpt.com/library?file_id=libfile_e4c3faf362448191908e402b9b86067d&account_id=personal) — complete report, derivations, source locations, priorities, and repair recommendations.
-- [F4U_Corsair_Evidence_84f4657.zip](https://chatgpt.com/library?file_id=libfile_16b0cbd23bd88191b1dcc3d53f409652&account_id=personal) — reproducible probes, isolated prototypes, raw measurements, checked-runner receipts, source hashes, and a replay helper.
+- F4U_Corsair_Audit_84f4657.txt (private attachment URL omitted) — complete report, derivations, source locations, priorities, and repair recommendations.
+- F4U_Corsair_Evidence_84f4657.zip (private attachment URL omitted) — reproducible probes, isolated prototypes, raw measurements, checked-runner receipts, source hashes, and a replay helper.
 
 | ID | Finding | Assessment | Evidence |
 |---|---|---|---|

@@ -4,11 +4,11 @@
 
 The complete report includes the workflow map, code locations, run evidence, corrections, acceptance tests, and remediation sequence:
 
-[OpenRC-CI-Audit-347905ca.pdf](https://chatgpt.com/library?file_id=libfile_fde3_f-f6ec2946c29481919b215e1719b8ae5c_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+OpenRC-CI-Audit-347905ca.pdf (private attachment URL omitted)
 
 The evidence bundle contains selected logs and API responses, nine downloaded artifacts, reproduction probes, 41 source snapshots, and checksums:
 
-[OpenRC-CI-Audit-Evidence-347905ca.zip](https://chatgpt.com/library?file_id=libfile_fde3_f-8fec888afb808191890cf2ea8113dff7_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)
+OpenRC-CI-Audit-Evidence-347905ca.zip (private attachment URL omitted)
 
 ## Reviewed source and status
 

@@ -8,7 +8,7 @@ A new commit landed during the review. I incorporated it: the latest audited rev
 
 The complete **16-page report, with 55 source references**, is available here:
 
-[OpenRC_Apple_Silicon_Audit_2026-11-05.pdf](https://chatgpt.com/library?file_id=libfile_9454ec9136788191b9a0e58d8a730b1b\&account_id=personal)
+OpenRC_Apple_Silicon_Audit_2026-11-05.pdf (private attachment URL omitted)
 
 **Evidence boundary:** I performed a source audit, internet research, and targeted synthetic checks of benchmark validation. The Mac performance numbers below come from the repository’s recorded campaigns; I did not run new native Mac benchmarks.
 

@@ -4,20 +4,20 @@ The package is grounded in the reviewed repository and explicitly separates exis
 
 ## Download the handoff
 
-- **Complete package to forward:** [OpenRC_Crash_Cost_Senior_Handoff_2026-11-09.zip](https://chatgpt.com/library?file_id=libfile_fde3_f-7b0acda58c488191a870d0d86206d22c_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) — all Markdown documents, research JSON, acceptance matrix, reproducibility tool, and retained evidence.
-- **Everything in one Markdown document:** [OPENRC_CRASH_COST_SENIOR_HANDOFF.md](https://chatgpt.com/library?file_id=libfile_fde3_f-bcbd77ab586c8191a70c72fd12960bfc_ac5d15b10f548191b3cb750779cf7c10&account_id=personal).
+- **Complete package to forward:** OpenRC_Crash_Cost_Senior_Handoff_2026-11-09.zip (private attachment URL omitted) — all Markdown documents, research JSON, acceptance matrix, reproducibility tool, and retained evidence.
+- **Everything in one Markdown document:** OPENRC_CRASH_COST_SENIOR_HANDOFF.md (private attachment URL omitted).
 
 ### Individual documents
 
 | Document | What the senior developer will find |
 |---|---|
-| [README.md](https://chatgpt.com/library?file_id=libfile_fde3_f-0b5ca6acf31081919c9c46b1fb4609df_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) | Reading order, scope, key decisions, evidence boundaries, and a ready-to-forward handoff note. |
-| [01_EXECUTION_PLAN.md](https://chatgpt.com/library?file_id=libfile_fde3_f-7e9e1bdaa4a08191872e975f5347c3eb_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) | Nineteen sequenced work packages with owners, dependencies, files to inspect, required changes, tests, and concrete completion criteria. |
-| [02_RUNTIME_IMPLEMENTATION_SPEC.md](https://chatgpt.com/library?file_id=libfile_fde3_f-9135263684388191a4ab16ee6cca2a9e_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) | The current call graph and proposed runtime changes: accepted contacts, local damage, persistent evidence, inspections, component reuse, hazards, reporting, and restoration. |
-| [03_TEST_AND_RELEASE_SPEC.md](https://chatgpt.com/library?file_id=libfile_fde3_f-081178fbfe5c8191968416417467903c_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) | All 46 proposed cases, independent accounting fixtures, checked commands, actual player journeys, eight gates, and adversarial review questions. |
-| [04_FLEET_AND_PRICE_WORKBOOK.md](https://chatgpt.com/library?file_id=libfile_fde3_f-01181c3fb2e48191977f6a7ed42b485c_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) | Every current catalog route, actual component identifiers and quantities, researched prices, package contents, labor assumptions, missing information, and per-aircraft tasks. |
-| [05_DATA_CONTRACT_AND_AUTHORING_STANDARD.md](https://chatgpt.com/library?file_id=libfile_fde3_f-0941ff1bb3048191a14af76edb0a92b8_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) | The proposed standard for existing and future aircraft: physical versus financial components, damage regions, packages, provenance, schemas, compatibility, migration, and validation. |
-| [06_RESEARCH_AND_BASELINE_NOTES.md](https://chatgpt.com/library?file_id=libfile_fde3_f-9a2732b2427c8191b9c4db0ac06db856_ac5d15b10f548191b3cb750779cf7c10&account_id=personal) | Repository changes since the audit, existing documents to reuse, explanations for the wide ranges, new research findings, corrections, and exact verification limits. |
+| README.md (private attachment URL omitted) | Reading order, scope, key decisions, evidence boundaries, and a ready-to-forward handoff note. |
+| 01_EXECUTION_PLAN.md (private attachment URL omitted) | Nineteen sequenced work packages with owners, dependencies, files to inspect, required changes, tests, and concrete completion criteria. |
+| 02_RUNTIME_IMPLEMENTATION_SPEC.md (private attachment URL omitted) | The current call graph and proposed runtime changes: accepted contacts, local damage, persistent evidence, inspections, component reuse, hazards, reporting, and restoration. |
+| 03_TEST_AND_RELEASE_SPEC.md (private attachment URL omitted) | All 46 proposed cases, independent accounting fixtures, checked commands, actual player journeys, eight gates, and adversarial review questions. |
+| 04_FLEET_AND_PRICE_WORKBOOK.md (private attachment URL omitted) | Every current catalog route, actual component identifiers and quantities, researched prices, package contents, labor assumptions, missing information, and per-aircraft tasks. |
+| 05_DATA_CONTRACT_AND_AUTHORING_STANDARD.md (private attachment URL omitted) | The proposed standard for existing and future aircraft: physical versus financial components, damage regions, packages, provenance, schemas, compatibility, migration, and validation. |
+| 06_RESEARCH_AND_BASELINE_NOTES.md (private attachment URL omitted) | Repository changes since the audit, existing documents to reuse, explanations for the wide ranges, new research findings, corrections, and exact verification limits. |
 
 ## What I advanced for the developer
 

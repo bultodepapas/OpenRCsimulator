@@ -8,11 +8,11 @@ I reviewed **`bultodepapas/OpenRCsimulator` at commit `3751e35e1cccf574c4446d212
 
 The complete **19-page report** includes source links, reproduction details, proposed fixes, acceptance criteria, and the Godot research:
 
-[OpenRC_UI_UX_Incremental_Audit_2026-11-06.pdf](https://chatgpt.com/library?file_id=libfile_ecc3ed98349081919be12251b22d5db7&account_id=personal)
+OpenRC_UI_UX_Incremental_Audit_2026-11-06.pdf (private attachment URL omitted)
 
 The evidence archive contains probes, logs, source hashes, reconstruction instructions, and the prior-audit comparison:
 
-[OpenRC_UI_UX_Evidence_2026-11-06(1).zip](https://chatgpt.com/library?file_id=libfile_14a46b6f606081919632d7722957cd31&account_id=personal)
+OpenRC_UI_UX_Evidence_2026-11-06(1).zip (private attachment URL omitted)
 
 ### How I handled previous audits
 

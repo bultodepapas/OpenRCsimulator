@@ -1,0 +1,413 @@
+{
+  "format": "openrc-performance-audit-repository-state-v1",
+  "observed_at_utc": "2026-11-15 15:39:27 UTC",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "default_branch": "main",
+  "base_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "base_tree": "cca9ad99ee0d1a6b5f70f1a960c8f8f36f488bf8",
+  "previous_round3_commit": "45d86d250f6e38a3d9b60d30c01bdc2396571efe",
+  "commits_ahead_of_round3": 151,
+  "intended_branch": "audit/performance-consolidation-2026-11-15",
+  "scope": "Historical audit intake, source reconciliation, and evidence preservation; no production changes or new game-performance measurements.",
+  "workflows": [
+    {
+      "id": 43710453322,
+      "name": "Windows test queue regressions",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453322",
+      "head_sha": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+      "updated_at": "2026-11-15T11:47:06Z"
+    },
+    {
+      "id": 43710453317,
+      "name": "MetalFX source controls",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453317",
+      "head_sha": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+      "updated_at": "2026-11-15T11:47:41Z"
+    },
+    {
+      "id": 43710453445,
+      "name": "CI",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445",
+      "head_sha": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+      "updated_at": "2026-11-15T14:08:34Z"
+    }
+  ],
+  "open_pull_requests": [
+    {
+      "number": 12,
+      "title": "DT-MAC: fix Temporal camera-cut ordering and qualify M1 execution",
+      "draft": true,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/pull/12",
+      "head_ref": "codex/apple-silicon-native-default-20261113",
+      "head_sha": "bffe0ed522efc4e0ab7336ef60d401c4cf4d712d",
+      "base_ref": "main"
+    },
+    {
+      "number": 11,
+      "title": "Bound circuit mesh cache and reuse parked ORM texture reads",
+      "draft": true,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/pull/11",
+      "head_ref": "perf/bounded-memory-reuse-2026-11-07",
+      "head_sha": "7171aef8111aa7005267d3eb2bff64caa311ffdb",
+      "base_ref": "main"
+    },
+    {
+      "number": 10,
+      "title": "fix(tools): preserve reports and enforce debug contracts (PT1h-R13/R14)",
+      "draft": true,
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/pull/10",
+      "head_ref": "codex/tools-review-20261107",
+      "head_sha": "644f4e7370fc4d0cb4efe254b25cebd4ea329b70",
+      "base_ref": "main"
+    }
+  ],
+  "source_files": {
+    "app/project.godot": {
+      "git_blob_sha": "647257adefaa34ffd3a95245bd616246679a340b",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/project.godot"
+    },
+    "app/get-godot.sh": {
+      "git_blob_sha": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/get-godot.sh"
+    },
+    "app/sim/native_stage.gd": {
+      "git_blob_sha": "bf265bcacb003cb1d1fb1cdc3d9cc105cc4af8fd",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/sim/native_stage.gd"
+    },
+    "app/scenery/runway_meadow.gd": {
+      "git_blob_sha": "3fbf1e2a691746c6f9bc00bae23e12c7596248b6",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/scenery/runway_meadow.gd"
+    },
+    "app/sim/aircraft_contact_events.gd": {
+      "git_blob_sha": "5c64279aa7e6a387bb3442adb74567dca50c32c5",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/sim/aircraft_contact_events.gd"
+    },
+    "app/economy/incident.gd": {
+      "git_blob_sha": "3b06d717e9642daf6bb7f428256cad5b093d3b03",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/economy/incident.gd"
+    },
+    "app/main.gd": {
+      "git_blob_sha": "c6d2c38e1d43c5a5db15150317ffa92e0a67a73a",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/main.gd"
+    },
+    "app/ai/companions/pilot.gd": {
+      "git_blob_sha": "a3e789784d331a91727467ba8eaee1f4328686e8",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/app/ai/companions/pilot.gd"
+    },
+    "docs/research/crash-damage-investigations/CR-22e/README.md": {
+      "git_blob_sha": "3a2b5f2c474f9121485c02c7763299811383219e",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/docs/research/crash-damage-investigations/CR-22e/README.md"
+    },
+    "docs/research/visual-quality-implementation/VQ-04a/collection-decoder-20261109/README.md": {
+      "git_blob_sha": "015dfdbb439360ee30375bf16ec7fd25fd795b33",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/docs/research/visual-quality-implementation/VQ-04a/collection-decoder-20261109/README.md"
+    },
+    "external Audits/CONSOLIDATED-AUDITS.md": {
+      "git_blob_sha": "422b980ea0112ae53acfb313c54c2d33c5dbeeb6",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/external%20Audits/CONSOLIDATED-AUDITS.md"
+    },
+    "external Audits/COMPLETED-AUDIT-WORK.md": {
+      "git_blob_sha": "eaec2b51117634ec1b5ea002aaaaf87aa4419c83",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/ad21070798bfb9658785576a9c0b8bfc9a71fc7f/external%20Audits/COMPLETED-AUDIT-WORK.md"
+    }
+  },
+  "platform_settings": {
+    "godot": "4.8.beta2.official.cafc17a19",
+    "physics_hz": 240,
+    "default_renderer": "gl_compatibility",
+    "arm64_renderer_override": "mobile",
+    "native_admission_scope": "Linux x86_64; receipt-gated Windows x86_64 source/debug; restricted macOS ARM64 routes. Windows release remains reference. Actual installation and scenario admission must be recorded."
+  },
+  "ci_failure_observation": {
+    "run_id": 43710453322,
+    "job_id": 132800644383,
+    "tests_run": 164,
+    "failures": 2,
+    "skipped": 3,
+    "test_file": "tools/testqueue/test_pool_mcp.py",
+    "test_names": [
+      "test_launch_is_local_and_idempotent_across_clients",
+      "test_supervisor_freezes_once_and_resumes_original_manifest"
+    ],
+    "assertion_mismatch": "Expected short Windows user path RUNNER~1; actual path uses expanded runneradmin. This observation does not establish a runtime queue or simulator failure.",
+    "job_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453322/job/132800644383"
+  },
+  "uid_findings": {
+    "previous_round3_missing_paths_now_present": [
+      "app/ai/companions/seed_allocator.gd.uid",
+      "app/economy/report_archive.gd.uid",
+      "app/tests/test_companions_external_rejection.gd.uid",
+      "app/tests/test_companions_restore.gd.uid",
+      "app/tests/test_crash_cost_common_coverage.gd.uid"
+    ],
+    "current_ci_preflight": "success",
+    "qualification": "Source existence and current preflight; not full CI success."
+  },
+  "pr12_comparison": {
+    "head_sha": "bffe0ed522efc4e0ab7336ef60d401c4cf4d712d",
+    "comparison_base": "PR head",
+    "comparison_head": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+    "status": "behind",
+    "ahead_by": 0,
+    "behind_by": 26,
+    "interpretation": "PR head is 26 commits ahead of main; main is its merge base. PR remains draft and unmerged."
+  },
+  "main_ci_jobs": [
+    {
+      "id": 132800644495,
+      "name": "CI selection and release preflight",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132800644495"
+    },
+    {
+      "id": 132800645604,
+      "name": "Publication source rebind evidence",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132800645604"
+    },
+    {
+      "id": 132801393861,
+      "name": "three.js prototype (archived bake-off build)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393861"
+    },
+    {
+      "id": 132801393873,
+      "name": "NK-4 native kernel qualification (Windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393873"
+    },
+    {
+      "id": 132801393885,
+      "name": "Website source and download checks",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393885"
+    },
+    {
+      "id": 132801393922,
+      "name": "RC native Linux build",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393922"
+    },
+    {
+      "id": 132801393923,
+      "name": "NK-3 native kernel qualification (Linux)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393923"
+    },
+    {
+      "id": 132801393925,
+      "name": "RC native Windows build",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393925"
+    },
+    {
+      "id": 132801393926,
+      "name": "Godot visual captures",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393926"
+    },
+    {
+      "id": 132801393947,
+      "name": "Godot app (units 0)",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393947"
+    },
+    {
+      "id": 132801393957,
+      "name": "Godot app (integration 0)",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393957"
+    },
+    {
+      "id": 132801393970,
+      "name": "Godot app (units 1)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393970"
+    },
+    {
+      "id": 132801393971,
+      "name": "NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393971"
+    },
+    {
+      "id": 132801393986,
+      "name": "Godot app (units 5)",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393986"
+    },
+    {
+      "id": 132801394010,
+      "name": "Godot app (units 7)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801394010"
+    },
+    {
+      "id": 132801394013,
+      "name": "Godot app (units 2)",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801394013"
+    },
+    {
+      "id": 132801394026,
+      "name": "Godot app (units 6)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801394026"
+    },
+    {
+      "id": 132801394039,
+      "name": "Godot app (units 3)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801394039"
+    },
+    {
+      "id": 132801394069,
+      "name": "Godot app (units 4)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801394069"
+    },
+    {
+      "id": 132801395143,
+      "name": "Visual group shadow (${{ matrix.group }})",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801395143"
+    },
+    {
+      "id": 132802224929,
+      "name": "RC native production checks (linux)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132802224929"
+    },
+    {
+      "id": 132802224931,
+      "name": "RC native production checks (windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132802224931"
+    },
+    {
+      "id": 132806264738,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132806264738"
+    },
+    {
+      "id": 132837431021,
+      "name": "CI required",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132837431021"
+    },
+    {
+      "id": 132837432356,
+      "name": "Visual group shadow comparison",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132837432356"
+    },
+    {
+      "id": 132837955420,
+      "name": "GitHub release (v* tags)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132837955420"
+    }
+  ],
+  "main_ci_failure_observations": [
+    {
+      "job_id": 132801393947,
+      "name": "Godot app (units 0)",
+      "test": "test_controls_setup_p0.gd",
+      "observed_failure_at_utc": "2026-11-15T12:02:34Z",
+      "message": "FAIL the question offers Save, Discard and Keep editing",
+      "reported_failures": 1,
+      "scope": "The log identifies a failed assertion; underlying UI cause and user-visible impact were not established.",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393947"
+    },
+    {
+      "job_id": 132801393957,
+      "name": "Godot app (integration 0)",
+      "test": "D11g",
+      "observed_failure_at_utc": "2026-11-15T12:04:26Z",
+      "message": "data check: stale",
+      "fields": [
+        "aero.coefficients.Cmq.source",
+        "aero.coefficients.CLq.source",
+        "aero.coefficients.Cnr.source"
+      ],
+      "diagnostic": "Fields do not match current or qualified historical provenance.",
+      "source": "research/aero/d11g/derive_rate_derivatives.gd:207",
+      "scope": "Provenance validation failure; the logged derivatives do not establish a physical or numerical regression.",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393957"
+    },
+    {
+      "job_id": 132801394013,
+      "name": "Godot app (units 2)",
+      "test": "test_shaft_publication.gd",
+      "checks": 154,
+      "failed_checks": 1,
+      "message": "source-bound shaft fixture did not load; fixture manifest or source identity differs",
+      "scope": "The log does not distinguish manifest mismatch from source identity mismatch.",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801394013"
+    },
+    {
+      "job_id": 132801393986,
+      "name": "Godot app (units 5)",
+      "test": "test_weather_publication.gd",
+      "checks": 193,
+      "failed_checks": 1,
+      "message": "source-bound weather fixture did not load; fixture manifest or source identity differs",
+      "scope": "The log does not distinguish manifest mismatch from source identity mismatch.",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132801393986"
+    },
+    {
+      "job_id": 132837431021,
+      "name": "CI required",
+      "message": "app: unexpected 'failure' (required=True)",
+      "scope": "Downstream gate failure; not another independent app-test failure. Discovery reconciliation was skipped.",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43710453445/job/132837431021"
+    }
+  ],
+  "publication_adjustments": {
+    "reason": "Automatic publication review rejected personal ChatGPT attachment URLs in the completed-work ledger and inherited audit tree.",
+    "action": "Two private URLs are redacted in the historical round 2 ledger member. In 25 older audit records, three personal links are replaced by the recovered repository copies and 51 others are rendered with their displayed labels and explicit omission notes. All other audit text and ordinary citation parameters are preserved.",
+    "private_urls_in_new_payloads": false,
+    "original_inputs_modified": false,
+    "link_manifest": "public-link-redactions.json"
+  },
+  "main_ci_totals": {
+    "success": 17,
+    "skipped": 4,
+    "failure": 5
+  },
+  "native_ci_scope": "Linux NK-3 and Windows NK-4 qualification jobs passed. Mac ARM64 job passed experimental fixed-wing source correctness; this does not establish M1 execution, performance, automatic admission, fleet or distribution. RC native production checks passed on Linux and Windows. Release build was a cross-export from Ubuntu, not native package execution or a published release."
+}
