@@ -100,12 +100,12 @@ disabled and different Temporal AA. It does not qualify active-flight quality,
 sustained 60 FPS, presentation or latency. The implementation evidence preserves
 the earlier Native fallback, exact sources, raw results and remaining gates.
 
-The custom-engine/native-physics preflight found a separate blocker: patch 0005
-widens existing RT method integer metadata from the official engine's uint32/uint8
-to int64. The native intake correctly refuses those API incompatibilities. Restore
-the upstream binding contract and retain checked Metal bounds before rebuilding
-and repeating native correctness. Do not suppress the validator diagnostics or
-promote the current reference-physics research package to native by declaration.
+The custom-engine/native-physics preflight found 15 existing RT method metadata
+incompatibilities in patch 0005. Additive 0021 restores the unsigned API while
+retaining checked wide inputs. Its fresh editor/template pair passes the unchanged
+full official API validator and 81 native query/dispatch processes. Combined
+native-physics and packaged qualification remain separate. The R3 development ZIP
+still contains clean19 and reference physics; the new pair does not upgrade it.
 
 Completion has three distinct levels per technology:
 

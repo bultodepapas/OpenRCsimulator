@@ -1402,21 +1402,57 @@ the custom engine also reported 15 pre-existing RT method metadata changes:
 geometry offsets/counts/stride, instance ID/mask and `tlas_create` capacity changed
 from uint32/uint8 to int64 in patch 0005. Both validators exited zero, demonstrating
 why diagnostic inspection is required. Raw stdout/stderr and inputs remain in
-`native-api-control-diagnostic-r1` under ANGEL's task root. This blocks combined
-custom-engine/native-physics correctness until the upstream ABI is restored and
-the new editor/template pair passes the unchanged validator. The earlier clean19
+`native-api-control-diagnostic-r1` under ANGEL's task root. This blocked combined
+custom-engine/native-physics correctness until the upstream ABI repair below.
+The earlier clean19
 scaler/SDK observations remain scoped to that engine; they do not prove native
 extension compatibility.
 
 Additive patch `0021-metal-rt-extension-abi.patch` is prepared after frozen
 0001–0019, excluding optional 0020. It restores actual unsigned-facing methods
 and routes wide script/ptrcall integers through the existing checked paths.
-Five source/catalog controls passed; the unchanged complete official API
-validator and native dispatch/RT rejection witnesses remain required. Fresh
-editor/template builds are in progress, using the existing intake/build helper;
-no rebuilt-pair, ABI repair or custom-native pass is claimed here. The separate
-pair/ZIP binding producer passed 13 synthetic controls and independent source
-review; actual export consumption and final package integration remain pending.
+Five source/catalog controls passed. Fresh editor/template builds through the
+unchanged intake/build helper then passed pair verification in 1,618.51 seconds.
+The editor SHA-256 is
+`465227d92ac1696cd338d7d17ff2204ae662c51164fb10ae9e558d46c40689a4`;
+the release template is
+`c93f89c7949fd1c26fe9451b1b47711d73680fb4f1c8f686f65c928752c7cfb2`.
+Both use the exact 0001–0019+0021 sequence, excluding optional 0020. The editor
+passed the unchanged full official 4.8 API validator without diagnostics; both
+engines detected the deliberately missing-class control. The official API dump
+SHA-256 is `f44ba46a874368b716dd7c713ffccec27afaa2dbaaf6b32b625c309524a730ba`.
+
+A separate diagnostic GDExtension and the existing checked Metal runner passed
+42 fresh processes: 34 raw ptrcall cases and eight explicit `Object.call` cases,
+across argument-buffer and direct binding modes. The original typed probe also
+passed all 39 planned processes, including feature-off, hit/readback and rejection
+controls. Invalid-width inputs still reach the intended BLAS/TLAS refusal; getter
+casts alone are not proof. Intentional engine-error cases retain their failing
+checked verdicts and are accepted only by the existing exact-diagnostic policy.
+These 81 processes are API/query correctness evidence, not 81 flight or rendered
+quality/performance samples. The auxiliary build's first validation used the
+kernel translation-unit roster and was refused; a separate validation declared
+the actual witness source and retained all compiler/SDK/FP checks, preserving
+the original attempt. No kernel build was qualified by that auxiliary receipt.
+
+The release-only export-template ZIP is 20,412,246 bytes, SHA-256
+`244bf295bd0799f67d23fb7fd2b7d16f350923057713355515f3f6e359bdcc7e`.
+Its release member matches the verified template; four skeleton members match
+the pinned upstream archive. Phase 14 retains 234 payloads in 21,254,403 compressed
+bytes, SHA-256
+`102cefaf2a7f5e5163dbe20f3f6fca8e16d156ae39f150cedcc33c38ccc14f9c`;
+all retrieved payload hashes matched independently. This does not retroactively
+upgrade the clean19 R3 application ZIP or qualify a native-physics package.
+
+The separate pair/ZIP binding producer passed 13 synthetic controls and source
+review. Its export integration passed 14 existing and 12 focused Python controls;
+native export/PCK/receipt qualification remains pending. Combined private source
+`d53afebd7e8935ee7ee30cdaf681c7f190fdf1ff` passed 39 producer controls,
+seven actual script parses and six focused startup/log/replay scripts on the
+new editor, using a declared warm import cache and isolated research profile.
+It is not packaged execution or native replay qualification. Review then found
+a non-string backend edge in the new recording guard; a type check and focused
+test are being qualified before repeating native correctness.
 
 ## Evidence retention and open gates
 

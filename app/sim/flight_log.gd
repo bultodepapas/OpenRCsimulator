@@ -45,11 +45,14 @@ func _stage_backend_identity() -> Variant:
 	# Older fixed-wing sessions predate selectable stage backends and always use the reference.
 	var identity: Variant = _session.call("stage_backend_identity") if _session.has_method("stage_backend_identity") \
 		else {backend = "gdscript_reference"}
-	if identity is Dictionary and identity.get("backend") == "gdscript_reference":
-		var sim: Variant = _session.get("sim")
-		if is_instance_valid(sim):
-			var model: Variant = sim.get("model")
-			if is_instance_valid(model) and _has_native_callback(model): return null
+	if identity is Dictionary:
+		var backend: Variant = identity.get("backend")
+		if typeof(backend) != TYPE_STRING: return null
+		if backend == "gdscript_reference":
+			var sim: Variant = _session.get("sim")
+			if is_instance_valid(sim):
+				var model: Variant = sim.get("model")
+				if is_instance_valid(model) and _has_native_callback(model): return null
 	return identity
 
 
@@ -73,12 +76,13 @@ func start(destination := "") -> Error:
 	if recording:
 		return ERR_ALREADY_IN_USE
 	failure = ""
-	var checkpoint: Dictionary = _session.checkpoint()
-	if checkpoint.is_empty() or not _session.physics_enabled:
-		return _failed("Flight log requires a valid fixed-wing checkpoint.", ERR_INVALID_DATA)
+	# Reject malformed reported backends before checkpoint() reads the same value.
 	var stage_backend: Variant = _stage_backend_identity()
 	if not stage_backend is Dictionary:
 		return _failed("Flight log requires a valid stage backend identity.", ERR_INVALID_DATA)
+	var checkpoint: Dictionary = _session.checkpoint()
+	if checkpoint.is_empty() or not _session.physics_enabled:
+		return _failed("Flight log requires a valid fixed-wing checkpoint.", ERR_INVALID_DATA)
 	var replay_identity := _replay_identity(str(stage_backend.get("backend", "")), true)
 	if OS.has_feature("template_release") and OS.get_name() == "macOS" and replay_identity.kind == "unavailable":
 		return _failed("Flight log requires a verified Mac bundle receipt for its selected backend.", ERR_INVALID_DATA)
