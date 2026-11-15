@@ -29,6 +29,8 @@ func _initialize() -> void:
 	_test_rotating_wing(lake)
 	_test_prop_disc(lake)
 	_test_hull_contact_context(lake)
+	_test_surface_normals()
+	_test_aircraft_bank_tolerance(lake)
 	print("all lake collision checks passed" if _failures == 0 else "%d lake collision checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 
@@ -95,6 +97,14 @@ func _test_water_and_hull_first(lake: Dictionary) -> void:
 		and event.penetration_m >= 0.0 and event.has_kinematics and event.normal_speed_mps > 10.0
 		and event.point_index == 0 and event.probe_kind == "hull",
 		"depth=%.3f penetration=%.8f speed=%.3f" % [event.depth_m, event.penetration_m, event.normal_speed_mps])
+	var epsilon: float = LakeCollision.WATER_SLOPE_EPSILON_M
+	var dn: float = (LakeSurface.water_height_down(lake, event.point_ned[0] + epsilon, event.point_ned[1], event_time)
+		- LakeSurface.water_height_down(lake, event.point_ned[0] - epsilon, event.point_ned[1], event_time)) / (2.0 * epsilon)
+	var de: float = (LakeSurface.water_height_down(lake, event.point_ned[0], event.point_ned[1] + epsilon, event_time)
+		- LakeSurface.water_height_down(lake, event.point_ned[0], event.point_ned[1] - epsilon, event_time)) / (2.0 * epsilon)
+	_check("water sweep normal is orthogonal to both positive-down surface tangents",
+		absf(M.dot(event.normal_ned, PackedFloat64Array([1.0, 0.0, dn]))) < 1.0e-10
+		and absf(M.dot(event.normal_ned, PackedFloat64Array([0.0, 1.0, de]))) < 1.0e-10)
 	_check("simultaneous hull and gear water contact deterministically favors hull", event.probe_order == 0
 		and event.probe_kind == "hull" and event.point_index == 0)
 	var off_water_hull := PackedFloat64Array([200.0, 0.0, 0.0])
@@ -159,6 +169,8 @@ func _test_rotating_wing(lake: Dictionary) -> void:
 		_check("rotating wing event preserves point angular velocity", M.norm(event.velocity_ned) > 25.0
 			and event._state_at_contact.size() == RB.SIZE and event.crossing.available,
 			"velocity=%s fraction=%.6f" % [event.velocity_ned, event.time_fraction])
+		_check("rotating point impact speed projects its complete velocity", absf(event.normal_speed_mps
+			- maxf(0.0, -M.dot(event.velocity_ned, event.normal_ned))) < 1.0e-10)
 
 
 func _test_prop_disc(lake: Dictionary) -> void:
@@ -210,6 +222,75 @@ func _test_hull_contact_context(lake: Dictionary) -> void:
 			- (float(prop_depth.point_ned[2]) - LakeSurface.water_height_down(lake,
 				float(prop_depth.point_ned[0]), float(prop_depth.point_ned[1]), 0.0))) < 1.0e-12,
 		str(prop_depth))
+
+
+func _test_surface_normals() -> void:
+	for slopes: Array in [[0.2, 0.0], [-0.2, 0.0], [0.0, 0.3], [0.0, -0.3], [0.2, -0.3], [-0.2, 0.3]]:
+		var normal: PackedFloat64Array = LakeCollision._surface_normal(slopes[0], slopes[1])
+		var tangent_n := PackedFloat64Array([1.0, 0.0, slopes[0]])
+		var tangent_e := PackedFloat64Array([0.0, 1.0, slopes[1]])
+		_check("swept normal follows independent down-plane tangents %s" % str(slopes),
+			absf(M.dot(normal, tangent_n)) < 1.0e-14 and absf(M.dot(normal, tangent_e)) < 1.0e-14
+			and absf(M.norm(normal) - 1.0) < 1.0e-14 and normal[2] < 0.0)
+	_check("invalid swept gradients reject", LakeCollision._surface_normal(NAN, 0.0).is_empty()
+		and LakeCollision._surface_normal(0.0, INF).is_empty())
+
+
+func _test_aircraft_bank_tolerance(lake: Dictionary) -> void:
+	var hull := PackedFloat64Array([0.0, 0.0, 0.0])
+	var q := M.q_from_euler(0.0, 0.0, 0.0)
+	var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, 110.0, 174.0)
+	var down: float = terrain.ground_down_m
+	var length: float = sqrt(1.0 + terrain.slope_north * terrain.slope_north + terrain.slope_east * terrain.slope_east)
+	var normal := PackedFloat64Array([terrain.slope_north / length, terrain.slope_east / length, -1.0 / length])
+	var properties := {mass_kg = MASS, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+		inertia = _inertia, inverse = RB.inertia_inverse(_inertia)}
+	var sampler := func(_fraction: float) -> Dictionary:
+		return properties
+	for tolerance: Dictionary in [{}, {terminal_specific_energy = 12.5, crash_depth = 0.12}]:
+		var prepared: Dictionary = HullContact.prepare(hull, MASS, _inertia, lake, PackedFloat64Array(), tolerance)
+		var threshold: float = HullContact.terminal_energy(prepared)
+		for energy: float in [threshold - 0.00001, threshold + 0.00001]:
+			var velocity: PackedFloat64Array = M.scale(normal, -sqrt(2.0 * energy))
+			var previous := _state([110.0, 174.0, down - 0.005], Array(velocity), q, [0.0, 0.0, 0.0])
+			var candidate := _state([110.0, 174.0, down + 0.005], Array(velocity), q, [0.0, 0.0, 0.0])
+			var event: LakeCollision.WaterEvent = LakeCollision.first_hit(lake, previous, candidate,
+				hull, {}, 1, 0.01, MASS, _inertia, true, {}, prepared)
+			var sampled: Dictionary = LakeCollision.first_hit_sampled(lake, previous, candidate,
+				hull, {}, 1, 0.01, sampler, true, {}, prepared)
+			var terminal: bool = energy > threshold
+			_check("fixed/sampled bank energy boundary %s / %s" % [threshold, energy], sampled.ok
+				and (event != null) == terminal and (sampled.event != null) == terminal)
+			if event != null and sampled.event != null:
+				_check("bank severity uses the geometric normal and coherent mass", absf(event.specific_j_per_kg - energy) < 1.0e-9
+					and absf(sampled.event.specific_j_per_kg - energy) < 1.0e-9)
+		for depth: float in [0.07999, 0.08001, 0.11999, 0.12001]:
+			var candidate := _state([110.0, 174.0, down + depth], [0.0, 0.0, -0.1], q, [0.0, 0.0, 0.0])
+			# Starting deep exercises the separating guard. Starting shallow exercises the final crush fallback.
+			for initial_depth: float in [depth, 0.001]:
+				var previous := _state([110.0, 174.0, down + initial_depth], [0.0, 0.0, -0.1], q, [0.0, 0.0, 0.0])
+				var event: LakeCollision.WaterEvent = LakeCollision.first_hit(lake, previous, candidate,
+					hull, {}, 1, 0.01, MASS, _inertia, true, {}, prepared)
+				var sampled: Dictionary = LakeCollision.first_hit_sampled(lake, previous, candidate,
+					hull, {}, 1, 0.01, sampler, true, {}, prepared)
+				var terminal: bool = depth > HullContact.crash_depth(prepared)
+				_check("fixed/sampled separating and fallback bank depth %s / %s / %s" % [HullContact.crash_depth(prepared), depth, initial_depth],
+					sampled.ok and (event != null) == terminal and (sampled.event != null) == terminal)
+		var water_previous := _state([110.0, 125.0, 0.4], [0.0, 0.0, 0.1], q, [0.0, 0.0, 0.0])
+		var water_candidate := _state([110.0, 125.0, 0.5], [0.0, 0.0, 0.1], q, [0.0, 0.0, 0.0])
+		var water: LakeCollision.WaterEvent = LakeCollision.first_hit(lake, water_previous, water_candidate,
+			hull, {}, 1, 0.01, MASS, _inertia, true, {}, prepared)
+		_check("aircraft bank tolerance retains terminal water contact", water != null and water.trigger == "water")
+		var hard_previous := _state([110.0, 174.0, down - 0.005], [0.0, 0.0, 0.1], q, [0.0, 0.0, 0.0])
+		var hard_candidate := _state([110.0, 174.0, down + 0.005], [0.0, 0.0, 0.1], q, [0.0, 0.0, 0.0])
+		_check("aircraft tolerance retains non-soft bank terminal policy", LakeCollision.first_hit(lake,
+			hard_previous, hard_candidate, hull, {}, 1, 0.01, MASS, _inertia, false, {}, prepared) != null)
+		var separating := _state([110.0, 174.0, down + 0.10], [0.0, 0.0, -0.1], q, [0.0, 0.0, 0.0])
+		var hard_sampled: Dictionary = LakeCollision.first_hit_sampled(lake, separating, separating,
+			hull, {}, 1, 0.01, sampler, false, {}, prepared)
+		_check("non-soft separating depth retains its shared policy in both APIs", hard_sampled.ok
+			and hard_sampled.event != null and LakeCollision.first_hit(lake, separating, separating,
+				hull, {}, 1, 0.01, MASS, _inertia, false, {}, prepared) != null)
 
 
 func _state(pos: Array, vel: Array, attitude: PackedFloat64Array, rate: Array) -> PackedFloat64Array:

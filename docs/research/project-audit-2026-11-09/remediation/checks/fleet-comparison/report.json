@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2ac83578-75d8-4065-8149-405c05dc6a1c",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/g/OpenRC-a35-20261115-validation/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/compare_fleet.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-15T18:01:48.952253+00:00",
+  "label": "fleet-comparison",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-flight/fleet-comparison-yhbt343q/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-flight/fleet-comparison-yhbt343q/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "failures=0 cases=8"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.201913,
+  "log_bytes": 121,
+  "log_sha256": "20b5d8e4d7ad2bf1eaf5fceec9f67a322f545ae0aae894a25d81432b549c8104"
+}

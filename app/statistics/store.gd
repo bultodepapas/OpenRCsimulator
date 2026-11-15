@@ -22,6 +22,7 @@ const PREPARED_DELETE: String = "snapshot_delete_prepare.bin"
 const NORMAL_TEMP: String = "snapshot_write.tmp"
 const FENCE_TEMP: String = "deletion_fence_write.tmp"
 const LOCK_DIR: String = ".writer_lock"
+const MAX_QUARANTINE_COPIES: int = 8 # Per slot, including the historical unsuffixed copy.
 
 var data: Dictionary = {}
 var note: String = ""
@@ -685,10 +686,12 @@ func _write_snapshot_slot(slot: String, snapshot: Dictionary, _label: String) ->
 
 
 func _purge_pre_fence_copies() -> bool:
-	for name: String in [
+	var names: Array[String] = [
 		NORMAL_TEMP, PREPARED_DELETE, FENCE_TEMP, "snapshot_recovery.tmp",
-		"snapshot_quarantine_a.bin", "snapshot_quarantine_b.bin",
-	]:
+	]
+	names.append_array(_quarantine_names(SLOT_A))
+	names.append_array(_quarantine_names(SLOT_B))
+	for name: String in names:
 		var path: String = _root_path.path_join(name)
 		if FileAccess.file_exists(path) and DirAccess.remove_absolute(path) != OK:
 			return false
@@ -809,24 +812,58 @@ func _newest_snapshot(entries: Array) -> Dictionary:
 	return sorted.back()
 
 
+func _quarantine_names(slot: String) -> Array[String]:
+	var stem: String = "snapshot_quarantine_a" if slot == SLOT_A else "snapshot_quarantine_b"
+	var names: Array[String] = [stem + ".bin"]
+	for index: int in range(1, MAX_QUARANTINE_COPIES):
+		names.append("%s_%d.bin" % [stem, index])
+	return names
+
+
+func _quarantine_matches(path: String, bytes: PackedByteArray) -> bool:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return false
+	var same: bool = file.get_length() == bytes.size() and file.get_buffer(bytes.size()) == bytes \
+		and file.get_error() == OK
+	file.close()
+	return same
+
+
 func _quarantine_bad_snapshots(slots: Array) -> bool:
+	if not _owns_lock:
+		return false
 	for slot_value: Variant in slots:
 		var slot: String = str(slot_value)
-		var source: String = _root_path.path_join(slot)
-		var quarantine_name: String = "snapshot_quarantine_a.bin" if slot == SLOT_A else "snapshot_quarantine_b.bin"
-		var target: String = _root_path.path_join(quarantine_name)
-		if FileAccess.file_exists(target):
+		if slot not in [SLOT_A, SLOT_B]:
 			return false
+		var source: String = _root_path.path_join(slot)
 		var file := FileAccess.open(source, FileAccess.READ)
 		if file == null:
 			return false
 		var length: int = file.get_length()
-		if length <= 0 or length > MAX_SNAPSHOT_BYTES:
+		if length < 0 or length > MAX_SNAPSHOT_BYTES:
 			file.close()
 			return false
 		var bytes: PackedByteArray = file.get_buffer(length)
 		file.close()
 		if bytes.size() != length:
+			return false
+		var target: String = ""
+		var preserved: bool = false
+		for name: String in _quarantine_names(slot):
+			var path: String = _root_path.path_join(name)
+			if FileAccess.file_exists(path):
+				if _quarantine_matches(path, bytes):
+					preserved = true
+					break
+			elif target.is_empty() and not DirAccess.dir_exists_absolute(path):
+				target = path
+		if preserved:
+			continue
+		if target.is_empty():
+			return false
+		if _interrupt("before_quarantine_copy"):
 			return false
 		var copy := FileAccess.open(target, FileAccess.WRITE)
 		if copy == null:
@@ -835,7 +872,9 @@ func _quarantine_bad_snapshots(slots: Array) -> bool:
 		copy.flush()
 		var write_error: Error = copy.get_error()
 		copy.close()
-		if write_error != OK:
+		if write_error != OK or not _quarantine_matches(target, bytes):
+			return false
+		if _interrupt("after_quarantine_copy"):
 			return false
 	return true
 

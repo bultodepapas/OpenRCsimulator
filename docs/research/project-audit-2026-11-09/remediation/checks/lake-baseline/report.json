@@ -1,0 +1,43 @@
+{
+  "capture_id": "9954f01c-7c3c-4adc-abd9-8763cacd62d4",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--path",
+    "C:\\ProgramData\\OpenRC\\testqueue\\attempts\\A-35c4af20143d47b9b56af16a223b65dd\\source\\app",
+    "--audio-driver",
+    "Dummy",
+    "--headless",
+    "--script",
+    "res://tests/test_lake_session.gd"
+  ],
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "cwd": "C:\\ProgramData\\OpenRC\\testqueue\\attempts\\A-35c4af20143d47b9b56af16a223b65dd\\source",
+  "detail": "",
+  "diagnostics": [],
+  "elapsed_seconds": 4.954,
+  "exit_code": 1,
+  "format": "openrc-godot-check v1",
+  "label": "godot",
+  "log": "C:\\ProgramData\\OpenRC\\testpool\\results\\dd53b986c75240bdaf89303104abc808\\engine.log",
+  "log_bytes": 3912,
+  "log_sha256": "aea71b5e74a33b13c499794695469bc465c9c3a9ce23c7eb331c0f98a44151f3",
+  "max_log_bytes": 8388608,
+  "missing_required_text": [],
+  "ok": false,
+  "pool_host": "windows",
+  "pool_job": "dd53b986c75240bdaf89303104abc808",
+  "pool_outcome": "TEST_FAILED",
+  "process_exit": 1,
+  "reason": "process_exit",
+  "report": "C:\\ProgramData\\OpenRC\\testpool\\results\\dd53b986c75240bdaf89303104abc808\\report.json",
+  "required_text": [
+    "lake session checks,"
+  ],
+  "started_utc": "2026-11-15T17:10:09.324635+00:00",
+  "timeout_seconds": 899.5,
+  "warnings_as_errors": false
+}

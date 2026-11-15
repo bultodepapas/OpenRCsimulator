@@ -3532,14 +3532,14 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 	if mass_at_fraction.is_valid():
 		var sampled_lake: Dictionary = LakeCollision.first_hit_sampled(_lake, previous, candidate,
 			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), mass_at_fraction,
-			soft_hull_contacts, _prop_disc)
+			soft_hull_contacts, _prop_disc, _hull_contact)
 		if not sampled_lake.ok:
 			return PackedFloat64Array()
 		lake_hit = sampled_lake.event
 	else:
 		lake_hit = LakeCollision.first_hit(_lake, previous, candidate,
 			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), sim.mass,
-			sim.inertia, soft_hull_contacts, _prop_disc)
+			sim.inertia, soft_hull_contacts, _prop_disc, _hull_contact)
 	var ground_hit: ImpactSnapshot.Snapshot = null
 	var ground_fraction: float = INF
 	if not soft_hull_contacts:
@@ -5699,6 +5699,7 @@ func trace_meta() -> Dictionary:
 		metadata.rc_track_contact_law = RcTrackCrossing.LAW
 	if not _lake.is_empty():
 		metadata.lake_terrain_model = "bounded-lake-terrain-and-terminal-water-contact-v1"
+		metadata.lake_collision_law = LakeCollision.LAW
 		metadata.lake_id = str(_lake.id)
 		metadata.lake_identity = _lake_identity()
 		metadata.ground = "flat at 0 m outside lake bank; normalized basin terrain inside bank; no water buoyancy"
@@ -6095,6 +6096,7 @@ func _configuration_for_weather(field: WeatherField, mix_owner := "") -> String:
 		parts.append("collision-world:" + str(_collision_world.identity))
 	if not _lake.is_empty():
 		parts.append("lake-geometry:" + _lake_identity())
+		parts.append(LakeCollision.LAW)
 	if not _rc_track.is_empty():
 		parts.append("rc-track:" + RcTrack.identity(_rc_track))
 		parts.append(RcTrackCrossing.LAW)
