@@ -113,6 +113,10 @@ The fresh verified 0001–0017 native pair has editor SHA-256
 `c47636a595313598a399b01ba8d550ef11409beb63b80718aa7fa8fe763bc7b7`
 and release-template SHA-256
 `c44d06546ebd953514be583b5195b1c0ec9a9e22eff74480d306faebf273aacb`.
+The later clean 0001–0019 pair has editor
+`8e345b212ab1612b19e67c00541a34eeae31aa43980016517e6e7b2449f2682b` and
+release template `f2dfbc94195ba6bdb49b9b34090040a279cf159012e38f5155705a164f5c4e59`.
+Optional 0020 was built separately as a development editor, not as this pair.
 These identities are build evidence, not hardware or public-release qualification.
 Use the same absolute Python invocation spelling for both builds. The verifier
 compares recorded command arrays and refuses differing aliases or `..` spellings
@@ -242,6 +246,31 @@ final presenter generation 9, zero confirmed GPU failures and five ignored
 unrequested `NotEnqueued` callbacks. This is not a sustained-rate, visual-quality
 or latency result. Hardware qualification remains `not_run` and public use deferred.
 
+## Optional alpha-list diagnostic
+
+Patch 0020 is separate from the clean 0001–0019 pair and leaves transparent-scene
+rejection unchanged. Set `OPENRC_METALFX_ALPHA_DIAGNOSTICS=1` before starting its
+development editor to retain a bounded historical alpha-list page after an FG
+input rejection. `viewport_get_metalfx_frame_status` exposes it as
+`alpha_diagnostic`; each page holds at most eight entries plus frame, viewport and
+producer generations, total, offset and truncation. The captured material RID is
+the actual alpha-list material when available; shader RID can be unavailable.
+With the diagnostic startup flag unset, no diagnostic snapshot is allocated.
+A captured snapshot can outlive producer Off. Pages from different frames cannot
+be combined into an exhaustive single-frame list.
+
+The 1080p native `frame_probe.gd` enabled case matched its known RIDs and retained
+the snapshot after producer Off; the diagnostic-Off case skipped it. The explicit
+`alpha_scene_census.gd` helper joins historical base resources to bounded current
+scene candidates, not unique instances or pixel contributions. One Home page
+matched three NightKit light sprites among 35 alpha entries; flight coverage and
+the remaining entries are unresolved.
+
+A separate research-only alpha-input patch disables composition and presentation
+and failed eight native moving-image gates. It is not part of the pair, a fallback
+or a reason to remove the transparent-scene rejection. See the
+[dated results](../../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md#alpha-diagnostics-and-moving-image-experiment).
+
 ## Completed real-frame observation
 
 0013 adds an explicit main-window viewport observer, separate from scaler
@@ -301,15 +330,20 @@ GPU completions. A current proof permits only a renderer-gated composition
 attempt; it does not bypass per-frame checks or establish presentation. Explicit
 input/postprocess rejection suspends the producer with bounded retry backoff.
 The current pure policy passed 517 checks and the adapter passed 89 focused
-Windows checks. The preceding controller passed 82 native checks with this
-517-check policy; the current 0019 adapter's native run is pending. These are
+checks on both Windows and the clean 19-patch M1 editor. The rendered history
+fixture separately passed conditional rejection/acceptance, resize fencing and
+successful GPU reset completion. These are
 logic and lifecycle evidence, not a performance or display qualification.
 Native full-app Home/Fly/pause/resume trials execute Temporal but have not
 qualified full-flight generated presentation. Explicit activation also requires
 selecting Temporal in Graphics settings: saved preferences supersede the startup
 reconstruction environment value. The first observed selection compiled 336
 pipelines and exceeded the confirmation deadline; the later warm selection
-succeeded. Preserve shared caches and label their state in comparisons.
+succeeded. In a later bounded Home UI trial, a 20-second injected main-thread
+stall did not consume the confirmation window: Keep remained available and
+saved the Temporal choice. This observes CPU status only, not GPU completion,
+presentation or cold-compilation behavior. Preserve shared caches and label
+their state in comparisons.
 The retained-sample polling cost remains unmeasured.
 
 0019 adds `viewport_request_temporal_history_reset_if_current(viewport,

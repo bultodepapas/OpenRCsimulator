@@ -942,8 +942,46 @@ and test `ff4357f70190524bf27dc5197a5c0d5c413e5f4ad39fb2810977f76c4abf960f`
 passed 89 Windows checks. It accepts a correctly scoped newer lifetime serial,
 requires actual 0006 GPU completion and requalifies the 0013 history. Absence of
 the new API blocks only synthetic recovery while preserving Temporal selection.
-The fresh 19-patch editor build and latest native controller run are pending at
-this record. Source review does not qualify those pending cases.
+The fresh 19-patch editor and release template subsequently built and passed
+strict local signature verification and the immutable helper's pair check.
+Editor SHA-256 is `8e345b212ab1612b19e67c00541a34eeae31aa43980016517e6e7b2449f2682b`;
+template is `f2dfbc94195ba6bdb49b9b34090040a279cf159012e38f5155705a164f5c4e59`.
+The pair binds build receipts `cea3405daebfa0a3b49fa76f5b559283923a970be5427f9668f027b321c8642a`
+and `a55413475cb40d618f127d334e33fbc882580ed03c1380143d217ca0f09d5f96`.
+All 89 controller and 517 policy checks passed on that native editor, with
+Home/main parsing and no diagnostics. This is not a renewed native-physics
+qualification of the custom engine.
+
+The rendered history fixture `1f94f095a00b5e087dd22d604e5c586bc6d085b5236b1a8939500a18b1063527`
+passed checked parsing and native 1080p execution. Both conditional cases were
+actually tested, rather than skipped; the separate 0006 receipt observed a
+successful reset serial 3 in viewport generation 8 / observer generation 3.
+The completed command was render frame 13, ticket 1. A CPU reset receipt alone
+still leaves GPU completion unobserved, and the GPU receipt is not presentation.
+
+Full-app R5 used this editor and the current 89/517-check sources. Its bounded
+transition history resolves R4's missing rejection cause: after warming up,
+Home and Flight reject `transparent_geometry_has_no_motion_vectors`. The
+Forward+ alpha list is nonempty and that pass strips motion-vector writes;
+this does not identify a particular visible material. Shadow receivers, field
+cues and the evening star field are source candidates, not proven offenders.
+Home/Fly/pause/resume/Home and zero-leak teardown passed. The run did not
+activate full-flight FG or establish an FPS gain. Do not remove the gate, hide
+visual cues or relabel ordinary Temporal output as successful interpolation.
+
+The R1 checkout of public commit `66145a16724d5dc05b7ef36e2450a459d14baf61`
+incorrectly converted 60 CRLF working files to LF to match their raw Git blobs.
+Although Git considered the result clean, it violated committed `.gitattributes`
+checkout rules and the raw-byte aircraft and field pins. An R1 official-engine
+companion attempt failed for those identities; the source and failure are retained.
+Git object identity alone did not establish equivalent runtime input bytes.
+
+A separate R2 checkout of the same commit and tree
+`67c29504cefd89e302f439afac6049a294c056c0` restored the committed checkout
+conversions with `git cat-file --filters`. All 51,213 tracked paths matched their
+Git identities, status was clean, and the required raw aircraft and field hashes
+were checked separately. R1 source, package and earlier trial identities are not
+retrofitted with R2's result.
 
 The existing Godot exporter also produced a local ARM64 development `.app` from
 the verified 17-patch editor/template and pinned upstream template skeleton.
@@ -959,6 +997,99 @@ qualification. The fixed packaged diagnostic requires a pre-export Git-bound
 input capture and sibling reference receipt. An archive without Git metadata
 cannot satisfy that helper, and no synthetic receipt was substituted. Full
 package/session and current-source export gates remain open.
+
+The later clean 19-patch pair also produced a source-bound, ad-hoc-signed local
+ARM64 development package with executable SHA-256
+`f19f2d2583bf85773b91661e2317851eaea3cf3d3f35244f5f8717a3d5f4f5ee`.
+Its reference receipt verified, a 10-sample reference-physics session probe
+passed, and a bounded rendered quick-flight smoke exited successfully. That
+package was built from the R1 checkout and therefore contains the raw-byte
+companion-admission defect described above. Those smokes did not qualify the
+companion route, current R2 package, native physics, performance or distribution.
+
+### Alpha diagnostics and moving-image experiment
+
+Optional 0020 is a diagnostic-only patch, SHA-256
+`64288c65bfedd5391b0032e7ac4feddbb6bfa5a4063ca38b9a648bdff30ec09c`,
+built in a development editor
+`0d5f979f105476fdc27aa7dc62db135bc6bf656bad610fb347d088414ccda1c3`.
+The native `frame_probe.gd` fixture passed its known viewport, base, mesh and
+material RID comparisons and retained the snapshot after producer Off. Its
+diagnostic-Off case correctly reported unavailable. The fixture and status are
+documented in the [engine guide](../../../../tools/graphics/metalfx/README.md#optional-alpha-list-diagnostic).
+
+The R8 Home capture held one historical page: offset 32, three entries of 35,
+with `truncated=true`. The value-only scene census joined those entries to
+current `NightKit/landing_lamp`, `strobe_left` and `nav_left` resource candidates
+using `res://render/world/light_sprite.gdshader`. Those resource matches are not
+unique historical node identity, pixel contribution, a complete list or a
+flight-scene qualification. The separate flight census did not establish one.
+
+The research-only alpha-input experiment
+`06dab095ee03fe4f3a94d6efe97cdd0a1d150fda37b7673e249d06c2dc296107`
+temporarily admits the unsupported input for offscreen measurement while
+disabling composition/presentation for that process. Its development editor is
+`68159b19306c22dae0c6b4cbc96d495a4edb9b662cb56cb97eb0087ecbd70399`;
+the final motion fixture is
+`dfe6a4316aaba40c5e6bd5de70fa10a52ce124e4e72ce573179ca8bb7c8a3f2a`.
+The Off control passed. The enabled 1920×1080 test failed eight image gates.
+Full-ROI midpoint MAE was 0.096158 for opaque motion behind static alpha and
+0.112968 for alpha motion over static opaque, against the 0.04 bound. In the
+latter case, distance to the Temporal endpoint crossfade was 0.0089285. That
+crossfade is an approximation reconstructed from 8-bit LDR endpoints, not an
+exact HDR input. The result rejects this tested path, not the Apple API in general;
+keep the ordinary transparent-scene rejection.
+
+All 21 portable engine test scripts for the normal 0001–0020 stack passed 141
+tests on Windows using the dirty working-tree checked runner; its `inspect_log`
+was unchanged. The separate alpha experiment was not part of that run, and
+exact-candidate clone controls remain pending. These tests do not replace the
+failed native image checks or demonstrate full-flight interpolation.
+R8's later Home exit left four DummyAudio-related ObjectDB references despite
+zero tracked Metal allocations; that teardown remains unresolved. CI run
+`43691732964` exposed fixture/pin issues fixed locally. Its separate macOS source
+correctness job timed out during the initial import, before native correctness
+gates executed; that remains unresolved. Required CI on the corrected candidate
+is pending. The frozen phase-6 archive contains 415 text
+payloads and is 10,437,879 bytes, SHA-256
+`3a5ddbc6a3826c189fe39a821ea0a542f08b8b0ef17110e1bdc7ac0ff2c9158f`.
+The retrieved archive and all 415 individual payload hashes matched on Windows.
+
+### Settings preview under a controlled stall
+
+Native Settings parsing first exposed a Variant-inference error; the corrected
+Settings source
+`e359c4be8d8913c786b1e6ed6ab07946e61c9648d77ca8de636658ab86de3956`
+and its test parsed successfully. One checked unit invocation used the wrong
+required completion marker and was inconclusive; the corrected-marker Settings
+unit rerun passed on the official editor. The focused display-preference suite
+passed 175 checks and the renderer-guard suite passed 40; the latter retained its
+intentional cannot-save warning control.
+
+In a separate R9 1080p Home trial with FG Off on the 0020 development editor,
+the test helper inserted a 20,006,315 µs main-thread delay after application of
+the Temporal choice. The choose action took 30.7767 s including preparation. At
+the first later snapshot the confirmation window still had 14,727 ms and Keep
+was enabled. A separate, non-atomic CPU status query reported Temporal mode 4
+created/enqueued in viewport generation 11.
+Keep saved `metalfx_temporal_quality`, matched the draft and cleared the deadline.
+After 360 Home frames the process stopped unforced with zero reported leaked
+objects. This bounded test does not resolve R8's separate four-reference exit,
+prove GPU completion or OS presentation, or qualify cold compilation, FPS or
+latency. The local R9 command receipt is SHA-256
+`3773594ba516f866965c9e1ae3d2194ce435dc763b53fe325a300e4ba838c4c7`.
+
+The [companion behavior receipt](../../ai-companions/AFC-02/rebinds/2026-11-15-metalfx-behavior.json)
+records 19 passing checked invocations on the official
+`4.8.beta2.official.cafc17a19` editor, including old-manifest refusal, the
+two-source `app_root.gd`/`main.gd` renewal, the other 14 unchanged source pins,
+strict profiles and a strict Home/Fly/pause/restart path with three pilots. The
+198-source solver identity remained
+`a81c2b2d1275faba30d3e55ecca3e59cde0f005c50857fe92e48c66a2040866c`.
+The retained raw runner receipt is SHA-256
+`91348324618172eee459a4dc2cb13803992946af8f37f9910027a7e33e6c0d09`.
+This bounded official-engine result does not qualify companions or native physics
+on the custom engine and does not relax any public-distribution or native pin.
 
 ## Evidence retention and open gates
 
@@ -1007,12 +1138,13 @@ its local path is `tmp/metalfx-20261114/retained-phase1.tar.gz`. Later results a
 not retroactively included in that archive.
 
 Remaining: required CI on the stable integrated candidate, independent Temporal-history
-image/lifecycle qualification beyond the bounded reset fixtures, FG input/presenter
-integration, real engine RT/denoised consumer, moving-image/1080p workload
-comparisons, physical latency, lifecycle/endurance and local development package.
-Newer hardware remains useful for independent qualification; M1 denoising is an
-open runtime finding, not an automatic unsupported result. Public Developer ID
-distribution remains deferred. Normal reconstruction defaults are unchanged.
+image/lifecycle qualification beyond the bounded reset fixtures, FG scene inputs
+and end-to-end presentation, a real engine RT/denoised consumer, moving-image/1080p
+workload comparisons, physical latency, lifecycle/endurance and an R2 source-bound
+development package. Newer hardware remains useful for independent qualification;
+M1 denoised scene/product qualification remains open despite the native binding
+witness. Public Developer ID distribution remains deferred. Normal reconstruction
+defaults are unchanged.
 
 Historical interruption before the later native campaigns: after the earlier
 template compilation, SSH and Tailscale data-plane probes stopped

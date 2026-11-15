@@ -45,7 +45,7 @@ checkbox complete. Missing supported hardware leaves native qualification open.
 An infeasible engine dependency produces a documented incomplete milestone,
 with its smallest remaining dependency; it does not close the four-feature goal.
 
-Current implementation boundary: ordered patches 0001–0017 have a clean native
+Current implementation boundary: ordered patches 0001–0019 have a clean native
 M1 editor/template pair with matching verified build inputs and local signatures.
 The moving-quad interpolation witness passed at 1080p; triangle-query hit/readback,
 real-RT denoising, GPU completion and Temporal reset observation also ran on M1.
@@ -57,15 +57,31 @@ image quality, latency or a frame-rate gain.
 
 An opt-in application controller now connects the real-completion admission
 policy to the existing Temporal producer and presentation adapter. The current
-Windows candidates pass 89 controller and 517 policy checks. On the native editor,
-the preceding controller passes 82 checks with that 517-check policy; the current
-0019 conditional-reset adapter still needs its native run. Complete-app Home/flight
+Windows and the clean native editor pass 89 controller and 517 policy checks.
+The rendered 0019 fixture also passes conditional-reset rejection, acceptance,
+resize fencing and independently observed reset GPU completion. Complete-app Home/flight
 script parsing and the affected reconstruction/history tests also pass. Rendered
 product trials now exercise Home/Fly/pause/resume and show actual Temporal GPU
-work, but frame-generation admission and workload qualification remain open. Ordinary launches do
+work. The latest trial reaches the renderer and refuses its nonempty transparent
+draw list because that pass has no complete motion vectors. Correct transparent
+composition and workload qualification remain open. An optional 0020 diagnostic
+identified three current Home-scene resource candidates in one truncated page;
+it is not a complete flight census or proof of pixel contribution. A separate
+research-only alpha experiment failed eight 1080p moving-image gates, so the
+ordinary rejection remains required. This is an observed failure of that input
+path, not an Apple API-wide prohibition. Ordinary launches do
 not install this controller. No whole-scene RT consumer, public FG control or
 four-feature default has been qualified. Exact revisions and results belong to
 the linked implementation evidence, not this status paragraph.
+
+The official pinned Godot editor passed the bounded companion requalification
+after the actual CRLF aircraft/field checkout bytes and two behavior-source pins
+were restored. That does not qualify companions or native physics on the custom
+engine. The earlier R1 development package used the wrong raw checkout bytes;
+its source-bound receipt and smokes do not repair that admission limitation.
+A bounded native Settings trial now preserves the confirmation window through
+an injected main-thread stall, and the focused Settings consumers pass. Cold
+compilation and a new required-CI run remain pending.
 
 Completion has three distinct levels per technology:
 

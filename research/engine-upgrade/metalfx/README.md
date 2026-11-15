@@ -110,8 +110,13 @@ Never put these drafts or deliberate fault controls in the production app.
 - `status_probe.gd`: actual Spatial/Mobile or Temporal/Forward+ allocation,
   submission, output sanity, resize generation and viewport isolation.
 - `history_probe.gd`: actual Temporal reset/cut coalescing, paused render-attempt
-  accounting and camera/scenario/resize lifecycle. GPU completion remains unknown
-  even when the SDK encode callback acknowledges the reset serial.
+  accounting and camera/scenario/resize lifecycle. Original status receipts are
+  CPU acknowledgements. With 0019 and 0006, separate optional cases test conditional
+  rejection/acceptance, resize fencing and a successful reset GPU completion in
+  the unchanged observer generation. A native claim requires overall `ok=true`,
+  `conditional_reset.status=tested`, its `gpu_completion.status=observed`, and
+  `conditional_resize_fence.status=tested`; older engines deliberately skip them.
+  All required cases passed on the clean 19-patch M1 editor.
 - `fault_probe.gd`: four fresh debug processes with patch 0003's factory/enqueue
   faults. Compare the first failed frame against a changed Native reference and
   stale-image negative control before invoking the production recovery adapter.
@@ -119,6 +124,31 @@ Never put these drafts or deliberate fault controls in the production app.
   full 1080p finite/sentinel readback, paused cut/toggle receipts, resize and
   orthographic/alpha/Canvas/Keep rejection. This native fixture passed; its status
   still labels motion/jitter conventions unverified and the image not presentable.
+  With optional 0020, the native diagnostic-enabled case also matched its known
+  viewport/base/mesh/material RIDs and retained the snapshot after producer Off;
+  the diagnostic-Off case honestly skipped it. Require `observed`, `matches` and
+  `retained_after_off` for that enabled claim, not just the fixture's overall pass.
+- `alpha_scene_census.gd`: explicit debug-bridge query of the historical 0020
+  snapshot against current mesh and MultiMesh resource candidates. Its walk and
+  output are capped at 8,192 nodes and 64 candidates. Shared resources and scene
+  changes prevent a unique historical-node or pixel-contribution claim. An R8 Home
+  sample matched three NightKit light-sprite candidates in a truncated 35-entry
+  alpha list; it was not a complete census or a flight proof.
+- `alpha_motion_probe.gd`: 1080p moving opaque/alpha midpoint experiment using the
+  separate research-only alpha-input patch. The Off control passed, while enabled
+  output failed eight image gates. Full-ROI midpoint MAE was 0.096158 and 0.112968
+  against 0.04 for its two cases; the latter was 0.0089285 from an approximate
+  Temporal endpoint crossfade reconstructed from 8-bit LDR images. Composition
+  is disabled throughout that experiment. This does not qualify transparent FG
+  or establish a universal Apple API limitation.
+- `settings_stall_probe.gd`: explicit Home/Graphics debug witness for the Settings
+  confirmation window. Load it through `ResourceLoader.load(<absolute path>)`,
+  call `install(app)`, then choose Temporal Quality through the ordinary UI.
+  Its one-shot listener injects a 20-second main-thread delay after the real app
+  listener; it never changes draft settings, readiness or the deadline. Query
+  `snapshot(app)` after allowing the app to render. The native R9 trial preserved
+  the confirmation interval and saved the choice. This tests CPU readiness and
+  UI persistence, not GPU completion, OS presentation or cold-compilation time.
 - `frame_motion_probe.gd`: moving-quad witness with independently rendered
   midpoint/endpoints, crossfade control, static HDR-to-sRGB calibration and exactly
   one attempted real render. ROI and margins are fixed in source. Checked parsing
@@ -175,10 +205,9 @@ Never put these drafts or deliberate fault controls in the production app.
   no viewport lighting/denoised output and does not complete 13d1.
 
 The opt-in application controller and its pure admission policy have separate
-focused checks: the current Windows candidates passed 89 and 517, respectively.
-The preceding adapter passed 82 native checks with that 517-check policy; the
-current conditional-reset adapter still needs its 0019 native run. These checks
-do not establish presentation. Complete native Home/Fly/pause/resume trials
+focused checks: the current candidates passed 89 and 517, respectively, on
+Windows and the clean 0019 M1 editor. These checks do not establish presentation.
+Complete native Home/Fly/pause/resume trials
 execute Temporal, while full-flight FG qualification remains open. The
 [engine guide](../../../tools/graphics/metalfx/README.md#completed-real-frame-observation)
 owns the technical startup flags and observer contracts.
