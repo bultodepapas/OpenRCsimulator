@@ -1,0 +1,8 @@
+
+FT moonrunner-x99: 3.13 kg, S 0.750 m2, start 12.8 m/s, CL_max 1.05 -> Vs estimate 8.0 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.496,"first_untrimmable_mps":26.172298041438,"points":27,"slowest_trim_mps":8.94}
+FT modes                    valid {}
+FT aero_sweep               valid {"cy_at_beta20":-0.0977,"cy_max_beta_le_30":0.1416,"cy_oracle_at_beta20":-0.1045,"knife_edge_cy_needed_at_0_8vmax":0.1525,"knife_edge_side_force_margin":0.928,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":3.33}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.142 of 0.152)
+FT report: tmp/ugly-audit-fleet-static/moonrunner-x99/profile.md

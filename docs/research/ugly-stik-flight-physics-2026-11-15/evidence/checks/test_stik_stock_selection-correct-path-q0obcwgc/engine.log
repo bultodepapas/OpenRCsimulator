@@ -1,0 +1,654 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Unable to open file: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/turf/detail.png.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/turf/detail.png".
+          at: GDScript::reload (res://render/ground.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "TURF_DETAIL" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://render/ground.gd:9)
+ERROR: Unable to open file: res://.godot/imported/Wood050_1K-JPG_Color.jpg-733b911494b30a3e7b404f5ce0a9ec66.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Wood050_1K-JPG_Color.jpg-733b911494b30a3e7b404f5ce0a9ec66.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Wood050_1K-JPG_NormalGL.jpg-22c52f069b62bd795dc922d8cab4a57f.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Wood050_1K-JPG_NormalGL.jpg-22c52f069b62bd795dc922d8cab4a57f.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Wood050_1K-JPG_Roughness.jpg-da31df8204a1aad29c6949910cb2709b.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Wood050_1K-JPG_Roughness.jpg-da31df8204a1aad29c6949910cb2709b.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Concrete034_1K-JPG_Color.jpg-975ebc01086a6f97733f5a51a6ddc358.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Concrete034_1K-JPG_Color.jpg-975ebc01086a6f97733f5a51a6ddc358.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Concrete034_1K-JPG_NormalGL.jpg-5ba0fc74dc89a649eedb344685844875.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Concrete034_1K-JPG_NormalGL.jpg-5ba0fc74dc89a649eedb344685844875.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Concrete034_1K-JPG_Roughness.jpg-13a68aaf2de78171bb7237be79bc8db6.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Concrete034_1K-JPG_Roughness.jpg-13a68aaf2de78171bb7237be79bc8db6.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal032_1K-JPG_NormalGL.jpg-87c2887f309e19a1118a1f80d29ccc5b.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal032_1K-JPG_NormalGL.jpg-87c2887f309e19a1118a1f80d29ccc5b.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal032_1K-JPG_Roughness.jpg-585b53d205c3df67076ffd894049aea6.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal032_1K-JPG_Roughness.jpg-585b53d205c3df67076ffd894049aea6.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:8)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:9)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:10)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:11)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:12)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:13)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:14)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://render/pilot_station.gd:15)
+ERROR: Unable to open file: res://.godot/imported/Metal032_1K-JPG_NormalGL.jpg-87c2887f309e19a1118a1f80d29ccc5b.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal032_1K-JPG_NormalGL.jpg-87c2887f309e19a1118a1f80d29ccc5b.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal032_1K-JPG_Roughness.jpg-585b53d205c3df67076ffd894049aea6.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal032_1K-JPG_Roughness.jpg-585b53d205c3df67076ffd894049aea6.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Concrete034_1K-JPG_Color.jpg-975ebc01086a6f97733f5a51a6ddc358.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Concrete034_1K-JPG_Color.jpg-975ebc01086a6f97733f5a51a6ddc358.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Concrete034_1K-JPG_NormalGL.jpg-5ba0fc74dc89a649eedb344685844875.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Concrete034_1K-JPG_NormalGL.jpg-5ba0fc74dc89a649eedb344685844875.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/windsock.gd:26)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://render/windsock.gd:27)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg".
+          at: GDScript::reload (res://render/windsock.gd:28)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/windsock.gd:29)
+ERROR: Unable to open file: res://.godot/imported/relief.png-642f0788b4831f62ca8d6bdc9cc6747d.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/relief.png-642f0788b4831f62ca8d6bdc9cc6747d.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/mountains/relief.png.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/habitat.png-5045476dbdde4445de88bd4c1edacbc7.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/habitat.png-5045476dbdde4445de88bd4c1edacbc7.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/mountains/habitat.png.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/aerial_grass_rock_diff_1k.jpg-d01b9ed94996ef5e80d7acdb78566851.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/aerial_grass_rock_diff_1k.jpg-d01b9ed94996ef5e80d7acdb78566851.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/mountains/aerial_grass_rock_diff_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/aerial_rocks_01_diff_1k.jpg-11c61a794d974fe038b1d5d60e9d7762.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/aerial_rocks_01_diff_1k.jpg-11c61a794d974fe038b1d5d60e9d7762.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/mountains/aerial_rocks_01_diff_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/mountains/relief.png".
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:7)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "RELIEF" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:7)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/mountains/habitat.png".
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "HABITAT" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:8)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/mountains/aerial_grass_rock_diff_1k.jpg".
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "GRASS_ROCK" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:9)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/mountains/aerial_rocks_01_diff_1k.jpg".
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:10)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ROCKS" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://render/landscape_upgrade/ridges.gd:10)
+ERROR: Unable to open file: res://.godot/imported/aerial_asphalt_01_diff_1k.jpg-f4150c351269dbc962c7b829151dfe74.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/aerial_asphalt_01_diff_1k.jpg-f4150c351269dbc962c7b829151dfe74.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/countryside/aerial_asphalt_01_diff_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/countryside/aerial_asphalt_01_diff_1k.jpg".
+          at: GDScript::reload (res://render/landscape_upgrade/countryside.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ASPHALT" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://render/landscape_upgrade/countryside.gd:9)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://render/field.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://landscapes/club_field/landscape.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://landscapes/catalog.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://app_state/preferences.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://tests/test_stik_stock_selection.gd:0)
+ERROR: Failed to load script "res://tests/test_stik_stock_selection.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+ok basic stays first/default
+ok electric follows basic
+ok backward wrap
+ok multiple wraps
+ok historical alias canonicalizes
+ok rotorcraft remains a stock choice
+ok unknown stock ID is refused
+ok hidden retains exact technical lookup: stik-glow-61fx-2t
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok saved config parses
+ok unrelated save retains original ID
+ok restart resolves idempotently
+ok failed explicit save retains marker
+ok saved config parses
+ok explicit choice commits after save
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok saved config parses
+ok unrelated save retains original ID
+ok restart resolves idempotently
+ok failed explicit save retains marker
+ok saved config parses
+ok explicit choice commits after save
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok future schema protected
+ok hidden retains exact technical lookup: stik-glow-55ax-2t
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok saved config parses
+ok unrelated save retains original ID
+ok restart resolves idempotently
+ok failed explicit save retains marker
+ok saved config parses
+ok explicit choice commits after save
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok saved config parses
+ok unrelated save retains original ID
+ok restart resolves idempotently
+ok failed explicit save retains marker
+ok saved config parses
+ok explicit choice commits after save
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok future schema protected
+ok hidden retains exact technical lookup: stik-glow-fs64v-4t
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok saved config parses
+ok unrelated save retains original ID
+ok restart resolves idempotently
+ok failed explicit save retains marker
+ok saved config parses
+ok explicit choice commits after save
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok saved config parses
+ok unrelated save retains original ID
+ok restart resolves idempotently
+ok failed explicit save retains marker
+ok saved config parses
+ok explicit choice commits after save
+ok legacy fixture saves
+ok Home resolves hidden selection
+ok loading performs no selection write
+ok future schema protected
+ok current-schema transaction fixture
+ok replacement failure is reported
+ok replacement failure preserves bytes
+ok failure after destination removal is reported
+ok destructive Windows-style failure restores accepted bytes
+ok interrupted transaction fixture
+ok load recovers interrupted publication
+ok an unpublished partial backup never replaces settings
+ok first writer acquires profile lock
+ok second writer cannot publish or recover first writer
+ok a reader cannot enter an active publication
+ok future-schema recovery fixture
+ok recovery protects newer settings and the prior copy
+ok hidden saved selection fixture
+ERROR: Unable to open file: res://.godot/imported/polystyrene_nor_gl_1k.jpg-b47c19e753b410995df1c5e18d544948.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/polystyrene_nor_gl_1k.jpg-b47c19e753b410995df1c5e18d544948.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Unable to open file: res://.godot/imported/polystyrene_rough_1k.jpg-b23d8f2e835bfcc04c764b92967fe3d1.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/polystyrene_rough_1k.jpg-b23d8f2e835bfcc04c764b92967fe3d1.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Unable to open file: res://.godot/imported/Rubber002_1K-JPG_NormalGL.jpg-ae85ed18f6e286355682e0f1f5bfff12.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/Rubber002_1K-JPG_NormalGL.jpg-ae85ed18f6e286355682e0f1f5bfff12.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Unable to open file: res://.godot/imported/Rubber002_1K-JPG_Roughness.jpg-7fc37b3247fa3813186b1bc36267a6d4.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/Rubber002_1K-JPG_Roughness.jpg-7fc37b3247fa3813186b1bc36267a6d4.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg".
+          at: GDScript::reload (res://aircraft/timber_visual_details.gd:7)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg".
+          at: GDScript::reload (res://aircraft/timber_visual_details.gd:8)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://aircraft/timber_visual_details.gd:9)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://aircraft/timber_visual_details.gd:10)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://render/airplane.gd:0)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://ui/home.gd:0)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/navigation.ogg-81bb7336663ba948a4cc875d729f56c2.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/navigation.ogg-81bb7336663ba948a4cc875d729f56c2.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/navigation.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/navigation.ogg-81bb7336663ba948a4cc875d729f56c2.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/navigation.ogg-81bb7336663ba948a4cc875d729f56c2.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/navigation.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/press.ogg-c1203bc5c01d62f3ecb069a59264363d.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/press.ogg-c1203bc5c01d62f3ecb069a59264363d.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/press.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/selection.ogg-640d1fc877628e8f06019d3451ed0023.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/selection.ogg-640d1fc877628e8f06019d3451ed0023.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/selection.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/range_tick.ogg-e5a387165e744d21ee0b047ef08a7907.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/range_tick.ogg-e5a387165e744d21ee0b047ef08a7907.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/range_tick.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/accept.ogg-b488a5db00a6bbf75e8630ff2aa32f04.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/accept.ogg-b488a5db00a6bbf75e8630ff2aa32f04.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/accept.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/back.ogg-e4a5b84937dba58aa536d5773f8864fd.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/back.ogg-e4a5b84937dba58aa536d5773f8864fd.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/back.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/reject.ogg-9c97d4edee7b6dbb72c64113277a35e4.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/reject.ogg-9c97d4edee7b6dbb72c64113277a35e4.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/reject.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/open.ogg-bce0e3e7317e480a924235c30576bd2e.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/open.ogg-bce0e3e7317e480a924235c30576bd2e.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/open.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/pause.ogg-330ba3ca887162602bf97f1a89a8d440.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/pause.ogg-330ba3ca887162602bf97f1a89a8d440.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/pause.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/resume.ogg-d85ff1e42f51213ee5d4fcb5adca3f8c.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/resume.ogg-d85ff1e42f51213ee5d4fcb5adca3f8c.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/resume.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/restart.ogg-1f0bc4350a70501dc72ac7ae37966e25.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/restart.ogg-1f0bc4350a70501dc72ac7ae37966e25.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/restart.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/exit.ogg-cc7dff0c72c467a015228940831ee0e3.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/exit.ogg-cc7dff0c72c467a015228940831ee0e3.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/exit.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/exit.ogg-cc7dff0c72c467a015228940831ee0e3.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/exit.ogg-cc7dff0c72c467a015228940831ee0e3.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/exit.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/back.ogg-e4a5b84937dba58aa536d5773f8864fd.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/back.ogg-e4a5b84937dba58aa536d5773f8864fd.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/back.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/accept.ogg-b488a5db00a6bbf75e8630ff2aa32f04.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/accept.ogg-b488a5db00a6bbf75e8630ff2aa32f04.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/accept.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/navigation.ogg-81bb7336663ba948a4cc875d729f56c2.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/navigation.ogg-81bb7336663ba948a4cc875d729f56c2.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/navigation.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/navigation_2.ogg-391286c1eeddb55f6bdb369831df3119.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/navigation_2.ogg-391286c1eeddb55f6bdb369831df3119.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/navigation_2.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Cannot open file 'res://.godot/imported/navigation_3.ogg-dc46ec93d70d63bd548d4b24662c9373.oggvorbisstr'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://.godot/imported/navigation_3.ogg-dc46ec93d70d63bd548d4b24662c9373.oggvorbisstr.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed loading resource: res://assets/ui/audio/navigation_3.ogg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/navigation.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:16)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/navigation.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:17)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/press.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:18)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/selection.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:19)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/range_tick.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:20)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/accept.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:21)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/back.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:22)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/reject.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:23)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/open.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:24)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/pause.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:25)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/resume.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:26)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/restart.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:27)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/exit.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:28)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/exit.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:29)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/back.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:30)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/accept.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:31)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/navigation.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:56)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/navigation_2.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:57)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/ui/audio/navigation_3.ogg".
+          at: GDScript::reload (res://ui/menu_audio.gd:58)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://app_root.gd:0)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:115)
+ERROR: Failed to load script "res://app_root.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/test_stik_stock_selection.gd:115)
+SCRIPT ERROR: Invalid call. Nonexistent function 'attach' in base 'GDScript'.
+          at: _ready (res://app_root.gd:390)
+          GDScript backtrace (most recent call first):
+              [0] _ready (res://app_root.gd:390)
+              [1] run (res://tests/test_stik_stock_selection.gd:119)
+SCRIPT ERROR: Invalid access to property or key 'aircraft_id' on a base object of type 'Nil'.
+          at: run (res://tests/test_stik_stock_selection.gd:121)
+          GDScript backtrace (most recent call first):
+              [0] run (res://tests/test_stik_stock_selection.gd:121)
+              [1] settle (res://tests/ui_driver.gd:55)

@@ -1,0 +1,398 @@
+[
+  {
+    "directory": "checks/aero-baseline-6rciyesa",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "cacec0991c0f3a6bf5692a5dd3f857bd6b7dfe5bcb4676005818eaf5da315ef3"
+  },
+  {
+    "directory": "checks/baseline-card-comparison-qvavu9r4",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "a390293fb74f6066c4abe5801aaaaaff0633aba714e0c5de420ef1842f7795e5"
+  },
+  {
+    "directory": "checks/baseline-invalid-empty-success-6l3q_n6q",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "081ddfd0ebad214ee26f424e29fd09812d971cdf35e1bf2459cda7ffba475458"
+  },
+  {
+    "directory": "checks/controls-probe-xm5owgbf",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "735fe0fb718e366b741b7c885ec36f0b5b89fa4567941f572942da42607b6dd4"
+  },
+  {
+    "directory": "checks/direct-invalid-0-aqair_h6",
+    "ok": false,
+    "reason": "process_exit",
+    "process_exit": 2,
+    "complete": true,
+    "counts": {
+      "error": 1,
+      "warning": 0
+    },
+    "log_sha256": "7b147a6e1d135e72afb8763265e024b7762faf6149dcf6561752a7eb7b3c6474"
+  },
+  {
+    "directory": "checks/direct-invalid-1-p97mqfor",
+    "ok": false,
+    "reason": "process_exit",
+    "process_exit": 2,
+    "complete": true,
+    "counts": {
+      "error": 1,
+      "warning": 0
+    },
+    "log_sha256": "7b147a6e1d135e72afb8763265e024b7762faf6149dcf6561752a7eb7b3c6474"
+  },
+  {
+    "directory": "checks/direct-invalid-2-h0egsjgu",
+    "ok": false,
+    "reason": "process_exit",
+    "process_exit": 2,
+    "complete": true,
+    "counts": {
+      "error": 1,
+      "warning": 0
+    },
+    "log_sha256": "e46b401747e085d4ebdc3f2e8d6c726587d18492e0491e98c84d7b82ccf96832"
+  },
+  {
+    "directory": "checks/direct-invalid-3-pf54rwsq",
+    "ok": false,
+    "reason": "process_exit",
+    "process_exit": 2,
+    "complete": true,
+    "counts": {
+      "error": 1,
+      "warning": 0
+    },
+    "log_sha256": "767565af9b7f9a63fcd3b531bf53e1260cc5f83ba644d6bcf1c8299c8de4f5a7"
+  },
+  {
+    "directory": "checks/flight-card-parse-oepictc9",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "aa4f54f08a5917c8498811494f7840994652b0a922b3719618e39be87447d49d"
+  },
+  {
+    "directory": "checks/import-restored-assets-q1dl55n1",
+    "ok": false,
+    "reason": "engine_error",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 2,
+      "warning": 0
+    },
+    "log_sha256": "9e2ef4d1ccc425bdaca8c8d415a5ce130967e5cc1d7bcdf5ed369a897e67b2fd"
+  },
+  {
+    "directory": "checks/import-ui-assets-p6rydeab",
+    "ok": false,
+    "reason": "engine_error",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 2,
+      "warning": 0
+    },
+    "log_sha256": "8b4af450a4d34c947b230f2a528fe5e460a66e993c53a033d7a080f3977fcc47"
+  },
+  {
+    "directory": "checks/physics-probe-sv2laxu5",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "e77ac959b0bf03933e63a4dc93943a88c5e54e519dd31e82c877b16f933ad11c"
+  },
+  {
+    "directory": "checks/stik-electric-installation-twsblcd4",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "5270775be3112f26379642ffd58b5f91766710d88d319c8fce828311e7f74b53"
+  },
+  {
+    "directory": "checks/test_aero_flow-1uu929m7",
+    "ok": false,
+    "reason": "engine_error",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 118,
+      "warning": 0
+    },
+    "log_sha256": "9211a7ab8e0a134843e445ccdbf5a576506fa88578c6346deaba60bc174cae9f"
+  },
+  {
+    "directory": "checks/test_aero_flow-restored-assets-snovvyp4",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "d208f807d24d0ba11193e2c8aa4fd0be80e431f48385ef23a61d1f18e2dda22a"
+  },
+  {
+    "directory": "checks/test_aircraft_data-1fqob_0a",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "f9b033809c35fa8afe0e8547eb79d790459228430cccad38b4a9b63f71de9f42"
+  },
+  {
+    "directory": "checks/test_electric_session-66asb85i",
+    "ok": false,
+    "reason": "engine_error",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 118,
+      "warning": 0
+    },
+    "log_sha256": "f33b49c330d56ff676640a5366713d1e44fb79266f392d3fbd694f23f157853d"
+  },
+  {
+    "directory": "checks/test_electric_session-restored-assets-ue7jeiok",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "43f499745c3b13d32d792076d11c203de30ed1a7031fd21a22dc6d41c0c3c6ff"
+  },
+  {
+    "directory": "checks/test_golden-lxcwfpfb",
+    "ok": false,
+    "reason": "engine_error",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 118,
+      "warning": 0
+    },
+    "log_sha256": "85f783f038c5caf5b62610779c031cb3fbfb66071ada4fddf5bfaa4818b0681d"
+  },
+  {
+    "directory": "checks/test_golden-restored-assets-bqrn94jg",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "9e30cdab61beddf248169a9ecc78607fa1f09769eb55424419a24424e8619dca"
+  },
+  {
+    "directory": "checks/test_mass_inventory-q3fwdhg5",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "f42ae800441f1bbeff64d54666b770daa4b0ce1f113b897e1c4ea54722aae89f"
+  },
+  {
+    "directory": "checks/test_propeller_table_continuity-restored-assets-g8iq1ivl",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "e501c3907991f2e395c8c479caa846324bd61534ebeff5dc4fb921d72335b86a"
+  },
+  {
+    "directory": "checks/test_propeller_table_continuity-ywtwzpxv",
+    "ok": false,
+    "reason": "engine_error",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 118,
+      "warning": 0
+    },
+    "log_sha256": "2e5bcfb8297bd738ab0d3c427bdc5e32e00c0bc905ac9f0dd000410cafca6881"
+  },
+  {
+    "directory": "checks/test_rates-correct-path-i14v2qwd",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "e7638e30473b80ea13014ef2d0df89684ddb303916a11bfa99843e8a8edb5fe4"
+  },
+  {
+    "directory": "checks/test_rates-dj8ndjrn",
+    "ok": false,
+    "reason": "process_exit",
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 3,
+      "warning": 0
+    },
+    "log_sha256": "83fa03b0f8dcc417890755036105816632e01961c59d929ddbc01a60d23971a1"
+  },
+  {
+    "directory": "checks/test_rc_axis_history-kof73h64",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "42ad9f1ade0349c338d128ec975e8bcee744db3843edccb739e64a07ea5cb711"
+  },
+  {
+    "directory": "checks/test_rc_calibration-v3sehegu",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "2e59d71c946efce6d24392ad9c54aa9762b563fd5411d188e5591824ebdde17f"
+  },
+  {
+    "directory": "checks/test_servo-8g8djh4_",
+    "ok": false,
+    "reason": "process_exit",
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 3,
+      "warning": 0
+    },
+    "log_sha256": "8ca6a022319008da64efacf8203f8d0bc1651cde65d63159a2f89017d811c52f"
+  },
+  {
+    "directory": "checks/test_servo-correct-path-b70zsz65",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "cc9f699c186c637ba709f44c449816cda8ec7c63e6f921b15870ba81fa08bc64"
+  },
+  {
+    "directory": "checks/test_stall_solver-nzb_8jyj",
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "89eff5e7bf804fbba28ce8bb072bbf0eff8f6813498b87ebffb6d89f0b6f93f1"
+  },
+  {
+    "directory": "checks/test_stik_stock_selection-correct-path-q0obcwgc",
+    "ok": false,
+    "reason": "timeout",
+    "process_exit": -9,
+    "complete": false,
+    "counts": {
+      "error": 182,
+      "warning": 0
+    },
+    "log_sha256": "3a7adcc5603a7361a5cb06b50bf85f4844c2d205d20a23d29c45c13d9c311d27"
+  },
+  {
+    "directory": "checks/test_stik_stock_selection-o8s0l8k9",
+    "ok": false,
+    "reason": "process_exit",
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 3,
+      "warning": 0
+    },
+    "log_sha256": "2e5e2d9106012e23a3fb848b9dee4dfb849334119dc3a1aa10298ac30a1e2ef9"
+  },
+  {
+    "directory": "checks/test_stik_stock_selection-restored-ui-assets-28ccjfd8",
+    "ok": false,
+    "reason": "engine_error",
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 351,
+      "warning": 5
+    },
+    "log_sha256": "ba48959ed124fe909ea563debb58df49b5db569a8c64412699b2b69a9507fa34"
+  }
+]

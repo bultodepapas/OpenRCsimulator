@@ -1,0 +1,204 @@
+F.EEFEEEEE..F..F
+======================================================================
+ERROR: test_empty_aircraft_selection_is_refused_before_launch (__main__.InputIdentityTests.test_empty_aircraft_selection_is_refused_before_launch) (selection='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 112, in test_empty_aircraft_selection_is_refused_before_launch
+    RUNNER.main()
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 149, in main
+    version = subprocess.run([binary, "--version"], capture_output=True, text=True).stdout.strip()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 548, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'test-engine'
+
+======================================================================
+ERROR: test_empty_aircraft_selection_is_refused_before_launch (__main__.InputIdentityTests.test_empty_aircraft_selection_is_refused_before_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 113, in test_empty_aircraft_selection_is_refused_before_launch
+    self.assertEqual(result.exception.code, 2)
+                     ^^^^^^^^^^^^^^^^
+AttributeError: '_AssertRaisesContext' object has no attribute 'exception'
+
+======================================================================
+ERROR: test_invalid_test_selections_are_refused_before_engine_or_output (__main__.InputIdentityTests.test_invalid_test_selections_are_refused_before_engine_or_output) (selection='not_a_test')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 99, in test_invalid_test_selections_are_refused_before_engine_or_output
+    RUNNER.main()
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 147, in main
+    runs = dict(pool.map(fly, ids))
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 122, in fly
+    errors = len(ERROR.findall(log))
+                 ^^^^^^^^^^^^^^^^^^
+TypeError: expected string or bytes-like object, got 'MagicMock'
+
+======================================================================
+ERROR: test_invalid_test_selections_are_refused_before_engine_or_output (__main__.InputIdentityTests.test_invalid_test_selections_are_refused_before_engine_or_output) (selection='aero_sweep,not_a_test')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 99, in test_invalid_test_selections_are_refused_before_engine_or_output
+    RUNNER.main()
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 147, in main
+    runs = dict(pool.map(fly, ids))
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 122, in fly
+    errors = len(ERROR.findall(log))
+                 ^^^^^^^^^^^^^^^^^^
+TypeError: expected string or bytes-like object, got 'MagicMock'
+
+======================================================================
+ERROR: test_invalid_test_selections_are_refused_before_engine_or_output (__main__.InputIdentityTests.test_invalid_test_selections_are_refused_before_engine_or_output) (selection='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 99, in test_invalid_test_selections_are_refused_before_engine_or_output
+    RUNNER.main()
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 147, in main
+    runs = dict(pool.map(fly, ids))
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 122, in fly
+    errors = len(ERROR.findall(log))
+                 ^^^^^^^^^^^^^^^^^^
+TypeError: expected string or bytes-like object, got 'MagicMock'
+
+======================================================================
+ERROR: test_invalid_test_selections_are_refused_before_engine_or_output (__main__.InputIdentityTests.test_invalid_test_selections_are_refused_before_engine_or_output) (selection='aero_sweep,')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 99, in test_invalid_test_selections_are_refused_before_engine_or_output
+    RUNNER.main()
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 147, in main
+    runs = dict(pool.map(fly, ids))
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 122, in fly
+    errors = len(ERROR.findall(log))
+                 ^^^^^^^^^^^^^^^^^^
+TypeError: expected string or bytes-like object, got 'MagicMock'
+
+======================================================================
+ERROR: test_invalid_test_selections_are_refused_before_engine_or_output (__main__.InputIdentityTests.test_invalid_test_selections_are_refused_before_engine_or_output) (selection='aero_sweep,aero_sweep')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 99, in test_invalid_test_selections_are_refused_before_engine_or_output
+    RUNNER.main()
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 147, in main
+    runs = dict(pool.map(fly, ids))
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/run.py", line 122, in fly
+    errors = len(ERROR.findall(log))
+                 ^^^^^^^^^^^^^^^^^^
+TypeError: expected string or bytes-like object, got 'MagicMock'
+
+======================================================================
+FAIL: test_default_full_card_cannot_succeed_with_a_partial_profile (__main__.InputIdentityTests.test_default_full_card_cannot_succeed_with_a_partial_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 137, in test_default_full_card_cannot_succeed_with_a_partial_profile
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_empty_result_set_is_not_a_completed_card (__main__.InputIdentityTests.test_empty_result_set_is_not_a_completed_card)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 119, in test_empty_result_set_is_not_a_completed_card
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_partial_result_set_cannot_hide_an_omitted_requested_test (__main__.InputIdentityTests.test_partial_result_set_cannot_hide_an_omitted_requested_test)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 126, in test_partial_result_set_cannot_hide_an_omitted_requested_test
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_unrequested_result_is_not_credited (__main__.InputIdentityTests.test_unrequested_result_is_not_credited)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/test_run.py", line 132, in test_unrequested_result_is_not_credited
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.054s
+
+FAILED (failures=4, errors=7)

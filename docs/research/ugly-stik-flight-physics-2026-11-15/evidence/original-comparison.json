@@ -1,0 +1,37 @@
+{
+  "baseline-card-comparison": {
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/baseline-card-comparison-qvavu9r4/report.json",
+    "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/baseline-card-comparison-qvavu9r4/engine.log",
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "result_names": [
+      "trim_sweep",
+      "modes",
+      "aero_sweep"
+    ],
+    "profile_equal_excluding_wall_s": true
+  },
+  "baseline-invalid-empty-success": {
+    "ok": true,
+    "reason": "passed",
+    "process_exit": 0,
+    "complete": true,
+    "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/baseline-invalid-empty-success-6l3q_n6q/report.json",
+    "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/baseline-invalid-empty-success-6l3q_n6q/engine.log",
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "result_names": []
+  },
+  "baseline": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "card_source_sha256": "b22527e89479e6c487651e1a275055c02012e107da14a6901a77ee01809618b6"
+}

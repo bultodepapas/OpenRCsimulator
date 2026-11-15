@@ -1,0 +1,19 @@
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FT jensen-das-ugly-stik-60: 2.88 kg, S 0.465 m2, start 15.0 m/s, CL_max 1.10 -> Vs estimate 9.5 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.283,"first_untrimmable_mps":32.25,"points":29,"slowest_trim_mps":10.5}
+FT stall_power_off          valid {"altitude_lost_m":34.4,"bank_in_first_second_deg":-80.5,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.33,"max_bank_in_recovery_deg":80.5,"ratio_to_cl_max_estimate":1.018,"recovery_time_s":3.31,"stall_alpha_deg":18.3,"stall_speed_mps":9.67,"wing_drop":"left"}
+FT vmax                     valid {"height_error_end_m":0.44,"height_error_run_m":0.75,"initial_acceleration_mps2":7.1,"max_level_speed_kmh":117.9,"max_level_speed_mps":32.76,"rpm_at_max":11149,"time_plus_10_mps_s":1.53,"time_plus_5_mps_s":0.8,"time_to_90_percent_s":3.61}
+FT throttle_response        valid {"rpm_full":11149,"rpm_idle_end":2800,"rpm_trimmed":5159,"speed_gain_in_6_s_mps":17.15,"spool_down_90_10_s":0.55,"spool_up_10_90_s":0.55}
+FT hands_off                valid {"bank_10_s_deg":4.6,"bank_30_s_deg":3.9,"bank_after_aileron_pulse_deg":7.1,"heading_change_10_s_deg":18.4,"heading_change_30_s_deg":68.5,"height_change_10_s_m":-0.14,"height_change_30_s_m":-0.33,"phugoid_period_s":10.1,"reached_floor_s":null,"speed_change_10_s_mps":0.68,"speed_change_30_s_mps":0.13}
+FT roll_rate                valid {}
+FT pitch_pull               valid {}
+FT power_step               valid {"height_change_10_s_100pct_m":151.5,"height_change_10_s_50pct_m":35.6,"inverted_at_100pct_s":5.93,"inverted_at_50pct_s":null,"path_angle_end_100pct_deg":74.9,"path_angle_end_50pct_deg":15.7}
+   note: 75pct: past inverted at 9.83 s with the elevator at its trim
+   note: 100pct: past inverted at 5.92 s with the elevator at its trim
+FT report: tmp/ugly-audit-dynamic/jensen-das-ugly-stik-60/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+     at: _stringify (core/io/json.cpp:86)
+     GDScript backtrace (most recent call first):
+         [0] _run (research/flight-test/flight_test.gd:216)
+         [1] _initialize (research/flight-test/flight_test.gd:137)

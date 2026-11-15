@@ -1,0 +1,15 @@
+{
+  "format": "ft-card-v5",
+  "aircraft": "jensen-das-ugly-stik-60",
+  "name": "Ugly Stick",
+  "aircraft_input_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+  "data_sha256": "0e9469abf35f5a2cf40a7fcc4ed1e914df5d5527ddf501352e331d6e7079b737",
+  "mass_kg": 2.8786621383898,
+  "wing_area_m2": 0.464515,
+  "span_m": 1.524,
+  "start_speed_mps": 15.0,
+  "stall_speed_estimate_mps": 9.497437083913,
+  "stall_start_alpha_deg": 12.1283959903325,
+  "engine": "4.8-beta2 (official)",
+  "results": {}
+}

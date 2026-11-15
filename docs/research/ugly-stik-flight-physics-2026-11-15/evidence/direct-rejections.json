@@ -1,0 +1,30 @@
+[
+  {
+    "only": "not_a_test",
+    "process_exit": 2,
+    "output_exists": false,
+    "intentional_rejection": true,
+    "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/direct-invalid-0-aqair_h6/report.json"
+  },
+  {
+    "only": "aero_sweep,not_a_test",
+    "process_exit": 2,
+    "output_exists": false,
+    "intentional_rejection": true,
+    "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/direct-invalid-1-p97mqfor/report.json"
+  },
+  {
+    "only": "",
+    "process_exit": 2,
+    "output_exists": false,
+    "intentional_rejection": true,
+    "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/direct-invalid-2-h0egsjgu/report.json"
+  },
+  {
+    "only": "aero_sweep,aero_sweep",
+    "process_exit": 2,
+    "output_exists": false,
+    "intentional_rejection": true,
+    "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/direct-invalid-3-pf54rwsq/report.json"
+  }
+]

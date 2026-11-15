@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "613551b1-fc4a-443e-ae35-6f3c7eb52c49",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/_audit_original.gd",
+    "--",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--out=/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/baseline-card-comparison",
+    "--only=trim_sweep,aero_sweep,modes"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T16:04:02.070882+00:00",
+  "label": "baseline-card-comparison",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/baseline-card-comparison-qvavu9r4/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/baseline-card-comparison-qvavu9r4/report.json",
+  "timeout_seconds": 180,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "FT "
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.478237,
+  "log_bytes": 1173,
+  "log_sha256": "a390293fb74f6066c4abe5801aaaaaff0633aba714e0c5de420ef1842f7795e5"
+}

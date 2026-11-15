@@ -1,0 +1,9 @@
+
+FT turbo-lumber-evolution: 2.19 kg, S 0.327 m2, start 13.1 m/s, CL_max 1.60 -> Vs estimate 8.2 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.41,"first_untrimmable_mps":29.4708955647157,"points":30,"slowest_trim_mps":9.82}
+   note: no level trim below 9.8 m/s (1 slower speeds failed)
+FT modes                    valid {}
+FT aero_sweep               valid {"cy_at_beta20":-0.0356,"cy_max_beta_le_30":0.0485,"cy_oracle_at_beta20":-0.1045,"knife_edge_cy_needed_at_0_8vmax":0.1929,"knife_edge_side_force_margin":0.251,"local_weight_full_at_alpha_deg":20.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":4.32}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.048 of 0.193)
+FT report: tmp/ugly-audit-fleet-static/turbo-lumber-evolution/profile.md

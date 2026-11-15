@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FT jensen-das-ugly-stik-60: 2.88 kg, S 0.465 m2, start 15.0 m/s, CL_max 1.10 -> Vs estimate 9.5 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.283,"first_untrimmable_mps":32.25,"points":29,"slowest_trim_mps":10.5}
+FT modes                    valid {}
+FT aero_sweep               valid {"cy_at_beta20":-0.055,"cy_max_beta_le_30":0.0676,"cy_oracle_at_beta20":-0.1748,"knife_edge_cy_needed_at_0_8vmax":0.1491,"knife_edge_side_force_margin":0.454,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":4.2}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.068 of 0.149)
+FT report: /workspace/scratch/d289586b400e/OpenRCsimulator/tmp/baseline-card-comparison/jensen-das-ugly-stik-60/profile.md

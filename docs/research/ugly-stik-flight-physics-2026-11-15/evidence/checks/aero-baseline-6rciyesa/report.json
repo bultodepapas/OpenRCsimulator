@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a506db54-f982-47e9-b2d0-3d1acd32eca1",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aero.gd"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T15:50:06.205633+00:00",
+  "label": "aero-baseline",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/aero-baseline-6rciyesa/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/aero-baseline-6rciyesa/report.json",
+  "timeout_seconds": 90,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.39664,
+  "log_bytes": 90,
+  "log_sha256": "cacec0991c0f3a6bf5692a5dd3f857bd6b7dfe5bcb4676005818eaf5da315ef3"
+}

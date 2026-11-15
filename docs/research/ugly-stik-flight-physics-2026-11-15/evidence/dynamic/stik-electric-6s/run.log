@@ -1,0 +1,17 @@
+
+FT stik-electric-6s: 2.60 kg, S 0.465 m2, start 15.0 m/s, CL_max 1.10 -> Vs estimate 9.0 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.411,"first_untrimmable_mps":34.5,"points":33,"slowest_trim_mps":9.75}
+FT stall_power_off          valid {"altitude_lost_m":14.9,"bank_in_first_second_deg":38.6,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.39,"max_bank_in_recovery_deg":38.6,"ratio_to_cl_max_estimate":1.004,"recovery_time_s":2.73,"stall_alpha_deg":19.0,"stall_speed_mps":9.06,"wing_drop":"right"}
+FT vmax                     valid {"height_error_end_m":0.26,"height_error_run_m":0.29,"initial_acceleration_mps2":8.23,"max_level_speed_kmh":122.0,"max_level_speed_mps":33.89,"rpm_at_max":11074,"time_plus_10_mps_s":1.38,"time_plus_5_mps_s":0.63,"time_to_90_percent_s":3.87}
+FT throttle_response        valid {"rpm_full":11042,"rpm_idle_end":2020,"rpm_trimmed":4918,"speed_gain_in_6_s_mps":18.13,"spool_down_90_10_s":4.158,"spool_up_10_90_s":0.3}
+FT hands_off                valid {"bank_10_s_deg":1.2,"bank_30_s_deg":1.5,"bank_after_aileron_pulse_deg":7.3,"heading_change_10_s_deg":10.6,"heading_change_30_s_deg":35.0,"height_change_10_s_m":0.8,"height_change_30_s_m":1.2,"phugoid_period_s":12.76,"reached_floor_s":null,"speed_change_10_s_mps":1.08,"speed_change_30_s_mps":0.02}
+FT roll_rate                valid {}
+FT pitch_pull               valid {}
+FT power_step               valid {"height_change_10_s_100pct_m":147.2,"height_change_10_s_50pct_m":17.0,"inverted_at_100pct_s":7.26,"inverted_at_50pct_s":null,"path_angle_end_100pct_deg":78.8,"path_angle_end_50pct_deg":7.0}
+   note: 100pct: past inverted at 7.26 s with the elevator at its trim
+FT report: tmp/ugly-audit-dynamic/stik-electric-6s/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+     at: _stringify (core/io/json.cpp:86)
+     GDScript backtrace (most recent call first):
+         [0] _run (research/flight-test/flight_test.gd:216)
+         [1] _initialize (research/flight-test/flight_test.gd:137)

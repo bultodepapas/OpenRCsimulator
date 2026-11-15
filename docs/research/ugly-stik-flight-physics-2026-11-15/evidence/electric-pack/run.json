@@ -1,0 +1,41 @@
+{
+  "card": "ft-card-v5",
+  "commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "dirty_paths": [
+    "research/flight-test/AGENTS.md",
+    "research/flight-test/README.md",
+    "research/flight-test/flight_test.gd",
+    "research/flight-test/run.py",
+    "research/flight-test/test_run.py"
+  ],
+  "godot": "4.8.beta2.official.cafc17a19",
+  "app": "app",
+  "data_override": "/workspace/scratch/d289586b400e/OpenRCsimulator/app/data/aircraft/battery/stik_electric_6s_pack.json",
+  "only": "trim_sweep,stall_power_off,vmax,roll_rate,pitch_pull,throttle_response,hands_off,power_step",
+  "expected_tests": [
+    "trim_sweep",
+    "stall_power_off",
+    "vmax",
+    "throttle_response",
+    "hands_off",
+    "roll_rate",
+    "pitch_pull",
+    "power_step"
+  ],
+  "aircraft": {
+    "stik-electric-6s": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 139.9,
+      "valid_tests": 8,
+      "tests": 8,
+      "data_file": "data/aircraft/battery/stik_electric_6s_pack.json",
+      "data_sha256": "fbbfd74512b8e3141adc530296687721c5ca7e3d94a38c384fbaf10f03c2c73e",
+      "data_file_sha256_after": "fbbfd74512b8e3141adc530296687721c5ca7e3d94a38c384fbaf10f03c2c73e",
+      "data_identity_matches": true,
+      "test_roster_matches": true,
+      "missing_tests": [],
+      "unexpected_tests": []
+    }
+  }
+}

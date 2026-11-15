@@ -1,0 +1,184 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+ERROR: Attempting to parent and popup a dialog that already has a parent.
+   at: _try_parent_dialog (scene/main/window.cpp:2365)
+ERROR: Attempting to parent and popup a dialog that already has a parent.
+   at: _try_parent_dialog (scene/main/window.cpp:2365)
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (39 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | logo-segments.svg[39m[0m
+[   2% ] [90m[1m_update_scan_actions[22m | openrc-official.svg[39m[0m
+[   5% ] [90m[1m_update_scan_actions[22m | openrc-refined.svg[39m[0m
+[   7% ] [90m[1m_update_scan_actions[22m | flower_empodium_alpha_1k.jpg[39m[0m
+[  10% ] [90m[1m_update_scan_actions[22m | flower_empodium_arm_1k.jpg[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | flower_empodium_diff_1k.jpg[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | flower_empodium_nor_gl_1k.jpg[39m[0m
+[  17% ] [90m[1m_update_scan_actions[22m | flower_empodium_1k.gltf[39m[0m
+[  20% ] [90m[1m_update_scan_actions[22m | Rocks_Diffuse.png[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | Rock_Medium_1.gltf[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | Rock_Medium_2.gltf[39m[0m
+[  27% ] [90m[1m_update_scan_actions[22m | Rock_Medium_3.gltf[39m[0m
+[  30% ] [90m[1m_update_scan_actions[22m | clay_roof_tiles_arm_1k.jpg[39m[0m
+[  32% ] [90m[1m_update_scan_actions[22m | clay_roof_tiles_diff_1k.jpg[39m[0m
+[  35% ] [90m[1m_update_scan_actions[22m | clay_roof_tiles_nor_gl_1k.png[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | roof_slates_03_arm_1k.jpg[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | roof_slates_03_diff_1k.jpg[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | roof_slates_03_nor_gl_1k.png[39m[0m
+[  45% ] [90m[1m_update_scan_actions[22m | Metal026_1K-JPG_Color.jpg[39m[0m
+[  47% ] [90m[1m_update_scan_actions[22m | Metal026_1K-JPG_Metalness.jpg[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | Metal026_1K-JPG_NormalGL.jpg[39m[0m
+[  52% ] [90m[1m_update_scan_actions[22m | Metal026_1K-JPG_Roughness.jpg[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | Metal038_1K-JPG_Color.jpg[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | Metal038_1K-JPG_Metalness.jpg[39m[0m
+[  60% ] [90m[1m_update_scan_actions[22m | Metal038_1K-JPG_NormalGL.jpg[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | Metal038_1K-JPG_Roughness.jpg[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | Wood049_1K-JPG_Color.jpg[39m[0m
+[  67% ] [90m[1m_update_scan_actions[22m | Wood049_1K-JPG_NormalGL.jpg[39m[0m
+[  70% ] [90m[1m_update_scan_actions[22m | Wood049_1K-JPG_Roughness.jpg[39m[0m
+[  72% ] [90m[1m_update_scan_actions[22m | Wood060_2K-JPG_Color.jpg[39m[0m
+[  75% ] [90m[1m_update_scan_actions[22m | Wood060_2K-JPG_NormalGL.jpg[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | Wood060_2K-JPG_Roughness.jpg[39m[0m
+[  80% ] [90m[1m_update_scan_actions[22m | corrugated_iron_02_arm_2k.jpg[39m[0m
+[  82% ] [90m[1m_update_scan_actions[22m | corrugated_iron_02_diff_2k.jpg[39m[0m
+[  85% ] [90m[1m_update_scan_actions[22m | corrugated_iron_02_nor_gl_2k.png[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | transmission-tower-3tier-ipoly3d.glb[39m[0m
+[  90% ] [90m[1m_update_scan_actions[22m | Fabric001_1K-JPG_Color.jpg[39m[0m
+[  92% ] [90m[1m_update_scan_actions[22m | Fabric001_1K-JPG_NormalGL.jpg[39m[0m
+[  95% ] [90m[1m_update_scan_actions[22m | Fabric001_1K-JPG_Roughness.jpg[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (39 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   2% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   5% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   7% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  10% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  12% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  17% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  20% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  22% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  25% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  27% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  30% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  32% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  35% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  37% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  40% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  42% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  45% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  47% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  50% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  52% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  55% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  57% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  60% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  62% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  65% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  67% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  70% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  72% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  75% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  77% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  80% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  82% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  85% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  87% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  90% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  92% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  95% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mpreload_reimporting_scene[22m | Started Preparing scenes for reload (1 steps)[39m[0m
+[   0% ] [90m[1mpreload_reimporting_scene[22m | Analyzing scene [empty][39m[0m
+[  50% ] [90m[1mpreload_reimporting_scene[22m | Preparation done.[39m[0m
+[92m[ DONE ][39m [1mpreload_reimporting_scene[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Metal026_1K-JPG_Metalness.jpg[39m[0m
+[   2% ] [90m[1mreimport[22m | Metal026_1K-JPG_NormalGL.jpg[39m[0m
+[   5% ] [90m[1mreimport[22m | Metal026_1K-JPG_Roughness.jpg[39m[0m
+[   7% ] [90m[1mreimport[22m | Metal038_1K-JPG_Color.jpg[39m[0m
+[  10% ] [90m[1mreimport[22m | Metal038_1K-JPG_Metalness.jpg[39m[0m
+[  12% ] [90m[1mreimport[22m | Metal038_1K-JPG_NormalGL.jpg[39m[0m
+[  15% ] [90m[1mreimport[22m | Metal038_1K-JPG_Roughness.jpg[39m[0m
+[  17% ] [90m[1mreimport[22m | Wood049_1K-JPG_Color.jpg[39m[0m
+[  20% ] [90m[1mreimport[22m | Wood049_1K-JPG_NormalGL.jpg[39m[0m
+[  22% ] [90m[1mreimport[22m | Wood049_1K-JPG_Roughness.jpg[39m[0m
+[  25% ] [90m[1mreimport[22m | Wood060_2K-JPG_Color.jpg[39m[0m
+[  27% ] [90m[1mreimport[22m | Wood060_2K-JPG_NormalGL.jpg[39m[0m
+[  30% ] [90m[1mreimport[22m | Wood060_2K-JPG_Roughness.jpg[39m[0m
+[  32% ] [90m[1mreimport[22m | corrugated_iron_02_arm_2k.jpg[39m[0m
+[  35% ] [90m[1mreimport[22m | corrugated_iron_02_diff_2k.jpg[39m[0m
+[  37% ] [90m[1mreimport[22m | corrugated_iron_02_nor_gl_2k.png[39m[0m
+[  40% ] [90m[1mreimport[22m | Fabric001_1K-JPG_Color.jpg[39m[0m
+[  42% ] [90m[1mreimport[22m | Fabric001_1K-JPG_NormalGL.jpg[39m[0m
+[  45% ] [90m[1mreimport[22m | Fabric001_1K-JPG_Roughness.jpg[39m[0m
+[  47% ] [90m[1mreimport[22m | logo-segments.svg[39m[0m
+[  50% ] [90m[1mreimport[22m | openrc-official.svg[39m[0m
+[  52% ] [90m[1mreimport[22m | openrc-refined.svg[39m[0m
+[  55% ] [90m[1mreimport[22m | flower_empodium_alpha_1k.jpg[39m[0m
+[  57% ] [90m[1mreimport[22m | flower_empodium_arm_1k.jpg[39m[0m
+[  60% ] [90m[1mreimport[22m | flower_empodium_diff_1k.jpg[39m[0m
+[  62% ] [90m[1mreimport[22m | flower_empodium_nor_gl_1k.jpg[39m[0m
+[  65% ] [90m[1mreimport[22m | Rocks_Diffuse.png[39m[0m
+[  67% ] [90m[1mreimport[22m | clay_roof_tiles_arm_1k.jpg[39m[0m
+[  70% ] [90m[1mreimport[22m | clay_roof_tiles_diff_1k.jpg[39m[0m
+[  72% ] [90m[1mreimport[22m | clay_roof_tiles_nor_gl_1k.png[39m[0m
+[  75% ] [90m[1mreimport[22m | roof_slates_03_arm_1k.jpg[39m[0m
+[  77% ] [90m[1mreimport[22m | roof_slates_03_diff_1k.jpg[39m[0m
+[  80% ] [90m[1mreimport[22m | roof_slates_03_nor_gl_1k.png[39m[0m
+[  82% ] [90m[1mreimport[22m | Metal026_1K-JPG_Color.jpg[39m[0m
+[  85% ] [90m[1mreimport[22m | Rock_Medium_2.gltf[39m[0m
+[   0% ] [90m[1mimport[22m | Started Import Scene (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | Importing Scene...[39m[0m
+[   1% ] [90m[1mimport[22m | Running Custom Script...[39m[0m
+[  99% ] [90m[1mimport[22m | Saving...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  87% ] [90m[1mreimport[22m | Rock_Medium_1.gltf[39m[0m
+[   0% ] [90m[1mimport[22m | Started Import Scene (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | Importing Scene...[39m[0m
+[   1% ] [90m[1mimport[22m | Running Custom Script...[39m[0m
+[  99% ] [90m[1mimport[22m | Saving...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  90% ] [90m[1mreimport[22m | Rock_Medium_3.gltf[39m[0m
+[   0% ] [90m[1mimport[22m | Started Import Scene (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | Importing Scene...[39m[0m
+[   1% ] [90m[1mimport[22m | Running Custom Script...[39m[0m
+[  99% ] [90m[1mimport[22m | Saving...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  92% ] [90m[1mreimport[22m | flower_empodium_1k.gltf[39m[0m
+[   0% ] [90m[1mimport[22m | Started Import Scene (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | Importing Scene...[39m[0m
+[   1% ] [90m[1mimport[22m | Running Custom Script...[39m[0m
+[  99% ] [90m[1mimport[22m | Saving...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  95% ] [90m[1mreimport[22m | transmission-tower-3tier-ipoly3d.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started Import Scene (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | Importing Scene...[39m[0m
+[   1% ] [90m[1mimport[22m | Running Custom Script...[39m[0m
+[  99% ] [90m[1mimport[22m | Saving...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  97% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (39 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

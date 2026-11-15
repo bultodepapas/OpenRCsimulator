@@ -78,6 +78,16 @@ func _initialize() -> void:
 		push_error("usage: -- --aircraft=<catalog id> --out=<dir>")
 		quit(2)
 		return
+	var card := _card()
+	var requested := {}
+	for index in only.size():
+		var name := only[index].strip_edges()
+		if name.is_empty() or requested.has(name) or not card.has(name):
+			push_error("--only requires distinct known test names; invalid selection: " + name)
+			quit(2)
+			return
+		requested[name] = true
+		only[index] = name
 	var entry: Dictionary = Catalog.entry(aircraft_id)
 	if entry.is_empty():
 		push_error("unknown catalog aircraft: " + aircraft_id)
@@ -123,50 +133,58 @@ func _initialize() -> void:
 	out_dir = out_dir.path_join(aircraft_id)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_dir) if out_dir.begins_with("res://") or out_dir.begins_with("user://") else out_dir)
 	print("FT %s: %.2f kg, S %.3f m2, start %.1f m/s, CL_max %.2f -> Vs estimate %.1f m/s" % [aircraft_id, model.mass_kg, model.reference.S, v_start, cl_max, vs_estimate])
-	_run("trim_sweep", _trim_sweep)
-	_run("stall_power_off", _stall_power_off)
-	_run("vmax", _vmax)
-	_run("modes", _modes)
-	_run("aero_sweep", _aero_sweep)
-	_run("stall_power_on", _stall_power_on)
-	_run("throttle_response", _throttle_response)
-	_run("hands_off", _hands_off)
-	_run("climb", _climb)
-	_run("glide", _glide)
-	_run("roll_rate", _roll_rate)
-	_run("pitch_pull", _pitch_pull)
-	_run("loop", _loop)
-	_run("turn_60", _turn_60)
-	_run("rudder_step", _rudder_step)
-	_run("knife_edge", _knife_edge)
-	_run("knife_edge_full_rudder", _knife_edge_full_rudder)
-	_run("inverted", _inverted)
-	_run("spin", _spin)
-	_run("takeoff", _takeoff)
-	_run("landing", _landing)
-	# Card v4 (FT-04): appended after the v3 tests, which run exactly as before; each group lives in its own file.
-	_run("inverted_speeds", func() -> Dictionary: return Acro.inverted_speeds(self))
-	_run("inverted_turn", func() -> Dictionary: return Acro.inverted_turn(self))
-	_run("immelmann", func() -> Dictionary: return Acro.immelmann(self))
-	_run("split_s", func() -> Dictionary: return Acro.split_s(self))
-	_run("outside_loop", func() -> Dictionary: return Acro.outside_loop(self))
-	_run("slow_roll", func() -> Dictionary: return Acro.slow_roll(self))
-	_run("point_roll", func() -> Dictionary: return Acro.point_roll(self))
-	_run("snap_roll", func() -> Dictionary: return Acro.snap_roll(self))
-	_run("stall_turn", func() -> Dictionary: return Acro.stall_turn(self))
-	_run("engine_cut_climb", func() -> Dictionary: return Power.engine_cut_climb(self))
-	_run("glide_turn", func() -> Dictionary: return Power.glide_turn(self))
-	_run("stall_turning", func() -> Dictionary: return Stalls.stall_turning(self))
-	_run("stall_cross_controlled", func() -> Dictionary: return Stalls.stall_cross_controlled(self))
-	_run("stall_held", func() -> Dictionary: return Stalls.stall_held(self))
-	_run("stall_inverted", func() -> Dictionary: return Stalls.stall_inverted(self))
-	_run("spin_inverted", func() -> Dictionary: return Stalls.spin_inverted(self))
-	_run("dead_stick_landing", func() -> Dictionary: return Runway.dead_stick_landing(self))
-	_run("go_around", func() -> Dictionary: return Runway.go_around(self))
-	# Card v5 (D6e-R3): hands-off throttle steps, appended after the v4 tests.
-	_run("power_step", func() -> Dictionary: return Power.power_step(self))
+	for name: String in card:
+		_run(name, card[name])
 	_write_report()
 	quit(0)
+
+
+## Single ordered registry for selection validation and dispatch; maneuver definitions are unchanged.
+func _card() -> Dictionary:
+	return {
+		"trim_sweep": _trim_sweep,
+		"stall_power_off": _stall_power_off,
+		"vmax": _vmax,
+		"modes": _modes,
+		"aero_sweep": _aero_sweep,
+		"stall_power_on": _stall_power_on,
+		"throttle_response": _throttle_response,
+		"hands_off": _hands_off,
+		"climb": _climb,
+		"glide": _glide,
+		"roll_rate": _roll_rate,
+		"pitch_pull": _pitch_pull,
+		"loop": _loop,
+		"turn_60": _turn_60,
+		"rudder_step": _rudder_step,
+		"knife_edge": _knife_edge,
+		"knife_edge_full_rudder": _knife_edge_full_rudder,
+		"inverted": _inverted,
+		"spin": _spin,
+		"takeoff": _takeoff,
+		"landing": _landing,
+		# Card v4 (FT-04): appended after the v3 tests, which run exactly as before; each group lives in its own file.
+		"inverted_speeds": func() -> Dictionary: return Acro.inverted_speeds(self),
+		"inverted_turn": func() -> Dictionary: return Acro.inverted_turn(self),
+		"immelmann": func() -> Dictionary: return Acro.immelmann(self),
+		"split_s": func() -> Dictionary: return Acro.split_s(self),
+		"outside_loop": func() -> Dictionary: return Acro.outside_loop(self),
+		"slow_roll": func() -> Dictionary: return Acro.slow_roll(self),
+		"point_roll": func() -> Dictionary: return Acro.point_roll(self),
+		"snap_roll": func() -> Dictionary: return Acro.snap_roll(self),
+		"stall_turn": func() -> Dictionary: return Acro.stall_turn(self),
+		"engine_cut_climb": func() -> Dictionary: return Power.engine_cut_climb(self),
+		"glide_turn": func() -> Dictionary: return Power.glide_turn(self),
+		"stall_turning": func() -> Dictionary: return Stalls.stall_turning(self),
+		"stall_cross_controlled": func() -> Dictionary: return Stalls.stall_cross_controlled(self),
+		"stall_held": func() -> Dictionary: return Stalls.stall_held(self),
+		"stall_inverted": func() -> Dictionary: return Stalls.stall_inverted(self),
+		"spin_inverted": func() -> Dictionary: return Stalls.spin_inverted(self),
+		"dead_stick_landing": func() -> Dictionary: return Runway.dead_stick_landing(self),
+		"go_around": func() -> Dictionary: return Runway.go_around(self),
+		# Card v5 (D6e-R3): hands-off throttle steps, appended after the v4 tests.
+		"power_step": func() -> Dictionary: return Power.power_step(self),
+	}
 
 
 ## Fixed-wing catalog aircraft: the ones whose data a FlightSession accepts with a trimmed start.

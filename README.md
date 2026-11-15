@@ -74,7 +74,7 @@
 
 ## Aircraft
 
-Current source has **seven fixed-wing airframes and ten airplane configurations**. The Ugly Stik is the reference model; the other configurations are experimental. Click an aircraft for its guide, controls and modeling limits.
+Current source offers **eight stock fixed-wing configurations across seven airframes**. The basic Ugly Stick is the reference model; the other stock configurations are experimental. Three additional finite-glow Stik configurations are retained for technical and saved-build compatibility. Click an aircraft for its guide, controls and modeling limits.
 
 ### MoonRunner X99
 
@@ -92,7 +92,7 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
       <a href="docs/UGLY-STIK-PLAN.md"><img src="docs/media/studio-jensen-das-ugly-stik-60.png" alt="Red and white Jensen Das Ugly Stik 60, studio model view" width="288"></a><br>
       <a href="docs/UGLY-STIK-PLAN.md"><strong>Jensen Das Ugly Stik 60</strong></a><br>
       1.52 m · .61 glow · tricycle gear<br>
-      The reference sport model.
+      The reference sport model; an experimental 6S electric version is also available.
     </td>
     <td width="33%" align="center" valign="top">
       <a href="docs/EXTRA-300-PLAN.md"><img src="docs/media/studio-gp-extra-300s-60.png" alt="Great Planes Extra 300S, studio model view" width="288"></a><br>
@@ -129,7 +129,7 @@ Current source has **seven fixed-wing airframes and ten airplane configurations*
   </tr>
 </table>
 
-**More ways to fly the Stik:** three additional [O.S. glow installations](docs/GLOW-ENGINES.md) — MAX-61FX, MAX-55AX and FS-64V — share its airframe, with finite fuel and engine start, cut and mixture controls.
+**Ugly Stick choices:** Home and the Workshop new-stock picker offer the basic .61 glow reference and the experimental [Electric 6S](docs/UGLY-STIK-PLAN.md#stock-configurations). The electric configuration defaults to a finite battery pack, with an ideal fixed-voltage option. The three finite-fuel [O.S. glow installations](docs/GLOW-ENGINES.md) — MAX-61FX, MAX-55AX and FS-64V — remain available through explicit technical launches and existing Workshop builds; they are not additional stock choices.
 
 At **Club field**, geared airplanes offer runway or airborne starts. At **Green paradise**, they start airborne; MoonRunner X99 retains its hand-launch option. Aircraft equipment varies: use the in-game control guide for the selected model.
 

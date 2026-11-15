@@ -1,0 +1,58 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "79f01c80-2c8c-494c-9b9a-b52d77669c4d",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T15:55:05.136340+00:00",
+  "label": "import-restored-assets",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/import-restored-assets-q1dl55n1/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/import-restored-assets-q1dl55n1/report.json",
+  "timeout_seconds": 180,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Attempting to parent and popup a dialog that already has a parent.",
+      "context": [
+        "   at: _try_parent_dialog (scene/main/window.cpp:2365)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 11,
+      "message": "Attempting to parent and popup a dialog that already has a parent.",
+      "context": [
+        "   at: _try_parent_dialog (scene/main/window.cpp:2365)",
+        "[  83% ] first_scan_filesystem | Starting file scan...",
+        "[ DONE ] first_scan_filesystem"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 9.97919,
+  "log_bytes": 12491,
+  "log_sha256": "9e2ef4d1ccc425bdaca8c8d415a5ce130967e5cc1d7bcdf5ed369a897e67b2fd"
+}

@@ -1,0 +1,7 @@
+
+FT f4u-corsair-250: 21.50 kg, S 1.441 m2, start 23.0 m/s, CL_max 1.16 -> Vs estimate 14.4 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.075,"first_untrimmable_mps":54.05,"points":33,"slowest_trim_mps":16.1}
+FT modes                    valid {}
+FT aero_sweep               valid {"cy_at_beta20":-0.1456,"cy_max_beta_le_30":0.2237,"cy_oracle_at_beta20":-0.1334,"knife_edge_cy_needed_at_0_8vmax":0.1278,"knife_edge_side_force_margin":1.75,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":3.68}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+FT report: tmp/ugly-audit-fleet-static/f4u-corsair-250/profile.md

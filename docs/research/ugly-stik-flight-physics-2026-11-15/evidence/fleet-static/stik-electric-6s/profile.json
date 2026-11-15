@@ -1,0 +1,614 @@
+{
+  "format": "ft-card-v5",
+  "aircraft": "stik-electric-6s",
+  "name": "Ugly Stick · Electric 6S",
+  "aircraft_input_sha256": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+  "data_sha256": "af8981c7df739b860480a31308be0b6af7922b0ac8e5cb9993e7b511d7a09526",
+  "mass_kg": 2.600082,
+  "wing_area_m2": 0.464515,
+  "span_m": 1.524,
+  "start_speed_mps": 15.0,
+  "stall_speed_estimate_mps": 9.02619267277757,
+  "stall_start_alpha_deg": 12.1283959903325,
+  "engine": "4.8-beta2 (official)",
+  "results": {
+    "trim_sweep": {
+      "valid": true,
+      "metrics": {
+        "points": 33,
+        "slowest_trim_mps": 9.75,
+        "first_untrimmable_mps": 34.5,
+        "cruise_throttle_at_start_speed": 0.411
+      },
+      "notes": [],
+      "table": [
+        {
+          "case": "x0.65",
+          "speed_mps": 9.75,
+          "throttle": 0.308,
+          "stick_pitch": 0.245,
+          "alpha_deg": 10.62,
+          "rpm": 3686
+        },
+        {
+          "case": "x0.70",
+          "speed_mps": 10.5,
+          "throttle": 0.317,
+          "stick_pitch": 0.18,
+          "alpha_deg": 8.8,
+          "rpm": 3797
+        },
+        {
+          "case": "x0.75",
+          "speed_mps": 11.25,
+          "throttle": 0.328,
+          "stick_pitch": 0.146,
+          "alpha_deg": 7.48,
+          "rpm": 3936
+        },
+        {
+          "case": "x0.80",
+          "speed_mps": 12.0,
+          "throttle": 0.342,
+          "stick_pitch": 0.124,
+          "alpha_deg": 6.42,
+          "rpm": 4101
+        },
+        {
+          "case": "x0.85",
+          "speed_mps": 12.75,
+          "throttle": 0.357,
+          "stick_pitch": 0.106,
+          "alpha_deg": 5.54,
+          "rpm": 4285
+        },
+        {
+          "case": "x0.90",
+          "speed_mps": 13.5,
+          "throttle": 0.374,
+          "stick_pitch": 0.091,
+          "alpha_deg": 4.8,
+          "rpm": 4483
+        },
+        {
+          "case": "x0.95",
+          "speed_mps": 14.25,
+          "throttle": 0.392,
+          "stick_pitch": 0.08,
+          "alpha_deg": 4.18,
+          "rpm": 4692
+        },
+        {
+          "case": "x1.00",
+          "speed_mps": 15.0,
+          "throttle": 0.411,
+          "stick_pitch": 0.07,
+          "alpha_deg": 3.64,
+          "rpm": 4911
+        },
+        {
+          "case": "x1.05",
+          "speed_mps": 15.75,
+          "throttle": 0.43,
+          "stick_pitch": 0.063,
+          "alpha_deg": 3.18,
+          "rpm": 5135
+        },
+        {
+          "case": "x1.10",
+          "speed_mps": 16.5,
+          "throttle": 0.45,
+          "stick_pitch": 0.056,
+          "alpha_deg": 2.78,
+          "rpm": 5365
+        },
+        {
+          "case": "x1.15",
+          "speed_mps": 17.25,
+          "throttle": 0.471,
+          "stick_pitch": 0.05,
+          "alpha_deg": 2.43,
+          "rpm": 5599
+        },
+        {
+          "case": "x1.20",
+          "speed_mps": 18.0,
+          "throttle": 0.492,
+          "stick_pitch": 0.046,
+          "alpha_deg": 2.12,
+          "rpm": 5836
+        },
+        {
+          "case": "x1.25",
+          "speed_mps": 18.75,
+          "throttle": 0.514,
+          "stick_pitch": 0.042,
+          "alpha_deg": 1.85,
+          "rpm": 6075
+        },
+        {
+          "case": "x1.30",
+          "speed_mps": 19.5,
+          "throttle": 0.536,
+          "stick_pitch": 0.038,
+          "alpha_deg": 1.61,
+          "rpm": 6317
+        },
+        {
+          "case": "x1.35",
+          "speed_mps": 20.25,
+          "throttle": 0.558,
+          "stick_pitch": 0.035,
+          "alpha_deg": 1.4,
+          "rpm": 6560
+        },
+        {
+          "case": "x1.40",
+          "speed_mps": 21.0,
+          "throttle": 0.581,
+          "stick_pitch": 0.032,
+          "alpha_deg": 1.21,
+          "rpm": 6804
+        },
+        {
+          "case": "x1.45",
+          "speed_mps": 21.75,
+          "throttle": 0.604,
+          "stick_pitch": 0.03,
+          "alpha_deg": 1.04,
+          "rpm": 7050
+        },
+        {
+          "case": "x1.50",
+          "speed_mps": 22.5,
+          "throttle": 0.627,
+          "stick_pitch": 0.028,
+          "alpha_deg": 0.88,
+          "rpm": 7296
+        },
+        {
+          "case": "x1.55",
+          "speed_mps": 23.25,
+          "throttle": 0.65,
+          "stick_pitch": 0.026,
+          "alpha_deg": 0.74,
+          "rpm": 7543
+        },
+        {
+          "case": "x1.60",
+          "speed_mps": 24.0,
+          "throttle": 0.673,
+          "stick_pitch": 0.024,
+          "alpha_deg": 0.61,
+          "rpm": 7790
+        },
+        {
+          "case": "x1.65",
+          "speed_mps": 24.75,
+          "throttle": 0.697,
+          "stick_pitch": 0.022,
+          "alpha_deg": 0.5,
+          "rpm": 8038
+        },
+        {
+          "case": "x1.70",
+          "speed_mps": 25.5,
+          "throttle": 0.721,
+          "stick_pitch": 0.021,
+          "alpha_deg": 0.39,
+          "rpm": 8286
+        },
+        {
+          "case": "x1.75",
+          "speed_mps": 26.25,
+          "throttle": 0.745,
+          "stick_pitch": 0.02,
+          "alpha_deg": 0.3,
+          "rpm": 8534
+        },
+        {
+          "case": "x1.80",
+          "speed_mps": 27.0,
+          "throttle": 0.769,
+          "stick_pitch": 0.019,
+          "alpha_deg": 0.21,
+          "rpm": 8783
+        },
+        {
+          "case": "x1.85",
+          "speed_mps": 27.75,
+          "throttle": 0.794,
+          "stick_pitch": 0.018,
+          "alpha_deg": 0.13,
+          "rpm": 9031
+        },
+        {
+          "case": "x1.90",
+          "speed_mps": 28.5,
+          "throttle": 0.818,
+          "stick_pitch": 0.017,
+          "alpha_deg": 0.05,
+          "rpm": 9280
+        },
+        {
+          "case": "x1.95",
+          "speed_mps": 29.25,
+          "throttle": 0.843,
+          "stick_pitch": 0.016,
+          "alpha_deg": -0.02,
+          "rpm": 9529
+        },
+        {
+          "case": "x2.00",
+          "speed_mps": 30.0,
+          "throttle": 0.868,
+          "stick_pitch": 0.015,
+          "alpha_deg": -0.08,
+          "rpm": 9778
+        },
+        {
+          "case": "x2.05",
+          "speed_mps": 30.75,
+          "throttle": 0.893,
+          "stick_pitch": 0.014,
+          "alpha_deg": -0.14,
+          "rpm": 10027
+        },
+        {
+          "case": "x2.10",
+          "speed_mps": 31.5,
+          "throttle": 0.918,
+          "stick_pitch": 0.013,
+          "alpha_deg": -0.2,
+          "rpm": 10276
+        },
+        {
+          "case": "x2.15",
+          "speed_mps": 32.25,
+          "throttle": 0.943,
+          "stick_pitch": 0.013,
+          "alpha_deg": -0.25,
+          "rpm": 10525
+        },
+        {
+          "case": "x2.20",
+          "speed_mps": 33.0,
+          "throttle": 0.969,
+          "stick_pitch": 0.012,
+          "alpha_deg": -0.3,
+          "rpm": 10775
+        },
+        {
+          "case": "x2.25",
+          "speed_mps": 33.75,
+          "throttle": 0.995,
+          "stick_pitch": 0.012,
+          "alpha_deg": -0.34,
+          "rpm": 11024
+        }
+      ],
+      "wall_s": 1.78
+    },
+    "modes": {
+      "valid": true,
+      "metrics": {},
+      "notes": [
+        "0.8Vmax: longitudinal roots do not separate into short period and phugoid; phugoid not reported"
+      ],
+      "table": [
+        {
+          "case": "1.3Vs",
+          "speed_mps": 11.73,
+          "short_period_hz": 2.172,
+          "short_period_zeta": 0.845,
+          "phugoid_period_s": 8.91,
+          "phugoid_zeta": 0.215,
+          "dutch_roll_hz": 0.549,
+          "dutch_roll_zeta": 0.364,
+          "roll_time_constant_s": 0.065,
+          "spiral_time_to_double_s": null,
+          "spiral_time_to_half_s": 18.7
+        },
+        {
+          "case": "start",
+          "speed_mps": 15.0,
+          "short_period_hz": 2.8,
+          "short_period_zeta": 0.854,
+          "phugoid_period_s": 12.34,
+          "phugoid_zeta": 0.368,
+          "dutch_roll_hz": 0.676,
+          "dutch_roll_zeta": 0.359,
+          "roll_time_constant_s": 0.051,
+          "spiral_time_to_double_s": null,
+          "spiral_time_to_half_s": 12.2
+        },
+        {
+          "case": "0.8Vmax",
+          "speed_mps": 27.6,
+          "short_period_hz": 0.034,
+          "short_period_zeta": 1.557,
+          "phugoid_period_s": null,
+          "phugoid_zeta": null,
+          "dutch_roll_hz": 1.188,
+          "dutch_roll_zeta": 0.363,
+          "roll_time_constant_s": 0.027,
+          "spiral_time_to_double_s": null,
+          "spiral_time_to_half_s": 13.2
+        }
+      ],
+      "wall_s": 0.111
+    },
+    "aero_sweep": {
+      "valid": true,
+      "metrics": {
+        "trim_alpha_deg": 3.64,
+        "local_weight_full_at_beta_deg": 15.0,
+        "local_weight_full_at_alpha_deg": 15.0,
+        "cy_at_beta20": -0.0551,
+        "cy_oracle_at_beta20": -0.1744,
+        "cy_max_beta_le_30": 0.0676,
+        "knife_edge_cy_needed_at_0_8vmax": 0.1176,
+        "knife_edge_side_force_margin": 0.575
+      },
+      "notes": [
+        "with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)",
+        "no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.068 of 0.118)"
+      ],
+      "table": [
+        {
+          "case": "beta_00",
+          "beta_deg": 0.0,
+          "local_weight": 0.0,
+          "cy_oracle": 0.0,
+          "cy_local": 0.0,
+          "cy": 0.0,
+          "cn_oracle": 0.0,
+          "cn_local": 0.0,
+          "cn": 0.0,
+          "cl_oracle": 0.0,
+          "cl_local": 0.0,
+          "cl": 0.0
+        },
+        {
+          "case": "beta_05",
+          "beta_deg": 5.0,
+          "local_weight": 0.0,
+          "cy_oracle": -0.0465,
+          "cy_local": -0.0219,
+          "cy": -0.0465,
+          "cn_oracle": 0.0054,
+          "cn_local": 0.006,
+          "cn": 0.0054,
+          "cl_oracle": -0.0067,
+          "cl_local": -0.0057,
+          "cl": -0.0067
+        },
+        {
+          "case": "beta_10",
+          "beta_deg": 10.0,
+          "local_weight": 0.507,
+          "cy_oracle": -0.092,
+          "cy_local": -0.044,
+          "cy": -0.0676,
+          "cn_oracle": 0.0107,
+          "cn_local": 0.0123,
+          "cn": 0.0115,
+          "cl_oracle": -0.0135,
+          "cl_local": -0.0112,
+          "cl": -0.0123
+        },
+        {
+          "case": "beta_15",
+          "beta_deg": 15.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.1355,
+          "cy_local": -0.0611,
+          "cy": -0.0611,
+          "cn_oracle": 0.0162,
+          "cn_local": 0.0164,
+          "cn": 0.0164,
+          "cl_oracle": -0.0201,
+          "cl_local": -0.0162,
+          "cl": -0.0162
+        },
+        {
+          "case": "beta_20",
+          "beta_deg": 20.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.1744,
+          "cy_local": -0.0551,
+          "cy": -0.0551,
+          "cn_oracle": 0.0215,
+          "cn_local": 0.0182,
+          "cn": 0.0182,
+          "cl_oracle": -0.0263,
+          "cl_local": -0.0112,
+          "cl": -0.0112
+        },
+        {
+          "case": "beta_25",
+          "beta_deg": 25.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.2066,
+          "cy_local": -0.054,
+          "cy": -0.054,
+          "cn_oracle": 0.0264,
+          "cn_local": 0.0262,
+          "cn": 0.0262,
+          "cl_oracle": -0.0319,
+          "cl_local": -0.0025,
+          "cl": -0.0025
+        },
+        {
+          "case": "beta_30",
+          "beta_deg": 30.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.2345,
+          "cy_local": -0.0642,
+          "cy": -0.0642,
+          "cn_oracle": 0.0315,
+          "cn_local": 0.0312,
+          "cn": 0.0312,
+          "cl_oracle": -0.0373,
+          "cl_local": -0.003,
+          "cl": -0.003
+        },
+        {
+          "case": "beta_45",
+          "beta_deg": 45.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.2768,
+          "cy_local": -0.0913,
+          "cy": -0.0913,
+          "cn_oracle": 0.0458,
+          "cn_local": 0.0443,
+          "cn": 0.0443,
+          "cl_oracle": -0.0504,
+          "cl_local": -0.0042,
+          "cl": -0.0042
+        },
+        {
+          "case": "beta_60",
+          "beta_deg": 60.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.2513,
+          "cy_local": -0.1113,
+          "cy": -0.1113,
+          "cn_oracle": 0.0583,
+          "cn_local": 0.054,
+          "cn": 0.054,
+          "cl_oracle": -0.058,
+          "cl_local": -0.0051,
+          "cl": -0.0051
+        },
+        {
+          "case": "beta_90",
+          "beta_deg": 90.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.0457,
+          "cy_local": -0.1263,
+          "cy": -0.1263,
+          "cn_oracle": 0.0731,
+          "cn_local": 0.0613,
+          "cn": 0.0613,
+          "cl_oracle": -0.0565,
+          "cl_local": -0.0058,
+          "cl": -0.0058
+        },
+        {
+          "case": "alpha_m10",
+          "alpha_deg": -10.0,
+          "local_weight": 0.772,
+          "cl_lift_oracle": -0.6926,
+          "cd_oracle": 0.1128,
+          "cm_oracle": 0.0124,
+          "cl_lift_local": -0.6924,
+          "cd_local": 0.1117,
+          "cm_local": 0.0522,
+          "cl_lift": -0.6925,
+          "cd": 0.112,
+          "cm": 0.0431
+        },
+        {
+          "case": "alpha_m05",
+          "alpha_deg": -5.0,
+          "local_weight": 0.0,
+          "cl_lift_oracle": -0.2929,
+          "cd_oracle": 0.0657,
+          "cm_oracle": 0.0082,
+          "cl_lift_local": -0.2928,
+          "cd_local": 0.068,
+          "cm_local": 0.0318,
+          "cl_lift": -0.2929,
+          "cd": 0.0657,
+          "cm": 0.0082
+        },
+        {
+          "case": "alpha_00",
+          "alpha_deg": 0.0,
+          "local_weight": 0.0,
+          "cl_lift_oracle": 0.1068,
+          "cd_oracle": 0.0446,
+          "cm_oracle": -0.0054,
+          "cl_lift_local": 0.1068,
+          "cd_local": 0.0486,
+          "cm_local": 0.0026,
+          "cl_lift": 0.1068,
+          "cd": 0.0446,
+          "cm": -0.0054
+        },
+        {
+          "case": "alpha_05",
+          "alpha_deg": 5.0,
+          "local_weight": 0.0,
+          "cl_lift_oracle": 0.5065,
+          "cd_oracle": 0.0496,
+          "cm_oracle": -0.0288,
+          "cl_lift_local": 0.5064,
+          "cd_local": 0.0534,
+          "cm_local": -0.0355,
+          "cl_lift": 0.5065,
+          "cd": 0.0496,
+          "cm": -0.0288
+        },
+        {
+          "case": "alpha_10",
+          "alpha_deg": 10.0,
+          "local_weight": 0.477,
+          "cl_lift_oracle": 0.9062,
+          "cd_oracle": 0.0807,
+          "cm_oracle": -0.0621,
+          "cl_lift_local": 0.9061,
+          "cd_local": 0.0824,
+          "cm_local": -0.0823,
+          "cl_lift": 0.9061,
+          "cd": 0.0815,
+          "cm": -0.0718
+        },
+        {
+          "case": "alpha_15",
+          "alpha_deg": 15.0,
+          "local_weight": 1.0,
+          "cl_lift_oracle": 0.8352,
+          "cd_oracle": 0.1312,
+          "cm_oracle": -0.1346,
+          "cl_lift_local": 0.8102,
+          "cd_local": 0.1117,
+          "cm_local": -0.2692,
+          "cl_lift": 0.8102,
+          "cd": 0.1117,
+          "cm": -0.2692
+        },
+        {
+          "case": "alpha_20",
+          "alpha_deg": 20.0,
+          "local_weight": 1.0,
+          "cl_lift_oracle": 0.3857,
+          "cd_oracle": 0.1838,
+          "cm_oracle": -0.2154,
+          "cl_lift_local": 0.5165,
+          "cd_local": 0.2199,
+          "cm_local": -0.2576,
+          "cl_lift": 0.5165,
+          "cd": 0.2199,
+          "cm": -0.2576
+        },
+        {
+          "case": "alpha_30",
+          "alpha_deg": 30.0,
+          "local_weight": 1.0,
+          "cl_lift_oracle": 0.5196,
+          "cd_oracle": 0.3434,
+          "cm_oracle": -0.3068,
+          "cl_lift_local": 0.6217,
+          "cd_local": 0.4055,
+          "cm_local": -0.1998,
+          "cl_lift": 0.6217,
+          "cd": 0.4055,
+          "cm": -0.1998
+        }
+      ],
+      "wall_s": 0.039
+    }
+  }
+}

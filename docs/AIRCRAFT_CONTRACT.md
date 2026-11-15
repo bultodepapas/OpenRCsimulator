@@ -133,7 +133,8 @@ For deployed gear, compare each contact's datum-relative x position with `balanc
 | Aircraft | Configuration preserved |
 | --- | --- |
 | Jensen Das Ugly Stik 60 | Legacy glow propeller with prescribed fuel, tricycle contacts and 15 m/s start; estimated throws and ground-effect law |
-| Three experimental Stik glow variants | Finite-glow installations: MAX-55AX, FS-64V and MAX-61FX; generated engine/propeller profiles, not flight-validated |
+| Ugly Stick Electric 6S | Experimental tractor conversion with fixed tricycle gear; finite `pack_ecm` 6S pack by default and an ideal fixed-voltage option. Installation and electrical behavior require physical qualification. |
+| Three experimental Stik glow variants | Technical and saved-build configurations, excluded from stock selection: finite-glow MAX-55AX, FS-64V and MAX-61FX installations with generated engine/propeller profiles, not flight-validated |
 | Great Planes Extra 300S .60 | Finite MAX-61FX glow installation and fixed taildragger; Extra-specific fuel-feed calibration and physical validation pending |
 | P-51D Mustang 1/4 | Estimated gasoline `gasoline_bsfc_v1`, shaft balance and retractable taildragger; estimated hardware and consumption inputs |
 | F4U-1D Corsair 1/4.5 | Estimated Moki S250 gasoline installation, finite `gasoline_bsfc_v1`, retractable taildragger and flaps; visual folding wings/auxiliary mechanisms do not add aerodynamic laws |

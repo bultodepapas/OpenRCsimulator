@@ -20,7 +20,7 @@ SPEC.loader.exec_module(RUNNER)
 
 
 class InputIdentityTests(unittest.TestCase):
-    def run_card(self, change_file=False, omit_identity=False):
+    def run_card(self, change_file=False, omit_identity=False, only="aero_sweep", result_names=None):
         with tempfile.TemporaryDirectory(prefix="ft-input-", dir=ROOT / "tmp") as folder:
             directory = Path(folder).resolve()
             self.assertEqual(directory.parent, (ROOT / "tmp").resolve())
@@ -32,7 +32,8 @@ class InputIdentityTests(unittest.TestCase):
             def engine(_binary, _args, _timeout):
                 target = output / "plane"
                 target.mkdir(parents=True)
-                profile = {"results": {"probe": {"valid": True}}}
+                names = ["aero_sweep"] if result_names is None else result_names
+                profile = {"results": {name: {"valid": True} for name in names}}
                 if not omit_identity:
                     profile["aircraft_input_sha256"] = loaded_hash
                 (target / "profile.json").write_text(json.dumps(profile), encoding="utf-8")
@@ -42,6 +43,8 @@ class InputIdentityTests(unittest.TestCase):
 
             summarizer = types.SimpleNamespace(main_with=lambda *_: None)
             args = ["run.py", "--out", str(output), "--aircraft", "plane", "--data", str(source)]
+            if only is not None:
+                args += ["--only", only]
             with mock.patch.object(sys, "argv", args), \
                     mock.patch.object(RUNNER, "find_godot", return_value="test-engine"), \
                     mock.patch.object(RUNNER, "data_paths", return_value={"plane": source}), \
@@ -82,6 +85,92 @@ class InputIdentityTests(unittest.TestCase):
             RUNNER.main()
         self.assertEqual(result.exception.code, 2)
         engine.assert_not_called()
+
+    def test_invalid_test_selections_are_refused_before_engine_or_output(self):
+        for selection in ["not_a_test", "aero_sweep,not_a_test", "", "aero_sweep,", "aero_sweep,aero_sweep"]:
+            with self.subTest(selection=selection), \
+                    tempfile.TemporaryDirectory(prefix="ft-selection-", dir=ROOT / "tmp") as folder:
+                output = Path(folder) / "new-output"
+                args = ["run.py", "--out", str(output), "--aircraft", "plane", "--only", selection]
+                with mock.patch.object(sys, "argv", args), \
+                        mock.patch.object(RUNNER, "find_godot", return_value="test-engine") as finder, \
+                        mock.patch.object(RUNNER, "godot") as engine, \
+                        contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                    RUNNER.main()
+                self.assertEqual(result.exception.code, 2)
+                finder.assert_not_called()
+                engine.assert_not_called()
+                self.assertFalse(output.exists())
+
+    def test_empty_aircraft_selection_is_refused_before_launch(self):
+        for selection in ["", ",", "plane,", "all,plane"]:
+            with self.subTest(selection=selection), \
+                    mock.patch.object(sys, "argv", ["run.py", "--out", "unused", "--aircraft", selection]), \
+                    mock.patch.object(RUNNER, "find_godot", return_value="test-engine") as finder, \
+                    mock.patch.object(RUNNER, "godot") as engine, \
+                    contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                RUNNER.main()
+            self.assertEqual(result.exception.code, 2)
+            finder.assert_not_called()
+            engine.assert_not_called()
+
+    def test_empty_result_set_is_not_a_completed_card(self):
+        code, report, _, log = self.run_card(result_names=[])
+        self.assertEqual(code, 1)
+        self.assertEqual(report["exit"], "test_roster_mismatch")
+        self.assertEqual(report["missing_tests"], ["aero_sweep"])
+        self.assertIn("requested test roster", log)
+
+    def test_partial_result_set_cannot_hide_an_omitted_requested_test(self):
+        code, report, _, _ = self.run_card(only="aero_sweep,trim_sweep")
+        self.assertEqual(code, 1)
+        self.assertEqual(report["missing_tests"], ["trim_sweep"])
+        self.assertFalse(report["test_roster_matches"])
+
+    def test_unrequested_result_is_not_credited(self):
+        code, report, _, _ = self.run_card(result_names=["aero_sweep", "trim_sweep"])
+        self.assertEqual(code, 1)
+        self.assertEqual(report["unexpected_tests"], ["trim_sweep"])
+
+    def test_default_full_card_cannot_succeed_with_a_partial_profile(self):
+        code, report, _, _ = self.run_card(only=None)
+        self.assertEqual(code, 1)
+        self.assertIn("trim_sweep", report["missing_tests"])
+        self.assertIn("power_step", report["missing_tests"])
+
+    def test_unknown_aircraft_cannot_overwrite_a_log_outside_output(self):
+        with tempfile.TemporaryDirectory(prefix="ft-unknown-", dir=ROOT / "tmp") as folder:
+            directory = Path(folder).resolve()
+            sentinel = directory / "run.log"
+            sentinel.write_text("existing evidence", encoding="utf-8")
+            output = directory / "new-output"
+            for aircraft in [str(directory), "../existing", "not-a-catalog-aircraft"]:
+                args = ["run.py", "--out", str(output), "--aircraft", aircraft]
+                catalog = {aircraft: directory / "data.json"} if "/" in aircraft else {"plane": directory / "data.json"}
+                with self.subTest(aircraft=aircraft), mock.patch.object(sys, "argv", args), \
+                        mock.patch.object(RUNNER, "data_paths", return_value=catalog), \
+                        mock.patch.object(RUNNER, "find_godot") as finder, \
+                        mock.patch.object(RUNNER, "godot") as engine, \
+                        contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                    RUNNER.main()
+                self.assertEqual(result.exception.code, 2)
+                finder.assert_not_called()
+                engine.assert_not_called()
+                self.assertFalse(output.exists())
+                self.assertEqual(sentinel.read_text(), "existing evidence")
+
+    def test_complete_default_roster_is_accepted(self):
+        code, report, _, _ = self.run_card(only=None, result_names=RUNNER.card_test_names())
+        self.assertEqual(code, 0)
+        self.assertTrue(report["test_roster_matches"])
+        self.assertFalse(report["missing_tests"])
+
+    def test_card_roster_retains_all_maneuvers_in_original_order(self):
+        # Independent published card order, including the appended power-step case.
+        names = RUNNER.card_test_names()
+        self.assertEqual(len(names), 40)
+        self.assertEqual(names[:5], ["trim_sweep", "stall_power_off", "vmax", "modes", "aero_sweep"])
+        self.assertEqual(names[-3:], ["dead_stick_landing", "go_around", "power_step"])
 
     def test_old_profile_is_preserved_and_never_summarized(self):
         with tempfile.TemporaryDirectory(prefix="ft-stale-", dir=ROOT / "tmp") as folder:

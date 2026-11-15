@@ -1,0 +1,70 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ee94f46c-51ae-4361-94dd-22408b5aa1d1",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "app/tests/test_servo.gd"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T16:04:41.763045+00:00",
+  "label": "test_servo",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_servo-8g8djh4_/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_servo-8g8djh4_/report.json",
+  "timeout_seconds": 240,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Attempt to open script 'res://app/tests/test_servo.gd' resulted in error 'File not found'.",
+      "context": [
+        "   at: load_source_code (modules/gdscript/gdscript.cpp:1160)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://app/tests/test_servo.gd.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Can't load script: app/tests/test_servo.gd",
+      "context": [
+        "   at: start (main/main.cpp:4409)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.707479,
+  "log_bytes": 423,
+  "log_sha256": "8ca6a022319008da64efacf8203f8d0bc1651cde65d63159a2f89017d811c52f"
+}

@@ -1,0 +1,255 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Unable to open file: res://.godot/imported/Wood049_1K-JPG_Color.jpg-85e556b28184729930eadd6d42da5226.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Wood049_1K-JPG_Color.jpg-85e556b28184729930eadd6d42da5226.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg".
+          at: GDScript::reload (res://scenery/club_furniture.gd:6)
+ERROR: Unable to open file: res://.godot/imported/Fabric001_1K-JPG_Color.jpg-4b7c58c9ae9e3dfba3832985684dd974.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Fabric001_1K-JPG_Color.jpg-4b7c58c9ae9e3dfba3832985684dd974.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg".
+          at: GDScript::reload (res://scenery/pit_chair.gd:6)
+ERROR: Cannot open file 'res://.godot/imported/transmission-tower-3tier-ipoly3d.glb-f5fe6d32e4063da7d3b8f28ecf28dde2.scn'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+ERROR: Failed loading resource: res://.godot/imported/transmission-tower-3tier-ipoly3d.glb-f5fe6d32e4063da7d3b8f28ecf28dde2.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb".
+          at: GDScript::reload (res://scenery/power_lines.gd:5)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/prefabs.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/scenery_loader.gd:0)
+ERROR: Unable to open file: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/roof_slates_03_arm_1k.jpg-cb802109d02af290fbe4701e3d1bc295.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/roof_slates_03_arm_1k.jpg-cb802109d02af290fbe4701e3d1bc295.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/clay_roof_tiles_diff_1k.jpg-1f0dee32de357e35122a5c9a98d6b7fd.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/clay_roof_tiles_diff_1k.jpg-1f0dee32de357e35122a5c9a98d6b7fd.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/clay_roof_tiles_nor_gl_1k.png-a211e32595f874fcbbb95af0e146c281.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/clay_roof_tiles_nor_gl_1k.png-a211e32595f874fcbbb95af0e146c281.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/clay_roof_tiles_arm_1k.jpg-ac5e10aed00f860fc3f17995d6d91102.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/clay_roof_tiles_arm_1k.jpg-ac5e10aed00f860fc3f17995d6d91102.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/corrugated_iron_02_diff_2k.jpg-420a6668269d8e63cbe2fb51422cad5b.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/corrugated_iron_02_diff_2k.jpg-420a6668269d8e63cbe2fb51422cad5b.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/corrugated_iron_02_nor_gl_2k.png-62075eb609d00822cf80d0b60d9a1795.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/corrugated_iron_02_nor_gl_2k.png-62075eb609d00822cf80d0b60d9a1795.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pit-shelter/corrugated_iron_02_nor_gl_2k.png.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/corrugated_iron_02_arm_2k.jpg-d4655257e557552e4c838aab10ba981e.s3tc.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/corrugated_iron_02_arm_2k.jpg-d4655257e557552e4c838aab10ba981e.s3tc.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/pit-shelter/corrugated_iron_02_arm_2k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg".
+          at: GDScript::reload (res://scenery/building_roofs.gd:7)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png".
+          at: GDScript::reload (res://scenery/building_roofs.gd:8)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg".
+          at: GDScript::reload (res://scenery/building_roofs.gd:9)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg".
+          at: GDScript::reload (res://scenery/building_roofs.gd:10)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png".
+          at: GDScript::reload (res://scenery/building_roofs.gd:11)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg".
+          at: GDScript::reload (res://scenery/building_roofs.gd:12)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg".
+          at: GDScript::reload (res://scenery/building_roofs.gd:13)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pit-shelter/corrugated_iron_02_nor_gl_2k.png".
+          at: GDScript::reload (res://scenery/building_roofs.gd:14)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/pit-shelter/corrugated_iron_02_arm_2k.jpg".
+          at: GDScript::reload (res://scenery/building_roofs.gd:15)
+ERROR: Unable to open file: res://.godot/imported/Wood060_2K-JPG_Color.jpg-50079cbbcc8d080d7eb682c8f58b447a.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Wood060_2K-JPG_Color.jpg-50079cbbcc8d080d7eb682c8f58b447a.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Wood060_2K-JPG_NormalGL.jpg-543ea838b1330cfb1564cc8350d4ad67.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Wood060_2K-JPG_NormalGL.jpg-543ea838b1330cfb1564cc8350d4ad67.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Wood060_2K-JPG_Roughness.jpg-421d1fe16714e4a7fa8a6ce99b2da266.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Wood060_2K-JPG_Roughness.jpg-421d1fe16714e4a7fa8a6ce99b2da266.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal026_1K-JPG_Color.jpg-3da003e7bb0147a0f423c298404a2231.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal026_1K-JPG_Color.jpg-3da003e7bb0147a0f423c298404a2231.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal026_1K-JPG_NormalGL.jpg-6133f4b6076195a89feeefd1d257980c.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal026_1K-JPG_NormalGL.jpg-6133f4b6076195a89feeefd1d257980c.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal026_1K-JPG_Roughness.jpg-3542788d1e8eae9cb66916c58544c84c.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal026_1K-JPG_Roughness.jpg-3542788d1e8eae9cb66916c58544c84c.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal026_1K-JPG_Metalness.jpg-b08b1dde794c2305f1dacecaf1c06ac1.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal026_1K-JPG_Metalness.jpg-b08b1dde794c2305f1dacecaf1c06ac1.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal038_1K-JPG_Color.jpg-9ec54855a2fe7490300a58504182f555.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal038_1K-JPG_Color.jpg-9ec54855a2fe7490300a58504182f555.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal038_1K-JPG_NormalGL.jpg-888048e856c6d42dd7ca8afd7fc42fca.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal038_1K-JPG_NormalGL.jpg-888048e856c6d42dd7ca8afd7fc42fca.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal038_1K-JPG_Roughness.jpg-5f7c89f0f2b7e93be825d490408d4866.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal038_1K-JPG_Roughness.jpg-5f7c89f0f2b7e93be825d490408d4866.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Unable to open file: res://.godot/imported/Metal038_1K-JPG_Metalness.jpg-e2bcd8fe43ae92b767309dea445329cf.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/Metal038_1K-JPG_Metalness.jpg-e2bcd8fe43ae92b767309dea445329cf.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:101)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:102)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:103)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:104)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:105)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:106)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:107)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:108)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:109)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:110)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg".
+          at: GDScript::reload (res://render/flightline_barrier.gd:111)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/collision_world.gd:0)
+ERROR: Cannot open file 'res://.godot/imported/Rock_Medium_1.gltf-c51e51a720ed6e875f47987ea4f3e0d8.scn'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+ERROR: Failed loading resource: res://.godot/imported/Rock_Medium_1.gltf-c51e51a720ed6e875f47987ea4f3e0d8.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://.godot/imported/Rock_Medium_2.gltf-4518db16f38cadee2660fbdea91ca0e7.scn'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+ERROR: Failed loading resource: res://.godot/imported/Rock_Medium_2.gltf-4518db16f38cadee2660fbdea91ca0e7.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://.godot/imported/Rock_Medium_3.gltf-a95cb13d527f377ccfdc5258c6c201d0.scn'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+ERROR: Failed loading resource: res://.godot/imported/Rock_Medium_3.gltf-a95cb13d527f377ccfdc5258c6c201d0.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://.godot/imported/flower_empodium_1k.gltf-5b1bab6e511aa32fe65c2fe6e6562240.scn'.
+   at: load (core/io/resource_format_binary.cpp:1143)
+ERROR: Failed loading resource: res://.godot/imported/flower_empodium_1k.gltf-5b1bab6e511aa32fe65c2fe6e6562240.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf".
+          at: GDScript::reload (res://scenery/airfield_detail.gd:6)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf".
+          at: GDScript::reload (res://scenery/airfield_detail.gd:7)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf".
+          at: GDScript::reload (res://scenery/airfield_detail.gd:8)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf".
+          at: GDScript::reload (res://scenery/airfield_detail.gd:10)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/scenery.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/collision_setup.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://sim/native_macos_domain.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://sim/native_stage.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://sim/flight_session.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://tests/test_aero_flow.gd:0)
+ERROR: Failed to load script "res://tests/test_aero_flow.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+H4 local flow: 25000 byte-exact comparisons, 0 failed (legacy frozen weight plus independently evaluated R02 rate guard)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+H12 local loads: 25001 comparisons in attached planar forward domain, 25000 samples verified attached, 0 failed
+D11j Lumber section moment: ΔMy -1.326784386806 Nm, analytic -1.326784386806 Nm, Cm_ac -0.035000

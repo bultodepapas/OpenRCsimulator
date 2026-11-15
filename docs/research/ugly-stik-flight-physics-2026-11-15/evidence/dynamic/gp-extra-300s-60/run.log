@@ -1,0 +1,18 @@
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FT gp-extra-300s-60: 3.82 kg, S 0.480 m2, start 22.0 m/s, CL_max 1.05 -> Vs estimate 11.0 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.244,"first_untrimmable_mps":41.8,"points":27,"slowest_trim_mps":12.1}
+FT stall_power_off          valid {"altitude_lost_m":33.0,"bank_in_first_second_deg":-11.4,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.39,"max_bank_in_recovery_deg":11.4,"ratio_to_cl_max_estimate":1.01,"recovery_time_s":3.96,"stall_alpha_deg":22.2,"stall_speed_mps":11.12,"wing_drop":"left"}
+FT vmax                     valid {"height_error_end_m":0.13,"height_error_run_m":1.07,"initial_acceleration_mps2":2.43,"max_level_speed_kmh":148.4,"max_level_speed_mps":41.21,"rpm_at_max":13660,"time_plus_10_mps_s":3.71,"time_plus_5_mps_s":1.79,"time_to_90_percent_s":9.75}
+FT throttle_response        valid {"rpm_full":12718,"rpm_idle_end":6779,"rpm_trimmed":7499,"speed_gain_in_6_s_mps":13.49,"spool_down_90_10_s":3.412,"spool_up_10_90_s":3.996}
+FT hands_off                valid {"bank_10_s_deg":25.6,"bank_30_s_deg":44.3,"bank_after_aileron_pulse_deg":26.7,"heading_change_10_s_deg":88.4,"heading_change_30_s_deg":410.3,"height_change_10_s_m":-22.55,"height_change_30_s_m":-75.64,"phugoid_period_s":11.91,"reached_floor_s":null,"speed_change_10_s_mps":6.23,"speed_change_30_s_mps":6.88}
+FT roll_rate                valid {}
+FT pitch_pull               valid {}
+FT power_step               valid {"height_change_10_s_100pct_m":94.6,"height_change_10_s_50pct_m":42.7,"inverted_at_100pct_s":null,"inverted_at_50pct_s":null,"path_angle_end_100pct_deg":18.0,"path_angle_end_50pct_deg":9.1}
+FT report: tmp/ugly-audit-dynamic/gp-extra-300s-60/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+     at: _stringify (core/io/json.cpp:86)
+     GDScript backtrace (most recent call first):
+         [0] _run (research/flight-test/flight_test.gd:216)
+         [1] _initialize (research/flight-test/flight_test.gd:137)

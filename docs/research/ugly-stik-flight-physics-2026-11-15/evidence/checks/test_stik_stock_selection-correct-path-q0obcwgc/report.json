@@ -1,0 +1,223 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0cfba8c6-5b1a-4333-8fdc-96fce30a7748",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/app/tests/test_stik_stock_selection.gd"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T16:04:48.159163+00:00",
+  "label": "test_stik_stock_selection-correct-path",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_stik_stock_selection-correct-path-q0obcwgc/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_stik_stock_selection-correct-path-q0obcwgc/report.json",
+  "timeout_seconds": 240,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": -9,
+  "complete": false,
+  "counts": {
+    "error": 182,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Unable to open file: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Failed loading resource: res://assets/landscape/turf/detail.png.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Parse Error: Could not preload resource file \"res://assets/landscape/turf/detail.png\".",
+      "context": [
+        "          at: GDScript::reload (res://render/ground.gd:9)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Parse Error: Cannot infer the type of \"TURF_DETAIL\" constant because the value doesn't have a set type.",
+      "context": [
+        "          at: GDScript::reload (res://render/ground.gd:9)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 13,
+      "message": "Unable to open file: res://.godot/imported/Wood050_1K-JPG_Color.jpg-733b911494b30a3e7b404f5ce0a9ec66.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 15,
+      "message": "Failed loading resource: res://.godot/imported/Wood050_1K-JPG_Color.jpg-733b911494b30a3e7b404f5ce0a9ec66.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 17,
+      "message": "Failed loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Unable to open file: res://.godot/imported/Wood050_1K-JPG_NormalGL.jpg-22c52f069b62bd795dc922d8cab4a57f.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 21,
+      "message": "Failed loading resource: res://.godot/imported/Wood050_1K-JPG_NormalGL.jpg-22c52f069b62bd795dc922d8cab4a57f.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 23,
+      "message": "Failed loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 25,
+      "message": "Unable to open file: res://.godot/imported/Wood050_1K-JPG_Roughness.jpg-da31df8204a1aad29c6949910cb2709b.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 27,
+      "message": "Failed loading resource: res://.godot/imported/Wood050_1K-JPG_Roughness.jpg-da31df8204a1aad29c6949910cb2709b.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 29,
+      "message": "Failed loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 31,
+      "message": "Unable to open file: res://.godot/imported/Concrete034_1K-JPG_Color.jpg-975ebc01086a6f97733f5a51a6ddc358.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 33,
+      "message": "Failed loading resource: res://.godot/imported/Concrete034_1K-JPG_Color.jpg-975ebc01086a6f97733f5a51a6ddc358.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 35,
+      "message": "Failed loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 37,
+      "message": "Unable to open file: res://.godot/imported/Concrete034_1K-JPG_NormalGL.jpg-5ba0fc74dc89a649eedb344685844875.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 39,
+      "message": "Failed loading resource: res://.godot/imported/Concrete034_1K-JPG_NormalGL.jpg-5ba0fc74dc89a649eedb344685844875.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 41,
+      "message": "Failed loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 240.055697,
+  "log_bytes": 43677,
+  "log_sha256": "3a7adcc5603a7361a5cb06b50bf85f4844c2d205d20a23d29c45c13d9c311d27"
+}

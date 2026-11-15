@@ -126,7 +126,7 @@ These are operational caveats, not a saved inventory of one machine. Recheck aga
 
 | Tool | Required care |
 | --- | --- |
-| `research/flight-test/run.py --only` | Unknown names can yield empty or partial results with exit zero. Verify the requested case set against [the card](../../research/flight-test/README.md). |
+| `research/flight-test/run.py --only` | The requested test roster is validated, but a maneuver's `valid=false` remains a reported result, not a runner failure or a physical-aircraft verdict. Inspect [the card's validity fields](../../research/flight-test/README.md). |
 | `research/flight-test/{summarize,spin_state,polar_fit}.py`, `research/flight-dynamics/power-climb/fleet_neutral_point.py` | Do not probe with `--help`: these entrypoints lack argparse and may treat it as input or execute the job. Read their source/guide first. |
 | `research/aircraft-standardization/conformance.py` | Can overwrite `--out`; use a fresh path. [Contract](physics.md#aircraft-conformance-and-unchanged-behavior). |
 | `research/validation/dashboard.py --check` | Recomputes a source-bound snapshot, including a Godot collector; stale results need investigation, not an automatic refresh. |

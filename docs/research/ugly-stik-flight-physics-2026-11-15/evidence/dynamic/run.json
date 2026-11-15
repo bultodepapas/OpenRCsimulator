@@ -1,0 +1,83 @@
+{
+  "card": "ft-card-v5",
+  "commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "dirty_paths": [
+    "research/flight-test/AGENTS.md",
+    "research/flight-test/README.md",
+    "research/flight-test/flight_test.gd",
+    "research/flight-test/run.py",
+    "research/flight-test/test_run.py"
+  ],
+  "godot": "4.8.beta2.official.cafc17a19",
+  "app": "app",
+  "data_override": null,
+  "only": "trim_sweep,stall_power_off,vmax,roll_rate,pitch_pull,throttle_response,hands_off,power_step",
+  "expected_tests": [
+    "trim_sweep",
+    "stall_power_off",
+    "vmax",
+    "throttle_response",
+    "hands_off",
+    "roll_rate",
+    "pitch_pull",
+    "power_step"
+  ],
+  "aircraft": {
+    "jensen-das-ugly-stik-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 52.3,
+      "valid_tests": 8,
+      "tests": 8,
+      "data_file": "data/aircraft/jensen_ugly_stik_60.json",
+      "data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+      "data_file_sha256_after": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+      "data_identity_matches": true,
+      "test_roster_matches": true,
+      "missing_tests": [],
+      "unexpected_tests": []
+    },
+    "stik-electric-6s": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 109.7,
+      "valid_tests": 8,
+      "tests": 8,
+      "data_file": "data/aircraft/stik_electric_6s.json",
+      "data_sha256": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+      "data_file_sha256_after": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+      "data_identity_matches": true,
+      "test_roster_matches": true,
+      "missing_tests": [],
+      "unexpected_tests": []
+    },
+    "stik-glow-61fx-2t": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 186.9,
+      "valid_tests": 8,
+      "tests": 8,
+      "data_file": "data/aircraft/stik_glow_61fx_2t.json",
+      "data_sha256": "a214c7d144f3b1a978a01f9f52bb80d2ce76de27644c1d8571d669f291a05350",
+      "data_file_sha256_after": "a214c7d144f3b1a978a01f9f52bb80d2ce76de27644c1d8571d669f291a05350",
+      "data_identity_matches": true,
+      "test_roster_matches": true,
+      "missing_tests": [],
+      "unexpected_tests": []
+    },
+    "gp-extra-300s-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 186.9,
+      "valid_tests": 8,
+      "tests": 8,
+      "data_file": "data/aircraft/gp_extra_300s_60.json",
+      "data_sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
+      "data_file_sha256_after": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
+      "data_identity_matches": true,
+      "test_roster_matches": true,
+      "missing_tests": [],
+      "unexpected_tests": []
+    }
+  }
+}

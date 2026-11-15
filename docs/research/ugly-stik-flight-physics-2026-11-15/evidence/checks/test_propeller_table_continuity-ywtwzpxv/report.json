@@ -1,0 +1,221 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d73391b7-451d-466f-97c0-372a9979f2e8",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_propeller_table_continuity.gd"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T15:51:31.577319+00:00",
+  "label": "test_propeller_table_continuity",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_propeller_table_continuity-ywtwzpxv/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_propeller_table_continuity-ywtwzpxv/report.json",
+  "timeout_seconds": 240,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 118,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Unable to open file: res://.godot/imported/Wood049_1K-JPG_Color.jpg-85e556b28184729930eadd6d42da5226.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://.godot/imported/Wood049_1K-JPG_Color.jpg-85e556b28184729930eadd6d42da5226.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Failed loading resource: res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Parse Error: Could not preload resource file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\".",
+      "context": [
+        "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 11,
+      "message": "Unable to open file: res://.godot/imported/Fabric001_1K-JPG_Color.jpg-4b7c58c9ae9e3dfba3832985684dd974.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 13,
+      "message": "Failed loading resource: res://.godot/imported/Fabric001_1K-JPG_Color.jpg-4b7c58c9ae9e3dfba3832985684dd974.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 15,
+      "message": "Failed loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Parse Error: Could not preload resource file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\".",
+      "context": [
+        "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Cannot open file 'res://.godot/imported/transmission-tower-3tier-ipoly3d.glb-f5fe6d32e4063da7d3b8f28ecf28dde2.scn'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1143)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 21,
+      "message": "Failed loading resource: res://.godot/imported/transmission-tower-3tier-ipoly3d.glb-f5fe6d32e4063da7d3b8f28ecf28dde2.scn.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 23,
+      "message": "Failed loading resource: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 25,
+      "message": "Parse Error: Could not preload resource file \"res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb\".",
+      "context": [
+        "          at: GDScript::reload (res://scenery/power_lines.gd:5)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 27,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/prefabs.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 29,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/scenery_loader.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 31,
+      "message": "Unable to open file: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.s3tc.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 33,
+      "message": "Failed loading resource: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.s3tc.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 35,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 37,
+      "message": "Unable to open file: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.s3tc.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 39,
+      "message": "Failed loading resource: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.s3tc.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 41,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.518878,
+  "log_bytes": 20322,
+  "log_sha256": "2e5bcfb8297bd738ab0d3c427bdc5e32e00c0bc905ac9f0dd000410cafca6881"
+}

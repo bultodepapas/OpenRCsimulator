@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+Corsair endpoint: J=1.350000000000 Ct(before,at,after)=(-0.102900000000,-0.102900000000,-0.102900000000), thrust step=0.000000000 N
+Engine-off tick: J 1.350010000 -> 1.347020998; RPM 1750.000000 -> 1753.201245; tick 1; fault 
+Propeller table continuity: 49 checks, 0 failed

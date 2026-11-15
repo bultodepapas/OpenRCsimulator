@@ -1,0 +1,19 @@
+{
+  "baseline_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "baseline_app_tree": "565e4a839e63c1b65064d0da4e6e1366b13ebbc7",
+  "branch": "audit/ugly-stik-flight-physics-2026-11-15",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "platform": "Linux x86_64",
+  "python": "3.12.14",
+  "application_diff_paths": [],
+  "candidate_file_sha256": {
+    "research/flight-test/run.py": "1da9881a5815a13a37bbef5da2fec91f5872778b5b5e60c125813e73d6663c60",
+    "research/flight-test/flight_test.gd": "2b5b5aadf425f2ca072c1f57bd33ca6595e4fee9449bee2be60eaea4e47dc581",
+    "research/flight-test/test_run.py": "c5125d67fee19032205640039c566a91276f6c8ad9e3c7e659bc5e93757c7d24",
+    "research/ugly-stik-audit-2026-11-15/physics_probe.gd": "96845481a957a7629ee16ea2e03cce429dc26e612835c654dddd67c04a8cea09",
+    "research/ugly-stik-audit-2026-11-15/controls_probe.gd": "adec4af32448f4db9550ce31825594c3b428b694745b2e1df1222ffa52d80081",
+    "research/ugly-stik-audit-2026-11-15/summarize_traces.py": "b84d94139dbec5dab5bca4209a82ee0cc9b9e6002de8694a0f99918caa55dee8"
+  },
+  "scope_note": "Application source/data stayed at baseline. Candidate audit harness files were dirty during runs. Sparse missing render assets limit the UI attempt; see verification.md. This is not a native-backend or physical qualification receipt."
+}

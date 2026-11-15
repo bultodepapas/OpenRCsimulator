@@ -204,7 +204,9 @@ Use the [flight-model audit](flight-model-robustness-audit.md), [repair implemen
 
 ### Ugly Stik
 
-The [two-variant integration plan](../plans/ugly-stik-two-variants.md) preserves the existing basic Ugly Stik and its tests unchanged, adds one electric 6S stock choice, and retains hidden glow configurations as technical fixtures. The [2026-11-08 motor selection](propulsion/ugly-stik-6s-selection-2026-11-08.md) compares manufacturer sources and records the initial Scorpion candidate; implementation and physical validation remain pending.
+The [2026-11-15 flight, physics and controls audit](ugly-stik-flight-physics-2026-11-15/README.md) is the current cross-cutting audit: source and variant routes, primary literature, all-eleven-aircraft static comparison, selected dynamic cards, reproduced input/tool defects, and a prioritized findings register with retained evidence.
+
+The [two-variant integration plan](../plans/ugly-stik-two-variants.md) preserves the existing basic Ugly Stik and its tests unchanged, adds one electric 6S stock choice, and retains hidden glow configurations as technical fixtures. The [2026-11-08 motor selection](propulsion/ugly-stik-6s-selection-2026-11-08.md) compares manufacturer sources and records the initial Scorpion candidate; the [implementation evidence](propulsion/ugly-stik-implementation-2026-11-08.md) records delivered stock integration and remaining physical validation.
 
 Start with the [current model guide and remaining acceptance](../UGLY-STIK-PLAN.md) and [authoring/capture pipeline](../../assets/aircraft/ugly-stik-60/README.md). Dated evidence includes the [source and local-reference map](ugly-stik-resources.md), [model investigations](ugly-stik-investigations/README.md), [v4 delivery](ugly-stik-model-v4.md), [engine v5](ugly-stik-engine-v5.md) and [US-V09…12 finish/feedback passes](ugly-stik-finish-v6.md). Visual and authoring work is indexed under [visual investigations](ugly-stik-visual-investigations/README.md) and [tooling investigations](ugly-stik-tooling-investigations/README.md).
 

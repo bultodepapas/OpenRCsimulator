@@ -36,7 +36,7 @@ Production builders supply the current geometry and materials. A separate studio
 | Bisonte MT8 | [View](studio-mt8-bisonte.png) |
 | MONSTER CAR 2 | [View](studio-monster-car-2.png) |
 
-All 13 playable catalog/ground configurations were rendered and inspected. The README retains one view per airframe or vehicle; the three additional glow Stik configurations share its visual family, so their redundant images stay outside Git. All ten retained model views were checked for clipping and missing geometry.
+The original capture campaign rendered and inspected 13 technical catalog/ground configurations. That historical count is not the current stock picker: the three additional glow Stiks now remain hidden technical fixtures, and the Electric 6S has a separate presentation family that this campaign does not qualify. The README retained one view per airframe or vehicle from that campaign; the three glow Stiks shared the basic visual family, so their additional images stayed outside Git. All ten retained model views were checked for clipping and missing geometry at capture time. See the [current stock distinction](../UGLY-STIK-PLAN.md#stock-configurations) and the [2026-11-15 route audit](../research/ugly-stik-flight-physics-2026-11-15/variants-and-routes.md).
 
 ## Reproduce
 

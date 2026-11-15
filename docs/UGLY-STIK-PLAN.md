@@ -23,6 +23,8 @@ The electric model has its own inventory, model family and estimated mass of 2.6
 
 The three finite-glow Stiks retain their original technical IDs, physics, explicit CLI routes and saved Workshop documents; they are excluded from new stock choices. A saved hidden Home selection resolves to the basic aircraft with an explanation. Unrelated saves retain the original selection until an explicit aircraft selection or successful Fly save. See [glow compatibility routes](GLOW-ENGINES.md#fly-and-configure) and the [implementation evidence](research/propulsion/ugly-stik-implementation-2026-11-08.md). The [active plan](plans/ugly-stik-two-variants.md) retains remaining qualification gates.
 
+The [2026-11-15 flight, physics and controls audit](research/ugly-stik-flight-physics-2026-11-15/README.md) verifies the two-choice boundary, compares all eleven technical fixed-wing aircraft, reproduces input and audit-tool defects, and records propulsion/aerodynamic limitations with primary research and retained numerical evidence. It preserves the baseline flight model; its findings register separates delivered tool/documentation fixes from remaining calibration and hardware gates.
+
 ## Delivered work and pending gates
 
 | IDs | Delivered scope / evidence | Remaining acceptance |

@@ -1,0 +1,8 @@
+
+FT p51d-mustang-120: 21.50 kg, S 1.372 m2, start 25.0 m/s, CL_max 1.02 -> Vs estimate 15.7 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.101,"first_untrimmable_mps":56.25,"points":31,"slowest_trim_mps":17.5}
+FT modes                    valid {}
+FT aero_sweep               valid {"cy_at_beta20":-0.0561,"cy_max_beta_le_30":0.0681,"cy_oracle_at_beta20":-0.1497,"knife_edge_cy_needed_at_0_8vmax":0.1239,"knife_edge_side_force_margin":0.55,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":4.23}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.068 of 0.124)
+FT report: tmp/ugly-audit-fleet-static/p51d-mustang-120/profile.md

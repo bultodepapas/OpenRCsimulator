@@ -1,0 +1,226 @@
+[
+  {
+    "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg",
+    "ok": true,
+    "bytes": 2094723,
+    "git_blob": "0b02003fd8ff02782bcd44cbf1b28bb0ebce482d",
+    "sha256": "02709d839b1a1f402834920b8b8816920bbe08a40463aa188905a87621d6fa65"
+  },
+  {
+    "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg",
+    "ok": true,
+    "bytes": 750022,
+    "git_blob": "d6fe7bb8a1447d8efcf7b057942d01c361f8ce1b",
+    "sha256": "82417913bb17853c2ad8bd4c7049fe43a594be78f61b2791a0e9c9b8e3145529"
+  },
+  {
+    "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg",
+    "ok": true,
+    "bytes": 1020329,
+    "git_blob": "f2fdab63b70e5043b12bd688a1ac4710d4608ec2",
+    "sha256": "f9d739a05cc4d09230703cb1d831bb4c0334fed4b258490b1c453461acf7b574"
+  },
+  {
+    "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg",
+    "ok": true,
+    "bytes": 315038,
+    "git_blob": "02e38282b6ab63944918dc46c960b38051fc4cb3",
+    "sha256": "5374d3ea09f2f7b4e1cd3c4cf19adc542f9622a3a5f1dae07c75502b4a080035"
+  },
+  {
+    "path": "app/assets/landscape/countryside/aerial_asphalt_01_diff_1k.jpg",
+    "ok": true,
+    "bytes": 635143,
+    "git_blob": "870f440d6f4fe375e928b8dd83e2b236ce7055b9",
+    "sha256": "28bfd71288b364f825e0feb750e487410422d80bf3c31d32da01cae3bf085b58"
+  },
+  {
+    "path": "app/assets/landscape/mountains/aerial_grass_rock_diff_1k.jpg",
+    "ok": true,
+    "bytes": 666655,
+    "git_blob": "c158705edf6966ff257d7442fb44a16cf8767f60",
+    "sha256": "57b8041bfe0d0f01430e4dbaad45e7ddddf0a9fc97317f90dbc51f7b0d9e1b5d"
+  },
+  {
+    "path": "app/assets/landscape/mountains/aerial_rocks_01_diff_1k.jpg",
+    "ok": true,
+    "bytes": 812635,
+    "git_blob": "33806a71b0127b9ec184c5a53452ad9d31f81a3c",
+    "sha256": "0f184f4a1da57342d240086b5abfb804bb129bc649024c9546b054bb918264b7"
+  },
+  {
+    "path": "app/assets/landscape/mountains/habitat.png",
+    "ok": true,
+    "bytes": 181840,
+    "git_blob": "e64891a55ff94cb6fa20da384514b509e33128bd",
+    "sha256": "a03b2e7a3b5ea9042e39a0688eab019fa1fa8092523066be0123a19bf86900b7"
+  },
+  {
+    "path": "app/assets/landscape/mountains/relief.png",
+    "ok": true,
+    "bytes": 306313,
+    "git_blob": "f7ba41f5767bf28f6b853793afd90c90a2914af0",
+    "sha256": "5521aa9956ef6db6c7414e3cf5de5848af50e62c1246bf590cadc45ef1d6a6c6"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg",
+    "ok": true,
+    "bytes": 269501,
+    "git_blob": "ecbd2f572a5d43d8c9fa8d86b32e0f541d2d8daa",
+    "sha256": "8ceb9186d990b31fce785e06fdc6974c160f1d27c43f6160266f164deba713aa"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg",
+    "ok": true,
+    "bytes": 821681,
+    "git_blob": "8de165228a9b1ae80ce0b6dbd21a2422678c5021",
+    "sha256": "e509eb9dfa978e780fbebfd2acacc2ce158b5b7ced722ddc0759039dd51e18ca"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg",
+    "ok": true,
+    "bytes": 217708,
+    "git_blob": "8283c7762ee3152810747b33621b564a8f2523c7",
+    "sha256": "a4a9e39857a19afd23a778e5abf44fcdf6bd7f93918f1cf6878b41933e553511"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg",
+    "ok": true,
+    "bytes": 341948,
+    "git_blob": "458bf203e4f4ec57969de301366a120e5beea4a6",
+    "sha256": "8537c1015de5cc33d20231e5b6aa27309edcb983e1c37e608d08bb00f733747d"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg",
+    "ok": true,
+    "bytes": 404875,
+    "git_blob": "6fe0bbb3b31e2afd7af1544a205a6c83f92f5a27",
+    "sha256": "55d3eee2b69008ad3701b18977495531d0e3515105102e56f40a4d1098d10bce"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg",
+    "ok": true,
+    "bytes": 1294859,
+    "git_blob": "2bdca6912acb8de4acaf12695fb0054e8357b4b1",
+    "sha256": "a16cab3c789dd34570759b5bfb7ced36f983c180a20e3796d3dcb5571d94053d"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg",
+    "ok": true,
+    "bytes": 1579943,
+    "git_blob": "ae4f10102606196657007bb77b7764ba501f27cd",
+    "sha256": "199be90187d780760012f479e492a913999e33a34ac4d9cd4186b4d2c570d9ce"
+  },
+  {
+    "path": "app/assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg",
+    "ok": true,
+    "bytes": 676044,
+    "git_blob": "f8d74ecdd367fd9659dd44c3ded8d57b3fea7bbe",
+    "sha256": "9055b55a3cf39e7dbeb1aa0479c86d30878622f28b2d521cb21983718b3e0b5d"
+  },
+  {
+    "path": "app/assets/landscape/turf/detail.png",
+    "ok": true,
+    "bytes": 2287341,
+    "git_blob": "434c785ea4c68eddefe6816792b8be5bf08f412a",
+    "sha256": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e"
+  },
+  {
+    "path": "app/assets/ui/audio/accept.ogg",
+    "ok": true,
+    "bytes": 6481,
+    "git_blob": "219828abb43a90ffb9feb608d859a5ee67efcffd",
+    "sha256": "7ba48f2f99c91c71be420841a91f1e69c0cbc4fe887fcd7213144d67bb87b13a"
+  },
+  {
+    "path": "app/assets/ui/audio/back.ogg",
+    "ok": true,
+    "bytes": 6575,
+    "git_blob": "97735ff813cdd1b3825e06a927a32e5e83eed9b2",
+    "sha256": "1723a9fd25103ed41af06054814e84e65f4a772bac86ab2dc927da93d9592ff5"
+  },
+  {
+    "path": "app/assets/ui/audio/exit.ogg",
+    "ok": true,
+    "bytes": 6181,
+    "git_blob": "fb6e75fad5fce4623e558a3677a94987d77c0cd4",
+    "sha256": "af07511902b309b3f6d8f0e1fafbe93869127fb88099ebdc0aa6a00a98dc3cb0"
+  },
+  {
+    "path": "app/assets/ui/audio/navigation.ogg",
+    "ok": true,
+    "bytes": 6373,
+    "git_blob": "2184d0504732b25db5dd8b9c69867aaa36ab8f61",
+    "sha256": "4b76bf3ccc8e60d19188f3165b778a7817786faa6887c55d9049bcbeef3b425f"
+  },
+  {
+    "path": "app/assets/ui/audio/navigation_2.ogg",
+    "ok": true,
+    "bytes": 6366,
+    "git_blob": "c27596a65dce07db55a3456ab8bf9b6561375d83",
+    "sha256": "b183cf7a5bd783817e0e4b82af34ac6658fa1927049089dadc8b15c2ecc771dc"
+  },
+  {
+    "path": "app/assets/ui/audio/navigation_3.ogg",
+    "ok": true,
+    "bytes": 6395,
+    "git_blob": "b7a35ebf0e26072e27315ebf53a4ffb48a15e494",
+    "sha256": "e10009f67ddaeb3a59a3e1129cfc1615d84ba60ab578eae07e7092ac223f099c"
+  },
+  {
+    "path": "app/assets/ui/audio/open.ogg",
+    "ok": true,
+    "bytes": 6381,
+    "git_blob": "88359d14164c6df85d8f31b6227d49b274d208e3",
+    "sha256": "cdfbe8af2fe7ff9ee28f337a0a989deee0f327620da456c8413644880e9d0004"
+  },
+  {
+    "path": "app/assets/ui/audio/pause.ogg",
+    "ok": true,
+    "bytes": 5506,
+    "git_blob": "a8c643460ae2d429f0a219d02a7cc186ba2b3652",
+    "sha256": "7642a4fd43e547afe4f7adfadb3dabb681c0ff512f52c1674bae30a726841faf"
+  },
+  {
+    "path": "app/assets/ui/audio/press.ogg",
+    "ok": true,
+    "bytes": 6343,
+    "git_blob": "4bf6be62febf1de5f13b8bf33151118d8bb56c34",
+    "sha256": "eb45e35b4bed784d3f120de4afec4b0d6ac09d9e143cce8cfcb7d739e1b1f3c3"
+  },
+  {
+    "path": "app/assets/ui/audio/range_tick.ogg",
+    "ok": true,
+    "bytes": 5351,
+    "git_blob": "bf1027b541bfe16cc80af24807ca9bce271c267a",
+    "sha256": "7d3ba0bb5e60a11b5d3e558c141303dcf494256675fbf753c0d252d2cf0481e3"
+  },
+  {
+    "path": "app/assets/ui/audio/reject.ogg",
+    "ok": true,
+    "bytes": 5392,
+    "git_blob": "13b52479eeb7d45646a50b4b5205a296c6324f7d",
+    "sha256": "5c4a1f35fde7e14046931da7bc3d1b23736541b7190ba107e08a379c4ca43cd6"
+  },
+  {
+    "path": "app/assets/ui/audio/restart.ogg",
+    "ok": true,
+    "bytes": 6598,
+    "git_blob": "e559cb3b4e3f06221d40e8cfaade427558448be2",
+    "sha256": "635c37cfcd854b187d643d450ff0397798dcc29ae94da32192b814fae6bd854c"
+  },
+  {
+    "path": "app/assets/ui/audio/resume.ogg",
+    "ok": true,
+    "bytes": 6555,
+    "git_blob": "a31492174376bb150ac7cf83add874823d08c032",
+    "sha256": "15271dbe8e2872dbb0ff1aeb7b12b2d2b92b7c1951c88532b9ab9158c36dfc73"
+  },
+  {
+    "path": "app/assets/ui/audio/selection.ogg",
+    "ok": true,
+    "bytes": 6607,
+    "git_blob": "d5cf1d0a3675e0f7552bbb6945ab95b76990ae7c",
+    "sha256": "3f3f1917428b828f733a963167833c707bf88296ff158e1559c57c5cb813d799"
+  }
+]

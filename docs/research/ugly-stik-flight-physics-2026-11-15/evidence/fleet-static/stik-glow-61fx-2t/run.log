@@ -1,0 +1,10 @@
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FT stik-glow-61fx-2t: 3.03 kg, S 0.465 m2, start 20.0 m/s, CL_max 1.10 -> Vs estimate 9.7 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.2,"first_untrimmable_mps":39.0,"points":28,"slowest_trim_mps":11.0}
+FT modes                    valid {}
+   note: 0.8Vmax: longitudinal roots do not separate into short period and phugoid; phugoid not reported
+FT aero_sweep               valid {"cy_at_beta20":-0.0553,"cy_max_beta_le_30":0.0677,"cy_oracle_at_beta20":-0.1736,"knife_edge_cy_needed_at_0_8vmax":0.1072,"knife_edge_side_force_margin":0.632,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":1.96}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.068 of 0.107)
+FT report: tmp/ugly-audit-fleet-static/stik-glow-61fx-2t/profile.md

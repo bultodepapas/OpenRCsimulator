@@ -1,0 +1,54 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b318926c-aa76-49c8-a64e-6bcf2f4ff031",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/flight_test.gd",
+    "--",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--out=/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-direct-refused-1",
+    "--only=aero_sweep,not_a_test"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T15:57:02.891891+00:00",
+  "label": "direct-invalid-1",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/direct-invalid-1-p97mqfor/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/direct-invalid-1-p97mqfor/report.json",
+  "timeout_seconds": 90,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 2,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "--only requires distinct known test names; invalid selection: not_a_test",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _initialize (/workspace/scratch/d289586b400e/OpenRCsimulator/research/flight-test/flight_test.gd:86)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 2,
+  "ok": false,
+  "elapsed_seconds": 5.811953,
+  "log_bytes": 368,
+  "log_sha256": "7b147a6e1d135e72afb8763265e024b7762faf6149dcf6561752a7eb7b3c6474"
+}

@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FT jensen-das-ugly-stik-60: 2.88 kg, S 0.465 m2, start 15.0 m/s, CL_max 1.10 -> Vs estimate 9.5 m/s
+FT report: /workspace/scratch/d289586b400e/OpenRCsimulator/tmp/baseline-invalid-empty-success/jensen-das-ugly-stik-60/profile.md

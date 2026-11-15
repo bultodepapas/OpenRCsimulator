@@ -1,0 +1,261 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7434a7f0-e891-4259-8df8-b5e9805d49b8",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/app/tests/test_stik_stock_selection.gd"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T16:11:27.923244+00:00",
+  "label": "test_stik_stock_selection-restored-ui-assets",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_stik_stock_selection-restored-ui-assets-28ccjfd8/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-checks/test_stik_stock_selection-restored-ui-assets-28ccjfd8/report.json",
+  "timeout_seconds": 90,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 351,
+    "warning": 5
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SHADER ERROR",
+      "line": 99,
+      "message": "Tokenizer: Unknown character #35: '#'",
+      "context": [
+        "          at: (null) (:12)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] sky_material (res://render/atmosphere.gd:682)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 110,
+      "message": "Shader compilation failed.",
+      "context": [
+        "   at: shader_set_code (servers/rendering/dummy/storage/material_storage.cpp:192)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] sky_material (res://render/atmosphere.gd:682)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 121,
+      "message": "Unable to open file: res://.godot/imported/moon_albedo_2k.jpg-861582a798af178409ff369ba27e9602.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:777)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 134,
+      "message": "Failed loading resource: res://.godot/imported/moon_albedo_2k.jpg-861582a798af178409ff369ba27e9602.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:777)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 147,
+      "message": "Failed loading resource: res://assets/sky/moon/moon_albedo_2k.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:777)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 160,
+      "message": "Unable to open file: res://.godot/imported/moon_normal_1k.png-50c9b2661d7114d32fa73bbf2d7ab98f.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:778)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 173,
+      "message": "Failed loading resource: res://.godot/imported/moon_normal_1k.png-50c9b2661d7114d32fa73bbf2d7ab98f.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:778)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 186,
+      "message": "Failed loading resource: res://assets/sky/moon/moon_normal_1k.png.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply_state_to_sky (res://render/atmosphere.gd:778)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SHADER ERROR",
+      "line": 205,
+      "message": "Tokenizer: Unknown character #35: '#'",
+      "context": [
+        "          at: (null) (:21)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] ground_material (res://render/atmosphere.gd:893)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 222,
+      "message": "Shader compilation failed.",
+      "context": [
+        "   at: shader_set_code (servers/rendering/dummy/storage/material_storage.cpp:192)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] ground_material (res://render/atmosphere.gd:893)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 239,
+      "message": "Unable to open file: res://.godot/imported/grass-albedo.jpg-26df972c17be7ad384a1f608fb206a94.s3tc.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 254,
+      "message": "Failed loading resource: res://.godot/imported/grass-albedo.jpg-26df972c17be7ad384a1f608fb206a94.s3tc.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 269,
+      "message": "Failed loading resource: res://assets/landscape/rc-ground/grass-albedo.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 284,
+      "message": "Unable to open file: res://.godot/imported/grass-normal.jpg-8f87db3a1667eed7ed841fce563fd948.s3tc.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 299,
+      "message": "Failed loading resource: res://.godot/imported/grass-normal.jpg-8f87db3a1667eed7ed841fce563fd948.s3tc.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 314,
+      "message": "Failed loading resource: res://assets/landscape/rc-ground/grass-normal.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 329,
+      "message": "Unable to open file: res://.godot/imported/grass-roughness.jpg-5f743317b66876db5955128343a4d985.s3tc.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 344,
+      "message": "Failed loading resource: res://.godot/imported/grass-roughness.jpg-5f743317b66876db5955128343a4d985.s3tc.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 359,
+      "message": "Failed loading resource: res://assets/landscape/rc-ground/grass-roughness.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 374,
+      "message": "Parse Error: Could not preload resource file \"res://assets/landscape/rc-ground/grass-albedo.jpg\".",
+      "context": [
+        "          at: GDScript::reload (res://render/grass_ground_material.gd:4)",
+        "          GDScript backtrace (most recent call first):",
+        "              [0] _build_ground_setup (res://render/field.gd:383)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 19.780903,
+  "log_bytes": 338274,
+  "log_sha256": "ba48959ed124fe909ea563debb58df49b5db569a8c64412699b2b69a9507fa34"
+}

@@ -1,0 +1,58 @@
+{
+  "baseline": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "checks": 5,
+  "complete": true,
+  "failures": 0,
+  "results": [
+    {
+      "details": {
+        "errors": []
+      },
+      "name": "offset_center_profile_is_valid",
+      "passed": true
+    },
+    {
+      "details": {
+        "armed": true,
+        "roll_event_seen": false
+      },
+      "name": "low_throttle_event_arms_without_roll_event",
+      "passed": true
+    },
+    {
+      "details": {
+        "assumed_physical_center": 0.2,
+        "expected_roll": -0.166666666666667,
+        "max": 1.0,
+        "min": -1.0,
+        "polled_raw": 0.0,
+        "returned_roll": -0.166666666666667
+      },
+      "name": "unseen_zero_poll_normalizes_to_nonzero_roll",
+      "passed": true
+    },
+    {
+      "details": {
+        "center": 0.0,
+        "command_at_true_positive_endpoint": 1.0,
+        "maximum": 0.8,
+        "minimum": -0.8,
+        "ok": true
+      },
+      "name": "clean_sweep_accepts_true_endpoint",
+      "passed": true
+    },
+    {
+      "details": {
+        "center": 0.0,
+        "command_at_true_positive_endpoint": 0.8,
+        "maximum": 1.0,
+        "minimum": -0.8,
+        "ok": true
+      },
+      "name": "repeated_outlier_sets_accepted_endpoint",
+      "passed": true
+    }
+  ],
+  "scope": "injected reader and repeated poll scenarios; no physical device or rendered evidence"
+}
