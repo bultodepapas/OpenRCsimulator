@@ -115,6 +115,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 [EX-06/08/09 realism audit](extra-300-realism/README.md) links the manual/source audit, corrections, behavior matrix, regression results and remaining physical gaps. The [Extra guide/plan](../EXTRA-300-PLAN.md) owns current scope and pending work; the research retains dated results and physical gaps.
 
+### AERIS-120 gasoline 3D aerobatics
+
+[A120-00 investigation](aeris-120/README.md), 2026-11-15, maps the current gasoline/shaft, local aerodynamic, wake, radio/servo, native and replay contracts against a 120 cc Extra NG-inspired aircraft. It includes manufacturer and research sources, evidence-labelled parameters, equations and maneuver validation cards. The [integration plan](../plans/aeris-120-3d-gas.md) owns the staged conventional/3D/transient envelope and pending implementation. The user's existing model remains the supplied visual asset; no AERIS runtime or physical validation is claimed.
+
 <a id="avanti-s-flight-realism"></a>
 
 ### Ventage Jet flight realism
