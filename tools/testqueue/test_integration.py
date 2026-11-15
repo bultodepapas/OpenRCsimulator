@@ -12,6 +12,25 @@ from tools.testqueue import common, integration, presets
 
 
 class CheckedAdmissionTests(unittest.TestCase):
+    def test_suite_submission_forwards_only_the_bounded_import_setting(self):
+        # Exercise the request actually sent to the authority without launching a job.
+        for preset in ("suite", "ci", "debug-session"):
+            with self.subTest(preset=preset), tempfile.TemporaryDirectory() as temporary:
+                source = Path(temporary)
+                with patch.dict(os.environ, {"OPENRC_IMPORT_TIMEOUT": "1800", "OPENRC_TEST_PART": "units", "USERNAME": "fixture-user",
+                                             "UNRELATED_SETTING": "must-not-travel"}, clear=True), \
+                        patch.object(integration, "state_root", return_value=source / "state"), \
+                        patch.object(integration, "rpc", side_effect=[{}, {"job": "accepted"}]) as rpc, \
+                        patch.object(integration, "submission_receipt", return_value=source / "receipt"), \
+                        patch("tools.testqueue.snapshots.capture"), \
+                        patch("subprocess.check_output", return_value=b"app/project.godot\0"), \
+                        contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(integration.submit(preset, {"argv": []}, source), {"job": "accepted"})
+                expected = {"OPENRC_TEST_PART": "units"}
+                if preset in {"suite", "ci"}:
+                    expected["OPENRC_IMPORT_TIMEOUT"] = "1800"
+                self.assertEqual(rpc.call_args.kwargs["environment"], expected)
+
     def test_repeated_recovery_failure_keeps_original_receipt_and_never_submits(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

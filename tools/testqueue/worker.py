@@ -306,8 +306,14 @@ class Worker:
                    "snapshot": str(snapshot), "source": str(source), "manifest": receipt,
                    "environment": request.get("environment", {})}
         allowed_environment = {"OPENRC_TEST_PART", "OPENRC_UNIT_SHARDS", "OPENRC_UNIT_SHARD", "OPENRC_PARSE_WITH_UNITS"}
+        if preset in {"suite", "ci"}:
+            allowed_environment.add("OPENRC_IMPORT_TIMEOUT")
         if set(payload["environment"]) - allowed_environment or any(not isinstance(value, str) for value in payload["environment"].values()):
             raise ValueError("only suite partition environment can be submitted")
+        if "OPENRC_IMPORT_TIMEOUT" in payload["environment"]:
+            timeout = payload["environment"]["OPENRC_IMPORT_TIMEOUT"]
+            if not 1 <= len(timeout) <= 4 or any(char < "0" or char > "9" for char in timeout) or not 1 <= int(timeout) <= 1800:
+                raise ValueError("OPENRC_IMPORT_TIMEOUT must be an integer from 1 to 1800 seconds")
         with self.lock:
             result = self.store.submit(request["request_id"], payload, request["request_secret"])
         return {**result, "scheduling": scheduling(preset, options)}
@@ -466,7 +472,7 @@ class Worker:
             temporary = directory / "temp"
             temporary.mkdir()
             env = {key: value for key, value in os.environ.items()
-                   if not key.startswith(("OPENRC_DEBUG_", "OPENRC_TESTQUEUE_"))}
+                   if not key.startswith(("OPENRC_DEBUG_", "OPENRC_TESTQUEUE_")) and key != "OPENRC_IMPORT_TIMEOUT"}
             env.update(payload["environment"])
             env.update(OPENRC_TESTQUEUE_CONTEXT=context, OPENRC_TESTQUEUE_ROOT=str(self.root),
                        OPENRC_GODOT=str(self.engine), APPDATA=str(profile), XDG_DATA_HOME=str(profile),

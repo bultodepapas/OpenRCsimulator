@@ -2,6 +2,17 @@
 # Headless checks (no display needed). Fails if any script fails to parse or any test fails.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
+# Validate before submitting a new suite. An inherited attempt first installs
+# its normal receipt trap, then rejects invalid values without resolving Godot.
+validate_import_timeout() {
+  IMPORT_TIMEOUT="${OPENRC_IMPORT_TIMEOUT-600}"
+  if [[ ! "$IMPORT_TIMEOUT" =~ ^[0-9]{1,4}$ ]] || (( 10#$IMPORT_TIMEOUT < 1 || 10#$IMPORT_TIMEOUT > 1800 )); then
+    echo "OPENRC_IMPORT_TIMEOUT must be an integer from 1 to 1800 seconds" >&2
+    exit 2
+  fi
+  IMPORT_TIMEOUT="$((10#$IMPORT_TIMEOUT))"
+}
+if [[ -z "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then validate_import_timeout; fi
 if python3 "$HERE/../tools/testqueue/entry.py" suite -- "$@"; then
   exit 0
 else
@@ -10,6 +21,7 @@ else
 fi
 if [[ -n "${OPENRC_TESTQUEUE_CONTEXT:-}" ]]; then
   trap 'queue_status=$?; python3 "$HERE/../tools/testqueue/entry.py" receipt suite "$queue_status"' EXIT
+  validate_import_timeout
 fi
 # Full local verification remains the default. CI runs every partition as a required job.
 TEST_PART="${OPENRC_TEST_PART:-all}"
@@ -70,7 +82,7 @@ run_reference_unit() {
 # L6a imports the runtime PNG before tests; a clean checkout has no editor cache.
 IMPORT_LOG="$(mktemp)"
 echo "== import resource dependencies"
-if ! run_with_timeout 600 --import > "$IMPORT_LOG" 2>&1; then
+if ! run_with_timeout "$IMPORT_TIMEOUT" --import > "$IMPORT_LOG" 2>&1; then
   cat "$IMPORT_LOG"; rm -f "$IMPORT_LOG"; exit 1
 fi
 rm -f "$IMPORT_LOG"
