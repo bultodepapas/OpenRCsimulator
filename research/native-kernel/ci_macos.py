@@ -93,8 +93,9 @@ def main() -> int:
         run(list(command), label, logs, env)
 
     def import_project(label: str, project: Path) -> None:
-        execute(label, python, checked, "--out-dir", str(checks), "--label", label, "--timeout", "600", "--",
-                str(godot), "--headless", "--path", str(project), "--audio-driver", "Dummy", "--import")
+        execute(label, python, checked, "--out-dir", str(checks), "--label", label, "--timeout", "1800",
+                "--resources", "--resource-disk-path", str(project), "--",
+                str(godot), "--verbose", "--headless", "--path", str(project), "--audio-driver", "Dummy", "--import")
 
     try:
         execute("prepare-before", python, prepare, "--dest", str(before), "--copy-mode", "clone")

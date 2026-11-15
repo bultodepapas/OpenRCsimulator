@@ -168,6 +168,19 @@ func _test_setup_draft_and_single_save() -> void:
 	_check("the only confirmation action is Save", setup.save_button.text == "Save" and setup.find_child("ApplyDevices", true, false) == null)
 	setup._cancel_edits()
 	_check("Cancel closes without writing or applying either controller", close_count[0] == 1 and store.saved_count == 0 and registry.selections == {"flight": -1, "ui": -1})
+	# The owner disposes the cancelled screen. Reopen it instead of saving the
+	# discarded screen's other profile drafts as though they were still live.
+	setup.free()
+	setup = ControllerSetup.new()
+	setup.configure(registry, store)
+	setup.close_requested.connect(func() -> void: close_count[0] += 1)
+	root.add_child(setup)
+	await process_frame
+	await process_frame
+	setup._on_flight_device_selected(setup.flight_device_picker.get_item_index(5))
+	setup._on_ui_device_selected(setup.ui_device_picker.get_item_index(5))
+	setup._apply_preset("mode1")
+	_check("reopened setup has no discarded dirty profile drafts", setup._other_dirty_context().is_empty())
 	close_count[0] = 0
 	setup.save_and_apply = func(_candidate: Dictionary, _flight_id: int, _menu_id: int) -> Dictionary:
 		return {"ok": false, "error": "The selected controller disconnected."}

@@ -35,9 +35,18 @@ jobs:
           python3 research/native-kernel/test_ci_macos.py
           mkdir -p tmp/nk-macos-ci-bootstrap
           app/get-godot.sh > tmp/nk-macos-ci-bootstrap/godot-path.txt
+          # Keep partial inventory if a host field is unavailable; it is diagnostic only.
+          if ! python3 tools/godot/macos_preflight.py \
+              --godot "$(cat tmp/nk-macos-ci-bootstrap/godot-path.txt)" \
+              --out-dir tmp/nk-macos-ci-bootstrap/preflight; then
+            echo 'Mac host inventory incomplete; inspect the retained receipt.' >&2
+          fi
+          python3 -m venv .tools/nk-macos-resources-venv
+          .tools/nk-macos-resources-venv/bin/python -m pip install --disable-pip-version-check \
+            -r tools/godot/requirements-resources.txt
       - name: Run the Mac source correctness gates
         run: |
-          python3 research/native-kernel/ci_macos.py \
+          .tools/nk-macos-resources-venv/bin/python research/native-kernel/ci_macos.py \
             --godot "$(cat tmp/nk-macos-ci-bootstrap/godot-path.txt)" \
             --out "$PWD/tmp/nk-macos-ci" --jobs 2
       - name: Retain reports and diagnostic outputs

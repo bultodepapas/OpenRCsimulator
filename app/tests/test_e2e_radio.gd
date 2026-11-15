@@ -5,6 +5,7 @@
 extends SceneTree
 
 const ControllerProfile := preload("res://input/controller_profile.gd")
+const ControllerRegistry := preload("res://input/controller_registry.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const ID := 15 # a real radio on the dev machine would take id 0
 const AIRCRAFT := "turbo-lumber-evolution"
@@ -239,12 +240,35 @@ func _run() -> void:
 
 func _calibration_flight_guard(managed: bool) -> void:
 	var previous_selection: bool = _session.external_controller_selection
+	var previous_generation: Callable = _session.controller_connection_generation
 	_session.external_controller_selection = managed
 	var label := "managed calibration" if managed else "direct calibration"
 	_check(label + " starts with an armed, flyable radio", _session.radio.armed and _session.is_flyable())
+	# Managed calibration must be bound to the same live connection, including
+	# when the OS later reuses its numeric device handle.
+	var managed_registry := ControllerRegistry.new()
+	if managed:
+		_session.controller_connection_generation = Callable()
+		_check("managed calibration refuses a missing connection generation", not _session.start_calibration() \
+			and _session.calibration == null and not _session.sim.paused)
+		var observation := {"id": ID, "name": "Fake EdgeTX", "guid": "fake", "vendor_id": 0x1209, "product_id": 0x4f54}
+		managed_registry.update_devices([observation])
+		_session.controller_connection_generation = managed_registry.connection_generation
+		var original_generation: int = managed_registry.connection_generation(ID)
+		_check("managed calibration accepts a current connection generation", original_generation > 0 \
+			and _session.start_calibration() and _session.calibration != null \
+			and _session._calibration_generation == original_generation and _session.sim.paused)
+		managed_registry.disconnect_device(ID)
+		managed_registry.update_devices([observation])
+		_session.advance_calibration()
+		_check("managed calibration cancels after connection generation changes", \
+			managed_registry.connection_generation(ID) > original_generation and _session.calibration == null \
+			and _session.sim.paused and _session.commands.throttle == 0.0 \
+			and _session.pause_reason.contains("connection changed"))
 	_key(KEY_K)
 	await _settle()
 	var wizard: RefCounted = _session.calibration
+	_check(label + " started and paused the flight", wizard != null and _session.sim.paused)
 	var tick: int = _session.sim.tick
 	var state: PackedByteArray = _session.sim.state.to_byte_array()
 	var reason: String = _session.pause_reason
@@ -297,4 +321,5 @@ func _calibration_flight_guard(managed: bool) -> void:
 	await _settle()
 	_check(label + " explicit resume works after cancellation", _session.can_resume()
 		and not _session.sim.paused and _session.sim.tick > resume_tick)
+	_session.controller_connection_generation = previous_generation
 	_session.external_controller_selection = previous_selection

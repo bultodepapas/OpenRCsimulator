@@ -3,6 +3,7 @@ const Session = preload("res://sim/helicopter_flight_session.gd")
 const Wind = preload("res://physics/wind_config.gd")
 const Recorder = preload("res://sim/rotorcraft_recorder.gd")
 const ControllerProfile = preload("res://input/controller_profile.gd")
+const ControllerRegistry = preload("res://input/controller_registry.gd")
 const Math3D = preload("res://physics/math3d.gd")
 var checks: int = 0
 var failures: int = 0
@@ -189,10 +190,37 @@ func _run() -> void:
 	good_recorder.detach()
 
 	var controller: Node = make_session(true)
+	var registry := ControllerRegistry.new()
+	registry.update_devices([{"id": 992, "name": "audit gamepad", "known": true}])
+	controller.controller_connection_generation = registry.connection_generation
 	var invalid_profile: Dictionary = {"throttle_mode": "stick_rate"}
-	check("malformed controller profile is rejected before connect", not controller.apply_controller_selection(991, {"name": "audit joystick", "known": false}, invalid_profile) and controller._controller_lost and not controller.radio.connected and controller.sim.paused)
+	var previous_profile: Dictionary = controller.radio.profile.duplicate(true)
+	var previous_device: int = controller.radio.device_id
+	var previous_connected: bool = controller.radio.connected
+	var previous_lost: bool = controller._controller_lost
+	var previous_calibration_generation: int = controller._calibration_generation
+	check("malformed profile preserves the prior keyboard route while pausing", not previous_connected \
+		and previous_device == -1 \
+		and not controller.apply_controller_selection(991, {"name": "audit joystick", "known": false}, invalid_profile) \
+		and controller.radio.profile == previous_profile and controller.radio.device_id == previous_device \
+		and controller.radio.connected == previous_connected and controller._controller_lost == previous_lost \
+		and controller._calibration_generation == previous_calibration_generation and controller.sim.paused)
 	var valid_profile: Dictionary = ControllerProfile.defaults("gamepad", "mode2")
-	check("validated stick-rate profile connects", controller.apply_controller_selection(992, {"name": "audit gamepad", "known": true}, valid_profile) and controller.radio.profile_error.is_empty() and not controller._controller_lost)
+	check("validated stick-rate profile connects", controller.apply_controller_selection(992, registry.device_for_id(992), valid_profile) and controller.radio.profile_error.is_empty() and not controller._controller_lost)
+	var active_profile: Dictionary = controller.radio.profile.duplicate(true)
+	var active_key: String = controller.radio.device_key
+	var active_generation: int = registry.connection_generation(992)
+	var active_lost: bool = controller._controller_lost
+	var active_armed: bool = controller.radio.armed
+	var active_calibration_generation: int = controller._calibration_generation
+	check("malformed replacement preserves the active controller and its generation", active_generation > 0 \
+		and not controller.apply_controller_selection(991, {"name": "audit joystick", "known": false}, invalid_profile) \
+		and controller.radio.connected and controller.radio.device_id == 992 and controller.radio.device_key == active_key \
+		and controller.radio.profile == active_profile and controller.radio.armed == active_armed \
+		and registry.connection_generation(992) == active_generation \
+		and controller.controller_connection_generation.call(992) == active_generation \
+		and controller._controller_lost == active_lost and controller._calibration_generation == active_calibration_generation \
+		and controller.sim.paused)
 
 	print("HELI state audit: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

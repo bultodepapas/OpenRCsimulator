@@ -488,6 +488,27 @@ jobs:
             .tools/Godot_v*_win64.exe.sha512
             .tools/Godot_v*_win64.exe.zip
           key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - name: Record Windows machine and GPU inventory
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path tmp/nk4-ci | Out-Null
+          function Get-Inventory([string]$ClassName, [string[]]$Properties) {
+            try {
+              $items = @(Get-CimInstance -ClassName $ClassName -OperationTimeoutSec 20 -ErrorAction Stop |
+                Select-Object -First 32 -Property $Properties)
+              return @{ status = 'available'; items = $items }
+            } catch {
+              return @{ status = 'error'; error = $_.Exception.Message }
+            }
+          }
+          $inventory = [ordered]@{
+            captured_utc = [DateTime]::UtcNow.ToString('o')
+            system = Get-Inventory 'Win32_ComputerSystem' @('Manufacturer', 'Model', 'NumberOfLogicalProcessors', 'TotalPhysicalMemory')
+            os = Get-Inventory 'Win32_OperatingSystem' @('Caption', 'Version', 'BuildNumber', 'OSArchitecture')
+            cpu = Get-Inventory 'Win32_Processor' @('Name', 'NumberOfCores', 'NumberOfLogicalProcessors')
+            gpu = Get-Inventory 'Win32_VideoController' @('Name', 'VideoProcessor', 'DriverVersion', 'AdapterRAM')
+          }
+          $inventory | ConvertTo-Json -Depth 5 | Set-Content -Encoding utf8 tmp/nk4-ci/host-inventory.json
       - name: Install the pinned MinGW-w64 toolchain (nuwen components 20.0, g++ 15.2.0, mingw-w64 11.0.1)
         shell: pwsh
         run: |
@@ -505,8 +526,19 @@ jobs:
       - name: Import project resources with checked diagnostics
         run: |
           g++ --version
-          python tools/godot/run_checked.py --timeout 600 --out-dir tmp/nk4-ci/checks --label nk4-import -- \
-            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
+          python -m venv .tools/nk4-resources-venv
+          .tools/nk4-resources-venv/Scripts/python.exe -m pip install --disable-pip-version-check \
+            -r tools/godot/requirements-resources.txt
+          console_godot="$(app/get-godot.sh)"
+          case "$console_godot" in
+            *_console.exe) direct_godot="${console_godot%_console.exe}.exe" ;;
+            *) echo 'Expected the verified Windows console launcher.' >&2; exit 1 ;;
+          esac
+          test -f "$direct_godot"
+          .tools/nk4-resources-venv/Scripts/python.exe tools/godot/run_checked.py \
+            --timeout 1800 --resources --resource-disk-path app --out-dir tmp/nk4-ci/checks --label nk4-import \
+            --require-text 'Godot Engine v4.8.beta2.official' -- \
+            "$direct_godot" --verbose --headless --path app --audio-driver Dummy --import
       - name: Build the pinned native stage and the separate mutation control
         run: |
           mkdir -p tmp/nk4-ci
@@ -827,13 +859,13 @@ jobs:
     needs: [scope, native-linux, native-windows]
     if: needs.scope.outputs.app == 'true'
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    timeout-minutes: ${{ matrix.job_timeout }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {platform: linux, runner: ubuntu-24.04, python: python3, executables: linux.x86_64, archive: linux.x86_64}
-          - {platform: windows, runner: windows-2025-vs2026, python: python, executables: 'win64*.exe', archive: win64.exe}
+          - {platform: linux, runner: ubuntu-24.04, python: python3, executables: linux.x86_64, archive: linux.x86_64, import_timeout: 600, job_timeout: 45}
+          - {platform: windows, runner: windows-2025-vs2026, python: python, executables: 'win64*.exe', archive: win64.exe, import_timeout: 1800, job_timeout: 75}
     defaults:
       run:
         shell: bash
@@ -866,7 +898,7 @@ jobs:
           ${{ matrix.python }} research/rc-monster-truck/native/build.py --install-only
       - name: Require installed-native session guards and trajectory comparison
         id: native_checks
-        run: ${{ matrix.python }} tools/ci/check_rcv_native.py --godot "$(app/get-godot.sh)" --out-dir tmp/rcv-native-checks
+        run: ${{ matrix.python }} tools/ci/check_rcv_native.py --godot "$(app/get-godot.sh)" --out-dir tmp/rcv-native-checks --import-timeout ${{ matrix.import_timeout }}
       - name: Summarize native production diagnostics
         if: always() && steps.native_checks.outcome != 'skipped'
         run: ${{ matrix.python }} tools/godot/summarize.py tmp/rcv-native-checks --junit tmp/rcv-native-checks/results.xml

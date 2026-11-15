@@ -15,6 +15,63 @@ from unittest import mock
 import check_rcv_native
 
 
+class NativeImportPolicy(unittest.TestCase):
+    def test_cold_import_budget_does_not_change_native_checks(self):
+        for host, timeout in (("linux", 600), ("win32", 1800)):
+            with self.subTest(host=host), tempfile.TemporaryDirectory(prefix="openrc-rcv-policy-") as directory:
+                root = Path(directory)
+                calls = []
+
+                def record(command, out, *, label, timeout, required=None):
+                    calls.append((label, command, timeout, required))
+                    log = root / f"{label}.log"
+                    log.write_text("fixture.version\n", encoding="utf-8")
+                    return {"ok": True, "log": str(log)}
+
+                with mock.patch.object(check_rcv_native, "check_editor", return_value="fixture.version") as identity, \
+                     mock.patch.object(check_rcv_native, "_check", side_effect=record):
+                    self.assertTrue(check_rcv_native.run(root, root / "engine", root / "checks",
+                                                        host=host, import_timeout=timeout))
+                by_label = {label: (command, budget, required) for label, command, budget, required in calls}
+                self.assertEqual(identity.call_count, 2)
+                self.assertEqual(by_label["rcv-editor-version"][1:], (30, ["fixture.version"]))
+                self.assertEqual(by_label["rcv-native-import"][1], timeout)
+                self.assertEqual("--verbose" in by_label["rcv-native-import"][0], host == "win32")
+                for label, _, marker in check_rcv_native.CASES:
+                    self.assertEqual(by_label[label][1:], (600, [marker]))
+                    self.assertNotIn("--verbose", by_label[label][0])
+
+    def test_failed_import_still_prevents_native_checks(self):
+        with tempfile.TemporaryDirectory(prefix="openrc-rcv-policy-") as directory:
+            root = Path(directory)
+            labels = []
+
+            def record(command, out, *, label, timeout, required=None):
+                labels.append(label)
+                log = root / f"{label}.log"
+                log.write_text("fixture.version\n", encoding="utf-8")
+                return {"ok": label != "rcv-native-import", "log": str(log)}
+
+            with mock.patch.object(check_rcv_native, "check_editor", return_value="fixture.version"), \
+                 mock.patch.object(check_rcv_native, "_check", side_effect=record):
+                self.assertFalse(check_rcv_native.run(root, root / "engine", root / "checks",
+                                                     host="win32", import_timeout=1800))
+            self.assertEqual(labels, ["rcv-editor-version", "rcv-native-import"])
+
+    def test_import_budget_is_bounded_and_cli_forwards_it(self):
+        with tempfile.TemporaryDirectory(prefix="openrc-rcv-policy-") as directory:
+            root = Path(directory)
+            for invalid in (0, -1, 1801, True, 1.5):
+                with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                    check_rcv_native.run(root, root / "engine", root / "checks", import_timeout=invalid)
+                self.assertFalse((root / "checks").exists())
+            with mock.patch.object(sys, "argv", ["check_rcv_native.py", "--godot", "engine", "--out-dir", "out",
+                                                   "--import-timeout", "1800"]), \
+                 mock.patch.object(check_rcv_native, "run", return_value=True) as run:
+                self.assertEqual(check_rcv_native.main(), 0)
+                self.assertEqual(run.call_args.kwargs["import_timeout"], 1800)
+
+
 @unittest.skipIf(os.name == "nt", "executable fixture uses a POSIX shebang")
 class NativeChecks(unittest.TestCase):
     def setUp(self):
