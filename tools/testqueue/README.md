@@ -327,6 +327,18 @@ its durable prelaunch identity. It does not kill by recorded PID. Preserve the j
 and use an ordinary host reboot when necessary; never delete a stale lock or edit
 claims to manufacture proof of cleanup.
 
+An operator who explicitly accepts the remaining cleanup uncertainty can close a
+same-boot Windows orphan with `testctl abandon <handle> --reason "owner request"`.
+Drain the worker first and wait for all executing attempts to finish. The command
+authenticates ownership and requires the recorded gate to be absent or signaled
+and its named Job Object absent. Access errors refuse release. It records the
+operator's reason, preserves the original identity and audit trail, and releases
+only that attempt's claims. The terminal result is `INFRA_FAILED` with
+`cleanup: UNCONFIRMED` and `evidence: INCOMPLETE`. This administrative exception
+requires an explicit operator decision each time. After closure, restore admission
+with `testctl drain off`. Ordinary cancellation and reconciliation retain their
+existing process-tree proof requirements.
+
 Snapshots bind actual dirty/untracked bytes, deletions, relevant metadata, launcher
 digests, referenced aircraft authoring files, installed native inputs and optional
 prepared imports. Stored input and per-attempt materialization are both verified.

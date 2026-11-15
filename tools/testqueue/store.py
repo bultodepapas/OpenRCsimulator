@@ -177,6 +177,25 @@ class Store:
                     raise ValueError("cannot release without confirmed process-tree cleanup")
                 self.db.execute("DELETE FROM claims WHERE attempt=?", (attempt,))
 
+    def abandon(self, job: str, reason: str):
+        """Release one quarantined attempt by an explicit operator decision."""
+        if not isinstance(reason, str) or not reason.strip() or len(reason) > 2000:
+            raise ValueError("operator abandonment requires a reason of 1..2000 characters")
+        with self.db:
+            status = self.get(job)
+            if status["state"] != "UNKNOWN":
+                raise ValueError("only UNKNOWN attempts can be abandoned")
+            attempt = status["attempts"][-1]
+            data = {**attempt["data"], "cleanup": "UNCONFIRMED", "outcome": "INFRA_FAILED",
+                    "evidence": "INCOMPLETE", "finished": time.time(),
+                    "operator_abandoned": {"reason": reason.strip()}}
+            self.db.execute("UPDATE attempts SET state='FINISHED',data=? WHERE id=? AND job=?",
+                            (json.dumps(data), attempt["id"], job))
+            self.db.execute("UPDATE jobs SET state='FINISHED',canceled=1,reason=? WHERE id=?",
+                            ("OPERATOR_ABANDONED: " + reason.strip(), job))
+            self.db.execute("DELETE FROM claims WHERE attempt=?", (attempt["id"],))
+            self.event(job, "OPERATOR_ABANDONED", {"attempt": attempt["id"], **data})
+
     def cancel(self, job: str):
         with self.db:
             self._cancel(job)

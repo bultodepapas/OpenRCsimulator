@@ -12,7 +12,7 @@ import uuid
 from unittest import mock
 
 import processes
-from processes import OwnedProcess, confirm_stopped, host_identity
+from processes import OwnedProcess, confirm_stopped, host_identity, orphan_absent
 
 
 def wait_for(predicate, timeout=8):
@@ -159,6 +159,7 @@ class ProcessFixture(unittest.TestCase):
         identity = json.loads(control.read_text())
         child_pid = int(ready.read_text())
         if os.name == "nt":
+            self.assertFalse(orphan_absent(identity))
             import ctypes
             from ctypes import wintypes
             kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
@@ -176,6 +177,7 @@ class ProcessFixture(unittest.TestCase):
                     self.assertEqual(kernel32.WaitForSingleObject(handle, 0), 0,
                                      "reconciliation claimed empty before the child terminated")
                 self.assertEqual(kernel32.WaitForSingleObject(handle, 8000), 0)
+                wait_for(lambda: orphan_absent(identity))
                 self.assertFalse(confirm_stopped(identity),
                                  "an absent job alone must remain unknown")
                 after_reboot = dict(identity, boot=str(uuid.uuid4()))
@@ -202,6 +204,9 @@ class ProcessFixture(unittest.TestCase):
         self.assertFalse(confirm_stopped(None))
         self.assertFalse(confirm_stopped({"kind": "windows-job-v1", "job": "anything"}))
         self.assertFalse(confirm_stopped({"host": 123, "boot": 123}))
+        self.assertFalse(orphan_absent({}))
+        self.assertFalse(orphan_absent(None))
+        self.assertFalse(orphan_absent(dict(host_identity(), kind="windows-job-v1", job="anything")))
 
     def test_prelaunch_host_identity(self):
         identity = host_identity()
@@ -212,6 +217,22 @@ class ProcessFixture(unittest.TestCase):
         previous_boot = dict(identity, boot=old_boot)
         self.assertTrue(confirm_stopped(previous_boot))
 
+    @unittest.skipUnless(os.name == "nt", "Windows orphan evidence")
+    def test_operator_orphan_probe_rejects_foreign_identity_and_access_errors(self):
+        identity = dict(host_identity(), kind="windows-job-v1",
+                        job="Global\\OpenRC-testqueue-" + str(uuid.uuid4()), pid=123, creation=456)
+        with mock.patch.object(processes._kernel32, "OpenProcess", return_value=None) as opened:
+            self.assertFalse(orphan_absent(dict(identity, host=str(uuid.uuid4()))))
+            self.assertFalse(orphan_absent(dict(identity, boot=str(uuid.uuid4()))))
+            opened.assert_not_called()
+            with mock.patch.object(processes.ctypes, "get_last_error", return_value=5):
+                self.assertFalse(orphan_absent(identity))
+            with mock.patch.object(processes._kernel32, "OpenJobObjectW", return_value=None), \
+                    mock.patch.object(processes.ctypes, "get_last_error", side_effect=[87, 5]):
+                self.assertFalse(orphan_absent(identity))
+            with mock.patch.object(processes._kernel32, "OpenJobObjectW", return_value=None), \
+                    mock.patch.object(processes.ctypes, "get_last_error", side_effect=[87, 2]):
+                self.assertTrue(orphan_absent(identity))
     @unittest.skipUnless(os.name == "nt", "Windows Job Object behavior")
     def test_missing_process_witness_remains_unknown_after_close(self):
         process = OwnedProcess([sys.executable, "-c", "pass"], self.root, os.environ.copy(),
