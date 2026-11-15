@@ -1,0 +1,212 @@
+[
+  {
+    "id": "IN2-S01",
+    "title": "Godot 4.8-beta2 release",
+    "url": "https://github.com/godotengine/godot-builds/releases/tag/4.8-beta2",
+    "kind": "official release",
+    "version_or_date": "2026-10-29",
+    "claims_supported": "Identifies beta2 source commit cafc17a192acf67903910a68aeb3c076c0907a4b.",
+    "limits": "Release identity alone does not qualify a local binary or hardware.",
+    "license_if_reuse": "No code copied; check upstream terms before reuse.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S02",
+    "title": "Pinned Godot SDL joypad driver",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/sdl/joypad_sdl.cpp",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob 44dfc8f5b641e65aecb4afa25536ad311bf590cc",
+    "claims_supported": "SDL event pump, SDL-instance-to-Godot-slot map, event paths and map removal; no initial-axis query in this file.",
+    "limits": "Source control flow, not measured device behavior; special backends/builds may differ.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S03",
+    "title": "Pinned Godot Input implementation",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/input/input.cpp",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob 23332b06a4489eb46e84f4c913796d498d75917f",
+    "claims_supported": "Axis-cache getter, event parse/dispatch ordering, focus gate, buffering, disconnect zeroing and deferred connection signal.",
+    "limits": "Does not by itself prove platform event cadence or a hardware heartbeat.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S04",
+    "title": "Pinned Godot Input declarations",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/input/input.h",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob 71d50f909b6406aca34fa3a3b43223989b6badd2",
+    "claims_supported": "16 joypad slots, cached axis map and initial input defaults.",
+    "limits": "Build or application settings may alter runtime paths.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S05",
+    "title": "Pinned vendored SDL joystick implementation",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/thirdparty/sdl/joystick/SDL_joystick.c",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob cf08c30b8617bb9b09f0981e795036f0704d451f",
+    "claims_supported": "Initial axis state, event suppression and virtual/preinitialized exceptions; background-ignore helper in this vendored source.",
+    "limits": "Source path is conditional on device and backend; no real report cadence measured.",
+    "license_if_reuse": "SDL zlib; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S06",
+    "title": "Pinned vendored SDL version header",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/thirdparty/sdl/include/SDL3/SDL_version.h",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob 6b7816e0d4d792bb611aef799e77278aa2b35943",
+    "claims_supported": "Defines SDL version macros 3.4.16.",
+    "limits": "Header does not prove each vendored file is identical to upstream or report the loaded binary runtime version.",
+    "license_if_reuse": "SDL zlib; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S07",
+    "title": "Pinned Godot third-party inventory",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/thirdparty/README.md",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob 4af7f2b91252a9b7aa0b7f934472f56b343be51d",
+    "claims_supported": "SDL inventory lists 3.4.12, inconsistent with the pinned 3.4.16 header.",
+    "limits": "A documentation entry is not proof of actual compiled version.",
+    "license_if_reuse": "Godot documentation; no material copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S08",
+    "title": "Pinned Godot input-event declarations",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/core/input/input_event.h",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob 7891510933148730992a5c362d45d4f43247d580",
+    "claims_supported": "InputEvent has Godot device field; joypad motion has axis and value, and no SDL instance, report counter or timestamp in this path.",
+    "limits": "A different extension/backend may define additional metadata outside this class.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S09",
+    "title": "Pinned Godot SceneTree focus notification",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/main/scene_tree.cpp",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob b755ff4296fe98deb2f7c59d06ae73a2af31e0da",
+    "claims_supported": "Focus notification calls release_pressed_events before propagating to nodes.",
+    "limits": "This ordering does not establish when an OS produces or ceases joystick reports.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S10",
+    "title": "Pinned Godot main loop",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/main/main.cpp",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob e754e37083e57dc1c3944982d0e33addcbd93ab0",
+    "claims_supported": "Agile input event flushing project-setting default is false and optional flush points exist.",
+    "limits": "Application code or another project may override input settings.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S11",
+    "title": "SDL_JoystickID",
+    "url": "https://wiki.libsdl.org/SDL3/SDL_JoystickID",
+    "kind": "official API documentation",
+    "version_or_date": "SDL3 API since 3.2.0; living page",
+    "claims_supported": "SDL instance ID is unique per connection and not reused during an application lifetime.",
+    "limits": "Godot translates this to a separate reusable slot; not a promise about arbitrary backend defects.",
+    "license_if_reuse": "SDL wiki CC BY 4.0; no material copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S12",
+    "title": "Godot joypad issue tracker: RadioMaster Pocket report",
+    "url": "https://github.com/godotengine/godot/issues/105417",
+    "kind": "original developer issue discussion",
+    "version_or_date": "2026-08-25 comment",
+    "claims_supported": "Reporter describes zero-until-moved axes on an OpenTX RadioMaster Pocket, macOS and Godot 4.8-dev b56a918.",
+    "limits": "Individual report; not a test of beta2, OpenRC, other OSes or universal hardware behavior.",
+    "license_if_reuse": "No material copied; author and platform terms apply.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S13",
+    "title": "Godot 4.8 dev 6 announcement",
+    "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-dev-6/",
+    "kind": "official release announcement",
+    "version_or_date": "2026-09-15",
+    "claims_supported": "Reports SDL update to 3.4.16 before beta2.",
+    "limits": "Does not independently prove the exact beta2 build runtime or every vendored file version.",
+    "license_if_reuse": "No material copied; check upstream terms before reuse.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S14",
+    "title": "Pinned Linux main loop",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/platform/linuxbsd/os_linuxbsd.cpp",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob c654d86217f4c052baa96775cbfc9fa55313a7ce",
+    "claims_supported": "Linux run loop processes display and SDL events before main iteration.",
+    "limits": "Other platforms and execution modes have different event paths.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  },
+  {
+    "id": "IN2-S15",
+    "title": "Pinned Windows display server",
+    "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/platform/windows/display_server_windows.cpp",
+    "kind": "official source",
+    "version_or_date": "commit cafc17a192acf67903910a68aeb3c076c0907a4b; Git blob c3ebe4b00751946732d48402c9c05588fa34824a",
+    "claims_supported": "Windows process_events handles SDL events and later flushes buffered input in the shown path.",
+    "limits": "Does not establish precise timing for every OS event, device or scene.",
+    "license_if_reuse": "Godot MIT; no code copied.",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "S2-01"
+    ]
+  }
+]

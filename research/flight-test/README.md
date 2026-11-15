@@ -54,6 +54,28 @@ python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tm
 
 Use a new or empty `--out` directory and distinct known aircraft IDs. The runner refuses reused evidence folders, empty selections, unknown IDs and duplicate jobs before launching those jobs. Both entry points reject unknown, empty or duplicate `--only` names. The Python runner exits 1 when a run fails, Godot reports a script error, the loaded input identity disagrees with the reported file, or the profile omits/adds requested tests. Omitting `--only` requires all 40 card tests. A test that is not valid is a result, not a run failure. Runs are deterministic: two runs of the full battery compare with no change.
 
+The runner also refuses nonpositive/nonfinite timeouts and nonpositive job counts. Each finished job writes its own
+`<aircraft>/run.json` receipt, retaining the child exit separately from profile/identity/roster failures. Timeout logs
+retain both separately captured stdout and stderr, decoded as UTF-8 with replacement; their original interleaving is
+unknown. Expected launch, read, JSON and profile-shape failures remain per-job outcomes, so other jobs and the aggregate
+manifest survive. Catalog-discovery failure writes `run.log` and a failed `run.json` at the output root. Raw profiles
+are preserved. A failed summary reduction records `summary_error`, exits nonzero and publishes no partial summary;
+successful job receipts remain available. This does not guarantee writes survive a full disk or forced termination.
+
+`compare.py` reports the **union** of aircraft by default, including additions and removals. Use
+`--aircraft-scope baseline` only for an intentional subset; it names candidate-only exclusions. Both scopes require at
+least one shared aircraft, and each compared aircraft needs shared tests. `--shared-tests` names omitted tests and
+still refuses an empty intersection. Reports show shared test/value coverage and non-null value pairs. A validity-only
+comparison is allowed and labeled; `null` never becomes zero. Duplicate JSON names/case IDs, malformed profiles and
+invalid tolerances are refused, while structured metric/table paths prevent punctuation from aliasing measurements.
+When present, aircraft identities and run receipts must agree with the profile and indicate successful execution.
+Old missing provenance fields and profile-only comparisons remain explicitly unverified rather than gaining evidence
+retroactively. An ineligible comparison exits **2**, regardless of `--fail-on-change`; eligible differences exit **1**
+with that flag; otherwise an eligible comparison exits **0**. These are evidence-tool outcomes, not physical validation.
+
+Focused Python contract tests: `python -m unittest discover -s research/flight-test -p 'test_*.py' -v`. The timeout test
+uses a real Python child; the remaining runner fixtures substitute child responses. They do not qualify Godot flights.
+
 You can also run one aircraft directly: `<godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- --aircraft=<id> --out=<dir> [--only=a,b]`, or list the aircraft with `-- --list`.
 
 **Card versions.** A change to a test, its cases or its pilot changes what is measured, so it bumps `VERSION` in `flight_test.gd` and needs a new baseline. `compare.py` refuses to compare different card versions unless given `--allow-card-change`. Add `--shared-tests` to compare only the tests both profiles contain: a card that appends tests then shows its earlier tests unchanged (`--rel 0 --abs 0 --fail-on-change`). New tests go after the existing ones for this reason.

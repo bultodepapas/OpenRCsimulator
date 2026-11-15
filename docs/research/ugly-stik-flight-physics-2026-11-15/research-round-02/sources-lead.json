@@ -1,0 +1,143 @@
+[
+  {
+    "id": "LEAD-S01",
+    "title": "Python 3.12 subprocess — TimeoutExpired",
+    "url": "https://docs.python.org/3.12/library/subprocess.html#subprocess.TimeoutExpired",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Python 3.12 documentation (page reports 3.12.16); execution uses 3.12.14",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R19"
+    ],
+    "claims_supported": "Timeout output/stderr can be bytes despite text=True and absent output can be None.",
+    "limits": "Does not guarantee process-tree cleanup or chronological merging of separate streams.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S02",
+    "title": "Python 3.12 JSON — interoperability and decoder hooks",
+    "url": "https://docs.python.org/3.12/library/json.html#standard-compliance-and-interoperability",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Python 3.12 documentation",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R19",
+      "R20"
+    ],
+    "claims_supported": "Default decoder admits nonfinite constants and repeated names; hooks permit explicit validation.",
+    "limits": "A JSON parser is not a scientific schema or completion validator.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S03",
+    "title": "Python 3.12 concurrent.futures — Executor.map",
+    "url": "https://docs.python.org/3.12/library/concurrent.futures.html#concurrent.futures.Executor.map",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Python 3.12 documentation",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R19"
+    ],
+    "claims_supported": "Mapped worker exceptions propagate when retrieved.",
+    "limits": "Does not supply durable job receipts or classify expected data errors.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S04",
+    "title": "pytest exit codes",
+    "url": "https://docs.pytest.org/en/stable/reference/exit-codes.html",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Rolling stable documentation retrieved 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R20"
+    ],
+    "claims_supported": "No collected tests has a distinct non-success outcome.",
+    "limits": "Design precedent only; pytest numeric codes are not imposed on this comparator.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S05",
+    "title": "JSON Schema array validation",
+    "url": "https://json-schema.org/understanding-json-schema/reference/array",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Rolling official guide retrieved 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R20"
+    ],
+    "claims_supported": "Minimum size and item uniqueness are different constraints; empty arrays can satisfy uniqueness.",
+    "limits": "Whole-item uniqueness is not uniqueness of a case property; no schema dependency imported.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S06",
+    "title": "W3C PROV-DM",
+    "url": "https://www.w3.org/TR/2013/REC-prov-dm-20130430/",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "W3C Recommendation 2013-04-30",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R21"
+    ],
+    "claims_supported": "Separates provenance entities, activities, agents and derivation.",
+    "limits": "Conceptual guidance; report is not claimed PROV-conformant or physically validated.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S07",
+    "title": "Playwright visual comparisons",
+    "url": "https://playwright.dev/docs/test-snapshots",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Rolling official documentation retrieved 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R21"
+    ],
+    "claims_supported": "Screenshot comparisons depend on a matched rendering environment.",
+    "limits": "Browser example supports methodology, not Godot behavior or framework adoption.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S08",
+    "title": "Godot — The Profiler",
+    "url": "https://docs.godotengine.org/en/stable/tutorials/scripting/debug/the_profiler.html",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Rolling stable documentation retrieved 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R22"
+    ],
+    "claims_supported": "Distinguishes frame, idle and physics work; profiling has overhead.",
+    "limits": "Not proof every facility is available in pinned 4.8 beta 2.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S09",
+    "title": "Godot — General optimization tips",
+    "url": "https://docs.godotengine.org/en/stable/tutorials/performance/general_optimization.html",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Rolling stable documentation retrieved 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R22"
+    ],
+    "claims_supported": "Recurring, intermittent and startup costs need attribution; CPU views can miss GPU/OS effects.",
+    "limits": "No measured OpenRC speedup follows.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  },
+  {
+    "id": "LEAD-S10",
+    "title": "Godot — Using C++ profilers",
+    "url": "https://docs.godotengine.org/en/stable/engine_details/development/profiling/index.html",
+    "kind": "official documentation / primary project source",
+    "version_or_date": "Rolling stable documentation retrieved 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R22"
+    ],
+    "claims_supported": "Sampling and tracing expose different evidence; native attribution requires suitable symbols/build.",
+    "limits": "Exact pinned-engine facilities/build flags must be checked; no new engine or tool dependency adopted.",
+    "license_if_reuse": "No upstream code copied or vendored; documentation citation only. Inspect exact component license before reuse."
+  }
+]

@@ -1,0 +1,17 @@
+test_actual_png_difference_produces_heatmap (test_scenario_report.ScenarioEvidenceTests.test_actual_png_difference_produces_heatmap) ... ok
+test_context_changes_and_invalid_source_claims_are_explicit (test_scenario_report.ScenarioEvidenceTests.test_context_changes_and_invalid_source_claims_are_explicit) ... ok
+test_duplicate_frame_identity_is_ambiguous (test_scenario_report.ScenarioEvidenceTests.test_duplicate_frame_identity_is_ambiguous) ... ok
+test_history_distinguishes_missing_partial_malformed_and_complete_receipts (test_scenario_report.ScenarioEvidenceTests.test_history_distinguishes_missing_partial_malformed_and_complete_receipts) ... ok
+test_identical_pixels_cannot_hide_sampled_state_change (test_scenario_report.ScenarioEvidenceTests.test_identical_pixels_cannot_hide_sampled_state_change) ... ok
+test_image_dimension_mismatch_is_reported_without_broadcast_crash (test_scenario_report.ScenarioEvidenceTests.test_image_dimension_mismatch_is_reported_without_broadcast_crash) ... ok
+test_missing_or_tampered_images_cannot_pass_hash_shortcut (test_scenario_report.ScenarioEvidenceTests.test_missing_or_tampered_images_cannot_pass_hash_shortcut) ... ok
+test_no_or_partial_overlap_never_claims_unchanged (test_scenario_report.ScenarioEvidenceTests.test_no_or_partial_overlap_never_claims_unchanged) ... ok
+test_observed_failure_takes_precedence_over_unknown_coverage (test_scenario_report.ScenarioEvidenceTests.test_observed_failure_takes_precedence_over_unknown_coverage) ... ok
+test_observed_sync_positive_control_and_html_keep_coverage (test_scenario_report.ScenarioEvidenceTests.test_observed_sync_positive_control_and_html_keep_coverage) ... ok
+test_sync_checks_require_actual_observations (test_scenario_report.ScenarioEvidenceTests.test_sync_checks_require_actual_observations) ... ok
+test_unchanged_images_and_sampled_state_have_scoped_result (test_scenario_report.ScenarioEvidenceTests.test_unchanged_images_and_sampled_state_have_scoped_result) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.039s
+
+OK

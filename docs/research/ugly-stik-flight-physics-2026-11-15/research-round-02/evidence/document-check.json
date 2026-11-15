@@ -1,0 +1,12 @@
+{
+  "format": "openrc-research-document-check-v1",
+  "investigations": 24,
+  "second_round": 2,
+  "registers": 5,
+  "source_records": 107,
+  "unique_source_ids": 107,
+  "unique_urls": 105,
+  "local_links_checked": 131,
+  "errors": [],
+  "scope": "Source-index/schema/link consistency; not automatic verification of the scientific claims."
+}

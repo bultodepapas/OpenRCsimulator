@@ -1,0 +1,19 @@
+# R07 — Propwash and control coupling
+
+**Decision: prototype/measure first.** Add measured, optional installation capability through the shared kernel only when its geometry and experiment support it. Static source inspection at baseline `08f0c08348395c0d6d9f7e224f66460828f59a7f`; no new flight or engine runs.
+
+## Existing implementation
+
+`app/physics/dynamics.gd::_components_from_air()` calls optional slipstream loads only when `model.propulsion.slipstream` is present. `app/physics/slipstream.gd::stage_loads()` can use the same stage thrust/torque, applies wake geometry and tail-piece immersion, and compares washed against unwashed tail loads; some routes carry transported axial wake and swirl. `aero.gd::tail_surface_increment()` uses the same wing-downwash input for both evaluations. These details help avoid adding a second entire tail load or reusing stale thrust. The Stik basic, electric and inspected finite-glow installations omit the option, and the strict electric parser in `aircraft_data.gd::_electric_propulsion()` does not admit `slipstream`. Merely adding a JSON object would fail admission. Existing tail coupling does not automatically model propwash over wing/ailerons. Propeller thrust, shaft reaction and rotor gyro are separate and are not absent.
+
+The preceding audit documented an isolated stationary, 10,000-rpm example: modeled Stiks had nonzero thrust but no rudder-wash increment, while an opt-in Extra had one. Those are selected equation evaluations, not measured control authority or a matched-aircraft comparison.
+
+## What primary sources support
+
+[Deters, Ananda and Selig, 2015](https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2015-AIAA-2015-2265-LRN-PropSlipstream.pdf) [PHY-S07] measured static and forward-flight slipstream fields at several downstream stations using small 4.2-, 5- and 9-inch propellers. The measured flow is spatial and installation/operating dependent; it does not identify the Stik's 12-inch wake. [NACA's longitudinal slipstream investigation](https://ntrs.nasa.gov/search.jsp?R=19930091767) [PHY-S08] compared power and tail/control settings and addresses tail dynamic pressure/downwash and propeller/wing pitching contribution. It establishes mechanisms, not scale-matched Stik parameters. A scalar velocity multiplier is cheaper than resolved wakes but cannot justify identical immersion of all surfaces or account automatically for wake direction, decay, swirl and an interfering fuselage.
+
+## Integration proposal
+
+Survey hub location/diameter/axis, disc-to-tail distance, actual stabilizer and fin chord/span/control geometry, and incidence/CG in a common datum. Estimate a wake envelope for sensitivity, then measure local velocities or forces at representative RPM/airspeed/control angles. Carry separate power-source and wake capability in the normalized vehicle model, extend electric admission and identity/version handling, and feed stage-local thrust, torque, air velocity and transported wake through one shared evaluator. Model partial surface immersion; leave wing-wash as a distinct later extension rather than pretending tail pieces cover it. Preserve the existing unwashed configuration exactly when disabled.
+
+Acceptance includes signs and symmetry with controls reversed, continuity across wake edge and near-zero thrust, tail wake decay after source reduction, stage-local consistency, frame/datum transforms, and no double counting of tail aero, shaft moments or gyro. Compare washed-minus-unwashed increments at matched speed/control/RPM and flight input tapes; vary only one factor per experiment. Static prop-on tests and independent powered/unpowered elevator and rudder response are physical gates, not assumptions that zero thrust implies zero residual wake immediately. Explicitly handle reverse flow and negative thrust only in a validated domain. The sources are cited, not vendored; copying UIUC data or third-party code requires a separate terms review.

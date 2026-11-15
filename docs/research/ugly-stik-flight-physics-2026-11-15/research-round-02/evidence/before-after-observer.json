@@ -1,0 +1,14 @@
+{
+  "label": "before-after-observer",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "research/ugly-stik-audit-2026-11-15/follow-up-01/tool_evidence_probe.py",
+    "--out",
+    "docs/research/ugly-stik-flight-physics-2026-11-15/research-round-02/evidence/tool-evidence-after.json"
+  ],
+  "exit": 0,
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "utc": "2026-11-15T18:01:46.359891+00:00",
+  "source_head": "973ac3b42708102a6ebc95b64b3e42e688aae573",
+  "scope": "Python tooling on the working tree; synthetic child/profile/image fixtures, not native or physical flight qualification."
+}

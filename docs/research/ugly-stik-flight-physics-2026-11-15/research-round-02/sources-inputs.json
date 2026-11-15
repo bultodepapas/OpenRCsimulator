@@ -1,0 +1,355 @@
+[
+  {
+    "id": "IN-S01",
+    "title": "Godot 4.8 beta 2 release",
+    "url": "https://github.com/godotengine/godot-builds/releases/tag/4.8-beta2",
+    "kind": "official release",
+    "version_or_date": "2026-10-29, engine cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "investigations": [
+      "R01"
+    ],
+    "claims_supported": "Identifies beta2 engine source commit.",
+    "limits": "Does not specify joystick event ordering or bundled SDL version.",
+    "license_if_reuse": "No reuse; inspect upstream terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S02",
+    "title": "Godot controllers guide",
+    "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html",
+    "kind": "official documentation",
+    "version_or_date": "4.7 documentation, accessed 2026-11-15",
+    "investigations": [
+      "R01"
+    ],
+    "claims_supported": "Desktop controller support uses SDL3 since 4.5; specialized devices are less tested.",
+    "limits": "Documentation from 4.7 is not an exhaustive guarantee for 4.8-beta2.",
+    "license_if_reuse": "No reuse; inspect Godot documentation terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S03",
+    "title": "Godot Input class",
+    "url": "https://docs.godotengine.org/en/latest/classes/class_input.html",
+    "kind": "official documentation",
+    "version_or_date": "latest unstable, accessed 2026-11-15",
+    "investigations": [
+      "R01",
+      "R03"
+    ],
+    "claims_supported": "Describes get_joy_axis as current value and connected device IDs/order.",
+    "limits": "Not a beta2 driver/source audit, hardware-freshness guarantee or SDL ID equivalence.",
+    "license_if_reuse": "No reuse; inspect Godot documentation terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S04",
+    "title": "SDL_GetJoystickAxis",
+    "url": "https://wiki.libsdl.org/SDL3/SDL_GetJoystickAxis",
+    "kind": "official API documentation",
+    "version_or_date": "SDL3 API since 3.2.0; living page",
+    "investigations": [
+      "R01",
+      "R02"
+    ],
+    "claims_supported": "Current joystick-axis value, zero on failure, arbitrary layout and possible jitter.",
+    "limits": "Godot does not necessarily expose the same error or call directly; no report freshness.",
+    "license_if_reuse": "SDL wiki CC BY 4.0; no code/data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S05",
+    "title": "SDL_GetJoystickAxisInitialState",
+    "url": "https://wiki.libsdl.org/SDL3/SDL_GetJoystickAxisInitialState",
+    "kind": "official API documentation",
+    "version_or_date": "SDL3 API since 3.2.0; living page",
+    "investigations": [
+      "R01"
+    ],
+    "claims_supported": "Separate boolean indicates whether an initial axis value exists.",
+    "limits": "No proof that Godot exposes it or that a later snapshot is live.",
+    "license_if_reuse": "SDL wiki CC BY 4.0; no code/data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S06",
+    "title": "SDL_UpdateJoysticks",
+    "url": "https://wiki.libsdl.org/SDL3/SDL_UpdateJoysticks",
+    "kind": "official API documentation",
+    "version_or_date": "SDL3 API since 3.2.0; living page",
+    "investigations": [
+      "R01"
+    ],
+    "claims_supported": "Updates open joystick state, automatically via event loop under stated conditions.",
+    "limits": "Not evidence of one hardware report per call or the Godot beta2 callback schedule.",
+    "license_if_reuse": "SDL wiki CC BY 4.0; no code/data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S07",
+    "title": "Godot issue 111231: unmapped flight joystick axes",
+    "url": "https://github.com/godotengine/godot/issues/111231",
+    "kind": "original developer issue",
+    "version_or_date": "2025-10-03; discussion through 2026-06-21",
+    "investigations": [
+      "R01"
+    ],
+    "claims_supported": "Reporter observed mapped T.16000M unmapped axes ignored in Godot 4.5/4.6-dev on Windows.",
+    "limits": "Issue-specific report and discussion; beta2 or RC radio impact not established.",
+    "license_if_reuse": "No reuse; inspect original authors terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S08",
+    "title": "ArduPilot radio control calibration",
+    "url": "https://github.com/ArduPilot/ardupilot_wiki/blob/master/common/source/docs/common-radio-control-calibration.rst",
+    "kind": "official documentation source",
+    "version_or_date": "master, accessed 2026-11-15",
+    "investigations": [
+      "R02"
+    ],
+    "claims_supported": "Pilot sweeps extrema then centers and sets aircraft throttle low.",
+    "limits": "Living workflow; does not prove robust USB endpoint inference or report cadence.",
+    "license_if_reuse": "No reuse; inspect upstream license before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S09",
+    "title": "QGroundControl Radio Setup",
+    "url": "https://docs.qgroundcontrol.com/Stable_V5.0/en/qgc-user-guide/setup_view/radio.html",
+    "kind": "official documentation",
+    "version_or_date": "Stable V5.0, accessed 2026-11-15",
+    "investigations": [
+      "R02"
+    ],
+    "claims_supported": "Mapping, min/max/trim/reverse and guided radio calibration workflow.",
+    "limits": "Vehicle radio path is not a universal Godot USB backend algorithm.",
+    "license_if_reuse": "No reuse; inspect QGroundControl documentation terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S10",
+    "title": "SDL_JoyAxisEvent",
+    "url": "https://wiki.libsdl.org/SDL3/SDL_JoyAxisEvent",
+    "kind": "official API documentation",
+    "version_or_date": "SDL3 API since 3.2.0; living page",
+    "investigations": [
+      "R02",
+      "R03"
+    ],
+    "claims_supported": "SDL axis events contain timestamp, instance ID, axis and value.",
+    "limits": "Event timestamp is not a hardware report counter or guaranteed exposed by Godot.",
+    "license_if_reuse": "SDL wiki CC BY 4.0; no code/data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S11",
+    "title": "SDL_JoystickID",
+    "url": "https://wiki.libsdl.org/SDL3/SDL_JoystickID",
+    "kind": "official API documentation",
+    "version_or_date": "SDL3 API since 3.2.0; living page",
+    "investigations": [
+      "R03"
+    ],
+    "claims_supported": "SDL connection instance IDs change after reconnect and are not reused in application lifetime.",
+    "limits": "Does not establish Godot device IDs equal SDL instance IDs.",
+    "license_if_reuse": "SDL wiki CC BY 4.0; no code/data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S12",
+    "title": "SDL joystick background-events hint",
+    "url": "https://wiki.libsdl.org/SDL3/SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS",
+    "kind": "official API documentation",
+    "version_or_date": "SDL3 API since 3.2.0; living page",
+    "investigations": [
+      "R03"
+    ],
+    "claims_supported": "SDL background controller event delivery is configurable.",
+    "limits": "Does not establish beta2 project delivery, focus queue ordering, or poll state.",
+    "license_if_reuse": "SDL wiki CC BY 4.0; no code/data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S13",
+    "title": "Godot controller guide: focus and identity",
+    "url": "https://docs.godotengine.org/en/latest/tutorials/inputs/controllers_gamepads_joysticks.html",
+    "kind": "official documentation",
+    "version_or_date": "latest unstable, accessed 2026-11-15",
+    "investigations": [
+      "R03"
+    ],
+    "claims_supported": "Documents 4.8 new-project focus default and potential generic device mapping ambiguity.",
+    "limits": "Not proof of current pinned-beta2 behavior under each OS or physical device.",
+    "license_if_reuse": "No reuse; inspect Godot documentation terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S14",
+    "title": "Godot issue 112802: Windows hot-plug",
+    "url": "https://github.com/godotengine/godot/issues/112802",
+    "kind": "original developer issue",
+    "version_or_date": "2025-11-15, closed/archived",
+    "investigations": [
+      "R03"
+    ],
+    "claims_supported": "Reporter observed post-start hotplug detection failure on specific older Windows/Godot builds.",
+    "limits": "Not proven in beta2; reporter said Linux did not reproduce.",
+    "license_if_reuse": "No reuse; inspect original authors terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S15",
+    "title": "Godot: fixing jitter, stutter and input lag",
+    "url": "https://docs.godotengine.org/en/latest/tutorials/rendering/jitter_stutter.html",
+    "kind": "official documentation",
+    "version_or_date": "latest unstable, accessed 2026-11-15",
+    "investigations": [
+      "R04"
+    ],
+    "claims_supported": "Recommends recording input and display together and notes cadence/accumulation tradeoffs.",
+    "limits": "Not a beta2 RC controller or application latency measurement.",
+    "license_if_reuse": "No reuse; inspect Godot documentation terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S16",
+    "title": "NVIDIA Latency and Display Analysis Tool",
+    "url": "https://developer.nvidia.com/nvidia-latency-display-analysis-tool",
+    "kind": "manufacturer documentation",
+    "version_or_date": "undated, accessed 2026-11-15",
+    "investigations": [
+      "R04"
+    ],
+    "claims_supported": "Luminance sensor is an example of end-to-end timing measurement.",
+    "limits": "Describes click example; does not directly qualify an analog RC setup.",
+    "license_if_reuse": "No reuse; inspect manufacturer terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S17",
+    "title": "Microsoft GameInput Dynamic Latency Input",
+    "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/input/advanced/input-synchronization?view=gdk-2604",
+    "kind": "official documentation",
+    "version_or_date": "GDK 2604, updated 2026-03-07",
+    "investigations": [
+      "R04"
+    ],
+    "claims_supported": "Supported Xbox devices synchronize controller reports with input reads; PC unavailable.",
+    "limits": "Console-specific architecture; does not imply PC/Godot support or measured project benefit.",
+    "license_if_reuse": "No reuse; inspect Microsoft documentation terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S18",
+    "title": "JSBSim frames of reference",
+    "url": "https://jsbsim-team.github.io/jsbsim-reference-manual/user/concepts/frames-of-reference/",
+    "kind": "official manual",
+    "version_or_date": "living manual, accessed 2026-11-15",
+    "investigations": [
+      "R17"
+    ],
+    "claims_supported": "Construction and CG-relative body frames differ; contacts are defined in construction frame.",
+    "limits": "Coordinate convention and model example only; not proof of Stik geometry.",
+    "license_if_reuse": "No reuse; inspect JSBSim manual terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S19",
+    "title": "JSBSim equations of motion and ground reaction diagram",
+    "url": "https://jsbsim-team.github.io/jsbsim-reference-manual/formulation/equations-of-motion/",
+    "kind": "official manual",
+    "version_or_date": "2026-10-24 page date",
+    "investigations": [
+      "R17"
+    ],
+    "claims_supported": "Individual wheel weight-on-wheels can differ during ground contact.",
+    "limits": "Diagram alone does not validate contact dynamics or provide RC coefficients.",
+    "license_if_reuse": "No reuse; inspect JSBSim manual terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S20",
+    "title": "FlightGear discussion: GroundReactions documentation",
+    "url": "https://forum.flightgear.org/viewtopic.php?f=49&t=21803",
+    "kind": "original developer forum",
+    "version_or_date": "2014-01-13",
+    "investigations": [
+      "R17"
+    ],
+    "claims_supported": "Developer discusses uncompressed gear location, visual compression and ground-handling effects.",
+    "limits": "Individual forum experience and advice; no proof for this simulator or aircraft.",
+    "license_if_reuse": "No reuse; author and forum terms apply.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S21",
+    "title": "A method for landing gear modeling and simulation with experimental validation",
+    "url": "https://ntrs.nasa.gov/citations/19960049759",
+    "kind": "original research",
+    "version_or_date": "NASA-CR-201601, 1996-06-01",
+    "investigations": [
+      "R17"
+    ],
+    "claims_supported": "A-6 gear model compared to static and dynamic drop/shaker data including nonlinearities.",
+    "limits": "Full-scale A-6 and its fitted cases do not identify RC-Stik gear parameters.",
+    "license_if_reuse": "NASA record states US Government work, public use permitted; no data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S22",
+    "title": "Experimental and analytical determination of characteristics affecting light aircraft landing-gear dynamics",
+    "url": "https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19780003109.pdf",
+    "kind": "original research",
+    "version_or_date": "NASA-TM-X-3561, 1977-11-01",
+    "investigations": [
+      "R17"
+    ],
+    "claims_supported": "Uses static, level and inclined drop experiments to study gear response.",
+    "limits": "Full-scale light aircraft, not quantitative evidence for the Stik.",
+    "license_if_reuse": "NASA record states US Government work, public use permitted; no data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S23",
+    "title": "Flight Test Validation of Optimal Input Design and Comparison to Conventional Inputs",
+    "url": "https://ntrs.nasa.gov/citations/20040105626",
+    "kind": "original research",
+    "version_or_date": "AIAA 97-3711, 1997",
+    "investigations": [
+      "R18"
+    ],
+    "claims_supported": "F-18 flight comparison of designed and conventional inputs; control feedback distorts applied inputs.",
+    "limits": "F-18 conditions and design are not a transferable RC maneuver prescription.",
+    "license_if_reuse": "NASA record says public use permitted; no data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S24",
+    "title": "Flight Test Maneuvers for Efficient Aerodynamic Modeling",
+    "url": "https://ntrs.nasa.gov/citations/20110014634",
+    "kind": "original research",
+    "version_or_date": "AIAA paper, 2011-08-08",
+    "investigations": [
+      "R18"
+    ],
+    "claims_supported": "Designed multisine surface excitation demonstrated in subscale jet-transport flight.",
+    "limits": "Different aircraft/test infrastructure; not a Stik coefficient set or safe generic flight script.",
+    "license_if_reuse": "NASA record states US Government work, public use permitted; no data copied.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "IN-S25",
+    "title": "Dependence of Dynamic Modeling Accuracy on Sensor Measurements, Mass Properties, and Aircraft Geometry",
+    "url": "https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20140003885.pdf",
+    "kind": "original research",
+    "version_or_date": "NASA/TM-2013-218056, 2013-11-01",
+    "investigations": [
+      "R18"
+    ],
+    "claims_supported": "Studies sensor, mass-property and geometry errors in dynamic identification.",
+    "limits": "Specific recommendations and F-16 simulation cases do not transfer directly to RC scale.",
+    "license_if_reuse": "NASA record states public distribution; verify detailed terms before reuse; no data copied.",
+    "accessed_date": "2026-11-15"
+  }
+]

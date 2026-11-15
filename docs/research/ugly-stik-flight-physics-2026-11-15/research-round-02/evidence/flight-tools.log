@@ -1,0 +1,41 @@
+test_added_and_removed_aircraft_are_reported (test_compare.ComparisonTests.test_added_and_removed_aircraft_are_reported) ... ok
+test_availability_boolean_type_and_numeric_changes_are_visible (test_compare.ComparisonTests.test_availability_boolean_type_and_numeric_changes_are_visible) ... ok
+test_baseline_scope_explicitly_reports_excluded_additions (test_compare.ComparisonTests.test_baseline_scope_explicitly_reports_excluded_additions) ... ok
+test_declared_aircraft_identity_must_match_directory (test_compare.ComparisonTests.test_declared_aircraft_identity_must_match_directory) ... ok
+test_disjoint_tests_are_ineligible_even_with_shared_subset (test_compare.ComparisonTests.test_disjoint_tests_are_ineligible_even_with_shared_subset) ... ok
+test_duplicate_case_and_missing_case_are_rejected (test_compare.ComparisonTests.test_duplicate_case_and_missing_case_are_rejected) ... ok
+test_duplicate_json_names_are_rejected (test_compare.ComparisonTests.test_duplicate_json_names_are_rejected) ... ok
+test_empty_or_disjoint_aircraft_cannot_pass (test_compare.ComparisonTests.test_empty_or_disjoint_aircraft_cannot_pass) ... ok
+test_failed_or_inconsistent_receipts_are_ineligible (test_compare.ComparisonTests.test_failed_or_inconsistent_receipts_are_ineligible) ... ok
+test_invalid_tolerances_are_rejected (test_compare.ComparisonTests.test_invalid_tolerances_are_rejected) ... ok
+test_malformed_and_nonfinite_profiles_are_rejected (test_compare.ComparisonTests.test_malformed_and_nonfinite_profiles_are_rejected) ... ok
+test_shared_tests_and_card_override_are_explicit (test_compare.ComparisonTests.test_shared_tests_and_card_override_are_explicit) ... ok
+test_structured_field_identities_cannot_alias_across_profiles (test_compare.ComparisonTests.test_structured_field_identities_cannot_alias_across_profiles) ... ok
+test_validity_only_and_null_results_remain_useful (test_compare.ComparisonTests.test_validity_only_and_null_results_remain_useful) ... ok
+test_actual_timeout_keeps_both_captured_byte_streams (test_run.FailureReceiptTests.test_actual_timeout_keeps_both_captured_byte_streams) ... ok
+test_catalog_discovery_failures_leave_campaign_evidence (test_run.FailureReceiptTests.test_catalog_discovery_failures_leave_campaign_evidence) ... ok
+test_failed_profile_does_not_erase_successful_peer (test_run.FailureReceiptTests.test_failed_profile_does_not_erase_successful_peer) ... ok
+test_invalid_execution_limits_are_refused_before_launch (test_run.FailureReceiptTests.test_invalid_execution_limits_are_refused_before_launch) ... ok
+test_launch_failure_is_a_job_result (test_run.FailureReceiptTests.test_launch_failure_is_a_job_result) ... ok
+test_malformed_profiles_leave_logs_and_receipts (test_run.FailureReceiptTests.test_malformed_profiles_leave_logs_and_receipts) ... ok
+test_summary_failure_is_recorded_without_publishing_partial_summary (test_run.FailureReceiptTests.test_summary_failure_is_recorded_without_publishing_partial_summary) ... ok
+test_timeout_text_absence_and_partial_utf8_are_supported (test_run.FailureReceiptTests.test_timeout_text_absence_and_partial_utf8_are_supported) ... ok
+test_card_roster_retains_all_maneuvers_in_original_order (test_run.InputIdentityTests.test_card_roster_retains_all_maneuvers_in_original_order) ... ok
+test_complete_default_roster_is_accepted (test_run.InputIdentityTests.test_complete_default_roster_is_accepted) ... ok
+test_default_full_card_cannot_succeed_with_a_partial_profile (test_run.InputIdentityTests.test_default_full_card_cannot_succeed_with_a_partial_profile) ... ok
+test_duplicate_ids_are_refused_before_launch (test_run.InputIdentityTests.test_duplicate_ids_are_refused_before_launch) ... ok
+test_empty_aircraft_selection_is_refused_before_launch (test_run.InputIdentityTests.test_empty_aircraft_selection_is_refused_before_launch) ... ok
+test_empty_result_set_is_not_a_completed_card (test_run.InputIdentityTests.test_empty_result_set_is_not_a_completed_card) ... ok
+test_invalid_test_selections_are_refused_before_engine_or_output (test_run.InputIdentityTests.test_invalid_test_selections_are_refused_before_engine_or_output) ... ok
+test_missing_loaded_identity_is_not_credited (test_run.InputIdentityTests.test_missing_loaded_identity_is_not_credited) ... ok
+test_old_profile_is_preserved_and_never_summarized (test_run.InputIdentityTests.test_old_profile_is_preserved_and_never_summarized) ... ok
+test_partial_result_set_cannot_hide_an_omitted_requested_test (test_run.InputIdentityTests.test_partial_result_set_cannot_hide_an_omitted_requested_test) ... ok
+test_rewrite_during_child_run_cannot_claim_the_new_bytes (test_run.InputIdentityTests.test_rewrite_during_child_run_cannot_claim_the_new_bytes) ... ok
+test_unchanged_input_is_reported_as_loaded (test_run.InputIdentityTests.test_unchanged_input_is_reported_as_loaded) ... ok
+test_unknown_aircraft_cannot_overwrite_a_log_outside_output (test_run.InputIdentityTests.test_unknown_aircraft_cannot_overwrite_a_log_outside_output) ... ok
+test_unrequested_result_is_not_credited (test_run.InputIdentityTests.test_unrequested_result_is_not_credited) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 2.124s
+
+OK

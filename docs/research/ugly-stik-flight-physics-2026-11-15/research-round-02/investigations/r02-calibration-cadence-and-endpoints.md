@@ -1,0 +1,33 @@
+# R02 — Calibration cadence and robust endpoints
+
+**Decision: prototype/measure first.** Count observations only at a boundary whose meaning is known, and keep explicit user confirmation plus range/direction checks. Neither poll repetition nor a generic percentile automatically distinguishes a real held endpoint from an outlier.
+
+**Second-round update.** [S2-01](../second-round/s2-01-pinned-input-backend.md) inspected the pinned beta2 source and confirms that Godot polls an event-fed cache, so multiple calibration polls can read the same cached value. SDL and Godot also suppress some motion events; delivered event counts are not independent hardware-report counts or a heartbeat. Initial-axis behavior has device-specific exceptions, so selecting a robust endpoint policy still requires representative traces.
+
+## Current behavior
+
+`RcCalibration.sample` appends a copy of ten polled axes every caller tick. `stable_axis` sorts the most recent window, accepts small spread and returns its median. The window holds five samples; three stable samples can update the sweep minimum/maximum (`app/input/rc_calibration.gd:35–48,152–180`). `advance` does not itself add a sample; it checks low/center return, direction, one moved axis and sufficient asymmetric travel (`:183–281`). Both `FlightSession._physics_process` and `RadioCalibrationSetup` feed successive polls, so equal values can be copies of one backend state (`app/sim/flight_session.gd:3070–3085`; `app/ui/radio_calibration_setup.gd:124–142`). `ControllerProfile.normalize_signed_axis` uses separate center-to-min and center-to-max denominators; an inflated extreme reduces actual travel on only that side (`app/input/controller_profile.gd:579–614`).
+
+The prior [controls audit](../../controls-feel-and-performance.md) and [input follow-up](../../follow-up-01/input-contract-and-repair-plan.md) retained a paired synthetic result: a true `+0.8` endpoint maps to `1.0` on the clean sequence but approximately `0.8` after one `+1.0` report is polled three times and admitted as the maximum. This is not a measured physical-radio failure rate. The same candidate and persistence flows already isolate drafts, check device generation in managed paths, and preserve compatible AUX. Do not break them while changing sampling.
+
+## External evidence and its limits
+
+[ArduPilot's calibration instructions](https://github.com/ArduPilot/ardupilot_wiki/blob/master/common/source/docs/common-radio-control-calibration.rst) describe moving the sticks to their limits, then centering and setting throttle low for aircraft; the shown minima/maxima are values seen during calibration (living documentation, IN-S08). [QGroundControl's Radio Setup v5.0](https://docs.qgroundcontrol.com/Stable_V5.0/en/qgc-user-guide/setup_view/radio.html) describes mapping and calibrating minimum, maximum, trim and reversal (IN-S09). These are operational workflows, not claims of outlier resistance or a directly reusable USB-report algorithm.
+
+SDL3's [axis-event structure](https://wiki.libsdl.org/SDL3/SDL_JoyAxisEvent) contains a timestamp, device instance and value (available since 3.2.0, IN-S10). It describes an SDL event, **not** a hardware-report sequence number, an independent sample, or a timestamp exposed by this project's Godot callback. The [SDL current-axis getter](https://wiki.libsdl.org/SDL3/SDL_GetJoystickAxis) permits jitter and reports zero on error (IN-S04); these API facts do not reveal whether a stable repeated value came from one or many device reports. The first pass did not inspect the exact beta2 implementation; S2-01 now identifies the cache and event-suppression paths without establishing a hardware report counter or heartbeat.
+
+## Candidate policies and counterexamples
+
+- **Report-aware evidence where available:** accept endpoint candidates from distinct, well-defined backend observations with owner/generation, axis, value and provenance. Require separate hold/confirm phases and low/center return. Multiple reports may still be correlated or repeat a persistent sensor fault; do not call them statistically independent or promise outlier immunity.
+- **Explicit endpoint capture without report counts:** direct the pilot to hold each end, display raw candidate and reversal, and confirm separately. This supports a quiet device, but a frozen or noisy poll can still be wrong. A second deliberate return-and-reach check provides useful evidence, not a hardware heartbeat.
+- **Robust window or quantile:** potentially reduces isolated spikes if backed by distinct observations and adequate dwell; too aggressive a quantile can systematically clip a real brief end, especially with low-rate or asymmetric hardware. Timing based on poll clock alone measures duration of a cached value, not duration of a hardware report. Do not select an unmeasured magic threshold.
+
+A single event-only approach can fail for a radio already held at its endpoint; a raw min/max approach is sensitive to one spike. Compare these alternatives on the same trace set and expose an inconclusive case rather than pretending one policy detects all hardware failures.
+
+## Integration and acceptance
+
+Retain the wizard's one-function-at-a-time direction, reversible mapping, center/low return, no simultaneous channels, compatibility-preserving AUX merge and explicit Save/cancel boundaries. Record what each UI indicates: stability of UI reads, confirmed position, or independently evidenced reports. Never label a poll count as hardware-report count. Add deterministic fixtures for one outlier repeated across many polls, one genuine held endpoint, slow and bursty reports, asymmetric limits, reversed axes, short endpoint dwell, center jitter, simultaneous transmitter mixes and missing reports. Compare final endpoints and normalized real travel, not just wizard completion. Check failure leaves active profile unchanged, saved generation mismatch, cancellation, persistence rejection and restart.
+
+On representative physical radios and adapters, capture actual report cadence and values independently of simulation polling, repeated reaches/holds, low/center/full travel, jitter, hysteresis and firmware/OS/USB details. Predeclare tolerances relative to instrument uncertainty and repeatability; if independent report timing is unavailable, record that limit rather than fabricating it. Include a known standard gamepad control and verify its separate profile path.
+
+**Disposition: prototype/measure first.** Existing three-poll support is demonstrably inadequate as report evidence, but the replacements trade false acceptance against unusable held controls and need trace-based selection.

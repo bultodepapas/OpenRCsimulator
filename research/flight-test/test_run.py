@@ -33,7 +33,8 @@ class InputIdentityTests(unittest.TestCase):
                 target = output / "plane"
                 target.mkdir(parents=True)
                 names = ["aero_sweep"] if result_names is None else result_names
-                profile = {"results": {name: {"valid": True} for name in names}}
+                profile = {"mass_kg": 1.0, "start_speed_mps": 15.0,
+                           "results": {name: {"valid": True} for name in names}}
                 if not omit_identity:
                     profile["aircraft_input_sha256"] = loaded_hash
                 (target / "profile.json").write_text(json.dumps(profile), encoding="utf-8")
@@ -188,6 +189,157 @@ class InputIdentityTests(unittest.TestCase):
             engine.assert_not_called()
             self.assertEqual(profile.read_text(), '{"old":true}')
             self.assertFalse((directory / "summary.md").exists())
+
+
+class FailureReceiptTests(unittest.TestCase):
+    def run_jobs(self, profiles, failures=None, child_codes=None, summary=None):
+        failures, child_codes = failures or {}, child_codes or {}
+        with tempfile.TemporaryDirectory(prefix="ft-receipt-", dir=ROOT / "tmp") as folder:
+            directory = Path(folder)
+            output = directory / "output"
+            sources = {}
+            for aircraft in profiles:
+                sources[aircraft] = directory / (aircraft + ".json")
+                sources[aircraft].write_text(json.dumps({"id": aircraft}))
+
+            def engine(_binary, arguments, _timeout):
+                aircraft = next(arg.split("=", 1)[1] for arg in arguments if arg.startswith("--aircraft="))
+                if aircraft in failures:
+                    raise failures[aircraft]
+                target = output / aircraft
+                target.mkdir(parents=True, exist_ok=True)
+                profile = profiles[aircraft]
+                if isinstance(profile, dict):
+                    profile = dict(profile, aircraft_input_sha256=hashlib.sha256(sources[aircraft].read_bytes()).hexdigest())
+                if profile is not None:
+                    (target / "profile.json").write_text(profile if isinstance(profile, str) else json.dumps(profile), encoding="utf-8")
+                return subprocess.CompletedProcess([], child_codes.get(aircraft, 0), "CHILD_STDOUT\n", "CHILD_STDERR\n")
+
+            args = ["run.py", "--out", str(output), "--aircraft", ",".join(profiles), "--only", "aero_sweep", "--jobs", "2"]
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(mock.patch.object(sys, "argv", args))
+                stack.enter_context(mock.patch.object(RUNNER, "find_godot", return_value="test-engine"))
+                stack.enter_context(mock.patch.object(RUNNER, "data_paths", return_value=sources))
+                stack.enter_context(mock.patch.object(RUNNER, "godot", side_effect=engine))
+                stack.enter_context(mock.patch.object(RUNNER, "git", return_value="source-snapshot"))
+                stack.enter_context(mock.patch.object(RUNNER.subprocess, "run", return_value=types.SimpleNamespace(stdout="test-engine", returncode=0)))
+                stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+                if summary is not None:
+                    stack.enter_context(mock.patch.dict(sys.modules, {"summarize": types.SimpleNamespace(main_with=summary)}))
+                with self.assertRaises(SystemExit) as result:
+                    RUNNER.main()
+            record = json.loads((output / "run.json").read_text())
+            logs = {a: (output / a / "run.log").read_text() for a in profiles}
+            receipts = {a: json.loads((output / a / "run.json").read_text()) for a in profiles}
+            summary_text = (output / "summary.md").read_text() if (output / "summary.md").exists() else None
+            return result.exception.code, record, logs, receipts, summary_text
+
+    @staticmethod
+    def good_profile():
+        return {"name": "Good fixture", "mass_kg": 1.0, "start_speed_mps": 15.0,
+                "results": {"aero_sweep": {"valid": False, "metrics": {"unavailable": None}}}}
+
+    def test_actual_timeout_keeps_both_captured_byte_streams(self):
+        program = "import sys,time; print('TIMEOUT_STDOUT',flush=True); print('ERROR: TIMEOUT_STDERR',file=sys.stderr,flush=True); time.sleep(5)"
+        with self.assertRaises(subprocess.TimeoutExpired) as caught:
+            subprocess.run([sys.executable, "-u", "-c", program], capture_output=True, text=True, timeout=0.25)
+        self.assertIsInstance(caught.exception.stdout, bytes)
+        code, record, logs, receipts, summary = self.run_jobs({"plane": None}, {"plane": caught.exception})
+        self.assertEqual(code, 1)
+        self.assertEqual(record["aircraft"]["plane"]["exit"], "timeout")
+        self.assertFalse(receipts["plane"]["capture_complete"])
+        self.assertIn("TIMEOUT_STDOUT", logs["plane"])
+        self.assertIn("ERROR: TIMEOUT_STDERR", logs["plane"])
+        self.assertIsNone(summary)
+
+    def test_timeout_text_absence_and_partial_utf8_are_supported(self):
+        for stdout, stderr in [(None, None), ("partial stdout", "partial stderr"), (b"partial \xe2", b"error \xff")]:
+            with self.subTest(stdout=stdout):
+                error = subprocess.TimeoutExpired("fixture", 1, output=stdout, stderr=stderr)
+                code, record, logs, _, _ = self.run_jobs({"plane": None}, {"plane": error})
+                self.assertEqual(code, 1)
+                self.assertEqual(record["aircraft"]["plane"]["child_exit"], "timeout")
+                self.assertIn("captured separately", logs["plane"])
+                if isinstance(stdout, bytes):
+                    self.assertIn("\ufffd", logs["plane"])
+
+    def test_malformed_profiles_leave_logs_and_receipts(self):
+        good = self.good_profile()
+        cases = ['{"results":', [], {"results": []}, {"results": {"aero_sweep": 1}},
+                 dict(good, results={"aero_sweep": {"valid": "yes"}}),
+                 dict(good, results={"aero_sweep": {"valid": True, "table": [{"case": "x"}, {"case": "x"}]}}),
+                 dict(good, mass_kg=None), dict(good, mass_kg=10 ** 1000),
+                 dict(good, results={"aero_sweep": {"valid": True, "metrics": []}})]
+        for profile in cases:
+            with self.subTest(profile_type=type(profile).__name__):
+                code, record, logs, receipts, summary = self.run_jobs({"plane": profile})
+                self.assertEqual(code, 1)
+                self.assertEqual(record["aircraft"]["plane"]["exit"], "profile_invalid")
+                self.assertTrue(receipts["plane"]["profile_error"])
+                self.assertIn("CHILD_STDOUT", logs["plane"])
+                self.assertIn("CHILD_STDERR", logs["plane"])
+                self.assertIsNone(summary)
+
+    def test_failed_profile_does_not_erase_successful_peer(self):
+        code, record, logs, receipts, summary = self.run_jobs({"broken": '{"results":', "good": self.good_profile()}, child_codes={"broken": 7})
+        self.assertEqual(code, 1)
+        self.assertEqual(set(record["aircraft"]), {"broken", "good"})
+        self.assertEqual(receipts["broken"]["exit"], 7)
+        self.assertEqual(receipts["broken"]["child_exit"], 7)
+        self.assertTrue(receipts["broken"]["profile_error"])
+        self.assertEqual(receipts["good"]["exit"], 0)
+        self.assertIn("Good fixture", summary)
+        self.assertNotIn("broken", summary)
+
+    def test_launch_failure_is_a_job_result(self):
+        code, record, _, receipts, _ = self.run_jobs({"plane": None}, {"plane": FileNotFoundError("engine disappeared")})
+        self.assertEqual(code, 1)
+        self.assertEqual(record["aircraft"]["plane"]["exit"], "launch_error")
+        self.assertIn("engine disappeared", receipts["plane"]["launch_error"])
+
+    def test_summary_failure_is_recorded_without_publishing_partial_summary(self):
+        def malformed_summary(*_):
+            print("partial summary")
+            raise TypeError("malformed summary measurement")
+        code, record, _, receipts, summary = self.run_jobs({"plane": self.good_profile()}, summary=malformed_summary)
+        self.assertEqual(code, 1)
+        self.assertIn("malformed summary measurement", record["summary_error"])
+        self.assertEqual(receipts["plane"]["exit"], 0)
+        self.assertIsNone(summary)
+
+    def test_invalid_execution_limits_are_refused_before_launch(self):
+        for option, value in [("--timeout", "nan"), ("--timeout", "inf"), ("--timeout", "0"), ("--timeout", "-1"), ("--jobs", "0")]:
+            with self.subTest(option=option, value=value), \
+                    mock.patch.object(sys, "argv", ["run.py", "--out", "unused", option, value]), \
+                    mock.patch.object(RUNNER, "find_godot") as finder, contextlib.redirect_stderr(io.StringIO()), \
+                    self.assertRaises(SystemExit) as result:
+                RUNNER.main()
+            self.assertEqual(result.exception.code, 2)
+            finder.assert_not_called()
+
+    def test_catalog_discovery_failures_leave_campaign_evidence(self):
+        cases = [subprocess.TimeoutExpired("catalog", 300, output=b"CATALOG_STDOUT", stderr=b"CATALOG_STDERR"),
+                 FileNotFoundError("engine missing"), subprocess.CompletedProcess([], 0, "no catalog entries\n", "")]
+        for case in cases:
+            with self.subTest(case=type(case).__name__), tempfile.TemporaryDirectory(prefix="ft-catalog-", dir=ROOT / "tmp") as folder:
+                output = Path(folder) / "out"
+                args = ["run.py", "--out", str(output), "--only", "aero_sweep"]
+                behavior = {"side_effect": case} if isinstance(case, Exception) else {"return_value": case}
+                with mock.patch.object(sys, "argv", args), \
+                        mock.patch.object(RUNNER, "find_godot", return_value="test-engine"), \
+                        mock.patch.object(RUNNER, "data_paths", return_value={"plane": Path(folder) / "plane.json"}), \
+                        mock.patch.object(RUNNER, "godot", **behavior), \
+                        mock.patch.object(RUNNER, "git", return_value="source-snapshot"), \
+                        contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as result:
+                    RUNNER.main()
+                self.assertEqual(result.exception.code, 1)
+                record = json.loads((output / "run.json").read_text())
+                self.assertEqual(record["phase"], "catalog_discovery")
+                self.assertFalse(record["aircraft"])
+                if isinstance(case, subprocess.TimeoutExpired):
+                    log = (output / "run.log").read_text()
+                    self.assertIn("CATALOG_STDOUT", log)
+                    self.assertIn("CATALOG_STDERR", log)
 
 
 if __name__ == "__main__":

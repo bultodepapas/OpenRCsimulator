@@ -10,12 +10,33 @@ Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)).
 | `bake_parked_aircraft.gd` | Production parked fleet: snapshots five current aircraft and the Stik maintenance configuration, preserves authored materials and generates static mesh LODs plus matching collision metadata. Re-run after a source model changes. Requires a real renderer to retain texture image data. | `godot --rendering-driver opengl3 --path app --script $PWD/tools/scenery/bake_parked_aircraft.gd [-- --check]` |
 | `bake_farm_tractor.gd` | SC-13-R1: verifies the retained CC0 source hash, fits the existing tractor envelope, simplifies physical parts independently, then merges identical materials and saves a self-contained mesh with 1K mipmapped S3TC textures and LODs. Requires a real renderer; `--check` compares source/recipe and saved mesh/material/texture/LOD contents. | `godot --rendering-driver opengl3 --path app --script $PWD/tools/scenery/bake_farm_tractor.gd [-- --check]` |
 | `bake_fleet.gd` | Legacy vertex-colour snapshots retained for model-format checks; the Club field uses the material-preserving resources above. | `godot --headless --path app --script $PWD/tools/scenery/bake_fleet.gd` |
-| `scenario.sh` + `scenario_report.py` | The runway scenario (`app/scenery/runway_scenario.gd`, pilot in `takeoff_pilot.gd`): airplane at the threshold, scripted takeoff, five cameras × 12 instants, manifest, sync checks, comparison with the previous run (heatmaps, verdict), filmstrips, `report.html`, history timeline. Also run by `app/capture.sh` | `tools/scenery/scenario.sh [root] [-- --aircraft=<id> --scenery=off]` |
+| `scenario.sh` + `scenario_report.py` | The runway scenario (`app/scenery/runway_scenario.gd`, pilot in `takeoff_pilot.gd`): airplane at the threshold, scripted takeoff, four cameras at 12 instants plus three closeups, manifest, sync checks, comparison with the previous run (heatmaps, verdict), filmstrips, `report.html`, history timeline. Also run by `app/capture.sh` | `tools/scenery/scenario.sh [root] [-- --aircraft=<id> --scenery=off]` |
 | `capture.sh` | Renders every view of `app/scenery/postcards.gd` with scenery off and twice on, then `check_views.py` checks per-view budgets (pilot views: ≤ +40 draws, ≤ +150 k primitives; 0 shadow-pass draws) and byte repeats | `tools/scenery/capture.sh [out-dir]` (needs `xvfb-run`) |
 | `check_birds.py` + `capture_birds.gd` | SC-BIRD: renders the bird layer at 1920×1080 with a long lens aimed at the position `bird_tracks.gd` predicts for one bird per flock, with and without birds, twice and in two processes; checks the bird is drawn within 10 px of the prediction at a plausible size and that the images repeat byte for byte ([evidence](../../docs/research/scenery-implementation/SC-BIRD-01-05/README.md)) | `"$(app/tests/visual-env.sh)" tools/scenery/check_birds.py --app app --godot "$(app/get-godot.sh)" --out tmp/<new>` (about 3 min) |
 | `bench_birds.gd` | SC-BIRD efficiency bench: the bird layer alone, K copies, mean frame time with and without; `--shader=<file>` and `--deindex` measure an older variant in the same process ([evidence](../../docs/research/scenery-implementation/SC-BIRD-08/README.md#efficiency-round)). llvmpipe compares versions only | `xvfb-run -a -s '-screen 0 1920x1080x24' "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --resolution 1920x1080 --script $PWD/tools/scenery/bench_birds.gd -- --copies=20` |
+
 | `budget.sh` + `attribute_views.gd` + `attribution_report.py` | [LU-34](../../docs/research/landscape-upgrade/LU-34/README.md) world-only postcard attribution and historical 1280×720 scene budget, with subsystem, shadow-caster, full-detail mesh and renderer texture-memory checks. See the measurement identity and compatibility note below. Source-triangle allowances live in `app/tests/scene_source_budget.gd`. | `tools/scenery/budget.sh [out-dir] [--report-only]` (about 40 min on llvmpipe; the historical gate currently refuses before rendering) |
 | `landscape_metrics.py` | The landscape-improvement metrics on two capture folders (before, after): grass hue/saturation, far-band spread, pilot box, top-down repetition (three off-runway views), crown seam, front-lit vs backlit crowns ([evidence](../../docs/research/landscape-improvement-2026-10-07/implementation/README.md)) | `.tools/visual-venv/bin/python tools/scenery/landscape_metrics.py <before> <after>` |
+
+### Runway report evidence contract
+
+The Python report distinguishes matched, added and removed frame keys. Zero overlap is not comparable; partial overlap
+does not receive an unchanged verdict. A complete overlap describes the two declared rosters, not proof the full capture
+schedule ran. Matched-image SHA-256 values are checked against the actual bytes before the equality shortcut; missing,
+tampered, undecodable differing images and incompatible dimensions are evidence errors. Context changes (aircraft,
+start, timestep, scenery, engine, adapter) and sampled-state/image changes are reported separately. Legacy v1 captures
+do not contain accepted aircraft input hashes or source modes: their accepted source identity remains **unknown**.
+
+New sync checks include observation counts: no cross-camera pair, no constant-RPM interval or no ground-shadow sample
+is **UNKNOWN**, not a zero-error pass. Their list-shaped receipt and `ok` boolean remain compatible. An observed failing
+check takes precedence over unknown checks; otherwise unknown coverage exits 2. An observed sync failure exits 1;
+comparison evidence errors exit 2; intentional differences or partial overlap alone are informational. History requires
+the complete unique nine-check roster and boolean outcomes. Missing, empty, partial or malformed receipts are UNKNOWN.
+Complete legacy receipts without counts retain their declared pass/fail with observation coverage explicitly unverified.
+History contains light artifacts, so it does not revalidate full images that were not retained there.
+
+Focused checks: `python -m unittest discover -s tools/scenery -p 'test_scenario_report.py' -v` in the documented visual
+Python environment. They use temporary PNGs and synthetic states; they are not native capture or hardware qualification.
 
 **Downloads for `bake_models.gd`.** They are listed with their URLs in [assets/scenery/PROVENANCE.json](../../assets/scenery/PROVENANCE.json), and their SHA-256 values are in `app/scenery/models.gd`. They are never committed: only the baked derivatives are.
 

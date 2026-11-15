@@ -1,0 +1,408 @@
+[
+  {
+    "id": "PHY-S01",
+    "title": "Surface Oil Flow Measurements on Several Airfoils at Low Reynolds Numbers",
+    "url": "https://m-selig.ae.illinois.edu/pubs/McGranahanSelig-2003-AIAA-2003-4067-LRN-Airfoils.pdf",
+    "kind": "experimental paper",
+    "version_or_date": "AIAA 2003-4067, 2003",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R05"
+    ],
+    "claims_supported": "Measured upper-surface transition and separation for named sections at 200k, 350k and 500k Reynolds numbers.",
+    "limits": "Not Jensen geometry or complete-aircraft polar.",
+    "license_if_reuse": "Paper states permission needed to copy or republish; no content imported."
+  },
+  {
+    "id": "PHY-S02",
+    "title": "Wind Tunnel Testing Airfoils at Low Reynolds Numbers",
+    "url": "https://m-selig.ae.illinois.edu/pubs/SeligDetersWilliamson-2011-AIAA-2011-875-LRN-AirfoilWindTunnelTesting.pdf",
+    "kind": "experimental paper",
+    "version_or_date": "AIAA 2011-875",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R05"
+    ],
+    "claims_supported": "UIUC/NASA E387 comparisons vary with Reynolds number; 100k drag discrepancies were unexplained.",
+    "limits": "Different section and facilities; not a Jensen polar.",
+    "license_if_reuse": "Paper reproduction terms require review; no material imported."
+  },
+  {
+    "id": "PHY-S03",
+    "title": "UIUC Wind Tunnel Data use terms",
+    "url": "https://m-selig.ae.illinois.edu/pd.html",
+    "kind": "official data terms",
+    "version_or_date": "Undated page, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R05"
+    ],
+    "claims_supported": "Airfoil data have stated attribution, commercial-use and redistribution requirements.",
+    "limits": "Do not assume these exact terms cover every separately published propeller dataset or paper.",
+    "license_if_reuse": "Page describes copyrighted GPL-described airfoil data with specific conditions; check exact dataset and compatibility before reuse."
+  },
+  {
+    "id": "PHY-S04",
+    "title": "UIUC Propeller Database Volume 4",
+    "url": "https://m-selig.ae.illinois.edu/props/volume-4/propDB-volume-4.html",
+    "kind": "experimental dataset",
+    "version_or_date": "v1, 2022-06-12",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R06"
+    ],
+    "claims_supported": "Measured APC 12x8 Thin Electric static and advancing-flow points at listed RPMs.",
+    "limits": "Individual propellers and Reynolds numbers differ; does not demonstrate negative-power coverage.",
+    "license_if_reuse": "Verify dataset-specific reuse conditions; no data imported."
+  },
+  {
+    "id": "PHY-S05",
+    "title": "Performance Testing of APC Electric Fixed-Blade UAV Propellers",
+    "url": "https://m-selig.ae.illinois.edu/pubs/DantskerCaccamoDetersSelig-2022-AIAA-Paper-2022-4020-APCEPropTestsVol4.pdf",
+    "kind": "experimental paper",
+    "version_or_date": "AIAA 2022-4020",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R06"
+    ],
+    "claims_supported": "Test stopped near zero torque and impending windmill brake; details powered measurement.",
+    "limits": "Does not provide stopped/negative-power closure; different propeller specimens/operating conditions.",
+    "license_if_reuse": "Check AIAA and data-specific terms before reuse; no content imported."
+  },
+  {
+    "id": "PHY-S06",
+    "title": "Negative Thrust and Torque Characteristics of an Adjustable-Pitch Metal Propeller",
+    "url": "https://ntrs.nasa.gov/citations/19930091538",
+    "kind": "experimental report",
+    "version_or_date": "NACA TR-464, 1934",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R06"
+    ],
+    "claims_supported": "Negative thrust/torque and body-behind-propeller interference were measured.",
+    "limits": "Four-foot adjustable metal propeller is not the Stik propeller.",
+    "license_if_reuse": "NASA identifies as US-government work, public use permitted; no data imported."
+  },
+  {
+    "id": "PHY-S07",
+    "title": "Slipstream Measurements of Small-Scale Propellers at Low Reynolds Numbers",
+    "url": "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2015-AIAA-2015-2265-LRN-PropSlipstream.pdf",
+    "kind": "experimental paper",
+    "version_or_date": "AIAA 2015-2265",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R07"
+    ],
+    "claims_supported": "Seven-hole probe measurements resolve downstream slipstream under static and advancing flow.",
+    "limits": "4.2-, 5-, and 9-inch tested propellers, not the modeled Stik installation.",
+    "license_if_reuse": "Review paper/data reuse terms before importing; no material imported."
+  },
+  {
+    "id": "PHY-S08",
+    "title": "Longitudinal stability and control with special reference to slipstream effects",
+    "url": "https://ntrs.nasa.gov/search.jsp?R=19930091767",
+    "kind": "experimental report",
+    "version_or_date": "NACA TR-690, 1940",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R07"
+    ],
+    "claims_supported": "Power changes tail dynamic pressure/downwash and pitching contributions.",
+    "limits": "Full-scale cases and configurations are not an RC Stik installation.",
+    "license_if_reuse": "NASA identifies US-government work and public use permitted; no data imported."
+  },
+  {
+    "id": "PHY-S09",
+    "title": "Modeling, System Measurements and Controller Investigation of a Small Battery-Powered Fixed-Wing UAV",
+    "url": "https://www.mdpi.com/2075-1702/9/12/333",
+    "kind": "experimental paper",
+    "version_or_date": "Machines 9(12), 333, 2021",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R08"
+    ],
+    "claims_supported": "Bench-based low-order motor and ESC system model and measurement context.",
+    "limits": "Specific UAV and parameter conventions differ from Stik hardware.",
+    "license_if_reuse": "Check article/data license and attribution before reuse; no material imported."
+  },
+  {
+    "id": "PHY-S10",
+    "title": "Hobbywing Platinum 60A V4 ESC",
+    "url": "https://www.hobbywing.com/en/products/platinum-60a-v473.html",
+    "kind": "manufacturer documentation",
+    "version_or_date": "V4 product page, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R08"
+    ],
+    "claims_supported": "Distinct adjustable brake modes and protection features exist.",
+    "limits": "Not evidence that this ESC or its timing is installed in a Stik.",
+    "license_if_reuse": "Manufacturer content; obtain applicable permission for reuse; no material imported."
+  },
+  {
+    "id": "PHY-S11",
+    "title": "Practical Battery Thermal Modeling Techniques",
+    "url": "https://ntrs.nasa.gov/citations/20205006303",
+    "kind": "research report",
+    "version_or_date": "2020",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R08"
+    ],
+    "claims_supported": "Lithium-ion behavior depends on thermal/electrochemical conditions and model assumptions.",
+    "limits": "Does not parameterize the Stik pack or ESC.",
+    "license_if_reuse": "Check NASA record and any third-party materials before reproduction; no material imported."
+  },
+  {
+    "id": "PHY-S12",
+    "title": "O.S. MAX-50SX and 40/46/61/91 FX Owner Instruction Manual",
+    "url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/manual/50sx_40-91fx.pdf",
+    "kind": "manufacturer manual",
+    "version_or_date": "FX series manual, date not specified",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R09"
+    ],
+    "claims_supported": "61FX practical 2000–17000 RPM and 1.9 PS at 16000 RPM; printed horsepower equivalent conflicts with PS conversion.",
+    "limits": "Neither full installed torque map nor a physical hard-stop threshold.",
+    "license_if_reuse": "Manufacturer content; review reuse permissions; no material imported."
+  },
+  {
+    "id": "PHY-S13",
+    "title": "O.S. FS-64V product specifications",
+    "url": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html",
+    "kind": "manufacturer specification",
+    "version_or_date": "FS-64V page, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R09"
+    ],
+    "claims_supported": "Practical 2400–11000 RPM, rated 1.14 PS at 11000 RPM and example propeller sizes.",
+    "limits": "Manufacturer specification is not a measured installation torque curve.",
+    "license_if_reuse": "Manufacturer content; review reuse permissions; no material imported."
+  },
+  {
+    "id": "PHY-S14",
+    "title": "O.S. Suggested Propeller Sizes",
+    "url": "https://www.os-engines.co.jp/english/line_up/propelle/prop.htm",
+    "kind": "manufacturer guidance",
+    "version_or_date": "Undated page, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R09"
+    ],
+    "claims_supported": "Selection depends on engine/model/use; same nominal dimensions can differ by maker.",
+    "limits": "Suggested sizes do not validate exact installed performance or set a failure model.",
+    "license_if_reuse": "Manufacturer content; no material imported."
+  },
+  {
+    "id": "PHY-S15",
+    "title": "APC Propellers RPM Limits",
+    "url": "https://www.apcprop.com/technical-information/rpm-limits/",
+    "kind": "manufacturer guidance",
+    "version_or_date": "Undated page, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R09"
+    ],
+    "claims_supported": "Lists different diameter-based RPM limits for specific APC propeller classes.",
+    "limits": "Cannot apply APC category rules to a different brand or guessed construction.",
+    "license_if_reuse": "Manufacturer content; no material imported."
+  },
+  {
+    "id": "PHY-S16",
+    "title": "An Accurate Method of Measuring the Moments of Inertia of Airplanes",
+    "url": "https://ntrs.nasa.gov/citations/19930081105",
+    "kind": "experimental report",
+    "version_or_date": "NACA TN-351, 1930",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R10"
+    ],
+    "claims_supported": "Improved pendulum method and calibration on known objects.",
+    "limits": "Reported accuracy belongs to its particular apparatus and conditions.",
+    "license_if_reuse": "NASA identifies US-government work and public use permitted; no material imported."
+  },
+  {
+    "id": "PHY-S17",
+    "title": "Methods for Accurate Measurements of Small Fixed Wing UAV Inertial Properties",
+    "url": "https://www.cambridge.org/core/journals/aeronautical-journal/article/abs/methods-for-accurate-measurements-of-small-fixed-wing-uav-inertial-properties/507615BF6196D73BAE1747286D49F3FA",
+    "kind": "experimental paper",
+    "version_or_date": "Lehmkühler, Wong and Verstraete, 2016, doi:10.1017/aer.2016.105",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R10"
+    ],
+    "claims_supported": "In the investigated small UAV setup, aerodynamic added-mass corrections reached 25% and depended on method.",
+    "limits": "Not a universal correction or a direct measurement of Jensen.",
+    "license_if_reuse": "Royal Aeronautical Society copyright; permission/terms required for reproduction; no material imported."
+  },
+  {
+    "id": "PHY-S18",
+    "title": "Lifting Line Free Vortex Wake",
+    "url": "https://docs.qblade.org/src/theory/aerodynamics/lifting_line/lifting_line.html",
+    "kind": "official technical documentation",
+    "version_or_date": "QBlade documentation 2.0.9.7",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R11"
+    ],
+    "claims_supported": "Local relative flow sums ambient, motion and induced components; a finite core regularizes vortices.",
+    "limits": "Rotor analysis, not validation of a specific fixed-wing local closure.",
+    "license_if_reuse": "Documentation/code terms and exact revision require review before reuse; no material imported."
+  },
+  {
+    "id": "PHY-S19",
+    "title": "OpenFAST OLAF Theory",
+    "url": "https://github.com/OpenFAST/OpenFAST/blob/main/docs/source/user/aerodyn-olaf/OLAFTheory.rst",
+    "kind": "official implementation documentation",
+    "version_or_date": "Moving main branch, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R11"
+    ],
+    "claims_supported": "Induced flow from vortex elements and distinction between regularization and physical diffusion.",
+    "limits": "Version is unpinned and wind-turbine application is not an RC aircraft validation.",
+    "license_if_reuse": "OpenFAST repository identifies Apache-2.0; exact revision and dependencies require review before code reuse."
+  },
+  {
+    "id": "PHY-S20",
+    "title": "Forced Oscillation Wind Tunnel Testing for FASER Flight Research Aircraft",
+    "url": "https://ntrs.nasa.gov/citations/20120014506",
+    "kind": "experimental paper",
+    "version_or_date": "NASA/NF1676L-14053, 2012",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R12"
+    ],
+    "claims_supported": "FASER damping depends on angle and on rate/reduced frequency in stall and post-stall.",
+    "limits": "FASER is an analog aircraft, not a measured Jensen.",
+    "license_if_reuse": "NASA record permits public use; confirm material-specific terms if reproducing."
+  },
+  {
+    "id": "PHY-S21",
+    "title": "Experimental Investigation of Static Stall Hysteresis and 3-Dimensional Flow Structures for an NREL S826 Wing Section of Finite Span",
+    "url": "https://www.mdpi.com/1996-1073/11/6/1418",
+    "kind": "experimental paper",
+    "version_or_date": "Energies 11(6), 1418, 2018",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R12"
+    ],
+    "claims_supported": "Selected S826 tests exhibit static hysteresis below Re 100000 in a broader 40000–400000 campaign.",
+    "limits": "Static hysteresis is not dynamic stall and the section differs from Jensen.",
+    "license_if_reuse": "Check article/data reuse terms; no material imported."
+  },
+  {
+    "id": "PHY-S22",
+    "title": "OpenFAST AeroDyn Modeling Considerations",
+    "url": "https://github.com/OpenFAST/OpenFAST/blob/main/docs/source/user/aerodyn/modeling.rst",
+    "kind": "official implementation documentation",
+    "version_or_date": "Moving main branch, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R12"
+    ],
+    "claims_supported": "Original B-L option noted as not functional and other unsteady models need suitable airfoil/Re/Mach parameters.",
+    "limits": "Moving documentation and turbine use; does not validate models for Stik.",
+    "license_if_reuse": "OpenFAST repository identifies Apache-2.0; pin exact revision and review all terms before reuse."
+  },
+  {
+    "id": "PHY-S23",
+    "title": "QBlade Oye Dynamic Stall Model",
+    "url": "https://docs.qblade.org/src/theory/aerodynamics/dynamic_stall/OYE_stall.html",
+    "kind": "official technical documentation",
+    "version_or_date": "QBlade documentation 2.0.9.7",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R12"
+    ],
+    "claims_supported": "Oye model covers separation dynamics; attached wake memory is separate in its free-wake implementation.",
+    "limits": "Model requires calibration and does not by itself resolve aircraft spin.",
+    "license_if_reuse": "Documentation/code terms require review before reuse; no material imported."
+  },
+  {
+    "id": "PHY-S24",
+    "title": "Rotary Balance Wind Tunnel Testing for the FASER Flight Research Aircraft",
+    "url": "https://ntrs.nasa.gov/citations/20160010112",
+    "kind": "experimental paper",
+    "version_or_date": "NASA 2016",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R12"
+    ],
+    "claims_supported": "Rotary balance complements static and forced-oscillation tests in a FASER spin research program.",
+    "limits": "Different aircraft and test environment; not Jensen validation.",
+    "license_if_reuse": "Check NASA record and material-specific permissions before reproduction; no material imported."
+  },
+  {
+    "id": "PHY-S25",
+    "title": "The Experimental Determination of the Moments of Inertia of Airplanes",
+    "url": "https://ntrs.nasa.gov/citations/19930091541",
+    "kind": "experimental report",
+    "version_or_date": "NACA TR-467, 1934",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R10"
+    ],
+    "claims_supported": "Pendulum inertia methods need to account for effects of the surrounding air.",
+    "limits": "Full-scale study does not determine a correction for the modeled small aircraft.",
+    "license_if_reuse": "NASA identifies US-government work and public use permitted; no material imported."
+  },
+  {
+    "id": "PHY-S26",
+    "title": "OpenFAST source repository",
+    "url": "https://github.com/OpenFAST/openfast",
+    "kind": "maintainer repository",
+    "version_or_date": "Moving main, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R12"
+    ],
+    "claims_supported": "Official project identifies Apache-2.0 licensing.",
+    "limits": "License label is not full due diligence and no exact code revision selected.",
+    "license_if_reuse": "Apache-2.0 identified by repository; pin and review notices/dependencies before reuse."
+  },
+  {
+    "id": "PHY-S27",
+    "title": "UIUC Low-Speed Airfoil Tests Airfoils Tested",
+    "url": "https://m-selig.ae.illinois.edu/uiuc_lsat_airfoilsTested.html",
+    "kind": "official dataset index",
+    "version_or_date": "Undated index, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R05"
+    ],
+    "claims_supported": "Lists named tested airfoils and volumes for identifying candidate measurements.",
+    "limits": "Index is not evidence of a match to a real covered Jensen wing.",
+    "license_if_reuse": "Verify dataset-specific terms; no data imported."
+  },
+  {
+    "id": "PHY-S28",
+    "title": "JSBSim discussion 850: How to get the propeller aerodynamic coefficient?",
+    "url": "https://github.com/JSBSim-Team/jsbsim/discussions/850",
+    "kind": "developer discussion",
+    "version_or_date": "2023-03-02, cites commit ebb770e",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R06"
+    ],
+    "claims_supported": "Discussion points to the propeller calculation implementation and coefficient properties.",
+    "limits": "Developer discussion is not experimental proof of low-speed or stopped-propeller fidelity.",
+    "license_if_reuse": "No reuse proposed; source and dependencies require license review before importing."
+  },
+  {
+    "id": "PHY-S29",
+    "title": "VortexLattice.jl",
+    "url": "https://github.com/byuflowlab/VortexLattice.jl",
+    "kind": "maintainer repository",
+    "version_or_date": "Moving master, accessed 2026-11-15",
+    "accessed_date": "2026-11-15",
+    "investigations": [
+      "R11"
+    ],
+    "claims_supported": "Supports a finite-core model, general velocity fields and aircraft rotation; repository identifies MIT license.",
+    "limits": "Unpinned source and inviscid attached-flow assumptions; not a separated-flow or target-aircraft validation.",
+    "license_if_reuse": "MIT indicated on repository; review full terms, selected revision and dependencies before reuse."
+  }
+]

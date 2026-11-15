@@ -13,12 +13,16 @@ import argparse
 import concurrent.futures
 import hashlib
 import json
+import math
 import os
 import re
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from profile_io import read_profile
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "research" / "flight-test" / "flight_test.gd"
@@ -40,6 +44,17 @@ APP = ROOT / "app"
 def godot(binary, args, timeout):
     command = [binary, "--headless", "--path", str(APP), "--audio-driver", "Dummy", "--script", str(SCRIPT), "--"] + args
     return subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout)
+
+
+def output_text(value):
+    """TimeoutExpired captures bytes even with text=True; no output may be None."""
+    return value.decode("utf-8", errors="replace") if isinstance(value, bytes) else (value or "")
+
+
+def child_log(stdout, stderr):
+    # These streams were captured separately; their original interleaving is unknown.
+    return ("--- stdout (captured separately) ---\n" + output_text(stdout)
+            + "\n--- stderr (captured separately) ---\n" + output_text(stderr))
 
 
 def git(*args):
@@ -85,6 +100,10 @@ def main():
     parser.add_argument("--app", help="a disposable copy of app/ holding one explicit candidate change")
     parser.add_argument("--data", help="generated candidate JSON for one explicitly selected aircraft; data id must match")
     args = parser.parse_args()
+    if not math.isfinite(args.timeout) or args.timeout <= 0:
+        parser.error("--timeout must be positive and finite")
+    if args.jobs <= 0:
+        parser.error("--jobs must be positive")
     selected_ids = [a.strip() for a in args.aircraft.split(",")]
     if not all(selected_ids) or ("all" in selected_ids and selected_ids != ["all"]):
         parser.error("--aircraft must name all or a nonempty list of distinct aircraft IDs")
@@ -127,13 +146,29 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
 
     if args.aircraft == "all":
-        listing = godot(binary, ["--list"], 300)
+        def fail_listing(reason, stdout, stderr, child_exit, complete):
+            log = child_log(stdout, stderr) + "\nERROR: " + reason + "\n"
+            (out / "run.log").write_text(log, encoding="utf-8")
+            record = {"phase": "catalog_discovery", "exit": "catalog_failed", "child_exit": child_exit,
+                      "capture_complete": complete, "error": reason, "aircraft": {},
+                      "card": card_version(), "commit": git("rev-parse", "HEAD"), "expected_tests": expected_tests}
+            (out / "run.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+            print(f"FAIL catalog discovery: {reason}; evidence {out}", file=sys.stderr)
+            sys.exit(1)
+
+        try:
+            listing = godot(binary, ["--list"], 300)
+        except subprocess.TimeoutExpired as expired:
+            fail_listing("catalog listing timed out", expired.stdout, expired.stderr, "timeout", False)
+        except OSError as error:
+            fail_listing(f"cannot launch catalog listing: {error}", None, None, "launch_error", False)
         if listing.returncode != 0 or ERROR.search(listing.stdout + listing.stderr):
-            sys.exit("the catalog listing failed:\n" + listing.stdout + listing.stderr)
+            fail_listing("catalog listing failed", listing.stdout, listing.stderr, listing.returncode, True)
         ids = re.findall(r"^FT-AIRCRAFT (\S+)", listing.stdout, re.M)
         if (not ids or len(ids) != len(set(ids))
                 or any(not AIRCRAFT_ID.fullmatch(aircraft) or aircraft not in paths for aircraft in ids)):
-            sys.exit("the catalog listing returned an empty, duplicate or unknown aircraft roster:\n" + listing.stdout + listing.stderr)
+            fail_listing("catalog listing returned an empty, duplicate or unknown aircraft roster",
+                         listing.stdout, listing.stderr, listing.returncode, True)
     else:
         ids = selected_ids
 
@@ -146,33 +181,58 @@ def main():
         paths[ids[0]] = data_override
 
     def fly(aircraft):
-        started = time.time()
+        started = time.monotonic()
+        job_dir = out / aircraft
+        capture_complete = True
+        launch_error = None
         try:
             result = godot(binary, ["--aircraft=" + aircraft, "--out=" + str(out)] + extra, args.timeout)
-            log = result.stdout + result.stderr
+            log = child_log(result.stdout, result.stderr)
             code = result.returncode
         except subprocess.TimeoutExpired as expired:
-            log = (expired.stdout or "") if isinstance(expired.stdout, str) else ""
+            log = child_log(expired.stdout, expired.stderr)
             code = "timeout"
+            capture_complete = False
+        except OSError as error:
+            launch_error = f"{type(error).__name__}: {error}"
+            log = "ERROR: cannot launch flight-test child: " + launch_error + "\n"
+            code = "launch_error"
+            capture_complete = False
+        child_exit = code
         log = log.replace(str(ROOT).replace("\\", "/") + "/", "").replace(str(ROOT) + os.sep, "")
-        (out / aircraft).mkdir(exist_ok=True)
+        # Retain the child evidence even if reading or validating its profile fails.
+        job_dir.mkdir(exist_ok=True)
+        log_path = job_dir / "run.log"
+        log_path.write_text(log, encoding="utf-8")
         errors = len(ERROR.findall(log))
-        profile = out / aircraft / "profile.json"
+        profile = job_dir / "profile.json"
         valid = total = None
         loaded_hash = None
         actual_tests = []
-        if profile.is_file():
-            report = json.loads(profile.read_text(encoding="utf-8"))
+        profile_error = None
+        try:
+            report = read_profile(profile, summary_metadata=True)
             loaded_hash = report.get("aircraft_input_sha256")
             results = report["results"]
             actual_tests = list(results)
             total = len(results)
             valid = sum(1 for r in results.values() if r.get("valid"))
+        except (OSError, UnicodeError, ValueError) as error:
+            profile_error = f"{type(error).__name__}: {error}"
+            log += "\nERROR: unusable flight-test profile: " + profile_error + "\n"
+            errors += 1
+            if code == 0:
+                code = "profile_invalid"
         missing_tests = sorted(set(expected_tests) - set(actual_tests))
         unexpected_tests = sorted(set(actual_tests) - set(expected_tests))
         test_roster_matches = bool(actual_tests) and not missing_tests and not unexpected_tests
         data = paths.get(aircraft)
-        disk_hash = hashlib.sha256(data.read_bytes()).hexdigest() if data and data.is_file() else None
+        data_error = None
+        try:
+            disk_hash = hashlib.sha256(data.read_bytes()).hexdigest() if data else None
+        except OSError as error:
+            disk_hash = None
+            data_error = f"{type(error).__name__}: {error}"
         identity_matches = isinstance(loaded_hash, str) and len(loaded_hash) == 64 and loaded_hash == disk_hash
         if code == 0 and not identity_matches:
             code = "data_identity_mismatch"
@@ -183,47 +243,67 @@ def main():
             errors += 1
             log += ("\nERROR: flight-test results do not match the requested test roster; "
                     f"missing={missing_tests}, unexpected={unexpected_tests}\n")
-        (out / aircraft / "run.log").write_text("\n".join(l for l in log.splitlines() if not l.startswith("Godot Engine")) + "\n", encoding="utf-8")
-        return aircraft, {
-            "exit": code, "script_errors": errors, "wall_s": round(time.time() - started, 1), "valid_tests": valid, "tests": total,
+        log_path.write_text(log.rstrip("\n") + "\n", encoding="utf-8")
+        receipt = {
+            "exit": code, "child_exit": child_exit, "script_errors": errors,
+            "capture_complete": capture_complete, "launch_error": launch_error,
+            "profile_error": profile_error, "data_error": data_error,
+            "wall_s": round(time.monotonic() - started, 1), "valid_tests": valid, "tests": total,
             "data_file": (str(data.relative_to(APP)) if data.is_relative_to(APP) else str(data)).replace("\\", "/") if data else None,
             "data_sha256": loaded_hash, "data_file_sha256_after": disk_hash, "data_identity_matches": identity_matches,
             "test_roster_matches": test_roster_matches,
             "missing_tests": missing_tests, "unexpected_tests": unexpected_tests,
         }
+        (job_dir / "run.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+        return aircraft, receipt
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.jobs)) as pool:
         runs = dict(pool.map(fly, ids))
 
-    version = subprocess.run([binary, "--version"], capture_output=True, text=True).stdout.strip()
+    try:
+        version_result = subprocess.run([binary, "--version"], capture_output=True, text=True,
+                                        encoding="utf-8", errors="replace", timeout=30)
+        version = version_result.stdout.strip()
+        version_error = None if getattr(version_result, "returncode", 0) == 0 else "engine version command failed"
+    except (OSError, subprocess.TimeoutExpired) as error:
+        version, version_error = "", f"{type(error).__name__}: {error}"
     dirty = [line[3:] for line in git("status", "--porcelain", "--", "app", "research/flight-test").splitlines()]
     record = {"card": card_version(), "commit": git("rev-parse", "HEAD"), "dirty_paths": dirty, "godot": version,
+              "godot_version_error": version_error,
               "app": "app" if APP == ROOT / "app" else str(APP),
               "data_override": str(data_override) if data_override else None,
               "only": args.only, "expected_tests": expected_tests, "aircraft": runs}
     (out / "run.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
 
-    sys.path.insert(0, str(Path(__file__).parent))
     import summarize
     finished = [a for a in ids if runs[a]["exit"] == 0 and not runs[a]["script_errors"]
                 and runs[a]["test_roster_matches"] and (out / a / "profile.json").is_file()]
+    summary_error = None
     if finished:
         from io import StringIO
         buffer = StringIO()
         stdout, sys.stdout = sys.stdout, buffer
         try:
             summarize.main_with(out, finished)
+        except (OSError, UnicodeError, ValueError, KeyError, TypeError) as error:
+            summary_error = f"{type(error).__name__}: {error}"
         finally:
             sys.stdout = stdout
-        (out / "summary.md").write_text(buffer.getvalue(), encoding="utf-8")
+        if summary_error is None:
+            (out / "summary.md").write_text(buffer.getvalue(), encoding="utf-8")
+    record["summary_error"] = summary_error
+    (out / "run.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
 
-    failed = False
+    failed = bool(summary_error or version_error)
     for aircraft, run in runs.items():
         bad = run["exit"] != 0 or run["script_errors"] or run["tests"] is None
         failed = failed or bad
         print(f"{'FAIL' if bad else 'ok  '} {aircraft:32s} exit {run['exit']}, script errors {run['script_errors']}, "
               f"valid {run['valid_tests']}/{run['tests']}, {run['wall_s']} s")
-    summary_status = f"summary {out / 'summary.md'}" if finished else "summary unavailable (no complete runs)"
+    summary_status = (f"summary unavailable ({summary_error})" if summary_error else
+                      f"summary {out / 'summary.md'}" if finished else "summary unavailable (no complete runs)")
+    if version_error:
+        print("engine provenance unavailable: " + version_error)
     print(f"card {record['card']}, commit {record['commit'][:10]}{' (dirty)' if dirty else ''}; {summary_status}")
     sys.exit(1 if failed else 0)
 

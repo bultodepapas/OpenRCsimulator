@@ -1,0 +1,450 @@
+[
+  {
+    "id": "REV-S01",
+    "title": "SciPy: scipy.linalg.eig",
+    "url": "https://docs.scipy.org/doc/scipy-1.17.0/reference/generated/scipy.linalg.eig.html",
+    "kind": "official documentation",
+    "version_or_date": "SciPy 1.17.0",
+    "investigations": [
+      "R13"
+    ],
+    "claims_supported": [
+      "General nonsymmetric eigenvalues and left/right eigenvectors"
+    ],
+    "limits": "An eigensolver applied to a simulator matrix does not validate the matrix or identify physical modes.",
+    "license_if_reuse": "SciPy BSD-3-Clause; inspect binary and bundled notices before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S02",
+    "title": "LAPACK DGEES: real nonsymmetric Schur form",
+    "url": "https://netlib.org/lapack/explore-html/d5/d38/group__gees_gab48df0b5c60d7961190d868087f485bc.html",
+    "kind": "upstream numerical documentation",
+    "version_or_date": "LAPACK online reference, accessed snapshot",
+    "investigations": [
+      "R13"
+    ],
+    "claims_supported": [
+      "Real Schur factorization and optional ordered subspace for a nonsymmetric matrix"
+    ],
+    "limits": "A real Schur decomposition does not uniquely label aircraft modes.",
+    "license_if_reuse": "No code reused; inspect the exact LAPACK distribution terms and linked libraries before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S03",
+    "title": "Franklin: V/STOL Dynamics, Control, and Flying Qualities",
+    "url": "https://ntrs.nasa.gov/api/citations/20010038495/downloads/20010038495.pdf",
+    "kind": "NASA technical publication",
+    "version_or_date": "NASA/TP-2000-209591, 2000",
+    "investigations": [
+      "R13"
+    ],
+    "claims_supported": [
+      "Example of a normally oscillatory phugoid becoming two real roots in a V/STOL configuration"
+    ],
+    "limits": "General example, not a Stik measurement or classification rule.",
+    "license_if_reuse": "No passage or figure reused; verify NASA and third-party material terms before copying.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S04",
+    "title": "SciPy: scipy.optimize.least_squares",
+    "url": "https://docs.scipy.org/doc/scipy-1.17.0/reference/generated/scipy.optimize.least_squares.html",
+    "kind": "official documentation",
+    "version_or_date": "SciPy 1.17.0",
+    "investigations": [
+      "R14"
+    ],
+    "claims_supported": [
+      "Bounded nonlinear least squares and active-bound reporting"
+    ],
+    "limits": "Solver termination or active mask is not proof that a physical equilibrium exists or is unique.",
+    "license_if_reuse": "SciPy BSD-3-Clause; inspect binary and bundled notices before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S05",
+    "title": "AUTO-07P continuation and bifurcation software",
+    "url": "https://github.com/auto-07p/auto-07p",
+    "kind": "upstream project",
+    "version_or_date": "Repository branch inspected; exact dependency version not selected",
+    "investigations": [
+      "R14"
+    ],
+    "claims_supported": [
+      "Project purpose is continuation and bifurcation problems"
+    ],
+    "limits": "Not run, integrated, licensed for reuse, or shown to find disconnected branches.",
+    "license_if_reuse": "Not assessed for redistribution; inspect selected version and dependencies before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S06",
+    "title": "JSBSim discussion: Update FGTrimAnalysis",
+    "url": "https://github.com/JSBSim-Team/jsbsim/discussions/988",
+    "kind": "upstream developer discussion",
+    "version_or_date": "2023-11 discussion #988",
+    "investigations": [
+      "R14"
+    ],
+    "claims_supported": [
+      "Developers discussed trim failures and configuration details for a separate custom aircraft"
+    ],
+    "limits": "Participant experience is not a controlled comparison or evidence about OpenRC.",
+    "license_if_reuse": "No code or configuration copied; review contribution and project terms if reused.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S07",
+    "title": "Godot ProjectSettings: maximum physics steps",
+    "url": "https://docs.godotengine.org/en/4.5/classes/class_projectsettings.html",
+    "kind": "official documentation",
+    "version_or_date": "Godot 4.5 documentation",
+    "investigations": [
+      "R15"
+    ],
+    "claims_supported": [
+      "Documents maximum physics steps per rendered frame and possible apparent slowdown"
+    ],
+    "limits": "4.5 documentation is context; verify behavior against the pinned Godot 4.8 beta 2 application.",
+    "license_if_reuse": "Documentation consulted only; verify terms before redistribution.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S08",
+    "title": "Godot physics interpolation introduction",
+    "url": "https://docs.godotengine.org/en/4.5/tutorials/physics/interpolation/physics_interpolation_introduction.html",
+    "kind": "official documentation",
+    "version_or_date": "Godot 4.5 documentation",
+    "investigations": [
+      "R15"
+    ],
+    "claims_supported": [
+      "Explains fixed-tick physics and presentation interpolation"
+    ],
+    "limits": "Does not establish actual app frame pacing or native hardware performance.",
+    "license_if_reuse": "Documentation consulted only; verify terms before redistribution.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S09",
+    "title": "Erin Catto: Determinism",
+    "url": "https://box2d.org/posts/2024/08/determinism/",
+    "kind": "original developer article",
+    "version_or_date": "2024-08-27",
+    "investigations": [
+      "R15"
+    ],
+    "claims_supported": [
+      "Describes sources of determinism differences and repeatability testing in Box2D"
+    ],
+    "limits": "Box2D implementation and claims do not transfer automatically to OpenRC.",
+    "license_if_reuse": "No code or text copied; check project terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S10",
+    "title": "Glenn Fiedler: Fix Your Timestep!",
+    "url": "https://www.gafferongames.com/post/fix_your_timestep/",
+    "kind": "original developer article",
+    "version_or_date": "Undated page; accessed snapshot",
+    "investigations": [
+      "R15"
+    ],
+    "claims_supported": [
+      "Explains fixed timestep accumulator and presentation interpolation tradeoffs"
+    ],
+    "limits": "A conceptual article, not a measurement of this Godot build or its scheduler.",
+    "license_if_reuse": "No code or text copied; check author terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S11",
+    "title": "SciPy: scipy.integrate.solve_ivp",
+    "url": "https://docs.scipy.org/doc/scipy-1.17.0/reference/generated/scipy.integrate.solve_ivp.html",
+    "kind": "official documentation",
+    "version_or_date": "SciPy 1.17.0",
+    "investigations": [
+      "R16"
+    ],
+    "claims_supported": [
+      "Explicit and implicit IVP methods, tolerances and event detection limits"
+    ],
+    "limits": "Adaptive offline IVP integration does not reproduce OpenRC tick, event and replay semantics automatically.",
+    "license_if_reuse": "SciPy BSD-3-Clause; inspect binary and bundled notices before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S12",
+    "title": "JSBSim discussion: Review state propagation procedure",
+    "url": "https://github.com/JSBSim-Team/jsbsim/discussions/1391",
+    "kind": "upstream developer discussion",
+    "version_or_date": "2026, discussion #1391; cited source excerpt short commit 3003423",
+    "investigations": [
+      "R16"
+    ],
+    "claims_supported": [
+      "Developers discuss propagation execution order and state ownership"
+    ],
+    "limits": "A discussion of another simulator is not a validated prescription for OpenRC.",
+    "license_if_reuse": "No code copied; inspect project and contributor terms before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S13",
+    "title": "JSBSim README legal notice",
+    "url": "https://github.com/JSBSim-Team/jsbsim/blob/master/README.md",
+    "kind": "upstream license notice",
+    "version_or_date": "Upstream master inspected; exact distribution not selected",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "JSBSim library and Python module identify LGPL 2.1; some companion components have separate licenses"
+    ],
+    "limits": "Moving branch; component notices and exact selected release need separate verification.",
+    "license_if_reuse": "LGPL 2.1 for listed core/Python; other components differ; assess actual distribution/linkage.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S14",
+    "title": "JSBSim version 1.3.3 release",
+    "url": "https://github.com/JSBSim-Team/jsbsim/releases/tag/v1.3.3",
+    "kind": "upstream release",
+    "version_or_date": "v1.3.3, displayed short commit 66f7faf",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "Example of a concrete identifiable upstream release"
+    ],
+    "limits": "Listing the release is not selecting, downloading, running, or certifying it; tagged license text not independently opened.",
+    "license_if_reuse": "Check the exact release and bundled component notices before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S15",
+    "title": "AVL upstream overview",
+    "url": "https://web.mit.edu/drela/Public/web/avl/",
+    "kind": "upstream project documentation",
+    "version_or_date": "Upstream web page, accessed snapshot",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "AVL uses extended vortex lattice and supports linearized flight-dynamic analysis"
+    ],
+    "limits": "Model assumptions and inputs do not establish low-Re or post-stall Stik realism.",
+    "license_if_reuse": "No software or data copied; inspect exact distribution terms.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S16",
+    "title": "AVL source avl.f license header",
+    "url": "https://github.com/RobotLocomotion/avl/blob/master/src/avl.f",
+    "kind": "authored source license notice",
+    "version_or_date": "Mirror master header copyright 2002, accessed snapshot",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "The inspected avl.f header specifies GPL version 2 or later"
+    ],
+    "limits": "This is a particular file in a mirror; not a complete license inventory for all AVL components or datasets.",
+    "license_if_reuse": "GPL-2.0-or-later for the inspected file; inspect full selected distribution before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S17",
+    "title": "AeroSandbox LICENSE.txt",
+    "url": "https://github.com/peterdsharpe/AeroSandbox/blob/master/LICENSE.txt",
+    "kind": "upstream license text",
+    "version_or_date": "Master license inspected; exact release not selected",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "Upstream AeroSandbox license text is MIT"
+    ],
+    "limits": "Moving source and core license alone do not cover every dependency or third-party dataset.",
+    "license_if_reuse": "MIT core; inspect dependencies, data, notices and exact selected release.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S18",
+    "title": "OpenFAST LICENSE",
+    "url": "https://github.com/OpenFAST/openfast/blob/main/LICENSE",
+    "kind": "upstream license text",
+    "version_or_date": "Main branch license inspected; exact release not selected",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "Upstream OpenFAST license text is Apache-2.0"
+    ],
+    "limits": "Wind-turbine models are not directly qualified for RC aircraft.",
+    "license_if_reuse": "Apache-2.0 core; inspect exact release and dependencies.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S19",
+    "title": "SciPy LICENSE.txt",
+    "url": "https://github.com/scipy/scipy/blob/main/LICENSE.txt",
+    "kind": "upstream license text",
+    "version_or_date": "Main branch license inspected; 1.17.0 was used in earlier offline analysis",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "SciPy core license is BSD-3-Clause"
+    ],
+    "limits": "Repository core license is not a complete binary-wheel license inventory.",
+    "license_if_reuse": "BSD-3-Clause core; check selected distribution and dependencies.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S20",
+    "title": "SciPy bundled licenses",
+    "url": "https://github.com/scipy/scipy/blob/main/LICENSES_bundled.txt",
+    "kind": "upstream bundled-license inventory",
+    "version_or_date": "Main branch inventory inspected; exact wheel not selected",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "SciPy source distribution documents bundled libraries under their own terms"
+    ],
+    "limits": "Selected release and wheel may differ; inspect actual binary packaging.",
+    "license_if_reuse": "Multiple licenses; review exact distributed components.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S21",
+    "title": "Tracy LICENSE",
+    "url": "https://github.com/wolfpld/tracy/blob/master/LICENSE",
+    "kind": "upstream license text",
+    "version_or_date": "Master license inspected; exact release not selected",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "Tracy core license is BSD-3-Clause"
+    ],
+    "limits": "No profiling or instrumentation is justified solely by license availability.",
+    "license_if_reuse": "BSD-3-Clause core; inspect third-party notices and distribution.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S22",
+    "title": "Perfetto LICENSE",
+    "url": "https://github.com/google/perfetto/blob/main/LICENSE",
+    "kind": "upstream license text",
+    "version_or_date": "Main license inspected; exact release not selected",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "Perfetto core license is Apache-2.0"
+    ],
+    "limits": "Trace viewers do not validate clock alignment or source coverage.",
+    "license_if_reuse": "Apache-2.0 core; inspect exact distribution and dependencies.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S23",
+    "title": "pyperf COPYING",
+    "url": "https://github.com/psf/pyperf/blob/main/COPYING",
+    "kind": "upstream license text",
+    "version_or_date": "Main license inspected; exact release not selected",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "pyperf license is MIT"
+    ],
+    "limits": "Python microbenchmark results are not direct real-time GPU or flight measurements.",
+    "license_if_reuse": "MIT; inspect selected version and dependencies.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S24",
+    "title": "AeroSandbox pyproject metadata",
+    "url": "https://github.com/peterdsharpe/AeroSandbox/blob/master/pyproject.toml",
+    "kind": "upstream package metadata",
+    "version_or_date": "Master metadata displayed version 4.2.10 when accessed",
+    "investigations": [
+      "R23"
+    ],
+    "claims_supported": [
+      "The inspected project metadata identifies version and declared dependencies"
+    ],
+    "limits": "Moving branch; this is not a locked environment or a dependency adoption.",
+    "license_if_reuse": "MIT core; inspect exact dependency and data licenses.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S25",
+    "title": "Godot: The Profiler",
+    "url": "https://docs.godotengine.org/en/4.5/tutorials/scripting/debug/the_profiler.html",
+    "kind": "official documentation",
+    "version_or_date": "Godot 4.5 documentation",
+    "investigations": [
+      "R24"
+    ],
+    "claims_supported": [
+      "Describes profiler categories and script attribution"
+    ],
+    "limits": "Diagnostic profiling overhead and differences from pinned 4.8 beta 2 must be measured.",
+    "license_if_reuse": "Documentation consulted only; verify terms before redistribution.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S26",
+    "title": "pyperf: Tune the system for benchmarks",
+    "url": "https://pyperf.readthedocs.io/en/stable/system.html",
+    "kind": "upstream documentation",
+    "version_or_date": "Stable page displayed pyperf 2.11.0 when accessed",
+    "investigations": [
+      "R24"
+    ],
+    "claims_supported": [
+      "Discusses affinity and system variability in Python benchmarking"
+    ],
+    "limits": "Tuning changes the environment and does not qualify rendered real-time behavior.",
+    "license_if_reuse": "pyperf MIT; documentation terms and exact version should be checked before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S27",
+    "title": "Google Benchmark: random interleaving",
+    "url": "https://github.com/google/benchmark/blob/main/docs/random_interleaving.md",
+    "kind": "upstream documentation",
+    "version_or_date": "Main branch documentation inspected; exact release not selected",
+    "investigations": [
+      "R24"
+    ],
+    "claims_supported": [
+      "Explains random interleaving and repeated benchmark runs"
+    ],
+    "limits": "Microbenchmark guidance is not proof of a full simulator or hardware gain.",
+    "license_if_reuse": "No code copied; inspect selected project license and dependencies before reuse.",
+    "accessed_date": "2026-11-15"
+  },
+  {
+    "id": "REV-S28",
+    "title": "Google Benchmark issue 1051: random interleaving",
+    "url": "https://github.com/google/benchmark/issues/1051",
+    "kind": "upstream developer issue",
+    "version_or_date": "Opened 2020-10-05",
+    "investigations": [
+      "R24"
+    ],
+    "claims_supported": [
+      "Original developer discussion of interleaving and variation tradeoffs"
+    ],
+    "limits": "The reported examples are another project; no effect size transfers to OpenRC.",
+    "license_if_reuse": "No code copied; inspect terms before reuse.",
+    "accessed_date": "2026-11-15"
+  }
+]

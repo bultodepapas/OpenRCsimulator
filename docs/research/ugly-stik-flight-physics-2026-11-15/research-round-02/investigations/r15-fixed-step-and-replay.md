@@ -1,0 +1,27 @@
+# R15 — Fixed-step pacing, event sampling and replay
+
+**Decision: retain the existing fixed-step and replay contracts; prototype a matched cross-rate/hitch experiment before changing scheduling.** Fixed physics steps help repeatability, but do not by themselves prove identical input assignment, wall-clock pacing, rendered motion or cross-machine bit identity.
+
+## Current project behavior
+
+At runtime baseline `08f0c08348395c0d6d9f7e224f66460828f59a7f`, `app/project.godot:44–53` requests 240 physics ticks/s, at most 12 physics steps per rendered frame, custom interpolation and zero jitter fix. The source comment's 20 fps follows from 240/12 in an ideal steady-cadence calculation; it is not a measured threshold for every workload or hitch. `Simulation.step` fails safely if the established timestep changes (`app/sim/simulation.gd:378–386`), and `_physics_process` advances one tick when not paused (`:650–655`). Rendering interpolates the previous/current states (`:658–660`). `FlightSession` polls the reader before setting physics inputs (`app/sim/flight_session.gd:3060–3112`); event arrival and the input values sampled for a tick are distinct from presentation frames.
+
+The existing recorder identifies the accepted checkpoint, solver/backend, aircraft and environment and defines the recorded input boundary after conditioning/rates/trim and before failure/servos (`app/sim/flight_log.gd:84–105`). It rejects a backend change or nonconsecutive ticks (`:258–267`). `docs/FLIGHT-LOGGING.md:212–245,347–353` separates exact replay, candidate replay, changed solver and incomplete recovered prefixes. A post-conditioning tape is excellent for solver replay but cannot by itself measure raw device-event latency, device freshness or the entire physical input chain.
+
+## External context
+
+[Godot 4.5 ProjectSettings (REV-S07)](https://docs.godotengine.org/en/4.5/classes/class_projectsettings.html) documents a maximum physics-steps-per-rendered-frame setting. [Godot 4.5 interpolation guidance (REV-S08)](https://docs.godotengine.org/en/4.5/tutorials/physics/interpolation/physics_interpolation_introduction.html) describes the relationship between fixed updates and displayed interpolation. Those documents are context, not a substitute for verifying the pinned **Godot 4.8 beta 2** build, application settings and target OS.
+
+[Box2D maintainer Erin Catto's determinism account (REV-S09)](https://box2d.org/posts/2024/08/determinism/) illustrates how operation ordering, platform/compiler choices and testing matter to repeatability. Box2D's claims concern Box2D, not this independent `VehicleModel`/OpenRC solver. [Glenn Fiedler's original fixed-timestep article (REV-S10)](https://www.gafferongames.com/post/fix_your_timestep/) explains accumulator and interpolation tradeoffs; it is a developer explanation, not evidence that this project's overload policy works on a particular machine.
+
+## Proposed experiment and alternatives
+
+Keep one immutable starting checkpoint and a tick-indexed **post-conditioning** command tape. At the same pinned source, data, backend and engine, replay it against 30/60/120/144 Hz presentation schedules and deliberately introduced frame stalls; preserve the actual accepted tick/input pairs and event order. Compare state at identical tick indices, not merely equal wall-clock seconds; separately record wall-clock delay, physics ticks per rendered frame, interpolation fraction, frame pacing, focus and overload/slow-motion state. A variable number of fixed ticks per display frame can replay identically at equal tick but still feel delayed or fall behind real time. Then use instrumented, timestamped physical transmitter inputs on each supported OS to assess input-to-photon latency; synthetic pacing is not hardware evidence.
+
+An alternative is timestamped raw events assigned deterministically to tick boundaries, but an event may not prove a fresh device snapshot, and assigning input differently changes controls/replay semantics. Another is reducing physics rate to hide overload: reject it as a default optimization without new convergence and handling evidence. Never substitute render interpolation or generated frames for simulation ticks. Do not promise cross-platform bit-identical behavior merely because one host replay matches.
+
+## Acceptance
+
+Exact same-identity `.orfl` replay must remain `complete`, identity-matched and exact; candidate/changed-backend results remain labeled `solver_changed` as appropriate. Include tick-indexed edge cases for two input changes within one render frame, near-boundary changes, reconnect/focus pauses and a hitch above the configured catch-up budget. Confirm interpolation does not mutate physics and output remains a valid render state. Record source/data hashes, engine/backend, OS, timing clocks, tick rate, input tape, frame cap, dropped/incomplete observations and actual display resolution. A checked headless replay proves its bounded software claim, not 1080p presentation, latency, native hardware acceptance or flight realism.
+
+Primary sources: [REV-S07](https://docs.godotengine.org/en/4.5/classes/class_projectsettings.html), [REV-S08](https://docs.godotengine.org/en/4.5/tutorials/physics/interpolation/physics_interpolation_introduction.html), [REV-S09](https://box2d.org/posts/2024/08/determinism/), [REV-S10](https://www.gafferongames.com/post/fix_your_timestep/), accessed 2026-11-15. Source register: [`../sources-review.json`](../sources-review.json).

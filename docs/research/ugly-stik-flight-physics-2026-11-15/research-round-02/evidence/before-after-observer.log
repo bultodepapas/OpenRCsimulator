@@ -1,0 +1,50 @@
+{
+  "wrapper_outcomes": [
+    {
+      "case": "complete_control",
+      "exit": 0,
+      "exception": null,
+      "manifest": true
+    },
+    {
+      "case": "timeout",
+      "exit": 1,
+      "exception": null,
+      "manifest": true
+    },
+    {
+      "case": "malformed_json",
+      "exit": 1,
+      "exception": null,
+      "manifest": true
+    },
+    {
+      "case": "missing_results",
+      "exit": 1,
+      "exception": null,
+      "manifest": true
+    }
+  ],
+  "comparison_outcomes": [
+    {
+      "case": "empty_directories",
+      "exit": 2
+    },
+    {
+      "case": "no_shared_tests",
+      "exit": 2
+    },
+    {
+      "case": "duplicate_case_hidden_change",
+      "exit": 2
+    },
+    {
+      "case": "candidate_only_aircraft",
+      "exit": 1
+    },
+    {
+      "case": "ordinary_change_control",
+      "exit": 1
+    }
+  ]
+}

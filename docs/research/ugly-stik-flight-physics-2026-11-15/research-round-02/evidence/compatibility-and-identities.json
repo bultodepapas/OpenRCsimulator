@@ -1,0 +1,205 @@
+{
+  "format": "openrc-research-tool-verification-v1",
+  "source_head": "973ac3b42708102a6ebc95b64b3e42e688aae573",
+  "app_tree": "565e4a839e63c1b65064d0da4e6e1366b13ebbc7",
+  "app_diff_vs_head": [],
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "numpy": "2.3.5",
+  "pillow": "13.0.0",
+  "tool_sha256": {
+    "research/flight-test/run.py": "c7901b8a0d6015a749ce6c3518840ff8c909756962cd4d7e90fd582d7f4f6f86",
+    "research/flight-test/compare.py": "f1b4b4bb0d580560a2f543f95969749a1d90677d72547c1a1da83361647a3593",
+    "research/flight-test/profile_io.py": "6dbe85c2149dc876c372bccbecd3c05a67a8eec7ca432465dc87caae40c3f0d8",
+    "tools/scenery/scenario_report.py": "f7e7fee845784b7c43c94770b35acd27c6034a03e60cee89660454adc37b7041",
+    "research/flight-test/test_run.py": "01711b566982d58aaa1578cd184ae21c80effcf2430f91970277331e72d783db",
+    "research/flight-test/test_compare.py": "bef3a91806a4a83001b2a7a5222a0362183495860c22a3b3fa27bbdb38c4070b",
+    "tools/scenery/test_scenario_report.py": "b2c4e410144ea2ad243c311ce751163157c2ea3a9f8792efdcc63896ce59b4d0"
+  },
+  "independent_review_matches_final_tools": true,
+  "retained_profiles": [
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/baseline-comparison/profile.json",
+      "sha256": "d81ae425f2824fe059aedfc637df2765b742522a6905dcf0565b22a6236c5745",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 50
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/baseline-invalid/profile.json",
+      "sha256": "4a9bed84ec883196db3c8f7a2c6f0c05955ca0437f54a4e16a30356ac315efd8",
+      "accepted": true,
+      "tests": 0,
+      "table_rows": 0
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/dynamic/gp-extra-300s-60/profile.json",
+      "sha256": "2678de0adf2cef5f8e4e6538b0cb91fb8c654d634fe87022cd2fd089cd6f4483",
+      "accepted": true,
+      "tests": 8,
+      "table_rows": 40
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/dynamic/jensen-das-ugly-stik-60/profile.json",
+      "sha256": "b59b9373bb9c1ef6cef06d9443392b6053386303e8155e7c0d01fa50582bd8e2",
+      "accepted": true,
+      "tests": 8,
+      "table_rows": 42
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/dynamic/stik-electric-6s/profile.json",
+      "sha256": "84a52890af5e12a6346724c0881df27e131209c3933832553673e5d7994db83d",
+      "accepted": true,
+      "tests": 8,
+      "table_rows": 46
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/dynamic/stik-glow-61fx-2t/profile.json",
+      "sha256": "1aee7c3506950bc3619d798a01276127247b4d576e4f79fcd012b4ec467ce5a3",
+      "accepted": true,
+      "tests": 8,
+      "table_rows": 41
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/electric-pack/stik-electric-6s/profile.json",
+      "sha256": "e61644b4e17d169d8a3fdc240f68706d9af591a4482fbbd50bfb0557467c6623",
+      "accepted": true,
+      "tests": 8,
+      "table_rows": 48
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/f4u-corsair-250/profile.json",
+      "sha256": "dc35b3c1c5780f77f75df022c1572254900ff162b798008fe793ff1a18434aa7",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 54
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/gp-extra-300s-60/profile.json",
+      "sha256": "16489aa39e9ff39b1d296c599bf17942c4164c079eabfcb56cbbd4da519e19a4",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 48
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/jensen-das-ugly-stik-60/profile.json",
+      "sha256": "0ad074db6289c3d3f9883ba5bd966cfba6c62c116f12d5fde86828cc4ec71177",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 50
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/moonrunner-x99/profile.json",
+      "sha256": "604a007fdac87892f8f45e3354ee66e1d9ea66c398ab36912798c3569af96f79",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 48
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/p51d-mustang-120/profile.json",
+      "sha256": "d580f6ab12ee7be74995684dfd7c8f8030890a917ae5a0626a4d8a0ca074e366",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 52
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/sebart-avanti-s-a200-p100rx/profile.json",
+      "sha256": "e24163a2a3f526d380a215b54eed9d9bb0abc956a3aca06ee6956555aba6dca9",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 58
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/stik-electric-6s/profile.json",
+      "sha256": "7da9649ff9f91d644d5e94f2afd843c39f5a510d64d6c444b932d707141484a5",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 54
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/stik-glow-55ax-2t/profile.json",
+      "sha256": "ca17460d686c403d321ee8706b92986de70929b6f77f3cda1249d42d993ce3f7",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 50
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/stik-glow-61fx-2t/profile.json",
+      "sha256": "df8f33dec585cb65e5c4694c39e9d64448c868dd24985cea2d7d213919d90fef",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 49
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/stik-glow-fs64v-4t/profile.json",
+      "sha256": "feadcb6b742535887955624db09a874b078aa2ae009dbae012e0611da5a70c43",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 39
+    },
+    {
+      "path": "docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static/turbo-lumber-evolution/profile.json",
+      "sha256": "3d4ccdedb2bb5ddbaeedf5f2d936f6d29d5978f922137a3e86cf36ec54d82e82",
+      "accepted": true,
+      "tests": 3,
+      "table_rows": 51
+    }
+  ],
+  "self_comparisons": [
+    {
+      "group": "fleet-static",
+      "exit": 0,
+      "stderr": "",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "research/flight-test/compare.py",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/evidence/fleet-static",
+        "--rel",
+        "0",
+        "--abs",
+        "0",
+        "--fail-on-change",
+        "--out",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/research-round-02/evidence/fleet-static-self-comparison.md"
+      ]
+    },
+    {
+      "group": "dynamic",
+      "exit": 0,
+      "stderr": "",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "research/flight-test/compare.py",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/evidence/dynamic",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/evidence/dynamic",
+        "--rel",
+        "0",
+        "--abs",
+        "0",
+        "--fail-on-change",
+        "--out",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/research-round-02/evidence/dynamic-self-comparison.md"
+      ]
+    },
+    {
+      "group": "electric-pack",
+      "exit": 0,
+      "stderr": "",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "research/flight-test/compare.py",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/evidence/electric-pack",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/evidence/electric-pack",
+        "--rel",
+        "0",
+        "--abs",
+        "0",
+        "--fail-on-change",
+        "--out",
+        "/workspace/scratch/d289586b400e/OpenRCsimulator/docs/research/ugly-stik-flight-physics-2026-11-15/research-round-02/evidence/electric-pack-self-comparison.md"
+      ]
+    }
+  ],
+  "scope": "Static compatibility against retained audit profiles plus actual Python comparison CLI; no new flight/render/hardware/performance run."
+}
