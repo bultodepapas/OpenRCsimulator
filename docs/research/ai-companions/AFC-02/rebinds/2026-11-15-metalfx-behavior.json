@@ -1,0 +1,650 @@
+{
+  "admission": {
+    "enrollment_absent_before_execution": true,
+    "enrollment_path": "/var/tmp/openrc-testqueue/enrollment.json",
+    "preexisting_queue_or_pool_keys": []
+  },
+  "candidate": {
+    "behavior_sources": {
+      "res://ai/companions/agent.gd": {
+        "manifest_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "normalized_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "raw_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd"
+      },
+      "res://ai/companions/airspace.gd": {
+        "manifest_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "normalized_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "raw_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920"
+      },
+      "res://ai/companions/circuit_controller.gd": {
+        "manifest_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "normalized_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "raw_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+      },
+      "res://ai/companions/config.gd": {
+        "manifest_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "normalized_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "raw_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d"
+      },
+      "res://ai/companions/manager.gd": {
+        "manifest_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "normalized_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "raw_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585"
+      },
+      "res://ai/companions/observation_airdata.gd": {
+        "manifest_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "normalized_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "raw_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8"
+      },
+      "res://ai/companions/pilot.gd": {
+        "manifest_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "normalized_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "raw_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1"
+      },
+      "res://ai/companions/profile_loader.gd": {
+        "manifest_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "normalized_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "raw_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8"
+      },
+      "res://ai/companions/seed_allocator.gd": {
+        "manifest_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "normalized_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "raw_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1"
+      },
+      "res://ai/companions/static_trajectory.gd": {
+        "manifest_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "normalized_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "raw_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+      },
+      "res://app_root.gd": {
+        "manifest_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "normalized_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "raw_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647"
+      },
+      "res://data/field_loader.gd": {
+        "manifest_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "normalized_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "raw_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1"
+      },
+      "res://data/lake_loader.gd": {
+        "manifest_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "normalized_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "raw_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+      },
+      "res://main.gd": {
+        "manifest_sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006",
+        "normalized_sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006",
+        "raw_sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006"
+      },
+      "res://scenery/collision_world.gd": {
+        "manifest_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "normalized_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "raw_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a"
+      },
+      "res://workshop/strict_json.gd": {
+        "manifest_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "normalized_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "raw_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+      }
+    },
+    "inputs_raw_sha256": {
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "05e383ce541b699b0145826b33577dd7dcbff6a170698750e95621cd16ad63e3",
+      "app/data/ai/companions/behavior-manifest.json": "920e0ed7fc83095f859eca40a79f147570e81ad9e527c01ba0f06d7fa85c817a",
+      "app/data/ai/companions/fields/club-default.json": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+      "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "app/project.godot": "ecd884b5709a728dd0c62b0cbd1e993b4fee4e82536b6fe6695e0b267ee58ad6",
+      "app/render/frame_generation.gd": "ba9c975fa81fa1c8cc51bd19918e1095223f72eda5f4e2e9e70224f1fffb39ea",
+      "app/render/frame_generation_policy.gd": "dc1d7736d449bc77280b04d348df91403d4267a8328102faf51b604cc0edc9fc",
+      "app/render/metalfx_policy.gd": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "app/render/reconstruction.gd": "1f323cbdc825a52e44995999950b4af1b21d1e535208b16f6a968c1b9dbebee1",
+      "app/tests/test_companions_airspace.gd": "3c545c1b29b136fe68e131de8f9c23595df05dd4510b3a01dbce10bed7183c8d",
+      "app/tests/test_companions_behavior_manifest.gd": "85d1f0d7b67d95482a1e87309ce413c2c3b3a3e1ae2ebbcd02e6559cf25575f2",
+      "app/tests/test_companions_draft_refresh.gd": "f978b70fdc9cc8301f337336a5013c166a19afad81a81c25c4347a767ef7c02d",
+      "app/tests/test_companions_lifecycle.gd": "bca191e72cf9feffbaa54a1491f4eadeebda956f1ebc2c1bde6e1bb5395c3a74",
+      "app/tests/test_companions_manager.gd": "d592e89bb1ec248e40c1dd5cbc7ffb180b10db417b0122e4ca7af290b30af53e",
+      "app/tests/test_companions_observation.gd": "dbf37a715b2779afb0b0afe7ef63b78a53c49034b17c386644f163243291d8ce",
+      "app/tests/test_companions_presentation.gd": "512c7c3a2b0459e64ec1cef93ee0bb05049ee813cfe560b709642a3073b9f447",
+      "app/tests/test_companions_profiles.gd": "0cf182b9dff89064fb0cdc11917e0fc6ec4a9c8a7849aed4984aee862cab4046",
+      "app/tests/test_companions_restore.gd": "04d35744215ac50f8d54e88a777793465a32f67d0fccd1044681136c0bc1c4f7",
+      "app/tests/test_companions_seeds_timing.gd": "d2d1b26524727ec327c3d66560b564245fe09ff1cef14851df70ac5c726629f9",
+      "app/tests/test_companions_session.gd": "78b6bed2fe9691e0164c1a18df9c4499bf10f6bb17169a867b8bd7a20ea974a2",
+      "app/tests/test_companions_shell.gd": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb",
+      "app/tests/test_frame_generation.gd": "ff4357f70190524bf27dc5197a5c0d5c413e5f4ad39fb2810977f76c4abf960f",
+      "app/tests/test_frame_generation_policy.gd": "ab98392a566d468f17d671c32e239e49a986d40abb1e4c69da2066835d7a5ecb",
+      "tools/companions/qualification.json": "6a7bf970b183ea1fc0f31908648ec9a040cfca996c200cebee505e9765b4231a",
+      "tools/godot/run_checked.py": "aec26b085e7fdf9b32cd539c1e8631d84edc2c9cb6ac934936f6ce35f800f66b"
+    },
+    "manifest_normalized_sha256": "920e0ed7fc83095f859eca40a79f147570e81ad9e527c01ba0f06d7fa85c817a",
+    "manifest_raw_sha256": "920e0ed7fc83095f859eca40a79f147570e81ad9e527c01ba0f06d7fa85c817a",
+    "profile_normalized_sha256": "05e383ce541b699b0145826b33577dd7dcbff6a170698750e95621cd16ad63e3",
+    "profile_raw_sha256": "05e383ce541b699b0145826b33577dd7dcbff6a170698750e95621cd16ad63e3",
+    "source_diff_sha256": "fef93ccfbe303297459e4fe521e5233e9891ac16bac0e4334411f8ce8e2c4f70",
+    "strict_shell_path": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/companions_shell_strict.gd",
+    "strict_shell_raw_sha256": "7c4ef043e4a8e7fdd4fd52466564e202138c5d4f382f455091f68c285ef88118"
+  },
+  "checks": [
+    {
+      "complete": true,
+      "label": "official-source-version",
+      "log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/official-source-version/official-source-version-ppyvdlkt/report.json",
+      "report_sha256": "c2ff9fe0e27449378f07515415f96d3a6a210c008e3fb03458c48a8fc9f0138f",
+      "required_text": [
+        "4.8.beta2.official.cafc17a19"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/official-source-version/wrapper.log",
+      "wrapper_log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986"
+    },
+    {
+      "complete": true,
+      "label": "official-clone-version",
+      "log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/official-clone-version/official-clone-version-jaqzfvo1/report.json",
+      "report_sha256": "3bfaa4bf234ddb7f103a3ccd187aca096d0064843085f85dcbae2b1427665278",
+      "required_text": [
+        "4.8.beta2.official.cafc17a19"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/official-clone-version/wrapper.log",
+      "wrapper_log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986"
+    },
+    {
+      "complete": true,
+      "label": "user-data-isolation",
+      "log_sha256": "ae6888bb6797d2aeb5bbdfb2bcb005704a1cf2acb4b96daa9d475787b40f98fc",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/user-data-isolation/user-data-isolation-j1qz8bts/report.json",
+      "report_sha256": "2fababaab86a6689851864886c21dedabf0d27cee75a5bf83e7ee3764a877e56",
+      "required_text": [
+        "COMPANION_USER_DATA_DIR=",
+        "COMPANION_PROJECT_NAME=OpenRC-Companion-Behavior-R2-66145",
+        "COMPANION_EXECUTABLE="
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/user-data-isolation/wrapper.log",
+      "wrapper_log_sha256": "ae6888bb6797d2aeb5bbdfb2bcb005704a1cf2acb4b96daa9d475787b40f98fc"
+    },
+    {
+      "complete": true,
+      "label": "import",
+      "log_sha256": "57822f505606e3a7d104b909e6b101a08a5edafa6e8a6b99dac1ce42acea35bd",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/import/import-048jmh48/report.json",
+      "report_sha256": "292ce1b977fb6790dba2f3354349f8eda37e56c27f5a783161da8a2f9afc99a8",
+      "required_text": [
+        "Godot Engine"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/import/wrapper.log",
+      "wrapper_log_sha256": "57822f505606e3a7d104b909e6b101a08a5edafa6e8a6b99dac1ce42acea35bd"
+    },
+    {
+      "complete": true,
+      "label": "behavior-stale-refusal",
+      "log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/behavior-stale-refusal/behavior-stale-refusal-uf3mi7n5/report.json",
+      "report_sha256": "c649ed5eb03c0d21247f9b21d6539d8065647e3b9bc5b42c7d7981dc7209b127",
+      "required_text": [
+        "0 failed",
+        "companion behavior manifest: 8 checks, 0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/behavior-stale-refusal/wrapper.log",
+      "wrapper_log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd"
+    },
+    {
+      "complete": true,
+      "label": "behavior-positive",
+      "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/behavior-positive/behavior-positive-fw9eq75o/report.json",
+      "report_sha256": "74bc687493235f37edbd0e96bbe95205582863246f4e777ed9c5809bba56b7bc",
+      "required_text": [
+        "0 failed",
+        "companion behavior manifest:"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/behavior-positive/wrapper.log",
+      "wrapper_log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59"
+    },
+    {
+      "complete": true,
+      "label": "profiles",
+      "log_sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/profiles/profiles-hktk2p57/report.json",
+      "report_sha256": "d98323109865a2cca1024f9dd88b45fc1d77e7d61119f24eff3b87c9271e4cb4",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/profiles/wrapper.log",
+      "wrapper_log_sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d"
+    },
+    {
+      "complete": true,
+      "label": "manager",
+      "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/manager/manager-nw3kbas_/report.json",
+      "report_sha256": "c4d4b902365d4c3116fda260c17c68ea2294a575b05b983cc425d95c4c1278de",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/manager/wrapper.log",
+      "wrapper_log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d"
+    },
+    {
+      "complete": true,
+      "label": "airspace",
+      "log_sha256": "a2d01fdb51278384ebc61a410245ae0817a80a50d9607ee51eaad0c60c0305a4",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/airspace/airspace-en3bdxtd/report.json",
+      "report_sha256": "4d87fa95e65396b058d2a576764442613dbe09cd4b9877d84e7bc3a703505a28",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/airspace/wrapper.log",
+      "wrapper_log_sha256": "a2d01fdb51278384ebc61a410245ae0817a80a50d9607ee51eaad0c60c0305a4"
+    },
+    {
+      "complete": true,
+      "label": "lifecycle",
+      "log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/lifecycle/lifecycle-u0inastw/report.json",
+      "report_sha256": "14cd08c74d00010f331b0d8849a9afd13d5f829b844d2faf9a44d0c12f9b2b2c",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/lifecycle/wrapper.log",
+      "wrapper_log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f"
+    },
+    {
+      "complete": true,
+      "label": "observation",
+      "log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/observation/observation-8udumvmz/report.json",
+      "report_sha256": "02d4f2596a44faa57efe69ae4a447a4c1e914e9400e7c98dde4d3f251d637bfb",
+      "required_text": [
+        "AFC COMPANION OBSERVATION CHECKS",
+        "FAILED 0"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/observation/wrapper.log",
+      "wrapper_log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25"
+    },
+    {
+      "complete": true,
+      "label": "seeds-timing",
+      "log_sha256": "b529cff69bda0825719d9defb15ec4c0e52fe51e444551ff5be48ac9fe2993e5",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/seeds-timing/seeds-timing-dm98m95u/report.json",
+      "report_sha256": "07241bf6b28308c931730088984a94303207bb160edc451d0a48d0b3c866c09a",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/seeds-timing/wrapper.log",
+      "wrapper_log_sha256": "b529cff69bda0825719d9defb15ec4c0e52fe51e444551ff5be48ac9fe2993e5"
+    },
+    {
+      "complete": true,
+      "label": "presentation",
+      "log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/presentation/presentation-59cy0gia/report.json",
+      "report_sha256": "e5ac8d44eb5dfc16c8fe50c833d5bc5e03f2b544bc4cb0ab012651935d25fb50",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/presentation/wrapper.log",
+      "wrapper_log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0"
+    },
+    {
+      "complete": true,
+      "label": "draft-refresh",
+      "log_sha256": "23b78a3a16fa9dc2be51ee44127ba43082cd3ace8eb7e107cdb17d284928eae0",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/draft-refresh/draft-refresh-87uqlo1m/report.json",
+      "report_sha256": "8e6a3577fe0e0041084e1e99e9181d6a49b3a64cfaeb1f8d0597d26435043a34",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/draft-refresh/wrapper.log",
+      "wrapper_log_sha256": "23b78a3a16fa9dc2be51ee44127ba43082cd3ace8eb7e107cdb17d284928eae0"
+    },
+    {
+      "complete": true,
+      "label": "session",
+      "log_sha256": "b2eca620bec5c155550811a35d34148c42c0d07594f571e7fb4d6843c38dc7ab",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/session/session-09hpneur/report.json",
+      "report_sha256": "b59b161c897050f6301a16adcb44824028539dd91f40c46370efdd25c625a670",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/session/wrapper.log",
+      "wrapper_log_sha256": "b2eca620bec5c155550811a35d34148c42c0d07594f571e7fb4d6843c38dc7ab"
+    },
+    {
+      "complete": true,
+      "label": "restore",
+      "log_sha256": "54d86d50a7be538309d7d2ef10cea260f1423786ba55289902ab03e3c5aa8185",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/restore/restore-yrw9g2ov/report.json",
+      "report_sha256": "a77a4e1471d4662ea6257226423c6906120ab4013bca4e77ed8c95965a3d6882",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/restore/wrapper.log",
+      "wrapper_log_sha256": "54d86d50a7be538309d7d2ef10cea260f1423786ba55289902ab03e3c5aa8185"
+    },
+    {
+      "complete": true,
+      "label": "frame-generation",
+      "log_sha256": "9290646f802931efe394ac715d2e2f198c8b42af8772ec3ddf7aac8055f0477d",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/frame-generation/frame-generation-8nrbd4bc/report.json",
+      "report_sha256": "47ee71986b08a446020393a386601f5533007156dce384752352fe461e10a4a2",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/frame-generation/wrapper.log",
+      "wrapper_log_sha256": "9290646f802931efe394ac715d2e2f198c8b42af8772ec3ddf7aac8055f0477d"
+    },
+    {
+      "complete": true,
+      "label": "frame-generation-policy",
+      "log_sha256": "34d2496a3c861140376951bb4379d3f440e2741f86788819464d80b90b8582f4",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/frame-generation-policy/frame-generation-policy-nbopxtlx/report.json",
+      "report_sha256": "7c36c3617392db44101d5fb368328fe75c2b7ec496bb585b47a9bca97a3e1c45",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/frame-generation-policy/wrapper.log",
+      "wrapper_log_sha256": "34d2496a3c861140376951bb4379d3f440e2741f86788819464d80b90b8582f4"
+    },
+    {
+      "complete": true,
+      "label": "shell-strict",
+      "log_sha256": "d5786328e371fbb5d4f01b8a8839390ee796aa07a753e10f0fa2388cfeae419b",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/shell-strict/shell-strict-14eqow3h/report.json",
+      "report_sha256": "26afa3d11f63591d700def067f6b9329854efe19784c21c4890474c6cee263df",
+      "required_text": [
+        "Companions shell: 0 failed",
+        "ok   Home flight receives the saved companion config before startup",
+        "ok   the manager starts three real AI pilots",
+        "ok   Pause freezes simulation ticks and propeller angle",
+        "ok   Restart rebuilds the live group from the staged count"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/checks/shell-strict/wrapper.log",
+      "wrapper_log_sha256": "d5786328e371fbb5d4f01b8a8839390ee796aa07a753e10f0fa2388cfeae419b"
+    }
+  ],
+  "commit": "66145a16724d5dc05b7ef36e2450a459d14baf61",
+  "engine": {
+    "clone_after_marker_signature": {
+      "bundle": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/Godot.app",
+      "exit": 0,
+      "log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/official-clone-after-marker.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clone_before_marker_signature": {
+      "bundle": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/Godot.app",
+      "exit": 0,
+      "log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/official-clone-before-marker.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clone_path": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/Godot.app/Contents/MacOS/Godot",
+    "clone_sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80",
+    "clone_version": "4.8.beta2.official.cafc17a19",
+    "editor_data": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/editor_data",
+    "self_contained_marker": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/_sc_",
+    "sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80",
+    "source_path": "/Users/g/OpenRC-m1-work/angel-setup-20261107/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+    "source_signature": {
+      "bundle": "/Users/g/OpenRC-m1-work/angel-setup-20261107/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app",
+      "exit": 0,
+      "log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/official-source-signature.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "version": "4.8.beta2.official.cafc17a19"
+  },
+  "environment": "OPENRC/GODOT/MTL/METAL/DYLD variables removed; HOME unchanged; unique user-data name",
+  "finished_utc": "2026-11-15T09:24:45.301018+00:00",
+  "format": "openrc-afc-02-behavior-requalification v1",
+  "import_cache": {
+    "bytes": 1960041795,
+    "catalog_sha256": "7a636951285d43e793f6210b70cc6419750d11ddcad9f83c63ce1970f1ea5e2d",
+    "files": 1292,
+    "source": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/public-product-export19-r1/app/.godot/imported"
+  },
+  "native_candidate_receipt_sha256": "91348324618172eee459a4dc2cb13803992946af8f37f9910027a7e33e6c0d09",
+  "native_candidate_status_at_capture": "candidate_checks_passed_not_published",
+  "preflight": {
+    "behavior_sources": {
+      "res://ai/companions/agent.gd": {
+        "manifest_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "normalized_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "raw_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd"
+      },
+      "res://ai/companions/airspace.gd": {
+        "manifest_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "normalized_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "raw_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920"
+      },
+      "res://ai/companions/circuit_controller.gd": {
+        "manifest_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "normalized_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "raw_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+      },
+      "res://ai/companions/config.gd": {
+        "manifest_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "normalized_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "raw_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d"
+      },
+      "res://ai/companions/manager.gd": {
+        "manifest_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "normalized_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "raw_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585"
+      },
+      "res://ai/companions/observation_airdata.gd": {
+        "manifest_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "normalized_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "raw_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8"
+      },
+      "res://ai/companions/pilot.gd": {
+        "manifest_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "normalized_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "raw_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1"
+      },
+      "res://ai/companions/profile_loader.gd": {
+        "manifest_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "normalized_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "raw_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8"
+      },
+      "res://ai/companions/seed_allocator.gd": {
+        "manifest_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "normalized_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "raw_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1"
+      },
+      "res://ai/companions/static_trajectory.gd": {
+        "manifest_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "normalized_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "raw_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+      },
+      "res://app_root.gd": {
+        "manifest_sha256": "b48c9d2eef76ad873206a7a24c41f05304387c4c1cb780281b524841c8ab283c",
+        "normalized_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "raw_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647"
+      },
+      "res://data/field_loader.gd": {
+        "manifest_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "normalized_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "raw_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1"
+      },
+      "res://data/lake_loader.gd": {
+        "manifest_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "normalized_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "raw_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+      },
+      "res://main.gd": {
+        "manifest_sha256": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09",
+        "normalized_sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006",
+        "raw_sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006"
+      },
+      "res://scenery/collision_world.gd": {
+        "manifest_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "normalized_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "raw_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a"
+      },
+      "res://workshop/strict_json.gd": {
+        "manifest_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "normalized_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "raw_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+      }
+    },
+    "expected_stale_sources": [
+      "res://app_root.gd",
+      "res://main.gd"
+    ],
+    "manifest_raw_sha256": "c9c76432ae23a7ac7eefafa4bcef1177ff6e304939bd3b4c0c56bee38792cbb5",
+    "profile_raw_sha256": "5c417484e886b3b8b1b7a3b6dc24c5fd4c571851a6d8ccad14142db621450df3",
+    "raw_profile_bound_inputs": {
+      "admission_refs": {
+        "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "res://data/aircraft/jensen_ugly_stik_60.json": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+        "res://data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d"
+      },
+      "field_profile_raw_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611"
+    },
+    "solver": {
+      "normalization": "utf8-lf",
+      "sha256": "a81c2b2d1275faba30d3e55ecca3e59cde0f005c50857fe92e48c66a2040866c",
+      "source_count": 198
+    },
+    "source_inputs_raw_sha256": {
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "5c417484e886b3b8b1b7a3b6dc24c5fd4c571851a6d8ccad14142db621450df3",
+      "app/data/ai/companions/behavior-manifest.json": "c9c76432ae23a7ac7eefafa4bcef1177ff6e304939bd3b4c0c56bee38792cbb5",
+      "app/data/ai/companions/fields/club-default.json": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+      "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "app/project.godot": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "app/render/frame_generation.gd": "ba9c975fa81fa1c8cc51bd19918e1095223f72eda5f4e2e9e70224f1fffb39ea",
+      "app/render/frame_generation_policy.gd": "dc1d7736d449bc77280b04d348df91403d4267a8328102faf51b604cc0edc9fc",
+      "app/render/metalfx_policy.gd": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "app/render/reconstruction.gd": "1f323cbdc825a52e44995999950b4af1b21d1e535208b16f6a968c1b9dbebee1",
+      "app/tests/test_companions_airspace.gd": "3c545c1b29b136fe68e131de8f9c23595df05dd4510b3a01dbce10bed7183c8d",
+      "app/tests/test_companions_behavior_manifest.gd": "85d1f0d7b67d95482a1e87309ce413c2c3b3a3e1ae2ebbcd02e6559cf25575f2",
+      "app/tests/test_companions_draft_refresh.gd": "f978b70fdc9cc8301f337336a5013c166a19afad81a81c25c4347a767ef7c02d",
+      "app/tests/test_companions_lifecycle.gd": "bca191e72cf9feffbaa54a1491f4eadeebda956f1ebc2c1bde6e1bb5395c3a74",
+      "app/tests/test_companions_manager.gd": "d592e89bb1ec248e40c1dd5cbc7ffb180b10db417b0122e4ca7af290b30af53e",
+      "app/tests/test_companions_observation.gd": "dbf37a715b2779afb0b0afe7ef63b78a53c49034b17c386644f163243291d8ce",
+      "app/tests/test_companions_presentation.gd": "512c7c3a2b0459e64ec1cef93ee0bb05049ee813cfe560b709642a3073b9f447",
+      "app/tests/test_companions_profiles.gd": "0cf182b9dff89064fb0cdc11917e0fc6ec4a9c8a7849aed4984aee862cab4046",
+      "app/tests/test_companions_restore.gd": "04d35744215ac50f8d54e88a777793465a32f67d0fccd1044681136c0bc1c4f7",
+      "app/tests/test_companions_seeds_timing.gd": "d2d1b26524727ec327c3d66560b564245fe09ff1cef14851df70ac5c726629f9",
+      "app/tests/test_companions_session.gd": "78b6bed2fe9691e0164c1a18df9c4499bf10f6bb17169a867b8bd7a20ea974a2",
+      "app/tests/test_companions_shell.gd": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb",
+      "app/tests/test_frame_generation.gd": "ff4357f70190524bf27dc5197a5c0d5c413e5f4ad39fb2810977f76c4abf960f",
+      "app/tests/test_frame_generation_policy.gd": "ab98392a566d468f17d671c32e239e49a986d40abb1e4c69da2066835d7a5ecb",
+      "tools/companions/qualification.json": "6a7bf970b183ea1fc0f31908648ec9a040cfca996c200cebee505e9765b4231a",
+      "tools/godot/run_checked.py": "aec26b085e7fdf9b32cd539c1e8631d84edc2c9cb6ac934936f6ce35f800f66b"
+    },
+    "strict_shell_derived_raw_sha256": "7c4ef043e4a8e7fdd4fd52466564e202138c5d4f382f455091f68c285ef88118",
+    "strict_shell_original_raw_sha256": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb"
+  },
+  "previous_behavior_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-14-controller-routing-behavior.json",
+  "project_isolation": {
+    "diff_sha256": "ac14b097e990650f929b7d3cd0007e5e34ef71acdef34b16043b64804a4b9948",
+    "name": "OpenRC-Companion-Behavior-R2-66145",
+    "new_sha256": "ecd884b5709a728dd0c62b0cbd1e993b4fee4e82536b6fe6695e0b267ee58ad6",
+    "old_sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1"
+  },
+  "review": {
+    "changed_sources": {
+      "res://app_root.gd": {
+        "after": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "before": "b48c9d2eef76ad873206a7a24c41f05304387c4c1cb780281b524841c8ab283c"
+      },
+      "res://main.gd": {
+        "after": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006",
+        "before": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09"
+      }
+    },
+    "qualification_scope": "Existing official Godot Stik/Club airborne profile only; custom MetalFX engine and FG presentation remain unqualified.",
+    "rationale": "Reviewed opt-in MetalFX owner/surface/session hooks; no controller gains, physics or roster scope changes.",
+    "unchanged_behavior_sources": 14,
+    "unchanged_solver": {
+      "normalization": "utf8-lf",
+      "sha256": "a81c2b2d1275faba30d3e55ecca3e59cde0f005c50857fe92e48c66a2040866c",
+      "source_count": 198
+    }
+  },
+  "runner": {
+    "path": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/native_companion_behavior_r2.py",
+    "sha256_after": "37189738f7ede242d43448934e17b642d76f87c6e8178f4b6abf6c11835fe769",
+    "sha256_before": "37189738f7ede242d43448934e17b642d76f87c6e8178f4b6abf6c11835fe769"
+  },
+  "scope": "headless Stik/Club airborne software checks; no pin publication or performance/physical qualification",
+  "source": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/public-product-source-r2",
+  "source_scope": "commit-tracked files only; source ignored/untracked files are not cloned or certified",
+  "started_utc": "2026-11-15T09:18:37.648504+00:00",
+  "status": "bounded_behavior_requalified_on_official_engine",
+  "tracked_clone": {
+    "catalog": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/tracked-source-catalog.jsonl",
+    "catalog_sha256": "d335e9943caf51b37048fa331113db67a122ababb35ad6dfb4f64033802f0580",
+    "files": 51213,
+    "git_metadata_copied": false,
+    "post_test_all_tracked_bytes_match": true,
+    "verification": "Git clean-filter object IDs and independent raw source/clone SHA-256"
+  },
+  "user_data_directory": "/Users/g/Library/Application Support/Godot/app_userdata/OpenRC-Companion-Behavior-R2-66145",
+  "user_data_probe": {
+    "actual_directory": "/Users/g/Library/Application Support/Godot/app_userdata/OpenRC-Companion-Behavior-R2-66145/",
+    "actual_executable": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/Godot.app/Contents/MacOS/Godot",
+    "path": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-evidence-r2/user_data_probe.gd",
+    "self_contained_marker_sha256": "fc377fdf27ebfe56dc1567f6b7a7a2aa227b9389f0a7c51db80028f74d6d9893",
+    "sha256": "efb3cec8a17c30e63a8d1000eef11ff61a504462df64ee9e5fbcef81ad5757b1"
+  },
+  "workspace": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-behavior-r2"
+}
