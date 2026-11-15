@@ -1,5 +1,7 @@
 # DRS contract reference for the graphics handoff
 
+The separate [ray-query and sunlight-energy fixture reference](rt_fixture_README.md) now provides offline M4 geometry/lighting cases. This page remains the DRS specimen's home; neither reference is a measurement collector or a production feature.
+
 2026-11-15 · A small executable design specimen for [M2](../../../docs/research/graphics-performance-2026-11-15/05-integrated-implementation-plan.md), following the [timing/DRS design](../../../docs/research/graphics-performance-2026-11-15/09-timing-and-drs-design.md). This is original standard-library Python code outside `app/`. It neither changes the simulator nor collects measurements. It needs Python 3.10 or newer; it has no package dependencies, GPU, engine, settings, network, file-writing or physics integration.
 
 ## Run the contract checks
@@ -7,7 +9,7 @@
 From the repository root, including a fresh complete checkout:
 
 ```sh
-python3 -B -m unittest discover -s research/performance/graphics_handoff -p 'test_*.py' -v
+python3 -B -m unittest discover -s research/performance/graphics_handoff -p 'test_drs_reference.py' -v
 ```
 
 The suite has 38 tests plus table-driven negative cases. It checks independently specified integer examples, a default-policy transition trace, stale and duplicate samples, bounded storage, CPU/pacing admission, floor/ceiling, hysteresis, and proposal/acknowledgement/retirement. It does not qualify Godot or any GPU. The [execution playbook](../../../docs/research/graphics-performance-2026-11-15/11-test-and-execution-playbook.md) names the existing application, native, optical and export checks that remain necessary. Results and exact file hashes belong in the [handoff receipt](../../../docs/research/graphics-performance-2026-11-15/evidence/handoff-validation.json).

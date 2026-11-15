@@ -1,0 +1,685 @@
+{
+  "schema_version": 1,
+  "research_date": "2026-11-15",
+  "scope": "Offline ray-query geometry and selected-sun energy reference; exact-pin native implementation work order; no native engine or product effect implementation",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "audit/graphics-performance-technologies-2026-11-15",
+  "publication_parent": "92a16af2ddb5b26951ce4067484a79fb26a7014a",
+  "application_baseline": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "main_checkpoint": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
+  "main_checkpoint_note": "Read-only checkpoint for this continuation; separate from the application baseline and not a prediction of later main. No merge/rebase or main changes.",
+  "official_engine": "4.8.beta2.official.cafc17a19",
+  "official_engine_commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+  "offline_fixture": {
+    "identities": [
+      {
+        "path": "research/performance/graphics_handoff/rt_fixture_cases.json",
+        "git_blob_sha": "62a106d002ea140be4856a616eabd507891bf64e",
+        "sha256": "87983eba8f79debc33b929f3e6d4c6c495ebd65a7880b0baa5258e81b50fbe2e",
+        "bytes": 8679
+      },
+      {
+        "path": "research/performance/graphics_handoff/rt_fixture_reference.py",
+        "git_blob_sha": "ce4f48d6408447fd310230ed87aa6ece1e911b8a",
+        "sha256": "98d9b0cf4375f5ebfc3e92b9baa34b2d3d45d14030c652df117968e41d0d6cf4",
+        "bytes": 9798
+      },
+      {
+        "path": "research/performance/graphics_handoff/test_rt_fixture_reference.py",
+        "git_blob_sha": "0ad3740fd8027a31917645e8cc91b70f0602314e",
+        "sha256": "49d24134c0a41c4e5018a4eb3c703c3f47dc667e94bf7855468f8946e9522553",
+        "bytes": 13445
+      }
+    ],
+    "geometric_cases": 14,
+    "lighting_cases": 5,
+    "geometry_case_names": [
+      "identity_hit",
+      "side_miss",
+      "away_miss",
+      "affine_nearest",
+      "nonunit_parameter",
+      "mask_far",
+      "zero_mask",
+      "before_near",
+      "between_surfaces",
+      "past_near_hits_far",
+      "near_transform_changed",
+      "offset_receiver_miss",
+      "small_blocker_preserved",
+      "tilted_local_y_scale"
+    ],
+    "lighting_case_names": [
+      "unblocked_replaces_shadowed_raster",
+      "blocked_replaces_unshadowed_raster",
+      "partial_opacity_and_fade",
+      "zero_shadow_opacity",
+      "fully_faded_to_lit"
+    ],
+    "precision_contract": "Finite binary32 geometry inputs, exact rational transform/plane/barycentric/closest calculations, float64 output approximation; deliberately strict interior corpus, not a GPU precision model. Ideal linear lighting is not a Godot BRDF/quantization/pixel oracle.",
+    "native_adapter_implemented": false,
+    "new_measurement_collector": false
+  },
+  "software_validation": {
+    "focused_test_methods": 26,
+    "working_tree_result": "26 passed after the exact-rational and regression-case corrections",
+    "independent_review_result": "Read-only numerical reviewer reran final 26 tests successfully and independently verified exact endpoint/edge/nearest-tie counterexamples",
+    "staged_copy": {
+      "command": "python3 -B -m unittest discover -s research/performance/graphics_handoff -p 'test_rt_fixture_reference.py' -v",
+      "scope": "fresh small copy of the exact staged Python and JSON files at their repository-relative paths",
+      "exit_code": 0,
+      "test_methods": 26,
+      "passed": true,
+      "log_sha256": "8212519e32efc0d1d8011cd8ed438da3b1c6552334694d33a5558c4e589e3ead",
+      "test_names": [
+        "test_bad_direction_or_interval_is_rejected_after_rounding",
+        "test_binary32_rounding_is_explicit",
+        "test_constructed_values_do_not_alias_input_lists",
+        "test_degenerate_and_missing_triangles_are_rejected",
+        "test_duplicate_fixture_custom_indices_are_rejected",
+        "test_invalid_and_singular_transforms_are_rejected",
+        "test_invalid_numbers_are_rejected",
+        "test_mask_and_custom_index_ranges_are_independent",
+        "test_closest_identity_is_independent_of_instance_order",
+        "test_distinct_triangles_have_an_exact_nearest_tie",
+        "test_edge_and_coplanar_inputs_are_ambiguous",
+        "test_empty_scene_and_hidden_instance_miss",
+        "test_equal_nearest_ties_are_ambiguous",
+        "test_exact_interval_endpoints_are_ambiguous_not_gpu_failures",
+        "test_non_axis_endpoint_and_edge_counterexamples_are_ambiguous",
+        "test_nonunit_direction_preserves_parameter_and_distance",
+        "test_parallel_non_coplanar_ray_misses",
+        "test_primitive_index_is_not_custom_instance_index",
+        "test_published_analytic_cases",
+        "test_small_blocker_is_lost_by_an_excessive_origin_offset",
+        "test_two_sided_winding_is_explicit",
+        "test_factors_are_independent_of_input_container_mutation",
+        "test_fully_opaque_cloud_changes_only_selected_sun",
+        "test_invalid_energy_and_factors_are_rejected",
+        "test_published_binary_exact_energy_cases",
+        "test_zero_and_hdr_radiance_are_valid"
+      ],
+      "python": "3.12.14"
+    },
+    "unrelated_drs_suite_rerun": false,
+    "mutations": [
+      {
+        "mutation": "ignore_mask",
+        "assertion_failures": 3,
+        "errors": 0,
+        "test_methods_run": 26,
+        "log_sha256": "89ef63d3f56cc179dabd4e54207299458c4904f9f8d7a5e3ffff2f845eb71a87",
+        "mutated_module_sha256": "70343916814eb64af9e38761f2122c3658a4d09420f1f797aeb34a00e75845cc",
+        "unchanged_case_and_test_bytes_verified": true,
+        "failed_tests_or_subtests": [
+          "test_empty_scene_and_hidden_instance_miss (test_rt_fixture_reference.GeometryCases.test_empty_scene_and_hidden_instance_miss)",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='mask_far')",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='zero_mask')"
+        ],
+        "mutation_diff": "--- reviewed_reference\n+++ isolated_mutation\n@@ -193,5 +193,5 @@\n     candidates = []\n     for instance in instances:\n-        if not (ray.cull_mask & instance.mask):\n+        if False:\n             continue\n         for primitive_index, triangle in enumerate(instance.triangles):\n"
+      },
+      {
+        "mutation": "first_not_closest",
+        "assertion_failures": 5,
+        "errors": 0,
+        "test_methods_run": 26,
+        "log_sha256": "482d7eebad6f5719bdaad647730117c3b8f7801e35db31dc5d022c884ae0f6ec",
+        "mutated_module_sha256": "2d85a4b28a46ed8e515143a81967187a7c90bd38a49a3bee59d97a2e9dfaf5ca",
+        "unchanged_case_and_test_bytes_verified": true,
+        "failed_tests_or_subtests": [
+          "test_closest_identity_is_independent_of_instance_order (test_rt_fixture_reference.GeometryCases.test_closest_identity_is_independent_of_instance_order)",
+          "test_nonunit_direction_preserves_parameter_and_distance (test_rt_fixture_reference.GeometryCases.test_nonunit_direction_preserves_parameter_and_distance)",
+          "test_primitive_index_is_not_custom_instance_index (test_rt_fixture_reference.GeometryCases.test_primitive_index_is_not_custom_instance_index)",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='affine_nearest')",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='nonunit_parameter')"
+        ],
+        "mutation_diff": "--- reviewed_reference\n+++ isolated_mutation\n@@ -204,5 +204,5 @@\n                           primitive_index, tuple(float(weight) for weight in weights))\n                 candidates.append((t, hit))\n-    candidates.sort(key=lambda candidate: candidate[0])\n+    # Mutation: leave candidates in instance order.\n     if len(candidates) > 1 and candidates[0][0] == candidates[1][0]:\n         raise AmbiguousFixture(\"equal nearest hits have no unique identity oracle\")\n"
+      },
+      {
+        "mutation": "truncate_custom_index",
+        "assertion_failures": 5,
+        "errors": 0,
+        "test_methods_run": 26,
+        "log_sha256": "169014eb872cdc79fd5ae24c856df9b962a3d07a047f5ad1b5d25df2f12b842a",
+        "mutated_module_sha256": "5aee4d26c940d58561bf5367ea8f29641d1196a4d958a5d3ef2e3c774ffab41f",
+        "unchanged_case_and_test_bytes_verified": true,
+        "failed_tests_or_subtests": [
+          "test_closest_identity_is_independent_of_instance_order (test_rt_fixture_reference.GeometryCases.test_closest_identity_is_independent_of_instance_order)",
+          "test_primitive_index_is_not_custom_instance_index (test_rt_fixture_reference.GeometryCases.test_primitive_index_is_not_custom_instance_index)",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='affine_nearest')",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='nonunit_parameter')",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='tilted_local_y_scale')"
+        ],
+        "mutation_diff": "--- reviewed_reference\n+++ isolated_mutation\n@@ -201,5 +201,5 @@\n                 t, weights = result\n                 distance = _number(float(t) * math.sqrt(_dot(ray.direction, ray.direction)))\n-                hit = Hit(float(t), distance, instance.instance_custom_index,\n+                hit = Hit(float(t), distance, instance.instance_custom_index & 0xFFFF,\n                           primitive_index, tuple(float(weight) for weight in weights))\n                 candidates.append((t, hit))\n"
+      },
+      {
+        "mutation": "normalize_direction",
+        "assertion_failures": 5,
+        "errors": 0,
+        "test_methods_run": 26,
+        "log_sha256": "1f795616c65e393d6c30f8393391c75d19f1f8155a252a2d1f4e20a99545d56d",
+        "mutated_module_sha256": "46472004f1986bbd3b40bb66c496d1113d2ecd086daf03b93fa3beada24b2cb0",
+        "unchanged_case_and_test_bytes_verified": true,
+        "failed_tests_or_subtests": [
+          "test_distinct_triangles_have_an_exact_nearest_tie (test_rt_fixture_reference.GeometryCases.test_distinct_triangles_have_an_exact_nearest_tie)",
+          "test_non_axis_endpoint_and_edge_counterexamples_are_ambiguous (test_rt_fixture_reference.GeometryCases.test_non_axis_endpoint_and_edge_counterexamples_are_ambiguous) (t_max=1)",
+          "test_non_axis_endpoint_and_edge_counterexamples_are_ambiguous (test_rt_fixture_reference.GeometryCases.test_non_axis_endpoint_and_edge_counterexamples_are_ambiguous) (t_max=2)",
+          "test_nonunit_direction_preserves_parameter_and_distance (test_rt_fixture_reference.GeometryCases.test_nonunit_direction_preserves_parameter_and_distance)",
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='nonunit_parameter')"
+        ],
+        "mutation_diff": "--- reviewed_reference\n+++ isolated_mutation\n@@ -197,5 +197,7 @@\n         for primitive_index, triangle in enumerate(instance.triangles):\n             vertices = tuple(_point(instance.transform_rows, vertex) for vertex in triangle)\n-            result = _triangle_hit(ray, *vertices)\n+            unit = math.sqrt(_dot(ray.direction, ray.direction))\n+            normalized_ray = Ray(ray.origin, tuple(d / unit for d in ray.direction), ray.t_min, ray.t_max, ray.cull_mask)\n+            result = _triangle_hit(normalized_ray, *vertices)\n             if result is not None:\n                 t, weights = result\n"
+      },
+      {
+        "mutation": "cloud_twice",
+        "assertion_failures": 5,
+        "errors": 0,
+        "test_methods_run": 26,
+        "log_sha256": "1f14b5e98d6e6dd9fe712ccbb77ef6ddb243e31c8ee46e31d66a3595759b2e4e",
+        "mutated_module_sha256": "1be1d4030f9266311bdb6853d7024ab1c50e68e2cc3b4735f871063f6a90884f",
+        "unchanged_case_and_test_bytes_verified": true,
+        "failed_tests_or_subtests": [
+          "test_factors_are_independent_of_input_container_mutation (test_rt_fixture_reference.LightingCases.test_factors_are_independent_of_input_container_mutation)",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='unblocked_replaces_shadowed_raster')",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='partial_opacity_and_fade')",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='zero_shadow_opacity')",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='fully_faded_to_lit')"
+        ],
+        "mutation_diff": "--- reviewed_reference\n+++ isolated_mutation\n@@ -250,5 +250,5 @@\n         _factor, (raw_visibility, opacity, fade_to_lit, cloud_transmission))\n     effective = 1 - opacity * (1 - raw_visibility) * (1 - fade_to_lit)\n-    factor = effective * cloud_transmission\n+    factor = effective * cloud_transmission * cloud_transmission\n     diffuse = tuple(value * factor for value in diffuse)\n     specular = tuple(value * factor for value in specular)\n"
+      },
+      {
+        "mutation": "omit_sun_specular",
+        "assertion_failures": 5,
+        "errors": 0,
+        "test_methods_run": 26,
+        "log_sha256": "21a13376602507c1ef2cfedafa59d81c3c20a56b3464bbcc78729d1124925f48",
+        "mutated_module_sha256": "5729827562c523cd21049df7932cd3b1dc01bea8659f8fa8ac040df80ebf0cc7",
+        "unchanged_case_and_test_bytes_verified": true,
+        "failed_tests_or_subtests": [
+          "test_factors_are_independent_of_input_container_mutation (test_rt_fixture_reference.LightingCases.test_factors_are_independent_of_input_container_mutation)",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='unblocked_replaces_shadowed_raster')",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='partial_opacity_and_fade')",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='zero_shadow_opacity')",
+          "test_published_binary_exact_energy_cases (test_rt_fixture_reference.LightingCases.test_published_binary_exact_energy_cases) (case='fully_faded_to_lit')"
+        ],
+        "mutation_diff": "--- reviewed_reference\n+++ isolated_mutation\n@@ -252,5 +252,5 @@\n     factor = effective * cloud_transmission\n     diffuse = tuple(value * factor for value in diffuse)\n-    specular = tuple(value * factor for value in specular)\n+    specular = tuple(0.0 for value in specular)\n     total = tuple(_number(sum(channel)) for channel in zip(\n         ambient, emission, other_lights, diffuse, specular))\n"
+      },
+      {
+        "mutation": "ignore_y_scale",
+        "assertion_failures": 1,
+        "errors": 0,
+        "test_methods_run": 26,
+        "log_sha256": "e64d92760786aebe190c072fa8d7b00fb7e3f2c1f6ea32d11a2dc4c606ad65c0",
+        "mutated_module_sha256": "3a9aa994caf606de740826a4f196de1c0658dab68a6ea3b3d7aa729db6da1c3e",
+        "unchanged_case_and_test_bytes_verified": true,
+        "failed_tests_or_subtests": [
+          "test_published_analytic_cases (test_rt_fixture_reference.GeometryCases.test_published_analytic_cases) (case='tilted_local_y_scale')"
+        ],
+        "mutation_diff": "--- reviewed_reference\n+++ isolated_mutation\n@@ -79,4 +79,5 @@\n \n def _point(matrix, vertex):\n+    matrix = (matrix[0], (matrix[1][0], 1, matrix[1][2], matrix[1][3]), matrix[2])\n     vertex = _exact_vector(vertex)\n     return tuple(_exact_dot(_exact_vector(row[:3]), vertex) + Fraction(row[3])\n"
+      }
+    ],
+    "mutation_scope": "Seven isolated final-source mutants; all assertion failures, no import/syntax/runtime errors; corresponding case/test files byte-identical to published originals. These are sensitivity checks, not code coverage or native results."
+  },
+  "source_findings": [
+    {
+      "finding": "BLAS backing-buffer address used as the AS instance reference",
+      "classification": "Exact-source/API contract mismatch; native failure not reproduced",
+      "source": "drivers/vulkan/rendering_device_driver_vulkan.cpp:6470-6485",
+      "required_next_step": "Load/query/cache the actual BLAS AS address before returning its ID; void instance writer consumes cache; verify resource lifetime and recreation."
+    },
+    {
+      "finding": "AS creation helper returns void and does not propagate every allocation/native-create failure",
+      "classification": "Exact-source error-propagation risk; native crash or invalid-ID return not reproduced",
+      "source": "drivers/vulkan/rendering_device_driver_vulkan.cpp:6415-6417,6463-6464,6499-6514",
+      "required_next_step": "Propagate errors and clean up partial ownership in BLAS/TLAS callers; reject failed BLAS-address query before exposing ID."
+    },
+    {
+      "finding": "First write into new per-TLAS mapped instance buffer leaves used_size at zero",
+      "classification": "Same-TLAS same-frame input-overlap source risk; GPU overlap not reproduced",
+      "source": "servers/rendering/rendering_device.cpp:515-600",
+      "required_next_step": "Initial witness uses one build before completion. Before multiple queued builds, reserve consumed first range and verify two distinct queued input/output witnesses plus failure/retirement."
+    }
+  ],
+  "additional_native_constraints": [
+    "Query and pipeline are distinct; first fixture requires both plus legitimate allocated/initialized SBT; never call an absent pipeline entry point or fabricate a range.",
+    "VkFormatProperties2.formatProperties.bufferFeatures must admit VK_FORMAT_FEATURE_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR on the actual physical device; enum/texture-format checks are insufficient.",
+    "Pinned vertex/storage creation ignores _buffer_initialize return; empty-create with checked buffer_update plus engine errors and sentinel output is the proposed diagnostic upload route.",
+    "Select named mesh per JSON scene; tilted_triangle requires its own geometry/BLAS or safely completed replacement.",
+    "Forward+ eight-bit visibility/opacity/blur policy must be reconciled at the actual Sun replacement seam; ideal Python energy does not assert pixel identity."
+  ],
+  "selected_upstream_texts": [
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "servers/rendering/rendering_device.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_device.cpp",
+      "sha256": "60e9c20f0d28cf822aec5adf4b9b9560910b877eb40b528fed3138a08d36ebd2",
+      "bytes": 465227,
+      "git_blob_sha": "afff76e3b98e3a9882231f711536d41c2ff1e89c",
+      "scope": "complete file; cached exact-pin bytes rechecked against original manifest"
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.cpp",
+      "sha256": "482b78643b2cfc28873f61800b98b631c7a84a8c30f7177fd57982a0b2b17350",
+      "bytes": 374021,
+      "git_blob_sha": "6987a5e94d92d0b617713636a9291c9ce9bfa5c1",
+      "scope": "complete file; cached exact-pin bytes rechecked against original manifest"
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "drivers/vulkan/rendering_device_driver_vulkan.h",
+      "git_blob_sha": "e7c129c744b0b8c0f085d11decb36a230061b9c7",
+      "sha256": "eb15e7855afe5dbb2d15ae6abd797e5bf1decd40fe60172b2ace89ada7850c5b",
+      "bytes": 39742,
+      "scope": "complete file",
+      "retrieval_url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.h"
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl",
+      "git_blob_sha": "de1cb92e51ee49af0d37cad43e141666439599c6",
+      "sha256": "a1bc1aefb73ab43372a3503b94e1a42b862679564bd946fe0bc4c95b3e589982",
+      "bytes": 1514,
+      "scope": "excerpt requested at source lines 2725-2770; SHA-256 is excerpt only; Git blob is whole-file metadata supplied by connector",
+      "retrieval_url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl"
+    }
+  ],
+  "primary_api_references": [
+    "https://docs.vulkan.org/refpages/latest/refpages/source/VkAccelerationStructureInstanceKHR.html",
+    "https://docs.vulkan.org/refpages/latest/refpages/source/vkGetAccelerationStructureDeviceAddressKHR.html",
+    "https://docs.vulkan.org/spec/latest/chapters/accelstructures.html",
+    "https://docs.vulkan.org/spec/latest/chapters/raytraversal.html",
+    "https://docs.vulkan.org/refpages/latest/refpages/source/VkFormatProperties2.html"
+  ],
+  "documentation_validation": {
+    "markdown_documents_checked": 46,
+    "local_links_checked": 1483,
+    "errors": [],
+    "whitespace_check_passed": true,
+    "utf8_json_and_fence_checks_passed": true,
+    "changed_markdown_identities": [
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/04-ray-tracing-in-godot.md",
+        "git_blob_sha": "3e9791d4aa92e64d2b56c1286eddcc792312a23d",
+        "sha256": "611f42f08deaf5cec3f0ee3a728b861932cc5b224f41e5724577b4c02e2e09d7",
+        "bytes": 27620
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+        "git_blob_sha": "e32b6aa0d2e66747db04baffc21ee6627adf25a3",
+        "sha256": "99e1838dcbc7c6b34e8e3a5582e68e4548318789113140437962a91028055507",
+        "bytes": 25406
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/10-reflex-and-ray-integration-design.md",
+        "git_blob_sha": "2202e380473c5b416980e0b68558f5dc7879bc1a",
+        "sha256": "88639b25112b068914f3878901d2c98ca3ff4e14b9be767f78d9cf9385cb1421",
+        "bytes": 45693
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/11-test-and-execution-playbook.md",
+        "git_blob_sha": "56f99343b3458c200a4ab39a436c4bbf717ef9e3",
+        "sha256": "9f991306096a17b2d8a2f331e0a767c973e1ccc3df7d293d910503d1be238010",
+        "bytes": 27084
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+        "git_blob_sha": "3eaf80622ef3398e13b55c74180f0b3ce959c0fb",
+        "sha256": "c04f1ba4495ced7f76472d20edc724fc86abe39f3731b6857f775e1d4ca3e3bd",
+        "bytes": 20402
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/14-ray-tracing-quality-and-delivery-plan.md",
+        "git_blob_sha": "a8cc9f0c7b9c170b22f04c9d3cc893fa126e9a8c",
+        "sha256": "3b12fa6c2fdbd5e24580a52c1e577a79a30c5527598c9156327d939c2041302a",
+        "bytes": 30087
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/15-ray-tracing-fixture-handoff.md",
+        "git_blob_sha": "8c18669852c2558fd8190f64242acf57131e933d",
+        "sha256": "04deecbd0884ad7186bb93194201e1d62f615f2fd356c493424bd60900850e71",
+        "bytes": 15065
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/README.md",
+        "git_blob_sha": "dbe17425841d5f8e5aaec2a2140e8000c3d2106d",
+        "sha256": "78aa90d4f7cd7e181e2126bf7804c9e4524fcbf4ec2a45161ef47f3cb75c2f9b",
+        "bytes": 12977
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/ray-tracing/01-nvidia-amd-integration-guide.md",
+        "git_blob_sha": "e02d55181d335ecf58f26cd7c06b1929b12ade45",
+        "sha256": "90edc5ff47f2b75d94e4a058a6c4994ec21a2524f4dff0b464376fcaea244ce0",
+        "bytes": 29010
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/ray-tracing/03-vulkan-fixture-work-order.md",
+        "git_blob_sha": "a17fa4c9e77721c06b4fac0d3054a4322dc6cdb9",
+        "sha256": "bfcae380180a74bafe89bc34bd35ab009ba458fea25aea3637f6ce10fa80f64c",
+        "bytes": 24264
+      },
+      {
+        "path": "research/performance/graphics_handoff/README.md",
+        "git_blob_sha": "507cbe4ff2ade594ebc0b822b5b479eecbf4999c",
+        "sha256": "9b3d1d18981dcb4209ce2f17ef5d20529196fd08d2a0438ad8792f6397592b69",
+        "bytes": 9804
+      },
+      {
+        "path": "research/performance/graphics_handoff/rt_fixture_README.md",
+        "git_blob_sha": "44bd60ede653e1baa932620fea0ec20317207a2c",
+        "sha256": "aa22b82bb06aa97c996c73957c829c422d5c58545be0bd035b4fbbc8659bb0ab",
+        "bytes": 9363
+      }
+    ]
+  },
+  "selected_project_source_identity_scope": "Application/tool source paths linked from changed Markdown, excluding Markdown; exact bytes compared with original application baseline. Not a full asset/dependency closure.",
+  "selected_project_sources": [
+    {
+      "path": "app/app_state/display_preferences.gd",
+      "git_blob_sha": "667662a1a1400775815d916a8ea1b955be72a1d4",
+      "sha256": "b084fbff2b1c9b8765d96bd12d1722ee4c950ce04e7b31a6aa13578bfbd564c4",
+      "bytes": 22883,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/get-godot.sh",
+      "git_blob_sha": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "bytes": 8960,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/get-templates.sh",
+      "git_blob_sha": "8a75f3b83765f0affcd581aa4b88932715a4ac4c",
+      "sha256": "cd15f5b0a54c29345e577df253e8b831a10dcaf6d6025679d4cdb6aa2f9c9d90",
+      "bytes": 5064,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/project.godot",
+      "git_blob_sha": "647257adefaa34ffd3a95245bd616246679a340b",
+      "sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "bytes": 3950,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "git_blob_sha": "0a5cd1d9fc13fc8ca9b85081d8d153a52a23e5c4",
+      "sha256": "93fb697d887e5182518857fdb9c51e73695f9ba4516544b8fa7eb1e9b93a6490",
+      "bytes": 24734,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "git_blob_sha": "b842aca5ed05391451a0df73f6d8d897bedb32fa",
+      "sha256": "1b5eb746d49cf99610fa00490203052ed1045fab19d1a49f3876818e685f48f1",
+      "bytes": 51976,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/camera/camera_settings.gd",
+      "git_blob_sha": "16d8e48d756e7ec4ae1fd2d3a865ea010ad0f7e6",
+      "sha256": "d5fb145e8f5bcc0a5909990f3c3f69c6ae5f561c51b4c0fe711573de7e921e95",
+      "bytes": 5622,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "git_blob_sha": "5680a093dcc31aea56b029273eee5197ab1960fa",
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede",
+      "bytes": 21924,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/high_graphics_profile.gd",
+      "git_blob_sha": "14067ace4dbf092240d425fabc27c39a00b8be27",
+      "sha256": "4cc764c4c6c9aa3f5f1b1f8d6074d380432fea2952e9ee8a0b37f43e60d48e6f",
+      "bytes": 7098,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/lake/lake_planar_reflection.gd",
+      "git_blob_sha": "c6e13822215ad20f4ea779a9c6ee92731c6d2322",
+      "sha256": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665",
+      "bytes": 7002,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/lake/lake_reflection.gd",
+      "git_blob_sha": "9d6ca0e1a44d0c2dbfc2754e0d9612b9e7bcb300",
+      "sha256": "db692550c9680022d57bbf2ec370fdc32305dfff05017c6d9ab236fd52715e9e",
+      "bytes": 3869,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/lake/water.gdshader",
+      "git_blob_sha": "a13062d2d567dac08a5d1cfc1ca084b52f1c1456",
+      "sha256": "b6d9ff136f48a79c8ce164ce298adb92583b7ca97a32a4c411dc8c3a0bc3a32c",
+      "bytes": 8837,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/metalfx_policy.gd",
+      "git_blob_sha": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "sha256": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "bytes": 5703,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/nvidia_reflex.gd",
+      "git_blob_sha": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "sha256": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+      "bytes": 3801,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/pilot_camera.gd",
+      "git_blob_sha": "15dac3b5343d209147fb14ba4724f51c7ec73009",
+      "sha256": "fbf1960c9977c39bb95fdf4ce4bc5205dacdf789b869e0de5013d8201991be56",
+      "bytes": 7460,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/propeller_blur.gd",
+      "git_blob_sha": "5f033212c4aae37ed68152870b362380d9d2c7d7",
+      "sha256": "e8b4d41c2cbd9a91fd0ae3c51a58aba56809122519abf3d6d4bf507dea242a1f",
+      "bytes": 21906,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/reconstruction.gd",
+      "git_blob_sha": "6b758b525980fa8d0a1be8f94d55be3831809cec",
+      "sha256": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44",
+      "bytes": 41252,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/shadow_settings.gd",
+      "git_blob_sha": "6cf078ac1c3145e00daf0b25ebe60c285701a0cc",
+      "sha256": "7636d2ca7d9a36b96349e63ad531e6ee3aa7c015b3bc37cc599f9884e45b14b0",
+      "bytes": 11509,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/sky.gdshader",
+      "git_blob_sha": "2810142e6efa267a972383fabdf12090ba57357d",
+      "sha256": "727935ab19c18dc89bb3b4351d48dccc740fb01ddf80b9c0c7749042f4bf7ede",
+      "bytes": 19339,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/treeline.gdshader",
+      "git_blob_sha": "d0224f0df288d0a5769bf1ae0b941b5a180961d1",
+      "sha256": "ac1ee408a766edcbe9d8b63d3d5305715ed6415de0adb5da1dbd7a21f8335c13",
+      "bytes": 5936,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/vehicle_paint.gd",
+      "git_blob_sha": "d2476fc3275fa928bc40f9ba7d68741daa8d2c92",
+      "sha256": "f656bf1b93c65cea6ccb6ba5426e6cb6ace522a27eb1a6e54c62cf49c4966611",
+      "bytes": 12335,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/weather/lightning.gd",
+      "git_blob_sha": "6d1a9bed1c08289e5e040aa0e3679fc12a8cd5c7",
+      "sha256": "0f1990160263c2405524bd2187e8e8162231e60dc57991925d66b1c810c3cda1",
+      "bytes": 24117,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/weather/storm_bank.gd",
+      "git_blob_sha": "d17ce37feb7130cecb953248fcbb9869c05fb5e9",
+      "sha256": "16bcafc9304e8a802c34330a85af0218f0ca2960d207fa7ab0077443bd27145c",
+      "bytes": 9959,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/scenery/imported_vegetation.gd",
+      "git_blob_sha": "783a11e6ed02c2ea19f38b0dac1d639afb1d61bd",
+      "sha256": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
+      "bytes": 47095,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/scenery/imported_vegetation_wind.gdshader",
+      "git_blob_sha": "1aebc084ca810cf2cb91baca82a4216240917bc5",
+      "sha256": "3635588944c2a85663d6ce822e58a0392537786d95f0bc4537c4f0eb13c35fbe",
+      "bytes": 2675,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/scenery/motion.gdshader",
+      "git_blob_sha": "d9ea1375ba8f1410005e808f8ff23db52ec99de9",
+      "sha256": "ff3a47e1f56e086369926c6cbe94e4e210c7b012f433d6e965d2003205cf7cf1",
+      "bytes": 2827,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_high_graphics_profile.gd",
+      "git_blob_sha": "4e3aa316d13676454cbfc2cdf17a3f2b3efcee7e",
+      "sha256": "32052504ddee9e299f26f1416f2a3ec6989a0b99044632506e77e64277798d23",
+      "bytes": 21673,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_shadow_settings.gd",
+      "git_blob_sha": "c5720ec060c88a9061ef018d2d5546aef932fe79",
+      "sha256": "abb826b76827e0a1ea6c7bb52be55b791a69d2a5988f9d1b145da943cf9fdf57",
+      "bytes": 15797,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "git_blob_sha": "481ac1c250f1ece7c73b099a0b10cf76448be619",
+      "sha256": "e359c4be8d8913c786b1e6ed6ab07946e61c9648d77ca8de636658ab86de3956",
+      "bytes": 87016,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/build.py",
+      "git_blob_sha": "33129b31388cc98d30e85dc1480227ecd097381b",
+      "sha256": "8c7358aece65fcd846d8584473848bf14e63ce541e388efe5207a5648de1b79b",
+      "bytes": 10656,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/dlss_frame_lifecycle.patch",
+      "git_blob_sha": "0c16fe4e4a1e68aef270f580787f795af9493be8",
+      "sha256": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+      "bytes": 21956,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/reflex_lifecycle.patch",
+      "git_blob_sha": "a68eb233cb458a7d013035163c82f47a2ce875f7",
+      "sha256": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+      "bytes": 22443,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/reflex_startup.gd",
+      "git_blob_sha": "1b73d55cf31b7984b5f3124a14a93cc24a1aa245",
+      "sha256": "d14a6a3013c0fbcbb50a08d9d0c53201e324b1928411207512b34d5262990580",
+      "bytes": 2209,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/reflex_sync.patch",
+      "git_blob_sha": "2817196f898f9c9ce8c30ed2d5ee7283f846b883",
+      "sha256": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+      "bytes": 6206,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/test_shadow_energy.gd",
+      "git_blob_sha": "d5cb13cf0c657bede46585ff0f19c773ca7a77e3",
+      "sha256": "ac27a6484310d39625f359f9d09d1da5a98edada7f0db589eeca362251c5de0f",
+      "bytes": 4356,
+      "matches_application_baseline": true
+    }
+  ],
+  "change_boundary": {
+    "paths": [
+      "docs/research/graphics-performance-2026-11-15/04-ray-tracing-in-godot.md",
+      "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+      "docs/research/graphics-performance-2026-11-15/10-reflex-and-ray-integration-design.md",
+      "docs/research/graphics-performance-2026-11-15/11-test-and-execution-playbook.md",
+      "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+      "docs/research/graphics-performance-2026-11-15/14-ray-tracing-quality-and-delivery-plan.md",
+      "docs/research/graphics-performance-2026-11-15/15-ray-tracing-fixture-handoff.md",
+      "docs/research/graphics-performance-2026-11-15/README.md",
+      "docs/research/graphics-performance-2026-11-15/evidence/rt-fixture-validation.json",
+      "docs/research/graphics-performance-2026-11-15/ray-tracing/01-nvidia-amd-integration-guide.md",
+      "docs/research/graphics-performance-2026-11-15/ray-tracing/03-vulkan-fixture-work-order.md",
+      "research/performance/graphics_handoff/README.md",
+      "research/performance/graphics_handoff/rt_fixture_README.md",
+      "research/performance/graphics_handoff/rt_fixture_cases.json",
+      "research/performance/graphics_handoff/rt_fixture_reference.py",
+      "research/performance/graphics_handoff/test_rt_fixture_reference.py"
+    ],
+    "path_count": 16,
+    "cumulative_changed_paths": 57,
+    "app_tools_ci_changed": false,
+    "runtime_defaults_changed": false,
+    "engine_patch_created": false
+  },
+  "preserved_history": {
+    "unchanged_original_studies": 20,
+    "unchanged_prior_receipts_including_source_manifest": 5,
+    "unchanged_drs_code_test_paths": 2,
+    "drs_readme_command_note": "Documentation only: discovery pattern narrowed to test_drs_reference.py so its historical 38-test scope is explicit."
+  },
+  "independent_review": {
+    "source_review": "Read-only Vulkan source/API review plus bounded rereview of the native work order and fixture handoff; fixed address cache/error boundary, actual format field, checked uploads, named tilted mesh and corrected-engine sequencing.",
+    "numerical_review": "Read-only analytic cases and exact counterexamples; corrected float64-only draft, added two regression methods and non-flat transform coverage; seven final-code deliberate regressions caught."
+  },
+  "execution_budget": {
+    "m0_maximum_engineering_days_total": 5,
+    "m4_feasibility_decision_engineering_days": 2,
+    "m4_useful_opaque_fixture_checkpoint_weeks": 2,
+    "measurement_framework_added": false,
+    "later_attribution_review_limit_engineering_days": 1,
+    "scope_note": "Existing milestones remain controlling; native qualification is required for actual support. Time caps close proceed/static-only/blocked/defer decisions rather than waive evidence."
+  },
+  "native_gpu_measurements": false,
+  "new_visual_captures": false,
+  "new_runtime_implementation": false,
+  "unperformed": [
+    "Engine prerequisite patch implementation/build",
+    "Shader compilation and SPIR-V validation",
+    "Native Vulkan device/AS/query/pipeline/SBT execution",
+    "Validation-layer and native failure-injection checks",
+    "Rendered selected-sun image or pilot readability comparison",
+    "GPU timing/VRAM/flight benchmark",
+    "Vendor SDK integration or build",
+    "Physical RC/display latency test",
+    "Editor/template/export/package qualification",
+    "CI workflow execution for this publication"
+  ]
+}

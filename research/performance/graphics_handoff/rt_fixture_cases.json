@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "scope": "Opaque two-sided, well-conditioned interior correctness cases; no performance or full-flight qualification.",
+  "coordinates": "Render-space metres, Y-up. Transform rows are mathematical local-to-world affine rows; the native adapter must use the exact RD packing.",
+  "ray_parameter": "P(t)=origin+t*direction; direction is not normalized by the reference. distance_m=t*length(direction).",
+  "traversal": "Closest diagnostic completes traversal; terminate-on-first-hit is allowed only for a separate boolean visibility check.",
+  "geometry_input_precision": "Every scalar is rounded to finite IEEE binary32 before exact rational reference geometry; returned numeric fields are float64 approximations. This does not model GPU precision.",
+  "meshes": {
+    "right_triangle": [[[0, 0, 0], [2, 0, 0], [0, 0, 2]]],
+    "tilted_triangle": [[[0, 0, 0], [2, 1, 0], [0, 0, 2]]]
+  },
+  "scenes": {
+    "identity_raised": [
+      {"mesh": "right_triangle", "instance_custom_index": 7, "mask": 255, "transform_rows": [[1, 0, 0, 0], [0, 1, 0, 2], [0, 0, 1, 0]]}
+    ],
+    "affine_near_far": [
+      {"mesh": "right_triangle", "instance_custom_index": 73, "mask": 4, "transform_rows": [[0, 0, 2, 3], [0, 3, 0, 8], [-1, 0, 0, 5]]},
+      {"mesh": "right_triangle", "instance_custom_index": 66051, "mask": 2, "transform_rows": [[0, 0, 2, 3], [0, 3, 0, 4], [-1, 0, 0, 5]]}
+    ],
+    "near_moved": [
+      {"mesh": "right_triangle", "instance_custom_index": 73, "mask": 4, "transform_rows": [[0, 0, 2, 3], [0, 3, 0, 8], [-1, 0, 0, 5]]},
+      {"mesh": "right_triangle", "instance_custom_index": 66051, "mask": 2, "transform_rows": [[0, 0, 2, 7], [0, 3, 0, 4], [-1, 0, 0, 5]]}
+    ],
+    "affine_tilted": [
+      {"mesh": "tilted_triangle", "instance_custom_index": 66051, "mask": 2, "transform_rows": [[0, 0, 2, 3], [0, 3, 0, 4], [-1, 0, 0, 5]]}
+    ],
+    "receiver_only": [
+      {"mesh": "right_triangle", "instance_custom_index": 101, "mask": 255, "transform_rows": [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]}
+    ],
+    "receiver_and_small_blocker": [
+      {"mesh": "right_triangle", "instance_custom_index": 101, "mask": 255, "transform_rows": [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]},
+      {"mesh": "right_triangle", "instance_custom_index": 102, "mask": 255, "transform_rows": [[1, 0, 0, 0], [0, 1, 0, 0.001953125], [0, 0, 1, 0]]}
+    ]
+  },
+  "geometric_cases": [
+    {"name": "identity_hit", "scene": "identity_raised", "ray": {"origin": [0.5, 0, 0.5], "direction": [0, 1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 255}, "expected": {"hit": true, "t": 2, "distance_m": 2, "instance_custom_index": 7, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}},
+    {"name": "side_miss", "scene": "identity_raised", "ray": {"origin": [3, 0, 3], "direction": [0, 1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 255}, "expected": {"hit": false, "t": null, "distance_m": null, "instance_custom_index": null, "primitive_index": null, "barycentric": null}},
+    {"name": "away_miss", "scene": "identity_raised", "ray": {"origin": [0.5, 0, 0.5], "direction": [0, -1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 255}, "expected": {"hit": false, "t": null, "distance_m": null, "instance_custom_index": null, "primitive_index": null, "barycentric": null}},
+    {"name": "affine_nearest", "scene": "affine_near_far", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 255}, "expected": {"hit": true, "t": 6, "distance_m": 6, "instance_custom_index": 66051, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}},
+    {"name": "nonunit_parameter", "scene": "affine_near_far", "ray": {"origin": [4, -2, 4.5], "direction": [0, 2, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 255}, "expected": {"hit": true, "t": 3, "distance_m": 6, "instance_custom_index": 66051, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}},
+    {"name": "mask_far", "scene": "affine_near_far", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 4}, "expected": {"hit": true, "t": 10, "distance_m": 10, "instance_custom_index": 73, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}},
+    {"name": "zero_mask", "scene": "affine_near_far", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 0}, "expected": {"hit": false, "t": null, "distance_m": null, "instance_custom_index": null, "primitive_index": null, "barycentric": null}},
+    {"name": "before_near", "scene": "affine_near_far", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 2, "t_max": 5, "cull_mask": 255}, "expected": {"hit": false, "t": null, "distance_m": null, "instance_custom_index": null, "primitive_index": null, "barycentric": null}},
+    {"name": "between_surfaces", "scene": "affine_near_far", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 7, "t_max": 9, "cull_mask": 255}, "expected": {"hit": false, "t": null, "distance_m": null, "instance_custom_index": null, "primitive_index": null, "barycentric": null}},
+    {"name": "past_near_hits_far", "scene": "affine_near_far", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 7, "t_max": 11, "cull_mask": 255}, "expected": {"hit": true, "t": 10, "distance_m": 10, "instance_custom_index": 73, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}},
+    {"name": "near_transform_changed", "scene": "near_moved", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 255}, "expected": {"hit": true, "t": 10, "distance_m": 10, "instance_custom_index": 73, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}},
+    {"name": "offset_receiver_miss", "scene": "receiver_only", "ray": {"origin": [0.5, 0.000244140625, 0.5], "direction": [0, 1, 0], "t_min": 0.000244140625, "t_max": 0.0078125, "cull_mask": 255}, "expected": {"hit": false, "t": null, "distance_m": null, "instance_custom_index": null, "primitive_index": null, "barycentric": null}},
+    {"name": "small_blocker_preserved", "scene": "receiver_and_small_blocker", "ray": {"origin": [0.5, 0.000244140625, 0.5], "direction": [0, 1, 0], "t_min": 0.000244140625, "t_max": 0.0078125, "cull_mask": 255}, "expected": {"hit": true, "t": 0.001708984375, "distance_m": 0.001708984375, "instance_custom_index": 102, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}},
+    {"name": "tilted_local_y_scale", "scene": "affine_tilted", "ray": {"origin": [4, -2, 4.5], "direction": [0, 1, 0], "t_min": 0.125, "t_max": 12, "cull_mask": 255}, "expected": {"hit": true, "t": 6.75, "distance_m": 6.75, "instance_custom_index": 66051, "primitive_index": 0, "barycentric": [0.5, 0.25, 0.25]}}
+  ],
+  "lighting_inputs": {
+    "ambient": [0.125, 0.0625, 0.03125],
+    "emission": [0.03125, 0.0625, 0.125],
+    "other_lights": [0.25, 0.125, 0.0625],
+    "sun_diffuse": [0.5, 0.25, 0.125],
+    "sun_specular": [0.0625, 0.125, 0.25],
+    "cloud_transmission": 0.5
+  },
+  "lighting_policy": "Ideal linear fixture: Veff=1-opacity*(1-raw_visibility)*(1-fade_to_lit). other_lights already includes its baseline cloud policy. Sun inputs are unshadowed. No Godot pixel/BRDF/quantization equivalence is claimed.",
+  "lighting_cases": [
+    {"name": "unblocked_replaces_shadowed_raster", "previous_raster_visibility": 0, "raw_visibility": 1, "opacity": 1, "fade_to_lit": 0, "expected": {"effective_visibility": 1, "sun_diffuse": [0.25, 0.125, 0.0625], "sun_specular": [0.03125, 0.0625, 0.125], "total": [0.6875, 0.4375, 0.40625]}},
+    {"name": "blocked_replaces_unshadowed_raster", "previous_raster_visibility": 1, "raw_visibility": 0, "opacity": 1, "fade_to_lit": 0, "expected": {"effective_visibility": 0, "sun_diffuse": [0, 0, 0], "sun_specular": [0, 0, 0], "total": [0.40625, 0.25, 0.21875]}},
+    {"name": "partial_opacity_and_fade", "previous_raster_visibility": 1, "raw_visibility": 0, "opacity": 0.5, "fade_to_lit": 0.5, "expected": {"effective_visibility": 0.75, "sun_diffuse": [0.1875, 0.09375, 0.046875], "sun_specular": [0.0234375, 0.046875, 0.09375], "total": [0.6171875, 0.390625, 0.359375]}},
+    {"name": "zero_shadow_opacity", "previous_raster_visibility": 0, "raw_visibility": 0, "opacity": 0, "fade_to_lit": 0, "expected": {"effective_visibility": 1, "sun_diffuse": [0.25, 0.125, 0.0625], "sun_specular": [0.03125, 0.0625, 0.125], "total": [0.6875, 0.4375, 0.40625]}},
+    {"name": "fully_faded_to_lit", "previous_raster_visibility": 0, "raw_visibility": 0, "opacity": 1, "fade_to_lit": 1, "expected": {"effective_visibility": 1, "sun_diffuse": [0.25, 0.125, 0.0625], "sun_specular": [0.03125, 0.0625, 0.125], "total": [0.6875, 0.4375, 0.40625]}}
+  ]
+}

@@ -63,10 +63,12 @@ This exact command passed 21 tests in the sparse audit workspace. Directly runni
 For the [offline DRS design specimen](../../../research/performance/graphics_handoff/README.md), run this from the repository root of a fresh complete checkout with Python 3.10 or newer:
 
 ```sh
-python3 -B -m unittest discover -s research/performance/graphics_handoff -p 'test_*.py' -v
+python3 -B -m unittest discover -s research/performance/graphics_handoff -p 'test_drs_reference.py' -v
 ```
 
 The independent reviewer ran that discovery command on an isolated copy of the two Python files: **38 tests passed**. The copied `drs_reference.py` SHA-256 was `10af4e2800bb6b6ac27021b8453cd7cfb529cb2c7083ac864c2a2ac96faaf30f` and `test_drs_reference.py` was `6f6016cca1015c0450d2cda973d1ab67dff9695758b10dc67bcde63cf3f1f28e`. This is a no-GPU, no-engine contract example, not an M0 collector, a production implementation or an additional native qualification gate. A production port must independently exercise the real owner and the cases below.
+
+The later [RT fixture reference](../../../research/performance/graphics_handoff/rt_fixture_README.md) has a separate focused `test_rt_fixture_reference.py` command and 26 offline tests. Its geometry/energy answers prepare a proposed native adapter; they do not change the status of the application/GPU cases below. The [native work order](ray-tracing/03-vulkan-fixture-work-order.md) records the engine prerequisites and buffer/shader contract.
 
 ## Card 2 — Required new or extended test cases
 
