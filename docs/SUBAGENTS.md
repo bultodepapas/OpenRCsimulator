@@ -20,6 +20,7 @@ Read the [delegation rules](#lead-agent-and-delegation-rules), send a [brief](#d
 5. **Keep review independent and bounded.** Give critical reviewers requirements and evidence before the preferred conclusion. Request concrete counterexamples, not a quota of objections. Resolve disagreements through a discriminating check; agent agreement is not physical or hardware evidence. Stop when the question is answered or required evidence is unavailable, and report that limit.
 6. **Keep delegation shallow.** Reuse specialists for focused follow-ups. Children delegate only when the lead explicitly assigns that responsibility and budget. A role does not confer ownership of another track or authority for unrelated actions.
 7. **Integrate and verify the actual result.** Inspect the combined diff and source identity; individual checks can predate another edit. Run the relevant [contribution checks](../CONTRIBUTING.md#make-a-change), then report the outcome and missing evidence. Existing user authorization carries through the task; review recommendations do not create approval gates or expand authority to unrelated publication, deletion or third-party contact.
+8. **Close delegated storage ownership.** Identify each potentially large workspace, expected peak growth and cleanup owner in the brief. The lead retains responsibility if a child exits or fails. Use the [storage inspection contract](../tools/testqueue/README.md#storage-inspection), preserve active/unknown attempts and unique work, and return exact retained paths with reasons. Routine accounting and cleanup should use deterministic tooling; a standing Disk Steward agent is not required.
 
 ## Shared OpenRC contract
 
@@ -41,6 +42,7 @@ Baseline: <commit, relevant dirty paths/diff, data/config and environment>
 Context: <requirements, known evidence, applicable instructions and canonical guide>
 Scope: read <paths>; write <none or exact paths>; outputs <unique directory>
 Resources / limits: <tools, exclusive access, dependencies and non-goals>
+Storage: <owner, existing local root, expected peak growth, reuse and closure/handoff>
 Acceptance / stop: <required proof; completion or unavailable-evidence condition>
 Budget: <proportionate effort; time/tool limit if useful>
 Return: findings and checks below; no child delegation unless explicitly assigned
@@ -51,6 +53,7 @@ Verdict and identity: <supported / issue found / inconclusive; source/run examin
 Findings: <trigger -> consequence -> evidence; distinguish observed from suspected>
 Changes: <paths changed or none; source/generator where applicable>
 Checks: <actually run, results and artifact paths; unperformed checks explicit>
+Storage closure: <owned disposable paths removed; retained paths/reasons; unresolved owner>
 Remaining: <uncertainty, dependency or smallest next action; none if complete>
 ```
 
@@ -88,7 +91,22 @@ Inspect fresh production-path captures/video for silhouette, attitude readabilit
 
 ### 8. Disk Steward — `disk_steward`
 
-Measure storage within assigned roots and distinguish source, evidence, generated outputs, caches, worktrees and external deliveries. Return exact candidate paths, sizes, retention reasons and recovery recipes without double-counting. Inventory is read-only; cleanup requires an already authorized exact scope. Resolve paths/junctions first, and never infer disposability from age, size or ignore status. Start with the [evidence conventions](README.md#conventions-for-documents).
+Measure storage within assigned stable local roots and distinguish source,
+evidence, generated outputs, caches, worktrees and external deliveries. Use the
+[bounded storage commands](../tools/testqueue/README.md#storage-inspection) before
+writing a new scanner. Label logical path bytes, observed volume free space,
+incomplete scans and unknown allocation separately; do not sum the same volume
+twice or call logical bytes reclaimable space. Return exact candidate paths,
+ownership, retention reasons and recovery recipes in the task handoff.
+
+Inventory does not authorize deletion. Cleanup needs an already authorized
+exact scope, verified lifecycle and retained unique work; age, size, ignore
+status and process teardown alone are insufficient. Keep unknown attempts and
+their claims protected. This is an on-demand audit/review role, not a permanent
+LLM polling loop. Start with the [evidence conventions](README.md#conventions-for-documents)
+and [storage research](research/agent-storage/README.md); the
+[plan](plans/agent-storage-lifecycle.md) distinguishes pending automation from
+current commands.
 
 ## Simulation, vehicle and data specialists
 

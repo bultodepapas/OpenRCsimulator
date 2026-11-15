@@ -95,10 +95,12 @@ def _normalize_excludes(excludes: Sequence[str] | None) -> list[str]:
 
 def _prefix_matches(relative: str, prefix: str) -> bool:
     if os.name == "nt":
-        relative = os.path.normcase(relative)
-        prefix = os.path.normcase(prefix)
+        # normcase on Windows also changes '/' to '\\'; the scanner and
+        # normalized exclusions use '/' as their component separator.
+        relative = os.path.normcase(relative).replace("\\", "/")
+        prefix = os.path.normcase(prefix).replace("\\", "/")
     if prefix == ".git":
-        return ".git" in relative.split("/")
+        return any(part.casefold() == ".git" for part in relative.split("/"))
     return relative == prefix or relative.startswith(prefix + "/")
 
 
@@ -208,6 +210,30 @@ def scan_storage(root: Path, *, top: int = DEFAULT_TOP, max_entries: int = DEFAU
         except OSError as error:
             filesystem_error("close", relative, error)
 
+    def open_checked_directory(path: Path, relative: str, before: os.stat_result) -> Any:
+        # Do not enumerate if the path changed between its no-follow stat and
+        # opening it. This detects common replacements, not swap-and-restore
+        # races or concurrent changes to an ancestor.
+        try:
+            iterator = os.scandir(path)
+        except OSError as error:
+            filesystem_error("scandir", relative, error)
+            return None
+        try:
+            after = path.lstat()
+        except OSError as error:
+            close_iterator(iterator, relative)
+            filesystem_error("directory_identity", relative, error)
+            partial("directory_changed")
+            return None
+        if (not stat.S_ISDIR(after.st_mode) or _is_reparse_point(after)
+                or (before.st_dev, before.st_ino) != (after.st_dev, after.st_ino)):
+            close_iterator(iterator, relative)
+            filesystem_error("directory_identity", relative, ValueError("directory changed while opening; contents omitted"))
+            partial("directory_changed")
+            return None
+        return iterator
+
     def add_file(relative: str, size: int) -> None:
         nonlocal file_count, logical_file_bytes
         file_count += 1
@@ -240,9 +266,17 @@ def scan_storage(root: Path, *, top: int = DEFAULT_TOP, max_entries: int = DEFAU
     stack: list[tuple[Path, str, Any, int]] = []
     try:
         try:
-            stack.append((root, "", os.scandir(root), 0))
+            root_info = root.lstat()
         except OSError as error:
-            filesystem_error("scandir", "", error)
+            filesystem_error("stat", "", error)
+        else:
+            if not stat.S_ISDIR(root_info.st_mode) or _is_reparse_point(root_info):
+                filesystem_error("directory_identity", "", ValueError("root changed before opening; contents omitted"))
+                partial("directory_changed")
+            else:
+                root_iterator = open_checked_directory(root, "", root_info)
+                if root_iterator is not None:
+                    stack.append((root, "", root_iterator, 0))
 
         while stack:
             if time.monotonic() >= deadline:
@@ -299,10 +333,10 @@ def scan_storage(root: Path, *, top: int = DEFAULT_TOP, max_entries: int = DEFAU
                 elif entries_encountered >= max_entries:
                     partial("entry_limit")
                 else:
-                    try:
-                        stack.append((Path(entry.path), relative, os.scandir(entry.path), child_depth))
-                    except OSError as error:
-                        filesystem_error("scandir", relative, error)
+                    child = Path(entry.path)
+                    child_iterator = open_checked_directory(child, relative, info)
+                    if child_iterator is not None:
+                        stack.append((child, relative, child_iterator, child_depth))
             elif stat.S_ISREG(info.st_mode):
                 size = info.st_size
                 if type(size) is not int or size < 0:
@@ -358,10 +392,10 @@ def scan_storage(root: Path, *, top: int = DEFAULT_TOP, max_entries: int = DEFAU
         "scope": {
             "logical_file_bytes": "sum of st_size for scanned regular-file paths only; hard links count once per path and may be double-counted",
             "volume_capacity": "shutil.disk_usage(root), shown separately from the scanned logical bytes",
-            "links": "symbolic links and Windows reparse points are not traversed or included as regular-file bytes",
+            "links": "symbolic links and Windows reparse points are skipped when observed; replacement checks are best-effort and concurrent races can still follow links",
             "contents": "file contents are never opened or read",
             "output": "the new report is written after the scan and is not included in its own totals",
-            "excludes": ".git path components are skipped anywhere by default; extra prefixes are root-relative and component-boundary matched",
+            "excludes": ".git path components are skipped case-insensitively anywhere by default; extra root-relative prefixes use native case and component-boundary matching",
             "directory_count": "counts encountered directories below root; root itself is excluded",
         },
         "excluded_prefixes": excluded_prefixes,

@@ -356,6 +356,111 @@ an eligible-exclusive waiting barrier.
 The local authority has no remote-host substitution, priority override or owner
 transfer. The checked pool above selects a host before a new attempt is submitted.
 
+## Storage inspection
+
+`testctl.py storage` provides local inventory and an explicit capacity diagnostic.
+It reuses the [existing scanner](../godot/README.md#process-ram-io-and-storage-pt1h-r4),
+does not contact the queue authority, and does not create/read queue state or
+classify a path as safe to delete. It does not allocate storage, reserve capacity,
+launch a test or run cleanup. Use `python -B` so the interpreter does not create
+bytecode caches; without `-B`, normal Python startup/import behavior can write them.
+
+Select existing, trusted, stable local directories. The following PowerShell
+paths and budgets are examples, not configured host locations or calibrated
+limits; substitute the host's approved roots. The command does not create them.
+
+```powershell
+python -B tools/testqueue/testctl.py storage inventory --root 'D:\OpenRC-agent-data' --top 20 --max-seconds 5
+python -B tools/testqueue/testctl.py storage budget --root 'D:\OpenRC-agent-data' --peak-bytes 8589934592 --reserved-bytes 4294967296 --floor-bytes 21474836480
+```
+
+The second example asks whether an additional 8 GiB peak fits after 4 GiB of
+other future commitments and a 20 GiB free-space floor. It is illustrative;
+measure actual workload growth before choosing host policy. Run separately on
+each relevant volume. C: and D: letters do not prove separate physical disks,
+and two roots on one volume must not be treated as two pools of free space.
+
+### Inventory contract
+
+Repeat `--root` for up to four non-overlapping directories. The command refuses
+duplicate/ancestor roots, detected identity aliases, selected paths inside a
+case-insensitive `.git` component, `..`, and observed symlink/junction/reparse
+components. Windows UNC and detected mapped-network drives are refused.
+Operators must still avoid remote or nested network mounts; portable path
+checks cannot identify every mount topology or alias.
+
+| Option | Default | Bound / meaning |
+| --- | --- | --- |
+| `--top` | 20 | 1–100 largest regular-file paths per root |
+| `--max-entries` | 25,000 | 1–100,000 encountered entries per root |
+| `--max-seconds` | 5 | Greater than zero, at most 30; cooperative per-root scan time |
+| `--max-depth` | 128 | 1–1,024 directory levels |
+| `--exclude PREFIX` | None beyond `.git` | Repeatable root-relative, component-boundary prefix |
+| `--out NEW_FILE` | JSON on stdout | Optional exclusive new file; existing local parent required |
+
+All `.git` component casings are skipped, including a distinct `.GIT` on a
+case-sensitive filesystem; other exclusions use native case behavior. File
+contents are not read. Logical bytes count scanned regular-file paths and can
+count the same hard-linked content more than once. They do not measure physical
+allocation or reclaimable space. Volume free space is shown separately, and
+results from different roots are not summed. Excluded or unreadable data,
+limits and concurrent changes can make coverage incomplete.
+
+An incomplete root makes the report partial. If a later root becomes unavailable
+after initial validation, earlier results are preserved and that root has an
+explicit unavailable record without an invented size. Inspect each root's
+status and partial reasons; a successful earlier scan does not complete a later one.
+
+Time limits are cooperative, not hard deadlines: a blocked filesystem call can
+overrun them, and total scan time can reach the root count times the per-root
+limit. Run after producers stop for a more consistent observation. Directory
+identity checks detect common replacement races, but concurrent ancestor changes
+or swap-and-restore can still follow a changed path. This is not a security
+boundary for a hostile or actively rearranged filesystem.
+
+### Budget contract
+
+All three byte inputs are required nonnegative decimal integers; zero is valid.
+`--peak-bytes` is the new operation's additional peak growth. `--reserved-bytes`
+is other promised future growth not already reflected in volume usage;
+`--floor-bytes` is free space to preserve. Assessment is:
+
+```text
+observed_fit when peak_bytes <= observed_free - reserved_bytes - floor_bytes
+```
+
+The command neither discovers those commitments nor writes a reservation.
+Several agents can observe the same headroom, so this result cannot authorize
+concurrent allocation by itself. Unavailable capacity is indeterminate rather
+than a fit. The [storage lifecycle plan](../../docs/plans/agent-storage-lifecycle.md)
+defines the pending atomic controller and its wider lifecycle accounting.
+
+### Output and exit status
+
+With no `--out`, the report is emitted to stdout. With `--out`, only the explicitly
+requested new JSON file is created; its parent must already exist, and existing
+files are not overwritten. Windows alternate-stream/device path syntax is
+rejected lexically. Output-parent checks are strongest where descriptor-relative
+no-follow access is available; concurrent replacement remains a Windows limit.
+Native Windows and case-insensitive macOS behavior have not yet been qualified.
+
+| Exit | Inventory | Budget |
+| --- | --- | --- |
+| 0 | Complete within the stated scope | Observed fit at sampling time |
+| 1 | Partial report, including a root lost after validation | Insufficient observed headroom |
+| 2 | Invalid selection/arguments or output error | Invalid input/path, unavailable capacity or output error |
+
+Usage/output errors are reported on stderr and may have no JSON report.
+Preserve useful findings in the existing task handoff rather than accumulating
+committed inventory files. Source evidence and option tradeoffs live in the
+[24-investigation research set](../../docs/research/agent-storage/README.md).
+
+Focused verification:
+
+```powershell
+python -B -m unittest tools.testqueue.test_storage -v
+```
+
 ## Verification
 
 Set `TEMP`, `TMP` and `TMPDIR` to a local volume with at least the snapshot reserve.

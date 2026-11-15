@@ -57,6 +57,33 @@ Several tracks share this tree. Read `git status` before editing, especially sha
 
 Keep aircraft node/hinge names (`airplane`, `propeller`, `*_hinge`) stable. Generated aircraft geometry and physics data must be regenerated through their source pipelines, never hand-edited. Each aircraft guide identifies its generator.
 
+## Bound agent storage
+
+Before a large copy, import, export or parallel dispatch, identify its owner,
+existing local output root, expected peak growth and closure responsibility.
+Use the smallest qualified workspace and reuse existing verified inputs where
+their contract permits. Avoid recursive copies of workspaces containing older
+copies, outputs or caches. Coding worktrees still need isolated writable game
+state; retain the test queue's snapshot and process-ownership contracts.
+
+Inspect selected stable local roots with the
+[storage commands](tools/testqueue/README.md#storage-inspection); use `python -B`
+and stdout unless a retained report is needed. The budget command is a free-space
+observation, not an atomic reservation. C: and D: placement must follow the
+host's configured roots and capacity; moving a cache does not bound its size.
+
+At closure, remove only task-owned disposable data within the already authorized
+scope after verified teardown and evidence handoff. Preserve unique source,
+dirty/untracked/ignored work, references, user data, accepted evidence and live
+or unknown attempts. Age, size, `.gitignore`, a missing PID or process
+`cleanup="CONFIRMED"` alone does not establish safe file removal. The lead owns
+unresolved child leftovers and records their exact retained paths/reasons in
+the existing handoff. Keep useful reusable caches bounded through their owning
+tools; do not create backup copies of disposable copies or routine cleanup archives.
+
+The [storage lifecycle plan](docs/plans/agent-storage-lifecycle.md) defines the
+pending admission/finalizer/sweeper work; those controls are not yet installed.
+
 ## Simulation and verification
 
 - State in `app/sim/` and `app/physics/` uses 64-bit GDScript `float` and packed float64 arrays. Do not use `Vector3`, `Basis`, `Quaternion` or `Transform3D` for simulation state. Rendering converts at the boundary.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import ntpath
 import os
 from pathlib import Path
 import subprocess
@@ -152,15 +153,20 @@ class StorageAuditTests(unittest.TestCase):
         self.assertIn("app/.godot-cache/visible.bin", paths)
         self.assertIn(".godot/root-cache.bin", paths)
 
-    def test_git_exclusion_uses_windows_case_rules_but_posix_remains_case_sensitive(self):
+    def test_git_exclusion_is_case_insensitive_and_custom_prefixes_follow_platform(self):
         with mock.patch.object(storage_audit.os, "name", "nt"), \
-                mock.patch.object(storage_audit.os.path, "normcase", side_effect=str.casefold):
+                mock.patch.object(storage_audit.os.path, "normcase", side_effect=ntpath.normcase):
             self.assertTrue(storage_audit._prefix_matches("nested/.GIT/objects/item", ".git"))
             self.assertFalse(storage_audit._prefix_matches("nested/.GITignore/item", ".git"))
+            self.assertTrue(storage_audit._prefix_matches("Cache/NESTED/item", "cache/nested"))
+            self.assertFalse(storage_audit._prefix_matches("Cache/NESTEDother/item", "cache/nested"))
 
         with mock.patch.object(storage_audit.os, "name", "posix"), \
                 mock.patch.object(storage_audit.os.path, "normcase", side_effect=lambda value: value):
-            self.assertFalse(storage_audit._prefix_matches("nested/.GIT/objects/item", ".git"))
+            self.assertTrue(storage_audit._prefix_matches("nested/.GIT/objects/item", ".git"))
+            self.assertFalse(storage_audit._prefix_matches("nested/.GITignore/item", ".git"))
+            self.assertTrue(storage_audit._prefix_matches("cache/nested/item", "cache/nested"))
+            self.assertFalse(storage_audit._prefix_matches("Cache/nested/item", "cache/nested"))
 
     def test_largest_files_ties_retain_lexicographically_smallest_paths(self):
         kept = []

@@ -59,6 +59,9 @@ def main(argv=None):
     if arguments and arguments[0] == 'pool':
         from tools.testqueue.pool import main as pool_main
         return pool_main(arguments[1:])
+    if arguments and arguments[0] == 'storage':
+        from tools.testqueue.storage import main as storage_main
+        return storage_main(arguments[1:])
     args = parser().parse_args(argv)
     if args.command == "serve":
         if not 1 <= args.headless_slots <= 8:

@@ -400,15 +400,21 @@ Interpret the counters separately:
 For project **file sizes**, the read-only audit needs no dependency:
 
 ```powershell
-python tools/godot/storage_audit.py . --out tmp/storage-review.json --top 20 --max-seconds 30
+python -B tools/godot/storage_audit.py . --out tmp/storage-review.json --top 20 --max-seconds 30
 ```
 
 It identifies the largest files and Godot-related storage categories, plus free
 space on the root volume. File bytes are logical sizes per path, not allocated
-blocks; hard-linked files count once per path. Exclusions and skipped links are
-reported; no symlink/junction entry is traversed, and no content is read or deleted.
-Review `.godot` imports, assets and retained captures separately before deciding
-what to keep. Run after producers stop for a more consistent snapshot.
+blocks; hard-linked files count once per path. Exclusions and observed links are
+reported and skipped; no content is read or deleted. `.git` components are
+excluded case-insensitively; extra prefixes use native case matching. Directory
+identity checks mark common replacement races partial, but concurrent ancestor
+changes or swap-and-restore can still redirect traversal. Use trusted, stable
+local roots; this is not a hostile-filesystem security boundary. Review `.godot`
+imports, assets and retained captures separately before deciding what to keep.
+Run after producers stop for a more consistent snapshot. For stdout output,
+up to four selected roots and a non-atomic capacity diagnostic, use
+[test-queue storage inspection](../testqueue/README.md#storage-inspection).
 
 The output must be new. Scan limits, unreadable entries and other incomplete
 coverage produce exit 1 with a partial report; bad arguments or output failures

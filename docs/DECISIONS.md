@@ -348,6 +348,17 @@ containment with either backend; do not build a generic backend framework meanwh
 [SQLite WAL](https://www.sqlite.org/wal.html) requires same-host access, so remote
 workers must use structured transport rather than share this database.
 
+**STOR-01, storage inspection foundation.** Reuse the existing bounded scanner
+and keep inventory/capacity observations separate from allocation and deletion.
+This exposes storage pressure without treating directory age, Git cleanliness or
+confirmed process teardown as permission to remove payloads. Agent guidance and
+an on-demand Disk Steward support the workflow; durable lifecycle enforcement
+belongs with host tooling. Automatic reservations and cleanup remain proposed
+in the [storage lifecycle plan](plans/agent-storage-lifecycle.md), with the
+[research](research/agent-storage/README.md) recording alternatives. Revisit the
+read-only boundary after native filesystem, interrupted-cleanup and evidence-
+handoff qualification, not solely because a scan reports little free space.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.
