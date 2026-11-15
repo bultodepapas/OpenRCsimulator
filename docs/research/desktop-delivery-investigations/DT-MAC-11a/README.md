@@ -1324,6 +1324,136 @@ renewal restores exact editor-import project bytes before runtime and isolates
 both imports and tests; the first continuation lacked editor-import isolation
 and is not admitted. Its canonical AFC receipt records the bounded qualification.
 
+## R3 package, warm product trial and native intake follow-up
+
+The [required CI run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43727815769)
+for `bffe0ed522efc4e0ab7336ef60d401c4cf4d712d` completed with 21 successful jobs
+and five conditional skips. The final visual captures and `CI required` gate
+passed. This qualifies that source's required checks, not every MetalFX product
+or the later private native-integration candidate.
+
+The R3 local ARM64 development ZIP includes that source and camera-cut fix:
+1,643,422,544 bytes, SHA-256
+`cd1f081c72343a3f260f36c2f6e74349dc009e05bbfeb646f09e4ceaece89ff7`.
+The retrieved ZIP matched independently. Export, local signature/source receipt,
+fixed-session and rendered Metal smokes passed. Its custom engine still uses
+reference physics. The smoke requested a 1920×1080 window but did not establish
+actual pixels; use the separate measured screen above for its scoped pixel proof.
+
+An unwrapped release Temporal startup completed without engine errors and kept
+the requested mode, but remained menu-paused with zero simulation ticks. Its
+active-simulation acceptance failed. It took 330.9 seconds; a two-second native
+stack sample observed render-pipeline compilation and a main-thread worker wait.
+That sample does not attribute the whole delay to compilation. Cold startup,
+active-flight execution and GPU completion are not established by this attempt.
+
+A separate warm-cache, source-hosted product trial advanced simulation ticks
+24 → 351, paused through the normal menu at 652, and resumed to 944. Two GPU
+snapshots matched viewport generation 11 / observer generation 3, successful
+completed tickets 62 and 130, and explicit requested/encoded/completed reset
+serial 1. The process stopped normally with exit 0 and zero reported ObjectDB
+leaks. This used an explicit after-ready reset; it is not cold-start, release,
+FPS, latency or endurance qualification. A read-only postflight matched seven
+source paths to the selected Git tree; only the declared research project and
+export settings differed. Its receipt SHA-256 is
+`b1916e65e14420ac9960ffaa9772efe3f098d081baf63c7a2521c02b23e5424d`.
+Phase 12 retains 19 payloads in 196,470 compressed bytes, SHA-256
+`2329b857c59e5b272b72becd4b8f9583a96833da9c6523910031a888d06c9435`;
+all retrieved payload hashes matched. The separate postflight is not in that archive.
+
+Native integration draft `90c1e2e3fc1d00da5df28ea49be7ce039abe8e65`
+(tree `b7b949fd9efa678b7293fea7005c857220187bac`) adds explicit, independent
+native and engine toolchain profiles for Apple clang 2100.4.1.1 / SDK 27.2.
+The legacy profile remains the default. All 189 focused portable controls passed
+on ANGEL after fixture paths were resolved before constructing their identities;
+the initial `/var` versus `/private/var` fixture failures are retained. The proposed
+package-specific automatic-admission route remains disabled and lacks its final
+producer, packaged consumers/replay and performance qualification.
+
+A separate source correctness suite subsequently passed on the same M1 with the
+official ARM64 editor and explicitly selected native clang 2100.4.1.1 / SDK 27.2,
+in 1,345.75 seconds. Both native builds completed with local ad-hoc signatures;
+all 17 positive oracle rows passed and the separate mutation control was detected.
+FPCR and native array-domain guard controls passed. Production-path native stage, lifecycle and exact
+replay passed 97, 343 and 190 checks, with explicit native execution markers.
+The candidate dylib SHA-256 is
+`06f301e2c1a40d6a58c0e7de57882df263adcdc90f19cd93c317eab5a02b306c`.
+This is official-engine source correctness, not custom-engine, fleet, performance
+or automatic-default qualification. The initial official standalone-executable
+copy was killed by macOS; the admitted run copied and verified the complete
+signed bundle before adding its isolated editor marker. The task environment
+also needed the existing pinned psutil 7.2.2 dependency; earlier failed attempts
+are retained.
+
+The real `NativeStage._macos_package_source_error` consumer also passed a bounded
+19-check receipt fixture on M1: the independently verified package/row was
+accepted and a changed row, unverified package and wrong kind were refused.
+Its other parse dependencies are explicit stubs; no extension or release-template
+execution is claimed. The Windows MCP attempt failed before source freezing,
+and the CLI fallback froze its source but waited for an offline authority. Those
+attempts do not establish a Windows test pass. Phase 13 retains 175 payloads,
+7,699,113 compressed bytes, SHA-256
+`752146aba405bf03ec33a8fffb92c3e0b0880dad78755b50b70e821f898619d8`;
+every retrieved payload hash matched independently.
+
+The actual clean19 custom-engine intake then refused its API compatibility
+control. The official engine detected only the deliberately missing class;
+the custom engine also reported 15 pre-existing RT method metadata changes:
+geometry offsets/counts/stride, instance ID/mask and `tlas_create` capacity changed
+from uint32/uint8 to int64 in patch 0005. Both validators exited zero, demonstrating
+why diagnostic inspection is required. Raw stdout/stderr and inputs remain in
+`native-api-control-diagnostic-r1` under ANGEL's task root. This blocked combined
+custom-engine/native-physics correctness until the upstream ABI repair below.
+The earlier clean19
+scaler/SDK observations remain scoped to that engine; they do not prove native
+extension compatibility.
+
+Additive patch `0021-metal-rt-extension-abi.patch` is prepared after frozen
+0001–0019, excluding optional 0020. It restores actual unsigned-facing methods
+and routes wide script/ptrcall integers through the existing checked paths.
+Five source/catalog controls passed. Fresh editor/template builds through the
+unchanged intake/build helper then passed pair verification in 1,618.51 seconds.
+The editor SHA-256 is
+`465227d92ac1696cd338d7d17ff2204ae662c51164fb10ae9e558d46c40689a4`;
+the release template is
+`c93f89c7949fd1c26fe9451b1b47711d73680fb4f1c8f686f65c928752c7cfb2`.
+Both use the exact 0001–0019+0021 sequence, excluding optional 0020. The editor
+passed the unchanged full official 4.8 API validator without diagnostics; both
+engines detected the deliberately missing-class control. The official API dump
+SHA-256 is `f44ba46a874368b716dd7c713ffccec27afaa2dbaaf6b32b625c309524a730ba`.
+
+A separate diagnostic GDExtension and the existing checked Metal runner passed
+42 fresh processes: 34 raw ptrcall cases and eight explicit `Object.call` cases,
+across argument-buffer and direct binding modes. The original typed probe also
+passed all 39 planned processes, including feature-off, hit/readback and rejection
+controls. Invalid-width inputs still reach the intended BLAS/TLAS refusal; getter
+casts alone are not proof. Intentional engine-error cases retain their failing
+checked verdicts and are accepted only by the existing exact-diagnostic policy.
+These 81 processes are API/query correctness evidence, not 81 flight or rendered
+quality/performance samples. The auxiliary build's first validation used the
+kernel translation-unit roster and was refused; a separate validation declared
+the actual witness source and retained all compiler/SDK/FP checks, preserving
+the original attempt. No kernel build was qualified by that auxiliary receipt.
+
+The release-only export-template ZIP is 20,412,246 bytes, SHA-256
+`244bf295bd0799f67d23fb7fd2b7d16f350923057713355515f3f6e359bdcc7e`.
+Its release member matches the verified template; four skeleton members match
+the pinned upstream archive. Phase 14 retains 234 payloads in 21,254,403 compressed
+bytes, SHA-256
+`102cefaf2a7f5e5163dbe20f3f6fca8e16d156ae39f150cedcc33c38ccc14f9c`;
+all retrieved payload hashes matched independently. This does not retroactively
+upgrade the clean19 R3 application ZIP or qualify a native-physics package.
+
+The separate pair/ZIP binding producer passed 13 synthetic controls and source
+review. Its export integration passed 14 existing and 12 focused Python controls;
+native export/PCK/receipt qualification remains pending. Combined private source
+`d53afebd7e8935ee7ee30cdaf681c7f190fdf1ff` passed 39 producer controls,
+seven actual script parses and six focused startup/log/replay scripts on the
+new editor, using a declared warm import cache and isolated research profile.
+It is not packaged execution or native replay qualification. Review then found
+a non-string backend edge in the new recording guard; a type check and focused
+test are being qualified before repeating native correctness.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is
@@ -1370,7 +1500,7 @@ The retrieved phase-1 receipt bundle SHA-256 is
 its local path is `tmp/metalfx-20261114/retained-phase1.tar.gz`. Later results are
 not retroactively included in that archive.
 
-Remaining: required CI on the stable integrated candidate, independent Temporal-history
+Remaining: required CI on later integrated candidates, independent Temporal-history
 image/lifecycle qualification beyond the bounded reset fixtures, FG scene inputs
 and end-to-end presentation, a real engine RT/denoised consumer, moving-image/1080p
 workload comparisons, physical latency and lifecycle/endurance. The R2 source-bound
