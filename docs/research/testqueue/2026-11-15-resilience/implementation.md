@@ -214,6 +214,22 @@ The failed runs remain part of the evidence. The corrected revision requires a
 fresh Windows run and the required CI gate; consult PR #13 for its actual result.
 No test selection or preflight rule was weakened to accept these failures.
 
+### Inherited release-preflight prerequisite
+
+A separate follow-up adds only the missing application sidecar. The exact
+`4.8.beta2.official.cafc17a19` editor generated it from the unchanged original
+script in a private minimal project, using `--headless --import` through
+`run_checked.py`. The binary matched the repository's pinned SHA-512. The editor
+exited zero with complete output and no error or warning records. Its generated
+UID was checked against all 2,009 existing tracked application sidecar blobs,
+verified from local Git objects: no collision.
+
+This was metadata generation, not a simulator run, aircraft test or complete
+production import. Full local application materialization was unavailable in
+this partial clone. The required CI run must verify the complete source and
+preflight; the application script itself remains unchanged. The machine-readable
+evidence retains engine, script, sidecar and log identities.
+
 ## Remaining senior work and deployment gates
 
 | Priority | Remaining boundary | Concrete next review/acceptance |

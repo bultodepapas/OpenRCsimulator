@@ -1,6 +1,6 @@
 {
   "format": "openrc-testqueue-resilience-validation-v1",
-  "recorded_at_utc": "2026-11-15T22:39:31.414979+00:00",
+  "recorded_at_utc": "2026-11-15T22:44:52.514867+00:00",
   "audit_commit": "413c8c88a57dc35d77e68a5808dad9a6a47aeff3",
   "runtime_baseline": "c048a4e6834646400070a488b293344dc1e1fd80",
   "integrated_main": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
@@ -166,6 +166,8 @@
     "source_sha256": {
       ".github/workflows/testqueue-windows.yml": "1cbff9491508abed0afffa7e00d65ffc0543168fbc0e93f994e6290360f194ab",
       ".mcp.json": "bc4685583e975d792b7a9180938ad38ec2173c58cc5278c0d6038025085e6f64",
+      "app/tests/test_extra_visual_details.gd": "7fb0563ba6eaf6420877078d31a1f8614555e682f84422044a5c1fa3ebb3658f",
+      "app/tests/test_extra_visual_details.gd.uid": "b6a649c668289d17f3bd7cbbb8d668c443a568b5d10b3d564eecedc21de87335",
       "research/performance/session_baseline.py": "8dcf4569dd5ffc3519010c34478c4afb807a2d70ba6ba307b486dbacc18d72e1",
       "research/performance/test_session_baseline.py": "b78645f1b3c1ac4692c26e52a134967ec93d2b884661eac6b82b14279715fad4",
       "tools/debug/debugctl.py": "f0bd093730192c61bc09ca13270033b4bd4f503951920fe61531c428bc4f3666",
@@ -308,7 +310,30 @@
         "conclusion": "success"
       }
     ],
-    "note": "Preserve the failed first runs. Review PR #13 checks for the actual corrected revision and final outcome; this local follow-up does not assert Windows or required CI success."
+    "note": "Preserve the failed first runs. Review PR #13 checks for the actual corrected revision and final outcome; this local follow-up does not assert Windows or required CI success.",
+    "inherited_prerequisite_repair": {
+      "path": "app/tests/test_extra_visual_details.gd.uid",
+      "generation": "Exact original script, minimal isolated project, pinned editor --headless --import through run_checked.py. No project main scene was run.",
+      "source_revision": "86777e923e6b6f1894878449d02b3125c05c5600",
+      "source_script_sha256": "7fb0563ba6eaf6420877078d31a1f8614555e682f84422044a5c1fa3ebb3658f",
+      "source_script_changed": false,
+      "engine_version": "4.8.beta2.official.cafc17a19",
+      "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+      "generated_uid": "uid://cdx4wwfqhb3db",
+      "sidecar_sha256": "b6a649c668289d17f3bd7cbbb8d668c443a568b5d10b3d564eecedc21de87335",
+      "existing_tracked_sidecars_checked": 2009,
+      "uid_collisions": 0,
+      "editor_result": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "errors": 0,
+        "warnings": 0,
+        "elapsed_seconds": 4.44886,
+        "log_sha256": "06b79742ae49376b4989fb8368d7bde683c9358274a46b99dd46d44490753ad8"
+      },
+      "limit": "Metadata generation only; complete production import and release preflight remain GitHub CI gates. Full local app materialization was unavailable in the partial clone; UID definitions were checked from verified local Git object stores with lazy fetching disabled."
+    }
   },
   "limits": [
     "No simulator or personal-fleet execution in the local fixtures.",
