@@ -363,7 +363,10 @@ bounded briefs, actual input identities and evidence-based acceptance, while fin
 no universal benefit from more agents, maximum effort or a copied framework.
 Preserve native delegation and existing permissions instead of adding a separate
 orchestration service. [SUBAGENTS](SUBAGENTS.md) owns current behavior and runtime
-limits. Revisit routing and budgets when client behavior changes or representative
+limits. Register named Codex roles without global helper-default or concurrency
+keys: integration on 0.144.5 found that the proposed newer scalar fields caused
+configuration fallback. Keep model/effort pins in the profiles and observe native
+runtime limits. Revisit routing and budgets when client behavior changes or representative
 OpenRC outcomes demonstrate a better tradeoff; this policy is not a measured gain.
 
 ## Maintaining this record

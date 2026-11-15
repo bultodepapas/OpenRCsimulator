@@ -74,7 +74,7 @@ The hierarchy is project policy; model access and enforcement come from the runn
 
 ### Codex
 
-Project defaults in [`.codex/config.toml`](../.codex/config.toml) select Terra/max for spawned agents and cap concurrently open helper threads at three. This is a local budget, not a target or measured optimum; it does not limit lifetime task count. The defaults do not change the main model or permissions. The three standalone profiles are:
+Project configuration in [`.codex/config.toml`](../.codex/config.toml) registers three named helper profiles. Each profile pins Terra/max; other native helpers need explicit supported model/effort settings. Keep at most three helpers open as a local guidance budget, subject to stricter runtime limits, rather than an enforced configuration cap or measured optimum. This does not limit lifetime task count or change the main model, permissions or runtime concurrency settings. The profiles are:
 
 | Profile | Use |
 | --- | --- |
@@ -82,7 +82,7 @@ Project defaults in [`.codex/config.toml`](../.codex/config.toml) select Terra/m
 | [`openrc_draft_helper`](../.codex/agents/openrc_draft_helper.toml) | A bounded proposed patch or test, returned to the lead without source edits |
 | [`openrc_good_enemy`](../.codex/agents/openrc_good_enemy.toml) | Independent challenge of a proposal or actual candidate |
 
-These profiles deliberately pin Terra/max. Their model/effort fields override previously resolved spawn/default/inherited values; changing defaults alone does not change a pinned profile. For a lighter or otherwise substituted helper, use a suitable native agent with explicit supported settings. Standalone discovery and project config loading depend on the installed client and project trust. ChatGPT Work does not load these local Codex configuration files. Inspect the available agent types and live tool schema: a task label is not an agent-type selector, and copying a profile's name into it does not register or select the profile.
+These profiles deliberately pin Terra/max. Their model/effort fields override previously resolved spawn/default/inherited values; changing defaults alone does not change a pinned profile. For a lighter or otherwise substituted helper, use a suitable native agent with explicit supported settings. Discovery and project config loading depend on the installed client and project trust. Registration uses role tables with relative `config_file` paths, supported by the inspected 0.144.5 and 0.166.0 clients. Do not add global helper-default or concurrency keys without checking the client: unsupported scalars made 0.144.5 discard the project configuration during integration. The [integration evidence](research/agent-orchestration-2026-11-15.md#main-integration-compatibility-check) records that check. ChatGPT Work does not load these local Codex configuration files. Inspect the available agent types and live tool schema: a task label is not an agent-type selector, and copying a profile's name into it does not register or select the profile.
 
 If a live spawn tool requires a fresh context for a model override, use that supported mode and provide the complete brief. Do not copy parameters such as `fork_turns`, `model` or `reasoning_effort` into tools that do not expose them. A full-history fork may retain the parent's model; do not present that as Terra/max without runtime evidence.
 

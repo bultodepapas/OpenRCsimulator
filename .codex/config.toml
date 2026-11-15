@@ -1,8 +1,14 @@
-# Helper defaults only. The user's selected main model and permissions stay in
-# the parent session. See docs/SUBAGENTS.md for availability and fallback rules.
-# Three is a local concurrency budget, not a target or a lifetime agent limit.
-# Named OpenRC profiles also pin Terra/max; native overrides follow runtime rules.
-[agents]
-default_subagent_model = "gpt-6.1-terra"
-default_subagent_reasoning_effort = "max"
-max_concurrent_threads_per_session = 3
+# Register supporting roles; model/effort pins live in their profile files.
+# Keep the main model, permissions and concurrency settings with the runtime.
+# See docs/SUBAGENTS.md for the local budget, availability and fallback rules.
+[agents.openrc_researcher]
+description = "Bounded source research, code mapping and evidence synthesis."
+config_file = "agents/openrc_researcher.toml"
+
+[agents.openrc_draft_helper]
+description = "Return a proposed patch or test for the lead to review; no source edits."
+config_file = "agents/openrc_draft_helper.toml"
+
+[agents.openrc_good_enemy]
+description = "Independently challenge consequential proposals and candidate diffs."
+config_file = "agents/openrc_good_enemy.toml"

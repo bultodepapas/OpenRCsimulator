@@ -502,3 +502,36 @@ live client tests:
 No simulation behavior changes, live model comparison, hardware qualification or
 measured cost/latency improvement is claimed. Existing focused verification,
 testqueue admission and required CI remain authoritative for future code changes.
+
+## Main integration compatibility check
+
+The 2026-11-15 integration reviews branch `0342765a2` against main `e488ef765`.
+It retains the lead/helper policy, six profiles, 26 specialties and research,
+with one configuration correction found independently by the lead and Good Enemy.
+
+On this host, Codex **0.144.5** logged `Invalid configuration; using defaults`
+when loading the proposed helper-default and concurrency scalars. The same
+startup outside the candidate had no configuration error. That version's
+[agent schema](https://github.com/openai/codex/blob/rust-v0.144.5/codex-rs/config/src/config_toml.rs)
+treats those unknown keys as role declarations, whose values must be tables.
+Its [configuration loader](https://github.com/openai/codex/blob/rust-v0.144.5/codex-rs/core/src/config/mod.rs)
+also rejects `max_threads` when multi-agent v2 is enabled, so replacing just the
+concurrency key would not establish compatibility.
+
+The integrated configuration explicitly registers the three roles through
+relative `config_file` paths. Terra/max stays pinned in each profile. Other native
+helpers need explicit supported settings; the three-helper guidance budget is
+subject to native limits, without configuring defaults or concurrency. Standalone
+discovery is a simpler supported alternative; explicit registration retains a
+visible declaration of the project's named routes.
+
+After that correction, `codex app-server --listen stdio://` with closed stdin
+exited **0** in both baseline and candidate, without invalid-configuration or
+fallback diagnostics. Both emitted remote-control early-shutdown warnings; this
+was a startup/configuration check with no model request. Four TOML files and
+three YAML frontmatter blocks parse, the simulation rules and 26 specialty
+definitions remain byte-identical, and local link/anchor checks use the existing
+CI checker. Claude **2.1.211** was identified, without invoking its helpers.
+Effective profile execution, provider model/effort and performance remain
+unverified; startup success does not establish them. Required hosted CI remains
+separate from these documentation/configuration checks.
