@@ -196,6 +196,51 @@ separate native bundle and ZIP receipt commands in
 [release tools](../../tools/release/README.md). Its identity is
 `macos-arm64-native-bundle-v1`; reference retains `macos-reference-bundle-v1`.
 The public six-file release contract has not adopted the experimental ZIP.
+
+### Paired research export from a prepared project
+
+Set the final ARM64 preset and exact custom release template before native
+qualification. Keep the canonical app, project settings and preset stable through
+export. The preparation tool requires the canonical project name and no custom
+user-data directory; it gives the isolated copy a unique name.
+
+Pass the complete research-engine selection, independent native/engine compiler
+profiles and these four pair inputs to each Mac package command:
+
+```sh
+P=(--pair-template-intake "$TEMPLATE_INTAKE"
+   --pair-receipt "$PAIR_RECEIPT"
+   --pair-export-template "$EXPORT_TEMPLATE_ZIP"
+   --pair-binding-pins "$PAIR_BINDING_PINS")
+```
+
+The pins identify the retained editor/template receipts, source catalog, ordered
+patches and export ZIP; the producer revalidates them instead of deriving trust
+from a manifest. The repaired native-compatible stack uses patches 0001–0019
+followed by 0021; optional diagnostic 0020 is excluded from that pair.
+
+After the verified native installation, run `package.py prepare-macos`. Once its
+native artifacts and package manifest are final, use
+`tools/graphics/prepare_research.py --dest <ROOT/tmp/new-run>`. Export the resulting
+`<new-run>/app`, and copy the canonical `research/performance/session_probe.gd`
+to `<new-run>/research/performance/session_probe.gd`; the plugin reads this sibling.
+Import the prepared project with the checked runner and capture the reference
+bundle inputs using the [release tools](../../tools/release/README.md).
+
+Immediately before the checked export, retain the JSON proof from
+`package._prepared_macos_export_project(project, package._pair_binder())`.
+Immediately afterward, retain another proof and require equality. Set
+`OPENRC_EXPERIMENTAL_NATIVE_MACOS_PACKAGE=1`, select the same paired editor and
+preset, and require exactly the pair's ordered BEGIN/END markers. These are
+endpoint consistency checks, not source-to-PCK reproducibility or protection
+against changes restored during export.
+
+Run `package.py stage-macos`, sign the app without changing the qualified dylib,
+finalize its reference receipt, then run `package.py finalize-research-macos`
+with the same selections and checked export report. Retain the prepared project,
+preparation receipt, sibling probe, both endpoint proofs, checked report and
+finalizer output: later performance readers revalidate the prepared copy.
+Actual package execution, performance and delivery gates remain separate.
 Public distribution of a native Mac bundle remains deferred.
 Developer ID, notarization, downloaded/quarantined launch and product performance
 remain separate target-hardware gates.

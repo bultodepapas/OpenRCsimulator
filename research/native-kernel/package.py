@@ -470,6 +470,56 @@ def _mac_release_tool():
     return release
 
 
+def _prepared_macos_export_project(project: Path, binder) -> dict:
+    """Bind an isolated export to the real preparation validator and its sibling probe."""
+    tmp = binder._path(ROOT / "tmp", directory=True)
+    project = binder._path(project, directory=True)
+    if project == tmp or not project.is_relative_to(tmp) or ".." in project.relative_to(tmp).parts:
+        raise ValueError("Prepared export project must be below the repository tmp directory")
+    receipt = binder._path(project.parent / "research-preparation.json")
+    validator_path = binder._path(ROOT / "research/native-kernel/run.py")
+    probe = binder._path(ROOT / "research/performance/session_probe.gd")
+    prepared_probe = binder._path(project.parent / "research/performance/session_probe.gd")
+    inputs = ((receipt, binder.MAX_JSON), (validator_path, binder.MAX_PATCH),
+              (probe, binder.MAX_PATCH), (prepared_probe, binder.MAX_PATCH))
+    snapshots = [binder._snapshot(path, limit) for path, limit in inputs]
+    if snapshots[2][1] != snapshots[3][1]:
+        raise ValueError("Prepared export session probe differs from the canonical probe")
+    spec = importlib.util.spec_from_file_location("nk3_package_project_validator", validator_path)
+    if spec is None or spec.loader is None:
+        raise ValueError("Prepared export project validator is unavailable")
+    validator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(validator)
+    proof = validator.validate_project(project)
+    if not proof:
+        raise ValueError("Prepared export project did not produce a validation proof")
+
+    # The reusable validator intentionally allows canonical installation outputs to
+    # advance after preparation. An export must instead use today's exact outputs.
+    def native_inventory(app: Path) -> list[dict]:
+        entries = []
+        for relative in sorted(validator.NATIVE_INSTALL_OUTPUTS):
+            path = app / relative
+            if not path.exists() and not path.is_symlink():
+                continue
+            path = binder._path(path)
+            before = binder._stamp(path.stat())
+            digest = sha(path)
+            if binder._stamp(binder._path(path).stat()) != before:
+                raise ValueError("Prepared export native artifact changed during validation")
+            entries.append({"path": relative, "bytes": before[3], "sha256": digest})
+        return entries
+
+    canonical_native = native_inventory(ROOT / "app")
+    if canonical_native != native_inventory(project):
+        raise ValueError("Prepared export native artifacts differ from the canonical installation")
+    if [binder._snapshot(path, limit) for path, limit in inputs] != snapshots:
+        raise ValueError("Prepared export validation inputs changed during validation")
+    return {"project": str(project), "preparation_sha256": snapshots[0][1],
+            "validator_sha256": snapshots[1][1], "session_probe_sha256": snapshots[2][1],
+            "native_artifacts_sha256": validator._inventory_hash(canonical_native), "inventory": proof}
+
+
 def _checked_macos_export(report_path: Path, bundle: Path, pair: dict, runner_sha256: str) -> dict:
     """Re-read the checked export report and its bounded log, including both plugin callbacks."""
     binder = _pair_binder()
@@ -488,6 +538,20 @@ def _checked_macos_export(report_path: Path, bundle: Path, pair: dict, runner_sh
             or report["counts"]["error"] != 0
             or report.get("report") != str(report_path)):
         raise ValueError("Checked Mac export report is incomplete or did not pass both pair markers")
+    command = report.get("command")
+    if not isinstance(command, list) or any(not isinstance(arg, str) or not arg for arg in command) \
+            or not command or command.count("--export-release") != 1 or command.count("--path") != 1 \
+            or any(flag in command for flag in ("--script", "-s", "--export-debug", "--export-pack", "--export-patch")):
+        raise ValueError("Checked process is not one explicit release export")
+    index, project_index = command.index("--export-release"), command.index("--path")
+    if index + 3 != len(command) or project_index + 1 >= index or not command[index + 1] \
+            or not Path(command[index + 2]).is_absolute() \
+            or not Path(command[project_index + 1]).is_absolute() \
+            or binder._path(command[index + 2], directory=True) != bundle:
+        raise ValueError("Checked export names a different project or bundle")
+    project = binder._path(command[project_index + 1], directory=True)
+    canonical = binder._path(ROOT / "app", directory=True)
+    prepared = _prepared_macos_export_project(project, binder) if project != canonical else None
     log = binder._path(report.get("log"))
     if log.parent != report_path.parent or log.name != "engine.log":
         raise ValueError("Checked Mac export log is outside the report directory")
@@ -510,28 +574,21 @@ def _checked_macos_export(report_path: Path, bundle: Path, pair: dict, runner_sh
             or inspected["missing_required_text"] or any(lines.count(marker) != 1 for marker in markers) \
             or lines.index(markers[0]) >= lines.index(markers[1]):
         raise ValueError("Checked Mac export log has errors or lacks ordered pair callbacks")
-    command = report.get("command")
-    if not isinstance(command, list) or any(not isinstance(arg, str) or not arg for arg in command) \
-            or not command or command.count("--export-release") != 1 or command.count("--path") != 1 \
-            or any(flag in command for flag in ("--script", "-s", "--export-debug", "--export-pack", "--export-patch")):
-        raise ValueError("Checked process is not one explicit release export")
-    index, project_index = command.index("--export-release"), command.index("--path")
-    if index + 3 != len(command) or project_index + 1 >= index or not command[index + 1] \
-            or not Path(command[index + 2]).is_absolute() \
-            or not Path(command[project_index + 1]).is_absolute() \
-            or binder._path(command[index + 2], directory=True) != bundle \
-            or binder._path(command[project_index + 1], directory=True) != binder._path(ROOT / "app", directory=True):
-        raise ValueError("Checked export names a different project or bundle")
     editor = binder._path(command[0])
     editor_before = binder._snapshot(editor, binder.MAX_BINARY)
     if editor_before[1] != pair["editor_sha256"]:
         raise ValueError("Checked export used a different editor")
+    if prepared is not None and _prepared_macos_export_project(project, binder) != prepared:
+        raise ValueError("Prepared export project changed during checked export validation")
     if binder._snapshot(report_path, binder.MAX_JSON) != before \
             or binder._snapshot(log, 16 * 1024 * 1024) != log_before \
             or binder._snapshot(editor, binder.MAX_BINARY) != editor_before \
             or binder._snapshot(runner_path, binder.MAX_PATCH) != runner_before:
         raise ValueError("Checked export evidence changed during validation")
-    return {"report_sha256": before[1], "log_sha256": log_before[1], "editor_sha256": editor_before[1]}
+    result = {"report_sha256": before[1], "log_sha256": log_before[1], "editor_sha256": editor_before[1]}
+    if prepared is not None:
+        result["prepared_project"] = prepared
+    return result
 
 
 def finalize_research_macos(bundle: Path, tool_root: Path, godot: Path, research_engine: dict | None,

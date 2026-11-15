@@ -125,6 +125,49 @@ class PairExportIntegrationTests(unittest.TestCase):
     def write_report(self):
         self.report.write_text(json.dumps(self.checked), encoding="utf-8")
 
+    def prepared_project(self):
+        """Make a small real-validator fixture in the shape produced by prepare_research.py."""
+        canonical = self.root / "app"
+        (canonical / "project.godot").write_bytes(
+            b'config/name="OpenRC Simulator"\n'
+            b'lights_and_shadows/multi_bounce_occlusion/enabled=true\n')
+        validator_path = self.root / "research/native-kernel/run.py"
+        validator_path.parent.mkdir(parents=True)
+        shutil.copyfile(HERE / "run.py", validator_path)
+        validator = load("prepared_project_fixture_validator", validator_path)
+        source = validator._project_inventory(canonical)
+        project = self.root / "tmp/prepared/app"
+        shutil.copytree(canonical, project)
+        name = "OpenRC-Research-0123456789abcdef0123456789abcdef"
+        original = (project / "project.godot").read_bytes()
+        edited = original.replace(b'config/name="OpenRC Simulator"', f'config/name="{name}"'.encode(), 1)
+        edited = edited.replace(b"lights_and_shadows/multi_bounce_occlusion/enabled=true",
+                                b"lights_and_shadows/multi_bounce_occlusion/enabled=false", 1)
+        (project / "project.godot").write_bytes(edited)
+        receipt = project.parent / "research-preparation.json"
+        receipt.write_text(json.dumps({
+            "format": "openrc-graphics-research-preparation v1", "complete": True,
+            "source": {"copied_app_manifest_sha256": validator._inventory_hash(source),
+                       "native_kernel_inventory": [item for item in source
+                                                   if item["path"].startswith("native/kernel/")]},
+            "destination": {"app": str(project), "project_name": name,
+                            "project_sha256": package.sha(project / "project.godot")},
+        }), encoding="utf-8")
+        probe = self.root / "research/performance/session_probe.gd"
+        probe.parent.mkdir(parents=True)
+        probe.write_text("the fixed probe", encoding="utf-8")
+        prepared_probe = project.parent / "research/performance/session_probe.gd"
+        prepared_probe.parent.mkdir(parents=True)
+        shutil.copyfile(probe, prepared_probe)
+        self.checked["command"][3] = str(project)
+        self.write_report()
+        self.assertTrue(validator.validate_project(project))
+        return project, validator
+
+    def checked_export(self):
+        return package._checked_macos_export(self.report, self.bundle, self.f.expected,
+                                             package.sha(self.checked_runner))
+
     def prepare(self, pair_selection=None):
         return package.prepare_macos(self.tool_root, self.editor, self.f.selection,
                                      pair_selection=pair_selection or self.pair_selection)
@@ -142,6 +185,7 @@ class PairExportIntegrationTests(unittest.TestCase):
             self.prepare()
             saved = json.loads(self.manifest.read_text(encoding="utf-8"))
             self.assertEqual(saved["engine_pair"], self.f.expected)
+            project, _validator = self.prepared_project()
             self.stage()
             final = self.verify()
             self.assertEqual(final["engine_pair"], self.f.expected)
@@ -158,6 +202,7 @@ class PairExportIntegrationTests(unittest.TestCase):
                                                         checked_export_report=self.report)
             self.assertEqual(result["engine_pair"], self.f.expected)
             self.assertEqual(result["executable_binding"], final["executable_binding"])
+            self.assertEqual(result["checked_export"]["prepared_project"]["project"], str(project))
             self.assertGreaterEqual(actual_bind.call_count, 9)
         bundled = self.bundle / "Contents/Frameworks/libopenrc_native_kernel.dylib"
         bundled.write_bytes(b"changed staged library")
@@ -297,6 +342,102 @@ class PairExportIntegrationTests(unittest.TestCase):
         self.write_report()
         with self.assertRaisesRegex(ValueError, "ordered pair callbacks"):
             package._checked_macos_export(self.report, self.bundle, self.f.expected, runner_sha)
+
+    def test_prepared_export_uses_real_validator_and_binds_project_and_sibling_probe(self):
+        self.assertNotIn("prepared_project", self.checked_export())
+        project, validator = self.prepared_project()
+        binding = self.checked_export()["prepared_project"]
+        self.assertEqual(binding["project"], str(project))
+        self.assertEqual(binding["inventory"], validator.validate_project(project))
+        self.assertEqual(binding["preparation_sha256"], package.sha(project.parent / "research-preparation.json"))
+        self.assertEqual(binding["validator_sha256"], package.sha(self.root / "research/native-kernel/run.py"))
+        self.assertEqual(binding["session_probe_sha256"], package.sha(self.root / "research/performance/session_probe.gd"))
+        self.assertEqual(binding, self.checked_export()["prepared_project"])
+
+    def test_prepared_export_refuses_changed_inventory_settings_and_probe(self):
+        project, _validator = self.prepared_project()
+        paths = [project / "physics/fixture.gd", project / "project.godot",
+                 project.parent / "research/performance/session_probe.gd",
+                 self.root / "app/sim/fixture.gd", project.parent / "research-preparation.json"]
+        for path in paths:
+            original = path.read_bytes()
+            path.write_bytes(original + b" changed")
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                self.checked_export()
+            path.write_bytes(original)
+        extra = project / "extra.gd"
+        extra.write_text("unexpected", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "project content differs"):
+            self.checked_export()
+        extra.unlink()
+        missing = project / "failures/fixture.gd"
+        data = missing.read_bytes()
+        missing.unlink()
+        with self.assertRaisesRegex(ValueError, "project content differs"):
+            self.checked_export()
+        missing.write_bytes(data)
+        self.assertIn("prepared_project", self.checked_export())
+
+    def test_native_artifact_drift_allowed_by_general_validator_is_refused_for_export(self):
+        project, validator = self.prepared_project()
+        self.library.write_bytes(b"a newer canonical installation")
+        self.assertTrue(validator.validate_project(project))
+        with self.assertRaisesRegex(ValueError, "native artifacts differ"):
+            self.checked_export()
+
+    def test_prepared_export_refuses_project_outside_tmp_and_missing_probe(self):
+        project, _validator = self.prepared_project()
+        outside = self.root / "elsewhere/app"
+        shutil.copytree(project, outside)
+        self.checked["command"][3] = str(outside)
+        self.write_report()
+        with self.assertRaisesRegex(ValueError, "below the repository tmp"):
+            self.checked_export()
+        self.checked["command"][3] = str(self.root / "tmp/prepared/../../elsewhere/app")
+        self.write_report()
+        with self.assertRaisesRegex(ValueError, "below the repository tmp"):
+            self.checked_export()
+        link = self.root / "tmp/prepared-link"
+        try:
+            link.symlink_to(project, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            pass  # Some Windows accounts cannot create directory links.
+        else:
+            self.checked["command"][3] = str(link)
+            self.write_report()
+            with self.assertRaisesRegex(ValueError, "Redirected|Symbolic-link"):
+                self.checked_export()
+        self.checked["command"][3] = str(project)
+        self.write_report()
+        (project.parent / "research/performance/session_probe.gd").unlink()
+        with self.assertRaisesRegex(ValueError, "Missing or inaccessible"):
+            self.checked_export()
+
+    def test_prepared_export_revalidates_after_log_inspection(self):
+        project, _validator = self.prepared_project()
+        receipt = project.parent / "research-preparation.json"
+        receipt_bytes = receipt.read_bytes()
+        runner_text = self.checked_runner.read_text(encoding="utf-8")
+        # Change only harmless receipt whitespace inside the real log inspection;
+        # a second real validation still succeeds, but the bound identity changes.
+        with self.checked_runner.open("a", encoding="utf-8") as runner:
+            runner.write("\n_original_inspect_log = inspect_log\n"
+                         "def inspect_log(*args, **kwargs):\n"
+                         "    result = _original_inspect_log(*args, **kwargs)\n"
+                         f"    with open({str(receipt)!r}, 'ab') as changed: changed.write(b' ')\n"
+                         "    return result\n")
+        with self.assertRaisesRegex(ValueError, "project changed during checked export validation"):
+            self.checked_export()
+        receipt.write_bytes(receipt_bytes)
+        changed = project / "physics/fixture.gd"
+        self.checked_runner.write_text(
+            runner_text + "\n_original_inspect_log = inspect_log\n"
+            "def inspect_log(*args, **kwargs):\n"
+            "    result = _original_inspect_log(*args, **kwargs)\n"
+            f"    with open({str(changed)!r}, 'wb') as changed: changed.write(b'changed')\n"
+            "    return result\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "project content differs"):
+            self.checked_export()
 
 
 class PairCommandTests(unittest.TestCase):
