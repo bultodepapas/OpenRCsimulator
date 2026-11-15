@@ -5,12 +5,14 @@ Owner: **TQ shared-host test admission**. Parent:
 [15 November 2026 audit](../research/testqueue/2026-11-15-resilience/README.md)
 at `c048a4e6834646400070a488b293344dc1e1fd80`.
 
-**Status: proposed implementation; audit and plan delivered.** No runtime,
-deployed worker, capacity setting, CI workflow or repository protection is changed
-by this document. Existing commands and limits remain in the
-[operating guide](../../tools/testqueue/README.md). The dated
-[runbook](../research/testqueue/2026-11-15-resilience/runbook.md) covers recovery
-with those current commands.
+**Status: partial implementation under senior review.** R1/R2 and bounded slices
+of R3/R7 have a tested candidate on the audit branch; see the
+[implementation handoff and evidence](../research/testqueue/2026-11-15-resilience/implementation.md).
+Native deployment, higher capacity, guardians, required-check policy changes and
+fleet efficiency qualification remain open. Current source commands and limits
+are in the [operating guide](../../tools/testqueue/README.md); the dated
+[runbook](../research/testqueue/2026-11-15-resilience/runbook.md) is preserved for
+the original audited baseline.
 
 ## 1. Goal and acceptance boundary
 
@@ -73,6 +75,12 @@ and recovery time with the reproduced mechanisms.
    alone cannot create a pass.
 10. Deployed protocols/runtime identities are pinned. Upgrade an idle or drained
     boundary; an active attempt keeps the exact runtime that owns it.
+
+The concurrent upstream `abandon` command is an explicit administrative exception
+to proof-based capacity release: it preserves `UNCONFIRMED/INCOMPLETE` evidence and
+requires an operator decision. The candidate preserves that exception, additionally
+blocking it while attempt journals/fences remain pending. Automatic recovery and
+timeouts must never invoke it. See the implementation handoff for its boundaries.
 
 ## 3. Architecture and ownership
 
@@ -346,13 +354,13 @@ authoritative at track level; these are the operational-refinement substeps.
 
 | Step | Work and primary owner | Paths/interfaces | Proof/status |
 | --- | --- | --- | --- |
-| **TQ-04-R1** | Repair false nonexecution during accepted-request recovery, proven nonlaunch classification, pre-receipt recovery and schema/error disagreement. Queue/process and pool owners coordinate the shared outcome contract. | `processes.py`, `worker.py`, `pool.py`, `pool_batch.py`, `pool_mcp.py`, `presets.py`, `remote_agent.py` and focused tests. | Proposed. Reproductions become desired-behavior regressions; identity-first recovery preserves an accepted job despite changed inputs; ambiguous-start and lost-ACK controls must still quarantine. |
-| **TQ-04-R2** | Recover scheduler liveness in-place; guard diagnostic writes and expose real readiness. Queue owner. | `worker.py`, `store.py`, host/status schema. | Proposed. Double storage failure recovers one scheduler without resetting or terminating existing attempts. |
-| **TQ-04-R3** | Responsive MCP intake, asynchronous expensive launch preparation, immutable session context and observer deadline propagation. MCP owner. | `mcp_server.py`, `integration.py`, `common.py`, MCP tests. | Proposed. Ping/status/cancel intake stays responsive while tool/preparation is blocked; no stdout cross-talk or session mix-up. |
+| **TQ-04-R1** | Repair false nonexecution during accepted-request recovery, proven nonlaunch classification, pre-receipt recovery and schema/error disagreement. Queue/process and pool owners coordinate the shared outcome contract. | `processes.py`, `worker.py`, `pool.py`, `pool_batch.py`, `pool_mcp.py`, `presets.py`, `remote_agent.py` and focused tests. | Candidate implemented with desired-behavior regressions, version-2 batch migration and input/result binding. Ambiguous starts and legacy receipt loss remain fenced. Senior/native review and deployment remain open. |
+| **TQ-04-R2** | Recover scheduler liveness in-place; guard diagnostic writes and expose real readiness. Queue owner. | `worker.py`, `store.py`, host/status schema. | Candidate implemented for dispatcher/diagnostic faults, pending journals and health reporting. General running-loop storage continuity and bounded lock-held status are not solved. |
+| **TQ-04-R3** | Responsive MCP intake, asynchronous expensive launch preparation, immutable session context and observer deadline propagation. MCP owner. | `mcp_server.py`, `integration.py`, `common.py`, MCP tests. | Partial candidate: bounded lanes, stalled-output handling and socket observation deadlines. Session mutations/stop remain ordered; snapshot/transfer/filesystem bounds and immutable session context remain open. |
 | **TQ-04-R4** | Independent guardians, phase budgets, owned remote cancel and proof-based reconciliation. Native process/transport owners. | Guardian protocol; local/remote worker lifecycle; versioned receipts and migration. | Proposed, highest native risk. Controller restart preserves a healthy guardian; guardian loss never grants duplicate execution. |
 | **TQ-04-R5** | Enforce physical-host/parent identity and atomic per-volume/memory/preparation reservations. Host admission owner. | `pool.py`, `pool_policy.py`, local/remote admission and private configuration schema. | Proposed. Two roots/aliases cannot double-admit; shared volumes/parents cannot be double-counted. |
 | **TQ-04-R6** | Reviewed functional concurrency, global fair order, bounded asynchronous preparation and measured placement. Scheduler owner. | Pool/batch policy and capacity schema. | Proposed after R1–R5. Same-host parallel checks pass under real budgets; exclusives never overlap. |
-| **TQ-04-R7** | Windows dependency/registration coverage and reliable required-result selection; optional trusted CI adapter later. CI owner. | Workflows, `tools/ci/`, registration fixtures and release receipts. | Proposed. First coverage repair can run alongside R1/R2; trusted personal-fleet delegation waits for R4/R5/native gates. |
+| **TQ-04-R7** | Windows dependency/registration coverage and reliable required-result selection; optional trusted CI adapter later. CI owner. | Workflows, `tools/ci/`, registration fixtures and release receipts. | Partial candidate: five missing trigger paths and a registration fixture. Stable required-gate integration/rules and trusted personal-fleet delegation remain open; the latter waits for R4/R5/native gates. |
 | **TQ-04-R8** | Status/metrics, verified cache inventory, retention and incident bundles. Queue/CI/storage owners. | Status/event schema, cache/collector/diagnostics, existing storage and CI plans. | Proposed. No active/unknown deletion; valid cold/warm equivalence and bounded diagnostic growth. |
 | **TQ-04-R9** | Native fault campaign, staged rollout and measured utilization/latency comparison. TQ acceptance owner. | Dated evidence under `docs/research/testqueue/`; private machine artifacts. | Open. Separate Windows, Linux, ANGEL and ANGELA_AIR results; no fixture-to-hardware inference. |
 

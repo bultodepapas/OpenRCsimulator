@@ -1,0 +1,237 @@
+# Queue resilience implementation and senior review handoff
+
+Owner: **TQ-04**. This is the implementation follow-up to the
+[dated audit](README.md) and [repair plan](../../../plans/mcp-queue-resilience.md).
+Branch: `audit/mcp-queue-resilience-2026-11-15`.
+
+**Status: tested review candidate; no fleet deployment or merge authorization.**
+The audit was published at `413c8c88a57dc35d77e68a5808dad9a6a47aeff3`, against
+runtime baseline `c048a4e6834646400070a488b293344dc1e1fd80`. This follow-up
+incorporates `main` at `273a7e4c0617fdf4cacc39c360796fd79afa5f2c`, including
+`c930dcdbf`'s explicit operator abandonment. Its unrelated aircraft/research
+changes are preserved. Review the resilience changes against the merged parent,
+not as replacements for that concurrent work.
+
+## What is implemented
+
+| Boundary | Candidate behavior | Main evidence |
+| --- | --- | --- |
+| Process creation, F01 | The adapter reports proved nonlaunch only before entering process creation. The worker requires both the typed exception and that instance's confirmation. Ambiguous creation retains quarantine. | `test_processes`, `test_worker` |
+| Allocated thread cannot start | A one-way grant prevents execution until `Thread.start()` returns. Even a spawned thread followed by an exception receives a denied grant. Confirmed nonlaunch finalizes as infrastructure failure; failed persistence retains a fence. | Pre-start, post-spawn and repeated journal-failure tests in `test_worker` |
+| Cleanup uncertainty plus broken storage | Establish an in-memory fence under the worker lock before attempting an `UNKNOWN` write. Retry that same journal transition before new allocation. Already allocated preparations also check the fence before launching. | Cleanup failure plus SQLite transaction failure with a compatible waiting job |
+| Dispatcher death/readiness, F02 | Preserve one scheduler loop, guard the error-reporting path, use bounded backoff, report thread/heartbeat/error health, and require a committed storage recovery check before clearing degradation. Unreadable claims are `null`, never an invented empty inventory. | Scheduler double-failure, recovery, stale heartbeat and unavailable inventory tests |
+| Ambiguous pool acceptance, F14 | Query the original authority with the saved identity before input validation or replay. Only replay the identical request to its bound destination. An exception is never cleanup or nonacceptance proof. | Unit recovery cases and a real task-owned fake process surviving lost acceptance plus missing snapshot |
+| Historical false terminal results | Reopen legacy `NOT_DISPATCHED` receipts and affected completed/collecting batch rows for observation. Preserve old status/collection records and recollect under `recovery-1`. Cached MCP status exposes recovery required without SSH. | `test_pool_legacy_batch`, `test_pool_recovery` |
+| Failure before dispatch, F03/F05 | Typed lock/preflight I/O deferral retries the same row with capped backoff. A returned invalid-input refusal rejects that invocation. Persist `SUBMITTING` before calling the pool; interruption becomes observation-only, including when no receipt is found. | `test_pool_submission` |
+| Input/result identity | Use the exact manifest object returned by verification. Bind the batch's raw receipt hash to that same read. Bind engine-pin policy bytes to their verified file hash. Pool and interactive submissions carry expected source/manifest digests; observed local/remote results are checked against retained identity. | Snapshot replacement, forged-scope, engine-pin substitution/removal, local digest and remote payload tests |
+| MCP intake, F06 | Fixed ordered tool lane, separate cached batch-status lane, bounded message queues, explicit overload, and independent protocol intake/output. Output backpressure cannot strand later accepted actions. | Concurrent stdio, stalled sink, unread OS pipe and admission-race tests |
+| Observation budget, F04 | Use one monotonic deadline across socket connect/send/each receive. Zero wait performs no status call. Preserve accepted handles on timeout and mark a returned prior status stale. No observer timeout invokes cancellation. | Private loopback silent/trickle peers, socket cleanup, handle retention and wait tests |
+| Request validation, F05 | Local, MCP and remote checked entry points agree on marker count, length and prohibited control characters. | `test_request_limits` |
+| Windows selection, F11 | Add five omitted dependency/registration paths to both PR and main-push filters; validate repository MCP registration without launching a server. | Workflow diff and `test_mcp_registration`; Windows Actions run remains separate evidence |
+
+The runtime implementation is in
+[worker/process ownership](../../../../tools/testqueue/worker.py),
+[pool recovery](../../../../tools/testqueue/pool.py),
+[batch state](../../../../tools/testqueue/pool_batch.py),
+[snapshot verification](../../../../tools/testqueue/snapshots.py),
+[observation RPC](../../../../tools/testqueue/common.py), and the
+[MCP server](../../../../tools/debug/mcp_server.py). The
+[operating guide](../../../../tools/testqueue/README.md) owns user-facing commands.
+
+## Safety decisions for review
+
+### A timeout stops observation, not ownership
+
+The new deadline applies to `common.wait()` and its socket steps. It does not
+shorten an accepted execution budget. `wait_observation` marks a prior result as
+`STALE`, with `DEADLINE_EXPIRED` or `RPC_STEP_TIMEOUT`; the actual lifecycle state
+is retained. When no observation exists, `ObservationTimeout` identifies the job
+and reason. Managed interactive launch with zero wait returns its accepted
+handle and `observation: NOT_REQUESTED`. A first-observation timeout returns that
+same handle with `observation: TIMEOUT`.
+
+Snapshot creation, local filesystem I/O, admission before acceptance, SSH upload,
+collection and worker-lock acquisition do **not** acquire hard end-to-end bounds
+from this patch. A 30-second pool observation budget can still enter an older
+inline transfer with a longer transport limit. Do not describe R3/R4 as complete.
+Hard execution limits remain the preexisting, explicitly admitted job policy.
+
+### Nonlaunch requires a witness
+
+`ProcessNotStartedError` is insufficient by itself: the same `OwnedProcess`
+instance must confirm its pre-create failure. Crossing the creation boundary
+without ownership/cleanup proof remains uncertain. A thread-start failure has a
+different witness: its immutable denied gate prevents the thread from entering
+execution, even if the thread exists. Neither a missing PID nor elapsed time is
+used as that witness.
+
+Failed persistence cannot reopen capacity. Pending unknown/nonlaunch journal
+transitions remain fenced in memory and retry on the existing scheduler.
+Durable `UNKNOWN` retains the existing store's quarantine. A process restart
+still converts unresolved durable attempts conservatively; this is not guardian
+continuity or general immunity to storage failure.
+
+### Receipt absence is not global nonexecution
+
+Batch version 2 persists `SUBMITTING` before entering the pool call. A completed
+typed preflight rejection can move a fresh row to `REJECTED`; it contains no
+fabricated cleanup result. A crash before recording that returned rejection
+leaves uncertainty. An interrupted `SUBMITTING`, legacy version-1 `WAITING`,
+or pool receipt missing its execution request is reobserved/blocked, not freshly
+submitted because a file is absent.
+
+The existing JSON journal fsyncs file contents and renames, but does not qualify
+directory-entry durability across power loss on every platform. The conservative
+no-request behavior deliberately avoids claiming that an earlier receipt cannot
+have been lost. Stronger platform persistence semantics and migration belong to
+R4/R5; do not weaken these guards to make a stuck row disappear.
+
+### Recover the same authority and the same inputs
+
+New pool receipts bind configuration bytes and, for local execution, the original
+authority root. A changed config fails closed. Legacy receipts without that
+binding permit observation only; automatic replay is refused. Keep the original
+configuration and request secret privately. Do not remap a host alias or copy a
+receipt to a different root to force recovery.
+
+Remote observation must carry the original request ID and canonical payload
+hash. Only a structured request-bound remote `NOT_FOUND` refusal can lead to
+same-ID replay; an older unbound error envelope or transport exception cannot.
+The standalone remote agent adds protocol/request identity to its refusal
+envelope. No remote runtime was installed during this work.
+
+For snapshots, comparing the two digest *strings* after rereading a file was
+insufficient: changed scope/source fields could retain those strings. Callers
+now consume the actual verified object, and pin checks read bytes matched to
+that object's file hash. The execution path verifies the accepted digests again
+before and after materialization. This remains per-file verification, not an
+atomic multi-file filesystem snapshot. Legacy callers can still omit the optional
+expected digests; enforcing a versioned client/runtime contract remains open.
+
+### Preserve the explicit operator exception
+
+Upstream `abandon` requires an owner handle, a drained worker, no executing
+supervisor, and its Windows orphan-absence check. It records
+`INFRA_FAILED / UNCONFIRMED / INCOMPLETE`, rather than claiming proved cleanup.
+The merged candidate additionally refuses abandonment while **any** pending
+attempt fence/journal exists, preventing a later retry from resurrecting an
+abandoned attempt whose claims were already released. The regression checks all
+three registries. No timer, recovery loop or MCP notification calls `abandon`.
+
+## MCP concurrency and delivery contract
+
+| Lane | Bound | Behavior |
+| --- | --- | --- |
+| Ordered simulator/mutating tools | One worker, 32 waiting calls | Preserves process-global session environment and captured stdout. `sim_stop` remains ordered behind an earlier tool. |
+| Cached `sim_test_status` | One worker, 8 waiting calls | Reads local receipts without SSH; slow filesystem access can still block this lane. |
+| Protocol intake | Input lines capped at 1,048,576 characters | Handles ping/list/validation independently of a long tool. Oversized messages are discarded with a protocol error. |
+| Replies | One writer, 64 queued messages | A saturated queue waits at most 0.2 seconds per publication before abandoning delivery. The abandonment transition and final tool admission share a short lock. |
+| EOF | Drain accepted tool calls; then at most 0.5 seconds for reply delivery | Remaining or partially written replies can be lost, including for a slow reader. This does not cancel the accepted calls. |
+
+No protocol lock is held across stdout write/flush. A blocked writer can remain
+as one daemon thread until the pipe unblocks or the process exits. Real stdio
+uses the raw descriptor so that this thread does not retain Python's buffered
+stdout lock during interpreter shutdown. The unread-pipe fixture exercises the
+actual subprocess exit path. This is a bounded-delivery policy, not a guarantee
+that a client receives every response.
+
+Queue bounds count messages, not response bytes. A large screenshot or cached
+batch can still allocate a large object/result. Pagination/output-byte budgets
+remain R3/R8 work. Input EOF also cannot interrupt an accepted tool that itself
+blocks indefinitely. Full asynchronous session-context/guardian work is not
+implemented by adding these lanes.
+
+Wire-level JSON-RPC IDs and durable `sim_test_launch` argument IDs are different.
+Use a fresh wire ID for each call while reusing the durable batch ID to recover
+work. The advertised MCP versions end at 2025-11-25, whose
+[request contract](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/docs/specification/2025-11-25/basic/index.mdx)
+requires session-unique wire IDs. The in-flight duplicate guard is bounded;
+this patch does not add a forever-growing session ID ledger or implement the
+newer stateless protocol. Cancellation notifications remain silent and never
+terminate owned simulator work; explicit owned stop/cancel retains its contract.
+
+## Verification and evidence
+
+The [implementation evidence](implementation-evidence.json) records distinct
+suite counts, commands, skipped cases, source hashes and CI observations. It is
+separate from [the historical audit record](verification.md), whose 119 baseline
+cases and defect reproductions remain unchanged. Historical defect probes are
+not success gates for the repaired source.
+
+The integrated local run covers the complete queue and debug fixture directories,
+checked/resource runners, the performance admission consumer and GOD TEST.
+It ran **491 distinct cases: 481 passed, 10 skipped, no failures or errors**.
+The groups were queue 253, debug 120, checked runner 22, resource runner 14,
+performance admission 64 and GOD TEST 18. The final debug run supersedes its
+earlier run after the output-abandonment admission race was repaired.
+Fixtures use private roots, loopback peers and task-owned fake processes. They
+do not launch Godot, connect to the fleet, qualify the RTX GPU or benchmark useful
+throughput. Windows-only ownership cases and native engine/desktop opt-ins are
+recorded as skips on Linux; they are never counted as passes.
+
+The most consequential regression scenarios are:
+
+- Lost acceptance while a real fake process continues, followed by a missing
+  snapshot: same job, same claims, no second submit.
+- Forged scope with copied digest strings, a replaced valid snapshot, engine-pin
+  substitution/removal and a batch hash/verification race.
+- Failed cleanup plus an unavailable UNKNOWN transaction; a compatible younger
+  job must not start. Repeated failed nonlaunch journal writes also retain the
+  fence until persistence recovers.
+- A thread that starts and then raises, demonstrating that its denied gate
+  actually receives the thread and prevents execution.
+- Legacy terminal/collection phases, a missing receipt alongside independent
+  live work, preserved old artifacts and a legitimate failed test staying failed.
+- Silent/trickling socket peers, blocked output, unread full stdout pipe, EOF,
+  overload, distinct protocol IDs, and disconnection racing final admission.
+
+Initial test setup errors and intermediate assertion updates were resolved before
+the integrated run. No old failing assertion was discarded to bless the original
+defect; changed contracts receive explicit desired-behavior tests. Review notes
+also rejected a proposed wire-ID-reuse requirement after checking the supported
+MCP specification, instead of restoring a blocking I/O lock.
+
+## Remaining senior work and deployment gates
+
+| Priority | Remaining boundary | Concrete next review/acceptance |
+| --- | --- | --- |
+| P0 for continuity claims | A database error in an executing attempt's status loop can still enter teardown and stop a healthy process. Controller and process ownership remain coupled. | Design independent guardians or a qualified ownership-preserving storage-error policy; inject failures after confirmed launch and prove the same process survives without weakening hard cancellation. |
+| P0 for rollout | Native Windows process semantics and the operator exception need the exact combined candidate. | Review Windows Actions fixtures, then an idle/private native campaign: start ambiguity, cleanup failure, pending journals, owned cancel and foreign-process preservation. Hosted fixtures do not qualify the interactive desktop. |
+| P1 | `hosts` shares the worker lock with scheduling/storage; a stall holding it can prevent a prompt degraded response. | Separate immutable health snapshots from blocking admission operations; test a held lock and hung storage explicitly. |
+| P1 | Preparation/upload/collection remain synchronous in parts of the pool. | Give each stage owned background lifetime, progress and remaining-budget propagation; do not equate reporting expiry with cleanup. |
+| P1 | Physical host/VM/alias identity, memory/volume reservations and runtime version negotiation remain incomplete. | Implement R4/R5 before increasing capacities or routing CI onto personal machines. |
+| P1 | Pool placement still serializes per host and uses existing estimates. | Measure cold/warm setup, transfer, execution and collection; implement fair global ordering and calibrated durations under R6. |
+| P1 | Windows workflow still has path filters; stable required-gate integration and rule visibility are incomplete. | Confirm repository rules with authorized access, validate selected/missing/canceled results, keep full required CI policy intact. |
+| P2 | Output-byte budgets, paginated status, bounded event retention and incident diagnostics. | Add R8 with limits that preserve active/unknown evidence and report unavailable observations honestly. |
+
+The Windows Ryzen 5900X/RTX3090, Linux host and both Macs remain the intended
+qualification fleet, not claimed test environments for this patch. Keep current
+capacity settings. Confirm whether Linux shares physical resources with Windows;
+do not count a VM/WSL guest twice. Start Macs at their already approved capacity
+and qualify sleep/wake, SSH loss and cooperative process-group limits separately.
+Keep graphics/performance runs on a reserved physical host at 1920×1080 first.
+No speedup percentage or increased GPU utilization is claimed without matched
+native measurements.
+
+### Suggested senior review order
+
+1. Review the process witness, denied thread gate, pending journals and explicit
+   operator exception together. Check the negative controls before changing any
+   quarantine or claim-release rule.
+2. Review pool recovery, version-2 migration and identity binding. Retain old
+   receipts/artifacts; confirm legacy ambiguity stays observation-only.
+3. Review MCP lane safety and its bounded, potentially lossy delivery contract.
+   Confirm the intended clients retain durable IDs and handles across disconnects.
+4. Require CI for the final PR revision, inspect skipped/native boundaries and
+   review any interaction with newly landed `main` changes. Merge only after the
+   maintainer's review; this candidate does not merge itself.
+5. Deploy one drained/idle boundary at a time with retained runtime/config/state
+   identities. Do not replace the running process owner. Reconnect MCP clients
+   after updating the server; deploy compatible remote agents before relying on
+   request-bound refusal behavior.
+
+Batch version 2 is deliberately refused by old version-1 supervisors. Rollback
+must not relabel interrupted submissions as `WAITING`, rewrite receipts, remove
+claims or downgrade state files. Preserve the newer state and stop new admissions;
+let current ownership/collection resolve under a compatible version. Native
+backup/restore and broader rollout acceptance remain part of R9.

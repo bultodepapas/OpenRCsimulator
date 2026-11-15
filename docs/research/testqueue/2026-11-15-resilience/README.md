@@ -4,6 +4,11 @@ Date: **15 November 2026**. Owner: shared-host test admission (**TQ**), with CI
 owners retaining workflow and release policy. Baseline:
 [`c048a4e6834646400070a488b293344dc1e1fd80`](https://github.com/bultodepapas/OpenRCsimulator/commit/c048a4e6834646400070a488b293344dc1e1fd80).
 
+**Follow-up:** [implementation and senior handoff](implementation.md) records the
+tested repair candidate now on this branch. Findings and line references below
+remain historical observations of the pinned baseline; the follow-up has separate
+[implementation evidence](implementation-evidence.json) and remaining gates.
+
 ## Assessment
 
 The queue has a substantial safety foundation: durable request identities,
@@ -41,8 +46,8 @@ The [implementation plan](../../../plans/mcp-queue-resilience.md) defines repair
 owners, sequencing, acceptance and rollback. The [recovery runbook](runbook.md)
 distinguishes safe current operations from proposed APIs. The
 [verification record](verification.md) retains reproduction and CI evidence.
-This branch delivers research, reproducible probes and a plan; it does not deploy
-the proposed queue changes.
+The original audit commit delivered research, reproducible probes and a plan.
+The subsequent implementation candidate also remains undeployed.
 
 ## Scope and method
 

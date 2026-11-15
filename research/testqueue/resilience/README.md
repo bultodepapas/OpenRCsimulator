@@ -8,8 +8,11 @@ The [implementation plan](../../../docs/plans/mcp-queue-resilience.md) owns repa
 
 **A successful probe means the audited behavior was reproduced.** These scripts
 assert current defects/limitations; they are not new production regression gates.
-As repairs land, convert the relevant cases into desired-behavior tests and retain
-this dated evidence. Do not change production code to keep an old defect probe green.
+Run them only against the pinned baseline when reproducing that evidence. The
+[implementation candidate](../../../docs/research/testqueue/2026-11-15-resilience/implementation.md)
+adds desired-behavior regressions under `tools/testqueue/` and `tools/debug/`.
+Do not run these historical probes as a pass/fail gate for the repaired branch,
+or change production code to keep an old defect probe green.
 
 They use private fixture roots, injected errors, fake processes and stubbed network
 boundaries. No simulator, remote host or normal queue authority is required.

@@ -1,9 +1,12 @@
 # Shared-host test admission
 
 The [15 November 2026 resilience audit](../../docs/research/testqueue/2026-11-15-resilience/README.md)
-records known recovery/control gaps and a [current recovery runbook](../../docs/research/testqueue/2026-11-15-resilience/runbook.md).
-Its [TQ-04 repair plan](../../docs/plans/mcp-queue-resilience.md) is proposed work;
-the commands and behavior below remain the implemented operating contract.
+records known recovery/control gaps and a [baseline recovery runbook](../../docs/research/testqueue/2026-11-15-resilience/runbook.md).
+The [implementation handoff](../../docs/research/testqueue/2026-11-15-resilience/implementation.md)
+records the tested repair candidate, evidence and remaining gates. The
+[TQ-04 repair plan](../../docs/plans/mcp-queue-resilience.md) distinguishes partial
+implementation from proposed guardian/resource work. This guide describes the
+source on this branch; deployed hosts may still run the older audited version.
 
 ## Automatic multi-host checked tests
 
@@ -49,6 +52,16 @@ and cannot qualify a passing batch.
 If freezing is interrupted before a snapshot manifest exists, exact inputs were not
 frozen and no tests were dispatched. Submit a new request ID for a stable source.
 
+Protocol ping/list/validation and cached `sim_test_status` have independent intake
+from the ordered simulator tool lane. Other tools, including `sim_stop`, still
+execute in order. The lanes have fixed workers and bounded queues; overload is
+an explicit nonacceptance error. A disconnected or saturated observer cannot
+block accepted calls behind reply publication. After input EOF, accepted calls
+finish, then reply delivery has a 0.5-second drain window; queued or partial replies
+may be lost. Individual reply bytes are not capped. Recover durable work by its
+original batch ID or session handle. Use a fresh JSON-RPC wire ID for each call;
+that wire ID is separate from the stable batch `request_id` argument.
+
 For example, pass these argument objects to the named MCP tools:
 
 ```text
@@ -90,8 +103,21 @@ Reusing the batch command resumes its saved IDs. Finished attempts must have
 complete checked evidence, confirmed cleanup and locally verified artifacts
 before the batch passes. Failed tests remain failed. SSH ambiguity retains the
 selected host and request identity. `recover` retries that identical submission
-on the same host. A preparation interrupted before a durable execution request
-can be closed as `NOT_DISPATCHED`; its files and failure remain available.
+on the same host only after querying the original authority and only when the
+saved destination permits replay. New receipts bind configuration bytes and the
+local authority root. Restore the original configuration if recovery reports a
+changed destination. Legacy unbound receipts permit observation, not automatic
+replay. A receipt missing dispatch metadata stays `UNKNOWN/UNCONFIRMED`.
+
+Batch state is version 2. `SUBMITTING` is persisted before calling the pool;
+interrupted calls and legacy version-1 `WAITING` rows are reobserved rather than
+blindly resubmitted. Proved predispatch lock/I/O deferral uses `RETRY_WAIT` with
+0.25-second initial backoff capped at 30 seconds. Returned invalid-input refusal
+uses `REJECTED`, without asserting global nonexecution or cleanup. Old
+`NOT_DISPATCHED` and associated terminal/collection results require reobservation;
+their previous status/artifacts remain available and new collection uses
+`recovery-1`. MCP cached status exposes `recovery_required: true` and `INCOMPLETE`
+for those records. Old supervisors refuse version-2 state; do not downgrade it.
 The lower-level `pool submit` returns exit 3 when no host is eligible and nothing
 was submitted. `pool run` and the batch driver retain and wait for pending work.
 
@@ -316,7 +342,32 @@ Resource allocation and dispatch intent are transactional. The database is opene
 only by the authority, using schema-version checks, WAL and full synchronization.
 The worker holds a singleton guard; a restart converts unresolved dispatch/running/
 cleanup records to `UNKNOWN` and retains their claims. Cancellation is durable before
-a delayed start can proceed. There is no automatic retry or claim expiry.
+a delayed start can proceed. Execution is not automatically retried and claims
+do not expire. Typed predispatch pool deferrals and pending journal writes can
+retry without creating another execution attempt.
+
+Proved failures before process creation finalize as infrastructure failures with
+confirmed nonlaunch. An allocated execution thread must receive a one-way grant
+after thread startup succeeds; a denied grant cannot launch, even if the thread
+was created before startup raised. Ambiguous start or cleanup failure retains
+quarantine. If the quarantine write fails, an in-memory fence blocks allocation
+and preallocated launches until the same journal transition becomes durable.
+
+`hosts` includes scheduler thread/liveness, last successful scan/dispatch, age,
+error and recovery state. The same scheduler recovers with capped backoff after
+dispatch/diagnostic faults. Unavailable claim inventory is `null`, not an empty
+list. Scheduler health is not proof that capacity is free: inspect claims,
+reservations and attempt states too. A worker lock or filesystem stall can still
+delay this response; running-loop database failure is not yet continuity-safe.
+
+`wait` shares a monotonic socket deadline across connection, send and every read.
+A prior nonterminal observation returned on timeout carries
+`wait_observation: {state: STALE, reason: DEADLINE_EXPIRED|RPC_STEP_TIMEOUT}`.
+With no observation it raises an explicit observation timeout identifying the
+job. Zero wait issues no status RPC. Managed MCP launch retains the accepted
+handle and returns `ACCEPTED / NOT_REQUESTED`; an initial positive observation
+timeout retains the same handle with `observation: TIMEOUT`. This does not cancel
+the job, bound preparation/filesystem I/O, or alter its accepted execution limit.
 
 Windows containment assigns a blocked Python launch gate to a kill-on-close Job Object
 before it can execute the adapter. A Job completion port observes member processes;
@@ -342,11 +393,15 @@ only that attempt's claims. The terminal result is `INFRA_FAILED` with
 `cleanup: UNCONFIRMED` and `evidence: INCOMPLETE`. This administrative exception
 requires an explicit operator decision each time. After closure, restore admission
 with `testctl drain off`. Ordinary cancellation and reconciliation retain their
-existing process-tree proof requirements.
+existing process-tree proof requirements. Abandonment is also refused while any
+attempt has a pending in-memory fence/journal retry; let that journal recover first.
 
 Snapshots bind actual dirty/untracked bytes, deletions, relevant metadata, launcher
 digests, referenced aircraft authoring files, installed native inputs and optional
 prepared imports. Stored input and per-attempt materialization are both verified.
+Admission uses the exact verified manifest object. Batch receipt hashes and
+engine-pin policy reads are bound to the same verified inputs; new pool and
+interactive requests also pin expected source and manifest digests.
 Writable source, `.godot`, profile, temp and output directories are independent.
 History-dependent presets receive a separate local clone of Git history. Copies are
 verified per file and inventories rechecked; this is **not an atomic multi-file

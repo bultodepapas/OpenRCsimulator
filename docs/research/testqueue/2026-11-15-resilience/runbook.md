@@ -1,9 +1,16 @@
-# Safe recovery with the current queue
+# Recovery for the audited queue baseline
 
 Applies to baseline `c048a4e6834646400070a488b293344dc1e1fd80`, inspected
 15 November 2026. Commands are existing interfaces; proposed automatic recovery,
 remote cancellation and phase deadlines live in the
 [implementation plan](../../../plans/mcp-queue-resilience.md).
+
+The branch now contains a later [implementation candidate](implementation.md).
+Use the [operating guide](../../../../tools/testqueue/README.md) for that source;
+this dated runbook preserves the earlier baseline's behavior and restrictions.
+In particular, it predates version-2 batches, identity-first recovery and the
+upstream explicit operator-abandonment command. Do not mix runtime versions or
+apply newer recovery semantics to an old deployed worker without review.
 
 ## 1. Identify which queue layer is uncertain
 

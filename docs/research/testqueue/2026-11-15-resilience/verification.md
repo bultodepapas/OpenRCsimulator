@@ -5,6 +5,10 @@ Audit date: **15 November 2026**. Source baseline:
 findings; the [implementation plan](../../../plans/mcp-queue-resilience.md) owns
 proposed repairs and their acceptance gates. This record does not close those gates.
 
+Later implementation results belong to the separate
+[handoff](implementation.md) and [evidence record](implementation-evidence.json).
+The counts and defect observations below are retained unchanged for this baseline.
+
 ## Local focused checks
 
 Existing fixture groups ran in the Linux audit environment, with private temporary
