@@ -1,0 +1,66 @@
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -5683,7 +5683,8 @@
+ 	uint32_t to_present_index = 0;
+ 	while (to_present_index < frames[frame].swap_chains_to_present.size()) {
+ 		if (frames[frame].swap_chains_to_present[to_present_index] == it->value) {
+-			driver->command_queue_execute_and_present(present_queue, {}, {}, {}, {}, it->value);
++			Error gpu_submit_result = driver->command_queue_execute_and_present(present_queue, {}, {}, {}, {}, it->value);
++			CRASH_COND_MSG(gpu_submit_result != OK && driver->get_api_name() == "Metal", "GPU command submission failed; refusing to recycle in-flight resources.");
+ 			frames[frame].swap_chains_to_present.remove_at(to_present_index);
+ 		} else {
+ 			to_present_index++;
+@@ -7602,7 +7603,8 @@
+ }
+ 
+ void RenderingDevice::_submit_transfer_worker(TransferWorker *p_transfer_worker, VectorView<RDD::SemaphoreID> p_signal_semaphores) {
+-	driver->command_queue_execute_and_present(transfer_queue, {}, p_transfer_worker->command_buffer, p_signal_semaphores, p_transfer_worker->command_fence, {});
++	Error gpu_submit_result = driver->command_queue_execute_and_present(transfer_queue, {}, p_transfer_worker->command_buffer, p_signal_semaphores, p_transfer_worker->command_fence, {});
++	CRASH_COND_MSG(gpu_submit_result != OK && driver->get_api_name() == "Metal", "GPU command submission failed; refusing to recycle in-flight resources.");
+ 
+ 	for (uint32_t i = 0; i < p_signal_semaphores.size(); i++) {
+ 		// Indicate the frame should wait on these semaphores before executing the main command buffer.
+@@ -7618,7 +7620,8 @@
+ }
+ 
+ void RenderingDevice::_wait_for_transfer_worker(TransferWorker *p_transfer_worker) {
+-	driver->fence_wait(p_transfer_worker->command_fence);
++	Error gpu_wait_result = driver->fence_wait(p_transfer_worker->command_fence);
++	CRASH_COND_MSG(gpu_wait_result != OK && driver->get_api_name() == "Metal", "GPU fence wait failed; refusing to recycle in-flight resources.");
+ 	driver->command_pool_reset(p_transfer_worker->command_pool);
+ 	p_transfer_worker->staging_buffer_size_in_use = 0;
+ 	p_transfer_worker->submitted = false;
+@@ -8628,9 +8631,11 @@
+ 			// Semaphores always need to be signaled if it's not the last command buffer.
+ 		}
+ 
+-		driver->command_queue_execute_and_present(main_queue, wait_semaphores, command_buffer,
++		Error gpu_submit_result = driver->command_queue_execute_and_present(main_queue, wait_semaphores, command_buffer,
+ 				signal_semaphore ? signal_semaphore : VectorView<RDD::SemaphoreID>(), signal_fence,
+ 				swap_chains);
++
++		CRASH_COND_MSG(gpu_submit_result != OK && driver->get_api_name() == "Metal", "GPU command submission failed; refusing to recycle in-flight resources.");
+ 
+ 		// Make the next command buffer wait on the semaphore signaled by this one.
+ 		wait_semaphores.resize(1);
+@@ -8660,7 +8665,8 @@
+ 	if (frame_can_present) {
+ 		if (separate_present_queue) {
+ 			// Issue the presentation separately if the presentation queue is different from the main queue.
+-			driver->command_queue_execute_and_present(present_queue, frames[frame].semaphore, {}, {}, {}, frames[frame].swap_chains_to_present);
++			Error gpu_submit_result = driver->command_queue_execute_and_present(present_queue, frames[frame].semaphore, {}, {}, {}, frames[frame].swap_chains_to_present);
++			CRASH_COND_MSG(gpu_submit_result != OK && driver->get_api_name() == "Metal", "GPU command submission failed; refusing to recycle in-flight resources.");
+ 		}
+ 
+ 		frames[frame].swap_chains_to_present.clear();
+@@ -8672,7 +8678,8 @@
+ 
+ 	if (frames[p_frame].fence_signaled) {
+ 		GodotProfileZoneGroupedFirst(_profile_zone, "driver->fence_wait");
+-		driver->fence_wait(frames[p_frame].fence);
++		Error gpu_wait_result = driver->fence_wait(frames[p_frame].fence);
++		CRASH_COND_MSG(gpu_wait_result != OK && driver->get_api_name() == "Metal", "GPU fence wait failed; refusing to recycle in-flight resources.");
+ 		frames[p_frame].fence_signaled = false;
+ 
+ 		// Flush any pending requests for asynchronous buffer downloads.

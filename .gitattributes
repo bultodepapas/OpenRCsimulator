@@ -310,3 +310,12 @@
 # AV-17-R5 identities bind exact recorder and checked-run bytes across platforms.
 /docs/research/avanti-realism/AV-17-R5/** -text whitespace=cr-at-eol
 /docs/research/avanti-realism/AV-17-R5/**/*.log -whitespace
+
+# MetalFX intake and native witnesses bind exact source/patch bytes across hosts.
+/tools/graphics/metalfx/patches/*.patch text eol=lf -whitespace
+/tools/graphics/metalfx/*.py text eol=lf
+/research/engine-upgrade/metalfx/*.gd text eol=lf
+/app/render/frame_generation*.gd text eol=lf
+/app/render/frame_generation*.gd.uid text eol=lf
+/app/tests/test_frame_generation*.gd text eol=lf
+/app/tests/test_frame_generation*.gd.uid text eol=lf

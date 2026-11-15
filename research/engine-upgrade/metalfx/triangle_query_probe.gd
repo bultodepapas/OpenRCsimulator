@@ -43,6 +43,7 @@ var indirect := RID()
 var shader := RID()
 var pipeline := RID()
 var uniform_set := RID()
+var queued_build := false
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
@@ -56,9 +57,11 @@ func _check(ok: bool, message: String) -> void:
 
 func _finish() -> void:
 	if rd != null:
-		# Finish any queued build even in a negative case before destroying its inputs.
-		rd.submit()
-		rd.sync()
+		# Negative cases rejected before a build have no command buffer to wait
+		# for. Submitting an empty graph produces an unsignaled-fence warning.
+		if queued_build:
+			rd.submit()
+			rd.sync()
 		if uniform_set.is_valid() and rd.uniform_set_is_valid(uniform_set):
 			rd.free_rid(uniform_set)
 		if pipeline.is_valid():
@@ -191,7 +194,9 @@ func _run() -> void:
 	if not blas.is_valid() or not tlas.is_valid():
 		_finish()
 		return
-	_check(rd.blas_build(blas) == OK, "build_blas")
+	var build_error := rd.blas_build(blas)
+	queued_build = build_error == OK
+	_check(build_error == OK, "build_blas")
 	var instance := _instance()
 	if case_name == "bad_id":
 		instance.id = 0x1000000

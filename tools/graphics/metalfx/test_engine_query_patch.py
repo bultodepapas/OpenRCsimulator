@@ -678,6 +678,8 @@ def evaluate_checked_case(report: dict, command: list[str], case_dir: Path,
     result = {"case": case, "mode": mode, "ok": False, "findings": []}
     findings = result["findings"]
     try:
+        if not isinstance(report, dict):
+            raise ValueError("checked runner returned an invalid report")
         if report.get("format") != "openrc-godot-check v1" or report.get("command") != command:
             raise ValueError("checked report identity or command differs")
         report_path = Path(report["report"]).resolve(strict=True)
@@ -949,6 +951,23 @@ class NativeRunnerControlTests(unittest.TestCase):
         self.assertIn("admission refused", result["runner_exception"])
         self.assertNotIn("checked", result)
         self.assertIsNone(self.report, "runner must not launch after admission refusal")
+
+    def test_default_admission_checks_exclusive_grant(self) -> None:
+        log = self.fixture_log("happy", "argument")
+        with mock.patch("tools.testqueue.common.enabled", return_value=True), \
+                mock.patch("tools.testqueue.common.inherited", side_effect=lambda scope: scope == "rendered") as inherited:
+            result = run_native_case(self.command, self.output / "refused", "argument", "happy", None,
+                                     runner=self.fake_runner(log))
+        self.assertFalse(result["ok"])
+        self.assertIn("exclusive inherited", result["runner_exception"])
+        self.assertEqual(inherited.call_args_list, [mock.call("rendered"), mock.call("performance")])
+        self.assertIsNone(self.report, "a nonexclusive grant must not launch the runner")
+        with mock.patch("tools.testqueue.common.enabled", return_value=True), \
+                mock.patch("tools.testqueue.common.inherited", return_value=True) as inherited:
+            result = run_native_case(self.command, self.output / "admitted", "argument", "happy", None,
+                                     runner=self.fake_runner(log))
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(inherited.call_args_list, [mock.call("rendered"), mock.call("performance")])
 
 if __name__ == "__main__":
     if "--native" in sys.argv:
