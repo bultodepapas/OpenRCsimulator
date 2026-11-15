@@ -7,8 +7,9 @@ const Settings := preload("res://ui/settings_screen.gd")
 
 class AdvertisingBackend extends RefCounted:
 	var requests: Array[RID] = []
+	var providers := PackedStringArray(["metalfx_temporal"])
 	func get_temporal_history_reset_providers() -> PackedStringArray:
-		return PackedStringArray(["metalfx_temporal"])
+		return providers
 	func viewport_request_temporal_history_reset(viewport: RID) -> void:
 		requests.append(viewport)
 
@@ -121,6 +122,8 @@ func _run() -> void:
 	_check("camera discontinuity restores Native and AA", report.provider == "native" and root.scaling_3d_scale == 1.0 and root.msaa_3d == Viewport.MSAA_8X)
 	_check("camera fallback preserves saved request", config == before and report.requested == "metalfx_temporal_85")
 	_check("fallback records missing reset separately", report.runtime_failure.reason == "history_reset_unavailable" and report.history_reset.submitted == 0)
+	_check("missing API is diagnosed without claiming encoding", report.history_reset.failure.reason == "reset_api_missing"
+		and report.history_reset.reset_state == "unavailable" and not report.history_reset.encoded)
 	Reconstruction.apply(root, config, forward)
 	_check("settings reapply cannot revive invalid temporal history", Reconstruction.describe(root).provider == "native")
 	config.reconstruction = "native"
@@ -135,6 +138,15 @@ func _run() -> void:
 	report = Reconstruction.describe(root)
 	_check("unacknowledged reset falls back and never counts a submission", report.provider == "native"
 		and report.effective == "native" and report.history_reset.submitted == 0
+		and report.runtime_failure.reason == "history_reset_unavailable")
+	_check("missing status API is separately diagnosed", report.history_reset.failure.reason == "status_api_missing")
+	root.set_meta(Reconstruction.CONFIG_META, config)
+	root.set_meta(Reconstruction.POLICY_META, temporal)
+	advertised.providers = PackedStringArray(["dlss"])
+	_check("unadvertised Temporal reset keeps Native fallback", not Reconstruction.request_history_reset(root, "camera_cut", advertised))
+	report = Reconstruction.describe(root)
+	_check("unsupported provider is diagnosed without submitting", report.provider == "native"
+		and report.history_reset.failure.reason == "provider_unsupported" and report.history_reset.submitted == 0
 		and report.runtime_failure.reason == "history_reset_unavailable")
 
 	# Model the startup seam used by Main: the rig starts at pilot and applies the

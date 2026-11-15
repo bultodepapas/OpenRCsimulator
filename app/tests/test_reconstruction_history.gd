@@ -11,13 +11,17 @@ class MetalBackend extends RefCounted:
 	var status := {}
 	var response: Variant = {}
 	var requests: Array[RID] = []
+	var status_reads := 0
+	var post_status_patch := {}
 	func viewport_get_metalfx_status(_viewport: RID) -> Dictionary:
+		status_reads += 1
 		return status.duplicate(true)
 	func viewport_request_temporal_history_reset(viewport: RID) -> Variant:
 		requests.append(viewport)
 		if typeof(response) == TYPE_DICTIONARY and response.get("accepted") == true \
 				and typeof(response.get("serial")) == TYPE_INT:
 			status["reset_requested_serial"] = response.serial
+		status.merge(post_status_patch, true)
 		return response
 
 var _checks := 0
@@ -56,6 +60,7 @@ func _initialize() -> void:
 	description.history_reset.notifications = -1
 	_check("description does not expose mutable viewport bookkeeping", first.get_meta(Reconstruction.HISTORY_RESET_META).notifications > 0)
 	_test_metalfx_reset()
+	_test_metalfx_refusal_diagnostics()
 	first.free()
 	second.free()
 	print("reconstruction history: %d checks, %d failed" % [_checks, _failures])
@@ -180,6 +185,50 @@ func _test_metalfx_reset() -> void:
 		and not Reconstruction._metalfx_configured_native(native_status, 4, 9))
 	view.free()
 	other.free()
+
+
+func _test_metalfx_refusal_diagnostics() -> void:
+	var view := SubViewport.new()
+	var mode := int(view.scaling_3d_mode)
+	var backend := MetalBackend.new()
+	var ready := {"generation": 7, "requested_mode": mode, "configured_mode": mode,
+		"render_buffers_available": true, "provider": "temporal", "allocation": "created", "submission": "enqueued",
+		"reset_requested_serial": 0, "reset_submitted_serial": 0, "reset_encoded_serial": 0,
+		"reset_gpu_completion": "unobserved", "temporal_attempts": 10}
+	backend.status = ready.duplicate(true)
+	backend.status.render_buffers_available = false
+	backend.status.provider = "p".repeat(200)
+	backend.status["unrelated"] = "x".repeat(10000)
+	var cold := {}
+	_check("unready status is not submitted", Reconstruction._request_metalfx_reset(view, backend, mode, 7, cold).is_empty()
+		and backend.requests.is_empty() and backend.status_reads == 1)
+	_check("unready status has a bounded diagnostic", cold.get("reason") == "before_status_not_ready"
+		and cold.before_status.render_buffers_available == false and cold.before_status.provider.length() == 64
+		and not cold.before_status.has("unrelated"))
+	backend.status = ready.duplicate(true)
+	backend.response = {"accepted": false, "generation": 7, "serial": 0, "reset_request_attempt": 10}
+	var refused := {}
+	_check("rejected reset remains unaccepted", Reconstruction._request_metalfx_reset(view, backend, mode, 7, refused).is_empty()
+		and backend.requests.size() == 1 and backend.status_reads == 2)
+	_check("backend rejection is distinct from readiness", refused.get("reason") == "reset_rejected"
+		and refused.reset_receipt.accepted == false and refused.before_status.allocation == "created")
+	backend.status = ready.duplicate(true)
+	backend.response = {"accepted": true, "generation": 7, "serial": "s".repeat(200), "reset_request_attempt": 10}
+	var malformed := {}
+	_check("malformed reset receipt stays unavailable", Reconstruction._request_metalfx_reset(view, backend, mode, 7, malformed).is_empty()
+		and malformed.get("reason") == "reset_receipt_malformed" and malformed.reset_receipt.serial.length() == 64)
+	backend.status = ready.duplicate(true)
+	backend.response = {"accepted": true, "generation": 7, "serial": 1, "reset_request_attempt": 10}
+	backend.post_status_patch = {"generation": 8}
+	var inconsistent := {}
+	var reads_before := backend.status_reads
+	_check("inconsistent post-status stays unavailable", Reconstruction._request_metalfx_reset(view, backend, mode, 7, inconsistent).is_empty()
+		and inconsistent.get("reason") == "post_status_unavailable" and inconsistent.before_status.generation == 7
+		and inconsistent.after_status.generation == 8 and backend.status_reads == reads_before + 2)
+	var invalid := Reconstruction._metalfx_diagnostic_fields({"generation": [1], "provider": {}, "other": 5},
+		Reconstruction.METALFX_RESET_STATUS_FIELDS)
+	_check("diagnostics omit extra fields and bound invalid values", invalid == {"generation": "invalid_type", "provider": "invalid_type"})
+	view.free()
 
 
 func _check(label: String, valid: bool) -> void:

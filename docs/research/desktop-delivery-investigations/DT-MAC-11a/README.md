@@ -1178,6 +1178,53 @@ compressed bytes, SHA-256
 The archive and every payload matched after retrieval. This includes the native
 renewal, controller checks and capture logs, including failed preliminary attempts.
 
+### Requested-mode frame screen and reset diagnosis
+
+The retained `f5219d7d` research package ran four exploratory scripted samples on
+M1 using Forward+/Metal, reported 1920×1080 window/viewport dimensions, ten seconds
+of warmup and thirty measured seconds each. VSync, frame cap and FG were off;
+audio used Dummy. The scripted route disables physical flight and input.
+
+| Request | Mean FPS | p95 wall frame (ms) | p99 (ms) | Observed selection |
+| --- | ---: | ---: | ---: | --- |
+| Native before | 38.86 | 29.612 | 35.541 | Native |
+| Spatial Quality | 54.56 | 21.896 | 24.830 | Selected; effective SDK execution unknown |
+| Temporal Quality | 39.00 | 29.613 | 33.497 | Native fallback |
+| Native after | 39.01 | 29.511 | 36.128 | Native |
+
+All four streams completed, drawing advanced throughout, and the existing
+diagnoser found no invalid measurements or engine errors. The three non-temporal
+runs each retained four ObjectDB references at exit. These dimensions are runtime
+reports, not independent drawable-pixel observations for each run. This screen
+does not establish active-flight performance, presentation timing, physical
+latency, image quality or a sustained MetalFX speedup. Spatial's requested-mode
+result cannot be attributed to verified SDK execution; the Temporal result is
+explicitly Native fallback. Raw reports and verified hashes are retained locally
+under `tmp/metalfx-20261114/reconstruction-screen-r1/`.
+
+A diagnostics-only change to Reconstruction records a bounded failure reason and
+whitelisted status fields using its existing status reads. Acceptance, fallback,
+serial/generation checks and GPU-completion reporting are unchanged. The clean
+19-patch editor passed 58 history and 124 MetalFX policy checks. A separate
+source-hosted run, with an isolated profile and a route wrapper that defers the
+ordinary main scene by one frame, reproduced `before_status_not_ready`: requested
+mode 4, generation 10, no render buffers, provider `none`, and allocation/submission
+`not_attempted`. Temporal attempts and all reset serials were zero. Its frame
+report is `d92a8cd4ab61f4edf5d57d1efe259baec8513acda28ccd6ef9b25d840f142cbc`.
+This diagnoses that run, not the identical packaged executable. The fallback
+remains required; a fix needs a cut boundary after the affected pose and before
+its next draw, with a scoped reset or proof of the generation's initial reset.
+The phase-9 archive retains 45 report/script payloads, 658,493 compressed bytes,
+SHA-256 `40f6e2e8a5976f718570c076699e77d9df407eb66dd44bdd0d09ba76acfdf812`;
+the archive and all payloads matched after retrieval.
+
+Required CI at `f5a0f325` subsequently reached a stale Controls dialog-label
+expectation and the guarded shaft/weather publication fixture. The one-line
+dialog expectation now matches the existing `Save current` label and passes the
+official-engine M1 P0 suite. The publication fixture still guards 19 inputs; only
+the Session pin differs. Windows/Linux comparison and strict fixture promotion
+remain pending. Its historical captures and numerical expectations are unchanged.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is

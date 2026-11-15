@@ -83,6 +83,11 @@ A bounded native Settings trial now preserves the confirmation window through
 an injected main-thread stall, and the focused Settings consumers pass. A corrected
 source-bound ARM64 development package also passes fixed-session and bounded
 rendered smokes. Cold compilation and full required CI remain unqualified.
+Direct-start Temporal reset ordering also remains open: a bounded source-hosted
+diagnostic observed the reset before render buffers existed. The preceding
+packaged Temporal frame screen used Native fallback; it is not a Temporal
+performance result. The implementation evidence records the required post-pose
+reset boundary and the requested-mode Spatial screen.
 
 Completion has three distinct levels per technology:
 
