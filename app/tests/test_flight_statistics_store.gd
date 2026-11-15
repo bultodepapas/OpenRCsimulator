@@ -18,6 +18,8 @@ func _initialize() -> void:
 	_test_initial_round_trip_and_lock(schema, store_script)
 	_test_string_name_keys(schema, store_script)
 	_test_corrupt_generation_recovery(schema, store_script)
+	_test_repeated_quarantine(schema, store_script)
+	_test_quarantine_failure(schema, store_script)
 	_test_future_schema_protection(schema, store_script)
 	_test_commit_interruptions(schema, store_script)
 	_test_alias_delete_recovery(schema, store_script, reducer)
@@ -102,6 +104,87 @@ func _test_corrupt_generation_recovery(schema: Script, store_script: Script) -> 
 	var retained: PackedByteArray = FileAccess.get_file_as_bytes(root_path.path_join(quarantine))
 	_check("damaged bytes are retained for diagnosis", retained == bad_bytes)
 	recovered.close()
+
+
+func _test_repeated_quarantine(schema: Script, store_script: Script) -> void:
+	var root_uri: String = _new_root("repeat_quarantine")
+	var root_path: String = ProjectSettings.globalize_path(root_uri)
+	var writer: RefCounted = store_script.new()
+	_check("repeat fixture opens", writer.open(root_uri))
+	_check("repeat fixture writes both valid generations", writer.commit(_fixture_data(schema, writer.data, true))
+		and writer.commit(writer.data.duplicate(true)))
+	var damaged_slot: String = writer._current_slot
+	var damaged_path: String = root_path.path_join(damaged_slot)
+	var quarantine: String = "snapshot_quarantine_a" if damaged_slot == store_script.SLOT_A else "snapshot_quarantine_b"
+	var records: Array = writer.data.records.duplicate(true)
+	writer.close()
+	var first_damage: PackedByteArray = "{repeat-damage".to_utf8_buffer()
+	_check("repeat damage writes", _write_bytes(damaged_path, first_damage))
+	var recovered: RefCounted = store_script.new()
+	_check("first repeat recovery remains writable", recovered.open(root_uri) and recovered.writable, recovered.note)
+	recovered.close()
+	_check("immediate reopen recognizes identical preserved damage", recovered.open(root_uri) and recovered.writable, recovered.note)
+	_check("immediate recovery retains valid history", recovered.data.records == records)
+	var competing: RefCounted = store_script.new()
+	_check("competing recovery remains read-only", competing.open(root_uri) and not competing.writable)
+	_check("non-owner cannot preserve damage directly", not competing._quarantine_bad_snapshots([damaged_slot]))
+	competing.close()
+	for damage: PackedByteArray in [first_damage, "{different-damage".to_utf8_buffer(), PackedByteArray()]:
+		_check("healthy recovery heals both slots", recovered.commit(recovered.data.duplicate(true))
+			and recovered.commit(recovered.data.duplicate(true)), recovered.note)
+		recovered.close()
+		_check("healthy store reopens", recovered.open(root_uri) and recovered.writable)
+		recovered.close()
+		_check("same slot is corrupted after healthy commits", _write_bytes(damaged_path, damage))
+		_check("later corruption preserves writable recovery", recovered.open(root_uri) and recovered.writable, recovered.note)
+		_check("later recovery retains valid history", recovered.data.records == records)
+	_check("first damaged bytes remain intact", FileAccess.get_file_as_bytes(root_path.path_join(quarantine + ".bin")) == first_damage)
+	_check("different damaged bytes have a separate copy", FileAccess.get_file_as_bytes(root_path.path_join(quarantine + "_1.bin")) == "{different-damage".to_utf8_buffer())
+	_check("empty corruption is preserved as an actual file", FileAccess.file_exists(root_path.path_join(quarantine + "_2.bin"))
+		and recovered._quarantine_matches(root_path.path_join(quarantine + "_2.bin"), PackedByteArray()))
+	_check("missing file cannot satisfy empty-byte preservation", not recovered._quarantine_matches(root_path.path_join("missing.bin"), PackedByteArray()))
+	var completed: Dictionary = recovered.data.duplicate(true)
+	completed.active_context = {}
+	_check("recovered store accepts a subsequent commit", recovered.commit(completed), recovered.note)
+	_check("history deletion succeeds after repeated damage", recovered.delete_history(), recovered.note)
+	for name: String in DirAccess.get_files_at(root_path):
+		_check("deletion purges every retained quarantine", not name.begins_with("snapshot_quarantine_"), name)
+	recovered.close()
+	_check("deleted history stays deleted after reopen", recovered.open(root_uri) and recovered.writable and recovered.data.records.is_empty())
+	recovered.close()
+
+
+func _test_quarantine_failure(schema: Script, store_script: Script) -> void:
+	for stage: String in ["before_quarantine_copy", "after_quarantine_copy", "capacity"]:
+		var root_uri: String = _new_root(stage)
+		var root_path: String = ProjectSettings.globalize_path(root_uri)
+		var writer: RefCounted = store_script.new()
+		_check("failed-preservation fixture opens", writer.open(root_uri))
+		_check("failed-preservation fixture has two generations", writer.commit(_fixture_data(schema, writer.data, true))
+			and writer.commit(writer.data.duplicate(true)))
+		var damaged_slot: String = writer._current_slot
+		var records: Array = writer.data.records.duplicate(true)
+		var names: Array[String] = writer._quarantine_names(damaged_slot)
+		writer.close()
+		if stage == "capacity":
+			for index: int in names.size():
+				_check("bounded quarantine slot is occupied", _write_bytes(root_path.path_join(names[index]), ("old-damage-%d" % index).to_utf8_buffer()))
+		_check("failed-preservation damage writes", _write_bytes(root_path.path_join(damaged_slot), "{new-damage".to_utf8_buffer()))
+		var recovered: RefCounted = store_script.new()
+		_stop_stage = stage
+		recovered.interruption_hook = Callable(self, "_interrupt_at")
+		_check("failed preservation retains read-only valid history", recovered.open(root_uri) and not recovered.writable
+			and recovered.data.records == records, recovered.note)
+		_check("failed preservation refuses later writes", not recovered.commit(recovered.data.duplicate(true)))
+		recovered.close()
+		if stage == "capacity":
+			_check("capacity failure preserves the damaged source", FileAccess.get_file_as_bytes(root_path.path_join(damaged_slot)) == "{new-damage".to_utf8_buffer())
+			_check("capacity failure retains the earliest evidence", FileAccess.get_file_as_bytes(root_path.path_join(names[0])) == "old-damage-0".to_utf8_buffer())
+		else:
+			recovered.interruption_hook = Callable()
+			_check("interrupted preservation recovers on reopen", recovered.open(root_uri) and recovered.writable
+				and recovered.data.records == records, recovered.note)
+			recovered.close()
 
 
 func _test_future_schema_protection(schema: Script, store_script: Script) -> void:

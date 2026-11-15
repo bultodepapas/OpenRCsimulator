@@ -3,6 +3,7 @@ extends SceneTree
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Loader := preload("res://data/lake_loader.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const LakeCollision := preload("res://sim/lake_collision.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
@@ -23,6 +24,8 @@ func _initialize() -> void:
 	_test_checkpoint_identity(lake)
 	_test_earliest_event(lake)
 	_test_outside_parity(lake)
+	_test_audit_bank_ticks(lake)
+	_test_sampled_bank_tolerance(lake)
 	print("%d lake session checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -66,6 +69,7 @@ func _test_checkpoint_identity(lake: Dictionary) -> void:
 	var checkpoint: Dictionary = session.checkpoint()
 	_check("lake checkpoint records format, identity, and trace header", checkpoint.get("format", "") == "openrc-flight-checkpoint v7"
 		and checkpoint.get("lake_identity", "") == lake.identity and session.trace_meta().get("lake_identity", "") == lake.identity)
+	_check("lake trace declares the corrected swept contact law", session.trace_meta().get("lake_collision_law", "") == LakeCollision.LAW)
 	var other: Dictionary = lake.duplicate(true)
 	other["id"] = str(lake.id) + "_other"
 	other["identity"] = Loader.identity(other)
@@ -95,7 +99,8 @@ func _test_earliest_event(lake: Dictionary) -> void:
 		and scenery_session.last_lake_event() == null and str(scenery_session.crash.get("impact").trigger) == "scenery")
 
 ## Supply the controlled geometric sweep through the actual simulation acceptance boundary.
-func _accept_sweep(session: Session, previous: PackedFloat64Array, candidate: PackedFloat64Array) -> void:
+func _accept_sweep(session: Session, previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		mass_at_fraction: Callable = Callable()) -> void:
 	# These fixtures replace the aircraft's geometry; disable propulsion callbacks tied to its original gear.
 	session.sim.continuous = PackedFloat64Array()
 	for field: String in ["step_policy", "stage", "block_loads", "block_derivative",
@@ -103,7 +108,7 @@ func _accept_sweep(session: Session, previous: PackedFloat64Array, candidate: Pa
 		session.sim.model.set(field, Callable())
 	_set_direct_state(session, Array(previous.slice(RB.POS, RB.POS + 3)), Array(previous.slice(RB.VEL, RB.VEL + 3)))
 	session.sim.model.post_tick = func(_previous: PackedFloat64Array, _candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
-		var filtered: PackedFloat64Array = session._resolve_collision_step(previous, candidate, tick)
+		var filtered: PackedFloat64Array = session._resolve_collision_step(previous, candidate, tick, mass_at_fraction)
 		_check("unaccepted sweep keeps impact private", session.crash.is_empty()
 			and session.last_lake_event() == null and session.last_scenery_event() == null)
 		return filtered
@@ -131,6 +136,66 @@ func _test_outside_parity(lake: Dictionary) -> void:
 		and bounded.touches_ground(on_dry_ground))
 	_check("outside-bank gear compression remains bit-identical",
 		_same_packed(dry.gear_compressions(on_dry_ground), bounded.gear_compressions(on_dry_ground)))
+
+
+## A35 F06/F07 witnesses, using the real aircraft, accepted tick and stopped propeller.
+func _test_audit_bank_ticks(lake: Dictionary) -> void:
+	var stik: Session = _bank_tick(lake, "res://data/aircraft/jensen_ugly_stik_60.json",
+		171.3, M.q_from_euler(-PI / 2.0, 0.0, 0.0), PackedFloat64Array([35.0, 0.0, 4.45]), 0.001)
+	_check("F06 shallow Stik bank approach survives the accepted tick", stik.sim.tick == 1
+		and stik.sim.fault_reason.is_empty() and stik.crash.is_empty() and stik.last_lake_event() == null,
+		str(stik.crash))
+	var foam: Session = _bank_tick(lake, "res://data/aircraft/moonrunner_x99.json",
+		174.0, M.q_from_euler(0.0, 0.0, 0.0), PackedFloat64Array([0.0, 0.0, 5.0]), 0.0)
+	_check("F07 X99 uses its authored bank impact tolerance in the accepted tick", foam.sim.tick == 1
+		and foam.sim.fault_reason.is_empty() and foam.crash.is_empty() and foam.last_lake_event() == null,
+		str(foam.crash))
+
+
+func _test_sampled_bank_tolerance(lake: Dictionary) -> void:
+	var session: Session = _new_collision_session(lake)
+	session.soft_hull_contacts = true
+	session.aircraft.model.crash_tolerance = {terminal_specific_energy = 12.5, crash_depth = 0.12}
+	session._hull_contact = session._prepare_hull_contact()
+	var properties := {mass_kg = session.sim.mass, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+		inertia = session.sim.inertia, inverse = RB.inertia_inverse(session.sim.inertia)}
+	var sampler := func(_fraction: float) -> Dictionary:
+		return properties
+	var down: float = LakeSurface.sample_terrain_validated(lake, 110.0, 174.0).ground_down_m
+	var previous := _state([110.0, 174.0, down - 0.005], [0.0, 0.0, 3.0])
+	var candidate := _state([110.0, 174.0, down + 0.005], [0.0, 0.0, 3.0])
+	_accept_sweep(session, previous, candidate, sampler)
+	_check("session forwards prepared aircraft tolerance to the sampled bank sweep", session.crash.is_empty()
+		and session.last_lake_event() == null)
+
+
+func _bank_tick(lake: Dictionary, aircraft_path: String, east: float, q: PackedFloat64Array,
+		velocity_body: PackedFloat64Array, penetration: float) -> Session:
+	var session := Session.new()
+	session.physics_enabled = false
+	session.soft_hull_contacts = true
+	session.crash_auto_restart = false
+	root.add_child(session)
+	session.setup(aircraft_path)
+	_check("audit aircraft accepts lake context", session.aircraft.ok and session.set_lake_context(lake))
+	var center_down: float = INF
+	var hull: PackedFloat64Array = session.aircraft.model.crash_hull
+	for at: int in range(0, hull.size(), 3):
+		var offset: PackedFloat64Array = M.q_rotate(q, hull.slice(at, at + 3))
+		var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, 110.0 + offset[0], east + offset[1])
+		center_down = minf(center_down, float(terrain.ground_down_m) - offset[2])
+	var velocity_ned: PackedFloat64Array = M.q_rotate(q, velocity_body)
+	var center := PackedFloat64Array([110.0, east, center_down + penetration])
+	var lead_time: float = session.sim.dt() * (0.5 if penetration > 0.0 else 0.25)
+	var initial: PackedFloat64Array = RB.make_state(M.sub(center, M.scale(velocity_ned, lead_time)),
+		velocity_body, q, PackedFloat64Array([0.0, 0.0, 0.0]))
+	session.engine_running = false
+	session.sim.continuous[session._rotor_index()] = 0.0
+	session.sim.aux[Session.AUX_RPM] = 0.0
+	_check("audit bank state resets", session.sim.reset(initial))
+	session.sim.set_paused(false)
+	session.sim.step()
+	return session
 
 func _new_session(lake: Dictionary = {}) -> Session:
 	var session: Session = Session.new()
