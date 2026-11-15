@@ -412,6 +412,12 @@
               "surface": 0,
               "kind": "shader_color",
               "parameter": "red"
+              },
+              {
+                "node_path": "cowl_face",
+                "surface": 0,
+                "kind": "shader_color",
+                "parameter": "red"
             }
           ]
         },

@@ -7,7 +7,7 @@ extends RefCounted
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-e300-06-propeller"
+const VISUAL_REVISION := "gp-extra-300s-60-e300-07-cowl-gear"
 const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const GLASS := Color("1c2733")
@@ -211,7 +211,59 @@ static func _fuselage(root: Node3D) -> void:
 			for point in ring: uv.append(Vector2(point.y, z))
 			rings.append(ring)
 			uvs.append(uv)
-	_instance("fuselage", _loft(rings, Finish.material(Finish.FUSELAGE, D.cowl_rear_z), [true, true], uvs), root)
+	_instance("fuselage", _loft(rings, Finish.material(Finish.FUSELAGE, D.cowl_rear_z), [false, true], uvs), root)
+	_cowl_face(rings[0], root)
+
+
+# Estimated twin cooling openings within the measured nose outline. The recessed
+# throats give the cap thickness and depth without adding a black decal over it.
+static func _cowl_face(nose: Array, root: Node3D) -> void:
+	var face := _surface(Finish.material(Finish.FUSELAGE, D.cowl_rear_z))
+	var ducts := _surface(material(COCKPIT, 0.9))
+	var z: float = nose[0].z
+	var top := profile(z, 2)
+	var bottom := profile(z, 3)
+	var half_width := profile(z, 1)
+	var radius := Vector2(half_width * 0.20, (top - bottom) * 0.19)
+	var right: Array[Vector3] = [Vector3(0, top, z)]
+	for p: Vector3 in nose:
+		if p.x > 0.0: right.append(p)
+	right.append(Vector3(0, bottom, z))
+	for side in [-1.0, 1.0]:
+		var center := Vector3(side * half_width * 0.67, (top + bottom) * 0.5, z)
+		var outer: Array[Vector3] = []
+		var mouth: Array[Vector3] = []
+		var throat: Array[Vector3] = []
+		# Subdivide the straight edges as well as the corners so the inboard
+		# half of each opening has the same smooth silhouette as the outside.
+		for i in right.size():
+			var a := right[i]
+			var b := right[(i + 1) % right.size()]
+			var steps := maxi(1, ceili(a.distance_to(b) / 0.006))
+			for k in steps:
+				var p := a.lerp(b, float(k) / steps)
+				p.x *= side
+				var direction := Vector2((p.x - center.x) / radius.x, (p.y - center.y) / radius.y).normalized()
+				var offset := Vector3(direction.x * radius.x, direction.y * radius.y, 0)
+				outer.append(p)
+				mouth.append(center + offset + Vector3(0, 0, 0.0015))
+				throat.append(center + offset * 0.85 + Vector3(0, 0, 0.018))
+		for i in outer.size():
+			var j := (i + 1) % outer.size()
+			var a := outer[i]
+			var b := outer[j]
+			var c := mouth[j]
+			var d := mouth[i]
+			var forward := Vector3.FORWARD
+			_tri(face, a, b, c, forward, forward, forward, forward, [Vector2(a.y, a.z), Vector2(b.y, b.z), Vector2(c.y, c.z)])
+			_tri(face, a, c, d, forward, forward, forward, forward, [Vector2(a.y, a.z), Vector2(c.y, c.z), Vector2(d.y, d.z)])
+			var ni := Vector3(center.x - d.x, center.y - d.y, 0).normalized()
+			var nj := Vector3(center.x - c.x, center.y - c.y, 0).normalized()
+			_tri(ducts, d, c, throat[j], ni, nj, nj, ni + nj)
+			_tri(ducts, d, throat[j], throat[i], ni, nj, ni, ni + nj)
+			_tri(ducts, center + Vector3(0, 0, 0.018), throat[i], throat[j], forward, forward, forward, forward)
+	_instance("cowl_face", face.commit(), root)
+	_instance("cowl_intakes", ducts.commit(), root)
 
 
 ## Half-width of the fuselage skin at height y (same corner rounding as _fuselage_ring), for parts seated on it.
@@ -551,8 +603,19 @@ static func _wheel(label: String, diameter: float, width: float, center: Vector3
 	pivot.name = label
 	pivot.position = center
 	parent.add_child(pivot)
-	var tire := _cylinder(label + "_tire", diameter / 2.0, width, TIRE, pivot, 20)
-	tire.rotation.z = PI / 2.0
+	# Rounded shoulders and sidewalls retain the authored diameter, width and
+	# axle. Rings run along X, matching the runtime wheel's rotation axis.
+	var rings: Array = []
+	for section in [[-0.5, 0.58], [-0.49, 0.76], [-0.43, 0.93], [-0.25, 0.99], [0.0, 1.0],
+		[0.25, 0.99], [0.43, 0.93], [0.49, 0.76], [0.5, 0.58]]:
+		var ring: Array[Vector3] = []
+		for k in 24:
+			var angle := TAU * k / 24.0
+			ring.append(Vector3(section[0] * width, cos(angle) * section[1] * diameter / 2.0, sin(angle) * section[1] * diameter / 2.0))
+		rings.append(ring)
+	_instance(label + "_tire", _loft(rings, material(TIRE, 0.8)), pivot)
+	var hub := _cylinder(label + "_hub", diameter * 0.22, width * 1.04, METAL, pivot, 24)
+	hub.rotation.z = PI / 2.0
 	return pivot
 
 

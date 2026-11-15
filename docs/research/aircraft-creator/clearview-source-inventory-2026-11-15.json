@@ -1,0 +1,900 @@
+{
+  "format": "openrc-clearview-research-inventory",
+  "version": 1,
+  "observed_on": "2026-11-15",
+  "repository_head": "c930dcdbfe16d0f94f25d36c64e4384069730714",
+  "method": "Python standard-library HTTP, ZIP member inspection, ASCII header and lexical declarations; no full scene parse, image decode, conversion or simulator execution",
+  "coverage": "Seven selected archives, not the full catalog. Source archives and binary assets are not redistributed here.",
+  "summary": {
+    "archives": 7,
+    "model_roots": 26,
+    "ver5": 20,
+    "ver6": 6,
+    "ac_members": 121,
+    "unique_casefold_visual_resolutions": 5,
+    "unique_casefold_texture_resolutions": 1
+  },
+  "archives": [
+    {
+      "key": "ken-pack1",
+      "url": "https://time2rc.s3.amazonaws.com/kendata/cvplanepaks/CVPlanesPk1.zip",
+      "bytes": 10557890,
+      "sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8",
+      "entries": 373,
+      "expanded_bytes": 26365367,
+      "extensions": {
+        ".txt": 85,
+        ".ac": 99,
+        ".gif": 24,
+        ".bmp": 2,
+        ".jpg": 72,
+        ".bkp": 20,
+        ".wav": 60,
+        ".jbf": 1,
+        ".db": 3,
+        ".bak": 6,
+        ".bap": 1
+      }
+    },
+    {
+      "key": "extra-v6",
+      "url": "https://time2rc.s3.amazonaws.com/mc-models/RP17/MC_3D_Hobby_Shops_Extra_330_Red.zip",
+      "bytes": 1414972,
+      "sha256": "3f9ab90947762a66543cf20297aac4564a22011fbe6e2c037514c2295ddb0c85",
+      "entries": 15,
+      "expanded_bytes": 2932054,
+      "extensions": {
+        ".txt": 3,
+        ".jpg": 1,
+        ".bkp": 1,
+        ".wav": 3,
+        ".ac": 5,
+        ".bmp": 1,
+        ".gif": 1
+      }
+    },
+    {
+      "key": "calmato",
+      "url": "https://time2rc.s3.amazonaws.com/tb-models/Calmato_40_sports.zip",
+      "bytes": 1183603,
+      "sha256": "cb53aa60dc46a919e4a27fbfca4a0d83960cb3a15d4c5cd468e34c6085553017",
+      "entries": 14,
+      "expanded_bytes": 1633949,
+      "extensions": {
+        ".jpg": 3,
+        ".ac": 3,
+        ".gif": 1,
+        ".txt": 3,
+        ".bkp": 1,
+        ".wav": 3
+      }
+    },
+    {
+      "key": "biplane-v5",
+      "url": "https://time2rc.s3.amazonaws.com/mc-models/OP/MC_Tiburon-bipe-7-2.zip",
+      "bytes": 580124,
+      "sha256": "1d346d518cbdfb76c04a7e3cc0978466a1e227d3f442fc7ac4902f7a10568afe",
+      "entries": 12,
+      "expanded_bytes": 928016,
+      "extensions": {
+        ".ac": 3,
+        ".jpg": 2,
+        ".txt": 3,
+        ".bkp": 1,
+        ".wav": 3
+      }
+    },
+    {
+      "key": "osprey",
+      "url": "https://time2rc.s3.amazonaws.com/tb-models/V-22_Osprey.zip",
+      "bytes": 633845,
+      "sha256": "789247541c924c56ce612bfc0e1b33d89f2463b9abddfe1f0ec2591fda5df604",
+      "entries": 21,
+      "expanded_bytes": 1501493,
+      "extensions": {
+        ".ac": 3,
+        ".jpg": 3,
+        ".txt": 6,
+        ".bkp": 1,
+        ".wav": 7,
+        ".pk": 1
+      }
+    },
+    {
+      "key": "paint",
+      "url": "https://time2rc.s3.amazonaws.com/mc-models/NP22/MC_300S-Air_Guard.zip",
+      "bytes": 1301722,
+      "sha256": "39ee27cecb946ce5b4929ed95ab64cd37011f8a56ef4d021ff353b46f8e26e9c",
+      "entries": 15,
+      "expanded_bytes": 2738670,
+      "extensions": {
+        ".txt": 3,
+        ".jpg": 1,
+        ".bkp": 1,
+        ".wav": 3,
+        ".ac": 5,
+        ".bmp": 1,
+        ".gif": 1
+      }
+    },
+    {
+      "key": "f117",
+      "url": "https://time2rc.s3.amazonaws.com/tb-models/F117.zip",
+      "bytes": 923682,
+      "sha256": "c6ead5a4a348433a3acfaa9d51b841a8a82daa8de0636da582b34192257ace21",
+      "entries": 12,
+      "expanded_bytes": 1114543,
+      "extensions": {
+        ".ac": 3,
+        ".jpg": 3,
+        ".txt": 2,
+        ".bkp": 1,
+        ".wav": 3
+      }
+    }
+  ],
+  "documents": [
+    {
+      "url": "https://time2rc.s3.amazonaws.com/CVManuals/Creating%20ClearView%20Models_.docx",
+      "bytes": 20884,
+      "sha256": "bb8b866867cc0cf58f717b60520e388e0a4561035749e2bc81b32c1c67bc3dc0"
+    },
+    {
+      "url": "https://time2rc.s3.amazonaws.com/CVManuals/Create%20plane%20model%201.docx",
+      "bytes": 750926,
+      "sha256": "d9ab9df86d72f7b8ffd5c8595ef52a267b4dc27862c1bcfeb12b374123538ca8"
+    },
+    {
+      "url": "https://time2rc.s3.amazonaws.com/CVManuals/Create%20plane%20model%202.docx",
+      "bytes": 3509120,
+      "sha256": "26077ec40ae6c4be45022311a6042216efee621e638cbe01271d8c0141284f74"
+    },
+    {
+      "url": "https://time2rc.s3.amazonaws.com/CVManuals/Create%20plane%20model%203.docx",
+      "bytes": 1544848,
+      "sha256": "4d563a72b5190e0a2965b9dee4fbeaed9ebd862341b23c8edde1ddb424e8f5b8"
+    }
+  ],
+  "download_failures": [
+    {
+      "url": "https://time2rc.s3.amazonaws.com/pb-models/DHC-2_Beaver.zip",
+      "http_status": 403,
+      "meaning": "Observed response only; no permanent-unavailability claim"
+    }
+  ],
+  "models": [
+    {
+      "archive": "biplane-v5.zip",
+      "root": "MC Tiburon-bipe-7-2",
+      "dialect_hint": "flat",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "Tiburon-bipe-7.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 3,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 35,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "MC Tiburon-bipe-7-2/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "a2958169d763b44abd0df309b5e3e40576845343955de01ef112e631ff91dcd1",
+      "selected_visual_sha256": "0f236b986eb8c035bef0ba28819a3feab2b723ffc1d5889ba9f48e28536cd931",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 1133,
+      "declared_vertex_count": 1407
+    },
+    {
+      "archive": "calmato.zip",
+      "root": "Calmato 40 Sports",
+      "dialect_hint": "sectioned",
+      "selected_visual": "tomboscalmato.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "Bottoms.jpg",
+        "Calmato40.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 3,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 29,
+      "has_fmodel": true,
+      "has_paramModel": false,
+      "has_colbody": true,
+      "resolved_visual": "Calmato 40 Sports/data/tomboscalmato.ac",
+      "declared_versions": [
+        "6.0"
+      ],
+      "params_sha256": "e01a102f21e04235f247963ff6828784fd5dbe65bc82d0fc7e66efcf39152e3a",
+      "selected_visual_sha256": "590ccb69fff0e32ad819e39bd1b42a48f966ce582bec32a7846d7e4cfbaea1a0",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 3529,
+      "declared_vertex_count": 2162
+    },
+    {
+      "archive": "extra-v6.zip",
+      "root": "MC 3D Hobby Shops Extra 330 Red",
+      "dialect_hint": "sectioned",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "Extra 330 Red.bmp"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 41,
+      "has_fmodel": true,
+      "has_paramModel": false,
+      "has_colbody": true,
+      "resolved_visual": "MC 3D Hobby Shops Extra 330 Red/data/body.ac",
+      "declared_versions": [
+        "6.0"
+      ],
+      "params_sha256": "2d043cb0d7af35bad07fbc820baaf188473d79c6aa1f663e86e2f7c914a11ff4",
+      "selected_visual_sha256": "68d6b0aae101afad386a5fb6354fc55626c7813c6d62e945094ecb3e43322d6c",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 2649,
+      "declared_vertex_count": 2683
+    },
+    {
+      "archive": "f117.zip",
+      "root": "F-117",
+      "dialect_hint": "sectioned",
+      "selected_visual": "TombosF-117.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "F-117_Tex.jpg",
+        "F-117_Tex_TB.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 3,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 24,
+      "has_fmodel": true,
+      "has_paramModel": false,
+      "has_colbody": true,
+      "resolved_visual": "F-117/data/TombosF-117.ac",
+      "declared_versions": [
+        "6.0"
+      ],
+      "params_sha256": "d05e645df58d7b93bc91e5239ef5d9ab03860d6d93e8d896f2474204abd3856b",
+      "selected_visual_sha256": "505e2f7f62a2a4a08277bea403149f1777a0804ba0513cfa2cdf5cb7b0cb9270",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 738,
+      "declared_vertex_count": 1071
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "701F2",
+      "dialect_hint": "flat",
+      "selected_visual": "Body.ac",
+      "visual_exists_exact": false,
+      "texture_references": [],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 37,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "701F2/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "23cf0b1bc185658d07177302641f69c69f6469da1fc0a5f332aa19232243d300",
+      "selected_visual_sha256": "fc4f6597a3e954ce0881f0a8dc486294e8776bd820ebfb034edffcf2d89954c0",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 2229,
+      "declared_vertex_count": 1604
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "701f",
+      "dialect_hint": "flat",
+      "selected_visual": "Body.ac",
+      "visual_exists_exact": false,
+      "texture_references": [],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 29,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "701f/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "23cf0b1bc185658d07177302641f69c69f6469da1fc0a5f332aa19232243d300",
+      "selected_visual_sha256": "93ab2c24ad3d0e6d1f745ed8ae39c415333c725306d2391209b87fccc4dbe20d",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 2221,
+      "declared_vertex_count": 1596
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "A-10_GWS",
+      "dialect_hint": "flat",
+      "selected_visual": "gws-a10.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "gws-a10.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 41,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "A-10_GWS/data/gws-a10.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "9961b32b73af3dd728f33ce5f050e4875635ae0bbd6d62437ba1418e1261aff8",
+      "selected_visual_sha256": "36e6b49c74ddef004fc62d217b9e477cf363e515e2c8232ace3f74abfb25f04e",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 4976,
+      "declared_vertex_count": 2824
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "A-6 Intruder",
+      "dialect_hint": "flat",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "A-6.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 41,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "A-6 Intruder/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "462eb240ec47818ea0f54ec0fcfe32c551016f6c9072ea9adacdc96b20ada6ba",
+      "selected_visual_sha256": "ae33e035797d592c52156180c842b9d890d3f3f6928b5f39602380f3f2f22fa0",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 4535,
+      "declared_vertex_count": 3119
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "A-7 Corsair",
+      "dialect_hint": "flat",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "A-7.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 38,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "A-7 Corsair/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "462eb240ec47818ea0f54ec0fcfe32c551016f6c9072ea9adacdc96b20ada6ba",
+      "selected_visual_sha256": "2908a0eb48e87a3c351b18ca7913daba8236eb4ad3790b45a5e5e849037ee323",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 3225,
+      "declared_vertex_count": 2195
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "A6-Zero",
+      "dialect_hint": "flat",
+      "selected_visual": "A6m5C.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "A6M5c_HG.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 39,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "A6-Zero/data/A6m5C.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "8521e7726baf0b7a2ac482a2ff0c8422919f54e3593a9ff7d1646b887a979147",
+      "selected_visual_sha256": "483e05b4226076eba2a97fba474a04aaa1f0aba4db0bf2b8d66cc4f9c71101bc",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 4066,
+      "declared_vertex_count": 2529
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Agri Duck Duster",
+      "dialect_hint": "flat",
+      "selected_visual": "Body.ac",
+      "visual_exists_exact": false,
+      "texture_references": [],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 40,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Agri Duck Duster/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "dbfeb5f9c656973aab03daa101e792989411970b791297f4eda4eb0907937d99",
+      "selected_visual_sha256": "9aa7b0193dcdb5dac09b96b49a594f3062eb2cfaf78b00bb269bc586a3f9072f",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 6519,
+      "declared_vertex_count": 4451
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "AlleyCat",
+      "dialect_hint": "flat",
+      "selected_visual": "alleycat.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "alleycat.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 26,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "AlleyCat/data/alleycat.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "3bf463c256216b741c366fe6ed5fcc96133348782a6d561e77bfef2e2a285dc7",
+      "selected_visual_sha256": "32702999d3c193e442e0cd844b1f20147167d0f369c0ea12838c0ccdd44cb92e",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 1440,
+      "declared_vertex_count": 908
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Ascent Park Glider",
+      "dialect_hint": "flat",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "ascent.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 20,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Ascent Park Glider/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "1c79d38369d2a8c4fc4225eb008cc329903a62b9ef348625e563fceabf373ce7",
+      "selected_visual_sha256": "2fbbb4ea9d9c73bde6b129d27281b5f0c0ab3655df7b07f634c1dde024a7e021",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 579,
+      "declared_vertex_count": 697
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "B-25",
+      "dialect_hint": "flat",
+      "selected_visual": "B-25.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "B-25u.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 47,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "B-25/data/B-25.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "99dc47546a2da5a27402cf0d48cf6f9e2ae55abc28b47b883283d318d8c7f2cc",
+      "selected_visual_sha256": "0c099cdecd2c725eb9f5699e6c276aaed1e7c39c365610f91b835e4d5f89c83b",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 7436,
+      "declared_vertex_count": 4484
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "B-26 Marauder",
+      "dialect_hint": "flat",
+      "selected_visual": "B-26.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "B-26_01 pilots and props.JPG",
+        "B-26_02 wings.JPG",
+        "B-26_03 wings.JPG",
+        "B-26_04 fuselage.JPG",
+        "B-26_05 wings.JPG",
+        "B-26_06 instr panels.JPG"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 6,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 52,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "B-26 Marauder/data/B-26.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "57286a0ef24f1ce4e41d57ec7d9bc9b8065c61641b726aeb1e2a85edf69fc032",
+      "selected_visual_sha256": "416c6284eca347a1ac670fd0e76d1454036b953d106dea6e2c8db9cae3fde39f",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 7553,
+      "declared_vertex_count": 5224
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "B-52-Stratofortress",
+      "dialect_hint": "sectioned",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "mapping3.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 3,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 95,
+      "has_fmodel": true,
+      "has_paramModel": false,
+      "has_colbody": true,
+      "resolved_visual": "B-52-Stratofortress/data/body.ac",
+      "declared_versions": [
+        "6.0"
+      ],
+      "params_sha256": "0db8d70107674639893a1111c0aa0a5e61074b4825a58f7613e0ee9acfa6b48c",
+      "selected_visual_sha256": "fc33dab08170eaa831c6d8e88241fdca5e28097ff2489897481a4b018f4a61fc",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 19049,
+      "declared_vertex_count": 13933
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "BD-5J",
+      "dialect_hint": "flat",
+      "selected_visual": "BD5J.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "2bd5j_1.jpg",
+        "2bd5j_2.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 31,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "BD-5J/data/BD5J.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "755a4b8f6a9a0e5471e2e0b89eb680d8d0d1e4555c96bd515b01150d9183173b",
+      "selected_visual_sha256": "b6e9a60fea2facdb97a081d0ead1c196f226f0df796a04c9987bacc4c8819a8a",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 6478,
+      "declared_vertex_count": 3893
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Beech99",
+      "dialect_hint": "flat",
+      "selected_visual": "beech99.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "Propdisk.jpg",
+        "beech.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 43,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Beech99/data/beech99.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "66826f6336281db4bef1255545981316a98134d3ddab7652db509449ecc850dd",
+      "selected_visual_sha256": "51c8f398a316b0ca563d458958db036740bafb77ad3a11e61fbba30beb9c0669",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 1814,
+      "declared_vertex_count": 1167
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Beginair",
+      "dialect_hint": "flat",
+      "selected_visual": "Beginair.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "beginair.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 33,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Beginair/data/Beginair.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "54ede221d35d16a0ee65bc64c471f9411e4e6f2d3cf70c429b508f46f9a58eb5",
+      "selected_visual_sha256": "be6a9d766a3530ea8e2e8fadb1c38bf3e67b89065f7c00c16919a3e06c38c2c3",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 2141,
+      "declared_vertex_count": 1238
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Bell X-5",
+      "dialect_hint": "flat",
+      "selected_visual": "X-5.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "X-5-Dekor.JPG"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 40,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Bell X-5/data/X-5.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "659843d69a5c8341d55fcf030be568f949d8c239b85a37e52b0d184928c7203c",
+      "selected_visual_sha256": "329c2be927d0f8ad0e75105ecb4b0083a33645d5b0503503ec7a4f0b0b5e18de",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 3798,
+      "declared_vertex_count": 2576
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Bellanca C-27",
+      "dialect_hint": "flat",
+      "selected_visual": "Body.ac",
+      "visual_exists_exact": false,
+      "texture_references": [],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 40,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Bellanca C-27/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "e0a2d5b24d842ed9868173e7d3a8788ca7669f80832217aa3c63193ab58871a5",
+      "selected_visual_sha256": "e1685c704c27d728322969a5b6a8ae6fd5353dd4f214d3bdc09f06145f052bc5",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 6283,
+      "declared_vertex_count": 4331
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Beluga",
+      "dialect_hint": "flat",
+      "selected_visual": "beluga.ac",
+      "visual_exists_exact": false,
+      "texture_references": [],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 39,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Beluga/data/Beluga.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "0562e55eed83ec41b9578aada1e499b9f54e7905b88f377946d2de6c34b8a46d",
+      "selected_visual_sha256": "9fb7768552f4a7e99381dbae340cd61d96b17e12455b48d18d55b52fa1d3918d",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 5116,
+      "declared_vertex_count": 2753
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "Brown-B1 Racer",
+      "dialect_hint": "flat",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "Brown_B1.jpg",
+        "smoke.gif"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 36,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "Brown-B1 Racer/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "17d5e0981a189607bad86bcdedcec57221a5e93534cea803b1e8973edfb1479d",
+      "selected_visual_sha256": "05a569710e613bfeaeeedc7ffe74aabbbb54abcaf1bd3a3dd8de72a5171a4d38",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 3598,
+      "declared_vertex_count": 2266
+    },
+    {
+      "archive": "ken-pack1.zip",
+      "root": "C-130",
+      "dialect_hint": "flat",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "C-130.jpg",
+        "prop.jpg"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 46,
+      "has_fmodel": false,
+      "has_paramModel": true,
+      "has_colbody": true,
+      "resolved_visual": "C-130/data/body.ac",
+      "declared_versions": [
+        "5.0"
+      ],
+      "params_sha256": "6ba4477f08e1da5e389180d449cb9e07794f839f2929a8703452eba626689b1a",
+      "selected_visual_sha256": "2ac174625610cff3ea745278a581d3a66eb33ce651a9bf67e90bd8f9ca5dce1c",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 4209,
+      "declared_vertex_count": 2723
+    },
+    {
+      "archive": "osprey.zip",
+      "root": "V22 Osprey",
+      "dialect_hint": "sectioned",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "V-22.JPG"
+      ],
+      "missing_exact_texture_paths": [
+        "V-22.JPG"
+      ],
+      "ac_count": 3,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 70,
+      "has_fmodel": true,
+      "has_paramModel": false,
+      "has_colbody": true,
+      "resolved_visual": "V22 Osprey/data/body.ac",
+      "declared_versions": [
+        "6.0"
+      ],
+      "params_sha256": "bb4c6875fc17676b0fd30e607fc4dbebba98bc83ebd15a6e8a2f8fd3025341c5",
+      "selected_visual_sha256": "0088dee3dd37a58e1dbbbe6d3cce325a9ef4e5dca9a282dce7629c13faca16c0",
+      "unique_casefold_texture_resolutions": {
+        "V-22.JPG": "V22 Osprey/data/V-22.jpg"
+      },
+      "declared_surface_count": 6593,
+      "declared_vertex_count": 4621
+    },
+    {
+      "archive": "paint.zip",
+      "root": "MC 300S-Air Guard",
+      "dialect_hint": "sectioned",
+      "selected_visual": "body.ac",
+      "visual_exists_exact": true,
+      "texture_references": [
+        "S300 Airguard.bmp"
+      ],
+      "missing_exact_texture_paths": [],
+      "ac_count": 5,
+      "ac_headers": [
+        "AC3Db"
+      ],
+      "object_count": 33,
+      "has_fmodel": true,
+      "has_paramModel": false,
+      "has_colbody": true,
+      "resolved_visual": "MC 300S-Air Guard/data/body.ac",
+      "declared_versions": [
+        "6.0"
+      ],
+      "params_sha256": "383a3ba80c78ebe8fcf0cf2587ff1af45f69eb0a9d6877f62612729a20e09321",
+      "selected_visual_sha256": "2bbbb50a6b544f714c1bb56ac6846ab3d941269b29efb83a96bca31e8a6106b3",
+      "unique_casefold_texture_resolutions": {},
+      "declared_surface_count": 1102,
+      "declared_vertex_count": 1284
+    }
+  ]
+}

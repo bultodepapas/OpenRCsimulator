@@ -1458,6 +1458,18 @@ checks in a disposable project. A separate editor-plugin entry runs all eight
 export-preset checks and closes normally with zero errors or warnings; the
 earlier `--editor --script` attempt leaked editor resources and remains failed.
 
+The complete custom-engine native correctness battery then passed on that exact
+`b4442e6a` source in 1,544.2 seconds: 17 positive oracle rows, detected mutation,
+FPCR/domain controls, and installed production-path stage (97), lifecycle (343)
+and exact replay (210) checks. The native dylib is
+`3b1549091e1319d1f646e2cf19f53f73824e8aea5d307023f37be294e43a8b31`.
+Phase 15 retains 277 payloads in 7,099,849 compressed bytes, SHA-256
+`bde6551fe713cc92d3b78a556991431e6e8c88a03030163cf1964d72be81bd94`;
+every retrieved payload was independently rehashed. This closes source
+correctness for the repaired engine, not release-package or automatic-default
+qualification. Later pair/export/measurement tooling passed 122 portable
+controls on M1; these do not change the qualified runtime or mirrored sources.
+
 The actual new editor/template/ZIP binding passes with independently retained
 phase-14 pins. The signed executable comparison now uses complete disposable
 copies: remove signatures, apply the same fixed ad-hoc signature, then compare
