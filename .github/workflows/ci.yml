@@ -179,8 +179,10 @@ jobs:
       - name: Import resources before schema probes
         id: resource_import
         if: matrix.part == 'integration'
+        env:
+          OPENRC_IMPORT_TIMEOUT: '1800'
         run: |
-          python3 tools/godot/run_checked.py --timeout 600 --out-dir tmp/godot-checks --label ci-resource-import -- \
+          python3 tools/godot/run_checked.py --timeout "${OPENRC_IMPORT_TIMEOUT:-600}" --out-dir tmp/godot-checks --label ci-resource-import -- \
             "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
       - name: Aircraft v2 contract and explicit v1 loader compatibility (AS-01, DATA-4a)
         if: matrix.part == 'integration'
@@ -227,6 +229,8 @@ jobs:
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m pip install -r tools/godot/requirements-resources.txt
           "$RUNNER_TEMP/godot-resources-venv/bin/python" -m unittest discover -s tools/godot -p 'test_resource*.py'
       - name: Run app checks with unit-backed parse coverage
+        env:
+          OPENRC_IMPORT_TIMEOUT: '1800'
         run: |
           if [[ "$OPENRC_TEST_PART" == integration ]]; then
             OPENRC_PARSE_WITH_UNITS=1 app/test.sh

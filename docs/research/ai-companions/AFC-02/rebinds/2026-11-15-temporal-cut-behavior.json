@@ -1,0 +1,678 @@
+{
+  "cache_scope": "COW R2 cache, metadata checked and reimported; full contents not rehashed",
+  "candidate": {
+    "behavior_sources": {
+      "res://ai/companions/agent.gd": {
+        "manifest_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "normalized_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "raw_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd"
+      },
+      "res://ai/companions/airspace.gd": {
+        "manifest_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "normalized_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "raw_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920"
+      },
+      "res://ai/companions/circuit_controller.gd": {
+        "manifest_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "normalized_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "raw_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+      },
+      "res://ai/companions/config.gd": {
+        "manifest_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "normalized_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "raw_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d"
+      },
+      "res://ai/companions/manager.gd": {
+        "manifest_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "normalized_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "raw_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585"
+      },
+      "res://ai/companions/observation_airdata.gd": {
+        "manifest_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "normalized_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "raw_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8"
+      },
+      "res://ai/companions/pilot.gd": {
+        "manifest_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "normalized_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "raw_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1"
+      },
+      "res://ai/companions/profile_loader.gd": {
+        "manifest_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "normalized_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "raw_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8"
+      },
+      "res://ai/companions/seed_allocator.gd": {
+        "manifest_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "normalized_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "raw_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1"
+      },
+      "res://ai/companions/static_trajectory.gd": {
+        "manifest_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "normalized_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "raw_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+      },
+      "res://app_root.gd": {
+        "manifest_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "normalized_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "raw_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647"
+      },
+      "res://data/field_loader.gd": {
+        "manifest_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "normalized_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "raw_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1"
+      },
+      "res://data/lake_loader.gd": {
+        "manifest_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "normalized_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "raw_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+      },
+      "res://main.gd": {
+        "manifest_sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+        "normalized_sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+        "raw_sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327"
+      },
+      "res://scenery/collision_world.gd": {
+        "manifest_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "normalized_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "raw_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a"
+      },
+      "res://workshop/strict_json.gd": {
+        "manifest_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "normalized_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "raw_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+      }
+    },
+    "bounded_inputs_lf_sha256": {
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "f121b8b33bd7a32ccdbb6529e59ecf6e2e9a6a37bee9616a8fc8ba0e721d3611",
+      "app/data/ai/companions/behavior-manifest.json": "7c4909c8db82ec5ab5d622e716fa129719d988a8840421d28b721af7f9ca4b50",
+      "app/data/ai/companions/fields/club-default.json": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "46ece9af4381baaef9dfbdc5a1adc2427f4aaf60d250db99ed386e570bd9b4f2",
+      "app/data/fields/default.json": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
+      "app/main.gd": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+      "app/project.godot": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "app/render/camera/camera_rig.gd": "30d8f12b1ce2af509dc996d4f6e04f3853bff5e86df31729d7a01b2190afd8f9",
+      "app/render/frame_generation.gd": "ba9c975fa81fa1c8cc51bd19918e1095223f72eda5f4e2e9e70224f1fffb39ea",
+      "app/render/frame_generation_policy.gd": "dc1d7736d449bc77280b04d348df91403d4267a8328102faf51b604cc0edc9fc",
+      "app/render/metalfx_policy.gd": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "app/render/reconstruction.gd": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44",
+      "app/tests/test_camera_history.gd": "075e4d534e705600c21cefc0ba471f8b2b00334811351bb6e3211c1c701c37a9",
+      "app/tests/test_camera_route.gd": "4667d85376a5060805e9fc1996067ba83a6bdac14d4b3da22f55a490fafd3a21",
+      "app/tests/test_companions_airspace.gd": "3c545c1b29b136fe68e131de8f9c23595df05dd4510b3a01dbce10bed7183c8d",
+      "app/tests/test_companions_behavior_manifest.gd": "85d1f0d7b67d95482a1e87309ce413c2c3b3a3e1ae2ebbcd02e6559cf25575f2",
+      "app/tests/test_companions_draft_refresh.gd": "f978b70fdc9cc8301f337336a5013c166a19afad81a81c25c4347a767ef7c02d",
+      "app/tests/test_companions_lifecycle.gd": "bca191e72cf9feffbaa54a1491f4eadeebda956f1ebc2c1bde6e1bb5395c3a74",
+      "app/tests/test_companions_manager.gd": "d592e89bb1ec248e40c1dd5cbc7ffb180b10db417b0122e4ca7af290b30af53e",
+      "app/tests/test_companions_observation.gd": "dbf37a715b2779afb0b0afe7ef63b78a53c49034b17c386644f163243291d8ce",
+      "app/tests/test_companions_presentation.gd": "512c7c3a2b0459e64ec1cef93ee0bb05049ee813cfe560b709642a3073b9f447",
+      "app/tests/test_companions_profiles.gd": "0cf182b9dff89064fb0cdc11917e0fc6ec4a9c8a7849aed4984aee862cab4046",
+      "app/tests/test_companions_restore.gd": "04d35744215ac50f8d54e88a777793465a32f67d0fccd1044681136c0bc1c4f7",
+      "app/tests/test_companions_seeds_timing.gd": "d2d1b26524727ec327c3d66560b564245fe09ff1cef14851df70ac5c726629f9",
+      "app/tests/test_companions_session.gd": "78b6bed2fe9691e0164c1a18df9c4499bf10f6bb17169a867b8bd7a20ea974a2",
+      "app/tests/test_companions_shell.gd": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb",
+      "app/tests/test_frame_generation.gd": "ff4357f70190524bf27dc5197a5c0d5c413e5f4ad39fb2810977f76c4abf960f",
+      "app/tests/test_frame_generation_policy.gd": "ab98392a566d468f17d671c32e239e49a986d40abb1e4c69da2066835d7a5ecb",
+      "app/tests/test_initial_flight_camera.gd": "8f0106e9d0186a2f9edec458ee35643f640abc77df09d73ad0319a61c2976482",
+      "app/tests/test_metalfx_policy.gd": "75c416385ce092de7fa0d4024fcedf64f2ed5f51e475c49a65db7e49042e37ee",
+      "app/tests/test_reconstruction_history.gd": "af1cbe4e0e434728e650e8d07e82b571703c33dc6d34b8cffa4bd8f0b7e9a93b",
+      "docs/research/ai-companions/AFC-02/rebinds/2026-11-15-metalfx-behavior.json": "f242bc01d7c0402b1f2afffbd9462731aa41eb1826a430dbcbdd124ccc51680a",
+      "tools/companions/qualification.json": "6a7bf970b183ea1fc0f31908648ec9a040cfca996c200cebee505e9765b4231a",
+      "tools/godot/run_checked.py": "aec26b085e7fdf9b32cd539c1e8631d84edc2c9cb6ac934936f6ce35f800f66b",
+      "tools/testqueue/__init__.py": "5baaa9ea0a675272a578afb9ce3b404d079ebbe12062c3a76821264265738c9c",
+      "tools/testqueue/common.py": "372350dc985b84ab70ae05e3dcf260e72c2be6d5664afbc9fa3d1a4dcd47f970"
+    },
+    "manifest_sha256": "7c4909c8db82ec5ab5d622e716fa129719d988a8840421d28b721af7f9ca4b50",
+    "profile_sha256": "f121b8b33bd7a32ccdbb6529e59ecf6e2e9a6a37bee9616a8fc8ba0e721d3611",
+    "source_diff_sha256": "617eb7204f3c961de5a0f02673dd9bd9f156e8180327763f12c67f4fbf20ec2b",
+    "strict_shell_sha256": "7c4ef043e4a8e7fdd4fd52466564e202138c5d4f382f455091f68c285ef88118"
+  },
+  "checks": [
+    {
+      "complete": true,
+      "label": "official-source-version",
+      "log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/official-source-version/official-source-version-gcjpyi_0/report.json",
+      "report_sha256": "8984bfd8204f22bfb43897518ab4b3f021c5043e2357f96dd77d408d588ada7c",
+      "required_text": [
+        "4.8.beta2.official.cafc17a19"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/official-source-version/wrapper.log",
+      "wrapper_log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986"
+    },
+    {
+      "complete": true,
+      "label": "official-clone-version",
+      "log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/official-clone-version/official-clone-version-1y0bwq6h/report.json",
+      "report_sha256": "d93ccbe85f09c9b97f3a0f849f822563c48b8dfd9df9ee1192dae6ff1e984104",
+      "required_text": [
+        "4.8.beta2.official.cafc17a19"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/official-clone-version/wrapper.log",
+      "wrapper_log_sha256": "f664e18f196e1f3a4f307fe2c95a60004cd89cbfb72e190c719cd693a29ad986"
+    },
+    {
+      "complete": true,
+      "label": "user-data-isolation",
+      "log_sha256": "e17c3df06ef11e0af91bc8c670284438ab810098b69c6b9de4a53974ddcb8179",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/user-data-isolation/user-data-isolation-s6yjdgt3/report.json",
+      "report_sha256": "0aa35b56903d885f78f443fb685b4f65d9086bf255f7a1e081a1d689b80c22bd",
+      "required_text": [
+        "COMPANION_ROUTE_OK",
+        "COMPANION_EXECUTABLE="
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/user-data-isolation/wrapper.log",
+      "wrapper_log_sha256": "e17c3df06ef11e0af91bc8c670284438ab810098b69c6b9de4a53974ddcb8179"
+    },
+    {
+      "complete": true,
+      "label": "import",
+      "log_sha256": "94a4950e573f7603e0f660074905789995ffd5fe9374ab350f71772e8cece4c5",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/import/import-hwngbalv/report.json",
+      "report_sha256": "aed24c263ab0c728fc77e6b14332a4bffdc05b6cefe6c6c4d75628faab23ed31",
+      "required_text": [
+        "Godot Engine"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/import/wrapper.log",
+      "wrapper_log_sha256": "94a4950e573f7603e0f660074905789995ffd5fe9374ab350f71772e8cece4c5"
+    },
+    {
+      "complete": true,
+      "label": "behavior-stale-refusal",
+      "log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/behavior-stale-refusal/behavior-stale-refusal-xai37go7/report.json",
+      "report_sha256": "e32864cd323e23fd56aa99bd38d771ee75f14922f92db32ab58886a61ac6c0ce",
+      "required_text": [
+        "0 failed",
+        "companion behavior manifest: 8 checks, 0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/behavior-stale-refusal/wrapper.log",
+      "wrapper_log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd"
+    },
+    {
+      "complete": true,
+      "label": "behavior-positive",
+      "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/behavior-positive/behavior-positive-awt2eviw/report.json",
+      "report_sha256": "1737f4ebe11eaea0bcad27109544d4363849d1484cd0d5a207a7efea45b9b920",
+      "required_text": [
+        "0 failed",
+        "companion behavior manifest:"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/behavior-positive/wrapper.log",
+      "wrapper_log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59"
+    },
+    {
+      "complete": true,
+      "label": "profiles",
+      "log_sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/profiles/profiles-59_4kik1/report.json",
+      "report_sha256": "e03145aa64a6a26e71f80d5e48f76ce99805926b425f1ff732de35f70113d497",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/profiles/wrapper.log",
+      "wrapper_log_sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d"
+    },
+    {
+      "complete": true,
+      "label": "manager",
+      "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/manager/manager-o1eslg6b/report.json",
+      "report_sha256": "8411a7194542ae4f38b6049599cec3968322ef914fbf5512b6589d0107dbde87",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/manager/wrapper.log",
+      "wrapper_log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d"
+    },
+    {
+      "complete": true,
+      "label": "airspace",
+      "log_sha256": "a2d01fdb51278384ebc61a410245ae0817a80a50d9607ee51eaad0c60c0305a4",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/airspace/airspace-ginb4bzr/report.json",
+      "report_sha256": "dbf6af7e6555cfe31032b3c32c03e20cfa523a757ad00c3f2949c38e764f444e",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/airspace/wrapper.log",
+      "wrapper_log_sha256": "a2d01fdb51278384ebc61a410245ae0817a80a50d9607ee51eaad0c60c0305a4"
+    },
+    {
+      "complete": true,
+      "label": "lifecycle",
+      "log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/lifecycle/lifecycle-rtwvqcg9/report.json",
+      "report_sha256": "6839601579166ef2156a6186a91600a7fa253185b2812e8e66bdbb08bbd80a8d",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/lifecycle/wrapper.log",
+      "wrapper_log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f"
+    },
+    {
+      "complete": true,
+      "label": "observation",
+      "log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/observation/observation-lhry5s39/report.json",
+      "report_sha256": "93593c99d2562af1febe83369700dc475bcbd2e877e81b7f767f07408d2e0647",
+      "required_text": [
+        "AFC COMPANION OBSERVATION CHECKS",
+        "FAILED 0"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/observation/wrapper.log",
+      "wrapper_log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25"
+    },
+    {
+      "complete": true,
+      "label": "seeds-timing",
+      "log_sha256": "0bddfc1848caede6071373818a79ec8d5bdbe92f5007630dd6808216185fde10",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/seeds-timing/seeds-timing-jnvfwjpp/report.json",
+      "report_sha256": "f9a8c84c8c4126a04082a41239b2244b60ca9b729d1b3c662390d4e29b22027a",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/seeds-timing/wrapper.log",
+      "wrapper_log_sha256": "0bddfc1848caede6071373818a79ec8d5bdbe92f5007630dd6808216185fde10"
+    },
+    {
+      "complete": true,
+      "label": "presentation",
+      "log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/presentation/presentation-as27w6lz/report.json",
+      "report_sha256": "06ed95db2d2bbbdee53711d8d75056697ce6d43a7dfa444bffd378205ec7596e",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/presentation/wrapper.log",
+      "wrapper_log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0"
+    },
+    {
+      "complete": true,
+      "label": "draft-refresh",
+      "log_sha256": "51bdde2638ea416c683e827f4fbe9d888e275d5ef5220f00b88689afb15dd2a9",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/draft-refresh/draft-refresh-p2dnhdg9/report.json",
+      "report_sha256": "919f850086884a1c7ae3c9eccfffe9c2421fb27251c869f945f28337ecc5819f",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/draft-refresh/wrapper.log",
+      "wrapper_log_sha256": "51bdde2638ea416c683e827f4fbe9d888e275d5ef5220f00b88689afb15dd2a9"
+    },
+    {
+      "complete": true,
+      "label": "session",
+      "log_sha256": "b2eca620bec5c155550811a35d34148c42c0d07594f571e7fb4d6843c38dc7ab",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/session/session-sev0wxkk/report.json",
+      "report_sha256": "f30a1d59e37e750ff2b0a5bf5a784047a14f6fe9fc7e17d3eaaa61b7fb71f9a1",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/session/wrapper.log",
+      "wrapper_log_sha256": "b2eca620bec5c155550811a35d34148c42c0d07594f571e7fb4d6843c38dc7ab"
+    },
+    {
+      "complete": true,
+      "label": "restore",
+      "log_sha256": "e7aa1ed7818b141b7a46b78daf72a9e6ab8a24b637e810fe169130f5f810bc54",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/restore/restore-q74a4e9d/report.json",
+      "report_sha256": "7476aa4b4bb3ca15970acac392c9dfb18040db2c8dbe3f21ee52f1f69848c575",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/restore/wrapper.log",
+      "wrapper_log_sha256": "e7aa1ed7818b141b7a46b78daf72a9e6ab8a24b637e810fe169130f5f810bc54"
+    },
+    {
+      "complete": true,
+      "label": "frame-generation",
+      "log_sha256": "9290646f802931efe394ac715d2e2f198c8b42af8772ec3ddf7aac8055f0477d",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/frame-generation/frame-generation-9sckywde/report.json",
+      "report_sha256": "ae5c9282dfd52eaedb2891c2ec6d35c21d3350789be59543293c76db616c9e6d",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/frame-generation/wrapper.log",
+      "wrapper_log_sha256": "9290646f802931efe394ac715d2e2f198c8b42af8772ec3ddf7aac8055f0477d"
+    },
+    {
+      "complete": true,
+      "label": "frame-generation-policy",
+      "log_sha256": "34d2496a3c861140376951bb4379d3f440e2741f86788819464d80b90b8582f4",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/frame-generation-policy/frame-generation-policy-z4lcikwh/report.json",
+      "report_sha256": "3ed726c11696f8706a7ae7ea8e6e16e78521dfa9af87f1e8e42ec964b9f041fc",
+      "required_text": [
+        "0 failed"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/frame-generation-policy/wrapper.log",
+      "wrapper_log_sha256": "34d2496a3c861140376951bb4379d3f440e2741f86788819464d80b90b8582f4"
+    },
+    {
+      "complete": true,
+      "label": "shell-strict",
+      "log_sha256": "8ac3f3ddcf81b5271472002b31edb3506fae44e7f06529e5b1e3ad35ee79b7d5",
+      "ok": true,
+      "reason": "passed",
+      "report": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/shell-strict/shell-strict-j7vvsiff/report.json",
+      "report_sha256": "2aefc8d4d31121a8ec1bb5cf2daeaf23a3d4081ee4ffbfc95a51689b079cfefa",
+      "required_text": [
+        "Companions shell: 0 failed",
+        "ok   Home flight receives the saved companion config before startup",
+        "ok   the manager starts three real AI pilots",
+        "ok   Pause freezes simulation ticks and propeller angle",
+        "ok   Restart rebuilds the live group from the staged count"
+      ],
+      "wrapper_exit": 0,
+      "wrapper_log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/checks/shell-strict/wrapper.log",
+      "wrapper_log_sha256": "8ac3f3ddcf81b5271472002b31edb3506fae44e7f06529e5b1e3ad35ee79b7d5"
+    }
+  ],
+  "clone_cache_metadata_entries": 1313,
+  "earlier_r1": {
+    "native_receipt_sha256": "dfdcafba0e06f601c6fd61d6f9501bd2c1e71ac12f850ea6293a598f09f1409d",
+    "qualification": "import isolation unqualified",
+    "reason": "Editor mode ignores override.cfg; the editor user-data route was not established. No actual writes to the normal profile were established."
+  },
+  "editor_import_route": {
+    "diff_sha256": "547ccb80bc08db3e809853b67461cd27970d947750253a05e911826afc2d629b",
+    "name": "OpenRC-Companion-Temporal-Cut-R2-f5219d7d",
+    "observed_after_import_sha256": "50611a44416224545081b765f5a174e04a7047a7e0a7a450c058127dfe721ccb",
+    "original_sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+    "restored_sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+    "settings": [
+      "application/config/use_custom_user_dir",
+      "application/config/custom_user_dir_name"
+    ],
+    "temporary_sha256": "50611a44416224545081b765f5a174e04a7047a7e0a7a450c058127dfe721ccb"
+  },
+  "engine": {
+    "clone_after_marker_signature": {
+      "bundle": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/Godot.app",
+      "exit": 0,
+      "log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/clone-after-marker.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clone_before_marker_signature": {
+      "bundle": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/Godot.app",
+      "exit": 0,
+      "log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/clone-before-marker.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "post_signature": {
+      "bundle": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/Godot.app",
+      "exit": 0,
+      "log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/clone-after-suite.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source_sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80",
+    "source_signature": {
+      "bundle": "/Users/g/OpenRC-m1-work/angel-setup-20261107/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app",
+      "exit": 0,
+      "log": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/official-source-signature.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "evidence_archive": {
+    "bytes": 1779298,
+    "name": "retained-phase10-m1b.tar.gz",
+    "sha256": "ee1749f002c8babdbdc393c591229f7613a9492ad36c6b86152626440fbbec4c",
+    "text_payloads_verified": 206
+  },
+  "finished_utc": "2026-11-15T14:35:37.586011+00:00",
+  "format": "openrc-companion-behavior-candidate-run v1",
+  "home_environment_preserved": true,
+  "input_packet_sha256": "0f297fa3b56ba4c361715c1f73e12cdaf0d38920307490bcfff76d661e4add1e",
+  "native_candidate_receipt_sha256": "a83736760dbfc15022ca2800cce6fca154320356ca28f91d542abf859ee6ad73",
+  "native_candidate_status_at_capture": "candidate_checks_passed_not_published",
+  "overlay_archive_sha256": "cf4fa2c623d205e95f5f3e3a78953728824bdba98b29d79ea1d2872265c04064",
+  "preflight": {
+    "behavior_sources": {
+      "res://ai/companions/agent.gd": {
+        "manifest_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "normalized_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+        "raw_sha256": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd"
+      },
+      "res://ai/companions/airspace.gd": {
+        "manifest_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "normalized_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+        "raw_sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920"
+      },
+      "res://ai/companions/circuit_controller.gd": {
+        "manifest_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "normalized_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "raw_sha256": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+      },
+      "res://ai/companions/config.gd": {
+        "manifest_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "normalized_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+        "raw_sha256": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d"
+      },
+      "res://ai/companions/manager.gd": {
+        "manifest_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "normalized_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+        "raw_sha256": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585"
+      },
+      "res://ai/companions/observation_airdata.gd": {
+        "manifest_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "normalized_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+        "raw_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8"
+      },
+      "res://ai/companions/pilot.gd": {
+        "manifest_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "normalized_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "raw_sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1"
+      },
+      "res://ai/companions/profile_loader.gd": {
+        "manifest_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "normalized_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+        "raw_sha256": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8"
+      },
+      "res://ai/companions/seed_allocator.gd": {
+        "manifest_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "normalized_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+        "raw_sha256": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1"
+      },
+      "res://ai/companions/static_trajectory.gd": {
+        "manifest_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "normalized_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+        "raw_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+      },
+      "res://app_root.gd": {
+        "manifest_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "normalized_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "raw_sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647"
+      },
+      "res://data/field_loader.gd": {
+        "manifest_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "normalized_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "raw_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1"
+      },
+      "res://data/lake_loader.gd": {
+        "manifest_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "normalized_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+        "raw_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+      },
+      "res://main.gd": {
+        "manifest_sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006",
+        "normalized_sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+        "raw_sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327"
+      },
+      "res://scenery/collision_world.gd": {
+        "manifest_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "normalized_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+        "raw_sha256": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a"
+      },
+      "res://workshop/strict_json.gd": {
+        "manifest_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "normalized_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+        "raw_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+      }
+    },
+    "bounded_inputs_lf_sha256": {
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "05e383ce541b699b0145826b33577dd7dcbff6a170698750e95621cd16ad63e3",
+      "app/data/ai/companions/behavior-manifest.json": "920e0ed7fc83095f859eca40a79f147570e81ad9e527c01ba0f06d7fa85c817a",
+      "app/data/ai/companions/fields/club-default.json": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "46ece9af4381baaef9dfbdc5a1adc2427f4aaf60d250db99ed386e570bd9b4f2",
+      "app/data/fields/default.json": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
+      "app/main.gd": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+      "app/project.godot": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "app/render/camera/camera_rig.gd": "30d8f12b1ce2af509dc996d4f6e04f3853bff5e86df31729d7a01b2190afd8f9",
+      "app/render/frame_generation.gd": "ba9c975fa81fa1c8cc51bd19918e1095223f72eda5f4e2e9e70224f1fffb39ea",
+      "app/render/frame_generation_policy.gd": "dc1d7736d449bc77280b04d348df91403d4267a8328102faf51b604cc0edc9fc",
+      "app/render/metalfx_policy.gd": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "app/render/reconstruction.gd": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44",
+      "app/tests/test_camera_history.gd": "075e4d534e705600c21cefc0ba471f8b2b00334811351bb6e3211c1c701c37a9",
+      "app/tests/test_camera_route.gd": "4667d85376a5060805e9fc1996067ba83a6bdac14d4b3da22f55a490fafd3a21",
+      "app/tests/test_companions_airspace.gd": "3c545c1b29b136fe68e131de8f9c23595df05dd4510b3a01dbce10bed7183c8d",
+      "app/tests/test_companions_behavior_manifest.gd": "85d1f0d7b67d95482a1e87309ce413c2c3b3a3e1ae2ebbcd02e6559cf25575f2",
+      "app/tests/test_companions_draft_refresh.gd": "f978b70fdc9cc8301f337336a5013c166a19afad81a81c25c4347a767ef7c02d",
+      "app/tests/test_companions_lifecycle.gd": "bca191e72cf9feffbaa54a1491f4eadeebda956f1ebc2c1bde6e1bb5395c3a74",
+      "app/tests/test_companions_manager.gd": "d592e89bb1ec248e40c1dd5cbc7ffb180b10db417b0122e4ca7af290b30af53e",
+      "app/tests/test_companions_observation.gd": "dbf37a715b2779afb0b0afe7ef63b78a53c49034b17c386644f163243291d8ce",
+      "app/tests/test_companions_presentation.gd": "512c7c3a2b0459e64ec1cef93ee0bb05049ee813cfe560b709642a3073b9f447",
+      "app/tests/test_companions_profiles.gd": "0cf182b9dff89064fb0cdc11917e0fc6ec4a9c8a7849aed4984aee862cab4046",
+      "app/tests/test_companions_restore.gd": "04d35744215ac50f8d54e88a777793465a32f67d0fccd1044681136c0bc1c4f7",
+      "app/tests/test_companions_seeds_timing.gd": "d2d1b26524727ec327c3d66560b564245fe09ff1cef14851df70ac5c726629f9",
+      "app/tests/test_companions_session.gd": "78b6bed2fe9691e0164c1a18df9c4499bf10f6bb17169a867b8bd7a20ea974a2",
+      "app/tests/test_companions_shell.gd": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb",
+      "app/tests/test_frame_generation.gd": "ff4357f70190524bf27dc5197a5c0d5c413e5f4ad39fb2810977f76c4abf960f",
+      "app/tests/test_frame_generation_policy.gd": "ab98392a566d468f17d671c32e239e49a986d40abb1e4c69da2066835d7a5ecb",
+      "app/tests/test_initial_flight_camera.gd": "8f0106e9d0186a2f9edec458ee35643f640abc77df09d73ad0319a61c2976482",
+      "app/tests/test_metalfx_policy.gd": "75c416385ce092de7fa0d4024fcedf64f2ed5f51e475c49a65db7e49042e37ee",
+      "app/tests/test_reconstruction_history.gd": "af1cbe4e0e434728e650e8d07e82b571703c33dc6d34b8cffa4bd8f0b7e9a93b",
+      "docs/research/ai-companions/AFC-02/rebinds/2026-11-15-metalfx-behavior.json": "f242bc01d7c0402b1f2afffbd9462731aa41eb1826a430dbcbdd124ccc51680a",
+      "tools/companions/qualification.json": "6a7bf970b183ea1fc0f31908648ec9a040cfca996c200cebee505e9765b4231a",
+      "tools/godot/run_checked.py": "aec26b085e7fdf9b32cd539c1e8631d84edc2c9cb6ac934936f6ce35f800f66b",
+      "tools/testqueue/__init__.py": "5baaa9ea0a675272a578afb9ce3b404d079ebbe12062c3a76821264265738c9c",
+      "tools/testqueue/common.py": "372350dc985b84ab70ae05e3dcf260e72c2be6d5664afbc9fa3d1a4dcd47f970"
+    },
+    "excluded_pycache": {
+      "tools/graphics/__pycache__/launch.cpython-312.pyc": "eafd84b791fb03a9e5707adced7abfe15ab095c9cd38024013304841a5c71708",
+      "tools/testqueue/__pycache__/__init__.cpython-312.pyc": "f4eea9737f4e8a9bf0bc06d18743cadaff94708e2cec72717b4da909e9be1c76",
+      "tools/testqueue/__pycache__/common.cpython-312.pyc": "023d59b43cc7e1c22bffa743b337c4ab88c0a6f70795394bde7f76d7f7ed32e4"
+    },
+    "overlay_raw_sha256": {
+      "app/main.gd": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+      "app/render/camera/camera_rig.gd": "8641d0d89068fbf5b5809d2e3b480105307157faa73ddfc69c67bb41cd89ea35",
+      "app/render/reconstruction.gd": "ea07f60c844ef0dd6b73330938d1a61471b5523100eb6672f1f71eda5496e910",
+      "app/tests/test_camera_history.gd": "075e4d534e705600c21cefc0ba471f8b2b00334811351bb6e3211c1c701c37a9",
+      "app/tests/test_camera_route.gd": "1aa059ccb2c6f9aaf0e117db9f58d99bac53b78ba5ca3430be0875ac4525c2d0",
+      "app/tests/test_initial_flight_camera.gd": "8f0106e9d0186a2f9edec458ee35643f640abc77df09d73ad0319a61c2976482",
+      "app/tests/test_metalfx_policy.gd": "ddb5b650d06d8da8d81127fd45a6920d0168b5dca1ed9993793726806fa4a47a",
+      "app/tests/test_reconstruction_history.gd": "af1cbe4e0e434728e650e8d07e82b571703c33dc6d34b8cffa4bd8f0b7e9a93b"
+    },
+    "override_sha256": "a7b45fab1ec89eabe52e71046828bc88b76fd5075dd344dcec8bd80031c185df",
+    "raw_profile_inputs": {
+      "admission_refs": {
+        "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+        "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+        "res://data/aircraft/jensen_ugly_stik_60.json": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+        "res://data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d"
+      },
+      "field_profile_raw_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611"
+    },
+    "solver": {
+      "normalization": "utf8-lf",
+      "sha256": "a81c2b2d1275faba30d3e55ecca3e59cde0f005c50857fe92e48c66a2040866c",
+      "source_count": 198
+    }
+  },
+  "previous_behavior_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-15-metalfx-behavior.json",
+  "prior_helper_sha256": "37189738f7ede242d43448934e17b642d76f87c6e8178f4b6abf6c11835fe769",
+  "project_isolation": {
+    "clone_override_sha256": "32656c36e36e79ea183494e06a108bcdf955140d64a25a3603dba9c03352b023",
+    "name": "OpenRC-Companion-Temporal-Cut-R2-f5219d7d",
+    "source_override_sha256": "a7b45fab1ec89eabe52e71046828bc88b76fd5075dd344dcec8bd80031c185df"
+  },
+  "retained_warning": {
+    "check": "restore",
+    "detail": "2 ObjectDB instances were reported leaked at exit; objects remain uncharacterized.",
+    "diagnostic_count": 1,
+    "prior_observation": "The same warning occurred in the previous phase-6 official-engine companion restore run."
+  },
+  "review": {
+    "changed_sources": {
+      "res://main.gd": {
+        "after": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+        "before": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006"
+      }
+    },
+    "qualification_scope": "Official Godot Stik/Club headless software checks only; custom MetalFX engine, physical behavior and performance are not qualified.",
+    "unchanged_behavior_sources": 15,
+    "unchanged_solver": {
+      "normalization": "utf8-lf",
+      "sha256": "a81c2b2d1275faba30d3e55ecca3e59cde0f005c50857fe92e48c66a2040866c",
+      "source_count": 198
+    }
+  },
+  "runner_sha256_before": "6f53fedb2958f0aefbb49a6c8160bd17d897f20a70fc905a1afe6688dbf40f48",
+  "scope": "official-engine headless Stik/Club software checks; no pin publication or physical qualification",
+  "source": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/temporal-cut-source-r2",
+  "source_cache_metadata_entries": 1313,
+  "source_postflight": "bounded source identities, HEAD, tree and packet unchanged",
+  "source_scope": "f521 tree plus the exact R2 overlay; bounded inputs rechecked, not a new full-tree scan",
+  "started_utc": "2026-11-15T14:32:54.193618+00:00",
+  "status": "bounded_behavior_requalified_on_official_engine",
+  "user_data_directory": "/Users/g/Library/Application Support/OpenRC-Companion-Temporal-Cut-R2-f5219d7d",
+  "user_data_probe": {
+    "actual_executable": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/evidence-r2/Godot.app/Contents/MacOS/Godot",
+    "marker_sha256": "fc377fdf27ebfe56dc1567f6b7a7a2aa227b9389f0a7c51db80028f74d6d9893",
+    "override_sha256": "32656c36e36e79ea183494e06a108bcdf955140d64a25a3603dba9c03352b023",
+    "sha256": "30cc126877e5e78151357f275385293344ee8d164034d3978d13a786846bc597"
+  },
+  "workspace": "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/companion-temporal-cut-r1/source-r2"
+}

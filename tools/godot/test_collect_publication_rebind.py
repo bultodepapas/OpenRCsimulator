@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Small, process-free-of-Godot regression for historical app reconstruction."""
 import importlib.util
+import hashlib
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -16,6 +18,32 @@ spec.loader.exec_module(collector)
 
 
 class ReconstructionTest(unittest.TestCase):
+    def test_canonical_prior_is_exactly_the_qualified_fixture(self):
+        receipt = json.loads((ROOT / "docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-15.json").read_text())
+        self.assertEqual(collector.BASELINE, receipt["candidate_commit"])
+        self.assertEqual(collector.PRIOR_FIXTURE_SHA256, receipt["candidate_fixture_sha256"])
+
+    def test_prior_rejects_changed_bytes_and_wrong_baseline(self):
+        (ROOT / "tmp").mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="publication-prior-test-", dir=ROOT / "tmp") as temp:
+            fixture = Path(temp) / "fixture.json"
+            prior = {"candidate_commit": collector.BASELINE, "source_pins": {}}
+            raw = json.dumps(prior).encode()
+            fixture.write_bytes(raw)
+            with mock.patch.object(collector, "PIN_FILE", fixture), \
+                 mock.patch.object(collector, "PRIOR_FIXTURE_SHA256", hashlib.sha256(raw).hexdigest()):
+                self.assertEqual(collector.load_prior_fixture(), prior)
+                fixture.write_bytes(raw + b" ")
+                with self.assertRaisesRegex(ValueError, "accepted identity"):
+                    collector.load_prior_fixture()
+                forged = dict(prior)
+                forged["candidate_commit"] = "a" * 40
+                forged_bytes = json.dumps(forged).encode()
+                fixture.write_bytes(forged_bytes)
+                with mock.patch.object(collector, "PRIOR_FIXTURE_SHA256", hashlib.sha256(forged_bytes).hexdigest()):
+                    with self.assertRaisesRegex(ValueError, "accepted baseline"):
+                        collector.load_prior_fixture()
+
     def test_complete_historical_tree_and_checkout_line_endings(self):
         (ROOT / "tmp").mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="publication-copy-test-", dir=ROOT / "tmp") as temp:

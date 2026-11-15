@@ -255,7 +255,7 @@ func _test_unsaved_guard() -> void:
 	await process_frame
 	var dialog := setup.unsaved_dialog
 	_check("a dirty close asks first", dialog != null and dialog.visible and closes == count)
-	_check("the question offers Save, Discard and Keep editing", dialog.get_ok_button().text == "Save"
+	_check("the question offers Save current, Discard and Keep editing", dialog.get_ok_button().text == "Save current"
 		and setup._unsaved_discard_button.text == "Discard" and dialog.get_cancel_button().text == "Keep editing")
 	dialog.get_cancel_button().pressed.emit()
 	await process_frame

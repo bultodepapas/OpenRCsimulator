@@ -28,9 +28,12 @@ def submit(preset: str, options: dict, source: Path, *, retain_session: bool = F
         scopes = tuple(sorted({name.split("/")[0] for name in names if name}))
     kwargs = {"scope": scopes} if scopes else {}
     capture(source, snapshot, include_imports=(source / "app/.godot/imported").is_dir(), **kwargs)
+    environment_names = ("OPENRC_TEST_PART", "OPENRC_UNIT_SHARDS", "OPENRC_UNIT_SHARD", "OPENRC_PARSE_WITH_UNITS")
+    if preset in {"suite", "ci"}:
+        environment_names += ("OPENRC_IMPORT_TIMEOUT",)
     request = {"preset": preset, "options": options, "owner": os.environ.get("OPENRC_TESTQUEUE_OWNER", f"{getpass.getuser()}-{os.getpid()}"),
                "source": str(source), "snapshot": str(snapshot), "request_id": identifier, "request_secret": submission_secret,
-               "environment": {name: os.environ[name] for name in ("OPENRC_TEST_PART", "OPENRC_UNIT_SHARDS", "OPENRC_UNIT_SHARD", "OPENRC_PARSE_WITH_UNITS") if name in os.environ}}
+               "environment": {name: os.environ[name] for name in environment_names if name in os.environ}}
     # Durable before network submission: a lost reply can replay this exact ID,
     # secret and immutable snapshot rather than silently creating another job.
     receipt = submission_receipt(state_root(), request)
