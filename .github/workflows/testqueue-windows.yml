@@ -56,7 +56,8 @@ jobs:
             app/debug
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: '3.12.12'
+          # The actions manifest has no Windows x64 build for 3.12.12.
+          python-version: '3.12.10'
       - name: Queue contracts and real Windows process containment
         run: |
           python -m unittest discover -s tools/testqueue -p 'test_*.py' 2>&1 | Tee-Object queue-windows.log
