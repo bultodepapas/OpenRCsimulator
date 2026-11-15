@@ -1,6 +1,6 @@
 # External audits — implemented work
 
-Reviewed **2026-11-09**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports and their historical claims remain unchanged. Historical classifications did not rerun runtime tests; new implementation entries link their own fresh verification receipts.
+Reviewed **2026-11-09**; A34/A35 intake updated **2026-11-15**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports retain their historical claims. Historical classifications did not rerun runtime tests; new implementation entries link their own fresh verification receipts.
 
 Each finding row includes an **Original report** link; implementation evidence remains separate from its originating audit.
 
@@ -11,6 +11,16 @@ pins the committed source. Profile validation passes 44 checks and the rebind to
 passes 37 tests. Fresh clones preserve the fuel evidence bytes with both checkout
 line-ending settings. Complete required CI and the remaining engineering,
 research, physical/device/platform and performance work stay in the pending queue.
+
+2026-11-15 intake recovered the A34 first-round PDF and ZIP and the A35
+round-two originals. Their [research home](../docs/research/project-audit-2026-11-09/README.md)
+records identities and historical boundaries; the [current snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md)
+is a source review, not a fresh execution of those engine witnesses. The A34
+rows below retain their bounded implementation evidence: version-2 lock recovery
+does not automatically reclaim legacy locks, and selected-resource and layered
+cache fixes do not close all shared-resource or cache-transition qualification.
+A35's distinct F06–F08 remain in the [pending queue](CONSOLIDATED-AUDITS.md),
+not in this completed ledger.
 
 ## Implemented corrections
 
@@ -166,7 +176,7 @@ These are original failure descriptions for implemented items, not the active qu
 
 ## Completed external helicopter experiments
 
-[A20 original][A20] reports four experiments executed and independently rerun by its author, plus six benchmark tests. Executable baseline: `3e652a879ab8e928fc7d0b23d8303ac5724c3be6`; the report compares relevant helicopter files through `d0b672b09663226ff8b8ac4f43eae8643c77a8c4`. These are **external component research results, not production repairs or physical/HX qualification**. The [experiment ZIP](https://chatgpt.com/library?file_id=libfile_6befa7ef61248191b95d7e697600919b&account_id=personal) is linked by the source but was not supplied locally, inspected or rerun during consolidation. Integration remains in the [pending queue](CONSOLIDATED-AUDITS.md#a20-helicopter-experiment-follow-up).
+[A20 original][A20] reports four experiments executed and independently rerun by its author, plus six benchmark tests. Executable baseline: `3e652a879ab8e928fc7d0b23d8303ac5724c3be6`; the report compares relevant helicopter files through `d0b672b09663226ff8b8ac4f43eae8643c77a8c4`. These are **external component research results, not production repairs or physical/HX qualification**. The experiment ZIP (private link omitted from this public integration) is linked by the source but was not supplied locally, inspected or rerun during consolidation. Integration remains in the [pending queue](CONSOLIDATED-AUDITS.md#a20-helicopter-experiment-follow-up).
 
 | Completed reported experiment | Result and evidence boundary | Original report |
 | --- | --- | --- |
@@ -255,7 +265,7 @@ This registry is provenance, **not a claim that all source findings are complete
 | A27 | [CI audit — validation coverage, orchestration and release evidence][A27] | Frozen `347905cafed505cad758107f2790fab2b018e4c6`, closing 2026-11-07 00:23 UTC (2026-11-06 19:23 America/Bogota); reports CI-01–10, including later companion repair 181d7ca6. Historical run/API/artifact/source review and focused local probes, not full Godot/native rebuild/export/target-device validation. External PDF/ZIP uninspected here. Local Git history additionally establishes later CI-01/02 source repairs; no live CI status claim. |
 | A28 | [Apple Silicon follow-up — Stik samples, audio, cloud readback and lens ghosts][A28] | Reviewed `181d7ca638285f24c1ec9e5089ed07b35b7ea418`; pinned beta2 Linux Godot/float32 CPU probes. Five techniques, three reported probes (28 Stik checks/20 comparisons, ten audio cases, nine ghost grids). Cloud and ghost refine existing investigations; no production changes or native Mac performance/power campaign. External ZIP uninspected during consolidation. |
 | A29 | [Seeded wind — joint statistics, aerodynamic cusp and timestep diagnostics][A29] | Executed `181d7ca638285f24c1ec9e5089ed07b35b7ea418`, relevant files reportedly unchanged through `420c259`. 283 reported assertions plus independent 25 kernel controls/six joint-load conditions. Extends A10/A23/F12 and A25; no new independent serious bug, production modification or physical validation. Sandbox deliverables unavailable locally and uninspected. |
-| A30 | [Code and simulation audit — recording, controls and audio][A30]; [full Page snapshot][A30-full] | Reviewed b21c0789649b856217d82faa112c190d34389a21. Five runtime findings N01–N05; three qualified follow-ups. Summary preserved byte-for-byte; full report preserves all 93 Page block texts/order under its title, read 2026-11-07. One audit with two documents. [Live Page](https://chatgpt.com/space/page_a837fc1e69288191af414d4270f9b32e) unchanged; external ZIP uninspected. |
+| A30 | [Code and simulation audit — recording, controls and audio][A30]; [full Page snapshot][A30-full] | Reviewed b21c0789649b856217d82faa112c190d34389a21. Five runtime findings N01–N05; three qualified follow-ups. Summary preserved byte-for-byte; full report preserves all 93 Page block texts/order under its title, read 2026-11-07. One audit with two documents. Live Page (private link omitted; local Page snapshot retained) unchanged; external ZIP uninspected. |
 
 ### Original-file SHA-256
 

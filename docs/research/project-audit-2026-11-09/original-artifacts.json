@@ -1,0 +1,41 @@
+{
+  "format": "openrc-external-audit-intake-v1",
+  "historical_source_commit": "45d86d250f6e38a3d9b60d30c01bdc2396571efe",
+  "historical_engine": "4.8.beta2.official.cafc17a19",
+  "report_date": "2026-11-09",
+  "retrieved_date": "2026-11-15",
+  "review_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "byte_preservation": "Original saved deliverables copied without editing. ZIP hashes match the recorded November 9 deliveries. PDF hashes identify the saved files retrieved for this intake; no PDF re-encoding or text-extraction replacement.",
+  "artifacts": [
+    {
+      "path": "originals/OpenRC_Simulator_Audit_45d86d2.pdf",
+      "bytes": 142435,
+      "sha256": "387c4674f7c979a42248a60f98c6c5875e1459a983ce76927b73b17a45fba97a",
+      "round": 1,
+      "content_type": "application/pdf",
+      "pages": 12
+    },
+    {
+      "path": "originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+      "bytes": 545378,
+      "sha256": "6c8eb64180363ab90d8fb7885c175c8a1bc00856d7b3e99d4c8f2a776bba5bb7",
+      "round": 1,
+      "content_type": "application/zip"
+    },
+    {
+      "path": "originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf",
+      "bytes": 118209,
+      "sha256": "2c502dfaad364b9fa54d944b7f84f9245c617df55a8f02400d1ea9e9e063333b",
+      "round": 2,
+      "content_type": "application/pdf",
+      "pages": 8
+    },
+    {
+      "path": "originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+      "bytes": 290902,
+      "sha256": "51e17a4869e4edabdb3fda78c70f1327bbe2407650ce60399cdaf060560fb05b",
+      "round": 2,
+      "content_type": "application/zip"
+    }
+  ]
+}

@@ -1,0 +1,760 @@
+{
+  "format": "openrc-project-audit-source-review-v1",
+  "original_audit_commit": "45d86d250f6e38a3d9b60d30c01bdc2396571efe",
+  "reviewed_main_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "review_date": "2026-11-15",
+  "method": {
+    "execution": "Source inspection and Git tree/blob identity comparison only; no new engine, native, test, capture, or performance execution for this review.",
+    "identity": "Blob IDs are Git object IDs for whole files at the two commits; null means the path is absent at that commit. Equality of selected blobs does not establish equality of all runtime inputs; inequality does not by itself prove a semantic change.",
+    "historical_boundary": "Original audit witnesses and 2026-11-09 remediation receipts are historical, with their own source/configuration/platform limits. In particular flight_session.gd differs, so old full-tick numerical results are not current measurements.",
+    "validation_boundary": "Software regression, numerical consistency, real-hardware performance, rendered inspection and physical aircraft validation are distinct claims."
+  },
+  "evidence_archives": {
+    "A34": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+    "A35": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip"
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "audit": "A34",
+      "title": "Extra 300S spanwise progression and reverse-flow seam",
+      "status": "fixed_with_retained_regression_evidence",
+      "status_scope": "The original finite seam from scaling the physical reverse-flow angle is addressed. This is numerical continuity and consumer agreement, not physical aircraft validation; a small Godot wrapf endpoint residual remains.",
+      "current_source": "The force and wake paths pass the physical angle separately from the strip factor. WingPolar retains progressed stall through 45 degrees, blends toward the physical-angle law through 90 degrees, and uses that law in reverse flow. The native mirror follows the same continuation.",
+      "source_refs": [
+        {
+          "path": "app/data/aircraft/gp_extra_300s_60.json",
+          "line": 1380,
+          "symbol": "wing_polar.spanwise_progression"
+        },
+        {
+          "path": "app/physics/aero.gd",
+          "line": 472,
+          "symbol": "strip_factor and WingPolar.evaluate force path"
+        },
+        {
+          "path": "app/physics/aero.gd",
+          "line": 955,
+          "symbol": "WingPolar.evaluate wake path"
+        },
+        {
+          "path": "app/physics/wing_polar.gd",
+          "line": 82,
+          "symbol": "WingPolar.evaluate and _evaluate"
+        },
+        {
+          "path": "research/native-kernel/src/nk_aero.hpp",
+          "line": 260,
+          "symbol": "wing_polar_evaluate"
+        },
+        {
+          "path": "app/tests/test_wing_reverse_flow.gd",
+          "line": 27,
+          "symbol": "stock Extra seam and polar continuation regressions"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/README.md",
+          "line": 30,
+          "symbol": "historical numerical and native-component results"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/evidence.json",
+          "line": 116,
+          "symbol": "candidate source and native identities"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/verification.json",
+          "line": 683,
+          "symbol": "checked test_wing_reverse_flow receipt"
+        }
+      ],
+      "retained_remediation_evidence": "The 2026-11-09 documentation reports 218 passing reverse-flow checks on Windows and 593941/593941 strict-FP Linux/WSL native component comparisons; the native binary was not installed or promoted. The current aero, polar, reverse-flow test and native mirror blobs equal those in repair commit 0ab4d1e3b6bf052133a5456cbd3d73924646a055. The receipt retains report/log hashes, not raw checked logs.",
+      "next_check": "Run the existing checked test_wing_reverse_flow.gd on the pinned current source if fresh confirmation is needed."
+    },
+    {
+      "id": "F02",
+      "audit": "A34",
+      "title": "Visual quality altered physical obstacle inventory",
+      "status": "fixed_for_original_quality_and_hardware_choices",
+      "status_scope": "Collision construction is independent of the original quality/hardware choices; explicitly disabling scenery remains a scenario choice that removes scenery. Source tests and historical checked receipts are not fresh render or hardware validation.",
+      "current_source": "The builder uses the selected full scenery layout and lights; collidable prefabs are retained across visual quality. Automatic circuit selection is also independent of the reviewed detail/hardware choices.",
+      "source_refs": [
+        {
+          "path": "app/scenery/collision_setup.gd",
+          "line": 10,
+          "symbol": "build"
+        },
+        {
+          "path": "app/scenery/scenery.gd",
+          "line": 238,
+          "symbol": "collidable visual quality policy"
+        },
+        {
+          "path": "app/scenery/scenery.gd",
+          "line": 621,
+          "symbol": "collidable prefab retention"
+        },
+        {
+          "path": "app/scenery/collision_world.gd",
+          "line": 48,
+          "symbol": "collidable catalog"
+        },
+        {
+          "path": "app/scenery/collision_world.gd",
+          "line": 133,
+          "symbol": "world inventory construction"
+        },
+        {
+          "path": "app/scenery/rc_track_option.gd",
+          "line": 41,
+          "symbol": "automatic circuit selection"
+        },
+        {
+          "path": "app/tests/test_landscape_collision_setup.gd",
+          "line": 76,
+          "symbol": "explicit scenery-off and quality inventory checks"
+        },
+        {
+          "path": "app/tests/test_rc_track_flight.gd",
+          "line": 281,
+          "symbol": "automatic selection across hardware/detail choices"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/verification.json",
+          "line": 420,
+          "symbol": "historical checked collision and track receipts"
+        }
+      ],
+      "retained_remediation_evidence": "The 2026-11-09 checked index records complete passing Windows invocations of test_landscape_collision_setup.gd and test_rc_track_flight.gd. The original inventory counts and bench sweep belong only to the older audit fixture.",
+      "historical_witness": {
+        "archive": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+        "members": [
+          "audit_work/performance/collision_quality_census.json",
+          "audit_work/performance/collision_quality_full_world.json"
+        ],
+        "scope": "Historical audit at the original commit; not a new execution."
+      },
+      "next_check": "Run both checked tests on current source; use matched world sweeps and actual render inspection if visual/physical alignment is being qualified."
+    },
+    {
+      "id": "F03",
+      "audit": "A34",
+      "title": "Statistics lock JSON integer and stale-lock recovery",
+      "status": "changed_needs_validation_and_legacy_disposition",
+      "status_scope": "Integral JSON floats are accepted for new version-2 leases, subject to conservative ownership checks. Old three-field lock records and unsupported, foreign, or ambiguous scopes deliberately remain read-only and are not automatically reclaimed.",
+      "current_source": "A qualified lease requires matching host/namespace scope, bindable UDP port, verified absent process and stable record/directory. _lock_integer accepts finite integral int or float; legacy records do not satisfy the version-2 format.",
+      "source_refs": [
+        {
+          "path": "app/statistics/store.gd",
+          "line": 843,
+          "symbol": "_acquire_writer_lock"
+        },
+        {
+          "path": "app/statistics/store.gd",
+          "line": 922,
+          "symbol": "_valid_lease_owner"
+        },
+        {
+          "path": "app/statistics/store.gd",
+          "line": 934,
+          "symbol": "_lock_integer"
+        },
+        {
+          "path": "app/tests/test_flight_statistics_lock.gd",
+          "line": 22,
+          "symbol": "cross-process cases conditional on qualified scope"
+        },
+        {
+          "path": "app/tests/test_flight_statistics_lock.gd",
+          "line": 52,
+          "symbol": "legacy records fail closed"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/verification.json",
+          "line": 300,
+          "symbol": "historical Linux and Windows checked lock receipts"
+        }
+      ],
+      "retained_remediation_evidence": "The 2026-11-09 checked index records complete passing Linux and Windows invocations of test_flight_statistics_lock.gd. Its cross-process cases skip when no qualified scope is available, so receipt success alone does not prove that branch ran on every platform.",
+      "historical_witness": {
+        "archive": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+        "members": [
+          "audit_work/gameplay/statistics_lock_probe.gd",
+          "audit_work/gameplay/checks/statistics-lock-isolated-1t_xqdzp/engine.log"
+        ],
+        "scope": "Historical audit at the original commit; not a new execution."
+      },
+      "next_check": "Run the checked lock test on each qualified native OS and explicitly decide/document the support or migration policy for valid stale pre-upgrade records."
+    },
+    {
+      "id": "F04",
+      "audit": "A34",
+      "title": "Optional resources loaded before feature selection",
+      "status": "changed_needs_end_to_end_validation",
+      "status_scope": "The named early-load cases were moved behind their feature paths. The complete preload graph, actual incremental residency and startup impact are not established.",
+      "current_source": "RC dirt/grass texture paths load in configure and the track view after the empty-track guard; lake audio and Ugly Stik engine assets load on selected use. A selected ground scene still preloads effects modules before the effect-enable decision, and both modules preload a shared smoke texture.",
+      "source_refs": [
+        {
+          "path": "app/render/rc_ground_material.gd",
+          "line": 4,
+          "symbol": "TEXTURES and configure"
+        },
+        {
+          "path": "app/render/rc_track_field.gd",
+          "line": 19,
+          "symbol": "empty-track guard and view load"
+        },
+        {
+          "path": "app/render/lake/water_effects.gd",
+          "line": 128,
+          "symbol": "selected audio preparation"
+        },
+        {
+          "path": "app/aircraft/ugly_stik_equipment.gd",
+          "line": 309,
+          "symbol": "on-use engine scene"
+        },
+        {
+          "path": "app/app_root.gd",
+          "line": 855,
+          "symbol": "ground-scene selection"
+        },
+        {
+          "path": "app/vehicles/ground/ground_scene.gd",
+          "line": 32,
+          "symbol": "effects preloads and feature selection"
+        },
+        {
+          "path": "app/vehicles/ground/ground_effects.gd",
+          "line": 5,
+          "symbol": "smoke texture preload"
+        },
+        {
+          "path": "app/vehicles/ground/nitro_exhaust.gd",
+          "line": 4,
+          "symbol": "smoke texture preload"
+        },
+        {
+          "path": "app/tests/test_optional_resource_loading.gd",
+          "line": 17,
+          "symbol": "isolated cache and enabled-path checks"
+        },
+        {
+          "path": "app/tests/test_rcv_ground_material.gd",
+          "line": 11,
+          "symbol": "configured material maps"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/verification.json",
+          "line": 444,
+          "symbol": "historical optional-resource receipt"
+        }
+      ],
+      "retained_remediation_evidence": "The 2026-11-09 checked index records a complete passing Windows invocation of test_optional_resource_loading.gd. The old isolated 21.66 MiB headless static-memory increment includes dependencies and is not a current saving, whole-app RSS, VRAM or GPU measurement.",
+      "next_check": "Run the two focused checked tests; inspect fresh-process off/on activity dependency and cache behavior before matched cold/warm startup, peak/retained memory and hitch measurements on representative hardware."
+    },
+    {
+      "id": "F05",
+      "audit": "A34",
+      "title": "Cloud layer seed and shadow-cache binding mismatch",
+      "status": "original_seed_mismatch_fixed_with_regression_evidence",
+      "status_scope": "The original derived-layer versus base-seed mismatch is corrected in source. Synthetic binding tests and historical checked receipts do not prove GPU bake, displayed parity, or performance across all presets.",
+      "current_source": "Atmosphere requests eligible layer seeds; the cache binds distinct seeds into up to four slots and the shader selects matching seeds with analytic fallback. Cirrus, anvil and zero-coverage/density layers are excluded.",
+      "source_refs": [
+        {
+          "path": "app/render/weather/sky_appearance.gd",
+          "line": 13,
+          "symbol": "derived layer seeds"
+        },
+        {
+          "path": "app/render/atmosphere.gd",
+          "line": 722,
+          "symbol": "_sky_relief_seeds"
+        },
+        {
+          "path": "app/render/cloud_shadow_map.gd",
+          "line": 97,
+          "symbol": "apply_sky seed-to-slot binding"
+        },
+        {
+          "path": "app/render/cloud_shadow_map.gdshaderinc",
+          "line": 51,
+          "symbol": "seed lookup and analytic fallback"
+        },
+        {
+          "path": "app/render/sky.gdshader",
+          "line": 267,
+          "symbol": "layer seed passed to relief"
+        },
+        {
+          "path": "app/tests/test_sky_relief_layers.gd",
+          "line": 17,
+          "symbol": "eligible layer and synthetic binding checks"
+        },
+        {
+          "path": "app/tests/test_cloud_shadow_map.gd",
+          "line": 1,
+          "symbol": "shadow-cache checks"
+        },
+        {
+          "path": "app/tests/test_cloud_cache_disable.gd",
+          "line": 1,
+          "symbol": "cache opt-out checks"
+        },
+        {
+          "path": "app/render/cloud_shadow_map.gd",
+          "line": 305,
+          "symbol": "four-slot retained tile limit"
+        },
+        {
+          "path": "docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md",
+          "line": 53,
+          "symbol": "separate cloudy-to-cloudy cache transition caveat"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/verification.json",
+          "line": 492,
+          "symbol": "historical sky-relief checked receipt"
+        }
+      ],
+      "retained_remediation_evidence": "The 2026-11-09 checked index records complete passing Windows invocations of test_sky_relief_layers.gd, test_cloud_shadow_map.gd and test_cloud_cache_disable.gd. The old base/derived seed values and six-preset witness apply to the original fixture.",
+      "separate_caveat": "A direct cloudy-preset or seed transition may leave old tiles occupying the four slots while a consumer remains, forcing new eligible layers to analytic fallback. This is separately tracked and is not the repaired original seed mismatch.",
+      "historical_witness": {
+        "archive": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+        "members": [
+          "audit_work/performance/cloud_runs/cloud-seed-ready-fixture-s4pe5afx/engine.log"
+        ],
+        "scope": "Historical audit at the original commit; not a new execution."
+      },
+      "next_check": "Run the three checked tests, exercise direct cloudy-to-cloudy transitions with live consumers and stale completions, and use native 1080p captures/performance before making GPU claims."
+    },
+    {
+      "id": "F06",
+      "audit": "A35",
+      "title": "Swept lake positive-down slope normal has reversed horizontal signs",
+      "status": "still_present_by_source_inspection",
+      "status_scope": "The swept bank and water event helper uses the wrong horizontal signs; the separate soft-hull helper already uses the correct convention and does not repair the swept path. Historical full-tick numbers are not current measurements.",
+      "current_source": "For down-height D=h(N,E), the outward unit normal is [h_N,h_E,-1]/length. LakeCollision._surface_normal returns [-h_N,-h_E,-1]/length, so its vector is not orthogonal to the surface tangent when a slope is nonzero. Bank impact speed and effective mass feed the terminal decision; water event kinematics are affected as well.",
+      "source_refs": [
+        {
+          "path": "app/physics/lake_surface.gd",
+          "line": 47,
+          "symbol": "positive-down ground height and slopes"
+        },
+        {
+          "path": "app/sim/lake_collision.gd",
+          "line": 316,
+          "symbol": "water and bank slope sampling"
+        },
+        {
+          "path": "app/sim/lake_collision.gd",
+          "line": 342,
+          "symbol": "event normal and kinematics"
+        },
+        {
+          "path": "app/sim/lake_collision.gd",
+          "line": 519,
+          "symbol": "_surface_normal"
+        },
+        {
+          "path": "app/physics/hull_contact.gd",
+          "line": 767,
+          "symbol": "separate corrected _lake_normal"
+        },
+        {
+          "path": "app/physics/ground_terrain.gd",
+          "line": 40,
+          "symbol": "normal_from_up_slopes contract"
+        },
+        {
+          "path": "app/tests/test_hull_support_normal.gd",
+          "line": 33,
+          "symbol": "hull-only analytic plane/tangent oracle"
+        },
+        {
+          "path": "app/tests/test_lake_collision.gd",
+          "line": 123,
+          "symbol": "bank policy tests"
+        },
+        {
+          "path": "app/tests/test_lake_session.gd",
+          "line": 78,
+          "symbol": "swept event ordering"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "line": 3519,
+          "symbol": "production session lake collision path"
+        }
+      ],
+      "retained_remediation_evidence": "No current fix is present in the swept helper. Its lake_collision.gd blob, lake_surface.gd and hull_contact.gd blobs match the original audit; flight_session.gd differs, so that equality cannot establish the current integrated outcome.",
+      "historical_witness": {
+        "archive": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+        "members": [
+          "audit_round2/collision/lake_real_aircraft.gd",
+          "audit_round2/collision/bank-integrated-final-ydad69ma/engine.log",
+          "audit_round2/collision/bank-corrected-3v5b6pmk/engine.log",
+          "variants/lake_bank_normal_sign/diagnostic.patch"
+        ],
+        "scope": "Historical audit at the original commit; not a new execution."
+      },
+      "next_check": "Use an analytic positive-down plane/tangent oracle for the swept normal, both slope signs and water/bank cases; if desired, rerun the historical full-session witness and sign-only control on isolated copies of the current snapshot."
+    },
+    {
+      "id": "F07",
+      "audit": "A35",
+      "title": "Swept bank ignores X99 model-specific crash tolerance",
+      "status": "still_present_by_source_inspection",
+      "status_scope": "The swept path ignores both configured model-specific energy and depth thresholds and uses shared defaults. The historical controlled full tick isolates the energy mismatch; the depth mismatch needs a separate case.",
+      "current_source": "X99 authors estimated 12.5 J/kg and 0.12 m; session hull preparation stores those values. Both sampled and non-sampled lake sweeps omit that prepared tolerance and use shared 2.5 J/kg and 0.08 m constants for bank decisions.",
+      "source_refs": [
+        {
+          "path": "app/data/aircraft/moonrunner_x99.json",
+          "line": 1582,
+          "symbol": "crash_tolerance"
+        },
+        {
+          "path": "app/physics/aircraft_data.gd",
+          "line": 1067,
+          "symbol": "_crash_tolerance"
+        },
+        {
+          "path": "app/physics/hull_contact.gd",
+          "line": 39,
+          "symbol": "shared defaults and prepared tolerance accessors"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "line": 2152,
+          "symbol": "_prepare_hull_contact"
+        },
+        {
+          "path": "app/sim/flight_session.gd",
+          "line": 3531,
+          "symbol": "sampled and non-sampled swept calls"
+        },
+        {
+          "path": "app/sim/lake_collision.gd",
+          "line": 349,
+          "symbol": "bank approach and depth guard"
+        },
+        {
+          "path": "app/sim/lake_collision.gd",
+          "line": 390,
+          "symbol": "global soft-bank thresholds"
+        },
+        {
+          "path": "app/sim/lake_collision.gd",
+          "line": 444,
+          "symbol": "global deep-bank threshold"
+        },
+        {
+          "path": "app/tests/test_moonrunner_x99.gd",
+          "line": 173,
+          "symbol": "prepared hull tolerance and flat touchdown"
+        },
+        {
+          "path": "app/tests/test_lake_collision.gd",
+          "line": 123,
+          "symbol": "shared-default bank policy"
+        }
+      ],
+      "retained_remediation_evidence": "No current swept-tolerance correction is present. Original and current lake collision, hull contact and X99 data blobs match; flight_session.gd differs. The X99 thresholds are estimates and owner drop tests remain pending.",
+      "historical_witness": {
+        "archive": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+        "members": [
+          "audit_round2/collision/lake_tolerance_original.gd",
+          "audit_round2/collision/tolerance-stopped-original-final-9d2bhdlp/engine.log",
+          "audit_round2/collision/tolerance-stopped-sign-final-j6m_r9s4/engine.log",
+          "audit_round2/collision/tolerance-stopped-override-final-_3r338fi/engine.log",
+          "variants/lake_sweep_tolerance_override/diagnostic.patch"
+        ],
+        "scope": "Historical audit at the original commit; not a new execution."
+      },
+      "historical_control_limit": "The threshold-only diagnostic changes 2.5 to 12.5 J/kg; it does not change 0.08 to 0.12 m and therefore does not experimentally demonstrate the depth branch.",
+      "next_check": "Cover values around both thresholds with tolerant and default aircraft, near-boundary and deep-crush cases, and sampled/non-sampled paths. Run any historical negative controls only in isolated copies."
+    },
+    {
+      "id": "F08",
+      "audit": "A35",
+      "title": "Repeated statistics snapshot quarantine blocks future writes",
+      "status": "still_present_by_source_inspection",
+      "status_scope": "A fixed per-slot quarantine filename makes a subsequent recovery fail closed when that filename already exists, even with a valid alternate snapshot and an owned writer lock.",
+      "current_source": "_read_snapshots records invalid slots; _quarantine_bad_snapshots immediately rejects an existing slot quarantine; open then marks the store read-only and commit refuses writes. This covers immediate reopen after a first recovery and another corruption of the same slot after healthy alternating commits.",
+      "source_refs": [
+        {
+          "path": "app/statistics/store.gd",
+          "line": 127,
+          "symbol": "recovery chooses snapshot and assigns writability"
+        },
+        {
+          "path": "app/statistics/store.gd",
+          "line": 148,
+          "symbol": "commit read-only guard"
+        },
+        {
+          "path": "app/statistics/store.gd",
+          "line": 166,
+          "symbol": "alternating snapshot slots"
+        },
+        {
+          "path": "app/statistics/store.gd",
+          "line": 394,
+          "symbol": "_read_snapshots invalid slots"
+        },
+        {
+          "path": "app/statistics/store.gd",
+          "line": 812,
+          "symbol": "_quarantine_bad_snapshots fixed target"
+        },
+        {
+          "path": "app/statistics/service.gd",
+          "line": 57,
+          "symbol": "service read-only behavior"
+        },
+        {
+          "path": "app/tests/test_flight_statistics_store.gd",
+          "line": 84,
+          "symbol": "single-corruption test"
+        },
+        {
+          "path": "app/tests/test_flight_statistics_store.gd",
+          "line": 266,
+          "symbol": "separate post-deletion case"
+        },
+        {
+          "path": "docs/research/aero-consistency/reverse-flow-2026-11-09/verification.json",
+          "line": 348,
+          "symbol": "historical existing statistics-store check"
+        }
+      ],
+      "retained_remediation_evidence": "The 2026-11-09 checked index records a passing Windows invocation of the existing statistics-store test, but its stated single-corruption and separate deletion cases do not cover same-slot repeated recovery. The production store blob changed since the historical audit, so the old probe is not a current execution.",
+      "historical_witness": {
+        "archive": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+        "members": [
+          "audit_round2/persistence/quarantine_reopen_probe.gd",
+          "audit_round2/persistence/checks/quarantine-reopen-a99buh5l/engine.log",
+          "audit_round2/persistence/checks/quarantine-reopen-a99buh5l/report.json"
+        ],
+        "scope": "Historical audit at the original commit; not a new execution."
+      },
+      "next_check": "Test initial corrupt/recover and immediate reopen; separately perform healthy commits and re-corrupt the same slot, preserving distinct and identical bad bytes, history, lock ownership and writability, then test commit/deletion and write failures."
+    }
+  ],
+  "related_observations": [
+    {
+      "topic": "Optional sun-glare work candidate",
+      "source_refs": [
+        {
+          "path": "app/render/landscape_upgrade/sun_glare.gd",
+          "line": 155,
+          "symbol": "intensity, source and skyline work"
+        },
+        {
+          "path": "app/render/landscape_upgrade/sun_glare.gd",
+          "line": 212,
+          "symbol": "skyline advancement"
+        }
+      ],
+      "scope": "At zero intensity some source/cloud/skyline work appears to proceed. The 600 samples/frame setting budgets job sampling, but whole mesh-chunk preparation can occur before that budget is applied; it does not bound total per-callback work. No timing bottleneck has been measured. Profile a matched full scene before prioritizing changes and preserve other state contracts."
+    }
+  ],
+  "git_blob_ids": {
+    "app/aircraft/ugly_stik_equipment.gd": {
+      "original": "104051e1c2718598599e8b7dd6509417f5ada5ab",
+      "reviewed": "e792d0ac4414e8b174e304fae57a46f24d1d7c82"
+    },
+    "app/app_root.gd": {
+      "original": "53604c23816c0d1c8d9dff680a57e5175b4100b0",
+      "reviewed": "2d6dcadd00dee40f7eb8ba12d9c398b39ee10760"
+    },
+    "app/data/aircraft/gp_extra_300s_60.json": {
+      "original": "4e054c3b02e992acdca90c95719438d51a70449f",
+      "reviewed": "ecfb01ab4288cb7b29637e6b385afec11b80e259"
+    },
+    "app/data/aircraft/moonrunner_x99.json": {
+      "original": "6a43cbc30df12a524eb0275285bff616b62b7703",
+      "reviewed": "6a43cbc30df12a524eb0275285bff616b62b7703"
+    },
+    "app/physics/aero.gd": {
+      "original": "f8a9387bb342c3d7cb38a7cb0401c48f4ae44810",
+      "reviewed": "d6f266279929e864b2b7744f26f41b06e497653d"
+    },
+    "app/physics/aircraft_data.gd": {
+      "original": "c29f540c53408284fdf81e0d2a21f30d1082b816",
+      "reviewed": "686fc5d2b670ae771eb705cb12085bfe5c8f1863"
+    },
+    "app/physics/ground_terrain.gd": {
+      "original": "9f118b77837a9e991e5fea49fa38d882587b1ab6",
+      "reviewed": "9f118b77837a9e991e5fea49fa38d882587b1ab6"
+    },
+    "app/physics/hull_contact.gd": {
+      "original": "12c0242a729f3a92d59aef44e19fc206a181ee63",
+      "reviewed": "12c0242a729f3a92d59aef44e19fc206a181ee63"
+    },
+    "app/physics/lake_surface.gd": {
+      "original": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5",
+      "reviewed": "3a5f9c662bc63d63ee3d2afd80532dee19d439b5"
+    },
+    "app/physics/wing_polar.gd": {
+      "original": "72e4745f5e0f0b954d9684f92c2c03ba8890ce8a",
+      "reviewed": "f5be238c7ae06f58009d8c867cffa0e625f84c7c"
+    },
+    "app/render/atmosphere.gd": {
+      "original": "3f23c9684ea36b99ccdc497c6a5ece2be38bd1de",
+      "reviewed": "b842aca5ed05391451a0df73f6d8d897bedb32fa"
+    },
+    "app/render/cloud_shadow_map.gd": {
+      "original": "73ac9ef70c64757860c90ccaec5a0f26ad2370e6",
+      "reviewed": "9c186f941e4ac436bb192c80e2bf48e4d493b80a"
+    },
+    "app/render/cloud_shadow_map.gdshaderinc": {
+      "original": "d12c0cd21c187b21bbf165bb08f8f09e77f28d15",
+      "reviewed": "f3fe6dfad9027ff16634fe4df8a0845886563d4b"
+    },
+    "app/render/lake/water_effects.gd": {
+      "original": "ba98cdd1e8bbc0276f190cb920f53e5947574361",
+      "reviewed": "45bab9e3a0c2b95ef0f4331e3da5950cff3279e7"
+    },
+    "app/render/landscape_upgrade/sun_glare.gd": {
+      "original": "6fc471bb6308e482eb63ebcdbdbfcd8151404b0a",
+      "reviewed": "948628d7c5cccc6a58930a4acf0aa9cf2553e5b6"
+    },
+    "app/render/rc_ground_material.gd": {
+      "original": "fdf17f6a0e4279cee5202815612d8d32dcf10fc9",
+      "reviewed": "400564756a1ceac48a79f5ab41fa3cd680c06493"
+    },
+    "app/render/rc_track_field.gd": {
+      "original": "8f84b084f22a4b925867677c0493ea1268b1b4ac",
+      "reviewed": "a9f3681b5eeb65e0ae8a533080f7fec619f11d51"
+    },
+    "app/render/sky.gdshader": {
+      "original": "521400776371465089eb4f451cbfbe7d8c5f2887",
+      "reviewed": "2810142e6efa267a972383fabdf12090ba57357d"
+    },
+    "app/render/weather/sky_appearance.gd": {
+      "original": "129281cabcfe9dc8648cf8a09037546e69b2477a",
+      "reviewed": "129281cabcfe9dc8648cf8a09037546e69b2477a"
+    },
+    "app/scenery/collision_setup.gd": {
+      "original": "fbc0d9c63d3a8fb9b36c813dd15b5735042e1f51",
+      "reviewed": "e7e72e96c3af7ae5ffb891d21fd9be6ce830b67f"
+    },
+    "app/scenery/collision_world.gd": {
+      "original": "8e1e8650e41e6a8308c22750ef3ebc4ff1f2fa87",
+      "reviewed": "bf63a504ba83d6e6e1608d719e4928fb3ab9c48d"
+    },
+    "app/scenery/rc_track_option.gd": {
+      "original": "855259cdc748a1135a2457cd116c37ff3f861bdc",
+      "reviewed": "797afa24d5f69752329db4d1969500f0269408d6"
+    },
+    "app/scenery/scenery.gd": {
+      "original": "6ee2ac163a8512e37e44c3515741833c23638083",
+      "reviewed": "589986f6ef47dc4ef2e8a2101f088553f356e4c8"
+    },
+    "app/sim/flight_session.gd": {
+      "original": "69c3c82f6b9e2cc6509eeda0f49ad2d2106c2da9",
+      "reviewed": "1c639fe4be03ede927a2aba9a7ba09b255d395cf"
+    },
+    "app/sim/lake_collision.gd": {
+      "original": "9cfb08d57b19fe5992f981f9d490bc75415a29d8",
+      "reviewed": "9cfb08d57b19fe5992f981f9d490bc75415a29d8"
+    },
+    "app/statistics/service.gd": {
+      "original": "9cf97d8f9b2c3c05184c1d4adf7794ecb516b747",
+      "reviewed": "9cf97d8f9b2c3c05184c1d4adf7794ecb516b747"
+    },
+    "app/statistics/store.gd": {
+      "original": "0890cb901bfd3f3c37654d17e35119eb6e60779f",
+      "reviewed": "f67811516d3e2864f9a464f32806be50d8f76e3d"
+    },
+    "app/tests/test_cloud_cache_disable.gd": {
+      "original": null,
+      "reviewed": "88d7ae1187d2ddd119740d5d212be636cf9a1a0f"
+    },
+    "app/tests/test_cloud_shadow_map.gd": {
+      "original": "0e6757ae26a992703d75fbd58e99de330cea4457",
+      "reviewed": "f02a63f0996def07ed119fcda214b9351ae1f825"
+    },
+    "app/tests/test_flight_statistics_lock.gd": {
+      "original": null,
+      "reviewed": "154b048d60344fe9b7495b0922e77bca3c1c7311"
+    },
+    "app/tests/test_flight_statistics_store.gd": {
+      "original": "e88291fadb2c16d37cc036669003796ea9207c47",
+      "reviewed": "e88291fadb2c16d37cc036669003796ea9207c47"
+    },
+    "app/tests/test_hull_support_normal.gd": {
+      "original": "9e81e2dd0533af77da9870b5e53640420b6a541c",
+      "reviewed": "9e81e2dd0533af77da9870b5e53640420b6a541c"
+    },
+    "app/tests/test_lake_collision.gd": {
+      "original": "eede3f04603cee148f527a3cd7cba0b85384b0ef",
+      "reviewed": "eede3f04603cee148f527a3cd7cba0b85384b0ef"
+    },
+    "app/tests/test_lake_session.gd": {
+      "original": "44db80569288360b399228bfe10763354ccc9f89",
+      "reviewed": "44db80569288360b399228bfe10763354ccc9f89"
+    },
+    "app/tests/test_landscape_collision_setup.gd": {
+      "original": "63ed9246afa7cedae09090c9c6fc1c04d4a9fb27",
+      "reviewed": "c8570a99ddbf1ad136e46f28f29fc9d0318fd6c6"
+    },
+    "app/tests/test_moonrunner_x99.gd": {
+      "original": "fa39ac58b27efa6752acf3eca92b7df3bfdd0093",
+      "reviewed": "fa39ac58b27efa6752acf3eca92b7df3bfdd0093"
+    },
+    "app/tests/test_optional_resource_loading.gd": {
+      "original": null,
+      "reviewed": "76a5b53306e0e6fa1c2f7b052536b5b2b9fc27b6"
+    },
+    "app/tests/test_rc_track_flight.gd": {
+      "original": "93a64e766648a47b50ef2b80f76b6b35f96df4c4",
+      "reviewed": "6869e01d1c9228b22811fc798fd7c2ea97fe67e1"
+    },
+    "app/tests/test_rcv_ground_material.gd": {
+      "original": "b7370a8803971d5b6b813673869c80dffd14b285",
+      "reviewed": "b7370a8803971d5b6b813673869c80dffd14b285"
+    },
+    "app/tests/test_sky_relief_layers.gd": {
+      "original": null,
+      "reviewed": "867a919482447ee75e43d837c734a762604cb4ba"
+    },
+    "app/tests/test_wing_reverse_flow.gd": {
+      "original": null,
+      "reviewed": "b6237e854cc4ca2e66cef4bc98738926e5c2316e"
+    },
+    "app/vehicles/ground/ground_effects.gd": {
+      "original": "a2e79555154aee3f179d60a61a5a2269fd81853c",
+      "reviewed": "a2e79555154aee3f179d60a61a5a2269fd81853c"
+    },
+    "app/vehicles/ground/ground_scene.gd": {
+      "original": "13814e7d968a5238ff70b6139e75d9898a59a6a0",
+      "reviewed": "6b0ac2a6314dddcbf72f3319ee2b26c13ae3a658"
+    },
+    "app/vehicles/ground/nitro_exhaust.gd": {
+      "original": "1f84a0861bacb2c39f23314fa3161c48175e5b32",
+      "reviewed": "1f84a0861bacb2c39f23314fa3161c48175e5b32"
+    },
+    "docs/research/aero-consistency/reverse-flow-2026-11-09/README.md": {
+      "original": null,
+      "reviewed": "a5b24c03e4f856d7a0519248ee2111a9feff6c9c"
+    },
+    "docs/research/aero-consistency/reverse-flow-2026-11-09/evidence.json": {
+      "original": null,
+      "reviewed": "10c43a4c41573a80171ffaaff61d9450b2d3319e"
+    },
+    "docs/research/aero-consistency/reverse-flow-2026-11-09/verification.json": {
+      "original": null,
+      "reviewed": "57ae8d33c69ea1fffd46b545cfb43913e5fcf7a0"
+    },
+    "docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md": {
+      "original": null,
+      "reviewed": "1ca228676820f946f9a3a7df9b1fe02ffeb71bad"
+    },
+    "research/native-kernel/src/nk_aero.hpp": {
+      "original": "90839c4b6f3b1944f3ce78fb38c281052bed83bb",
+      "reviewed": "c0ac68f43e77bd9845f4ff2f46184911e2d998db"
+    }
+  }
+}
