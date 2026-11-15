@@ -32,6 +32,10 @@ FORMAT = "openrc-session-cost v2"
 LEGACY_FORMAT = "openrc-session-cost v1"
 BASELINE_FORMAT = "openrc-session-baseline v1"
 IDENTICAL_FORMAT = "openrc-session-identical-campaign v1"
+RESEARCH_RELEASE_SELECTION_FORMAT = "openrc-macos-research-release-selection v1"
+RESEARCH_RELEASE_PIN_FIELDS = frozenset({"reference_receipt_sha256", "native_receipt_sha256", "manifest_sha256",
+                                        "executable_sha256", "pack_sha256", "checked_export_report_sha256",
+                                        "checked_export_log_sha256"})
 REQUIRED_GODOT_VERSION = "4.8-beta2"
 REQUIRED_GODOT_BUILD = "4.8.beta2.official.cafc17a19"
 REQUIRED_GODOT_REPORT = "4.8-beta2 (official)"
@@ -930,6 +934,102 @@ def inspect_godot(executable: Path, timeout: float, research_engine: dict[str, A
     }
 
 
+def _research_package():
+    path = Path(__file__).resolve().parents[2] / "research/native-kernel/package.py"
+    spec = importlib.util.spec_from_file_location("openrc_session_research_package", path)
+    if spec is None or spec.loader is None:
+        raise ValueError("Mac research package verifier is unavailable")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def inspect_research_release(executable: Path, timeout: float, selection: dict[str, Any]) -> dict[str, Any]:
+    """Inspect the final signed executable; its hash is not the unsigned template hash."""
+    admission.require_exclusive("headless")
+    before = _sha256_file(executable)
+    result = subprocess.run([str(executable), "--version"], cwd=executable.parent,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                            encoding="utf-8", errors="replace", timeout=min(timeout, 30.0), check=False,
+                            env=ENGINE_POLICY.clean_child_environment())
+    version = result.stdout.strip()
+    if (result.returncode != 0 or any(ENGINE_ERROR_RE.search(line) for line in version.splitlines())
+            or version != selection.get("cli_version") or _sha256_file(executable) != before):
+        raise ValueError("Custom release version, executable, or inspection output differs")
+    return {"path": str(executable), "version": version, "required_version": REQUIRED_GODOT_VERSION,
+            "sha256": before, "runtime_binary_path": str(executable), "runtime_binary_sha256": before}
+
+
+def verify_research_release(executable: Path, selection: dict[str, Any], selection_path: Path,
+                            timeout: float) -> dict[str, Any]:
+    """Independently revalidate the original pair, checked export and final linked bundle."""
+    package = _research_package()
+    binder = package._pair_binder()
+    selection_path = binder._path(selection_path)
+    selected_before = binder._snapshot(selection_path, binder.MAX_JSON)
+    requested = binder._json(selection_path)
+    required = {"format", "editor", "native_tool_root", "native_toolchain_profile", "pair",
+                "checked_export_report", "pins"}
+    if not isinstance(selection, dict) or not isinstance(selection.get("toolchain_profile"), str) \
+            or not isinstance(requested, dict) or set(requested) != required \
+            or requested.get("format") != RESEARCH_RELEASE_SELECTION_FORMAT:
+        raise ValueError("Explicit research editor and complete release selection are required")
+    profiles = getattr(ENGINE_POLICY, "TOOLCHAIN_PROFILES", {})
+    profile = requested.get("native_toolchain_profile")
+    pair_args = requested.get("pair")
+    pins = requested.get("pins")
+    if (not isinstance(profile, str) or profile not in profiles
+            or selection["toolchain_profile"] not in profiles
+            or not isinstance(pair_args, dict)
+            or set(pair_args) != {"template_intake", "pair_receipt", "export_template", "pins"}
+            or not isinstance(pins, dict) or set(pins) != RESEARCH_RELEASE_PIN_FIELDS
+            or any(not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None for value in pins.values())):
+        raise ValueError("Research release requires distinct explicit toolchains, pair inputs and all final pins")
+    path_values = [requested.get("editor"), requested.get("native_tool_root"), requested.get("checked_export_report"),
+                   *pair_args.values()]
+    if any(not isinstance(value, str) or not value or not Path(value).is_absolute() for value in path_values):
+        raise ValueError("Research release inputs must use explicit absolute paths")
+    executable = binder._path(executable)
+    editor = binder._path(requested["editor"])
+    tool_root = binder._path(requested["native_tool_root"], directory=True)
+    report = binder._path(requested["checked_export_report"])
+    reference, native = verify_macos_release_identities(executable)
+    bundle = MAC_RECEIPT.bundle_from_executable(executable)
+    editor_identity = inspect_godot(editor, timeout, selection)
+    packaged = package.verify_macos_export(bundle, tool_root, editor, selection, profile,
+                                           pair_selection={key: Path(value) for key, value in pair_args.items()})
+    pair = packaged.get("engine_pair") if isinstance(packaged, dict) else None
+    source_editor = editor_identity.get("source_engine_identity") if isinstance(editor_identity, dict) else None
+    provenance = source_editor.get("research_engine") if isinstance(source_editor, dict) else None
+    if (not isinstance(pair, dict) or not isinstance(provenance, dict)
+            or editor_identity.get("sha256") != selection.get("sha256")
+            or source_editor.get("sha256") != selection.get("sha256")
+            or editor_identity.get("research_engine") != provenance
+            or provenance.get("scope") != ENGINE_POLICY.SCOPE or provenance.get("selection") != selection
+            or pair.get("editor_sha256") != editor_identity.get("sha256")
+            or any(packaged.get(field) != native.get(field) for field in
+                   ("manifest_sha256", "library_sha256", "descriptor_sha256", "license_sha256"))):
+        raise ValueError("Final Mac package is not bound to the selected editor and native receipt")
+    checked = package._checked_macos_export(report, bundle, pair, packaged.get("export_runner_sha256"))
+    if not isinstance(checked, dict) or checked.get("editor_sha256") != selection.get("sha256"):
+        raise ValueError("Checked export does not identify the independently selected editor")
+    observed = {"reference_receipt_sha256": reference["receipt_sha256"],
+                "native_receipt_sha256": native["receipt_sha256"], "manifest_sha256": native["manifest_sha256"],
+                "executable_sha256": reference["executable_sha256"], "pack_sha256": reference["pack_sha256"],
+                "checked_export_report_sha256": checked["report_sha256"],
+                "checked_export_log_sha256": checked["log_sha256"]}
+    if observed != pins:
+        raise ValueError("Final Mac bundle or checked export differs from independent release pins")
+    release_engine = inspect_research_release(executable, timeout, selection)
+    if release_engine["sha256"] != reference["executable_sha256"] \
+            or verify_macos_release_identities(executable) != (reference, native) \
+            or binder._snapshot(selection_path, binder.MAX_JSON) != selected_before:
+        raise ValueError("Research release inputs changed during verification")
+    return {"selection_path": str(selection_path), "selection_sha256": selected_before[1],
+            "selection": requested, "editor": editor_identity, "package": packaged,
+            "checked_export": checked, "reference": reference, "native": native, "release_engine": release_engine}
+
+
 def _engine_error_lines(log_text: str) -> list[str]:
     clean = re.sub(r"\x1b\[[0-9;]*m", "", log_text)
     return [line.strip() for line in clean.splitlines() if ENGINE_ERROR_RE.search(line)]
@@ -1283,6 +1383,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--experimental-native-macos", action="store_true",
                         help="explicit opt-in to the experimental Mac ARM64 native source or release backend")
     ENGINE_POLICY.add_arguments(parser)
+    parser.add_argument("--research-release-inputs", action=ENGINE_POLICY._Once, type=Path,
+                        help="explicit original editor, pair/export inputs, native profile and independently pinned final bundle")
+    parser.add_argument("--research-campaign-sha256", action="append", default=[],
+                        help="independently retained campaign JSON SHA-256; repeat in before/after order for research comparison")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
     parser.add_argument("--case", action="append", help="trim, maneuver, runway, or lake; repeat or comma-separate")
     parser.add_argument("--battery", choices=("ideal", "pack"),
@@ -1322,6 +1426,7 @@ def run_campaign(args: argparse.Namespace) -> int:
     admission.require_exclusive("headless")
     root = Path(__file__).resolve().parents[2]
     research_engine = ENGINE_POLICY.selection_from_args(args)
+    research_release = getattr(args, "research_release_inputs", None)
     identical = getattr(args, "compare_identical", False)
     report_format = IDENTICAL_FORMAT if identical else BASELINE_FORMAT
     report_name = "session_identical.json" if identical else "session_baseline.json"
@@ -1359,6 +1464,8 @@ def run_campaign(args: argparse.Namespace) -> int:
         config["battery"] = args.battery
     if args.trim_profile is not None:
         config["trim_profile"] = args.trim_profile
+    if research_release is not None:
+        config["custom_engine_release"] = True
     failures: list[str] = []
     pairs: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
@@ -1371,10 +1478,18 @@ def run_campaign(args: argparse.Namespace) -> int:
         try:
             metadata["workspace"] = capture_workspace_identity(root)
             godot = resolve_executable(args.godot)
-            if research_engine is not None and (args.release_executable or not args.experimental_native_macos
+            if research_engine is not None and (not args.experimental_native_macos
                     or metadata["system"].get("system") != "Darwin"
                     or metadata["system"].get("machine", "").lower() not in ("arm64", "aarch64")):
-                raise ValueError("Local research engine measurements require an opted-in native Mac source session")
+                raise ValueError("Local research engine measurements require an opted-in native Mac session")
+            if research_engine is not None and args.release_executable:
+                if research_release is None or not args.compare_backends:
+                    raise ValueError("Research release measurement requires explicit release inputs and a reference/native pair")
+                candidate = Path(args.godot).expanduser()
+                if not candidate.is_absolute() or candidate.is_symlink() or candidate.absolute() != candidate.resolve():
+                    raise ValueError("Research release executable must be an explicit nonredirected path")
+            elif research_release is not None:
+                raise ValueError("Research release inputs require an explicitly selected research-engine release")
             if args.release_executable and MAC_RECEIPT.looks_like_bundle_executable(godot):
                 wants_native = args.physics_backend == "native" or args.compare_backends
                 if wants_native and not args.experimental_native_macos:
@@ -1397,11 +1512,20 @@ def run_campaign(args: argparse.Namespace) -> int:
                     raise RuntimeError(f"Mac release bundle identity refused: {error}") from error
             elif args.release_executable and args.experimental_native_macos:
                 raise RuntimeError("Experimental Mac native release requires a verified Mac app bundle")
-            metadata["engine"] = (inspect_godot(godot, args.timeout, research_engine) if research_engine is not None
-                                  else inspect_godot(godot, args.timeout))
-            source_engine_identity = (metadata["engine"].get("source_engine_identity")
-                                      if research_engine is not None else None)
-            if research_engine is not None and not isinstance(source_engine_identity, dict):
+            if research_engine is not None and args.release_executable:
+                verified = verify_research_release(godot, research_engine, research_release, args.timeout)
+                if (verified.get("reference") != metadata.get("mac_reference_bundle")
+                        or verified.get("native") != metadata.get("mac_native_bundle")):
+                    raise ValueError("Research release pair differs from the verified final bundle")
+                metadata["mac_research_release"] = verified
+                metadata["engine"] = verified["release_engine"]
+                source_engine_identity = None
+            else:
+                metadata["engine"] = (inspect_godot(godot, args.timeout, research_engine) if research_engine is not None
+                                      else inspect_godot(godot, args.timeout))
+                source_engine_identity = (metadata["engine"].get("source_engine_identity")
+                                          if research_engine is not None else None)
+            if research_engine is not None and not args.release_executable and not isinstance(source_engine_identity, dict):
                 raise ValueError("Missing independently verified research source-engine identity")
             metadata["native_source_sha256"] = native_source_digest(root)
             if not app_dir.is_dir() or not (app_dir / "project.godot").is_file():
@@ -1563,7 +1687,11 @@ def run_campaign(args: argparse.Namespace) -> int:
                 failures.append(f"{label} unavailable after the campaign: {error}")
         if research_engine is not None:
             try:
-                if inspect_godot(godot, args.timeout, research_engine) != metadata["engine"]:
+                if args.release_executable:
+                    valid_research = verify_research_release(godot, research_engine, research_release, args.timeout) == metadata.get("mac_research_release")
+                else:
+                    valid_research = inspect_godot(godot, args.timeout, research_engine) == metadata["engine"]
+                if not valid_research:
                     failures.append("local research engine provenance changed during the campaign")
             except (OSError, ValueError, TypeError, RuntimeError, subprocess.SubprocessError) as error:
                 failures.append(f"local research engine provenance unavailable after the campaign: {error}")
@@ -1652,10 +1780,26 @@ def run_campaign(args: argparse.Namespace) -> int:
             pass
 
 
-def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]]]:
+def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None,
+                   research_release_inputs: Path | None = None,
+                   expected_campaign_sha256: str | None = None) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]]]:
     """Re-read and verify retained raw reports; do not trust the campaign's summary alone."""
+    if research_release_inputs is not None or expected_campaign_sha256 is not None:
+        if (not isinstance(expected_campaign_sha256, str)
+                or re.fullmatch(r"[0-9a-f]{64}", expected_campaign_sha256) is None
+                or path.is_symlink() or not path.is_file() or not 0 < path.stat().st_size <= 64 * 1024 * 1024
+                or _sha256_file(path) != expected_campaign_sha256):
+            raise ValueError(f"{path}: independent campaign SHA-256 pin is missing or differs")
+    def unique(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError(f"{path}: duplicate campaign key {key}")
+            result[key] = value
+        return result
     with path.open(encoding="utf-8") as stream:
-        campaign = json.load(stream, parse_constant=_json_constant)
+        campaign = json.load(stream, parse_constant=_json_constant,
+                             object_pairs_hook=unique if research_release_inputs is not None else dict)
     if not isinstance(campaign, dict) or campaign.get("format") != BASELINE_FORMAT or campaign.get("complete") is not True:
         raise ValueError(f"{path}: campaign is not complete")
     config, metadata, pairs = campaign.get("configuration"), campaign.get("metadata"), campaign.get("pairs")
@@ -1678,7 +1822,21 @@ def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None) ->
         raise ValueError(f"{path}: explicit trim profile requires source-editor mode")
     engine_metadata = metadata.get("engine")
     local_record = engine_metadata.get("research_engine") if isinstance(engine_metadata, dict) else None
-    if local_record is not None or research_engine is not None:
+    custom_release = metadata.get("mac_research_release")
+    custom_requested = custom_release is not None or research_release_inputs is not None \
+        or config.get("custom_engine_release") is True or (release and research_engine is not None)
+    if custom_requested:
+        if (not release or not experimental or config.get("custom_engine_release") is not True
+                or research_engine is None or research_release_inputs is None or not isinstance(custom_release, dict)
+                or not isinstance(engine_metadata, dict) or not isinstance(engine_metadata.get("path"), str)
+                or not isinstance(expected_campaign_sha256, str)
+                or re.fullmatch(r"[0-9a-f]{64}", expected_campaign_sha256) is None
+                or path.is_symlink() or _sha256_file(path) != expected_campaign_sha256):
+            raise ValueError(f"{path}: research release requires explicit independent campaign and package pins")
+        fresh = verify_research_release(Path(engine_metadata["path"]), research_engine, research_release_inputs, 30)
+        if fresh != custom_release or fresh.get("release_engine") != engine_metadata:
+            raise ValueError(f"{path}: research release package or provenance differs from retained evidence")
+    elif local_record is not None or research_engine is not None:
         if (research_engine is None or release or not experimental or not isinstance(engine_metadata, dict)
                 or not isinstance(engine_metadata.get("path"), str)
                 or inspect_godot(Path(engine_metadata["path"]), 30, research_engine) != engine_metadata):
@@ -1705,6 +1863,8 @@ def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None) ->
             raise ValueError(f"{path}: invalid Mac release receipt or source/editor evidence: {error}")
         if verify_macos_release_identities(Path(engine["path"])) != (mac_reference, mac_native):
             raise ValueError(f"{path}: Mac release bundle differs from retained evidence")
+        if custom_requested and capture_mac_release_source(Path(__file__).resolve().parents[2]) != source["before"]:
+            raise ValueError(f"{path}: current source differs from the pinned research release")
     elif mac_native is not None:
         raise ValueError(f"{path}: native Mac release identity requires release mode and explicit opt-in")
     elif release and mac_reference is not None:
@@ -1788,7 +1948,8 @@ def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None) ->
             if ((trim_profile is None and ("trim_profile" in report or "trim_start" in report))
                     or (trim_profile is not None and report.get("trim_profile") != trim_profile)):
                 raise ValueError(f"{path}: raw report differs from the requested trim profile")
-            if mac_release and report.get("machine", {}).get("godot") != REQUIRED_GODOT_REPORT:
+            expected_display = research_engine["runtime_version"] if custom_requested else REQUIRED_GODOT_REPORT
+            if mac_release and report.get("machine", {}).get("godot") != expected_display:
                 raise ValueError(f"{path}: raw report does not identify the pinned release engine")
             if research_engine is None and report.get("machine", {}).get("godot") == ENGINE_POLICY.RESEARCH_RUNTIME:
                 raise ValueError(f"{path}: local research-engine reports require the independent pin")
@@ -1812,13 +1973,21 @@ def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None) ->
         raise ValueError(f"{path}: Mac release probe evidence changed while rereading")
     if mac_release and verify_macos_release_identities(Path(metadata["engine"]["path"])) != (mac_reference, mac_native):
         raise ValueError(f"{path}: Mac release bundle changed while rereading evidence")
-    if research_engine is not None and inspect_godot(Path(engine_metadata["path"]), 30, research_engine) != engine_metadata:
+    if custom_requested and (verify_research_release(Path(engine_metadata["path"]), research_engine,
+                                                     research_release_inputs, 30) != custom_release
+                             or capture_mac_release_source(Path(__file__).resolve().parents[2]) != source["before"]
+                             or _sha256_file(path) != expected_campaign_sha256):
+        raise ValueError(f"{path}: research release or pinned campaign changed while rereading evidence")
+    if research_engine is not None and not custom_requested \
+            and inspect_godot(Path(engine_metadata["path"]), 30, research_engine) != engine_metadata:
         raise ValueError(f"{path}: local research engine changed while rereading evidence")
     return campaign, runs
 
 
 def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path,
-                      research_engine: dict[str, Any] | None = None) -> int:
+                      research_engine: dict[str, Any] | None = None,
+                      research_release_inputs: Path | None = None,
+                      campaign_pins: Sequence[str] | None = None) -> int:
     """Compare matching inputs; distinct Mac release bundles have no independent reference identity."""
     output_dir = output_dir.expanduser().resolve()
     if output_dir.exists() and (not output_dir.is_dir() or any(output_dir.iterdir())):
@@ -1827,10 +1996,25 @@ def compare_campaigns(before_path: Path, after_path: Path, output_dir: Path,
     failures: list[str] = []
     rows: list[dict[str, Any]] = []
     try:
-        before_path, after_path = before_path.expanduser().resolve(), after_path.expanduser().resolve()
-        before, old_runs = (_campaign_runs(before_path, research_engine) if research_engine is not None
+        before_path, after_path = before_path.expanduser().absolute(), after_path.expanduser().absolute()
+        if research_release_inputs is not None:
+            for candidate in (before_path, after_path):
+                if (os.path.normcase(os.path.abspath(candidate)) != os.path.normcase(str(candidate.resolve(strict=True)))
+                        or any(part.is_symlink() for part in (candidate, *candidate.parents))):
+                    raise ValueError("Research campaign path is redirected")
+        else:
+            before_path, after_path = before_path.resolve(), after_path.resolve()
+        if research_release_inputs is not None:
+            if research_engine is None or campaign_pins is None or len(campaign_pins) != 2:
+                raise ValueError("Research release comparison requires editor, package and two campaign SHA-256 pins")
+            before, old_runs = _campaign_runs(before_path, research_engine, research_release_inputs, campaign_pins[0])
+            after, new_runs = _campaign_runs(after_path, research_engine, research_release_inputs, campaign_pins[1])
+        else:
+            if campaign_pins:
+                raise ValueError("Campaign SHA-256 pins require research release inputs")
+            before, old_runs = (_campaign_runs(before_path, research_engine) if research_engine is not None
                             else _campaign_runs(before_path))
-        after, new_runs = (_campaign_runs(after_path, research_engine) if research_engine is not None
+            after, new_runs = (_campaign_runs(after_path, research_engine) if research_engine is not None
                            else _campaign_runs(after_path))
         old_meta, new_meta = before["metadata"], after["metadata"]
         old_mac, new_mac = old_meta.get("mac_native_bundle"), new_meta.get("mac_native_bundle")
@@ -1911,8 +2095,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 raise ValueError("--release-executable applies to a new campaign, not a campaign comparison")
             if args.project is not None or args.experimental_native_macos or args.battery is not None or args.trim_profile is not None:
                 raise ValueError("--project, --experimental-native-macos, --battery and --trim-profile apply to a new campaign")
+            if args.research_release_inputs is not None:
+                if research_engine is None or len(args.research_campaign_sha256) != 2 \
+                        or any(re.fullmatch(r"[0-9a-f]{64}", value) is None for value in args.research_campaign_sha256):
+                    raise ValueError("Research release comparison requires editor, package and two campaign SHA-256 pins")
+                return compare_campaigns(*args.compare_campaigns, args.out, research_engine,
+                                         args.research_release_inputs, args.research_campaign_sha256)
+            if args.research_campaign_sha256:
+                raise ValueError("Campaign SHA-256 pins require research release inputs")
             return (compare_campaigns(*args.compare_campaigns, args.out, research_engine)
                     if research_engine is not None else compare_campaigns(*args.compare_campaigns, args.out))
+        if args.research_campaign_sha256:
+            raise ValueError("Campaign SHA-256 pins apply only to campaign comparison")
+        if args.research_release_inputs is not None and (not args.release_executable
+                                                          or ENGINE_POLICY.selection_from_args(args) is None):
+            raise ValueError("Research release inputs require an explicitly selected research-engine release")
         if not args.godot:
             raise ValueError("--godot is required for a campaign")
         if args.release_executable and args.trim_profile is not None:
