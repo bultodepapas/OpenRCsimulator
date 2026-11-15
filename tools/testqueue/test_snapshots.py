@@ -195,6 +195,8 @@ class SnapshotTests(unittest.TestCase):
 
     def test_rejects_links_and_destinations_inside_checkout(self) -> None:
         with self.assertRaisesRegex(ValueError, "outside"):
+            snapshots.capture(self.repo, self.repo, scope=("app",))
+        with self.assertRaisesRegex(ValueError, "outside"):
             snapshots.capture(self.repo, self.repo / "snapshot", scope=("app",))
         external = self.base / "external"
         external.write_text("outside", encoding="utf-8")
@@ -204,6 +206,36 @@ class SnapshotTests(unittest.TestCase):
             self.skipTest(f"symlink creation not available: {exc}")
         with self.assertRaisesRegex(ValueError, "linked|reparse"):
             self.capture()
+
+    def test_rejects_a_subdirectory_as_the_worktree_root(self) -> None:
+        with self.assertRaisesRegex(ValueError, "Git worktree root"):
+            snapshots.capture(self.repo / "app", self.base / "nested-source", scope=("tools",))
+
+    @unittest.skipUnless(os.name == "nt", "Windows short-name aliases")
+    def test_windows_short_worktree_name_preserves_root_and_containment_checks(self) -> None:
+        import ctypes
+        from ctypes import wintypes
+
+        get_short = ctypes.WinDLL("kernel32", use_last_error=True).GetShortPathNameW
+        get_short.argtypes = (wintypes.LPCWSTR, wintypes.LPWSTR, wintypes.DWORD)
+        get_short.restype = wintypes.DWORD
+        buffer = ctypes.create_unicode_buffer(32768)
+        if not get_short(str(self.repo), buffer, len(buffer)):
+            self.fail(f"GetShortPathNameW failed: {ctypes.get_last_error()}")
+        short = Path(buffer.value)
+        if os.path.normcase(str(short)) == os.path.normcase(str(self.repo)):
+            self.skipTest("the fixture volume does not provide a distinct short-name alias")
+        self.assertTrue(os.path.samefile(short, self.repo))
+        receipt = snapshots.capture(short, self.base / "short-snapshot", scope=("app", "tools"))
+        self.assertTrue(snapshots.verify(self.base / "short-snapshot")["ok"])
+        self.assertEqual(receipt["commit"], self.git("rev-parse", "HEAD").decode().strip())
+        with self.assertRaisesRegex(ValueError, "Git worktree root"):
+            snapshots.capture(short / "app", self.base / "short-child", scope=("tools",))
+        for source, destination in ((short, self.repo), (short, self.repo / "inside-long"),
+                                    (self.repo, short / "inside-short")):
+            with self.subTest(source=str(source), destination=str(destination)):
+                with self.assertRaisesRegex(ValueError, "outside"):
+                    snapshots.capture(source, destination, scope=("app",))
 
     def test_rejects_missing_cache_invalid_scope_and_low_disk(self) -> None:
         with self.assertRaisesRegex(ValueError, "cache"):
