@@ -41,6 +41,8 @@ damage and custom paint kits. Home lists stock skins from the registry.
    Colour-only edits do not justify broad physics suites or new tests that repeat
    the implementation. Read engine errors/warnings and completion markers as well
    as assertion counts. Keep captures in ignored evidence, not tracked image folders.
+   Inspect imported masks through `Texture2D.get_image()` and decompress its CPU
+   copy if needed; raw `Image.load_from_file(res://...)` emits export warnings.
 
 ## UV and raster rules
 
@@ -115,6 +117,9 @@ assertion. Retain logs and restore owned temporary storage changes before handof
 Reuse suitable ambientCG CC0 maps, bundled OFL fonts and public-domain artwork.
 Record exact source URLs, licences, hashes and transformations in the existing
 SOURCE/LICENSE files. Keep downloaded originals separate from generated textures.
+Preserve checksummed originals with local Git `-text` attributes when line-ending
+conversion would alter them; verify their hashes and generator checks from a fresh
+Git archive as well as the working tree.
 Trademarked sponsor artwork requires the owner's confirmation of permission; keep
 its original bytes and provenance. Do not turn a paint task into a geometry,
 lighting, simulation or host-configuration change.

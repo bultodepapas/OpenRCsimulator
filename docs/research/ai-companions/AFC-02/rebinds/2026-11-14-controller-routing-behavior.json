@@ -1,0 +1,578 @@
+{
+  "format": "openrc-afc-02-behavior-requalification v1",
+  "date": "2026-11-14",
+  "created_utc": "2026-11-14T20:27:49.733994+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit arm64",
+  "engine": {
+    "path": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80"
+  },
+  "frozen_behavior_source_commit": "c66df1efc847f9e8c38f78cc975cc6b0743c07e0",
+  "integration_head": "0641439c45b96437e184cfb66b26cf9c98e988dd",
+  "previous_behavior_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-13-main-macos-route-behavior.json",
+  "solver_rebind_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-14-880c90f7-to-a81c2b2d.json",
+  "scope": "Bounded software renewal of the existing Stik/Club airborne circuit profile; no activity, aircraft, weather or roster scope expansion.",
+  "review": {
+    "changed_sources": {
+      "res://app_root.gd": {
+        "before": "eafe1598fb98ee4623ccf70abf6b41ac638005c3cac354295d29a74acf64433e",
+        "after": "b48c9d2eef76ad873206a7a24c41f05304387c4c1cb780281b524841c8ab283c",
+        "raw_sha256": "b48c9d2eef76ad873206a7a24c41f05304387c4c1cb780281b524841c8ab283c"
+      }
+    },
+    "unchanged_manifest_sources": 15,
+    "all_source_normalized_sha256": {
+      "res://ai/companions/agent.gd": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+      "res://ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+      "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+      "res://ai/companions/config.gd": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+      "res://ai/companions/manager.gd": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+      "res://ai/companions/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+      "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+      "res://ai/companions/profile_loader.gd": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+      "res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+      "res://ai/companions/static_trajectory.gd": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+      "res://app_root.gd": "b48c9d2eef76ad873206a7a24c41f05304387c4c1cb780281b524841c8ab283c",
+      "res://data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+      "res://main.gd": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09",
+      "res://scenery/collision_world.gd": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+      "res://workshop/strict_json.gd": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+    },
+    "manifest_before": "0e3daf99ac0bdd76f799986cfd6c73ebad87324808fa34f92a674ce55425955d",
+    "manifest_candidate": "c9c76432ae23a7ac7eefafa4bcef1177ff6e304939bd3b4c0c56bee38792cbb5",
+    "profile_candidate_raw_sha256": "5c417484e886b3b8b1b7a3b6dc24c5fd4c571851a6d8ccad14142db621450df3"
+  },
+  "analysis": "The full accepted-to-candidate AppRoot diff covers earlier RC-car paint selection plus controller event caching, managed airship ownership, connection-bound saves, calibration mode and retained-measurement handoff. The other fifteen declared behavior sources, pilot/base, aircraft and field data are unchanged. Nine retained tapes have byte-identical baseline and candidate CSVs. Strict Home-to-Fly checks remove only the solver-test override and preserve every assertion.",
+  "home_shell_test": {
+    "source_normalized_sha256": "9636d59bf58d8ec227d53fe038bbeb0cd8b5997732ea7f9cf69ce77b7c0d82fb",
+    "derived_normalized_sha256": "7c4ef043e4a8e7fdd4fd52466564e202138c5d4f382f455091f68c285ef88118",
+    "derivation": "Remove exactly one solver-test override from a disposable copy; preserve all assertions."
+  },
+  "checks": [
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e9430d1e-134f-403d-8532-c885f54899cd",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_behavior_manifest.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:22:40.977968+00:00",
+        "label": "behavior-stale-refusal",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-stale-refusal-altqczn1/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-stale-refusal-altqczn1/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.694972,
+        "log_bytes": 118,
+        "log_sha256": "357c10bff96edf8389196dae66c4d367bb9e870d0f09ef06431285df35324fdd"
+      },
+      "report_sha256": "e65b3692727b65c372f0cab07370f02712c1f5a8a9df64ea450fbb19b8544dd4",
+      "completion": [
+        "companion behavior manifest: 8 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "8717397d-4df6-46b1-bc68-84ac33d0f363",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_behavior_manifest.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:22:44.749487+00:00",
+        "label": "behavior-behavior_manifest",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-behavior_manifest-gcjtom5c/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-behavior_manifest-gcjtom5c/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.881523,
+        "log_bytes": 365,
+        "log_sha256": "a4ccbd00bd663cfd725d6f4e7f31a91df8ef32fd13e98ef36802d2422c93aa59"
+      },
+      "report_sha256": "49f76f36aee19a61ff4bfbe9547cbe628fa4ded33d281689ab15321318934c37",
+      "completion": [
+        "companion behavior manifest: 39 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2a88944f-f5e8-4058-8b08-2955a1690dbb",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_profiles.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:22:48.631800+00:00",
+        "label": "behavior-profiles",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-profiles-nfcqx2vz/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-profiles-nfcqx2vz/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.407509,
+        "log_bytes": 3002,
+        "log_sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d"
+      },
+      "report_sha256": "b13c3e7abd031232662077c62a1289ed656d10c21a59fa995c3d811714b0c80d",
+      "completion": [
+        "AFC-02 companion profile validation: 52 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "88b90d39-5a7e-4515-aaab-2b7df6caacb0",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_manager.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:22:53.040180+00:00",
+        "label": "behavior-manager",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-manager-_kcqsngt/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-manager-_kcqsngt/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 14.707102,
+        "log_bytes": 1412,
+        "log_sha256": "002c34354f058a5e6393a3e6c9c5f6d2c9f4074c16c3c532b2ed78a3d265549d"
+      },
+      "report_sha256": "9c58c2c7bb2e1f08371e09036d27e213804801ccfbccacfb49f608dec1fce915",
+      "completion": [
+        "companions manager: 53 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6190812b-4da6-4849-bc78-4b72034e89f3",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_airspace.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:23:07.747729+00:00",
+        "label": "behavior-airspace",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-airspace-ua_ojqfp/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-airspace-ua_ojqfp/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.046567,
+        "log_bytes": 5032,
+        "log_sha256": "a2d01fdb51278384ebc61a410245ae0817a80a50d9607ee51eaad0c60c0305a4"
+      },
+      "report_sha256": "dab593b207178c1efd2541416d9bb9c594b3e4f6c3d5bac4ff9ce9e8dc15f303",
+      "completion": [
+        "AFC-02 static airspace validation: 48 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6495a799-18d3-4d25-b2b2-c4597243b554",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_lifecycle.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:29:40.924937+00:00",
+        "label": "behavior-lifecycle",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-lifecycle-eucirzrq/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-lifecycle-eucirzrq/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 35.110364,
+        "log_bytes": 10945,
+        "log_sha256": "e64349dbc1be2a5bfafcc4d5ffb3f5eaa0a49b51faf6c6f97b05d143637c875f"
+      },
+      "report_sha256": "a98c79d0282c24414bb253fee7387d9f97486743ab05e499d9fc277ba765296a",
+      "completion": [
+        "companions lifecycle: 653 checks, 0 failed; 50 headless cycles, 10 visual/audio cycles"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a224282a-01ab-4452-abb6-0ae78a78b0ec",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_observation.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:30:16.035983+00:00",
+        "label": "behavior-observation",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-observation-spnxd_rl/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-observation-spnxd_rl/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "FAILED 0"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 9.027952,
+        "log_bytes": 2520,
+        "log_sha256": "9caa104e527270a748988dc5cb6f574f3b88f276eb215ba633462203e8e2ac25"
+      },
+      "report_sha256": "ef80caab3876c9107e7d54e60efb75d51a978b2155558fcdb8232c4840c8bb5c",
+      "completion": [
+        "AFC COMPANION OBSERVATION CHECKS 21 FAILED 0",
+        "AFC COMPANION OBSERVATION TEST COMPLETE"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "db433c48-7402-4eab-a3cb-fe748d91101b",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_seeds_timing.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:30:25.061693+00:00",
+        "label": "behavior-seeds_timing",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-seeds_timing-74g1fpju/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-seeds_timing-74g1fpju/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.518095,
+        "log_bytes": 3467,
+        "log_sha256": "f11881d11e05500287c18fad843ebb8a8ff0acac64910ada9ff5f0c994de272f"
+      },
+      "report_sha256": "44f299fd77eb4c1c01e6bcf6d2181199ae3dd0447be6418d84e01460fe1d2ca4",
+      "completion": [
+        "companions seeds and timing: 83 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "77460a10-384d-4f8d-a5b5-7b2b2acc890b",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_presentation.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T19:30:30.579838+00:00",
+        "label": "behavior-presentation",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-presentation-0evepwzj/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-presentation-0evepwzj/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.52362,
+        "log_bytes": 300,
+        "log_sha256": "88cc369257146cd9ca9ef4a819218d8d1b10f8b07c5aab21c68a37f0ee2ff4f0"
+      },
+      "report_sha256": "fe674de80139aa10d88403a15abfe41ecd14be5e5cff055aac10c093fca2a7b5",
+      "completion": [
+        "companion presentation: 13 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2091b9d8-743d-4389-9e56-6d38be4a71e1",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_draft_refresh.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T20:24:31.896249+00:00",
+        "label": "behavior-draft_refresh",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-draft_refresh-cuo5fys7/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-draft_refresh-cuo5fys7/report.json",
+        "timeout_seconds": 240,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 15.201919,
+        "log_bytes": 12187,
+        "log_sha256": "2c1176e8e56e36b0ba72907e9ea0f53b7723eb2b2fc5527cd74900d38c02f1d7"
+      },
+      "report_sha256": "45a21862f19ef65c3acf55e253d86160b5d508facb907b09535a592280b927f0",
+      "completion": [
+        "companions draft refresh: 60 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4e07d03c-61bd-4c1c-ae65-dfcef2c9c41f",
+        "command": [
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/behavior-evidence/companions_shell_strict.gd"
+        ],
+        "cwd": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d",
+        "started_utc": "2026-11-14T20:24:47.100521+00:00",
+        "label": "behavior-shell-strict",
+        "log": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-shell-strict-e5tib_4i/engine.log",
+        "report": "/Users/gius/OpenRC-m1-work/controller-audit-20261114-f546b94d/checks/behavior-shell-strict-e5tib_4i/report.json",
+        "timeout_seconds": 600,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 18.734956,
+        "log_bytes": 6311,
+        "log_sha256": "b00e75daca126a2c2e764786133a5a13017371551268c7864cbddfb5e11d6a74"
+      },
+      "report_sha256": "5088c8d1c0d4cd4be0bed3e9343af3bad7d7441b3de7d744d427def973632d16",
+      "completion": [
+        "Companions shell: 0 failed"
+      ],
+      "failures": []
+    }
+  ],
+  "fixture": "Production scripts and required resources copied unchanged to an isolated source fixture. Project name is unique, unused startup/editor plugins and native extensions are omitted, and resources are imported with the exact native pinned engine. Real commit/tree/solver objects preserve the accepted solver revision; unused history/blobs are omitted.",
+  "limitations": [
+    "Headless GDScript-reference software checks; no rendered 1080p or performance qualification.",
+    "No physical controller, USB/Bluetooth, flight realism or general encounter-safety qualification."
+  ]
+}

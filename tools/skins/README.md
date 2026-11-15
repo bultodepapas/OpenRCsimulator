@@ -179,6 +179,11 @@ atlas width by their ratio (about 0.719) relative to height. Keep a whole emblem
 clear of the relieved fin/rudder hinge near x=318; sharing a texture does not make
 the two moving surfaces one decal surface.
 
+Wing U/V densities are 1024/1.524 and 224/0.3048 units per metre; the fuselage
+uses 1008/1.082294 and 240/0.3. Compensate these ratios too. Check the tapered
+flat-side outline before placing flank labels: an upright atlas label can still
+wrap under the belly. Keep wing access plates clear of the aileron hinge near y=215.
+
 Bind the main artwork to `classic-covering-v4`, the matching dark gap atlas to
 `classic-covering-gap-v1`, and recolour the solid ventral fin `skin:b00e28ff`.
 Preserve the gap's dark, nonmetallic finish. `same_as` shares the electric
@@ -234,7 +239,7 @@ At Low, metal/paint boundaries remain while normal and roughness detail are omit
 the recorded roughness mean keeps the overall sheen. Returning to factory or
 NEON RONIN restores its own material finish.
 
-The stock wing and fin UV sharing still applies. Fin insignia are symmetric;
+The stock wing and fin UV sharing still applies. Wing and fin insignia are symmetric;
 readable serials are on the two unwrapped fuselage flanks. Stabiliser tops and
 some end caps sample a constant metal patch, so they cannot show separate rivet
 detail. Dorsal/hatch/underside overlaps are retained. Validate with
@@ -359,6 +364,26 @@ reported no error-level engine records; loading/catch-up hitches were present.
 The checked `test_vehicle_paint.gd` run passed 1,621 assertions with zero engine
 errors or warnings. The generator's three maps passed byte-exact `--check`.
 These are visual checks, not a sustained performance qualification.
+
+US-V20–US-V22, 2026-11-14: SILVER ACE, BLACKBIRD and HONEYBEE were reviewed on
+the basic Stik in native Home and flight at 1920 × 1080, Windows, Godot 4.8-beta2,
+GL Compatibility and an RTX 3090. Both flanks, top, underside and Low detail were
+inspected. SILVER ACE's final roundels retain their proportions and clear the
+hinges; shared wing faces carry no lettering. HONEYBEE's complete bee emblem
+stays on the fixed fin; source hardware partly obscures its first-flank label.
+The final owned session passed with no crash or leaked objects. Loading and
+catch-up hitches and the existing inertia information remain in the logs.
+
+Checked tests passed 1,880 vehicle-paint, 181 stock-livery, 285 picker and 47
+custom-skin assertions: 2,393 total, with zero engine errors or warnings.
+Paint checks cover all five Stik IDs, repainting and Low. Mask assertions read
+imported textures, including CPU decompression when required. All three generators
+passed `--check`; the seven downloaded originals also retained their recorded
+hashes through a fresh Git archive. Captures stay outside Git in
+`D:/OpenRCsimulator-evidence/{silver-ace,blackbird,honeybee}-20261114/`; checked
+reports and source identities are under `honeybee-20261114/checks/` there.
+This evidence qualifies the reviewed appearance and targeted software behavior,
+not sustained performance, physical validation or an exported application.
 
 The original X8-only integration was checked on Windows on 2026-10-28 with Godot
 4.8-beta1 and Blender 5.2.2. It passed 36 importer, 114 dialog, 285 picker, 179

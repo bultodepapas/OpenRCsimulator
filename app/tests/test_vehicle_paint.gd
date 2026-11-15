@@ -154,7 +154,8 @@ func _check_stik_metal() -> void:
 		check("Low neon still retains the stock film normals", _materials_named(plain.root, "classic-covering-v4")[0].normal_texture == stock_normal)
 	plain.root.free()
 	SceneDetail.set_preference(previous)
-	var mask := Image.load_from_file("res://assets/vehicle-paints/ugly-stik/silver_ace_metallic.png")
+	var mask := (load("res://assets/vehicle-paints/ugly-stik/silver_ace_metallic.png") as Texture2D).get_image()
+	if mask.is_compressed(): mask.decompress()
 	check("painted bands are dielectric while unpainted panels are metallic", mask.get_pixel(40, 40).r > 0.99
 		and mask.get_pixel(250, 150).r < 0.01)
 
@@ -185,7 +186,8 @@ func _check_stik_blackbird() -> void:
 		VehiclePaint.apply(built.root, id, "blackbird")
 		check(id + " removes neon emission when repainted BLACKBIRD", not _materials_named(built.root, "classic-covering-v4")[0].emission_enabled)
 		built.root.free()
-	var mask := Image.load_from_file("res://assets/vehicle-paints/ugly-stik/blackbird_metallic.png")
+	var mask := (load("res://assets/vehicle-paints/ugly-stik/blackbird_metallic.png") as Texture2D).get_image()
+	if mask.is_compressed(): mask.decompress()
 	check("BLACKBIRD coating is dielectric over the panels", mask.get_pixel(40, 40).r < 0.01
 		and mask.get_pixel(600, 100).r < 0.01)
 	var previous := SceneDetail._preference

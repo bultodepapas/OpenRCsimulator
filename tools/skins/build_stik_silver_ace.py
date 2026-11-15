@@ -161,7 +161,8 @@ class MetalAtlas:
         self.relief_line(p, -0.55)
         for x, y in [(x0 + 6, y0 + 6), (x1 - 6, y0 + 6), (x0 + 6, y1 - 6), (x1 - 6, y1 - 6)]:
             self.rivet(x, y, True)
-        self.text(label, (x0 + 10, y1 - 13, x1 - 10, y1 - 7), stencil=False)
+        if label:
+            self.text(label, (x0 + 10, y1 - 13, x1 - 10, y1 - 7), stencil=False)
 
     def weather(self):
         # Localised scuffs, wipe marks and grey oxide, not orange rust on aluminium.
@@ -203,23 +204,26 @@ def build():
         a.paint((x, 26, x + 27, 243), "#3a3f3f", 0.88)
         for y in range(35, 238, 9):
             a.line([(x + 3, y), (x + 24, y + 4)], "#5b6061", 0.55, 0.91, 0.0)
-    a.insignia((253, 84, 425, 175))
-    a.text("USAF", (604, 85, 825, 159))
+    a.insignia((261, 84, 418, 175))
+    # Upper/lower wing faces share mirrored UVs. Symmetric roundels and access
+    # plates remain coherent on both; readable serials belong on the flanks.
+    a.insignia((606, 84, 763, 175))
     for x in (174, 590):
-        a.text("NO STEP", (x, 213, x + 72, 220), RED, stencil=False)
-        a.access((x + 73, 190, x + 137, 231), "INSPECT")
-    a.text("FUEL  /  SERVICE", (260, 34, 402, 41), stencil=False)
-    a.text("FU-604", (642, 34, 790, 46))
+        a.line([(x, 216), (x + 72, 216)], RED, 1.2, 0.62, 0.0)
+        a.access((x + 73, 177, x + 137, 210), "")
     a.grid([4, 94, 195, 300, 425, 550, 690, 830, 1020], [278, 324, 385, 415, 476, 522], 3)
     a.stripe(610, 668, 278, 522)
     for rotate in (False, True):
-        top = 322 if not rotate else 424
-        a.text("U.S. AIR FORCE", (111, top, 399, top + 13), rotate=rotate)
-        a.text("FU-604", (113, top + 23, 405, top + 54), rotate=rotate)
-        a.insignia((442, top + 3, 553, top + 62), rotate)
-        a.text("52-0604   /   SILVER ACE", (45, top + 63, 340, top + 69), rotate=rotate, stencil=False)
-        a.access((716, top + 48, 812, top + 81), "BATTERY")
-        a.polygon([(70, top + 6), (80, top + 16), (60, top + 16)], RED)
+        def flank(box):
+            x0, y0, x1, y1 = box
+            return (x0, 800 - y1, x1, 800 - y0) if rotate else box
+        a.text("U.S. AIR FORCE", flank((111, 303, 399, 314)), rotate=rotate)
+        a.text("FU-604", flank((113, 317, 405, 339)), rotate=rotate)
+        a.insignia(flank((454, 313, 542, 353)), rotate)
+        a.text("52-0604 / SILVER ACE", flank((111, 342, 405, 352)), rotate=rotate, stencil=False)
+        a.access(flank((716, 335, 812, 368)), "")
+        a.polygon([(70, 486 if rotate else 314), (80, 476 if rotate else 324),
+                   (60, 476 if rotate else 324)], RED)
     # Dorsal, underside and hatch overlap in this stock atlas. Keep their palette
     # coherent: these service marks also wrap onto the fuselage top.
     a.grid([540, 620, 742, 882, 1018], [540, 640, 752, 876, 1014], 2)
@@ -227,21 +231,25 @@ def build():
     a.paint((16, 528, 496, 616), YELLOW, 0.49)
     a.paint((16, 616, 496, 624), INK, 0.59)
     # Mirror-symmetric national insignia avoids a backwards tail serial.
-    a.insignia((208, 737, 442, 861))
-    a.access((100, 871, 239, 953), "RUDDER SERVICE")
+    # Entire emblem on the fixed fin; aspect compensates unequal U/V density.
+    a.insignia((168, 738, 294, 831))
+    a.access((95, 845, 170, 900), "")
     layout = json.loads((ROOT / "assets/aircraft/ugly-stik-60/appearance.json").read_text())
     under = layout["stab_unwrap"]
     xs, ys = under["x_px"], under["y_px"]
+    a.height[round((ys[0] - 2) * S):round((ys[1] + 2) * S) + 1,
+             round((xs[0] - 2) * S):round((xs[1] + 2) * S) + 1] = 0
     a.grid([xs[0] - 2, 650, 768, 886, xs[1] + 2], [ys[0] - 2, 585, ys[1] + 2], 1)
     a.stripe(572, 601, ys[0], ys[1])
     a.stripe(935, 964, ys[0], ys[1])
-    a.text("NO STEP", (692, 550, 840, 561), RED, stencil=False)
+    a.line([(692, 555), (840, 555)], RED, 1.2, 0.62, 0.0)
     h = layout["hatch"]
     x0, x1 = h["x_px"]
     y0, y1 = h["y_px"]
+    a.height[round((y0 - 2) * S):round((y1 + 2) * S) + 1,
+             round((x0 - 2) * S):round((x1 + 2) * S) + 1] = 0
     a.paint((x0 - 2, y0 - 2, x1 + 2, y1 + 2), "#303a35", 0.83)
-    a.access((x0 + 5, y0 + 5, x1 - 5, y1 - 5), "DANGER")
-    a.text("604", (932, 877, 996, 916), "#d8d5bc")
+    a.access((x0 + 5, y0 + 5, x1 - 5, y1 - 5), "")
     a.polygon([(953, 726), (981, 777), (925, 777)], YELLOW, 0.58)
     a.text("!", (948, 743, 959, 767), INK)
     a.weather()

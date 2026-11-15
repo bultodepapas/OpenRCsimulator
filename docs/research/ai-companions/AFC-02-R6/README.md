@@ -1,5 +1,11 @@
 # AFC-02-R6: seeds, behavior identity and flight status
 
+The 2026-11-14 controller/session source renewal retains the same narrow scope:
+[nine identical replay tapes](../AFC-02/rebinds/2026-11-14-880c90f7-to-a81c2b2d.json)
+and [checked behavior/admission evidence](../AFC-02/rebinds/2026-11-14-controller-routing-behavior.json),
+including normal Home-to-Fly admission without the solver-test override. These are
+headless software checks, not physical or target-hardware performance qualification.
+
 The 2026-11-11 source renewal preserves this narrow profile: the
 [nine-tape solver rebind](../AFC-02/rebinds/2026-11-11-e9ea5138-to-5510ec6a.json)
 and [bounded behavior/admission checks](../AFC-02/rebinds/2026-11-11-0ab4d1e3-to-60b34346-behavior.json)
