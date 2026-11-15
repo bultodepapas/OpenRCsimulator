@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Reconstruction := preload("res://render/reconstruction.gd")
+const CameraRig := preload("res://render/camera/camera_rig.gd")
 
 class Backend extends RefCounted:
 	var requests: Array[RID] = []
@@ -13,6 +14,8 @@ class MetalBackend extends RefCounted:
 	var requests: Array[RID] = []
 	var status_reads := 0
 	var post_status_patch := {}
+	func get_temporal_history_reset_providers() -> PackedStringArray:
+		return PackedStringArray(["metalfx_temporal"])
 	func viewport_get_metalfx_status(_viewport: RID) -> Dictionary:
 		status_reads += 1
 		return status.duplicate(true)
@@ -24,10 +27,25 @@ class MetalBackend extends RefCounted:
 		status.merge(post_status_patch, true)
 		return response
 
+
+class ObservedRig extends CameraRig:
+	var backend: MetalBackend
+	var observations: Array = []
+	func _submit_history_reset(viewport: Viewport, reason: String) -> void:
+		var diagnostic := {}
+		var result := Reconstruction._request_metalfx_reset(viewport, backend, int(viewport.scaling_3d_mode), 7,
+			diagnostic, true)
+		observations.append({"reason": reason, "pose": camera.global_transform, "result": result,
+			"diagnostic": diagnostic})
+
 var _checks := 0
 var _failures := 0
 
 func _initialize() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
 	var backend := Backend.new()
 	var first := SubViewport.new()
 	var second := SubViewport.new()
@@ -61,6 +79,8 @@ func _initialize() -> void:
 	_check("description does not expose mutable viewport bookkeeping", first.get_meta(Reconstruction.HISTORY_RESET_META).notifications > 0)
 	_test_metalfx_reset()
 	_test_metalfx_refusal_diagnostics()
+	_test_empty_generation()
+	_test_camera_pose_boundary()
 	first.free()
 	second.free()
 	print("reconstruction history: %d checks, %d failed" % [_checks, _failures])
@@ -228,6 +248,145 @@ func _test_metalfx_refusal_diagnostics() -> void:
 	var invalid := Reconstruction._metalfx_diagnostic_fields({"generation": [1], "provider": {}, "other": 5},
 		Reconstruction.METALFX_RESET_STATUS_FIELDS)
 	_check("diagnostics omit extra fields and bound invalid values", invalid == {"generation": "invalid_type", "provider": "invalid_type"})
+	view.free()
+
+
+func _test_empty_generation() -> void:
+	var view := SubViewport.new()
+	root.add_child(view)
+	var mode := int(view.scaling_3d_mode)
+	var backend := MetalBackend.new()
+	var cold := {"generation": 8, "requested_mode": mode, "configured_mode": -1,
+		"render_buffers_available": false, "provider": "none", "allocation": "not_attempted",
+		"submission": "not_attempted", "reset_gpu_completion": "unobserved", "temporal_attempts": 0,
+		"reset_requested_serial": 0, "reset_submitted_serial": 0, "reset_encoded_serial": 0}
+	backend.status = cold.duplicate(true)
+	var failure := {}
+	_check("cold history without a post-pose boundary stays unavailable",
+		Reconstruction._request_metalfx_reset(view, backend, mode, 7, failure).is_empty()
+		and failure.reason == "before_status_not_ready" and backend.requests.is_empty())
+	var expected := Reconstruction._request_metalfx_reset(view, backend, mode, 7, {}, true)
+	_check("post-pose empty generation expects only its initial reset",
+		expected.get("state") == "initial_history" and expected.get("generation") == 8
+		and not expected.has("serial") and backend.requests.is_empty())
+	failure = {}
+	_check("unknown original generation cannot establish initial history",
+		Reconstruction._request_metalfx_reset(view, backend, mode, -1, failure, true).is_empty()
+		and failure.reason == "before_status_not_ready")
+	for invalid: Array in [["generation", 6], ["generation", 8.0], ["requested_mode", mode + 1],
+			["requested_mode", float(mode)], ["configured_mode", mode], ["configured_mode", -1.0],
+			["render_buffers_available", true], ["render_buffers_available", 0], ["provider", "temporal"],
+			["provider", &"none"], ["allocation", "created"], ["allocation", &"not_attempted"],
+			["submission", "enqueued"], ["submission", &"not_attempted"],
+			["reset_gpu_completion", "completed"], ["reset_gpu_completion", &"unobserved"],
+			["temporal_attempts", 1], ["temporal_attempts", 0.0], ["reset_requested_serial", 1],
+			["reset_submitted_serial", 1], ["reset_encoded_serial", 1]]:
+		backend.status = cold.duplicate(true)
+		backend.status[invalid[0]] = invalid[1]
+		failure = {}
+		_check("unproven initial history stays unavailable: " + str(invalid),
+			Reconstruction._request_metalfx_reset(view, backend, mode, 7, failure, true).is_empty()
+			and failure.reason == "before_status_not_ready" and backend.requests.is_empty())
+	backend.status = {"generation": 8, "requested_mode": mode, "configured_mode": mode,
+		"render_buffers_available": true, "provider": "temporal", "allocation": "created", "submission": "enqueued",
+		"reset_requested_serial": 0, "reset_submitted_serial": 0, "reset_encoded_serial": 0,
+		"reset_gpu_completion": "unobserved", "temporal_attempts": 1}
+	backend.response = {"accepted": false, "generation": 8, "serial": 0, "reset_request_attempt": 1}
+	failure = {}
+	_check("ready history cannot use initial reset after explicit refusal",
+		Reconstruction._request_metalfx_reset(view, backend, mode, 7, failure, true).is_empty()
+		and failure.reason == "reset_rejected" and backend.requests.size() == 1)
+	backend.requests.clear()
+	# Only assign the real custom enum on a rendered Forward+ Metal host. The
+	# backend remains injected, so this is not evidence of native GPU execution.
+	var native_mode: Variant = Reconstruction._integer_constant_or_null("Viewport", "SCALING_3D_MODE_METALFX_TEMPORAL")
+	if typeof(native_mode) == TYPE_INT and DisplayServer.get_name() != "headless" \
+			and RenderingServer.get_current_rendering_method() == "forward_plus" \
+			and RenderingServer.get_current_rendering_driver_name() == "metal":
+		mode = int(native_mode)
+		view.scaling_3d_mode = mode
+		view.set_meta(Reconstruction.POLICY_META, {"provider": "metalfx_temporal", "scaling_3d_mode": mode})
+		view.set_meta(Reconstruction.METALFX_STATUS_META, {"provider": "metalfx_temporal", "mode": mode,
+			"generation": 7, "rid": view.get_viewport_rid()})
+		backend.status = cold.duplicate(true)
+		backend.status.requested_mode = mode
+		_check("initial history never returns a submitted request",
+			not Reconstruction.request_history_reset(view, "camera_flight_reset", backend, true))
+		var receipt: Dictionary = view.get_meta(Reconstruction.HISTORY_RESET_META, {})
+		_check("initial history receipt claims neither an API submission nor encode nor GPU completion",
+			receipt.get("reset_state") == "initial_history" and receipt.get("submitted") == 0
+			and receipt.get("pending") == false and receipt.get("encoded") == false
+			and receipt.get("gpu_completion") == "unobserved" and backend.requests.is_empty())
+		Reconstruction._expire_metalfx_reset_receipt(view, {"generation": 9})
+		_check("resize or replacement expires the old initial-history receipt",
+			(view.get_meta(Reconstruction.HISTORY_RESET_META, {}) as Dictionary).get("reset_state") == "superseded")
+	view.free()
+
+
+func _test_camera_pose_boundary() -> void:
+	var view := SubViewport.new()
+	view.size = Vector2i(1920, 1080)
+	root.add_child(view)
+	var camera := Camera3D.new()
+	view.add_child(camera)
+	var rig := ObservedRig.new(camera, 1.5)
+	var backend := MetalBackend.new()
+	rig.backend = backend
+	var mode := int(view.scaling_3d_mode)
+	var cold := {"generation": 7, "requested_mode": mode, "configured_mode": -1,
+		"render_buffers_available": false, "provider": "none", "allocation": "not_attempted",
+		"submission": "not_attempted", "reset_gpu_completion": "unobserved", "temporal_attempts": 0,
+		"reset_requested_serial": 0, "reset_submitted_serial": 0, "reset_encoded_serial": 0}
+	backend.status = cold.duplicate(true)
+	rig.reset()
+	_check("flight reset does not request history before camera placement", rig.observations.is_empty())
+	# A staged startup can draw between reset and final placement. Simulate that
+	# draw creating history; it must now use the normal serial-based API.
+	backend.status = {"generation": 7, "requested_mode": mode, "configured_mode": mode,
+		"render_buffers_available": true, "provider": "temporal", "allocation": "created", "submission": "enqueued",
+		"reset_requested_serial": 0, "reset_submitted_serial": 0, "reset_encoded_serial": 0,
+		"reset_gpu_completion": "unobserved", "temporal_attempts": 1}
+	backend.response = {"accepted": true, "generation": 7, "serial": 1, "reset_request_attempt": 1}
+	var ground := func(_x: float, _z: float) -> float: return 0.0
+	rig.update(Vector3(50.0, 20.0, -80.0), Transform3D.IDENTITY, Basis.IDENTITY, 0.016, false, ground)
+	var first: Dictionary = rig.observations[0] if rig.observations.size() > 0 else {}
+	_check("intervening draw uses a scoped request after final camera pose", rig.observations.size() == 1
+		and first.reason == "camera_flight_reset" and first.pose == camera.global_transform
+		and (first.pose as Transform3D).basis != Basis.IDENTITY and first.result.get("state") == "pending"
+		and backend.requests.size() == 1)
+	rig.set_view("chase")
+	rig.select_view("chase")
+	_check("repeated cuts wait for the next pose", rig.observations.size() == 1)
+	backend.response = {"accepted": true, "generation": 7, "serial": 2, "reset_request_attempt": 1}
+	rig.update(Vector3(50.0, 20.0, -80.0), Transform3D.IDENTITY, Basis.IDENTITY, 0.016, false, ground)
+	var second: Dictionary = rig.observations[1] if rig.observations.size() > 1 else {}
+	_check("repeated cuts coalesce after the final pose", rig.observations.size() == 2
+		and second.reason == "camera_chase_style_changed" and second.pose == camera.global_transform
+		and second.result.get("serial") == 2 and backend.requests.size() == 2)
+	rig.set_view("closeup")
+	backend.response = {"accepted": true, "generation": 7, "serial": 3, "reset_request_attempt": 1}
+	rig.update(Vector3(50.0, 20.0, -80.0), Transform3D.IDENTITY, Basis.IDENTITY, 0.016, false,
+		ground, Vector3.INF, Callable(), true)
+	_check("Main can defer the reset until after crash focus", rig.observations.size() == 2)
+	var before_focus := camera.global_transform
+	rig.focus(Vector3(20.0, 10.0, -30.0), ground)
+	rig.commit_history_reset()
+	var focused: Dictionary = rig.observations[2] if rig.observations.size() > 2 else {}
+	_check("deferred reset observes the final crash camera pose", rig.observations.size() == 3
+		and focused.pose == camera.global_transform and focused.pose != before_focus
+		and focused.result.get("serial") == 3 and backend.requests.size() == 3)
+	backend.status = cold.duplicate(true)
+	backend.status.generation = 8 # resize creates a new empty generation
+	rig.reset()
+	rig.update(Vector3(0.0, 10.0, -20.0), Transform3D.IDENTITY, Basis.IDENTITY, 0.016, false, ground)
+	_check("resize relies only on the next initial history", rig.observations.size() == 4
+		and rig.observations[3].result.get("state") == "initial_history" and backend.requests.size() == 3)
+	rig.reset()
+	view.remove_child(camera)
+	rig.commit_history_reset()
+	view.add_child(camera)
+	rig.update(Vector3(0.0, 10.0, -20.0), Transform3D.IDENTITY, Basis.IDENTITY, 0.016, false, ground)
+	_check("removal discards the queued cut without touching a viewport", rig.observations.size() == 4)
 	view.free()
 
 

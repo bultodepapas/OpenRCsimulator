@@ -82,12 +82,21 @@ its source-bound receipt and smokes do not repair that admission limitation.
 A bounded native Settings trial now preserves the confirmation window through
 an injected main-thread stall, and the focused Settings consumers pass. A corrected
 source-bound ARM64 development package also passes fixed-session and bounded
-rendered smokes. Cold compilation and full required CI remain unqualified.
-Direct-start Temporal reset ordering also remains open: a bounded source-hosted
-diagnostic observed the reset before render buffers existed. The preceding
-packaged Temporal frame screen used Native fallback; it is not a Temporal
-performance result. The implementation evidence records the required post-pose
-reset boundary and the requested-mode Spatial screen.
+rendered smokes. That package predates the latest camera-cut correction. Cold
+compilation and full required CI remain unqualified.
+
+In the tested direct-start run, Temporal kept its selection on M1. Camera cuts are coalesced
+until the final camera pose, including crash focus, before the next draw. Only a
+typed, empty buffer generation can rely on the engine's initial-history reset;
+that path reports no explicit submission, encode or GPU completion. The clean
+19-patch editor passed 445 focused headless checks and 94 rendered Metal history
+checks, including injected-backend cold-state cases. A matched exploratory 1080p screen measured Native 42.48 FPS, Spatial
+Quality 60.03 and Temporal Quality 57.65, with successful current-generation SDK
+completions for both scalers and Temporal reset serial 1 independently observed
+on the GPU. This was one sky-heavy scripted sample per mode, with physics/input
+disabled and different Temporal AA. It does not qualify active-flight quality,
+sustained 60 FPS, presentation or latency. The implementation evidence preserves
+the earlier Native fallback, exact sources, raw results and remaining gates.
 
 Completion has three distinct levels per technology:
 

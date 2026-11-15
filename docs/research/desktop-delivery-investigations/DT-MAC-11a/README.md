@@ -1,7 +1,8 @@
 # DT-MAC-11a / 07a1: first MetalFX implementation evidence
 
-Date: 2026-11-14. Implementation and native API intake are in progress. This
-record does not qualify four production technologies or establish an FPS gain.
+Started: 2026-11-14; updated 2026-11-15. Implementation and native API intake are
+in progress. The later matched screen records a bounded FPS improvement; this
+record does not qualify four production technologies or sustained flight performance.
 The [plan](../../../plans/apple-metalfx.md) retains integration, motion, lifecycle,
 latency, package and promotion gates.
 
@@ -1222,8 +1223,106 @@ Required CI at `f5a0f325` subsequently reached a stale Controls dialog-label
 expectation and the guarded shaft/weather publication fixture. The one-line
 dialog expectation now matches the existing `Save current` label and passes the
 official-engine M1 P0 suite. The publication fixture still guards 19 inputs; only
-the Session pin differs. Windows/Linux comparison and strict fixture promotion
-remain pending. Its historical captures and numerical expectations are unchanged.
+the Session pin differs. The subsequent Windows/Linux run
+[`43717526635`](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43717526635)
+passed both collectors at `d61eb0830227e120c64c4fc51462b9feb5052149`.
+The strict packer admitted all eight captures without changing typed frames,
+events, families or numerical expectations. The
+[publication receipt](../../release-readiness/PT1-CI-00/publication-rebind-2026-11-15.json)
+binds the independently verified artifact ZIPs and promoted source pin. Required
+CI on the later integrated candidate remains separate.
+
+### Post-pose Temporal correction and matched M1 screen
+
+The camera rig now queues one discontinuity reason and commits it after camera
+placement. Main defers that commit until crash focus has placed its final pose,
+before the next draw. Existing helicopter/capture callers commit at the end of
+the rig update. This covers the first updated camera/model pose; intervening
+smoke, weather or other scene changes during staged loading are not independently
+qualified by this correction.
+
+The reset adapter can recognize an explicitly typed empty buffer generation
+only at that post-pose boundary. Its `initial_history` receipt returns false for
+explicit submission and records zero serials, no encode and GPU completion
+`unobserved`; the engine's first encode must initialize history. Ordinary ready
+generations retain explicit reset, scope/generation/serial checks and fallback.
+The rendered screen below exercised an explicit reset, not that empty-generation
+branch. Missing APIs and other unready states are not admitted by this exception.
+
+Source was frozen tree `35e5a8cf082f01c48d603820fb2f1d48c908e8f7` at
+`f5219d7d682a7f2470bbf2af88c2cf64c1fe7833` plus eight code/test overlays in
+`temporal-cut-inputs-r2.zip`, SHA-256
+`cf4fa2c623d205e95f5f3e3a78953728824bdba98b29d79ea1d2872265c04064`.
+The three production-file SHA-256s were:
+
+| File | Raw SHA-256 |
+| --- | --- |
+| `app/main.gd` | `34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327` |
+| `app/render/camera/camera_rig.gd` | `8641d0d89068fbf5b5809d2e3b480105307157faa73ddfc69c67bb41cd89ea35` |
+| `app/render/reconstruction.gd` | `ea07f60c844ef0dd6b73330938d1a61471b5523100eb6672f1f71eda5496e910` |
+
+On ANGEL (M1/8 GiB, macOS 27.0/26A5425a, AC), the unchanged clean 19-patch
+editor `8e345b212ab1612b19e67c00541a34eeae31aa43980016517e6e7b2449f2682b`
+passed six focused headless scripts: history 91, policy 125, camera-history 26,
+camera-route 35, camera-views 152 and initial-flight-camera 16 checks, **445 total**.
+Three production parses had already passed with identical source. A separate
+rendered Forward+/Metal history run passed **94 checks**, zero errors/warnings,
+including three additional injected-backend cold-state cases; this count does
+not represent 94 native SDK/GPU checks. Its
+checked report SHA-256
+`3482738e4b600577b3175ae994298cd54de092d083e60bcd4607062c6dc4b0ff`.
+The first history-fixture attempt printed 85/0 but emitted engine errors and was
+not admitted; its deferred-tree-entry/backend fix changed only test code.
+
+The matched screen used separate processes, the same isolated source/profile,
+Forward+/Metal, reported 1920×1080 window/viewport, High scene detail with 127
+detailed trees, VSync/cap/FG Off, Dummy audio, 10-second warm-up and 30-second
+measurement. It used a scripted circle with physics/input disabled and a
+sky-heavy pilot camera. The wrapper deferred the ordinary main scene by one
+startup frame. It was source-hosted, not the older packaged executable.
+
+| Mode, in execution order | FPS | p50 ms | p95 ms | p99 ms | Maximum ms |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Native before | 42.475 | 24.355 | 26.525 | 28.384 | 46.732 |
+| Spatial Quality | 60.027 | 17.508 | 19.553 | 20.948 | 32.665 |
+| Temporal Quality | 57.646 | 17.755 | 19.821 | 21.583 | 35.762 |
+| Native after | 42.478 | 24.363 | 26.602 | 28.132 | 45.092 |
+
+Spatial was 41.3% and Temporal 35.7% faster than the mean Native bracket in this
+screen. Each mode has one sample; there is no confidence interval or sustained
+flight claim. The reports estimate nominal 1280×720 input for 1080p output in
+both scaler modes; these are not independently observed SDK texture dimensions.
+Native/Spatial retained 4× MSAA; Temporal replaced it, so this is not equal-AA or
+image-quality qualification. Even the scaler p95 exceeds 16.667 ms; these results
+do not establish locked 60 FPS or eliminate stutter.
+
+The actual `viewport_get_metalfx_gpu_status` observer sampled each mode during
+and after measurement. Both scaler samples matched provider, configured mode,
+viewport/observer generations and encoded/completed epochs, with successful
+current-generation command-buffer completion and no first-failure ticket.
+Temporal's explicit CPU requested/submitted/encoded serial 1 also had GPU
+`reset_completed_serial=1` in both samples. Greatest completed tickets are not
+contiguous completion counts, fences or displayed-frame FPS. The preceding R2
+startup witness queried CPU status only; it is not GPU proof.
+
+All four streams completed, draw counters advanced, the diagnoser found zero
+invalid measurements and logs had zero engine errors. Spatial reported four
+ObjectDB instances at shutdown; the other three runs had no warnings. A Temporal
+viewport-texture readback taken after timing was actually **1920×1080**, SHA-256
+`a933a39d7cae31027bc530c11e7c2df310995103eb26673c97b2e8880d0b49d3`.
+It shows coherent sky/clouds/field and a small aircraft/HUD; it is not a matched
+moving-image quality comparison or a physical display-presentation observation.
+Other modes' dimensions are runtime reports. Physical latency, active flight,
+ground-heavy workloads and endurance remain unqualified.
+
+Phase 10 retains 206 report/input payloads, **1,779,298 compressed bytes**,
+SHA-256 `ee1749f002c8babdbdc393c591229f7613a9492ad36c6b86152626440fbbec4c`;
+all payload hashes matched independently after retrieval. It includes failed R1,
+successful R2, the matched screen and both companion renewals. The 94-check Metal
+history report was retrieved separately afterward. The corrected companion
+renewal restores exact editor-import project bytes before runtime and isolates
+both imports and tests; the first continuation lacked editor-import isolation
+and is not admitted. Its canonical AFC receipt records the bounded qualification.
 
 ## Evidence retention and open gates
 

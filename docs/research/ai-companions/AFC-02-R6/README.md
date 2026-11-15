@@ -1,5 +1,16 @@
 # AFC-02-R6: seeds, behavior identity and flight status
 
+The 2026-11-15 Temporal camera-cut [behavior renewal](../AFC-02/rebinds/2026-11-15-temporal-cut-behavior.json)
+updates only the Main source pin. All 19 checked runs passed on the official Godot
+4.8 beta 2 engine, including stale-source refusal, the behavior mutations and a
+strict Home-to-Fly, three-pilot, pause and restart path. The 198-source solver
+identity is unchanged. The restore check passed but reported two leaked ObjectDB
+instances, as in the earlier official run; those objects remain uncharacterized.
+An earlier attempt's editor-import isolation was unqualified, with no confirmed
+normal-profile writes; the qualifying run used a separate route and restored its
+temporary project settings. This is bounded headless software evidence, not
+qualification of the custom MetalFX engine, physical behavior or performance.
+
 The 2026-11-14 controller/session source renewal retains the same narrow scope:
 [nine identical replay tapes](../AFC-02/rebinds/2026-11-14-880c90f7-to-a81c2b2d.json)
 and [checked behavior/admission evidence](../AFC-02/rebinds/2026-11-14-controller-routing-behavior.json),

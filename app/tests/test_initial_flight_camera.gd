@@ -25,11 +25,11 @@ class TrackedFlight extends "res://main.gd":
 	func _process(delta: float) -> void:
 		process_calls += 1
 		super._process(delta)
-	func _render_pose(pose: Dictionary, controls: Dictionary, prop_angle: float) -> void:
+	func _render_pose(pose: Dictionary, controls: Dictionary, prop_angle: float, defer_camera_cut := false) -> void:
 		render_calls += 1
 		prime_tick = session.sim.tick
 		var before: PackedByteArray = var_to_bytes(session.checkpoint())
-		super._render_pose(pose, controls, prop_angle)
+		super._render_pose(pose, controls, prop_angle, defer_camera_cut)
 		prime_state_unchanged = before == var_to_bytes(session.checkpoint())
 
 var _checks := 0

@@ -117,7 +117,7 @@ func _run() -> void:
 	root.set_meta(Reconstruction.CONFIG_META, config)
 	root.set_meta(Reconstruction.POLICY_META, temporal)
 	var no_backend := RefCounted.new()
-	_check("missing reset never claims submission", not Reconstruction.request_history_reset(root, "camera_cut", no_backend))
+	_check("missing reset never claims submission", not Reconstruction.request_history_reset(root, "camera_cut", no_backend, true))
 	var report := Reconstruction.describe(root)
 	_check("camera discontinuity restores Native and AA", report.provider == "native" and root.scaling_3d_scale == 1.0 and root.msaa_3d == Viewport.MSAA_8X)
 	_check("camera fallback preserves saved request", config == before and report.requested == "metalfx_temporal_85")
@@ -134,7 +134,7 @@ func _run() -> void:
 	root.set_meta(Reconstruction.POLICY_META, temporal)
 	var advertised := AdvertisingBackend.new()
 	_check("provider advertisement cannot acknowledge a MetalFX reset",
-		not Reconstruction.request_history_reset(root, "camera_cut", advertised) and advertised.requests.is_empty())
+		not Reconstruction.request_history_reset(root, "camera_cut", advertised, true) and advertised.requests.is_empty())
 	report = Reconstruction.describe(root)
 	_check("unacknowledged reset falls back and never counts a submission", report.provider == "native"
 		and report.effective == "native" and report.history_reset.submitted == 0
@@ -143,7 +143,7 @@ func _run() -> void:
 	root.set_meta(Reconstruction.CONFIG_META, config)
 	root.set_meta(Reconstruction.POLICY_META, temporal)
 	advertised.providers = PackedStringArray(["dlss"])
-	_check("unadvertised Temporal reset keeps Native fallback", not Reconstruction.request_history_reset(root, "camera_cut", advertised))
+	_check("unadvertised Temporal reset keeps Native fallback", not Reconstruction.request_history_reset(root, "camera_cut", advertised, true))
 	report = Reconstruction.describe(root)
 	_check("unsupported provider is diagnosed without submitting", report.provider == "native"
 		and report.history_reset.failure.reason == "provider_unsupported" and report.history_reset.submitted == 0
@@ -151,7 +151,7 @@ func _run() -> void:
 
 	# Model the startup seam used by Main: the rig starts at pilot and applies the
 	# requested non-pilot view before its first placement. No fake Metal enum is
-	# assigned to a Windows viewport. A cut must still roll the policy back.
+	# assigned to a Windows viewport. A cut still rolls back at the pose boundary.
 	var view := SubViewport.new()
 	view.size = Vector2i(1920, 1080)
 	root.add_child(view)
@@ -178,8 +178,12 @@ func _run() -> void:
 	settings._sync_reconstruction_controls(forward)
 	_check("default pilot view causes no startup cut", rig.set_view("pilot")
 		and not view.has_meta(Reconstruction.HISTORY_RESET_META))
-	_check("initial non-pilot view reports a cut", rig.set_view("chase")
-		and view.get_meta(Reconstruction.HISTORY_RESET_META).last_reason == "camera_view_changed")
+	_check("initial non-pilot selection waits for camera placement", rig.set_view("chase")
+		and not view.has_meta(Reconstruction.HISTORY_RESET_META))
+	rig.update(Vector3(0.0, 20.0, -50.0), Transform3D.IDENTITY, Basis.IDENTITY, 0.016, false,
+		func(_x: float, _z: float) -> float: return 0.0)
+	_check("initial non-pilot placement reports a cut",
+		view.get_meta(Reconstruction.HISTORY_RESET_META).last_reason == "camera_view_changed")
 	var cut_report := Reconstruction.describe(view)
 	_check("initial non-pilot cut latches Native and restores MSAA", cut_report.provider == "native"
 		and cut_report.effective == "native" and view.msaa_3d == Viewport.MSAA_8X
