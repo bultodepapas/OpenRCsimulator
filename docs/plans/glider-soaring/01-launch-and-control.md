@@ -101,6 +101,8 @@ stateDiagram-v2
   GroundRoll --> AirborneTow: Both aircraft airborne
   TakingUpSlack --> Aborted: Cancel or fault
   GroundRoll --> Aborted: Abort or contact failure
+  TakingUpSlack --> Aborted: Qualified ground release
+  GroundRoll --> Aborted: Qualified ground release
   AirborneTow --> Separated: Release or qualified break
   AirborneTow --> Aborted: Pair failure
   Separated --> Recovering: Glider free and tug clears
@@ -109,6 +111,8 @@ stateDiagram-v2
 ~~~
 
 Internal line modes include attached/slack, attached/tensioned, released and, only if qualified, broken. Slack/taut transitions do not transfer the human controls. Rendering may show sag but must not imply an unimplemented catenary or collision law.
+
+A qualified release during slack take-up or ground roll records the line as released and the tow attempt as aborted; both aircraft retain their accepted contact and control state until the admitted stop/terminal policy completes. Ground release does not imply that an airborne-only takeover is available. A refused takeover never disables an independently available release. SG-12 must test these transitions and their replay.
 
 ### Ground sequence, after SG-12
 
@@ -119,6 +123,8 @@ Tug runway width alone is insufficient: check both airframes, tail/line routing,
 At any unsafe or unsupported combination, the defined outcome is a refused start, a recorded release/abort, or a paused fault. No force clamp, aircraft teleport, indefinite frozen glider, or secretly extended rope may conceal the failure.
 
 Terrain contact does not add aircraft-to-aircraft collision automatically. The existing companion fleet has no such contact forces. For this activity, qualify a geometry-based pair exclusion and terminal-incident policy before scored towing; it must detect relevant swept encounters and prevent a success outcome for intersecting airframes. If full inter-aircraft impact mechanics are deferred, identify that limit explicitly. A controlled solver prototype may disable collision only inside a strictly separated airborne fixture; that is not product collision qualification.
+
+This airborne exclusion gate belongs to SG-07/10/11; SG-12 extends it to ground take-up and dual contact. Where the admitted rope-clearance policy cannot bound a slack path or resolve a candidate intersection, record clearance as unknown and refuse, pause or conservatively terminate the affected exercise without successful-tow credit. An overlapping conservative bound is not a demonstrated physical impact. A separately labelled, unscored diagnostic fixture may retain the omission, but cannot establish clear rope passage.
 
 ## 6. AI tug with human glider
 
@@ -147,12 +153,14 @@ Provide three distinct commands:
 | Command | Mechanical action | Ownership action |
 | --- | --- | --- |
 | Release tow | Release the specified available hook | Keep current human aircraft |
-| Take glider | None, only in a separately admitted attached-transfer mode | Human → glider; AI → tug |
+| Take glider | None; normally after release, or while attached only in a separately admitted advanced mode | Human → glider; AI → tug |
 | Release and take glider | Release and transfer in one accepted intent | Human → glider; AI → tug |
 
-The third is the primary requested journey. Attached transfer is an advanced option and can remain unavailable initially. Display each command's actual binding rather than inventing a global key that may conflict with existing controls.
+The third is the primary requested journey. Release-only followed by a later Take glider is also required: it recovers the journey when combined transfer was refused for readiness. Attached transfer is an advanced option and can remain unavailable initially. Display each command's actual binding rather than inventing a global key that may conflict with existing controls.
 
 Every release intent identifies an actor and an installed hook. A human flying the tug normally commands the tug's release. A command to the glider's hook while its receiver is AI-owned is an explicit simulator coordination command, with admitted cross-actor authority and a recorded reason; it does not imply that one physical transmitter operates both receivers. Offer a separate release action even if a combined transfer is refused for pickup/recovery readiness. Show the refusal reason without disabling a physically available emergency release.
+
+On release while the human still owns the tug, the glider controller changes from tow following to an admitted, bounded free-glide mode using actual surfaces. Preflight requires that fallback and its time/height/separation limits. If it cannot continue, pause the whole activity or apply its recorded terminal policy; never leave a tow follower targeting a disconnected tug or leave the glider without a command source. A later Take glider uses the same transactional pickup and tug-recovery checks below, preserves the released line state and emits no second release. If the human already owns the glider, a repeated takeover is a recorded no-op/duplicate rejection under the intent policy, without extra credit. The first implementation need not support transfer back to the tug.
 
 ### Atomic handoff
 
@@ -191,6 +199,8 @@ The first airborne slice may use a safe circuit/loiter with a defined distance/a
 
 If the tug engine fails, loss of thrust comes from the propulsion/failure owner. If the human releases, the free glider remains controllable. Unknown structural strength must not be replaced with a fabricated break rating. Scripted emergency-release lessons can exist separately from physically modeled weak-link breakage.
 
+After separation, both actors remain subject to the shared field/domain and swept-airframe policy. Loss of the tug recovery controller, an unsafe encounter, or a failed second-body step causes the admitted whole-activity pause/fault or terminal incident; zero rope force does not permit a frozen or discarded actor. A new recovery controller is used only if its fallback is already qualified. Preserve the accepted glider owner and both final states in the resulting record.
+
 ## 9. Interruption, reset and failure behavior
 
 | Condition | Required behavior |
@@ -203,6 +213,7 @@ If the tug engine fails, loss of thrust comes from the propulsion/failure owner.
 | Invalid second-body weather/force | Reject the entire candidate; no first-body advance or leaked event/controller memory |
 | Simultaneous release and failure | Apply only a qualified versioned composition; otherwise reject/roll back the whole candidate and pause with the unsupported-intersection reason |
 | Tug crash before release | Follow an explicitly admitted pair incident policy; do not freeze only one endpoint |
+| AI fault or unsafe encounter after release | Apply the bounded whole-activity pause/fault or terminal policy; preserve both actors and current ownership |
 | Glider landing first | Contact/finish rules identify which actor landed and whether the line remains attached |
 | Repeated or held action | One event per accepted edge; no duplicate release, credit or owner assignment |
 | Time scale or catch-up limit | Preserve fixed simulation ticks and event order; no independently running AI or wind clock |

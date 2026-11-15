@@ -4,6 +4,8 @@
 **Runtime source reviewed:** `ad21070798bfb9658785576a9c0b8bfc9a71fc7f`. **Plan branch before expansion:** `49dce1db4fce7e907c38367cdfdbe1fc0338876a`. Both remote refs were checked before this work and were unchanged.  
 **Implementation status:** all SG implementation and physical qualification gates retain their status in the [master plan](../../plans/glider-soaring.md). Research completion does not mark a simulator, bench, flight or training experiment complete.
 
+**Final plan audit:** the [audit and dispositions](2026-11-15-plan-audit.md) refine milestone placement, claim-dependent gates and the GI-02 validation design; the 24 research questions and source findings remain traceable.
+
 ## Purpose and method
 
 This follow-up investigates **24 separate engineering questions** requested after the first handoff. Each card records a question, primary evidence, a finding, source applicability, a proposed plan change, a discriminating experiment, priority and uncertainty. Sources include original experiments, NASA/NACA reports, manufacturer/designer information, scientific papers and official project documentation. Abstract-only or blocked-full-text access is identified where relevant.
@@ -35,7 +37,7 @@ The priorities below are planning recommendations: P1 protects the first credibl
 | GI-08 | Speed overlap alone does not establish a controllable climb. | Establish joint force/moment trim, hook moments, control margins and tug excess power. | 03/08/09/10/11/16 |
 | GI-09 | Equal/opposite force exchange can still introduce discrete energy error. | Compare lagged coupling against same-stage evaluation using independent power, energy and event ledgers. | 07/08/15 |
 | GI-10 | Stiff compliance and rigid unilateral constraints have different laws and event behavior. | Compare qualified solver candidates using refinement, located events, accuracy and cost; reject unresolved crossings. | 07/08/12/17 |
-| GI-11 | Clear endpoints do not rule out a between-tick collision or unknown slack-line path. | Qualify swept aircraft checks; define conditional taut/slack rope bounds, exemptions and conservative failure semantics. | 07/08/12/14/17 |
+| GI-11 | Clear endpoints do not rule out a between-tick collision or unknown slack-line path. | Qualify airborne swept aircraft checks before SG-10/11; add ground checks in SG-12; define conditional rope bounds, exemptions and conservative unknown outcomes. | 07/08/10/11/12/14/17 |
 | GI-12 | AI route goals must be physically reachable by the coupled pair. | Admit climb/turn/speed/control limits, label ideal sensors, and test saturation, release and aborts with held-out cases. | 09/10/11/14/16 |
 | GI-13 | A volume-conserving kinematic cell is not automatically density-weighted mass conserving. | Reuse M5's boundary/flux work and label field assumptions; design low-launch lessons around actual available lift. | 06; M5 |
 | GI-14 | Shared seeds and equal RMS do not establish spatially coherent encounters. | Compare covariance, complex coherence and stage-time response across wings, tails and both aircraft. | 06/07 |

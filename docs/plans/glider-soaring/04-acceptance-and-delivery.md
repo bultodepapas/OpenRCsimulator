@@ -9,7 +9,7 @@ The [master plan](../glider-soaring.md#7-delivery-sequence-and-canonical-step-st
 
 A milestone is usable when its declared aircraft, start, weather, controls, replay and end condition work together. A successful force calculation, a menu item or a rendered glider is not that milestone.
 
-The minimum solo story is: select the unpowered configuration → choose calm air start → see actual resolved conditions → start in a descending trim → control the aircraft → land → inspect a complete debrief → restart and replay.
+The minimum solo story is: select the unpowered configuration → choose calm air start → see actual resolved conditions → start in a descending trim → control the aircraft → land → inspect the basic accepted outcome and complete recording → restart and replay. Comparative debrief and scored lessons are later SG-15 work.
 
 The complete requested story adds: choose manual tug → glider AI maintains its own aircraft → fly and climb within the pair's envelope → invoke release-and-take-glider → retain glider control without an axis surprise → tug continues its recovery → glider soars and lands → the entire sequence restores/replays with the same ownership and line events.
 
@@ -32,10 +32,10 @@ These are proposed homes to review against the current tree at implementation ti
 
 | Work package | Existing seams to inspect or extend | Proposed new homes / evidence | Shared owner |
 | --- | --- | --- | --- |
-| SG-01 absent propulsion | `app/physics/aircraft_modules.gd`, `aircraft_data.gd`, schema registry and compiler; session, audio, telemetry and Workshop consumers | Source-owned contract/generator changes; evidence `docs/research/glider-soaring/SG-01/` | AS + physics, AE/AUD |
-| SG-02 trainer | Aircraft inventory, geometry/control manifests, catalog, conformance | New `research/glider-soaring/aircraft/` and aircraft asset/source directories chosen by AS; generated runtime output | Aircraft + AS/asset owners |
+| SG-01 absent propulsion | `app/physics/aircraft_modules.gd`, `aircraft_data.gd`, `physical_identity.gd`, schema registry/compiler, `app/sim/aircraft_propulsion_runtime.gd`; observation, contact rotor identity, trace/log, audio and Workshop consumers | Versioned absence/identity/observation contract through all consumers; evidence `docs/research/glider-soaring/SG-01/` | AS + physics, SF/FL/AE/AUD |
+| SG-02 trainer | Aircraft inventory, geometry/control manifests, catalog, conformance; authored intended hull support and physical identity | New `research/glider-soaring/aircraft/` and aircraft asset/source directories chosen by AS; generated runtime output | Aircraft + AS/asset owners, GP/UI-FS |
 | SG-03 glide | `aero.gd`, `wing_polar.gd`, trim/scenario and actuator paths | Polar/measurement reducer and bounded flight cards in owning research path | Physics/FT |
-| SG-04/05 starts | `app/sim/flight_session.gd`, `app/app_root.gd`, shared launch resolver, input and staged-start tests | Glider start adapter/recipe, exact path chosen after consumer inventory | Physics/UI/input/GP |
+| SG-04/05 starts | `app/sim/flight_session.gd`, `app/app_root.gd`, shared launch resolver, input and staged-start tests; `app/physics/intended_hull_support.gd`, `app/statistics/profiles.gd`, `fixed_wing_adapter.gd` | Glider start adapter/recipe; accepted belly/skid outcome and minimum solo record/replay slice | Physics/UI/input/GP/UI-FS/FL |
 | SG-06 environment | `wind_config.gd`, `wind_spatial_config.gd`, `wind_spatial_presets.gd`, `wind_thermal_field.gd` | Soaring scenario authoring using existing weather schema; no second wind engine | M5 + scenarios |
 | SG-07 pair foundation | `vehicle_model.gd`, `simulation.gd`, `integrator.gd`, event/contact contracts | New `app/sim/soaring/` pair adapter/session if approved; generic SF extensions remain SF-owned | SF + physics |
 | SG-08 line | Joint force evaluator and generic event boundary | New `app/physics/soaring/tow_line.gd` or agreed equivalent; analytic fixture and measurement source | Physics/SF |
@@ -44,14 +44,14 @@ These are proposed homes to review against the current tree at implementation ti
 | SG-12 ground | Shared contact, point/hull geometry, prepared runway state, collision and event composition | Pair ground/abort evidence and qualified configuration bounds | GP/CR/SF |
 | SG-13 UI/camera/audio | Shell, profile/actions, camera facade, HUD, localization, flight sound | Narrow integrations, optional glider presentation modules | UI/input/CAM/HUD/AUD |
 | SG-14 failure | Existing failure adapters, physical propulsion source loss, release events | Tow-specific fault recipes with declared physical versus scripted semantics | EM/CR/SF |
-| SG-15 logs/scoring | `app/sim/flight_log.gd`, trace/readers, statistics and debrief | Versioned paired envelope and per-actor channels; scorer reads accepted events | FL/UI-FS |
+| SG-15 logs/scoring | `app/sim/flight_log.gd`, trace/readers, statistics and debrief | Minimum solo outcome/record with SG-04; pair envelope/actor channels/replay before SG-10/11; richer debrief/scoring later | FL/UI-FS |
 | SG-16/17 qualification | Existing tools, test queue, CI, source receipts and export/runtime admission | Evidence under SG steps; generated packages through existing release workflow | FT/PT/DT/NK |
 
 Do not add all these files in one change. Start by proving one boundary with a synthetic fixture and the smallest relevant regression set. Coordinate mixed-purpose files whose hash changes invalidate AI/native source admission.
 
 ### Decisions that unblock parallel work
 
-Before SG-07 implementation, settle the primary/secondary body layout, both quaternion projections, per-stage validation, controller sampling, event arbitration and full-frame publication. Before SG-12, demonstrate the policy for both contacts, the line, propulsion events and substeps. Before SG-15, freeze the pair log's actor IDs, named inputs, version and restoration semantics.
+Use the bounded SG-07 experiment to choose the primary/secondary body layout, trial-rotation convention, both quaternion projections, per-stage validation, controller sampling, event arbitration and full-frame publication. Settle that design before production adoption or pair admission, not before the experiment that supplies its evidence. Before SG-10/11, freeze the minimum paired record's actor IDs, named inputs, version, accepted events and restoration semantics with FL. Before SG-12, demonstrate the policy for both contacts, ground release, the line, propulsion events and substeps.
 
 These are technical design deliverables, not new requests for user permission. Record accepted decisions in the existing decision log and link the proof.
 
@@ -61,8 +61,8 @@ Test combinations must cover actual declared behavior. Do not weaken existing gu
 
 | ID | Case | Required observable result |
 | --- | --- | --- |
-| A01 | Valid pure glider and contradictory propulsion fields | Valid data loads without a fictitious engine; invalid combinations refuse before publication |
-| A02 | Receiver battery, servos and absent propulsion | Installed masses/inertia remain; at least an ideal receiver/servo/release supply is declared; finite-battery behavior is separately qualified; no fuel/shaft/audio assumptions leak |
+| A01 | Valid pure glider and contradictory propulsion fields | AS-versioned absence passes registry, PhysicalIdentity and normalized model without invented motor/rotor IDs; invalid or incompatible combinations refuse before publication; old powered identities remain valid |
+| A02 | Receiver battery, servos and absent propulsion | Installed masses/inertia and declared supply remain; absent propulsion observations, rotor/contact identity, trace/log/replay and audio agree without phantom fuel/shaft/RPM data; finite-battery behavior is separately qualified |
 | A03 | Units, axes, wing area and CG | Authored quantities convert once; FAI wing-plus-tail area is not substituted for aerodynamic reference area |
 | A04 | Calm descending trim across supported speeds | Force/moment residuals meet predeclared tolerances; actual sink and trim converge; no hidden altitude hold |
 | A05 | Whole-aircraft polar | Best glide, minimum sink and their airspeeds are separately derived; transients are excluded or identified |
@@ -76,7 +76,7 @@ Test combinations must cover actual declared behavior. Do not weaken existing gu
 | A13 | Equal position/time queried by either actor | Identical shared-field answer, independent of query order; no separate OU realization for the pair |
 | A14 | Both-wing/tail station domain and finite horizon | All required queries valid; unsupported boundary rejects the whole candidate and explains the failure |
 | A15 | Energy/TE/netto in calm, updraft and shear | Correct signs/work ledger, speed-height exchange and stated estimator biases/filter lag |
-| A16 | Belly/skid landing, rough/unsupported terrain and slope | Ground/contact policy is correct for the actual configuration; no silent wheel substitution |
+| A16 | Belly/skid accepted support and landing outcome | Matching authored hull identity/pose and soft-contact law feed accepted support/accident observations and UI-FS statistics; distinguish intended support, wrong-pose/incidental contact, touchdown, stop and incident; no duplicate outcome on restart/restore. Current observer scope is flat solid/no lake; unsupported terrain is refused or yields an unavailable result until separately qualified |
 
 Weather correctness checks precede pilot difficulty claims. A preset's configured peak is not its actual lift at a particular altitude, radius, time, bank or aircraft sink rate.
 
@@ -91,19 +91,21 @@ The five base recipes in the [aircraft/weather dossier](03-aircraft-and-weather.
 | T03 | Slack, coincident endpoints and line shortening | No compression or zero-length normalization fault; damping/storage power remains non-generating |
 | T04 | Elastic/damped analytic fixture | Frequency, decay and energy error match an independent equation or high-accuracy oracle |
 | T05 | 1/2/4/8 substep refinement in an admitted envelope | Trajectory, tension peaks and event times meet predeclared tolerances; no clipping/softening to hide failure |
-| T06 | Secondary quaternion in every relevant path | Stage, substep, event, accepted endpoint, reset and restore semantics remain valid |
+| T06 | Secondary quaternion in every relevant path | Trial q-to-rotation/inverse convention, stage validation, substep/event/accepted projection, reset and restore remain consistent; verify hook power and convergence without silently altering stored RK trial states |
 | T07 | Failure injected in either body at each RK stage | Entire pair unchanged; no controller/RNG/owner/event/recorder advance escapes |
-| T08 | Commanded release at each boundary | Exactly one event; no unexplained velocity impulse or subsequent reattachment |
+| T08 | Commanded release at each admitted boundary | Exactly one event; no unexplained impulse or reattachment; SG-12 includes release during slack take-up and ground roll with defined contact, abort and ownership outcomes |
 | T09 | Physical break if strength/event law qualified | Within-step threshold policy and timing are tested, including peaks missed by endpoint-only logic |
 | T10 | Concurrent release/contact/source-loss events | Defined ordering/composition; unsupported overlap refuses without partial publication |
 | T11 | Whole-pair checkpoint before/after release and transfer | Both aircraft, line, controls, sampled memories, weather and ownership restore consistently |
 | T12 | Old/mismatched log or layout/backend | Explicit refusal or declared read-only compatibility; no silent one-aircraft replay |
 | T13 | Airframe proximity and crossing trajectories | Tested pair exclusion/incident policy; no unnoticed pass-through reported as successful training |
 | T14 | Ground take-up and glider/tug takeoff order | Both contact states, line geometry, clearance and abort outcome remain coherent |
-| T15 | Tug or glider fault/crash while connected | Defined joint lifecycle; a frozen endpoint cannot keep pulling the other aircraft |
-| T16 | Post-release tug continuation | Physical state continues; recovery path and finish/despawn semantics are explicit |
+| T15 | Tug or glider fault/crash, connected or separated | Defined whole-activity lifecycle and both final states; no frozen endpoint, discarded actor or false successful outcome |
+| T16 | Post-release continuation and recovery failure | Physical state and one command source continue for both actors; released AI glider free-flight, later takeover, tug recovery/fallback and finish semantics are bounded and recorded |
 
 T13 is a release blocker for credible paired training even if fully resolved aircraft-to-aircraft impact mechanics are deferred. The minimum acceptable alternative is a geometry-based exclusion/terminal incident policy whose checks are qualified across each simulation interval. It must prevent a success score for airframes intersecting. It does not establish structural crash realism. Reuse GP/CR collision infrastructure where applicable.
+
+Carry the airborne T13 policy into SG-07/10/11 before an interactive pair milestone; retain the strictly separated SG-07 solver-fixture exception stated in the launch guide. SG-12 adds T14's ground/contact cases. A clear rendered rope cannot resolve an unknown slack path: test a candidate conservative enclosure that intersects an obstacle with clear endpoints, and require the [declared refusal/pause/terminal outcome without tow-success credit](01-launch-and-control.md#5-the-tow-activity-state-machine). Do not record a proved impact from an enclosure alone.
 
 For a massless line with omitted weight, drag, sag and entanglement, retain that scope in scenario metadata. An independently measured force-extension curve and a declared weak-link experiment support the physical line; a guessed spring constant and a plausible render do not. Initial hook-kinematics and conservation fixtures use constant mass, fixed CG and rigid hooks. Finite-fuel tugs require a separate moving-mass/fixed-datum proof, including hook velocity and efflux bookkeeping; changing the CG sample alone does not pass it.
 
@@ -131,10 +133,12 @@ Start with a deterministic set of canonical trajectories, then a versioned multi
 | C10 | Wrong source receipt, unsupported weather and unavailable native | Clear refusal or existing qualified fallback; guards remain effective |
 | C11 | Restore midway through takeover blending or axis pickup | Correct held command, ownership and remaining policy state |
 | C12 | Both actors outside/near visible view | Useful feedback/camera action without unrequested control transfer |
+| C13 | Combined transfer refused → release-only → later Take glider | Released glider has bounded AI free flight or whole-pair hold; readiness can recover; later atomic takeover preserves line state and emits no duplicate release or credit; replay/restore agrees |
+| C14 | Recovery controller fault or unsafe encounter after takeover | Qualified fallback or one recorded whole-activity pause/fault/terminal outcome; both accepted states and current owner remain complete; no recovery-success claim |
 
 A proposed first automated tow campaign should cover both human-role variants, two turn directions, calm and admitted nonzero wind, low/high admitted mass, nominal and boundary line configurations, and deliberately invalid starts. Add seeded turbulence only after deterministic conditions pass. The final number of seeds and success criteria should be chosen from the supported envelope and observed failure modes; a handful of successful sorties cannot justify a broad reliability claim.
 
-Real devices must include keyboard, a supported gamepad and at least one actual RC transmitter profile. Record OS, device identity, calibration, axis polarity, deadband/rates/expo, mapping and connection sequence. Mocked axes establish software behavior only.
+The complete activity's device qualification includes keyboard, a supported gamepad and at least one actual RC transmitter profile. A narrower experimental playtest exposes only its verified control methods and identifies its support limits; this does not close the full SG-13 device scope. Record OS, device identity, calibration, axis polarity, deadband/rates/expo, mapping and connection sequence. Mocked axes establish software behavior only and cannot qualify an advertised radio.
 
 ## 6. Physical calibration and held-out validation
 
@@ -149,7 +153,9 @@ Use independent observations to estimate a limited set of parameters:
 - Towline extension versus force, damping/repeated loading and release operation.
 - Tug low-speed climb and turning capacity with the actual towing installation.
 
-Separate calibration flights from held-out verification flights. Record wind, atmospheric density, sensor calibration and uncertainty. A sensor payload can materially change a small glider; reweigh the instrumented configuration. Video/photogrammetry is a method to evaluate, not assumed error-free truth.
+Select those measurements for the mode and physical claim being qualified. A solo airborne claim needs its glider/trim/control/landing evidence, but does not wait for measured hand-release behavior or the separate tug/rope program. Every installed component still belongs to that glider's mass/geometry receipt.
+
+Separate calibration, model-selection and final held-out validation flights. Inspecting a holdout to choose or revise a model consumes its independence for the selected model even without coefficient refitting; classify those data as development and reserve a fresh final flight set. Freeze the selected model and metrics before final evaluation. Record wind, atmospheric density, sensor calibration and uncertainty. A sensor payload can materially change a small glider; reweigh the instrumented configuration. Video/photogrammetry is a method to evaluate, not assumed error-free truth.
 
 Report residuals and uncertainty, not a single “realistic” score. If measurements are unavailable, ship only the specifically labelled experimental model and do not invent a measured sink rate, glide ratio, stall speed or weak-link force.
 
@@ -184,7 +190,7 @@ No cost claim follows from having only two aircraft: local station weather, subs
 
 For native adoption, pin the correct complete new law and all data/layout contracts, maintain reference fallback, and follow the current parity/source/target-host policy. A pre-existing fixed-wing native binary does not establish a glider/tow backend. Qualify Windows, Linux and macOS packages through their existing owners; do not infer packaged success from an editor test.
 
-Roll out by capabilities: solo experimental, then thermal, then airborne pair, then ground pair. Update availability/help/catalog text only for admitted modes. Maintain read-only access to old logs where feasible and refuse incompatible restoration without silently rewriting data. Rollback removes the experimental capability/preset exposure while preserving saved user data and diagnostic evidence.
+Roll out by capabilities: solo experimental, then hand/thermal, then airborne pair, then ground pair. Apply SG-17's applicable cost, CI, export and platform checks to each distributed slice; it is not an end-only task. Advertise only tested support and retain the repository's required gates. Lessons can ship as exercises after their usability and stated model-scope checks; controlled learner studies are required for causal learning-effect claims, not as a universal package prerequisite. Update availability/help/catalog text only for admitted modes. Maintain read-only access to old logs where feasible and refuse incompatible restoration without silently rewriting data. Rollback removes the experimental capability/preset exposure while preserving saved user data and diagnostic evidence.
 
 ## 9. Risk register and unresolved decisions
 
@@ -222,16 +228,16 @@ The [24-investigation index](../../research/glider-soaring/2026-11-15-investigat
 | Research | Owning gate | Additional observable acceptance |
 | --- | --- | --- |
 | GI-01 | A05; SG-03/16 | Withhold entire flights/runs and bound vertical-air/sensor timing bias; a synthetic updraft-contaminated measurement must not be accepted as an unbiased sink polar. |
-| GI-02 | A04/A06; SG-03 | Record source dimensionality, Re and transition/finish; validate table conversion/interpolation and regime boundaries against withheld conditions. |
+| GI-02 | A04/A06; SG-03 | Record source dimensionality, Re and transition/finish; validate conversion/interpolation and regime boundaries; keep model-selection data separate from the selected model's final independent flight holdout. |
 | GI-03 | A03/A08; SG-02/16 | Compare inventory with independent CG/inertia and identifiable control-response measurements; report suspension/fixture and parameter-correlation uncertainty. |
 | GI-04 | A07; SG-13 | Sweep simultaneous roll/brake commands through saturation; compare left/right applied commands, achieved angles, pitch/yaw/drag and render bindings. |
 | GI-05 | A10; SG-05 | Reconstruct correlated release state, transform tracked markers to CG, and compare the initial trajectory/rates without added post-release hand energy. |
 | GI-06 | A06; SG-16 | Retain the evidenced rigid-airframe domain and deformation/modal limits; ordinary-flight agreement never creates an unmeasured strength/flutter threshold. |
-| GI-07 | T03/T04/T09; SG-08/09 | Fit installed loading/unloading histories and reserve whole histories for validation; compare loop work, rate, set and conditioning. Qualify weak-link failure separately. |
+| GI-07 | T03/T04/T09; SG-08/09 | For a physically supported line installation, fit installed loading/unloading histories and reserve whole histories for validation; compare loop work, rate, set and conditioning. Qualify weak-link failure separately. |
 | GI-08 | T02; SG-09 | Establish joint trim and attainable transitions with hook moments, actual surfaces and excess tug power; record margins, not only overlapping speed ranges. |
 | GI-09 | T01/T04/T07; SG-07 | Compare lagged exchange and same-stage coupling with independent per-hook work, energy and event residuals, including one-sided release/failure mutations. |
 | GI-10 | T05/T06/T10; SG-08/17 | Compare credible numerical references over stiffness/damping/mass/closure boundaries, including hidden within-step events and bounded failure/cost. Distinguish a different constraint law. |
-| GI-11 | T13/T14; SG-12 | Detect rotating/fast crossings with clear endpoints; qualify swept geometry and any conditional line bound. Report conservative false positives and unknown slack/contact outcomes. |
+| GI-11 | T13: SG-07/10/11; T14: SG-12 | Qualify airborne swept aircraft exclusion before interactive pair admission, then ground expansion; test conditional rope bounds and conservative false positives. Inconclusive slack/contact clearance invokes the declared refusal/pause/terminal policy without successful-tow credit. |
 | GI-12 | C01/C02; SG-10/11/14 | Exercise feasible turns/climbs, slack take-up, saturation and power loss in both human-role modes; label idealized sensors and retain ordered release/abort outcomes. |
 | GI-13 | A11/A12; SG-06, M5 | Test actual provider boundary semantics and density-weighted flux against the expected volume term, with zero-cell/constant-density controls and refinement. |
 | GI-14 | A13/A14; SG-06/07 | Compare multi-point covariance and complex coherence/phase across both wings/tails and aircraft; use analytic field and query-order controls before seeded statistics. |
@@ -242,7 +248,7 @@ The [24-investigation index](../../research/glider-soaring/2026-11-15-investigat
 | GI-19 | SG-11/13 | Match each controller's real output boundary while preserving servo state; test saturation/lag/trims/flight modes and actual-device reconnect with one effective writer. |
 | GI-20 | SG-13/17 | Evaluate native 1080p attitude/alignment/approach tasks over intended distances and backgrounds; record camera aids and the complete timestamped response chain. |
 | GI-21 | T11/T12; SG-15/17 | Exact same-identity pair replay must survive cosmetic/RNG-query-order isolation checks; changed build/backend/law remains an explicitly classified comparison. |
-| GI-22 | SG-16 | Freeze calibration before holdout prediction, predeclare intended-use metrics and separately report measurement, numerical and model error; investigate sensitive/confounded parameters. |
+| GI-22 | SG-16 | Freeze model selection and calibration before final independent prediction; predeclare intended-use metrics and separately report measurement, numerical and model error; investigate sensitive/confounded parameters. |
 | GI-23 | SG-02/17 | Trace each imported mesh/texture/data/code file to exact origin/hash/notices, reviewed intended use and physical fit; generic repository licensing is insufficient evidence. |
 | GI-24 | SG-15/16 | Predeclare accepted lesson outcomes, assistance/abort/refusal/reset rules and held-out scenarios; use comparison/repeated-baseline design for causal learning claims. |
 
@@ -253,4 +259,22 @@ For each admitted aircraft/mode/weather combination, retain its configuration, d
 Pair logs distinguish requested intent, post-limit/arbiter actuator command and achieved actuator position. Instrument truth, sensor estimates and assistance are separately identified. Model, physical and learning claims use different evidence categories from section 1. A task refused for unsupported conditions is not a successful training sortie; an appropriate deliberate abort can satisfy a separately defined lesson objective.
 
 The research changes impose no NASA organizational approval process and no mandatory MATLAB/SciPy/OpenFAST dependency. Their methods inform project-owned criteria. All simulator, bench, flight, real-device, display, performance and learner experiments above remain unperformed in this documentation change.
+
+## 12. Select gates for the declared milestone and claim
+
+The [master milestone table](../glider-soaring.md#milestones-and-dependencies) owns order and status. The slices below allocate this guide's evidence; they do not create new SG IDs or mark an entire cross-cutting step complete. State the aircraft/mode/weather/controls/platform and claim before selecting checks. Every applicable earlier check remains required.
+
+| Delivery slice | Required software and user-flow evidence | Additional evidence when making the claim |
+| --- | --- | --- |
+| M0 / first data contract | A01–A03; generated-source consistency, explicit absence through all consumers and powered-aircraft compatibility | Independent mass/CG/inertia and geometry before a named physical-build claim |
+| M1a / calm solo | A04–A09 as applicable; A16; input/focus/restart behavior; basic accepted outcome, complete recording and same-identity replay; first SG-13/15/17 slices | Held-out polar/control and actual build evidence for advertised physical fidelity; real devices/1080p and package gates for advertised playtest support |
+| M1b / hand launch | A10 plus solo gates; correlated release state, cancellation/held-action and first-trajectory evidence | Measured release distribution and actual device exercise before realistic launch/device claims |
+| M1c / finite thermal | A11–A15 plus solo gates; complete schema, epoch/domain, instrument and return/expiry checks for each admitted recipe | Weather/instrument and task-feasibility evidence for that recipe; learning gains need their own study |
+| M2a / coupled feasibility fixture | T01–T08 and T10–T12 applicable synthetic cases; bounded solver/events, trial/accepted orientation, whole-pair rollback and minimum state/record envelope | A fixture establishes software evidence only; no physical installation or collision qualification follows |
+| M2b / AI tug and player glider | Pair mechanics; airborne T13; T15/T16; C01 and applicable C03–C14; bounded recovery; full pair record/restore/replay and SG-13/17 slices | Installed aircraft/line and held-out pair-flight evidence for physical towing claims; wake omission remains explicit |
+| M2c / manual tug and transfer | M2b plus C02/C04/C05/C11/C13/C14, both takeover paths and released AI glider fallback; full ownership/event replay | Actual radio/profile/platform and usable transition evidence for advertised support; no assumed training transfer |
+| M3 / ground and richer lessons | T14, ground T08/T10, dual contact and aborts, applicable failures; accepted-event scoring/debrief; all airborne prerequisites | Installed ground/contact/line evidence and any independently claimed failure/break law; controlled study only for a learning-effect claim |
+| M4 / selected release candidate | Applicable prior slices and required CI/export/backend/platform checks; native 1080p evidence, complete limitation text and source/package identities | SG-16 evidence for each advertised physical, instrument or learning claim; a narrower release cannot waive existing repository gates |
+
+Engineering parameters may remain explicitly estimated/synthetic within a bounded experimental slice. Missing physical evidence keeps the corresponding physical claim open; it does not erase numerical, input, contact, observer, event, replay or release requirements. Solo physical qualification is independent of the tug/rope dossier. The full SG-16 record lists each claim as supported, unsupported or outside scope instead of demanding a learner study for every exercise package.
 
