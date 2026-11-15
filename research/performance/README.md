@@ -358,6 +358,10 @@ mode. For example, `--aircraft=stik-electric-6s --battery=pack` selects the fini
 6S pack; `--battery=ideal` selects its ideal supply. Reports bind the mode, data
 path and hash, and actual dynamic/pack flags. Unsupported combinations refuse.
 Keep the modes separate: timings for one do not establish the other.
+The fixed release-session probe also accepts explicit `--trim-profile=reference|production`;
+production requests and verifies a 0.5 throttle start. Omitting either option retains
+the historical probe defaults. The release host validates both values before invoking
+the fixed probe, and retained Mac backend campaigns bind the exact command and results.
 
 ### FlightAudio sound-speed accessor microprobe
 

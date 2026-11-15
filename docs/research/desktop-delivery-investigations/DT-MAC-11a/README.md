@@ -1488,6 +1488,52 @@ It independently pins the final signed executable, PCK, both receipts and
 checked export evidence, and rechecks the executable/template binding. Its
 output is callback time per tick and the reference/native ratio, not FPS.
 
+## Actual paired native package and companion rebind (2026-11-15)
+
+The merged runtime at `f99761a7ffe7be2d3851b6b815bd0914419a882b` passes
+the 17 positive native oracles, required mutation, FPCR/domain controls and
+650 installed stage/lifecycle/replay checks with the 1–19+21 custom editor.
+Its native dylib is `ccb90f962583062bde0bab7ddf658c333b690074a245d42fdb48113f570d13e7`.
+The later `a5bf3e0c5277d2ad977f74f1fe2bdb9db72f3de9` changes the prepared-export
+tooling while preserving that application and mirrored native source.
+
+The actual ARM64 template-release app at `a5bf3e0c` passes checked export,
+both endpoint project proofs, exact signed-template binding, strict ad-hoc
+signatures and linked reference/native receipts. Executable SHA-256:
+`6cd60576161531ae194df8451eb2e20f3a4d519dae1f4d24c687e224f924d6f3`;
+PCK: `5343f1b6e4fe051af626fce6d9e53d74dae09f009224ca2ba2c0ca760df36aeb`.
+Actual package tests pass stage (97), lifecycle (343) and replay (211), with
+`preloaded=false`. The two short fixed sessions each complete 24 warmup and
+240 sample ticks with the requested backend; their state fingerprints match.
+All five checked processes exit cleanly with zero diagnosed errors or warnings.
+
+Lifecycle takes 1,381.49 seconds and replay 1,335.77 seconds. These are diagnostic
+durations with other task work possible, not controlled performance results.
+The source shows repeated full-bundle SHA-256 walks at preparation and replay
+boundaries. Its default bundled PSA configuration selects generic SHA-256.
+Additive optional 0024 enables the vendor ARM implementation on the verified
+macOS ARM64 target; its fresh pair, timing and renewed package gates remain open.
+No freshness check is removed. Ordinary 1080p active-flight, sustained FPS,
+latency/endurance and automatic package default qualification remain open.
+
+CI exposed the stale normalized companion solver pin. A full-baseline comparison
+on the pinned official ARM64 editor replays all nine retained tapes: each has
+2,881 rows and byte-identical baseline/candidate CSVs. `e7715a841eb188d089095bcdd1a70a0b6242a476`
+promotes only the profile, qualification and generated nine-tape receipt to
+`2fbe337732bd1a2a42e43fa7fd0a7126d0fd7d765cd8a0c050e95618c9076d37`.
+The behavior manifest and 19 publication fixture pins stay unchanged. Earlier
+missing-history/resource preparation failures remain retained; they did not
+establish behavior parity. The app must be re-exported to include this profile.
+
+Phase 17 retains 205 payloads in 36,709,510 compressed bytes, SHA-256
+`cb4ccbc1e0431f1f0300f0509e8e5fa343452ea3aab11c3ad66fc46a72e39f8a`;
+every retrieved payload was independently rehashed. The original complete PCK
+stays on the M1; this bounded archive retains its signed inventory and hash.
+The old R3 ZIP still contains the clean19/reference package. Public Developer ID
+distribution remains deferred. The new host's explicit battery/production-trim
+options require a new export and runtime evidence; portable controls alone do
+not upgrade either retained package.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is

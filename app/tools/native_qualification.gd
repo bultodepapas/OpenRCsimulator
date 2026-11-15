@@ -12,7 +12,7 @@ const SCRIPTS := {
 	"helicopter": "test_native_helicopter_session.gd",
 	"helicopter-radio": "test_heli_restore_radio.gd",
 }
-const SESSION_OPTIONS := ["output", "aircraft", "case", "warmup-ticks", "sample-ticks", "observer", "physics-backend"]
+const SESSION_OPTIONS := ["output", "aircraft", "case", "warmup-ticks", "sample-ticks", "observer", "physics-backend", "battery", "trim-profile"]
 const FIXED_WING_MODES := ["session", "stage", "lifecycle", "replay"]
 
 var _harness: Object
@@ -56,6 +56,7 @@ func start(args: PackedStringArray) -> void:
 	# Each existing harness schedules its synchronous run via call_deferred.
 	# Schedule our finish afterward, and quit the application's tree, not the
 	# detached SceneTree object created by the original test harness.
+	# The fixed session probe reads the same OS user arguments validated above.
 	_harness.call("_initialize")
 	call_deferred("_finish")
 
@@ -90,6 +91,10 @@ static func _parse_options(args: PackedStringArray, os_name: String) -> Dictiona
 	var output := str(options.get("output", ""))
 	if mode == "session" and (backend not in ["gdscript_reference", "native"] or output.is_empty()):
 		return {ok = false, error = "session requires --physics-backend and a new --output"}
+	if options.has("battery") and options["battery"] not in ["ideal", "pack"]:
+		return {ok = false, error = "battery must be ideal or pack"}
+	if options.has("trim-profile") and options["trim-profile"] not in ["reference", "production"]:
+		return {ok = false, error = "trim-profile must be reference or production"}
 	return {ok = true, mode = mode, backend = backend, output = output, experimental_native_macos = mac_option == "true"}
 
 

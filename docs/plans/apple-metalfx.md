@@ -107,8 +107,13 @@ full official API validator and 81 native query/dispatch processes. The combined
 `b4442e6a` source candidate also passed native numerical, mutation, FPCR/domain
 and production-path stage/lifecycle/exact-replay gates on M1. The later main
 branch lake/contact changes require fresh source-bound native qualification. Paired export tooling
-and signed-executable/template checks are implemented and tested; actual
-packaged native execution and automatic-default qualification remain open.
+and signed-executable/template checks pass. The actual `a5bf3e0c` ARM64 app passes
+native stage, lifecycle, replay and both short fixed-session backends; its state
+fingerprints agree. The `e7715a84` companion-profile renewal uses nine identical
+retained-tape comparisons and needs a new package export. Explicit production
+trim/battery coverage, actual 1080p workload measurement and automatic package
+default qualification remain open. Optional 0024 targets expensive package hashing;
+its new engine/pair/package gates remain separate from the retained app.
 The R3 development ZIP still contains clean19 and reference physics; the new
 pair does not upgrade it. The linked evidence identifies each tested source.
 

@@ -1104,8 +1104,6 @@ def _run_probe(
         return refused("battery mode must be ideal or pack")
     if trim_profile not in (None, "reference", "production"):
         return refused("trim profile must be reference or production")
-    if release_executable and trim_profile is not None:
-        return refused("explicit trim profile requires a source-editor campaign")
     if mac_native_identity is not None and (not release_executable or not experimental_native_macos
                                             or mac_identity is None or mac_source_identity is not None):
         return refused("Mac native release requires explicit opt-in and both linked bundle identities")
@@ -1389,10 +1387,10 @@ def build_parser() -> argparse.ArgumentParser:
                         help="independently retained campaign JSON SHA-256; repeat in before/after order for research comparison")
     parser.add_argument("--aircraft", action="append", help="catalog ID; repeat or pass comma-separated IDs")
     parser.add_argument("--case", action="append", help="trim, maneuver, runway, or lake; repeat or comma-separate")
-    parser.add_argument("--battery", choices=("ideal", "pack"),
+    parser.add_argument("--battery", action=ENGINE_POLICY._Once, choices=("ideal", "pack"),
                         help="explicit catalog data mode; without this option the historical ideal profile is used")
-    parser.add_argument("--trim-profile", choices=("reference", "production"),
-                        help="explicit source trim profile; production selects 0.5 throttle before setup")
+    parser.add_argument("--trim-profile", action=ENGINE_POLICY._Once, choices=("reference", "production"),
+                        help="explicit trim profile; production selects 0.5 throttle before setup")
     parser.add_argument("--warmup-ticks", type=int, default=2400)
     parser.add_argument("--sample-ticks", type=int, default=14400)
     parser.add_argument("--repeats", type=int, default=3)
@@ -1818,8 +1816,6 @@ def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None,
     release = config.get("release_executable", False)
     if type(release) is not bool:
         raise ValueError(f"{path}: malformed release mode")
-    if release and trim_profile is not None:
-        raise ValueError(f"{path}: explicit trim profile requires source-editor mode")
     engine_metadata = metadata.get("engine")
     local_record = engine_metadata.get("research_engine") if isinstance(engine_metadata, dict) else None
     custom_release = metadata.get("mac_research_release")
@@ -1903,6 +1899,8 @@ def _campaign_runs(path: Path, research_engine: dict[str, Any] | None = None,
                     f"--physics-backend={requested_backend}"]
                 if battery is not None:
                     expected_command.append(f"--battery={battery}")
+                if trim_profile is not None:
+                    expected_command.append(f"--trim-profile={trim_profile}")
                 expected_command.append("--experimental-native-macos=true")
                 log_relative = item.get("log_relative_path")
                 if (command != expected_command or type(item.get("exit_code")) is not int or item["exit_code"] != 0
@@ -2112,8 +2110,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise ValueError("Research release inputs require an explicitly selected research-engine release")
         if not args.godot:
             raise ValueError("--godot is required for a campaign")
-        if args.release_executable and args.trim_profile is not None:
-            raise ValueError("--trim-profile requires a source-editor campaign")
         if args.release_executable and args.probe:
             raise ValueError("--release-executable uses the fixed embedded probe; --probe is not permitted")
         if args.release_executable and args.project is not None:

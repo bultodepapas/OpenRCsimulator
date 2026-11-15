@@ -444,3 +444,22 @@ render-target usage in the observed configuration. The dated record preserves
 the corrected fixture and the empty-device warning/fix separately. This binding
 does not supply OpenRC's whole-scene RT
 lighting, moving geometry/material coverage, composition or a product control.
+
+## Apple ARM64 package hashing (0024)
+
+Optional `0024-apple-arm64-sha256.patch` selects the bundled mbedTLS ARM
+SHA-256 implementation in the default macOS ARM64 PSA configuration. It respects
+custom PSA configuration and explicit acceleration choices. The vendor Apple
+path assumes the instructions exist; verify each intended host. ANGEL reports
+`hw.optional.arm.FEAT_SHA256=1`. Full and light configuration controls pass;
+native build, vectors and package qualification are separate gates.
+
+Apply it after 0001–0019 and 0021 in fresh editor/template intakes. Preserve the
+previous pair and its source/catalog/receipt identities. The source change affects
+bundled SHA-256 users and changes engine bytes; renew both build receipts,
+API/native qualification and signed package receipts. Package freshness checks
+continue to hash the complete inventory at their existing boundaries.
+
+Use the [file-hash fixture](../../../research/engine-upgrade/metalfx/README.md#file-hash-correctness-fixture)
+for independently computed vectors and an optional same-file timing comparison.
+The prepared 0024 pair is still being built; no speedup is established here.

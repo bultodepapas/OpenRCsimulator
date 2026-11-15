@@ -1839,12 +1839,111 @@ class TrimProfileTests(unittest.TestCase):
             self.assertTrue(all("trim_profile" not in item and "trim_start" not in item
                                 for item in campaign["pairs"][0]["runs"].values()))
 
-    def test_release_and_comparison_do_not_silently_ignore_explicit_profile(self):
-        with patch.object(baseline, "run_campaign") as campaign, patch.object(baseline, "compare_campaigns") as compare:
-            self.assertEqual(baseline.main(["--godot", "fake", "--out", "out", "--release-executable", "--trim-profile", "production"]), 1)
+    def test_release_accepts_profile_but_comparison_refuses_override(self):
+        with patch.object(baseline, "run_campaign", return_value=23) as campaign, \
+             patch.object(baseline, "compare_campaigns") as compare:
+            self.assertEqual(baseline.main(["--godot", "fake", "--out", "out", "--release-executable",
+                                            "--battery", "ideal", "--trim-profile", "production"]), 23)
+            args = campaign.call_args.args[0]
+            self.assertTrue(args.release_executable)
+            self.assertEqual((args.battery, args.trim_profile), ("ideal", "production"))
             self.assertEqual(baseline.main(["--compare-campaigns", "one", "two", "--out", "out", "--trim-profile", "reference"]), 1)
-            campaign.assert_not_called()
+            campaign.assert_called_once()
             compare.assert_not_called()
+
+    def test_parameter_duplicates_invalid_values_and_unknown_options_are_refused(self):
+        options = (["--battery", "ideal", "--battery", "pack"],
+                   ["--trim-profile=production", "--trim-profile=production"],
+                   ["--battery", "IDEAL"], ["--trim-profile", "other"], ["--unrecognized", "yes"])
+        with patch.object(baseline, "run_campaign") as campaign, contextlib.redirect_stderr(io.StringIO()):
+            for extra in options:
+                with self.subTest(extra=extra), self.assertRaises(SystemExit):
+                    baseline.main(["--godot", "fake", "--out", "out", "--release-executable", *extra])
+            campaign.assert_not_called()
+
+    def test_release_profiles_bind_command_and_completed_runtime_proof(self):
+        for profile in (None, "reference", "production"):
+            with self.subTest(profile=profile), tempfile.TemporaryDirectory(prefix="session-trim-release-") as directory:
+                root = Path(directory)
+                executable, _probe, reference, native = mac_release_fixture(root)
+                engine = {"path": str(executable.resolve()), "sha256": reference["executable_sha256"],
+                          "runtime_binary_sha256": reference["executable_sha256"]}
+                commands = []
+
+                class Process:
+                    returncode = 0
+
+                    def __init__(self, command, **kwargs):
+                        commands.append(command)
+                        output = Path(next(arg.removeprefix("--output=") for arg in command if arg.startswith("--output=")))
+                        backend = next(arg.removeprefix("--physics-backend=") for arg in command if arg.startswith("--physics-backend="))
+                        report = mac_release_report(backend, reference, native)
+                        if profile is not None:
+                            report["battery"] = {"mode": "ideal", "data_path": "res://data/aircraft/stik.json",
+                                                 "data_sha256": report["aircraft_sha256"], "dynamic": False, "pack": False}
+                            report["trim_profile"] = profile
+                            if profile == "production":
+                                report["trim_start"] = TrimProfileTests.start(backend)
+                        output.write_text(json.dumps(report))
+                        kwargs["stdout"].write("NATIVE_QUALIFICATION mode=session verdict=pass\n")
+
+                    def wait(self, timeout): return 0
+
+                output = root / "campaign"
+                args = ["--godot", str(executable), "--out", str(output), "--release-executable", "--compare-backends",
+                        "--experimental-native-macos", "--aircraft", "jensen-das-ugly-stik-60", "--case", "trim",
+                        "--warmup-ticks", "4", "--sample-ticks", "5", "--repeats", "1"]
+                if profile is not None:
+                    args += ["--battery", "ideal", "--trim-profile", profile]
+                with patch.object(baseline, "capture_workspace_identity", return_value={}), \
+                     patch.object(baseline, "capture_system_identity", return_value={"system": "Darwin", "machine": "arm64"}), \
+                     patch.object(baseline, "capture_mac_release_source", return_value=mac_release_source_fixture(reference)), \
+                     patch.object(baseline, "inspect_godot", return_value=engine), \
+                     patch.object(baseline, "native_source_digest", return_value="c" * 64), \
+                     patch.object(baseline, "app_source_digest", return_value="app-digest"), \
+                     patch.object(MAC_RECEIPT, "verify", return_value=reference), \
+                     patch.object(MAC_RECEIPT, "verify_native", return_value=native), patch("subprocess.Popen", Process):
+                    self.assertEqual(baseline.main(args), 0)
+                    path = output / "session_baseline.json"
+                    campaign, rows = baseline._campaign_runs(path)
+                    self.assertEqual(len(rows), 1)
+                    for command in commands:
+                        self.assertEqual(any(arg.startswith("--battery=") for arg in command), profile is not None)
+                        self.assertEqual(any(arg.startswith("--trim-profile=") for arg in command), profile is not None)
+                        if profile is not None:
+                            self.assertLess(command.index("--battery=ideal"), command.index("--trim-profile=" + profile))
+                            self.assertLess(command.index("--trim-profile=" + profile), command.index("--experimental-native-macos=true"))
+                    if profile is None:
+                        self.assertNotIn("battery", campaign["configuration"])
+                        self.assertNotIn("trim_profile", campaign["configuration"])
+                        continue
+                    native_run = campaign["pairs"][0]["runs"]["native"]
+                    for mutation in ("missing", "wrong", "reordered"):
+                        changed = copy.deepcopy(campaign)
+                        cmd = changed["pairs"][0]["runs"]["native"]["command"]
+                        index = cmd.index("--trim-profile=" + profile)
+                        if mutation == "missing":
+                            cmd.pop(index)
+                        elif mutation == "wrong":
+                            cmd[index] = "--trim-profile=invalid"
+                        else:
+                            cmd[index], cmd[index - 1] = cmd[index - 1], cmd[index]
+                        path.write_text(json.dumps(changed))
+                        with self.subTest(mutation=mutation), self.assertRaisesRegex(ValueError, "invalid Mac release probe command"):
+                            baseline._campaign_runs(path)
+                    if profile == "production":
+                        raw_path = output / native_run["report_relative_path"]
+                        raw = json.loads(raw_path.read_text())
+                        for field, value in (("requested_throttle", 0.6), ("backend_domain_guard", False),
+                                             ("domain_guard_checks", 0), ("start_sha256", "8" * 64)):
+                            bad = copy.deepcopy(raw)
+                            bad["trim_start"][field] = value
+                            raw_path.write_text(json.dumps(bad))
+                            changed = copy.deepcopy(campaign)
+                            changed["pairs"][0]["runs"]["native"]["report_sha256"] = _sha256_file(raw_path)
+                            path.write_text(json.dumps(changed))
+                            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "not comparable"):
+                                baseline._campaign_runs(path)
 
 
 class ResearchReleaseProvenanceTests(unittest.TestCase):
