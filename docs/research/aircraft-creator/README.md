@@ -6,6 +6,7 @@ Dated evidence for the [Aircraft Creator plan](../../plans/aircraft-creator.md) 
 | --- | --- |
 | [Revision 6 specification](2026-11-07-creator-specification-rev6.md) | External source specification, 2026-11-07, written against `997e2127` and never run against the application. Kept unchanged as the detailed reference for record, storage and UI contracts. The plan supersedes it where they differ. Its companion pack and historical probe receipts (H01, H02) were never in this repository. |
 | [Estimated trainer package](estimated-trainer-package.md) | Derivation, borrowed values, domain and software checks of the first airframe and power packages (AC-05, AC-06). |
+| [ClearView compatibility research](clearview-2026-11-15.md) | Primary documentation, seven ZIPs / 26 model roots, exact source inventory, licensing and Creator integration limits, 2026-11-15. The [AC-CV subplan](../../plans/clearview-aircraft-import.md) owns proposed implementation and gates. |
 
 ## Engine probes (2026-11-10)
 

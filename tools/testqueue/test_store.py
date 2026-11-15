@@ -37,6 +37,27 @@ class DurableStoreTests(unittest.TestCase):
         self.assertEqual(self.store.get(job)["outcome"], "CANCELED")
         self.assertEqual(self.store.db.execute("SELECT COUNT(*) FROM attempts").fetchone()[0], 0)
 
+    def test_operator_abandonment_releases_only_orphan_and_retains_incomplete_evidence(self):
+        first, second = self.submit("orphan"), self.submit("next")
+        attempt = self.store.allocate(first, {"exclusive": 1}, {"exclusive": 1})
+        identity = {"process": {"host": "fixture", "boot": "fixture"}}
+        self.store.update(first, attempt, "UNKNOWN", identity)
+        for reason in (None, "", " ", "x" * 2001):
+            with self.assertRaises(ValueError):
+                self.store.abandon(first, reason)
+        self.assertIsNone(self.store.allocate(second, {"headless": 1}, {"headless": 1}))
+        self.store.abandon(first, "Owner requested release after loss of supervisor")
+        status = self.store.get(first)
+        self.assertEqual(status["state"], "FINISHED")
+        self.assertEqual(status["outcome"], "INFRA_FAILED")
+        self.assertEqual(status["cleanup"], "UNCONFIRMED")
+        self.assertEqual(status["evidence"], "INCOMPLETE")
+        self.assertEqual(status["process"], identity["process"])
+        self.assertTrue(status["operator_abandoned"]["reason"])
+        self.assertIsNotNone(self.store.allocate(second, {"headless": 1}, {"headless": 1}))
+        with self.assertRaisesRegex(ValueError, "only UNKNOWN"):
+            self.store.abandon(first, "repeat")
+
     def test_failed_release_rolls_back_and_singleton_cannot_be_duplicated(self):
         job = self.submit("cleanup")
         attempt = self.store.allocate(job, {"rendered": 1}, {"rendered": 1})

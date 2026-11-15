@@ -1,6 +1,6 @@
 # Great Planes Extra 300S .60: source and model guide
 
-Checked 2026-10-19. `gp-extra-300s-60` is an experimental GPMA0236 aircraft with a native Godot model. This page owns geometry, finish, model interfaces and their tools. The [aircraft guide/plan](../../../docs/EXTRA-300-PLAN.md) owns current flight scope, pending checks and remaining EX work; [glow](../../../docs/GLOW-ENGINES.md) and [fuel](../../../docs/FUEL-SYSTEM.md) own shared runtime behavior.
+Checked 2026-11-15. `gp-extra-300s-60` is an experimental GPMA0236 aircraft with a native Godot model. This page owns geometry, finish, model interfaces and their tools. The [aircraft guide/plan](../../../docs/EXTRA-300-PLAN.md) owns current flight scope, pending checks and remaining EX work; [glow](../../../docs/GLOW-ENGINES.md) and [fuel](../../../docs/FUEL-SYSTEM.md) own shared runtime behavior.
 
 ## Sources and frames
 
@@ -42,6 +42,12 @@ Rebuilding EX-01 metrology is separate from routine checks: `python3 research/ex
 [extra_300s_model.gd](../../../app/aircraft/extra_300s_model.gd) is selected by the version-1 model manifest (`euler_hinges`); it builds native geometry rather than importing a scene. Its raw `build()` result contains `{root, propeller, hinges, gear}`. Stable `airplane`, `propeller` and hinge nodes remain bound through the common presentation contract. Static `aileron_frame_*` parents carry the swept hinge direction; commanded deflection acts on the child hinges.
 
 The [finish](../../../app/aircraft/extra_300s_finish.gd) uses model-space UVs and shared shaders for the estimated red/white/blue scheme. The plan-derived pilot sits under a tinted canopy; `appearance.json` controls its alpha. [EX-10 visual evidence](../../../docs/research/extra-300-visual-review-v1.md) records orientation checks and limits.
+
+E300-07 adds twin recessed cooling openings inside the measured nose outline and rounded tire shoulders with separate metal hubs. Opening dimensions, 18 mm duct depth and tire sections are visual estimates. The hub and tire share each existing wheel pivot. The new `cowl_face` participates in the fuselage paint slot. General kit-shape references remain the Great Planes plans/manual and the .60 photographs credited to [Outerzone oz10977](https://outerzone.co.uk/plan_details.asp?ID=10977).
+
+[test_extra_visual_details.gd](../../../app/tests/test_extra_visual_details.gd) checks open intake centers, duct depth, wheel dimensions, outward cap winding and isolated body paint, then runs the existing Extra geometry/articulation verifier. Submit this script through the checked test pool on enrolled hosts. The E300-07 visual review used paired front, side, top, oblique, cowl and gear views at 1920×1080 in the native Windows Compatibility renderer on an RTX 3090. Scratch captures and their source/checksum manifest remain under ignored `tmp/extra300-model-20261115/`.
+
+The native Windows checked run passed 151 checks with zero errors or warnings on 2026-11-15. The model contains 37 meshes and 21,346 triangles, with a 1.624 × 0.552 × 1.386 m extent. Minimum control clearance remains 1.75 mm at the manual high rates.
 
 The verifier checks posed control clearance at manual travel and 45° using [extra_clearance.gd](../../../app/aircraft/extra_clearance.gd). Those are software geometry checks, not measured loaded-airframe travel. The visual propeller is nominal 12×6 with estimated outline/section; the shaft frame has the plan's 2° right / 0.5° down angles. [EX-05](../../../research/extra-300/ex05/derivation.md) derives the physical axis and force arm from that frame and hub. Aerodynamics, mass/inertia and the active glow profile remain separately attributed estimates.
 

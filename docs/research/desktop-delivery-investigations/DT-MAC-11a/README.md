@@ -1450,9 +1450,41 @@ native export/PCK/receipt qualification remains pending. Combined private source
 `d53afebd7e8935ee7ee30cdaf681c7f190fdf1ff` passed 39 producer controls,
 seven actual script parses and six focused startup/log/replay scripts on the
 new editor, using a declared warm import cache and isolated research profile.
-It is not packaged execution or native replay qualification. Review then found
-a non-string backend edge in the new recording guard; a type check and focused
-test are being qualified before repeating native correctness.
+It is not packaged execution or native replay qualification. The subsequent
+`b4442e6a86b58489d67683f56f39623353480a0d` correction rejects a non-string backend
+before checkpoint creation. Eight script parses and six focused scripts pass,
+including 4,417 flight-log checks. The actual receipt/cache consumer passes 35
+checks in a disposable project. A separate editor-plugin entry runs all eight
+export-preset checks and closes normally with zero errors or warnings; the
+earlier `--editor --script` attempt leaked editor resources and remains failed.
+
+The complete custom-engine native correctness battery then passed on that exact
+`b4442e6a` source in 1,544.2 seconds: 17 positive oracle rows, detected mutation,
+FPCR/domain controls, and installed production-path stage (97), lifecycle (343)
+and exact replay (210) checks. The native dylib is
+`3b1549091e1319d1f646e2cf19f53f73824e8aea5d307023f37be294e43a8b31`.
+Phase 15 retains 277 payloads in 7,099,849 compressed bytes, SHA-256
+`bde6551fe713cc92d3b78a556991431e6e8c88a03030163cf1964d72be81bd94`;
+every retrieved payload was independently rehashed. This closes source
+correctness for the repaired engine, not release-package or automatic-default
+qualification. Later pair/export/measurement tooling passed 122 portable
+controls on M1; these do not change the qualified runtime or mirrored sources.
+
+The actual new editor/template/ZIP binding passes with independently retained
+phase-14 pins. The signed executable comparison now uses complete disposable
+copies: remove signatures, apply the same fixed ad-hoc signature, then compare
+full sizes and SHA-256. Signature removal alone left two differing bytes in
+`__LINKEDIT` sizing; no byte region is masked. On M1, the integrated helper
+accepts the existing clean19 app and a separately signed copy of template21,
+returns stable repeated proofs, and rejects both a code-byte mutation and a
+different selected engine. Original files remain unchanged. The template21
+copy is not an exported application; actual paired package execution remains open.
+
+The custom-release CPU measurement lane has 73 passing portable controls,
+including real pair/package/receipt readers with simulated host operations.
+It independently pins the final signed executable, PCK, both receipts and
+checked export evidence, and rechecks the executable/template binding. Its
+output is callback time per tick and the reference/native ratio, not FPS.
 
 ## Evidence retention and open gates
 

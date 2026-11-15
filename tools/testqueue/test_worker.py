@@ -460,6 +460,33 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(status.get("cleanup"), "CONFIRMED")
         self.assertIn("EXTERNAL_SIMULATOR", status["error"])
 
+    def test_operator_abandonment_requires_ownership_drain_and_absent_orphan(self):
+        self.worker.draining = True
+        accepted = self._submit("orphan")
+        attempt = self.worker.store.allocate(accepted["job"], {"exclusive": 1}, {"exclusive": 1})
+        self.worker.store.update(accepted["job"], attempt, "UNKNOWN", {"process": {"fixture": True}})
+        with mock.patch.object(processes, "orphan_absent", return_value=True):
+            with self.assertRaisesRegex(ValueError, "handle"):
+                self._call("abandon", handle=accepted["job"] + ":wrong", reason="owner request")
+            self.worker.draining = False
+            with self.assertRaisesRegex(ValueError, "drained"):
+                self._call("abandon", handle=accepted["handle"], reason="owner request")
+            self.worker.draining = True
+            for registry in (self.worker.active, self.worker.contexts):
+                registry[attempt] = None
+                with self.assertRaisesRegex(ValueError, "supervisor thread"):
+                    self._call("abandon", handle=accepted["handle"], reason="owner request")
+                registry.pop(attempt)
+        with mock.patch.object(processes, "orphan_absent", return_value=False):
+            with self.assertRaisesRegex(ValueError, "absence"):
+                self._call("abandon", handle=accepted["handle"], reason="owner request")
+        self.assertEqual(self._status(accepted["job"])["state"], "UNKNOWN")
+        with mock.patch.object(processes, "orphan_absent", return_value=True):
+            result = self._call("abandon", handle=accepted["handle"], reason="owner request")
+        self.assertEqual(result["state"], "FINISHED")
+        self.assertEqual(result["cleanup"], "UNCONFIRMED")
+        self.assertEqual(result["outcome"], "INFRA_FAILED")
+
     def test_queued_studio_job_is_rechecked_after_authority_upgrade(self):
         self.worker.draining = True
         self._write("tools/readme/capture_aircraft.gd", "# old reviewed studio script\n")
