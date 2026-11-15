@@ -402,8 +402,14 @@ argument buffer, and validation of stale descriptor sets after a pipeline change
 Inactive set holes are skipped before residency tracking; the current shader's
 active TLAS and child BLASes are explicitly declared resident. Nine portable
 tests passed, including compiled actual-function controls and deliberate
-mutations. Test source SHA-256:
-`a7d5d8d14bbe495e10700f6a41c39a716b7c6ce42c46665a03f56735d163f819`.
+mutations. The final test/runner source SHA-256 is
+`350f17484047d176860caeca0061417da2c6e8eafc988f8ee757c5a374434067`.
+Seven additional fake-runner controls passed: bounded checked evidence, exact
+intentional rejections, extra shader/script errors, incomplete capture, changed
+evidence, binding/GPU faults and admission refusal. Each native process now uses
+the checked runner and normal host admission. Expected rejection reports retain
+`ok=false` / `engine_error`; only a separate fixture verdict can accept their
+exact diagnostics, never extras or an incomplete run.
 The prepared fixture tests fresh processes for both binding modes. This revision
 has not been compiled with Apple's Metal SDK or executed on a GPU.
 
@@ -427,7 +433,565 @@ Command-buffer completion is distinct from the legacy CPU encode acknowledgement
 image correctness, presentation and effect-only cost. No production default or
 recovery policy was changed by this observer.
 
+### RenderingDevice denoised binding
+
+Patch 0007 SHA-256
+`d3ce4cb242eb311d214535ce695c744c2a15801b1226c940fb707b71bce64166`
+adds a driver-neutral context RID interface and an availability-guarded Metal 3
+SDK bridge using Godot's device/command buffer. It supplies the nine fixed guide,
+exposure and output textures, finite frame parameters and explicit history reset.
+Its narrow native route requires hazard tracking; imported and shared textures
+are rejected. The [engine guide](../../../../tools/graphics/metalfx/README.md#experimental-rd-denoised-binding)
+owns the complete contract. This is not the production scene RT consumer.
+
+Independent review found and fixed four concrete defects: an exposure upload
+could remain unsubmitted, distinct imported views could alias backing memory,
+the alternative barrier-fence path could wait for an unencoded update, and a
+denoiser-only graph could lack a native command buffer. The prepared real-RT
+witness now produces/submits its inputs before denoising first in a fresh graph.
+Sampled guides, distances and retired-context output explicitly reject NaN/Inf.
+Fixture SHA-256:
+`9bb9c5a961a85f27b56c930bc03a8f981d47176daef7d62793b46a3c021ba145`.
+
+Nine portable controls passed after the final fixture correction. Test source:
+`c466f421477926080fa6e118ca6f74b51488ea98a3d6ca718eea41b8b7a48d39`.
+The actual patched `RenderingDevice.cpp` passed Windows GCC 15.2 C++17 syntax
+checks in release and DEBUG/DEV configurations. The frozen source revision then
+cleared the bounded independent review. None of these checks compiles the
+Objective-C++ bridge against Apple's SDK, parses the fixture or executes Metal.
+
+The final frozen portable patch suite passed **60 tests**. A complete fresh 1–7
+intake, reconstructed from the pinned ZIP, contains 14,442 files with catalog
+SHA-256 `61cdead5b912c1775251477252b71cd3ea9817c6ffdad452336e05fab2b86341`.
+Its original receipt/source is retained locally under
+`tmp/metalfx-stack7-intake-20261114-r1`. No native build or hardware result is
+attached to this intake yet.
+
+The corresponding tools/fixtures overlay is retained at
+`tmp/metalfx-20261114/engine-stack-1234567-r2.zip`, 225,347 bytes, SHA-256
+`fe8a2d010cc6ef71ef8b573ee33e4db23b244b1df2354c6aea08789c5eaf171d`.
+Its 40 payload files have individual size/hash entries; manifest SHA-256:
+`1eada54b4c66e4a9cb42a527e3ce2047d2b2fd34e9dbef7d59e237f2bd201de4`.
+Every archived byte was read back and compared. The overlay is not a complete
+product source, a compiled native engine or a renewed kernel qualification.
+Runner dependencies use Git blobs from
+`9d131dd94a45badf04c4066cb5ee700c2e978a19`, avoiding unrelated ongoing pool-tool
+edits in the shared tree. Its checked runner has LF blob identity
+`aec26b085e7fdf9b32cd539c1e8631d84edc2c9cb6ac934936f6ce35f800f66b`.
+The earlier `engine-stack-1234567.zip` is superseded before native use; it captured
+moving helper inputs and is retained separately.
+The final suite ran from the extracted r2 overlay; all 40 recorded payloads were
+rehashed unchanged after execution. Captured result:
+`tmp/metalfx-20261114/stack7-frozen-portable-result.json`. The earlier combined
+run passed 59 tests before the final runner admission control was added.
+
+## Native follow-up after access recovered
+
+The two documented M1 routes became reachable. Tests below are new runs, not
+retroactive changes to the earlier pending or failing receipts. Both hosts are
+MacBookAir10,1 / M1 / 8 GiB. The original host used macOS 27.0.1, SDK 27.0 and
+Apple clang 2100.3.34.2. The second used macOS 27.0 (26A5425a), SDK 27.2 and
+clang 2100.4.1.1. Task-owned workspaces and fresh output directories preserve
+the old campaigns. Neither Mac had test-queue enrollment; occupancy was checked
+before native work. These runs do not establish thermal or sustained performance.
+
+The pinned source archive and unchanged intake helper produced two fresh native
+ARM64 editors on the second M1:
+
+| Ordered patches | Editor SHA-256 | Build log SHA-256 |
+| --- | --- | --- |
+| 0001–0007 | `253b8de37c267028aee81d899158cebfef48921bd54ec27864dbf1abc1f9ec95` | `1263411859a98561c2ea8aeb3e0f2ebd0ab9ea8a41547c8b1d9d6875b1142cb7` |
+| 0001–0007, 0010 | `93a99f25cbcf60b5ca90ebf5b1eb691b30f64b877541f1ab09abce826ecd11f1` | `440ba7d85d676ada16f0da0c34f8789dd2f01e7d3218a68909a7d062d7d3cf2d` |
+
+Build durations were 8m44s and 8m38s. The latter pristine source catalog is
+`cf8902f8526a35c26dcb03f8d9c29f716281ca172c13791aca47ecfeafea68ad`.
+The earlier seven-patch catalog remains `61cdead5…`; its native build is now
+established. Neither editor has a verified matching release-template pair or
+renewed native-physics qualification. SDK 27.2 does not satisfy the existing
+kernel qualification's exact SDK 27.0/toolchain pins; those pins are unchanged.
+
+The original M1 passed the checked 1920×1080 moving-quad interpolation witness
+with its earlier four-patch editor. Fixture SHA-256 is
+`370ff63627dc4baa4e9d5c62638dc3d2efdb01d08a16a42710d1ab3991e95408`.
+Midpoint MAE was 0.004253, versus previous endpoint 0.112593, current endpoint
+0.107999 and crossfade 0.107296; static calibration was 0.004771. All 2,073,600
+RGBA16F output pixels were finite and none retained the sentinel. An initial run
+failed only the render-count check: SubViewport's property retained UPDATE_ONCE
+after backend consumption. Explicitly disabling it after frame completion and
+checking two idle root frames established a single SDK submission, 22→23→23.
+Image hashes stayed identical between those runs; thresholds were not retuned.
+This verifies one opaque translating quad with linear tonemapping, not general
+flight motion, HDR mapping, composition, OS presentation, FPS or input latency.
+
+The seven-patch editor also passed all six native `gpu_probe.gd` cases on that
+host, including Spatial, Temporal GPU reset serials, interpolation epoch changes
+and observation retirement. Command-buffer timing is shared with other encoded
+work; it is neither effect-only timing nor an FPS measurement.
+
+On the second M1, the final triangle-query r3 battery passed **39 cases** using
+the 0001–0007+0010 editor. Both binding modes executed actual hits/readback under
+Metal API/shader validation. Rejection cases deliberately produce checked
+engine-error reports; the case wrapper accepts only their exact expected
+diagnostics and rejects warnings. Fixture SHA-256:
+`55428cb8571005ada52f54822adf944315fcd18302e67ad70bf4af647d95cd49`.
+Earlier r1/r2 failures remain retained: an empty local RD emitted
+`Never signaled fence`. Patch 0010 ensures a queue-ordered command buffer exists
+before encoding a non-null completion fence, including the barrier path; it
+does not suppress the diagnostic or signal the event early from the CPU.
+Patch SHA-256: `e72d1d5659213f34b582b2c55e88e2bf50a54c24bc38f3dc3c985130a3c063a4`.
+Its three compiled controls include deliberate mutations; fake completion is not
+native fault injection.
+
+Both native denoising binding modes passed r4 with that editor, zero engine
+errors and zero warnings. The fixture traced 56,568 samples with 18,336 hits and
+zero analytic hit mismatches, read finite/sentinel-free 1920×1080 RGB output,
+and measured loose ROI MAE 0.006505. Five accepted/encoded dispatches include
+denoising first in a fresh graph; retiring the context before callback completion
+preserved output validity. Fixture SHA-256:
+`93ad333d91945d6a14b29ff04d3c8594bdb99eb74f683c546c271bf91c43b287`.
+Earlier parse and SDK-usage failures are retained separately. The output needs
+color-attachment usage as reported by this SDK. `accepted`/`encoded` remain CPU
+receipts; actual readback establishes GPU execution for this witness. It does
+not qualify whole-scene lighting, dynamic geometry, quality, cost or defaults.
+
+The native process-identity policy was exercised twice with the actual original
+four-patch editor and official beta2. Both rounds passed fresh API extraction
+and detected the deliberately absent class; no API compatibility diagnostic was
+ignored. The fresh official 4.8 API is 7,115,491 bytes, SHA-256
+`f44ba46a874368b716dd7c713ffccec27afaa2dbaaf6b32b625c309524a730ba`.
+Its identity overlay is `native-api-identity-r1.zip`, SHA-256
+`172983105d81eb061031226756c5d50dabc4431d76f9cb3df219ac8b64f19206`.
+This repairs the earlier 4.7 comparison apparatus; it does not issue a new kernel
+default marker. The attempted four-patch editor/template r2 pair remains refused:
+the recorded Python path spellings differ even though they resolve to one
+interpreter. Preserve that refusal and use one exact absolute invocation for
+future matching builds.
+
+Patch 0012 adds Metal-only fail-stops at four RD queue-submit and two fence-wait
+returns before resource/fence recycling. SHA-256:
+`55c185f928b9e1d742568f3803d5bec70450177d30ddf976723f8f4197f33fdb`.
+Three compiled source-bound controls passed, including ignored-error mutations
+and preserving Vulkan's existing recoverable error handling. Metal's current
+wait can time out after two seconds: termination can therefore mean a slow or
+suspended GPU, not proven device loss. This is experimental failure behavior;
+native stress, asynchronous GPU faults and recovery remain unqualified.
+
+For presentation patch 0008 `e4b73172a8025a1702a04ee818b0e0591d68ec814610d22a6441420ebdfef18a`,
+the isolated Objective-C++ bridge compiled cleanly on the original M1 with SDK
+27.0, deployment floor 13.0 and availability/method-access errors enabled.
+The bridge snapshot SHA-256 is
+`e26b78ae7b4ce723837ffc214ec210d2b912caf602e4c8368cd669c640ae063a`;
+archive `presenter-syntax-r6.zip` is
+`32db9011effa343ad3fec768bf452b792d1d7cf967457891be99bbfe8278cbc0`.
+Thirteen portable controls passed. This is syntax/control evidence only; the
+combined engine, actual adapter and OS presentation remain open.
+
+Retrieved raw phase-2 bundles, without images/binaries, are retained locally:
+
+- `tmp/metalfx-20261114/retained-phase2-m1a.tar.gz`, SHA-256
+  `745f0f9b8a86f245928f4696e8897b458e7ebe8097b9c3b3a50dfc32aa2878a2`:
+  checked motion/GPU runs, identity tests, failed pair and early bridge syntax.
+- `tmp/metalfx-20261114/retained-phase2-m1b.tar.gz`, SHA-256
+  `c51362819f380611302242fba533b14648d57e7b423d55a278c23afe945fe4c2`:
+  both native builds, query r1–r3, denoising r1–r4 and their exact fixture sources.
+
+Later bridge/adapter work is not included retroactively in either bundle.
+
+## Integrated presentation candidate
+
+The ordered 0001–0012 candidate reconstructed 14,446 source files, catalog
+SHA-256 `8313fb46102b8c8cc78b2470bf436ff00da64cb1403850b0867e86a30953b6c1`.
+Its native editor build passed in a new second-M1 intake in 8m40s. The ARM64
+editor is 113,873,736 bytes, SHA-256
+`37f9017d5e4b34cd41a6eef2cf4401aff7284c5c970990963ce10e1ec80b10f0`;
+build log SHA-256 is
+`c83a7cc44c5f04afc49b0d478df5a9906c1896e57517a753d9f6a7218f0af3fb`.
+Source/toolchain verification passed after the build. Both new presentation and
+composition fixtures passed native checked parsing; rendered cases remain
+separate results. The frozen
+tools/fixtures overlay is `tmp/metalfx-20261114/engine-stack-1-12-r1.zip`,
+299,993 bytes, SHA-256
+`418a9d863fabd7fe0614dbd540dad51ae5f71183a796940ea0959f2c92541457`;
+its 53-file manifest is
+`e26aa41bc201700801ba804e8b91d1b531c85d948ae4fa24d72fc2b1d1f3e952`.
+The frozen overlay passed **91 portable controls** using Windows GCC 15.2.
+An initial invocation omitted the source-cache/compiler environment and failed
+prerequisite discovery; the corrected run used the exact pinned archive.
+These controls are source-bound simulations, not a native presentation result.
+
+Frozen additional patches are 0008 `e4b73172…`, 0009
+`5ca9396cc846a7f6b72a42f06d1785124e605e4a983e565a31cdf4273dc29333`,
+0010 `e72d1d56…`, 0011
+`d6ebee96e1717b7f2d6d5b3b63da82d0c3238582a9bb51bda5a749b70ff55640`
+and 0012 `55c185f9…`. Bounded independent source review found no remaining
+concrete blocker; it did not establish image correctness or OS timing.
+The actual-pair adapter fixture is `composition_probe.gd`, SHA-256
+`a6d3928563f1b34fcf45064805be3c63deb079b2be965809be3a20ceac06aa14`.
+It is prepared to check generated and real OS-presented callbacks, then real-only
+continuity with composition disabled; until run, these remain intended checks.
+
+The experimental owner suppresses the boot background/logo. Cancellation prevents
+new admission until an old in-gate submission exits; it is not synchronous
+revocation or OS cancellation. Blocked epochs may need an explicit reset, and
+200-ms retirement or Metal's two-second fence timeout can terminate the process.
+These limitations, native build/fixture results and product integration remain
+separate from the existing qualified native-physics default.
+
+### Native presentation failure and bounded correction
+
+The first 0001–0012 rendered route test passed ordinary presentation, then the
+display-link real-only case timed out. A three-second native `sample` captured
+the lock cycle: the display-link thread called `addPresentedHandler` while holding
+the state mutex; Core Animation's presented callback needed that mutex while
+holding its own lock. Metal completion callbacks also stalled, eventually
+blocking the main thread's command-buffer pool. The sample is retained at
+`tmp/metalfx-20261114/present-real-owner-r1.sample.txt`, SHA-256
+`2c99925d5fcce1e22591aaef42facb6e7dc8c8a7ce1bfbf0074f5a5330639ca5`.
+The redundant synthetic case was interrupted through the checked runner after
+the first timeout; it is not a passing or completed case.
+
+Patch 0014 moves drawable/Metal property access, encoding and handler
+registration outside that callback mutex. It retains presentation/source/proof
+gates and leases, then reacquires the state mutex to revalidate deadline,
+cancellation, generation and scheduler reservation before accounting and
+submission. The completion callback reads native status before taking the mutex.
+Patch SHA-256: `a15caae49bb4d543043e009fd63a63f88c433e8d8ccbbc139ade6acf6a991468`.
+Four source-bound controls passed, including a two-thread CA-lock stand-in using
+the actual presented callback. Restoring the previous lock order reproduces a
+bounded deadlock; the test exits deliberately without an OS crash dialog. The
+controls do not model indirect native texture releases or replace native stress.
+
+A separate APFS development clone was incrementally rebuilt, preserving the
+original intake and binary. Editor SHA-256:
+`1091ddaa48dddebb0b39179214c6a4c8d90a3087b13a1ab98ccdfc993486b8b7`.
+This is explicitly a diagnostic build, not a fresh qualified editor/template pair.
+Under Metal API validation, its real-only display-link case passed: 176 present
+requests, 172 OS-presented callbacks and four unresolved requests at the sampled
+instant, zero GPU failures. Callback counts are not physical scanout proof.
+
+The offscreen composition case passed with actual 1920×1080 images. The sampled
+translucent UI changed the pixel by 0.411765; saved-real and generated UI errors
+against current-real were both zero. Reset/recovery, glow rejection, resize and
+Off checks passed. Generated, saved-real and current-real image hashes remain
+distinct in the receipt. This checks UI exactly once in that bounded scene; it
+does not establish general color correctness or presentation.
+
+Both synthetic and actual-pair presentation cases completed but failed their
+generated-output requirements: 178/238 pair candidates were accepted, with zero
+generated present requests or OS-presented callbacks. The actual adapter still
+presented 235 real frames, and composition Off preserved real-only continuity.
+Therefore neither case establishes working generated-frame presentation. Patch
+0015 adds observed scheduler predicates/timestamps to distinguish proof, cadence
+and deadline rejection before changing behavior; a 30-FPS request alone does not
+prove the producer or display cadence.
+
+macOS clamped these requested 1920×1080 windows to **1920×1018**, confirmed by
+the window/root viewport receipts. Their presentation results are functional
+diagnostics, not 1080p display qualification. The separate 1920×1080 offscreen
+composition result retains its narrower image scope.
+
+### Real completion observer and admission-policy follow-up
+
+0013 adds opt-in real-viewport GPU completion and a separate guarded device
+capability query. Frozen patch SHA-256:
+`4557e956812dd07a5457763d9f59266520c39f04053ecf2977364c345c4e8cda`.
+Its six portable controls passed. A development engine with canonical ordered
+0001–0015 source then built and passed pre/post source verification: 14,447
+files, catalog `3eaf5d41e50f293a7f62f6159ddfe1368a9e42dc700b67e2edad0c99e02f0d68`,
+editor `6e9d52a7b2fcb14a24dc70e938ce478bea652aa128ced4111d448d42ca232407`.
+It remains an incremental diagnostic build, without a matching qualified template.
+
+The final 0015 diagnostic revision is
+`5e1b25dc8e3296423dae24489cd8b936a6cfbaf32a0fc6b006c6bec0b1971b9d`.
+It captures proof scalars once for the actual predicate, records the commit
+deadline and job kind, and preserves native command status/error code on failure.
+Its two compiled controls passed. The earlier native diagnostic source/patch is
+retained separately in `presenter-decision-native-r1.zip`, SHA-256
+`6d3fe5d8ed2e00e15db30b64e2d611a0071c2cefd0d08af57be672e707a89c59`.
+
+The synthetic native trace observed a 0.016666625-second display period and
+0.033584667-second producer interval. Its previous real target was
+479646.105649625, next target 479646.138982875, CPU observation 479646.089127583
+and reservation 479646.081439917. Proof matched the preceding real, but cadence
+and deadline checks rejected all 176 considered decisions. The target was two
+display periods after the preceding real and roughly 50 ms in the future;
+comparing it with reservation plus one producer interval systematically expired
+the candidate. These facts motivate an explicit bounded priming/pacing repair;
+they do not justify bypassing identity, stale-work or real-priority checks.
+Apple's [display-link contract](https://developer.apple.com/documentation/quartzcore/cametaldisplaylink)
+separately describes callback preferences, render timing and commit-before-present.
+
+The native 0013 fixture, SHA-256
+`ffb9abaa4296f8338c30957e756a7867bf3ee0b2ad522433c8cb2825c39547be`,
+passed with **3,589 assertions and zero failures** under Metal API validation.
+FG, composition and Temporal were Off. It observed eight distinct successful
+real completions, then reset generation 1→2 with one callback pending. The
+immediate post-reset snapshot had zero stale callbacks; a later snapshot had
+one stale callback and 29 fresh generation-2 samples, without resurrected old
+records. Repeated enable, second-owner rejection and Off checks passed.
+The capability query returned compiled/OS `yes`, device `supported` on this M1.
+This is successful whole-command-buffer observation, not pixel-change or FPS
+qualification. The fullscreen window and root reported 1920×1080; physical
+drawable extent remains a separate presenter observation.
+
+The pure admission candidate `f9eaaedbdd697a447b8e84015244a08132c933503cdc4231fc1c3184820e96e7`
+and its test `485fcb1f00dea1ec41c2fd124413b32908072eaa101c259d5a1d9927779417cb`
+passed 484 assertions both through Windows checked admission and native M1
+headless execution. That revision is not connected to settings/runtime. Review
+subsequently identified a bootstrap cycle in its unavailable FG-off alpha and
+postprocess facts; the correction delegates dynamic eligibility to existing
+per-frame renderer gates. The earlier pass remains bound to its actual bytes.
+
+The fullscreen adapter diagnostic still reported zero generated output. One
+earlier diagnostic run latched three presenter GPU failures; the later run with
+native error-code observation reported zero. The earlier failures are unresolved,
+not dismissed by the later zero. No generated-presentation or latency pass is
+claimed from these runs.
+
+Retrieved phase-3 evidence is
+`tmp/metalfx-20261114/retained-phase3-m1b.tar.gz`, 455,613 bytes, SHA-256
+`d7ffef0d8246b8d57d7bb2be6bf7d28f79a57d2c46b12723365c2d500a3764ab`.
+All 59 payloads were rehashed against the archived manifest after retrieval.
+It includes the full-stack build, timed-out/interrupted and corrected cases,
+native sample, diagnostic build identities/inputs, observer/reset and policy runs.
+Later pacing changes are not retroactively part of that bundle.
+
+### 2026-11-15: pacing, callback lifetime and complete-app candidate
+
+0016 (`6592562afd4208d211e924cd1330b6fb58a05d88b0161f43a51d133d6863efbe`)
+adds bounded two-tick priming followed by one-tick generated/real pacing,
+independent CPU freshness and OS timing bounds, and observed drawable extent.
+Its native synthetic fixture presented 143 generated frames from 144 requests,
+with 171 real presentation callbacks, at an actual 1920×1080 drawable. The actual
+SDK adapter instead reported seven failures with native status/error both zero.
+That is the recorded earlier result, not a successful SDK presentation run.
+
+0017 (`db0f4aad4eced890cd5a072be1b69aa5ca6331d41c1a700b12a8ed967357b746`)
+distinguishes callbacks for commands never requested/admitted from terminal GPU
+failures, accounts each owned in-flight command once, and bounds unresolved
+submission retention. The native development editor was
+`64e781ef2d7fcf56a875bee9447cf2ea5f73fad64d89e18387487dc7dc3f1c6c`;
+its verified 14,447-file code catalog was
+`82b6b5397ce0093dafb7c255a1278649981d0c65b2a6b6caf7638618169d2ef3`.
+Both fullscreen fixtures passed. Synthetic current-generation counters recorded
+140 generated and 172 real presentation callbacks. The actual SDK adapter's
+final generation 9 recorded one generated request/presentation and 60 real
+presentations, five ignored unrequested `NotEnqueued` callbacks, zero confirmed
+GPU failures, zero nonterminal owned completions and zero retained/rejected
+submission leases. The observed drawable was 1920×1080, pixel format 80.
+Counters reset with presenter generations; these values are not entire-run
+counts or sustained product FPS. Earlier failures remain bound to their runs.
+
+The preceding real-completion series had a complete two-second coverage window
+with 60 successful command-buffer completions, no failure/overflow or pending
+callback, and a maximum retained completion gap of 0.159981 seconds. This
+instrumented fixture does not establish smooth flight, the policy's sustained
+35-FPS recovery condition, generated FPS or physical input latency.
+
+The frozen ordered 0001–0017 packet
+`tmp/metalfx-20261114/engine-stack-1-17-r1.zip` is 352,212 bytes, SHA-256
+`6eeb1ea4bb7a08a5fce77cced56949815e487c015f937b7874ce39751a97ae21`.
+Its manifest is
+`ce2e22da278ed2b44ca32ec927ff498d58071ebe6e84e2ab9f76a0ac7b80357f`.
+All 112 portable controls passed; all 64 payloads were rehashed unchanged after
+the run. The checked source includes isolated Git roots for patch compilation.
+
+Fresh editor and release-template builds used the same absolute Python path,
+SDK 27.2, Apple clang 2100.4.1.1, source catalog and ordered 17 patches on ANGEL.
+Both passed source verification and `codesign --verify --strict`; the existing
+helper then returned `pair_verified`:
+
+| Artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| ARM64 editor | 113,923,976 | `c47636a595313598a399b01ba8d550ef11409beb63b80718aa7fa8fe763bc7b7` |
+| ARM64 release template | 51,305,056 | `c44d06546ebd953514be583b5195b1c0ec9a9e22eff74480d306faebf273aacb` |
+
+Build receipt hashes are
+`13fd9fc76af01032003b5c4fd1658f93787d457ed18364fae0ac1e16af7f6eb7`
+and `dc8730909a5864817253ede1add9ab0ef0b9ff33429ae7b6fd24cbde70f143d5`.
+This repairs the previously rejected Python-path pair; it does not qualify the
+custom engine for the existing native-physics marker or public distribution.
+
+The complete product source was frozen from
+`af897f0307886eb8c3337d44d4eeb2bcddabb1e4`. Its 7,575,644,160-byte source TAR
+is `3973a4b45f23dc09da9fc830458086fcbd5c27f1b17e3dba4234421a2b757cb2`.
+All 51,217 extracted files (7,529,626,700 file bytes) were rehashed on ANGEL
+against the retained manifest
+`1d5d3340a68141a021a9d4ad349059246b59c20368004e40598800c4d838e9bf`.
+An isolated clone applied only the six-file frame-generation overlay,
+`989c3ca716362f61efcab20e583859f8ccbeb55f694f3ff173d2d2e40ddcc692`,
+before the existing research-preparation tool made a separate runtime and unique
+macOS application profile. Unrelated working-tree paints/tools were excluded.
+The complete import succeeded. On the fresh final editor, checked AppRoot/main
+parsing passed, followed by 498 policy, 47 controller, 127 reconstruction,
+51 reconstruction-history and 24 camera-history checks with zero failures or
+diagnostics. The controller includes the real Simulation pause/resume signal;
+its check verifies that observing that signal advances no physics tick.
+
+The final policy SHA-256 is
+`a0e1330432d3a05fbd1b94519f35287b14273a8cd31c66c613baea6573058d34`;
+controller `87c67678f15c6b3ee610048066fb729641b84188b35c49f8b5624030ae432a54`.
+Their tests are respectively
+`76281236dbc510a920d09dab8326627385333eae15c9c2ef6b54f96e3e267896`
+and `ca80d176f4b54e1d573e84bcb567c610de787de71fe87f7a63c0436119d1c142`.
+Runtime flags and current source instructions live in the
+[MetalFX tool guide](../../../../tools/graphics/metalfx/README.md).
+Normal launches leave the controller uninstalled. Rendered Home/Fly lifecycle,
+performance/latency, supported old-OS execution and RT viewport consumption remain
+separate open gates. The custom research engine currently uses reference physics;
+no SDK/compiler pins or native-default qualification marker were relaxed.
+
+On the fresh final editor, the 39 native triangle-query cases and both denoised
+binding modes passed again. The GPU-observation and real-completion fixtures
+also passed. The final presentation run's actual SDK adapter recorded **31
+generated OS-presented drawables**, 232 real presentation callbacks and zero GPU
+failures in generation 2, at an actual 1920×1080 drawable. Its synthetic control
+recorded 144 generated and 170 real callbacks. These bounded fixture counts
+supersede neither the earlier runs nor full-flight qualification.
+Both final binaries retain a 13.0 Mach-O minimum OS, weak MetalFX framework load
+and weak references to the optional display-link/interpolation/denoised classes.
+This is linkage evidence; no macOS 13 execution was performed.
+
+The complete rendered app passed Home→Fly→pause→Home with FG Off at a reported
+1920×1080 window/root viewport and then shut down with zero leaked objects.
+The real observer remained `not_requested`, no FG owner was installed, and Auto
+selected Native. With the trial enabled but Auto still configured, it correctly
+reported `temporal_active_unavailable`. One such shutdown reported four ObjectDB
+instances; a later verbose trial shutdown reported zero. The earlier warning is
+retained and is not declared resolved from that later zero.
+
+The four startup environment settings do **not** override saved display settings:
+AppRoot reapplies the user's reconstruction selection. Temporal was then selected
+and kept through the existing Graphics settings, in the isolated research profile.
+The first selection logged a **262,889.8 ms** frame with 336 new pipelines and
+active `MTLCompilerService`; the confirmation deadline expired before it became
+responsive, restoring Auto. A second selection with the compiled pipelines
+available succeeded immediately. Metal API validation and verbose logging were
+enabled. This is an observed activation stall, not a validation-free performance
+measurement. Moving the confirmation deadline only after the apply call would
+not necessarily cover compilation deferred to the first render; bounded
+preparation/readiness and existing renderer-guard recovery need separate work.
+
+Temporal then allocated and enqueued real full-app work. Short controller
+snapshots reported 42.5 completed-real FPS in Home and 46 in flight; they are
+neither paired comparisons nor sustained performance results. FG stayed
+suspended. Native flight receipts exposed an actual reset-order problem:
+reset 1 had already encoded before 0006 observation was enabled, so its
+`reset_completed_serial` stayed zero. Later successful ordinary callbacks carry
+reset serial zero and cannot prove the missed reset. The source correction and
+continuous-rendering proof join are being verified separately; no completion
+requirement is waived. Actual non-menu pause/resume invalidated the observation
+history, and this longer trial returned Home and shut down cleanly.
+
+Retrieved phase-4 evidence is 2,790,860 bytes, SHA-256
+`4f5d667ccba3bac09415425129130d0ec397906357734f8b5abece4a3a355351`
+(`tmp/metalfx-20261114/retained-phase4-m1b.tar.gz`); all 79 payloads were rehashed.
+Phase 5 is 193,199 bytes, SHA-256
+`e456b889770f1869e423798fa62a2acbf8fe35b034375b518afbb0fa9120166a`
+(`tmp/metalfx-20261114/retained-phase5-m1b.tar.gz`); all 113 payloads were rehashed.
+The latter includes the fresh native controls, Mach-O inspection, full-app
+trial receipts and the activation-stall sample. Images and binaries are excluded.
+A local ARM64 template ZIP reuses the pinned Godot skeleton and verified release
+binary: 20,399,673 bytes,
+`45e865f7214aa88f41917ef124b36f9b4ce5a0019beafb6b8b23c15111394d60`.
+It is prepared export input, not a completed product package or public release.
+
+### Native scene-input prerequisite and conditional reset
+
+The first 0018 native build failed in Apple SDK `math.h`: its `OVERFLOW` macro
+collided with the diagnostic enum. That failed source catalog and log are
+retained; the copied older binary is not a successful 0018 artifact. The corrected
+patch is `8339b8978c21a1133b8b6e144de0dc182a9c29a7cb39677fa628b3105dee5c82`.
+Eight portable controls cover the macro, expanded indexed geometry, identity,
+budgets, nested-flush reentry and deferred source retirement, with deliberate
+mutations. The corrected development clone passed native compilation and source
+verification against catalog
+`2e9e30b41520fe6f03e0cbe70ca59891069092e42fdfb5f882d7a56091af78a4`
+(14,448 files), editor
+`e5228cb63665d5082c67f976cbe8ebe25cfb83ae88dabb8187cdc9ef7108f8cd`.
+It is an incremental diagnostic build, distinct from the clean 17-patch pair.
+
+Checked parsing and nine fresh Metal API-validation cases passed: Off, actual
+Horizon ground, an Extra pilot mesh, offscreen geometry, source update, raw-buffer
+escape, release, unsupported material and `skip_vertex_transform`. The CPU
+oracle matched actual triangle/instance hit identity and distance. Ground hit
+primitive 520 at distance 12.9047908783; the aircraft component hit primitive 268
+at 12.3155841827, and its offscreen instance hit primitive 236 at 32.4173622131.
+Update/escape returned `source_missing_or_invalidated`; unsupported shader cases
+returned `unsupported_material`. No lighting, G-buffer, denoised viewport, full
+aircraft coverage, FPS or 13d1 completion is implied.
+
+The proof-join policy is now
+`dc1d7736d449bc77280b04d348df91403d4267a8328102faf51b604cc0edc9fc`, test
+`ab98392a566d468f17d671c32e239e49a986d40abb1e4c69da2066835d7a5ecb`.
+All 517 checks passed on Windows and M1, including the exact R3 watermark/frame
+shape. With the preceding 82-check controller, native R4 advanced beyond the
+scaler proof gate into FG retry backoff. Home/Fly/pause/resume/Home and clean
+shutdown passed, but the transient rejection cause was not retained in those
+snapshots; this is not a full-flight FG pass. The current developer diagnostics
+retain up to 16 state/reason transitions so the next run can distinguish the
+actual renderer rejection, timeout or recovery reason.
+
+0019 is `6a71e3e6eee7542996f52a318085f892ada178b1800c28a173129e07b500b289`.
+It compares generation and requested serial and calls the existing reset path
+in a single render-server transaction. Stale/absent requests have no reset side
+effects. Two source-bound test groups and Metal/non-Metal translation-unit
+syntax checks passed, including deliberate stale-check mutations. The latest
+controller `ba9c975fa81fa1c8cc51bd19918e1095223f72eda5f4e2e9e70224f1fffb39ea`
+and test `ff4357f70190524bf27dc5197a5c0d5c413e5f4ad39fb2810977f76c4abf960f`
+passed 89 Windows checks. It accepts a correctly scoped newer lifetime serial,
+requires actual 0006 GPU completion and requalifies the 0013 history. Absence of
+the new API blocks only synthetic recovery while preserving Temporal selection.
+The fresh 19-patch editor build and latest native controller run are pending at
+this record. Source review does not qualify those pending cases.
+
+The existing Godot exporter also produced a local ARM64 development `.app` from
+the verified 17-patch editor/template and pinned upstream template skeleton.
+Its executable is
+`ea45d2cd02a8cf307258ccbe456f1ed9faabd4e2eadb3630562f968c3a7adc09`;
+deep/strict ad-hoc signature verification passed. The first export correctly
+failed because the prepared copy lacked the sibling research probe required by
+the native-kernel export plugin; an explicit verified-source link fixed the next
+staging copy. This artifact contains the earlier R1 controller, not the current
+0019 adapter. A first smoke incorrectly used `--script` with a release template
+and timed out; it is retained as an invalid apparatus attempt, not a package
+qualification. The fixed packaged diagnostic requires a pre-export Git-bound
+input capture and sibling reference receipt. An archive without Git metadata
+cannot satisfy that helper, and no synthetic receipt was substituted. Full
+package/session and current-source export gates remain open.
+
 ## Evidence retention and open gates
+
+The next complete-app overlay is
+`938a4c8b5b1fd36bd8735698a5ec05434dc10dea6c5e2d84e4ab36187a3f282c`
+(31,925 bytes). It changes four FG scripts/tests and adds their four native
+Godot-generated UID sidecars; the Home/main hooks are unchanged. The controller
+`226435e070bc3402da6808ad10bc9da9c79416aee590aeb3246242f32f345fa0`
+and policy `73c9ddd1d3121aa6f5ae5a5da673bbf1f6373ce85f6414802365ff7f571dad63`
+passed 82 and 499 checks on both Windows and the fresh ARM64 editor. Their tests
+are `51f451f271f92729d45cb7ec2bede32ce2b113aada41194204e5157bd9299551`
+and `e5506a6ba273bf7838c33be8d535c2d0b30f278d5d4f239a7f86a53ae7b638e0`.
+The runtime uses a separate research profile, with only the prior task-owned
+import cache reused and changed inputs rechecked.
+
+Native trial R3 selected and kept Temporal through Graphics settings without the
+previous activation stall. Home/Fly/non-menu pause/resume/Home succeeded and
+shutdown reported zero leaked objects. A single observation-sync reset recovered
+actual GPU reset serial 2 in flight and serial 3 after resume. The scoped helper
+does not use a CPU acknowledgement as GPU proof. Its separate status/reset calls
+still permit an external-cut race; a serial mismatch closes FG admission but
+cannot undo an extra visual reset already issued. The later 0019 transaction
+and adapter supersede this cross-call implementation; their status is below.
+
+The new bounded diagnostics exposed the remaining Home proof-join bug without
+guessing from later debug samples. In the same poll, the scaler completed frame
+5768 successfully at Mach time 489378.52254025004. The 0013 ring contained that
+exact frame/time and `now` was 489378.5239288334, but its exclusive completeness
+watermark was 489378.4982610001, so the rate prefix ended at frame 5767. The
+policy consequently rejected the fresh individual completion while reporting
+41.5 closed-window real FPS and three recovery bins. The correction must keep
+the closed prefix for FPS/gap/recovery accounting and separately join validated
+individual successful completions for SDK proof. This run did not activate FG.
 
 Raw receipts/logs remain in the task workspace's `candidate/tmp/` and native
 fixture directories, with retrieved copies under ignored local
@@ -450,7 +1014,8 @@ Newer hardware remains useful for independent qualification; M1 denoising is an
 open runtime finding, not an automatic unsupported result. Public Developer ID
 distribution remains deferred. Normal reconstruction defaults are unchanged.
 
-After the fresh template compilation, SSH and Tailscale data-plane probes stopped
+Historical interruption before the later native campaigns: after the earlier
+template compilation, SSH and Tailscale data-plane probes stopped
 responding. Tailscale still advertised the M1 online; that is not SSH availability.
 The documented Linux jump host was offline. The motion fixture was prepared
 locally, but its transfer timed out, so no native parse/motion result is claimed.

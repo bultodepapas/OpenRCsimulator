@@ -119,22 +119,71 @@ Never put these drafts or deliberate fault controls in the production app.
   full 1080p finite/sentinel readback, paused cut/toggle receipts, resize and
   orthographic/alpha/Canvas/Keep rejection. This native fixture passed; its status
   still labels motion/jitter conventions unverified and the image not presentable.
-- `frame_motion_probe.gd`: draft moving-quad witness with independently rendered
+- `frame_motion_probe.gd`: moving-quad witness with independently rendered
   midpoint/endpoints, crossfade control, static HDR-to-sRGB calibration and exactly
-  one attempted real render. ROI and margins are fixed in source. Parse and native
-  execution are pending; the Mac transfer timed out. Do not call its intended
-  comparisons a passing result.
-- `gpu_probe.gd`: draft for patch 0006's explicitly requested command-buffer
+  one attempted real render. ROI and margins are fixed in source. Checked parsing
+  and native 1920×1080 execution passed on the original M1 after access recovered.
+  It explicitly disables UPDATE_ONCE after frame completion and checks that idle
+  root frames do not add SDK submissions. This bounded quad result does not
+  establish flight-scene motion, final presentation or nonlinear HDR correctness.
+- `gpu_probe.gd`: fixture for patch 0006's explicitly requested command-buffer
   observation. It checks Spatial, Temporal reset GPU completion, interpolation
   epochs and observation retirement without changing Temporal receipts. It is
-  not parsed or natively executed yet. The
+  parsed and passed six native observation/lifecycle cases on M1. The
   [engine guide](../../../tools/graphics/metalfx/README.md#optional-gpu-completion-observation)
   owns the status identities, clocks and whole-command-buffer timing limits.
-- `triangle_query_probe.gd`: draft for patch 0005's bounded RD triangle-query
+- `real_completion_probe.gd`: patch 0013's main-window real-render completion
+  observer and capability-query fixture, with frame generation and Temporal Off.
+  The native M1 API-validation run passed 3,589 checks at reported 1920×1080
+  window and root-viewport sizes. It observed a pending callback across a
+  generation 1→2 reset, followed by a stale callback and 29 fresh records without
+  old-generation resurrection; Off and second-owner controls also passed. The
+  receipt establishes bounded observer behavior, not changed pixels, display
+  pacing or a performance result.
+- `present_probe.gd` and `composition_probe.gd`: display-link controls,
+  offscreen scene/UI composition and the actual SDK-pair presentation path.
+  With the full 0001–0017 development stack, a bounded native M1 run reported one
+  generated OS-presented drawable at 1920×1080 in final presenter generation 9,
+  zero confirmed GPU failures and five ignored unrequested `NotEnqueued`
+  callbacks. A synthetic real-frame duplicate is a separate control. Neither
+  result establishes sustained performance, visual qualification or a public
+  default. The [engine guide](../../../tools/graphics/metalfx/README.md#experimental-sceneui-composition-and-presentation)
+  owns patch order, status scope and remaining limits.
+- `triangle_query_probe.gd`: fixture for patch 0005's bounded RD triangle-query
   backend. Its runner creates an isolated project and tests both argument-buffer
   and direct binding paths in fresh native processes. Portable compiled controls
-  passed; actual Metal compilation, shader lowering and GPU readback remain open.
+  and 39 native cases passed with patches 0001–0007 plus 0010. The earlier native
+  negative battery exposed an empty-device finalization warning, retained in the
+  dated evidence; 0010 fixes its queue-ordered fence signal.
+- `denoised_query_probe.gd`: fixture for patch 0007's local-RD RT/denoising witness.
+  It produces primary/reflected rays and guide textures, rasterizes D32F depth,
+  then submits denoising first in a fresh graph using the previously submitted
+  inputs. Producer samples and output have explicit finite-value checks. The
+  loose analytic ROI and sentinel checks establish sanity. Checked parsing and
+  both native binding modes passed with patches 0001–0007 plus 0010, without
+  engine errors or warnings. Output includes SDK-required color-attachment usage.
+  This is not OpenRC's scene RT consumer or a quality/performance comparison. The
+  [engine guide](../../../tools/graphics/metalfx/README.md#experimental-rd-denoised-binding)
+  owns the exact texture layout and bounded API contract.
+- `rt_scene_probe.gd`: optional 0018 renderer-owned geometry/query prerequisite.
+  It uses actual Horizon geometry and an Extra pilot mesh, with a CPU hit oracle.
+  Checked parsing and nine fresh M1 cases passed: Off, ground, aircraft component,
+  offscreen geometry, source update, raw-buffer escape, release and two unsupported
+  shader/material controls. Enable `OPENRC_METAL_RT_SCENE=1` and
+  `GODOT_METAL_TRIANGLE_QUERY=1` for enabled cases; use Forward+/Metal and run each
+  case in a fresh process. This intentionally stalls the main RD graph. It produces
+  no viewport lighting/denoised output and does not complete 13d1.
+
+The opt-in application controller and its pure admission policy have separate
+focused checks: the current Windows candidates passed 89 and 517, respectively.
+The preceding adapter passed 82 native checks with that 517-check policy; the
+current conditional-reset adapter still needs its 0019 native run. These checks
+do not establish presentation. Complete native Home/Fly/pause/resume trials
+execute Temporal, while full-flight FG qualification remains open. The
+[engine guide](../../../tools/graphics/metalfx/README.md#completed-real-frame-observation)
+owns the technical startup flags and observer contracts.
 
 Keep the normal full product, its physical backend and audio/HID/effects activation
 separate from these bounded fixtures. The owning plan retains moving-image,
-presentation, latency, end-to-end performance and package gates.
+presentation, latency, end-to-end performance and package gates. No scene-wide
+RT viewport consumer or 13d1 completion is implied by these witnesses.

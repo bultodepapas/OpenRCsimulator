@@ -20,7 +20,8 @@ MetalFX APIs. The current native experiment uses SDK 27; compiling a macOS 13
 deployment target does not establish execution on macOS 13. No Developer ID is
 required for local raw executables. Public signed distribution remains deferred.
 
-Prepare **separate fresh intakes** for editor and release template. Bash/zsh:
+Prepare **separate fresh intakes** for editor and release template. This example
+selects the complete 0001–0019 experimental stack, in order. Bash/zsh:
 
 ```sh
 patches=(
@@ -30,6 +31,19 @@ patches=(
   --patch tools/graphics/metalfx/patches/0004-metalfx-frame-inputs.patch
   --patch tools/graphics/metalfx/patches/0005-metal-triangle-query.patch
   --patch tools/graphics/metalfx/patches/0006-metalfx-gpu-observation.patch
+  --patch tools/graphics/metalfx/patches/0007-metalfx-denoised-binding.patch
+  --patch tools/graphics/metalfx/patches/0008-metal-paired-presentation.patch
+  --patch tools/graphics/metalfx/patches/0009-metalfx-frame-composition.patch
+  --patch tools/graphics/metalfx/patches/0010-metal-empty-submit-fence.patch
+  --patch tools/graphics/metalfx/patches/0011-metalfx-presentation-adapter.patch
+  --patch tools/graphics/metalfx/patches/0012-rd-gpu-failure-stop.patch
+  --patch tools/graphics/metalfx/patches/0013-metalfx-real-completion.patch
+  --patch tools/graphics/metalfx/patches/0014-metal-present-callback-lock.patch
+  --patch tools/graphics/metalfx/patches/0015-metal-present-decision-observation.patch
+  --patch tools/graphics/metalfx/patches/0016-metal-present-pacing.patch
+  --patch tools/graphics/metalfx/patches/0017-metal-present-submission-lifetime.patch
+  --patch tools/graphics/metalfx/patches/0018-metal-rt-scene-inputs.patch
+  --patch tools/graphics/metalfx/patches/0019-metalfx-conditional-history-reset.patch
 )
 python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip \
   --out tmp/metalfx-editor "${patches[@]}"
@@ -52,16 +66,32 @@ The controls are absent from release-template code. Normal launches leave it uns
 0004 adds an explicitly requested offscreen HDR scene-input experiment, macOS 26+
 SDK bridge and synchronous diagnostic readback. It rejects unsupported scenes,
 keeps Temporal reset receipts independent and has no presenter. Its actual M1
-readback/lifecycle fixture passed; scene motion and presentation remain open.
+readback/lifecycle fixture passed; broader scene motion and product presentation
+remain open.
 0005 adds an opt-in experimental Metal compute triangle-query backend. Launch
 with `GODOT_METAL_TRIANGLE_QUERY=1` only for that experiment; ordinary ray-query
 and ray-pipeline support remain unavailable. It admits a bounded triangle/instance
 subset, not complete OpenRC scenes. The portable controls compile the changed
 validation and binding functions, including development-build object naming,
 pipeline changes, inactive descriptor-set holes and current TLAS/BLAS residency.
-Native compilation and GPU readback for this patch remain pending.
+Native compilation and both binding-mode hit/readback cases passed on M1. The
+strict rejection battery exposed empty-submit fence handling; 0010 addresses
+that independently. The dated evidence retains both failing and corrected runs.
 0006 adds opt-in command-buffer completion observation, described below. Its
-compiled fake-command controls passed; it has not run on the native Metal backend.
+compiled controls and the native Spatial/Temporal/interpolation observer fixture
+passed on M1. This remains command-buffer observation, not presentation evidence.
+0007 adds the bounded RD denoised binding described below. All three later patches
+were subsequently built in a separate seven-patch native M1 editor. The earlier
+four-patch editor and its receipts remain distinct from later builds.
+
+The presentation experiment requires 0008–0017 in the exact
+order shown, after 0001–0007. The current controller additionally uses 0019 for
+atomic missed-reset recovery; without it, that recovery stops safely and leaves
+Temporal selected. 0018 is the optional RT diagnostic prerequisite described
+below. 0010 also supplies the empty-submit fence fix used
+by the earlier triangle-query native tests. Select a smaller stack explicitly
+when reproducing earlier evidence. Never add patches to an existing intake or
+substitute its recorded patch copies.
 
 Intake freezes and hashes archive/ordered patch copies, reconstructs the expected
 patched catalog, rejects unknown source edits, extra inputs, unsafe paths and
@@ -79,6 +109,11 @@ editor/template source, patches, helper, toolchain and flags and rehashes exact
 artifacts and logs. Pair verification does not qualify rendering, export,
 signing, minimum OS compatibility, performance or a product package. Keep the
 export's actual template identity bound to the later package receipt.
+The fresh verified 0001–0017 native pair has editor SHA-256
+`c47636a595313598a399b01ba8d550ef11409beb63b80718aa7fa8fe763bc7b7`
+and release-template SHA-256
+`c44d06546ebd953514be583b5195b1c0ec9a9e22eff74480d306faebf273aacb`.
+These identities are build evidence, not hardware or public-release qualification.
 Use the same absolute Python invocation spelling for both builds. The verifier
 compares recorded command arrays and refuses differing aliases or `..` spellings
 even when they resolve to the same interpreter.
@@ -132,5 +167,246 @@ timestamps use system Mach seconds; absent, zero or invalid times remain null.
 The callback's CPU observation uses `std::chrono::steady_clock` microseconds.
 Do not subtract these clocks without calibration, sum durations shared between
 roles, or label this effect-only cost, OS presentation, displayed FPS or latency.
-`gpu_probe.gd` exercises the native API and retirement cases; parsing and native
-execution are still required before accepting that fixture.
+`gpu_probe.gd` passed checked parsing and native API/retirement cases on M1.
+
+## Experimental scene/UI composition and presentation
+
+0009 composes two bounded offscreen outputs: the actual SDK-generated scene and
+the saved current real scene, with UI drawn once on each. It reuses immutable
+tonemap settings rather than executing stateful postprocessing twice. Unsupported
+postprocessing, canvases, views and scene inputs reject the pair. Request it with
+`viewport_set_metalfx_frame_composition_requested(viewport_rid, true)` together
+with `viewport_set_metalfx_frame_requested`. Read
+`viewport_get_metalfx_frame_composition_status`; diagnostic
+`viewport_read_metalfx_frame_composition` performs synchronous readback. These
+engine experiments do not add a normal player setting.
+
+0008 adds a startup-only `OPENRC_METALFX_DISPLAY_LINK=1` opt-in on macOS 26+.
+When admitted, one engine-owned CAMetalDisplayLink keeps drawable ownership for
+the window's lifetime, including real-only fallback. Its supplied update drawable
+is committed and presented through that route; no second `nextDrawable` call or
+timed-present method is mixed in. Conversion uses separately allocated, retained
+Metal textures rather than transient RD heap regions. Ordinary launches leave
+this option unset. The experimental opt-in suppresses the boot logo/background,
+including when owner admission later falls back to ordinary presentation.
+
+0011 connects the current in-flight composition pair to that owner. Exact SDK
+encode/completion proof and source identity are required before choosing generated
+output. Bounded leases preserve source textures through GPU conversion. Cuts,
+Off, resize and viewport changes cancel a source generation; a new generation
+waits for an already-entered old submission to leave its gate. This cannot revoke
+work already accepted by the OS. A blocked epoch can require an explicit history
+or lifecycle reset. Render/main loops never wait for the next real frame.
+
+`RenderingDevice.openrc_metalfx_present_status()` must be sampled on the render
+thread. `accepted_pair_candidates` counts admitted candidates before SDK proof
+is ready. GPU completion, present requests and OS-presented callbacks remain
+separate counters; none measures physical latency. Debug-only
+`OPENRC_METALFX_DISPLAY_LINK_PROBE=1` submits two converted copies of the same
+real source. Its `synthetic_control=true` receipt cannot prove interpolation.
+
+Use `present_probe.gd` for ordinary/real-only/synthetic route controls and
+`composition_probe.gd` for offscreen image checks. For the latter's actual
+interpolated presentation case, set `OPENRC_METALFX_PRESENT_ADAPTER_PROBE=1`
+and the display-link opt-in, leaving the synthetic option unset. Both use the
+existing checked runner and isolated projects at 1920×1080. A requested 30-FPS
+cap is a diagnostic configuration, not the product's measured-rate admission
+policy or a maintained real-frame-rate claim.
+
+0010 fixes empty Metal submissions with a queue-ordered fence signal. 0012 stops
+on returned Metal submission/wait failures before recycling resources, including
+when FG is Off in this custom engine; other backends retain upstream handling.
+A two-second wait timeout is not proof that a slow or suspended GPU is lost. It and a
+200-ms source-ticket retirement timeout can terminate the experimental process.
+These guards prevent unsafe reuse; they are not graceful device-loss recovery.
+Native stress, sleep/wake, visible color, pacing and latency qualification remain
+required before this route can become a normal choice or default.
+
+0014 addresses an observed native Core Animation/state-mutex deadlock: drawable
+access and Metal encoding/handler registration happen outside the mutex used by
+callbacks, then admission revalidates under it before commit. The corrected
+development build passed real-only native presentation and the 1080p offscreen
+UI case. Its generated presentation cases still failed; their accepted-candidate
+counts do not establish generated output. 0015 exposes bounded scheduler decision
+facts and native GPU error codes for diagnosing those failures. Its counters
+include real-only decisions; `paired_candidate` identifies the sampled job type.
+
+0016 adds bounded display-link pacing and reservation handling. 0017 retains
+admitted submission resources until terminal completion and distinguishes
+unrequested `NotEnqueued` callbacks from failures of admitted commands. A
+nonterminal admitted completion or exhausted retention capacity leaves the
+presenter unresolved; it is not proof that real frames continue to display.
+In a bounded native M1 development run of the full 0001–0017 stack, the actual
+SDK pair adapter reported one generated OS-presented drawable at 1920×1080 in
+final presenter generation 9, zero confirmed GPU failures and five ignored
+unrequested `NotEnqueued` callbacks. This is not a sustained-rate, visual-quality
+or latency result. Hardware qualification remains `not_run` and public use deferred.
+
+## Completed real-frame observation
+
+0013 adds an explicit main-window viewport observer, separate from scaler
+callbacks, the process loop and generated presentations:
+
+- `viewport_set_real_gpu_observation_requested(viewport_rid, enabled)`
+- `viewport_reset_real_gpu_observation(viewport_rid)`
+- `viewport_get_real_gpu_observation(viewport_rid)`
+- `viewport_get_metalfx_frame_capability(viewport_rid)`
+
+The observer attaches a graph-tracked read after the real viewport scene, canvas
+and resolve work. Only successful whole-command-buffer completion with a valid
+GPU end timestamp produces a sample. Callbacks retain bounded CPU state, not a
+viewport or render target. Off does not create that optional state or recurring
+GPU observation. Unsupported/no-swap/overridden-target and multi-owner cases
+remain explicitly ineligible; changing context/configuration invalidates its
+generation. The device capability query is independent of factory allocation:
+map only affirmative `compiled`, `os_available` and `device_support` facts to
+admission, preserving unknown values and later factory/dispatch failure.
+
+Snapshots contain generation/frame identities, bounded `samples`, `pending`,
+overflow/failure/invalid-clock flags, `coverage_start_seconds`,
+`observed_through_seconds` and `now_seconds`. Samples use `gpu_end_seconds` in
+`mach_seconds`; the snapshot clock uses the same native time base. The watermark
+stays behind unresolved reservations, so a CPU poll cannot close a rate window
+ahead of pending callbacks. Lost history or invalid timestamps fail closed.
+Whole-command-buffer completion proves ordering; it does not prove changed pixels
+or displayed FPS. This clock stops during system sleep. The controller handles
+application pause/resume and focus notifications, but macOS sleep/wake delivery
+has not been qualified and must not be inferred from gap arithmetic.
+
+`app/render/frame_generation_policy.gd` is the 12c admission policy, now wired
+through `app/render/frame_generation.gd` for an explicit developer startup trial.
+Normal Off does not load the controller or request either optional observer.
+The technical trial requests all four environment settings below and requires
+Forward+/Metal and an actually configured MetalFX Temporal viewport:
+
+```sh
+export OPENRC_METALFX_TRIAL=1
+export OPENRC_METALFX_DISPLAY_LINK=1
+export OPENRC_METALFX_FRAME_GENERATION=1
+export OPENRC_RECONSTRUCTION=metalfx_temporal_quality
+```
+
+These are not a public player option or a change to defaults. If Temporal is not
+configured, a capability is unknown or any other gate fails, the request stays
+suspended. The controller polls at most 10 Hz, keeps at most one presenter-status request
+outstanding on the render thread, and exposes an experimental receipt in viewport
+metadata `openrc_frame_generation_status`. It invalidates on observed cuts,
+simulation pause/resume, source, focus and viewport changes. Already submitted OS
+work cannot be revoked; presenter generation and sleep/wake limits remain open.
+
+0013's completed-real history drives the two-second 30 FPS floor, the over-100 ms gap
+limit and three distinct closed one-second recovery bins of at least 35 FPS. The
+separate 0006 observer supplies scoped Temporal scaler and frame-interpolation
+GPU completions. A current proof permits only a renderer-gated composition
+attempt; it does not bypass per-frame checks or establish presentation. Explicit
+input/postprocess rejection suspends the producer with bounded retry backoff.
+The current pure policy passed 517 checks and the adapter passed 89 focused
+Windows checks. The preceding controller passed 82 native checks with this
+517-check policy; the current 0019 adapter's native run is pending. These are
+logic and lifecycle evidence, not a performance or display qualification.
+Native full-app Home/Fly/pause/resume trials execute Temporal but have not
+qualified full-flight generated presentation. Explicit activation also requires
+selecting Temporal in Graphics settings: saved preferences supersede the startup
+reconstruction environment value. The first observed selection compiled 336
+pipelines and exceeded the confirmation deadline; the later warm selection
+succeeded. Preserve shared caches and label their state in comparisons.
+The retained-sample polling cost remains unmeasured.
+
+0019 adds `viewport_request_temporal_history_reset_if_current(viewport,
+expected_generation, expected_requested_serial)`. The comparison and existing
+reset request execute as one render-server transaction. Stale/unavailable
+requests leave reset state unchanged. Its receipt establishes request admission,
+not GPU completion. The controller still waits for the matching 0006 GPU reset
+receipt and new 0013 rate history before warmup. Diagnostic-only metadata can
+retain the latest 16 state/reason transitions when
+`OPENRC_METALFX_TRIAL_DIAGNOSTICS=1`; it is not admission evidence.
+
+## Renderer-owned scene geometry diagnostic
+
+Optional 0018 follows the frozen 0001–0017 stack. It supplies an engine-owned
+one-shot geometry/query diagnostic, not a viewport RT effect or completion of
+DT-MAC-13d1. Enable `OPENRC_METAL_RT_SCENE=1` and
+`GODOT_METAL_TRIANGLE_QUERY=1` before startup, with explicit Forward+/Metal.
+Normal launches do not capture expanded RT mesh inputs. The query flag selects
+the experimental Metal 3 hazard-tracking path; it is not normal renderer policy.
+
+The render-thread methods are `scenario_probe_metalfx_rt(...)` and
+`scenario_poll_metalfx_rt_probe()`. Use the supplied `rt_scene_probe.gd` through
+the checked runner in an isolated complete app copy. It deliberately flushes and
+stalls the main RD graph for a one-shot build, trace and readback. Never use it
+as a frame-time benchmark or call it every frame. Results contain value/provenance
+receipts, not caller-owned raw input buffers or acceleration structures.
+
+The source capture expands compatible indexed float3 geometry and keeps rigid
+transforms, surface and material identities. It scans candidates beyond the
+camera frustum, refuses unsupported shader/deformation/material cases, and
+invalidates changed or publicly exposed RD buffers. Reentrant diagnostic flushes
+are rejected; temporary AS ownership retires before deferred source buffers.
+Expanded input allocation attempts have a cumulative 64 MiB charge and 1,024
+source slots; diagnostic native AS/scratch reservations have a separate 256 MiB
+limit. Input charges are not refunded before deferred native lifetime is known,
+so a long diagnostic process can exhaust them and require a restart. These are
+conservative accounting bounds, not resident RAM/VRAM measurements.
+
+On M1 the corrected 0018 source compiled and passed checked parsing plus nine
+fresh native cases: Off, actual Horizon ground, a production Extra pilot mesh,
+offscreen geometry, mesh update, raw-buffer escape, release, unsupported material
+and `skip_vertex_transform`. Hit identity/distance was cross-checked against the
+CPU. This does not qualify the whole aircraft, moving normal-flight geometry,
+material lighting, denoiser guides, raster composition or performance. Exact
+source/build identities and the earlier SDK macro failure remain in the
+[dated implementation evidence](../../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md).
+
+## Experimental RD denoised binding
+
+Patch 0007 exposes `RenderingDevice.metalfx_denoised_capability()`,
+`metalfx_denoised_create(input_size, output_size)`,
+`metalfx_denoised_encode(context, textures, world_to_view, view_to_clip,
+pre_exposure, jitter, reset)` and `metalfx_denoised_status(context)`.
+Release a context through that device's `free_rid`. The driver-neutral API returns
+unavailable on other backends; the native implementation requires macOS/SDK 26+
+and Metal 3 native hazard tracking. For the prepared RT witness,
+`GODOT_METAL_TRIANGLE_QUERY=1` selects that tracking mode. Do not switch the normal
+product's synchronization policy simply to make this experimental API available.
+
+The texture array has a fixed order:
+
+| Index | Signal | Format / extent |
+| --- | --- | --- |
+| 0 | Noisy linear HDR color | RGBA16F / input |
+| 1 | Non-reversed depth | D32F / input |
+| 2 | Pixel-space motion, scale 1 | RG16F / input |
+| 3 | Diffuse albedo | RGBA16F / input |
+| 4 | Specular albedo | RGBA16F / input |
+| 5 | World-space normal | RGBA16F / input |
+| 6 | Roughness | R16F / input |
+| 7 | Manual exposure | R16F / 1×1 |
+| 8 | Denoised output | RGBA16F / output |
+
+Only distinct, device-owned regular 2D, single-sample, single-mip textures are
+admitted. Imported textures and shared views are rejected because their backing
+storage can alias despite distinct native object pointers. All inputs require
+sampling usage; output also requires storage usage, private storage and all
+SDK-reported output usage. Dimensions, formats, actual device and queried SDK
+usage are checked before graph admission. Pre-exposure must be finite/positive;
+jitter and matrices must be finite, and the first accepted frame requires reset.
+Optional strength/reactive/hit-distance/transparency inputs are disabled.
+
+Admission joins pending texture uploads and clears to the existing RD graph.
+The stateful SDK context is ordered even when callers replace every texture RID.
+An empty graph lazily creates its Metal command buffer before SDK dispatch.
+Context and callback references keep the SDK object alive through deferred work
+and GPU execution. An encode-callback error remains latched for that context;
+recovery creates another context. `accepted` and `encoded` are CPU receipts;
+`gpu_completion_observed` deliberately remains false. Diagnostic readback or an
+independent observer must establish GPU completion and image correctness.
+
+The real-RT fixture is `denoised_query_probe.gd`. Its optional native runner uses
+the checked runner, retains reports and exercises both binding modes. On enrolled
+hosts these custom rendered fixtures need a suitable inherited exclusive grant;
+normal admission refusal is not a result. Native SDK compilation, parsing and
+both binding-mode RT/denoising cases passed on M1. Output also needs the SDK's
+render-target usage in the observed configuration. The dated record preserves
+the corrected fixture and the empty-device warning/fix separately. This binding
+does not supply OpenRC's whole-scene RT
+lighting, moving geometry/material coverage, composition or a product control.
