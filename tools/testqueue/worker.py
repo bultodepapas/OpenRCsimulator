@@ -241,6 +241,20 @@ class Worker:
                 return {"released": True}
             if operation == "reconcile":
                 return self._reconcile(request)
+            if operation == "abandon":
+                job = self.store.authorize(request["handle"])
+                status = self.store.get(job)
+                from .processes import orphan_absent
+                if not self.draining or status["state"] != "UNKNOWN":
+                    raise ValueError("operator abandonment requires a drained worker and an UNKNOWN attempt")
+                if self.active or self.contexts:
+                    raise ValueError("attempt still belongs to an executing supervisor thread")
+                if self.store.db.execute("SELECT 1 FROM attempts WHERE state IN ('DISPATCHING','RUNNING','CLEANING') LIMIT 1").fetchone():
+                    raise ValueError("operator abandonment requires no executing attempts")
+                if not orphan_absent(status.get("process")):
+                    raise ValueError("recorded gate/job absence cannot be established")
+                self.store.abandon(job, request.get("reason"))
+                return self.store.get(job)
         if operation == "bridge":
             return self.bridge(request)
         if operation == "submit":

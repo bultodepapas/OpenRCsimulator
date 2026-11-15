@@ -629,8 +629,8 @@ class FleetCampaignTests(unittest.TestCase):
 
     def test_runway_live_pins_match_the_godot_producer(self):
         source = (HERE / "fleet.gd").read_text(encoding="utf-8")
-        match = re.search(r"(?ms)^const RUNWAY_LIVE_CONFIG_V4 := (\{.*?^\})", source)
-        self.assertIsNotNone(match, "Godot producer's v4 live-configuration pins are missing")
+        match = re.search(r"(?ms)^const RUNWAY_LIVE_CONFIG_V5 := (\{.*?^\})", source)
+        self.assertIsNotNone(match, "Godot producer's v5 live-configuration pins are missing")
         producer = ast.literal_eval(match.group(1))
         consumer = {
             aircraft: {

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8718b693-3188-41e2-b820-118752359fc1",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/g/OpenRC-a35-20261115-validation/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_shaft_publication.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-15T18:07:38.286701+00:00",
+  "label": "shaft-publication-qualified",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-integration/shaft-publication-qualified-7gd8tdn_/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-integration/shaft-publication-qualified-7gd8tdn_/report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 31.721901,
+  "log_bytes": 4841,
+  "log_sha256": "1802aad91e78bbe8cb67a629025849114e5a100cdb2de0f84d9cc751ae698878"
+}

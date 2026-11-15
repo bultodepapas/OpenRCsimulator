@@ -1,0 +1,8 @@
+# Preserve the delivered originals under every checkout line-ending setting.
+originals/*.pdf binary
+originals/*.zip binary
+# Intake manifests and new review text use stable LF bytes.
+*.json text eol=lf
+*.md text eol=lf
+# Retained checked reports, logs and compressed captures keep their recorded bytes.
+remediation/** -text whitespace=cr-at-eol

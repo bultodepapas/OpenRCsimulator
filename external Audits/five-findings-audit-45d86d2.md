@@ -1,5 +1,7 @@
 # Audit completed: five substantial findings
 
+> Historical report at `45d86d2` (2026-11-09). Later corrections and open work are tracked in the [completed ledger](COMPLETED-AUDIT-WORK.md) and [pending queue](CONSOLIDATED-AUDITS.md); the [2026-11-15 snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md) distinguishes current source review from these original observations.
+
 I audited **[bultodepapas/OpenRCsimulator](https://github.com/bultodepapas/OpenRCsimulator)** at commit **[`45d86d250f6e38a3d9b60d30c01bdc2396571efe`](https://github.com/bultodepapas/OpenRCsimulator/tree/45d86d250f6e38a3d9b60d30c01bdc2396571efe)**, using the repository’s pinned **Godot 4.8.beta2.official.cafc17a19**.
 
 **The strongest physics finding is a finite aerodynamic force discontinuity in the stock Extra 300S.** A velocity difference of just \(2\times10^{-10}\,\mathrm{m/s}\) produces a roll-acceleration difference of approximately **425°/s²** in a controlled reverse-flow test.
@@ -8,8 +10,8 @@ Separately, I reproduced a gameplay consequence of graphics settings: **the same
 
 The completed deliverables are:
 
-- OpenRC_Simulator_Audit_45d86d2.pdf[OpenRC_Simulator_Audit_45d86d2.pdf](sandbox:/workspace/scratch/30a3be555435/audit_deliverables/OpenRC_Simulator_Audit_45d86d2.pdf) — the **12-page audit**, including causes, measurements, corrections, acceptance criteria, and source links.
-- OpenRC_Simulator_Audit_Evidence_45d86d2.zip[OpenRC_Simulator_Audit_Evidence_45d86d2.zip](sandbox:/workspace/scratch/30a3be555435/audit_deliverables/OpenRC_Simulator_Audit_Evidence_45d86d2.zip) — probes, original execution logs, commands, source identities, verification scripts, and portable reproduction instructions.
+- [OpenRC_Simulator_Audit_45d86d2.pdf](../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_45d86d2.pdf) — the **12-page audit**, including causes, measurements, corrections, acceptance criteria, and source links.
+- [OpenRC_Simulator_Audit_Evidence_45d86d2.zip](../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip) — probes, original execution logs, commands, source identities, verification scripts, and portable reproduction instructions.
 
 I used three specialist investigation tracks and a separate adversarial reviewer. The retained evidence includes **nine checked executions**, with verified log hashes and **69 packaged production source copies verified against the pinned Git tree**. No tracked repository source was modified.
 
@@ -205,7 +207,7 @@ Acceptance is concrete: the same scenario should produce identical collision ide
 
 The statistics store writes its PID as an integer in JSON. When Godot parses that JSON, the number becomes a floating-point value. The validator then insists that the PID has `TYPE_INT`.
 
-The store rejects its own owner-record format before reaching the stale-process recovery logic. The mismatch is visible in [`store.gd`, lines 854–885](https://github.com/bultodepapas/OpenRCsimulator/blob/45d86d250f6e38a3d9b60d30c01bdc2396571efe/app/statistics/store.gd#L854-L885). Godot documents this JSON numeric conversion. [Godot Engine (latest) documentation in English](https://docs.godotengine.org/en/latest/classes/class_json.html?utm_source=chatgpt.com)
+The store rejects its own owner-record format before reaching the stale-process recovery logic. The mismatch is visible in [`store.gd`, lines 854–885](https://github.com/bultodepapas/OpenRCsimulator/blob/45d86d250f6e38a3d9b60d30c01bdc2396571efe/app/statistics/store.gd#L854-L885). Godot documents this JSON numeric conversion. [Godot Engine (latest) documentation in English](https://docs.godotengine.org/en/latest/classes/class_json.html)
 
 The failing sequence is:
 
@@ -264,7 +266,7 @@ The test needs to verify the reason and exercise recovery after abrupt process d
 
 Correct the PID codec with finite, integral, and range validation. Then validate the entire ownership protocol.
 
-A cast alone is insufficient: Godot documents `is_process_running` for a valid child PID returned by `create_process`, whereas a separate application instance is normally an independent process. That distinction matters when choosing a reliable cross-process locking design. [Godot Engine (latest) documentation in English](https://docs.godotengine.org/en/latest/classes/class_os.html?utm_source=chatgpt.com)
+A cast alone is insufficient: Godot documents `is_process_running` for a valid child PID returned by `create_process`, whereas a separate application instance is normally an independent process. That distinction matters when choosing a reliable cross-process locking design. [Godot Engine (latest) documentation in English](https://docs.godotengine.org/en/latest/classes/class_os.html)
 
 Acceptance should cover a force-killed real writer, successful relaunch and recording, protection of a live independent writer, simultaneous reclaim attempts, and process-identity/PID-reuse concerns.
 
@@ -286,7 +288,7 @@ For the RC track, the relevant chain is:
 
 `RcTrackField` preloads the material module at the top of the script, then checks for an empty track inside `build()`. See [`rc_track_field.gd`, lines 6–24](https://github.com/bultodepapas/OpenRCsimulator/blob/45d86d250f6e38a3d9b60d30c01bdc2396571efe/app/render/rc_track_field.gd#L6-L24) and [`rc_ground_material.gd`, lines 4–19](https://github.com/bultodepapas/OpenRCsimulator/blob/45d86d250f6e38a3d9b60d30c01bdc2396571efe/app/render/rc_ground_material.gd#L4-L19).
 
-This behavior is consistent with Godot’s documented distinction between loading and preloading. [Godot Engine (latest) documentation in English](https://docs.godotengine.org/en/latest/tutorials/best_practices/logic_preferences.html?utm_source=chatgpt.com)
+This behavior is consistent with Godot’s documented distinction between loading and preloading. [Godot Engine (latest) documentation in English](https://docs.godotengine.org/en/latest/tutorials/best_practices/logic_preferences.html)
 
 ### What I measured
 

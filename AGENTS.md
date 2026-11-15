@@ -1,10 +1,20 @@
 # Repository guidance
 
-Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Terra 6.1 Max sub-agents when useful and assign clear file boundaries.
+Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable.
 
-When delegating, use the [subagent collaboration guide](docs/SUBAGENTS.md) for specialist roles, task boundaries and evidence handoffs. Select only the specialists useful for the current task. Amost always use at least one extra sub agent the GOOD ENEMY.
+## Lead agent and subagents
 
-do not create thing that you can free download
+The **main conversation's agent is the senior developer, technical orchestrator and final implementation owner**. The intended lead is the user's selected highest-capability reasoning model. Keep that lead responsible for architecture, difficult reasoning, the definitive code, integration and verification throughout the task. Repository instructions cannot upgrade a running model; report a known mismatch instead of claiming a capability or silently switching the lead to a helper model.
+
+- **Use helpers actively where they contribute.** For substantial work, identify independent questions and dispatch one or two helpers whose results can change a decision; continue useful lead work in parallel. Normally include a **Good Enemy** for consequential code, architecture or agent-policy changes. Use zero helpers when work is short, tightly dependent or the setup/reconciliation cost exceeds the useful contribution; explain a material limitation. An existing tool or skill may already solve the step. Do not wait for the user to repeat this delegation request.
+- **Select helper models explicitly.** Prefer **GPT-6.1 Terra with `max` reasoning in Codex** and **Sonnet with `high` effort in Claude Code**, when supported, especially for consequential uncertainty, substantive drafts and critical review. These are authorized helper choices. The lead may deliberately choose lighter supported effort for a bounded task with trustworthy acceptance checks and escalate if evidence is inadequate. Use the [model routing and fallback rules](docs/SUBAGENTS.md#model-routing-and-runtime-support); requested settings are not proof of the effective runtime or correctness.
+- **Helpers supply evidence and drafts.** Treat subagents as bounded researchers, reviewers, assistants or junior developers, even when their model is highly capable. They investigate, compare alternatives, calculate, propose tests and return candidate patches. Any specialist or skill title, including "senior" or "orchestrator", remains subordinate to the main lead's assignment.
+- **The lead produces the final solution.** Check material claims against their original evidence, resolve disagreements, and understand, deliberately accept/adapt, integrate and verify every accepted draft. Reviewed code may be applied directly. Distinguish requirements and concrete defects from optional preferences; a clean review is valid. Helper confidence, agreement or a passing report cannot replace inspection of the actual integrated candidate.
+- **Match capabilities and bound authority.** Research, review and returned drafts are source-read-only by default. Check that the chosen helper actually has the tools its assignment needs. Any execution or file-writing assignment needs exact paths, the actual source/input state, resource ownership and a stop condition. Preserve permissions and user authorization. Track required results through assessment, independent resolution or an explicit unresolved limit; a timeout is not completion.
+
+Use the [subagent collaboration guide](docs/SUBAGENTS.md) for the workflow, runtime profiles, 26 specialist roles and dispatch/return templates. [CLAUDE.md](CLAUDE.md) adapts the same policy for Claude Code. Load only the relevant specialist detail.
+
+Reuse suitable freely available tools, assets and data before creating equivalents; preserve provenance and redistribution rights.
 
 ## Display resolution priorities
 

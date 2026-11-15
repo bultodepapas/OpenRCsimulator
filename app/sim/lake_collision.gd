@@ -16,6 +16,7 @@ const MAX_TRANSLATION_STEP_M := 1000.0
 const FRACTION_TIE := 1.0e-12
 const NORMAL_EPSILON := 1.0e-10
 const WATER_SLOPE_EPSILON_M := 0.025
+const LAW := "positive-down-lake-sweep-aircraft-tolerance-v2"
 
 
 class WaterEvent:
@@ -34,9 +35,10 @@ class WaterEvent:
 ## gear may hit water but dry-bank support stays with GroundContact's terrain sampler.
 static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		hull: PackedFloat64Array, gear: Dictionary, tick: int, dt: float, mass: float,
-		inertia: PackedFloat64Array, soft_bank: bool = true, prop_disc: Dictionary = {}) -> WaterEvent:
+		inertia: PackedFloat64Array, soft_bank: bool = true, prop_disc: Dictionary = {},
+		hull_contact: Dictionary = {}) -> WaterEvent:
 	return _first_hit_core(lake, previous, candidate, hull, gear, tick, dt, mass, inertia,
-		soft_bank, prop_disc, Callable(), {})
+		soft_bank, prop_disc, Callable(), {}, hull_contact)
 
 
 ## Dynamic contact path. The pure sampler returns one coherent fixed-datum mass-properties Dictionary for a
@@ -44,7 +46,7 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 static func first_hit_sampled(lake: Dictionary, previous: PackedFloat64Array,
 		candidate: PackedFloat64Array, hull: PackedFloat64Array, gear: Dictionary, tick: int,
 		dt: float, mass_at_fraction: Callable, soft_bank: bool = true,
-		prop_disc: Dictionary = {}) -> Dictionary:
+		prop_disc: Dictionary = {}, hull_contact: Dictionary = {}) -> Dictionary:
 	if not mass_at_fraction.is_valid():
 		return {ok = false, event = null, reason = "invalid_mass_sampler"}
 	if not LakeSurface.is_valid_definition(lake):
@@ -58,7 +60,7 @@ static func first_hit_sampled(lake: Dictionary, previous: PackedFloat64Array,
 	var failure: Dictionary = {}
 	var unit_inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
 	var event: WaterEvent = _first_hit_core(lake, previous, candidate, hull, gear, tick, dt,
-		1.0, unit_inertia, soft_bank, prop_disc, mass_at_fraction, failure)
+		1.0, unit_inertia, soft_bank, prop_disc, mass_at_fraction, failure, hull_contact)
 	if not failure.is_empty():
 		return {ok = false, event = null, reason = str(failure.get("reason", "invalid_mass_properties"))}
 	return {ok = true, event = event, reason = ""}
@@ -78,7 +80,7 @@ static func _gear_probe_point(contact_value: Variant) -> PackedFloat64Array:
 static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		hull: PackedFloat64Array, gear: Dictionary, tick: int, dt: float, mass: float,
 		inertia: PackedFloat64Array, soft_bank: bool, prop_disc: Dictionary,
-		mass_at_fraction: Callable, sample_failure: Dictionary) -> WaterEvent:
+		mass_at_fraction: Callable, sample_failure: Dictionary, hull_contact: Dictionary) -> WaterEvent:
 	if not LakeSurface.is_valid_definition(lake) or not SceneryCollision._state_is_valid(previous) \
 			or not SceneryCollision._state_is_valid(candidate) or hull.is_empty() or hull.size() % 3 != 0 \
 			or not SceneryCollision._packed_finite(hull) or not is_finite(dt) or dt <= 0.0 or tick < 1 \
@@ -193,12 +195,12 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 					if bool(gear_water_hit.get("hit", false)):
 						var gear_water_event: WaterEvent = _event_at(lake, previous, candidate, probe,
 							gear_water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank,
-							mass_at_fraction, sample_failure, best)
+							mass_at_fraction, sample_failure, best, hull_contact)
 						if gear_water_event != null and (best == null or _event_precedes(gear_water_event, best)):
 							best = gear_water_event
 					continue
 				var bank_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
-					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best)
+					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best, hull_contact)
 				if bank_event != null:
 					if best == null or _event_precedes(bank_event, best):
 						best = bank_event
@@ -209,18 +211,18 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 					if bool(water_hit.get("hit", false)):
 						var water_event: WaterEvent = _event_at(lake, previous, candidate, probe,
 							water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank,
-							mass_at_fraction, sample_failure, best)
+							mass_at_fraction, sample_failure, best, hull_contact)
 						if water_event != null and (best == null or _event_precedes(water_event, best)):
 							best = water_event
 				continue
 			if material == "water":
 				var water_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
-					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best)
+					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best, hull_contact)
 				if water_event != null and (best == null or _event_precedes(water_event, best)):
 					best = water_event
 			elif material == "bank_ground" and str(probe.kind) == "hull":
 				var bank_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
-					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best)
+					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best, hull_contact)
 				if bank_event != null and (best == null or _event_precedes(bank_event, best)):
 					best = bank_event
 			# Once a probe has a terminal event, later pieces of that same probe cannot precede it.
@@ -230,7 +232,7 @@ static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, cand
 		# A water/bank event from an earlier probe cannot be beaten by this end-of-tick crush check.
 		if str(probe.kind) == "hull" and soft_bank and best == null:
 			var final_event: WaterEvent = _deep_bank_event(lake, previous, candidate, probe,
-				tick, mass, inertia, mass_at_fraction, sample_failure)
+				tick, mass, inertia, mass_at_fraction, sample_failure, hull_contact)
 			if final_event != null and (best == null or _event_precedes(final_event, best)):
 				best = final_event
 	return best
@@ -290,7 +292,8 @@ static func _sweep_water(lake: Dictionary, from_ned: PackedFloat64Array, to_ned:
 static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 	probe: Dictionary, local_hit: Dictionary, material: String, fraction0: float, fraction1: float,
 	tick: int, mass: float, inertia: PackedFloat64Array, soft_bank: bool,
-	mass_at_fraction: Callable, sample_failure: Dictionary, best: WaterEvent) -> WaterEvent:
+	mass_at_fraction: Callable, sample_failure: Dictionary, best: WaterEvent,
+	hull_contact: Dictionary) -> WaterEvent:
 	if mass_at_fraction.is_valid() and not sample_failure.is_empty():
 		return null
 	if not bool(local_hit.get("hit", false)) or material not in ["water", "bank_ground"]:
@@ -346,8 +349,9 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 		M.cross(RB._slice3(state, RB.RATE), body_point))
 	var velocity: PackedFloat64Array = M.q_rotate(q, velocity_body)
 	var normal_component: float = M.dot(velocity, normal)
+	var crash_depth: float = HullContact.crash_depth(hull_contact) if soft_bank else HullContact.CRASH_DEPTH_M
 	if not is_finite(normal_component) or (material == "bank_ground" and normal_component >= -NORMAL_EPSILON
-			and depth <= HullContact.CRASH_DEPTH_M):
+			and depth <= crash_depth):
 		return null
 	var normal_speed: float = maxf(0.0, -normal_component)
 	var inverse_attitude: PackedFloat64Array = PackedFloat64Array([q[0], -q[1], -q[2], -q[3]])
@@ -387,8 +391,8 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 		if mass_at_fraction.is_valid():
 			sample_failure["reason"] = "nonfinite_impact_energy"
 		return null
-	if material == "bank_ground" and soft_bank and penetration <= HullContact.CRASH_DEPTH_M \
-			and specific < HullContact.TERMINAL_J_PER_KG:
+	if material == "bank_ground" and soft_bank and penetration <= crash_depth \
+			and specific < HullContact.terminal_energy(hull_contact):
 		return null
 	var out := WaterEvent.new()
 	out.tick = tick
@@ -443,7 +447,7 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 
 static func _deep_bank_event(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 	probe: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array,
-	mass_at_fraction: Callable, sample_failure: Dictionary) -> WaterEvent:
+	mass_at_fraction: Callable, sample_failure: Dictionary, hull_contact: Dictionary) -> WaterEvent:
 	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, 1.0)
 	var point: PackedFloat64Array = _probe_position(state, probe.body_point)
 	if not LakeSurface._contains(lake.bank_ne_m, point[0], point[1]):
@@ -454,14 +458,14 @@ static func _deep_bank_event(lake: Dictionary, previous: PackedFloat64Array, can
 	var normal: PackedFloat64Array = _surface_normal(float(terrain.slope_north), float(terrain.slope_east))
 	var norm: float = M.norm(normal)
 	var penetration: float = (point[2] - float(terrain.ground_down_m)) / norm
-	if penetration <= HullContact.CRASH_DEPTH_M:
+	if penetration <= HullContact.crash_depth(hull_contact):
 		return null
 	var local_hit := {"ok": true, "hit": true, "fraction": 1.0, "time_s": float(tick) * 0.0,
 		"material": "bank_ground"}
 	# Reuse the event builder's kinematics, then restore the end-of-tick terrain depth. A zero-duration
 	# point event is already on the bank; normal speed cannot suppress the authored crush-depth rule.
 	var out := _event_at(lake, previous, candidate, probe, local_hit, "bank_ground", 0.0, 1.0,
-		tick, mass, inertia, true, mass_at_fraction, sample_failure, null)
+		tick, mass, inertia, true, mass_at_fraction, sample_failure, null, hull_contact)
 	if out != null:
 		out.time_fraction = 1.0
 		out.depth_m = penetration
@@ -522,7 +526,8 @@ static func _surface_normal(slope_north: float, slope_east: float) -> PackedFloa
 	var length: float = sqrt(1.0 + slope_north * slope_north + slope_east * slope_east)
 	if not is_finite(length) or length <= 0.0:
 		return PackedFloat64Array()
-	return PackedFloat64Array([-slope_north / length, -slope_east / length, -1.0 / length])
+	# D=h(N,E) has outward normal [h_N,h_E,-1] in positive-down NED coordinates.
+	return PackedFloat64Array([slope_north / length, slope_east / length, -1.0 / length])
 
 
 static func _event_precedes(a: WaterEvent, b: WaterEvent) -> bool:

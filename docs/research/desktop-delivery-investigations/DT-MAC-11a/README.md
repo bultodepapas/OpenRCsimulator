@@ -1469,6 +1469,8 @@ every retrieved payload was independently rehashed. This closes source
 correctness for the repaired engine, not release-package or automatic-default
 qualification. Later pair/export/measurement tooling passed 122 portable
 controls on M1; these do not change the qualified runtime or mirrored sources.
+The later main branch lake/contact changes require fresh source-bound native
+qualification; these results remain specific to `b4442e6a`.
 
 The actual new editor/template/ZIP binding passes with independently retained
 phase-14 pins. The signed executable comparison now uses complete disposable

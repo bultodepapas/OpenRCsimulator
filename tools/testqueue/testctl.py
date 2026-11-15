@@ -49,6 +49,9 @@ def parser():
             command.add_argument("--timeout", type=float, default=600)
     for name in ("cancel", "reconcile", "release"):
         sub.add_parser(name).add_argument("handle")
+    abandon = sub.add_parser("abandon", help="operator release of an orphan with incomplete cleanup evidence")
+    abandon.add_argument("handle")
+    abandon.add_argument("--reason", required=True)
     sub.add_parser("reserve").add_argument("--owner", required=True)
     sub.add_parser("drain").add_argument("mode", choices=("on", "off"))
     return result
@@ -101,6 +104,8 @@ def main(argv=None):
         value = rpc(args.command, job=args.job)
     elif args.command in {"cancel", "reconcile", "release"}:
         value = rpc(args.command, handle=args.handle)
+    elif args.command == "abandon":
+        value = rpc("abandon", handle=args.handle, reason=args.reason)
     elif args.command == "reserve":
         value = rpc("reserve", owner=args.owner)
     elif args.command == "drain":

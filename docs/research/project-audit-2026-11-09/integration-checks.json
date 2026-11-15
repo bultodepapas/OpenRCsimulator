@@ -1,0 +1,147 @@
+{
+  "format": "openrc-audit-integration-checks-v1",
+  "checked_at_utc": "2026-11-15T12:27:21+00:00",
+  "reviewed_base_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "historical_audit_commit": "45d86d250f6e38a3d9b60d30c01bdc2396571efe",
+  "status": "pass",
+  "scope": "Documentation and original evidence intake only. Staged Git objects were checked; no engine or performance test was launched. The receipt itself is excluded from its payload hashes to avoid self-reference.",
+  "changed_paths": [
+    "docs/research/README.md",
+    "docs/research/project-audit-2026-11-09/.gitattributes",
+    "docs/research/project-audit-2026-11-09/README.md",
+    "docs/research/project-audit-2026-11-09/ci-status-2026-11-15.json",
+    "docs/research/project-audit-2026-11-09/current-state-2026-11-15.md",
+    "docs/research/project-audit-2026-11-09/integration-checks.json",
+    "docs/research/project-audit-2026-11-09/original-artifacts.json",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_45d86d2.pdf",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+    "docs/research/project-audit-2026-11-09/source-review.json",
+    "external Audits/COMPLETED-AUDIT-WORK.md",
+    "external Audits/CONSOLIDATED-AUDITS.md",
+    "external Audits/five-findings-audit-45d86d2.md"
+  ],
+  "runtime_paths_changed": [],
+  "whitespace_check": {
+    "command": "git diff --cached --check",
+    "result": "pass"
+  },
+  "links": {
+    "checker": "tools/ci/check_docs.py links/check_target over staged Git objects",
+    "markdown_files": 6,
+    "local_link_occurrences": 1152,
+    "new_or_changed_failures": [],
+    "preexisting_failures": []
+  },
+  "json_files_parsed": 4,
+  "public_reference_check": {
+    "text_files_checked": 10,
+    "private_chatgpt_resource_urls": 0,
+    "private_links_omitted_from_updated_legacy_ledger": 2,
+    "public_godot_tracking_parameters_removed": 3,
+    "original_deliverables": "unchanged"
+  },
+  "original_artifacts": [
+    {
+      "path": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_45d86d2.pdf",
+      "bytes": 142435,
+      "sha256": "387c4674f7c979a42248a60f98c6c5875e1459a983ce76927b73b17a45fba97a"
+    },
+    {
+      "path": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+      "bytes": 545378,
+      "sha256": "6c8eb64180363ab90d8fb7885c175c8a1bc00856d7b3e99d4c8f2a776bba5bb7"
+    },
+    {
+      "path": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf",
+      "bytes": 118209,
+      "sha256": "2c502dfaad364b9fa54d944b7f84f9245c617df55a8f02400d1ea9e9e063333b"
+    },
+    {
+      "path": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+      "bytes": 290902,
+      "sha256": "51e17a4869e4edabdb3fda78c70f1327bbe2407650ce60399cdaf060560fb05b"
+    }
+  ],
+  "archive_integrity": [
+    {
+      "path": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+      "checksummed_files": 108,
+      "crc": "pass",
+      "sha256_manifest": "pass"
+    },
+    {
+      "path": "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+      "checksummed_files": 63,
+      "crc": "pass",
+      "sha256_manifest": "pass"
+    }
+  ],
+  "original_artifact_checkout_bytes": {
+    "method": "git checkout-index to separate temporary output directories using staged path attributes",
+    "modes": [
+      {
+        "core_autocrlf": "false",
+        "artifacts_checked": 4,
+        "result": "pass"
+      },
+      {
+        "core_autocrlf": "true",
+        "artifacts_checked": 4,
+        "result": "pass"
+      }
+    ]
+  },
+  "original_helpers": [
+    {
+      "archive_round": 1,
+      "command": "python3 verify.py --repo <checkout-containing-original-commit>",
+      "exit_code": 0,
+      "checked_manifest_files": 108,
+      "original_receipts": 9,
+      "verified_source_copies": 69,
+      "issues": []
+    },
+    {
+      "archive_round": 2,
+      "command": "python3 verify.py --repo <checkout-containing-original-commit>",
+      "exit_code": 0,
+      "checksummed_files": 63,
+      "original_receipts": 7,
+      "pinned_source_copies": 27,
+      "diagnostic_variants": 2,
+      "issues": []
+    }
+  ],
+  "source_review": {
+    "git_blob_pairs_checked": 49,
+    "source_line_references_checked": 77,
+    "result": "pass"
+  },
+  "independent_review": {
+    "scope": "Read-only combined documentation, source identities and evidence boundaries",
+    "result": "No substantive blocker after correcting the skyline budget, historical hull-helper attribution and intake/hosted-CI wording"
+  },
+  "payload_sha256": {
+    "docs/research/README.md": "a614f046108307d054882c7e96f965ff4e2a1174d550e1b1e203d7570c291497",
+    "docs/research/project-audit-2026-11-09/.gitattributes": "f6f024ac45cf6678e44c873630655f9e73b3bdf500f27f8b7c8caec6ff786d20",
+    "docs/research/project-audit-2026-11-09/README.md": "1b56ce150d6e58b373a5dda84b9d68514970749e2fad4480455c1cacbcf7b061",
+    "docs/research/project-audit-2026-11-09/ci-status-2026-11-15.json": "46e4d7f1733c772e9b29dbf45cbc4c3b7e834dec194d5391d7603ef6220e138a",
+    "docs/research/project-audit-2026-11-09/current-state-2026-11-15.md": "c9ce9c54f042e259320e1c132822d87336d374db91c29bf56fe4e226cb1df589",
+    "docs/research/project-audit-2026-11-09/original-artifacts.json": "770260c6c1762cd1fe546ecada5145dcdd50ba62485bd31592e91ba8dcc920a9",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_45d86d2.pdf": "387c4674f7c979a42248a60f98c6c5875e1459a983ce76927b73b17a45fba97a",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip": "6c8eb64180363ab90d8fb7885c175c8a1bc00856d7b3e99d4c8f2a776bba5bb7",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf": "2c502dfaad364b9fa54d944b7f84f9245c617df55a8f02400d1ea9e9e063333b",
+    "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip": "51e17a4869e4edabdb3fda78c70f1327bbe2407650ce60399cdaf060560fb05b",
+    "docs/research/project-audit-2026-11-09/source-review.json": "5a7adafdeb2b463833949724f0f01cd495e593a22312ce195a0fb29b56bb1645",
+    "external Audits/COMPLETED-AUDIT-WORK.md": "d47b4e4dc028dc1387433915902f3c7c7e8f9c7abd6e83337ae0b2804eb64989",
+    "external Audits/CONSOLIDATED-AUDITS.md": "afb0cd78c02091bebc7ff65cbb18b762260b0f7a5eb081325bce032c7da38268",
+    "external Audits/five-findings-audit-45d86d2.md": "ee57cde7cf0d715d6387ddd35f322a3900de62d9a501b8a4704eb1c75c2e526b"
+  },
+  "not_claimed": [
+    "Current-source replay of the historical audit witnesses",
+    "Complete green CI for the integration commit",
+    "Physical, native graphical, controller or performance qualification"
+  ]
+}

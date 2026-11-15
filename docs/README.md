@@ -14,7 +14,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Record flight handling, replay and compare a physics change | [Flight logging manual](FLIGHT-LOGGING.md) |
 | Implemented architecture, boundaries and repository layout | [STACK](STACK.md) |
 | Contribution workflow and durable agent rules | [CONTRIBUTING](../CONTRIBUTING.md), [AGENTS](../AGENTS.md), [Claude Code guidance](../CLAUDE.md) |
-| Specialist subagent roles, delegation and evidence handoffs | [Subagent collaboration guide](SUBAGENTS.md) |
+| Senior lead ownership, Codex/Claude helpers, specialist roles and evidence handoffs | [Subagent collaboration guide](SUBAGENTS.md); [21-question research review](research/agent-orchestration-2026-11-15.md) |
 | Main-line work and acceptance gates | [ROADMAP](../ROADMAP.md#where-we-are) |
 | Twelve-month product/engineering vision and first implementation sequence | [MOONSHOT](../MOONSHOT.md); proposed transformations do not replace current track gates |
 | Performance/visual implementation order, gates and idea decisions | [Global implementation plan](plans/global-performance-visual-quality.md); [dated research and sources](research/godot-global-review-2026-10-14.md) |

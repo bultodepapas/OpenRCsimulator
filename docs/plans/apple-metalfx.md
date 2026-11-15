@@ -104,8 +104,9 @@ The custom-engine/native-physics preflight found 15 existing RT method metadata
 incompatibilities in patch 0005. Additive 0021 restores the unsigned API while
 retaining checked wide inputs. Its fresh editor/template pair passes the unchanged
 full official API validator and 81 native query/dispatch processes. The combined
-source candidate also passes native numerical, mutation, FPCR/domain and
-production-path stage/lifecycle/exact-replay gates on M1. Paired export tooling
+`b4442e6a` source candidate also passed native numerical, mutation, FPCR/domain
+and production-path stage/lifecycle/exact-replay gates on M1. The later main
+branch lake/contact changes require fresh source-bound native qualification. Paired export tooling
 and signed-executable/template checks are implemented and tested; actual
 packaged native execution and automatic-default qualification remain open.
 The R3 development ZIP still contains clean19 and reference physics; the new

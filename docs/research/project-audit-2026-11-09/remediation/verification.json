@@ -1,0 +1,374 @@
+{
+  "format": "openrc-a35-remediation-verification-v1",
+  "date": "2026-11-15",
+  "baseline_main": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "integrated_intake_baseline": "d1e55d5b9c81d33f8ebf4a75528a67bd87b2d70a",
+  "runtime_repair_commit": "2673d9dd0196e4d2dd58e8f1550b07a0ff9c6b86",
+  "captured_app_commit": "5b409a03436905224f9d64b139b69bfeb97304ac",
+  "platforms": {
+    "lake_baseline": "Windows",
+    "focused_candidate": "Linux x86_64 / WSL Ubuntu",
+    "publication_capture": [
+      "Windows",
+      "Linux"
+    ],
+    "companion_replay": "Windows"
+  },
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "publication_workflow": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43742060049",
+  "companion_receipt": "../../ai-companions/AFC-02/rebinds/2026-11-15-a81c2b2d-to-4ff26331.json",
+  "compressed_captures": {
+    "baseline-fleet.json.gz": {
+      "raw_sha256": "8fb276fa20fb9fbb365a91caaf015328cde280a5b7b53d914bdcb21f2591f4e0",
+      "stored_sha256": "6ec132c4dc93e4717eb34d7261dd188cb000bacef00c8f7c5fb35dc35690b91f",
+      "raw_bytes": 3289031,
+      "stored_bytes": 344934
+    },
+    "candidate-fleet.json.gz": {
+      "raw_sha256": "a65e5f7893f9899894be15973543c087c5bf74ea9ff717e2f903c7556d12d705",
+      "stored_sha256": "a3766bdf76f3b2dcc951bdf2441762fa2e5357e4ba4be452ac1e436948f6ada3",
+      "raw_bytes": 3289039,
+      "stored_bytes": 344950
+    }
+  },
+  "checks": {
+    "lake-baseline": {
+      "report": "checks/lake-baseline/report.json",
+      "log": "checks/lake-baseline/engine.log",
+      "complete": true,
+      "ok": false,
+      "errors": 0,
+      "summary": [
+        "41 lake session checks, 2 failed"
+      ]
+    },
+    "f08-base-witness": {
+      "report": "checks/f08-base-witness/report.json",
+      "log": "checks/f08-base-witness/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "AUDIT_QUARANTINE_REOPEN_REPRODUCED=true"
+      ]
+    },
+    "f08-candidate-store": {
+      "report": "checks/f08-candidate-store/report.json",
+      "log": "checks/f08-candidate-store/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "209 checks, 0 failed"
+      ]
+    },
+    "test_lake_collision": {
+      "report": "checks/test_lake_collision/report.json",
+      "log": "checks/test_lake_collision/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "all lake collision checks passed"
+      ]
+    },
+    "test_lake_session": {
+      "report": "checks/test_lake_session/report.json",
+      "log": "checks/test_lake_session/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "47 lake session checks, 0 failed"
+      ]
+    },
+    "test_dynamic_mass_contact": {
+      "report": "checks/test_dynamic_mass_contact/report.json",
+      "log": "checks/test_dynamic_mass_contact/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "R05-B draft: 38 checks, 0 failures"
+      ]
+    },
+    "test_statistics_delete_commit": {
+      "report": "checks/test_statistics_delete_commit/report.json",
+      "log": "checks/test_statistics_delete_commit/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "F15 deletion boundary: 207 checks, 0 failures"
+      ]
+    },
+    "baseline-fleet-capture": {
+      "report": "checks/baseline-fleet-capture/report.json",
+      "log": "checks/baseline-fleet-capture/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "CI_AUDIT_FLEET_CAPTURE checks=170 failures=0 cases=8"
+      ]
+    },
+    "candidate-fleet-capture": {
+      "report": "checks/candidate-fleet-capture/report.json",
+      "log": "checks/candidate-fleet-capture/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "CI_AUDIT_FLEET_CAPTURE checks=170 failures=0 cases=8"
+      ]
+    },
+    "fleet-comparison": {
+      "report": "checks/fleet-comparison/report.json",
+      "log": "checks/fleet-comparison/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "A35_FLEET_COMPARISON checks=452 failures=0 cases=8"
+      ]
+    },
+    "shaft-publication-qualified": {
+      "report": "checks/shaft-publication-qualified/report.json",
+      "log": "checks/shaft-publication-qualified/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "Shaft publication: 214 checks, 0 failed; /mnt/g/OpenRC-a35-20261115-validation/candidate/app/../tmp/shaft-publication-25627509"
+      ]
+    },
+    "weather-publication-qualified": {
+      "report": "checks/weather-publication-qualified/report.json",
+      "log": "checks/weather-publication-qualified/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "Weather publication: 313 checks, 0 failed; /mnt/g/OpenRC-a35-20261115-validation/candidate/app/../tmp/weather-publication-26338589"
+      ]
+    },
+    "fleet-policy-qualified": {
+      "report": "checks/fleet-policy-qualified/report.json",
+      "log": "checks/fleet-policy-qualified/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "NK3 fleet policy: 598 checks, 0 failed"
+      ]
+    },
+    "companion-profile-qualified": {
+      "report": "checks/companion-profile-qualified/report.json",
+      "log": "checks/companion-profile-qualified/engine.log",
+      "complete": true,
+      "ok": true,
+      "errors": 0,
+      "summary": [
+        "AFC-02 companion profile validation: 52 checks, 0 failed"
+      ]
+    }
+  },
+  "candidate_source_files": {
+    "app/sim/lake_collision.gd": {
+      "raw_sha256": "9ea2d81b1b40a30bfc603c72e590cb250b5ad05ed13909e55f5ca09e7ad66419",
+      "utf8_lf_sha256": "9610c73580ffb5f22ea5ab2b53559ad9519f8d3696f1469e4258f961b8b632b6"
+    },
+    "app/sim/flight_session.gd": {
+      "raw_sha256": "9b4cdcca6c34be5dcf4be293e191e94f3d8a8db05c140ed0f7240c827f7abcc3",
+      "utf8_lf_sha256": "9b4cdcca6c34be5dcf4be293e191e94f3d8a8db05c140ed0f7240c827f7abcc3"
+    },
+    "app/statistics/store.gd": {
+      "raw_sha256": "fda64e3713162452afc8a7f4eaf3587c49b1aae5135e4f50d4843a53d9dd2d69",
+      "utf8_lf_sha256": "fda64e3713162452afc8a7f4eaf3587c49b1aae5135e4f50d4843a53d9dd2d69"
+    },
+    "app/tests/test_lake_collision.gd": {
+      "raw_sha256": "f68a9ea82506a405fdbdd5f95609436b5a6e95458fa9dfe492b704c8ee2e06b4",
+      "utf8_lf_sha256": "f68a9ea82506a405fdbdd5f95609436b5a6e95458fa9dfe492b704c8ee2e06b4"
+    },
+    "app/tests/test_lake_session.gd": {
+      "raw_sha256": "49b77fceb48640a61b1db3a24c94280f4be69eb203bf9e6579c1fc42f78eb76c",
+      "utf8_lf_sha256": "af7f20651bdb939e9d12b825ef51c8ce78d3d6589dcb2f513ddced6a6b01038b"
+    },
+    "app/tests/test_flight_statistics_store.gd": {
+      "raw_sha256": "40ac406a0ea5e4bf155ceaeb252aa5ebaac90c5cbadbc66af01b9bd99d914371",
+      "utf8_lf_sha256": "fa82b6b24f9a0ab6753c971c4a2a596eb13a9d33b0fea2b8bb0860fcbe49845b"
+    },
+    "app/tests/publication_fixture_bridge.gd": {
+      "raw_sha256": "03e674949cd294fe7c9afe795c572f41634ff4f4808e62178666bfb333559d8e",
+      "utf8_lf_sha256": "501e29865c4f4e1cba09c5e8c851aa21e7b2a821aeca9e34bc19fef7a072f10a"
+    },
+    "app/tests/fixtures/publication_fixture_bridge.json": {
+      "raw_sha256": "7b51caf56d64d8944fab076e4a2faa85cbc14ff66e22c1512359eda9cb055e50",
+      "utf8_lf_sha256": "7b51caf56d64d8944fab076e4a2faa85cbc14ff66e22c1512359eda9cb055e50"
+    },
+    "research/native-kernel/fleet.gd": {
+      "raw_sha256": "521aaf99081cf3962b9c2ae008fa243a91a77e6308e06f23a7184159fcedb554",
+      "utf8_lf_sha256": "8be6c56b728238e3ef73881e4a71cd0043dca2948565678f04b32d213a5726be"
+    },
+    "research/native-kernel/fleet_campaign.py": {
+      "raw_sha256": "cde52a7a36840faa7a68ff2823d3e090a8d4d6ac5b6791a4c98598f2d0baad3c",
+      "utf8_lf_sha256": "ffde96befc2a0de0c87571db9f6da18bfa821c9b3b72f29dd83315f0d56e6178"
+    },
+    "research/native-kernel/test_fleet_campaign.py": {
+      "raw_sha256": "a6755fd270e48c843ecd92b961a1eb0c5a1e7515fe51f1e79f7ad78e4bb174c3",
+      "utf8_lf_sha256": "79206a9d92a61e7d21e6575bcbce366dd827ad2f5cc1d49d7320ec411375bfd0"
+    },
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+      "raw_sha256": "8d5c063450fee77dfca9ea0f374dad466320f48ceeedca6caf3b0c454d96d3cc",
+      "utf8_lf_sha256": "6a6bb49075cb5a947a33abb557597759c5cca4f4d61b517b507e250adc287de3"
+    },
+    "tools/companions/qualification.json": {
+      "raw_sha256": "181f4a1796faf119068ab565e0c4a1c9f708c59243af5bd4b26d8dd127d927d7",
+      "utf8_lf_sha256": "8a74d42960a37516d647b99ecbb227334d6577486b9456a69a0c042a185f53a1"
+    }
+  },
+  "artifacts": {
+    "baseline-fleet.json.gz": {
+      "sha256": "6ec132c4dc93e4717eb34d7261dd188cb000bacef00c8f7c5fb35dc35690b91f",
+      "bytes": 344934
+    },
+    "candidate-fleet.json.gz": {
+      "sha256": "a3766bdf76f3b2dcc951bdf2441762fa2e5357e4ba4be452ac1e436948f6ada3",
+      "bytes": 344950
+    },
+    "checks/baseline-fleet-capture/engine.log": {
+      "sha256": "fd7dda755171973bf788165cc6dd5e1195c37cd07a32231c048faae72b03bbaf",
+      "bytes": 383
+    },
+    "checks/baseline-fleet-capture/report.json": {
+      "sha256": "e252ad3b6a77424b4baf4af460b998616e5328e031dc4aae7effc68a8807ec49",
+      "bytes": 1280
+    },
+    "checks/candidate-fleet-capture/engine.log": {
+      "sha256": "fd7dda755171973bf788165cc6dd5e1195c37cd07a32231c048faae72b03bbaf",
+      "bytes": 383
+    },
+    "checks/candidate-fleet-capture/report.json": {
+      "sha256": "b82900b776c58d4ab476873ada9be9205ac3286f24ef77c93021d9a8882e66fd",
+      "bytes": 1285
+    },
+    "checks/companion-profile-qualified/engine.log": {
+      "sha256": "dbb283c7d7127bb830034f7f1148fe10f8bea7d6e377b9611b3458ac527cad0d",
+      "bytes": 3002
+    },
+    "checks/companion-profile-qualified/report.json": {
+      "sha256": "7d96a9966debda0a11a51e787eef4235cf586847ef4b364f4c119ea1dc975078",
+      "bytes": 1295
+    },
+    "checks/f08-base-witness/engine.log": {
+      "sha256": "fa2e03f231076e395276c2455d239433585504f9466a8f8703b818c53a54843d",
+      "bytes": 1782
+    },
+    "checks/f08-base-witness/report.json": {
+      "sha256": "983b127279e0d12970f573604f40c6bfbd786f3dbfafc5afdac10ded1f8ab5a1",
+      "bytes": 1228
+    },
+    "checks/f08-candidate-store/engine.log": {
+      "sha256": "214ff1a24a7a706e02c3fe672faefab049f130904b8bbc2b9f31481c9548d5cd",
+      "bytes": 91
+    },
+    "checks/f08-candidate-store/report.json": {
+      "sha256": "aaf19855c312ab7b89e806a09bc38037dda84f13b4072ad09c275767ed1cac6c",
+      "bytes": 1218
+    },
+    "checks/fleet-comparison/engine.log": {
+      "sha256": "20b5d8e4d7ad2bf1eaf5fceec9f67a322f545ae0aae894a25d81432b549c8104",
+      "bytes": 121
+    },
+    "checks/fleet-comparison/report.json": {
+      "sha256": "e3e6e95d934cedaffcef97014b6b7c6accee7af2929e28ade62751e022fb5290",
+      "bytes": 1256
+    },
+    "checks/fleet-policy-qualified/engine.log": {
+      "sha256": "f61c94e1b31902d21af3b5d730c943675811a87f77cc8ff28bcc59da88f99e36",
+      "bytes": 3980
+    },
+    "checks/fleet-policy-qualified/report.json": {
+      "sha256": "cc401cffa588b4e4f29c35145892e4da2f324ae6f804f359a9c55eadea0febc8",
+      "bytes": 1309
+    },
+    "checks/lake-baseline/engine.log": {
+      "sha256": "aea71b5e74a33b13c499794695469bc465c9c3a9ce23c7eb331c0f98a44151f3",
+      "bytes": 3912
+    },
+    "checks/lake-baseline/report.json": {
+      "sha256": "b99cb73a2a9fe1ba61bdc4768a13cbcf2fc7d7551ba4d421f746cfee6e071875",
+      "bytes": 1450
+    },
+    "checks/shaft-publication-qualified/engine.log": {
+      "sha256": "1802aad91e78bbe8cb67a629025849114e5a100cdb2de0f84d9cc751ae698878",
+      "bytes": 4841
+    },
+    "checks/shaft-publication-qualified/report.json": {
+      "sha256": "f825f2f5417a384f027295841cb92efcd1dd8d3b4fce20d391bc7f66f87e9038",
+      "bytes": 1293
+    },
+    "checks/test_dynamic_mass_contact/engine.log": {
+      "sha256": "11ee5bb335c06fecbacc1b8f397399abd7cd3fabfd048a3810e1f4f119e59e60",
+      "bytes": 2493
+    },
+    "checks/test_dynamic_mass_contact/report.json": {
+      "sha256": "54f25a060c8534e6c0cd861cd69ed3c86ef3a2918d4c35b4cbc489d7f6082835",
+      "bytes": 1283
+    },
+    "checks/test_lake_collision/engine.log": {
+      "sha256": "b3ecec42d356acc41599f937a1cae4ac8c2a073c4016686087b839dbfdb2669e",
+      "bytes": 4195
+    },
+    "checks/test_lake_collision/report.json": {
+      "sha256": "424fccf8ba06b59f2d22779c897ab7c588c33bbdbd92bb3f966c318deab3b5a0",
+      "bytes": 1273
+    },
+    "checks/test_lake_session/engine.log": {
+      "sha256": "19c34714c187b82aae4bca8cdcf63732c8fd68324326932106b9a7420ce82209",
+      "bytes": 3614
+    },
+    "checks/test_lake_session/report.json": {
+      "sha256": "8c1d12754341cfe037cac1e72c662c8e146729e77c03de3675d9e1d9032aedac",
+      "bytes": 1263
+    },
+    "checks/test_statistics_delete_commit/engine.log": {
+      "sha256": "070bc474589c13372ba3f5158661e117642cd9bca3c4d4fb25f3261e0858eee7",
+      "bytes": 116
+    },
+    "checks/test_statistics_delete_commit/report.json": {
+      "sha256": "f2940a47585b1de945e5ed613ad41ed0ffa8612eeeb86f98aafab8ac11369650",
+      "bytes": 1298
+    },
+    "checks/weather-publication-qualified/engine.log": {
+      "sha256": "0a750d000cf8f5cb6b3256f8dcc896eeccffbcf6f8d89c9cd8c264849b2295f4",
+      "bytes": 6011
+    },
+    "checks/weather-publication-qualified/report.json": {
+      "sha256": "036796f838ff5476a1febdee78b03d5cddfd8f503c98f3c927308295d6033149",
+      "bytes": 1301
+    },
+    "compare_fleet.gd": {
+      "sha256": "c4ffcfb91980882262b30045218d34a43e81df75d9e08acac2c50e58c1f37161",
+      "bytes": 7590
+    },
+    "fleet-comparison.json": {
+      "sha256": "0eb58eedb36a2a4cb7186b21af73b6045c76e73f8f2f5a912bbaa6ed5b9fab41",
+      "bytes": 7019
+    },
+    "native-pin-python.txt": {
+      "sha256": "ef0d169c13714d762dd4c745e4430ca4f9537098fc4c77636f00143af46a0a5c",
+      "bytes": 1009
+    },
+    "publication-rebind.json": {
+      "sha256": "4545897385946b815e865ce9d56b9fccc65b5fe01ce953dd55c19b7c9088d580",
+      "bytes": 11054
+    }
+  },
+  "limits": [
+    "Fleet observations are reference reset refusals and do not qualify native flights.",
+    "X99 impact thresholds retain estimated physical provenance.",
+    "The initial shared-pool cold import, disk and transport failures do not qualify tests.",
+    "Complete CI results are retained by GitHub for the final integration commit."
+  ]
+}

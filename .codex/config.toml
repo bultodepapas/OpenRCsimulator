@@ -1,0 +1,14 @@
+# Register supporting roles; model/effort pins live in their profile files.
+# Keep the main model, permissions and concurrency settings with the runtime.
+# See docs/SUBAGENTS.md for the local budget, availability and fallback rules.
+[agents.openrc_researcher]
+description = "Bounded source research, code mapping and evidence synthesis."
+config_file = "agents/openrc_researcher.toml"
+
+[agents.openrc_draft_helper]
+description = "Return a proposed patch or test for the lead to review; no source edits."
+config_file = "agents/openrc_draft_helper.toml"
+
+[agents.openrc_good_enemy]
+description = "Independently challenge consequential proposals and candidate diffs."
+config_file = "agents/openrc_good_enemy.toml"

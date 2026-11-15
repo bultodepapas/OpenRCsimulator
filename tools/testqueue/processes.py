@@ -130,6 +130,8 @@ if os.name == "nt":
 
     _kernel32.CreateJobObjectW.argtypes = [ctypes.c_void_p, wintypes.LPCWSTR]
     _kernel32.CreateJobObjectW.restype = _HANDLE
+    _kernel32.OpenJobObjectW.argtypes = [_DWORD, wintypes.BOOL, wintypes.LPCWSTR]
+    _kernel32.OpenJobObjectW.restype = _HANDLE
     _kernel32.SetInformationJobObject.argtypes = [_HANDLE, ctypes.c_int, ctypes.c_void_p, _DWORD]
     _kernel32.SetInformationJobObject.restype = wintypes.BOOL
     _kernel32.AssignProcessToJobObject.argtypes = [_HANDLE, _HANDLE]
@@ -275,6 +277,47 @@ def confirm_stopped(identity: dict) -> bool:
             return False
         return previous_boot != current["boot"]
     except (OSError, KeyError, TypeError, ValueError, RuntimeError, subprocess.SubprocessError):
+        return False
+
+
+def orphan_absent(identity: dict) -> bool:
+    """Bounded same-boot evidence for explicit operator abandonment.
+
+    This does not establish process-tree cleanup. The original gate must be
+    absent or signaled and its named job absent. Inaccessible identities fail.
+    """
+    if os.name != "nt" or not isinstance(identity, dict):
+        return False
+    try:
+        current = host_identity()
+        if identity.get("host") != current["host"] or identity.get("boot") != current["boot"]:
+            return False
+        name = identity.get("job", "")
+        if identity.get("kind") != "windows-job-v1" or not re.fullmatch(
+                r"Global\\OpenRC-testqueue-[0-9a-f-]{36}", name):
+            return False
+        uuid.UUID(name.removeprefix("Global\\OpenRC-testqueue-"))
+        pid, creation = identity["pid"], identity["creation"]
+        if type(pid) is not int or pid <= 0 or type(creation) is not int or creation <= 0:
+            return False
+        handle = _kernel32.OpenProcess(0x00100000 | 0x1000, False, pid)
+        if handle:
+            try:
+                times = [wintypes.FILETIME() for _ in range(4)]
+                _wincheck(_kernel32.GetProcessTimes(handle, *(ctypes.byref(t) for t in times)))
+                observed = (times[0].dwHighDateTime << 32) | times[0].dwLowDateTime
+                if observed == creation and _kernel32.WaitForSingleObject(handle, 0) != 0:
+                    return False
+            finally:
+                _kernel32.CloseHandle(handle)
+        elif ctypes.get_last_error() != 87:  # ERROR_INVALID_PARAMETER for an absent PID
+            return False
+        job = _kernel32.OpenJobObjectW(0x0004, False, name)  # JOB_OBJECT_QUERY
+        if job:
+            _kernel32.CloseHandle(job)
+            return False
+        return ctypes.get_last_error() == 2  # ERROR_FILE_NOT_FOUND only
+    except (OSError, KeyError, TypeError, ValueError, RuntimeError):
         return False
 
 

@@ -1,15 +1,21 @@
 # External audits — pending work
 
-Updated **2026-11-09**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
+Updated **2026-11-15**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries retain their historical reproductions, derivations, measurements and limits; the A34 text has only a status banner and repaired artifact/source links. Private external links in the updated ledger are omitted; its local report references remain.
 
 **Read status carefully:** entries require implementation, investigation or qualification. Reproduce historical findings against current source before editing; an old report is not proof of a current failure. Implemented work is removed from the implementation queue even when native/physical/release gates remain; those gates are listed separately below. Concurrent unverified edits are not classified as completed.
 
 Each finding row includes an **Original report** link; implementation evidence remains separate from its originating audit.
 
-The [five-finding audit at `45d86d2`][A34] is retained from the supplied text; its
-external PDF/ZIP were not available for inspection. Fresh bounded repairs and
-their remaining qualification are in the [implemented ledger](COMPLETED-AUDIT-WORK.md).
-Its local-wing closure question remains research, not a newly calibrated flight model.
+On **2026-11-15**, the original PDFs and evidence ZIPs for the [five-finding
+audit][A34] and its [three-finding second round][A35] were recovered. The
+[research home](../docs/research/project-audit-2026-11-09/README.md) retains the
+originals, intake identities and evidence boundaries. The [dated source and CI
+snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md)
+reviews main `ad21070798bfb9658785576a9c0b8bfc9a71fc7f`; historical engine
+observations at `45d86d2` are not current reruns. A34's bounded corrections remain
+in the [implemented ledger](COMPLETED-AUDIT-WORK.md); its local-wing closure
+question remains research, not a newly calibrated flight model. A35 F06–F08
+repairs and their fresh verification are recorded in the [implemented ledger](COMPLETED-AUDIT-WORK.md).
 
 ## Contents
 
@@ -203,6 +209,31 @@ The failed-save/new-T loss warning is already covered by A30's generation-aware 
 | **A28 §3 — Asynchronous cloud readback (DT-MAC-06b)** | Attribute fresh-process uncached-seed bake/readback/validation/publication first; three process frames do not prove GPU completion. Ordinary HDR source is logically 32 MiB versus final RG16F 16 MiB, excluding staging/alignment. Pinned synchronous path stalls; async API can also stall on staging exhaustion. Preserve analytic fallback while resolving actual proxy/RD texture, render-thread ownership/completion, exact format/conversion, viewport/RID lifetime, seed/generation, cancel/stale/no-progress/retry handling and validation. Publish the same stable copied ImageTexture: earlier direct ViewportTexture path produced black Mobile/Metal sky data. Four-entry process cache includes failures; exhausted-cache fallback is not faster async loading. An arbitrary worker around get_image is not a proven solution. | [A28 original][A28] |
 | **A28 §4 — Lens-ghost support guard** | For finite valid inputs, conservatively reject outside the union of five support boxes before secondary ghost visibility/work; preserve veil, positions/colors, blending/common outputs and original path for uncertain inputs. Nine float32 grids validate sampled cases only; radius×1.001 plus one vertical pixel is not a Metal/raster/MSAA error bound. Never cull merely because source is offscreen: probe retains 19,694 visible pixels there. Depth reads are conditional and coherent; extra branches/registers may erase savings, and the depth dependency remains. Inspect generated Metal and actual GPU/full-frame A/B results with sun/moon, on/offscreen, moving occlusion, FOV/resize and image parity. | [A28 original][A28] |
 
+**A34 cloud transition follow-up — A28 / DT-MAC-06b:** the original
+base-versus-layer-seed binding was corrected with the bounded implementation in
+the completed ledger. Current source can retain obsolete tiles while a consumer
+remains, leaving new layer seeds analytic when the four-entry cache is full.
+Investigate direct cloudy-preset and seed permutations with all live ground/sky
+consumers, shared tiles, pending tokens, cancellation and prewarm/failure
+semantics; preserve the analytic fallback. This refines the [existing cloud
+admission handoff](../docs/research/desktop-delivery-investigations/external-handoffs-2026-11-14.md),
+not an additional audit defect or a measured GPU saving. [A34][A34]
+
+**A34 optional resources follow-up:** selected circuit maps, lake audio and the
+Stik engine were made lazy within their documented scope. A ground activity still
+preloads effect modules and a shared smoke texture before its effects guard;
+measure actual default/off/on application paths and shared-resource ownership
+before estimating savings. Preserve enabled resources and loading-phase behavior,
+then compare cold/warm startup, retained and peak memory and hitches. The old
+21.66 MiB figure was an isolated historical Godot allocator observation, not a
+current whole-app saving. [A34][A34]
+
+**SUN-09 / SUN-08 glare-off lead:** the current eye-view process can advance
+skyline work at zero glare intensity. Treat this as a secondary source-derived
+candidate, not a measured bottleneck or extra defect. Profile a matched complete
+scene first; any change must preserve sun/moon, cloud-disc, dose/afterimage and
+transition behavior and the existing owner-flight acceptance. [Sun plan](../docs/plans/sun.md)
+
 Retain actual 1080p first, release-equivalent identities, effective renderer/scaler sizes, audio/lighting/seed/cache/power state and separate diagnostic/clean runs. The report's suggested 60-second screen and roughly 20-minute sustained follow-up are exploratory suggestions, not replacements for the owning Mac plan/A26 qualification gates or proof of thermal equilibrium. No FPS, battery or sustained gain is established. Original report: [A28][A28].
 
 ### Wind observer qualification
@@ -291,6 +322,7 @@ A16/A19 propose experiments, not completed physical validation. A20 reports four
 
 | Implemented or historical area | Pending gate | Original report |
 | --- | --- | --- |
+| A35 F07 / X99 bank tolerance | The prepared-policy software repair and boundary regressions are implemented. The authored 12.5 J/kg and 0.12 m limits retain estimated provenance and require independent impact/drop measurements under the ground-physics owner. [Repair and software evidence](../docs/research/project-audit-2026-11-09/README.md#a35-remediation-follow-up). | [A35 original][A35] |
 | A21 trial identity; A22 WOPT-02; A31 source cache | [UI-32-R11](../docs/research/menu-investigations/UI-32/README.md#frozen-trial-identity-ui-32-r11--a21-2026-11-09), [actual overlay reuse](../docs/WIND-ATMOSPHERE-REFERENCE.md#observer-datum-reuse-m5-w-aud-22--wopt-02-2026-11-09) and [NR-02-R1](../docs/research/natural-random/README.md#source-identity-cache-nr-02-r1--a31-2026-11-09) have focused Windows software evidence and bounded 1080p UI review. Complete required CI, participant/device/platform/release and target-performance gates remain separate. | [A21][A21], [A22][A22], [A31][A31] |
 | A30 reference-reset follow-up | [Guarded reference/native-request transactions](../docs/research/helicopter/HELI-20/README.md#runtime-refusal-and-reset-follow-up-a20--a30-2026-11-08) pass 305 reset/observer assertions, with actual recorder, calibration and gamepad preservation. Actual native execution and callback backend-status identity, complete required CI, devices and physical qualification remain separate. | [A30 summary][A30], [A30 full][A30-full] |
 | A21 §5 | [UI-32-R10](../docs/research/menu-investigations/UI-32/README.md#paused-alert-inspection-ui-32-r10-2026-11-08) passes 101 focused checks plus 399 existing consumer checks, with native Windows 1080p EN100/200 and ES200 review. Physical controllers, assistive technology, participant comprehension, other platforms, full CI and performance qualification remain open; later concurrent controller/catalog additions have software evidence but were not re-captured natively. | [A21 original][A21] |
@@ -327,6 +359,11 @@ A16/A19 propose experiments, not completed physical validation. A20 reports four
 Implemented rows link fresh software evidence in the completed ledger. Remaining entries are not passes; neither software regressions nor the bounded native spot checks certify physical accuracy, releases or sustained platform performance.
 
 ## CI validation and release evidence
+
+For the time-bounded observed status at `ad210707`, see the [2026-11-15
+snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md).
+It is not a substitute for a complete required green run at the final integrated
+commit or for native/package qualification.
 
 PT1h-R14's [debug follow-up](../docs/research/release-readiness/PT1h-R14/README.md#native-windows-integration-and-d14-follow-up-2026-11-08)
 integrates D01–D13 and repairs D14 with Windows/WSL checks. Remaining debug gates are final-source CI, native macOS
@@ -389,6 +426,7 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 | A32 | [CI changes critical audit at 939ab5d][A32] |
 | A33 | [Mathematical CPU performance review — 2026-11-09][A33] |
 | A34 | [Reverse flow, graphics/scenario separation, statistics recovery, optional resources and layered clouds][A34] |
+| A35 | [Round two — swept lake normal and tolerance, repeat statistics quarantine][A35] |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -426,3 +464,4 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 [A32]: ci-changes-critical-audit-939ab5d.md
 [A33]: cpu-mathematical-optimization-2026-11-09.md
 [A34]: five-findings-audit-45d86d2.md
+[A35]: ../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf

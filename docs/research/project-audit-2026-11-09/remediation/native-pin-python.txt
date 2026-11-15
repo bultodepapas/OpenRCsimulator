@@ -1,0 +1,17 @@
+Waiting for reused fleet shard: heli
+Collected reused fleet shard: heli
+Waiting for reused fleet shard: heli
+Declared fleet: 3 total rows, 2 fixed-wing rows across 1 aircraft; selected 1
+Declared fleet: 3 total rows, 2 fixed-wing rows across 1 aircraft; selected 1
+NK3_FLEET_CAMPAIGN verdict=open scope=macos-arm64-fixed-wing-experimental verified_flights=1 open_rows=1 evidence=C:\Users\bulto\AppData\Local\Temp\tmpgguv5t6b\campaign-1\campaign.json
+Declared fleet: 3 total rows, 2 fixed-wing rows across 1 aircraft; selected 1
+NK3_FLEET_CAMPAIGN verdict=open scope=macos-arm64-fixed-wing-experimental verified_flights=0 open_rows=2 evidence=C:\Users\bulto\AppData\Local\Temp\tmpgguv5t6b\campaign-2\campaign.json
+Starting fleet shard: fixed
+Completed fleet shard: fixed
+Starting fleet shard: fixed
+Completed fleet shard: fixed
+..................................................................
+----------------------------------------------------------------------
+Ran 66 tests in 3.763s
+
+OK

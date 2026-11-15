@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5e551cfc-79b8-4a27-9303-1261a64ab3ea",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "tmp/external-audit-20261115/f08-baseline/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/quarantine_reopen_probe.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-15T17:40:29.692892+00:00",
+  "label": "f08-base-witness",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-stats/f08-base-witness-hkxfq13k/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-stats/f08-base-witness-hkxfq13k/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AUDIT_QUARANTINE_REOPEN_REPRODUCED=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.501779,
+  "log_bytes": 1782,
+  "log_sha256": "fa2e03f231076e395276c2455d239433585504f9466a8f8703b818c53a54843d"
+}
