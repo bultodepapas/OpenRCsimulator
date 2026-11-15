@@ -2,6 +2,8 @@
 
 This is an implementation-ready audit backlog, not a claim that the remaining proposals have shipped. Each item names the producer/consumer boundary, a useful first increment, the evidence required for acceptance and a decision to avoid until that evidence exists. References point to the completed investigations and the retained earlier audit. Owners are engineering roles, not assignments to specific people.
 
+The [five Stik foundation plans](../../../plans/stik-foundations/README.md) provide the next scoped implementation sequence and a mapping back to these items. This backlog retains the original research handoff; the plans use existing track owners and do not duplicate their runtime status.
+
 ## Delivered in this branch
 
 | Work item | Changed boundary | Result and limits |

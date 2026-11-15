@@ -6,6 +6,8 @@ The package contains **26 investigation reports**, five structured registers wit
 
 ## What this round changes
 
+**Next implementation planning:** [Five Stik foundations](../../../plans/stik-foundations/README.md) turns this research into five coordinated proposals with small first PRs, source boundaries, acceptance and rollback. It uses the existing owner tracks and does not mark the remaining runtime work complete.
+
 Three groups of evidence-tool changes are implemented: interrupted flight-card jobs retain useful logs/receipts; comparisons require meaningful, unambiguous coverage and respect declared failure receipts; runway reports verify matched image bytes and distinguish incomplete/unknown observations from unchanged results. **48 focused Python tests pass**, all **18 original retained audit profiles** pass the generic structure check, and three retained campaigns compare unchanged against themselves at zero tolerance. The independent review identifies no blocker in those targeted closures. These are Python-tool results with synthetic states/profiles/PNGs and a real Python timeout child; no new simulator flight, native rendering, controller, target-hardware or physical-flight qualification is claimed.
 
 The application tree remains `565e4a839e63c1b65064d0da4e6e1366b13ebbc7`. Runtime aircraft equations, stock identities, coefficients and input policy are unchanged in this round. That leaves the physical proposals reviewable without pretending that literature or a software receipt supplies the missing measurements.

@@ -12,6 +12,8 @@ Two audit-tool defects were fixed while generating the evidence: empty/incomplet
 
 ## Read the dossier
 
+**Implementation planning:** [Five Stik foundations](../../plans/stik-foundations/README.md) selects and sequences substantial controls, identity, physics, evidence and performance improvements from this research. The five plans define scoped PRs, existing owners, decision experiments, compatibility and acceptance; their runtime work remains proposed.
+
 **Latest continuation:** [Research round 02](research-round-02/README.md) completes 24 investigations planned before research and two targeted follow-ups, with 107 indexed source records, an ordered integration backlog and independently reviewed evidence-tool fixes. Its [verification](research-round-02/verification.md) records 48 focused Python tests and the precise limits of those results. This updates the evidence-tool closure status below without rewriting the earlier reports as if their original counterexamples had never existed.
 
 **Continuation:** [Follow-up 01](follow-up-01/README.md) adds deeper input-contract analysis, FS-64V eigenvalue/trim diagnosis, a checked Electric statistics candidate, report-integrity reproductions and implementation plans. It retains the exact execution baseline and explicitly bounds the later upstream changes.

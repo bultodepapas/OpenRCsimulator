@@ -12,6 +12,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Developer setup, commands, tests, captures and exports | [TOOLS](TOOLS.md) |
 | Which tool to run for a task; debugging playbooks | [Tool index](tools/README.md) |
 | Record flight handling, replay and compare a physics change | [Flight logging manual](FLIGHT-LOGGING.md) |
+| Five proposed Stik foundations: feel, identity, physics, evidence and performance | [Stik foundations program](plans/stik-foundations/README.md); scoped proposals under existing owners |
 | Implemented architecture, boundaries and repository layout | [STACK](STACK.md) |
 | Contribution workflow and durable agent rules | [CONTRIBUTING](../CONTRIBUTING.md), [AGENTS](../AGENTS.md), [Claude Code guidance](../CLAUDE.md) |
 | Specialist subagent roles, delegation and evidence handoffs | [Subagent collaboration guide](SUBAGENTS.md) |
