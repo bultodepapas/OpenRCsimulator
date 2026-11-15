@@ -12,8 +12,11 @@ Two audit-tool defects were fixed while generating the evidence: empty/incomplet
 
 ## Read the dossier
 
+**Continuation:** [Follow-up 01](follow-up-01/README.md) adds deeper input-contract analysis, FS-64V eigenvalue/trim diagnosis, a checked Electric statistics candidate, report-integrity reproductions and implementation plans. It retains the exact execution baseline and explicitly bounds the later upstream changes.
+
 | Report | Purpose |
 | --- | --- |
+| [Follow-up 01: deeper external audit](follow-up-01/README.md) | New counterexamples, independent analyses, concrete repair scopes and acceptance criteria; proposals remain open. |
 | [Findings register](findings-register.md) | Priorities, evidence strength, delivered fixes and remaining closure criteria. |
 | [Physics and aerodynamics](physics-and-aerodynamics.md) | Production equations, propulsion, wake, side force, stall, induced flow, inertia and coefficient provenance. |
 | [Variants and routes](variants-and-routes.md) | Catalog, Home, Workshop, CLI, debug, saves, generators, economy, statistics and media. |

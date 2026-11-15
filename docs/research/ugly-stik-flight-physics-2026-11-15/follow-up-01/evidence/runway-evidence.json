@@ -1,0 +1,575 @@
+{
+  "format": "openrc-runway-report-synthetic-probe-v1",
+  "generated_utc": "2026-11-15T17:07:41.364755+00:00",
+  "scope": "synthetic metadata-only report comparison; no images or engine",
+  "source": {
+    "path": "/workspace/scratch/d289586b400e/OpenRCsimulator/tools/scenery/scenario_report.py",
+    "sha256_before": "45d9e9ecf59f7e0a4e676f5a5f826478c6b3cc6dc5d7954b13cd42a2ee1e2adc",
+    "sha256_after": "45d9e9ecf59f7e0a4e676f5a5f826478c6b3cc6dc5d7954b13cd42a2ee1e2adc",
+    "repository_head": "00610ce3df391560dc195444d797bb81f2f83270"
+  },
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "pillow": "13.0.0"
+  },
+  "notes": [
+    "Image hashes and state samples are invented test inputs, not captures.",
+    "Temporary paths in compare outputs were removed after the call.",
+    "The image-load function was replaced with a failing sentinel to ensure it is never used."
+  ],
+  "comparison_cases": [
+    {
+      "case": "identical_matched_positive_control",
+      "inputs": {
+        "current": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            },
+            {
+              "view": "pilot",
+              "t_s": 2.0,
+              "image": "pilot/t002.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 2.0
+            }
+          ]
+        },
+        "previous": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            },
+            {
+              "view": "pilot",
+              "t_s": 2.0,
+              "image": "pilot/t002.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 2.0
+            }
+          ]
+        }
+      },
+      "input_keys": {
+        "current": [
+          [
+            "pilot",
+            1.0
+          ],
+          [
+            "pilot",
+            2.0
+          ]
+        ],
+        "previous": [
+          [
+            "pilot",
+            1.0
+          ],
+          [
+            "pilot",
+            2.0
+          ]
+        ]
+      },
+      "output": {
+        "previous": "/tmp/openrc-runway-probe-456soucj/identical_matched_positive_control/previous",
+        "verdict": "identical",
+        "frames": [
+          {
+            "image": "pilot/t001.0.png",
+            "status": "identical",
+            "changed_pixels": 0,
+            "state_changes": {}
+          },
+          {
+            "image": "pilot/t002.0.png",
+            "status": "identical",
+            "changed_pixels": 0,
+            "state_changes": {}
+          }
+        ]
+      }
+    },
+    {
+      "case": "same_frames_different_aircraft_id",
+      "inputs": {
+        "current": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "jensen-das-ugly-stik-60",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            },
+            {
+              "view": "pilot",
+              "t_s": 2.0,
+              "image": "pilot/t002.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 2.0
+            }
+          ]
+        },
+        "previous": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            },
+            {
+              "view": "pilot",
+              "t_s": 2.0,
+              "image": "pilot/t002.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 2.0
+            }
+          ]
+        }
+      },
+      "input_keys": {
+        "current": [
+          [
+            "pilot",
+            1.0
+          ],
+          [
+            "pilot",
+            2.0
+          ]
+        ],
+        "previous": [
+          [
+            "pilot",
+            1.0
+          ],
+          [
+            "pilot",
+            2.0
+          ]
+        ]
+      },
+      "output": {
+        "previous": "/tmp/openrc-runway-probe-456soucj/same_frames_different_aircraft_id/previous",
+        "verdict": "identical",
+        "frames": [
+          {
+            "image": "pilot/t001.0.png",
+            "status": "identical",
+            "changed_pixels": 0,
+            "state_changes": {}
+          },
+          {
+            "image": "pilot/t002.0.png",
+            "status": "identical",
+            "changed_pixels": 0,
+            "state_changes": {}
+          }
+        ]
+      }
+    },
+    {
+      "case": "no_overlapping_frame_keys",
+      "inputs": {
+        "current": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 9.0,
+              "image": "pilot/t009.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 9.0
+            }
+          ]
+        },
+        "previous": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            }
+          ]
+        }
+      },
+      "input_keys": {
+        "current": [
+          [
+            "pilot",
+            9.0
+          ]
+        ],
+        "previous": [
+          [
+            "pilot",
+            1.0
+          ]
+        ]
+      },
+      "output": {
+        "previous": "/tmp/openrc-runway-probe-456soucj/no_overlapping_frame_keys/previous",
+        "verdict": "identical",
+        "frames": [
+          {
+            "image": "pilot/t009.0.png",
+            "status": "new frame"
+          }
+        ]
+      }
+    },
+    {
+      "case": "previous_frame_removed",
+      "inputs": {
+        "current": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            }
+          ]
+        },
+        "previous": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            },
+            {
+              "view": "pilot",
+              "t_s": 2.0,
+              "image": "pilot/t002.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 2.0
+            }
+          ]
+        }
+      },
+      "input_keys": {
+        "current": [
+          [
+            "pilot",
+            1.0
+          ]
+        ],
+        "previous": [
+          [
+            "pilot",
+            1.0
+          ],
+          [
+            "pilot",
+            2.0
+          ]
+        ]
+      },
+      "output": {
+        "previous": "/tmp/openrc-runway-probe-456soucj/previous_frame_removed/previous",
+        "verdict": "identical",
+        "frames": [
+          {
+            "image": "pilot/t001.0.png",
+            "status": "identical",
+            "changed_pixels": 0,
+            "state_changes": {}
+          }
+        ]
+      }
+    },
+    {
+      "case": "changed_sampled_state_positive_control",
+      "inputs": {
+        "current": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.001,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            }
+          ]
+        },
+        "previous": {
+          "format": "openrc-runway-scenario v1",
+          "aircraft": "stik-electric-6s",
+          "frames": [
+            {
+              "view": "pilot",
+              "t_s": 1.0,
+              "image": "pilot/t001.0.png",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "north_m": 0.0,
+              "east_m": 0.0,
+              "height_m": 1.0,
+              "speed_ms": 2.0,
+              "heading_deg": 3.0,
+              "pitch_deg": 4.0,
+              "roll_deg": 5.0,
+              "rpm": 6.0,
+              "prop_angle_deg": 7.0,
+              "sim_clock": 1.0
+            }
+          ]
+        }
+      },
+      "input_keys": {
+        "current": [
+          [
+            "pilot",
+            1.0
+          ]
+        ],
+        "previous": [
+          [
+            "pilot",
+            1.0
+          ]
+        ]
+      },
+      "output": {
+        "previous": "/tmp/openrc-runway-probe-456soucj/changed_sampled_state_positive_control/previous",
+        "verdict": "physics changed",
+        "frames": [
+          {
+            "image": "pilot/t001.0.png",
+            "status": "identical",
+            "changed_pixels": 0,
+            "state_changes": {
+              "north_m": 0.001
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "history_cases": {
+    "inputs": {
+      "scenario_manifest": {
+        "format": "openrc-runway-scenario v1",
+        "aircraft": "stik-electric-6s",
+        "frames": [
+          {
+            "view": "pilot",
+            "t_s": 1.0,
+            "image": "pilot/t001.0.png",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "north_m": 0.0,
+            "east_m": 0.0,
+            "height_m": 1.0,
+            "speed_ms": 2.0,
+            "heading_deg": 3.0,
+            "pitch_deg": 4.0,
+            "roll_deg": 5.0,
+            "rpm": 6.0,
+            "prop_angle_deg": 7.0,
+            "sim_clock": 1.0
+          }
+        ]
+      },
+      "sync_receipts": {
+        "missing_sync": null,
+        "empty_sync": [],
+        "present_pass": [
+          {
+            "check": "synthetic control",
+            "ok": true
+          }
+        ],
+        "present_fail": [
+          {
+            "check": "synthetic control",
+            "ok": false
+          }
+        ]
+      }
+    },
+    "output": {
+      "stdout": "history: 4 runs in /tmp/openrc-runway-probe-456soucj/history/index.html\n",
+      "html": "<!doctype html><meta charset=utf-8><title>Runway scenario history</title>\n<style>body{font:14px system-ui;margin:16px;background:#111;color:#ddd}img{max-width:100%}td{padding:4px;vertical-align:top}.ok{color:#5c5}.bad{color:#f66}</style><h1>Runway scenario history</h1>\n<p>Newest first. Each run: its sync checks, its verdict against the run before it, and one filmstrip per camera.</p>\n<p>Camera: <select onchange=\"for(const i of document.querySelectorAll('img[data-v]'))i.style.display=(this.value=='all'||i.dataset.v==this.value)?'':'none'\"><option>all</option><option>pilot</option><option>chase</option><option>side</option><option>wide</option><option>closeup</option></select></p>\n<h2>present_pass \u00b7 <span class=ok>sync pass</span> \u00b7 no previous run</h2>\n<h2>present_fail \u00b7 <span class=bad>sync FAIL</span> \u00b7 no previous run</h2>\n<h2>missing_sync \u00b7 <span class=ok>sync pass</span> \u00b7 no previous run</h2>\n<h2>empty_sync \u00b7 <span class=ok>sync pass</span> \u00b7 no previous run</h2>\n",
+      "labels": {
+        "missing_sync": {
+          "heading": "missing_sync \u00b7 <span class=ok>sync pass</span> \u00b7 no previous run",
+          "sync_label": "pass"
+        },
+        "empty_sync": {
+          "heading": "empty_sync \u00b7 <span class=ok>sync pass</span> \u00b7 no previous run",
+          "sync_label": "pass"
+        },
+        "present_pass": {
+          "heading": "present_pass \u00b7 <span class=ok>sync pass</span> \u00b7 no previous run",
+          "sync_label": "pass"
+        },
+        "present_fail": {
+          "heading": "present_fail \u00b7 <span class=bad>sync FAIL</span> \u00b7 no previous run",
+          "sync_label": "FAIL"
+        }
+      }
+    }
+  },
+  "validation_errors": []
+}

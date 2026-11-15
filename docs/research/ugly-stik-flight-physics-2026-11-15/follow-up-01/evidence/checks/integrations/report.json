@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5d6069af-0be4-4d41-80e1-0db74efc64da",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/research/ugly-stik-audit-2026-11-15/follow-up-01/integrations_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T16:58:40.518965+00:00",
+  "label": "integrations_probe",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-followup-checks/integrations_probe-r975cfve/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-followup-checks/integrations_probe-r975cfve/report.json",
+  "timeout_seconds": 60,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AUDIT_FOLLOWUP_DONE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.596177,
+  "log_bytes": 1231,
+  "log_sha256": "8df76e5dd8249b29c92fb5f7dabd16b7d084694aca3fae6c5819574beaa36ec0"
+}

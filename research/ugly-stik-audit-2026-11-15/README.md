@@ -2,6 +2,8 @@
 
 The [dated dossier](../../docs/research/ugly-stik-flight-physics-2026-11-15/README.md) owns findings, citations, limits and original receipts. These small tools inspect existing production equations/input classes. They do not modify aircraft data, install an alternative model or qualify real hardware.
 
+The [follow-up probes](follow-up-01/README.md) cover input ownership, Electric statistics integration, modal/trim diagnosis, early-stop reporting, interrupted/corrupt evidence and runway comparison/history contracts.
+
 Use the repository's pinned Godot `4.8.beta2.official.cafc17a19`, imported baseline dependencies and the existing checked runner. From the repository root, after following [Godot tooling](../../tools/godot/README.md), run:
 
 ```bash

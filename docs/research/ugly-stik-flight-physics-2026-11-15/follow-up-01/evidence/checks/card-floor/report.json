@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2bffd402-96fe-4f5f-ae1e-d1f34b93b430",
+  "command": [
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/d289586b400e/OpenRCsimulator/research/ugly-stik-audit-2026-11-15/follow-up-01/evidence_contract_probe.gd",
+    "--",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--out=/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-followup-floor",
+    "--only=power_step"
+  ],
+  "cwd": "/workspace/scratch/d289586b400e/OpenRCsimulator",
+  "started_utc": "2026-11-15T16:54:39.274448+00:00",
+  "label": "card-floor-probe",
+  "log": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-followup-checks/card-floor-probe-l5_mtlaz/engine.log",
+  "report": "/workspace/scratch/d289586b400e/OpenRCsimulator/tmp/ugly-audit-followup-checks/card-floor-probe-l5_mtlaz/report.json",
+  "timeout_seconds": 240,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "FOLLOWUP_EVIDENCE_COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "`NaN` (\"Not a Number\") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.",
+      "context": [
+        "     at: _stringify (core/io/json.cpp:86)",
+        "     GDScript backtrace (most recent call first):",
+        "         [0] _run (res://../research/flight-test/flight_test.gd:216)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 35.225346,
+  "log_bytes": 6306,
+  "log_sha256": "1a6dd5ae8fff675b58d6aefa1be09719b9f99fe82dc09a824a90003651a102c0"
+}

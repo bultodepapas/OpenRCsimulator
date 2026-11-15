@@ -1,0 +1,137 @@
+{
+  "format": "openrc-audit-followup-evidence-manifest-v1",
+  "created_utc": "2026-11-15T17:15:16.419164+00:00",
+  "scope": "Byte hashes of retained evidence; excludes this manifest and SHA256SUMS to avoid self-reference. Original engine receipt paths remain unchanged.",
+  "entries": [
+    {
+      "path": "card-floor.json",
+      "bytes": 6929,
+      "sha256": "c2183b56719694c42704774a65f09049a1573c557e3dfcfdf723cdeaceb5fe88"
+    },
+    {
+      "path": "checks/card-floor/engine.log",
+      "bytes": 6306,
+      "sha256": "1a6dd5ae8fff675b58d6aefa1be09719b9f99fe82dc09a824a90003651a102c0"
+    },
+    {
+      "path": "checks/card-floor/report.json",
+      "bytes": 2042,
+      "sha256": "17b17e54f39f361e6b0d3cb6049d695ca61eedd737815fde5422d02f15f0a2a6"
+    },
+    {
+      "path": "checks/input/engine.log",
+      "bytes": 1546,
+      "sha256": "7b203e7a07e58d4e8ff5e4d23081e4ee57749511b86bd46798ad43e29310be4b"
+    },
+    {
+      "path": "checks/input/report.json",
+      "bytes": 1303,
+      "sha256": "e3b98ba622da64fc48c2c30adf89a5692e0f277305cc512285033d6055896b1d"
+    },
+    {
+      "path": "checks/integrations/engine.log",
+      "bytes": 1231,
+      "sha256": "8df76e5dd8249b29c92fb5f7dabd16b7d084694aca3fae6c5819574beaa36ec0"
+    },
+    {
+      "path": "checks/integrations/report.json",
+      "bytes": 1324,
+      "sha256": "e956f845469bb3e617d8589fd8e81a3162924b881885d161d35eb1cb50c26749"
+    },
+    {
+      "path": "checks/modes/engine.log",
+      "bytes": 138947,
+      "sha256": "e34eb21647109b3ae85198e7422f4e0ab912e23a63a8c88c1bd0d37d3716877b"
+    },
+    {
+      "path": "checks/modes/report.json",
+      "bytes": 1331,
+      "sha256": "d97c330a8ee22dd3ac7f1b0ee0a3067511e101983b925a78e436b86224f573d9"
+    },
+    {
+      "path": "coupled-root-comparison.svg",
+      "bytes": 70830,
+      "sha256": "7d408f86fc86bb871c954f51e4f651962b21dd69c661f1a4c5893c6ef4b7544e"
+    },
+    {
+      "path": "floor-card/power_step_100pct.csv",
+      "bytes": 206012,
+      "sha256": "0cf0a5915a65a56b5ea73adb40598a4bf0beb8875efbaba4de1f4a784d036fa2"
+    },
+    {
+      "path": "floor-card/power_step_25pct.csv",
+      "bytes": 35472,
+      "sha256": "840c29c88c78c71a92850b2b843850fbc780e2a61071adebc716f97b4acf8ad9"
+    },
+    {
+      "path": "floor-card/power_step_50pct.csv",
+      "bytes": 207221,
+      "sha256": "0da037a236fc749e826a25d00d0fd2c68c890c3efdc6b2a6bdbc0f9788c36e76"
+    },
+    {
+      "path": "floor-card/power_step_75pct.csv",
+      "bytes": 207762,
+      "sha256": "75cf087fe43a46414562697be3f27f3761fc3142f33abe7645a960baea8466a9"
+    },
+    {
+      "path": "floor-card/power_step_idle.csv",
+      "bytes": 21528,
+      "sha256": "b98b23f2347b0c88c04c3aa05f218fbfaace776ed4bb48310a8ab5d608364f6e"
+    },
+    {
+      "path": "floor-card/profile.json",
+      "bytes": 6058,
+      "sha256": "b12cd2ca10b50173f899a75a147f809badeda439cf928e848f2602bf2d5e4649"
+    },
+    {
+      "path": "floor-card/profile.md",
+      "bytes": 3797,
+      "sha256": "4061165360574c38ef3db50623c89e158ffa563b34e7dab8cf57673bf6619d8a"
+    },
+    {
+      "path": "input.json",
+      "bytes": 1935,
+      "sha256": "04f0ad691c7251847066765c8847c79358141e94768e3d642edd072499f8a991"
+    },
+    {
+      "path": "integrations.json",
+      "bytes": 2095,
+      "sha256": "60ab3dc29cd255b49e510749e4971fe995c93f6277b4b0e32020bb2e11a5d1b0"
+    },
+    {
+      "path": "modes-analysis.json",
+      "bytes": 201722,
+      "sha256": "0986028f703351f19307d822efcfe3ff79f1b86f81154bbd44a96b68cabe6a84"
+    },
+    {
+      "path": "modes.json",
+      "bytes": 292936,
+      "sha256": "cc7a9695291733a413e542bb4ce1e18ced4d6a43f7ab7c9a91e787bb48decfbf"
+    },
+    {
+      "path": "probe-source-manifest.json",
+      "bytes": 2135,
+      "sha256": "7e959b8e106e9c9b9d61f0ebc3a2025a8b82c16208f3de2f39c3b5f8d042afe4"
+    },
+    {
+      "path": "runway-evidence.json",
+      "bytes": 17329,
+      "sha256": "742da5df0850195c12e131dacf5beec43f828199b2b65df0903126a386993cb9"
+    },
+    {
+      "path": "secondary-numerical-review.json",
+      "bytes": 766,
+      "sha256": "6ae0d0bda1f4dfda4800f5f6d5fd776bab21f0cba291f0cf5093dd8c1a2235ce"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 4291,
+      "sha256": "11b465a66425d5af8fb309c45232cc4903a5be225640126488bb87502657ff78"
+    },
+    {
+      "path": "tool-evidence.json",
+      "bytes": 5091,
+      "sha256": "78a9b9cc4c27285c029e0ef0eaaa9fa0a8e0dfac305a0fc983ed1c18b40b38de"
+    }
+  ]
+}

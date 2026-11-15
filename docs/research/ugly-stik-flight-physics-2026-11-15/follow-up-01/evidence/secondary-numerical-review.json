@@ -1,0 +1,27 @@
+{
+  "source": "modes.json",
+  "source_sha256": "cc7a9695291733a413e542bb4ce1e18ced4d6a43f7ab7c9a91e787bb48decfbf",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "scope": "Independent reproduction of reviewer unit-scaling example only; no model or physical validation.",
+  "transform": "A_prime = D A D^-1; velocity/wake in mm/s and angular values in degrees",
+  "diagonal_D": [
+    1000.0,
+    1000.0,
+    1000.0,
+    57.29577951308232,
+    57.29577951308232,
+    57.29577951308232,
+    57.29577951308232,
+    57.29577951308232,
+    1000.0
+  ],
+  "original": {
+    "root_real": 0.057051863495511355,
+    "eigenvalue_condition_2norm": 3.646189706598012
+  },
+  "rescaled": {
+    "root_real": 0.0570518634955111,
+    "eigenvalue_condition_2norm": 59.083794639178606
+  }
+}

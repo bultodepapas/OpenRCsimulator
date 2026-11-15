@@ -1,0 +1,52 @@
+{
+  "format": "openrc-audit-probe-source-manifest-v1",
+  "audited_execution_head": "00610ce3df391560dc195444d797bb81f2f83270",
+  "scope": "Research source bytes delivered with the final retained observations; plot accepts SVG or PNG. Probe reference labels are not dynamic checkout attestations.",
+  "sources": [
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/README.md",
+      "bytes": 7106,
+      "sha256": "5560f241f1abbda8d12c25715f5cf7be87c35c9c7111370a7f39e2a2fbeb9341"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/evidence_contract_probe.gd",
+      "bytes": 1826,
+      "sha256": "bc60c428e129fe9499fdfd8fc3ae4a577403ac5a4570bdc9157af9a17dc9b9c0"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/input_probe.gd",
+      "bytes": 6440,
+      "sha256": "5572b21790aa997babc3b866553f2783381fdc2c18e47eae90e76f0c6ed5bf38"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/integrations_probe.gd",
+      "bytes": 6452,
+      "sha256": "144c5a0a4ee828fc0fa7fa4fc7c8e000ec2a40bfce33a5026b52fc2c8dba9849"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/modes_analysis.py",
+      "bytes": 6690,
+      "sha256": "4a8f41eea18bd2ab1cf5e0c8b172c16c002bdac964a5a29f375cf3cf0c3aa064"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/modes_probe.gd",
+      "bytes": 12242,
+      "sha256": "86dbf7b5a829c2829cef086536eb013fc4936ae249333f1c949c10d94d2f6999"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/plot_modes.py",
+      "bytes": 2145,
+      "sha256": "24208a951fe14b95f2f17eb978868c02cf8750f2a29945ec0fca33a600dc4bd5"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/runway_evidence_probe.py",
+      "bytes": 9901,
+      "sha256": "39488ee4aa499dfceac7ba549267514bdf2afe8eda7231f21010db7f246da3d2"
+    },
+    {
+      "path": "research/ugly-stik-audit-2026-11-15/follow-up-01/tool_evidence_probe.py",
+      "bytes": 8515,
+      "sha256": "397f62e86bd210e12cb68a154d596f581ad4468883cd0e016306851d80c99872"
+    }
+  ]
+}

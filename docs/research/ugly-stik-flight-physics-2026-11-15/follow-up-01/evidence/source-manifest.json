@@ -1,0 +1,96 @@
+{
+  "format": "openrc-audit-followup-source-manifest-v1",
+  "recorded_utc": "2026-11-15T17:06:39.046132+00:00",
+  "executed_head": "00610ce3df391560dc195444d797bb81f2f83270",
+  "runtime_baseline": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "observed_upstream_main": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "git_objects": {
+    "app": {
+      "baseline": "565e4a839e63c1b65064d0da4e6e1366b13ebbc7",
+      "executed": "565e4a839e63c1b65064d0da4e6e1366b13ebbc7",
+      "observed_main": "423b48bfd24a83a10e9ab27cf3057344fbc97256",
+      "executed_matches_observed_main": false
+    },
+    "app/physics": {
+      "baseline": "3b9bd91e8aedcac7eaaf8d1ac093cdc96fe7b9e1",
+      "executed": "3b9bd91e8aedcac7eaaf8d1ac093cdc96fe7b9e1",
+      "observed_main": "3b9bd91e8aedcac7eaaf8d1ac093cdc96fe7b9e1",
+      "executed_matches_observed_main": true
+    },
+    "app/sim": {
+      "baseline": "91764e09c89025e4c9ee2e4fbd443569f90896c3",
+      "executed": "91764e09c89025e4c9ee2e4fbd443569f90896c3",
+      "observed_main": "91764e09c89025e4c9ee2e4fbd443569f90896c3",
+      "executed_matches_observed_main": true
+    },
+    "app/input": {
+      "baseline": "aed517d17d23897774a39454085672e15c4379c6",
+      "executed": "aed517d17d23897774a39454085672e15c4379c6",
+      "observed_main": "aed517d17d23897774a39454085672e15c4379c6",
+      "executed_matches_observed_main": true
+    },
+    "app/statistics": {
+      "baseline": "8261e6e559a3e9fc4161cd487209832ebea0e578",
+      "executed": "8261e6e559a3e9fc4161cd487209832ebea0e578",
+      "observed_main": "8261e6e559a3e9fc4161cd487209832ebea0e578",
+      "executed_matches_observed_main": true
+    },
+    "app/app_state/aircraft_catalog.gd": {
+      "baseline": "5790cd5275ac08ff2d1dc34c23e595c1ec269c87",
+      "executed": "5790cd5275ac08ff2d1dc34c23e595c1ec269c87",
+      "observed_main": "5790cd5275ac08ff2d1dc34c23e595c1ec269c87",
+      "executed_matches_observed_main": true
+    },
+    "app/scenery/runway_scenario.gd": {
+      "baseline": "03063d29ca72d80004220b22a63ec4cb08bf36ae",
+      "executed": "03063d29ca72d80004220b22a63ec4cb08bf36ae",
+      "observed_main": "03063d29ca72d80004220b22a63ec4cb08bf36ae",
+      "executed_matches_observed_main": true
+    },
+    "app/app_root.gd": {
+      "baseline": "2d6dcadd00dee40f7eb8ba12d9c398b39ee10760",
+      "executed": "2d6dcadd00dee40f7eb8ba12d9c398b39ee10760",
+      "observed_main": "2d6dcadd00dee40f7eb8ba12d9c398b39ee10760",
+      "executed_matches_observed_main": true
+    },
+    "app/main.gd": {
+      "baseline": "c6d2c38e1d43c5a5db15150317ffa92e0a67a73a",
+      "executed": "c6d2c38e1d43c5a5db15150317ffa92e0a67a73a",
+      "observed_main": "71702b06946d73d3f6e64c7cc899049d091e083c",
+      "executed_matches_observed_main": false
+    },
+    "tools/scenery/scenario_report.py": {
+      "baseline": "925dceecb8b041cc443c45ee1bd48c51c23dd7f8",
+      "executed": "925dceecb8b041cc443c45ee1bd48c51c23dd7f8",
+      "observed_main": "925dceecb8b041cc443c45ee1bd48c51c23dd7f8",
+      "executed_matches_observed_main": true
+    },
+    "research/flight-test": {
+      "baseline": "83bfd87973056bbb335302bab7d1ed7c8273b4ad",
+      "executed": "a2b69f8e5776d1bb35ea389cdbcc238092e34df7",
+      "observed_main": "83bfd87973056bbb335302bab7d1ed7c8273b4ad",
+      "executed_matches_observed_main": false
+    }
+  },
+  "upstream_app_changes": [
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+    "app/data/ai/companions/behavior-manifest.json",
+    "app/main.gd",
+    "app/render/camera/camera_rig.gd",
+    "app/render/reconstruction.gd",
+    "app/test.sh",
+    "app/tests/fixtures/publication_fixture_bridge.json",
+    "app/tests/publication_fixture_bridge.gd",
+    "app/tests/test_camera_history.gd",
+    "app/tests/test_camera_route.gd",
+    "app/tests/test_controls_setup_p0.gd",
+    "app/tests/test_initial_flight_camera.gd",
+    "app/tests/test_metalfx_policy.gd",
+    "app/tests/test_reconstruction_history.gd"
+  ],
+  "scope": "Numerical execution is pinned to executed_head. Observed main contains app changes; equality is claimed only per exact object row.",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9"
+  }
+}

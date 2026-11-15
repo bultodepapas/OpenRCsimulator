@@ -1,0 +1,41 @@
+# Verification and provenance of follow-up 01
+
+## Exact execution scope
+
+All Godot observations ran from audit checkout **`00610ce3df391560dc195444d797bb81f2f83270`**. Its application tree is **`565e4a839e63c1b65064d0da4e6e1366b13ebbc7`**, identical to the original audited runtime `ad21070798bfb9658785576a9c0b8bfc9a71fc7f`. The earlier audit's research runner validation and documentation repairs are included in this checkout. This follow-up adds only reports, research probes, independent analysis and evidence; it makes no additional production runner/card or application change.
+
+The executable is pinned Godot **`4.8.beta2.official.cafc17a19`**. The [source manifest](evidence/source-manifest.json) records the exact engine SHA-512, Git object IDs and observed upstream changes. Godot ran headlessly with dummy audio, absolute research-script paths, the project checked runner and isolated task-specific `XDG_DATA_HOME` directories. The numerical import prerequisites came from the previously established audit environment; this was not a fresh full-asset UI build.
+
+The newer observed main **`e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc`** has app tree **`423b48bfd24a83a10e9ab27cf3057344fbc97256`**. Fourteen app paths differ from the runtime baseline, including `app/main.gd`, camera/reconstruction code and related tests. Source diffs were inspected to bound freshness. The `app/input`, `app/physics`, `app/sim` and `app/statistics` trees, aircraft catalog and runway scenario file match the executed runtime exactly. `app/app_root.gd` and the scenery report tool also match. The audit branch's repaired `research/flight-test` tree differs from main and is identified separately in the manifest. No camera/MetalFX/native/rendered qualification of the newer main is claimed.
+
+## Executed checks and their meaning
+
+| Evidence | Actual execution | Observed outcome | Limits |
+| --- | --- | --- | --- |
+| [Input receipt](evidence/checks/input/report.json), [log](evidence/checks/input/engine.log), [structured cases](evidence/input.json) | Production reader/session classes with injected input, identity and persistence callbacks | 7 checks, 0 failures; complete, exit 0; 0 errors, 0 warnings | No physical controller, actual OS-focus delivery or real storage failure. |
+| [Modal receipt](evidence/checks/modes/report.json), [log](evidence/checks/modes/engine.log), [captured matrices](evidence/modes.json) | Production loader/modes/dynamics/trim/session; 16 modal conditions plus trim-boundary investigation | Complete, exit 0; 0 errors, 0 warnings; all 16 modal cases returned `ok` | Frozen-control/fixed-RPM reference-model eigenanalysis; no session perturbation or physical validation. Failed trim attempts are intended diagnostic outcomes, not failed engine execution. |
+| [Independent modal analysis](evidence/modes-analysis.json) | NumPy 2.3.5, SciPy 1.17.0 on saved matrices | All 16 replicated default-step full Jacobians equal production captures; largest matched full-root variation across the three tested steps is about 4.03×10⁻⁷/s | Finite-step sensitivity over the chosen coordinates/steps, not global convergence or correctness of all model assumptions. |
+| [Electric receipt](evidence/checks/integrations/report.json), [log](evidence/checks/integrations/engine.log), [sources](evidence/integrations.json) | Both exact Electric source files, production contact validator and detector with synthetic samples | 30 checks, 0 failures; complete, exit 0; 0 errors, 0 warnings | No installed support row, actual adapter-clearance exercise, physical landing or rendered flow. |
+| [Floor receipt](evidence/checks/card-floor/report.json), [log](evidence/checks/card-floor/engine.log), [profile and traces](evidence/floor-card/) | Production power-step card through a research subclass injecting 399 m floor | Complete, exit 0; 0 errors, **1 warning**; two early stops still have future-time values and `completed=true` | Deliberate early termination, not an observed standard-60 m-floor incident. Warning is NaN-to-null serialization; warnings were not fatal. |
+| [Python tool evidence](evidence/tool-evidence.json) | Real runner with four temporary child/profile conditions; actual comparator with five fixtures | Complete positive control succeeds; actual Python timeout fails with lost diagnostics; two invalid profiles raise before receipts; four coverage/malformed comparison fixtures exit 0; normal changed case exits 1 | Synthetic report inputs and substituted child responses; timeout child is Python, not Godot. Does not prove old normal campaigns were malformed. |
+| [Runway metadata evidence](evidence/runway-evidence.json) | Unchanged scenery compare/history functions with temporary manifests and declared frame hashes | Five comparison cases and four history cases, including positive controls | No PNG decoding, visual capture, engine execution or full CLI sync run; describes report-function behavior only. |
+
+The modal capture was extended after an initial clean run to retain full Jacobians at all three difference steps. The published source, final capture and independent analysis correspond to that extended run. The initial run remains a superseded workspace diagnostic; no extra app state was changed. The main modal/source values in the final capture agree with the initial result.
+
+A probe whose purpose is to reproduce a flaw can pass its own assertions while demonstrating that the production behavior needs repair. Conversely, a normal scientific card returning `valid=false` is not automatically an engine execution failure. The reports maintain these distinctions.
+
+## Retained artifact integrity
+
+The checked runner's raw `report.json` and `engine.log` files are copied without rewriting their internal absolute paths, commands, timestamps or hashes. Those paths identify the original execution workspace; use the relative links here to open the published copies. Every checked log is rehashed against its receipt. The evidence manifest records byte sizes and SHA-256 values for retained evidence; the probe-source manifest binds the published research source bytes. Regenerating an analysis JSON with another input filename may alter provenance metadata even when its numerical content is identical.
+
+Structured input/modal/floor outputs are parsed from the corresponding raw completion-marker lines. Electric source records are extracted from the two logged accepted-loader records. The synthetic Python receipts include their exact fixtures or link to the source that constructs them. CSVs and logs keep original formatting. The SVG plot is generated from the retained independent modal analysis and visually inspected; it adds no flight data.
+
+Only relevant checks were run. This follow-up does not repeat the entire forty-case flight card, all fleet tests, full UI suites, native/GPU tests, or physical/pilot trials. Earlier clean and failed gates remain in the [original verification report](../verification.md); they are not rebranded as new passes. A missing optional SVG rasterizer during preview was bypassed by rendering the same plot directly with Matplotlib; it did not affect the retained SVG or any engine result.
+
+## Reproduction and review
+
+Use the [research probe README](../../../../research/ugly-stik-audit-2026-11-15/follow-up-01/README.md) from the exact checkout and pinned/imported environment. Preserve an independent output directory; do not overwrite the retained evidence. Engine exit code alone is insufficient: inspect the checked receipt, completion markers, errors/warnings, check counts, source identity and the actual interpretation of each case.
+
+An independent reviewer challenged the input repair, time-coverage claim, exception paths, comparator policy, mode identity, scaling and finite-difference sensitivity. The [review](independent-review.md) records both confirmed conclusions and rejected overclaims. The final report corrects the floor warning explanation and cites the actual source locations for profile parsing and comparator exit handling.
+
+These results establish software behavior under their stated conditions. Native controller incidence, hardware ordering, real filesystem/power-loss behavior, pilot-rated feel, measured airframe dynamics, full nonlinear stability and target-machine performance remain separate acceptance work.

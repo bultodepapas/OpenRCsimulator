@@ -1,0 +1,86 @@
+{
+  "format": "openrc-electric-statistics-followup-v1",
+  "scope": "Production loader/validator and synthetic detector inputs; no actual adapter or flight qualification.",
+  "checks": 30,
+  "failures": 0,
+  "sources": {
+    "ideal": {
+      "cg_le": [
+        0.1209,
+        0.0,
+        0.004684467643712777
+      ],
+      "clearance_m": 0.25,
+      "hash": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+      "mass_kg": 2.600082,
+      "path": "res://data/aircraft/stik_electric_6s.json",
+      "rest_height_m": 0.256923452624336,
+      "rest_pitch_rad": -0.009038230749286957,
+      "support_map": {
+        "contact_main_left": {
+          "index": 0,
+          "position": [
+            -0.0941,
+            -0.18,
+            0.25778446764371277
+          ]
+        },
+        "contact_main_right": {
+          "index": 1,
+          "position": [
+            -0.0941,
+            0.18,
+            0.25778446764371277
+          ]
+        },
+        "contact_nose": {
+          "index": 2,
+          "position": [
+            0.257176,
+            0.0,
+            0.2546094676437128
+          ]
+        }
+      }
+    },
+    "pack": {
+      "cg_le": [
+        0.1209,
+        0.0,
+        0.004684467643712777
+      ],
+      "clearance_m": 0.25,
+      "hash": "fbbfd74512b8e3141adc530296687721c5ca7e3d94a38c384fbaf10f03c2c73e",
+      "mass_kg": 2.600082,
+      "path": "res://data/aircraft/battery/stik_electric_6s_pack.json",
+      "rest_height_m": 0.256923452624336,
+      "rest_pitch_rad": -0.009038230749286957,
+      "support_map": {
+        "contact_main_left": {
+          "index": 0,
+          "position": [
+            -0.0941,
+            -0.18,
+            0.25778446764371277
+          ]
+        },
+        "contact_main_right": {
+          "index": 1,
+          "position": [
+            -0.0941,
+            0.18,
+            0.25778446764371277
+          ]
+        },
+        "contact_nose": {
+          "index": 2,
+          "position": [
+            0.257176,
+            0.0,
+            0.2546094676437128
+          ]
+        }
+      }
+    }
+  }
+}

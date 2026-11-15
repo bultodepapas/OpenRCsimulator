@@ -4,6 +4,8 @@ This register applies to application commit `ad21070798bfb9658785576a9c0b8bfc9a7
 
 ## Delivered repairs
 
+The subsequent [Follow-up 01](follow-up-01/README.md) expands CTRL-01/02, ORG-02/03 and CARD-02 and adds EVID-01 through EVID-04 for time coverage, timeout diagnostics, invalid-profile isolation and comparator eligibility. It also reproduces runway comparison/history gaps and provides a constructive local trim-boundary diagnosis. Its reports and probes propose future repairs; they do not change the runtime or mark these open findings fixed. See its [work packages](follow-up-01/README.md#findings-and-recommended-work-packages) and [exact verification scope](follow-up-01/verification.md).
+
 | ID | Priority / status | Evidence and effect | Delivered change and acceptance |
 | --- | --- | --- | --- |
 | ORG-01 | High clarity; **fixed** | The old README advertised three alternative glow Stiks and omitted the stock electric; a contract table also omitted it. The current Home/new-stock policy already offers two Stiks. Historical media wording conflated a technical capture roster with current playability. | Corrected `README.md`, `docs/AIRCRAFT_CONTRACT.md`, research index and media wording; linked the canonical two-stock policy. Preserved historical capture scope and all technical identities. See [route audit](variants-and-routes.md). |

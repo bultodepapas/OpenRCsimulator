@@ -1,0 +1,114 @@
+{
+  "format": "openrc-audit-tool-evidence-v1",
+  "source_head": "00610ce3df391560dc195444d797bb81f2f83270",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "tool_sha256": {
+    "run.py": "1da9881a5815a13a37bbef5da2fec91f5872778b5b5e60c125813e73d6663c60",
+    "compare.py": "63e9ce0ad9ae76d377c8647d5b823e4e1a66836fb4b0cc4fd9d5b3ead8ca6833"
+  },
+  "scope": "Actual production Python tools with temporary synthetic profiles/child responses; timeout is an actual Python child, not an engine run.",
+  "wrapper_cases": [
+    {
+      "exit": 0,
+      "case": "complete_control",
+      "stdout": "ok   plane                            exit 0, script errors 0, valid 1/1, 0.0 s\ncard ft-card-v5, commit 00610ce3df; summary /workspace/scratch/d289586b400e/OpenRCsimulator/tmp/audit-evidence-9_utg03t/output/summary.md\n",
+      "stderr": "",
+      "run_manifest_exists": true,
+      "run_log_exists": true,
+      "summary_exists": true,
+      "retained_run_log": "AUDIT_CHILD_STARTED\n",
+      "run_aircraft": {
+        "exit": 0,
+        "script_errors": 0,
+        "valid_tests": 1,
+        "tests": 1,
+        "data_sha256": "934eee38ee6df7da82e5bdcef25062a38a891d90c5ca8ef080a9f0b65879d145",
+        "data_file_sha256_after": "934eee38ee6df7da82e5bdcef25062a38a891d90c5ca8ef080a9f0b65879d145",
+        "data_identity_matches": true,
+        "test_roster_matches": true,
+        "missing_tests": [],
+        "unexpected_tests": []
+      }
+    },
+    {
+      "actual_timeout_stdout_type": "bytes",
+      "actual_timeout_stderr_type": "bytes",
+      "exception_stdout": "AUDIT_STDOUT_BEFORE_TIMEOUT\n",
+      "exception_stderr": "ERROR: AUDIT_STDERR_BEFORE_TIMEOUT\n",
+      "exit": 1,
+      "case": "timeout",
+      "stdout": "FAIL plane                            exit timeout, script errors 0, valid None/None, 0.3 s\ncard ft-card-v5, commit 00610ce3df; summary unavailable (no complete runs)\n",
+      "stderr": "",
+      "run_manifest_exists": true,
+      "run_log_exists": true,
+      "summary_exists": false,
+      "retained_run_log": "\n",
+      "run_aircraft": {
+        "exit": "timeout",
+        "script_errors": 0,
+        "valid_tests": null,
+        "tests": null,
+        "data_sha256": null,
+        "data_file_sha256_after": "934eee38ee6df7da82e5bdcef25062a38a891d90c5ca8ef080a9f0b65879d145",
+        "data_identity_matches": false,
+        "test_roster_matches": false,
+        "missing_tests": [
+          "aero_sweep"
+        ],
+        "unexpected_tests": []
+      }
+    },
+    {
+      "exception": "JSONDecodeError",
+      "exception_message": "Expecting value: line 1 column 12 (char 11)",
+      "case": "malformed_json",
+      "stdout": "",
+      "stderr": "",
+      "run_manifest_exists": false,
+      "run_log_exists": false,
+      "summary_exists": false
+    },
+    {
+      "exception": "KeyError",
+      "exception_message": "'results'",
+      "case": "missing_results",
+      "stdout": "",
+      "stderr": "",
+      "run_manifest_exists": false,
+      "run_log_exists": false,
+      "summary_exists": false
+    }
+  ],
+  "comparison_cases": [
+    {
+      "case": "empty_directories",
+      "exit": 0,
+      "stdout": "# Flight-test comparison\n\nBaseline `<temporary_fixture>/baseline`, candidate `<temporary_fixture>/candidate`; tolerance max(0.01, 0.01 \u00d7 |baseline|).\n\n**0 change(s) beyond tolerance.**\n\n",
+      "stderr": ""
+    },
+    {
+      "case": "no_shared_tests",
+      "exit": 0,
+      "stdout": "# Flight-test comparison\n\nBaseline `<temporary_fixture>/baseline`, candidate `<temporary_fixture>/candidate`; tolerance max(0.01, 0.01 \u00d7 |baseline|).\n\n## Synthetic evidence fixture \u2014 0 change(s)\n\nCompared 0 shared tests, 0 values. Not compared: aero_sweep (baseline only), trim_sweep (candidate only).\n\n**0 change(s) beyond tolerance.**\n\n",
+      "stderr": ""
+    },
+    {
+      "case": "duplicate_case_hidden_change",
+      "exit": 0,
+      "stdout": "# Flight-test comparison\n\nBaseline `<temporary_fixture>/baseline`, candidate `<temporary_fixture>/candidate`; tolerance max(0.01, 0.01 \u00d7 |baseline|).\n\n## Synthetic evidence fixture \u2014 0 change(s)\n\n**0 change(s) beyond tolerance.**\n\n",
+      "stderr": ""
+    },
+    {
+      "case": "candidate_only_aircraft",
+      "exit": 0,
+      "stdout": "# Flight-test comparison\n\nBaseline `<temporary_fixture>/baseline`, candidate `<temporary_fixture>/candidate`; tolerance max(0.01, 0.01 \u00d7 |baseline|).\n\n## Synthetic evidence fixture \u2014 0 change(s)\n\n**0 change(s) beyond tolerance.**\n\n",
+      "stderr": ""
+    },
+    {
+      "case": "ordinary_change_control",
+      "exit": 1,
+      "stdout": "# Flight-test comparison\n\nBaseline `<temporary_fixture>/baseline`, candidate `<temporary_fixture>/candidate`; tolerance max(0.01, 0.01 \u00d7 |baseline|).\n\n## Synthetic evidence fixture \u2014 1 change(s)\n\n| Test | Value | Baseline | Candidate | Change |\n| --- | --- | --- | --- | --- |\n| roll_rate | roll_rate[start].rate | 5.0 | 500.0 | +495 (+9900.0 %) |\n\n**1 change(s) beyond tolerance.**\n\n",
+      "stderr": ""
+    }
+  ]
+}

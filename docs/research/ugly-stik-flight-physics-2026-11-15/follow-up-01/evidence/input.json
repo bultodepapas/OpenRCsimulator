@@ -1,0 +1,75 @@
+{
+  "checks": 7,
+  "complete": true,
+  "failures": 0,
+  "head": "00610ce3df391560dc195444d797bb81f2f83270",
+  "results": [
+    {
+      "details": {
+        "armed": true,
+        "command_roll": 0.0,
+        "event_seen": true,
+        "roll_event": 0.8,
+        "subsequent_roll_poll": 0.0
+      },
+      "name": "event_seen_but_command_uses_different_poll",
+      "passed": true
+    },
+    {
+      "details": {
+        "armed_after_activation": false,
+        "event_before_activation": 0.6,
+        "new_roll_axis": 4,
+        "seen_after_activation": true
+      },
+      "name": "new_mapping_inherits_historical_axis_seen",
+      "passed": true
+    },
+    {
+      "details": {
+        "armed": true,
+        "integrate": false,
+        "post_reset_throttle_event": -1.0,
+        "roll_event_seen": false
+      },
+      "name": "post_reset_low_can_arm_during_nonintegrating_poll",
+      "passed": true
+    },
+    {
+      "details": {
+        "armed": false,
+        "roll": 0.8,
+        "throttle": 0.0
+      },
+      "name": "unarmed_radio_still_reports_surface",
+      "passed": true
+    },
+    {
+      "details": {
+        "unchanged": true
+      },
+      "name": "cancelled_candidate_leaves_active_profile",
+      "passed": true
+    },
+    {
+      "details": {
+        "active_center_after": 0.2,
+        "filesystem_save_called": false,
+        "old_center": 0.0,
+        "pause_reason": "radio calibrated, NOT saved (error 22)"
+      },
+      "name": "direct_duplicate_identity_refuses_save_after_activation",
+      "passed": true
+    },
+    {
+      "details": {
+        "active_unchanged": true,
+        "pause_reason": "Calibration not saved: injected refusal",
+        "pending_generation": 12
+      },
+      "name": "managed_refusal_retains_pending_without_activation",
+      "passed": true
+    }
+  ],
+  "scope": "synthetic production-class inputs and duplicate identity; no hardware, real focus or storage I/O failure"
+}
