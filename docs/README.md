@@ -128,4 +128,3 @@ Main-line Gate 2, Gate F and Gate P state lives in [ROADMAP](../ROADMAP.md#execu
 8. Keep committed evidence light; history keeps every version, so re-encoding old files only adds size. Show views as JPEG (quality about 85); commit lossless PNG only when pixel values are the evidence (parity, masks, measured colour). Prefer summaries over raw logs and captures, and a hash plus a download or regeneration recipe over a copied archive. `tools/repo/check_large_files.py` (run by `app/test.sh`) refuses unrecorded tracked files above 50 MiB and any above GitHub's 100 MiB push limit.
 
 The original platform work is retained in [the initial notebook](research/initial-notebook.md) and the frozen [bake-off spec/comparison](../prototypes/stage0/COMPARISON.md). Those records explain earlier choices without defining current runtime behavior.
-
