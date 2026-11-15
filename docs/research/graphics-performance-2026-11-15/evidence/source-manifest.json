@@ -1,0 +1,579 @@
+{
+  "format": "openrc-graphics-audit-source-manifest",
+  "version": 1,
+  "research_date": "2026-11-15",
+  "timezone": "America/Bogota",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "baseline_commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "baseline_tree": "a7bf7082ef8447253482b970d99184ab675b30ac",
+  "scope": "Selected inspected implementation, tests, build/patch sources, governing plans and retained evidence; not a complete dependency closure. Baseline hashes refer to Git object bytes. Upstream hashes refer to UTF-8 text returned by the GitHub source connector.",
+  "project_file_count": 87,
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "git_blob_sha1": "8f281e4553ab493f131976c923d2b7be47a902b2",
+      "sha256": "f2b63fd6b0d7827c3f6abfb36ea5a94eda9c48f71bb6d9aa9ec235aa2c6aa76c",
+      "bytes": 9558
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "git_blob_sha1": "ec5222f27b6b1d06cbf8ad938fd0d0fc9d40d23d",
+      "sha256": "1fdb156fafa08072955df144ed66c0e415baf1e40e2e87ce43da2108e16132cd",
+      "bytes": 5328
+    },
+    {
+      "path": "app/app_root.gd",
+      "git_blob_sha1": "2d6dcadd00dee40f7eb8ba12d9c398b39ee10760",
+      "sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+      "bytes": 226662
+    },
+    {
+      "path": "app/app_state/display_preferences.gd",
+      "git_blob_sha1": "667662a1a1400775815d916a8ea1b955be72a1d4",
+      "sha256": "b084fbff2b1c9b8765d96bd12d1722ee4c950ce04e7b31a6aa13578bfbd564c4",
+      "bytes": 22883
+    },
+    {
+      "path": "app/app_state/renderer_guard.gd",
+      "git_blob_sha1": "b82d7c6d5c4871c1879ceecd750b0ec4c7176c84",
+      "sha256": "1cfda9cafe487c5ca07920cf4b8e53c7713c507f84eda534db62198a1b072531",
+      "bytes": 11865
+    },
+    {
+      "path": "app/debug/debug_bridge.gd",
+      "git_blob_sha1": "861ffef0153ff6837b0f22797e7fc6984fdbbc55",
+      "sha256": "6f36090db87220c3749414e9621f5f72cec4f5c4c27d0e7aef0b13cc91565065",
+      "bytes": 148452
+    },
+    {
+      "path": "app/debug/render_probe.gd",
+      "git_blob_sha1": "42081e0c90761f6ed4e6657c3573ecddd96d06c7",
+      "sha256": "67325f9924f00f001f57fc135a38ac65b6b0164eb887b09f8c1f840982ff0938",
+      "bytes": 26083
+    },
+    {
+      "path": "app/get-godot.sh",
+      "git_blob_sha1": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "bytes": 8960
+    },
+    {
+      "path": "app/get-templates.sh",
+      "git_blob_sha1": "8a75f3b83765f0affcd581aa4b88932715a4ac4c",
+      "sha256": "cd15f5b0a54c29345e577df253e8b831a10dcaf6d6025679d4cdb6aa2f9c9d90",
+      "bytes": 5064
+    },
+    {
+      "path": "app/input/latency_patch.gd",
+      "git_blob_sha1": "92e25090436e6190942bc59b0cf7dbca3901f612",
+      "sha256": "2988eadabab93191ee8843d19562d8e4559a024fccb7a483c1a731634215a5c2",
+      "bytes": 7043
+    },
+    {
+      "path": "app/main.gd",
+      "git_blob_sha1": "71702b06946d73d3f6e64c7cc899049d091e083c",
+      "sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+      "bytes": 209627
+    },
+    {
+      "path": "app/project.godot",
+      "git_blob_sha1": "647257adefaa34ffd3a95245bd616246679a340b",
+      "sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "bytes": 3950
+    },
+    {
+      "path": "app/render/camera/camera_rig.gd",
+      "git_blob_sha1": "d073bb782c08088d6805835640f176a63aa1b1f4",
+      "sha256": "30d8f12b1ce2af509dc996d4f6e04f3853bff5e86df31729d7a01b2190afd8f9",
+      "bytes": 19168
+    },
+    {
+      "path": "app/render/frame_diagnostics.gd",
+      "git_blob_sha1": "4d238aaf3d4bfa164be6a828ecff57f6d7f5995b",
+      "sha256": "067cc4c4f45e273466107048f1f1290e0da5acb581a424a6a7b227408bccca39",
+      "bytes": 7979
+    },
+    {
+      "path": "app/render/frame_generation.gd",
+      "git_blob_sha1": "781f944b3bee0fce1c9b9bea5980e6b7eba66ec0",
+      "sha256": "ba9c975fa81fa1c8cc51bd19918e1095223f72eda5f4e2e9e70224f1fffb39ea",
+      "bytes": 47869
+    },
+    {
+      "path": "app/render/high_graphics_profile.gd",
+      "git_blob_sha1": "14067ace4dbf092240d425fabc27c39a00b8be27",
+      "sha256": "4cc764c4c6c9aa3f5f1b1f8d6074d380432fea2952e9ee8a0b37f43e60d48e6f",
+      "bytes": 7098
+    },
+    {
+      "path": "app/render/lake/lake_planar_reflection.gd",
+      "git_blob_sha1": "c6e13822215ad20f4ea779a9c6ee92731c6d2322",
+      "sha256": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665",
+      "bytes": 7002
+    },
+    {
+      "path": "app/render/lake/lake_reflection.gd",
+      "git_blob_sha1": "9d6ca0e1a44d0c2dbfc2754e0d9612b9e7bcb300",
+      "sha256": "db692550c9680022d57bbf2ec370fdc32305dfff05017c6d9ab236fd52715e9e",
+      "bytes": 3869
+    },
+    {
+      "path": "app/render/metalfx_policy.gd",
+      "git_blob_sha1": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "sha256": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "bytes": 5703
+    },
+    {
+      "path": "app/render/nvidia_reflex.gd",
+      "git_blob_sha1": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "sha256": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+      "bytes": 3801
+    },
+    {
+      "path": "app/render/propeller_blur.gd",
+      "git_blob_sha1": "5f033212c4aae37ed68152870b362380d9d2c7d7",
+      "sha256": "e8b4d41c2cbd9a91fd0ae3c51a58aba56809122519abf3d6d4bf507dea242a1f",
+      "bytes": 21906
+    },
+    {
+      "path": "app/render/reconstruction.gd",
+      "git_blob_sha1": "6b758b525980fa8d0a1be8f94d55be3831809cec",
+      "sha256": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44",
+      "bytes": 41252
+    },
+    {
+      "path": "app/render/shadow_settings.gd",
+      "git_blob_sha1": "6cf078ac1c3145e00daf0b25ebe60c285701a0cc",
+      "sha256": "7636d2ca7d9a36b96349e63ad531e6ee3aa7c015b3bc37cc599f9884e45b14b0",
+      "bytes": 11509
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "git_blob_sha1": "1c639fe4be03ede927a2aba9a7ba09b255d395cf",
+      "sha256": "5a3c36f5b2b375505a45cff94ca9ede31eeb7bc79fc1a40e27c3064e7894bb50",
+      "bytes": 332294
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "git_blob_sha1": "0a370665fcc43efbfd4e75084692b135ea471022",
+      "sha256": "d56b08720363eaab495e320147a93170eb429dfe9243bcdfd6c6fd670b4670bd",
+      "bytes": 66941
+    },
+    {
+      "path": "app/tests/test_advanced_graphics_settings.gd",
+      "git_blob_sha1": "790da6ff1a5f4baa18d44b3eb994b0e319dbc578",
+      "sha256": "fea35811263b1779f37e126ec741e1eac7d84d2d231c08a196b80be9dab82ed2",
+      "bytes": 25021
+    },
+    {
+      "path": "app/tests/test_frame_diagnostics.gd",
+      "git_blob_sha1": "c9a669645f036870121c642e0146efa87b6290d7",
+      "sha256": "d71a2cdf1812a3385da53741fb3c8066ac44707f5f879a5c04f81d2af09395c1",
+      "bytes": 7208
+    },
+    {
+      "path": "app/tests/test_latency_patch.gd",
+      "git_blob_sha1": "fac01e4f51e7f5ab16612299aa6fdf2316f090db",
+      "sha256": "c8acfd6daea703f271256eb00419fefe3455d8a59bc5a642c3e407653c61c09b",
+      "bytes": 7977
+    },
+    {
+      "path": "app/tests/test_metalfx_policy.gd",
+      "git_blob_sha1": "e902ee162e14ce111e57409e446abf31f500abb5",
+      "sha256": "75c416385ce092de7fa0d4024fcedf64f2ed5f51e475c49a65db7e49042e37ee",
+      "bytes": 23779
+    },
+    {
+      "path": "app/tests/test_nvidia_reflex.gd",
+      "git_blob_sha1": "a41c379f1e386950c0b701ae05242cc018ca1416",
+      "sha256": "e99a380cdeb4fd84a2d37d64e31a10978febb5f908e5ac98b0dc779dd9a0bf81",
+      "bytes": 7319
+    },
+    {
+      "path": "app/tests/test_reconstruction.gd",
+      "git_blob_sha1": "e684497d0495569dea05c9c9f41b1cd8762804af",
+      "sha256": "98cfce259de0e657118dbb403e704b119ceb4006c2d7e8df8aac21815ec3343c",
+      "bytes": 17056
+    },
+    {
+      "path": "app/tests/test_reconstruction_history.gd",
+      "git_blob_sha1": "18288959def96cb0e2e60deeed7feb4600cd0b29",
+      "sha256": "af1cbe4e0e434728e650e8d07e82b571703c33dc6d34b8cffa4bd8f0b7e9a93b",
+      "bytes": 25253
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "git_blob_sha1": "481ac1c250f1ece7c73b099a0b10cf76448be619",
+      "sha256": "e359c4be8d8913c786b1e6ed6ab07946e61c9648d77ca8de636658ab86de3956",
+      "bytes": 87016
+    },
+    {
+      "path": "docs/README.md",
+      "git_blob_sha1": "eb8f536cc2e7c0c3541d34b193d376e6cdb9f2f8",
+      "sha256": "27e4c850d34fad9fa06aaeb368cecc10a1b951a5f9bd2eaafe5ad48d0ae15ea2",
+      "bytes": 43768
+    },
+    {
+      "path": "docs/STACK.md",
+      "git_blob_sha1": "3ae274a1bcbebfc225d605d2db0868b35b412ec9",
+      "sha256": "e91984e225dee959188d7f5b6db7f322b566448ad3eed2b754a9d43af1218f4d",
+      "bytes": 13577
+    },
+    {
+      "path": "docs/SUBAGENTS.md",
+      "git_blob_sha1": "4265f67c3c7abf1dc729b0e831a1816d7ee5a6d4",
+      "sha256": "d9cfb096924a130c83c9817481a0591b2b1aeda6b3d1103f32f0145ae1f2f54f",
+      "bytes": 23946
+    },
+    {
+      "path": "docs/plans/advanced-graphics.md",
+      "git_blob_sha1": "d1782d842a39f0f8f57f1c92125c7e342846a348",
+      "sha256": "fcf4cb88938423dbb5442141e2cbaf55bae329aea84da650d359f7046c93e3e7",
+      "bytes": 67380
+    },
+    {
+      "path": "docs/plans/amd-fsr-completion.md",
+      "git_blob_sha1": "72058b5a3b1be77c4e04f211dd1e74f012f741ea",
+      "sha256": "07240e45b4c2ca7a01975ab54201a014aa067bcf7f2f2f8a581a474fda01d816",
+      "bytes": 23684
+    },
+    {
+      "path": "docs/plans/apple-metalfx.md",
+      "git_blob_sha1": "df0cd12a5b1dfad8b6ff9e49a622760a64d11479",
+      "sha256": "b6d02c60ab2109491b2965e2add212316e971046a872662431ab619e5234a25a",
+      "bytes": 55646
+    },
+    {
+      "path": "docs/plans/apple-silicon-performance.md",
+      "git_blob_sha1": "b31f37b5f0f8484254a5965cb3ce1d190bb478a0",
+      "sha256": "d6e2c867c39eb738ffa7dd489f0802c5de86d351da8dd6c4b703ea602ae0dc53",
+      "bytes": 117317
+    },
+    {
+      "path": "docs/plans/controller-support.md",
+      "git_blob_sha1": "568f8addc8cf54426c6bd7814d93a202b847f669",
+      "sha256": "f4048f8bf664e6e3e119bfb98585c66d00d168d1d3808e17733f5c354fa9f51d",
+      "bytes": 27339
+    },
+    {
+      "path": "docs/plans/global-performance-visual-quality.md",
+      "git_blob_sha1": "4d2e29461d347314b493b828c5e46531b046a632",
+      "sha256": "76fe9e0019857a2513b6cedab628e125774d8638c01a91b6561cba3cd2bcae0b",
+      "bytes": 47308
+    },
+    {
+      "path": "docs/plans/godot-4.8-upgrade.md",
+      "git_blob_sha1": "62127a1e900e2cf7ebf8b022294ac4a525ba02eb",
+      "sha256": "b6627b8927fde44d8f16c19da9add4dce654ba766f8b32d30f181aa12b9aee0e",
+      "bytes": 19628
+    },
+    {
+      "path": "docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md",
+      "git_blob_sha1": "1d2fb9c35558175c701ef2891db83365bde70927",
+      "sha256": "36dec907b97a81a975382f7e371e6c5f296a225de5cdc085539dbb8b8291471d",
+      "bytes": 88871
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md",
+      "git_blob_sha1": "f60ba0baff8d8d354d4e596258592ab3e1865728",
+      "sha256": "a8ef5480ac50867aa9602e80467d6ed0edc2539a3432005c9051e40a5ac57a1d",
+      "bytes": 42545
+    },
+    {
+      "path": "tools/graphics/README.md",
+      "git_blob_sha1": "b957dc009c4b6b977350cef4720df7e6c5989f21",
+      "sha256": "6f6dac9445e3357de6a23bde1cdd0ae3e77b45e364edbc4330c9cdf4c47e22dd",
+      "bytes": 23499
+    },
+    {
+      "path": "tools/graphics/metalfx/README.md",
+      "git_blob_sha1": "8b08df4b650486cb3c344b6ed48ac4a38ecc62e5",
+      "sha256": "fad14089d351c8768f3c61715be72fbcd362b42a6ff1dd12b8341c6386ba2037",
+      "bytes": 28453
+    },
+    {
+      "path": "tools/graphics/metalfx/engine.py",
+      "git_blob_sha1": "1b375a4b20f64a29add87b394cdd00a8795a7d0d",
+      "sha256": "f659dec8be4092c20b2889d664634100449ba99bc0f8731319f28254a8399d09",
+      "bytes": 19163
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0001-metalfx-allocation-fallback.patch",
+      "git_blob_sha1": "0f6ada6f16426bf25b5f9701a7964f86886651d7",
+      "sha256": "f04167e05f452bfc37e85e90d512373d92c3f6ec808cef8431a0705e197d716a",
+      "bytes": 28439
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0002-metalfx-history-reset.patch",
+      "git_blob_sha1": "3529867847652fb0668957d4753926aaa4b6a309",
+      "sha256": "d7570f1b3639616e4e565a920cc4b9caca844bf7d1c8b3ec7d14d6e596c4ecc5",
+      "bytes": 18869
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0003-metalfx-debug-faults.patch",
+      "git_blob_sha1": "53d43d400b686230ea2a3eb64e6927be00280a58",
+      "sha256": "cdacbdf81c80e44b96b200f1890236774225d93d8b54299f8e7db47b9f2c21cd",
+      "bytes": 4138
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0004-metalfx-frame-inputs.patch",
+      "git_blob_sha1": "45480488dd087d22d25a09a91f99cfcfa9fb9e34",
+      "sha256": "2cfc1c4b466dfba51ae940d4c0529d290bf5a4502cd562d52edc4c4712e1ce18",
+      "bytes": 45663
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0005-metal-triangle-query.patch",
+      "git_blob_sha1": "a15d616457e1f9a3e990fbe7201a67e5145b5fae",
+      "sha256": "825920ed18b56dd3d531eda30d25ffb9da33b6becb29dd849c03073ff375e155",
+      "bytes": 54570
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0006-metalfx-gpu-observation.patch",
+      "git_blob_sha1": "217b80cc96569e8f9dda29a4ff340b9eb19eeae2",
+      "sha256": "565aec0587e8d5b8895f8e9025be316437a9cda0f7207e5c02214f0bf9cfd272",
+      "bytes": 26073
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0007-metalfx-denoised-binding.patch",
+      "git_blob_sha1": "3b6b5037d8bcaf96214c6ef754eb552a046979c6",
+      "sha256": "d3ce4cb242eb311d214535ce695c744c2a15801b1226c940fb707b71bce64166",
+      "bytes": 28506
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0008-metal-paired-presentation.patch",
+      "git_blob_sha1": "68ef7ca9ceb353661aa9a600279254d41a9338b5",
+      "sha256": "e4b73172a8025a1702a04ee818b0e0591d68ec814610d22a6441420ebdfef18a",
+      "bytes": 68206
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0009-metalfx-frame-composition.patch",
+      "git_blob_sha1": "762f5b9e63d1b5ee6c2d7cd948f36c5086826c56",
+      "sha256": "5ca9396cc846a7f6b72a42f06d1785124e605e4a983e565a31cdf4273dc29333",
+      "bytes": 49306
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0010-metal-empty-submit-fence.patch",
+      "git_blob_sha1": "6e71d98c840fe7e23dcf8bd5473bbbd1ce3a765f",
+      "sha256": "e72d1d5659213f34b582b2c55e88e2bf50a54c24bc38f3dc3c985130a3c063a4",
+      "bytes": 985
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0011-metalfx-presentation-adapter.patch",
+      "git_blob_sha1": "8276f6e5f550e480cabb65bac158fa0a84c55785",
+      "sha256": "d6ebee96e1717b7f2d6d5b3b63da82d0c3238582a9bb51bda5a749b70ff55640",
+      "bytes": 38875
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0012-rd-gpu-failure-stop.patch",
+      "git_blob_sha1": "f28dd91a8098b3e5dd415edcfbfc42387d30a2ef",
+      "sha256": "55c185f928b9e1d742568f3803d5bec70450177d30ddf976723f8f4197f33fdb",
+      "bytes": 4131
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0013-metalfx-real-completion.patch",
+      "git_blob_sha1": "adc0be930bdf452f2b959bf71ccb2cff848e79e7",
+      "sha256": "4557e956812dd07a5457763d9f59266520c39f04053ecf2977364c345c4e8cda",
+      "bytes": 38239
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0014-metal-present-callback-lock.patch",
+      "git_blob_sha1": "d5edc684e2c15ec758575c4da2f453fda120fa21",
+      "sha256": "a15caae49bb4d543043e009fd63a63f88c433e8d8ccbbc139ade6acf6a991468",
+      "bytes": 4771
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0015-metal-present-decision-observation.patch",
+      "git_blob_sha1": "18b0d40ebe15b8be08dbc69d71fdb6e52d305cb4",
+      "sha256": "5e1b25dc8e3296423dae24489cd8b936a6cfbaf32a0fc6b006c6bec0b1971b9d",
+      "bytes": 9889
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0016-metal-present-pacing.patch",
+      "git_blob_sha1": "13eaa7c9117af0a8484bec7857b0d6d7d050aeda",
+      "sha256": "6592562afd4208d211e924cd1330b6fb58a05d88b0161f43a51d133d6863efbe",
+      "bytes": 33029
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0017-metal-present-submission-lifetime.patch",
+      "git_blob_sha1": "09b515f942c9ef60eddc6a8cc0007a50717f70d2",
+      "sha256": "db0f4aad4eced890cd5a072be1b69aa5ca6331d41c1a700b12a8ed967357b746",
+      "bytes": 23031
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0018-metal-rt-scene-inputs.patch",
+      "git_blob_sha1": "2146a38dfe7a5aabbea1877a676dce7e33bec464",
+      "sha256": "8339b8978c21a1133b8b6e144de0dc182a9c29a7cb39677fa628b3105dee5c82",
+      "bytes": 57589
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0019-metalfx-conditional-history-reset.patch",
+      "git_blob_sha1": "9f0b942286af7637b56cbf2f68fe1d258787feb0",
+      "sha256": "6a71e3e6eee7542996f52a318085f892ada178b1800c28a173129e07b500b289",
+      "bytes": 6310
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0020-metalfx-alpha-diagnostic.patch",
+      "git_blob_sha1": "57c3f765ba7b82dd7619b56a8e60db41e5ef2d4c",
+      "sha256": "64288c65bfedd5391b0032e7ac4feddbb6bfa5a4063ca38b9a648bdff30ec09c",
+      "bytes": 16377
+    },
+    {
+      "path": "tools/graphics/native/README.md",
+      "git_blob_sha1": "d7ba445751c1156501e5b75b282fc495ab91ed41",
+      "sha256": "f4d283631bf32a0590b7d02947d77d5e5d1c7fd89fbc00e85e751a96aeb1fc8e",
+      "bytes": 23042
+    },
+    {
+      "path": "tools/graphics/native/buffer_write_sync.patch",
+      "git_blob_sha1": "f08fb7a08f56b091f206b9ccd18c8555f6b29f78",
+      "sha256": "d4ed03e2f95878ca226ad2bd0c689ea2294622cb92c3dacc2080f970f812aea6",
+      "bytes": 1200
+    },
+    {
+      "path": "tools/graphics/native/build.py",
+      "git_blob_sha1": "33129b31388cc98d30e85dc1480227ecd097381b",
+      "sha256": "8c7358aece65fcd846d8584473848bf14e63ce541e388efe5207a5648de1b79b",
+      "bytes": 10656
+    },
+    {
+      "path": "tools/graphics/native/dlss_failure_paths.patch",
+      "git_blob_sha1": "c0e7809fbd429a9e5ec3c0adf11f3a262fc9ced5",
+      "sha256": "bf81e9af717ceeffed761350c2a8fdf39d64ca37cd350482a8c543ec726f46ee",
+      "bytes": 2460
+    },
+    {
+      "path": "tools/graphics/native/dlss_frame_lifecycle.patch",
+      "git_blob_sha1": "0c16fe4e4a1e68aef270f580787f795af9493be8",
+      "sha256": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+      "bytes": 21956
+    },
+    {
+      "path": "tools/graphics/native/dlss_history_reset.patch",
+      "git_blob_sha1": "b60a6e5ccbeb7b358d02d10dfd53b1f5206a1c5a",
+      "sha256": "02ed268d7d5317bfa63f1208637d92f3b90133222a02214abfbd31ba1c8cc3b1",
+      "bytes": 15119
+    },
+    {
+      "path": "tools/graphics/native/dlss_validation.patch",
+      "git_blob_sha1": "485dd08201b83563a08b136c51eca35776ff03c1",
+      "sha256": "6d518a549a16c7cc77db241b32c832958923c3cd9b970181e814fc1dab584185",
+      "bytes": 9317
+    },
+    {
+      "path": "tools/graphics/native/engine.patch",
+      "git_blob_sha1": "01003d74a4c95564e8d2bbff0c84bcfe4f29394e",
+      "sha256": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+      "bytes": 17501
+    },
+    {
+      "path": "tools/graphics/native/fidelityfx.patch",
+      "git_blob_sha1": "1746a8149c3b97a892a47f9e7d7e561649f4cacd",
+      "sha256": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+      "bytes": 3641
+    },
+    {
+      "path": "tools/graphics/native/fsr_history_reset.patch",
+      "git_blob_sha1": "d924972f82f889ccc2fc210013ab344f1ebf279b",
+      "sha256": "5c9d14e653588b2083aac48360c82e4f65dfc2dcc7a21467b77cb53a939c60bd",
+      "bytes": 22328
+    },
+    {
+      "path": "tools/graphics/native/load_token_lifetime.patch",
+      "git_blob_sha1": "dfca148f703daa32e5b2c2f9c6b9f7a06517ad4a",
+      "sha256": "868c518c78d2afe86e4ea29e53ec0d13488fa1c62a0dbd9b079d7ad70e8260a1",
+      "bytes": 3453
+    },
+    {
+      "path": "tools/graphics/native/product.py",
+      "git_blob_sha1": "321fa51ec54a05b3db9b79ec42b5bd5a4fed1b03",
+      "sha256": "e7c58737b732e529c719fb1facb24e241f9da2b567b62b58ea4066f5e2121f47",
+      "bytes": 45049
+    },
+    {
+      "path": "tools/graphics/native/reflection_atlas_lifetime.patch",
+      "git_blob_sha1": "f7bd1e9b97a13e1be0883b7c003c4b37593f7245",
+      "sha256": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+      "bytes": 1082
+    },
+    {
+      "path": "tools/graphics/native/reflex_lifecycle.patch",
+      "git_blob_sha1": "a68eb233cb458a7d013035163c82f47a2ce875f7",
+      "sha256": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+      "bytes": 22443
+    },
+    {
+      "path": "tools/graphics/native/reflex_sync.patch",
+      "git_blob_sha1": "2817196f898f9c9ce8c30ed2d5ee7283f846b883",
+      "sha256": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+      "bytes": 6206
+    },
+    {
+      "path": "tools/graphics/native/sdk24.py",
+      "git_blob_sha1": "0521b093b36d9dae0499fff9f7861c491c956390",
+      "sha256": "7d6d0eefe19c3ad8c6f7dd1bdcfd11c312d55e3883492d9a873e94c496f17192",
+      "bytes": 17215
+    },
+    {
+      "path": "tools/graphics/native/sdk24_vulkan_features.patch",
+      "git_blob_sha1": "c707b41089a89ed375f2179af2c19866f5465420",
+      "sha256": "0065c167e7d56ada0110fab5b8b4dd920988f35cac45124cc9619de16e5b13bb",
+      "bytes": 7722
+    },
+    {
+      "path": "tools/graphics/native/shutdown_thread.patch",
+      "git_blob_sha1": "6058b0499af24b9386bbac8832d2ef9e1b2680c3",
+      "sha256": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+      "bytes": 638
+    },
+    {
+      "path": "tools/graphics/native/vulkan_validation.patch",
+      "git_blob_sha1": "75229a8c7ca6d4489820ca62e9e8d6c7b022a122",
+      "sha256": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206",
+      "bytes": 5623
+    }
+  ],
+  "upstream_files": [
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp",
+      "sha256": "e41a1a74e442ecffd29831e69b4ead5e4c7fe6df58a18837c0f559db4ab800b6",
+      "bytes": 35492
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "servers/rendering/renderer_viewport.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp",
+      "sha256": "1f36cb269db4843995ca3d4a8371447fd53917ca1967eae66abcd9455abe6245",
+      "bytes": 69943
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "servers/rendering/rendering_device.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_device.cpp",
+      "sha256": "60e9c20f0d28cf822aec5adf4b9b9560910b877eb40b528fed3138a08d36ebd2",
+      "bytes": 465227
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.cpp",
+      "sha256": "482b78643b2cfc28873f61800b98b631c7a84a8c30f7177fd57982a0b2b17350",
+      "bytes": 374021
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "scene/main/viewport.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/main/viewport.cpp",
+      "sha256": "2434336efa412579e3ca50b837d3e3d8bb86b2e64be77e6d0267ae807c063c4b",
+      "bytes": 202574
+    }
+  ],
+  "new_hardware_measurements": false,
+  "new_runtime_implementation": false
+}

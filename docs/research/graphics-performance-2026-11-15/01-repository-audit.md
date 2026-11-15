@@ -42,13 +42,15 @@ Finding IDs below identify this audit only; they do not create a new implementat
 
 The runtime holds named constant scales in `SCALES`; `auto_mode()` considers only capability and output height. `apply()` sets the chosen scale when configuration is applied. There is no target GPU budget, sample age, deadband, asymmetric recovery or continuous scale policy in those production paths. Existing reconstruction and settings tests establish fixed-mode behavior, not adaptive regulation.
 
-**Decision:** add an optional controller through the current reconstruction boundary after timing and scale-transition qualification. Keep fixed modes fully usable. Do not market the existing Auto mode as dynamic resolution.
+**Decision:** first establish a pixel-sensitive GPU bottleneck on a named 1080p target. If fixed options do not satisfy its performance/readability gate, prototype an optional controller through the current reconstruction boundary after timing and scale-transition qualification. Keep fixed modes fully usable. Do not market the existing Auto mode as dynamic resolution.
 
 ### F02 — GPU timing ownership can interfere across diagnostic consumers
 
 **Class:** confirmed source-level ownership hazard; no live overlap reproduction performed in this audit. **Priority:** high before adding a persistent controller.
 
 `FrameDiagnostics.start()` enables `viewport_set_measure_render_time(root_rid, true)` at line 88, and `stop()` disables it at line 142. Independently, `RenderProbe.set_measure()` writes the same per-RID boolean through `_enable()` at line 44. If both consumers are active, stopping one can disable measurement while the other still considers itself enabled.
+
+The overlap is reachable: `app/debug/debug_bridge.gd:222–223` starts the root probe, while `app/main.gd:1360–1362` can start frame diagnostics on that root viewport. This is a concrete inspection argument, not a measured failure rate.
 
 **Decision:** coordinate timing through one shared owner with acquire/release semantics, and test both stop orders plus freed/recreated viewports. A future DRS controller must detect stale or missing observations independently; a positive cached value is not sufficient evidence of fresh GPU work.
 
@@ -68,6 +70,8 @@ The current helper, preferences, UI, engine patches and retained RTX 3090 trials
 
 **Decision:** extend and qualify this implementation. Keep requested, accepted and failed states distinct. Measure complete input-to-display behavior before claiming a number, and evaluate Boost's power/thermal cost separately.
 
+The physical RC transmitter path must be tested: PCL/software timestamps and a mouse-flash test cannot establish radio-to-photon latency. Multiple fixed 240 Hz ticks can occur within one render frame, so engine frame markers require explicit association with the sampled input and the visible response.
+
 ### F05 — RT prerequisites exist; a complete normal-flight RT effect is not established
 
 **Class:** partial infrastructure and open feature work. **Priority:** medium, after the basic performance contract.
@@ -83,6 +87,14 @@ The Metal patch stack includes a triangle-query subset and scene-input diagnosti
 Official beta 2, the older NVIDIA fork, the AMD loader candidate and the Apple patch stack do not have identical features or packages. A setting name, generic current documentation, or a historical 720p trial cannot qualify all of them at 1080p. The source already contains several strong capability/failure receipts; reuse those instead of creating a marketing-only support matrix.
 
 **Decision:** record engine hash, patch/SDK identity, actual renderer/driver, package identity and effective mode in every benchmark and support decision. Preserve real/generated/presented frame distinctions. Newer upstream releases are investigation candidates until their exact dependencies and regressions are checked.
+
+### F07 — Scale transitions can recreate buffers, and one settings apply can do it repeatedly
+
+**Class:** exact pinned-engine source behavior; performance impact unmeasured. **Priority:** high before enabling a dynamic controller.
+
+The beta 2 server scale setter returns for an exactly unchanged clamped float. A different value calls render-buffer configuration even when integer width/height would be unchanged. The RD configuration path cleans up old resources and recreates buffers; the MetalFX Spatial context is among the affected objects. Separately, `reconstruction.gd:246–263` writes mode, scale, sharpening and AA in sequence, and changed values can each trigger configuration. See the [exact-source analysis](02-dynamic-resolution-and-upscaling.md#terms-and-present-behavior).
+
+**Decision:** quantize proposed changes to actual supported dimensions, skip no-ops, measure transition spikes and history behavior, and investigate coalesced engine configuration or persistent allocations where required. A setter called every frame is not an acceptable default design. Keeping a provider static is a valid outcome if the engine transition path cannot meet the gate.
 
 ## 4. Search method and limits
 

@@ -26,6 +26,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Advanced graphics, isolated Forward+ comparison and proposed High profile | [VQ-07 upgrade plan](plans/advanced-graphics.md); [source audit, 2026-10-21](research/advanced-graphics-2026-10-21/README.md) |
 | Detailed shadows, grounding and shadow settings | [VQ-04b shadow plan](plans/shadows.md); [runtime and primary-source audit, 2026-10-31](research/shadows-2026-10-31.md) |
 | AMD FSR completion, latest SDK integration and separate frame generation | [VQ-07d/h FSR completion plan](plans/amd-fsr-completion.md); [release/source audit, 2026-10-28](research/advanced-graphics-2026-10-21/amd-fsr-2026-10-28.md) |
+| Dynamic resolution, Reflex/Boost and ray tracing: current-source external audit | [2026-11-15 audit and proposed work order](research/graphics-performance-2026-11-15/README.md); existing VQ, DT-MAC, GDU and PT homes retain implementation status |
 | Aircraft format, fields, conventions and extension rules | [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) |
 | Reusable Blender developer handoff for new airplanes and all their skins | [Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md) |
 | Create a personal MoonRunner X99 paint with Blender and AI, then load it in the simulator | [Aircraft skins tutorial](AIRCRAFT-SKINS.md) |

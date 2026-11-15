@@ -14,15 +14,31 @@
 
 ## Executive assessment
 
-The project already contains meaningful implementations. The best next investment is to connect and qualify the existing pieces through reliable measurements and a controlled dynamic-resolution policy.
+The project already contains meaningful implementations. The next investment should be reliable measurements and qualification of those pieces. Prototype controlled dynamic resolution where a named target is measurably GPU-bound and existing fixed-scale options do not meet the performance and readability gates.
 
-- **Dynamic resolution:** the reconstruction menu already selects FSR, DLSS and MetalFX paths where the actual engine supports them. Its `Auto` policy selects a fixed mode from capability and output size; it does not continuously regulate GPU load. A real feedback controller is new work, and the engine's buffer/history behavior must be qualified first.
+- **Dynamic resolution:** the reconstruction menu already offers FSR, DLSS and MetalFX requests where capability gates allow them. Effective execution needs separate evidence. Its `Auto` policy selects a fixed mode from capability and output size; it does not continuously regulate GPU load. A real feedback controller is new work, and the engine's buffer/history behavior must be qualified first.
 - **NVIDIA Reflex:** the separate Windows/Vulkan NVIDIA build contains real SDK scheduling and markers, with Off/On/Boost controls. The official cross-platform engine is a separate product path. Existing functional evidence does not establish a measured input-to-photon improvement.
 - **Ray tracing:** recent Godot exposes useful low-level Vulkan APIs. OpenRC also has isolated Metal triangle-query and scene-input work. Neither fact alone provides a complete, qualified real-time ray-traced effect for normal flight. Reuse these foundations for one bounded optional effect after the performance baseline is dependable.
 
 ## How to read the audit
 
-The [repository audit](01-repository-audit.md) anchors findings to the baseline. Topic reports, the integrated work order, and the validation plan are being assembled in this directory and will be linked here when complete. All recommendations retain the existing track owners below.
+| Report | Purpose |
+| --- | --- |
+| [01 · Repository audit](01-repository-audit.md) | Engine families, code-to-behavior map, seven findings and source/evidence limits. |
+| [02 · Dynamic resolution and upscaling](02-dynamic-resolution-and-upscaling.md) | Apple/Windows/Linux/vendor matrix, exact engine allocation behavior, current M1 evidence and a guarded controller design. |
+| [03 · Latency, Reflex and Boost](03-latency-reflex-and-boost.md) | Actual native integration, RC input path, Boost tradeoffs, AMD/Intel/Linux alternatives and measurement requirements. |
+| [04 · Ray tracing in Godot](04-ray-tracing-in-godot.md) | Current Vulkan APIs, stock versus experimental Metal, existing OpenRC prerequisites and a bounded optional effect. |
+| [05 · Integrated implementation plan](05-integrated-implementation-plan.md) | Priorities, reviewable deliveries, settings contract, existing owners, effort and stop conditions. |
+| [06 · Validation and benchmarks](06-validation-and-benchmark-plan.md) | Native 1080p matrix, CPU/GPU/presentation distinctions, motion/readability, physical RC latency and lifecycle gates. |
+| [07 · Sources and verification](07-sources-and-verification.md) | Source precedence, version contradictions, independent review and validation receipts. |
+
+Machine-readable evidence: [audited source manifest](evidence/source-manifest.json) and [documentation validation](evidence/validation.json). The topic studies contain claim-specific primary sources; the manifest preserves source identities without copying upstream engine code into the repository.
+
+## Recommended first work
+
+Repair the shared GPU-timing ownership hazard, establish a source-identical 1080p active-flight baseline, and measure scale-transition cost for one current provider. Those results determine whether a DRS prototype is warranted and whether the current engine setter is an adequate foundation. In parallel after the common baseline, measure the existing Reflex Off/On/Boost path. Keep RT and frame generation under their own correctness, quality and latency gates.
+
+The strongest current source risks are stale/ambiguous GPU samples, multiple owners of the measurement flag, repeated buffer reconfiguration, incomplete temporal-reset coverage across engine families, and overgeneralizing limited native results. None of this audit's source findings establishes a measured speedup or a measured hitch on its own.
 
 ## Existing authoritative owners
 
