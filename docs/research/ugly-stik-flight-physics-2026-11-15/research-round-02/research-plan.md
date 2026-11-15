@@ -1,0 +1,48 @@
+# Research round 02 — plan recorded before external investigation
+
+**Planning date:** 2026-11-15. **Recorded UTC:** 2026-11-15T17:36:37.334479+00:00. **Baseline:** `08f0c08348395c0d6d9f7e224f66460828f59a7f`. **Branch:** `audit/ugly-stik-flight-physics-2026-11-15`.
+
+The user requested at least twenty planned investigations, followed by execution and an assessment of what can be implemented or integrated. This plan defines **24 distinct decision questions** before external searching begins. It is a planning/evidence record; the completed conclusions and implementation status will be indexed in this directory. P1 means a prerequisite for trustworthy handling/evidence; P2 means the next layer once that prerequisite is understood, not a severity certification.
+
+## Method and integration boundary
+
+For each question: inspect retained research and current code; retrieve applicable primary papers, official documentation or maintainer-owned implementations; use original developer/forum reports as leads and bounded experience, not proof of this simulator; record URLs, versions/commit pins where available, limitations, counterarguments, code touchpoints, reuse/license constraints and a clear decision. Every investigation must end in adopt now, prototype/measure first, or reject/defer with a reason and acceptance evidence. Distinct questions are not counted as multiple investigations merely because several searches were issued.
+
+Bounded evidence-tool fixes may be implemented after their research and acceptance contract are complete. Physics coefficients, generated aircraft data, runtime input policy, stock identities and third-party code imports require their own evidence; no speculative tuning or wholesale dependency adoption is planned. New dependencies will not be added merely to replicate an existing standard-library/project tool. A second round may investigate concrete contradictions or implementation edges revealed by these 24 questions; it will be identified separately.
+
+## Ordered investigation register
+
+| ID | Priority | Topic | Decision question | Repository seam | Required output |
+| --- | --- | --- | --- | --- | --- |
+| R01 | P1 | Raw input observations | What do Godot/SDL actually guarantee about event-versus-poll ordering, initial values and fresh snapshots? | app/input/rc_input.gd; controller_service.gd | Explicit observation contract; no fabricated heartbeat |
+| R02 | P1 | Calibration cadence and robust endpoints | Which endpoint policies tolerate held controls, noisy reports and unequal report/poll cadence? | app/input/rc_calibration.gd; controller_profile.gd | Report-aware algorithm alternatives and physical-device acceptance |
+| R03 | P1 | Focus, reconnect and controller identity | How do established input stacks treat focus loss, connection generations and stale queued input? | controller_registry.gd; controller_service.gd; flight_session.gd | Owner/epoch policy with backend-specific evidence limits |
+| R04 | P2 | Latency and control feel | How should input sampling, buffering, dead zones, expo and actuator latency be measured without double shaping? | rc_input.gd; latency_patch.gd; servo.gd | Matched-command latency experiment and bounded UX changes |
+| R05 | P1 | Low-Reynolds airfoil evidence | Which public measurements match the Stik operating range, and what geometry/roughness information is missing? | app/physics/aero.gd; Stik authoring inputs | Applicable data shortlist with uncertainty and reuse terms |
+| R06 | P1 | Stopped propellers and windmilling | What measured or implemented signed propeller laws cover stop, windmill, restart and negative shaft power? | propeller.gd; propulsion.gd; electric propulsion data | Energy-consistent closure options; no arbitrary drag constant |
+| R07 | P1 | Propwash and control coupling | How do open simulators/papers couple propeller flow to tail forces, moments and control effectiveness? | aero.gd; aircraft_data.gd; optional wash fields | Shared-kernel integration design with geometry requirements |
+| R08 | P1 | Motor, ESC and battery limits | What measurements and open models support current, voltage sag, thermal and coast/brake behavior? | electric propulsion and battery modules | Installation-qualified model scope and transient checks |
+| R09 | P1 | Glow installation and operating envelope | How should engine/propeller limits, torque maps and unloading be represented without unphysical clamps? | glow propulsion, FS-64V and 61FX authoring sources | Operating-domain policy tied to actual manufacturer evidence |
+| R10 | P1 | Mass, CG and inertia measurement | Which practical methods can replace estimated inertias and virtual balance with measured uncertainties? | inventory reduction; mass_properties; Stik generators | Reproducible measurement and uncertainty plan |
+| R11 | P1 | Induced flow and spanwise coupling | How do established lifting-line/vortex implementations handle receiver velocity, yaw gradients and singular limits? | aero.gd local induced-flow closure | Bounded alternatives and convergence/energy counterexamples |
+| R12 | P1 | Stall, hysteresis and spin validation | Which dynamic-stall models and experiments are applicable to low-Re RC post-stall motion? | local surfaces; separation/stall laws | Model hierarchy and held-out validation, not donor tuning |
+| R13 | P1 | Mode identification and continuation | How can real/complex transitions and coupled modes be labeled without a root-count heuristic? | flight_modes.gd; linearize.gd; flight card modes | Raw-spectrum/ambiguity contract and solver options |
+| R14 | P2 | Bounded trim and continuation | How do open flight codes distinguish solver failure, bound activation and actual reachable equilibria? | trim.gd; card trim sweep | Continuation alternatives and honest limit reporting |
+| R15 | P1 | Fixed-step timing and replay | What timing/input-tape contracts preserve deterministic replay under render hitches and input buffering? | simulation.gd; flight_log.gd; session timing | Cross-rate experiment with exact replay and complete provenance |
+| R16 | P2 | Integrator and actuator coupling | How should force evaluation, actuator states, wake and propulsion be advanced consistently at integration stages? | rigid_body.gd; dynamics.gd; fixed-wing model | Stage-contract audit and numerical alternatives with scope limits |
+| R17 | P2 | Ground contact and landing evidence | What open contact models and test practices help validate wheel roles, clearance, flare and terrain coupling? | ground/contact modules; statistics adapter/profiles | Separate physical contact and statistics qualification |
+| R18 | P1 | System identification and validation design | How can parameter fitting avoid compensating input errors and validate held-out flight behavior? | flight-test; measurement reducers; flight logs | Identifiable experiments, uncertainty and holdout protocol |
+| R19 | P1 | Interrupted-run evidence | What does official subprocess guidance imply for timeout output, parse failures and durable per-job receipts? | research/flight-test/run.py | Implementable bounded failure-capture repair and negative tests |
+| R20 | P1 | Comparison eligibility and schema | How should a regression tool represent empty coverage, duplicate identities, invalid measurements and intentional subsets? | research/flight-test/compare.py | Implementable eligibility/coverage contract preserving intended comparisons |
+| R21 | P1 | Capture provenance and unknown outcomes | How should image/state comparisons and history distinguish changed sources, absent frames and missing receipts? | tools/scenery/scenario_report.py; runway fixture | Implementable truthful labels; native capture remains separate |
+| R22 | P2 | Profiling and allocation opportunities | Which Godot/native profiling tools can locate actual input/kernel/observer allocations and frame spikes? | input polling; RK4 scratch; session observers | Target-hardware profile plan and low-risk integration shortlist |
+| R23 | P2 | Reuse, dependencies and licensing | Which existing open flight/numerical tools can be reused as oracles, offline tools or runtime components? | shared kernel; research tools; dependency policy | Version/license/maintenance/fit matrix; no unreviewed vendoring |
+| R24 | P2 | Experiment quality and optimization evidence | What benchmark/design practices distinguish numerical correctness, component cost and whole-flight improvement? | tools/godot; performance/replay workflows | Comparable runs, uncertainty and 1080p-first acceptance |
+
+## Work allocation and review
+
+Physical-model research owns R05–R12; input/validation integration research owns R01–R04 and R17–R18; the independent numerical/reuse reviewer owns R13–R16 and R23–R24; the lead owns R19–R22 and any selected implementation. One writer owns each investigation file. All research is initially source-read-only. The independent reviewer will challenge consequential proposals and the final combined diff before publication.
+
+## Completion criteria
+
+All 24 questions receive a source-backed disposition with direct repository applicability and limits. Concrete findings are separated from hypotheses and literature analogies. Implemented changes receive focused regression tests and review of affected consumers; a passing research probe is not mislabeled physical or native qualification. The branch contains the research, source register, decision matrix, implemented code/tests where justified, verification evidence and remaining work. Publication uses the existing audit branch with a checked parent; main is not merged as part of this research.
