@@ -15,6 +15,13 @@ spec.loader.exec_module(pack)
 ROOT = HERE.parents[1]
 
 
+class CanonicalBaselineTests(unittest.TestCase):
+    def test_packer_anchors_to_the_last_qualified_fixture(self):
+        receipt = json.loads((ROOT / 'docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-13.json').read_text())
+        self.assertEqual(pack.SOURCE_REBIND_BASE, receipt['candidate_commit'])
+        self.assertEqual(pack.SOURCE_REBIND_PRIOR, receipt['candidate_fixture_sha256'])
+
+
 class PublicationSourceRebindTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='publication-source-rebind-')
