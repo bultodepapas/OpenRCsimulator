@@ -280,6 +280,10 @@ def confirm_stopped(identity: dict) -> bool:
         return False
 
 
+class ProcessNotStartedError(RuntimeError):
+    """This adapter observed a failure before entering process creation."""
+
+
 def orphan_absent(identity: dict) -> bool:
     """Bounded same-boot evidence for explicit operator abandonment.
 
@@ -357,13 +361,20 @@ class OwnedProcess:
         self._closed = False
         self._cleanup_error = None
         self._posix_killed = False
+        self._nonlaunch_confirmed = False
+
+    @property
+    def nonlaunch_confirmed(self):
+        """True only after this instance witnessed and cleaned up a pre-create failure."""
+        return self._nonlaunch_confirmed
 
     def start(self):
         if self._process is not None or self._closed:
             raise RuntimeError("attempt already started or closed")
-        self._log_file = self.log.open("xb")
+        creation_entered = False
         status_write = None
         try:
+            self._log_file = self.log.open("xb")
             if os.name == "nt":
                 job_name = "Global\\OpenRC-testqueue-" + str(uuid.uuid4())
                 ctypes.set_last_error(0)
@@ -384,6 +395,7 @@ class OwnedProcess:
                 self._observer = threading.Thread(target=self._observe_windows, daemon=True)
                 self._observer.start()
                 args = [sys.executable, "-I", "-S", "-c", _WINDOWS_GATE, *self.command]
+                creation_entered = True
                 self._process = subprocess.Popen(args, cwd=self.cwd, env=self.env,
                                                  stdin=subprocess.PIPE, stdout=self._log_file,
                                                  stderr=subprocess.STDOUT, close_fds=True)
@@ -398,6 +410,7 @@ class OwnedProcess:
                 os.set_blocking(self._status_fd, False)
                 args = [sys.executable, "-I", "-S", "-c", _POSIX_GATE,
                         str(status_write), *self.command]
+                creation_entered = True
                 self._process = subprocess.Popen(args, cwd=self.cwd, env=self.env,
                                                  stdin=subprocess.PIPE, stdout=self._log_file,
                                                  stderr=subprocess.STDOUT, close_fds=True,
@@ -415,10 +428,15 @@ class OwnedProcess:
                 self.identity.update({"kind": "windows-job-v1", "job": job_name, "host": host})
             self._process.stdin.write(b"1")
             self._process.stdin.flush()
-        except BaseException:
+        except BaseException as error:
             if status_write is not None:
                 os.close(status_write)
             self._abort_start()
+            if not creation_entered and isinstance(error, Exception):
+                # This receipt is emitted only by this adapter, after local
+                # setup has unwound and before any Popen invocation was entered.
+                self._nonlaunch_confirmed = True
+                raise ProcessNotStartedError(str(error)) from error
             raise
 
     def _abort_start(self):
@@ -470,7 +488,8 @@ class OwnedProcess:
             self._status_fd = None
         if os.name == "nt" and self._process is not None:
             self._process._handle.Close()
-        self._log_file.close()
+        if self._log_file is not None:
+            self._log_file.close()
         self._closed = True
         self._cleanup_error = failure
         if failure:
