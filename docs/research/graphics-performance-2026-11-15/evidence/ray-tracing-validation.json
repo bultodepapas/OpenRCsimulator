@@ -1,0 +1,534 @@
+{
+  "schema_version": 1,
+  "research_date": "2026-11-15",
+  "scope": "Documentation-only ray-tracing quality and delivery continuation; no native or product qualification.",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "audit/graphics-performance-technologies-2026-11-15",
+  "publication_parent": "e92db3654432f81fb3e666e1c0e7f59b94355002",
+  "application_baseline": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "main_checkpoint": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
+  "official_engine": "4.8.beta2.official.cafc17a19",
+  "official_engine_commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+  "new_source_catalog_entries": {
+    "vendor_guides": 12,
+    "cloud_material_water_references": 9,
+    "note": "Selected entries can group multiple documents; not a claim of 21 distinct SDKs or adopted dependencies."
+  },
+  "selected_upstream_texts": [
+    {
+      "repository": "NVIDIA-RTX/NRD",
+      "tag": "v4.18.0",
+      "resolved_commit": "8f12a22fc90e6a3c7f5da4c9c3103633c842963a",
+      "git_blob_sha": "94965d731e87f62e85c9e06bab49cb0b22534d41",
+      "url": "https://github.com/NVIDIA-RTX/NRD/blob/v4.18.0/LICENSE.txt",
+      "sha256": "0f74d24da3082b666de48eea9ec7ff835657575a71576281e383901f3d7c08c2",
+      "bytes": 24319,
+      "git_blob_verified": true
+    },
+    {
+      "repository": "NVIDIA-RTX/NRD",
+      "tag": "v4.18.0",
+      "resolved_commit": "8f12a22fc90e6a3c7f5da4c9c3103633c842963a",
+      "git_blob_sha": "777fb48a34d7bcc267957d9a5298d32e4a9ca772",
+      "url": "https://github.com/NVIDIA-RTX/NRD/blob/v4.18.0/README.md",
+      "sha256": "acaa18f898bb41dae0d2fe585f94e04f21ab10caeee91c5e4d007aac9512425a",
+      "bytes": 81517,
+      "git_blob_verified": true
+    },
+    {
+      "repository": "NVIDIA-RTX/RTXDI",
+      "tag": "v3.2.0",
+      "resolved_commit": "fdbd9b36dc55827b67a03f926e78cfad9b1c1c57",
+      "git_blob_sha": "641c3c864186b9fa60a7687cfec839a3499306ab",
+      "url": "https://github.com/NVIDIA-RTX/RTXDI/blob/v3.2.0/Doc/Integration.md",
+      "sha256": "b41b98b9409d18d0760f829211b0f8e26c19bbeb0c95bbc31a6b08c5b0200f2b",
+      "bytes": 25579,
+      "git_blob_verified": true
+    },
+    {
+      "repository": "NVIDIA-RTX/Streamline",
+      "tag": "v2.14.16",
+      "resolved_commit": "625db07d4bca5abc67d781c42af7e7fb0761f1b6",
+      "git_blob_sha": "c10e772bcaae50d051c6a1d3ac3cfb53f78febf8",
+      "url": "https://github.com/NVIDIA-RTX/Streamline/blob/v2.14.16/docs/ProgrammingGuideDLSS_RR.md",
+      "sha256": "8c7b001ed95887a1c59f7a04dfbf99c09cc438fb417c54675b178c43d4eafca3",
+      "bytes": 25548,
+      "git_blob_verified": true
+    }
+  ],
+  "documentation_validation": {
+    "scope": "All cumulative changed Markdown from application baseline to the staged candidate; final receipt content is excluded from self-hashing.",
+    "existing_checker": "tools/ci/check_docs.py",
+    "helper_functions": [
+      "GitObjects",
+      "links",
+      "_local_target",
+      "check_target"
+    ],
+    "markdown_documents_checked": 43,
+    "local_links_checked": 1434,
+    "errors": [],
+    "utf8_and_final_newline": "passed",
+    "fenced_code_pairs": "passed",
+    "changed_json_parsing": "passed",
+    "git_diff_cached_check": "passed",
+    "changed_markdown_identities": [
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/04-ray-tracing-in-godot.md",
+        "git_blob_sha": "340e0e292b3da452591bc32f951efa90889da3e5",
+        "sha256": "1972e5f2168e6e40088f454135fbdb419389b2954037984653241e479c040f6c",
+        "bytes": 26544
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+        "git_blob_sha": "611b7311fb9d3af4d4fb08f369b34aba0e363ad1",
+        "sha256": "49078b86baec8590c41aae8362387d149f5aeace207327d3eb4800cdb05b6e3f",
+        "bytes": 22628
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/10-reflex-and-ray-integration-design.md",
+        "git_blob_sha": "e5aa3bef504294a21217eb579a7512295bb061e7",
+        "sha256": "4e384bf54e90dda55c670992b5ff23b80c4a40e435b23c8ab6abc9866604b5c9",
+        "bytes": 44710
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+        "git_blob_sha": "479cda9e49424ba74dade8c46e5abd96d629fdea",
+        "sha256": "b0c6e47912edb69d92160f73755edb16caf0e60f8f19f38ca56c6c30d49312fd",
+        "bytes": 19941
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/14-ray-tracing-quality-and-delivery-plan.md",
+        "git_blob_sha": "79e9d82f84de06f7dfd61bc65adb2d8f12a4317b",
+        "sha256": "b3c9ad30b602ddad2a7013d12fd5a752053ea874c2ef900b88cc1eff85ab75d2",
+        "bytes": 29930
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/README.md",
+        "git_blob_sha": "44e94810f53a434a24c8015069ac658a6df036dd",
+        "sha256": "ebb84e1ab3d83531519bad3f9681fd38a3de86a103757cced19fc1ff5fb55953",
+        "bytes": 11668
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/ray-tracing/01-nvidia-amd-integration-guide.md",
+        "git_blob_sha": "ce1dc3daa1040c8d8a1c58e69e860190263e6005",
+        "sha256": "65a19dcc530365e614e171bd50278843e6c2e87ad8b35a70eec4a68070af4281",
+        "bytes": 28621
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/ray-tracing/02-clouds-materials-and-water.md",
+        "git_blob_sha": "251c49cab2314d18e7f73950f7f17989fd2e67e0",
+        "sha256": "65a59d20c967762ad78890fa5c5330bdca4d5c4fea9780aa99cdc68ccf695214",
+        "bytes": 22782
+      }
+    ],
+    "required_ci_workflow_executed": false
+  },
+  "runtime_tests_performed": [],
+  "native_gpu_measurements": [],
+  "new_visual_captures": [],
+  "sdk_builds_performed": [],
+  "source_only": true,
+  "main_checkpoint_note": "Rechecked before publication; remains separate from this branch's application baseline and is not merged.",
+  "selected_project_source_identity_scope": "Source files linked by changed research documents under app/tools; verified byte-identical to the pinned application baseline. This is not a complete asset/runtime dependency closure.",
+  "selected_project_sources": [
+    {
+      "path": "app/app_state/display_preferences.gd",
+      "git_blob_sha": "667662a1a1400775815d916a8ea1b955be72a1d4",
+      "sha256": "b084fbff2b1c9b8765d96bd12d1722ee4c950ce04e7b31a6aa13578bfbd564c4",
+      "bytes": 22883,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/get-godot.sh",
+      "git_blob_sha": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "bytes": 8960,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/get-templates.sh",
+      "git_blob_sha": "8a75f3b83765f0affcd581aa4b88932715a4ac4c",
+      "sha256": "cd15f5b0a54c29345e577df253e8b831a10dcaf6d6025679d4cdb6aa2f9c9d90",
+      "bytes": 5064,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/project.godot",
+      "git_blob_sha": "647257adefaa34ffd3a95245bd616246679a340b",
+      "sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "bytes": 3950,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "git_blob_sha": "0a5cd1d9fc13fc8ca9b85081d8d153a52a23e5c4",
+      "sha256": "93fb697d887e5182518857fdb9c51e73695f9ba4516544b8fa7eb1e9b93a6490",
+      "bytes": 24734,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "git_blob_sha": "b842aca5ed05391451a0df73f6d8d897bedb32fa",
+      "sha256": "1b5eb746d49cf99610fa00490203052ed1045fab19d1a49f3876818e685f48f1",
+      "bytes": 51976,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/camera/camera_settings.gd",
+      "git_blob_sha": "16d8e48d756e7ec4ae1fd2d3a865ea010ad0f7e6",
+      "sha256": "d5fb145e8f5bcc0a5909990f3c3f69c6ae5f561c51b4c0fe711573de7e921e95",
+      "bytes": 5622,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gd",
+      "git_blob_sha": "9c186f941e4ac436bb192c80e2bf48e4d493b80a",
+      "sha256": "af4bba2a467203aefce44554f80821cec5cf328989760616753df5975925fa10",
+      "bytes": 17274,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "git_blob_sha": "5680a093dcc31aea56b029273eee5197ab1960fa",
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede",
+      "bytes": 21924,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/high_graphics_profile.gd",
+      "git_blob_sha": "14067ace4dbf092240d425fabc27c39a00b8be27",
+      "sha256": "4cc764c4c6c9aa3f5f1b1f8d6074d380432fea2952e9ee8a0b37f43e60d48e6f",
+      "bytes": 7098,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/lake/lake_planar_reflection.gd",
+      "git_blob_sha": "c6e13822215ad20f4ea779a9c6ee92731c6d2322",
+      "sha256": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665",
+      "bytes": 7002,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/lake/lake_reflection.gd",
+      "git_blob_sha": "9d6ca0e1a44d0c2dbfc2754e0d9612b9e7bcb300",
+      "sha256": "db692550c9680022d57bbf2ec370fdc32305dfff05017c6d9ab236fd52715e9e",
+      "bytes": 3869,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/lake/water.gdshader",
+      "git_blob_sha": "a13062d2d567dac08a5d1cfc1ca084b52f1c1456",
+      "sha256": "b6d9ff136f48a79c8ce164ce298adb92583b7ca97a32a4c411dc8c3a0bc3a32c",
+      "bytes": 8837,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/metalfx_policy.gd",
+      "git_blob_sha": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "sha256": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "bytes": 5703,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/near_grass.gdshader",
+      "git_blob_sha": "3f9e81c150fe23a8c9fda3f1f6328900642f60c7",
+      "sha256": "fa018122e1ced099ebc3c4a732cecad4d669adcc7ce586e2795945fd2233a0b0",
+      "bytes": 4592,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/nvidia_reflex.gd",
+      "git_blob_sha": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "sha256": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+      "bytes": 3801,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/pilot_camera.gd",
+      "git_blob_sha": "15dac3b5343d209147fb14ba4724f51c7ec73009",
+      "sha256": "fbf1960c9977c39bb95fdf4ce4bc5205dacdf789b869e0de5013d8201991be56",
+      "bytes": 7460,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/propeller_blur.gd",
+      "git_blob_sha": "5f033212c4aae37ed68152870b362380d9d2c7d7",
+      "sha256": "e8b4d41c2cbd9a91fd0ae3c51a58aba56809122519abf3d6d4bf507dea242a1f",
+      "bytes": 21906,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/reconstruction.gd",
+      "git_blob_sha": "6b758b525980fa8d0a1be8f94d55be3831809cec",
+      "sha256": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44",
+      "bytes": 41252,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/shadow_settings.gd",
+      "git_blob_sha": "6cf078ac1c3145e00daf0b25ebe60c285701a0cc",
+      "sha256": "7636d2ca7d9a36b96349e63ad531e6ee3aa7c015b3bc37cc599f9884e45b14b0",
+      "bytes": 11509,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/sky.gdshader",
+      "git_blob_sha": "2810142e6efa267a972383fabdf12090ba57357d",
+      "sha256": "727935ab19c18dc89bb3b4351d48dccc740fb01ddf80b9c0c7749042f4bf7ede",
+      "bytes": 19339,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/treeline.gdshader",
+      "git_blob_sha": "d0224f0df288d0a5769bf1ae0b941b5a180961d1",
+      "sha256": "ac1ee408a766edcbe9d8b63d3d5305715ed6415de0adb5da1dbd7a21f8335c13",
+      "bytes": 5936,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/vehicle_paint.gd",
+      "git_blob_sha": "d2476fc3275fa928bc40f9ba7d68741daa8d2c92",
+      "sha256": "f656bf1b93c65cea6ccb6ba5426e6cb6ace522a27eb1a6e54c62cf49c4966611",
+      "bytes": 12335,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/weather/cloud_transport.gd",
+      "git_blob_sha": "75389784b32869467049db96ffbdb60f6dd54f87",
+      "sha256": "0d2052cea0e0640f09c5502b57aa78bc0ceed985bade0dc8f538bf6823b8f921",
+      "bytes": 9954,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/weather/lightning.gd",
+      "git_blob_sha": "6d1a9bed1c08289e5e040aa0e3679fc12a8cd5c7",
+      "sha256": "0f1990160263c2405524bd2187e8e8162231e60dc57991925d66b1c810c3cda1",
+      "bytes": 24117,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/weather/storm_bank.gd",
+      "git_blob_sha": "d17ce37feb7130cecb953248fcbb9869c05fb5e9",
+      "sha256": "16bcafc9304e8a802c34330a85af0218f0ca2960d207fa7ab0077443bd27145c",
+      "bytes": 9959,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/weather/storm_bank.gdshader",
+      "git_blob_sha": "a75cad353d235a77f34dcad76bcfd4689a5f96d5",
+      "sha256": "f9bf4cf5f555608975480e016f89aef7304dd89cfeff2abc7685d10adc626e7e",
+      "bytes": 1844,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/render/windsock_fabric.gdshader",
+      "git_blob_sha": "f1cd52694cf930e988410c52e7b112f766c99f20",
+      "sha256": "b08962a05e9008e4dba4be517e4f4e4b07db8a17cf4d3979af5cbe8a60625c31",
+      "bytes": 2535,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/scenery/imported_vegetation.gd",
+      "git_blob_sha": "783a11e6ed02c2ea19f38b0dac1d639afb1d61bd",
+      "sha256": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
+      "bytes": 47095,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/scenery/imported_vegetation_wind.gdshader",
+      "git_blob_sha": "1aebc084ca810cf2cb91baca82a4216240917bc5",
+      "sha256": "3635588944c2a85663d6ce822e58a0392537786d95f0bc4537c4f0eb13c35fbe",
+      "bytes": 2675,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/scenery/motion.gdshader",
+      "git_blob_sha": "d9ea1375ba8f1410005e808f8ff23db52ec99de9",
+      "sha256": "ff3a47e1f56e086369926c6cbe94e4e210c7b012f433d6e965d2003205cf7cf1",
+      "bytes": 2827,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_cloud_shadow_map.gd",
+      "git_blob_sha": "f02a63f0996def07ed119fcda214b9351ae1f825",
+      "sha256": "16a37dab5781d7b6bdfdbccb19aa7718e13f33d7c5c2040fa00bff41dabc3369",
+      "bytes": 17526,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_cloud_transport.gd",
+      "git_blob_sha": "69b32f589506ac2c1ff8e8f78989184781db6ee7",
+      "sha256": "c27708b3b2d35c01c1e188f49cd7536b97a58792a7f792cd5b34d4738d8a5eb5",
+      "bytes": 5289,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_high_graphics_profile.gd",
+      "git_blob_sha": "4e3aa316d13676454cbfc2cdf17a3f2b3efcee7e",
+      "sha256": "32052504ddee9e299f26f1416f2a3ec6989a0b99044632506e77e64277798d23",
+      "bytes": 21673,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_lake_planar_reflection.gd",
+      "git_blob_sha": "ab10992be61e5d9d68c24b005b639b5a7a46d76a",
+      "sha256": "0c914eab266e6fdc026fbd7f5fef8ea21f07c50d761109d987f7329b359a68c7",
+      "bytes": 31616,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_lake_probe_ambient.gd",
+      "git_blob_sha": "d09ca6fcd09cb2d2ac1760186def74ea471de04f",
+      "sha256": "179f62af13602d3533f2278fd4e2d40e453aa719fb397bf005a92c818a8c9e97",
+      "bytes": 2988,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_propeller_blur.gd",
+      "git_blob_sha": "2602673addb9f8fa62e9d5166f8646bc2c850398",
+      "sha256": "2bdbb59a08aeb4c0e5f76de556bee9869fc37a46165ae06d53c41cd6911bf8e1",
+      "bytes": 12762,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_shadow_settings.gd",
+      "git_blob_sha": "c5720ec060c88a9061ef018d2d5546aef932fe79",
+      "sha256": "abb826b76827e0a1ea6c7bb52be55b791a69d2a5988f9d1b145da943cf9fdf57",
+      "bytes": 15797,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_sky_relief_layers.gd",
+      "git_blob_sha": "867a919482447ee75e43d837c734a762604cb4ba",
+      "sha256": "92d4f1cd9a2719cbb4e71e6ce0727bdb92a5372f67c45ab64da20180e7bc0e96",
+      "bytes": 7225,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_storm_bank.gd",
+      "git_blob_sha": "78ae56e76446d234e14ba70770e34375c157e087",
+      "sha256": "9bda799c045611513f8f42576837b71336c00dd52c10a393b3d48ef8168710a0",
+      "bytes": 20106,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/tests/test_tree_wind.gd",
+      "git_blob_sha": "621705479a98c5be3354706da639be0d264199aa",
+      "sha256": "9e62243eff1cd7039d70cbb8d8a6c1021d3e9a0e2384c6c273461e946b43949e",
+      "bytes": 2781,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "git_blob_sha": "481ac1c250f1ece7c73b099a0b10cf76448be619",
+      "sha256": "e359c4be8d8913c786b1e6ed6ab07946e61c9648d77ca8de636658ab86de3956",
+      "bytes": 87016,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/build.py",
+      "git_blob_sha": "33129b31388cc98d30e85dc1480227ecd097381b",
+      "sha256": "8c7358aece65fcd846d8584473848bf14e63ce541e388efe5207a5648de1b79b",
+      "bytes": 10656,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/dlss_frame_lifecycle.patch",
+      "git_blob_sha": "0c16fe4e4a1e68aef270f580787f795af9493be8",
+      "sha256": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+      "bytes": 21956,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/reflex_lifecycle.patch",
+      "git_blob_sha": "a68eb233cb458a7d013035163c82f47a2ce875f7",
+      "sha256": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+      "bytes": 22443,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/reflex_startup.gd",
+      "git_blob_sha": "1b73d55cf31b7984b5f3124a14a93cc24a1aa245",
+      "sha256": "d14a6a3013c0fbcbb50a08d9d0c53201e324b1928411207512b34d5262990580",
+      "bytes": 2209,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/native/reflex_sync.patch",
+      "git_blob_sha": "2817196f898f9c9ce8c30ed2d5ee7283f846b883",
+      "sha256": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+      "bytes": 6206,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/test_shadow_energy.gd",
+      "git_blob_sha": "d5cb13cf0c657bede46585ff0f19c773ca7a77e3",
+      "sha256": "ac27a6484310d39625f359f9d09d1da5a98edada7f0db589eeca362251c5de0f",
+      "bytes": 4356,
+      "matches_application_baseline": true
+    }
+  ],
+  "change_boundary": {
+    "paths": [
+      "docs/research/graphics-performance-2026-11-15/04-ray-tracing-in-godot.md",
+      "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+      "docs/research/graphics-performance-2026-11-15/10-reflex-and-ray-integration-design.md",
+      "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+      "docs/research/graphics-performance-2026-11-15/14-ray-tracing-quality-and-delivery-plan.md",
+      "docs/research/graphics-performance-2026-11-15/README.md",
+      "docs/research/graphics-performance-2026-11-15/evidence/ray-tracing-validation.json",
+      "docs/research/graphics-performance-2026-11-15/ray-tracing/01-nvidia-amd-integration-guide.md",
+      "docs/research/graphics-performance-2026-11-15/ray-tracing/02-clouds-materials-and-water.md"
+    ],
+    "cumulative_audit_changed_paths": 50,
+    "production_tool_ci_changes": false
+  },
+  "preserved_history": {
+    "prior_studies_unchanged": 20,
+    "prior_receipts_unchanged": 4,
+    "offline_reference_paths_unchanged": 3,
+    "unchanged_38_test_reference_rerun": false
+  },
+  "research_inventory": {
+    "new_document_word_counts_whitespace_tokens": {
+      "docs/research/graphics-performance-2026-11-15/14-ray-tracing-quality-and-delivery-plan.md": 3733,
+      "docs/research/graphics-performance-2026-11-15/ray-tracing/01-nvidia-amd-integration-guide.md": 3467,
+      "docs/research/graphics-performance-2026-11-15/ray-tracing/02-clouds-materials-and-water.md": 2806
+    },
+    "unique_external_urls_in_new_documents": 36,
+    "note": "Inventory only; no assertion that every linked URL or full archive was HTTP-tested or executed."
+  },
+  "query_count_arithmetic": {
+    "full_1080p": 2073600,
+    "full_at_60_fps": 124416000,
+    "half_width_and_height": 518400,
+    "pixel_ratio": 0.25,
+    "measurement": false
+  },
+  "independent_review": {
+    "role": "Read-only Good Enemy",
+    "outcome": "No blocking findings after bounded reread; remaining historical estimate clarification applied and checked by lead.",
+    "corrected_findings": [
+      "Retain every submitted GPU resource generation through early-return and partial failure paths.",
+      "Invalidate temporal history across every raster gap and restore the prior raster binding.",
+      "Check atomic publication before reporting the effect active; distinguish recoverable errors from actual device loss.",
+      "Apply existing shadow-opacity/fade to raw ray visibility and preserve its residual sun contribution.",
+      "Preserve current cloud attenuation on a second directional light while replacing only selected-Sun visibility.",
+      "Qualify default PCSS against actual user-overridden effective settings.",
+      "Keep a bounded fixture separate from complete normal-flight scene coverage and qualification.",
+      "Name process-loop p95/p99 separately from GPU distributions.",
+      "Repair RT-oracle anchor and clarify historical 3–7-day combined estimate under M0/M4 caps.",
+      "Resolve tagged upstream files and component-specific DRS/license contracts rather than relying on cached release prose."
+    ],
+    "native_execution": false
+  },
+  "unperformed": [
+    "Production RT implementation or SDK adoption",
+    "Application/Godot/shader execution",
+    "NVIDIA, AMD or Apple GPU performance qualification",
+    "New image captures or pilot visual comparison",
+    "Physical radio/display latency or Reflex/Boost measurements",
+    "Export/package/endurance/full runtime CI qualification"
+  ]
+}
