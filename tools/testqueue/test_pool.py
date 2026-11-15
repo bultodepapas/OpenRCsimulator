@@ -8,9 +8,24 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.testqueue.pool import Pool
+from tools.testqueue.pool import Pool, SubmissionRejected
 from tools.testqueue.pool_batch import run_batch
 from tools.testqueue.pool_checked import checked
+
+
+def verified_fixture(snapshot, **_):
+    """Stub content verification for transport-only fixtures with tiny receipts.
+
+    Real snapshot hashing and replacement races are tested by test_snapshots and
+    the real-worker recovery fixtures. Preserve the verifier's object/hash
+    boundary here without requiring a simulator checkout for transport tests.
+    """
+    data = (Path(snapshot) / 'manifest.json').read_bytes()
+    manifest = json.loads(data)
+    return {'ok': True, 'manifest': manifest,
+            'manifest_sha256': hashlib.sha256(data).hexdigest(),
+            'source_digest': manifest.get('source_digest'),
+            'manifest_digest': manifest.get('manifest_digest')}
 
 
 class PoolTests(unittest.TestCase):
@@ -28,15 +43,49 @@ class PoolTests(unittest.TestCase):
             'source_root': str(root), 'source_digest': 'test', 'files': {}}))
 
     def test_unreachable_hosts_never_submit(self):
-        with patch('tools.testqueue.pool.verify', return_value={'ok': True}), \
+        with patch('tools.testqueue.pool.verify', side_effect=verified_fixture), \
              patch.object(self.pool, 'probe', return_value=[{'id': 'windows', 'online': False}]), \
              patch('tools.testqueue.pool.rpc') as rpc:
             result = self.pool.submit(self.snapshot, 'res://tests/test_math3d.gd')
         self.assertEqual(result['state'], 'WAITING')
         rpc.assert_not_called()
 
+    def test_manifest_swap_between_batch_hash_check_and_verification_is_rejected(self):
+        path = self.snapshot / 'manifest.json'
+        expected = hashlib.sha256(path.read_bytes()).hexdigest()
+
+        def swap_then_verify(snapshot, **kwargs):
+            manifest = json.loads(path.read_text())
+            manifest['source_root'] = str(self.snapshot / 'different-source')
+            path.write_text(json.dumps(manifest))
+            return verified_fixture(snapshot, **kwargs)
+
+        with patch('tools.testqueue.pool.verify', side_effect=swap_then_verify), \
+                patch('tools.testqueue.pool.rpc') as rpc:
+            with self.assertRaisesRegex(SubmissionRejected, 'manifest changed during verification'):
+                self.pool.submit(self.snapshot, 'res://tests/test_math3d.gd',
+                                 expected_manifest_sha256=expected)
+        rpc.assert_not_called()
+
+    def test_preflight_uses_verified_object_when_path_changes_after_verification(self):
+        path = self.snapshot / 'manifest.json'
+        original = json.loads(path.read_text())
+
+        def verify_then_swap(snapshot, **kwargs):
+            report = verified_fixture(snapshot, **kwargs)
+            changed = dict(original, source_root=str(self.snapshot / 'unverified-source'))
+            path.write_text(json.dumps(changed))
+            return report
+
+        with patch('tools.testqueue.pool.verify', side_effect=verify_then_swap), \
+                patch.object(self.pool, 'probe', return_value=[]), \
+                patch('tools.testqueue.pool.plan', return_value={'selected': 'windows'}), \
+                patch('tools.testqueue.pool.rpc', return_value={'job': 'accepted'}) as rpc:
+            self.pool.submit(self.snapshot, 'res://tests/test_math3d.gd')
+        self.assertEqual(rpc.call_args.kwargs['source'], original['source_root'])
+
     def test_lost_reply_keeps_exact_request_and_destination(self):
-        with patch('tools.testqueue.pool.verify', return_value={'ok': True}), \
+        with patch('tools.testqueue.pool.verify', side_effect=verified_fixture), \
              patch.object(self.pool, 'probe', return_value=[]), \
              patch('tools.testqueue.pool.plan', return_value={'selected': 'windows'}), \
              patch('tools.testqueue.pool.rpc', side_effect=RuntimeError('lost reply')):
@@ -51,31 +100,33 @@ class PoolTests(unittest.TestCase):
         self.assertEqual(rpc.call_args.args[0], 'recover')
 
     def test_timing_script_cannot_be_distributed_as_functional(self):
-        with patch('tools.testqueue.pool.verify', return_value={'ok': True}), \
+        with patch('tools.testqueue.pool.verify', side_effect=verified_fixture), \
              patch.object(self.pool, 'probe') as probe:
             with self.assertRaisesRegex(ValueError, 'Performance'):
                 self.pool.submit(self.snapshot, 'res://tests/benchmark_solver.gd')
         probe.assert_not_called()
 
     def test_observed_completion_clears_uncertain_submission_reservation(self):
-        with patch('tools.testqueue.pool.verify', return_value={'ok': True}), \
+        with patch('tools.testqueue.pool.verify', side_effect=verified_fixture), \
              patch.object(self.pool, 'probe', return_value=[]), \
              patch('tools.testqueue.pool.plan', return_value={'selected': 'windows'}), \
              patch('tools.testqueue.pool.rpc', side_effect=RuntimeError('lost reply')):
             submitted = self.pool.submit(self.snapshot, 'res://tests/test_math3d.gd')
-        with patch('tools.testqueue.pool.rpc', side_effect=[{'job': 'existing'}, {'state': 'FINISHED', 'outcome': 'PASSED'}]):
+        with patch('tools.testqueue.pool.rpc', side_effect=[{'job': 'existing'}, {'state': 'FINISHED', 'outcome': 'PASSED',
+                'payload': {'manifest': {'source_digest': 'test'}}}]):
             self.pool.status(submitted['job'])
         receipt = json.loads(Path(submitted['receipt']).read_text())
         self.assertEqual(receipt['state'], 'SUBMITTED')
 
-    def test_preparation_recovery_releases_host_without_dispatch(self):
+    def test_missing_dispatch_metadata_never_confirms_nonexecution(self):
         path = self.pool.root / 'jobs' / 'prepared.json'
         path.parent.mkdir()
         path.write_text(json.dumps({'state': 'PREPARING', 'host': 'windows'}))
         with patch('tools.testqueue.pool.rpc') as rpc:
             result = self.pool.recover('prepared')
-        self.assertEqual(result['state'], 'FINISHED')
-        self.assertEqual(json.loads(path.read_text())['state'], 'NOT_DISPATCHED')
+        self.assertEqual(result['state'], 'UNKNOWN')
+        self.assertEqual(result['cleanup'], 'UNCONFIRMED')
+        self.assertEqual(json.loads(path.read_text())['state'], 'SUBMISSION_UNCONFIRMED')
         rpc.assert_not_called()
 
     def receipt(self, identifier, host):

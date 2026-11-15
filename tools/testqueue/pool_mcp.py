@@ -15,7 +15,7 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, write_json
 from tools.testqueue.pool import Pool, default_config, digest
-from tools.testqueue.pool_batch import run_batch
+from tools.testqueue.pool_batch import reobservation_ids, run_batch
 from tools.testqueue.presets import validate, scheduling
 
 
@@ -82,7 +82,7 @@ def launch(request_id, jobs, source=None, *, config=None):
     if not (source / "app" / "project.godot").is_file():
         raise ValueError("source must be an OpenRC checkout with app/project.godot")
     request = {"request_id": request_id, "jobs": _jobs(jobs), "source": str(source),
-               "config": str(pool.config_path), "config_sha256": digest(pool.config_path)}
+               "config": str(pool.config_path), "config_sha256": pool.config_digest}
     guard = Singleton(directory / "request.lock")
     try:
         path = directory / "request.json"
@@ -114,6 +114,14 @@ def status(request_id, *, config=None):
     if (directory / "batch.json").exists():
         batch = _read(directory / "batch.json")
         result.update(result=batch.get("result", "INCOMPLETE"), snapshot=batch["snapshot"], jobs=batch["jobs"])
+        reobserve = reobservation_ids(pool, batch["jobs"])
+        if reobserve:
+            result.update(result="INCOMPLETE", recovery_required=True,
+                          recovery_reason="Legacy nonexecution results require original-authority observation")
+            result["jobs"] = [({**row, "phase": "BLOCKED", "previous_status": row.get("status"),
+                                "status": {"state": "UNKNOWN", "cleanup": "UNCONFIRMED"},
+                                "recovery_required": True} if row["request_id"] in reobserve else row)
+                              for row in batch["jobs"]]
     return result
 
 
@@ -123,8 +131,10 @@ def recover(request_id, *, config=None):
     request = _read(directory / "request.json")
     if digest(pool.config_path) != request["config_sha256"]:
         raise ValueError("pool configuration changed; restore the original configuration before recovery")
-    if (directory / "batch.json").exists() and _read(directory / "batch.json").get("result") in {"PASSED", "FAILED"}:
-        return status(request_id, config=config)
+    if (directory / "batch.json").exists():
+        batch = _read(directory / "batch.json")
+        if batch.get("result") in {"PASSED", "FAILED"} and not reobservation_ids(pool, batch["jobs"]):
+            return status(request_id, config=config)
     _start(directory)  # worker.lock excludes concurrent supervisors
     return status(request_id, config=config)
 

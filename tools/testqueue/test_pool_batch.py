@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from tools.testqueue.test_pool import verified_fixture
+
 from tools.testqueue.common import Singleton
 from tools.testqueue.pool import Pool
 from tools.testqueue.pool_batch import run_batch
@@ -25,7 +27,8 @@ class FakePool:
         self.wait_once = set()
         self.crash_once = False
 
-    def submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id):
+    def submit(self, snapshot, script, *, platform, require, timeout, host_id, request_id,
+               expected_manifest_sha256):
         saved = json.loads(self.state_path.read_text())
         assert request_id in [row["request_id"] for row in saved["jobs"]]
         assert all(row.get("request_id") for row in saved["jobs"])
@@ -52,6 +55,9 @@ class FakePool:
         state = json.loads(self.state_path.read_text())
         row = next(item for item in state["jobs"] if item["request_id"] == request_id)
         return {"pool_job": request_id, "pool_outcome": row["status"]["outcome"]}
+
+    def needs_reobservation(self, request_id, status):
+        return False
 
 
 class PoolBatchTests(unittest.TestCase):
@@ -99,7 +105,7 @@ class PoolBatchTests(unittest.TestCase):
         self.assertIn(identifier, self.pool.submissions)
         result = self.run_case()
         self.assertEqual(result["result"], "PASSED")
-        self.assertEqual([call[1] for call in self.pool.submit_calls], [identifier, identifier])
+        self.assertEqual([call[1] for call in self.pool.submit_calls], [identifier])
         self.assertEqual(len(self.pool.submissions), 1)
 
     def test_unknown_is_only_polled_on_resume_never_resubmitted(self):
@@ -158,12 +164,18 @@ class PoolBatchTests(unittest.TestCase):
 
     def test_changed_batch_or_snapshot_cannot_start_another_row(self):
         self.inputs([{"script": "res://tests/test_a.gd"}])
-        self.pool.submit = lambda *args, **kwargs: {"state": "WAITING"}
-        result = run_batch(self.pool, self.config, self.manifest, self.state, timeout=0.01, poll_interval=0.001)
-        self.assertEqual(result["result"], "INCOMPLETE")
-        (self.snapshot / "manifest.json").write_text("{}")
-        result = self.run_case()
-        self.assertEqual(result["jobs"][0]["phase"], "BLOCKED")
+        self.config.write_text(json.dumps({"state_root": str(self.root / "pool"), "hosts": []}))
+        (self.snapshot / "manifest.json").write_text(json.dumps({"source_root": str(self.root),
+                                                                  "source_digest": "source", "files": {}}))
+        self.pool = Pool(self.config)
+        with patch("tools.testqueue.pool.verify", side_effect=verified_fixture), \
+                patch.object(self.pool, "probe", return_value=[]), patch("tools.testqueue.pool.rpc") as rpc:
+            result = run_batch(self.pool, self.config, self.manifest, self.state, timeout=0.01, poll_interval=0.001)
+            self.assertEqual(result["result"], "INCOMPLETE")
+            (self.snapshot / "manifest.json").write_text("{}")
+            result = self.run_case()
+        rpc.assert_not_called()
+        self.assertEqual(result["jobs"][0]["phase"], "REJECTED")
         self.assertIn("snapshot manifest changed", result["jobs"][0]["status"]["error"])
         self.manifest.write_text(self.manifest.read_text() + " ")
         with self.assertRaisesRegex(ValueError, "inputs changed"):
@@ -203,10 +215,11 @@ class PoolBatchTests(unittest.TestCase):
             if operation == "recover":
                 return {"job": kwargs["request_id"]}
             if operation == "status":
-                return {**PASS, "runner_verdict": {"checked": report}}
+                return {**PASS, "runner_verdict": {"checked": report},
+                        "payload": {"manifest": {"source_digest": "source"}}}
             raise AssertionError(operation)
 
-        with patch("tools.testqueue.pool.verify", return_value={"ok": True}), \
+        with patch("tools.testqueue.pool.verify", side_effect=verified_fixture), \
                 patch("tools.testqueue.pool.plan", return_value={"selected": "windows"}), \
                 patch.object(pool, "probe", return_value=[]), \
                 patch("tools.testqueue.pool.rpc", side_effect=rpc):

@@ -652,6 +652,7 @@ def main():
         return supervise(root, args.request_id)
     if args.action == "_invoke":
         return invoke(root, args.request_id, args.stage)
+    request = None
     try:
         raw = sys.stdin.buffer.read(LIMIT + 1)
         if len(raw) > LIMIT:
@@ -668,7 +669,9 @@ def main():
         print(json.dumps({"ok": True, "result": result}, allow_nan=False))
         return 0
     except Exception as error:
-        print(json.dumps({"ok": False, "code": getattr(error, "code", "ERROR"), "error": str(error)}))
+        print(json.dumps({"ok": False, "protocol": PROTOCOL,
+                          "request_id": request.get("request_id") if isinstance(request, dict) else None,
+                          "code": getattr(error, "code", "ERROR"), "error": str(error)}))
         return 1
 
 

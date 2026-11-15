@@ -20,8 +20,12 @@ import uuid
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, write_json
-from tools.testqueue.pool import Pool
+from tools.testqueue.pool import Pool, SubmissionDeferred, SubmissionRejected
 from tools.testqueue.presets import scheduling, validate
+
+BATCH_VERSION = 2
+RETRY_INITIAL_SECONDS = 0.25
+RETRY_MAX_SECONDS = 30.0
 
 
 def _digest(path):
@@ -72,16 +76,22 @@ def _finished_success(row):
 
 def _result(state):
     phases = [row["phase"] for row in state["jobs"]]
-    if all(phase == "DONE" for phase in phases):
+    if all(phase in {"DONE", "REJECTED"} for phase in phases):
         return "PASSED" if all(_finished_success(row) for row in state["jobs"]) else "FAILED"
     return "INCOMPLETE"
+
+
+def reobservation_ids(pool, rows):
+    """Find stale terminal rows using coordinator receipts only, without RPC."""
+    return {row["request_id"] for row in rows if row.get("phase") in {"DONE", "COLLECTING", "COLLECTION_BLOCKED"}
+            and pool.needs_reobservation(row["request_id"], row.get("status") or {})}
 
 
 def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=2):
     """Run or resume a batch under its persistent state-file lock.
 
-    An interrupted submit can be retried only with the same prewritten request
-    ID. Once an attempt is known or uncertain, only status is queried. Repeated
+    SUBMITTING is durable before a call. After interruption, observe its original
+    ID; an absent receipt cannot authorize a new submit. Repeated
     invocations can observe recovery of an UNKNOWN attempt but cannot relaunch it.
     Config, manifest and snapshot-manifest identities are bound to the batch.
     """
@@ -99,19 +109,40 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
     try:
         if state_path.exists():
             state = json.loads(state_path.read_text(encoding="utf-8"))
-            if (state.get("version") != 1 or state.get("config_sha256") != config_digest
+            if (state.get("version") not in {1, BATCH_VERSION} or state.get("config_sha256") != config_digest
                     or state.get("manifest_sha256") != manifest_digest or state.get("snapshot") != str(snapshot)
                     or [row.get("input") for row in state.get("jobs", [])] != jobs):
                 raise ValueError("batch inputs changed; preserve and recover the original state")
             ids = [row.get("request_id") for row in state["jobs"]]
             if (len(set(ids)) != len(ids) or any(not isinstance(item, str) or not item.isalnum() for item in ids)
-                    or any(row.get("phase") not in {"WAITING", "TRACKING", "BLOCKED", "COLLECTING",
+                    or any(row.get("phase") not in {"WAITING", "SUBMITTING", "RETRY_WAIT", "REJECTED",
+                                                      "TRACKING", "BLOCKED", "COLLECTING",
                                                       "COLLECTION_BLOCKED", "DONE"} for row in state["jobs"])):
                 raise ValueError("invalid batch state")
             # Older batch receipts could mark FINISHED rows done without
             # collecting their evidence. Recover those same IDs, never submit.
             changed = False
+            reobserve = reobservation_ids(pool, state["jobs"])
             for row in state["jobs"]:
+                attempts = row.get("submission_attempts", 0)
+                if type(attempts) is not int or attempts < 0:
+                    raise ValueError("invalid batch submission count")
+                if row["phase"] == "RETRY_WAIT" and (type(row.get("retry_after")) not in (int, float)
+                        or not math.isfinite(row["retry_after"])):
+                    raise ValueError("invalid batch retry deadline")
+                if row["phase"] == "SUBMITTING" or state["version"] == 1 and row["phase"] == "WAITING":
+                    # v1 WAITING could be a crash after acceptance. Do not infer
+                    # nonexecution from receipt absence or revalidate its inputs.
+                    row.update(phase="TRACKING", status={"state": "UNKNOWN", "cleanup": "UNCONFIRMED",
+                        "error": "Interrupted submission requires original-identity observation"})
+                    changed = True
+                if row["request_id"] in reobserve:
+                    row.setdefault("previous_results", []).append({
+                        "status": row.get("status"), "collection": row.pop("collection", None),
+                        "reason": "Legacy nonexecution result requires original-authority observation"})
+                    row.update(phase="TRACKING", status={"state": "UNKNOWN", "cleanup": "UNCONFIRMED",
+                                                        "error": "Reobserving legacy nonexecution result"})
+                    changed = True
                 collection = row.get("collection") or {}
                 if row["phase"] == "DONE" and (collection.get("pool_job") != row["request_id"]
                         or collection.get("pool_outcome") != (row.get("status") or {}).get("outcome")):
@@ -119,10 +150,15 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                         raise ValueError("completed row lacks a finished status")
                     row["phase"] = "COLLECTING"
                     changed = True
+            if state["version"] != BATCH_VERSION:
+                state["migrated_from_version"] = state["version"]
+                state["version"] = BATCH_VERSION
+                changed = True
             if changed:
+                state["result"] = _result(state)
                 write_json(state_path, state)
         else:
-            state = {"version": 1, "config_sha256": config_digest, "manifest_sha256": manifest_digest,
+            state = {"version": BATCH_VERSION, "config_sha256": config_digest, "manifest_sha256": manifest_digest,
                      "snapshot": str(snapshot), "snapshot_manifest_sha256": _digest(snapshot_manifest),
                      "jobs": [{"request_id": uuid.uuid4().hex, "input": job, "phase": "WAITING"}
                               for job in jobs]}
@@ -132,28 +168,44 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
         deadline = time.monotonic() + timeout
         checked_blocked = set()
         checked_collections = set()
+        retry_ready = {row["request_id"]: time.monotonic() + min(RETRY_MAX_SECONDS,
+                       max(0, row["retry_after"] - time.time())) for row in state["jobs"]
+                       if row["phase"] == "RETRY_WAIT"}
         while True:
             for row in state["jobs"]:
-                if row["phase"] != "WAITING":
+                if row["phase"] not in {"WAITING", "RETRY_WAIT"}:
+                    continue
+                if row["phase"] == "RETRY_WAIT" and time.monotonic() < retry_ready[row["request_id"]]:
                     continue
                 if time.monotonic() >= deadline:
                     break
+                row.update(phase="SUBMITTING", submission_attempts=row.get("submission_attempts", 0) + 1)
+                write_json(state_path, state)
                 try:
-                    if _digest(snapshot_manifest) != state["snapshot_manifest_sha256"]:
-                        raise ValueError("snapshot manifest changed")
                     job = row["input"]
                     submission = pool.submit(snapshot, job["script"], platform=job["platform"],
                                              require=job["require"], timeout=job["timeout"],
-                                             host_id=job["host"], request_id=row["request_id"])
+                                             host_id=job["host"], request_id=row["request_id"],
+                                             expected_manifest_sha256=state["snapshot_manifest_sha256"])
                     if submission.get("state") == "WAITING":
-                        row["status"] = submission
+                        row.update(phase="WAITING", status=submission)
                     elif submission.get("job") == row["request_id"]:
                         row.update(phase="TRACKING", status=submission)
                     else:
                         raise ValueError("pool returned an invalid submission receipt")
+                except SubmissionRejected as error:
+                    row.update(phase="REJECTED", status=error.status)
+                    row.setdefault("first_error", str(error))
+                except SubmissionDeferred as error:
+                    delay = min(RETRY_MAX_SECONDS, RETRY_INITIAL_SECONDS * 2 ** min(row["submission_attempts"] - 1, 16))
+                    row.update(phase="RETRY_WAIT", retry_after=time.time() + delay,
+                               status={"state": "WAITING", "reason_code": "SUBMISSION_DEFERRED", "error": str(error)})
+                    row.setdefault("first_error", str(error))
+                    retry_ready[row["request_id"]] = time.monotonic() + delay
                 except Exception as error:
                     # The request may have crossed the dispatch boundary: no failover.
                     row.update(phase="BLOCKED", status={"state": "UNKNOWN", "error": str(error)})
+                    row.setdefault("first_error", str(error))
                     checked_blocked.add(row["request_id"])
                 write_json(state_path, state)
 
@@ -171,6 +223,7 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                     row.update(phase=phase, status=status)
                 except Exception as error:
                     row.update(phase="BLOCKED", status={"state": "UNKNOWN", "error": str(error)})
+                    row.setdefault("first_error", str(error))
                 if row["phase"] == "BLOCKED":
                     checked_blocked.add(row["request_id"])
                 write_json(state_path, state)
@@ -196,9 +249,14 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
             state["result"] = _result(state)
             write_json(state_path, state)
             if (state["result"] != "INCOMPLETE" or time.monotonic() >= deadline
-                    or all(row["phase"] in {"DONE", "BLOCKED", "COLLECTION_BLOCKED"} for row in state["jobs"])):
+                    or all(row["phase"] in {"DONE", "REJECTED", "BLOCKED", "COLLECTION_BLOCKED"} for row in state["jobs"])):
                 return state
-            time.sleep(min(poll_interval, max(0, deadline - time.monotonic())))
+            delay = poll_interval
+            if all(row["phase"] in {"DONE", "REJECTED", "BLOCKED", "COLLECTION_BLOCKED", "RETRY_WAIT"}
+                   for row in state["jobs"]):
+                pending = [retry_ready[row["request_id"]] for row in state["jobs"] if row["phase"] == "RETRY_WAIT"]
+                delay = max(delay, min(pending) - time.monotonic())
+            time.sleep(min(max(0, delay), max(0, deadline - time.monotonic())))
     finally:
         guard.close()
 
