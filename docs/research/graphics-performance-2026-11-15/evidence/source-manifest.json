@@ -1,13 +1,13 @@
 {
   "format": "openrc-graphics-audit-source-manifest",
-  "version": 1,
+  "version": 2,
   "research_date": "2026-11-15",
   "timezone": "America/Bogota",
   "repository": "bultodepapas/OpenRCsimulator",
   "baseline_commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
   "baseline_tree": "a7bf7082ef8447253482b970d99184ab675b30ac",
   "scope": "Selected inspected implementation, tests, build/patch sources, governing plans and retained evidence; not a complete dependency closure. Baseline hashes refer to Git object bytes. Upstream hashes refer to UTF-8 text returned by the GitHub source connector.",
-  "project_file_count": 87,
+  "project_file_count": 91,
   "files": [
     {
       "path": "AGENTS.md",
@@ -202,6 +202,12 @@
       "bytes": 25253
     },
     {
+      "path": "app/tests/test_render_probe.gd",
+      "git_blob_sha1": "9aedef5d79ffaddfa3672fdfe736d4bfe2fd2cb5",
+      "sha256": "39318ca0f10741d9367b3453a4a11012139fed42782187550c94cfabd5fd6c97",
+      "bytes": 10978
+    },
+    {
       "path": "app/ui/settings_screen.gd",
       "git_blob_sha1": "481ac1c250f1ece7c73b099a0b10cf76448be619",
       "sha256": "e359c4be8d8913c786b1e6ed6ab07946e61c9648d77ca8de636658ab86de3956",
@@ -278,6 +284,24 @@
       "git_blob_sha1": "f60ba0baff8d8d354d4e596258592ab3e1865728",
       "sha256": "a8ef5480ac50867aa9602e80467d6ed0edc2539a3432005c9051e40a5ac57a1d",
       "bytes": 42545
+    },
+    {
+      "path": "research/performance/README.md",
+      "git_blob_sha1": "b93bcd81c4340794a8c42867861f79641dd9d186",
+      "sha256": "baa02908b30f40729284543c5d80ba7e2e962833948c89130bb09405fb8eb729",
+      "bytes": 87532
+    },
+    {
+      "path": "research/performance/frame_diagnose.py",
+      "git_blob_sha1": "1336f19e47d3ce9673a18c39007b1c27b15cdffb",
+      "sha256": "415447c5b8fbd6ca6c46a64b28a3c6ab5071801f610ed584a3dd245b137e80c0",
+      "bytes": 31021
+    },
+    {
+      "path": "research/performance/native_summary.py",
+      "git_blob_sha1": "de9d1f30164a6e2cfcb42cbf7d018c4aa6d98539",
+      "sha256": "8bc41f65561f236962ac0d9894cb98e46ebeae096bfa793e6214c1e7436a80b7",
+      "bytes": 134471
     },
     {
       "path": "tools/graphics/README.md",
@@ -572,8 +596,78 @@
       "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/main/viewport.cpp",
       "sha256": "2434336efa412579e3ca50b837d3e3d8bb86b2e64be77e6d0267ae807c063c4b",
       "bytes": 202574
+    },
+    {
+      "repository": "GameTechDev/PresentMon",
+      "commit": "f50c407ad9492051f4b834d77c31c49f38f0fef0",
+      "path": "README.md",
+      "retrieval_url": "https://raw.githubusercontent.com/GameTechDev/PresentMon/f50c407ad9492051f4b834d77c31c49f38f0fef0/README.md",
+      "sha256": "be63d86941169b48555f18ce5c0cb53aedfebeef632b70aa5888a6007ba7095d",
+      "bytes": 7001
+    },
+    {
+      "repository": "GameTechDev/PresentMon",
+      "commit": "f50c407ad9492051f4b834d77c31c49f38f0fef0",
+      "path": "PresentData/PresentMonTraceConsumer.hpp",
+      "retrieval_url": "https://raw.githubusercontent.com/GameTechDev/PresentMon/f50c407ad9492051f4b834d77c31c49f38f0fef0/PresentData/PresentMonTraceConsumer.hpp",
+      "sha256": "6456dc5994d58bc3d6c13624cffcd57cd2c602a3419f561d778430d2af2ce637",
+      "bytes": 36961
+    },
+    {
+      "repository": "GameTechDev/PresentMon",
+      "commit": "f50c407ad9492051f4b834d77c31c49f38f0fef0",
+      "path": "PresentMon/OutputThread.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/GameTechDev/PresentMon/f50c407ad9492051f4b834d77c31c49f38f0fef0/PresentMon/OutputThread.cpp",
+      "sha256": "ac1b422e48b30c8c956f1b8e979384be25e47fd8c3f2a42a3544118d92d91a1a",
+      "bytes": 24062
+    },
+    {
+      "repository": "wolfpld/tracy",
+      "commit": "aa5240ca19dd4978784b76f769f067cdda647615",
+      "path": "public/tracy/TracyVulkan.hpp",
+      "retrieval_url": "https://raw.githubusercontent.com/wolfpld/tracy/aa5240ca19dd4978784b76f769f067cdda647615/public/tracy/TracyVulkan.hpp",
+      "sha256": "6d9238cf85d2bb150edd2d892f2b28088f868686c2c4bd499062618b65faa2ab",
+      "bytes": 32754
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "drivers/metal/rendering_device_driver_metal.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/metal/rendering_device_driver_metal.cpp",
+      "sha256": "565c9569c4ad94036c9f6021658eb224e3fa587ddf0a414af1a4f98b62bdc097",
+      "bytes": 127687
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "drivers/metal/rendering_device_driver_metal3.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/metal/rendering_device_driver_metal3.cpp",
+      "sha256": "7194d7b61912a3d964c50d826975990599cb685677994d44091749f6b62083f3",
+      "bytes": 12179
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "drivers/metal/rendering_device_driver_metal3.h",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/metal/rendering_device_driver_metal3.h",
+      "sha256": "78cd1eea9d6248f24cbf84133e05e68cccd131a5a04232234748f1fdf258cdb6",
+      "bytes": 5964
+    },
+    {
+      "repository": "godotengine/godot",
+      "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "drivers/metal/metal3_objects.cpp",
+      "retrieval_url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/metal/metal3_objects.cpp",
+      "sha256": "f84bf833084771e31d180bb8031e042ff68f71fb20b486cfa56cb83e6ad3bbb7",
+      "bytes": 79870
     }
   ],
   "new_hardware_measurements": false,
-  "new_runtime_implementation": false
+  "new_runtime_implementation": false,
+  "continuation_parent_commit": "b0f1dca56cdb926c42f609c72b6ca88df48d8a77",
+  "external_investigations": {
+    "count": 20,
+    "index": "docs/research/graphics-performance-2026-11-15/08-twenty-external-investigations.md",
+    "scope": "Individual R01-R20 records preserve inspected references and exact commits where available. Selected upstream text hashes below are a reproducibility subset, not all cited sources."
+  }
 }

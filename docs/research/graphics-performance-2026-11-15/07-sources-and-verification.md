@@ -26,7 +26,31 @@ Each topic report maps more detailed claims to direct source links. This compact
 | Does current Godot have RT APIs? | [GodotCon integration description](https://talks.godotengine.org/godotcon-ams-2026/talk/JDYVQ3/), exact beta 2 [RenderingDevice](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_device.cpp) and [Vulkan driver](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.cpp), plus [the original query bug](https://github.com/godotengine/godot/issues/121286). Low-level APIs exist; whole-scene effects and actual device execution remain distinct. |
 | Does an Apple GPU imply Godot RT support? | [Apple Metal RT](https://developer.apple.com/documentation/metal/accelerating-ray-tracing-using-metal), [Apple family 9 hardware](https://developer.apple.com/videos/play/tech-talks/111375/), the pinned Metal driver stubs and OpenRC's isolated Metal patches. API capability, dedicated hardware acceleration and engine integration must be established separately. |
 
-All sources were checked on the research date. URLs under `main`, `master`, `latest` or `stable` can change; exact commit links and the manifest preserve the pin-specific findings.
+Sources directly used for technical conclusions were checked on the research date. Explicitly inaccessible sample archives or branch refs are described as limitations, not inspected implementations. URLs under `main`, `master`, `latest` or `stable` can change; exact commit links and the manifest preserve the pin-specific findings.
+
+## Twenty-investigation continuation
+
+The follow-up begins from published audit commit `b0f1dca56cdb926c42f609c72b6ca88df48d8a77` on the same branch. Both that remote branch and `main` were checked again before editing; the application baseline remained `e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc`. The new [catalog](08-twenty-external-investigations.md) contains exactly twenty distinct question-led studies, rather than counting twenty hyperlinks as twenty investigations.
+
+| Group | Studies | Evidence inspected |
+| --- | --- | --- |
+| Dynamic resolution / reconstruction | R01–R07 | Pinned Godot and a community addon; Unity's public handler and adaptive sample; AMD sample/headers; NVIDIA fork/Streamline contracts; Apple dynamic-input API and published integration example; Intel guide/sample; Vulkan Guide implementation excerpts. |
+| Latency | R08–R12 | Streamline guide/sample and OpenRC native patches; DXVK and developer issues; Khronos NV extension/revision semantics; AMD DirectX sample plus Dagor Vulkan code; Intel XeLL sample/guide. |
+| Measurement | R13–R15 | PresentMon's actual event/output code and constraints; Tracy's availability-aware Vulkan collector; Godot timing docs, historical issue/merged PR and exact Metal3 timestamp implementation. |
+| Ray tracing | R16–R20 | Pinned Godot APIs/validation and bug-fix history; NVIDIA and Khronos Vulkan sample code; Apple API/presentation code and project bridge; substantive NVIDIA/community Godot renderer forks and their maintenance limits. |
+
+Every study links its inspected source and OpenRC entrypoints, states an adopt/avoid decision, and describes a bounded next deliverable or a defer condition. External code was not installed or executed. Official/vendor samples demonstrate their own contracts and limitations, not the simulator's performance. Forums, issue comments and PR discussions are first-hand leads; the associated exact source or official specification carries technical conclusions.
+
+Two access limitations are material: the full Apple MetalFX and Metal RT sample archives were not independently inspected; their documented examples/API and accessible implementation code are clearly distinguished. The community Metal path-tracing README advertised a `metal_rt` branch that returned 404; its separately pinned historical implementation remained inspectable. The report does not use the README revision as if it contained that missing branch's code.
+
+Newly resolved distinctions include:
+
+- A real Godot target-FPS addon does not establish GPU-sensitive feedback or inexpensive buffer changes. Unity's policy sample is separate from its allocation handler and has timing assumptions unsuitable for blind copying.
+- Streamline's required active resource extents matter for a future subrectangle path. The inspected local lifecycle/failure patches change tagging lifetime/layout, but no such extent addition was found; the prepared binary still requires execution evidence. This is not a demonstrated fixed-DLSS failure.
+- Intel's older no-DRS guidance and newer bounded-input guide have different scopes; the inspected Vulkan example is still fixed-size.
+- Godot's historic Metal timing issue was addressed in 4.8. The exact beta2 Metal3 subclass overrides timestamp operations under supported barrier/counter conditions, despite stubs in the base class. This does not give the application a fresh completed-sample identity automatically and does not imply a Metal RT implementation.
+- DXVK and Dagor provide useful real-engine examples, while their renderer ownership cannot be presumed for native Godot. Direct latency APIs, vendor SDKs and physical RC endpoints remain distinct.
+- The RT examples' opaque material assumptions and synchronous teaching builds require adaptation; neither establishes correct foliage or a nonblocking production flight path.
 
 ## Contradictions resolved explicitly
 
@@ -40,9 +64,11 @@ All sources were checked on the research date. URLs under `main`, `master`, `lat
 
 Three bounded specialist studies covered reconstruction, latency and RT, with separate file ownership. A critical review challenged the repository conclusions and integrated plan. Resolved points include conditional DRS admission, unknown effective state, the actual timer-overlap path, physical-radio versus PCL endpoints, CPU-bound Reflex/Boost cases, independent experiment ordering, and uncertainty across sessions and small optical sample counts. This review is an additional source-quality check, not hardware evidence or certification.
 
+The continuation used three bounded specialists for seventeen investigations and lead-owned measurement research for three. A separate read-only Good Enemy/consistency review challenged the updated plan. Resolved issues include the unchanged baseline repeat and original renderer-parity review; formal 5% optimization versus descriptive physical-latency comparison; missing vendor flash verification not blocking usable optical work; live F6 input rejecting scripted/frametime/capture flags; provider-specific M1 cases being conditional on selection; acceptable transition cost instead of automatically requiring persistent allocation; and exact-once direct-sun visibility at the first RT checkpoint. The five-day M0 allocation, later one-day attribution review, scope-specific verification funnel and explicit closure states were checked for consistency. Reviewer agreement does not replace native evidence.
+
 The final [validation receipt](evidence/validation.json) records document/link checks, source preservation, manifest verification and the exact scope checked. Local links and Markdown anchors are checked using the repository's existing `tools/ci/check_docs.py` parsing and Git-object target validation. Comparing Git objects makes the check independent of a sparse worktree's omitted files. Newly cited non-Markdown source line fragments are contextual references; the link checker establishes the file target, not semantic correctness of each line claim, which was reviewed separately.
 
-The audit also checks whitespace/conflict markers, valid UTF-8 and JSON, hashes against the baseline, and that no production source or existing plan was modified. No simulation suite was needed for these documentation-only changes. No native app, GPU, benchmark, physical controller or export-template validation was run by this audit. Required CI and hardware acceptance for any future implementation remain in their owners' gates.
+The audit also checks whitespace/conflict markers, valid UTF-8 and JSON, hashes against the baseline, exactly twenty research IDs with matching index entries, and that no production source or existing owning plan was modified. The implementation/validation proposal inside this dated audit was revised; the authoritative track plans retain their existing status. No simulation suite was needed for these documentation-only changes. No native app, GPU, benchmark, physical controller or export-template validation was run by this audit. Required CI and hardware acceptance for any future implementation remain in their owners' gates.
 
 ## Remaining uncertainty
 
