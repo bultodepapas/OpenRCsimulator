@@ -48,6 +48,7 @@ PREREQUISITES = (
     "d3ce4cb242eb311d214535ce695c744c2a15801b1226c940fb707b71bce64166",
 )
 PATCH_HASH = "e4b73172a8025a1702a04ee818b0e0591d68ec814610d22a6441420ebdfef18a"
+STATE_HASH = "379f8f6f0f2bb88e2b06a51d25a8138f522227d5b095dbdc8551fac3fc5b6e73"
 
 STATE_TEST = r'''#include <drivers/metal/openrc_mfx_present_state.h>
 #define CHECK(x) do { if (!(x)) return __LINE__; } while (0)
@@ -414,10 +415,22 @@ class PresentPatchTests(unittest.TestCase):
                     target = cls.base / path
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes(archive.read(member))
+        # Without an isolated Git root, apply can skip all paths outside the
+        # ancestor checkout's prefix and still return success.
+        ENGINE.git(cls.base, "init", "--quiet")
+        env = {name: value for name, value in os.environ.items() if not name.startswith("GIT_")}
+        env.update(GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
+        root = subprocess.run(["git", "-C", str(cls.base), "rev-parse", "--show-toplevel"],
+                              env=env, capture_output=True, text=True, timeout=30, check=True).stdout.strip()
+        if Path(root).resolve() != cls.base.resolve():
+            raise RuntimeError("Presentation fixture Git root differs from its temporary directory")
         for patch in PATCHES:
             ENGINE.git(cls.base, "apply", "--check", str(patch.resolve()))
             ENGINE.git(cls.base, "apply", str(patch.resolve()))
-        cls.state = (cls.base / "drivers/metal/openrc_mfx_present_state.h").read_text(encoding="utf-8")
+        state_path = cls.base / "drivers/metal/openrc_mfx_present_state.h"
+        if not state_path.is_file() or ENGINE.sha256(state_path) != STATE_HASH:
+            raise RuntimeError("Presentation patch did not produce the expected scheduler header")
+        cls.state = state_path.read_text(encoding="utf-8")
         cls.shared = (cls.base / "servers/rendering/storage/metalfx_presentation.h").read_text(encoding="utf-8")
         cls.compositor = (cls.base / "servers/rendering/renderer_rd/renderer_compositor_rd.cpp").read_text(encoding="utf-8")
         cls.bridge = (cls.base / "drivers/metal/openrc_mfx_present_bridge.mm").read_text(encoding="utf-8")
