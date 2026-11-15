@@ -1,6 +1,6 @@
 {
   "format": "openrc-testqueue-resilience-validation-v1",
-  "recorded_at_utc": "2026-11-15T22:26:31.936568+00:00",
+  "recorded_at_utc": "2026-11-15T22:39:31.414979+00:00",
   "audit_commit": "413c8c88a57dc35d77e68a5808dad9a6a47aeff3",
   "runtime_baseline": "c048a4e6834646400070a488b293344dc1e1fd80",
   "integrated_main": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
@@ -23,12 +23,12 @@
           "test_*.py",
           "-v"
         ],
-        "tests": 253,
-        "passed": 245,
+        "tests": 254,
+        "passed": 246,
         "skipped": 8,
         "failures": 0,
         "errors": 0,
-        "elapsed_seconds": 35.861,
+        "elapsed_seconds": 34.69,
         "skip_details": [
           "test_two_sessions_use_one_rendered_lifetime (test_native.NativeSessionTests.test_two_sessions_use_one_rendered_lifetime) ... skipped 'opt-in native Windows desktop campaign'",
           "test_assignment_failure_never_runs_command (test_processes.ProcessFixture.test_assignment_failure_never_runs_command) ... skipped 'Windows Job Object behavior'",
@@ -39,7 +39,7 @@
           "test_windows_short_worktree_name_preserves_root_and_containment_checks (test_snapshots.SnapshotTests.test_windows_short_worktree_name_preserves_root_and_containment_checks) ... skipped 'Windows short-name aliases'",
           "test_materialization_preserves_frozen_windows_attributes (test_worker.WorkerFixture.test_materialization_preserves_frozen_windows_attributes) ... skipped 'Windows materialized file attributes'"
         ],
-        "log_sha256": "5ccdcb648a9237fde33f6a64b2ae9138f72b85b4f6f7a19cc7833075768e8293"
+        "log_sha256": "d9e7cea341a20d7ecda81001bc23749f338450022b86a0edc6b47a1afe363560"
       },
       {
         "name": "debug",
@@ -59,11 +59,11 @@
         "skipped": 1,
         "failures": 0,
         "errors": 0,
-        "elapsed_seconds": 4.044,
+        "elapsed_seconds": 4.178,
         "skip_details": [
           "test_windows_contender_recovers_when_lock_owner_is_killed (test_debugctl.DebugctlTests.test_windows_contender_recovers_when_lock_owner_is_killed) ... skipped 'needs native Windows locking'"
         ],
-        "log_sha256": "bd274d068f789dc681f520793b412c5dd2d1d7f95b2d0d913f857f6e9884d963"
+        "log_sha256": "d0fe6695a50f6f44aef77bd94561ffed84ba5761bfe79e5e683d235d45c18fd3"
       },
       {
         "name": "checked",
@@ -157,8 +157,8 @@
       }
     ],
     "totals": {
-      "tests": 491,
-      "passed": 481,
+      "tests": 492,
+      "passed": 482,
       "skipped": 10,
       "failures": 0,
       "errors": 0
@@ -218,7 +218,7 @@
       "tools/testqueue/adapter.py": "0a198fb2ec549ab2c7b1c3d4340f37e78192a08428770dc1a3623a7b25c1c6d0",
       "tools/testqueue/common.py": "cb9960d1536148c262d44fc50443aaf206c496398a7c3d6e32e41c03a99ced24",
       "tools/testqueue/entry.py": "f1a45888361fe0c2268f7e0508586a86f38e04d0fffca8bc858ff1cbae91895d",
-      "tools/testqueue/integration.py": "0559af74b1a2455e5d570d285eab5781e0fc837bccb4e76191645730ac44b697",
+      "tools/testqueue/integration.py": "fcb1b640e69f94409cce38953931756c6036b7e952bf91a364294fdf6b4533ad",
       "tools/testqueue/pool.py": "987995ece3123bb262c525e219b5624eddb7cb9aa4e7521e7c1f4b72874dca7e",
       "tools/testqueue/pool_batch.py": "2e2307f6d85945ef3d44dd798ac289fd3780202682baaae4942a3e5dfc2259c0",
       "tools/testqueue/pool_checked.py": "b1f9ef427cdfc47362717caf1f7cfda8195ef6ca16878e29afe96a12dd08c657",
@@ -231,7 +231,7 @@
       "tools/testqueue/store.py": "152b4235db3a057723af16b72e3b371223f417390a01ae705c677f5852e4cafc",
       "tools/testqueue/test_capture_context.py": "24912c765c3f8bbcb67e8b845d2c2273299f8cc2ce180354204654be48dbada9",
       "tools/testqueue/test_contracts.py": "1d6e3872993a7ec455bb350d33112dc10a67ba429e4a8ff714ed4b4fd7bcb686",
-      "tools/testqueue/test_integration.py": "338d62b8e1823d95b6b1fa17babcf9b0d89e76a52d4325641db56a80a665df5b",
+      "tools/testqueue/test_integration.py": "87a9f7467cb1eda3bf55c7e51a7acf4ea1041fd53f8413e284b37aad75d447ba",
       "tools/testqueue/test_native.py": "8b980039391eb12122c05630429136096b4f387b8ce05562cc14b0c150c274f6",
       "tools/testqueue/test_pool.py": "bbae7f46ce6bfe3b6c83325d3d44cf94f695776bb59daa93a0b5f36d16e8ae54",
       "tools/testqueue/test_pool_batch.py": "c6be753f67d758f0afecfc951b9eaca192b60d1d5cdacda9184965ff5e67e957",
@@ -241,7 +241,7 @@
       "tools/testqueue/test_pool_legacy_batch.py": "62c56e07e13042c365d4335722fa233624b06b4cc2481e59ad957f05f14e06a6",
       "tools/testqueue/test_pool_mcp.py": "7ec2a40adfbb5fd959877d0b7fed5dd6afd33dcdf5fe6fd9812c92691d39a94f",
       "tools/testqueue/test_pool_policy.py": "fa17c01609bb74554dfea5d9d9de6790ee2047b57fb90676a6b55a095508084a",
-      "tools/testqueue/test_pool_recovery.py": "596819a06b1499a3596eb78aa1fd6445a251b1da9f95280d94c7c33970dacc45",
+      "tools/testqueue/test_pool_recovery.py": "9d9a157e9143c0f902b602e831e4ddcb42ea00c822532b39191c62b66c67d79d",
       "tools/testqueue/test_pool_recovery_process.py": "1515fdac2b1741efa1a3cd01b635874e622c04620d80949b137a0e444ef9be65",
       "tools/testqueue/test_pool_remote_identity.py": "4a6998c9c38ff2cbb7439c99a4e9cc9f98949b1972d8d134b25e50bb8870f0e0",
       "tools/testqueue/test_pool_submission.py": "7e865084a2403273c9e8568d129ba9b9eff3af80ad4d03637fbac920e79e3cd1",
@@ -259,16 +259,56 @@
       "tools/testqueue/testctl.py": "397d5c7de409e7aacd9e51666739f79072d9d48ce1312d93a9f8da76cf13aa91",
       "tools/testqueue/worker.py": "c423c2be3e1de6eda5698dbbf816caebb89b325904685648823af56bae08fcf8"
     },
-    "note": "Distinct suite cases; final debug run supersedes its earlier run after the admission-race repair. Source hashes identify selected fixture/runtime inputs, not a complete hermetic dependency closure.",
+    "note": "Distinct suite cases. Queue and debug were rerun after Windows CI exposed owner lookup and path canonicalization issues; unchanged checked/resource/performance/GOD TEST source groups retain their prior run. Source hashes identify selected fixture/runtime inputs, not a complete hermetic dependency closure.",
     "source_checks": {
       "git_diff_check": "PASS",
-      "new_or_changed_documentation_links": 26,
-      "documentation_links_result": "PASS"
+      "new_or_changed_documentation_links": 59,
+      "documentation_links_result": "PASS",
+      "documentation_comparison_base": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c"
     }
   },
   "ci": {
-    "status": "NOT_RUN_AT_LOCAL_RECORDING",
-    "note": "This file records pre-publication local evidence. GitHub PR checks and the PR handoff record the actual CI revision and outcome."
+    "status": "CORRECTED_REVISION_AWAITING_CI",
+    "first_revision": "86777e923e6b6f1894878449d02b3125c05c5600",
+    "runs": [
+      {
+        "name": "Windows test queue regressions",
+        "run_id": 43769880597,
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43769880597",
+        "conclusion": "failure",
+        "tests": 253,
+        "failures": 1,
+        "errors": 1,
+        "skipped": 3,
+        "findings": [
+          "Fixture cleared Windows username environment; explicit owner still eagerly evaluated system-user default. Corrected with lazy default and a regression.",
+          "Authority-root fixture compared resolved and unresolved Windows path spellings. Corrected the expected canonical path; root-binding assertion retained."
+        ],
+        "later_groups": "Not run after the queue step failed."
+      },
+      {
+        "name": "CI",
+        "run_id": 43769880612,
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43769880612",
+        "conclusion": "failure",
+        "passing_groups": {
+          "ci_policy_and_documentation_fixtures": 130,
+          "linux_queue": {
+            "tests": 253,
+            "passed": 245,
+            "skipped": 8
+          }
+        },
+        "blocker": "Release preflight: app/tests/test_extra_visual_details.gd.uid is missing in integrated main 273a7e4c0617fdf4cacc39c360796fd79afa5f2c. Downstream production qualification did not run."
+      },
+      {
+        "name": "MetalFX source controls",
+        "run_id": 43769880593,
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43769880593",
+        "conclusion": "success"
+      }
+    ],
+    "note": "Preserve the failed first runs. Review PR #13 checks for the actual corrected revision and final outcome; this local follow-up does not assert Windows or required CI success."
   },
   "limits": [
     "No simulator or personal-fleet execution in the local fixtures.",

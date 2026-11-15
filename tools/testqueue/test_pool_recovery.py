@@ -139,7 +139,8 @@ class PoolRecoveryTests(unittest.TestCase):
         self.assertIn("configuration changed", result["error"])
 
     def test_local_authority_root_is_bound_before_dispatch(self):
-        original_root = self.root / "original-authority"
+        # Windows may canonicalize the temporary user's long/8.3 path spelling.
+        original_root = (self.root / "original-authority").resolve()
         with patch("tools.testqueue.pool.state_root", return_value=original_root):
             self.uncertain()
         with patch("tools.testqueue.pool.state_root", return_value=self.root / "different-authority"), \

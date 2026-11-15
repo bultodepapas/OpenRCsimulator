@@ -32,7 +32,10 @@ def submit(preset: str, options: dict, source: Path, *, retain_session: bool = F
     environment_names = ("OPENRC_TEST_PART", "OPENRC_UNIT_SHARDS", "OPENRC_UNIT_SHARD", "OPENRC_PARSE_WITH_UNITS")
     if preset in {"suite", "ci"}:
         environment_names += ("OPENRC_IMPORT_TIMEOUT",)
-    request = {"preset": preset, "options": options, "owner": os.environ.get("OPENRC_TESTQUEUE_OWNER", f"{getpass.getuser()}-{os.getpid()}"),
+    owner = os.environ.get("OPENRC_TESTQUEUE_OWNER")
+    if owner is None:
+        owner = f"{getpass.getuser()}-{os.getpid()}"
+    request = {"preset": preset, "options": options, "owner": owner,
                "source": str(source), "snapshot": str(snapshot), "request_id": identifier, "request_secret": submission_secret,
                "expected_source_digest": manifest["source_digest"], "expected_manifest_digest": manifest["manifest_digest"],
                "environment": {name: os.environ[name] for name in environment_names if name in os.environ}}

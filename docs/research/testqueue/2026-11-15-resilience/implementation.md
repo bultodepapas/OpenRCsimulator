@@ -160,10 +160,10 @@ not success gates for the repaired source.
 
 The integrated local run covers the complete queue and debug fixture directories,
 checked/resource runners, the performance admission consumer and GOD TEST.
-It ran **491 distinct cases: 481 passed, 10 skipped, no failures or errors**.
-The groups were queue 253, debug 120, checked runner 22, resource runner 14,
-performance admission 64 and GOD TEST 18. The final debug run supersedes its
-earlier run after the output-abandonment admission race was repaired.
+It covers **492 distinct cases: 482 passed, 10 skipped, no failures or errors**.
+The groups were queue 254, debug 120, checked runner 22, resource runner 14,
+performance admission 64 and GOD TEST 18. Queue and debug were rerun after the
+Windows CI corrections below; the other unchanged groups retain their prior run.
 Fixtures use private roots, loopback peers and task-owned fake processes. They
 do not launch Godot, connect to the fleet, qualify the RTX GPU or benchmark useful
 throughput. Windows-only ownership cases and native engine/desktop opt-ins are
@@ -190,6 +190,29 @@ the integrated run. No old failing assertion was discarded to bless the original
 defect; changed contracts receive explicit desired-behavior tests. Review notes
 also rejected a proposed wire-ID-reuse requirement after checking the supported
 MCP specification, instead of restoring a blocking I/O lock.
+
+### First GitHub CI pass and corrections
+
+The first PR checks ran at `86777e923e6b6f1894878449d02b3125c05c5600`:
+
+- [Windows queue fixtures](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43769880597)
+  ran 253 queue cases with one failure, one error and three skips. A fixture that
+  clears the environment exposed an eagerly evaluated system-username default,
+  even when an owner is configured. Owner lookup is now lazy and explicitly
+  tested. Another assertion compared canonical and unresolved temporary path
+  spellings; it now compares canonical roots while retaining the original
+  authority-binding check. Later Windows groups did not run after that failure.
+- [Required CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43769880612)
+  passed 130 policy/documentation fixtures and the Linux queue group (253 cases,
+  eight skips), then release preflight rejected the missing
+  `app/tests/test_extra_visual_details.gd.uid`. The script without its sidecar is
+  already present in integrated `main` at `273a7e4c0`; production jobs did not run.
+- [MetalFX source controls](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43769880593)
+  passed.
+
+The failed runs remain part of the evidence. The corrected revision requires a
+fresh Windows run and the required CI gate; consult PR #13 for its actual result.
+No test selection or preflight rule was weakened to accept these failures.
 
 ## Remaining senior work and deployment gates
 

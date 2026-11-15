@@ -34,6 +34,21 @@ class CheckedAdmissionTests(unittest.TestCase):
                 self.assertEqual(rpc.call_args.kwargs["expected_source_digest"], "a" * 64)
                 self.assertEqual(rpc.call_args.kwargs["expected_manifest_digest"], "b" * 64)
 
+    def test_explicit_owner_does_not_require_system_user_lookup(self):
+        with tempfile.TemporaryDirectory(prefix="openrc-explicit-owner-") as temporary:
+            source = Path(temporary)
+            with patch.dict(os.environ, {"OPENRC_TESTQUEUE_OWNER": "fixture-owner"}, clear=True), \
+                    patch.object(integration.getpass, "getuser", side_effect=RuntimeError("unexpected lookup")) as lookup, \
+                    patch.object(integration, "state_root", return_value=source / "state"), \
+                    patch.object(integration, "rpc", side_effect=[{}, {"job": "accepted"}]) as rpc, \
+                    patch.object(integration, "submission_receipt", return_value=source / "receipt"), \
+                    patch("tools.testqueue.snapshots.capture", return_value={
+                        "source_digest": "a" * 64, "manifest_digest": "b" * 64}), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(integration.submit("debug-session", {"argv": []}, source), {"job": "accepted"})
+            lookup.assert_not_called()
+            self.assertEqual(rpc.call_args.kwargs["owner"], "fixture-owner")
+
     def test_repeated_recovery_failure_keeps_original_receipt_and_never_submits(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -70,7 +85,7 @@ class CheckedAdmissionTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory(prefix="openrc-retry-identity-") as temporary:
             root = Path(temporary)
-            with patch.dict(os.environ, {}, clear=True), \
+            with patch.dict(os.environ, {"OPENRC_TESTQUEUE_OWNER": "fixture-owner"}, clear=True), \
                     patch.object(integration, "state_root", return_value=root / "state"), \
                     patch.object(integration, "rpc", side_effect=rpc), \
                     patch("tools.testqueue.snapshots.capture", return_value=manifest) as capture, \
@@ -85,6 +100,7 @@ class CheckedAdmissionTests(unittest.TestCase):
             self.assertEqual(len(submissions), 2)
             self.assertEqual(submissions[0], submissions[1])
             self.assertEqual(receipt, submissions[0])
+            self.assertEqual(receipt["owner"], "fixture-owner")
             self.assertEqual(receipt["expected_source_digest"], manifest["source_digest"])
             self.assertEqual(receipt["expected_manifest_digest"], manifest["manifest_digest"])
 
