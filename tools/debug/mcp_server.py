@@ -17,7 +17,9 @@ import io
 import json
 import math
 import os
+import queue
 import sys
+import threading
 import time
 import uuid
 from pathlib import Path
@@ -120,7 +122,26 @@ INSTRUCTIONS += (" For independent checked headless regression tests use sim_tes
                  "request_id and jobs, then sim_test_status. Compatible tests are placed automatically across the configured pool. "
                  "Declare platform=any only for portable checks; otherwise keep native coverage. Evidence is collected automatically. "
                  "Use sim_test_recover on a stopped supervisor, preserving the same request. Graphical/performance checks keep their native workflows.")
+INSTRUCTIONS += (" Protocol requests and cached sim_test_status can be serviced during a long tool call. Simulator "
+                 "tools, including sim_stop, execute in order: a stop can wait behind an earlier tool. A busy error "
+                 "means the request was not accepted. Request cancellation notifications are ignored and do not "
+                 "cancel accepted work. sim_stop requests owned simulator-session cancellation in its normal order. "
+                 "Use a new JSON-RPC id for each request; reuse a durable test request_id only to recover that work. "
+                 "On input EOF, accepted calls finish, then reply delivery gets at most 0.5 seconds to drain. "
+                 "A slow reader may lose replies, including partial replies, even if the queue never fills. If the "
+                 "reply queue fills, delivery is abandoned, but accepted calls still run. Recover durable work by "
+                 "its original request identity or retained session handle.")
 TOOL_BY_NAME = {tool["name"]: tool for tool in TOOLS}
+
+# Limits apply independently to the ordered tool lane, cached-status lane and
+# outgoing replies. A blocked filesystem or client can apply backpressure, but
+# cannot create an unbounded number of workers or queued messages.
+TOOL_QUEUE_LIMIT = 32
+STATUS_QUEUE_LIMIT = 8
+OUTPUT_QUEUE_LIMIT = 64
+MAX_INPUT_CHARS = 1024 * 1024
+OUTPUT_ENQUEUE_SECONDS = 0.2
+OUTPUT_DRAIN_SECONDS = 0.5
 
 
 class ToolError(Exception):
@@ -306,23 +327,23 @@ def _rpc_error(message_id: str | int | None, code: int, detail: str) -> dict:
     return {"jsonrpc": "2.0", "id": message_id, "error": {"code": code, "message": detail}}
 
 
-def handle(message: object) -> dict | None:
-    """One JSON-RPC message in, the reply out (None for notifications)."""
+def _prepare(message: object) -> tuple[dict | None, tuple[str, dict] | None]:
+    """Validate without executing a tool; return a reply and an optional invocation."""
     if not isinstance(message, dict):
-        return _rpc_error(None, -32600, "request must be an object")
+        return _rpc_error(None, -32600, "request must be an object"), None
     message_id = message.get("id")
     valid_id = type(message_id) in (str, int)  # MCP excludes null, bool and fractional IDs.
     if message.get("jsonrpc") != "2.0" or not isinstance(message.get("method"), str):
-        return _rpc_error(message_id if valid_id else None, -32600, "invalid JSON-RPC request")
+        return _rpc_error(message_id if valid_id else None, -32600, "invalid JSON-RPC request"), None
     if "id" in message and not valid_id:
-        return _rpc_error(None, -32600, "request id must be a string or integer")
+        return _rpc_error(None, -32600, "request id must be a string or integer"), None
     method = message.get("method")
     if "id" not in message:
-        return None  # notifications/initialized, cancellations: nothing to answer
+        return None, None  # Notifications do not invoke a tool or cancel owned work.
     reply = {"jsonrpc": "2.0", "id": message["id"]}
     params = message.get("params", {})
     if not isinstance(params, dict):
-        return _rpc_error(message_id, -32602, "params must be an object")
+        return _rpc_error(message_id, -32602, "params must be an object"), None
     if method == "initialize":
         asked = params.get("protocolVersion")
         reply["result"] = {"protocolVersion": asked if asked in PROTOCOLS else PROTOCOLS[0],
@@ -335,43 +356,232 @@ def handle(message: object) -> dict | None:
     elif method == "tools/call":
         name = params.get("name", "")
         if not isinstance(name, str):
-            return _rpc_error(message_id, -32602, "tool name must be a string")
+            return _rpc_error(message_id, -32602, "tool name must be a string"), None
         if name not in TOOL_BY_NAME:
             reply["error"] = {"code": -32602, "message": f"unknown tool {name}"}
-            return reply
+            return reply, None
         arguments = params.get("arguments", {})
         if not isinstance(arguments, dict):
-            return _rpc_error(message_id, -32602, "tool arguments must be an object")
+            return _rpc_error(message_id, -32602, "tool arguments must be an object"), None
         try:
             _check_arguments(TOOL_BY_NAME[name], arguments)
-            reply["result"] = {"content": call_tool(name, arguments), "isError": False}
         except ToolError as error:
             reply["result"] = {"content": [_text(str(error))], "isError": True}
-        except Exception as error:  # a tool bug must not end the server
-            reply["result"] = {"content": [_text(f"{type(error).__name__}: {error}")], "isError": True}
+            return reply, None
+        return reply, (name, arguments)
     else:
         reply["error"] = {"code": -32601, "message": f"method not found: {method}"}
+    return reply, None
+
+
+def _invoke(reply: dict, invocation: tuple[str, dict]) -> dict:
+    try:
+        reply["result"] = {"content": call_tool(*invocation), "isError": False}
+    except ToolError as error:
+        reply["result"] = {"content": [_text(str(error))], "isError": True}
+    except Exception as error:  # a tool bug must not end the server
+        reply["result"] = {"content": [_text(f"{type(error).__name__}: {error}")], "isError": True}
     return reply
 
 
-def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
-    for line in stdin:
-        line = line.strip()
+def handle(message: object) -> dict | None:
+    """One JSON-RPC message in, the reply out (None for notifications)."""
+    reply, invocation = _prepare(message)
+    return _invoke(reply, invocation) if invocation is not None else reply
+
+
+def _input_lines(stdin):
+    """Read bounded chunks and discard an oversized line before continuing."""
+    if not hasattr(stdin, "readline"):
+        # Also support callers that supply an iterable instead of a text stream.
+        for line in stdin:
+            yield line if len(line) <= MAX_INPUT_CHARS else None
+        return
+    while True:
+        line = stdin.readline(MAX_INPUT_CHARS + 1)
         if not line:
-            continue
+            return
+        if len(line) > MAX_INPUT_CHARS:
+            while line and not line.endswith("\n"):
+                line = stdin.readline(MAX_INPUT_CHARS + 1)
+            yield None
+        else:
+            yield line
+
+
+def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
+    """Read requests independently of ordered tools; drain accepted work on EOF.
+
+    Only cached sim_test_status uses the separate status lane. Other tools stay
+    in one FIFO because session environment and _captured() are process-global.
+    The explicit stdout reference is never replaced by a tool's redirection.
+    Once accepted calls finish, pending reply delivery has a bounded drain time;
+    a slow or disconnected reader can lose complete or partial replies.
+    """
+    ordered = queue.Queue(TOOL_QUEUE_LIMIT)
+    status = queue.Queue(STATUS_QUEUE_LIMIT)
+    outgoing = queue.Queue(OUTPUT_QUEUE_LIMIT)
+    finished = object()
+    disconnected = threading.Event()
+    id_lock = threading.Lock()
+    in_flight = set()
+
+    # Bypass the TextIOWrapper for real stdio: a blocked pipe write must not
+    # hold its buffered-I/O lock during Python interpreter shutdown.
+    try:
+        output_fd = stdout.fileno()
+    except (AttributeError, OSError, ValueError):
+        output_fd = None
+
+    def release_id(tracked_id):
+        if tracked_id is not None:
+            with id_lock:
+                in_flight.discard(tracked_id)
+
+    def abandon_output():
+        # Atomic with the final admission decision; never held across I/O.
+        with id_lock:
+            disconnected.set()
+
+    def publish(reply, tracked_id):
+        if disconnected.is_set():
+            release_id(tracked_id)
+            return
         try:
-            message = json.loads(line)
-        except (ValueError, RecursionError):
-            stdout.write(json.dumps({"jsonrpc": "2.0", "id": None,
-                                     "error": {"code": -32700, "message": "parse error"}}) + "\n")
-            stdout.flush()
-            continue
-        reply = handle(message)
-        if reply is not None:
-            # JSON escaping also keeps an accepted escaped surrogate from
-            # raising UnicodeEncodeError on the strict UTF-8 stdio stream.
-            stdout.write(json.dumps(reply, ensure_ascii=True) + "\n")
-            stdout.flush()
+            outgoing.put((reply, tracked_id), timeout=OUTPUT_ENQUEUE_SECONDS)
+        except queue.Full:
+            # An unavailable observer cannot stop already accepted side effects.
+            # No further input is accepted after delivery is abandoned.
+            abandon_output()
+            release_id(tracked_id)
+
+    def write_line(data):
+        if output_fd is None:
+            stdout.write(data)
+            if not disconnected.is_set():
+                stdout.flush()
+            return
+        remaining = memoryview(data.encode("ascii"))
+        while remaining and not disconnected.is_set():
+            count = os.write(output_fd, remaining)
+            if count <= 0:
+                raise BrokenPipeError("protocol output closed")
+            remaining = remaining[count:]
+
+    def write_replies():
+        while True:
+            item = outgoing.get()
+            if item is finished:
+                return
+            reply, tracked_id = item
+            try:
+                if not disconnected.is_set():
+                    try:
+                        # Escaping also permits surrogate IDs on strict UTF-8 streams.
+                        data = json.dumps(reply, ensure_ascii=True) + "\n"
+                    except (TypeError, ValueError, RecursionError):
+                        data = json.dumps(_rpc_error(reply.get("id"), -32603, "invalid tool response")) + "\n"
+                    write_line(data)
+            except (OSError, ValueError, UnicodeError):
+                # The observer is gone. Accepted work still drains; no retries
+                # or traceback may be written into the protocol stream.
+                abandon_output()
+                with contextlib.suppress(OSError, ValueError):
+                    stdout.close()
+            finally:
+                release_id(tracked_id)
+
+    def run_tools(work):
+        while True:
+            item = work.get()
+            if item is finished:
+                return
+            reply, invocation, tracked_id = item
+            try:
+                response = _invoke(reply, invocation)
+            except BaseException:
+                # Even a tool raising SystemExit must not strand later accepted work.
+                response = _rpc_error(reply["id"], -32603, "tool execution interrupted")
+            publish(response, tracked_id)
+
+    writer = threading.Thread(target=write_replies, name="mcp-writer", daemon=True)
+    workers = [threading.Thread(target=run_tools, args=(work,), name=name)
+               for work, name in ((ordered, "mcp-tools"), (status, "mcp-status"))]
+    writer.start()
+    for worker in workers:
+        worker.start()
+    try:
+        for line in _input_lines(stdin):
+            if disconnected.is_set():
+                break
+            if line is None:
+                publish(_rpc_error(None, -32600, "request exceeds input limit"), None)
+                continue
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                message = json.loads(line)
+            except (ValueError, RecursionError):
+                publish(_rpc_error(None, -32700, "parse error"), None)
+                continue
+            reply, invocation = _prepare(message)
+            if reply is None:
+                continue
+            tracked_id = reply.get("id")
+            duplicate = False
+            busy = False
+            # Output abandonment and enqueue share this short critical section:
+            # a request is either admitted before abandonment, or not admitted.
+            # Publishing a refusal and all output I/O happen after it is released.
+            with id_lock:
+                if disconnected.is_set():
+                    break
+                if tracked_id is not None:
+                    duplicate = tracked_id in in_flight
+                    if not duplicate:
+                        in_flight.add(tracked_id)
+                if not duplicate and invocation is not None:
+                    work = status if invocation[0] == "sim_test_status" else ordered
+                    try:
+                        work.put_nowait((reply, invocation, tracked_id))
+                    except queue.Full:
+                        busy = True
+            if duplicate:
+                error = _rpc_error(None, -32600, "request id is already in flight; duplicate not accepted")
+                error["error"]["data"] = {"requestId": tracked_id}
+                publish(error, None)
+                continue
+            if invocation is None:
+                publish(reply, tracked_id)
+                continue
+            if busy:
+                publish(_rpc_error(tracked_id, -32000, "server busy; request not accepted, retry"), tracked_id)
+    finally:
+        # Waiting is deliberate: EOF or an abandoned observer is not permission
+        # to kill a call or silently discard an action already accepted above.
+        ordered.put(finished)
+        status.put(finished)
+        for worker in workers:
+            worker.join()
+        deadline = time.monotonic() + OUTPUT_DRAIN_SECONDS
+        try:
+            outgoing.put(finished, timeout=max(0, deadline - time.monotonic()))
+        except queue.Full:
+            abandon_output()
+        writer.join(max(0, deadline - time.monotonic()))
+        if writer.is_alive():
+            abandon_output()
+            # A blocked write may eventually return. Discard remaining replies
+            # and leave a sentinel so its one daemon writer can then exit.
+            while True:
+                try:
+                    item = outgoing.get_nowait()
+                except queue.Empty:
+                    break
+                if item is not finished:
+                    release_id(item[1])
+            outgoing.put_nowait(finished)
 
 
 if __name__ == "__main__":
