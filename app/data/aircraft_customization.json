@@ -456,7 +456,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "gp-extra-300s-60",
-      "model_manifest_sha256": "45bbed0a5e01d114744ef0ab8c628bc760aa29f62f3c3ae555e6b7f95a3a4148",
+      "model_manifest_sha256": "1640daa5abedabc21cbc37f31905a241f9e32dbc8dae6d213238ca4cc4675b2b",
       "paint_slots": [
         {
           "id": "body",
@@ -470,6 +470,12 @@
             },
             {
               "node_path": "cowl_face",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "canopy_frame",
               "surface": 0,
               "kind": "shader_color",
               "parameter": "red"
@@ -831,7 +837,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "884bfc3437a1fc97599fc198ce6ee303189b7d051aa3a54c15598df4fd923d22"
+      "slots_sha256": "b022abdbd89680d606d1f231cf64f4fcab20f07234e2c7b7ec85a0a5b71bd22e"
     },
     {
       "format": "openrc-aircraft-customization-bindings",

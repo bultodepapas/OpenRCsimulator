@@ -119,6 +119,10 @@ void fragment() {
 		float d = UV.x - 0.5 * (fin_band.x + fin_band.y);
 		c = band(red, d, 0.5 * (fin_band.y - fin_band.x), pin_m);
 	}
+	if (part == 2) {
+		// Narrow, antialiased joint where the removable ABS cowl meets the body.
+		c *= mix(1.0, 0.55, inside(abs(UV.y - cowl_rear_z) - 0.00045));
+	}
 	ALBEDO = c;
 	ROUGHNESS = roughness_value;
 }

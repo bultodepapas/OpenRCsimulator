@@ -8,7 +8,7 @@
   "white": "#f3f1ea",
   "blue": "#1f3f9e",
   "pinstripe": "#16285e",
-  "glass": "#1c2733"
+  "glass": "#607987"
  },
  "wing_top": {
   "band_chord_fraction": [
@@ -69,15 +69,19 @@
    0.235
   ]
  },
- "roughness": 0.4,
+ "roughness": 0.34,
  "fuselage_note": "Side band: straight line in model height (metres) from the cowl joint to the tail post, as in the photo; the cowl carries a lower white panel with three stars.",
  "canopy": {
-  "alpha": 0.45,
+  "alpha": 0.28,
   "note": "Tinted transparent canopy (EX-10 test): set alpha to 1.0 for the opaque fallback if transparency shows sorting defects."
  },
  "pilot_colors": {
-  "skin": "#d9a57e",
+  "skin": "#ce9b78",
   "cap": "#1d2a4a",
-  "shirt": "#e6e8ec"
+  "shirt": "#243d60",
+  "glasses": "#14212b",
+  "harness": "#d8cfb5",
+  "seat": "#303b47",
+  "instruments": "#c9d1d5"
  }
 }

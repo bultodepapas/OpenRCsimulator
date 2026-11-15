@@ -123,7 +123,7 @@
     },
     {
       "path": "assets/aircraft/extra-300s-60/appearance.json",
-      "sha256": "70ecc6fb8bddcbefc555856b5ef666417bc8d76e2228b1982a219d233480d7ad",
+      "sha256": "abdc9227fa87a879486bf056f2953c5d1478bf510182dde0c94a2196538288b3",
       "hash_mode": "lf_text",
       "role": "appearance"
     }
@@ -131,13 +131,13 @@
   "dependencies": [
     {
       "path": "res://aircraft/extra_300s_appearance.gd",
-      "sha256": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+      "sha256": "f22a6499d9537d3718bd638dc154644d5ce65963787a44e68084f3b9d9acead2",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
     {
       "path": "res://aircraft/extra_300s_finish.gd",
-      "sha256": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+      "sha256": "6fc532495d020cf5b20c80b76ea3342c6823c59d6092fdbf6f01040273a8ddab",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -149,7 +149,7 @@
     },
     {
       "path": "res://aircraft/extra_300s_model.gd",
-      "sha256": "b55442f3aaf57f82e02437a1054fdb9ed6ab90a941ec28726784c20cb9c2e240",
+      "sha256": "dca667236cccba9e37656c0ab9d7f877a04128f6f01d3668cb82aa55c270285e",
       "hash_mode": "lf_text",
       "role": "builder"
     }
