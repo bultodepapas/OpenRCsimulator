@@ -4,6 +4,7 @@ const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Loader := preload("res://data/lake_loader.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
+const HullContact := preload("res://physics/hull_contact.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const LakeCollision := preload("res://sim/lake_collision.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
@@ -113,7 +114,7 @@ func _accept_sweep(session: Session, previous: PackedFloat64Array, candidate: Pa
 			and session.last_lake_event() == null and session.last_scenery_event() == null)
 		return filtered
 	session.sim.step()
-	_check("controlled sweep commits", session.sim.tick == 1 and session.sim.fault_reason.is_empty())
+	_check("controlled sweep commits", session.sim.tick == 1 and session.sim.fault_reason.is_empty(), session.sim.fault_reason)
 
 func _test_outside_parity(lake: Dictionary) -> void:
 	var dry: Session = _new_session()
@@ -156,7 +157,8 @@ func _test_sampled_bank_tolerance(lake: Dictionary) -> void:
 	var session: Session = _new_collision_session(lake)
 	session.soft_hull_contacts = true
 	session.aircraft.model.crash_tolerance = {terminal_specific_energy = 12.5, crash_depth = 0.12}
-	session._hull_contact = session._prepare_hull_contact()
+	session._hull_contact = HullContact.prepare_geometry(session.aircraft.model.crash_hull, lake,
+		session.airframe_surfaces, session.aircraft.model.crash_tolerance)
 	var properties := {mass_kg = session.sim.mass, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
 		inertia = session.sim.inertia, inverse = RB.inertia_inverse(session.sim.inertia)}
 	var sampler := func(_fraction: float) -> Dictionary:
