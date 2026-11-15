@@ -1,0 +1,6 @@
+# Helper defaults only. The user's selected main model and permissions stay in
+# the parent session. See docs/SUBAGENTS.md for availability and fallback rules.
+[agents]
+default_subagent_model = "gpt-6.1-terra"
+default_subagent_reasoning_effort = "max"
+max_concurrent_threads_per_session = 3

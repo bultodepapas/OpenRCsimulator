@@ -1,10 +1,20 @@
 # Repository guidance
 
-Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Terra 6.1 Max sub-agents when useful and assign clear file boundaries.
+Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable.
 
-When delegating, use the [subagent collaboration guide](docs/SUBAGENTS.md) for specialist roles, task boundaries and evidence handoffs. Select only the specialists useful for the current task. Amost always use at least one extra sub agent the GOOD ENEMY.
+## Lead agent and subagents
 
-do not create thing that you can free download
+The **main conversation's agent is the senior developer, technical orchestrator and final implementation owner**. The intended lead is the user's selected highest-capability reasoning model. Keep that lead responsible for architecture, difficult reasoning, the definitive code, integration and verification throughout the task. Repository instructions cannot upgrade a running model; report a known mismatch instead of claiming a capability or silently switching the lead to a helper model.
+
+- **Use helpers actively.** For substantial work with independent questions, dispatch one or two useful subagents early and continue the lead's own technical work in parallel. Normally include a **Good Enemy** for consequential code, architecture or agent-policy changes. A trivial edit, tightly dependent task or unavailable delegation tool can stay with the lead; briefly explain a material omission. Do not wait for the user to repeat this delegation request.
+- **Select helper models explicitly.** Prefer **GPT-6.1 Terra with `max` reasoning in Codex** and **Sonnet with `high` effort in Claude Code**, when supported. These are authorized helper choices, not replacements for the lead. Use the [model routing and fallback rules](docs/SUBAGENTS.md#model-routing-and-runtime-support); model and effort are separate settings, and requested settings are not proof of the effective runtime.
+- **Helpers supply evidence and drafts.** Treat subagents as bounded researchers, reviewers, assistants or junior developers, even when their model is highly capable. They investigate, compare alternatives, calculate, propose tests and return candidate patches. Any specialist or skill title, including "senior" or "orchestrator", remains subordinate to the main lead's assignment.
+- **The lead produces the final solution.** Inspect important source evidence, resolve disagreements, write or deliberately adapt the final code and review every accepted draft. A helper's confidence, passing report or agreement cannot replace the lead's examination and integrated checks. Helpers do not take over the whole task or approve their own work.
+- **Bound authority and writes.** Research, review and returned drafts are source-read-only by default. Any execution or file-writing assignment needs exact paths, source identity, resource ownership and a stop condition. Preserve existing permissions and user authorization; delegate neither a permission bypass nor unassigned publication.
+
+Use the [subagent collaboration guide](docs/SUBAGENTS.md) for the workflow, runtime profiles, 26 specialist roles and dispatch/return templates. [CLAUDE.md](CLAUDE.md) adapts the same policy for Claude Code. Load only the relevant specialist detail.
+
+Reuse suitable freely available tools, assets and data before creating equivalents; preserve provenance and redistribution rights.
 
 ## Display resolution priorities
 

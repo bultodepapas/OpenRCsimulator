@@ -8,34 +8,45 @@ Follow the shared [display resolution priorities](AGENTS.md#display-resolution-p
 
 ## Claude subagent collaboration
 
-Act as the lead senior developer and technical orchestrator. Use native Claude Code subagents when independent investigation, implementation or review meaningfully improves the task. Keep small or tightly dependent work in the main conversation.
+In the main conversation, remain the senior developer, technical orchestrator and final implementation owner described in [AGENTS.md](AGENTS.md#lead-agent-and-subagents). Keep the user's selected strongest lead model for planning, coding, integration and verification. A spawned helper reading this file remains subordinate to its assigned scope.
 
-For Claude Code, use available **Claude models** as the client-specific adaptation of the model preference in [AGENTS.md](AGENTS.md). Default to the session's configured subagent model; otherwise inherit the main model. Only override with a model supported by the current runtime when the task warrants it. This adaptation changes model selection, not the shared project rules.
+**Actively use Sonnet helpers at high effort** for useful independent work. This project authorizes that model/effort choice; do not silently inherit the lead model for every helper. Use native Claude Code delegation, start with one or two bounded assignments for substantial work, and normally include a Good Enemy for consequential changes. Keep trivial or tightly dependent steps with the lead and explain material runtime limitations.
 
-Use [docs/SUBAGENTS.md](docs/SUBAGENTS.md) for the 26 specialist definitions, delegation contract and dispatch/return templates. Read the shared contract and relevant role on demand. Catalog identifiers such as `pure_physicist` are roles, not automatically registered Claude subagent types.
+Use [docs/SUBAGENTS.md](docs/SUBAGENTS.md) for the canonical workflow, model fallback, 26 specialist definitions and dispatch/return templates. Read its operating rules and only the relevant specialty. Catalog names such as `pure_physicist` are assignments, not automatically registered agent types.
 
-### Choose an available native agent
+### Use the configured helpers
 
-Delegate through Claude Code's native subagent tool using a type actually available in the session. Pass the selected catalog role in the task prompt.
+Project profiles in [`.claude/agents/`](.claude/agents/) separate the helper model and effort:
 
-| Task | Native agent and assigned role |
+```yaml
+model: sonnet
+effort: high
+```
+
+| Profile | Assignment and tools |
 | --- | --- |
-| Repository discovery | `Explore` as Repo Cartographer when its tools can access the required graph; otherwise `general-purpose` with a read-only assignment |
-| Independent review or research | `general-purpose` as Good Enemy, Pure Physicist, Deep Research Scout, Regression Guardian or Evidence Auditor; read-only source scope |
-| Captures, device checks or storage investigation | `general-purpose` as Visual QA Pilot, RC Controls Engineer or Disk Steward, with the required tools and explicit output/resource scope |
-| Bounded implementation | `general-purpose` as the relevant subsystem specialist, with exact writable paths and acceptance checks |
+| [`openrc-researcher`](.claude/agents/openrc-researcher.md) | Map code, research sources or compare options; Read, Glob, Grep, WebSearch, WebFetch |
+| [`openrc-draft-helper`](.claude/agents/openrc-draft-helper.md) | Return a proposed patch, algorithm or test for lead review; Read, Glob, Grep |
+| [`openrc-good-enemy`](.claude/agents/openrc-good-enemy.md) | Independently challenge requirements, design or the actual candidate; Read, Glob, Grep |
 
-Use an existing custom agent if its definition fits the task. The catalog can be used through native agents without registering every role under `.claude/agents/`. See the [official subagent documentation](https://code.claude.com/docs/en/sub-agents) for client-specific configuration.
+These are supporting profiles, not main-session agents. Their allowlists omit shell, file-write and delegation tools, and their turn budgets keep assignments bounded. The draft helper returns text; the lead writes or adapts the accepted implementation. Supply a diff and source identity when the helper cannot obtain them itself. A partial result at the turn limit remains partial; resume only for a concrete remaining question.
+
+Invoke the named custom profile as an ordinary subagent. A conversation fork inherits the parent's model, prompt and tools; it is not the restricted Sonnet/high helper defined here. Check the actual agent type rather than assuming every delegation uses the profile. Keep required results pending until they arrive, even when the client runs helpers in the background without a blocking wait.
+
+Verify discovery through a named invocation and its delegation transcript; supported clients also show agents in the `@`-mention typeahead. Inspect the reported model/effort in `/tasks` when available. In recent releases `/agents` only prints a reminder, so it is not a discovery check. Restart the session if directly added profile files have not loaded. `sonnet` resolves according to the provider/client; `high` is a separate effort setting supported only by appropriate models/releases. Invocation, environment or managed settings can change the effective choice. Follow the shared [fallback rules](docs/SUBAGENTS.md#availability-overrides-and-fallback), report substitutions and mark unobservable settings unverified.
+
+For a required MCP graph, execution, capture or draft-writing task that these profiles cannot perform, supply the evidence or use an actually available capable native agent, such as `general-purpose`, with explicit supported Sonnet/high settings and a bounded brief. Prefer the assigned custom profile over `Explore` when model control matters. Preserve graph-first discovery when available and the documented source-search fallback when it is not. Do not broaden a profile's tool access just to avoid reporting a limitation.
+
+Do not use `opusplan` as a substitute for this hierarchy: it changes the execution model. Do not enable an agent team or switch providers merely to obtain helpers. The strongest selected lead remains responsible for the final solution.
 
 ### Delegate and integrate
 
-- Give each agent a self-contained question, repository root, owner/step, baseline and dirty-file context, relevant rules, read/write paths, unique output directory, evidence requirement and stop condition. Do not assume it sees the parent conversation. Explicitly supply repository constraints to `Explore` and `Plan`, which may omit project instructions at startup.
-- Carry the graph-first discovery rule into every code investigation. If the graph or another required tool is unavailable to a child, route the task to a capable agent or report the limitation and use the repository's documented fallback.
-- Keep research/review source-read-only, including shell and MCP actions. Assign one writer per path; coordinate shared interfaces and exclusive Blender, UI, radio and capture access. Do not benchmark alongside competing CPU/GPU workloads.
-- Give critical reviewers facts and evidence without steering them toward the preferred conclusion. Require concise, reproducible findings and explicit uncertainty; finding no significant issues is valid.
-- Keep child delegation bounded; do not spawn another layer unless the lead explicitly assigns it. Wait for dependent findings before integrating, reconcile disagreements with evidence and verify the combined diff.
-- Retain responsibility for the final result. Do not turn agent recommendations into approval gates, replace missing hardware/pilot evidence with agent consensus or claim a subagent ran when delegation was unavailable.
+- Give each helper the shared dispatch brief, including requested model/effort, exact question, baseline/dirty inputs, relevant constraints and the decision retained by the lead. Ordinary helpers do not receive the parent conversation automatically; some built-in agents also omit project instructions. Pass essential constraints explicitly.
+- Keep research/review source-read-only across every available tool. A shell-capable fallback can still write despite lacking an Edit tool. Assign exact paths for a writing helper and verify the worktree's actual base; coordinate exclusive Blender, UI, radio and capture access through existing admission tools.
+- Ask for alternatives, source evidence, concrete findings and uncertainty. Check consequential claims yourself, decide which draft material to accept, and implement the definitive solution. Continue useful lead work while independent investigations run.
+- For consequential changes, normally have a Good Enemy inspect the actual candidate and acceptance criteria. Resolve material findings, inspect the combined diff and verify affected behavior. A reviewer cannot approve its own draft or replace missing hardware/pilot evidence.
+- Keep delegation shallow by project policy, even when the runtime supports nested subagents. The shipped profiles cannot spawn children; a capable fallback may do so only when explicitly assigned by the lead within the available budget. Do not convert advice into a new approval gate or claim unavailable delegation occurred.
 
 The [shared rules](AGENTS.md), [tooling guide](docs/TOOLS.md) and [flight logging workflow](docs/FLIGHT-LOGGING.md) govern implementation and verification. Reuse suitable free tools, assets and data with appropriate provenance and redistribution rights.
 
-Shared rules load through Claude Code's [documented file import](https://code.claude.com/docs/en/memory#import-additional-files). Keep this file focused on Claude-specific behavior; update common rules in `AGENTS.md` and specialist definitions in `docs/SUBAGENTS.md`.
+Shared rules load through Claude Code's [documented file import](https://code.claude.com/docs/en/memory#import-additional-files). Client details were checked on 2026-11-15 against [custom subagents](https://code.claude.com/docs/en/sub-agents) and [model configuration](https://code.claude.com/docs/en/model-config); verify current runtime support. Keep common policy in `AGENTS.md` and the workflow/specialties in `docs/SUBAGENTS.md`.
