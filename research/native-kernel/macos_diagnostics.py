@@ -448,7 +448,8 @@ def run(args: argparse.Namespace) -> dict:
     diagnostic_path = getattr(args, "diagnostic_godot", None)
     try:
         lock = mac.locked.load_lock()
-        toolchain = mac.host_toolchain()
+        selected_profile = getattr(args, "toolchain_profile", None)
+        toolchain = mac.host_toolchain(selected_profile) if selected_profile is not None else mac.host_toolchain()
         research_engine = ENGINE_POLICY.selection_from_args(args)
         def engine_check():
             return (mac.godot_identity(args.godot, lock, research_engine) if research_engine is not None
@@ -600,7 +601,9 @@ def run(args: argparse.Namespace) -> dict:
                 summary["domain_guard"]["error"] = str(error)
                 raise ValueError(f"{DOMAIN_GUARD_SCRIPT}: {error}") from error
             summary["domain_guard"].update(**guard_result)
+        final_toolchain = mac.host_toolchain(selected_profile) if selected_profile is not None else mac.host_toolchain()
         if (inputs != {name: helper._sha(Path(name)) for name in inputs} or mac._identity() != identity
+                or final_toolchain != toolchain
                 or engine_check() != engine or runner.validate_project(project) != project_proof
                 or harness_hashes != {name: helper._sha(Path(name)) for name in harness_hashes}
                 or (runtime and helper._sha(runtime) != summary["asan_runtime"]["sha256"])):
@@ -671,6 +674,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=20261027)
     parser.add_argument("--timeout", type=float, default=600)
     ENGINE_POLICY.add_arguments(parser)
+    ENGINE_POLICY.add_toolchain_arguments(parser)
     try:
         result = run(parser.parse_args())
     except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as error:

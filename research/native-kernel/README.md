@@ -73,6 +73,14 @@ roster from `verification_roster()` using `run.py` and its declared counts/tapes
 The installer revalidates the actual reports, checked logs, source, binary and
 engine; an old report or matching fallback cannot qualify a native install.
 
+The default `--toolchain-profile` remains `apple-clang-2100.3.34.2-sdk-27.0`.
+For a host with exactly Apple Clang `2100.4.1.1` and SDK `27.2`, select
+`--toolchain-profile apple-clang-2100.4.1.1-sdk-27.2` explicitly for the builder,
+installer, FPCR control, diagnostics, fleet, package and promotion commands.
+The selected profile and actual compiler/SDK are bound in the build receipt;
+legacy receipts without a profile retain the original exact pin. A selected
+profile does not qualify a host, candidate, package or performance result.
+
 The separate local MetalFX-engine lane requires explicit independent selection;
 an engine build receipt alone cannot authorize its executable. It binds the exact
 ARM64 editor hash, CLI/runtime versions, original build receipt, upstream ZIP,
@@ -110,6 +118,14 @@ R=(
 Use exactly the ordered patch list in the selected intake; omit later entries
 when testing an earlier stack. The
 [engine guide](../../tools/graphics/metalfx/README.md) owns the current patch list.
+
+The engine-build toolchain is an independent selection. Its omitted
+`--research-engine-toolchain-profile` retains the original Clang `2100.3.34.2` /
+SDK `27.0` receipt check. When the selected engine was built with the second
+exact pair, add `--research-engine-toolchain-profile apple-clang-2100.4.1.1-sdk-27.2`
+to `R`. This does not select or imply the kernel
+build's `--toolchain-profile`, or vice versa. Pass the independent selections to
+each command that validates those identities.
 
 `run.py` reads that identity from the verified native build receipt instead of
 accepting this argument array. Identity checks reconstruct source catalogs and

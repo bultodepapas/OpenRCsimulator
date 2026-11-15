@@ -36,9 +36,18 @@ if ENGINE_SPEC is None or ENGINE_SPEC.loader is None:
 engine_policy = importlib.util.module_from_spec(ENGINE_SPEC)
 ENGINE_SPEC.loader.exec_module(engine_policy)
 
-# The observed M1 toolchain; changing any member requires new qualification.
+# The observed M1 toolchains; each selection requires its own qualification.
 APPLE_CLANG = "Apple clang version 21.0.0 (clang-2100.3.34.2)"
 SDK_VERSION = "27.0"
+DEFAULT_TOOLCHAIN_PROFILE = engine_policy.DEFAULT_TOOLCHAIN_PROFILE
+TOOLCHAIN_PROFILES = {
+    "apple-clang-2100.3.34.2-sdk-27.0": {"compiler_version": APPLE_CLANG, "sdk_version": SDK_VERSION},
+    "apple-clang-2100.4.1.1-sdk-27.2": {
+        "compiler_version": "Apple clang version 21.0.0 (clang-2100.4.1.1)", "sdk_version": "27.2"},
+}
+if (DEFAULT_TOOLCHAIN_PROFILE != "apple-clang-2100.3.34.2-sdk-27.0"
+        or engine_policy.TOOLCHAIN_PROFILES != TOOLCHAIN_PROFILES):
+    raise RuntimeError("Mac toolchain profile policy differs from the builder's exact pins")
 # 11.0 is the first macOS release supporting Apple Silicon. This is a build
 # floor, not a claim that the resulting evaluator is qualified on macOS 11.
 DEPLOYMENT_TARGET = "11.0"
@@ -205,8 +214,33 @@ def clean_build_environment(compiler: Path, sdk: Path) -> dict[str, str]:
     return env
 
 
-def host_toolchain() -> dict:
+def add_toolchain_arguments(parser: argparse.ArgumentParser) -> None:
+    engine_policy.add_toolchain_arguments(parser)
+
+
+def _validated_toolchain(record: object) -> dict:
+    """Legacy records without a profile retain the original exact compiler/SDK pin."""
+    if not isinstance(record, dict):
+        raise ValueError("Missing native toolchain identity")
+    profile = record.get("profile", DEFAULT_TOOLCHAIN_PROFILE)
+    if not isinstance(profile, str) or profile not in TOOLCHAIN_PROFILES:
+        raise ValueError("Unknown native toolchain profile")
+    expected = TOOLCHAIN_PROFILES[profile]
+    if any(record.get(key) != value for key, value in expected.items()):
+        raise ValueError("Native toolchain does not match its exact compiler/SDK profile")
+    return {**record, "profile": profile}
+
+
+def require_matching_toolchains(record: object, actual: object) -> None:
+    if _validated_toolchain(record) != _validated_toolchain(actual):
+        raise ValueError("Recorded native toolchain differs from the selected current toolchain")
+
+
+def host_toolchain(profile: str = DEFAULT_TOOLCHAIN_PROFILE) -> dict:
     """Fail before building on Rosetta, a different compiler, SDK, or missing libc++ headers."""
+    if not isinstance(profile, str) or profile not in TOOLCHAIN_PROFILES:
+        raise ValueError("Unknown native toolchain profile")
+    expected = TOOLCHAIN_PROFILES[profile]
     if locked.host_platform_name() != "macos" or locked.host_arch_name() != "arm64":
         raise ValueError("build_macos.py requires a native macOS ARM64 host")
     translated = _output(["sysctl", "-in", "sysctl.proc_translated"])
@@ -221,7 +255,8 @@ def host_toolchain() -> dict:
     version = _output([str(compiler), "--version"]).splitlines()[0]
     target = _output([str(compiler), "-dumpmachine"])
     headers = sdk / "usr/include/c++/v1"
-    if version != APPLE_CLANG or sdk_version != SDK_VERSION or not target.startswith("arm64-apple-darwin"):
+    if (version != expected["compiler_version"] or sdk_version != expected["sdk_version"]
+            or not target.startswith("arm64-apple-darwin")):
         raise ValueError(f"Unpinned Apple toolchain: {version}, SDK {sdk_version}, target {target}")
     if not compiler.is_file() or not c_compiler.is_file() or not (headers / "vector").is_file():
         raise ValueError(f"Compiler or SDK libc++ headers are missing (expected {headers})")
@@ -229,7 +264,7 @@ def host_toolchain() -> dict:
     if c_compiler.parent != compiler.parent:
         raise ValueError("clang and clang++ resolve to different toolchains")
     settings = sdk / "SDKSettings.json"
-    return {"compiler": str(compiler), "compiler_sha256": nk.sha256_file(compiler),
+    return {"profile": profile, "compiler": str(compiler), "compiler_sha256": nk.sha256_file(compiler),
             "c_compiler": str(c_compiler), "c_compiler_sha256": nk.sha256_file(c_compiler),
             "compiler_version": version, "target": target, "sdk_path": str(sdk),
             "sdk_version": sdk_version, "sdk_settings_sha256": nk.sha256_file(settings) if settings.is_file() else None,
@@ -461,7 +496,7 @@ def uuid_map(binary: Path) -> dict[str, str]:
     return result
 
 
-def build_version(load_commands: str) -> dict:
+def build_version(load_commands: str, sdk_version: str = SDK_VERSION) -> dict:
     blocks = re.split(r"(?=\s*Load command \d+\n)", load_commands)
     found = []
     for block in blocks:
@@ -475,17 +510,17 @@ def build_version(load_commands: str) -> dict:
     if len(found) != 1 or found[0]["platform"] not in {"MACOS", "1"}:
         raise ValueError("Missing or ambiguous macOS LC_BUILD_VERSION")
     result = found[0]
-    if _version(result["minimum_os"]) != _version(DEPLOYMENT_TARGET) or _version(result["sdk"]) != _version(SDK_VERSION):
+    if _version(result["minimum_os"]) != _version(DEPLOYMENT_TARGET) or _version(result["sdk"]) != _version(sdk_version):
         raise ValueError(f"Mach-O SDK/deployment differs from the selected toolchain: {result}")
     return result
 
 
-def inspect_library(library: Path, dsym: Path, work: Path) -> dict:
+def inspect_library(library: Path, dsym: Path, work: Path, sdk_version: str = SDK_VERSION) -> dict:
     if architectures(library) != ["arm64"]:
         raise ValueError("The dylib must contain exactly one ARM64 slice")
     commands = _output(["xcrun", "otool", "-l", str(library)])
     (work / "macho-load-commands.txt").write_text(commands + "\n", encoding="utf-8")
-    version = build_version(commands)
+    version = build_version(commands, sdk_version)
     install = _output(["xcrun", "otool", "-D", str(library)]).splitlines()
     if len(install) != 2 or install[1].strip() != f"@rpath/{library.name}":
         raise ValueError(f"Unexpected dylib install name: {install}")
@@ -638,7 +673,7 @@ def _verified_macho(library: Path, work: Path, built: dict) -> None:
         raise ValueError("The signed dylib no longer has the recorded Developer ID signature metadata")
     commands = _output(["xcrun", "otool", "-l", str(library)])
     if (hashlib.sha256((commands + "\n").encode()).hexdigest() != macho["load_commands_sha256"]
-            or build_version(commands) != macho["build_version"]):
+            or build_version(commands, built["toolchain"]["sdk_version"]) != macho["build_version"]):
         raise ValueError("Dylib load commands changed")
     install = _output(["xcrun", "otool", "-D", str(library)]).splitlines()
     if len(install) != 2 or install[1].strip() != f"@rpath/{library.name}" or macho["install_name"] != install[1].strip():
@@ -692,10 +727,13 @@ def validate_build(root: Path, mutant: bool, identity: dict, toolchain: dict, en
     built = json.loads(receipt_path.read_text(encoding="utf-8"))
     if not isinstance(built, dict) or any(built.get(key) != value for key, value in identity.items()):
         raise ValueError("Native source, mirrored source, builder or lock changed since the build")
+    require_matching_toolchains(built.get("toolchain"), toolchain)
+    if built.get("compiler") != toolchain["compiler_version"] or built.get("compiler_version") != toolchain["compiler_version"]:
+        raise ValueError("Recorded compiler differs from the effective selected compiler")
     flags = [*_common_flags(Path(toolchain["sdk_path"])), *(["-DNK_MUTATION=1"] if mutant else [])]
     required = {"format": FORMAT, "installable": False, "mutant": mutant, "platform": "macos",
                 "architecture": "arm64", "target": "template_release", "backend_version": nk.BACKEND_VERSION,
-                "abi_version": nk.ABI_VERSION, "toolchain": toolchain, "engine": engine,
+                "abi_version": nk.ABI_VERSION, "engine": engine,
                 "engine_version": engine["version"], "engine_sha256": engine["sha256"],
                 "godot_cpp_commit": lock["godot_cpp"]["commit"], "scons_version": lock["scons"]["version"],
                 "scons_wheel_sha256": lock["scons"]["wheel_sha256"], "extension_api": lock["godot"]["extension_api"],
@@ -941,14 +979,14 @@ def _atomic_install(path: Path, data: bytes) -> None:
 
 
 def install_app(tool_root: Path, godot: Path, expected_signing: dict | None = None,
-                research_engine: dict | None = None) -> int:
+                research_engine: dict | None = None, toolchain_profile: str = DEFAULT_TOOLCHAIN_PROFILE) -> int:
     """Install only an evidence-bound, experimental source-tree fixed-wing candidate."""
     root = tool_root.resolve()
     tmp = (ROOT / "tmp").resolve()
     if root == tmp or not root.is_relative_to(tmp):
         raise ValueError("--tool-root must be a directory inside this checkout's tmp/")
     lock = locked.load_lock()
-    toolchain = host_toolchain()
+    toolchain = host_toolchain(toolchain_profile)
     engine = godot_identity(godot, lock, research_engine) if research_engine is not None else godot_identity(godot, lock)
     identity = _identity()
     candidate = validate_build(root, False, identity, toolchain, engine, lock)
@@ -1000,7 +1038,7 @@ def install_app(tool_root: Path, godot: Path, expected_signing: dict | None = No
                                                   final_cache, runner) for key, pattern in verification_roster().items()}
     library_bytes = Path(candidate["library"]).read_bytes()
     final_engine = godot_identity(godot, lock, research_engine) if research_engine is not None else godot_identity(godot, lock)
-    if (_identity() != identity or final_engine != engine or host_toolchain() != toolchain
+    if (_identity() != identity or final_engine != engine or host_toolchain(toolchain_profile) != toolchain
             or hashlib.sha256(library_bytes).hexdigest() != candidate["binary_sha256"]
             or nk.sha256_file(Path(mutant["library"])) != mutant["binary_sha256"]
             or final_verifications != verifications):
@@ -1035,7 +1073,8 @@ def build(args: argparse.Namespace) -> int:
     if args.jobs < 1:
         raise ValueError("--jobs must be at least 1")
     requested_signing = signing_selection(getattr(args, "signing_identity", None), getattr(args, "team_id", None))
-    toolchain = host_toolchain()
+    selected_profile = getattr(args, "toolchain_profile", DEFAULT_TOOLCHAIN_PROFILE)
+    toolchain = host_toolchain(selected_profile)
     lock = locked.load_lock()
     research_engine = engine_policy.selection_from_args(args)
     engine = godot_identity(args.godot, lock, research_engine) if research_engine is not None else godot_identity(args.godot, lock)
@@ -1053,6 +1092,7 @@ def build(args: argparse.Namespace) -> int:
         other = json.loads(other_receipt.read_text(encoding="utf-8"))
         if not isinstance(other, dict) or _signing_record_selection(other.get("signing")) != selected_signing:
             raise ValueError("Candidate and mutant must use the same signing selection")
+        require_matching_toolchains(other.get("toolchain"), toolchain)
     variant = "_mutant" if args.mutant else ""
     name = nk.NAME + variant
     library = root / "lib" / f"lib{name}.dylib"
@@ -1114,8 +1154,8 @@ def build(args: argparse.Namespace) -> int:
         sign_command = ["codesign", "--force", "--sign", selected_signing["identity_sha1"], "--timestamp", str(library)]
     subprocess.run(sign_command, check=True, env=env)
     signature = inspect_signing(library, selected_signing, env=env)
-    inspection = inspect_library(library, dwarf, work)
-    if (before != _identity() or nk.sha256_file(api) != api_sha256
+    inspection = inspect_library(library, dwarf, work, toolchain["sdk_version"])
+    if (before != _identity() or host_toolchain(selected_profile) != toolchain or nk.sha256_file(api) != api_sha256
             or nk.sha256_file(args.godot.resolve()) != engine["sha256"]
             or (research_engine is not None and godot_identity(args.godot, lock, research_engine) != engine)):
         raise ValueError("Sources, API or engine changed during the build; use a fresh tool root")
@@ -1160,6 +1200,7 @@ def main() -> int:
     parser.add_argument("--team-id", help="10-character Developer ID team; required with --signing-identity")
     parser.add_argument("--install-app", action="store_true",
                         help="install the evidence-bound experimental source candidate; does not qualify fleet or packages")
+    add_toolchain_arguments(parser)
     engine_policy.add_arguments(parser)
     args = parser.parse_args()
     try:
@@ -1169,7 +1210,7 @@ def main() -> int:
         research_engine = engine_policy.selection_from_args(args)
         return install_app(args.tool_root, args.godot,
                            expected_signing=requested if args.signing_identity is not None else None,
-                           research_engine=research_engine) if args.install_app else build(args)
+                           research_engine=research_engine, toolchain_profile=args.toolchain_profile) if args.install_app else build(args)
     except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as error:
         print(f"Mac native build refused: {error}", file=sys.stderr)
         return 1

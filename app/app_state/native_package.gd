@@ -262,7 +262,9 @@ static func mac_native_identity(executable: String, architecture: String, argume
 		return _refuse("Mac native bundle receipt could not be hashed")
 	return {ok = true, reason = "", kind = MAC_NATIVE_IDENTITY_KIND,
 		sha256 = (receipt_hash + "\n" + architecture).sha256_text(), receipt_sha256 = receipt_hash,
-		reference_receipt_sha256 = reference.receipt_sha256, manifest = manifest,
+		reference_receipt_sha256 = reference.receipt_sha256, reference_identity = reference, manifest = manifest,
+		manifest_sha256 = values.manifest_sha256, library_sha256 = values.library_sha256,
+		descriptor_sha256 = values.descriptor_sha256,
 		library_path = bundle.path_join(MAC_NATIVE_LIBRARY), descriptor_path = bundle.path_join(MAC_NATIVE_DESCRIPTOR)}
 
 

@@ -5,7 +5,9 @@ import copy
 import importlib.util
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import Mock, patch
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -115,6 +117,34 @@ class ControlProbeTests(unittest.TestCase):
         for bad_result, bad_checked, bad_log in changes:
             with self.subTest(result=bad_result, checked=bad_checked, log=bad_log), self.assertRaises(ValueError):
                 probe.control_result(bad_result, bad_checked, bad_log)
+
+    def test_cli_forwards_selected_profile_to_control(self):
+        selected = probe.ENGINE_POLICY.NEW_TOOLCHAIN_PROFILE
+        argv = ["fpcr_control_probe.py", "--tool-root", str(self.root / "build"), "--godot", "engine",
+                "--project", str(self.root / "project"), "--out", str(self.root / "output"),
+                "--toolchain-profile", selected]
+        with patch.object(probe.sys, "argv", argv), \
+             patch.object(probe, "run", return_value={"result": "detected", "fpcr": {}}) as run:
+            self.assertEqual(probe.main(), 0)
+            self.assertEqual(run.call_args.args[0].toolchain_profile, selected)
+
+    def test_control_uses_selected_host_profile_before_validating_candidate(self):
+        tmp = self.root / "tmp"
+        build = tmp / "build"
+        project = tmp / "project"
+        build.mkdir(parents=True)
+        project.mkdir()
+        selected = probe.ENGINE_POLICY.NEW_TOOLCHAIN_PROFILE
+        mac = SimpleNamespace(locked=SimpleNamespace(load_lock=lambda: {}), host_toolchain=Mock(return_value={}),
+                              godot_identity=lambda *_: {}, _identity=lambda: {},
+                              validate_build=Mock(side_effect=ValueError("candidate stopped")))
+        args = SimpleNamespace(timeout=60, tool_root=build, project=project, out=tmp / "output",
+                               godot=self.root / "Godot", toolchain_profile=selected)
+        with patch.object(probe, "ROOT", self.root), patch.object(probe, "_module", return_value=mac):
+            with self.assertRaisesRegex(ValueError, "candidate stopped"):
+                probe.run(args)
+        mac.host_toolchain.assert_called_once_with(selected)
+        self.assertEqual(mac.validate_build.call_args.args[3], {})
 
 
 if __name__ == "__main__":

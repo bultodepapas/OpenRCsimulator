@@ -1414,7 +1414,7 @@ class MacosExperimentalCampaignTests(unittest.TestCase):
     def test_command_forwards_project_engine_opt_in_and_fixed_wing_scope(self):
         async def scenario():
             with tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
+                root = Path(temporary).resolve()
                 tool = root / "tool"
                 tool.mkdir()
                 result_path = tool / "fleet-sample.json"
@@ -1607,7 +1607,9 @@ class MacosSelectedProjectTests(unittest.TestCase):
                             "--godot", str(self.engine), "--tool-root", self.context["tool_root"]]
         linux_with_root = ["fleet_campaign.py", "--out", str(campaign.ROOT / "tmp/out"),
                            "--qualification-root", self.context["qualification_root"]]
-        for argv in (mac_without_root, linux_with_root):
+        linux_with_explicit_default = ["fleet_campaign.py", "--out", str(campaign.ROOT / "tmp/out"),
+                                       "--toolchain-profile", campaign.ENGINE_POLICY.DEFAULT_TOOLCHAIN_PROFILE]
+        for argv in (mac_without_root, linux_with_root, linux_with_explicit_default):
             with self.subTest(argv=argv), mock.patch.object(campaign.sys, "argv", argv), \
                     mock.patch.object(campaign.sys, "stderr"):
                 with self.assertRaises(SystemExit) as error:
@@ -1655,7 +1657,8 @@ class MacosBaseBoundaryEvidenceTests(unittest.TestCase):
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.mac = fixture_module.mac
-        self.toolchain = {"os_version": "27.0.1", "os_build": "26A434"}
+        self.toolchain = {"os_version": "27.0.1", "os_build": "26A434",
+                          "compiler_version": self.mac.APPLE_CLANG, "sdk_version": "27.0"}
         self.candidate = self.fixture.built
         self.candidate.update(engine_sha256=self.fixture.engine["sha256"], toolchain=self.toolchain,
                               source_sha256="1" * 64, lock_sha256="2" * 64, builder_sha256="3" * 64,
@@ -1714,6 +1717,20 @@ class MacosBaseBoundaryEvidenceTests(unittest.TestCase):
         self.guard["research_engine"] = selection
         campaign.validate_macos_base_boundary(self.guard)
         self.assertEqual(self.mac.godot_identity.call_args.args, (Path(self.guard["godot"]), {}, selection))
+
+    def test_selected_toolchain_is_forwarded_and_receipt_mismatch_refused(self):
+        selected = self.mac.engine_policy.NEW_TOOLCHAIN_PROFILE
+        self.guard["toolchain_profile"] = selected
+        self.toolchain.update(profile=selected, **self.mac.TOOLCHAIN_PROFILES[selected])
+        self.guard["receipt"]["toolchain"] = copy.deepcopy(self.toolchain)
+        self.candidate["toolchain"] = copy.deepcopy(self.toolchain)
+        self.candidate_path.write_text(json.dumps(self.candidate), encoding="utf-8")
+        with mock.patch.object(self.mac, "_check_oracle_identity"):
+            campaign.validate_macos_base_boundary(self.guard)
+            self.mac.host_toolchain.assert_called_with(selected)
+            self.guard["receipt"]["toolchain"]["sdk_version"] = "27.0"
+            with self.assertRaises(ValueError):
+                campaign.validate_macos_base_boundary(self.guard)
 
     def test_missing_or_wrong_qualification_root_does_not_fall_back_to_tool_root(self):
         original = self.guard["qualification_root"]

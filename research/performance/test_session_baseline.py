@@ -363,6 +363,33 @@ class ReducerTests(unittest.TestCase):
 
 
 class EngineInspectionTests(unittest.TestCase):
+    def test_session_parser_forwards_explicit_engine_profile_to_both_routes(self):
+        policy = baseline.ENGINE_POLICY
+        pins = ["--research-engine-sha256", "a" * 64,
+                "--research-engine-cli-version", policy.RESEARCH_CLI,
+                "--research-engine-runtime-version", policy.RESEARCH_RUNTIME,
+                "--research-engine-build-receipt", "build-editor.json",
+                "--research-engine-archive", "source.zip",
+                "--research-engine-extension-api", "extension_api-4-7.json",
+                "--research-engine-reference-godot", "official-godot",
+                "--research-engine-patch", "0001.patch",
+                "--research-engine-toolchain-profile", policy.NEW_TOOLCHAIN_PROFILE]
+        parsed = baseline.build_parser().parse_args(["--out", "unused", *pins])
+        selection = policy.selection_from_args(parsed)
+        self.assertEqual(selection["toolchain_profile"], policy.NEW_TOOLCHAIN_PROFILE)
+        engine = {"path": "/local/Godot", "version": policy.RESEARCH_CLI, "sha256": "a" * 64,
+                  "architectures": ["arm64"], "research_engine": {"selection": selection}}
+        mac = SimpleNamespace(locked=SimpleNamespace(load_lock=lambda: {}),
+                              godot_identity=unittest.mock.Mock(return_value=engine))
+        spec = SimpleNamespace(loader=SimpleNamespace(exec_module=lambda _module: None))
+        with patch.object(baseline.importlib.util, "spec_from_file_location", return_value=spec), \
+             patch.object(baseline.importlib.util, "module_from_spec", return_value=mac):
+            inspect_godot(Path("/local/Godot"), 30, selection)
+        self.assertEqual(mac.godot_identity.call_args.args[2], selection)
+        with patch.object(baseline, "compare_campaigns", return_value=0) as compare:
+            self.assertEqual(baseline.main(["--out", "unused", "--compare-campaigns", "before", "after", *pins]), 0)
+        self.assertEqual(compare.call_args.args[-1], selection)
+
     def test_only_exact_current_official_build_can_run_a_new_campaign(self):
         with tempfile.TemporaryDirectory() as directory:
             executable = Path(directory) / "godot"

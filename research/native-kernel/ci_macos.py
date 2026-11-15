@@ -21,6 +21,33 @@ ROOT = HERE.parents[1]
 EXCLUDED = {"helicopter", "helicopter_stage"}
 
 
+def engine_policy() -> object:
+    """Load argument policy before the builder captures its selected tool root."""
+    spec = importlib.util.spec_from_file_location("openrc_ci_macos_engine_policy", HERE / "macos_engine_identity.py")
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Cannot load the Mac engine identity policy")
+    policy = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(policy)
+    return policy
+
+
+def research_arguments(selection: dict | None) -> list[str]:
+    """Forward a validated independent selection; run.py reads its build receipt."""
+    if selection is None:
+        return []
+    result = []
+    for option, key in (("sha256", "sha256"), ("cli-version", "cli_version"),
+                        ("runtime-version", "runtime_version"), ("build-receipt", "receipt"),
+                        ("archive", "archive"), ("extension-api", "extension_api"),
+                        ("reference-godot", "reference_godot")):
+        result.extend(("--research-engine-" + option, str(selection[key])))
+    if "toolchain_profile" in selection:
+        result.extend(("--research-engine-toolchain-profile", selection["toolchain_profile"]))
+    for patch in selection["patches"]:
+        result.extend(("--research-engine-patch", str(patch)))
+    return result
+
+
 def oracle_commands(builder: object) -> list[tuple[str, str, list[str]]]:
     """Use the installer's actual roster and the shared declared oracle arguments."""
     roster = builder.verification_roster()
@@ -56,7 +83,16 @@ def main() -> int:
     parser.add_argument("--godot", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path, help="new directory below this checkout's tmp/")
     parser.add_argument("--jobs", type=int, default=2)
+    policy = engine_policy()
+    policy.add_arguments(parser)
+    policy.add_toolchain_arguments(parser)
     args = parser.parse_args()
+    try:
+        research_engine = policy.selection_from_args(args)
+    except ValueError as error:
+        parser.error(str(error))
+    selected_arguments = research_arguments(research_engine)
+    toolchain_arguments = ["--toolchain-profile", args.toolchain_profile]
     raw_out = args.out.expanduser()
     if raw_out.exists() or raw_out.is_symlink():
         parser.error("--out must not already exist")
@@ -71,7 +107,8 @@ def main() -> int:
     logs = out / "logs"
     logs.mkdir()
     build_root = out / "build"
-    env = dict(os.environ, OPENRC_NK_TOOL_ROOT=str(build_root), PYTHONDONTWRITEBYTECODE="1")
+    child_environment = policy.clean_child_environment() if research_engine is not None else dict(os.environ)
+    env = dict(child_environment, OPENRC_NK_TOOL_ROOT=str(build_root), PYTHONDONTWRITEBYTECODE="1")
     # The Python builder reads OPENRC_NK_TOOL_ROOT when imported.
     os.environ["OPENRC_NK_TOOL_ROOT"] = str(build_root)
     spec = importlib.util.spec_from_file_location("openrc_ci_macos_builder", HERE / "build_macos.py")
@@ -98,12 +135,18 @@ def main() -> int:
                 str(godot), "--verbose", "--headless", "--path", str(project), "--audio-driver", "Dummy", "--import")
 
     try:
+        # Validate the exact selected toolchain and executable before any import
+        # or preparation can execute Godot. Shape-only CLI pins are insufficient.
+        selected_toolchain = builder.host_toolchain(args.toolchain_profile)
+        selected_engine = builder.godot_identity(godot, builder.locked.load_lock(), research_engine)
+        (out / "selected-toolchain.json").write_text(json.dumps(selected_toolchain, indent=2) + "\n")
+        (out / "selected-engine.json").write_text(json.dumps(selected_engine, indent=2) + "\n")
         execute("prepare-before", python, prepare, "--dest", str(before), "--copy-mode", "clone")
         before_app = before / "app"
         import_project("import-before", before_app)
         for mutant in (False, True):
             command = [python, builder_path, "--godot", str(godot), "--tool-root", str(build_root),
-                       "--jobs", str(args.jobs)]
+                       "--jobs", str(args.jobs), *selected_arguments, *toolchain_arguments]
             if mutant:
                 command.append("--mutant")
             run(command, "build-mutant" if mutant else "build-candidate", logs, env)
@@ -113,7 +156,8 @@ def main() -> int:
                     str(before_app), "--experimental-native-macos", "--script", script, *options)
 
         execute("fpcr-control", python, str(HERE / "fpcr_control_probe.py"), "--tool-root", str(build_root),
-                "--godot", str(godot), "--project", str(before_app), "--out", str(out / "fpcr"))
+                "--godot", str(godot), "--project", str(before_app), "--out", str(out / "fpcr"),
+                *selected_arguments, *toolchain_arguments)
 
         guard_checks = out / "guard-check"
         execute("domain-guard", python, checked, "--out-dir", str(guard_checks), "--label", "domain-guard",
@@ -129,7 +173,7 @@ def main() -> int:
         print(f"Packed domain guard: {count} checks", flush=True)
 
         execute("install", python, builder_path, "--godot", str(godot), "--tool-root", str(build_root),
-                "--install-app")
+                "--install-app", *selected_arguments, *toolchain_arguments)
         # Installer outputs change the canonical app. A previously prepared copy
         # remains frozen; a fresh verified copy is required to execute that install.
         execute("prepare-after", python, prepare, "--dest", str(after), "--copy-mode", "clone")

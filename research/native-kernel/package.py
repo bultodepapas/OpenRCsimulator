@@ -199,7 +199,8 @@ def _validate_mac_cited_evidence(root: Path, cited: object, candidate: dict, mut
             raise ValueError(f"Cited Mac evidence count or bytes changed: {key}")
 
 
-def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
+def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | None = None,
+                         toolchain_profile: str | None = None) -> dict:
     """Revalidate the exact signed candidate and all required source-oracle evidence."""
     mac = _mac_builder()
     root = tool_root.resolve()
@@ -207,7 +208,7 @@ def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | N
     if root == tmp or not root.is_relative_to(tmp):
         raise ValueError("Mac tool root must be inside this checkout's tmp/")
     lock = mac.locked.load_lock()
-    toolchain = mac.host_toolchain()
+    toolchain = mac.host_toolchain(toolchain_profile) if toolchain_profile is not None else mac.host_toolchain()
     engine = mac.godot_identity(godot, lock, research_engine) if research_engine is not None else mac.godot_identity(godot, lock)
     identity = mac._identity()
     candidate = mac.validate_build(root, False, identity, toolchain, engine, lock)
@@ -245,19 +246,27 @@ def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | N
                 "source_sha256": identity["source_sha256"], "lock_sha256": identity["lock_sha256"],
                 "mirrored_sources": identity["reference_sources_sha256"], "runtime_os_version": toolchain["os_version"],
                 "runtime_os_build": toolchain["os_build"], "engine_version": mac._engine_display(engine["version"]),
-                "engine_sha256": engine["sha256"]}
+                "engine_sha256": engine["sha256"], "engine": engine}
     if not isinstance(row, dict) or any(row.get(key) != value for key, value in required.items()) \
             or type(row.get("abi_version")) is not int or sha(library) != candidate["binary_sha256"] \
             or descriptor.read_text(encoding="utf-8") != mac.SOURCE_DESCRIPTOR:
         raise ValueError("Mac installation differs from the verified source build or evidence")
+    mac.require_matching_toolchains(row.get("toolchain"), toolchain)
+    mac.require_matching_toolchains(candidate.get("toolchain"), toolchain)
+    mac.require_matching_toolchains(mutant.get("toolchain"), toolchain)
     _validate_mac_cited_evidence(root, row.get("verification"), candidate, mutant, mac)
+    final_toolchain = mac.host_toolchain(toolchain_profile) if toolchain_profile is not None else mac.host_toolchain()
+    if final_toolchain != toolchain:
+        raise ValueError("Mac toolchain changed during installation verification")
     if research_engine is not None and mac.godot_identity(godot, lock, research_engine) != engine:
         raise ValueError("Research engine provenance changed during installation verification")
     return receipt
 
 
-def _mac_manifest(tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
-    receipt = (verified_mac_install(tool_root, godot, research_engine) if research_engine is not None
+def _mac_manifest(tool_root: Path, godot: Path, research_engine: dict | None = None,
+                  toolchain_profile: str | None = None) -> dict:
+    receipt = (verified_mac_install(tool_root, godot, research_engine, toolchain_profile) if toolchain_profile is not None
+               else verified_mac_install(tool_root, godot, research_engine) if research_engine is not None
                else verified_mac_install(tool_root, godot))
     return {"format": MAC_MANIFEST_FORMAT, "platform": "macos", "architecture": "arm64",
             "engine_version": receipt["platforms"]["macos"]["engine_version"], "native_receipt": receipt,
@@ -265,8 +274,10 @@ def _mac_manifest(tool_root: Path, godot: Path, research_engine: dict | None = N
             "qualification_sources": {name: sha(path) for name, path in MAC_QUALIFICATION.items()}}
 
 
-def prepare_macos(tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
-    manifest = (_mac_manifest(tool_root, godot, research_engine) if research_engine is not None
+def prepare_macos(tool_root: Path, godot: Path, research_engine: dict | None = None,
+                  toolchain_profile: str | None = None) -> dict:
+    manifest = (_mac_manifest(tool_root, godot, research_engine, toolchain_profile) if toolchain_profile is not None
+                else _mac_manifest(tool_root, godot, research_engine) if research_engine is not None
                 else _mac_manifest(tool_root, godot))
     if MAC_MANIFEST.is_symlink():
         raise ValueError("Mac manifest path is redirected")
@@ -276,14 +287,16 @@ def prepare_macos(tool_root: Path, godot: Path, research_engine: dict | None = N
     return {"manifest": str(MAC_MANIFEST), "manifest_sha256": sha(MAC_MANIFEST)}
 
 
-def stage_macos(bundle: Path, tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
+def stage_macos(bundle: Path, tool_root: Path, godot: Path, research_engine: dict | None = None,
+                toolchain_profile: str | None = None) -> dict:
     """Stage exact previously verified bytes before outer app signing; never re-sign the dylib."""
     if bundle.is_symlink() or not bundle.is_dir() or not bundle.name.endswith(".app"):
         raise ValueError("Mac destination must be a real .app directory")
     if MAC_MANIFEST.is_symlink() or not MAC_MANIFEST.is_file():
         raise ValueError("Missing or redirected Mac package manifest")
     manifest = json.loads(MAC_MANIFEST.read_text(encoding="utf-8"))
-    current_manifest = lambda: (_mac_manifest(tool_root, godot, research_engine) if research_engine is not None
+    current_manifest = lambda: (_mac_manifest(tool_root, godot, research_engine, toolchain_profile) if toolchain_profile is not None
+                                else _mac_manifest(tool_root, godot, research_engine) if research_engine is not None
                                 else _mac_manifest(tool_root, godot))
     if manifest != current_manifest():
         raise ValueError("Mac package inputs changed since preparation")
@@ -330,19 +343,22 @@ def main() -> None:
     mac_prepare.add_argument("--tool-root", type=Path, required=True)
     mac_prepare.add_argument("--godot", type=Path, required=True)
     _mac_builder().engine_policy.add_arguments(mac_prepare)
+    _mac_builder().add_toolchain_arguments(mac_prepare)
     mac_stage = commands.add_parser("stage-macos")
     mac_stage.add_argument("--bundle", type=Path, required=True)
     mac_stage.add_argument("--tool-root", type=Path, required=True)
     mac_stage.add_argument("--godot", type=Path, required=True)
     _mac_builder().engine_policy.add_arguments(mac_stage)
+    _mac_builder().add_toolchain_arguments(mac_stage)
     args = parser.parse_args()
     if args.command == "prepare": result = prepare()
     elif args.command == "finalize": result = finalize(args.executable, args.template)
     elif args.command == "prepare-macos":
-        result = prepare_macos(args.tool_root, args.godot, _mac_builder().engine_policy.selection_from_args(args))
+        result = prepare_macos(args.tool_root, args.godot, _mac_builder().engine_policy.selection_from_args(args),
+                               args.toolchain_profile)
     else:
         result = stage_macos(args.bundle, args.tool_root, args.godot,
-                             _mac_builder().engine_policy.selection_from_args(args))
+                             _mac_builder().engine_policy.selection_from_args(args), args.toolchain_profile)
     print(json.dumps(result, indent=2, sort_keys=True))
 
 

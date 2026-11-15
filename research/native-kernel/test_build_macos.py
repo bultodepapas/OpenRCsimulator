@@ -193,6 +193,40 @@ class BuildPolicy(ScratchCase):
             with self.assertRaisesRegex(ValueError, "native macOS"):
                 mac.host_toolchain()
 
+    def test_explicit_profile_requires_the_exact_compiler_and_sdk_pair(self):
+        selected = mac.engine_policy.NEW_TOOLCHAIN_PROFILE
+        observed = {"compiler": mac.APPLE_CLANG, "sdk": "27.0"}
+        def outputs(command, **_kwargs):
+            values = {("sysctl", "-in", "sysctl.proc_translated"): "0",
+                      ("xcrun", "--sdk", "macosx", "--show-sdk-path"): str(self.sdk),
+                      ("xcrun", "--sdk", "macosx", "--show-sdk-version"): observed["sdk"],
+                      ("xcrun", "--sdk", "macosx", "--find", "clang++"): str(self.compiler),
+                      ("xcrun", "--sdk", "macosx", "--find", "clang"): str(self.compiler.with_name("clang")),
+                      (str(self.compiler), "--version"): observed["compiler"] + "\nTarget: arm64-apple-darwin27.0.0",
+                      (str(self.compiler), "-dumpmachine"): "arm64-apple-darwin27.0.0",
+                      ("xcode-select", "-p"): "/selected", ("sw_vers", "-productVersion"): "27.0",
+                      ("sw_vers", "-buildVersion"): "26A434"}
+            return values[tuple(command)]
+        with patch.object(mac.locked, "host_platform_name", return_value="macos"), \
+             patch.object(mac.locked, "host_arch_name", return_value="arm64"), \
+             patch.object(mac, "_output", side_effect=outputs):
+            self.assertEqual(mac.host_toolchain()["profile"], mac.DEFAULT_TOOLCHAIN_PROFILE)
+            with self.assertRaisesRegex(ValueError, "Unpinned"):
+                mac.host_toolchain(selected)
+            observed.update(compiler=mac.TOOLCHAIN_PROFILES[selected]["compiler_version"], sdk="27.2")
+            new = mac.host_toolchain(selected)
+            self.assertEqual((new["profile"], new["compiler_version"], new["sdk_version"]),
+                             (selected, observed["compiler"], "27.2"))
+            with self.assertRaisesRegex(ValueError, "Unpinned"):
+                mac.host_toolchain()
+            for compiler, sdk in ((mac.APPLE_CLANG, "27.2"), (observed["compiler"], "27.0"),
+                                  (observed["compiler"] + " modified", "27.2")):
+                observed.update(compiler=compiler, sdk=sdk)
+                with self.subTest(compiler=compiler, sdk=sdk), self.assertRaisesRegex(ValueError, "Unpinned"):
+                    mac.host_toolchain(selected)
+            with self.assertRaisesRegex(ValueError, "Unknown"):
+                mac.host_toolchain("unknown")
+
     def test_godot_identity_requires_version_and_arm_slice(self):
         exe = self.root / "Godot"
         exe.write_text("engine")
@@ -284,6 +318,12 @@ class MachOPolicy(ScratchCase):
 
     def test_build_version_and_math_imports_fail_closed(self):
         self.assertEqual(mac.build_version(self.COMMANDS)["sdk"], "27.0")
+        selected = self.COMMANDS.replace("27.0", "27.2")
+        self.assertEqual(mac.build_version(selected, "27.2")["sdk"], "27.2")
+        with self.assertRaises(ValueError):
+            mac.build_version(selected)
+        with self.assertRaises(ValueError):
+            mac.build_version(self.COMMANDS, "27.2")
         for change in (self.COMMANDS.replace("11.0", "12.0"), self.COMMANDS.replace("27.0", "26.0"),
                        self.COMMANDS.replace("MACOS", "IOS"), self.COMMANDS + self.COMMANDS, ""):
             with self.subTest(change=change), self.assertRaises(ValueError):
@@ -465,6 +505,18 @@ class SigningPolicy(ScratchCase):
 
 
 class Publishing(ScratchCase):
+    def test_builder_cli_forwards_profile_to_build_and_install(self):
+        selected = mac.engine_policy.NEW_TOOLCHAIN_PROFILE
+        argv = ["build_macos.py", "--godot", "engine", "--tool-root", str(self.root / "build"),
+                "--toolchain-profile", selected]
+        with patch.object(mac.sys, "argv", argv), patch.object(mac, "build", return_value=0) as build:
+            self.assertEqual(mac.main(), 0)
+            self.assertEqual(build.call_args.args[0].toolchain_profile, selected)
+        with patch.object(mac.sys, "argv", [*argv, "--install-app"]), \
+             patch.object(mac, "install_app", return_value=0) as install:
+            self.assertEqual(mac.main(), 0)
+            self.assertEqual(install.call_args.kwargs["toolchain_profile"], selected)
+
     def test_developer_id_build_signs_before_hashing_and_rejects_mixed_pair(self):
         tool_root = self.root / "outputs"
         compiler = self.root / "bin/clang++"
@@ -476,7 +528,7 @@ class Publishing(ScratchCase):
         engine_identity = {"path": str(engine), "version": "version", "sha256": mac.nk.sha256_file(engine),
                            "architectures": ["arm64"]}
         toolchain = {"compiler": str(compiler), "c_compiler": str(compiler.with_name("clang")),
-                     "compiler_version": mac.APPLE_CLANG, "sdk_path": str(sdk)}
+                     "compiler_version": mac.APPLE_CLANG, "sdk_version": "27.0", "sdk_path": str(sdk)}
         lock = mac.locked.load_lock()
         identity = {"source_sha256": "source", "reference_sources_sha256": {}, "lock_sha256": "lock",
                     "builder_sha256": "builder", "linux_builder_sha256": "linux", "shared_builder_sha256": "shared"}
@@ -512,7 +564,7 @@ class Publishing(ScratchCase):
                 path.write_bytes(path.read_bytes() + b"-developer-signed")
             return SimpleNamespace(returncode=0, stdout="", stderr=details)
 
-        def inspection(library, _dwarf, _work):
+        def inspection(library, _dwarf, _work, _sdk):
             self.assertTrue(library.read_bytes().endswith(b"-developer-signed"))
             return {"architectures": ["arm64"]}
 
@@ -562,7 +614,7 @@ class Publishing(ScratchCase):
         engine_identity = {"path": str(engine), "version": "version", "sha256": mac.nk.sha256_file(engine),
                            "architectures": ["arm64"]}
         toolchain = {"compiler": str(compiler), "c_compiler": str(compiler.with_name("clang")),
-                     "compiler_version": mac.APPLE_CLANG, "sdk_path": str(sdk)}
+                     "compiler_version": mac.APPLE_CLANG, "sdk_version": "27.0", "sdk_path": str(sdk)}
         lock = mac.locked.load_lock()
         identity = {"source_sha256": "source", "reference_sources_sha256": {}, "lock_sha256": "lock",
                     "builder_sha256": "builder", "linux_builder_sha256": "linux", "shared_builder_sha256": "shared"}
@@ -595,7 +647,7 @@ class Publishing(ScratchCase):
                 stderr = "Signature=adhoc"
             return Result()
 
-        def inspection(library, _dwarf, _work):
+        def inspection(library, _dwarf, _work, _sdk):
             self.assertTrue(library.read_bytes().endswith(b"-signed"))
             return {"architectures": ["arm64"]}
 
@@ -987,7 +1039,7 @@ class RetainedBuildValidation(ScratchCase):
         self.descriptor = self.out / "openrc_native_kernel.gdextension"
         self.descriptor.write_text("descriptor")
         self.toolchain = {"compiler": str(self.compiler), "sdk_path": str(self.sdk), "os_version": "27.0.1",
-                          "os_build": "26A434"}
+                          "os_build": "26A434", "compiler_version": mac.APPLE_CLANG, "sdk_version": "27.0"}
         self.engine = {"path": str(self.root / "Godot"), "sha256": "e" * 64,
                        "version": "4.8.beta2.official.cafc17a19", "architectures": ["arm64"]}
         self.identity = {"source_sha256": "a" * 64, "reference_sources_sha256": {"app/proof": "b" * 64},
@@ -1005,7 +1057,8 @@ class RetainedBuildValidation(ScratchCase):
         self.receipt = {**self.identity, "format": mac.FORMAT, "installable": False, "mutant": False,
                         "platform": "macos", "architecture": "arm64", "target": "template_release",
                         "backend_version": mac.nk.BACKEND_VERSION, "abi_version": mac.nk.ABI_VERSION,
-                        "toolchain": self.toolchain, "engine": self.engine, "engine_version": self.engine["version"],
+                        "toolchain": copy.deepcopy(self.toolchain), "compiler": mac.APPLE_CLANG, "compiler_version": mac.APPLE_CLANG,
+                        "engine": self.engine, "engine_version": self.engine["version"],
                         "engine_sha256": self.engine["sha256"], "godot_cpp_commit": self.lock["godot_cpp"]["commit"],
                         "scons_version": self.lock["scons"]["version"],
                         "scons_wheel_sha256": self.lock["scons"]["wheel_sha256"],
@@ -1048,6 +1101,35 @@ class RetainedBuildValidation(ScratchCase):
             with self.subTest(file=file), self.assertRaises(ValueError):
                 self.check()
             file.write_bytes(before)
+        self.assertEqual(self.check(), self.receipt)
+
+    def test_receipt_profile_is_bound_and_legacy_omission_means_only_old_pair(self):
+        self.assertNotIn("profile", self.receipt["toolchain"])
+        self.assertEqual(self.check(), self.receipt)
+        self.toolchain["profile"] = mac.DEFAULT_TOOLCHAIN_PROFILE
+        self.assertEqual(self.check(), self.receipt)
+        selected = mac.engine_policy.NEW_TOOLCHAIN_PROFILE
+        self.toolchain.update(profile=selected, **mac.TOOLCHAIN_PROFILES[selected])
+        with self.assertRaises(ValueError):
+            self.check()
+        self.receipt["toolchain"] = copy.deepcopy(self.toolchain)
+        self.receipt["compiler"] = self.toolchain["compiler_version"]
+        self.receipt["compiler_version"] = self.toolchain["compiler_version"]
+        self.write()
+        self.assertEqual(self.check(), self.receipt)
+        for mutate in (lambda row: row["toolchain"].update(profile="unknown"),
+                       lambda row: row["toolchain"].pop("profile"),
+                       lambda row: row["toolchain"].update(sdk_version="27.0"),
+                       lambda row: row["toolchain"].update(compiler_version=mac.APPLE_CLANG),
+                       lambda row: row.update(compiler=mac.APPLE_CLANG),
+                       lambda row: row.update(compiler_version=mac.APPLE_CLANG)):
+            before = copy.deepcopy(self.receipt)
+            mutate(self.receipt)
+            self.write()
+            with self.assertRaises(ValueError):
+                self.check()
+            self.receipt = before
+        self.write()
         self.assertEqual(self.check(), self.receipt)
 
 

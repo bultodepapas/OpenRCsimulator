@@ -20,6 +20,7 @@ const HelicopterAdapter := preload("res://sim/native/helicopter_stage_adapter.gd
 const StageConfig := preload("res://sim/native/stage_config.gd")
 const NativePackage := preload("res://app_state/native_package.gd")
 const MacosAdmission := preload("res://sim/native_macos_admission.gd")
+const MacosPackageAdmission := preload("res://sim/native_macos_package_admission.gd")
 const MacosDomain := preload("res://sim/native_macos_domain.gd")
 
 const EXTENSION_PATH := "res://native/kernel/openrc_native_kernel.gdextension"
@@ -97,6 +98,7 @@ static var _library_checked := false
 static var _library_error := ""
 static var _receipt_row: Dictionary = {}
 static var _macos_loaded_receipt_sha256 := ""
+static var _macos_loaded_package_identity: Dictionary = {}
 
 var reason := "not prepared"
 var _native: Object = null
@@ -226,11 +228,14 @@ func prepare(session: Node) -> Dictionary:
 	_macos_domain_context = {}
 	_macos_automatic_marker = {}
 	var is_macos := OS.get_name() == "macOS"
+	var package_admission := {}
 	if is_macos:
-		var session_error := _macos_session_error(session)
-		if not session_error.is_empty(): return _refuse(session_error)
+		var session_admission := _macos_session_admission(session)
+		if not session_admission.get("ok", false): return _refuse(str(session_admission.reason))
+		package_admission = session_admission.get("package_admission", {})
 		if not session.experimental_native_macos:
-			var marker := MacosAdmission.read_marker()
+			var marker: Dictionary = package_admission.get("marker", {}) if OS.has_feature("template_release") \
+				else MacosAdmission.read_marker()
 			_macos_automatic_marker = marker
 			var selected := MacosDomain.screen_session(session, true)
 			if not MacosAdmission.selection_allowed(marker, selected, session.soft_hull_contacts):
@@ -248,10 +253,28 @@ func prepare(session: Node) -> Dictionary:
 					return _refuse("screened Mac stock context could not be frozen")
 	var status := library_status(is_macos)
 	if not status.ok: return _refuse(status.reason)
-	if not _macos_automatic_marker.is_empty():
+	var source_error := ""
+	if is_macos and OS.has_feature("template_release"):
+		# A cached library may not silently inherit a newly replaced package or
+		# receipt, even for the explicit experimental route.
+		var current := _macos_verified_package_snapshot()
+		var cached_error := MacosPackageAdmission.loaded_identity_error(
+			_macos_loaded_package_identity, current.get("identity", {}))
+		if not cached_error.is_empty(): return _refuse(cached_error)
+		var actual_os_error := _macos_runtime_os_error(_receipt_row)
+		if not actual_os_error.is_empty(): return _refuse(actual_os_error)
+		if not _macos_automatic_marker.is_empty():
+			if package_admission.get("identity", {}) != _macos_loaded_package_identity \
+					or not _macos_package_marker_unchanged(package_admission):
+				return _refuse("Mac package default changed after admission; restart required")
+		# The current package snapshot has already checked its actual bundle;
+		# reuse it for the existing receipt-row boundary without another full scan.
+		source_error = _macos_package_source_error(current.get("native", {}), _receipt_row)
+	elif not _macos_automatic_marker.is_empty():
 		var cached_error := MacosAdmission.loaded_identity_error(_macos_automatic_marker, _macos_loaded_receipt_sha256, _receipt_row)
 		if not cached_error.is_empty(): return _refuse(cached_error)
-	var source_error := _mirrored_source_error()
+	if not is_macos or not OS.has_feature("template_release"):
+		source_error = _mirrored_source_error()
 	if not source_error.is_empty(): return _refuse(source_error)
 	if session == null or session.get("sim") == null or not session.aircraft.get("ok", false):
 		return _refuse("no committed aircraft and simulation")
@@ -407,12 +430,74 @@ func _refuse(why: String) -> Dictionary:
 
 ## Reject before consulting or populating the process-wide library cache.
 static func _macos_session_error(session: Node) -> String:
+	return str(_macos_session_admission(session).get("reason", ""))
+
+
+static func _macos_session_admission(session: Node) -> Dictionary:
 	if not is_instance_valid(session) or session.get_script() != load("res://sim/flight_session.gd"):
-		return "native stage on macOS supports experimental fixed-wing sessions only"
+		return {ok = false, reason = "native stage on macOS supports experimental fixed-wing sessions only"}
 	var opt_in: Variant = session.get("experimental_native_macos")
-	if typeof(opt_in) == TYPE_BOOL and opt_in: return ""
-	if session.get("automatic_native_macos") == true and not MacosAdmission.read_marker().is_empty(): return ""
-	return "Mac native default qualification is unavailable; explicit experimental fixed-wing opt-in remains available"
+	if typeof(opt_in) == TYPE_BOOL and opt_in: return {ok = true, reason = ""}
+	if session.get("automatic_native_macos") == true:
+		if OS.has_feature("template_release"):
+			var admission := _macos_automatic_admission()
+			if not admission.is_empty(): return {ok = true, reason = "", package_admission = admission}
+		elif not MacosAdmission.read_marker().is_empty():
+			return {ok = true, reason = ""}
+	return {ok = false, reason = "Mac native default qualification is unavailable; explicit experimental fixed-wing opt-in remains available"}
+
+
+## Reference and native package readers bind the final executable, PCK,
+## receipts, manifest and sidecars. Return no partially verified snapshot.
+static func _macos_verified_package_snapshot() -> Dictionary:
+	var executable := OS.get_executable_path()
+	var architecture := Engine.get_architecture_name()
+	var args := OS.get_cmdline_args() + OS.get_cmdline_user_args()
+	var native := NativePackage.mac_native_identity(executable, architecture, args)
+	if not native.get("ok", false) or not native.get("reference_identity") is Dictionary: return {}
+	if not FileAccess.file_exists(NativePackage.MAC_NATIVE_MANIFEST_PATH): return {}
+	var reference: Dictionary = native.reference_identity
+	var manifest_sha := FileAccess.get_sha256(NativePackage.MAC_NATIVE_MANIFEST_PATH)
+	var identity := MacosPackageAdmission.package_identity(native, reference, manifest_sha)
+	if identity.is_empty(): return {}
+	return {native = native, reference = reference, identity = identity}
+
+
+## Package promotion remains disabled until an independent producer validates
+## pair provenance, packaged execution, fleet, replay and performance evidence.
+## The source-editor marker remains on its original route.
+static func _macos_automatic_admission() -> Dictionary:
+	if not OS.has_feature("template_release"):
+		var marker := MacosAdmission.read_marker()
+		return {} if marker.is_empty() else {marker = marker}
+	if not MacosPackageAdmission.ENABLED or OS.get_name() != "macOS" \
+			or Engine.get_architecture_name() != "arm64": return {}
+	var verified := _macos_verified_package_snapshot()
+	if verified.is_empty(): return {}
+	var row: Dictionary = verified.native.manifest.native_receipt.platforms.macos
+	var actual_os_error := _macos_runtime_os_error(row)
+	var bundle := OS.get_executable_path().get_base_dir().get_base_dir().get_base_dir()
+	var marker_path := bundle + MacosPackageAdmission.MARKER_SUFFIX
+	var parent := DirAccess.open(bundle.get_base_dir())
+	if parent == null or parent.is_link(bundle.get_file()) or parent.is_link(marker_path.get_file()): return {}
+	var document := MacosAdmission._read_document(marker_path)
+	var marker: Variant = document.get("data")
+	if not marker is Dictionary or not MacosPackageAdmission.marker_error(marker, verified.native, verified.reference,
+			verified.identity.manifest_sha256, OS.get_processor_name(), OS.get_model_name(), actual_os_error).is_empty(): return {}
+	if parent.is_link(marker_path.get_file()) \
+			or MacosAdmission._read_document(marker_path) != document: return {}
+	return {marker = marker, identity = verified.identity, marker_path = marker_path,
+		marker_sha256 = document.sha256}
+
+
+static func _macos_package_marker_unchanged(admission: Dictionary) -> bool:
+	var path: Variant = admission.get("marker_path")
+	if typeof(path) != TYPE_STRING or path.is_empty(): return false
+	var parent := DirAccess.open(path.get_base_dir())
+	if parent == null or parent.is_link(path.get_file()): return false
+	var document := MacosAdmission._read_document(path)
+	return document.get("sha256") == admission.get("marker_sha256") \
+		and document.get("data") == admission.get("marker") and not parent.is_link(path.get_file())
 
 
 ## Return the supported source/debug process target; unknown targets refuse.
@@ -492,9 +577,9 @@ static func _load_package_library() -> String:
 
 
 static func _load_macos_package_library() -> String:
-	var package := NativePackage.mac_native_identity(OS.get_executable_path(), Engine.get_architecture_name(),
-		OS.get_cmdline_args() + OS.get_cmdline_user_args())
-	if not package.get("ok", false): return str(package.get("reason", "Mac native package unavailable"))
+	var snapshot := _macos_verified_package_snapshot()
+	if snapshot.is_empty(): return "Mac native package identity is unavailable or changed"
+	var package: Dictionary = snapshot.native
 	var row := _platform_row(package.manifest.native_receipt, "macos")
 	if row.is_empty() or row.get("engine_version") != Engine.get_version_info().string:
 		return "Mac native package has no valid verified ARM64 receipt"
@@ -508,7 +593,13 @@ static func _load_macos_package_library() -> String:
 		return "Mac native package descriptor differs from the verified loader contract"
 	if FileAccess.get_sha256(library) != row.binary_sha256:
 		return "Mac native package binary differs from its embedded identity"
-	return _initialize_library(descriptor, row)
+	var load_error := _initialize_library(descriptor, row)
+	if not load_error.is_empty(): return load_error
+	var after := _macos_verified_package_snapshot()
+	if after.get("identity", {}) != snapshot.identity:
+		return "Mac package changed while loading the native library; restart required"
+	_macos_loaded_package_identity = snapshot.identity.duplicate(true)
+	return ""
 
 
 static func _initialize_library(descriptor: String, row: Dictionary) -> String:

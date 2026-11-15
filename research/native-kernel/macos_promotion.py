@@ -277,11 +277,16 @@ def generate(args: argparse.Namespace) -> dict[str, Any]:
     qualification_root = args.qualification_root.expanduser().resolve()
     context = {"project": str(project), "godot": str(godot), "tool_root": str(tool_root),
                "qualification_root": str(qualification_root), "trim_profile": "production"}
+    selected_profile = getattr(args, "toolchain_profile", None)
+    if selected_profile is not None and selected_profile != ENGINE_POLICY.DEFAULT_TOOLCHAIN_PROFILE:
+        context["toolchain_profile"] = selected_profile
     research_engine = ENGINE_POLICY.selection_from_args(args)
     if research_engine is not None:
         context["research_engine"] = research_engine
     def verified_install() -> dict:
-        return (package.verified_mac_install(qualification_root, godot, research_engine) if research_engine is not None
+        return (package.verified_mac_install(qualification_root, godot, research_engine, selected_profile)
+                if selected_profile is not None else
+                package.verified_mac_install(qualification_root, godot, research_engine) if research_engine is not None
                 else package.verified_mac_install(qualification_root, godot))
     installed = verified_install()
     guard = fleet.snapshot(context)
@@ -332,6 +337,7 @@ def main() -> int:
     for option in ("project", "godot", "tool-root", "qualification-root", "preflight", "campaign", "out"):
         parser.add_argument("--" + option, type=Path, required=True)
     ENGINE_POLICY.add_arguments(parser)
+    ENGINE_POLICY.add_toolchain_arguments(parser)
     parser.add_argument("--short-pair", nargs=2, type=Path, action="append", default=[], metavar=("REFERENCE", "NATIVE"))
     parser.add_argument("--long-pair", nargs=2, type=Path, action="append", default=[], metavar=("REFERENCE", "NATIVE"))
     args = parser.parse_args()

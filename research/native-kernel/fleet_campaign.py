@@ -320,6 +320,8 @@ def macos_snapshot(context: dict[str, Any]) -> dict[str, Any]:
             "fleet_sha256": sha256(FLEET), "campaign_sha256": sha256(Path(__file__).resolve())}
     if context.get("research_engine") is not None:
         result["research_engine"] = context["research_engine"]
+    if context.get("toolchain_profile") is not None:
+        result["toolchain_profile"] = context["toolchain_profile"]
     return result
 
 
@@ -1080,16 +1082,18 @@ def validate_macos_base_boundary(guard: dict[str, Any]) -> dict[str, Any]:
     report_hash, candidate_hash = sha256(path), sha256(candidate_path)
     require(report_hash == expected_hash, "installed Mac base-oracle report changed")
     lock = mac.locked.load_lock()
-    toolchain = mac.host_toolchain()
+    selected_profile = guard.get("toolchain_profile")
+    toolchain = mac.host_toolchain(selected_profile) if selected_profile is not None else mac.host_toolchain()
     research_engine = guard.get("research_engine")
     engine = (mac.godot_identity(Path(guard["godot"]), lock, research_engine) if research_engine is not None
               else mac.godot_identity(Path(guard["godot"]), lock))
     candidate = mac.validate_build(root, False, mac._identity(), toolchain, engine, lock)
+    mac.require_matching_toolchains(candidate.get("toolchain"), toolchain)
+    mac.require_matching_toolchains(installed.get("toolchain"), toolchain)
     require(isinstance(candidate, dict) and json.loads(candidate_path.read_text(encoding="utf-8")) == candidate
             and candidate.get("binary_sha256") == guard["binary_sha256"]
             and candidate.get("engine") == installed.get("engine") == engine
             and candidate.get("engine_sha256") == guard["engine_sha256"]
-            and candidate.get("toolchain") == installed.get("toolchain") == toolchain
             and candidate.get("reference_sources_sha256") == guard["reference_sources"] == installed.get("mirrored_sources")
             and all(key in candidate and key in installed and candidate[key] == installed[key] for key in
                     ("source_sha256", "lock_sha256", "builder_sha256", "linux_builder_sha256",
@@ -1442,6 +1446,9 @@ def macos_context(args: argparse.Namespace, out: Path) -> dict[str, Any]:
                "tool_root": str(args.tool_root.expanduser().resolve()),
                "qualification_root": str(args.qualification_root.expanduser().resolve()),
                "trim_profile": str(getattr(args, "trim_profile", "reference"))}
+    selected_profile = getattr(args, "toolchain_profile", None)
+    if selected_profile is not None and selected_profile != ENGINE_POLICY.DEFAULT_TOOLCHAIN_PROFILE:
+        context["toolchain_profile"] = selected_profile
     research_engine = ENGINE_POLICY.selection_from_args(args)
     if research_engine is not None:
         context["research_engine"] = research_engine
@@ -1545,6 +1552,7 @@ def main() -> int:
     parser.add_argument("--tool-root", type=Path, help="Mac runner's evidence and checks directory under tmp/")
     parser.add_argument("--qualification-root", type=Path, help="exact Mac build and cited oracle evidence under tmp/")
     ENGINE_POLICY.add_arguments(parser)
+    ENGINE_POLICY.add_toolchain_arguments(parser)
     parser.add_argument("--trim-profile", choices=("reference", "production"), default="reference",
                         help="Mac fleet trim profile; production selects the Home/Quick Flight 0.5 trim")
     parser.add_argument("--aircraft", action="append", default=[], metavar="ID",
@@ -1556,6 +1564,8 @@ def main() -> int:
         parser.error(str(error))
     if research_engine is not None and not args.experimental_native_macos:
         parser.error("A local research engine requires --experimental-native-macos")
+    if getattr(args, "_toolchain_profile_specified", False) and not args.experimental_native_macos:
+        parser.error("A Mac toolchain profile requires --experimental-native-macos")
     if not 1 <= args.jobs <= MAX_JOBS or args.warmup < MIN_WARMUP or args.samples < MIN_SAMPLES or args.timeout <= 0:
         parser.error("jobs must be 1–4, warmup >= 600, samples >= 2400, and timeout positive")
     if args.experimental_native_macos:
