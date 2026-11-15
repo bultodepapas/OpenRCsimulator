@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e7874260-72b7-4c4f-b05f-44d5baa7a38c",
+  "command": [
+    "/workspace/scratch/ee2410a82829/openrc-source/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/ee2410a82829/afterburner_package/prototype",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_afterburner_core.gd"
+  ],
+  "cwd": "/workspace/scratch/ee2410a82829/openrc-source",
+  "started_utc": "2026-11-14T15:31:02.996788+00:00",
+  "label": "afterburner-core-final",
+  "log": "/workspace/scratch/ee2410a82829/afterburner_package/prototype/tests/evidence/afterburner-core-final-5f5qolz8/engine.log",
+  "report": "/workspace/scratch/ee2410a82829/afterburner_package/prototype/tests/evidence/afterburner-core-final-5f5qolz8/report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AFTERBURNER_CORE:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.506812,
+  "log_bytes": 108,
+  "log_sha256": "b1a6db30c1b3fa13ac3e05557eb80d9d7fc9a8fa07924b1f899140e7724923e8"
+}

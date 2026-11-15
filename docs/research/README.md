@@ -48,6 +48,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Entry points per track
 
+### Jet afterburner proposal
+
+[Afterburner research, 15 November 2026](afterburner/README.md) retains 28 engineering and 24 effects investigations, the complete source-grounded handoff, three proposed art profiles, 34 unexecuted capture cases, and historical standalone evidence. The [proposed implementation plan](../plans/jet-afterburner.md) sequences flame, physical augmentation, fuel, controls, replay and causal sound; no production afterburner or native qualification is delivered. Reusable scripts/data and the unchanged isolated prototype live under [research/afterburner](../../research/afterburner/README.md).
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.

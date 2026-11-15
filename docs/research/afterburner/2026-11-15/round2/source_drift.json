@@ -1,0 +1,241 @@
+{
+  "old_commit": "f41d0fd2eb5483c609bcd858bcf22776eb311e14",
+  "new_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "checkout_clean": true,
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "old_sha256": "c6c47e3e79ce7161c9ea296484b3ec23ffa9b1c8d5549d7cc1066ee8dfa0fada",
+      "new_sha256": "f2b63fd6b0d7827c3f6abfb36ea5a94eda9c48f71bb6d9aa9ec235aa2c6aa76c",
+      "status": "changed"
+    },
+    {
+      "path": "app/aircraft/avanti_s_blender_geometry.gd",
+      "old_sha256": "ca9c44cd9d8d147328b5b7bd7b77f1b6e237b90038e03de754cb84089873373b",
+      "new_sha256": "ca9c44cd9d8d147328b5b7bd7b77f1b6e237b90038e03de754cb84089873373b",
+      "status": "same"
+    },
+    {
+      "path": "app/assets/audio/powertrains/manifest.json",
+      "old_sha256": "274e8116e766c8ffbba2a7df919d664563021d92e0fa25e56e1d10a501f53016",
+      "new_sha256": "274e8116e766c8ffbba2a7df919d664563021d92e0fa25e56e1d10a501f53016",
+      "status": "same"
+    },
+    {
+      "path": "app/audio/flight_audio.gd",
+      "old_sha256": "6b7543e6900535160738e649eb95ec510e5f2a7bfc2e7726415267a0ac3a2ee7",
+      "new_sha256": "6b7543e6900535160738e649eb95ec510e5f2a7bfc2e7726415267a0ac3a2ee7",
+      "status": "same"
+    },
+    {
+      "path": "app/audio/powertrain_audio.gd",
+      "old_sha256": "fe2acdb9d93ab67af9d8f20c8755d0f72a98cb210840e697c68d126f10e1b52e",
+      "new_sha256": "fe2acdb9d93ab67af9d8f20c8755d0f72a98cb210840e697c68d126f10e1b52e",
+      "status": "same"
+    },
+    {
+      "path": "app/audio/soundscape.gd",
+      "old_sha256": "e0b4383575c18ce3f44d25a84b3ee9ff9f8c0fb83f7bc4feab1001a650f81642",
+      "new_sha256": "e0b4383575c18ce3f44d25a84b3ee9ff9f8c0fb83f7bc4feab1001a650f81642",
+      "status": "same"
+    },
+    {
+      "path": "app/data/aircraft/sebart_avanti_s_a200.json",
+      "old_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
+      "new_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
+      "status": "same"
+    },
+    {
+      "path": "app/data/aircraft_customization.json",
+      "old_sha256": "32fcb10bf55daa7b059b536403ba18add9d67777645d5d4d37f5071dc6bc575b",
+      "new_sha256": "32fcb10bf55daa7b059b536403ba18add9d67777645d5d4d37f5071dc6bc575b",
+      "status": "same"
+    },
+    {
+      "path": "app/get-godot.sh",
+      "old_sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "new_sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "status": "same"
+    },
+    {
+      "path": "app/input/controller_actions.gd",
+      "old_sha256": "96d484dcca792b91e01f1238d5fb1c2c3f920d1cac331fb57cf6aaa114b06083",
+      "new_sha256": "96d484dcca792b91e01f1238d5fb1c2c3f920d1cac331fb57cf6aaa114b06083",
+      "status": "same"
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "old_sha256": "c9d31b457b1be783465fe0651756059eb7c2e93daa991e67f313225f21c99d01",
+      "new_sha256": "a8ae3affeb25a046903a92716775f8d125dc7e7af5374f5187998279480f4b34",
+      "status": "changed"
+    },
+    {
+      "path": "app/input/smoke_aux.gd",
+      "old_sha256": "365d456ea8807acff13081acd40d76b1c5092d98d17fa41b03887b4873e5e560",
+      "new_sha256": "365d456ea8807acff13081acd40d76b1c5092d98d17fa41b03887b4873e5e560",
+      "status": "same"
+    },
+    {
+      "path": "app/main.gd",
+      "old_sha256": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09",
+      "new_sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006",
+      "status": "changed"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "old_sha256": "ae2ced8856cdd9f1fd478db60e7b69f9e7d06465cf53c56be3dd158896a75358",
+      "new_sha256": "ae2ced8856cdd9f1fd478db60e7b69f9e7d06465cf53c56be3dd158896a75358",
+      "status": "same"
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "old_sha256": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0",
+      "new_sha256": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0",
+      "status": "same"
+    },
+    {
+      "path": "app/project.godot",
+      "old_sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "new_sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "status": "same"
+    },
+    {
+      "path": "app/render/aircraft_customization.gd",
+      "old_sha256": "f739cc5226b652e9cf35aa0a148c19d71a2992550cf365c03a3031af9d8023af",
+      "new_sha256": "f739cc5226b652e9cf35aa0a148c19d71a2992550cf365c03a3031af9d8023af",
+      "status": "same"
+    },
+    {
+      "path": "app/render/frames.gd",
+      "old_sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+      "new_sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+      "status": "same"
+    },
+    {
+      "path": "app/render/shader_clock.gd",
+      "old_sha256": "8e4e4feb72ebd071c0730d928fb1ea26a8be67d704bf3b7c3c71bbb4efad03da",
+      "new_sha256": "8e4e4feb72ebd071c0730d928fb1ea26a8be67d704bf3b7c3c71bbb4efad03da",
+      "status": "same"
+    },
+    {
+      "path": "app/render/weather/lightning_bolt.gdshader",
+      "old_sha256": "15c1d14d0652f836fefbb16615bfe3915380ee755af06a8ae21a152fec436d80",
+      "new_sha256": "15c1d14d0652f836fefbb16615bfe3915380ee755af06a8ae21a152fec436d80",
+      "status": "same"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "old_sha256": "be1284db9b926e6e10b8794e254496abd26731d5212da4f609edeffa775fb913",
+      "new_sha256": "be1284db9b926e6e10b8794e254496abd26731d5212da4f609edeffa775fb913",
+      "status": "same"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "old_sha256": "50913fcc9d66dd6b39099f0bf887996bedd18241ab5ce4413aa9642a6eced76f",
+      "new_sha256": "5a3c36f5b2b375505a45cff94ca9ede31eeb7bc79fc1a40e27c3064e7894bb50",
+      "status": "changed"
+    },
+    {
+      "path": "app/sim/liquid_fuel_flight.gd",
+      "old_sha256": "5339079d8466b7ca8a1af966cd2a76b1a32286bea9f408f01d4cd31cee0861ad",
+      "new_sha256": "5339079d8466b7ca8a1af966cd2a76b1a32286bea9f408f01d4cd31cee0861ad",
+      "status": "same"
+    },
+    {
+      "path": "app/sim/native/liquid_stage_adapter.gd",
+      "old_sha256": "0b0148d04a04618aa8c1b20aaa5def923595393d79ecadba5063ab9a100ce9a9",
+      "new_sha256": "0b0148d04a04618aa8c1b20aaa5def923595393d79ecadba5063ab9a100ce9a9",
+      "status": "same"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "old_sha256": "52f24dc06a4f6c2fb523ac1a8f8c40198f872d52b1145b03ac0de1d5b62ab89f",
+      "new_sha256": "52f24dc06a4f6c2fb523ac1a8f8c40198f872d52b1145b03ac0de1d5b62ab89f",
+      "status": "same"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "old_sha256": "5fe73efd3fe0e51b5bb6b553b39db567c596deedc2bd2443ccbcd07712a94b20",
+      "new_sha256": "5fe73efd3fe0e51b5bb6b553b39db567c596deedc2bd2443ccbcd07712a94b20",
+      "status": "same"
+    },
+    {
+      "path": "docs/AIRCRAFT_CONTRACT.md",
+      "old_sha256": "4dbc09d2c44d0f9b17f35ab64cb1d25935196225d8ed824e3f1dce3dab5d2dd0",
+      "new_sha256": "4dbc09d2c44d0f9b17f35ab64cb1d25935196225d8ed824e3f1dce3dab5d2dd0",
+      "status": "same"
+    },
+    {
+      "path": "docs/AUDIO-PLAN.md",
+      "old_sha256": "386d14e1f5cf1254c8d9fe1c18709e6fde84aa47034ab765a0d5baa77363ad85",
+      "new_sha256": "386d14e1f5cf1254c8d9fe1c18709e6fde84aa47034ab765a0d5baa77363ad85",
+      "status": "same"
+    },
+    {
+      "path": "docs/AVANTI-S-PLAN.md",
+      "old_sha256": "88d3fceded1ff26e86637551377b3843a157a88c2e0483a6261f78cee7f15af9",
+      "new_sha256": "88d3fceded1ff26e86637551377b3843a157a88c2e0483a6261f78cee7f15af9",
+      "status": "same"
+    },
+    {
+      "path": "docs/FLIGHT-LOGGING.md",
+      "old_sha256": "e8a666ff2186772bbd152f42c03ef1616bac6512f4e7b92170e68813805a3f34",
+      "new_sha256": "e8a666ff2186772bbd152f42c03ef1616bac6512f4e7b92170e68813805a3f34",
+      "status": "same"
+    },
+    {
+      "path": "docs/FUEL-SYSTEM.md",
+      "old_sha256": "1c45968e8cc7045ffd6f110f351955828eaef55578dd8751fe7797c8a16a5422",
+      "new_sha256": "1c45968e8cc7045ffd6f110f351955828eaef55578dd8751fe7797c8a16a5422",
+      "status": "same"
+    },
+    {
+      "path": "docs/STACK.md",
+      "old_sha256": "e91984e225dee959188d7f5b6db7f322b566448ad3eed2b754a9d43af1218f4d",
+      "new_sha256": "e91984e225dee959188d7f5b6db7f322b566448ad3eed2b754a9d43af1218f4d",
+      "status": "same"
+    },
+    {
+      "path": "docs/plans/turbine-realism.md",
+      "old_sha256": "2b42043fd8dc2ae0034321e9c5bd0666bac4c4fbc1dd7eb1bf517711dea034ce",
+      "new_sha256": "2b42043fd8dc2ae0034321e9c5bd0666bac4c4fbc1dd7eb1bf517711dea034ce",
+      "status": "same"
+    },
+    {
+      "path": "external Audits/CONSOLIDATED-AUDITS.md",
+      "old_sha256": "652ba32656d20c71c898b33af983a5a4f810727dcb8e2bd44fd05b78ddd9d5d9",
+      "new_sha256": "652ba32656d20c71c898b33af983a5a4f810727dcb8e2bd44fd05b78ddd9d5d9",
+      "status": "same"
+    },
+    {
+      "path": "research/avanti-s/av06/derive_physics.py",
+      "old_sha256": "2c36b9675ccfa61217a14dc934a234b1d164d3f80aa869f36ab2acb731d1e1e3",
+      "new_sha256": "2c36b9675ccfa61217a14dc934a234b1d164d3f80aa869f36ab2acb731d1e1e3",
+      "status": "same"
+    },
+    {
+      "path": "research/avanti-s/av06/inputs.json",
+      "old_sha256": "bddc1c31c9ea46b65d93c9943701065b9c8378ae6b453ab94b7b99c3ed8d59fd",
+      "new_sha256": "bddc1c31c9ea46b65d93c9943701065b9c8378ae6b453ab94b7b99c3ed8d59fd",
+      "status": "same"
+    },
+    {
+      "path": "research/native-kernel/src/nk_kernel.cpp",
+      "old_sha256": "ef573d46d15235b6c0541e3b955b20a034eeaf1cf5b2d663d1cf581c4ecafec4",
+      "new_sha256": "ef573d46d15235b6c0541e3b955b20a034eeaf1cf5b2d663d1cf581c4ecafec4",
+      "status": "same"
+    },
+    {
+      "path": "tools/audio/README.md",
+      "old_sha256": "50cfe367ebf4ca4983f1f4f38fcbcd79c52ed78aa20200b9f66c797b1fed70cd",
+      "new_sha256": "50cfe367ebf4ca4983f1f4f38fcbcd79c52ed78aa20200b9f66c797b1fed70cd",
+      "status": "same"
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "old_sha256": "c5caf9832dc494ab075c25f9d50eba5480bb234ec44f677aa019364fae1aa353",
+      "new_sha256": "55fd7b19a5c7490ab020e2c1b8e732784441375afff17d75a86c01a307a93b46",
+      "status": "changed"
+    }
+  ]
+}

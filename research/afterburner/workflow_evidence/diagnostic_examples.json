@@ -1,0 +1,43 @@
+{
+  "scope": "Synthetic CPU-only arithmetic. Not a Godot screenshot, a flame simulation, a visual quality threshold, or rendering/hardware qualification.",
+  "interpretation": "The same localized error is diluted by whole-frame averaging. These values alone do not classify an image as acceptable or unacceptable.",
+  "sample_format": "normalized linear grayscale, with exact values 0 and 1; maximum possible value 1.0",
+  "frame": {
+    "width": 1920,
+    "height": 1080
+  },
+  "region_of_interest": {
+    "x": 930,
+    "y": 525,
+    "width": 60,
+    "height": 30
+  },
+  "missing_reference_rectangle": {
+    "x": 950,
+    "y": 535,
+    "width": 20,
+    "height": 10
+  },
+  "reference_and_candidate": "Reference is 1 in the 10x20 rectangle and 0 elsewhere; candidate is 0 everywhere.",
+  "formulae": {
+    "mse": "sum((reference - candidate)^2) / number_of_pixels",
+    "rmse": "sqrt(mse)",
+    "psnr_db_peak_1": "10 * log10(1 / mse)"
+  },
+  "whole_frame": {
+    "pixels": 2073600,
+    "different_pixels": 200,
+    "squared_error_sum": 200,
+    "mse": 9.645061728395061e-05,
+    "rmse": 0.009820927516479826,
+    "psnr_db_peak_1": 40.156949885265185
+  },
+  "local_region": {
+    "pixels": 1800,
+    "different_pixels": 200,
+    "squared_error_sum": 200,
+    "mse": 0.1111111111111111,
+    "rmse": 0.3333333333333333,
+    "psnr_db_peak_1": 9.542425094393248
+  }
+}

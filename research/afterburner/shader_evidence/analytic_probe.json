@@ -1,0 +1,120 @@
+{
+  "scope": "CPU arithmetic only. These are idealized blend equations and a smooth cone, not Godot rendering, GPU pixels, a 4.8-beta2 engine test, physical exhaust, or actual CylinderMesh vertex-array sampling.",
+  "blend_model": "Scalar additive B + n*C*a; straight mix and premultiplied P=C*a use P+(1-a)*B. The fixed-total optical depth tau=-ln(1-a_ref) is divided equally among layers. No clipping, sRGB transforms, tone mapping, depth tests, or surface variation.",
+  "background": 0.2,
+  "source": 0.8,
+  "reference_alpha": 0.2,
+  "tau": 0.22314355131420976,
+  "layers": [
+    {
+      "count": 1,
+      "fixed_alpha_each": 0.2,
+      "additive_fixed": 0.36000000000000004,
+      "additive_normalized": 0.36000000000000004,
+      "mix_fixed": 0.32000000000000006,
+      "tau_normalized_per_alpha": 0.2,
+      "mix_tau_normalized": 0.32000000000000006,
+      "premul_tau_normalized": 0.32000000000000006
+    },
+    {
+      "count": 2,
+      "fixed_alpha_each": 0.2,
+      "additive_fixed": 0.52,
+      "additive_normalized": 0.36000000000000004,
+      "mix_fixed": 0.4160000000000001,
+      "tau_normalized_per_alpha": 0.10557280900008413,
+      "mix_tau_normalized": 0.32,
+      "premul_tau_normalized": 0.32
+    },
+    {
+      "count": 4,
+      "fixed_alpha_each": 0.2,
+      "additive_fixed": 0.8400000000000001,
+      "additive_normalized": 0.36000000000000004,
+      "mix_fixed": 0.5542400000000002,
+      "tau_normalized_per_alpha": 0.05425839099682419,
+      "mix_tau_normalized": 0.32,
+      "premul_tau_normalized": 0.32
+    },
+    {
+      "count": 8,
+      "fixed_alpha_each": 0.2,
+      "additive_fixed": 1.4800000000000002,
+      "additive_normalized": 0.36000000000000004,
+      "mix_fixed": 0.6993367040000003,
+      "tau_normalized_per_alpha": 0.02750752753392697,
+      "mix_tau_normalized": 0.3200000000000001,
+      "premul_tau_normalized": 0.3200000000000001
+    }
+  ],
+  "colored_mix_order": {
+    "background": [
+      0.2,
+      0.2,
+      0.2
+    ],
+    "orange": [
+      1.0,
+      0.3,
+      0.05
+    ],
+    "blue": [
+      0.1,
+      0.4,
+      1.0
+    ],
+    "alpha_each": 0.3,
+    "orange_then_blue": [
+      0.33799999999999997,
+      0.28099999999999997,
+      0.4085
+    ],
+    "blue_then_orange": [
+      0.419,
+      0.272,
+      0.32299999999999995
+    ]
+  },
+  "cone_model": "Continuous ideal cone R(t,theta)=r*(1-t)*(1+0.065*t*sin(29*t)*sin(3*theta)); L=0.42m, r=0.036m. Compares exact parametric normal with the prototype-style constant-scale transformed undeformed cone normal; no rasterization.",
+  "cone_grid": {
+    "t_range": "0.05..0.95 step 0.01",
+    "theta_samples": 200,
+    "maximum": {
+      "t": 0.92,
+      "theta_rad": 2.0734511513692637,
+      "angle_degrees": 10.149502366108322,
+      "exact_ideal_normal": [
+        -0.3180731198820049,
+        0.9443557349087012,
+        0.08379580152713317
+      ],
+      "scaled_input_normal": [
+        -0.48000677601122144,
+        0.8731290842135667,
+        0.0850828847870793
+      ]
+    },
+    "representative": {
+      "t": 0.5,
+      "theta_rad": 0.8168140899333463,
+      "angle_degrees": 3.946778738785938,
+      "exact_ideal_normal": [
+        0.6300067604648227,
+        0.7708543545884944,
+        0.09420746138483568
+      ],
+      "scaled_input_normal": [
+        0.6819489609269336,
+        0.7262018840090619,
+        0.08704273865386318
+      ]
+    }
+  },
+  "vertex_map": {
+    "axes": "(x,y,z) -> (r*x, r*z, L*y)",
+    "determinant_expression": "-r^2*L",
+    "r": 0.036,
+    "L": 0.42,
+    "determinant": -0.0005443199999999999
+  }
+}

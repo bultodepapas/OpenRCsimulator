@@ -1,0 +1,40 @@
+{
+  "scope": "Read-only GitHub fetches of text source at engine ref cafc17a19; source inspection is not runtime, image, importer, or performance qualification.",
+  "files": [
+    {
+      "path": "modules/noise/noise_texture_2d.cpp",
+      "blob_sha": "9eadeaf30e1876f766cba8b4a6df4ef9a58a7d14",
+      "lines_inspected": "121-148,160-184,205-225",
+      "finding": "First deferred update generates synchronously; subsequent updates can be dispatched to worker pool. Output replacement emits changed; generated 2D mipmaps are configurable.",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/modules/noise/noise_texture_2d.cpp"
+    },
+    {
+      "path": "modules/noise/noise_texture_3d.cpp",
+      "blob_sha": "e9f8eb5d8cac21403b7e252c77bb4460e6704e20",
+      "lines_inspected": "57-89,103-137,149-177,200-220,349-350,361-364",
+      "finding": "First deferred update generates synchronously; later updates can use workers. Texture creation disables mipmaps; has_mipmaps returns false. get_data logs an error and returns an empty vector on an invalid texture RID.",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/modules/noise/noise_texture_3d.cpp"
+    },
+    {
+      "path": "scene/resources/material.cpp",
+      "blob_sha": "6e95cbf5bc2e34848ef9925a85286fd4bc80007f",
+      "lines_inspected": "1324-1337",
+      "finding": "With particle animation enabled, one frame is selected by flooring INSTANCE_CUSTOM.z multiplied by frame count; coordinates select the resulting atlas cell.",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/scene/resources/material.cpp"
+    },
+    {
+      "path": "editor/import/resource_importer_layered_texture.cpp",
+      "blob_sha": "5c3093d9738baeb6bc2d70b1eb4619f57a07a9a3",
+      "lines_inspected": "80-81,157-164,295-305,339-341",
+      "finding": "Layered importer takes recognized image loader formats, configurable slice grid and optional mip generation; VDB support outside this importer was not exhaustively surveyed.",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/editor/import/resource_importer_layered_texture.cpp"
+    },
+    {
+      "path": "drivers/gles3/storage/particles_storage.cpp",
+      "blob_sha": "f43d878d70353635c81805c693bdaa62faa8dc8a",
+      "lines_inspected": "303-309,383-392,674,707,1417",
+      "finding": "Compatibility renderer warns and rejects manually emitted particles, sub-emitters and trails; it also warns on vector-field attractors and SDF 3D particle collision. Source read, not runtime qualification.",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/storage/particles_storage.cpp"
+    }
+  ]
+}

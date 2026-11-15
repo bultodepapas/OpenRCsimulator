@@ -1,0 +1,1412 @@
+{
+  "schema_id": "openrc-afterburner-capture-cases-v0-draft",
+  "schema_status": "proposed_not_executable",
+  "source_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "case_status_vocabulary": [
+    "not_run"
+  ],
+  "note": "These cases are a proposed review checklist, not a supported command line, debug bridge API, automated test suite, or evidence of a result.",
+  "common_controls": {
+    "output_baseline_px": [
+      1920,
+      1080
+    ],
+    "internal_baseline_px": [
+      1920,
+      1080
+    ],
+    "scale": 1.0,
+    "renderer_rule": "Run the three named native renderers where supported and capture the actual backend; conditional Forward+-only cases declare their requirement.",
+    "shared_pose": "Use the same accepted/interpolated pose, selected visual profile, nozzle binding, camera, weather, settings and input tape inside each comparison unless a condition explicitly changes one.",
+    "identity_receipt": [
+      "source commit",
+      "engine version",
+      "actual renderer/backend",
+      "GPU and driver",
+      "physical display and actual drawable pixels",
+      "internal pixels and scale",
+      "camera transform and FOV",
+      "profile and asset identity",
+      "output conditions",
+      "VSync and frame cap",
+      "presentation-time interval"
+    ],
+    "no_capture_claim": "All cases are not_run. Hardware, renderer, scene availability, motion quality and timings remain unverified."
+  },
+  "cases": [
+    {
+      "id": "LAB-001",
+      "title": "Outlet axis and rotated parents",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Validate the smoke -Z to plume +Z adapter on admitted poses and reject unsupported parent transforms.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Identity parent with a validated visual outlet basis."
+        },
+        {
+          "id": "B",
+          "description": "Rotate the aircraft and parent with a finite, nonsingular, orientation-preserving uniform positive scale; explicitly align local plume +Z with the existing smoke anchor -Z."
+        },
+        {
+          "id": "C",
+          "description": "Separately introduce nonuniform scale, parent shear, a reflection, zero scale, and an invalid/zero exhaust direction; each is an explicit rejection case."
+        }
+      ],
+      "evidence_expected": [
+        "For A and B, record world-space origin/direction and side and rear images: +Z points aft, the basis is right-handed, and authored diameter is scaled exactly once.",
+        "For each C input, record an actionable validation diagnostic and no guessed, mirrored or wrongly directed flame; do not reinterpret rejection as a successful capture."
+      ]
+    },
+    {
+      "id": "LAB-002",
+      "title": "Side and aft orbit",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Establish visibility across the ordinary camera orbit.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Stable side view 90 degrees to the exhaust direction."
+        },
+        {
+          "id": "B",
+          "description": "Stable aft and oblique views at 0 and 45 degrees using the same displayed pose and level."
+        }
+      ],
+      "evidence_expected": [
+        "Matched unedited images and camera matrices show a coherent core, no missing sides or flipped normals."
+      ]
+    },
+    {
+      "id": "LAB-003",
+      "title": "Aft core and root cap",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check whether the plume looks hollow from behind.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Core and root cap present."
+        },
+        {
+          "id": "B",
+          "description": "Same frame with cap disabled as a diagnostic control."
+        }
+      ],
+      "evidence_expected": [
+        "Rear close-up makes the cap contribution and tail occlusion visible; no hollow gap in the selected version."
+      ]
+    },
+    {
+      "id": "LAB-004",
+      "title": "Inside and near-plane views",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Expose near-plane clipping and backface behavior.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Camera just outside the outer plume surface."
+        },
+        {
+          "id": "B",
+          "description": "Camera just inside the volume and a separate close aft view crossing the near plane."
+        }
+      ],
+      "evidence_expected": [
+        "Short camera sweep, matrices and near-plane distance; no unexplained full-frame disappearance or inside-out flash."
+      ]
+    },
+    {
+      "id": "LAB-005",
+      "title": "Opaque occlusion",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Verify that the aircraft and terrain can hide the transparent flame.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Tailplane or fuselage placed in front of the plume from the camera."
+        },
+        {
+          "id": "B",
+          "description": "Terrain ridge placed in front of the same plume with the same exposure and level."
+        }
+      ],
+      "evidence_expected": [
+        "Images demonstrate normal depth testing, no flame through opaque surfaces, and no unexpected shadow casting."
+      ]
+    },
+    {
+      "id": "LAB-006",
+      "title": "Deformed bounds and screen edge",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "full_scale_reference_study_v0"
+      ],
+      "purpose": "Check culling with maximum authored plume dimensions and deformation.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Maximum outer length and radial deformation fully on screen."
+        },
+        {
+          "id": "B",
+          "description": "Move the nozzle just outside each edge while the maximum plume remains partly visible."
+        }
+      ],
+      "evidence_expected": [
+        "Maximum local/world bounds and a continuous edge-crossing clip show no premature culling."
+      ]
+    },
+    {
+      "id": "LAB-007",
+      "title": "Layering and blend comparison",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Compare transparent overlap and fragment work between bounded alternatives.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Outer plus inner layer with the proposed blend mode."
+        },
+        {
+          "id": "B",
+          "description": "One-layer/core-disc candidate or alpha blend with the same pose and displayed level."
+        }
+      ],
+      "evidence_expected": [
+        "Rear, side and crossing-view images reveal ordering artifacts; record actual draw calls and native timing rather than assuming either wins."
+      ]
+    },
+    {
+      "id": "LAB-008",
+      "title": "Daylight visibility",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "full_scale_reference_study_v0"
+      ],
+      "purpose": "Check a restrained plume against the regular bright field and sky.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Daylight environment with the plume off."
+        },
+        {
+          "id": "B",
+          "description": "Same daylight, camera, accepted pose and visual level one, with plume on."
+        }
+      ],
+      "evidence_expected": [
+        "Matched captures demonstrate aircraft-attitude readability and visible shape; record exposure and actual internal pixels."
+      ]
+    },
+    {
+      "id": "LAB-009",
+      "title": "Night exposure",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "full_scale_reference_study_v0",
+        "cosmetic_led_ring_v0"
+      ],
+      "purpose": "Check that an emissive effect stays recognizable without blowing out the tail.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Night scene with the selected appearance off."
+        },
+        {
+          "id": "B",
+          "description": "Same night scene with the appearance at level one; retain the existing environment/exposure owner."
+        }
+      ],
+      "evidence_expected": [
+        "Matched image and exposure record show the tail remains legible, with no uncontrolled white patch."
+      ]
+    },
+    {
+      "id": "LAB-010",
+      "title": "Fog and environment coexistence",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check presentation through existing weather without replacing world settings.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Clear weather, fixed time and camera."
+        },
+        {
+          "id": "B",
+          "description": "Existing fog preset or controlled fog density with the same pose, level and exposure policy."
+        }
+      ],
+      "evidence_expected": [
+        "Fog settings, environment identity and images show expected distance attenuation and unchanged scene ownership."
+      ]
+    },
+    {
+      "id": "LAB-011",
+      "title": "Projected-pixel sweep",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Measure whether nozzle and plume detail survive an RC-scale flight-line view.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "D = 0.05 m, vertical FOV 60 degrees, 1080 internal pixels, side view and camera distance 10 m."
+        },
+        {
+          "id": "B",
+          "description": "Repeat at 20 m and 40 m with the same level; the expected outlet widths are about 4.68, 2.34 and 1.17 pixels."
+        }
+      ],
+      "evidence_expected": [
+        "Actual internal viewport and measured projected bounding width; unedited images distinguish core visibility from unresolved fine cells."
+      ]
+    },
+    {
+      "id": "LAB-012",
+      "title": "LOD hysteresis",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "full_scale_reference_study_v0"
+      ],
+      "purpose": "Check proposed 3-pixel enable and 2-pixel disable boundaries without chatter.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Approach from far to cross projected diameter 3.0 internal pixels; hold the prior state between thresholds."
+        },
+        {
+          "id": "B",
+          "description": "Recede to cross 2.0 pixels, then jitter around both thresholds with the same presentation tape."
+        }
+      ],
+      "evidence_expected": [
+        "Frame-by-frame internal footprint and LOD state show one transition per threshold crossing and a persistent low-frequency core."
+      ]
+    },
+    {
+      "id": "LAB-013",
+      "title": "Internal resolution and reconstruction",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Compare native pixels with a lower-resolution reconstruction using the same 1080p output.",
+      "renderer_requirements": [
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Forward+ 1920x1080 native internal resolution with reconstruction off."
+        },
+        {
+          "id": "B",
+          "description": "Where supported, Forward+ FSR2 Quality at actual 1280x720 internal into 1920x1080 output; otherwise record unsupported."
+        }
+      ],
+      "evidence_expected": [
+        "Actual scaler execution, effective internal/output dimensions and images; compare LOD decisions using internal pixels."
+      ],
+      "prerequisites": [
+        "A supported and verified FSR2 Quality path; do not silently substitute another scaler."
+      ],
+      "comparison_overrides": {
+        "condition_b_internal_px": [
+          1280,
+          720
+        ],
+        "condition_b_output_px": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "id": "LAB-014",
+      "title": "Higher output resolution",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Qualify higher resolutions only after the native 1080p baseline.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Native 1920x1080 output and internal pixels."
+        },
+        {
+          "id": "B",
+          "description": "Repeat at native 2560x1440 and 3840x2160 with the same scene, FOV and visual input."
+        }
+      ],
+      "evidence_expected": [
+        "Actual drawable/internal sizes and matched field of view; distinguish higher-resolution quality from the first 1080p gate."
+      ],
+      "comparison_overrides": {
+        "condition_b_output_and_internal_px": [
+          [
+            2560,
+            1440
+          ],
+          [
+            3840,
+            2160
+          ]
+        ]
+      }
+    },
+    {
+      "id": "LAB-015",
+      "title": "Restrained RC cell default",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Ensure the first RC profile does not imply an unverified shock-cell pattern.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "The default RC profile with cells disabled."
+        },
+        {
+          "id": "B",
+          "description": "A deliberately enabled cell treatment as an exploratory comparison, clearly marked non-default."
+        }
+      ],
+      "evidence_expected": [
+        "Profile settings and matched capture confirm the default has no cells; any proposed alternative remains art-only."
+      ]
+    },
+    {
+      "id": "LAB-016",
+      "title": "Reference cell stationarity",
+      "status": "not_run",
+      "profiles": [
+        "full_scale_reference_study_v0"
+      ],
+      "purpose": "Check that reference-study cells stay fixed to the nozzle while turbulence moves.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Reference profile with weak cells enabled; record two times one second apart."
+        },
+        {
+          "id": "B",
+          "description": "Same snapshots with cells disabled to isolate their contribution."
+        }
+      ],
+      "evidence_expected": [
+        "Nozzle-relative axial cell positions remain fixed as detail changes; distant filtering removes unresolved contrast.",
+        "Label images full-scale reference study and not RC calibration.",
+        "Fixed peak positions verify this proposed shader behavior, not physical stationarity or RC shock-cell measurements."
+      ]
+    },
+    {
+      "id": "LAB-017",
+      "title": "Cosmetic LED isolation",
+      "status": "not_run",
+      "profiles": [
+        "cosmetic_led_ring_v0",
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Confirm the decorative ring is an independent visual presentation.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "LED level one with no plume profile."
+        },
+        {
+          "id": "B",
+          "description": "LED level zero, then an RC plume as a separately selected illustrative comparison."
+        }
+      ],
+      "evidence_expected": [
+        "LED-only image contains a ring and no gas mesh, particles or haze; record separate signal and unchanged physical state."
+      ]
+    },
+    {
+      "id": "LAB-018",
+      "title": "Light-off, hold and cutoff",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check a smooth, bounded appearance response to accepted levels.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Presented visual-level tape 0 to 0.15 to 0.5 to 1.0, then hold."
+        },
+        {
+          "id": "B",
+          "description": "Matched tape from 1.0 back to zero; no new births after the visual cutoff."
+        }
+      ],
+      "evidence_expected": [
+        "Timeline clip and timestamped input/uniform record show coherent length/brightness, no visible pre-ignition, and a defined extinction."
+      ]
+    },
+    {
+      "id": "LAB-019",
+      "title": "Pause and resume",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Verify that visual animation follows the presented simulation clock.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Hold a lit paused snapshot for five wall-clock seconds."
+        },
+        {
+          "id": "B",
+          "description": "Resume from the same snapshot and advance one accepted presentation interval."
+        }
+      ],
+      "evidence_expected": [
+        "Before/after shader phase, displayed pose and frames remain unchanged during pause and continue on resume."
+      ]
+    },
+    {
+      "id": "LAB-020",
+      "title": "Long-time phase wrap",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Prevent wrapped-angle interpolation from jumping at long session times.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Evaluate unwrapped presentation times 1023.999, 1024.000 and 1024.001 seconds."
+        },
+        {
+          "id": "B",
+          "description": "Evaluate the midpoint from interpolated unwrapped time, not an average of wrapped radians."
+        }
+      ],
+      "evidence_expected": [
+        "CPU reference phase inputs and captures show continuity at the wrap; report GPU variance separately."
+      ]
+    },
+    {
+      "id": "LAB-021",
+      "title": "Seek, restart and teleport",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Clear history instead of drawing a streak across a discontinuity.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Continuous accepted motion into a short lit segment."
+        },
+        {
+          "id": "B",
+          "description": "Seek backward, restart and separately teleport, then prime the new pose before births resume."
+        }
+      ],
+      "evidence_expected": [
+        "Timestamp, pool and event history show no stale pre-reset frame, duplicate burst or bridge across the discontinuity."
+      ]
+    },
+    {
+      "id": "LAB-022",
+      "title": "Frame-rate motion",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "full_scale_reference_study_v0"
+      ],
+      "purpose": "Inspect temporal sampling and flicker at common rendering rates.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Same accepted presentation tape captured at 60 displayed frames/s."
+        },
+        {
+          "id": "B",
+          "description": "Repeat at 30 and 20 displayed frames/s with identical camera and render settings."
+        }
+      ],
+      "evidence_expected": [
+        "Motion clips, frame timestamps and phase inputs permit review for strobing or apparent reversal; state whether frame caps were honored."
+      ]
+    },
+    {
+      "id": "LAB-023",
+      "title": "Particle straight-line sweep",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check fractional world-space births during rapid translation.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Optional detail disabled, with the mesh core retained."
+        },
+        {
+          "id": "B",
+          "description": "Optional detail enabled while the outlet moves at 40 m/s and 30 displayed frames/s; use swept births."
+        }
+      ],
+      "evidence_expected": [
+        "Motion and birthplace overlays show rearward emission without a 1.33 m endpoint-only gap or doubled carrier velocity."
+      ],
+      "prerequisites": [
+        "A future optional particle adapter using the accepted presentation clock; no manual Compatibility emission."
+      ]
+    },
+    {
+      "id": "LAB-024",
+      "title": "Particle rotation and antipodes",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check outlet rotation and velocity ownership.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Fixed-orientation outlet translating at the same speed."
+        },
+        {
+          "id": "B",
+          "description": "A turn plus a separate 180-degree direction-change fixture, retaining one carrier-velocity owner."
+        }
+      ],
+      "evidence_expected": [
+        "Birth directions stay finite and aft relative to each interpolated nozzle pose; record tangential outlet motion and no doubled inheritance."
+      ],
+      "prerequisites": [
+        "A future optional particle adapter and captured transformed outlet poses."
+      ]
+    },
+    {
+      "id": "LAB-025",
+      "title": "Particle cutoff and residual life",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check the distinction between stopping births and aging existing detail.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Cutoff immediately after a burst with 0.25 s maximum illustrative life."
+        },
+        {
+          "id": "B",
+          "description": "Resume only after a fresh accepted positive visual level; repeat across pause."
+        }
+      ],
+      "evidence_expected": [
+        "Event/birth log and clip show no new cutoff births, bounded residual expiry, pause freeze and no unintended stale replay."
+      ],
+      "prerequisites": [
+        "A future optional particle adapter."
+      ]
+    },
+    {
+      "id": "LAB-026",
+      "title": "Capacity and scheduler overflow",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check bounded pool demand and explicit failure instead of silent event loss.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Illustrative 16-slot pool and 0.25 s lifetime: request 48 births/s, or 12 nominal live slots."
+        },
+        {
+          "id": "B",
+          "description": "With the same pool, request 120 births/s and inspect saturation and any explicitly resolved rate."
+        },
+        {
+          "id": "C",
+          "description": "Separately, on the existing public scheduler, compare an inclusive 24-tick interval with 25 tick positions against invalid inputs: a 25-tick interval or an array of 26 input changes; reset after a latched failure."
+        },
+        {
+          "id": "D",
+          "description": "Only through a deliberately owned consumer test seam or future AB adapter, inject 32 versus 33 raw event records into the 32-record consumer capacity; do not imply the current scheduler naturally generates 33."
+        }
+      ],
+      "evidence_expected": [
+        "Record requested/resolved rate, pool occupancy and saturation; do not assume an unimplemented GPU adapter achieves any particular count.",
+        "Record public-path interval and input-bound rejections, with the fault latched until reset. The current inclusive loop can produce at most 25 output records per slot over an accepted interval.",
+        "For a separately injected consumer-boundary test, distinguish 32-record capacity from overflow at 33, verify the latched fault without silent truncation, and identify the test seam. No guard has been exercised yet."
+      ],
+      "prerequisites": [
+        "A future detail adapter; a disposable existing-scheduler test for public input boundaries; and a separately owned raw-event consumer seam for injected capacity tests."
+      ]
+    },
+    {
+      "id": "LAB-027",
+      "title": "Noise seams and mip filtering",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check the reusable data texture at wrapping boundaries and oblique sizes.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Show the shared noise across the angular wrap at full-resolution sampling."
+        },
+        {
+          "id": "B",
+          "description": "Repeat at oblique angles and progressively coarser mip levels, including the plume tip."
+        }
+      ],
+      "evidence_expected": [
+        "Texture-state record and seam crops reveal no obvious line, inverted tip or distant shimmer; compare value and slope across the wrap."
+      ]
+    },
+    {
+      "id": "LAB-028",
+      "title": "Scalar versus color interpretation",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "cosmetic_led_ring_v0"
+      ],
+      "purpose": "Catch accidental sRGB conversion of masks or double conversion of authored colors.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Known 0.5 scalar test patch sampled as linear data."
+        },
+        {
+          "id": "B",
+          "description": "A known sRGB color patch converted once to the renderer working space; compare in all supported renderers."
+        }
+      ],
+      "evidence_expected": [
+        "Numeric sampled values, import flags and an exposure-controlled capture identify unintended conversion; do not interpret a screenshot alone as linear pixel data."
+      ],
+      "prerequisites": [
+        "A future diagnostic patch with known values; no external asset is required."
+      ]
+    },
+    {
+      "id": "LAB-029",
+      "title": "Cold and warm resource readiness",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Find first-use stalls and unsafe noise-readback assumptions.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Fresh process, request selected noise once and wait for tracked successful readiness."
+        },
+        {
+          "id": "B",
+          "description": "Reuse the same prepared immutable texture for another outlet and a warm relight."
+        }
+      ],
+      "evidence_expected": [
+        "Record preparation duration, actual texture/resource identity and readiness errors; distinguish synchronous initial work from later worker updates.",
+        "No null-only 3D data guard or unbounded wait; 3D path is only relevant if trialed."
+      ]
+    },
+    {
+      "id": "LAB-030",
+      "title": "Two-outlet isolation",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "full_scale_reference_study_v0"
+      ],
+      "purpose": "Ensure shared immutable assets do not couple independently controlled outlets.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Outlet A level zero, outlet B level one."
+        },
+        {
+          "id": "B",
+          "description": "Change A to one while holding B fixed, then change B to zero while holding A fixed."
+        }
+      ],
+      "evidence_expected": [
+        "Per-outlet IDs, material/texture identities, uniform values and side-by-side frames show independent changes with shared immutable texture only."
+      ]
+    },
+    {
+      "id": "LAB-031",
+      "title": "Main and auxiliary viewports",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check independent view-dependent LOD and no duplicate state advancement.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Main 1080p viewport alone at a close aft angle."
+        },
+        {
+          "id": "B",
+          "description": "Main plus an available auxiliary viewport at a distant or oblique angle; use the same presented state."
+        }
+      ],
+      "evidence_expected": [
+        "Record each actual viewport size, camera, LOD state and rendered frame; confirm correct per-view culling and no doubled timeline or particle updates."
+      ],
+      "prerequisites": [
+        "An actual available auxiliary viewport; if unavailable, record not supported rather than inventing an API."
+      ]
+    },
+    {
+      "id": "LAB-032",
+      "title": "Lake reflection and transparency",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Check visual consistency where the experimental planar reflection path is actually available.",
+      "renderer_requirements": [
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Lake planar reflection disabled in the same scene."
+        },
+        {
+          "id": "B",
+          "description": "Experimental planar reflection enabled if the selected native Forward+ path and aircraft reflection are supported; otherwise record unavailable."
+        }
+      ],
+      "evidence_expected": [
+        "Record reflection mode, actual reflected layers, images and timing; distinguish absent supported aircraft reflection from an afterburner bug."
+      ],
+      "prerequisites": [
+        "A real supported experimental planar-lake path; no promise that transparent flame is reflected."
+      ]
+    },
+    {
+      "id": "LAB-033",
+      "title": "Effects Off lifecycle",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0",
+        "full_scale_reference_study_v0",
+        "cosmetic_led_ring_v0"
+      ],
+      "purpose": "Check allocations and physical independence across repeated effects toggles.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "Start a fresh session with global Effects Off before any AB presentation resource is allocated."
+        },
+        {
+          "id": "B",
+          "description": "Enable effects, select the appearance and warm its resources on the same accepted state/tape."
+        },
+        {
+          "id": "C",
+          "description": "Turn effects Off, allow deferred cleanup, and repeat On/Off cycles without changing the accepted physical input."
+        }
+      ],
+      "evidence_expected": [
+        "At initial Off, no AB-owned effect node, mesh, material, noise texture, particle pool, light or haze is allocated and no AB updates run.",
+        "After each On to Off transition, AB-owned resources are released and updates suspended; report separately any immutable cache owned or still needed by another system.",
+        "Physical state and trajectory remain unchanged by the presentation choice."
+      ]
+    },
+    {
+      "id": "LAB-034",
+      "title": "Paired native performance",
+      "status": "not_run",
+      "profiles": [
+        "experimental_rc_restrained_v0"
+      ],
+      "purpose": "Estimate the visual cost against the proposed combined +0.5 ms frame-p95 allocation.",
+      "renderer_requirements": [
+        "Compatibility",
+        "Mobile",
+        "Forward+"
+      ],
+      "native_baseline": {
+        "output_px": [
+          1920,
+          1080
+        ],
+        "internal_px": [
+          1920,
+          1080
+        ],
+        "scale": 1.0
+      },
+      "paired_conditions": [
+        {
+          "id": "A",
+          "description": "After a 10 s warmup, seven alternating completed 60 s pairs with the same flight tape and visuals off."
+        },
+        {
+          "id": "B",
+          "description": "Same seven pairs with the selected visual tier on; separately ablate optional layers."
+        }
+      ],
+      "evidence_expected": [
+        "Report per-pair p95(on)-p95(off), median/range, GPU/driver, renderer, caps, effective dimensions, 0.99-1.01 simulation/wall ratio and at least 95% intended on activity.",
+        "Call the result inconclusive if caps, noise, missed activity or incomplete pairs prevent a defensible comparison."
+      ],
+      "prerequisites": [
+        "Named native target hardware, a complete future AB-equipped flight and an idle host; no screenshots/readbacks during timing."
+      ]
+    }
+  ]
+}

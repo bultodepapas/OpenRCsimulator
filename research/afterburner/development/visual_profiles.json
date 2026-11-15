@@ -1,0 +1,392 @@
+{
+  "schema_id": "openrc-afterburner-visual-study-profiles-v0-draft",
+  "schema_status": "proposed_art_only_not_production",
+  "source_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "provenance_note": "Original proposed art values for a future lab; no engine image, physical calibration, external asset, or production contract is claimed.",
+  "coordinate_contract": {
+    "outlet_anchor": "Authoring origin at the center of the validated visual outlet. The outlet direction is a finite nonzero vector in the resolved model/world frame.",
+    "plume_local_axis": [
+      0,
+      0,
+      1
+    ],
+    "axial_start_d": 0.0,
+    "scale_reference": "D is the authored visual nozzle diameter. All *_d geometry values are dimensionless multiples of D, not physical dimensions or measurements.",
+    "adapter": "Construct a right-handed basis aligning local +Z with the validated outward exhaust direction. The existing smoke resolver aligns local -Z with exhaust, so apply a local Y rotation of pi or build an equivalent dedicated basis.",
+    "transform_rules": "Admit only finite, nonsingular, orientation-preserving transforms with orthogonal axes and positive uniform scale. Apply model/parent rotation and the authored diameter once. Reject nonuniform scale, shear, reflection or invalid/zero direction with an actionable diagnostic; never guess an emitter pose.",
+    "illustrative_diameter_m": 0.05,
+    "illustrative_diameter_scope": "Visual test input only; derived from an existing approximate 0.025 m visual radius, not a measurement or engine nozzle-area claim.",
+    "study_diameter_range_m": [
+      0.001,
+      2.0
+    ],
+    "diameter_range_scope": "Proposed finite positive lab input guard only; it is not an aircraft contract or calibrated physical limit.",
+    "transform_tolerance": "Define and test an explicit numerical tolerance for orthogonality and equal scale in the eventual adapter; this draft does not set a production threshold."
+  },
+  "appearance_contract": {
+    "state_boundary": "Appearance consumes a validated normalized visual level and an accepted, pose-aligned presentation time. An AB installation may publish its accepted actual AB amount to the visual adapter; the LED ring consumes a separate cosmetic presentation signal.",
+    "no_physical_meaning": "Level, dimensions, colors, cell contrast, rates, and light gains are art controls only. They do not set or infer engine force, fuel demand, nozzle pressure, or measured temperature.",
+    "color_encoding": "All color_srgb components are authored in sRGB in [0,1]. Convert once to the active renderer working space. Linear emission_gain is a relative art multiplier, not luminance or temperature.",
+    "data_encoding": "Noise and flow textures are scalar/vector data, not color: no source_color conversion. Alpha is coverage, authored separately from sRGB color.",
+    "visibility": "Use normal depth testing, no plume depth writes, and no shadow casting. Comparison of additive versus alpha blending is a planned renderer decision.",
+    "timeline": "Derive bounded phases from the same unwrapped float64 presentation time as the displayed pose; do not interpolate wrapped angles. Pause freezes the presentation timeline.",
+    "sharing": "Share immutable geometry, shader and prepared textures where safe; keep mutable per-outlet state independent. Starting globally Effects Off creates no AB-owned effect resources. On to Off releases AB-owned resources and suspends AB updates after normal deferred cleanup; account separately for shared caches owned or still needed by other systems.",
+    "custom_channel": "Do not clobber CUSTOM.z in the existing smoke shader: it stores a seed. Standard particle animation expects that channel; reserve a new explicit contract or a separate shader before enabling an atlas.",
+    "per_outlet_dynamic_state": {
+      "engine_id": "Stable accepted presentation engine identity.",
+      "outlet_id": "Stable authored visual outlet identity.",
+      "visual_level": "Finite normalized art control in [0,1], sourced according to the selected profile.",
+      "presented_pose_and_time": "Interpolated outlet transform and its matching unwrapped float64 presentation timestamp.",
+      "bounded_phase_and_seed": "Phases recomputed from unwrapped time; stable per-outlet seed and identity, independent of global call order.",
+      "per_view_lod": "Each view may choose a fine-detail LOD from its own internal pixels; it must not advance simulation or duplicate particle births.",
+      "optional_particle_history": "Owned independently per outlet with bounded capacity, swept births, one carrier-velocity owner and discontinuity reset.",
+      "sharing_policy": "Shader and texture data may be immutable/shared; dynamic uniforms, animation and particle histories must remain isolated."
+    },
+    "bounds": "The supplied conservative local bounds are illustrative for the listed maximum geometry/deformation in D units; recompute and validate them whenever geometry, deformation or effective scale changes.",
+    "core_representation": "A coherent core can be a term in one shell, a core disc, or a separate inner layer; select after visual and native-cost comparison.",
+    "metal_and_interior": "No hot-metal or separately illuminated nozzle-interior channel is enabled initially; aperture color below represents gas emission, not a material temperature."
+  },
+  "shared_assets": [
+    {
+      "id": "shared_detail_noise_2d_v0",
+      "status": "proposed_not_generated",
+      "tool": "Godot FastNoiseLite + NoiseTexture2D",
+      "role": "Reusable low-frequency data modulation across all plume profiles; the LED profile does not need to load it.",
+      "dimensions_px": [
+        256,
+        256
+      ],
+      "generator_settings": {
+        "seed": 6341,
+        "noise_type": "simplex_smooth",
+        "frequency": 0.03,
+        "fractal_octaves": 3,
+        "seamless": true,
+        "seamless_blend_skirt": 0.1,
+        "normalize": true,
+        "fractal_type": "fbm",
+        "fractal_gain": 0.5,
+        "fractal_lacunarity": 2.0,
+        "fractal_weighted_strength": 0.0,
+        "domain_warp_enabled": false,
+        "offset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "in_3d_space": false,
+        "color_ramp": null
+      },
+      "sampling": {
+        "semantic": "linear_scalar_data",
+        "source_color_hint": false,
+        "wrap_u": "repeat",
+        "wrap_v": "repeat",
+        "min_filter": "linear_mipmap",
+        "mag_filter": "linear",
+        "generate_mipmaps": true
+      },
+      "preparation": "Request once during selected-profile loading. Connect changed before triggering generation, track successful readiness, handle already-ready/failure/teardown, and measure first synchronous generation. Share the immutable result, not mutable per-outlet uniforms.",
+      "runtime_qualification": "Confirm generator settings, readiness, seams and actual formats on the pinned binary and each renderer; values are a proposed recipe, not a pre-existing texture."
+    }
+  ],
+  "common_art_policy": {
+    "recommended_bounded_phases_hz": [
+      0.73,
+      1.31
+    ],
+    "recommended_motion_scope": "Animation frequencies are look-development starting points, not measured combustion frequencies.",
+    "lod_metric": "Approximate projected outlet diameter in internal render pixels, with hysteresis.",
+    "fine_detail_enable_at_or_above_px": 3.0,
+    "fine_detail_disable_at_or_below_px": 2.0,
+    "lod_note": "Proposed initial hysteresis values for a lab comparison, not validated visual thresholds; hold prior state between them. Keep the coherent core when fine detail is removed.",
+    "default_optional_layers": {
+      "gpu_particles": false,
+      "heat_haze": false,
+      "dynamic_light": false,
+      "volumetric_fog": false
+    }
+  },
+  "profiles": [
+    {
+      "id": "experimental_rc_restrained_v0",
+      "label": "Restrained experimental RC afterburner",
+      "purpose": "Readable short blue/cyan attached plume for experimental RC study; not a measured JetCat plume.",
+      "presentation_source": "accepted_actual_ab_visual_level",
+      "primitive": "attached_gas_plume_with_core_and_aperture_emission",
+      "shared_assets": [
+        "shared_detail_noise_2d_v0"
+      ],
+      "dimensions": {
+        "outer_length_d": 8.4,
+        "outer_root_radius_d": 0.5,
+        "outer_max_radius_d": 0.65,
+        "outer_tip_radius_d": 0.04,
+        "inner_length_d": 6.4,
+        "inner_root_radius_d": 0.28,
+        "max_radial_deformation_d": 0.1,
+        "max_axial_deformation_d": 0.1
+      },
+      "outer": {
+        "color_srgb": [
+          0.08,
+          0.52,
+          0.96
+        ],
+        "alpha": 0.34,
+        "emission_gain_linear_relative": 1.0
+      },
+      "core": {
+        "color_srgb": [
+          0.55,
+          0.9,
+          1.0
+        ],
+        "alpha": 0.82,
+        "emission_gain_linear_relative": 1.8
+      },
+      "strength_response": {
+        "brightness_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.15,
+            0.32
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ],
+        "length_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.15,
+            0.5
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "detail": {
+        "noise_amplitude": 0.12,
+        "noise_phase_hz": 1.31,
+        "cells_enabled_initially": false,
+        "cell_contrast": 0.0
+      },
+      "optional_particles": {
+        "enabled_initially": false,
+        "nominal_birth_rate_per_s": 48.0,
+        "lifetime_s": 0.25,
+        "pool_capacity_per_outlet": 16,
+        "carrier_velocity_owners": 1,
+        "note": "Illustrative detail budget, subject to an agreed combined effects budget; do not use particles as the only readable core."
+      },
+      "conservative_local_bounds_d": {
+        "min": [
+          -0.75,
+          -0.75,
+          -0.1
+        ],
+        "max": [
+          0.75,
+          0.75,
+          8.5
+        ]
+      },
+      "aperture_gas_emission": {
+        "color_srgb": [
+          0.28,
+          0.75,
+          1.0
+        ],
+        "alpha": 0.7,
+        "emission_gain_linear_relative": 1.2,
+        "kind": "gas_emission_at_outlet_aperture",
+        "implies_heated_metal": false
+      },
+      "metal_or_interior_glow": {
+        "enabled_initially": false,
+        "note": "Separate optional study only; not calibrated or justified by this profile."
+      }
+    },
+    {
+      "id": "full_scale_reference_study_v0",
+      "label": "Full-scale reference-study afterburner",
+      "purpose": "Violet/pink look-development comparison inspired by full-scale imagery; not calibrated to an RC engine and not evidence of RC exhaust conditions.",
+      "presentation_source": "accepted_actual_ab_visual_level",
+      "primitive": "attached_gas_plume_with_core_and_aperture_emission",
+      "shared_assets": [
+        "shared_detail_noise_2d_v0"
+      ],
+      "dimensions": {
+        "outer_length_d": 12.0,
+        "outer_root_radius_d": 0.5,
+        "outer_max_radius_d": 0.72,
+        "outer_tip_radius_d": 0.05,
+        "inner_length_d": 9.0,
+        "inner_root_radius_d": 0.31,
+        "max_radial_deformation_d": 0.1,
+        "max_axial_deformation_d": 0.12
+      },
+      "outer": {
+        "color_srgb": [
+          0.6,
+          0.23,
+          0.91
+        ],
+        "alpha": 0.3,
+        "emission_gain_linear_relative": 1.0
+      },
+      "core": {
+        "color_srgb": [
+          1.0,
+          0.68,
+          0.98
+        ],
+        "alpha": 0.78,
+        "emission_gain_linear_relative": 1.65
+      },
+      "strength_response": {
+        "brightness_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.15,
+            0.32
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ],
+        "length_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.15,
+            0.5
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "detail": {
+        "noise_amplitude": 0.1,
+        "noise_phase_hz": 0.73,
+        "cells_enabled_initially": true,
+        "cell_contrast": 0.12,
+        "cell_spacing_d": 1.3,
+        "max_cells": 6,
+        "cell_motion": "fixed in nozzle-local axial coordinates as a quasi-stationary art approximation; separately animated texture flows through them",
+        "cell_fade": "fade with distance and remove when projected detail is unresolved",
+        "cell_motion_evidence_limit": "A still image cannot establish temporal stationarity; nozzle-relative behavior is a conditional approximation, not RC validation."
+      },
+      "optional_particles": {
+        "enabled_initially": false,
+        "nominal_birth_rate_per_s": 48.0,
+        "lifetime_s": 0.25,
+        "pool_capacity_per_outlet": 16,
+        "carrier_velocity_owners": 1
+      },
+      "conservative_local_bounds_d": {
+        "min": [
+          -0.82,
+          -0.82,
+          -0.12
+        ],
+        "max": [
+          0.82,
+          0.82,
+          12.12
+        ]
+      },
+      "aperture_gas_emission": {
+        "color_srgb": [
+          0.82,
+          0.53,
+          1.0
+        ],
+        "alpha": 0.66,
+        "emission_gain_linear_relative": 1.15,
+        "kind": "gas_emission_at_outlet_aperture",
+        "implies_heated_metal": false
+      },
+      "metal_or_interior_glow": {
+        "enabled_initially": false,
+        "note": "Separate optional study only; not calibrated or justified by this profile."
+      }
+    },
+    {
+      "id": "cosmetic_led_ring_v0",
+      "label": "Cosmetic LED ring",
+      "purpose": "Nozzle-mounted decorative luminous annulus, controlled separately from physical augmentation.",
+      "presentation_source": "independent_cosmetic_visual_level",
+      "primitive": "nozzle_annulus_only",
+      "shared_assets": [],
+      "dimensions": {
+        "ring_center_z_d": 0.02,
+        "ring_inner_radius_d": 0.4,
+        "ring_outer_radius_d": 0.5,
+        "ring_thickness_d": 0.02
+      },
+      "ring": {
+        "color_srgb": [
+          1.0,
+          0.35,
+          0.08
+        ],
+        "alpha": 0.85,
+        "emission_gain_linear_relative": 1.0
+      },
+      "strength_response": {
+        "brightness_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "detail": {
+        "cells_enabled_initially": false,
+        "cell_contrast": 0.0
+      },
+      "forbidden_components": [
+        "gas_plume_mesh",
+        "gas_plume_particles",
+        "heat_haze",
+        "state_mapping_to_thrust_or_fuel"
+      ],
+      "conservative_local_bounds_d": {
+        "min": [
+          -0.5,
+          -0.5,
+          0.01
+        ],
+        "max": [
+          0.5,
+          0.5,
+          0.03
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,705 @@
+{
+  "format": "openrc-afterburner-handoff-source-v3",
+  "revision": 3,
+  "created_date": "2026-11-14",
+  "updated_date": "2026-11-15",
+  "timezone": "America/Bogota",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "current_inspected_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "checkout_scope": "clean sparse read-only source review; no production import or flight",
+  "production_files_modified": false,
+  "engine": {
+    "source_pin": "4.8.beta2.official.cafc17a19",
+    "executed_in_revision_2": false,
+    "historical_tested_engine": {
+      "version": "4.8.beta2.official.cafc17a19",
+      "platform": "linux.x86_64",
+      "file_name": "Godot_v4.8-beta2_linux.x86_64",
+      "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+      "verification": "matches source-pinned official executable SHA-512 in app/get-godot.sh"
+    },
+    "executed_in_revision_3": false,
+    "exact_source_inspections_revision_3": {
+      "scope": "Read-only GitHub fetches of text source at engine ref cafc17a19; source inspection is not runtime, image, importer, or performance qualification.",
+      "files": [
+        {
+          "path": "modules/noise/noise_texture_2d.cpp",
+          "blob_sha": "9eadeaf30e1876f766cba8b4a6df4ef9a58a7d14",
+          "lines_inspected": "121-148,160-184,205-225",
+          "finding": "First deferred update generates synchronously; subsequent updates can be dispatched to worker pool. Output replacement emits changed; generated 2D mipmaps are configurable.",
+          "url": "https://github.com/godotengine/godot/blob/cafc17a19/modules/noise/noise_texture_2d.cpp"
+        },
+        {
+          "path": "modules/noise/noise_texture_3d.cpp",
+          "blob_sha": "e9f8eb5d8cac21403b7e252c77bb4460e6704e20",
+          "lines_inspected": "57-89,103-137,149-177,200-220,349-350,361-364",
+          "finding": "First deferred update generates synchronously; later updates can use workers. Texture creation disables mipmaps; has_mipmaps returns false. get_data logs an error and returns an empty vector on an invalid texture RID.",
+          "url": "https://github.com/godotengine/godot/blob/cafc17a19/modules/noise/noise_texture_3d.cpp"
+        },
+        {
+          "path": "scene/resources/material.cpp",
+          "blob_sha": "6e95cbf5bc2e34848ef9925a85286fd4bc80007f",
+          "lines_inspected": "1324-1337",
+          "finding": "With particle animation enabled, one frame is selected by flooring INSTANCE_CUSTOM.z multiplied by frame count; coordinates select the resulting atlas cell.",
+          "url": "https://github.com/godotengine/godot/blob/cafc17a19/scene/resources/material.cpp"
+        },
+        {
+          "path": "editor/import/resource_importer_layered_texture.cpp",
+          "blob_sha": "5c3093d9738baeb6bc2d70b1eb4619f57a07a9a3",
+          "lines_inspected": "80-81,157-164,295-305,339-341",
+          "finding": "Layered importer takes recognized image loader formats, configurable slice grid and optional mip generation; VDB support outside this importer was not exhaustively surveyed.",
+          "url": "https://github.com/godotengine/godot/blob/cafc17a19/editor/import/resource_importer_layered_texture.cpp"
+        },
+        {
+          "path": "drivers/gles3/storage/particles_storage.cpp",
+          "blob_sha": "f43d878d70353635c81805c693bdaa62faa8dc8a",
+          "lines_inspected": "303-309,383-392,674,707,1417",
+          "finding": "Compatibility renderer warns and rejects manually emitted particles, sub-emitters and trails; it also warns on vector-field attractors and SDF 3D particle collision. Source read, not runtime qualification.",
+          "url": "https://github.com/godotengine/godot/blob/cafc17a19/drivers/gles3/storage/particles_storage.cpp"
+        }
+      ]
+    }
+  },
+  "source_files": [
+    {
+      "path": "AGENTS.md",
+      "size_bytes": 9558,
+      "sha256": "f2b63fd6b0d7827c3f6abfb36ea5a94eda9c48f71bb6d9aa9ec235aa2c6aa76c"
+    },
+    {
+      "path": "app/aircraft/avanti_s_blender_geometry.gd",
+      "size_bytes": 306720,
+      "sha256": "ca9c44cd9d8d147328b5b7bd7b77f1b6e237b90038e03de754cb84089873373b"
+    },
+    {
+      "path": "app/app_root.gd",
+      "size_bytes": 226662,
+      "sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647"
+    },
+    {
+      "path": "app/assets/audio/powertrains/BANKS.json",
+      "size_bytes": 735,
+      "sha256": "6a9fe7a6a4d79ad6838a298b5d22dbefa5301739f09fa26a45d39c3d7caab387"
+    },
+    {
+      "path": "app/assets/audio/powertrains/manifest.json",
+      "size_bytes": 16493,
+      "sha256": "274e8116e766c8ffbba2a7df919d664563021d92e0fa25e56e1d10a501f53016"
+    },
+    {
+      "path": "app/audio/flight_audio.gd",
+      "size_bytes": 24356,
+      "sha256": "6b7543e6900535160738e649eb95ec510e5f2a7bfc2e7726415267a0ac3a2ee7"
+    },
+    {
+      "path": "app/audio/ground_audio.gd",
+      "size_bytes": 20565,
+      "sha256": "0ae2f66500b6968741f824fa356b4edc2b361f020a8cfb6a2edb1d9fd3214c42"
+    },
+    {
+      "path": "app/audio/mechanical_audio.gd",
+      "size_bytes": 41341,
+      "sha256": "a7fd40a6c820d0eca6cd00e636eb06e009a197d667576e5782f5351b6385080c"
+    },
+    {
+      "path": "app/audio/powertrain_audio.gd",
+      "size_bytes": 8772,
+      "sha256": "fe2acdb9d93ab67af9d8f20c8755d0f72a98cb210840e697c68d126f10e1b52e"
+    },
+    {
+      "path": "app/audio/soundscape.gd",
+      "size_bytes": 32781,
+      "sha256": "e0b4383575c18ce3f44d25a84b3ee9ff9f8c0fb83f7bc4feab1001a650f81642"
+    },
+    {
+      "path": "app/audio/soundscape_model.gd",
+      "size_bytes": 11828,
+      "sha256": "7735a18174a3e9e196d2189802053f46b0a9a82c9ecf7459ef6828a59f30cdbe"
+    },
+    {
+      "path": "app/data/aircraft/sebart_avanti_s_a200.json",
+      "size_bytes": 110631,
+      "sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9"
+    },
+    {
+      "path": "app/data/aircraft_customization.json",
+      "size_bytes": 83370,
+      "sha256": "32fcb10bf55daa7b059b536403ba18add9d67777645d5d4d37f5071dc6bc575b"
+    },
+    {
+      "path": "app/data/schema/aircraft-contract-v2.json",
+      "size_bytes": 44189,
+      "sha256": "f3c7e0cc21f2ada617bb248dbdf24f0ef4dd8047ef5d78b9fcec1d00308f3ccd"
+    },
+    {
+      "path": "app/get-godot.sh",
+      "size_bytes": 8960,
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439"
+    },
+    {
+      "path": "app/input/controller_actions.gd",
+      "size_bytes": 36561,
+      "sha256": "96d484dcca792b91e01f1238d5fb1c2c3f920d1cac331fb57cf6aaa114b06083"
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "size_bytes": 27351,
+      "sha256": "a8ae3affeb25a046903a92716775f8d125dc7e7af5374f5187998279480f4b34"
+    },
+    {
+      "path": "app/input/smoke_aux.gd",
+      "size_bytes": 10908,
+      "sha256": "365d456ea8807acff13081acd40d76b1c5092d98d17fa41b03887b4873e5e560"
+    },
+    {
+      "path": "app/main.gd",
+      "size_bytes": 209398,
+      "sha256": "eff3916ef3429ddf97fb687e655dddd789d019e67a565dc9619db8f9bbc6d006"
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "size_bytes": 18954,
+      "sha256": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "size_bytes": 152382,
+      "sha256": "ae2ced8856cdd9f1fd478db60e7b69f9e7d06465cf53c56be3dd158896a75358"
+    },
+    {
+      "path": "app/physics/aircraft_modules.gd",
+      "size_bytes": 19691,
+      "sha256": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5"
+    },
+    {
+      "path": "app/physics/atmosphere.gd",
+      "size_bytes": 8134,
+      "sha256": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be"
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "size_bytes": 10490,
+      "sha256": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0"
+    },
+    {
+      "path": "app/physics/wind_field.gd",
+      "size_bytes": 6835,
+      "sha256": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776"
+    },
+    {
+      "path": "app/project.godot",
+      "size_bytes": 3950,
+      "sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1"
+    },
+    {
+      "path": "app/render/aircraft_customization.gd",
+      "size_bytes": 46037,
+      "sha256": "f739cc5226b652e9cf35aa0a148c19d71a2992550cf365c03a3031af9d8023af"
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "size_bytes": 51976,
+      "sha256": "1b5eb746d49cf99610fa00490203052ed1045fab19d1a49f3876818e685f48f1"
+    },
+    {
+      "path": "app/render/frames.gd",
+      "size_bytes": 2433,
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8"
+    },
+    {
+      "path": "app/render/lake/lake_planar_reflection.gd",
+      "size_bytes": 7002,
+      "sha256": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665"
+    },
+    {
+      "path": "app/render/lake/lake_reflection.gd",
+      "size_bytes": 3869,
+      "sha256": "db692550c9680022d57bbf2ec370fdc32305dfff05017c6d9ab236fd52715e9e"
+    },
+    {
+      "path": "app/render/lighting/rgb_strip.gdshader",
+      "size_bytes": 2594,
+      "sha256": "f25119078acdd2b626ee0c8689639b40e4d251cee97e79ec767d6c90be0a5282"
+    },
+    {
+      "path": "app/render/shader_clock.gd",
+      "size_bytes": 1831,
+      "sha256": "8e4e4feb72ebd071c0730d928fb1ea26a8be67d704bf3b7c3c71bbb4efad03da"
+    },
+    {
+      "path": "app/render/smoke/profile_process.gdshader",
+      "size_bytes": 7198,
+      "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke.gd",
+      "size_bytes": 29360,
+      "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke_schedule.gd",
+      "size_bytes": 16920,
+      "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+    },
+    {
+      "path": "app/render/weather/lightning_bolt.gdshader",
+      "size_bytes": 1271,
+      "sha256": "15c1d14d0652f836fefbb16615bfe3915380ee755af06a8ae21a152fec436d80"
+    },
+    {
+      "path": "app/render/world/engine_srgb.gdshaderinc",
+      "size_bytes": 1221,
+      "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+    },
+    {
+      "path": "app/sim/aircraft_propulsion_runtime.gd",
+      "size_bytes": 10439,
+      "sha256": "f1df9fba77eb400d1db8ffa0a96cc84758f1c67e08aa2d0a677b38d8205bec75"
+    },
+    {
+      "path": "app/sim/checkpoint_json.gd",
+      "size_bytes": 1751,
+      "sha256": "145bd071bb19d3e1c4f65bce79471bdf926dc4f28dd41b2503f0302f988f50fc"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "size_bytes": 20722,
+      "sha256": "be1284db9b926e6e10b8794e254496abd26731d5212da4f609edeffa775fb913"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "size_bytes": 332294,
+      "sha256": "5a3c36f5b2b375505a45cff94ca9ede31eeb7bc79fc1a40e27c3064e7894bb50"
+    },
+    {
+      "path": "app/sim/liquid_fuel_flight.gd",
+      "size_bytes": 7470,
+      "sha256": "5339079d8466b7ca8a1af966cd2a76b1a32286bea9f408f01d4cd31cee0861ad"
+    },
+    {
+      "path": "app/sim/native/liquid_stage_adapter.gd",
+      "size_bytes": 3684,
+      "sha256": "0b0148d04a04618aa8c1b20aaa5def923595393d79ecadba5063ab9a100ce9a9"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "size_bytes": 95531,
+      "sha256": "52f24dc06a4f6c2fb523ac1a8f8c40198f872d52b1145b03ac0de1d5b62ab89f"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "size_bytes": 14810,
+      "sha256": "5fe73efd3fe0e51b5bb6b553b39db567c596deedc2bd2443ccbcd07712a94b20"
+    },
+    {
+      "path": "app/workshop/compiler.gd",
+      "size_bytes": 32542,
+      "sha256": "cd98900f2e05eb08e6f35b4e89fba902e53d30e1a4fb61210c0afb2641de0383"
+    },
+    {
+      "path": "app/workshop/descriptor.gd",
+      "size_bytes": 19968,
+      "sha256": "d1bd69d303eefd369ecfcc0e82eb49272b6538b023a132b3bd3ab13b3fbfd46c"
+    },
+    {
+      "path": "docs/AIRCRAFT_CONTRACT.md",
+      "size_bytes": 86491,
+      "sha256": "4dbc09d2c44d0f9b17f35ab64cb1d25935196225d8ed824e3f1dce3dab5d2dd0"
+    },
+    {
+      "path": "docs/AUDIO-PLAN.md",
+      "size_bytes": 12379,
+      "sha256": "386d14e1f5cf1254c8d9fe1c18709e6fde84aa47034ab765a0d5baa77363ad85"
+    },
+    {
+      "path": "docs/AVANTI-S-PLAN.md",
+      "size_bytes": 12051,
+      "sha256": "88d3fceded1ff26e86637551377b3843a157a88c2e0483a6261f78cee7f15af9"
+    },
+    {
+      "path": "docs/FLIGHT-LOGGING.md",
+      "size_bytes": 26344,
+      "sha256": "e8a666ff2186772bbd152f42c03ef1616bac6512f4e7b92170e68813805a3f34"
+    },
+    {
+      "path": "docs/FUEL-SYSTEM.md",
+      "size_bytes": 12497,
+      "sha256": "1c45968e8cc7045ffd6f110f351955828eaef55578dd8751fe7797c8a16a5422"
+    },
+    {
+      "path": "docs/STACK.md",
+      "size_bytes": 13577,
+      "sha256": "e91984e225dee959188d7f5b6db7f322b566448ad3eed2b754a9d43af1218f4d"
+    },
+    {
+      "path": "docs/SUBAGENTS.md",
+      "size_bytes": 23946,
+      "sha256": "d9cfb096924a130c83c9817481a0591b2b1aeda6b3d1103f32f0145ae1f2f54f"
+    },
+    {
+      "path": "docs/WIND-ATMOSPHERE-REFERENCE.md",
+      "size_bytes": 86431,
+      "sha256": "15391e2c084a95de644eefd5d3f8b6f4ec51d6a514182c2466f4fecf87b5d61d"
+    },
+    {
+      "path": "docs/plans/night-flight-lighting.md",
+      "size_bytes": 107362,
+      "sha256": "ed72f2031efa99a3fab8352202d848305e9a8e5ef9fa5bc50879a4c0a8a89864"
+    },
+    {
+      "path": "docs/plans/turbine-realism.md",
+      "size_bytes": 54184,
+      "sha256": "2b42043fd8dc2ae0034321e9c5bd0666bac4c4fbc1dd7eb1bf517711dea034ce"
+    },
+    {
+      "path": "docs/research/field-world/FW-84/README.md",
+      "size_bytes": 19612,
+      "sha256": "6d9c5a58ed09734079cd05605c18b9bce6c667563af6e5c0720445bce00efad2"
+    },
+    {
+      "path": "docs/tools/README.md",
+      "size_bytes": 8292,
+      "sha256": "f45f140510802ecb2e8f2d654a7c35887ec1971073c563f2755e32b125fcb585"
+    },
+    {
+      "path": "docs/tools/graphics.md",
+      "size_bytes": 15850,
+      "sha256": "ad4a2caa2ad22635bbb52c3e0954b97ad95ababbf5fc9ae09174e36af34aca7e"
+    },
+    {
+      "path": "external Audits/CONSOLIDATED-AUDITS.md",
+      "size_bytes": 82659,
+      "sha256": "652ba32656d20c71c898b33af983a5a4f810727dcb8e2bd44fd05b78ddd9d5d9"
+    },
+    {
+      "path": "research/avanti-s/av06/derive_physics.py",
+      "size_bytes": 93254,
+      "sha256": "2c36b9675ccfa61217a14dc934a234b1d164d3f80aa869f36ab2acb731d1e1e3"
+    },
+    {
+      "path": "research/avanti-s/av06/inputs.json",
+      "size_bytes": 39780,
+      "sha256": "bddc1c31c9ea46b65d93c9943701065b9c8378ae6b453ab94b7b99c3ed8d59fd"
+    },
+    {
+      "path": "research/native-kernel/README.md",
+      "size_bytes": 42242,
+      "sha256": "afe7aac950c88bde94001349b98b1a0160e0532e877553642ec85cfe61b8acc3"
+    },
+    {
+      "path": "research/native-kernel/src/nk_kernel.cpp",
+      "size_bytes": 98286,
+      "sha256": "ef573d46d15235b6c0541e3b955b20a034eeaf1cf5b2d663d1cf581c4ecafec4"
+    },
+    {
+      "path": "tools/audio/README.md",
+      "size_bytes": 23670,
+      "sha256": "50cfe367ebf4ca4983f1f4f38fcbcd79c52ed78aa20200b9f66c797b1fed70cd"
+    },
+    {
+      "path": "tools/debug/README.md",
+      "size_bytes": 60674,
+      "sha256": "efbbd7f1662aaf0cf5de3c6ba8e3e33b7489e5e1b2a8df6bf3a8f5e593ec2735"
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "size_bytes": 28617,
+      "sha256": "55fd7b19a5c7490ab020e2c1b8e732784441375afff17d75a86c01a307a93b46"
+    },
+    {
+      "path": "tools/graphics/README.md",
+      "size_bytes": 23499,
+      "sha256": "6f6dac9445e3357de6a23bde1cdd0ae3e77b45e364edbc4330c9cdf4c47e22dd"
+    },
+    {
+      "path": "tools/smoke/README.md",
+      "size_bytes": 9274,
+      "sha256": "bf4bf03f9b1e3e38d3a851e6e25b985e3d5f1dcfc1ce0024758f9580644d4c9c"
+    },
+    {
+      "path": "tools/testqueue/README.md",
+      "size_bytes": 24496,
+      "sha256": "37748eb184744e21c907336451d0793173e6b34df8d3bef3b12fcd82608fd1a0"
+    }
+  ],
+  "source_file_scope": "Selected source identity only; referenced files were read or searched within the recorded investigations. This is neither whole-repository coverage nor a claim that every line was reviewed.",
+  "baseline_source_drift": {
+    "selected_paths": 39,
+    "same": 34,
+    "changed": 5,
+    "evidence": "research_round2/source_drift.json"
+  },
+  "historical": {
+    "inspected_commit": "f41d0fd2eb5483c609bcd858bcf22776eb311e14",
+    "source_manifest": "evidence/source_manifest_2026-11-14.json",
+    "verification": "evidence/verification_2026-11-14.md",
+    "core_checks": 97,
+    "visual_state_checks": 14,
+    "rerun_in_revision_2": false
+  },
+  "research_outputs": [
+    {
+      "path": "research_round2/audio.md",
+      "size_bytes": 25049,
+      "sha256": "b059f64d2ede1237f700d34a15aa64be6dcfea41c2c8ebbeb37a7b40e86d2f19"
+    },
+    {
+      "path": "research_round2/audio_evidence/probe-results.txt",
+      "size_bytes": 1045,
+      "sha256": "ce56f8540e8f76bdaff0540071b93cde2453ec2d27231226012a993c89a57b94"
+    },
+    {
+      "path": "research_round2/audio_evidence/probe.py",
+      "size_bytes": 1496,
+      "sha256": "54262f24a63a3145bf0d3c873a51296f8b0911cc226cdae76c41d1d7437b0357"
+    },
+    {
+      "path": "research_round2/graphics.md",
+      "size_bytes": 26855,
+      "sha256": "20acf6d5623f770bcb6ce9864e8ef7f54c477eb7bd3b0266f194fce15e511a53"
+    },
+    {
+      "path": "research_round2/graphics_evidence/projected_size_phase.json",
+      "size_bytes": 2919,
+      "sha256": "ae498a0e8dfa7a037099c930c2a441a267628806898e6b652b6acb60663a162a"
+    },
+    {
+      "path": "research_round2/independent_review.md",
+      "size_bytes": 6650,
+      "sha256": "021293562120d77b99513951b3abd0a4f28141edb01569596771b30d5124d7e1"
+    },
+    {
+      "path": "research_round2/integration.md",
+      "size_bytes": 21797,
+      "sha256": "403593dd589b84f382e9bdb7ac549d7f003d2313fc2d96662db505b1fcab34dc"
+    },
+    {
+      "path": "research_round2/investigation_plan.md",
+      "size_bytes": 8031,
+      "sha256": "07d8be8c5b07ae6ef294454e9e9456f9a990b4219344af60cc93242a3e25d863"
+    },
+    {
+      "path": "research_round2/physics.md",
+      "size_bytes": 28517,
+      "sha256": "36ca6066c8c9474bce6f5d856bca5302544c603dde238c8fe5ad66c6df30e0d7"
+    },
+    {
+      "path": "research_round2/physics_evidence/analytic_cases.py",
+      "size_bytes": 3079,
+      "sha256": "4da74de9ecd925fa61c1bb676a09c3209495f561492aaf0d1c60844686c5c327"
+    },
+    {
+      "path": "research_round2/physics_evidence/analytic_cases_output.txt",
+      "size_bytes": 983,
+      "sha256": "40f4af8e90087617b8edbb03e99efea1540e07832182087d082f3182d75bba48"
+    },
+    {
+      "path": "research_round2/source_drift.json",
+      "size_bytes": 10190,
+      "sha256": "6d35144727b18a101a2d5c83bf60069a631aba389cb37ba715e19664a8959294"
+    },
+    {
+      "path": "research_fx3/development/README.md",
+      "size_bytes": 10052,
+      "sha256": "2be3acef921b1f7ba0590092cf4537a920818300ce47610ca660ddfa42a50986"
+    },
+    {
+      "path": "research_fx3/development/capture_cases.json",
+      "size_bytes": 42008,
+      "sha256": "a4d0e446df2aa9b91c5acbe40909324e170a5ceb8a2b48b61439148d168ea0f9"
+    },
+    {
+      "path": "research_fx3/development/visual_profiles.json",
+      "size_bytes": 15103,
+      "sha256": "b43a2ae70d389544c687c38b88b3b6c280fd5fd190c923b98ee94bf655b02185"
+    },
+    {
+      "path": "research_fx3/effects_workflow.md",
+      "size_bytes": 18080,
+      "sha256": "1e06252cc33b658e6386ee32fa3126f4a361187194771b8c845a326fdc6f0c2a"
+    },
+    {
+      "path": "research_fx3/flame_reference.md",
+      "size_bytes": 23558,
+      "sha256": "2c028f432b26def1e1616be7eaf1284ee02cdceabecf7bbe01ac6d6673ac64f9"
+    },
+    {
+      "path": "research_fx3/independent_review.md",
+      "size_bytes": 8240,
+      "sha256": "6406878d970e2ab9095f18da1ddfc2fb1835cdc6203bab88586a064b039c1870"
+    },
+    {
+      "path": "research_fx3/investigation_plan.md",
+      "size_bytes": 4874,
+      "sha256": "69aa1f5dfd9581aa32b6288643a95adac32e5b146ab2026ab9aec48860b2fccc"
+    },
+    {
+      "path": "research_fx3/shader_evidence/analytic_probe.json",
+      "size_bytes": 3551,
+      "sha256": "f7ecb9eb5169183fc60922e2d1836d752e1ee7c59631da947e74ebc85b2351c7"
+    },
+    {
+      "path": "research_fx3/shader_evidence/analytic_probe.py",
+      "size_bytes": 4598,
+      "sha256": "186affe44914fea09dc863683026dcd8f63bfffaacc9e4e9a111511878e3bc81"
+    },
+    {
+      "path": "research_fx3/shader_techniques.md",
+      "size_bytes": 21276,
+      "sha256": "1afc61ca310063205658453101896f1cad0327c1558dad3a21c4768cb34a6350"
+    },
+    {
+      "path": "research_fx3/tools_assets.md",
+      "size_bytes": 20169,
+      "sha256": "e5e88276a1167a27b3da7743d4b46f2079fca53a588b284589763d8427ee1d5f"
+    },
+    {
+      "path": "research_fx3/tools_evidence/pin_source_metadata.json",
+      "size_bytes": 2672,
+      "sha256": "af4e5d2d13238bc6bef2669f47c9cb93b09ea4768af53dcee6019dc8085078ce"
+    },
+    {
+      "path": "research_fx3/tools_evidence/texture_costs.json",
+      "size_bytes": 6854,
+      "sha256": "19948330f97be0bd51326dbf9a68fa14cfd654e393b00c27a76296d7303bea00"
+    },
+    {
+      "path": "research_fx3/workflow_evidence/diagnostic_examples.json",
+      "size_bytes": 1363,
+      "sha256": "c2cd9193fd5181fcbf9a6b58c1c130359b767c25b6f76a69d487643b94581660"
+    },
+    {
+      "path": "research_fx3/workflow_evidence/diagnostic_examples.png",
+      "size_bytes": 85523,
+      "sha256": "1bccdd3694b0852bc048beb5b14fc164ec234c27ea3e7e58f9b3e4dd3d417f65"
+    },
+    {
+      "path": "research_fx3/workflow_evidence/diagnostic_examples.py",
+      "size_bytes": 5615,
+      "sha256": "874a0acd696157481d56b184a28ef2c53ab0230ef5fbbeb81d17abc64b531a82"
+    }
+  ],
+  "prototype_files": [
+    {
+      "path": "prototype/core/afterburner_core.gd",
+      "size_bytes": 15129,
+      "sha256": "7a35291598ffde2a786fd122a52bdcfd891a1b93b48adb1469c54221795f8d11"
+    },
+    {
+      "path": "prototype/core/afterburner_core.gd.uid",
+      "size_bytes": 20,
+      "sha256": "ef95fc4cbb30d76a9d5197911d39d6d8b1d5f26f98be74ef556b912bed107f41"
+    },
+    {
+      "path": "prototype/project.godot",
+      "size_bytes": 600,
+      "sha256": "b98f022ff9b5759b70f85552002891d5a0ac4a5c1b21699a31d8548124bf51fa"
+    },
+    {
+      "path": "prototype/tests/test_afterburner_core.gd",
+      "size_bytes": 19254,
+      "sha256": "ad780871ad90b1f97a1c51f886dae867e0319c0dc3bf6bd8a05c309693d7f33b"
+    },
+    {
+      "path": "prototype/tests/test_afterburner_core.gd.uid",
+      "size_bytes": 20,
+      "sha256": "0924a81ab5fab7dd21509dae4d4efa7fc9ab542127a42bc8e1ba34a840edf949"
+    },
+    {
+      "path": "prototype/visual/afterburner_plume.gdshader",
+      "size_bytes": 2796,
+      "sha256": "0ff992669eb356f03682e94c730b9c40e0cda68a77778ebcc0c29b21e0f273aa"
+    },
+    {
+      "path": "prototype/visual/afterburner_plume.gdshader.uid",
+      "size_bytes": 20,
+      "sha256": "b40e08642bddef3d9baed855d8b29cf5e923b99c874ae7009a130716d52283e2"
+    },
+    {
+      "path": "prototype/visual/afterburner_visual.gd",
+      "size_bytes": 4094,
+      "sha256": "0b25aba3ae4d418810cefadd246b66b00288c87e9545dace0db22a385f26aa60"
+    },
+    {
+      "path": "prototype/visual/afterburner_visual.gd.uid",
+      "size_bytes": 20,
+      "sha256": "107c75f5f2acb820eee8f6f77f7764ef8755e22054e785e487dc2efad926fb83"
+    },
+    {
+      "path": "prototype/visual/verify_visual.gd",
+      "size_bytes": 3153,
+      "sha256": "22d84a79d278ceec95985a37d84d436cfdb0b01623800c2668ee4417559358fa"
+    },
+    {
+      "path": "prototype/visual/verify_visual.gd.uid",
+      "size_bytes": 20,
+      "sha256": "953094817603f6f9eb22dcb2a983008da854d771d6e9ac6be745b7599775c5f1"
+    },
+    {
+      "path": "prototype/visual/visual_fixture.gd",
+      "size_bytes": 7766,
+      "sha256": "5e3167ddc604e8966444e08b5b09f63acc3804d86ddeb9ba5221973dd0c98f23"
+    },
+    {
+      "path": "prototype/visual/visual_fixture.gd.uid",
+      "size_bytes": 19,
+      "sha256": "296d0fb283d7623ea7bb33070c4d60596729d09f55eaadfe46bcb123c6a28b35"
+    },
+    {
+      "path": "prototype/visual/visual_fixture.tscn",
+      "size_bytes": 188,
+      "sha256": "931fae15460078690e31a9b91d0c4ee5564787a88e55f7ec0435c71b31f348b8"
+    }
+  ],
+  "historical_engine_receipts": [
+    {
+      "path": "evidence/core-final/report.json",
+      "log_path": "evidence/core-final/engine.log"
+    },
+    {
+      "path": "evidence/visual-import/report.json",
+      "log_path": "evidence/visual-import/engine.log"
+    },
+    {
+      "path": "evidence/visual-state/report.json",
+      "log_path": "evidence/visual-state/engine.log"
+    },
+    {
+      "path": "evidence/visual-runtime/report.json",
+      "log_path": "evidence/visual-runtime/engine.log"
+    }
+  ],
+  "limitations": [
+    "No production afterburner integration",
+    "No measured engine wet-map calibration",
+    "No rendered visual or GPU shader qualification",
+    "No audio asset import or listening",
+    "No target-hardware performance qualification",
+    "No complete production replay/fuel-event/native parity test",
+    "New arithmetic probes do not execute OpenRC",
+    "Godot documentation versions do not qualify exact beta2 rendering",
+    "Sound candidates inspected as metadata only",
+    "Revision 3 adds effects research, CPU arithmetic and draft authoring/capture data; no new engine, renderer, flight or hardware qualification."
+  ],
+  "provenance": "Original prototype preserved; no third-party audio, art, repository or engine binary bundled",
+  "revision_3_additional_source_paths": [
+    "app/render/atmosphere.gd",
+    "app/render/lake/lake_planar_reflection.gd",
+    "app/render/lake/lake_reflection.gd",
+    "app/render/lighting/rgb_strip.gdshader",
+    "app/render/smoke/profile_smoke_schedule.gd",
+    "app/render/world/engine_srgb.gdshaderinc",
+    "docs/plans/night-flight-lighting.md",
+    "docs/research/field-world/FW-84/README.md",
+    "tools/debug/README.md"
+  ],
+  "revision_3_evidence": {
+    "new_investigations": 24,
+    "retained_investigations": 28,
+    "proposed_visual_profiles": 3,
+    "planned_capture_cases": 34,
+    "native_cases_executed": 0,
+    "prototype_modified": false,
+    "production_modified": false
+  }
+}

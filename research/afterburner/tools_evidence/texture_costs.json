@@ -1,0 +1,382 @@
+{
+  "scope": "Analytical integer arithmetic only; no GPU allocations, timings, or renders were measured. Actual formats, compression, block minimums, row alignment, metadata, caches, staging and hardware behavior vary.",
+  "textures": {
+    "noise_2d_256_r8": {
+      "levels": [
+        {
+          "dimensions": [
+            256,
+            256
+          ],
+          "bytes": 65536
+        },
+        {
+          "dimensions": [
+            128,
+            128
+          ],
+          "bytes": 16384
+        },
+        {
+          "dimensions": [
+            64,
+            64
+          ],
+          "bytes": 4096
+        },
+        {
+          "dimensions": [
+            32,
+            32
+          ],
+          "bytes": 1024
+        },
+        {
+          "dimensions": [
+            16,
+            16
+          ],
+          "bytes": 256
+        },
+        {
+          "dimensions": [
+            8,
+            8
+          ],
+          "bytes": 64
+        },
+        {
+          "dimensions": [
+            4,
+            4
+          ],
+          "bytes": 16
+        },
+        {
+          "dimensions": [
+            2,
+            2
+          ],
+          "bytes": 4
+        },
+        {
+          "dimensions": [
+            1,
+            1
+          ],
+          "bytes": 1
+        }
+      ],
+      "base_bytes": 65536,
+      "full_mips_bytes": 87381
+    },
+    "noise_3d_64_r8": {
+      "levels": [
+        {
+          "dimensions": [
+            64,
+            64,
+            64
+          ],
+          "bytes": 262144
+        },
+        {
+          "dimensions": [
+            32,
+            32,
+            32
+          ],
+          "bytes": 32768
+        },
+        {
+          "dimensions": [
+            16,
+            16,
+            16
+          ],
+          "bytes": 4096
+        },
+        {
+          "dimensions": [
+            8,
+            8,
+            8
+          ],
+          "bytes": 512
+        },
+        {
+          "dimensions": [
+            4,
+            4,
+            4
+          ],
+          "bytes": 64
+        },
+        {
+          "dimensions": [
+            2,
+            2,
+            2
+          ],
+          "bytes": 8
+        },
+        {
+          "dimensions": [
+            1,
+            1,
+            1
+          ],
+          "bytes": 1
+        }
+      ],
+      "base_bytes": 262144,
+      "full_mips_bytes": 299593
+    },
+    "flipbook_512_rgba8": {
+      "levels": [
+        {
+          "dimensions": [
+            512,
+            512
+          ],
+          "bytes": 1048576
+        },
+        {
+          "dimensions": [
+            256,
+            256
+          ],
+          "bytes": 262144
+        },
+        {
+          "dimensions": [
+            128,
+            128
+          ],
+          "bytes": 65536
+        },
+        {
+          "dimensions": [
+            64,
+            64
+          ],
+          "bytes": 16384
+        },
+        {
+          "dimensions": [
+            32,
+            32
+          ],
+          "bytes": 4096
+        },
+        {
+          "dimensions": [
+            16,
+            16
+          ],
+          "bytes": 1024
+        },
+        {
+          "dimensions": [
+            8,
+            8
+          ],
+          "bytes": 256
+        },
+        {
+          "dimensions": [
+            4,
+            4
+          ],
+          "bytes": 64
+        },
+        {
+          "dimensions": [
+            2,
+            2
+          ],
+          "bytes": 16
+        },
+        {
+          "dimensions": [
+            1,
+            1
+          ],
+          "bytes": 4
+        }
+      ],
+      "base_bytes": 1048576,
+      "full_mips_bytes": 1398100
+    },
+    "flipbook_1024_rgba8": {
+      "levels": [
+        {
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "bytes": 4194304
+        },
+        {
+          "dimensions": [
+            512,
+            512
+          ],
+          "bytes": 1048576
+        },
+        {
+          "dimensions": [
+            256,
+            256
+          ],
+          "bytes": 262144
+        },
+        {
+          "dimensions": [
+            128,
+            128
+          ],
+          "bytes": 65536
+        },
+        {
+          "dimensions": [
+            64,
+            64
+          ],
+          "bytes": 16384
+        },
+        {
+          "dimensions": [
+            32,
+            32
+          ],
+          "bytes": 4096
+        },
+        {
+          "dimensions": [
+            16,
+            16
+          ],
+          "bytes": 1024
+        },
+        {
+          "dimensions": [
+            8,
+            8
+          ],
+          "bytes": 256
+        },
+        {
+          "dimensions": [
+            4,
+            4
+          ],
+          "bytes": 64
+        },
+        {
+          "dimensions": [
+            2,
+            2
+          ],
+          "bytes": 16
+        },
+        {
+          "dimensions": [
+            1,
+            1
+          ],
+          "bytes": 4
+        }
+      ],
+      "base_bytes": 4194304,
+      "full_mips_bytes": 5592404
+    },
+    "volume_128_r8": {
+      "levels": [
+        {
+          "dimensions": [
+            128,
+            128,
+            128
+          ],
+          "bytes": 2097152
+        },
+        {
+          "dimensions": [
+            64,
+            64,
+            64
+          ],
+          "bytes": 262144
+        },
+        {
+          "dimensions": [
+            32,
+            32,
+            32
+          ],
+          "bytes": 32768
+        },
+        {
+          "dimensions": [
+            16,
+            16,
+            16
+          ],
+          "bytes": 4096
+        },
+        {
+          "dimensions": [
+            8,
+            8,
+            8
+          ],
+          "bytes": 512
+        },
+        {
+          "dimensions": [
+            4,
+            4,
+            4
+          ],
+          "bytes": 64
+        },
+        {
+          "dimensions": [
+            2,
+            2,
+            2
+          ],
+          "bytes": 8
+        },
+        {
+          "dimensions": [
+            1,
+            1,
+            1
+          ],
+          "bytes": 1
+        }
+      ],
+      "base_bytes": 2097152,
+      "full_mips_bytes": 2396745
+    }
+  },
+  "examples": {
+    "atlas_512_frames": 16,
+    "atlas_cell_pixels": 128,
+    "atlas_border_pixels_each_side": 4,
+    "atlas_interior_pixels": 120,
+    "atlas_frame_count": 16,
+    "atlas_lifetime_seconds": 0.8,
+    "atlas_nominal_fps_for_one_cycle": 20.0,
+    "volume_128_r8_32_frames_base_bytes": 67108864,
+    "volume_128_r8_two_resident_base_bytes": 4194304,
+    "volume_128_r8_new_frame_upload_bytes_per_second_at_30fps": 62914560,
+    "proxy_pixel_width": 300,
+    "proxy_pixel_height": 180,
+    "samples_per_ray": 24,
+    "volume_fetches_per_frame_without_early_exit": 1296000,
+    "volume_fetches_per_second_at_60fps": 77760000
+  }
+}

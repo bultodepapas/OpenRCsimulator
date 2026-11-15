@@ -1,0 +1,537 @@
+{
+  "format": "openrc-afterburner-handoff-source-v1",
+  "prepared_date": "2026-11-14",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "inspected_commit": "f41d0fd2eb5483c609bcd858bcf22776eb311e14",
+  "checkout_scope": "clean sparse read-only source inspection; full app not imported or flown",
+  "production_files_modified": false,
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "platform": "linux.x86_64",
+    "file_name": "Godot_v4.8-beta2_linux.x86_64",
+    "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "verification": "matches source-pinned official executable SHA-512 in app/get-godot.sh"
+  },
+  "source_files": [
+    {
+      "path": "AGENTS.md",
+      "size_bytes": 8997,
+      "sha256": "c6c47e3e79ce7161c9ea296484b3ec23ffa9b1c8d5549d7cc1066ee8dfa0fada"
+    },
+    {
+      "path": "app/aircraft/avanti_s_blender_geometry.gd",
+      "size_bytes": 306720,
+      "sha256": "ca9c44cd9d8d147328b5b7bd7b77f1b6e237b90038e03de754cb84089873373b"
+    },
+    {
+      "path": "app/assets/audio/powertrains/manifest.json",
+      "size_bytes": 16493,
+      "sha256": "274e8116e766c8ffbba2a7df919d664563021d92e0fa25e56e1d10a501f53016"
+    },
+    {
+      "path": "app/audio/flight_audio.gd",
+      "size_bytes": 24356,
+      "sha256": "6b7543e6900535160738e649eb95ec510e5f2a7bfc2e7726415267a0ac3a2ee7"
+    },
+    {
+      "path": "app/audio/powertrain_audio.gd",
+      "size_bytes": 8772,
+      "sha256": "fe2acdb9d93ab67af9d8f20c8755d0f72a98cb210840e697c68d126f10e1b52e"
+    },
+    {
+      "path": "app/audio/soundscape.gd",
+      "size_bytes": 32781,
+      "sha256": "e0b4383575c18ce3f44d25a84b3ee9ff9f8c0fb83f7bc4feab1001a650f81642"
+    },
+    {
+      "path": "app/data/aircraft/sebart_avanti_s_a200.json",
+      "size_bytes": 110631,
+      "sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9"
+    },
+    {
+      "path": "app/data/aircraft_customization.json",
+      "size_bytes": 83370,
+      "sha256": "32fcb10bf55daa7b059b536403ba18add9d67777645d5d4d37f5071dc6bc575b"
+    },
+    {
+      "path": "app/get-godot.sh",
+      "size_bytes": 8960,
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439"
+    },
+    {
+      "path": "app/input/controller_actions.gd",
+      "size_bytes": 36561,
+      "sha256": "96d484dcca792b91e01f1238d5fb1c2c3f920d1cac331fb57cf6aaa114b06083"
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "size_bytes": 26181,
+      "sha256": "c9d31b457b1be783465fe0651756059eb7c2e93daa991e67f313225f21c99d01"
+    },
+    {
+      "path": "app/input/smoke_aux.gd",
+      "size_bytes": 10908,
+      "sha256": "365d456ea8807acff13081acd40d76b1c5092d98d17fa41b03887b4873e5e560"
+    },
+    {
+      "path": "app/main.gd",
+      "size_bytes": 208935,
+      "sha256": "2271e353a784cbc230aa51c198db8c8818c1001c670dcb2200f5ee1e238f2f09"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "size_bytes": 152382,
+      "sha256": "ae2ced8856cdd9f1fd478db60e7b69f9e7d06465cf53c56be3dd158896a75358"
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "size_bytes": 10490,
+      "sha256": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0"
+    },
+    {
+      "path": "app/project.godot",
+      "size_bytes": 3950,
+      "sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1"
+    },
+    {
+      "path": "app/render/aircraft_customization.gd",
+      "size_bytes": 46037,
+      "sha256": "f739cc5226b652e9cf35aa0a148c19d71a2992550cf365c03a3031af9d8023af"
+    },
+    {
+      "path": "app/render/frames.gd",
+      "size_bytes": 2433,
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8"
+    },
+    {
+      "path": "app/render/shader_clock.gd",
+      "size_bytes": 1831,
+      "sha256": "8e4e4feb72ebd071c0730d928fb1ea26a8be67d704bf3b7c3c71bbb4efad03da"
+    },
+    {
+      "path": "app/render/weather/lightning_bolt.gdshader",
+      "size_bytes": 1271,
+      "sha256": "15c1d14d0652f836fefbb16615bfe3915380ee755af06a8ae21a152fec436d80"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "size_bytes": 20722,
+      "sha256": "be1284db9b926e6e10b8794e254496abd26731d5212da4f609edeffa775fb913"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "size_bytes": 330439,
+      "sha256": "50913fcc9d66dd6b39099f0bf887996bedd18241ab5ce4413aa9642a6eced76f"
+    },
+    {
+      "path": "app/sim/liquid_fuel_flight.gd",
+      "size_bytes": 7470,
+      "sha256": "5339079d8466b7ca8a1af966cd2a76b1a32286bea9f408f01d4cd31cee0861ad"
+    },
+    {
+      "path": "app/sim/native/liquid_stage_adapter.gd",
+      "size_bytes": 3684,
+      "sha256": "0b0148d04a04618aa8c1b20aaa5def923595393d79ecadba5063ab9a100ce9a9"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "size_bytes": 95531,
+      "sha256": "52f24dc06a4f6c2fb523ac1a8f8c40198f872d52b1145b03ac0de1d5b62ab89f"
+    },
+    {
+      "path": "app/sim/vehicle_model.gd",
+      "size_bytes": 14810,
+      "sha256": "5fe73efd3fe0e51b5bb6b553b39db567c596deedc2bd2443ccbcd07712a94b20"
+    },
+    {
+      "path": "docs/AIRCRAFT_CONTRACT.md",
+      "size_bytes": 86491,
+      "sha256": "4dbc09d2c44d0f9b17f35ab64cb1d25935196225d8ed824e3f1dce3dab5d2dd0"
+    },
+    {
+      "path": "docs/AUDIO-PLAN.md",
+      "size_bytes": 12379,
+      "sha256": "386d14e1f5cf1254c8d9fe1c18709e6fde84aa47034ab765a0d5baa77363ad85"
+    },
+    {
+      "path": "docs/AVANTI-S-PLAN.md",
+      "size_bytes": 12051,
+      "sha256": "88d3fceded1ff26e86637551377b3843a157a88c2e0483a6261f78cee7f15af9"
+    },
+    {
+      "path": "docs/FLIGHT-LOGGING.md",
+      "size_bytes": 26344,
+      "sha256": "e8a666ff2186772bbd152f42c03ef1616bac6512f4e7b92170e68813805a3f34"
+    },
+    {
+      "path": "docs/FUEL-SYSTEM.md",
+      "size_bytes": 12497,
+      "sha256": "1c45968e8cc7045ffd6f110f351955828eaef55578dd8751fe7797c8a16a5422"
+    },
+    {
+      "path": "docs/STACK.md",
+      "size_bytes": 13577,
+      "sha256": "e91984e225dee959188d7f5b6db7f322b566448ad3eed2b754a9d43af1218f4d"
+    },
+    {
+      "path": "docs/plans/turbine-realism.md",
+      "size_bytes": 54184,
+      "sha256": "2b42043fd8dc2ae0034321e9c5bd0666bac4c4fbc1dd7eb1bf517711dea034ce"
+    },
+    {
+      "path": "external Audits/CONSOLIDATED-AUDITS.md",
+      "size_bytes": 82659,
+      "sha256": "652ba32656d20c71c898b33af983a5a4f810727dcb8e2bd44fd05b78ddd9d5d9"
+    },
+    {
+      "path": "research/avanti-s/av06/derive_physics.py",
+      "size_bytes": 93254,
+      "sha256": "2c36b9675ccfa61217a14dc934a234b1d164d3f80aa869f36ab2acb731d1e1e3"
+    },
+    {
+      "path": "research/avanti-s/av06/inputs.json",
+      "size_bytes": 39780,
+      "sha256": "bddc1c31c9ea46b65d93c9943701065b9c8378ae6b453ab94b7b99c3ed8d59fd"
+    },
+    {
+      "path": "research/native-kernel/src/nk_kernel.cpp",
+      "size_bytes": 98286,
+      "sha256": "ef573d46d15235b6c0541e3b955b20a034eeaf1cf5b2d663d1cf581c4ecafec4"
+    },
+    {
+      "path": "tools/audio/README.md",
+      "size_bytes": 23670,
+      "sha256": "50cfe367ebf4ca4983f1f4f38fcbcd79c52ed78aa20200b9f66c797b1fed70cd"
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "size_bytes": 27272,
+      "sha256": "c5caf9832dc494ab075c25f9d50eba5480bb234ec44f677aa019364fae1aa353"
+    }
+  ],
+  "research_references": [
+    {
+      "id": "C01",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/docs/STACK.md"
+    },
+    {
+      "id": "C02",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/docs/AVANTI-S-PLAN.md"
+    },
+    {
+      "id": "C03",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/physics/turbine.gd"
+    },
+    {
+      "id": "C04",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/sim/liquid_fuel_flight.gd"
+    },
+    {
+      "id": "C05",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/sim/flight_session.gd"
+    },
+    {
+      "id": "C06",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/sim/vehicle_model.gd"
+    },
+    {
+      "id": "C07",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/audio/flight_audio.gd"
+    },
+    {
+      "id": "C08",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/audio/soundscape.gd"
+    },
+    {
+      "id": "C09",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/audio/powertrain_audio.gd"
+    },
+    {
+      "id": "C10",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/assets/audio/powertrains/manifest.json"
+    },
+    {
+      "id": "C11",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/input/controller_actions.gd"
+    },
+    {
+      "id": "C12",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/sim/flight_log.gd"
+    },
+    {
+      "id": "C13",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/sim/native/liquid_stage_adapter.gd"
+    },
+    {
+      "id": "C14",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/input/rc_input.gd"
+    },
+    {
+      "id": "C15",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/docs/AIRCRAFT_CONTRACT.md"
+    },
+    {
+      "id": "C16",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/docs/FUEL-SYSTEM.md"
+    },
+    {
+      "id": "C17",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/docs/plans/turbine-realism.md"
+    },
+    {
+      "id": "C18",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/data/aircraft_customization.json"
+    },
+    {
+      "id": "C19",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/render/aircraft_customization.gd"
+    },
+    {
+      "id": "C20",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/render/weather/lightning_bolt.gdshader"
+    },
+    {
+      "id": "C21",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/render/shader_clock.gd"
+    },
+    {
+      "id": "C22",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/AGENTS.md"
+    },
+    {
+      "id": "C23",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/docs/AUDIO-PLAN.md"
+    },
+    {
+      "id": "C24",
+      "primary_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f41d0fd2eb5483c609bcd858bcf22776eb311e14/app/main.gd"
+    },
+    {
+      "id": "P01",
+      "primary_url": "https://www.grc.nasa.gov/www/k-12/airplane/turbab.html"
+    },
+    {
+      "id": "P02",
+      "primary_url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/thrust-force/"
+    },
+    {
+      "id": "P03",
+      "primary_url": "https://www.grc.nasa.gov/www/k-12/airplane/sfc.html"
+    },
+    {
+      "id": "P04",
+      "primary_url": "https://www.jetcat.de/en/productdetails/produkte/jetcat/produkte/zubehoer/Elektronik/Nachbrennerring%20D-80mm"
+    },
+    {
+      "id": "P05",
+      "primary_url": "https://www.nasa.gov/image-article/diamonds-from-nasas-x-59/"
+    },
+    {
+      "id": "P06",
+      "primary_url": "https://ntrs.nasa.gov/citations/19730065439"
+    },
+    {
+      "id": "G01",
+      "primary_url": "https://docs.godotengine.org/en/latest/tutorials/rendering/renderers.html"
+    },
+    {
+      "id": "G02",
+      "primary_url": "https://docs.godotengine.org/en/latest/tutorials/shaders/shader_reference/spatial_shader.html"
+    },
+    {
+      "id": "G03",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_gpuparticles3d.html"
+    },
+    {
+      "id": "G04",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_geometryinstance3d.html"
+    },
+    {
+      "id": "G05",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_particleprocessmaterial.html"
+    },
+    {
+      "id": "G06",
+      "primary_url": "https://docs.godotengine.org/en/latest/tutorials/3d/environment_and_post_processing.html"
+    },
+    {
+      "id": "G07",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_noisetexture2d.html"
+    },
+    {
+      "id": "G08",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_fastnoiselite.html"
+    },
+    {
+      "id": "G09",
+      "primary_url": "https://docs.godotengine.org/en/latest/tutorials/3d/particles/turbulence.html"
+    },
+    {
+      "id": "G10",
+      "primary_url": "https://docs.godotengine.org/en/stable/tutorials/shaders/screen-reading_shaders.html"
+    },
+    {
+      "id": "G11",
+      "primary_url": "https://docs.godotengine.org/en/latest/tutorials/shaders/advanced_postprocessing.html"
+    },
+    {
+      "id": "G12",
+      "primary_url": "https://github.com/godotengine/godot-demo-projects/tree/master/3d/particles"
+    },
+    {
+      "id": "S01",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_audiostreamplayer3d.html"
+    },
+    {
+      "id": "S02",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_audiolistener3d.html"
+    },
+    {
+      "id": "S03",
+      "primary_url": "https://docs.godotengine.org/en/latest/tutorials/assets_pipeline/importing_audio_samples.html"
+    },
+    {
+      "id": "S04",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_audiostreamgenerator.html"
+    },
+    {
+      "id": "S05",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_audiostreamsynchronized.html"
+    },
+    {
+      "id": "S06",
+      "primary_url": "https://docs.godotengine.org/en/latest/classes/class_audiostreamrandomizer.html"
+    },
+    {
+      "id": "S07",
+      "primary_url": "https://manual.audacityteam.org/man/creating_a_crossfade.html"
+    },
+    {
+      "id": "A01",
+      "primary_url": "https://freesound.org/people/TiesWijnen/sounds/413312/"
+    },
+    {
+      "id": "A02",
+      "primary_url": "https://freesound.org/people/JSK_Productions/sounds/829068/"
+    },
+    {
+      "id": "A03",
+      "primary_url": "https://freesound.org/people/StoneyJ/sounds/104883/"
+    },
+    {
+      "id": "A04",
+      "primary_url": "https://freesound.org/people/qubodup/sounds/205581/"
+    },
+    {
+      "id": "A05",
+      "primary_url": "https://store.godotengine.org/asset/vefects/free-fire-vfx/"
+    },
+    {
+      "id": "A06",
+      "primary_url": "https://freesound.org/people/surrey_film/sounds/162242/"
+    },
+    {
+      "id": "A07",
+      "primary_url": "https://freesound.org/people/minian89/sounds/152509/"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "evidence/core-final/report.json",
+      "log_path": "evidence/core-final/engine.log"
+    },
+    {
+      "path": "evidence/visual-import/report.json",
+      "log_path": "evidence/visual-import/engine.log"
+    },
+    {
+      "path": "evidence/visual-state/report.json",
+      "log_path": "evidence/visual-state/engine.log"
+    },
+    {
+      "path": "evidence/visual-runtime/report.json",
+      "log_path": "evidence/visual-runtime/engine.log"
+    }
+  ],
+  "limitations": [
+    "No production afterburner integration",
+    "No measured engine wet-map calibration",
+    "No rendered visual or GPU shader qualification",
+    "No audio asset import or listening",
+    "No target-hardware performance qualification",
+    "No complete production replay/fuel-event/native parity test"
+  ],
+  "provenance": "Original standalone prototype; no third-party artwork, audio, repository, engine or display-server package bundled",
+  "prototype_files": [
+    {
+      "path": "prototype/core/afterburner_core.gd",
+      "size_bytes": 15129,
+      "sha256": "7a35291598ffde2a786fd122a52bdcfd891a1b93b48adb1469c54221795f8d11"
+    },
+    {
+      "path": "prototype/core/afterburner_core.gd.uid",
+      "size_bytes": 20,
+      "sha256": "ef95fc4cbb30d76a9d5197911d39d6d8b1d5f26f98be74ef556b912bed107f41"
+    },
+    {
+      "path": "prototype/project.godot",
+      "size_bytes": 600,
+      "sha256": "b98f022ff9b5759b70f85552002891d5a0ac4a5c1b21699a31d8548124bf51fa"
+    },
+    {
+      "path": "prototype/tests/test_afterburner_core.gd",
+      "size_bytes": 19254,
+      "sha256": "ad780871ad90b1f97a1c51f886dae867e0319c0dc3bf6bd8a05c309693d7f33b"
+    },
+    {
+      "path": "prototype/tests/test_afterburner_core.gd.uid",
+      "size_bytes": 20,
+      "sha256": "0924a81ab5fab7dd21509dae4d4efa7fc9ab542127a42bc8e1ba34a840edf949"
+    },
+    {
+      "path": "prototype/visual/afterburner_plume.gdshader",
+      "size_bytes": 2796,
+      "sha256": "0ff992669eb356f03682e94c730b9c40e0cda68a77778ebcc0c29b21e0f273aa"
+    },
+    {
+      "path": "prototype/visual/afterburner_plume.gdshader.uid",
+      "size_bytes": 20,
+      "sha256": "b40e08642bddef3d9baed855d8b29cf5e923b99c874ae7009a130716d52283e2"
+    },
+    {
+      "path": "prototype/visual/afterburner_visual.gd",
+      "size_bytes": 4094,
+      "sha256": "0b25aba3ae4d418810cefadd246b66b00288c87e9545dace0db22a385f26aa60"
+    },
+    {
+      "path": "prototype/visual/afterburner_visual.gd.uid",
+      "size_bytes": 20,
+      "sha256": "107c75f5f2acb820eee8f6f77f7764ef8755e22054e785e487dc2efad926fb83"
+    },
+    {
+      "path": "prototype/visual/verify_visual.gd",
+      "size_bytes": 3153,
+      "sha256": "22d84a79d278ceec95985a37d84d436cfdb0b01623800c2668ee4417559358fa"
+    },
+    {
+      "path": "prototype/visual/verify_visual.gd.uid",
+      "size_bytes": 20,
+      "sha256": "953094817603f6f9eb22dcb2a983008da854d771d6e9ac6be745b7599775c5f1"
+    },
+    {
+      "path": "prototype/visual/visual_fixture.gd",
+      "size_bytes": 7766,
+      "sha256": "5e3167ddc604e8966444e08b5b09f63acc3804d86ddeb9ba5221973dd0c98f23"
+    },
+    {
+      "path": "prototype/visual/visual_fixture.gd.uid",
+      "size_bytes": 19,
+      "sha256": "296d0fb283d7623ea7bb33070c4d60596729d09f55eaadfe46bcb123c6a28b35"
+    },
+    {
+      "path": "prototype/visual/visual_fixture.tscn",
+      "size_bytes": 188,
+      "sha256": "931fae15460078690e31a9b91d0c4ee5564787a88e55f7ec0435c71b31f348b8"
+    }
+  ]
+}

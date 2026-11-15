@@ -1,0 +1,21 @@
+; Isolated afterburner research fixture. This is not the OpenRC production project.
+config_version=5
+
+[application]
+config/name="OpenRC Afterburner Research Fixture"
+config/features=PackedStringArray("4.8")
+run/main_scene="res://visual/visual_fixture.tscn"
+
+[display]
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=1280
+window/size/window_height_override=720
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2
+
+[physics]
+common/physics_ticks_per_second=240

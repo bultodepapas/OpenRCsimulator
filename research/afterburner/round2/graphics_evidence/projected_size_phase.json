@@ -1,0 +1,94 @@
+{
+  "assumptions": {
+    "height_px": 1080,
+    "vertical_fov_deg": 60,
+    "projection": "pinhole; equal depth, side-on; no perspective foreshortening",
+    "render_scale": 1,
+    "radius_m": 0.025,
+    "plume_length_m": 0.42,
+    "cells_per_plume": 5.2,
+    "cell_intensity_formula": "pow(0.5+0.5*cos(2*pi*5.2*along),10)",
+    "breakup_phase_along_radians": 61,
+    "note": "illustrative, not a rendered image; 0.42 m is starter max, not verified physical length"
+  },
+  "equations": {
+    "focal_length_px": "height_px/(2*tan(vertical_fov/2))",
+    "projected_size_px": "focal_length_px*size_m/distance_m",
+    "cell_half_max_width_fraction_of_period": "acos(2*0.5**(1/10)-1)/pi"
+  },
+  "focal_length_px": 935.3074360871938,
+  "cell_half_max_fraction_of_period": 0.16664083127282173,
+  "samples": [
+    {
+      "distance_m": 10,
+      "nozzle_width_px": 4.676537180435969,
+      "plume_length_px": 39.28291231566214,
+      "cell_period_px": 7.5544062145504105,
+      "cell_half_max_width_px": 1.258872531365251,
+      "breakup_period_px": 4.046259303032661
+    },
+    {
+      "distance_m": 20,
+      "nozzle_width_px": 2.3382685902179845,
+      "plume_length_px": 19.64145615783107,
+      "cell_period_px": 3.7772031072752053,
+      "cell_half_max_width_px": 0.6294362656826255,
+      "breakup_period_px": 2.0231296515163306
+    },
+    {
+      "distance_m": 40,
+      "nozzle_width_px": 1.1691342951089922,
+      "plume_length_px": 9.820728078915534,
+      "cell_period_px": 1.8886015536376026,
+      "cell_half_max_width_px": 0.3147181328413127,
+      "breakup_period_px": 1.0115648257581653
+    }
+  ],
+  "phase_oscillators": {
+    "period_s": 1024,
+    "cycles": [
+      2119,
+      1141,
+      3097,
+      5052
+    ],
+    "frequency_hz": [
+      2.0693359375,
+      1.1142578125,
+      3.0244140625,
+      4.93359375
+    ],
+    "examples_frames_per_cycle_at_30_fps": [
+      14.497404436054742,
+      26.923751095530235,
+      9.919276719405877,
+      6.080760095011876
+    ]
+  },
+  "float32_seconds_spacing": {
+    "one_day_s": 86400,
+    "ulp_at_one_day_s": 0.0078125,
+    "seven_days_s": 604800,
+    "ulp_at_seven_days_s": 0.0625
+  },
+  "status": "arithmetic check only; no Godot, GPU, or visual tests",
+  "wrapped_phase_interpolation": {
+    "frequency_hz": 4.93359375,
+    "before_s": 1023.999,
+    "after_s": 1024.001,
+    "phase_before_rad": 6.252186623417124,
+    "phase_after_rad": 0.030998683760860016,
+    "naive_phase_midpoint_rad": 3.141592653588992,
+    "phase_from_midpoint_time_rad": 0.0,
+    "cos_naive_midpoint": -1.0,
+    "cos_correct_midpoint": 1.0
+  },
+  "upscaling_example": {
+    "distance_m": 20,
+    "internal_height_px": 720,
+    "output_height_px": 1080,
+    "nozzle_width_internal_px": 1.5588457268119897,
+    "cell_half_max_internal_px": 0.4196241771217503,
+    "note": "nominal two-thirds-per-axis 3D input; temporal reconstruction quality is not determined by this arithmetic"
+  }
+}

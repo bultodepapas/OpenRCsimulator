@@ -1,0 +1,19 @@
+Crossfade midpoint; equal input mean-square power; rho = normalized correlation
+linear      rho=-1.0: power=0.000000, level=-infinity
+linear      rho=+0.0: power=0.500000, level=-3.010 dB
+linear      rho=+1.0: power=1.000000, level=+0.000 dB
+equal_power rho=-1.0: power=0.000000, level=-infinity
+equal_power rho=+0.0: power=1.000000, level=+0.000 dB
+equal_power rho=+1.0: power=2.000000, level=+3.010 dB
+
+Propagation, stationary source-to-listener initial distance = 100 m, c = 343 m/s
+stationary listener delay = 0.291545 s
+listener approaches source at 10 m/s: arrival = 0.283286 s
+source approaches at 40 m/s, listener stationary: f_obs/f_source = 1.132013
+source approaches at 40 m/s, listener approaches at 10 m/s: ratio = 1.165017
+
+Two sampled AB values across an instantaneous onset: linear interpolation leak
+event emission 0.100 s; queried emission 0.050 s; 0-to-1 interpolation = 0.500 (causal step must be 0)
+
+WAV storage, 48 kHz, mono, 16-bit PCM, 10 seconds
+960000 data bytes (0.96 MB decimal), excluding headers and runtime copies
