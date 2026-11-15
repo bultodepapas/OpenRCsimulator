@@ -2,6 +2,8 @@
 
 **2026-11-15 · A120 research.** These are proposed configuration and acceptance procedures. No matching radio, servo, engine or aircraft was tested. [Plan/status](../../plans/aeris-120-3d-gas.md), [sources](sources.md), [source audit](integration-audit.md).
 
+The follow-up [handling/identifiability study](evidence-update-2026-11-15.md), [acquisition map](../../../research/aeris-120/README.md#acquisition-map) and [blank pilot record](../../../research/aeris-120/pilot-evaluation.template.md) make these existing cards actionable without changing their acceptance status.
+
 ## 1. Control ownership and conditioning
 
 Trace physical stick/channel → device calibration → permitted input shaping → accepted command → actual servo/surface state → local force/moment → aircraft motion. Record each boundary. The physics responds to deflected surfaces; it does not accept commanded roll/pitch/yaw rates as though the aircraft were stabilized.

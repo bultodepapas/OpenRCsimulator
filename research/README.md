@@ -39,6 +39,7 @@ Folder names can differ between tools and reports. Use this map rather than rena
 | --- | --- |
 | [ugly-stik](ugly-stik/) | [Stik sources and model history](../docs/research/README.md#ugly-stik), [current guide](../docs/UGLY-STIK-PLAN.md) |
 | [extra-300](extra-300/) | [Extra research](../docs/research/README.md#extra-300s), [current guide](../docs/EXTRA-300-PLAN.md) |
+| [aeris-120](aeris-120/README.md) | [120 cc gasoline 3D research](../docs/research/aeris-120/README.md), [integration plan](../docs/plans/aeris-120-3d-gas.md); offline reference study and measurement preparation, not an aircraft generator |
 | [avanti-s](avanti-s/) | [Ventage Jet research](../docs/research/README.md#ventage-jet), [current guide](../docs/AVANTI-S-PLAN.md) |
 | [p51](p51/) | [P-51 research](../docs/research/README.md#p-51d), [current guide](../docs/P51-PLAN.md) |
 | [timber](timber/) | [Timber integration evidence](../docs/research/timber-integration/), [current guide](../docs/TIMBER-INTEGRATION-PLAN.md) |

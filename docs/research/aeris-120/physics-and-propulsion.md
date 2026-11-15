@@ -2,6 +2,8 @@
 
 **2026-11-15 · A120 research.** This is a proposed physical model and calibration strategy, not implemented behavior. [Source IDs](sources.md) identify evidence; [source audit](integration-audit.md) identifies what OpenRC already supports. The [plan](../../plans/aeris-120-3d-gas.md) owns delivery gates.
 
+The [follow-up evidence](evidence-update-2026-11-15.md) adds instrumentation and identification limits. The [offline reference study](../../../research/aeris-120/README.md) reproduces selected dimensional/scalar checks with explicit assumptions; it is not an aircraft generator or flight prediction.
+
 ## 1. Scale, mass and geometry
 
 The target is an original giant-scale **RC** aircraft. Full-scale Extra performance, another simulator's settings or a geometrically enlarged Extra .60 cannot establish its flight model. Reynolds number, propwash coverage, component mass distribution, surface travel and power loading differ.

@@ -1,0 +1,127 @@
+{
+  "format": "aeris120-external-transient-result v1",
+  "physical_acceptance": false,
+  "aircraft_data_export": false,
+  "evidence": "derived_selection_from_external_processed_measurements",
+  "source": {
+    "format": "aeris120-transient-source v1",
+    "attribution": "Adapted numerical selection from Ratz, Schram, Sciacchitano and Mendez, Dataset of: On the aerodynamics of an accelerating and decelerating propeller in hover at low Reynolds numbers, version 1.0.0 (2026-10-05).",
+    "record": "https://zenodo.org/records/23083730",
+    "doi": "10.5281/zenodo.23083730",
+    "article": "https://arxiv.org/abs/2611.07862v1",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "files": {
+      "README.md": {
+        "url": "https://zenodo.org/records/23083730/files/README.md?download=1",
+        "bytes": 21680,
+        "published_md5": "09392b956886108d66d16319c494527d",
+        "intake_sha256": "12c35fdefa0fd14b75140692e2c78e6abdb3c5635b6687a5fcd69c1e14a6f130"
+      },
+      "data_thrust.h5": {
+        "url": "https://zenodo.org/records/23083730/files/data_thrust.h5?download=1",
+        "bytes": 1760506,
+        "published_md5": "71152df1562c12212d6bb7948f86c63c",
+        "intake_sha256": "5a2ccb6464b684532f01348e6e0238c67246dd405a04a881553fa44782fdab33"
+      }
+    },
+    "selection": "Existing processed ensemble sample nearest 4000 RPM in each /00,/05,/10 Up and Do trace, within 1 RPM. Authors already interpolated RPM onto the thrust time base; this selector performs no additional interpolation or fit. Descriptive selection, not held-out validation.",
+    "scope": "External small-electric-propeller processed ensemble means. Not AERIS/DA120 calibration, individual trial data, command latency, or a uniquely identified causal model. No PIV archive is required or inspected."
+  },
+  "target_rpm": 4000.0,
+  "rows": [
+    {
+      "pitch_key": "00",
+      "step_key": "Up",
+      "source_path": "/00/Up",
+      "index_zero_based": 515,
+      "time_s": 0.056999999999999995,
+      "processed_mean_rpm": 3999.425362749774,
+      "thrust_n": 4.546013809449346,
+      "author_steady_fit_n": 4.586708869458784,
+      "deviation_percent": -0.8872387842274294,
+      "author_expanded_u95_percentage_points": 0.14873423149374265
+    },
+    {
+      "pitch_key": "00",
+      "step_key": "Do",
+      "source_path": "/00/Do",
+      "index_zero_based": 612,
+      "time_s": 0.0667,
+      "processed_mean_rpm": 4000.598955644036,
+      "thrust_n": 4.641048860720177,
+      "author_steady_fit_n": 4.5895775287086105,
+      "deviation_percent": 1.1214830055621625,
+      "author_expanded_u95_percentage_points": 0.13649694712438684
+    },
+    {
+      "pitch_key": "05",
+      "step_key": "Up",
+      "source_path": "/05/Up",
+      "index_zero_based": 502,
+      "time_s": 0.0557,
+      "processed_mean_rpm": 3999.1990944864065,
+      "thrust_n": 5.251654871514748,
+      "author_steady_fit_n": 5.595109212829513,
+      "deviation_percent": -6.13847430408023,
+      "author_expanded_u95_percentage_points": 0.20052697474533052
+    },
+    {
+      "pitch_key": "05",
+      "step_key": "Do",
+      "source_path": "/05/Do",
+      "index_zero_based": 579,
+      "time_s": 0.0634,
+      "processed_mean_rpm": 3999.549897725302,
+      "thrust_n": 5.845875813361235,
+      "author_steady_fit_n": 5.596109572510481,
+      "deviation_percent": 4.463212122894614,
+      "author_expanded_u95_percentage_points": 0.3320441084920851
+    },
+    {
+      "pitch_key": "10",
+      "step_key": "Up",
+      "source_path": "/10/Up",
+      "index_zero_based": 503,
+      "time_s": 0.055799999999999995,
+      "processed_mean_rpm": 4000.063687802517,
+      "thrust_n": 6.114137543739561,
+      "author_steady_fit_n": 6.290486274520846,
+      "deviation_percent": -2.803419689437555,
+      "author_expanded_u95_percentage_points": 0.14023122611760883
+    },
+    {
+      "pitch_key": "10",
+      "step_key": "Do",
+      "source_path": "/10/Do",
+      "index_zero_based": 558,
+      "time_s": 0.0613,
+      "processed_mean_rpm": 4000.6205596886275,
+      "thrust_n": 6.436424871101591,
+      "author_steady_fit_n": 6.2922498039412895,
+      "deviation_percent": 2.2913118781456165,
+      "author_expanded_u95_percentage_points": 0.17727752383531128
+    }
+  ],
+  "normalization": {
+    "radius_m": 0.15525,
+    "density_kg_m3": 1.2,
+    "source_ct": "T/(rho*pi*R^4*Omega^2), Omega=2*pi*RPM/60",
+    "conventional_ct": "T/(rho*(RPM/60)^2*(2R)^4)",
+    "source_to_conventional_ct_factor": 7.751569170074954
+  },
+  "limits": [
+    "Filtered ensemble means of 500 repetitions; individual trials unavailable in this file.",
+    "Authors cubic-spline interpolated RPM onto the thrust time base; selector performs no additional interpolation.",
+    "30 Hz forward/backward filtering is noncausal; 10 kHz stored arrays are not independent observations.",
+    "First 5 ms absent; selected timestamps identify rows, not physical command-to-thrust onset latency.",
+    "U95 belongs to each deviation from the author's fitted baseline; paired covariance/uncertainty is not supplied.",
+    "Static fit and transients come from the same study; no new fit or held-out validation performed.",
+    "This apparatus cannot identify AERIS engine lag, installed 28-inch wake or a unique memory mechanism."
+  ],
+  "identity": {
+    "manifest_sha256": "4f28f2e868870b6285ab69f2bf5fafabb475d5154a3d63f77ffda0873bbfed0d",
+    "selector_sha256": "af48cf5b98bde014d5110a6bca9380236240038a26da4cf61f203931f7af3d50",
+    "numpy": "2.3.5",
+    "h5py": "3.15.1"
+  }
+}

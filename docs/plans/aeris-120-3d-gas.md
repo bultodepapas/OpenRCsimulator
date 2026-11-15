@@ -1,6 +1,6 @@
 # AERIS-120: gasoline 3D aerobatic aircraft integration plan
 
-**Date:** 2026-11-15. **Status:** research and planning only; no aircraft or physics implementation in this change. **Owner:** aircraft/physics, coordinating AS, SF/NK, D6, FUEL, AE, GP, FL, AUD and CAM. **Step prefix:** `A120-00…12`. **Baseline:** `main` at `ad21070798bfb9658785576a9c0b8bfc9a71fc7f`. [Dated investigation and sources](../research/aeris-120/README.md).
+**Date:** 2026-11-15. **Status:** extended research, offline reference tooling and planning; no aircraft or production-physics implementation. **Owner:** aircraft/physics, coordinating AS, SF/NK, D6, FUEL, AE, GP, FL, AUD and CAM. **Step prefix:** `A120-00…12`. **Baseline:** `main` at `ad21070798bfb9658785576a9c0b8bfc9a71fc7f`. [Dated investigation and sources](../research/aeris-120/README.md).
 
 ## 1. Intended result
 
@@ -65,7 +65,7 @@ The current combustion family is named **`glow_prop`**, including legacy gasolin
 | Purpose | Proposed location / existing boundary |
 | --- | --- |
 | Canonical plan and dated evidence | This plan; `docs/research/aeris-120/` |
-| Physical inputs, derivation and measurements | `research/aeris-120/`, with one owning generator and a documented `--check` route |
+| Physical inputs, derivation and measurements | [Research kit](../../research/aeris-120/README.md) now contains offline reference arithmetic/acquisition preparation. The future aircraft generator remains pending and must own its own `--check` route |
 | Generated physical aircraft | `app/data/aircraft/aeris_120.json`; generated, never edited directly |
 | Existing model registration | Existing imported GLB pipeline, `assets/aircraft/model-bindings.json` and `app/app_state/aircraft_catalog.gd`; actual delivery path established during intake |
 | Aircraft-specific checks/cards | `app/tests/test_aeris_120_*.gd`, `research/aeris-120/` and the existing flight-test/log tools |
@@ -80,7 +80,7 @@ The table owns step status. All implementation rows are pending; the linked rese
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| A120-00 | Research the target, inspect current source and identify unsupported regimes | **Research complete:** source register, audit, equations and validation cards in the linked investigation; no aircraft validation |
+| A120-00 | Research the target, inspect current source and identify unsupported regimes | **Research extended:** source register/audit, deeper experimental evidence, seven developer briefs, executable scalar study, external transient-data benchmark and acquisition/pilot templates; no aircraft validation |
 | A120-01 | Establish configuration identity, geometry, component inventory, dry/fuel mass, CG, inertia and installed prop/servos | **Pending:** provenance ledger; inertia feasibility; full/empty CG; explicit unknowns and sensitivity ranges. L0 input gate |
 | A120-02 | Author source generator, stable IDs, supported v2 capabilities and dependent manifests/descriptors | **Pending:** regeneration check, schema plus actual loader acceptance, invalid-input rejection, deterministic identities; no hidden donor defaults |
 | A120-03 | Fit gasoline shaft/prop load and fuel consumption; specify ignition/start/cut lifecycle | **Pending:** matched RPM/thrust/torque/power, load-dependent RPM, throttle steps, idle/cut/fuel-out/restore; explicit surrogate scope |
@@ -97,6 +97,8 @@ The table owns step status. All implementation rows are pending; the linked rese
 **Critical path:** 01 → 02/03 → 04/05/06 → 07/08 → 09 → 12. A120-10 follows measured L2 mismatches and must be resolved before claiming L3. Presentation integration can proceed once state semantics are fixed. Time estimates depend mainly on access to matching hardware/flight data; no dates are implied by a finished plan.
 
 Suggested reviewable implementation slices: data specimen; gasoline bench and lifecycle; common inflow/wake contract; aerodynamic/control calibration; selection and presentation; validation/promotion. Each shared physics change needs its own baseline and affected-fleet comparison. Do not combine a new aircraft, a solver rewrite and retuned goldens into one acceptance decision.
+
+The [developer briefs](../research/aeris-120/development-briefs.md) make the first slices concrete without changing this status table. B1 inventory/observation work and B5 controls acquisition can proceed alongside B2's common gasoline hub-flow contract. B3 then addresses wing/tail wash. The [follow-up evidence](../research/aeris-120/evidence-update-2026-11-15.md) and [acquisition kit](../../research/aeris-120/README.md) distinguish directly measured quantities, reconstructed loads, comparator data and unidentifiable parameters. The reference study is not a flyable specimen or the aircraft generator.
 
 ## 5. Physics priorities
 
@@ -142,4 +144,4 @@ The planning task can finish without these measurements. Implementation begins b
 | Matched flight observations | Coefficient identification and realism | Synchronized commands, RPM and motion; calibrated video where telemetry is unavailable |
 | Target radio/OS and evaluation pilots | Conditioning, latency and transfer of skills | Real-device diagnostic plus repeatable precision/3D evaluation cards |
 
-The first implementation decision is therefore a **data and instrumentation specimen**, followed by the gasoline inflow/wing-wake gap. The existing model can be bound once its physical contract is checked; model authoring is not on the critical path.
+The first implementation decision is therefore a **data and instrumentation specimen**, followed by the gasoline inflow/wing-wake gap. Use the prepared briefs and existing measurement reducers; do not invent source readings or clone a new reducer where the current one fits. The existing model can be bound once its physical contract is checked; model authoring is not on the critical path.

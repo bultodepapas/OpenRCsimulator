@@ -1,6 +1,6 @@
 # AERIS-120 integration investigation
 
-**Research date:** 2026-11-15. **Track:** A120. **Scope:** documentation and engineering plan for the user's existing 120 cc gasoline 3D aerobatic aircraft. No runtime implementation, new 3D model, real-aircraft test or simulator flight is claimed.
+**Research date:** 2026-11-15. **Track:** A120. **Scope:** documentation, offline reference arithmetic, external-data analysis and engineering preparation for the user's existing 120 cc gasoline 3D aerobatic aircraft. No runtime implementation, new 3D model, real-aircraft test or simulator flight is claimed.
 
 The [active integration plan](../../plans/aeris-120-3d-gas.md) owns milestones and status. This directory preserves the evidence and reasoning behind that plan.
 
@@ -10,6 +10,9 @@ The [active integration plan](../../plans/aeris-120-3d-gas.md) owns milestones a
 | [Repository integration audit](integration-audit.md) | Pinned source paths, implemented mechanisms and remaining integration gaps |
 | [Physics and propulsion](physics-and-propulsion.md) | Frames, mass properties, full-angle aerodynamics, engine/propeller coupling and bounded approximations |
 | [Controls and validation](controls-and-validation.md) | Radio/servo semantics, handling criteria, maneuver cards and staged acceptance |
+| [Follow-up evidence](evidence-update-2026-11-15.md) | Instrumented RC flights, configuration-specific engine/actuator evidence, identifiability and task-based handling |
+| [Developer work packages](development-briefs.md) | Seven bounded briefs with dependencies, observables and discriminating checks |
+| [Offline research and acquisition kit](../../../research/aeris-120/README.md) | Reproducible scalar calculations, an identified external transient-data benchmark, existing reducers and a blank pilot-evaluation record |
 
 ## Source identity
 
@@ -26,10 +29,14 @@ The target dimensions, 2.64 m span / 2.60 m length / 1.2408 m² wing area, are p
 - The Mejzlik prop reference is simulated at 5,000 RPM and has a separate RPM limit; engine headline output cannot be treated as a complete installed propulsion model.
 - Correct radio curve ownership, actual surface motion, camera conditions and end-to-end latency are part of handling evaluation.
 
-## Verification scope
+## Verification scope and continuation
 
-This change is limited to Markdown documentation and its navigation/decision records. Verification consists of source inspection, unit/algebra checks, local-link/anchor checking with the repository's existing documentation checker functions, and an independent technical review. Runtime tests, physical measurements, pilot flights, exported-package checks and target-hardware performance remain implementation gates. No generated aircraft data, runtime code, assets, goldens or release behavior is changed.
+The initial commit was limited to Markdown documentation and its navigation/decision records. Its verification consisted of source inspection, unit/algebra checks, local-link/anchor checking with the repository's existing documentation checker functions, and an independent technical review. Runtime tests, physical measurements, pilot flights, exported-package checks and target-hardware performance remain implementation gates. No generated aircraft data, runtime code, assets, goldens or release behavior is changed.
 
 Documentation checks passed: 44 new local links/anchors resolve; the geometry, stall-sensitivity and propeller-point calculations were recomputed; all 41 named test files in the audit exist at the pinned commit. Independent review corrected the distinction between fixed-carrier shaft dynamics and relative shaft/body coupling, and clarified that the seven-plus-one servo count belongs to the EF donor. No material review findings remained in the final documentation candidate. These checks establish the plan's internal consistency, not aircraft realism.
+
+The follow-up adds instrument/source-limit research, task-specific development briefs and an isolated Python reference study. Its eight focused checks include known-answer/scaling/domain cases and a synthetic in-memory consistency comparison with the existing static-prop reducer. The generated snapshot includes input/calculator identities and explicitly refuses a physical-acceptance claim. Independent review identified and corrected misleading source-point wording for edited calculator inputs. Detailed current verification is recorded in the [kit](../../../research/aeris-120/README.md#verification-of-this-kit); no A120-01…12 or L0–L3 gate is closed by these research checks.
+
+A separately identified CC BY 4.0 small-propeller dataset supplies a reproducible six-row transient comparison. Published source checksums and the full-array coefficient/deviation definitions were checked; originals remain outside Git. This is an external processed-measurement benchmark with explicit filtering/uncertainty limits, not a target-aircraft calibration or a new flight law.
 
 Read the existing [deferred 3D proposal](../flight-mechanics-stall-hover-knife-edge-2026-10-18.md#integration-disposition-2026-10-26) before reusing its equations: historical candidate test counts are not accepted current mechanics or aircraft measurements.

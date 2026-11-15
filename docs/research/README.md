@@ -119,6 +119,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 [A120-00 investigation](aeris-120/README.md), 2026-11-15, maps the current gasoline/shaft, local aerodynamic, wake, radio/servo, native and replay contracts against a 120 cc Extra NG-inspired aircraft. It includes manufacturer and research sources, evidence-labelled parameters, equations and maneuver validation cards. The [integration plan](../plans/aeris-120-3d-gas.md) owns the staged conventional/3D/transient envelope and pending implementation. The user's existing model remains the supplied visual asset; no AERIS runtime or physical validation is claimed.
 
+The [follow-up evidence](aeris-120/evidence-update-2026-11-15.md) audits instrumented RC flights, installed propulsion/actuator identification and handling evaluation. [Seven developer briefs](aeris-120/development-briefs.md) and an [offline research kit](../../research/aeris-120/README.md) add executable reference arithmetic, an identified external transient-data benchmark, an acquisition map reusing current reducers, and a blank pilot record. These preparations close no aircraft-validation gate.
+
 <a id="avanti-s-flight-realism"></a>
 
 ### Ventage Jet flight realism

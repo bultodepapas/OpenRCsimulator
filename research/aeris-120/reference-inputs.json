@@ -1,0 +1,31 @@
+{
+  "format": "aeris120-reference-study-inputs v1",
+  "scope": "Illustrative scalar research only. Not aircraft data, a performance prediction, or physical validation. All study scenarios are chosen inputs, not flight observations.",
+  "runtime_audit_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+  "quantities": {
+    "span": {"value": 2.64, "unit": "m", "kind": "estimated", "source": "Prior AERIS design input; no model metrology in this investigation"},
+    "wing_area": {"value": 1.2408, "unit": "m^2", "kind": "estimated", "source": "Prior AERIS design input; no model metrology in this investigation"},
+    "density": {"value": 1.225, "unit": "kg/m^3", "kind": "estimated", "source": "Chosen sea-level reference atmosphere; not field weather"},
+    "kinematic_viscosity": {"value": 0.0000146, "unit": "m^2/s", "kind": "estimated", "source": "Chosen approximate reference-air value; no temperature or viscosity measurement"},
+    "gravity": {"value": 9.80665, "unit": "m/s^2", "kind": "manual", "source": "Conventional standard gravity used for this calculation; not local gravimetry"},
+    "prop_diameter": {"value": 0.7112, "unit": "m", "kind": "borrowed", "source": "S06: Mejzlik PN 228108, 28 inches converted to metres; reference prop only"},
+    "prop_rpm": {"value": 5000, "unit": "rpm", "kind": "borrowed", "source": "S06: published performance SIMULATION reference speed, not installed DA120 RPM"},
+    "prop_ct": {"value": 0.0816, "unit": "1", "kind": "borrowed", "source": "S06 rev. 3.0: manufacturer-simulated static J=0 point at 5000 RPM; not a measurement"},
+    "prop_cp": {"value": 0.0264, "unit": "1", "kind": "borrowed", "source": "S06 rev. 3.0: manufacturer-simulated static J=0 point at 5000 RPM; not a measurement"},
+    "prop_inertia": {"value": 0.00767, "unit": "kg*m^2", "kind": "borrowed", "source": "S06: estimated axial PROPELLER inertia; excludes spinner and engine rotating parts"},
+    "roll_rate": {"value": 360, "unit": "deg/s", "kind": "estimated", "source": "Chosen body-roll screening scenario; not an AERIS roll-rate claim"},
+    "perpendicular_body_rate": {"value": 180, "unit": "deg/s", "kind": "estimated", "source": "Chosen body rate exactly perpendicular to the shaft; not a measured maneuver"}
+  },
+  "scenarios": {
+    "mass": {"values": [12.0, 12.6, 14.0], "unit": "kg", "kind": "estimated", "source": "Chosen sensitivity cases; 12.6 kg is also the S03 donor listing, with fuel state unresolved. None is an AERIS weighing."},
+    "airspeed": {"values": [0, 5, 10, 20, 30, 40], "unit": "m/s", "kind": "estimated", "source": "Chosen local/reference speeds; no predicted flight envelope or uniform powered-wing speed"},
+    "frequency": {"values": [0.5, 1, 2, 4], "unit": "Hz", "kind": "estimated", "source": "Chosen sinusoidal frequencies for pure-delay phase arithmetic; no pilot bandwidth measurement"},
+    "delay": {"values": [0, 10, 20, 33.333333333333336, 50, 100], "unit": "ms", "kind": "estimated", "source": "Chosen pure delays; no device, actuator, frame-time or latency acceptance specification"}
+  },
+  "references": {
+    "S06": "https://www.mejzlik.eu/files/28x10-2b-gas-evo-lf-datasheet.pdf",
+    "S03": "https://pilot-rc.com/extra-ng-103-2-63m/",
+    "S28": "https://web.mit.edu/16.unified/www/SPRING/thermodynamics/notes/node86.html",
+    "source_register": "../../docs/research/aeris-120/sources.md"
+  }
+}

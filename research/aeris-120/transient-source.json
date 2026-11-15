@@ -1,0 +1,24 @@
+{
+  "format": "aeris120-transient-source v1",
+  "attribution": "Adapted numerical selection from Ratz, Schram, Sciacchitano and Mendez, Dataset of: On the aerodynamics of an accelerating and decelerating propeller in hover at low Reynolds numbers, version 1.0.0 (2026-10-05).",
+  "record": "https://zenodo.org/records/23083730",
+  "doi": "10.5281/zenodo.23083730",
+  "article": "https://arxiv.org/abs/2611.07862v1",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "files": {
+    "README.md": {
+      "url": "https://zenodo.org/records/23083730/files/README.md?download=1",
+      "bytes": 21680,
+      "published_md5": "09392b956886108d66d16319c494527d",
+      "intake_sha256": "12c35fdefa0fd14b75140692e2c78e6abdb3c5635b6687a5fcd69c1e14a6f130"
+    },
+    "data_thrust.h5": {
+      "url": "https://zenodo.org/records/23083730/files/data_thrust.h5?download=1",
+      "bytes": 1760506,
+      "published_md5": "71152df1562c12212d6bb7948f86c63c",
+      "intake_sha256": "5a2ccb6464b684532f01348e6e0238c67246dd405a04a881553fa44782fdab33"
+    }
+  },
+  "selection": "Existing processed ensemble sample nearest 4000 RPM in each /00,/05,/10 Up and Do trace, within 1 RPM. Authors already interpolated RPM onto the thrust time base; this selector performs no additional interpolation or fit. Descriptive selection, not held-out validation.",
+  "scope": "External small-electric-propeller processed ensemble means. Not AERIS/DA120 calibration, individual trial data, command latency, or a uniquely identified causal model. No PIV archive is required or inspected."
+}

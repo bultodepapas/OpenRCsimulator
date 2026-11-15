@@ -1,0 +1,423 @@
+{
+  "format": "aeris120-reference-study-result v1",
+  "physical_acceptance": false,
+  "aircraft_data_export": false,
+  "geometry": {
+    "kind": "derived",
+    "evidence": "illustrative_algebra",
+    "input_keys": [
+      "span",
+      "wing_area",
+      "prop_diameter"
+    ],
+    "limitation": "S/b is a coefficient reference chord, not measured MAC. Diameter/span is not washed area.",
+    "values": {
+      "reference_chord_m": 0.4699999999999999,
+      "aspect_ratio": 5.617021276595746,
+      "disc_area_m2": 0.3972586636124383,
+      "diameter_to_span": 0.2693939393939394
+    }
+  },
+  "static_prop_reference": {
+    "kind": "derived",
+    "evidence": "illustrative_algebra",
+    "input_keys": [
+      "density",
+      "prop_diameter",
+      "prop_rpm",
+      "prop_ct",
+      "prop_cp",
+      "prop_inertia",
+      "perpendicular_body_rate"
+    ],
+    "limitation": "Arithmetic at the supplied Ct/Cp, RPM, diameter and density, not an installed engine run. Source strings are declarations: edited values are not authenticated by this calculator. Transferring coefficients across RPM or propellers requires separate evidence. Ideal steady open-flow disc/far-wake quantities exclude swirl and installation; neither predicts wing/tail velocity. Prop-only inertia excludes other rotating parts. Gyro is a coupling term for the specified perpendicular body rate, not net moment or angular acceleration.",
+    "values": {
+      "rpm": 5000,
+      "thrust_n": 177.59500519190297,
+      "shaft_power_w": 3405.2971681796444,
+      "shaft_torque_nm": 6.503638524151484,
+      "ideal_disc_speed_m_s": 13.508142790278308,
+      "ideal_far_wake_speed_m_s": 27.016285580556616,
+      "ideal_far_wake_radius_m": 0.2514471713899363,
+      "ideal_disc_power_w": 2398.978688972443,
+      "prop_angular_momentum_nms": 4.016002608838952,
+      "prop_spin_energy_j": 1051.3870243938247,
+      "gyro_coupling_magnitude_nm": 12.616644292725896
+    }
+  },
+  "mass_sensitivity": {
+    "kind": "derived",
+    "evidence": "illustrative_algebra",
+    "input_keys": [
+      "mass",
+      "wing_area",
+      "gravity",
+      "density",
+      "prop_diameter",
+      "prop_ct",
+      "prop_rpm"
+    ],
+    "limitation": "Chosen mass cases, not weighed AERIS. Constant-Ct T=mg uses the supplied coefficient at every RPM without a validated RPM range; no engine torque balance, installed RPM, control authority, hover margin or stability is established.",
+    "values": [
+      {
+        "mass_kg": 12.0,
+        "wing_loading_kg_m2": 9.671179883945841,
+        "reference_point_thrust_to_weight": 1.50913755115069,
+        "constant_ct_balance_rpm": 4070.1047966934457
+      },
+      {
+        "mass_kg": 12.6,
+        "wing_loading_kg_m2": 10.154738878143133,
+        "reference_point_thrust_to_weight": 1.4372738582387525,
+        "constant_ct_balance_rpm": 4170.616346401373
+      },
+      {
+        "mass_kg": 14.0,
+        "wing_loading_kg_m2": 11.283043197936816,
+        "reference_point_thrust_to_weight": 1.2935464724148773,
+        "constant_ct_balance_rpm": 4396.215633786043
+      }
+    ]
+  },
+  "reference_flow": {
+    "kind": "derived",
+    "evidence": "illustrative_algebra",
+    "input_keys": [
+      "airspeed",
+      "span",
+      "wing_area",
+      "density",
+      "kinematic_viscosity",
+      "roll_rate",
+      "perpendicular_body_rate",
+      "prop_rpm",
+      "prop_diameter"
+    ],
+    "limitation": "Uniform reference-speed arithmetic only. Reduced rates/advection are undefined at zero speed and retained as null. Pitch row treats the chosen perpendicular rate as pitch. J assumes shaft-aligned forward inflow; no Ct/Cp extrapolation along J or near-hover aerodynamic prediction is made.",
+    "values": [
+      {
+        "speed_m_s": 0,
+        "reynolds_reference_chord": 0.0,
+        "dynamic_pressure_pa": 0.0,
+        "reference_chord_advection_s": null,
+        "roll_reduced_rate": null,
+        "pitch_reduced_rate": null,
+        "axial_advance_ratio": 0.0
+      },
+      {
+        "speed_m_s": 5,
+        "reynolds_reference_chord": 160958.904109589,
+        "dynamic_pressure_pa": 15.312500000000002,
+        "reference_chord_advection_s": 0.09399999999999999,
+        "roll_reduced_rate": 1.658760921095411,
+        "pitch_reduced_rate": 0.14765485471872025,
+        "axial_advance_ratio": 0.0843644544431946
+      },
+      {
+        "speed_m_s": 10,
+        "reynolds_reference_chord": 321917.808219178,
+        "dynamic_pressure_pa": 61.25000000000001,
+        "reference_chord_advection_s": 0.04699999999999999,
+        "roll_reduced_rate": 0.8293804605477055,
+        "pitch_reduced_rate": 0.07382742735936013,
+        "axial_advance_ratio": 0.1687289088863892
+      },
+      {
+        "speed_m_s": 20,
+        "reynolds_reference_chord": 643835.616438356,
+        "dynamic_pressure_pa": 245.00000000000003,
+        "reference_chord_advection_s": 0.023499999999999997,
+        "roll_reduced_rate": 0.41469023027385277,
+        "pitch_reduced_rate": 0.03691371367968006,
+        "axial_advance_ratio": 0.3374578177727784
+      },
+      {
+        "speed_m_s": 30,
+        "reynolds_reference_chord": 965753.424657534,
+        "dynamic_pressure_pa": 551.25,
+        "reference_chord_advection_s": 0.015666666666666666,
+        "roll_reduced_rate": 0.2764601535159018,
+        "pitch_reduced_rate": 0.02460914245312004,
+        "axial_advance_ratio": 0.5061867266591676
+      },
+      {
+        "speed_m_s": 40,
+        "reynolds_reference_chord": 1287671.232876712,
+        "dynamic_pressure_pa": 980.0000000000001,
+        "reference_chord_advection_s": 0.011749999999999998,
+        "roll_reduced_rate": 0.20734511513692638,
+        "pitch_reduced_rate": 0.01845685683984003,
+        "axial_advance_ratio": 0.6749156355455568
+      }
+    ]
+  },
+  "pure_delay": {
+    "kind": "derived",
+    "evidence": "illustrative_algebra",
+    "input_keys": [
+      "frequency",
+      "delay"
+    ],
+    "limitation": "Phase of an isolated linear pure delay for chosen sinusoids; not full control-loop phase, measured latency, pilot bandwidth or an acceptance budget.",
+    "values": [
+      {
+        "frequency_hz": 0.5,
+        "delay_ms": 0,
+        "phase_deg": -0.0
+      },
+      {
+        "frequency_hz": 0.5,
+        "delay_ms": 10,
+        "phase_deg": -1.8
+      },
+      {
+        "frequency_hz": 0.5,
+        "delay_ms": 20,
+        "phase_deg": -3.6
+      },
+      {
+        "frequency_hz": 0.5,
+        "delay_ms": 33.333333333333336,
+        "phase_deg": -6.0
+      },
+      {
+        "frequency_hz": 0.5,
+        "delay_ms": 50,
+        "phase_deg": -9.0
+      },
+      {
+        "frequency_hz": 0.5,
+        "delay_ms": 100,
+        "phase_deg": -18.0
+      },
+      {
+        "frequency_hz": 1,
+        "delay_ms": 0,
+        "phase_deg": 0.0
+      },
+      {
+        "frequency_hz": 1,
+        "delay_ms": 10,
+        "phase_deg": -3.6
+      },
+      {
+        "frequency_hz": 1,
+        "delay_ms": 20,
+        "phase_deg": -7.2
+      },
+      {
+        "frequency_hz": 1,
+        "delay_ms": 33.333333333333336,
+        "phase_deg": -12.0
+      },
+      {
+        "frequency_hz": 1,
+        "delay_ms": 50,
+        "phase_deg": -18.0
+      },
+      {
+        "frequency_hz": 1,
+        "delay_ms": 100,
+        "phase_deg": -36.0
+      },
+      {
+        "frequency_hz": 2,
+        "delay_ms": 0,
+        "phase_deg": 0.0
+      },
+      {
+        "frequency_hz": 2,
+        "delay_ms": 10,
+        "phase_deg": -7.2
+      },
+      {
+        "frequency_hz": 2,
+        "delay_ms": 20,
+        "phase_deg": -14.4
+      },
+      {
+        "frequency_hz": 2,
+        "delay_ms": 33.333333333333336,
+        "phase_deg": -24.0
+      },
+      {
+        "frequency_hz": 2,
+        "delay_ms": 50,
+        "phase_deg": -36.0
+      },
+      {
+        "frequency_hz": 2,
+        "delay_ms": 100,
+        "phase_deg": -72.0
+      },
+      {
+        "frequency_hz": 4,
+        "delay_ms": 0,
+        "phase_deg": 0.0
+      },
+      {
+        "frequency_hz": 4,
+        "delay_ms": 10,
+        "phase_deg": -14.4
+      },
+      {
+        "frequency_hz": 4,
+        "delay_ms": 20,
+        "phase_deg": -28.8
+      },
+      {
+        "frequency_hz": 4,
+        "delay_ms": 33.333333333333336,
+        "phase_deg": -48.0
+      },
+      {
+        "frequency_hz": 4,
+        "delay_ms": 50,
+        "phase_deg": -72.0
+      },
+      {
+        "frequency_hz": 4,
+        "delay_ms": 100,
+        "phase_deg": -144.0
+      }
+    ]
+  },
+  "inputs": {
+    "format": "aeris120-reference-study-inputs v1",
+    "scope": "Illustrative scalar research only. Not aircraft data, a performance prediction, or physical validation. All study scenarios are chosen inputs, not flight observations.",
+    "runtime_audit_commit": "ad21070798bfb9658785576a9c0b8bfc9a71fc7f",
+    "quantities": {
+      "span": {
+        "value": 2.64,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Prior AERIS design input; no model metrology in this investigation"
+      },
+      "wing_area": {
+        "value": 1.2408,
+        "unit": "m^2",
+        "kind": "estimated",
+        "source": "Prior AERIS design input; no model metrology in this investigation"
+      },
+      "density": {
+        "value": 1.225,
+        "unit": "kg/m^3",
+        "kind": "estimated",
+        "source": "Chosen sea-level reference atmosphere; not field weather"
+      },
+      "kinematic_viscosity": {
+        "value": 1.46e-05,
+        "unit": "m^2/s",
+        "kind": "estimated",
+        "source": "Chosen approximate reference-air value; no temperature or viscosity measurement"
+      },
+      "gravity": {
+        "value": 9.80665,
+        "unit": "m/s^2",
+        "kind": "manual",
+        "source": "Conventional standard gravity used for this calculation; not local gravimetry"
+      },
+      "prop_diameter": {
+        "value": 0.7112,
+        "unit": "m",
+        "kind": "borrowed",
+        "source": "S06: Mejzlik PN 228108, 28 inches converted to metres; reference prop only"
+      },
+      "prop_rpm": {
+        "value": 5000,
+        "unit": "rpm",
+        "kind": "borrowed",
+        "source": "S06: published performance SIMULATION reference speed, not installed DA120 RPM"
+      },
+      "prop_ct": {
+        "value": 0.0816,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "S06 rev. 3.0: manufacturer-simulated static J=0 point at 5000 RPM; not a measurement"
+      },
+      "prop_cp": {
+        "value": 0.0264,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "S06 rev. 3.0: manufacturer-simulated static J=0 point at 5000 RPM; not a measurement"
+      },
+      "prop_inertia": {
+        "value": 0.00767,
+        "unit": "kg*m^2",
+        "kind": "borrowed",
+        "source": "S06: estimated axial PROPELLER inertia; excludes spinner and engine rotating parts"
+      },
+      "roll_rate": {
+        "value": 360,
+        "unit": "deg/s",
+        "kind": "estimated",
+        "source": "Chosen body-roll screening scenario; not an AERIS roll-rate claim"
+      },
+      "perpendicular_body_rate": {
+        "value": 180,
+        "unit": "deg/s",
+        "kind": "estimated",
+        "source": "Chosen body rate exactly perpendicular to the shaft; not a measured maneuver"
+      }
+    },
+    "scenarios": {
+      "mass": {
+        "values": [
+          12.0,
+          12.6,
+          14.0
+        ],
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Chosen sensitivity cases; 12.6 kg is also the S03 donor listing, with fuel state unresolved. None is an AERIS weighing."
+      },
+      "airspeed": {
+        "values": [
+          0,
+          5,
+          10,
+          20,
+          30,
+          40
+        ],
+        "unit": "m/s",
+        "kind": "estimated",
+        "source": "Chosen local/reference speeds; no predicted flight envelope or uniform powered-wing speed"
+      },
+      "frequency": {
+        "values": [
+          0.5,
+          1,
+          2,
+          4
+        ],
+        "unit": "Hz",
+        "kind": "estimated",
+        "source": "Chosen sinusoidal frequencies for pure-delay phase arithmetic; no pilot bandwidth measurement"
+      },
+      "delay": {
+        "values": [
+          0,
+          10,
+          20,
+          33.333333333333336,
+          50,
+          100
+        ],
+        "unit": "ms",
+        "kind": "estimated",
+        "source": "Chosen pure delays; no device, actuator, frame-time or latency acceptance specification"
+      }
+    },
+    "references": {
+      "S06": "https://www.mejzlik.eu/files/28x10-2b-gas-evo-lf-datasheet.pdf",
+      "S03": "https://pilot-rc.com/extra-ng-103-2-63m/",
+      "S28": "https://web.mit.edu/16.unified/www/SPRING/thermodynamics/notes/node86.html",
+      "source_register": "../../docs/research/aeris-120/sources.md"
+    }
+  },
+  "identity": {
+    "input_sha256": "98cda0f639a81ff25e6870eb0b78b1964b03b23e35d134f18d692f1d3cc10069",
+    "calculator_sha256": "8b05bac8a252cc8f68de5a0e01e5dba4278445647e290e4d6e0463b9f37222be"
+  }
+}
