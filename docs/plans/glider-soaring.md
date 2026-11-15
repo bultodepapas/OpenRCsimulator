@@ -2,6 +2,7 @@
 
 **Status:** proposed development plan; no glider or towing feature is implemented by this document.  
 **Review date:** 15 November 2026.  
+**Research expansion:** [24 additional investigations, GI-01…GI-24](../research/glider-soaring/2026-11-15-investigations.md), completed 15 November 2026; their implementation and qualification experiments remain pending.  
 **Reviewed source:** [main at ad21070798bfb9658785576a9c0b8bfc9a71fc7f](https://github.com/bultodepapas/OpenRCsimulator/commit/ad21070798bfb9658785576a9c0b8bfc9a71fc7f).  
 **Track:** SG-00…SG-17; physics/simulation leads, with AS, SF, M5, AFC, GP/CR, input/UI, FL, CAM/HUD/AUD, AE, and platform owners retaining their existing interfaces.
 
@@ -30,6 +31,7 @@ The first playable milestone is a solo air-start glider with calm air, a valid d
 | [Aircraft and weather](glider-soaring/03-aircraft-and-weather.md) | Aircraft comparison, data intake, speeds, thermal scenarios and asset provenance | Aircraft/data, M5, art, product |
 | [Acceptance and delivery](glider-soaring/04-acceptance-and-delivery.md) | Work packages, verification matrix, rollout, risks and evidence receipts | Engineering lead, QA, release |
 | [Dated source review](../research/glider-soaring/2026-11-15-source-review.md) | Exact inspected paths, existing-work reconciliation, primary references and research limits | Reviewers and future implementers |
+| [24 follow-up investigations](../research/glider-soaring/2026-11-15-investigations.md) | Decision evidence, applicability limits and discriminating experiments in four research volumes | Aircraft/physics, SF/M5, AFC/input, QA/product |
 
 The [aircraft contract](../AIRCRAFT_CONTRACT.md), [kernel contract](../STACK.md#boundaries-and-data-flow), [wind reference](../WIND-ATMOSPHERE-REFERENCE.md), [flight-log workflow](../FLIGHT-LOGGING.md), and [tool index](../tools/README.md) remain authoritative for existing systems. Do not copy their commands or silently change another track's policy.
 
@@ -121,7 +123,7 @@ These ideas are proposed development opportunities. Launch, towing and soaring a
 | I03 | Repeatable weather challenges | Allows fair comparisons of decisions | P1; SG-06 | Full law, agenda, epoch, aircraft and assistance identity reconstruct the exercise |
 | I04 | Flight debrief and comparison | Connects stick use to aircraft behavior | P1; SG-03/15 | Event timeline, ground track, speed and thermal circles match the accepted flight and show missing data honestly |
 | I05 | Tow instructor and abort practice | Teaches slack, climb, turns and release | P2; SG-08…12/14 | Successful and aborted runs use the same pair dynamics; interventions and line assumptions are visible |
-| I06 | Trim, CG and ballast laboratory | Explains wing loading and stability | P2; AS/AE and SG-03 | Inventory changes recalculate mass/CG/inertia and measured performance; invalid builds refuse and baseline can be restored |
+| I06 | Trim, CG and ballast laboratory | Explains wing loading and stability | P2; AS/AE and SG-03 | Inventory changes recalculate mass/CG/inertia and predicted performance, with measured comparisons identified separately; invalid builds refuse and baseline can be restored |
 | I07 | RC transmitter and mixed-surface trainer | Practices real control assignments | P2; SG-13, AS/AE | Commanded and achieved surfaces, rates, differential and mixes agree; saved mapping and role handoff do not cause surprise deployment |
 | I08 | Landing accuracy and approach drills | Adds skill goals beyond duration | P2; SG-04/12/15 | Scoring uses actual touchdown/contact and identifies overspeed, damage and assistance |
 | I09 | Two-pilot club aerotow | Makes cooperation a meaningful activity | P3; complete local pair/authority first | One controller owns each aircraft and both observe one release; later network authority handles latency explicitly |
@@ -137,21 +139,21 @@ All implementation steps remain pending. The documentation and research intake c
 | --- | --- | --- |
 | SG-00 | Reconcile source, owners, aircraft choice, constraints and decisions | Review captured; confirm owner interfaces and accepted decisions before implementation |
 | SG-01 | Extend absent-propulsion data/runtime contract | Invalid data refuses; no phantom thrust/wake/energy/audio; legacy fleet preserved |
-| SG-02 | Author the trainer and asset/data pipeline | Provenance, actual configuration, generated conformance and geometry/control checks |
-| SG-03 | Qualify aerodynamic model, trim and speed/sink outputs | Calm glide, stall/control, polar and independent measurement evidence |
+| SG-02 | Author the trainer and asset/data pipeline | File-specific provenance, exact build, independent mass/CG/inertia, source polar meaning and generated geometry/control checks |
+| SG-03 | Qualify aerodynamic model, trim and speed/sink outputs | Wind-qualified held-out polar/control data, declared Re/rigidity/configuration domain, trim and uncertainty evidence |
 | SG-04 | Deliver solo airborne flight, landing and replay | Valid descending start, contact lifecycle and exact same-identity replay |
-| SG-05 | Deliver unpowered hand launch | Ground-relative release, no post-release energy injection, boundary and real-controller checks |
+| SG-05 | Deliver unpowered hand launch | Correlated measured ground-relative release state, marker-to-CG conversion, no extra energy injection and real-controller checks |
 | SG-06 | Add finite thermal presets and instruments | Current weather schema, analytic field checks, matched flight and honest TE/netto |
 | SG-07 | Establish joint body, event, projection and persistence contract | Both-body normalization, atomic rollback/publication, pair checkpoint and legacy equivalence |
 | SG-08 | Implement the compliant line and releases | Mechanics/passivity, stiffness admission, convergence and release/event evidence |
-| SG-09 | Qualify tow installations and speed overlap | Hook/line/tug data, compatible envelope, weight/balance and available power |
+| SG-09 | Qualify tow installations and joint tow envelope | Installed rope history, hook moments, joint trim/control margins, excess power and explicit wake limitations |
 | SG-10 | Airborne tow: AI tug, player glider | Controller envelope, shared weather, manual release and deterministic recovery |
 | SG-11 | Airborne tow: player tug, AI glider, then transfer | One owner per actor, actuator continuity, axis pickup and complete pair replay |
 | SG-12 | Ground aerotow and aborts | Take-up, dual contact/events, takeoff, clearance, cable-scope and recovery gates |
-| SG-13 | Complete input, camera, HUD, accessibility and localization | 1080p inspection; keyboard/gamepad/radio, focus/reconnect and English/Spanish coverage |
+| SG-13 | Complete input, camera, HUD, accessibility and localization | Native 1080p visibility/response timing, actual radios, applied-command/actuator continuity, focus/reconnect and English/Spanish coverage |
 | SG-14 | Add bounded failure practice | Evidence-based break if available; engine/control faults and consistent pair lifecycle |
-| SG-15 | Lessons, debrief, challenges and statistics | Accepted-event scoring; assistance/version identity; no credit on rollback/restore |
-| SG-16 | Physical, pilot and instrument validation | Independent RC measurements, held-out flights, real devices and declared uncertainties |
+| SG-15 | Lessons, debrief, challenges and statistics | Full pair replay identity; accepted-event outcomes; assistance/abort/refusal separation and no duplicate rollback/restore credit |
+| SG-16 | Physical, pilot and instrument validation | Intended-use metrics, calibration/holdout separation, independent RC measurements, real devices, uncertainty and controlled learning evidence |
 | SG-17 | Performance, backend, CI and package qualification | Complete supported matrix, 1080p target-host evidence, exact source/package identities |
 
 SG-13 starts with SG-04 and progresses with each new mode; it is not deferred until the end. SG-16 data collection starts with SG-02. SG-07/08 can proceed in synthetic fixtures while aircraft evidence is collected, but must not establish a named-aircraft realism claim.
@@ -180,3 +182,16 @@ Proposed decisions to record in `docs/DECISIONS.md` when accepted:
 - D8: initially omit unqualified wake, rope entanglement, dynamic soaring, full DLG launch, and networked towing; add through their own gates.
 
 No hidden approval gate is introduced by these proposed decisions. They identify implementation choices for the owning team. This branch contains planning documents and the documentation registry entry; it does not change the runtime, claim passing flight tests, or qualify a real aircraft.
+
+## 9. Research refinements adopted into this plan
+
+The [GI-01…24 investigation set](../research/glider-soaring/2026-11-15-investigations.md) strengthens the existing sequence without adding new SG implementation steps. The four supporting guides now require:
+
+- **Aircraft evidence:** independent air-motion-aware polars and mass/inertia, meaningful low-Re and rigid-airframe domains, actual surface mixing and correlated release samples.
+- **Tow evidence:** installed line histories, joint trim/control authority, both-body energy ledgers, solver/event comparison, swept clearance and attainable AI commands.
+- **Weather and instruments:** shared-field coherence and M5 boundary/flux qualification, bank/sink/return tasks, explicit truth-versus-sensor cues and complete atmosphere/epoch identity.
+- **Usability and delivery:** controller-state tracking at the correct command boundary, RC camera/latency evidence, exact pair replay, file-specific reuse checks and decision-based lesson evaluation.
+
+The first wake-omitted tow remains experimental with respect to wake exposure. The cited small-propeller measurement range does not justify a three-diameter clearance rule, and no such rule is adopted. A future wake capability needs its own installation-specific data and law identity. Existing independent collision gates still apply.
+
+Start the measurement program with SG-02/03 and GI-01…06/GI-22 while SG-07/08 uses bounded synthetic fixtures. Prioritize unresolved inputs by their demonstrated effect on the intended flight or lesson, and keep prototype, physical, human and platform claims separate. The [acceptance additions](glider-soaring/04-acceptance-and-delivery.md#11-research-driven-acceptance-additions) map every investigation to an observable gate.

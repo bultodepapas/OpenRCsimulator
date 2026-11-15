@@ -185,3 +185,9 @@ Independent review checked the draft against the current source and challenged:
 Those corrections are integrated into the [master plan](../../plans/glider-soaring.md), [launch/control guide](../../plans/glider-soaring/01-launch-and-control.md), [physics](../../plans/glider-soaring/02-physics-and-tow.md), [aircraft/weather](../../plans/glider-soaring/03-aircraft-and-weather.md), and [acceptance](../../plans/glider-soaring/04-acceptance-and-delivery.md).
 
 Validation for this planning change consists of document structure, cross-references, requirement coverage, arithmetic examples and the final GitHub diff. No application build, simulator run, physical measurement, real-controller session, rendered target-host test or native-backend qualification was executed. No old test count or historical CI status is represented as current evidence. Proposed test matrices and numerical/physical gates remain work for the implementation team.
+
+## Follow-up: 24 additional investigations
+
+The user requested a deeper investigation set after the initial handoff. [GI-01…GI-24](2026-11-15-investigations.md), completed on 15 November 2026, cover aircraft/aerodynamics, towing/numerics, weather/instruments and controls/evidence/delivery in four dated volumes. Their findings are incorporated into the master and four implementation guides, with a row-by-row acceptance mapping. The original source observations above remain tied to the same unchanged runtime revision.
+
+The expansion adds primary-source analysis, explicit analytical examples, file-specific upstream reuse checks and independent critical review. It separates completed source investigations from proposed implementation, measurement and learner experiments. Existing M5 boundary/flux/coherence work keeps its own IDs and owners. The research does not establish a calibrated aircraft, towline, wake, real-device workflow or training-transfer result.

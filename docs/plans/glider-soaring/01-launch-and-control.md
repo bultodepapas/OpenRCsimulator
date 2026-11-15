@@ -160,7 +160,7 @@ At the chosen accepted tick boundary:
 
 1. Validate the intent, actor identities, connection mode, input readiness and available tug recovery controller.
 2. Capture both actual aircraft/actuator states and the current held commands.
-3. Initialize the tug controller from the accepted tug state and existing realized commands. Seed or clamp integrators under an explicit anti-windup policy.
+3. Initialize each tug-controller loop at its actual output boundary, using the accepted post-limit/arbiter command and a guidance target consistent with the accepted trajectory. Preserve achieved physical servo positions separately. Seed/track integrators and filters under explicit anti-windup and saturation semantics; a lagging servo position is not the previous actuator command.
 4. Release the line if requested, change ownership, and update takeover/axis-pickup state as one transaction.
 5. Publish a single ordered event containing tick, reason, old/new owners and release status.
 6. Change the camera target from the accepted event and animate the view separately.
@@ -180,6 +180,8 @@ A tug pilot may have the throttle stick high at transfer. When the selected glid
 Use named role mappings and a recorded pickup policy. On transfer, hold the glider's already accepted brake command until the axis enters a defined neighborhood of that command, then grant control. Show “Move brake axis to pick up” and a visual position cue; support keyboard/gamepad and an optional explicit neutralization action. Test both polarities and flight-mode switches. Preserve trim and flap selections by actor.
 
 The exact tolerance, blend duration and any novice holding assistance are provisional UI/control parameters; select them with real transmitter users. They must never change unnoticed between identical recorded scenarios.
+
+The [GI-19 investigation](../../research/glider-soaring/2026-11-15-investigations-04-delivery.md) sharpens this existing transfer requirement. Telemetry distinguishes requested intent, applied actuator command and achieved physical position with units/polarity. Tracking state advances only through the pair transaction; an inactive controller cannot write effective commands. Test transfer with saturation, servo lag, bank, trims, flight modes and reconnect. A matching initial command does not establish that the new guidance target is reachable.
 
 ## 8. What the tug does after release
 
@@ -219,3 +221,15 @@ The camera transition must preserve orientation and a useful horizon. The RC gro
 Vario sound, wind sound and servo sound are observers. A pure glider has no phantom engine sound. Tone indicates the selected instrument and has independent mute/volume. Diagnostic thermal visualization is an explicit aid and can be hidden until debrief for challenges.
 
 Verify native 1920×1080 first, then higher resolutions and 720p fallback. Include small distant silhouettes, contrast against sky/trees, ultrawide/zoom behavior, 200% UI scale, keyboard/controller focus, English/Spanish text, and focus/controller-loss recovery. Headless tests do not prove visual readability or real-radio usability.
+
+## 11. Research additions to launch, guidance and learning
+
+The [24 investigations](../../research/glider-soaring/2026-11-15-investigations.md) add the following observable requirements without changing the four player journeys.
+
+**Release measurements — GI-05.** Author release position, CG ground velocity, attitude, angular rate and achieved controls as a correlated configuration-specific state. Transform tracked markers to the CG using the measured lever arm/rates. Do not assemble independent marginal maxima into an unobserved throw; DLG swing energy and flexible launch behavior require their own dataset.
+
+**Reachable towing and swept clearance — GI-08/11/12/17.** Admit routes using joint force/moment trim, available tug power, actual actuator travel/rate and recoverable separation. Check swept aircraft motion and any claimed line corridor over the full interval, with explicit hook exemptions and unmodeled slack/contact outcomes. Simulation-truth tension or lift-center access is idealized assistance when not supplied by an admitted sensor. Keep the wake omission visible; the source's three-propeller-diameter measurement extent is not a clearance rule. Release remains independently available if takeover readiness fails.
+
+**RC view and timing — GI-20.** Record projection and FOV axis, viewport, zoom/tracking, visual scale and aids. Keep physical dimensions/forces unchanged by graphics settings. Measure input → accepted applied command → accepted motion → visible response with synchronized timestamps and a defined response event. Report actuator/aircraft dynamics separately from transport delay. Evaluate actual attitude recognition, alignment and approaches at intended distances; neither FPS nor a nominal camera angle establishes usability.
+
+**Learning flow — GI-15/16/24.** Give each lesson explicit objectives, prerequisite skills, assistance, finite weather and accepted end events. Teach short glide/landing before centering and return, then tow position, release/transfer and admitted aborts. Separate physical-truth diagnostics, sensor-derived instruments and assisted cues. Debrief accepted outcomes and choices; distinguish completion, assistance, deliberate abort and technical refusal. Preserve version/reset/restore identity, and assess withheld scenarios rather than duration alone.

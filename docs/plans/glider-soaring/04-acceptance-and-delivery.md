@@ -214,3 +214,43 @@ Start with existing checks such as `test_aircraft_contract.gd`, `test_aircraft_m
 Use the [tool index](../../tools/README.md), [physics checks](../../tools/physics.md), [flight logging](../../FLIGHT-LOGGING.md) and repository test-queue instructions. Run broader coverage only for the shared boundaries actually changed or the required release gates.
 
 This documentation-only handoff is verified by content, cross-reference, numeric-example and published-diff checks. It does not need a flight-simulation run and makes no claim of runtime, physical, native, controller or CI qualification.
+
+## 11. Research-driven acceptance additions
+
+The [24-investigation index](../../research/glider-soaring/2026-11-15-investigations.md) and its four source volumes retain the rationale. The rows below extend the existing A/T/C matrices and SG gates; they do not mark any check complete or require implementing every researched alternative. Choose thresholds from intended use, measurement uncertainty and the admitted domain before examining candidate results.
+
+| Research | Owning gate | Additional observable acceptance |
+| --- | --- | --- |
+| GI-01 | A05; SG-03/16 | Withhold entire flights/runs and bound vertical-air/sensor timing bias; a synthetic updraft-contaminated measurement must not be accepted as an unbiased sink polar. |
+| GI-02 | A04/A06; SG-03 | Record source dimensionality, Re and transition/finish; validate table conversion/interpolation and regime boundaries against withheld conditions. |
+| GI-03 | A03/A08; SG-02/16 | Compare inventory with independent CG/inertia and identifiable control-response measurements; report suspension/fixture and parameter-correlation uncertainty. |
+| GI-04 | A07; SG-13 | Sweep simultaneous roll/brake commands through saturation; compare left/right applied commands, achieved angles, pitch/yaw/drag and render bindings. |
+| GI-05 | A10; SG-05 | Reconstruct correlated release state, transform tracked markers to CG, and compare the initial trajectory/rates without added post-release hand energy. |
+| GI-06 | A06; SG-16 | Retain the evidenced rigid-airframe domain and deformation/modal limits; ordinary-flight agreement never creates an unmeasured strength/flutter threshold. |
+| GI-07 | T03/T04/T09; SG-08/09 | Fit installed loading/unloading histories and reserve whole histories for validation; compare loop work, rate, set and conditioning. Qualify weak-link failure separately. |
+| GI-08 | T02; SG-09 | Establish joint trim and attainable transitions with hook moments, actual surfaces and excess tug power; record margins, not only overlapping speed ranges. |
+| GI-09 | T01/T04/T07; SG-07 | Compare lagged exchange and same-stage coupling with independent per-hook work, energy and event residuals, including one-sided release/failure mutations. |
+| GI-10 | T05/T06/T10; SG-08/17 | Compare credible numerical references over stiffness/damping/mass/closure boundaries, including hidden within-step events and bounded failure/cost. Distinguish a different constraint law. |
+| GI-11 | T13/T14; SG-12 | Detect rotating/fast crossings with clear endpoints; qualify swept geometry and any conditional line bound. Report conservative false positives and unknown slack/contact outcomes. |
+| GI-12 | C01/C02; SG-10/11/14 | Exercise feasible turns/climbs, slack take-up, saturation and power loss in both human-role modes; label idealized sensors and retain ordered release/abort outcomes. |
+| GI-13 | A11/A12; SG-06, M5 | Test actual provider boundary semantics and density-weighted flux against the expected volume term, with zero-cell/constant-density controls and refinement. |
+| GI-14 | A13/A14; SG-06/07 | Compare multi-point covariance and complex coherence/phase across both wings/tails and aircraft; use analytic field and query-order controls before seeded statistics. |
+| GI-15 | SG-03/06/15 | Compare bank/speed/offset/drift with measured banked sink, actual energy and remaining return/expiry margin; preserve weak-lift negative controls. |
+| GI-16 | A15; SG-06/13 | Separate truth, sensor-derived and assisted channels; verify declared sampling/filter response, anti-aliasing, dropout, warmup, reset and restore. |
+| GI-17 | SG-09/10/11 | Declare wake omission independently of collision clearance; do not use the 3D measurement extent as a runtime clearance rule. Future wake claims require exact-installation evidence. |
+| GI-18 | A04/A09/A14; SG-06 | Pin atmosphere/polar/field/epoch/sensor identity and reject incompatible changes; include actual remaining world horizon and all station-domain limits. |
+| GI-19 | SG-11/13 | Match each controller's real output boundary while preserving servo state; test saturation/lag/trims/flight modes and actual-device reconnect with one effective writer. |
+| GI-20 | SG-13/17 | Evaluate native 1080p attitude/alignment/approach tasks over intended distances and backgrounds; record camera aids and the complete timestamped response chain. |
+| GI-21 | T11/T12; SG-15/17 | Exact same-identity pair replay must survive cosmetic/RNG-query-order isolation checks; changed build/backend/law remains an explicitly classified comparison. |
+| GI-22 | SG-16 | Freeze calibration before holdout prediction, predeclare intended-use metrics and separately report measurement, numerical and model error; investigate sensitive/confounded parameters. |
+| GI-23 | SG-02/17 | Trace each imported mesh/texture/data/code file to exact origin/hash/notices, reviewed intended use and physical fit; generic repository licensing is insufficient evidence. |
+| GI-24 | SG-15/16 | Predeclare accepted lesson outcomes, assistance/abort/refusal/reset rules and held-out scenarios; use comparison/repeated-baseline design for causal learning claims. |
+
+### Required evidence package
+
+For each admitted aircraft/mode/weather combination, retain its configuration, data and source/solver identity; the question and metric; calibration versus holdout split; raw/synchronized measurement method; uncertainty and exclusions; numerical reference/refinement; actual hardware/controller/camera where relevant; and result with failure cases. Record unknown distributions as bounded assumptions rather than invented probabilities. Use sensitivity to select the next useful measurement instead of broadening tests without a concrete question.
+
+Pair logs distinguish requested intent, post-limit/arbiter actuator command and achieved actuator position. Instrument truth, sensor estimates and assistance are separately identified. Model, physical and learning claims use different evidence categories from section 1. A task refused for unsupported conditions is not a successful training sortie; an appropriate deliberate abort can satisfy a separately defined lesson objective.
+
+The research changes impose no NASA organizational approval process and no mandatory MATLAB/SciPy/OpenFAST dependency. Their methods inform project-owned criteria. All simulator, bench, flight, real-device, display, performance and learner experiments above remain unperformed in this documentation change.
+
