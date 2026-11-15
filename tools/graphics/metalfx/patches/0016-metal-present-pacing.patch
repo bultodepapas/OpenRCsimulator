@@ -1,0 +1,621 @@
+diff --git a/drivers/metal/openrc_mfx_present_bridge.h b/drivers/metal/openrc_mfx_present_bridge.h
+--- a/drivers/metal/openrc_mfx_present_bridge.h
++++ b/drivers/metal/openrc_mfx_present_bridge.h
+@@ -11,6 +11,9 @@
+ 	DecisionTrace decision;
+ 	double display_period = 0.0;
+ 	int64_t last_gpu_status = 0, last_gpu_error_code = 0;
++	uint64_t last_admitted_drawable_width = 0, last_admitted_drawable_height = 0;
++	uint64_t last_admitted_drawable_pixel_format = 0, last_admitted_drawable_frame = 0;
++	bool last_admitted_drawable_generated = false;
+ 	uint64_t generation = 0;
+ 	uint64_t real_accepted_jobs = 0;
+ 	uint64_t pair_accepted_candidates = 0;
+diff --git a/drivers/metal/openrc_mfx_present_bridge.mm b/drivers/metal/openrc_mfx_present_bridge.mm
+--- a/drivers/metal/openrc_mfx_present_bridge.mm
++++ b/drivers/metal/openrc_mfx_present_bridge.mm
+@@ -57,11 +57,11 @@
+ 	p_state.stats.last_gpu_error_code = last_code;
+ }
+ 
+-static void synchronize_generation(Shared &p_state) {
++static void synchronize_generation(Shared &p_state, Retired &r_retired) {
+ 	uint64_t requested = p_state.requested_generation.load(std::memory_order_acquire);
+ 	if (!requested) { return; }
+ 	if (requested != p_state.scheduler.current_generation()) {
+-		p_state.scheduler.reset_to(requested);
++		p_state.scheduler.reset_to(requested, r_retired);
+ 		retire_stats(p_state);
+ 		p_state.previous_display_target = 0.0;
+ 		p_state.display_period = 0.0;
+@@ -89,10 +89,12 @@
+ 		const double deadline = p_update.targetTimestamp;
+ 		const double target = p_update.targetPresentationTimestamp;
+ 		const double now = CACurrentMediaTime();
++		OpenRCMetalPresent::Retired retired_before_choice;
++		OpenRCMetalPresent::Retired retired_after_choice;
+ 		std::unique_lock<std::mutex> gate(s->gate);
+ 		std::unique_lock<std::mutex> lock(s->mutex);
+ 		if (s->stopping) { return; }
+-		OpenRCMetalPresent::synchronize_generation(*s);
++		OpenRCMetalPresent::synchronize_generation(*s, retired_before_choice);
+ 		if (!s->requested_generation.load(std::memory_order_acquire)) { return; }
+ 		if (std::isfinite(target) && target > s->previous_display_target) {
+ 			double interval = target - s->previous_display_target;
+@@ -102,7 +104,7 @@
+ 			s->display_period = 0.0;
+ 		}
+ 		if (s->in_flight != 0) { return; }
+-		OpenRCMetalPresent::Choice choice = s->scheduler.choose(now, deadline, target, s->display_period, true);
++		OpenRCMetalPresent::Choice choice = s->scheduler.choose(now, deadline, target, s->display_period, true, retired_before_choice);
+ 		if (choice.kind == OpenRCMetalPresent::Kind::NONE || !choice.texture) { return; }
+ 		lock.unlock();
+ 		std::unique_lock<std::mutex> source_gate;
+@@ -117,12 +119,17 @@
+ 		}
+ 		id<MTLTexture> src = (__bridge id<MTLTexture>)choice.texture;
+ 		id<MTLTexture> dst = drawable.texture;
+-		if (!src || !dst || src.device != s->device || dst.device != s->device ||
+-				src.width != dst.width || src.height != dst.height ||
+-				src.pixelFormat != dst.pixelFormat ||
++		if (!src || !dst) { return; }
++		// Native drawable identity is read outside the shared state mutex.
++		const uint64_t drawable_width = uint64_t(dst.width);
++		const uint64_t drawable_height = uint64_t(dst.height);
++		const MTLPixelFormat drawable_format = dst.pixelFormat;
++		if (src.device != s->device || dst.device != s->device ||
++				src.width != drawable_width || src.height != drawable_height ||
++				src.pixelFormat != drawable_format ||
+ 				(src.usage & MTLTextureUsageShaderRead) == 0) { return; }
+-		id<MTLRenderPipelineState> pipeline = dst.pixelFormat == MTLPixelFormatBGRA8Unorm ? s->pipeline_sdr :
+-				(dst.pixelFormat == MTLPixelFormatRGBA16Float ? s->pipeline_hdr : nil);
++		id<MTLRenderPipelineState> pipeline = drawable_format == MTLPixelFormatBGRA8Unorm ? s->pipeline_sdr :
++				(drawable_format == MTLPixelFormatRGBA16Float ? s->pipeline_hdr : nil);
+ 		if (!pipeline) { return; }
+ 		id<MTLCommandBuffer> command = [s->queue commandBuffer];
+ 		if (!command) { return; }
+@@ -171,8 +178,10 @@
+ 			auto shared = weak.lock();
+ 			if (!shared) { return; }
+ 			const auto completed_status = p_command.status;
++			const double completed_at = CACurrentMediaTime();
+ 			NSError *completed_error = p_command.error;
+ 			const int64_t completed_error_code = completed_error ? int64_t(completed_error.code) : 0;
++			OpenRCMetalPresent::Retired completed_retired;
+ 			std::lock_guard<std::mutex> guard(shared->mutex);
+ 			if (shared->in_flight > 0) { shared->in_flight--; }
+ 			if (sample_generation == shared->scheduler.current_generation() && completed_status != MTLCommandBufferStatusCompleted) {
+@@ -183,10 +192,10 @@
+ 					shared->stats.gpu_failed++;
+ 					shared->stats.last_gpu_status = int64_t(completed_status);
+ 					shared->stats.last_gpu_error_code = completed_error_code;
+-					if (replacement) { shared->scheduler.recover_failed(completion_choice); }
+-					else { shared->scheduler.reset(); }
++					if (replacement) { shared->scheduler.recover_failed(completion_choice, completed_at, completed_retired); }
++					else { shared->scheduler.reset(completed_retired); }
+ 				} else {
+-					OpenRCMetalPresent::synchronize_generation(*shared);
++					OpenRCMetalPresent::synchronize_generation(*shared, completed_retired);
+ 				}
+ 			}
+ 		}];
+@@ -194,11 +203,17 @@
+ 			// Handler registration and encoder calls above may enter Apple code.
+ 			// Revalidate afterwards, with only state mutation under this mutex.
+ 			std::lock_guard<std::mutex> admission(s->mutex);
+-			if (s->stopping || CACurrentMediaTime() >= deadline) { return; }
++			const double admitted_at = CACurrentMediaTime();
++			if (s->stopping || admitted_at >= deadline) { return; }
+ 			if (choice.proof && choice.proof->is_cancelled()) { return; }
+ 			if (choice.source_generation && choice.source_generation->is_cancelled()) { return; }
+ 			if (choice.generation != s->requested_generation.load(std::memory_order_acquire)) { return; }
+-			if (!s->scheduler.commit(choice)) { return; }
++			if (!s->scheduler.commit(choice, admitted_at, retired_after_choice)) { return; }
++			s->stats.last_admitted_drawable_width = drawable_width;
++			s->stats.last_admitted_drawable_height = drawable_height;
++			s->stats.last_admitted_drawable_pixel_format = uint64_t(drawable_format);
++			s->stats.last_admitted_drawable_frame = choice.frame;
++			s->stats.last_admitted_drawable_generated = is_generated;
+ 			s->in_flight++;
+ 			if (is_generated) { s->stats.generated_present_requested++; } else { s->stats.real_present_requested++; }
+ 		}
+@@ -255,10 +270,14 @@
+ 			shared->started_condition.notify_all();
+ 		}
+ 		for (;;) {
++			Retired retired;
++			const double cleanup_now = CACurrentMediaTime();
+ 			{
+ 				std::lock_guard<std::mutex> guard(shared->mutex);
+ 				if (shared->stopping || !shared->valid) { break; }
++				shared->scheduler.expire(cleanup_now, retired);
+ 			}
++			retired.clear();
+ 			@autoreleasepool { CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, true); }
+ 		}
+ 		[link invalidate];
+@@ -284,11 +303,12 @@
+ 	if (!p_presenter || !p_presenter->state) { return; }
+ 	auto shared = p_presenter->state;
+ 	CFRunLoopRef loop = nullptr;
++	Retired retired;
+ 	{
+ 		std::lock_guard<std::mutex> gate(shared->gate);
+ 		std::lock_guard<std::mutex> guard(shared->mutex);
+ 		shared->stopping = true;
+-		shared->scheduler.reset();
++		shared->scheduler.reset(retired);
+ 		shared->requested_generation.store(shared->scheduler.current_generation(), std::memory_order_release);
+ 		loop = shared->run_loop;
+ 		if (loop) { CFRetain(loop); }
+@@ -362,11 +382,13 @@
+ bool submit(const Handle &p_presenter, Job p_job) {
+ 	if (!p_presenter) { return false; }
+ 	auto shared = p_presenter->state;
++	const double now = CACurrentMediaTime();
++	Retired retired;
+ 	std::lock_guard<std::mutex> guard(shared->mutex);
+ 	if (shared->stopping || !shared->requested_generation.load(std::memory_order_acquire)) { return false; }
+-	synchronize_generation(*shared);
++	synchronize_generation(*shared, retired);
+ 	bool paired = p_job.generated && p_job.paired_real;
+-	if (!shared->scheduler.submit(std::move(p_job))) { return false; }
++	if (!shared->scheduler.submit(p_job, now, retired)) { return false; }
+ 	shared->stats.real_accepted_jobs++;
+ 	if (paired) { shared->stats.pair_accepted_candidates++; }
+ 	return true;
+@@ -374,8 +396,9 @@
+ 
+ Snapshot snapshot(const Handle &p_presenter) {
+ 	if (!p_presenter) { return {}; }
++	Retired retired;
+ 	std::lock_guard<std::mutex> guard(p_presenter->state->mutex);
+-	synchronize_generation(*p_presenter->state);
++	synchronize_generation(*p_presenter->state, retired);
+ 	Snapshot result = p_presenter->state->stats;
+ 	result.decision = p_presenter->state->scheduler.decision_trace();
+ 	result.display_period = p_presenter->state->display_period;
+diff --git a/drivers/metal/openrc_mfx_present_state.h b/drivers/metal/openrc_mfx_present_state.h
+--- a/drivers/metal/openrc_mfx_present_state.h
++++ b/drivers/metal/openrc_mfx_present_state.h
+@@ -4,7 +4,9 @@
+ // It is deliberately independent of Objective-C and Godot ownership so callback
+ // races can be tested without a display or GPU. The caller serializes Scheduler.
+ #include "servers/rendering/storage/metalfx_presentation.h"
++#include <array>
+ #include <cmath>
++#include <exception>
+ #include <cstdint>
+ #include <memory>
+ 
+@@ -38,6 +40,19 @@
+ 	bool proof_ready = false, cadence_ready = false, deadlines_ready = false, paired_candidate = false;
+ };
+ 
++// Collected under the scheduler lock, released only after that lock is gone.
++// At most four occupied slots can be retired by one locked operation.
++struct Retired {
++	std::array<std::shared_ptr<void>, 4> leases;
++	unsigned count = 0;
++	void keep(std::shared_ptr<void> &p_lease) {
++		if (!p_lease) { return; }
++		if (count >= leases.size()) { std::terminate(); }
++		leases[count++] = std::move(p_lease);
++	}
++	void clear() { for (unsigned i = 0; i < count; ++i) { leases[i].reset(); } count = 0; }
++};
++
+ enum class Kind { NONE, GENERATED, REAL };
+ 
+ struct Choice {
+@@ -51,12 +66,16 @@
+ 	void *fallback_texture = nullptr;
+ 	std::shared_ptr<Proof> proof;
+ 	std::shared_ptr<SourceGeneration> source_generation;
+-};
+-
+-// Fixed-capacity latest-complete scheduler. A successfully scheduled generated
+-// image reserves its matching real image until the next eligible callback.
++	double source_reserved_at = 0.0;
++	double display_period = 0.0;
++};
++
++// Fixed-capacity latest-complete scheduler. A scheduled generated image
++// reserves its matching real endpoint for exactly the next display tick.
+ class Scheduler {
+ 	static constexpr unsigned CAPACITY = 4;
++	static constexpr double MAX_SOURCE_AGE = 0.2;
++	static constexpr double MAX_TARGET_LOOKAHEAD = 0.1;
+ 	Job slots[CAPACITY];
+ 	bool occupied[CAPACITY] = {};
+ 	uint64_t generation = 1;
+@@ -64,18 +83,67 @@
+ 	uint64_t last_generated_scheduled = 0;
+ 	double last_real_target = 0.0;
+ 	double last_generated_target = 0.0;
++	double reservation_period = 0.0;
+ 	uint64_t blocked_epoch = 0;
+ 	uint64_t last_pair_epoch = 0;
+ 	uint64_t discontinuities = 0;
+ 	int reserved = -1;
++	bool primed = false;
++	bool reservation_interrupted = false;
+ 	mutable DecisionTrace decision;
+ 
+-	void erase(unsigned p_index) {
+-		if (reserved == int(p_index)) {
++	void erase(unsigned p_index, Retired &r_retired) {
++		if (reserved == int(p_index)) { reserved = -1; }
++		occupied[p_index] = false;
++		r_retired.keep(slots[p_index].output_lease);
++		slots[p_index] = Job();
++	}
++
++	void abandon_reserved(Retired &r_retired, bool p_keep_real = false) {
++		if (reserved < 0 || !occupied[reserved]) { reserved = -1; primed = false; return; }
++		const unsigned index = unsigned(reserved);
++		if (slots[index].epoch) { blocked_epoch = slots[index].epoch; }
++		++discontinuities;
++		primed = false;
++		reservation_interrupted = false;
++		reservation_period = 0.0;
++		if (p_keep_real) {
++			slots[index].generated_scheduled = false;
++			slots[index].generated = nullptr;
++			slots[index].paired_real = nullptr;
+ 			reserved = -1;
+-		}
+-		occupied[p_index] = false;
+-		slots[p_index] = Job();
++		} else { erase(index, r_retired); }
++	}
++
++	static bool valid_period(double p_period) {
++		return std::isfinite(p_period) && p_period >= 0.001 && p_period <= 0.1;
++	}
++	static bool source_fresh(const Job &p_job, double p_now) {
++		return std::isfinite(p_now) && std::isfinite(p_job.reserved_at) && p_job.reserved_at > 0.0 &&
++				p_now >= p_job.reserved_at && p_now - p_job.reserved_at <= MAX_SOURCE_AGE;
++	}
++	static bool pair_target_bounded(const Job &p_job, double p_now, double p_target) {
++		return source_fresh(p_job, p_now) && std::isfinite(p_target) && p_target > p_now &&
++				p_target - p_now <= MAX_TARGET_LOOKAHEAD && p_target - p_job.reserved_at <= MAX_SOURCE_AGE;
++	}
++	bool cadence_ready(const Job &p_job, double p_target, double p_period) const {
++		if (!valid_period(p_period) || !std::isfinite(p_job.real_interval) || p_job.real_interval < 0.01 ||
++				p_job.real_interval > 0.2 || p_job.real_interval < 2.0 * p_period || p_job.real_interval > 2.1 * p_period ||
++				last_real_target <= 0.0) { return false; }
++		if (primed && (!valid_period(reservation_period) || p_period < reservation_period * 0.9 || p_period > reservation_period * 1.1)) { return false; }
++		double gap = p_target - last_real_target;
++		const bool next_tick = gap >= 0.75 * p_period && gap <= 1.25 * p_period;
++		const bool initial_gap = !primed && gap >= 1.75 * p_period && gap <= 2.25 * p_period;
++		return next_tick || initial_gap;
++	}
++	Choice make_choice(Kind p_kind, const Job &p_job, double p_target, double p_period) const {
++		Choice choice;
++		choice.kind = p_kind; choice.generation = generation; choice.frame = p_job.frame;
++		choice.texture = p_kind == Kind::GENERATED ? p_job.generated : (p_job.generated_scheduled ? p_job.paired_real : p_job.fallback);
++		choice.target_time = p_target; choice.output_lease = p_job.output_lease; choice.fallback_texture = p_job.fallback;
++		choice.proof = p_job.proof; choice.source_generation = p_job.source_generation;
++		choice.source_reserved_at = p_job.reserved_at; choice.display_period = p_period;
++		return choice;
+ 	}
+ 
+ public:
+@@ -84,172 +152,179 @@
+ 	uint64_t last_real() const { return last_real_scheduled; }
+ 	uint64_t blocked_source_epoch() const { return blocked_epoch; }
+ 	uint64_t discontinuity_count() const { return discontinuities; }
+-
+-	void reset_to(uint64_t p_generation) {
++	bool cadence_is_primed() const { return primed; }
++
++	void reset_to(uint64_t p_generation, Retired &r_retired) {
+ 		if (!p_generation || p_generation == generation) { return; }
+ 		const uint64_t retired_epoch = last_pair_epoch ? last_pair_epoch : blocked_epoch;
++		for (unsigned i = 0; i < CAPACITY; ++i) { erase(i, r_retired); }
++		generation = p_generation; decision = {};
++		last_real_scheduled = last_generated_scheduled = 0;
++		last_real_target = last_generated_target = reservation_period = 0.0;
++		primed = false; reservation_interrupted = false;
++		blocked_epoch = retired_epoch; last_pair_epoch = 0;
++		if (retired_epoch) { ++discontinuities; }
++	}
++	void reset(Retired &r_retired) { uint64_t next = generation + 1; reset_to(next ? next : 1, r_retired); }
++
++	// Called on the worker's existing timed run-loop and on queue activity.
++	void expire(double p_now, Retired &r_retired) {
++		if (!std::isfinite(p_now) || p_now <= 0.0) { return; }
+ 		for (unsigned i = 0; i < CAPACITY; ++i) {
+-			erase(i);
+-		}
+-		generation = p_generation;
+-		decision = {};
+-		last_real_scheduled = 0;
+-		last_generated_scheduled = 0;
+-		last_real_target = 0.0;
+-		last_generated_target = 0.0;
+-		blocked_epoch = retired_epoch;
+-		last_pair_epoch = 0;
+-		if (retired_epoch) { discontinuities++; }
+-	}
+-
+-	void reset() {
+-		uint64_t next = generation + 1;
+-		reset_to(next ? next : 1);
+-	}
+-
+-	bool submit(Job p_job) {
+-		if (p_job.generation != generation || p_job.frame == 0 || p_job.frame <= last_real_scheduled || !p_job.fallback || !p_job.output_lease ||
+-				(p_job.proof && p_job.proof->is_cancelled()) || (p_job.source_generation && p_job.source_generation->is_cancelled())) {
+-			return false;
+-		}
+-		if (p_job.generated_scheduled) { return false; }
+-		for (unsigned i = 0; i < CAPACITY; ++i) {
+-			if (occupied[i] && slots[i].frame == p_job.frame) { return false; }
+-		}
++			if (!occupied[i]) { continue; }
++			Job &job = slots[i];
++			const bool cancelled = (job.proof && job.proof->is_cancelled()) || (job.source_generation && job.source_generation->is_cancelled());
++			// The delegate samples now before acquiring this lock. A newer job
++			// admitted while it waited must not be mistaken for an expired job.
++			if (!cancelled && std::isfinite(job.reserved_at) && p_now < job.reserved_at) { continue; }
++			const bool fresh = source_fresh(job, p_now);
++			const bool endpoint_late = int(i) == reserved && (!std::isfinite(job.real_deadline) || p_now > job.real_deadline);
++			if (!cancelled && fresh && !endpoint_late) { continue; }
++			if (int(i) == reserved) { abandon_reserved(r_retired, !cancelled && fresh); }
++			else {
++				primed = false;
++				if (reserved >= 0) { reservation_interrupted = true; }
++				erase(i, r_retired);
++			}
++		}
++	}
++
++	bool submit(Job &p_job, double p_now, Retired &r_retired) {
++		if (p_job.generation != generation) { return false; }
++		expire(p_now, r_retired);
++		if (p_job.frame == 0 || p_job.frame <= last_real_scheduled || !p_job.fallback || !p_job.output_lease ||
++				!source_fresh(p_job, p_now) || (p_job.proof && p_job.proof->is_cancelled()) ||
++				(p_job.source_generation && p_job.source_generation->is_cancelled()) || p_job.generated_scheduled) { return false; }
++		for (unsigned i = 0; i < CAPACITY; ++i) { if (occupied[i] && slots[i].frame == p_job.frame) { return false; } }
+ 		int free_index = -1;
+-		for (unsigned i = 0; i < CAPACITY; ++i) {
+-			if (!occupied[i]) { free_index = int(i); break; }
+-		}
++		for (unsigned i = 0; i < CAPACITY; ++i) { if (!occupied[i]) { free_index = int(i); break; } }
+ 		if (free_index < 0) {
+-			// Do not displace an image after scheduling its generated partner.
+ 			int oldest = -1;
+ 			for (unsigned i = 0; i < CAPACITY; ++i) {
+ 				if (int(i) != reserved && (oldest < 0 || slots[i].frame < slots[oldest].frame)) { oldest = int(i); }
+ 			}
+ 			if (oldest < 0 || slots[oldest].frame >= p_job.frame) { return false; }
+-			erase(unsigned(oldest));
+-			free_index = oldest;
++			primed = false;
++			if (reserved >= 0) { reservation_interrupted = true; }
++			erase(unsigned(oldest), r_retired); free_index = oldest;
+ 		}
+ 		if (p_job.proof && p_job.epoch) { last_pair_epoch = p_job.epoch; }
+-		slots[free_index] = std::move(p_job);
+-		occupied[free_index] = true;
++		slots[free_index] = std::move(p_job); occupied[free_index] = true;
+ 		return true;
+ 	}
+ 
+-	Choice choose(double p_now, double p_deadline, double p_target, double p_display_period, bool p_drawable) const {
++	Choice choose(double p_now, double p_deadline, double p_target, double p_display_period, bool p_drawable, Retired &r_retired) {
++		expire(p_now, r_retired);
+ 		if (!p_drawable || !std::isfinite(p_now) || !std::isfinite(p_deadline) || !std::isfinite(p_target) ||
+-				p_now >= p_deadline || p_target <= p_now || p_target <= last_real_target || p_target <= last_generated_target) { return {}; }
++				p_now >= p_deadline || p_target <= p_now ||
++				p_target <= last_real_target || p_target <= last_generated_target) { return {}; }
++		if (reserved >= 0 && occupied[reserved]) {
++			const Job &real = slots[reserved];
++			if (p_now < real.reserved_at) { return {}; }
++			const double gap = p_target - last_generated_target;
++			if (!valid_period(p_display_period) || !valid_period(reservation_period) ||
++					p_display_period < reservation_period * 0.9 || p_display_period > reservation_period * 1.1 ||
++					gap > reservation_period * 1.25 || !pair_target_bounded(real, p_now, p_target)) {
++				abandon_reserved(r_retired, true);
++			} else if (gap < reservation_period * 0.75) {
++				return {};
++			} else {
++				return make_choice(Kind::REAL, real, p_target, p_display_period);
++			}
++		}
+ 		int newest = -1;
+ 		for (unsigned i = 0; i < CAPACITY; ++i) {
+-			if (occupied[i] && (!slots[i].proof || !slots[i].proof->is_cancelled()) &&
+-					(!slots[i].source_generation || !slots[i].source_generation->is_cancelled()) &&
+-					slots[i].frame > last_real_scheduled && (newest < 0 || slots[i].frame > slots[newest].frame)) { newest = int(i); }
++			if (occupied[i] && source_fresh(slots[i], p_now) && slots[i].frame > last_real_scheduled && (newest < 0 || slots[i].frame > slots[newest].frame)) { newest = int(i); }
+ 		}
+ 		if (newest < 0) { return {}; }
+-		if (reserved >= 0 && occupied[reserved] && (!slots[reserved].proof || !slots[reserved].proof->is_cancelled()) &&
+-				(!slots[reserved].source_generation || !slots[reserved].source_generation->is_cancelled())) {
+-			const Job &old_real = slots[reserved];
+-			// A stopped display link cannot reserve an old real indefinitely.
+-			// Prefer the newest current-real fallback once the endpoint expires.
+-			bool abandoned = p_target > old_real.real_deadline && newest != reserved;
+-			const Job &real = abandoned ? slots[newest] : old_real;
+-			return { Kind::REAL, generation, real.frame, real.generated_scheduled ? real.paired_real : real.fallback, p_target, real.output_lease,
+-					abandoned ? old_real.epoch : 0, real.fallback, real.proof, real.source_generation };
++		// Coalescing an unseen real frame is a discontinuity in the cadence.
++		for (unsigned i = 0; i < CAPACITY; ++i) {
++			if (int(i) != newest && occupied[i] && slots[i].frame < slots[newest].frame) { primed = false; erase(i, r_retired); }
+ 		}
+ 		const Job &job = slots[newest];
++		if (!source_fresh(job, p_now)) { return {}; }
+ 		const int decision_encode = job.proof ? job.proof->encode_result.load(std::memory_order_acquire) : 0;
+ 		const int decision_completion = job.proof ? job.proof->sdk_completion.load(std::memory_order_acquire) : 0;
+ 		const uint32_t decision_warm = job.proof ? job.proof->warm_count.load(std::memory_order_acquire) : 0;
+ 		bool match = job.proof && job.epoch != blocked_epoch && job.proof->previous_frame == last_real_scheduled && job.proof->frame == job.frame && job.proof->epoch == job.epoch && job.proof->serial == job.serial &&
+-				!job.proof->is_cancelled() && decision_encode == 1 && decision_completion == 1 &&
+-				decision_warm >= 5;
+-		bool cadence = last_real_target > 0 && std::isfinite(p_display_period) && p_display_period >= 0.001 && p_display_period <= 0.1 &&
+-				std::isfinite(job.real_interval) && job.real_interval >= 0.01 && job.real_interval <= 0.2 &&
+-				p_display_period * 2.0 <= job.real_interval * 1.05 &&
+-				p_target >= last_real_target + p_display_period * 0.75 && p_target <= last_real_target + p_display_period * 1.25 &&
+-				p_target + p_display_period <= last_real_target + job.real_interval * 1.1;
+-		bool bounded = std::isfinite(job.reserved_at) && job.reserved_at > 0.0 && std::isfinite(job.generated_deadline) &&
+-				std::isfinite(job.real_deadline) && job.generated_deadline > job.reserved_at &&
+-				job.real_deadline > job.generated_deadline && job.real_deadline - job.reserved_at <= 0.2 &&
+-				p_target <= job.generated_deadline && p_target + p_display_period <= job.real_deadline;
++				!job.proof->is_cancelled() && decision_encode == 1 && decision_completion == 1 && decision_warm >= 5;
++		bool cadence = cadence_ready(job, p_target, p_display_period);
++		bool bounded = p_deadline <= p_target && pair_target_bounded(job, p_now, p_target) && std::isfinite(job.generated_deadline) && std::isfinite(job.real_deadline) &&
++				job.generated_deadline > job.reserved_at && job.real_deadline > job.generated_deadline &&
++				job.real_deadline - job.reserved_at <= MAX_SOURCE_AGE && p_now <= job.generated_deadline &&
++				valid_period(p_display_period) && p_target + p_display_period - job.reserved_at <= MAX_SOURCE_AGE;
+ 		decision.considered++;
+ 		if (!match) { decision.proof_rejected++; }
+ 		if (!cadence) { decision.cadence_rejected++; }
+ 		if (!bounded) { decision.deadline_rejected++; }
+-		decision.frame = job.frame;
+-		decision.previous_frame = job.proof ? job.proof->previous_frame : 0;
+-		decision.last_real_frame = last_real_scheduled;
+-		decision.epoch = job.epoch;
+-		decision.serial = job.serial;
+-		decision.warm_count = decision_warm;
+-		decision.encode_result = decision_encode;
+-		decision.sdk_completion = decision_completion;
+-		decision.now = p_now;
+-		decision.deadline = p_deadline;
+-		decision.target = p_target;
+-		decision.last_real_target = last_real_target;
+-		decision.display_period = p_display_period;
+-		decision.real_interval = job.real_interval;
+-		decision.reserved_at = job.reserved_at;
+-		decision.generated_deadline = job.generated_deadline;
+-		decision.real_deadline = job.real_deadline;
+-		decision.proof_ready = match;
+-		decision.cadence_ready = cadence;
+-		decision.deadlines_ready = bounded;
++		decision.frame = job.frame; decision.previous_frame = job.proof ? job.proof->previous_frame : 0;
++		decision.last_real_frame = last_real_scheduled; decision.epoch = job.epoch; decision.serial = job.serial;
++		decision.warm_count = decision_warm; decision.encode_result = decision_encode; decision.sdk_completion = decision_completion;
++		decision.now = p_now; decision.deadline = p_deadline; decision.target = p_target;
++		decision.last_real_target = last_real_target; decision.display_period = p_display_period;
++		decision.real_interval = job.real_interval; decision.reserved_at = job.reserved_at;
++		decision.generated_deadline = job.generated_deadline; decision.real_deadline = job.real_deadline;
++		decision.proof_ready = match; decision.cadence_ready = cadence; decision.deadlines_ready = bounded;
+ 		decision.paired_candidate = job.generated && job.paired_real;
+ 		if (!job.generated_scheduled && job.frame > last_generated_scheduled && job.generated && job.paired_real && match && cadence && bounded) {
+-			return { Kind::GENERATED, generation, job.frame, job.generated, p_target, job.output_lease, 0, job.fallback, job.proof, job.source_generation };
+-		}
+-		return { Kind::REAL, generation, job.frame, job.generated_scheduled ? job.paired_real : job.fallback, p_target, job.output_lease, 0, job.fallback, job.proof, job.source_generation };
+-	}
+-
+-	// On a presenter GPU failure, do not let a merely requested real frame be
+-	// the left endpoint for later generated frames. Requeue its real fallback
+-	// into a new generation; an old completion cannot reset a newer generation.
+-	bool recover_failed(const Choice &p_choice) {
++			return make_choice(Kind::GENERATED, job, p_target, p_display_period);
++		}
++		return make_choice(Kind::REAL, job, p_target, p_display_period);
++	}
++
++	bool recover_failed(const Choice &p_choice, double p_now, Retired &r_retired) {
+ 		if (p_choice.generation != generation || !p_choice.fallback_texture || !p_choice.output_lease) { return false; }
+-		reset();
++		reset(r_retired);
+ 		Job fallback;
+-		fallback.generation = generation;
+-		fallback.frame = p_choice.frame;
+-		fallback.fallback = p_choice.fallback_texture;
+-		fallback.output_lease = p_choice.output_lease;
+-		fallback.proof = p_choice.proof;
+-		fallback.source_generation = p_choice.source_generation;
++		fallback.generation = generation; fallback.frame = p_choice.frame; fallback.reserved_at = p_choice.source_reserved_at;
++		fallback.fallback = p_choice.fallback_texture; fallback.output_lease = p_choice.output_lease;
++		fallback.proof = p_choice.proof; fallback.source_generation = p_choice.source_generation;
+ 		fallback.epoch = p_choice.proof ? p_choice.proof->epoch : 0;
+-		return submit(std::move(fallback));
+-	}
+-
+-	bool commit(const Choice &p_choice) {
++		return submit(fallback, p_now, r_retired);
++	}
++
++	bool commit(const Choice &p_choice, double p_now, Retired &r_retired) {
+ 		if (p_choice.kind == Kind::NONE || p_choice.generation != generation || !p_choice.texture || !std::isfinite(p_choice.target_time) ||
+ 				p_choice.target_time <= last_real_target || p_choice.target_time <= last_generated_target) { return false; }
+ 		int index = -1;
+-		for (unsigned i = 0; i < CAPACITY; ++i) {
+-			if (occupied[i] && slots[i].frame == p_choice.frame) { index = int(i); break; }
+-		}
++		for (unsigned i = 0; i < CAPACITY; ++i) { if (occupied[i] && slots[i].frame == p_choice.frame) { index = int(i); break; } }
+ 		if (index < 0 || p_choice.frame <= last_real_scheduled) { return false; }
+ 		Job &job = slots[index];
+-		if (job.proof != p_choice.proof || job.source_generation != p_choice.source_generation || (job.proof && job.proof->is_cancelled()) ||
+-				(job.source_generation && job.source_generation->is_cancelled())) { return false; }
++		if (job.proof != p_choice.proof || job.source_generation != p_choice.source_generation ||
++				job.reserved_at != p_choice.source_reserved_at || (job.proof && job.proof->is_cancelled()) ||
++				(job.source_generation && job.source_generation->is_cancelled()) || !source_fresh(job, p_now) || p_choice.target_time <= p_now) { return false; }
+ 		if (p_choice.kind == Kind::GENERATED) {
+-			if (job.generated_scheduled || job.generated != p_choice.texture || job.frame <= last_generated_scheduled) { return false; }
+-			if (reserved >= 0 && reserved != index) { erase(unsigned(reserved)); }
+-			job.generated_scheduled = true;
+-			last_generated_scheduled = job.frame;
+-			last_generated_target = p_choice.target_time;
+-			reserved = index;
++			// A newer ready real takes priority over a stale unlocked choice.
++			for (unsigned i = 0; i < CAPACITY; ++i) {
++				if (occupied[i] && slots[i].frame > job.frame && source_fresh(slots[i], p_now) &&
++						(!slots[i].proof || !slots[i].proof->is_cancelled()) &&
++						(!slots[i].source_generation || !slots[i].source_generation->is_cancelled())) {
++					primed = false; return false;
++				}
++			}
++			if (reserved >= 0 || job.generated_scheduled || job.generated != p_choice.texture || job.frame <= last_generated_scheduled ||
++					!job.proof || job.epoch == blocked_epoch || job.proof->previous_frame != last_real_scheduled ||
++					job.proof->frame != job.frame || job.proof->epoch != job.epoch || job.proof->serial != job.serial ||
++					job.proof->encode_result.load(std::memory_order_acquire) != 1 || job.proof->sdk_completion.load(std::memory_order_acquire) != 1 ||
++					job.proof->warm_count.load(std::memory_order_acquire) < 5 || !cadence_ready(job, p_choice.target_time, p_choice.display_period) ||
++					!pair_target_bounded(job, p_now, p_choice.target_time) ||
++					!std::isfinite(job.generated_deadline) || p_now > job.generated_deadline ||
++					!std::isfinite(job.real_deadline) || job.real_deadline <= job.generated_deadline ||
++					job.real_deadline - job.reserved_at > MAX_SOURCE_AGE ||
++					p_choice.target_time + p_choice.display_period - job.reserved_at > MAX_SOURCE_AGE) { return false; }
++			job.generated_scheduled = true; last_generated_scheduled = job.frame; last_generated_target = p_choice.target_time;
++			reserved = index; reservation_period = p_choice.display_period; reservation_interrupted = false;
+ 			return true;
+ 		}
+ 		if ((job.generated_scheduled ? job.paired_real : job.fallback) != p_choice.texture) { return false; }
+-		last_real_scheduled = job.frame;
+-		last_real_target = p_choice.target_time;
+-		if (p_choice.abandoned_epoch) {
+-			blocked_epoch = p_choice.abandoned_epoch;
+-			discontinuities++;
+-		}
+-		for (unsigned i = 0; i < CAPACITY; ++i) {
+-			if (occupied[i] && slots[i].frame <= last_real_scheduled) { erase(i); }
+-		}
++		if (job.generated_scheduled) {
++			const double gap = p_choice.target_time - last_generated_target;
++			if (index != reserved || !std::isfinite(job.real_deadline) || p_now > job.real_deadline ||
++					!pair_target_bounded(job, p_now, p_choice.target_time) || !valid_period(reservation_period) || gap < reservation_period * 0.75 || gap > reservation_period * 1.25) { return false; }
++			primed = !reservation_interrupted;
++		} else { primed = false; reservation_period = 0.0; }
++		last_real_scheduled = job.frame; last_real_target = p_choice.target_time;
++		for (unsigned i = 0; i < CAPACITY; ++i) { if (occupied[i] && slots[i].frame <= last_real_scheduled) { erase(i, r_retired); } }
+ 		return true;
+ 	}
+ };
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -5738,6 +5738,11 @@
+ 		if (handle) {
+ 			OpenRCMetalPresent::Snapshot s = OpenRCMetalPresent::snapshot(handle);
+ 			result["owner"] = "display_link";
++			result["last_admitted_drawable_width"] = int64_t(s.last_admitted_drawable_width);
++			result["last_admitted_drawable_height"] = int64_t(s.last_admitted_drawable_height);
++			result["last_admitted_drawable_pixel_format"] = int64_t(s.last_admitted_drawable_pixel_format);
++			result["last_admitted_drawable_frame"] = int64_t(s.last_admitted_drawable_frame);
++			result["last_admitted_drawable_generated"] = s.last_admitted_drawable_generated;
+ 			result["display_period_seconds"] = s.display_period;
+ 			result["last_gpu_status"] = s.last_gpu_status;
+ 			result["last_gpu_error_code"] = s.last_gpu_error_code;

@@ -328,14 +328,16 @@ def capture(source: Path, destination: Path, *, scope: tuple[str, ...] = DEFAULT
     scope = tuple(_relative(item) for item in scope)
     if type(include_imports) is not bool:
         raise ValueError("include_imports must be boolean")
-    try:
-        inside = os.path.commonpath((str(root), str(output))) == str(root)
-    except ValueError:
-        inside = False
+    # Compare directory identities: on Windows the same existing directory can
+    # be spelled with either its long name or an 8.3 alias. A lexical prefix
+    # check would miss a destination inside the source under mixed spellings.
+    inside = any(os.path.samefile(root, parent) for parent in output.parents)
+    if not inside and output.exists():
+        inside = os.path.samefile(root, output)
     if inside:
         raise ValueError("snapshot destination must be outside the source repository")
     git_root = Path(os.fsdecode(_git(root, "rev-parse", "--show-toplevel")).strip())
-    if os.path.normcase(os.path.abspath(git_root)) != os.path.normcase(str(root)):
+    if not os.path.samefile(git_root, root):
         raise ValueError("source must be the Git worktree root")
     before = _inventory(root, scope, include_imports)
     required = sum(metadata.st_size for metadata in before["files"].values())

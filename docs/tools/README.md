@@ -8,6 +8,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | --- | --- |
 | Connect to the configured Linux test host over SSH | [Linux SSH connection](linux-ssh.md): pinned identity, bounded connection checks and worker qualification boundary. |
 | Coordinate agents/worktrees on a shared Windows desktop | [Host test queue](../../tools/testqueue/README.md): explicit ownership, durable waiting, isolated inputs and fail-closed recovery; experimental local adapter. |
+| Distribute independent headless checked tests from MCP | [Automatic checked batches](../../tools/testqueue/README.md#mcp-checked-batches): durable launch, status and same-request recovery across eligible hosts. |
 | Connect to the shared M1, prepare a Mac workspace or run native checks | [M1 access and workflow](macos-m1.md): SSH, paths, installed tools, desktop requirements and retained evidence. |
 | Full app checks or a CI partition | `app/test.sh`; [suite and snapshot rules](shared.md#full-app-suite). |
 | Local quick/full/release preflight | [CI tools](../../tools/ci/README.md); Linux/WSL, no branch creation or publication. |

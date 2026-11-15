@@ -1058,6 +1058,18 @@ class MacNativeReleaseTests(unittest.TestCase):
     def test_five_pair_campaign_and_rereader_refuse_receipt_or_report_drift(self):
         with tempfile.TemporaryDirectory(prefix="mac-release-campaign-") as directory:
             root = Path(directory)
+            if os.name == "nt":
+                # Exercise a real short-path alias when the volume provides one.
+                import ctypes
+                from ctypes import wintypes
+                short_name = ctypes.WinDLL("kernel32", use_last_error=True).GetShortPathNameW
+                short_name.argtypes = (wintypes.LPCWSTR, wintypes.LPWSTR, wintypes.DWORD)
+                short_name.restype = wintypes.DWORD
+                buffer = ctypes.create_unicode_buffer(32768)
+                length = short_name(str(root), buffer, len(buffer))
+                self.assertGreater(length, 0, f"GetShortPathNameW failed: {ctypes.get_last_error()}")
+                self.assertLess(length, len(buffer))
+                root = Path(buffer.value)
             executable, probe, reference, native = mac_release_fixture(root)
             output = root / "campaign"
             launches = []
@@ -1071,7 +1083,8 @@ class MacNativeReleaseTests(unittest.TestCase):
                     Path(output_arg).write_text(json.dumps(mac_release_report(backend, reference, native)))
                     kwargs["stdout"].write("NATIVE_QUALIFICATION mode=session verdict=pass\n")
                 def wait(self, timeout): return 0
-            engine = {"path": str(executable), "sha256": reference["executable_sha256"],
+            # inspect_godot receives the resolved path from resolve_executable.
+            engine = {"path": str(executable.resolve()), "sha256": reference["executable_sha256"],
                       "runtime_binary_sha256": reference["executable_sha256"]}
             args = ["--godot", str(executable), "--out", str(output), "--release-executable", "--compare-backends",
                     "--experimental-native-macos", "--aircraft", "jensen-das-ugly-stik-60", "--case", "trim",
@@ -1087,6 +1100,7 @@ class MacNativeReleaseTests(unittest.TestCase):
                  patch("subprocess.Popen", Process):
                 self.assertEqual(baseline.main(args), 0)
                 self.assertEqual(len(launches), 10)
+                self.assertTrue(all(command[0] == engine["path"] for command in launches))
                 self.assertEqual((ref_verify.call_count, native_verify.call_count), (22, 22))
                 campaign_path = output / "session_baseline.json"
                 campaign, rows = baseline._campaign_runs(campaign_path)
@@ -1121,6 +1135,16 @@ class MacNativeReleaseTests(unittest.TestCase):
                     baseline._campaign_runs(campaign_path)
                 campaign = copy.deepcopy(original)
                 campaign["pairs"][0]["runs"]["native"]["command"].append("--script=other.gd")
+                campaign_path.write_text(json.dumps(campaign))
+                with self.assertRaisesRegex(ValueError, "invalid Mac release probe command"):
+                    baseline._campaign_runs(campaign_path)
+                campaign = copy.deepcopy(original)
+                alternate_executable = str(executable)
+                if alternate_executable == engine["path"]:
+                    alternate_executable += ".changed"
+                else:
+                    self.assertTrue(os.path.samefile(alternate_executable, engine["path"]))
+                campaign["pairs"][0]["runs"]["native"]["command"][0] = alternate_executable
                 campaign_path.write_text(json.dumps(campaign))
                 with self.assertRaisesRegex(ValueError, "invalid Mac release probe command"):
                     baseline._campaign_runs(campaign_path)
@@ -1640,7 +1664,7 @@ class BatteryModeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="session-battery-release-") as directory:
             root = Path(directory)
             executable, _probe, reference, native = mac_release_fixture(root)
-            engine = {"path": str(executable), "sha256": reference["executable_sha256"],
+            engine = {"path": str(executable.resolve()), "sha256": reference["executable_sha256"],
                       "runtime_binary_sha256": reference["executable_sha256"]}
             commands = []
             class Process:

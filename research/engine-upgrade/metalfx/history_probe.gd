@@ -1,13 +1,17 @@
-## DT-MAC-07a2: rendered MetalFX Temporal reset/viewport fencing probe.
-## CPU encode-call acknowledgement only; GPU completion remains unobserved.
+## DT-MAC-07a2/12c: rendered MetalFX Temporal reset/viewport fencing probe.
+## Original cut receipts are CPU acknowledgements; the optional conditional
+## case separately observes a whole-command-buffer GPU reset completion.
 extends SceneTree
 
 const Reconstruction := preload("res://render/reconstruction.gd")
 const Preferences := preload("res://app_state/display_preferences.gd")
 const PREFIX := "METALFX_HISTORY_PROBE "
+const CONDITIONAL_RESET := &"viewport_request_temporal_history_reset_if_current"
+const GPU_ENABLE := &"viewport_set_metalfx_gpu_observation_requested"
+const GPU_STATUS := &"viewport_get_metalfx_gpu_status"
 
 var failures: Array[String] = []
-var result: Dictionary = {"scope": "rendered_offscreen_temporal_history_not_gpu_completion", "cases": {}}
+var result: Dictionary = {"scope": "rendered_offscreen_temporal_history_with_separate_optional_gpu_observation", "cases": {}}
 var finished := false
 
 
@@ -30,6 +34,21 @@ func _check(condition: bool, message: String) -> void:
 
 func _status(viewport: SubViewport) -> Dictionary:
 	var value: Variant = RenderingServer.call("viewport_get_metalfx_status", viewport.get_viewport_rid())
+	return value if typeof(value) == TYPE_DICTIONARY else {}
+
+
+func _status_rid(rid: RID) -> Dictionary:
+	var value: Variant = RenderingServer.call("viewport_get_metalfx_status", rid)
+	return value if typeof(value) == TYPE_DICTIONARY else {}
+
+
+func _conditional(rid: RID, generation: int, serial: int) -> Dictionary:
+	var value: Variant = RenderingServer.call(CONDITIONAL_RESET, rid, generation, serial)
+	return value if typeof(value) == TYPE_DICTIONARY else {}
+
+
+func _gpu_status(viewport: SubViewport) -> Dictionary:
+	var value: Variant = RenderingServer.call(GPU_STATUS, viewport.get_viewport_rid())
 	return value if typeof(value) == TYPE_DICTIONARY else {}
 
 
@@ -81,6 +100,128 @@ func _finish() -> void:
 	result["ok"] = failures.is_empty()
 	print(PREFIX + JSON.stringify(result))
 	quit(0 if failures.is_empty() else 1)
+
+
+## Every rejected request must leave the observed Temporal identity and CPU
+## reset serials unchanged; no frame is drawn between the two status reads.
+func _conditional_reject(rid: RID, expected_generation: int, expected_serial: int,
+		reason: String, baseline: Dictionary, receipt_serial: int) -> Dictionary:
+	var receipt := _conditional(rid, expected_generation, expected_serial)
+	var after := _status_rid(rid)
+	_check(receipt.get("accepted") == false and receipt.get("reason") == reason \
+			and receipt.get("generation") == baseline.get("generation") \
+			and receipt.get("previous_requested_serial") == receipt_serial \
+			and receipt.get("requested_serial") == receipt_serial, "conditional_rejection:" + reason)
+	for key: String in ["generation", "reset_requested_serial", "reset_submitted_serial", "reset_encoded_serial", "temporal_attempts", "render_buffers_available"]:
+		_check(after.has(key) and after.get(key) == baseline.get(key), "conditional_rejection_mutated:" + reason + ":" + key)
+	return {"receipt": receipt, "after": after}
+
+
+## Conditional-reset API is optional so the historical CPU-only probe still
+## runs on earlier engines. This case uses the existing rendered viewport.
+func _conditional_cases(viewport: SubViewport) -> void:
+	if not RenderingServer.has_method(CONDITIONAL_RESET):
+		result.cases["conditional_reset"] = {"status": "skipped", "reason": "conditional_api_unavailable"}
+		return
+	var previous_mode := viewport.render_target_update_mode
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	for _i in 2:
+		await _frame()
+	var before := _status(viewport)
+	if not _ready_status(before) or int(before.get("generation", -1)) <= 0 \
+			or int(before.get("reset_requested_serial", -1)) <= 0:
+		_check(false, "conditional_baseline_unavailable")
+		result.cases["conditional_reset"] = {"status": "failed", "reason": "baseline_unavailable", "before": before}
+		viewport.render_target_update_mode = previous_mode
+		return
+	var generation := int(before.generation)
+	var serial := int(before.reset_requested_serial)
+	var has_gpu := RenderingServer.has_method(GPU_ENABLE) and RenderingServer.has_method(GPU_STATUS)
+	var initial_gpu := {}
+	if has_gpu:
+		RenderingServer.call(GPU_ENABLE, viewport.get_viewport_rid(), true)
+		initial_gpu = _gpu_status(viewport)
+		_check(initial_gpu.get("requested_by_caller") == true and initial_gpu.get("viewport_generation") == generation \
+				and typeof(initial_gpu.get("observation_generation")) == TYPE_INT \
+				and int(initial_gpu.observation_generation) > 0, "conditional_gpu_observer_scope")
+		var after_enable := _status(viewport)
+		_check(after_enable.get("generation") == generation and after_enable.get("reset_requested_serial") == serial,
+				"conditional_observer_changed_temporal_scope")
+	var rid := viewport.get_viewport_rid()
+	var rejections := {}
+	rejections["stale_generation"] = _conditional_reject(rid, generation - 1, serial, "stale_generation", before, serial)
+	rejections["stale_serial"] = _conditional_reject(rid, generation, serial - 1, "stale_serial", before, serial)
+	rejections["negative_generation"] = _conditional_reject(rid, -1, serial, "invalid_expected_scope", before, serial)
+	rejections["negative_serial"] = _conditional_reject(rid, generation, -1, "invalid_expected_scope", before, serial)
+	rejections["maximum_generation"] = _conditional_reject(rid, 9223372036854775807, serial, "stale_generation", before, serial)
+	rejections["maximum_serial"] = _conditional_reject(rid, generation, 9223372036854775807, "stale_serial", before, serial)
+	var invalid := _conditional(RID(), generation, serial)
+	_check(invalid.get("accepted") == false and invalid.get("reason") == "invalid_viewport" \
+			and invalid.get("generation") == -1 and invalid.get("previous_requested_serial") == -1 \
+			and invalid.get("requested_serial") == -1, "conditional_invalid_viewport")
+	rejections["invalid_viewport"] = invalid
+	var empty_rid := RenderingServer.viewport_create()
+	if empty_rid.is_valid():
+		var empty_before := _status_rid(empty_rid)
+		_check(empty_before.get("render_buffers_available") == false and typeof(empty_before.get("generation")) == TYPE_INT,
+				"conditional_missing_buffers_setup")
+		rejections["missing_buffers"] = _conditional_reject(empty_rid, int(empty_before.get("generation", -1)), 0,
+				"render_buffers_unavailable", empty_before, -1)
+		RenderingServer.free_rid(empty_rid)
+	else:
+		_check(false, "conditional_empty_viewport_create")
+	var accepted := _conditional(rid, generation, serial)
+	var after_accept := _status(viewport)
+	var accepted_serial: int = int(accepted.get("requested_serial", -1))
+	var accepted_ok: bool = accepted.get("accepted") == true and accepted.get("reason") == "accepted" \
+			and accepted.get("generation") == generation and accepted.get("previous_requested_serial") == serial \
+			and accepted_serial > serial and typeof(accepted.get("reset_request_attempt")) == TYPE_INT \
+			and int(accepted.reset_request_attempt) == int(before.temporal_attempts) \
+			and after_accept.get("generation") == generation and after_accept.get("reset_requested_serial") == accepted_serial \
+			and after_accept.get("reset_submitted_serial") == before.get("reset_submitted_serial") \
+			and after_accept.get("reset_encoded_serial") == before.get("reset_encoded_serial")
+	_check(accepted_ok, "conditional_current_request_not_accepted")
+	var gpu_case := {"status": "skipped", "reason": "gpu_observation_api_unavailable"}
+	if accepted_ok:
+		rejections["repeat_old_serial"] = _conditional_reject(rid, generation, serial, "stale_serial", after_accept, accepted_serial)
+		if has_gpu:
+			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+			var observed_gpu := {}
+			for _i in 90:
+				await _frame()
+				observed_gpu = _gpu_status(viewport)
+				var scaler: Variant = observed_gpu.get("scaler", {})
+				if scaler is Dictionary and (int(scaler.get("reset_completed_serial", 0)) >= accepted_serial \
+						or scaler.get("state") in ["failed", "invalid_callback", "observation_exhausted"]):
+					break
+			viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+			var after_gpu := _status(viewport)
+			var scaler: Variant = observed_gpu.get("scaler", {})
+			var completed: Variant = scaler.get("completed", {}) if scaler is Dictionary else {}
+			var failed: Variant = scaler.get("first_observed_failure", {}) if scaler is Dictionary else {}
+			var gpu_ok: bool = observed_gpu.get("requested_by_caller") == true \
+					and observed_gpu.get("requested") == true and observed_gpu.get("render_buffers_available") == true \
+					and observed_gpu.get("provider") == "temporal" \
+					and observed_gpu.get("viewport_generation") == generation \
+					and observed_gpu.get("observation_generation") == initial_gpu.get("observation_generation") \
+					and scaler is Dictionary and scaler.get("state_allocated") == true and scaler.get("state") in ["pending", "completed"] \
+					and typeof(scaler.get("reset_completed_serial")) == TYPE_INT and int(scaler.reset_completed_serial) == accepted_serial \
+					and failed is Dictionary and typeof(failed.get("ticket")) == TYPE_INT and int(failed.ticket) == 0 \
+					and completed is Dictionary and typeof(completed.get("ticket")) == TYPE_INT and int(completed.ticket) > 0 \
+					and typeof(completed.get("render_frame")) == TYPE_INT and int(completed.render_frame) > 0 \
+					and completed.get("succeeded") == true and completed.get("error_present") == false \
+					and completed.get("command_status") == 4 and completed.get("error_code") == 0 \
+					and after_gpu.get("generation") == generation and after_gpu.get("reset_requested_serial") == accepted_serial \
+					and after_gpu.get("reset_submitted_serial") == accepted_serial and after_gpu.get("reset_encoded_serial") == accepted_serial
+			_check(gpu_ok, "conditional_reset_gpu_completion_not_observed")
+			_check(after_gpu.get("reset_gpu_completion") == "unobserved", "conditional_cpu_receipt_claimed_gpu_completion")
+			gpu_case = {"status": "observed" if gpu_ok else "not_observed", "observation": observed_gpu,
+					"temporal_status": after_gpu, "scope": "matching_successful_reset_command_buffer_not_presentation"}
+	if has_gpu:
+		RenderingServer.call(GPU_ENABLE, rid, false)
+	viewport.render_target_update_mode = previous_mode
+	result.cases["conditional_reset"] = {"status": "tested", "before": before, "rejections": rejections,
+			"accepted": accepted, "after_accept": after_accept, "gpu_completion": gpu_case}
 
 
 func _run() -> void:
@@ -191,11 +332,29 @@ func _run() -> void:
 	result.cases["coalesced_encode"] = {"status": observed, "app_receipt": receipt,
 		"scope": "cpu_encode_call_returned_not_gpu_completion"}
 
+	await _conditional_cases(viewport)
+
 	var before_resize: Dictionary = _status(viewport)
 	viewport.size = Vector2i(1921, 1081)
 	var after_resize: Dictionary = _status(viewport)
 	_check(int(after_resize.get("generation", -1)) > int(before_resize.get("generation", -1)), "resize_generation_not_advanced")
 	_check(int(after_resize.get("reset_encoded_serial", -1)) == 0, "old_encode_survived_resize")
+	if RenderingServer.has_method(CONDITIONAL_RESET):
+		var stale_after_resize := _conditional(viewport.get_viewport_rid(), int(before_resize.get("generation", -1)),
+				int(before_resize.get("reset_requested_serial", -1)))
+		var unchanged_after_resize := _status(viewport)
+		_check(stale_after_resize.get("accepted") == false and stale_after_resize.get("reason") == "stale_generation" \
+				and stale_after_resize.get("generation") == after_resize.get("generation") \
+				and stale_after_resize.get("previous_requested_serial") == stale_after_resize.get("requested_serial") \
+				and (stale_after_resize.get("requested_serial") == -1 \
+						or stale_after_resize.get("requested_serial") == after_resize.get("reset_requested_serial")) \
+				and unchanged_after_resize.get("generation") == after_resize.get("generation") \
+				and unchanged_after_resize.get("reset_requested_serial") == after_resize.get("reset_requested_serial"),
+				"conditional_stale_resize_mutated")
+		result.cases["conditional_resize_fence"] = {"status": "tested", "receipt": stale_after_resize,
+				"after": unchanged_after_resize}
+	else:
+		result.cases["conditional_resize_fence"] = {"status": "skipped", "reason": "conditional_api_unavailable"}
 	for _i in 3:
 		await _frame()
 	var resized_ready: Dictionary = _status(viewport)

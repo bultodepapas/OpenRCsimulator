@@ -9,6 +9,32 @@ const UiInput := preload("res://ui/ui_input.gd")
 const AppRoot := preload("res://app_root.gd")
 const PREFS := "user://test_settings_ui_display.cfg"
 
+
+class PendingPreviewSettings extends SettingsScreen:
+	var clock_msec := 1000
+	var preview_ready := false
+	var barrier_token := -1
+	var apply_delay_msec := 0
+	var preview_delay_msec := 0
+	var process_frame_index := 0
+
+	func _init(store: DisplayPreferences) -> void:
+		super(store, "en")
+
+	func _trial_now_msec() -> int:
+		return clock_msec
+
+	func _trial_process_frame() -> int:
+		return process_frame_index
+
+	func _queue_trial_render_barrier(token: int) -> void:
+		barrier_token = token
+
+	func _trial_preview_ready() -> bool:
+		clock_msec += preview_delay_msec
+		return preview_ready
+
+
 var _failures := 0
 var _presentations: Array[Dictionary] = []
 var _languages: Array[String] = []
@@ -344,6 +370,7 @@ func _run() -> void:
 		and not DisplayPreferences.load_from(PREFS).opaque_panels)
 	settings.queue_free()
 	await _display_trial_recovery(store, test_viewport)
+	await _temporal_preview_recovery(store, test_viewport)
 	test_viewport.queue_free()
 	await process_frame
 	ScreenTheme.text_scale = 1.0
@@ -391,6 +418,196 @@ func _display_trial_recovery(store: DisplayPreferences, viewport: SubViewport) -
 	_check("explicit Revert still discards the whole draft", settings._draft == settings._saved
 		and settings._trial_deadline_msec == 0)
 	settings.queue_free()
+	await process_frame
+
+
+func _select_temporal(settings: PendingPreviewSettings) -> void:
+	for index in settings._reconstruction_picker.item_count:
+		if settings._reconstruction_picker.get_item_metadata(index) == "metalfx_temporal_quality":
+			settings._reconstruction_picker.item_selected.emit(index)
+			return
+	_check("Temporal quality is present in the picker", false)
+
+
+func _deliver_trial_draw(settings: PendingPreviewSettings, token: int) -> void:
+	var callback: Callable = settings._trial_draw_callback
+	if callback.is_valid() and RenderingServer.frame_post_draw.is_connected(callback):
+		RenderingServer.frame_post_draw.disconnect(callback)
+	settings._trial_frame_drawn(token)
+
+
+func _temporal_preview_recovery(store: DisplayPreferences, viewport: SubViewport) -> void:
+	var rid := viewport.get_viewport_rid()
+	var policy := {"requested": "metalfx_temporal_quality", "provider": "metalfx_temporal",
+		"fallback": false, "scaling_3d_mode": 7, "scale": 2.0 / 3.0}
+	var scope := {"rid": rid, "provider": "metalfx_temporal", "mode": 7, "generation": 4}
+	var status := {"render_buffers_available": true, "requested_mode": 7, "configured_mode": 7,
+		"generation": 4, "provider": "temporal", "allocation": "created", "submission": "enqueued"}
+	_check("matching Temporal draw receipt can start confirmation", SettingsScreen._trial_receipt_ready(
+		"metalfx_temporal_quality", rid, 7, 2.0 / 3.0, policy, scope, status, {}))
+	for invalid: String in ["fallback", "scale", "scope", "generation", "buffers", "mode", "provider", "allocation", "submission", "failure"]:
+		var bad_policy := policy.duplicate(true)
+		var bad_scope := scope.duplicate(true)
+		var bad_status := status.duplicate(true)
+		var failure := {}
+		match invalid:
+			"fallback": bad_policy.fallback = true
+			"scale": bad_policy.scale = 0.5
+			"scope": bad_scope.rid = RID()
+			"generation": bad_status.generation = 3
+			"buffers": bad_status.render_buffers_available = false
+			"mode": bad_status.configured_mode = 0
+			"provider": bad_status.provider = "none"
+			"allocation": bad_status.allocation = "factory_failed"
+			"submission": bad_status.submission = "not_attempted"
+			"failure": failure = {"provider": "metalfx_temporal", "reason": "backend_failed"}
+		_check("Temporal confirmation rejects " + invalid, not SettingsScreen._trial_receipt_ready(
+			"metalfx_temporal_quality", rid, 7, 2.0 / 3.0, bad_policy, bad_scope, bad_status, failure))
+
+	var settings := PendingPreviewSettings.new(store)
+	viewport.add_child(settings)
+	await process_frame
+	var saved := store.config.duplicate(true)
+	settings._volume_changed(0.37)
+	settings.presentation_changed.connect(func(_config: Dictionary) -> void:
+		settings.clock_msec += settings.apply_delay_msec)
+	settings.apply_delay_msec = 298000
+	settings._keep_button.grab_focus()
+	var first_edit := settings.clock_msec
+	_select_temporal(settings)
+	var token := settings._trial_draw_token
+	_check("cold Temporal apply keeps an unsaved pending preview", settings._trial_waiting_for_draw \
+		and settings._trial_first_deadline_msec == first_edit + 15000 \
+		and settings._trial_deadline_msec == settings.clock_msec + 15000 \
+		and settings._keep_button.disabled and not settings._revert_button.disabled \
+		and settings.barrier_token == token and settings._draft.reconstruction == "metalfx_temporal_quality")
+	_check("disabled pending Keep returns focus to Revert", viewport.gui_get_focus_owner() == settings._revert_button)
+	settings.keep_changes()
+	_check("pending preview cannot be kept before a draw", store.config == saved and settings._trial_waiting_for_draw)
+	settings.preview_ready = true
+	settings._trial_frame_drawn(token)
+	_check("a pre-barrier draw cannot start confirmation", settings._trial_waiting_for_draw and settings._keep_button.disabled)
+	settings.preview_ready = false
+	settings._trial_render_barrier_passed(token)
+	_check("post-change barrier arms one draw callback", settings._trial_barrier_seen \
+		and RenderingServer.frame_post_draw.is_connected(settings._trial_draw_callback))
+	_deliver_trial_draw(settings, token)
+	_check("unready renderer stays pending", settings._trial_waiting_for_draw and settings._keep_button.disabled)
+	settings.preview_ready = true
+	settings.clock_msec += 1000
+	_deliver_trial_draw(settings, token)
+	_check("ordered ready draw starts a full confirmation interval", not settings._trial_waiting_for_draw \
+		and settings._trial_deadline_msec == settings.clock_msec + 15000 and not settings._keep_button.disabled)
+	settings.clock_msec = settings._trial_deadline_msec + 1
+	settings._process(0.0)
+	_check("confirmation expiry restores only display keys", settings._draft.reconstruction == saved.reconstruction \
+		and is_equal_approx(settings._draft.menu_volume, 0.37) and store.config == saved)
+	settings._trial_frame_drawn(token)
+	_check("stale draw cannot restart an expired trial", settings._trial_deadline_msec == 0)
+
+	settings.apply_delay_msec = 0
+	settings.preview_ready = false
+	_select_temporal(settings)
+	settings.clock_msec = settings._trial_deadline_msec - 100
+	settings._process(0.0) # the main loop remained responsive near the deadline
+	settings.clock_msec = settings._trial_deadline_msec + 1
+	settings._process(0.0)
+	settings.process_frame_index += 1
+	settings._process(0.0)
+	await process_frame
+	_check("responsive no-draw watchdog restores the display preview", not settings._trial_waiting_for_draw \
+		and settings._draft.reconstruction == saved.reconstruction and is_equal_approx(settings._draft.menu_volume, 0.37))
+
+	_select_temporal(settings)
+	token = settings._trial_draw_token
+	settings.clock_msec = settings._trial_deadline_msec + 1
+	settings._process(0.0) # observe expiry after a simulated main-loop block
+	settings._trial_render_barrier_passed(token)
+	var renewed: int = settings._trial_deadline_msec
+	settings._expire_waiting_trial(token)
+	_check("late ordered barrier gets one bounded draw opportunity", settings._trial_waiting_for_draw \
+		and renewed == settings.clock_msec + 15000 and not settings._trial_main_stall_observed)
+	settings._trial_render_barrier_passed(token)
+	_check("duplicate barrier cannot extend the watchdog", settings._trial_deadline_msec == renewed)
+	settings.preview_ready = true
+	_deliver_trial_draw(settings, token)
+	settings._revert()
+
+	_select_temporal(settings)
+	token = settings._trial_draw_token
+	settings.clock_msec = settings._trial_deadline_msec - 100
+	settings._process(0.0)
+	settings.clock_msec = settings._trial_deadline_msec + 1
+	settings._process(0.0)
+	settings._trial_render_barrier_passed(token)
+	_check("a responsive late barrier cannot extend the no-draw watchdog", not settings._trial_waiting_for_draw \
+		and settings._draft.reconstruction == saved.reconstruction)
+
+	_select_temporal(settings)
+	token = settings._trial_draw_token
+	settings._trial_render_barrier_passed(token)
+	settings.clock_msec = settings._trial_deadline_msec - 100
+	settings._process(0.0)
+	settings.clock_msec = settings._trial_deadline_msec + 1
+	settings.preview_ready = true
+	_deliver_trial_draw(settings, token)
+	_check("a responsive late draw cannot extend the no-draw watchdog", not settings._trial_waiting_for_draw \
+		and settings._draft.reconstruction == saved.reconstruction)
+
+	_select_temporal(settings)
+	token = settings._trial_draw_token
+	settings._trial_render_barrier_passed(token)
+	settings.clock_msec = settings._trial_deadline_msec - 100
+	settings._process(0.0)
+	settings.clock_msec = settings._trial_deadline_msec - 50
+	settings.preview_delay_msec = 100
+	_deliver_trial_draw(settings, token)
+	settings.preview_delay_msec = 0
+	_check("receipt crossing a responsive deadline still rolls back", not settings._trial_waiting_for_draw \
+		and settings._draft.reconstruction == saved.reconstruction)
+
+	_select_temporal(settings)
+	token = settings._trial_draw_token
+	settings._trial_render_barrier_passed(token)
+	settings.clock_msec = settings._trial_deadline_msec + 1
+	settings._process(0.0) # first main-loop turn after a blocked render sync
+	settings.process_frame_index += 1
+	settings.preview_ready = true
+	call_deferred("_deliver_trial_draw", settings, token) # draw receipt already queued
+	settings._process(0.0) # expiry queues behind that receipt
+	await process_frame
+	_check("completed draw wins after the blocked render turn", not settings._trial_waiting_for_draw \
+		and settings._draft.reconstruction == "metalfx_temporal_quality" \
+		and settings._trial_deadline_msec == settings.clock_msec + 15000)
+	settings._revert()
+
+	_select_temporal(settings)
+	token = settings._trial_draw_token
+	var first_deadline: int = settings._trial_first_deadline_msec
+	settings._window_mode_selected(1)
+	_check("mixed window edit retains the first deadline", not settings._trial_waiting_for_draw \
+		and settings._trial_deadline_msec == first_deadline)
+	settings._trial_render_barrier_passed(token)
+	_check("stale barrier cannot extend a mixed trial", settings._trial_deadline_msec == first_deadline)
+	settings._revert()
+	settings._fps_picker.item_selected.emit(2)
+	first_deadline = settings._trial_deadline_msec
+	_select_temporal(settings)
+	_check("existing graphics trial keeps its deadline", not settings._trial_waiting_for_draw \
+		and settings._trial_deadline_msec == first_deadline)
+	settings._revert()
+	_select_temporal(settings)
+	token = settings._trial_draw_token
+	settings.close()
+	settings._trial_frame_drawn(token)
+	_check("Close cancels pending and stale callbacks", not settings._trial_waiting_for_draw \
+		and settings._trial_deadline_msec == 0 and settings._draft == settings._saved)
+	settings.queue_free()
+	var disposed := SettingsScreen.new(store, "en")
+	viewport.add_child(disposed)
+	disposed._queue_trial_render_barrier(1)
+	disposed.free() # deferred continuation must tolerate a freed target
+	await process_frame
 	await process_frame
 
 

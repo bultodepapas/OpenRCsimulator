@@ -1,0 +1,319 @@
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -479,6 +479,11 @@
+ 		_configure_3d_render_buffers(p_viewport);
+ 	}
+ 
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (p_viewport->metal_fx_frame_requested && p_viewport->render_buffers.is_valid()) {
++		p_viewport->render_buffers->set_metalfx_alpha_diagnostic_scope(p_viewport->self, p_viewport->metal_fx_generation, p_viewport->metal_fx_frame_generation);
++	}
++#endif
+ 	const bool composition_had_sdf = p_viewport->sdf_active;
+ 	if (p_viewport->metal_fx_frame_composition_requested && p_viewport->render_buffers.is_valid()) {
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/rendering/storage/render_scene_buffers.h
+--- a/servers/rendering/storage/render_scene_buffers.h
++++ b/servers/rendering/storage/render_scene_buffers.h
+@@ -344,6 +344,9 @@
+ 		return result;
+ 	}
+ 
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	virtual void set_metalfx_alpha_diagnostic_scope(RID, uint64_t, uint64_t) {}
++#endif
+ 	virtual void clear_metalfx_frame() {}
+ 	void set_metalfx_frame_requested(bool p_enabled) {
+ 		if (metal_fx_frame_requested != p_enabled) {
+diff --git a/servers/rendering/renderer_rd/storage_rd/material_storage.h b/servers/rendering/renderer_rd/storage_rd/material_storage.h
+--- a/servers/rendering/renderer_rd/storage_rd/material_storage.h
++++ b/servers/rendering/renderer_rd/storage_rd/material_storage.h
+@@ -91,6 +91,7 @@
+ 	};
+ 
+ 	struct MaterialData {
++		RID get_diagnostic_rid() const { return self; }
+ 		Vector<RendererRD::TextureStorage::RenderTarget *> render_target_cache;
+ 		void update_uniform_buffer(const HashMap<StringName, ShaderLanguage::ShaderNode::Uniform> &p_uniforms, const uint32_t *p_uniform_offsets, const HashMap<StringName, Variant> &p_parameters, uint8_t *p_buffer, uint32_t p_buffer_size, bool p_use_linear_color);
+ 		void update_textures(const HashMap<StringName, Variant> &p_parameters, const HashMap<StringName, HashMap<int, RID>> &p_default_textures, const Vector<ShaderCompiler::GeneratedCode::Texture> &p_texture_uniforms, RID *p_textures, bool p_use_linear_color, bool p_3d_material);
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+@@ -36,6 +36,9 @@
+ #include "servers/rendering/renderer_rd/storage_rd/render_buffer_custom_data_rd.h"
+ #include "servers/rendering/rendering_device.h"
+ #include "servers/rendering/storage/render_scene_buffers.h"
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++#include "servers/rendering/storage/metalfx_alpha_diagnostic.h"
++#endif
+ 
+ #ifdef METAL_ENABLED
+ #include "servers/rendering/renderer_rd/effects/metal_fx.h"
+@@ -67,6 +70,23 @@
+ #define RB_TEX_BACK_COLOR SNAME("back_color")
+ #define RB_TEX_BACK_DEPTH SNAME("back_depth")
+ 
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++// Copied values only: no renderer-object pointers survive the render call.
++struct MetalFXAlphaDiagnosticEntry {
++	RID base, mesh, material;
++	uint32_t base_type = 0, surface = 0, flags = 0, mesh_local_index = 0, shader_local_index = 0;
++	uint32_t instance_count = 0;
++	bool material_from_alpha_pass = false, mesh_lookup_truncated = false, shader_available = false;
++	String shader_path;
++	AABB world_bounds;
++};
++struct MetalFXAlphaDiagnostic {
++	MetalFXAlphaSnapshot<MetalFXAlphaDiagnosticEntry> page;
++	RID viewport;
++	uint64_t viewport_generation = 0, producer_generation = 0;
++};
++#endif
++
+ class RenderSceneBuffersRD : public RenderSceneBuffers {
+ 	GDCLASS(RenderSceneBuffersRD, RenderSceneBuffers);
+ 
+@@ -97,6 +117,10 @@
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ 	RendererRD::MFXFrameContext *mfx_frame_context = nullptr;
+ 	String mfx_frame_reason = "not_attempted";
++	bool mfx_alpha_diagnostic_enabled = false;
++	RID mfx_alpha_scope_viewport;
++	uint64_t mfx_alpha_scope_viewport_generation = 0, mfx_alpha_scope_producer_generation = 0;
++	std::unique_ptr<MetalFXAlphaDiagnostic> mfx_alpha_diagnostic;
+ 	uint64_t mfx_frame_epoch = 0; // Survives rejection and recreation within this buffer generation.
+ 	struct MFXCompositionSlot {
+ 		RID generated_target;
+@@ -268,6 +292,9 @@
+ 	RendererRD::MFXFrameContext *get_metalfx_frame_context() const { return mfx_frame_context; }
+ 	RendererRD::MFXFrameContext *ensure_metalfx_frame_context(RendererRD::MFXFrameEffect *p_effect, const RendererRD::MFXFrameEffect::CreateParams &p_params);
+ 	void reject_metalfx_frame(const char *p_reason);
++	virtual void set_metalfx_alpha_diagnostic_scope(RID p_viewport, uint64_t p_viewport_generation, uint64_t p_producer_generation) override;
++	bool is_metalfx_alpha_diagnostic_enabled() const { return mfx_alpha_diagnostic_enabled; }
++	MetalFXAlphaDiagnostic *begin_metalfx_alpha_diagnostic(uint64_t p_frame, uint32_t p_total);
+ 	std::shared_ptr<MetalFXCompositionFrame> get_metalfx_composition_state() const {
+ 		return mfx_composition_active < 0 ? nullptr : mfx_composition_slots[mfx_composition_active].state;
+ 	}
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -44,6 +44,11 @@
+ #include "servers/rendering/rendering_server_enums.h"
+ 
+ RenderSceneBuffersRD::RenderSceneBuffersRD() {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	// The process environment is latched on the first render-buffer creation.
++	static const bool enabled = OS::get_singleton()->get_environment("OPENRC_METALFX_ALPHA_DIAGNOSTICS") == "1";
++	mfx_alpha_diagnostic_enabled = enabled;
++#endif
+ }
+ 
+ RenderSceneBuffersRD::~RenderSceneBuffersRD() {
+@@ -520,6 +525,23 @@
+ 	return mfx_frame_context;
+ }
+ 
++void RenderSceneBuffersRD::set_metalfx_alpha_diagnostic_scope(RID p_viewport, uint64_t p_viewport_generation, uint64_t p_producer_generation) {
++	if (!mfx_alpha_diagnostic_enabled) { return; }
++	mfx_alpha_scope_viewport = p_viewport;
++	mfx_alpha_scope_viewport_generation = p_viewport_generation;
++	mfx_alpha_scope_producer_generation = p_producer_generation;
++}
++
++MetalFXAlphaDiagnostic *RenderSceneBuffersRD::begin_metalfx_alpha_diagnostic(uint64_t p_frame, uint32_t p_total) {
++	if (!mfx_alpha_diagnostic_enabled || mfx_alpha_scope_viewport.is_null() || !p_total) { return nullptr; }
++	if (!mfx_alpha_diagnostic) { mfx_alpha_diagnostic = std::make_unique<MetalFXAlphaDiagnostic>(); }
++	mfx_alpha_diagnostic->viewport = mfx_alpha_scope_viewport;
++	mfx_alpha_diagnostic->viewport_generation = mfx_alpha_scope_viewport_generation;
++	mfx_alpha_diagnostic->producer_generation = mfx_alpha_scope_producer_generation;
++	mfx_alpha_diagnostic->page.begin(p_frame, p_total);
++	return mfx_alpha_diagnostic.get();
++}
++
+ void RenderSceneBuffersRD::reject_metalfx_frame(const char *p_reason) {
+ 	if (mfx_frame_context || has_texture(RB_SCOPE_METALFX_FRAME, RB_METALFX_FRAME_OUTPUT)) {
+ 		clear_metalfx_frame();
+@@ -538,6 +560,47 @@
+ 	result["purpose"] = "experiment_not_presentable";
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ 	result["reason"] = mfx_frame_reason;
++	if (mfx_alpha_diagnostic) {
++		const MetalFXAlphaDiagnostic &snapshot = *mfx_alpha_diagnostic;
++		const auto &page = snapshot.page;
++		Dictionary detail;
++		detail["scope"] = "historical_alpha_render_list_not_pixel_contribution";
++		detail["identity_scope"] = "resources_may_match_multiple_scene_nodes";
++		detail["frame"] = page.frame <= uint64_t(INT64_MAX) ? int64_t(page.frame) : int64_t(-1);
++		detail["viewport_rid"] = int64_t(snapshot.viewport.get_id());
++		detail["viewport_generation"] = snapshot.viewport_generation <= uint64_t(INT64_MAX) ? int64_t(snapshot.viewport_generation) : int64_t(-1);
++		detail["producer_generation"] = snapshot.producer_generation <= uint64_t(INT64_MAX) ? int64_t(snapshot.producer_generation) : int64_t(-1);
++		detail["total"] = int64_t(page.total);
++		detail["offset"] = int64_t(page.offset);
++		detail["captured"] = int64_t(page.count);
++		detail["truncated"] = page.truncated();
++		Array entries;
++		for (uint32_t i = 0; i < page.count; ++i) {
++			const MetalFXAlphaDiagnosticEntry &source = page.entries[i];
++			Dictionary entry;
++			entry["base_rid"] = int64_t(source.base.get_id());
++			entry["mesh_rid"] = int64_t(source.mesh.get_id());
++			entry["mesh_rid_available"] = source.mesh.is_valid();
++			entry["material_rid"] = int64_t(source.material.get_id());
++			entry["material_rid_available"] = source.material.is_valid();
++			entry["shader_rid"] = int64_t(0);
++			entry["shader_rid_available"] = false;
++			entry["shader_available"] = source.shader_available;
++			entry["shader_local_index"] = int64_t(source.shader_local_index);
++			entry["shader_path"] = source.shader_path;
++			entry["base_type"] = int64_t(source.base_type);
++			entry["surface"] = int64_t(source.surface);
++			entry["flags"] = int64_t(source.flags);
++			entry["mesh_local_index"] = int64_t(source.mesh_local_index);
++			entry["instance_count"] = int64_t(source.instance_count);
++			entry["material_from_alpha_pass"] = source.material_from_alpha_pass;
++			entry["mesh_lookup_truncated"] = source.mesh_lookup_truncated;
++			entry["world_bounds"] = source.world_bounds;
++			entries.push_back(entry);
++		}
++		detail["entries"] = entries;
++		result["alpha_diagnostic"] = detail;
++	}
+ 	if (mfx_frame_context) {
+ 		const RendererRD::MFXFrameContext *ctx = mfx_frame_context;
+ 		result["allocation"] = ctx->effect ? "created" : (ctx->allocation == MFX_FRAME_UNAVAILABLE ? "device_or_os_unavailable" : "factory_failed");
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
+@@ -769,6 +769,7 @@
+ 	RendererRD::MFXTemporalEffect *mfx_temporal_effect = nullptr;
+ #endif
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	void _capture_metalfx_alpha_diagnostic(Ref<RenderSceneBuffersRD> p_buffers);
+ 	void _process_metalfx_frame(const RenderDataRD *p_render_data, Ref<RenderSceneBuffersRD> p_buffers, bool p_temporal_submitted, bool p_temporal_reset);
+ #endif
+ 	RendererRD::MotionVectorsStore *motion_vectors_store = nullptr;
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -65,6 +65,74 @@
+ 	return nullptr;
+ }
+ 
++void RenderForwardClustered::_capture_metalfx_alpha_diagnostic(Ref<RenderSceneBuffersRD> p_buffers) {
++	// This is only called for an explicitly requested diagnostic after the
++	// ordinary rejection. It copies value identities, not live object pointers.
++	const auto &alpha = render_list[RENDER_LIST_ALPHA].elements;
++	if (alpha.is_empty()) { return; }
++	MetalFXAlphaDiagnostic *snapshot = p_buffers->begin_metalfx_alpha_diagnostic(RSG::rasterizer->get_frame_number(), alpha.size());
++	if (!snapshot) { return; }
++	auto &page = snapshot->page;
++	RendererRD::MeshStorage *meshes = RendererRD::MeshStorage::get_singleton();
++	RendererRD::ParticlesStorage *particles = RendererRD::ParticlesStorage::get_singleton();
++	for (uint32_t i = 0; i < 8 && uint64_t(page.offset) + i < page.total; ++i) {
++		const GeometryInstanceSurfaceDataCache *surface = alpha[page.offset + i];
++		MetalFXAlphaDiagnosticEntry entry;
++		if (surface) {
++			entry.surface = surface->surface_index;
++			entry.flags = surface->flags;
++			entry.mesh_local_index = surface->sort.geometry_id;
++			entry.shader_local_index = surface->sort.shader_id;
++			entry.material_from_alpha_pass = (surface->flags & GeometryInstanceSurfaceDataCache::FLAG_PASS_ALPHA) != 0;
++			if (surface->material) {
++				RID material = surface->material->get_diagnostic_rid();
++				uint32_t material_local = (uint32_t(surface->sort.material_id_hi) << 24) | uint32_t(surface->sort.material_id_lo);
++				if (material.is_valid() && material.get_local_index() == material_local) { entry.material = material; }
++			}
++			if (surface->shader) {
++				entry.shader_available = true;
++				entry.shader_path = surface->shader->path.length() > 256 ? surface->shader->path.substr(0, 256) : surface->shader->path;
++			}
++			const GeometryInstanceForwardClustered *owner = surface->owner;
++			if (owner && owner->data) {
++				entry.base = owner->data->base;
++				entry.base_type = uint32_t(owner->data->base_type);
++				entry.instance_count = owner->instance_count;
++				entry.world_bounds = owner->transformed_aabb;
++				RID mesh;
++				switch (owner->data->base_type) {
++					case RSE::INSTANCE_MESH:
++						mesh = entry.base;
++						break;
++					case RSE::INSTANCE_MULTIMESH:
++						mesh = meshes->multimesh_get_mesh(entry.base);
++						break;
++					case RSE::INSTANCE_PARTICLES: {
++						int passes = particles->particles_get_draw_passes(entry.base);
++						if (passes > 32) { entry.mesh_lookup_truncated = true; break; }
++						for (int pass = 0; pass < passes; ++pass) {
++							RID candidate = particles->particles_get_draw_pass_mesh(entry.base, pass);
++							if (candidate.is_null() || candidate.get_local_index() != entry.mesh_local_index ||
++									meshes->mesh_get_surface_count(candidate) <= int(entry.surface) ||
++									meshes->mesh_get_surface(candidate, entry.surface) != surface->surface) { continue; }
++							if (mesh.is_valid() && mesh != candidate) { mesh = RID(); break; }
++							mesh = candidate;
++						}
++					} break;
++					default:
++						break;
++				}
++				if (mesh.is_valid() && mesh.get_local_index() == entry.mesh_local_index &&
++						meshes->mesh_get_surface_count(mesh) > int(entry.surface) &&
++						meshes->mesh_get_surface(mesh, entry.surface) == surface->surface) {
++					entry.mesh = mesh;
++				}
++			}
++		}
++		page.append(entry);
++	}
++}
++
+ void RenderForwardClustered::_process_metalfx_frame(const RenderDataRD *p_render_data, Ref<RenderSceneBuffersRD> p_buffers, bool p_temporal_submitted, bool p_temporal_reset) {
+ 	if (!p_buffers->is_metalfx_frame_requested()) {
+ 		return;
+@@ -73,6 +141,7 @@
+ 	const char *scene_rejection = metalfx_frame_scene_rejection(!render_list[RENDER_LIST_ALPHA].elements.is_empty(), background);
+ 	if (scene_rejection) {
+ 		p_buffers->reject_metalfx_frame(scene_rejection);
++		if (p_buffers->is_metalfx_alpha_diagnostic_enabled()) { _capture_metalfx_alpha_diagnostic(p_buffers); }
+ 		return;
+ 	}
+ 	const Projection &projection = p_render_data->scene_data->cam_projection;
+diff --git a/servers/rendering/storage/metalfx_alpha_diagnostic.h b/servers/rendering/storage/metalfx_alpha_diagnostic.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_alpha_diagnostic.h
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: MIT
++// Bounded, value-only pages of the historical Forward+ alpha render list.
++#pragma once
++
++#include <array>
++#include <cstdint>
++
++template <typename Entry, uint32_t Capacity = 8>
++struct MetalFXAlphaSnapshot {
++	static_assert(Capacity > 0, "A diagnostic page must have a finite capacity");
++	std::array<Entry, Capacity> entries{};
++	uint64_t frame = 0;
++	uint32_t total = 0;
++	uint32_t offset = 0;
++	uint32_t count = 0;
++	uint32_t next_page = 0;
++
++	void begin(uint64_t p_frame, uint32_t p_total) {
++		frame = p_frame;
++		total = p_total;
++		count = 0;
++		const uint64_t pages = p_total ? (uint64_t(p_total) + Capacity - 1) / Capacity : 1;
++		if (next_page >= pages) { next_page = 0; }
++		offset = p_total ? uint32_t(uint64_t(next_page) * Capacity) : 0;
++		if (p_total && ++next_page >= pages) { next_page = 0; }
++	}
++	bool append(const Entry &p_entry) {
++		if (count >= Capacity || uint64_t(offset) + count >= total) { return false; }
++		entries[count++] = p_entry;
++		return true;
++	}
++	bool truncated() const { return total > count; }
++};

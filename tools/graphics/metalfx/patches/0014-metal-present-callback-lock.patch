@@ -1,0 +1,91 @@
+diff --git a/drivers/metal/openrc_mfx_present_bridge.mm b/drivers/metal/openrc_mfx_present_bridge.mm
+--- a/drivers/metal/openrc_mfx_present_bridge.mm
++++ b/drivers/metal/openrc_mfx_present_bridge.mm
+@@ -78,13 +78,19 @@
+ 	(void)p_link;
+ 	@autoreleasepool {
+ 		auto s = state;
+-		if (!s || !p_update || !p_update.drawable) { return; }
++		if (!s || !p_update) { return; }
++		// Drawable access can take CoreAnimation locks. Never nest it inside
++		// the mutex also used by presented/completion callbacks.
++		id<CAMetalDrawable> drawable = p_update.drawable;
++		if (!drawable) { return; }
++		const double deadline = p_update.targetTimestamp;
++		const double target = p_update.targetPresentationTimestamp;
++		const double now = CACurrentMediaTime();
+ 		std::unique_lock<std::mutex> gate(s->gate);
+ 		std::unique_lock<std::mutex> lock(s->mutex);
+ 		if (s->stopping) { return; }
+ 		OpenRCMetalPresent::synchronize_generation(*s);
+ 		if (!s->requested_generation.load(std::memory_order_acquire)) { return; }
+-		double target = p_update.targetPresentationTimestamp;
+ 		if (std::isfinite(target) && target > s->previous_display_target) {
+ 			double interval = target - s->previous_display_target;
+ 			s->display_period = s->previous_display_target > 0.0 && interval >= 0.001 && interval <= 0.1 ? interval : 0.0;
+@@ -93,9 +99,9 @@
+ 			s->display_period = 0.0;
+ 		}
+ 		if (s->in_flight != 0) { return; }
+-		double now = CACurrentMediaTime();
+-		OpenRCMetalPresent::Choice choice = s->scheduler.choose(now, p_update.targetTimestamp, target, s->display_period, true);
++		OpenRCMetalPresent::Choice choice = s->scheduler.choose(now, deadline, target, s->display_period, true);
+ 		if (choice.kind == OpenRCMetalPresent::Kind::NONE || !choice.texture) { return; }
++		lock.unlock();
+ 		std::unique_lock<std::mutex> source_gate;
+ 		if (choice.source_generation) {
+ 			source_gate = choice.source_generation->lock_for_presentation();
+@@ -107,7 +113,6 @@
+ 			if (choice.proof->is_cancelled()) { return; }
+ 		}
+ 		id<MTLTexture> src = (__bridge id<MTLTexture>)choice.texture;
+-		id<CAMetalDrawable> drawable = p_update.drawable;
+ 		id<MTLTexture> dst = drawable.texture;
+ 		if (!src || !dst || src.device != s->device || dst.device != s->device ||
+ 				src.width != dst.width || src.height != dst.height ||
+@@ -130,11 +135,6 @@
+ 		[encoder endEncoding];
+ 		// The display-link contract requires a committed command before the
+ 		// drawable's direct present, both before this update's deadline.
+-		if (CACurrentMediaTime() >= p_update.targetTimestamp) { return; }
+-		if (choice.proof && choice.proof->is_cancelled()) { return; }
+-		if (choice.source_generation && choice.source_generation->is_cancelled()) { return; }
+-		if (choice.generation != s->requested_generation.load(std::memory_order_acquire)) { return; }
+-		if (!s->scheduler.commit(choice)) { return; }
+ 		const uint64_t sample_generation = choice.generation;
+ 		const uint64_t sample_frame = choice.frame;
+ 		const bool is_generated = choice.kind == OpenRCMetalPresent::Kind::GENERATED;
+@@ -167,9 +167,10 @@
+ 			// the exact current-real fallback if this present command fails.
+ 			auto shared = weak.lock();
+ 			if (!shared) { return; }
++			const auto completed_status = p_command.status;
+ 			std::lock_guard<std::mutex> guard(shared->mutex);
+ 			if (shared->in_flight > 0) { shared->in_flight--; }
+-			if (sample_generation == shared->scheduler.current_generation() && p_command.status != MTLCommandBufferStatusCompleted) {
++			if (sample_generation == shared->scheduler.current_generation() && completed_status != MTLCommandBufferStatusCompleted) {
+ 				uint64_t expected = sample_generation;
+ 				uint64_t replacement = expected == UINT64_MAX ? 0 : expected + 1;
+ 				if (shared->requested_generation.compare_exchange_strong(expected, replacement, std::memory_order_acq_rel)) {
+@@ -182,9 +183,18 @@
+ 				}
+ 			}
+ 		}];
+-		s->in_flight++;
+-		if (is_generated) { s->stats.generated_present_requested++; } else { s->stats.real_present_requested++; }
+-		lock.unlock();
++		{
++			// Handler registration and encoder calls above may enter Apple code.
++			// Revalidate afterwards, with only state mutation under this mutex.
++			std::lock_guard<std::mutex> admission(s->mutex);
++			if (s->stopping || CACurrentMediaTime() >= deadline) { return; }
++			if (choice.proof && choice.proof->is_cancelled()) { return; }
++			if (choice.source_generation && choice.source_generation->is_cancelled()) { return; }
++			if (choice.generation != s->requested_generation.load(std::memory_order_acquire)) { return; }
++			if (!s->scheduler.commit(choice)) { return; }
++			s->in_flight++;
++			if (is_generated) { s->stats.generated_present_requested++; } else { s->stats.real_present_requested++; }
++		}
+ 		[command commit];
+ 		[drawable present];
+ 	}

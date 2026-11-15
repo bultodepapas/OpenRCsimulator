@@ -85,6 +85,43 @@ func _rejected(viewport: SubViewport, reason: String, label: String) -> Dictiona
 	return status
 
 
+## Optional 0020 diagnostic: compare captured resource RIDs to this fixture's
+## single known transparent draw. Older engines and disabled diagnostics omit it.
+func _alpha_diagnostic_witness(status: Dictionary, viewport: SubViewport, instance: MeshInstance3D, material: Material) -> Dictionary:
+	var witness := {"status": "unavailable_or_not_enabled", "matches": false}
+	if not status.has("alpha_diagnostic"):
+		return witness
+	var detail: Variant = status.get("alpha_diagnostic")
+	if not detail is Dictionary:
+		_check(false, "alpha_diagnostic_malformed")
+		return {"status": "malformed", "matches": false}
+	var expected := {
+		"viewport_rid": viewport.get_viewport_rid().get_id(),
+		"viewport_generation": int(_status(viewport).get("generation", -1)),
+		"producer_generation": int(status.get("generation", -1)),
+		"base_rid": instance.mesh.get_rid().get_id(),
+		"mesh_rid": instance.mesh.get_rid().get_id(),
+		"material_rid": material.get_rid().get_id(),
+	}
+	var entries: Variant = detail.get("entries", [])
+	var one_entry: bool = entries is Array and entries.size() == 1
+	var entry: Dictionary = entries[0] if one_entry and entries[0] is Dictionary else {}
+	var matches: bool = one_entry and detail.get("scope") == "historical_alpha_render_list_not_pixel_contribution" \
+		and int(detail.get("frame", -1)) >= 0 and int(detail.get("total", -1)) == 1 \
+		and int(detail.get("offset", -1)) == 0 and int(detail.get("captured", -1)) == 1 \
+		and detail.get("truncated", true) == false \
+		and int(detail.get("viewport_rid", -1)) == expected.viewport_rid \
+		and int(detail.get("viewport_generation", -1)) == expected.viewport_generation \
+		and int(detail.get("producer_generation", -1)) == expected.producer_generation \
+		and int(entry.get("base_rid", -1)) == expected.base_rid \
+		and int(entry.get("mesh_rid", -1)) == expected.mesh_rid and entry.get("mesh_rid_available") == true \
+		and int(entry.get("material_rid", -1)) == expected.material_rid and entry.get("material_rid_available") == true \
+		and int(entry.get("surface", -1)) == 0 and entry.get("shader_rid_available") == false
+	_check(matches, "alpha_diagnostic_identity")
+	witness = {"status": "observed", "matches": matches, "expected": expected, "observed": detail}
+	return witness
+
+
 func _scene() -> Dictionary:
 	var viewport := SubViewport.new()
 	viewport.size = Vector2i(1920, 1080)
@@ -188,6 +225,7 @@ func _run() -> void:
 	_check(viewport.size == Vector2i(1920, 1080) and viewport.msaa_3d == Viewport.MSAA_DISABLED, "scene_configuration")
 	_check(off.get("requested") == false and off.get("allocation") == "not_attempted" \
 		and off.get("ready_for_debug_readback") == false and off.get("presentable") == false, "default_off")
+	_check(not off.has("alpha_diagnostic"), "default_off_alpha_diagnostic_present")
 	_check(_read_frame(viewport).get("readback") == "not_ready", "default_off_readback")
 	result.cases["default_off"] = {"temporal": temporal, "frame": off}
 
@@ -292,6 +330,7 @@ func _run() -> void:
 	transparent.material_override = alpha
 	viewport.add_child(transparent)
 	var alpha_status: Dictionary = await _rejected(viewport, "transparent_geometry_has_no_motion_vectors", "alpha")
+	var alpha_diagnostic := _alpha_diagnostic_witness(alpha_status, viewport, transparent, alpha)
 	transparent.queue_free()
 	active = await _ready(viewport)
 	_check(active.get("ready_for_debug_readback") == true, "alpha_restore")
@@ -312,6 +351,16 @@ func _run() -> void:
 	_check(final_off.get("requested") == false and final_off.get("allocation") == "not_attempted" \
 		and final_off.get("ready_for_debug_readback") == false, "off_not_released")
 	_check(_read_frame(viewport).get("readback") == "not_ready", "off_stale_readback")
+	if alpha_diagnostic.status == "observed":
+		var old_detail: Dictionary = alpha_diagnostic.observed
+		var retained: Variant = final_off.get("alpha_diagnostic")
+		var same_capture: bool = retained is Dictionary and retained.get("frame") == old_detail.get("frame") \
+			and retained.get("viewport_rid") == old_detail.get("viewport_rid") \
+			and retained.get("viewport_generation") == old_detail.get("viewport_generation") \
+			and retained.get("producer_generation") == old_detail.get("producer_generation")
+		_check(same_capture, "alpha_diagnostic_not_retained_after_off")
+		alpha_diagnostic["retained_after_off"] = same_capture
+	result.cases["alpha_diagnostic"] = alpha_diagnostic
 	for _i in 2:
 		await _frame()
 	_check(_frame_status(viewport).get("allocation") == "not_attempted", "off_reallocated")

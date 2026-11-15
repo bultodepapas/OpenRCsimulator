@@ -41,12 +41,7 @@ func _run() -> void:
 	if not setup.calibrate_button.visible:
 		await _finish()
 		return
-	var original: Dictionary = setup.current_profile()
-	original.presentation.glyph_family = "generic"
-	original.throttle_rate = 1.7
-	original.roll["expo"] = 0.35
-	original.roll["deadzone"] = 0.1
-	original.aux = {"smoke": {"type": "button", "button": 20, "mode": "level"}, "flaps": {"type": "axis", "axis": 4, "off": -1.0, "on": 1.0, "invert": false}}
+	var original: Dictionary = _custom_radio_draft(setup.current_profile())
 	check("custom radio fixture uses valid V2 data", Profile.validate(original).ok)
 	setup._set_draft_profile(original)
 	setup.profile_name_edit.text = "My limited radio"
@@ -103,6 +98,16 @@ func _run() -> void:
 	devices[0].guid = "replacement-radio"
 	app.controllers.refresh()
 	check("reused connection ID with another identity cancels", app.screens.is_top("controls") and setup.current_profile() == original)
+	# Select the replacement explicitly, creating a fresh connection-owned draft.
+	setup._on_flight_device_selected(setup.flight_device_picker.get_item_index(15))
+	var replacement_lease: Dictionary = setup.connection_leases().flight
+	check("replacement review binds the current device identity and generation", \
+		replacement_lease.get("generation", 0) == app.controllers.registry.connection_generation(15) \
+		and replacement_lease.get("generation", 0) > 0 \
+		and replacement_lease.get("identity", {}).get("guid") == "replacement-radio")
+	original = _custom_radio_draft(setup.current_profile())
+	setup._set_draft_profile(original)
+	setup.profile_name_edit.text = "My limited radio"
 	for invalid: Variant in [NAN, INF, 1.1, "invalid"]:
 		await _open_wizard()
 		var bad: Node = app.screens.top()
@@ -132,18 +137,29 @@ func _run() -> void:
 		_check_arming(calibrated, inverted)
 	var complete: Dictionary = setup.current_profile()
 	var commit: Callable = setup.save_and_apply
-	setup.save_and_apply = func(_candidate: Dictionary, _flight_id: int, _ui_id: int) -> Dictionary: return {"ok": false, "error": "test storage failure"}
-	check("failed Save keeps calibrated draft and durable storage unchanged", not setup._save_profile(false) and setup.current_profile() == complete and app.controllers.store.load_all().profiles.is_empty() and app.screens.is_top("controls"))
+	var rejected_save_calls := [0]
+	setup.save_and_apply = func(_candidate: Dictionary, _flight_id: int, _ui_id: int) -> Dictionary:
+		rejected_save_calls[0] += 1
+		return {"ok": false, "error": "test storage failure"}
+	check("failed Save keeps calibrated draft and durable storage unchanged", not setup._save_profile(false) and rejected_save_calls[0] == 1 and setup.current_profile() == complete and app.controllers.store.load_all().profiles.is_empty() and app.screens.is_top("controls"))
 	setup.save_and_apply = commit
 	var stale_generation: int = app.controllers.registry.connection_generation(15)
 	app.controllers.registry.disconnect_device(15)
 	app.controllers.refresh()
-	check("completed ranges cannot be saved to a new connection generation", not setup._save_profile(false) and app.controllers.store.load_all().profiles.is_empty())
+	check("completed ranges cannot be saved to a new connection generation", not setup._save_profile(false) and setup.current_profile() == complete and app.controllers.store.load_all().profiles.is_empty())
 	check("stale wizard completion cannot replace another connection's draft", not setup.apply_calibration_draft(complete, 15, stale_generation) and setup.current_profile() == complete)
 	var prior_context: String = setup._draft_context_key
 	setup._duplicate_profile()
 	check("duplicating cannot bypass the calibration connection check", not setup._save_profile(false) and app.controllers.store.load_all().profiles.is_empty())
-	setup._set_draft_profile(complete, prior_context)
+	setup._on_flight_device_selected(setup.flight_device_picker.get_item_index(15))
+	var current_lease: Dictionary = setup.connection_leases().flight
+	var current_profile_id: String = str(setup.current_profile().profile_id)
+	check("reselecting the reconnected radio creates a current lease", setup._draft_context_key != prior_context \
+		and current_lease.get("generation", 0) == app.controllers.registry.connection_generation(15) \
+		and current_lease.get("generation", 0) > stale_generation \
+		and current_lease.get("identity", {}).get("guid") == "replacement-radio")
+	check("the new connection cannot reuse old calibration", not setup.radio_mapping_verified(setup.current_profile()) \
+		and not setup._save_profile(false) and app.controllers.store.load_all().profiles.is_empty())
 	setup.profile_name_edit.text = "My limited radio"
 	await _open_wizard()
 	await _complete_wizard()
@@ -154,7 +170,7 @@ func _run() -> void:
 		await _finish()
 		return
 	var saved: Dictionary = app.controllers.store.load_all().profiles[0]
-	check("saved identity and calibration match the edited draft", saved.name == "My limited radio" and saved.profile_id == original.profile_id and saved.throttle.min == -0.6 and saved.throttle.max == 0.6)
+	check("saved identity and calibration match the edited draft", saved.name == "My limited radio" and saved.profile_id == current_profile_id and saved.throttle.min == -0.6 and saved.throttle.max == 0.6)
 	app.screens.pop()
 	app.open_controls()
 	await ui.settle()
@@ -177,6 +193,16 @@ func _run() -> void:
 	app.screens.top().request_close()
 	check("calibration did not start an activity", app.flight == null and selection_before == 15)
 	await _finish()
+
+
+func _custom_radio_draft(profile: Dictionary) -> Dictionary:
+	var draft := profile.duplicate(true)
+	draft.presentation.glyph_family = "generic"
+	draft.throttle_rate = 1.7
+	draft.roll["expo"] = 0.35
+	draft.roll["deadzone"] = 0.1
+	draft.aux = {"smoke": {"type": "button", "button": 20, "mode": "level"}, "flaps": {"type": "axis", "axis": 4, "off": -1.0, "on": 1.0, "invert": false}}
+	return draft
 
 
 func _hold_calibration_position() -> void:

@@ -1,0 +1,144 @@
+{
+  "downloaded": "2026-11-14",
+  "cache": ".tools/skin-sources/marquetry",
+  "files": [
+    {
+      "file": "Cinzel-wght.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/d50a0d29b/ofl/cinzel/Cinzel%5Bwght%5D.ttf",
+      "sha256": "f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34"
+    },
+    {
+      "file": "OFL-Cinzel.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/d50a0d29b/ofl/cinzel/OFL.txt",
+      "sha256": "f2b3029aba64c378bf0963b62945eee15e564fe4330b934c8f2eb058282b5e83"
+    },
+    {
+      "file": "Wood027_1K-JPG_Color.jpg",
+      "role": "walnut",
+      "archive": "https://ambientcg.com/get?file=Wood027_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood027",
+      "license": "CC0-1.0",
+      "sha256": "c61c6585122744974677eb22a3081651d7126197d902f4abe4c6f645602886a4"
+    },
+    {
+      "file": "Wood027_1K-JPG_Displacement.jpg",
+      "role": "walnut",
+      "archive": "https://ambientcg.com/get?file=Wood027_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood027",
+      "license": "CC0-1.0",
+      "sha256": "be2635832a21dc4355a6d60b56d94f2231a7a74d7ec9f116eb3ab91378cd9381"
+    },
+    {
+      "file": "Wood013_1K-JPG_Color.jpg",
+      "role": "crown",
+      "archive": "https://ambientcg.com/get?file=Wood013_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood013",
+      "license": "CC0-1.0",
+      "sha256": "bb2d9ba072db388eaedd929768f86ff21075058c1aa22f03712b8bd809a1e7b7"
+    },
+    {
+      "file": "Wood013_1K-JPG_Displacement.jpg",
+      "role": "crown",
+      "archive": "https://ambientcg.com/get?file=Wood013_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood013",
+      "license": "CC0-1.0",
+      "sha256": "253ea663b412236a77e325510b641a86ae3d2f9adc15568ebe53e123e00fe0f5"
+    },
+    {
+      "file": "Wood028_1K-JPG_Color.jpg",
+      "role": "ebony",
+      "archive": "https://ambientcg.com/get?file=Wood028_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood028",
+      "license": "CC0-1.0",
+      "sha256": "06a626e0e598b9eb580adbd800972ba77b9e6946adc8863af0625b0c1a11288b"
+    },
+    {
+      "file": "Wood028_1K-JPG_Displacement.jpg",
+      "role": "ebony",
+      "archive": "https://ambientcg.com/get?file=Wood028_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood028",
+      "license": "CC0-1.0",
+      "sha256": "4f4673b85aef8c59464d844a995b02fc7513ad920e1e2cbe6a469b96ce21b7b1"
+    },
+    {
+      "file": "Wood022_1K-JPG_Color.jpg",
+      "role": "maple",
+      "archive": "https://ambientcg.com/get?file=Wood022_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood022",
+      "license": "CC0-1.0",
+      "sha256": "41469c059a00d574afe4079817090495e018b14e0784db58ce342d7f17e69b76"
+    },
+    {
+      "file": "Wood022_1K-JPG_Displacement.jpg",
+      "role": "maple",
+      "archive": "https://ambientcg.com/get?file=Wood022_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood022",
+      "license": "CC0-1.0",
+      "sha256": "1a65a78bbc5b8759c3f6ee625c97e3adab35a6784c29b644a99cdb58a2a67d2e"
+    },
+    {
+      "file": "Wood023_1K-JPG_Color.jpg",
+      "role": "satinwood",
+      "archive": "https://ambientcg.com/get?file=Wood023_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood023",
+      "license": "CC0-1.0",
+      "sha256": "0c8f440e6c620ea5488838b5ea9929730ff317223bea8b03eeb34ab227db99e4"
+    },
+    {
+      "file": "Wood023_1K-JPG_Displacement.jpg",
+      "role": "satinwood",
+      "archive": "https://ambientcg.com/get?file=Wood023_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood023",
+      "license": "CC0-1.0",
+      "sha256": "dab3e61ffd0ee2038ad4ec1af0df1ea30220f2ccc813d50513a1dc2424f65fb5"
+    },
+    {
+      "file": "Wood029_1K-JPG_Color.jpg",
+      "role": "cherry",
+      "archive": "https://ambientcg.com/get?file=Wood029_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood029",
+      "license": "CC0-1.0",
+      "sha256": "0ed986492daf8e128b495f12d919b6db1fd756624e348ae7b04b4381975f2029"
+    },
+    {
+      "file": "Wood029_1K-JPG_Displacement.jpg",
+      "role": "cherry",
+      "archive": "https://ambientcg.com/get?file=Wood029_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood029",
+      "license": "CC0-1.0",
+      "sha256": "7144aff8512983b41feb0c0c93b3c82ae136434d89bac5c349ee10d726386d71"
+    },
+    {
+      "file": "Wood026_1K-JPG_Color.jpg",
+      "role": "mahogany",
+      "archive": "https://ambientcg.com/get?file=Wood026_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood026",
+      "license": "CC0-1.0",
+      "sha256": "982470ba602bc0def07170b701075427144e00cbbf2880bb70d2675122992093"
+    },
+    {
+      "file": "Wood026_1K-JPG_Displacement.jpg",
+      "role": "mahogany",
+      "archive": "https://ambientcg.com/get?file=Wood026_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood026",
+      "license": "CC0-1.0",
+      "sha256": "e876c0bcea80a5c664a973ad513f0a56f6a51231c744ed31d08ce871e7c2839b"
+    },
+    {
+      "file": "Wood069_1K-JPG_Color.jpg",
+      "role": "padauk",
+      "archive": "https://ambientcg.com/get?file=Wood069_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood069",
+      "license": "CC0-1.0",
+      "sha256": "dbe7c016d9fd4237035e59c1ce47937d2223e4bed2a522923340f97c265ae95e"
+    },
+    {
+      "file": "Wood069_1K-JPG_Displacement.jpg",
+      "role": "padauk",
+      "archive": "https://ambientcg.com/get?file=Wood069_1K-JPG.zip",
+      "page": "https://ambientcg.com/view?id=Wood069",
+      "license": "CC0-1.0",
+      "sha256": "64f7533ed88a62a988f2bf40c1633a758447a77a77dc1ba0e51c5efd98cd352b"
+    }
+  ]
+}

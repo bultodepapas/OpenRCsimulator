@@ -40,6 +40,7 @@ func _run() -> void:
 	_check_sabre_livery()
 	_check_steam_livery()
 	_check_camo_livery()
+	_check_marquetry_livery()
 	_check_stik_metal()
 	_check_stik_blackbird()
 	_check_stik_honeybee()
@@ -592,4 +593,27 @@ func _check_camo_livery() -> void:
 	var trim := _materials_named(jet.root, "paint_trim_carbono")
 	check("the carbon trim becomes matte dark green", trim.size() >= 1 and trim[0].albedo_texture == null
 		and trim[0].metallic < 0.1 and trim[0].albedo_color.g > trim[0].albedo_color.b)
+	jet.root.free()
+
+
+func _check_marquetry_livery() -> void:
+	var jet_id := "sebart-avanti-s-a200-p100rx"
+	var ids: Array = AirplaneBuilder.livery_choices(jet_id).map(func(choice: Dictionary) -> String: return str(choice.id))
+	check("the jet lists Marquetería Real", ids.has("marqueteria_real"), str(ids))
+	var jet: Dictionary = AirplaneBuilder.build(jet_id, NAN, {}, "marqueteria_real")
+	check("the jet builds with Marquetería Real", not jet.is_empty())
+	if jet.is_empty():
+		return
+	var detail := VehiclePaint.detail_enabled()
+	for part: String in ["fuselage", "wing", "doors", "stab", "fin"]:
+		var material_name := "paint_doors_ala" if part == "doors" else "paint_" + part
+		var finish := _materials_named(jet.root, material_name)
+		check("Marquetería Real %s: veneer maps under a gloss lacquer clear coat, brass-only metal mask" % part, finish.size() == 1
+			and finish[0].albedo_texture.resource_path.ends_with("marqueteria_real_%s.jpg" % part)
+			and finish[0].metallic_texture != null and finish[0].metallic_texture.resource_path.ends_with("marqueteria_real_%s_metallic.png" % part)
+			and finish[0].clearcoat_enabled and not finish[0].emission_enabled
+			and (finish[0].normal_texture != null) == detail and (finish[0].roughness_texture != null) == detail)
+	var trim := _materials_named(jet.root, "paint_trim_carbono")
+	check("the carbon trim becomes lacquered ebony", trim.size() >= 1 and trim[0].albedo_texture == null
+		and trim[0].clearcoat_enabled and trim[0].albedo_color.get_luminance() < 0.2)
 	jet.root.free()

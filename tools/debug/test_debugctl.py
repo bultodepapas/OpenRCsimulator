@@ -420,6 +420,50 @@ class DebugctlTests(unittest.TestCase):
         backend.assert_called_once()
         sampler.assert_called_once()
 
+    def test_explicit_native_renderer_options_stay_before_user_arguments(self) -> None:
+        os.environ["OPENRC_GODOT"] = "source-godot"
+        out = Path(self.tmp.name) / "metal-run"
+        process = SimpleNamespace(pid=12345)
+        with patch.object(debugctl.sys, "platform", "darwin"), \
+                patch.object(debugctl.admission, "enabled", return_value=False), \
+                patch.object(debugctl, "reserve_port", return_value=43210), \
+                patch.object(debugctl.subprocess, "Popen", return_value=process) as popen, \
+                patch.object(debugctl, "wait_ready", return_value={"result": {"pid": 12346}}):
+            status, _, err = self.run_cli("launch", "--out", str(out), "--rendering-method", "forward_plus",
+                                         "--rendering-driver", "metal", "--fullscreen", "--", "--quick-flight")
+        self.assertEqual((status, err), (0, ""))
+        expected = ["source-godot", "--path", str(debugctl.REPO / "app"),
+                    "--rendering-method", "forward_plus", "--rendering-driver", "metal", "--fullscreen",
+                    "--resolution", "1920x1080", "--", "--quick-flight"]
+        self.assertEqual(popen.call_args.args[0], expected)
+        self.assertEqual(json.loads((out / "launch.json").read_text())["command"], expected)
+
+    def test_invalid_renderer_options_do_not_claim_a_port_or_spawn(self) -> None:
+        cases = [("--rendering-method", "unknown"), ("--rendering-driver", "unknown"),
+                 ("--rendering-method",), ("--rendering-driver",),
+                 ("--rendering-method", "mobile", "--rendering-method", "forward_plus")]
+        for args in cases:
+            with self.subTest(args=args), patch.object(debugctl.admission, "enabled", return_value=False), \
+                    patch.object(debugctl, "reserve_port") as reserve, \
+                    patch.object(debugctl.subprocess, "Popen") as popen:
+                status, _, err = self.run_cli("launch", *args)
+                self.assertEqual(status, 2)
+                self.assertIn("requires one supported value", err)
+                reserve.assert_not_called()
+                popen.assert_not_called()
+
+    def test_explicit_renderer_keeps_managed_host_admission(self) -> None:
+        from tools.testqueue import integration
+        args = ["--rendering-method", "forward_plus", "--rendering-driver", "metal"]
+        with patch.object(debugctl.admission, "enabled", return_value=True), \
+                patch.object(debugctl.admission, "inherited", return_value=False), \
+                patch.object(integration, "open_debug", return_value=0) as managed, \
+                patch.object(debugctl.subprocess, "Popen") as popen:
+            status, _, err = self.run_cli("launch", *args)
+        self.assertEqual((status, err), (0, ""))
+        managed.assert_called_once_with(args, debugctl.REPO)
+        popen.assert_not_called()
+
     def test_rendered_linux_without_display_keeps_xvfb_path(self) -> None:
         os.environ["OPENRC_GODOT"] = "source-godot"
         os.environ.pop("DISPLAY", None)

@@ -1,6 +1,7 @@
 extends SceneTree
 const UiDriver := preload("res://tests/ui_driver.gd")
 const Screen := preload("res://ui/screen.gd")
+const RcInput := preload("res://input/rc_input.gd")
 const PREFS := "user://test_controller_menu.cfg"
 var failures := 0
 var checks := 0
@@ -192,8 +193,31 @@ func _run() -> void:
 	await button(JOY_BUTTON_A)
 	check("draft radio exposes calibration without an Apply step", session.radio.profile.kind == "gamepad" and setup.calibrate_button.visible and not setup.calibrate_button.disabled)
 	setup.calibrate_button.grab_focus()
+	var early_refusal := [false]
+	var on_wizard_opened := func(_surface: Control, id: String, _feedback: bool) -> void:
+		if id != "radio_calibration":
+			return
+		var wizard: Node = app.screens.top()
+		# A synthetic device has no hardware poll. Supply stable neutral readings,
+		# but still let the real surface sample once per process frame.
+		wizard.read_axis = func(_device: int, _axis: int) -> float: return 0.0
+		wizard.advance()
+		early_refusal[0] = wizard._wizard.step == 0 and not wizard._wizard.error.is_empty()
+	app.screens.surface_opened.connect(on_wizard_opened)
 	await button(JOY_BUTTON_A)
+	app.screens.surface_opened.disconnect(on_wizard_opened)
 	check("new radio calibration stays in the draft without replacing the flight controller", session.radio.profile.kind == "gamepad" and session.calibration == null and app.screens.is_top("radio_calibration") and session.sim.paused)
+	check("wizard refuses confirmation before independent samples", early_refusal[0])
+	var radio_wizard: Node = app.screens.top()
+	check("calibration opens with Next focused", root.gui_get_focus_owner() == radio_wizard.next_button)
+	var stable_samples: bool = await ui.wait_until(func() -> bool:
+		if not is_instance_valid(radio_wizard) or not app.screens.is_top("radio_calibration"):
+			return false
+		for axis: int in RcInput.AXES:
+			if not radio_wizard._wizard.stable_axis(axis).get("ok", false):
+				return false
+		return true)
+	check("wizard receives the required stable neutral samples", stable_samples)
 	await button(JOY_BUTTON_A)
 	check("selected menu pad advances the draft radio wizard", app.screens.is_top("radio_calibration") and app.screens.top()._wizard.step == 1)
 	await button(JOY_BUTTON_B)

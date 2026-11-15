@@ -23,11 +23,13 @@ class FixtureService extends Node:
 	var store := Fixtures.FakeStore.new()
 	var flight_profile := Profile.defaults("joystick", "radio_custom")
 	var ui_profile := Profile.defaults()
+	var last_setup_leases: Dictionary = {}
 	func profile_for_device(id: int) -> Dictionary:
 		return (ui_profile if id == 8 else flight_profile).duplicate(true)
 	func is_ui_gamepad(id: int) -> bool:
 		return id == 8 and ui_profile.get("kind", "") == "gamepad" and bool(registry.device_for_id(id).get("connected", false))
-	func save_settings_from_setup(candidate: Dictionary, flight_id: int, ui_id: int) -> Dictionary:
+	func save_settings_from_setup(candidate: Dictionary, flight_id: int, ui_id: int, leases: Dictionary) -> Dictionary:
+		last_setup_leases = leases.duplicate(true)
 		var result: Dictionary = store.save_profile(candidate)
 		if result.ok:
 			flight_profile = candidate.duplicate(true)
@@ -100,6 +102,15 @@ func _run() -> void:
 	check("actual Controls opens over pause", shell.screens.is_top("controls"))
 	var setup: Node = shell.screens.top()
 	check("unchanged profile saves through Controls", setup._save_profile(false))
+	var flight_lease: Dictionary = service.last_setup_leases.get("flight", {})
+	var ui_lease: Dictionary = service.last_setup_leases.get("ui", {})
+	check("Controls forwards both live connection leases", flight_lease.get("id") == 7 \
+		and flight_lease.get("generation") == service.registry.connection_generation(7) \
+		and flight_lease.get("generation", 0) > 0 \
+		and flight_lease.get("identity", {}).get("raw_name") == "Flight stick" \
+		and ui_lease.get("id") == 8 and ui_lease.get("generation") == service.registry.connection_generation(8) \
+		and ui_lease.get("generation", 0) > 0 \
+		and ui_lease.get("identity", {}).get("raw_name") == "Menu pad")
 	setup.request_close()
 	check("Cancel/close returns to pause", shell.screens.is_top("pause"))
 	shell.screens.pop(false, false)
@@ -290,8 +301,28 @@ func _test_editing_keys(shell: RoutingShell, service: FixtureService) -> void:
 		shell._exit_request_active = false
 		editor.text = "abc def"
 		editor.caret_column = editor.text.length()
-		await _key(KEY_BACKSPACE, 0, true)
-		check("modified editing key stays in the editor", editor.text.length() < 7 and shell.screens.is_top("controls"))
+		# Word deletion uses a platform-specific modifier (Option on macOS).
+		var word_delete: InputEventKey
+		if InputMap.has_action("ui_text_backspace_word"):
+			for binding: InputEvent in InputMap.action_get_events("ui_text_backspace_word"):
+				if not binding is InputEventKey:
+					continue
+				var candidate: InputEventKey = binding.duplicate()
+				candidate.pressed = true
+				if (candidate.ctrl_pressed or candidate.alt_pressed or candidate.shift_pressed or candidate.meta_pressed) \
+						and candidate.is_action_pressed("ui_text_backspace_word", false, true):
+					word_delete = candidate
+					break
+		check("native modified word-deletion binding exists", word_delete != null)
+		if word_delete != null:
+			Input.parse_input_event(word_delete)
+			var release: InputEventKey = word_delete.duplicate()
+			release.pressed = false
+			Input.parse_input_event(release)
+			await process_frame
+			await process_frame
+		check("modified editing key stays in the editor", word_delete != null and editor.text == "abc " \
+			and root.gui_get_focus_owner() == editor and shell.screens.is_top("controls"))
 		setup.save_button.grab_focus()
 		await _key(KEY_X, 120)
 		# UI-15-UX-02b: the edited name makes the draft dirty, so Back asks first; Discard closes.

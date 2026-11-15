@@ -55,6 +55,10 @@ def parser():
 
 
 def main(argv=None):
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if arguments and arguments[0] == 'pool':
+        from tools.testqueue.pool import main as pool_main
+        return pool_main(arguments[1:])
     args = parser().parse_args(argv)
     if args.command == "serve":
         if not 1 <= args.headless_slots <= 8:

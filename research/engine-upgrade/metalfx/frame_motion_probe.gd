@@ -44,6 +44,9 @@ func _once(viewport: SubViewport) -> void:
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	await process_frame
 	await RenderingServer.frame_post_draw
+	# The server consumes UPDATE_ONCE, but SubViewport's getter retains its
+	# cached request. Explicitly disable and prove no further SDK encodes below.
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 
 
 func _status(viewport: SubViewport) -> Dictionary:
@@ -193,6 +196,14 @@ func _run() -> void:
 	mesh.position.x = 24.0 * meters_per_pixel
 	await _once(viewport)
 	var after := _status(viewport)
+	for _frame in 2:
+		await process_frame
+		await RenderingServer.frame_post_draw
+	var idle := _status(viewport)
+	result.cases["idle_after_move"] = idle
+	_check(idle.get("submitted") == after.get("submitted") \
+		and idle.get("generation") == after.get("generation") \
+		and idle.get("encoded_epoch") == after.get("encoded_epoch"), "disabled_viewport_encoded_again")
 	var generated := _read(viewport)
 	var actual_current := viewport.get_texture().get_image()
 	result.cases["after"] = after

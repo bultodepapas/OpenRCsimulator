@@ -1,0 +1,1483 @@
+diff --git a/drivers/metal/SCsub b/drivers/metal/SCsub
+--- a/drivers/metal/SCsub
++++ b/drivers/metal/SCsub
+@@ -65,7 +65,7 @@
+ if env["platform"] == "macos":
+     # The bundled metal-cpp predates MTLFXFrameInterpolator. Keep this small
+     # SDK bridge macOS-only instead of changing the shared third-party pin.
+-    env_metal.add_source_files(driver_obj, ["metalfx_frame_bridge.mm", "metalfx_denoised_bridge.mm"])
++    env_metal.add_source_files(driver_obj, ["metalfx_frame_bridge.mm", "metalfx_denoised_bridge.mm", "openrc_mfx_present_bridge.mm"])
+ env.drivers_sources += driver_obj
+ 
+ # Needed to force rebuilding the driver files when the thirdparty library is updated.
+diff --git a/drivers/metal/openrc_mfx_present_bridge.h b/drivers/metal/openrc_mfx_present_bridge.h
+new file mode 100644
+--- /dev/null
++++ b/drivers/metal/openrc_mfx_present_bridge.h
+@@ -0,0 +1,41 @@
++#pragma once
++
++#include "openrc_mfx_present_state.h"
++
++namespace OpenRCMetalPresent {
++
++struct Presenter;
++using Handle = std::shared_ptr<Presenter>;
++
++struct Snapshot {
++	uint64_t generation = 0;
++	uint64_t real_accepted_jobs = 0;
++	uint64_t pair_accepted_candidates = 0;
++	uint64_t real_present_requested = 0;
++	uint64_t generated_present_requested = 0;
++	uint64_t real_command_scheduled = 0;
++	uint64_t generated_command_scheduled = 0;
++	uint64_t real_presented = 0;
++	uint64_t generated_presented = 0;
++	uint64_t retired_real_unresolved = 0;
++	uint64_t retired_generated_unresolved = 0;
++	uint64_t gpu_failed = 0;
++	uint64_t last_presented_frame = 0;
++	uint64_t blocked_source_epoch = 0;
++	uint64_t discontinuities = 0;
++	double last_os_presented_time = 0.0;
++	double last_callback_time = 0.0;
++};
++
++// p_layer and p_device are actual CAMetalLayer and MTLDevice objects. The
++// returned object owns its run loop and uses only the display-link drawable.
++Handle create(void *p_layer, void *p_device);
++void stop(const Handle &p_presenter);
++double native_time();
++uint64_t generation(const Handle &p_presenter);
++void retire_generation(const Handle &p_presenter);
++bool try_retire_complete(const Handle &p_presenter);
++bool submit(const Handle &p_presenter, Job p_job);
++Snapshot snapshot(const Handle &p_presenter);
++
++} // namespace OpenRCMetalPresent
+diff --git a/drivers/metal/openrc_mfx_present_bridge.mm b/drivers/metal/openrc_mfx_present_bridge.mm
+new file mode 100644
+--- /dev/null
++++ b/drivers/metal/openrc_mfx_present_bridge.mm
+@@ -0,0 +1,381 @@
++// Optional macOS display-link output. All source images are already converted
++// by Godot's screen blit and complete on the producer GPU queue before submit.
++#include "openrc_mfx_present_bridge.h"
++
++#import <Foundation/Foundation.h>
++#import <Metal/Metal.h>
++#import <QuartzCore/QuartzCore.h>
++#include <AvailabilityMacros.h>
++#include <chrono>
++#include <condition_variable>
++#include <mutex>
++#include <pthread.h>
++
++#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
++namespace OpenRCMetalPresent {
++struct Shared {
++	// Gate serializes stop/retire against the commit-and-present critical section.
++	// GPU and OS callbacks never acquire it and may therefore run inline safely.
++	std::mutex gate;
++	std::mutex mutex;
++	std::condition_variable started_condition;
++	Scheduler scheduler;
++	std::atomic<uint64_t> requested_generation{ 1 };
++	Snapshot stats;
++	bool stopping = false;
++	bool started = false;
++	bool valid = false;
++	unsigned in_flight = 0;
++	double previous_display_target = 0.0;
++	double display_period = 0.0;
++	CFRunLoopRef run_loop = nullptr;
++	__strong CAMetalLayer *layer = nil;
++	__strong id<MTLDevice> device = nil;
++	__strong id<MTLCommandQueue> queue = nil;
++	__strong id<MTLRenderPipelineState> pipeline_sdr = nil;
++	__strong id<MTLRenderPipelineState> pipeline_hdr = nil;
++};
++
++struct Presenter {
++	std::shared_ptr<Shared> state;
++	pthread_t worker{};
++	bool worker_started = false;
++};
++
++static void retire_stats(Shared &p_state) {
++	uint64_t real = p_state.stats.retired_real_unresolved;
++	uint64_t generated = p_state.stats.retired_generated_unresolved;
++	if (p_state.stats.real_present_requested > p_state.stats.real_presented) { real += p_state.stats.real_present_requested - p_state.stats.real_presented; }
++	if (p_state.stats.generated_present_requested > p_state.stats.generated_presented) { generated += p_state.stats.generated_present_requested - p_state.stats.generated_presented; }
++	uint64_t failures = p_state.stats.gpu_failed;
++	p_state.stats = {};
++	p_state.stats.retired_real_unresolved = real;
++	p_state.stats.retired_generated_unresolved = generated;
++	p_state.stats.gpu_failed = failures;
++}
++
++static void synchronize_generation(Shared &p_state) {
++	uint64_t requested = p_state.requested_generation.load(std::memory_order_acquire);
++	if (!requested) { return; }
++	if (requested != p_state.scheduler.current_generation()) {
++		p_state.scheduler.reset_to(requested);
++		retire_stats(p_state);
++		p_state.previous_display_target = 0.0;
++		p_state.display_period = 0.0;
++	}
++}
++} // namespace OpenRCMetalPresent
++
++API_AVAILABLE(macos(26.0))
++@interface OpenRCMetalDisplayDelegate : NSObject <CAMetalDisplayLinkDelegate> {
++@public
++	std::shared_ptr<OpenRCMetalPresent::Shared> state;
++}
++@end
++
++@implementation OpenRCMetalDisplayDelegate
++- (void)metalDisplayLink:(CAMetalDisplayLink *)p_link needsUpdate:(CAMetalDisplayLinkUpdate *)p_update {
++	(void)p_link;
++	@autoreleasepool {
++		auto s = state;
++		if (!s || !p_update || !p_update.drawable) { return; }
++		std::unique_lock<std::mutex> gate(s->gate);
++		std::unique_lock<std::mutex> lock(s->mutex);
++		if (s->stopping) { return; }
++		OpenRCMetalPresent::synchronize_generation(*s);
++		if (!s->requested_generation.load(std::memory_order_acquire)) { return; }
++		double target = p_update.targetPresentationTimestamp;
++		if (std::isfinite(target) && target > s->previous_display_target) {
++			double interval = target - s->previous_display_target;
++			s->display_period = s->previous_display_target > 0.0 && interval >= 0.001 && interval <= 0.1 ? interval : 0.0;
++			s->previous_display_target = target;
++		} else {
++			s->display_period = 0.0;
++		}
++		if (s->in_flight != 0) { return; }
++		double now = CACurrentMediaTime();
++		OpenRCMetalPresent::Choice choice = s->scheduler.choose(now, p_update.targetTimestamp, target, s->display_period, true);
++		if (choice.kind == OpenRCMetalPresent::Kind::NONE || !choice.texture) { return; }
++		std::unique_lock<std::mutex> source_gate;
++		if (choice.source_generation) {
++			source_gate = choice.source_generation->lock_for_presentation();
++			if (choice.source_generation->is_cancelled()) { return; }
++		}
++		std::unique_lock<std::mutex> proof_gate;
++		if (choice.proof) {
++			proof_gate = choice.proof->lock_for_presentation();
++			if (choice.proof->is_cancelled()) { return; }
++		}
++		id<MTLTexture> src = (__bridge id<MTLTexture>)choice.texture;
++		id<CAMetalDrawable> drawable = p_update.drawable;
++		id<MTLTexture> dst = drawable.texture;
++		if (!src || !dst || src.device != s->device || dst.device != s->device ||
++				src.width != dst.width || src.height != dst.height ||
++				src.pixelFormat != dst.pixelFormat ||
++				(src.usage & MTLTextureUsageShaderRead) == 0) { return; }
++		id<MTLRenderPipelineState> pipeline = dst.pixelFormat == MTLPixelFormatBGRA8Unorm ? s->pipeline_sdr :
++				(dst.pixelFormat == MTLPixelFormatRGBA16Float ? s->pipeline_hdr : nil);
++		if (!pipeline) { return; }
++		id<MTLCommandBuffer> command = [s->queue commandBuffer];
++		if (!command) { return; }
++		MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
++		pass.colorAttachments[0].texture = dst;
++		pass.colorAttachments[0].loadAction = MTLLoadActionDontCare;
++		pass.colorAttachments[0].storeAction = MTLStoreActionStore;
++		id<MTLRenderCommandEncoder> encoder = [command renderCommandEncoderWithDescriptor:pass];
++		if (!encoder) { return; }
++		[encoder setRenderPipelineState:pipeline];
++		[encoder setFragmentTexture:src atIndex:0];
++		[encoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
++		[encoder endEncoding];
++		// The display-link contract requires a committed command before the
++		// drawable's direct present, both before this update's deadline.
++		if (CACurrentMediaTime() >= p_update.targetTimestamp) { return; }
++		if (choice.proof && choice.proof->is_cancelled()) { return; }
++		if (choice.source_generation && choice.source_generation->is_cancelled()) { return; }
++		if (choice.generation != s->requested_generation.load(std::memory_order_acquire)) { return; }
++		if (!s->scheduler.commit(choice)) { return; }
++		const uint64_t sample_generation = choice.generation;
++		const uint64_t sample_frame = choice.frame;
++		const bool is_generated = choice.kind == OpenRCMetalPresent::Kind::GENERATED;
++		std::weak_ptr<OpenRCMetalPresent::Shared> weak = s;
++		auto completion_choice = choice;
++		[drawable addPresentedHandler:^(id<MTLDrawable> p_drawable) {
++			auto shared = weak.lock();
++			if (!shared) { return; }
++			double presented = p_drawable.presentedTime;
++			double observed = CACurrentMediaTime();
++			std::lock_guard<std::mutex> guard(shared->mutex);
++			if (sample_generation != shared->requested_generation.load(std::memory_order_acquire) || !std::isfinite(presented) || presented <= 0.0) { return; }
++			if (is_generated) { shared->stats.generated_presented++; } else { shared->stats.real_presented++; }
++			if (presented > shared->stats.last_os_presented_time) {
++				shared->stats.last_presented_frame = sample_frame;
++				shared->stats.last_os_presented_time = presented;
++				shared->stats.last_callback_time = observed;
++			}
++		}];
++		[command addScheduledHandler:^(id<MTLCommandBuffer> p_command) {
++			(void)p_command;
++			auto shared = weak.lock();
++			if (!shared) { return; }
++			std::lock_guard<std::mutex> guard(shared->mutex);
++			if (sample_generation != shared->requested_generation.load(std::memory_order_acquire)) { return; }
++			if (is_generated) { shared->stats.generated_command_scheduled++; } else { shared->stats.real_command_scheduled++; }
++		}];
++		[command addCompletedHandler:^(id<MTLCommandBuffer> p_command) {
++			// Captures the converted slot through this GPU read and can requeue
++			// the exact current-real fallback if this present command fails.
++			auto shared = weak.lock();
++			if (!shared) { return; }
++			std::lock_guard<std::mutex> guard(shared->mutex);
++			if (shared->in_flight > 0) { shared->in_flight--; }
++			if (sample_generation == shared->scheduler.current_generation() && p_command.status != MTLCommandBufferStatusCompleted) {
++				uint64_t expected = sample_generation;
++				uint64_t replacement = expected == UINT64_MAX ? 0 : expected + 1;
++				if (shared->requested_generation.compare_exchange_strong(expected, replacement, std::memory_order_acq_rel)) {
++					OpenRCMetalPresent::retire_stats(*shared);
++					shared->stats.gpu_failed++;
++					if (replacement) { shared->scheduler.recover_failed(completion_choice); }
++					else { shared->scheduler.reset(); }
++				} else {
++					OpenRCMetalPresent::synchronize_generation(*shared);
++				}
++			}
++		}];
++		s->in_flight++;
++		if (is_generated) { s->stats.generated_present_requested++; } else { s->stats.real_present_requested++; }
++		lock.unlock();
++		[command commit];
++		[drawable present];
++	}
++}
++@end
++
++namespace OpenRCMetalPresent {
++static id<MTLRenderPipelineState> make_pipeline(id<MTLDevice> p_device, MTLPixelFormat p_format) {
++	NSString *source = @"#include <metal_stdlib>\n"
++			"using namespace metal;\n"
++			"vertex float4 orc_vertex(uint i [[vertex_id]]) {\n"
++			"  const float2 p[3] = {float2(-1,-1),float2(3,-1),float2(-1,3)};\n"
++			"  return float4(p[i],0,1);\n"
++			"}\n"
++			"fragment float4 orc_fragment(float4 pos [[position]], texture2d<float,access::read> img [[texture(0)]]) {\n"
++			"  return img.read(uint2(pos.xy));\n"
++			"}\n";
++	NSError *error = nil;
++	id<MTLLibrary> library = [p_device newLibraryWithSource:source options:nil error:&error];
++	if (!library) { return nil; }
++	id<MTLFunction> vertex = [library newFunctionWithName:@"orc_vertex"];
++	id<MTLFunction> fragment = [library newFunctionWithName:@"orc_fragment"];
++	if (!vertex || !fragment) { return nil; }
++	MTLRenderPipelineDescriptor *descriptor = [[MTLRenderPipelineDescriptor alloc] init];
++	descriptor.vertexFunction = vertex;
++	descriptor.fragmentFunction = fragment;
++	descriptor.colorAttachments[0].pixelFormat = p_format;
++	return [p_device newRenderPipelineStateWithDescriptor:descriptor error:&error];
++}
++
++API_AVAILABLE(macos(26.0))
++static void *present_worker(void *p_userdata) {
++	auto *holder = static_cast<std::shared_ptr<Shared> *>(p_userdata);
++	auto shared = std::move(*holder);
++	delete holder;
++	@autoreleasepool {
++		OpenRCMetalDisplayDelegate *delegate = [[OpenRCMetalDisplayDelegate alloc] init];
++		delegate->state = shared;
++		CAMetalDisplayLink *link = [[CAMetalDisplayLink alloc] initWithMetalLayer:shared->layer];
++		CFRunLoopRef loop = CFRunLoopGetCurrent();
++		if (link && loop) {
++			link.delegate = delegate;
++			[link addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
++		}
++		{
++			std::lock_guard<std::mutex> guard(shared->mutex);
++			shared->run_loop = loop;
++			if (loop) { CFRetain(loop); }
++			shared->valid = link != nil && loop != nullptr;
++			shared->started = true;
++			shared->started_condition.notify_all();
++		}
++		for (;;) {
++			{
++				std::lock_guard<std::mutex> guard(shared->mutex);
++				if (shared->stopping || !shared->valid) { break; }
++			}
++			@autoreleasepool { CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, true); }
++		}
++		[link invalidate];
++		std::lock_guard<std::mutex> guard(shared->mutex);
++		if (shared->run_loop) { CFRelease(shared->run_loop); shared->run_loop = nullptr; }
++	}
++	return nullptr;
++}
++
++API_AVAILABLE(macos(26.0))
++static bool start_worker(Presenter *p_presenter) {
++	if (!p_presenter || !p_presenter->state || p_presenter->worker_started) { return false; }
++	auto *holder = new std::shared_ptr<Shared>(p_presenter->state);
++	if (pthread_create(&p_presenter->worker, nullptr, present_worker, holder) != 0) {
++		delete holder;
++		return false;
++	}
++	p_presenter->worker_started = true;
++	return true;
++}
++
++static void stop_impl(Presenter *p_presenter) {
++	if (!p_presenter || !p_presenter->state) { return; }
++	auto shared = p_presenter->state;
++	CFRunLoopRef loop = nullptr;
++	{
++		std::lock_guard<std::mutex> gate(shared->gate);
++		std::lock_guard<std::mutex> guard(shared->mutex);
++		shared->stopping = true;
++		shared->scheduler.reset();
++		shared->requested_generation.store(shared->scheduler.current_generation(), std::memory_order_release);
++		loop = shared->run_loop;
++		if (loop) { CFRetain(loop); }
++	}
++	if (loop) { CFRunLoopStop(loop); CFRunLoopWakeUp(loop); CFRelease(loop); }
++	if (p_presenter->worker_started) {
++		pthread_join(p_presenter->worker, nullptr);
++		p_presenter->worker_started = false;
++	}
++}
++
++Handle create(void *p_layer, void *p_device) {
++	@autoreleasepool {
++		if (@available(macOS 26.0, *)) {
++			CAMetalLayer *layer = (__bridge CAMetalLayer *)p_layer;
++			id<MTLDevice> device = (__bridge id<MTLDevice>)p_device;
++			if (!layer || !device || layer.device != device || layer.pixelFormat != MTLPixelFormatBGRA8Unorm) { return {}; }
++			auto shared = std::make_shared<Shared>();
++			shared->layer = layer;
++			shared->device = device;
++			shared->queue = [device newCommandQueueWithMaxCommandBufferCount:2];
++			shared->pipeline_sdr = make_pipeline(device, MTLPixelFormatBGRA8Unorm);
++			shared->pipeline_hdr = make_pipeline(device, MTLPixelFormatRGBA16Float);
++			if (!shared->queue || !shared->pipeline_sdr || !shared->pipeline_hdr) { return {}; }
++			Handle presenter(new Presenter(), [](Presenter *p_value) {
++				if (p_value) {
++					stop_impl(p_value);
++					delete p_value;
++				}
++			});
++			presenter->state = shared;
++			if (!start_worker(presenter.get())) { return {}; }
++			std::unique_lock<std::mutex> lock(shared->mutex);
++			bool started = shared->started_condition.wait_for(lock, std::chrono::seconds(2), [&]() { return shared->started; });
++			bool valid = started && shared->valid;
++			lock.unlock();
++			if (!valid) { stop(presenter); return {}; }
++			return presenter;
++		}
++	}
++	return {};
++}
++
++void stop(const Handle &p_presenter) {
++	stop_impl(p_presenter.get());
++}
++
++double native_time() { return CACurrentMediaTime(); }
++
++uint64_t generation(const Handle &p_presenter) {
++	if (!p_presenter) { return 0; }
++	return p_presenter->state->requested_generation.load(std::memory_order_acquire);
++}
++
++void retire_generation(const Handle &p_presenter) {
++	if (!p_presenter) { return; }
++	auto &requested = p_presenter->state->requested_generation;
++	uint64_t prior = requested.load(std::memory_order_acquire);
++	while (prior) {
++		uint64_t next = prior == UINT64_MAX ? 0 : prior + 1;
++		if (requested.compare_exchange_weak(prior, next, std::memory_order_acq_rel)) { return; }
++	}
++}
++
++bool try_retire_complete(const Handle &p_presenter) {
++	if (!p_presenter) { return true; }
++	std::unique_lock<std::mutex> guard(p_presenter->state->gate, std::try_to_lock);
++	return guard.owns_lock();
++}
++
++bool submit(const Handle &p_presenter, Job p_job) {
++	if (!p_presenter) { return false; }
++	auto shared = p_presenter->state;
++	std::lock_guard<std::mutex> guard(shared->mutex);
++	if (shared->stopping || !shared->requested_generation.load(std::memory_order_acquire)) { return false; }
++	synchronize_generation(*shared);
++	bool paired = p_job.generated && p_job.paired_real;
++	if (!shared->scheduler.submit(std::move(p_job))) { return false; }
++	shared->stats.real_accepted_jobs++;
++	if (paired) { shared->stats.pair_accepted_candidates++; }
++	return true;
++}
++
++Snapshot snapshot(const Handle &p_presenter) {
++	if (!p_presenter) { return {}; }
++	std::lock_guard<std::mutex> guard(p_presenter->state->mutex);
++	synchronize_generation(*p_presenter->state);
++	Snapshot result = p_presenter->state->stats;
++	result.generation = p_presenter->state->requested_generation.load(std::memory_order_acquire);
++	result.blocked_source_epoch = p_presenter->state->scheduler.blocked_source_epoch();
++	result.discontinuities = p_presenter->state->scheduler.discontinuity_count();
++	return result;
++}
++} // namespace OpenRCMetalPresent
++#else
++namespace OpenRCMetalPresent {
++struct Presenter {};
++Handle create(void *, void *) { return {}; }
++void stop(const Handle &) {}
++double native_time() { return 0.0; }
++uint64_t generation(const Handle &) { return 0; }
++void retire_generation(const Handle &) {}
++bool try_retire_complete(const Handle &) { return true; }
++bool submit(const Handle &, Job) { return false; }
++Snapshot snapshot(const Handle &) { return {}; }
++}
++#endif
+diff --git a/drivers/metal/openrc_mfx_present_state.h b/drivers/metal/openrc_mfx_present_state.h
+new file mode 100644
+--- /dev/null
++++ b/drivers/metal/openrc_mfx_present_state.h
+@@ -0,0 +1,216 @@
++#pragma once
++
++// CPU-only scheduling and observation state for the opt-in display-link path.
++// It is deliberately independent of Objective-C and Godot ownership so callback
++// races can be tested without a display or GPU. The caller serializes Scheduler.
++#include "servers/rendering/storage/metalfx_presentation.h"
++#include <cmath>
++#include <cstdint>
++#include <memory>
++
++namespace OpenRCMetalPresent {
++
++struct Job {
++	uint64_t generation = 0;
++	uint64_t frame = 0;
++	uint64_t epoch = 0;
++	uint64_t serial = 0;
++	double reserved_at = 0.0;
++	double generated_deadline = 0.0;
++	double real_deadline = 0.0;
++	double real_interval = 0.0;
++	void *fallback = nullptr;
++	void *generated = nullptr;
++	void *paired_real = nullptr;
++	std::shared_ptr<Proof> proof;
++	std::shared_ptr<SourceGeneration> source_generation;
++	std::shared_ptr<void> output_lease;
++	bool generated_scheduled = false;
++};
++
++enum class Kind { NONE, GENERATED, REAL };
++
++struct Choice {
++	Kind kind = Kind::NONE;
++	uint64_t generation = 0;
++	uint64_t frame = 0;
++	void *texture = nullptr;
++	double target_time = 0.0;
++	std::shared_ptr<void> output_lease;
++	uint64_t abandoned_epoch = 0;
++	void *fallback_texture = nullptr;
++	std::shared_ptr<Proof> proof;
++	std::shared_ptr<SourceGeneration> source_generation;
++};
++
++// Fixed-capacity latest-complete scheduler. A successfully scheduled generated
++// image reserves its matching real image until the next eligible callback.
++class Scheduler {
++	static constexpr unsigned CAPACITY = 4;
++	Job slots[CAPACITY];
++	bool occupied[CAPACITY] = {};
++	uint64_t generation = 1;
++	uint64_t last_real_scheduled = 0;
++	uint64_t last_generated_scheduled = 0;
++	double last_real_target = 0.0;
++	double last_generated_target = 0.0;
++	uint64_t blocked_epoch = 0;
++	uint64_t last_pair_epoch = 0;
++	uint64_t discontinuities = 0;
++	int reserved = -1;
++
++	void erase(unsigned p_index) {
++		if (reserved == int(p_index)) {
++			reserved = -1;
++		}
++		occupied[p_index] = false;
++		slots[p_index] = Job();
++	}
++
++public:
++	uint64_t current_generation() const { return generation; }
++	uint64_t last_real() const { return last_real_scheduled; }
++	uint64_t blocked_source_epoch() const { return blocked_epoch; }
++	uint64_t discontinuity_count() const { return discontinuities; }
++
++	void reset_to(uint64_t p_generation) {
++		if (!p_generation || p_generation == generation) { return; }
++		const uint64_t retired_epoch = last_pair_epoch ? last_pair_epoch : blocked_epoch;
++		for (unsigned i = 0; i < CAPACITY; ++i) {
++			erase(i);
++		}
++		generation = p_generation;
++		last_real_scheduled = 0;
++		last_generated_scheduled = 0;
++		last_real_target = 0.0;
++		last_generated_target = 0.0;
++		blocked_epoch = retired_epoch;
++		last_pair_epoch = 0;
++		if (retired_epoch) { discontinuities++; }
++	}
++
++	void reset() {
++		uint64_t next = generation + 1;
++		reset_to(next ? next : 1);
++	}
++
++	bool submit(Job p_job) {
++		if (p_job.generation != generation || p_job.frame == 0 || p_job.frame <= last_real_scheduled || !p_job.fallback || !p_job.output_lease ||
++				(p_job.proof && p_job.proof->is_cancelled()) || (p_job.source_generation && p_job.source_generation->is_cancelled())) {
++			return false;
++		}
++		if (p_job.generated_scheduled) { return false; }
++		for (unsigned i = 0; i < CAPACITY; ++i) {
++			if (occupied[i] && slots[i].frame == p_job.frame) { return false; }
++		}
++		int free_index = -1;
++		for (unsigned i = 0; i < CAPACITY; ++i) {
++			if (!occupied[i]) { free_index = int(i); break; }
++		}
++		if (free_index < 0) {
++			// Do not displace an image after scheduling its generated partner.
++			int oldest = -1;
++			for (unsigned i = 0; i < CAPACITY; ++i) {
++				if (int(i) != reserved && (oldest < 0 || slots[i].frame < slots[oldest].frame)) { oldest = int(i); }
++			}
++			if (oldest < 0 || slots[oldest].frame >= p_job.frame) { return false; }
++			erase(unsigned(oldest));
++			free_index = oldest;
++		}
++		if (p_job.proof && p_job.epoch) { last_pair_epoch = p_job.epoch; }
++		slots[free_index] = std::move(p_job);
++		occupied[free_index] = true;
++		return true;
++	}
++
++	Choice choose(double p_now, double p_deadline, double p_target, double p_display_period, bool p_drawable) const {
++		if (!p_drawable || !std::isfinite(p_now) || !std::isfinite(p_deadline) || !std::isfinite(p_target) ||
++				p_now >= p_deadline || p_target <= p_now || p_target <= last_real_target || p_target <= last_generated_target) { return {}; }
++		int newest = -1;
++		for (unsigned i = 0; i < CAPACITY; ++i) {
++			if (occupied[i] && (!slots[i].proof || !slots[i].proof->is_cancelled()) &&
++					(!slots[i].source_generation || !slots[i].source_generation->is_cancelled()) &&
++					slots[i].frame > last_real_scheduled && (newest < 0 || slots[i].frame > slots[newest].frame)) { newest = int(i); }
++		}
++		if (newest < 0) { return {}; }
++		if (reserved >= 0 && occupied[reserved] && (!slots[reserved].proof || !slots[reserved].proof->is_cancelled()) &&
++				(!slots[reserved].source_generation || !slots[reserved].source_generation->is_cancelled())) {
++			const Job &old_real = slots[reserved];
++			// A stopped display link cannot reserve an old real indefinitely.
++			// Prefer the newest current-real fallback once the endpoint expires.
++			bool abandoned = p_target > old_real.real_deadline && newest != reserved;
++			const Job &real = abandoned ? slots[newest] : old_real;
++			return { Kind::REAL, generation, real.frame, real.generated_scheduled ? real.paired_real : real.fallback, p_target, real.output_lease,
++					abandoned ? old_real.epoch : 0, real.fallback, real.proof, real.source_generation };
++		}
++		const Job &job = slots[newest];
++		bool match = job.proof && job.epoch != blocked_epoch && job.proof->previous_frame == last_real_scheduled && job.proof->frame == job.frame && job.proof->epoch == job.epoch && job.proof->serial == job.serial &&
++				!job.proof->is_cancelled() && job.proof->encode_result.load(std::memory_order_acquire) == 1 && job.proof->sdk_completion.load(std::memory_order_acquire) == 1 &&
++				job.proof->warm_count.load(std::memory_order_acquire) >= 5;
++		bool cadence = last_real_target > 0 && std::isfinite(p_display_period) && p_display_period >= 0.001 && p_display_period <= 0.1 &&
++				std::isfinite(job.real_interval) && job.real_interval >= 0.01 && job.real_interval <= 0.2 &&
++				p_display_period * 2.0 <= job.real_interval * 1.05 &&
++				p_target >= last_real_target + p_display_period * 0.75 && p_target <= last_real_target + p_display_period * 1.25 &&
++				p_target + p_display_period <= last_real_target + job.real_interval * 1.1;
++		bool bounded = std::isfinite(job.reserved_at) && job.reserved_at > 0.0 && std::isfinite(job.generated_deadline) &&
++				std::isfinite(job.real_deadline) && job.generated_deadline > job.reserved_at &&
++				job.real_deadline > job.generated_deadline && job.real_deadline - job.reserved_at <= 0.2 &&
++				p_target <= job.generated_deadline && p_target + p_display_period <= job.real_deadline;
++		if (!job.generated_scheduled && job.frame > last_generated_scheduled && job.generated && job.paired_real && match && cadence && bounded) {
++			return { Kind::GENERATED, generation, job.frame, job.generated, p_target, job.output_lease, 0, job.fallback, job.proof, job.source_generation };
++		}
++		return { Kind::REAL, generation, job.frame, job.generated_scheduled ? job.paired_real : job.fallback, p_target, job.output_lease, 0, job.fallback, job.proof, job.source_generation };
++	}
++
++	// On a presenter GPU failure, do not let a merely requested real frame be
++	// the left endpoint for later generated frames. Requeue its real fallback
++	// into a new generation; an old completion cannot reset a newer generation.
++	bool recover_failed(const Choice &p_choice) {
++		if (p_choice.generation != generation || !p_choice.fallback_texture || !p_choice.output_lease) { return false; }
++		reset();
++		Job fallback;
++		fallback.generation = generation;
++		fallback.frame = p_choice.frame;
++		fallback.fallback = p_choice.fallback_texture;
++		fallback.output_lease = p_choice.output_lease;
++		fallback.proof = p_choice.proof;
++		fallback.source_generation = p_choice.source_generation;
++		fallback.epoch = p_choice.proof ? p_choice.proof->epoch : 0;
++		return submit(std::move(fallback));
++	}
++
++	bool commit(const Choice &p_choice) {
++		if (p_choice.kind == Kind::NONE || p_choice.generation != generation || !p_choice.texture || !std::isfinite(p_choice.target_time) ||
++				p_choice.target_time <= last_real_target || p_choice.target_time <= last_generated_target) { return false; }
++		int index = -1;
++		for (unsigned i = 0; i < CAPACITY; ++i) {
++			if (occupied[i] && slots[i].frame == p_choice.frame) { index = int(i); break; }
++		}
++		if (index < 0 || p_choice.frame <= last_real_scheduled) { return false; }
++		Job &job = slots[index];
++		if (job.proof != p_choice.proof || job.source_generation != p_choice.source_generation || (job.proof && job.proof->is_cancelled()) ||
++				(job.source_generation && job.source_generation->is_cancelled())) { return false; }
++		if (p_choice.kind == Kind::GENERATED) {
++			if (job.generated_scheduled || job.generated != p_choice.texture || job.frame <= last_generated_scheduled) { return false; }
++			if (reserved >= 0 && reserved != index) { erase(unsigned(reserved)); }
++			job.generated_scheduled = true;
++			last_generated_scheduled = job.frame;
++			last_generated_target = p_choice.target_time;
++			reserved = index;
++			return true;
++		}
++		if ((job.generated_scheduled ? job.paired_real : job.fallback) != p_choice.texture) { return false; }
++		last_real_scheduled = job.frame;
++		last_real_target = p_choice.target_time;
++		if (p_choice.abandoned_epoch) {
++			blocked_epoch = p_choice.abandoned_epoch;
++			discontinuities++;
++		}
++		for (unsigned i = 0; i < CAPACITY; ++i) {
++			if (occupied[i] && slots[i].frame <= last_real_scheduled) { erase(i); }
++		}
++		return true;
++	}
++};
++
++} // namespace OpenRCMetalPresent
+diff --git a/drivers/metal/rendering_context_driver_metal.cpp b/drivers/metal/rendering_context_driver_metal.cpp
+--- a/drivers/metal/rendering_context_driver_metal.cpp
++++ b/drivers/metal/rendering_context_driver_metal.cpp
+@@ -96,6 +96,21 @@
+ 	return OK;
+ }
+ 
++#ifdef MACOS_ENABLED
++bool RenderingContextDriverMetal::openrc_presenter_requested() {
++	static const bool requested = OS::get_singleton()->get_environment("OPENRC_METALFX_DISPLAY_LINK") == "1";
++	return requested;
++}
++bool RenderingContextDriverMetal::openrc_presenter_probe_requested() {
++#ifdef DEBUG_ENABLED
++	static const bool requested = OS::get_singleton()->get_environment("OPENRC_METALFX_DISPLAY_LINK_PROBE") == "1";
++	return requested;
++#else
++	return false;
++#endif
++}
++#endif
++
+ const RenderingContextDriver::Device &RenderingContextDriverMetal::device_get(uint32_t p_device_index) const {
+ 	DEV_ASSERT(p_device_index < 1);
+ 	return device;
+@@ -148,6 +163,9 @@
+ 
+ class API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0)) SurfaceLayer final : public RenderingContextDriverMetal::Surface {
+ 	CA::MetalLayer *layer = nullptr;
++#ifdef MACOS_ENABLED
++	OpenRCMetalPresent::Handle openrc_presenter;
++#endif
+ 	LocalVector<MDFrameBufferLayer> frame_buffers;
+ 	uint32_t rear = -1;
+ 	uint32_t front = 0;
+@@ -156,6 +174,10 @@
+ public:
+ 	SurfaceLayer(CA::MetalLayer *p_layer, MTL::Device *p_device) :
+ 			Surface(p_device), layer(p_layer) {
++#ifdef MACOS_ENABLED
++		(void)RenderingContextDriverMetal::openrc_presenter_requested();
++		(void)RenderingContextDriverMetal::openrc_presenter_probe_requested();
++#endif
+ 		layer->setAllowsNextDrawableTimeout(true);
+ 		layer->setFramebufferOnly(true);
+ 		layer->setOpaque(!OS::get_singleton()->is_layered_allowed());
+@@ -164,8 +186,25 @@
+ 	}
+ 
+ 	~SurfaceLayer() override {
++#ifdef MACOS_ENABLED
++		openrc_presenter_stop();
++#endif
+ 		layer = nullptr;
+ 	}
++
++#ifdef MACOS_ENABLED
++	OpenRCMetalPresent::Handle openrc_presenter_start() override {
++		if (!openrc_presenter) {
++			openrc_presenter = OpenRCMetalPresent::create(layer, device);
++		}
++		return openrc_presenter;
++	}
++	OpenRCMetalPresent::Handle openrc_presenter_get() const override { return openrc_presenter; }
++	void openrc_presenter_stop() override {
++		OpenRCMetalPresent::stop(openrc_presenter);
++		openrc_presenter.reset();
++	}
++#endif
+ 
+ 	Error resize(uint32_t p_desired_framebuffer_count, RDD::DataFormat &r_format, RDD::ColorSpace &r_color_space) override final {
+ 		if (width == 0 || height == 0) {
+diff --git a/drivers/metal/rendering_context_driver_metal.h b/drivers/metal/rendering_context_driver_metal.h
+--- a/drivers/metal/rendering_context_driver_metal.h
++++ b/drivers/metal/rendering_context_driver_metal.h
+@@ -38,6 +38,10 @@
+ #include <Metal/Metal.hpp>
+ #include <QuartzCore/QuartzCore.hpp>
+ 
++#ifdef MACOS_ENABLED
++#include "openrc_mfx_present_bridge.h"
++#endif
++
+ namespace MTL3 {
+ class MDCommandBuffer;
+ }
+@@ -50,6 +54,10 @@
+ 	Device device; // There is only one device on Apple Silicon.
+ 
+ public:
++#ifdef MACOS_ENABLED
++	static bool openrc_presenter_requested();
++	static bool openrc_presenter_probe_requested();
++#endif
+ 	Error initialize() final override;
+ 	const Device &device_get(uint32_t p_device_index) const final override;
+ 	uint32_t device_get_count() const final override;
+@@ -122,6 +130,11 @@
+ 		virtual RDD::FramebufferID acquire_next_frame_buffer() = 0;
+ 		virtual void present(MTL3::MDCommandBuffer *p_cmd_buffer) = 0;
+ 		virtual MTL::Drawable *next_drawable() = 0;
++#ifdef MACOS_ENABLED
++		virtual OpenRCMetalPresent::Handle openrc_presenter_start() { return {}; }
++		virtual OpenRCMetalPresent::Handle openrc_presenter_get() const { return {}; }
++		virtual void openrc_presenter_stop() {}
++#endif
+ 		API_AVAILABLE(macos(26.0), ios(26.0))
+ 		virtual MTL::ResidencySet *get_residency_set() const = 0;
+ 		void set_max_fps(int p_max_fps) { present_minimum_duration = p_max_fps ? 1.0 / p_max_fps : 0.0; }
+diff --git a/servers/rendering/renderer_rd/renderer_compositor_rd.cpp b/servers/rendering/renderer_rd/renderer_compositor_rd.cpp
+--- a/servers/rendering/renderer_rd/renderer_compositor_rd.cpp
++++ b/servers/rendering/renderer_rd/renderer_compositor_rd.cpp
+@@ -39,18 +39,33 @@
+ #include "servers/rendering/renderer_rd/forward_mobile/render_forward_mobile.h"
+ #include "servers/rendering/rendering_server_types.h"
+ 
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++#include "drivers/metal/metal3_objects.h"
++#include "drivers/metal/rendering_context_driver_metal.h"
++#include <algorithm>
++#include <cmath>
++#endif
++
+ void RendererCompositorRD::blit_render_targets_to_screen(DisplayServerEnums::WindowID p_screen, const RenderingServerTypes::BlitToScreen *p_render_targets, int p_amount) {
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	if (_openrc_blit(p_screen, p_render_targets, p_amount)) { return; }
++#endif
+ 	Error err = RD::get_singleton()->screen_prepare_for_drawing(p_screen);
+ 	if (err != OK) {
+ 		// Window is minimized and does not have valid swapchain, skip drawing without printing errors.
+ 		return;
+ 	}
+-
+-	BlitPipelines blit_pipelines = _get_blit_pipelines_for_format(RD::get_singleton()->screen_get_framebuffer_format(p_screen));
+-
++	BlitPipelines pipelines = _get_blit_pipelines_for_format(RD::get_singleton()->screen_get_framebuffer_format(p_screen));
+ 	RD::DrawListID draw_list = RD::get_singleton()->draw_list_begin_for_screen(p_screen);
+ 	ERR_FAIL_COND(draw_list == RD::INVALID_ID);
+-
++	_draw_screen_blits(p_screen, p_render_targets, p_amount, draw_list, pipelines);
++	RD::get_singleton()->draw_list_end();
++}
++
++void RendererCompositorRD::_draw_screen_blits(DisplayServerEnums::WindowID p_screen, const RenderingServerTypes::BlitToScreen *p_render_targets, int p_amount,
++		RD::DrawListID p_draw_list, const BlitPipelines &p_blit_pipelines, RID p_override_texture) {
++	RD::DrawListID draw_list = p_draw_list;
++	const BlitPipelines &blit_pipelines = p_blit_pipelines;
+ 	const RD::ColorSpace color_space = RD::get_singleton()->screen_get_color_space(p_screen);
+ 	const float reference_luminance = RD::get_singleton()->get_context_driver()->window_get_hdr_output_reference_luminance(p_screen);
+ 	const float linear_luminance_scale = RD::get_singleton()->get_context_driver()->window_get_hdr_output_linear_luminance_scale(p_screen);
+@@ -58,7 +73,7 @@
+ 	const float reference_multiplier = _compute_reference_multiplier(color_space, reference_luminance, linear_luminance_scale);
+ 
+ 	for (int i = 0; i < p_amount; i++) {
+-		RID rd_texture = texture_storage->render_target_get_rd_texture(p_render_targets[i].render_target);
++		RID rd_texture = i == 0 && p_override_texture.is_valid() ? p_override_texture : texture_storage->render_target_get_rd_texture(p_render_targets[i].render_target);
+ 		ERR_CONTINUE(rd_texture.is_null());
+ 
+ 		BlitMode mode = p_render_targets[i].lens_distortion.apply ? BLIT_MODE_LENS : (p_render_targets[i].multi_view.use_layer ? BLIT_MODE_USE_LAYER : BLIT_MODE_NORMAL);
+@@ -118,8 +133,339 @@
+ 		RD::get_singleton()->draw_list_draw(draw_list, true);
+ 	}
+ 
+-	RD::get_singleton()->draw_list_end();
+-}
++}
++
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++namespace {
++struct OpenRCOutputReferences {
++	NS::SharedPtr<MTL::Texture> images[3];
++	std::shared_ptr<OpenRCMetalPresent::Ticket> ticket;
++};
++
++struct OpenRCBlitCallback {
++	OpenRCMetalPresent::Handle presenter;
++	OpenRCMetalPresent::Job job;
++	// This ticket holds the producer's textures until the conversion GPU work
++	// finishes, including its failure path and any viewport retirement.
++	std::shared_ptr<OpenRCMetalPresent::Ticket> source_ticket;
++};
++
++void openrc_blit_completed(RDD *, RDD::CommandBufferID p_command, void *p_userdata) {
++	OpenRCBlitCallback *args = static_cast<OpenRCBlitCallback *>(p_userdata);
++	auto *command = reinterpret_cast<MTL3::MDCommandBuffer *>(p_command.id);
++	if (!args || !command) { memdelete(args); return; }
++	command->end();
++	MTL::CommandBuffer *metal = command->ensure_command_buffer();
++	if (!metal) { memdelete(args); return; }
++	metal->addCompletedHandler([args](MTL::CommandBuffer *p_completed) {
++		if (p_completed && p_completed->status() == MTL::CommandBufferStatusCompleted) {
++			OpenRCMetalPresent::submit(args->presenter, std::move(args->job));
++		}
++		memdelete(args);
++	});
++}
++
++bool openrc_same_image_contract(RID p_reference, RID p_candidate, Size2i p_size) {
++	RD *rd = RD::get_singleton();
++	if (p_reference.is_null() || p_candidate.is_null() || !rd->texture_is_valid(p_reference) || !rd->texture_is_valid(p_candidate) || rd->texture_is_shared(p_candidate)) { return false; }
++	RD::TextureFormat reference = rd->texture_get_format(p_reference);
++	RD::TextureFormat candidate = rd->texture_get_format(p_candidate);
++	return candidate.texture_type == RD::TEXTURE_TYPE_2D && candidate.array_layers == 1 && candidate.mipmaps == 1 &&
++			candidate.samples == RD::TEXTURE_SAMPLES_1 && candidate.width == uint32_t(p_size.x) && candidate.height == uint32_t(p_size.y) &&
++			candidate.format == reference.format && (candidate.usage_bits & RD::TEXTURE_USAGE_SAMPLING_BIT) != 0;
++}
++} // namespace
++
++void RendererCompositorRD::_openrc_free_slot(OpenRCOutputSlot &r_slot) {
++	RD *rd = RD::get_singleton();
++	for (int i = 0; i < 3; ++i) {
++		if (r_slot.framebuffers[i].is_valid()) { rd->free_rid(r_slot.framebuffers[i]); }
++		if (r_slot.textures[i].is_valid()) { rd->free_rid(r_slot.textures[i]); }
++	}
++	r_slot = OpenRCOutputSlot();
++}
++
++void RendererCompositorRD::_openrc_collect_slots(bool p_all) {
++	for (int i = openrc_retired_slots.size() - 1; i >= 0; --i) {
++		OpenRCOutputSlot &slot = openrc_retired_slots.write[i];
++		if (p_all || !slot.lease || !slot.lease->held.load(std::memory_order_acquire)) {
++			_openrc_free_slot(slot);
++			openrc_retired_slots.remove_at(i);
++		}
++	}
++}
++
++bool RendererCompositorRD::_openrc_allocate_slots(Size2i p_size, RD::DataFormat p_format) {
++	if (p_size.x <= 0 || p_size.y <= 0) { return false; }
++	RD *rd = RD::get_singleton();
++	RD::TextureFormat format;
++	format.format = p_format;
++	format.width = p_size.x;
++	format.height = p_size.y;
++	format.usage_bits = RD::TEXTURE_USAGE_SAMPLING_BIT | RD::TEXTURE_USAGE_COLOR_ATTACHMENT_BIT;
++	auto *context = static_cast<RenderingContextDriverMetal *>(rd->get_context_driver());
++	MTL::Device *device = context->get_metal_device();
++	if (!device) { return false; }
++	MTL::PixelFormat pixel = p_format == RD::DATA_FORMAT_B8G8R8A8_UNORM ? MTL::PixelFormatBGRA8Unorm : MTL::PixelFormatRGBA16Float;
++	for (OpenRCOutputSlot &slot : openrc_slots) {
++		slot.size = p_size;
++		slot.format = p_format;
++		slot.lease = std::make_shared<OpenRCMetalPresent::Lease>();
++		for (int i = 0; i < 3; ++i) {
++			// Committed, device-owned textures have no Godot heap suballocation.
++			// Their native retain remains sufficient if the present queue outlives
++			// RD's imported wrapper during a bounded stop or resize.
++			NS::SharedPtr<MTL::TextureDescriptor> descriptor = NS::TransferPtr(MTL::TextureDescriptor::alloc()->init());
++			if (!descriptor) { goto failed; }
++			descriptor->setTextureType(MTL::TextureType2D);
++			descriptor->setPixelFormat(pixel);
++			descriptor->setWidth(p_size.x);
++			descriptor->setHeight(p_size.y);
++			descriptor->setResourceOptions(MTL::ResourceStorageModePrivate | MTL::ResourceHazardTrackingModeTracked);
++			descriptor->setUsage(MTL::TextureUsageRenderTarget | MTL::TextureUsageShaderRead);
++			NS::SharedPtr<MTL::Texture> native = NS::TransferPtr(device->newTexture(descriptor.get()));
++			if (!native) { goto failed; }
++			slot.textures[i] = rd->texture_create_from_extension(RD::TEXTURE_TYPE_2D, p_format, RD::TEXTURE_SAMPLES_1,
++					format.usage_bits, uint64_t(uintptr_t(native.get())), p_size.x, p_size.y, 1, 1, 1);
++			if (slot.textures[i].is_null()) { goto failed; }
++			Vector<RID> attachments;
++			attachments.push_back(slot.textures[i]);
++			slot.framebuffers[i] = rd->framebuffer_create(attachments);
++			if (slot.framebuffers[i].is_null()) { goto failed; }
++		}
++	}
++	return true;
++failed:
++	for (OpenRCOutputSlot &slot : openrc_slots) { _openrc_free_slot(slot); }
++	return false;
++}
++
++bool RendererCompositorRD::_openrc_blit(DisplayServerEnums::WindowID p_screen, const RenderingServerTypes::BlitToScreen *p_render_targets, int p_amount) {
++	if (p_screen != DisplayServerEnums::MAIN_WINDOW_ID) { return false; }
++	RD *rd = RD::get_singleton();
++	if (!openrc_start_decided) {
++		openrc_start_decided = true;
++		if (!RenderingContextDriverMetal::openrc_presenter_requested() ||
++				OS::get_singleton()->get_current_rendering_driver_name() != "metal" || p_amount != 1 || !p_render_targets ||
++				DisplayServer::get_singleton()->get_window_list().size() != 1 || p_render_targets[0].multi_view.use_layer ||
++				p_render_targets[0].lens_distortion.apply || p_render_targets[0].src_rect != Rect2(0, 0, 1, 1)) { return false; }
++		bool resized = false;
++		if (rd->screen_prepare_for_external_drawing(p_screen, resized) != OK) { return false; }
++		Size2i size(rd->screen_get_width(p_screen), rd->screen_get_height(p_screen));
++		if (p_render_targets[0].dst_rect != Rect2i(Vector2i(), size) || rd->screen_get_color_space(p_screen) != RD::COLOR_SPACE_REC709_NONLINEAR_SRGB || !_openrc_allocate_slots(size, RD::DATA_FORMAT_B8G8R8A8_UNORM)) { return false; }
++		RenderingContextDriver::SurfaceID id = rd->get_context_driver()->surface_get_from_window(p_screen);
++		auto *surface = reinterpret_cast<RenderingContextDriverMetal::Surface *>(id);
++		if (surface) { openrc_presenter = surface->openrc_presenter_start(); }
++		if (!openrc_presenter) {
++			for (OpenRCOutputSlot &slot : openrc_slots) { _openrc_free_slot(slot); }
++			return false;
++		}
++		openrc_surface_id = id;
++		openrc_source = std::make_shared<OpenRCMetalPresent::SourceGeneration>();
++		openrc_source_default = true;
++		openrc_owner = true;
++	}
++	if (!openrc_owner) { return false; }
++	_openrc_collect_slots();
++	Vector<RID> stale_descriptors;
++	for (const KeyValue<RID, RID> &entry : render_target_descriptors) {
++		if (!rd->uniform_set_is_valid(entry.value)) { stale_descriptors.push_back(entry.key); }
++	}
++	for (RID key : stale_descriptors) { render_target_descriptors.erase(key); }
++	RenderingContextDriver::SurfaceID current_id = rd->get_context_driver()->surface_get_from_window(p_screen);
++	if (!current_id) { return true; }
++	auto *current_surface = reinterpret_cast<RenderingContextDriverMetal::Surface *>(current_id);
++	auto current_handle = current_surface->openrc_presenter_get();
++	if (current_id != openrc_surface_id || current_handle != openrc_presenter) {
++		if (openrc_source) { openrc_source->request_cancel(); }
++		openrc_source_transition = true;
++		OpenRCMetalPresent::stop(openrc_presenter);
++		openrc_presenter.reset();
++		bool initial_resize = false;
++		if (rd->screen_prepare_for_external_drawing(p_screen, initial_resize) != OK) { return true; }
++		openrc_presenter = current_surface->openrc_presenter_start();
++		if (!openrc_presenter) { return true; }
++		openrc_surface_id = current_id;
++		openrc_resize_pending = true;
++	}
++	if (rd->get_context_driver()->surface_get_needs_resize(current_id) && !openrc_resize_pending) {
++		OpenRCMetalPresent::retire_generation(openrc_presenter);
++		openrc_resize_pending = true;
++	}
++	// A retirement request is nonblocking. Do not reconfigure the layer until
++	// any delegate already past its final generation check exits its gate.
++	if (openrc_resize_pending && !OpenRCMetalPresent::try_retire_complete(openrc_presenter)) { return true; }
++	bool resized = false;
++	if (rd->screen_prepare_for_external_drawing(p_screen, resized) != OK) { return true; }
++	Size2i size(rd->screen_get_width(p_screen), rd->screen_get_height(p_screen));
++	RD::ColorSpace color_space = rd->screen_get_color_space(p_screen);
++	RD::DataFormat output_format = color_space == RD::COLOR_SPACE_REC709_NONLINEAR_SRGB ? RD::DATA_FORMAT_B8G8R8A8_UNORM :
++			(color_space == RD::COLOR_SPACE_REC709_LINEAR ? RD::DATA_FORMAT_R16G16B16A16_SFLOAT : RD::DATA_FORMAT_MAX);
++	if (output_format == RD::DATA_FORMAT_MAX) { return true; }
++	if (resized || openrc_resize_pending || openrc_slots[0].size != size || openrc_slots[0].format != output_format) {
++		if (!openrc_resize_pending) {
++			OpenRCMetalPresent::retire_generation(openrc_presenter);
++			openrc_resize_pending = true;
++			return true;
++		}
++		unsigned held = 0;
++		for (const OpenRCOutputSlot &slot : openrc_slots) {
++			if (slot.lease && slot.lease->held.load(std::memory_order_acquire)) { held++; }
++		}
++		// Keep at most one retired set. On persistent GPU/callback delay skip
++		// output until a lease is returned; never accumulate resize generations.
++		if (uint32_t(openrc_retired_slots.size()) + held > 4) {
++			openrc_resize_pending = true;
++			return true;
++		}
++		for (OpenRCOutputSlot &slot : openrc_slots) {
++			if (slot.lease && slot.lease->held.load(std::memory_order_acquire)) { openrc_retired_slots.push_back(slot); slot = OpenRCOutputSlot(); }
++			else { _openrc_free_slot(slot); }
++		}
++		openrc_resize_pending = false;
++		if (!_openrc_allocate_slots(size, output_format)) { return true; }
++	}
++	if (!p_render_targets || p_amount <= 0) { return true; }
++	std::shared_ptr<OpenRCMetalPresent::SourceGeneration> incoming_source;
++	bool any_tagged = false;
++	bool all_tagged = true;
++	for (int i = 0; i < p_amount; ++i) {
++		auto token = p_render_targets[i].source_generation;
++		if (!token) { all_tagged = false; continue; }
++		any_tagged = true;
++		if (incoming_source && incoming_source != token) { return true; }
++		incoming_source = token;
++	}
++	if (any_tagged && !all_tagged) { return true; }
++	const auto &pair = p_render_targets[0].paired;
++	bool wants_pair = p_amount == 1 && pair.requested;
++	if (wants_pair && !incoming_source) { return true; }
++	if (!openrc_source || openrc_source_transition || openrc_source_default == any_tagged || (incoming_source && incoming_source != openrc_source)) {
++		if (!openrc_source_transition) {
++			if (openrc_source) { openrc_source->request_cancel(); }
++			OpenRCMetalPresent::retire_generation(openrc_presenter);
++			openrc_source_transition = true;
++		}
++		if ((openrc_source && !openrc_source->try_cancel_complete()) || !OpenRCMetalPresent::try_retire_complete(openrc_presenter)) { return true; }
++		if (incoming_source && incoming_source->is_cancelled()) { return true; }
++		openrc_source = incoming_source ? incoming_source : std::make_shared<OpenRCMetalPresent::SourceGeneration>();
++		openrc_source_default = !incoming_source;
++		openrc_source_transition = false;
++		// Captured producer generations predate this transition; consume them
++		// only after the producer has observed the new owner generation.
++		return true;
++	}
++	auto source_generation = openrc_source;
++	const uint64_t current_generation = OpenRCMetalPresent::generation(openrc_presenter);
++	if (source_generation->is_cancelled()) { return true; }
++	for (int i = 0; i < p_amount; ++i) {
++		if (any_tagged && (p_render_targets[i].paired.presenter_generation == 0 || p_render_targets[i].paired.presenter_generation != current_generation)) { return true; }
++	}
++	if (wants_pair && (!pair.proof || pair.proof->is_cancelled())) {
++		// A marked job from a retired source/presenter generation cannot supply
++		// even a real fallback: the whole viewport source may already be stale.
++		return true;
++	}
++	OpenRCOutputSlot *selected = nullptr;
++	std::shared_ptr<OpenRCMetalPresent::Ticket> output_ticket;
++	for (OpenRCOutputSlot &slot : openrc_slots) {
++		output_ticket = OpenRCMetalPresent::Ticket::acquire(slot.lease);
++		if (output_ticket) { selected = &slot; break; }
++	}
++	if (!selected) { return true; }
++	RID normal_texture = texture_storage->render_target_get_rd_texture(p_render_targets[0].render_target);
++	// Explicit debug-only routing control: two distinct converted outputs are
++	// drawn from the same real source. This is not a MetalFX-generated image.
++	bool synthetic_pair = RenderingContextDriverMetal::openrc_presenter_probe_requested() && !pair.requested && p_amount == 1 &&
++			color_space == RD::COLOR_SPACE_REC709_NONLINEAR_SRGB && normal_texture.is_valid() &&
++			!p_render_targets[0].multi_view.use_layer && !p_render_targets[0].lens_distortion.apply &&
++			p_render_targets[0].dst_rect == Rect2i(Vector2i(), size) && p_render_targets[0].src_rect == Rect2(0, 0, 1, 1);
++	bool valid_pair = color_space == RD::COLOR_SPACE_REC709_NONLINEAR_SRGB && p_amount == 1 && pair.requested && pair.proof && pair.ticket && pair.proof->frame == frame &&
++			!p_render_targets[0].multi_view.use_layer && !p_render_targets[0].lens_distortion.apply &&
++			p_render_targets[0].dst_rect == Rect2i(Vector2i(), size) && p_render_targets[0].src_rect == Rect2(0, 0, 1, 1) &&
++			pair.generated_texture != pair.real_texture && openrc_same_image_contract(normal_texture, pair.generated_texture, size) &&
++			openrc_same_image_contract(normal_texture, pair.real_texture, size);
++	if (valid_pair) {
++		uint64_t gen = rd->get_driver_resource(RD::DRIVER_RESOURCE_TEXTURE, pair.generated_texture);
++		uint64_t real = rd->get_driver_resource(RD::DRIVER_RESOURCE_TEXTURE, pair.real_texture);
++		valid_pair = gen != 0 && real != 0 && gen != real;
++	}
++	valid_pair = valid_pair || synthetic_pair;
++	auto draw_output = [&](int p_index, RID p_override) {
++		BlitPipelines pipelines = _get_blit_pipelines_for_format(rd->framebuffer_get_format(selected->framebuffers[p_index]));
++		for (int i = 0; i < p_amount; ++i) {
++			BlitMode mode = p_render_targets[i].lens_distortion.apply ? BLIT_MODE_LENS : (p_render_targets[i].multi_view.use_layer ? BLIT_MODE_USE_LAYER : BLIT_MODE_NORMAL);
++			if (!rd->render_pipeline_is_valid(pipelines.pipelines[mode])) { return false; }
++		}
++		Vector<Color> clear;
++		clear.push_back(Color());
++		RD::DrawListID list = rd->draw_list_begin(selected->framebuffers[p_index], RD::DRAW_CLEAR_COLOR_0, clear);
++		if (list == RD::INVALID_ID) { return false; }
++		_draw_screen_blits(p_screen, p_render_targets, p_amount, list, pipelines, p_override);
++		rd->draw_list_end();
++		for (int i = 0; i < p_amount; ++i) {
++			RID texture = i == 0 && p_override.is_valid() ? p_override : texture_storage->render_target_get_rd_texture(p_render_targets[i].render_target);
++			HashMap<RID, RID>::Iterator it = render_target_descriptors.find(texture);
++			if (it == render_target_descriptors.end() || !rd->uniform_set_is_valid(it->value)) { return false; }
++		}
++		return true;
++	};
++	if (!draw_output(0, RID())) { rd->screen_external_submission_failed(); return true; }
++	bool pair_attempted = valid_pair;
++	if (valid_pair && (!draw_output(1, synthetic_pair ? RID() : pair.generated_texture) || !draw_output(2, synthetic_pair ? RID() : pair.real_texture))) { valid_pair = false; }
++	auto refs = std::make_shared<OpenRCOutputReferences>();
++	refs->ticket = output_ticket;
++	for (int i = 0; i < (pair_attempted ? 3 : 1); ++i) {
++		auto *native = reinterpret_cast<MTL::Texture *>(rd->get_driver_resource(RD::DRIVER_RESOURCE_TEXTURE, selected->textures[i]));
++		if (!native) { rd->screen_external_submission_failed(); return true; }
++		refs->images[i] = NS::RetainPtr(native);
++	}
++	OpenRCBlitCallback *args = memnew(OpenRCBlitCallback);
++	args->presenter = openrc_presenter;
++	args->job.generation = any_tagged ? pair.presenter_generation : current_generation;
++	args->job.frame = frame;
++	args->job.reserved_at = OpenRCMetalPresent::native_time();
++	args->job.fallback = refs->images[0].get();
++	args->job.output_lease = refs;
++	args->job.source_generation = source_generation;
++	if (wants_pair && pair.proof) {
++		args->job.proof = pair.proof;
++		args->job.epoch = pair.proof->epoch;
++		args->job.serial = pair.proof->serial;
++	}
++	if (pair_attempted && !synthetic_pair) { args->source_ticket = pair.ticket; }
++	if (valid_pair) {
++		auto proof = pair.proof;
++		double interval = pair.real_interval;
++		if (synthetic_pair) {
++			proof = std::make_shared<OpenRCMetalPresent::Proof>(frame - 1, frame, 1, frame);
++			proof->warm_count.store(5);
++			proof->encode_result.store(1);
++			proof->sdk_completion.store(1);
++			interval = delta;
++		}
++		args->job.epoch = proof->epoch;
++		args->job.serial = proof->serial;
++		args->job.real_interval = interval;
++		args->job.generated_deadline = args->job.reserved_at + std::min(0.1, std::max(0.01, interval));
++		args->job.real_deadline = args->job.reserved_at + std::min(0.2, std::max(0.025, interval * 2.0));
++		args->job.generated = refs->images[1].get();
++		args->job.paired_real = refs->images[2].get();
++		args->job.proof = proof;
++	}
++	RD::CallbackResource resources[3];
++	for (int i = 0; i < (pair_attempted ? 3 : 1); ++i) {
++		resources[i].rid = selected->textures[i];
++		resources[i].usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE;
++	}
++	Error result = rd->driver_callback_add(openrc_blit_completed, args, VectorView<RD::CallbackResource>(resources, pair_attempted ? 3 : 1));
++	if (result != OK) {
++		rd->screen_external_submission_failed();
++		memdelete(args);
++	}
++	return true;
++}
++#endif
+ 
+ void RendererCompositorRD::begin_frame(double frame_step) {
+ 	frame++;
+@@ -172,6 +518,22 @@
+ uint64_t RendererCompositorRD::frame = 1;
+ 
+ void RendererCompositorRD::finalize() {
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	if (openrc_owner) {
++		// Retire the render graph before scene buffers and their tickets vanish.
++		RD::get_singleton()->screen_external_submission_failed();
++		RenderingContextDriver::SurfaceID id = RD::get_singleton()->get_context_driver()->surface_get_from_window(DisplayServerEnums::MAIN_WINDOW_ID);
++		if (id && id == openrc_surface_id) {
++			auto *surface = reinterpret_cast<RenderingContextDriverMetal::Surface *>(id);
++			surface->openrc_presenter_stop();
++		} else {
++			OpenRCMetalPresent::stop(openrc_presenter);
++		}
++		for (OpenRCOutputSlot &slot : openrc_slots) { _openrc_free_slot(slot); }
++		_openrc_collect_slots(true);
++		openrc_presenter.reset();
++	}
++#endif
+ 	texture_storage->_tex_blit_shader_free();
+ 	memdelete(scene);
+ 	memdelete(canvas);
+@@ -213,6 +575,11 @@
+ }
+ 
+ void RendererCompositorRD::set_boot_image_with_stretch(const Ref<Image> &p_image, const Color &p_color, RSE::SplashStretchMode p_stretch_mode, bool p_use_filter) {
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	// Select the experimental owner before any drawable is presented. This
++	// startup-only experiment omits the ordinary swapchain splash.
++	if (RenderingContextDriverMetal::openrc_presenter_requested() && OS::get_singleton()->get_current_rendering_driver_name() == "metal") { return; }
++#endif
+ 	if (p_image.is_null() || p_image->is_empty()) {
+ 		return;
+ 	}
+diff --git a/servers/rendering/renderer_rd/renderer_compositor_rd.h b/servers/rendering/renderer_rd/renderer_compositor_rd.h
+--- a/servers/rendering/renderer_rd/renderer_compositor_rd.h
++++ b/servers/rendering/renderer_rd/renderer_compositor_rd.h
+@@ -45,6 +45,10 @@
+ #include "servers/rendering/renderer_rd/storage_rd/utilities.h"
+ #include "servers/rendering/renderer_rd/uniform_set_cache_rd.h"
+ 
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++#include "drivers/metal/openrc_mfx_present_bridge.h"
++#endif
++
+ class RendererCompositorRD : public RendererCompositor {
+ protected:
+ 	UniformSetCacheRD *uniform_set_cache = nullptr;
+@@ -107,6 +111,33 @@
+ 	} blit;
+ 
+ 	HashMap<RID, RID> render_target_descriptors;
++
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	struct OpenRCOutputSlot {
++		RID textures[3];
++		RID framebuffers[3];
++		Size2i size;
++		RD::DataFormat format = RD::DATA_FORMAT_MAX;
++		std::shared_ptr<OpenRCMetalPresent::Lease> lease;
++	};
++	OpenRCOutputSlot openrc_slots[4];
++	Vector<OpenRCOutputSlot> openrc_retired_slots;
++	OpenRCMetalPresent::Handle openrc_presenter;
++	std::shared_ptr<OpenRCMetalPresent::SourceGeneration> openrc_source;
++	RenderingContextDriver::SurfaceID openrc_surface_id = 0;
++	bool openrc_start_decided = false;
++	bool openrc_owner = false;
++	bool openrc_resize_pending = false;
++	bool openrc_source_default = true;
++	bool openrc_source_transition = false;
++	void _openrc_free_slot(OpenRCOutputSlot &r_slot);
++	void _openrc_collect_slots(bool p_all = false);
++	bool _openrc_allocate_slots(Size2i p_size, RD::DataFormat p_format);
++	bool _openrc_blit(DisplayServerEnums::WindowID p_screen, const RenderingServerTypes::BlitToScreen *p_render_targets, int p_amount);
++#endif
++
++	void _draw_screen_blits(DisplayServerEnums::WindowID p_screen, const RenderingServerTypes::BlitToScreen *p_render_targets, int p_amount,
++			RD::DrawListID p_draw_list, const BlitPipelines &p_blit_pipelines, RID p_override_texture = RID());
+ 
+ 	double time = 0.0;
+ 	double delta = 0.0;
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -43,6 +43,10 @@
+ #include "servers/rendering/rendering_device_binds.h"
+ #include "servers/rendering/rendering_shader_container.h"
+ #include "servers/rendering/shader_include_db.h"
++
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++#include "drivers/metal/rendering_context_driver_metal.h"
++#endif
+ 
+ #include "modules/modules_enabled.gen.h"
+ 
+@@ -5667,6 +5671,92 @@
+ 	screen_swap_chains[p_screen] = swap_chain;
+ 
+ 	return OK;
++}
++
++bool RenderingDevice::openrc_metalfx_present_requested() const {
++	ERR_RENDER_THREAD_GUARD_V(false);
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	return OS::get_singleton()->get_current_rendering_driver_name() == "metal" && RenderingContextDriverMetal::openrc_presenter_requested();
++#else
++	return false;
++#endif
++}
++
++uint64_t RenderingDevice::openrc_metalfx_present_generation(DisplayServerEnums::WindowID p_screen) const {
++	ERR_RENDER_THREAD_GUARD_V(0);
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	if (OS::get_singleton()->get_current_rendering_driver_name() != "metal" || !context) { return 0; }
++	RenderingContextDriver::SurfaceID id = context->surface_get_from_window(p_screen);
++	auto *surface = reinterpret_cast<RenderingContextDriverMetal::Surface *>(id);
++	return surface ? OpenRCMetalPresent::generation(surface->openrc_presenter_get()) : 0;
++#else
++	(void)p_screen;
++	return 0;
++#endif
++}
++
++Dictionary RenderingDevice::openrc_metalfx_present_status() const {
++	ERR_RENDER_THREAD_GUARD_V(Dictionary());
++	Dictionary result;
++	result["requested"] = false;
++	result["owner"] = "ordinary";
++	result["presentation"] = "unobserved";
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	if (OS::get_singleton()->get_current_rendering_driver_name() == "metal") {
++		result["requested"] = RenderingContextDriverMetal::openrc_presenter_requested();
++		result["synthetic_control"] = RenderingContextDriverMetal::openrc_presenter_probe_requested();
++		RenderingContextDriver::SurfaceID id = context ? context->surface_get_from_window(DisplayServerEnums::MAIN_WINDOW_ID) : 0;
++		auto *surface = reinterpret_cast<RenderingContextDriverMetal::Surface *>(id);
++		auto handle = surface ? surface->openrc_presenter_get() : OpenRCMetalPresent::Handle();
++		if (handle) {
++			OpenRCMetalPresent::Snapshot s = OpenRCMetalPresent::snapshot(handle);
++			result["owner"] = "display_link";
++			result["generation"] = int64_t(s.generation);
++			result["accepted_real_jobs"] = int64_t(s.real_accepted_jobs);
++			result["accepted_pair_candidates"] = int64_t(s.pair_accepted_candidates);
++			result["real_present_requested"] = int64_t(s.real_present_requested);
++			result["generated_present_requested"] = int64_t(s.generated_present_requested);
++			result["real_command_scheduled"] = int64_t(s.real_command_scheduled);
++			result["generated_command_scheduled"] = int64_t(s.generated_command_scheduled);
++			result["real_os_presented"] = int64_t(s.real_presented);
++			result["generated_os_presented"] = int64_t(s.generated_presented);
++			result["real_unresolved"] = int64_t(s.real_present_requested >= s.real_presented ? s.real_present_requested - s.real_presented : 0);
++			result["generated_unresolved"] = int64_t(s.generated_present_requested >= s.generated_presented ? s.generated_present_requested - s.generated_presented : 0);
++			result["retired_real_unresolved_at_retirement"] = int64_t(s.retired_real_unresolved);
++			result["retired_generated_unresolved_at_retirement"] = int64_t(s.retired_generated_unresolved);
++			result["gpu_failed"] = int64_t(s.gpu_failed);
++			result["blocked_source_epoch"] = int64_t(s.blocked_source_epoch);
++			result["discontinuities"] = int64_t(s.discontinuities);
++			result["last_presented_frame"] = int64_t(s.last_presented_frame);
++			result["last_os_presented_mach_seconds"] = s.last_os_presented_time > 0.0 ? Variant(s.last_os_presented_time) : Variant();
++			result["last_observed_mach_seconds"] = s.last_callback_time > 0.0 ? Variant(s.last_callback_time) : Variant();
++			result["presentation"] = s.last_os_presented_time > 0.0 ? "os_presented" : "unresolved";
++		}
++	}
++#endif
++	return result;
++}
++
++Error RenderingDevice::screen_prepare_for_external_drawing(DisplayServerEnums::WindowID p_screen, bool &r_resized) {
++	_THREAD_SAFE_METHOD_
++	r_resized = false;
++	RenderingContextDriver::SurfaceID surface = context->surface_get_from_window(p_screen);
++	HashMap<DisplayServerEnums::WindowID, RDD::SwapChainID>::ConstIterator it = screen_swap_chains.find(p_screen);
++	ERR_FAIL_COND_V(surface == 0 || it == screen_swap_chains.end(), ERR_CANT_CREATE);
++	if (context->surface_get_needs_resize(surface)) {
++		_flush_and_stall_for_all_frames();
++		Error error = driver->swap_chain_resize(main_queue, it->value, _get_swap_chain_desired_count());
++		if (error != OK) { return error; }
++		r_resized = true;
++	}
++	return OK;
++}
++
++void RenderingDevice::screen_external_submission_failed() {
++	// A failed observer registration must not release a source lease while its
++	// already-recorded draw is still pending in this frame's graph.
++	_THREAD_SAFE_METHOD_
++	_flush_and_stall_for_all_frames();
+ }
+ 
+ Error RenderingDevice::screen_prepare_for_drawing(DisplayServerEnums::WindowID p_screen) {
+@@ -9606,6 +9696,7 @@
+ 	ClassDB::bind_method(D_METHOD("hit_sbt_range_update", "hit_sbt", "range", "offset", "hit_group_indices"), &RenderingDevice::_hit_sbt_range_update);
+ 
+ 	ClassDB::bind_method(D_METHOD("screen_get_width", "screen"), &RenderingDevice::screen_get_width, DEFVAL(DisplayServerEnums::MAIN_WINDOW_ID));
++	ClassDB::bind_method(D_METHOD("openrc_metalfx_present_status"), &RenderingDevice::openrc_metalfx_present_status);
+ 	ClassDB::bind_method(D_METHOD("screen_get_height", "screen"), &RenderingDevice::screen_get_height, DEFVAL(DisplayServerEnums::MAIN_WINDOW_ID));
+ 	ClassDB::bind_method(D_METHOD("screen_get_framebuffer_format", "screen"), &RenderingDevice::screen_get_framebuffer_format, DEFVAL(DisplayServerEnums::MAIN_WINDOW_ID));
+ 
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -1351,6 +1351,13 @@
+ public:
+ 	Error screen_create(DisplayServerEnums::WindowID p_screen = DisplayServerEnums::MAIN_WINDOW_ID);
+ 	Error screen_prepare_for_drawing(DisplayServerEnums::WindowID p_screen = DisplayServerEnums::MAIN_WINDOW_ID);
++	// Resize the existing surface without acquiring its ordinary framebuffer.
++	// Only the explicitly selected display-link owner may use this path.
++	Error screen_prepare_for_external_drawing(DisplayServerEnums::WindowID p_screen, bool &r_resized);
++	void screen_external_submission_failed();
++	Dictionary openrc_metalfx_present_status() const;
++	bool openrc_metalfx_present_requested() const;
++	uint64_t openrc_metalfx_present_generation(DisplayServerEnums::WindowID p_screen) const;
+ 	int screen_get_width(DisplayServerEnums::WindowID p_screen = DisplayServerEnums::MAIN_WINDOW_ID) const;
+ 	int screen_get_height(DisplayServerEnums::WindowID p_screen = DisplayServerEnums::MAIN_WINDOW_ID) const;
+ 	int screen_get_pre_rotation_degrees(DisplayServerEnums::WindowID p_screen = DisplayServerEnums::MAIN_WINDOW_ID) const;
+diff --git a/servers/rendering/rendering_server_types.h b/servers/rendering/rendering_server_types.h
+--- a/servers/rendering/rendering_server_types.h
++++ b/servers/rendering/rendering_server_types.h
+@@ -41,6 +41,7 @@
+ #include "core/templates/rid.h"
+ #include "core/templates/vector.h"
+ #include "servers/rendering/rendering_server_enums.h"
++#include "servers/rendering/storage/metalfx_presentation.h"
+ 
+ #include <cstdint>
+ 
+@@ -134,6 +135,18 @@
+ 
+ struct BlitToScreen {
+ 	RID render_target;
++	std::shared_ptr<OpenRCMetalPresent::SourceGeneration> source_generation;
++	// Optional current-frame, already-composited sources. The ordinary render
++	// target remains the fallback. The shared ticket owns the producer's lease.
++	struct {
++		bool requested = false;
++		RID generated_texture;
++		RID real_texture;
++		double real_interval = 0.0;
++		uint64_t presenter_generation = 0;
++		std::shared_ptr<OpenRCMetalPresent::Proof> proof;
++		std::shared_ptr<OpenRCMetalPresent::Ticket> ticket;
++	} paired;
+ 	Rect2 src_rect = Rect2(0.0, 0.0, 1.0, 1.0);
+ 	Rect2i dst_rect;
+ 
+diff --git a/servers/rendering/storage/metalfx_presentation.h b/servers/rendering/storage/metalfx_presentation.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_presentation.h
+@@ -0,0 +1,67 @@
++#pragma once
++
++#include <atomic>
++#include <cstdint>
++#include <memory>
++#include <mutex>
++#include <utility>
++
++namespace OpenRCMetalPresent {
++
++struct CancelGate {
++	void request_cancel() {
++		cancelled.store(true, std::memory_order_release);
++	}
++	bool is_cancelled() const { return cancelled.load(std::memory_order_acquire); }
++	bool try_cancel_complete() const {
++		std::unique_lock<std::mutex> guard(presentation_gate, std::try_to_lock);
++		return guard.owns_lock();
++	}
++	std::unique_lock<std::mutex> lock_for_presentation() const { return std::unique_lock<std::mutex>(presentation_gate); }
++
++private:
++	mutable std::mutex presentation_gate;
++	std::atomic<bool> cancelled{ false };
++};
++
++struct SourceGeneration : CancelGate {};
++
++struct Proof : CancelGate {
++	const uint64_t previous_frame;
++	const uint64_t frame;
++	const uint64_t epoch;
++	const uint64_t serial;
++	std::atomic<unsigned> warm_count{ 0 };
++	// 0 means unobserved, 1 means the exact SDK encode returned, -1 means failed.
++	std::atomic<int> encode_result{ 0 };
++	// Exact SDK command-buffer completion, independently of conversion work.
++	std::atomic<int> sdk_completion{ 0 };
++	Proof(uint64_t p_previous_frame, uint64_t p_frame, uint64_t p_epoch, uint64_t p_serial) : previous_frame(p_previous_frame), frame(p_frame), epoch(p_epoch), serial(p_serial) {}
++};
++
++struct Lease {
++	std::atomic<bool> held{ false };
++};
++
++// The producer retains Lease, not Ticket. The last consumer reference therefore
++// releases a slot even when a blit is dropped before it reaches the compositor.
++struct Ticket {
++	static std::shared_ptr<Ticket> acquire(const std::shared_ptr<Lease> &p_lease) {
++		if (!p_lease) { return {}; }
++		bool expected = false;
++		if (!p_lease->held.compare_exchange_strong(expected, true, std::memory_order_acq_rel)) { return {}; }
++		return std::shared_ptr<Ticket>(new Ticket(p_lease));
++	}
++
++	Ticket(const Ticket &) = delete;
++	Ticket &operator=(const Ticket &) = delete;
++	~Ticket() {
++		lease->held.store(false, std::memory_order_release);
++	}
++
++private:
++	std::shared_ptr<Lease> lease;
++	explicit Ticket(std::shared_ptr<Lease> p_lease) : lease(std::move(p_lease)) {}
++};
++
++} // namespace OpenRCMetalPresent

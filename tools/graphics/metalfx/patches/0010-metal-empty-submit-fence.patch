@@ -1,0 +1,25 @@
+diff --git a/drivers/metal/rendering_device_driver_metal3.cpp b/drivers/metal/rendering_device_driver_metal3.cpp
+--- a/drivers/metal/rendering_device_driver_metal3.cpp
++++ b/drivers/metal/rendering_device_driver_metal3.cpp
+@@ -221,7 +221,9 @@
+ 	Fence *fence = (Fence *)(p_cmd_fence.id);
+ 	if (fence != nullptr) {
+ 		cmd_buffer->end();
+-		MTL::CommandBuffer *cb = cmd_buffer->get_command_buffer();
++		// Empty RD submissions still carry a queue-ordered completion fence.
++		MTL::CommandBuffer *cb = cmd_buffer->ensure_command_buffer();
++		ERR_FAIL_NULL_V(cb, ERR_CANT_CREATE);
+ 		fence->signal(cb);
+ 	}
+ 
+@@ -262,7 +264,9 @@
+ 	Fence *fence = (Fence *)(p_cmd_fence.id);
+ 	if (fence != nullptr) {
+ 		cmd_buffer->end();
+-		MTL::CommandBuffer *cb = cmd_buffer->get_command_buffer();
++		// Empty RD submissions still carry a queue-ordered completion fence.
++		MTL::CommandBuffer *cb = cmd_buffer->ensure_command_buffer();
++		ERR_FAIL_NULL_V(cb, ERR_CANT_CREATE);
+ 		fence->signal(cb);
+ 	}
+ 

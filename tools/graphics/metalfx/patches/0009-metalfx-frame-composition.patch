@@ -1,0 +1,929 @@
+diff --git a/servers/rendering/renderer_rd/effects/copy_effects.cpp b/servers/rendering/renderer_rd/effects/copy_effects.cpp
+--- a/servers/rendering/renderer_rd/effects/copy_effects.cpp
++++ b/servers/rendering/renderer_rd/effects/copy_effects.cpp
+@@ -398,10 +398,19 @@
+ }
+ 
+ void CopyEffects::copy_to_rect(RID p_source_rd_texture, RID p_dest_texture, const Rect2i &p_rect, bool p_flip_y, bool p_force_luminance, bool p_all_source, bool p_8_bit_dst, bool p_alpha_to_one, bool p_sanitize_inf_nan) {
+-	UniformSetCacheRD *uniform_set_cache = UniformSetCacheRD::get_singleton();
+-	ERR_FAIL_NULL(uniform_set_cache);
+-	MaterialStorage *material_storage = MaterialStorage::get_singleton();
+-	ERR_FAIL_NULL(material_storage);
++	(void)copy_to_rect_impl<false>(p_source_rd_texture, p_dest_texture, p_rect, p_flip_y, p_force_luminance, p_all_source, p_8_bit_dst, p_alpha_to_one, p_sanitize_inf_nan);
++}
++
++bool CopyEffects::copy_to_rect_checked(RID p_source_rd_texture, RID p_dest_texture, const Rect2i &p_rect, bool p_flip_y, bool p_force_luminance, bool p_all_source, bool p_8_bit_dst, bool p_alpha_to_one, bool p_sanitize_inf_nan) {
++	return copy_to_rect_impl<true>(p_source_rd_texture, p_dest_texture, p_rect, p_flip_y, p_force_luminance, p_all_source, p_8_bit_dst, p_alpha_to_one, p_sanitize_inf_nan);
++}
++
++template <bool p_checked>
++bool CopyEffects::copy_to_rect_impl(RID p_source_rd_texture, RID p_dest_texture, const Rect2i &p_rect, bool p_flip_y, bool p_force_luminance, bool p_all_source, bool p_8_bit_dst, bool p_alpha_to_one, bool p_sanitize_inf_nan) {
++	UniformSetCacheRD *uniform_set_cache = UniformSetCacheRD::get_singleton();
++	ERR_FAIL_NULL_V(uniform_set_cache, false);
++	MaterialStorage *material_storage = MaterialStorage::get_singleton();
++	ERR_FAIL_NULL_V(material_storage, false);
+ 
+ 	memset(&copy.push_constant, 0, sizeof(CopyPushConstant));
+ 	if (p_flip_y) {
+@@ -439,15 +448,31 @@
+ 
+ 	CopyMode mode = p_8_bit_dst ? COPY_MODE_SIMPLY_COPY_8BIT : COPY_MODE_SIMPLY_COPY;
+ 	RID shader = copy.shader.version_get_shader(copy.shader_version, mode);
+-	ERR_FAIL_COND(shader.is_null());
+-
+-	RD::ComputeListID compute_list = RD::get_singleton()->compute_list_begin();
+-	RD::get_singleton()->compute_list_bind_compute_pipeline(compute_list, copy.pipelines[mode].get_rid());
+-	RD::get_singleton()->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 0, u_source_rd_texture), 0);
+-	RD::get_singleton()->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 3, u_dest_texture), 3);
++	ERR_FAIL_COND_V(shader.is_null(), false);
++	RD::ComputeListID compute_list;
++	if constexpr (p_checked) {
++		RID pipeline = copy.pipelines[mode].get_rid();
++		RID source_set = uniform_set_cache->get_cache(shader, 0, u_source_rd_texture);
++		RID dest_set = uniform_set_cache->get_cache(shader, 3, u_dest_texture);
++		if (!RD::get_singleton()->compute_pipeline_is_valid(pipeline) ||
++				!RD::get_singleton()->uniform_set_is_valid(source_set) || !RD::get_singleton()->uniform_set_is_valid(dest_set)) {
++			return false;
++		}
++		compute_list = RD::get_singleton()->compute_list_begin();
++		ERR_FAIL_COND_V(compute_list == RD::INVALID_ID, false);
++		RD::get_singleton()->compute_list_bind_compute_pipeline(compute_list, pipeline);
++		RD::get_singleton()->compute_list_bind_uniform_set(compute_list, source_set, 0);
++		RD::get_singleton()->compute_list_bind_uniform_set(compute_list, dest_set, 3);
++	} else {
++		compute_list = RD::get_singleton()->compute_list_begin();
++		RD::get_singleton()->compute_list_bind_compute_pipeline(compute_list, copy.pipelines[mode].get_rid());
++		RD::get_singleton()->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 0, u_source_rd_texture), 0);
++		RD::get_singleton()->compute_list_bind_uniform_set(compute_list, uniform_set_cache->get_cache(shader, 3, u_dest_texture), 3);
++	}
+ 	RD::get_singleton()->compute_list_set_push_constant(compute_list, &copy.push_constant, sizeof(CopyPushConstant));
+ 	RD::get_singleton()->compute_list_dispatch_threads(compute_list, p_rect.size.width, p_rect.size.height, 1);
+ 	RD::get_singleton()->compute_list_end();
++	return true;
+ }
+ 
+ void CopyEffects::copy_octmap_to_panorama(RID p_source_octmap, RID p_dest_panorama, const Size2i &p_panorama_size, float p_lod, bool p_is_array, const Size2 &p_source_octmap_border_size) {
+diff --git a/servers/rendering/renderer_rd/effects/copy_effects.h b/servers/rendering/renderer_rd/effects/copy_effects.h
+--- a/servers/rendering/renderer_rd/effects/copy_effects.h
++++ b/servers/rendering/renderer_rd/effects/copy_effects.h
+@@ -366,6 +366,9 @@
+ 	BitField<RasterEffects> get_raster_effects() { return raster_effects; }
+ 
+ 	void copy_to_rect(RID p_source_rd_texture, RID p_dest_texture, const Rect2i &p_rect, bool p_flip_y = false, bool p_force_luminance = false, bool p_all_source = false, bool p_8_bit_dst = false, bool p_alpha_to_one = false, bool p_sanitize_inf_nan = false);
++	bool copy_to_rect_checked(RID p_source_rd_texture, RID p_dest_texture, const Rect2i &p_rect, bool p_flip_y = false, bool p_force_luminance = false, bool p_all_source = false, bool p_8_bit_dst = false, bool p_alpha_to_one = false, bool p_sanitize_inf_nan = false);
++	template <bool p_checked>
++	bool copy_to_rect_impl(RID p_source_rd_texture, RID p_dest_texture, const Rect2i &p_rect, bool p_flip_y, bool p_force_luminance, bool p_all_source, bool p_8_bit_dst, bool p_alpha_to_one, bool p_sanitize_inf_nan);
+ 	void copy_octmap_to_panorama(RID p_source_octmap, RID p_dest_panorama, const Size2i &p_panorama_size, float p_lod, bool p_is_array, const Size2 &p_source_octmap_border_size);
+ 	void copy_depth_to_rect(RID p_source_rd_texture, RID p_dest_framebuffer, const Rect2i &p_rect, bool p_flip_y = false);
+ 	void copy_depth_to_rect_and_linearize(RID p_source_rd_texture, RID p_dest_texture, const Rect2i &p_rect, bool p_flip_y, float p_z_near, float p_z_far);
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.cpp b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+--- a/servers/rendering/renderer_rd/effects/metal_fx.cpp
++++ b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+@@ -399,7 +399,13 @@
+ 	args->serial = p_ctx->history->submitted.load(std::memory_order_relaxed) + 1;
+ 	args->epoch = p_params.epoch;
+ 	args->gpu = p_params.gpu;
+-	args->frame = args->gpu ? RSG::rasterizer->get_frame_number() : 0;
++	args->composition = p_params.composition;
++	args->frame = (args->gpu || args->composition) ? RSG::rasterizer->get_frame_number() : 0;
++	if (args->composition) {
++		args->composition->frame = args->frame;
++		args->composition->epoch = args->epoch;
++		args->composition->serial = args->serial;
++	}
+ 	args->scale_x = p_params.motion_scale.x; args->scale_y = p_params.motion_scale.y;
+ 	args->jitter_x = p_params.jitter.x; args->jitter_y = p_params.jitter.y;
+ 	args->delta = p_params.delta; args->fov = p_params.fov;
+@@ -442,6 +448,9 @@
+ 				p_userdata->delta, p_userdata->fov, p_userdata->z_near, p_userdata->z_far, p_userdata->aspect);
+ 		if (result == MFX_FRAME_OK) {
+ 			mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->gpu, p_userdata->frame, p_userdata->epoch);
++			if (p_userdata->composition) {
++				mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->composition->sdk_completion, p_userdata->frame, p_userdata->epoch);
++			}
+ 			obj->retain_resource((CFTypeRef)p_userdata->effect);
+ 			if (p_userdata->reset) {
+ 				history->encoded_in_epoch.store(1, std::memory_order_relaxed);
+@@ -452,14 +461,52 @@
+ 				history->callback_error.store(MFX_FRAME_INPUT_MISMATCH, std::memory_order_release);
+ 			}
+ 			history->encoded.store(p_userdata->serial, std::memory_order_release);
++			if (p_userdata->composition) {
++				uint32_t count = history->encoded_in_epoch.load(std::memory_order_acquire);
++				p_userdata->composition->warm_count.store(count, std::memory_order_relaxed);
++				bool valid = history->encoded_epoch.load(std::memory_order_acquire) == p_userdata->epoch &&
++						!history->callback_error.load(std::memory_order_acquire);
++				p_userdata->composition->encode_result.store(valid ? 1 : -1, std::memory_order_release);
++			}
+ 		} else {
+ 			history->callback_error.store(result, std::memory_order_release);
+ 		}
+ 	}
++	if (p_userdata->composition && p_userdata->composition->encode_result.load(std::memory_order_acquire) == 0) {
++		p_userdata->composition->encode_result.store(-1, std::memory_order_release);
++	}
+ 	mfx_frame_release(p_userdata->effect);
+ 	memdelete(p_userdata);
+ }
+ 
++bool MFXCompositionEffect::observe_completion(RID p_generated, RID p_real, const std::shared_ptr<MetalFXCompositionFrame> &p_state) const {
++	if (!p_generated.is_valid() || !p_real.is_valid() || p_generated == p_real || !p_state) {
++		return false;
++	}
++	CallbackArgs *args = memnew(CallbackArgs);
++	args->state = p_state;
++	RD::CallbackResource resources[2] = {
++		{ .rid = p_generated, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
++		{ .rid = p_real, .usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE },
++	};
++	Error error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)MFXCompositionEffect::callback, args, VectorView<RD::CallbackResource>(resources, 2));
++	if (error != OK) {
++		memdelete(args);
++		return false;
++	}
++	return true;
++}
++
++void MFXCompositionEffect::callback(RDD *p_driver, RDD::CommandBufferID p_command_buffer, CallbackArgs *p_userdata) {
++	(void)p_driver;
++	MDCommandBufferBase *obj = (MDCommandBufferBase *)(p_command_buffer.id);
++	obj->end();
++	MTL3::MDCommandBuffer *cmd = (MTL3::MDCommandBuffer *)(p_command_buffer.id);
++	mfx_observe_gpu(cmd->ensure_command_buffer(), p_userdata->state->completion,
++			p_userdata->state->frame, p_userdata->state->epoch);
++	memdelete(p_userdata);
++}
++
+ #endif // MACOS_ENABLED
+ 
+ #endif // METAL_ENABLED
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.h b/servers/rendering/renderer_rd/effects/metal_fx.h
+--- a/servers/rendering/renderer_rd/effects/metal_fx.h
++++ b/servers/rendering/renderer_rd/effects/metal_fx.h
+@@ -92,7 +92,6 @@
+ 		RDD::TextureID dst;
+ 		std::shared_ptr<MetalFXGPUObservation> gpu;
+ 		uint64_t frame = 0;
+-
+ 		CallbackArgs(RDD::TextureID p_src, RDD::TextureID p_dst, const MFXSpatialContext &p_ctx) :
+ 				scaler(p_ctx.scaler), src(p_src), dst(p_dst) {}
+ 
+@@ -253,6 +252,7 @@
+ 		uint64_t serial = 0, epoch = 0;
+ 		std::shared_ptr<MetalFXGPUObservation> gpu;
+ 		uint64_t frame = 0;
++		std::shared_ptr<MetalFXCompositionFrame> composition;
+ 		float scale_x = 0, scale_y = 0, jitter_x = 0, jitter_y = 0;
+ 		float delta = 0, fov = 0, z_near = 0, z_far = 0, aspect = 0;
+ 		bool reset = false;
+@@ -271,11 +271,24 @@
+ 		bool reset = false;
+ 		uint64_t epoch = 0;
+ 		std::shared_ptr<MetalFXGPUObservation> gpu;
++		std::shared_ptr<MetalFXCompositionFrame> composition;
+ 	};
+ 	MFXFrameContext *create_context(const CreateParams &p_params) const;
+ 	bool process(MFXFrameContext *p_ctx, const Params &p_params) const;
+ };
+ 
++// Registered after both finished images have been written. The resource
++// dependencies keep this observer behind the actual scene and canvas work.
++class MFXCompositionEffect {
++	struct CallbackArgs {
++		std::shared_ptr<MetalFXCompositionFrame> state;
++	};
++	static void callback(RDD *p_driver, RDD::CommandBufferID p_command_buffer, CallbackArgs *p_userdata);
++
++public:
++	bool observe_completion(RID p_generated, RID p_real, const std::shared_ptr<MetalFXCompositionFrame> &p_state) const;
++};
++
+ #endif
+ 
+ } //namespace RendererRD
+diff --git a/servers/rendering/renderer_rd/effects/tone_mapper.cpp b/servers/rendering/renderer_rd/effects/tone_mapper.cpp
+--- a/servers/rendering/renderer_rd/effects/tone_mapper.cpp
++++ b/servers/rendering/renderer_rd/effects/tone_mapper.cpp
+@@ -115,11 +115,20 @@
+ }
+ 
+ void ToneMapper::tonemapper(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings) {
+-	ERR_FAIL_COND_MSG(using_mobile_version, "Can't use the non mobile version of the tonemapper with the Mobile renderer.");
++	(void)tonemapper_impl<false>(p_source_color, p_dst_framebuffer, p_settings);
++}
++
++bool ToneMapper::tonemapper_checked(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings) {
++	return tonemapper_impl<true>(p_source_color, p_dst_framebuffer, p_settings);
++}
++
++template <bool p_checked>
++bool ToneMapper::tonemapper_impl(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings) {
++	ERR_FAIL_COND_V_MSG(using_mobile_version, false, "Can't use the non mobile version of the tonemapper with the Mobile renderer.");
+ 	UniformSetCacheRD *uniform_set_cache = UniformSetCacheRD::get_singleton();
+-	ERR_FAIL_NULL(uniform_set_cache);
++	ERR_FAIL_NULL_V(uniform_set_cache, false);
+ 	MaterialStorage *material_storage = MaterialStorage::get_singleton();
+-	ERR_FAIL_NULL(material_storage);
++	ERR_FAIL_NULL_V(material_storage, false);
+ 
+ 	memset(&tonemap.push_constant, 0, sizeof(TonemapPushConstant));
+ 
+@@ -206,18 +215,40 @@
+ 	u_color_correction_texture.append_id(p_settings.color_correction_texture);
+ 
+ 	RID shader = tonemap.shader.version_get_shader(tonemap.shader_version, mode);
+-	ERR_FAIL_COND(shader.is_null());
++	ERR_FAIL_COND_V(shader.is_null(), false);
+ 
+ 	RD::DrawListID draw_list = RD::get_singleton()->draw_list_begin(p_dst_framebuffer);
+-	RD::get_singleton()->draw_list_bind_render_pipeline(draw_list, tonemap.pipelines[mode].get_render_pipeline(RD::INVALID_ID, RD::get_singleton()->framebuffer_get_format(p_dst_framebuffer), false, RD::get_singleton()->draw_list_get_current_pass()));
+-	RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 0, u_source_color), 0);
+-	RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 1, u_exposure_texture), 1);
+-	RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 2, u_glow_texture, u_glow_map), 2);
+-	RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 3, u_color_correction_texture), 3);
++	if constexpr (p_checked) {
++		ERR_FAIL_COND_V(draw_list == RD::INVALID_ID, false);
++		RID pipeline = tonemap.pipelines[mode].get_render_pipeline(RD::INVALID_ID, RD::get_singleton()->framebuffer_get_format(p_dst_framebuffer), false, RD::get_singleton()->draw_list_get_current_pass());
++		RID sets[4] = {
++			uniform_set_cache->get_cache(shader, 0, u_source_color),
++			uniform_set_cache->get_cache(shader, 1, u_exposure_texture),
++			uniform_set_cache->get_cache(shader, 2, u_glow_texture, u_glow_map),
++			uniform_set_cache->get_cache(shader, 3, u_color_correction_texture),
++		};
++		if (!RD::get_singleton()->render_pipeline_is_valid(pipeline) ||
++				!RD::get_singleton()->uniform_set_is_valid(sets[0]) || !RD::get_singleton()->uniform_set_is_valid(sets[1]) ||
++				!RD::get_singleton()->uniform_set_is_valid(sets[2]) || !RD::get_singleton()->uniform_set_is_valid(sets[3])) {
++			RD::get_singleton()->draw_list_end();
++			return false;
++		}
++		RD::get_singleton()->draw_list_bind_render_pipeline(draw_list, pipeline);
++		for (uint32_t i = 0; i < 4; i++) {
++			RD::get_singleton()->draw_list_bind_uniform_set(draw_list, sets[i], i);
++		}
++	} else {
++		RD::get_singleton()->draw_list_bind_render_pipeline(draw_list, tonemap.pipelines[mode].get_render_pipeline(RD::INVALID_ID, RD::get_singleton()->framebuffer_get_format(p_dst_framebuffer), false, RD::get_singleton()->draw_list_get_current_pass()));
++		RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 0, u_source_color), 0);
++		RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 1, u_exposure_texture), 1);
++		RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 2, u_glow_texture, u_glow_map), 2);
++		RD::get_singleton()->draw_list_bind_uniform_set(draw_list, uniform_set_cache->get_cache(shader, 3, u_color_correction_texture), 3);
++	}
+ 
+ 	RD::get_singleton()->draw_list_set_push_constant(draw_list, &tonemap.push_constant, sizeof(TonemapPushConstant));
+ 	RD::get_singleton()->draw_list_draw(draw_list, false, 1u, 3u);
+ 	RD::get_singleton()->draw_list_end();
++	return true;
+ }
+ 
+ void ToneMapper::tonemapper_mobile(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings) {
+diff --git a/servers/rendering/renderer_rd/effects/tone_mapper.h b/servers/rendering/renderer_rd/effects/tone_mapper.h
+--- a/servers/rendering/renderer_rd/effects/tone_mapper.h
++++ b/servers/rendering/renderer_rd/effects/tone_mapper.h
+@@ -210,6 +210,9 @@
+ 	};
+ 
+ 	void tonemapper(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings);
++	bool tonemapper_checked(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings);
++	template <bool p_checked>
++	bool tonemapper_impl(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings);
+ 	void tonemapper_mobile(RID p_source_color, RID p_dst_framebuffer, const TonemapSettings &p_settings);
+ 	void tonemapper_subpass(RD::DrawListID p_subpass_draw_list, RID p_source_color, RD::FramebufferFormatID p_dst_format_id, const TonemapSettings &p_settings);
+ };
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -171,10 +171,15 @@
+ 	params.delta = delta; params.fov = fov; params.z_near = z_near; params.z_far = z_far; params.aspect = aspect;
+ 	params.reset = reset; params.epoch = ctx->epoch;
+ 	params.gpu = p_buffers->ensure_metalfx_gpu_observation(true);
++	params.composition = p_buffers->get_metalfx_composition_state();
++	if (params.composition) {
++		params.composition->previous_frame = reset ? frame : ctx->timeline.last_frame;
++	}
+ 	if (!effect.process(ctx, params)) {
+ 		ctx->history->callback_error.store(MFX_FRAME_ENQUEUE_FAILED, std::memory_order_release);
+ 		return;
+ 	}
++	p_buffers->mark_metalfx_composition_enqueued();
+ 	ctx->timeline.commit(frame, now, fov, z_near, z_far, aspect);
+ 	ctx->next_capture = previous;
+ }
+diff --git a/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp b/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
+--- a/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
++++ b/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
+@@ -812,6 +812,22 @@
+ 		} else {
+ 			tone_mapper->tonemapper_mobile(color_texture, dest_fb, tonemap);
+ 		}
++
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++		// Reuse the immutable settings, not the full post-process chain: DoF,
++		// glow and auto-exposure have mutable/source-specific intermediates.
++		RID generated_target = rb->get_metalfx_composition_candidate();
++		if (generated_target.is_valid() && p_render_data->compositor.is_null() && can_use_storage && use_upscaled_texture && !using_scaling_pass && !use_smaa &&
++				!dest_is_msaa_2d && !using_dof &&
++				!RSG::camera_attributes->camera_attributes_uses_auto_exposure(p_render_data->camera_attributes) &&
++				!(p_render_data->environment.is_valid() && environment_get_glow_enabled(p_render_data->environment))) {
++			RID generated = rb->get_texture(RB_SCOPE_METALFX_FRAME, RB_METALFX_FRAME_OUTPUT);
++			RID generated_fb = texture_storage->render_target_get_rd_framebuffer(generated_target);
++			if (generated.is_valid() && generated_fb.is_valid() && tone_mapper->tonemapper_checked(generated, generated_fb, tonemap)) {
++				rb->mark_metalfx_composition_tonemapped();
++			}
++		}
++#endif
+ 
+ 		RD::get_singleton()->draw_command_end_label();
+ 	}
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -37,6 +37,7 @@
+ #include "drivers/metal/metalfx_frame_bridge.h"
+ #endif
+ #include "servers/rendering/renderer_rd/storage_rd/texture_storage.h"
++#include "servers/rendering/renderer_rd/effects/copy_effects.h"
+ #include "servers/rendering/rendering_device_binds.h"
+ #include "servers/rendering/rendering_server.h" // IWYU pragma: keep // Needed to bind RSE enums.
+ #include "servers/rendering/rendering_server_enums.h"
+@@ -129,6 +130,7 @@
+ }
+ 
+ void RenderSceneBuffersRD::clear_metalfx_frame() {
++	clear_metalfx_frame_composition();
+ 	clear_metalfx_frame_gpu_observation();
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ 	if (mfx_frame_context) {
+@@ -138,6 +140,260 @@
+ 	}
+ 	mfx_frame_reason = "not_attempted";
+ #endif
++}
++
++void RenderSceneBuffersRD::clear_metalfx_frame_composition() {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	// RD defers native resource destruction until the owning frame fence. The
++	// callbacks themselves retain only their shared value state.
++	RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
++	for (MFXCompositionSlot &slot : mfx_composition_slots) {
++		if (slot.generated_target.is_valid()) {
++			storage->render_target_free(slot.generated_target);
++		}
++		if (slot.real_target.is_valid()) {
++			storage->render_target_free(slot.real_target);
++		}
++		slot = MFXCompositionSlot();
++	}
++	mfx_composition_active = -1;
++	mfx_composition_invalid_through = 0;
++	mfx_composition_current_frame = 0;
++	mfx_composition_faulted = false;
++	mfx_composition_reason = "not_attempted";
++#endif
++}
++
++void RenderSceneBuffersRD::begin_metalfx_frame_composition(uint64_t p_frame, bool p_compatible) {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (!is_metalfx_frame_composition_requested()) {
++		return;
++	}
++	mfx_composition_active = -1;
++	mfx_composition_current_frame = p_frame;
++	if (!p_compatible || !is_metalfx_frame_requested() || !p_frame || target_size.x <= 0 || target_size.y <= 0) {
++		mfx_composition_invalid_through = p_frame;
++		mfx_composition_reason = "incompatible_viewport";
++		return;
++	}
++	RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
++	bool hdr = storage->render_target_is_using_hdr(render_target);
++	bool debanding = storage->render_target_is_using_debanding(render_target);
++	for (MFXCompositionSlot &slot : mfx_composition_slots) {
++		if (slot.generated_target.is_valid() &&
++				(storage->render_target_get_size(slot.generated_target) != target_size ||
++						storage->render_target_is_using_hdr(slot.generated_target) != hdr ||
++						storage->render_target_is_using_debanding(slot.generated_target) != debanding)) {
++			clear_metalfx_frame_composition();
++			mfx_composition_invalid_through = p_frame - 1;
++			mfx_composition_current_frame = p_frame;
++			break;
++		}
++	}
++	for (MFXCompositionSlot &slot : mfx_composition_slots) {
++		if (slot.submitted && slot.state) {
++			for (const auto &observer : { slot.state->sdk_completion, slot.state->completion }) {
++				MetalFXGPUObservation::Snapshot observed = observer->snapshot();
++				if (observed.first_observed_failure.ticket || observed.counter_exhausted || observed.unexpected_callback) {
++					mfx_composition_faulted = true;
++				}
++			}
++		}
++	}
++	if (mfx_composition_faulted) {
++		mfx_composition_invalid_through = p_frame;
++		mfx_composition_reason = "gpu_completion_failed";
++		return;
++	}
++	// Preserve the newest completed pair while there is another free slot.
++	int latest = _metalfx_composition_ready_slot();
++	for (int attempt = 0; attempt < 2; ++attempt) {
++		int index = latest < 0 ? attempt : ((latest + 1 + attempt) % 2);
++		MFXCompositionSlot &slot = mfx_composition_slots[index];
++		if (slot.submitted && slot.state && !slot.state->completion->snapshot().completed.ticket) {
++			continue; // Pending or unobservable work must never be reused.
++		}
++		if (slot.submitted && slot.state && slot.state->encode_result.load(std::memory_order_acquire) == 1 &&
++				!slot.state->sdk_completion->snapshot().completed.ticket) {
++			continue;
++		}
++		if (!slot.generated_target.is_valid()) {
++			slot.generated_target = storage->render_target_create();
++			slot.real_target = storage->render_target_create();
++			if (!slot.generated_target.is_valid() || !slot.real_target.is_valid()) {
++				if (slot.generated_target.is_valid()) {
++					storage->render_target_free(slot.generated_target);
++				}
++				if (slot.real_target.is_valid()) {
++					storage->render_target_free(slot.real_target);
++				}
++				slot = MFXCompositionSlot();
++				mfx_composition_reason = "render_target_allocation_failed";
++				return;
++			}
++			for (RID target : { slot.generated_target, slot.real_target }) {
++				storage->render_target_set_use_hdr(target, hdr);
++				storage->render_target_set_use_debanding(target, debanding);
++				storage->render_target_set_size(target, target_size.x, target_size.y, 1);
++			}
++		}
++		slot.state = std::make_shared<MetalFXCompositionFrame>();
++		slot.state->frame = p_frame;
++		slot.submitted = false;
++		slot.encode_enqueued = false;
++		slot.tonemapped = false;
++		slot.eligible = false;
++		mfx_composition_active = index;
++		mfx_composition_reason = "pending_scene";
++		return;
++	}
++	mfx_composition_reason = "both_slots_pending";
++#endif
++}
++
++RID RenderSceneBuffersRD::get_metalfx_frame_composition_target() const {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (mfx_composition_active >= 0 && mfx_composition_slots[mfx_composition_active].tonemapped) {
++		return mfx_composition_slots[mfx_composition_active].generated_target;
++	}
++#endif
++	return RID();
++}
++
++void RenderSceneBuffersRD::finish_metalfx_frame_composition(bool p_canvas_compatible) {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (mfx_composition_active < 0) {
++		return;
++	}
++	MFXCompositionSlot &slot = mfx_composition_slots[mfx_composition_active];
++	mfx_composition_active = -1;
++	if (!slot.tonemapped) {
++		mfx_composition_invalid_through = slot.state->frame;
++		slot.state.reset();
++		mfx_composition_reason = "unsupported_scene_or_postprocess";
++		return;
++	}
++	RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
++	RID generated = storage->render_target_get_rd_texture(slot.generated_target);
++	RID real = storage->render_target_get_rd_texture(slot.real_target);
++	RID source = storage->render_target_get_rd_texture(render_target);
++	if (!generated.is_valid() || !real.is_valid() || !source.is_valid()) {
++		slot.submitted = true; // Quarantine: do not reuse unobserved work.
++		mfx_composition_faulted = true;
++		mfx_composition_reason = "invalid_render_target";
++		return;
++	}
++	// Both RTs use the same raw UNORM/HDR encoding. This is a texel copy, not
++	// a second UI render or an sRGB conversion.
++	RendererRD::CopyEffects *copy_effects = RendererRD::CopyEffects::get_singleton();
++	bool copy_recorded = copy_effects && copy_effects->copy_to_rect_checked(source, real, Rect2i(Point2i(), target_size), false, false, false, !storage->render_target_is_using_hdr(render_target));
++	slot.eligible = p_canvas_compatible && copy_recorded;
++	if (!slot.eligible) {
++		mfx_composition_invalid_through = slot.state->frame;
++	}
++	RendererRD::MFXCompositionEffect observer;
++	slot.submitted = true;
++	if (!observer.observe_completion(generated, real, slot.state)) {
++		mfx_composition_faulted = true; // Keep the slot quarantined until retirement.
++		mfx_composition_reason = "completion_observer_rejected";
++		return;
++	}
++	mfx_composition_reason = !copy_recorded ? "copy_record_failed" : (slot.eligible ? "completion_pending" : "incompatible_canvas");
++#endif
++}
++
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++int RenderSceneBuffersRD::_metalfx_composition_ready_slot() const {
++	if (!is_metalfx_frame_composition_requested() || !mfx_frame_context || !mfx_frame_context->history || mfx_composition_faulted ||
++			mfx_frame_context->history->callback_error.load(std::memory_order_acquire)) {
++		return -1;
++	}
++	for (const MFXCompositionSlot &slot : mfx_composition_slots) {
++		if (slot.submitted && slot.state) {
++			for (const auto &observer : { slot.state->sdk_completion, slot.state->completion }) {
++				MetalFXGPUObservation::Snapshot observed = observer->snapshot();
++				if (observed.first_observed_failure.ticket || observed.counter_exhausted || observed.unexpected_callback) {
++					return -1;
++				}
++			}
++		}
++	}
++	uint64_t epoch = mfx_frame_context->history->requested_epoch.load(std::memory_order_acquire);
++	int latest = -1;
++	for (int i = 0; i < 2; ++i) {
++		const MFXCompositionSlot &slot = mfx_composition_slots[i];
++		if (slot.submitted && slot.eligible && slot.state && slot.state->frame > mfx_composition_invalid_through &&
++				slot.state->frame <= mfx_composition_current_frame && mfx_composition_current_frame - slot.state->frame <= 1 &&
++				slot.state->ready(slot.state->frame, epoch) &&
++				(latest < 0 || slot.state->frame > mfx_composition_slots[latest].state->frame)) {
++			latest = i;
++		}
++	}
++	return latest;
++}
++#endif
++
++bool RenderSceneBuffersRD::get_metalfx_completed_pair(MetalFXCompletedPair &r_pair) const {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	int index = _metalfx_composition_ready_slot();
++	if (index >= 0) {
++		const MFXCompositionSlot &slot = mfx_composition_slots[index];
++		RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
++		r_pair.generated_texture = storage->render_target_get_rd_texture(slot.generated_target);
++		r_pair.real_texture = storage->render_target_get_rd_texture(slot.real_target);
++		r_pair.frame = slot.state->frame;
++		r_pair.previous_frame = slot.state->previous_frame;
++		r_pair.epoch = slot.state->epoch;
++		r_pair.serial = slot.state->serial;
++		return r_pair.generated_texture.is_valid() && r_pair.real_texture.is_valid() && r_pair.generated_texture != r_pair.real_texture;
++	}
++#endif
++	return false;
++}
++
++Dictionary RenderSceneBuffersRD::get_metalfx_frame_composition_status() const {
++	Dictionary status = RenderSceneBuffers::get_metalfx_frame_composition_status();
++	status["scope"] = "offscreen_composed_pair_not_presentation";
++	status["color_convention"] = "experimental_unverified";
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	status["latest_submission"] = mfx_composition_reason;
++	int index = _metalfx_composition_ready_slot();
++	status["ready"] = index >= 0;
++	status["reason"] = index >= 0 ? "ready" : mfx_composition_reason;
++	status["frame_age_scope"] = "global_frame_delta_at_last_viewport_draw_not_current";
++	if (index >= 0) {
++		status["source_frame"] = int64_t(mfx_composition_slots[index].state->frame);
++		status["previous_frame"] = int64_t(mfx_composition_slots[index].state->previous_frame);
++		status["epoch"] = int64_t(mfx_composition_slots[index].state->epoch);
++		status["serial"] = int64_t(mfx_composition_slots[index].state->serial);
++		status["source_age_at_last_viewport_draw_frames"] = int64_t(mfx_composition_current_frame - mfx_composition_slots[index].state->frame);
++	}
++#endif
++	return status;
++}
++
++Dictionary RenderSceneBuffersRD::read_metalfx_frame_composition() {
++	Dictionary result = get_metalfx_frame_composition_status();
++	result["readback"] = "not_ready";
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	int index = _metalfx_composition_ready_slot();
++	if (index >= 0) {
++		RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
++		bool hdr = storage->render_target_is_using_hdr(render_target);
++		Image::Format format = hdr ? Image::FORMAT_RGBAH : Image::FORMAT_RGBA8;
++		int bytes_per_pixel = hdr ? 8 : 4;
++		Vector<uint8_t> generated = RD::get_singleton()->texture_get_data(storage->render_target_get_rd_texture(mfx_composition_slots[index].generated_target), 0);
++		Vector<uint8_t> real = RD::get_singleton()->texture_get_data(storage->render_target_get_rd_texture(mfx_composition_slots[index].real_target), 0);
++		if (generated.size() == int64_t(target_size.x) * target_size.y * bytes_per_pixel && real.size() == generated.size()) {
++			result["generated_image"] = Image::create_from_data(target_size.x, target_size.y, false, format, generated);
++			result["real_image"] = Image::create_from_data(target_size.x, target_size.y, false, format, real);
++			result["readback"] = "returned";
++		} else {
++			result["readback"] = "failed";
++		}
++	}
++#endif
++	return result;
+ }
+ 
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+@@ -98,6 +98,22 @@
+ 	RendererRD::MFXFrameContext *mfx_frame_context = nullptr;
+ 	String mfx_frame_reason = "not_attempted";
+ 	uint64_t mfx_frame_epoch = 0; // Survives rejection and recreation within this buffer generation.
++	struct MFXCompositionSlot {
++		RID generated_target;
++		RID real_target;
++		std::shared_ptr<MetalFXCompositionFrame> state;
++		bool submitted = false;
++		bool encode_enqueued = false;
++		bool tonemapped = false;
++		bool eligible = false;
++	};
++	MFXCompositionSlot mfx_composition_slots[2];
++	int mfx_composition_active = -1;
++	uint64_t mfx_composition_invalid_through = 0;
++	uint64_t mfx_composition_current_frame = 0;
++	bool mfx_composition_faulted = false;
++	String mfx_composition_reason = "not_attempted";
++	int _metalfx_composition_ready_slot() const;
+ #endif
+ 
+ 	// Aliasing settings
+@@ -219,11 +235,37 @@
+ 	virtual void clear_metalfx_frame() override;
+ 	virtual Dictionary get_metalfx_frame_status() const override;
+ 	virtual Dictionary read_metalfx_frame() override;
++	virtual void clear_metalfx_frame_composition() override;
++	virtual void begin_metalfx_frame_composition(uint64_t p_frame, bool p_compatible) override;
++	virtual RID get_metalfx_frame_composition_target() const override;
++	virtual void finish_metalfx_frame_composition(bool p_canvas_compatible) override;
++	virtual bool get_metalfx_completed_pair(MetalFXCompletedPair &r_pair) const override;
++	virtual Dictionary get_metalfx_frame_composition_status() const override;
++	virtual Dictionary read_metalfx_frame_composition() override;
+ 
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ 	RendererRD::MFXFrameContext *get_metalfx_frame_context() const { return mfx_frame_context; }
+ 	RendererRD::MFXFrameContext *ensure_metalfx_frame_context(RendererRD::MFXFrameEffect *p_effect, const RendererRD::MFXFrameEffect::CreateParams &p_params);
+ 	void reject_metalfx_frame(const char *p_reason);
++	std::shared_ptr<MetalFXCompositionFrame> get_metalfx_composition_state() const {
++		return mfx_composition_active < 0 ? nullptr : mfx_composition_slots[mfx_composition_active].state;
++	}
++	void mark_metalfx_composition_enqueued() {
++		if (mfx_composition_active >= 0) {
++			mfx_composition_slots[mfx_composition_active].encode_enqueued = true;
++		}
++	}
++	RID get_metalfx_composition_candidate() const {
++		if (mfx_composition_active < 0 || !mfx_composition_slots[mfx_composition_active].encode_enqueued) {
++			return RID();
++		}
++		return mfx_composition_slots[mfx_composition_active].generated_target;
++	}
++	void mark_metalfx_composition_tonemapped() {
++		if (mfx_composition_active >= 0) {
++			mfx_composition_slots[mfx_composition_active].tonemapped = true;
++		}
++	}
+ 	bool next_metalfx_frame_epoch(uint64_t &r_epoch) {
+ 		if (mfx_frame_epoch >= uint64_t(INT64_MAX)) {
+ 			return false;
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -323,6 +323,7 @@
+ 			p_viewport->render_buffers->configure(&rb_config);
+ 			p_viewport->render_buffers->set_metalfx_configured_mode(int(scaling_3d_mode));
+ 			p_viewport->render_buffers->set_metalfx_frame_requested(p_viewport->metal_fx_frame_requested);
++			p_viewport->render_buffers->set_metalfx_frame_composition_requested(p_viewport->metal_fx_frame_composition_requested);
+ 			p_viewport->render_buffers->set_metalfx_gpu_observation_requested(p_viewport->metal_fx_gpu_observation_requested);
+ 		}
+ 	}
+@@ -418,6 +419,18 @@
+ 		p_viewport->render_buffers = RSG::scene->render_buffers_create();
+ 
+ 		_configure_3d_render_buffers(p_viewport);
++	}
++
++	const bool composition_had_sdf = p_viewport->sdf_active;
++	if (p_viewport->metal_fx_frame_composition_requested && p_viewport->render_buffers.is_valid()) {
++		bool compatible = can_draw_3d && can_draw_2d && !scenario_draw_canvas_bg && !composition_had_sdf &&
++				!p_viewport->transparent_bg && !p_viewport->use_xr && !p_viewport->viewport_render_direct_to_screen &&
++				p_viewport->view_count == 1 && p_viewport->msaa_2d == RSE::VIEWPORT_MSAA_DISABLED &&
++				p_viewport->debug_draw == RSE::VIEWPORT_DEBUG_DRAW_DISABLED &&
++				!RSG::canvas->canvas_item_get_debug_redraw() && !RSG::canvas->_interpolation_data.interpolation_enabled &&
++				RSG::texture_storage->render_target_get_size(p_viewport->render_target) == p_viewport->size &&
++				!RSG::texture_storage->render_target_get_override_color(p_viewport->render_target).is_valid();
++		p_viewport->render_buffers->begin_metalfx_frame_composition(RSG::rasterizer->get_frame_number(), compatible);
+ 	}
+ 
+ 	Color bgcolor = p_viewport->transparent_bg ? Color(0, 0, 0, 0) : RSG::texture_storage->get_default_clear_color();
+@@ -774,6 +787,24 @@
+ 				_draw_3d(p_viewport);
+ 			}
+ 		}
++
++		// The first cull consumes CanvasGroup lists. Cull the same canvases anew,
++		// only after all real canvases have reported whether they used an SDF.
++		if (p_viewport->metal_fx_frame_composition_requested && p_viewport->render_buffers.is_valid()) {
++			RID generated_target = p_viewport->render_buffers->get_metalfx_frame_composition_target();
++			bool composition_canvas_ok = generated_target.is_valid() && !composition_had_sdf && !p_viewport->sdf_active &&
++					!lights && !directional_lights && !scenario_draw_canvas_bg;
++			if (composition_canvas_ok) {
++				RenderingServerTypes::RenderInfo generated_info = {};
++				for (const KeyValue<Viewport::CanvasKey, Viewport::CanvasData *> &E : canvas_map) {
++					RendererCanvasCull::Canvas *canvas = static_cast<RendererCanvasCull::Canvas *>(E.value->canvas);
++					Transform2D xform = _canvas_get_transform(p_viewport, canvas, E.value, clip_rect.size);
++					RSG::canvas->render_canvas(generated_target, canvas, xform, nullptr, nullptr, clip_rect, p_viewport->texture_filter, p_viewport->texture_repeat, p_viewport->snap_2d_transforms_to_pixel, p_viewport->snap_2d_vertices_to_pixel, p_viewport->canvas_cull_mask, &generated_info);
++					composition_canvas_ok &= !RSG::canvas->was_sdf_used();
++				}
++			}
++			p_viewport->render_buffers->finish_metalfx_frame_composition(composition_canvas_ok);
++		}
+ 	}
+ 
+ 	if (RSG::texture_storage->render_target_is_clear_requested(p_viewport->render_target)) {
+@@ -1668,6 +1699,40 @@
+ 	if (viewport->render_buffers.is_valid()) {
+ 		viewport->render_buffers->set_metalfx_frame_requested(p_enabled);
+ 	}
++}
++
++void RendererViewport::viewport_set_metalfx_frame_composition_requested(RID p_viewport, bool p_enabled) {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL(viewport);
++	viewport->metal_fx_frame_composition_requested = p_enabled;
++	if (viewport->render_buffers.is_valid()) {
++		viewport->render_buffers->set_metalfx_frame_composition_requested(p_enabled);
++	}
++}
++
++Dictionary RendererViewport::viewport_get_metalfx_frame_composition_status(RID p_viewport) const {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL_V(viewport, Dictionary());
++	Dictionary status;
++	if (viewport->render_buffers.is_valid()) {
++		status = viewport->render_buffers->get_metalfx_frame_composition_status();
++	}
++	status["requested_by_caller"] = viewport->metal_fx_frame_composition_requested;
++	status["viewport_generation"] = int64_t(viewport->metal_fx_generation);
++	status["frame_generation"] = int64_t(viewport->metal_fx_frame_generation);
++	return status;
++}
++
++Dictionary RendererViewport::viewport_read_metalfx_frame_composition(RID p_viewport) {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL_V(viewport, Dictionary());
++	Dictionary status;
++	if (viewport->render_buffers.is_valid()) {
++		status = viewport->render_buffers->read_metalfx_frame_composition();
++	}
++	status["viewport_generation"] = int64_t(viewport->metal_fx_generation);
++	status["frame_generation"] = int64_t(viewport->metal_fx_frame_generation);
++	return status;
+ }
+ 
+ Dictionary RendererViewport::viewport_get_metalfx_frame_status(RID p_viewport) const {
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -70,6 +70,7 @@
+ 		uint64_t metal_fx_reset_serial = 0;
+ 		uint64_t metal_fx_frame_generation = 0; // Independent of Temporal reset receipts.
+ 		bool metal_fx_frame_requested = false;
++		bool metal_fx_frame_composition_requested = false;
+ 		bool metal_fx_gpu_observation_requested = false;
+ 
+ 		RSE::ViewportMSAA msaa_2d = RSE::VIEWPORT_MSAA_DISABLED;
+@@ -296,6 +297,9 @@
+ 	void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled);
+ 	Dictionary viewport_get_metalfx_gpu_status(RID p_viewport) const;
+ 	void viewport_set_metalfx_frame_requested(RID p_viewport, bool p_enabled);
++	void viewport_set_metalfx_frame_composition_requested(RID p_viewport, bool p_enabled);
++	Dictionary viewport_get_metalfx_frame_composition_status(RID p_viewport) const;
++	Dictionary viewport_read_metalfx_frame_composition(RID p_viewport);
+ 	Dictionary viewport_get_metalfx_frame_status(RID p_viewport) const;
+ 	Dictionary viewport_read_metalfx_frame(RID p_viewport);
+ 	virtual int viewport_get_render_info(RID p_viewport, RSE::ViewportRenderInfoType p_type, RSE::ViewportRenderInfo p_info);
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -2930,6 +2930,9 @@
+ 	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_gpu_observation_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_gpu_observation_requested);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_gpu_status", "viewport"), &RenderingServer::viewport_get_metalfx_gpu_status);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_frame_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_frame_requested);
++	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_frame_composition_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_frame_composition_requested);
++	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_frame_composition_status", "viewport"), &RenderingServer::viewport_get_metalfx_frame_composition_status);
++	ClassDB::bind_method(D_METHOD("viewport_read_metalfx_frame_composition", "viewport"), &RenderingServer::viewport_read_metalfx_frame_composition);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_frame_status", "viewport"), &RenderingServer::viewport_get_metalfx_frame_status);
+ 	ClassDB::bind_method(D_METHOD("viewport_read_metalfx_frame", "viewport"), &RenderingServer::viewport_read_metalfx_frame);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_render_info", "viewport", "type", "info"), &RenderingServer::viewport_get_render_info);
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -626,6 +626,9 @@
+ 	virtual void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled) = 0;
+ 	virtual Dictionary viewport_get_metalfx_gpu_status(RID p_viewport) const = 0;
+ 	virtual void viewport_set_metalfx_frame_requested(RID p_viewport, bool p_enabled) = 0;
++	virtual void viewport_set_metalfx_frame_composition_requested(RID p_viewport, bool p_enabled) = 0;
++	virtual Dictionary viewport_get_metalfx_frame_composition_status(RID p_viewport) const = 0;
++	virtual Dictionary viewport_read_metalfx_frame_composition(RID p_viewport) = 0;
+ 	virtual Dictionary viewport_get_metalfx_frame_status(RID p_viewport) const = 0;
+ 	virtual Dictionary viewport_read_metalfx_frame(RID p_viewport) = 0;
+ 	virtual int viewport_get_render_info(RID p_viewport, RSE::ViewportRenderInfoType p_type, RSE::ViewportRenderInfo p_info) = 0;
+diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/rendering_server_default.h
+--- a/servers/rendering/rendering_server_default.h
++++ b/servers/rendering/rendering_server_default.h
+@@ -812,6 +812,9 @@
+ 	FUNC2(viewport_set_metalfx_gpu_observation_requested, RID, bool)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_gpu_status, RID)
+ 	FUNC2(viewport_set_metalfx_frame_requested, RID, bool)
++	FUNC2(viewport_set_metalfx_frame_composition_requested, RID, bool)
++	FUNC1RC(Dictionary, viewport_get_metalfx_frame_composition_status, RID)
++	FUNC1R(Dictionary, viewport_read_metalfx_frame_composition, RID)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_frame_status, RID)
+ 	FUNC1R(Dictionary, viewport_read_metalfx_frame, RID)
+ 	FUNC3R(int, viewport_get_render_info, RID, RSE::ViewportRenderInfoType, RSE::ViewportRenderInfo)
+diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/rendering/storage/render_scene_buffers.h
+--- a/servers/rendering/storage/render_scene_buffers.h
++++ b/servers/rendering/storage/render_scene_buffers.h
+@@ -36,6 +36,7 @@
+ #include "servers/rendering/storage/metalfx_gpu_observation.h"
+ 
+ #include <atomic>
++#include <initializer_list>
+ #include <memory>
+ 
+ // Shared by a buffer generation and its queued callbacks. Reconfiguration
+@@ -74,6 +75,46 @@
+ 	}
+ };
+ 
++// One SDK encode and one later, whole-pair completion. No callback retains a
++// viewport or render buffer; retirement only leaves this value state alive.
++struct MetalFXCompositionFrame {
++	uint64_t frame = 0;
++	uint64_t previous_frame = 0; // Actual previous SDK input, not last presented frame.
++	uint64_t epoch = 0;
++	uint64_t serial = 0;
++	std::atomic<uint32_t> warm_count{ 0 };
++	std::atomic<int> encode_result{ 0 }; // 0 pending, 1 success, -1 failure.
++	std::shared_ptr<MetalFXGPUObservation> sdk_completion = std::make_shared<MetalFXGPUObservation>();
++	std::shared_ptr<MetalFXGPUObservation> completion = std::make_shared<MetalFXGPUObservation>();
++
++	bool ready(uint64_t p_frame, uint64_t p_epoch) const {
++		if (!frame || !serial || frame != p_frame || epoch != p_epoch ||
++				encode_result.load(std::memory_order_acquire) != 1 || warm_count.load(std::memory_order_acquire) < 5) {
++			return false;
++		}
++		for (const auto &observer : { sdk_completion, completion }) {
++			MetalFXGPUObservation::Snapshot s = observer->snapshot();
++			if (s.counter_exhausted || s.unexpected_callback || s.first_observed_failure.ticket ||
++					s.encoded.ticket != 1 || s.completed.ticket != 1 || !s.completed.succeeded ||
++					s.completed.frame != frame || s.completed.epoch != epoch) {
++				return false;
++			}
++		}
++		return true;
++	}
++};
++
++// Diagnostic render-thread snapshot only. A presenter must first add a lease:
++// these texture RIDs can be retired or reused on the next viewport draw.
++struct MetalFXCompletedPair {
++	RID generated_texture;
++	RID real_texture;
++	uint64_t frame = 0;
++	uint64_t previous_frame = 0;
++	uint64_t epoch = 0;
++	uint64_t serial = 0;
++};
++
+ class RenderSceneBuffersConfiguration : public RefCounted {
+ 	GDCLASS(RenderSceneBuffersConfiguration, RefCounted);
+ 
+@@ -146,6 +187,7 @@
+ 	int metal_fx_configured_mode = -1;
+ 	std::shared_ptr<MetalFXTemporalHistoryState> metal_fx_history;
+ 	bool metal_fx_frame_requested = false;
++	bool metal_fx_frame_composition_requested = false;
+ 	bool metal_fx_gpu_observation_requested = false;
+ 	uint64_t metal_fx_gpu_observation_generation = 0;
+ 	std::shared_ptr<MetalFXGPUObservation> metal_fx_scaler_gpu;
+@@ -308,6 +350,27 @@
+ 	}
+ 	virtual Dictionary read_metalfx_frame() { return Dictionary(); }
+ 
++	virtual void clear_metalfx_frame_composition() {}
++	void set_metalfx_frame_composition_requested(bool p_enabled) {
++		if (metal_fx_frame_composition_requested != p_enabled) {
++			clear_metalfx_frame_composition();
++			metal_fx_frame_composition_requested = p_enabled;
++		}
++	}
++	bool is_metalfx_frame_composition_requested() const { return metal_fx_frame_composition_requested; }
++	virtual void begin_metalfx_frame_composition(uint64_t p_frame, bool p_compatible) {}
++	virtual RID get_metalfx_frame_composition_target() const { return RID(); }
++	virtual void finish_metalfx_frame_composition(bool p_canvas_compatible) {}
++	virtual bool get_metalfx_completed_pair(MetalFXCompletedPair &r_pair) const { return false; }
++	virtual Dictionary get_metalfx_frame_composition_status() const {
++		Dictionary status;
++		status["requested"] = metal_fx_frame_composition_requested;
++		status["ready"] = false;
++		status["presentable"] = false;
++		return status;
++	}
++	virtual Dictionary read_metalfx_frame_composition() { return get_metalfx_frame_composition_status(); }
++
+ 	virtual void configure(const RenderSceneBuffersConfiguration *p_config) = 0;
+ 
+ 	// for those settings that are unlikely to require buffers to be recreated, we'll add setters

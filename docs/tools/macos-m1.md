@@ -85,9 +85,11 @@ on the same physical Mac, with no competing workload during measurement.
 
 For fallback, choose the other available Mac before dispatch. After a connection
 loss, reconnect and establish the original task's state and teardown before
-retrying elsewhere. Automatic distribution and failover remain pending under
-[TQ-02–04](../plans/agent-test-orchestrator.md). The existing
-[queue worker](../../tools/testqueue/README.md) has a local Windows adapter.
+retrying elsewhere. Independent headless checks now have
+[automatic pool placement](../../tools/testqueue/README.md#automatic-multi-host-checked-tests)
+with durable SSH execution and verified artifact collection. Automatic migration
+after an uncertain dispatch and graphical/composite presets remain under
+[TQ-02–04](../plans/agent-test-orchestrator.md).
 
 SSH, the retained keys and ANGEL's native tools already work. During a test
 session, the owner can keep either Mac awake for two hours from its Terminal.

@@ -1,0 +1,932 @@
+diff --git a/servers/rendering/renderer_rd/effects/metal_fx.cpp b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+--- a/servers/rendering/renderer_rd/effects/metal_fx.cpp
++++ b/servers/rendering/renderer_rd/effects/metal_fx.cpp
+@@ -53,7 +53,8 @@
+ // Registered only by an explicit per-viewport observation request. Capture no
+ // Godot owner or driver pointer: the shared generation may outlive its viewport.
+ static void mfx_observe_gpu(MTL::CommandBuffer *p_command, const std::shared_ptr<MetalFXGPUObservation> &p_state,
+-		uint64_t p_frame, uint64_t p_epoch = 0, uint64_t p_reset_serial = 0) {
++		uint64_t p_frame, uint64_t p_epoch = 0, uint64_t p_reset_serial = 0,
++		const std::shared_ptr<OpenRCMetalPresent::Proof> &p_proof = nullptr) {
+ 	if (!p_state || !p_command) {
+ 		return;
+ 	}
+@@ -61,7 +62,7 @@
+ 	if (!sample.ticket) {
+ 		return;
+ 	}
+-	p_command->addCompletedHandler([state = p_state, sample](MTL::CommandBuffer *command) {
++	p_command->addCompletedHandler([state = p_state, sample, proof = p_proof](MTL::CommandBuffer *command) {
+ 		MTL::CommandBufferStatus status = command->status();
+ 		NS::Error *error = command->error();
+ 		bool terminal = status == MTL::CommandBufferStatusCompleted || status == MTL::CommandBufferStatusError;
+@@ -70,8 +71,12 @@
+ 		double gpu_end = succeeded ? command->GPUEndTime() : 0;
+ 		auto ticks = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+ 		uint64_t observer_usec = ticks > 0 && uint64_t(ticks) <= MetalFXGPUObservation::MAX_COUNTER ? uint64_t(ticks) : 0;
+-		state->completed(sample, terminal, succeeded, int64_t(status), error != nullptr,
++		bool accepted = state->completed(sample, terminal, succeeded, int64_t(status), error != nullptr,
+ 				error ? int64_t(error->code()) : 0, gpu_start, gpu_end, observer_usec);
++		if (proof && !proof->is_cancelled()) {
++			bool exact = proof->frame == sample.frame && proof->epoch == sample.epoch;
++			proof->sdk_completion.store(accepted && exact && succeeded ? 1 : -1, std::memory_order_release);
++		}
+ 	});
+ }
+ 
+@@ -405,6 +410,8 @@
+ 		args->composition->frame = args->frame;
+ 		args->composition->epoch = args->epoch;
+ 		args->composition->serial = args->serial;
++		args->composition->real_interval = p_params.delta;
++		args->composition->presentation_proof = std::make_shared<OpenRCMetalPresent::Proof>(args->composition->previous_frame, args->frame, args->epoch, args->serial);
+ 	}
+ 	args->scale_x = p_params.motion_scale.x; args->scale_y = p_params.motion_scale.y;
+ 	args->jitter_x = p_params.jitter.x; args->jitter_y = p_params.jitter.y;
+@@ -449,7 +456,7 @@
+ 		if (result == MFX_FRAME_OK) {
+ 			mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->gpu, p_userdata->frame, p_userdata->epoch);
+ 			if (p_userdata->composition) {
+-				mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->composition->sdk_completion, p_userdata->frame, p_userdata->epoch);
++				mfx_observe_gpu(cmd->get_command_buffer(), p_userdata->composition->sdk_completion, p_userdata->frame, p_userdata->epoch, 0, p_userdata->composition->presentation_proof);
+ 			}
+ 			obj->retain_resource((CFTypeRef)p_userdata->effect);
+ 			if (p_userdata->reset) {
+@@ -467,6 +474,11 @@
+ 				bool valid = history->encoded_epoch.load(std::memory_order_acquire) == p_userdata->epoch &&
+ 						!history->callback_error.load(std::memory_order_acquire);
+ 				p_userdata->composition->encode_result.store(valid ? 1 : -1, std::memory_order_release);
++				const auto &proof = p_userdata->composition->presentation_proof;
++				if (proof && !proof->is_cancelled()) {
++					proof->warm_count.store(count, std::memory_order_relaxed);
++					proof->encode_result.store(valid ? 1 : -1, std::memory_order_release);
++				}
+ 			}
+ 		} else {
+ 			history->callback_error.store(result, std::memory_order_release);
+@@ -474,6 +486,11 @@
+ 	}
+ 	if (p_userdata->composition && p_userdata->composition->encode_result.load(std::memory_order_acquire) == 0) {
+ 		p_userdata->composition->encode_result.store(-1, std::memory_order_release);
++		const auto &proof = p_userdata->composition->presentation_proof;
++		if (proof && !proof->is_cancelled()) {
++			proof->encode_result.store(-1, std::memory_order_release);
++			proof->sdk_completion.store(-1, std::memory_order_release);
++		}
+ 	}
+ 	mfx_frame_release(p_userdata->effect);
+ 	memdelete(p_userdata);
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -147,6 +147,9 @@
+ 	bool reset = decision.reset;
+ 	float delta = decision.delta;
+ 	if (reset) {
++		if (ctx->timeline.has_previous) {
++			p_buffers->cancel_metalfx_presentation_source();
++		}
+ 		delta = 1.0f / 60.0f; // first/reset frame has no usable previous pair
+ 		if (!p_buffers->next_metalfx_frame_epoch(ctx->epoch)) {
+ 			p_buffers->reject_metalfx_frame("generation_exhausted");
+diff --git a/servers/rendering/renderer_rd/renderer_compositor_rd.cpp b/servers/rendering/renderer_rd/renderer_compositor_rd.cpp
+--- a/servers/rendering/renderer_rd/renderer_compositor_rd.cpp
++++ b/servers/rendering/renderer_rd/renderer_compositor_rd.cpp
+@@ -37,6 +37,7 @@
+ #include "servers/display/display_server.h"
+ #include "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h"
+ #include "servers/rendering/renderer_rd/forward_mobile/render_forward_mobile.h"
++#include "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h"
+ #include "servers/rendering/rendering_server_types.h"
+ 
+ #if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
+@@ -533,6 +534,7 @@
+ 		_openrc_collect_slots(true);
+ 		openrc_presenter.reset();
+ 	}
++	RenderSceneBuffersRD::finalize_metalfx_retirements();
+ #endif
+ 	texture_storage->_tex_blit_shader_free();
+ 	memdelete(scene);
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -33,6 +33,7 @@
+ 
+ #include "core/object/class_db.h"
+ #include "core/io/image.h"
++#include "core/os/os.h"
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ #include "drivers/metal/metalfx_frame_bridge.h"
+ #endif
+@@ -52,6 +53,38 @@
+ 
+ 	RendererRD::MaterialStorage::get_singleton()->samplers_rd_free(samplers);
+ }
++
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++Vector<RenderSceneBuffersRD::MFXRetiredCompositionSlot> RenderSceneBuffersRD::mfx_retired_composition_slots;
++uint32_t RenderSceneBuffersRD::mfx_live_composition_slots = 0;
++
++void RenderSceneBuffersRD::collect_metalfx_retired_slots() {
++	RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
++	for (int i = mfx_retired_composition_slots.size() - 1; i >= 0; --i) {
++		MFXRetiredCompositionSlot &slot = mfx_retired_composition_slots.write[i];
++		if (slot.lease && slot.lease->held.load(std::memory_order_acquire)) {
++			continue;
++		}
++		storage->render_target_free(slot.generated_target);
++		storage->render_target_free(slot.real_target);
++		mfx_retired_composition_slots.remove_at(i);
++		--mfx_live_composition_slots;
++	}
++}
++
++void RenderSceneBuffersRD::finalize_metalfx_retirements() {
++	// The compositor has already flushed the RD graph and stopped its owner.
++	// Completion handlers may run shortly after the fence wakes; never free a
++	// held source or let an old-owner RID enter a later renderer generation.
++	for (int i = 0; i < 200 && mfx_live_composition_slots; ++i) {
++		collect_metalfx_retired_slots();
++		if (mfx_live_composition_slots) {
++			OS::get_singleton()->delay_usec(1000);
++		}
++	}
++	CRASH_COND_MSG(mfx_live_composition_slots != 0 || !mfx_retired_composition_slots.is_empty(), "MetalFX source tickets did not retire before renderer shutdown.");
++}
++#endif
+ 
+ void RenderSceneBuffersRD::_bind_methods() {
+ 	ClassDB::bind_method(D_METHOD("has_texture", "context", "name"), &RenderSceneBuffersRD::has_texture);
+@@ -144,22 +177,37 @@
+ 
+ void RenderSceneBuffersRD::clear_metalfx_frame_composition() {
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+-	// RD defers native resource destruction until the owning frame fence. The
+-	// callbacks themselves retain only their shared value state.
++	cancel_metalfx_presentation_source();
++	// Cancellation is nonblocking. Converted jobs may outlive their source
++	// ticket, so cancel every still-live proof, not only the current two slots.
++	for (auto &weak : mfx_presentation_proofs) {
++		if (auto proof = weak.lock()) {
++			proof->request_cancel();
++		}
++		weak.reset();
++	}
+ 	RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
+ 	for (MFXCompositionSlot &slot : mfx_composition_slots) {
+-		if (slot.generated_target.is_valid()) {
+-			storage->render_target_free(slot.generated_target);
+-		}
+-		if (slot.real_target.is_valid()) {
+-			storage->render_target_free(slot.real_target);
++		if (slot.state && slot.state->presentation_proof) {
++			slot.state->presentation_proof->request_cancel();
++		}
++		if (slot.generated_target.is_valid() && slot.real_target.is_valid()) {
++			if (slot.lease && slot.lease->held.load(std::memory_order_acquire)) {
++				mfx_retired_composition_slots.push_back({ slot.generated_target, slot.real_target, slot.lease });
++			} else {
++				storage->render_target_free(slot.generated_target);
++				storage->render_target_free(slot.real_target);
++				--mfx_live_composition_slots;
++			}
+ 		}
+ 		slot = MFXCompositionSlot();
+ 	}
+ 	mfx_composition_active = -1;
++	mfx_composition_handoff = -1;
+ 	mfx_composition_invalid_through = 0;
+ 	mfx_composition_current_frame = 0;
+ 	mfx_composition_faulted = false;
++	mfx_presentation_incompatible = false;
+ 	mfx_composition_reason = "not_attempted";
+ #endif
+ }
+@@ -169,9 +217,12 @@
+ 	if (!is_metalfx_frame_composition_requested()) {
+ 		return;
+ 	}
++	collect_metalfx_retired_slots();
+ 	mfx_composition_active = -1;
++	mfx_composition_handoff = -1;
+ 	mfx_composition_current_frame = p_frame;
+ 	if (!p_compatible || !is_metalfx_frame_requested() || !p_frame || target_size.x <= 0 || target_size.y <= 0) {
++		invalidate_metalfx_presentation_once();
+ 		mfx_composition_invalid_through = p_frame;
+ 		mfx_composition_reason = "incompatible_viewport";
+ 		return;
+@@ -201,6 +252,7 @@
+ 		}
+ 	}
+ 	if (mfx_composition_faulted) {
++		invalidate_metalfx_presentation_once();
+ 		mfx_composition_invalid_through = p_frame;
+ 		mfx_composition_reason = "gpu_completion_failed";
+ 		return;
+@@ -210,6 +262,9 @@
+ 	for (int attempt = 0; attempt < 2; ++attempt) {
+ 		int index = latest < 0 ? attempt : ((latest + 1 + attempt) % 2);
+ 		MFXCompositionSlot &slot = mfx_composition_slots[index];
++		if (slot.lease && slot.lease->held.load(std::memory_order_acquire)) {
++			continue;
++		}
+ 		if (slot.submitted && slot.state && !slot.state->completion->snapshot().completed.ticket) {
+ 			continue; // Pending or unobservable work must never be reused.
+ 		}
+@@ -218,6 +273,9 @@
+ 			continue;
+ 		}
+ 		if (!slot.generated_target.is_valid()) {
++			if (mfx_live_composition_slots >= MFX_MAX_LIVE_COMPOSITION_SLOTS) {
++				continue;
++			}
+ 			slot.generated_target = storage->render_target_create();
+ 			slot.real_target = storage->render_target_create();
+ 			if (!slot.generated_target.is_valid() || !slot.real_target.is_valid()) {
+@@ -236,9 +294,12 @@
+ 				storage->render_target_set_use_debanding(target, debanding);
+ 				storage->render_target_set_size(target, target_size.x, target_size.y, 1);
+ 			}
++			slot.lease = std::make_shared<OpenRCMetalPresent::Lease>();
++			++mfx_live_composition_slots;
+ 		}
+ 		slot.state = std::make_shared<MetalFXCompositionFrame>();
+ 		slot.state->frame = p_frame;
++		slot.state->presentation_source = get_metalfx_presentation_source();
+ 		slot.submitted = false;
+ 		slot.encode_enqueued = false;
+ 		slot.tonemapped = false;
+@@ -247,7 +308,7 @@
+ 		mfx_composition_reason = "pending_scene";
+ 		return;
+ 	}
+-	mfx_composition_reason = "both_slots_pending";
++	mfx_composition_reason = mfx_live_composition_slots >= MFX_MAX_LIVE_COMPOSITION_SLOTS ? "slot_budget_exhausted_or_pending" : "both_slots_pending";
+ #endif
+ }
+ 
+@@ -265,9 +326,11 @@
+ 	if (mfx_composition_active < 0) {
+ 		return;
+ 	}
+-	MFXCompositionSlot &slot = mfx_composition_slots[mfx_composition_active];
++	int index = mfx_composition_active;
++	MFXCompositionSlot &slot = mfx_composition_slots[index];
+ 	mfx_composition_active = -1;
+ 	if (!slot.tonemapped) {
++		invalidate_metalfx_presentation_once();
+ 		mfx_composition_invalid_through = slot.state->frame;
+ 		slot.state.reset();
+ 		mfx_composition_reason = "unsupported_scene_or_postprocess";
+@@ -278,6 +341,7 @@
+ 	RID real = storage->render_target_get_rd_texture(slot.real_target);
+ 	RID source = storage->render_target_get_rd_texture(render_target);
+ 	if (!generated.is_valid() || !real.is_valid() || !source.is_valid()) {
++		invalidate_metalfx_presentation_once();
+ 		slot.submitted = true; // Quarantine: do not reuse unobserved work.
+ 		mfx_composition_faulted = true;
+ 		mfx_composition_reason = "invalid_render_target";
+@@ -289,14 +353,20 @@
+ 	bool copy_recorded = copy_effects && copy_effects->copy_to_rect_checked(source, real, Rect2i(Point2i(), target_size), false, false, false, !storage->render_target_is_using_hdr(render_target));
+ 	slot.eligible = p_canvas_compatible && copy_recorded;
+ 	if (!slot.eligible) {
++		invalidate_metalfx_presentation_once();
+ 		mfx_composition_invalid_through = slot.state->frame;
+ 	}
+ 	RendererRD::MFXCompositionEffect observer;
+ 	slot.submitted = true;
+ 	if (!observer.observe_completion(generated, real, slot.state)) {
++		invalidate_metalfx_presentation_once();
+ 		mfx_composition_faulted = true; // Keep the slot quarantined until retirement.
+ 		mfx_composition_reason = "completion_observer_rejected";
+ 		return;
++	}
++	if (slot.eligible && slot.state->presentation_proof) {
++		mfx_presentation_incompatible = false;
++		mfx_composition_handoff = index;
+ 	}
+ 	mfx_composition_reason = !copy_recorded ? "copy_record_failed" : (slot.eligible ? "completion_pending" : "incompatible_canvas");
+ #endif
+@@ -349,6 +419,51 @@
+ 	}
+ #endif
+ 	return false;
++}
++
++bool RenderSceneBuffersRD::acquire_metalfx_pending_pair(uint64_t p_frame, MetalFXPendingPair &r_pair) {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (!is_metalfx_frame_composition_requested() || mfx_composition_handoff < 0 || p_frame != mfx_composition_current_frame) {
++		return false;
++	}
++	MFXCompositionSlot &slot = mfx_composition_slots[mfx_composition_handoff];
++	if (!slot.submitted || !slot.eligible || !slot.state || slot.state->frame != p_frame || !slot.lease ||
++			!slot.state->presentation_proof || slot.state->presentation_proof->is_cancelled() ||
++			!slot.state->presentation_source || slot.state->presentation_source->is_cancelled() ||
++			slot.state->presentation_source != get_metalfx_presentation_source()) {
++		return false;
++	}
++	int free_index = -1;
++	for (int i = 0; i < 8; ++i) {
++		if (mfx_presentation_proofs[i].expired()) {
++			free_index = i;
++			break;
++		}
++	}
++	if (free_index < 0) {
++		return false; // Never evict a live proof just to admit another pair.
++	}
++	RendererRD::TextureStorage *storage = RendererRD::TextureStorage::get_singleton();
++	RID generated = storage->render_target_get_rd_texture(slot.generated_target);
++	RID real = storage->render_target_get_rd_texture(slot.real_target);
++	if (!generated.is_valid() || !real.is_valid() || generated == real) {
++		return false;
++	}
++	auto ticket = OpenRCMetalPresent::Ticket::acquire(slot.lease);
++	if (!ticket) {
++		return false;
++	}
++	r_pair.generated_texture = generated;
++	r_pair.real_texture = real;
++	r_pair.real_interval = slot.state->real_interval;
++	r_pair.proof = slot.state->presentation_proof;
++	r_pair.ticket = ticket;
++	mfx_presentation_proofs[free_index] = r_pair.proof;
++	mfx_composition_handoff = -1;
++	return true;
++#else
++	return false;
++#endif
+ }
+ 
+ Dictionary RenderSceneBuffersRD::get_metalfx_frame_composition_status() const {
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+@@ -102,6 +102,7 @@
+ 		RID generated_target;
+ 		RID real_target;
+ 		std::shared_ptr<MetalFXCompositionFrame> state;
++		std::shared_ptr<OpenRCMetalPresent::Lease> lease;
+ 		bool submitted = false;
+ 		bool encode_enqueued = false;
+ 		bool tonemapped = false;
+@@ -109,9 +110,26 @@
+ 	};
+ 	MFXCompositionSlot mfx_composition_slots[2];
+ 	int mfx_composition_active = -1;
++	int mfx_composition_handoff = -1;
++	std::weak_ptr<OpenRCMetalPresent::Proof> mfx_presentation_proofs[8];
++	struct MFXRetiredCompositionSlot {
++		RID generated_target;
++		RID real_target;
++		std::shared_ptr<OpenRCMetalPresent::Lease> lease;
++	};
++	static Vector<MFXRetiredCompositionSlot> mfx_retired_composition_slots;
++	static uint32_t mfx_live_composition_slots;
++	static constexpr uint32_t MFX_MAX_LIVE_COMPOSITION_SLOTS = 4;
+ 	uint64_t mfx_composition_invalid_through = 0;
+ 	uint64_t mfx_composition_current_frame = 0;
+ 	bool mfx_composition_faulted = false;
++	bool mfx_presentation_incompatible = false;
++	void invalidate_metalfx_presentation_once() {
++		if (!mfx_presentation_incompatible) {
++			cancel_metalfx_presentation_source();
++			mfx_presentation_incompatible = true;
++		}
++	}
+ 	String mfx_composition_reason = "not_attempted";
+ 	int _metalfx_composition_ready_slot() const;
+ #endif
+@@ -240,10 +258,13 @@
+ 	virtual RID get_metalfx_frame_composition_target() const override;
+ 	virtual void finish_metalfx_frame_composition(bool p_canvas_compatible) override;
+ 	virtual bool get_metalfx_completed_pair(MetalFXCompletedPair &r_pair) const override;
++	virtual bool acquire_metalfx_pending_pair(uint64_t p_frame, MetalFXPendingPair &r_pair) override;
+ 	virtual Dictionary get_metalfx_frame_composition_status() const override;
+ 	virtual Dictionary read_metalfx_frame_composition() override;
+ 
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	static void collect_metalfx_retired_slots();
++	static void finalize_metalfx_retirements();
+ 	RendererRD::MFXFrameContext *get_metalfx_frame_context() const { return mfx_frame_context; }
+ 	RendererRD::MFXFrameContext *ensure_metalfx_frame_context(RendererRD::MFXFrameEffect *p_effect, const RendererRD::MFXFrameEffect::CreateParams &p_params);
+ 	void reject_metalfx_frame(const char *p_reason);
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -45,10 +45,68 @@
+ #include "servers/rendering/rendering_server_globals.h"
+ #include "servers/rendering/storage/texture_storage.h"
+ 
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++#include "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h"
++#endif
++
+ #ifndef XR_DISABLED
+ #include "servers/xr/xr_interface.h"
+ #include "servers/xr/xr_server.h"
+ #endif // XR_DISABLED
++
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++// Source generations can outlive a viewport. Keep canceled generations until
++// their presenter critical section is quiescent before publishing any new
++// main-window output, including a real-only frame. Admission is bounded.
++static std::shared_ptr<OpenRCMetalPresent::SourceGeneration> mfx_sources[4];
++static bool mfx_sources_quiescent() {
++	for (auto &source : mfx_sources) {
++		if (source && source->is_cancelled()) {
++			if (!source->try_cancel_complete()) {
++				return false;
++			}
++			source.reset();
++		}
++	}
++	return true;
++}
++static std::shared_ptr<OpenRCMetalPresent::SourceGeneration> mfx_new_source() {
++	if (!mfx_sources_quiescent()) {
++		return {};
++	}
++	for (auto &source : mfx_sources) {
++		if (source && !source->is_cancelled()) {
++			return source; // One source generation covers the whole main window.
++		}
++	}
++	for (auto &source : mfx_sources) {
++		if (!source) {
++			source = std::make_shared<OpenRCMetalPresent::SourceGeneration>();
++			return source;
++		}
++	}
++	return {};
++}
++#endif
++
++static void mfx_cancel_main_sources() {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	for (auto &source : mfx_sources) {
++		if (source) {
++			source->request_cancel();
++		}
++	}
++#endif
++}
++
++static void mfx_cancel_viewport_source(RendererViewport::Viewport *p_viewport) {
++	if (p_viewport->metal_fx_presentation_source) {
++		p_viewport->metal_fx_presentation_source->request_cancel();
++	}
++	if (p_viewport->viewport_to_screen == DisplayServerEnums::MAIN_WINDOW_ID) {
++		mfx_cancel_main_sources();
++	}
++}
+ 
+ static Transform2D _canvas_get_transform(RendererViewport::Viewport *p_viewport, RendererCanvasCull::Canvas *p_canvas, RendererViewport::Viewport::CanvasData *p_canvas_data, const Vector2 &p_vp_size) {
+ 	Transform2D xf = p_viewport->global_transform;
+@@ -423,6 +481,13 @@
+ 
+ 	const bool composition_had_sdf = p_viewport->sdf_active;
+ 	if (p_viewport->metal_fx_frame_composition_requested && p_viewport->render_buffers.is_valid()) {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++		bool main_metal = p_viewport->viewport_to_screen == DisplayServerEnums::MAIN_WINDOW_ID && OS::get_singleton()->get_current_rendering_driver_name() == "metal";
++		if (main_metal && (!p_viewport->metal_fx_presentation_source || p_viewport->metal_fx_presentation_source->is_cancelled())) {
++			p_viewport->metal_fx_presentation_source = mfx_new_source();
++		}
++		p_viewport->render_buffers->set_metalfx_presentation_source(main_metal ? p_viewport->metal_fx_presentation_source : nullptr);
++#endif
+ 		bool compatible = can_draw_3d && can_draw_2d && !scenario_draw_canvas_bg && !composition_had_sdf &&
+ 				!p_viewport->transparent_bg && !p_viewport->use_xr && !p_viewport->viewport_render_direct_to_screen &&
+ 				p_viewport->view_count == 1 && p_viewport->msaa_2d == RSE::VIEWPORT_MSAA_DISABLED &&
+@@ -430,6 +495,9 @@
+ 				!RSG::canvas->canvas_item_get_debug_redraw() && !RSG::canvas->_interpolation_data.interpolation_enabled &&
+ 				RSG::texture_storage->render_target_get_size(p_viewport->render_target) == p_viewport->size &&
+ 				!RSG::texture_storage->render_target_get_override_color(p_viewport->render_target).is_valid();
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++		compatible = compatible && (!main_metal || (p_viewport->metal_fx_presentation_source && !p_viewport->metal_fx_presentation_source->is_cancelled()));
++#endif
+ 		p_viewport->render_buffers->begin_metalfx_frame_composition(RSG::rasterizer->get_frame_number(), compatible);
+ 	}
+ 
+@@ -840,6 +908,9 @@
+ }
+ 
+ void RendererViewport::draw_viewports(bool p_swap_buffers) {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	RenderSceneBuffersRD::collect_metalfx_retired_slots();
++#endif
+ 	GodotProfileZoneGroupedFirst(_profile_zone, "prepare viewports");
+ 	timestamp_vp_map.clear();
+ 
+@@ -992,6 +1063,40 @@
+ 				//copy to screen if set as such
+ 				RenderingServerTypes::BlitToScreen blit;
+ 				blit.render_target = vp->render_target;
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++				bool suppress_mfx_output = false;
++				if (p_swap_buffers && vp->viewport_to_screen == DisplayServerEnums::MAIN_WINDOW_ID &&
++						OS::get_singleton()->get_current_rendering_driver_name() == "metal" && RD::get_singleton()) {
++					suppress_mfx_output = !mfx_sources_quiescent();
++					uint64_t presenter_generation = RD::get_singleton()->openrc_metalfx_present_generation(vp->viewport_to_screen);
++					if (!suppress_mfx_output && (vp->metal_fx_frame_composition_requested || presenter_generation)) {
++					if (!vp->metal_fx_presentation_source || vp->metal_fx_presentation_source->is_cancelled()) {
++						vp->metal_fx_presentation_source = mfx_new_source();
++					}
++					if (!vp->metal_fx_presentation_source) {
++						suppress_mfx_output = true;
++					} else if (vp->render_buffers.is_valid()) {
++						vp->render_buffers->set_metalfx_presentation_source(vp->metal_fx_presentation_source);
++					}
++					if (!suppress_mfx_output) {
++					blit.source_generation = vp->metal_fx_presentation_source;
++					blit.paired.presenter_generation = presenter_generation;
++					if (vp->metal_fx_frame_composition_requested && presenter_generation && vp->render_buffers.is_valid()) {
++						MetalFXPendingPair pair;
++						if (vp->render_buffers->acquire_metalfx_pending_pair(RSG::rasterizer->get_frame_number(), pair)) {
++							blit.paired.requested = true;
++							blit.paired.generated_texture = pair.generated_texture;
++							blit.paired.real_texture = pair.real_texture;
++							blit.paired.real_interval = pair.real_interval;
++							blit.paired.proof = pair.proof;
++							blit.paired.ticket = pair.ticket;
++						}
++					}
++					}
++					}
++				}
++				if (!suppress_mfx_output) {
++#endif
+ 				if (vp->viewport_to_screen_rect != Rect2()) {
+ 					blit.dst_rect = vp->viewport_to_screen_rect;
+ 				} else {
+@@ -1009,6 +1114,9 @@
+ 					}
+ 					blits->push_back(blit);
+ 				}
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++				}
++#endif
+ 			}
+ 		}
+ 
+@@ -1038,7 +1146,36 @@
+ 
+ 	GodotProfileZoneGrouped(_profile_zone, "rasterizer->blit_render_targets_to_screen");
+ 	if (p_swap_buffers && !blit_to_screen_list.is_empty()) {
+-		for (const KeyValue<int, Vector<RenderingServerTypes::BlitToScreen>> &E : blit_to_screen_list) {
++		for (KeyValue<int, Vector<RenderingServerTypes::BlitToScreen>> &E : blit_to_screen_list) {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++			if (E.key == DisplayServerEnums::MAIN_WINDOW_ID && OS::get_singleton()->get_current_rendering_driver_name() == "metal" && RD::get_singleton()) {
++				if (!mfx_sources_quiescent()) {
++					continue;
++				}
++				uint64_t generation = RD::get_singleton()->openrc_metalfx_present_generation(DisplayServerEnums::MAIN_WINDOW_ID);
++				bool tagged = false;
++				for (const auto &blit : E.value) {
++					tagged |= bool(blit.source_generation);
++				}
++				if (generation || tagged || RD::get_singleton()->openrc_metalfx_present_requested()) {
++					auto source = mfx_new_source();
++					bool same_source = bool(source);
++					for (const auto &blit : E.value) {
++						same_source &= !blit.source_generation || blit.source_generation == source;
++					}
++					if (!same_source) {
++						continue;
++					}
++					for (int i = 0; i < E.value.size(); ++i) {
++						auto &blit = E.value.write[i];
++						blit.source_generation = source;
++						if (!blit.paired.presenter_generation) {
++							blit.paired.presenter_generation = generation;
++						}
++					}
++				}
++			}
++#endif
+ 			RSG::rasterizer->blit_render_targets_to_screen(E.key, E.value.ptr(), E.value.size());
+ 		}
+ 	}
+@@ -1067,6 +1204,7 @@
+ 	if (viewport->use_xr == p_use_xr) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 
+ 	viewport->use_xr = p_use_xr;
+ 
+@@ -1113,6 +1251,7 @@
+ 	if (viewport->scaling_3d_mode == p_mode) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 
+ 	bool motion_vectors_before = _viewport_requires_motion_vectors(viewport);
+ 	viewport->scaling_3d_mode = p_mode;
+@@ -1159,6 +1298,7 @@
+ 	if (viewport->scaling_3d_scale == CLAMP(p_scaling_3d_scale, 0.1, 2.0)) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 
+ 	viewport->scaling_3d_scale = CLAMP(p_scaling_3d_scale, 0.1, 2.0);
+ 	_configure_3d_render_buffers(viewport);
+@@ -1176,6 +1316,7 @@
+ void RendererViewport::_viewport_set_size(Viewport *p_viewport, int p_width, int p_height, uint32_t p_view_count) {
+ 	Size2i new_size(p_width, p_height);
+ 	if (p_viewport->size != new_size || p_viewport->view_count != p_view_count) {
++		mfx_cancel_viewport_source(p_viewport);
+ 		p_viewport->size = new_size;
+ 		p_viewport->view_count = p_view_count;
+ 
+@@ -1198,9 +1339,13 @@
+ 
+ 	if (p_active) {
+ 		ERR_FAIL_COND_MSG(active_viewports.has(viewport), "Can't make active a Viewport that is already active.");
++		mfx_cancel_viewport_source(viewport);
+ 		viewport->occlusion_buffer_dirty = true;
+ 		active_viewports.push_back(viewport);
+ 	} else {
++		if (active_viewports.has(viewport)) {
++			mfx_cancel_viewport_source(viewport);
++		}
+ 		active_viewports.erase(viewport);
+ 	}
+ 
+@@ -1224,6 +1369,12 @@
+ void RendererViewport::viewport_attach_to_screen(RID p_viewport, const Rect2 &p_rect, DisplayServerEnums::WindowID p_screen) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
++	if (viewport->viewport_to_screen != p_screen || viewport->viewport_to_screen_rect != p_rect) {
++		mfx_cancel_viewport_source(viewport);
++		if (p_screen == DisplayServerEnums::MAIN_WINDOW_ID) {
++			mfx_cancel_main_sources();
++		}
++	}
+ 
+ 	if (p_screen != DisplayServerEnums::INVALID_WINDOW_ID) {
+ 		// If using OpenGL we can optimize this operation by rendering directly to system_fbo
+@@ -1274,6 +1425,9 @@
+ void RendererViewport::viewport_set_update_mode(RID p_viewport, RSE::ViewportUpdateMode p_mode) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
++	if (viewport->update_mode != p_mode) {
++		mfx_cancel_viewport_source(viewport);
++	}
+ 
+ 	viewport->update_mode = p_mode;
+ }
+@@ -1329,6 +1483,9 @@
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
++	if (viewport->disable_2d != p_disable) {
++		mfx_cancel_viewport_source(viewport);
++	}
+ 	viewport->disable_2d = p_disable;
+ }
+ 
+@@ -1354,6 +1511,7 @@
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	if (viewport->disable_3d != p_disable) {
++		mfx_cancel_viewport_source(viewport);
+ 		++viewport->metal_fx_generation;
+ 		++viewport->metal_fx_frame_generation;
+ 		if (viewport->render_buffers.is_valid()) {
+@@ -1368,6 +1526,7 @@
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	if (viewport->camera != p_camera) {
++		mfx_cancel_viewport_source(viewport);
+ 		++viewport->metal_fx_generation;
+ 		++viewport->metal_fx_frame_generation;
+ 		if (viewport->render_buffers.is_valid()) {
+@@ -1382,6 +1541,7 @@
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	if (viewport->scenario != p_scenario) {
++		mfx_cancel_viewport_source(viewport);
+ 		++viewport->metal_fx_generation;
+ 		++viewport->metal_fx_frame_generation;
+ 		if (viewport->render_buffers.is_valid()) {
+@@ -1438,6 +1598,7 @@
+ 	if (viewport->transparent_bg == p_enabled) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 
+ 	RSG::texture_storage->render_target_set_transparent(viewport->render_target, p_enabled);
+ 	viewport->transparent_bg = p_enabled;
+@@ -1483,6 +1644,7 @@
+ 	if (viewport->msaa_2d == p_msaa) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 	viewport->msaa_2d = p_msaa;
+ 	RSG::texture_storage->render_target_set_msaa(viewport->render_target, p_msaa);
+ }
+@@ -1494,6 +1656,7 @@
+ 	if (viewport->msaa_3d == p_msaa) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 	viewport->msaa_3d = p_msaa;
+ 	_configure_3d_render_buffers(viewport);
+ }
+@@ -1505,6 +1668,7 @@
+ 	if (viewport->use_hdr_2d == p_use_hdr_2d) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 	viewport->use_hdr_2d = p_use_hdr_2d;
+ 	RSG::texture_storage->render_target_set_use_hdr(viewport->render_target, p_use_hdr_2d);
+ 	_configure_3d_render_buffers(viewport);
+@@ -1528,6 +1692,7 @@
+ 	if (viewport->screen_space_aa == p_mode) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 	viewport->screen_space_aa = p_mode;
+ 	_configure_3d_render_buffers(viewport);
+ }
+@@ -1543,6 +1708,7 @@
+ 	if (viewport->use_taa == p_use_taa) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 
+ 	bool motion_vectors_before = _viewport_requires_motion_vectors(viewport);
+ 	viewport->use_taa = p_use_taa;
+@@ -1562,6 +1728,7 @@
+ 	if (viewport->use_debanding == p_use_debanding) {
+ 		return;
+ 	}
++	mfx_cancel_viewport_source(viewport);
+ 	viewport->use_debanding = p_use_debanding;
+ 	RSG::texture_storage->render_target_set_use_debanding(viewport->render_target, p_use_debanding);
+ 	_configure_3d_render_buffers(viewport);
+@@ -1694,6 +1861,9 @@
+ 	if (viewport->metal_fx_frame_requested == p_enabled) {
+ 		return;
+ 	}
++	if (!p_enabled) {
++		mfx_cancel_viewport_source(viewport);
++	}
+ 	viewport->metal_fx_frame_requested = p_enabled;
+ 	++viewport->metal_fx_frame_generation;
+ 	if (viewport->render_buffers.is_valid()) {
+@@ -1704,6 +1874,12 @@
+ void RendererViewport::viewport_set_metalfx_frame_composition_requested(RID p_viewport, bool p_enabled) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
++	if (viewport->metal_fx_frame_composition_requested == p_enabled) {
++		return;
++	}
++	if (!p_enabled) {
++		mfx_cancel_viewport_source(viewport);
++	}
+ 	viewport->metal_fx_frame_composition_requested = p_enabled;
+ 	if (viewport->render_buffers.is_valid()) {
+ 		viewport->render_buffers->set_metalfx_frame_composition_requested(p_enabled);
+@@ -1801,6 +1977,9 @@
+ void RendererViewport::viewport_set_debug_draw(RID p_viewport, RSE::ViewportDebugDraw p_draw) {
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
++	if (viewport->debug_draw != p_draw) {
++		mfx_cancel_viewport_source(viewport);
++	}
+ 
+ 	bool motion_vectors_before = _viewport_requires_motion_vectors(viewport);
+ 	viewport->debug_draw = p_draw;
+@@ -1906,6 +2085,7 @@
+ bool RendererViewport::free(RID p_rid) {
+ 	if (viewport_owner.owns(p_rid)) {
+ 		Viewport *viewport = viewport_owner.get_or_null(p_rid);
++		mfx_cancel_viewport_source(viewport);
+ 
+ 		RSG::texture_storage->render_target_free(viewport->render_target);
+ 		RSG::light_storage->shadow_atlas_free(viewport->shadow_atlas);
+@@ -1987,3 +2167,25 @@
+ RendererViewport::RendererViewport() {
+ 	occlusion_rays_per_thread = GLOBAL_GET("rendering/occlusion_culling/occlusion_rays_per_thread");
+ }
++
++void RendererViewport::prepare_metalfx_shutdown() {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	for (auto &source : mfx_sources) {
++		if (source) {
++			source->request_cancel();
++		}
++	}
++	for (RID id : viewport_owner.get_owned_list()) {
++		Viewport *viewport = viewport_owner.get_or_null(id);
++		if (viewport && viewport->render_buffers.is_valid()) {
++			viewport->render_buffers->set_metalfx_frame_composition_requested(false);
++		}
++	}
++#endif
++}
++
++void RendererViewport::finish_metalfx_shutdown() {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	CRASH_COND_MSG(!mfx_sources_quiescent(), "MetalFX presentation source did not quiesce before renderer shutdown.");
++#endif
++}
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -71,6 +71,7 @@
+ 		uint64_t metal_fx_frame_generation = 0; // Independent of Temporal reset receipts.
+ 		bool metal_fx_frame_requested = false;
+ 		bool metal_fx_frame_composition_requested = false;
++		std::shared_ptr<OpenRCMetalPresent::SourceGeneration> metal_fx_presentation_source;
+ 		bool metal_fx_gpu_observation_requested = false;
+ 
+ 		RSE::ViewportMSAA msaa_2d = RSE::VIEWPORT_MSAA_DISABLED;
+@@ -338,5 +339,7 @@
+ 	void call_set_vsync_mode(DisplayServerEnums::VSyncMode p_mode, DisplayServerEnums::WindowID p_window);
+ 
+ 	RendererViewport();
++	void prepare_metalfx_shutdown();
++	void finish_metalfx_shutdown();
+ 	virtual ~RendererViewport() {}
+ };
+diff --git a/servers/rendering/rendering_server_default.cpp b/servers/rendering/rendering_server_default.cpp
+--- a/servers/rendering/rendering_server_default.cpp
++++ b/servers/rendering/rendering_server_default.cpp
+@@ -264,9 +264,11 @@
+ 		free_rid(test_cube);
+ 	}
+ 
++	RSG::viewport->prepare_metalfx_shutdown();
+ 	RSG::canvas->finalize();
+ 	memdelete(RSG::canvas);
+ 	RSG::rasterizer->finalize();
++	RSG::viewport->finish_metalfx_shutdown();
+ 	memdelete(RSG::viewport);
+ 	memdelete(RSG::rasterizer);
+ 	memdelete(RSG::scene);
+diff --git a/servers/rendering/storage/render_scene_buffers.h b/servers/rendering/storage/render_scene_buffers.h
+--- a/servers/rendering/storage/render_scene_buffers.h
++++ b/servers/rendering/storage/render_scene_buffers.h
+@@ -34,6 +34,7 @@
+ #include "core/variant/dictionary.h"
+ #include "servers/rendering/rendering_server_enums.h"
+ #include "servers/rendering/storage/metalfx_gpu_observation.h"
++#include "servers/rendering/storage/metalfx_presentation.h"
+ 
+ #include <atomic>
+ #include <initializer_list>
+@@ -82,6 +83,9 @@
+ 	uint64_t previous_frame = 0; // Actual previous SDK input, not last presented frame.
+ 	uint64_t epoch = 0;
+ 	uint64_t serial = 0;
++	double real_interval = 0.0;
++	std::shared_ptr<OpenRCMetalPresent::Proof> presentation_proof;
++	std::shared_ptr<OpenRCMetalPresent::SourceGeneration> presentation_source;
+ 	std::atomic<uint32_t> warm_count{ 0 };
+ 	std::atomic<int> encode_result{ 0 }; // 0 pending, 1 success, -1 failure.
+ 	std::shared_ptr<MetalFXGPUObservation> sdk_completion = std::make_shared<MetalFXGPUObservation>();
+@@ -115,6 +119,14 @@
+ 	uint64_t serial = 0;
+ };
+ 
++struct MetalFXPendingPair {
++	RID generated_texture;
++	RID real_texture;
++	double real_interval = 0.0;
++	std::shared_ptr<OpenRCMetalPresent::Proof> proof;
++	std::shared_ptr<OpenRCMetalPresent::Ticket> ticket;
++};
++
+ class RenderSceneBuffersConfiguration : public RefCounted {
+ 	GDCLASS(RenderSceneBuffersConfiguration, RefCounted);
+ 
+@@ -188,6 +200,7 @@
+ 	std::shared_ptr<MetalFXTemporalHistoryState> metal_fx_history;
+ 	bool metal_fx_frame_requested = false;
+ 	bool metal_fx_frame_composition_requested = false;
++	std::shared_ptr<OpenRCMetalPresent::SourceGeneration> metal_fx_presentation_source;
+ 	bool metal_fx_gpu_observation_requested = false;
+ 	uint64_t metal_fx_gpu_observation_generation = 0;
+ 	std::shared_ptr<MetalFXGPUObservation> metal_fx_scaler_gpu;
+@@ -358,10 +371,18 @@
+ 		}
+ 	}
+ 	bool is_metalfx_frame_composition_requested() const { return metal_fx_frame_composition_requested; }
++	void set_metalfx_presentation_source(const std::shared_ptr<OpenRCMetalPresent::SourceGeneration> &p_source) { metal_fx_presentation_source = p_source; }
++	std::shared_ptr<OpenRCMetalPresent::SourceGeneration> get_metalfx_presentation_source() const { return metal_fx_presentation_source; }
++	void cancel_metalfx_presentation_source() {
++		if (metal_fx_presentation_source) {
++			metal_fx_presentation_source->request_cancel();
++		}
++	}
+ 	virtual void begin_metalfx_frame_composition(uint64_t p_frame, bool p_compatible) {}
+ 	virtual RID get_metalfx_frame_composition_target() const { return RID(); }
+ 	virtual void finish_metalfx_frame_composition(bool p_canvas_compatible) {}
+ 	virtual bool get_metalfx_completed_pair(MetalFXCompletedPair &r_pair) const { return false; }
++	virtual bool acquire_metalfx_pending_pair(uint64_t p_frame, MetalFXPendingPair &r_pair) { return false; }
+ 	virtual Dictionary get_metalfx_frame_composition_status() const {
+ 		Dictionary status;
+ 		status["requested"] = metal_fx_frame_composition_requested;

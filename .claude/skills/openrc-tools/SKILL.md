@@ -11,11 +11,26 @@ Retain the owning session handle through teardown; a port alone is insufficient.
 Start at the task table in [docs/tools/README.md](../../../docs/tools/README.md) and read only the doc its row names.
 Every tool's README owns its commands; do not copy them into notes or new scripts.
 
+For compatible independent headless GDScript checks, use `sim_test_launch` by default.
+Give it a stable client-chosen `request_id` and a `jobs` array; each job requires `script`
+and accepts `require` (literal completion markers), `timeout`, `platform` and `host`.
+Optional `source` selects another checkout.
+`platform` defaults to the caller's OS; use `any` only for a reviewed portable check.
+The launch is nonblocking and its detached supervisor survives the client. Keep the
+candidate stable until `sim_test_status(request_id)` reports `source_frozen: true`.
+Status shows cached progress and automatically collected artifacts; inspect the final
+outcomes and evidence, since an accepted ticket is not a pass.
+`sim_test_recover(request_id)` resumes the same snapshot, IDs and hosts without rerunning
+failed or uncertain attempts. If MCP is unavailable, use `testctl.py pool run` from the
+[test pool guide](../../../tools/testqueue/README.md) and set `--platform` to the required
+OS unless portability is established: the CLI's default is `any`.
+Graphics, benchmarks, composite suites and interactive sessions use their existing tools.
+
 Most-used commands (repository root, Bash):
 
 | Task | Command |
 | --- | --- |
-| One test script, failing on engine errors that exit 0 | `python3 tools/godot/run_checked.py --timeout 90 -- "$(app/get-godot.sh)" --headless --path app --script res://tests/test_X.gd` |
+| Independent headless tests | `sim_test_launch` with one job per script; follow with `sim_test_status` |
 | Full local app verification for broad changes or release preparation (40+ min); CI runs it as a required gate | `app/test.sh` (on a stable snapshot when other sessions edit the tree) |
 | Headless flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=tmp/t.csv --t=3 --aircraft=<id>` |
 | Handling change: before/after | `python3 research/flight-test/run.py --out tmp/ft-base --aircraft <id> --only trim_sweep,vmax,roll_rate`, then `compare.py` |

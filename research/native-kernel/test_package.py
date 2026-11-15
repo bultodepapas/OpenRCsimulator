@@ -111,7 +111,7 @@ class PackageAdmissionTests(unittest.TestCase):
             data["sources_after"] = copy.deepcopy(data["sources"])
             harness = [self.tool / name for name in ("oracle.gd", "stage_oracle.gd", "stage_adapter.gd", "run.py", "build.py", "trajectory.gd")]
             harness += [self.root / "app/sim/native_stage.gd", checked_runner]
-            data["harness_sources"] = {str(path.relative_to(self.root)): package.sha(path) for path in harness}
+            data["harness_sources"] = {path.relative_to(self.root).as_posix(): package.sha(path) for path in harness}
             evidence_path = self.evidence_dir / ("stage-verified.json" if kind == "stage_oracle" else "trajectory-verified.json")
             evidence_path.write_text(json.dumps(data))
             self.evidence[kind] = evidence_path
@@ -341,13 +341,16 @@ class PackageAdmissionTests(unittest.TestCase):
 
     def test_cli_prepare_finalize_protocol(self):
         executable = self.executable("cli")
-        with patch.object(sys, "argv", ["package.py", "prepare"]), contextlib.redirect_stdout(io.StringIO()) as stdout:
-            package.main()
-        prepared = json.loads(stdout.getvalue())
-        with patch.object(sys, "argv", ["package.py", "finalize", "--executable", str(executable),
-                                        "--template", str(self.template)]), contextlib.redirect_stdout(io.StringIO()) as stdout:
-            package.main()
-        finalized = json.loads(stdout.getvalue())
+        # HERE points to the temporary fixture; use the real already-loaded Mac
+        # builder for the parser definitions shared by all CLI invocations.
+        with patch.object(package, "_mac_builder", return_value=macos_evidence_tests.mac):
+            with patch.object(sys, "argv", ["package.py", "prepare"]), contextlib.redirect_stdout(io.StringIO()) as stdout:
+                package.main()
+            prepared = json.loads(stdout.getvalue())
+            with patch.object(sys, "argv", ["package.py", "finalize", "--executable", str(executable),
+                                            "--template", str(self.template)]), contextlib.redirect_stdout(io.StringIO()) as stdout:
+                package.main()
+            finalized = json.loads(stdout.getvalue())
         self.assertEqual(prepared["manifest_sha256"], finalized["manifest_sha256"])
         self.assertEqual(finalized["executable_sha256"], package.sha(executable))
         self.assertEqual(self.install_bytes(), self.original_install)

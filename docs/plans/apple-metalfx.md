@@ -1,6 +1,6 @@
 # Apple MetalFX — four-technology implementation plan
 
-Updated: 2026-11-14. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
+Updated: 2026-11-15. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
 Status: implementation in progress. The [first implementation evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md)
 separates prerequisite fixes, injected checks, native API observations and the
 engine build. No four-feature product qualification is claimed. Source inspected at
@@ -45,13 +45,44 @@ checkbox complete. Missing supported hardware leaves native qualification open.
 An infeasible engine dependency produces a documented incomplete milestone,
 with its smallest remaining dependency; it does not close the four-feature goal.
 
-Current implementation boundary: native M1 compilation and readback cover engine
-patches 0001–0004, including the scene-input experiment, but no FG presenter.
-The bounded RD triangle-query backend (0005) and opt-in GPU completion observer
-(0006) have compiled portable controls; their native execution is pending.
-The RD denoised binding is in progress. No whole-scene RT consumer, public FG
-control or four-feature default has been qualified. Exact revisions and results
-belong to the linked implementation evidence, not this status paragraph.
+Current implementation boundary: ordered patches 0001–0019 have a clean native
+M1 editor/template pair with matching verified build inputs and local signatures.
+The moving-quad interpolation witness passed at 1080p; triangle-query hit/readback,
+real-RT denoising, GPU completion and Temporal reset observation also ran on M1.
+The presentation follow-up fixes an observed callback deadlock, conservative
+display-link pacing and unrequested-command callback accounting. Its bounded
+native fixture presented an actual SDK-generated drawable at 1920×1080 without
+a confirmed GPU failure. This does not establish sustained presentation, flight
+image quality, latency or a frame-rate gain.
+
+An opt-in application controller now connects the real-completion admission
+policy to the existing Temporal producer and presentation adapter. The current
+Windows and the clean native editor pass 89 controller and 517 policy checks.
+The rendered 0019 fixture also passes conditional-reset rejection, acceptance,
+resize fencing and independently observed reset GPU completion. Complete-app Home/flight
+script parsing and the affected reconstruction/history tests also pass. Rendered
+product trials now exercise Home/Fly/pause/resume and show actual Temporal GPU
+work. The latest trial reaches the renderer and refuses its nonempty transparent
+draw list because that pass has no complete motion vectors. Correct transparent
+composition and workload qualification remain open. An optional 0020 diagnostic
+identified three current Home-scene resource candidates in one truncated page;
+it is not a complete flight census or proof of pixel contribution. A separate
+research-only alpha experiment failed eight 1080p moving-image gates, so the
+ordinary rejection remains required. This is an observed failure of that input
+path, not an Apple API-wide prohibition. Ordinary launches do
+not install this controller. No whole-scene RT consumer, public FG control or
+four-feature default has been qualified. Exact revisions and results belong to
+the linked implementation evidence, not this status paragraph.
+
+The official pinned Godot editor passed the bounded companion requalification
+after the actual CRLF aircraft/field checkout bytes and two behavior-source pins
+were restored. That does not qualify companions or native physics on the custom
+engine. The earlier R1 development package used the wrong raw checkout bytes;
+its source-bound receipt and smokes do not repair that admission limitation.
+A bounded native Settings trial now preserves the confirmation window through
+an injected main-thread stall, and the focused Settings consumers pass. A corrected
+source-bound ARM64 development package also passes fixed-session and bounded
+rendered smokes. Cold compilation and full required CI remain unqualified.
 
 Completion has three distinct levels per technology:
 
@@ -437,6 +468,29 @@ data and read-only presentation transforms. Compare reuse of an upstream RT path
 against a bounded pass before choosing implementation. If it needs a general
 shader compiler or scene renderer rewrite, split that prerequisite explicitly and
 keep 13d1 incomplete until the required infrastructure exists.
+
+That prerequisite is now explicit: 0018 adds an opt-in renderer-owned scene
+geometry diagnostic before the viewport effect. It expands actual indexed mesh
+inputs, retains instance/material provenance, includes candidates outside the
+camera frustum, invalidates changed or externally exposed buffers, and checks a
+one-shot main-RD ray hit against the CPU. Its input budget is a conservative
+cumulative allocation charge, not reclaimed native memory. This work does not
+produce lighting or denoiser guides and cannot close 13d1. Native compilation and
+the actual field/aircraft cases must pass before using it as a producer boundary.
+An additional native move-during-capture case confirms that returned transforms
+and hits can remain valid historical data after an instance moves. A current-scene
+consumer must independently validate its scene generation, transforms, materials,
+liveness and complete relevant caster set; this diagnostic is not that gate.
+
+The next consumer must preserve the custom ground material and existing raster
+lighting semantics. A bounded hybrid Sun/contact-visibility contribution is a
+candidate for reuse; it requires an explicit split of the selected light's
+existing shadow visibility to avoid applying the same shadow twice. It still
+needs real linear-HDR noisy radiance and correctly aligned material/depth/motion
+guides for denoising. A grayscale visibility image cannot stand in for the SDK's
+noisy-radiance input. Keep raster and candidate output isolated until the actual
+per-frame encode and GPU outcome permits consumption; an enqueue acknowledgement
+or neutral prefill cannot prove a partially recorded SDK pass safe to sample.
 
 The pinned Metal driver has unsupported RT stubs even though generic RD exposes
 RT types. Intake must explicitly resolve Metal driver/compute traversal, shader

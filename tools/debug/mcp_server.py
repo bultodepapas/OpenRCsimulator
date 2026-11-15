@@ -25,7 +25,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import debugctl  # noqa: E402
 
-SERVER = {"name": "openrc-sim", "version": "1.1.0"}
+SERVER = {"name": "openrc-sim", "version": "1.2.0"}
 PROTOCOLS = ("2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05")
 INSTRUCTIONS = (
     "Drives the running OpenRC RC-flight simulator. Start with sim_launch (unless one is running), then sim_look: "
@@ -99,6 +99,27 @@ TOOLS = [
      "frames, render, ablate, rewind, gizmos, break, sample, eval, ...).",
      "inputSchema": _schema({"command": {"type": "string"}, "args": {"type": "object"}}, ["command"])},
 ]
+TOOLS += [
+    {"name": "sim_test_launch", "description": "Start independent headless checked tests in the shared Windows/Mac/Linux pool. "
+     "Returns a durable ticket immediately; source freezing, placement and verified artifact collection run in a detached supervisor. "
+     "Reuse your stable request_id after a lost reply. Platform defaults to caller OS; choose any only for portable tests. "
+     "Use existing native tools for graphics, performance and composite suites.",
+     "inputSchema": _schema({"request_id": {"type": "string"}, "source": {"type": "string"},
+         "jobs": {"type": "array", "minItems": 1, "maxItems": 64, "items": _schema({
+             "script": {"type": "string"}, "platform": {"type": "string", "enum": ["any", "windows", "linux", "darwin"]},
+             "require": {"type": "array", "items": {"type": "string"}}, "timeout": {"type": "number"},
+             "host": {"type": "string"}}, ["script"])}}, ["request_id", "jobs"])},
+    {"name": "sim_test_status", "description": "Read cached test-pool progress and automatically collected report/log paths. "
+     "No SSH or waiting. Only result PASSED with verified evidence qualifies a batch; an accepted ticket is not a frozen source or test pass.",
+     "inputSchema": _schema({"request_id": {"type": "string"}}, ["request_id"])},
+    {"name": "sim_test_recover", "description": "Resume a stopped test supervisor using the same frozen snapshot and job IDs/hosts. "
+     "Does not rerun failed tests or cancel remote jobs. Returns immediately; inspect sim_test_status.",
+     "inputSchema": _schema({"request_id": {"type": "string"}}, ["request_id"])},
+]
+INSTRUCTIONS += (" For independent checked headless regression tests use sim_test_launch with a stable caller-generated "
+                 "request_id and jobs, then sim_test_status. Compatible tests are placed automatically across the configured pool. "
+                 "Declare platform=any only for portable checks; otherwise keep native coverage. Evidence is collected automatically. "
+                 "Use sim_test_recover on a stopped supervisor, preserving the same request. Graphical/performance checks keep their native workflows.")
 TOOL_BY_NAME = {tool["name"]: tool for tool in TOOLS}
 
 
@@ -124,6 +145,7 @@ def _check_arguments(tool: dict, args: dict) -> None:
             "string": isinstance(value, str),
             "boolean": type(value) is bool,
             "object": isinstance(value, dict),
+            "array": isinstance(value, list),
             "number": type(value) is int or (type(value) is float and math.isfinite(value)),
             "integer": type(value) is int or (type(value) is float and math.isfinite(value) and value.is_integer()),
         }
@@ -170,6 +192,11 @@ def _text(text: str) -> dict:
 
 
 def call_tool(name: str, args: dict) -> list[dict]:
+    if name.startswith("sim_test_"):
+        from tools.testqueue import pool_mcp
+        action = {"sim_test_launch": pool_mcp.launch, "sim_test_status": pool_mcp.status,
+                  "sim_test_recover": pool_mcp.recover}[name]
+        return [_text(json.dumps(action(**args), ensure_ascii=False))]
     if name == "sim_launch":
         argv = ["--headless"] if args.get("headless") else []
         if args.get("resolution"):

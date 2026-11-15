@@ -79,8 +79,10 @@ def _check(command: list[str], out: Path, *, label: str, timeout: int,
     return result
 
 
-def run(root: Path, godot: Path, out: Path, *, host: str = sys.platform) -> bool:
+def run(root: Path, godot: Path, out: Path, *, host: str = sys.platform, import_timeout: int = 600) -> bool:
     """Create fresh evidence, then require import and both native-only branches."""
+    if type(import_timeout) is not int or not 1 <= import_timeout <= 1800:
+        raise ValueError("import timeout must be an integer between 1 and 1800 seconds")
     root, godot, out = root.resolve(), godot.resolve(), out.resolve()
     out.mkdir(parents=True, exist_ok=False)
     try:
@@ -91,7 +93,8 @@ def run(root: Path, godot: Path, out: Path, *, host: str = sys.platform) -> bool
         if not version_check["ok"] or Path(version_check["log"]).read_text(encoding="utf-8").strip() != version:
             raise ValueError("Godot did not report the exact pinned engine version")
         base = [*engine, "--headless", "--path", str(root / "app"), "--audio-driver", "Dummy"]
-        imported = _check([*base, "--import"], out, label="rcv-native-import", timeout=600)
+        import_options = ["--verbose"] if host == "win32" else []
+        imported = _check([*base, *import_options, "--import"], out, label="rcv-native-import", timeout=import_timeout)
         if not imported["ok"]:
             return False
         results = []
@@ -112,9 +115,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--godot", type=Path, required=True, help="pinned host Godot editor (console executable on Windows)")
     parser.add_argument("--out-dir", type=Path, required=True, help="new directory for checked logs and reports")
+    parser.add_argument("--import-timeout", type=int, default=600, help="cold-import deadline in seconds (1–1800; default 600)")
     args = parser.parse_args()
+    if not 1 <= args.import_timeout <= 1800:
+        parser.error("--import-timeout must be between 1 and 1800 seconds")
     try:
-        return 0 if run(ROOT, args.godot, args.out_dir) else 1
+        return 0 if run(ROOT, args.godot, args.out_dir, import_timeout=args.import_timeout) else 1
     except OSError as error:
         print(f"RC native check output error: {error}", file=sys.stderr)
         return 1

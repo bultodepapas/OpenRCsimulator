@@ -1,0 +1,189 @@
+diff --git a/drivers/metal/openrc_mfx_present_state.h b/drivers/metal/openrc_mfx_present_state.h
+--- a/drivers/metal/openrc_mfx_present_state.h
++++ b/drivers/metal/openrc_mfx_present_state.h
+@@ -28,6 +28,16 @@
+ 	bool generated_scheduled = false;
+ };
+ 
++struct DecisionTrace {
++	uint64_t considered = 0, proof_rejected = 0, cadence_rejected = 0, deadline_rejected = 0;
++	uint64_t frame = 0, previous_frame = 0, last_real_frame = 0, epoch = 0, serial = 0;
++	uint32_t warm_count = 0;
++	int encode_result = 0, sdk_completion = 0;
++	double now = 0.0, deadline = 0.0, target = 0.0, last_real_target = 0.0, display_period = 0.0;
++	double real_interval = 0.0, reserved_at = 0.0, generated_deadline = 0.0, real_deadline = 0.0;
++	bool proof_ready = false, cadence_ready = false, deadlines_ready = false, paired_candidate = false;
++};
++
+ enum class Kind { NONE, GENERATED, REAL };
+ 
+ struct Choice {
+@@ -58,6 +68,7 @@
+ 	uint64_t last_pair_epoch = 0;
+ 	uint64_t discontinuities = 0;
+ 	int reserved = -1;
++	mutable DecisionTrace decision;
+ 
+ 	void erase(unsigned p_index) {
+ 		if (reserved == int(p_index)) {
+@@ -68,6 +79,7 @@
+ 	}
+ 
+ public:
++	DecisionTrace decision_trace() const { return decision; }
+ 	uint64_t current_generation() const { return generation; }
+ 	uint64_t last_real() const { return last_real_scheduled; }
+ 	uint64_t blocked_source_epoch() const { return blocked_epoch; }
+@@ -80,6 +92,7 @@
+ 			erase(i);
+ 		}
+ 		generation = p_generation;
++		decision = {};
+ 		last_real_scheduled = 0;
+ 		last_generated_scheduled = 0;
+ 		last_real_target = 0.0;
+@@ -144,9 +157,12 @@
+ 					abandoned ? old_real.epoch : 0, real.fallback, real.proof, real.source_generation };
+ 		}
+ 		const Job &job = slots[newest];
++		const int decision_encode = job.proof ? job.proof->encode_result.load(std::memory_order_acquire) : 0;
++		const int decision_completion = job.proof ? job.proof->sdk_completion.load(std::memory_order_acquire) : 0;
++		const uint32_t decision_warm = job.proof ? job.proof->warm_count.load(std::memory_order_acquire) : 0;
+ 		bool match = job.proof && job.epoch != blocked_epoch && job.proof->previous_frame == last_real_scheduled && job.proof->frame == job.frame && job.proof->epoch == job.epoch && job.proof->serial == job.serial &&
+-				!job.proof->is_cancelled() && job.proof->encode_result.load(std::memory_order_acquire) == 1 && job.proof->sdk_completion.load(std::memory_order_acquire) == 1 &&
+-				job.proof->warm_count.load(std::memory_order_acquire) >= 5;
++				!job.proof->is_cancelled() && decision_encode == 1 && decision_completion == 1 &&
++				decision_warm >= 5;
+ 		bool cadence = last_real_target > 0 && std::isfinite(p_display_period) && p_display_period >= 0.001 && p_display_period <= 0.1 &&
+ 				std::isfinite(job.real_interval) && job.real_interval >= 0.01 && job.real_interval <= 0.2 &&
+ 				p_display_period * 2.0 <= job.real_interval * 1.05 &&
+@@ -156,6 +172,31 @@
+ 				std::isfinite(job.real_deadline) && job.generated_deadline > job.reserved_at &&
+ 				job.real_deadline > job.generated_deadline && job.real_deadline - job.reserved_at <= 0.2 &&
+ 				p_target <= job.generated_deadline && p_target + p_display_period <= job.real_deadline;
++		decision.considered++;
++		if (!match) { decision.proof_rejected++; }
++		if (!cadence) { decision.cadence_rejected++; }
++		if (!bounded) { decision.deadline_rejected++; }
++		decision.frame = job.frame;
++		decision.previous_frame = job.proof ? job.proof->previous_frame : 0;
++		decision.last_real_frame = last_real_scheduled;
++		decision.epoch = job.epoch;
++		decision.serial = job.serial;
++		decision.warm_count = decision_warm;
++		decision.encode_result = decision_encode;
++		decision.sdk_completion = decision_completion;
++		decision.now = p_now;
++		decision.deadline = p_deadline;
++		decision.target = p_target;
++		decision.last_real_target = last_real_target;
++		decision.display_period = p_display_period;
++		decision.real_interval = job.real_interval;
++		decision.reserved_at = job.reserved_at;
++		decision.generated_deadline = job.generated_deadline;
++		decision.real_deadline = job.real_deadline;
++		decision.proof_ready = match;
++		decision.cadence_ready = cadence;
++		decision.deadlines_ready = bounded;
++		decision.paired_candidate = job.generated && job.paired_real;
+ 		if (!job.generated_scheduled && job.frame > last_generated_scheduled && job.generated && job.paired_real && match && cadence && bounded) {
+ 			return { Kind::GENERATED, generation, job.frame, job.generated, p_target, job.output_lease, 0, job.fallback, job.proof, job.source_generation };
+ 		}
+diff --git a/drivers/metal/openrc_mfx_present_bridge.h b/drivers/metal/openrc_mfx_present_bridge.h
+--- a/drivers/metal/openrc_mfx_present_bridge.h
++++ b/drivers/metal/openrc_mfx_present_bridge.h
+@@ -8,6 +8,9 @@
+ using Handle = std::shared_ptr<Presenter>;
+ 
+ struct Snapshot {
++	DecisionTrace decision;
++	double display_period = 0.0;
++	int64_t last_gpu_status = 0, last_gpu_error_code = 0;
+ 	uint64_t generation = 0;
+ 	uint64_t real_accepted_jobs = 0;
+ 	uint64_t pair_accepted_candidates = 0;
+diff --git a/drivers/metal/openrc_mfx_present_bridge.mm b/drivers/metal/openrc_mfx_present_bridge.mm
+--- a/drivers/metal/openrc_mfx_present_bridge.mm
++++ b/drivers/metal/openrc_mfx_present_bridge.mm
+@@ -48,10 +48,13 @@
+ 	if (p_state.stats.real_present_requested > p_state.stats.real_presented) { real += p_state.stats.real_present_requested - p_state.stats.real_presented; }
+ 	if (p_state.stats.generated_present_requested > p_state.stats.generated_presented) { generated += p_state.stats.generated_present_requested - p_state.stats.generated_presented; }
+ 	uint64_t failures = p_state.stats.gpu_failed;
++	const int64_t last_status = p_state.stats.last_gpu_status, last_code = p_state.stats.last_gpu_error_code;
+ 	p_state.stats = {};
+ 	p_state.stats.retired_real_unresolved = real;
+ 	p_state.stats.retired_generated_unresolved = generated;
+ 	p_state.stats.gpu_failed = failures;
++	p_state.stats.last_gpu_status = last_status;
++	p_state.stats.last_gpu_error_code = last_code;
+ }
+ 
+ static void synchronize_generation(Shared &p_state) {
+@@ -168,6 +171,8 @@
+ 			auto shared = weak.lock();
+ 			if (!shared) { return; }
+ 			const auto completed_status = p_command.status;
++			NSError *completed_error = p_command.error;
++			const int64_t completed_error_code = completed_error ? int64_t(completed_error.code) : 0;
+ 			std::lock_guard<std::mutex> guard(shared->mutex);
+ 			if (shared->in_flight > 0) { shared->in_flight--; }
+ 			if (sample_generation == shared->scheduler.current_generation() && completed_status != MTLCommandBufferStatusCompleted) {
+@@ -176,6 +181,8 @@
+ 				if (shared->requested_generation.compare_exchange_strong(expected, replacement, std::memory_order_acq_rel)) {
+ 					OpenRCMetalPresent::retire_stats(*shared);
+ 					shared->stats.gpu_failed++;
++					shared->stats.last_gpu_status = int64_t(completed_status);
++					shared->stats.last_gpu_error_code = completed_error_code;
+ 					if (replacement) { shared->scheduler.recover_failed(completion_choice); }
+ 					else { shared->scheduler.reset(); }
+ 				} else {
+@@ -370,6 +377,8 @@
+ 	std::lock_guard<std::mutex> guard(p_presenter->state->mutex);
+ 	synchronize_generation(*p_presenter->state);
+ 	Snapshot result = p_presenter->state->stats;
++	result.decision = p_presenter->state->scheduler.decision_trace();
++	result.display_period = p_presenter->state->display_period;
+ 	result.generation = p_presenter->state->requested_generation.load(std::memory_order_acquire);
+ 	result.blocked_source_epoch = p_presenter->state->scheduler.blocked_source_epoch();
+ 	result.discontinuities = p_presenter->state->scheduler.discontinuity_count();
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -5711,6 +5711,37 @@
+ 		if (handle) {
+ 			OpenRCMetalPresent::Snapshot s = OpenRCMetalPresent::snapshot(handle);
+ 			result["owner"] = "display_link";
++			result["display_period_seconds"] = s.display_period;
++			result["last_gpu_status"] = s.last_gpu_status;
++			result["last_gpu_error_code"] = s.last_gpu_error_code;
++			Dictionary decision;
++			decision["considered"] = int64_t(s.decision.considered);
++			decision["proof_rejected"] = int64_t(s.decision.proof_rejected);
++			decision["cadence_rejected"] = int64_t(s.decision.cadence_rejected);
++			decision["deadline_rejected"] = int64_t(s.decision.deadline_rejected);
++			decision["frame"] = int64_t(s.decision.frame);
++			decision["previous_frame"] = int64_t(s.decision.previous_frame);
++			decision["last_real_frame"] = int64_t(s.decision.last_real_frame);
++			decision["epoch"] = int64_t(s.decision.epoch);
++			decision["serial"] = int64_t(s.decision.serial);
++			decision["warm_count"] = int64_t(s.decision.warm_count);
++			decision["encode_result"] = int64_t(s.decision.encode_result);
++			decision["sdk_completion"] = int64_t(s.decision.sdk_completion);
++			decision["now"] = s.decision.now;
++			decision["deadline"] = s.decision.deadline;
++			decision["target"] = s.decision.target;
++			decision["last_real_target"] = s.decision.last_real_target;
++			decision["display_period"] = s.decision.display_period;
++			decision["real_interval"] = s.decision.real_interval;
++			decision["reserved_at"] = s.decision.reserved_at;
++			decision["generated_deadline"] = s.decision.generated_deadline;
++			decision["real_deadline"] = s.decision.real_deadline;
++			decision["proof_ready"] = s.decision.proof_ready;
++			decision["cadence_ready"] = s.decision.cadence_ready;
++			decision["deadlines_ready"] = s.decision.deadlines_ready;
++			decision["paired_candidate"] = s.decision.paired_candidate;
++			result["decision"] = decision;
++
+ 			result["generation"] = int64_t(s.generation);
+ 			result["accepted_real_jobs"] = int64_t(s.real_accepted_jobs);
+ 			result["accepted_pair_candidates"] = int64_t(s.pair_accepted_candidates);

@@ -38,6 +38,22 @@ class McpServerTests(unittest.TestCase):
     def rpc(self, method, params=None, id_=1):
         return mcp_server.handle({"jsonrpc": "2.0", "id": id_, "method": method, "params": params or {}})
 
+    def test_pool_tools_discovered_and_launch_returns_durable_ticket(self):
+        from tools.testqueue import pool_mcp
+        names = {tool["name"] for tool in self.rpc("tools/list")["result"]["tools"]}
+        self.assertTrue({"sim_test_launch", "sim_test_status", "sim_test_recover"} <= names)
+        args = {"request_id": "candidate123", "jobs": [{"script": "res://tests/test_math3d.gd", "platform": "any"}]}
+        with patch.object(pool_mcp, "launch", return_value={"request_id": "candidate123", "source_frozen": False}) as launch:
+            reply = self.rpc("tools/call", {"name": "sim_test_launch", "arguments": args})
+        launch.assert_called_once_with(**args)
+        self.assertFalse(reply["result"]["isError"])
+        self.assertFalse(json.loads(reply["result"]["content"][0]["text"])["source_frozen"])
+        self.assertEqual(self.rpc("ping")["result"], {})
+        with patch.object(pool_mcp, "launch") as launch:
+            bad = self.rpc("tools/call", {"name": "sim_test_launch", "arguments": {**args, "jobs": "invalid"}})
+        launch.assert_not_called()
+        self.assertTrue(bad["result"]["isError"])
+
     def test_initialize_negotiates_and_lists_tools_with_schemas(self) -> None:
         reply = self.rpc("initialize", {"protocolVersion": "2025-06-18"})
         self.assertEqual(reply["result"]["protocolVersion"], "2025-06-18")

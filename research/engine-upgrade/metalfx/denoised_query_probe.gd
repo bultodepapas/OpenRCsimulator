@@ -204,7 +204,8 @@ func _run() -> void:
     var normal := _texture(RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT, IW, IH, sample_storage)
     var roughness := _texture(RenderingDevice.DATA_FORMAT_R16_SFLOAT, IW, IH, sample_storage)
     var exposure := _texture(RenderingDevice.DATA_FORMAT_R16_SFLOAT, 1, 1, RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT | RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT, PackedByteArray([0, 60]))
-    var output := _texture(RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT, OW, OH, sample_storage)
+    var output := _texture(RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT, OW, OH,
+        sample_storage | RenderingDevice.TEXTURE_USAGE_COLOR_ATTACHMENT_BIT)
     var textures: Array[RID] = [color, depth, motion, diffuse, specular, normal, roughness, exposure, output]
     var compute_images: Array[RID] = [color, depth_value, motion, diffuse, specular, normal, roughness, output]
     for id in textures + [depth_value]:
@@ -279,7 +280,11 @@ func _run() -> void:
         rd.submit()
         rd.sync()
         var after := rd.texture_get_data(output, 0)
-        _check(after.size() == OW * OH * 8 and after.decode_half((OH / 2 * OW + OW / 2) * 8) != 7.0, "retired_context_output")
+        if after.size() == OW * OH * 8:
+            var retired_value := after.decode_half((OH / 2 * OW + OW / 2) * 8)
+            _check(is_finite(retired_value) and retired_value != 7.0, "retired_context_output")
+        else:
+            failures.append("retired_context_readback_size")
     _finish()
 
 func _near(value: float, expected: float, tolerance: float = 0.01) -> bool:
@@ -327,7 +332,7 @@ func _inspect(witness: RID, color: RID, depth: RID, motion: RID, diffuse: RID, s
                 mismatch += 1
                 continue
             for channel in 3:
-                var base := [0.24,0.36,0.48][channel]
+                var base: float = [0.24,0.36,0.48][channel]
                 var expected_color: float = base*2.0*sqrt(u)+0.04 if hit else [0.06,0.10,0.16][channel]
                 if not _near(c.decode_half(i*8+channel*2), expected_color) or not _near(a.decode_half(i*8+channel*2), base if hit else 0.0) or not _near(s.decode_half(i*8+channel*2), 0.04 if hit else 0.0):
                     mismatch += 1

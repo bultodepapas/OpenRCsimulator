@@ -112,6 +112,18 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
     required = required or []
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     from tools.testqueue.common import enabled, inherited
+    if (os.environ.get("OPENRC_TESTPOOL_CONFIG") and not os.environ.get("OPENRC_TESTQUEUE_CONTEXT")
+            and "--script" in command and "--headless" in command
+            and not resources and host_state_helper is None):
+        from tools.testqueue.presets import scheduling
+        from tools.testqueue.common import rpc
+        approved_engine = rpc("hosts")["engine"]["path"]
+        script_index = command.index("--script") + 1
+        if (Path(command[0]).resolve() == Path(approved_engine).resolve() and script_index < len(command)
+                and scheduling("checked", {"script": command[script_index], "headless": True})["workload"] != "performance"):
+            from tools.testqueue.pool_checked import checked as pool_checked
+            return pool_checked(command, out_dir=out_dir, timeout=timeout, required=required, max_log_bytes=max_log_bytes,
+                                warnings_as_errors=warnings_as_errors, label=label)
     engine_argv = command[:command.index("--")] if "--" in command else command
     engine_headless = bool(command) and Path(command[0]).name.lower().startswith("godot") and "--headless" in engine_argv
     if enabled() and not inherited("headless" if engine_headless else "rendered"):
