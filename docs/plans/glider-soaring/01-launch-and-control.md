@@ -138,7 +138,9 @@ Use nested guidance and bounded control:
 - Abort/release supervision produces versioned deterministic intents.
 - Anti-windup and saturation handling prevent controller memory from accumulating impossible commands.
 
-Candidate control cadence is 60 Hz with commands held for four 240 Hz ticks, subject to measurement; this is a design seed, not an existing qualification. Stage evaluations reuse the accepted tick sample. Controllers' integrators, previous errors, mode, held commands, timers and decisions belong to the checkpointed pair.
+Candidate control cadence is 60 Hz with commands held for four 240 Hz ticks, subject to measurement; this is a design seed, not an existing qualification. Stage evaluations reuse the accepted tick sample. Controllers' integrators, previous errors, mode, held commands, timers, cadence phase and decisions belong to the transactionally accepted pair. Checkpoint inclusion alone does not make a session-owned sidecar transactional; [the proposed interface contract](06-interface-contracts.md#4-composite-frame-and-evaluator-boundary) requires kernel-owned state or proved staged commit, rejection recovery and restore.
+
+The framed sampler runs once per physics tick even when guidance updates less often. SF/AFC/input/FL must freeze a tick-labelled timeline before pair admission: which owner and command drive each interval, the guidance phase, release-edge processing on held-guidance ticks, and the sampled, effective and published times of an action. Either boundary convention may be evaluated; none is selected by the existing phrase “accepted tick boundary.” Release must not silently wait for the next guidance update. See [timing and failure boundaries](06-interface-contracts.md#6-timing-events-and-failure-boundaries) and SC-10 in the [scenario cards](07-acceptance-scenarios.md).
 
 The current companion circuit controller can supply patterns and utilities. Its admission must not simply be bypassed: towing, spatial weather, terrain and takeoff are new conditions. Evaluate a new tow profile on a defined matrix. A control law that passes straight calm towing is not automatically qualified in gusts, turns or at low release height.
 
@@ -164,7 +166,7 @@ On release while the human still owns the tug, the glider controller changes fro
 
 ### Atomic handoff
 
-At the chosen accepted tick boundary:
+At the effective boundary chosen and versioned by SF/AFC/input/FL:
 
 1. Validate the intent, actor identities, connection mode, input readiness and available tug recovery controller.
 2. Capture both actual aircraft/actuator states and the current held commands.
@@ -173,7 +175,9 @@ At the chosen accepted tick boundary:
 5. Publish a single ordered event containing tick, reason, old/new owners and release status.
 6. Change the camera target from the accepted event and animate the view separately.
 
-If validation fails, none of these changes commit. If a postcommit observer fails, follow the kernel's accepted-fault contract rather than claiming rollback.
+If validation fails, none of these changes commit. The source's guarded accepted-observer publication covers prepared reset/restore; ordinary tick publication does not have the same guard or receipt. Pair handoff and normal pair ticks therefore require an explicitly designed and tested SF/session/FL publication boundary. A postcommit observer or recorder failure preserves the newly accepted pair and event identity, pauses/faults as appropriate and marks the affected record incomplete; it must not claim rollback or retry the physical action. SC-08/09 distinguish rejected candidates from committed publication faults.
+
+A release request and confirmed hook opening are distinct. The first law may explicitly idealize opening as instantaneous under a versioned assumption. A future finite-delay installation needs its own pending, timeout and completion semantics; combined completion must satisfy the qualified mechanical/ownership timing rather than report release from the request alone. Attached transfer remains separately gated. Persist intent edges, request/result identity and duplicate handling with the accepted pair; the kernel's diagnostic `last_events` field is not a persistent action ledger. The [proposed action and timing contract](06-interface-contracts.md#5-arbitration-and-action-results) defines these obligations without inventing a current intent API.
 
 Actual servo positions remain continuous. A brief command blend is permissible only as a versioned assistance/input policy with recorded duration; it must not blend physical positions or velocities. “No physical jump” means no unauthorized state reset, not that a genuine control command cannot change acceleration.
 

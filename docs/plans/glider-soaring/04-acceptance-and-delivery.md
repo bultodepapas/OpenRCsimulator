@@ -53,6 +53,8 @@ Do not add all these files in one change. Start by proving one boundary with a s
 
 Use the bounded SG-07 experiment to choose the primary/secondary body layout, trial-rotation convention, both quaternion projections, per-stage validation, controller sampling, event arbitration and full-frame publication. Settle that design before production adoption or pair admission, not before the experiment that supplies its evidence. Before SG-10/11, freeze the minimum paired record's actor IDs, named inputs, version, accepted events and restoration semantics with FL. Before SG-12, demonstrate the policy for both contacts, ground release, the line, propulsion events and substeps.
 
+The [proposed interface contracts](06-interface-contracts.md) also require an owner-approved effective-time/cadence convention, intent/result identity and duplicate handling, kernel-owned or proved transactional sidecar state, guarded ordinary pair publication, and declared replay comparison domains. Existing reset/restore guards and checkpoint serialization do not establish these ordinary-tick guarantees. The [implementation packets](05-implementation-packets.md) allocate the work; the [scenario cards](07-acceptance-scenarios.md) specify concrete stimuli and expected results without claiming tests already exist.
+
 These are technical design deliverables, not new requests for user permission. Record accepted decisions in the existing decision log and link the proof.
 
 ## 3. Aircraft and environment test matrix
@@ -70,7 +72,7 @@ Test combinations must cover actual declared behavior. Do not weaken existing gu
 | A07 | Controls/servo limits, differential and optional braking surfaces | Commanded versus achieved response, signs and physical lift/drag/moment are consistent |
 | A08 | Inventory/CG/ballast | Mass, CG, inertia and trim update consistently; out-of-envelope settings refuse |
 | A09 | Airborne reset in head/tail/crosswind | Airspeed-derived initial state adds wind once and preserves valid descent |
-| A10 | Hand release, cancellation and held action | Correct ground-relative impulse/state, one accepted release, no continuing hand force or duplicate credit |
+| A10 | Hand release, cancellation and held action | Correct ground-relative release state, one accepted release, no continuing hand force or duplicate credit |
 | A11 | Thermal core, positive-lift boundary and sink annulus | Analytical sign/amplitude and lifecycle match; no extra vertical force |
 | A12 | Finite thermal expiry, offset and restart | Correct phase at start, expiry after the remaining lifetime, explicit repeat/new recipe |
 | A13 | Equal position/time queried by either actor | Identical shared-field answer, independent of query order; no separate OU realization for the pair |
@@ -92,7 +94,7 @@ The five base recipes in the [aircraft/weather dossier](03-aircraft-and-weather.
 | T04 | Elastic/damped analytic fixture | Frequency, decay and energy error match an independent equation or high-accuracy oracle |
 | T05 | 1/2/4/8 substep refinement in an admitted envelope | Trajectory, tension peaks and event times meet predeclared tolerances; no clipping/softening to hide failure |
 | T06 | Secondary quaternion in every relevant path | Trial q-to-rotation/inverse convention, stage validation, substep/event/accepted projection, reset and restore remain consistent; verify hook power and convergence without silently altering stored RK trial states |
-| T07 | Failure injected in either body at each RK stage | Entire pair unchanged; no controller/RNG/owner/event/recorder advance escapes |
+| T07 | Failure injected in either body at each RK stage | Accepted pair, clock, controller/RNG/owner state and intent consumption unchanged; no accepted sample, physical event or score escapes. Diagnostic attempt/pause/fault/footer output may identify rejection at the unchanged accepted boundary |
 | T08 | Commanded release at each admitted boundary | Exactly one event; no unexplained impulse or reattachment; SG-12 includes release during slack take-up and ground roll with defined contact, abort and ownership outcomes |
 | T09 | Physical break if strength/event law qualified | Within-step threshold policy and timing are tested, including peaks missed by endpoint-only logic |
 | T10 | Concurrent release/contact/source-loss events | Defined ordering/composition; unsupported overlap refuses without partial publication |
@@ -102,6 +104,8 @@ The five base recipes in the [aircraft/weather dossier](03-aircraft-and-weather.
 | T14 | Ground take-up and glider/tug takeoff order | Both contact states, line geometry, clearance and abort outcome remain coherent |
 | T15 | Tug or glider fault/crash, connected or separated | Defined whole-activity lifecycle and both final states; no frozen endpoint, discarded actor or false successful outcome |
 | T16 | Post-release continuation and recovery failure | Physical state and one command source continue for both actors; released AI glider free-flight, later takeover, tug recovery/fallback and finish semantics are bounded and recorded |
+
+Test the publication boundary separately from T07: an observer failing after commit leaves the new pair and event accepted, with an explicit fault/incomplete-record outcome. It cannot be reported as a rejected step or retried physical action. The baseline protects prepared reset/restore publication only; ordinary pair publication must be implemented and qualified. SC-08/09 cover both sides, including mutation/reentry and recorder failure.
 
 T13 is a release blocker for credible paired training even if fully resolved aircraft-to-aircraft impact mechanics are deferred. The minimum acceptable alternative is a geometry-based exclusion/terminal incident policy whose checks are qualified across each simulation interval. It must prevent a success score for airframes intersecting. It does not establish structural crash realism. Reuse GP/CR collision infrastructure where applicable.
 
@@ -170,13 +174,17 @@ Plan a versioned paired envelope that identifies:
 | Identity | Source commit, engine build, backend/law/layout/protocol versions, both aircraft source hashes, hook/line and controller identities |
 | World | Complete weather/terrain configuration, seed, resolved agenda, datum, epoch offset, bounds and horizon |
 | Physical state | Both positions, orientations, ground/body velocities, rates, systems, actual actuators, line modes and any stored energy |
-| Commands | Per-actor named final control commands at accepted ticks; human/AI owner and assistance/pickup state |
-| Events | Start, release, break if admitted, transfer, contact, fault, pause/restart/restore and terminal reason with actor IDs/order |
-| Replay | Both controller memories and sampled holds for decision replay; final-command tape for solver replay; explicit compatibility/refusal policy |
+| Commands | Per-actor named final control commands at an explicit boundary for each accepted interval; human/AI owner, assistance/pickup state, cadence phase and requested inputs/intents kept distinct |
+| Events | Start, release, break if admitted, transfer, contact, fault, pause/restart/restore and terminal reason with actor/request IDs, sampled/effective/publication time and order; external interventions distinguished from endogenous physical events |
+| Replay | Complete initial pair checkpoint and identities; timed external interventions; final-command physics projection or full decision replay as declared below; explicit compatibility, incomplete-record and refusal policy |
 | Observation | TAS/groundspeed, height definitions, energy/instrument signals, tension and geometric errors at declared sample times |
 | Outcome | Complete/incomplete, stopped actor, any missing segment, assistance and challenge identity |
 
-Do not label a collection of independent companion logs as an atomic fleet replay. Distinguish final-command physics replay from re-executing AI decisions; both require source/version identity but answer different questions.
+Do not label a collection of independent companion logs as an atomic fleet replay. Both replay modes need a complete initial pair checkpoint, the admitted source/build/backend/law/layout identities and an explicit command/event time convention. A noninitial current fixed-wing log row records inputs for the interval ending at that row's tick, while its k1 loads belong to the interval start; pair records must name an equally precise convention.
+
+**Final-command physics replay** applies the named per-interval command tape plus authoritative timed external release/transfer interventions or their equivalent accepted-transition data. Final actuator commands alone cannot reconstruct those interventions. Recompute and compare endogenous contact/break events instead of also injecting them as commands. If AI is bypassed, compare a declared, versioned physical-state projection and its events; unchanged initial controller memory does not reproduce evolving integrators, pickup or cadence state. An exact result is exact within that declared comparison domain, not proof of full pair continuation.
+
+**Decision replay** restores controller/arbiter and intent-ledger state, guidance phase, held commands, world/RNG identities and external input/intent tape; it re-executes the decision process and compares decisions, accepted events and the complete declared pair frame. A separate deterministic mechanism would need qualification before a solver-only mode could claim the same complete state. Refuse unsupported identities or label changed-candidate comparisons explicitly. A missing sample, failed observer or truncated prefix is incomplete, never exact complete replay. See [the interface record contract](06-interface-contracts.md#7-checkpoint-tapes-and-replay) and SC-10/13.
 
 Debrief scores must read accepted events. Restored checkpoints, paused time, rejected steps and abandoned previews must not duplicate airtime, launch count, duration records or landing points. Store exact unrounded inputs; render rounding is presentation only.
 
@@ -214,6 +222,8 @@ Decisions still needed include exact measured build, asset license, receiver-pow
 ## 10. Handoff and verification protocol
 
 For each implementation increment, provide: intended behavior; affected owner/step; exact source/config identity; scope of changes; smallest relevant existing checks plus new boundary tests; accepted output/refusal cases; retained failures; physical/visual/device limitations; and the next release gate.
+
+Start with the [team entry point](README.md). Use [WP-01…15](05-implementation-packets.md) for bounded issue/PR scope, [proposed interface contracts](06-interface-contracts.md) for cross-owner decisions, [SC-01…20](07-acceptance-scenarios.md) for test design, and the [data/evidence kit](08-data-and-evidence-kit.md) for collection and claim receipts. These refine this guide; they do not create another SG status table, new runtime APIs or passed tests.
 
 Start with existing checks such as `test_aircraft_contract.gd`, `test_aircraft_modules.gd`, `test_trim.gd`, `test_hand_launch.gd`, `test_flight_session_staged.gd`, `test_sf_vehicle_model.gd`, `test_sf_framed_sampled.gd`, `test_sf_event_protocol.gd`, `test_sf_event_refinement.gd` and `test_sf_contact_substeps.gd`. Relevant source links and additional log/companion seams are in the [review](../../research/glider-soaring/2026-11-15-source-review.md). Their current existence is not coverage for the new feature.
 
@@ -254,7 +264,9 @@ The [24-investigation index](../../research/glider-soaring/2026-11-15-investigat
 
 ### Required evidence package
 
-For each admitted aircraft/mode/weather combination, retain its configuration, data and source/solver identity; the question and metric; calibration versus holdout split; raw/synchronized measurement method; uncertainty and exclusions; numerical reference/refinement; actual hardware/controller/camera where relevant; and result with failure cases. Record unknown distributions as bounded assumptions rather than invented probabilities. Use sensitivity to select the next useful measurement instead of broadening tests without a concrete question.
+For every admitted aircraft/mode/weather combination, retain configuration and source/build/law identity, declared scope and claim, question and metric, assumptions and limitations, applicable software/numerical checks and reference/refinement, retained failures and the actual result. Include hardware/controller/camera and release evidence where advertised. For a physical-fidelity claim or use of physical measurements, additionally retain the exact build/installation, raw synchronized measurement method, uncertainty/exclusions and calibration, selection and final-independent-validation split. For a purely synthetic fixture or experimental slice without physical measurements, mark those physical collection fields `not applicable: synthetic-only` and leave the physical claim unsupported. This does not waive applicable numerical, input, clearance, lifecycle, replay or release gates. The [evidence kit](08-data-and-evidence-kit.md) provides fill-in records for both scopes.
+
+Record unknown distributions as bounded assumptions rather than invented probabilities. Use sensitivity to select the next useful measurement instead of broadening tests without a concrete question.
 
 Pair logs distinguish requested intent, post-limit/arbiter actuator command and achieved actuator position. Instrument truth, sensor estimates and assistance are separately identified. Model, physical and learning claims use different evidence categories from section 1. A task refused for unsupported conditions is not a successful training sortie; an appropriate deliberate abort can satisfy a separately defined lesson objective.
 

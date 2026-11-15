@@ -2,7 +2,8 @@
 
 **Status:** final audited planning baseline, ready to start the bounded work below; implementation and qualification remain pending. No glider or towing feature is implemented by this document.  
 **Review date:** 15 November 2026.  
-**Final audit:** [findings, corrections and remaining evidence](../research/glider-soaring/2026-11-15-plan-audit.md), against planning commit `270203ac8a6b0d66385b6705487a0483eccb4ed9`.  
+**Final audit:** [findings, corrections and remaining evidence](../research/glider-soaring/2026-11-15-plan-audit.md), with the senior handoff pass against planning commit `f10619263cb74596d001064b9bc4cc5c3d55396c`.  
+**Team entry point:** [implementation handoff](glider-soaring/README.md), with 15 implementation packets, proposed interfaces, 20 acceptance scenarios and evidence templates.  
 **Research expansion:** [24 additional investigations, GI-01…GI-24](../research/glider-soaring/2026-11-15-investigations.md), completed 15 November 2026; their implementation and qualification experiments remain pending.  
 **Reviewed source:** [main at ad21070798bfb9658785576a9c0b8bfc9a71fc7f](https://github.com/bultodepapas/OpenRCsimulator/commit/ad21070798bfb9658785576a9c0b8bfc9a71fc7f).  
 **Track:** SG-00…SG-17; physics/simulation leads, with AS, SF, M5, AFC, GP/CR, input/UI, FL, CAM/HUD/AUD, AE, and platform owners retaining their existing interfaces.
@@ -31,6 +32,11 @@ The first playable milestone is a solo air-start glider with calm air, a valid d
 | [Physics and towing](glider-soaring/02-physics-and-tow.md) | Aerodynamics, trim, energy, two-body mechanics, integration and event contracts | Physics, SF, AS, GP/CR |
 | [Aircraft and weather](glider-soaring/03-aircraft-and-weather.md) | Aircraft comparison, data intake, speeds, thermal scenarios and asset provenance | Aircraft/data, M5, art, product |
 | [Acceptance and delivery](glider-soaring/04-acceptance-and-delivery.md) | Work packages, verification matrix, rollout, risks and evidence receipts | Engineering lead, QA, release |
+| [Team entry point](glider-soaring/README.md) | Reading routes and first work to assign; points to this plan for status | Team lead and new implementers |
+| [Implementation packets](glider-soaring/05-implementation-packets.md) | WP-01…15: bounded results, dependencies, source seams, stop/admit criteria and PR handoff | Implementers and reviewers |
+| [Proposed interface contracts](glider-soaring/06-interface-contracts.md) | Current source boundaries versus proposed identity, transaction, action, timing, record and replay semantics | AS/SF/session/AFC/input/FL |
+| [Acceptance scenarios](glider-soaring/07-acceptance-scenarios.md) | SC-01…20: setup, stimulus, observable result and evidence, refining the gates in 04 | Implementers and QA |
+| [Data and evidence kit](glider-soaring/08-data-and-evidence-kit.md) | Build, parameter, measurement, exclusion, installation and claim-receipt templates | Aircraft/FT, QA and release |
 | [Dated source review](../research/glider-soaring/2026-11-15-source-review.md) | Exact inspected paths, existing-work reconciliation, primary references and research limits | Reviewers and future implementers |
 | [24 follow-up investigations](../research/glider-soaring/2026-11-15-investigations.md) | Decision evidence, applicability limits and discriminating experiments in four research volumes | Aircraft/physics, SF/M5, AFC/input, QA/product |
 | [Final plan audit](../research/glider-soaring/2026-11-15-plan-audit.md) | Inspected gaps, their disposition, evidence limits and closure checks | Technical lead, implementers and reviewers |
@@ -123,6 +129,8 @@ The source can carry extra continuous state, but this is not finished multi-body
 4. Qualify event composition before any admitted airborne tow: line release can intersect tug propulsion, energy or failure events even without ground contact. Unsupported intersections reject the whole candidate and pause with a diagnostic. Expand that policy to both bodies' contact events before ground towing; never suppress requested substeps to fit the current single-event interface.
 5. Publish and restore the complete pair, including controller memory, weather epoch and ownership. Bring the minimum SG-15 paired recording/replay slice into SG-07/10/11; richer debrief and scoring can follow.
 
+The [proposed interfaces](glider-soaring/06-interface-contracts.md) make the remaining source boundaries explicit: a checkpointed external envelope is not automatically transactional; the current reset/restore observer guard does not protect ordinary ticks; and final actuator commands alone cannot replay timed release/ownership interventions or evolving AI state. SF/session/AFC/input/FL must freeze the intent effective-time/cadence convention, state ownership, ordinary publication-fault behavior and replay comparison domain before pair admission. A rejected candidate may produce fault diagnostics at the old accepted tick; it must not produce an accepted physics sample or transition.
+
 A second rigid body packed in the continuous tail is a prototype representation to assess, not an adopted public format. The architecture decision must include the smallest generic alternative and its legacy-vehicle equivalence evidence. Separate independently advanced `FlightSession` objects connected by a one-frame-old rope force are not the proposed solution.
 
 Reference GDScript is the first backend. Existing native receipts do not cover a new glider or coupled tow adapter. Native adoption follows the owning backend policy after complete support and qualification; no aircraft requires a native backend.
@@ -203,6 +211,8 @@ Hand-launch/thermal work and the coupled feasibility work can overlap. Nonzero-w
 
 Assign one writer per path, integrate small reviewable changes, and use the existing test queue/tool workflow. Do not estimate a firm release date until the aircraft data gate and SG-07 prototype have resolved their uncertainty.
 
+The [15 implementation packets](glider-soaring/05-implementation-packets.md) subdivide these five workstreams into issue/PR-sized objectives without changing SG status. Begin WP-01/02/03 for the solo loop, WP-04/05 for the independent pair experiment and WP-14 for evidence collection. Draft WP-06 record contracts alongside the pair experiment; freeze them after its representation and timing decisions. [SC-01…20](glider-soaring/07-acceptance-scenarios.md) and the [evidence kit](glider-soaring/08-data-and-evidence-kit.md) provide concrete test and collection inputs.
+
 ## 8. Decisions and explicit limits
 
 Planning defaults to carry into the owning design decisions, with the implemented choice and evidence recorded in `docs/DECISIONS.md`:
@@ -222,6 +232,8 @@ The remaining engineering decisions have named owners and deadlines in the seque
 | --- | --- | --- |
 | Absent propulsion, identity and observation version | AS + SF/FL | M0 production admission; compatible normalized model, trace/log and consumer contract with negative cases |
 | Minimal pair layout, trial rotations, projections and events | SF + physics | Production adoption after M2a; fixture comparison, bounded failure and legacy-equivalence evidence |
+| Pair timing, intent identity and transactional state | SF + session/AFC/input | M2a contract choice and before pair admission; explicit interval/cadence/effective-event timeline, typed encoding, persistent duplicate handling and proved frame/sidecar commit/rejection/restore |
+| Ordinary pair publication and replay domain | SF + session/FL | M2a–M2b; rejected-diagnostic versus committed-observer fault behavior, complete pair record, timed interventions and declared physical-projection versus full decision replay |
 | Synthetic/installed line, solver policy and admitted envelope | Physics + aircraft/FT | M2b; versioned law/parameters, convergence, joint trim and cost; physical claims additionally need installed measurements |
 | Input pickup, free-glide/recovery and terminal policies | AFC + input/session + FL | M2b/M2c; one-writer state transitions, source/device identity and both takeover/failure paths |
 | Belly support and landing observation | AS + GP/UI-FS | M1a; generated hull identity/pose, accepted support and correct outcome in supported terrain |
