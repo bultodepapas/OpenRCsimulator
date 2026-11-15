@@ -1,0 +1,119 @@
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -1851,6 +1851,71 @@
+ 	return receipt;
+ }
+ 
++Dictionary RendererViewport::viewport_request_temporal_history_reset_if_current(RID p_viewport, int64_t p_expected_render_buffer_generation, int64_t p_expected_requested_serial) {
++	Dictionary receipt;
++	receipt["accepted"] = false;
++	receipt["reason"] = "invalid_viewport";
++	receipt["generation"] = int64_t(-1);
++	receipt["previous_requested_serial"] = int64_t(-1);
++	receipt["requested_serial"] = int64_t(-1);
++	receipt["reset_request_attempt"] = int64_t(-1);
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	if (!viewport) { return receipt; }
++	if (viewport->metal_fx_generation > uint64_t(INT64_MAX)) {
++		receipt["reason"] = "generation_out_of_range";
++		return receipt;
++	}
++	receipt["generation"] = int64_t(viewport->metal_fx_generation);
++	std::shared_ptr<MetalFXTemporalHistoryState> history;
++	uint64_t requested = 0;
++	if (viewport->render_buffers.is_valid()) {
++		history = viewport->render_buffers->get_metalfx_history_state();
++		if (history) {
++			requested = history->requested.load(std::memory_order_acquire);
++			if (requested <= uint64_t(INT64_MAX)) {
++				receipt["previous_requested_serial"] = int64_t(requested);
++				receipt["requested_serial"] = int64_t(requested);
++			}
++		}
++	}
++	if (p_expected_render_buffer_generation < 0 || p_expected_requested_serial < 0) {
++		receipt["reason"] = "invalid_expected_scope";
++		return receipt;
++	}
++	if (uint64_t(p_expected_render_buffer_generation) != viewport->metal_fx_generation) {
++		receipt["reason"] = "stale_generation";
++		return receipt;
++	}
++	if (!viewport->render_buffers.is_valid()) {
++		receipt["reason"] = "render_buffers_unavailable";
++		return receipt;
++	}
++	if (!history) {
++		receipt["reason"] = "history_unavailable";
++		return receipt;
++	}
++	if (requested > uint64_t(INT64_MAX)) {
++		receipt["reason"] = "requested_serial_out_of_range";
++		return receipt;
++	}
++	if (uint64_t(p_expected_requested_serial) != requested) {
++		receipt["reason"] = "stale_serial";
++		return receipt;
++	}
++	// The server wrapper serializes this entire method onto the render thread.
++	// Reuse the existing reset for readiness, observer and frame invalidation.
++	Dictionary reset = viewport_request_temporal_history_reset(p_viewport);
++	if (!bool(reset.get("accepted", false))) {
++		receipt["reason"] = "reset_unavailable";
++		return receipt;
++	}
++	receipt["accepted"] = true;
++	receipt["reason"] = "accepted";
++	receipt["requested_serial"] = reset["serial"];
++	receipt["reset_request_attempt"] = reset["reset_request_attempt"];
++	return receipt;
++}
++
+ void RendererViewport::_real_gpu_reset_main() {
+ 	if (!real_gpu_observer || real_gpu_observer_viewport.is_null()) { return; }
+ 	Viewport *viewport = viewport_owner.get_or_null(real_gpu_observer_viewport);
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -302,6 +302,7 @@
+ 	void viewport_set_mesh_lod_threshold(RID p_viewport, float p_pixels);
+ 
+ 	Dictionary viewport_request_temporal_history_reset(RID p_viewport);
++	Dictionary viewport_request_temporal_history_reset_if_current(RID p_viewport, int64_t p_expected_render_buffer_generation, int64_t p_expected_requested_serial);
+ 	Dictionary viewport_get_metalfx_status(RID p_viewport) const;
+ 	void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled);
+ 	Dictionary viewport_get_metalfx_gpu_status(RID p_viewport) const;
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -2925,6 +2925,7 @@
+ 	ClassDB::bind_method(D_METHOD("viewport_set_occlusion_culling_build_quality", "quality"), &RenderingServer::viewport_set_occlusion_culling_build_quality);
+ 
+ 	ClassDB::bind_method(D_METHOD("viewport_request_temporal_history_reset", "viewport"), &RenderingServer::viewport_request_temporal_history_reset);
++	ClassDB::bind_method(D_METHOD("viewport_request_temporal_history_reset_if_current", "viewport", "expected_render_buffer_generation", "expected_requested_serial"), &RenderingServer::viewport_request_temporal_history_reset_if_current);
+ 	ClassDB::bind_method(D_METHOD("get_temporal_history_reset_providers"), &RenderingServer::get_temporal_history_reset_providers);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_status", "viewport"), &RenderingServer::viewport_get_metalfx_status);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_gpu_observation_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_gpu_observation_requested);
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -621,6 +621,7 @@
+ 	virtual void viewport_set_occlusion_culling_build_quality(RSE::ViewportOcclusionCullingBuildQuality p_quality) = 0;
+ 
+ 	virtual Dictionary viewport_request_temporal_history_reset(RID p_viewport) = 0;
++	virtual Dictionary viewport_request_temporal_history_reset_if_current(RID p_viewport, int64_t p_expected_render_buffer_generation, int64_t p_expected_requested_serial) = 0;
+ 	PackedStringArray get_temporal_history_reset_providers() const;
+ 	virtual Dictionary viewport_get_metalfx_status(RID p_viewport) const = 0;
+ 	virtual void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled) = 0;
+diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/rendering_server_default.h
+--- a/servers/rendering/rendering_server_default.h
++++ b/servers/rendering/rendering_server_default.h
+@@ -808,6 +808,7 @@
+ 	FUNC2(viewport_set_mesh_lod_threshold, RID, float)
+ 
+ 	FUNC1R(Dictionary, viewport_request_temporal_history_reset, RID)
++	FUNC3R(Dictionary, viewport_request_temporal_history_reset_if_current, RID, int64_t, int64_t)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_status, RID)
+ 	FUNC2(viewport_set_metalfx_gpu_observation_requested, RID, bool)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_gpu_status, RID)
