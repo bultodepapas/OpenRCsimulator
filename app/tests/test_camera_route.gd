@@ -203,7 +203,9 @@ func _main_wiring() -> void:
 	var switched_history := int(_history(viewport).notifications)
 	_frames(flight, 1)
 	check("crash aftermath: the pilot view keeps the director's aim", director.aimed)
-	check("view switch is not followed by another crash-focus reset", int(_history(viewport).notifications) == switched_history)
+	check("view switch commits once after the director's aim", int(_history(viewport).notifications) == switched_history + 1
+		and _history(viewport).last_reason == "camera_view_changed")
+	switched_history += 1
 	director.active = false
 	_frames(flight, 1)
 	var returned_history := _history(viewport)

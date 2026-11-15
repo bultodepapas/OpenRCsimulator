@@ -108,3 +108,17 @@ Windows turbulent trace; the strict packer refused it. Its cause remains
 unknown and its values were not admitted. Two physical Windows queue attempts
 failed before producing a runner verdict or Godot capture; neither is numerical
 evidence. The original fixture branches remain unchanged.
+
+## 2026-11-15 flight-session source renewal
+
+The [receipt](publication-rebind-2026-11-15.json) binds baseline `05e01598`
+and candidate `d61eb083` to [CI run 43717526635](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43717526635).
+All eight Windows and Linux shaft and weather captures reproduced the retained
+hashes, and the strict packer verified their checked logs, source inventories
+and 19 source pins. Only the Session pin and overlay, candidate commit and
+helper fixture identity were renewed; historical families, numerical
+expectations and tolerances were preserved. The promoted fixture SHA-256 is
+`a790e01d423c70af3112ef9a6f79e7c9aa9c5b4d0fb75adb12f1feb1b6f5f701`.
+These are bounded 25-frame software comparisons of the named commits, not
+physical validation or evidence for later changes. Artifact IDs and verified
+ZIP digests are recorded in the receipt; GitHub artifact retention is limited.

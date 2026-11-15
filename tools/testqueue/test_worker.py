@@ -38,7 +38,8 @@ request = json.loads((directory / "request.json").read_text(encoding="utf-8"))
 owner = request["owner"]
 start = time.monotonic_ns()
 (directory / "started.json").write_text(json.dumps({"time": start, "pid": os.getpid(),
-    "source": os.getcwd(), "profile": os.environ["APPDATA"], "temp": os.environ["TEMP"]}))
+    "source": os.getcwd(), "profile": os.environ["APPDATA"], "temp": os.environ["TEMP"],
+    "import_timeout": os.environ.get("OPENRC_IMPORT_TIMEOUT")}))
 
 if owner.startswith("rendered-"):
     until = time.monotonic() + 15
@@ -168,6 +169,48 @@ class WorkerFixture(unittest.TestCase):
         self.scheduler.join(timeout=3)
         self.worker.store.db.close()
         self.worker.singleton.close()
+
+    def test_suite_import_timeout_is_bounded_before_admission(self):
+        # Keep this isolated authority drained: these requests must never launch an adapter.
+        self.worker.draining = True
+        full_snapshot = self.base / "full-scope"
+        snapshots.capture(self.repo, full_snapshot, scope=("app", "tools", "research", "assets", "site", "docs", ".github"))
+
+        def submit(value, preset="suite"):
+            return self._call("submit", owner="timeout-fixture", preset=preset, options={},
+                              source=str(self.repo), snapshot=str(full_snapshot),
+                              request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex,
+                              environment={"OPENRC_IMPORT_TIMEOUT": value})
+
+        for preset in ("suite", "ci"):
+            for value in ("1", "600", "1800", "0001"):
+                with self.subTest(preset=preset, value=value):
+                    accepted = submit(value, preset)
+                    self.assertEqual(self._status(accepted["job"])["payload"]["environment"]["OPENRC_IMPORT_TIMEOUT"], value)
+                    self._call("cancel", handle=accepted["handle"])
+        for value in ("", "0", "1801", "10000", "-1", "1.0", "1e2", "９", "9" * 10000):
+            with self.subTest(value=value[:12]):
+                with self.assertRaisesRegex(ValueError, "OPENRC_IMPORT_TIMEOUT"):
+                    submit(value)
+        with self.assertRaisesRegex(ValueError, "only suite partition environment"):
+            submit("600", "debug-session")
+
+    def test_suite_timeout_comes_from_the_recorded_request_not_worker_environment(self):
+        full_snapshot = self.base / "full-scope"
+        snapshots.capture(self.repo, full_snapshot, scope=("app", "tools", "research", "assets", "site", "docs", ".github"))
+        with mock.patch.dict(os.environ, {"OPENRC_IMPORT_TIMEOUT": "1800"}):
+            for supplied, expected in (({}, None), ({"OPENRC_IMPORT_TIMEOUT": "123"}, "123")):
+                with self.subTest(supplied=supplied):
+                    accepted = self._call("submit", owner="timeout-fixture", preset="suite", options={"timeout": 20},
+                                          source=str(self.repo), snapshot=str(full_snapshot), environment=supplied,
+                                          request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex)
+                    self.handles.append(accepted)
+                    status = self._finish(accepted["job"])
+                    self.assertEqual(status.get("outcome"), "PASSED", status)
+                    directory = self.worker.root / "attempts" / status["attempt"]
+                    started = json.loads((directory / "started.json").read_text(encoding="utf-8"))
+                    self.assertEqual(started["import_timeout"], expected)
+                    self.assertEqual(status["payload"]["environment"], supplied)
 
     @unittest.skipUnless(os.name == "nt", "Windows materialized file attributes")
     def test_materialization_preserves_frozen_windows_attributes(self):

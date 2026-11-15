@@ -1507,7 +1507,7 @@ func _process(delta: float) -> void:
 		InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_camera_dt = dt
 	CameraRig.release_cursor_if_up()
-	_render_pose(_current_pose(), surfaces, _prop_angle)
+	_render_pose(_current_pose(), surfaces, _prop_angle, true)
 	_update_storm(visual_clock_s, frozen)
 	var smoke_clock_s: float = sim.time()
 	if not _scripted and _visual_pose.is_empty() and session.crash.is_empty() and sim.tick > 0:
@@ -1542,8 +1542,12 @@ func _process(delta: float) -> void:
 		if _crash_director.active and diagnostics_visible:
 			_panel.text = _crash_director.description()
 	if crash_camera_active != _history_crash_camera_active:
-		Reconstruction.request_history_reset(get_viewport(), "camera_crash_focus_changed")
+		_rig.queue_history_reset("camera_crash_focus_changed")
 		_history_crash_camera_active = crash_camera_active
+	# Crash focus can place the camera again after _render_pose(). Submit only
+	# after its final pose, before this frame is drawn.
+	if not _rig.pending_history_reset.is_empty():
+		_rig.commit_history_reset()
 	if _lens != null:
 		_lens.advance(delta, visual_clock_s, not session.holds.is_empty())
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
@@ -3524,7 +3528,7 @@ func _update_aircraft_shadow(pose: Dictionary, snapshot_lighting: bool) -> Vecto
 	return direction
 
 
-func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
+func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_camera_cut := false) -> void:
 	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	# root_transform replaces the basis each frame; restore the presentation-only uniform scale.
@@ -3550,7 +3554,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	var paused: bool = session != null and session.sim.paused and not _scripted
 	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
-		_camera_clearance)
+		_camera_clearance, defer_camera_cut)
 	if _magnifier != null:
 		_magnifier.mode = _rig.magnifier
 		_magnifier.update(_camera, pose.pos, _extent.x, _airplane.root, _rig.view == "pilot" and is_nan(_look.x)

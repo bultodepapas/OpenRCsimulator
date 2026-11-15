@@ -89,6 +89,7 @@ var _orbit_primed := false
 var _orbit_entry_eye := Vector3.INF
 var _placed := false # the camera has been placed by a view at least once (orbit can start from it)
 var _history_chase_zoom := NAN
+var pending_history_reset := ""
 
 
 func _init(rig_camera: Camera3D, span: float) -> void:
@@ -119,7 +120,7 @@ func set_view(id: String) -> bool:
 		return true
 	view = id
 	_history_chase_zoom = NAN
-	_request_history_reset("camera_view_changed")
+	queue_history_reset("camera_view_changed")
 	_screen_up = Vector3.ZERO
 	if id == "chase":
 		chase.reset()
@@ -139,7 +140,7 @@ func select_view(id: String) -> bool:
 		chase.style = "follow3d" if chase.style == "horizon" else "horizon"
 		chase.reset()
 		_history_chase_zoom = NAN
-		_request_history_reset("camera_chase_style_changed")
+		queue_history_reset("camera_chase_style_changed")
 		return true
 	return set_view(id)
 
@@ -184,7 +185,7 @@ func zoom(steps: float) -> void:
 			var previous := flyby.zoom
 			flyby.zoom = clampf(flyby.zoom / factor, 0.25, 4.0)
 			if not is_equal_approx(previous, flyby.zoom):
-				_request_history_reset("camera_flyby_zoom")
+				queue_history_reset("camera_flyby_zoom")
 
 
 ## Backspace: the current view's zoom and offsets back to their defaults.
@@ -198,12 +199,12 @@ func reset_view() -> void:
 			chase.zoom = 1.0
 		"orbit":
 			orbit.reset()
-			_request_history_reset("camera_orbit_reset")
+			queue_history_reset("camera_orbit_reset")
 		"flyby":
 			var changed := not is_equal_approx(flyby.zoom, 1.0)
 			flyby.zoom = 1.0
 			if changed:
-				_request_history_reset("camera_flyby_zoom")
+				queue_history_reset("camera_flyby_zoom")
 
 
 ## CAM-29: while the right button turns the orbit the cursor is held (hidden, no window edge to run into); it is
@@ -227,7 +228,7 @@ func drag(relative: Vector2) -> void:
 
 ## A restarted flight: views with memory start settled again.
 func reset() -> void:
-	_request_history_reset("camera_flight_reset")
+	queue_history_reset("camera_flight_reset")
 	_history_chase_zoom = NAN
 	chase.reset()
 	flyby.reset()
@@ -244,7 +245,7 @@ func reset() -> void:
 ## Camera consumers (audio listener, lake reflection, sun glare) must run after this call, and after focus() during a
 ## crash aftermath, in the same frame.
 func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable,
-		velocity := Vector3.INF, obstacles := Callable()) -> void:
+		velocity := Vector3.INF, obstacles := Callable(), defer_history_reset := false) -> void:
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
@@ -253,6 +254,8 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 		camera.near = near_value
 	if not is_nan(look.x):
 		PilotCamera.look(camera, look.x, look.y, look_height)
+		if not defer_history_reset and not pending_history_reset.is_empty():
+			commit_history_reset()
 		return
 	match view:
 		"pilot":
@@ -275,10 +278,10 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 			var target_cut := primed and not paused and dt > 0.0 \
 					and (target - chase._last_target).length() > ChaseView.TELEPORT_SPEED * dt
 			if target_cut:
-				_request_history_reset("camera_target_teleport")
+				queue_history_reset("camera_target_teleport")
 			if primed and chase.style == "follow3d" and not paused and dt > 0.0 and not is_nan(_history_chase_zoom) \
 					and not is_equal_approx(_history_chase_zoom, chase.zoom) and not target_cut:
-				_request_history_reset("camera_chase_zoom")
+				queue_history_reset("camera_chase_zoom")
 			if not primed or (not paused and dt > 0.0):
 				_history_chase_zoom = chase.zoom
 			_apply(chase.update(target, body, dt, paused, ground_y, velocity, obstacles))
@@ -287,7 +290,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 			var previous_position: Vector3 = flyby.position
 			var placement := flyby.update(target, body, velocity, dt, paused, ground_y, light_direction, obstacles)
 			if had_placement and flyby.position != previous_position:
-				_request_history_reset("camera_flyby_reposition")
+				queue_history_reset("camera_flyby_reposition")
 			_apply(placement)
 		"orbit":
 			if not _orbit_primed:
@@ -299,11 +302,28 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 				_orbit_primed = true
 			_apply(orbit.update(target, ground_y, dt, obstacles))
 	_placed = true
+	if not defer_history_reset and not pending_history_reset.is_empty():
+		commit_history_reset()
 
 
-func _request_history_reset(reason: String) -> void:
+func queue_history_reset(reason: String) -> void:
 	if is_instance_valid(camera) and camera.is_inside_tree():
-		Reconstruction.request_history_reset(camera.get_viewport(), reason)
+		# The view or flight state changes here; the camera itself changes in
+		# update(). A startup stage may draw between those two events.
+		pending_history_reset = reason
+
+
+func commit_history_reset() -> void:
+	if pending_history_reset.is_empty():
+		return
+	var reason := pending_history_reset
+	pending_history_reset = ""
+	if is_instance_valid(camera) and camera.is_inside_tree() and not camera.is_queued_for_deletion():
+		_submit_history_reset(camera.get_viewport(), reason)
+
+
+func _submit_history_reset(viewport: Viewport, reason: String) -> void:
+	Reconstruction.request_history_reset(viewport, reason, null, true)
 
 
 ## CAM-27: a crash aftermath, called after update() in the same frame. Non-pilot views look at `point` (the wreck's

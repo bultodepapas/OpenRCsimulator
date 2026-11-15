@@ -59,6 +59,10 @@ const OUTPUT_SIZE_SCOPE := "viewport_render_target_estimate_v1"
 const NOMINAL_SIZE_SCOPE := "scaled_viewport_estimate_not_sdk_execution"
 const HISTORY_RESET_META := &"openrc_reconstruction_history_reset"
 const HISTORY_RESET_METHOD := &"viewport_request_temporal_history_reset"
+const METALFX_RESET_STATUS_FIELDS := ["generation", "requested_mode", "configured_mode", "render_buffers_available",
+	"provider", "allocation", "submission", "reset_gpu_completion", "temporal_attempts",
+	"reset_requested_serial", "reset_submitted_serial", "reset_encoded_serial"]
+const METALFX_RESET_RECEIPT_FIELDS := ["accepted", "generation", "serial", "reset_request_attempt"]
 
 
 ## MetalFX trials are method/device gated independently of the High effects profile.
@@ -262,7 +266,7 @@ static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictiona
 	if provider != "metalfx_temporal":
 		var history: Variant = viewport.get_meta(HISTORY_RESET_META, {})
 		if viewport.has_meta(METALFX_RESET_META) \
-				or (typeof(history) == TYPE_DICTIONARY and history.get("reset_state") == "encoded"):
+				or (typeof(history) == TYPE_DICTIONARY and history.get("reset_state") in ["encoded", "initial_history"]):
 			_finish_metalfx_reset(viewport, "superseded")
 	if provider in MetalFX.PROVIDERS:
 		_track_metalfx_status(viewport, policy, status_before, mode_changed)
@@ -390,8 +394,13 @@ static func _metalfx_scope_matches(viewport: Viewport, policy: Dictionary, scope
 
 ## Discontinuities invalidate history; ordinary camera movement must not call this.
 ## A MetalFX acceptance is pending until its matching CPU-side encode is observed.
-static func request_history_reset(viewport: Viewport, reason: String, backend: Object = null) -> bool:
-	if not is_instance_valid(viewport):
+## Only a caller that has just placed the final pose, before the next draw, may
+## rely on the first reset of a proven empty MetalFX buffer generation.
+static func request_history_reset(viewport: Viewport, reason: String, backend: Object = null,
+		after_pose_before_draw: bool = false) -> bool:
+	if not is_instance_valid(viewport) or viewport.is_queued_for_deletion():
+		return false
+	if after_pose_before_draw and not viewport.is_inside_tree():
 		return false
 	var previous: Dictionary = viewport.get_meta(HISTORY_RESET_META, {})
 	var receipt := {"notifications": int(previous.get("notifications", 0)) + 1,
@@ -409,11 +418,33 @@ static func request_history_reset(viewport: Viewport, reason: String, backend: O
 		var scope: Variant = viewport.get_meta(METALFX_STATUS_META, {})
 		var actual_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_METALFX_TEMPORAL")
 		var request := {}
-		if supported and provider_supported and target.has_method(METALFX_STATUS_METHOD) \
-				and typeof(scope) == TYPE_DICTIONARY and typeof(actual_mode) == TYPE_INT \
-				and _metalfx_scope_matches(viewport, policy, scope, int(actual_mode)):
-			request = _request_metalfx_reset(viewport, target, int(actual_mode), int(scope.generation))
+		var failure := {}
+		if not supported:
+			failure.reason = "reset_api_missing"
+		elif not provider_supported:
+			failure.reason = "provider_unsupported"
+		elif not target.has_method(METALFX_STATUS_METHOD):
+			failure.reason = "status_api_missing"
+		elif typeof(scope) != TYPE_DICTIONARY:
+			failure.reason = "scope_invalid"
+		elif typeof(actual_mode) != TYPE_INT:
+			failure.reason = "mode_unavailable"
+		elif not _metalfx_scope_matches(viewport, policy, scope, int(actual_mode)):
+			failure.reason = "scope_mismatch"
+		else:
+			request = _request_metalfx_reset(viewport, target, int(actual_mode), int(scope.generation), failure,
+				after_pose_before_draw)
 		if not request.is_empty():
+			if request.state == "initial_history":
+				# No explicit request or encode was observed. A new generation has
+				# no old picture, and its first Temporal encode must reset history.
+				receipt.merge({"reset_state": "initial_history", "pending": false, "encoded": false,
+					"generation": request.generation, "serial": 0, "reset_submitted_serial": 0,
+					"reset_encoded_serial": 0, "gpu_completion": "unobserved"}, true)
+				viewport.set_meta(HISTORY_RESET_META, receipt)
+				if viewport.has_meta(METALFX_RESET_META):
+					viewport.remove_meta(METALFX_RESET_META)
+				return false # No explicit request was submitted.
 			receipt.submitted += 1
 			_update_metalfx_reset_receipt(receipt, request, str(request.state))
 			viewport.set_meta(HISTORY_RESET_META, receipt)
@@ -426,6 +457,13 @@ static func request_history_reset(viewport: Viewport, reason: String, backend: O
 		receipt["pending"] = false
 		receipt["encoded"] = false
 		receipt["gpu_completion"] = "unobserved"
+		if typeof(scope) == TYPE_DICTIONARY:
+			failure["scope"] = _metalfx_diagnostic_fields(scope, ["provider", "mode", "generation"])
+		failure["policy"] = _metalfx_diagnostic_fields(policy, ["provider", "scaling_3d_mode"])
+		failure["viewport_mode"] = int(viewport.scaling_3d_mode)
+		if typeof(actual_mode) == TYPE_INT:
+			failure["expected_mode"] = int(actual_mode)
+		receipt["failure"] = failure
 		viewport.set_meta(HISTORY_RESET_META, receipt)
 		_fallback_metalfx_reset(viewport)
 		return false
@@ -439,23 +477,77 @@ static func request_history_reset(viewport: Viewport, reason: String, backend: O
 
 ## This helper takes an injected backend for deterministic tests. Production has
 ## already verified the real engine enum, viewport property, RID and scope.
-static func _request_metalfx_reset(viewport: Viewport, backend: Object, mode: int, minimum_generation: int) -> Dictionary:
+static func _request_metalfx_reset(viewport: Viewport, backend: Object, mode: int, minimum_generation: int,
+		diagnostic: Dictionary = {}, after_pose_before_draw: bool = false) -> Dictionary:
 	var before := _metalfx_status(viewport, backend)
 	if not _metalfx_reset_ready(before, mode, minimum_generation):
+		if after_pose_before_draw and _metalfx_empty_generation(before, mode, minimum_generation):
+			return {"state": "initial_history", "generation": int(before.generation)}
+		diagnostic["reason"] = "before_status_not_ready"
+		diagnostic["before_status"] = _metalfx_diagnostic_fields(before, METALFX_RESET_STATUS_FIELDS)
 		return {}
 	var raw: Variant = backend.call(HISTORY_RESET_METHOD, viewport.get_viewport_rid())
+	if typeof(raw) == TYPE_DICTIONARY and typeof(raw.get("accepted")) == TYPE_BOOL and not raw.accepted:
+		diagnostic["reason"] = "reset_rejected"
+		diagnostic["before_status"] = _metalfx_diagnostic_fields(before, METALFX_RESET_STATUS_FIELDS)
+		diagnostic["reset_receipt"] = _metalfx_diagnostic_fields(raw, METALFX_RESET_RECEIPT_FIELDS)
+		return {}
 	if typeof(raw) != TYPE_DICTIONARY or typeof(raw.get("accepted")) != TYPE_BOOL or not raw.accepted \
 			or typeof(raw.get("generation")) != TYPE_INT or int(raw.generation) != int(before.generation) \
 			or typeof(raw.get("serial")) != TYPE_INT or int(raw.serial) <= int(before.reset_requested_serial) \
 			or typeof(raw.get("reset_request_attempt")) != TYPE_INT \
 			or int(raw.reset_request_attempt) < int(before.temporal_attempts):
+		diagnostic["reason"] = "reset_receipt_malformed"
+		diagnostic["before_status"] = _metalfx_diagnostic_fields(before, METALFX_RESET_STATUS_FIELDS)
+		if typeof(raw) == TYPE_DICTIONARY:
+			diagnostic["reset_receipt"] = _metalfx_diagnostic_fields(raw, METALFX_RESET_RECEIPT_FIELDS)
 		return {}
 	var request := {"rid": viewport.get_viewport_rid(), "mode": mode, "generation": int(raw.generation),
 		"serial": int(raw.serial), "reset_request_attempt": int(raw.reset_request_attempt)}
 	var after := _metalfx_status(viewport, backend)
 	request["state"] = _metalfx_reset_state(after, request)
 	request["status"] = after
+	if request.state not in ["pending", "encoded"]:
+		diagnostic["reason"] = "post_status_unavailable"
+		diagnostic["before_status"] = _metalfx_diagnostic_fields(before, METALFX_RESET_STATUS_FIELDS)
+		diagnostic["reset_receipt"] = _metalfx_diagnostic_fields(raw, METALFX_RESET_RECEIPT_FIELDS)
+		diagnostic["after_status"] = _metalfx_diagnostic_fields(after, METALFX_RESET_STATUS_FIELDS)
 	return request if request.state in ["pending", "encoded"] else {}
+
+
+## This deliberately excludes merely "not ready" states: only a viewport with
+## no buffers and no observed work can use the engine's initial-reset contract.
+static func _metalfx_empty_generation(status: Dictionary, mode: int, minimum_generation: int) -> bool:
+	if minimum_generation < 0 \
+			or typeof(status.get("generation")) != TYPE_INT or int(status.generation) < minimum_generation \
+			or typeof(status.get("requested_mode")) != TYPE_INT or int(status.requested_mode) != mode \
+			or typeof(status.get("configured_mode")) != TYPE_INT or int(status.configured_mode) != -1 \
+			or typeof(status.get("render_buffers_available")) != TYPE_BOOL or status.render_buffers_available \
+			or typeof(status.get("provider")) != TYPE_STRING or status.provider != "none" \
+			or typeof(status.get("allocation")) != TYPE_STRING or status.allocation != "not_attempted" \
+			or typeof(status.get("submission")) != TYPE_STRING or status.submission != "not_attempted" \
+			or typeof(status.get("reset_gpu_completion")) != TYPE_STRING or status.reset_gpu_completion != "unobserved":
+		return false
+	for key: String in ["reset_requested_serial", "reset_submitted_serial", "reset_encoded_serial", "temporal_attempts"]:
+		if typeof(status.get(key)) != TYPE_INT or int(status[key]) != 0:
+			return false
+	return true
+
+
+## Keep failure receipts small even if an injected or future backend returns extra data.
+static func _metalfx_diagnostic_fields(source: Dictionary, keys: Array) -> Dictionary:
+	var result := {}
+	for key: String in keys:
+		if not source.has(key):
+			continue
+		var value: Variant = source[key]
+		if typeof(value) in [TYPE_BOOL, TYPE_INT]:
+			result[key] = value
+		elif typeof(value) == TYPE_STRING:
+			result[key] = str(value).left(64)
+		else:
+			result[key] = "invalid_type"
+	return result
 
 
 static func _metalfx_reset_ready(status: Dictionary, mode: int, minimum_generation: int) -> bool:
@@ -517,7 +609,7 @@ static func _expire_metalfx_reset_receipt(viewport: Viewport, status: Dictionary
 	if viewport.has_meta(METALFX_RESET_META):
 		return
 	var receipt: Variant = viewport.get_meta(HISTORY_RESET_META, {})
-	if typeof(receipt) == TYPE_DICTIONARY and receipt.get("reset_state") == "encoded" \
+	if typeof(receipt) == TYPE_DICTIONARY and receipt.get("reset_state") in ["encoded", "initial_history"] \
 			and (typeof(receipt.get("generation")) != TYPE_INT or typeof(status.get("generation")) != TYPE_INT \
 			or int(receipt.generation) != int(status.generation)):
 		_finish_metalfx_reset(viewport, "superseded")

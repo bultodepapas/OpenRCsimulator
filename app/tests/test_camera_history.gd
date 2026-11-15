@@ -26,14 +26,17 @@ func _run() -> void:
 	var count := _count(viewport)
 	_check("same and invalid views do not notify", rig.set_view("pilot") and not rig.set_view("missing")
 		and _count(viewport) == count)
-	_check("switching the same Camera3D view sends one request", rig.set_view("chase")
-		and _count(viewport) == count + 1 and _reason(viewport) == "camera_view_changed")
+	_check("switching view waits for camera placement", rig.set_view("chase") and _count(viewport) == count)
+	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
+	_check("new view placement sends one request", _count(viewport) == count + 1
+		and _reason(viewport) == "camera_view_changed")
 	count = _count(viewport)
 	_check("reselecting a view sends no request", rig.set_view("chase") and _count(viewport) == count)
 	rig.select_view("chase")
+	_check("changing chase style waits for placement", _count(viewport) == count)
+	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("changing chase style sends one request", _count(viewport) == count + 1
 		and _reason(viewport) == "camera_chase_style_changed")
-	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	count = _count(viewport)
 	for i in 120:
 		target += velocity * dt
@@ -47,12 +50,12 @@ func _run() -> void:
 	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("unchanged 3D follow zoom does not repeat the request", _count(viewport) == count)
 	rig.reset()
-	_check("flight reset sends one request", _count(viewport) == count + 1
-		and _reason(viewport) == "camera_flight_reset")
-	count = _count(viewport)
+	_check("flight reset waits for camera placement", _count(viewport) == count)
 	target = Vector3(400.0, 20.0, 0.0)
 	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
-	_check("first placement after reset does not double-notify", _count(viewport) == count)
+	_check("first placement after reset sends one request", _count(viewport) == count + 1
+		and _reason(viewport) == "camera_flight_reset")
+	count = _count(viewport)
 	target += Vector3(100.0, 0.0, 0.0)
 	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("chase's existing teleport snap sends one request", _count(viewport) == count + 1
@@ -62,6 +65,7 @@ func _run() -> void:
 	_check("settled chase does not repeat the teleport request", _count(viewport) == count)
 
 	rig.set_view("pilot")
+	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	count = _count(viewport)
 	rig.zoom(1.0)
 	rig.toggle_auto_zoom()
@@ -82,10 +86,10 @@ func _run() -> void:
 		rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("smoothed orbit motion does not request resets", _count(viewport) == count)
 	rig.reset_view()
-	_check("orbit reset snaps and sends one request", _count(viewport) == count + 1
-		and _reason(viewport) == "camera_orbit_reset")
+	_check("orbit reset waits for camera placement", _count(viewport) == count)
 	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
-	_check("orbit update does not repeat the reset", _count(viewport) == count + 1)
+	_check("orbit placement sends one reset", _count(viewport) == count + 1
+		and _reason(viewport) == "camera_orbit_reset")
 
 	rig.set_view("flyby")
 	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
@@ -103,10 +107,12 @@ func _run() -> void:
 		and _reason(viewport) == "camera_flyby_reposition")
 	count = _count(viewport)
 	rig.zoom(1.0)
+	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("fly-by FOV zoom sends one request", _count(viewport) == count + 1
 		and _reason(viewport) == "camera_flyby_zoom")
 	count = _count(viewport)
 	rig.reset_view()
+	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("fly-by FOV reset sends one request", _count(viewport) == count + 1)
 	count = _count(viewport)
 	rig.reset_view()
@@ -114,6 +120,7 @@ func _run() -> void:
 
 	var config := CameraSettings.normalized({"camera_view": "pilot"})
 	CameraSettings.apply_at_start(rig, config)
+	rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, dt, false, flat, velocity)
 	_check("first-view preference uses the same view-change seam", _count(viewport) == count + 1
 		and _reason(viewport) == "camera_view_changed")
 	count = _count(viewport)

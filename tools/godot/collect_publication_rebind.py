@@ -18,7 +18,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-BASELINE = "676be5351357c981d6500b17569aa38615a0c8cb"
+BASELINE = "d61eb0830227e120c64c4fc51462b9feb5052149"
+PRIOR_FIXTURE_SHA256 = "a790e01d423c70af3112ef9a6f79e7c9aa9c5b4d0fb75adb12f1feb1b6f5f701"
 PIN_FILE = ROOT / "app/tests/fixtures/publication_fixture_bridge.json"
 PRIOR_RECEIPT = ROOT / "docs/research/release-readiness/PT1-CI-00/publication-rebind-2026-11-11.json"
 CAPTURE_SCRIPTS = {"shaft": "audit_fixture_shaft_capture.gd", "weather": "audit_fixture_weather_capture.gd"}
@@ -32,6 +33,16 @@ def sha256(path: Path) -> str:
 
 def script_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+def load_prior_fixture() -> dict:
+    prior_bytes = PIN_FILE.read_bytes().replace(b"\r\n", b"\n")
+    if hashlib.sha256(prior_bytes).hexdigest() != PRIOR_FIXTURE_SHA256:
+        raise ValueError("Prior fixture does not match the accepted identity")
+    prior = json.loads(prior_bytes)
+    if prior.get("candidate_commit") != BASELINE:
+        raise ValueError("Prior fixture is not anchored to the accepted baseline")
+    return prior
 
 
 def git(args: list[str], *, cwd: Path | None = None, env: dict[str, str] | None = None,
@@ -190,9 +201,7 @@ def main() -> int:
         if git(["status", "--porcelain=v1", "--untracked-files=all", "--", "app", ".gitattributes",
                 "tools/godot/audit_fixture_shaft_capture.gd", "tools/godot/audit_fixture_weather_capture.gd"]).strip():
             raise ValueError("Capture source checkout is not clean")
-        prior = json.loads(PIN_FILE.read_text(encoding="utf-8"))
-        if prior.get("candidate_commit") != BASELINE:
-            raise ValueError("Prior fixture is not anchored to the accepted baseline")
+        prior = load_prior_fixture()
         pins = prior["source_pins"]
         receipt = json.loads(PRIOR_RECEIPT.read_text(encoding="utf-8"))
         expected_engines = receipt["engine"]["executable_sha256"]
