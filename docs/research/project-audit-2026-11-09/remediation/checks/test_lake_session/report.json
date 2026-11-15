@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "69d11e4d-eb4f-4e44-a09f-f271384082e3",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/g/OpenRC-a35-20261115-validation/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_lake_session.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-15T18:03:06.367221+00:00",
+  "label": "test_lake_session",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-focused/test_lake_session-c4r_anpy/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-focused/test_lake_session-c4r_anpy/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "lake session checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 28.621425,
+  "log_bytes": 3614,
+  "log_sha256": "19c34714c187b82aae4bca8cdcf63732c8fd68324326932106b9a7420ce82209"
+}

@@ -14,8 +14,8 @@ snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md)
 reviews main `ad21070798bfb9658785576a9c0b8bfc9a71fc7f`; historical engine
 observations at `45d86d2` are not current reruns. A34's bounded corrections remain
 in the [implemented ledger](COMPLETED-AUDIT-WORK.md); its local-wing closure
-question remains research, not a newly calibrated flight model. A35 F06–F08 are
-pending below under their existing owners, not a second queue.
+question remains research, not a newly calibrated flight model. A35 F06–F08
+repairs and their fresh verification are recorded in the [implemented ledger](COMPLETED-AUDIT-WORK.md).
 
 ## Contents
 
@@ -61,12 +61,6 @@ Qualified follow-ups, not additional confirmed defects:
 
 An immutable accepted-tick contact observation could carry environment/geometry identity, endpoint loads and transition timing/uncertainty for statistics/audio. Reuse must preserve the corrected N04/N05 contracts and their declared timing uncertainty; cached stage forces are not automatically equivalent. Reuse must preserve the implemented A6 F6 per-element passivity constraints and CF-05 conservative interval admission; total negative power cannot substitute for local constraints, and root refinement cannot repair skipped admission. Existing moment/rotor/native-weather/UI findings retain their IDs. [A30 full][A30-full]
 
-### Statistics recovery — UI-FS-03
-
-| Pending item | Action and acceptance boundary | Original report |
-| --- | --- | --- |
-| **A35 F08 — P2, repeat snapshot quarantine** | Preserve damaged bytes without allowing an earlier fixed per-slot quarantine to block a later recovery. Current source sets the valid recovered store read-only even with the writer lock when that target exists. Cover immediate reopen, healthy commits followed by a second corruption of the same slot, identical and different damaged bytes, interrupted/failed preservation, competing writers, subsequent commits and history deletion. Never overwrite evidence or silently discard a failed copy. The 2026-11-09 engine witnesses are historical; the 2026-11-15 source review did not rerun them. This is distinct from A34's versioned-lock correction and legacy-lock limitation. | [A35 original][A35], [current snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md) |
-
 ### Related work without a new defect count
 
 - **A14 paint observations:** recognizable same-label cards, explained incompatible-skin fallback, localized actionable errors and practical inventory recovery. Real package/upgrade cases remain unverified; preserve existing legacy exception. Original reports: [A14][A14].
@@ -78,19 +72,6 @@ An immutable accepted-tick contact observation could carry environment/geometry 
 ### Shared kernel and ground vehicles
 
 - **Fuel residual scope:** [FUEL-12-R5](../docs/research/fuel-systems/FUEL-12/README.md#exact-zero-connected-trials-fuel-12-r5--a4a6-2026-11-09) implements the exact-zero connected RK derivative and versioned native mirror, with synthetic event/refinement and retained stock controls. Broader event-timing convergence, physically resolved spark probability, installed-native/package and full CI qualification remain separate. [A4][A4], [A6][A6]
-
-### Swept lake contact — GP / LU-25
-
-The [round-two report][A35] used Godot 4.8.beta2 at `45d86d2`. At the
-2026-11-15 source snapshot, the swept lake, lake-surface, hull and X99 data blobs
-remain unchanged while the session and aircraft-data loader have changed; the
-historical full-tick results were not rerun against that session. Follow the ground-physics owner and existing lake
-session contracts; software cases do not physically validate impact thresholds.
-
-| Pending item | Action and acceptance boundary | Original report |
-| --- | --- | --- |
-| **A35 F06 — P2, positive-down swept surface normal** | Correct the swept bank/water normal for positive-down slopes and reconcile it with the existing hull contact convention. For `D=h(N,E)`, test the outward `[h_N,h_E,-1]` normal against both plane tangents and gap rates, with north/east slope signs, tangent and approaching motion, sampled and non-sampled queries, and bank/water event semantics. Retain the sign-only historical control and production-session witness as comparisons; run current-source checked regressions before claiming the old false crash still reproduces. | [A35 original][A35], [current snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md) |
-| **A35 F07 — P2, aircraft-specific bank tolerance** | Forward prepared model tolerances through both swept query paths and the deep-bank fallback, preserving defaults and existing water/non-soft-contact policy. Check default and X99 energy boundaries (2.5 / 12.5 J/kg) and depth boundaries (0.08 / 0.12 m), including separating and deep-contact paths; add an independent depth case. The historical stopped-propeller control isolates the energy threshold only. X99 tolerances are estimates, not measured impact strength. | [A35 original][A35], [current snapshot](../docs/research/project-audit-2026-11-09/current-state-2026-11-15.md) |
 
 ### Extra 300 generator and presentation
 
@@ -341,6 +322,7 @@ A16/A19 propose experiments, not completed physical validation. A20 reports four
 
 | Implemented or historical area | Pending gate | Original report |
 | --- | --- | --- |
+| A35 F07 / X99 bank tolerance | The prepared-policy software repair and boundary regressions are implemented. The authored 12.5 J/kg and 0.12 m limits retain estimated provenance and require independent impact/drop measurements under the ground-physics owner. [Repair and software evidence](../docs/research/project-audit-2026-11-09/README.md#a35-remediation-follow-up). | [A35 original][A35] |
 | A21 trial identity; A22 WOPT-02; A31 source cache | [UI-32-R11](../docs/research/menu-investigations/UI-32/README.md#frozen-trial-identity-ui-32-r11--a21-2026-11-09), [actual overlay reuse](../docs/WIND-ATMOSPHERE-REFERENCE.md#observer-datum-reuse-m5-w-aud-22--wopt-02-2026-11-09) and [NR-02-R1](../docs/research/natural-random/README.md#source-identity-cache-nr-02-r1--a31-2026-11-09) have focused Windows software evidence and bounded 1080p UI review. Complete required CI, participant/device/platform/release and target-performance gates remain separate. | [A21][A21], [A22][A22], [A31][A31] |
 | A30 reference-reset follow-up | [Guarded reference/native-request transactions](../docs/research/helicopter/HELI-20/README.md#runtime-refusal-and-reset-follow-up-a20--a30-2026-11-08) pass 305 reset/observer assertions, with actual recorder, calibration and gamepad preservation. Actual native execution and callback backend-status identity, complete required CI, devices and physical qualification remain separate. | [A30 summary][A30], [A30 full][A30-full] |
 | A21 §5 | [UI-32-R10](../docs/research/menu-investigations/UI-32/README.md#paused-alert-inspection-ui-32-r10-2026-11-08) passes 101 focused checks plus 399 existing consumer checks, with native Windows 1080p EN100/200 and ES200 review. Physical controllers, assistive technology, participant comprehension, other platforms, full CI and performance qualification remain open; later concurrent controller/catalog additions have software evidence but were not re-captured natively. | [A21 original][A21] |

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "703b4090-4ea4-4f12-bd03-c0fb90de2da1",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/g/OpenRC-a35-20261115-validation/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_dynamic_mass_contact.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-15T18:03:06.968654+00:00",
+  "label": "test_dynamic_mass_contact",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-focused/test_dynamic_mass_contact-mz7u2_il/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/external-audit-20261115/wsl-focused/test_dynamic_mass_contact-mz7u2_il/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "checks, 0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.428709,
+  "log_bytes": 2493,
+  "log_sha256": "11ee5bb335c06fecbacc1b8f397399abd7cd3fabfd048a3810e1f4f119e59e60"
+}

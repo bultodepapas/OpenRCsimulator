@@ -11,6 +11,9 @@ results establish the original witnesses; this intake did not rerun the simulato
 against the newer commit. The current source, retained remediation evidence and
 observed CI status are separate evidence classes.
 
+The [remediation follow-up](#a35-remediation-follow-up) records
+the subsequent F06–F08 corrections against main `e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc`.
+
 The [external-audit pending queue][pending] remains the authoritative home for
 remaining actions. Its source **A34** identifies round one; **A35** identifies round
 two. The [implemented ledger][completed] owns delivered corrections. This folder
@@ -222,6 +225,72 @@ deleted history. Current tests cover first corruption and another deletion
 scenario, not these repeat-corruption sequences. The pending queue retains
 immediate reopen, healthy healing/re-corruption, distinct damaged bytes,
 write-failure, owned-lock, valid-history and deletion controls.
+
+## A35 remediation follow-up
+
+The GP-10b / UI-FS-03 remediation branch incorporates this evidence intake and main
+`e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc`. The reviewed integration baseline is
+`d1e55d5b9c81d33f8ebf4a75528a67bd87b2d70a`.
+
+- **F06.** The swept normal uses `[h_N,h_E,-1]` for positive-down bank and water
+  gradients. Tests cover both slope signs and axes, plane tangents, wave normals,
+  rotating point velocity and the original Stik accepted-tick scenario.
+- **F07.** Both swept APIs accept the prepared HullContact policy. The session
+  forwards that policy through fixed and sampled mass queries. Energy, separating
+  depth and final crush decisions use the aircraft limits in soft-bank mode.
+  Regression cases bracket 2.5/12.5 J/kg and 0.08/0.12 m, retain hard-bank and water
+  behavior, and exercise the original stopped-propeller X99 tick. Lake-enabled
+  metadata and checkpoint configuration identify the corrected swept law.
+- **F08.** Quarantine compares existing bytes before copying. Each snapshot slot
+  has eight bounded names, including its historical unsuffixed name. Identical
+  corruption reuses preserved bytes, distinct corruption uses an available name,
+  and copies require successful write and explicit readback. Exhaustion or failed
+  preservation keeps the recovered history read-only. The deletion-fence purge
+  enumerates the same names. Tests cover repeated, distinct and empty damage,
+  healthy commits, competing ownership, interrupted preservation, exhaustion and
+  later history deletion.
+
+An independent read-only review identified and resolved a sampled-test setup
+error, hard-mode separating-depth handling and empty-file readback ambiguity.
+Terra review workers did not initialize; the completed review used the session's
+available model.
+
+The frozen Windows baseline completed 41 lake-session checks with exactly the
+two new F06/F07 expected-survival assertions failing. Its checked report has no
+engine errors or warnings. The original F08 witness also reproduces on the
+unchanged baseline store in an isolated Linux/WSL project. The corrected store
+passes 209 checks through the checked runner on that private Linux runner.
+
+The standard companion rebind compares all nine retained tapes against the
+complete accepted source baseline. All 2,881 CSV rows per tape remain
+byte-identical. The generated receipt renews the profile from `a81c2b2d` to
+`4ff26331`. The profile consumer passes 52 checks. [Companion comparison](../ai-companions/AFC-02/rebinds/2026-11-15-a81c2b2d-to-4ff26331.json).
+
+The [verification record](remediation/verification.json) retains source identities,
+checked report/log pairs and compressed fleet captures. The corrected candidate
+passes the lake collision regression, 47 lake-session checks, 38 sampled-contact
+checks and 207 deletion-boundary checks. The fleet policy passes 598 checks and
+its Python campaign tests pass 66 tests.
+
+Both baseline and candidate fleet captures pass 170 checks. All eight baseline
+rows reproduce the existing Linux pins. The [452-check typed comparison](remediation/fleet-comparison.json)
+preserves row, refusal, physical frame, setup, outcome and ownership data. Only
+the embedded checkpoint configuration changes. The active V5 live-configuration
+pins record that change. The original and candidate capture bytes are preserved
+in `baseline-fleet.json.gz` and `candidate-fleet.json.gz`; decompress each into a
+fresh scratch path before rerunning the retained `compare_fleet.gd` recipe.
+
+The [publication source renewal](remediation/publication-rebind.json) verifies all
+eight Windows/Linux baseline/candidate captures from [the capture workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43742060049).
+The strict packer preserves every retained shaft/weather frame and event array.
+The promoted fixture has SHA-256 `7b51caf56d64d8944fab076e4a2faa85cbc14ff66e22c1512359eda9cb055e50`.
+Its Linux adoption tests pass 214 shaft and 313 weather assertions. GitHub retains
+the complete CI results for the integration commit.
+
+Shared-pool attempts retain cold-import timeout, disk-exhaustion and transport
+diagnostics. A private WSL runner provides the isolated Linux fallback. These
+checks establish the stated software scopes. The X99 limits retain their
+estimated physical provenance.
 
 ## Other ideas and negative findings retained
 

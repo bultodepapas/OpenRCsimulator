@@ -19,13 +19,16 @@ is a source review, not a fresh execution of those engine witnesses. The A34
 rows below retain their bounded implementation evidence: version-2 lock recovery
 does not automatically reclaim legacy locks, and selected-resource and layered
 cache fixes do not close all shared-resource or cache-transition qualification.
-A35's distinct F06–F08 remain in the [pending queue](CONSOLIDATED-AUDITS.md),
-not in this completed ledger.
+A35's F06–F08 repairs now have fresh baseline reproductions and candidate
+regressions in the [remediation follow-up](../docs/research/project-audit-2026-11-09/README.md#a35-remediation-follow-up).
 
 ## Implemented corrections
 
 | Source / ID | Delivered behavior | Evidence / limits | Original report |
 | --- | --- | --- | --- |
+| A35 / GP-10b F06 | Swept lake and bank normals use the positive-down surface gradient. | Plane, wave, angular-velocity and accepted Stik tick regressions pass. [Remediation evidence](../docs/research/project-audit-2026-11-09/README.md#a35-remediation-follow-up). | [Round-two original](../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf) |
+| A35 / GP-10b F07 | Both swept mass paths receive prepared aircraft energy/depth policy, including separating and final crush decisions. | Default/X99 boundaries and the stopped-propeller tick pass. The X99 limits retain estimated physical provenance. [Remediation evidence](../docs/research/project-audit-2026-11-09/README.md#a35-remediation-follow-up). | [Round-two original](../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf) |
+| A35 / UI-FS-03 F08 | Identical damaged snapshots reuse verified quarantine bytes. Distinct damage uses bounded additional copies, included in deletion-fence cleanup. | 209 store and 207 deletion-boundary checks cover repeated, empty and distinct corruption, ownership, interruptions, exhaustion and later deletion. [Remediation evidence](../docs/research/project-audit-2026-11-09/README.md#a35-remediation-follow-up). | [Round-two original](../docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf) |
 | A34 / D8b-R2d-R1 | Stall progression returns smoothly to the geometric-angle polar; force, wake, clean-flap and native consumers agree. V4 identity protects exact restore, with explicit same-state candidate comparison. | [218 seam/continuation checks, 4,391 log checks and retained baseline/candidate tapes](../docs/research/aero-consistency/reverse-flow-2026-11-09/README.md); 593,941 exact native component comparisons. Native fleet/package/full CI and physical validation remain open. | [A34](five-findings-audit-45d86d2.md) |
 | A34 / UI-FS-03 | Validated JSON numbers and a versioned process-held lease permit safe local Windows/Linux writer recovery; uncertain ownership remains read-only. | [Storage contract and limits](../docs/FLIGHT-STATISTICS.md#storage-and-implementation-boundaries): 84 cross-process checks on each host, including killed writer, competing recovery and live exclusion. Legacy/incomplete records and unsupported scopes still need manual recovery. | [A34](five-findings-audit-45d86d2.md) |
 | A34 / SC-24-R1 | Scene detail and GPU recommendations no longer select the physical obstacle course. Low keeps visible collidable props; circuit Automatic is consistently Off, explicit On remains a scenario choice. | [Current scenery contract](../docs/SCENERY-PLAN.md), collision/contact invariance and native Windows 1920×1080 people/tractor review. Broader hardware performance remains open. | [A34](five-findings-audit-45d86d2.md) |

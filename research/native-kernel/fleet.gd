@@ -85,21 +85,22 @@ const RUNWAY_LIVE_CONFIG_V3 := {
 		"ideal": {"on": "eba55a47f7129469446a2f123e89c769d707b21919b0eb337df7bb85050e1d47",
 			"off": "1cd1f331c71a27b5ead12a4f84220351b9cdf1bed9cf36a2a70303c1f5e341da"}},
 }
-# Linux beta2 reference observations after the v4 aero-law identity and collision-world
-# changes, with the Avanti pins refreshed for AV-17-R4. The v3 pins are historical;
-# an observed refusal is still not a flight.
-const RUNWAY_LIVE_CONFIG_V4 := {
+# Linux beta2 reference observations after A35 adds the swept-lake law to checkpoint
+# configuration. The 452-check comparison retains exact frame, setup, outcome and
+# ownership fields; only the embedded checkpoint identity changes. Earlier v4 values
+# remain in the retained baseline capture and comparison receipt.
+const RUNWAY_LIVE_CONFIG_V5 := {
 	"p51d-mustang-120": {"ideal": {
-		"on": "59f263f57edd0b2ec2295c0516cc0bebda4aca1c92bed0ea9bcfb7c49d73ddf8",
-		"off": "99bb750afd144ff53351cb1f385956b81ad19b43b7e74b8dad8f301fdbc4cfbb"}},
+		"on": "a1d4248ffbd9a9f617e741d90cf3c28626777461d09f94606cdd35e2e485ff9b",
+		"off": "ce933bc6c4f293b9b8d7d3c7c3c210c78fbd01e13906b48c962970a466eb2fc0"}},
 	"sebart-avanti-s-a200-p100rx": {"ideal": {
-		"on": "608ea5ba0dec238cda690638be83e4ca6171de957bd62c55392cd4916e407e12",
-		"off": "15f9d0f9f73c36a3653a542dbfac293d445ec5ab5ad615361f533c73e57d303d"}},
+		"on": "6178d22dba58b33113e8b219c71870032d7e84c88d0e1d944d947f70dfd0aeff",
+		"off": "efde27dc48477d96a7449274cf41b69a732f67901f7770b7399fe365c3972e8e"}},
 	"turbo-lumber-evolution": {
-		"pack": {"on": "0f9ad0647542f3f9ef12796d9fb37574fc4d81f6ef29b822bc1c5f8439d9d7c8",
-			"off": "24e28bc0b02491b597c3ab873bca4b25998434c0652a979833ceebc320bb4807"},
-		"ideal": {"on": "9a8e7a58a156a46dd9280b7d7b441ed4fe16e77c5b5f8a8e88e488e7cb80d7cf",
-			"off": "3eef9a988d3c6e0c7718145e2527cceb186a6cf79d81c83470bee94c82a522c0"}},
+		"pack": {"on": "845076db346bba7440fc2802c9d673778fb45c0a5bfdb5e880d843c265520fe5",
+			"off": "096457f94ae817a86ca24be13b1b97e1114f0dd7d644d7454cfcabbe722ff860"},
+		"ideal": {"on": "98716ffa02b686af9995a357d67ef3c267de6d51e030456637ca68b35ca4fa91",
+			"off": "cf278c88606b2dd7ebba1923a896d18ec525fc6e8fa6d467099c0ff3324798bc"}},
 }
 const TRIM_START_REFUSAL := "reset failed: trim: reference-speed trim already requires more than the requested throttle"
 const TRIM_START_BOUNDARIES := {
@@ -880,7 +881,7 @@ static func _fleet_start_proof_valid(row: Dictionary, proof: Variant, requested:
 	var live_hex: Variant = proof.get("live_config_bytes_hex")
 	var expected_live: String = spec.live_config_sha256["on" if row.soft_hull else "off"]
 	if runway:
-		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V4.get(row.aircraft, {})
+		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V5.get(row.aircraft, {})
 		var battery_pins: Dictionary = aircraft_pins.get(row.battery, {})
 		expected_live = str(battery_pins.get("on" if row.soft_hull else "off", ""))
 	if typeof(live_hex) != TYPE_STRING or live_hex.is_empty() or live_hex.length() > 1048576 \
