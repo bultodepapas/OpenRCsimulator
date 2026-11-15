@@ -1366,10 +1366,35 @@ Native integration draft `90c1e2e3fc1d00da5df28ea49be7ce039abe8e65`
 native and engine toolchain profiles for Apple clang 2100.4.1.1 / SDK 27.2.
 The legacy profile remains the default. All 189 focused portable controls passed
 on ANGEL after fixture paths were resolved before constructing their identities;
-the initial `/var` versus `/private/var` fixture failures are retained. No native
-compiler success or default promotion follows from those controls. The proposed
+the initial `/var` versus `/private/var` fixture failures are retained. The proposed
 package-specific automatic-admission route remains disabled and lacks its final
 producer, packaged consumers/replay and performance qualification.
+
+A separate source correctness suite subsequently passed on the same M1 with the
+official ARM64 editor and explicitly selected native clang 2100.4.1.1 / SDK 27.2,
+in 1,345.75 seconds. Both native builds completed with local ad-hoc signatures;
+all 17 positive oracle rows passed and the separate mutation control was detected.
+FPCR and native array-domain guard controls passed. Production-path native stage, lifecycle and exact
+replay passed 97, 343 and 190 checks, with explicit native execution markers.
+The candidate dylib SHA-256 is
+`06f301e2c1a40d6a58c0e7de57882df263adcdc90f19cd93c317eab5a02b306c`.
+This is official-engine source correctness, not custom-engine, fleet, performance
+or automatic-default qualification. The initial official standalone-executable
+copy was killed by macOS; the admitted run copied and verified the complete
+signed bundle before adding its isolated editor marker. The task environment
+also needed the existing pinned psutil 7.2.2 dependency; earlier failed attempts
+are retained.
+
+The real `NativeStage._macos_package_source_error` consumer also passed a bounded
+19-check receipt fixture on M1: the independently verified package/row was
+accepted and a changed row, unverified package and wrong kind were refused.
+Its other parse dependencies are explicit stubs; no extension or release-template
+execution is claimed. The Windows MCP attempt failed before source freezing,
+and the CLI fallback froze its source but waited for an offline authority. Those
+attempts do not establish a Windows test pass. Phase 13 retains 175 payloads,
+7,699,113 compressed bytes, SHA-256
+`752146aba405bf03ec33a8fffb92c3e0b0880dad78755b50b70e821f898619d8`;
+every retrieved payload hash matched independently.
 
 The actual clean19 custom-engine intake then refused its API compatibility
 control. The official engine detected only the deliberately missing class;
@@ -1382,6 +1407,16 @@ custom-engine/native-physics correctness until the upstream ABI is restored and
 the new editor/template pair passes the unchanged validator. The earlier clean19
 scaler/SDK observations remain scoped to that engine; they do not prove native
 extension compatibility.
+
+Additive patch `0021-metal-rt-extension-abi.patch` is prepared after frozen
+0001–0019, excluding optional 0020. It restores actual unsigned-facing methods
+and routes wide script/ptrcall integers through the existing checked paths.
+Five source/catalog controls passed; the unchanged complete official API
+validator and native dispatch/RT rejection witnesses remain required. Fresh
+editor/template builds are in progress, using the existing intake/build helper;
+no rebuilt-pair, ABI repair or custom-native pass is claimed here. The separate
+pair/ZIP binding producer passed 13 synthetic controls and independent source
+review; actual export consumption and final package integration remain pending.
 
 ## Evidence retention and open gates
 

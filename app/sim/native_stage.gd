@@ -457,10 +457,41 @@ static func _macos_verified_package_snapshot() -> Dictionary:
 	if not native.get("ok", false) or not native.get("reference_identity") is Dictionary: return {}
 	if not FileAccess.file_exists(NativePackage.MAC_NATIVE_MANIFEST_PATH): return {}
 	var reference: Dictionary = native.reference_identity
+	if not NativePackage.macos_process_reference_error(reference).is_empty(): return {}
 	var manifest_sha := FileAccess.get_sha256(NativePackage.MAC_NATIVE_MANIFEST_PATH)
 	var identity := MacosPackageAdmission.package_identity(native, reference, manifest_sha)
 	if identity.is_empty(): return {}
 	return {native = native, reference = reference, identity = identity}
+
+
+## A replay may inspect a verified package before it has loaded a stage. Once
+## loading has been attempted, its identity must also match the process cache.
+## Recording and the final replay check require an already loaded stage.
+static func macos_package_replay_identity(require_loaded := false) -> Dictionary:
+	var unavailable := {kind = "unavailable", sha256 = "unavailable-export"}
+	if OS.get_name() != "macOS" or not OS.has_feature("template_release") \
+			or Engine.get_architecture_name() != "arm64": return unavailable
+	if _library_checked and not _library_error.is_empty(): return unavailable
+	return _macos_replay_identity_from_snapshot(_macos_verified_package_snapshot(),
+		_macos_loaded_package_identity, require_loaded or _library_checked)
+
+
+## Only the production package readers construct snapshot. Kept separate so a
+## disposable fixture can exercise the real receipt readers and replacement.
+static func _macos_replay_identity_from_snapshot(snapshot: Dictionary, loaded: Dictionary, require_loaded: bool) -> Dictionary:
+	var unavailable := {kind = "unavailable", sha256 = "unavailable-export"}
+	var native: Variant = snapshot.get("native")
+	var current: Variant = snapshot.get("identity")
+	if not native is Dictionary or not current is Dictionary or current.is_empty(): return unavailable
+	if (require_loaded or not loaded.is_empty()) \
+			and not MacosPackageAdmission.loaded_identity_error(loaded, current).is_empty(): return unavailable
+	if not native.get("manifest") is Dictionary: return unavailable
+	var row := _platform_row(native.manifest.get("native_receipt"), "macos")
+	if row.is_empty(): return unavailable
+	return {kind = native.kind, sha256 = native.sha256,
+		stage_backend = {backend = BACKEND_NATIVE, backend_version = row.backend_version,
+			abi_version = int(row.abi_version), binary_sha256 = row.binary_sha256,
+			source_sha256 = row.source_sha256, lock_sha256 = row.lock_sha256}}
 
 
 ## Package promotion remains disabled until an independent producer validates

@@ -2,6 +2,7 @@ extends Node
 ## Lightweight entry: the official mark renders before the shell's large preload graph.
 
 const Languages := preload("res://i18n/languages.gd")
+const NativePackage := preload("res://app_state/native_package.gd")
 const APP_SCENE := "res://app_root.tscn"
 const Intro := preload("res://ui/brand_intro.gd")
 const SceneLoad := preload("res://ui/flight_scene_load.gd")
@@ -31,6 +32,12 @@ var _handoff_app: WeakRef
 var _handoff_process_mode: Node.ProcessMode = Node.PROCESS_MODE_INHERIT
 var _home_milestone := 0
 var _home_stage := ""
+
+
+func _enter_tree() -> void:
+	# Pin the process receipt before the intro or deferred application handoff.
+	# This is a bounded receipt read only on a macOS release template.
+	NativePackage.pin_macos_process_receipt()
 
 
 func _ready() -> void:

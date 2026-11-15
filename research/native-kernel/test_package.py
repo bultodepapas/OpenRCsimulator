@@ -460,6 +460,10 @@ class MacPackagePortableTests(unittest.TestCase):
                 "--research-engine-reference-godot", str(self.root / "official"),
                 "--research-engine-patch", str(self.root / "0001.patch"),
                 "--research-engine-toolchain-profile", selected_engine,
+                "--pair-template-intake", str(self.root / "template-intake"),
+                "--pair-receipt", str(self.root / "pair.json"),
+                "--pair-export-template", str(self.root / "export.zip"),
+                "--pair-binding-pins", str(self.root / "binding-pins.json"),
                 "--toolchain-profile", selected_kernel]
         for command, extra, function in (("prepare-macos", [], "prepare_macos"),
                                          ("stage-macos", ["--bundle", str(self.root / "OpenRC.app")], "stage_macos")):
@@ -471,6 +475,9 @@ class MacPackagePortableTests(unittest.TestCase):
                 selection, profile = called.call_args.args[-2:]
                 self.assertEqual(selection["toolchain_profile"], selected_engine)
                 self.assertEqual(profile, selected_kernel)
+                self.assertEqual(called.call_args.kwargs["pair_selection"], {
+                    "template_intake": self.root / "template-intake", "pair_receipt": self.root / "pair.json",
+                    "export_template": self.root / "export.zip", "pins": self.root / "binding-pins.json"})
 
     def test_mac_verified_install_rejects_changed_receipt_or_library(self):
         library = self.install / "libopenrc_native_kernel.dylib"
