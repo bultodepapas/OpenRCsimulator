@@ -1145,8 +1145,8 @@ Its archive and every payload matched after retrieval.
 At that commit, the Linux MetalFX workflow passed all 21 scripts / 141 controls,
 as did a fresh Windows sparse clone; the Windows queue workflow passed. Full
 CI exposed controller failures inherited from its main-line base and 600-second
-cold-import timeouts on macOS and Windows. These remain under repair; the full
-required workflow has not passed.
+cold-import timeouts on macOS and Windows. The repairs below are prepared for a
+new required workflow; the full workflow has not passed.
 
 The six repaired controller fixtures subsequently passed on M1 with the official
 editor. They update test contracts without changing the controller runtime:
@@ -1165,8 +1165,18 @@ identical named numerical/provenance fields on M1 with unchanged aircraft and
 project bytes. The comparison receipt is
 `5added5e9ccc592bb048ff2c21e954d2d571f1be849220ca2a9888d83f2d99cc`.
 The original guard passed and the candidate correctly refused its three
-historical-source leaves. Guard renewal and fresh mutation controls remain
-pending; numerical equality alone does not waive provenance.
+historical-source leaves. The isolated renewal then passed both tools; fresh
+physics-comment and project-version mutations were refused by both, and restored
+checks passed. Its receipt is
+`9e142a9afe162916fe525dcb7dc148e77cc114872f1e767a48bbfbcd4196dd33`.
+The [D11g qualification](../../aero-consistency/D11g/README.md) owns this narrow
+source qualification. Aircraft data, project settings and physics remain unchanged.
+
+The phase-8 archive retains 93 further text reports and scripts, 8,056,127
+compressed bytes, SHA-256
+`d42962b62d0194a5b5905508106b8c5552fb4211bad3dac8ce74861f145b5a28`.
+The archive and every payload matched after retrieval. This includes the native
+renewal, controller checks and capture logs, including failed preliminary attempts.
 
 ## Evidence retention and open gates
 
@@ -1217,8 +1227,8 @@ not retroactively included in that archive.
 Remaining: required CI on the stable integrated candidate, independent Temporal-history
 image/lifecycle qualification beyond the bounded reset fixtures, FG scene inputs
 and end-to-end presentation, a real engine RT/denoised consumer, moving-image/1080p
-workload comparisons, physical latency, lifecycle/endurance and an R2 source-bound
-development package. Newer hardware remains useful for independent qualification;
+workload comparisons, physical latency and lifecycle/endurance. The R2 source-bound
+development package is retained above. Newer hardware remains useful for independent qualification;
 M1 denoised scene/product qualification remains open despite the native binding
 witness. Public Developer ID distribution remains deferred. Normal reconstruction
 defaults are unchanged.

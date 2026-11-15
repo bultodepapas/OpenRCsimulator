@@ -118,6 +118,28 @@ imports shared an XDG profile isolated from the user's profile. This renewal did
 not rerun the Windows reconstruction; release CI and native checks remain
 separate evidence.
 
+### 2026-11-15 macOS inventory renewal
+
+On macOS arm64 with pinned Godot 4.8 beta2, isolated projects compared baseline
+`bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c` and candidate
+`f5219d7d682a7f2470bbf2af88c2cf64c1fe7833`. Of 149 qualified inputs, 148
+matched; `app/physics/multirotor/flight_controller.gd` contains a substantive
+inherited controller source-readiness change. The new complete normalized
+aggregate is `57453acc5a6c1a1cda23bac423467ef172cabdec0001e503e91e56e2a2da6653`.
+
+The baseline generator passed, while the unrenewed candidate refused exactly
+three historical-source checks. Aircraft input, trim, unrounded and rounded
+derivatives, sensitivity rows and generated provenance matched exactly. After
+the two inventory guards were renewed, the generator and updater passed. Both
+rejected historical provenance after separate physics-comment and project-version
+mutations; the updater used a fresh report for each. Both mutations were restored
+and the checks passed again. Aircraft
+bytes and historical source strings remained unchanged. The
+[qualification receipt](2026-11-15-macos-inventory-renewal.json) binds the
+reports, logs and retained evidence archive. This M1 result establishes sampled
+model consistency only; it does not establish general equivalence or physical
+validation.
+
 This establishes model consistency only for these inputs and sampled conditions, not general equivalence of the laws or physical validation. The original 2026-10-07 values and checks below describe the earlier D11g decision, not the present R02 values.
 
 ## Decision

@@ -1,0 +1,329 @@
+{
+  "format": "openrc-d11g-historical-provenance-requalification-v1",
+  "date_local": "2026-11-15",
+  "baseline_commit": "bdeb1a0a354207a18d2f0b6f11f17ca1fcf9953c",
+  "baseline_tree": "7fbe05c2831d30822238ce23e9a5e7604c5f7930",
+  "candidate_commit": "f5219d7d682a7f2470bbf2af88c2cf64c1fe7833",
+  "candidate_tree": "35e5a8cf082f01c48d603820fb2f1d48c908e8f7",
+  "scope": "Sampled model consistency for these exact inputs only; no general solver equivalence or physical validation. The multirotor controller difference is substantive inherited behavior, not a metadata-only change.",
+  "platform": "macOS arm64 on M1; no Windows or Linux reconstruction in this comparison",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "executable_sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80",
+    "original_and_clone_codesign_deep_strict_exit": 0,
+    "renewal_before_after_codesign_deep_strict_exit": 0
+  },
+  "inventory": {
+    "baseline_count": 149,
+    "candidate_count": 149,
+    "baseline_sha256": "66bf3b51214237e1a1d0dca77014f8b7c1276c8f23248694420406e625ef4255",
+    "candidate_sha256": "57453acc5a6c1a1cda23bac423467ef172cabdec0001e503e91e56e2a2da6653",
+    "unchanged": 148,
+    "changed": {
+      "app/physics/multirotor/flight_controller.gd": {
+        "before": "8f8677532c1c5165b7948095f2a58dc5b3f2cec62c6de290d8e73fd925444a11",
+        "after": "e8d23dc43a82145a650b50da27e846d86fbaa0cb5ceafdb4f704dcc16ebf8e4c"
+      }
+    }
+  },
+  "aircraft_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+  "normalized_aircraft_input": {
+    "excluded_leaves": [
+      "aero.coefficients.Cmq.value",
+      "aero.coefficients.Cmq.source",
+      "aero.coefficients.CLq.value",
+      "aero.coefficients.CLq.source",
+      "aero.coefficients.Cnr.value",
+      "aero.coefficients.Cnr.source"
+    ],
+    "ok": true,
+    "scheme": "utf8-source-text-v1",
+    "sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+  },
+  "numerical_and_provenance_result": {
+    "schema": "d11g-rate-derivatives-v2",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "law": "section-plane-source-weighted-wake-velocity-v4",
+    "engine_hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "condition": {
+      "central_difference_step_rad_s": 0.05,
+      "controls": "neutral",
+      "density_kg_m3": 1.225,
+      "speed_mps": 15.0,
+      "trim_alpha_deg": 4.195979159664104,
+      "trim_alpha_rad": 0.07323365168120345,
+      "wake": "settled instantaneous Aero.wing_wake_velocity output; no ground effect"
+    },
+    "about_cg": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -7.928815588194173,
+      "Cnr": -0.1335802424533328
+    },
+    "about_arp": {
+      "CLq": 2.3574257732845374,
+      "Cmq": -8.082101784164095,
+      "Cnr": -0.13604012801947268
+    },
+    "rounded_4_significant_digits": {
+      "CLq": 2.357,
+      "Cmq": -8.082,
+      "Cnr": -0.136
+    },
+    "alpha_sensitivity_about_cg": [
+      {
+        "CLq": 2.465798153025895,
+        "Cmq_about_cg": -7.882827840819535,
+        "Cnr_about_cg": -0.13681305590437906,
+        "alpha_deg": 0.0
+      },
+      {
+        "CLq": 2.4103239493708846,
+        "Cmq_about_cg": -7.895873160074377,
+        "Cnr_about_cg": -0.1354648138993857,
+        "alpha_deg": 2.0
+      },
+      {
+        "CLq": 2.3617900208368128,
+        "Cmq_about_cg": -7.925095563963791,
+        "Cnr_about_cg": -0.13376507955880204,
+        "alpha_deg": 4.0
+      },
+      {
+        "CLq": 2.3206741895900262,
+        "Cmq_about_cg": -7.970108277446484,
+        "Cnr_about_cg": -0.1317326595812141,
+        "alpha_deg": 6.0
+      }
+    ],
+    "provenance": {
+      "CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
+      "Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+      "Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v4 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+    },
+    "normalized_input": {
+      "excluded_leaves": [
+        "aero.coefficients.Cmq.value",
+        "aero.coefficients.Cmq.source",
+        "aero.coefficients.CLq.value",
+        "aero.coefficients.CLq.source",
+        "aero.coefficients.Cnr.value",
+        "aero.coefficients.Cnr.source"
+      ],
+      "ok": true,
+      "scheme": "utf8-source-text-v1",
+      "sha256": "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+    }
+  },
+  "comparison": {
+    "fields_equal": {
+      "about_arp": true,
+      "about_cg": true,
+      "alpha_sensitivity_about_cg": true,
+      "condition": true,
+      "normalized_input": true,
+      "provenance": true,
+      "rounded_4_significant_digits": true
+    },
+    "baseline_and_candidate": {
+      "baseline": {
+        "generator_exit": 0,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "derivation_sha256": "08224fbebcd77c162825b0032fe62020c7f89a69e92ffa476aba2ff48dad1032",
+        "checked_report_sha256": "bfdfa152a498c5988dc18813b65bc93b9ba84e0ac277ff2042d2922c83076c52",
+        "engine_log_sha256": "704d8bd415856a48883b9407ffd7612785dcdfc17a1cb96e78f63045e4a1eb06"
+      },
+      "candidate": {
+        "generator_exit": 1,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "derivation_sha256": "4a8b5bd1ca3ec7cf16fd41a8a2ae79c4504249da66394a6d745cef93b8a990e7",
+        "checked_report_sha256": "9898c9a25efe120dd3f2e71aa3059353d6cacab93ce94c2ba62c4045f29ea2b5",
+        "engine_log_sha256": "3a6f497f43b831b31a60d04ee53de0c1ffb82562152bb7d66f383672c3859c31"
+      }
+    },
+    "initial_candidate_issues": [
+      "aero.coefficients.Cmq.source does not match current or qualified historical provenance",
+      "aero.coefficients.CLq.source does not match current or qualified historical provenance",
+      "aero.coefficients.Cnr.source does not match current or qualified historical provenance"
+    ]
+  },
+  "renewal": {
+    "guard_source_sha256_lf": {
+      "research/aero/d11g/apply_rate_derivatives.py": {
+        "after": "318b949cf55f742537cf461d362be4c0b8179d16a7790026ed1f79c6a073d7b7",
+        "before": "d10834309635b7f8adf50c1f06afa26879e391b6df7450909361ed8d9634f474"
+      },
+      "research/aero/d11g/derive_rate_derivatives.gd": {
+        "after": "59ccfc5b089a3d598476fd332304f53fc1c44d39a82ca3eeed77eaa29e7f37d7",
+        "before": "9c0412994b1d96f4db5ca780827ff239937551f1fbb888e2d764c442dc29498a"
+      }
+    },
+    "checks": {
+      "positive": {
+        "generator_exit": 0,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "derivation_sha256": "05eb72de3183b587bc58afc598cb6c0a9ec1454c643fd115d36615d1cbf9f563",
+        "checked_report_sha256": "994540b066cbcf4aa00c3d3c13c1d3517438895499d4746776fb63dc42475d5d",
+        "engine_log_sha256": "a11c2b72efc9d766874a554f4eb82cfd5017696eb5a3d150d4b669a1b5d03a6c",
+        "updater_exit": 0,
+        "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48",
+        "generator_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-evidence-r3/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/app",
+          "--audio-driver",
+          "Dummy",
+          "--log-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/positive-godot.log",
+          "--script",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/Renew-route-wrapper.gd",
+          "--",
+          "--json",
+          "--check",
+          "--report-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/positive-derivation.json"
+        ],
+        "updater_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/venv/bin/python",
+          "-B",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/research/aero/d11g/apply_rate_derivatives.py",
+          "--report",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/positive-derivation.json",
+          "--check"
+        ]
+      },
+      "physics-comment": {
+        "generator_exit": 1,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "derivation_sha256": "fb28bd1b06e0a50fd4fb12de07e6120ed39b40e92a86a780eb6f2f1bc48c37b4",
+        "checked_report_sha256": "ab0a7fd94268a830efb555798b8cb877644c4c57915a8f7d8ab3fe8b204dbf52",
+        "engine_log_sha256": "a11c2b72efc9d766874a554f4eb82cfd5017696eb5a3d150d4b669a1b5d03a6c",
+        "updater_exit": 1,
+        "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+        "generator_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-evidence-r3/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/app",
+          "--audio-driver",
+          "Dummy",
+          "--log-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/physics-comment-godot.log",
+          "--script",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/Renew-route-wrapper.gd",
+          "--",
+          "--json",
+          "--check",
+          "--report-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/physics-comment-derivation.json"
+        ],
+        "updater_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/venv/bin/python",
+          "-B",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/research/aero/d11g/apply_rate_derivatives.py",
+          "--report",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/physics-comment-derivation.json",
+          "--check"
+        ]
+      },
+      "project-version": {
+        "generator_exit": 1,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "derivation_sha256": "5a2164b85b1bf03b4e4192919ea336d97aa525df4dc50c9ae2d83c3547c244a4",
+        "checked_report_sha256": "eebc466c1902146e37893baa2115740501fd399d40e6869c63818b87ecf8c6fd",
+        "engine_log_sha256": "a11c2b72efc9d766874a554f4eb82cfd5017696eb5a3d150d4b669a1b5d03a6c",
+        "updater_exit": 1,
+        "updater_log_sha256": "b9007db122fa2c07e03de79e2564e7328a55b6a1f1b275e62d11497ff74acd22",
+        "generator_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-evidence-r3/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/app",
+          "--audio-driver",
+          "Dummy",
+          "--log-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/project-version-godot.log",
+          "--script",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/Renew-route-wrapper.gd",
+          "--",
+          "--json",
+          "--check",
+          "--report-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/project-version-derivation.json"
+        ],
+        "updater_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/venv/bin/python",
+          "-B",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/research/aero/d11g/apply_rate_derivatives.py",
+          "--report",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/project-version-derivation.json",
+          "--check"
+        ]
+      },
+      "restored": {
+        "generator_exit": 0,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "derivation_sha256": "05eb72de3183b587bc58afc598cb6c0a9ec1454c643fd115d36615d1cbf9f563",
+        "checked_report_sha256": "e0bb41b982141f45519e6037d0ae7be1adf52f08afa8d1260e445d468b75c0ea",
+        "engine_log_sha256": "a11c2b72efc9d766874a554f4eb82cfd5017696eb5a3d150d4b669a1b5d03a6c",
+        "updater_exit": 0,
+        "updater_log_sha256": "d20d0e4e15251e715aad36752a4182e87ac2d65bba6f9a3d4be347a452fb5b48",
+        "generator_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-evidence-r3/Godot.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/app",
+          "--audio-driver",
+          "Dummy",
+          "--log-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/restored-godot.log",
+          "--script",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/Renew-route-wrapper.gd",
+          "--",
+          "--json",
+          "--check",
+          "--report-file",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/restored-derivation.json"
+        ],
+        "updater_command": [
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/venv/bin/python",
+          "-B",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-source-r1/research/aero/d11g/apply_rate_derivatives.py",
+          "--report",
+          "/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/d11g-qualified-evidence-r1/restored-derivation.json",
+          "--check"
+        ]
+      }
+    },
+    "physics_mutation": "A disposable comment in app/physics/multirotor/flight_controller.gd.",
+    "project_mutation": "A disposable config/version change from 0.2.8 to 0.2.9.",
+    "mutations_restored": true,
+    "aircraft_and_historical_provenance_changed": false,
+    "source_postflight": "verified_unchanged",
+    "source_postflight_scope": "The 149 inventoried inputs, the two guards, aircraft, checked runner, override, physics path set and source HEAD/tree; not a new full-tree byte scan."
+  },
+  "evidence": {
+    "archive": "tmp/metalfx-20261114/retained-phase8-m1b.tar.gz (ignored local evidence; not committed)",
+    "archive_sha256": "d42962b62d0194a5b5905508106b8c5552fb4211bad3dac8ce74861f145b5a28",
+    "comparison_receipt_member": "d11g-evidence-r3/runner-receipt.json",
+    "comparison_receipt_sha256": "5added5e9ccc592bb048ff2c21e954d2d571f1be849220ca2a9888d83f2d99cc",
+    "renewal_receipt_member": "d11g-qualified-evidence-r1/renewal-receipt.json",
+    "renewal_receipt_sha256": "9e142a9afe162916fe525dcb7dc148e77cc114872f1e767a48bbfbcd4196dd33",
+    "comparison_runner_sha256": "c6c066cbb9947a2d7a85a2850641ab9de0f739d1ee582d15585c14d43e11b2c4",
+    "renewal_runner_sha256": "8e40cad7509603f4df59ac46b1732e7129511854cb4dc0f6c04114d46759adfe",
+    "source_packet": {
+      "delta_sha256": "2fb943c157670c519b961da246fc965f7e1f9cfd66b6b35a9f198c3f8872f0ad",
+      "manifest_sha256": "d6decb0c3f54e26c24cd262c665093250699873312b972608633b8293c2cb48b",
+      "tree_pack_sha256": "ebf1f1f9abce6ccbf790e0d3dcac23b2a4c27b0520f58802ec550b234ee5650a"
+    },
+    "source_postflight": "verified_unchanged",
+    "import_cache_sha256": "e132f9a4fc5a9e2e344859b81a917a1508bea440436d5093e3dbe53d8081cd8e",
+    "editor_import_run": false
+  }
+}
