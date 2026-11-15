@@ -82,8 +82,10 @@ its source-bound receipt and smokes do not repair that admission limitation.
 A bounded native Settings trial now preserves the confirmation window through
 an injected main-thread stall, and the focused Settings consumers pass. A corrected
 source-bound ARM64 development package also passes fixed-session and bounded
-rendered smokes. That package predates the latest camera-cut correction. Cold
-compilation and full required CI remain unqualified.
+rendered smokes. The newer R3 local package is bound to `bffe0ed522efc4e0ab7336ef60d401c4cf4d712d`
+and includes the camera-cut correction. That candidate's required CI passed,
+including visual captures and macOS ARM64 source correctness. Cold startup and
+the custom-engine native-physics package remain unqualified.
 
 In the tested direct-start run, Temporal kept its selection on M1. Camera cuts are coalesced
 until the final camera pose, including crash focus, before the next draw. Only a
@@ -97,6 +99,13 @@ on the GPU. This was one sky-heavy scripted sample per mode, with physics/input
 disabled and different Temporal AA. It does not qualify active-flight quality,
 sustained 60 FPS, presentation or latency. The implementation evidence preserves
 the earlier Native fallback, exact sources, raw results and remaining gates.
+
+The custom-engine/native-physics preflight found a separate blocker: patch 0005
+widens existing RT method integer metadata from the official engine's uint32/uint8
+to int64. The native intake correctly refuses those API incompatibilities. Restore
+the upstream binding contract and retain checked Metal bounds before rebuilding
+and repeating native correctness. Do not suppress the validator diagnostics or
+promote the current reference-physics research package to native by declaration.
 
 Completion has three distinct levels per technology:
 

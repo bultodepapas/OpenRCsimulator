@@ -1324,6 +1324,65 @@ renewal restores exact editor-import project bytes before runtime and isolates
 both imports and tests; the first continuation lacked editor-import isolation
 and is not admitted. Its canonical AFC receipt records the bounded qualification.
 
+## R3 package, warm product trial and native intake follow-up
+
+The [required CI run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43727815769)
+for `bffe0ed522efc4e0ab7336ef60d401c4cf4d712d` completed with 21 successful jobs
+and five conditional skips. The final visual captures and `CI required` gate
+passed. This qualifies that source's required checks, not every MetalFX product
+or the later private native-integration candidate.
+
+The R3 local ARM64 development ZIP includes that source and camera-cut fix:
+1,643,422,544 bytes, SHA-256
+`cd1f081c72343a3f260f36c2f6e74349dc009e05bbfeb646f09e4ceaece89ff7`.
+The retrieved ZIP matched independently. Export, local signature/source receipt,
+fixed-session and rendered Metal smokes passed. Its custom engine still uses
+reference physics. The smoke requested a 1920×1080 window but did not establish
+actual pixels; use the separate measured screen above for its scoped pixel proof.
+
+An unwrapped release Temporal startup completed without engine errors and kept
+the requested mode, but remained menu-paused with zero simulation ticks. Its
+active-simulation acceptance failed. It took 330.9 seconds; a two-second native
+stack sample observed render-pipeline compilation and a main-thread worker wait.
+That sample does not attribute the whole delay to compilation. Cold startup,
+active-flight execution and GPU completion are not established by this attempt.
+
+A separate warm-cache, source-hosted product trial advanced simulation ticks
+24 → 351, paused through the normal menu at 652, and resumed to 944. Two GPU
+snapshots matched viewport generation 11 / observer generation 3, successful
+completed tickets 62 and 130, and explicit requested/encoded/completed reset
+serial 1. The process stopped normally with exit 0 and zero reported ObjectDB
+leaks. This used an explicit after-ready reset; it is not cold-start, release,
+FPS, latency or endurance qualification. A read-only postflight matched seven
+source paths to the selected Git tree; only the declared research project and
+export settings differed. Its receipt SHA-256 is
+`b1916e65e14420ac9960ffaa9772efe3f098d081baf63c7a2521c02b23e5424d`.
+Phase 12 retains 19 payloads in 196,470 compressed bytes, SHA-256
+`2329b857c59e5b272b72becd4b8f9583a96833da9c6523910031a888d06c9435`;
+all retrieved payload hashes matched. The separate postflight is not in that archive.
+
+Native integration draft `90c1e2e3fc1d00da5df28ea49be7ce039abe8e65`
+(tree `b7b949fd9efa678b7293fea7005c857220187bac`) adds explicit, independent
+native and engine toolchain profiles for Apple clang 2100.4.1.1 / SDK 27.2.
+The legacy profile remains the default. All 189 focused portable controls passed
+on ANGEL after fixture paths were resolved before constructing their identities;
+the initial `/var` versus `/private/var` fixture failures are retained. No native
+compiler success or default promotion follows from those controls. The proposed
+package-specific automatic-admission route remains disabled and lacks its final
+producer, packaged consumers/replay and performance qualification.
+
+The actual clean19 custom-engine intake then refused its API compatibility
+control. The official engine detected only the deliberately missing class;
+the custom engine also reported 15 pre-existing RT method metadata changes:
+geometry offsets/counts/stride, instance ID/mask and `tlas_create` capacity changed
+from uint32/uint8 to int64 in patch 0005. Both validators exited zero, demonstrating
+why diagnostic inspection is required. Raw stdout/stderr and inputs remain in
+`native-api-control-diagnostic-r1` under ANGEL's task root. This blocks combined
+custom-engine/native-physics correctness until the upstream ABI is restored and
+the new editor/template pair passes the unchanged validator. The earlier clean19
+scaler/SDK observations remain scoped to that engine; they do not prove native
+extension compatibility.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is
@@ -1370,7 +1429,7 @@ The retrieved phase-1 receipt bundle SHA-256 is
 its local path is `tmp/metalfx-20261114/retained-phase1.tar.gz`. Later results are
 not retroactively included in that archive.
 
-Remaining: required CI on the stable integrated candidate, independent Temporal-history
+Remaining: required CI on later integrated candidates, independent Temporal-history
 image/lifecycle qualification beyond the bounded reset fixtures, FG scene inputs
 and end-to-end presentation, a real engine RT/denoised consumer, moving-image/1080p
 workload comparisons, physical latency and lifecycle/endurance. The R2 source-bound

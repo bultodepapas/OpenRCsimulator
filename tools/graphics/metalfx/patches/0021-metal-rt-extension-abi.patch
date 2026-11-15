@@ -1,0 +1,192 @@
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -1431,7 +1431,8 @@
+ 	};
+ 
+ 	RID blas_create(Span<AccelerationStructureGeometry> p_geometries, BitField<AccelerationStructureFlagBits> p_flags);
+-	RID tlas_create(int64_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags);
++	RID tlas_create(uint32_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags);
++	RID tlas_create_checked(int64_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags);
+ 
+ 	typedef int64_t HitShaderBindingTableRange;
+ 
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -488,7 +488,11 @@
+ 	return usage;
+ }
+ 
+-RID RenderingDevice::tlas_create(int64_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) {
++RID RenderingDevice::tlas_create(uint32_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) {
++	return tlas_create_checked(p_max_instance_count, p_flags);
++}
++
++RID RenderingDevice::tlas_create_checked(int64_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) {
+ 	ERR_FAIL_COND_V_MSG(!has_feature(SUPPORTS_RAYTRACING_PIPELINE) && !has_feature(SUPPORTS_RAY_QUERY) && !has_feature(SUPPORTS_METAL_TRIANGLE_QUERY), RID(), "The current rendering device has neither raytracing pipeline nor ray query support.");
+ 
+ 	ERR_FAIL_COND_V_MSG(p_max_instance_count < 0 || p_max_instance_count > UINT32_MAX, RID(), "TLAS capacity must fit uint32.");
+@@ -9805,7 +9809,8 @@
+ 	ClassDB::bind_method(D_METHOD("raytracing_pipeline_is_valid", "raytracing_pipeline"), &RenderingDevice::raytracing_pipeline_is_valid);
+ 
+ 	ClassDB::bind_method(D_METHOD("blas_create", "geometries", "flags"), &RenderingDevice::_blas_create);
+-	ClassDB::bind_method(D_METHOD("tlas_create", "max_instance_count", "flags"), &RenderingDevice::tlas_create);
++	rd_bind_checked_integer(RenderingDevice::get_class_static(), "tlas_create", &RenderingDevice::tlas_create,
++			&RenderingDevice::tlas_create_checked, UINT32_MAX, "max_instance_count", "flags");
+ 	ClassDB::bind_method(D_METHOD("blas_build", "blas"), &RenderingDevice::blas_build);
+ 	ClassDB::bind_method(D_METHOD("tlas_build", "tlas", "instances"), &RenderingDevice::_tlas_build);
+ 
+diff --git a/servers/rendering/rendering_device_binds.h b/servers/rendering/rendering_device_binds.h
+--- a/servers/rendering/rendering_device_binds.h
++++ b/servers/rendering/rendering_device_binds.h
+@@ -34,6 +34,91 @@
+ #include "core/object/class_db.h"
+ #include "servers/rendering/rendering_device.h"
+ 
++// Keep the upstream unsigned GDExtension signature while retaining full
++// Variant integers until the existing acceleration-structure checks run.
++// Godot's ptrcall ABI transports uint8, uint32 and int64 as int64 slots.
++class RDCheckedIntegerMethodBind final : public MethodBind {
++	MethodBind *native_bind;
++	MethodBind *checked_bind;
++	uint64_t maximum;
++
++protected:
++	Variant::Type _gen_argument_type(int p_arg) const override {
++		return native_bind->get_argument_type(p_arg);
++	}
++	PropertyInfo _gen_argument_type_info(int p_arg) const override {
++		return p_arg < 0 ? native_bind->get_return_info() : native_bind->get_argument_info(p_arg);
++	}
++
++public:
++#ifdef DEBUG_ENABLED
++	GodotTypeInfo::Metadata get_argument_meta(int p_arg) const override {
++		return native_bind->get_argument_meta(p_arg);
++	}
++#endif
++	Variant call(Object *p_object, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) const override {
++		return checked_bind->call(p_object, p_args, p_arg_count, r_error);
++	}
++	void validated_call(Object *p_object, const Variant **p_args, Variant *r_ret) const override {
++		checked_bind->validated_call(p_object, p_args, r_ret);
++	}
++	void ptrcall(Object *p_object, const void **p_args, void *r_ret) const override {
++		const int64_t value = *reinterpret_cast<const int64_t *>(p_args[0]);
++		if (value < 0 || uint64_t(value) > maximum) {
++			checked_bind->ptrcall(p_object, p_args, r_ret);
++		} else {
++			native_bind->ptrcall(p_object, p_args, r_ret);
++		}
++	}
++	RDCheckedIntegerMethodBind(MethodBind *p_native, MethodBind *p_checked, uint64_t p_maximum) :
++			native_bind(p_native), checked_bind(p_checked), maximum(p_maximum) {
++		set_instance_class(native_bind->get_instance_class());
++		_set_returns(native_bind->has_return());
++		_generate_argument_types(native_bind->get_argument_count());
++	}
++	~RDCheckedIntegerMethodBind() override {
++		memdelete(native_bind);
++		memdelete(checked_bind);
++	}
++};
++
++template <typename NativeMethod, typename CheckedMethod>
++static void rd_bind_checked_integer(const StringName &p_class, const StringName &p_name,
++		NativeMethod p_native, CheckedMethod p_checked, uint64_t p_maximum,
++		const char *p_arg0, const char *p_arg1 = nullptr) {
++	MethodBind *native_bind = create_method_bind(p_native);
++	MethodBind *checked_bind = create_method_bind(p_checked);
++	RDCheckedIntegerMethodBind *bound = memnew(RDCheckedIntegerMethodBind(native_bind, checked_bind, p_maximum));
++	bound->set_name(p_name);
++	native_bind->set_name(p_name);
++	checked_bind->set_name(p_name);
++#ifdef DEBUG_ENABLED
++	Vector<StringName> names;
++	names.push_back(p_arg0);
++	if (p_arg1 != nullptr) {
++		names.push_back(p_arg1);
++	}
++	bound->set_argument_names(names);
++	native_bind->set_argument_names(names);
++	checked_bind->set_argument_names(names);
++#else
++	(void)p_arg0;
++	(void)p_arg1;
++#endif
++	ClassDB::bind_method_custom(p_class, bound);
++}
++
++#define RD_SETGET_CHECKED(m_type, m_member) \
++	void set_##m_member(m_type p_##m_member) { base.m_member = p_##m_member; } \
++	m_type get_##m_member() const { return static_cast<m_type>(base.m_member); } \
++	void set_##m_member##_checked(int64_t p_##m_member) { base.m_member = p_##m_member; }
++
++#define RD_BIND_CHECKED(m_class, m_member, m_maximum) \
++	rd_bind_checked_integer(m_class::get_class_static(), "set_" _MKSTR(m_member), \
++			&m_class::set_##m_member, &m_class::set_##m_member##_checked, m_maximum, "p_" _MKSTR(member)); \
++	ClassDB::bind_method(D_METHOD("get_" _MKSTR(m_member)), &m_class::get_##m_member); \
++	ADD_PROPERTY(PropertyInfo(Variant::INT, #m_member), "set_" _MKSTR(m_member), "get_" _MKSTR(m_member))
++
+ #define RD_SETGET(m_type, m_member) \
+ 	void set_##m_member(m_type p_##m_member) { \
+ 		base.m_member = p_##m_member; \
+@@ -754,25 +839,25 @@
+ public:
+ 	RD_SETGET(BitField<RD::AccelerationStructureGeometryFlagBits>, flags)
+ 	RD_SETGET(RID, vertex_buffer)
+-	RD_SETGET(int64_t, vertex_offset)
+-	RD_SETGET(int64_t, vertex_stride)
+-	RD_SETGET(int64_t, vertex_count)
++	RD_SETGET_CHECKED(uint32_t, vertex_offset)
++	RD_SETGET_CHECKED(uint32_t, vertex_stride)
++	RD_SETGET_CHECKED(uint32_t, vertex_count)
+ 	RD_SETGET(RD::DataFormat, vertex_format)
+ 	RD_SETGET(RID, index_buffer)
+-	RD_SETGET(int64_t, index_offset)
+-	RD_SETGET(int64_t, index_count)
++	RD_SETGET_CHECKED(uint32_t, index_offset)
++	RD_SETGET_CHECKED(uint32_t, index_count)
+ 
+ protected:
+ 	static void _bind_methods() {
+ 		RD_BIND(Variant::INT, RDAccelerationStructureGeometry, flags);
+ 		RD_BIND(Variant::RID, RDAccelerationStructureGeometry, vertex_buffer);
+-		RD_BIND(Variant::INT, RDAccelerationStructureGeometry, vertex_offset);
+-		RD_BIND(Variant::INT, RDAccelerationStructureGeometry, vertex_stride);
+-		RD_BIND(Variant::INT, RDAccelerationStructureGeometry, vertex_count);
++		RD_BIND_CHECKED(RDAccelerationStructureGeometry, vertex_offset, UINT32_MAX);
++		RD_BIND_CHECKED(RDAccelerationStructureGeometry, vertex_stride, UINT32_MAX);
++		RD_BIND_CHECKED(RDAccelerationStructureGeometry, vertex_count, UINT32_MAX);
+ 		RD_BIND(Variant::INT, RDAccelerationStructureGeometry, vertex_format);
+ 		RD_BIND(Variant::RID, RDAccelerationStructureGeometry, index_buffer);
+-		RD_BIND(Variant::INT, RDAccelerationStructureGeometry, index_offset);
+-		RD_BIND(Variant::INT, RDAccelerationStructureGeometry, index_count);
++		RD_BIND_CHECKED(RDAccelerationStructureGeometry, index_offset, UINT32_MAX);
++		RD_BIND_CHECKED(RDAccelerationStructureGeometry, index_count, UINT32_MAX);
+ 	}
+ };
+ 
+@@ -783,8 +868,8 @@
+ 
+ public:
+ 	RD_SETGET(Transform3D, transform)
+-	RD_SETGET(int64_t, id)
+-	RD_SETGET(int64_t, mask)
++	RD_SETGET_CHECKED(uint32_t, id)
++	RD_SETGET_CHECKED(uint8_t, mask)
+ 	RD_SETGET(RD::HitShaderBindingTableRange, hit_sbt_range)
+ 	RD_SETGET(BitField<RD::AccelerationStructureInstanceFlagBits>, flags)
+ 	RD_SETGET(RID, blas)
+@@ -792,8 +877,8 @@
+ protected:
+ 	static void _bind_methods() {
+ 		RD_BIND(Variant::TRANSFORM3D, RDAccelerationStructureInstance, transform);
+-		RD_BIND(Variant::INT, RDAccelerationStructureInstance, id);
+-		RD_BIND(Variant::INT, RDAccelerationStructureInstance, mask);
++		RD_BIND_CHECKED(RDAccelerationStructureInstance, id, UINT32_MAX);
++		RD_BIND_CHECKED(RDAccelerationStructureInstance, mask, UINT8_MAX);
+ 		RD_BIND(Variant::INT, RDAccelerationStructureInstance, hit_sbt_range);
+ 		RD_BIND(Variant::INT, RDAccelerationStructureInstance, flags);
+ 		RD_BIND(Variant::RID, RDAccelerationStructureInstance, blas);
