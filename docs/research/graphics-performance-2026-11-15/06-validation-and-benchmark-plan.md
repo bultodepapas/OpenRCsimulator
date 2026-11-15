@@ -114,6 +114,8 @@ FG remains separately gated. Real simulation/render cadence, generated OS-presen
 
 ## 7. Result format
 
+The later [execution playbook](11-test-and-execution-playbook.md) maps this plan to existing script arguments, success markers, admission and comparison constraints. The [offline DRS examples](../../../research/performance/graphics_handoff/README.md) add 38 contract tests for the requested engineering handoff. They do not collect measurements, add an M0 executable, or substitute for application/native/physical tests. Their [separate receipt](evidence/handoff-validation.json) records the actual software checks and deliberately unperformed hardware rows.
+
 Every proposed change ends with one of: **accepted for the named configuration**, **retained as experimental**, **retain baseline**, or **inconclusive because specified evidence is missing**. Attach exact identities, completed cases, failed/excluded runs, distributions, visual/latency judgments and remaining hardware rows. Keep existing owners' status separate from this dated audit. No new support claim follows merely because a settings item or native capability check exists.
 
 Use the existing evidence folder and report format, with one compact decision block: objective; baseline/candidate; affected files; primary metric/threshold; protected cues; actual checks and exclusions; result/uncertainty; instrumentation engineering time; implementation time; verdict and smallest next action. This is a content requirement, not authorization to build a new schema framework. A milestone with no passing candidate can finish with a supported retain/defer decision; it cannot claim a performance improvement merely because measurement was repaired.

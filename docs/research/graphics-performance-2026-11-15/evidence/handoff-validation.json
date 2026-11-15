@@ -1,0 +1,792 @@
+{
+  "format": "openrc-graphics-handoff-validation",
+  "version": 1,
+  "research_date": "2026-11-15",
+  "application_baseline": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "branch": "audit/graphics-performance-technologies-2026-11-15",
+  "branch_parent": "725cb17585475999d3c5ef01f0af41643b3d0c36",
+  "scope": "Research documents and an offline DRS contract reference; no application/engine integration or hardware qualification.",
+  "software_checks": {
+    "reference": {
+      "command": "python3 -B -m unittest discover -s research/performance/graphics_handoff -p 'test_*.py' -v",
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "python": "3.12.14",
+      "status": "passed_worktree_and_independent_isolated_copy",
+      "files": [
+        {
+          "path": "research/performance/graphics_handoff/drs_reference.py",
+          "sha256": "10af4e2800bb6b6ac27021b8453cd7cfb529cb2c7083ac864c2a2ac96faaf30f",
+          "bytes": 16251
+        },
+        {
+          "path": "research/performance/graphics_handoff/test_drs_reference.py",
+          "sha256": "6f6016cca1015c0450d2cda973d1ab67dff9695758b10dc67bcde63cf3f1f28e",
+          "bytes": 19766
+        }
+      ]
+    },
+    "deliberate_mutations": {
+      "scope": "synthetic reference only; each mutation on a disposable copy; no engine or hardware",
+      "core_sha256": "10af4e2800bb6b6ac27021b8453cd7cfb529cb2c7083ac864c2a2ac96faaf30f",
+      "tests_sha256": "6f6016cca1015c0450d2cda973d1ab67dff9695758b10dc67bcde63cf3f1f28e",
+      "mutations": [
+        {
+          "mutation": "duplicate_expiry",
+          "test": "test_drs_reference.FeedbackContracts.test_duplicate_cannot_refresh_its_timestamp_or_evade_expiry",
+          "detected_by_assertion": true,
+          "exit_code": 1
+        },
+        {
+          "mutation": "numeric_ack_collision",
+          "test": "test_drs_reference.ApplyContracts.test_foreign_and_copied_tokens_do_not_acknowledge_current_apply",
+          "detected_by_assertion": true,
+          "exit_code": 1
+        },
+        {
+          "mutation": "selection_is_not_effective",
+          "test": "test_drs_reference.ApplyContracts.test_proposal_is_not_an_observed_apply",
+          "detected_by_assertion": true,
+          "exit_code": 1
+        },
+        {
+          "mutation": "ceil_instead_of_truncate",
+          "test": "test_drs_reference.ExtentContracts.test_odd_output_does_not_round_a_floor_up",
+          "detected_by_assertion": true,
+          "exit_code": 1
+        },
+        {
+          "mutation": "retired_epoch_revives",
+          "test": "test_drs_reference.ApplyContracts.test_reduced_stale_epoch_cannot_revive_after_fixed_restore",
+          "detected_by_assertion": true,
+          "exit_code": 1
+        },
+        {
+          "mutation": "periodic_sampling_alias",
+          "test": "test_drs_reference.FeedbackContracts.test_periodic_240hz_cost_cannot_alias_away",
+          "detected_by_assertion": true,
+          "exit_code": 1
+        },
+        {
+          "mutation": "same_pixels_raise_scalar",
+          "test": "test_drs_reference.ExtentContracts.test_equal_pixel_extents_cannot_hide_exceeding_saved_scalar",
+          "detected_by_assertion": true,
+          "exit_code": 1
+        }
+      ]
+    },
+    "checked_runner_self_test": {
+      "command": "PYTHONPATH=. python3 tools/godot/test_run_checked.py CheckedRunnerTests",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "reported_by": "independent reviewer; current unchanged tool source",
+      "scope": "checked runner Python fixtures only; NativeGodotTests not run"
+    },
+    "fresh_sparse_checkout": {
+      "status": "passed",
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "staged_candidate_tree": "d5b34ce24eab30fe5642b77f5519003f8b27f405",
+      "local_only_verification_commit": "c581be5f486331e5ed6b0cfe8fdbf5ccddd1e73b",
+      "checkout": "fresh sparse local Git clone; shared read-only object store; only reference directory materialized; repository-root command",
+      "files": [
+        {
+          "path": "research/performance/graphics_handoff/drs_reference.py",
+          "sha256": "10af4e2800bb6b6ac27021b8453cd7cfb529cb2c7083ac864c2a2ac96faaf30f"
+        },
+        {
+          "path": "research/performance/graphics_handoff/test_drs_reference.py",
+          "sha256": "6f6016cca1015c0450d2cda973d1ab67dff9695758b10dc67bcde63cf3f1f28e"
+        }
+      ],
+      "clean_after_run": true,
+      "test_log_sha256": "36b94f6a0878fc8ee1b52cdfb9d22b0e94a8826030d21ca366c3a0cf2d50b632",
+      "scope": "new path/test discoverability and exact offline reference source only; no full app/assets/engine/native qualification"
+    }
+  },
+  "documentation": {
+    "status": "passed",
+    "cumulative_changed_paths": 41,
+    "handoff_changed_paths": 13,
+    "markdown_checked": 36,
+    "local_links_checked": 1232,
+    "errors": [],
+    "unique_external_urls_in_checked_documents": 241,
+    "external_url_count_is_not_http_availability_check": true,
+    "twenty_investigations_preserved": true,
+    "prior_evidence_files_unchanged": true,
+    "utf8_json_python_syntax_and_fences": "passed",
+    "git_diff_check": "passed",
+    "checked_tree": "c163b84255b4d8c80a2b711fd96b9074a95b8ce6"
+  },
+  "review": {
+    "roles": [
+      "render/timing researcher",
+      "Reflex/RT integration researcher",
+      "independent Good Enemy/Regression Guardian",
+      "lead integration review"
+    ],
+    "resolved_counterexamples": [
+      "duplicate feedback age",
+      "cross-controller/copy acknowledgement token",
+      "forged scalar/extent mapping",
+      "saved scalar collision at 1080p",
+      "oversized numeric telemetry",
+      "retired state resurrection",
+      "periodic sampling alias",
+      "explicit rejected versus ignored acknowledgement"
+    ],
+    "retained_limits": [
+      "provider/output/scope admission belongs to qualified adapter",
+      "native sample identity and age unavailable in stock viewport API",
+      "cooperative deadline needs owner scheduling",
+      "no GPU or physical qualification"
+    ]
+  },
+  "source_verification": {
+    "project_files": [
+      {
+        "path": "app/app_root.gd",
+        "git_blob": "2d6dcadd00dee40f7eb8ba12d9c398b39ee10760",
+        "sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
+        "bytes": 226662,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/app_state/display_preferences.gd",
+        "git_blob": "667662a1a1400775815d916a8ea1b955be72a1d4",
+        "sha256": "b084fbff2b1c9b8765d96bd12d1722ee4c950ce04e7b31a6aa13578bfbd564c4",
+        "bytes": 22883,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/debug/debug_bridge.gd",
+        "git_blob": "861ffef0153ff6837b0f22797e7fc6984fdbbc55",
+        "sha256": "6f36090db87220c3749414e9621f5f72cec4f5c4c27d0e7aef0b13cc91565065",
+        "bytes": 148452,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/debug/godtest_driver.gd",
+        "git_blob": "2089d1da1313f6480fd98e1e23a9e5cae4e45e4a",
+        "sha256": "b1c0215b1ea60bc3bc45ace523942b260cdbca3f0d353da1216e5bdc443d6ec6",
+        "bytes": 32495,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/debug/render_probe.gd",
+        "git_blob": "42081e0c90761f6ed4e6657c3573ecddd96d06c7",
+        "sha256": "67325f9924f00f001f57fc135a38ac65b6b0164eb887b09f8c1f840982ff0938",
+        "bytes": 26083,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/input/latency_patch.gd",
+        "git_blob": "92e25090436e6190942bc59b0cf7dbca3901f612",
+        "sha256": "2988eadabab93191ee8843d19562d8e4559a024fccb7a483c1a731634215a5c2",
+        "bytes": 7043,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/main.gd",
+        "git_blob": "71702b06946d73d3f6e64c7cc899049d091e083c",
+        "sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327",
+        "bytes": 209627,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/render/atmosphere.gd",
+        "git_blob": "b842aca5ed05391451a0df73f6d8d897bedb32fa",
+        "sha256": "1b5eb746d49cf99610fa00490203052ed1045fab19d1a49f3876818e685f48f1",
+        "bytes": 51976,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/render/frame_diagnostics.gd",
+        "git_blob": "4d238aaf3d4bfa164be6a828ecff57f6d7f5995b",
+        "sha256": "067cc4c4f45e273466107048f1f1290e0da5acb581a424a6a7b227408bccca39",
+        "bytes": 7979,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/render/frame_samples.gd",
+        "git_blob": "78297af3f01302d2e4d6a5aef84403f1c0ab0472",
+        "sha256": "887061956f02647ec30a7e31614829c8ae8dd0e8ec4174a89f10ec43fd5d151e",
+        "bytes": 28493,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/render/ground.gdshader",
+        "git_blob": "5680a093dcc31aea56b029273eee5197ab1960fa",
+        "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede",
+        "bytes": 21924,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/render/nvidia_reflex.gd",
+        "git_blob": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+        "sha256": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+        "bytes": 3801,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/render/reconstruction.gd",
+        "git_blob": "6b758b525980fa8d0a1be8f94d55be3831809cec",
+        "sha256": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44",
+        "bytes": 41252,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/render/weather/lightning.gd",
+        "git_blob": "6d1a9bed1c08289e5e040aa0e3679fc12a8cd5c7",
+        "sha256": "0f1990160263c2405524bd2187e8e8162231e60dc57991925d66b1c810c3cda1",
+        "bytes": 24117,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/scenery/imported_vegetation.gd",
+        "git_blob": "783a11e6ed02c2ea19f38b0dac1d639afb1d61bd",
+        "sha256": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
+        "bytes": 47095,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/scenery/motion.gdshader",
+        "git_blob": "d9ea1375ba8f1410005e808f8ff23db52ec99de9",
+        "sha256": "ff3a47e1f56e086369926c6cbe94e4e210c7b012f433d6e965d2003205cf7cf1",
+        "bytes": 2827,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_advanced_graphics_settings.gd",
+        "git_blob": "790da6ff1a5f4baa18d44b3eb994b0e319dbc578",
+        "sha256": "fea35811263b1779f37e126ec741e1eac7d84d2d231c08a196b80be9dab82ed2",
+        "bytes": 25021,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_frame_diagnostics.gd",
+        "git_blob": "c9a669645f036870121c642e0146efa87b6290d7",
+        "sha256": "d71a2cdf1812a3385da53741fb3c8066ac44707f5f879a5c04f81d2af09395c1",
+        "bytes": 7208,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_frame_samples.gd",
+        "git_blob": "695cbe7b07c3490b9aab77022417d6a0e69f94a6",
+        "sha256": "f64868f259bc62c8a26c8fadc4ac5997fd07205951afc25d5c3a33be46d6b224",
+        "bytes": 42771,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_latency_patch.gd",
+        "git_blob": "fac01e4f51e7f5ab16612299aa6fdf2316f090db",
+        "sha256": "c8acfd6daea703f271256eb00419fefe3455d8a59bc5a642c3e407653c61c09b",
+        "bytes": 7977,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_latency_patch_cli.gd",
+        "git_blob": "3dbd3fb7c3fdeea68bb18aa34311fca44a96e4c0",
+        "sha256": "fc4d7d27f73b1747038abbf0994f778df858c2e7a617a421f5948e8df6e58ecf",
+        "bytes": 2345,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_latency_patch_route.gd",
+        "git_blob": "1f08bbba2a7a7c8922125cec3cc34b2631a05c3b",
+        "sha256": "471c966dbc93e50e1b30b00b93db8fd6147f04ed2da8046d3407cb4b5f9508b9",
+        "bytes": 1420,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_nvidia_reflex.gd",
+        "git_blob": "a41c379f1e386950c0b701ae05242cc018ca1416",
+        "sha256": "e99a380cdeb4fd84a2d37d64e31a10978febb5f908e5ac98b0dc779dd9a0bf81",
+        "bytes": 7319,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_reconstruction.gd",
+        "git_blob": "e684497d0495569dea05c9c9f41b1cd8762804af",
+        "sha256": "98cfce259de0e657118dbb403e704b119ceb4006c2d7e8df8aac21815ec3343c",
+        "bytes": 17056,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_reconstruction_history.gd",
+        "git_blob": "18288959def96cb0e2e60deeed7feb4600cd0b29",
+        "sha256": "af1cbe4e0e434728e650e8d07e82b571703c33dc6d34b8cffa4bd8f0b7e9a93b",
+        "bytes": 25253,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/tests/test_render_probe.gd",
+        "git_blob": "9aedef5d79ffaddfa3672fdfe736d4bfe2fd2cb5",
+        "sha256": "39318ca0f10741d9367b3453a4a11012139fed42782187550c94cfabd5fd6c97",
+        "bytes": 10978,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "app/ui/settings_screen.gd",
+        "git_blob": "481ac1c250f1ece7c73b099a0b10cf76448be619",
+        "sha256": "e359c4be8d8913c786b1e6ed6ab07946e61c9648d77ca8de636658ab86de3956",
+        "bytes": 87016,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "research/performance/frame_diagnose.py",
+        "git_blob": "1336f19e47d3ce9673a18c39007b1c27b15cdffb",
+        "sha256": "415447c5b8fbd6ca6c46a64b28a3c6ab5071801f610ed584a3dd245b137e80c0",
+        "bytes": 31021,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "research/performance/native_summary.py",
+        "git_blob": "de9d1f30164a6e2cfcb42cbf7d018c4aa6d98539",
+        "sha256": "8bc41f65561f236962ac0d9894cb98e46ebeae096bfa793e6214c1e7436a80b7",
+        "bytes": 134471,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "research/performance/test_frame_diagnose.py",
+        "git_blob": "4d6f90355d281bbf7d5af2a7cf44f702d2a07f5f",
+        "sha256": "ce43cd9c864e6db552b6f5fcb9fec6f9d030083761d403f6606f1c94628ea0ac",
+        "bytes": 29729,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "research/performance/test_native_summary.py",
+        "git_blob": "792aa20324befbae6424049f410d84f3c293b548",
+        "sha256": "b7e7d08713306adcde5fe406f9def529a303d2b0fa3b7c8759ddad58ca809f42",
+        "bytes": 156339,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/godot/run_checked.py",
+        "git_blob": "7e500ad0d91eb854982a8656aafb7e989dfc0572",
+        "sha256": "55fd7b19a5c7490ab020e2c1b8e732784441375afff17d75a86c01a307a93b46",
+        "bytes": 28617,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/godot/test_run_checked.py",
+        "git_blob": "7c6d234efe114186eaae1eff514453e3e23e6d0c",
+        "sha256": "426a26197cc83a8e822fe8ea1307405be12ec86b6f0e4b367cc1331560ad355e",
+        "bytes": 11461,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/graphics/native/build.py",
+        "git_blob": "33129b31388cc98d30e85dc1480227ecd097381b",
+        "sha256": "8c7358aece65fcd846d8584473848bf14e63ce541e388efe5207a5648de1b79b",
+        "bytes": 10656,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/graphics/native/dlss_frame_lifecycle.patch",
+        "git_blob": "0c16fe4e4a1e68aef270f580787f795af9493be8",
+        "sha256": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+        "bytes": 21956,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/graphics/native/reflex_lifecycle.patch",
+        "git_blob": "a68eb233cb458a7d013035163c82f47a2ce875f7",
+        "sha256": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458",
+        "bytes": 22443,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/graphics/native/reflex_sync.patch",
+        "git_blob": "2817196f898f9c9ce8c30ed2d5ee7283f846b883",
+        "sha256": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4",
+        "bytes": 6206,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/graphics/native/repro/reflex.gd",
+        "git_blob": "eee9cbd78b1cd3595c9a6dceb5d96f23b6c1300e",
+        "sha256": "fdcca7f671fa5a6365bd6248759e482bc108964445752d6cb148619e6711fb4e",
+        "bytes": 3237,
+        "unchanged_from_application_baseline": true
+      },
+      {
+        "path": "tools/testqueue/testctl.py",
+        "git_blob": "d81b674f88e297490e48b9c0f75c1f8dfecb973f",
+        "sha256": "cf3d335baa5d9925c664ee9db166b446cbe0e354e96a50ee496fd4f2a2b04784",
+        "bytes": 5978,
+        "unchanged_from_application_baseline": true
+      }
+    ],
+    "selected_upstream_text": [
+      {
+        "key": "server_default",
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "servers/rendering/rendering_server_default.cpp",
+        "url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_server_default.cpp",
+        "sha256": "b21dc45c1dfe7f6e5aefecad3ebcba42a15012e1535e0b6131c76ec7f13b4654",
+        "bytes": 16907,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "compositor_rd",
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "servers/rendering/renderer_rd/renderer_compositor_rd.cpp",
+        "url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/renderer_compositor_rd.cpp",
+        "sha256": "636f0be3e41a35a427f59fb46e6f705bbb87a0e9b67f7206e8cadcab7db9f0c6",
+        "bytes": 19489,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "render_device_header",
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "servers/rendering/rendering_device.h",
+        "url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_device.h",
+        "sha256": "66d7dda7d9beb2a894111892957e93402b2cd113e3b99c6ebc95e6c906086a05",
+        "bytes": 86372,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "forward_shader",
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl",
+        "url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl",
+        "sha256": "7aaa375900f3939abae10a9b7f37cca426a029bc2cdf30d9b4858cac6f5790c4",
+        "bytes": 114864,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "mesh_storage",
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp",
+        "url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp",
+        "sha256": "e74cf62580a426d52bc2d707e2794dd1235e4adab90846d813914d30c91e6cfe",
+        "bytes": 92637,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "vulkan_header",
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "drivers/vulkan/rendering_device_driver_vulkan.h",
+        "url": "https://raw.githubusercontent.com/godotengine/godot/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.h",
+        "sha256": "eb15e7855afe5dbb2d15ae6abd797e5bf1decd40fe60172b2ace89ada7850c5b",
+        "bytes": 39742,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "reflex_guide",
+        "repo": "NVIDIA-RTX/Streamline",
+        "commit": "019994e18d256a3e92347888deb527feb7f58bc0",
+        "path": "docs/ProgrammingGuideReflex.md",
+        "url": "https://raw.githubusercontent.com/NVIDIA-RTX/Streamline/019994e18d256a3e92347888deb527feb7f58bc0/docs/ProgrammingGuideReflex.md",
+        "sha256": "14f082775b52640436a98d67b7978c9565b1d60bf1eaaf5afb8de128a53cd3fe",
+        "bytes": 19160,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "reflex_header",
+        "repo": "NVIDIA-RTX/Streamline",
+        "commit": "019994e18d256a3e92347888deb527feb7f58bc0",
+        "path": "include/sl_reflex.h",
+        "url": "https://raw.githubusercontent.com/NVIDIA-RTX/Streamline/019994e18d256a3e92347888deb527feb7f58bc0/include/sl_reflex.h",
+        "sha256": "3b623a1189e04a686384d224a58c4ad9974c4e6e3204077676f6ec529475164c",
+        "bytes": 10565,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "key": "pcl_header",
+        "repo": "NVIDIA-RTX/Streamline",
+        "commit": "019994e18d256a3e92347888deb527feb7f58bc0",
+        "path": "include/sl_pcl.h",
+        "url": "https://raw.githubusercontent.com/NVIDIA-RTX/Streamline/019994e18d256a3e92347888deb527feb7f58bc0/include/sl_pcl.h",
+        "sha256": "f43c5135fc8d5349ccd345e424f8cf1f61953a9f17e9897204b0741a3ab7b0fb",
+        "bytes": 5726,
+        "hash_scope": "UTF-8 source text returned by GitHub connector at exact revision"
+      },
+      {
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "servers/rendering/renderer_viewport.cpp",
+        "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp",
+        "sha256": "1f36cb269db4843995ca3d4a8371447fd53917ca1967eae66abcd9455abe6245",
+        "bytes": 69943,
+        "hash_scope": "Retained pinned upstream text; prior source-manifest identity"
+      },
+      {
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "servers/rendering/rendering_device.cpp",
+        "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_device.cpp",
+        "sha256": "60e9c20f0d28cf822aec5adf4b9b9560910b877eb40b528fed3138a08d36ebd2",
+        "bytes": 465227,
+        "hash_scope": "Retained pinned upstream text; prior source-manifest identity"
+      },
+      {
+        "repo": "godotengine/godot",
+        "commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "path": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+        "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.cpp",
+        "sha256": "482b78643b2cfc28873f61800b98b631c7a84a8c30f7177fd57982a0b2b17350",
+        "bytes": 374021,
+        "hash_scope": "Retained pinned upstream text; prior source-manifest identity"
+      }
+    ],
+    "complete_dependency_closure": false,
+    "prior_source_manifest_preserved": true,
+    "later_main_context": [
+      {
+        "commit": "15f732b3b9318a6be4bf7c55550e292f0844cfda",
+        "path": "docs/plans/apple-metalfx.md",
+        "sha256": "8b5783678ec80ccd5091e15f6b9dc89c2986d31d59f1ae2f5552517e23078973",
+        "bytes": 56313,
+        "scope": "read-only publication drift/context; not integrated into the audit branch"
+      },
+      {
+        "commit": "15f732b3b9318a6be4bf7c55550e292f0844cfda",
+        "path": "docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md",
+        "sha256": "0045b96870dba7054baa6dc35b6f1884bd399c62248446c25acec4ff55452ad6",
+        "bytes": 97421,
+        "scope": "read-only publication drift/context; not integrated into the audit branch"
+      },
+      {
+        "commit": "c048a4e6834646400070a488b293344dc1e1fd80",
+        "path": "app/sim/flight_session.gd",
+        "sha256": "9b4cdcca6c34be5dcf4be293e191e94f3d8a8db05c140ed0f7240c827f7abcc3",
+        "bytes": 332408,
+        "scope": "read-only publication drift/context; not integrated into the audit branch"
+      },
+      {
+        "commit": "c048a4e6834646400070a488b293344dc1e1fd80",
+        "path": "app/sim/lake_collision.gd",
+        "sha256": "9610c73580ffb5f22ea5ab2b53559ad9519f8d3696f1469e4258f961b8b632b6",
+        "bytes": 30283,
+        "scope": "read-only publication drift/context; not integrated into the audit branch"
+      },
+      {
+        "commit": "c048a4e6834646400070a488b293344dc1e1fd80",
+        "path": "app/statistics/store.gd",
+        "sha256": "fda64e3713162452afc8a7f4eaf3587c49b1aae5135e4f50d4843a53d9dd2d69",
+        "bytes": 47812,
+        "scope": "read-only publication drift/context; not integrated into the audit branch"
+      }
+    ]
+  },
+  "not_run": [
+    "Godot application tests",
+    "GPU/native renderer execution",
+    "active-flight benchmark",
+    "radio/display optical latency",
+    "native engine build",
+    "export/package verification",
+    "full runtime CI"
+  ],
+  "production_runtime_changes": [],
+  "engine_pin_changes": [],
+  "owning_plan_changes": [],
+  "new_hardware_evidence": false,
+  "performance_or_latency_improvement_claimed": false,
+  "content_hashes": [
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/02-dynamic-resolution-and-upscaling.md",
+      "sha256": "d5a96b2f8e576ee884e16e9b94b53cc63614db93f26ae21310ccd145f6ffd1cb",
+      "bytes": 36419
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/05-integrated-implementation-plan.md",
+      "sha256": "f4d92ec2c825be596d212b15960c72c0e284fc130b1c5081ee7ab3ba16d5a176",
+      "bytes": 34447
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/06-validation-and-benchmark-plan.md",
+      "sha256": "5ed70daff9ec31956ea773c397e240df6db4cd3dc4f6a4654d1e886d037cd978",
+      "bytes": 20632
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+      "sha256": "91e5021aff409dac76cadeb17b4bdc87b3d790738e2cb8172f44a6ee694e43cd",
+      "bytes": 16637
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/09-timing-and-drs-design.md",
+      "sha256": "14b3e42615fa27caaf0ed82592b76f48e2f89e3f5f426c8e1ef84b46ad9b6bc5",
+      "bytes": 38528
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/10-reflex-and-ray-integration-design.md",
+      "sha256": "665755f2590a7776ae03438a15a1a789c5923f4ddab5a814742bbacccf63614a",
+      "bytes": 44035
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/11-test-and-execution-playbook.md",
+      "sha256": "8e43841c18c1fe9268c4bf4a7e4234074d1b8f87cb2cf2a479503246c9dc93c0",
+      "bytes": 26002
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+      "sha256": "dfe2ef720a7d3825c60526fbca5158768e9b78735ea59cc060e4772b9620c931",
+      "bytes": 19036
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/README.md",
+      "sha256": "7b45c361482509e430fdfd07aa03630b41a1e4d4d43821a515e05e7554aadc7f",
+      "bytes": 9087
+    },
+    {
+      "path": "research/performance/graphics_handoff/README.md",
+      "sha256": "e4eb5f5a644bd1711a6676656c1e9337dc04609e85a39792cf8c8a49e10ca4ea",
+      "bytes": 9544
+    },
+    {
+      "path": "research/performance/graphics_handoff/drs_reference.py",
+      "sha256": "10af4e2800bb6b6ac27021b8453cd7cfb529cb2c7083ac864c2a2ac96faaf30f",
+      "bytes": 16251
+    },
+    {
+      "path": "research/performance/graphics_handoff/test_drs_reference.py",
+      "sha256": "6f6016cca1015c0450d2cda973d1ab67dff9695758b10dc67bcde63cf3f1f28e",
+      "bytes": 19766
+    }
+  ],
+  "publication_precheck": {
+    "remote_branch_parent": "725cb17585475999d3c5ef01f0af41643b3d0c36",
+    "initial_main_at_turn_start": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+    "api_main_during_publication": "15f732b3b9318a6be4bf7c55550e292f0844cfda",
+    "last_fetched_main": "c048a4e6834646400070a488b293344dc1e1fd80",
+    "checkpoint_utc": "2026-11-15 20:36 UTC",
+    "main_advanced": true,
+    "additional_ancestry_commits": 11,
+    "tree_changed_paths": [
+      ".claude/agents/openrc-draft-helper.md",
+      ".claude/agents/openrc-good-enemy.md",
+      ".claude/agents/openrc-researcher.md",
+      ".codex/agents/openrc_draft_helper.toml",
+      ".codex/agents/openrc_good_enemy.toml",
+      ".codex/agents/openrc_researcher.toml",
+      ".codex/config.toml",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "app/sim/flight_session.gd",
+      "app/sim/lake_collision.gd",
+      "app/statistics/store.gd",
+      "app/tests/fixtures/publication_fixture_bridge.json",
+      "app/tests/publication_fixture_bridge.gd",
+      "app/tests/test_flight_statistics_store.gd",
+      "app/tests/test_lake_collision.gd",
+      "app/tests/test_lake_session.gd",
+      "docs/DECISIONS.md",
+      "docs/README.md",
+      "docs/SUBAGENTS.md",
+      "docs/plans/apple-metalfx.md",
+      "docs/research/README.md",
+      "docs/research/agent-orchestration-2026-11-15.md",
+      "docs/research/ai-companions/AFC-02/rebinds/2026-11-15-a81c2b2d-to-4ff26331.json",
+      "docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md",
+      "docs/research/project-audit-2026-11-09/.gitattributes",
+      "docs/research/project-audit-2026-11-09/README.md",
+      "docs/research/project-audit-2026-11-09/ci-status-2026-11-15.json",
+      "docs/research/project-audit-2026-11-09/current-state-2026-11-15.md",
+      "docs/research/project-audit-2026-11-09/integration-checks.json",
+      "docs/research/project-audit-2026-11-09/original-artifacts.json",
+      "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_45d86d2.pdf",
+      "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Evidence_45d86d2.zip",
+      "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_45d86d2.pdf",
+      "docs/research/project-audit-2026-11-09/originals/OpenRC_Simulator_Audit_Round2_Evidence_45d86d2.zip",
+      "docs/research/project-audit-2026-11-09/remediation/baseline-fleet.json.gz",
+      "docs/research/project-audit-2026-11-09/remediation/candidate-fleet.json.gz",
+      "docs/research/project-audit-2026-11-09/remediation/checks/baseline-fleet-capture/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/baseline-fleet-capture/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/candidate-fleet-capture/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/candidate-fleet-capture/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/companion-profile-qualified/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/companion-profile-qualified/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/f08-base-witness/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/f08-base-witness/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/f08-candidate-store/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/f08-candidate-store/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/fleet-comparison/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/fleet-comparison/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/fleet-policy-qualified/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/fleet-policy-qualified/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/lake-baseline/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/lake-baseline/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/shaft-publication-qualified/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/shaft-publication-qualified/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_dynamic_mass_contact/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_dynamic_mass_contact/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_lake_collision/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_lake_collision/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_lake_session/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_lake_session/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_statistics_delete_commit/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/test_statistics_delete_commit/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/checks/weather-publication-qualified/engine.log",
+      "docs/research/project-audit-2026-11-09/remediation/checks/weather-publication-qualified/report.json",
+      "docs/research/project-audit-2026-11-09/remediation/compare_fleet.gd",
+      "docs/research/project-audit-2026-11-09/remediation/fleet-comparison.json",
+      "docs/research/project-audit-2026-11-09/remediation/native-pin-python.txt",
+      "docs/research/project-audit-2026-11-09/remediation/publication-rebind.json",
+      "docs/research/project-audit-2026-11-09/remediation/verification.json",
+      "docs/research/project-audit-2026-11-09/source-review.json",
+      "external Audits/COMPLETED-AUDIT-WORK.md",
+      "external Audits/CONSOLIDATED-AUDITS.md",
+      "external Audits/five-findings-audit-45d86d2.md",
+      "research/native-kernel/fleet.gd",
+      "research/native-kernel/fleet_campaign.py",
+      "research/native-kernel/test_fleet_campaign.py",
+      "tools/companions/qualification.json"
+    ],
+    "unchanged_graphics_seams_checked": [
+      "app/render",
+      "app/input",
+      "app/ui",
+      "app/debug",
+      "app/main.gd",
+      "app/app_root.gd",
+      "app/get-godot.sh",
+      "tools/graphics",
+      "tools/godot",
+      "tools/testqueue",
+      ".github/workflows"
+    ],
+    "changed_graphics_seams": [],
+    "baseline_action": "Preserve branch application snapshot; next implementation needs a frozen current-source active-flight control; old physics/replay/performance identities not rebound by this audit."
+  },
+  "changed_paths": [
+    "docs/research/graphics-performance-2026-11-15/02-dynamic-resolution-and-upscaling.md",
+    "docs/research/graphics-performance-2026-11-15/05-integrated-implementation-plan.md",
+    "docs/research/graphics-performance-2026-11-15/06-validation-and-benchmark-plan.md",
+    "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+    "docs/research/graphics-performance-2026-11-15/09-timing-and-drs-design.md",
+    "docs/research/graphics-performance-2026-11-15/10-reflex-and-ray-integration-design.md",
+    "docs/research/graphics-performance-2026-11-15/11-test-and-execution-playbook.md",
+    "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+    "docs/research/graphics-performance-2026-11-15/README.md",
+    "docs/research/graphics-performance-2026-11-15/evidence/handoff-validation.json",
+    "research/performance/graphics_handoff/README.md",
+    "research/performance/graphics_handoff/drs_reference.py",
+    "research/performance/graphics_handoff/test_drs_reference.py"
+  ],
+  "content_hash_scope": "Final handoff content excluding this generated receipt; documentation check tree precedes receipt finalization only. Code hashes match fresh-checkout, independent review and mutation inputs; later edits affect documentation/receipt only.",
+  "retained_evidence_update": {
+    "report_commit": "15f732b3b9318a6be4bf7c55550e292f0844cfda",
+    "report": "docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md",
+    "historical_ci_api_checked": {
+      "run_id": 43727815769,
+      "head_sha": "bffe0ed522efc4e0ab7336ef60d401c4cf4d712d",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "scope": "Owner-reported R3/warm reset/API/0021 evidence; original archives/binaries not downloaded or executed by this audit. No new performance or latency claim."
+  }
+}

@@ -4,6 +4,8 @@
 
 ## Product goal and decisions
 
+The follow-up [senior handoff](12-senior-developer-handoff.md) expands these milestones into reviewable file-boundary work orders. Detailed [timing/DRS pseudocode](09-timing-and-drs-design.md), [Reflex/RT integration contracts](10-reflex-and-ray-integration-design.md), [actual test commands](11-test-and-execution-playbook.md), and the [offline DRS reference](../../../research/performance/graphics_handoff/README.md) prepare implementation without claiming a production milestone has passed or expanding M0's budget.
+
 Offer graphics options that improve real flight smoothness while keeping small aircraft readable and control response predictable. The primary qualification target is 1920 × 1080 at a 60 Hz profile, then higher resolutions, then 720p fallback. Rendering must not change the fixed simulation law, aircraft data, input ownership or recorder. A successful result may be retaining the baseline when a feature fails its cost, clarity or latency test.
 
 Recommended order:

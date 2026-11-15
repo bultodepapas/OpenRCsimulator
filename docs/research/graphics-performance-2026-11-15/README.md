@@ -1,6 +1,6 @@
 # Graphics performance technologies: external audit
 
-**Research date:** 2026-11-15. **Scope:** dynamic resolution and reconstruction, NVIDIA Reflex/Boost and other latency paths, and ray tracing in Godot. This is a source audit and implementation proposal; it does not change the simulator or qualify new graphics modes.
+**Research date:** 2026-11-15. **Scope:** dynamic resolution and reconstruction, NVIDIA Reflex/Boost and other latency paths, and ray tracing in Godot. This is a source audit and implementation proposal with offline executable design examples; it does not change the simulator or qualify new graphics modes.
 
 | Identity | Value |
 | --- | --- |
@@ -11,6 +11,7 @@
 | Official engine pin | `4.8.beta2.official.cafc17a19` |
 | Resolution priority | 1920 × 1080 first; higher resolutions next; 1280 × 720 last, per [repository policy](../../../AGENTS.md#display-resolution-priorities) |
 | Evidence boundary | Current source, retained project evidence, and newly checked primary internet sources. No new GPU, radio, latency or flight-performance measurements were collected for this audit. |
+| Publication checkpoint | Later `main` at `c048a4e6834646400070a488b293344dc1e1fd80` was reviewed for drift; [new Apple evidence and simulation changes](12-senior-developer-handoff.md#publication-checkpoint-and-parallel-main-changes) are recorded separately from the pinned audit baseline. |
 
 ## Executive assessment
 
@@ -32,8 +33,12 @@ The project already contains meaningful implementations. Strengthen the existing
 | [06 · Validation and benchmarks](06-validation-and-benchmark-plan.md) | A bounded screen → finalist → export funnel; existing-tool improvements, native 1080p evidence, motion/readability, physical RC latency and lifecycle gates. |
 | [07 · Sources and verification](07-sources-and-verification.md) | Source precedence, version contradictions, independent review and validation receipts. |
 | [08 · Twenty external investigations](08-twenty-external-investigations.md) | Twenty linked studies of real GitHub code, official documentation and developer discussions: seven reconstruction, five latency, three measurement and five RT questions, each mapped to OpenRC with adopt/avoid and bounded next steps. |
+| [09 · Timing and DRS design](09-timing-and-drs-design.md) | Detailed caller/lifetime, sample-schema, native timing, integer range, settings and transaction pseudocode with exact existing test seams. |
+| [10 · Reflex and ray integration design](10-reflex-and-ray-integration-design.md) | Patched frame ordering, failure/flash cases, concrete sun-light and scene-buffer seams, and proposed native/optical/RT test oracles. |
+| [11 · Test and execution playbook](11-test-and-execution-playbook.md) | Verified existing commands, selective test matrix, comparison pitfalls, native and optical execution cards, and rollback decisions. |
+| [12 · Senior developer handoff](12-senior-developer-handoff.md) | Next reviewable changes, day-by-day M0 scope, new findings and implementation-ready acceptance boundaries. |
 
-Machine-readable evidence: [audited source manifest](evidence/source-manifest.json) and [documentation validation](evidence/validation.json). The topic studies contain claim-specific primary sources; the manifest preserves source identities without copying upstream engine code into the repository.
+Machine-readable evidence: [audited source manifest](evidence/source-manifest.json), [prior documentation validation](evidence/validation.json), and [new handoff validation](evidence/handoff-validation.json). The [DRS reference and 38 tests](../../../research/performance/graphics_handoff/README.md) are runnable offline research examples with no engine or measurement I/O. The topic studies contain claim-specific primary sources; the manifests preserve source identities without copying upstream engine code into the repository.
 
 ## Recommended first work
 
@@ -41,7 +46,7 @@ Repair shared GPU-timing ownership, preserve truthful sample validity/scope in t
 
 After its relevant baseline, measure the existing Reflex Off/On/Boost path independently of DRS. Physical trials use the existing live-radio optical mode, with incompatible scripted/frame diagnostics collected separately; missing SDK flash verification remains an explicit gap without automatically blocking that comparison. Keep RT and frame generation under their own correctness, quality and latency gates. RT starts with a visible defect/headroom decision and one bounded direct-sun result, not a whole renderer replacement.
 
-The [twenty-study catalog](08-twenty-external-investigations.md) is complete as source research. Its purpose is to select implementation and rejection decisions; it is not a backlog of twenty tools or twenty new SDK integrations. None of the new milestones or proposed measurement repairs is claimed implemented by this documentation branch.
+The [twenty-study catalog](08-twenty-external-investigations.md) is complete as source research. Its purpose is to select implementation and rejection decisions; it is not a backlog of twenty tools or twenty new SDK integrations. The later handoff adds executable contract examples, while the production milestones and proposed measurement repairs remain unimplemented on this research branch.
 
 The strongest current source risks are stale/ambiguous GPU samples, multiple owners of the measurement flag, repeated buffer reconfiguration, incomplete temporal-reset coverage across engine families, and overgeneralizing limited native results. None of this audit's source findings establishes a measured speedup or a measured hitch on its own.
 
