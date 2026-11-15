@@ -1,6 +1,7 @@
-## Focused export-preset binding controls. Run only through a checked editor
-## in a disposable project after installing the draft plugin; this is not an export.
-extends SceneTree
+## Focused export-preset controls for an isolated checked editor project.
+## Enable only in the disposable project; this is not an export.
+@tool
+extends EditorPlugin
 
 const Plugin := preload("res://addons/native_kernel/export_plugin.gd")
 const PAIR_FORMAT := "openrc-macos-engine-pair-binding v1"
@@ -25,12 +26,36 @@ func check(value: bool, message: String) -> void:
 		printerr("FAIL: " + message)
 
 
-func _initialize() -> void:
+func _enter_tree() -> void:
+	_wait_for_editor.call_deferred()
+
+
+func _wait_for_editor() -> void:
+	var filesystem := EditorInterface.get_resource_filesystem()
+	var base := EditorInterface.get_base_control()
+	if not is_instance_valid(filesystem) or not is_instance_valid(base):
+		check(false, "editor filesystem or interface unavailable")
+		_finish()
+		return
+	# EditorFileSystem reports the first scan as scanning until its thread and
+	# import work have been joined. Let queued startup work settle as well.
+	var ready_frames := 0
+	while ready_frames < 2:
+		await get_tree().process_frame
+		if not filesystem.is_scanning() and not filesystem.is_importing() \
+				and filesystem.get_filesystem() != null and base.is_node_ready():
+			ready_frames += 1
+		else:
+			ready_frames = 0
+	_run_checks()
+
+
+func _run_checks() -> void:
 	var path := "user://openrc-pair-plugin-test-%d.zip" % Time.get_ticks_usec()
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
-		printerr("FAIL: cannot create disposable template")
-		quit(1)
+		check(false, "cannot create disposable template")
+		_finish()
 		return
 	file.store_string("template A")
 	file.close()
@@ -75,5 +100,17 @@ func _initialize() -> void:
 	check(plugin._mac_pair_matches_with_preset({}, null), "ordinary official route")
 	var remove_error := DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	check(remove_error == OK, "remove disposable fixture")
+	_finish()
+
+
+func _finish() -> void:
 	print("MAC_PAIR_EXPORT_PLUGIN checks=%d failures=%d" % [checks, failures])
-	quit(1 if failures else 0)
+	if failures > 0: push_error("Mac pair export plugin fixture failed")
+	# The editor owns and unloads this addon during its normal close. Defer the
+	# notification so it cannot free this plugin while its callback is active.
+	var editor_node := get_parent()
+	if not is_instance_valid(editor_node):
+		push_error("Mac pair export plugin has no editor owner")
+		get_tree().quit(1)
+		return
+	editor_node.call_deferred("notification", NOTIFICATION_WM_CLOSE_REQUEST)

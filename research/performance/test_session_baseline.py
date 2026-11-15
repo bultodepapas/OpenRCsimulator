@@ -2153,7 +2153,7 @@ class ResearchReleaseRealBinderTests(unittest.TestCase):
             "research_release_pair_fixture", Path(module_path))
         integration = __import__("importlib.util", fromlist=["module_from_spec"]).module_from_spec(spec)
         spec.loader.exec_module(integration)
-        integration.fixtures.TEST_ROOT = Path(__file__).resolve().parents[2] / "test-tmp"
+        integration.fixtures.TEST_ROOT = Path(__file__).resolve().parents[2]
         fixture = integration.PairExportIntegrationTests(methodName="runTest")
         fixture.setUp()
         self.addCleanup(fixture.doCleanups)
@@ -2169,9 +2169,9 @@ class ResearchReleaseRealBinderTests(unittest.TestCase):
                    verification={"oracle": "synthetic"})
         fixture.receipt.update(format="openrc-native-kernel-receipt", backend="native",
                                backend_version="openrc-native-kernel-stage-v2", abi_version=2)
-        executable = fixture.bundle / "Contents/MacOS/OpenRC"
-        executable.parent.mkdir(parents=True)
-        executable.write_bytes(macho + b"final signed fixture")
+        # Integration setup has selected-template bytes plus a simulated app
+        # signature. The real comparison runs; only host codesign is stubbed.
+        executable = fixture.executable
         pack = fixture.bundle / "Contents/Resources/OpenRC.pck"
         pack.write_bytes(struct.pack("<4sIIIIIQQI", b"GDPC", 4, 4, 8, 0, 2, 0, 40, 1) + b"fixture pack")
         fixture.prepare()
@@ -2208,11 +2208,14 @@ class ResearchReleaseRealBinderTests(unittest.TestCase):
                  "runtime_binary_path": str(executable), "runtime_binary_sha256": reference["executable_sha256"]}
         with patch.object(baseline, "_research_package", return_value=integration.package), \
              patch.object(baseline, "inspect_godot", return_value=editor), \
-             patch.object(baseline, "inspect_research_release", return_value=final):
+             patch.object(baseline, "inspect_research_release", return_value=final), \
+             patch.object(fixture.binder, "verify_export_executable", wraps=fixture.binder.verify_export_executable) as binding:
             proof = baseline.verify_research_release(executable, fixture.f.selection, selection_path, 30)
             self.assertEqual(proof["package"]["engine_pair"], fixture.f.expected)
             self.assertEqual(proof["native"], native)
             self.assertNotEqual(proof["release_engine"]["sha256"], fixture.f.expected["template_sha256"])
+            self.assertEqual(proof["package"]["executable_binding"]["executable_sha256"], reference["executable_sha256"])
+            self.assertGreaterEqual(binding.call_count, 1)
 
 
 class LaunchAdmissionTests(unittest.TestCase):

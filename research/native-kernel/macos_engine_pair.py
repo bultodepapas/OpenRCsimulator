@@ -14,8 +14,11 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import stat
 import struct
+import subprocess
+import tempfile
 import zipfile
 
 HERE = Path(__file__).resolve().parent
@@ -39,6 +42,9 @@ MAX_ZIP = 512 * 1024 * 1024
 MAX_SOURCE = 2 * 1024 * 1024 * 1024
 MAX_LOG = 256 * 1024 * 1024
 CHUNK = 1024 * 1024
+NORMALIZED_MAX_BINARY = MAX_BINARY + 16 * 1024 * 1024
+NORMALIZATION_IDENTIFIER = "org.openrc.template-comparison"
+NORMALIZATION_FORMAT = "openrc-macos-template-executable-binding v1"
 
 
 def _module(name: str, path: Path):
@@ -131,6 +137,84 @@ def _snapshot(path: Path, limit: int) -> tuple:
                 or _stamp(_path(path).stat()) != before:
             raise ValueError(f"Input changed while reading: {path}")
         return before, digest.hexdigest()
+
+
+def _copy_snapshot(source: Path, destination: Path, expected: tuple) -> None:
+    """Copy an already snapshotted input into a newly created disposable file."""
+    digest = hashlib.sha256()
+    count = 0
+    with _open(source) as src, destination.open("xb") as dst:
+        if _stamp(os.fstat(src.fileno())) != expected[0]:
+            raise ValueError("Executable changed before normalization copy")
+        for chunk in iter(lambda: src.read(CHUNK), b""):
+            count += len(chunk)
+            if count > MAX_BINARY:
+                raise ValueError("Executable exceeds its normalization bound")
+            digest.update(chunk)
+            dst.write(chunk)
+        if count != expected[0][3] or digest.hexdigest() != expected[1] \
+                or _stamp(os.fstat(src.fileno())) != expected[0] \
+                or _stamp(_path(source).stat()) != expected[0]:
+            raise ValueError("Executable changed while making the normalization copy")
+    destination.chmod(0o700)
+
+
+def _codesign(arguments: list[str]) -> None:
+    """Invoke Apple's system tool only on a private copy; report brief diagnostics."""
+    env = {name: value for name, value in os.environ.items()
+           if not name.startswith("DYLD_") and name not in {"ASAN_OPTIONS", "UBSAN_OPTIONS", "CODESIGN_ALLOCATE"}}
+    try:
+        completed = subprocess.run(["/usr/bin/codesign", *arguments], stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT, timeout=120, check=False, env=env)
+    except (OSError, subprocess.SubprocessError) as error:
+        raise ValueError(f"Executable signature normalization failed: {error}") from error
+    if completed.returncode != 0:
+        detail = completed.stdout[:4096].decode("utf-8", errors="replace").strip()
+        raise ValueError("Executable signature normalization failed" + (": " + detail if detail else ""))
+
+
+def verify_export_executable(template: Path, executable: Path, expected_template_sha256: str) -> dict:
+    """Bind the final app's Mach-O to the checked pair; never modify the inputs.
+
+    Both binaries must already carry signatures. Removing them alone is not a
+    byte-canonical operation; applying the same fixed ad-hoc signature to each
+    disposable copy normalizes observed __LINKEDIT sizing as well.
+    """
+    template, executable = _path(template), _path(executable)
+    if template == executable or not _digest(expected_template_sha256):
+        raise ValueError("Distinct final executable and pinned template are required")
+    before_template, before_executable = _snapshot(template, MAX_BINARY), _snapshot(executable, MAX_BINARY)
+    if before_template[1] != expected_template_sha256:
+        raise ValueError("Template executable differs from the independently verified pair")
+    with tempfile.TemporaryDirectory(prefix="openrc-template-comparison-") as scratch:
+        root = Path(scratch).resolve(strict=True)
+        # Two copies plus one possible codesign working file and signature headroom.
+        needed = before_template[0][3] + before_executable[0][3] \
+            + max(before_template[0][3], before_executable[0][3]) + 32 * 1024 * 1024
+        if shutil.disk_usage(root).free < needed:
+            raise ValueError("Insufficient temporary storage for bounded executable comparison")
+        (root / "template").mkdir()
+        (root / "export").mkdir()
+        template_copy = root / "template" / "executable"
+        executable_copy = root / "export" / "executable"
+        _copy_snapshot(template, template_copy, before_template)
+        _copy_snapshot(executable, executable_copy, before_executable)
+        for item in (template_copy, executable_copy):
+            _codesign(["--remove-signature", str(item)])
+            _codesign(["--force", "--sign", "-", "--timestamp=none", "--identifier",
+                       NORMALIZATION_IDENTIFIER, str(item)])
+            _codesign(["--verify", "--strict", str(item)])
+        normalized_template = _snapshot(template_copy, NORMALIZED_MAX_BINARY)
+        normalized_executable = _snapshot(executable_copy, NORMALIZED_MAX_BINARY)
+        if normalized_template[0][3] != normalized_executable[0][3] \
+                or normalized_template[1] != normalized_executable[1]:
+            raise ValueError("Final Mac executable differs from the selected release template")
+        if _snapshot(template, MAX_BINARY) != before_template \
+                or _snapshot(executable, MAX_BINARY) != before_executable:
+            raise ValueError("Original executable changed during signature normalization")
+        return {"format": NORMALIZATION_FORMAT, "template": str(template), "executable": str(executable),
+                "template_sha256": before_template[1], "executable_sha256": before_executable[1],
+                "normalized_sha256": normalized_template[1], "normalized_bytes": normalized_template[0][3]}
 
 
 def _json(path: Path) -> dict:

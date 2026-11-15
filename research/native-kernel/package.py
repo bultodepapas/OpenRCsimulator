@@ -427,6 +427,25 @@ def verify_macos_export(bundle: Path, tool_root: Path, godot: Path, research_eng
             or sha(license_file) != manifest["license_sha256"]:
         raise ValueError("Staged Mac native package files differ from preparation")
     library_sha, descriptor_sha, license_sha = sha(library), sha(descriptor), sha(license_file)
+    executable_binding = None
+    if binder is not None:
+        # The checked export report identifies an invocation and target path;
+        # prove that the current app's executable still derives from the exact
+        # independently selected template, including after application signing.
+        if not isinstance(pair_selection, dict) or not isinstance(pair_selection.get("template_intake"), (str, Path)) \
+                or not isinstance(manifest.get("engine_pair"), dict):
+            raise ValueError("Research export is missing its independently verified pair")
+        macos = binder._path(contents / "MacOS", directory=True)
+        entries = list(macos.iterdir())
+        if any(entry.is_symlink() for entry in entries):
+            raise ValueError("Mac export executable directory contains a symbolic link")
+        executables = [entry for entry in entries if entry.is_file()]
+        if len(executables) != 1:
+            raise ValueError("Mac export must contain exactly one executable")
+        template = binder._path(Path(pair_selection["template_intake"]) /
+                                "build-source-template_release/bin/godot.macos.template_release.arm64")
+        executable_binding = binder.verify_export_executable(
+            template, binder._path(executables[0]), manifest["engine_pair"].get("template_sha256"))
     if sha(MAC_MANIFEST) != before or (binder is not None and binder._snapshot(MAC_MANIFEST, binder.MAX_JSON) != manifest_before) \
             or manifest != current() \
             or any(path.is_symlink() or not path.is_file() for path in (library, descriptor, license_file)) \
@@ -437,6 +456,7 @@ def verify_macos_export(bundle: Path, tool_root: Path, godot: Path, research_eng
     if "engine_pair" in manifest:
         result["engine_pair"] = manifest["engine_pair"]
         result["export_runner_sha256"] = manifest["export_runner_sha256"]
+        result["executable_binding"] = executable_binding
     return result
 
 
@@ -558,7 +578,8 @@ def finalize_research_macos(bundle: Path, tool_root: Path, godot: Path, research
             raise ValueError(f"Finalization failed and the redirected native receipt was retained: {created}") from error
         raise
     return {"receipt": str(created), "receipt_sha256": digest, "manifest_sha256": before["manifest_sha256"],
-            "engine_pair": before["engine_pair"], "checked_export": checked}
+            "engine_pair": before["engine_pair"], "executable_binding": before["executable_binding"],
+            "checked_export": checked}
 
 
 class _Once(argparse.Action):

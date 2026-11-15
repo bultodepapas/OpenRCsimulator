@@ -86,6 +86,24 @@ class PairExportIntegrationTests(unittest.TestCase):
         self.editor = self.f.binaries["editor"]
         self.bundle = self.root / "OpenRC.app"
         (self.bundle / "Contents/Resources").mkdir(parents=True)
+        self.executable = self.bundle / "Contents/MacOS/OpenRC"
+        self.executable.parent.mkdir(parents=True)
+        self.executable.write_bytes(self.f.binaries["template_release"].read_bytes() + b"\nFAKE_APP_SIGNATURE")
+        def fake_codesign(args):
+            path = Path(args[-1])
+            data = path.read_bytes()
+            if args[0] == "--remove-signature":
+                path.write_bytes(data.removesuffix(b"\nFAKE_APP_SIGNATURE"))
+            elif args[0] == "--force":
+                path.write_bytes(data + b"\nFAKE_NORMAL_SIGNATURE")
+            elif args[0] == "--verify":
+                if not data.endswith(b"\nFAKE_NORMAL_SIGNATURE"):
+                    raise ValueError("fake normalized signature is absent")
+            else:
+                raise AssertionError(args)
+        signer = patch.object(self.binder, "_codesign", side_effect=fake_codesign)
+        signer.start()
+        self.addCleanup(signer.stop)
         self.checked_runner = self.root / "tools/godot/run_checked.py"
         self.checked_runner.parent.mkdir(parents=True)
         shutil.copyfile(HERE.parents[1] / "tools/godot/run_checked.py", self.checked_runner)
@@ -127,6 +145,8 @@ class PairExportIntegrationTests(unittest.TestCase):
             self.stage()
             final = self.verify()
             self.assertEqual(final["engine_pair"], self.f.expected)
+            self.assertEqual(final["executable_binding"]["template_sha256"], self.f.expected["template_sha256"])
+            self.assertEqual(final["executable_binding"]["executable_sha256"], package.sha(self.executable))
             def create_receipt(bundle, _manifest):
                 path = bundle.with_name(bundle.name + ".openrc-native-receipt")
                 path.write_bytes(b"synthetic receipt")
@@ -137,11 +157,31 @@ class PairExportIntegrationTests(unittest.TestCase):
                                                         pair_selection=self.pair_selection,
                                                         checked_export_report=self.report)
             self.assertEqual(result["engine_pair"], self.f.expected)
+            self.assertEqual(result["executable_binding"], final["executable_binding"])
             self.assertGreaterEqual(actual_bind.call_count, 9)
         bundled = self.bundle / "Contents/Frameworks/libopenrc_native_kernel.dylib"
         bundled.write_bytes(b"changed staged library")
         with self.assertRaisesRegex(ValueError, "files differ"):
             self.verify()
+
+    def test_replaced_executable_refuses_even_if_pair_and_sidecars_are_unchanged(self):
+        self.prepare()
+        self.stage()
+        initial = self.verify()
+        content = bytearray(self.executable.read_bytes())
+        content[32] ^= 1 # mutate payload without changing size or the simulated signing trailer
+        self.executable.write_bytes(content)
+        with self.assertRaisesRegex(ValueError, "differs from the selected release template"):
+            self.verify()
+        self.assertEqual(initial["engine_pair"], self.f.expected)
+
+    def test_official_export_does_not_invoke_pair_or_executable_normalization(self):
+        package.prepare_macos(self.tool_root, self.editor)
+        package.stage_macos(self.bundle, self.tool_root, self.editor)
+        with patch.object(package, "_pair_binder", side_effect=AssertionError("unexpected pair lookup")):
+            result = package.verify_macos_export(self.bundle, self.tool_root, self.editor)
+        self.assertNotIn("engine_pair", result)
+        self.assertNotIn("executable_binding", result)
 
     def test_different_individually_valid_template_and_binding_cannot_replace_prepared_pair(self):
         self.prepare()
