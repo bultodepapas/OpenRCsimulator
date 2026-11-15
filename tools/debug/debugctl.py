@@ -4,10 +4,13 @@ Guide: tools/debug/README.md (the "I want to..." table). Task index for every ot
 
 Session
   launch [--headless] [--resolution WxH] [--port N] [--app DIR | --exported] [--script-profile] [--verbose]
+         [--rendering-method METHOD] [--rendering-driver DRIVER] [--fullscreen]
          [--profile DIR | --real-profile] [--import] [-- <app args>]
                                                             start the app; prints its port (isolated user:// profile);
                                                             --import first refreshes the import cache (new assets)
                                                             --exported uses OPENRC_GODOT as the packaged debug executable
+         Renderer/driver/fullscreen overrides require a local or inherited session;
+         the managed preset parser currently rejects those three options.
   status | ready [--timeout S] | stop [--force]            alive? / wait for it / quit it (prints crash + exit leaks)
   clean [--keep N]                                          delete old run folders (never a live session)
 Drive the app (any bridge command; `help` asks the app for its list). Agents: start with `look`.
@@ -351,10 +354,16 @@ def _launch_local(argv: list[str]) -> int:
             raise ValueError(f"exported executable does not exist: {exported_exe}")
     # Rendered sessions open at 1920x1080, the primary display target (AGENTS.md); --resolution 1280x720 is faster.
     options = {"--out": None, "--timeout": "180", "--port": None, "--profile": None, "--resolution": "1920x1080",
-               "--app": str(REPO / "app")}
+               "--app": str(REPO / "app"), "--rendering-method": None, "--rendering-driver": None}
     for i, arg in enumerate(argv):
         if arg in options and i + 1 < len(argv):
             options[arg] = argv[i + 1]
+    for name, choices in (
+            ("--rendering-method", {"gl_compatibility", "mobile", "forward_plus"}),
+            ("--rendering-driver", {"metal", "vulkan", "d3d12", "opengl3", "opengl3_es", "opengl3_angle"})):
+        if name in argv:
+            if argv.count(name) != 1 or options[name] not in choices:
+                raise ValueError(f"{name} requires one supported value: {', '.join(sorted(choices))}")
     explicit_port = int(options["--port"]) if options["--port"] else env_port()
     chosen = reserve_port(explicit_port)
     if chosen is None:
@@ -371,6 +380,11 @@ def _launch_local(argv: list[str]) -> int:
     # Exported templates can forbid --path; their executable locates its packaged resources itself.
     # --app runs a source copy (it needs the import cache and sibling folders, as app/ has them).
     command = [str(exported_exe)] if exported else [godot(), "--path", str(Path(options["--app"]).resolve())]
+    for name in ("--rendering-method", "--rendering-driver"):
+        if options[name] is not None:
+            command += [name, options[name]]
+    if "--fullscreen" in argv:
+        command += ["--fullscreen"]
     if "--import" in argv:  # assets pulled since the last import load as "Unable to open file: …ctex"
         imported = subprocess.run([command[0], "--headless", "--path", command[2], "--audio-driver", "Dummy", "--import"],
                                   capture_output=True, text=True, timeout=1800)
