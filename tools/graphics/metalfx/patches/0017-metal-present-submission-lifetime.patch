@@ -1,0 +1,434 @@
+diff --git a/drivers/metal/openrc_mfx_present_bridge.h b/drivers/metal/openrc_mfx_present_bridge.h
+--- a/drivers/metal/openrc_mfx_present_bridge.h
++++ b/drivers/metal/openrc_mfx_present_bridge.h
+@@ -26,6 +26,11 @@
+ 	uint64_t retired_real_unresolved = 0;
+ 	uint64_t retired_generated_unresolved = 0;
+ 	uint64_t gpu_failed = 0;
++	uint64_t last_gpu_failure_generation = 0;
++	uint64_t ignored_unrequested_commands = 0;
++	uint64_t aborted_completion_not_enqueued = 0, aborted_completion_other = 0;
++	uint64_t submission_retained = 0, submission_retention_rejected = 0;
++	uint64_t nonterminal_completion_commands = 0;
+ 	uint64_t last_presented_frame = 0;
+ 	uint64_t blocked_source_epoch = 0;
+ 	uint64_t discontinuities = 0;
+diff --git a/drivers/metal/openrc_mfx_present_bridge.mm b/drivers/metal/openrc_mfx_present_bridge.mm
+--- a/drivers/metal/openrc_mfx_present_bridge.mm
++++ b/drivers/metal/openrc_mfx_present_bridge.mm
+@@ -21,11 +21,13 @@
+ 	std::condition_variable started_condition;
+ 	Scheduler scheduler;
+ 	std::atomic<uint64_t> requested_generation{ 1 };
++	std::atomic<uint64_t> ignored_unrequested_commands{ 0 };
++	std::atomic<uint64_t> aborted_completion_not_enqueued{ 0 }, aborted_completion_other{ 0 };
+ 	Snapshot stats;
+ 	bool stopping = false;
+ 	bool started = false;
+ 	bool valid = false;
+-	unsigned in_flight = 0;
++	std::shared_ptr<SubmissionReceipt> in_flight_submission;
+ 	double previous_display_target = 0.0;
+ 	double display_period = 0.0;
+ 	CFRunLoopRef run_loop = nullptr;
+@@ -42,17 +44,30 @@
+ 	bool worker_started = false;
+ };
+ 
++// Intentionally process-lifetime: unresolved GPU reads cannot lose their
++// final source reference during presenter/surface or C++ static teardown.
++static SubmissionRetentions &submission_retentions() {
++	static SubmissionRetentions *retentions = new SubmissionRetentions;
++	return *retentions;
++}
++
+ static void retire_stats(Shared &p_state) {
+ 	uint64_t real = p_state.stats.retired_real_unresolved;
+ 	uint64_t generated = p_state.stats.retired_generated_unresolved;
+ 	if (p_state.stats.real_present_requested > p_state.stats.real_presented) { real += p_state.stats.real_present_requested - p_state.stats.real_presented; }
+ 	if (p_state.stats.generated_present_requested > p_state.stats.generated_presented) { generated += p_state.stats.generated_present_requested - p_state.stats.generated_presented; }
+ 	uint64_t failures = p_state.stats.gpu_failed;
++	const uint64_t failure_generation = p_state.stats.last_gpu_failure_generation;
++	const uint64_t unrequested = p_state.stats.ignored_unrequested_commands;
++	const uint64_t nonterminal = p_state.stats.nonterminal_completion_commands;
+ 	const int64_t last_status = p_state.stats.last_gpu_status, last_code = p_state.stats.last_gpu_error_code;
+ 	p_state.stats = {};
+ 	p_state.stats.retired_real_unresolved = real;
+ 	p_state.stats.retired_generated_unresolved = generated;
+ 	p_state.stats.gpu_failed = failures;
++	p_state.stats.last_gpu_failure_generation = failure_generation;
++	p_state.stats.ignored_unrequested_commands = unrequested;
++	p_state.stats.nonterminal_completion_commands = nonterminal;
+ 	p_state.stats.last_gpu_status = last_status;
+ 	p_state.stats.last_gpu_error_code = last_code;
+ }
+@@ -66,6 +81,62 @@
+ 		p_state.previous_display_target = 0.0;
+ 		p_state.display_period = 0.0;
+ 	}
++}
++// Native callbacks invoke this before taking Shared::mutex. A callback that
++// fires while the command is merely prepared prevents later admission.
++static bool handler_ready(const std::weak_ptr<Shared> &p_weak, const std::shared_ptr<SubmissionReceipt> &p_receipt, bool p_presented) {
++	const bool ready = p_receipt->observe_handler() && p_receipt->commit_was_requested() && (!p_presented || p_receipt->present_was_requested());
++	if (!ready && p_receipt->take_unrequested()) {
++		auto shared = p_weak.lock();
++		if (shared) { shared->ignored_unrequested_commands.fetch_add(1, std::memory_order_relaxed); }
++	}
++	return ready;
++}
++
++// Record only an unrequested command's completion notification, once per
++// receipt. In particular status NotEnqueued is not a GPU failure.
++static void record_aborted_completion(const std::weak_ptr<Shared> &p_weak, const std::shared_ptr<SubmissionReceipt> &p_receipt, bool p_not_enqueued) {
++	if (!p_receipt->take_aborted_completion()) { return; }
++	auto shared = p_weak.lock();
++	if (!shared) { return; }
++	if (p_not_enqueued) { shared->aborted_completion_not_enqueued.fetch_add(1, std::memory_order_relaxed); }
++	else { shared->aborted_completion_other.fetch_add(1, std::memory_order_relaxed); }
++}
++
++// Undo a scheduler choice whose command was not sent, or recover an actual
++// failed command. The caller holds Shared::mutex and drains Retired afterwards.
++static void abandon_admitted_locked(Shared &p_state, const Choice &p_choice, uint64_t p_generation, double p_now, Retired &r_retired) {
++	if (p_generation != p_state.scheduler.current_generation()) { return; }
++	uint64_t expected = p_generation;
++	uint64_t replacement = expected == UINT64_MAX ? 0 : expected + 1;
++	if (p_state.requested_generation.compare_exchange_strong(expected, replacement, std::memory_order_acq_rel)) {
++		retire_stats(p_state);
++		if (replacement) { p_state.scheduler.recover_failed(p_choice, p_now, r_retired); }
++		else { p_state.scheduler.reset(r_retired); }
++	} else {
++		synchronize_generation(p_state, r_retired);
++	}
++}
++
++// The caller holds Shared::mutex. The terminal callback belongs to exactly one
++// admitted command; stale generations can report failure but cannot reset or
++// decrement a different generation's active command.
++static void completion_locked(Shared &p_state, const std::shared_ptr<SubmissionReceipt> &p_receipt,
++		const Choice &p_choice, uint64_t p_generation, double p_now, bool p_terminal, bool p_succeeded,
++		int64_t p_status, int64_t p_error_code, Retired &r_retired) {
++	if (!p_receipt->claimed() || !p_receipt->commit_was_requested()) { return; }
++	if (!p_terminal) {
++		if (p_receipt->take_nonterminal()) { ++p_state.stats.nonterminal_completion_commands; }
++		return;
++	}
++	const bool active_command = p_state.in_flight_submission == p_receipt;
++	if (active_command) { p_state.in_flight_submission.reset(); }
++	if (p_succeeded) { return; }
++	++p_state.stats.gpu_failed;
++	p_state.stats.last_gpu_status = p_status;
++	p_state.stats.last_gpu_error_code = p_error_code;
++	p_state.stats.last_gpu_failure_generation = p_generation;
++	if (active_command) { abandon_admitted_locked(p_state, p_choice, p_generation, p_now, r_retired); }
+ }
+ } // namespace OpenRCMetalPresent
+ 
+@@ -91,6 +162,7 @@
+ 		const double now = CACurrentMediaTime();
+ 		OpenRCMetalPresent::Retired retired_before_choice;
+ 		OpenRCMetalPresent::Retired retired_after_choice;
++		OpenRCMetalPresent::Retired retired_rollback;
+ 		std::unique_lock<std::mutex> gate(s->gate);
+ 		std::unique_lock<std::mutex> lock(s->mutex);
+ 		if (s->stopping) { return; }
+@@ -103,7 +175,7 @@
+ 		} else {
+ 			s->display_period = 0.0;
+ 		}
+-		if (s->in_flight != 0) { return; }
++		if (s->in_flight_submission) { return; }
+ 		OpenRCMetalPresent::Choice choice = s->scheduler.choose(now, deadline, target, s->display_period, true, retired_before_choice);
+ 		if (choice.kind == OpenRCMetalPresent::Kind::NONE || !choice.texture) { return; }
+ 		lock.unlock();
+@@ -149,14 +221,22 @@
+ 		const uint64_t sample_frame = choice.frame;
+ 		const bool is_generated = choice.kind == OpenRCMetalPresent::Kind::GENERATED;
+ 		std::weak_ptr<OpenRCMetalPresent::Shared> weak = s;
++		auto receipt = std::make_shared<OpenRCMetalPresent::SubmissionReceipt>(choice.output_lease);
++		auto &retentions = OpenRCMetalPresent::submission_retentions();
++		if (!retentions.retain(receipt)) { return; }
++		OpenRCMetalPresent::SubmissionRetentionGuard retention_guard(retentions, receipt);
+ 		auto completion_choice = choice;
++		completion_choice.output_lease.reset(); // The receipt owns the GPU lease until terminal.
+ 		[drawable addPresentedHandler:^(id<MTLDrawable> p_drawable) {
++			if (!OpenRCMetalPresent::handler_ready(weak, receipt, true)) { return; }
+ 			auto shared = weak.lock();
+ 			if (!shared) { return; }
+ 			double presented = p_drawable.presentedTime;
+ 			double observed = CACurrentMediaTime();
+ 			std::lock_guard<std::mutex> guard(shared->mutex);
+-			if (sample_generation != shared->requested_generation.load(std::memory_order_acquire) || !std::isfinite(presented) || presented <= 0.0) { return; }
++			if (!receipt->claimed() || !receipt->present_was_requested() ||
++					sample_generation != shared->requested_generation.load(std::memory_order_acquire) ||
++					!std::isfinite(presented) || presented <= 0.0 || !receipt->take_presented()) { return; }
+ 			if (is_generated) { shared->stats.generated_presented++; } else { shared->stats.real_presented++; }
+ 			if (presented > shared->stats.last_os_presented_time) {
+ 				shared->stats.last_presented_frame = sample_frame;
+@@ -165,39 +245,43 @@
+ 			}
+ 		}];
+ 		[command addScheduledHandler:^(id<MTLCommandBuffer> p_command) {
+-			(void)p_command;
++			if (!OpenRCMetalPresent::handler_ready(weak, receipt, false)) { return; }
++			const auto status = p_command.status;
++			if (status != MTLCommandBufferStatusScheduled && status != MTLCommandBufferStatusCompleted && status != MTLCommandBufferStatusError) { return; }
+ 			auto shared = weak.lock();
+ 			if (!shared) { return; }
+ 			std::lock_guard<std::mutex> guard(shared->mutex);
+-			if (sample_generation != shared->requested_generation.load(std::memory_order_acquire)) { return; }
++			if (!receipt->claimed() || !receipt->commit_was_requested() ||
++					sample_generation != shared->requested_generation.load(std::memory_order_acquire) || !receipt->take_scheduled()) { return; }
+ 			if (is_generated) { shared->stats.generated_command_scheduled++; } else { shared->stats.real_command_scheduled++; }
+ 		}];
+ 		[command addCompletedHandler:^(id<MTLCommandBuffer> p_command) {
+-			// Captures the converted slot through this GPU read and can requeue
+-			// the exact current-real fallback if this present command fails.
++			// The captured choice retains the converted slot through GPU use.
++			if (!OpenRCMetalPresent::handler_ready(weak, receipt, false)) {
++				const auto status = p_command.status;
++				OpenRCMetalPresent::record_aborted_completion(weak, receipt, status == MTLCommandBufferStatusNotEnqueued);
++				return;
++			}
++			const auto status = p_command.status;
++			const double completed_at = CACurrentMediaTime();
++			NSError *error = p_command.error;
++			const int64_t error_code = error ? int64_t(error.code) : 0;
++			const bool terminal = status == MTLCommandBufferStatusCompleted || status == MTLCommandBufferStatusError;
++			const bool succeeded = status == MTLCommandBufferStatusCompleted && error == nil;
++			std::shared_ptr<void> completed_output;
++			if (terminal) {
++				if (!receipt->take_terminal(succeeded)) { return; }
++				completed_output = receipt->take_completed_output();
++				OpenRCMetalPresent::submission_retentions().release(receipt);
++			}
+ 			auto shared = weak.lock();
+ 			if (!shared) { return; }
+-			const auto completed_status = p_command.status;
+-			const double completed_at = CACurrentMediaTime();
+-			NSError *completed_error = p_command.error;
+-			const int64_t completed_error_code = completed_error ? int64_t(completed_error.code) : 0;
++			auto completed_choice = completion_choice;
++			completed_choice.output_lease = std::move(completed_output);
+ 			OpenRCMetalPresent::Retired completed_retired;
+ 			std::lock_guard<std::mutex> guard(shared->mutex);
+-			if (shared->in_flight > 0) { shared->in_flight--; }
+-			if (sample_generation == shared->scheduler.current_generation() && completed_status != MTLCommandBufferStatusCompleted) {
+-				uint64_t expected = sample_generation;
+-				uint64_t replacement = expected == UINT64_MAX ? 0 : expected + 1;
+-				if (shared->requested_generation.compare_exchange_strong(expected, replacement, std::memory_order_acq_rel)) {
+-					OpenRCMetalPresent::retire_stats(*shared);
+-					shared->stats.gpu_failed++;
+-					shared->stats.last_gpu_status = int64_t(completed_status);
+-					shared->stats.last_gpu_error_code = completed_error_code;
+-					if (replacement) { shared->scheduler.recover_failed(completion_choice, completed_at, completed_retired); }
+-					else { shared->scheduler.reset(completed_retired); }
+-				} else {
+-					OpenRCMetalPresent::synchronize_generation(*shared, completed_retired);
+-				}
+-			}
++			OpenRCMetalPresent::completion_locked(*shared, receipt, completed_choice, sample_generation, completed_at,
++					terminal, succeeded, int64_t(status), error_code, completed_retired);
+ 		}];
+ 		{
+ 			// Handler registration and encoder calls above may enter Apple code.
+@@ -208,16 +292,37 @@
+ 			if (choice.proof && choice.proof->is_cancelled()) { return; }
+ 			if (choice.source_generation && choice.source_generation->is_cancelled()) { return; }
+ 			if (choice.generation != s->requested_generation.load(std::memory_order_acquire)) { return; }
+-			if (!s->scheduler.commit(choice, admitted_at, retired_after_choice)) { return; }
++			if (!receipt->claim()) { return; }
++			if (!s->scheduler.commit(choice, admitted_at, retired_after_choice)) { receipt->abort(); return; }
++			if (!receipt->admit()) {
++				OpenRCMetalPresent::abandon_admitted_locked(*s, choice, sample_generation, admitted_at, retired_after_choice);
++				return;
++			}
+ 			s->stats.last_admitted_drawable_width = drawable_width;
+ 			s->stats.last_admitted_drawable_height = drawable_height;
+ 			s->stats.last_admitted_drawable_pixel_format = uint64_t(drawable_format);
+ 			s->stats.last_admitted_drawable_frame = choice.frame;
+ 			s->stats.last_admitted_drawable_generated = is_generated;
+-			s->in_flight++;
+-			if (is_generated) { s->stats.generated_present_requested++; } else { s->stats.real_present_requested++; }
+-		}
++			s->in_flight_submission = receipt;
++		}
++		if (!receipt->begin_commit()) {
++			const double rollback_at = CACurrentMediaTime();
++			std::lock_guard<std::mutex> admission(s->mutex);
++			if (s->in_flight_submission == receipt) { s->in_flight_submission.reset(); }
++			OpenRCMetalPresent::abandon_admitted_locked(*s, choice, sample_generation, rollback_at, retired_rollback);
++			return;
++		}
++		retention_guard.retain_until_terminal();
+ 		[command commit];
++		if (!receipt->claim_present()) { return; }
++		{
++			std::lock_guard<std::mutex> admission(s->mutex);
++			if (sample_generation == s->requested_generation.load(std::memory_order_acquire)) {
++				if (is_generated) { s->stats.generated_present_requested++; } else { s->stats.real_present_requested++; }
++			} else {
++				if (is_generated) { s->stats.retired_generated_unresolved++; } else { s->stats.retired_real_unresolved++; }
++			}
++		}
+ 		[drawable present];
+ 	}
+ }
+@@ -400,6 +505,11 @@
+ 	std::lock_guard<std::mutex> guard(p_presenter->state->mutex);
+ 	synchronize_generation(*p_presenter->state, retired);
+ 	Snapshot result = p_presenter->state->stats;
++	result.ignored_unrequested_commands = p_presenter->state->ignored_unrequested_commands.load(std::memory_order_relaxed);
++	result.aborted_completion_not_enqueued = p_presenter->state->aborted_completion_not_enqueued.load(std::memory_order_relaxed);
++	result.aborted_completion_other = p_presenter->state->aborted_completion_other.load(std::memory_order_relaxed);
++	result.submission_retained = submission_retentions().count();
++	result.submission_retention_rejected = submission_retentions().rejection_count();
+ 	result.decision = p_presenter->state->scheduler.decision_trace();
+ 	result.display_period = p_presenter->state->display_period;
+ 	result.generation = p_presenter->state->requested_generation.load(std::memory_order_acquire);
+diff --git a/drivers/metal/openrc_mfx_present_state.h b/drivers/metal/openrc_mfx_present_state.h
+--- a/drivers/metal/openrc_mfx_present_state.h
++++ b/drivers/metal/openrc_mfx_present_state.h
+@@ -5,6 +5,7 @@
+ // races can be tested without a display or GPU. The caller serializes Scheduler.
+ #include "servers/rendering/storage/metalfx_presentation.h"
+ #include <array>
++#include <atomic>
+ #include <cmath>
+ #include <exception>
+ #include <cstdint>
+@@ -38,6 +39,116 @@
+ 	double now = 0.0, deadline = 0.0, target = 0.0, last_real_target = 0.0, display_period = 0.0;
+ 	double real_interval = 0.0, reserved_at = 0.0, generated_deadline = 0.0, real_deadline = 0.0;
+ 	bool proof_ready = false, cadence_ready = false, deadlines_ready = false, paired_candidate = false;
++};
++
++// A handler can be registered before final admission and may arrive early.
++// The token contains no native object or texture ownership. Atomics close the
++// race between early callbacks and the render thread's final claim.
++class SubmissionReceipt {
++	enum class Phase : unsigned { PREPARED, CLAIMED, ADMITTED, COMMIT_REQUESTED, ABORTED };
++	std::atomic<Phase> phase{ Phase::PREPARED };
++	std::shared_ptr<void> retained_output;
++	enum : unsigned { PRESENT_REQUESTED = 1, COMPLETION_OBSERVED = 2, TERMINAL_FAILURE = 4 };
++	std::atomic<unsigned> events{ 0 };
++	std::atomic<bool> scheduled_seen{ false }, presented_seen{ false };
++	std::atomic<bool> unrequested_seen{ false }, aborted_completion_seen{ false }, nonterminal_seen{ false };
++	static bool take_once(std::atomic<bool> &p_seen) { return !p_seen.exchange(true, std::memory_order_acq_rel); }
++
++public:
++	explicit SubmissionReceipt(std::shared_ptr<void> p_output) : retained_output(std::move(p_output)) {}
++	bool claim() {
++		Phase expected = Phase::PREPARED;
++		return phase.compare_exchange_strong(expected, Phase::CLAIMED, std::memory_order_acq_rel);
++	}
++	void abort() { phase.store(Phase::ABORTED, std::memory_order_release); }
++	bool observe_handler() {
++		Phase observed = phase.load(std::memory_order_acquire);
++		while (observed == Phase::PREPARED || observed == Phase::CLAIMED || observed == Phase::ADMITTED) {
++			if (phase.compare_exchange_weak(observed, Phase::ABORTED, std::memory_order_acq_rel)) { return false; }
++		}
++		return observed == Phase::COMMIT_REQUESTED;
++	}
++	bool admit() {
++		Phase expected = Phase::CLAIMED;
++		return phase.compare_exchange_strong(expected, Phase::ADMITTED, std::memory_order_acq_rel);
++	}
++	bool begin_commit() {
++		Phase expected = Phase::ADMITTED;
++		return phase.compare_exchange_strong(expected, Phase::COMMIT_REQUESTED, std::memory_order_acq_rel);
++	}
++	bool claimed() const { return phase.load(std::memory_order_acquire) == Phase::COMMIT_REQUESTED; }
++	bool commit_was_requested() const { return claimed(); }
++	bool claim_present() {
++		unsigned observed = events.load(std::memory_order_acquire);
++		for (;;) {
++			if (observed & (PRESENT_REQUESTED | TERMINAL_FAILURE)) { return false; }
++			if (events.compare_exchange_weak(observed, observed | PRESENT_REQUESTED, std::memory_order_acq_rel)) { return true; }
++		}
++	}
++	bool present_was_requested() const { return (events.load(std::memory_order_acquire) & PRESENT_REQUESTED) != 0; }
++	bool take_terminal(bool p_succeeded) {
++		unsigned observed = events.load(std::memory_order_acquire);
++		for (;;) {
++			if (observed & COMPLETION_OBSERVED) { return false; }
++			const unsigned next = observed | COMPLETION_OBSERVED | (p_succeeded ? 0u : TERMINAL_FAILURE);
++			if (events.compare_exchange_weak(observed, next, std::memory_order_acq_rel)) { return true; }
++		}
++	}
++	// Only the first terminal callback calls this; the drawable receipt can
++	// then outlive GPU completion without retaining the compositor slot.
++	std::shared_ptr<void> take_completed_output() {
++		if (!(events.load(std::memory_order_acquire) & COMPLETION_OBSERVED)) { return {}; }
++		return std::move(retained_output);
++	}
++	bool take_scheduled() { return take_once(scheduled_seen); }
++	bool take_presented() { return take_once(presented_seen); }
++	bool take_unrequested() { return take_once(unrequested_seen); }
++	bool take_aborted_completion() { return take_once(aborted_completion_seen); }
++	bool take_nonterminal() { return take_once(nonterminal_seen); }
++};
++
++// A process-lifetime bounded quarantine keeps unresolved native source leases
++// alive across surface destruction. Call retain/release outside Shared::mutex.
++class SubmissionRetentions {
++	std::mutex gate;
++	std::array<std::shared_ptr<SubmissionReceipt>, 4> entries;
++	std::atomic<unsigned> used{ 0 };
++	std::atomic<uint64_t> rejected{ 0 };
++
++public:
++	bool retain(const std::shared_ptr<SubmissionReceipt> &p_receipt) {
++		if (!p_receipt) { return false; }
++		std::lock_guard<std::mutex> guard(gate);
++		for (const auto &entry : entries) { if (entry == p_receipt) { return false; } }
++		for (auto &entry : entries) {
++			if (!entry) { entry = p_receipt; used.fetch_add(1, std::memory_order_relaxed); return true; }
++		}
++		rejected.fetch_add(1, std::memory_order_relaxed);
++		return false;
++	}
++	void release(const std::shared_ptr<SubmissionReceipt> &p_receipt) {
++		std::shared_ptr<SubmissionReceipt> retired;
++		{
++			std::lock_guard<std::mutex> guard(gate);
++			for (auto &entry : entries) {
++				if (entry == p_receipt && entry) { retired = std::move(entry); used.fetch_sub(1, std::memory_order_relaxed); break; }
++			}
++		}
++	}
++	unsigned count() const { return used.load(std::memory_order_relaxed); }
++	uint64_t rejection_count() const { return rejected.load(std::memory_order_relaxed); }
++};
++
++class SubmissionRetentionGuard {
++	SubmissionRetentions &retentions;
++	std::shared_ptr<SubmissionReceipt> receipt;
++	bool committed = false;
++public:
++	SubmissionRetentionGuard(SubmissionRetentions &p_retentions, const std::shared_ptr<SubmissionReceipt> &p_receipt) : retentions(p_retentions), receipt(p_receipt) {}
++	SubmissionRetentionGuard(const SubmissionRetentionGuard &) = delete;
++	SubmissionRetentionGuard &operator=(const SubmissionRetentionGuard &) = delete;
++	void retain_until_terminal() { committed = true; }
++	~SubmissionRetentionGuard() { if (!committed) { retentions.release(receipt); } }
+ };
+ 
+ // Collected under the scheduler lock, released only after that lock is gone.
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -5746,6 +5746,13 @@
+ 			result["display_period_seconds"] = s.display_period;
+ 			result["last_gpu_status"] = s.last_gpu_status;
+ 			result["last_gpu_error_code"] = s.last_gpu_error_code;
++			result["last_gpu_failure_generation"] = int64_t(s.last_gpu_failure_generation);
++			result["ignored_unrequested_commands"] = int64_t(s.ignored_unrequested_commands);
++			result["aborted_completion_not_enqueued"] = int64_t(s.aborted_completion_not_enqueued);
++			result["aborted_completion_other"] = int64_t(s.aborted_completion_other);
++			result["submission_retained"] = int64_t(s.submission_retained);
++			result["submission_retention_rejected"] = int64_t(s.submission_retention_rejected);
++			result["nonterminal_completion_commands"] = int64_t(s.nonterminal_completion_commands);
+ 			Dictionary decision;
+ 			decision["considered"] = int64_t(s.decision.considered);
+ 			decision["proof_rejected"] = int64_t(s.decision.proof_rejected);

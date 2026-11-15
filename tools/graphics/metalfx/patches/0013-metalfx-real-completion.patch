@@ -1,0 +1,714 @@
+diff --git a/drivers/metal/metalfx_frame_bridge.h b/drivers/metal/metalfx_frame_bridge.h
+--- a/drivers/metal/metalfx_frame_bridge.h
++++ b/drivers/metal/metalfx_frame_bridge.h
+@@ -7,6 +7,8 @@
+ enum MFXFrameBridgeResult { MFX_FRAME_OK = 0, MFX_FRAME_UNAVAILABLE = 1, MFX_FRAME_FACTORY_FAILED = 2, MFX_FRAME_INPUT_MISMATCH = 3, MFX_FRAME_ENQUEUE_FAILED = 4 };
+ 
+ extern "C" {
++double mfx_real_gpu_now();
++int mfx_frame_device_capability(void *p_device);
+ void *mfx_frame_create(void *p_device, uint32_t p_input_w, uint32_t p_input_h, uint32_t p_output_w, uint32_t p_output_h,
+ 		uint64_t p_color_format, uint64_t p_depth_format, uint64_t p_motion_format, uint64_t p_output_format, int *r_result);
+ void mfx_frame_retain(void *p_effect);
+diff --git a/drivers/metal/metalfx_frame_bridge.mm b/drivers/metal/metalfx_frame_bridge.mm
+--- a/drivers/metal/metalfx_frame_bridge.mm
++++ b/drivers/metal/metalfx_frame_bridge.mm
+@@ -4,7 +4,24 @@
+ #import <Foundation/Foundation.h>
+ #import <Metal/Metal.h>
+ #import <MetalFX/MetalFX.h>
++#import <QuartzCore/QuartzCore.h>
+ #include <AvailabilityMacros.h>
++
++double mfx_real_gpu_now() { return CACurrentMediaTime(); }
++
++int mfx_frame_device_capability(void *p_device) {
++#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
++	if (@available(macOS 26.0, *)) {
++		id<MTLDevice> device = (__bridge id<MTLDevice>)p_device;
++		if (!device) { return 5; }
++		return [MTLFXFrameInterpolatorDescriptor supportsDevice:device] ? 1 : 2;
++	}
++	return 4;
++#else
++	(void)p_device;
++	return 3;
++#endif
++}
+ 
+ void *mfx_frame_create(void *p_device, uint32_t p_input_w, uint32_t p_input_h, uint32_t p_output_w, uint32_t p_output_h,
+ 		uint64_t p_color_format, uint64_t p_depth_format, uint64_t p_motion_format, uint64_t p_output_format, int *r_result) {
+diff --git a/drivers/metal/rendering_device_driver_metal3.cpp b/drivers/metal/rendering_device_driver_metal3.cpp
+--- a/drivers/metal/rendering_device_driver_metal3.cpp
++++ b/drivers/metal/rendering_device_driver_metal3.cpp
+@@ -37,10 +37,30 @@
+ #include "drivers/metal/rendering_context_driver_metal.h"
+ #ifdef MACOS_ENABLED
+ #include "drivers/metal/metalfx_denoised_bridge.h"
++#include "drivers/metal/metalfx_frame_bridge.h"
+ #endif
+ 
+ namespace MTL3 {
+ #ifdef MACOS_ENABLED
++double RenderingDeviceDriverMetal::real_gpu_completion_now() const {
++	return mfx_real_gpu_now();
++}
++int RenderingDeviceDriverMetal::metalfx_frame_device_capability() const {
++	return mfx_frame_device_capability(device);
++}
++bool RenderingDeviceDriverMetal::real_gpu_completion_register(CommandBufferID p_buffer, const std::shared_ptr<RealGPUCompletion> &p_state, const RealGPUCompletion::Reservation &p_reservation) {
++	if (!p_buffer.id || !p_state) { return false; }
++	MDCommandBuffer *cmd = (MDCommandBuffer *)p_buffer.id;
++	cmd->end();
++	MTL::CommandBuffer *native = cmd->ensure_command_buffer();
++	if (!native) { return false; }
++	native->addCompletedHandler([state = p_state, reservation = p_reservation](MTL::CommandBuffer *completed) {
++		const bool success = completed && completed->status() == MTL::CommandBufferStatusCompleted && completed->error() == nullptr;
++		const double gpu_end = success ? completed->GPUEndTime() : 0;
++		state->complete(reservation, success, gpu_end, mfx_real_gpu_now());
++	});
++	return true;
++}
+ int RenderingDeviceDriverMetal::denoised_capability() const {
+ 	return sync_mode == HazardTracking ? mfx_denoised_capability(device) : MFX_DENOISED_HAZARD_REQUIRED;
+ }
+diff --git a/drivers/metal/rendering_device_driver_metal3.h b/drivers/metal/rendering_device_driver_metal3.h
+--- a/drivers/metal/rendering_device_driver_metal3.h
++++ b/drivers/metal/rendering_device_driver_metal3.h
+@@ -78,6 +78,10 @@
+ public:
+ 	Error initialize(uint32_t p_device_index, uint32_t p_frame_count) override;
+ #ifdef MACOS_ENABLED
++	bool real_gpu_completion_supported() const override { return true; }
++	double real_gpu_completion_now() const override;
++	bool real_gpu_completion_register(CommandBufferID, const std::shared_ptr<RealGPUCompletion> &, const RealGPUCompletion::Reservation &) override;
++	int metalfx_frame_device_capability() const override;
+ 	int denoised_capability() const override;
+ 	void *denoised_create(uint32_t, uint32_t, uint32_t, uint32_t, int &) override;
+ 	void denoised_retain(void *) override;
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -1001,6 +1001,7 @@
+ 		}
+ 
+ 		RENDER_TIMESTAMP("> Render Viewport " + itos(i));
++		if (vp->real_gpu_observation_requested && vp->use_xr && vp->self == real_gpu_observer_viewport && real_gpu_observer) { real_gpu_observer->invalidate("ineligible_viewport"); }
+ 
+ 		RSG::texture_storage->render_target_set_as_unused(vp->render_target);
+ #ifndef XR_DISABLED
+@@ -1058,6 +1059,7 @@
+ 
+ 			// render standard mono camera
+ 			_draw_viewport(vp);
++			if (p_swap_buffers && vp->real_gpu_observation_requested) { _real_gpu_observe_viewport(vp); }
+ 
+ 			if (vp->viewport_to_screen != DisplayServerEnums::INVALID_WINDOW_ID && (!vp->viewport_render_direct_to_screen || !RSG::rasterizer->is_low_end())) {
+ 				//copy to screen if set as such
+@@ -1204,6 +1206,7 @@
+ 	if (viewport->use_xr == p_use_xr) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 
+ 	viewport->use_xr = p_use_xr;
+@@ -1251,6 +1254,7 @@
+ 	if (viewport->scaling_3d_mode == p_mode) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 
+ 	bool motion_vectors_before = _viewport_requires_motion_vectors(viewport);
+@@ -1298,6 +1302,7 @@
+ 	if (viewport->scaling_3d_scale == CLAMP(p_scaling_3d_scale, 0.1, 2.0)) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 
+ 	viewport->scaling_3d_scale = CLAMP(p_scaling_3d_scale, 0.1, 2.0);
+@@ -1316,6 +1321,7 @@
+ void RendererViewport::_viewport_set_size(Viewport *p_viewport, int p_width, int p_height, uint32_t p_view_count) {
+ 	Size2i new_size(p_width, p_height);
+ 	if (p_viewport->size != new_size || p_viewport->view_count != p_view_count) {
++		if (p_viewport->self == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(p_viewport);
+ 		p_viewport->size = new_size;
+ 		p_viewport->view_count = p_view_count;
+@@ -1337,6 +1343,7 @@
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 
++	if (active_viewports.has(viewport) != p_active && viewport->viewport_to_screen == DisplayServerEnums::MAIN_WINDOW_ID) { _real_gpu_reset_main(); }
+ 	if (p_active) {
+ 		ERR_FAIL_COND_MSG(active_viewports.has(viewport), "Can't make active a Viewport that is already active.");
+ 		mfx_cancel_viewport_source(viewport);
+@@ -1370,6 +1377,7 @@
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 	if (viewport->viewport_to_screen != p_screen || viewport->viewport_to_screen_rect != p_rect) {
++		if (viewport->viewport_to_screen == DisplayServerEnums::MAIN_WINDOW_ID || p_screen == DisplayServerEnums::MAIN_WINDOW_ID) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(viewport);
+ 		if (p_screen == DisplayServerEnums::MAIN_WINDOW_ID) {
+ 			mfx_cancel_main_sources();
+@@ -1413,6 +1421,7 @@
+ 	}
+ 
+ 	RSG::texture_storage->render_target_set_direct_to_screen(viewport->render_target, p_enable);
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	viewport->viewport_render_direct_to_screen = p_enable;
+ 
+ 	// if attached to screen already, setup screen size and position, this needs to happen after setting flag to avoid an unnecessary buffer allocation
+@@ -1426,6 +1435,7 @@
+ 	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
+ 	ERR_FAIL_NULL(viewport);
+ 	if (viewport->update_mode != p_mode) {
++		if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(viewport);
+ 	}
+ 
+@@ -1484,6 +1494,7 @@
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	if (viewport->disable_2d != p_disable) {
++		if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(viewport);
+ 	}
+ 	viewport->disable_2d = p_disable;
+@@ -1511,6 +1522,7 @@
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	if (viewport->disable_3d != p_disable) {
++		if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(viewport);
+ 		++viewport->metal_fx_generation;
+ 		++viewport->metal_fx_frame_generation;
+@@ -1526,6 +1538,7 @@
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	if (viewport->camera != p_camera) {
++		if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(viewport);
+ 		++viewport->metal_fx_generation;
+ 		++viewport->metal_fx_frame_generation;
+@@ -1541,6 +1554,7 @@
+ 	ERR_FAIL_NULL(viewport);
+ 
+ 	if (viewport->scenario != p_scenario) {
++		if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(viewport);
+ 		++viewport->metal_fx_generation;
+ 		++viewport->metal_fx_frame_generation;
+@@ -1598,6 +1612,7 @@
+ 	if (viewport->transparent_bg == p_enabled) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 
+ 	RSG::texture_storage->render_target_set_transparent(viewport->render_target, p_enabled);
+@@ -1644,6 +1659,7 @@
+ 	if (viewport->msaa_2d == p_msaa) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 	viewport->msaa_2d = p_msaa;
+ 	RSG::texture_storage->render_target_set_msaa(viewport->render_target, p_msaa);
+@@ -1656,6 +1672,7 @@
+ 	if (viewport->msaa_3d == p_msaa) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 	viewport->msaa_3d = p_msaa;
+ 	_configure_3d_render_buffers(viewport);
+@@ -1668,6 +1685,7 @@
+ 	if (viewport->use_hdr_2d == p_use_hdr_2d) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 	viewport->use_hdr_2d = p_use_hdr_2d;
+ 	RSG::texture_storage->render_target_set_use_hdr(viewport->render_target, p_use_hdr_2d);
+@@ -1692,6 +1710,7 @@
+ 	if (viewport->screen_space_aa == p_mode) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 	viewport->screen_space_aa = p_mode;
+ 	_configure_3d_render_buffers(viewport);
+@@ -1708,6 +1727,7 @@
+ 	if (viewport->use_taa == p_use_taa) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 
+ 	bool motion_vectors_before = _viewport_requires_motion_vectors(viewport);
+@@ -1728,6 +1748,7 @@
+ 	if (viewport->use_debanding == p_use_debanding) {
+ 		return;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	mfx_cancel_viewport_source(viewport);
+ 	viewport->use_debanding = p_use_debanding;
+ 	RSG::texture_storage->render_target_set_use_debanding(viewport->render_target, p_use_debanding);
+@@ -1817,6 +1838,7 @@
+ 	if (attempts > uint64_t(INT64_MAX) - 2) {
+ 		return receipt;
+ 	}
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
+ 	uint64_t serial = ++viewport->metal_fx_reset_serial;
+ 	history->requested.store(serial, std::memory_order_release);
+ 	// An already encoded diagnostic image belongs to the old temporal history.
+@@ -1827,6 +1849,125 @@
+ 	receipt["accepted"] = true;
+ 	receipt["serial"] = int64_t(serial);
+ 	return receipt;
++}
++
++void RendererViewport::_real_gpu_reset_main() {
++	if (!real_gpu_observer || real_gpu_observer_viewport.is_null()) { return; }
++	Viewport *viewport = viewport_owner.get_or_null(real_gpu_observer_viewport);
++	if (!viewport || !viewport->real_gpu_observation_requested) { return; }
++	viewport->real_gpu_observation_eligible = false;
++	RD *rd = RD::get_singleton();
++	real_gpu_observer->reset(true, rd ? rd->real_gpu_completion_now() : 0);
++}
++
++void RendererViewport::_real_gpu_observe_viewport(Viewport *p_viewport) {
++	if (!real_gpu_observer || p_viewport->self != real_gpu_observer_viewport) { return; }
++	RD *rd = RD::get_singleton();
++	if (!rd || !rd->real_gpu_completion_supported()) { real_gpu_observer->invalidate("backend_unavailable"); return; }
++	const Size2i screen_size(rd->screen_get_width(DisplayServerEnums::MAIN_WINDOW_ID), rd->screen_get_height(DisplayServerEnums::MAIN_WINDOW_ID));
++	const Rect2 screen_rect{ Vector2(), Size2(screen_size) };
++	if (p_viewport->viewport_to_screen != DisplayServerEnums::MAIN_WINDOW_ID || p_viewport->use_xr || p_viewport->view_count != 1 ||
++			p_viewport->viewport_render_direct_to_screen || screen_size.x <= 1 || screen_size.y <= 1 || p_viewport->size != screen_size ||
++			(p_viewport->viewport_to_screen_rect != Rect2() && p_viewport->viewport_to_screen_rect != screen_rect)) {
++		real_gpu_observer->invalidate("ineligible_viewport"); return;
++	}
++	int main_count = 0;
++	for (Viewport *candidate : sorted_active_viewports) {
++		if (candidate->last_pass == draw_viewports_pass && candidate->viewport_to_screen == DisplayServerEnums::MAIN_WINDOW_ID) { ++main_count; }
++	}
++	if (main_count != 1) { real_gpu_observer->invalidate("multiple_main_viewports"); return; }
++	// A repeated untouched RT is not a new real 3D scene render.
++#ifdef _3D_DISABLED
++	real_gpu_observer->invalidate("scene_unavailable"); return;
++#else
++	if (p_viewport->disable_3d || !p_viewport->render_buffers.is_valid() || !RSG::scene->is_camera(p_viewport->camera) || !RSG::scene->is_scenario(p_viewport->scenario)) { real_gpu_observer->invalidate("scene_unavailable"); return; }
++#endif
++	if (RSG::texture_storage->render_target_get_override_color(p_viewport->render_target).is_valid()) { real_gpu_observer->invalidate("overridden_real_target"); return; }
++	RID texture = RSG::texture_storage->texture_get_rd_texture(RSG::texture_storage->render_target_get_texture(p_viewport->render_target));
++	if (texture.is_null()) { real_gpu_observer->invalidate("missing_real_texture"); return; }
++	if (rd->real_gpu_completion_observe(texture, real_gpu_observer, RSG::rasterizer->get_frame_number()) == OK) {
++		p_viewport->real_gpu_observation_eligible = true;
++	}
++}
++
++void RendererViewport::viewport_set_real_gpu_observation_requested(RID p_viewport, bool p_enabled) {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL(viewport);
++	if (viewport->real_gpu_observation_requested == p_enabled && (!p_enabled || real_gpu_observer_viewport == p_viewport)) { return; }
++	viewport->real_gpu_observation_requested = p_enabled;
++	viewport->real_gpu_observation_eligible = false;
++	if (!p_enabled) {
++		if (real_gpu_observer_viewport == p_viewport) {
++			if (real_gpu_observer) { real_gpu_observer->reset(false, 0); }
++			real_gpu_observer_viewport = RID();
++		}
++		return;
++	}
++	RD *rd = RD::get_singleton();
++	if (!rd || !rd->real_gpu_completion_supported() || real_gpu_observer_viewport.is_valid()) { return; }
++	if (!real_gpu_observer) { real_gpu_observer = std::make_shared<RealGPUCompletion>(); }
++	real_gpu_observer_viewport = p_viewport;
++	real_gpu_observer->reset(true, rd->real_gpu_completion_now());
++}
++
++void RendererViewport::viewport_reset_real_gpu_observation(RID p_viewport) {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL(viewport);
++	if (!viewport->real_gpu_observation_requested) { return; }
++	if (p_viewport == real_gpu_observer_viewport) { _real_gpu_reset_main(); }
++	else { viewport_set_real_gpu_observation_requested(p_viewport, true); }
++}
++
++Dictionary RendererViewport::viewport_get_real_gpu_observation(RID p_viewport) const {
++	Viewport *viewport = viewport_owner.get_or_null(p_viewport);
++	ERR_FAIL_NULL_V(viewport, Dictionary());
++	RD *rd = RD::get_singleton();
++	bool supported = rd && rd->real_gpu_completion_supported();
++	Dictionary result;
++	result["requested"] = viewport->real_gpu_observation_requested;
++	result["supported"] = supported;
++	result["valid"] = false;
++	result["eligible"] = viewport->real_gpu_observation_eligible;
++	result["reason"] = !viewport->real_gpu_observation_requested ? "not_requested" : (!supported ? "backend_unavailable" : "observer_busy");
++	result["clock"] = supported ? "mach_seconds" : "unavailable";
++	result["retention_seconds"] = RealGPUCompletion::RETENTION_SECONDS;
++	result["capacity"] = int64_t(RealGPUCompletion::CAPACITY);
++	result["samples"] = Array();
++	if (!viewport->real_gpu_observation_requested || !supported || p_viewport != real_gpu_observer_viewport || !real_gpu_observer) { return result; }
++	auto snapshot = real_gpu_observer->snapshot(rd->real_gpu_completion_now());
++	result["generation"] = int64_t(snapshot.generation);
++	result["now_seconds"] = snapshot.now_seconds;
++	result["observed_through_seconds"] = snapshot.observed_through_seconds;
++	result["coverage_start_seconds"] = snapshot.coverage_start_seconds;
++	result["pending"] = int64_t(snapshot.pending);
++	result["stale_callbacks"] = int64_t(snapshot.stale_callbacks);
++	result["failed"] = snapshot.failed;
++	result["overflow"] = snapshot.overflow;
++	result["invalid_clock"] = snapshot.invalid_clock;
++	result["valid"] = snapshot.enabled && !snapshot.failed && !snapshot.overflow && !snapshot.invalid_clock && viewport->real_gpu_observation_eligible;
++	result["reason"] = !viewport->real_gpu_observation_eligible && !snapshot.failed ? "awaiting_frame" : snapshot.reason;
++	Array records;
++	for (size_t i = 0; i < snapshot.count; ++i) {
++		Dictionary record;
++		record["generation"] = int64_t(snapshot.samples[i].generation);
++		record["frame"] = int64_t(snapshot.samples[i].frame);
++		record["gpu_end_seconds"] = snapshot.samples[i].gpu_end_seconds;
++		records.push_back(record);
++	}
++	result["samples"] = records;
++	return result;
++}
++
++Dictionary RendererViewport::viewport_get_metalfx_frame_capability(RID p_viewport) const {
++	ERR_FAIL_NULL_V(viewport_owner.get_or_null(p_viewport), Dictionary());
++	RD *rd = RD::get_singleton();
++	const int code = rd ? rd->metalfx_frame_device_capability() : 0;
++	Dictionary result;
++	result["compiled"] = code == 3 ? "no" : (code >= 1 && code <= 5 ? "yes" : "unknown");
++	result["os_available"] = code == 4 ? "no" : (code == 1 || code == 2 || code == 5 ? "yes" : "unknown");
++	result["device_support"] = code == 1 ? "supported" : (code == 2 ? "unsupported" : "unknown");
++	result["reason"] = code == 1 ? "supported" : (code == 2 ? "device_unsupported" : (code == 3 ? "sdk_unavailable" : (code == 4 ? "os_unavailable" : (code == 5 ? "device_unavailable" : "backend_unknown"))));
++	return result;
+ }
+ 
+ void RendererViewport::viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled) {
+@@ -2085,6 +2226,10 @@
+ bool RendererViewport::free(RID p_rid) {
+ 	if (viewport_owner.owns(p_rid)) {
+ 		Viewport *viewport = viewport_owner.get_or_null(p_rid);
++		if (p_rid == real_gpu_observer_viewport) {
++			if (real_gpu_observer) { real_gpu_observer->reset(false, 0); }
++			real_gpu_observer_viewport = RID();
++		} else if (viewport->viewport_to_screen == DisplayServerEnums::MAIN_WINDOW_ID) { _real_gpu_reset_main(); }
+ 		mfx_cancel_viewport_source(viewport);
+ 
+ 		RSG::texture_storage->render_target_free(viewport->render_target);
+diff --git a/servers/rendering/renderer_viewport.h b/servers/rendering/renderer_viewport.h
+--- a/servers/rendering/renderer_viewport.h
++++ b/servers/rendering/renderer_viewport.h
+@@ -36,6 +36,7 @@
+ #include "servers/rendering/rendering_server_enums.h"
+ #include "servers/rendering/rendering_server_types.h"
+ #include "servers/rendering/storage/render_scene_buffers.h"
++#include "servers/rendering/storage/real_gpu_completion.h"
+ 
+ class RendererViewport {
+ public:
+@@ -73,6 +74,8 @@
+ 		bool metal_fx_frame_composition_requested = false;
+ 		std::shared_ptr<OpenRCMetalPresent::SourceGeneration> metal_fx_presentation_source;
+ 		bool metal_fx_gpu_observation_requested = false;
++		bool real_gpu_observation_requested = false;
++		bool real_gpu_observation_eligible = false;
+ 
+ 		RSE::ViewportMSAA msaa_2d = RSE::VIEWPORT_MSAA_DISABLED;
+ 		RSE::ViewportMSAA msaa_3d = RSE::VIEWPORT_MSAA_DISABLED;
+@@ -210,6 +213,11 @@
+ 	int num_viewports_with_motion_vectors = 0;
+ 
+ private:
++	// One bounded main-window observer, reused across viewport generations.
++	std::shared_ptr<RealGPUCompletion> real_gpu_observer;
++	RID real_gpu_observer_viewport;
++	void _real_gpu_reset_main();
++	void _real_gpu_observe_viewport(Viewport *p_viewport);
+ 	Vector<Viewport *> _sort_active_viewports();
+ 	void _viewport_set_size(Viewport *p_viewport, int p_width, int p_height, uint32_t p_view_count);
+ 	bool _viewport_requires_motion_vectors(Viewport *p_viewport);
+@@ -297,6 +305,10 @@
+ 	Dictionary viewport_get_metalfx_status(RID p_viewport) const;
+ 	void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled);
+ 	Dictionary viewport_get_metalfx_gpu_status(RID p_viewport) const;
++	void viewport_set_real_gpu_observation_requested(RID p_viewport, bool p_enabled);
++	void viewport_reset_real_gpu_observation(RID p_viewport);
++	Dictionary viewport_get_real_gpu_observation(RID p_viewport) const;
++	Dictionary viewport_get_metalfx_frame_capability(RID p_viewport) const;
+ 	void viewport_set_metalfx_frame_requested(RID p_viewport, bool p_enabled);
+ 	void viewport_set_metalfx_frame_composition_requested(RID p_viewport, bool p_enabled);
+ 	Dictionary viewport_get_metalfx_frame_composition_status(RID p_viewport) const;
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -1298,6 +1298,33 @@
+ 	ERR_FAIL_COND_V_MSG(p_offset + p_size > buffer->size, ERR_INVALID_PARAMETER, "Attempted to write buffer (" + itos((p_offset + p_size) - buffer->size) + " bytes) past the end.");
+ 
+ 	return _buffer_update(buffer, p_buffer, p_offset, p_size, p_data);
++}
++
++namespace {
++struct RealGPUCompletionCallback {
++	std::shared_ptr<RealGPUCompletion> state;
++	RealGPUCompletion::Reservation reservation;
++};
++void real_gpu_completion_callback(RenderingDeviceDriver *p_driver, RenderingDeviceDriver::CommandBufferID p_buffer, void *p_data) {
++	RealGPUCompletionCallback *args = static_cast<RealGPUCompletionCallback *>(p_data);
++	if (!p_driver->real_gpu_completion_register(p_buffer, args->state, args->reservation)) {
++		args->state->fail(args->reservation, "registration_failed");
++	}
++	memdelete(args);
++}
++}
++
++Error RenderingDevice::real_gpu_completion_observe(RID p_texture, const std::shared_ptr<RealGPUCompletion> &p_state, uint64_t p_frame) {
++	ERR_RENDER_THREAD_GUARD_V(ERR_UNAVAILABLE);
++	if (!p_state || !real_gpu_completion_supported()) { return ERR_UNAVAILABLE; }
++	RealGPUCompletion::Reservation reservation = p_state->reserve(p_frame, real_gpu_completion_now());
++	if (!reservation.generation) { return ERR_UNAVAILABLE; }
++	RealGPUCompletionCallback *args = memnew(RealGPUCompletionCallback);
++	args->state = p_state; args->reservation = reservation;
++	CallbackResource resource{ .rid = p_texture, .usage = CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE };
++	Error result = driver_callback_add(real_gpu_completion_callback, args, VectorView<CallbackResource>(&resource, 1));
++	if (result != OK) { p_state->fail(reservation, "enqueue_failed"); memdelete(args); }
++	return result;
+ }
+ 
+ Error RenderingDevice::driver_callback_add(RDD::DriverCallback p_callback, void *p_userdata, VectorView<CallbackResource> p_resources) {
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -325,6 +325,10 @@
+ 	};
+ 
+ 	Error driver_callback_add(RDD::DriverCallback p_callback, void *p_userdata, VectorView<CallbackResource> p_resources);
++	bool real_gpu_completion_supported() const { return driver && driver->real_gpu_completion_supported(); }
++	double real_gpu_completion_now() const { return driver ? driver->real_gpu_completion_now() : 0; }
++	int metalfx_frame_device_capability() const { return driver ? driver->metalfx_frame_device_capability() : 0; }
++	Error real_gpu_completion_observe(RID p_texture, const std::shared_ptr<RealGPUCompletion> &p_state, uint64_t p_frame);
+ 
+ private:
+ 	struct DenoisedProgress {
+diff --git a/servers/rendering/rendering_device_driver.h b/servers/rendering/rendering_device_driver.h
+--- a/servers/rendering/rendering_device_driver.h
++++ b/servers/rendering/rendering_device_driver.h
+@@ -49,6 +49,9 @@
+ #include "core/templates/paged_allocator.h"
+ #include "servers/rendering/rendering_context_driver.h"
+ #include "servers/rendering/rendering_device_commons.h"
++#include "servers/rendering/storage/real_gpu_completion.h"
++
++#include <memory>
+ 
+ class RenderingShaderContainer;
+ class RenderingShaderContainerFormat;
+@@ -834,6 +837,13 @@
+ 	virtual int denoised_validate(void *, const DenoisedFrame &) const { return 1; }
+ 	virtual int denoised_encode(void *, CommandBufferID, const DenoisedFrame &) { return 1; }
+ 
++	// Optional backend extension; unsupported drivers never register a handler.
++	virtual bool real_gpu_completion_supported() const { return false; }
++	virtual double real_gpu_completion_now() const { return 0; }
++	virtual bool real_gpu_completion_register(CommandBufferID, const std::shared_ptr<RealGPUCompletion> &, const RealGPUCompletion::Reservation &) { return false; }
++	// 0 unknown backend, 1 yes, 2 no, 3 SDK unavailable, 4 OS unavailable, 5 no device.
++	virtual int metalfx_frame_device_capability() const { return 0; }
++
+ 	typedef void (*DriverCallback)(RenderingDeviceDriver *p_driver, CommandBufferID p_command_buffer, void *p_userdata);
+ 
+ 	/*****************/
+diff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -2929,6 +2929,10 @@
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_status", "viewport"), &RenderingServer::viewport_get_metalfx_status);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_gpu_observation_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_gpu_observation_requested);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_gpu_status", "viewport"), &RenderingServer::viewport_get_metalfx_gpu_status);
++	ClassDB::bind_method(D_METHOD("viewport_set_real_gpu_observation_requested", "viewport", "enabled"), &RenderingServer::viewport_set_real_gpu_observation_requested);
++	ClassDB::bind_method(D_METHOD("viewport_reset_real_gpu_observation", "viewport"), &RenderingServer::viewport_reset_real_gpu_observation);
++	ClassDB::bind_method(D_METHOD("viewport_get_real_gpu_observation", "viewport"), &RenderingServer::viewport_get_real_gpu_observation);
++	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_frame_capability", "viewport"), &RenderingServer::viewport_get_metalfx_frame_capability);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_frame_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_frame_requested);
+ 	ClassDB::bind_method(D_METHOD("viewport_set_metalfx_frame_composition_requested", "viewport", "enable"), &RenderingServer::viewport_set_metalfx_frame_composition_requested);
+ 	ClassDB::bind_method(D_METHOD("viewport_get_metalfx_frame_composition_status", "viewport"), &RenderingServer::viewport_get_metalfx_frame_composition_status);
+diff --git a/servers/rendering/rendering_server.h b/servers/rendering/rendering_server.h
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -625,6 +625,10 @@
+ 	virtual Dictionary viewport_get_metalfx_status(RID p_viewport) const = 0;
+ 	virtual void viewport_set_metalfx_gpu_observation_requested(RID p_viewport, bool p_enabled) = 0;
+ 	virtual Dictionary viewport_get_metalfx_gpu_status(RID p_viewport) const = 0;
++	virtual void viewport_set_real_gpu_observation_requested(RID p_viewport, bool p_enabled) = 0;
++	virtual void viewport_reset_real_gpu_observation(RID p_viewport) = 0;
++	virtual Dictionary viewport_get_real_gpu_observation(RID p_viewport) const = 0;
++	virtual Dictionary viewport_get_metalfx_frame_capability(RID p_viewport) const = 0;
+ 	virtual void viewport_set_metalfx_frame_requested(RID p_viewport, bool p_enabled) = 0;
+ 	virtual void viewport_set_metalfx_frame_composition_requested(RID p_viewport, bool p_enabled) = 0;
+ 	virtual Dictionary viewport_get_metalfx_frame_composition_status(RID p_viewport) const = 0;
+diff --git a/servers/rendering/rendering_server_default.h b/servers/rendering/rendering_server_default.h
+--- a/servers/rendering/rendering_server_default.h
++++ b/servers/rendering/rendering_server_default.h
+@@ -811,6 +811,10 @@
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_status, RID)
+ 	FUNC2(viewport_set_metalfx_gpu_observation_requested, RID, bool)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_gpu_status, RID)
++	FUNC2(viewport_set_real_gpu_observation_requested, RID, bool)
++	FUNC1(viewport_reset_real_gpu_observation, RID)
++	FUNC1RC(Dictionary, viewport_get_real_gpu_observation, RID)
++	FUNC1RC(Dictionary, viewport_get_metalfx_frame_capability, RID)
+ 	FUNC2(viewport_set_metalfx_frame_requested, RID, bool)
+ 	FUNC2(viewport_set_metalfx_frame_composition_requested, RID, bool)
+ 	FUNC1RC(Dictionary, viewport_get_metalfx_frame_composition_status, RID)
+diff --git a/servers/rendering/storage/real_gpu_completion.h b/servers/rendering/storage/real_gpu_completion.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/real_gpu_completion.h
+@@ -0,0 +1,142 @@
++// SPDX-License-Identifier: MIT
++// Bounded per-main-viewport real-render completion receipts. A GPU callback
++// retains only this state and its reservation; no render target is retained.
++#pragma once
++
++#include <algorithm>
++#include <array>
++#include <cmath>
++#include <cstdint>
++#include <limits>
++#include <mutex>
++
++class RealGPUCompletion {
++public:
++    static constexpr size_t CAPACITY = 1024;
++    static constexpr double RETENTION_SECONDS = 3.0;
++    static constexpr uint64_t MAX_ID = uint64_t(std::numeric_limits<int64_t>::max());
++    struct Reservation { uint64_t generation = 0; uint64_t frame = 0; double reserved_at = 0; };
++    struct Sample { uint64_t generation = 0; uint64_t frame = 0; double gpu_end_seconds = 0; };
++    struct Snapshot {
++        bool enabled = false, failed = false, overflow = false, invalid_clock = false;
++        uint64_t generation = 0, stale_callbacks = 0;
++        size_t pending = 0, count = 0;
++        double now_seconds = 0, observed_through_seconds = 0, coverage_start_seconds = 0;
++        const char *reason = "not_requested";
++        std::array<Sample, CAPACITY> samples{};
++    };
++private:
++    struct Pending { bool active = false; Reservation reservation; };
++    mutable std::mutex gate;
++    std::array<Pending, CAPACITY> pending{};
++    std::array<Sample, CAPACITY> samples{};
++    size_t pending_count = 0, outstanding_count = 0, sample_count = 0;
++    uint64_t generation = 0, last_frame = 0, stale_callbacks = 0;
++    bool have_frame = false, enabled = false, failed = false, overflow = false, invalid_clock = false;
++    double started_at = 0, last_reserved_at = 0, evicted_through = 0;
++    const char *reason = "not_requested";
++    static bool valid_time(double p_time) { return std::isfinite(p_time) && p_time > 0; }
++    void fail_locked(const char *p_reason) { failed = true; reason = p_reason; }
++    void prune_locked(double p_now) {
++        const double cutoff = p_now - RETENTION_SECONDS;
++        size_t keep = 0;
++        for (size_t i = 0; i < sample_count; ++i) {
++            if (samples[i].gpu_end_seconds < cutoff) {
++                evicted_through = std::max(evicted_through, samples[i].gpu_end_seconds);
++            } else { samples[keep++] = samples[i]; }
++        }
++        sample_count = keep;
++    }
++public:
++    // Invalidate prior callbacks without replacing the shared state object.
++    bool reset(bool p_enabled, double p_now) {
++        std::lock_guard<std::mutex> lock(gate);
++        if (generation == MAX_ID) { failed = true; reason = "generation_exhausted"; return false; }
++        ++generation;
++        pending_count = sample_count = 0;
++        // Old-generation callbacks retain their slots until they arrive. A
++        // stalled GPU therefore cannot grow memory across repeated resets.
++        have_frame = false; enabled = p_enabled; failed = overflow = invalid_clock = false;
++        started_at = last_reserved_at = p_now; evicted_through = 0;
++        reason = p_enabled ? "ok" : "not_requested";
++        if (p_enabled && !valid_time(p_now)) { invalid_clock = true; fail_locked("invalid_clock"); return false; }
++        return true;
++    }
++    Reservation reserve(uint64_t p_frame, double p_now) {
++        std::lock_guard<std::mutex> lock(gate);
++        if (!enabled || failed || overflow || invalid_clock) { return {}; }
++        if (!valid_time(p_now) || p_now < last_reserved_at) { invalid_clock = true; fail_locked("invalid_clock"); return {}; }
++        if (p_frame > MAX_ID || (have_frame && p_frame <= last_frame)) { fail_locked("duplicate_or_stale_frame"); return {}; }
++        if (outstanding_count == CAPACITY) { overflow = true; fail_locked("pending_overflow"); return {}; }
++        for (auto &p : pending) {
++            if (!p.active) {
++                p.active = true; p.reservation = { generation, p_frame, p_now };
++                ++pending_count; ++outstanding_count; last_frame = p_frame; have_frame = true; last_reserved_at = p_now;
++                return p.reservation;
++            }
++        }
++        overflow = true; fail_locked("pending_overflow"); return {};
++    }
++    void fail(const Reservation &p_reservation, const char *p_reason) {
++        std::lock_guard<std::mutex> lock(gate);
++        for (auto &p : pending) {
++            if (p.active && p.reservation.generation == p_reservation.generation && p.reservation.frame == p_reservation.frame && p.reservation.reserved_at == p_reservation.reserved_at) {
++                p.active = false; --outstanding_count;
++                if (p_reservation.generation == generation && pending_count) { --pending_count; }
++                break;
++            }
++        }
++        if (p_reservation.generation == generation && enabled) { fail_locked(p_reason); }
++    }
++    void invalidate(const char *p_reason) {
++        std::lock_guard<std::mutex> lock(gate);
++        if (enabled) { fail_locked(p_reason); }
++    }
++    void complete(const Reservation &p_reservation, bool p_success, double p_gpu_end, double p_now) {
++        std::lock_guard<std::mutex> lock(gate);
++        const bool current = enabled && p_reservation.generation == generation;
++        Pending *slot = nullptr;
++        for (auto &p : pending) {
++            if (p.active && p.reservation.frame == p_reservation.frame && p.reservation.generation == p_reservation.generation && p.reservation.reserved_at == p_reservation.reserved_at) { slot = &p; break; }
++        }
++        if (!slot) { if (current) { fail_locked("unexpected_callback"); } return; }
++        slot->active = false; --outstanding_count;
++        if (!current) { if (stale_callbacks < MAX_ID) { ++stale_callbacks; } return; }
++        --pending_count;
++        if (!p_success) { fail_locked("gpu_failure"); return; }
++        if (!valid_time(p_now) || !valid_time(p_gpu_end) || p_gpu_end < p_reservation.reserved_at || p_gpu_end > p_now) {
++            invalid_clock = true; fail_locked("invalid_clock"); return;
++        }
++        // Different frames with the same or reversed GPU end cannot establish
++        // per-frame cadence, even if callbacks arrive out of order.
++        for (size_t i = 0; i < sample_count; ++i) {
++            if ((samples[i].frame < p_reservation.frame && samples[i].gpu_end_seconds >= p_gpu_end) ||
++                    (samples[i].frame > p_reservation.frame && samples[i].gpu_end_seconds <= p_gpu_end)) {
++                invalid_clock = true; fail_locked("nonmonotonic_gpu_completion"); return;
++            }
++        }
++        prune_locked(p_now);
++        if (p_gpu_end < p_now - RETENTION_SECONDS) { evicted_through = std::max(evicted_through, p_gpu_end); return; }
++        if (sample_count == CAPACITY) { overflow = true; fail_locked("sample_overflow"); return; }
++        samples[sample_count++] = { generation, p_reservation.frame, p_gpu_end };
++    }
++    Snapshot snapshot(double p_now) const {
++        std::lock_guard<std::mutex> lock(gate);
++        Snapshot out;
++        out.enabled = enabled; out.failed = failed; out.overflow = overflow; out.invalid_clock = invalid_clock;
++        out.generation = generation; out.stale_callbacks = stale_callbacks; out.pending = pending_count;
++        out.reason = reason; out.now_seconds = p_now;
++        if (!enabled) { return out; }
++        if (!valid_time(p_now) || p_now < started_at) { out.invalid_clock = out.failed = true; out.reason = "invalid_clock"; return out; }
++        out.coverage_start_seconds = std::max(started_at, p_now - RETENTION_SECONDS);
++        if (evicted_through > 0) { out.coverage_start_seconds = std::max(out.coverage_start_seconds, std::nextafter(evicted_through, std::numeric_limits<double>::infinity())); }
++        out.observed_through_seconds = p_now;
++        for (const auto &p : pending) { if (p.active && p.reservation.generation == generation) { out.observed_through_seconds = std::min(out.observed_through_seconds, p.reservation.reserved_at); } }
++        if (out.observed_through_seconds < out.coverage_start_seconds) { out.failed = true; out.reason = "pending_history_lost"; }
++        for (size_t i = 0; i < sample_count; ++i) {
++            if (samples[i].gpu_end_seconds >= out.coverage_start_seconds && samples[i].gpu_end_seconds <= p_now) { out.samples[out.count++] = samples[i]; }
++        }
++        std::sort(out.samples.begin(), out.samples.begin() + out.count, [](const Sample &a, const Sample &b) { return a.gpu_end_seconds < b.gpu_end_seconds; });
++        return out;
++    }
++};
