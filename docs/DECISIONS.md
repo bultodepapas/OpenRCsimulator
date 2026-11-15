@@ -348,6 +348,24 @@ containment with either backend; do not build a generic backend framework meanwh
 [SQLite WAL](https://www.sqlite.org/wal.html) requires same-host access, so remote
 workers must use structured transport rather than share this database.
 
+### Keep a senior lead with bounded, evidence-producing helpers
+
+**DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**
+The user's selected strongest lead retains design, definitive implementation,
+integration and verification. Prefer Terra/max and Sonnet/high helpers for useful
+independent investigation, drafts and challenge; choose task fit and actual
+capabilities before dispatch. The lead may apply examined drafts directly and
+resolve findings itself. Zero helpers or lighter supported effort can be appropriate
+when the task and acceptance checks justify them, subject to explicit user choices.
+
+The [21-question investigation](research/agent-orchestration-2026-11-15.md) supports
+bounded briefs, actual input identities and evidence-based acceptance, while finding
+no universal benefit from more agents, maximum effort or a copied framework.
+Preserve native delegation and existing permissions instead of adding a separate
+orchestration service. [SUBAGENTS](SUBAGENTS.md) owns current behavior and runtime
+limits. Revisit routing and budgets when client behavior changes or representative
+OpenRC outcomes demonstrate a better tradeoff; this policy is not a measured gain.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.
