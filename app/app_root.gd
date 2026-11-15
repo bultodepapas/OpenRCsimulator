@@ -292,6 +292,8 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	Reconstruction.apply(get_viewport(), Reconstruction.startup_config())
+	if OS.get_environment("OPENRC_METALFX_FRAME_GENERATION") == "1" and OS.get_environment("OPENRC_METALFX_DISPLAY_LINK") == "1":
+		load("res://render/frame_generation.gd").install(self)
 	# UI-28-R5: the staged first Home attaches the bridge once Home exists, so "bridge answers" keeps
 	# meaning a usable route for agents that act right after launch.
 	_debug_bridge_deferred = DebugBridge.requested() and _first_home_staged_requested()
@@ -316,8 +318,12 @@ func _ready() -> void:
 	_radio_menu_ingress_connected = true
 	get_tree().root.focus_entered.connect(func() -> void: _radio_menu_epoch += 1)
 	get_tree().root.focus_exited.connect(func() -> void: _radio_menu_epoch += 1)
-	screens.surface_opened.connect(func(_surface: Control, _id: String, _feedback: bool) -> void: _radio_menu_epoch += 1)
-	screens.surface_closed.connect(func(_id: String, _restore: bool) -> void: _radio_menu_epoch += 1)
+	screens.surface_opened.connect(func(_surface: Control, id: String, _feedback: bool) -> void:
+		_radio_menu_epoch += 1
+		if id in ["pause", "home", "loading"]: _frame_generation_boundary("surface_open:" + id))
+	screens.surface_closed.connect(func(id: String, _restore: bool) -> void:
+		_radio_menu_epoch += 1
+		if id in ["pause", "home", "loading"]: _frame_generation_boundary("surface_close:" + id))
 	if user_args.has("--vehicle=mt8-bisonte") or user_args.has("--vehicle=monster-car-2"):
 		TranslationServer.set_locale("en")
 		if user_args.size() != 1:
@@ -442,6 +448,25 @@ func _process(_delta: float) -> void:
 	# The shell owns the window viewport for Home and Home-started flights. Direct
 	# flights leave has_home false and are monitored by main.gd instead.
 	Reconstruction.guard_runtime_failure(get_viewport())
+
+
+func _frame_generation_boundary(reason: String) -> void:
+	var viewport := get_viewport()
+	if not is_instance_valid(viewport) or not viewport.has_meta(&"openrc_frame_generation_owner"):
+		return
+	var owner: Variant = viewport.get_meta(&"openrc_frame_generation_owner")
+	if owner is WeakRef and is_instance_valid(owner.get_ref()):
+		owner.get_ref().call("note_discontinuity", reason)
+
+
+func _frame_generation_bind_flight() -> void:
+	var viewport := get_viewport()
+	if not is_instance_valid(viewport) or not viewport.has_meta(&"openrc_frame_generation_owner") or not is_instance_valid(flight):
+		return
+	var owner: Variant = viewport.get_meta(&"openrc_frame_generation_owner")
+	var current_session: Variant = flight.get("session") if _has_property(flight, "session") else null
+	if owner is WeakRef and is_instance_valid(owner.get_ref()) and is_instance_valid(current_session) and _has_property(current_session, "sim"):
+		owner.get_ref().call("bind_simulation", current_session.get("sim"))
 
 
 func _tick_home_flight_preparation() -> void:
@@ -1517,6 +1542,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		if _has_property(flight, "startup_cancel_requested"):
 			flight.startup_cancel_requested = _flight_loading_is_cancelled
 	add_child(flight)
+	_frame_generation_bind_flight()
 	if staged and _has_property(flight, "startup_complete") and not flight.startup_complete:
 		await flight.startup_finished
 	if staged and not _loading_cancelled and flight.startup_error.is_empty() \
@@ -3315,6 +3341,7 @@ func _commit_return_to_workshop() -> void:
 	_keyboard_reader = _workshop_previous_keyboard
 	if flight != null:
 		add_child(flight)
+		_frame_generation_bind_flight()
 		if statistics_service != null:
 			statistics_service.resume_activity()
 		flight._camera.make_current()

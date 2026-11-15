@@ -535,6 +535,8 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 
 func _ready() -> void:
+	if OS.get_environment("OPENRC_METALFX_FRAME_GENERATION") == "1" and OS.get_environment("OPENRC_METALFX_DISPLAY_LINK") == "1":
+		load("res://render/frame_generation.gd").install(self)
 	# A fixed diagnostic runs in this same executable and owns its exit; it never starts a flight scene.
 	for argument: String in user_args:
 		if argument.begins_with("--native-qualification"):
@@ -1134,6 +1136,9 @@ func _prepare_flight() -> void:
 		return
 	session.name = "FlightSession" # a stable path for tools and reports
 	add_child(session)
+	var fg_owner: Variant = get_viewport().get_meta(&"openrc_frame_generation_owner") if get_viewport().has_meta(&"openrc_frame_generation_owner") else null
+	if fg_owner is WeakRef and is_instance_valid(fg_owner.get_ref()):
+		fg_owner.get_ref().call("bind_simulation", session.sim)
 	if startup_checkpoint.is_valid():
 		session.hold("loading")
 	# The windsock is a read-only presentation consumer; uploads happen in World.update. It samples the
