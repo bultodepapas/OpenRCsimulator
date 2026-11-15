@@ -1,0 +1,81 @@
+name: MetalFX source controls
+
+on:
+  pull_request:
+    paths:
+      - 'tools/graphics/metalfx/**'
+      - 'research/engine-upgrade/metalfx/**'
+      - 'tools/godot/run_checked.py'
+      - 'tools/testqueue/common.py'
+      - '.gitattributes'
+      - '.github/workflows/metalfx-source.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/graphics/metalfx/**'
+      - 'research/engine-upgrade/metalfx/**'
+      - 'tools/godot/run_checked.py'
+      - 'tools/testqueue/common.py'
+      - '.gitattributes'
+      - '.github/workflows/metalfx-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: metalfx-source-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  portable:
+    name: Pinned engine patch and mutation controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CXX: g++
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          sparse-checkout: |
+            tools/graphics/metalfx
+            tools/godot
+            tools/testqueue
+            research/engine-upgrade/metalfx
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12.12'
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .tools/apple-metalfx-cache
+          key: metalfx-source-cafc17a192acf67903910a68aeb3c076c0907a4b-83cf257b-v1
+      - name: Fetch and verify the pinned source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive_path=.tools/apple-metalfx-cache/godot-cafc17a192acf67903910a68aeb3c076c0907a4b.zip
+          mkdir -p .tools/apple-metalfx-cache
+          if [[ ! -f "$archive_path" ]]; then
+            curl --fail --location --retry 3 --max-time 180 \
+              --output "$archive_path.partial" \
+              https://codeload.github.com/godotengine/godot/zip/cafc17a192acf67903910a68aeb3c076c0907a4b
+            printf '%s  %s\n' 83cf257bc53427f2b1ea07015dbad298252c20546e916c5daa30a1cf78c45c1e "$archive_path.partial" | sha256sum --check --strict
+            mv -- "$archive_path.partial" "$archive_path"
+          fi
+          printf '%s  %s\n' 83cf257bc53427f2b1ea07015dbad298252c20546e916c5daa30a1cf78c45c1e "$archive_path" | sha256sum --check --strict
+      - name: Run source-bound portable controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tmp/metalfx-source-controls
+          for test in tools/graphics/metalfx/test_engine*.py; do
+            python -B "$test" -v 2>&1 | tee "tmp/metalfx-source-controls/$(basename "$test").log"
+          done
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: metalfx-source-controls
+          path: tmp/metalfx-source-controls/*.log
+          if-no-files-found: warn
+          retention-days: 14

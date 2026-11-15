@@ -1,0 +1,114 @@
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -138,7 +138,11 @@
+ 		return;
+ 	}
+ 	RSE::EnvironmentBG background = is_environment(p_render_data->environment) ? environment_get_background(p_render_data->environment) : RSE::ENV_BG_CLEAR_COLOR;
+-	const char *scene_rejection = metalfx_frame_scene_rejection(!render_list[RENDER_LIST_ALPHA].elements.is_empty(), background);
++	const bool has_alpha = !render_list[RENDER_LIST_ALPHA].elements.is_empty();
++	if (p_buffers->is_metalfx_alpha_qualification_enabled()) {
++		p_buffers->set_metalfx_alpha_qualification_input(has_alpha, RSG::rasterizer->get_frame_number());
++	}
++	const char *scene_rejection = metalfx_frame_scene_rejection(has_alpha && !p_buffers->is_metalfx_alpha_qualification_enabled(), background);
+ 	if (scene_rejection) {
+ 		p_buffers->reject_metalfx_frame(scene_rejection);
+ 		if (p_buffers->is_metalfx_alpha_diagnostic_enabled()) { _capture_metalfx_alpha_diagnostic(p_buffers); }
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -48,6 +48,9 @@
+ 	// The process environment is latched on the first render-buffer creation.
+ 	static const bool enabled = OS::get_singleton()->get_environment("OPENRC_METALFX_ALPHA_DIAGNOSTICS") == "1";
+ 	mfx_alpha_diagnostic_enabled = enabled;
++	// Research-only, latched for the process. No generated pair may be presented.
++	static const bool alpha_qualification = OS::get_singleton()->get_environment("OPENRC_METALFX_ALPHA_QUALIFICATION") == "1";
++	mfx_alpha_qualification_enabled = alpha_qualification;
+ #endif
+ }
+ 
+@@ -176,6 +179,8 @@
+ 		mfx_frame_context = nullptr;
+ 		clear_context(RB_SCOPE_METALFX_FRAME);
+ 	}
++	mfx_alpha_qualification_input_observed = false;
++	mfx_alpha_qualification_input_frame = 0;
+ 	mfx_frame_reason = "not_attempted";
+ #endif
+ }
+@@ -220,6 +225,13 @@
+ void RenderSceneBuffersRD::begin_metalfx_frame_composition(uint64_t p_frame, bool p_compatible) {
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ 	if (!is_metalfx_frame_composition_requested()) {
++		return;
++	}
++	if (mfx_alpha_qualification_enabled) {
++		mfx_composition_active = -1;
++		mfx_composition_handoff = -1;
++		mfx_composition_current_frame = p_frame;
++		mfx_composition_reason = "alpha_qualification_offscreen_only";
+ 		return;
+ 	}
+ 	collect_metalfx_retired_slots();
+@@ -379,6 +391,9 @@
+ 
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ int RenderSceneBuffersRD::_metalfx_composition_ready_slot() const {
++	if (mfx_alpha_qualification_enabled) {
++		return -1;
++	}
+ 	if (!is_metalfx_frame_composition_requested() || !mfx_frame_context || !mfx_frame_context->history || mfx_composition_faulted ||
+ 			mfx_frame_context->history->callback_error.load(std::memory_order_acquire)) {
+ 		return -1;
+@@ -428,6 +443,9 @@
+ 
+ bool RenderSceneBuffersRD::acquire_metalfx_pending_pair(uint64_t p_frame, MetalFXPendingPair &r_pair) {
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (mfx_alpha_qualification_enabled) {
++		return false;
++	}
+ 	if (!is_metalfx_frame_composition_requested() || mfx_composition_handoff < 0 || p_frame != mfx_composition_current_frame) {
+ 		return false;
+ 	}
+@@ -560,6 +578,14 @@
+ 	result["purpose"] = "experiment_not_presentable";
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ 	result["reason"] = mfx_frame_reason;
++	result["alpha_qualification"] = mfx_alpha_qualification_enabled ? "unqualified_alpha_experiment" : "disabled";
++	if (mfx_alpha_qualification_enabled) {
++		const bool available = mfx_alpha_qualification_input_observed && mfx_alpha_qualification_input_frame > 0 && mfx_alpha_qualification_input_frame <= uint64_t(INT64_MAX);
++		result["alpha_qualification_input_scope"] = "last_requested_draw_alpha_list_not_encode_success";
++		result["alpha_qualification_input_available"] = available;
++		result["alpha_qualification_input_frame"] = available ? int64_t(mfx_alpha_qualification_input_frame) : int64_t(-1);
++		result["alpha_qualification_input_has_alpha"] = available ? Variant(mfx_alpha_qualification_last_input_has_alpha) : Variant();
++	}
+ 	if (mfx_alpha_diagnostic) {
+ 		const MetalFXAlphaDiagnostic &snapshot = *mfx_alpha_diagnostic;
+ 		const auto &page = snapshot.page;
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+@@ -118,6 +118,10 @@
+ 	RendererRD::MFXFrameContext *mfx_frame_context = nullptr;
+ 	String mfx_frame_reason = "not_attempted";
+ 	bool mfx_alpha_diagnostic_enabled = false;
++	bool mfx_alpha_qualification_enabled = false;
++	bool mfx_alpha_qualification_input_observed = false;
++	bool mfx_alpha_qualification_last_input_has_alpha = false;
++	uint64_t mfx_alpha_qualification_input_frame = 0;
+ 	RID mfx_alpha_scope_viewport;
+ 	uint64_t mfx_alpha_scope_viewport_generation = 0, mfx_alpha_scope_producer_generation = 0;
+ 	std::unique_ptr<MetalFXAlphaDiagnostic> mfx_alpha_diagnostic;
+@@ -294,6 +298,12 @@
+ 	void reject_metalfx_frame(const char *p_reason);
+ 	virtual void set_metalfx_alpha_diagnostic_scope(RID p_viewport, uint64_t p_viewport_generation, uint64_t p_producer_generation) override;
+ 	bool is_metalfx_alpha_diagnostic_enabled() const { return mfx_alpha_diagnostic_enabled; }
++	bool is_metalfx_alpha_qualification_enabled() const { return mfx_alpha_qualification_enabled; }
++	void set_metalfx_alpha_qualification_input(bool p_has_alpha, uint64_t p_frame) {
++		mfx_alpha_qualification_input_observed = true;
++		mfx_alpha_qualification_last_input_has_alpha = p_has_alpha;
++		mfx_alpha_qualification_input_frame = p_frame;
++	}
+ 	MetalFXAlphaDiagnostic *begin_metalfx_alpha_diagnostic(uint64_t p_frame, uint32_t p_total);
+ 	std::shared_ptr<MetalFXCompositionFrame> get_metalfx_composition_state() const {
+ 		return mfx_composition_active < 0 ? nullptr : mfx_composition_slots[mfx_composition_active].state;
