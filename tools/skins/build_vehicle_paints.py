@@ -2014,6 +2014,649 @@ def _steam_cached(atlas: str):
     return _STEAM_CACHE[atlas]
 
 
+# ---------------------------------------------------------------------------------------------
+# Sebart Avanti S jet: "Camuflaje Selva". A fictional low-visibility combat scheme: a matte three-tone dark-green
+# disruptive camouflage (dark green, black-green and olive drab patches, domain-warped and stretched along the
+# airframe) over the upper surfaces and flanks, a light grey-green countershaded belly with a wavy spray line,
+# low-visibility pale-grey markings (fictional roundel, serial, squadron), touched-up panels, panel-line wash,
+# leading-edge chips to primer and bare alloy, a non-slip walkway, exhaust soot and belly oil streaks. Same four
+# maps and scene-space bake as Sabre Plata; the paint is dielectric and only chips expose metal.
+# ---------------------------------------------------------------------------------------------
+CAMO_ATLASES = dict(SABRE_ATLASES)
+CAMO_GREEN = hex_rgb("#34432c")
+CAMO_BLACK = hex_rgb("#1e281c")
+CAMO_OLIVE = hex_rgb("#565d3b")
+CAMO_BELLY = hex_rgb("#8b9487")
+CAMO_MARK = hex_rgb("#8f9784")  # low-visibility pale grey-green markings
+CAMO_INK = hex_rgb("#17191a")
+CAMO_PRIMER = hex_rgb("#8a8b6a")
+CAMO_RED = hex_rgb("#8e2a26")  # subdued rescue red
+CAMO_ROUGH = 0.66
+_CAMO_ART: dict = {}
+
+
+def _camo_roundel() -> np.ndarray:
+    """Fictional low-visibility roundel: pale ring, black-green disc and a forward chevron (left-right symmetric,
+    so it reads the same on both flanks and on the mirrored wings)."""
+    if "roundel" not in _CAMO_ART:
+        from PIL import ImageDraw
+        size = 512
+        img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        mark = tuple(int(c * 255 + 0.5) for c in CAMO_MARK) + (255,)
+        disc = tuple(int(c * 255 + 0.5) for c in CAMO_BLACK) + (255,)
+        d.ellipse((4, 4, size - 5, size - 5), fill=mark)
+        d.ellipse((40, 40, size - 41, size - 41), fill=disc)
+        c = size / 2
+        d.polygon([(c, 96), (c + 150, 330), (c + 92, 330), (c, 188), (c - 92, 330), (c - 150, 330)], fill=mark)
+        d.ellipse((c - 26, 360, c + 26, 412), fill=mark)
+        _CAMO_ART["roundel"] = np.asarray(img, dtype=np.float64) / 255.0
+    return _CAMO_ART["roundel"]
+
+
+def camo_paint(skin: "_Skin", p, panel_id, seed: int, pattern=None):
+    """Matte three-tone camouflage in scene space, so patches run on across parts and control surfaces.
+    `pattern` replaces the scene position for the patch shapes where stock UVs share texels between faces."""
+    pattern = p if pattern is None else pattern
+    warp = np.stack([fbm(pattern, 0.16, seed + k) - 0.5 for k in range(3)], axis=1) * 0.09
+    q = pattern + warp
+    dark = fbm(q, (0.20, 0.12, 0.34), seed + 5)
+    olive = fbm(q, (0.22, 0.14, 0.30), seed + 9)
+    dark_w = 1.0 - smoothstep(0.437, 0.443, dark)
+    olive_w = smoothstep(0.567, 0.573, olive) * (1.0 - dark_w)
+    colour = mix(np.broadcast_to(CAMO_GREEN, (len(p), 3)).copy(), CAMO_OLIVE, olive_w)
+    colour = mix(colour, CAMO_BLACK, dark_w)
+    # Touched-up panels differ slightly in shade and sheen; the paint fades in sun-exposed blotches.
+    shade = 0.95 + 0.09 * _hash(panel_id, seed=seed + 13)
+    fade = fbm(p, 0.07, seed + 17)
+    skin.colour = colour * (shade * (0.95 + 0.10 * fade))[:, None]
+    skin.rough = CAMO_ROUGH + 0.05 * (_hash(panel_id, seed=seed + 19) - 0.5) + 0.08 * (fbm(p, 0.03, seed + 23) - 0.5)
+    skin.metal = np.zeros(len(p))
+    skin.paint = np.ones(len(p))
+
+
+def camo_belly(skin: "_Skin", p, weight):
+    weight = np.clip(weight, 0.0, 1.0)
+    tone = CAMO_BELLY * (0.96 + 0.06 * fbm(p, 0.06, 601))[:, None]
+    skin.colour = mix(skin.colour, tone, weight)
+    skin.rough = skin.rough + (0.6 - skin.rough) * weight
+
+
+def camo_chips(skin: "_Skin", amount, p, seed: int):
+    """Worn paint: primer first, bare alloy at the centre of the larger chips."""
+    primer = smoothstep(0.62, 0.66, fbm(p, 0.006, seed)) * amount
+    metal = smoothstep(0.70, 0.74, fbm(p, 0.006, seed)) * amount
+    skin.lay(CAMO_PRIMER, primer, rough=0.7, metal=0.0)
+    skin.lay(ALU_TONES[1], metal, rough=0.32, metal=0.55)
+
+
+def camo_fuselage(p, n):
+    x, y, z = p[:, 0], p[:, 1], p[:, 2]
+    zn = (z - FUS_NOSE) / FUS_LEN
+    zm = zn * FUS_LEN
+    dy = y - _fuselage_centre(zn)
+    r = np.hypot(x, dy)
+    phi = np.arctan2(x, dy)
+    a = np.abs(phi)
+    arc = r * phi
+    side = smoothstep(0.45, 0.65, np.abs(n[:, 0]))
+    skin = _Skin(len(p))
+    d_station, k_station, f_station = _nearest(zn, FUS_STATIONS)
+    d_seam, k_seam, _ = _nearest(a, FUS_SEAMS)
+    k_seam = np.where(k_seam == 0, 0, k_seam + 10 * (x < 0))
+    panel = k_station * 64 + k_seam
+    camo_paint(skin, p, panel, seed=611)
+    across = np.where(a < FUS_SEAMS[0], (phi + FUS_SEAMS[0]) / (2 * FUS_SEAMS[0]), _nearest(a, FUS_SEAMS)[2])
+    skin.height += 0.0002 * np.sin(np.pi * f_station) * np.sin(np.pi * np.clip(across, 0, 1)) \
+        * np.where(_hash(panel, seed=7) < 0.5, -1.0, 1.0)
+    # Countershaded belly below a wavy spray line.
+    limit = np.radians(124.0 + 10.0 * (noise3(p, (0.5, 0.5, 0.18), 613) - 0.5))
+    camo_belly(skin, p, smoothstep(-0.003, 0.003, (a - limit) * r))
+    # Panel lines with a dark wash, rivet rows, screwed hatches.
+    skin.groove(d_station * FUS_LEN, wash=0.10)
+    skin.groove(d_seam * r, wash=0.10)
+    skin.groove(np.abs(zn - 0.730) * FUS_LEN, width=0.0016, depth=0.00035, wash=0.12)
+    rivet = rivets(d_station * FUS_LEN, arc, (-0.0035, 0.0035), 0.008)
+    rivet = np.maximum(rivet, rivets(d_seam * r, zm, (0.0,), 0.008))
+    skin.rivet(rivet * (zn > 0.062) * 0.7)
+    for z0, z1, y0, y1 in FUS_HATCHES:
+        box = _box_distance(zm, y, z0 * FUS_LEN, z1 * FUS_LEN, y0, y1)
+        skin.groove(np.where(side > 0.5, box, 1.0), width=0.0013, wash=0.12)
+        along = np.where(np.minimum(np.abs(y - y0), np.abs(y - y1)) < np.minimum(np.abs(zm - z0 * FUS_LEN),
+                                                                                 np.abs(zm - z1 * FUS_LEN)), zm, y)
+        phase = (along % 0.011) - 0.0055
+        skin.screw((1.0 - smoothstep(0.0007, 0.0011, np.hypot(box + 0.004, phase))) * (box < 0) * side * 0.6)
+        # Fluid stains running aft from the hatch's lower edge.
+        drip = np.exp(-np.maximum(zm - z1 * FUS_LEN, 0.0) / 0.10) * (zm > z0 * FUS_LEN) * (np.abs(y - y0) < 0.012)
+        skin.grime(drip * smoothstep(0.5, 0.8, noise3(p, (0.004, 0.004, 0.08), 617)) * side * 0.35,
+                   tint=(0.30, 0.29, 0.25), rough=0.45, metal_loss=0.0)
+    # Gun ports: dark recessed slots with soot fanning aft.
+    slot_z0, slot_z1 = 0.100 * FUS_LEN, 0.136 * FUS_LEN
+    soot = np.zeros(len(p))
+    for yc in GUN_SLOTS:
+        capsule = np.hypot(np.maximum(np.maximum(slot_z0 - zm, zm - slot_z1), 0.0), y - yc) - 0.0042
+        port = (1.0 - smoothstep(-0.0004, 0.0003, capsule)) * side
+        skin.lay(hex_rgb("#101111"), port, rough=0.85, metal=0.0)
+        skin.height -= 0.0008 * port
+        aft = np.maximum(zm - slot_z1, 0.0)
+        spread = 0.0045 + aft * 0.22
+        streak = 0.6 + 0.4 * noise3(p, (0.004, 0.003, 0.06), 619)
+        soot = np.maximum(soot, np.exp(-aft / 0.12) * (1.0 - smoothstep(spread * 0.5, spread, np.abs(y - yc)))
+                          * (zm > slot_z0) * streak * side)
+    skin.grime(soot * 0.8, tint=(0.22, 0.21, 0.20), rough=0.7, metal_loss=0.0)
+    # Dark grey radome and a matte black-green anti-glare panel ahead of the canopy.
+    radome = 1.0 - smoothstep(0.0615, 0.0625, zn)
+    skin.lay(hex_rgb("#3a3e3a"), radome, rough=0.55, metal=0.0)
+    glare_limit = np.radians(np.interp(zn, [0.07, 0.12, 0.165], [30.0, 50.0, 64.0]))
+    glare = (1.0 - smoothstep(-0.001, 0.001, (a - glare_limit) * r)) * (zn > 0.0625) * (1.0 - smoothstep(0.163, 0.167, zn))
+    skin.lay(hex_rgb("#191d18"), glare, rough=0.85, metal=0.0)
+
+    def side_mask(mask, z0, z1, y0, y1):
+        u, v, weight = _side_uv(p, n, FUS_NOSE + z0 * FUS_LEN, FUS_NOSE + z1 * FUS_LEN, y0, y1)
+        return np.where(weight > 0, _bilinear(mask, u, v), 0.0) * weight
+
+    def lettering(text, z0, z1, y0, y1, colour=CAMO_MARK, rows=1, rough=0.6):
+        aspect = (z1 - z0) * FUS_LEN / (y1 - y0)
+        skin.lay(colour, side_mask(_sabre_text(text, aspect, rows), z0, z1, y0, y1), rough=rough, metal=0.0)
+
+    u, v, weight = _side_uv(p, n, FUS_NOSE + 0.765 * FUS_LEN, FUS_NOSE + 0.845 * FUS_LEN, 0.058, 0.152)
+    art = _bilinear(_camo_roundel(), u, v)
+    skin.lay(art[:, :3], np.where(weight > 0, art[:, 3], 0.0) * weight, rough=0.6, metal=0.0)
+    lettering("FA-742", 0.862, 0.952, 0.034, 0.074, colour=CAMO_INK)
+    lettering("ESCUADRÓN 7", 0.205, 0.330, 0.082, 0.102)
+    # Rescue arrow pointing forward to the canopy release (scene space, so the tip does not flip).
+    rz0, rz1, ry = 0.322 * FUS_LEN, 0.366 * FUS_LEN, 0.1195
+    shaft = (zm > rz0 + 0.011) & (zm < rz1) & (np.abs(y - ry) < 0.0042)
+    head = (zm >= rz0) & (zm <= rz0 + 0.012) & (np.abs(y - ry) < 0.008 * (zm - rz0) / 0.012)
+    skin.lay(CAMO_RED, (shaft | head) * side, rough=0.55, metal=0.0)
+    lettering("RESCUE", 0.331, 0.363, 0.1162, 0.1228, colour=CAMO_MARK)
+    lettering("SERIAL NO. 742\nFUEL JP-8", 0.432, 0.490, 0.068, 0.090, colour=CAMO_INK, rows=2)
+    lettering("EXT. POWER\n28V DC", 0.612, 0.650, 0.074, 0.092, colour=CAMO_INK, rows=2)
+    lettering("NO STEP", 0.560, 0.598, 0.196, 0.206, colour=CAMO_MARK)
+    # Fuel filler cap on the spine.
+    top = smoothstep(0.55, 0.7, n[:, 1])
+    cap = np.hypot(x, (zn - 0.53) * FUS_LEN)
+    skin.lay(hex_rgb("#4b5046"), (1.0 - smoothstep(0.010, 0.011, cap)) * top, rough=0.5, metal=0.2)
+    skin.groove(np.where(top > 0, cap - 0.0112, 1.0), width=0.0012)
+    # Weathering: chips on the canopy sill and spine walk, exhaust soot and heat, belly oil.
+    sill = ((zn > 0.165) & (zn < 0.42) & (y > 0.08)).astype(float)
+    camo_chips(skin, 0.1 * sill + 0.03, p, 621)
+    skin.scratch(0.5 * scratches(zm, arc, 0.018, 1.0, 623) * (_hash(np.floor(zm / 0.018), np.floor(arc / 0.018), seed=625)
+                                                          < np.where(sill > 0, 0.2, 0.03)))
+    exhaust = smoothstep(0.88, 1.0, zn) * (1.0 - smoothstep(0.05, 0.17, y))
+    skin.grime(exhaust * (0.5 + 0.5 * noise3(p, (0.006, 0.006, 0.12), 627)) * 0.9, tint=(0.22, 0.21, 0.20), rough=0.7,
+               metal_loss=0.0)
+    heat = smoothstep(0.975, 0.995, zn)
+    skin.lay(hex_rgb("#3a3631"), heat, rough=0.45, metal=0.5)
+    belly = smoothstep(np.radians(115), np.radians(150), a)
+    oil = np.exp(-np.mod(zn - 0.20, 0.135) * FUS_LEN / 0.16) * smoothstep(0.55, 0.85, noise3(p, (0.005, 0.005, 0.2), 629))
+    skin.grime(oil * belly * 0.5, tint=(0.40, 0.38, 0.33), rough=0.42, metal_loss=0.0)
+    return skin
+
+
+def camo_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len, table=None):
+    z = p[:, 2]
+    s = span_norm * span_hi
+    top = n[:, 1] >= 0.0
+    face = smoothstep(0.3, 0.6, np.abs(n[:, 1]))
+    joints = [0.14, 0.42, 0.70] if atlas != "stab" else [0.17, 0.32]
+    spars = [0.14, 0.63] if atlas != "stab" else [0.16, 0.62]
+    skin = _Skin(len(p))
+    d_joint, k_joint, f_joint = _nearest(s, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, spars)
+    panel = k_joint * 16 + k_spar * 2 + top
+    # The stock stabiliser UVs let elevator and stabiliser faces several centimetres apart share texels: its
+    # patches vary along the span only, so the faces sharing a texel agree on its colour.
+    pattern = None if atlas != "stab" else np.stack([s, np.full(len(p), 0.30), np.full(len(p), 1.05)], axis=1)
+    camo_paint(skin, p, panel, seed=641 if atlas != "stab" else 643, pattern=pattern)
+    camo_belly(skin, p, (~top).astype(float))
+    skin.height += 0.0002 * np.sin(np.pi * f_joint) * np.sin(np.pi * f_spar) * np.where(_hash(panel, seed=9) < 0.5, -1, 1)
+    skin.groove(np.where(face > 0.5, d_joint, 1.0), wash=0.10)
+    skin.groove(np.where(face > 0.5, d_spar * chord_len, 1.0), wash=0.10)
+    rivet = rivets(d_joint, z, (0.0,), 0.008)
+    rivet = np.maximum(rivet, rivets(d_spar * chord_len, s, (0.0,), 0.008))
+    skin.rivet(rivet * face * 0.7)
+    # Leading-edge erosion: chipped to primer and bare alloy.
+    edge = 1.0 - smoothstep(0.0, 0.04, frac)
+    camo_chips(skin, 0.85 * edge + 0.03, p, 645 if atlas != "stab" else 647)
+    if atlas != "stab":
+        # Low-visibility roundels on the upper surfaces, chevron forward.
+        art = _camo_roundel()
+        # Square in (span, z) about the 42 % chord point at its centre span: not sheared by the sweep, clear of
+        # the walkway, the fence, the flap and the leading-edge wear.
+        x0, x1 = 0.34, 0.54  # inboard of the wing fence (|x| 0.575) and ahead of the flap
+        size = x1 - x0
+        le, te = table
+        centres = -span_hi + (np.arange(len(le)) + 0.5) * (2.0 * span_hi) / len(le)
+        sc = 0.5 * (x0 + x1)
+        zc = np.interp(sc, centres, le) + 0.42 * (np.interp(sc, centres, te) - np.interp(sc, centres, le))
+        u = (s - x0) / size
+        v = (z - (zc - size * 0.5)) / size
+        inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1) & top
+        sample = _bilinear(art, u, v)
+        skin.lay(sample[:, :3], np.where(inside, sample[:, 3], 0.0) * face, rough=0.6, metal=0.0)
+        # Non-slip walkway at the root: rough black-green with a pale outline.
+        walk = _box_distance(s, frac * chord_len, 0.12, 0.30, 0.26 * chord_len, 0.58 * chord_len)
+        skin.lay(hex_rgb("#1b211a"), ((walk < 0) & top) * face, rough=0.92, metal=0.0)
+        skin.lay(CAMO_MARK, _line(walk, 0.0018) * top * face, rough=0.6, metal=0.0)
+        skin.scratch(0.5 * scratches(s, z, 0.016, 1.0, 649) * np.where((walk < 0) & top, 0.4, 0.02))
+        streak = smoothstep(0.55, 0.85, noise3(p, (0.2, 0.006, 0.006), 651)) * (frac > 0.3)
+        skin.grime(np.where(top, 0.0, 0.25 * streak), tint=(0.42, 0.40, 0.36), rough=0.45, metal_loss=0.0)
+    else:
+        soot = (1.0 - smoothstep(0.10, 0.22, s)) * smoothstep(0.3, 0.9, frac)
+        skin.grime(soot * (0.5 + 0.5 * noise3(p, (0.2, 0.01, 0.01), 653)) * 0.7, tint=(0.22, 0.21, 0.20), metal_loss=0.0)
+    skin.colour = mix(CAMO_BLACK * 0.8, skin.colour, face)  # gap and edge faces read dark
+    return skin
+
+
+def camo_fin(p, n, frac, height_norm):
+    y, z = p[:, 1], p[:, 2]
+    chord_m = 0.36
+    skin = _Skin(len(p))
+    joints = [0.212 + 0.365 * h for h in (0.30, 0.62)]
+    d_joint, k_joint, f_joint = _nearest(y, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, [0.12, 0.62])
+    panel = k_joint * 8 + k_spar
+    camo_paint(skin, p, panel, seed=661)
+    side = smoothstep(0.35, 0.6, np.abs(n[:, 0]))
+    skin.groove(np.where(side > 0.5, d_joint, 1.0), wash=0.10)
+    skin.groove(np.where(side > 0.5, d_spar * chord_m, 1.0), wash=0.10)
+    skin.rivet(np.maximum(rivets(d_joint, z, (0.0,), 0.008), rivets(d_spar * chord_m, y, (0.0,), 0.008)) * side * 0.7)
+    camo_chips(skin, 0.8 * (1.0 - smoothstep(0.0, 0.05, frac)) + 0.03, p, 663)
+
+    def lettering(text, z0, z1, y0, y1):
+        u, v, weight = _side_uv(p, n, z0, z1, y0, y1)
+        mask = _sabre_text(text, (z1 - z0) / (y1 - y0))
+        skin.lay(CAMO_MARK, np.where(weight > 0, _bilinear(mask, u, v), 0.0) * weight, rough=0.6, metal=0.0)
+
+    lettering("742", 0.895, 1.035, 0.300, 0.344)
+    lettering("ESCUADRÓN 7", 0.925, 1.035, 0.352, 0.364)
+    # A black-green fin cap band with a pale keyline.
+    skin.lay(CAMO_BLACK, smoothstep(0.875, 0.885, height_norm) * side, rough=0.62, metal=0.0)
+    skin.lay(CAMO_MARK, _line((height_norm - 0.872) * 0.365, 0.0025) * side, rough=0.6, metal=0.0)
+    soot = (1.0 - smoothstep(0.0, 0.12, height_norm)) * smoothstep(0.4, 0.9, frac)
+    skin.grime(soot * 0.5, tint=(0.22, 0.21, 0.20), metal_loss=0.0)
+    skin.colour = mix(CAMO_BLACK * 0.8, skin.colour, side)
+    return skin
+
+
+def build_camo(atlas: str):
+    return build_metal_skin(atlas, CAMO_ATLASES, camo_fuselage, camo_lifting, camo_fin)
+
+
+_CAMO_CACHE: dict = {}
+
+
+def _camo_cached(atlas: str):
+    if atlas not in _CAMO_CACHE:
+        _CAMO_CACHE[atlas] = build_camo(atlas)
+    return _CAMO_CACHE[atlas]
+
+
+# ---------------------------------------------------------------------------------------------
+# Sebart Avanti S jet: "Marquetería Real". A luxury cabinetmaker's veneer airframe: strip-planked walnut topsides
+# and mahogany below a stringing belt, a maple king plank, an ebony radome and tail cone, a padauk band, book-matched
+# knotty-cherry wings and a crown-cut fin with maple cross-banded leading edges and ebony tips, satinwood and padauk
+# control surfaces, compass-rose medallions and inlaid maple Cinzel numerals edged in ebony, brass fittings, all under
+# a gloss lacquer. Each veneer is a photographed CC0 wood (ambientCG, see sources/marquetry) laid in scene space with its
+# grain following the airframe. Same four maps and bake as Sabre Plata; the metallic map marks only the brass.
+# ---------------------------------------------------------------------------------------------
+WOOD_ATLASES = dict(SABRE_ATLASES)
+MARQUETRY_SOURCES = ROOT / "tools/skins/sources/marquetry"
+MARQUETRY_CACHE = ROOT / ".tools/skin-sources/marquetry"  # ignored; filled from ambientCG and hash-verified
+INLAY_FONT = MARQUETRY_SOURCES / "Cinzel-wght.ttf"  # SIL OFL 1.1 (see that folder's README.md)
+WOODS = {"walnut": "Wood027", "ebony": "Wood028", "maple": "Wood022", "satinwood": "Wood023",
+         "cherry": "Wood029", "mahogany": "Wood026", "padauk": "Wood069", "crown": "Wood013"}
+WOOD_TILE = 0.60  # metres of real veneer per photograph (finer grain aliases at the atlas texel size)
+LACQUER = np.array([1.0, 0.975, 0.94])  # amber warmth of a gloss lacquer film
+# Art-directed grading per veneer (saturation, value): a lifted dark walnut and a quieter padauk keep it elegant.
+WOOD_GRADE = {"walnut": (0.95, 1.08), "padauk": (0.72, 0.80), "cherry": (0.92, 0.94), "mahogany": (0.92, 0.92)}
+BRASS = hex_rgb("#c49b50")
+_WOOD: dict = {}
+_WOOD_ART: dict = {}
+_HINGES: dict = {}
+
+
+def _wood(name: str):
+    """(colour, relief) arrays of one veneer from the ignored cache; a missing member is fetched once and verified."""
+    if name not in _WOOD:
+        asset = WOODS[name]
+        manifest = json.loads((MARQUETRY_SOURCES / "sources.json").read_text(encoding="utf-8"))
+        entries = {entry["file"]: entry for entry in manifest["files"]}
+        members = [f"{asset}_1K-JPG_{kind}.jpg" for kind in ("Color", "Displacement")]
+
+        def valid(member):
+            path = MARQUETRY_CACHE / member
+            return path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() == entries[member]["sha256"]
+
+        if not all(valid(member) for member in members):
+            import urllib.request
+            import zipfile
+            request = urllib.request.Request(entries[members[0]]["archive"], headers={"User-Agent": "openrc-skin-builder"})
+            with urllib.request.urlopen(request, timeout=120) as response:
+                archive = zipfile.ZipFile(io.BytesIO(response.read()))
+            MARQUETRY_CACHE.mkdir(parents=True, exist_ok=True)
+            for member in members:
+                data = archive.read(member)
+                if hashlib.sha256(data).hexdigest() != entries[member]["sha256"]:
+                    raise SystemExit(f"{member}: SHA-256 differs from sources/marquetry/sources.json")
+                (MARQUETRY_CACHE / member).write_bytes(data)
+        colour = np.asarray(Image.open(MARQUETRY_CACHE / members[0]).convert("RGB"), dtype=np.float64) / 255.0
+        saturation, value = WOOD_GRADE.get(name, (1.0, 1.0))
+        grey = colour @ np.array([0.2126, 0.7152, 0.0722])
+        colour = (grey[..., None] + (colour - grey[..., None]) * saturation) * value
+        relief = np.asarray(Image.open(MARQUETRY_CACHE / members[1]).convert("L"), dtype=np.float64) / 255.0
+        _WOOD[name] = (colour, relief)
+    return _WOOD[name]
+
+
+def wood_lay(skin: "_Skin", name, along, t, mask, leaf=0, width=1e3, seed=0, tone=0.08, tile=WOOD_TILE,
+             seam=False):
+    """Lay veneer over `mask`: `along` runs with the grain (metres), `t` across it from the leaf's seam (0..width).
+    Leaves 2k and 2k+1 are consecutive slices of one flitch, so the second mirrors the first across their shared
+    seam (book-matching); each flitch has its own offset into the photograph and a slightly different tone."""
+    mask = np.clip(mask, 0.0, 1.0)
+    colour, relief = _wood(name)
+    leaf = np.broadcast_to(np.asarray(leaf), np.shape(along)).astype(np.int64)
+    width = np.broadcast_to(np.asarray(width, dtype=np.float64), np.shape(along))
+    pair = np.floor_divide(leaf, 2)
+    local = np.where(leaf % 2 == 1, width - t, t)
+    u = (along / tile + _hash(pair, seed=seed)) % 1.0
+    v = (local / tile + _hash(pair, seed=seed + 1)) % 1.0
+    shade = 1.0 - tone * 0.5 + tone * _hash(pair, seed=seed + 2)
+    wood = np.clip(_bilinear(colour, u, v) * shade[:, None] * LACQUER, 0.0, 1.0)
+    pores = _bilinear(relief, u, v)
+    skin.colour = mix(skin.colour, wood, mask)
+    skin.rough = skin.rough + (0.085 + 0.10 * (1.0 - pores) ** 2 - skin.rough) * mask  # open pores hold less lacquer
+    skin.metal = skin.metal * (1.0 - mask)
+    skin.height = skin.height * (1.0 - mask) + 0.00003 * (pores - 0.5) * mask
+    if seam:  # a hairline glue joint between leaves
+        line = _line(np.minimum(t, width - t), 0.0005) * mask
+        skin.colour = skin.colour * (1.0 - 0.28 * line)[:, None]
+        skin.height -= 0.00002 * line
+
+
+def leaves(coord, width):
+    """Leaf index and the position across it for leaves `width` wide along `coord`."""
+    k = np.floor(coord / width)
+    return k.astype(np.int64), coord - k * width
+
+
+def stringing(skin: "_Skin", d, along, mask=1.0, pattern=(("ebony", 0.0024), ("maple", 0.0011)), seed=0):
+    """Inlaid stringing centred on d = 0: nested bands, outermost first (ebony-maple-ebony by default)."""
+    for n, (name, half) in enumerate(pattern):
+        band = (1.0 - smoothstep(half - 0.00015, half + 0.00015, np.abs(d))) * mask
+        if np.any(band > 0):
+            wood_lay(skin, name, along, d + half, band, seed=seed + 17 * n, tone=0.0, tile=0.25)
+            skin.height -= 0.00002 * _line(np.abs(d) - half, 0.0004) * np.clip(mask, 0, 1)
+
+
+def brass_fitting(skin: "_Skin", mask, p, seed):
+    mask = np.clip(mask, 0.0, 1.0)
+    tarnish = smoothstep(0.3, 0.8, fbm(p, 0.01, seed))
+    skin.lay(BRASS * (1.0 - 0.18 * tarnish)[:, None], mask, rough=0.22 + 0.10 * tarnish, metal=0.68)
+    skin.height = skin.height * (1.0 - mask) + 0.00006 * mask
+
+
+def _inlay_masks(text: str, aspect: float):
+    """(letter, letter plus ebony border) masks of Cinzel Bold numerals."""
+    key = (text, round(aspect, 3))
+    if key not in _WOOD_ART:
+        from PIL import ImageDraw, ImageFont
+        height = 256
+        width = int(round(height * aspect))
+        font = ImageFont.truetype(str(INLAY_FONT), int(height * 0.80))
+        font.set_variation_by_name("Bold")
+        masks = []
+        for stroke in (0, 9):
+            canvas = Image.new("L", (width, height), 0)
+            ImageDraw.Draw(canvas).text((width * 0.5, height * 0.52), text, fill=255, font=font, anchor="mm",
+                                        stroke_width=stroke, stroke_fill=255)
+            masks.append(np.asarray(canvas, dtype=np.float64) / 255.0)
+        _WOOD_ART[key] = tuple(masks)
+    return _WOOD_ART[key]
+
+
+def _compass_labels() -> np.ndarray:
+    """Label image of an eight-point compass rose: 1 disc, 2 ebony ring, 3 maple ring, 4 centre, 10 + 2i (+1) for
+    the left (right) half of point i, clockwise from the top (forward)."""
+    if "compass" not in _WOOD_ART:
+        from PIL import ImageDraw
+        size = 1024
+        c = size / 2
+        img = Image.new("L", (size, size), 0)
+        d = ImageDraw.Draw(img)
+        for radius, label in ((0.49, 2), (0.465, 3), (0.452, 2), (0.437, 1)):
+            d.ellipse((c - radius * size, c - radius * size, c + radius * size, c + radius * size), fill=label)
+
+        def at(angle, radius):
+            return (c + radius * size * np.sin(angle), c - radius * size * np.cos(angle))
+
+        for i in list(range(1, 8, 2)) + list(range(0, 8, 2)):  # minor points under the cardinal points
+            phi = np.radians(45.0 * i)
+            tip = 0.425 if i % 2 == 0 else 0.30
+            side = 0.085 if i % 2 == 0 else 0.065
+            left, right = at(phi - np.radians(22.5), side), at(phi + np.radians(22.5), side)
+            d.polygon([(c, c), at(phi, tip), left], fill=10 + 2 * i)
+            d.polygon([(c, c), at(phi, tip), right], fill=11 + 2 * i)
+        d.ellipse((c - 0.03 * size, c - 0.03 * size, c + 0.03 * size, c + 0.03 * size), fill=4)
+        _WOOD_ART["compass"] = np.asarray(img)
+    return _WOOD_ART["compass"]
+
+
+def compass_inlay(skin: "_Skin", u, v, size_m, weight, seed):
+    """A compass-rose medallion over the unit square (u right, v down = aft); each point is split into a light and a
+    dark wood with the grain along the point, as a marquetry rose is cut."""
+    labels = _compass_labels()
+    n = labels.shape[0]
+    inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1) & (np.asarray(weight) > 0)
+    lab = np.where(inside, labels[np.clip((v * n).astype(int), 0, n - 1), np.clip((u * n).astype(int), 0, n - 1)], 0)
+    x, y = (u - 0.5) * size_m, (0.5 - v) * size_m
+    w = np.clip(weight, 0.0, 1.0)
+    wood_lay(skin, "satinwood", x, y, (lab == 1) * w, seed=seed, tone=0.0)
+    wood_lay(skin, "ebony", np.arctan2(x, y) * size_m * 0.5, np.hypot(x, y), np.isin(lab, (2, 4)) * w, seed=seed + 1, tone=0.0)
+    wood_lay(skin, "maple", np.arctan2(x, y) * size_m * 0.5, np.hypot(x, y), (lab == 3) * w, seed=seed + 2, tone=0.0)
+    for i in range(8):
+        phi = np.radians(45.0 * i)
+        along = x * np.sin(phi) + y * np.cos(phi)
+        across = x * np.cos(phi) - y * np.sin(phi)
+        light, dark = ("maple", "walnut") if i % 2 == 0 else ("padauk", "mahogany")
+        wood_lay(skin, light, along, across, (lab == 10 + 2 * i) * w, seed=seed + 5 + i, tone=0.0)
+        wood_lay(skin, dark, along, across, (lab == 11 + 2 * i) * w, seed=seed + 15 + i, tone=0.0)
+    edge = np.zeros(len(u))
+    for dy, dx in ((1, 0), (0, 1)):  # hairline knife joints between the cut pieces
+        nb = labels[np.clip((v * n).astype(int) + dy, 0, n - 1), np.clip((u * n).astype(int) + dx, 0, n - 1)]
+        edge = np.maximum(edge, ((nb != lab) & inside).astype(float))
+    skin.colour = skin.colour * (1.0 - 0.3 * edge * w)[:, None]
+    skin.height -= 0.00002 * edge * w
+
+
+def numeral_inlay(skin: "_Skin", u, v, inside_weight, text, aspect, seed, along, across):
+    """Maple numerals with an ebony border, grain set across the surrounding veneer."""
+    letter, border = _inlay_masks(text, aspect)
+    w = np.clip(inside_weight, 0.0, 1.0)
+    edge = np.where(w > 0, _bilinear(border, np.clip(u, 0, 1), np.clip(v, 0, 1)), 0.0) * w
+    core = np.where(w > 0, _bilinear(letter, np.clip(u, 0, 1), np.clip(v, 0, 1)), 0.0) * w
+    wood_lay(skin, "ebony", along, across, edge, seed=seed, tone=0.0)
+    wood_lay(skin, "maple", across, along, core, seed=seed + 1, tone=0.0)
+    skin.height -= 0.00002 * (_line(edge - 0.5, 0.25) + _line(core - 0.5, 0.25))
+
+
+def _hinge(kind: str):
+    """Control-surface leading edge z along its span, from that surface's own primitives in the stock model."""
+    if kind not in _HINGES:
+        material, axis, lo, hi, z_floor = {"aileron": ("paint_wing", 0, 0.579, 0.894, 0.40),
+                                           "flap": ("paint_wing", 0, 0.174, 0.566, 0.30),
+                                           "elevator": ("paint_stab", 0, 0.087, 0.44, 1.10),
+                                           "rudder": ("paint_fin", 1, 0.224, 0.576, 1.00)}[kind]
+        pts = []
+        for _name, pos, _nrm, _uv, _tris in scene_primitives(JET_GLB, (material,)):
+            span = np.abs(pos[:, axis]) if axis == 0 else pos[:, axis]
+            if abs(span.min() - lo) < 0.01 and abs(span.max() - hi) < 0.01 and pos[:, 2].min() > z_floor:
+                pts.append(np.stack([span, pos[:, 2]], axis=1))
+        pts = np.concatenate(pts)
+        bins = 24
+        k = np.clip(((pts[:, 0] - lo) / (hi - lo) * bins).astype(int), 0, bins - 1)
+        zmin = np.full(bins, np.inf)
+        np.minimum.at(zmin, k, pts[:, 1])
+        centres = lo + (np.arange(bins) + 0.5) * (hi - lo) / bins
+        good = np.isfinite(zmin)
+        # Hinge lines are straight; a line through the per-bin leading edges removes the bins' stair steps.
+        _HINGES[kind] = (lo, hi, np.polyfit(centres[good], zmin[good], 1))
+    return _HINGES[kind]
+
+
+def hinge_mask(kind: str, span, z):
+    """(mask of the control surface, signed distance aft of its hinge line)."""
+    lo, hi, line = _hinge(kind)
+    d = z - np.polyval(line, span)
+    inside = (span > lo - 0.002) & (span < hi + 0.002)
+    return (inside & (d > -0.001)).astype(float), np.where(inside, d, 1.0)
+
+
+def wood_fuselage(p, n):
+    x, y, z = p[:, 0], p[:, 1], p[:, 2]
+    zn = (z - FUS_NOSE) / FUS_LEN
+    zm = zn * FUS_LEN
+    dy = y - _fuselage_centre(zn)
+    r = np.hypot(x, dy)
+    phi = np.arctan2(x, dy)
+    a = np.abs(phi)
+    arc = r * phi
+    side = smoothstep(0.45, 0.65, np.abs(n[:, 0]))
+    skin = _Skin(len(p))
+    skin.metal = np.zeros(len(p))
+    # Strip planking: tapering strakes (constant angle, so they narrow toward the nose and tail like real strips).
+    strake = 2.0 * np.pi / 44.0
+    k, t = leaves(phi, strake)
+    width = strake * np.maximum(r, 1e-3)
+    belt = np.radians(117.0)
+    lower = smoothstep(-0.0004, 0.0004, (a - belt) * r)
+    wood_lay(skin, "walnut", zm, t * r, np.ones(len(p)), leaf=k, width=width, seed=701, seam=True)
+    wood_lay(skin, "mahogany", zm, t * r, lower, leaf=k, width=width, seed=703, seam=True)
+    body = (zn > 0.07) & (zn < 0.905)
+    stringing(skin, (a - belt) * r, zm, body, seed=705)
+    # Maple king plank down the spine, edged in ebony.
+    king = 0.0105
+    wood_lay(skin, "maple", zm, arc + king, (np.abs(arc) < king) * body, seed=707, tone=0.0)
+    stringing(skin, np.abs(arc) - king, zm, body, pattern=(("ebony", 0.0014),), seed=709)
+    # Padauk band at the aft break, cross-grained, with stringing on both edges.
+    band = (zn > 0.700) & (zn < 0.724)
+    wood_lay(skin, "padauk", arc, zm, band.astype(float), seed=711, tone=0.0)
+    for edge in (0.700, 0.724):
+        stringing(skin, (zn - edge) * FUS_LEN, arc, 1.0, seed=713)
+    # Ebony radome and tail cone, grain along the length, with a maple-and-ebony ring at each joint.
+    wood_lay(skin, "ebony", zm, arc, (zn < 0.066).astype(float), seed=715, tone=0.0)
+    wood_lay(skin, "ebony", zm, arc, (zn > 0.905).astype(float), seed=717, tone=0.0)
+    for edge in (0.066, 0.905):
+        stringing(skin, (zn - edge) * FUS_LEN, arc, 1.0, pattern=(("ebony", 0.0030), ("maple", 0.0016)), seed=719)
+    # Hatches: a maple stringing outline and four brass screws.
+    for z0, z1, y0, y1 in FUS_HATCHES:
+        box = _box_distance(zm, y, z0 * FUS_LEN, z1 * FUS_LEN, y0, y1)
+        along = np.where(np.abs(np.abs(y - 0.5 * (y0 + y1)) - 0.5 * (y1 - y0)) < 0.003, zm, y)
+        stringing(skin, box, along, side, pattern=(("maple", 0.0009),), seed=721)
+        for cz in (z0 * FUS_LEN + 0.006, z1 * FUS_LEN - 0.006):
+            for cy in (y0 + 0.006, y1 - 0.006):
+                brass_fitting(skin, (1.0 - smoothstep(0.0011, 0.0016, np.hypot(zm - cz, y - cy))) * side, p, 723)
+    # Brass fuel filler on the spine.
+    top = smoothstep(0.55, 0.7, n[:, 1])
+    cap = np.hypot(x, (zn - 0.53) * FUS_LEN)
+    stringing(skin, cap - 0.0125, arc, top, pattern=(("ebony", 0.0016),), seed=725)
+    brass_fitting(skin, (1.0 - smoothstep(0.010, 0.0108, cap)) * top, p, 727)
+    # Inlaid numerals behind the radome and compass-rose medallions on the aft flanks.
+    z0, z1, y0, y1 = FUS_NOSE + 0.098 * FUS_LEN, FUS_NOSE + 0.170 * FUS_LEN, -0.018, 0.046
+    u, v, weight = _side_uv(p, n, z0, z1, y0, y1)
+    numeral_inlay(skin, u, v, weight, "07", (z1 - z0) / (y1 - y0), 731, zm, y)
+    z0, z1, y0, y1 = FUS_NOSE + 0.784 * FUS_LEN, FUS_NOSE + 0.826 * FUS_LEN, 0.058, 0.152
+    u, v, weight = _side_uv(p, n, z0, z1, y0, y1)
+    compass_inlay(skin, u, v, y1 - y0, weight, 733)
+    # A faint heat patina inside the jet pipe lip; the lacquer is otherwise immaculate.
+    heat = smoothstep(0.975, 1.0, zn)
+    skin.colour = skin.colour * (1.0 - 0.25 * heat)[:, None]
+    return skin
+
+
+def wood_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len, table=None):
+    z = p[:, 2]
+    s = span_norm * span_hi
+    top = n[:, 1] >= 0.0
+    face = smoothstep(0.3, 0.6, np.abs(n[:, 1]))
+    skin = _Skin(len(p))
+    skin.metal = np.zeros(len(p))
+    b = frac * chord_len  # metres aft of the leading edge
+    ones = np.ones(len(p))
+    if atlas == "stab":
+        # Grain runs chordwise: the stock stabiliser UVs let faces centimetres apart in z share texels, and a
+        # veneer varies far less along its grain than across it.
+        k, t = leaves(s, 0.075)
+        wood_lay(skin, "walnut", z, t, ones, leaf=k, width=0.075, seed=741, seam=True)
+        cs, d_hinge = hinge_mask("elevator", s, z)
+        wood_lay(skin, "padauk", z, s, cs, seed=743, tone=0.0)
+        stringing(skin, d_hinge - 0.0012, s, (d_hinge > -0.004).astype(float), pattern=(("ebony", 0.0012),), seed=745)
+        le_band, tip_from = 0.014, span_hi - 0.030
+    else:
+        k, t = leaves(b, 0.078)
+        wood_lay(skin, "cherry", s, t, top.astype(float), leaf=k, width=0.078, seed=751, seam=True)
+        wood_lay(skin, "mahogany", s, t, (~top).astype(float), leaf=k, width=0.078, seed=753, seam=True)
+        for kind, name in (("flap", "satinwood"), ("aileron", "padauk")):
+            cs, d_hinge = hinge_mask(kind, s, z)
+            wood_lay(skin, name, s, d_hinge, cs, seed=755 if kind == "flap" else 757, tone=0.0)
+            stringing(skin, d_hinge - 0.0012, s, (d_hinge > -0.004).astype(float), pattern=(("ebony", 0.0012),), seed=759)
+        le_band, tip_from = 0.022, span_hi - 0.045
+    # Maple cross-banded leading edge (grain chordwise) behind an ebony line; ebony tips edged in maple.
+    wood_lay(skin, "maple", b, s, (b < le_band).astype(float), seed=761, tone=0.0)
+    stringing(skin, b - le_band, s, 1.0, pattern=(("ebony", 0.0012),), seed=763)
+    wood_lay(skin, "ebony", b, s, (s > tip_from).astype(float), seed=765, tone=0.0)
+    stringing(skin, s - tip_from, b, 1.0, pattern=(("maple", 0.0011),), seed=767)
+    if atlas == "wing":
+        # Compass-rose medallions on the upper surfaces, inboard of the fences and ahead of the flaps.
+        x0, x1 = 0.36, 0.52
+        size = x1 - x0
+        le, te = table
+        centres = -span_hi + (np.arange(len(le)) + 0.5) * (2.0 * span_hi) / len(le)
+        sc = 0.5 * (x0 + x1)
+        zc = np.interp(sc, centres, le) + 0.40 * (np.interp(sc, centres, te) - np.interp(sc, centres, le))
+        compass_inlay(skin, (s - x0) / size, (z - (zc - size * 0.5)) / size, size, top * face, 771)
+    # Gap and edge faces read as dark end grain.
+    skin.colour = mix(np.broadcast_to(hex_rgb("#231912"), (len(p), 3)), skin.colour, face)
+    return skin
+
+
+def wood_fin(p, n, frac, height_norm):
+    y, z = p[:, 1], p[:, 2]
+    side = smoothstep(0.35, 0.6, np.abs(n[:, 0]))
+    skin = _Skin(len(p))
+    skin.metal = np.zeros(len(p))
+    k, t = leaves(y, 0.07)
+    wood_lay(skin, "crown", z, t, np.ones(len(p)), leaf=k, width=0.07, seed=781, seam=True)
+    cs, d_hinge = hinge_mask("rudder", y, z)
+    wood_lay(skin, "satinwood", y, z, cs, seed=783, tone=0.0)  # vertical grain on the rudder
+    stringing(skin, d_hinge - 0.0012, y, (d_hinge > -0.004).astype(float), pattern=(("ebony", 0.0012),), seed=785)
+    wood_lay(skin, "maple", y, z, (frac < 0.045).astype(float), seed=787, tone=0.0)
+    stringing(skin, (frac - 0.045) * 0.36, y, 1.0, pattern=(("ebony", 0.0012),), seed=789)
+    cap = 0.885
+    wood_lay(skin, "ebony", z, y, (height_norm > cap).astype(float), seed=791, tone=0.0)
+    stringing(skin, (height_norm - cap) * 0.365, z, 1.0, pattern=(("ebony", 0.0024), ("maple", 0.0011)), seed=793)
+    z0, z1, y0, y1 = 0.905, 1.030, 0.284, 0.364
+    u, v, weight = _side_uv(p, n, z0, z1, y0, y1)
+    numeral_inlay(skin, u, v, weight, "07", (z1 - z0) / (y1 - y0), 795, z, y)
+    skin.colour = mix(np.broadcast_to(hex_rgb("#231912"), (len(p), 3)), skin.colour, side)
+    return skin
+
+
+def build_wood(atlas: str):
+    return build_metal_skin(atlas, WOOD_ATLASES, wood_fuselage, wood_lifting, wood_fin)
+
+
+_WOOD_CACHE: dict = {}
+
+
+def _wood_cached(atlas: str):
+    if atlas not in _WOOD_CACHE:
+        _WOOD_CACHE[atlas] = build_wood(atlas)
+    return _WOOD_CACHE[atlas]
+
+
 def outputs() -> dict:
     """Output path -> zero-argument builder returning encoded bytes (built only when selected)."""
     # shared/ holds unchanged CC0 maps from ambientCG (see shared/LICENSES.txt); this tool does not write them.
@@ -2042,6 +2685,18 @@ def outputs() -> dict:
         files[stem + "_metallic.png"] = lambda a=atlas: encode(_steam_cached(a)[2], ".png")
         files[stem + "_normal.png"] = lambda a=atlas: encode(_steam_cached(a)[3], ".png")
         files[stem + "_emission.png"] = lambda a=atlas: encode(_steam_cached(a)[4], ".png")
+    for atlas in CAMO_ATLASES:
+        stem = f"avanti-s-a200/camuflaje_selva_{atlas}"
+        files[stem + ".jpg"] = lambda a=atlas: encode(_camo_cached(a)[0], ".jpg")
+        files[stem + "_roughness.jpg"] = lambda a=atlas: encode(_camo_cached(a)[1], ".jpg")
+        files[stem + "_metallic.png"] = lambda a=atlas: encode(_camo_cached(a)[2], ".png")
+        files[stem + "_normal.png"] = lambda a=atlas: encode(_camo_cached(a)[3], ".png")
+    for atlas in WOOD_ATLASES:
+        stem = f"avanti-s-a200/marqueteria_real_{atlas}"
+        files[stem + ".jpg"] = lambda a=atlas: encode(_wood_cached(a)[0], ".jpg")
+        files[stem + "_roughness.jpg"] = lambda a=atlas: encode(_wood_cached(a)[1], ".jpg")
+        files[stem + "_metallic.png"] = lambda a=atlas: encode(_wood_cached(a)[2], ".png")
+        files[stem + "_normal.png"] = lambda a=atlas: encode(_wood_cached(a)[3], ".png")
     return files
 
 

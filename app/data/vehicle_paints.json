@@ -1366,6 +1366,280 @@
 							"roughness": 0.8
 						}
 					}
+				},
+				{
+					"id": "camuflaje_selva",
+					"label": "Camuflaje Selva",
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fuselage.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fuselage_metallic.png",
+							"specular": 0.4,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fuselage_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fuselage_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_wing.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_wing_metallic.png",
+							"specular": 0.4,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_wing_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_wing_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_doors_ala": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_doors.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_doors_metallic.png",
+							"specular": 0.4,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_doors_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_doors_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_stab.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_stab_metallic.png",
+							"specular": 0.4,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_stab_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_stab_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fin.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fin_metallic.png",
+							"specular": 0.4,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fin_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fin_normal.png",
+							"normal_scale": 1.0
+						},
+						"paint_doors": {
+							"albedo": "#8b9487",
+							"metallic": 0.0,
+							"roughness": 0.6
+						},
+						"paint_fence": {
+							"albedo": "#34432c",
+							"metallic": 0.0,
+							"roughness": 0.66
+						},
+						"paint_fence_lower": {
+							"albedo": "#2a3524",
+							"metallic": 0.0,
+							"roughness": 0.66
+						},
+						"paint_fillets": {
+							"albedo": "#34432c",
+							"metallic": 0.0,
+							"roughness": 0.66
+						},
+						"paint_trim_carbono": {
+							"albedo": "#262e22",
+							"metallic": 0.0,
+							"roughness": 0.7,
+							"albedo_texture": null,
+							"emission_texture": null
+						},
+						"thrust_tube_gold": {
+							"albedo": "#4a4640",
+							"metallic": 0.6,
+							"roughness": 0.45
+						},
+						"mk_ply": {
+							"albedo": "#3a3f33",
+							"metallic": 0.0,
+							"roughness": 0.7
+						},
+						"canopy_glass": {
+							"albedo": "#2c3a3270",
+							"metallic": 0.15,
+							"roughness": 0.03,
+							"specular": 0.6,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.02
+						},
+						"cockpit_tub_grey": {
+							"albedo": "#2e3230",
+							"roughness": 0.75
+						},
+						"seat_tan": {
+							"albedo": "#3a3d30",
+							"roughness": 0.7
+						},
+						"seat_cushion": {
+							"albedo": "#424332",
+							"roughness": 0.85
+						},
+						"glare_shield_black": {
+							"albedo": "#191b1a",
+							"roughness": 0.85
+						}
+					}
+				},
+				{
+					"id": "marqueteria_real",
+					"label": "Marquetería Real",
+					"materials": {
+						"paint_fuselage": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fuselage.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fuselage_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fuselage_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fuselage_normal.png",
+							"normal_scale": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04
+						},
+						"paint_wing": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_wing.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_wing_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_wing_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_wing_normal.png",
+							"normal_scale": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04
+						},
+						"paint_doors_ala": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_doors.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_doors_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_doors_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_doors_normal.png",
+							"normal_scale": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04
+						},
+						"paint_stab": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_stab.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_stab_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_stab_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_stab_normal.png",
+							"normal_scale": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04
+						},
+						"paint_fin": {
+							"albedo": "#ffffff",
+							"albedo_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fin.jpg",
+							"emission_texture": null,
+							"metallic": 1.0,
+							"metallic_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fin_metallic.png",
+							"specular": 0.5,
+							"roughness": 1.0,
+							"roughness_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fin_roughness.jpg",
+							"normal_texture": "res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fin_normal.png",
+							"normal_scale": 1.0,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.04
+						},
+						"paint_doors": {
+							"albedo": "#5a2f1b",
+							"metallic": 0.0,
+							"roughness": 0.14,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.05
+						},
+						"paint_fence": {
+							"albedo": "#2a1e16",
+							"metallic": 0.0,
+							"roughness": 0.12,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.05
+						},
+						"paint_fence_lower": {
+							"albedo": "#2a1e16",
+							"metallic": 0.0,
+							"roughness": 0.12,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.05
+						},
+						"paint_fillets": {
+							"albedo": "#5e3a22",
+							"metallic": 0.0,
+							"roughness": 0.14,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.05
+						},
+						"paint_trim_carbono": {
+							"albedo": "#2b2019",
+							"metallic": 0.0,
+							"roughness": 0.12,
+							"albedo_texture": null,
+							"emission_texture": null,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.05
+						},
+						"thrust_tube_gold": {
+							"albedo": "#b8924e",
+							"metallic": 0.66,
+							"roughness": 0.24
+						},
+						"mk_ply": {
+							"albedo": "#c9a676",
+							"metallic": 0.0,
+							"roughness": 0.35
+						},
+						"canopy_glass": {
+							"albedo": "#3a2e1c60",
+							"metallic": 0.1,
+							"roughness": 0.02,
+							"specular": 0.6,
+							"clearcoat": 1.0,
+							"clearcoat_roughness": 0.02
+						},
+						"cockpit_tub_grey": {
+							"albedo": "#4a3020",
+							"roughness": 0.4
+						},
+						"seat_tan": {
+							"albedo": "#7a4422",
+							"roughness": 0.55
+						},
+						"seat_cushion": {
+							"albedo": "#6a381c",
+							"roughness": 0.7
+						},
+						"glare_shield_black": {
+							"albedo": "#241a14",
+							"roughness": 0.6
+						}
+					}
 				}
 			]
 		}
@@ -1391,6 +1665,16 @@
 		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_doors_roughness.jpg": 0.462,
 		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_stab_roughness.jpg": 0.3802,
 		"res://assets/vehicle-paints/avanti-s-a200/steampunk_cobre_fin_roughness.jpg": 0.3515,
-		"res://assets/vehicle-paints/ugly-stik/honeybee_roughness.png": 0.4319722951627245
+		"res://assets/vehicle-paints/ugly-stik/honeybee_roughness.png": 0.4319722951627245,
+		"res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fuselage_roughness.jpg": 0.6366,
+		"res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_wing_roughness.jpg": 0.6294,
+		"res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_doors_roughness.jpg": 0.5962,
+		"res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_stab_roughness.jpg": 0.6193,
+		"res://assets/vehicle-paints/avanti-s-a200/camuflaje_selva_fin_roughness.jpg": 0.6539,
+		"res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fuselage_roughness.jpg": 0.1172,
+		"res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_wing_roughness.jpg": 0.1172,
+		"res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_doors_roughness.jpg": 0.122,
+		"res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_stab_roughness.jpg": 0.1146,
+		"res://assets/vehicle-paints/avanti-s-a200/marqueteria_real_fin_roughness.jpg": 0.1048
 	}
 }

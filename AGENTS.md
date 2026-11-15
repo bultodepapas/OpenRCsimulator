@@ -18,6 +18,11 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 
 - Shared-host launch admission and session ownership: [test queue](tools/testqueue/README.md).
   On enrolled hosts use the returned session handle; a bridge port alone is not ownership.
+- Route compatible independent headless GDScript checks through `sim_test_launch` by default;
+  follow them with `sim_test_status` and retain the request ID for `sim_test_recover`.
+  Use the [test pool CLI](tools/testqueue/README.md) if MCP is unavailable. Preserve the
+  required OS; declare `any` only for reviewed portable checks. Graphics, performance,
+  composite suites and interactive sessions retain their existing tool and admission paths.
 
 - Find the tool for your task in the [tool index](docs/tools/README.md) before writing ad-hoc test, probe or debug code.
 - For M1 access, native Mac tests or captures, read the [shared M1 guide](docs/tools/macos-m1.md): SSH, installed tools, isolated workspaces and evidence retention. Preserve its existing SSH keys and frozen campaigns.

@@ -17,8 +17,9 @@ delayed original submit. Different launch inputs are refused while unresolved.
 
 Drive a **running** app from the shell, with no mouse and no editor. You can read its state and live log, use every
 menu, setting, shortcut and controller action, fly with stick values or drive the RC truck, pause and step exact
-physics ticks, sample telemetry, take screenshots, record flight logs and evaluate expressions. For batch checks of
-one script, use the [checked runner](../godot/README.md) instead. Claude Code and Codex find this tool through the
+physics ticks, sample telemetry, take screenshots, record flight logs and evaluate expressions. For independent
+headless checks, agents can use [MCP checked batches](../testqueue/README.md#mcp-checked-batches), and shell users
+can use the [checked runner](../godot/README.md). Claude Code and Codex find this tool through the
 `openrc-debug` skill; the [tool index](../../docs/tools/README.md) routes every other task.
 
 Contents: [agents and MCP](#agents-and-mcp-pt1h-r11) · [quick start](#quick-start) · [I want to…](#i-want-to) ·
@@ -118,11 +119,17 @@ $ debugctl.py press text="Keep changes"
 `sim_sticks`, `sim_key`, `sim_screenshot` (an inline JPEG), `sim_bugit`, `sim_stop`, and `sim_command`, which reaches
 any other bridge command.
 
-- Every action returns the fresh snapshot.
+- Every interactive action returns the fresh snapshot.
 - `sim_fly` closes the launch menu and resumes, so the aircraft is flying when it returns.
 - `sim_launch` points that server at its own session.
 
-The server uses MCP over stdio, the standard library and `debugctl.py`, and nothing else.
+The same server exposes `sim_test_launch`, `sim_test_status` and `sim_test_recover`
+for [automatic checked batches](../testqueue/README.md#mcp-checked-batches). These
+use a durable request ID and do not need an interactive `sim_launch` session. Their
+status and recovery are separate from interactive session handles and `sim_stop`.
+
+The interactive bridge uses MCP over stdio, the standard library and `debugctl.py`.
+The checked-batch tools also use the configured [test pool](../testqueue/README.md).
 
 ```sh
 claude mcp add openrc-sim -- python3 tools/debug/mcp_server.py   # Claude Code; .mcp.json also declares it

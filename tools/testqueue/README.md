@@ -1,15 +1,139 @@
 # Shared-host test admission
 
+## Automatic multi-host checked tests
+
+`testctl.py pool` coordinates independent headless GDScript checks across the
+Windows authority and SSH agents on ANGEL, ANGELA_AIR and Linux. Host configuration
+on DEVIL is `C:\ProgramData\OpenRC\testpool\config.json`. SSH aliases and private
+keys belong to the user's SSH configuration. Override the configuration with
+`--config PATH` after `pool`, or `OPENRC_TESTPOOL_CONFIG`.
+
+### MCP checked batches
+
+Agents can submit independent headless checked scripts directly through the
+`openrc-sim` MCP server, without opening an interactive simulator session. Reconnect
+the MCP client after updating the server so it discovers `sim_test_launch`,
+`sim_test_status` and `sim_test_recover`. The server uses the configured pool above.
+The repository's `.mcp.json` registers it for compatible clients. On DEVIL it is
+also registered in the user's Codex MCP configuration with the absolute server
+path and `OPENRC_TESTPOOL_CONFIG`; `codex mcp get openrc-sim` inspects that entry.
+Existing Codex sessions must reconnect to load the new tools.
+
+1. Choose a unique, stable `request_id` (1–80 letters, digits, `_` or `-`) and
+   call `sim_test_launch` with 1–64 `jobs`. Each job accepts `script` and optional
+   `platform`, `require` (literal completion markers), `timeout` (seconds; default
+   90) and `host` (configured host ID). Optional `source` selects a checkout;
+   otherwise the repository root is used.
+2. The call returns promptly while source freezing and dispatch proceed in the
+   background. Keep the candidate stable until `sim_test_status` reports
+   `source_frozen: true`. Status reads durable state only: `supervisor_active`,
+   `supervisor`, optional `result` (`INCOMPLETE`, `PASSED` or `FAILED`), snapshot,
+   job outcomes and collected artifact locations. It does not launch work.
+3. Inspect the checked outcomes, cleanup and collected evidence. A failed test is
+   not retried. If interrupted or a reply is lost, use `sim_test_recover` with the
+   same ID; recovery retains the frozen snapshot, request identity and selected
+   host, and never reruns a failed test. An uncertain attempt is not moved to a
+   different host. Repeating `sim_test_launch` with the same ID and inputs is
+   idempotent; reusing the ID with changed inputs is refused.
+
+The supervisor observes the batch for up to one hour, retrying receipt recovery
+and artifact collection without rerunning tests. It may then stop with an
+incomplete batch; recovery resumes that batch. Stopping observation does not
+cancel remote jobs. Infrastructure failures retain their available diagnostics
+and cannot qualify a passing batch.
+If freezing is interrupted before a snapshot manifest exists, exact inputs were not
+frozen and no tests were dispatched. Submit a new request ID for a stable source.
+
+For example, pass these argument objects to the named MCP tools:
+
+```text
+sim_test_launch: {"request_id":"mathcheck20261114a","jobs":[{"script":"res://tests/test_math3d.gd","require":["0 failed"],"timeout":90}]}
+sim_test_status: {"request_id":"mathcheck20261114a"}
+sim_test_recover: {"request_id":"mathcheck20261114a"}
+```
+
+The MCP default targets the caller's OS. Set `platform` to `windows`, `linux` or
+`darwin` for a specific OS, or explicitly to `any` only for a reviewed portable
+check. A pass on one host does not establish coverage on the other platforms.
+Tests with performance, graphics, interactive or composite-suite requirements
+retain their existing dedicated entry points and acceptance gates.
+
+### CLI checked batches
+
+```powershell
+python tools/testqueue/testctl.py pool hosts
+python tools/testqueue/testctl.py pool run --script res://tests/test_math3d.gd --script res://tests/test_camera_math.gd --require "0 failed"
+```
+
+`run` freezes the candidate once and distributes its independent scripts. It
+prints a durable batch manifest/state pair before dispatch. Each job has its
+own project, imports, profile, deadline and results. Explicit pool jobs default
+to `--platform any`, declaring that their checks may run on any configured OS.
+Use `--platform windows`, `linux` or `darwin` when the required coverage is OS
+specific. Different platforms in one batch use a JSON manifest with a `snapshot`
+path and `jobs` array, each containing `script`, `platform`, `timeout`, `require`
+and optional `host`. A pool snapshot is created with `pool snapshot --source PATH`.
+
+```powershell
+python tools/testqueue/pool_batch.py --config C:/ProgramData/OpenRC/testpool/config.json --manifest batch.json --state batch-state.json --timeout 3600
+python tools/testqueue/testctl.py pool status JOB_ID
+python tools/testqueue/testctl.py pool collect JOB_ID
+python tools/testqueue/testctl.py pool recover JOB_ID
+```
+
+Reusing the batch command resumes its saved IDs. Finished attempts must have
+complete checked evidence, confirmed cleanup and locally verified artifacts
+before the batch passes. Failed tests remain failed. SSH ambiguity retains the
+selected host and request identity. `recover` retries that identical submission
+on the same host. A preparation interrupted before a durable execution request
+can be closed as `NOT_DISPATCHED`; its files and failure remain available.
+The lower-level `pool submit` returns exit 3 when no host is eligible and nothing
+was submitted. `pool run` and the batch driver retain and wait for pending work.
+
+Placement rejects unavailable/busy hosts, incompatible platforms, mismatched
+engine hashes and insufficient storage/memory. The estimate combines observed
+load, recorded per-test duration, import setup and configured transfer bandwidth.
+Bandwidth starts as an estimate. Repeated source archives are content-addressed,
+verified and reused over SSH; each attempt still receives writable isolation.
+Initial capacity is one exclusive attempt per remote host. Windows submissions
+retain the existing queue's admission and ownership. Long-lived remote jobs are
+detached from SSH and supervised with process-group cleanup and durable state.
+Cooperative POSIX containment retains its documented limits.
+
+The regular checked runner can opt into automatic placement in a shell.
+
+```powershell
+$env:OPENRC_TESTPOOL_CONFIG = 'C:/ProgramData/OpenRC/testpool/config.json'
+# Declare portability only for a reviewed cross-platform check or batch.
+$env:OPENRC_TESTPOOL_PLATFORM = 'any'
+```
+
+Without the platform override, the hook preserves the caller's OS. It routes
+only the registered engine's headless script calls and preserves requested
+output directories, required markers and diagnostic settings. Custom engines,
+graphics, resource measurements, recognized timing scripts and composite
+suite/CI/capture flows continue through their existing host-specific entry points.
+Automatic migration of those composite/graphical workloads remains future work.
+Hardware-specific benchmarks need a fixed machine and their native acceptance.
+
+Deployment requires `remote_agent.py`, `processes.py` and `common.py` under the
+configured remote `runtime/tools/testqueue/`, native Python and the verified
+engine. Use one pool root per physical host for every client. The config pins
+each remote engine SHA-256 and the shared exact engine version. Inputs include
+the frozen source manifest; extracted files and target profile transformations
+have separate receipts. Private configuration, generated snapshots, caches,
+reports and runtime copies remain outside Git.
+
 The experimental local worker owns each admitted process tree until verified teardown.
 It classifies exclusive and parallel work across worktrees, isolates writable projects and
 profiles, and preserves uncertain attempts as `UNKNOWN`. It does not change simulator
-physics. Remote distribution and native graphical qualification remain in the
+physics. Broader remote presets and native graphical qualification remain in the
 [implementation gates](../../docs/plans/agent-test-orchestrator.md).
 
 ## Start one authority
 
 For the configured Linux connection, use the [Linux SSH guide](../../docs/tools/linux-ssh.md).
-SSH access is preparation for TQ-02, not enrollment of a qualified remote worker.
+SSH access alone does not qualify remote graphical or composite workloads.
 
 Use Python 3.11 or newer. The worker uses the standard library; no package installation
 or separate queue server is required. Run it in the intended logged-in Windows user's
@@ -229,12 +353,20 @@ CPU/memory units are conservative configured admission
 slots, not measured hardware limits; do not increase concurrency before measuring
 headroom and qualifying adapters. The scheduler is FIFO among feasible jobs with
 an eligible-exclusive waiting barrier.
-There is no remote-host substitution, priority override or owner transfer.
+The local authority has no remote-host substitution, priority override or owner
+transfer. The checked pool above selects a host before a new attempt is submitted.
 
 ## Verification
 
-Set `TEMP`, `TMP` and `TMPDIR` to a local volume with at least the snapshot reserve,
-then run:
+Set `TEMP`, `TMP` and `TMPDIR` to a local volume with at least the snapshot reserve.
+For MCP checked-batch changes, run the focused client and coordinator fixtures:
+
+```powershell
+python -m unittest tools.testqueue.test_pool_mcp tools.debug.test_mcp_server
+```
+
+For broader changes to queue ownership or the debug bridge, select the affected
+suite when its scope is justified:
 
 ```powershell
 python -m unittest discover -s tools/testqueue -p 'test_*.py'

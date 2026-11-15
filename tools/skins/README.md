@@ -111,6 +111,17 @@ builder evaluates them in chunks to bound memory.
 "Steampunk Cobre" reuses that bake (`build_metal_skin`) with an emission map. Its
 gears share one circular pitch and `mesh_phase` aligns each tooth with the
 neighbouring gap, so the drawn gear train meshes.
+"Camuflaje Selva" (fictional low-visibility markings) reuses the same bake with dielectric
+matte paint; only chips expose metal. Its stabiliser patches vary along the span only,
+because the stock stabiliser UVs let faces several centimetres apart share texels and a
+3-D pattern shatters there. Wing roundels sit inboard of the fences (|x| 0.575 m).
+"Marquetería Real" lays photographed CC0 veneers (ambientCG) in scene space with
+book-matched leaves, stringing, cross-banding, compass-rose medallions and Cinzel
+numerals; control surfaces get their own woods from hinge lines fitted to their stock
+primitives. The photographs stay out of Git: the builder fetches them into the ignored
+`.tools/skin-sources/marquetry/` and verifies each against
+[sources/marquetry](sources/marquetry/README.md). Its stabiliser grain runs chordwise
+for the same shared-texel reason.
 
 Fixed-wing families may have entries too. `AirplaneBuilder.build` applies a
 family's base right after model validation, before lighting, customization or

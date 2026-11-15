@@ -10,11 +10,56 @@ Physics, hosted CI policy and other tracks' acceptance gates remain with their o
 | --- | --- | --- |
 | TQ-00 | Inventory and reuse decision | Jenkins documentation and local availability assessed; provisional embedded SQLite choice in DECISIONS. Jenkins live contention/restart/disconnect comparison remains open. Remote topology, budgets and native adapters are unverified. |
 | TQ-01 | Local ownership foundation | Durable authority, atomic claims, frozen inputs, Job supervision, cancellation, explicit CLI/MCP control and protected shell entry points implemented. Native Windows fake-process and contract fixtures cover contention, lifetime, isolation and failure evidence. Real simulator qualification remains open. |
-| TQ-02 | Linux distribution | [SSH configured and connected](../tools/linux-ssh.md) with the existing pinned identity on 2026-11-12 after the VM was brought online. Linux x86_64, Python 3.12.3 and the clean existing checkout were verified. The remote checkout lacks queue sources. Persistent worker, structured idempotent transport, host/parent/storage budgets, isolated imports and software-capture qualification remain pending. POSIX helper tests do not close this gate. |
-| TQ-03 | Mac qualification | [Both M1 SSH routes and current tools](../tools/macos-m1.md#two-m1-windows-workflow) verified on 2026-11-14 with a focused native headless math check. Remote-worker qualification still needs actual resolved profile-path proof, preferences/calibration preservation, adapter-bound ARM64 engine identity and a logged-in GUI adapter. GOD TEST's Darwin refusal remains. |
-| TQ-04 | Operational refinement | Basic FIFO, manual reserve/release and drain implemented; per-owner quotas, bounded aging, explicit retry history, separate queue/idle/collection policies, backup/restore campaign and durable artifact transfer remain pending. |
+| TQ-02 | Linux distribution | Source-bound independent checked jobs now run through the [configured Linux SSH host](../tools/linux-ssh.md), with idempotent transport, isolated imports and retained evidence. Composite adapters, software-capture qualification and coordinated host/storage budgets remain open; see the distributed checked-test evidence below. |
+| TQ-03 | Mac qualification | [Both M1 SSH routes and current tools](../tools/macos-m1.md#two-m1-windows-workflow) have native headless checked-job evidence with pinned engines. Broader profile/preferences and calibration preservation, a logged-in GUI adapter and graphical qualification remain open. GOD TEST's Darwin refusal remains. |
+| TQ-04 | Operational refinement | Basic FIFO, manual reserve/release and drain implemented; the checked pool collects verified artifacts. Per-owner quotas, bounded aging, explicit retry history, separate queue/idle/collection policies, backup/restore campaign and automated evidence retention remain pending. |
 
 ## Scheduling review candidate, 14 November 2026
+
+### Distributed checked-test implementation, 14 November 2026
+
+The [automatic pool](../../tools/testqueue/README.md#automatic-multi-host-checked-tests)
+adds explicit multi-host headless checked batches, measured-duration placement,
+platform requirements, SSH agents, durable same-host recovery and verified local
+artifact collection. Windows uses the existing authority. ANGEL, ANGELA_AIR and
+Linux have deployed agents and pinned engine identities. The source archive is
+verified against the original snapshot's bytes before transfer; target imports
+and unique user profiles are generated separately.
+
+The [MCP checked-batch interface](../../tools/testqueue/README.md#mcp-checked-batches)
+exposes asynchronous launch, durable status and same-request recovery to agents.
+Its default is the caller's platform; cross-platform placement requires an explicit
+`any` declaration. Native MCP acceptance used a four-host math-check matrix:
+all four jobs passed with verified local artifacts after the original MCP client
+exited. A new client observed the same completed IDs, and recovery did not rerun
+them. Launch returned in 0.125 seconds; a fresh-client status call returned in
+0.156 seconds. These are responsiveness observations, not throughput benchmarks.
+Receipts are `acceptance/mcp-launch.json` and `acceptance/mcp-final.json` under the
+pool root, with the frozen batch at `mcp/mcp-946ebd68d67b45008868ff3ce8e32618`.
+Focused pool/transport/MCP fixtures passed 74 tests; the final collection and
+receipt-concurrency follow-up passed 23 overlapping tests. These cover lost
+launch replies, interrupted freezing, same-ID recovery, per-job receipt locking
+and terminal infrastructure failures without checked reports. Codex registration,
+agent guidance and mirrored tool skills now route compatible checks to this API.
+
+Native existing math checks passed on Windows, both M1s and Linux, including an automatically
+selected Linux run and an automatic batch selecting available Macs. Each checked
+run reported 20 checks, zero failures and confirmed cleanup. Native transport
+fixtures passed ten cases each on Windows, Linux and ANGEL. The coordinator,
+planner, batch, hook and transport fixtures passed 37 cases on Windows; the
+existing checked-runner suite passed 22 cases with one platform skip.
+Local raw receipts are under `C:\ProgramData\OpenRC\testpool\acceptance`, with
+per-job reports in `results` and retained batch states in `batches`.
+The Windows acceptance first exposed an old running authority's metadata-copy
+failure. After draining to zero active claims, restarting with the existing
+metadata fix and resuming admission, the new Windows native attempt passed with
+verified collection. Prior failed receipts remain retained.
+
+TQ-02 now has a bounded checked-job transport. TQ-03 graphical qualification,
+composite suite/CI distribution, automatic benchmark migration, cancellation of
+active remote jobs and automated cache/evidence retention remain open. Initial
+remote capacity is one exclusive attempt per physical host. The planner's
+estimates and fixture timings establish no measured end-to-end speedup.
 
 The review against `95fe1177f26929a12bd032c12e7ac3352eef304d` adds explicit
 exclusive/parallel admission, an eligible-exclusive waiting barrier, global UNKNOWN
@@ -95,9 +140,10 @@ Fake runners establish orchestration logic and real OS process containment, not
 rendered simulator acceptance. The host must be free of unmanaged sessions before
 attempting that campaign. Do not kill another agent's Godot process to qualify it.
 
-The first implementation uses a local combined coordinator/worker with a loopback JSON
-protocol. SQLite is not a remote shared database. Remote hosts remain unadvertised;
-`any-qualified` is refused until a platform adapter has been qualified. Windows state
+At this Windows audit, the first implementation used a local combined coordinator/worker
+with a loopback JSON protocol. SQLite is not a remote shared database. That local
+worker does not advertise remote hosts or accept `any-qualified`; the separate checked
+pool described above now provides bounded remote jobs. Windows authority state
 must reside on a local volume with sufficient space. A machine-wide singleton also
 prevents independent worktree/root authorities from owning the same Windows host.
 

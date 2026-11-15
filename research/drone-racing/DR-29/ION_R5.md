@@ -73,12 +73,42 @@ retain automatic updates. The per-frame transform-following, RPM conversion,
 phase, visibility and blur laws are unchanged; profiles and mutable materials
 are not cached or shared between rotor instances.
 
-Verification of this follow-up is pending recovery of the shared test queue.
-Its TCP listener is alive, but authenticated operations block on the worker lock.
-The prepared tests cover parked/animated visible-surface and Home-bounds parity,
-independent rotor speeds, held-frame pose following, source retirement and
-automatic session reattachment. A paired warm-construction screen will report
-raw timings and instance mesh/material counts; it does not measure FPS or GPU cost.
+Verified on **2026-11-14** through the shared queue on Windows x86_64, Godot
+`4.8.beta2.official.cafc17a19`, AMD Ryzen 9 5900X. Focused headless checks passed
+with warnings treated as errors, complete evidence and confirmed cleanup.
+
+- `test_mr_visual.gd` passed **31 checks**, covering visible geometry, selected
+  material properties, transforms, Home bounds and pre-pose shadow extent,
+  camera, independent RPM, held-frame following, stopped phases and retirement
+  for ION and the fixture.
+- `test_home_vehicle_roster.gd` passed **44 checks**.
+- `test_propeller_blur.gd` passed **161 checks**, including manual processing
+  suppression and automatic session updates after reattachment.
+- `test_mr_activity.gd` passed **96 checks**, including Home/flight transitions,
+  achieved rotor speed, pause/resume, restart and lifecycle.
+
+`bench_mr_visual.gd` ran seven alternating pairs after warming both builds.
+The interval measures only `Visual.build()` with the GLB already held in memory.
+Both paths use the same candidate, including its unused-motor-material elision.
+The animated path retains the observer construction previously used by Home.
+
+| Measured quantity | Animated build | Parked Home build |
+| --- | --- | --- |
+| Median construction time | 136.059 ms | 0.163 ms |
+| Nodes | 37 | 25 |
+| Distinct mesh resources | 17 | 9 |
+| Distinct active material resources | 44 | 32 |
+
+Counts describe reachable per-instance objects, including hidden geometry.
+Loading, data preparation, tree entry, rendering, memory bytes and whole-Home
+startup are outside this screen. FPS and GPU performance require their own
+target-resolution evidence.
+
+The admitted source digest was
+`e7afe3f8c2de08755c189daae34c12b90e4e45955e39b50c066b9ab492cfa62f`.
+The tested visual, Home adapter, blur, tests and GLB match the working tree.
+The frozen candidate and raw samples, checked reports, logs and queue results
+are retained under `D:\OpenRCsimulator-evidence\ion-r5-opt-20261114\`.
 
 ## Verification and limits
 
