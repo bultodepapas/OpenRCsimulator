@@ -80,8 +80,9 @@ were restored. That does not qualify companions or native physics on the custom
 engine. The earlier R1 development package used the wrong raw checkout bytes;
 its source-bound receipt and smokes do not repair that admission limitation.
 A bounded native Settings trial now preserves the confirmation window through
-an injected main-thread stall, and the focused Settings consumers pass. Cold
-compilation and a new required-CI run remain pending.
+an injected main-thread stall, and the focused Settings consumers pass. A corrected
+source-bound ARM64 development package also passes fixed-session and bounded
+rendered smokes. Cold compilation and full required CI remain unqualified.
 
 Completion has three distinct levels per technology:
 
@@ -476,6 +477,10 @@ one-shot main-RD ray hit against the CPU. Its input budget is a conservative
 cumulative allocation charge, not reclaimed native memory. This work does not
 produce lighting or denoiser guides and cannot close 13d1. Native compilation and
 the actual field/aircraft cases must pass before using it as a producer boundary.
+An additional native move-during-capture case confirms that returned transforms
+and hits can remain valid historical data after an instance moves. A current-scene
+consumer must independently validate its scene generation, transforms, materials,
+liveness and complete relevant caster set; this diagnostic is not that gate.
 
 The next consumer must preserve the custom ground material and existing raster
 lighting semantics. A bounded hybrid Sun/contact-visibility contribution is a

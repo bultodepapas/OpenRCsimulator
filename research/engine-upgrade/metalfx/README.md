@@ -203,6 +203,12 @@ Never put these drafts or deliberate fault controls in the production app.
   `GODOT_METAL_TRIANGLE_QUERY=1` for enabled cases; use Forward+/Metal and run each
   case in a fresh process. This intentionally stalls the main RD graph. It produces
   no viewport lighting/denoised output and does not complete 13d1.
+  The additional `OPENRC_RT_CASE=capture_instance_move` case queues an asynchronous
+  readback and requires its callback to move an actual renderer instance inside
+  the probe's flush. It checks the historical transform/hit and an independently
+  CPU-checked fresh post-move query. It passed on M1, alongside aircraft and Off
+  controls. These results are historical; the API does not revalidate instance
+  transforms, material or liveness before returning a retained snapshot.
 
 The opt-in application controller and its pure admission policy have separate
 focused checks: the current candidates passed 89 and 517, respectively, on

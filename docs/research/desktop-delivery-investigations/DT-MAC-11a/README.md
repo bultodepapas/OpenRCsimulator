@@ -1091,6 +1091,83 @@ The retained raw runner receipt is SHA-256
 This bounded official-engine result does not qualify companions or native physics
 on the custom engine and does not relax any public-distribution or native pin.
 
+### Corrected development package and moving-instance witness
+
+The corrected checkout uses public commit
+`f5219d7d682a7f2470bbf2af88c2cf64c1fe7833`, tree
+`35e5a8cf082f01c48d603820fb2f1d48c908e8f7`. It preserves committed checkout
+filters, passes full Git fsck with a clean status, and matches all 16 behavior
+sources. The clean 19-patch pair exported a new ARM64 development app. Its
+executable SHA-256 is
+`1674e23d183b126040a54132a0afa495a48246f7fd05e3fdf21890f0e993c88c`;
+the source-input snapshot is
+`875768f397ca77a8943b4925d38455970e64c8e58ea52d745acc8037e0c93b63`
+and sibling reference receipt is
+`e7a847cd8c317d66803f251e061b8a3ce67f48319e19bdc4dc1245ed2ab1e19c`.
+Signature/receipt verification, a complete ten-sample reference session and a
+bounded rendered quick flight requesting 1920×1080 passed; that smoke did not
+record actual drawable dimensions. The custom engine correctly retains
+reference-physics fallback; this does not renew native default admission.
+
+The local ZIP is 1,608,871,093 bytes, SHA-256
+`5d8d51b251edb43138f9212c51870c0287128b1b4b8bf5e99e95b94f19ab0c2b`.
+The Windows transfer and its sibling receipt were independently rehashed. This
+supersedes the R1 raw-checkout package for local research only. Public signing,
+performance, complete-app quality and required CI remain separate gates. A later
+fixed capture measured the windowed output at 1920×1018, so the requested size
+does not establish 1080p qualification. That technical capture also reported four
+ObjectDB references at immediate exit; it is not a zero-leak result.
+The fullscreen repeat produced an actual 1920×1080 PNG, SHA-256
+`4fb8181f77558e3b81d27a28fa465e95982ccd47affa49939562bd082af117e8`.
+Basic visual review found a coherent field, aircraft and HUD. It also reported
+four references at immediate exit. This qualifies the fixed capture's output
+dimensions, not normal-flight frame pacing, interpolation or latency.
+
+The later `capture_instance_move` fixture
+`45f69ab5b9e41312840997c9189bbcb00691cb7d923bbc257d4f63456cf2df0a`
+passed native parsing on the 0020 development editor. Its four-byte asynchronous
+download callback ran exactly once inside the probe, after snapshot capture,
+and moved the actual aircraft-component renderer instance 20 m. The old snapshot
+still reported its original transform and CPU-matched hit at 12.3156 m. A fresh
+query reported the moved transform and a different, CPU-matched ground hit at
+18.9438 m. Both GPU results completed successfully. Aircraft and Off controls
+also passed. The fixture's output has a `failures` array, not an `ok` member;
+an initial coordinator asserted the wrong schema after the native case passed.
+The corrected rereader validates that retained result without repeating it.
+
+This confirms the diagnostic's historical-snapshot contract, not current-scene
+validity. A future viewport consumer needs transform/material/liveness and caster
+coverage checks before accepting output; 13d1 remains incomplete. The phase-7
+archive contains 41 report/receipt payloads, 112,333 compressed bytes, SHA-256
+`c1b1e3cbf4bf62f6359bcb9c666eacc2391e8f7361e7a502f516b023110766eb`.
+Its archive and every payload matched after retrieval.
+
+At that commit, the Linux MetalFX workflow passed all 21 scripts / 141 controls,
+as did a fresh Windows sparse clone; the Windows queue workflow passed. Full
+CI exposed controller failures inherited from its main-line base and 600-second
+cold-import timeouts on macOS and Windows. These remain under repair; the full
+required workflow has not passed.
+
+The six repaired controller fixtures subsequently passed on M1 with the official
+editor. They update test contracts without changing the controller runtime:
+connection leases, fresh calibration after reconnect, cancelled-screen disposal,
+stable wizard samples and refusal atomicity. The editing-key fixture uses the
+platform's actual word-delete binding; it passed 46 checks, menu routing passed
+60, helicopter state passed 55 and preflight calibration passed 114. Setup and
+end-to-end radio completed their full success markers. The radio fixture retained
+19 ObjectDB references at exit, so this is functional evidence, not zero-leak or
+physical-radio qualification. Mac orchestration and RC helper controls also
+passed 4 and 11 Python/fake-process checks on M1, including the POSIX fixtures.
+
+The inherited D11g refusal was traced to one multirotor-controller input in its
+149-file inventory. A genuine last-qualified source and the candidate produced
+identical named numerical/provenance fields on M1 with unchanged aircraft and
+project bytes. The comparison receipt is
+`5added5e9ccc592bb048ff2c21e954d2d571f1be849220ca2a9888d83f2d99cc`.
+The original guard passed and the candidate correctly refused its three
+historical-source leaves. Guard renewal and fresh mutation controls remain
+pending; numerical equality alone does not waive provenance.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is
