@@ -50,6 +50,14 @@ except ImportError:  # Also support direct execution from this directory.
 baseline = sys.modules[_run_probe.__module__]
 
 
+def setUpModule():
+    # Process launchers in this module are fakes. Admission tests explicitly
+    # enable the real gate within their own scope.
+    admission_fixture = patch.object(baseline.admission, "enabled", return_value=False)
+    admission_fixture.start()
+    unittest.addModuleCleanup(admission_fixture.stop)
+
+
 def valid_report(observer: bool = True) -> dict:
     tick = [3, 4, 5, 6, 7]
     return {

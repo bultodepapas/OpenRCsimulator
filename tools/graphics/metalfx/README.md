@@ -28,6 +28,8 @@ patches=(
   --patch tools/graphics/metalfx/patches/0002-metalfx-history-reset.patch
   --patch tools/graphics/metalfx/patches/0003-metalfx-debug-faults.patch
   --patch tools/graphics/metalfx/patches/0004-metalfx-frame-inputs.patch
+  --patch tools/graphics/metalfx/patches/0005-metal-triangle-query.patch
+  --patch tools/graphics/metalfx/patches/0006-metalfx-gpu-observation.patch
 )
 python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip \
   --out tmp/metalfx-editor "${patches[@]}"
@@ -51,6 +53,15 @@ The controls are absent from release-template code. Normal launches leave it uns
 SDK bridge and synchronous diagnostic readback. It rejects unsupported scenes,
 keeps Temporal reset receipts independent and has no presenter. Its actual M1
 readback/lifecycle fixture passed; scene motion and presentation remain open.
+0005 adds an opt-in experimental Metal compute triangle-query backend. Launch
+with `GODOT_METAL_TRIANGLE_QUERY=1` only for that experiment; ordinary ray-query
+and ray-pipeline support remain unavailable. It admits a bounded triangle/instance
+subset, not complete OpenRC scenes. The portable controls compile the changed
+validation and binding functions, including development-build object naming,
+pipeline changes, inactive descriptor-set holes and current TLAS/BLAS residency.
+Native compilation and GPU readback for this patch remain pending.
+0006 adds opt-in command-buffer completion observation, described below. Its
+compiled fake-command controls passed; it has not run on the native Metal backend.
 
 Intake freezes and hashes archive/ordered patch copies, reconstructs the expected
 patched catalog, rejects unknown source edits, extra inputs, unsafe paths and
@@ -89,3 +100,37 @@ checks the real device independently. Neither fixture is a second profiler.
 The verified 0001–0003 pair and the later intake-helper revision are identified
 separately in the dated evidence; a helper update deliberately invalidates an
 older intake's helper identity until its original frozen helper is restored.
+
+## Optional GPU completion observation
+
+With patch 0006, call
+`RenderingServer.viewport_set_metalfx_gpu_observation_requested(viewport_rid, true)`
+and read `viewport_get_metalfx_gpu_status(viewport_rid)`. The default is Off. Off
+creates no observation state or completion handler. Explicitly requesting it can
+allocate CPU state before an effect callback is admitted; an enqueue failure may
+therefore have allocated state with ticket zero and `unobserved` status.
+
+Handlers are registered after the actual SDK encode returns. They retain only
+shared observation state and value metadata, so retiring a viewport/generation
+does not leave a callback holding its owner. Snapshots are coherent per role
+(`scaler` or `frame_interpolation`), not an atomic pair. Identify a sample by the
+viewport RID, viewport generation, observation generation, frame generation,
+role, epoch and ticket. A recovered interpolation context can restart its ticket
+counter while its epoch changes. A greatest observed completed ticket is not a
+contiguous completion fence or a count of completed frames.
+
+`completed` means the latest encoded ticket's callback reported command-buffer
+success; an earlier observed failure stays latched in that observation state.
+Temporal GPU reset completion is independent of the legacy encode-call receipt.
+Toggling observation does not reset Temporal history or its request serials.
+
+Apple's [completion handler](https://developer.apple.com/documentation/metal/mtlcommandbuffer/addcompletedhandler(_:))
+reports the whole command buffer. Its
+[GPU start](https://developer.apple.com/documentation/metal/mtlcommandbuffer/gpustarttime)
+and [end](https://developer.apple.com/documentation/metal/mtlcommandbuffer/gpuendtime)
+timestamps use system Mach seconds; absent, zero or invalid times remain null.
+The callback's CPU observation uses `std::chrono::steady_clock` microseconds.
+Do not subtract these clocks without calibration, sum durations shared between
+roles, or label this effect-only cost, OS presentation, displayed FPS or latency.
+`gpu_probe.gd` exercises the native API and retirement cases; parsing and native
+execution are still required before accepting that fixture.

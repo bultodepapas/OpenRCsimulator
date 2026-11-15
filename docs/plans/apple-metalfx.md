@@ -45,6 +45,14 @@ checkbox complete. Missing supported hardware leaves native qualification open.
 An infeasible engine dependency produces a documented incomplete milestone,
 with its smallest remaining dependency; it does not close the four-feature goal.
 
+Current implementation boundary: native M1 compilation and readback cover engine
+patches 0001–0004, including the scene-input experiment, but no FG presenter.
+The bounded RD triangle-query backend (0005) and opt-in GPU completion observer
+(0006) have compiled portable controls; their native execution is pending.
+The RD denoised binding is in progress. No whole-scene RT consumer, public FG
+control or four-feature default has been qualified. Exact revisions and results
+belong to the linked implementation evidence, not this status paragraph.
+
 Completion has three distinct levels per technology:
 
 | Level | Required result |

@@ -2014,6 +2014,275 @@ def _steam_cached(atlas: str):
     return _STEAM_CACHE[atlas]
 
 
+# ---------------------------------------------------------------------------------------------
+# Sebart Avanti S jet: "Camuflaje Selva". A fictional low-visibility combat scheme: a matte three-tone dark-green
+# disruptive camouflage (dark green, black-green and olive drab patches, domain-warped and stretched along the
+# airframe) over the upper surfaces and flanks, a light grey-green countershaded belly with a wavy spray line,
+# low-visibility pale-grey markings (fictional roundel, serial, squadron), touched-up panels, panel-line wash,
+# leading-edge chips to primer and bare alloy, a non-slip walkway, exhaust soot and belly oil streaks. Same four
+# maps and scene-space bake as Sabre Plata; the paint is dielectric and only chips expose metal.
+# ---------------------------------------------------------------------------------------------
+CAMO_ATLASES = dict(SABRE_ATLASES)
+CAMO_GREEN = hex_rgb("#34432c")
+CAMO_BLACK = hex_rgb("#1e281c")
+CAMO_OLIVE = hex_rgb("#565d3b")
+CAMO_BELLY = hex_rgb("#8b9487")
+CAMO_MARK = hex_rgb("#a7ae9e")  # low-visibility pale grey-green markings
+CAMO_INK = hex_rgb("#17191a")
+CAMO_PRIMER = hex_rgb("#8a8b6a")
+CAMO_RED = hex_rgb("#8e2a26")  # subdued rescue red
+CAMO_ROUGH = 0.66
+_CAMO_ART: dict = {}
+
+
+def _camo_roundel() -> np.ndarray:
+    """Fictional low-visibility roundel: pale ring, black-green disc and a forward chevron (left-right symmetric,
+    so it reads the same on both flanks and on the mirrored wings)."""
+    if "roundel" not in _CAMO_ART:
+        from PIL import ImageDraw
+        size = 512
+        img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        mark = tuple(int(c * 255 + 0.5) for c in CAMO_MARK) + (255,)
+        disc = tuple(int(c * 255 + 0.5) for c in CAMO_BLACK) + (255,)
+        d.ellipse((4, 4, size - 5, size - 5), fill=mark)
+        d.ellipse((40, 40, size - 41, size - 41), fill=disc)
+        c = size / 2
+        d.polygon([(c, 96), (c + 150, 330), (c + 92, 330), (c, 188), (c - 92, 330), (c - 150, 330)], fill=mark)
+        d.ellipse((c - 26, 360, c + 26, 412), fill=mark)
+        _CAMO_ART["roundel"] = np.asarray(img, dtype=np.float64) / 255.0
+    return _CAMO_ART["roundel"]
+
+
+def camo_paint(skin: "_Skin", p, panel_id, seed: int):
+    """Matte three-tone camouflage in scene space, so patches run on across parts and control surfaces."""
+    warp = np.stack([fbm(p, 0.16, seed + k) - 0.5 for k in range(3)], axis=1) * 0.09
+    q = p + warp
+    dark = fbm(q, (0.20, 0.12, 0.34), seed + 5)
+    olive = fbm(q, (0.22, 0.14, 0.30), seed + 9)
+    dark_w = 1.0 - smoothstep(0.437, 0.443, dark)
+    olive_w = smoothstep(0.567, 0.573, olive) * (1.0 - dark_w)
+    colour = mix(np.broadcast_to(CAMO_GREEN, (len(p), 3)).copy(), CAMO_OLIVE, olive_w)
+    colour = mix(colour, CAMO_BLACK, dark_w)
+    # Touched-up panels differ slightly in shade and sheen; the paint fades in sun-exposed blotches.
+    shade = 0.95 + 0.09 * _hash(panel_id, seed=seed + 13)
+    fade = fbm(p, 0.07, seed + 17)
+    skin.colour = colour * (shade * (0.95 + 0.10 * fade))[:, None]
+    skin.rough = CAMO_ROUGH + 0.05 * (_hash(panel_id, seed=seed + 19) - 0.5) + 0.08 * (fbm(p, 0.03, seed + 23) - 0.5)
+    skin.metal = np.zeros(len(p))
+    skin.paint = np.ones(len(p))
+
+
+def camo_belly(skin: "_Skin", p, weight):
+    weight = np.clip(weight, 0.0, 1.0)
+    tone = CAMO_BELLY * (0.96 + 0.06 * fbm(p, 0.06, 601))[:, None]
+    skin.colour = mix(skin.colour, tone, weight)
+    skin.rough = skin.rough + (0.6 - skin.rough) * weight
+
+
+def camo_chips(skin: "_Skin", amount, p, seed: int):
+    """Worn paint: primer first, bare alloy at the centre of the larger chips."""
+    primer = smoothstep(0.62, 0.66, fbm(p, 0.006, seed)) * amount
+    metal = smoothstep(0.70, 0.74, fbm(p, 0.006, seed)) * amount
+    skin.lay(CAMO_PRIMER, primer, rough=0.7, metal=0.0)
+    skin.lay(ALU_TONES[1], metal, rough=0.32, metal=0.55)
+
+
+def camo_fuselage(p, n):
+    x, y, z = p[:, 0], p[:, 1], p[:, 2]
+    zn = (z - FUS_NOSE) / FUS_LEN
+    zm = zn * FUS_LEN
+    dy = y - _fuselage_centre(zn)
+    r = np.hypot(x, dy)
+    phi = np.arctan2(x, dy)
+    a = np.abs(phi)
+    arc = r * phi
+    side = smoothstep(0.45, 0.65, np.abs(n[:, 0]))
+    skin = _Skin(len(p))
+    d_station, k_station, f_station = _nearest(zn, FUS_STATIONS)
+    d_seam, k_seam, _ = _nearest(a, FUS_SEAMS)
+    k_seam = np.where(k_seam == 0, 0, k_seam + 10 * (x < 0))
+    panel = k_station * 64 + k_seam
+    camo_paint(skin, p, panel, seed=611)
+    across = np.where(a < FUS_SEAMS[0], (phi + FUS_SEAMS[0]) / (2 * FUS_SEAMS[0]), _nearest(a, FUS_SEAMS)[2])
+    skin.height += 0.0002 * np.sin(np.pi * f_station) * np.sin(np.pi * np.clip(across, 0, 1)) \
+        * np.where(_hash(panel, seed=7) < 0.5, -1.0, 1.0)
+    # Countershaded belly below a wavy spray line.
+    limit = np.radians(124.0 + 10.0 * (noise3(p, (0.5, 0.5, 0.18), 613) - 0.5))
+    camo_belly(skin, p, smoothstep(-0.003, 0.003, (a - limit) * r))
+    # Panel lines with a dark wash, rivet rows, screwed hatches.
+    skin.groove(d_station * FUS_LEN, wash=0.10)
+    skin.groove(d_seam * r, wash=0.10)
+    skin.groove(np.abs(zn - 0.730) * FUS_LEN, width=0.0016, depth=0.00035, wash=0.12)
+    rivet = rivets(d_station * FUS_LEN, arc, (-0.0035, 0.0035), 0.008)
+    rivet = np.maximum(rivet, rivets(d_seam * r, zm, (0.0,), 0.008))
+    skin.rivet(rivet * (zn > 0.062) * 0.7)
+    for z0, z1, y0, y1 in FUS_HATCHES:
+        box = _box_distance(zm, y, z0 * FUS_LEN, z1 * FUS_LEN, y0, y1)
+        skin.groove(np.where(side > 0.5, box, 1.0), width=0.0013, wash=0.12)
+        along = np.where(np.minimum(np.abs(y - y0), np.abs(y - y1)) < np.minimum(np.abs(zm - z0 * FUS_LEN),
+                                                                                 np.abs(zm - z1 * FUS_LEN)), zm, y)
+        phase = (along % 0.011) - 0.0055
+        skin.screw((1.0 - smoothstep(0.0007, 0.0011, np.hypot(box + 0.004, phase))) * (box < 0) * side * 0.6)
+        # Fluid stains running aft from the hatch's lower edge.
+        drip = np.exp(-np.maximum(zm - z1 * FUS_LEN, 0.0) / 0.10) * (zm > z0 * FUS_LEN) * (np.abs(y - y0) < 0.012)
+        skin.grime(drip * smoothstep(0.5, 0.8, noise3(p, (0.004, 0.004, 0.08), 617)) * side * 0.35,
+                   tint=(0.30, 0.29, 0.25), rough=0.45, metal_loss=0.0)
+    # Gun ports: dark recessed slots with soot fanning aft.
+    slot_z0, slot_z1 = 0.100 * FUS_LEN, 0.136 * FUS_LEN
+    soot = np.zeros(len(p))
+    for yc in GUN_SLOTS:
+        capsule = np.hypot(np.maximum(np.maximum(slot_z0 - zm, zm - slot_z1), 0.0), y - yc) - 0.0042
+        port = (1.0 - smoothstep(-0.0004, 0.0003, capsule)) * side
+        skin.lay(hex_rgb("#101111"), port, rough=0.85, metal=0.0)
+        skin.height -= 0.0008 * port
+        aft = np.maximum(zm - slot_z1, 0.0)
+        spread = 0.0045 + aft * 0.22
+        streak = 0.6 + 0.4 * noise3(p, (0.004, 0.003, 0.06), 619)
+        soot = np.maximum(soot, np.exp(-aft / 0.12) * (1.0 - smoothstep(spread * 0.5, spread, np.abs(y - yc)))
+                          * (zm > slot_z0) * streak * side)
+    skin.grime(soot * 0.8, tint=(0.22, 0.21, 0.20), rough=0.7, metal_loss=0.0)
+    # Dark grey radome and a matte black-green anti-glare panel ahead of the canopy.
+    radome = 1.0 - smoothstep(0.0615, 0.0625, zn)
+    skin.lay(hex_rgb("#3a3e3a"), radome, rough=0.55, metal=0.0)
+    glare_limit = np.radians(np.interp(zn, [0.07, 0.12, 0.165], [30.0, 50.0, 64.0]))
+    glare = (1.0 - smoothstep(-0.001, 0.001, (a - glare_limit) * r)) * (zn > 0.0625) * (1.0 - smoothstep(0.163, 0.167, zn))
+    skin.lay(hex_rgb("#191d18"), glare, rough=0.85, metal=0.0)
+
+    def side_mask(mask, z0, z1, y0, y1):
+        u, v, weight = _side_uv(p, n, FUS_NOSE + z0 * FUS_LEN, FUS_NOSE + z1 * FUS_LEN, y0, y1)
+        return np.where(weight > 0, _bilinear(mask, u, v), 0.0) * weight
+
+    def lettering(text, z0, z1, y0, y1, colour=CAMO_MARK, rows=1, rough=0.6):
+        aspect = (z1 - z0) * FUS_LEN / (y1 - y0)
+        skin.lay(colour, side_mask(_sabre_text(text, aspect, rows), z0, z1, y0, y1), rough=rough, metal=0.0)
+
+    u, v, weight = _side_uv(p, n, FUS_NOSE + 0.765 * FUS_LEN, FUS_NOSE + 0.845 * FUS_LEN, 0.058, 0.152)
+    art = _bilinear(_camo_roundel(), u, v)
+    skin.lay(art[:, :3], np.where(weight > 0, art[:, 3], 0.0) * weight, rough=0.6, metal=0.0)
+    lettering("FA-742", 0.862, 0.952, 0.034, 0.074, colour=CAMO_INK)
+    lettering("ESCUADRÓN 7", 0.205, 0.330, 0.082, 0.102)
+    # Rescue arrow pointing forward to the canopy release (scene space, so the tip does not flip).
+    rz0, rz1, ry = 0.322 * FUS_LEN, 0.366 * FUS_LEN, 0.1195
+    shaft = (zm > rz0 + 0.011) & (zm < rz1) & (np.abs(y - ry) < 0.0042)
+    head = (zm >= rz0) & (zm <= rz0 + 0.012) & (np.abs(y - ry) < 0.008 * (zm - rz0) / 0.012)
+    skin.lay(CAMO_RED, (shaft | head) * side, rough=0.55, metal=0.0)
+    lettering("RESCUE", 0.331, 0.363, 0.1162, 0.1228, colour=CAMO_MARK)
+    lettering("SERIAL NO. 742\nFUEL JP-8", 0.432, 0.490, 0.068, 0.090, colour=CAMO_INK, rows=2)
+    lettering("EXT. POWER\n28V DC", 0.612, 0.650, 0.074, 0.092, colour=CAMO_INK, rows=2)
+    lettering("NO STEP", 0.560, 0.598, 0.196, 0.206, colour=CAMO_MARK)
+    # Fuel filler cap on the spine.
+    top = smoothstep(0.55, 0.7, n[:, 1])
+    cap = np.hypot(x, (zn - 0.53) * FUS_LEN)
+    skin.lay(hex_rgb("#4b5046"), (1.0 - smoothstep(0.010, 0.011, cap)) * top, rough=0.5, metal=0.2)
+    skin.groove(np.where(top > 0, cap - 0.0112, 1.0), width=0.0012)
+    # Weathering: chips on the canopy sill and spine walk, exhaust soot and heat, belly oil.
+    sill = ((zn > 0.165) & (zn < 0.42) & (y > 0.08)).astype(float)
+    camo_chips(skin, 0.2 * sill + 0.03, p, 621)
+    skin.scratch(0.5 * scratches(zm, arc, 0.018, 1.0, 623) * (_hash(np.floor(zm / 0.018), np.floor(arc / 0.018), seed=625)
+                                                          < np.where(sill > 0, 0.2, 0.03)))
+    exhaust = smoothstep(0.88, 1.0, zn) * (1.0 - smoothstep(0.05, 0.17, y))
+    skin.grime(exhaust * (0.5 + 0.5 * noise3(p, (0.006, 0.006, 0.12), 627)) * 0.9, tint=(0.22, 0.21, 0.20), rough=0.7,
+               metal_loss=0.0)
+    heat = smoothstep(0.975, 0.995, zn)
+    skin.lay(hex_rgb("#3a3631"), heat, rough=0.45, metal=0.5)
+    belly = smoothstep(np.radians(115), np.radians(150), a)
+    oil = np.exp(-np.mod(zn - 0.20, 0.135) * FUS_LEN / 0.16) * smoothstep(0.55, 0.85, noise3(p, (0.005, 0.005, 0.2), 629))
+    skin.grime(oil * belly * 0.5, tint=(0.40, 0.38, 0.33), rough=0.42, metal_loss=0.0)
+    return skin
+
+
+def camo_lifting(p, n, frac, span_norm, span_hi, atlas, chord_len, table=None):
+    z = p[:, 2]
+    s = span_norm * span_hi
+    top = n[:, 1] >= 0.0
+    face = smoothstep(0.3, 0.6, np.abs(n[:, 1]))
+    joints = [0.14, 0.42, 0.70] if atlas != "stab" else [0.17, 0.32]
+    spars = [0.14, 0.63] if atlas != "stab" else [0.16, 0.62]
+    skin = _Skin(len(p))
+    d_joint, k_joint, f_joint = _nearest(s, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, spars)
+    panel = k_joint * 16 + k_spar * 2 + top
+    camo_paint(skin, p, panel, seed=641 if atlas != "stab" else 643)
+    camo_belly(skin, p, (~top).astype(float))
+    skin.height += 0.0002 * np.sin(np.pi * f_joint) * np.sin(np.pi * f_spar) * np.where(_hash(panel, seed=9) < 0.5, -1, 1)
+    skin.groove(np.where(face > 0.5, d_joint, 1.0), wash=0.10)
+    skin.groove(np.where(face > 0.5, d_spar * chord_len, 1.0), wash=0.10)
+    rivet = rivets(d_joint, z, (0.0,), 0.008)
+    rivet = np.maximum(rivet, rivets(d_spar * chord_len, s, (0.0,), 0.008))
+    skin.rivet(rivet * face * 0.7)
+    # Leading-edge erosion: chipped to primer and bare alloy.
+    edge = 1.0 - smoothstep(0.0, 0.04, frac)
+    camo_chips(skin, 0.85 * edge + 0.03, p, 645 if atlas != "stab" else 647)
+    if atlas != "stab":
+        # Low-visibility roundels on the upper surfaces, chevron forward.
+        art = _camo_roundel()
+        x0, x1 = 0.50, 0.70
+        size = x1 - x0
+        zc = z - (frac - 0.42) * chord_len
+        u = (s - x0) / size
+        v = (z - (zc - size * 0.5)) / size
+        inside = (u >= 0) & (u < 1) & (v >= 0) & (v < 1) & top
+        sample = _bilinear(art, u, v)
+        skin.lay(sample[:, :3], np.where(inside, sample[:, 3], 0.0) * face, rough=0.6, metal=0.0)
+        # Non-slip walkway at the root: rough black-green with a pale outline.
+        walk = _box_distance(s, frac * chord_len, 0.12, 0.30, 0.26 * chord_len, 0.58 * chord_len)
+        skin.lay(hex_rgb("#1b211a"), ((walk < 0) & top) * face, rough=0.92, metal=0.0)
+        skin.lay(CAMO_MARK, _line(walk, 0.0018) * top * face, rough=0.6, metal=0.0)
+        skin.scratch(0.5 * scratches(s, z, 0.016, 1.0, 649) * np.where((walk < 0) & top, 0.4, 0.02))
+        streak = smoothstep(0.55, 0.85, noise3(p, (0.2, 0.006, 0.006), 651)) * (frac > 0.3)
+        skin.grime(np.where(top, 0.0, 0.25 * streak), tint=(0.42, 0.40, 0.36), rough=0.45, metal_loss=0.0)
+    else:
+        soot = (1.0 - smoothstep(0.10, 0.22, s)) * smoothstep(0.3, 0.9, frac)
+        skin.grime(soot * (0.5 + 0.5 * noise3(p, (0.2, 0.01, 0.01), 653)) * 0.7, tint=(0.22, 0.21, 0.20), metal_loss=0.0)
+    skin.colour = mix(CAMO_BLACK * 0.8, skin.colour, face)  # gap and edge faces read dark
+    return skin
+
+
+def camo_fin(p, n, frac, height_norm):
+    y, z = p[:, 1], p[:, 2]
+    chord_m = 0.36
+    skin = _Skin(len(p))
+    joints = [0.212 + 0.365 * h for h in (0.30, 0.62)]
+    d_joint, k_joint, f_joint = _nearest(y, joints)
+    d_spar, k_spar, f_spar = _nearest(frac, [0.12, 0.62])
+    panel = k_joint * 8 + k_spar
+    camo_paint(skin, p, panel, seed=661)
+    side = smoothstep(0.35, 0.6, np.abs(n[:, 0]))
+    skin.groove(np.where(side > 0.5, d_joint, 1.0), wash=0.10)
+    skin.groove(np.where(side > 0.5, d_spar * chord_m, 1.0), wash=0.10)
+    skin.rivet(np.maximum(rivets(d_joint, z, (0.0,), 0.008), rivets(d_spar * chord_m, y, (0.0,), 0.008)) * side * 0.7)
+    camo_chips(skin, 0.8 * (1.0 - smoothstep(0.0, 0.05, frac)) + 0.03, p, 663)
+
+    def lettering(text, z0, z1, y0, y1):
+        u, v, weight = _side_uv(p, n, z0, z1, y0, y1)
+        mask = _sabre_text(text, (z1 - z0) / (y1 - y0))
+        skin.lay(CAMO_MARK, np.where(weight > 0, _bilinear(mask, u, v), 0.0) * weight, rough=0.6, metal=0.0)
+
+    lettering("742", 0.895, 1.035, 0.300, 0.344)
+    lettering("ESCUADRÓN 7", 0.925, 1.035, 0.352, 0.364)
+    # A black-green fin cap band with a pale keyline.
+    skin.lay(CAMO_BLACK, smoothstep(0.875, 0.885, height_norm) * side, rough=0.62, metal=0.0)
+    skin.lay(CAMO_MARK, _line((height_norm - 0.872) * 0.365, 0.0025) * side, rough=0.6, metal=0.0)
+    soot = (1.0 - smoothstep(0.0, 0.12, height_norm)) * smoothstep(0.4, 0.9, frac)
+    skin.grime(soot * 0.5, tint=(0.22, 0.21, 0.20), metal_loss=0.0)
+    skin.colour = mix(CAMO_BLACK * 0.8, skin.colour, side)
+    return skin
+
+
+def build_camo(atlas: str):
+    return build_metal_skin(atlas, CAMO_ATLASES, camo_fuselage, camo_lifting, camo_fin)
+
+
+_CAMO_CACHE: dict = {}
+
+
+def _camo_cached(atlas: str):
+    if atlas not in _CAMO_CACHE:
+        _CAMO_CACHE[atlas] = build_camo(atlas)
+    return _CAMO_CACHE[atlas]
+
+
 def outputs() -> dict:
     """Output path -> zero-argument builder returning encoded bytes (built only when selected)."""
     # shared/ holds unchanged CC0 maps from ambientCG (see shared/LICENSES.txt); this tool does not write them.
@@ -2042,6 +2311,12 @@ def outputs() -> dict:
         files[stem + "_metallic.png"] = lambda a=atlas: encode(_steam_cached(a)[2], ".png")
         files[stem + "_normal.png"] = lambda a=atlas: encode(_steam_cached(a)[3], ".png")
         files[stem + "_emission.png"] = lambda a=atlas: encode(_steam_cached(a)[4], ".png")
+    for atlas in CAMO_ATLASES:
+        stem = f"avanti-s-a200/camuflaje_selva_{atlas}"
+        files[stem + ".jpg"] = lambda a=atlas: encode(_camo_cached(a)[0], ".jpg")
+        files[stem + "_roughness.jpg"] = lambda a=atlas: encode(_camo_cached(a)[1], ".jpg")
+        files[stem + "_metallic.png"] = lambda a=atlas: encode(_camo_cached(a)[2], ".png")
+        files[stem + "_normal.png"] = lambda a=atlas: encode(_camo_cached(a)[3], ".png")
     return files
 
 

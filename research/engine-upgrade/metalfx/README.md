@@ -124,6 +124,16 @@ Never put these drafts or deliberate fault controls in the production app.
   one attempted real render. ROI and margins are fixed in source. Parse and native
   execution are pending; the Mac transfer timed out. Do not call its intended
   comparisons a passing result.
+- `gpu_probe.gd`: draft for patch 0006's explicitly requested command-buffer
+  observation. It checks Spatial, Temporal reset GPU completion, interpolation
+  epochs and observation retirement without changing Temporal receipts. It is
+  not parsed or natively executed yet. The
+  [engine guide](../../../tools/graphics/metalfx/README.md#optional-gpu-completion-observation)
+  owns the status identities, clocks and whole-command-buffer timing limits.
+- `triangle_query_probe.gd`: draft for patch 0005's bounded RD triangle-query
+  backend. Its runner creates an isolated project and tests both argument-buffer
+  and direct binding paths in fresh native processes. Portable compiled controls
+  passed; actual Metal compilation, shader lowering and GPU readback remain open.
 
 Keep the normal full product, its physical backend and audio/HID/effects activation
 separate from these bounded fixtures. The owning plan retains moving-image,

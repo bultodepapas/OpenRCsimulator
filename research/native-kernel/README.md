@@ -101,8 +101,15 @@ R=(
   --research-engine-patch "$PATCH_2"
   --research-engine-patch "$PATCH_3"
   --research-engine-patch "$PATCH_4"
+  --research-engine-patch "$PATCH_5"
+  --research-engine-patch "$PATCH_6"
+  --research-engine-patch "$PATCH_7"
 )
 ```
+
+Use exactly the ordered patch list in the selected intake; omit later entries
+when testing an earlier stack. The
+[engine guide](../../tools/graphics/metalfx/README.md) owns the current patch list.
 
 `run.py` reads that identity from the verified native build receipt instead of
 accepting this argument array. Identity checks reconstruct source catalogs and

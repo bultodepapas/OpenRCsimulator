@@ -415,7 +415,7 @@ class Worker:
                     data.update(cleanup="CONFIRMED", outcome="CANCELED", finished=time.time())
                     self.store.update(job, attempt, "FINISHED", data)
                     return
-            from .snapshots import verify
+            from .snapshots import _file_stat, _set_metadata, verify
             def canceled_before_start():
                 with self.lock:
                     return bool(self.store.db.execute("SELECT canceled FROM jobs WHERE id=?", (job,)).fetchone()[0])
@@ -433,7 +433,12 @@ class Worker:
             def copy_owned_file(original, target):
                 if canceled_before_start():
                     raise RuntimeError("CANCELED during preparation")
-                return shutil.copy2(original, target)
+                metadata = _file_stat(Path(original))
+                copied = shutil.copy2(original, target)
+                # copy2 does not preserve Windows indexing/hidden attributes.
+                # Match the frozen receipt before the unchanged strict verifier.
+                _set_metadata(Path(copied), metadata)
+                return copied
             shutil.copytree(Path(payload["snapshot"]) / "source", source, copy_function=copy_owned_file)
             shutil.copy2(Path(payload["snapshot"]) / "manifest.json", directory / "manifest.json")
             copied = verify(directory, canceled=canceled_before_start)

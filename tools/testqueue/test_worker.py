@@ -18,6 +18,7 @@ import time
 import unittest
 from unittest import mock
 import uuid
+from types import SimpleNamespace
 
 from tools.testqueue import processes, snapshots
 from tools.testqueue.worker import Worker
@@ -167,6 +168,32 @@ class WorkerFixture(unittest.TestCase):
         self.scheduler.join(timeout=3)
         self.worker.store.db.close()
         self.worker.singleton.close()
+
+    @unittest.skipUnless(os.name == "nt", "Windows materialized file attributes")
+    def test_materialization_preserves_frozen_windows_attributes(self):
+        # A destination directory can inherit different indexing attributes from
+        # the immutable source store. Both file choices must survive copytree.
+        expected = {}
+        for name, attributes in (("indexed", 0x20), ("not-indexed", 0x2020)):
+            relative = f"app/{name}.gd"
+            self._write(relative, "unchanged source bytes\n")
+            path = self.repo / relative
+            metadata = path.stat()
+            snapshots._set_metadata(path, SimpleNamespace(
+                st_atime_ns=metadata.st_atime_ns, st_mtime_ns=metadata.st_mtime_ns,
+                st_mode=metadata.st_mode, st_file_attributes=attributes))
+            expected[relative] = attributes
+        self.snapshot = self.base / "frozen-attributes"
+        manifest = snapshots.capture(self.repo, self.snapshot, scope=("app", "tools"))
+        for relative, attributes in expected.items():
+            self.assertEqual(manifest["files"][relative]["windows_attributes"], attributes)
+        result = self._finish(self._submit("metadata")['job'])
+        self.assertEqual(result["outcome"], "PASSED", result)
+        self.assertEqual(result["cleanup"], "CONFIRMED", result)
+        directory = self.worker.root / "attempts" / result["attempts"][-1]["id"]
+        for relative, attributes in expected.items():
+            self.assertEqual((directory / "source" / relative).stat().st_file_attributes, attributes)
+        self.assertTrue(snapshots.verify(directory)["ok"])
 
     def test_five_rendered_owners_never_overlap(self):
         submissions = [self._submit(f"rendered-{index}") for index in range(5)]

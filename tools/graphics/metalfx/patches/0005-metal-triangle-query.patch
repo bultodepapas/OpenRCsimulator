@@ -15,18 +15,51 @@ diff --git a/doc/classes/RenderingDevice.xml b/doc/classes/RenderingDevice.xml
 diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
 --- a/drivers/metal/metal3_objects.cpp
 +++ b/drivers/metal/metal3_objects.cpp
-@@ -1735,8 +1735,27 @@
+@@ -1676,7 +1676,7 @@
+ 		// Clear the set bit.
+ 		set_uniforms &= (set_uniforms - 1);
+ 		MDUniformSet *set = compute.uniform_sets[index];
+-		if (set == nullptr || index >= (uint32_t)shader->sets.size()) {
++		if (set == nullptr || index >= (uint32_t)shader->sets.size() || !shader->sets[index].active_stages.has_flag(RDD::SHADER_STAGE_COMPUTE_BIT)) {
+ 			continue;
+ 		}
+ 		if (shader->uses_argument_buffers) {
+@@ -1735,8 +1735,51 @@
  	}
  }
  
++// Use the currently bound shader's reflected layout, not retained sets from an
++// earlier pipeline. A UINT32_MAX slot denotes an unused binding in that mode.
++static bool _triangle_query_binding_active(const MDShader *p_shader, const UniformInfo &p_info) {
++	const uint32_t slot = p_shader->uses_argument_buffers ? p_info.arg_buffer.buffer : p_info.slot.buffer;
++	return p_info.dataType == MTL::DataTypeInstanceAccelerationStructure && p_info.active_stages.has_flag(RDD::SHADER_STAGE_COMPUTE_BIT) && slot != UINT32_MAX;
++}
++
 +bool MDCommandBuffer::triangle_query_resources_ready() const {
-+	for (const MDUniformSet *set : compute.uniform_sets) {
-+		if (!set) {
++	if (!compute.pipeline || !compute.pipeline->shader) {
++		return false;
++	}
++	const MDComputeShader *shader = compute.pipeline->shader;
++	for (uint32_t set_index = 0; set_index < (uint32_t)shader->sets.size(); set_index++) {
++		const UniformSet &layout = shader->sets[set_index];
++		if (!layout.active_stages.has_flag(RDD::SHADER_STAGE_COMPUTE_BIT)) {
 +			continue;
 +		}
-+		for (const RDD::BoundUniform &uniform : set->uniforms) {
-+			if (uniform.type != RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE) {
++		for (uint32_t uniform_index = 0; uniform_index < layout.uniforms.size(); uniform_index++) {
++			const UniformInfo &info = layout.uniforms[uniform_index];
++			if (!_triangle_query_binding_active(shader, info)) {
 +				continue;
++			}
++			if (set_index >= compute.uniform_sets.size()) {
++				return false;
++			}
++			const MDUniformSet *set = compute.uniform_sets[set_index];
++			if (!set || uniform_index >= set->uniforms.size()) {
++				return false;
++			}
++			const RDD::BoundUniform &uniform = set->uniforms[uniform_index];
++			if (uniform.type != RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE || uniform.binding != info.binding || uniform.ids.size() != 1) {
++				return false;
 +			}
 +			const MDAccelerationStructure *accel = (const MDAccelerationStructure *)uniform.ids[0].id;
 +			if (!accel || !accel->build_encoded || !device_driver->acceleration_structure_build_is_valid(RDD::AccelerationStructureID(uint64_t(accel)))) {
@@ -43,7 +76,7 @@ diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
  
  	_compute_set_dirty_state();
  
-@@ -1748,6 +1767,7 @@
+@@ -1748,6 +1791,7 @@
  
  void MDCommandBuffer::compute_dispatch_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset) {
  	DEV_ASSERT(type == MDCommandBufferStateType::Compute);
@@ -51,7 +84,7 @@ diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
  
  	_compute_set_dirty_state();
  
-@@ -1755,6 +1775,32 @@
+@@ -1755,6 +1799,32 @@
  
  	MTL::ComputeCommandEncoder *enc = compute.encoder.get();
  	enc->dispatchThreadgroups(indirectBuffer->buffer.get(), p_offset, compute.pipeline->compute_state.local);
@@ -84,12 +117,15 @@ diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
  }
  
  void MDCommandBuffer::reset() {
-@@ -2036,6 +2082,21 @@
+@@ -2036,6 +2106,24 @@
  				const MetalBufferDynamicInfo *buf_info = (const MetalBufferDynamicInfo *)uniform.ids[0].id;
  				p_enc.set(buf_info->buffer.get(), frame_idx * buf_info->size_bytes, indexes.buffer);
  			} break;
 +			case RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE: {
 +				ERR_FAIL_COND_MSG(p_enc.mode != DirectEncoder::COMPUTE, "Metal triangle queries require a compute encoder.");
++				if (!_triangle_query_binding_active(p_shader, ui) || uniform.binding != ui.binding) {
++					break; // The retained set does not describe an active query binding.
++				}
 +				MDAccelerationStructure *accel = (MDAccelerationStructure *)uniform.ids[0].id;
 +				MTL::ComputeCommandEncoder *enc = static_cast<MTL::ComputeCommandEncoder *>(p_enc.encoder);
 +				enc->setAccelerationStructure(accel->accel.get(), indexes.buffer);
@@ -106,15 +142,28 @@ diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
  			case RDD::UNIFORM_TYPE_INPUT_ATTACHMENT: {
  				size_t count = uniform.ids.size();
  				MTL::Texture **objects = ALLOCA_ARRAY(MTL::Texture *, count);
-@@ -2058,6 +2119,19 @@
+@@ -2056,12 +2144,28 @@
+ 	DEV_ASSERT(p_shader->uses_argument_buffers);
+ 	DEV_ASSERT(compute.encoder);
  
- 	MTL::ComputeCommandEncoder *enc = compute.encoder.get();
- 	compute.resource_tracker.merge_from(p_set->usage_to_resources);
-+	for (const RDD::BoundUniform &uniform : p_set->uniforms) {
-+		if (uniform.type != RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE) {
+-	MTL::ComputeCommandEncoder *enc = compute.encoder.get();
+-	compute.resource_tracker.merge_from(p_set->usage_to_resources);
+-
+ 	const UniformSet &shader_set = p_shader->sets[p_set_index];
+ 	if (!shader_set.active_stages.has_flag(RDD::SHADER_STAGE_COMPUTE_BIT)) {
+ 		return;
++	}
++	MTL::ComputeCommandEncoder *enc = compute.encoder.get();
++	compute.resource_tracker.merge_from(p_set->usage_to_resources);
++	for (uint32_t i = 0; i < MIN(p_set->uniforms.size(), shader_set.uniforms.size()); i++) {
++		const RDD::BoundUniform &uniform = p_set->uniforms[i];
++		const UniformInfo &info = shader_set.uniforms[i];
++		if (uniform.type != RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE || uniform.binding != info.binding || !_triangle_query_binding_active(p_shader, info)) {
 +			continue;
 +		}
 +		MDAccelerationStructure *accel = (MDAccelerationStructure *)uniform.ids[0].id;
++		// A compatible set may have been created for a shader with different stage use.
++		enc->useResource(accel->accel.get(), MTL::ResourceUsageRead);
 +		if (!accel->resident_blases.is_empty()) {
 +			enc->useResources(reinterpret_cast<const MTL::Resource *const *>(accel->resident_blases.ptr()), accel->resident_blases.size(), MTL::ResourceUsageRead);
 +		}
@@ -122,10 +171,9 @@ diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
 +		for (MTL::Resource *blas : accel->resident_blases) {
 +			retain_resource(reinterpret_cast<CFTypeRef>(blas));
 +		}
-+	}
+ 	}
  
- 	const UniformSet &shader_set = p_shader->sets[p_set_index];
- 	if (!shader_set.active_stages.has_flag(RDD::SHADER_STAGE_COMPUTE_BIT)) {
+ 	// Check if this set has dynamic uniforms.
 diff --git a/drivers/metal/metal3_objects.h b/drivers/metal/metal3_objects.h
 --- a/drivers/metal/metal3_objects.h
 +++ b/drivers/metal/metal3_objects.h
@@ -386,7 +434,24 @@ diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/ren
  }
  
  void RenderingDeviceDriverMetal::command_bind_raytracing_pipeline(CommandBufferID p_cmd_buffer, RaytracingPipelineID p_pipeline) {
-@@ -2780,6 +2902,8 @@
+@@ -2531,7 +2653,15 @@
+ 		} break;
+ 		case OBJECT_TYPE_UNIFORM_SET: {
+ 			MDUniformSet *set = (MDUniformSet *)(p_driver_id.id);
+-			set->arg_buffer.buffer->setLabel(label);
++			if (set && set->arg_buffer.buffer) {
++				set->arg_buffer.buffer->setLabel(label);
++			}
++		} break;
++		case OBJECT_TYPE_ACCELERATION_STRUCTURE: {
++			MDAccelerationStructure *accel = (MDAccelerationStructure *)(p_driver_id.id);
++			if (accel && accel->accel) {
++				accel->accel->setLabel(label);
++			}
+ 		} break;
+ 		case OBJECT_TYPE_PIPELINE: {
+ 			// Can't set label after creation.
+@@ -2780,6 +2910,8 @@
  			return true;
  		case API_TRAIT_TEXTURE_CLEARS_WITH_COPY_ENGINE:
  			return false;
@@ -395,7 +460,7 @@ diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/ren
  		case API_TRAIT_TEXTURES_REQUIRE_LAYOUT_TRANSITIONS:
  			return false;
  		default:
-@@ -2817,6 +2941,8 @@
+@@ -2817,6 +2949,8 @@
  #endif
  			return is_supported;
  		}
@@ -404,7 +469,7 @@ diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/ren
  		case SUPPORTS_GPU_MAPPABLE_BUFFER:
  			return true;
  		default:
-@@ -3029,6 +3155,9 @@
+@@ -3029,6 +3163,9 @@
  	device_properties = memnew(MetalDeviceProperties(device));
  	pixel_formats = memnew(PixelFormats(device, device_properties->features));
  	device_profile = device_profile_from_properties(device_properties);

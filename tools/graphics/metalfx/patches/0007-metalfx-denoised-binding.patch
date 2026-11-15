@@ -1,0 +1,545 @@
+diff --git a/drivers/metal/SCsub b/drivers/metal/SCsub
+index f377c5d9d..e22e5ab45 100644
+--- a/drivers/metal/SCsub
++++ b/drivers/metal/SCsub
+@@ -65,7 +65,7 @@ env_metal.add_source_files(driver_obj, "*.cpp")
+ if env["platform"] == "macos":
+     # The bundled metal-cpp predates MTLFXFrameInterpolator. Keep this small
+     # SDK bridge macOS-only instead of changing the shared third-party pin.
+-    env_metal.add_source_files(driver_obj, ["metalfx_frame_bridge.mm"])
++    env_metal.add_source_files(driver_obj, ["metalfx_frame_bridge.mm", "metalfx_denoised_bridge.mm"])
+ env.drivers_sources += driver_obj
+ 
+ # Needed to force rebuilding the driver files when the thirdparty library is updated.
+diff --git a/drivers/metal/metal3_objects.h b/drivers/metal/metal3_objects.h
+index fcb25e3c7..b0d533e1c 100644
+--- a/drivers/metal/metal3_objects.h
++++ b/drivers/metal/metal3_objects.h
+@@ -577,6 +577,11 @@ public:
+ 		return commandBuffer.get();
+ 	}
+ 
++	// External passes can be the first command in a frame; create lazily.
++	_FORCE_INLINE_ MTL::CommandBuffer *ensure_command_buffer() {
++		return command_buffer();
++	}
++
+ 	void _begin() override;
+ 	void _commit() override;
+ 	void _end() override;
+diff --git a/drivers/metal/metalfx_denoised_bridge.h b/drivers/metal/metalfx_denoised_bridge.h
+new file mode 100644
+index 000000000..6ea52ed6c
+--- /dev/null
++++ b/drivers/metal/metalfx_denoised_bridge.h
+@@ -0,0 +1,16 @@
++#pragma once
++#include <cstdint>
++
++// A synchronous encode result is not a GPU completion observation.
++enum MFXDenoisedResult { MFX_DENOISED_OK = 0, MFX_DENOISED_UNAVAILABLE = 1,
++    MFX_DENOISED_UNSUPPORTED = 2, MFX_DENOISED_FACTORY_FAILED = 3,
++    MFX_DENOISED_INPUT_MISMATCH = 4, MFX_DENOISED_EXCEPTION = 5, MFX_DENOISED_HAZARD_REQUIRED = 6 };
++extern "C" {
++int mfx_denoised_capability(void *device);
++void *mfx_denoised_create(void *device, uint32_t iw, uint32_t ih, uint32_t ow, uint32_t oh, int *result);
++void mfx_denoised_retain(void *effect);
++void mfx_denoised_release(void *effect);
++int mfx_denoised_validate(void *effect, void *const *textures);
++int mfx_denoised_encode(void *effect, void *command, void *fence, void *const *textures,
++        float pre_exposure, float jitter_x, float jitter_y, const float *world, const float *clip, bool reset);
++}
+diff --git a/drivers/metal/metalfx_denoised_bridge.mm b/drivers/metal/metalfx_denoised_bridge.mm
+new file mode 100644
+index 000000000..96b9c1576
+--- /dev/null
++++ b/drivers/metal/metalfx_denoised_bridge.mm
+@@ -0,0 +1,121 @@
++// SDK bridge for the experimental RenderingDevice denoiser. Uses Godot's device.
++#include "metalfx_denoised_bridge.h"
++#import <Foundation/Foundation.h>
++#import <Metal/Metal.h>
++#import <MetalFX/MetalFX.h>
++#include <AvailabilityMacros.h>
++#include <cstring>
++
++@interface OpenRCDenoised : NSObject
++@property(nonatomic, strong) id<MTLDevice> device;
++@property(nonatomic, strong) id effect;
++@end
++@implementation OpenRCDenoised
++@end
++
++int mfx_denoised_capability(void *p_device) {
++#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
++    @autoreleasepool {
++        if (@available(macOS 26.0, *)) {
++            id<MTLDevice> device = (__bridge id<MTLDevice>)p_device;
++            return device && [MTLFXTemporalDenoisedScalerDescriptor supportsDevice:device] ? MFX_DENOISED_OK : MFX_DENOISED_UNSUPPORTED;
++        }
++    }
++#endif
++    return MFX_DENOISED_UNAVAILABLE;
++}
++
++void *mfx_denoised_create(void *p_device, uint32_t iw, uint32_t ih, uint32_t ow, uint32_t oh, int *result) {
++    *result = mfx_denoised_capability(p_device);
++    if (*result != MFX_DENOISED_OK) return nullptr;
++#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
++    @autoreleasepool {
++        if (@available(macOS 26.0, *)) {
++            @try {
++                id<MTLDevice> device = (__bridge id<MTLDevice>)p_device;
++                MTLFXTemporalDenoisedScalerDescriptor *d = [MTLFXTemporalDenoisedScalerDescriptor new];
++                if (!d) { *result = MFX_DENOISED_FACTORY_FAILED; return nullptr; }
++                d.inputWidth = iw; d.inputHeight = ih; d.outputWidth = ow; d.outputHeight = oh;
++                d.colorTextureFormat = MTLPixelFormatRGBA16Float; d.depthTextureFormat = MTLPixelFormatDepth32Float;
++                d.motionTextureFormat = MTLPixelFormatRG16Float; d.diffuseAlbedoTextureFormat = MTLPixelFormatRGBA16Float;
++                d.specularAlbedoTextureFormat = MTLPixelFormatRGBA16Float; d.normalTextureFormat = MTLPixelFormatRGBA16Float;
++                d.roughnessTextureFormat = MTLPixelFormatR16Float; d.outputTextureFormat = MTLPixelFormatRGBA16Float;
++                d.autoExposureEnabled = NO; d.specularHitDistanceTextureEnabled = NO;
++                d.denoiseStrengthMaskTextureEnabled = NO; d.reactiveMaskTextureEnabled = NO;
++                d.transparencyOverlayTextureEnabled = NO;
++                id<MTLFXTemporalDenoisedScaler> fx = [d newTemporalDenoisedScalerWithDevice:device];
++                if (!fx) { *result = MFX_DENOISED_FACTORY_FAILED; return nullptr; }
++                OpenRCDenoised *holder = [OpenRCDenoised new];
++                if (!holder) { *result = MFX_DENOISED_FACTORY_FAILED; return nullptr; }
++                holder.device = device; holder.effect = fx; *result = MFX_DENOISED_OK;
++                return (__bridge_retained void *)holder;
++            } @catch (NSException *e) { (void)e; *result = MFX_DENOISED_EXCEPTION; return nullptr; }
++        }
++    }
++#endif
++    *result = MFX_DENOISED_UNAVAILABLE;
++    return nullptr;
++}
++void mfx_denoised_retain(void *p) { if (p) CFRetain((CFTypeRef)p); }
++void mfx_denoised_release(void *p) { if (p) CFRelease((CFTypeRef)p); }
++
++int mfx_denoised_validate(void *p_effect, void *const *p_textures) {
++#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
++    @autoreleasepool {
++        if (@available(macOS 26.0, *)) {
++            if (!p_effect || !p_textures) return MFX_DENOISED_INPUT_MISMATCH;
++            OpenRCDenoised *holder = (__bridge OpenRCDenoised *)p_effect;
++            id<MTLFXTemporalDenoisedScaler> fx = holder.effect;
++            if (!fx || !holder.device) return MFX_DENOISED_INPUT_MISMATCH;
++            const MTLPixelFormat formats[] = { fx.colorTextureFormat, fx.depthTextureFormat, fx.motionTextureFormat,
++                fx.diffuseAlbedoTextureFormat, fx.specularAlbedoTextureFormat, fx.normalTextureFormat,
++                fx.roughnessTextureFormat, MTLPixelFormatR16Float, fx.outputTextureFormat };
++            const MTLTextureUsage usage[] = { fx.colorTextureUsage, fx.depthTextureUsage, fx.motionTextureUsage,
++                fx.diffuseAlbedoTextureUsage, fx.specularAlbedoTextureUsage, fx.normalTextureUsage,
++                fx.roughnessTextureUsage, MTLTextureUsageShaderRead, fx.outputTextureUsage };
++            for (unsigned i=0; i<9; ++i) {
++                id<MTLTexture> texture = (__bridge id<MTLTexture>)p_textures[i];
++                NSUInteger w = i==7 ? 1 : (i==8 ? fx.outputWidth : fx.inputWidth);
++                NSUInteger h = i==7 ? 1 : (i==8 ? fx.outputHeight : fx.inputHeight);
++                if (!texture || texture.device != holder.device || texture.textureType != MTLTextureType2D ||
++                        texture.sampleCount != 1 || texture.mipmapLevelCount != 1 || texture.width != w || texture.height != h ||
++                        texture.pixelFormat != formats[i] || (texture.usage & usage[i]) != usage[i] ||
++                        (i == 8 && texture.storageMode != MTLStorageModePrivate)) return MFX_DENOISED_INPUT_MISMATCH;
++                for (unsigned j=0; j<i; ++j) if (p_textures[i] == p_textures[j]) return MFX_DENOISED_INPUT_MISMATCH;
++            }
++            return MFX_DENOISED_OK;
++        }
++    }
++#endif
++    return MFX_DENOISED_UNAVAILABLE;
++}
++
++int mfx_denoised_encode(void *p_effect, void *p_command, void *p_fence, void *const *t,
++        float exposure, float jx, float jy, const float *world, const float *clip, bool reset) {
++#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
++    @autoreleasepool {
++        if (@available(macOS 26.0, *)) {
++            int validation = mfx_denoised_validate(p_effect, t);
++            if (validation != MFX_DENOISED_OK || !p_command || !world || !clip) return MFX_DENOISED_INPUT_MISMATCH;
++            @try {
++                OpenRCDenoised *holder = (__bridge OpenRCDenoised *)p_effect;
++                id<MTLFXTemporalDenoisedScaler> fx = holder.effect;
++                id<MTLCommandBuffer> command = (__bridge id<MTLCommandBuffer>)p_command;
++                if (command.device != holder.device) return MFX_DENOISED_INPUT_MISMATCH;
++                fx.colorTexture = (__bridge id<MTLTexture>)t[0]; fx.depthTexture = (__bridge id<MTLTexture>)t[1];
++                fx.motionTexture = (__bridge id<MTLTexture>)t[2]; fx.diffuseAlbedoTexture = (__bridge id<MTLTexture>)t[3];
++                fx.specularAlbedoTexture = (__bridge id<MTLTexture>)t[4]; fx.normalTexture = (__bridge id<MTLTexture>)t[5];
++                fx.roughnessTexture = (__bridge id<MTLTexture>)t[6]; fx.exposureTexture = (__bridge id<MTLTexture>)t[7];
++                fx.outputTexture = (__bridge id<MTLTexture>)t[8]; fx.preExposure = exposure;
++                fx.jitterOffsetX = jx; fx.jitterOffsetY = jy; fx.motionVectorScaleX = 1; fx.motionVectorScaleY = 1;
++                fx.depthReversed = NO; fx.shouldResetHistory = reset;
++                simd_float4x4 w, c; std::memcpy(&w, world, sizeof(w)); std::memcpy(&c, clip, sizeof(c));
++                fx.worldToViewMatrix = w; fx.viewToClipMatrix = c; fx.fence = (__bridge id<MTLFence>)p_fence;
++                [fx encodeToCommandBuffer:command];
++                return MFX_DENOISED_OK;
++            } @catch (NSException *e) { (void)e; return MFX_DENOISED_EXCEPTION; }
++        }
++    }
++#endif
++    return MFX_DENOISED_UNAVAILABLE;
++}
+diff --git a/drivers/metal/rendering_device_driver_metal3.cpp b/drivers/metal/rendering_device_driver_metal3.cpp
+index 03d21f7fe..c6769a735 100644
+--- a/drivers/metal/rendering_device_driver_metal3.cpp
++++ b/drivers/metal/rendering_device_driver_metal3.cpp
+@@ -35,8 +35,37 @@
+ #include "core/string/ustring.h"
+ #include "drivers/metal/pixel_formats.h"
+ #include "drivers/metal/rendering_context_driver_metal.h"
++#ifdef MACOS_ENABLED
++#include "drivers/metal/metalfx_denoised_bridge.h"
++#endif
+ 
+ namespace MTL3 {
++#ifdef MACOS_ENABLED
++int RenderingDeviceDriverMetal::denoised_capability() const {
++	return sync_mode == HazardTracking ? mfx_denoised_capability(device) : MFX_DENOISED_HAZARD_REQUIRED;
++}
++void *RenderingDeviceDriverMetal::denoised_create(uint32_t iw, uint32_t ih, uint32_t ow, uint32_t oh, int &r_result) {
++	if (sync_mode != HazardTracking) { r_result = MFX_DENOISED_HAZARD_REQUIRED; return nullptr; }
++	return mfx_denoised_create(device, iw, ih, ow, oh, &r_result);
++}
++void RenderingDeviceDriverMetal::denoised_retain(void *p) { mfx_denoised_retain(p); }
++void RenderingDeviceDriverMetal::denoised_release(void *p) { mfx_denoised_release(p); }
++int RenderingDeviceDriverMetal::denoised_validate(void *p, const DenoisedFrame &f) const {
++	if (sync_mode != HazardTracking) return MFX_DENOISED_HAZARD_REQUIRED;
++	void *textures[9]; for (unsigned i=0; i<9; ++i) textures[i] = (void *)f.textures[i];
++	return mfx_denoised_validate(p, textures);
++}
++int RenderingDeviceDriverMetal::denoised_encode(void *p, CommandBufferID p_cmd, const DenoisedFrame &f) {
++	if (sync_mode != HazardTracking) return MFX_DENOISED_HAZARD_REQUIRED;
++	MDCommandBuffer *cmd = (MDCommandBuffer *)p_cmd.id;
++	cmd->end();
++	void *textures[9]; for (unsigned i=0; i<9; ++i) textures[i] = (void *)f.textures[i];
++	int result = mfx_denoised_encode(p, cmd->ensure_command_buffer(), nullptr, textures,
++			f.exposure, f.jitter_x, f.jitter_y, f.world, f.clip, f.reset);
++	if (result == MFX_DENOISED_OK) cmd->retain_resource((CFTypeRef)p);
++	return result;
++}
++#endif
+ 
+ #pragma mark - Fence
+ 
+diff --git a/drivers/metal/rendering_device_driver_metal3.h b/drivers/metal/rendering_device_driver_metal3.h
+index 659b5be92..433626919 100644
+--- a/drivers/metal/rendering_device_driver_metal3.h
++++ b/drivers/metal/rendering_device_driver_metal3.h
+@@ -77,6 +77,14 @@ protected:
+ 
+ public:
+ 	Error initialize(uint32_t p_device_index, uint32_t p_frame_count) override;
++#ifdef MACOS_ENABLED
++	int denoised_capability() const override;
++	void *denoised_create(uint32_t, uint32_t, uint32_t, uint32_t, int &) override;
++	void denoised_retain(void *) override;
++	void denoised_release(void *) override;
++	int denoised_validate(void *, const DenoisedFrame &) const override;
++	int denoised_encode(void *, CommandBufferID, const DenoisedFrame &) override;
++#endif
+ 
+ 	FenceID fence_create() override;
+ 	Error fence_wait(FenceID p_fence) override;
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+index 2e491669b..7cfee6671 100644
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -1351,6 +1351,126 @@ Error RenderingDevice::driver_callback_add(RDD::DriverCallback p_callback, void
+ 	return OK;
+ }
+ 
++// Fixed-layout experiment: [HDR, depth, motion, diffuse, specular, world normal,
++// roughness, 1x1 exposure, output]. Capability/factory/CPU encode are distinct
++// from GPU completion; no completion handler holds a RenderingDevice pointer.
++static const char *denoised_reason(int p_code) {
++	switch (p_code) {
++		case 0: return "available";
++		case 1: return "sdk_os_or_driver_unavailable";
++		case 2: return "device_unsupported";
++		case 3: return "factory_failed";
++		case 4: return "native_texture_mismatch";
++		case 5: return "native_exception";
++		case 6: return "native_hazard_tracking_required";
++		default: return "driver_error";
++	}
++}
++static Dictionary denoised_result(const char *p_status) {
++	Dictionary result; result["status"] = p_status; return result;
++}
++Dictionary RenderingDevice::metalfx_denoised_capability() const {
++	ERR_RENDER_THREAD_GUARD_V(Dictionary());
++	return denoised_result(denoised_reason(driver->denoised_capability()));
++}
++Dictionary RenderingDevice::metalfx_denoised_create(Size2i p_input, Size2i p_output) {
++	ERR_RENDER_THREAD_GUARD_V(Dictionary());
++	using namespace MFXDenoisedContract;
++	if (p_input.x <= 0 || p_input.y <= 0 || p_output.x <= 0 || p_output.y <= 0 ||
++			!dimensions(p_input.x, p_input.y, p_output.x, p_output.y)) return denoised_result("invalid_dimensions");
++	int code = driver->denoised_capability();
++	if (code) return denoised_result(denoised_reason(code));
++	void *effect = driver->denoised_create(p_input.x, p_input.y, p_output.x, p_output.y, code);
++	if (!effect || code) {
++		if (effect) driver->denoised_release(effect);
++		return denoised_result(denoised_reason(code ? code : 3));
++	}
++	RID id = denoised_owner.make_rid();
++	if (!id.is_valid()) { driver->denoised_release(effect); return denoised_result("allocation_failed"); }
++	DenoisedContext *ctx = denoised_owner.get_or_null(id);
++	ctx->effect = effect; ctx->input = p_input; ctx->output = p_output;
++	ctx->progress = std::make_shared<DenoisedProgress>();
++	Dictionary result = denoised_result("created"); result["context"] = id; return result;
++}
++Dictionary RenderingDevice::metalfx_denoised_status(RID p_context) {
++	ERR_RENDER_THREAD_GUARD_V(Dictionary());
++	DenoisedContext *ctx = denoised_owner.get_or_null(p_context);
++	if (!ctx) return denoised_result("invalid_context");
++	int code = ctx->progress->callback_error.load(std::memory_order_acquire);
++	Dictionary result = denoised_result(code ? denoised_reason(code) : "created");
++	result["accepted"] = ctx->accepted;
++	result["encoded"] = ctx->progress->encoded.load(std::memory_order_acquire);
++	result["gpu_completion_observed"] = false;
++	return result;
++}
++void RenderingDevice::_denoised_callback(RDD *p_driver, RDD::CommandBufferID p_command, void *p_userdata) {
++	DenoisedCallback *args = static_cast<DenoisedCallback *>(p_userdata);
++	if (!args->progress->callback_error.load(std::memory_order_acquire)) {
++		int code = p_driver->denoised_encode(args->effect, p_command, args->frame);
++		if (code) args->progress->callback_error.store(code, std::memory_order_release);
++		else args->progress->encoded.store(args->serial, std::memory_order_release);
++	}
++	p_driver->denoised_release(args->effect);
++	memdelete(args);
++}
++Dictionary RenderingDevice::metalfx_denoised_encode(RID p_context, const TypedArray<RID> &p_textures,
++		const Projection &p_world, const Projection &p_clip, float p_pre_exposure, Vector2 p_jitter, bool p_reset) {
++	ERR_RENDER_THREAD_GUARD_V(Dictionary());
++	using namespace MFXDenoisedContract;
++	DenoisedContext *ctx = denoised_owner.get_or_null(p_context);
++	if (!ctx) return denoised_result("invalid_context");
++	if (ctx->progress->callback_error.load(std::memory_order_acquire)) return denoised_result("callback_failed");
++	if (p_textures.size() != COUNT) return denoised_result("invalid_texture_count");
++	RDD::DenoisedFrame frame;
++	frame.exposure = p_pre_exposure; frame.jitter_x = p_jitter.x; frame.jitter_y = p_jitter.y; frame.reset = p_reset;
++	for (unsigned c=0; c<4; ++c) for (unsigned r=0; r<4; ++r) {
++		frame.world[c*4+r] = p_world[c][r]; frame.clip[c*4+r] = p_clip[c][r];
++	}
++	if (!MFXDenoisedContract::frame(frame.exposure, frame.jitter_x, frame.jitter_y, frame.world, frame.clip, p_reset, ctx->accepted)) return denoised_result("invalid_frame");
++	MFXDenoisedContract::Image info[COUNT]; CallbackResource resources[COUNT]; RID ids[COUNT];
++	for (unsigned i=0; i<COUNT; ++i) {
++		ids[i] = p_textures[i];
++		Texture *tex = texture_owner.get_or_null(ids[i]);
++		if (!tex) return denoised_result("invalid_textures");
++		info[i].identity = get_driver_resource(DRIVER_RESOURCE_TEXTURE, ids[i]);
++		info[i].width = tex->width; info[i].height = tex->height;
++		switch (tex->format) {
++			case DATA_FORMAT_R16G16B16A16_SFLOAT: info[i].format = RGBA16F; break;
++			case DATA_FORMAT_D32_SFLOAT: info[i].format = D32F; break;
++			case DATA_FORMAT_R16G16_SFLOAT: info[i].format = RG16F; break;
++			case DATA_FORMAT_R16_SFLOAT: info[i].format = R16F; break;
++			default: return denoised_result("invalid_textures");
++		}
++		info[i].external = tex->is_external;
++		info[i].shared = tex->owner.is_valid();
++		info[i].regular = tex->type == TEXTURE_TYPE_2D && tex->depth == 1 && tex->layers == 1 && tex->mipmaps == 1 &&
++				tex->samples == TEXTURE_SAMPLES_1 && !tex->is_discardable && !tex->is_resolve_buffer &&
++				!(tex->usage_flags & (TEXTURE_USAGE_TRANSIENT_BIT | TEXTURE_USAGE_CPU_READ_BIT));
++		info[i].sampled = (tex->usage_flags & TEXTURE_USAGE_SAMPLING_BIT) != 0;
++		info[i].writable = (tex->usage_flags & TEXTURE_USAGE_STORAGE_BIT) != 0;
++		frame.textures[i] = info[i].identity;
++		resources[i].rid = ids[i];
++		resources[i].usage = i == OUTPUT ? CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE : CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE;
++	}
++	if (!images(info, ctx->input.x, ctx->input.y, ctx->output.x, ctx->output.y)) return denoised_result("invalid_textures");
++	int code = driver->denoised_validate(ctx->effect, frame);
++	if (code) return denoised_result(denoised_reason(code));
++	for (unsigned i=0; i<COUNT; ++i) {
++		Texture *tex = texture_owner.get_or_null(ids[i]);
++		_check_transfer_worker_texture(tex);
++		_texture_check_pending_clear(ids[i], tex);
++	}
++	DenoisedCallback *args = memnew(DenoisedCallback);
++	args->effect = ctx->effect; args->frame = frame; args->progress = ctx->progress; args->serial = ctx->accepted + 1;
++	driver->denoised_retain(args->effect);
++	// History is stateful even if a caller switches all texture RIDs between frames.
++	draw_graph.add_synchronization();
++	Error error = driver_callback_add(_denoised_callback, args, VectorView<CallbackResource>(resources, COUNT));
++	if (error != OK) { driver->denoised_release(args->effect); memdelete(args); return denoised_result("enqueue_failed"); }
++	ctx->accepted++;
++	Dictionary result = denoised_result("enqueued"); result["serial"] = ctx->accepted; return result;
++}
++
+ String RenderingDevice::get_perf_report() const {
+ 	String perf_report_text;
+ 	perf_report_text += " gpu:" + String::num_int64(gpu_copy_count);
+@@ -1966,6 +2086,7 @@ RID RenderingDevice::texture_create_from_extension(TextureType p_type, DataForma
+ 	// This method creates a texture object using a VkImage created by an extension, module or other external source (OpenXR uses this).
+ 
+ 	Texture texture;
++	texture.is_external = true;
+ 	texture.type = p_type;
+ 	texture.format = p_format;
+ 	texture.samples = p_samples;
+@@ -7822,7 +7943,11 @@ void RenderingDevice::_free_internal(RID p_id) {
+ #endif
+ 
+ 	// Push everything so it's disposed of next time this frame index is processed (means, it's safe to do it).
+-	if (texture_owner.owns(p_id)) {
++	if (denoised_owner.owns(p_id)) {
++		DenoisedContext *ctx = denoised_owner.get_or_null(p_id);
++		driver->denoised_release(ctx->effect);
++		denoised_owner.free(p_id);
++	} else if (texture_owner.owns(p_id)) {
+ 		Texture *texture = texture_owner.get_or_null(p_id);
+ 		_check_transfer_worker_texture(texture);
+ 
+@@ -8080,7 +8205,9 @@ void RenderingDevice::texture_replace_rid(RID p_old_texture, RID p_new_texture)
+ void RenderingDevice::set_resource_name(RID p_id, const String &p_name) {
+ 	_THREAD_SAFE_METHOD_
+ 
+-	if (texture_owner.owns(p_id)) {
++	if (denoised_owner.owns(p_id)) {
++		// The SDK context is not a driver MTLResource; no native naming call.
++	} else if (texture_owner.owns(p_id)) {
+ 		Texture *texture = texture_owner.get_or_null(p_id);
+ 		driver->set_object_name(RDD::OBJECT_TYPE_TEXTURE, texture->driver_id, p_name);
+ 	} else if (framebuffer_owner.owns(p_id)) {
+@@ -9210,6 +9337,7 @@ void RenderingDevice::finalize() {
+ 	draw_graph.finalize();
+ 
+ 	// Free all resources.
++	_free_rids(denoised_owner, "MetalFXDenoised");
+ 	_free_rids(render_pipeline_owner, "Pipeline");
+ 	_free_rids(compute_pipeline_owner, "Compute");
+ 	_free_rids(raytracing_pipeline_owner, "RaytracingPipeline");
+@@ -9563,6 +9691,10 @@ void RenderingDevice::_bind_methods() {
+ 
+ 	ClassDB::bind_method(D_METHOD("get_driver_resource", "resource", "rid", "index"), &RenderingDevice::get_driver_resource);
+ 
++	ClassDB::bind_method(D_METHOD("metalfx_denoised_capability"), &RenderingDevice::metalfx_denoised_capability);
++	ClassDB::bind_method(D_METHOD("metalfx_denoised_create", "input_size", "output_size"), &RenderingDevice::metalfx_denoised_create);
++	ClassDB::bind_method(D_METHOD("metalfx_denoised_encode", "context", "textures", "world_to_view", "view_to_clip", "pre_exposure", "jitter", "reset"), &RenderingDevice::metalfx_denoised_encode);
++	ClassDB::bind_method(D_METHOD("metalfx_denoised_status", "context"), &RenderingDevice::metalfx_denoised_status);
+ 	ClassDB::bind_method(D_METHOD("get_perf_report"), &RenderingDevice::get_perf_report);
+ 
+ 	ClassDB::bind_method(D_METHOD("get_driver_and_device_memory_report"), &RenderingDevice::get_driver_and_device_memory_report);
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+index 86270f77c..ed347a36d 100644
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -44,6 +44,9 @@
+ #include "servers/rendering/rendering_device_driver.h"
+ #include "servers/rendering/rendering_device_enums.h"
+ #include "servers/rendering/rendering_device_graph.h"
++#include "servers/rendering/storage/metalfx_denoised_contract.h"
++#include <atomic>
++#include <memory>
+ 
+ class RDTextureFormat;
+ class RDTextureView;
+@@ -323,6 +326,33 @@ public:
+ 
+ 	Error driver_callback_add(RDD::DriverCallback p_callback, void *p_userdata, VectorView<CallbackResource> p_resources);
+ 
++private:
++	struct DenoisedProgress {
++		std::atomic<uint64_t> encoded{0};
++		std::atomic<int> callback_error{0};
++	};
++	struct DenoisedContext {
++		void *effect = nullptr;
++		Size2i input, output;
++		uint64_t accepted = 0;
++		std::shared_ptr<DenoisedProgress> progress;
++	};
++	struct DenoisedCallback {
++		void *effect = nullptr;
++		RDD::DenoisedFrame frame;
++		std::shared_ptr<DenoisedProgress> progress;
++		uint64_t serial = 0;
++	};
++	RID_Owner<DenoisedContext, true> denoised_owner;
++	static void _denoised_callback(RDD *, RDD::CommandBufferID, void *);
++public:
++	Dictionary metalfx_denoised_capability() const;
++	Dictionary metalfx_denoised_create(Size2i p_input, Size2i p_output);
++	Dictionary metalfx_denoised_encode(RID p_context, const TypedArray<RID> &p_textures,
++			const Projection &p_world_to_view, const Projection &p_view_to_clip,
++			float p_pre_exposure, Vector2 p_jitter, bool p_reset);
++	Dictionary metalfx_denoised_status(RID p_context);
++
+ 	/*****************/
+ 	/**** TEXTURE ****/
+ 	/*****************/
+@@ -368,6 +398,7 @@ public:
+ 		Vector<DataFormat> allowed_shared_formats;
+ 
+ 		bool is_resolve_buffer = false;
++		bool is_external = false; // Imported storage may alias another native texture.
+ 		bool is_discardable = false;
+ 		bool is_subsampled = false;
+ 		bool has_initial_data = false;
+diff --git a/servers/rendering/rendering_device_driver.h b/servers/rendering/rendering_device_driver.h
+index 1f78cf5f4..9d3210c62 100644
+--- a/servers/rendering/rendering_device_driver.h
++++ b/servers/rendering/rendering_device_driver.h
+@@ -820,6 +820,20 @@ public:
+ 	/**** CALLBACK ****/
+ 	/******************/
+ 
++	// Experimental fixed-format denoiser. Other drivers are unavailable by default.
++	struct DenoisedFrame {
++		uint64_t textures[9] = {};
++		float world[16] = {}, clip[16] = {};
++		float exposure = 1, jitter_x = 0, jitter_y = 0;
++		bool reset = false;
++	};
++	virtual int denoised_capability() const { return 1; }
++	virtual void *denoised_create(uint32_t, uint32_t, uint32_t, uint32_t, int &r_result) { r_result = 1; return nullptr; }
++	virtual void denoised_retain(void *) {}
++	virtual void denoised_release(void *) {}
++	virtual int denoised_validate(void *, const DenoisedFrame &) const { return 1; }
++	virtual int denoised_encode(void *, CommandBufferID, const DenoisedFrame &) { return 1; }
++
+ 	typedef void (*DriverCallback)(RenderingDeviceDriver *p_driver, CommandBufferID p_command_buffer, void *p_userdata);
+ 
+ 	/*****************/
+diff --git a/servers/rendering/storage/metalfx_denoised_contract.h b/servers/rendering/storage/metalfx_denoised_contract.h
+new file mode 100644
+index 000000000..2a8e70854
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_denoised_contract.h
+@@ -0,0 +1,37 @@
++// Experimental fixed-format Temporal Denoised admission. This header is also
++// compiled with a fake driver on hosts without Metal. No GPU claim is implied.
++#pragma once
++#include <cstdint>
++#include <cmath>
++
++namespace MFXDenoisedContract {
++enum Slot { COLOR, DEPTH, MOTION, DIFFUSE, SPECULAR, NORMAL, ROUGHNESS, EXPOSURE, OUTPUT, COUNT };
++enum Format { RGBA16F, D32F, RG16F, R16F };
++struct Image {
++    uint64_t identity = 0;
++    uint32_t width = 0, height = 0;
++    Format format = RGBA16F;
++    bool regular = false, sampled = false, writable = false, external = false, shared = false;
++};
++inline bool dimensions(uint32_t iw, uint32_t ih, uint32_t ow, uint32_t oh) {
++    return iw > 0 && ih > 0 && ow > 0 && oh > 0 &&
++           iw <= 16384 && ih <= 16384 && ow <= 16384 && oh <= 16384;
++}
++inline bool images(const Image *v, uint32_t iw, uint32_t ih, uint32_t ow, uint32_t oh) {
++    if (!v || !dimensions(iw, ih, ow, oh)) return false;
++    const Format formats[COUNT] = { RGBA16F, D32F, RG16F, RGBA16F, RGBA16F, RGBA16F, R16F, R16F, RGBA16F };
++    for (unsigned i = 0; i < COUNT; ++i) {
++        uint32_t w = i == EXPOSURE ? 1 : (i == OUTPUT ? ow : iw);
++        uint32_t h = i == EXPOSURE ? 1 : (i == OUTPUT ? oh : ih);
++        if (!v[i].identity || !v[i].regular || v[i].external || v[i].shared || v[i].format != formats[i] ||
++            v[i].width != w || v[i].height != h || !v[i].sampled || (i == OUTPUT && !v[i].writable)) return false;
++        for (unsigned j = 0; j < i; ++j) if (v[i].identity == v[j].identity) return false;
++    }
++    return true;
++}
++inline bool frame(float exposure, float jx, float jy, const float *world, const float *clip, bool reset, uint64_t accepted) {
++    if (!std::isfinite(exposure) || exposure <= 0 || !std::isfinite(jx) || !std::isfinite(jy) || !world || !clip || (!accepted && !reset) || accepted == UINT64_MAX) return false;
++    for (unsigned i = 0; i < 16; ++i) if (!std::isfinite(world[i]) || !std::isfinite(clip[i])) return false;
++    return true;
++}
++} // namespace MFXDenoisedContract

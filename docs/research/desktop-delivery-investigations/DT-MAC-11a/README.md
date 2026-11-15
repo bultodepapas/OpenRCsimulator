@@ -337,10 +337,28 @@ observed failure forms and an embedded non-error mention are regression controls
 Native M1 tests passed: 22 checked-runner tests (one optional real-engine matrix
 skip) and 14 resource-runner tests. The new isolated Python-only regression also
 passed on Windows. A broader local Windows attempt was refused by queue admission
-for its Python fixtures; it did not launch Godot or qualify that suite. The custom
-engine identity policy is being revised to validate against an independently
-pinned official 4.8 API, preserving the clean 4.7 bindings pin and exact native
-admission. No new default marker has been issued.
+for its Python fixtures; it did not launch Godot or qualify that suite.
+
+The revised custom-engine identity source now creates a fresh API dump using an
+independently pinned official 4.8 editor and validates the custom engine against
+that reference. Both engines must first detect the same deliberately absent
+class in a bounded control dump, including when the process exits zero. Fresh
+dumps and selected inputs are rehashed; the locked clean 4.7 bindings input is
+verified separately. Campaigns compare the full selected identity against the
+installed receipt before and after execution. The source revisions are
+`325dfc98bb79c354a5bfb7fda113a5309844288abc11eb1bab6fd3fd90c58068`
+(`macos_engine_identity.py`) and
+`505620c693fcc35c7e62ad8e99726be31eb10cd3cb5142836c9255b699694e71`
+(`build_macos.py`). Portable controls and an independent source review passed;
+the corrected API procedure has not yet run on the M1. No new default marker
+has been issued.
+
+The performance sampler's parallel admission change is preserved
+(`session_baseline.py` SHA-256
+`8dcf4569dd5ffc3519010c34478c4afb807a2d70ba6ba307b486dbacc18d72e1`).
+Its fake-process unit fixtures now isolate host admission while three explicit
+admission controls exercise the production gate. All 64 module tests passed on
+Windows with Python 3.11.15; these tests did not launch Godot.
 
 ## RT producer port boundary
 
@@ -360,10 +378,54 @@ and custom shaders until coverage or whole-scene rejection is demonstrated. Its
 producer is Forward+, whereas the normal ARM64 route is Mobile. The root MIT
 notice is insufficient for wholesale intake: the Streamline block includes a
 proprietary NVIDIA notice, and the BRDF keeps a separate Epic attribution/permission
-note. No RT feature bit or partial producer patch was added. The coherent next
-port must reconcile RD/Metal/Forward+ with RT off, establish complete scene
-eligibility before suppressing raster, then demonstrate real guide buffers and
-fallback transitions. This is an implementation dependency, not M1 exclusion.
+note. The subsequent bounded backend below reuses only the needed generic RD,
+shader and Metal boundaries. The whole-scene consumer still must establish
+eligibility before suppressing raster, demonstrate actual guide buffers and
+exercise fallback transitions. This is an implementation dependency, not M1
+exclusion.
+
+### Bounded Metal triangle-query backend
+
+Patch 0005 SHA-256
+`825920ed18b56dd3d531eda30d25ffb9da33b6becb29dd849c03073ff375e155`
+adds an explicitly requested Metal 3 compute backend. It advertises only
+`SUPPORTS_METAL_TRIANGLE_QUERY`, leaving general ray-query and ray-pipeline
+capabilities false. `GODOT_METAL_TRIANGLE_QUERY=1` selects the experimental path
+with native hazard tracking. The first supported subset is immutable opaque,
+non-indexed float3 triangles, one geometry per BLAS and a nonempty build-once
+TLAS with bounded instance IDs. Moving-scene update/refit support is not implied.
+
+The implementation carries acceleration structures through both argument-buffer
+and direct bindings, shader reflection/lowering and deferred GPU lifetime.
+Source review found and fixed development-build AS naming, naming a missing
+argument buffer, and validation of stale descriptor sets after a pipeline change.
+Inactive set holes are skipped before residency tracking; the current shader's
+active TLAS and child BLASes are explicitly declared resident. Nine portable
+tests passed, including compiled actual-function controls and deliberate
+mutations. Test source SHA-256:
+`a7d5d8d14bbe495e10700f6a41c39a716b7c6ce42c46665a03f56735d163f819`.
+The prepared fixture tests fresh processes for both binding modes. This revision
+has not been compiled with Apple's Metal SDK or executed on a GPU.
+
+### Opt-in command-buffer completion observer
+
+Patch 0006 SHA-256
+`565aec0587e8d5b8895f8e9025be316437a9cda0f7207e5c02214f0bf9cfd272`
+adds an independently requested, default-off observer for Spatial, Temporal and
+experimental interpolation. Ten portable tests compiled and exercised the actual
+observer/header/helper and viewport/render-buffer status code with fake commands:
+disabled allocation/registration, lifetime after owner retirement, errors and
+reset acknowledgement, invalid/missing times, invalid callback IDs, late failure,
+coherent concurrent snapshots and signed-counter exhaustion. A separate source
+review found no further concrete blocker. This is source evidence; the new
+`gpu_probe.gd` is unparsed and has not run on Metal.
+
+The [engine guide](../../../../tools/graphics/metalfx/README.md#optional-gpu-completion-observation)
+owns sample identity, clocks and timing limits. Observation state may allocate
+before an enqueue succeeds; handler registration occurs after SDK encoding.
+Command-buffer completion is distinct from the legacy CPU encode acknowledgement,
+image correctness, presentation and effect-only cost. No production default or
+recovery policy was changed by this observer.
 
 ## Evidence retention and open gates
 
@@ -393,3 +455,14 @@ responding. Tailscale still advertised the M1 online; that is not SSH availabili
 The documented Linux jump host was offline. The motion fixture was prepared
 locally, but its transfer timed out, so no native parse/motion result is claimed.
 No task-owned rendered application remained running when access was lost.
+
+A Windows-only parse attempt was admitted but failed before Godot launched:
+`T-36b1158c202c4e009dafc7eec4250c6f`, cleanup confirmed, evidence incomplete.
+Its isolated copy changed `NotContentIndexed` attributes from 8224 to 32 while
+bytes, mode and mtime stayed identical. The worker source now reapplies the
+frozen metadata after `copy2`; the strict verifier is unchanged. All 27 worker
+and snapshot tests passed with Python 3.11.15. A disposable mutation omitting
+the metadata restoration reproduced `INFRA_FAILED` and failed the new regression.
+The running shared authority had another active claim and was not restarted.
+These are fake-process infrastructure controls, not a successful fixture parse
+or a native graphics result.

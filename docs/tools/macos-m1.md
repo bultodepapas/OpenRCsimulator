@@ -16,6 +16,11 @@ reused engine and new frozen evidence. This does not qualify a native evaluator
 or renew the historical rendered campaign. The separate `angel` mDNS alias did
 not resolve in that session.
 
+**2026-11-14 connection refresh:** both Macs are reachable directly from Windows
+over Tailscale using retained SSH keys. ANGEL's new Tailscale route matches its
+previously trusted LAN host key. The permanent aliases and current tool paths
+are recorded below. Earlier workspace inventories remain dated observations.
+
 ## Select the Mac first
 
 These are separate machines, accounts and SSH identities. Sections 1–6 below
@@ -24,8 +29,91 @@ describe **ANGELA_AIR**, the original remote Mac; do not run their hard-coded
 
 | Host | Verified route | Account | Client credential |
 | --- | --- | --- | --- |
-| ANGELA_AIR, original remote M1 | Tailscale `100.79.151.42` | `gius` | Original Linux key or Windows `~/.ssh/openrc_m1_ed25519`; section 1 |
-| ANGEL, Gius's second test M1 | DEVIL LAN, `ssh angel` / `ssh angel-lan`; `Gs-MacBook-Air.local`, observed `192.168.80.27` | `g` | Existing Windows `~/.ssh/devil_automation_ed25519` |
+| ANGELA_AIR, original remote M1 | Tailscale `100.79.151.42`, `ssh openrc-m1-angela` from DEVIL | `gius` | Original Linux key or Windows `~/.ssh/openrc_m1_ed25519`; section 1 |
+| ANGEL, Gius's second test M1 | Tailscale `100.66.252.127`, `ssh openrc-m1` / `ssh openrc-m1-angel` from DEVIL | `g` | Existing Windows `~/.ssh/devil_automation_ed25519` |
+
+### Two-M1 Windows workflow
+
+Verified **2026-11-14**, America/Bogota. The screenshot's
+`gs-macbook-air-1` is the existing ANGEL machine. Strict SSH over its Tailscale
+route authenticated against the retained `Gs-MacBook-Air.local` host-key entry.
+
+DEVIL's `C:\Users\bulto\.ssh\config` now contains these connection aliases.
+Each uses batch public-key authentication, strict ED25519 host-key checking,
+disabled agent forwarding/host-key updates, a 15-second connection timeout
+and bounded keepalives. A dated sibling backup preserves the preceding config.
+Windows stores credentials and trust entries in the user's `.ssh` directory.
+
+```powershell
+# Default connection selects ANGEL. Explicit aliases identify both machines.
+ssh openrc-m1
+ssh openrc-m1-angela
+
+# Bounded readiness checks can also run in two separate terminals.
+ssh -T openrc-m1 'id -un; hostname; uname -sm; pmset -g batt'
+ssh -T openrc-m1-angela 'id -un; hostname; uname -sm; pmset -g batt'
+```
+
+Both are MacBookAir10,1 / M1 / 8 GiB and were on AC. ANGEL had about
+124 GiB free and ANGELA_AIR about 6 GiB. ANGEL is the default connection for
+new large snapshots because of this headroom. Recheck storage and occupancy
+before each task.
+
+| Resource checked on November 14 | ANGEL | ANGELA_AIR |
+| --- | --- | --- |
+| New task parent | `/Users/g/OpenRC-m1-work/` | `/Users/gius/OpenRC-m1-work/` |
+| Reusable Python | `/Users/g/OpenRC-m1-tools/venv-3.12.16/bin/python`, 3.12.16 ARM64 | `/Users/gius/OpenRC-m1-tools/venv-3.12.15/bin/python`, 3.12.15 ARM64 |
+| Reusable official engine | `/Users/g/OpenRC-m1-work/angel-setup-20261107/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot` | `/Users/gius/OpenRC-m1-work/metalfx-20261114/official-engine/Godot.app/Contents/MacOS/Godot` |
+
+Both engine executables report `4.8.beta2.official.cafc17a19` and SHA-256
+`2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80`.
+The original `/Users/gius/OpenRC-m1-check/.venv/bin/python` and November 5
+engine path are absent. Resolve a tool's current prerequisites before reuse.
+Both reusable Python environments have psutil 7.2.2. ANGELA_AIR's new environment
+uses its existing managed CPython 3.12.15. Its retained ARM64 psutil wheel is under
+`/Users/gius/OpenRC-m1-tools/bootstrap-20261114/`, SHA-256
+`1a7b04c10f32cc88ab39cbf606e117fd74721c831c98a27dc04578deb0c16979`.
+Package dependency checks and a live process-memory query passed.
+
+Use separate fresh source/project/profile/output directories for independent
+functional checks, with one task per Mac initially. Select the host explicitly
+before starting. The ANGEL subsection below owns its Windows archive/transfer
+route. Sections 3–4 contain ANGELA_AIR-specific Linux transfer and Mac commands.
+Adapting those commands for ANGEL requires its SSH destination/key and account
+paths together. Compare a performance baseline and candidate
+on the same physical Mac, with no competing workload during measurement.
+
+For fallback, choose the other available Mac before dispatch. After a connection
+loss, reconnect and establish the original task's state and teardown before
+retrying elsewhere. Automatic distribution and failover remain pending under
+[TQ-02–04](../plans/agent-test-orchestrator.md). The existing
+[queue worker](../../tools/testqueue/README.md) has a local Windows adapter.
+
+SSH, the retained keys and ANGEL's native tools already work. During a test
+session, the owner can keep either Mac awake for two hours from its Terminal.
+Keep it connected to AC with the lid open. Rendered checks also require the
+logged-in, unlocked graphical desktop described in section 5.
+
+```bash
+pmset -g batt
+caffeinate -dis -t 7200
+```
+
+The connection exercise used the same six repository files from source
+`9d131dd94a45badf04c4066cb5ee700c2e978a19` plus a uniquely named microproject
+on both hosts. Native preflight and checked import completed, then the existing
+`test_math3d.gd` passed **20 checks, zero failures** per Mac. Both imports/tests
+reported `ok` and `complete`, with zero errors/warnings. Engine processes exited.
+ANGELA_AIR first exercised system Python 3.9.6, then passed a fresh preflight,
+checked import and the same math test through the reusable 3.12.15 environment.
+This exercised headless math and tooling. Full-project, graphical, performance
+and remote-worker qualification remain open.
+
+The task directory is `m1-pool-20261114T201938` under each host's task parent.
+Local receipts are in `tmp/m1-pool-20261114T201938/` on DEVIL, including
+`source/source-manifest.json`, `summary.json`, per-host preflight/check reports,
+logs and verified artifact hashes. The source archive SHA-256 is
+`980bc707ae03a64622649b46fd82a66ef373497cf196dd3c7f2aa510db0ed390`.
 
 ### ANGEL: Windows access and native setup
 
@@ -184,24 +272,23 @@ the Mac's account configuration. Preserve normal SSH host-key verification.
 
 ## 2. Paths and installed tools
 
-The final access check found SSH and the Python environment available, but the
-original checkout/engine and Mac campaign copies below had been removed since
-the earlier check. Do not treat historical paths as installed tools. The Linux
-campaign evidence remains available. Check existence before reuse.
+The November 14 refresh above identifies the currently exercised Python and
+engine. The original checkout and earlier Mac campaigns below are historical.
+Check existence before reuse and preserve retained evidence.
 
 | Resource | Location / scope |
 | --- | --- |
 | Linux development checkout | `/home/bulto/OpenRCsimulator` |
 | Original Mac checkout | `/Users/gius/Documents/OpenRCsimulator`; **absent at final check**, historical location |
 | Historical native engine | `/Users/gius/Documents/OpenRCsimulator/.tools/Godot_v4.8-beta1_macos.arm64/Godot.app/Contents/MacOS/Godot`; **absent**, acquire through the existing getter in section 4 |
-| Remaining research workspace | `/Users/gius/OpenRC-m1-check`; Python and partial source remain, but its `assets` link targets the missing original checkout. Use a fresh complete source snapshot for game checks |
-| Tested Python | `/Users/gius/OpenRC-m1-check/.venv/bin/python`; native ARM64 Python 3.9.6, psutil 7.2.2 |
+| Historical research workspace | `/Users/gius/OpenRC-m1-check`; the old Python environment is absent on November 14. Use a fresh complete source snapshot for game checks |
+| Reusable Python, checked 2026-11-14 | `/Users/gius/OpenRC-m1-tools/venv-3.12.15/bin/python`; native ARM64 Python 3.12.15, psutil 7.2.2 |
 | Retained comparison evidence on Linux | `/home/bulto/OpenRCsimulator/tmp/apple-round5/` and `apple-round6/`; preserve raw captures, analysis and manifests. Mac copies formerly under `/Users/gius/OpenRC-m1-check/tmp/` are absent |
 | Historical host helper | `/Users/gius/OpenRC-m1-check/tmp/apple-round6/host/macos_host_state-r4`; **absent**. Linux `tmp/apple-round6/host/` retains the build evidence; build a new helper for a new campaign |
 | Round-6 final analysis on Linux | `/home/bulto/OpenRCsimulator/tmp/apple-round6/analysis/long-final.json`; raw captures in sibling `metal-long-{baseline,candidate}-{1..3}/` directories |
 | Historical development package | `/Users/gius/OpenRC-m1-package-check/tmp/round2-final-20261102/OpenRC-M1-round2.zip`; **absent at final check**, not a current release |
 | New task workspaces | Use a fresh `/Users/gius/OpenRC-m1-work/<task-id>/` |
-| Verified reusable beta2 engine (2026-11-06) | `/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot`; `4.8.beta2.official.cafc17a19`. Recheck the bundle/hash before reuse; preserve the owning campaign. |
+| Reusable beta2 engine, checked 2026-11-14 | `/Users/gius/OpenRC-m1-work/metalfx-20261114/official-engine/Godot.app/Contents/MacOS/Godot`; `4.8.beta2.official.cafc17a19`. Recheck the bundle/hash before reuse and preserve the owning campaign. The November 5 path is absent. |
 | Apple tools | `/usr/bin/xcrun`, `/usr/bin/caffeinate`; clang resolves under `/Library/Developer/CommandLineTools/` |
 
 Historical campaigns used `4.8.beta1.official.4d10419ca`; the current reusable
@@ -212,9 +299,8 @@ assumptions. Use the existing
 [native preflight](../../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a)
 for a new hardware/tool receipt.
 
-The Python above is sufficient for the exercised checked runner, psutil and
-bridge. **Template correction requires Python 3.11+** through
-`OPENRC_GODOT_PYTHON`; do not use the 3.9 environment for that step.
+The current Python passed the focused checked runner and psutil query.
+**Template correction requires Python 3.11+** through `OPENRC_GODOT_PYTHON`.
 Source checks need no export templates. Once acquired, reuse a validated pinned
 engine cache across tasks rather than downloading another copy each time.
 
@@ -284,7 +370,7 @@ needs a checked import; a clone does not establish the new source identity by
 itself.
 
 The archive is a source snapshot, **not a historical Git checkout**. If the engine
-is missing, section 4 initializes local Git metadata solely so the existing getter
+is missing, section 4 explains initializing local Git metadata so the existing getter
 can locate its cache. This does not restore source history or establish a new
 source commit. `app/test.sh` calls the getter directly, needs a proper checkout
 and its prerequisites, and does not honor `OPENRC_GODOT` as an engine override;
@@ -307,14 +393,21 @@ In a **Mac shell**, enter the new task path printed/selected above, then:
 
 ```bash
 cd '/Users/gius/OpenRC-m1-work/<task-id>' || exit 1
-M1_PY=/Users/gius/OpenRC-m1-check/.venv/bin/python
-# Only in this new archive snapshot: give the official getter a cache root.
+M1_PY=/Users/gius/OpenRC-m1-tools/venv-3.12.15/bin/python
 test -f source-head.txt || exit 1
-git init -q . || exit 1
-# Reuse a validated existing engine path instead when one is available.
-OPENRC_GODOT="$(bash app/get-godot.sh)" || exit 1
+OPENRC_GODOT=/Users/gius/OpenRC-m1-work/metalfx-20261114/official-engine/Godot.app/Contents/MacOS/Godot
+test -x "$OPENRC_GODOT" || exit 1
 export OPENRC_GODOT
 M1_APP="$PWD/tmp/research/app"
+```
+
+If a reusable engine is unavailable, initialize Git metadata only in this new
+archive snapshot and acquire the pinned editor through the official getter.
+
+```bash
+git init -q . || exit 1
+OPENRC_GODOT="$(bash app/get-godot.sh)" || exit 1
+export OPENRC_GODOT
 ```
 
 Stop if acquisition fails. The getter verifies the official ARM64 archive,
