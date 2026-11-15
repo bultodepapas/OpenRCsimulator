@@ -348,6 +348,17 @@ containment with either backend; do not build a generic backend framework meanwh
 [SQLite WAL](https://www.sqlite.org/wal.html) requires same-host access, so remote
 workers must use structured transport rather than share this database.
 
+**TQ-04 planning direction, 2026-11-15; implementation pending.** The
+[resilience audit](research/testqueue/2026-11-15-resilience/README.md) reproduces
+avoidable nonlaunch quarantine, dead-scheduler readiness, pre-receipt recovery
+gaps and falsely confirmed nonexecution during local replay. The
+[repair subplan](plans/mcp-queue-resilience.md) keeps the existing authority
+and proof-based release contract, separates observation/progress deadlines from
+explicit owned cancellation, and gates higher concurrency on physical-host and
+resource reservations. Repair these failures before expanding the pool; a new
+queue backend is not a prerequisite. Independent guardians and remote cancel are
+proposed work, not capabilities of the current combined worker.
+
 ### Keep a senior lead with bounded, evidence-producing helpers
 
 **DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**

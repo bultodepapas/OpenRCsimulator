@@ -1,5 +1,10 @@
 # Shared-host test admission
 
+The [15 November 2026 resilience audit](../../docs/research/testqueue/2026-11-15-resilience/README.md)
+records known recovery/control gaps and a [current recovery runbook](../../docs/research/testqueue/2026-11-15-resilience/runbook.md).
+Its [TQ-04 repair plan](../../docs/plans/mcp-queue-resilience.md) is proposed work;
+the commands and behavior below remain the implemented operating contract.
+
 ## Automatic multi-host checked tests
 
 `testctl.py pool` coordinates independent headless GDScript checks across the

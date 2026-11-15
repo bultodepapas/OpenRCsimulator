@@ -1,0 +1,47 @@
+{
+  "baseline": "c048a4e6834646400070a488b293344dc1e1fd80",
+  "observed_at_utc": "2026-11-15T21:06:17.403496+00:00",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "meaning": "Exit zero means the baseline observation was reproduced, not that the defect is fixed. Private fixture roots; no simulator or real remote hosts.",
+  "reproductions": [
+    {
+      "script": "research/testqueue/resilience/reproduce_mcp_dispatch.py",
+      "exit_code": 0,
+      "stdout": "{\n  \"baseline\": \"c048a4e6834646400070a488b293344dc1e1fd80\",\n  \"scope\": \"stubbed control flow; no simulator or network\",\n  \"serial_dispatch\": {\n    \"observation\": \"ping, cancellation and stop are unread while a tool is executing\",\n    \"consumed_while_tool_blocked\": [\n      1\n    ],\n    \"reply_ids_after_release\": [\n      1,\n      2,\n      3\n    ],\n    \"original_request_completed_after_queued_cancellation\": true,\n    \"live_workers_contacted\": 0\n  },\n  \"zero_wait_rpc_budget\": {\n    \"observation\": \"a zero-second observer budget still permits the default 30-second status RPC\",\n    \"rpc_calls\": [\n      {\n        \"operation\": \"status\",\n        \"timeout_seconds\": 30\n      }\n    ],\n    \"live_workers_contacted\": 0\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "script": "research/testqueue/resilience/reproduce_pool_failures.py",
+      "exit_code": 0,
+      "stdout": "PRE_RECEIPT: invalid snapshot -> BLOCKED/UNKNOWN; receipt absent -> resume BLOCKED/UNKNOWN on missing receipt, still INCOMPLETE\nPHYSICAL_HOST: same-root second request quarantined; different roots on same process/machine both accepted STARTING (fake Popen, no workloads)\nTRANSIENT: injected dispatch-lock timeout before receipt -> BLOCKED; fault removed -> resume makes zero submissions and remains INCOMPLETE; direct same-ID retry reaches fake authority\nOBSERVER_BUDGET: timeout=0.01s returned after 0.081s when one mocked submit took 0.08s; no remote work\nPROTOCOL_VALIDATION: MCP/local validation accepts 129 markers, remote validation rejects INVALID before dispatch; no SSH or remote workload\n",
+      "stderr": ""
+    },
+    {
+      "script": "research/testqueue/resilience/reproduce_prelaunch_failure.py",
+      "exit_code": 0,
+      "stdout": "Popen calls: 0\nfirst state: UNKNOWN; cleanup: UNCONFIRMED; claims: 4\nerror: injected pre-spawn log denial\nsame-boot reconcile: cleanup cannot be proved; resource remains quarantined\nsecond state: QUEUED; reason: RESOURCE_BUSY: unresolved cleanup quarantines the managed host\n",
+      "stderr": ""
+    },
+    {
+      "script": "research/testqueue/resilience/reproduce_preparation_timeout.py",
+      "exit_code": 0,
+      "stdout": "elapsed after allocation: 1.20s; configured execution timeout: 1s\nwhile copy blocked: state=DISPATCHING, canceled=1, claims=3, starts=0\nafter copy resumes: state=FINISHED, outcome=CANCELED, cleanup=CONFIRMED, starts=0\n",
+      "stderr": ""
+    },
+    {
+      "script": "research/testqueue/resilience/reproduce_scheduler_failure.py",
+      "exit_code": 0,
+      "stdout": "scheduler alive after logging failure: False\nunhandled scheduler error: injected logging failure\nafter fault cleared: host=READY, job=QUEUED, stopping=False\n",
+      "stderr": ""
+    },
+    {
+      "script": "research/testqueue/resilience/reproduce_local_recovery_misclassification.py",
+      "observed_at_utc": "2026-11-15T21:14:58.916059+00:00",
+      "exit_code": 0,
+      "stdout": "initial pool state: SUBMISSION_UNCONFIRMED after accepted reply was lost\nauthority before and after replay: RUNNING; live owned fake process; claims=4; attempts=1\npool.recover RPC calls: ['submit']\npool.recover reported: FINISHED, outcome=INFRA_FAILED, cleanup=CONFIRMED; receipt=NOT_DISPATCHED\nsubsequent pool.status: FINISHED, cleanup=CONFIRMED, RPC calls=[]\nowned fixture cleanup: FINISHED, outcome=CANCELED, cleanup=CONFIRMED\n",
+      "stderr": ""
+    }
+  ],
+  "additional_recovery_observed_at_utc": "2026-11-15T21:14:58.916059+00:00"
+}
