@@ -1,0 +1,623 @@
+{
+  "schema": "openrc-graphics-community-research-validation-v1",
+  "research_date": "2026-11-15",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "audit/graphics-performance-technologies-2026-11-15",
+  "parent_commit": "3dc343bb5d3654c75eee6e4078da1bb0f6e9d9ff",
+  "application_baseline": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "scope": "documentation and source research only; no new measurement tool or runtime code",
+  "expected_changed_paths": [
+    "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+    "docs/research/graphics-performance-2026-11-15/11-test-and-execution-playbook.md",
+    "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+    "docs/research/graphics-performance-2026-11-15/13-community-driven-execution-plan.md",
+    "docs/research/graphics-performance-2026-11-15/README.md",
+    "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+    "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+    "docs/research/graphics-performance-2026-11-15/community/03-ray-tracing-cases.md",
+    "docs/research/graphics-performance-2026-11-15/evidence/community-validation.json"
+  ],
+  "case_count": 17,
+  "cases": [
+    {
+      "id": "C-DRS-01",
+      "title": "Fullscreen and a scaler coincided with persistent frame drops",
+      "document": "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-DRS-02",
+      "title": "Object motion-vector resets are not camera-history resets",
+      "document": "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-DRS-03",
+      "title": "Moving-camera ghosting survived an Unreal FSR2 plugin workaround",
+      "document": "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-DRS-04",
+      "title": "Additive billboards shimmer under FSR2",
+      "document": "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-DRS-05",
+      "title": "Unsupported MetalFX request left temporal jitter active",
+      "document": "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-DRS-06",
+      "title": "Above-native FSR2 fell back to bilinear but kept the wrong type",
+      "document": "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-LAT-01",
+      "title": "Where the limiter waits can change the physical result",
+      "document": "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-LAT-02",
+      "title": "A clock regression can confound a Boost comparison",
+      "document": "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-LAT-03",
+      "title": "Wine translation once lacked a working Vulkan Reflex path",
+      "document": "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-LAT-04",
+      "title": "Mouse-triggered stutter varied with the compositor path",
+      "document": "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-LAT-05",
+      "title": "Present-call spacing is not display spacing",
+      "document": "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-LAT-06",
+      "title": "An Off-to-On transition can expose missing frame association",
+      "document": "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-RT-01",
+      "title": "NVIDIA push constants failed while an AMD run appeared correct",
+      "document": "docs/research/graphics-performance-2026-11-15/community/03-ray-tracing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-RT-02",
+      "title": "Reported fast RT did not solve deforming geometry",
+      "document": "docs/research/graphics-performance-2026-11-15/community/03-ray-tracing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-RT-03",
+      "title": "A LightmapGI timeout was initially confused with memory pressure",
+      "document": "docs/research/graphics-performance-2026-11-15/community/03-ray-tracing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-RT-04",
+      "title": "Self-intersection, attribution and an external allocation improvement",
+      "document": "docs/research/graphics-performance-2026-11-15/community/03-ray-tracing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    },
+    {
+      "id": "C-RT-05",
+      "title": "Cross-viewport texture sharing remained unresolved",
+      "document": "docs/research/graphics-performance-2026-11-15/community/03-ray-tracing-cases.md",
+      "scope": "external reported case plus proposed OpenRC test",
+      "openrc_native_execution": false
+    }
+  ],
+  "cited_external_url_count_in_new_documents": 61,
+  "external_url_inventory_is_http_verification": false,
+  "cited_external_urls_in_new_documents": [
+    "https://developer.apple.com/documentation/metal/mtlaccelerationstructurecommandencoder/refit(sourceaccelerationstructure:descriptor:destinationaccelerationstructure:scratchbuffer:scratchbufferoffset:)",
+    "https://developer.apple.com/documentation/metalfx",
+    "https://developer.nvidia.com/blog/?p=64245",
+    "https://developer.nvidia.com/blog/solving-self-intersection-artifacts-in-directx-raytracing/",
+    "https://docs.vulkan.org/refpages/latest/refpages/source/VK_NV_low_latency2.html",
+    "https://docs.vulkan.org/refpages/latest/refpages/source/vkWaitForPresentKHR.html",
+    "https://forum.godotengine.org/t/fps-go-crazy-when-changing-to-fullscreen-with-gi-and-variable-fsr2-scale/124676",
+    "https://forum.godotengine.org/t/the-proper-way-to-transmit-a-texture-between-compositor-effects/143037",
+    "https://forums.developer.nvidia.com/t/clocking-issues-in-some-games-with-rtx-5080/322364",
+    "https://forums.developer.nvidia.com/t/how-do-i-avoiding-hitting-the-same-triangle-when-calling-tracing-another-ray/281669",
+    "https://forums.developer.nvidia.com/t/reflex-marker-association-across-a-low-latency-off-on-transition/380728",
+    "https://github.com/GPUOpen-Effects/FidelityFX-FSR2/blob/master/README.md#camera-jump-cuts",
+    "https://github.com/GPUOpen-Effects/FidelityFX-FSR2/blob/master/README.md#input-resources",
+    "https://github.com/GPUOpen-Effects/FidelityFX-FSR2/blob/master/README.md#reactive-mask",
+    "https://github.com/GPUOpen-Effects/FidelityFX-FSR2/issues/102",
+    "https://github.com/NVIDIA-RTX/Streamline/blob/019994e18d256a3e92347888deb527feb7f58bc0/docs/ProgrammingGuideReflex.md",
+    "https://github.com/NVIDIA-RTX/Streamline/issues/65",
+    "https://github.com/NVIDIA/open-gpu-kernel-modules/issues/781",
+    "https://github.com/NVIDIA/self-intersection-avoidance/blob/5a5c45bc61aca5d095032860058481e0497350e0/LICENSE",
+    "https://github.com/NVIDIA/self-intersection-avoidance/blob/5a5c45bc61aca5d095032860058481e0497350e0/SelfIntersectionAvoidance.glsl",
+    "https://github.com/ValveSoftware/gamescope/blob/master/README.md",
+    "https://github.com/ValveSoftware/gamescope/commit/dd77e4de10974bdbfe8252f6ec6f4c8723ac3305",
+    "https://github.com/ValveSoftware/gamescope/issues/1626",
+    "https://github.com/ValveSoftware/gamescope/issues/474",
+    "https://github.com/bultodepapas/OpenRCsimulator/blob/273a7e4c0617fdf4cacc39c360796fd79afa5f2c/docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md#r3-package-warm-product-trial-and-native-intake-follow-up",
+    "https://github.com/bultodepapas/OpenRCsimulator/blob/273a7e4c0617fdf4cacc39c360796fd79afa5f2c/tools/testqueue/README.md",
+    "https://github.com/bultodepapas/OpenRCsimulator/commit/273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
+    "https://github.com/godotengine/godot-docs/issues/11119",
+    "https://github.com/godotengine/godot-proposals/issues/15180",
+    "https://github.com/godotengine/godot-proposals/issues/15180#issuecomment-4978162189",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/RenderData.xml",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/vulkan/rendering_device_driver_vulkan.cpp",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/3d/visual_instance_3d.cpp#L106",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp#L127-L212",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp#L128",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp#L796",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L1035-L1055",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L1097-L1109",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L156-L205",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/renderer_viewport.cpp#L211-L230",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_device.cpp#L495",
+    "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_shader_container.cpp#L306",
+    "https://github.com/godotengine/godot/issues/101391",
+    "https://github.com/godotengine/godot/issues/103782",
+    "https://github.com/godotengine/godot/issues/107704",
+    "https://github.com/godotengine/godot/issues/121285",
+    "https://github.com/godotengine/godot/issues/121285#issuecomment-5168442343",
+    "https://github.com/godotengine/godot/issues/85123",
+    "https://github.com/godotengine/godot/pull/102257",
+    "https://github.com/godotengine/godot/pull/102257#issuecomment-2628405339",
+    "https://github.com/godotengine/godot/pull/102257#issuecomment-2628685760",
+    "https://github.com/godotengine/godot/pull/103792",
+    "https://github.com/godotengine/godot/pull/105437",
+    "https://github.com/godotengine/godot/pull/110672",
+    "https://github.com/godotengine/godot/pull/122051",
+    "https://github.com/jp7677/dxvk-nvapi/issues/166",
+    "https://github.com/jp7677/dxvk-nvapi/pull/237",
+    "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-2/",
+    "https://images.nvidia.com/content/geforce/technologies/frameview/frameview-1-4-user-guide-web-version.pdf",
+    "https://www.nvidia.com/en-us/drivers/details/242302/",
+    "https://www.nvidia.com/en-us/geforce/news/reflex-low-latency-platform/"
+  ],
+  "new_document_word_count": 8977,
+  "project_source_hashes": [
+    {
+      "path": "app/app_root.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "2d6dcadd00dee40f7eb8ba12d9c398b39ee10760",
+      "sha256": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647"
+    },
+    {
+      "path": "app/app_state/display_preferences.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "667662a1a1400775815d916a8ea1b955be72a1d4",
+      "sha256": "b084fbff2b1c9b8765d96bd12d1722ee4c950ce04e7b31a6aa13578bfbd564c4"
+    },
+    {
+      "path": "app/main.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "71702b06946d73d3f6e64c7cc899049d091e083c",
+      "sha256": "34fb8d664902446b1292f2d5f328867f1cccd658698826fc0790888f88a41327"
+    },
+    {
+      "path": "app/render/camera/camera_rig.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "d073bb782c08088d6805835640f176a63aa1b1f4",
+      "sha256": "30d8f12b1ce2af509dc996d4f6e04f3853bff5e86df31729d7a01b2190afd8f9"
+    },
+    {
+      "path": "app/render/frame_diagnostics.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "4d238aaf3d4bfa164be6a828ecff57f6d7f5995b",
+      "sha256": "067cc4c4f45e273466107048f1f1290e0da5acb581a424a6a7b227408bccca39"
+    },
+    {
+      "path": "app/render/frames.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "47c72e226cd6fe157f3209e6fcc2b169b93edf85",
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8"
+    },
+    {
+      "path": "app/render/metalfx_policy.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "sha256": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8"
+    },
+    {
+      "path": "app/render/nvidia_reflex.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "a6181ae7fdf28112fae6ff576adfa159822a1adb",
+      "sha256": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081"
+    },
+    {
+      "path": "app/render/reconstruction.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "6b758b525980fa8d0a1be8f94d55be3831809cec",
+      "sha256": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44"
+    },
+    {
+      "path": "app/render/rotor/heli_wreck.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "cb3d287904613303f653cb2ac534bef969efe729",
+      "sha256": "054c319fa1fc68e9a8af22688ff2fa6d0e66759b7fea079f6c548cca06183743"
+    },
+    {
+      "path": "app/render/world/campfire.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "5b378f9365eb308653dc64690a343176a3b8fc56",
+      "sha256": "763415b254acfc45fb73a4f80283ce59430bc4b0b6952f804accd402583d6cf4"
+    },
+    {
+      "path": "app/render/world/stars.gdshader",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "bc691729c3dfd5c0e3b158f2d30d32b80d643119",
+      "sha256": "4cc01e711ff6e0c8436776729c06c87c04f4844d58ba68b26691737768aeab18"
+    },
+    {
+      "path": "app/scenery/imported_vegetation.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "783a11e6ed02c2ea19f38b0dac1d639afb1d61bd",
+      "sha256": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e"
+    },
+    {
+      "path": "app/scenery/motion.gdshader",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "d9ea1375ba8f1410005e808f8ff23db52ec99de9",
+      "sha256": "ff3a47e1f56e086369926c6cbe94e4e210c7b012f433d6e965d2003205cf7cf1"
+    },
+    {
+      "path": "app/tests/test_advanced_graphics_settings.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "790da6ff1a5f4baa18d44b3eb994b0e319dbc578",
+      "sha256": "fea35811263b1779f37e126ec741e1eac7d84d2d231c08a196b80be9dab82ed2"
+    },
+    {
+      "path": "app/tests/test_camera_history.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "522411c96161c6c0fd665d13e8f016944c2daea1",
+      "sha256": "075e4d534e705600c21cefc0ba471f8b2b00334811351bb6e3211c1c701c37a9"
+    },
+    {
+      "path": "app/tests/test_latency_patch.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "fac01e4f51e7f5ab16612299aa6fdf2316f090db",
+      "sha256": "c8acfd6daea703f271256eb00419fefe3455d8a59bc5a642c3e407653c61c09b"
+    },
+    {
+      "path": "app/tests/test_metalfx_policy.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "e902ee162e14ce111e57409e446abf31f500abb5",
+      "sha256": "75c416385ce092de7fa0d4024fcedf64f2ed5f51e475c49a65db7e49042e37ee"
+    },
+    {
+      "path": "app/tests/test_nvidia_reflex.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "a41c379f1e386950c0b701ae05242cc018ca1416",
+      "sha256": "e99a380cdeb4fd84a2d37d64e31a10978febb5f908e5ac98b0dc779dd9a0bf81"
+    },
+    {
+      "path": "app/tests/test_reconstruction.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "e684497d0495569dea05c9c9f41b1cd8762804af",
+      "sha256": "98cfce259de0e657118dbb403e704b119ceb4006c2d7e8df8aac21815ec3343c"
+    },
+    {
+      "path": "app/tests/test_reconstruction_history.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "18288959def96cb0e2e60deeed7feb4600cd0b29",
+      "sha256": "af1cbe4e0e434728e650e8d07e82b571703c33dc6d34b8cffa4bd8f0b7e9a93b"
+    },
+    {
+      "path": "app/tests/test_simulation.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "5a12e88a34b7005a17876011a02ec60f3d2beb9e",
+      "sha256": "32d6225bdc04db2fee71f128b4ad4a30db3058b12f76d5f88336986464473d8c"
+    },
+    {
+      "path": "app/tests/test_ui_recovery_dead_ends.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "a5faae37ad2121b7f810dc98330dc82437d71e45",
+      "sha256": "21a5ba512034ed4d3f80303be3938bf3ad578b82e18b932aa9c7f3391d090552"
+    },
+    {
+      "path": "research/performance/frame_diagnose.py",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "1336f19e47d3ce9673a18c39007b1c27b15cdffb",
+      "sha256": "415447c5b8fbd6ca6c46a64b28a3c6ab5071801f610ed584a3dd245b137e80c0"
+    },
+    {
+      "path": "research/performance/test_frame_diagnose.py",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "4d6f90355d281bbf7d5af2a7cf44f702d2a07f5f",
+      "sha256": "ce43cd9c864e6db552b6f5fcb9fec6f9d030083761d403f6606f1c94628ea0ac"
+    },
+    {
+      "path": "tools/graphics/capture.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "9927624cfdf6665971258994c9e502ff8a9920b6",
+      "sha256": "39d0ea5a5679ad707f7731d377694f0bd8a92dee6debb8c429ba4c535ee31951"
+    },
+    {
+      "path": "tools/graphics/native/build.py",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "33129b31388cc98d30e85dc1480227ecd097381b",
+      "sha256": "8c7358aece65fcd846d8584473848bf14e63ce541e388efe5207a5648de1b79b"
+    },
+    {
+      "path": "tools/graphics/native/dlss_frame_lifecycle.patch",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "0c16fe4e4a1e68aef270f580787f795af9493be8",
+      "sha256": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5"
+    },
+    {
+      "path": "tools/graphics/native/reflex_lifecycle.patch",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "a68eb233cb458a7d013035163c82f47a2ce875f7",
+      "sha256": "1dff3a3e323eef0905fa1c501ab085f894a3e0682ca76b9f55035100d182c458"
+    },
+    {
+      "path": "tools/graphics/native/reflex_sync.patch",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "2817196f898f9c9ce8c30ed2d5ee7283f846b883",
+      "sha256": "3e0891bc6d0bdda63c77a06b1325bc2e576f702c72ba5bf5991e55b46d0fb5b4"
+    },
+    {
+      "path": "tools/graphics/native/repro/reflex.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "eee9cbd78b1cd3595c9a6dceb5d96f23b6c1300e",
+      "sha256": "fdcca7f671fa5a6365bd6248759e482bc108964445752d6cb148619e6711fb4e"
+    },
+    {
+      "path": "tools/graphics/test_shadow_energy.gd",
+      "commit": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "git_blob_sha": "d5cb13cf0c657bede46585ff0f19c773ca7a77e3",
+      "sha256": "ac27a6484310d39625f359f9d09d1da5a98edada7f0db589eeca362251c5de0f"
+    }
+  ],
+  "selected_upstream_source_identity": [
+    {
+      "repository": "godotengine/godot",
+      "ref": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "servers/rendering/rendering_shader_container.cpp",
+      "line_range": [
+        290,
+        355
+      ],
+      "git_blob_sha": "d6457a96163bd19ef3ecc278101386fc06626cd1",
+      "retrieved_utf8_sha256": "2fdcac3055e170da2b498047d1cbff45979367c4053e4fe0226ce8e9bd504d9d",
+      "hash_scope": "returned line-range excerpt",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/servers/rendering/rendering_shader_container.cpp"
+    },
+    {
+      "repository": "godotengine/godot",
+      "ref": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "scene/3d/visual_instance_3d.cpp",
+      "line_range": [
+        30,
+        125
+      ],
+      "git_blob_sha": "cce47f93de931d0a74900501068aa4f6a47a53c8",
+      "retrieved_utf8_sha256": "aca082c3b8eebbcd8d702bebcff8458c8c1db109757c6eaf8a24f5f72fec3fce",
+      "hash_scope": "returned line-range excerpt",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/3d/visual_instance_3d.cpp"
+    },
+    {
+      "repository": "godotengine/godot",
+      "ref": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "doc/classes/RenderData.xml",
+      "line_range": null,
+      "git_blob_sha": "bb66cab9dac2c5945aa01cc7bfe7e7a8053554ff",
+      "retrieved_utf8_sha256": "d225a3e70e11a84ba9f772158bbcf556f854f738f99382f44cca51cd5fdccabe",
+      "hash_scope": "returned full file text",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/RenderData.xml"
+    },
+    {
+      "repository": "godotengine/godot",
+      "ref": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "path": "doc/classes/RenderSceneBuffersRD.xml",
+      "line_range": null,
+      "git_blob_sha": "1d6ebc88056b1fea3d3653562fd802c4a6f838c6",
+      "retrieved_utf8_sha256": "38ed253ce99039d41c96341f98a22769c31d40ca543ea4b703cc5379dc402ee1",
+      "hash_scope": "returned full file text",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/RenderSceneBuffersRD.xml"
+    },
+    {
+      "repository": "NVIDIA/self-intersection-avoidance",
+      "ref": "5a5c45bc61aca5d095032860058481e0497350e0",
+      "path": "README.md",
+      "line_range": null,
+      "git_blob_sha": "e92ac841daf6d167f45b4744e440b2b28de8c89a",
+      "retrieved_utf8_sha256": "57ed1e5b0719098b34197f38a360907a22d6e6ac3dce2896882a7cf9c4be18f8",
+      "hash_scope": "returned full file text",
+      "url": "https://github.com/NVIDIA/self-intersection-avoidance/blob/5a5c45bc61aca5d095032860058481e0497350e0/README.md"
+    },
+    {
+      "repository": "NVIDIA/self-intersection-avoidance",
+      "ref": "5a5c45bc61aca5d095032860058481e0497350e0",
+      "path": "SelfIntersectionAvoidance.glsl",
+      "line_range": null,
+      "git_blob_sha": "8c1d433ee0b14ab7c3a8bdc8b9f68bce68d51446",
+      "retrieved_utf8_sha256": "6bc4ccd133b3ff8d6288d0fd3d978c44bc6027b33532ba870f7c0077f8a00119",
+      "hash_scope": "returned full file text",
+      "url": "https://github.com/NVIDIA/self-intersection-avoidance/blob/5a5c45bc61aca5d095032860058481e0497350e0/SelfIntersectionAvoidance.glsl"
+    },
+    {
+      "repository": "NVIDIA/self-intersection-avoidance",
+      "ref": "5a5c45bc61aca5d095032860058481e0497350e0",
+      "path": "LICENSE",
+      "line_range": null,
+      "git_blob_sha": "364cf8c866423ba41337713dc88e18f335e3c778",
+      "retrieved_utf8_sha256": "3ae1065abffbceac8cc660d0c0fffb27142c94fa473d8006e56b1807e5f85ca1",
+      "hash_scope": "returned full file text",
+      "url": "https://github.com/NVIDIA/self-intersection-avoidance/blob/5a5c45bc61aca5d095032860058481e0497350e0/LICENSE"
+    }
+  ],
+  "verified_upstream_ancestors": [
+    {
+      "pr": 105437,
+      "merge_commit": "8954125990b80bc09a91e66543e3c0554feb15bd",
+      "pin": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_base": "8954125990b80bc09a91e66543e3c0554feb15bd",
+      "url": "https://api.github.com/repos/godotengine/godot/compare/8954125990b80bc09a91e66543e3c0554feb15bd...cafc17a192acf67903910a68aeb3c076c0907a4b"
+    },
+    {
+      "pr": 103792,
+      "merge_commit": "3b66cb5f8dee1ff3af432388671629a13a481309",
+      "pin": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_base": "3b66cb5f8dee1ff3af432388671629a13a481309",
+      "url": "https://api.github.com/repos/godotengine/godot/compare/3b66cb5f8dee1ff3af432388671629a13a481309...cafc17a192acf67903910a68aeb3c076c0907a4b"
+    },
+    {
+      "pr": 110672,
+      "merge_commit": "9f4f16c58831faf31a37cd9728abc057549c1e5b",
+      "pin": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_base": "9f4f16c58831faf31a37cd9728abc057549c1e5b",
+      "url": "https://api.github.com/repos/godotengine/godot/compare/9f4f16c58831faf31a37cd9728abc057549c1e5b...cafc17a192acf67903910a68aeb3c076c0907a4b"
+    },
+    {
+      "pr": 122051,
+      "merge_commit": "f3b471af78baf59144922f7d48416574ce49b19b",
+      "pin": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_base": "f3b471af78baf59144922f7d48416574ce49b19b",
+      "url": "https://api.github.com/repos/godotengine/godot/compare/f3b471af78baf59144922f7d48416574ce49b19b...cafc17a192acf67903910a68aeb3c076c0907a4b"
+    },
+    {
+      "pr": 102257,
+      "merge_commit": "3d25533d0ce43f7bf37f3cde81d2bab515ad61e7",
+      "pin": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_base": "3d25533d0ce43f7bf37f3cde81d2bab515ad61e7",
+      "url": "https://api.github.com/repos/godotengine/godot/compare/3d25533d0ce43f7bf37f3cde81d2bab515ad61e7...cafc17a192acf67903910a68aeb3c076c0907a4b"
+    }
+  ],
+  "main_checkpoint": {
+    "commit": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
+    "api_observed_at": "2026-11-15T21:55:00Z",
+    "time_precision": "minute",
+    "later_git_fetch_agreed": true,
+    "previous_checkpoint": "c048a4e6834646400070a488b293344dc1e1fd80",
+    "additional_ancestry_commits": 2,
+    "tree_paths_changed_since_previous_checkpoint": 23,
+    "merged_into_audit_branch": false,
+    "unchanged_inspected_paths_from_application_baseline": [
+      "app/render",
+      "app/input",
+      "app/ui",
+      "app/debug",
+      "app/main.gd",
+      "app/app_root.gd",
+      "app/get-godot.sh",
+      "tools/graphics",
+      "tools/godot",
+      ".github/workflows"
+    ],
+    "newly_changed_tool_scope": [
+      "tools/testqueue"
+    ],
+    "owner_evidence": "DT-MAC-11a at the checkpoint reports source-native correctness on b4442e6a86b58489d67683f56f39623353480a0d; this audit did not retrieve its payloads or rerun hardware checks; package/default qualification remains separate"
+  },
+  "independent_review": {
+    "role": "Good Enemy / evidence auditor",
+    "scope": "source-only, no repository edits or hardware tests",
+    "resolved_findings": [
+      "Make fixed-scale resize comparison conditional within the existing single M0 question.",
+      "Distinguish maintainer TDR diagnosis and intermediate shadowmask regression from the revised fix and separate remaining tunnel issue.",
+      "Preserve proven empty MetalFX generation initial_history without an extra reset request or invented submitted serial.",
+      "Respect drained render/present callbacks before Reflex post-sync mode change; do not label this GPU completion."
+    ],
+    "final_verdict": "no further blocking findings in the reviewed chapters and execution plan"
+  },
+  "checks": {
+    "checked_tree_before_receipt_finalization": "e12a2ddb2e9d1b3ae81b8d42d77dbf33148bf864",
+    "changed_paths": 9,
+    "cumulative_paths": 46,
+    "markdown_files": 40,
+    "local_links_checked": 1332,
+    "errors": [],
+    "twenty_original_studies_preserved": true,
+    "historical_receipts_and_reference_preserved": true,
+    "project_source_hashes_verified": 32,
+    "utf8_json_fences_and_whitespace": "pass",
+    "new_runtime_or_tool_paths": [],
+    "status": "passed documentation and source checks only"
+  },
+  "not_run": [
+    "application or Godot scripts",
+    "engine builds",
+    "native GPU fixtures or capture",
+    "performance or physical radio/display latency trials",
+    "export/package execution",
+    "lifecycle endurance or hardware qualification",
+    "runtime CI"
+  ],
+  "prior_software_result_policy": "The prior 38-test DRS reference and seven mutation results are historical and linked; unchanged code is not rerun for this documentation-only continuation.",
+  "changed_document_hashes": [
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+      "sha256": "0e6eef7df86c660c3984d4e98a9d09be55557b577fd0c2d4225d32a7d723d156"
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/11-test-and-execution-playbook.md",
+      "sha256": "2ff2044f7caee3757dc8d6c4b5feb80105c5af32574999566f89a4ac73a66c0c"
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+      "sha256": "af38c4209d8686319650fad649924682f252b2e533db3d3322580c18f0e0591b"
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/13-community-driven-execution-plan.md",
+      "sha256": "d4f4fccc6b5b65a7a3dbca6d8a1ea31e99f11362a0b698ad7f9c2a8a2359123b"
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/README.md",
+      "sha256": "b2954ccb60eaa14522e5d583688d8b169a28fbaa7f28a9eb893e6858970d2584"
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/community/01-resolution-and-upscaling-cases.md",
+      "sha256": "09e0ad6fb0ba162d2d2da24e28924a565a6c4a2d5caf9504bbdd6797f47c9e06"
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/community/02-latency-and-pacing-cases.md",
+      "sha256": "7e951afd0ab880bd8a9ef4f3e186ecc38f460c1cd16963b5d8364fea540f859f"
+    },
+    {
+      "path": "docs/research/graphics-performance-2026-11-15/community/03-ray-tracing-cases.md",
+      "sha256": "58baa63331a45bcfa1406e5c365edd8c43e09df96a3e43373cdeb087d88f7253"
+    }
+  ],
+  "self_hash_note": "This receipt intentionally does not include its own hash or final tree to avoid recursive identity. The published commit binds it; checked_tree_before_receipt_finalization binds the checked documents, whose final hashes are recorded here."
+}

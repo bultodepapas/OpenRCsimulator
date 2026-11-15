@@ -11,7 +11,7 @@
 | Official engine pin | `4.8.beta2.official.cafc17a19` |
 | Resolution priority | 1920 × 1080 first; higher resolutions next; 1280 × 720 last, per [repository policy](../../../AGENTS.md#display-resolution-priorities) |
 | Evidence boundary | Current source, retained project evidence, and newly checked primary internet sources. No new GPU, radio, latency or flight-performance measurements were collected for this audit. |
-| Publication checkpoint | Later `main` at `c048a4e6834646400070a488b293344dc1e1fd80` was reviewed for drift; [new Apple evidence and simulation changes](12-senior-developer-handoff.md#publication-checkpoint-and-parallel-main-changes) are recorded separately from the pinned audit baseline. |
+| Publication checkpoint | Later `main` at `273a7e4c0617fdf4cacc39c360796fd79afa5f2c` was reviewed for drift; [newer Apple, aircraft and test-queue context](13-community-driven-execution-plan.md#4-newer-main-checkpoint-and-retained-project-results) is recorded separately from the pinned audit baseline and the earlier handoff checkpoint. |
 
 ## Executive assessment
 
@@ -37,8 +37,11 @@ The project already contains meaningful implementations. Strengthen the existing
 | [10 · Reflex and ray integration design](10-reflex-and-ray-integration-design.md) | Patched frame ordering, failure/flash cases, concrete sun-light and scene-buffer seams, and proposed native/optical/RT test oracles. |
 | [11 · Test and execution playbook](11-test-and-execution-playbook.md) | Verified existing commands, selective test matrix, comparison pitfalls, native and optical execution cards, and rollback decisions. |
 | [12 · Senior developer handoff](12-senior-developer-handoff.md) | Next reviewable changes, day-by-day M0 scope, new findings and implementation-ready acceptance boundaries. |
+| [13 · Community evidence and execution](13-community-driven-execution-plan.md) | Seventeen additional practical cases from developer forums and GitHub discussions, tied to existing work slices, expected outcomes, conditional tests, provider-specific pseudocode and stop decisions. |
 
-Machine-readable evidence: [audited source manifest](evidence/source-manifest.json), [prior documentation validation](evidence/validation.json), and [new handoff validation](evidence/handoff-validation.json). The [DRS reference and 38 tests](../../../research/performance/graphics_handoff/README.md) are runnable offline research examples with no engine or measurement I/O. The topic studies contain claim-specific primary sources; the manifests preserve source identities without copying upstream engine code into the repository.
+Machine-readable evidence: [audited source manifest](evidence/source-manifest.json), [prior documentation validation](evidence/validation.json), [handoff validation](evidence/handoff-validation.json), and [community continuation validation](evidence/community-validation.json). The [DRS reference and 38 tests](../../../research/performance/graphics_handoff/README.md) are runnable offline research examples with no engine or measurement I/O. The topic studies contain claim-specific primary sources; the manifests preserve source identities without copying upstream engine code into the repository.
+
+The latest forum round has three case chapters: [six resolution/upscaling cases](community/01-resolution-and-upscaling-cases.md), [six latency/pacing cases](community/02-latency-and-pacing-cases.md), and [five RT/integration cases](community/03-ray-tracing-cases.md). They distinguish observed reports, unresolved explanations, subsequently corrected artifacts and fixes already present in the official pin. Each case identifies an existing OpenRC seam and a falsifiable next check. Their reported milliseconds, camera-frame counts and allocation gains are external observations, not simulator measurements. The next implementation remains bounded M0 followed by one product correction or the independent Reflex comparison.
 
 ## Recommended first work
 
