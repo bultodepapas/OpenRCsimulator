@@ -57,6 +57,20 @@ var _language := "en"
 var _trial_deadline_msec := 0
 var _trial_baseline: Dictionary = {}
 var _trial_remaining_seconds := 0
+var _trial_first_deadline_msec := 0
+var _trial_waiting_for_draw := false
+var _trial_barrier_seen := false
+var _trial_draw_token := 0
+var _trial_draw_callback := Callable()
+var _trial_expiry_queued := false
+var _trial_expired_process_frame := -1
+var _trial_last_process_msec := -1
+var _trial_main_stall_observed := false
+var _trial_viewport_id := 0
+var _trial_viewport_rid := RID()
+var _trial_reconstruction := ""
+var _trial_viewport_mode := -1
+var _trial_viewport_scale := 0.0
 var _save_error: int = OK
 var _status_state := "instructions"
 var _status_value := 0
@@ -142,6 +156,20 @@ func _init(store: DisplayPreferences = null, initial_language: String = "en") ->
 
 
 func _process(delta: float) -> void:
+	if _trial_waiting_for_draw:
+		var now := _trial_now_msec()
+		if _trial_last_process_msec >= 0 and now - _trial_last_process_msec >= DISPLAY_TEST_SECONDS * 1000:
+			_trial_main_stall_observed = true
+		_trial_last_process_msec = now
+	if _trial_waiting_for_draw and _trial_deadline_msec > 0 and _trial_now_msec() >= _trial_deadline_msec:
+		# Give an already submitted draw one process/render turn to finish. Its
+		# queued receipt runs before the deferred rollback after a blocked sync.
+		if _trial_expired_process_frame < 0:
+			_trial_expired_process_frame = _trial_process_frame()
+		elif _trial_process_frame() > _trial_expired_process_frame and not _trial_expiry_queued:
+			_trial_expiry_queued = true
+			call_deferred("_expire_waiting_trial", _trial_draw_token)
+		return
 	# The native SDK accepts mode changes at a later frame boundary and can
 	# withdraw support during a session. Refresh the visible receipt in place.
 	_reflex_poll_seconds += delta
@@ -153,7 +181,7 @@ func _process(delta: float) -> void:
 		_refresh_graphics_info()
 	if _trial_deadline_msec <= 0:
 		return
-	var remaining_msec: int = _trial_deadline_msec - Time.get_ticks_msec()
+	var remaining_msec: int = _trial_deadline_msec - _trial_now_msec()
 	if remaining_msec <= 0:
 		_expire_display_trial()
 		_set_status("expired")
@@ -167,6 +195,8 @@ func _notification(what: int) -> void:
 		close()
 	elif what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_refresh_translated_text()
+	elif what == NOTIFICATION_EXIT_TREE:
+		_cancel_trial_draw_wait()
 
 
 func _ready() -> void:
@@ -674,8 +704,11 @@ func _choice_picker(node_name: String, key: String, values: Array) -> OptionButt
 		picker.add_item(_choice_caption(key, value))
 		picker.set_item_metadata(picker.item_count - 1, value)
 	picker.item_selected.connect(func(index: int) -> void:
-		_draft[key] = picker.get_item_metadata(index)
-		_on_graphics_option_changed())
+		var value: Variant = picker.get_item_metadata(index)
+		if _trial_waiting_for_draw and _draft.get(key) == value:
+			return
+		_draft[key] = value
+		_on_graphics_option_changed(key))
 	return picker
 
 
@@ -797,24 +830,190 @@ func _fsr2_sharpness_drag_ended(changed: bool) -> void:
 		_on_graphics_option_changed()
 
 
-func _on_graphics_option_changed() -> void:
+func _on_graphics_option_changed(changed_key: String = "") -> void:
 	var changed := false
+	var reconstruction_only := true
 	for key: String in DISPLAY_TRIAL_KEYS:
 		changed = changed or _draft[key] != _saved[key]
+		if key != "reconstruction" and _draft[key] != _saved[key]:
+			reconstruction_only = false
+	var begin_draw_wait := false
 	if not changed:
+		_cancel_trial_draw_wait()
 		_trial_deadline_msec = 0
+		_trial_first_deadline_msec = 0
 		_trial_baseline.clear()
 	elif _trial_deadline_msec == 0:
 		_trial_baseline = _saved.duplicate(true)
-		_trial_deadline_msec = Time.get_ticks_msec() + DISPLAY_TEST_SECONDS * 1000
+		_trial_deadline_msec = _trial_now_msec() + DISPLAY_TEST_SECONDS * 1000
+		_trial_first_deadline_msec = _trial_deadline_msec
 		_trial_remaining_seconds = DISPLAY_TEST_SECONDS
-		_set_status("trial", DISPLAY_TEST_SECONDS)
+		begin_draw_wait = is_inside_tree() and reconstruction_only and changed_key == "reconstruction" \
+			and str(_draft.reconstruction).begins_with("metalfx_temporal_")
+		if begin_draw_wait:
+			_trial_waiting_for_draw = true
+			_trial_draw_token += 1
+			_trial_viewport_id = get_viewport().get_instance_id()
+			_trial_viewport_rid = get_viewport().get_viewport_rid()
+			_trial_reconstruction = str(_draft.reconstruction)
+		_set_status("preparing_trial" if begin_draw_wait else "trial", DISPLAY_TEST_SECONDS)
+	elif _trial_waiting_for_draw:
+		# A second display edit retains the original first-edit safety deadline.
+		_cancel_trial_draw_wait()
+		_trial_deadline_msec = mini(_trial_deadline_msec, _trial_first_deadline_msec)
+		_set_status("trial")
 	_emit_presentation()
+	if begin_draw_wait and _trial_waiting_for_draw:
+		# The apply signal itself may synchronously block in driver compilation;
+		# no main-thread rollback can run until it returns.
+		_trial_deadline_msec = _trial_now_msec() + DISPLAY_TEST_SECONDS * 1000
+		_trial_last_process_msec = _trial_now_msec()
+		_trial_viewport_mode = int(get_viewport().scaling_3d_mode)
+		_trial_viewport_scale = get_viewport().scaling_3d_scale
+		_queue_trial_render_barrier(_trial_draw_token)
 	if not changed:
 		# Selecting the saved option is a rollback even if Close sees a clean draft.
 		presentation_reverted.emit()
 	_sync_controls()
 	_refresh_graphics_info.call_deferred()
+
+
+func _trial_now_msec() -> int:
+	return Time.get_ticks_msec()
+
+
+func _trial_process_frame() -> int:
+	return Engine.get_process_frames()
+
+
+func _trial_main_was_blocked(now: int) -> bool:
+	return _trial_main_stall_observed or (_trial_last_process_msec >= 0 \
+		and now - _trial_last_process_msec >= DISPLAY_TEST_SECONDS * 1000)
+
+
+func _cancel_trial_draw_wait() -> void:
+	_trial_waiting_for_draw = false
+	_trial_barrier_seen = false
+	_trial_draw_token += 1
+	if _trial_draw_callback.is_valid() and RenderingServer.frame_post_draw.is_connected(_trial_draw_callback):
+		RenderingServer.frame_post_draw.disconnect(_trial_draw_callback)
+	_trial_draw_callback = Callable()
+	_trial_expiry_queued = false
+	_trial_expired_process_frame = -1
+	_trial_last_process_msec = -1
+	_trial_main_stall_observed = false
+	_trial_viewport_id = 0
+	_trial_viewport_rid = RID()
+	_trial_reconstruction = ""
+
+
+func _queue_trial_render_barrier(token: int) -> void:
+	# The render-thread callback queues a value-only lambda. It neither reads
+	# nor changes the screen; the weak target is resolved on the main thread.
+	var screen: WeakRef = weakref(self)
+	var continuation: Callable = func() -> void:
+		var target: Object = screen.get_ref()
+		if is_instance_valid(target):
+			target.call("_trial_render_barrier_passed", token)
+	RenderingServer.call_on_render_thread(func() -> void:
+		continuation.call_deferred())
+
+
+func _trial_render_barrier_passed(token: int) -> void:
+	if not _trial_waiting_for_draw or _trial_barrier_seen or token != _trial_draw_token or not is_inside_tree():
+		return
+	_trial_barrier_seen = true
+	# A receipt queued before a delayed expiry may arrive after the main loop
+	# was blocked. Give the first ordered draw a bounded chance to finish.
+	if _trial_now_msec() >= _trial_deadline_msec:
+		if not _trial_main_was_blocked(_trial_now_msec()):
+			_expire_waiting_trial(token)
+			return
+		_trial_deadline_msec = _trial_now_msec() + DISPLAY_TEST_SECONDS * 1000
+		_trial_expired_process_frame = -1
+		_trial_last_process_msec = _trial_now_msec()
+		_trial_main_stall_observed = false
+	_listen_for_trial_draw(token)
+
+
+func _listen_for_trial_draw(token: int) -> void:
+	_trial_draw_callback = Callable(self, "_trial_frame_drawn").bind(token)
+	if not RenderingServer.frame_post_draw.is_connected(_trial_draw_callback):
+		RenderingServer.frame_post_draw.connect(_trial_draw_callback, CONNECT_ONE_SHOT)
+
+
+func _trial_frame_drawn(token: int) -> void:
+	if not _trial_waiting_for_draw or not _trial_barrier_seen or token != _trial_draw_token:
+		return
+	_trial_draw_callback = Callable()
+	if _trial_now_msec() >= _trial_deadline_msec and not _trial_main_was_blocked(_trial_now_msec()):
+		_expire_waiting_trial(token)
+		return
+	if not _trial_preview_ready():
+		if _trial_now_msec() >= _trial_deadline_msec:
+			_expire_waiting_trial(token)
+		else:
+			_listen_for_trial_draw(token)
+		return
+	if _trial_now_msec() >= _trial_deadline_msec and not _trial_main_was_blocked(_trial_now_msec()):
+		_expire_waiting_trial(token)
+		return
+	_cancel_trial_draw_wait()
+	_trial_deadline_msec = _trial_now_msec() + DISPLAY_TEST_SECONDS * 1000
+	_trial_first_deadline_msec = _trial_deadline_msec
+	_trial_remaining_seconds = DISPLAY_TEST_SECONDS
+	_set_status("trial", DISPLAY_TEST_SECONDS)
+	_sync_action_buttons()
+
+
+func _expire_waiting_trial(token: int) -> void:
+	if not _trial_waiting_for_draw or token != _trial_draw_token:
+		return
+	_trial_expiry_queued = false
+	if _trial_deadline_msec > 0 and _trial_now_msec() >= _trial_deadline_msec:
+		_expire_display_trial()
+		_set_status("expired")
+
+
+static func _trial_receipt_ready(requested: String, rid: RID, mode: int, scale: float, policy: Dictionary,
+		scope: Dictionary, status: Dictionary, failure: Dictionary) -> bool:
+	return rid.is_valid() and policy.get("requested") == requested and policy.get("provider") == "metalfx_temporal" \
+		and typeof(policy.get("fallback")) == TYPE_BOOL and policy.fallback == false \
+		and typeof(policy.get("scaling_3d_mode")) == TYPE_INT and policy.scaling_3d_mode == mode \
+		and typeof(policy.get("scale")) in [TYPE_FLOAT, TYPE_INT] and is_equal_approx(float(policy.scale), scale) \
+		and scope.get("rid") == rid and scope.get("provider") == "metalfx_temporal" \
+		and typeof(scope.get("mode")) == TYPE_INT and scope.mode == mode \
+		and typeof(scope.get("generation")) == TYPE_INT and int(scope.generation) >= 0 \
+		and typeof(status.get("render_buffers_available")) == TYPE_BOOL and status.render_buffers_available == true \
+		and typeof(status.get("requested_mode")) == TYPE_INT and status.requested_mode == mode \
+		and typeof(status.get("configured_mode")) == TYPE_INT and status.configured_mode == mode \
+		and typeof(status.get("generation")) == TYPE_INT \
+		and int(status.generation) >= int(scope.generation) and status.get("provider") == "temporal" \
+		and status.get("allocation") == "created" and status.get("submission") == "enqueued" \
+		and failure.get("provider", "") != "metalfx_temporal"
+
+
+func _trial_preview_ready() -> bool:
+	if not is_inside_tree():
+		return false
+	var viewport := get_viewport()
+	if viewport.get_instance_id() != _trial_viewport_id or viewport.get_viewport_rid() != _trial_viewport_rid \
+			or not viewport is Window or not (viewport as Window).can_draw() \
+			or not RenderingServer.is_render_loop_enabled() \
+			or int(viewport.scaling_3d_mode) != _trial_viewport_mode \
+			or not is_equal_approx(viewport.scaling_3d_scale, _trial_viewport_scale) \
+			or str(_draft.get("reconstruction", "")) != _trial_reconstruction \
+			or not RenderingServer.has_method(Reconstruction.METALFX_STATUS_METHOD):
+		return false
+	var policy: Variant = viewport.get_meta(Reconstruction.POLICY_META, {})
+	var scope: Variant = viewport.get_meta(Reconstruction.METALFX_STATUS_META, {})
+	var failure: Variant = viewport.get_meta(Reconstruction.RUNTIME_FAILURE_META, {})
+	var status: Variant = RenderingServer.call(Reconstruction.METALFX_STATUS_METHOD, _trial_viewport_rid)
+	if not policy is Dictionary or not scope is Dictionary or not failure is Dictionary or not status is Dictionary:
+		return false
+	# This is a same-viewport CPU submission receipt after a draw, not a GPU
+	# completion, changed-pixel check or OS presentation guarantee.
+	return _trial_receipt_ready(_trial_reconstruction, _trial_viewport_rid, _trial_viewport_mode, _trial_viewport_scale, policy, scope, status, failure)
 
 
 func _restore_graphics_defaults() -> void:
@@ -1031,13 +1230,18 @@ func _request_route(route: String, from: Control) -> void:
 
 
 func keep_changes() -> void:
+	if _trial_waiting_for_draw:
+		feedback_requested.emit(&"reject")
+		return
 	var err: Error = display_preferences.save(_draft)
 	if err != OK:
 		_set_status("save_error", err)
 		feedback_requested.emit(&"reject")
 		return
 	_saved = _draft.duplicate(true)
+	_cancel_trial_draw_wait()
 	_trial_deadline_msec = 0
+	_trial_first_deadline_msec = 0
 	_trial_baseline.clear()
 	_set_status("saved")
 	_sync_action_buttons()
@@ -1046,7 +1250,9 @@ func keep_changes() -> void:
 
 
 func _revert() -> void:
+	_cancel_trial_draw_wait()
 	_trial_deadline_msec = 0
+	_trial_first_deadline_msec = 0
 	_trial_baseline.clear()
 	_draft = _saved.duplicate(true)
 	_emit_presentation(_saved)
@@ -1063,7 +1269,9 @@ func _expire_display_trial() -> void:
 	# remain in the draft until Keep, explicit Revert or Close resolves them.
 	for key: String in DISPLAY_TRIAL_KEYS:
 		_draft[key] = _trial_baseline.get(key, _saved[key])
+	_cancel_trial_draw_wait()
 	_trial_deadline_msec = 0
+	_trial_first_deadline_msec = 0
 	_trial_baseline.clear()
 	_emit_presentation()
 	presentation_reverted.emit()
@@ -1286,13 +1494,17 @@ func _reconstruction_fallback_text(mode: String, reason: String) -> String:
 func _sync_action_buttons() -> void:
 	var dirty := _draft != _saved
 	var focus_was_on_action := false
+	var focus_was_on_keep := false
 	if is_inside_tree():
 		var focused := get_viewport().gui_get_focus_owner()
 		focus_was_on_action = focused == _keep_button or focused == _revert_button
-	_keep_button.disabled = not dirty
+		focus_was_on_keep = focused == _keep_button
+	_keep_button.disabled = not dirty or _trial_waiting_for_draw
 	_revert_button.disabled = not dirty
 	if not dirty and focus_was_on_action:
 		_grab_settings_focus(_close_button)
+	elif dirty and _trial_waiting_for_draw and focus_was_on_keep:
+		_grab_settings_focus(_revert_button)
 	if dirty and _trial_deadline_msec <= 0 and _status_state in ["saved", "reverted"]:
 		_set_status("instructions")
 	elif _status_state == "instructions":
@@ -1440,6 +1652,7 @@ func _refresh_status_text() -> void:
 		return
 	match _status_state:
 		"trial", "save_error": _status.text = ""
+		"preparing_trial": _status.text = tr("Preparing display preview…")
 		"expired": _status.text = tr("Display settings restored. Your other changes are still unsaved.") if _draft != _saved \
 			else tr("Display test expired. Saved settings restored.")
 		"saved": _status.text = tr("Settings saved.")
@@ -1449,7 +1662,7 @@ func _refresh_status_text() -> void:
 			else tr("Changes preview at once. Keep changes saves them; Close discards them.")
 	if _save_error != OK:
 		_status.text = (tr("Could not save settings (error %d).") % _save_error) + ("\n" + _status.text if not _status.text.is_empty() else "")
-	if _trial_deadline_msec > 0:
+	if _trial_deadline_msec > 0 and not _trial_waiting_for_draw:
 		_status.text += ("\n" if not _status.text.is_empty() else "") + tr("Keep the display test within %d seconds.") % _trial_remaining_seconds
 
 
