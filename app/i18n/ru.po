@@ -13453,3 +13453,93 @@ msgstr "Комментарии JPEG проигнорированы."
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "Проигнорированы заявленные размеры ещё %s старых пустых папок."
+
+msgid "Left aileron, second part"
+msgstr "Левый элерон, вторая часть"
+
+msgid "Right aileron, second part"
+msgstr "Правый элерон, вторая часть"
+
+msgid "Rudder, second part"
+msgstr "Руль направления, вторая часть"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "Маркер координат «%s» неоднозначен или не поддерживается. Исправьте его систему XYZ из четырёх точек перед импортом."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "Скрыто маркеров координат: %s. Они сохранены как исходные данные."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "Подготовлено предложений визуальных шарниров: %s. Выберите их группы в разделе «Подвижные части»; X следует заявленной оси. Проверьте каждый орган управления и направление в предпросмотре."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "Не подготовлено привязок сервоприводов: %s. Проверьте их исходные объявления перед привязкой этих частей."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Шарнир «%s»: задайте одну именованную визуальную систему координат и отдельную видимую группу частей."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Шарнир «%s»: используйте один указанный сервопривод вращения с однозначными поверхностью, визуальной группой и осью."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Шарнир «%s»: отделите посторонние или вложенные части и примените жёсткие преобразования родительских узлов."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Шарнир «%s»: новая иерархия превысила пределы точности или сложности. Упростите и заново центрируйте исходную модель."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Шарнир «%s»: подготовленная модель отклонена. Исходная статическая иерархия сохранена."
+
+msgid "Inspect source declarations"
+msgstr "Проверить исходные сведения"
+
+msgid "Source declarations are references, not measurements. They do not change the flight configuration."
+msgstr "Исходные сведения служат справкой, а не измерениями. Они не меняют конфигурацию полёта."
+
+msgid "Parameter contents checked. ZIP membership is declared; physical values are unverified."
+msgstr "Содержимое параметров проверено. Принадлежность ZIP заявлена; физические значения не проверены."
+
+msgid "Unit documented for ClearView v5"
+msgstr "Единица документирована для ClearView v5"
+
+msgid "Unit inferred; confirm independently"
+msgstr "Единица предположена; проверьте независимо"
+
+msgid "Unit or meaning unresolved"
+msgstr "Единица или смысл не установлены"
+
+msgid "Repeated declaration; no value selected"
+msgstr "Повторное объявление; значение не выбрано"
+
+msgid "Declaration shortened for display"
+msgstr "Объявление сокращено для отображения"
+
+msgid "Some declarations are omitted from this view. The original parameters are retained with the model."
+msgstr "Часть сведений здесь не показана. Исходные параметры сохранены с моделью."
+
+msgid "Parameter file: %s"
+msgstr "Файл параметров: %s"
+
+msgid "Parameter SHA-256: %s"
+msgstr "SHA-256 параметров: %s"
+
+msgid "%s · line %s"
+msgstr "%s · строка %s"
+
+msgid "Original parameter bytes are absent. Re-import the ZIP to review source declarations."
+msgstr "Исходные параметры отсутствуют. Импортируйте ZIP повторно для просмотра сведений."
+
+msgid "The source declarations could not be checked. Re-import the ZIP."
+msgstr "Не удалось проверить исходные сведения. Импортируйте ZIP повторно."
+
+msgid "The original parameters exceed the converted model's metadata limit. Source declarations are unavailable for this model."
+msgstr "Исходные параметры превышают лимит метаданных преобразованной модели. Исходные сведения для этой модели недоступны."
+
+msgid "The saved source declarations do not match this model. Re-import the ZIP."
+msgstr "Сохранённые сведения не соответствуют модели. Импортируйте ZIP повторно."
+
+msgid "The compiled definition changed. Review the aircraft and save again."
+msgstr "Скомпилированное описание изменилось. Проверьте самолёт и сохраните снова."
+
+msgid "Source observations require the versioned definition format."
+msgstr "Исходные наблюдения требуют версионного формата описания."

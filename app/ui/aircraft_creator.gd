@@ -23,6 +23,8 @@ const UiScale := preload("res://ui/ui_scale.gd")
 const R := preload("res://workshop/creator/result.gd")
 const Limits := preload("res://workshop/creator/limits.gd")
 const Authoring := preload("res://workshop/creator/authoring.gd")
+const Definition := preload("res://workshop/creator/definition.gd")
+const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const Importer := preload("res://workshop/creator/source_importer.gd")
 const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 const VisualBuilder := preload("res://workshop/creator/visual_builder.gd")
@@ -32,6 +34,8 @@ const LibraryScript := preload("res://ui/aircraft_creator_library.gd")
 const PartsScript := preload("res://ui/aircraft_creator_parts.gd")
 const ClearViewPackage := preload("res://workshop/creator/clearview/package.gd")
 const ClearViewConverter := preload("res://workshop/creator/clearview/converter.gd")
+const SourceObservations := preload("res://workshop/creator/clearview/observations.gd")
+const SourceReportPanel := preload("res://ui/aircraft_creator_source_report.gd")
 const ImportCancellation := preload("res://workshop/creator/clearview/cancellation.gd")
 
 ## Quiet time after the last change before the automatic backup is written.
@@ -115,6 +119,7 @@ class ImportJob extends RefCounted:
 	var model_root := ""
 	var cancellation := ImportCancellation.new()
 	var annotations: Array = []
+	var observations: SourceObservations.CheckedReport
 
 
 ## Inspections whose wizard was closed before they finished. Kept alive until their task is released.
@@ -167,6 +172,7 @@ var _choose_button: Button
 var _import_status: Label
 var _import_details: Label
 var _import_notes: VBoxContainer
+var _source_report: SourceReportPanel
 var _import_errors: VBoxContainer
 var _import_state := "idle"
 var _import_file_name := ""
@@ -547,11 +553,13 @@ static func _inspect(job: ImportJob) -> void:
 		job.result = ClearViewConverter.convert(job.package, job.model_root, job.cancellation.is_cancelled)
 		if job.result.ok:
 			job.annotations = job.result.diagnostics
+			_inspect_observations(job,job.result.value.source)
 		return
 	if not job.opening.is_empty():
 		job.result = Importer.inspect_bytes(job.bytes, job.file_name)
 		if job.result.ok:
 			job.annotations = ClearViewConverter.source_notes(job.result.value)
+			_inspect_observations(job,job.result.value)
 		return
 	var captured: Dictionary = Importer.read_bounded(job.path)
 	if captured.ok:
@@ -559,6 +567,16 @@ static func _inspect(job: ImportJob) -> void:
 	job.result = captured
 	if captured.ok:
 		job.annotations = ClearViewConverter.source_notes(captured.value)
+		_inspect_observations(job,captured.value)
+
+
+static func _inspect_observations(job: ImportJob,source: InspectedSource) -> void:
+	var report := SourceObservations.inspect(source)
+	if report.ok:
+		job.observations = report.value
+		job.annotations.append_array(report.diagnostics)
+	else:
+		job.annotations.append(R.diagnostic(R.SOURCE_INVALID,SourceObservations.INVALID,"source","import",[],R.SEVERITY_WARNING))
 
 
 static func _start_task(job: ImportJob) -> int:
@@ -617,7 +635,7 @@ func _adopt_import(job: ImportJob) -> void:
 			_refresh()
 			return
 		if result.get("ok", false) and result.get("value") is InspectedSource:
-			if _finish_open(str(job.opening.kind), job.opening.value, result.value):
+			if _finish_open(str(job.opening.kind), job.opening.value, result.value,job.observations):
 				_clearview_notes = job.annotations
 				_refresh()
 		else:
@@ -627,7 +645,7 @@ func _adopt_import(job: ImportJob) -> void:
 	if result.get("ok", false) and result.get("value") is InspectedSource:
 		_import_state = "imported"
 		_import_diagnostics = []
-		_doc.set_source(result.value)
+		_doc.set_source(result.value,job.observations)
 		_clearview_notes = job.annotations
 	else:
 		_import_state = "failed"
@@ -1061,6 +1079,8 @@ func _build_import_page(page: VBoxContainer) -> void:
 	_import_notes = VBoxContainer.new()
 	_import_notes.name = "ImportNotes"
 	page.add_child(_import_notes)
+	_source_report = SourceReportPanel.new()
+	page.add_child(_source_report)
 
 
 func _build_orient_page(page: VBoxContainer) -> void:
@@ -2292,6 +2312,7 @@ func _refresh_import() -> void:
 			_import_status.text = tr("Model imported") if source != null else tr(NO_MODEL)
 	_fill_lines(_import_errors, _import_diagnostics if _import_state == "failed" else [], "ErrorLabel", false)
 	_fill_lines(_import_notes, (source.notes() + _clearview_notes) if source != null else [], "SecondaryLabel", true)
+	_source_report.show_context(_doc.source_observations())
 	if source == null:
 		_import_details.text = ""
 		_import_details.visible = false
@@ -2939,14 +2960,22 @@ func _opening_edit_state() -> Dictionary:
 
 
 ## A fresh document is restored and only replaces the current one when everything succeeded.
-func _finish_open(kind: String, value: Dictionary, source: InspectedSource) -> bool:
+func _finish_open(kind: String, value: Dictionary, source: InspectedSource,observations: SourceObservations.CheckedReport = null) -> bool:
 	var fresh := Authoring.new()
 	var saved_snapshot: Variant = value.get("snapshot", {})
-	var restored: Dictionary = fresh.restore(saved_snapshot if saved_snapshot is Dictionary else {}, source)
+	var restored: Dictionary = fresh.restore(saved_snapshot if saved_snapshot is Dictionary else {}, source,observations)
 	if not restored.ok:
 		set_note(_diagnostics_text(restored.diagnostics))
 		_refresh()
 		return false
+	if kind == "aircraft" and not fresh.source_observations().is_empty():
+		var definition: Variant = value.get("definition")
+		var canonical := Definition.validate_complete(fresh.definition())
+		if not definition is Dictionary or not canonical.ok or definition != canonical.value \
+				or CreatorBytes.encode(canonical.value).value.sha256 != value.get("definition_sha256"):
+			set_note(tr("The saved source declarations do not match this model. Re-import the ZIP."))
+			_refresh()
+			return false
 	if source != null and not fresh.bindings().is_empty():
 		# Stored numbers come back as floats: the normalized copy writes the same content as before.
 		var bound: Dictionary = VisualBuilder.validate_bindings(source, fresh.bindings())
@@ -3012,7 +3041,11 @@ func _on_publish_pressed() -> void:
 		set_note(_diagnostics_text(compiled.get("diagnostics", [])))
 		return
 	var candidate: Object = compiled.value
-	var publication := {"aircraft_uuid": _doc.aircraft_uuid(), "name": _doc.name, "definition": _doc.definition(),
+	var definition := Definition.validate_complete(_doc.definition())
+	if not definition.ok or CreatorBytes.encode(definition.value).value.sha256 != candidate.call("definition_sha256"):
+		set_note(tr("The compiled definition changed. Review the aircraft and save again."))
+		return
+	var publication := {"aircraft_uuid": _doc.aircraft_uuid(), "name": _doc.name, "definition": definition.value,
 		"raw_bytes": candidate.call("raw_bytes"), "source_bytes": source.source_bytes(),
 		"source_file_name": source.file_name(), "placement": _doc.placement(), "bindings": _doc.bindings(),
 		"appearance": _doc.appearance(), "snapshot": _doc.snapshot(_current)}

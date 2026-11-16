@@ -13624,3 +13624,93 @@ msgstr "Les commentaires JPEG ont été ignorés."
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "Les tailles déclarées de %s anciens dossiers vides supplémentaires ont été ignorées."
+
+msgid "Left aileron, second part"
+msgstr "Aileron gauche, deuxième pièce"
+
+msgid "Right aileron, second part"
+msgstr "Aileron droit, deuxième pièce"
+
+msgid "Rudder, second part"
+msgstr "Gouverne de direction, deuxième pièce"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "Le marqueur de coordonnées « %s » est ambigu ou non pris en charge. Corrigez son repère XYZ à quatre points avant l’importation."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "%s marqueurs de coordonnées ont été masqués et conservés comme données sources."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "%s propositions d’articulations visuelles ont été préparées. Sélectionnez leurs groupes de pivot dans Pièces mobiles ; X suit l’axe déclaré. Vérifiez chaque commande et son sens dans l’aperçu."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "%s associations de servos n’ont pas été préparées. Vérifiez leurs déclarations sources avant de lier ces pièces."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Articulation « %s » : fournissez un seul repère visuel nommé et un groupe distinct de pièces visibles."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Articulation « %s » : utilisez un seul servo de rotation déclaré, avec une surface, un groupe visuel et un axe non ambigus."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Articulation « %s » : séparez les pièces étrangères ou imbriquées et appliquez des transformations rigides aux nœuds parents."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Articulation « %s » : la nouvelle hiérarchie dépasse les limites de précision ou de structure. Simplifiez et recentrez le modèle source."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Articulation « %s » : le modèle préparé a été refusé. Sa hiérarchie statique d’origine a été conservée."
+
+msgid "Inspect source declarations"
+msgstr "Examiner les déclarations source"
+
+msgid "Source declarations are references, not measurements. They do not change the flight configuration."
+msgstr "Les déclarations source sont des références, pas des mesures. Elles ne modifient pas la configuration de vol."
+
+msgid "Parameter contents checked. ZIP membership is declared; physical values are unverified."
+msgstr "Contenu des paramètres vérifié. L’appartenance au ZIP est déclarée ; les valeurs physiques ne sont pas vérifiées."
+
+msgid "Unit documented for ClearView v5"
+msgstr "Unité documentée pour ClearView v5"
+
+msgid "Unit inferred; confirm independently"
+msgstr "Unité déduite ; à confirmer indépendamment"
+
+msgid "Unit or meaning unresolved"
+msgstr "Unité ou sens indéterminé"
+
+msgid "Repeated declaration; no value selected"
+msgstr "Déclaration répétée ; aucune valeur retenue"
+
+msgid "Declaration shortened for display"
+msgstr "Déclaration abrégée pour l’affichage"
+
+msgid "Some declarations are omitted from this view. The original parameters are retained with the model."
+msgstr "Certaines déclarations sont omises ici. Les paramètres originaux sont conservés avec le modèle."
+
+msgid "Parameter file: %s"
+msgstr "Fichier de paramètres : %s"
+
+msgid "Parameter SHA-256: %s"
+msgstr "SHA-256 des paramètres : %s"
+
+msgid "%s · line %s"
+msgstr "%s · ligne %s"
+
+msgid "Original parameter bytes are absent. Re-import the ZIP to review source declarations."
+msgstr "Les paramètres originaux sont absents. Réimportez le ZIP pour examiner les déclarations source."
+
+msgid "The source declarations could not be checked. Re-import the ZIP."
+msgstr "Les déclarations source n’ont pas pu être vérifiées. Réimportez le ZIP."
+
+msgid "The original parameters exceed the converted model's metadata limit. Source declarations are unavailable for this model."
+msgstr "Les paramètres originaux dépassent la limite des métadonnées du modèle converti. Les déclarations source ne sont pas disponibles pour ce modèle."
+
+msgid "The saved source declarations do not match this model. Re-import the ZIP."
+msgstr "Les déclarations enregistrées ne correspondent pas à ce modèle. Réimportez le ZIP."
+
+msgid "The compiled definition changed. Review the aircraft and save again."
+msgstr "La définition compilée a changé. Vérifiez l’avion et enregistrez-le à nouveau."
+
+msgid "Source observations require the versioned definition format."
+msgstr "Les observations source nécessitent le format de définition versionné."

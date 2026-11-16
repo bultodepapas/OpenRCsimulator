@@ -414,6 +414,17 @@
               "parameter": "red"
               },
               {
+                  "node_path": "thrust_frame/spinner",
+                  "surface": 0,
+                  "kind": "standard_albedo"
+                },
+                {
+                  "node_path": "cowl_lips",
+                  "surface": 0,
+                  "kind": "shader_color",
+                  "parameter": "red"
+                },
+                {
                 "node_path": "cowl_face",
                 "surface": 0,
                 "kind": "shader_color",

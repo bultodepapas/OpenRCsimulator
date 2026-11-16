@@ -3,6 +3,8 @@ const Creator := preload("res://ui/aircraft_creator.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Fixture := preload("res://tests/test_creator_clearview_readers.gd")
 const Converter := preload("res://workshop/creator/clearview/converter.gd")
+const Definition := preload("res://workshop/creator/definition.gd")
+const Authoring := preload("res://workshop/creator/authoring.gd")
 var failures := 0
 var checks := 0
 var _directory := "user://clearview-ui-%d" % Time.get_ticks_usec()
@@ -42,7 +44,7 @@ func _write(name: String, bytes: PackedByteArray) -> String:
 	return path
 
 func _zip(two := false) -> PackedByteArray:
-	var params := "verNumber 5\nmodelType 1\nmodelName body.ac\n".to_ascii_buffer()
+	var params := "verNumber 5\nmodelType 1\nmodelName body.ac\nmodelMass 4.1\ngravity 11.1\n".to_ascii_buffer()
 	var files: Array = [["One/params.txt",params],["One/data/body.ac",Fixture._ac_fixture().to_ascii_buffer()]]
 	if two:
 		files.append_array([["Two/params.txt",params],["Two/data/body.ac",Fixture._ac_fixture().to_ascii_buffer()]])
@@ -68,6 +70,15 @@ func _run() -> void:
 		_finish()
 		return
 	var original: String = source.sha256()
+	var observations: Dictionary = wizard.document().source_observations()
+	check("worker derives source declarations",not observations.is_empty() and observations.observations.size() == 2)
+	var report: Control = wizard.find_child("SourceDeclarations",true,false)
+	var toggle: Button = wizard.find_child("InspectSourceDeclarations",true,false)
+	var details: Control = wizard.find_child("SourceDeclarationDetails",true,false)
+	check("declarations are available and initially collapsed",report.visible and not details.visible)
+	toggle.button_pressed = true
+	await _settle()
+	check("declarations expand on import page",details.visible)
 	wizard.document().name = "ClearView draft"
 	check("normalized source can be saved as a draft", wizard.call("_save_draft"))
 	var draft: String = wizard.document().draft_id
@@ -121,6 +132,7 @@ func _run() -> void:
 	wizard.call("_on_library_open","draft",draft)
 	await _wait(wizard)
 	check("saved converted source reopens", wizard.document().source() != null and wizard.document().source().sha256() == original)
+	check("source declarations survive draft save and worker reopen",wizard.document().source_observations() == observations)
 	var notes: VBoxContainer = wizard.find_child("ImportNotes",true,false)
 	check("ClearView provenance warning survives reopen", notes.get_child_count() >= 2)
 	# Hold adoption on the main thread so a fast worker cannot hide an edit/open race.
@@ -154,12 +166,49 @@ func _run() -> void:
 	wizard.set_process(true)
 	await _wait(wizard)
 	check("navigation alone does not prevent opening", wizard.document().name == "ClearView draft")
+	await _revision(wizard)
 	wizard.queue_free()
 	await _settle(6)
 	deadline = Time.get_ticks_msec() + 5000
 	while Creator.reap_abandoned_imports() > 0 and Time.get_ticks_msec() < deadline:
 		await process_frame
 	_finish()
+
+func _revision(wizard: Control) -> void:
+	var doc: RefCounted = wizard.document()
+	var template := Definition.template()
+	var values := {}
+	for entry: Dictionary in Authoring.FIELDS:
+		values[entry.path] = Authoring._lookup(template,entry.path.split("/"))
+	doc.apply_values(values,true)
+	doc.propose_inventory()
+	doc.set_axis("nose_axis","+x")
+	doc.set_axis("up_axis","+z")
+	doc.set_units("m")
+	doc.set_datum([0.0,0.0,0.0])
+	var compiled: Dictionary = doc.compile()
+	check("explicit trainer configuration compiles independently of declarations",compiled.ok)
+	if not compiled.ok:
+		printerr(compiled.diagnostics)
+		return
+	var context: Dictionary = doc.source_observations()
+	wizard.call("_on_publish_pressed")
+	check("versioned definition publishes through existing store",doc.published_revision == 1)
+	var store: RefCounted = wizard.get("_store")
+	var saved: Dictionary = store.load_aircraft(doc.aircraft_uuid())
+	check("saved revision retains versioned context",saved.ok and saved.value.definition.format == Definition.SOURCE_FORMAT and saved.value.definition.source_observations == context)
+	if not saved.ok:
+		return
+	wizard.call("_begin_open","aircraft",saved.value)
+	await _wait(wizard)
+	check("saved aircraft reopens with exact review context",wizard.document().published_revision == 1 and wizard.document().source_observations() == context)
+	var forged: Dictionary = saved.value.duplicate(true)
+	forged.definition.source_observations.parameters_sha256 = "0".repeat(64)
+	var before: Dictionary = wizard.document().snapshot()
+	wizard.call("_begin_open","aircraft",forged)
+	await _wait(wizard)
+	check("revision definition cannot disagree with restored source context",wizard.document().snapshot() == before)
+	check("failed source comparison restores import controls",not (wizard.get("_choose_button") as Button).disabled)
 
 func _finish() -> void:
 	_remove_test_tree(ProjectSettings.globalize_path(_directory))

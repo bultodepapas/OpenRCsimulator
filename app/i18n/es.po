@@ -12277,3 +12277,93 @@ msgstr "Modelo ClearView %s: %s"
 
 msgid "ClearView aircraft ZIP"
 msgstr "ZIP de avión ClearView"
+
+msgid "Left aileron, second part"
+msgstr "Alerón izquierdo, segunda pieza"
+
+msgid "Right aileron, second part"
+msgstr "Alerón derecho, segunda pieza"
+
+msgid "Rudder, second part"
+msgstr "Timón, segunda pieza"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "El marcador de coordenadas «%s» es ambiguo o no está admitido. Corrige su sistema XYZ de cuatro puntos antes de importarlo."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "Se ocultaron %s marcadores de coordenadas y se conservaron como evidencia del origen."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "Se prepararon %s propuestas de bisagras visuales. Selecciona sus grupos de pivote en Piezas móviles; X sigue el eje declarado. Confirma cada control y su dirección en la vista previa."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "Quedaron %s asignaciones de servo sin preparar. Revisa sus declaraciones de origen antes de vincular esas piezas."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Bisagra «%s»: proporciona un único sistema de coordenadas visual con nombre y un grupo visible de piezas separado."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Bisagra «%s»: usa un único servo de rotación incluido en la lista, con superficie, grupo visual y eje inequívocos."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Bisagra «%s»: separa las piezas ajenas o anidadas y aplica transformaciones rígidas a los nodos padre."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Bisagra «%s»: el cambio de jerarquía superó los límites de precisión o complejidad. Simplifica el modelo y centra de nuevo su origen."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Bisagra «%s»: se rechazó el modelo preparado. Se conservó su jerarquía estática original."
+
+msgid "Inspect source declarations"
+msgstr "Revisar declaraciones de origen"
+
+msgid "Source declarations are references, not measurements. They do not change the flight configuration."
+msgstr "Las declaraciones de origen son referencias, no mediciones. No modifican la configuración de vuelo."
+
+msgid "Parameter contents checked. ZIP membership is declared; physical values are unverified."
+msgstr "Contenido de parámetros comprobado. La pertenencia al ZIP es declarada; los valores físicos no están verificados."
+
+msgid "Unit documented for ClearView v5"
+msgstr "Unidad documentada para ClearView v5"
+
+msgid "Unit inferred; confirm independently"
+msgstr "Unidad inferida; confírmala de forma independiente"
+
+msgid "Unit or meaning unresolved"
+msgstr "Unidad o significado sin resolver"
+
+msgid "Repeated declaration; no value selected"
+msgstr "Declaración repetida; no se eligió ningún valor"
+
+msgid "Declaration shortened for display"
+msgstr "Declaración abreviada para mostrarla"
+
+msgid "Some declarations are omitted from this view. The original parameters are retained with the model."
+msgstr "Esta vista omite algunas declaraciones. Los parámetros originales se conservan con el modelo."
+
+msgid "Parameter file: %s"
+msgstr "Archivo de parámetros: %s"
+
+msgid "Parameter SHA-256: %s"
+msgstr "SHA-256 de parámetros: %s"
+
+msgid "%s · line %s"
+msgstr "%s · línea %s"
+
+msgid "Original parameter bytes are absent. Re-import the ZIP to review source declarations."
+msgstr "Faltan los parámetros originales. Importa de nuevo el ZIP para revisar las declaraciones de origen."
+
+msgid "The source declarations could not be checked. Re-import the ZIP."
+msgstr "No se pudieron comprobar las declaraciones de origen. Importa de nuevo el ZIP."
+
+msgid "The original parameters exceed the converted model's metadata limit. Source declarations are unavailable for this model."
+msgstr "Los parámetros originales superan el límite de metadatos del modelo convertido. Las declaraciones de origen no están disponibles para este modelo."
+
+msgid "The saved source declarations do not match this model. Re-import the ZIP."
+msgstr "Las declaraciones guardadas no coinciden con este modelo. Importa de nuevo el ZIP."
+
+msgid "The compiled definition changed. Review the aircraft and save again."
+msgstr "La definición compilada cambió. Revisa el avión y vuelve a guardarlo."
+
+msgid "Source observations require the versioned definition format."
+msgstr "Las observaciones de origen requieren el formato de definición versionado."

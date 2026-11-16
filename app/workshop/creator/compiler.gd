@@ -64,18 +64,22 @@ static func compile_candidate(definition: Dictionary) -> Dictionary:
 	if not checked.ok:
 		return R.fail_all(checked.diagnostics)
 	var normal: Dictionary = checked.value
+	# Review metadata changes definition identity, never the canonical physical v1 inputs/bytes.
+	var physical: Dictionary = normal.duplicate(true)
+	physical.erase("source_observations")
+	physical.format = Definition.FORMAT
 	var encoded_definition: Dictionary = CreatorBytes.encode(normal)
 	if not encoded_definition.ok:
 		return R.fail_all(encoded_definition.diagnostics)
-	var study := _study(normal)
-	var domain := _domain(study, normal)
+	var study := _study(physical)
+	var domain := _domain(study, physical)
 	if not study.get("complete", false):
 		# A valid definition whose geometry no record can describe (a tail ahead of the wing).
 		if domain.is_empty():
 			domain.append(R.diagnostic(R.BUILD_INVALID, "The aircraft cannot be described by this package.", "", Definition.STEP_REVIEW))
 		return R.fail_all(domain)
 	var aircraft := Definition.aircraft_id(str(normal["aircraft_uuid"]))
-	var written: Dictionary = CreatorBytes.encode(_record(normal, study, aircraft))
+	var written: Dictionary = CreatorBytes.encode(_record(physical, study, aircraft))
 	if not written.ok:
 		return R.fail_all(written.diagnostics)
 	var bytes: PackedByteArray = written.value.bytes
@@ -95,6 +99,10 @@ static func compile_candidate(definition: Dictionary) -> Dictionary:
 	read_out["cg_m"] = Array(loaded.model.cg_le as PackedFloat64Array)
 	read_out["inertia_kg_m2"] = Array(loaded.model.inertia as PackedFloat64Array)
 	read_out["qualification"] = Packages.QUALIFICATION
+	if normal.has("source_observations"):
+		read_out["source_observations"] = normal.source_observations.duplicate(true)
+		read_out["source_observations_sha256"] = Definition.Observations.digest(normal.source_observations)
+		read_out["source_observations_validation"] = "structure_only"
 	read_out["loader_warnings"] = Array(loaded.get("warnings", PackedStringArray()))
 	read_out["identities"] = {
 		"aircraft_id": aircraft,

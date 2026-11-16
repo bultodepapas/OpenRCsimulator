@@ -215,7 +215,7 @@ func _loader_seam() -> void:
 			and from_file.input_identity == from_bytes.input_identity
 			and var_to_bytes(from_file.model) == var_to_bytes(from_bytes.model)
 			and from_file.get("wheel_profile_identity") == from_bytes.get("wheel_profile_identity")
-			and from_file.warnings == from_bytes.warnings)
+			and from_file.warnings == from_bytes.warnings, str(from_file.get("errors", [])) + " / " + str(from_bytes.get("errors", [])))
 	var broken: Dictionary = RecordLoader.load_bytes("{".to_utf8_buffer(), "label")
 	check("load_bytes names its label in a parse error", not broken.ok and broken.model.is_empty()
 		and str(broken.errors[0]).begins_with("label: JSON error at line") and not broken.has("input_identity"))
@@ -637,7 +637,7 @@ func _refusals() -> void:
 		["tip wider than root", func(d: Dictionary) -> void: d["wing"]["tip_chord"] = 0.4, R.FIELD_INVALID, "wing/tip_chord"],
 		["tail off the centreline", func(d: Dictionary) -> void: d["horizontal_tail"]["position"] = [0.7, 0.1, 0.0], R.FIELD_INVALID, "horizontal_tail/position"],
 		["nose behind the datum", func(d: Dictionary) -> void: d["fuselage"]["nose_x"] = 0.1, R.FIELD_INVALID, "fuselage/nose_x"],
-		["wrong format", func(d: Dictionary) -> void: d["format"] = "openrc-creator-definition v2", R.FIELD_INVALID, "format"],
+		["wrong format", func(d: Dictionary) -> void: d["format"] = "openrc-creator-definition v999", R.FIELD_INVALID, "format"],
 		["upper-case uuid", func(d: Dictionary) -> void: d["aircraft_uuid"] = "00000000-0000-4000-8000-00000000000A", R.FIELD_INVALID, "aircraft_uuid"],
 		["unknown airframe package", func(d: Dictionary) -> void: d["airframe_package"] = "delta-wing-v1", R.DEPENDENCY_MISSING, "airframe_package"],
 		["unknown power package", func(d: Dictionary) -> void: d["power_package"] = "glow-46-v1", R.DEPENDENCY_MISSING, "power_package"],

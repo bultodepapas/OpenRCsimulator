@@ -15,6 +15,7 @@ const HORIZONTAL_TAIL := 1
 const FUSELAGE := 2
 const VERTICAL_TAIL := 3
 const AILERON := 4
+const COWL_LIP := 5 # plain body colour on the rounded cooling-opening lips
 
 const SHADER_CODE := """
 shader_type spatial;

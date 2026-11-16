@@ -12652,3 +12652,93 @@ msgstr "已忽略 JPEG 注释。"
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "已忽略另外 %s 个旧式空文件夹的声明大小。"
+
+msgid "Left aileron, second part"
+msgstr "左副翼，第二部件"
+
+msgid "Right aileron, second part"
+msgstr "右副翼，第二部件"
+
+msgid "Rudder, second part"
+msgstr "方向舵，第二部件"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "坐标标记“%s”不明确或不受支持。请在导入前修正其四点 XYZ 坐标系。"
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "已隐藏 %s 个坐标标记，并将其保留为源数据记录。"
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "已准备 %s 个显示用铰链候选。请在“活动部件”中选择其枢轴组；X 遵循声明的轴。请在预览中确认各操纵功能和方向。"
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "有 %s 个舵机映射未准备。请在绑定这些部件前检查其源声明。"
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "铰链“%s”：请提供一个命名的显示坐标系和一个独立的可见部件组。"
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "铰链“%s”：请使用一个已列出的旋转舵机，并明确指定翼面、显示部件组和轴。"
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "铰链“%s”：请分离无关或嵌套的部件，并为父节点应用刚体变换。"
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "铰链“%s”：更改父节点超出了精度或层级限制。请简化源模型并重新居中。"
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "铰链“%s”：准备的模型被拒绝。已保留其原始静态层级。"
+
+msgid "Inspect source declarations"
+msgstr "查看源声明"
+
+msgid "Source declarations are references, not measurements. They do not change the flight configuration."
+msgstr "源声明仅供参考，并非测量结果。它们不会更改飞行配置。"
+
+msgid "Parameter contents checked. ZIP membership is declared; physical values are unverified."
+msgstr "参数内容已核对。所属 ZIP 仅由声明给出，物理值尚未验证。"
+
+msgid "Unit documented for ClearView v5"
+msgstr "ClearView v5 文档中注明的单位"
+
+msgid "Unit inferred; confirm independently"
+msgstr "单位为推断结果，请独立确认"
+
+msgid "Unit or meaning unresolved"
+msgstr "单位或含义尚未确定"
+
+msgid "Repeated declaration; no value selected"
+msgstr "声明重复，未选择任何值"
+
+msgid "Declaration shortened for display"
+msgstr "声明已缩短以便显示"
+
+msgid "Some declarations are omitted from this view. The original parameters are retained with the model."
+msgstr "此视图省略了部分声明。原始参数随模型保留。"
+
+msgid "Parameter file: %s"
+msgstr "参数文件：%s"
+
+msgid "Parameter SHA-256: %s"
+msgstr "参数 SHA-256：%s"
+
+msgid "%s · line %s"
+msgstr "%s · 第 %s 行"
+
+msgid "Original parameter bytes are absent. Re-import the ZIP to review source declarations."
+msgstr "缺少原始参数。请重新导入 ZIP 以查看源声明。"
+
+msgid "The source declarations could not be checked. Re-import the ZIP."
+msgstr "无法核对源声明。请重新导入 ZIP。"
+
+msgid "The original parameters exceed the converted model's metadata limit. Source declarations are unavailable for this model."
+msgstr "原始参数超过转换模型的元数据上限。此模型无法提供源声明。"
+
+msgid "The saved source declarations do not match this model. Re-import the ZIP."
+msgstr "保存的源声明与此模型不符。请重新导入 ZIP。"
+
+msgid "The compiled definition changed. Review the aircraft and save again."
+msgstr "编译后的定义已更改。请检查飞机并重新保存。"
+
+msgid "Source observations require the versioned definition format."
+msgstr "源观测信息需要带版本的定义格式。"

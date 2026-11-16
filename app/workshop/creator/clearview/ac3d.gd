@@ -121,7 +121,7 @@ func _object(header: Array[String], parent: int, depth: int) -> int:
 	var index := _nodes.size()
 	var node := {name = "Object %d" % index, type = header[1], parent = parent, children = [], loc = [0.0,0.0,0.0],
 		rot = [1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0], texture = "", texrep = [1.0,1.0], texoff = [0.0,0.0],
-		crease = 45.0, vertices = [], surfaces = []}
+		crease = 45.0, vertices = [], surfaces = [], has_data = false}
 	_nodes.append(node)
 	var seen := {}
 	while _at < _bytes.size() and _error.is_empty():
@@ -156,6 +156,7 @@ func _object(header: Array[String], parent: int, depth: int) -> int:
 					if node.crease < 0.0 or node.crease > 180.0:
 						_fail("An AC3D crease angle is outside the supported range.")
 			"data":
+				node.has_data = true
 				var count := _count(t, 65536)
 				if _at + count > _bytes.size():
 					_fail("An AC3D object data block is truncated.")
