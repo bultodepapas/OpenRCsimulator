@@ -14,6 +14,10 @@ const Weather := preload("res://physics/wind_config.gd")
 const WeatherField := preload("res://physics/wind_field.gd")
 const Log := preload("res://sim/flight_log.gd")
 const Reader := preload("res://tools/flight_log_cli.gd")
+class TemporalSession:
+	extends "res://sim/flight_session.gd"
+	func wind_at(time_s: float, _state: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
+		return PackedFloat64Array([time_s,0.0,0.0])
 var checks := 0
 var failures := 0
 
@@ -179,7 +183,7 @@ func _initialize() -> void:
 		check("new law refuses implicit/native backend",not refused._flight_ready() and refused.checkpoint().is_empty())
 		refused.free()
 	var flight:=session(selected,"gdscript_reference")
-	check("explicit new law installs complete model",flight._flight_ready() and flight.sim.model.callback_protocol==Model.PROTOCOL_JOINT_INTERVAL and flight.sim.continuous.size()==4)
+	check("explicit new law installs complete model",flight._flight_ready() and flight.sim.model.callback_protocol==Model.PROTOCOL_JOINT_INTERVAL_LOCAL and flight.sim.continuous.size()==4)
 	if not flight._flight_ready():
 		flight.free()
 		legacy.free()
@@ -227,15 +231,24 @@ func _initialize() -> void:
 	flight.sim.step()
 	restored.sim.step()
 	check("restored new-law continuation is exact",flight.sim.fault_reason.is_empty() and restored.sim.fault_reason.is_empty() and frame(flight)==frame(restored))
-	check("trace declares actual law/protocol",flight.trace_meta().servo_integration_law==Law.LAW and flight.trace_meta().servo_interval_protocol==Model.PROTOCOL_JOINT_INTERVAL)
+	check("trace declares actual law/protocol",flight.trace_meta().servo_integration_law==Law.LAW and flight.trace_meta().servo_interval_protocol==Model.PROTOCOL_JOINT_INTERVAL_LOCAL)
 	replay_check(restored)
 	var tiny:=session(selected,"gdscript_reference")
 	for _i in 240: tiny.sim.step()
 	var tiny_frame:=frame(tiny)
 	tiny.sim.inputs[0]=tiny.sim.aux[1]+1e-15
+	var tiny_target: float=tiny.sim.inputs[0]
 	tiny.sim.step()
-	check("unresolvable real demand change fails with bounded diagnostic",not tiny.sim.fault_reason.is_empty() and tiny.sim.fault_reason.contains("servo integration:") and frame(tiny)==tiny_frame)
+	check("sub-ULP absolute arrival advances on the local clock",tiny.sim.fault_reason.is_empty() and frame(tiny)!=tiny_frame and tiny.sim.aux[1]==tiny_target)
 	tiny.free()
+	var temporal:=TemporalSession.new()
+	temporal.setup_stage_backend("gdscript_reference")
+	check("time-dependent derived providers are outside this domain",not temporal.ServoFlight.admission(temporal,selected.model).ok)
+	temporal.free()
+	var changed_provider:=session(selected,"gdscript_reference")
+	changed_provider.environment.turbulence=func(at: float) -> PackedFloat64Array:return PackedFloat64Array([at,0.0,0.0])
+	check("time-dependent substituted provider refuses before flight",not changed_provider._flight_ready())
+	changed_provider.free()
 	var removed:=session(selected,"gdscript_reference")
 	var removed_frame:=frame(removed)
 	removed.aircraft.model.controls.erase("servo_integration")

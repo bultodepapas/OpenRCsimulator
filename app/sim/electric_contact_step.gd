@@ -57,7 +57,8 @@ static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,
 		return {ok=false,message="local partition requires a zero origin and one owning partition"}
 	if extra.is_empty():
 		if local_clock:
-			return BatteryStep.advance(combined,at,dt,derivative,first,rpm_index,charge_index,project,true)
+			var local_derivative := func(values: PackedFloat64Array,phase: float) -> Variant:return derivative.call(values,phase,0.0)
+			return BatteryStep.advance(combined,at,dt,local_derivative,first,rpm_index,charge_index,project,true)
 		return advance(combined,at,dt,derivative,first,rpm_index,charge_index,project,pieces)
 	if pieces<1 or pieces>MAX_PIECES or extra.size()>3 or not is_finite(at) or not is_finite(dt) \
 			or dt<=0.0 or not is_finite(at+dt) or at+dt<=at:
@@ -87,7 +88,7 @@ static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,
 	# No epsilon merging: distinct offsets must produce distinct absolute stage boundaries.
 	for index: int in offsets.size()-1:
 		if local_clock:
-			if not EventStep.stage_clock_resolved(offsets[index],offsets[index+1]-offsets[index]) \
+			if not EventStep.stage_clock_resolved(0.0,offsets[index+1]-offsets[index]) \
 				or offsets[index]+(offsets[index+1]-offsets[index]) != offsets[index+1]:
 				return {ok=false,message="partition stages collapse on the local clock"}
 			continue
@@ -103,13 +104,24 @@ static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,
 	for index: int in offsets.size()-1:
 		var begin: float = offsets[index]
 		var end: float = offsets[index+1]
-		var result := BatteryStep.advance(state,at+begin,end-begin,derivative,
+		var piece_derivative: Callable = derivative
+		if local_clock:
+			piece_derivative = func(values: PackedFloat64Array,phase: float) -> Variant:return derivative.call(values,phase,begin)
+		var result := BatteryStep.advance(state,0.0 if local_clock else at+begin,end-begin,piece_derivative,
 			first if index==0 else PackedFloat64Array(),rpm_index,charge_index,project,local_clock)
 		if not result.get("ok",false) or not result.get("state") is PackedFloat64Array \
 				or not result.get("events") is Array:
 			return {ok=false,message="explicit finite-battery piece failed"}
 		var event_index := 0
 		for event: Variant in result.events:
+			if local_clock and event is Dictionary and typeof(event.get("time_s")) in [TYPE_FLOAT,TYPE_INT]:
+				var phase: float = event.time_s
+				var local_at: float = begin + phase
+				if phase < 0.0 or phase > end-begin or (phase>0.0 and local_at<=begin) \
+					or (phase<end-begin and local_at>=end):
+					return {ok=false,message="piece event phase cannot be represented on the tick clock"}
+				event = event.duplicate(true)
+				event.time_s = local_at
 			if not event is Dictionary or typeof(event.get("type"))!=TYPE_STRING \
 					or typeof(event.get("time_s")) not in [TYPE_FLOAT,TYPE_INT] \
 					or not is_finite(float(event.time_s)) or float(event.time_s)<at+begin-EVENT_WINDOW_SLACK_S \

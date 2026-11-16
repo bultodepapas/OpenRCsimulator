@@ -12,7 +12,7 @@ const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
 ## Local identities keep this reader rebindable to historical solver sources.
 const SERVO_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v15"
 const SERVO_LAW := "normalized-slew-arrivals-v1"
-const SERVO_PROTOCOL := "joint-interval-v1"
+const SERVO_PROTOCOL := "joint-interval-local-v1"
 const SERVO_PHYSICS_FORMAT := "openrc-flight-checkpoint v6"
 const SERVO_SIMULATION_FORMAT := "openrc-simulation-checkpoint v2"
 var options := {}

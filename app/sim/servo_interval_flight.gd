@@ -29,6 +29,11 @@ static func admission(session: Node, model: Dictionary) -> Dictionary:
 	# the generic protocol for future providers that need the full clock.
 	if session.get_script().resource_path != "res://sim/flight_session.gd":
 		return _error("servo law v1 requires the base reference atmosphere provider")
+	var environment: RefCounted = session.get("environment")
+	if environment.get_script().resource_path != "res://sim/environment.gd" \
+		or environment.weather.get_script().resource_path != "res://physics/wind_field.gd" \
+		or environment.turbulence != Callable(session, "_turbulence_noise"):
+		return _error("servo law v1 requires the unchanged base environment providers")
 	if model.controls.servo_integration != Law.LAW:
 		return _error("unsupported servo integration law")
 	var prop: Dictionary = model.get("propulsion", {})
@@ -89,11 +94,11 @@ static func installed(session: Node, model: Dictionary) -> bool:
 
 
 static func evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float,
-		context: Dictionary, session: Node) -> Dictionary:
+		context: Dictionary, piece_origin_s: float, session: Node) -> Dictionary:
 	if not admission(session, session.get("aircraft").model).ok or not installed(session, session.get("aircraft").model): return {}
-	var sampled := _sample(context, at, session.get("aircraft").model)
+	var sampled := _sample(context, at, session.get("aircraft").model, piece_origin_s)
 	if not sampled.ok: return {}
-	var absolute_at: float = context.time_s + at
+	var absolute_at: float = context.time_s + (piece_origin_s + at)
 	var result: Dictionary = session.call("_coupled_response", body, continuous, absolute_at, {}, true, {}, false, sampled.aux)
 	if not result.get("ok", false): return {}
 	var extra := PackedFloat64Array([result.rpm_rate])
@@ -119,6 +124,8 @@ static func advance(combined: PackedFloat64Array, at: float, dt: float, derivati
 		var local_at: float = event.time_s
 		var absolute_at: float = context.time_s + local_at
 		if local_at < 0.0 or local_at > dt or local_at < previous_local \
+			or (local_at>0.0 and absolute_at<=context.time_s) \
+			or (local_at<dt and absolute_at>=context.time_s+dt) \
 			or (local_at > previous_local and absolute_at <= previous_absolute):
 			return _failure("local event chronology cannot be represented on the public clock")
 		event.time_s = absolute_at
@@ -142,12 +149,12 @@ static func _checked_plan(context: Dictionary, model: Dictionary) -> Dictionary:
 	return plan
 
 
-static func _sample(context: Dictionary, at: float, model: Dictionary) -> Dictionary:
+static func _sample(context: Dictionary, at: float, model: Dictionary, piece_origin_s: float = 0.0) -> Dictionary:
 	var values: PackedFloat64Array = context.after_aux.duplicate()
 	if context.kind == "boundary": return {ok = true, aux = values}
 	var plan := _checked_plan(context, model)
 	if not plan.ok: return plan
-	var sample := Law.sample(plan, at)
+	var sample := Law.sample_split(plan, piece_origin_s, at)
 	if sample.size() != 3: return _error("servo stage time outside interval")
 	for index: int in 3: values[index + 1] = sample[index]
 	return {ok = true, aux = values}

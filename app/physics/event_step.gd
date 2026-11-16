@@ -143,7 +143,10 @@ static func _trial(s: PackedFloat64Array, t: float, h: float, f: Callable,
 
 
 static func stage_clock_resolved(at: float, dt: float) -> bool:
+	# Construct the exact power of two without parsing an extreme decimal exponent.
+	var minimum_normal: float = pow(2.0, -1022.0)
 	return is_finite(at) and is_finite(dt) and dt > 0.0 and is_finite(at + dt) \
+		and dt / 6.0 >= minimum_normal \
 		and at + dt / 2.0 > at and at + dt / 2.0 < at + dt
 
 

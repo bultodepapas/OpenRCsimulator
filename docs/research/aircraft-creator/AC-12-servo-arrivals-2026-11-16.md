@@ -14,9 +14,11 @@ stage sampler and partition planner. This is a rounded-arithmetic definition;
 it is not an exact-real arrival comparison. Numeric equality, including signed
 zero, preserves the original start bits. Reached endpoints store target bits.
 Distinct represented interior arrivals are never merged by an epsilon.
-An unrepresentable absolute-clock partition refuses the entire tick.
+An unrepresentable partition refuses the entire tick. The initially registered
+absolute-clock transport failed as recorded below; its replacement uses a separately
+identified local-clock protocol with unchanged servo and acceptance laws.
 
-The adapter installs the complete `joint-interval-v1` vehicle contract, with
+The current adapter installs the complete `joint-interval-local-v1` vehicle contract, with
 body13, inputs4, aux4/5, continuous shaft/charge/energy/heat4 and modes1.
 No servo trajectory survives the tick in hidden mutable session state.
 Checkpoint v15 pins the law, callback protocol and explicit layout. Ordinary
@@ -33,7 +35,9 @@ Native execution and unrestricted interactive qualification are not implied.
 
 ## Fixed campaign
 
-Campaign identity: `ac12-normalized-slew-arrivals-v1-20261116`.
+Initial campaign identity: `ac12-normalized-slew-arrivals-v1-20261116`.
+The separately registered local transport uses
+`ac12-normalized-slew-arrivals-local-v1-20261116` and reruns the entire same matrix.
 The new [driver](../../../research/aircraft-creator/ac12/servo_arrival_campaign.gd)
 uses exactly C01–C17 from the historical `campaign.gd`, each with its four
 unchanged tapes: pitch doublet, roll doublet, rudder kick and throttle step.
@@ -148,3 +152,38 @@ G05 numerical closure is only one dependency of the ClearView first-flight
 milestone. Source appearance, confirmed moving parts, provenance/rights,
 persistence, Home/restart, lifecycle and packaged desktop/1080p evidence retain
 their independent gates in the [import plan](../../plans/clearview-aircraft-import.md).
+
+## Absolute-clock result and local-clock follow-up
+
+Pilot `7983be2547604bf3b2dd41405bf5d405` completed C01/pitch-doublet at all three
+rates; the strict independent partial verifier accepted its nine retained artifacts
+and its full 1,441-row exact replay. This was one cell, not a campaign pass.
+
+The full attempt `c03da259f4b04e6282782023c52f14fa` stopped at C02/rudder-kick,
+tick 144 at 240 Hz. It retained six complete cells and one incomplete prefix.
+The last rudder endpoint is `0.5397401129356305`, one ULP below the commanded
+`0.5397401129356306`. At rate 5/s its remaining arrival is
+`2.2204460492503132e-17` s, which collapses when added to absolute time 0.6 s.
+The guard correctly refused publication. This is a failed measurement attempt,
+not a numerical pass. Its frozen input, native receipt, all produced artifacts
+and retained negative collection remain separate from future attempts.
+
+The local follow-up is declared before its first refinement flight. It changes
+the generic transport, not the rounded servo law, case geometry, tapes, metrics,
+floors or thresholds. `joint-interval-local-v1` supplies stage/policy offsets in
+`[0, dt]` and keeps the absolute origin in the same immutable context. Reset
+stages have offset zero. The absolute-clock v1 protocol keeps its semantics.
+Every RK trial, including rotor/battery root refinements, must have distinct
+represented start/midpoint/end and normal positive RK weights. Truly unresolved
+trials still refuse atomically; no epsilon cut merging or target snap is added.
+
+Time-dependent generic laws can consume origin and offset separately. Adding
+them into one float cannot preserve sub-ULP phase. The aircraft adapter therefore
+admits only the unchanged base session/environment/weather and turbulence provider
+under its calm/reference domain, where the accepted force laws are independent of
+absolute stage time. Substituted or derived providers are refused. Local event
+order is checked before conversion; distinct local events whose absolute ordering
+cannot be represented are refused, rather than relabelled simultaneous.
+
+The follow-up requires a fresh frozen source identity, strict independent verifier
+and all 68 fresh full baselines. Nothing from the failed prefix is reused as a pass.

@@ -58,3 +58,28 @@ static func sample(plan: Dictionary, elapsed: float) -> PackedFloat64Array:
 		values[index] = plan.target[index] if elapsed >= plan.arrivals[index] else \
 			Actuators.rate_limit(plan.start[index], plan.target[index], plan.rates[index], elapsed)
 	return values
+
+
+## A piece may be shorter than one ULP of its tick-local origin. Preserve its
+## phase with an error-free sum; every exactly represented query retains sample().
+## This extends the same ramp/hold to split clock queries without merging cuts.
+static func sample_split(plan: Dictionary, origin: float, phase: float) -> PackedFloat64Array:
+	if not is_finite(origin) or not is_finite(phase) or origin < 0.0 or phase < 0.0 \
+		or not plan.get("ok",false) or origin > plan.duration or phase > plan.duration-origin:
+		return PackedFloat64Array()
+	var high := origin + phase
+	var virtual_phase := high - origin
+	var low := (origin - (high - virtual_phase)) + (phase - virtual_phase)
+	if low == 0.0:
+		return sample(plan,high)
+	var values: PackedFloat64Array = plan.start.duplicate()
+	for index: int in values.size():
+		if plan.start[index] == plan.target[index]:continue
+		if high > plan.arrivals[index] or (high == plan.arrivals[index] and low >= 0.0):
+			values[index]=plan.target[index]
+		else:
+			var direction: float=1.0 if plan.target[index]>plan.start[index] else -1.0
+			var value: float=Actuators.rate_limit(plan.start[index],plan.target[index],plan.rates[index],high)
+			value += direction*plan.rates[index]*low
+			values[index]=minf(value,plan.target[index]) if direction>0.0 else maxf(value,plan.target[index])
+	return values

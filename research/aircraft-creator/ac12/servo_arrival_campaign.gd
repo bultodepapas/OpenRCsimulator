@@ -3,7 +3,7 @@ extends "refinement_audit.gd"
 ## Registration: docs/research/aircraft-creator/AC-12-servo-arrivals-2026-11-16.md.
 const ServoLaw := preload("res://physics/slew_trajectory.gd")
 const Vehicle := preload("res://sim/vehicle_model.gd")
-const CAMPAIGN_ID := "ac12-normalized-slew-arrivals-v1-20261116"
+const CAMPAIGN_ID := "ac12-normalized-slew-arrivals-local-v1-20261116"
 
 
 func registered_cells() -> Array:
@@ -27,7 +27,7 @@ func candidate_is_admitted(candidate: RefCounted,definition: Dictionary) -> bool
 
 
 func session_is_admitted(session: Node,_candidate: RefCounted) -> bool:
-	if not session.servo_reference_selected() or session.sim.model.callback_protocol!=Vehicle.PROTOCOL_JOINT_INTERVAL \
+	if not session.servo_reference_selected() or session.sim.model.callback_protocol!=Vehicle.PROTOCOL_JOINT_INTERVAL_LOCAL \
 		or session.sim.model.identity.get("servo_integration")!=ServoLaw.LAW:
 		return false
 	var header := {metadata=session.trace_meta(),checkpoint=session.checkpoint(),aircraft=session.aircraft,
@@ -42,7 +42,7 @@ func baseline_replay_is_admitted(report: Dictionary) -> bool:
 	if not group is Dictionary or group.get("checkpoint_migration")!="none" \
 		or not group.get("recorded") is Dictionary or group.get("recorded")!=group.get("replay"):
 		return false
-	return group.recorded.get("law")==ServoLaw.LAW and group.recorded.get("protocol")==Vehicle.PROTOCOL_JOINT_INTERVAL
+	return group.recorded.get("law")==ServoLaw.LAW and group.recorded.get("protocol")==Vehicle.PROTOCOL_JOINT_INTERVAL_LOCAL
 
 
 func _source_context() -> Dictionary:
@@ -52,5 +52,5 @@ func _source_context() -> Dictionary:
 	value.sources["servo_arrival_campaign.gd"] = FileAccess.get_sha256(_folder().path_join("servo_arrival_campaign.gd"))
 	value.campaign_id = CAMPAIGN_ID
 	value.servo_integration_law = ServoLaw.LAW
-	value.servo_interval_protocol = Vehicle.PROTOCOL_JOINT_INTERVAL
+	value.servo_interval_protocol = Vehicle.PROTOCOL_JOINT_INTERVAL_LOCAL
 	return value

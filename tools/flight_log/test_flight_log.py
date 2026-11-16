@@ -1074,7 +1074,7 @@ class FlightLogCommandTests(unittest.TestCase):
 class ServoReplayReportTests(unittest.TestCase):
     def report(self) -> dict[str, object]:
         declaration = {
-            "law": "normalized-slew-arrivals-v1", "protocol": "joint-interval-v1",
+            "law": "normalized-slew-arrivals-v1", "protocol": "joint-interval-local-v1",
             "layout": "normalized-slew-arrivals-v1;body13;aux4;shaft-charge-energy-heat;modes1",
             "checkpoint_format": "openrc-flight-checkpoint v15",
             "physics_format": "openrc-flight-checkpoint v6",

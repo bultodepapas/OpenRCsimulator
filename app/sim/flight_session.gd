@@ -5929,7 +5929,7 @@ func trace_meta() -> Dictionary:
 		metadata.stage_backend = backend
 	if ServoFlight.selected(model):
 		metadata.servo_integration_law = ServoFlight.Law.LAW
-		metadata.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL
+		metadata.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL
 		metadata.servo_interval_layout = sim.model.state_layout_identity
 		metadata.state_timing = "accepted body/continuous/servo endpoints at tick k; immutable before/after servo interval sampled at RK stages"
 		metadata.loads = "k1 at previous body/continuous endpoint and previous actual servo; current input target held through the interval"
@@ -6065,7 +6065,7 @@ func checkpoint() -> Dictionary:
 		boundary.servo_physics_format = boundary.format
 		boundary.format = ServoFlight.CHECKPOINT_FORMAT
 		boundary.servo_integration_law = ServoFlight.Law.LAW
-		boundary.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL
+		boundary.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL
 		boundary.servo_interval_layout = sim.model.state_layout_identity
 	return boundary
 
@@ -6091,7 +6091,7 @@ func _configuration_for_weather(field: WeatherField, mix_owner := "") -> String:
 	config_hash.start(HashingContext.HASH_SHA256)
 	var parts: Array = [aircraft.model, ground_surfaces]
 	if ServoFlight.selected(aircraft.model):
-		parts.append(ServoFlight.Law.LAW + "; " + VehicleModel.PROTOCOL_JOINT_INTERVAL)
+		parts.append(ServoFlight.Law.LAW + "; " + VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL)
 	var backend := stage_backend_identity()
 	if backend.backend == NativeStage.BACKEND_NATIVE:
 		parts.append(backend)
@@ -6208,7 +6208,7 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 				return false
 		if (not servo_selected or not ServoFlight.admission(self, aircraft.model).ok
 			or candidate.get("servo_integration_law") != ServoFlight.Law.LAW
-			or candidate.get("servo_interval_protocol") != VehicleModel.PROTOCOL_JOINT_INTERVAL
+			or candidate.get("servo_interval_protocol") != VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL
 			or candidate.get("servo_interval_layout") != sim.model.state_layout_identity
 			or candidate.get("servo_physics_format") != "openrc-flight-checkpoint v6"):
 			return false

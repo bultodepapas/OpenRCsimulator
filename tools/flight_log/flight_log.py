@@ -1049,7 +1049,7 @@ def _check_servo_report(document: dict[str, Any]) -> None:
         raise FlightLogError("servo replay requires the same law without checkpoint migration")
     declaration = group["recorded"]
     expected = {
-        "law": "normalized-slew-arrivals-v1", "protocol": "joint-interval-v1",
+        "law": "normalized-slew-arrivals-v1", "protocol": "joint-interval-local-v1",
         "checkpoint_format": "openrc-flight-checkpoint v15",
         "physics_format": "openrc-flight-checkpoint v6",
         "simulation_format": "openrc-simulation-checkpoint v2",

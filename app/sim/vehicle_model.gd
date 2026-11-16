@@ -135,6 +135,10 @@ const PROTOCOL_JOINT_INTERVAL := "joint-interval-v1"
 ## remains the absolute origin: sub-ULP providers retain origin/offset separately.
 ## Boundary stages receive offset 0. A policy owns subdivision and returns
 ## absolute event times. The absolute-clock protocol keeps its old interpretation.
+## Local stage_interval has a fifth argument, piece_origin_s. Its second clock
+## component is stage_time_s, measured from that origin within this tick.
+## derivative(state, piece_time_s, piece_origin_s=0) preserves both components;
+## adding them into one float can lose a small piece near another arrival.
 const PROTOCOL_JOINT_INTERVAL_LOCAL := "joint-interval-local-v1"
 var stage_interval: Callable = Callable()
 var step_policy_interval: Callable = Callable()

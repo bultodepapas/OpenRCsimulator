@@ -20,8 +20,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tools/flight_log")
 import flight_log
 
 LAW = "normalized-slew-arrivals-v1"
-PROTOCOL = "joint-interval-v1"
-CAMPAIGN = "ac12-normalized-slew-arrivals-v1-20261116"
+PROTOCOL = "joint-interval-local-v1"
+CAMPAIGN = "ac12-normalized-slew-arrivals-local-v1-20261116"
 LEGACY_MAP_SHA256 = "5ee4b31e617ba4fb35cefa41eed03a256fb9631e624717c9ff92cef3933a2f9a"
 CASE_MAP_SHA256 = "f1217baebde255a9b5d9516a1e70b9118ce048643a24639b7e0a73d3ce9edc86"
 SNAPSHOT_MANIFEST_SHA256 = "a3129c799c422501ce9649e503447c5e009cd3853482a4eb00f1cc7005ae57e3"

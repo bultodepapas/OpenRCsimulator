@@ -515,7 +515,7 @@ func step() -> void:
 				return _zero_derivative()
 			derivative.append_array(extra)
 		return derivative
-	var f := func(s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+	var f := func(s: PackedFloat64Array, stage_t: float, piece_origin_s: float = 0.0) -> PackedFloat64Array:
 		if stage_error.has("interval_policy_guard") and not _endpoint_guard_matches(stage_error.interval_policy_guard):
 			_endpoint_guard_unchanged(stage_error.interval_policy_guard)
 			stage_error.message = "interval policy mutated live state or model before a delegated stage"
@@ -527,7 +527,7 @@ func step() -> void:
 			return _zero_derivative()
 		var joint: Dictionary = {}
 		if not continuous.is_empty() and model.uses_joint_stage():
-			var candidate: Variant = _call_joint_stage(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t, sampled_context)
+			var candidate: Variant = _call_joint_stage(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t, sampled_context, piece_origin_s)
 			if not _joint_stage_is_valid(candidate):
 				stage_error.message = "RK joint stage evaluation is nonfinite or malformed"
 				return _zero_derivative()
@@ -1120,7 +1120,7 @@ static func _interval_context(before_aux: PackedFloat64Array, after_aux: PackedF
 		tick = at_tick, time_s = at_time, dt = duration}
 
 
-func _interval_context_valid(context: Dictionary, stage_t: float) -> bool:
+func _interval_context_valid(context: Dictionary, stage_t: float, piece_origin_s: float = 0.0) -> bool:
 	if context.size() != 9 or not context.has_all(["kind", "before_aux", "after_aux", "before_modes", "after_modes", "inputs", "tick", "time_s", "dt"]):
 		return false
 	if typeof(context.kind) != TYPE_STRING or context.kind not in ["interval", "boundary"] \
@@ -1134,7 +1134,7 @@ func _interval_context_valid(context: Dictionary, stage_t: float) -> bool:
 		if typeof(context[key]) != TYPE_PACKED_INT64_ARRAY or context[key].size() != model.modes_size:
 			return false
 	if context.kind == "boundary":
-		return context.dt == 0.0 and stage_t == (0.0 if _local_interval() else context.time_s) \
+		return context.dt == 0.0 and piece_origin_s == 0.0 and stage_t == (0.0 if _local_interval() else context.time_s) \
 			and _guard_values_equal(context.before_aux, context.after_aux) \
 			and _guard_values_equal(context.before_modes, context.after_modes)
 	var end: float = context.time_s + context.dt
@@ -1142,7 +1142,10 @@ func _interval_context_valid(context: Dictionary, stage_t: float) -> bool:
 		# Local queries have exact bounds; an absolute-clock epsilon must not
 		# swallow a short first piece. The owning policy supplies the offsets.
 		return context.dt > 0.0 and is_finite(end) and end > context.time_s \
-			and stage_t >= 0.0 and stage_t <= context.dt
+			and is_finite(piece_origin_s) and piece_origin_s >= 0.0 and piece_origin_s <= context.dt \
+			and stage_t >= 0.0 and stage_t <= context.dt - piece_origin_s
+	if piece_origin_s != 0.0:
+		return false
 	var roundoff: float = minf(EVENT_TIME_SLACK_S, 2.0 * 2.220446049250313e-16 * maxf(absf(context.time_s), absf(end)))
 	return context.dt > 0.0 and is_finite(end) and end > context.time_s \
 		and stage_t >= context.time_s - roundoff and stage_t <= end + roundoff
@@ -1203,10 +1206,12 @@ func _framed_sample(accepted_frame: Dictionary, t: float) -> Dictionary:
 ## Single dispatch point for the joint stage. Legacy models keep `stage(body, continuous, t)` exactly.
 ## A framed model receives a detached copy of the tick's sampled context. Mutating that copy, or reentering a
 ## kernel transition from the stage, refuses the evaluation: null is a malformed joint result to every caller.
-func _call_joint_stage(body: PackedFloat64Array, extra: PackedFloat64Array, stage_t: float, context: Dictionary) -> Variant:
+func _call_joint_stage(body: PackedFloat64Array, extra: PackedFloat64Array, stage_t: float, context: Dictionary, piece_origin_s: float = 0.0) -> Variant:
 	if _interval():
-		if not _interval_context_valid(context, stage_t):
+		if not _interval_context_valid(context, stage_t, piece_origin_s):
 			return null
+		if _local_interval():
+			return _call_interval_read_only(model.stage_interval, [body, extra, stage_t, context, piece_origin_s])
 		# Clamp only representational boundary roundoff, never expose extrapolated elapsed time.
 		var bounded_time: float = stage_t if _local_interval() else clampf(stage_t, context.time_s, context.time_s + context.dt)
 		return _call_interval_read_only(model.stage_interval, [body, extra, bounded_time, context])
