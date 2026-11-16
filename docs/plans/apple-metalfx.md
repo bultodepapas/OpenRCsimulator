@@ -107,13 +107,19 @@ in 0005; additive 0021 restores the unsigned API with checked wide inputs. The
 stage/lifecycle/replay checks. Its new locally signed ARM64 app is exported and
 independently retained, and passes all five actual release diagnostics, including
 ideal-battery production-trim reference/native sessions with equal fingerprints.
-Three alternating release CPU pairs are being measured separately. The optional
-0024 makes the same warm-cache PCK hash 4.894× faster; that call is not game FPS.
+Three alternating release CPU pairs retain equal fingerprints over 16,800 ticks
+each. The median input/simulation callback ratio is 1.505× (33.6% less callback
+time); complete headless sample windows save 12.2–14.3%. These are not rendered
+FPS or latency measurements. Optional 0024 makes the same warm-cache PCK hash
+4.894× faster; that call is not game FPS.
 
 An explicit packaged direct-flight observer and strict reducer are implemented.
 The revised observer passes native parsing and 30 clock/drawable/input-delivery
 controls, plus 18 reducer controls. It is a synthetic no-radio route; its new
-application source is not covered by the earlier `94d566a7` package. Actual new
+application source is not covered by the earlier `94d566a7` package. Its Main
+behavior pin is renewed through 19 passing official-engine native checks. The
+custom engine still needs explicit companion admission and its own qualification.
+Actual new
 export/flight, acquired 1080p output, GPU pacing, full Home/fleet/campaign and
 automatic-default gates remain open. The R3 ZIP still uses clean19/reference
 physics. These separate source and package identities are retained in the

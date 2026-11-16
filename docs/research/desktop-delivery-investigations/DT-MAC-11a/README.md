@@ -1626,6 +1626,62 @@ viewport/SDK qualification. The universal guide gate stays closed; raster-comman
 provenance, geometric-versus-smooth shading and custom-bound/depth counterexamples
 remain explicit review findings. Draft engine patches are not part of this app.
 
+## Actual release CPU pairs and observer admission (2026-11-15)
+
+The locally signed source `94d566a7` / 1–19+21+24 package passes all five
+release diagnostics: 97 stage checks, 343 lifecycle checks, 211 replay checks,
+and reference/native short sessions with explicit ideal battery and production
+trim. The executable is
+`46d72247991fe0a1feaac9437917cca7ea4d1471f05964f7cdcbcac865732063`;
+PCK `79c850aadfc3a67bd5085e32decec1895578418f4f3a3583b6fc3be641641bbc`.
+This is a separate development app; the old R3 ZIP remains unchanged.
+
+Three alternating reference/native CPU pairs run in that actual release app on
+ANGEL/M1 with AC and no competing compiler or Godot process. Each run has
+2,400 warmup and 14,400 sampled ticks, production 0.5-throttle trim and ideal
+battery. All six finish and share state fingerprint
+`e5d0acfb1ab13f3182d04a71f9bc117ba39ae25fa2140a4652c43bfdaa9b0665`.
+All 16,801 state boundaries and 33,601 domain checks pass per run; native runs
+record 67,200 stage calls and 16,800 contexts. Raw arrays are retained and their
+means independently recomputed.
+
+| Pair | Reference callback µs/tick | Native callback µs/tick | Reference complete window µs/tick | Native complete window µs/tick |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 437.416250 | 290.594722 | 442.967917 | 380.142292 |
+| 2 | 445.042847 | 295.638056 | 450.698333 | 386.327222 |
+| 3 | 437.329653 | 297.798194 | 442.864028 | 388.981528 |
+
+The median paired callback ratio is 1.505245×, saving 33.5656% callback time.
+That callback excludes fingerprint/domain observers. Complete headless sample
+windows include those observers and save 12.17–14.28% (median ratio 1.165269×).
+Neither measurement establishes whole-game CPU, rendered FPS, stutter or latency.
+Phase 21 retains 78 payloads, 381,882 compressed bytes, archive SHA-256
+`87ee80fe146f723129f917f6be811bd24e8c2bcd09284a1cf74e42e6b6a2cf89`.
+All are independently rehashed, including the revised 30-check observer fixture.
+
+Adding the packaged-flight observer changes Main without changing the simulation
+solver fingerprint. CI correctly refuses its stale companion behavior pin. A
+fresh candidate at source `1e53d2d0` updates only that pin and the profile's manifest
+digest through the existing qualification helper. All 19 official-engine stages
+pass on M1, including profiles, manager, airspace, lifecycle, observation, timing,
+presentation, session, restore, frame-generation policy and strict shell. The
+first attempt failed because two tracked sibling authoring JSON files were absent
+from the isolated test environment; the retained retry restores their exact bytes.
+No failures are suppressed. Checked reports and before/after bounded inputs agree.
+The qualified manifest is
+`78057d5e178bbf6268fda791a1ddfb5dd6355574ead5c7f7f889b0f2d7b462a3`;
+profile `34a74eed643d18864d7ff94b30ba33c0545e6ae26b05f011851c95b579d1bc56`.
+
+Phase 22 retains 203 payloads, 128,120,424 compressed bytes, archive SHA-256
+`fe48184b2c1ff2ba4531d0fa64f8a99b0a0a70ffa5dd3cdac336148c19c040c4`.
+All payloads and the 19 checked-stage outcomes independently verify. This proves
+official-engine behavior admission only: the current runtime comparison still
+refuses the custom engine. A narrow explicit admission and checks on both engines
+remain necessary. The source-1e53 native qualification coordinator was stopped
+with return code -15 after this stale pin was found; its partial work is retained
+and is not counted as a new 650-check result. A fresh final source qualification,
+export and active-flight 1080p/pacing evidence remain open before default promotion.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is
