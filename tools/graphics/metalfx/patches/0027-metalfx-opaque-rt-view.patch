@@ -1,0 +1,3241 @@
+diff --git a/drivers/metal/metal3_objects.cpp b/drivers/metal/metal3_objects.cpp
+--- a/drivers/metal/metal3_objects.cpp
++++ b/drivers/metal/metal3_objects.cpp
+@@ -149,6 +149,15 @@
+ }
+ 
+ void MDCommandBuffer::begin_label(const char *p_label_name, const Color &p_color) {
++	const bool tracked_compute = type == MDCommandBufferStateType::Compute && viewport_dispatch_ledger &&
++			viewport_dispatch_ledger->tracking(reinterpret_cast<uint64_t>(compute.pipeline));
++	if ((type == MDCommandBufferStateType::Render && !render.encoder && viewport_draw_ledger && viewport_draw_ledger->active()) ||
++			(tracked_compute && !compute.encoder)) {
++		if (type == MDCommandBufferStateType::Render) { viewport_draw_ledger->note(false); }
++		else if (type == MDCommandBufferStateType::Compute) { viewport_dispatch_ledger->note(reinterpret_cast<uint64_t>(compute.pipeline), false); }
++		label_stack.push_back({ type, true });
++		return;
++	}
+ 	NS::SharedPtr<NS::String> s = NS::TransferPtr(NS::String::alloc()->init(p_label_name, NS::UTF8StringEncoding));
+ 	switch (type) {
+ 		case MDCommandBufferStateType::None:
+@@ -230,6 +239,8 @@
+ void MDCommandBuffer::_begin() {
+ 	DEV_ASSERT(!commandBuffer && !state_begin);
+ 	state_begin = true;
++	if (viewport_dispatch_ledger) { viewport_dispatch_ledger->clear(); }
++	if (viewport_draw_ledger) { viewport_draw_ledger->clear(); }
+ 	binding_cache.clear();
+ 	_scratch.reset();
+ 	inline_render.reset();
+@@ -560,6 +571,7 @@
+ 				}
+ 				desc->setRenderTargetArrayLength(layerCnt);
+ 				MTL::RenderCommandEncoder *enc = get_new_render_encoder_with_descriptor(desc.get());
++				if (!enc && viewport_draw_ledger && viewport_draw_ledger->active()) { viewport_draw_ledger->note(false); return; }
+ 				enc->setLabel(MTLSTR("Clear Image"));
+ 				if (mipLvl + 1 == mipLvlEnd) {
+ 					_set_inline_render_encoder(enc);
+@@ -567,6 +579,7 @@
+ 					_fence_update(enc);
+ 					enc->endEncoding();
+ 				}
++				if (viewport_draw_ledger && viewport_draw_ledger->active()) { viewport_draw_ledger->note(true); }
+ 			} else {
+ 				for (uint32_t layer = layerStart; layer < layerEnd; layer++) {
+ 					if (is3D) {
+@@ -575,6 +588,7 @@
+ 						caDesc->setSlice(layer);
+ 					}
+ 					MTL::RenderCommandEncoder *enc = get_new_render_encoder_with_descriptor(desc.get());
++					if (!enc && viewport_draw_ledger && viewport_draw_ledger->active()) { viewport_draw_ledger->note(false); return; }
+ 					enc->setLabel(MTLSTR("Clear Image"));
+ 					if (mipLvl + 1 == mipLvlEnd && layer + 1 == layerEnd) {
+ 						_set_inline_render_encoder(enc);
+@@ -582,6 +596,7 @@
+ 						_fence_update(enc);
+ 						enc->endEncoding();
+ 					}
++					if (viewport_draw_ledger && viewport_draw_ledger->active()) { viewport_draw_ledger->note(true); }
+ 				}
+ 			}
+ 		}
+@@ -959,6 +974,10 @@
+ 
+ void MDCommandBuffer::render_clear_attachments(VectorView<RDD::AttachmentClear> p_attachment_clears, VectorView<Rect2i> p_rects) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Render);
++	if (viewport_draw_ledger && viewport_draw_ledger->active() && !render.encoder) {
++		viewport_draw_ledger->note(false);
++		return;
++	}
+ 
+ 	const MDSubpass &subpass = render.get_subpass();
+ 
+@@ -1392,6 +1411,10 @@
+ 		render.desc = desc;
+ 	} else {
+ 		render.encoder = NS::RetainPtr(command_buffer()->renderCommandEncoder(desc.get()));
++		if (!render.encoder && viewport_draw_ledger && viewport_draw_ledger->active()) {
++			viewport_draw_ledger->note(false);
++			return;
++		}
+ 		render.clear_arg_buffer_cache();
+ 		render.encoder_raster = MDRenderPipeline::RasterState();
+ 		_encode_residency(render.encoder.get());
+@@ -1403,6 +1426,31 @@
+ 		// With a new encoder, all state is dirty.
+ 		render.dirty.set_flag(RenderState::DIRTY_ALL);
+ 	}
++}
++
++static bool _metalfx_bound_sets_ready(const MDShader *p_shader, const LocalVector<MDUniformSet *> &p_sets, bool p_compute) {
++	if (!p_shader) { return false; }
++	for (uint32_t i = 0; i < (uint32_t)p_shader->sets.size(); ++i) {
++		const UniformSet &layout = p_shader->sets[i];
++		const MDUniformSet *set = i < p_sets.size() ? p_sets[i] : nullptr;
++		for (uint32_t j = 0; j < layout.uniforms.size(); ++j) {
++			const UniformInfo &info = layout.uniforms[j];
++			const bool active = p_compute ? info.active_stages.has_flag(RDD::SHADER_STAGE_COMPUTE_BIT) :
++					(info.active_stages.has_flag(RDD::SHADER_STAGE_VERTEX_BIT) || info.active_stages.has_flag(RDD::SHADER_STAGE_FRAGMENT_BIT));
++			const auto &idx = p_shader->uses_argument_buffers ? info.arg_buffer : info.slot;
++			if (!active || (idx.buffer == UINT32_MAX && idx.texture == UINT32_MAX && idx.sampler == UINT32_MAX)) { continue; }
++			if (!set || j >= (uint32_t)set->uniforms.size()) { return false; }
++			const RDD::BoundUniform &uniform = set->uniforms[j];
++			if (uniform.binding != info.binding || uniform.ids.is_empty()) { return false; }
++			for (const auto &id : uniform.ids) { if (!id.id) { return false; } }
++			if (info.dataType == MTL::DataTypeInstanceAccelerationStructure && uniform.type != RDD::UNIFORM_TYPE_ACCELERATION_STRUCTURE) { return false; }
++			if (p_shader->uses_argument_buffers) {
++				if (layout.dynamic_uniforms.is_empty()) { if (!set->arg_buffer.buffer.get()) { return false; } }
++				else if ((uint32_t)set->arg_buffer_data.size() < layout.buffer_size) { return false; }
++			}
++		}
++	}
++	return true;
+ }
+ 
+ void MDCommandBuffer::render_draw(uint32_t p_vertex_count,
+@@ -1410,6 +1458,15 @@
+ 		uint32_t p_base_vertex,
+ 		uint32_t p_first_instance) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Render);
++	const bool tracked = viewport_draw_ledger && viewport_draw_ledger->active();
++	if (tracked && (!render.encoder || !render.pipeline || !p_vertex_count || !p_instance_count)) {
++		viewport_draw_ledger->note(false);
++		return;
++	}
++	if (tracked && !_metalfx_bound_sets_ready(render.pipeline->shader, render.uniform_sets, false)) {
++		viewport_draw_ledger->note(false);
++		if (viewport_draw_ledger->optional_pass()) { return; }
++	}
+ 	ERR_FAIL_NULL_MSG(render.pipeline, "No pipeline set for render command buffer.");
+ 
+ 	_render_set_dirty_state();
+@@ -1423,6 +1480,7 @@
+ 
+ 	MTL::RenderCommandEncoder *enc = render.encoder.get();
+ 	enc->drawPrimitives(render.pipeline->raster_state.render_primitive, p_base_vertex, p_vertex_count, p_instance_count, p_first_instance);
++	if (tracked) { viewport_draw_ledger->note(true); }
+ }
+ 
+ void MDCommandBuffer::render_bind_vertex_buffers(uint32_t p_binding_count, const RDD::BufferID *p_buffers, const uint64_t *p_offsets, uint64_t p_dynamic_offsets) {
+@@ -1486,6 +1544,15 @@
+ 		int32_t p_vertex_offset,
+ 		uint32_t p_first_instance) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Render);
++	const bool tracked = viewport_draw_ledger && viewport_draw_ledger->active();
++	if (tracked && (!render.encoder || !render.pipeline || !render.index_buffer || !p_index_count || !p_instance_count)) {
++		viewport_draw_ledger->note(false);
++		return;
++	}
++	if (tracked && !_metalfx_bound_sets_ready(render.pipeline->shader, render.uniform_sets, false)) {
++		viewport_draw_ledger->note(false);
++		if (viewport_draw_ledger->optional_pass()) { return; }
++	}
+ 	ERR_FAIL_NULL_MSG(render.pipeline, "No pipeline set for render command buffer.");
+ 
+ 	_render_set_dirty_state();
+@@ -1501,10 +1568,15 @@
+ 	index_offset += p_first_index * (render.index_type == MTL::IndexTypeUInt16 ? sizeof(uint16_t) : sizeof(uint32_t));
+ 
+ 	enc->drawIndexedPrimitives(render.pipeline->raster_state.render_primitive, p_index_count, render.index_type, render.index_buffer, index_offset, p_instance_count, p_vertex_offset, p_first_instance);
++	if (tracked) { viewport_draw_ledger->note(true); }
+ }
+ 
+ void MDCommandBuffer::render_draw_indexed_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset, uint32_t p_draw_count, uint32_t p_stride) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Render);
++	if (viewport_draw_ledger && viewport_draw_ledger->active()) {
++		viewport_draw_ledger->note(false);
++		if (!render.encoder) { return; }
++	}
+ 	ERR_FAIL_NULL_MSG(render.pipeline, "No pipeline set for render command buffer.");
+ 
+ 	_render_set_dirty_state();
+@@ -1526,6 +1598,10 @@
+ 
+ void MDCommandBuffer::render_draw_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset, uint32_t p_draw_count, uint32_t p_stride) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Render);
++	if (viewport_draw_ledger && viewport_draw_ledger->active()) {
++		viewport_draw_ledger->note(false);
++		if (!render.encoder) { return; }
++	}
+ 	ERR_FAIL_NULL_MSG(render.pipeline, "No pipeline set for render command buffer.");
+ 
+ 	_render_set_dirty_state();
+@@ -1548,7 +1624,13 @@
+ void MDCommandBuffer::render_end_pass() {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Render);
+ 
+-	_pop_active_encoder_labels();
++	if (render.encoder) {
++		_pop_active_encoder_labels();
++	} else {
++		for (LabelStackEntry &entry : label_stack) {
++			if (entry.type == MDCommandBufferStateType::Render) { entry.stale = true; }
++		}
++	}
+ 	_fence_update(render.encoder.get());
+ 	render.end_encoding();
+ 	render.reset();
+@@ -1779,7 +1861,24 @@
+ 
+ void MDCommandBuffer::compute_dispatch(uint32_t p_x_groups, uint32_t p_y_groups, uint32_t p_z_groups) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Compute);
+-	ERR_FAIL_COND_MSG(!triangle_query_resources_ready(), "Metal triangle-query resources failed or were not built.");
++	const uint64_t pipeline_id = reinterpret_cast<uint64_t>(compute.pipeline);
++	const bool tracked = viewport_dispatch_ledger && viewport_dispatch_ledger->tracking(pipeline_id);
++	if (tracked && (!compute.pipeline || !_metalfx_bound_sets_ready(compute.pipeline->shader, compute.uniform_sets, true))) {
++		viewport_dispatch_ledger->note(pipeline_id, false);
++		return;
++	}
++	if (!triangle_query_resources_ready()) {
++		if (tracked) { viewport_dispatch_ledger->note(pipeline_id, false); }
++		ERR_FAIL_MSG("Metal triangle-query resources failed or were not built.");
++	}
++	if (tracked && !compute.encoder) {
++		MTL::CommandBuffer *native = command_buffer();
++		if (!native) { viewport_dispatch_ledger->note(pipeline_id, false); ERR_FAIL_MSG("Metal viewport producer command buffer unavailable."); }
++		compute.encoder = NS::RetainPtr(native->computeCommandEncoder(MTL::DispatchTypeConcurrent));
++		if (!compute.encoder) { viewport_dispatch_ledger->note(pipeline_id, false); ERR_FAIL_MSG("Metal viewport producer compute encoder unavailable."); }
++		_encode_residency(compute.encoder.get());
++		_fence_wait(compute.encoder.get());
++	}
+ 
+ 	_compute_set_dirty_state();
+ 
+@@ -1787,10 +1886,16 @@
+ 
+ 	MTL::ComputeCommandEncoder *enc = compute.encoder.get();
+ 	enc->dispatchThreadgroups(size, compute.pipeline->compute_state.local);
++	if (tracked) { viewport_dispatch_ledger->note(pipeline_id, true); }
+ }
+ 
+ void MDCommandBuffer::compute_dispatch_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset) {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Compute);
++	const uint64_t pipeline_id = reinterpret_cast<uint64_t>(compute.pipeline);
++	if (viewport_dispatch_ledger && viewport_dispatch_ledger->tracking(pipeline_id)) {
++		viewport_dispatch_ledger->note(pipeline_id, false);
++		ERR_FAIL_MSG("Indirect dispatch is not admitted for the Metal viewport producer.");
++	}
+ 	ERR_FAIL_COND_MSG(!triangle_query_resources_ready(), "Metal triangle-query resources failed or were not built.");
+ 
+ 	_compute_set_dirty_state();
+@@ -1837,7 +1942,13 @@
+ void MDCommandBuffer::_end_compute_dispatch() {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Compute);
+ 
+-	_pop_active_encoder_labels();
++	if (compute.encoder) {
++		_pop_active_encoder_labels();
++	} else {
++		for (LabelStackEntry &entry : label_stack) {
++			if (entry.type == MDCommandBufferStateType::Compute) { entry.stale = true; }
++		}
++	}
+ 	_fence_update(compute.encoder.get());
+ 	compute.end_encoding();
+ 	compute.reset();
+@@ -1866,9 +1977,15 @@
+ void MDCommandBuffer::_end_blit() {
+ 	DEV_ASSERT(type == MDCommandBufferStateType::Blit);
+ 
+-	_pop_active_encoder_labels();
+-	_fence_update(blit.encoder.get());
+-	blit.encoder->endEncoding();
++	if (blit.encoder) {
++		_pop_active_encoder_labels();
++		_fence_update(blit.encoder.get());
++		blit.encoder->endEncoding();
++	} else {
++		for (LabelStackEntry &entry : label_stack) {
++			if (entry.type == MDCommandBufferStateType::Blit) { entry.stale = true; }
++		}
++	}
+ 	blit.reset();
+ 	reset();
+ }
+diff --git a/drivers/metal/metal3_objects.h b/drivers/metal/metal3_objects.h
+--- a/drivers/metal/metal3_objects.h
++++ b/drivers/metal/metal3_objects.h
+@@ -53,10 +53,12 @@
+ #include "drivers/metal/metal_objects_shared.h"
+ #include "drivers/metal/rendering_device_driver_metal.h"
+ #include "servers/rendering/rendering_device_driver.h"
++#include "servers/rendering/storage/metalfx_viewport_callback.h"
+ 
+ #include <Metal/Metal.hpp>
+ 
+ #include <initializer_list>
++#include <memory>
+ #include <optional>
+ 
+ namespace MTL3 {
+@@ -317,6 +319,8 @@
+ #pragma mark - Common State
+ 
+ 	BindingCache binding_cache;
++	std::unique_ptr<MFXViewportCallback::DispatchLedger> viewport_dispatch_ledger;
++	std::unique_ptr<MFXViewportCallback::DrawLedger> viewport_draw_ledger;
+ 
+ #pragma mark - Argument Buffer Ring Allocator
+ 
+@@ -624,6 +628,20 @@
+ 	void compute_end_pass() override;
+ 	void compute_bind_uniform_sets(VectorView<RDD::UniformSetID> p_uniform_sets, RDD::ShaderID p_shader, uint32_t p_first_set_index, uint32_t p_set_count, uint32_t p_dynamic_offsets) override;
+ 	bool triangle_query_resources_ready() const;
++	bool metalfx_track_dispatch_begin(uint64_t p_pipeline) {
++		if (!viewport_dispatch_ledger) { viewport_dispatch_ledger = std::make_unique<MFXViewportCallback::DispatchLedger>(); }
++		return viewport_dispatch_ledger->begin(p_pipeline);
++	}
++	bool metalfx_track_dispatch_finish(uint64_t p_pipeline) {
++		return viewport_dispatch_ledger && viewport_dispatch_ledger->finish(p_pipeline);
++	}
++	bool metalfx_track_draw_begin(uint64_t p_token, uint32_t p_stage) {
++		if (!viewport_draw_ledger) { viewport_draw_ledger = std::make_unique<MFXViewportCallback::DrawLedger>(); }
++		return viewport_draw_ledger->begin(p_token, p_stage);
++	}
++	bool metalfx_track_draw_finish(uint64_t p_token, uint32_t p_expected) {
++		return viewport_draw_ledger && viewport_draw_ledger->finish(p_token, p_expected);
++	}
+ 	void compute_dispatch(uint32_t p_x_groups, uint32_t p_y_groups, uint32_t p_z_groups) override;
+ 	void compute_dispatch_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset) override;
+ 	void acceleration_structure_build(MDAccelerationStructure *p_acceleration_structure, MTL::Buffer *p_scratch_buffer) override;
+diff --git a/drivers/metal/openrc_immutable_argument_upload.h b/drivers/metal/openrc_immutable_argument_upload.h
+new file mode 100644
+--- /dev/null
++++ b/drivers/metal/openrc_immutable_argument_upload.h
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: MIT
++#pragma once
++
++#include <cstddef>
++#include <cstdint>
++#include <cstring>
++#include <utility>
++
++namespace OpenRCImmutableArguments {
++
++// Per-set requested bytes; excludes allocator/driver overhead and other sets.
++constexpr std::size_t MAX_BYTES = 1024 * 1024;
++
++inline bool eligible(bool p_triangle_query, bool p_tracked_mode, bool p_tracked_resource, bool p_unified, bool p_argument_buffers) {
++	return p_triangle_query && p_tracked_mode && p_tracked_resource && p_unified && p_argument_buffers;
++}
++
++inline bool slots_fit(std::size_t p_first, std::size_t p_count, std::size_t p_size) {
++	const std::size_t slots = p_size / sizeof(std::uint64_t);
++	return p_size % sizeof(std::uint64_t) == 0 && p_count != 0 && p_first < slots && p_count <= slots - p_first;
++}
++
++// Allocate an independent buffer and write once before publishing its owner.
++// It must never be rewritten while a command can reference it.
++template <typename Buffer, typename Allocate, typename Map, typename Release>
++bool create(Buffer &r_output, const void *p_data, std::size_t p_size, Allocate p_allocate, Map p_map, Release p_release) {
++	if (!p_data || p_size == 0 || p_size > MAX_BYTES) {
++		return false;
++	}
++	Buffer candidate = p_allocate(p_size);
++	void *destination = p_map(candidate);
++	if (!destination) {
++		p_release(candidate);
++		return false;
++	}
++	std::memcpy(destination, p_data, p_size);
++	r_output = std::move(candidate);
++	return true;
++}
++
++} // namespace OpenRCImmutableArguments
+diff --git a/drivers/metal/rendering_device_driver_metal.cpp b/drivers/metal/rendering_device_driver_metal.cpp
+--- a/drivers/metal/rendering_device_driver_metal.cpp
++++ b/drivers/metal/rendering_device_driver_metal.cpp
+@@ -57,6 +57,7 @@
+ #include "core/string/ustring.h"
+ #include "core/templates/hash_map.h"
+ #include "drivers/apple/foundation_helpers.h"
++#include "drivers/metal/openrc_immutable_argument_upload.h"
+ #include "drivers/metal/pixel_formats.h"
+ #include "drivers/metal/rendering_context_driver_metal.h"
+ #include "drivers/metal/rendering_shader_container_metal.h"
+@@ -1358,7 +1359,32 @@
+ /*********************/
+ 
+ RDD::UniformSetID RenderingDeviceDriverMetal::uniform_set_create(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index, int p_linear_pool_index) {
++	return _uniform_set_create_impl(p_uniforms, p_shader, p_set_index, p_linear_pool_index, false);
++}
++
++bool RenderingDeviceDriverMetal::metalfx_shared_uniform_sets_supported() const {
++#if defined(MACOS_ENABLED) && (defined(__arm64__) || defined(__aarch64__))
++	if (!device || !device_properties || !allocator) {
++		return false;
++	}
++	if (__builtin_available(macOS 10.15, *)) {
++		return OpenRCImmutableArguments::eligible(triangle_query_enabled, sync_mode == HazardTracking,
++				base_hazard_tracking == MTL::ResourceHazardTrackingModeTracked, device->hasUnifiedMemory(),
++				device_properties->features.argument_buffers_supported());
++	}
++#endif
++	return false;
++}
++
++RDD::UniformSetID RenderingDeviceDriverMetal::metalfx_shared_uniform_set_create(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index) {
++	return _uniform_set_create_impl(p_uniforms, p_shader, p_set_index, -1, true);
++}
++
++RDD::UniformSetID RenderingDeviceDriverMetal::_uniform_set_create_impl(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index, int p_linear_pool_index, bool p_metalfx_shared) {
+ 	//p_linear_pool_index = -1; // TODO:? Linear pools not implemented or not supported by API backend.
++	if (p_metalfx_shared && !metalfx_shared_uniform_sets_supported()) {
++		return UniformSetID();
++	}
+ 
+ 	MDShader *shader = (MDShader *)(p_shader.id);
+ 	ERR_FAIL_INDEX_V_MSG(p_set_index, shader->sets.size(), UniformSetID(), "Set index out of range");
+@@ -1366,15 +1392,85 @@
+ 	MDUniformSet *set = memnew(MDUniformSet);
+ 	// Determine if there are any dynamic uniforms in this set.
+ 	bool is_dynamic = !shader_set.dynamic_uniforms.is_empty();
++	if (p_metalfx_shared && (is_dynamic || shader_set.buffer_size == 0 || shader_set.buffer_size > OpenRCImmutableArguments::MAX_BYTES)) {
++		memdelete(set);
++		return UniformSetID();
++	}
+ 
+ 	Vector<uint8_t> arg_buffer_data;
+ 
+ 	if (device_properties->features.argument_buffers_supported()) {
+-		arg_buffer_data.resize(shader_set.buffer_size);
++		if (p_metalfx_shared) {
++			if (arg_buffer_data.resize(shader_set.buffer_size) != OK) {
++				memdelete(set);
++				return UniformSetID();
++			}
++		} else {
++			arg_buffer_data.resize(shader_set.buffer_size);
++		}
+ 
+ 		// If argument buffers are enabled, we have already verified availability, so we can skip the runtime check.
+ 		GODOT_CLANG_WARNING_PUSH_AND_IGNORE("-Wunguarded-availability-new")
+ 		uint64_t *ptr = (uint64_t *)arg_buffer_data.ptrw();
++
++		// The private experiment must fail closed for unsupported or malformed
++		// reflection instead of writing outside the bounded CPU allocation.
++		if (p_metalfx_shared) {
++			bool valid = p_uniforms.size() == shader_set.uniforms.size();
++			for (uint32_t i = 0; valid && i < p_uniforms.size(); i++) {
++				const BoundUniform &uniform = p_uniforms[i];
++				const UniformInfo::Indexes &idx = shader_set.uniforms[i].arg_buffer;
++				const size_t count = uniform.ids.size();
++				auto fits = [&](uint32_t first, size_t elements) { return OpenRCImmutableArguments::slots_fit(first, elements, shader_set.buffer_size); };
++				auto texture_exists = [&](size_t j) {
++					const TextureInfo *texture = (const TextureInfo *)uniform.ids[j].id;
++					return texture && texture->texture;
++				};
++				switch (uniform.type) {
++					case UNIFORM_TYPE_SAMPLER:
++						valid = fits(idx.sampler, count);
++						for (size_t j = 0; valid && j < count; j++) {
++							valid = uniform.ids[j].id != 0;
++						}
++						break;
++					case UNIFORM_TYPE_SAMPLER_WITH_TEXTURE:
++						valid = count % 2 == 0 && fits(idx.sampler, count / 2) && fits(idx.texture, count / 2);
++						for (size_t j = 0; valid && j < count; j += 2) {
++							valid = uniform.ids[j].id != 0 && texture_exists(j + 1);
++						}
++						break;
++					case UNIFORM_TYPE_IMAGE:
++						// Atomic-image buffer emulation is outside this experiment.
++						if (idx.buffer != UINT32_MAX) {
++							valid = false;
++							break;
++						}
++						[[fallthrough]];
++					case UNIFORM_TYPE_TEXTURE:
++					case UNIFORM_TYPE_INPUT_ATTACHMENT:
++						valid = fits(idx.texture, count);
++						for (size_t j = 0; valid && j < count; j++) {
++							valid = texture_exists(j);
++						}
++						break;
++					case UNIFORM_TYPE_STORAGE_BUFFER:
++					case UNIFORM_TYPE_UNIFORM_BUFFER: {
++						const BufferInfo *buffer = count == 1 ? (const BufferInfo *)uniform.ids[0].id : nullptr;
++						valid = fits(idx.buffer, 1) && buffer && buffer->buffer;
++					} break;
++					case UNIFORM_TYPE_ACCELERATION_STRUCTURE: {
++						const MDAccelerationStructure *accel = count == 1 ? (const MDAccelerationStructure *)uniform.ids[0].id : nullptr;
++						valid = fits(idx.buffer, 1) && accel && accel->accel && accel->type == MDAccelerationStructure::Type::TLAS;
++					} break;
++					default:
++						valid = false;
++				}
++			}
++			if (!valid) {
++				memdelete(set);
++				return UniformSetID();
++			}
++		}
+ 
+ 		HashMap<MTL::Resource *, StageResourceUsage, HashMapHasherDefault> bound_resources;
+ 		auto add_usage = [&bound_resources](MTL::Resource *res, BitField<RDD::ShaderStage> stage, MTL::ResourceUsage usage) {
+@@ -1513,13 +1609,28 @@
+ 		}
+ 
+ 		if (!is_dynamic) {
+-			set->arg_buffer = allocator->new_buffer(shader_set.buffer_size, base_hazard_tracking | MTL::ResourceStorageModePrivate);
++			if (p_metalfx_shared) {
++				// A dedicated tracked buffer is populated exactly once before the
++				// RID is published. Its normal uniform-set lifetime owns the buffer.
++				const bool created = OpenRCImmutableArguments::create(set->arg_buffer, arg_buffer_data.ptr(), arg_buffer_data.size(),
++						[this](std::size_t size) { return allocator->new_buffer(size, base_hazard_tracking | MTL::ResourceStorageModeShared); },
++						[](MetalBuffer &buffer) -> void * { return buffer.buffer ? buffer.buffer->contents() : nullptr; },
++						[this](MetalBuffer &buffer) { allocator->free_buffer(buffer); });
++				if (!created) {
++					memdelete(set);
++					return UniformSetID();
++				}
++			} else {
++				set->arg_buffer = allocator->new_buffer(shader_set.buffer_size, base_hazard_tracking | MTL::ResourceStorageModePrivate);
++			}
+ #if DEV_ENABLED
+ 			char label[64];
+ 			snprintf(label, sizeof(label), "Uniform Set %u", p_set_index);
+ 			set->arg_buffer.buffer->setLabel(NS::String::string(label, NS::UTF8StringEncoding));
+ #endif
+-			_copy_queue_copy_to_buffer(arg_buffer_data, set->arg_buffer.buffer.get());
++			if (!p_metalfx_shared) {
++				_copy_queue_copy_to_buffer(arg_buffer_data, set->arg_buffer.buffer.get());
++			}
+ 		} else {
+ 			// Store the arg buffer data for dynamic uniform sets.
+ 			// It will be copied and updated at bind time.
+@@ -1529,7 +1640,15 @@
+ 		GODOT_CLANG_WARNING_POP
+ 	}
+ 	Vector<BoundUniform> bound_uniforms;
+-	bound_uniforms.resize(p_uniforms.size());
++	if (p_metalfx_shared) {
++		if (bound_uniforms.resize(p_uniforms.size()) != OK) {
++			allocator->free_buffer(set->arg_buffer);
++			memdelete(set);
++			return UniformSetID();
++		}
++	} else {
++		bound_uniforms.resize(p_uniforms.size());
++	}
+ 	for (uint32_t i = 0; i < p_uniforms.size(); i += 1) {
+ 		bound_uniforms.write[i] = p_uniforms[i];
+ 	}
+diff --git a/drivers/metal/rendering_device_driver_metal.h b/drivers/metal/rendering_device_driver_metal.h
+--- a/drivers/metal/rendering_device_driver_metal.h
++++ b/drivers/metal/rendering_device_driver_metal.h
+@@ -372,8 +372,13 @@
+ 
+ #pragma mark - Uniform Set
+ 
++private:
++	UniformSetID _uniform_set_create_impl(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index, int p_linear_pool_index, bool p_metalfx_shared);
++
+ public:
+ 	virtual UniformSetID uniform_set_create(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index, int p_linear_pool_index) override final;
++	virtual bool metalfx_shared_uniform_sets_supported() const override final;
++	virtual UniformSetID metalfx_shared_uniform_set_create(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index) override final;
+ 	virtual void uniform_set_free(UniformSetID p_uniform_set) override final;
+ 	virtual uint32_t uniform_sets_get_dynamic_offsets(VectorView<UniformSetID> p_uniform_sets, ShaderID p_shader, uint32_t p_first_set_index, uint32_t p_set_count) const override final;
+ 
+diff --git a/drivers/metal/rendering_device_driver_metal3.cpp b/drivers/metal/rendering_device_driver_metal3.cpp
+--- a/drivers/metal/rendering_device_driver_metal3.cpp
++++ b/drivers/metal/rendering_device_driver_metal3.cpp
+@@ -67,6 +67,27 @@
+ 	cmd->end();
+ 	return reinterpret_cast<uint64_t>(cmd->ensure_command_buffer());
+ }
++bool RenderingDeviceDriverMetal::metalfx_rt_acceleration_structure_ready(AccelerationStructureID p_id) const {
++	const MDAccelerationStructure *accel = (const MDAccelerationStructure *)p_id.id;
++	return accel && accel->build_encoded && acceleration_structure_build_is_valid(p_id);
++}
++bool RenderingDeviceDriverMetal::metalfx_viewport_uniforms_safe() const {
++	// The current private argument-buffer upload waits on a separate unchecked
++	// copy command buffer. Never admit that path as an async transaction.
++	return device_properties && !device_properties->features.argument_buffers_supported();
++}
++bool RenderingDeviceDriverMetal::metalfx_rt_track_dispatch_begin(CommandBufferID p_buffer, PipelineID p_pipeline) {
++	return p_buffer.id && p_pipeline.id && ((MDCommandBuffer *)p_buffer.id)->metalfx_track_dispatch_begin(p_pipeline.id);
++}
++bool RenderingDeviceDriverMetal::metalfx_rt_track_dispatch_finish(CommandBufferID p_buffer, PipelineID p_pipeline) {
++	return p_buffer.id && p_pipeline.id && ((MDCommandBuffer *)p_buffer.id)->metalfx_track_dispatch_finish(p_pipeline.id);
++}
++bool RenderingDeviceDriverMetal::metalfx_rt_track_draw_begin(CommandBufferID p_buffer, uint64_t p_token, uint32_t p_stage) {
++	return p_buffer.id && ((MDCommandBuffer *)p_buffer.id)->metalfx_track_draw_begin(p_token, p_stage);
++}
++bool RenderingDeviceDriverMetal::metalfx_rt_track_draw_finish(CommandBufferID p_buffer, uint64_t p_token, uint32_t p_expected) {
++	return p_buffer.id && ((MDCommandBuffer *)p_buffer.id)->metalfx_track_draw_finish(p_token, p_expected);
++}
+ int RenderingDeviceDriverMetal::denoised_capability() const {
+ 	return sync_mode == HazardTracking ? mfx_denoised_capability(device) : MFX_DENOISED_HAZARD_REQUIRED;
+ }
+diff --git a/drivers/metal/rendering_device_driver_metal3.h b/drivers/metal/rendering_device_driver_metal3.h
+--- a/drivers/metal/rendering_device_driver_metal3.h
++++ b/drivers/metal/rendering_device_driver_metal3.h
+@@ -82,6 +82,12 @@
+ 	double real_gpu_completion_now() const override;
+ 	bool real_gpu_completion_register(CommandBufferID, const std::shared_ptr<RealGPUCompletion> &, const RealGPUCompletion::Reservation &) override;
+ 	uint64_t metalfx_rt_command_buffer_identity(CommandBufferID) override;
++	bool metalfx_rt_acceleration_structure_ready(AccelerationStructureID) const override;
++	bool metalfx_viewport_uniforms_safe() const override;
++	bool metalfx_rt_track_dispatch_begin(CommandBufferID, PipelineID) override;
++	bool metalfx_rt_track_dispatch_finish(CommandBufferID, PipelineID) override;
++	bool metalfx_rt_track_draw_begin(CommandBufferID, uint64_t, uint32_t) override;
++	bool metalfx_rt_track_draw_finish(CommandBufferID, uint64_t, uint32_t) override;
+ 	int metalfx_frame_device_capability() const override;
+ 	int denoised_capability() const override;
+ 	void *denoised_create(uint32_t, uint32_t, uint32_t, uint32_t, int &) override;
+diff --git a/servers/rendering/renderer_rd/effects/metalfx_viewport_denoised.cpp b/servers/rendering/renderer_rd/effects/metalfx_viewport_denoised.cpp
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/renderer_rd/effects/metalfx_viewport_denoised.cpp
+@@ -0,0 +1,309 @@
++/**************************************************************************/
++/*  metalfx_viewport_denoised.cpp                                         */
++/**************************************************************************/
++/* Copyright (c) 2026 OpenRC Simulator contributors.                      */
++/* SPDX-License-Identifier: MIT                                           */
++/**************************************************************************/
++
++#include "metalfx_viewport_denoised.h"
++
++using namespace RendererRD;
++
++namespace {
++// Remains false until the actual primary producer and input receipts qualify.
++constexpr bool GUIDE_INPUT_RECEIPT_IMPLEMENTED = false;
++struct FrameProofCallback { std::shared_ptr<MFXViewportCallback::CommandProof> proof; };
++struct DrawProofCallback {
++	std::shared_ptr<MFXViewportCallback::CommandProof> proof;
++	uint32_t stage = 0;
++	uint32_t expected = 0;
++	bool begin = false;
++};
++void mark_frame_first(RenderingDeviceDriver *p_driver, RenderingDeviceDriver::CommandBufferID p_command, void *p_data) {
++	FrameProofCallback *callback = static_cast<FrameProofCallback *>(p_data);
++	uint64_t command = p_driver->metalfx_rt_command_buffer_identity(p_command);
++	const auto proof = callback->proof;
++	if (!command || !p_driver->metalfx_rt_track_dispatch_begin(p_command, RenderingDeviceDriver::PipelineID(proof->pipeline))) { command = 0; }
++	callback->proof->first_command.store(command, std::memory_order_release);
++	memdelete(callback);
++}
++void mark_draw_stage(RenderingDeviceDriver *p_driver, RenderingDeviceDriver::CommandBufferID p_command, void *p_data) {
++	DrawProofCallback *callback = static_cast<DrawProofCallback *>(p_data);
++	auto proof = callback->proof;
++	if (callback->begin && proof->draw_failed.load(std::memory_order_acquire)) { memdelete(callback); return; }
++	const uint64_t first = proof->first_command.load(std::memory_order_acquire);
++	const uint64_t last = p_driver->metalfx_rt_command_buffer_identity(p_command);
++	const uint64_t token = reinterpret_cast<uint64_t>(proof.get());
++	bool ok = MFXViewportCallback::same_command(first, last);
++	if (ok) {
++		ok = callback->begin ? p_driver->metalfx_rt_track_draw_begin(p_command, token, callback->stage) :
++				p_driver->metalfx_rt_track_draw_finish(p_command, token, callback->expected);
++	}
++	if (!ok) { proof->draw_failed.store(true, std::memory_order_release); }
++	else if (!callback->begin) { proof->completed_draw_stages.fetch_or(callback->stage, std::memory_order_release); }
++	memdelete(callback);
++}
++} // namespace
++
++MetalFXViewportDenoised::~MetalFXViewportDenoised() { clear_gpu(); }
++
++void MetalFXViewportDenoised::clear_gpu() {
++	active_epoch = 0;
++	authorized_frame = 0;
++	scene.invalidate();
++	visibility.invalidate();
++	RD *rd = RD::get_singleton();
++	if (rd && rd == owner) {
++		if (primary_depth.is_valid() && rd->texture_is_valid(primary_depth)) { rd->free_rid(primary_depth); }
++		if (context.is_valid()) { rd->free_rid(context); }
++		for (RID texture : textures) { if (texture.is_valid() && rd->texture_is_valid(texture)) { rd->free_rid(texture); } }
++	}
++	primary_depth = RID();
++	context = RID();
++	for (RID &texture : textures) { texture = RID(); }
++	completion.reset();
++	last_enqueued_frame = last_enqueued_serial = completed_frame = completed_serial = 0;
++	frame_proof.reset();
++	size = Size2i();
++	owner = nullptr;
++}
++
++void MetalFXViewportDenoised::reject(const char *p_reason) {
++	scene.invalidate();
++	visibility.invalidate();
++	active_epoch = 0;
++	authorized_frame = 0;
++	frame_proof.reset();
++	previous_surfaces.clear();
++	previous_scenario = RID();
++	have_previous = false;
++	reason = p_reason;
++}
++
++bool MetalFXViewportDenoised::allocate(Size2i p_size) {
++	RD *rd = RD::get_singleton();
++	if (!rd || p_size.x <= 0 || p_size.y <= 0) { reason = "invalid_viewport_size"; return false; }
++	owner = rd;
++	Dictionary created = rd->metalfx_denoised_create(p_size, p_size);
++	if (String(created.get("status", "")) != "created") { reason = String(created.get("status", "factory_failed")); faulted = true; return false; }
++	context = created["context"];
++	const RD::DataFormat formats[9] = { RD::DATA_FORMAT_R16G16B16A16_SFLOAT, RD::DATA_FORMAT_D32_SFLOAT,
++		RD::DATA_FORMAT_R16G16_SFLOAT, RD::DATA_FORMAT_R16G16B16A16_SFLOAT, RD::DATA_FORMAT_R16G16B16A16_SFLOAT,
++		RD::DATA_FORMAT_R16G16B16A16_SFLOAT, RD::DATA_FORMAT_R16_SFLOAT, RD::DATA_FORMAT_R16_SFLOAT, RD::DATA_FORMAT_R16G16B16A16_SFLOAT };
++	const uint32_t sample = RD::TEXTURE_USAGE_SAMPLING_BIT;
++	const uint32_t storage = RD::TEXTURE_USAGE_STORAGE_BIT;
++	const uint32_t clear = RD::TEXTURE_USAGE_CAN_COPY_TO_BIT;
++	const uint32_t usage[9] = { sample | storage, sample | RD::TEXTURE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
++		sample | clear, sample | storage, sample | storage, sample | storage, sample | storage, sample | clear, sample | storage | RD::TEXTURE_USAGE_COLOR_ATTACHMENT_BIT };
++	for (int i = 0; i < 9; ++i) {
++		if (!rd->texture_is_format_supported_for_usage(formats[i], usage[i])) { clear_gpu(); reason = "texture_format_unsupported"; faulted = true; return false; }
++		RD::TextureFormat format;
++		format.format = formats[i];
++		format.width = i == 7 ? 1 : p_size.x;
++		format.height = i == 7 ? 1 : p_size.y;
++		format.usage_bits = usage[i];
++		textures[i] = rd->texture_create(format, RD::TextureView());
++		if (!textures[i].is_valid()) { clear_gpu(); reason = "texture_allocation_failed"; faulted = true; return false; }
++	}
++	RD::TextureFormat primary_format;
++	primary_format.format = RD::DATA_FORMAT_R32_SFLOAT;
++	primary_format.width = p_size.x; primary_format.height = p_size.y; primary_format.usage_bits = sample | storage;
++	if (!rd->texture_is_format_supported_for_usage(primary_format.format, primary_format.usage_bits)) { clear_gpu(); reason = "primary_depth_unsupported"; faulted = true; return false; }
++	primary_depth = rd->texture_create(primary_format, RD::TextureView());
++	if (!primary_depth.is_valid()) { clear_gpu(); reason = "primary_depth_allocation_failed"; faulted = true; return false; }
++	completion = std::make_shared<RealGPUCompletion>();
++	if (!completion->reset(true, rd->real_gpu_completion_now())) { clear_gpu(); reason = "completion_clock_failed"; faulted = true; return false; }
++	size = p_size;
++	return true;
++}
++
++bool MetalFXViewportDenoised::admit(RID p_scenario, const Vector<MetalFXViewportRTScene::Surface> &p_surfaces, const Transform3D &p_camera, const Projection &p_projection, Color p_linear_environment, Size2i p_size) {
++	RD *rd = RD::get_singleton();
++	authorized_frame = 0;
++	if (faulted) { return false; }
++	if (owner && rd != owner) { clear_gpu(); reason = "device_changed"; faulted = true; return false; }
++	if (!rd || !rd->real_gpu_completion_supported() || !p_scenario.is_valid() || p_surfaces.is_empty() || !p_camera.is_finite()) { reject("not_supported"); return false; }
++	if (!rd->metalfx_viewport_uniforms_safe() && !rd->metalfx_shared_uniform_sets_supported()) { reject("argument_buffer_upload_unqualified"); return false; }
++	// Remain closed until the compute-primary producer, shared-set path, exact
++	// build/dispatch receipts, and native input conventions are qualified.
++	if (!GUIDE_INPUT_RECEIPT_IMPLEMENTED) { reject("guide_inputs_unqualified"); return false; }
++	if (size != Size2i() && size != p_size) { clear_gpu(); have_previous = false; }
++	bool same = have_previous && previous_scenario == p_scenario && previous_camera == p_camera && previous_projection == p_projection && previous_surfaces.size() == p_surfaces.size();
++	if (same) {
++		for (int i = 0; i < p_surfaces.size(); ++i) {
++			const auto &a = previous_surfaces[i];
++			const auto &b = p_surfaces[i];
++			if (a.instance != b.instance || a.instance_version != b.instance_version || a.mesh != b.mesh || a.material != b.material || a.surface != b.surface || a.expected_source_serial != b.expected_source_serial || a.transform != b.transform) { same = false; break; }
++		}
++	}
++	previous_scenario = p_scenario;
++	previous_camera = p_camera;
++	previous_projection = p_projection;
++	previous_surfaces = p_surfaces;
++	linear_environment = p_linear_environment;
++	have_previous = true;
++	if (!same) { scene.invalidate(); visibility.invalidate(); active_epoch = 0; reason = "awaiting_static_scene"; return false; }
++	if (!context.is_valid() && !allocate(p_size)) { return false; }
++	if (!active_epoch || !scene.is_fresh(active_epoch)) {
++		if (next_epoch >= uint64_t(INT64_MAX)) { reject("epoch_exhausted"); faulted = true; return false; }
++		const uint64_t epoch = ++next_epoch;
++		if (!scene.build(epoch, p_surfaces) || !visibility.begin_generation(epoch)) { scene.invalidate(); visibility.invalidate(); active_epoch = 0; reason = "scene_or_shader_failed"; return false; }
++		active_epoch = epoch;
++	}
++	const auto build_status = scene.build_status();
++	if (build_status == MetalFXViewportRTScene::BuildStatus::PENDING) { reason = "build_gpu_pending"; return false; }
++	if (build_status != MetalFXViewportRTScene::BuildStatus::READY) {
++		scene.invalidate(); visibility.invalidate(); active_epoch = 0; faulted = true; reason = "build_gpu_failed"; return false;
++	}
++	authorized_frame = rd->get_frames_drawn();
++	if (!authorized_frame) { reject("frame_unavailable"); return false; }
++	return true;
++}
++
++bool MetalFXViewportDenoised::can_record() {
++	RD *rd = RD::get_singleton();
++	if (!rd || rd != owner || !completion || !is_ready()) { reason = "scene_stale"; return false; }
++	auto snapshot = completion->snapshot(rd->real_gpu_completion_now());
++	if (snapshot.failed) {
++		const String failure = snapshot.reason;
++		clear_gpu(); // RID destruction remains deferred behind the owning frame fence.
++		reason = failure;
++		faulted = true; return false;
++	}
++	if (snapshot.pending) { reason = "gpu_pending"; return false; } // No CPU wait; keep current raster.
++	if (snapshot.count && snapshot.samples[snapshot.count - 1].frame == last_enqueued_frame) {
++		completed_frame = last_enqueued_frame;
++		completed_serial = last_enqueued_serial;
++	}
++	return true;
++}
++
++bool MetalFXViewportDenoised::begin_frame_proof(uint64_t p_frame) {
++	frame_proof.reset();
++	RD *rd = RD::get_singleton();
++	if (!p_frame || p_frame != authorized_frame || !can_record() || !rd) { authorized_frame = 0; return false; }
++	frame_proof = std::make_shared<MFXViewportCallback::CommandProof>();
++	frame_proof->frame = p_frame;
++	frame_proof->pipeline = rd->metalfx_rt_compute_pipeline_id(visibility.get_trace_pipeline()).id;
++	if (!frame_proof->pipeline) { frame_proof.reset(); authorized_frame = 0; reason = "trace_pipeline_unavailable"; return false; }
++	FrameProofCallback *callback = memnew(FrameProofCallback);
++	callback->proof = frame_proof;
++	RD::CallbackResource marker;
++	marker.rid = textures[3];
++	marker.type = RD::CALLBACK_RESOURCE_TYPE_TEXTURE;
++	marker.usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE;
++	if (rd->driver_callback_add(mark_frame_first, callback, VectorView<RD::CallbackResource>(&marker, 1)) != OK) {
++		memdelete(callback); frame_proof.reset(); authorized_frame = 0; reason = "frame_marker_failed"; return false;
++	}
++	// Force the marker before the depth prepass, opaque draw, guides and trace.
++	rd->metalfx_rt_probe_barrier();
++	return true;
++}
++
++bool MetalFXViewportDenoised::begin_draw_stage(uint32_t p_stage) {
++	RD *rd = RD::get_singleton();
++	if (!rd || rd != owner || !frame_proof || !p_stage || (p_stage & (p_stage - 1))) { return false; }
++	DrawProofCallback *callback = memnew(DrawProofCallback);
++	callback->proof = frame_proof; callback->stage = p_stage; callback->begin = true;
++	RD::CallbackResource marker;
++	marker.rid = textures[3]; marker.type = RD::CALLBACK_RESOURCE_TYPE_TEXTURE;
++	marker.usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE;
++	rd->metalfx_rt_probe_barrier();
++	if (rd->driver_callback_add(mark_draw_stage, callback, VectorView<RD::CallbackResource>(&marker, 1)) != OK) {
++		memdelete(callback); frame_proof->draw_failed.store(true, std::memory_order_release); return false;
++	}
++	rd->metalfx_rt_probe_barrier();
++	return true;
++}
++
++bool MetalFXViewportDenoised::end_draw_stage(uint32_t p_stage, uint32_t p_expected, bool p_enqueued) {
++	RD *rd = RD::get_singleton();
++	if (!rd || rd != owner || !frame_proof || !p_enqueued || !p_expected || !p_stage || (p_stage & (p_stage - 1))) {
++		if (frame_proof) { frame_proof->draw_failed.store(true, std::memory_order_release); }
++		return false;
++	}
++	DrawProofCallback *callback = memnew(DrawProofCallback);
++	callback->proof = frame_proof; callback->stage = p_stage; callback->expected = p_expected;
++	RD::CallbackResource marker;
++	marker.rid = textures[3]; marker.type = RD::CALLBACK_RESOURCE_TYPE_TEXTURE;
++	marker.usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE;
++	rd->metalfx_rt_probe_barrier();
++	if (rd->driver_callback_add(mark_draw_stage, callback, VectorView<RD::CallbackResource>(&marker, 1)) != OK) {
++		memdelete(callback); frame_proof->draw_failed.store(true, std::memory_order_release); return false;
++	}
++	frame_proof->required_draw_stages.fetch_or(p_stage, std::memory_order_release);
++	rd->metalfx_rt_probe_barrier();
++	return true;
++}
++
++bool MetalFXViewportDenoised::record(RID p_target, const Projection &p_world_to_view, const Projection &p_clip, const Projection &p_world_from_clip, Color p_linear_environment, Color p_linear_background, uint64_t p_frame) {
++	if (!can_record() || !frame_proof || frame_proof->frame != p_frame) { return false; }
++	RD *rd = RD::get_singleton();
++	if (!begin_draw_stage(MFXViewportCallback::INPUT_CLEARS)) { scene.invalidate(); visibility.invalidate(); active_epoch = 0; reason = "input_clear_failed"; faulted = true; return false; }
++	const bool cleared = rd->texture_clear(textures[2], Color(0, 0, 0, 0), 0, 1, 0, 1) == OK && rd->texture_clear(textures[7], Color(1, 0, 0, 0), 0, 1, 0, 1) == OK;
++	if (!end_draw_stage(MFXViewportCallback::INPUT_CLEARS, 2, cleared)) { scene.invalidate(); visibility.invalidate(); active_epoch = 0; reason = "input_clear_failed"; faulted = true; return false; }
++	MetalFXViewportVisibility::Inputs inputs;
++	inputs.scene = scene.get_current_tlas(active_epoch);
++	inputs.geometry = scene.get_current_primary_geometry(active_epoch);
++	inputs.primary_depth = primary_depth;
++	inputs.world_normal = textures[5];
++	inputs.diffuse_albedo = textures[3];
++	inputs.specular_albedo = textures[4];
++	inputs.roughness = textures[6];
++	inputs.noisy_output = textures[0];
++	inputs.size = size;
++	inputs.world_from_clip = p_world_from_clip;
++	inputs.linear_environment = p_linear_environment;
++	inputs.linear_background = p_linear_background;
++	inputs.sample = uint32_t(sample++);
++	inputs.epoch = active_epoch;
++	inputs.instance_count = scene.get_primary_instance_count(active_epoch);
++	inputs.normal_count = scene.get_primary_normal_count(active_epoch);
++	if (!visibility.dispatch(inputs)) { scene.invalidate(); visibility.invalidate(); active_epoch = 0; reason = "visibility_enqueue_failed"; faulted = true; return false; }
++	if (!begin_draw_stage(MFXViewportCallback::DEPTH_CONVERSION)) { scene.invalidate(); visibility.invalidate(); active_epoch = 0; reason = "depth_conversion_failed"; faulted = true; return false; }
++	const bool converted = visibility.convert_depth(primary_depth, textures[1], size);
++	if (!end_draw_stage(MFXViewportCallback::DEPTH_CONVERSION, 1, converted)) { scene.invalidate(); visibility.invalidate(); active_epoch = 0; reason = "depth_conversion_failed"; faulted = true; return false; }
++	TypedArray<RID> arguments;
++	for (RID texture : textures) { arguments.push_back(texture); }
++	Dictionary result = rd->metalfx_denoised_encode_viewport(context, arguments, p_world_to_view, p_clip, 1.0f, Vector2(), true,
++			visibility.get_consumer_pipeline(), visibility.get_consumer_sampler(), p_target, primary_depth, p_linear_background, completion, frame_proof, p_frame);
++	frame_proof.reset();
++	reason = String(result.get("status", "enqueue_failed"));
++	if (reason == "enqueued") {
++		last_enqueued_frame = p_frame;
++		last_enqueued_serial = uint64_t(int64_t(result.get("serial", 0)));
++	}
++	if (reason != "enqueued") { faulted = true; scene.invalidate(); visibility.invalidate(); active_epoch = 0; }
++	return reason == "enqueued";
++}
++
++Dictionary MetalFXViewportDenoised::status() const {
++	Dictionary result;
++	result["status"] = reason;
++	result["scene_epoch"] = int64_t(active_epoch);
++	result["faulted"] = faulted;
++	result["scope"] = "opaque_rt_view_constant_environment_diffuse";
++	result["pixel_values_validated"] = false;
++	result["invalid_hit_fallback"] = "linear_background";
++	result["maximum_ray_distance"] = 1000.0;
++	result["history_reset_each_frame"] = true;
++	RD *rd = RD::get_singleton();
++	if (rd && rd == owner && context.is_valid()) { result["denoiser"] = rd->metalfx_denoised_status(context); }
++	if (rd && rd == owner && completion) {
++		auto snapshot = completion->snapshot(rd->real_gpu_completion_now());
++		uint64_t matched_frame = completed_frame, matched_serial = completed_serial;
++		if (!snapshot.pending && !snapshot.failed && snapshot.count && snapshot.samples[snapshot.count - 1].frame == last_enqueued_frame) {
++			matched_frame = last_enqueued_frame; matched_serial = last_enqueued_serial;
++		}
++		result["completion_pending"] = int64_t(snapshot.pending);
++		result["completed_samples"] = int64_t(snapshot.count);
++		result["completion_failed"] = snapshot.failed;
++		result["completion_reason"] = snapshot.reason;
++		result["last_completed_frame"] = snapshot.count ? int64_t(snapshot.samples[snapshot.count - 1].frame) : int64_t(0);
++		result["completed_frame"] = int64_t(matched_frame);
++		result["completed_serial"] = int64_t(matched_serial);
++		result["enqueued_frame"] = int64_t(last_enqueued_frame);
++		result["enqueued_serial"] = int64_t(last_enqueued_serial);
++	}
++	return result;
++}
+diff --git a/servers/rendering/renderer_rd/effects/metalfx_viewport_denoised.h b/servers/rendering/renderer_rd/effects/metalfx_viewport_denoised.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/renderer_rd/effects/metalfx_viewport_denoised.h
+@@ -0,0 +1,55 @@
++/**************************************************************************/
++/*  metalfx_viewport_denoised.h                                           */
++/**************************************************************************/
++/* Copyright (c) 2026 OpenRC Simulator contributors.                      */
++/* SPDX-License-Identifier: MIT                                           */
++/**************************************************************************/
++#pragma once
++
++#include "metalfx_viewport_rt_scene.h"
++#include "metalfx_viewport_visibility.h"
++#include "servers/rendering/storage/real_gpu_completion.h"
++
++namespace RendererRD {
++
++class MetalFXViewportDenoised {
++	MetalFXViewportRTScene scene;
++	MetalFXViewportVisibility visibility;
++	Vector<MetalFXViewportRTScene::Surface> previous_surfaces;
++	RID previous_scenario;
++	Transform3D previous_camera;
++	Projection previous_projection;
++	Color linear_environment;
++	bool have_previous = false;
++	uint64_t next_epoch = 0, active_epoch = 0, sample = 0, authorized_frame = 0;
++	uint64_t last_enqueued_frame = 0, last_enqueued_serial = 0, completed_frame = 0, completed_serial = 0;
++	Size2i size;
++	RenderingDevice *owner = nullptr;
++	RID context, primary_depth;
++	RID textures[9];
++	std::shared_ptr<RealGPUCompletion> completion;
++	std::shared_ptr<MFXViewportCallback::CommandProof> frame_proof;
++	String reason = "not_attempted";
++	bool faulted = false;
++	void clear_gpu();
++	bool allocate(Size2i p_size);
++
++public:
++	~MetalFXViewportDenoised();
++	bool admit(RID p_scenario, const Vector<MetalFXViewportRTScene::Surface> &p_surfaces, const Transform3D &p_camera, const Projection &p_projection, Color p_linear_environment, Size2i p_size);
++	void reject(const char *p_reason);
++	bool is_ready() const { return active_epoch && scene.is_current(active_epoch); }
++	bool consume_authorization(uint64_t p_frame) {
++		const bool allowed = p_frame && authorized_frame == p_frame && frame_proof && frame_proof->frame == p_frame && is_ready();
++		authorized_frame = 0;
++		return allowed;
++	}
++	Color get_linear_environment() const { return linear_environment; }
++	bool can_record();
++	bool begin_frame_proof(uint64_t p_frame);
++	bool begin_draw_stage(uint32_t p_stage);
++	bool end_draw_stage(uint32_t p_stage, uint32_t p_expected, bool p_enqueued);
++	bool record(RID p_target, const Projection &p_world_to_view, const Projection &p_clip, const Projection &p_world_from_clip, Color p_linear_environment, Color p_linear_background, uint64_t p_frame);
++	Dictionary status() const;
++};
++} // namespace RendererRD
+diff --git a/servers/rendering/renderer_rd/effects/metalfx_viewport_rt_scene.cpp b/servers/rendering/renderer_rd/effects/metalfx_viewport_rt_scene.cpp
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/renderer_rd/effects/metalfx_viewport_rt_scene.cpp
+@@ -0,0 +1,209 @@
++/**************************************************************************/
++/*  metalfx_viewport_rt_scene.cpp                                         */
++/**************************************************************************/
++/* Copyright (c) 2026 OpenRC Simulator contributors.                      */
++/* SPDX-License-Identifier: MIT                                           */
++/**************************************************************************/
++
++#include "metalfx_viewport_rt_scene.h"
++#include "servers/rendering/storage/real_gpu_completion.h"
++#include "servers/rendering/storage/metalfx_viewport_callback.h"
++
++#include <atomic>
++
++using namespace RendererRD;
++
++struct RendererRD::MetalFXViewportBuildReceipt {
++	std::shared_ptr<RealGPUCompletion> completion;
++	RealGPUCompletion::Reservation reservation;
++	RenderingDeviceDriver::AccelerationStructureID tlas;
++	std::atomic<uint64_t> first_command{ 0 };
++};
++namespace {
++// Cumulative rather than refundable: allocation and in-flight retirement never
++// exceed this experiment's explicit process budget.
++OpenRCRTGeometry::InputBudget primary_buffer_budget{ 0, 32u * 1024u * 1024u };
++struct BuildCallback { std::shared_ptr<MetalFXViewportBuildReceipt> receipt; };
++void mark_build_first(RenderingDeviceDriver *p_driver, RenderingDeviceDriver::CommandBufferID p_command, void *p_data) {
++	BuildCallback *callback = static_cast<BuildCallback *>(p_data);
++	callback->receipt->first_command.store(p_driver->metalfx_rt_command_buffer_identity(p_command), std::memory_order_release);
++	memdelete(callback);
++}
++void observe_build_last(RenderingDeviceDriver *p_driver, RenderingDeviceDriver::CommandBufferID p_command, void *p_data) {
++	BuildCallback *callback = static_cast<BuildCallback *>(p_data);
++	auto receipt = callback->receipt;
++	const uint64_t first = receipt->first_command.load(std::memory_order_acquire);
++	const uint64_t last = p_driver->metalfx_rt_command_buffer_identity(p_command);
++	if (!MFXViewportCallback::build_commands_ready(first, last, p_driver->metalfx_rt_acceleration_structure_ready(receipt->tlas)) || !p_driver->real_gpu_completion_register(p_command, receipt->completion, receipt->reservation)) {
++		receipt->completion->fail(receipt->reservation, "build_command_changed_or_registration_failed");
++	}
++	memdelete(callback);
++}
++} // namespace
++
++void MetalFXViewportRTScene::_clear() {
++	epoch = 0;
++	RD *rd = RD::get_singleton();
++	MeshStorage *storage = MeshStorage::get_singleton();
++	if (rd == owner && rd) {
++		// Order matters: source release recursively invalidates dependencies.
++		if (tlas.is_valid()) { rd->free_rid(tlas); }
++		for (RID blas : blases) { rd->free_rid(blas); }
++		if (primary_geometry.is_valid()) { rd->free_rid(primary_geometry); }
++		if (receipt_marker.is_valid()) { rd->free_rid(receipt_marker); }
++		if (storage == storage_owner && storage) {
++			for (uint64_t token : leases) { CRASH_COND(!storage->rt_source_release(token)); }
++		}
++	}
++	tlas = RID();
++	primary_geometry = RID();
++	primary_instance_count = primary_normal_count = 0;
++	receipt_marker = RID();
++	blases.clear();
++	leases.clear();
++	owner = nullptr;
++	storage_owner = nullptr;
++	build_receipt.reset();
++	build_completion_accepted = false;
++}
++
++bool MetalFXViewportRTScene::is_fresh(uint64_t p_epoch) const {
++	if (!epoch || p_epoch != epoch || !tlas.is_valid() || !primary_geometry.is_valid() || RD::get_singleton() != owner || MeshStorage::get_singleton() != storage_owner) { return false; }
++	for (uint64_t token : leases) { if (!storage_owner->rt_source_lease_current(token)) { return false; } }
++	return true;
++}
++
++MetalFXViewportRTScene::BuildStatus MetalFXViewportRTScene::build_status() const {
++	if (!build_receipt || !owner || RD::get_singleton() != owner) { return BuildStatus::INVALID; }
++	if (build_completion_accepted) { return BuildStatus::READY; }
++	auto snapshot = build_receipt->completion->snapshot(owner->real_gpu_completion_now());
++	if (snapshot.failed) { return BuildStatus::FAILED; }
++	if (snapshot.pending) { return BuildStatus::PENDING; }
++	if (snapshot.count != 1 || snapshot.samples[0].frame != epoch) { return BuildStatus::FAILED; }
++	build_completion_accepted = true;
++	return BuildStatus::READY;
++}
++
++bool MetalFXViewportRTScene::is_current(uint64_t p_epoch) const {
++	return is_fresh(p_epoch) && build_status() == BuildStatus::READY;
++}
++
++bool MetalFXViewportRTScene::build(uint64_t p_epoch, const Vector<Surface> &p_surfaces) {
++	RD *rd = RD::get_singleton();
++	MeshStorage *storage = MeshStorage::get_singleton();
++	if (!p_epoch || p_epoch <= last_epoch || !rd || !storage || !storage->rt_sources_requested() ||
++			!rd->has_feature(RD::SUPPORTS_METAL_TRIANGLE_QUERY) || !rd->real_gpu_completion_supported() || p_surfaces.is_empty() || p_surfaces.size() > 16) { _clear(); return false; }
++	_clear();
++	owner = rd;
++	storage_owner = storage;
++	bool ok = false;
++	{
++		// No new source generation can be published or freed between admission
++		// and graph recording. Existing probe semantics handle reentrancy.
++		MutexLock lock(*storage->rt_source_mutex());
++		if (!storage->rt_probe_source_begin()) { _clear(); return false; }
++		do {
++			build_receipt = std::make_shared<MetalFXViewportBuildReceipt>();
++			build_receipt->completion = std::make_shared<RealGPUCompletion>();
++			if (!build_receipt->completion->reset(true, rd->real_gpu_completion_now())) { break; }
++			build_receipt->reservation = build_receipt->completion->reserve(p_epoch, rd->real_gpu_completion_now());
++			if (!build_receipt->reservation.generation) { break; }
++			receipt_marker = rd->storage_buffer_create(4);
++			if (!receipt_marker.is_valid()) { break; }
++			RD::CallbackResource marker;
++			marker.rid = receipt_marker;
++			marker.type = RD::CALLBACK_RESOURCE_TYPE_BUFFER;
++			marker.usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_BUFFER_READ_WRITE;
++			BuildCallback *first = memnew(BuildCallback);
++			first->receipt = build_receipt;
++			if (rd->driver_callback_add(mark_build_first, first, VectorView<RD::CallbackResource>(&marker, 1)) != OK) { memdelete(first); break; }
++			rd->metalfx_rt_probe_barrier();
++			Vector<RID> source_vertices;
++			Vector<RID> source_blases;
++			Vector<RD::AccelerationStructureInstance> instances;
++			MFXViewportPrimaryGeometry::Range ranges[MFXViewportPrimaryGeometry::MAX_INSTANCES] = {};
++			Vector<MFXViewportPrimaryGeometry::Normal> world_normals;
++			for (const Surface &surface : p_surfaces) {
++				const real_t det = surface.transform.basis.determinant();
++				if (!surface.mesh.is_valid() || surface.surface < 0 || !surface.expected_source_serial || !surface.transform.is_finite() || !surface.transform.basis.is_orthonormal() || !Math::is_finite(det) || det == 0) { break; }
++				RID vertices;
++				uint32_t count = 0;
++				uint64_t serial = 0, token = 0;
++				if (!storage->rt_source_acquire(surface.mesh, surface.surface, vertices, count, serial, token)) { break; }
++				leases.push_back(token);
++				if (serial != surface.expected_source_serial) { break; }
++				Vector<MFXViewportPrimaryGeometry::Normal> local_normals;
++				if (!storage->rt_source_primary_normals(surface.mesh, surface.surface, serial, local_normals) ||
++						count % 3 || local_normals.size() != count / 3) { break; }
++				const uint32_t start = world_normals.size();
++				const uint32_t n = local_normals.size();
++				constexpr uint32_t MAX_NORMALS = (8u * 1024u * 1024u - sizeof(ranges)) / sizeof(MFXViewportPrimaryGeometry::Normal);
++				if (!n || start > MAX_NORMALS || n > MAX_NORMALS - start || world_normals.resize(start + n) != OK) { break; }
++				bool normal_ok = true;
++				for (uint32_t j = 0; j < n; ++j) {
++					const auto &local = local_normals[j];
++					Vector3 normal = surface.transform.basis.xform(Vector3(local.x, local.y, local.z));
++					if (det < 0) { normal = -normal; }
++					const real_t length2 = normal.length_squared();
++					if (!normal.is_finite() || !Math::is_finite(length2) || length2 < 0.99 || length2 > 1.01) { normal_ok = false; break; }
++					world_normals.write[start + j] = { float(normal.x), float(normal.y), float(normal.z), 0.0f };
++				}
++				if (!normal_ok) { break; }
++				ranges[instances.size()] = { start, n, uint32_t(instances.size() + 1), 0 };
++				RID blas;
++				for (int j = 0; j < source_vertices.size(); ++j) {
++					if (source_vertices[j] == vertices) { blas = source_blases[j]; break; }
++				}
++				if (!blas.is_valid()) {
++					RD::AccelerationStructureGeometry geometry;
++					geometry.flags = RD::ACCELERATION_STRUCTURE_GEOMETRY_OPAQUE_BIT;
++					geometry.vertex_buffer = vertices;
++					geometry.vertex_count = count;
++					geometry.vertex_stride = 12;
++					geometry.vertex_format = RD::DATA_FORMAT_R32G32B32_SFLOAT;
++					blas = rd->blas_create(Span<RD::AccelerationStructureGeometry>(&geometry, 1), {});
++					if (!blas.is_valid()) { break; }
++					blases.push_back(blas);
++					if (rd->blas_build(blas) != OK) { break; }
++				}
++				source_vertices.push_back(vertices);
++				source_blases.push_back(blas);
++				RD::AccelerationStructureInstance instance;
++				instance.blas = blas;
++				instance.transform = surface.transform;
++				instance.id = instances.size() + 1;
++				instances.push_back(instance);
++			}
++			if (instances.size() != p_surfaces.size() || storage->rt_probe_source_changed()) { break; }
++			if (!MFXViewportPrimaryGeometry::valid_ranges(ranges, instances.size(), world_normals.size())) { break; }
++			const uint64_t packed_size = sizeof(ranges) + uint64_t(world_normals.size()) * sizeof(MFXViewportPrimaryGeometry::Normal);
++			if (!primary_buffer_budget.consume(packed_size)) { break; }
++			Vector<uint8_t> packed;
++			if (packed.resize(packed_size) != OK) { break; }
++			memcpy(packed.ptrw(), ranges, sizeof(ranges));
++			memcpy(packed.ptrw() + sizeof(ranges), world_normals.ptr(), packed_size - sizeof(ranges));
++			primary_geometry = rd->storage_buffer_create_metalfx_primary(uint32_t(packed_size), packed);
++			if (!primary_geometry.is_valid()) { break; }
++			primary_instance_count = instances.size();
++			primary_normal_count = world_normals.size();
++			tlas = rd->tlas_create(instances.size(), {});
++			if (!tlas.is_valid() || rd->tlas_build(tlas, Span<RD::AccelerationStructureInstance>(instances.ptr(), instances.size())) != OK || storage->rt_probe_source_changed()) { break; }
++			build_receipt->tlas = rd->metalfx_rt_native_tlas(tlas);
++			if (!build_receipt->tlas.id) { break; }
++			rd->metalfx_rt_probe_barrier();
++			BuildCallback *last = memnew(BuildCallback);
++			last->receipt = build_receipt;
++			if (rd->driver_callback_add(observe_build_last, last, VectorView<RD::CallbackResource>(&marker, 1)) != OK) { memdelete(last); break; }
++			epoch = p_epoch;
++			if (!is_fresh(p_epoch)) { break; }
++			ok = true;
++		} while (false);
++		if (!ok) {
++			if (build_receipt && build_receipt->reservation.generation) { build_receipt->completion->fail(build_receipt->reservation, "build_enqueue_failed"); }
++			_clear();
++		}
++		storage->rt_probe_source_end();
++	}
++	if (ok) { last_epoch = p_epoch; }
++	return ok; // Builds are graph-enqueued, not GPU-completed.
++}
+diff --git a/servers/rendering/renderer_rd/effects/metalfx_viewport_rt_scene.h b/servers/rendering/renderer_rd/effects/metalfx_viewport_rt_scene.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/renderer_rd/effects/metalfx_viewport_rt_scene.h
+@@ -0,0 +1,59 @@
++/**************************************************************************/
++/*  metalfx_viewport_rt_scene.h                                           */
++/**************************************************************************/
++/* Copyright (c) 2026 OpenRC Simulator contributors.                      */
++/* SPDX-License-Identifier: MIT                                           */
++/**************************************************************************/
++#pragma once
++
++#include "servers/rendering/renderer_rd/storage_rd/mesh_storage.h"
++
++namespace RendererRD {
++struct MetalFXViewportBuildReceipt;
++
++// Private per-viewport generation. The caller must supply the conservative
++// whole-scenario admission result and revalidate its scene/material epoch.
++// Source leases alone do not validate instance, transform or material changes.
++class MetalFXViewportRTScene {
++public:
++	struct Surface {
++		RID instance;
++		uint64_t instance_version = 0;
++		RID mesh;
++		RID material;
++		int surface = -1;
++		uint64_t expected_source_serial = 0;
++		Transform3D transform;
++	};
++
++private:
++	RenderingDevice *owner = nullptr;
++	MeshStorage *storage_owner = nullptr;
++	RID tlas, primary_geometry;
++	RID receipt_marker;
++	Vector<RID> blases;
++	Vector<uint64_t> leases;
++	uint64_t epoch = 0;
++	uint64_t last_epoch = 0;
++	uint32_t primary_instance_count = 0, primary_normal_count = 0;
++	std::shared_ptr<MetalFXViewportBuildReceipt> build_receipt;
++	mutable bool build_completion_accepted = false;
++	void _clear();
++
++public:
++	MetalFXViewportRTScene() = default;
++	MetalFXViewportRTScene(const MetalFXViewportRTScene &) = delete;
++	MetalFXViewportRTScene &operator=(const MetalFXViewportRTScene &) = delete;
++	~MetalFXViewportRTScene() { _clear(); }
++	bool build(uint64_t p_epoch, const Vector<Surface> &p_surfaces);
++	enum class BuildStatus { INVALID, PENDING, READY, FAILED };
++	bool is_fresh(uint64_t p_epoch) const;
++	BuildStatus build_status() const;
++	bool is_current(uint64_t p_epoch) const;
++	RID get_current_tlas(uint64_t p_epoch) const { return is_current(p_epoch) ? tlas : RID(); }
++	RID get_current_primary_geometry(uint64_t p_epoch) const { return is_current(p_epoch) ? primary_geometry : RID(); }
++	uint32_t get_primary_instance_count(uint64_t p_epoch) const { return is_current(p_epoch) ? primary_instance_count : 0; }
++	uint32_t get_primary_normal_count(uint64_t p_epoch) const { return is_current(p_epoch) ? primary_normal_count : 0; }
++	void invalidate() { _clear(); }
++};
++} // namespace RendererRD
+diff --git a/servers/rendering/renderer_rd/effects/metalfx_viewport_visibility.cpp b/servers/rendering/renderer_rd/effects/metalfx_viewport_visibility.cpp
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/renderer_rd/effects/metalfx_viewport_visibility.cpp
+@@ -0,0 +1,297 @@
++/**************************************************************************/
++/*  metalfx_viewport_visibility.cpp                                       */
++/**************************************************************************/
++/* Copyright (c) 2026 OpenRC Simulator contributors.                      */
++/* SPDX-License-Identifier: MIT                                           */
++/**************************************************************************/
++
++#include "metalfx_viewport_visibility.h"
++
++#include "core/math/math_funcs.h"
++#include "servers/rendering/storage/metalfx_viewport_numeric.h"
++
++using namespace RendererRD;
++
++// Primary hits and one secondary visibility ray come from the captured TLAS.
++// This estimates only constant-environment diffuse visibility, not full GI.
++static const char *metalfx_viewport_visibility_shader = R"GLSL(#version 460
++#extension GL_EXT_ray_query : require
++layout(local_size_x=8,local_size_y=8,local_size_z=1) in;
++layout(set=0,binding=0) uniform accelerationStructureEXT scene;
++layout(set=0,binding=1,std430) readonly buffer Geometry { uvec4 ranges[16]; vec4 normals[]; } geometry;
++layout(set=0,binding=2,rgba16f) uniform writeonly image2D noisy_output;
++layout(set=0,binding=3,r32f) uniform writeonly image2D primary_depth;
++layout(set=0,binding=4,rgba16f) uniform writeonly image2D diffuse_albedo;
++layout(set=0,binding=5,rgba16f) uniform writeonly image2D specular_albedo;
++layout(set=0,binding=6,rgba16f) uniform writeonly image2D world_normal;
++layout(set=0,binding=7,r16f) uniform writeonly image2D roughness;
++layout(push_constant,std430) uniform Push {
++    mat4 world_from_clip;
++    vec4 environment_epsilon;
++    uvec4 dimensions; // width, height, sample, instance count
++    uvec4 limits; // normal count, reserved
++    vec4 background;
++} pc;
++uint hash32(uint x) {
++    x ^= x >> 16; x *= 0x7feb352du; x ^= x >> 15;
++    x *= 0x846ca68bu; x ^= x >> 16; return x;
++}
++float rand01(uint x) { return (float(hash32(x) & 0x00ffffffu) + 0.5) * (1.0 / 16777216.0); }
++void no_hit(ivec2 p) {
++    imageStore(noisy_output, p, vec4(pc.background.rgb, 1)); imageStore(primary_depth, p, vec4(0));
++    imageStore(diffuse_albedo, p, vec4(0)); imageStore(specular_albedo, p, vec4(0));
++    // There is no scene surface here. Supply finite SDK background values;
++    // primary_depth stays zero so the consumer writes the exact background.
++    imageStore(world_normal, p, vec4(0, 0, 1, 1)); imageStore(roughness, p, vec4(1));
++}
++void main() {
++    uvec2 p = gl_GlobalInvocationID.xy;
++    if (p.x >= pc.dimensions.x || p.y >= pc.dimensions.y) { return; }
++    ivec2 pixel = ivec2(p);
++    vec2 uv = (vec2(p) + vec2(0.5)) / vec2(pc.dimensions.xy);
++    vec4 hn = pc.world_from_clip * vec4(uv * 2.0 - 1.0, 1.0, 1.0);
++    vec4 hf = pc.world_from_clip * vec4(uv * 2.0 - 1.0, 0.0, 1.0);
++    vec3 near_point = hn.xyz / hn.w, far_point = hf.xyz / hf.w;
++    vec3 segment = far_point - near_point;
++    float distance_limit = length(segment);
++    if (any(isnan(near_point)) || any(isinf(near_point)) || any(isnan(far_point)) || any(isinf(far_point)) ||
++            isnan(distance_limit) || isinf(distance_limit) || distance_limit <= 0.0 || distance_limit > 1e7) { no_hit(pixel); return; }
++    vec3 direction_primary = segment / distance_limit;
++    rayQueryEXT primary;
++    rayQueryInitializeEXT(primary, scene, gl_RayFlagsOpaqueEXT, 0xff, near_point, 0.0, direction_primary, distance_limit);
++    while (rayQueryProceedEXT(primary)) {}
++    if (rayQueryGetIntersectionTypeEXT(primary, true) != gl_RayQueryCommittedIntersectionTriangleEXT) { no_hit(pixel); return; }
++    uint id = rayQueryGetIntersectionInstanceCustomIndexEXT(primary, true);
++    uint primitive = rayQueryGetIntersectionPrimitiveIndexEXT(primary, true);
++    if (id == 0 || id > pc.dimensions.w || id > 16) { no_hit(pixel); return; }
++    uvec4 range = geometry.ranges[id - 1];
++    if (range.z != id || range.w != 0 || primitive >= range.y || range.x >= pc.limits.x || primitive >= pc.limits.x - range.x) { no_hit(pixel); return; }
++    vec3 n = geometry.normals[range.x + primitive].xyz;
++    float n2 = dot(n,n);
++    float distance = rayQueryGetIntersectionTEXT(primary, true);
++    float fraction = clamp(distance / distance_limit, 0.0, 1.0);
++    float denominator = fraction * hn.w + (1.0 - fraction) * hf.w;
++    float depth = (1.0 - fraction) * hf.w / denominator;
++    if (any(isnan(n)) || any(isinf(n)) || n2 < 0.99 || n2 > 1.01 || isnan(depth) || isinf(depth) || depth <= 0.0 || depth > 1.0) { no_hit(pixel); return; }
++    n = normalize(n);
++    if (dot(n, direction_primary) > 0.0) { n = -n; }
++    vec3 position = near_point + direction_primary * distance;
++    vec3 albedo = vec3(0.6, 0.5, 0.3); // Exact admitted real material literals.
++    uint seed = (p.y * pc.dimensions.x + p.x) ^ (pc.dimensions.z * 0x9e3779b9u);
++    float u = rand01(seed), v = rand01(seed ^ 0x68bc21ebu);
++    float radius = sqrt(u), phi = 6.283185307179586 * v;
++    vec3 tangent = normalize(cross(abs(n.z) < 0.999 ? vec3(0,0,1) : vec3(0,1,0), n));
++    vec3 bitangent = cross(n, tangent);
++    vec3 direction = normalize(tangent * (radius * cos(phi)) + bitangent * (radius * sin(phi)) + n * sqrt(1.0 - u));
++    rayQueryEXT query;
++    rayQueryInitializeEXT(query, scene, gl_RayFlagsOpaqueEXT, 0xff,
++        position + n * pc.environment_epsilon.w, 0.0, direction, 1000.0);
++    while (rayQueryProceedEXT(query)) {}
++    bool blocked = rayQueryGetIntersectionTypeEXT(query, true) == gl_RayQueryCommittedIntersectionTriangleEXT;
++    imageStore(noisy_output, pixel, vec4(blocked ? vec3(0.0) : albedo * pc.environment_epsilon.rgb, 1.0));
++    imageStore(primary_depth, pixel, vec4(depth));
++    imageStore(diffuse_albedo, pixel, vec4(albedo, 1.0));
++    imageStore(specular_albedo, pixel, vec4(0, 0, 0, 1));
++    imageStore(world_normal, pixel, vec4(n, 1.0));
++    imageStore(roughness, pixel, vec4(0.6));
++}
++)GLSL";
++
++// Invoked in the native denoiser callback only after successful SDK encoding
++// and completion registration. Every target pixel belongs to this opaque RT view.
++static const char *metalfx_viewport_consumer_shader = R"GLSL(#version 460
++layout(local_size_x=8,local_size_y=8,local_size_z=1) in;
++layout(set=0,binding=0) uniform sampler2D denoised;
++layout(set=0,binding=1,rgba16f) uniform writeonly image2D target;
++layout(set=0,binding=2) uniform sampler2D primary_depth;
++layout(push_constant,std430) uniform Push { vec4 background; } pc;
++void main() {
++    ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
++    if (any(greaterThanEqual(pixel, imageSize(target)))) { return; }
++    float traced = texelFetch(primary_depth, pixel, 0).r;
++    vec3 filtered = texelFetch(denoised, pixel, 0).rgb;
++    bool valid_hit = !isnan(traced) && !isinf(traced) && traced > 0.0;
++    bool finite_output = !any(isnan(filtered)) && !any(isinf(filtered));
++    vec3 color = valid_hit && finite_output ? filtered : pc.background.rgb;
++    imageStore(target, pixel, vec4(color, 1.0));
++}
++)GLSL";
++
++static const char *metalfx_depth_vertex = R"GLSL(#version 450
++void main() {
++    vec2 p[3] = vec2[3](vec2(-1,-1), vec2(3,-1), vec2(-1,3));
++    gl_Position = vec4(p[gl_VertexIndex], 0, 1);
++}
++)GLSL";
++static const char *metalfx_depth_fragment = R"GLSL(#version 450
++layout(set=0,binding=0) uniform sampler2D reversed_depth;
++void main() { gl_FragDepth = 1.0 - texelFetch(reversed_depth, ivec2(gl_FragCoord.xy), 0).r; }
++)GLSL";
++
++MetalFXViewportVisibility::~MetalFXViewportVisibility() {
++	RenderingDevice *rd = RenderingDevice::get_singleton();
++	if (rd != owner || !rd) { return; }
++	if (pipeline.is_valid() && rd->compute_pipeline_is_valid(pipeline)) { rd->free_rid(pipeline); }
++	if (consumer_pipeline.is_valid() && rd->compute_pipeline_is_valid(consumer_pipeline)) { rd->free_rid(consumer_pipeline); }
++	if (depth_pipeline.is_valid() && rd->render_pipeline_is_valid(depth_pipeline)) { rd->free_rid(depth_pipeline); }
++	if (shader.is_valid()) { rd->free_rid(shader); }
++	if (consumer_shader.is_valid()) { rd->free_rid(consumer_shader); }
++	if (depth_shader.is_valid()) { rd->free_rid(depth_shader); }
++	if (sampler.is_valid()) { rd->free_rid(sampler); }
++}
++
++bool MetalFXViewportVisibility::begin_generation(uint64_t p_epoch) {
++	RenderingDevice *rd = RenderingDevice::get_singleton();
++	if (!p_epoch || p_epoch <= last_epoch || !rd || (owner && owner != rd) || !rd->has_feature(RD::SUPPORTS_METAL_TRIANGLE_QUERY)) { invalidate(); return false; }
++	invalidate();
++	if (!pipeline.is_valid()) {
++		String error;
++		RD::ShaderStageSPIRVData stage;
++		stage.shader_stage = RD::SHADER_STAGE_COMPUTE;
++		stage.spirv = rd->shader_compile_spirv_from_source(stage.shader_stage, metalfx_viewport_visibility_shader, RD::SHADER_LANGUAGE_GLSL, &error, false);
++		if (stage.spirv.is_empty()) { return false; }
++		Vector<RD::ShaderStageSPIRVData> stages;
++		stages.push_back(stage);
++		RID new_shader = rd->shader_create_from_spirv(stages, "openrc_metalfx_viewport_visibility");
++		if (!new_shader.is_valid()) { return false; }
++		RID new_pipeline = rd->compute_pipeline_create(new_shader);
++		if (!new_pipeline.is_valid()) { rd->free_rid(new_shader); return false; }
++		RD::SamplerState sampler_state;
++		RID new_sampler = rd->sampler_create(sampler_state);
++		if (!new_sampler.is_valid()) { rd->free_rid(new_pipeline); rd->free_rid(new_shader); return false; }
++		owner = rd;
++		shader = new_shader;
++		pipeline = new_pipeline;
++		sampler = new_sampler;
++	}
++	if (!consumer_pipeline.is_valid()) {
++		String error;
++		RD::ShaderStageSPIRVData stage;
++		stage.shader_stage = RD::SHADER_STAGE_COMPUTE;
++		stage.spirv = rd->shader_compile_spirv_from_source(stage.shader_stage, metalfx_viewport_consumer_shader, RD::SHADER_LANGUAGE_GLSL, &error, false);
++		if (stage.spirv.is_empty()) { return false; }
++		Vector<RD::ShaderStageSPIRVData> stages;
++		stages.push_back(stage);
++		RID new_shader = rd->shader_create_from_spirv(stages, "openrc_metalfx_viewport_consumer");
++		if (!new_shader.is_valid()) { return false; }
++		RID new_pipeline = rd->compute_pipeline_create(new_shader);
++		if (!new_pipeline.is_valid()) { rd->free_rid(new_shader); return false; }
++		consumer_shader = new_shader;
++		consumer_pipeline = new_pipeline;
++	}
++	if (!depth_shader.is_valid()) {
++		Vector<RD::ShaderStageSPIRVData> stages;
++		String error;
++		for (int i = 0; i < 2; ++i) {
++			RD::ShaderStageSPIRVData stage;
++			stage.shader_stage = i == 0 ? RD::SHADER_STAGE_VERTEX : RD::SHADER_STAGE_FRAGMENT;
++			stage.spirv = rd->shader_compile_spirv_from_source(stage.shader_stage, i == 0 ? metalfx_depth_vertex : metalfx_depth_fragment, RD::SHADER_LANGUAGE_GLSL, &error, false);
++			if (stage.spirv.is_empty()) { return false; }
++			stages.push_back(stage);
++		}
++		depth_shader = rd->shader_create_from_spirv(stages, "openrc_metalfx_viewport_depth");
++		if (!depth_shader.is_valid()) { return false; }
++	}
++	epoch = p_epoch;
++	last_epoch = p_epoch;
++	return true;
++}
++
++bool MetalFXViewportVisibility::dispatch(const Inputs &p) {
++	RD *rd = RD::get_singleton();
++	if (!rd || rd != owner || !epoch || p.epoch != epoch || !p.scene.is_valid() || !p.geometry.is_valid() || !pipeline.is_valid() ||
++			!p.instance_count || p.instance_count > 16 || !p.normal_count ||
++			p.size.x <= 0 || p.size.y <= 0 || p.size.x > 16384 || p.size.y > 16384 ||
++			!MFXViewportNumeric::environment_channel(p.linear_environment.r) || !MFXViewportNumeric::environment_channel(p.linear_environment.g) || !MFXViewportNumeric::environment_channel(p.linear_environment.b) ||
++			!MFXViewportNumeric::environment_channel(p.linear_background.r) || !MFXViewportNumeric::environment_channel(p.linear_background.g) || !MFXViewportNumeric::environment_channel(p.linear_background.b) ||
++			!Math::is_finite(p.ray_epsilon) || p.ray_epsilon <= 0 || p.ray_distance != 1000.0f) { invalidate(); return false; }
++	const RID textures[6] = { p.noisy_output, p.primary_depth, p.diffuse_albedo, p.specular_albedo, p.world_normal, p.roughness };
++	const RD::DataFormat formats[6] = { RD::DATA_FORMAT_R16G16B16A16_SFLOAT, RD::DATA_FORMAT_R32_SFLOAT,
++		RD::DATA_FORMAT_R16G16B16A16_SFLOAT, RD::DATA_FORMAT_R16G16B16A16_SFLOAT,
++		RD::DATA_FORMAT_R16G16B16A16_SFLOAT, RD::DATA_FORMAT_R16_SFLOAT };
++	for (int i = 0; i < 6; ++i) {
++		if (!rd->metalfx_viewport_texture_is_private(textures[i])) { invalidate(); return false; }
++		for (int j = 0; j < i; ++j) { if (textures[i] == textures[j]) { invalidate(); return false; } }
++		RD::TextureFormat f = rd->texture_get_format(textures[i]);
++		if (f.format != formats[i] || f.width != uint32_t(p.size.x) || f.height != uint32_t(p.size.y) ||
++				f.depth != 1 || f.array_layers != 1 || f.mipmaps != 1 || f.texture_type != RD::TEXTURE_TYPE_2D ||
++				f.samples != RD::TEXTURE_SAMPLES_1 || !(f.usage_bits & RD::TEXTURE_USAGE_STORAGE_BIT) ||
++				f.is_discardable || f.is_resolve_buffer || f.is_subsampled) { invalidate(); return false; }
++	}
++	Vector<RD::Uniform> uniforms;
++	uniforms.push_back(RD::Uniform(RD::UNIFORM_TYPE_ACCELERATION_STRUCTURE, 0, p.scene));
++	uniforms.push_back(RD::Uniform(RD::UNIFORM_TYPE_STORAGE_BUFFER, 1, p.geometry));
++	for (int i = 0; i < 6; ++i) { uniforms.push_back(RD::Uniform(RD::UNIFORM_TYPE_IMAGE, i + 2, textures[i])); }
++	RID set = rd->metalfx_shared_uniform_sets_supported() ? rd->metalfx_shared_uniform_set_create(uniforms, shader, 0) : rd->uniform_set_create(uniforms, shader, 0);
++	if (!set.is_valid()) { invalidate(); return false; }
++	struct Push { float world_from_clip[16]; float environment_epsilon[4]; uint32_t dimensions[4]; uint32_t limits[4]; float background[4]; } push = {};
++	static_assert(sizeof(Push) == 128, "primary shader push constant layout");
++	for (int c = 0; c < 4; ++c) {
++		for (int r = 0; r < 4; ++r) {
++			push.world_from_clip[c * 4 + r] = float(p.world_from_clip[c][r]);
++			if (!Math::is_finite(push.world_from_clip[c * 4 + r])) { rd->free_rid(set); invalidate(); return false; }
++		}
++	}
++	if (!MFXViewportNumeric::primary_ray_domain_safe(push.world_from_clip) ||
++			!Math::is_finite(p.world_from_clip.determinant()) || p.world_from_clip.determinant() == 0) { rd->free_rid(set); invalidate(); return false; }
++	push.environment_epsilon[0] = p.linear_environment.r;
++	push.environment_epsilon[1] = p.linear_environment.g;
++	push.environment_epsilon[2] = p.linear_environment.b;
++	push.environment_epsilon[3] = p.ray_epsilon;
++	push.dimensions[0] = uint32_t(p.size.x);
++	push.dimensions[1] = uint32_t(p.size.y);
++	push.dimensions[2] = p.sample;
++	push.dimensions[3] = p.instance_count;
++	push.limits[0] = p.normal_count;
++	push.background[0] = p.linear_background.r; push.background[1] = p.linear_background.g; push.background[2] = p.linear_background.b; push.background[3] = 1.0f;
++	RD::ComputeListID list = rd->compute_list_begin();
++	if (list < 0) { rd->free_rid(set); invalidate(); return false; }
++	if (!rd->compute_list_enable_metalfx_input_checks(list)) { rd->compute_list_end(); rd->free_rid(set); invalidate(); return false; }
++	rd->compute_list_bind_compute_pipeline(list, pipeline);
++	rd->compute_list_bind_uniform_set(list, set, 0);
++	rd->compute_list_set_push_constant(list, &push, sizeof(push));
++	rd->compute_list_dispatch(list, (uint32_t(p.size.x) + 7) / 8, (uint32_t(p.size.y) + 7) / 8, 1);
++	rd->compute_list_end();
++	rd->free_rid(set);
++	return true; // The same-command dispatch ledger and later GPU receipt remain required.
++}
++bool MetalFXViewportVisibility::convert_depth(RID p_viewport_depth, RID p_denoised_depth, Size2i p_size) {
++	RD *rd = RD::get_singleton();
++	if (!rd || rd != owner || !epoch || p_size.x <= 0 || p_size.y <= 0 || p_viewport_depth == p_denoised_depth ||
++			!rd->metalfx_viewport_texture_is_private(p_viewport_depth) || !rd->metalfx_viewport_texture_is_private(p_denoised_depth)) { invalidate(); return false; }
++	RD::TextureFormat src = rd->texture_get_format(p_viewport_depth);
++	RD::TextureFormat dst = rd->texture_get_format(p_denoised_depth);
++	bool source_format = src.format == RD::DATA_FORMAT_R32_SFLOAT;
++	if (!source_format || dst.format != RD::DATA_FORMAT_D32_SFLOAT || src.width != uint32_t(p_size.x) || src.height != uint32_t(p_size.y) || dst.width != src.width || dst.height != src.height ||
++			src.texture_type != RD::TEXTURE_TYPE_2D || dst.texture_type != RD::TEXTURE_TYPE_2D || src.array_layers != 1 || dst.array_layers != 1 || src.mipmaps != 1 || dst.mipmaps != 1 ||
++			src.samples != RD::TEXTURE_SAMPLES_1 || dst.samples != RD::TEXTURE_SAMPLES_1 || !(src.usage_bits & RD::TEXTURE_USAGE_SAMPLING_BIT) || !(dst.usage_bits & RD::TEXTURE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)) { invalidate(); return false; }
++	RID framebuffer = rd->framebuffer_create(Vector<RID>({ p_denoised_depth }));
++	if (!framebuffer.is_valid()) { invalidate(); return false; }
++	RD::FramebufferFormatID format = rd->framebuffer_get_format(framebuffer);
++	if (!depth_pipeline.is_valid() || depth_pipeline_format != format) {
++		if (depth_pipeline.is_valid()) { rd->free_rid(depth_pipeline); }
++		RD::PipelineDepthStencilState depth_state;
++		depth_state.enable_depth_test = true;
++		depth_state.enable_depth_write = true;
++		depth_state.depth_compare_operator = RD::COMPARE_OP_ALWAYS;
++		depth_pipeline = rd->render_pipeline_create(depth_shader, format, RD::INVALID_ID, RD::RENDER_PRIMITIVE_TRIANGLES, RD::PipelineRasterizationState(), RD::PipelineMultisampleState(), depth_state, RD::PipelineColorBlendState());
++		depth_pipeline_format = format;
++	}
++	if (!depth_pipeline.is_valid()) { rd->free_rid(framebuffer); invalidate(); return false; }
++	Vector<RD::Uniform> uniforms;
++	uniforms.push_back(RD::Uniform(RD::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE, 0, Vector<RID>({ sampler, p_viewport_depth })));
++	RID set = rd->metalfx_shared_uniform_sets_supported() ? rd->metalfx_shared_uniform_set_create(uniforms, depth_shader, 0) : rd->uniform_set_create(uniforms, depth_shader, 0);
++	if (!set.is_valid()) { rd->free_rid(framebuffer); invalidate(); return false; }
++	RD::DrawListID draw = rd->draw_list_begin(framebuffer, RD::DRAW_CLEAR_DEPTH);
++	if (draw < 0) { rd->free_rid(set); rd->free_rid(framebuffer); invalidate(); return false; }
++	if (!rd->draw_list_enable_metalfx_input_checks(draw, true)) { rd->draw_list_end(); rd->free_rid(set); rd->free_rid(framebuffer); invalidate(); return false; }
++	rd->draw_list_bind_render_pipeline(draw, depth_pipeline);
++	rd->draw_list_bind_uniform_set(draw, set, 0);
++	rd->draw_list_draw(draw, false, 1, 3);
++	const bool inputs_valid = rd->draw_list_metalfx_inputs_valid(draw);
++	rd->draw_list_end();
++	rd->free_rid(set);
++	rd->free_rid(framebuffer);
++	if (!inputs_valid) { invalidate(); return false; }
++	return true;
++}
+diff --git a/servers/rendering/renderer_rd/effects/metalfx_viewport_visibility.h b/servers/rendering/renderer_rd/effects/metalfx_viewport_visibility.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/renderer_rd/effects/metalfx_viewport_visibility.h
+@@ -0,0 +1,53 @@
++/**************************************************************************/
++/*  metalfx_viewport_visibility.h                                         */
++/**************************************************************************/
++/* Copyright (c) 2026 OpenRC Simulator contributors.                      */
++/* SPDX-License-Identifier: MIT                                           */
++/**************************************************************************/
++#pragma once
++
++#include "servers/rendering/rendering_device.h"
++
++namespace RendererRD {
++
++// Internal, render-thread-only building block. A per-viewport owner must
++// supply a current, closed scenario generation with checked geometry metadata.
++// This does not certify admission, submission, GPU completion or presentation.
++class MetalFXViewportVisibility {
++public:
++	struct Inputs {
++		RID scene, geometry, primary_depth, world_normal, diffuse_albedo, specular_albedo, roughness, noisy_output;
++		Size2i size;
++		// Inverse of this frame's depth-corrected world-to-clip projection,
++		// including the renderer's jitter. Depth uses Godot's reversed 0..1.
++		Projection world_from_clip;
++		Color linear_environment;
++		Color linear_background;
++		float ray_epsilon = 0.005f;
++		float ray_distance = 1000.0f;
++		uint32_t sample = 0;
++		uint32_t instance_count = 0, normal_count = 0;
++		uint64_t epoch = 0;
++	};
++
++private:
++	RenderingDevice *owner = nullptr;
++	RID shader, pipeline, sampler, consumer_shader, consumer_pipeline, depth_shader, depth_pipeline;
++	RenderingDevice::FramebufferFormatID depth_pipeline_format = RenderingDevice::INVALID_ID;
++	uint64_t epoch = 0;
++	uint64_t last_epoch = 0;
++
++public:
++	MetalFXViewportVisibility() = default;
++	MetalFXViewportVisibility(const MetalFXViewportVisibility &) = delete;
++	MetalFXViewportVisibility &operator=(const MetalFXViewportVisibility &) = delete;
++	~MetalFXViewportVisibility();
++	bool begin_generation(uint64_t p_epoch);
++	void invalidate() { epoch = 0; }
++	bool dispatch(const Inputs &p_inputs);
++	bool convert_depth(RID p_primary_depth, RID p_denoised_depth, Size2i p_size);
++	RID get_trace_pipeline() const { return epoch ? pipeline : RID(); }
++	RID get_consumer_pipeline() const { return epoch ? consumer_pipeline : RID(); }
++	RID get_consumer_sampler() const { return epoch ? sampler : RID(); }
++};
++} // namespace RendererRD
+diff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -44,6 +44,7 @@
+ #include "servers/rendering/storage/ltc_lut.gen.h"
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ #include "drivers/metal/metalfx_frame_bridge.h"
++#include "servers/rendering/storage/metalfx_viewport_numeric.h"
+ #endif
+ 
+ #include "modules/modules_enabled.gen.h"
+@@ -2489,6 +2490,30 @@
+ 		}
+ 	}
+ 
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (auto *denoised = rb->get_metalfx_viewport_denoised()) {
++		const uint64_t current_frame = RD::get_singleton()->get_frames_drawn();
++		const bool partial_region = p_render_data->render_region.has_area() && p_render_data->render_region != Rect2i(Point2i(), screen_size);
++		if (is_reflection_probe || p_render_data->transparent_bg || load_color || draw_sky || draw_sky_fog_only || use_msaa || using_taa || using_upscaling || using_ssao || using_ssil || using_ssr || using_sscs || using_sdfgi || using_voxelgi || using_separate_specular ||
++				p_render_data->lightmaps->size() != 0 || p_render_data->decals->size() != 0 || p_render_data->fog_volumes->size() != 0 || partial_region ||
++				!render_list[RENDER_LIST_MOTION].elements.is_empty() || !render_list[RENDER_LIST_ALPHA].elements.is_empty() ||
++				!MFXViewportNumeric::environment_channel(clear_color.r) || !MFXViewportNumeric::environment_channel(clear_color.g) || !MFXViewportNumeric::environment_channel(clear_color.b) ||
++				get_debug_draw_mode() != RSE::VIEWPORT_DEBUG_DRAW_DISABLED) {
++			denoised->reject("unsupported_render_effect");
++		} else if (denoised->begin_frame_proof(current_frame) && denoised->consume_authorization(current_frame)) {
++			Projection correction;
++			correction.set_depth_correction(true);
++			Projection reversed_clip = correction * p_render_data->scene_data->cam_projection;
++			Projection world_to_view(p_render_data->scene_data->cam_transform.affine_inverse());
++			Projection world_from_clip = (reversed_clip * world_to_view).inverse();
++			Projection unreverse;
++			unreverse[2][2] = -1;
++			unreverse[3][2] = 1;
++			denoised->record(rb->get_internal_texture(), world_to_view, unreverse * reversed_clip, world_from_clip, denoised->get_linear_environment(), clear_color, current_frame);
++		}
++	}
++#endif
++
+ 	{
+ 		if (ce_post_opaque_resolved_color) {
+ 			for (uint32_t v = 0; v < rb->get_view_count(); v++) {
+@@ -5639,4 +5664,7 @@
+ 		RD::get_singleton()->free_rid(sdfgi_framebuffer_size_cache.begin()->value);
+ 		sdfgi_framebuffer_size_cache.remove(sdfgi_framebuffer_size_cache.begin());
+ 	}
+-}
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	if (singleton == this) { singleton = nullptr; }
++#endif
++}
+diff --git a/servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp b/servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp
+--- a/servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/mesh_storage.cpp
+@@ -34,6 +34,8 @@
+ #include "servers/rendering/renderer_viewport.h"
+ #include "servers/rendering/rendering_server.h"
+ #include "servers/rendering/rendering_server_types.h"
++#include "servers/rendering/storage/metalfx_viewport_opt_in.h"
++#include "servers/rendering/storage/metalfx_viewport_geometry.h"
+ 
+ using namespace RendererRD;
+ 
+@@ -61,6 +63,7 @@
+ 	if (OS::get_singleton()->get_environment("OPENRC_METAL_RT_SCENE") == "1" &&
+ 			RD::get_singleton()->has_feature(RD::SUPPORTS_METAL_TRIANGLE_QUERY)) {
+ 		rt_sources = std::make_unique<RTSourceCache>();
++		MFXViewportOptIn::denoised.initialize([]() { return OS::get_singleton()->get_environment("OPENRC_METALFX_OPAQUE_RT_VIEW") == "1"; });
+ 	}
+ #endif
+ 
+@@ -211,6 +214,9 @@
+ 		for (const KeyValue<const Mesh::Surface *, RTSource> &E : rt_sources->sources) {
+ 			RD::get_singleton()->free_rid(E.value.vertices);
+ 		}
++		rt_sources->lifetime.drain_retired([](RID p_vertices) {
++			RD::get_singleton()->free_rid(p_vertices);
++		});
+ 		rt_sources.reset();
+ 	}
+ 	//def buffers
+@@ -405,7 +411,6 @@
+ 	const bool requested_storage_buffer = (new_surface.format & RSE::ARRAY_FLAG_USE_STORAGE_BUFFER);
+ 	const BitField<RD::BufferCreationBits> as_storage_flag = (use_as_storage || requested_storage_buffer) ? RD::BUFFER_CREATION_AS_STORAGE_BIT : 0;
+ 	const BitField<RD::BufferCreationBits> requested_storage_flag = requested_storage_buffer ? RD::BUFFER_CREATION_AS_STORAGE_BIT : 0;
+-
+ 	if (new_surface.vertex_data.size()) {
+ 		// If we have an uncompressed surface that contains normals, but not tangents, we need to differentiate the array
+ 		// from a compressed array in the shader. To do so, we allow the normal to read 4 components out of the buffer
+@@ -584,6 +589,23 @@
+ 	if (expanded.resize(bytes) != OK || !OpenRCRTGeometry::expand(input, expanded.ptrw(), bytes)) {
+ 		return;
+ 	}
++	Vector<MFXViewportPrimaryGeometry::Normal> primary_normals;
++	const uint64_t triangle_count = bytes / 36;
++	const uint64_t normal_bytes = triangle_count * sizeof(MFXViewportPrimaryGeometry::Normal);
++	if (MFXViewportOptIn::denoised.requested()) {
++		const Vector3 bounds_end = p_data.aabb.position + p_data.aabb.size;
++		const double bounds_min[3] = { p_data.aabb.position.x, p_data.aabb.position.y, p_data.aabb.position.z };
++		const double bounds_max[3] = { bounds_end.x, bounds_end.y, bounds_end.z };
++		if (MFXViewportPrimaryGeometry::vertices_inside_bounds(input.positions, input.position_bytes, input.vertex_count, bounds_min, bounds_max) &&
++				rt_sources->normal_budget.consume(normal_bytes)) {
++			if (primary_normals.resize(triangle_count) != OK ||
++					!MFXViewportPrimaryGeometry::build_normals(expanded.ptr(), bytes, primary_normals.ptrw(), triangle_count) ||
++					!MFXViewportGeometry::flat_normals_match(input, bool(p_data.format & RSE::ARRAY_FORMAT_NORMAL),
++							bool(p_data.format & RSE::ARRAY_FORMAT_TANGENT), primary_normals.ptr(), triangle_count)) {
++				primary_normals.clear(); // Degenerate geometry remains usable by the ordinary RT probe.
++			}
++		}
++	}
+ 	RID vertices = RD::get_singleton()->vertex_buffer_create_metalfx_rt_input(uint32_t(bytes), expanded);
+ 	if (!vertices.is_valid()) {
+ 		return;
+@@ -592,6 +614,7 @@
+ 	source.vertices = vertices;
+ 	source.vertex_count = uint32_t(bytes / 12);
+ 	source.serial = rt_sources->next_serial++;
++	source.primary_normals = primary_normals;
+ 	rt_sources->sources.insert(p_surface, source);
+ }
+ 
+@@ -599,27 +622,31 @@
+ 	if (!rt_sources) {
+ 		return;
+ 	}
+-	RID vertices;
++	RID free_vertices;
+ 	{
+ 		MutexLock lock(rt_sources->mutex);
+ 		RTSource *source = rt_sources->sources.getptr(p_surface);
+ 		if (!source) {
+ 			return;
+ 		}
+-		vertices = source->vertices;
++		const RID vertices = source->vertices;
++		const uint64_t serial = source->serial;
+ 		rt_sources->sources.erase(p_surface);
++		CRASH_COND(!rt_sources->lifetime.retire(serial, vertices, rt_sources->probe_active, free_vertices));
+ 		if (rt_sources->probe_active) {
+ 			// The transaction admits no new sources and starts with at most
+ 			// SOURCE_LIMIT entries, so this fixed retirement array cannot overflow.
+ 			DEV_ASSERT(rt_sources->deferred_count < RTSourceCache::SOURCE_LIMIT);
+-			rt_sources->deferred_sources[rt_sources->deferred_count++] = vertices;
++			rt_sources->deferred_sources[rt_sources->deferred_count++] = serial;
+ 			rt_sources->probe_changed = true;
+ 			return;
+ 		}
+ 	}
+ 	// RD recursively invalidates dependent BLAS/TLAS and defers native release
+ 	// until the frame fence. The cumulative input budget is not refunded.
+-	RD::get_singleton()->free_rid(vertices);
++	if (free_vertices.is_valid()) {
++		RD::get_singleton()->free_rid(free_vertices);
++	}
+ }
+ 
+ bool MeshStorage::rt_source_get(RID p_mesh, int p_surface, RID &r_vertices, uint32_t &r_count, uint64_t &r_serial) {
+@@ -639,6 +666,53 @@
+ 	r_count = source->vertex_count;
+ 	r_serial = source->serial;
+ 	return true;
++}
++
++bool MeshStorage::rt_source_primary_normals(RID p_mesh, int p_surface, uint64_t p_expected_serial, Vector<MFXViewportPrimaryGeometry::Normal> &r_normals) {
++	r_normals.clear();
++	if (!rt_sources || p_surface < 0 || !p_expected_serial) { return false; }
++	Mesh *mesh = mesh_owner.get_or_null(p_mesh);
++	if (!mesh || uint32_t(p_surface) >= mesh->surface_count) { return false; }
++	MutexLock lock(rt_sources->mutex);
++	const RTSource *source = rt_sources->sources.getptr(mesh->surfaces[p_surface]);
++	if (!source || source->serial != p_expected_serial || source->primary_normals.is_empty()) { return false; }
++	r_normals = source->primary_normals;
++	return true;
++}
++
++bool MeshStorage::rt_source_acquire(RID p_mesh, int p_surface, RID &r_vertices, uint32_t &r_count, uint64_t &r_serial, uint64_t &r_token) {
++	r_vertices = RID();
++	r_count = 0;
++	r_serial = 0;
++	r_token = 0;
++	if (!rt_sources || p_surface < 0) { return false; }
++	Mesh *mesh = mesh_owner.get_or_null(p_mesh);
++	if (!mesh || uint32_t(p_surface) >= mesh->surface_count) { return false; }
++	MutexLock lock(rt_sources->mutex);
++	const RTSource *source = rt_sources->sources.getptr(mesh->surfaces[p_surface]);
++	if (!source || !rt_sources->lifetime.acquire(source->serial, r_token)) { return false; }
++	r_vertices = source->vertices;
++	r_count = source->vertex_count;
++	r_serial = source->serial;
++	return true;
++}
++
++bool MeshStorage::rt_source_lease_current(uint64_t p_token) const {
++	if (!rt_sources) { return false; }
++	MutexLock lock(rt_sources->mutex);
++	return rt_sources->lifetime.current(p_token);
++}
++
++bool MeshStorage::rt_source_release(uint64_t p_token) {
++	if (!rt_sources) { return false; }
++	RID free_vertices;
++	bool found;
++	{
++		MutexLock lock(rt_sources->mutex);
++		found = rt_sources->lifetime.release(p_token, free_vertices);
++	}
++	if (free_vertices.is_valid()) { RD::get_singleton()->free_rid(free_vertices); }
++	return found;
+ }
+ 
+ uint64_t MeshStorage::rt_input_budget_spent() const {
+@@ -671,8 +745,10 @@
+ 	// Called after the transaction has retired its logical BLAS/TLAS. Native
+ 	// destruction remains subject to RD's normal deferred frame ownership.
+ 	for (uint32_t i = 0; i < rt_sources->deferred_count; ++i) {
+-		RD::get_singleton()->free_rid(rt_sources->deferred_sources[i]);
+-		rt_sources->deferred_sources[i] = RID();
++		RID free_vertices;
++		CRASH_COND(!rt_sources->lifetime.end_probe_hold(rt_sources->deferred_sources[i], free_vertices));
++		if (free_vertices.is_valid()) { RD::get_singleton()->free_rid(free_vertices); }
++		rt_sources->deferred_sources[i] = 0;
+ 	}
+ 	rt_sources->deferred_count = 0;
+ 	rt_sources->probe_active = false;
+diff --git a/servers/rendering/renderer_rd/storage_rd/mesh_storage.h b/servers/rendering/renderer_rd/storage_rd/mesh_storage.h
+--- a/servers/rendering/renderer_rd/storage_rd/mesh_storage.h
++++ b/servers/rendering/renderer_rd/storage_rd/mesh_storage.h
+@@ -39,6 +39,8 @@
+ #include "servers/rendering/rendering_server_globals.h"
+ #include "servers/rendering/storage/mesh_storage.h"
+ #include "servers/rendering/storage/metalfx_rt_geometry.h"
++#include "servers/rendering/storage/metalfx_rt_source_lifetime.h"
++#include "servers/rendering/storage/metalfx_viewport_primary_geometry.h"
+ #include "servers/rendering/storage/utilities.h"
+ 
+ #include <memory>
+@@ -185,20 +187,23 @@
+ 	mutable RID_Owner<Mesh, true> mesh_owner;
+ 
+ 	// This cache exists only when explicitly requested at process startup.
+-	// The resources are private to the renderer; consumers must validate and
+-	// record their use within the same render-thread transaction.
++	// The resources are private to the renderer. A long-lived scene generation
++	// needs a lease, and must still validate scene/source freshness before use.
+ 	struct RTSource {
+ 		RID vertices;
+ 		uint32_t vertex_count = 0;
+ 		uint64_t serial = 0;
++		Vector<MFXViewportPrimaryGeometry::Normal> primary_normals;
+ 	};
+ 	struct RTSourceCache {
+ 		static constexpr uint32_t SOURCE_LIMIT = 1024;
+ 		Mutex mutex;
+ 		HashMap<const Mesh::Surface *, RTSource> sources;
++		OpenRCRTSourceLifetime<RID> lifetime;
+ 		OpenRCRTGeometry::InputBudget budget{ 0, 64u * 1024u * 1024u };
++		OpenRCRTGeometry::InputBudget normal_budget{ 0, 16u * 1024u * 1024u };
+ 		uint64_t next_serial = 1;
+-		RID deferred_sources[SOURCE_LIMIT];
++		uint64_t deferred_sources[SOURCE_LIMIT] = {};
+ 		uint32_t deferred_count = 0;
+ 		bool probe_active = false;
+ 		bool probe_changed = false;
+@@ -387,6 +392,15 @@
+ 	// Never expose these IDs to scripts or retain them across a render-thread
+ 	// transaction. Deleting the source also invalidates dependent BLAS/TLAS.
+ 	bool rt_source_get(RID p_mesh, int p_surface, RID &r_vertices, uint32_t &r_count, uint64_t &r_serial);
++	bool rt_source_primary_normals(RID p_mesh, int p_surface, uint64_t p_expected_serial, Vector<MFXViewportPrimaryGeometry::Normal> &r_normals);
++	// Render-thread only. Capture requires a current source; each successful
++	// capture returns a distinct token. Invalidation immediately makes current()
++	// false, even though existing tokens retain the old native source. Callers
++	// must hold rt_source_mutex() across current/epoch validation and graph
++	// recording, then retire dependent logical BLAS/TLAS before release.
++	bool rt_source_acquire(RID p_mesh, int p_surface, RID &r_vertices, uint32_t &r_count, uint64_t &r_serial, uint64_t &r_token);
++	bool rt_source_lease_current(uint64_t p_token) const;
++	bool rt_source_release(uint64_t p_token);
+ 	uint64_t rt_input_budget_spent() const;
+ 	bool rt_probe_source_begin();
+ 	bool rt_probe_source_changed() const;
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -29,6 +29,7 @@
+ /**************************************************************************/
+ 
+ #include "render_scene_buffers_rd.h"
++#include "servers/rendering/storage/metalfx_viewport_opt_in.h"
+ #include "render_scene_buffers_rd.compat.inc"
+ 
+ #include "core/object/class_db.h"
+@@ -87,6 +88,9 @@
+ #endif
+ 
+ void RenderSceneBuffersRD::_bind_methods() {
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	ClassDB::bind_method(D_METHOD("get_metalfx_viewport_denoised_status"), &RenderSceneBuffersRD::get_metalfx_viewport_denoised_status);
++#endif
+ 	ClassDB::bind_method(D_METHOD("has_texture", "context", "name"), &RenderSceneBuffersRD::has_texture);
+ 	ClassDB::bind_method(D_METHOD("create_texture", "context", "name", "data_format", "usage_bits", "texture_samples", "size", "layers", "mipmaps", "unique", "discardable"), &RenderSceneBuffersRD::create_texture);
+ 	ClassDB::bind_method(D_METHOD("create_texture_from_format", "context", "name", "format", "view", "unique"), &RenderSceneBuffersRD::_create_texture_from_format);
+@@ -593,6 +597,9 @@
+ 
+ void RenderSceneBuffersRD::cleanup() {
+ 	reset_metalfx_status();
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	mfx_viewport_denoised.reset();
++#endif
+ 	// Free our data buffers (but don't destroy them)
+ 	for (KeyValue<StringName, Ref<RenderBufferCustomDataRD>> &E : data_buffers) {
+ 		E.value->free_data();
+@@ -619,6 +626,25 @@
+ 	}
+ #endif
+ }
++
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++bool RenderSceneBuffersRD::is_metalfx_viewport_denoised_requested() const {
++	return MFXViewportOptIn::denoised.requested();
++}
++
++RendererRD::MetalFXViewportDenoised *RenderSceneBuffersRD::ensure_metalfx_viewport_denoised() {
++	if (!is_metalfx_viewport_denoised_requested()) { return nullptr; }
++	if (!mfx_viewport_denoised) { mfx_viewport_denoised = std::make_unique<RendererRD::MetalFXViewportDenoised>(); }
++	return mfx_viewport_denoised.get();
++}
++
++Dictionary RenderSceneBuffersRD::get_metalfx_viewport_denoised_status() const {
++	if (mfx_viewport_denoised) { return mfx_viewport_denoised->status(); }
++	Dictionary status;
++	status["status"] = is_metalfx_viewport_denoised_requested() ? "not_attempted" : "disabled";
++	return status;
++}
++#endif
+ 
+ void RenderSceneBuffersRD::configure(const RenderSceneBuffersConfiguration *p_config) {
+ 	RendererRD::TextureStorage *texture_storage = RendererRD::TextureStorage::get_singleton();
+diff --git a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h
+@@ -37,6 +37,10 @@
+ #include "servers/rendering/rendering_device.h"
+ #include "servers/rendering/storage/render_scene_buffers.h"
+ 
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++#include "servers/rendering/renderer_rd/effects/metalfx_viewport_denoised.h"
++#endif
++
+ #ifdef METAL_ENABLED
+ #include "servers/rendering/renderer_rd/effects/metal_fx.h"
+ #endif
+@@ -98,6 +102,7 @@
+ 	RendererRD::MFXFrameContext *mfx_frame_context = nullptr;
+ 	String mfx_frame_reason = "not_attempted";
+ 	uint64_t mfx_frame_epoch = 0; // Survives rejection and recreation within this buffer generation.
++	std::unique_ptr<RendererRD::MetalFXViewportDenoised> mfx_viewport_denoised;
+ 	struct MFXCompositionSlot {
+ 		RID generated_target;
+ 		RID real_target;
+@@ -263,6 +268,10 @@
+ 	virtual Dictionary read_metalfx_frame_composition() override;
+ 
+ #if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	bool is_metalfx_viewport_denoised_requested() const;
++	RendererRD::MetalFXViewportDenoised *ensure_metalfx_viewport_denoised();
++	RendererRD::MetalFXViewportDenoised *get_metalfx_viewport_denoised() const { return mfx_viewport_denoised.get(); }
++	Dictionary get_metalfx_viewport_denoised_status() const;
+ 	static void collect_metalfx_retired_slots();
+ 	static void finalize_metalfx_retirements();
+ 	RendererRD::MFXFrameContext *get_metalfx_frame_context() const { return mfx_frame_context; }
+diff --git a/servers/rendering/renderer_scene_cull.cpp b/servers/rendering/renderer_scene_cull.cpp
+--- a/servers/rendering/renderer_scene_cull.cpp
++++ b/servers/rendering/renderer_scene_cull.cpp
+@@ -41,10 +41,13 @@
+ 
+ #if defined(FORWARD_RD_ENABLED) && defined(METAL_ENABLED) && defined(MACOS_ENABLED)
+ #include "core/os/os.h"
++#include "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h"
+ #include "servers/rendering/renderer_rd/forward_clustered/scene_shader_forward_clustered.h"
+ #include "servers/rendering/renderer_rd/storage_rd/material_storage.h"
+ #include "servers/rendering/renderer_rd/storage_rd/mesh_storage.h"
++#include "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.h"
+ #include "servers/rendering/rendering_device.h"
++#include "servers/rendering/storage/metalfx_viewport_numeric.h"
+ #include "servers/rendering/storage/real_gpu_completion.h"
+ 
+ #include <atomic>
+@@ -4158,6 +4161,130 @@
+ 		prev_camera_data = RSG::viewport->viewport_get_prev_camera_data(p_viewport);
+ 	}
+ 
++#if defined(FORWARD_RD_ENABLED) && defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++	// Retain the source transaction across opaque rendering and the optional
++	// graph recording. No compositor callbacks are admitted in this first slice.
++	std::unique_ptr<MutexLock<Mutex>> mfx_source_lock;
++	Ref<RenderSceneBuffersRD> mfx_rb = p_render_buffers;
++	if (mfx_rb.is_valid() && mfx_rb->is_metalfx_viewport_denoised_requested()) {
++		auto *state = mfx_rb->ensure_metalfx_viewport_denoised();
++		RD *rd = RD::get_singleton();
++		auto *mesh_storage = RendererRD::MeshStorage::get_singleton();
++		auto *material_storage = RendererRD::MaterialStorage::get_singleton();
++		const char *rejection = nullptr;
++		auto *forward_renderer = RendererSceneRenderImplementation::RenderForwardClustered::get_singleton();
++		if (!forward_renderer || scene_render != static_cast<RendererSceneRender *>(forward_renderer)) {
++			rejection = "unsupported_renderer";
++		} else if (!state || !rd || !mesh_storage || !material_storage || !mesh_storage->rt_sources_requested() ||
++				!rd->has_feature(RD::SUPPORTS_METAL_TRIANGLE_QUERY) || !rd->real_gpu_completion_supported()) {
++			rejection = "device_or_scene_capture_unavailable";
++		} else if (!p_viewport.is_valid() || p_reflection_probe.is_valid() || p_compositor.is_valid() ||
++				p_camera_data->view_count != 1 || p_camera_data->taa_jitter != Vector2() || p_visible_layers != 0xffffffffu ||
++				!p_camera_data->main_transform.is_finite() || !p_camera_data->main_transform.basis.is_orthonormal() ||
++				!MFXViewportNumeric::position_component(p_camera_data->main_transform.origin.x) || !MFXViewportNumeric::position_component(p_camera_data->main_transform.origin.y) || !MFXViewportNumeric::position_component(p_camera_data->main_transform.origin.z) ||
++				mfx_rb->get_msaa_3d() != RSE::VIEWPORT_MSAA_DISABLED || mfx_rb->get_use_taa() ||
++				mfx_rb->get_scaling_3d_mode() != RSE::VIEWPORT_SCALING_3D_MODE_OFF || mfx_rb->get_internal_size() != mfx_rb->get_target_size() ||
++				mfx_rb->is_metalfx_frame_requested() || p_force_camera_attributes.is_valid() || scenario->camera_attributes.is_valid()) {
++			rejection = "unsupported_viewport_or_camera";
++		} else if (RendererSceneOcclusionCull::get_singleton()->buffer_get_ptr(p_viewport) != nullptr) {
++			rejection = "occlusion_culling_unqualified";
++		} else if (!scene_render->is_environment(p_environment) || scene_render->environment_get_ambient_source(p_environment) != RSE::ENV_AMBIENT_SOURCE_COLOR ||
++				scene_render->environment_get_background(p_environment) != RSE::ENV_BG_COLOR || scene_render->environment_get_fog_enabled(p_environment) ||
++				scene_render->environment_get_volumetric_fog_enabled(p_environment) || scene_render->environment_get_ssao_enabled(p_environment) ||
++				scene_render->environment_get_ssil_enabled(p_environment) || scene_render->environment_get_ssr_enabled(p_environment) || scene_render->environment_get_sdfgi_enabled(p_environment)) {
++			rejection = "requires_constant_color_environment";
++		}
++		Size2i target_size;
++		Color ambient;
++		Vector<RendererRD::MetalFXViewportRTScene::Surface> surfaces;
++		if (!rejection) {
++			RID target = mfx_rb->get_internal_texture();
++			target_size = mfx_rb->get_internal_size();
++			if (!rd->metalfx_viewport_texture_is_private(target)) {
++				rejection = "viewport_texture_not_private";
++			} else {
++				RD::TextureFormat format = rd->texture_get_format(target);
++				if (format.format != RD::DATA_FORMAT_R16G16B16A16_SFLOAT || !(format.usage_bits & RD::TEXTURE_USAGE_STORAGE_BIT) ||
++						format.width != uint32_t(target_size.x) || format.height != uint32_t(target_size.y) || format.samples != RD::TEXTURE_SAMPLES_1) {
++					rejection = "viewport_color_format_unsupported";
++				}
++			}
++			ambient = scene_render->environment_get_ambient_light(p_environment).srgb_to_linear();
++			float energy = scene_render->environment_get_ambient_light_energy(p_environment);
++			if (!Math::is_finite(energy) || energy < 0 || !Math::is_finite(ambient.r) || !Math::is_finite(ambient.g) || !Math::is_finite(ambient.b) || ambient.r < 0 || ambient.g < 0 || ambient.b < 0) {
++				rejection = "invalid_environment";
++			} else {
++				ambient *= energy;
++				if (!MFXViewportNumeric::environment_channel(ambient.r) || !MFXViewportNumeric::environment_channel(ambient.g) || !MFXViewportNumeric::environment_channel(ambient.b)) { rejection = "invalid_environment"; }
++			}
++		}
++		if (!rejection) {
++			mfx_source_lock = std::make_unique<MutexLock<Mutex>>(*mesh_storage->rt_source_mutex());
++			static const String admitted_shader = String::utf8(R"SHADER(shader_type spatial;
++render_mode cull_disabled, diffuse_lambert, specular_disabled;
++void fragment() {
++ ALBEDO = vec3(0.6, 0.5, 0.3);
++ ROUGHNESS = 0.6;
++ SPECULAR = 0.0;
++ METALLIC = 0.0;
++}
++)SHADER");
++			uint32_t examined = 0;
++			for (SelfList<Instance> *E = scenario->instances.first(); E && !rejection; E = E->next()) {
++				if (++examined > 65536) { rejection = "scenario_scan_limit"; break; }
++				Instance *instance = E->self();
++				if (!instance->visible) { continue; }
++				if (instance->base_type == RSE::INSTANCE_LIGHT || instance->base_type == RSE::INSTANCE_REFLECTION_PROBE || instance->base_type == RSE::INSTANCE_DECAL ||
++						instance->base_type == RSE::INSTANCE_VOXEL_GI || instance->base_type == RSE::INSTANCE_LIGHTMAP || instance->base_type == RSE::INSTANCE_FOG_VOLUME) {
++					rejection = "unsupported_light_or_effect"; break;
++				}
++				if (!((1u << instance->base_type) & RSE::INSTANCE_GEOMETRY_MASK)) { continue; }
++				if (instance->base_type != RSE::INSTANCE_MESH || instance->layer_mask == 0 || instance->custom_aabb || !Math::is_finite(instance->extra_margin) || instance->extra_margin < 0 ||
++						mesh_storage->mesh_get_custom_aabb(instance->base) != AABB() || instance->update_item.in_list() || instance->array_index < 0 || !instance->transformed_aabb.is_finite() ||
++						instance->skeleton.is_valid() || instance->mesh_instance.is_valid() ||
++						instance->material_overlay.is_valid() || instance->transparency != 0 || instance->visibility_parent ||
++						instance->visibility_range_begin != 0 || instance->visibility_range_end != 0 || !instance->transform.is_finite() ||
++						!instance->transform.basis.is_orthonormal() || instance->transform.basis.determinant() <= 0 ||
++						!MFXViewportNumeric::position_component(instance->transform.origin.x) || !MFXViewportNumeric::position_component(instance->transform.origin.y) || !MFXViewportNumeric::position_component(instance->transform.origin.z) ||
++						instance->cast_shadows != RSE::SHADOW_CASTING_SETTING_DOUBLE_SIDED || mesh_storage->mesh_get_shadow_mesh(instance->base).is_valid()) {
++					rejection = "unsupported_instance"; break;
++				}
++				int surface_count = mesh_storage->mesh_get_surface_count(instance->base);
++				if (surface_count <= 0 || surfaces.size() + surface_count > 16) { rejection = "surface_limit"; break; }
++				for (int i = 0; i < surface_count; ++i) {
++					void *surface = mesh_storage->mesh_get_surface(instance->base, uint32_t(i));
++					if (!surface || mesh_storage->mesh_surface_has_lod(surface)) { rejection = "lod_unsupported"; break; }
++					RID material = instance->material_override;
++					if (!material.is_valid() && i < instance->materials.size()) { material = instance->materials[i]; }
++					if (!material.is_valid()) { material = mesh_storage->mesh_surface_get_material(instance->base, i); }
++					using SceneShader = RendererSceneRenderImplementation::SceneShaderForwardClustered;
++					auto *data = static_cast<SceneShader::MaterialData *>(material_storage->material_get_data(material, RendererRD::MaterialStorage::SHADER_TYPE_3D));
++					if (!data || !data->shader_data || !data->shader_data->is_valid() || data->next_pass.is_valid() || data->shader_data->code != admitted_shader ||
++							data->shader_data->ubo_size != 0 || !data->shader_data->texture_uniforms.is_empty() || data->uniform_set.is_valid()) { rejection = "unsupported_material"; break; }
++					RID vertices;
++					uint32_t count = 0;
++					uint64_t serial = 0;
++					if (!mesh_storage->rt_source_get(instance->base, i, vertices, count, serial)) { rejection = "source_missing_or_invalidated"; break; }
++					Vector<MFXViewportPrimaryGeometry::Normal> normals;
++					if (!mesh_storage->rt_source_primary_normals(instance->base, i, serial, normals)) { rejection = "unsupported_primary_geometry"; break; }
++					RendererRD::MetalFXViewportRTScene::Surface admitted;
++					admitted.instance = instance->self;
++					admitted.instance_version = instance->version;
++					admitted.mesh = instance->base;
++					admitted.material = material;
++					admitted.surface = i;
++					admitted.expected_source_serial = serial;
++					admitted.transform = instance->transform;
++					surfaces.push_back(admitted);
++				}
++			}
++			if (!rejection && surfaces.is_empty()) { rejection = "empty_scene"; }
++			if (!rejection && !state->admit(p_scenario, surfaces, p_camera_data->main_transform, p_camera_data->main_projection, ambient, target_size)) { mfx_source_lock.reset(); }
++		}
++		if (rejection && state) { state->reject(rejection); mfx_source_lock.reset(); }
++	}
++#endif
++
+ 	RENDER_TIMESTAMP("Render 3D Scene");
+ 	scene_render->render_scene(p_render_buffers, p_camera_data, prev_camera_data, scene_cull_result.geometry_instances, scene_cull_result.light_instances, scene_cull_result.reflections, scene_cull_result.voxel_gi_instances, scene_cull_result.decals, scene_cull_result.lightmaps, scene_cull_result.fog_volumes, p_environment, camera_attributes, p_compositor, p_shadow_atlas, occluders_tex, p_reflection_probe.is_valid() ? RID() : scenario->reflection_atlas, p_reflection_probe, p_reflection_probe_pass, p_screen_mesh_lod_threshold, render_shadow_data, max_shadows_used, render_sdfgi_data, cull.sdfgi.region_count, p_window_output_max_value, &sdfgi_update_data, r_render_info);
+ 
+diff --git a/servers/rendering/renderer_viewport.cpp b/servers/rendering/renderer_viewport.cpp
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -2151,6 +2151,10 @@
+ 	Dictionary result;
+ 	if (viewport->render_buffers.is_valid()) {
+ 		result = viewport->render_buffers->get_metalfx_status();
++#if defined(METAL_ENABLED) && defined(MACOS_ENABLED)
++		Ref<RenderSceneBuffersRD> buffers_rd = viewport->render_buffers;
++		if (buffers_rd.is_valid()) { result["denoised_viewport"] = buffers_rd->get_metalfx_viewport_denoised_status(); }
++#endif
+ 	} else {
+ 		result["provider"] = "none";
+ 		result["allocation"] = "not_attempted";
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -29,6 +29,8 @@
+ /**************************************************************************/
+ 
+ #include "rendering_device.h"
++#include "servers/rendering/storage/metalfx_viewport_callback.h"
++#include "servers/rendering/storage/metalfx_viewport_numeric.h"
+ #include "rendering_device.compat.inc"
+ 
+ #include "core/config/engine.h"
+@@ -1452,21 +1454,83 @@
+ 	Dictionary result = denoised_result(code ? denoised_reason(code) : "created");
+ 	result["accepted"] = ctx->accepted;
+ 	result["encoded"] = ctx->progress->encoded.load(std::memory_order_acquire);
++	result["consumer_encoded"] = ctx->progress->consumer_encoded.load(std::memory_order_acquire);
+ 	result["gpu_completion_observed"] = false;
+ 	return result;
+ }
++RDD::AccelerationStructureID RenderingDevice::metalfx_rt_native_tlas(RID p_tlas) {
++	AccelerationStructure *accel = acceleration_structure_owner.get_or_null(p_tlas);
++	if (!accel || accel->type != ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL) { return RDD::AccelerationStructureID(); }
++	return accel->driver_id;
++}
++RDD::PipelineID RenderingDevice::metalfx_rt_compute_pipeline_id(RID p_pipeline) {
++	ERR_RENDER_THREAD_GUARD_V(RDD::PipelineID());
++	ComputePipeline *pipeline = compute_pipeline_owner.get_or_null(p_pipeline);
++	return pipeline ? pipeline->driver_id : RDD::PipelineID();
++}
+ void RenderingDevice::_denoised_callback(RDD *p_driver, RDD::CommandBufferID p_command, void *p_userdata) {
+ 	DenoisedCallback *args = static_cast<DenoisedCallback *>(p_userdata);
+-	if (!args->progress->callback_error.load(std::memory_order_acquire)) {
++	bool success = false;
++	const bool same_command = !args->viewport_proof || MFXViewportCallback::same_command(
++			args->viewport_proof->first_command.load(std::memory_order_acquire), p_driver->metalfx_rt_command_buffer_identity(p_command));
++	const bool producer_encoded = same_command && (!args->viewport_proof || p_driver->metalfx_rt_track_dispatch_finish(p_command, RDD::PipelineID(args->viewport_proof->pipeline)));
++	const bool draws_encoded = !args->viewport_proof || MFXViewportCallback::draw_stages_ready(*args->viewport_proof);
++	if (MFXViewportCallback::producer_receipts_ready(same_command, producer_encoded, draws_encoded) && !args->progress->callback_error.load(std::memory_order_acquire)) {
+ 		int code = p_driver->denoised_encode(args->effect, p_command, args->frame);
+ 		if (code) args->progress->callback_error.store(code, std::memory_order_release);
+-		else args->progress->encoded.store(args->serial, std::memory_order_release);
++		else { args->progress->encoded.store(args->serial, std::memory_order_release); success = true; }
++	}
++	if (args->completion) {
++		if (!same_command) {
++			args->completion->fail(args->reservation, "producer_command_changed");
++		} else if (!producer_encoded) {
++			args->completion->fail(args->reservation, "producer_dispatch_not_encoded");
++		} else if (!draws_encoded) {
++			args->completion->fail(args->reservation, "producer_draw_not_encoded");
++		} else {
++		auto result = MFXViewportCallback::after_native_encode(success, [&]() {
++			return p_driver->real_gpu_completion_register(p_command, args->completion, args->reservation);
++		}, [&]() {
++			// The SDK encode, completion registration and this consumer share
++			// the same native command buffer. RD's graph tracks all resources.
++			if (!MFXViewportCallback::same_command(args->viewport_proof->first_command.load(std::memory_order_acquire), p_driver->metalfx_rt_command_buffer_identity(p_command)) ||
++					!p_driver->metalfx_rt_track_dispatch_begin(p_command, args->consumer_pipeline)) {
++				args->completion->fail(args->reservation, "consumer_dispatch_unavailable");
++				return;
++			}
++			p_driver->command_begin_compute_pass(p_command);
++			p_driver->command_bind_compute_pipeline(p_command, args->consumer_pipeline);
++			p_driver->command_bind_compute_uniform_sets(p_command, VectorView<RDD::UniformSetID>(&args->consumer_set, 1), args->consumer_shader, 0, 1, 0);
++			p_driver->command_bind_push_constants(p_command, args->consumer_shader, 0, VectorView<uint32_t>(args->consumer_background, 4));
++			p_driver->command_compute_dispatch(p_command, args->consumer_groups_x, args->consumer_groups_y, 1);
++			p_driver->command_end_compute_pass(p_command);
++			if (p_driver->metalfx_rt_track_dispatch_finish(p_command, args->consumer_pipeline)) {
++				args->progress->consumer_encoded.store(args->serial, std::memory_order_release);
++			} else { args->completion->fail(args->reservation, "consumer_dispatch_not_encoded"); }
++		});
++		if (result == MFXViewportCallback::Result::NATIVE_FAILED) { args->completion->fail(args->reservation, "denoised_encode_failed"); }
++		if (result == MFXViewportCallback::Result::OBSERVER_FAILED) { args->completion->fail(args->reservation, "registration_failed"); }
++		}
+ 	}
+ 	p_driver->denoised_release(args->effect);
+ 	memdelete(args);
+ }
+ Dictionary RenderingDevice::metalfx_denoised_encode(RID p_context, const TypedArray<RID> &p_textures,
+ 		const Projection &p_world, const Projection &p_clip, float p_pre_exposure, Vector2 p_jitter, bool p_reset) {
++	return _metalfx_denoised_encode(p_context, p_textures, p_world, p_clip, p_pre_exposure, p_jitter, p_reset, RID(), RID(), RID(), RID(), Color(), nullptr, nullptr, 0);
++}
++Dictionary RenderingDevice::metalfx_denoised_encode_viewport(RID p_context, const TypedArray<RID> &p_textures,
++		const Projection &p_world, const Projection &p_clip, float p_pre_exposure, Vector2 p_jitter, bool p_reset,
++		RID p_consumer_pipeline, RID p_consumer_sampler, RID p_consumer_target, RID p_primary_depth, Color p_background,
++		const std::shared_ptr<RealGPUCompletion> &p_completion, const std::shared_ptr<MFXViewportCallback::CommandProof> &p_proof, uint64_t p_frame) {
++	if (!p_consumer_pipeline.is_valid() || !p_consumer_sampler.is_valid() || !p_consumer_target.is_valid() || !p_primary_depth.is_valid() || !p_completion || !p_proof || !p_frame || p_proof->frame != p_frame) { return denoised_result("invalid_consumer"); }
++	return _metalfx_denoised_encode(p_context, p_textures, p_world, p_clip, p_pre_exposure, p_jitter, p_reset,
++			p_consumer_pipeline, p_consumer_sampler, p_consumer_target, p_primary_depth, p_background, p_completion, p_proof, p_frame);
++}
++Dictionary RenderingDevice::_metalfx_denoised_encode(RID p_context, const TypedArray<RID> &p_textures,
++		const Projection &p_world, const Projection &p_clip, float p_pre_exposure, Vector2 p_jitter, bool p_reset,
++		RID p_consumer_pipeline, RID p_consumer_sampler, RID p_consumer_target, RID p_primary_depth, Color p_background,
++		const std::shared_ptr<RealGPUCompletion> &p_completion, const std::shared_ptr<MFXViewportCallback::CommandProof> &p_proof, uint64_t p_frame) {
+ 	ERR_RENDER_THREAD_GUARD_V(Dictionary());
+ 	using namespace MFXDenoisedContract;
+ 	DenoisedContext *ctx = denoised_owner.get_or_null(p_context);
+@@ -1479,7 +1543,7 @@
+ 		frame.world[c*4+r] = p_world[c][r]; frame.clip[c*4+r] = p_clip[c][r];
+ 	}
+ 	if (!MFXDenoisedContract::frame(frame.exposure, frame.jitter_x, frame.jitter_y, frame.world, frame.clip, p_reset, ctx->accepted)) return denoised_result("invalid_frame");
+-	MFXDenoisedContract::Image info[COUNT]; CallbackResource resources[COUNT]; RID ids[COUNT];
++	MFXDenoisedContract::Image info[COUNT]; CallbackResource resources[COUNT + 2]; RID ids[COUNT];
+ 	for (unsigned i=0; i<COUNT; ++i) {
+ 		ids[i] = p_textures[i];
+ 		Texture *tex = texture_owner.get_or_null(ids[i]);
+@@ -1507,6 +1571,42 @@
+ 	if (!images(info, ctx->input.x, ctx->input.y, ctx->output.x, ctx->output.y)) return denoised_result("invalid_textures");
+ 	int code = driver->denoised_validate(ctx->effect, frame);
+ 	if (code) return denoised_result(denoised_reason(code));
++	RID consumer_set;
++	ComputePipeline *consumer = nullptr;
++	RealGPUCompletion::Reservation reservation;
++	if (p_completion) {
++		consumer = compute_pipeline_owner.get_or_null(p_consumer_pipeline);
++		Texture *target = texture_owner.get_or_null(p_consumer_target);
++		Texture *primary = texture_owner.get_or_null(p_primary_depth);
++		if (!real_gpu_completion_supported() || !consumer || !sampler_owner.owns(p_consumer_sampler) || !target || !primary ||
++				!MFXViewportNumeric::environment_channel(p_background.r) || !MFXViewportNumeric::environment_channel(p_background.g) || !MFXViewportNumeric::environment_channel(p_background.b) ||
++				consumer->push_constant_size != 16 || consumer->local_group_size[0] != 8 || consumer->local_group_size[1] != 8 || consumer->local_group_size[2] != 1 ||
++				target->is_external || target->owner.is_valid() || target->type != TEXTURE_TYPE_2D || target->depth != 1 || target->layers != 1 ||
++				target->mipmaps != 1 || target->samples != TEXTURE_SAMPLES_1 || target->is_discardable || target->is_resolve_buffer ||
++				target->width != uint32_t(ctx->output.x) || target->height != uint32_t(ctx->output.y) ||
++				target->format != DATA_FORMAT_R16G16B16A16_SFLOAT || !(target->usage_flags & TEXTURE_USAGE_STORAGE_BIT) ||
++				primary->is_external || primary->owner.is_valid() || primary->format != DATA_FORMAT_R32_SFLOAT || !(primary->usage_flags & TEXTURE_USAGE_SAMPLING_BIT) ||
++				primary->type != TEXTURE_TYPE_2D || primary->depth != 1 || primary->layers != 1 || primary->mipmaps != 1 || primary->samples != TEXTURE_SAMPLES_1 ||
++				primary->width != target->width || primary->height != target->height || primary->is_discardable || primary->is_resolve_buffer ||
++				p_primary_depth == p_consumer_target) { return denoised_result("invalid_consumer"); }
++		for (unsigned i = 0; i < COUNT; ++i) { if (ids[i] == p_consumer_target || ids[i] == p_primary_depth) { return denoised_result("consumer_alias"); } }
++		Vector<Uniform> uniforms;
++		uniforms.push_back(Uniform(UNIFORM_TYPE_SAMPLER_WITH_TEXTURE, 0, Vector<RID>({ p_consumer_sampler, ids[OUTPUT] })));
++		uniforms.push_back(Uniform(UNIFORM_TYPE_IMAGE, 1, p_consumer_target));
++		uniforms.push_back(Uniform(UNIFORM_TYPE_SAMPLER_WITH_TEXTURE, 2, Vector<RID>({ p_consumer_sampler, p_primary_depth })));
++		consumer_set = metalfx_shared_uniform_sets_supported() ? metalfx_shared_uniform_set_create(uniforms, consumer->shader, 0) : uniform_set_create(uniforms, consumer->shader, 0);
++		if (!consumer_set.is_valid()) { return denoised_result("consumer_uniform_failed"); }
++		reservation = p_completion->reserve(p_frame, real_gpu_completion_now());
++		if (!reservation.generation) { free_rid(consumer_set); return denoised_result("completion_reservation_failed"); }
++		resources[COUNT].rid = p_consumer_target;
++		resources[COUNT].usage = CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE;
++		resources[COUNT + 1].rid = p_primary_depth;
++		resources[COUNT + 1].usage = CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE;
++		_check_transfer_worker_texture(target);
++		_check_transfer_worker_texture(primary);
++		_texture_check_pending_clear(p_consumer_target, target);
++		_texture_check_pending_clear(p_primary_depth, primary);
++	}
+ 	for (unsigned i=0; i<COUNT; ++i) {
+ 		Texture *tex = texture_owner.get_or_null(ids[i]);
+ 		_check_transfer_worker_texture(tex);
+@@ -1514,11 +1614,26 @@
+ 	}
+ 	DenoisedCallback *args = memnew(DenoisedCallback);
+ 	args->effect = ctx->effect; args->frame = frame; args->progress = ctx->progress; args->serial = ctx->accepted + 1;
++	if (p_completion) {
++		UniformSet *set = uniform_set_owner.get_or_null(consumer_set);
++		args->consumer_pipeline = consumer->driver_id;
++		args->consumer_shader = consumer->shader_driver_id;
++		args->consumer_set = set->driver_id;
++		args->consumer_groups_x = (uint32_t(ctx->output.x) + 7) / 8;
++		args->consumer_groups_y = (uint32_t(ctx->output.y) + 7) / 8;
++		const float background[4] = { p_background.r, p_background.g, p_background.b, 1.0f };
++		static_assert(sizeof(background) == sizeof(args->consumer_background), "push constant layout");
++		memcpy(args->consumer_background, background, sizeof(background));
++		args->completion = p_completion;
++		args->viewport_proof = p_proof;
++		args->reservation = reservation;
++	}
+ 	driver->denoised_retain(args->effect);
+ 	// History is stateful even if a caller switches all texture RIDs between frames.
+ 	draw_graph.add_synchronization();
+-	Error error = driver_callback_add(_denoised_callback, args, VectorView<CallbackResource>(resources, COUNT));
+-	if (error != OK) { driver->denoised_release(args->effect); memdelete(args); return denoised_result("enqueue_failed"); }
++	Error error = driver_callback_add(_denoised_callback, args, VectorView<CallbackResource>(resources, COUNT + (p_completion ? 2 : 0)));
++	if (consumer_set.is_valid()) { free_rid(consumer_set); }
++	if (error != OK) { if (p_completion) { p_completion->fail(reservation, "enqueue_failed"); } driver->denoised_release(args->effect); memdelete(args); return denoised_result("enqueue_failed"); }
+ 	ctx->accepted++;
+ 	Dictionary result = denoised_result("enqueued"); result["serial"] = ctx->accepted; return result;
+ }
+@@ -1728,6 +1843,31 @@
+ 	Buffer *buffer = _get_buffer_from_owner(p_buffer);
+ 	ERR_FAIL_NULL_MSG(buffer, "Buffer argument is not a valid buffer of any type.");
+ 	driver->buffer_flush(buffer->driver_id);
++}
++
++RID RenderingDevice::storage_buffer_create_metalfx_primary(uint32_t p_size_bytes, Span<uint8_t> p_data) {
++	if (!driver || !has_feature(SUPPORTS_METAL_TRIANGLE_QUERY) || !driver->has_feature(SUPPORTS_GPU_MAPPABLE_BUFFER) ||
++			!p_size_bytes || p_size_bytes > 8u * 1024u * 1024u || p_data.size() != p_size_bytes || !p_data.ptr()) { return RID(); }
++	Buffer buffer;
++	buffer.size = p_size_bytes;
++	buffer.usage = RDD::BUFFER_USAGE_TRANSFER_FROM_BIT | RDD::BUFFER_USAGE_TRANSFER_TO_BIT | RDD::BUFFER_USAGE_STORAGE_BIT;
++	buffer.alloc_type = RDD::MEMORY_ALLOCATION_TYPE_GPU_MAPPABLE;
++	buffer.driver_id = driver->buffer_create(buffer.size, buffer.usage, buffer.alloc_type, frames_drawn);
++	if (!buffer.driver_id) { return RID(); }
++	uint8_t *mapped = driver->buffer_map(buffer.driver_id);
++	if (!mapped) { driver->buffer_free(buffer.driver_id); return RID(); }
++	memcpy(mapped, p_data.ptr(), p_size_bytes);
++	driver->buffer_unmap(buffer.driver_id);
++	buffer.draw_tracker = RDG::resource_tracker_create();
++	buffer.draw_tracker->buffer_driver_id = buffer.driver_id;
++	buffer_memory.add(buffer.size);
++	RID id = storage_buffer_owner.make_rid(buffer);
++	if (!id.is_valid()) {
++		RDG::resource_tracker_free(buffer.draw_tracker);
++		buffer_memory.sub(buffer.size);
++		driver->buffer_free(buffer.driver_id);
++	}
++	return id;
+ }
+ 
+ RID RenderingDevice::storage_buffer_create(uint32_t p_size_bytes, Span<uint8_t> p_data, BitField<StorageBufferUsage> p_usage, BitField<BufferCreationBits> p_creation_bits) {
+@@ -3189,6 +3329,12 @@
+ 	Texture *tex = texture_owner.get_or_null(p_texture);
+ 	ERR_FAIL_NULL_V(tex, false);
+ 	return tex->owner.is_valid();
++}
++
++bool RenderingDevice::metalfx_viewport_texture_is_private(RID p_texture) {
++	ERR_RENDER_THREAD_GUARD_V(false);
++	Texture *texture = texture_owner.get_or_null(p_texture);
++	return texture && !texture->is_external && !texture->owner.is_valid();
+ }
+ 
+ bool RenderingDevice::texture_is_valid(RID p_texture) {
+@@ -4351,6 +4497,7 @@
+ 	return id;
+ }
+ 
++
+ RID RenderingDevice::index_buffer_create(uint32_t p_index_count, IndexBufferFormat p_format, Span<uint8_t> p_data, bool p_use_restart_indices, BitField<BufferCreationBits> p_creation_bits) {
+ 	ERR_FAIL_COND_V(p_index_count == 0, RID());
+ 
+@@ -4714,8 +4861,23 @@
+ }
+ 
+ RID RenderingDevice::uniform_set_create(const VectorView<RD::Uniform> &p_uniforms, RID p_shader, uint32_t p_shader_set, bool p_linear_pool) {
++	return _uniform_set_create_impl(p_uniforms, p_shader, p_shader_set, p_linear_pool, false);
++}
++
++bool RenderingDevice::metalfx_shared_uniform_sets_supported() const {
++	return driver && driver->metalfx_shared_uniform_sets_supported();
++}
++
++RID RenderingDevice::metalfx_shared_uniform_set_create(const VectorView<RD::Uniform> &p_uniforms, RID p_shader, uint32_t p_shader_set) {
++	return _uniform_set_create_impl(p_uniforms, p_shader, p_shader_set, false, true);
++}
++
++RID RenderingDevice::_uniform_set_create_impl(const VectorView<RD::Uniform> &p_uniforms, RID p_shader, uint32_t p_shader_set, bool p_linear_pool, bool p_metalfx_shared) {
+ 	_THREAD_SAFE_METHOD_
+ 
++	if (p_metalfx_shared && (!driver || !driver->metalfx_shared_uniform_sets_supported())) {
++		return RID();
++	}
+ 	ERR_FAIL_COND_V(p_uniforms.size() == 0, RID());
+ 
+ 	Shader *shader = shader_owner.get_or_null(p_shader);
+@@ -5133,7 +5295,7 @@
+ 		}
+ 	}
+ 
+-	RDD::UniformSetID driver_uniform_set = driver->uniform_set_create(driver_uniforms, shader->driver_id, p_shader_set, p_linear_pool ? frame : -1);
++	RDD::UniformSetID driver_uniform_set = p_metalfx_shared ? driver->metalfx_shared_uniform_set_create(driver_uniforms, shader->driver_id, p_shader_set) : driver->uniform_set_create(driver_uniforms, shader->driver_id, p_shader_set, p_linear_pool ? frame : -1);
+ 	ERR_FAIL_COND_V(!driver_uniform_set, RID());
+ 
+ 	UniformSet uniform_set;
+@@ -5149,6 +5311,7 @@
+ 	uniform_set.shader_set = p_shader_set;
+ 	uniform_set.shader_id = p_shader;
+ 	uniform_set.is_linear_pool = p_linear_pool;
++	uniform_set.metalfx_shared_argument_buffer = p_metalfx_shared;
+ 
+ 	// Store the original uniforms so the set can be re-created if a texture is replaced.
+ 	uniform_set.bound_uniforms.resize(uniform_count);
+@@ -6219,6 +6382,16 @@
+ 	draw_graph.add_draw_list_set_blend_constants(p_color);
+ }
+ 
++bool RenderingDevice::draw_list_enable_metalfx_input_checks(DrawListID p_list, bool p_suppress_invalid) {
++	if (!draw_list.active || p_list != (int64_t(ID_TYPE_DRAW_LIST) << ID_BASE_SHIFT)) { return false; }
++	draw_list.metalfx_checked_inputs = true;
++	draw_list.metalfx_suppress_invalid = p_suppress_invalid;
++	return true;
++}
++bool RenderingDevice::draw_list_metalfx_inputs_valid(DrawListID p_list) const {
++	return draw_list.active && p_list == (int64_t(ID_TYPE_DRAW_LIST) << ID_BASE_SHIFT) && draw_list.metalfx_checked_inputs && !draw_list.metalfx_input_failed;
++}
++
+ void RenderingDevice::draw_list_bind_render_pipeline(DrawListID p_list, RID p_render_pipeline) {
+ 	ERR_RENDER_THREAD_GUARD();
+ 
+@@ -6239,6 +6412,7 @@
+ 	draw_graph.add_draw_list_bind_pipeline(pipeline->driver_id, pipeline->stage_bits);
+ 
+ 	if (draw_list.state.pipeline_shader != pipeline->shader) {
++		if (draw_list.metalfx_checked_inputs) { draw_list.metalfx_push_supplied = false; }
+ 		// Shader changed, so descriptor sets may become incompatible.
+ 
+ 		uint32_t pcount = pipeline->set_formats.size(); // Formats count in this pipeline.
+@@ -6513,6 +6687,10 @@
+ 	ERR_RENDER_THREAD_GUARD();
+ 
+ 	ERR_FAIL_COND(!draw_list.active);
++	if (draw_list.metalfx_checked_inputs && (!p_data || p_data_size != draw_list.state.pipeline_push_constant_size)) {
++		draw_list.metalfx_input_failed = true;
++		if (draw_list.metalfx_suppress_invalid) { return; }
++	}
+ 
+ #ifdef DEBUG_ENABLED
+ 	ERR_FAIL_COND_MSG(p_data_size != draw_list.validation.pipeline_push_constant_size,
+@@ -6520,6 +6698,7 @@
+ #endif
+ 
+ 	draw_graph.add_draw_list_set_push_constant(draw_list.state.pipeline_shader_driver_id, p_data, p_data_size);
++	if (draw_list.metalfx_checked_inputs) { draw_list.metalfx_push_supplied = true; }
+ 
+ #ifdef DEBUG_ENABLED
+ 	draw_list.validation.pipeline_push_constant_supplied = true;
+@@ -6530,6 +6709,17 @@
+ 	ERR_RENDER_THREAD_GUARD();
+ 
+ 	ERR_FAIL_COND(!draw_list.active);
++	if (draw_list.metalfx_checked_inputs) {
++		bool valid = render_pipeline_owner.owns(draw_list.state.pipeline) && p_instances &&
++				(!draw_list.state.pipeline_push_constant_size || draw_list.metalfx_push_supplied) &&
++				(p_procedural_vertices || vertex_array_owner.owns(draw_list.state.vertex_array)) &&
++				(!p_use_indices || index_array_owner.owns(draw_list.state.index_array));
++		for (uint32_t i = 0; i < draw_list.state.set_count; ++i) {
++			const DrawList::SetState &set = draw_list.state.sets[i];
++			if (!MFXViewportCallback::required_set_valid(set.pipeline_expected_format, set.uniform_set_format, uniform_set_owner.owns(set.uniform_set))) { valid = false; }
++		}
++		if (!valid) { draw_list.metalfx_input_failed = true; if (draw_list.metalfx_suppress_invalid) { return; } }
++	}
+ 
+ #ifdef DEBUG_ENABLED
+ 	ERR_FAIL_COND_MSG(!draw_list.validation.pipeline_active,
+@@ -7197,6 +7387,12 @@
+ 	return ID_TYPE_COMPUTE_LIST;
+ }
+ 
++bool RenderingDevice::compute_list_enable_metalfx_input_checks(ComputeListID p_list) {
++	if (!compute_list.active || p_list != ID_TYPE_COMPUTE_LIST) { return false; }
++	compute_list.metalfx_checked_inputs = true;
++	return true;
++}
++
+ void RenderingDevice::compute_list_bind_compute_pipeline(ComputeListID p_list, RID p_compute_pipeline) {
+ 	ERR_RENDER_THREAD_GUARD();
+ 
+@@ -7215,6 +7411,7 @@
+ 	draw_graph.add_compute_list_bind_pipeline(pipeline->driver_id);
+ 
+ 	if (compute_list.state.pipeline_shader != pipeline->shader) {
++		if (compute_list.metalfx_checked_inputs) { compute_list.metalfx_push_supplied = false; }
+ 		// Shader changed, so descriptor sets may become incompatible.
+ 
+ 		uint32_t pcount = pipeline->set_formats.size(); // Formats count in this pipeline.
+@@ -7319,6 +7516,10 @@
+ 	ERR_FAIL_COND(p_list != ID_TYPE_COMPUTE_LIST);
+ 	ERR_FAIL_COND(!compute_list.active);
+ 	ERR_FAIL_COND_MSG(p_data_size > MAX_PUSH_CONSTANT_SIZE, "Push constants can't be bigger than 128 bytes to maintain compatibility.");
++	if (compute_list.metalfx_checked_inputs) {
++		const ComputePipeline *pipeline = compute_pipeline_owner.get_or_null(compute_list.state.pipeline);
++		if (!pipeline || !p_data || p_data_size != pipeline->push_constant_size) { return; }
++	}
+ 
+ #ifdef DEBUG_ENABLED
+ 	ERR_FAIL_COND_MSG(p_data_size != compute_list.validation.pipeline_push_constant_size,
+@@ -7330,6 +7531,7 @@
+ 	// Store it in the state in case we need to restart the compute list.
+ 	memcpy(compute_list.state.push_constant_data, p_data, p_data_size);
+ 	compute_list.state.push_constant_size = p_data_size;
++	if (compute_list.metalfx_checked_inputs) { compute_list.metalfx_push_supplied = true; }
+ 
+ #ifdef DEBUG_ENABLED
+ 	compute_list.validation.pipeline_push_constant_supplied = true;
+@@ -7370,6 +7572,14 @@
+ 
+ 	ERR_FAIL_COND(p_list != ID_TYPE_COMPUTE_LIST);
+ 	ERR_FAIL_COND(!compute_list.active);
++	if (compute_list.metalfx_checked_inputs) {
++		const ComputePipeline *pipeline = compute_pipeline_owner.get_or_null(compute_list.state.pipeline);
++		if (!pipeline || !p_x_groups || !p_y_groups || !p_z_groups || (pipeline->push_constant_size && !compute_list.metalfx_push_supplied)) { return; }
++		for (uint32_t i = 0; i < compute_list.state.set_count; ++i) {
++			const ComputeList::SetState &set = compute_list.state.sets[i];
++			if (!MFXViewportCallback::required_set_valid(set.pipeline_expected_format, set.uniform_set_format, uniform_set_owner.owns(set.uniform_set))) { return; }
++		}
++	}
+ 	ERR_FAIL_COND_MSG(!_compute_list_triangle_query_sets_valid(), "Metal triangle-query compute dispatch has an invalid or stale TLAS uniform set.");
+ 
+ #ifdef DEBUG_ENABLED
+@@ -8345,6 +8555,13 @@
+ 	for (const RID &us_rid : dependent_uniform_sets) {
+ 		UniformSet *us = uniform_set_owner.get_or_null(us_rid);
+ 		ERR_CONTINUE(!us);
++
++		// Re-creation through the ordinary factory would silently use the copy
++		// queue. Invalidate instead; already-recorded use retires with its frame.
++		if (us->metalfx_shared_argument_buffer) {
++			free_rid(us_rid);
++			continue;
++		}
+ 
+ 		if (us->bound_uniforms.is_empty()) {
+ 			// This uniform set wasn't created with stored bindings so it can't be patched.
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -45,6 +45,7 @@
+ #include "servers/rendering/rendering_device_enums.h"
+ #include "servers/rendering/rendering_device_graph.h"
+ #include "servers/rendering/storage/metalfx_denoised_contract.h"
++#include "servers/rendering/storage/metalfx_viewport_callback.h"
+ #include <atomic>
+ #include <memory>
+ 
+@@ -335,6 +336,7 @@
+ private:
+ 	struct DenoisedProgress {
+ 		std::atomic<uint64_t> encoded{0};
++		std::atomic<uint64_t> consumer_encoded{0};
+ 		std::atomic<int> callback_error{0};
+ 	};
+ 	struct DenoisedContext {
+@@ -348,9 +350,22 @@
+ 		RDD::DenoisedFrame frame;
+ 		std::shared_ptr<DenoisedProgress> progress;
+ 		uint64_t serial = 0;
++		RDD::PipelineID consumer_pipeline;
++		RDD::ShaderID consumer_shader;
++		RDD::UniformSetID consumer_set;
++		uint32_t consumer_groups_x = 0, consumer_groups_y = 0;
++		uint32_t consumer_background[4] = {};
++		std::shared_ptr<RealGPUCompletion> completion;
++		std::shared_ptr<MFXViewportCallback::CommandProof> viewport_proof;
++		RealGPUCompletion::Reservation reservation;
+ 	};
+ 	RID_Owner<DenoisedContext, true> denoised_owner;
+ 	static void _denoised_callback(RDD *, RDD::CommandBufferID, void *);
++	Dictionary _metalfx_denoised_encode(RID p_context, const TypedArray<RID> &p_textures,
++			const Projection &p_world_to_view, const Projection &p_view_to_clip,
++			float p_pre_exposure, Vector2 p_jitter, bool p_reset,
++			RID p_consumer_pipeline, RID p_consumer_sampler, RID p_consumer_target, RID p_primary_depth, Color p_background,
++			const std::shared_ptr<RealGPUCompletion> &p_completion, const std::shared_ptr<MFXViewportCallback::CommandProof> &p_proof, uint64_t p_frame);
+ public:
+ 	Dictionary metalfx_denoised_capability() const;
+ 	Dictionary metalfx_denoised_create(Size2i p_input, Size2i p_output);
+@@ -358,6 +373,13 @@
+ 			const Projection &p_world_to_view, const Projection &p_view_to_clip,
+ 			float p_pre_exposure, Vector2 p_jitter, bool p_reset);
+ 	Dictionary metalfx_denoised_status(RID p_context);
++	// Internal viewport path: SDK encoding, successful completion registration,
++	// and the post-process dispatch are recorded in this exact command buffer.
++	Dictionary metalfx_denoised_encode_viewport(RID p_context, const TypedArray<RID> &p_textures,
++			const Projection &p_world_to_view, const Projection &p_view_to_clip,
++			float p_pre_exposure, Vector2 p_jitter, bool p_reset,
++			RID p_consumer_pipeline, RID p_consumer_sampler, RID p_consumer_target, RID p_primary_depth, Color p_background,
++			const std::shared_ptr<RealGPUCompletion> &p_completion, const std::shared_ptr<MFXViewportCallback::CommandProof> &p_proof, uint64_t p_frame);
+ 
+ 	/*****************/
+ 	/**** TEXTURE ****/
+@@ -513,6 +535,8 @@
+ 
+ 	bool texture_is_format_supported_for_usage(DataFormat p_format, BitField<TextureUsageBits> p_usage) const;
+ 	bool texture_is_shared(RID p_texture);
++	// Internal renderer admission for the optional MetalFX viewport producer.
++	bool metalfx_viewport_texture_is_private(RID p_texture);
+ 	bool texture_is_valid(RID p_texture);
+ 	TextureFormat texture_get_format(RID p_texture);
+ 	Size2i texture_size(RID p_texture);
+@@ -912,6 +936,8 @@
+ 	// Private experimental scene path: synchronous, checked shared-memory upload.
+ 	// This method is intentionally not bound to scripts.
+ 	RID vertex_buffer_create_metalfx_rt_input(uint32_t p_size_bytes, Span<uint8_t> p_data);
++	// Private immutable scene-generation data; checked mapped write, no transfer worker.
++	RID storage_buffer_create_metalfx_primary(uint32_t p_size_bytes, Span<uint8_t> p_data);
+ 	RID _vertex_buffer_create(uint32_t p_size_bytes, const Vector<uint8_t> &p_data, BitField<BufferCreationBits> p_creation_bits = 0) {
+ 		return vertex_buffer_create(p_size_bytes, p_data, p_creation_bits);
+ 	}
+@@ -921,6 +947,7 @@
+ 	RID vertex_array_create(uint32_t p_vertex_count, VertexFormatID p_vertex_format, const Vector<RID> &p_src_buffers, const Vector<uint64_t> &p_offsets = Vector<uint64_t>());
+ 
+ 	RID index_buffer_create(uint32_t p_index_count, IndexBufferFormat p_format, Span<uint8_t> p_data = {}, bool p_use_restart_indices = false, BitField<BufferCreationBits> p_creation_bits = 0);
++	// Private immutable raster input with checked immediate shared-memory upload.
+ 	RID _index_buffer_create(uint32_t p_index_count, IndexBufferFormat p_format, const Vector<uint8_t> &p_data, bool p_use_restart_indices = false, BitField<BufferCreationBits> p_creation_bits = 0) {
+ 		return index_buffer_create(p_index_count, p_format, p_data, p_use_restart_indices, p_creation_bits);
+ 	}
+@@ -1218,12 +1245,14 @@
+ 		// Stored for uniform set re-creation during texture replacement.
+ 		LocalVector<Uniform> bound_uniforms;
+ 		bool is_linear_pool = false;
++		bool metalfx_shared_argument_buffer = false;
+ 	};
+ 
+ 	RID_Owner<UniformSet, true> uniform_set_owner;
+ 
+ 	void _uniform_set_update_shared(UniformSet *p_uniform_set);
+ 	void _uniform_set_update_clears(UniformSet *p_uniform_set);
++	RID _uniform_set_create_impl(const VectorView<Uniform> &p_uniforms, RID p_shader, uint32_t p_shader_set, bool p_linear_pool, bool p_metalfx_shared);
+ 
+ public:
+ 	/** Bake a set of uniforms that can be bound at runtime with the given shader.
+@@ -1237,6 +1266,9 @@
+ 	 * @return				Baked descriptor set.
+ 	 */
+ 	RID uniform_set_create(const VectorView<Uniform> &p_uniforms, RID p_shader, uint32_t p_shader_set, bool p_linear_pool = false);
++	// Renderer-internal only; not bound to the scripting or GDExtension API.
++	bool metalfx_shared_uniform_sets_supported() const;
++	RID metalfx_shared_uniform_set_create(const VectorView<Uniform> &p_uniforms, RID p_shader, uint32_t p_shader_set);
+ 	bool uniform_set_is_valid(RID p_uniform_set);
+ 	void uniform_set_set_invalidation_callback(RID p_uniform_set, InvalidationCallback p_callback, void *p_userdata);
+ 
+@@ -1449,6 +1481,11 @@
+ 
+ 	Error blas_build(RID p_blas);
+ 	Error tlas_build(RID p_tlas, Span<AccelerationStructureInstance> p_instances);
++	// Render-thread-only native receipt used by the private viewport transaction.
++	RDD::AccelerationStructureID metalfx_rt_native_tlas(RID p_tlas);
++	// Render-thread-only opaque driver ID for the viewport dispatch receipt.
++	RDD::PipelineID metalfx_rt_compute_pipeline_id(RID p_pipeline);
++	bool metalfx_viewport_uniforms_safe() const { return driver && driver->metalfx_viewport_uniforms_safe(); }
+ 
+ private:
+ 	/**********************************/
+@@ -1502,6 +1539,10 @@
+ 	struct DrawList {
+ 		Rect2i viewport;
+ 		bool active = false;
++		bool metalfx_checked_inputs = false;
++		bool metalfx_suppress_invalid = false;
++		bool metalfx_input_failed = false;
++		bool metalfx_push_supplied = false;
+ 
+ 		struct SetState {
+ 			uint32_t pipeline_expected_format = 0;
+@@ -1607,6 +1648,8 @@
+ 	 * @param p_clear_color_values Color values must use linear encoding when HDR 2D is active.
+ 	 */
+ 	DrawListID draw_list_begin(RID p_framebuffer, BitField<DrawFlags> p_draw_flags = DRAW_DEFAULT_ALL, VectorView<Color> p_clear_color_values = VectorView<Color>(), float p_clear_depth_value = 1.0f, uint32_t p_clear_stencil_value = 0, const Rect2 &p_region = Rect2(), uint32_t p_breadcrumb = 0);
++	bool draw_list_enable_metalfx_input_checks(DrawListID p_list, bool p_suppress_invalid);
++	bool draw_list_metalfx_inputs_valid(DrawListID p_list) const;
+ 	DrawListID _draw_list_begin_bind(RID p_framebuffer, BitField<DrawFlags> p_draw_flags = DRAW_DEFAULT_ALL, const Vector<Color> &p_clear_color_values = Vector<Color>(), float p_clear_depth_value = 1.0f, uint32_t p_clear_stencil_value = 0, const Rect2 &p_region = Rect2(), uint32_t p_breadcrumb = 0);
+ 
+ 	void draw_list_set_blend_constants(DrawListID p_list, const Color &p_color);
+@@ -1695,6 +1738,8 @@
+ 
+ 	struct ComputeList {
+ 		bool active = false;
++		bool metalfx_checked_inputs = false;
++		bool metalfx_push_supplied = false;
+ 		struct SetState {
+ 			uint32_t pipeline_expected_format = 0;
+ 			uint32_t uniform_set_format = 0;
+@@ -1737,6 +1782,7 @@
+ 
+ public:
+ 	ComputeListID compute_list_begin();
++	bool compute_list_enable_metalfx_input_checks(ComputeListID p_list);
+ 	void compute_list_bind_compute_pipeline(ComputeListID p_list, RID p_compute_pipeline);
+ 	void compute_list_bind_uniform_set(ComputeListID p_list, RID p_uniform_set, uint32_t p_index);
+ 	void compute_list_set_push_constant(ComputeListID p_list, const void *p_data, uint32_t p_data_size);
+diff --git a/servers/rendering/rendering_device_driver.h b/servers/rendering/rendering_device_driver.h
+--- a/servers/rendering/rendering_device_driver.h
++++ b/servers/rendering/rendering_device_driver.h
+@@ -49,6 +49,7 @@
+ #include "core/templates/paged_allocator.h"
+ #include "servers/rendering/rendering_context_driver.h"
+ #include "servers/rendering/rendering_device_commons.h"
++#include "servers/rendering/storage/metalfx_viewport_callback.h"
+ #include "servers/rendering/storage/real_gpu_completion.h"
+ 
+ #include <memory>
+@@ -543,6 +544,10 @@
+ 	};
+ 
+ 	virtual UniformSetID uniform_set_create(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index, int p_linear_pool_index) = 0;
++	// Internal experimental path. Other drivers must refuse it rather than fall
++	// back to an upload whose completion has not been observed.
++	virtual bool metalfx_shared_uniform_sets_supported() const { return false; }
++	virtual UniformSetID metalfx_shared_uniform_set_create(VectorView<BoundUniform> p_uniforms, ShaderID p_shader, uint32_t p_set_index) { return UniformSetID(); }
+ 	virtual void linear_uniform_set_pools_reset(int p_linear_pool_index) {}
+ 	virtual void uniform_set_free(UniformSetID p_uniform_set) = 0;
+ 	virtual bool uniform_sets_have_linear_pools() const { return false; }
+@@ -842,6 +847,13 @@
+ 	virtual double real_gpu_completion_now() const { return 0; }
+ 	virtual bool real_gpu_completion_register(CommandBufferID, const std::shared_ptr<RealGPUCompletion> &, const RealGPUCompletion::Reservation &) { return false; }
+ 	virtual uint64_t metalfx_rt_command_buffer_identity(CommandBufferID) { return 0; }
++	virtual bool metalfx_rt_acceleration_structure_ready(AccelerationStructureID) const { return false; }
++	// No private argument-buffer upload may be hidden behind this transaction.
++	virtual bool metalfx_viewport_uniforms_safe() const { return false; }
++	virtual bool metalfx_rt_track_dispatch_begin(CommandBufferID, PipelineID) { return false; }
++	virtual bool metalfx_rt_track_dispatch_finish(CommandBufferID, PipelineID) { return false; }
++	virtual bool metalfx_rt_track_draw_begin(CommandBufferID, uint64_t, uint32_t) { return false; }
++	virtual bool metalfx_rt_track_draw_finish(CommandBufferID, uint64_t, uint32_t) { return false; }
+ 	// 0 unknown backend, 1 yes, 2 no, 3 SDK unavailable, 4 OS unavailable, 5 no device.
+ 	virtual int metalfx_frame_device_capability() const { return 0; }
+ 
+diff --git a/servers/rendering/storage/metalfx_rt_source_lifetime.h b/servers/rendering/storage/metalfx_rt_source_lifetime.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_rt_source_lifetime.h
+@@ -0,0 +1,115 @@
++/**************************************************************************/
++/*  metalfx_rt_source_lifetime.h                                          */
++/**************************************************************************/
++/* Copyright (c) 2026 OpenRC Simulator contributors.                      */
++/* SPDX-License-Identifier: MIT                                           */
++/**************************************************************************/
++
++#pragma once
++
++#include "core/templates/hash_map.h"
++
++#include <cstdint>
++#include <limits>
++
++// Render-thread bookkeeping only. The containing MeshStorage supplies its
++// source mutex and frees returned resources through RD on the render thread.
++// A token retains its source, but it ceases to authorize new work as soon as
++// that source is retired. The owner must also validate its scene epoch.
++template <typename Resource>
++class OpenRCRTSourceLifetime {
++private:
++	struct Retired {
++		Resource resource;
++		bool probe_hold = false;
++	};
++	HashMap<uint64_t, uint64_t> tokens;
++	HashMap<uint64_t, uint32_t> references;
++	HashMap<uint64_t, Retired> retired;
++	uint64_t next_token = 1;
++	static constexpr uint32_t MAX_TOKENS = 4096;
++
++public:
++	bool acquire(uint64_t p_serial, uint64_t &r_token) {
++		r_token = 0;
++		if (!p_serial || retired.has(p_serial) || tokens.size() >= MAX_TOKENS || next_token == std::numeric_limits<uint64_t>::max()) {
++			return false;
++		}
++		uint32_t *count = references.getptr(p_serial);
++		if (count) {
++			++*count;
++		} else {
++			references.insert(p_serial, 1);
++		}
++		r_token = next_token++;
++		tokens.insert(r_token, p_serial);
++		return true;
++	}
++
++	bool current(uint64_t p_token) const {
++		const uint64_t *serial = tokens.getptr(p_token);
++		return serial && !retired.has(*serial);
++	}
++
++	// r_free receives a resource only if it can be handed to RD now. An
++	// invalidated source with outstanding tokens or a probe hold is retained.
++	bool retire(uint64_t p_serial, Resource p_resource, bool p_probe_hold, Resource &r_free) {
++		r_free = Resource();
++		if (!p_serial || retired.has(p_serial)) {
++			return false;
++		}
++		if (p_probe_hold || references.has(p_serial)) {
++			retired.insert(p_serial, Retired{ p_resource, p_probe_hold });
++		} else {
++			r_free = p_resource;
++		}
++		return true;
++	}
++
++	bool release(uint64_t p_token, Resource &r_free) {
++		r_free = Resource();
++		uint64_t *serial_ptr = tokens.getptr(p_token);
++		if (!serial_ptr) {
++			return false;
++		}
++		const uint64_t serial = *serial_ptr;
++		uint32_t *count = references.getptr(serial);
++		if (!count || !*count) {
++			return false; // Internal invariant violation; caller fails closed.
++		}
++		tokens.erase(p_token);
++		if (--*count == 0) {
++			references.erase(serial);
++			Retired *item = retired.getptr(serial);
++			if (item && !item->probe_hold) {
++				r_free = item->resource;
++				retired.erase(serial);
++			}
++		}
++		return true;
++	}
++
++	bool end_probe_hold(uint64_t p_serial, Resource &r_free) {
++		r_free = Resource();
++		Retired *item = retired.getptr(p_serial);
++		if (!item || !item->probe_hold) {
++			return false;
++		}
++		item->probe_hold = false;
++		if (!references.has(p_serial)) {
++			r_free = item->resource;
++			retired.erase(p_serial);
++		}
++		return true;
++	}
++
++	template <typename Callback>
++	void drain_retired(Callback p_callback) {
++		for (const KeyValue<uint64_t, Retired> &item : retired) {
++			p_callback(item.value.resource);
++		}
++		retired.clear();
++		tokens.clear();
++		references.clear();
++	}
++};
+diff --git a/servers/rendering/storage/metalfx_viewport_callback.h b/servers/rendering/storage/metalfx_viewport_callback.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_viewport_callback.h
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: MIT
++// Internal conditional consumer ordering; callbacks all use the caller's
++// original driver command buffer. This does not claim GPU completion.
++#pragma once
++#include <atomic>
++#include <array>
++#include <cstddef>
++#include <cstdint>
++namespace MFXViewportCallback {
++struct CommandProof {
++	uint64_t frame = 0;
++	uint64_t pipeline = 0;
++	std::atomic<uint64_t> first_command{ 0 };
++	std::atomic<uint32_t> required_draw_stages{ 0 };
++	std::atomic<uint32_t> completed_draw_stages{ 0 };
++	std::atomic<bool> draw_failed{ false };
++};
++enum DrawStage : uint32_t { PRIMARY_DEPTH = 1u, PRIMARY_COLOR = 2u, GUIDES = 4u, DEPTH_CONVERSION = 8u, INPUT_CLEARS = 16u };
++inline bool draw_stages_ready(const CommandProof &p) {
++	const uint32_t required = p.required_draw_stages.load(std::memory_order_acquire);
++	const uint32_t minimum = DEPTH_CONVERSION | INPUT_CLEARS;
++	return (required & minimum) == minimum && !p.draw_failed.load(std::memory_order_acquire) &&
++			(p.completed_draw_stages.load(std::memory_order_acquire) & required) == required;
++}
++inline bool same_command(uint64_t p_first, uint64_t p_last) { return p_first != 0 && p_first == p_last; }
++inline bool producer_receipts_ready(bool p_same_command, bool p_dispatch, bool p_draws) {
++	return p_same_command && p_dispatch && p_draws;
++}
++inline bool required_set_valid(uint32_t p_expected, uint32_t p_actual, bool p_live) {
++	return !p_expected || (p_expected == p_actual && p_live);
++}
++inline bool build_commands_ready(uint64_t p_first, uint64_t p_last, bool p_acceleration_structure_ready) {
++	return same_command(p_first, p_last) && p_acceleration_structure_ready;
++}
++// Only instantiated on an explicitly requested Metal command buffer. Bounded
++// per-pipeline tracking prevents another viewport's dispatch satisfying ours.
++class DispatchLedger {
++	struct Entry { uint64_t pipeline = 0; uint32_t encoded = 0; bool failed = false; };
++	std::array<Entry, 16> entries{};
++public:
++	void clear() { entries = {}; }
++	bool begin(uint64_t p_pipeline) {
++		if (!p_pipeline) { return false; }
++		for (const Entry &entry : entries) { if (entry.pipeline == p_pipeline) { return false; } }
++		for (Entry &entry : entries) { if (!entry.pipeline) { entry.pipeline = p_pipeline; return true; } }
++		return false;
++	}
++	bool tracking(uint64_t p_pipeline) const {
++		for (const Entry &entry : entries) { if (entry.pipeline && entry.pipeline == p_pipeline) { return true; } }
++		return false;
++	}
++	void note(uint64_t p_pipeline, bool p_encoded) {
++		for (Entry &entry : entries) {
++			if (entry.pipeline && entry.pipeline == p_pipeline) {
++				if (!p_encoded || entry.encoded == UINT32_MAX) { entry.failed = true; } else { ++entry.encoded; }
++				return;
++			}
++		}
++	}
++	bool finish(uint64_t p_pipeline) {
++		for (Entry &entry : entries) {
++			if (entry.pipeline && entry.pipeline == p_pipeline) {
++				bool ok = !entry.failed && entry.encoded == 1;
++				entry = {};
++				return ok;
++			}
++		}
++		return false;
++	}
++};
++// One graph-delimited render stage at a time on this native command buffer.
++class DrawLedger {
++	uint64_t token = 0;
++	uint32_t encoded = 0;
++	uint32_t stage = 0;
++	bool failed = false;
++public:
++	void clear() { token = 0; encoded = 0; stage = 0; failed = false; }
++	bool begin(uint64_t p_token, uint32_t p_stage) {
++		if (!p_token || !p_stage || token) { return false; }
++		token = p_token; stage = p_stage; return true;
++	}
++	bool active() const { return token != 0; }
++	bool optional_pass() const { return stage == GUIDES || stage == DEPTH_CONVERSION; }
++	void note(bool p_encoded) {
++		if (!token) { return; }
++		if (!p_encoded || encoded == UINT32_MAX) { failed = true; } else { ++encoded; }
++	}
++	bool finish(uint64_t p_token, uint32_t p_expected) {
++		if (!token || token != p_token) { return false; }
++		const bool ok = p_expected && !failed && encoded == p_expected;
++		clear(); return ok;
++	}
++};
++enum class Result { NATIVE_FAILED, OBSERVER_FAILED, CONSUMED };
++template <class Observe, class Consume>
++Result after_native_encode(bool p_native_ok, Observe p_observe, Consume p_consume) {
++	if (!p_native_ok) { return Result::NATIVE_FAILED; }
++	if (!p_observe()) { return Result::OBSERVER_FAILED; }
++	p_consume();
++	return Result::CONSUMED;
++}
++} // namespace MFXViewportCallback
+diff --git a/servers/rendering/storage/metalfx_viewport_geometry.h b/servers/rendering/storage/metalfx_viewport_geometry.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_viewport_geometry.h
+@@ -0,0 +1,89 @@
++// SPDX-License-Identifier: MIT
++// Narrow immutable normal proof for Godot's uncompressed triangle streams.
++#pragma once
++#include "servers/rendering/storage/metalfx_rt_geometry.h"
++#include "servers/rendering/storage/metalfx_viewport_primary_geometry.h"
++#include <cmath>
++#include <cstring>
++
++namespace MFXViewportGeometry {
++struct Normal { double x, y, z; };
++inline Normal decode(uint16_t p_x, uint16_t p_y) {
++	double x = double(p_x) * (2.0 / 65535.0) - 1.0;
++	double y = double(p_y) * (2.0 / 65535.0) - 1.0;
++	double z = 1.0 - std::abs(x) - std::abs(y);
++	const double t = z < 0.0 ? -z : 0.0;
++	x += x > 0.0 ? -t : (x < 0.0 ? t : 0.0);
++	y += y > 0.0 ? -t : (y < 0.0 ? t : 0.0);
++	const double length = std::sqrt(x * x + y * y + z * z);
++	return { x / length, y / length, z / length };
++}
++inline double dot(const Normal &a, const Normal &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
++
++// Normals follow the float3 position block as two UNORM16 values per vertex;
++// an optional tangent adds another two UNORM16 values to each normal stride.
++// Pairwise dot >= 0.5 gives a substantial shared-hemisphere margin so no
++// perspective-correct interpolated normal of a triangle can approach zero.
++inline bool guide_geometry_safe(const OpenRCRTGeometry::Input &p, bool p_has_normal, bool p_has_tangent) {
++	uint64_t bytes = 0;
++	if (!p_has_normal || OpenRCRTGeometry::validate(p, bytes) != OpenRCRTGeometry::Result::OK) { return false; }
++	const uint64_t offset = p.vertex_count * 12, stride = p_has_tangent ? 8 : 4;
++	if (p.vertex_count > (UINT64_MAX - offset) / stride || offset + p.vertex_count * stride != p.position_bytes) { return false; }
++	for (uint64_t i = 0; i < p.vertex_count; ++i) {
++		float position[3];
++		std::memcpy(position, p.positions + i * 12, 12);
++		for (float value : position) { if (std::abs(value) > 1000000.0f) { return false; } }
++		// Forward+ reads four UNORM16 components even without tangents. In
++		// that case ZW are the next vertex's normal; the final padded ZW are
++		// explicitly zero. (0, 1) selects the compressed-normal shader path,
++		// which does not match the XY octahedral normal checked below.
++		uint16_t zw[2] = {};
++		if (p_has_tangent || i + 1 < p.vertex_count) {
++			std::memcpy(zw, p.positions + offset + i * stride + 4, sizeof(zw));
++		}
++		if (zw[0] == 0 && zw[1] == 65535) { return false; }
++	}
++	const uint64_t count = p.index_count ? p.index_count : p.vertex_count;
++	for (uint64_t i = 0; i < count; i += 3) {
++		Normal normals[3];
++		for (uint64_t j = 0; j < 3; ++j) {
++			uint32_t index = uint32_t(i + j);
++			if (p.index_count) {
++				if (p.index_width == 2) { uint16_t value; std::memcpy(&value, p.indices + (i + j) * 2, 2); index = value; }
++				else { std::memcpy(&index, p.indices + (i + j) * 4, 4); }
++			}
++			uint16_t encoded[2];
++			std::memcpy(encoded, p.positions + offset + uint64_t(index) * stride, sizeof(encoded));
++			normals[j] = decode(encoded[0], encoded[1]);
++		}
++		if (dot(normals[0], normals[1]) < 0.5 || dot(normals[0], normals[2]) < 0.5 || dot(normals[1], normals[2]) < 0.5) { return false; }
++	}
++	return true;
++}
++
++// The admitted fixed material must use the same oriented normal as the
++// captured triangle at all three vertices. This is a source-only check; it
++// does not prove the raster GPU upload or front-face convention.
++inline bool flat_normals_match(const OpenRCRTGeometry::Input &p, bool p_has_normal, bool p_has_tangent,
++		const MFXViewportPrimaryGeometry::Normal *p_triangles, uint64_t p_triangle_count) {
++	constexpr double MIN_FLAT_DOT = 0.9999;
++	const uint64_t count = p.index_count ? p.index_count : p.vertex_count;
++	if (!p_triangles || !p_triangle_count || count / 3 != p_triangle_count ||
++			!guide_geometry_safe(p, p_has_normal, p_has_tangent)) { return false; }
++	const uint64_t offset = p.vertex_count * 12, stride = p_has_tangent ? 8 : 4;
++	for (uint64_t i = 0; i < count; ++i) {
++		uint32_t index = uint32_t(i);
++		if (p.index_count) {
++			if (p.index_width == 2) { uint16_t value; std::memcpy(&value, p.indices + i * 2, 2); index = value; }
++			else { std::memcpy(&index, p.indices + i * 4, 4); }
++		}
++		uint16_t encoded[2];
++		std::memcpy(encoded, p.positions + offset + uint64_t(index) * stride, sizeof(encoded));
++		const Normal n = decode(encoded[0], encoded[1]);
++		const auto &triangle = p_triangles[i / 3];
++		const double alignment = n.x * triangle.x + n.y * triangle.y + n.z * triangle.z;
++		if (!std::isfinite(alignment) || alignment < MIN_FLAT_DOT) { return false; }
++	}
++	return true;
++}
++} // namespace MFXViewportGeometry
+diff --git a/servers/rendering/storage/metalfx_viewport_numeric.h b/servers/rendering/storage/metalfx_viewport_numeric.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_viewport_numeric.h
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: MIT
++// Conservative bound for the half-float noisy-radiance input.
++#pragma once
++#include <cmath>
++namespace MFXViewportNumeric {
++inline bool environment_channel(float p_value) {
++	return std::isfinite(p_value) && p_value >= 0.0f && p_value <= 1024.0f;
++}
++inline bool position_component(float p_value) {
++	return std::isfinite(p_value) && std::abs(p_value) <= 1000000.0f;
++}
++// Column-major inverse projection. Bound all coefficients and the minimum
++// homogeneous w over x,y in [-1,1], depth in [0,1]. Since w is affine,
++// this lower bound covers the whole clip box, including raster interpolation.
++inline bool inverse_clip_matrix_safe(const float p_matrix[16]) {
++	for (int i = 0; i < 16; ++i) {
++		if (!std::isfinite(p_matrix[i]) || std::abs(p_matrix[i]) > 10000000.0f) { return false; }
++	}
++	const double minimum_w = double(p_matrix[15]) - std::abs(double(p_matrix[3])) - std::abs(double(p_matrix[7])) +
++			(p_matrix[11] < 0.0f ? double(p_matrix[11]) : 0.0);
++	const double scale = std::abs(double(p_matrix[15])) + std::abs(double(p_matrix[3])) +
++			std::abs(double(p_matrix[7])) + std::abs(double(p_matrix[11]));
++	// Leave room for GPU float rounding and cancellation, not just the exact
++	// real-valued lower bound computed above.
++	return minimum_w > 0.00001 * (1.0 + scale);
++}
++
++// Full-clip-box preflight relative to the near-center point. This keeps camera
++// translation correlated with w; independent absolute bounds reject ordinary
++// translated cameras. The error margins cover float matrix/divide/subtract
++// operations conservatively; exact shader arithmetic still needs native tests.
++inline bool primary_ray_domain_safe(const float p_matrix[16]) {
++	if (!inverse_clip_matrix_safe(p_matrix)) { return false; }
++	const double wx = p_matrix[3], wy = p_matrix[7], wz = p_matrix[11], wc = p_matrix[15];
++	const double min_w = wc - std::abs(wx) - std::abs(wy) + (wz < 0.0 ? wz : 0.0);
++	const double min_w0 = wc - std::abs(wx) - std::abs(wy);
++	const double min_w1 = wc + wz - std::abs(wx) - std::abs(wy);
++	const double max_w0 = wc + std::abs(wx) + std::abs(wy);
++	const double max_w1 = wc + wz + std::abs(wx) + std::abs(wy);
++	if (!(min_w > 0.0) || !(min_w0 > 0.0) || !(min_w1 > 0.0) || !(max_w0 > 0.0) || !(max_w1 > 0.0)) { return false; }
++	constexpr double FLOAT_MARGIN = 0.000001; // More than 16 float unit roundoffs.
++	const double err_w0 = FLOAT_MARGIN * (1.0 + std::abs(wc) + std::abs(wx) + std::abs(wy));
++	const double err_w1 = FLOAT_MARGIN * (1.0 + std::abs(wc) + std::abs(wx) + std::abs(wy) + std::abs(wz));
++	if (err_w0 >= min_w0 || err_w1 >= min_w1) { return false; }
++	double radius_squared = 0.0, error_squared = 0.0;
++	double axis_error[3] = {};
++	for (int axis = 0; axis < 3; ++axis) {
++		const double x = p_matrix[axis], y = p_matrix[4 + axis], z = p_matrix[8 + axis], c = p_matrix[12 + axis];
++		const double reference = (c + z) / (wc + wz);
++		const double numerator = std::abs(x - reference * wx) + std::abs(y - reference * wy) +
++				std::abs(z - reference * wz) + std::abs(c - reference * wc);
++		const double coordinate_bound = numerator / min_w;
++		radius_squared += coordinate_bound * coordinate_bound;
++		const double n0 = std::abs(x) + std::abs(y) + std::abs(c);
++		const double n1 = n0 + std::abs(z);
++		const double bound0 = n0 / min_w0, bound1 = n1 / min_w1;
++		const double err0 = (FLOAT_MARGIN * (1.0 + n0) + bound0 * err_w0) / (min_w0 - err_w0) + FLOAT_MARGIN * (1.0 + bound0);
++		const double err1 = (FLOAT_MARGIN * (1.0 + n1) + bound1 * err_w1) / (min_w1 - err_w1) + FLOAT_MARGIN * (1.0 + bound1);
++		axis_error[axis] = err0 + err1 + FLOAT_MARGIN * (1.0 + bound0 + bound1);
++		error_squared += axis_error[axis] * axis_error[axis];
++	}
++	const double radius = std::sqrt(radius_squared);
++	const double error = std::sqrt(error_squared);
++	if (!std::isfinite(radius) || !std::isfinite(error) || 2.0 * radius + error > 5000000.0) { return false; }
++	const double max_denominator = max_w0 * max_w1;
++	for (int axis = 0; axis < 3; ++axis) {
++		const double z = p_matrix[8 + axis], c = p_matrix[12 + axis];
++		const double constant = z * wc - c * wz;
++		const double x = z * wx - double(p_matrix[axis]) * wz;
++		const double y = z * wy - double(p_matrix[4 + axis]) * wz;
++		const double numerator_lower = std::abs(constant) - std::abs(x) - std::abs(y);
++		if (numerator_lower > 0.0 && numerator_lower / max_denominator > 0.25 * (1.0 + radius) + 2.0 * axis_error[axis]) { return true; }
++	}
++	return false;
++}
++}
+diff --git a/servers/rendering/storage/metalfx_viewport_opt_in.h b/servers/rendering/storage/metalfx_viewport_opt_in.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_viewport_opt_in.h
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: MIT
++// Startup-latched experiment switch. The per-frame read performs no lookup.
++#pragma once
++namespace MFXViewportOptIn {
++class StartupSwitch {
++	bool initialized = false;
++	bool requested_value = false;
++public:
++	template <typename Lookup>
++	void initialize(Lookup p_lookup) {
++		if (!initialized) { requested_value = p_lookup(); initialized = true; }
++	}
++	bool requested() const { return initialized && requested_value; }
++};
++inline StartupSwitch denoised;
++} // namespace MFXViewportOptIn
+diff --git a/servers/rendering/storage/metalfx_viewport_primary_geometry.h b/servers/rendering/storage/metalfx_viewport_primary_geometry.h
+new file mode 100644
+--- /dev/null
++++ b/servers/rendering/storage/metalfx_viewport_primary_geometry.h
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: MIT
++// Geometric normals from the exact expanded, non-indexed BLAS input.
++#pragma once
++#include <cmath>
++#include <cstdint>
++#include <cstring>
++
++namespace MFXViewportPrimaryGeometry {
++struct Normal { float x, y, z, pad; };
++static_assert(sizeof(Normal) == 16, "std430 vec4 layout");
++struct Range { uint32_t offset, count, instance_id, reserved; };
++static_assert(sizeof(Range) == 16, "std430 uvec4 layout");
++constexpr uint32_t MAX_INSTANCES = 16;
++
++inline bool vertices_inside_bounds(const uint8_t *p_vertices, uint64_t p_bytes, uint64_t p_count, const double p_min[3], const double p_max[3]) {
++	if (!p_vertices || !p_min || !p_max || !p_count || p_count > UINT64_MAX / 12 || p_count * 12 > p_bytes) { return false; }
++	for (uint32_t axis = 0; axis < 3; ++axis) {
++		if (!std::isfinite(p_min[axis]) || !std::isfinite(p_max[axis]) || p_min[axis] > p_max[axis]) { return false; }
++	}
++	for (uint64_t i = 0; i < p_count; ++i) {
++		float v[3];
++		std::memcpy(v, p_vertices + i * 12, sizeof(v));
++		for (uint32_t axis = 0; axis < 3; ++axis) {
++			if (!std::isfinite(v[axis]) || double(v[axis]) < p_min[axis] || double(v[axis]) > p_max[axis]) { return false; }
++		}
++	}
++	return true;
++}
++
++inline bool valid_ranges(const Range *p_ranges, uint32_t p_instances, uint32_t p_normals) {
++	if (!p_ranges || !p_instances || p_instances > MAX_INSTANCES) { return false; }
++	uint32_t next = 0;
++	for (uint32_t i = 0; i < p_instances; ++i) {
++		const Range &r = p_ranges[i];
++		if (r.instance_id != i + 1 || r.reserved || !r.count || r.offset != next || r.count > p_normals - next) { return false; }
++		next += r.count;
++	}
++	return next == p_normals;
++}
++
++inline bool lookup(const Range *p_ranges, uint32_t p_instances, uint32_t p_normals, uint32_t p_instance_id, uint32_t p_primitive, uint32_t &r_index) {
++	if (!valid_ranges(p_ranges, p_instances, p_normals) || !p_instance_id || p_instance_id > p_instances) { return false; }
++	const Range &range = p_ranges[p_instance_id - 1];
++	if (p_primitive >= range.count) { return false; }
++	r_index = range.offset + p_primitive;
++	return true;
++}
++
++inline bool build_normals(const uint8_t *p_vertices, uint64_t p_bytes, Normal *r_normals, uint64_t p_count) {
++	if (!p_vertices || !r_normals || !p_count || p_count > UINT32_MAX || p_count > UINT64_MAX / 36 || p_bytes != p_count * 36) { return false; }
++	for (uint64_t i = 0; i < p_count; ++i) {
++		float v[9];
++		std::memcpy(v, p_vertices + i * 36, sizeof(v));
++		for (float x : v) { if (!std::isfinite(x) || std::abs(x) > 1000000.0f) { return false; } }
++		const double ax = double(v[3]) - v[0], ay = double(v[4]) - v[1], az = double(v[5]) - v[2];
++		const double bx = double(v[6]) - v[0], by = double(v[7]) - v[1], bz = double(v[8]) - v[2];
++		const double x = ay * bz - az * by, y = az * bx - ax * bz, z = ax * by - ay * bx;
++		const double len2 = x * x + y * y + z * z;
++		if (!std::isfinite(len2) || len2 < 1e-24) { return false; }
++		const double inv = 1.0 / std::sqrt(len2);
++		r_normals[i] = { float(x * inv), float(y * inv), float(z * inv), 0.0f };
++	}
++	return true;
++}
++} // namespace MFXViewportPrimaryGeometry

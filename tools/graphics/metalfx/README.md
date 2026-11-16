@@ -536,3 +536,18 @@ controls run with:
 ```sh
 OPENRC_METALFX_SOURCE_ARCHIVE=/cache/godot.zip python -B tools/graphics/metalfx/test_engine_displaylink_resize_patch.py
 ```
+
+## Optional opaque RT view (0027)
+
+`0027-metalfx-opaque-rt-view.patch` is an optional, closed-gate source draft
+after 0001-0019, 0021, 0024, 0025 and 0026. Its exact source catalog SHA-256 is
+`a4754c95a2ed6163f3648562287155e89f11001c8cb3bd5281dab178d5cd9707`.
+`GUIDE_INPUT_RECEIPT_IMPLEMENTED` remains false; the patch does not change the
+default engine selection or enable RT denoising. With the
+RT-view switch off, it performs no optional RT-view state allocation, scene scan
+or GPU work; a reference conversion and latched check remain. Separately enabled
+0018 scene capture retains its own costs. Native compilation, completion and
+image validation remain required before any gate change or product claim.
+
+Source-bound controls: `python -B tools/graphics/metalfx/test_engine_opaque_rt_view_patch.py`.
+Set `OPENRC_METALFX_SOURCE_ARCHIVE` to the pinned ZIP for the full-stack check.
