@@ -195,7 +195,7 @@ class Worker:
         import re
         # Exact official build identifier comes from the tested revision, not a moving stable alias.
         versions = re.findall(r'4\.[0-9]+\.[A-Za-z0-9.]+\.official\.[0-9a-f]+', pin)
-        observed = subprocess.check_output([str(self.engine), "--version"], timeout=15, text=True).strip()
+        observed = subprocess.check_output([str(self.engine), "--version"], timeout=15, text=True, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0).strip()
         if not versions or observed not in versions:
             raise ValueError(f"ENGINE_MISMATCH: {observed}; revision pins {versions}")
         binaries = {self.engine.name: sha256(self.engine)}

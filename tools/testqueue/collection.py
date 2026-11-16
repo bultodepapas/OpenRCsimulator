@@ -185,7 +185,8 @@ def _copy_remote(protocol, host, output, name, target, expected):
     with target.open("xb") as stream:
         protocol.subprocess.run(["ssh", "-T", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes", "-o", "ConnectTimeout=10",
                                  host["ssh"], command], stdout=stream, stderr=protocol.subprocess.PIPE,
-                                check=True, timeout=120)
+                                check=True, timeout=120,
+                                creationflags=protocol.subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         stream.flush()
         os.fsync(stream.fileno())
     _verify_file(target, expected)

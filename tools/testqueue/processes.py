@@ -36,13 +36,16 @@ _CLEANUP_SECONDS = 8.0
 # -I -S prevents Python environment/site hooks from executing before the gate.
 # On Windows the gate itself waits for the command, so its exit code is the
 # requested command's status.  The job continues to count orphaned children.
+# Both console launch layers run without a console. CREATE_NO_WINDOW does not
+# suppress native GUI windows, and never changes job membership or captured I/O.
 _WINDOWS_GATE = r"""
 import sys
 if sys.stdin.buffer.read(1) != b'1':
     sys.exit(125)
 import subprocess
 try:
-    process = subprocess.Popen(sys.argv[1:], stdin=subprocess.DEVNULL, close_fds=True)
+    process = subprocess.Popen(sys.argv[1:], stdin=subprocess.DEVNULL, close_fds=True,
+                               creationflags=subprocess.CREATE_NO_WINDOW)
     sys.exit(process.wait())
 except OSError as exc:
     print('Could not launch command: ' + str(exc), file=sys.stderr, flush=True)
@@ -398,7 +401,8 @@ class OwnedProcess:
                 creation_entered = True
                 self._process = subprocess.Popen(args, cwd=self.cwd, env=self.env,
                                                  stdin=subprocess.PIPE, stdout=self._log_file,
-                                                 stderr=subprocess.STDOUT, close_fds=True)
+                                                 stderr=subprocess.STDOUT, close_fds=True,
+                                                 creationflags=subprocess.CREATE_NO_WINDOW)
                 self.pid = self._process.pid
                 _wincheck(_kernel32.AssignProcessToJobObject(self._job, int(self._process._handle)))
                 self._assigned = True

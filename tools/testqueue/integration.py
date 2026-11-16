@@ -25,7 +25,7 @@ def submit(preset: str, options: dict, source: Path, *, retain_session: bool = F
     scopes = None
     if preset in {"suite", "ci", "capture"}:
         import subprocess
-        names = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=source).decode().split("\0")
+        names = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=source, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0).decode().split("\0")
         scopes = tuple(sorted({name.split("/")[0] for name in names if name}))
     kwargs = {"scope": scopes} if scopes else {}
     manifest = capture(source, snapshot, include_imports=(source / "app/.godot/imported").is_dir(), **kwargs)

@@ -28,12 +28,12 @@ def prepare_history(preset, directory, request):
             raise ValueError("history destination must be new inside the owned attempt")
         history = directory / "history"
         subprocess.run(["git", "clone", "--no-checkout", "--no-hardlinks", request["source"], str(history)],
-                       check=True, capture_output=True, timeout=300)
+                       check=True, capture_output=True, timeout=300, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         shutil.move(str(history / ".git"), str(ROOT / ".git"))
         subprocess.run(["git", "reset", "--mixed", request["manifest"]["commit"]], cwd=ROOT,
-                       check=True, capture_output=True, timeout=60)
+                       check=True, capture_output=True, timeout=60, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
     elif preset == "landscape":
-        subprocess.run(["git", "init", "-q", str(ROOT)], check=True, capture_output=True, timeout=30)
+        subprocess.run(["git", "init", "-q", str(ROOT)], check=True, capture_output=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
 
 
 def main(directory: Path) -> int:
@@ -127,7 +127,7 @@ def main(directory: Path) -> int:
                 command += ["--out", str(directory / "captures"), "--run-id", directory.name]
             if preset == "godtest":
                 command += ["--godot", os.environ["OPENRC_GODOT"], "--out", str(directory / "godtest")]
-            code = subprocess.call(command, cwd=ROOT)
+            code = subprocess.call(command, cwd=ROOT, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
             complete, evidence_ok, evidence = validate_evidence(preset, directory, ROOT, options)
             verdict.update(ok=code == 0 and evidence_ok, complete=complete, evidence=evidence)
             if code == 0 and complete and not evidence_ok:

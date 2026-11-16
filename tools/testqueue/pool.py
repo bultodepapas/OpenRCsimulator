@@ -133,7 +133,7 @@ class Pool:
         command = shlex.join([host['python'], host['agent'], action, '--root', host['root']])
         result = subprocess.run(['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes',
                                  '-o', 'ConnectTimeout=8', host['ssh'], command],
-                                input=json.dumps(payload), capture_output=True, text=True, timeout=45)
+                                input=json.dumps(payload), capture_output=True, text=True, timeout=45, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         try:
             response = json.loads(result.stdout)
         except ValueError as error:
@@ -500,7 +500,7 @@ class Pool:
             else:
                 remote_archive = host['root'] + '/incoming/' + archive_digest + '.tar'
                 command = shlex.join(['mkdir', '-p', host['root'] + '/incoming'])
-                subprocess.run(['ssh', '-T', host['ssh'], command], check=True, timeout=30)
+                subprocess.run(['ssh', '-T', host['ssh'], command], check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
                 verifier = ('import hashlib, pathlib, sys\n'
                             'checksum = hashlib.sha256()\n'
                             'with pathlib.Path(sys.argv[1]).open("rb") as stream:\n'
@@ -509,14 +509,14 @@ class Pool:
                             'sys.exit(0 if checksum.hexdigest() == sys.argv[2] else 1)\n')
                 check = shlex.join([host['python'], '-c', verifier, remote_archive, archive_digest])
                 present = subprocess.run(['ssh', '-T', host['ssh'], check], timeout=180,
-                                         capture_output=True).returncode == 0
+                                         capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0).returncode == 0
                 if not present:
                     upload = remote_archive + '.' + identifier + '.pending'
-                    subprocess.run(['scp', str(archive), host['ssh'] + ':' + upload], check=True, timeout=1800)
+                    subprocess.run(['scp', str(archive), host['ssh'] + ':' + upload], check=True, timeout=1800, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
                     check = shlex.join([host['python'], '-c', verifier, upload, archive_digest])
-                    subprocess.run(['ssh', '-T', host['ssh'], check], check=True, timeout=180)
+                    subprocess.run(['ssh', '-T', host['ssh'], check], check=True, timeout=180, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
                     publish = shlex.join([host['python'], '-c', 'import os,sys; os.replace(sys.argv[1],sys.argv[2])', upload, remote_archive])
-                    subprocess.run(['ssh', '-T', host['ssh'], publish], check=True, timeout=30)
+                    subprocess.run(['ssh', '-T', host['ssh'], publish], check=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
                 receipt['request'] = {'request_id': identifier, 'preset': 'checked',
                                       'archive': {'path': remote_archive, 'sha256': archive_digest},
                                       'expected_engine_sha256': host['engine_sha256'],

@@ -80,7 +80,7 @@ def _git(root: Path, *args: str) -> bytes:
     try:
         return subprocess.check_output(
             ["git", "--literal-pathspecs", "-C", str(root), *args],
-            stderr=subprocess.PIPE, timeout=120,
+            stderr=subprocess.PIPE, timeout=120, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
         )
     except (OSError, subprocess.SubprocessError) as exc:
         raise ValueError(f"Git command failed ({args[0]}): {exc}") from exc
