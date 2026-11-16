@@ -95,6 +95,7 @@ The current [aircraft legal guide](AIRCRAFT-LICENSING.md) documents beta-specifi
 
 - [Choose a License — Non-software licenses and mixed projects](https://choosealicense.com/non-software/) — explicitly scoped licenses for code, media and other material.
 - [Godot — Complying with licenses](https://docs.godotengine.org/en/stable/about/complying_with_licenses.html) — engine MIT and game/third-party asset notices.
+- [Godot — Exporting packs, patches, and mods](https://docs.godotengine.org/en/stable/tutorials/export/exporting_pcks.html) — optional PCK/ZIP packs, distribution and copying risks.
 - [GitHub — Licensing a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository) and [source archives](https://docs.github.com/en/repositories/working-with-files/using-files/downloading-source-code-archives) — repository licensing and distributed snapshots.
 - [Creative Commons — License types](https://creativecommons.org/cc-licenses/), [FAQ](https://creativecommons.org/faq/) — BY, SA, NC, ND and adaptation rules.
 - [SPDX — Handling license info](https://spdx.dev/learn/handling-license-info/) and [REUSE FAQ](https://reuse.software/faq/) — per-file identification and retaining license texts.
