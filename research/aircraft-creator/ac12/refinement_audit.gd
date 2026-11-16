@@ -24,6 +24,28 @@ func specification() -> Dictionary:
 	return {case_id = "C01",tape = "pitch_doublet",calibrate = false}
 
 
+## An explicitly versioned campaign may choose a different, fixed registration.
+## The original audit keeps its five cells and historical compiler inputs.
+func registered_cells() -> Array:
+	return CELLS.duplicate()
+
+
+func audited_definition(value: Dictionary) -> Dictionary:
+	return value
+
+
+func candidate_is_admitted(_candidate: RefCounted,_definition: Dictionary) -> bool:
+	return true
+
+
+func session_is_admitted(_session: Node,_candidate: RefCounted) -> bool:
+	return true
+
+
+func baseline_replay_is_admitted(_report: Dictionary) -> bool:
+	return true
+
+
 func _initialize() -> void:
 	_run_audit.call_deferred()
 
@@ -42,7 +64,7 @@ func _run_audit() -> void:
 			spec.calibrate = true
 		else:
 			bad_option = true
-	if bad_option or not valid_specification(spec):
+	if bad_option or not valid_specification(spec,registered_cells()):
 		_fail("unknown option or cell outside the registered audit")
 		return
 	if _out.is_empty():
@@ -65,11 +87,15 @@ func _run_audit() -> void:
 	for entry: Array in _cases():
 		if entry[0] == spec.case_id:
 			definition = entry[2]
+	definition = audited_definition(definition)
 	var compiled := Compiler.compile_candidate(definition)
 	if not compiled.ok:
 		_fail("case refused: "+str(R.texts(compiled)))
 		return
 	var candidate: RefCounted = compiled.value
+	if not candidate_is_admitted(candidate,definition):
+		_fail("registered candidate admission failed")
+		return
 	var canonical := Definition.validate_complete(definition)
 	var encoded_definition := Bytes.encode(canonical.value) if canonical.ok else {ok = false}
 	if not encoded_definition.ok or encoded_definition.value.sha256 != candidate.definition_sha256() \
@@ -139,10 +165,11 @@ func _run_audit() -> void:
 	quit(0 if report.complete else 1)
 
 
-static func valid_specification(value: Dictionary) -> bool:
+static func valid_specification(value: Dictionary,allowed: Array = CELLS) -> bool:
 	return value.size() == 3 and typeof(value.get("case_id")) == TYPE_STRING \
 		and typeof(value.get("tape")) == TYPE_STRING and typeof(value.get("calibrate")) == TYPE_BOOL \
-		and (value.case_id+"/"+value.tape) in CELLS
+		and (value.case_id+"/"+value.tape) in allowed \
+		and (not value.calibrate or (value.case_id+"/"+value.tape) in CELLS)
 
 
 ## Called after resolving user://; relative paths cannot bypass the source-tree check.
@@ -240,7 +267,8 @@ func _capture(candidate: RefCounted,tape_name: String,rate: int) -> Dictionary:
 	session.start_choice = Session.START_AIRBORNE
 	session.setup("",candidate.aircraft_id(),candidate.flight_data())
 	if not session.is_flyable() or session.stage_backend_identity() != {backend = "gdscript_reference"} \
-			or session.sim.dt() != 1.0/float(rate) or session.sim.tick != 0 or not session.weather_is_calm():
+			or session.sim.dt() != 1.0/float(rate) or session.sim.tick != 0 or not session.weather_is_calm() \
+			or not session_is_admitted(session,candidate):
 		result.fault = "start/backend/clock/calm-weather invariant failed: "+session.start_error
 		session.free()
 		return result
@@ -321,7 +349,7 @@ func _capture(candidate: RefCounted,tape_name: String,rate: int) -> Dictionary:
 		result.baseline_replay.report_sha256 = FileAccess.get_sha256(_out.path_join("baseline-replay.json"))
 		result.baseline_replay.log_sha256 = FileAccess.get_sha256(log_path)
 		result.baseline_replay.csv_sha256 = FileAccess.get_sha256(_out.path_join("baseline.csv"))
-		if not full_baseline_replay(reader.report):
+		if not full_baseline_replay(reader.report) or not baseline_replay_is_admitted(reader.report):
 			result.fault = "baseline exact replay failed"
 		for field: String in ["report_sha256","log_sha256","csv_sha256"]:
 			if not Bytes.is_sha256(result.baseline_replay[field]):

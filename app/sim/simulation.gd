@@ -76,6 +76,10 @@ const CHECKPOINT_FORMAT := "openrc-simulation-checkpoint v1"
 const ENDPOINT_CHECKPOINT_FORMAT := "openrc-simulation-checkpoint v2"
 const MAX_ENDPOINT_EVENTS := 256
 var _state_layout_identity := ""
+# Only interval models pin this opt-in protocol between accepted boundaries.
+var _joint_interval_protocol := ""
+var _interval_observer_active := false
+var _interval_observer_reentry := false
 var _endpoint_callback_active := false
 var _endpoint_reentry_attempted := false
 var _reset_publication_active := false
@@ -191,6 +195,7 @@ func commit_prepared_reset(candidate: Dictionary, before_sample: Callable = Call
 	last_events = []
 	fault_reason = ""
 	_state_layout_identity = model.state_layout_identity
+	_joint_interval_protocol = model.callback_protocol if _interval() else ""
 	_remember_valid_state()
 	reset_observer_fault = ""
 	if before_sample.is_null():
@@ -291,6 +296,7 @@ func commit_prepared_reset_frame(candidate: Dictionary, before_sample: Callable 
 	last_events = []
 	fault_reason = ""
 	_state_layout_identity = model.state_layout_identity
+	_joint_interval_protocol = model.callback_protocol if _interval() else ""
 	_remember_valid_state()
 	reset_observer_fault = ""
 	if before_sample.is_null():
@@ -361,6 +367,9 @@ func time() -> float:
 
 
 func set_paused(value: bool) -> void:
+	if _interval_observer_active:
+		_interval_observer_reentry = true
+		return
 	if _reject_endpoint_reentry(): return
 	if not value and not fault_reason.is_empty():
 		return
@@ -396,16 +405,51 @@ func step() -> void:
 			or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
-	if _state_layout_identity != model.state_layout_identity or (_endpoint_enabled() \
+	if ((_interval() or not _joint_interval_protocol.is_empty()) and _joint_interval_protocol != model.callback_protocol) \
+		or _state_layout_identity != model.state_layout_identity or (_endpoint_enabled() \
 		and not _validate_endpoint_frame(_endpoint_frame(state, continuous, aux, modes), _endpoint_validation_context(tick, dt()))):
 		_fail_safe("step rejected: endpoint state validator or layout identity refused the current state")
 		return
-	before_step.emit(tick)
+	var interval_boundary_guard: Dictionary = _capture_endpoint_guard() if _interval() or not _joint_interval_protocol.is_empty() else {}
+	if interval_boundary_guard.is_empty():
+		before_step.emit(tick)
+	else:
+		# Transition entry points are blocked; checkpoint reads and direct input updates remain legal.
+		_interval_observer_active = true
+		_interval_observer_reentry = false
+		before_step.emit(tick)
+		var reentered := _interval_observer_reentry
+		_interval_observer_active = false
+		_interval_observer_reentry = false
+		# The observer boundary may update pilot input, not the physical frame, clock or model.
+		interval_boundary_guard.owner.inputs = inputs.duplicate()
+		var unchanged := _endpoint_guard_unchanged(interval_boundary_guard)
+		if reentered or not unchanged:
+			_fail_safe("step rejected: interval observer changed the protected input boundary")
+			return
+	if (_interval() or not _joint_interval_protocol.is_empty()) and (
+		_joint_interval_protocol != model.callback_protocol or _state_layout_identity != model.state_layout_identity \
+		or not _configuration_is_valid() or not _layout_matches_model(aux, modes, continuous) \
+		or _fixed_dt != 1.0 / Engine.physics_ticks_per_second or not _array_is_finite(inputs, model.input_size)):
+		_fail_safe("step rejected: interval contract changed at the input boundary")
+		return
 	var endpoint_previous: Dictionary = _endpoint_frame(state, continuous, aux, modes) if _endpoint_enabled() else {}
 	var old_aux := aux.duplicate()
 	# DR-16a: a framed model takes one candidate control sample per tick, held through every stage of this tick.
 	var sampled_context: Dictionary = {}
 	var stage_guard: Dictionary = {}
+	if _interval():
+		stage_guard = _capture_endpoint_guard()
+		var before_modes := modes.duplicate()
+		var input_snapshot := inputs.duplicate()
+		var next_aux: Variant = _call_interval_read_only(model.pre_tick, [old_aux.duplicate(), input_snapshot.duplicate(), dt()])
+		if not _array_is_finite(next_aux, old_aux.size()):
+			_endpoint_guard_unchanged(stage_guard)
+			_fail_safe("step rejected: interval pre_tick refused its read-only inputs or returned malformed aux")
+			return
+		aux = next_aux.duplicate()
+		stage_guard.owner.aux = aux.duplicate()
+		sampled_context = _interval_context(old_aux, aux, before_modes, modes, input_snapshot, tick, t, dt(), "interval")
 	if _framed():
 		# One guard, captured before the sample, spans the sample, every stage and the step policy, and is reused
 		# by the endpoint transition: a callback that writes live kernel state or swaps a model field refuses the
@@ -421,7 +465,7 @@ func step() -> void:
 		stage_guard.owner.aux = aux.duplicate()
 		stage_guard.owner.modes = modes.duplicate()
 		sampled_context = _sampled_context(aux, modes, tick, t)
-	else:
+	elif not _interval():
 		var next_aux: Variant = model.pre_tick.call(old_aux, inputs, dt())
 		if not _array_is_finite(next_aux) or next_aux.size() != old_aux.size():
 			_fail_safe("step rejected: pre-step produced nonfinite or malformed auxiliary state")
@@ -441,7 +485,7 @@ func step() -> void:
 		aux = old_aux
 		_fail_safe("step rejected: aircraft returned nonfinite or malformed loads")
 		return
-	var rotor: Variant = PackedFloat64Array() if _framed() else model.rotor_momentum.call(aux) # held constant during RK4, like aux
+	var rotor: Variant = PackedFloat64Array() if _framed() or _interval() else model.rotor_momentum.call(aux) # held constant during RK4, like aux
 	if not _array_is_finite(rotor) or (not rotor.is_empty() and rotor.size() != 3):
 		aux = old_aux
 		_fail_safe("step rejected: rotor momentum is nonfinite or malformed")
@@ -471,6 +515,10 @@ func step() -> void:
 			derivative.append_array(extra)
 		return derivative
 	var f := func(s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+		if stage_error.has("interval_policy_guard") and not _endpoint_guard_matches(stage_error.interval_policy_guard):
+			_endpoint_guard_unchanged(stage_error.interval_policy_guard)
+			stage_error.message = "interval policy mutated live state or model before a delegated stage"
+			return _zero_derivative()
 		if not stage_error.message.is_empty():
 			return _zero_derivative()
 		if not _stage_state_is_valid(s):
@@ -497,9 +545,11 @@ func step() -> void:
 	var substeps: int = 1
 	var declared_substeps: Variant = 1
 	if model.substeps_joint.is_valid():
-		declared_substeps = model.substeps_joint.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t, current_joint)
+		declared_substeps = _call_interval_read_only(model.substeps_joint, [combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t, current_joint]) if _interval() \
+			else model.substeps_joint.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t, current_joint)
 	elif model.substeps.is_valid():
-		declared_substeps = model.substeps.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
+		declared_substeps = _call_interval_read_only(model.substeps, [combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t]) if _interval() \
+			else model.substeps.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
 	if typeof(declared_substeps) != TYPE_INT or declared_substeps < 1 or declared_substeps > MAX_SUBSTEPS:
 		aux = old_aux
 		_fail_safe("step rejected: substep count is not an integer within 1..%d" % MAX_SUBSTEPS)
@@ -507,12 +557,18 @@ func step() -> void:
 	substeps = declared_substeps
 	# SF-04b: a step policy owns the whole tick and is never split. Refuse the tick rather than integrate a stiff
 	# contact over the full dt, where the loader's per-substep ω·dt rule would silently not hold.
-	if substeps > 1 and model.step_policy.is_valid():
+	if substeps > 1 and (model.step_policy.is_valid() or model.step_policy_interval.is_valid()):
 		aux = old_aux
 		_fail_safe("step rejected: the step policy owns the tick and cannot honour %d contact substeps" % substeps)
 		return
 	var policy_result: Variant
-	if model.step_policy.is_valid():
+	if _interval() and model.step_policy_interval.is_valid():
+		var policy_guard := _capture_endpoint_guard()
+		policy_guard.owner._endpoint_callback_active = true
+		stage_error.interval_policy_guard = policy_guard
+		policy_result = _call_interval_read_only(model.step_policy_interval, [combined, t, dt(), f, first, sampled_context])
+		stage_error.erase("interval_policy_guard")
+	elif model.step_policy.is_valid():
 		policy_result = model.step_policy.call(combined, t, dt(), f, first)
 	elif not model.events.is_empty():
 		policy_result = _locate_substeps(combined, t, dt(), f, first, model.events[0], substeps)
@@ -658,6 +714,9 @@ func _physics_process(_delta: float) -> void:
 ## State between the previous and current step: position lerp, attitude nlerp (shortest path).
 ## Only position and attitude are interpolated; rates are taken from the current state.
 func interpolated(fraction: float) -> PackedFloat64Array:
+	if _interval_observer_active and (not is_finite(fraction) or not state_is_valid(state) or not state_is_valid(previous)):
+		_interval_observer_reentry = true
+		return state.duplicate()
 	if _reject_endpoint_reentry(): return state.duplicate()
 	if not is_finite(fraction):
 		_fail_safe("interpolation rejected: fraction is nonfinite")
@@ -724,7 +783,7 @@ func _configuration_is_valid() -> bool:
 	if not continuous.is_empty() and not model.uses_joint_stage() and (not model.block_loads.is_valid() or not model.block_derivative.is_valid()):
 		return false
 	if not model.events.is_empty():
-		if model.step_policy.is_valid() or model.events.size() != 1:
+		if model.step_policy.is_valid() or model.step_policy_interval.is_valid() or model.events.size() != 1:
 			return false
 		var declared_index: int = int(model.events[0].get("index", -1))
 		if declared_index < RB.SIZE or declared_index >= RB.SIZE + continuous.size():
@@ -794,13 +853,19 @@ func _rk4_substeps(combined: PackedFloat64Array, t: float, dt_tick: float, f: Ca
 ## The declared-event locator over n pieces of dt/n; events keep their absolute times. null = the locator failed.
 func _locate_substeps(combined: PackedFloat64Array, t: float, dt_tick: float, f: Callable, first: PackedFloat64Array,
 		declared: Dictionary, n: int) -> Variant:
+	var transition: Callable = declared.transition
+	if _interval():
+		var original: Callable = transition
+		transition = func(values: PackedFloat64Array, index: int) -> PackedFloat64Array:
+			var result: Variant = _call_interval_read_only(original, [values, index])
+			return result if result is PackedFloat64Array else PackedFloat64Array()
 	var current: PackedFloat64Array = combined
 	var piece: float = dt_tick / float(n)
 	var elapsed: float = 0.0
 	var events: Array[Dictionary] = []
 	for i in n:
 		var located: Dictionary = EventStep.advance(current, t + elapsed, piece, f, first if i == 0 else PackedFloat64Array(),
-			int(declared.index), declared.transition, str(declared.type))
+			int(declared.index), transition, str(declared.type))
 		if not located.get("ok", false):
 			return null
 		current = located.state
@@ -895,7 +960,8 @@ func checkpoint() -> Dictionary:
 	if _reject_endpoint_reentry(): return {}
 	if not fault_reason.is_empty() or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		return {}
-	if _state_layout_identity != model.state_layout_identity:
+	if _state_layout_identity != model.state_layout_identity or ((_interval() or not _joint_interval_protocol.is_empty()) \
+		and _joint_interval_protocol != model.callback_protocol):
 		return {}
 	var snapshot: Dictionary = { format = CHECKPOINT_FORMAT, tick = tick, dt = dt(), state = state.duplicate(),
 		previous = previous.duplicate(), aux = aux.duplicate(), inputs = inputs.duplicate(),
@@ -906,7 +972,7 @@ func checkpoint() -> Dictionary:
 	if _endpoint_enabled():
 		snapshot.format = ENDPOINT_CHECKPOINT_FORMAT
 		snapshot.state_layout_identity = model.state_layout_identity
-		if _framed():
+		if _framed() or _interval():
 			snapshot.callback_protocol = model.callback_protocol
 	# A producer must not emit a boundary that its own reader refuses.
 	return snapshot if can_restore_checkpoint(snapshot) else {}
@@ -927,10 +993,10 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 	if _endpoint_enabled():
 		if typeof(candidate.get("state_layout_identity")) != TYPE_STRING \
 			or candidate.state_layout_identity != model.state_layout_identity \
-			or candidate.size() != 14 + (1 if candidate.has("continuous") else 0) + (1 if _framed() else 0):
+			or candidate.size() != 14 + (1 if candidate.has("continuous") else 0) + (1 if _framed() or _interval() else 0):
 			return false
 		# DR-16a: a framed checkpoint pins its callback protocol; a legacy one never carries the key.
-		if _framed() != candidate.has("callback_protocol") or (_framed() \
+		if (_framed() or _interval()) != candidate.has("callback_protocol") or ((_framed() or _interval()) \
 			and (typeof(candidate.callback_protocol) != TYPE_STRING or candidate.callback_protocol != model.callback_protocol)):
 			return false
 	elif candidate.has("state_layout_identity"):
@@ -981,6 +1047,7 @@ func restore_checkpoint(candidate: Dictionary, after_commit: Callable = Callable
 	fault_reason = ""
 	last_events = []
 	_state_layout_identity = model.state_layout_identity
+	_joint_interval_protocol = model.callback_protocol if _interval() else ""
 	_remember_valid_state()
 	if after_commit.is_null():
 		set_paused(true) # Historical direct kernel behavior/bytes/order.
@@ -1025,12 +1092,70 @@ func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
 	if model.uses_joint_stage():
 		# DR-16a: outside a tick (reset preparation) the sampled context is the candidate frame in the live arrays.
 		var candidate: Variant = _call_joint_stage(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t,
-			_sampled_context(aux, modes, 0, stage_t) if _framed() else {})
+			_sampled_context(aux, modes, 0, stage_t) if _framed() else \
+			_interval_context(aux, aux, modes, modes, inputs, 0, stage_t, 0.0, "boundary") if _interval() else {})
 		return candidate.loads if _joint_stage_is_valid(candidate) else PackedFloat64Array([NAN])
 	return model.block_loads.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
 
 
 ## DR-16a: true for the opt-in framed sampled protocol (sim/vehicle_model.gd).
+func _interval() -> bool:
+	return model.callback_protocol == VehicleModel.PROTOCOL_JOINT_INTERVAL
+
+
+static func _interval_context(before_aux: PackedFloat64Array, after_aux: PackedFloat64Array,
+		before_modes: PackedInt64Array, after_modes: PackedInt64Array, input: PackedFloat64Array,
+		at_tick: int, at_time: float, duration: float, kind: String) -> Dictionary:
+	return {kind = kind, before_aux = before_aux.duplicate(), after_aux = after_aux.duplicate(),
+		before_modes = before_modes.duplicate(), after_modes = after_modes.duplicate(), inputs = input.duplicate(),
+		tick = at_tick, time_s = at_time, dt = duration}
+
+
+func _interval_context_valid(context: Dictionary, stage_t: float) -> bool:
+	if context.size() != 9 or not context.has_all(["kind", "before_aux", "after_aux", "before_modes", "after_modes", "inputs", "tick", "time_s", "dt"]):
+		return false
+	if typeof(context.kind) != TYPE_STRING or context.kind not in ["interval", "boundary"] \
+		or typeof(context.tick) != TYPE_INT or context.tick < 0 \
+		or typeof(context.time_s) != TYPE_FLOAT or not is_finite(context.time_s) \
+		or typeof(context.dt) != TYPE_FLOAT or not is_finite(context.dt) or not is_finite(stage_t) \
+		or not _array_is_finite(context.before_aux, model.aux_size) or not _array_is_finite(context.after_aux, model.aux_size) \
+		or not _array_is_finite(context.inputs, model.input_size):
+		return false
+	for key: String in ["before_modes", "after_modes"]:
+		if typeof(context[key]) != TYPE_PACKED_INT64_ARRAY or context[key].size() != model.modes_size:
+			return false
+	if context.kind == "boundary":
+		return context.dt == 0.0 and stage_t == context.time_s \
+			and _guard_values_equal(context.before_aux, context.after_aux) \
+			and _guard_values_equal(context.before_modes, context.after_modes)
+	var end: float = context.time_s + context.dt
+	var roundoff: float = minf(EVENT_TIME_SLACK_S, 2.0 * 2.220446049250313e-16 * maxf(absf(context.time_s), absf(end)))
+	return context.dt > 0.0 and is_finite(end) and end > context.time_s \
+		and stage_t >= context.time_s - roundoff and stage_t <= end + roundoff
+
+
+## Interval-only guards include each callback's arguments and repair net live-state/model mutations
+## immediately, including failures before the outer tick guard is reached. Preserve nesting for
+## a contextual policy calling the contextual derivative or reset evaluating its boundary loads.
+func _call_interval_read_only(callback: Callable, arguments: Array) -> Variant:
+	var guard := _capture_endpoint_guard()
+	var detached: Array = arguments.duplicate(true)
+	var expected: Array = detached.duplicate(true)
+	var was_active := _endpoint_callback_active
+	var was_attempted := _endpoint_reentry_attempted
+	_endpoint_callback_active = true
+	_endpoint_reentry_attempted = false
+	var result: Variant = callback.callv(detached)
+	var reentered := _endpoint_reentry_attempted
+	_endpoint_callback_active = was_active
+	_endpoint_reentry_attempted = was_attempted
+	var unchanged := _endpoint_guard_unchanged(guard)
+	_endpoint_reentry_attempted = was_attempted or (reentered and was_active)
+	if reentered or not unchanged or not _guard_values_equal(detached, expected):
+		return null
+	return result
+
+
 func _framed() -> bool:
 	return model.callback_protocol == VehicleModel.PROTOCOL_FRAMED_SAMPLED
 
@@ -1065,6 +1190,12 @@ func _framed_sample(accepted_frame: Dictionary, t: float) -> Dictionary:
 ## A framed model receives a detached copy of the tick's sampled context. Mutating that copy, or reentering a
 ## kernel transition from the stage, refuses the evaluation: null is a malformed joint result to every caller.
 func _call_joint_stage(body: PackedFloat64Array, extra: PackedFloat64Array, stage_t: float, context: Dictionary) -> Variant:
+	if _interval():
+		if not _interval_context_valid(context, stage_t):
+			return null
+		# Clamp only representational boundary roundoff, never expose extrapolated elapsed time.
+		var bounded_time: float = clampf(stage_t, context.time_s, context.time_s + context.dt)
+		return _call_interval_read_only(model.stage_interval, [body, extra, bounded_time, context])
 	if not _framed():
 		return model.stage.call(body, extra, stage_t)
 	if context.size() != 4:
@@ -1155,14 +1286,14 @@ func _endpoint_reset_seal(candidate: Dictionary) -> PackedByteArray:
 ## They detect net mutation of owned state/model; arbitrary user code is not a sandbox.
 const _ENDPOINT_STATE_FIELDS := ["mass", "inertia", "gravity", "inputs", "last_loads", "aux", "modes", "continuous",
 	"state", "previous", "tick", "_fixed_dt", "paused", "stop_at_tick", "step_usec", "fault_reason", "last_events",
-	"_inertia_inv", "_inertia_cache", "_state_layout_identity", "_endpoint_callback_active", "_endpoint_reentry_attempted",
+	"_inertia_inv", "_inertia_cache", "_state_layout_identity", "_joint_interval_protocol", "_interval_observer_active", "_interval_observer_reentry", "_endpoint_callback_active", "_endpoint_reentry_attempted",
 	"_last_valid_continuous", "_last_valid_state",
 	"_last_valid_previous", "_last_valid_aux", "_last_valid_inputs", "_last_valid_loads", "_last_valid_modes",
 	"_last_valid_tick", "_last_valid_stop", "_last_valid_mass", "_last_valid_gravity", "_last_valid_inertia"]
 const _ENDPOINT_MODEL_FIELDS := ["input_size", "aux_size", "modes_size", "continuous_size", "identity", "state_layout_identity",
 	"loads", "stage", "block_loads", "block_derivative", "stage_rotor_momentum", "rotor_momentum", "pre_tick",
 	"post_tick", "post_tick_joint", "block_aux", "step_policy", "events", "substeps", "substeps_joint",
-	"endpoint_transition", "state_validator", "callback_protocol", "sample_tick", "stage_sampled"]
+	"endpoint_transition", "state_validator", "callback_protocol", "sample_tick", "stage_sampled", "stage_interval", "step_policy_interval"]
 
 
 static func _guard_copy(value: Variant) -> Variant:
@@ -1177,6 +1308,9 @@ static func _guard_copy(value: Variant) -> Variant:
 ## Read-only checkpoint access and set_paused remain legal during publication.
 ## Only transition entry points call this guard.
 func _reject_reset_publication_reentry() -> bool:
+	if _interval_observer_active:
+		_interval_observer_reentry = true
+		return true
 	if not _reset_publication_active: return false
 	_reset_publication_reentry = true
 	return true

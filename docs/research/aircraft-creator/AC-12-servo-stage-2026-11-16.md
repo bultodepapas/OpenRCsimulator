@@ -158,3 +158,6 @@ physical frame. Native admission must refuse unsupported laws before recording, 
 reference selection explicit. These changes need their own implementation/review and
 affected kernel, replay, native, lifecycle and historical-draft tests. The present work
 changes no production physics, stock goldens or ClearView flight/publication gate.
+
+The subsequent [known-arrival partition study](AC-12-servo-knots-2026-11-16.md)
+retains this failed ramp-only result and compares arrival-aligned and matched-work cuts.

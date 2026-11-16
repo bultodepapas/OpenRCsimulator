@@ -165,6 +165,11 @@ AC-CV-01 has a bounded reader implementation and synthetic/corpus evidence. AC-C
 
 ### Verification strategy
 
+The [AC-12 arrival study and generic interval transport](../research/aircraft-creator/AC-12-servo-knots-2026-11-16.md)
+implement numerical prerequisites for AC-CV-06. The selected two-cell split study passes its
+unchanged rule, and the transport is opt-in with no production aircraft caller. Aircraft-law
+selection, replay/native admission and full-domain G05 remain required before ClearView flight.
+
 Reuse focused `test_creator_import`, `test_creator_glb`, `test_creator_visual`, `test_creator_compiler`, `test_creator_trial`, `test_creator_flight`, `test_creator_store` and `test_creator_flow` coverage as affected. Add tests at the new archive, syntax, mapping and publication boundaries; generate synthetic assets with independently calculated expected coordinates, signs, unit conversions and CRCs. Keep third-party downloads out of the repository/required CI unless their fixture rights are established. A network-optional local corpus campaign records refusal reasons as well as successes.
 
 Follow the [tool index](../tools/README.md), [focused verification scope](../tools/shared.md#verification-scope) and test admission policy. Use checked headless jobs for compatible independent tests; rendered/export/platform evidence has separate gates. For physics changes preserve an `.orfl` baseline, verify exact replay, compare the same input tape, and retain `complete`, `solver_changed`, configuration and backend identities through the [flight-log workflow](../FLIGHT-LOGGING.md). Do not re-record stock goldens to absorb importer work.

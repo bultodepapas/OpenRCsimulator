@@ -47,6 +47,71 @@ static func advance(combined: PackedFloat64Array, at: float, dt: float, derivati
 	return {ok = true, state = state, events = events}
 
 
+## Merge up to three explicit local-time cuts with the existing uniform contact partition.
+## Empty/coincident cuts retain advance() and its exact arithmetic. No partial state is published.
+static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,derivative: Callable,
+		first: PackedFloat64Array,rpm_index: int,charge_index: int,project: Callable,
+		pieces: int,extra: PackedFloat64Array) -> Dictionary:
+	if extra.is_empty():
+		return advance(combined,at,dt,derivative,first,rpm_index,charge_index,project,pieces)
+	if pieces<1 or pieces>MAX_PIECES or extra.size()>3 or not is_finite(at) or not is_finite(dt) \
+			or dt<=0.0 or not is_finite(at+dt) or at+dt<=at:
+		return {ok=false,message="invalid explicit partition"}
+	var offsets := PackedFloat64Array([0.0])
+	for index: int in range(1,pieces):
+		var boundary := dt*float(index)/float(pieces)
+		if not is_finite(boundary) or boundary<=0.0 or boundary>=dt:
+			return {ok=false,message="uniform partition is not representable"}
+		offsets.append(boundary)
+	var additional := false
+	for value: float in extra:
+		if not is_finite(value) or value<=0.0 or value>=dt:
+			return {ok=false,message="explicit cuts must be finite and strictly interior"}
+		if not offsets.has(value):
+			additional=true
+			offsets.append(value)
+	if not additional:
+		return advance(combined,at,dt,derivative,first,rpm_index,charge_index,project,pieces)
+	offsets.append(dt)
+	offsets.sort()
+	var clock_tolerance := minf(EVENT_WINDOW_SLACK_S,maxf(TIME_TOL,
+		2.0*FLOAT64_EPSILON*maxf(absf(at),absf(at+dt))))
+	# Keep each piece well above the absolute clock rounding scale. This is a
+	# conservative resolution limit, not permission to merge distinct cuts.
+	var clock_roundoff := 2.0*FLOAT64_EPSILON*maxf(absf(at),absf(at+dt))
+	# No epsilon merging: distinct offsets must produce distinct absolute stage boundaries.
+	for index: int in offsets.size()-1:
+		if not is_finite(at+offsets[index]) or not is_finite(at+offsets[index+1]) \
+				or at+offsets[index+1]<=at+offsets[index] \
+				or offsets[index+1]-offsets[index]<=16.0*clock_roundoff \
+				or not is_finite((at+offsets[index])+(offsets[index+1]-offsets[index])) \
+				or (at+offsets[index])+(offsets[index+1]-offsets[index])<=at+offsets[index] \
+				or absf(((at+offsets[index])+(offsets[index+1]-offsets[index]))-(at+offsets[index+1]))>clock_tolerance:
+			return {ok=false,message="partition boundaries collapse on the absolute clock"}
+	var state := combined.duplicate()
+	var events: Array[Dictionary] = []
+	for index: int in offsets.size()-1:
+		var begin: float = offsets[index]
+		var end: float = offsets[index+1]
+		var result := BatteryStep.advance(state,at+begin,end-begin,derivative,
+			first if index==0 else PackedFloat64Array(),rpm_index,charge_index,project)
+		if not result.get("ok",false) or not result.get("state") is PackedFloat64Array \
+				or not result.get("events") is Array:
+			return {ok=false,message="explicit finite-battery piece failed"}
+		var event_index := 0
+		for event: Variant in result.events:
+			if not event is Dictionary or typeof(event.get("type"))!=TYPE_STRING \
+					or typeof(event.get("time_s")) not in [TYPE_FLOAT,TYPE_INT] \
+					or not is_finite(float(event.time_s)) or float(event.time_s)<at+begin-EVENT_WINDOW_SLACK_S \
+					or float(event.time_s)>at+end+EVENT_WINDOW_SLACK_S or events.size()>=MAX_EVENTS:
+				return {ok=false,message="malformed or out-of-range explicit piece event"}
+			if not _append_ordered(events,event,event_index,clock_tolerance):
+				return {ok=false,message="explicit piece events out of order"}
+			event_index+=1
+		state=result.state
+	return {ok=true,state=state,events=events}
+
+
 static func _append_ordered(events: Array[Dictionary], event: Dictionary, piece_index: int,
 		clock_tolerance: float) -> bool:
 	var copy: Dictionary = event.duplicate(true)

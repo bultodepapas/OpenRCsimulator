@@ -70,3 +70,24 @@ distinct from the labelled inherited-rule verdict and from `flight_qualified=fal
 Compare initial frames, environments and canonical command edges before interpreting a
 pair as step refinement. Equal sampled repeats alone do not establish a roundoff floor,
 complete trajectory equality, physical realism or G05.
+
+## Known arrival boundaries
+
+[The arrival-partition experiment](../../../docs/research/aircraft-creator/AC-12-servo-knots-2026-11-16.md)
+owns the controlled split study. `app/physics/slew_interval.gd` prepares the existing normalized
+slew endpoint and sorted unique interior arrival offsets. It commits no state.
+`ElectricContactStep.advance_at_offsets` merges at most three extra cuts with the existing
+contact partition, refreshes later-piece derivatives and preserves atomic event handling.
+Empty/coincident cuts retain the legacy path. Unresolvable or excessively fine absolute
+clock intervals are refused. These utilities do not install a new aircraft law or enable flight.
+
+Explicit pieces retain their local widths. Their represented absolute endpoints may differ
+from the next piece's start by at most the existing capped clock tolerance (1 ns maximum);
+this is not a promise of bit-exact clock joins. Distinct cuts are never epsilon-merged.
+Historical endpoint arithmetic can leave a tiny servo residual whose next arrival is below
+clock resolution; composition refuses it. Callers must handle that refusal, not silently
+drop the cut. The planner bounds 64 channels; this battery composition admits three cuts.
+
+`VehicleModel` also exposes the opt-in `joint-interval-v1` stage/policy transport, documented
+in that contract and checked by `test_sf_joint_interval.gd`. No production aircraft selects
+it; the arrival study's private ramp law is still separate from the runtime adapter.
