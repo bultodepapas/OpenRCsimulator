@@ -68,6 +68,8 @@ var block_aux: Callable
 ## step_policy(combined, t, dt, f, k1) -> combined or {state: combined, events: [{type, time_s, ...}]}: optional
 ## bounded integration/event policy for the whole tick (composed boundaries, the rotorcraft stop predictor).
 ## f(combined, stage_t) is the kernel's validated stage derivative. Located events are recorded by the kernel.
+## A refusal may return exactly {failure: String}: 1..256 characters, with no other keys.
+## Malformed failure receipts also refuse the complete tick; no state or events are published.
 ## An opt-in endpoint owner may also return integration_receipt:Dictionary, a bounded
 ## finite detached payload describing ONLY the accepted integration path. It passes
 ## to endpoint_transition, never observers/checkpoints as a second state or fake event.
@@ -129,6 +131,11 @@ var stage_sampled: Callable = Callable()
 ## Explicit sizes/layout and checkpoint-v2 protocol identity are required. Legacy and framed-v1
 ## callbacks and checkpoint shapes keep their meanings. No production vehicle selects this protocol yet.
 const PROTOCOL_JOINT_INTERVAL := "joint-interval-v1"
+## Local-clock interval transport keeps stage times in [0, dt]. Context.time_s
+## remains the absolute origin: sub-ULP providers retain origin/offset separately.
+## Boundary stages receive offset 0. A policy owns subdivision and returns
+## absolute event times. The absolute-clock protocol keeps its old interpretation.
+const PROTOCOL_JOINT_INTERVAL_LOCAL := "joint-interval-local-v1"
 var stage_interval: Callable = Callable()
 var step_policy_interval: Callable = Callable()
 
@@ -159,9 +166,9 @@ static func validate(candidate: Variant) -> Dictionary:
 		if typeof(candidate.get(field)) != TYPE_CALLABLE:
 			return {ok = false, message = "vehicle model %s must be a Callable" % field}
 	if typeof(candidate.callback_protocol) != TYPE_STRING \
-			or candidate.callback_protocol not in [PROTOCOL_LEGACY, PROTOCOL_FRAMED_SAMPLED, PROTOCOL_JOINT_INTERVAL]:
+			or candidate.callback_protocol not in [PROTOCOL_LEGACY, PROTOCOL_FRAMED_SAMPLED, PROTOCOL_JOINT_INTERVAL, PROTOCOL_JOINT_INTERVAL_LOCAL]:
 		return {ok = false, message = "vehicle model callback protocol is unknown"}
-	if candidate.callback_protocol != PROTOCOL_JOINT_INTERVAL \
+	if candidate.callback_protocol not in [PROTOCOL_JOINT_INTERVAL, PROTOCOL_JOINT_INTERVAL_LOCAL] \
 			and (not candidate.stage_interval.is_null() or not candidate.step_policy_interval.is_null()):
 		return {ok = false, message = "interval callbacks require the joint interval protocol"}
 	if candidate.callback_protocol == PROTOCOL_LEGACY:
@@ -193,14 +200,18 @@ static func validate(candidate: Variant) -> Dictionary:
 		return {ok = false, message = "vehicle model selects at most one of substeps and substeps_joint"}
 	if candidate.substeps_joint.is_valid() and not candidate.uses_joint_stage():
 		return {ok = false, message = "vehicle model substeps_joint requires a joint stage evaluator"}
-	if candidate.callback_protocol != PROTOCOL_JOINT_INTERVAL \
+	if candidate.callback_protocol not in [PROTOCOL_JOINT_INTERVAL, PROTOCOL_JOINT_INTERVAL_LOCAL] \
 			and not candidate.loads.is_valid() and not candidate.stage.is_valid() \
 			and not (candidate.block_loads.is_valid() and candidate.block_derivative.is_valid()):
 		return {ok = false, message = "vehicle model supplies loads, stage, or block_loads and block_derivative"}
-	if not candidate.pre_tick.is_valid() or (candidate.callback_protocol != PROTOCOL_JOINT_INTERVAL and not candidate.rotor_momentum.is_valid()):
+	if not candidate.pre_tick.is_valid() or (candidate.callback_protocol not in [PROTOCOL_JOINT_INTERVAL, PROTOCOL_JOINT_INTERVAL_LOCAL] and not candidate.rotor_momentum.is_valid()):
 		return {ok = false, message = "vehicle model pre_tick and rotor_momentum must be valid Callables"}
 	if typeof(candidate.events) != TYPE_ARRAY:
 		return {ok = false, message = "vehicle model events must be an array of declarations"}
+	if candidate.callback_protocol == PROTOCOL_JOINT_INTERVAL_LOCAL and (
+		not candidate.step_policy_interval.is_valid() or not candidate.events.is_empty()
+		or not candidate.substeps.is_null() or not candidate.substeps_joint.is_null()):
+		return {ok = false, message = "local interval protocol requires an owning policy without kernel events or subdivisions"}
 	if candidate.events.size() > 1:
 		return {ok = false, message = "vehicle model declares at most one kernel-located event; compose more in a step_policy"}
 	for declared: Variant in candidate.events:
@@ -215,4 +226,4 @@ static func validate(candidate: Variant) -> Dictionary:
 
 ## True when the model integrates continuous blocks through a joint stage route (`stage` or `stage_sampled`).
 func uses_joint_stage() -> bool:
-	return stage.is_valid() or callback_protocol in [PROTOCOL_FRAMED_SAMPLED, PROTOCOL_JOINT_INTERVAL]
+	return stage.is_valid() or callback_protocol in [PROTOCOL_FRAMED_SAMPLED, PROTOCOL_JOINT_INTERVAL, PROTOCOL_JOINT_INTERVAL_LOCAL]

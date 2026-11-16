@@ -16,6 +16,9 @@ const Packages := preload("res://workshop/creator/packages.gd")
 const FORMAT := "openrc-creator-definition v1"
 const SOURCE_FORMAT := "openrc-creator-definition v2"
 const INSTALLATION_FORMAT := "openrc-creator-definition v3"
+## Explicit opt-in: old definitions keep their historical physical bytes and servo law.
+const SERVO_FORMAT := "openrc-creator-definition v4"
+const ServoLaw := preload("res://physics/slew_trajectory.gd")
 const Observations := preload("res://workshop/creator/clearview/observations.gd")
 const Installation := preload("res://workshop/creator/source_installation.gd")
 const AIRCRAFT_ID_PREFIX := "user-aircraft-"
@@ -106,17 +109,18 @@ static func validate_complete(definition: Dictionary) -> Dictionary:
 	stated.erase("evidence")
 	stated.erase("source_observations")
 	stated.erase("source_installation")
+	stated.erase("servo_integration")
 	_closed(out, stated, "", KEYS, STEP_REVIEW)
 	_evidence(out, definition)
 	var format_value: Variant = definition.get("format")
 	var format_text: String = format_value if typeof(format_value) == TYPE_STRING else ""
-	if format_text == SOURCE_FORMAT or (format_text == INSTALLATION_FORMAT and definition.has("source_observations")):
+	if format_text == SOURCE_FORMAT or (format_text in [INSTALLATION_FORMAT,SERVO_FORMAT] and definition.has("source_observations")):
 		var observed := Observations.validate(definition.get("source_observations"))
 		if not observed.ok:
 			out.append_array(observed.diagnostics)
 	elif definition.has("source_observations"):
 		out.append(R.diagnostic(R.FIELD_INVALID,"Source observations require the versioned definition format.","source_observations",STEP_REVIEW))
-	if format_text == INSTALLATION_FORMAT:
+	if format_text == INSTALLATION_FORMAT or (format_text == SERVO_FORMAT and (definition.has("source_observations") or definition.has("source_installation"))):
 		var context: Variant = definition.get("source_observations",{})
 		var installation := Installation.validate(definition.get("source_installation"),context if context is Dictionary else {},
 			str(definition.get("airframe_package","")),str(definition.get("power_package","")))
@@ -124,9 +128,14 @@ static func validate_complete(definition: Dictionary) -> Dictionary:
 			out.append_array(installation.diagnostics)
 	elif definition.has("source_installation"):
 		out.append(R.diagnostic(R.FIELD_INVALID,Installation.INVALID,"source_installation",STEP_IMPORT))
-	if definition.has("format") and format_text not in [FORMAT,SOURCE_FORMAT,INSTALLATION_FORMAT]:
+	if format_text == SERVO_FORMAT:
+		if typeof(definition.get("servo_integration")) != TYPE_STRING or definition.servo_integration != ServoLaw.LAW:
+			out.append(R.diagnostic(R.FIELD_INVALID,"Choose a supported servo integration law.","servo_integration",STEP_CONTROLS))
+	elif definition.has("servo_integration"):
+		out.append(R.diagnostic(R.FIELD_INVALID,"Servo integration requires the versioned definition format.","servo_integration",STEP_CONTROLS))
+	if definition.has("format") and format_text not in [FORMAT,SOURCE_FORMAT,INSTALLATION_FORMAT,SERVO_FORMAT]:
 		out.append(R.diagnostic(R.FIELD_INVALID, "The definition format must be %s.", "format", STEP_REVIEW,
-			["%s / %s / %s" % [FORMAT,SOURCE_FORMAT,INSTALLATION_FORMAT]]))
+			["%s / %s / %s / %s" % [FORMAT,SOURCE_FORMAT,INSTALLATION_FORMAT,SERVO_FORMAT]]))
 	if definition.has("aircraft_uuid") and not _matches(definition.get("aircraft_uuid"), UUID_PATTERN):
 		out.append(R.diagnostic(R.FIELD_INVALID, "The aircraft identity must be a lowercase version 4 UUID.",
 			"aircraft_uuid", STEP_REVIEW))

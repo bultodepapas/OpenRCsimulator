@@ -4,6 +4,7 @@
 extends RefCounted
 
 const BatteryStep := preload("res://physics/electric_battery_step.gd")
+const EventStep := preload("res://physics/event_step.gd")
 const MAX_PIECES := 16
 const MAX_EVENTS := 128
 const TIME_TOL := 1e-12
@@ -51,8 +52,12 @@ static func advance(combined: PackedFloat64Array, at: float, dt: float, derivati
 ## Empty/coincident cuts retain advance() and its exact arithmetic. No partial state is published.
 static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,derivative: Callable,
 		first: PackedFloat64Array,rpm_index: int,charge_index: int,project: Callable,
-		pieces: int,extra: PackedFloat64Array) -> Dictionary:
+		pieces: int,extra: PackedFloat64Array,local_clock: bool = false) -> Dictionary:
+	if local_clock and (at != 0.0 or pieces != 1):
+		return {ok=false,message="local partition requires a zero origin and one owning partition"}
 	if extra.is_empty():
+		if local_clock:
+			return BatteryStep.advance(combined,at,dt,derivative,first,rpm_index,charge_index,project,true)
 		return advance(combined,at,dt,derivative,first,rpm_index,charge_index,project,pieces)
 	if pieces<1 or pieces>MAX_PIECES or extra.size()>3 or not is_finite(at) or not is_finite(dt) \
 			or dt<=0.0 or not is_finite(at+dt) or at+dt<=at:
@@ -81,6 +86,11 @@ static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,
 	var clock_roundoff := 2.0*FLOAT64_EPSILON*maxf(absf(at),absf(at+dt))
 	# No epsilon merging: distinct offsets must produce distinct absolute stage boundaries.
 	for index: int in offsets.size()-1:
+		if local_clock:
+			if not EventStep.stage_clock_resolved(offsets[index],offsets[index+1]-offsets[index]) \
+				or offsets[index]+(offsets[index+1]-offsets[index]) != offsets[index+1]:
+				return {ok=false,message="partition stages collapse on the local clock"}
+			continue
 		if not is_finite(at+offsets[index]) or not is_finite(at+offsets[index+1]) \
 				or at+offsets[index+1]<=at+offsets[index] \
 				or offsets[index+1]-offsets[index]<=16.0*clock_roundoff \
@@ -94,7 +104,7 @@ static func advance_at_offsets(combined: PackedFloat64Array,at: float,dt: float,
 		var begin: float = offsets[index]
 		var end: float = offsets[index+1]
 		var result := BatteryStep.advance(state,at+begin,end-begin,derivative,
-			first if index==0 else PackedFloat64Array(),rpm_index,charge_index,project)
+			first if index==0 else PackedFloat64Array(),rpm_index,charge_index,project,local_clock)
 		if not result.get("ok",false) or not result.get("state") is PackedFloat64Array \
 				or not result.get("events") is Array:
 			return {ok=false,message="explicit finite-battery piece failed"}

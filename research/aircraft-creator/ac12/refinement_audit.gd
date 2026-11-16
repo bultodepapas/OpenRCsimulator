@@ -46,6 +46,12 @@ func baseline_replay_is_admitted(_report: Dictionary) -> bool:
 	return true
 
 
+## A composite research owner may sequence fresh cells in this same process.
+## Ordinary audit entrypoints retain their existing completion and exit behavior.
+func audit_finished(report: Dictionary) -> void:
+	quit(0 if report.complete else 1)
+
+
 func _initialize() -> void:
 	_run_audit.call_deferred()
 
@@ -162,7 +168,7 @@ func _run_audit() -> void:
 	print("AC12 audit report: ",_out.path_join("audit.json"))
 	print("AC12 audit SHA256: ",encoded.value.sha256)
 	print("AC12 audit complete=%s flight_qualified=false" % str(report.complete))
-	quit(0 if report.complete else 1)
+	audit_finished(report)
 
 
 static func valid_specification(value: Dictionary,allowed: Array = CELLS) -> bool:

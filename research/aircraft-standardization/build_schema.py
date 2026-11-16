@@ -339,6 +339,8 @@ def add_v2_overlay(schema: dict, spec: dict):
     })
 
     controls = root_props["controls"]
+    controls["properties"]["servo_integration"] = {"type": "string", "enum": next(
+        rule["values"] for rule in spec["enum_paths"] if rule["path"] == "/controls/servo_integration")}
     controls["properties"]["keyboard"] = {
         "type": "object", "additionalProperties": False,
         "required": ["pitch_press_time", "pitch_release_time"],
@@ -766,6 +768,13 @@ def add_v2_overlay(schema: dict, spec: dict):
     rules.append({"if": {"properties": {"aero": {"properties": {"surfaces": {
         "required": ["wing_separated_force_offset"]}}}}},
         "then": {"not": {"required": ["flaps"]}}})
+    rules.append({"if": {"properties": {"controls": {"required": ["servo_integration"]}}},
+                  "then": {"properties": {
+                      "capabilities": {"not": {"required": ["airframe_layout"]}, "properties": {
+                          "controls": {"const": "conventional"}, "propulsion_layout": {"const": "single_tractor"},
+                          "energy": {"const": "ocv_resistance"}, "flaps": {"const": "not_simulated"},
+                          "damage": {"const": "terminal_hull"}}},
+                      "landing_gear": {"maxProperties": 0}}, "not": {"required": ["flaps"]}}})
     schema["allOf"] = list(schema.get("allOf", [])) + rules
     add_physical_identity(schema)
     return schema

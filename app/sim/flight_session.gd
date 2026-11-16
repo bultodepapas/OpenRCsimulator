@@ -519,6 +519,9 @@ func setup_weather(settings: Variant) -> bool:
 	if not built.ok:
 		weather_error = "; ".join(built.errors)
 		return false
+	if ServoFlight.selected(aircraft.get("model")) and (not built.field.is_calm() or built.field.has_atmosphere() or built.field.is_spatial()):
+		weather_error = "servo law v1 requires calm reference atmosphere"
+		return false
 	if sim != null and sim.tick > 0:
 		weather_error = "weather changes require a new flight or reset boundary"
 		return false
@@ -736,6 +739,7 @@ const NativeStage := preload("res://sim/native_stage.gd")
 const NATIVE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 
 var _stage_backend_requested := "gdscript_reference"
+var _stage_backend_explicit := false
 ## Explicit launch-time Mac research admission; separate from qualified automatic admission.
 var experimental_native_macos := false:
 	set(enabled):
@@ -757,8 +761,13 @@ func setup_stage_backend(mode: String) -> bool:
 		stage_backend_error = "stage backend must be native or gdscript_reference and selected before setup"
 		return false
 	_stage_backend_requested = mode
+	_stage_backend_explicit = true
 	stage_backend_error = ""
 	return true
+
+
+func servo_reference_selected() -> bool:
+	return _stage_backend_explicit and _stage_backend_requested == NativeStage.BACKEND_REFERENCE
 
 
 func stage_backend_identity() -> Dictionary:
@@ -778,6 +787,9 @@ func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
 	_native_stage = null
 	stage_backend_error = ""
 	var selected: String = _stage_backend_requested if backend.is_empty() else backend
+	if ServoFlight.selected(aircraft.get("model")) and (selected != NativeStage.BACKEND_REFERENCE or not servo_reference_selected()):
+		stage_backend_error = "servo law requires an explicit gdscript_reference backend; native is unsupported"
+		return
 	if selected != NativeStage.BACKEND_NATIVE or sim == null or not aircraft.get("ok", false):
 		return
 	if _weather_pending_reset or _shaft_pending_reset:
@@ -827,6 +839,7 @@ const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const PropulsionRuntime := preload("res://sim/aircraft_propulsion_runtime.gd")
+const ServoFlight := preload("res://sim/servo_interval_flight.gd")
 const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const LiquidFuel := preload("res://physics/liquid_fuel.gd")
 const MassInventory := preload("res://physics/mass_inventory.gd")
@@ -1153,7 +1166,7 @@ const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "a
 	"_cost_support_previous", "_cost_support_tick",
 	"_soft_contacts_cache_previous", "_soft_contacts_cache_state", "_pending_contact_tick", "_pending_crash",
 	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick",
-	"_out_of_trim", "_airframe_offset", "_native_stage", "stage_backend_error"]
+	"_out_of_trim", "_airframe_offset", "_native_stage", "stage_backend_error", "_stage_backend_requested", "_stage_backend_explicit"]
 
 
 func _begin_start_transaction() -> Dictionary:
@@ -1208,6 +1221,10 @@ func _stage_start_failures() -> bool:
 func _commit_start_candidate(candidate: Dictionary, transaction: Dictionary) -> Dictionary:
 	if _reset_transaction_reentry:
 		return _refuse_start_transaction(transaction, "reset preparation attempted owner transition reentry")
+	if ServoFlight.selected(aircraft.get("model")):
+		var servo_admission := ServoFlight.admission(self, aircraft.model)
+		if not servo_admission.ok:
+			return _refuse_start_transaction(transaction, servo_admission.message)
 	if not candidate.get("ok", false):
 		return _refuse_start_transaction(transaction, str(candidate.get("message", "invalid reset candidate")))
 	var committed: bool = sim.commit_prepared_reset(candidate, func() -> void:
@@ -2346,6 +2363,9 @@ func _prepare_aircraft_before_trim(data: Dictionary) -> Dictionary:
 	if not _model_is_valid(model):
 		var invalid_model := "aircraft model has invalid mass properties or control throws"
 		return { ok = false, data = data, start = { ok = false, message = invalid_model }, trims = neutral_trims, message = invalid_model }
+	var servo_admission := ServoFlight.admission(self, model)
+	if not servo_admission.ok:
+		return {ok = false, data = data, start = {ok = false, message = servo_admission.message}, trims = neutral_trims, message = servo_admission.message}
 	var contact_binding: Dictionary = ContactContract.describe(model, soft_hull_contacts)
 	if not contact_binding.ok:
 		var contact_error: String = "aircraft contact contract: " + "; ".join(contact_binding.errors)
@@ -2406,6 +2426,8 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	vehicle.loads = _loads
 	vehicle.pre_tick = _kernel_pre_step
 	vehicle.rotor_momentum = rotor_momentum
+	if ServoFlight.selected(aircraft.model):
+		ServoFlight.install(vehicle, self)
 	if not sim.set_model(vehicle):
 		push_error("Cannot install the fixed-wing vehicle model")
 	_gear_cache.clear()
@@ -2440,6 +2462,9 @@ func _configure_continuous_callbacks() -> void:
 
 ## Install only an already prepared callback set; this does not advance state.
 func _install_continuous_callbacks(prepared: Dictionary) -> void:
+	if ServoFlight.selected(aircraft.model):
+		ServoFlight.install(sim.model, self)
+		return
 	if _native_stage != null:
 		_native_stage.restore_reference_callback(self)
 	_native_stage = null
@@ -3780,6 +3805,10 @@ func _reset_impl(preserve_radio_readiness := false, supplied_transaction: Dictio
 	var transaction := supplied_transaction if not supplied_transaction.is_empty() else _begin_start_transaction()
 	if _reset_transaction_reentry:
 		return _refuse_start_transaction(transaction, "reset preparation attempted owner transition reentry")
+	if ServoFlight.selected(aircraft.get("model")):
+		var servo_admission := ServoFlight.admission(self, aircraft.model)
+		if not servo_admission.ok:
+			return _refuse_start_transaction(transaction, servo_admission.message)
 	_fuel_start_fill_known = true
 	_shaft_pending_reset = false
 	var pilot_trim: PackedFloat64Array = _pilot_trim_offset() # D6-TRIM-01: before a refit replaces the start trim
@@ -3995,6 +4024,10 @@ func _apply_runway_start(north: float, east: float, heading: float, supplied_tra
 	var transaction := supplied_transaction if not supplied_transaction.is_empty() else _begin_start_transaction()
 	if _reset_transaction_reentry:
 		return _refuse_start_transaction(transaction, "reset preparation attempted owner transition reentry")
+	if ServoFlight.selected(aircraft.get("model")):
+		var servo_admission := ServoFlight.admission(self, aircraft.model)
+		if not servo_admission.ok:
+			return _refuse_start_transaction(transaction, servo_admission.message)
 	var prop: Dictionary = aircraft.model.propulsion
 	var density: float = _weather.air_density(0.0)
 	var charge: float = _weather.engine_charge_ratio(0.0)
@@ -4127,6 +4160,9 @@ func _has_valid_start() -> bool:
 
 
 func _flight_ready() -> bool:
+	if ServoFlight.selected(aircraft.get("model")) or ServoFlight.configured(self):
+		if not ServoFlight.selected(aircraft.get("model")) or not ServoFlight.admission(self, aircraft.model).ok or not ServoFlight.installed(self, aircraft.model):
+			return false
 	return _has_valid_start() and not _weather_pending_reset and not _shaft_pending_reset and sim.fault_reason.is_empty()
 
 
@@ -4896,7 +4932,7 @@ func _coupled_rotor(_s: PackedFloat64Array, values: PackedFloat64Array, _t: floa
 ## External loads include -Q_prop exactly once. The rotor response adds only relative-spin reaction.
 func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float,
 		properties: Dictionary = {}, source_enabled: bool = true, preview: Dictionary = {},
-		capture_pre_reaction: bool = false) -> Dictionary:
+		capture_pre_reaction: bool = false, sampled_aux: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
 	var prop: Dictionary = aircraft.model.propulsion
 	var electric: bool = Propulsion.is_electric(prop)
 	var trial_rpm: float = _coupled_rpm(values, electric)
@@ -4921,7 +4957,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 			prop, air_density(s), engine_charge_ratio(s), propulsion_power_enabled() and source_enabled)
 	if not is_finite(rate):
 		return {ok = false}
-	var a: PackedFloat64Array = sim.aux
+	var a: PackedFloat64Array = sim.aux if sampled_aux.is_empty() else sampled_aux
 	var lag: int = downwash_index()
 	var external: PackedFloat64Array
 	var ground: Dictionary
@@ -5339,6 +5375,8 @@ var _fact_battery_block_size := _FACT_UNKNOWN
 func _kernel_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 	_drop_tick_facts()
 	_facts_armed = true
+	if ServoFlight.selected(aircraft.get("model")) and not ServoFlight.installed(self, aircraft.model):
+		return PackedFloat64Array()
 	if _native_stage != null and not _native_stage.configuration_matches(self):
 		stage_backend_error = "native prepared configuration changed outside an accepted boundary; reset required"
 		return PackedFloat64Array() # kernel rejects before any native stage can use stale coefficients
@@ -5889,6 +5927,12 @@ func trace_meta() -> Dictionary:
 	var backend := stage_backend_identity()
 	if backend.backend == NativeStage.BACKEND_NATIVE:
 		metadata.stage_backend = backend
+	if ServoFlight.selected(model):
+		metadata.servo_integration_law = ServoFlight.Law.LAW
+		metadata.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL
+		metadata.servo_interval_layout = sim.model.state_layout_identity
+		metadata.state_timing = "accepted body/continuous/servo endpoints at tick k; immutable before/after servo interval sampled at RK stages"
+		metadata.loads = "k1 at previous body/continuous endpoint and previous actual servo; current input target held through the interval"
 	return metadata
 
 
@@ -6017,6 +6061,12 @@ func checkpoint() -> Dictionary:
 		boundary.stage_physics_format = boundary.format
 		boundary.format = NATIVE_CHECKPOINT_FORMAT
 		boundary.stage_backend = backend
+	if ServoFlight.selected(aircraft.model):
+		boundary.servo_physics_format = boundary.format
+		boundary.format = ServoFlight.CHECKPOINT_FORMAT
+		boundary.servo_integration_law = ServoFlight.Law.LAW
+		boundary.servo_interval_protocol = VehicleModel.PROTOCOL_JOINT_INTERVAL
+		boundary.servo_interval_layout = sim.model.state_layout_identity
 	return boundary
 
 
@@ -6040,6 +6090,8 @@ func _configuration_for_weather(field: WeatherField, mix_owner := "") -> String:
 	var config_hash := HashingContext.new()
 	config_hash.start(HashingContext.HASH_SHA256)
 	var parts: Array = [aircraft.model, ground_surfaces]
+	if ServoFlight.selected(aircraft.model):
+		parts.append(ServoFlight.Law.LAW + "; " + VehicleModel.PROTOCOL_JOINT_INTERVAL)
 	var backend := stage_backend_identity()
 	if backend.backend == NativeStage.BACKEND_NATIVE:
 		parts.append(backend)
@@ -6149,6 +6201,23 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 
 func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) -> bool:
 	if typeof(candidate.get("format")) != TYPE_STRING: return false
+	var servo_selected := ServoFlight.selected(aircraft.get("model"))
+	if candidate.format == ServoFlight.CHECKPOINT_FORMAT:
+		for field: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout", "servo_physics_format"]:
+			if typeof(candidate.get(field)) != TYPE_STRING:
+				return false
+		if (not servo_selected or not ServoFlight.admission(self, aircraft.model).ok
+			or candidate.get("servo_integration_law") != ServoFlight.Law.LAW
+			or candidate.get("servo_interval_protocol") != VehicleModel.PROTOCOL_JOINT_INTERVAL
+			or candidate.get("servo_interval_layout") != sim.model.state_layout_identity
+			or candidate.get("servo_physics_format") != "openrc-flight-checkpoint v6"):
+			return false
+		candidate = candidate.duplicate(true)
+		candidate.format = candidate.servo_physics_format
+		for field: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout", "servo_physics_format"]:
+			candidate.erase(field)
+	elif servo_selected or candidate.has("servo_integration_law") or candidate.has("servo_interval_protocol") or candidate.has("servo_interval_layout") or candidate.has("servo_physics_format"):
+		return false
 	var restored_mix: Variant = candidate.get("flap_mix_owner", "simulator")
 	if typeof(restored_mix) != TYPE_STRING or restored_mix not in ["simulator", "transmitter"]:
 		return false
@@ -6381,6 +6450,8 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 					or not restored_weather.atmosphere(snapshot[key][RB.POS + 2]).get("ok", false):
 				return false
 	elif candidate.has("atmosphere_law"):
+		return false
+	if servo_selected and (not restored_weather.is_calm() or restored_weather.has_atmosphere() or restored_weather.is_spatial()):
 		return false
 	if candidate.configuration != _configuration_for_weather(restored_weather, restored_mix):
 		return false

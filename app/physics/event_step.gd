@@ -25,7 +25,7 @@ const BODY_SIZE: int = 13
 ## applies the discrete change at the boundary and must leave `state[index]` at exactly zero.
 ## Returns {ok, state, events: [{type, time_s}]}, events in tick order.
 static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
-		first: PackedFloat64Array, index: int, transition: Callable, type: String = "stop") -> Dictionary:
+		first: PackedFloat64Array, index: int, transition: Callable, type: String = "stop", strict_clock: bool = false) -> Dictionary:
 	if index < BODY_SIZE or index >= s.size() or not _finite(s, s.size()) or s[index] < 0.0 \
 			or not is_finite(time_s) or not is_finite(dt) or dt <= 0.0 or dt > MAX_DT_S or not is_finite(time_s + dt) \
 			or not derivative.is_valid() or not transition.is_valid() \
@@ -37,7 +37,7 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 	var events: Array[Dictionary] = []
 	var initial: PackedFloat64Array = first
 	for segment: int in MAX_SEGMENTS:
-		var probe: Dictionary = _trial(state, time_s + elapsed, step, derivative, initial, index)
+		var probe: Dictionary = _trial(state, time_s + elapsed, step, derivative, initial, index, strict_clock)
 		if not probe.ok:
 			return {ok = false}
 		var candidate: PackedFloat64Array = probe.state
@@ -54,7 +54,7 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 			continue
 		if candidate[index] <= 0.0 and state[index] > 0.0 and probe.max_rate <= 0.0:
 			var crossing_result: Dictionary = _locate_crossing(state, time_s + elapsed, step,
-				derivative, initial, index, candidate)
+				derivative, initial, index, candidate, strict_clock)
 			if not crossing_result.ok:
 				return {ok = false}
 			var at: PackedFloat64Array = crossing_result.state
@@ -84,7 +84,7 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 ## The upper side remains nonpositive; the transition only follows a bounded time AND value error.
 static func _locate_crossing(start: PackedFloat64Array, time_s: float, dt: float,
 		derivative: Callable, first: PackedFloat64Array, index: int,
-		high_state: PackedFloat64Array) -> Dictionary:
+		high_state: PackedFloat64Array, strict_clock: bool = false) -> Dictionary:
 	var lo: float = 0.0
 	var hi: float = dt
 	var low_value: float = start[index]
@@ -97,7 +97,7 @@ static func _locate_crossing(start: PackedFloat64Array, time_s: float, dt: float
 		var mid: float = Bracket.propose(lo, hi, low_value, high[index], TIME_TOL, bisect)
 		if not is_finite(mid):
 			break
-		var located: Dictionary = _trial(start, time_s, mid, derivative, first, index)
+		var located: Dictionary = _trial(start, time_s, mid, derivative, first, index, strict_clock)
 		if not located.ok:
 			return {ok = false}
 		var value: float = located.state[index]
@@ -114,7 +114,10 @@ static func _locate_crossing(start: PackedFloat64Array, time_s: float, dt: float
 
 
 static func _trial(s: PackedFloat64Array, t: float, h: float, f: Callable,
-		first: PackedFloat64Array, index: int) -> Dictionary:
+		first: PackedFloat64Array, index: int, strict_clock: bool = false) -> Dictionary:
+	# Check every trial, including dynamic event refinements, on the opt-in route.
+	if strict_clock and not stage_clock_resolved(t, h):
+		return {ok = false}
 	var initial: PackedFloat64Array = f.call(s, t) if first.is_empty() else first
 	if not _finite(initial, s.size()):
 		return {ok = false}
@@ -137,6 +140,11 @@ static func _trial(s: PackedFloat64Array, t: float, h: float, f: Callable,
 	var result: PackedFloat64Array = RK.rk4_step_at(s, t, h, tracked, initial)
 	return {ok = sample.valid and _finite(result, s.size()), state = result,
 		minimum = minf(sample.minimum, result[index]), max_rate = sample.max_rate}
+
+
+static func stage_clock_resolved(at: float, dt: float) -> bool:
+	return is_finite(at) and is_finite(dt) and dt > 0.0 and is_finite(at + dt) \
+		and at + dt / 2.0 > at and at + dt / 2.0 < at + dt
 
 
 static func _finite(values: PackedFloat64Array, size: int) -> bool:

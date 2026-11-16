@@ -1,5 +1,6 @@
 extends SceneTree
 const Campaign := preload("servo_arrival_campaign.gd")
+const Composite := preload("servo_arrival_campaign_all.gd")
 var checks := 0
 var failures := 0
 
@@ -40,6 +41,12 @@ func _initialize() -> void:
 		check("unselected physical candidate cannot claim the new law",not campaign.candidate_is_admitted(compiled.value,original))
 	check("unrecorded replay cannot claim the new law",not campaign.baseline_replay_is_admitted({}))
 	check("partial replay declaration refused",not campaign.baseline_replay_is_admitted({servo_integration={checkpoint_migration="none",recorded={law=Campaign.ServoLaw.LAW}}}))
+	var composite:=Composite.new()
+	for index: int in 68:
+		composite.set("_cell",index)
+		var spec: Dictionary=composite.specification()
+		check("composite preserves the fixed cell order",spec.case_id+"/"+spec.tape==cells[index] and spec.calibrate==false)
+	composite.free()
 	campaign.free()
 	print("SERVO_ARRIVAL_CAMPAIGN_TEST %d checks, %d failures" % [checks,failures])
 	quit(0 if failures==0 else 1)

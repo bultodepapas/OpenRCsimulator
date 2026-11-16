@@ -9,6 +9,12 @@ const REFERENCE_STAGE_BACKEND := "gdscript_reference"
 const NATIVE_STAGE_BACKEND := "native"
 const STAGE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
 const FLAP_MIX_CONTRACT := "flap-elevator-mix-owner-v1"
+## Local identities keep this reader rebindable to historical solver sources.
+const SERVO_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v15"
+const SERVO_LAW := "normalized-slew-arrivals-v1"
+const SERVO_PROTOCOL := "joint-interval-v1"
+const SERVO_PHYSICS_FORMAT := "openrc-flight-checkpoint v6"
+const SERVO_SIMULATION_FORMAT := "openrc-simulation-checkpoint v2"
 var options := {}
 var report := {status = "error", error = "Not started", format = "openrc-flight-log-report v1"}
 var _completed := false
@@ -55,7 +61,10 @@ static func recorded_stage_backend(header: Dictionary) -> Dictionary:
 	if not checkpoint is Dictionary:
 		return {ok = false, error = "Missing stage checkpoint."}
 	var native: bool = identity.backend == NATIVE_STAGE_BACKEND
-	var wrapped: bool = checkpoint.get("format") == STAGE_CHECKPOINT_FORMAT
+	var checkpoint_format: Variant = checkpoint.get("format")
+	if typeof(checkpoint_format) != TYPE_STRING:
+		return {ok = false, error = "Invalid stage checkpoint format."}
+	var wrapped: bool = checkpoint_format == STAGE_CHECKPOINT_FORMAT
 	if wrapped != native:
 		return {ok = false, error = "Stage backend and checkpoint wrapper disagree."}
 	if wrapped:
@@ -66,6 +75,65 @@ static func recorded_stage_backend(header: Dictionary) -> Dictionary:
 	elif checkpoint.has("stage_physics_format") or checkpoint.has("stage_backend"):
 		return {ok = false, error = "Unexpected stage checkpoint fields."}
 	return {ok = true, identity = identity.duplicate(true)}
+
+
+## A recorded opt-in law agrees in every owner. Absence is an unrecorded law,
+## since private historical solvers also used the same unselected aircraft data.
+static func recorded_servo_declaration(header: Dictionary) -> Dictionary:
+	var metadata: Variant = header.get("metadata")
+	var boundary: Variant = header.get("checkpoint")
+	var aircraft: Variant = header.get("aircraft")
+	if not metadata is Dictionary or not boundary is Dictionary or not aircraft is Dictionary \
+			or not aircraft.get("model") is Dictionary:
+		return {ok = false, error = "Missing servo declaration owner."}
+	var controls: Variant = aircraft.model.get("controls", {})
+	if not controls is Dictionary:
+		return {ok = false, error = "Malformed controls in aircraft model."}
+	var wrapped: bool = typeof(boundary.get("format")) == TYPE_STRING and boundary.format == SERVO_CHECKPOINT_FORMAT
+	var declared: bool = controls.has("servo_integration")
+	var inner: Variant = boundary.get("simulation")
+	if inner is Dictionary and typeof(inner.get("state_layout_identity")) == TYPE_STRING:
+		declared = declared or inner.state_layout_identity.begins_with(SERVO_LAW+";")
+	for key: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout"]:
+		declared = declared or metadata.has(key) or boundary.has(key)
+	declared = declared or boundary.has("servo_physics_format")
+	if not wrapped and not declared:
+		return {ok = true, declared = false}
+	if not wrapped:
+		return {ok = false, error = "Servo declaration requires the v15 checkpoint."}
+	if not header.has("stage_backend") or not header.stage_backend is Dictionary \
+			or header.stage_backend != {backend = REFERENCE_STAGE_BACKEND}:
+		return {ok = false, error = "Servo checkpoint requires an explicit reference backend."}
+	for key: String in ["servo_integration_law", "servo_interval_protocol", "servo_interval_layout"]:
+		if typeof(metadata.get(key)) != TYPE_STRING or typeof(boundary.get(key)) != TYPE_STRING \
+				or metadata[key] != boundary[key]:
+			return {ok = false, error = "Servo metadata and checkpoint disagree: " + key}
+	if typeof(controls.get("servo_integration")) != TYPE_STRING \
+			or controls.servo_integration != SERVO_LAW or boundary.servo_integration_law != SERVO_LAW \
+			or boundary.servo_interval_protocol != SERVO_PROTOCOL \
+			or typeof(boundary.get("servo_physics_format")) != TYPE_STRING \
+			or boundary.servo_physics_format != SERVO_PHYSICS_FORMAT:
+		return {ok = false, error = "Unsupported servo law or checkpoint declaration."}
+	var layout: Variant = header.get("layout")
+	var snapshot: Variant = boundary.get("simulation")
+	if not layout is Dictionary or not snapshot is Dictionary:
+		return {ok = false, error = "Missing servo simulation layout."}
+	for key: String in ["state", "loads", "inputs", "aux", "continuous", "modes"]:
+		if typeof(layout.get(key)) != TYPE_INT:
+			return {ok = false, error = "Invalid servo sample layout."}
+	if layout.state != 13 or layout.loads != 6 or layout.inputs != 4 or layout.aux not in [4, 5] \
+			or layout.continuous != 4 or layout.modes != 1:
+		return {ok = false, error = "Unsupported servo sample layout."}
+	var expected_layout := "%s;body13;aux%d;shaft-charge-energy-heat;modes1" % [SERVO_LAW, layout.aux]
+	if boundary.servo_interval_layout != expected_layout \
+			or typeof(snapshot.get("format")) != TYPE_STRING or snapshot.format != SERVO_SIMULATION_FORMAT \
+			or typeof(snapshot.get("callback_protocol")) != TYPE_STRING or snapshot.callback_protocol != SERVO_PROTOCOL \
+			or typeof(snapshot.get("state_layout_identity")) != TYPE_STRING or snapshot.state_layout_identity != expected_layout:
+		return {ok = false, error = "Servo simulation protocol or layout disagrees."}
+	return {ok = true, declared = true, declaration = {
+		law = SERVO_LAW, protocol = SERVO_PROTOCOL, layout = expected_layout,
+		checkpoint_format = SERVO_CHECKPOINT_FORMAT, physics_format = SERVO_PHYSICS_FORMAT,
+		simulation_format = SERVO_SIMULATION_FORMAT, stage_backend = header.stage_backend.duplicate(true)}}
 
 
 static func solver_changed(recorded_solver: String, current_solver: String,
@@ -217,6 +285,8 @@ func _run() -> void:
 		report.mode = "candidate" if options.has("candidate") else "exact"
 		report.candidate = str(options.get("candidate", ""))
 		report.candidate_identity = flight.aircraft.get("input_identity", {})
+		if prepared.has("servo_integration"):
+			report.servo_integration = prepared.servo_integration.duplicate(true)
 		report.comparison_method = "Open-loop: baseline body/internal initial state and post-conditioning input tape; candidate aircraft mass/inertia/configuration and current solver. Not a newly trimmed flight or pilot adaptation." if options.has("candidate") \
 			else "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver."
 	else:
@@ -325,6 +395,8 @@ static func inspect(path: String, recover := false) -> Dictionary:
 	if not input_contract.ok:
 		return input_contract
 	var snapshot: Dictionary = header.checkpoint.simulation
+	var recorded_servo := recorded_servo_declaration(header)
+	if not recorded_servo.ok: return recorded_servo
 	if snapshot.get("dt") != header.dt_s:
 		return {ok = false, error = "Header/checkpoint timestep disagreement."}
 	if typeof(snapshot.get("tick")) != TYPE_INT or snapshot.tick < 0 or snapshot.tick > 9007199254740991:
@@ -459,6 +531,10 @@ static func prepare_replay(header: Dictionary, candidate := "", experimental_nat
 	if not mix_error.is_empty(): return {ok = false, error = mix_error}
 	var recorded_backend := recorded_stage_backend(header)
 	if not recorded_backend.ok: return recorded_backend
+	var recorded_servo := recorded_servo_declaration(header)
+	if not recorded_servo.ok: return recorded_servo
+	if recorded_servo.declared and not candidate.is_empty():
+		return {ok = false, error = "Candidate replay of a servo checkpoint is not supported."}
 	var recorded_identity := recorded_replay_identity(header)
 	if not recorded_identity.ok: return recorded_identity
 	if header.engine != Engine.get_version_info().string:
@@ -616,7 +692,23 @@ static func prepare_replay(header: Dictionary, candidate := "", experimental_nat
 	if not recorded.ok or not installed.ok or recorded.names != installed.names:
 		flight.free()
 		return {ok = false, error = "Recorded input roles differ from the selected aircraft; replay refused."}
-	return {ok = true, flight = flight, stage_backend = expected_backend.duplicate(true)}
+	var installed_servo := {}
+	if recorded_servo.declared:
+		if not flight.has_method("servo_reference_selected") or flight.call("servo_reference_selected") != true:
+			flight.free()
+			return {ok = false, error = "Servo replay did not explicitly select the reference stage."}
+		var actual_header := {metadata = flight.trace_meta(), checkpoint = flight.checkpoint(),
+			aircraft = flight.aircraft, layout = header.layout, stage_backend = _session_stage_backend(flight)}
+		installed_servo = recorded_servo_declaration(actual_header)
+		if not installed_servo.ok or not installed_servo.declared \
+				or installed_servo.declaration != recorded_servo.declaration:
+			flight.free()
+			return {ok = false, error = "Installed servo law differs from the recorded declaration."}
+	var prepared := {ok = true, flight = flight, stage_backend = expected_backend.duplicate(true)}
+	if recorded_servo.declared:
+		prepared.servo_integration = {recorded = recorded_servo.declaration.duplicate(true),
+			replay = installed_servo.declaration.duplicate(true), checkpoint_migration = "none"}
+	return prepared
 
 
 static func disagreement(expected: Dictionary, actual: Dictionary) -> String:

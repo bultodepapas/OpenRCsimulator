@@ -239,7 +239,8 @@
         "rates",
         "keyboard",
         "gamepad",
-        "surface_ids"
+        "surface_ids",
+        "servo_integration"
       ]
     },
     {
@@ -2064,6 +2065,12 @@
         "borrowed",
         "estimated",
         "derived"
+      ]
+    },
+    {
+      "path": "/controls/servo_integration",
+      "values": [
+        "normalized-slew-arrivals-v1"
       ]
     }
   ],

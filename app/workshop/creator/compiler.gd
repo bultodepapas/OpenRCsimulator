@@ -72,6 +72,7 @@ static func compile_candidate(definition: Dictionary) -> Dictionary:
 	var physical: Dictionary = normal.duplicate(true)
 	physical.erase("source_observations")
 	physical.erase("source_installation")
+	physical.erase("servo_integration")
 	physical.format = Definition.FORMAT
 	var encoded_definition: Dictionary = CreatorBytes.encode(normal)
 	if not encoded_definition.ok:
@@ -84,7 +85,10 @@ static func compile_candidate(definition: Dictionary) -> Dictionary:
 			domain.append(R.diagnostic(R.BUILD_INVALID, "The aircraft cannot be described by this package.", "", Definition.STEP_REVIEW))
 		return R.fail_all(domain)
 	var aircraft := Definition.aircraft_id(str(normal["aircraft_uuid"]))
-	var written: Dictionary = CreatorBytes.encode(_record(physical, study, aircraft))
+	var record := _record(physical, study, aircraft)
+	if normal.format == Definition.SERVO_FORMAT:
+		record.controls.servo_integration = normal.servo_integration
+	var written: Dictionary = CreatorBytes.encode(record)
 	if not written.ok:
 		return R.fail_all(written.diagnostics)
 	var bytes: PackedByteArray = written.value.bytes
@@ -104,6 +108,8 @@ static func compile_candidate(definition: Dictionary) -> Dictionary:
 	read_out["cg_m"] = Array(loaded.model.cg_le as PackedFloat64Array)
 	read_out["inertia_kg_m2"] = Array(loaded.model.inertia as PackedFloat64Array)
 	read_out["qualification"] = Packages.QUALIFICATION
+	if normal.format == Definition.SERVO_FORMAT:
+		read_out["servo_integration"] = normal.servo_integration
 	if normal.has("source_installation"):
 		read_out["source_installation"] = normal.source_installation.duplicate(true)
 	if normal.has("source_observations"):

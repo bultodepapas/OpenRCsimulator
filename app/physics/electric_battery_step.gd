@@ -23,7 +23,7 @@ const MAX_ROOT_TRIALS: int = 128
 ## `time_error_bound_s` bounds the local root bracket, not absolute-clock float rounding.
 static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
 		first: PackedFloat64Array, rpm_index: int, charge_index: int,
-		project_rotor: Callable) -> Dictionary:
+		project_rotor: Callable, strict_clock: bool = false) -> Dictionary:
 	if rpm_index < BODY_STATE_SIZE or rpm_index >= s.size() or charge_index < BODY_STATE_SIZE \
 			or charge_index >= s.size() or charge_index == rpm_index or not _finite(s, s.size()) \
 			or s[rpm_index] < 0.0 or s[charge_index] < 0.0 or not is_finite(time_s) \
@@ -42,7 +42,7 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 
 	if state[charge_index] == 0.0:
 		return _finish_exhausted(state, time_s, dt, derivative, rpm_index, charge_index,
-			project_rotor, events)
+			project_rotor, events, strict_clock)
 
 	while accepted_segments < MAX_SEGMENTS:
 		var remaining: float = dt - elapsed
@@ -53,7 +53,7 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 		var accepted_piece: bool = false
 		for refinement: int in MAX_REFINEMENTS:
 			var trial: Dictionary = _stop_trial(state, time_s + elapsed, trial_step, derivative,
-				initial, rpm_index, charge_index, project_rotor, true)
+				initial, rpm_index, charge_index, project_rotor, true, strict_clock)
 			if not trial.ok:
 				return _failure(str(trial.get("message", "active battery trial failed")))
 			var candidate: PackedFloat64Array = trial.state
@@ -78,7 +78,7 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 				break
 
 			var crossing: Dictionary = _locate_battery_crossing(state, time_s + elapsed,
-				trial_step, derivative, initial, rpm_index, charge_index, project_rotor, trial)
+				trial_step, derivative, initial, rpm_index, charge_index, project_rotor, trial, strict_clock)
 			if not crossing.ok:
 				return _failure(str(crossing.get("message", "battery exhaustion localization failed")))
 			var crossing_state: PackedFloat64Array = crossing.state.duplicate()
@@ -93,7 +93,7 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 			if after_crossing <= 0.0:
 				return _success(crossing_state, events)
 			return _finish_exhausted(crossing_state, event_time, after_crossing, derivative,
-				rpm_index, charge_index, project_rotor, events)
+				rpm_index, charge_index, project_rotor, events, strict_clock)
 
 		if not accepted_piece:
 			if refined:
@@ -104,11 +104,11 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 
 static func _finish_exhausted(state: PackedFloat64Array, time_s: float, dt: float,
 		derivative: Callable, rpm_index: int, charge_index: int, project_rotor: Callable,
-		events: Array[Dictionary]) -> Dictionary:
+		events: Array[Dictionary], strict_clock: bool = false) -> Dictionary:
 	if dt <= 0.0:
 		return _success(state, events)
 	var exhausted: Dictionary = _stop_trial(state, time_s, dt, derivative,
-		PackedFloat64Array(), rpm_index, charge_index, project_rotor, false)
+		PackedFloat64Array(), rpm_index, charge_index, project_rotor, false, strict_clock)
 	if not exhausted.ok:
 		return _failure(str(exhausted.get("message", "exhausted-source coast failed")))
 	var endpoint: PackedFloat64Array = exhausted.state
@@ -120,7 +120,7 @@ static func _finish_exhausted(state: PackedFloat64Array, time_s: float, dt: floa
 
 static func _locate_battery_crossing(start: PackedFloat64Array, time_s: float, dt: float,
 		derivative: Callable, first: PackedFloat64Array, rpm_index: int, charge_index: int,
-		project_rotor: Callable, high_trial: Dictionary) -> Dictionary:
+		project_rotor: Callable, high_trial: Dictionary, strict_clock: bool = false) -> Dictionary:
 	var lo: float = 0.0
 	var hi: float = dt
 	var low_charge: float = start[charge_index]
@@ -138,7 +138,7 @@ static func _locate_battery_crossing(start: PackedFloat64Array, time_s: float, d
 		if not is_finite(mid):
 			break
 		var located: Dictionary = _stop_trial(start, time_s, mid, derivative, first,
-			rpm_index, charge_index, project_rotor, true)
+			rpm_index, charge_index, project_rotor, true, strict_clock)
 		if not located.ok:
 			return {ok = false, message = str(located.get("message", "battery root trial failed"))}
 		var q: float = located.state[charge_index]
@@ -165,7 +165,7 @@ static func _locate_battery_crossing(start: PackedFloat64Array, time_s: float, d
 
 static func _stop_trial(start: PackedFloat64Array, time_s: float, dt: float,
 		derivative: Callable, first: PackedFloat64Array, rpm_index: int, charge_index: int,
-		project_rotor: Callable, connected: bool) -> Dictionary:
+		project_rotor: Callable, connected: bool, strict_clock: bool = false) -> Dictionary:
 	var tracker: Dictionary = {
 		"ok": true,
 		"message": "",
@@ -226,7 +226,7 @@ static func _stop_trial(start: PackedFloat64Array, time_s: float, dt: float,
 				return _zero_state(start.size())
 		return projected
 
-	var stopped: Dictionary = Stop.advance(start, time_s, dt, tracked, first, rpm_index, safe_project)
+	var stopped: Dictionary = Stop.advance(start, time_s, dt, tracked, first, rpm_index, safe_project, strict_clock)
 	if not tracker.ok:
 		return {ok = false, message = str(tracker.message)}
 	if not stopped.ok:

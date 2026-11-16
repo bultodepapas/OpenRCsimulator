@@ -16,6 +16,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const FORMAT := "openrc-aircraft v2"
 const LEGACY_FORMAT := "openrc-aircraft v1"
 const Contract := preload("res://physics/aircraft_contract.gd")
+const ServoTrajectory := preload("res://physics/slew_trajectory.gd")
 const PhysicalIdentity := preload("res://physics/physical_identity.gd")
 const Aero := preload("res://physics/aero.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
@@ -209,6 +210,8 @@ static func _dq(domain: Dictionary, errors: PackedStringArray, path: String, nod
 
 static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictionary:
 	if raw.get("format") == LEGACY_FORMAT:
+		if raw.get("controls") is Dictionary and raw.controls.has("servo_integration"):
+			return _fail("controls.servo_integration requires openrc-aircraft v2")
 		var legacy: Dictionary = _validate_legacy(raw, domain)
 		if legacy.get("ok", false) and legacy.model.propulsion.get("battery", {}).get("kind") == "pack_ecm":
 			return _fail("propulsion.battery: pack_ecm requires openrc-aircraft v2 (inventory ids name the pack mount)")
@@ -218,6 +221,11 @@ static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictio
 	var structural: PackedStringArray = Contract.validate(raw)
 	if not structural.is_empty():
 		return {ok = false, errors = structural, warnings = PackedStringArray(), model = {}}
+	if raw.controls.has("servo_integration") and (raw.capabilities.controls != "conventional" \
+		or raw.capabilities.propulsion_layout != "single_tractor" or raw.capabilities.energy != "ocv_resistance" \
+		or raw.capabilities.flaps != "not_simulated" or raw.capabilities.damage != "terminal_hull" \
+		or not raw.get("landing_gear", {}).is_empty() or raw.capabilities.has("airframe_layout") or raw.has("flaps")):
+		return _fail("controls.servo_integration: v1 supports a conventional, gearless single-tractor OCV/resistance electric installation without flaps")
 	# X8-03/04: the shared numerical parser needs the control topology and airframe law; absent keys keep the
 	# historical conventional wing-tail path untouched.
 	var layout := {}
@@ -2163,6 +2171,11 @@ static func _controls(errors: PackedStringArray, node: Variant, elevon := false)
 			rad.aileron_down = deg_to_rad(down)
 	var t = _q(errors, "controls.servo_full_throw_time", node.get("servo_full_throw_time"), "s", 0.01, 2.0)
 	var out := { throw_deg = deg, throw_rad = rad, servo_rate = 1.0 / t if t != null else 0.0 }
+	if node.has("servo_integration"):
+		if typeof(node.servo_integration) != TYPE_STRING or node.servo_integration != ServoTrajectory.LAW:
+			errors.append("controls.servo_integration: unsupported law")
+		else:
+			out.servo_integration = node.servo_integration
 	if elevon:
 		out.layout = "elevon"
 	# Optional (D6e): the manual's normal-flight dual rates and expo as stick shaping (travel fraction of the maximum

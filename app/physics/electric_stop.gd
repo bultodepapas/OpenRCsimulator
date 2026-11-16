@@ -14,8 +14,8 @@ const MAX_DT_S: float = EventStep.MAX_DT_S
 
 
 static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
-		first: PackedFloat64Array, index: int, project: Callable) -> Dictionary:
-	var located: Dictionary = EventStep.advance(s, time_s, dt, derivative, first, index, project, "rotor_stop")
+		first: PackedFloat64Array, index: int, project: Callable, strict_clock: bool = false) -> Dictionary:
+	var located: Dictionary = EventStep.advance(s, time_s, dt, derivative, first, index, project, "rotor_stop", strict_clock)
 	if not located.get("ok", false):
 		return {ok = false}
 	var events: PackedFloat64Array = PackedFloat64Array()

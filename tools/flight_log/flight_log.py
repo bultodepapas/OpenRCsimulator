@@ -1032,6 +1032,48 @@ def _run_godot(command: Sequence[str], timeout: float | None, log_path: Path | N
                     raise FlightLogError(f"Godot reported an engine error despite exit 0: {line.strip()}")
 
 
+def _check_servo_report(document: dict[str, Any]) -> None:
+    """Validate the optional same-law replay extension; old reports keep their shape."""
+    metadata = document.get("metadata", {})
+    fields = ("servo_integration_law", "servo_interval_protocol", "servo_interval_layout")
+    declared = isinstance(metadata, dict) and any(key in metadata for key in fields)
+    if "servo_integration" not in document:
+        if declared and document.get("mode") == "exact":
+            raise FlightLogError("servo replay report is missing its declaration group")
+        return
+    group = document["servo_integration"]
+    if not isinstance(group, dict) or set(group) != {"recorded", "replay", "checkpoint_migration"}:
+        raise FlightLogError("servo replay declaration group is malformed")
+    if document.get("mode") != "exact" or document.get("solver_changed") is not False \
+            or group["checkpoint_migration"] != "none" or group["recorded"] != group["replay"]:
+        raise FlightLogError("servo replay requires the same law without checkpoint migration")
+    declaration = group["recorded"]
+    expected = {
+        "law": "normalized-slew-arrivals-v1", "protocol": "joint-interval-v1",
+        "checkpoint_format": "openrc-flight-checkpoint v15",
+        "physics_format": "openrc-flight-checkpoint v6",
+        "simulation_format": "openrc-simulation-checkpoint v2",
+        "stage_backend": {"backend": "gdscript_reference"},
+    }
+    if not isinstance(declaration, dict) or set(declaration) != set(expected) | {"layout"} \
+            or any(declaration[key] != value for key, value in expected.items()) \
+            or declaration["layout"] not in (
+                "normalized-slew-arrivals-v1;body13;aux4;shaft-charge-energy-heat;modes1",
+                "normalized-slew-arrivals-v1;body13;aux5;shaft-charge-energy-heat;modes1",
+            ):
+        raise FlightLogError("servo replay declaration is unsupported")
+    if not isinstance(metadata, dict) or any(metadata.get(key) != declaration[value]
+            for key, value in zip(fields, ("law", "protocol", "layout"))):
+        raise FlightLogError("servo replay metadata and declaration disagree")
+    if any(document.get(key) != expected["stage_backend"]
+           for key in ("baseline_stage_backend", "current_stage_backend")):
+        raise FlightLogError("servo replay requires recorded and current reference backends")
+    baseline = document.get("baseline_solver_sha256")
+    if not isinstance(baseline, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", baseline) \
+            or document.get("current_solver_sha256") != baseline:
+        raise FlightLogError("servo exact replay solver identities disagree")
+
+
 def _check_godot_report(
     report_path: Path, *, recover: bool = False, candidate_replay: bool = False
 ) -> dict[str, Any]:
@@ -1057,6 +1099,7 @@ def _check_godot_report(
             raise FlightLogError("Godot reported an incomplete log; pass --recover to export its verified prefix")
         if not isinstance(recovery_reason, str) or not recovery_reason.strip():
             raise FlightLogError("recovered export report must include a recovery_reason")
+    _check_servo_report(document)
     if candidate_replay:
         for key in ("baseline_solver_sha256", "current_solver_sha256"):
             value = document.get(key)

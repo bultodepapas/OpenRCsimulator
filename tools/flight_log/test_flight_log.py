@@ -1071,5 +1071,65 @@ class FlightLogCommandTests(unittest.TestCase):
                 self.assertFalse((output / "debrief.json").exists())
 
 
+class ServoReplayReportTests(unittest.TestCase):
+    def report(self) -> dict[str, object]:
+        declaration = {
+            "law": "normalized-slew-arrivals-v1", "protocol": "joint-interval-v1",
+            "layout": "normalized-slew-arrivals-v1;body13;aux4;shaft-charge-energy-heat;modes1",
+            "checkpoint_format": "openrc-flight-checkpoint v15",
+            "physics_format": "openrc-flight-checkpoint v6",
+            "simulation_format": "openrc-simulation-checkpoint v2",
+            "stage_backend": {"backend": "gdscript_reference"},
+        }
+        return {
+            "status": "ok", "error": "", "complete": True, "mode": "exact", "solver_changed": False,
+            "baseline_solver_sha256": "a" * 64, "current_solver_sha256": "a" * 64,
+            "baseline_stage_backend": {"backend": "gdscript_reference"},
+            "current_stage_backend": {"backend": "gdscript_reference"},
+            "metadata": {"servo_integration_law": declaration["law"],
+                         "servo_interval_protocol": declaration["protocol"],
+                         "servo_interval_layout": declaration["layout"]},
+            "servo_integration": {"recorded": declaration, "replay": dict(declaration),
+                                  "checkpoint_migration": "none"},
+        }
+
+    def checked(self, document: dict[str, object]) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            path.write_text(json.dumps(document), encoding="utf-8")
+            flight_log._check_godot_report(path)
+
+    def test_complete_same_law_report_and_old_report(self) -> None:
+        self.checked(self.report())
+        self.checked({"status": "ok", "error": "", "complete": True})
+
+    def test_missing_partial_or_conflicting_declarations_are_refused(self) -> None:
+        for value in (None, False, [], {}, {"checkpoint_migration": "none"}):
+            with self.subTest(value=value):
+                document = self.report()
+                document["servo_integration"] = value
+                with self.assertRaises(flight_log.FlightLogError):
+                    self.checked(document)
+        document = self.report()
+        del document["servo_integration"]
+        with self.assertRaises(flight_log.FlightLogError):
+            self.checked(document)
+        for change in ({"mode": "candidate"}, {"solver_changed": True},
+                       {"current_solver_sha256": "b" * 64},
+                       {"current_stage_backend": {"backend": "native"}},
+                       {"metadata": {}}):
+            with self.subTest(change=change):
+                document = self.report()
+                document.update(change)
+                with self.assertRaises(flight_log.FlightLogError):
+                    self.checked(document)
+        for field in self.report()["servo_integration"]["replay"]:
+            with self.subTest(field=field):
+                document = self.report()
+                document["servo_integration"]["replay"][field] = "different"
+                with self.assertRaises(flight_log.FlightLogError):
+                    self.checked(document)
+
+
 if __name__ == "__main__":
     unittest.main()

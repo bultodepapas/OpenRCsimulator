@@ -472,9 +472,10 @@ func step() -> void:
 			return
 		aux = next_aux
 	var combined: PackedFloat64Array = _packed_state(state)
+	var integration_at: float = 0.0 if _local_interval() else t
 	var current_joint: Dictionary = {}
 	if not continuous.is_empty() and model.uses_joint_stage():
-		var candidate: Variant = _call_joint_stage(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t, sampled_context)
+		var candidate: Variant = _call_joint_stage(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), integration_at, sampled_context)
 		if not _joint_stage_is_valid(candidate):
 			aux = old_aux
 			_fail_safe("step rejected: joint stage evaluation is nonfinite or malformed")
@@ -566,7 +567,7 @@ func step() -> void:
 		var policy_guard := _capture_endpoint_guard()
 		policy_guard.owner._endpoint_callback_active = true
 		stage_error.interval_policy_guard = policy_guard
-		policy_result = _call_interval_read_only(model.step_policy_interval, [combined, t, dt(), f, first, sampled_context])
+		policy_result = _call_interval_read_only(model.step_policy_interval, [combined, integration_at, dt(), f, first, sampled_context])
 		stage_error.erase("interval_policy_guard")
 	elif model.step_policy.is_valid():
 		policy_result = model.step_policy.call(combined, t, dt(), f, first)
@@ -880,6 +881,10 @@ func _locate_substeps(combined: PackedFloat64Array, t: float, dt_tick: float, f:
 ## evidence is bounded/detached and requires an explicit endpoint owner. Its
 ## physical meaning stays with that model; it is not published or checkpointed.
 func _unpack_policy_result(result: Dictionary, t: float) -> Dictionary:
+	if result.has("failure"):
+		if result.size() == 1 and typeof(result.failure) == TYPE_STRING and not result.failure.is_empty() and result.failure.length() <= 256:
+			return {ok = false, message = result.failure}
+		return {ok = false, message = "malformed step-policy failure receipt"}
 	if typeof(result.get("state")) != TYPE_PACKED_FLOAT64_ARRAY:
 		return {ok = false, message = "step policy returned no state"}
 	var integration_receipt := {}
@@ -1091,7 +1096,7 @@ func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
 		return model.loads.call(combined, stage_t)
 	if model.uses_joint_stage():
 		# DR-16a: outside a tick (reset preparation) the sampled context is the candidate frame in the live arrays.
-		var candidate: Variant = _call_joint_stage(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t,
+		var candidate: Variant = _call_joint_stage(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), 0.0 if _local_interval() else stage_t,
 			_sampled_context(aux, modes, 0, stage_t) if _framed() else \
 			_interval_context(aux, aux, modes, modes, inputs, 0, stage_t, 0.0, "boundary") if _interval() else {})
 		return candidate.loads if _joint_stage_is_valid(candidate) else PackedFloat64Array([NAN])
@@ -1100,7 +1105,11 @@ func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
 
 ## DR-16a: true for the opt-in framed sampled protocol (sim/vehicle_model.gd).
 func _interval() -> bool:
-	return model.callback_protocol == VehicleModel.PROTOCOL_JOINT_INTERVAL
+	return model.callback_protocol in [VehicleModel.PROTOCOL_JOINT_INTERVAL, VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL]
+
+
+func _local_interval() -> bool:
+	return model.callback_protocol == VehicleModel.PROTOCOL_JOINT_INTERVAL_LOCAL
 
 
 static func _interval_context(before_aux: PackedFloat64Array, after_aux: PackedFloat64Array,
@@ -1125,10 +1134,15 @@ func _interval_context_valid(context: Dictionary, stage_t: float) -> bool:
 		if typeof(context[key]) != TYPE_PACKED_INT64_ARRAY or context[key].size() != model.modes_size:
 			return false
 	if context.kind == "boundary":
-		return context.dt == 0.0 and stage_t == context.time_s \
+		return context.dt == 0.0 and stage_t == (0.0 if _local_interval() else context.time_s) \
 			and _guard_values_equal(context.before_aux, context.after_aux) \
 			and _guard_values_equal(context.before_modes, context.after_modes)
 	var end: float = context.time_s + context.dt
+	if _local_interval():
+		# Local queries have exact bounds; an absolute-clock epsilon must not
+		# swallow a short first piece. The owning policy supplies the offsets.
+		return context.dt > 0.0 and is_finite(end) and end > context.time_s \
+			and stage_t >= 0.0 and stage_t <= context.dt
 	var roundoff: float = minf(EVENT_TIME_SLACK_S, 2.0 * 2.220446049250313e-16 * maxf(absf(context.time_s), absf(end)))
 	return context.dt > 0.0 and is_finite(end) and end > context.time_s \
 		and stage_t >= context.time_s - roundoff and stage_t <= end + roundoff
@@ -1194,7 +1208,7 @@ func _call_joint_stage(body: PackedFloat64Array, extra: PackedFloat64Array, stag
 		if not _interval_context_valid(context, stage_t):
 			return null
 		# Clamp only representational boundary roundoff, never expose extrapolated elapsed time.
-		var bounded_time: float = clampf(stage_t, context.time_s, context.time_s + context.dt)
+		var bounded_time: float = stage_t if _local_interval() else clampf(stage_t, context.time_s, context.time_s + context.dt)
 		return _call_interval_read_only(model.stage_interval, [body, extra, bounded_time, context])
 	if not _framed():
 		return model.stage.call(body, extra, stage_t)
