@@ -12,6 +12,10 @@ incorporates `main` at `273a7e4c0617fdf4cacc39c360796fd79afa5f2c`, including
 changes are preserved. Review the resilience changes against the merged parent,
 not as replacements for that concurrent work.
 
+The storage follow-up below also integrates `main` at
+`cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b`. Its ClearView and aircraft changes
+are preserved in a separate merge; they are not queue implementation changes.
+
 ## What is implemented
 
 | Boundary | Candidate behavior | Main evidence |
@@ -158,7 +162,7 @@ separate from [the historical audit record](verification.md), whose 119 baseline
 cases and defect reproductions remain unchanged. Historical defect probes are
 not success gates for the repaired source.
 
-The integrated local run covers the complete queue and debug fixture directories,
+The first implementation's integrated local run covers the complete queue and debug fixture directories,
 checked/resource runners, the performance admission consumer and GOD TEST.
 It covers **492 distinct cases: 482 passed, 10 skipped, no failures or errors**.
 The groups were queue 254, debug 120, checked runner 22, resource runner 14,
@@ -210,9 +214,23 @@ The first PR checks ran at `86777e923e6b6f1894878449d02b3125c05c5600`:
 - [MetalFX source controls](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43769880593)
   passed.
 
-The failed runs remain part of the evidence. The corrected revision requires a
-fresh Windows run and the required CI gate; consult PR #13 for its actual result.
-No test selection or preflight rule was weakened to accept these failures.
+The failed runs remain part of the evidence. The corrected revision
+`1b0a6225e9c37585e6d051c7e5c6abd6b6c344a1` subsequently passed
+[Windows queue regressions](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061290)
+(492 cases: 487 passed, five skipped) and
+[MetalFX source controls](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061301).
+The [required CI run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061269)
+reached production qualification but failed
+[unit shard 6](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061269/job/132987956878)
+at `res://tests/test_skin_fleet.gd`: four of 592 checks failed for the
+`gp-extra-300s-60` paint/stock/kit identity. The earlier completed commands in that
+shard passed; later commands did not run. Other production, native and visual jobs
+in that run passed. The relevant aircraft and skin paths are unchanged between
+the integrated `273a7e4c0` parent and `1b0a6225`; this is an inherited blocker.
+The newer `cfb5acd5` main still changes geometry without completing the matching
+skin-identity review. Do not bless a changed paint identity by replacing its hash:
+the aircraft owner must qualify the geometry/UV/template compatibility or regenerate
+the kit through its owning pipeline. No test selection or preflight rule is weakened.
 
 ### Inherited release-preflight prerequisite
 
@@ -230,6 +248,105 @@ this partial clone. The required CI run must verify the complete source and
 preflight; the application script itself remains unchanged. The machine-readable
 evidence retains engine, script, sidecar and log identities.
 
+## Storage cleanup follow-up
+
+### Findings that constrain deletion
+
+The queue has several distinct copies and owners: a client snapshot, coordinator
+archive, remote incoming archive, remote per-job archive, writable materialized
+source, imported assets, profiles, temporary output and collected results. These
+are not interchangeable cache entries. The inspection found:
+
+- A failed coordinator archive build could leave its fixed `.pending` copy behind
+  and already reserve a selected host. The build's failure did not prove that an
+  older temporary or shared archive was unused.
+- Local pool placement measured the coordinator's volume, although the execution
+  authority can keep attempts on another volume. This could report available
+  capacity where the attempt filesystem was full.
+- A successful remote job retained a separate `input.tar` after extraction, while
+  the original verified incoming archive still existed. This is a narrow redundant
+  copy with a reviewable lifetime; the whole job directory is not.
+- Full capture evidence can reside inside `attempt/source/app/captures`, and
+  arbitrary checked jobs can write useful source/profile/temp output. Existing
+  artifact inventories do not establish a complete contract for these paths.
+- `FINISHED` can represent explicit abandonment with `cleanup: UNCONFIRMED`.
+  Released execution claims, file age, an empty PID list or a collected infrastructure
+  report cannot authorize workspace deletion. Missing remote artifact inventories
+  and interrupted collection remain evidence gaps.
+- Shared snapshots and archives can have queued or concurrent readers. The existing
+  archive creation lock does not cover the later upload lifetime. Remote upload
+  `.pending` files and log/SQLite-event growth have no complete retention contract.
+
+### Implemented changes and safety boundaries
+
+| Change | Implemented boundary | Failure behavior |
+| --- | --- | --- |
+| Coordinator archive construction | Unique temporary per invocation; verify regular-file identity, flush and verify contents before publication. Prepare outside the global dispatch lock and before a destination receipt; select again afterward. | Remove only that invocation's identifiable unpublished temporary. Transient I/O can defer before dispatch; an unremovable/replaced temporary or invalid cache requires inspection and blocks repeated automatic builds. |
+| Execution-volume observation | Worker `hosts.storage` reports the attempt filesystem's free bytes, scope and observation time. Query capacity before acquiring the admission lock. | Unavailable or older telemetry is `DISK_UNKNOWN`; do not substitute coordinator capacity. The individual filesystem call can still block. |
+| Preparation diagnostics | Record the owned attempt output directory immediately after exclusive creation. | Preparation failures retain a discoverable directory and incomplete evidence; this does not create an artifact-completeness or deletion claim. |
+| Remote redundant input | After durably confirmed `FINISHED / PASSED / COMPLETE / CONFIRMED`, verify both archive copies and pin the verified incoming inode as `retained-input.tar`. Persist unlink intent before removing only `input.tar`. | Separate `storage_cleanup` status retains uncertainty without changing the test outcome. All source, profiles, temp, captures, reports, logs, records and shared cache names remain untouched. |
+| Explicit retry | `reclaim-input` addresses one original request ID and canonical payload digest under the host pool lock. | Busy/conflicting/unsupported requests refuse; repeated completed cleanup is idempotent. The public digest binds identity and is not an authentication secret. |
+
+The [operating guide](../../../../tools/testqueue/README.md#storage-after-a-remote-checked-job)
+owns commands and status meanings. Remote reclamation is limited to supported
+POSIX descriptor-relative/no-follow operations, hard links and a private directory
+with cooperating processes under one account. It does not provide isolation from
+hostile same-account mutation. Windows retains its input copy. Hashing permits at
+most 16 GiB per file with a cooperative 30-second budget; blocked filesystem calls
+can exceed that budget. Hashing retains the host lock, so its post-execution I/O
+cost must be measured on the real machines before claiming a throughput benefit.
+
+The pin keeps archive bytes available without creating another archive copy.
+Reported reclamation is logical bytes, not guaranteed physically freed space.
+Python documents [platform-specific descriptor and link support](https://docs.python.org/3.12/library/os.html#os.supports_dir_fd);
+Linux separately documents [directory synchronization](https://man7.org/linux/man-pages/man2/fsync.2.html)
+and [unlink/open-file lifetime](https://man7.org/linux/man-pages/man2/unlink.2.html).
+The implementation checks supported operations and synchronizes both the retained
+link and the intent/result directory updates. If deletion is interrupted after
+intent, retry reports the observed absence without inventing a deletion witness.
+If every corrective journal write fails, no implementation can promise a durable
+corrective status; retain the original host evidence for inspection.
+
+No age-based sweep, fleet cleanup, local attempt deletion, shared-cache GC,
+snapshot pruning or log rotation is enabled. Disk estimates and the archive
+headroom check are advisory, not atomic volume reservations. The upload/request
+gap and incomplete collection paths still need the work below. Worker updates
+must wait for an idle/drained boundary; missing new storage telemetry is not a
+reason to restart an occupied authority.
+
+### Follow-up verification
+
+The exact combined queue source passes **542 distinct cases: 532 passed, ten
+skipped, zero failures or errors** across the same six groups. Queue now has 304
+cases, including 50 new archive/storage/retention cases; debug has 120, checked
+runner 22, resource runner 14, performance admission 64 and GOD TEST 18. Each
+group was rerun on this candidate, with duplicate case IDs checked. Skips remain
+platform/native opt-ins; this is Linux fixture evidence, not a fleet campaign.
+
+Fault coverage includes disk-full writes, publication and fsync failure, denied
+unlink, replaced/link/reparse paths, missing/corrupt backup, unsupported links,
+hash budgets, mutated inputs, before/after-intent interruptions, final journal
+publication failure, busy/conflicting retry, preserved source/capture evidence,
+placement reselection and a second batch invocation after failed cleanup. The
+independent source/fixture review found no publication-blocking safety regression
+within the documented cooperating-directory boundary; the lead ran the integrated
+tests. The reviewer did not claim an independent test run.
+
+A bounded read-only storage inventory covered this sparse development workspace
+only: 2,503 files and 33,784,681 logical bytes, with a complete scan. It does not
+measure the Windows/Linux/Mac fleet or demonstrate reclaimed fleet capacity. Test
+cleanup acted only on private fixture files. The evidence JSON retains the scan
+scope, commands, hashes, case counts and explicit limitations.
+
+The latest main integration also needs 13 ClearView GDScript UID sidecars.
+The exact pinned editor generated these from unchanged staged upstream scripts in
+an isolated minimal project: complete exit-zero import, no errors or warnings.
+All new IDs are distinct and checked against the complete application sidecar
+inventory. The sidecars are a separate metadata prerequisite, not a claim that
+ClearView, aircraft appearance or the full simulator has been qualified locally.
+PR #13 must run fresh Windows and required CI checks for the published follow-up;
+the inherited aircraft identity blocker above remains open.
+
 ## Remaining senior work and deployment gates
 
 | Priority | Remaining boundary | Concrete next review/acceptance |
@@ -241,7 +358,8 @@ evidence retains engine, script, sidecar and log identities.
 | P1 | Physical host/VM/alias identity, memory/volume reservations and runtime version negotiation remain incomplete. | Implement R4/R5 before increasing capacities or routing CI onto personal machines. |
 | P1 | Pool placement still serializes per host and uses existing estimates. | Measure cold/warm setup, transfer, execution and collection; implement fair global ordering and calibrated durations under R6. |
 | P1 | Windows workflow still has path filters; stable required-gate integration and rule visibility are incomplete. | Confirm repository rules with authorized access, validate selected/missing/canceled results, keep full required CI policy intact. |
-| P2 | Output-byte budgets, paginated status, bounded event retention and incident diagnostics. | Add R8 with limits that preserve active/unknown evidence and report unavailable observations honestly. |
+| P1 | General cleanup lacks complete artifact ownership, cache-reader leases and collection transactions. | Continue R8 from the narrow redundant-copy candidate: protect source-contained captures, confirm complete collection before workspace retirement, bind shared readers and retain interrupted uploads until nonuse is proved. |
+| P2 | Output-byte budgets, paginated status, bounded event/log retention and incident diagnostics. | Add limits that preserve active/unknown evidence and report unavailable observations honestly; do not treat the new copy reclamation as general GC. |
 
 The Windows Ryzen 5900X/RTX3090, Linux host and both Macs remain the intended
 qualification fleet, not claimed test environments for this patch. Keep current
@@ -261,10 +379,13 @@ native measurements.
    receipts/artifacts; confirm legacy ambiguity stays observation-only.
 3. Review MCP lane safety and its bounded, potentially lossy delivery contract.
    Confirm the intended clients retain durable IDs and handles across disconnects.
-4. Require CI for the final PR revision, inspect skipped/native boundaries and
+4. Review storage cleanup against its narrow unlink target, durable anchor/intent,
+   same-account boundary and failure tests. Confirm old workers become ineligible
+   instead of receiving invented disk capacity; plan compatible idle upgrades.
+5. Require CI for the final PR revision, inspect skipped/native boundaries and
    review any interaction with newly landed `main` changes. Merge only after the
    maintainer's review; this candidate does not merge itself.
-5. Deploy one drained/idle boundary at a time with retained runtime/config/state
+6. Deploy one drained/idle boundary at a time with retained runtime/config/state
    identities. Do not replace the running process owner. Reconnect MCP clients
    after updating the server; deploy compatible remote agents before relying on
    request-bound refusal behavior.

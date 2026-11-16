@@ -270,7 +270,7 @@
     }
   },
   "ci": {
-    "status": "CORRECTED_REVISION_AWAITING_CI",
+    "status": "CORRECTED_REVISION_REQUIRED_CI_FAILED_INHERITED_AIRCRAFT_IDENTITY",
     "first_revision": "86777e923e6b6f1894878449d02b3125c05c5600",
     "runs": [
       {
@@ -310,7 +310,7 @@
         "conclusion": "success"
       }
     ],
-    "note": "Preserve the failed first runs. Review PR #13 checks for the actual corrected revision and final outcome; this local follow-up does not assert Windows or required CI success.",
+    "note": "Preserve original failed and corrected runs. Storage follow-up requires fresh CI at its published head; previous passing platform checks do not qualify new code.",
     "inherited_prerequisite_repair": {
       "path": "app/tests/test_extra_visual_details.gd.uid",
       "generation": "Exact original script, minimal isolated project, pinned editor --headless --import through run_checked.py. No project main scene was run.",
@@ -333,7 +333,41 @@
         "log_sha256": "06b79742ae49376b4989fb8368d7bde683c9358274a46b99dd46d44490753ad8"
       },
       "limit": "Metadata generation only; complete production import and release preflight remain GitHub CI gates. Full local app materialization was unavailable in the partial clone; UID definitions were checked from verified local Git object stores with lazy fetching disabled."
-    }
+    },
+    "corrected_revision": "1b0a6225e9c37585e6d051c7e5c6abd6b6c344a1",
+    "corrected_revision_runs": [
+      {
+        "name": "Windows test queue regressions",
+        "run_id": 43771061290,
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061290",
+        "conclusion": "success",
+        "tests": 492,
+        "passed": 487,
+        "skipped": 5,
+        "failures": 0,
+        "errors": 0,
+        "scope": "Windows Server 2025 hosted fixtures, Python 3.12.10; not personal desktop/GPU qualification"
+      },
+      {
+        "name": "MetalFX source controls",
+        "run_id": 43771061301,
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061301",
+        "conclusion": "success",
+        "scope": "Source/mutation controls, not native Metal hardware"
+      },
+      {
+        "name": "CI",
+        "run_id": 43771061269,
+        "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061269",
+        "conclusion": "failure",
+        "failed_job_id": 132987956878,
+        "failed_job_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43771061269/job/132987956878",
+        "blocker": "Unit shard 6: test_skin_fleet.gd, gp-extra-300s-60 paint/kit/stock identity; 592 checks, 4 failed. Later shard commands did not execute. Required aggregation failed.",
+        "other_jobs": "Selection, release preflight and other production/native/visual jobs passed.",
+        "inherited_from": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
+        "evidence": "No relevant aircraft/model/skin/test path diff from integrated main to 1b0a6225. New main cfb5acd5 still requires owning paint-template compatibility review; hashes are not changed here."
+      }
+    ]
   },
   "limits": [
     "No simulator or personal-fleet execution in the local fixtures.",
@@ -341,5 +375,595 @@
     "No throughput, p95 latency, resource-capacity or physical validation claim.",
     "Historical baseline defect probes were not run as success gates on repaired code.",
     "General executing-job storage continuity, lock-bound status, full phase budgets and guardian isolation remain open."
-  ]
+  ],
+  "storage_followup": {
+    "recorded_at_utc": "2026-11-16T01:46:28.507461+00:00",
+    "previous_published_head": "1b0a6225e9c37585e6d051c7e5c6abd6b6c344a1",
+    "integrated_main": "cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b",
+    "upstream_merge_commit": "2881df173098e6ec75c95d9a228d028684523b7e",
+    "local": {
+      "environment": {
+        "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+        "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+      },
+      "recorded_at_utc": "2026-11-16T01:44:46.187406+00:00",
+      "groups": [
+        {
+          "name": "queue",
+          "command": [
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-v",
+            "-s",
+            "tools/testqueue",
+            "-p",
+            "test_*.py"
+          ],
+          "tests": 304,
+          "passed": 296,
+          "skipped": 8,
+          "failures": 0,
+          "errors": 0,
+          "elapsed_seconds": 39.072,
+          "skip_details": [
+            "test_two_sessions_use_one_rendered_lifetime (test_native.NativeSessionTests.test_two_sessions_use_one_rendered_lifetime) ... skipped 'opt-in native Windows desktop campaign'",
+            "test_assignment_failure_never_runs_command (test_processes.ProcessFixture.test_assignment_failure_never_runs_command) ... skipped 'Windows Job Object behavior'",
+            "test_job_handle_is_not_inheritable (test_processes.ProcessFixture.test_job_handle_is_not_inheritable) ... skipped 'Windows Job Object behavior'",
+            "test_missing_process_witness_remains_unknown_after_close (test_processes.ProcessFixture.test_missing_process_witness_remains_unknown_after_close) ... skipped 'Windows Job Object behavior'",
+            "test_operator_orphan_probe_rejects_foreign_identity_and_access_errors (test_processes.ProcessFixture.test_operator_orphan_probe_rejects_foreign_identity_and_access_errors) ... skipped 'Windows orphan evidence'",
+            "test_windows_open_handle_matches_path_after_modification (test_snapshots.SnapshotTests.test_windows_open_handle_matches_path_after_modification) ... skipped 'Windows path/handle timestamp compatibility'",
+            "test_windows_short_worktree_name_preserves_root_and_containment_checks (test_snapshots.SnapshotTests.test_windows_short_worktree_name_preserves_root_and_containment_checks) ... skipped 'Windows short-name aliases'",
+            "test_materialization_preserves_frozen_windows_attributes (test_worker.WorkerFixture.test_materialization_preserves_frozen_windows_attributes) ... skipped 'Windows materialized file attributes'"
+          ],
+          "case_ids_sha256": "8259ef95f31175655b7368ab1f460a2c3cd153dd44d3b415bba389e2ed92e4cc",
+          "log_sha256": "ec055c657bfe24557c29eeff2078f1df7273c44bd410add3c4a01f9603352766"
+        },
+        {
+          "name": "debug",
+          "command": [
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-v",
+            "-s",
+            "tools/debug",
+            "-p",
+            "test_*.py"
+          ],
+          "tests": 120,
+          "passed": 119,
+          "skipped": 1,
+          "failures": 0,
+          "errors": 0,
+          "elapsed_seconds": 4.085,
+          "skip_details": [
+            "test_windows_contender_recovers_when_lock_owner_is_killed (test_debugctl.DebugctlTests.test_windows_contender_recovers_when_lock_owner_is_killed) ... skipped 'needs native Windows locking'"
+          ],
+          "case_ids_sha256": "4f3c830bbc8acdea79a4add497c48b89a86be4fcdd2ec863f3ff46473b4ac8af",
+          "log_sha256": "fea68233131d4f065aedee6185717acfea6183cce6dc59b9e22fe853067b9729"
+        },
+        {
+          "name": "checked",
+          "command": [
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-v",
+            "-s",
+            "tools/godot",
+            "-p",
+            "test_run_checked.py"
+          ],
+          "tests": 22,
+          "passed": 21,
+          "skipped": 1,
+          "failures": 0,
+          "errors": 0,
+          "elapsed_seconds": 4.291,
+          "skip_details": [
+            "test_real_godot_failure_matrix (test_run_checked.NativeGodotTests.test_real_godot_failure_matrix) ... skipped 'set OPENRC_TEST_GODOT for actual engine faults'"
+          ],
+          "case_ids_sha256": "1eeb599fb777f493873b802bd5ebe7ee90d59e17f1062f1c9d84737427321ab0",
+          "log_sha256": "6ec049d21cec382c4c5943f108490e5b3224534683495bf57a2a73e367c22c54"
+        },
+        {
+          "name": "resource",
+          "command": [
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-v",
+            "-s",
+            "tools/godot",
+            "-p",
+            "test_resource_runner.py"
+          ],
+          "tests": 14,
+          "passed": 14,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0,
+          "elapsed_seconds": 1.724,
+          "skip_details": [],
+          "case_ids_sha256": "1a0547bf9f77eb51f247a15b840b34156a4d1c177b1c1da6da296b72d2105d06",
+          "log_sha256": "07941748752bcd6a3d56a35c1b111ed57a165483ced6efb0f36525864d70b4d3"
+        },
+        {
+          "name": "performance",
+          "command": [
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-v",
+            "-s",
+            "research/performance",
+            "-p",
+            "test_session_baseline.py"
+          ],
+          "tests": 64,
+          "passed": 64,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0,
+          "elapsed_seconds": 0.542,
+          "skip_details": [],
+          "case_ids_sha256": "a849ace270f34e7718d10ea67e94940a78b978b1be51163bb233d55724bdaae5",
+          "log_sha256": "e56ef191f2be026c792b8e5c037875524d16f4c714560bfc6268cae2b594c3ce"
+        },
+        {
+          "name": "godtest",
+          "command": [
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-v",
+            "-s",
+            "tools/godtest",
+            "-p",
+            "test_*.py"
+          ],
+          "tests": 18,
+          "passed": 18,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0,
+          "elapsed_seconds": 0.072,
+          "skip_details": [],
+          "case_ids_sha256": "108e38d78bb30ffda688e7be40c127299b7569358adf0fd829ff0c853043d6cc",
+          "log_sha256": "7b323254e0aaff44edb8ce4040a9a925caf3b182b14a259aa20d310c1a4bf97f"
+        }
+      ],
+      "totals": {
+        "tests": 542,
+        "passed": 532,
+        "skipped": 10,
+        "failures": 0,
+        "errors": 0
+      },
+      "distinct_case_ids": 542,
+      "source_sha256": {
+        ".github/workflows/testqueue-windows.yml": "1cbff9491508abed0afffa7e00d65ffc0543168fbc0e93f994e6290360f194ab",
+        ".mcp.json": "bc4685583e975d792b7a9180938ad38ec2173c58cc5278c0d6038025085e6f64",
+        "research/performance/session_baseline.py": "8dcf4569dd5ffc3519010c34478c4afb807a2d70ba6ba307b486dbacc18d72e1",
+        "research/performance/test_session_baseline.py": "b78645f1b3c1ac4692c26e52a134967ec93d2b884661eac6b82b14279715fad4",
+        "tools/debug/debugctl.py": "f0bd093730192c61bc09ca13270033b4bd4f503951920fe61531c428bc4f3666",
+        "tools/debug/gdscript_warnings.py": "fb533ad9322141659e696e09188389c2f1eee25494df2842bf4ad8c5df22d105",
+        "tools/debug/mcp_server.py": "e2ae11601e214749da415feed775ed33651dd71585c31b9828f6fb27a8dd6500",
+        "tools/debug/test_debugctl.py": "298935e2798db8d07ea95635290ec738b3819ad0b8d524aa0fd2ad24b6747ec0",
+        "tools/debug/test_gdscript_warnings.py": "8331c566f0b348dd513e47d2301479b089dc3ac71110e5879cb0dbb0392546a9",
+        "tools/debug/test_mcp_registration.py": "57880adfa36d306549caafde393efed2d2f11bb8270513d3f16cc7f43553825d",
+        "tools/debug/test_mcp_server.py": "6c6405f34e2e51872d4512de0d4e68c6723cede88f5f94de0d4017c8c9755b10",
+        "tools/debug/test_mcp_transport.py": "56a85230935d6ebfb7a8e2739c5a1fe9ed809240cd3689c7a5811e7d2bbad724",
+        "tools/godot/audit_fixture_pack.py": "601d7e82fa64b5ecffa0d814349b001a8319528d5579fcb04fe99183c18df463",
+        "tools/godot/collect_publication_rebind.py": "f760044054b17e95ff9436515f88e9bce3c497772617be89c6cd6dc47bcf4a6b",
+        "tools/godot/fixed_brake_legacy.py": "efe63f1cc5a224993696cda7c08228a31a0aa9124dda62fbfbe910a7735fdb57",
+        "tools/godot/get_historical_godot.py": "d9d109cec59267aff7aec61f2d43bdce44274e2c344ad1c0eac38b98a60c2f80",
+        "tools/godot/incident_bundle.py": "a037c5e735b3f68ed4b596e859e63ac0b6fd76b8ea8749a20a2be97d3aa77004",
+        "tools/godot/lifecycle_check.py": "7125bc5ac19e946eda518497663e82ba583c91cf8e29a3a47d62fed5b0fd140d",
+        "tools/godot/macos_host_state.py": "fadef673e80075f303d032c70d8e0779088f1f2bc7e8464cc2de90c01c43697d",
+        "tools/godot/macos_preflight.py": "cf8b64d646701125e4a78bbda291af46cea89582a0e83430a057d17e559d7e3d",
+        "tools/godot/macos_universal_template.py": "f8c3fb1d255a7f3be04da4d5bb93b49267463c8c4f3e18da0193440c84018bd9",
+        "tools/godot/perfetto_export.py": "11f329c3b6e11c02da685a1edd5b5d9dcaac4633aab40083742a2cc1f005f164",
+        "tools/godot/resource_samples.py": "5dc82ef9c0875d34addc6a446b58cf3a83b619b8dfaa8d778ad008cf61069a03",
+        "tools/godot/run_checked.py": "55fd7b19a5c7490ab020e2c1b8e732784441375afff17d75a86c01a307a93b46",
+        "tools/godot/storage_audit.py": "45f0724216ef19037004f52b001256878f276025e74ec21d50d3aa9dfa4f617c",
+        "tools/godot/summarize.py": "f1a261b751aba292154986150e652172d9d9937172f3a84dbd6617336ac3f585",
+        "tools/godot/test_collect_publication_rebind.py": "b099ae2b1a04f5a396f69d0dd8a9b27d5612c712543633d7df0058f6eee6aefe",
+        "tools/godot/test_fixed_brake_legacy.py": "7043eadfaa97bb3fd2840342b502df8990e6d18c2fa2478722060ce3cc14ec15",
+        "tools/godot/test_frame_capture.py": "5ad6c0aafee43899fb9112d725c46b9e2fc78f9806de477a5e5d3d7f6e80c343",
+        "tools/godot/test_get_godot.py": "ec317d5190f390d460dd6c76a5ef7859c6fd9f69346cc8669f58e2f2294b30a4",
+        "tools/godot/test_get_templates.py": "94e57b21f6e5e313966ebfdee7f4d30df4b2ff9bc06f0c453a77dbc4b11dd59e",
+        "tools/godot/test_historical_godot.py": "81297c4003f0f55fd80aea33f37ee86273a19836e3d62b45048a9d0ff3d16de6",
+        "tools/godot/test_incident_bundle.py": "39f5f4bccd2c962129fd14e955bd9aae57eaec5329e9852457cc9097987be455",
+        "tools/godot/test_lifecycle_check.py": "482fb1827b6fc599a4334bf735d62072e1d9a8834e2b49fc1a02814eaa8717ea",
+        "tools/godot/test_lifecycle_probe.py": "841e4c916839a04c4781b3a88a09b5115c0c1340bbdcaafffa89dff92065e388",
+        "tools/godot/test_macos_host_state.py": "0ae06eae143da3c61622dfcfbcd256841af97a37db14ef3fd56225b3a6283512",
+        "tools/godot/test_macos_preflight.py": "658289b11176a6f66d2a3f9253097feb82b8f9fe13f41d93f3a482ca9f267905",
+        "tools/godot/test_macos_universal_template.py": "a669925d23cb5452c94eb139e9ecf0a9ec4ee40d5751c2326d7c421703a70b2e",
+        "tools/godot/test_perfetto_export.py": "301dcb59c578f69a638052d60bb51a19b3ad71f64caed4731894f0d7df24939a",
+        "tools/godot/test_publication_rebind.py": "c70209fa222a776da7cd181600b8b87ee3d02fd4f77b0c47e3b6f8cf727ccc74",
+        "tools/godot/test_resource_runner.py": "1c2bd36fb3b77e83eaf90e70088f51bd3b857ef4eb66538075ff3dffa21ddaac",
+        "tools/godot/test_resource_samples.py": "ab23ede9cc7f8dd0c9c7811ebaead075030b0b4d3540528eba8b3bbc6c2a4bfc",
+        "tools/godot/test_run_checked.py": "426a26197cc83a8e822fe8ea1307405be12ec86b6f0e4b367cc1331560ad355e",
+        "tools/godot/test_storage_audit.py": "b3d3e6e6edc266aa6769b6c7832e8000c81bfc64c46bce7378778654f23021fa",
+        "tools/godot/test_summarize.py": "ba3669367a4eeb4e377c998c12ca1fad5f6417b4543a8b6fedf120d47e78b882",
+        "tools/godtest/analysis.py": "0b27f9ee458203cf1205e01c8341610ebdc774013c8e60d85851f0e8a6a268d9",
+        "tools/godtest/catalog.py": "42b66963231ef979f37f6d55250e9a5253ecd0fc22b2d8c6e04d4f7a5f9c7c0f",
+        "tools/godtest/godtest.py": "4ccb70cff994613e750246a53093eb0681d584c50c69a67ee4c37022842a4716",
+        "tools/godtest/runner.py": "88cf3d438d1f33ac19c40741505707f3d8fe3a6d4ec0acb36f81fc16336c2b14",
+        "tools/godtest/test_godtest.py": "64d7fee5f863342fb3774cab04ec18eddc7e977062c7be3bcca290708ed9c898",
+        "tools/testqueue/__init__.py": "5baaa9ea0a675272a578afb9ce3b404d079ebbe12062c3a76821264265738c9c",
+        "tools/testqueue/adapter.py": "0a198fb2ec549ab2c7b1c3d4340f37e78192a08428770dc1a3623a7b25c1c6d0",
+        "tools/testqueue/common.py": "cb9960d1536148c262d44fc50443aaf206c496398a7c3d6e32e41c03a99ced24",
+        "tools/testqueue/entry.py": "f1a45888361fe0c2268f7e0508586a86f38e04d0fffca8bc858ff1cbae91895d",
+        "tools/testqueue/integration.py": "fcb1b640e69f94409cce38953931756c6036b7e952bf91a364294fdf6b4533ad",
+        "tools/testqueue/pool.py": "2aa6bfcfabcb5034e5a86c38eefebd2292c25ed501650cd618eff138720d0e22",
+        "tools/testqueue/pool_batch.py": "2e2307f6d85945ef3d44dd798ac289fd3780202682baaae4942a3e5dfc2259c0",
+        "tools/testqueue/pool_checked.py": "b1f9ef427cdfc47362717caf1f7cfda8195ef6ca16878e29afe96a12dd08c657",
+        "tools/testqueue/pool_mcp.py": "42e685b30c3bb265a44e312fa15ff5a30a9c3f5541475e489b55ebf14893a13d",
+        "tools/testqueue/pool_policy.py": "207dc1345b3e5b4518b27c9c3aa2a31b6101b355e8fc14b8f1f2c0ab539d4979",
+        "tools/testqueue/presets.py": "9ac154d94c5a01936af8197b70023223871a13b1efb2369e4515b051cfc13d98",
+        "tools/testqueue/processes.py": "2f6bb86ceb7c6762074b64f76491f93b380c3807c747cb76eea5dad43e263104",
+        "tools/testqueue/remote_agent.py": "47f4517ebf57177911c2d0b388abc63c5b13305e612f95dccb8cb54dd212324f",
+        "tools/testqueue/snapshots.py": "4f5a69d5894d6ba2ff9f4bec95a4047d065bdd53ecef62fbaf5b025a9bf3eb38",
+        "tools/testqueue/store.py": "152b4235db3a057723af16b72e3b371223f417390a01ae705c677f5852e4cafc",
+        "tools/testqueue/test_archive_storage.py": "3e39a1e2b8a2ccee8b30592eb1711c720d54fe9cf05bc2a8c9ffb819ad2119cd",
+        "tools/testqueue/test_capture_context.py": "24912c765c3f8bbcb67e8b845d2c2273299f8cc2ce180354204654be48dbada9",
+        "tools/testqueue/test_contracts.py": "1d6e3872993a7ec455bb350d33112dc10a67ba429e4a8ff714ed4b4fd7bcb686",
+        "tools/testqueue/test_integration.py": "87a9f7467cb1eda3bf55c7e51a7acf4ea1041fd53f8413e284b37aad75d447ba",
+        "tools/testqueue/test_native.py": "8b980039391eb12122c05630429136096b4f387b8ce05562cc14b0c150c274f6",
+        "tools/testqueue/test_pool.py": "bbae7f46ce6bfe3b6c83325d3d44cf94f695776bb59daa93a0b5f36d16e8ae54",
+        "tools/testqueue/test_pool_batch.py": "c6be753f67d758f0afecfc951b9eaca192b60d1d5cdacda9184965ff5e67e957",
+        "tools/testqueue/test_pool_checked.py": "99d93416feb01dc97fc7d84504079c2fdb5dc9d6a6b0d83056fe271e13db8bd7",
+        "tools/testqueue/test_pool_concurrency.py": "6a4303f293dd3ad1e01e959d8f5767f248dceaadbaf38e8de15d548c228e0750",
+        "tools/testqueue/test_pool_engine_binding.py": "7d694fea6a91192c188b44505767e0fc782a39208bd2e73e2f75dbd84b23bbaa",
+        "tools/testqueue/test_pool_legacy_batch.py": "62c56e07e13042c365d4335722fa233624b06b4cc2481e59ad957f05f14e06a6",
+        "tools/testqueue/test_pool_mcp.py": "7ec2a40adfbb5fd959877d0b7fed5dd6afd33dcdf5fe6fd9812c92691d39a94f",
+        "tools/testqueue/test_pool_policy.py": "fa17c01609bb74554dfea5d9d9de6790ee2047b57fb90676a6b55a095508084a",
+        "tools/testqueue/test_pool_recovery.py": "9d9a157e9143c0f902b602e831e4ddcb42ea00c822532b39191c62b66c67d79d",
+        "tools/testqueue/test_pool_recovery_process.py": "1515fdac2b1741efa1a3cd01b635874e622c04620d80949b137a0e444ef9be65",
+        "tools/testqueue/test_pool_remote_identity.py": "4a6998c9c38ff2cbb7439c99a4e9cc9f98949b1972d8d134b25e50bb8870f0e0",
+        "tools/testqueue/test_pool_submission.py": "7e865084a2403273c9e8568d129ba9b9eff3af80ad4d03637fbac920e79e3cd1",
+        "tools/testqueue/test_processes.py": "cd3f6a0bb01f5ac28e1b7166e63c0920b7056bbd05a08cbfa6fcf0e9b314b124",
+        "tools/testqueue/test_remote_agent.py": "8f829fc3d68aff10ad76c1ecb8cad02f944bef3a67f15683ae55305297ca3b16",
+        "tools/testqueue/test_remote_retention.py": "ea88e8e079e1342c0e2b0d2508c547d7626b4607507086cda733a571ae75a510",
+        "tools/testqueue/test_request_limits.py": "e0cf886abbfb99de183309b75fc5aa1218cfbb1317bfe2ec514df77b1c571eda",
+        "tools/testqueue/test_rpc_deadline.py": "0db3f728aead1460a33405910b0c51a569c46daeab6e4dbedad771e1cedf4b2a",
+        "tools/testqueue/test_scheduling.py": "f633ee98a472a630baf2e0bc6841a6d58933f578790907c9eeb4ed642fdf0bae",
+        "tools/testqueue/test_screenshot.py": "5bf54a0ee3d311796705f0419b76b4247ac25c79b65a69ce99897dd3830bbcc4",
+        "tools/testqueue/test_server.py": "a21d067be719bdca38e4c00b0b2eb7ba23da9eddf9b7585f9e34f900106068c9",
+        "tools/testqueue/test_snapshots.py": "ef24e3cac3d30e0a24fdb4fb149f801f0a9efe1db0f97269ab1682f6303b8abb",
+        "tools/testqueue/test_storage_capacity.py": "4483cf1d3289b91e6fd4109467ce1351268f6ceafce1d5e68075ac3500e22b24",
+        "tools/testqueue/test_store.py": "96527248900bbd51fbe9eb23d4b414839369ded78901d6cd3fe29c25d756ae60",
+        "tools/testqueue/test_wait.py": "5419cf390d2dd61b652a88073b1e3aa8c332238eec143dc20c935b0c8393d48a",
+        "tools/testqueue/test_worker.py": "7a07e9f062a1bbefa0e2a39f5787bb3a420fd32ccd32976ab5ddb5c3bbe29537",
+        "tools/testqueue/testctl.py": "397d5c7de409e7aacd9e51666739f79072d9d48ce1312d93a9f8da76cf13aa91",
+        "tools/testqueue/worker.py": "5dbd5f10fe4d04d93fa45112fdd03952d4f630120071ac102e24e31e9eee342f"
+      }
+    },
+    "new_case_definitions": {
+      "archive_storage": 17,
+      "storage_capacity": 6,
+      "remote_retention": 27,
+      "total": 50
+    },
+    "documentation_fixture_check": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/ci",
+        "-p",
+        "test_docs.py"
+      ],
+      "tests": 20,
+      "passed": 20,
+      "failures": 0,
+      "errors": 0,
+      "scope": "Documentation checker behavior; final changed-link validation is a separate staged-tree check."
+    },
+    "review": {
+      "method": "Independent source and focused-fixture review, lead integration and six complete local suites",
+      "verdict": "No publication-blocking safety regression within the private cooperating-directory boundary.",
+      "independent_test_run": false
+    },
+    "metadata_prerequisite": {
+      "source_commit": "cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b",
+      "source_changed": false,
+      "verification_scope": "Stage-0 script blobs equal selected main, provenance hashes and isolated project copies; sparse worktree did not materialize these scripts.",
+      "engine_version": "4.8.beta2.official.cafc17a19",
+      "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+      "generation": "Pinned editor --headless --import through run_checked.py, private minimal project; metadata generation only.",
+      "scripts": [
+        {
+          "path": "app/tests/test_creator_clearview_jpeg.gd",
+          "staged_git_blob_sha1": "a60853aa4eef2212e86066538947e670d90d98af",
+          "main_git_blob_sha1": "a60853aa4eef2212e86066538947e670d90d98af",
+          "sha256": "9cffb5899f9de68a67534480cce2795eba801ad8cf9d9a162a3c63355e74a5b8",
+          "size_bytes": 5904
+        },
+        {
+          "path": "app/tests/test_creator_clearview_readers.gd",
+          "staged_git_blob_sha1": "42cdb0ae901ca8a978493e495b8cfc385227b27e",
+          "main_git_blob_sha1": "42cdb0ae901ca8a978493e495b8cfc385227b27e",
+          "sha256": "8e4cb1dec1a616bc19157fbe74c855f9cb286863baad6bb0f4d0186dcfe39b84",
+          "size_bytes": 12583
+        },
+        {
+          "path": "app/tests/test_creator_clearview_ui.gd",
+          "staged_git_blob_sha1": "553363a450249527c7db5f8e26302ca5fa909c39",
+          "main_git_blob_sha1": "553363a450249527c7db5f8e26302ca5fa909c39",
+          "sha256": "f7ec4c02c5a33ffaaa89896582f3fd5ac602defd17a3e999d134d18305e2e82d",
+          "size_bytes": 7937
+        },
+        {
+          "path": "app/tests/test_creator_clearview_visual.gd",
+          "staged_git_blob_sha1": "b4a5cfad187ed054b0b239ed40791ae579123b72",
+          "main_git_blob_sha1": "b4a5cfad187ed054b0b239ed40791ae579123b72",
+          "sha256": "88ef1df2e46e48fa900be9b78bbdb0c348989331c50257f95bdcbb937e8c550f",
+          "size_bytes": 10388
+        },
+        {
+          "path": "app/workshop/creator/clearview/ac3d.gd",
+          "staged_git_blob_sha1": "3bb9491a9dc43a967796706fd8487d41c50c1293",
+          "main_git_blob_sha1": "3bb9491a9dc43a967796706fd8487d41c50c1293",
+          "sha256": "c2e84c11d6558317090486ed5d319ae781bf134fa67fa4e5b3aa364963e6b4b9",
+          "size_bytes": 10076
+        },
+        {
+          "path": "app/workshop/creator/clearview/archive.gd",
+          "staged_git_blob_sha1": "09e6969fb935116a57b04b9d8ff2aaef5d339e38",
+          "main_git_blob_sha1": "09e6969fb935116a57b04b9d8ff2aaef5d339e38",
+          "sha256": "09e33da3712cf7b885c21baafe1dc5e8fcac47d9ee6f9694e7604635cd294977",
+          "size_bytes": 12112
+        },
+        {
+          "path": "app/workshop/creator/clearview/cancellation.gd",
+          "staged_git_blob_sha1": "f3a1a45961a35c26d22670a91438dec032da803f",
+          "main_git_blob_sha1": "f3a1a45961a35c26d22670a91438dec032da803f",
+          "sha256": "c012b51ce9895553f948aa0b1c12e3f0abc0dff5bb5a13fa1a64db6356a560d6",
+          "size_bytes": 339
+        },
+        {
+          "path": "app/workshop/creator/clearview/converter.gd",
+          "staged_git_blob_sha1": "c1102cab25fbc8610c83128927ea49a7856ed3f6",
+          "main_git_blob_sha1": "c1102cab25fbc8610c83128927ea49a7856ed3f6",
+          "sha256": "2ac27f51e7871cd1e70eb665bf64c1dbbe66da67fca6e63ae0cb0dfee0710268",
+          "size_bytes": 23493
+        },
+        {
+          "path": "app/workshop/creator/clearview/deflate.gd",
+          "staged_git_blob_sha1": "613a5d5e785952f196d91aa40c5be1bd40bd07a1",
+          "main_git_blob_sha1": "613a5d5e785952f196d91aa40c5be1bd40bd07a1",
+          "sha256": "5c7221c68de3515cd776ecb658c6ab594ce8bca5f8e3ea4240c009dfb096eb0b",
+          "size_bytes": 7133
+        },
+        {
+          "path": "app/workshop/creator/clearview/images.gd",
+          "staged_git_blob_sha1": "c5d37a43c5fa3bc41465e8d6fec9fbde32fdc5cb",
+          "main_git_blob_sha1": "c5d37a43c5fa3bc41465e8d6fec9fbde32fdc5cb",
+          "sha256": "60b5696ffa4f2041b5bc00cb91291a23f1f11ad60f74ff567d2271e58c811e84",
+          "size_bytes": 4305
+        },
+        {
+          "path": "app/workshop/creator/clearview/jpeg_check.gd",
+          "staged_git_blob_sha1": "1bc6422c6e8e57820c11f3a35e3e469ad4050bbf",
+          "main_git_blob_sha1": "1bc6422c6e8e57820c11f3a35e3e469ad4050bbf",
+          "sha256": "d6eb836c87298164bd2640baa0915654b0645c23f0a6cb3cb3b31474c0b09166",
+          "size_bytes": 14341
+        },
+        {
+          "path": "app/workshop/creator/clearview/package.gd",
+          "staged_git_blob_sha1": "f5e541cec21d3167045c0f5f21fd9f4b6062b1bc",
+          "main_git_blob_sha1": "f5e541cec21d3167045c0f5f21fd9f4b6062b1bc",
+          "sha256": "3b589da0a8e1d2548fc36860338d1617f10438fc0397f4ac8212a78fb4b3d2e1",
+          "size_bytes": 3201
+        },
+        {
+          "path": "app/workshop/creator/clearview/params.gd",
+          "staged_git_blob_sha1": "bacf2f5b8c82be310f3ee98890fbf22f236f1d8d",
+          "main_git_blob_sha1": "bacf2f5b8c82be310f3ee98890fbf22f236f1d8d",
+          "sha256": "134bb1769fc2aa0e4428233f1a9991db8a6d03f1e0706b532ffee49745f7eee1",
+          "size_bytes": 5992
+        }
+      ],
+      "sidecars": [
+        {
+          "path": "app/tests/test_creator_clearview_jpeg.gd.uid",
+          "uid": "uid://diston2dhddm8",
+          "sha256": "fd85195171993d6cec0b49841dd9063ad2427d23502759c5e1916f29e5e74020"
+        },
+        {
+          "path": "app/tests/test_creator_clearview_readers.gd.uid",
+          "uid": "uid://d4mxeluwvj8yy",
+          "sha256": "858329ea0e0342d2c5ee0b2071ba139614f2a5d62ac517092b0cf9b768fc943f"
+        },
+        {
+          "path": "app/tests/test_creator_clearview_ui.gd.uid",
+          "uid": "uid://dgfaw2nh6tejs",
+          "sha256": "3f6582a666f83d4d0b3c046a805492fa8ac93a61f14be149a680db91957fa69f"
+        },
+        {
+          "path": "app/tests/test_creator_clearview_visual.gd.uid",
+          "uid": "uid://f4lc0e84821j",
+          "sha256": "b49e6ab94fd957f321575ffada7ca1ae33f63e5d797d3aaf015e84f231ea3370"
+        },
+        {
+          "path": "app/workshop/creator/clearview/ac3d.gd.uid",
+          "uid": "uid://ccs0ov141dh7i",
+          "sha256": "63cbbcd8c79b504b3f72c4545d420cc3a76b11b70d24f5a5834a16d374ae7e21"
+        },
+        {
+          "path": "app/workshop/creator/clearview/archive.gd.uid",
+          "uid": "uid://diqib2xq3luvs",
+          "sha256": "17d4b4329eb53bebe18efa7ae7719511bf4d3a1bcee644b418489e2384e61232"
+        },
+        {
+          "path": "app/workshop/creator/clearview/cancellation.gd.uid",
+          "uid": "uid://duuaflh54vkr2",
+          "sha256": "e329883eec39368b66a4687a1fe5c84cb03a101b9194e60b16e8be0e40125af8"
+        },
+        {
+          "path": "app/workshop/creator/clearview/converter.gd.uid",
+          "uid": "uid://c0jugkhgmeiid",
+          "sha256": "ac9ce0fac93add31584c8ae507c043482886a301d8d62e179e7b53c4ec86c21b"
+        },
+        {
+          "path": "app/workshop/creator/clearview/deflate.gd.uid",
+          "uid": "uid://doaui58m4jpw5",
+          "sha256": "9aef3c0cd57b15cfc0118fc95fe6dc8408bd8b6c304d1849bd12176d834776c5"
+        },
+        {
+          "path": "app/workshop/creator/clearview/images.gd.uid",
+          "uid": "uid://cgnktdqymbgbu",
+          "sha256": "786cd8bd70139a666a1814146390da0b69213e3d77fb2592201ed4573d166073"
+        },
+        {
+          "path": "app/workshop/creator/clearview/jpeg_check.gd.uid",
+          "uid": "uid://bp8o2dtmcy8bk",
+          "sha256": "b16ef18de2b004d001d76aaa9521ed4bb7e3a7428c615b04af44dbf9ff31c996"
+        },
+        {
+          "path": "app/workshop/creator/clearview/package.gd.uid",
+          "uid": "uid://c6gqxomgmfeq2",
+          "sha256": "7817c6937e1cc620ecec34e635ef968152c018338d37878dc5d43a66e672e8ca"
+        },
+        {
+          "path": "app/workshop/creator/clearview/params.gd.uid",
+          "uid": "uid://dlcdj0gklwk4j",
+          "sha256": "65b07195f144ac0a836fc638f3d9cd0d63ce2ab861eb5a954fad30fef14bbfaf"
+        }
+      ],
+      "application_inventory": {
+        "indexed_sidecars": 2010,
+        "gd": 1915,
+        "gdshader": 79,
+        "gdshaderinc": 16,
+        "unavailable_blobs": 0,
+        "invalid_values": 0,
+        "existing_duplicates": 0,
+        "new_distinct_uids": 13,
+        "collisions_with_existing": 0
+      },
+      "editor_result": {
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 5.732341,
+        "log_sha256": "6f8014b03eadc7956e2caa06a12c2e73d21041a69609b00cb937de4625a6193b"
+      },
+      "limit": "No complete application import, simulator, aircraft or native fleet qualification performed by this metadata step."
+    },
+    "workspace_inventory": {
+      "complete": true,
+      "started_utc": "2026-11-16T01:32:02+00:00",
+      "scan": {
+        "directory_count": 1298,
+        "elapsed_seconds": 0.032421,
+        "entries_encountered": 3802,
+        "entries_stat_attempted": 3801,
+        "excluded_entries": 1,
+        "file_count": 2503,
+        "logical_file_bytes": 33784681,
+        "reparse_entries_skipped": 0,
+        "special_entries_skipped": 0,
+        "symlink_entries_skipped": 0
+      },
+      "scan_limits": {
+        "max_depth": 128,
+        "max_entries": 100000,
+        "max_seconds": 10.0,
+        "top": 5
+      },
+      "scope": {
+        "contents": "file contents are never opened or read",
+        "directory_count": "counts encountered directories below root; root itself is excluded",
+        "excludes": ".git path components are skipped anywhere by default; extra prefixes are root-relative and component-boundary matched",
+        "links": "symbolic links and Windows reparse points are not traversed or included as regular-file bytes",
+        "logical_file_bytes": "sum of st_size for scanned regular-file paths only; hard links count once per path and may be double-counted",
+        "output": "the new report is written after the scan and is not included in its own totals",
+        "volume_capacity": "shutil.disk_usage(root), shown separately from the scanned logical bytes"
+      },
+      "volume_capacity": {
+        "available": true,
+        "free_bytes": 52075823104,
+        "meaning": "filesystem volume capacity; separate from logical_file_bytes scanned under root",
+        "total_bytes": 67586535424,
+        "used_bytes": 12057964544
+      },
+      "partial_reasons": [],
+      "filesystem_errors": {
+        "count": 0,
+        "samples": [],
+        "samples_omitted": 0
+      },
+      "command": [
+        "python",
+        "tools/godot/storage_audit.py",
+        ".",
+        "--out",
+        "tmp/queue-cleanup-followup/workspace-storage-before.json",
+        "--max-entries",
+        "100000",
+        "--max-seconds",
+        "10",
+        "--top",
+        "5"
+      ],
+      "report_sha256": "53fead1a95e16638aaa9b83799c5a16cec359e1edb6b23dd79ac44141c28887d",
+      "measurement_scope": "Sparse development workspace only; no personal/fleet filesystem observations and no demonstrated fleet bytes reclaimed."
+    },
+    "ci_at_publication": "Fresh Windows/required checks requested by the branch push; results live in PR #13. Inherited skin-fleet identity failure remains a required merge gate.",
+    "limits": [
+      "No real fleet cleanup, deployment, worker restart, increased capacity or merge.",
+      "Remote reclamation covers only redundant input.tar for FINISHED/PASSED/COMPLETE/CONFIRMED; all source/profile/temp/capture/log/state evidence retained.",
+      "Requires supported POSIX descriptor-relative no-follow operations and hard links, and private cooperating queue-directory ownership; no arbitrary same-account mutation isolation.",
+      "16 GiB per-file hash bound and cooperative 30-second budget; a blocked filesystem operation can exceed it and the host lock is held.",
+      "Logical bytes are not guaranteed physical reclaimed capacity; backup hard links may be counted per path by size inventories.",
+      "No local attempt, shared-cache, snapshot, old-pending or failed/UNKNOWN job sweep; no atomic volume reservations or complete collection transaction.",
+      "Archive build now precedes receipt/host reservation, but remote upload/request ambiguity remains. Unremovable owned temporaries block repeated automatic rebuilds.",
+      "New local pool placement needs worker storage telemetry; old/unavailable telemetry is DISK_UNKNOWN, not permission to restart active ownership.",
+      "Executing-loop storage failure can still enter teardown; independent guardian continuity remains open."
+    ],
+    "document_validation": {
+      "base": "cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b",
+      "documents": [
+        "docs/DECISIONS.md",
+        "docs/README.md",
+        "docs/plans/agent-test-orchestrator.md",
+        "docs/plans/mcp-queue-resilience.md",
+        "docs/research/README.md",
+        "docs/research/testqueue/2026-11-15-resilience/README.md",
+        "docs/research/testqueue/2026-11-15-resilience/implementation.md",
+        "docs/research/testqueue/2026-11-15-resilience/runbook.md",
+        "docs/research/testqueue/2026-11-15-resilience/verification.md",
+        "research/README.md",
+        "research/testqueue/resilience/README.md",
+        "tools/debug/README.md",
+        "tools/testqueue/README.md"
+      ],
+      "checked_local_links": 1172,
+      "new_local_links": 64,
+      "errors": [],
+      "verification_note": "Two initial missing-target observations were unavailable partial-clone blobs, not broken links. Fetched exact source blobs, verified Git object IDs, and reran all changed-document local links.",
+      "scope": "Every local link in all 13 changed Markdown documents, using staged Git objects; evidence JSON amendment does not alter Markdown links."
+    },
+    "application_uid_preflight": {
+      "scope": "All indexed application .gd, .gdshader and .gdshaderinc paths have a tracked .uid sidecar",
+      "missing": []
+    }
+  }
 }

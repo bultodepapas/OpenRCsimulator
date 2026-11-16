@@ -131,6 +131,21 @@ retain the existing queue's admission and ownership. Long-lived remote jobs are
 detached from SSH and supervised with process-group cleanup and durable state.
 Cooperative POSIX containment retains its documented limits.
 
+For local placement, `hosts` reports free space on the worker's attempt filesystem,
+not necessarily the coordinator's filesystem. An older worker without this storage
+observation, or one reporting it unavailable, is ineligible for pool placement with
+`DISK_UNKNOWN`. Update the worker only at an idle, drained boundary after confirming
+its claims are clear; do not restart active work to refresh the observation.
+
+When a remote host is selected, the coordinator prepares and verifies its archive
+before writing a dispatch receipt. It releases the dispatch lock during preparation,
+then probes and selects again before recording a destination; that selection may
+change before a receipt exists. Once a destination is recorded, the existing
+original-host recovery rule applies. Failed archive builds discard only the unique
+unpublished temporary whose identity that invocation can verify. If its identity or
+removal is unresolved, or an archive needs inspection, the batch can remain blocked;
+preserve the reported path and investigate rather than sweeping temporary files.
+
 The regular checked runner can opt into automatic placement in a shell.
 
 ```powershell
@@ -395,6 +410,53 @@ requires an explicit operator decision each time. After closure, restore admissi
 with `testctl drain off`. Ordinary cancellation and reconciliation retain their
 existing process-tree proof requirements. Abandonment is also refused while any
 attempt has a pending in-memory fence/journal retry; let that journal recover first.
+
+### Storage after a remote checked job
+
+After a remote checked job durably records `FINISHED`, `PASSED`, `COMPLETE` evidence
+and process `cleanup: CONFIRMED`, the remote supervisor attempts to remove only its
+redundant job-local `input.tar`. It verifies that file and the retained incoming
+archive against the original digest, and pins a verified `retained-input.tar` hard
+link in the job before recording unlink intent. The anchor retains the verified
+archive even if the shared incoming name is later replaced. Files that fail these
+checks are not removed.
+
+`storage_cleanup` is separate from process `cleanup` and the test outcome:
+`PENDING` means storage work or its journal is unresolved; `RECLAIMED` reports
+`logical_bytes_removed`, not guaranteed physical space; `SKIPPED` means the cleanup
+did not act; and `ABSENT_AFTER_INTENT` means the file is absent after a durable
+intent but the deletion could not be witnessed, so removed bytes are unknown.
+Status or a duplicate launch does not retry storage cleanup. Inspect its reason or
+pending state and use the original host and identity for a single-job retry:
+
+```sh
+# On the original remote host, set these from pool status and that host's config.
+printf '{"request_id":"%s","payload_sha256":"%s"}\n' "$TQ_REQUEST_ID" "$TQ_PAYLOAD_SHA256" | \
+  python3 "$TQ_REMOTE_AGENT" reclaim-input --root "$TQ_REMOTE_ROOT"
+```
+
+Use the remote `request_id` and exact lowercase `payload_sha256` from that job's
+status. The digest binds the original request; it is not a secret or an ownership
+credential. A mismatch returns `CONFLICT`; a busy host lock returns `BUSY`. This
+action does not launch tests or sweep other jobs.
+
+Reclamation requires POSIX descriptor-relative no-follow operations and hard links;
+it is unsupported on Windows. Hashing is limited to 16 GiB per file and a cooperative
+30-second budget; a blocked filesystem call can exceed the deadline. A private
+queue directory with cooperating processes under one account is required. The checks
+confine path operations and refuse detected changes, but cannot make unlink atomic
+against an arbitrary same-account writer.
+
+Source trees, profiles, temporary directories, captures, logs, artifacts, job
+records, journals, locks, shared snapshots and caches remain protected, including
+failed, incomplete and `UNKNOWN` work. Full capture evidence can live inside an
+attempt's source tree. The queue does not yet provide shared-cache garbage collection
+or atomic storage reservations; remote upload can still leave a partial file before
+remote admission checks. A completed infrastructure-failure collection does not
+prove that all remote diagnostics were inventoried. Preserve remote evidence until
+independently verified. For a bounded read-only size inventory, use
+[`storage_audit.py`](../godot/README.md#process-ram-io-and-storage-pt1h-r4);
+its logical sizes and partial-scan indicators do not authorize deletion.
 
 Snapshots bind actual dirty/untracked bytes, deletions, relevant metadata, launcher
 digests, referenced aircraft authoring files, installed native inputs and optional

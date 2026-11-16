@@ -368,6 +368,15 @@ concurrent upstream operator-abandonment exception as explicit incomplete eviden
 automatic recovery must never use it or bypass pending journal fences. Fleet
 capacity and native qualification have not changed.
 
+**TQ-04-R8, narrow storage candidate.** Reclaim a redundant successful remote
+input copy only after verifying and pinning the original archive and journaling
+intent; record storage uncertainty separately from process cleanup. Remove failed
+coordinator temporaries only when owned by that invocation. A terminal state or
+file age cannot establish nonuse: source trees can hold capture evidence, abandoned
+attempts can retain unconfirmed cleanup, and shared archives can have readers.
+Broader retention waits for explicit evidence ownership and reader lifetimes in
+the [same repair plan](plans/mcp-queue-resilience.md#storage-cleanup-and-retention-acceptance).
+
 ### Keep a senior lead with bounded, evidence-producing helpers
 
 **DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**

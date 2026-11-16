@@ -6,7 +6,7 @@ Owner: **TQ shared-host test admission**. Parent:
 at `c048a4e6834646400070a488b293344dc1e1fd80`.
 
 **Status: partial implementation under senior review.** R1/R2 and bounded slices
-of R3/R7 have a tested candidate on the audit branch; see the
+of R3/R7/R8, plus execution-volume observations for R5, have a tested candidate on the audit branch; see the
 [implementation handoff and evidence](../research/testqueue/2026-11-15-resilience/implementation.md).
 Native deployment, higher capacity, guardians, required-check policy changes and
 fleet efficiency qualification remain open. Current source commands and limits
@@ -282,6 +282,48 @@ whole-host performance exclusion while collection can distort another measuremen
 Garbage collection must consult live/unknown claims and durable evidence leases;
 it never removes active snapshots, frozen campaigns or sole failure evidence.
 
+### Storage cleanup and retention acceptance
+
+The current R8 candidate removes only its own failed coordinator archive temporary
+or a verified redundant remote `input.tar` after a complete, confirmed success. It
+pins a recovery archive, journals deletion separately from process cleanup and
+leaves unresolved deletion blocked or explicitly pending. Worker-reported disk
+capacity fixes the volume observation but does not reserve that space. The
+[implementation handoff](../research/testqueue/2026-11-15-resilience/implementation.md#storage-cleanup-follow-up)
+owns findings and fault evidence; the [queue guide](../../tools/testqueue/README.md#storage-after-a-remote-checked-job)
+owns the supported command. No general retention sweep is implemented.
+
+Broader cleanup must proceed in this order:
+
+1. **Make evidence ownership explicit.** Inventory source-contained captures,
+   profile/temp outputs and failed preparation directories. Define completeness
+   per preset and preserve unknown or abandoned attempts. Collection must publish
+   a fresh verified manifest and completion receipt atomically; a partial overwrite
+   or an infrastructure report cannot authorize deleting the remote originals.
+2. **Give shared readers durable lifetimes.** Bind queued/batch snapshot references,
+   archive uploads and retained recovery anchors to owner identities. A cache-build
+   lock is not a reader lease. Transfer `.pending` files need their own identity,
+   progress and proof of nonuse before retirement. A restart or TTL alone cannot
+   establish that a reader or upload has stopped.
+3. **Add bounded, reviewable retention.** Provide inventory/dry-run selection with
+   reason codes, protected references and planned logical bytes. Successful,
+   failed and pinned campaigns need separate policy. Execute small resumable
+   batches under the relevant ownership locks with durable intent/results;
+   measure actual volume headroom separately. Qualify Windows handles/reparse
+   points and macOS/Linux filesystem behavior on the native hosts.
+4. **Prevent pressure before cleanup is necessary.** Reserve full peak footprints
+   by physical volume, account for import/output expansion, pause new admissions
+   on insufficient space and retain enough diagnostic capacity for a disk-full
+   incident. Bound logs/events/status bytes without truncating the sole failure
+   evidence. Demonstrate crash, permission, ENOSPC, stale-reference and concurrent
+   reader behavior before enabling periodic cleanup.
+
+Acceptance requires no deletion of live/unknown or sole evidence, no repeated
+temporary growth after an unresolved failure, stable same-ID recovery, and no
+inference that reported logical bytes equal physical space savings. The real
+Windows, Linux and both Mac baselines remain to be collected read-only at their
+original authorities; this development workspace is not a fleet measurement.
+
 ## 7. Efficient, explainable scheduling
 
 Use a deterministic policy whose decision and exclusions can be inspected. It
@@ -358,10 +400,10 @@ authoritative at track level; these are the operational-refinement substeps.
 | **TQ-04-R2** | Recover scheduler liveness in-place; guard diagnostic writes and expose real readiness. Queue owner. | `worker.py`, `store.py`, host/status schema. | Candidate implemented for dispatcher/diagnostic faults, pending journals and health reporting. General running-loop storage continuity and bounded lock-held status are not solved. |
 | **TQ-04-R3** | Responsive MCP intake, asynchronous expensive launch preparation, immutable session context and observer deadline propagation. MCP owner. | `mcp_server.py`, `integration.py`, `common.py`, MCP tests. | Partial candidate: bounded lanes, stalled-output handling and socket observation deadlines. Session mutations/stop remain ordered; snapshot/transfer/filesystem bounds and immutable session context remain open. |
 | **TQ-04-R4** | Independent guardians, phase budgets, owned remote cancel and proof-based reconciliation. Native process/transport owners. | Guardian protocol; local/remote worker lifecycle; versioned receipts and migration. | Proposed, highest native risk. Controller restart preserves a healthy guardian; guardian loss never grants duplicate execution. |
-| **TQ-04-R5** | Enforce physical-host/parent identity and atomic per-volume/memory/preparation reservations. Host admission owner. | `pool.py`, `pool_policy.py`, local/remote admission and private configuration schema. | Proposed. Two roots/aliases cannot double-admit; shared volumes/parents cannot be double-counted. |
+| **TQ-04-R5** | Enforce physical-host/parent identity and atomic per-volume/memory/preparation reservations. Host admission owner. | `pool.py`, `pool_policy.py`, local/remote admission and private configuration schema. | Worker execution-volume observation implemented; unknown capacity is ineligible. Reservations/physical-domain identity remain proposed: two roots/aliases must not double-admit or double-count shared volumes. |
 | **TQ-04-R6** | Reviewed functional concurrency, global fair order, bounded asynchronous preparation and measured placement. Scheduler owner. | Pool/batch policy and capacity schema. | Proposed after R1–R5. Same-host parallel checks pass under real budgets; exclusives never overlap. |
 | **TQ-04-R7** | Windows dependency/registration coverage and reliable required-result selection; optional trusted CI adapter later. CI owner. | Workflows, `tools/ci/`, registration fixtures and release receipts. | Partial candidate: five missing trigger paths and a registration fixture. Stable required-gate integration/rules and trusted personal-fleet delegation remain open; the latter waits for R4/R5/native gates. |
-| **TQ-04-R8** | Status/metrics, verified cache inventory, retention and incident bundles. Queue/CI/storage owners. | Status/event schema, cache/collector/diagnostics, existing storage and CI plans. | Proposed. No active/unknown deletion; valid cold/warm equivalence and bounded diagnostic growth. |
+| **TQ-04-R8** | Status/metrics, verified cache inventory, retention and incident bundles. Queue/CI/storage owners. | Status/event schema, cache/collector/diagnostics, existing storage and CI plans. | Partial tested candidate: failed archive temporary ownership, redundant successful remote input reclamation, durable cleanup status and identity-bound retry. Shared GC, complete collection/evidence lifetimes, bounded diagnostics and native retention qualification remain open. |
 | **TQ-04-R9** | Native fault campaign, staged rollout and measured utilization/latency comparison. TQ acceptance owner. | Dated evidence under `docs/research/testqueue/`; private machine artifacts. | Open. Separate Windows, Linux, ANGEL and ANGELA_AIR results; no fixture-to-hardware inference. |
 
 Implementation can parallelize R1's pool validation work, R2 and R7 only with
