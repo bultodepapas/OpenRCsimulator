@@ -1,0 +1,427 @@
+// The @...@ markers are replaced only with definitions extracted from the
+// checked, patched source. Everything else here is a deterministic stand-in.
+#include <cassert>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <map>
+#include <set>
+#include <string>
+#include <utility>
+#include <vector>
+
+#define ERR_FAIL_COND_V_MSG(c, v, m) do { if (c) return v; } while (false)
+#define ERR_FAIL_COND_V(c, v) do { if (c) return v; } while (false)
+#define ERR_FAIL_NULL_V_MSG(p, v, m) do { if (!(p)) return v; } while (false)
+#define ERR_FAIL_NULL_V(p, v) do { if (!(p)) return v; } while (false)
+#define ERR_FAIL_NULL_MSG(p, m) do { if (!(p)) return; } while (false)
+#define ERR_FAIL_V(v) do { return v; } while (false)
+#define unlikely(x) (x)
+
+template<class Tag> struct ID {
+    uintptr_t id = 0;
+    ID() = default;
+    explicit ID(uintptr_t n) : id(n) {}
+    template<class T> explicit ID(T *p) : id(reinterpret_cast<uintptr_t>(p)) {}
+    explicit operator bool() const { return id != 0; }
+    bool operator!=(const ID &rhs) const { return id != rhs.id; }
+};
+template<class T> struct SmallVector {
+    std::vector<T> values;
+    void resize(uint32_t n) { values.resize(n); }
+    void resize_initialized(uint32_t n) { values.resize(n); }
+    uint32_t size() const { return uint32_t(values.size()); }
+    T *ptr() { return values.data(); }
+    void push_back(const T &x) { values.push_back(x); }
+    void clear() { values.clear(); }
+    T &operator[](uint32_t i) { return values.at(i); }
+    const T &operator[](uint32_t i) const { return values.at(i); }
+};
+template<class T> using TightLocalVector = SmallVector<T>;
+template<class T> using LocalVector = SmallVector<T>;
+
+#ifdef DRIVER_CONTROL
+#define VULKAN_RAYTRACING_ENABLED 1
+#define _FORCE_INLINE_ inline
+using VkDeviceAddress = uint64_t;
+using VkAccelerationStructureKHR = uint64_t;
+using VkAccelerationStructureTypeKHR = uint32_t;
+using VkResult = int;
+constexpr auto VK_NULL_HANDLE = 0ULL;
+constexpr auto VK_SUCCESS = 0;
+constexpr auto VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR = 1U;
+constexpr auto VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_KHR = 2U;
+constexpr auto VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR = 1U;
+constexpr auto VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR = 1U;
+constexpr auto VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR = 2U;
+constexpr auto VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR = 3U;
+constexpr auto VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR = 4U;
+constexpr auto VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR = 5U;
+constexpr auto VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR = 6U;
+constexpr auto VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR = 7U;
+constexpr auto VK_GEOMETRY_TYPE_TRIANGLES_KHR = 1U;
+constexpr auto VK_GEOMETRY_TYPE_INSTANCES_KHR = 2U;
+constexpr auto VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR = 1U;
+constexpr auto VK_INDEX_TYPE_UINT16 = 1U;
+constexpr auto VK_INDEX_TYPE_UINT32 = 2U;
+constexpr auto VK_INDEX_TYPE_NONE_KHR = 0U;
+constexpr uint32_t RD_TO_VK_FORMAT[] = { 0 };
+struct VkTransformMatrixKHR { float matrix[3][4] = {}; };
+struct VkAccelerationStructureInstanceKHR {
+    VkTransformMatrixKHR transform;
+    uint32_t instanceCustomIndex = 0, mask = 0, instanceShaderBindingTableRecordOffset = 0, flags = 0;
+    VkDeviceAddress accelerationStructureReference = 0;
+};
+struct Address { VkDeviceAddress deviceAddress = 0; };
+struct Triangles { uint32_t sType = 0, vertexFormat = 0; Address vertexData; uint64_t vertexStride = 0; uint32_t maxVertex = 0, indexType = 0; Address indexData; };
+struct Instances { uint32_t sType = 0; };
+struct VkAccelerationStructureGeometryKHR { uint32_t sType = 0, geometryType = 0, flags = 0; struct { Triangles triangles; Instances instances; } geometry; };
+struct VkAccelerationStructureBuildRangeInfoKHR { uint32_t primitiveCount = 0; };
+struct VkAccelerationStructureBuildGeometryInfoKHR { uint32_t sType = 0, type = 0, mode = 0, geometryCount = 0, flags = 0; VkAccelerationStructureGeometryKHR *pGeometries = nullptr; VkAccelerationStructureKHR dstAccelerationStructure = 0; };
+struct VkAccelerationStructureBuildSizesInfoKHR { uint32_t sType = 0; uint64_t accelerationStructureSize = 0, buildScratchSize = 0; };
+struct VkAccelerationStructureCreateInfoKHR { uint32_t sType = 0, type = 0; uint64_t size = 0, buffer = 0; };
+struct VkAccelerationStructureDeviceAddressInfoKHR { uint32_t sType = 0; VkAccelerationStructureKHR accelerationStructure = 0; };
+struct Transform3D { struct { float rows[3][3] = {}; } basis; struct { float x = 0, y = 0, z = 0; } origin; };
+struct BufferTag {};
+struct AccelTag {};
+struct AccelerationStructureGeometry;
+struct RDD {
+    using BufferID = ID<BufferTag>;
+    using AccelerationStructureID = ID<AccelTag>;
+    using AccelerationStructureGeometry = ::AccelerationStructureGeometry;
+    enum { ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL = 1, ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL = 2, BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT = 1, BUFFER_USAGE_STORAGE_BIT = 2, BUFFER_USAGE_DEVICE_ADDRESS_BIT = 4, MEMORY_ALLOCATION_TYPE_GPU = 1 };
+};
+template<class T> struct VectorView { const std::vector<T> &values; VectorView(const std::vector<T> &v) : values(v) {} VectorView(const SmallVector<T> &v) : values(v.values) {} uint32_t size() const { return uint32_t(values.size()); } const T &operator[](uint32_t i) const { return values.at(i); } };
+template<class T> using BitField = uint32_t;
+enum AccelerationStructureFlagBits { UNUSED_FLAG };
+struct AccelerationStructureGeometry { uint32_t flags = 0, vertex_format = 0, vertex_count = 0, index_format = 0, index_count = 0; uint64_t vertex_offset = 0, index_offset = 0, vertex_stride = 0; RDD::BufferID vertex_buffer, index_buffer; };
+constexpr uint32_t INDEX_BUFFER_FORMAT_UINT16 = 1;
+struct AccelerationStructureInstance { Transform3D transform; uint32_t id = 0, mask = 0, hit_sbt_offset = 0, flags = 0; RDD::AccelerationStructureID blas; };
+struct BufferInfo { uint64_t vk_buffer = 22; };
+static std::vector<std::string> events;
+static int live_wrappers = 0, live_buffers = 0;
+static bool fail_storage = false, fail_native_create = false, null_native = false, zero_address = false;
+static uint64_t scratch_request = 128;
+static constexpr uint64_t buffer_address = 0x11110000;
+static constexpr uint64_t as_address = 0x22220000;
+static constexpr uint64_t handle = 0x3333;
+static constexpr uint64_t poisoned_handle = 0xdead;
+struct VersatileResource {
+    template<class T> static T *allocate(int) { ++live_wrappers; return new T; }
+    template<class T> static void free(int, T *p) { assert(p); --live_wrappers; events.push_back("wrapper_free"); delete p; }
+};
+static void fake_sizes(int, uint32_t, const VkAccelerationStructureBuildGeometryInfoKHR *, const uint32_t *, VkAccelerationStructureBuildSizesInfoKHR *out) { events.push_back("sizes"); out->accelerationStructureSize = 512; out->buildScratchSize = scratch_request; }
+static VkResult fake_create(int, const VkAccelerationStructureCreateInfoKHR *info, const void *, VkAccelerationStructureKHR *out) {
+    assert(info->buffer == 22); events.push_back("native_create");
+    if (fail_native_create) { *out = poisoned_handle; return -1; }
+    *out = null_native ? 0 : handle; return VK_SUCCESS;
+}
+static void fake_destroy(int, VkAccelerationStructureKHR value, const void *) { assert(value == handle); events.push_back("native_destroy"); }
+static VkDeviceAddress fake_address(int, const VkAccelerationStructureDeviceAddressInfoKHR *info) { assert(info->accelerationStructure == handle); events.push_back("as_query"); return zero_address ? 0 : as_address; }
+static void fake_build() {}
+struct DeviceFunctions {
+    decltype(&fake_sizes) GetAccelerationStructureBuildSizesKHR = fake_sizes;
+    decltype(&fake_create) CreateAccelerationStructureKHR = fake_create;
+    decltype(&fake_destroy) DestroyAccelerationStructureKHR = fake_destroy;
+    decltype(&fake_address) GetAccelerationStructureDeviceAddressKHR = fake_address;
+    decltype(&fake_build) CmdBuildAccelerationStructuresKHR = fake_build;
+};
+struct RenderingDeviceDriverVulkan {
+    using BufferID = RDD::BufferID;
+    using AccelerationStructureID = RDD::AccelerationStructureID;
+    @ACCEL_INFO@
+    DeviceFunctions device_functions;
+    int vk_device = 0, resources_allocator = 0;
+    struct { uint32_t min_acceleration_structure_scratch_offset_alignment = 256; } acceleration_structure_capabilities;
+    BufferID buffer_create(uint64_t, uint32_t, uint32_t, uint64_t) { events.push_back("buffer_create"); if (fail_storage) return {}; ++live_buffers; return BufferID(new BufferInfo); }
+    void buffer_free(BufferID id) { assert(id); --live_buffers; events.push_back("buffer_free"); delete reinterpret_cast<BufferInfo *>(id.id); }
+    VkDeviceAddress buffer_get_device_address(BufferID) { return buffer_address; }
+    RDD::AccelerationStructureID blas_create(VectorView<AccelerationStructureGeometry>, BitField<AccelerationStructureFlagBits>);
+    RDD::AccelerationStructureID tlas_create(uint32_t, BitField<AccelerationStructureFlagBits>);
+    void acceleration_structure_instance_write(uint8_t *, const AccelerationStructureInstance &);
+    bool _acceleration_structure_create(VkAccelerationStructureTypeKHR, VkAccelerationStructureBuildSizesInfoKHR, AccelerationStructureInfo *);
+    void acceleration_structure_free(AccelerationStructureID);
+};
+@TRANSFORM@
+@BLAS_CREATE@
+@TLAS_CREATE@
+@INSTANCE_WRITE@
+@CREATE@
+@FREE@
+// The RD wrappers below are also actual extracted functions. Their unrelated
+// geometry owners and RID allocator are stand-ins; cases use zero geometries.
+struct RID { int value = 0; bool is_valid() const { return value != 0; } };
+template<class T> struct Span { const std::vector<T> &items; uint32_t size() const { return uint32_t(items.size()); } const T &operator[](uint32_t i) const { return items.at(i); } };
+template<class T> using Vector = SmallVector<T>;
+template<class T> struct HashSet { void insert(T) {} };
+namespace RDG {
+    constexpr int RESOURCE_USAGE_ACCELERATION_STRUCTURE_READ_WRITE = 1;
+    struct ResourceTracker { RDD::AccelerationStructureID acceleration_structure_driver_id; int usage = 0; };
+    static ResourceTracker *resource_tracker_create() { return new ResourceTracker; }
+}
+struct DataFormat { static constexpr uint32_t DATA_FORMAT_MAX = 10; };
+constexpr uint32_t INDEX_BUFFER_FORMAT_UINT32 = 2;
+struct RenderingDevice {
+    struct AccelerationStructureGeometry { RID vertex_buffer, index_buffer; uint32_t flags = 0, vertex_format = 0, vertex_count = 0, index_count = 0; uint64_t vertex_offset = 0, vertex_stride = 0, index_offset = 0; };
+    struct Buffer { uint64_t size = 0; RDD::BufferID driver_id; RDG::ResourceTracker *draw_tracker = nullptr; };
+    struct IndexBuffer : Buffer { uint32_t format = 0, max_index = 0; };
+    struct AccelerationStructure { int type = 0; RDD::AccelerationStructureID driver_id; RDG::ResourceTracker *draw_tracker = nullptr; Vector<RDG::ResourceTracker *> draw_trackers; HashSet<RID> untracked_buffers; uint32_t max_instance_count = 0; };
+    struct BufferOwner { Buffer *get_or_null(RID) { return nullptr; } } vertex_buffer_owner;
+    struct IndexBufferOwner { IndexBuffer *get_or_null(RID) { return nullptr; } } index_buffer_owner;
+    struct AccelerationOwner {
+        RenderingDeviceDriverVulkan *driver; int made = 0;
+        RID make_rid(const AccelerationStructure &a) { assert(a.driver_id); ++made; driver->acceleration_structure_free(a.driver_id); delete a.draw_tracker; return {made}; }
+    } acceleration_structure_owner;
+    RenderingDeviceDriverVulkan *driver;
+    explicit RenderingDevice(RenderingDeviceDriverVulkan *p) : acceleration_structure_owner{p}, driver(p) {}
+    enum { SUPPORTS_RAYTRACING_PIPELINE, SUPPORTS_RAY_QUERY };
+    bool has_feature(int) { return true; }
+    template<class T> void _check_transfer_worker_buffer(T *) {}
+    void _add_dependency(RID, RID) {}
+    RID blas_create(Span<AccelerationStructureGeometry>, BitField<AccelerationStructureFlagBits>);
+    RID tlas_create(uint32_t, BitField<AccelerationStructureFlagBits>);
+};
+@RD_BLAS_CREATE@
+@RD_TLAS_CREATE@
+static bool seen(const char *value) { for (auto &event : events) if (event == value) return true; return false; }
+static void assert_clean() { assert(live_wrappers == 0 && live_buffers == 0); }
+static void assert_destroy_before_storage() {
+    size_t native = events.size(), storage = events.size();
+    for (size_t i = 0; i < events.size(); ++i) { if (events[i] == "native_destroy") native = i; if (events[i] == "buffer_free") storage = i; }
+    assert(native < storage && storage < events.size());
+}
+static RDD::AccelerationStructureID make_blas(RenderingDeviceDriverVulkan &driver) { static const std::vector<AccelerationStructureGeometry> empty; return driver.blas_create({empty}, 0); }
+int main(int argc, char **argv) {
+    assert(argc == 2); std::string which = argv[1]; RenderingDeviceDriverVulkan driver;
+    if (which == "address") {
+        auto id = make_blas(driver); assert(id && seen("as_query"));
+        AccelerationStructureInstance instance; instance.blas = id; instance.id = 73; instance.mask = 19;
+        VkAccelerationStructureInstanceKHR result = {}; driver.acceleration_structure_instance_write(reinterpret_cast<uint8_t *>(&result), instance);
+        assert(result.accelerationStructureReference == as_address && result.accelerationStructureReference != buffer_address);
+        assert(result.instanceCustomIndex == 73 && result.mask == 19);
+        instance.blas = {}; driver.acceleration_structure_instance_write(reinterpret_cast<uint8_t *>(&result), instance); assert(result.accelerationStructureReference == 0);
+        driver.acceleration_structure_free(id); assert_destroy_before_storage(); assert_clean();
+    } else if (which == "allocation") {
+        fail_storage = true; assert(!make_blas(driver)); assert(!driver.tlas_create(4, 0)); assert(!seen("native_create")); assert_clean();
+    } else if (which == "missing_query") {
+        driver.device_functions.GetAccelerationStructureDeviceAddressKHR = nullptr; assert(!make_blas(driver)); assert(!seen("buffer_create")); assert_clean();
+        auto check_missing = [](DeviceFunctions functions) {
+            RenderingDeviceDriverVulkan other; other.device_functions = functions; events.clear();
+            assert(!make_blas(other)); assert(!other.tlas_create(4, 0)); assert(!seen("sizes")); assert_clean();
+        };
+        DeviceFunctions functions; functions.GetAccelerationStructureBuildSizesKHR = nullptr; check_missing(functions);
+        functions = {}; functions.CreateAccelerationStructureKHR = nullptr; check_missing(functions);
+        functions = {}; functions.DestroyAccelerationStructureKHR = nullptr; check_missing(functions);
+        functions = {}; functions.CmdBuildAccelerationStructuresKHR = nullptr; check_missing(functions);
+    } else if (which == "create_failure") {
+        fail_native_create = true; assert(!make_blas(driver)); assert(!seen("native_destroy")); assert(seen("buffer_free")); assert_clean();
+        events.clear(); assert(!driver.tlas_create(4, 0)); assert(!seen("native_destroy")); assert(seen("buffer_free")); assert_clean();
+        fail_native_create = false; null_native = true; events.clear(); assert(!make_blas(driver)); assert(!seen("native_destroy")); assert_clean();
+    } else if (which == "zero_address") {
+        zero_address = true; assert(!make_blas(driver)); assert(seen("as_query")); assert_destroy_before_storage(); assert_clean();
+    } else if (which == "oversized_scratch") {
+        scratch_request = uint64_t(UINT32_MAX) + 1; assert(!make_blas(driver)); assert(!driver.tlas_create(4, 0)); assert(!seen("buffer_create")); assert_clean();
+        scratch_request = uint64_t(UINT32_MAX) - 255; assert(!make_blas(driver)); assert_clean();
+        scratch_request = uint64_t(UINT32_MAX) - 256; auto limit = make_blas(driver); assert(limit);
+        assert(reinterpret_cast<RenderingDeviceDriverVulkan::AccelerationStructureInfo *>(limit.id)->scratch_size == UINT32_MAX);
+        driver.acceleration_structure_free(limit); assert_clean();
+        scratch_request = 128; driver.acceleration_structure_capabilities.min_acceleration_structure_scratch_offset_alignment = 0; assert(!make_blas(driver));
+        driver.acceleration_structure_capabilities.min_acceleration_structure_scratch_offset_alignment = 3; assert(!make_blas(driver)); assert_clean();
+    } else if (which == "rid_rejection") {
+        RenderingDevice rd(&driver); const std::vector<RenderingDevice::AccelerationStructureGeometry> empty;
+        fail_storage = true; assert(!rd.blas_create({empty}, 0).is_valid()); assert(!rd.tlas_create(4, 0).is_valid()); assert_clean();
+        fail_storage = false; fail_native_create = true; assert(!rd.blas_create({empty}, 0).is_valid()); assert(!rd.tlas_create(4, 0).is_valid()); assert_clean();
+        fail_native_create = false; zero_address = true; assert(!rd.blas_create({empty}, 0).is_valid()); assert_clean();
+        zero_address = false; driver.device_functions.GetAccelerationStructureDeviceAddressKHR = nullptr; assert(!rd.blas_create({empty}, 0).is_valid()); assert_clean();
+        assert(rd.acceleration_structure_owner.made == 0); driver.device_functions.GetAccelerationStructureDeviceAddressKHR = fake_address;
+        assert(rd.blas_create({empty}, 0).is_valid()); assert(rd.tlas_create(4, 0).is_valid()); assert(rd.acceleration_structure_owner.made == 2); assert_clean();
+    } else if (which == "free_order") {
+        auto id = driver.tlas_create(4, 0); assert(id); driver.acceleration_structure_free(id); assert_destroy_before_storage(); assert_clean();
+    } else { assert(false); }
+    std::printf("PASS %s\n", argv[1]);
+}
+#endif
+
+#ifdef TLAS_CONTROL
+using Error = int;
+constexpr Error OK = 0, ERR_UNAVAILABLE = 1, ERR_INVALID_PARAMETER = 2, ERR_CANT_CREATE = 3;
+#define ERR_RENDER_THREAD_GUARD_V(v) do {} while (false)
+struct RID { int id = 0; bool is_valid() const { return id != 0; } bool operator<(RID r) const { return id < r.id; } };
+template<class T> struct Span { const std::vector<T> &items; uint32_t size() const { return uint32_t(items.size()); } const T &operator[](uint32_t i) const { return items.at(i); } };
+template<class T> struct Set {
+    std::set<T> items;
+    bool has(const T &value) const { return items.count(value) != 0; }
+    void insert(const T &value) { items.insert(value); }
+    void erase(const T &value) { items.erase(value); }
+};
+struct BufferTag {};
+struct AccelTag {};
+struct RDD {
+    using BufferID = ID<BufferTag>;
+    using AccelerationStructureID = ID<AccelTag>;
+    enum { ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL = 1, ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL = 2,
+           API_TRAIT_ACCELERATION_STRUCTURE_INSTANCE_SIZE = 1, BUFFER_USAGE_TRANSFER_FROM_BIT = 1,
+           BUFFER_USAGE_DEVICE_ADDRESS_BIT = 2, BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT = 4,
+           MEMORY_ALLOCATION_TYPE_CPU = 1 };
+    struct AccelerationStructureInstance { int transform = 0; uint32_t id = 0, mask = 0, hit_sbt_offset = 0, flags = 0; AccelerationStructureID blas; };
+};
+namespace RDG { struct ResourceTracker {}; }
+struct FakeDriver {
+    uint64_t instance_size = 16; uintptr_t next = 1; int create_calls = 0, free_calls = 0;
+    bool fail_create = false, fail_map = false;
+    std::map<uintptr_t, std::vector<uint8_t>> buffers;
+    uint64_t api_trait_get(int) { return instance_size; }
+    RDD::BufferID buffer_create(uint32_t size, int, int, uint64_t) {
+        ++create_calls; if (fail_create) return {}; auto id = next++; buffers[id].resize(size); return RDD::BufferID(id);
+    }
+    uint8_t *buffer_map(RDD::BufferID id) { return fail_map ? nullptr : buffers.at(id.id).data(); }
+    void buffer_free(RDD::BufferID id) { ++free_calls; assert(buffers.erase(id.id) == 1); }
+    void acceleration_structure_instance_write(uint8_t *where, const RDD::AccelerationStructureInstance &instance) {
+        std::memcpy(where, &instance.id, sizeof(instance.id)); std::memcpy(where + 4, &instance.transform, sizeof(instance.transform));
+    }
+};
+struct AccelerationStructureInstance { int transform = 0; uint32_t id = 0, mask = 0, hit_sbt_range = 0, flags = 0; RID blas; };
+struct AccelerationStructure {
+    struct InstanceBuffer { RDD::BufferID driver_id; uint64_t frame_used = 0; uint32_t used_size = 0; uint8_t *data_ptr = nullptr; };
+    int type = 0; uint32_t max_instance_count = 0; bool invalidated = false;
+    RDD::AccelerationStructureID driver_id; RDD::BufferID scratch_buffer; RDG::ResourceTracker *draw_tracker = nullptr;
+    SmallVector<InstanceBuffer> instance_buffers; Set<RID> acceleration_structure_dependencies;
+};
+struct Graph {
+    struct Build { RDD::BufferID buffer; uint32_t offset, count; };
+    std::vector<Build> builds;
+    void add_tlas_build(RDD::AccelerationStructureID, RDD::BufferID, RDD::BufferID buffer, uint32_t offset, uint32_t count, RDG::ResourceTracker *, const LocalVector<RDG::ResourceTracker *> &) { builds.push_back({buffer, offset, count}); }
+};
+struct RenderingDevice {
+    struct List { bool active = false; } draw_list, compute_list, raytracing_list;
+    struct Owner { std::map<RID, AccelerationStructure *> values; AccelerationStructure *get_or_null(RID id) { auto it = values.find(id); return it == values.end() ? nullptr : it->second; } } acceleration_structure_owner;
+    struct Memory { uint64_t bytes = 0; void add(uint64_t n) { bytes += n; } } buffer_memory;
+    FakeDriver *driver; uint64_t frames_drawn = 1; std::vector<int> frames = {0, 0, 0}; int scratch_calls = 0;
+    Graph draw_graph;
+    explicit RenderingDevice(FakeDriver *p) : driver(p) {}
+    Error _acceleration_structure_scratch_buffer_create(AccelerationStructure *) { ++scratch_calls; return OK; }
+    uint32_t _decode_hit_sbt_range_offset(uint32_t id) { return id; }
+    void _tlas_remove_blas_dependencies(AccelerationStructure *tlas, RID tlas_id) {
+        auto old = tlas->acceleration_structure_dependencies.items;
+        for (RID id : old) { auto *blas = acceleration_structure_owner.get_or_null(id); assert(blas); blas->acceleration_structure_dependencies.erase(tlas_id); }
+        tlas->acceleration_structure_dependencies.items.clear();
+    }
+    Error tlas_build(RID, Span<AccelerationStructureInstance>);
+};
+@TLAS_BUILD@
+struct Scenario {
+    static constexpr int T = 1, A = 2, B = 3;
+    FakeDriver driver; RenderingDevice rd{&driver}; AccelerationStructure tlas, a, b;
+    Scenario() {
+        tlas.type = RDD::ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL; tlas.max_instance_count = 4; tlas.driver_id = RDD::AccelerationStructureID(uintptr_t(T));
+        a.type = b.type = RDD::ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL; a.driver_id = RDD::AccelerationStructureID(uintptr_t(A)); b.driver_id = RDD::AccelerationStructureID(uintptr_t(B));
+        rd.acceleration_structure_owner.values = {{RID{T}, &tlas}, {RID{A}, &a}, {RID{B}, &b}};
+    }
+    AccelerationStructureInstance instance(int blas, uint32_t id, int transform) { AccelerationStructureInstance v; v.blas = {blas}; v.hit_sbt_range = 1; v.id = id; v.transform = transform; return v; }
+    Error build(std::vector<AccelerationStructureInstance> instances) { return rd.tlas_build({T}, {instances}); }
+    void established(uint32_t count = 1) {
+        std::vector<AccelerationStructureInstance> instances(count, instance(A, 11, 101));
+        assert(build(instances) == OK); assert(tlas.acceleration_structure_dependencies.has({A})); assert(a.acceleration_structure_dependencies.has({T}));
+    }
+};
+int main(int argc, char **argv) {
+    assert(argc == 2); std::string which = argv[1]; Scenario s;
+    if (which == "reservations") {
+        assert(s.build({s.instance(Scenario::A, 111, 1001)}) == OK);
+        assert(s.build({s.instance(Scenario::B, 222, 2002)}) == OK);
+        assert(s.rd.draw_graph.builds.size() == 2);
+        auto one = s.rd.draw_graph.builds[0], two = s.rd.draw_graph.builds[1];
+        assert(one.buffer.id == two.buffer.id && one.offset == 0 && two.offset == 16 && one.offset + 16 <= two.offset);
+        auto &bytes = s.driver.buffers.at(one.buffer.id); uint32_t id1 = 0, id2 = 0; int transform1 = 0, transform2 = 0;
+        std::memcpy(&id1, bytes.data() + one.offset, 4); std::memcpy(&id2, bytes.data() + two.offset, 4);
+        std::memcpy(&transform1, bytes.data() + one.offset + 4, 4); std::memcpy(&transform2, bytes.data() + two.offset + 4, 4);
+        assert(id1 == 111 && id2 == 222 && transform1 == 1001 && transform2 == 2002);
+        assert(s.tlas.instance_buffers[0].used_size == 32);
+    } else if (which == "dependencies") {
+        s.established(); auto before = s.driver.buffers.begin()->second; auto used = s.tlas.instance_buffers[0].used_size;
+        assert(!s.tlas.invalidated);
+        assert(s.build({s.instance(Scenario::B, 22, 202), s.instance(999, 33, 303)}) == ERR_INVALID_PARAMETER);
+        assert(s.rd.draw_graph.builds.size() == 1 && !s.tlas.invalidated);
+        assert(s.tlas.acceleration_structure_dependencies.has({Scenario::A}) && !s.tlas.acceleration_structure_dependencies.has({Scenario::B}));
+        assert(s.a.acceleration_structure_dependencies.has({Scenario::T}) && !s.b.acceleration_structure_dependencies.has({Scenario::T}));
+        assert(s.tlas.instance_buffers[0].used_size == used && s.driver.buffers.begin()->second == before);
+    } else if (which == "wrong_type") {
+        std::vector<AccelerationStructureInstance> empty;
+        assert(s.rd.tlas_build({Scenario::A}, {empty}) == ERR_INVALID_PARAMETER);
+        assert(s.rd.scratch_calls == 0 && s.driver.create_calls == 0 && s.rd.draw_graph.builds.empty());
+    } else if (which == "overflow") {
+        s.tlas.max_instance_count = UINT32_MAX / 16 + 1;
+        assert(s.build({}) == ERR_INVALID_PARAMETER);
+        assert(s.rd.scratch_calls == 0 && s.driver.create_calls == 0 && s.rd.draw_graph.builds.empty());
+        s.tlas.max_instance_count = 1; s.driver.instance_size = uint64_t(UINT32_MAX) + 1;
+        assert(s.build({}) == ERR_INVALID_PARAMETER && s.driver.create_calls == 0);
+    } else if (which == "create_failure" || which == "map_failure") {
+        s.tlas.max_instance_count = 2; s.established(2); auto used = s.tlas.instance_buffers[0].used_size; auto before = s.driver.buffers.begin()->second;
+        if (which == "create_failure") s.driver.fail_create = true; else s.driver.fail_map = true;
+        assert(s.build({s.instance(Scenario::B, 22, 202)}) == ERR_CANT_CREATE);
+        assert(s.rd.draw_graph.builds.size() == 1 && s.tlas.instance_buffers.size() == 1 && s.tlas.instance_buffers[0].used_size == used);
+        assert(s.driver.buffers.size() == 1 && s.driver.buffers.begin()->second == before);
+        assert(s.tlas.acceleration_structure_dependencies.has({Scenario::A}) && s.a.acceleration_structure_dependencies.has({Scenario::T}));
+        assert(!s.tlas.acceleration_structure_dependencies.has({Scenario::B}) && !s.b.acceleration_structure_dependencies.has({Scenario::T}));
+        assert(s.driver.free_calls == (which == "map_failure" ? 1 : 0));
+    } else if (which == "retirement") {
+        s.established(); auto id = s.rd.draw_graph.builds[0].buffer.id; s.rd.frames_drawn += s.rd.frames.size();
+        assert(s.build({s.instance(Scenario::B, 22, 202)}) == OK);
+        assert(s.rd.draw_graph.builds[1].buffer.id == id && s.rd.draw_graph.builds[1].offset == 0 && s.tlas.instance_buffers[0].used_size == 16);
+    } else { assert(false); }
+    std::printf("PASS %s\n", argv[1]);
+}
+#endif
+
+#ifdef TRACKED_CONTROL
+// Actual else-block from buffer_create's extra-GPU-tracking branch is inserted
+// below. The enclosing arguments and native/VMA entry points are stand-ins.
+#define ERR_FAIL_V_MSG(v, m) do { return v; } while (false)
+using VkResult = int;
+using VkBuffer = uint64_t;
+using VmaAllocation = uint64_t;
+struct VkBufferCreateInfo {};
+struct VmaAllocationCreateInfo {};
+struct VmaAllocationInfo {};
+struct BufferTag {};
+using BufferID = ID<BufferTag>;
+constexpr int VK_OBJECT_TYPE_BUFFER = 1;
+namespace VKC { static const void *get_allocation_callbacks(int) { return nullptr; } }
+static int live_buffer = 0, live_allocation = 0;
+static bool fail_buffer = false, fail_allocation = false, fail_bind = false;
+static std::vector<std::string> calls;
+static VkResult vkCreateBuffer(int, VkBufferCreateInfo *, const void *, VkBuffer *out) {
+    calls.push_back("create"); if (fail_buffer) { *out = 99; return -1; } *out = 10; ++live_buffer; return 0;
+}
+static void vkDestroyBuffer(int, VkBuffer buffer, const void *) { assert(buffer == 10 && live_buffer == 1); calls.push_back("destroy"); --live_buffer; }
+static VkResult vmaAllocateMemoryForBuffer(int, VkBuffer buffer, VmaAllocationCreateInfo *, VmaAllocation *out, VmaAllocationInfo *) {
+    assert(buffer == 10); calls.push_back("allocate"); if (fail_allocation) { *out = 99; return -1; } *out = 20; ++live_allocation; return 0;
+}
+static VkResult vmaBindBufferMemory2(int, VmaAllocation alloc, int, VkBuffer buffer, const void *) { assert(alloc == 20 && buffer == 10); calls.push_back("bind"); return fail_bind ? -1 : 0; }
+static void vmaFreeMemory(int, VmaAllocation alloc) { assert(alloc == 20 && live_allocation == 1 && live_buffer == 0); calls.push_back("free"); --live_allocation; }
+static BufferID tracked_allocate() {
+    int vk_device = 0, allocator = 0; VkBufferCreateInfo create_info; VmaAllocationCreateInfo alloc_create_info; VmaAllocationInfo alloc_info;
+    VkBuffer vk_buffer = 0; VmaAllocation allocation = 0;
+    @TRACKED_ALLOC@
+    assert(live_buffer == 1 && live_allocation == 1); calls.push_back("success");
+    vkDestroyBuffer(vk_device, vk_buffer, nullptr); vmaFreeMemory(allocator, allocation);
+    return BufferID(uintptr_t(1));
+}
+int main(int argc, char **argv) {
+    assert(argc == 2); std::string which = argv[1];
+    if (which == "allocation_failure") {
+        fail_allocation = true; assert(!tracked_allocate()); assert(live_buffer == 0 && live_allocation == 0);
+        assert((calls == std::vector<std::string>{"create", "allocate", "destroy"}));
+    } else if (which == "bind_failure") {
+        fail_bind = true; assert(!tracked_allocate()); assert(live_buffer == 0 && live_allocation == 0);
+        assert((calls == std::vector<std::string>{"create", "allocate", "bind", "destroy", "free"}));
+    } else if (which == "create_failure") {
+        fail_buffer = true; assert(!tracked_allocate()); assert(live_buffer == 0 && live_allocation == 0);
+        assert((calls == std::vector<std::string>{"create"}));
+    } else if (which == "success") {
+        assert(tracked_allocate()); assert(live_buffer == 0 && live_allocation == 0);
+        assert((calls == std::vector<std::string>{"create", "allocate", "bind", "success", "destroy", "free"}));
+    } else { assert(false); }
+    std::printf("PASS %s\n", argv[1]);
+}
+#endif

@@ -1,0 +1,567 @@
+{
+  "schema_version": 1,
+  "research_date": "2026-11-15",
+  "user_timezone": "America/Bogota",
+  "execution_round_started_utc": "2026-11-16 01:25:22 UTC",
+  "scope": "Two reviewable exact-pin Vulkan prerequisite patches, source-bound compiled controls, and two complete translation-unit compilations; not a linked engine or native GPU result",
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "audit/graphics-performance-technologies-2026-11-15",
+  "publication_parent": "4c00738feac422ad8ed1bde23faf442201f5b3c3",
+  "application_baseline": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+  "engine_commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "main_checkpoint": {
+    "sha": "cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b",
+    "previous": "273a7e4c0617fdf4cacc39c360796fd79afa5f2c",
+    "summary": "Creator/ClearView import and Extra 300s appearance/model changes; exact rendering/engine-tool paths below unchanged. Checkpoint only, not a claim main stops moving.",
+    "unchanged_inspected_paths": [
+      "app/get-godot.sh",
+      "app/get-templates.sh",
+      "app/render",
+      "app/app_state",
+      "app/debug",
+      "tools/graphics",
+      "tools/testqueue",
+      ".github",
+      "AGENTS.md",
+      "docs/SUBAGENTS.md"
+    ],
+    "changed_paths": [
+      "app/aircraft/extra_300s_appearance.gd",
+      "app/aircraft/extra_300s_finish.gd",
+      "app/aircraft/extra_300s_model.gd",
+      "app/data/aircraft_customization.json",
+      "app/data/aircraft_models/gp-extra-300s-60.json",
+      "app/data/workshop/gp-extra-300s-60.json",
+      "app/i18n/de.po",
+      "app/i18n/es.po",
+      "app/i18n/fr.po",
+      "app/i18n/it.po",
+      "app/i18n/ja.po",
+      "app/i18n/pt_BR.po",
+      "app/i18n/ru.po",
+      "app/i18n/zh_Hans.po",
+      "app/tests/test_creator_clearview_jpeg.gd",
+      "app/tests/test_creator_clearview_readers.gd",
+      "app/tests/test_creator_clearview_ui.gd",
+      "app/tests/test_creator_clearview_visual.gd",
+      "app/tests/test_extra_visual_details.gd",
+      "app/ui/aircraft_creator.gd",
+      "app/workshop/creator/clearview/ac3d.gd",
+      "app/workshop/creator/clearview/archive.gd",
+      "app/workshop/creator/clearview/cancellation.gd",
+      "app/workshop/creator/clearview/converter.gd",
+      "app/workshop/creator/clearview/deflate.gd",
+      "app/workshop/creator/clearview/images.gd",
+      "app/workshop/creator/clearview/jpeg_check.gd",
+      "app/workshop/creator/clearview/package.gd",
+      "app/workshop/creator/clearview/params.gd",
+      "assets/aircraft/customization-bindings.json",
+      "assets/aircraft/extra-300s-60/README.md",
+      "assets/aircraft/extra-300s-60/appearance.json",
+      "docs/AIRCRAFT-WORKSHOP.md",
+      "docs/DECISIONS.md",
+      "docs/README.md",
+      "docs/plans/aircraft-creator.md",
+      "docs/plans/clearview-aircraft-import.md",
+      "docs/research/aircraft-creator/README.md",
+      "docs/research/aircraft-creator/clearview-2026-11-15.md",
+      "docs/research/aircraft-creator/clearview-conversion-matrix-2026-11-15.json"
+    ],
+    "merged_into_audit_branch": false
+  },
+  "patch_and_control_identities": [
+    {
+      "path": "research/performance/graphics_handoff/vulkan/0001-as-address-and-creation.patch",
+      "git_blob_sha": "cc31065c449253eb0e72b36133fcbc3a520cbf84",
+      "sha256": "ab073512c28c28320ae2f31bfa0f86ae30d3e92e6c5e22583238d26c7036b56f",
+      "bytes": 13094
+    },
+    {
+      "path": "research/performance/graphics_handoff/vulkan/0002-tlas-instance-reservation.patch",
+      "git_blob_sha": "f5fadaba46e6403cb9d83345d79e846f2c9579ac",
+      "sha256": "9813369508e4fe1bdc0a40b258e02f2f33830ba86d589e45e72e32b2af54459f",
+      "bytes": 5108
+    },
+    {
+      "path": "research/performance/graphics_handoff/vulkan/controls.cpp.in",
+      "git_blob_sha": "52e3f3cebf61b1101757a8f1fc293736b3a716b2",
+      "sha256": "063d30f81d67c216114b036a95543eac8b56f86817694fc965775fa74f0faee6",
+      "bytes": 30850
+    },
+    {
+      "path": "research/performance/graphics_handoff/vulkan/test_prerequisites.py",
+      "git_blob_sha": "ec0377a22bb9bff3bd44c7c8ff195d6a8b28c4b1",
+      "sha256": "7e2fff2acf9e12dd09650640979d6b9bd8148293f41d46269526187a5a90fd92",
+      "bytes": 10813
+    }
+  ],
+  "upstream_source_identities": [
+    {
+      "path": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+      "base_git_blob_sha": "6987a5e94d92d0b617713636a9291c9ce9bfa5c1",
+      "base_sha256": "482b78643b2cfc28873f61800b98b631c7a84a8c30f7177fd57982a0b2b17350",
+      "patched_sha256": "d8d3fb0b1674d57d2d625549f2292242f95c06cbadae9903270494126ab54d2b",
+      "patched_git_blob_sha": "aa560542f1800a467c549a55451488494c0a08d3",
+      "patched_bytes": 376896
+    },
+    {
+      "path": "drivers/vulkan/rendering_device_driver_vulkan.h",
+      "base_git_blob_sha": "e7c129c744b0b8c0f085d11decb36a230061b9c7",
+      "base_sha256": "eb15e7855afe5dbb2d15ae6abd797e5bf1decd40fe60172b2ace89ada7850c5b",
+      "patched_sha256": "104067dec834e07cbc02fe0b6b221715eeb9b5c51797b78ccb933ccdd45ff15e",
+      "patched_git_blob_sha": "115c1dc0797f2f5e7afd6271a0bd11ce0ce4c67a",
+      "patched_bytes": 39881
+    },
+    {
+      "path": "servers/rendering/rendering_device.cpp",
+      "base_git_blob_sha": "afff76e3b98e3a9882231f711536d41c2ff1e89c",
+      "base_sha256": "60e9c20f0d28cf822aec5adf4b9b9560910b877eb40b528fed3138a08d36ebd2",
+      "patched_sha256": "929c65dab3730d72c2f3166cb6157dfdd835cc9fb277e9ff29a0687f1ad7004f",
+      "patched_git_blob_sha": "28b7b1e97eabcaa82817009a1558f7d1e87b1e58",
+      "patched_bytes": 466176
+    }
+  ],
+  "patch_scope": {
+    "changed_upstream_files": 3,
+    "insertions": 80,
+    "deletions": 27,
+    "address_patch": [
+      "Load/query/cache the actual BLAS AS address before exposing its ID",
+      "Propagate recoverable Vulkan storage/native-create/address failures through both driver callers",
+      "Own the native handle only after successful creation; never destroy undefined failure output",
+      "Reject unrepresentable padded scratch size and invalid alignment",
+      "Release successful buffer and allocation on extra-GPU-tracking allocation/bind failures; this branch also serves non-AS buffers"
+    ],
+    "reservation_patch": [
+      "Reject wrong AS type and validate all incoming BLAS/range/built-state references before dependency mutation",
+      "Bound instance stride/capacity multiplication before uint32 narrowing",
+      "Reserve the first written range and check remaining capacity by subtraction"
+    ],
+    "public_rd_signature_changes": false,
+    "production_build_integration": false,
+    "host_allocator_oom_recovery": false
+  },
+  "patch_application": {
+    "pristine_full_source_hashes_matched_prior_receipt": true,
+    "independent_patch_apply_check_passed": true,
+    "sequential_patch_apply_check_passed": true,
+    "actual_full_checkout_application_passed": true,
+    "whitespace_error_mode": true,
+    "independent_applied_bytes_match_reviewed_candidate": true
+  },
+  "source_bound_controls": {
+    "final_independent_review_run": {
+      "passed": true,
+      "test_methods": 6,
+      "positive_executable_cases": 19,
+      "original_source_runtime_negative_cases": 5,
+      "log_sha256": "f58603a54f81e18f3195cad1376dddf38d1bf929005b3b6308913283799a181f",
+      "log_text": "test_address_uses_as_query_not_buffer_address (test_prerequisites.VulkanPrerequisiteControls.test_address_uses_as_query_not_buffer_address) ... ok\ntest_creation_failure_and_lifetime (test_prerequisites.VulkanPrerequisiteControls.test_creation_failure_and_lifetime) ... ok\ntest_pristine_identity_rejects_changed_source (test_prerequisites.VulkanPrerequisiteControls.test_pristine_identity_rejects_changed_source) ... ok\ntest_tlas_reservation_and_rejections (test_prerequisites.VulkanPrerequisiteControls.test_tlas_reservation_and_rejections) ... ok\ntest_tracked_buffer_allocation_cleanup (test_prerequisites.VulkanPrerequisiteControls.test_tracked_buffer_allocation_cleanup) ... ok\ntest_unmodified_source_negative_controls (test_prerequisites.VulkanPrerequisiteControls.test_unmodified_source_negative_controls) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 4.925s\n\nOK\n"
+    },
+    "fresh_staged_copy_run": {
+      "command": "OPENRC_GODOT_SOURCE_DIR=<verified pristine tree> python3 -B -m unittest discover -s research/performance/graphics_handoff/vulkan -p test_prerequisites.py -v",
+      "scope": "Fresh copy of exact staged patches/controls plus unchanged repository extraction helper; bogus GIT_DIR/GIT_WORK_TREE; source inputs and sentinel outside the copied repository",
+      "exit_code": 0,
+      "test_methods": 6,
+      "positive_executable_cases": 19,
+      "original_source_runtime_negative_cases": 5,
+      "changed_source_hash_rejection": true,
+      "git_override_isolation": true,
+      "log_sha256": "092b8d35262cc83793111a285e4ca297f14d5704f48e990334db1d12ed79e802",
+      "python": "3.12.14",
+      "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+      "native_vulkan": false,
+      "full_translation_unit_build": false,
+      "extraction_helper": {
+        "path": "tools/graphics/metalfx/test_engine_patch.py",
+        "sha256": "ef0255a64193d6c88eff9aa01718325dfac85e8a8dffa63b5bae7fc19836e9ef"
+      },
+      "log_text": "test_address_uses_as_query_not_buffer_address (test_prerequisites.VulkanPrerequisiteControls.test_address_uses_as_query_not_buffer_address) ... ok\ntest_creation_failure_and_lifetime (test_prerequisites.VulkanPrerequisiteControls.test_creation_failure_and_lifetime) ... ok\ntest_pristine_identity_rejects_changed_source (test_prerequisites.VulkanPrerequisiteControls.test_pristine_identity_rejects_changed_source) ... ok\ntest_tlas_reservation_and_rejections (test_prerequisites.VulkanPrerequisiteControls.test_tlas_reservation_and_rejections) ... ok\ntest_tracked_buffer_allocation_cleanup (test_prerequisites.VulkanPrerequisiteControls.test_tracked_buffer_allocation_cleanup) ... ok\ntest_unmodified_source_negative_controls (test_prerequisites.VulkanPrerequisiteControls.test_unmodified_source_negative_controls) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 4.133s\n\nOK\n"
+    },
+    "negative_cases": [
+      "Original instance writer chooses buffer address instead of distinct AS address",
+      "Original tlas_build overwrites the first same-frame instance range",
+      "Original tlas_build loses A dependencies on rejected B/invalid rebuild",
+      "Original tracked allocation failure leaves the created buffer live",
+      "Original tracked bind failure leaves created buffer/allocation live"
+    ],
+    "negative_criterion": "Actual original functions/blocks compile, then fail the expected runtime assertion. Extraction/compile failures are not accepted as behavioral negatives.",
+    "executed_original_or_patched_parts": [
+      "Vulkan driver BLAS/TLAS creation, private creation helper, instance writer, transform helper and destructor",
+      "RD BLAS/TLAS create wrappers with fake RID owner",
+      "RD tlas_build with fake input buffers/dependencies/graph",
+      "Actual extra-GPU-tracking allocation block inside a stand-in enclosing function"
+    ],
+    "limits": [
+      "Vulkan ABI/types, native/VMA calls, allocations, containers, resource owners and graph are stand-ins",
+      "BLAS creation/wrapper control uses empty geometry to isolate the creation contract",
+      "The frame-age case is simulated bookkeeping, not observed GPU-fence completion",
+      "Capacity/trait overflow exercised; near-maximum used-plus-request wrap remains source-reviewed",
+      "Same-buffer nonoverlap exercised; successful second-buffer build is not directly tested",
+      "No real engine logging, Vulkan validation layer, device execution or rendered output"
+    ]
+  },
+  "full_translation_unit_compilation": {
+    "engine_commit": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "source_files": [
+      {
+        "path": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+        "base_git_blob_sha": "6987a5e94d92d0b617713636a9291c9ce9bfa5c1",
+        "base_sha256": "482b78643b2cfc28873f61800b98b631c7a84a8c30f7177fd57982a0b2b17350",
+        "patched_sha256": "d8d3fb0b1674d57d2d625549f2292242f95c06cbadae9903270494126ab54d2b",
+        "patched_git_blob_sha": "aa560542f1800a467c549a55451488494c0a08d3",
+        "patched_bytes": 376896
+      },
+      {
+        "path": "drivers/vulkan/rendering_device_driver_vulkan.h",
+        "base_git_blob_sha": "e7c129c744b0b8c0f085d11decb36a230061b9c7",
+        "base_sha256": "eb15e7855afe5dbb2d15ae6abd797e5bf1decd40fe60172b2ace89ada7850c5b",
+        "patched_sha256": "104067dec834e07cbc02fe0b6b221715eeb9b5c51797b78ccb933ccdd45ff15e",
+        "patched_git_blob_sha": "115c1dc0797f2f5e7afd6271a0bd11ce0ce4c67a",
+        "patched_bytes": 39881
+      },
+      {
+        "path": "servers/rendering/rendering_device.cpp",
+        "base_git_blob_sha": "afff76e3b98e3a9882231f711536d41c2ff1e89c",
+        "base_sha256": "60e9c20f0d28cf822aec5adf4b9b9560910b877eb40b528fed3138a08d36ebd2",
+        "patched_sha256": "929c65dab3730d72c2f3166cb6157dfdd835cc9fb277e9ff29a0687f1ad7004f",
+        "patched_git_blob_sha": "28b7b1e97eabcaa82817009a1558f7d1e87b1e58",
+        "patched_bytes": 466176
+      }
+    ],
+    "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+    "scons_version": "4.10.1",
+    "configuration": [
+      "platform=linuxbsd",
+      "target=editor",
+      "dev_build=yes",
+      "debug_symbols=no",
+      "optimize=none",
+      "vulkan=yes",
+      "wayland=no",
+      "accesskit=no"
+    ],
+    "requested_translation_units": [
+      {
+        "source": "servers/rendering/rendering_device.cpp",
+        "output": "bin/obj/servers/rendering/rendering_device.linuxbsd.editor.dev.x86_64.o",
+        "bytes": 6097128,
+        "sha256": "11f988f7f831deb40173ae4061aeba3af37796bdfed0c3a38aedad39c13b0f13",
+        "compiler_arguments": [
+          "g++",
+          "-o",
+          "bin/obj/servers/rendering/rendering_device.linuxbsd.editor.dev.x86_64.o",
+          "-c",
+          "-std=gnu++17",
+          "-fno-exceptions",
+          "-fPIE",
+          "-ffp-contract=off",
+          "-pipe",
+          "-msse4.2",
+          "-mpopcnt",
+          "-fno-diagnostics-color",
+          "-O0",
+          "-Wall",
+          "-Wshadow",
+          "-Wno-misleading-indentation",
+          "-Wenum-conversion",
+          "-DTOOLS_ENABLED",
+          "-DDEBUG_ENABLED",
+          "-DDEV_ENABLED",
+          "-DENGINE_UPDATE_CHECK_ENABLED",
+          "-DNO_EDITOR_SPLASH",
+          "-DRD_ENABLED",
+          "-DMOBILE_RD_ENABLED",
+          "-DFORWARD_RD_ENABLED",
+          "-DSOWRAP_ENABLED",
+          "-DTOUCH_ENABLED",
+          "-DFONTCONFIG_ENABLED",
+          "-DALSA_ENABLED",
+          "-DALSAMIDI_ENABLED",
+          "-DPULSEAUDIO_ENABLED",
+          "-D_REENTRANT",
+          "-DDBUS_ENABLED",
+          "-DSPEECHD_ENABLED",
+          "-DXKB_ENABLED",
+          "-DUDEV_ENABLED",
+          "-DSDL_ENABLED",
+          "-DLINUXBSD_ENABLED",
+          "-DUNIX_ENABLED",
+          "-D_FILE_OFFSET_BITS=64",
+          "-DX11_ENABLED",
+          "-DVULKAN_ENABLED",
+          "-DGLES3_ENABLED",
+          "-DCRASH_HANDLER_ENABLED",
+          "-D_LIBCPP_REMOVE_TRANSITIVE_INCLUDES",
+          "-DMINIZIP_ENABLED",
+          "-DBROTLI_ENABLED",
+          "-DOVERRIDE_ENABLED",
+          "-DOVERRIDE_PATH_ENABLED",
+          "-DTHREADS_ENABLED",
+          "-DCLIPPER2_ENABLED",
+          "-DZLIB_DEBUG",
+          "-DZSTD_STATIC_LINKING_ONLY",
+          "-DUSE_VOLK",
+          "-DVK_USE_PLATFORM_XLIB_KHR",
+          "-DVMA_EXTERNAL_MEMORY_WIN32=0",
+          "-DGLAD_ENABLED",
+          "-DEGL_ENABLED",
+          "-DGLAD_GLES2",
+          "-DGLAD_GLX_NO_X11",
+          "-Ithirdparty/freetype/include",
+          "-Ithirdparty/libpng",
+          "-Ithirdparty/glad",
+          "-Ithirdparty/volk",
+          "-Ithirdparty/vulkan",
+          "-Ithirdparty/vulkan/include",
+          "-Ithirdparty/zstd",
+          "-Ithirdparty/zlib",
+          "-Ithirdparty/clipper2/include",
+          "-Ithirdparty/brotli/include",
+          "-Ithirdparty/linuxbsd_headers",
+          "-Iplatform/linuxbsd",
+          "-I.",
+          "servers/rendering/rendering_device.cpp"
+        ]
+      },
+      {
+        "source": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+        "output": "bin/obj/drivers/vulkan/rendering_device_driver_vulkan.linuxbsd.editor.dev.x86_64.o",
+        "bytes": 1667192,
+        "sha256": "4f963d12c99314831f27fdcc9fc5328c7e6b4636df63b3af6abfa8d3a4d5c9c6",
+        "compiler_arguments": [
+          "g++",
+          "-o",
+          "bin/obj/drivers/vulkan/rendering_device_driver_vulkan.linuxbsd.editor.dev.x86_64.o",
+          "-c",
+          "-std=gnu++17",
+          "-fno-exceptions",
+          "-fPIE",
+          "-ffp-contract=off",
+          "-pipe",
+          "-msse4.2",
+          "-mpopcnt",
+          "-fno-diagnostics-color",
+          "-O0",
+          "-Wall",
+          "-Wshadow",
+          "-Wno-misleading-indentation",
+          "-Wenum-conversion",
+          "-DTOOLS_ENABLED",
+          "-DDEBUG_ENABLED",
+          "-DDEV_ENABLED",
+          "-DENGINE_UPDATE_CHECK_ENABLED",
+          "-DNO_EDITOR_SPLASH",
+          "-DRD_ENABLED",
+          "-DMOBILE_RD_ENABLED",
+          "-DFORWARD_RD_ENABLED",
+          "-DSOWRAP_ENABLED",
+          "-DTOUCH_ENABLED",
+          "-DFONTCONFIG_ENABLED",
+          "-DALSA_ENABLED",
+          "-DALSAMIDI_ENABLED",
+          "-DPULSEAUDIO_ENABLED",
+          "-D_REENTRANT",
+          "-DDBUS_ENABLED",
+          "-DSPEECHD_ENABLED",
+          "-DXKB_ENABLED",
+          "-DUDEV_ENABLED",
+          "-DSDL_ENABLED",
+          "-DLINUXBSD_ENABLED",
+          "-DUNIX_ENABLED",
+          "-D_FILE_OFFSET_BITS=64",
+          "-DX11_ENABLED",
+          "-DVULKAN_ENABLED",
+          "-DGLES3_ENABLED",
+          "-DCRASH_HANDLER_ENABLED",
+          "-D_LIBCPP_REMOVE_TRANSITIVE_INCLUDES",
+          "-DMINIZIP_ENABLED",
+          "-DBROTLI_ENABLED",
+          "-DOVERRIDE_ENABLED",
+          "-DOVERRIDE_PATH_ENABLED",
+          "-DTHREADS_ENABLED",
+          "-DCLIPPER2_ENABLED",
+          "-DZLIB_DEBUG",
+          "-DZSTD_STATIC_LINKING_ONLY",
+          "-DUSE_VOLK",
+          "-DVK_USE_PLATFORM_XLIB_KHR",
+          "-DVMA_EXTERNAL_MEMORY_WIN32=0",
+          "-DGLAD_ENABLED",
+          "-DEGL_ENABLED",
+          "-DGLAD_GLES2",
+          "-DGLAD_GLX_NO_X11",
+          "-Ithirdparty/freetype/include",
+          "-Ithirdparty/libpng",
+          "-Ithirdparty/glad",
+          "-Ithirdparty/volk",
+          "-Ithirdparty/vulkan",
+          "-Ithirdparty/vulkan/include",
+          "-Ithirdparty/zstd",
+          "-Ithirdparty/zlib",
+          "-Ithirdparty/clipper2/include",
+          "-Ithirdparty/brotli/include",
+          "-Ithirdparty/linuxbsd_headers",
+          "-Iplatform/linuxbsd",
+          "-I.",
+          "drivers/vulkan/rendering_device_driver_vulkan.cpp"
+        ]
+      }
+    ],
+    "exit_code": 0,
+    "log_sha256": "dc872ad8b721485a448124371123f7c93f5c452e329e2474763fef3a8eaed537",
+    "rt_branch_compiled": true,
+    "rt_branch_evidence": "Linux preprocessor configuration excludes MACOS_ENABLED/IOS_ENABLED; compiled object includes address entry-point and new zero-address failure text.",
+    "linked_engine": false,
+    "native_gpu_execution": false,
+    "dependencies_compiled": [
+      "thirdparty/volk/volk.c",
+      "thirdparty/vulkan/vk_mem_alloc.cpp",
+      "thirdparty/re-spirv/re-spirv.cpp"
+    ],
+    "scope": "Two changed complete translation units compiled through pinned Godot SCons with real headers and dependencies; not a linked editor/template build or native execution.",
+    "log_text": "scons: Reading SConscript files ...\nBuilding for platform \"linuxbsd\", architecture \"x86_64\", target \"editor\".\nINFO: Developer build, with debug optimization level and debug symbols (unless overridden).\nscons: done reading SConscript files.\nscons: Building targets ...\nCompiling thirdparty/volk/volk.c ...\nCompiling thirdparty/vulkan/vk_mem_alloc.cpp ...\nCompiling thirdparty/re-spirv/re-spirv.cpp ...\nGenerating core/extension/gdextension_interface.gen.h ...\nGenerating core/object/gdvirtual.gen.h ...\nGenerating modules/modules_enabled.gen.h ...\nGenerating core/disabled_classes.gen.h ...\nGenerating core/profiling/profiling.gen.h ...\nCompiling servers/rendering/rendering_device.cpp ...\nCompiling drivers/vulkan/rendering_device_driver_vulkan.cpp ...\nscons: done building targets.\nINFO: Time elapsed: 00:00:12.65\n"
+  },
+  "independent_review": {
+    "source": "Read-only Good Enemy reviewed exact source, actual candidate diffs and final applied patch bytes; no blocker found within stated scope.",
+    "controls": "Read-only final review found no blocking assertion defect or unsafe writes to supplied input; coverage qualifications retained explicitly.",
+    "resolved_findings": [
+      "Undefined native-create failure output",
+      "Scratch-size narrowing",
+      "Rejected TLAS rebuild dependency loss",
+      "Host allocator OOM not falsely claimed recoverable",
+      "Tracked-buffer block failure controls added",
+      "Temporary cleanup, bounded subprocesses and Git input isolation"
+    ]
+  },
+  "primary_references": [
+    "https://docs.vulkan.org/refpages/latest/refpages/source/vkGetAccelerationStructureDeviceAddressKHR.html",
+    "https://docs.vulkan.org/refpages/latest/refpages/source/vkCreateAccelerationStructureKHR.html",
+    "https://docs.vulkan.org/refpages/latest/refpages/source/vkGetAccelerationStructureBuildSizesKHR.html",
+    "https://docs.vulkan.org/spec/latest/chapters/accelstructures.html",
+    "https://docs.vulkan.org/spec/latest/chapters/fundamentals.html"
+  ],
+  "documentation_validation": {
+    "markdown_documents_checked": 47,
+    "local_links_checked": 1508,
+    "errors": [],
+    "changed_markdown_identities": [
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+        "git_blob_sha": "0c4c74f47550ada84f30ac8fce0cf09cef1b615d",
+        "sha256": "06a945d99286247b4b557f3331f3de2b4586b52e78a38024d7a5b7db0b77121a",
+        "bytes": 27833
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+        "git_blob_sha": "52d753646ecb63b01687864bf18ad3819f1d5f2e",
+        "sha256": "b7ac70974b69a5bb4b70df8be70d1123a8b6172f37dc76eebb2cee31630596b0",
+        "bytes": 20898
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/15-ray-tracing-fixture-handoff.md",
+        "git_blob_sha": "c53a6862648cd3c729af76a5d6b58a2f15624f30",
+        "sha256": "9c438afe582baef571ebbf1f7243e765eb9ac321b04fff7faafc5a908306bf4c",
+        "bytes": 18293
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/README.md",
+        "git_blob_sha": "17dc37bd69ac117a8f14d77565109a4e0f329b97",
+        "sha256": "1d46c076bede8cbf7d6d9c409e34c1f64062551eb95c711cbd7205632c5e6a92",
+        "bytes": 13996
+      },
+      {
+        "path": "docs/research/graphics-performance-2026-11-15/ray-tracing/03-vulkan-fixture-work-order.md",
+        "git_blob_sha": "689882a89127991c66441e4087da588abb31de5f",
+        "sha256": "564a7f8014481da30ba31d8e4b00b75a8ed2c1730de541c287c52cee1bea0c4e",
+        "bytes": 24911
+      },
+      {
+        "path": "research/performance/graphics_handoff/rt_fixture_README.md",
+        "git_blob_sha": "133a16f9c632912c5d546d93c9e9ada8cee347be",
+        "sha256": "bebe4ba0a3543fe8465cfd806a84e29e2ca9288c415a75a88df8d088b7fb2d5b",
+        "bytes": 9739
+      },
+      {
+        "path": "research/performance/graphics_handoff/vulkan/README.md",
+        "git_blob_sha": "a023138522c48b643b04cf57b8147ecd68ea1a5f",
+        "sha256": "a50c1dda446fa8567596a5acdccdcf435b06d43e21ec2d336210c235732deed1",
+        "bytes": 13109
+      }
+    ],
+    "non_patch_whitespace_check_passed": true,
+    "applied_engine_whitespace_check_passed": true,
+    "patch_whitespace_note": "Unified-diff context prefixes produce expected raw text diff-check warnings. Patch contents are instead checked by git apply --check --whitespace=error and by git diff --check on the applied real engine source; no repository rule is disabled.",
+    "utf8_json_and_fence_checks_passed": true
+  },
+  "selected_unchanged_project_sources": [
+    {
+      "path": "tools/graphics/metalfx/test_engine_patch.py",
+      "git_blob_sha": "a286c71cce38fc59cc62a283d2f3ba16b8031693",
+      "sha256": "ef0255a64193d6c88eff9aa01718325dfac85e8a8dffa63b5bae7fc19836e9ef",
+      "bytes": 36455,
+      "matches_application_baseline": true
+    },
+    {
+      "path": "tools/graphics/test_shadow_energy.gd",
+      "git_blob_sha": "d5cb13cf0c657bede46585ff0f19c773ca7a77e3",
+      "sha256": "ac27a6484310d39625f359f9d09d1da5a98edada7f0db589eeca362251c5de0f",
+      "bytes": 4356,
+      "matches_application_baseline": true
+    }
+  ],
+  "change_boundary": {
+    "paths": [
+      "docs/research/graphics-performance-2026-11-15/07-sources-and-verification.md",
+      "docs/research/graphics-performance-2026-11-15/12-senior-developer-handoff.md",
+      "docs/research/graphics-performance-2026-11-15/15-ray-tracing-fixture-handoff.md",
+      "docs/research/graphics-performance-2026-11-15/README.md",
+      "docs/research/graphics-performance-2026-11-15/evidence/vulkan-prerequisite-validation.json",
+      "docs/research/graphics-performance-2026-11-15/ray-tracing/03-vulkan-fixture-work-order.md",
+      "research/performance/graphics_handoff/rt_fixture_README.md",
+      "research/performance/graphics_handoff/vulkan/0001-as-address-and-creation.patch",
+      "research/performance/graphics_handoff/vulkan/0002-tlas-instance-reservation.patch",
+      "research/performance/graphics_handoff/vulkan/README.md",
+      "research/performance/graphics_handoff/vulkan/controls.cpp.in",
+      "research/performance/graphics_handoff/vulkan/test_prerequisites.py"
+    ],
+    "path_count": 12,
+    "cumulative_changed_paths": 63,
+    "app_tools_ci_changed": false,
+    "engine_getter_changed": false,
+    "runtime_defaults_changed": false,
+    "engine_objects_or_binaries_committed": false
+  },
+  "preserved_history": {
+    "original_studies": 20,
+    "historical_receipts": 6,
+    "unchanged_numerical_code_data_paths": 5,
+    "unchanged_numerical_suites_rerun": false
+  },
+  "remaining_gates": [
+    "Linked matching experimental editor/template pair and exact package identities",
+    "Actual physical-device maxInstanceCount validation before size query; arithmetic guard alone is insufficient",
+    "Actual instance-buffer device address plus offset alignment and AS vertex-format support",
+    "Zero-capacity TLAS/zero-byte instance-buffer behavior",
+    "Graph and scratch ordering, real fence retirement, partial submission and native teardown",
+    "Real Vulkan/VMA allocation/create failure behavior and validation-layer records",
+    "Real query/pipeline/SBT witness on admitted NVIDIA and AMD rows",
+    "Selected-sun replacement image, complete relevant flight geometry/material/temporal coverage and readability",
+    "1080p actual GPU/VRAM/full-flight cost and applicable export qualification"
+  ],
+  "execution_budget": {
+    "m0_engineering_days_total": 5,
+    "m4_feasibility_engineering_days": 2,
+    "m4_useful_opaque_fixture_weeks": 2,
+    "new_measurement_collector": false
+  },
+  "unperformed": [
+    "Complete linked Godot editor/template build",
+    "Native Vulkan GPU or validation-layer execution",
+    "Shader/query witness or selected-sun image",
+    "Flight benchmark or new performance measurement",
+    "Physical latency comparison",
+    "Windows/AMD/NVIDIA device and export qualification",
+    "CI workflow execution for this publication"
+  ]
+}

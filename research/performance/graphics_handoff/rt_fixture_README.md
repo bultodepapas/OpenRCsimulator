@@ -56,6 +56,8 @@ The exact Godot pin reconstructs a packed eight-bit shadow factor, applies shado
 
 ## Use, review and retirement
 
+The later [Vulkan prerequisite package](vulkan/README.md) supplies two actual exact-pin engine diffs, source-bound C++ controls and full translation-unit compilation evidence. It is separate from this unchanged 26-test mathematical reference. Its linked engine, real device, ABI and image gates remain explicit; passing either offline suite does not establish those results.
+
 Use this finite corpus during the first engine/ABI witness and selected-sun fixture. Port the relevant independent answers into the smallest existing native harness when the real adapter exists; keep existing checked-runner and test-queue ownership. A source-checked recipe, passing Python tests, shader compilation and one GPU hit are different claims. Normal-flight coverage, temporal lifetime, lighting, pilot readability, cost and package qualification remain open.
 
 Do not add collectors, telemetry, an automated benchmark service or a second scene system here. This is research preparation within the requested handoff, not another M0 instrument or mandatory delay before a product correction. M0 remains five engineering days total; M4 retains its two-day feasibility and two-week useful opaque-fixture checkpoint. Once production/native tests cover these independent cases, consolidate them into that owner and retire the duplicate reference. Actual local checks and deliberate-regression evidence are recorded in the [fixture receipt](../../../docs/research/graphics-performance-2026-11-15/evidence/rt-fixture-validation.json).

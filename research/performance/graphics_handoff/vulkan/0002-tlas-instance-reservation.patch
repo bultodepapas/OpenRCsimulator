@@ -1,0 +1,79 @@
+Subject: [PATCH 2/2] RD: validate TLAS input and reserve instance ranges
+Base: Godot cafc17a192acf67903910a68aeb3c076c0907a4b
+
+Prevalidate instance references and bound range arithmetic before recording;
+reserve the first mapped range. GPU alignment and lifetime remain native gates.
+Exact-source patch; compilation and native Vulkan validation remain required.
+
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+index afff76e..28b7b1e 100644
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -522,16 +522,32 @@ Error RenderingDevice::tlas_build(RID p_tlas, Span<AccelerationStructureInstance
+ 
+ 	AccelerationStructure *tlas = acceleration_structure_owner.get_or_null(p_tlas);
+ 	ERR_FAIL_NULL_V_MSG(tlas, ERR_INVALID_PARAMETER, "TLAS argument is not valid.");
++	ERR_FAIL_COND_V_MSG(tlas->type != RDD::ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL, ERR_INVALID_PARAMETER, "TLAS argument is not a top-level acceleration structure.");
+ 	ERR_FAIL_COND_V_MSG(p_instances.size() > tlas->max_instance_count, ERR_INVALID_PARAMETER, "Exceeded the maximum amount of instances allowed in the TLAS.");
+ 
+-	Error err = _acceleration_structure_scratch_buffer_create(tlas);
+-	ERR_FAIL_COND_V(err != OK, err);
++	// Reject invalid instances before changing any existing BLAS dependencies.
++	for (uint32_t i = 0; i < p_instances.size(); i++) {
++		const AccelerationStructureInstance &rd_instance = p_instances[i];
++		if (rd_instance.blas.is_valid()) {
++			ERR_FAIL_COND_V_MSG(!rd_instance.hit_sbt_range, ERR_INVALID_PARAMETER, "Instance " + itos(i) + " has an invalid hit shader binding table range.");
++			AccelerationStructure *blas = acceleration_structure_owner.get_or_null(rd_instance.blas);
++			ERR_FAIL_NULL_V(blas, ERR_INVALID_PARAMETER);
++			ERR_FAIL_COND_V(blas->type != RDD::ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL, ERR_INVALID_PARAMETER);
++			ERR_FAIL_COND_V_MSG(blas->invalidated, ERR_INVALID_PARAMETER, "BLAS either has not been built yet, or has been invalidated by an operation and needs to be rebuilt.");
++		}
++	}
+ 
+-	uint32_t instance_size = driver->api_trait_get(RDD::API_TRAIT_ACCELERATION_STRUCTURE_INSTANCE_SIZE);
++	uint64_t instance_size_64 = driver->api_trait_get(RDD::API_TRAIT_ACCELERATION_STRUCTURE_INSTANCE_SIZE);
++	ERR_FAIL_COND_V_MSG(instance_size_64 == 0 || instance_size_64 > UINT32_MAX, ERR_INVALID_PARAMETER, "Invalid acceleration structure instance size.");
++	uint32_t instance_size = uint32_t(instance_size_64);
++	ERR_FAIL_COND_V_MSG(tlas->max_instance_count > UINT32_MAX / instance_size, ERR_INVALID_PARAMETER, "TLAS instance buffer size exceeds the supported range.");
+ 	uint32_t instance_buffer_size = instance_size * tlas->max_instance_count;
+ 
++	Error err = _acceleration_structure_scratch_buffer_create(tlas);
++	ERR_FAIL_COND_V(err != OK, err);
++
+ 	uint32_t instance_buffer_offset = 0;
+-	uint32_t instance_buffer_used_size = instance_size * p_instances.size();
++	uint32_t instance_buffer_used_size = instance_size * uint32_t(p_instances.size());
+ 
+ 	uint32_t instance_buffer_index = UINT32_MAX;
+ 	for (uint32_t i = 0; i < tlas->instance_buffers.size(); i++) {
+@@ -542,7 +558,7 @@ Error RenderingDevice::tlas_build(RID p_tlas, Span<AccelerationStructureInstance
+ 			instance_buffer.used_size = 0;
+ 		}
+ 
+-		if (frames_drawn == instance_buffer.frame_used && (instance_buffer.used_size + instance_buffer_used_size) <= instance_buffer_size) {
++		if (frames_drawn == instance_buffer.frame_used && instance_buffer.used_size <= instance_buffer_size && instance_buffer_used_size <= instance_buffer_size - instance_buffer.used_size) {
+ 			instance_buffer_offset = instance_buffer.used_size;
+ 			instance_buffer.used_size += instance_buffer_used_size;
+ 			instance_buffer_index = i;
+@@ -565,7 +581,7 @@ Error RenderingDevice::tlas_build(RID p_tlas, Span<AccelerationStructureInstance
+ 		AccelerationStructure::InstanceBuffer instance_buffer;
+ 		instance_buffer.driver_id = instance_buffer_driver_id;
+ 		instance_buffer.frame_used = frames_drawn;
+-		instance_buffer.used_size = 0;
++		instance_buffer.used_size = instance_buffer_used_size;
+ 		instance_buffer.data_ptr = data_ptr;
+ 
+ 		instance_buffer_index = tlas->instance_buffers.size();
+@@ -590,12 +606,7 @@ Error RenderingDevice::tlas_build(RID p_tlas, Span<AccelerationStructureInstance
+ 		rdd_instance.flags = rd_instance.flags;
+ 
+ 		if (rd_instance.blas.is_valid()) {
+-			ERR_FAIL_COND_V_MSG(!rd_instance.hit_sbt_range, ERR_INVALID_PARAMETER, "Instance " + itos(i) + " has an invalid hit shader binding table range.");
+-
+ 			AccelerationStructure *blas = acceleration_structure_owner.get_or_null(rd_instance.blas);
+-			ERR_FAIL_NULL_V(blas, ERR_INVALID_PARAMETER);
+-			ERR_FAIL_COND_V(blas->type != RDD::ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL, ERR_INVALID_PARAMETER);
+-			ERR_FAIL_COND_V_MSG(blas->invalidated, ERR_INVALID_PARAMETER, "BLAS either has not been built yet, or has been invalidated by an operation and needs to be rebuilt.");
+ 			rdd_instance.blas = blas->driver_id;
+ 
+ 			if (!tlas->acceleration_structure_dependencies.has(rd_instance.blas)) {

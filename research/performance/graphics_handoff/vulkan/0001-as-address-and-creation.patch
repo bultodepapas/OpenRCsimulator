@@ -1,0 +1,187 @@
+Subject: [PATCH 1/2] Vulkan: propagate AS creation failures and cache BLAS address
+Base: Godot cafc17a192acf67903910a68aeb3c076c0907a4b
+
+Use the actual Vulkan BLAS address, reject failed creation, and clean up owned
+resources. The tracked-buffer allocation cleanup also affects non-AS buffers.
+Exact-source patch; compilation and native Vulkan validation remain required.
+
+diff --git a/drivers/vulkan/rendering_device_driver_vulkan.cpp b/drivers/vulkan/rendering_device_driver_vulkan.cpp
+index 6987a5e..aa56054 100644
+--- a/drivers/vulkan/rendering_device_driver_vulkan.cpp
++++ b/drivers/vulkan/rendering_device_driver_vulkan.cpp
+@@ -1576,6 +1576,7 @@ Error RenderingDeviceDriverVulkan::_initialize_device(const LocalVector<VkDevice
+ 			device_functions.CreateAccelerationStructureKHR = PFN_vkCreateAccelerationStructureKHR(functions.GetDeviceProcAddr(vk_device, "vkCreateAccelerationStructureKHR"));
+ 			device_functions.DestroyAccelerationStructureKHR = PFN_vkDestroyAccelerationStructureKHR(functions.GetDeviceProcAddr(vk_device, "vkDestroyAccelerationStructureKHR"));
+ 			device_functions.GetAccelerationStructureBuildSizesKHR = PFN_vkGetAccelerationStructureBuildSizesKHR(functions.GetDeviceProcAddr(vk_device, "vkGetAccelerationStructureBuildSizesKHR"));
++			device_functions.GetAccelerationStructureDeviceAddressKHR = PFN_vkGetAccelerationStructureDeviceAddressKHR(functions.GetDeviceProcAddr(vk_device, "vkGetAccelerationStructureDeviceAddressKHR"));
+ 			device_functions.CmdBuildAccelerationStructuresKHR = PFN_vkCmdBuildAccelerationStructuresKHR(functions.GetDeviceProcAddr(vk_device, "vkCmdBuildAccelerationStructuresKHR"));
+ 		}
+ 
+@@ -2087,9 +2088,16 @@ RDD::BufferID RenderingDeviceDriverVulkan::buffer_create(uint64_t p_size, BitFie
+ 		VkResult err = vkCreateBuffer(vk_device, &create_info, VKC::get_allocation_callbacks(VK_OBJECT_TYPE_BUFFER), &vk_buffer);
+ 		ERR_FAIL_COND_V_MSG(err, BufferID(), vformat("Can't create buffer of size: %d (VkResult error %d).", p_size, err));
+ 		err = vmaAllocateMemoryForBuffer(allocator, vk_buffer, &alloc_create_info, &allocation, &alloc_info);
+-		ERR_FAIL_COND_V_MSG(err, BufferID(), vformat("Can't allocate memory for buffer of size: %d (VkResult error %d).", p_size, err));
++		if (err) {
++			vkDestroyBuffer(vk_device, vk_buffer, VKC::get_allocation_callbacks(VK_OBJECT_TYPE_BUFFER));
++			ERR_FAIL_V_MSG(BufferID(), vformat("Can't allocate memory for buffer of size: %d (VkResult error %d).", p_size, err));
++		}
+ 		err = vmaBindBufferMemory2(allocator, allocation, 0, vk_buffer, nullptr);
+-		ERR_FAIL_COND_V_MSG(err, BufferID(), vformat("Can't bind memory to buffer of size: %d (VkResult error %d).", p_size, err));
++		if (err) {
++			vkDestroyBuffer(vk_device, vk_buffer, VKC::get_allocation_callbacks(VK_OBJECT_TYPE_BUFFER));
++			vmaFreeMemory(allocator, allocation);
++			ERR_FAIL_V_MSG(BufferID(), vformat("Can't bind memory to buffer of size: %d (VkResult error %d).", p_size, err));
++		}
+ 	}
+ 
+ 	// Bookkeep.
+@@ -6358,6 +6366,8 @@ static_assert(ENUM_MEMBERS_EQUAL(RDD::ACCELERATION_STRUCTURE_GEOMETRY_NO_DUPLICA
+ 
+ RDD::AccelerationStructureID RenderingDeviceDriverVulkan::blas_create(VectorView<AccelerationStructureGeometry> p_geometries, BitField<AccelerationStructureFlagBits> p_flags) {
+ #if VULKAN_RAYTRACING_ENABLED
++	ERR_FAIL_COND_V_MSG(!device_functions.GetAccelerationStructureBuildSizesKHR || !device_functions.CreateAccelerationStructureKHR || !device_functions.DestroyAccelerationStructureKHR || !device_functions.CmdBuildAccelerationStructuresKHR, AccelerationStructureID(), "Vulkan acceleration structure entry points are unavailable.");
++
+ 	AccelerationStructureInfo *accel_info = VersatileResource::allocate<AccelerationStructureInfo>(resources_allocator);
+ 
+ 	accel_info->geometries.resize(p_geometries.size());
+@@ -6412,7 +6422,10 @@ RDD::AccelerationStructureID RenderingDeviceDriverVulkan::blas_create(VectorView
+ 	size_info.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR;
+ 
+ 	device_functions.GetAccelerationStructureBuildSizesKHR(vk_device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &accel_info->build_info, max_primitive_counts.ptr(), &size_info);
+-	_acceleration_structure_create(VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR, size_info, accel_info);
++	if (!_acceleration_structure_create(VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR, size_info, accel_info)) {
++		acceleration_structure_free(AccelerationStructureID(accel_info));
++		return AccelerationStructureID();
++	}
+ 
+ 	return AccelerationStructureID(accel_info);
+ #else
+@@ -6439,6 +6452,8 @@ static _FORCE_INLINE_ void _store_transform_transposed_3x4(const Transform3D &p_
+ 
+ RDD::AccelerationStructureID RenderingDeviceDriverVulkan::tlas_create(uint32_t p_max_instance_count, BitField<AccelerationStructureFlagBits> p_flags) {
+ #if VULKAN_RAYTRACING_ENABLED
++	ERR_FAIL_COND_V_MSG(!device_functions.GetAccelerationStructureBuildSizesKHR || !device_functions.CreateAccelerationStructureKHR || !device_functions.DestroyAccelerationStructureKHR || !device_functions.CmdBuildAccelerationStructuresKHR, AccelerationStructureID(), "Vulkan acceleration structure entry points are unavailable.");
++
+ 	AccelerationStructureInfo *accel_info = VersatileResource::allocate<AccelerationStructureInfo>(resources_allocator);
+ 
+ 	accel_info->geometries.resize_initialized(1);
+@@ -6460,7 +6475,10 @@ RDD::AccelerationStructureID RenderingDeviceDriverVulkan::tlas_create(uint32_t p
+ 
+ 	accel_info->range_infos.resize_initialized(1);
+ 
+-	_acceleration_structure_create(VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_KHR, size_info, accel_info);
++	if (!_acceleration_structure_create(VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_KHR, size_info, accel_info)) {
++		acceleration_structure_free(AccelerationStructureID(accel_info));
++		return AccelerationStructureID();
++	}
+ 	return AccelerationStructureID(accel_info);
+ #else
+ 	return AccelerationStructureID();
+@@ -6478,7 +6496,7 @@ void RenderingDeviceDriverVulkan::acceleration_structure_instance_write(uint8_t
+ 
+ 	if (p_instance.blas) {
+ 		const AccelerationStructureInfo *blas_info = (const AccelerationStructureInfo *)p_instance.blas.id;
+-		vk_instance.accelerationStructureReference = buffer_get_device_address(blas_info->buffer);
++		vk_instance.accelerationStructureReference = blas_info->device_address;
+ 	} else {
+ 		vk_instance.accelerationStructureReference = 0;
+ 	}
+@@ -6496,23 +6514,45 @@ static VkDeviceAddress _align_up_address(VkDeviceAddress address, VkDeviceAddres
+ }
+ #endif
+ 
+-void RenderingDeviceDriverVulkan::_acceleration_structure_create(VkAccelerationStructureTypeKHR p_type, VkAccelerationStructureBuildSizesInfoKHR p_size_info, AccelerationStructureInfo *r_accel_info) {
++bool RenderingDeviceDriverVulkan::_acceleration_structure_create(VkAccelerationStructureTypeKHR p_type, VkAccelerationStructureBuildSizesInfoKHR p_size_info, AccelerationStructureInfo *r_accel_info) {
+ #if VULKAN_RAYTRACING_ENABLED
+-	RDD::BufferID buffer = buffer_create(p_size_info.accelerationStructureSize, RDD::BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT | RDD::BUFFER_USAGE_STORAGE_BIT | RDD::BUFFER_USAGE_DEVICE_ADDRESS_BIT, RDD::MEMORY_ALLOCATION_TYPE_GPU, UINT64_MAX);
+-	r_accel_info->buffer = buffer;
++	if (p_type == VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR) {
++		ERR_FAIL_COND_V_MSG(!device_functions.GetAccelerationStructureDeviceAddressKHR, false, "Vulkan acceleration structure address entry point is unavailable.");
++	}
+ 
+ 	// Scratch address must be a multiple of minAccelerationStructureScratchOffsetAlignment.
+ 	r_accel_info->scratch_alignment = acceleration_structure_capabilities.min_acceleration_structure_scratch_offset_alignment;
+-	r_accel_info->scratch_size = p_size_info.buildScratchSize + r_accel_info->scratch_alignment;
++	ERR_FAIL_COND_V_MSG(!r_accel_info->scratch_alignment || (r_accel_info->scratch_alignment & (r_accel_info->scratch_alignment - 1)) != 0, false, "Invalid Vulkan acceleration structure scratch alignment.");
++	ERR_FAIL_COND_V_MSG(p_size_info.buildScratchSize > UINT32_MAX - r_accel_info->scratch_alignment, false, "Vulkan acceleration structure scratch size exceeds the supported range.");
++	r_accel_info->scratch_size = uint32_t(p_size_info.buildScratchSize + r_accel_info->scratch_alignment);
++
++	RDD::BufferID buffer = buffer_create(p_size_info.accelerationStructureSize, RDD::BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT | RDD::BUFFER_USAGE_STORAGE_BIT | RDD::BUFFER_USAGE_DEVICE_ADDRESS_BIT, RDD::MEMORY_ALLOCATION_TYPE_GPU, UINT64_MAX);
++	ERR_FAIL_COND_V_MSG(!buffer, false, "Couldn't allocate Vulkan acceleration structure storage.");
++	r_accel_info->buffer = buffer;
+ 
+ 	VkAccelerationStructureCreateInfoKHR accel_create_info = {};
+ 	accel_create_info.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR;
+ 	accel_create_info.type = p_type;
+ 	accel_create_info.size = p_size_info.accelerationStructureSize;
+ 	accel_create_info.buffer = ((const BufferInfo *)buffer.id)->vk_buffer;
+-	VkResult err = device_functions.CreateAccelerationStructureKHR(vk_device, &accel_create_info, nullptr, &r_accel_info->vk_acceleration_structure);
+-	ERR_FAIL_COND_MSG(err, vformat("Couldn't create Vulkan raytracing acceleration structure (VkResult error %d).", err));
+-	r_accel_info->build_info.dstAccelerationStructure = r_accel_info->vk_acceleration_structure;
++	VkAccelerationStructureKHR vk_acceleration_structure = VK_NULL_HANDLE;
++	VkResult err = device_functions.CreateAccelerationStructureKHR(vk_device, &accel_create_info, nullptr, &vk_acceleration_structure);
++	ERR_FAIL_COND_V_MSG(err != VK_SUCCESS, false, vformat("Couldn't create Vulkan raytracing acceleration structure (VkResult error %d).", err));
++	ERR_FAIL_COND_V_MSG(vk_acceleration_structure == VK_NULL_HANDLE, false, "Vulkan returned a null acceleration structure.");
++	r_accel_info->vk_acceleration_structure = vk_acceleration_structure;
++
++	if (p_type == VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR) {
++		VkAccelerationStructureDeviceAddressInfoKHR address_info = {};
++		address_info.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR;
++		address_info.accelerationStructure = vk_acceleration_structure;
++		r_accel_info->device_address = device_functions.GetAccelerationStructureDeviceAddressKHR(vk_device, &address_info);
++		ERR_FAIL_COND_V_MSG(!r_accel_info->device_address, false, "Couldn't obtain Vulkan bottom-level acceleration structure address.");
++	}
++
++	r_accel_info->build_info.dstAccelerationStructure = vk_acceleration_structure;
++	return true;
++#else
++	return false;
+ #endif
+ }
+ 
+@@ -6520,12 +6560,12 @@ void RenderingDeviceDriverVulkan::acceleration_structure_free(AccelerationStruct
+ #if VULKAN_RAYTRACING_ENABLED
+ 	AccelerationStructureInfo *accel_info = (AccelerationStructureInfo *)p_acceleration_structure.id;
+ 	ERR_FAIL_NULL_MSG(accel_info, "Vulkan raytracing acceleration structure input parameter is not valid.");
+-	if (accel_info->buffer) {
+-		buffer_free(accel_info->buffer);
+-	}
+ 	if (accel_info->vk_acceleration_structure) {
+ 		device_functions.DestroyAccelerationStructureKHR(vk_device, accel_info->vk_acceleration_structure, nullptr);
+ 	}
++	if (accel_info->buffer) {
++		buffer_free(accel_info->buffer);
++	}
+ 	VersatileResource::free(resources_allocator, accel_info);
+ #endif
+ }
+diff --git a/drivers/vulkan/rendering_device_driver_vulkan.h b/drivers/vulkan/rendering_device_driver_vulkan.h
+index e7c129c..115c1dc 100644
+--- a/drivers/vulkan/rendering_device_driver_vulkan.h
++++ b/drivers/vulkan/rendering_device_driver_vulkan.h
+@@ -131,6 +131,7 @@ class RenderingDeviceDriverVulkan : public RenderingDeviceDriver {
+ 		PFN_vkCreateAccelerationStructureKHR CreateAccelerationStructureKHR = nullptr;
+ 		PFN_vkDestroyAccelerationStructureKHR DestroyAccelerationStructureKHR = nullptr;
+ 		PFN_vkGetAccelerationStructureBuildSizesKHR GetAccelerationStructureBuildSizesKHR = nullptr;
++		PFN_vkGetAccelerationStructureDeviceAddressKHR GetAccelerationStructureDeviceAddressKHR = nullptr;
+ 		PFN_vkCmdBuildAccelerationStructuresKHR CmdBuildAccelerationStructuresKHR = nullptr;
+ 		PFN_vkCreateRayTracingPipelinesKHR CreateRaytracingPipelinesKHR = nullptr;
+ 		PFN_vkGetRayTracingShaderGroupHandlesKHR GetRayTracingShaderGroupHandlesKHR = nullptr;
+@@ -707,6 +708,7 @@ public:
+ 
+ 	struct AccelerationStructureInfo {
+ 		VkAccelerationStructureKHR vk_acceleration_structure = VK_NULL_HANDLE;
++		VkDeviceAddress device_address = 0;
+ 		// Buffer used for the structure
+ 		RDD::BufferID buffer;
+ 
+@@ -728,7 +730,7 @@ public:
+ 	virtual uint32_t acceleration_structure_get_scratch_size_bytes(AccelerationStructureID p_acceleration_structure) override final;
+ 
+ private:
+-	void _acceleration_structure_create(VkAccelerationStructureTypeKHR p_type, VkAccelerationStructureBuildSizesInfoKHR p_size_info, AccelerationStructureInfo *r_accel_info);
++	bool _acceleration_structure_create(VkAccelerationStructureTypeKHR p_type, VkAccelerationStructureBuildSizesInfoKHR p_size_info, AccelerationStructureInfo *r_accel_info);
+ 
+ private:
+ 	VkStridedDeviceAddressRegionKHR _sbt_to_vk_strided_device_address_region(const ShaderBindingTable &p_sbt);
