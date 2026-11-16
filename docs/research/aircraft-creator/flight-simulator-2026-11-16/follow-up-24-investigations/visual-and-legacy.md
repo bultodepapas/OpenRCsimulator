@@ -1,5 +1,7 @@
 # Flight Simulator follow-up: visual and legacy investigations R01–R06
 
+**Product-direction update:** the later [automatic wizard contract](../../../../plans/flight-simulator-import-wizard.md) owns current delivery acceptance: in-app conversion, questions only for unresolved data and editable results. Earlier preparation/manual-step recommendations in this dated evidence are optional development/recovery proposals; underlying format and physics findings remain unchanged.
+
 Part of the [24-investigation follow-up](README.md). The [feature plan](../../../../plans/flight-simulator-aircraft-import.md) owns acceptance and implementation; [tools and fixtures](tooling-and-fixtures.md) turns these findings into a proposed evaluation backlog.
 
 **Research date and retrieval:** 2026-11-16 for every source below. This is published research, not an implementation or compatibility claim. It builds on the existing AC-FS plan and dated source register. The published pages are moving sources unless a revision is explicitly identified. No simulator package, third-party aircraft asset, binary, or SDK was downloaded or executed. Community reports are attributed to their reporters; none was independently reproduced here. An author's description of a tool's capabilities is not a test of the installed build.

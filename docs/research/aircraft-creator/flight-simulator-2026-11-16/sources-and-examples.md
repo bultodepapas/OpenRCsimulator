@@ -14,7 +14,7 @@
 | `LievreAI/msfsLegacyImporter` | MIT-labeled FSX-to-MSFS project; configuration splitting and AIR migration | Study explicit migration diagnostics. AIR migration depends on an AirUpdate text dump; intended input is native FSX, not every FS9/P3D model. Audit file-level origin before reusing code. [F16] |
 | `marcosox/fs-parse` | Partial FSX/FS9 MDL/BGL parser; author acknowledges FS9 limitations | Research reference only. No root license was observed in this inspection; do not integrate without an established license and bounded-reader review. [F20] |
 
-The proposed first product route accepts a user-prepared GLB with readable source configuration. Automatic modern-source normalization follows AC-FS-04's comparison spike. The comparison should use independently authored asymmetric geometry, visible texture/normal markers and known control pivots; accepting the same input is insufficient evidence of equal output. The production desktop application should not require Blender, the Microsoft SDK or ModelConverterX to launch.
+The clarified first completed product route automatically converts its supported source subset inside OpenRC. Prepared GLB remains an engineering/recovery route. AC-FS-04's comparison spike must select an app-owned qualified conversion runtime, following the [wizard contract](../../../plans/flight-simulator-import-wizard.md). The comparison should use independently authored asymmetric geometry, visible texture/normal markers and known control pivots; accepting the same input is insufficient evidence of equal output. The production desktop application should not require Blender, the Microsoft SDK or ModelConverterX to launch.
 
 ## Additional mod, forum and tool investigations
 

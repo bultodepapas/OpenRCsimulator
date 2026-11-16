@@ -4,6 +4,8 @@
 
 The work addresses 24 distinct engineering questions. Each investigation records primary evidence, what that evidence does and does not establish, a resulting design decision, and an independently reproducible fixture or acceptance proposal. The purpose is to improve the feature plan using actual aircraft projects and reported conversion failures, while retaining the existing Creator architecture.
 
+**Product clarification after this investigation:** the [automatic wizard](../../../../plans/flight-simulator-import-wizard.md) now requires in-app conversion, zero follow-up questions for complete supported inputs, conditional sliders/selectors and later editing. Earlier prepared-GLB-first recommendations below/in the evidence notes are engineering or recovery routes, not completed-product acceptance. The 24 research findings and their source limits remain applicable.
+
 ## Investigation register
 
 | ID | Question / evidence cases | Consequence for the feature | Owning work |
@@ -53,7 +55,7 @@ Source comments, mesh appearance, CFG values and runtime behavior can disagree. 
 
 DDS decoding needs a separate material interpretation, including channels, color spaces, UVs, normal convention and alpha. A low-detail LOD can meet resource limits while losing an expected control or paint. Optimizers may merge parts or discard names needed for subsequent articulation. Require source-to-output correspondence and independently declared expected inventories where a loss must be detected; an arbitrary output mesh cannot prove what its original contained. [R02/R03/R04](visual-and-legacy.md), [R22](packages-and-tools.md)
 
-Creator already supports mesh-bearing nodes and proper-subset groups, with restrictions on origins, local axes and overlapping bindings. Reuse that capability. Skin, morph and animation input still requires explicit supported normalization before ordinary GLB admission. The prepared-GLB route remains the first useful release. [Current parts](../../../../../app/workshop/creator/visual_parts.gd), [preflight](../../../../../app/workshop/creator/glb_preflight.gd), [R01/R04/R05](visual-and-legacy.md)
+Creator already supports mesh-bearing nodes and proper-subset groups, with restrictions on origins, local axes and overlapping bindings. Reuse that capability. Skin, morph and animation input still requires explicit supported normalization before ordinary GLB admission. Prepared GLB remains a useful engineering/recovery route; the clarified completed release requires automatic in-app conversion. [Current parts](../../../../../app/workshop/creator/visual_parts.gd), [preflight](../../../../../app/workshop/creator/glb_preflight.gd), [R01/R04/R05](visual-and-legacy.md)
 
 ### Treat calibration as an evidence workflow
 
@@ -85,7 +87,7 @@ The research does not close the following implementation questions:
 
 These questions are assigned to AC-FS-01…15 in the [updated plan](../../../../plans/flight-simulator-aircraft-import.md#7-work-packages). The research makes the experiments more specific; it does not substitute for them.
 
-## Verification of this documentation change
+## Verification of the 24-investigation commit
 
 The final review checked the 24 unique investigation IDs and their 24 corresponding fixture proposals, source attribution and confidence boundaries, current Creator group-binding/preflight behavior, and first-release sequencing. Three independent cross-reviews resulted in corrections to group support, static-pose admission, conditional source semantics, unestablished redistribution rights and numerical-gate wording. A narrow matching correction was made in the ClearView plan.
 

@@ -1,5 +1,7 @@
 # Flight Simulator → RC follow-up: physics, calibration, and mod lessons
 
+**Product-direction update:** the later [automatic wizard contract](../../../../plans/flight-simulator-import-wizard.md) owns current delivery acceptance: in-app conversion, questions only for unresolved data and editable results. Earlier preparation/manual-step recommendations in this dated evidence are optional development/recovery proposals; underlying format and physics findings remain unchanged.
+
 Part of the [24-investigation follow-up](README.md). The [feature plan](../../../../plans/flight-simulator-aircraft-import.md) owns acceptance and implementation; [tools and fixtures](tooling-and-fixtures.md) turns these findings into a proposed evaluation backlog.
 
 Research date and access date for **all sources below: 2026-11-16**. Source pages without a publication date are identified by their documented version or by the branch/page state observed on that date; they are not immutable revisions. This is published research, not implementation or a flight qualification. Community posts are first-person reports or development leads, not independent physical validation. No tools, aircraft, SDK components, or binaries were installed or run.

@@ -1,5 +1,7 @@
 # R19–R24: package composition, tools and regression evidence
 
+**Product-direction update:** the later [automatic wizard contract](../../../../plans/flight-simulator-import-wizard.md) owns current delivery acceptance: in-app conversion, questions only for unresolved data and editable results. Earlier preparation/manual-step recommendations in this dated evidence are optional development/recovery proposals; underlying format and physics findings remain unchanged.
+
 **Investigated:** 2026-11-16. **Baseline:** OpenRC `ce1216e644bd9916c66fa6ee885984a6e5bef1b5`. These are six distinct investigations within the [24-question follow-up](README.md). Official documentation and repository text establish documented behavior; community posts establish reported cases. No converter, third-party binary model or simulator was run. Proposed changes are owned by the [AC-FS implementation plan](../../../../plans/flight-simulator-aircraft-import.md).
 
 ## R19: Native 2024 composition

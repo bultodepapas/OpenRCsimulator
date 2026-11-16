@@ -1,5 +1,7 @@
 # Aircraft modification case investigations R07–R12
 
+**Product-direction update:** the later [automatic wizard contract](../../../../plans/flight-simulator-import-wizard.md) owns current delivery acceptance: in-app conversion, questions only for unresolved data and editable results. Earlier preparation/manual-step recommendations in this dated evidence are optional development/recovery proposals; underlying format and physics findings remain unchanged.
+
 Part of the [24-investigation follow-up](README.md). The [feature plan](../../../../plans/flight-simulator-aircraft-import.md) owns acceptance and implementation; [tools and fixtures](tooling-and-fixtures.md) turns these findings into a proposed evaluation backlog.
 
 **Date:** 2026-11-16. Research only; no aircraft was imported or flown in OpenRC. Sources are public project pages, version histories, and first-person reports inspected as text. I did not download packages, binaries, or authored models. A source page's declaration is evidence of the author's intent and stated release, not an independent measurement or a grant to redistribute. All proposed fixtures below are newly authored analogues unless a separate component-by-component rights review explicitly permits otherwise.

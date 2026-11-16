@@ -4,13 +4,13 @@
 
 ## Conversion modes and destination boundary
 
-The first usable workflow is **guided RC authoring**. Preserve the original full-scale configuration as reference, propose supported geometry/unit conversions, and construct a new target inventory and equipment installation inside a qualified Creator package. Later dynamic-similarity estimates and parameter fitting must carry their own assumptions and validation domains. Full-scale reference mode does not authorize launching a full-sized aircraft through the trainer compiler.
+The default product workflow is **automatic RC construction with conditional authoring questions**. Preserve the original full-scale configuration, automatically apply supported geometry/unit conversions and an applicable declared RC profile, and construct a new target inventory and installation inside the qualified Creator domain. Ask only for unresolved decisions; all meaningful automatic inputs stay editable under the [wizard contract](../../../plans/flight-simulator-import-wizard.md). Later dynamic-similarity estimates and parameter fitting must carry their own assumptions and validation domains. Full-scale reference mode does not authorize launching a full-sized aircraft through the trainer compiler.
 
 Final output remains ordinary `openrc-aircraft v2`. Each quantity is exactly `{value, unit, kind, source}`; recognized kinds are `manual`, `measured`, `borrowed`, `estimated`, `derived`. Detailed source paths, raw values, uncertainty, mapping status and field history belong in versioned Creator source/authoring records, not extra keys silently added to the closed physical schema. [OpenRC contract](../../../AIRCRAFT_CONTRACT.md#presence-evidence-and-defaults)
 
-A faithfully extracted simulator parameter is not automatically a physical measurement. A unit-converted source declaration retains its original evidence and is normally borrowed/derived when adopted; a modeled RC effect is estimated. User confirmation records an adoption decision, not an upgrade to measured truth. Missing, invalid, inactive, unresolved and zero remain distinct.
+A faithfully extracted simulator parameter is not automatically a physical measurement. A unit-converted source declaration retains its original evidence and is normally borrowed/derived when adopted; a modeled RC effect is estimated. Automatic rule/profile adoption or user confirmation records a construction decision, not an upgrade to measured truth. Missing, invalid, inactive, unresolved and zero remain distinct.
 
-This is a proposed adoption contract. Current Creator `Definition` accepts only `manual`, `measured` and `estimated` authoring evidence and generates generic source strings; its compiler strips `source_observations` before physical emission. AC-FS-02/07 must version Definition, Compiler, UI, Store and readers so an adopted value's evidence and source reference survive into the physical quantity. A versioned observation envelope alone cannot do that. Keep adoption unavailable until exact-byte compile/save/reopen and independent definition-to-physics correspondence checks pass. [Current definition](../../../../app/workshop/creator/definition.gd), [compiler](../../../../app/workshop/creator/compiler.gd)
+This is a proposed adoption contract. Current Creator `Definition` accepts only `manual`, `measured` and `estimated` authoring evidence and generates generic source strings; its compiler strips `source_observations` before physical emission. AC-FS-02/07 must version Authoring, Definition, Compiler, UI, Store and readers so an adopted value's evidence and source reference survive into the physical quantity. A versioned observation envelope alone cannot do that. Keep adoption unavailable until exact-byte compile/save/reopen and independent definition-to-physics correspondence checks pass. [Current definition](../../../../app/workshop/creator/definition.gd), [compiler](../../../../app/workshop/creator/compiler.gd)
 
 ## Field mapping and dispositions
 
@@ -37,6 +37,12 @@ MSFS can split configuration sections across files or retain them in `aircraft.c
 | Prose performance descriptions | Informational text with source path | Never authoritative numeric input; the inspected C-17 has conflicting prose and structured mass values |
 
 Source semantics: [P3–P7, P10, P12](sources-and-examples.md#physics-and-units-sources). The final column is a design inference constrained by [`Definition`](../../../../app/workshop/creator/definition.gd), [`Compiler`](../../../../app/workshop/creator/compiler.gd) and the [trainer package](../estimated-trainer-package.md).
+
+### Automatic resolution and later edits
+
+Source-to-target mapping and target construction run automatically when their versioned rules apply. A full-scale source span/mass is reference data, not the player's RC size or a target component mass. An applicable RC profile may supply target size, estimated construction, supported equipment and control defaults; otherwise the wizard asks for the unresolved choice. Preserve producer and input provenance, and distinguish missing, invalid, conflicting, unsupported and explicitly zero values.
+
+Changing target span recomputes the one source-to-target transform, eligible source-derived geometry and estimated airframe values. Preserve target-unit overrides and fixed equipment unless explicitly changed. A total-mass request must resolve into a supported inventory proposal, preserving locked/measured items and counting hardware once; CG/inertia remain derived from that inventory. Changing size cannot fix an incompatible aspect ratio or topology. The [coupled recomputation contract](../../../plans/flight-simulator-import-wizard.md#5-editable-results-and-coupled-recomputation) owns sliders, conflicts, dependency invalidation and editing limits. These are planned authoring behaviors, not new scaling laws or current implementation.
 
 ### Geometry is not a complete aerodynamic model
 
@@ -147,9 +153,9 @@ Modern MSFS derives numerous damping/control effects from simulated surfaces and
 
 Recommended initial dispositions:
 
-- Read dimensions, source mass roles and installation metadata exactly; propose only supported, confirmed target inputs.
+- Read dimensions, source mass roles and installation metadata exactly; automatically adopt only semantically supported target inputs and ask about remaining ambiguity.
 - Keep source polars, derivatives, tuning scalars and AIR/CFD references visible as reference-only until a tested mathematical mapping exists.
-- Compile a clearly labelled RC estimate from the selected supported package; record its donor assumptions and difference from source behavior.
+- Automatically construct and compile a clearly labelled RC estimate from the applicable declared supported profile/package; record its donor assumptions and difference from source behavior.
 - Add an optional later fit against independent RC measurements: lift/drag, trim, glide, power/thrust and control response over a preregistered domain. Do not fit more parameters than the measurements can identify.
 
 A fitting campaign must hold out maneuvers and conditions, retain measurement uncertainty and source identities, and distinguish numerical error from model error. Matching cruise trim does not validate stalls, spins, ground effect or gust response. Simulator telemetry, where independently available under applicable terms, can describe source behavior; agreement with it does not establish RC realism or give permission to use restricted SDK benchmarking facilities.

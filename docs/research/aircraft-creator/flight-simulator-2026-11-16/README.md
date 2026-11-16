@@ -6,6 +6,7 @@
 | --- | --- |
 | [Implementation plan](../../../plans/flight-simulator-aircraft-import.md) | Product flow, ownership, architecture, steps, dependencies and release gates |
 | This investigation | Current import audit, version matrix, findings, alternatives and evidence limits |
+| [Automatic import wizard](../../../plans/flight-simulator-import-wizard.md) | Clarified product goal: in-app conversion, conditional questions, editable defaults and ready-state acceptance |
 | [Conversion and scaling](conversion-and-scaling.md) | Per-field mapping, units, reference frames, inertia, aerodynamic semantics and RC scaling |
 | [Sources and examples](sources-and-examples.md) | Primary-source register, inspected aircraft and conversion-tool assessment |
 | [24 additional investigations](follow-up-24-investigations/README.md) | Specialist forums, GitHub issues, six aircraft-mod case studies, conditional physics, composition, tools and regressions |
@@ -14,9 +15,9 @@
 ## Findings that determine the design
 
 1. **Build on Aircraft Creator.** STL/GLB admission, ClearView normalization, explicit placement, physical authoring, trial and immutable storage already provide the relevant seams. A separate Flight Simulator aircraft loader or parallel catalog would duplicate them.
-2. **The earliest useful path is readable source data plus a prepared exterior GLB.** Automatic normalization of MSFS source glTF follows a bounded spike. Built Community glTF is not guaranteed source glTF; Asobo's own authoring importer excludes package-built input. [F08–F09](sources-and-examples.md#format-and-package-sources)
+2. **The completed product must convert a supported source automatically inside OpenRC.** Readable data plus a prepared GLB remains an engineering/recovery path; the owner clarified that the default release needs in-app normalization and a conditional wizard. A bounded spike chooses the actual automatic source profile. Built Community glTF is not guaranteed source glTF; Asobo's own authoring importer excludes package-built input. [F08–F09](sources-and-examples.md#format-and-package-sources)
 3. **A source package has several independently convertible parts.** Geometry, paint, moving-part semantics, physical configuration and executable systems must be assessed separately. A downloaded livery or stock-aircraft enhancement can omit the aircraft itself. [F05–F07, F25–F26](sources-and-examples.md#format-and-package-sources)
-4. **Flight characteristics need an explicit target model.** Modern/legacy MSFS fields do not share all meanings, many modern effects come from distributed surfaces, and legacy AIR contains information absent from CFG. Guided RC authoring is the first credible workflow; a coefficient-copying promise is unsupported. [Mapping evidence](conversion-and-scaling.md#field-mapping-and-dispositions)
+4. **Flight characteristics need an explicit target model.** Modern/legacy MSFS fields do not share all meanings, many modern effects come from distributed surfaces, and legacy AIR contains information absent from CFG. Automatic RC construction must use an explicit attributed target profile and supported conversion rules; matching coefficient names alone is insufficient. [Mapping evidence](conversion-and-scaling.md#field-mapping-and-dispositions)
 5. **RC size does not determine RC mass, power or handling.** Similarity laws are useful estimates under stated assumptions; Reynolds mismatch and actual component layout require separate treatment. [Scaling derivation](conversion-and-scaling.md#scaling-laws)
 6. **2024 needs a separate native-source adapter.** Preset/attachment composition and dynamic parameters add a configuration-resolution problem. StreamedPackages is not necessarily a complete local aircraft. [F10–F14](sources-and-examples.md#format-and-package-sources)
 7. **Asset rights affect the fixture strategy.** Public source code, freeware downloads and purchased aircraft do not establish cross-simulator redistribution rights. Inspected realistic projects have mixed asset terms. Start with project-authored fixtures and separately authorized real examples. [Rights and fixtures](sources-and-examples.md#rights-and-fixture-policy)
@@ -26,7 +27,7 @@
 
 The [24 additional investigations](follow-up-24-investigations/README.md) extend this original audit at branch baseline `ce1216e644bd9916c66fa6ee885984a6e5bef1b5`. They add version-qualified base/overlay resolution, field-specific sign/magnitude/subsystem semantics, explicit model/physics discrepancies, material and LOD completeness evidence, motion-preserving optimization, three-way reimport and a concrete tool/corpus backlog. The six aircraft-mod studies cover C152X/JPLogistics, the MGouge425 and Bagolu C172 modifications, Savage Carbon, AS33 Me, VL3 Rotax 915 and A32NX.
 
-The first release remains readable source data plus a prepared Creator-compatible GLB and an explicitly authored supported RC installation. The follow-up provides stronger acceptance cases; it does not change existing flight qualification, Home or packaged-platform status.
+The owner subsequently clarified that the first completed feature must automatically convert a supported source in-app, ask only unresolved questions and leave an editable, ready RC aircraft. The [wizard contract](../../../plans/flight-simulator-import-wizard.md) replaces the earlier prepared-GLB-first product assumption while retaining that engineering/recovery route. Existing flight, Home and packaged-platform gates still apply.
 
 ## Repository audit
 
@@ -87,7 +88,7 @@ The following outcomes are proposed. None is a tested Flight Simulator import in
 | FS2004 / FS9 | Compatible legacy CFG observations | External conversion of older MDL/BMP subset; author source export when available | AIR/binary records and animation dialect require separate coverage | Later limited legacy route |
 | FSX / Acceleration / Steam | `aircraft.cfg`, engine/contact/weight metadata; referenced AIR identification | Externally prepared GLB from authorized MDL or original source | CFG alone omits aero tables; gauge/custom-FDM behavior not converted | Legacy data after modern-source MVP; exact cases tested |
 | Prepar3D | Related SimObject/CFG/AIR family | ModelConverterX or author export, with exact P3D/model version recorded | Version-specific materials, AIR, modules and custom simulation | Per-version legacy extension; no blanket v1–v6 promise |
-| MSFS 2020 authoring source | Split or embedded readable CFG; model/variant/LOD/behavior references | Prepared GLB first; automatic supported source-glTF normalization next | Active modern/legacy semantics and OpenRC law fit still required | First target |
+| MSFS 2020 authoring source | Split or embedded readable CFG; model/variant/LOD/behavior references | Automatic qualified source-glTF/material conversion; optional prepared-GLB route | Active modern/legacy semantics and OpenRC law fit still required | First target |
 | MSFS 2020 compiled Community package | Accessible CFG may be useful independently of visuals | Content probe; supported converter or authorized source export | Runtime optimized data and DDS/material extensions; no ordinary-glTF assumption | Experimental, per-source outcomes |
 | MSFS 2024 legacy 2020-style package | Route according to detected source semantics | Same restrictions as its actual underlying encoding | Host version does not upgrade compatibility | Reuse only proven legacy/source path |
 | MSFS 2024 native modular source | Common/preset/attachment configurations and dynamic values | Assemble selected exterior/livery and normalize admitted formats | Composition/overrides and newer tensor/material rules | Separate later adapter |
@@ -109,7 +110,7 @@ For native 2024 sources, common files and selected presets/attachments compose t
 
 The target simulator's laws decide what a parameter means. Legacy AIR tables, MSFS surface normalization, propeller/CFD interactions and custom modules cannot be reproduced by copying fields whose names resemble OpenRC coefficients. The implementation must record each field as supported, inactive, conflicting, unresolved, reference-only or adopted through an explicit mapping. [Detailed mapping](conversion-and-scaling.md)
 
-A guided RC configuration can still be useful when the full-scale source FDM is unavailable. It must declare which source dimensions are reused, which flight parameters are borrowed/estimated and which motor/propeller/battery/control installation is newly selected. A full-sized airliner exterior at RC scale does not fit the current conventional trainer law merely because its span is 1.5 m.
+An automatically constructed, explicitly estimated RC configuration can still be useful when the full-scale source FDM is unavailable. It must declare which source dimensions are reused, which flight parameters are borrowed/estimated and which motor/propeller/battery/control installation is newly selected. A full-sized airliner exterior at RC scale does not fit the current conventional trainer law merely because its span is 1.5 m.
 
 ## Alternatives considered
 
@@ -117,7 +118,7 @@ A guided RC configuration can still be useful when the full-scale source FDM is 
 | --- | --- | --- |
 | Send installed glTF directly to Godot | Appears short to implement | Reject as product architecture: skips Creator's supported subset, assumes source/built equivalence and does not handle physics or systems |
 | Use a simulator SDK compiler/importer in the product | Could handle some proprietary build details | Do not select without applicable permission; SDK/sample terms are material, and a build pipeline is not a universal decoder |
-| Require Blender/ModelConverterX for every player | Reuses established tools | Optional author workflow only; prepared GLB works without tools installed in the exported app |
+| Require Blender/ModelConverterX for every player | Reuses established tools | Optional author/recovery workflow only; the normal automatic route ships its own qualified conversion runtime |
 | Implement MDL/AIR and native 2024 first | Potentially broad catalogue | Defer: more binary/version/composition uncertainty before the shared Creator flight and persistence gates close |
 | Generic file adapter plus guessed stock physics | Quick flyable-looking result | Reject implicit substitution; offer a separately authored, labelled RC installation only when topology/domain fit is explicit |
 | Reuse Creator with source reports and bounded normalization | Matches existing architecture and admits useful staged results | Selected proposal; qualification remains per source/configuration/domain |
@@ -134,7 +135,7 @@ Open decisions include the first complete authorized conventional aircraft, sour
 
 ### Review decisions
 
-The integrated design accepts the format research's source-first strategy and the physics research's separation of original data, dimensional estimates and RC reauthoring. It narrows the first milestone to prepared GLB plus readable observations so automatic conversion is not a prerequisite for useful authoring. It retains the repository audit's failed/open gates and semantic storage limitation. Exact version labels, source-array order, model JSON features and worked scaling arithmetic were checked before integration; helper reports are evidence inputs, not compatibility certification.
+The integrated design accepts the format research's source-first strategy and the physics research's separation of original data, dimensional estimates and RC reauthoring. The initial review proposed prepared GLB plus readable observations as an early useful milestone. The later owner clarification retains that engineering increment and requires an in-app automatic conversion journey for completed-product acceptance, as specified in the linked wizard. It retains the repository audit's failed/open gates and semantic storage limitation. Exact version labels, source-array order, model JSON features and worked scaling arithmetic were checked before integration; helper reports are evidence inputs, not compatibility certification.
 
 ### Documentation verification (2026-11-16)
 
@@ -143,3 +144,11 @@ A read-only independent review found and closed three design gaps before publica
 Reused `tools/ci/check_docs.py` link/anchor functions against the staged Git tree for the seven changed Markdown files: **120 new or affected local links, zero errors**. Unchanged links outside the affected targets were excluded; 62 external link occurrences were not subjected to a blanket network availability check. `git diff --cached --check` reported no whitespace errors.
 
 An independent arithmetic check reproduced the synthetic scaling example's area, mass, speed, inertia, power, Reynolds ratio, both conditional stall estimates and wing-loading counterexample, plus the asymmetric tensor transform and its inverse. These checks verify the written derivation and document navigation. No runtime code, generated aircraft data or third-party assets changed; simulator tests, required implementation CI, conversion fidelity and exported-platform flight qualification were not run or claimed.
+
+### Automatic wizard clarification (2026-11-16)
+
+Following the owner clarification after `8a0ec5320789a1eddccd576e066537aacffa2dff`, the plan now requires automatic in-app conversion for its advertised source profile, zero follow-up questions when source/profile data suffice, conditional unit-aware controls and later editing with coherent recomputation. Prepared GLB remains an engineering/recovery path. The new wizard specification defines W01–W14 and assigns them to existing AC-FS work; these are proposed journeys, not executed importer tests.
+
+Two focused independent reviews informed the integrated design. Accepted corrections preserve qualified in-app reduction of oversized sources, avoid mandatory pickers for already resolved choices, distinguish unavailable features from answerable questions, and separate an unsaved candidate's trial readiness from actual Store publication. The editing contract names coherent governing-input or validated-override routes and exposes fixed-package limitations as implementation work.
+
+Verification for this documentation revision: 195 new or affected local links/anchors passed; W01–W14 and the 16 existing AC-FS work-package IDs were checked; scale-once, aspect-ratio invariance and CG arithmetic checks passed; changed-file whitespace checks passed. Only 14 Markdown files changed. No automatic importer, converter runtime, UI or flight campaign was implemented or executed.

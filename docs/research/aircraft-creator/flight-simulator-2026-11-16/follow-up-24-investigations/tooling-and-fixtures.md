@@ -2,6 +2,10 @@
 
 **Date:** 2026-11-16. **Status:** proposed engineering backlog derived from [24 investigations](README.md); no new dependencies installed, vendored or qualified. The [AC-FS plan](../../../../plans/flight-simulator-aircraft-import.md) owns implementation. Tool names below are candidates with defined jobs and limits, not a recommendation to install all of them.
 
+## Automatic product runtime
+
+The later [owner clarification and wizard](../../../../plans/flight-simulator-import-wizard.md) requires OpenRC to perform supported conversion itself. The candidate table distinguishes evaluation/reference tools from components eligible for the shipped pipeline. AC-FS-04 must choose licensed, versioned app-owned libraries or bounded packaged workers; AC-FS-11 must prove normal conversion on clean desktop exports without Blender, MCX, a Python CLI or the Microsoft SDK installed by the player. No candidate has been selected or bundled by this research. Prepared GLB and external author workflows are optional recovery/engineering paths. Wizard W01…W14 supplement the original F01…F24 mechanism fixtures.
+
 ## Reuse the existing OpenRC boundaries
 
 | Existing capability | Proposed use | Boundary |
@@ -44,7 +48,7 @@ The six exact source revisions inspected for the interchange/fixture tools are i
 2. **Retain source identity.** Capture the selected closure once; record hashes, declared versus detected dialect, material roles and expected parts. Preserve the captured original. For optimizer fixtures use an independently inspectable reference; a large real source need not already fit Creator limits.
 3. **Run explicit transformations.** Use a dedicated temporary directory, rooted read/write access, no network resolution or source code execution, bounded workers and cancellation. Record each operation, its inputs/outputs, tool version and diagnostics. A timeout produces a failed stage, not an incomplete artifact accepted as complete.
 4. **Evaluate independent boundaries.** Compare standards diagnostics, final Creator admission, known geometry/UV/material samples, control poses and resource consumption. Test the material/hinge semantics even when a third-party validator returns no errors. For originals outside admission bounds, never send them directly to the runtime importer to create a reference image.
-5. **Decide narrowly.** Accept one explicit profile only if its intended outcomes pass; otherwise retain the prepared-GLB route or a declared limited result. Record refused/unsupported cases. A successful experiment does not expand the advertised simulator compatibility matrix by itself.
+5. **Decide narrowly.** Accept one explicit profile only if its intended outcomes pass; otherwise narrow the advertised automatic source profile and retain a declared limited result or optional prepared-GLB recovery. A recovery workflow does not satisfy automatic-feature completion. Record refused/unsupported cases. A successful experiment does not expand the advertised simulator compatibility matrix by itself.
 
 The proposed recipe record belongs to AC-FS-02's common dependency/provenance design, not a new standalone runtime format. It needs captured source and output identities, tool/build and operation parameters, dependency/profile versions, bounded execution observations, diagnostic severity and stage outcome, known-answer references, manual choices and artifact permissions. Repeating a recipe must distinguish reproducible semantic output from byte identity when a tool inserts timestamps or other nondeterministic metadata. Only exact admitted bytes enter an immutable saved revision.
 
@@ -64,7 +68,7 @@ All rows below are **planned**, not generated or run by this documentation chang
 | F08 | R08: cross-file system reference and competing mod | Missing source dependency stays visible without executing gauges or importing cockpit systems |
 | F09 | R09: asymmetric engine/datum/CG landmarks | One recorded transform applies to geometry and physical proposals; final RC inventory owns CG |
 | F10 | R10: payload versus water-ballast declaration | Source semantics are retained; unsupported ballast/tow/flex cannot authorize RC flight |
-| F11 | R11: declared two-blade geometry and three-blade physics | Discrepancy remains explicit; target installation must be selected and confirmed |
+| F11 | R11: declared two-blade geometry and three-blade physics | Discrepancy remains explicit; target installation must follow an explicit declared profile/selection with preserved origins |
 | F12 | R12: readable CFG plus custom engine-control dependency | Source report cannot claim the complete flight behavior from CFG alone |
 | F13 | R13: low-Re polar plus nonconverged/missing samples | Domain, solver and missing data survive; no extrapolated stall truth is silently created |
 | F14 | R14: propeller curve, changed RPM and stopped shaft | Recompute advance ratio, respect family limits, and avoid division by zero |
