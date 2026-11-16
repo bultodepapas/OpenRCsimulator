@@ -2,6 +2,8 @@
 
 Checked 2026-11-15 · [Audit](README.md) · [Plan](../../../plans/sun.md) · [Examples and experiments](experiments.md)
 
+The companion [28-investigation survey](investigations.md) expands this foundational source catalog with source-reviewed Godot addons/demos, pinned rendering libraries, production references, integration decisions and proposed experiments. It includes exact repository revisions and explicit version/license/retrieval limits; a listed project is not an installed or qualified dependency.
+
 ## 1. Version policy
 
 The project pins **Godot 4.8 beta 2**, `cafc17a192acf67903910a68aeb3c076c0907a4b`; [app/get-godot.sh](../../../../app/get-godot.sh) checks its executable identity. [G01: the official release announcement](https://godotengine.org/article/dev-snapshot-godot-4-8-beta-2/) provides release context. This program does not upgrade the engine.

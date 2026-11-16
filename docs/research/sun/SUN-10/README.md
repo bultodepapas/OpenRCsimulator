@@ -143,7 +143,7 @@ The lead accepted the independent audit's spatial, transparency, receiver and mo
 
 This change is confined to Markdown plans, source research, examples and navigation/status links. Delivery checks cover the final diff, referenced repository paths, Markdown fences, and branch/commit publication. Example arithmetic can be checked independently without launching the game. No game test, visual gate, benchmark or pilot-acceptance pass is claimed for this documentation branch.
 
-Pre-publication checks on the completed candidate:
+Pre-publication checks on the initial four-document candidate, delivered as `4e1d79704a5b71865e0817d7f18692edea28d171` (the counts below do not include the later investigation survey):
 
 | Check | Result and scope |
 | --- | --- |
@@ -154,3 +154,9 @@ Pre-publication checks on the completed candidate:
 | Independent technical review | Complete candidate reviewed; substantive findings resolved, including cirrus preservation, sun/moon shadow ownership, correlated visibility, recovery-trajectory controls and capture-tool evidence limits. |
 
 Publication identifies the final documentation commit on the named branch. Runtime implementation and its CI, native rendering, target-hardware performance and owner flight acceptance remain the separate phase exits above.
+
+## 6. Expanded research survey
+
+The follow-up [28 investigations](investigations.md) cover eight official Godot topics/demos, six sky/cloud repositories, five optics/color repositories and nine rendering-library/production-research/visual-reference questions. Each contains inspected primary evidence, an OpenRC integration analysis, a bounded experiment and an adoption/reference decision. Sixteen external addon/library repositories, the engine and official demos use exact code revisions; paper/manual sources identify their separate retrieval limits.
+
+The survey's [priorities and visual ideas](investigations.md#6-decisions-for-openrc) feed Revision 3 of the sun plan. Source discovery and relevant code/license inspection were completed with independent review; no addon was installed or executed, and no new native image or timing is claimed. The initial code audit remains fixed to its stated application baseline.

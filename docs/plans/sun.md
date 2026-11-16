@@ -1,10 +1,12 @@
 # Sun: realistic disc, glare and dazzle
 
-2026-11-15 · Revision 2 · **Implementation plan** · Step prefix: **SUN**
+2026-11-15 · Revision 3 · **Implementation plan** · Step prefix: **SUN**
 
 **Status:** SUN-00…05, -02b, -05b, -06 (command line) and -09 have delivered software and historical rendered evidence. The SUN-07 source handoff to moon glare exists in `SunGlare.source()`; FW-MOON-08 owns its remaining qualification. SUN-08 owner flight acceptance and the eyewear preference (SUN-D1) remain open. **SUN-10…19 below are a new, documentation-only improvement program; no new runtime effect is delivered by this revision.** SUN-10's source research is complete, while its current native baseline remains pending.
 
 This revision audits `main` at `273a7e4c0617fdf4cacc39c360796fd79afa5f2c`, application 0.2.8, official Godot `4.8.beta2.official.cafc17a19`. See the [dated code audit](../research/sun/SUN-10/README.md), [official sources and engine capability matrix](../research/sun/SUN-10/sources.md), and [implementation examples, experiments and acceptance cards](../research/sun/SUN-10/experiments.md). Existing evidence stays in [SUN-00](../research/sun/SUN-00/README.md), [SUN-01…05](../research/sun/SUN-01-05/README.md), and [SUN-02b/05b/06/09](../research/sun/SUN-02b-06-09/README.md); its original engine, resolution and hardware limits still apply.
+
+Revision 3 adds [28 detailed investigations](../research/sun/SUN-10/investigations.md): official Godot features/demos, eleven third-party Godot repositories, rendering libraries, production cloud research and visual-reference workflows. Each gives evidence, integration limits, an experiment and a decision. These are evaluated options within SUN-10…19, not twenty-eight new implementation commitments.
 
 **Owner:** Visual quality and landscape (the sun's look), with LU (`sun_glare.*` began as LU-04) and Field world (shared `sky.gdshader`, `atmosphere.gd`; moon glare is FW-MOON-08). CAM sets the optics hint on its camera.
 
@@ -251,9 +253,24 @@ Start with matched short screens, then use five alternating baseline/candidate p
 
 Reuse [graphics tools](../tools/graphics.md), [atmosphere tools](../../tools/atmosphere/README.md), [landscape glare tools](../../tools/landscape/README.md), [world tools](../../tools/world/README.md), [shadow tools](../../tools/shadows/README.md), [graphics profile launcher](../../tools/graphics/README.md) and the [debug bridge](../../tools/debug/README.md). Use `glare_contrast.py` and `verify_glare.py` for paired contrast checks, then inspect actual sequences. Their current mathematical oracle is not independent evidence of human perception.
 
-The [source catalog](../research/sun/SUN-10/sources.md) links immutable beta 2 API evidence, official Godot tutorials/demos, PBRT transmission/scattering, production cloud/atmosphere papers, RenderDoc and Apple's Metal tools. It states what each source supports and what it does not establish for OpenRC.
+The [source catalog](../research/sun/SUN-10/sources.md) links immutable beta 2 API evidence, official Godot tutorials/demos, PBRT transmission/scattering, production cloud/atmosphere papers, RenderDoc and Apple's Metal tools. It states what each source supports and what it does not establish for OpenRC. The expanded [28-investigation survey](../research/sun/SUN-10/investigations.md) supplies pinned addon/library evaluations, technical and license boundaries, and concrete experiments.
 
 Before each implementation slice, re-read current source and the [consolidated audit queue](../../external%20Audits/CONSOLIDATED-AUDITS.md). Reuse A28/DT-MAC-06b and FW-81-R1 investigations; preserve A34's repaired seed binding/publication. Source research, a numerical check, a rendered image, a GPU measurement and owner flight acceptance remain separate evidence categories.
 
 This branch delivers the plan and research only. Proposed settings, budgets, optical-model changes and backend choices are reviewable recommendations. Defaults remain subject to the existing owner acceptance process; this document does not claim they are already implemented or qualified.
+
+## 13. Research-led implementation choices
+
+The [survey's selection matrix](../research/sun/SUN-10/investigations.md#6-decisions-for-openrc) refines the next prototypes:
+
+| Choice | Application to the existing phases |
+| --- | --- |
+| Prototype selected cloud-shape/lighting ideas from Sky3D, Skydome and GDQuest using provenance-cleared inputs | SUN-13 remains inside the existing Atmosphere/cloud field; no second world server or animation clock. |
+| Use Godot's official file-based compositor example as the initial optional GPU integration reference | SUN-14 starts with a visibility/resource-lifetime diagnostic; buffer bounds, resolved MSAA inputs and per-view history precede richer flare. |
+| Use PhysicalSkyMaterial and atmosphere research for controlled comparisons | SUN-12 first separates sky appearance, exposure and tone response. A LUT/backend replacement stays in SUN-17. |
+| Compare one advanced cloud candidate from Clay John's demo or SunshineClouds2 | FW-85/SUN-17 remains time-boxed, with native renderer, full-scene cost, depth, clock and temporal evidence. |
+| Retain native fog as an optional local scattering experiment | SUN-16 still requires custom cloud light-path transmission; radial depth blur is only a limited artistic comparison. |
+| Treat licenses and project-version markers as part of intake | GDQuest artwork has a separate noncommercial license; Skydome is MPL-2.0; gtibo has no discovered license; ARez2 has unresolved upstream attributions. None is an approved wholesale import. |
+
+The survey also describes [ten concrete visual ideas](../research/sun/SUN-10/investigations.md#concrete-visual-ideas-derived-from-the-survey), from illuminated cloud edges and moving sun patches to local dazzle and optional cloud entry. Their acceptance remains in the existing SUN experiments and phase exits.
 
