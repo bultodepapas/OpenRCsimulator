@@ -7,14 +7,18 @@ consistency workflow makes no GPU, scanout, physical-radio or graphics claim.
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 from datetime import datetime, timedelta
 import hashlib
+import http.client
 import importlib.util
 import json
 import math
 import os
 from pathlib import Path
 import re
+import ssl
 import statistics
 import subprocess
 import sys
@@ -32,6 +36,9 @@ REPOSITORY = 'bultodepapas/OpenRCsimulator'
 CI_GATES = ('CI required', 'NK-3 native kernel qualification (macOS ARM64) / Experimental fixed-wing source correctness')
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+PUBLIC_CI_HOST = 'api.github.com'
+PUBLIC_CI_MAX_BODY = 16 * 1024 * 1024
+PUBLIC_CI_CHILD = '--_openrc-public-ci-get'
 
 
 def require(condition: bool, message: str) -> None:
@@ -588,16 +595,119 @@ def _current_host(source: Any) -> dict[str, Any]:
             'os_product_version': sw_vers('-productVersion'), 'os_build_version': sw_vers('-buildVersion')}
 
 
+def _public_ci_endpoint(endpoint: str) -> None:
+    """Only the fixed public repository's run and bounded jobs pages are supported."""
+    require(isinstance(endpoint, str) and len(endpoint) <= 512, 'invalid public CI endpoint')
+    match = re.fullmatch(r'repos/' + re.escape(REPOSITORY) +
+                         r'/actions/runs/[1-9][0-9]*(?:/jobs\?per_page=100&filter=latest&page=([1-9][0-9]*))?',
+                         endpoint)
+    require(match is not None and (match.group(1) is None or
+            (len(match.group(1)) <= 2 and 1 <= int(match.group(1)) <= 51)), 'invalid public CI endpoint')
+
+
+def _fetch_public_ci_http(endpoint: str, timeout: float) -> dict[str, Any]:
+    """Issue one anonymous, non-redirecting HTTPS GET to GitHub's public REST API."""
+    _public_ci_endpoint(endpoint)
+    require(type(timeout) in (int, float) and math.isfinite(timeout) and 0 < timeout <= 30,
+            'invalid public CI timeout')
+    connection = http.client.HTTPSConnection(PUBLIC_CI_HOST, timeout=timeout)
+    try:
+        connection.request('GET', '/' + endpoint, headers={
+            'Accept': 'application/vnd.github+json',
+            'User-Agent': 'openrc-package-ci-observer',
+            'X-GitHub-Api-Version': '2022-11-28',
+        })
+        response = connection.getresponse()
+        headers = {str(name).lower(): str(value) for name, value in response.getheaders()}
+        body = response.read(PUBLIC_CI_MAX_BODY + 1)
+        require(len(body) <= PUBLIC_CI_MAX_BODY, 'public CI response exceeds its size limit')
+        return {'status': response.status, 'headers': headers,
+                'body_base64': base64.b64encode(body).decode('ascii')}
+    finally:
+        connection.close()
+
+
+def _public_ci_child(arguments: list[str]) -> int:
+    """Run the HTTPS request in a child so the parent's deadline is a hard bound."""
+    try:
+        require(len(arguments) == 2, 'invalid public CI request')
+        response = _fetch_public_ci_http(arguments[0], float(arguments[1]))
+        print(json.dumps(response, separators=(',', ':'), allow_nan=False))
+        return 0
+    except ssl.SSLCertVerificationError:
+        print('public CI HTTPS certificate verification failed', file=sys.stderr)
+        return 1
+    except ssl.SSLError:
+        print('public CI HTTPS TLS failed', file=sys.stderr)
+        return 1
+    except (OSError, ValueError, TypeError, OverflowError, http.client.HTTPException):
+        # Never reproduce a server body or local transport details in diagnostics.
+        print('public CI HTTPS request failed', file=sys.stderr)
+        return 1
+
+
+def _public_ci_json(watch: Any, endpoint: str, timeout: float) -> Any:
+    """Adapt an actual HTTPS status, headers and body to the existing watcher contract."""
+    _public_ci_endpoint(endpoint)
+    require(type(timeout) in (int, float) and math.isfinite(timeout) and 0 < timeout <= 30,
+            'invalid public CI timeout')
+    command = [sys.executable, '-I', '-B', str(Path(__file__).resolve()), PUBLIC_CI_CHILD,
+               endpoint, str(timeout)]
+    try:
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                timeout=timeout, check=False)
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise watch.TransportError('public GitHub HTTPS request failed or timed out') from error
+    if result.returncode:
+        known = {b'public CI HTTPS certificate verification failed': 'public GitHub HTTPS certificate verification failed',
+                 b'public CI HTTPS TLS failed': 'public GitHub HTTPS TLS failed'}
+        raise watch.TransportError(known.get(result.stderr.strip(), 'public GitHub HTTPS request failed'))
+    try:
+        response = json.loads(result.stdout)
+        if (not isinstance(response, dict) or set(response) != {'status', 'headers', 'body_base64'}
+                or type(response['status']) is not int or not 100 <= response['status'] <= 599
+                or not isinstance(response['headers'], dict)
+                or any(not isinstance(k, str) or not isinstance(v, str) for k, v in response['headers'].items())
+                or not isinstance(response['body_base64'], str)):
+            raise ValueError('malformed response')
+        status = response['status']
+        headers = {key.lower(): value for key, value in response['headers'].items()}
+        body = base64.b64decode(response['body_base64'], validate=True)
+        if len(body) > PUBLIC_CI_MAX_BODY:
+            raise ValueError('oversized response')
+    except (ValueError, TypeError, KeyError, binascii.Error) as error:
+        raise watch.InvalidData('public GitHub HTTPS response is malformed') from error
+    if status >= 400:
+        try:
+            message = json.loads(body).get('message', '')
+        except (ValueError, UnicodeDecodeError, AttributeError):
+            message = ''
+        secondary = isinstance(message, str) and any(marker in message.lower()
+                    for marker in ('secondary rate limit', 'abuse detection'))
+        delay = watch.retry_delay(status, headers, time.time(), secondary)
+        limited = status == 429 or secondary or headers.get('x-ratelimit-remaining') == '0' or bool(delay)
+        detail = f'GitHub request failed (HTTP {status})' if delay is not None else 'GitHub quota exhausted without a usable reset'
+        raise watch.TransportError(detail, retry_after=delay or 0,
+                                   retryable=delay is not None and (limited or status >= 500 or status in (408, 425)))
+    # Do not follow redirects; a moved or unexpected endpoint must be reviewed.
+    watch.require(200 <= status < 300, 'unexpected GitHub HTTP status')
+    try:
+        return json.loads(body)
+    except (UnicodeDecodeError, ValueError) as error:
+        raise watch.InvalidData('GitHub returned invalid JSON') from error
+
+
 def _ci_snapshot(watch: Any, commit: str, run_id: int) -> dict[str, str]:
     from types import SimpleNamespace
     require(type(run_id) is int and run_id > 0, 'CI run ID must be a positive integer')
     deadline = time.monotonic() + 120
     endpoint = f'repos/{REPOSITORY}/actions/runs/{run_id}'
+    api = lambda path, timeout: _public_ci_json(watch, path, timeout)
     try:
-        before = watch.request(watch.gh_json, endpoint, deadline, time.monotonic)
-        jobs = watch.read_jobs(SimpleNamespace(repository=REPOSITORY, run_id=run_id), watch.gh_json,
+        before = watch.request(api, endpoint, deadline, time.monotonic)
+        jobs = watch.read_jobs(SimpleNamespace(repository=REPOSITORY, run_id=run_id), api,
                                deadline, time.monotonic)
-        after = watch.request(watch.gh_json, endpoint, deadline, time.monotonic)
+        after = watch.request(api, endpoint, deadline, time.monotonic)
     except (watch.TransportError, TimeoutError) as error:
         raise AdmissionError('live CI evidence is unavailable') from error
     return verify_ci_records(before, jobs, after, commit, run_id)
@@ -971,4 +1081,6 @@ def main() -> int:
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == PUBLIC_CI_CHILD:
+        raise SystemExit(_public_ci_child(sys.argv[2:]))
     raise SystemExit(main())
