@@ -61,6 +61,26 @@ The E300-09 native Windows checked run passed 190 checks with zero errors or war
 
 The verifier checks posed control clearance at manual travel and 45° using [extra_clearance.gd](../../../app/aircraft/extra_clearance.gd). Those are software geometry checks, not measured loaded-airframe travel. The visual propeller is nominal 12×6 with estimated outline/section; the shaft frame has the plan's 2° right / 0.5° down angles. [EX-05](../../../research/extra-300/ex05/derivation.md) derives the physical axis and force arm from that frame and hub. Aerodynamics, mass/inertia and the active glow profile remain separately attributed estimates.
 
+## Visual self-audit and improvement plan
+
+2026-11-15 · EX-10 / E300-10 · **Visual verdict: SHIP WITH NOTES.** Reviewed native Windows Compatibility captures on an RTX 3090 at 1920×1080: front, side, top, underside, oblique, wing/tail details and two distance views. The measured outline and contrasting upper/lower scheme remain readable. Geometry checks qualify software interfaces and clearances; this audit does not establish flight realism or target-hardware performance.
+
+The main confirmed defect was exposed red end-cap slivers at wing-panel joins. Full and shortened fixed panels sampled the same piecewise-linear airfoil at different chord fractions. Their boundary polylines differed by up to 0.431 mm. E300-10 includes every source section breakpoint at both ends of each panel, preserving equal ring counts, closed caps and the moving aileron bevel. Direct comparison of emitted render vertices reduces the worst join mismatch below 0.00001 mm. The regression rejects E300-09. It reads render arrays rather than the rounded faces returned by the collision-oriented mesh helper.
+
+Wing normals now interpolate the section-knot normals independently of subdivision, account for taper/sweep and tip scaling, and meet the fixed panel tangentially at the first tip ring. Caps retain their flat normals. Matched views show smoother highlights and substantially fewer isolated red pixels. One inherited red pixel remains at (285, 271) in the wing detail; its cause remains unresolved. Do not claim a completely artifact-free finish. The shader and artistic palette are unchanged. A shader-distance defect was considered, but projected seams and the native geometry A/B supported the panel explanation.
+
+The final native Windows checked run passed **204 checks, zero errors and zero warnings** (`T-253da60697cb437a82d5f580f39b98b9`). It contains 48 meshes and 26,263 triangles, 976 more triangles than E300-09. The extent remains 1.624 × 0.552 × 1.386 m and minimum control clearance remains 1.75 mm at manual high rates. The eight recorded runtime/test/package source hashes match the captured candidate, frozen input and checked attempt. The 16.9-second test duration is a functional-check observation, not a rendering-performance benchmark.
+
+| Priority | Finding and status | Next bounded action | Acceptance evidence |
+| --- | --- | --- | --- |
+| P0 | Panel join mismatch: corrected in E300-10. One isolated raster speck remains. | Retain emitted-boundary and closed-surface regression; isolate the remaining pixel before broader livery changes. | Join error ≤0.01 mm on both surfaces and both wings; closed meshes, finite outward unit normals; matched top/underside detail captures. |
+| P1 | Pilot still reads as separate primitive volumes in close-up. Artistic refinement, not a measured kit defect. | Refine face, neck and clothing transitions as one coherent RC bust; retain seat, harness and visor datum. | Close-up and overall comparison; curved-canopy containment; no new clipping; record mesh/material/triangle cost. |
+| P2 | Fin/rudder and elevator outer edges remain prism-shaped. | Add small selective exterior radii only after separating exterior edges from hinge-relief cuts. | Original outlines and named moving meshes preserved; closed topology; clearance at manual throws, intermediate poses and 45°; both paint faces reviewed. |
+| P3 | Control horns/linkages and motor-installation details are absent; gear-root detail is sparse. Exact kit-build placement is not established. | Collect compatible .60 build references, then add only visible supported fittings. Keep guessed dimensions labeled. | Source/provenance record; linkage endpoints follow controls; no fuselage/gear/control collisions; front, side and posed detail views. |
+| P4 | Studio and distance views support readability; this asset has no new in-flight frame-time/VRAM qualification from this audit. | Compare daylight and low sun in Home/flight at 1080p, including Low and normal presets; measure cost before increasing detail. | Actual viewport/renderer and hardware recorded; top/underside recognition at flight size; frame-time, draw and memory observations; preserved quality overrides. |
+
+Scratch evidence lives in ignored `tmp/extra300-audit-20261115/`: paired images, `visual-manifest.json`, baseline/candidate `join-regression.json` and the native verification receipts. The studio rig is a presentation fixture. Global scene lighting is not part of this model revision. Planned work above remains open; details added in earlier passes remain artistic estimates where the guide identifies them.
+
 ## Captures and research probes
 
 ```bash

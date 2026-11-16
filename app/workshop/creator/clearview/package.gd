@@ -8,13 +8,13 @@ var _archive: Archive
 var _models: Array = []
 
 static func capture(path: String, cancel := Callable()) -> Dictionary:
-	var archive := Archive.capture(path)
+	var archive := Archive.capture(path, cancel)
 	if not archive.ok:
 		return archive
 	return inspect_archive(archive.value, cancel)
 
 static func inspect_bytes(bytes: PackedByteArray, label := "models.zip", cancel := Callable()) -> Dictionary:
-	var archive := Archive.inspect(bytes, label)
+	var archive := Archive.inspect(bytes, label, cancel)
 	if not archive.ok:
 		return archive
 	return inspect_archive(archive.value, cancel)
@@ -59,7 +59,14 @@ static func inspect_archive(archive: Archive, cancel := Callable()) -> Dictionar
 			roots.append(root)
 		package._models.append(model)
 	if roots.is_empty():
-		return R.fail(R.SOURCE_UNSUPPORTED, "The ZIP contains no ClearView model-root params.txt file.", "source", "import")
+		if candidates.is_empty():
+			return R.fail(R.SOURCE_UNSUPPORTED, "The ZIP contains no ClearView model-root params.txt file.", "source", "import")
+		var failures: Array = []
+		for item: Dictionary in package._models:
+			for entry: Dictionary in item.diagnostics:
+				failures.append(R.diagnostic(str(entry.code), "ClearView model %s: %s", "source", "import",
+					[item.name, R.text(entry)], str(entry.severity)))
+		return R.fail_all(failures)
 	return R.ok(package)
 
 func models() -> Array:

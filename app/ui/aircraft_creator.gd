@@ -30,6 +30,9 @@ const Store := preload("res://workshop/creator/store.gd")
 const PreviewScript := preload("res://ui/aircraft_creator_preview.gd")
 const LibraryScript := preload("res://ui/aircraft_creator_library.gd")
 const PartsScript := preload("res://ui/aircraft_creator_parts.gd")
+const ClearViewPackage := preload("res://workshop/creator/clearview/package.gd")
+const ClearViewConverter := preload("res://workshop/creator/clearview/converter.gd")
+const ImportCancellation := preload("res://workshop/creator/clearview/cancellation.gd")
 
 ## Quiet time after the last change before the automatic backup is written.
 const BACKUP_DELAY_S := 2.0
@@ -107,10 +110,16 @@ class ImportJob extends RefCounted:
 	var bytes := PackedByteArray()
 	var file_name := ""
 	var opening := {}
+	var phase := "ordinary"
+	var package: ClearViewPackage
+	var model_root := ""
+	var cancellation := ImportCancellation.new()
+	var annotations: Array = []
 
 
 ## Inspections whose wizard was closed before they finished. Kept alive until their task is released.
 static var _abandoned_jobs: Array[ImportJob] = []
+static var _reap_scheduled := false
 
 var _doc: Authoring
 var _current := "import"
@@ -168,6 +177,11 @@ var _job: ImportJob
 var _shown_source: InspectedSource
 var _preview_signature := ""
 var _preview_placed := false
+var _pending_clearview: ClearViewPackage
+var _clearview_dialog: ConfirmationDialog
+var _clearview_list: ItemList
+var _cancel_import_button: Button
+var _clearview_notes: Array = []
 
 # Orient and size.
 var _orient_missing: VBoxContainer
@@ -228,6 +242,7 @@ var _store: Store
 var _store_reason := ""
 var _recovery_checked := false
 var _opening := false
+var _edit_generation := 0
 var _backup_timer: Timer
 var _save_button: Button
 var _open_button: Button
@@ -276,8 +291,11 @@ func _notification(what: int) -> void:
 			_closing = true
 			_import_generation += 1
 			if _job != null:
+				_job.cancellation.cancel()
 				_abandoned_jobs.append(_job)
 				_job = null
+				_schedule_import_reap()
+			_pending_clearview = null
 			_close_store()
 		NOTIFICATION_TRANSLATION_CHANGED, NOTIFICATION_THEME_CHANGED:
 			if _scroll != null and not _closing:
@@ -324,7 +342,7 @@ func set_note(text: String) -> void:
 ## True when the document differs from its last save (or was never saved and holds anything), or
 ## while a model is being imported. Follows the document's own save state.
 func has_unsaved_changes() -> bool:
-	return _doc.has_unsaved_changes() or _import_state == "inspecting"
+	return _doc.has_unsaved_changes() or _import_state in ["inspecting", "choosing"]
 
 
 ## Hides an open file dialog, confirmation, library, leave or recovery question, colour picker or
@@ -332,6 +350,9 @@ func has_unsaved_changes() -> bool:
 ## the backup for the next opening. True when something was dismissed.
 func dismiss_modal_for_exit() -> bool:
 	var dismissed := false
+	if _clearview_dialog != null and _clearview_dialog.visible:
+		cancel_import()
+		dismissed = true
 	if _file_dialog.visible:
 		_file_dialog.hide()
 		dismissed = true
@@ -383,10 +404,10 @@ func confirm_leave(proceed: Callable, cancel: Callable = Callable()) -> void:
 	_leave_proceed = proceed
 	_leave_cancel = cancel
 	_leave_pending = true
-	var saving := _can_save()
+	var saving := _can_save() and _import_state not in ["inspecting", "choosing"]
 	var text := tr(LEAVE_TEXT)
 	if not saving:
-		text += "\n\n" + _store_reason
+		text += "\n\n" + (tr(WAIT_FOR_IMPORT) if _import_state in ["inspecting", "choosing"] else _store_reason)
 	_leave_dialog.dialog_text = text
 	_leave_dialog.get_ok_button().disabled = not saving
 	_leave_dialog.popup_centered_clamped(Vector2i(760, 300), 0.9)
@@ -397,6 +418,9 @@ func confirm_leave(proceed: Callable, cancel: Callable = Callable()) -> void:
 ## Opens the library of drafts and saved aircraft.
 func open_library() -> void:
 	if _closing or not is_inside_tree() or _store == null:
+		return
+	if _import_state in ["inspecting", "choosing"]:
+		set_note(tr(WAIT_FOR_IMPORT))
 		return
 	_library.set_message("" if _can_save() else _store_reason)
 	_fill_library()
@@ -498,17 +522,43 @@ static func reap_abandoned_imports() -> int:
 	return running.size()
 
 
+## Cleanup survives a closed wizard; timer callbacks retain no UI node.
+static func _schedule_import_reap() -> void:
+	if _reap_scheduled or _abandoned_jobs.is_empty():
+		return
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null or tree.root == null:
+		return
+	_reap_scheduled = true
+	tree.create_timer(0.05).timeout.connect(func() -> void:
+		_reap_scheduled = false
+		if reap_abandoned_imports() > 0:
+			_schedule_import_reap())
+
+
 # --- Import ---------------------------------------------------------------------------------
 
 ## Worker-thread body. Static and node-free: closing the wizard cannot invalidate it.
 static func _inspect(job: ImportJob) -> void:
+	if job.phase == "clearview_inventory":
+		job.result = ClearViewPackage.capture(job.path, job.cancellation.is_cancelled)
+		return
+	if job.phase == "clearview_convert":
+		job.result = ClearViewConverter.convert(job.package, job.model_root, job.cancellation.is_cancelled)
+		if job.result.ok:
+			job.annotations = job.result.diagnostics
+		return
 	if not job.opening.is_empty():
 		job.result = Importer.inspect_bytes(job.bytes, job.file_name)
+		if job.result.ok:
+			job.annotations = ClearViewConverter.source_notes(job.result.value)
 		return
 	var captured: Dictionary = Importer.read_bounded(job.path)
 	if captured.ok:
 		captured = Importer.inspect_bytes(captured.value, job.path.get_file())
 	job.result = captured
+	if captured.ok:
+		job.annotations = ClearViewConverter.source_notes(captured.value)
 
 
 static func _start_task(job: ImportJob) -> int:
@@ -517,16 +567,27 @@ static func _start_task(job: ImportJob) -> int:
 
 
 func _start_import(path: String) -> void:
+	reap_abandoned_imports()
+	if _pending_clearview != null or (_job != null and _job.phase != "ordinary"):
+		set_note(tr("Wait for the current import, or cancel it first."))
+		return
+	for running: ImportJob in _abandoned_jobs:
+		if running.phase != "ordinary":
+			set_note(tr("The previous import is stopping. Try again in a moment."))
+			return
 	if _job != null:
 		# A newer selection wins: the running inspection is left to finish and its result is dropped.
 		_abandoned_jobs.append(_job)
 		_job = null
 		_discarded_imports += 1
+		_schedule_import_reap()
 		_opening = false
 	_import_generation += 1
 	var job := ImportJob.new()
 	job.path = path
 	job.generation = _import_generation
+	if path.get_extension().to_lower() == "zip":
+		job.phase = "clearview_inventory"
 	job.task_id = _start_task(job)
 	_job = job
 	_import_state = "inspecting"
@@ -542,10 +603,23 @@ func _adopt_import(job: ImportJob) -> void:
 		_discarded_imports += 1
 		return
 	var result: Dictionary = job.result
+	if job.phase == "clearview_inventory" and result.get("ok", false):
+		_show_clearview_package(result.value)
+		return
+	if job.phase == "clearview_convert" and result.get("ok", false):
+		result = R.ok(result.value.source, result.diagnostics)
 	if not job.opening.is_empty():
 		_opening = false
+		_commit_focused_edit()
+		if _opening_edit_state() != job.opening.baseline:
+			set_note(tr("The current draft changed while opening. Your changes were kept. Open the saved model again when ready."))
+			_schedule_backup()
+			_refresh()
+			return
 		if result.get("ok", false) and result.get("value") is InspectedSource:
-			_finish_open(str(job.opening.kind), job.opening.value, result.value)
+			if _finish_open(str(job.opening.kind), job.opening.value, result.value):
+				_clearview_notes = job.annotations
+				_refresh()
 		else:
 			set_note("\n".join(PackedStringArray([tr(OPEN_FAILED), _diagnostics_text(result.get("diagnostics", []))])).strip_edges())
 			_refresh()
@@ -554,9 +628,77 @@ func _adopt_import(job: ImportJob) -> void:
 		_import_state = "imported"
 		_import_diagnostics = []
 		_doc.set_source(result.value)
+		_clearview_notes = job.annotations
 	else:
 		_import_state = "failed"
 		_import_diagnostics = result.get("diagnostics", [])
+	_schedule_backup()
+	_refresh()
+
+
+## Cancel leaves the current document untouched and prevents any stale worker from adopting.
+func cancel_import() -> void:
+	_import_generation += 1
+	_opening = false
+	if _job != null:
+		_job.cancellation.cancel()
+		_abandoned_jobs.append(_job)
+		_job = null
+		_discarded_imports += 1
+		_schedule_import_reap()
+	_pending_clearview = null
+	if _clearview_dialog != null:
+		_clearview_dialog.hide()
+	_import_state = "imported" if _doc.source() != null else "idle"
+	_import_diagnostics = []
+	_schedule_backup()
+	_refresh()
+
+
+func _show_clearview_package(package: ClearViewPackage) -> void:
+	_pending_clearview = package
+	var models := package.models()
+	if models.size() == 1 and models[0].ok:
+		_start_clearview_conversion(str(models[0].root))
+		return
+	_import_state = "choosing"
+	_clearview_list.clear()
+	var first := -1
+	for model: Dictionary in models:
+		var index := _clearview_list.item_count
+		_clearview_list.add_item(str(model.name))
+		_clearview_list.set_item_metadata(index, str(model.root))
+		_clearview_list.set_item_disabled(index, not model.ok)
+		_clearview_list.set_item_tooltip(index, _diagnostics_text(model.diagnostics))
+		if model.ok and first < 0:
+			first = index
+	_clearview_dialog.get_ok_button().disabled = first < 0
+	if first >= 0:
+		_clearview_list.select(first)
+	_clearview_dialog.popup_centered_clamped(Vector2i(680,480),0.9)
+	_clearview_list.grab_focus.call_deferred()
+	_refresh()
+
+
+func _clearview_selected() -> void:
+	var selected := _clearview_list.get_selected_items()
+	if selected.is_empty() or _pending_clearview == null:
+		return
+	_start_clearview_conversion(str(_clearview_list.get_item_metadata(selected[0])))
+
+
+func _start_clearview_conversion(root: String) -> void:
+	var job := ImportJob.new()
+	job.phase = "clearview_convert"
+	job.generation = _import_generation
+	job.package = _pending_clearview
+	job.model_root = root
+	_pending_clearview = null
+	_clearview_dialog.hide()
+	job.task_id = _start_task(job)
+	_job = job
+	_import_state = "inspecting"
+	set_process(true)
 	_refresh()
 
 
@@ -566,7 +708,7 @@ func _choose_model() -> void:
 	_file_dialog.title = tr("Choose a model")
 	# Filter captions are plain text to the dialog: translate them each time it opens.
 	var filters := PackedStringArray()
-	for filter: String in PackedStringArray(["*.stl, *.glb ; 3D model"]) + Importer.FILE_FILTERS:
+	for filter: String in PackedStringArray(["*.stl, *.glb, *.zip ; 3D model"]) + Importer.FILE_FILTERS + PackedStringArray(["*.zip ; ClearView aircraft ZIP"]):
 		var parts := filter.split(";", true, 1)
 		if parts.size() == 2:
 			filters.append("%s ; %s" % [parts[0].strip_edges(), tr(parts[1].strip_edges())])
@@ -797,6 +939,26 @@ func _build_footer(parent: Container) -> void:
 
 
 func _build_dialogs() -> void:
+	_clearview_dialog = ConfirmationDialog.new()
+	_clearview_dialog.name = "ClearViewModelPicker"
+	_clearview_dialog.title = tr("Choose a model")
+	var contents := VBoxContainer.new()
+	contents.add_theme_constant_override("separation", 12)
+	_clearview_dialog.add_child(contents)
+	var explanation := _label("Choose the aircraft to import from this ClearView ZIP.", "SecondaryLabel")
+	explanation.name = "ClearViewExplanation"
+	contents.add_child(explanation)
+	_clearview_list = ItemList.new()
+	_clearview_list.name = "ClearViewModels"
+	_clearview_list.custom_minimum_size = Vector2(560,300)
+	_clearview_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_clearview_list.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_clearview_list.item_selected.connect(func(_index: int) -> void: _clearview_dialog.get_ok_button().disabled = false)
+	contents.add_child(_clearview_list)
+	_clearview_dialog.confirmed.connect(_clearview_selected)
+	_clearview_dialog.canceled.connect(cancel_import)
+	_clearview_dialog.visibility_changed.connect(_update_preview_active)
+	add_child(_clearview_dialog)
 	_file_dialog = FileDialog.new()
 	_file_dialog.name = "ModelFileDialog"
 	_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -879,10 +1041,14 @@ func _build_dialogs() -> void:
 
 
 func _build_import_page(page: VBoxContainer) -> void:
-	page.add_child(_label("Choose an STL file or a self-contained GLB file. A picture is not a 3D model."))
+	page.add_child(_label("Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."))
 	_choose_button = _button("Choose model…", "PrimaryButton", "ChooseModel")
 	_choose_button.pressed.connect(_choose_model)
 	page.add_child(_choose_button)
+	_cancel_import_button = _button("Cancel import", "", "CancelImport")
+	_cancel_import_button.pressed.connect(cancel_import)
+	_cancel_import_button.visible = false
+	page.add_child(_cancel_import_button)
 	_import_status = _label("", "", false)
 	_import_status.name = "ImportStatus"
 	page.add_child(_import_status)
@@ -1250,7 +1416,9 @@ func _number_edit(node_name: String, commit: Callable) -> LineEdit:
 	edit.focus_entered.connect(func() -> void:
 		if not bool(edit.get_meta("typed")):
 			edit.set_meta("origin", edit.text))
-	edit.text_changed.connect(func(_text: String) -> void: edit.set_meta("typed", true))
+	edit.text_changed.connect(func(_text: String) -> void:
+		edit.set_meta("typed", true)
+		_edit_generation += 1)
 	edit.text_submitted.connect(func(_text: String) -> void: _commit_edit(edit))
 	edit.focus_exited.connect(_commit_edit.bind(edit))
 	edit.gui_input.connect(_on_edit_gui_input.bind(edit))
@@ -1367,7 +1535,7 @@ func _update_preview_active() -> void:
 	if _preview == null or _file_dialog == null or _confirm == null or _library == null:
 		return
 	_preview.set_active(_active and is_visible_in_tree() and not _file_dialog.visible and not _confirm.visible
-		and not _leave_dialog.visible and not _recovery_dialog.visible and not _library.visible)
+		and not _leave_dialog.visible and not _recovery_dialog.visible and not _library.visible and not _clearview_dialog.visible)
 
 
 func _on_visibility_changed() -> void:
@@ -1383,7 +1551,7 @@ func _picker_open() -> bool:
 ## True while a dialog, colour picker or option list covers the wizard.
 func _modal_open() -> bool:
 	if _file_dialog.visible or _confirm.visible or _leave_dialog.visible or _recovery_dialog.visible or _library.visible \
-			or _picker_open():
+			or _clearview_dialog.visible or _picker_open():
 		return true
 	for picker: OptionButton in _option_buttons():
 		if picker.get_popup().visible:
@@ -1774,6 +1942,9 @@ func _flow(parent: Container, node_name: String) -> HFlowContainer:
 # --- Test flight ----------------------------------------------------------------------------
 
 func _on_test_fly_pressed() -> void:
+	if _import_state in ["inspecting", "choosing"]:
+		set_note(tr(WAIT_FOR_IMPORT))
+		return
 	_commit_focused_edit()
 	_issues = _collect_issues()
 	if not _issues.is_empty() or _import_state == "inspecting" or _opening:
@@ -2038,7 +2209,7 @@ func _refresh_steps() -> void:
 
 func _refresh_footer() -> void:
 	var reason := ""
-	if _import_state == "inspecting":
+	if _import_state in ["inspecting", "choosing"]:
 		reason = tr("Inspecting model…")
 	elif _opening:
 		reason = tr("Opening…")
@@ -2065,16 +2236,16 @@ func _refresh_save_state() -> void:
 	var writable := _can_save()
 	_save_state.text = STATE_VIEW_ONLY if not writable else (STATE_UNSAVED if has_unsaved_changes() else STATE_SAVED)
 	_save_state.tooltip_text = "" if writable else _store_reason
-	_save_button.disabled = not writable
+	_save_button.disabled = not writable or _opening or _import_state in ["inspecting", "choosing"]
 	_save_button.tooltip_text = "Ctrl+S" if writable else _store_reason
 	var open_reason := ""
 	if _store == null:
 		open_reason = _store_reason
-	elif _import_state == "inspecting" or _opening:
-		open_reason = tr(WAIT_FOR_IMPORT) if _import_state == "inspecting" else tr("Opening…")
+	elif _import_state in ["inspecting", "choosing"] or _opening:
+		open_reason = tr(WAIT_FOR_IMPORT) if _import_state in ["inspecting", "choosing"] else tr("Opening…")
 	_open_button.disabled = not open_reason.is_empty()
 	_open_button.tooltip_text = open_reason
-	_choose_button.disabled = _opening
+	_choose_button.disabled = _opening or _import_state in ["inspecting", "choosing"]
 
 
 func _refresh_fields(step: String) -> void:
@@ -2107,9 +2278,12 @@ func _refresh_fields(step: String) -> void:
 func _refresh_import() -> void:
 	var source: InspectedSource = _doc.source()
 	_choose_button.text = "Replace model…" if source != null else "Choose model…"
+	_cancel_import_button.visible = _import_state in ["inspecting", "choosing"]
 	match _import_state:
 		"inspecting":
 			_import_status.text = "%s\n%s" % [tr("Inspecting model…"), _import_file_name]
+		"choosing":
+			_import_status.text = tr("Choose an aircraft from the ClearView ZIP")
 		"failed":
 			_import_status.text = "%s\n%s" % [tr("The model could not be imported"), _import_file_name]
 			if source != null:
@@ -2117,7 +2291,7 @@ func _refresh_import() -> void:
 		_:
 			_import_status.text = tr("Model imported") if source != null else tr(NO_MODEL)
 	_fill_lines(_import_errors, _import_diagnostics if _import_state == "failed" else [], "ErrorLabel", false)
-	_fill_lines(_import_notes, source.notes() if source != null else [], "SecondaryLabel", true)
+	_fill_lines(_import_notes, (source.notes() + _clearview_notes) if source != null else [], "SecondaryLabel", true)
 	if source == null:
 		_import_details.text = ""
 		_import_details.visible = false
@@ -2534,6 +2708,9 @@ func _on_save_pressed() -> void:
 
 ## Saves the named draft. False when the name is missing or the store refused; the reason is shown.
 func _save_draft() -> bool:
+	if _opening or _import_state in ["inspecting", "choosing"]:
+		set_note(tr(WAIT_FOR_IMPORT))
+		return false
 	_commit_focused_edit()
 	if not _can_save():
 		set_note(_store_reason)
@@ -2572,7 +2749,10 @@ func _schedule_backup() -> void:
 
 ## Writes the automatic backup of unsaved work. Waits while a dialog is open or a model is read.
 func _write_backup(leaving := false) -> void:
-	if not _can_save() or not _doc.has_unsaved_changes() or _job != null:
+	if not _can_save() or not _doc.has_unsaved_changes():
+		return
+	if not leaving and (_job != null or _pending_clearview != null):
+		_backup_timer.start(BACKUP_DELAY_S)
 		return
 	if not leaving and _modal_open():
 		_backup_timer.start(BACKUP_DELAY_S)
@@ -2689,7 +2869,7 @@ func _load_entry(kind: String, id: String) -> Dictionary:
 
 ## A damaged entry is reported inside the library and costs nothing else.
 func _on_library_open(kind: String, id: String) -> void:
-	if _job != null:
+	if _job != null or _pending_clearview != null:
 		_library.set_message(tr(WAIT_FOR_IMPORT))
 		return
 	var loaded: Dictionary = _load_entry(kind, id)
@@ -2732,9 +2912,10 @@ func _begin_open_by_id(kind: String, id: String) -> void:
 func _begin_open(kind: String, value: Dictionary) -> void:
 	if _closing:
 		return
-	if _job != null:
+	if _job != null or _pending_clearview != null:
 		set_note(tr(WAIT_FOR_IMPORT))
 		return
+	_commit_focused_edit()
 	var bytes: PackedByteArray = value.get("source_bytes", PackedByteArray())
 	if bytes.is_empty():
 		_finish_open(kind, value, null)
@@ -2743,7 +2924,7 @@ func _begin_open(kind: String, value: Dictionary) -> void:
 	var job := ImportJob.new()
 	job.bytes = bytes
 	job.file_name = str(value.get("source_file_name", ""))
-	job.opening = {"kind": kind, "value": value}
+	job.opening = {"kind": kind, "value": value, "baseline": _opening_edit_state()}
 	job.generation = _import_generation
 	job.task_id = _start_task(job)
 	_job = job
@@ -2752,15 +2933,20 @@ func _begin_open(kind: String, value: Dictionary) -> void:
 	_refresh()
 
 
+## User typing includes invalid UI-owned text. Display-cache refreshes are not edits.
+func _opening_edit_state() -> Dictionary:
+	return {document = _doc.snapshot(), typed_revision = _edit_generation}
+
+
 ## A fresh document is restored and only replaces the current one when everything succeeded.
-func _finish_open(kind: String, value: Dictionary, source: InspectedSource) -> void:
+func _finish_open(kind: String, value: Dictionary, source: InspectedSource) -> bool:
 	var fresh := Authoring.new()
 	var saved_snapshot: Variant = value.get("snapshot", {})
 	var restored: Dictionary = fresh.restore(saved_snapshot if saved_snapshot is Dictionary else {}, source)
 	if not restored.ok:
 		set_note(_diagnostics_text(restored.diagnostics))
 		_refresh()
-		return
+		return false
 	if source != null and not fresh.bindings().is_empty():
 		# Stored numbers come back as floats: the normalized copy writes the same content as before.
 		var bound: Dictionary = VisualBuilder.validate_bindings(source, fresh.bindings())
@@ -2778,6 +2964,7 @@ func _finish_open(kind: String, value: Dictionary, source: InspectedSource) -> v
 			fresh.published_revision = int(value.revision)
 	_adopt_document(fresh, str(restored.value))
 	set_note("")
+	return true
 
 
 func _adopt_document(fresh: Authoring, step: String) -> void:
@@ -2808,6 +2995,9 @@ func _adopt_document(fresh: Authoring, step: String) -> void:
 
 
 func _on_publish_pressed() -> void:
+	if _opening or _import_state in ["inspecting", "choosing"]:
+		set_note(tr(WAIT_FOR_IMPORT))
+		return
 	_commit_focused_edit()
 	if not _can_save():
 		set_note(_store_reason)

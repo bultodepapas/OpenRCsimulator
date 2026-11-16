@@ -1,6 +1,6 @@
 # ClearView aircraft import plan
 
-**Date:** 2026-11-15. **Status:** researched proposal; importer not implemented. **Owner:** Aircraft Creator / Workshop. **Steps:** AC-CV-00…14, a subtrack of AC. The [research and source inventory](../research/aircraft-creator/clearview-2026-11-15.md) records the inspected downloads, primary documentation, source identities and limits. The [Creator plan](aircraft-creator.md) continues to own AC-00…25 and its gates.
+**Date:** 2026-11-15. **Status:** implementation in progress; bounded readers and an experimental visual adapter are integrated. Flight, Home, portable-source and exported-platform gates remain open. **Owner:** Aircraft Creator / Workshop. **Steps:** AC-CV-00…14, a subtrack of AC. The [research and source inventory](../research/aircraft-creator/clearview-2026-11-15.md) records the inspected downloads, primary documentation, source identities and limits. The [Creator plan](aircraft-creator.md) continues to own AC-00…25 and its gates.
 
 ## 1. Product outcome
 
@@ -136,7 +136,7 @@ Player flow: **Workshop → Import ClearView ZIP → choose model → inspect co
 
 ## 7. Work packages and acceptance
 
-All steps below are **open**. Research supplied by this proposal is input to AC-CV-00, not implementation evidence.
+AC-CV-01 has a bounded reader implementation and synthetic/corpus evidence. AC-CV-02/03 have an experimental conversion and Creator integration slice; their fidelity, resource and exported-target gates remain open. AC-CV-00 is partial, and AC-CV-04…14 remain open. The [implementation evidence](../research/aircraft-creator/clearview-2026-11-15.md#7-implementation-evidence) distinguishes implemented behavior from qualification. No whole step is marked complete by this preview slice.
 
 | ID | Work | Acceptance evidence / dependency |
 | --- | --- | --- |

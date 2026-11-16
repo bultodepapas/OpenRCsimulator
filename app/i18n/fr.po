@@ -13585,3 +13585,42 @@ msgstr "L’étalonnage n’a pas pu démarrer. Choisis une radio connectée ave
 
 msgid "All vehicles"
 msgstr "Tous les véhicules"
+
+msgid "Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."
+msgstr "Choisissez un modèle STL, GLB autonome ou ZIP ClearView. Une image n’est pas un modèle 3D."
+
+msgid "Choose the aircraft to import from this ClearView ZIP."
+msgstr "Choisissez l’avion à importer depuis ce ZIP ClearView."
+
+msgid "Choose an aircraft from the ClearView ZIP"
+msgstr "Choisissez un avion dans le ZIP ClearView"
+
+msgid "Cancel import"
+msgstr "Annuler l’importation"
+
+msgid "Wait for the current import, or cancel it first."
+msgstr "Attendez la fin de l’importation actuelle ou annulez-la d’abord."
+
+msgid "The previous import is stopping. Try again in a moment."
+msgstr "L’importation précédente s’arrête. Réessayez dans un instant."
+
+msgid "The current draft changed while opening. Your changes were kept. Open the saved model again when ready."
+msgstr "Le brouillon actuel a changé pendant l’ouverture. Vos modifications ont été conservées. Ouvrez à nouveau le modèle enregistré quand vous serez prêt."
+
+msgid "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Seule l’apparence ClearView est importée. Définissez et validez séparément sa configuration de vol OpenRC."
+
+msgid "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+msgstr "Les anciens matériaux Phong utilisent une finition approximative dans OpenRC. Les couleurs et les coordonnées de texture d’origine sont conservées."
+
+msgid "%s zero-area surfaces were omitted."
+msgstr "%s surfaces sans aire ont été omises."
+
+msgid "An empty legacy directory size hint was ignored: %s."
+msgstr "Une taille déclarée pour un ancien dossier vide a été ignorée : %s."
+
+msgid "JPEG comments were ignored."
+msgstr "Les commentaires JPEG ont été ignorés."
+
+msgid "Ignored size hints for %s additional empty legacy directories."
+msgstr "Les tailles déclarées de %s anciens dossiers vides supplémentaires ont été ignorées."

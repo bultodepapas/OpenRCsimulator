@@ -7,7 +7,7 @@ extends RefCounted
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-e300-09-wing-edges"
+const VISUAL_REVISION := "gp-extra-300s-60-e300-10-panel-joins"
 const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const COCKPIT := Color("1a1d22")
@@ -67,7 +67,7 @@ static func _surface(mat: Material) -> SurfaceTool:
 # Loft through closed rings that share a point count. Vertex normals come from the grid tangents and are
 # turned away from each ring's centroid; flat caps close the first and last rings when requested.
 # uvs/uv2s (optional): one Array[Vector2] per ring, matching its points; consumed by the procedural finish.
-static func _loft(rings: Array, mat: Material, caps := [true, true], uvs := [], uv2s := []) -> ArrayMesh:
+static func _loft(rings: Array, mat: Material, caps := [true, true], uvs := [], uv2s := [], normal_rows := []) -> ArrayMesh:
 	var st := _surface(mat)
 	var count: int = rings[0].size()
 	var centers: Array[Vector3] = []
@@ -77,6 +77,9 @@ static func _loft(rings: Array, mat: Material, caps := [true, true], uvs := [], 
 		centers.append(c / count)
 	var normals: Array = []
 	for i in rings.size():
+		if not normal_rows.is_empty():
+			normals.append(normal_rows[i])
+			continue
 		var row: Array[Vector3] = []
 		for j in count:
 			var around: Vector3 = rings[i][(j + 1) % count] - rings[i][(j - 1 + count) % count]
@@ -479,7 +482,7 @@ static func _le_z(span: float) -> float:
 
 # Closed section ring at spanwise station x (signed), chord fractions [x0, x1]; a nose at x0 > 0 is a 45 deg
 # bevel ending on the hinge axis, so a deflecting aileron turns about its own nose.
-static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false) -> Array[Vector3]:
+static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false, samples: Array[float] = []) -> Array[Vector3]:
 	var span := absf(x)
 	var c := _chord(span)
 	var le := _le_z(span)
@@ -488,9 +491,13 @@ static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false) -> A
 	var lower: Array[Vector3] = []
 	var start := x0
 	if bevel_nose: start = x0 + _half_thickness(x0) # 45 deg in chord-normalized units
-	for k in CHORD_SAMPLES + 1:
-		var u := float(k) / CHORD_SAMPLES
-		var xc := lerpf(start, x1, 0.5 - 0.5 * cos(PI * u)) if start <= 0.0 else lerpf(start, x1, u)
+	var parameters: Array[float] = samples.duplicate()
+	if parameters.is_empty():
+		for k in CHORD_SAMPLES + 1:
+			var u := float(k) / CHORD_SAMPLES
+			parameters.append(0.5 - 0.5 * cos(PI * u) if start <= 0.0 else u)
+	for u in parameters:
+		var xc := lerpf(start, x1, u)
 		var t := _half_thickness(xc) * c
 		upper.append(Vector3(x, y0 + t, le + xc * c))
 		lower.append(Vector3(x, y0 - t, le + xc * c))
@@ -509,37 +516,110 @@ static func _hinge_fraction(span: float) -> float:
 	return 1.0 - float(D.wing.aileron_chord) / _chord(span)
 
 
+# Both end rings must contain every piecewise-linear airfoil breakpoint. Merely
+# rescaling cosine samples to a shorter fixed chord leaves different boundary
+# polylines beside a full-chord panel, exposing its red end cap through the paint.
+# A common normalized list keeps the loft rectangular without moving the profile.
+static func _wing_panel_samples(a: float, b: float, part: String) -> Array[float]:
+	var samples: Array[float] = []
+	if part == "aileron": return samples # retain the moving nose and its bevel
+	for k in CHORD_SAMPLES + 1: samples.append(0.5 - 0.5 * cos(PI * float(k) / CHORD_SAMPLES))
+	for x in [a, b]:
+		var span := absf(x)
+		var end := 1.0 if part == "full" else _hinge_fraction(span) - float(D.wing.hinge_gap) * 0.5 / _chord(span)
+		for section in D.wing.section:
+			var fraction: float = section[0]
+			if fraction > 0.0 and fraction < end: samples.append(fraction / end)
+	samples.sort()
+	var unique: Array[float] = []
+	for sample in samples:
+		if unique.is_empty() or sample - unique[-1] > 1e-7: unique.append(sample)
+	return unique
+
+
+# Interpolate smooth section normals, rather than deriving them from whatever
+# extra points a neighbouring panel needs. Subdivision then leaves the finish
+# continuous. The shared leading-edge point faces forward on both surfaces.
+static var _wing_section_normals := {}
+
+
+static func _wing_section_normal(q: float, side: float) -> Vector3:
+	var table: Array = D.wing.section
+	if not _wing_section_normals.has(side):
+		var row: Array[Vector3] = []
+		for i in table.size():
+			if i == 0:
+				row.append(Vector3(0, 0, -1))
+				continue
+			var before: float = (table[i][1] - table[i - 1][1]) / (table[i][0] - table[i - 1][0])
+			var after: float = before if i == table.size() - 1 else (table[i + 1][1] - table[i][1]) / (table[i + 1][0] - table[i][0])
+			row.append((Vector3(0, side, -before).normalized() + Vector3(0, side, -after).normalized()).normalized())
+		_wing_section_normals[side] = row
+	var normals: Array[Vector3] = _wing_section_normals[side]
+	for i in table.size() - 1:
+		if q <= float(table[i + 1][0]):
+			return normals[i].lerp(normals[i + 1], clampf((q - float(table[i][0])) / (float(table[i + 1][0]) - float(table[i][0])), 0.0, 1.0)).normalized()
+	return normals[-1]
+
+
+static func _wing_normal(point: Vector3, scale: float, scale_derivative: float) -> Vector3:
+	var w: Dictionary = D.wing
+	var span := absf(point.x)
+	var chord := _chord(span)
+	var q := (point.z - _le_z(span)) / chord
+	var side := 1.0 if point.y >= float(w.chord_plane_y) else -1.0
+	var n := _wing_section_normal(q, side)
+	# Inverse-transpose of vertical tip scaling, then make the normal orthogonal
+	# to the span tangent of the tapered/swept wing (including the tip roll).
+	n.y /= scale
+	var chord_slope: float = (w.tip_chord - w.root_chord) / (w.span * 0.5) * signf(point.x)
+	var le_slope: float = (w.le_z_tip - w.le_z_root) / (w.span * 0.5) * signf(point.x)
+	var y_slope := side * _half_thickness(q) * (chord_slope * scale + chord * scale_derivative)
+	n.x = -n.y * y_slope - n.z * (le_slope + q * chord_slope)
+	return n.normalized()
+
+
 static func _wing_panel(label: String, a: float, b: float, part: String, parent: Node3D, to_local := Transform3D.IDENTITY, rounded_tip := false) -> void:
 	var g: float = D.wing.hinge_gap / 2.0
 	var rings: Array = []
 	var uvs: Array = []
 	var uv2s: Array = []
+	var normals: Array = []
+	var samples := _wing_panel_samples(a, b, part)
 	# Estimated tip-block section: retain the measured planform and inner airfoil.
 	# A finite outer section keeps the cap closed without coincident loft centres.
 	var sections := [[0.0, 1.0], [1.0, 1.0]]
 	if rounded_tip: sections = [[0.0, 1.0], [0.25, 0.97], [0.5, 0.86], [0.75, 0.67], [1.0, 0.40]]
-	for section in sections:
+	for index in sections.size():
+		var section: Array = sections[index]
+		var before: Array = sections[maxi(0, index - 1)]
+		var after: Array = sections[mini(sections.size() - 1, index + 1)]
+		var scale_derivative: float = (after[1] - before[1]) / ((after[0] - before[0]) * (b - a))
+		if rounded_tip and index == 0: scale_derivative = 0.0 # tangent shading at the fixed-panel join
 		var x := lerpf(a, b, section[0])
 		var span := absf(x)
 		var h := _hinge_fraction(span)
 		var ring: Array[Vector3]
 		match part:
-			"full": ring = _wing_ring(x, 0.0, 1.0)
-			"fixed": ring = _wing_ring(x, 0.0, h - g / _chord(span))
+			"full": ring = _wing_ring(x, 0.0, 1.0, false, samples)
+			"fixed": ring = _wing_ring(x, 0.0, h - g / _chord(span), false, samples)
 			"aileron": ring = _wing_ring(x, h + g / _chord(span), 1.0, true)
 		var local: Array[Vector3] = []
 		var uv: Array[Vector2] = []
 		var uv2: Array[Vector2] = []
+		var row: Array[Vector3] = []
 		for p in ring:
 			p.y = float(D.wing.chord_plane_y) + (p.y - float(D.wing.chord_plane_y)) * float(section[1])
 			local.append(to_local * p)
 			uv.append(Vector2(span, (p.z - _le_z(span)) / _chord(span)))
 			uv2.append(Vector2(_chord(span), 0.0))
+			if part != "aileron": row.append(_wing_normal(p, section[1], scale_derivative))
 		rings.append(local)
 		uvs.append(uv)
 		uv2s.append(uv2)
+		if part != "aileron": normals.append(row)
 	var finish := Finish.material(Finish.AILERON if part == "aileron" else Finish.WING)
-	_instance(label, _loft(rings, finish, [true, true], uvs, uv2s), parent)
+	_instance(label, _loft(rings, finish, [true, true], uvs, uv2s, normals), parent)
 
 
 static func _hinge(label: String, parent: Node3D, hinges: Dictionary) -> Node3D:

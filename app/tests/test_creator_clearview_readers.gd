@@ -69,6 +69,13 @@ func _deflate() -> void:
 	check("single-EOB dynamic tree and empty distance alphabet", Deflate.decode(_pack_bits(bits), 0).ok)
 
 func _zip() -> void:
+	check("cancel before capture never opens a file", not Archive.capture("res://missing.zip",func() -> bool: return true).ok)
+	check("cancel before inspection", not Archive.inspect(_zip_bytes([["a","x".to_ascii_buffer()]]),"x.zip",func() -> bool: return true).ok)
+	var index_polls := [0]
+	var cancelled := Archive.inspect(_zip_bytes([["a","x".to_ascii_buffer()],["b","y".to_ascii_buffer()]]),"x.zip",func() -> bool:
+		index_polls[0] += 1
+		return index_polls[0] > 2)
+	check("cancel during archive indexing or hashing", not cancelled.ok and index_polls[0] > 2)
 	check("independent CRC vector", Archive.crc32("123456789".to_ascii_buffer()).value == 0xCBF43926)
 	check("empty CRC", Archive.crc32(PackedByteArray()).value == 0)
 	var content := "123456789".to_ascii_buffer()

@@ -71,6 +71,12 @@ func _run() -> void:
 		_check(label + " fits the curved canopy", outside == 0, "%d vertices outside" % outside)
 	var wing: Dictionary = Geometry.DATA.wing
 	for side in ["left", "right"]:
+		for outer in [false, true]:
+			for upper in [false, true]:
+				var error := wing_join_error(root, side, outer, upper)
+				_check("%s %s wing join %s matches" % [side, "outer" if outer else "inner", "upper" if upper else "lower"], error <= 0.00001, "%.4f mm" % (error * 1000.0))
+		for part in ["root", "ahead_of_aileron", "tip"]:
+			_check("%s wing %s is closed" % [side, part], _closed_surface(root.get_node("wing_%s/wing_%s_%s" % [side, side, part])))
 		var tip := root.get_node("wing_%s/wing_%s_tip" % [side, side]) as MeshInstance3D
 		var inner_height := 0.0
 		var outer_height := 0.0
@@ -109,14 +115,65 @@ func _run() -> void:
 	super._run()
 
 
-func _closed_surface(mesh: MeshInstance3D) -> bool:
+# Compare the actual boundary polylines, independent of the generator's sample
+# list. The maximum difference of two piecewise-linear curves is at a vertex
+# of either curve. Cap centres are excluded by height, except the shared LE.
+static func wing_join_error(root: Node3D, side: String, outer: bool, upper: bool) -> float:
+	var wing: Dictionary = Geometry.DATA.wing
+	var seam: float = wing.aileron_outer if outer else wing.aileron_inner
+	var names := ["ahead_of_aileron", "tip"] if outer else ["root", "ahead_of_aileron"]
+	var curves: Array = []
+	for part in names:
+		var mesh := root.get_node("wing_%s/wing_%s_%s" % [side, side, part]) as MeshInstance3D
+		var transform := root.global_transform.affine_inverse() * mesh.global_transform
+		var points: Array[Vector2] = []
+		var vertices: PackedVector3Array = mesh.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+		for vertex in vertices:
+			var p: Vector3 = transform * vertex
+			if absf(absf(p.x) - seam) > 0.000001: continue
+			var height := p.y - float(wing.chord_plane_y)
+			if height * (1.0 if upper else -1.0) > 0.000001 or absf(p.z - Extra._le_z(seam)) < 0.000001:
+				points.append(Vector2(p.z, p.y))
+		points.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
+		var unique: Array[Vector2] = []
+		for point in points:
+			if unique.is_empty() or point.x - unique[-1].x > 0.0000001: unique.append(point)
+		if unique.size() < 2: return INF
+		curves.append(unique)
+	var start := maxf(curves[0][0].x, curves[1][0].x)
+	var end := minf(curves[0][-1].x, curves[1][-1].x)
+	if end <= start: return INF
+	var worst := 0.0
+	for curve in curves:
+		for point in curve:
+			if point.x < start or point.x > end: continue
+			worst = maxf(worst, absf(_curve_height(curves[0], point.x) - _curve_height(curves[1], point.x)))
+	return worst
+
+
+static func _curve_height(points: Array[Vector2], z: float) -> float:
+	for i in points.size() - 1:
+		if z <= points[i + 1].x:
+			return lerpf(points[i].y, points[i + 1].y, (z - points[i].x) / (points[i + 1].x - points[i].x))
+	return points[-1].y
+
+
+static func _closed_surface(mesh: MeshInstance3D) -> bool:
 	var arrays := mesh.mesh.surface_get_arrays(0)
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
 	for normal in normals:
 		if not normal.is_finite() or absf(normal.length() - 1.0) > 0.001: return false
-	var faces := mesh.mesh.get_faces()
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var indices: PackedInt32Array = PackedInt32Array() if arrays[Mesh.ARRAY_INDEX] == null else arrays[Mesh.ARRAY_INDEX]
+	var faces := PackedVector3Array()
+	if indices.is_empty(): faces = vertices
+	else:
+		for index in indices: faces.append(vertices[index])
 	var edges := {}
 	for i in range(0, faces.size(), 3):
+		var average := Vector3.ZERO
+		for j in 3: average += normals[i + j if indices.is_empty() else indices[i + j]]
+		if (faces[i + 2] - faces[i]).cross(faces[i + 1] - faces[i]).dot(average) <= 0.0: return false
 		var keys := []
 		for j in 3:
 			var p := faces[i + j]

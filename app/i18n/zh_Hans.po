@@ -12613,3 +12613,42 @@ msgstr "无法开始校准。请选择已连接且使用遥控器配置的遥控
 
 msgid "All vehicles"
 msgstr "所有载具"
+
+msgid "Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."
+msgstr "选择 STL、独立 GLB 或 ClearView ZIP 模型。图片不是 3D 模型。"
+
+msgid "Choose the aircraft to import from this ClearView ZIP."
+msgstr "选择要从此 ClearView ZIP 导入的飞机。"
+
+msgid "Choose an aircraft from the ClearView ZIP"
+msgstr "从 ClearView ZIP 选择飞机"
+
+msgid "Cancel import"
+msgstr "取消导入"
+
+msgid "Wait for the current import, or cancel it first."
+msgstr "请等待当前导入完成，或先取消导入。"
+
+msgid "The previous import is stopping. Try again in a moment."
+msgstr "正在停止上一次导入。请稍后重试。"
+
+msgid "The current draft changed while opening. Your changes were kept. Open the saved model again when ready."
+msgstr "打开期间当前草稿发生了更改。已保留你的更改。准备好后请重新打开已保存的模型。"
+
+msgid "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "仅导入 ClearView 外观。请单独定义并验证 OpenRC 飞行配置。"
+
+msgid "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+msgstr "旧式 Phong 材质使用 OpenRC 近似表面效果。保留原始颜色和纹理映射。"
+
+msgid "%s zero-area surfaces were omitted."
+msgstr "已省略 %s 个面积为零的表面。"
+
+msgid "An empty legacy directory size hint was ignored: %s."
+msgstr "已忽略旧式空文件夹的声明大小：%s。"
+
+msgid "JPEG comments were ignored."
+msgstr "已忽略 JPEG 注释。"
+
+msgid "Ignored size hints for %s additional empty legacy directories."
+msgstr "已忽略另外 %s 个旧式空文件夹的声明大小。"

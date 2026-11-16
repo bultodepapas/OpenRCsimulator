@@ -12664,3 +12664,42 @@ msgstr "校正を開始できませんでした。送信機プロファイルの
 
 msgid "All vehicles"
 msgstr "すべての機体"
+
+msgid "Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."
+msgstr "STL、自己完結型GLB、ClearView ZIPのモデルを選択します。画像は3Dモデルではありません。"
+
+msgid "Choose the aircraft to import from this ClearView ZIP."
+msgstr "このClearView ZIPからインポートする機体を選択してください。"
+
+msgid "Choose an aircraft from the ClearView ZIP"
+msgstr "ClearView ZIPから機体を選択"
+
+msgid "Cancel import"
+msgstr "インポートをキャンセル"
+
+msgid "Wait for the current import, or cancel it first."
+msgstr "現在のインポートを待つか、先にキャンセルしてください。"
+
+msgid "The previous import is stopping. Try again in a moment."
+msgstr "前のインポートを停止しています。少し待ってから再試行してください。"
+
+msgid "The current draft changed while opening. Your changes were kept. Open the saved model again when ready."
+msgstr "開いている間に現在の下書きが変更されました。変更は保持されています。準備ができたら保存済みモデルをもう一度開いてください。"
+
+msgid "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "ClearViewの外観のみをインポートします。OpenRCの飛行設定は別途定義して検証してください。"
+
+msgid "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+msgstr "従来のPhongマテリアルにはOpenRCの近似的な仕上げを使用します。元の色とテクスチャ座標は保持されます。"
+
+msgid "%s zero-area surfaces were omitted."
+msgstr "面積がゼロの面を%s個省略しました。"
+
+msgid "An empty legacy directory size hint was ignored: %s."
+msgstr "古い空フォルダーのサイズ情報を無視しました: %s。"
+
+msgid "JPEG comments were ignored."
+msgstr "JPEGコメントを無視しました。"
+
+msgid "Ignored size hints for %s additional empty legacy directories."
+msgstr "さらに%s個の古い空フォルダーのサイズ情報を無視しました。"

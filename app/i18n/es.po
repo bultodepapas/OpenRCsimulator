@@ -12205,3 +12205,75 @@ msgstr "No se pudo iniciar la calibración. Selecciona una emisora conectada con
 
 msgid "All vehicles"
 msgstr "Todos los vehículos"
+
+msgid "Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."
+msgstr "Elige un modelo STL, GLB autónomo o ZIP de ClearView. Una imagen no es un modelo 3D."
+
+msgid "Choose the aircraft to import from this ClearView ZIP."
+msgstr "Elige el avión que deseas importar de este ZIP de ClearView."
+
+msgid "Choose an aircraft from the ClearView ZIP"
+msgstr "Elige un avión del ZIP de ClearView"
+
+msgid "Cancel import"
+msgstr "Cancelar importación"
+
+msgid "Wait for the current import, or cancel it first."
+msgstr "Espera a que termine la importación actual o cancélala primero."
+
+msgid "The previous import is stopping. Try again in a moment."
+msgstr "La importación anterior se está deteniendo. Inténtalo de nuevo en un momento."
+
+msgid "The current draft changed while opening. Your changes were kept. Open the saved model again when ready."
+msgstr "El borrador actual cambió durante la apertura. Se conservaron tus cambios. Vuelve a abrir el modelo guardado cuando estés listo."
+
+msgid "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Solo se importa la apariencia de ClearView. Define y valida por separado su configuración de vuelo de OpenRC."
+
+msgid "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+msgstr "Los materiales Phong antiguos usan un acabado aproximado en OpenRC. Se conservan los colores y el mapeado de texturas originales."
+
+msgid "%s zero-area surfaces were omitted."
+msgstr "Se omitieron %s superficies sin área."
+
+msgid "An empty legacy directory size hint was ignored: %s."
+msgstr "Se ignoró un tamaño declarado para una carpeta antigua vacía: %s."
+
+msgid "JPEG comments were ignored."
+msgstr "Se ignoraron los comentarios JPEG."
+
+msgid "Ignored size hints for %s additional empty legacy directories."
+msgstr "Se ignoraron los tamaños declarados de otras %s carpetas antiguas vacías."
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+msgstr "Este formato de textura aún no es compatible. Convierte la textura a PNG estándar o BMP de 24 bits sin comprimir y actualiza su referencia en el modelo."
+
+msgid "This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+msgstr "Esta codificación o estos metadatos JPEG no son compatibles. Vuelve a exportar la textura como JPEG de línea base estándar o PNG."
+
+msgid "Polygon %s in part \"%s\" has intersecting edges."
+msgstr "El polígono %s de la pieza «%s» tiene aristas cruzadas."
+
+msgid "Recenter or rescale this model to preserve its detail at render precision."
+msgstr "Centra de nuevo o cambia la escala del modelo para conservar sus detalles con la precisión de renderizado."
+
+msgid "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing."
+msgstr "Un triángulo pierde su área o la orientación de sus vértices con la precisión de renderizado. Centra de nuevo o cambia la escala de la geometría original antes de importarla."
+
+msgid "The import was cancelled."
+msgstr "Se canceló la importación."
+
+msgid "The ClearView ZIP cannot be opened."
+msgstr "No se puede abrir el ZIP de ClearView."
+
+msgid "The ClearView ZIP must be between 22 bytes and 64 MiB."
+msgstr "El ZIP de ClearView debe ocupar entre 22 bytes y 64 MiB."
+
+msgid "The ZIP contains no ClearView model-root params.txt file."
+msgstr "El ZIP no contiene un archivo params.txt en la raíz de un modelo ClearView."
+
+msgid "ClearView model %s: %s"
+msgstr "Modelo ClearView %s: %s"
+
+msgid "ClearView aircraft ZIP"
+msgstr "ZIP de avión ClearView"

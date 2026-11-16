@@ -2,7 +2,6 @@ extends RefCounted
 ## Strict single-disk ZIP32 envelope. ASCII member paths, stored/raw-DEFLATE data, optional
 ## data descriptors. Captured bytes never leave this object; members are decoded on demand.
 const R := preload("res://workshop/creator/result.gd")
-const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const Deflate := preload("deflate.gd")
 const MAX_ARCHIVE := 64 * 1024 * 1024
 const MAX_EXPANDED := 256 * 1024 * 1024
@@ -16,30 +15,49 @@ var _folded := {}
 var _sha256 := ""
 var _label := ""
 var _notes: Array = []
+var _directory_hints := 0
 
-static func capture(path: String) -> Dictionary:
+static func capture(path: String, cancel := Callable()) -> Dictionary:
+	if _cancelled(cancel):
+		return _invalid("The import was cancelled.")
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return R.fail(R.SOURCE_MISSING, "The ClearView ZIP cannot be opened.", "source", "import")
 	var size := file.get_length()
 	if size < 22 or size > MAX_ARCHIVE:
 		return R.fail(R.SOURCE_LIMIT, "The ClearView ZIP must be between 22 bytes and 64 MiB.", "source", "import")
-	var bytes := file.get_buffer(size)
-	if bytes.size() != size or file.get_error() != OK:
-		return _invalid("The ClearView ZIP could not be read completely.")
-	return inspect(bytes, path.get_file())
+	var bytes := PackedByteArray()
+	while bytes.size() < size:
+		if _cancelled(cancel):
+			return _invalid("The import was cancelled.")
+		var chunk := file.get_buffer(mini(1024 * 1024, size - bytes.size()))
+		if chunk.is_empty() or file.get_error() != OK:
+			return _invalid("The ClearView ZIP could not be read completely.")
+		bytes.append_array(chunk)
+	return inspect(bytes, path.get_file(), cancel)
 
-static func inspect(bytes: PackedByteArray, label := "models.zip") -> Dictionary:
+static func inspect(bytes: PackedByteArray, label := "models.zip", cancel := Callable()) -> Dictionary:
+	if _cancelled(cancel):
+		return _invalid("The import was cancelled.")
 	if bytes.size() < 22 or bytes.size() > MAX_ARCHIVE:
 		return R.fail(R.SOURCE_LIMIT, "The ClearView ZIP must be between 22 bytes and 64 MiB.", "source", "import")
 	var archive := new()
 	archive._bytes = bytes.duplicate()
 	archive._label = label.get_file()
-	var checked := archive._index()
+	var checked := archive._index(cancel)
 	if not checked.ok:
 		return checked
-	archive._sha256 = CreatorBytes.sha256(bytes)
+	var hasher := HashingContext.new()
+	hasher.start(HashingContext.HASH_SHA256)
+	for at: int in range(0, bytes.size(), 1024 * 1024):
+		if _cancelled(cancel):
+			return _invalid("The import was cancelled.")
+		hasher.update(bytes.slice(at, mini(at + 1024 * 1024, bytes.size())))
+	archive._sha256 = hasher.finish().hex_encode()
 	return R.ok(archive, archive.diagnostics())
+
+static func _cancelled(cancel: Callable) -> bool:
+	return cancel.is_valid() and bool(cancel.call())
 
 func sha256() -> String:
 	return _sha256
@@ -51,7 +69,10 @@ func names() -> Array:
 	return _entries.keys()
 
 func diagnostics() -> Array:
-	return _notes.duplicate(true)
+	var notes := _notes.duplicate(true)
+	if _directory_hints > 32:
+		notes.append(R.diagnostic(R.SOURCE_INVALID, "Ignored size hints for %s additional empty legacy directories.", "source", "import", [str(_directory_hints - 32)], R.SEVERITY_INFO))
+	return notes
 
 func member_info(name: String) -> Dictionary:
 	return (_entries.get(name, {}) as Dictionary).duplicate(true)
@@ -123,9 +144,11 @@ static func safe_name(name: String, directory := true) -> bool:
 			return false
 	return true
 
-func _index() -> Dictionary:
+func _index(cancel := Callable()) -> Dictionary:
 	var eocd := -1
 	for at: int in range(_bytes.size() - 22, maxi(-1, _bytes.size() - 65558), -1):
+		if at % 4096 == 0 and _cancelled(cancel):
+			return _invalid("The import was cancelled.")
 		if _u32(at) == 0x06054B50 and at + 22 + _u16(at + 20) == _bytes.size():
 			eocd = at
 			break
@@ -142,6 +165,8 @@ func _index() -> Dictionary:
 	var expanded := 0
 	var ranges: Array = []
 	for index: int in count:
+		if _cancelled(cancel):
+			return _invalid("The import was cancelled.")
 		if at + 46 > eocd or _u32(at) != 0x02014B50:
 			return _invalid("The ZIP directory is truncated or malformed.")
 		var flags := _u16(at + 8)
@@ -180,7 +205,9 @@ func _index() -> Dictionary:
 		if (method == 0 and compressed != size and not empty_directory_hint) or (directory and size != 0 and not empty_directory_hint):
 			return _invalid("The ZIP stored size or directory payload is invalid.")
 		if empty_directory_hint and size != 0:
-			_notes.append(R.diagnostic(R.SOURCE_INVALID, "An empty legacy directory size hint was ignored: %s.", "source", "import", [name], R.SEVERITY_INFO))
+			_directory_hints += 1
+			if _directory_hints <= 32:
+				_notes.append(R.diagnostic(R.SOURCE_INVALID, "An empty legacy directory size hint was ignored: %s.", "source", "import", [name], R.SEVERITY_INFO))
 		var end := data + compressed
 		if end > start:
 			return _invalid("A ZIP member overlaps the directory.")
