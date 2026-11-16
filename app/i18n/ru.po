@@ -13543,3 +13543,38 @@ msgstr "Скомпилированное описание изменилось. 
 
 msgid "Source observations require the versioned definition format."
 msgstr "Исходные наблюдения требуют версионного формата описания."
+
+# ClearView import diagnostics.
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+msgstr "Этот формат текстуры пока не поддерживается. Преобразуйте текстуру в стандартный PNG или несжатый 24-битный BMP и обновите ссылку на неё в модели."
+
+msgid "This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+msgstr "Эта кодировка JPEG или эти метаданные не поддерживаются. Экспортируйте текстуру заново в стандартный JPEG с базовым кодированием или в PNG."
+
+msgid "Polygon %s in part \"%s\" has intersecting edges."
+msgstr "У полигона %s в детали «%s» пересекаются рёбра."
+
+msgid "Recenter or rescale this model to preserve its detail at render precision."
+msgstr "Повторно отцентрируйте или масштабируйте модель, чтобы сохранить её детали при точности визуализации."
+
+msgid "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing."
+msgstr "При точности визуализации треугольник модели теряет площадь или направление обхода вершин. Перед импортом отцентрируйте или масштабируйте исходную геометрию."
+
+msgid "The import was cancelled."
+msgstr "Импорт отменён."
+
+msgid "The ClearView ZIP cannot be opened."
+msgstr "Не удалось открыть ZIP-архив ClearView."
+
+msgid "The ClearView ZIP must be between 22 bytes and 64 MiB."
+msgstr "Размер ZIP-архива ClearView должен быть от 22 байт до 64 MiB."
+
+msgid "The ZIP contains no ClearView model-root params.txt file."
+msgstr "ZIP-архив не содержит файла params.txt в корне модели ClearView."
+
+msgid "ClearView model %s: %s"
+msgstr "Модель ClearView %s: %s"
+
+msgid "ClearView aircraft ZIP"
+msgstr "ZIP-архив самолёта ClearView"

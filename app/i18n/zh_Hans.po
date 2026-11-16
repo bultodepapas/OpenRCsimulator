@@ -12742,3 +12742,38 @@ msgstr "编译后的定义已更改。请检查飞机并重新保存。"
 
 msgid "Source observations require the versioned definition format."
 msgstr "源观测信息需要带版本的定义格式。"
+
+# ClearView import diagnostics.
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+msgstr "暂不支持此纹理格式。请将纹理转换为标准 PNG 或未压缩的 24 位 BMP，并更新模型中的引用。"
+
+msgid "This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+msgstr "不支持此 JPEG 编码或元数据。请将纹理重新导出为标准基线 JPEG 或 PNG。"
+
+msgid "Polygon %s in part \"%s\" has intersecting edges."
+msgstr "多边形 %s（位于部件“%s”中）的边相交。"
+
+msgid "Recenter or rescale this model to preserve its detail at render precision."
+msgstr "请重新居中或缩放此模型，以便在渲染精度下保留其细节。"
+
+msgid "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing."
+msgstr "在渲染精度下，模型三角形的面积或顶点顺序所确定的朝向会丢失。请在导入前重新居中或缩放源几何体。"
+
+msgid "The import was cancelled."
+msgstr "导入已取消。"
+
+msgid "The ClearView ZIP cannot be opened."
+msgstr "无法打开 ClearView ZIP 文件。"
+
+msgid "The ClearView ZIP must be between 22 bytes and 64 MiB."
+msgstr "ClearView ZIP 文件大小必须在 22 字节至 64 MiB 之间。"
+
+msgid "The ZIP contains no ClearView model-root params.txt file."
+msgstr "ZIP 文件中没有位于 ClearView 模型根目录的 params.txt 文件。"
+
+msgid "ClearView model %s: %s"
+msgstr "ClearView 模型 %s：%s"
+
+msgid "ClearView aircraft ZIP"
+msgstr "ClearView 飞机 ZIP 文件"
