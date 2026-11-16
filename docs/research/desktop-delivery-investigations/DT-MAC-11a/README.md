@@ -1,6 +1,6 @@
 # DT-MAC-11a / 07a1: first MetalFX implementation evidence
 
-Started: 2026-11-14; updated 2026-11-15. Implementation and native API intake are
+Started: 2026-11-14; updated 2026-11-16. Implementation and native API intake are
 in progress. The later matched screen records a bounded FPS improvement; this
 record does not qualify four production technologies or sustained flight performance.
 The [plan](../../../plans/apple-metalfx.md) retains integration, motion, lifecycle,
@@ -1558,3 +1558,72 @@ the metadata restoration reproduced `INFRA_FAILED` and failed the new regression
 The running shared authority had another active claim and was not restarted.
 These are fake-process infrastructure controls, not a successful fixture parse
 or a native graphics result.
+
+## 2026-11-16 native CPU closeout on ANGEL
+
+The [bounded closeout plan](../../../plans/apple-silicon-closeout.md) reached its
+screen stop condition. **Reference remains the default.** The native backend
+remains an explicit experimental option; no default-admission marker was created.
+This CPU comparison does not qualify the four MetalFX technologies above.
+
+Candidate `e272d8708a0b8efbcd2f9921482970581df3dfc7` ran on ANGEL,
+MacBookAir10,1 / Apple M1 / 8 GiB, macOS 27.0 (26A5425a), with the existing
+Engine 26 editor/template pair. The observer now guards absent optional
+frame-generation metadata and decodes finite, integral JSON clock bounds before
+joining drawable evidence. Its 119 checked native tests passed. Fresh source
+qualification passed 650 checks, 17 positive source oracles, the required mutant
+refusal, FPCR and domain controls. The unchanged performance gates were retained.
+
+The R8 ARM64 development app passed all five packaged checks and both complete
+Home/Fly/pause/restart/Home/re-entry/audio-shutdown fallback routes. It is at:
+
+`/Users/g/OpenRC-m1-work/metalfx-stack7-20261114/native26-development-r8/OpenRC-MetalFX-Native-Research.app`
+
+The Desktop link is `/Users/g/Desktop/OpenRC Simulator M1.app`. Its `arm64`
+project override selects Mobile; the performance screen
+above deliberately requests High/Forward+ and does not qualify other render scopes.
+
+One reference-then-native screen used 30-second warmups and 120-second measured
+samples, High / Metal Forward+ / native resolution / VSync. Both reported actual
+acquired 1920×1080 framebuffer textures, complete host observations, no health
+violations and simulation/wall ratios within 0.99–1.01. Five common complete
+6,000-tick state/input windows had identical hashes and the screened tick-zero
+checkpoint matched. This is software evidence, not physical flight validation.
+
+| Short-screen metric | Reference | Native |
+| --- | ---: | ---: |
+| Callback FPS | 59.167 | 59.142 |
+| Frame p95, ms | 18.646 | 18.650 |
+| Frame p99, ms | 20.401 | 20.638 |
+| Process CPU seconds per matched simulated second | 0.567579 | 0.571072 |
+| Sampled peak process RSS, MiB | 539.875 | 462.688 |
+
+Both p95 values exceeded the predeclared 18 ms gate. Native CPU was about 0.6%
+higher and callback FPS essentially unchanged in this single screen; neither
+provided the required 5% benefit. The lower sampled native RSS is unreplicated
+and does not establish a sustained memory improvement. Callback FPS and acquired
+textures do not measure display scanout. The coordinator stopped before the
+remaining short/long campaign, fleet admission and four-case candidate Home proof.
+No performance threshold, quality setting or reader was changed to admit it.
+
+Original results remain under the task's
+`native26-closeout2-first-pair-results-r1/{reference,native}/capture/` directories.
+The package record SHA-256 is
+`516b4b9e207b94891d1d0034859d3acc428b6caf3addd48ca60710d89ae594bc`;
+five-check result: `022c9e86fcbb9a75e557db78289b5671e7e54645859c1daefe67fa1e6f067303`;
+fallback proof: `92ea9327d8d26feef57a02d88f0a7ad4fec5f08db9af92267cb0bafe2a2f414a`.
+Fresh source/observer evidence and 27 replay tapes were cross-verified in the
+private phase-28 archive (`01beec989265a7315f201a29d246a76ce510d90f715c31f2d827c6ba3fb9dd95`).
+Earlier R7 failures and stopped r5 evidence remain separate and unaltered.
+The completed R8 checks, Home records and all four raw smoke/measured capture
+trees were separately cross-verified in the private phase-29 archive
+(`cba907ca6afe5175f51ce3fc16ce8066b23dc5e0655326dd594741583e1ad263`,
+155 payloads). Completed task import caches were retired after verification;
+source, proofs, binaries and the app were unchanged. Final free disk was about
+6 GiB. All task application/engine processes exited and the owned keep-awake
+assertion was stopped.
+
+The exact-head [MetalFX source CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43888123122)
+passed. The [required CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43888117712)
+is still awaiting its visual-capture job at this update; the other jobs passed.
+Public Developer ID distribution and integration into main remain pending.

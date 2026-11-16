@@ -6,6 +6,7 @@ func _run() -> void:
 	var airplane := AirplaneBuilder.build(AirplaneBuilder.EXTRA_ID)
 	var root: Node3D = airplane.root
 	get_root().add_child(root)
+	_fitting_checks(airplane)
 	var face := root.get_node("cowl_face") as MeshInstance3D
 	var ducts := root.get_node("cowl_intakes") as MeshInstance3D
 	var z: float = Geometry.DATA.fuselage_stations[0][0]
@@ -82,6 +83,11 @@ func _run() -> void:
 	var stock_lips := second.root.get_node("cowl_lips").get_active_material(0) as ShaderMaterial
 	_check("rounded intake lips follow body paint", Color(lip_paint.get_shader_parameter("red")).is_equal_approx(Color("#00A088FF")))
 	_check("intake lip paint is isolated", lip_paint != stock_lips and Color(stock_lips.get_shader_parameter("red")).is_equal_approx(Extra.RED))
+	for path in ["cowl_fasteners", "tail_steering/wheel_tail/tail_axle_hardware"]:
+		var fitting := root.get_node(path) as MeshInstance3D
+		var stock_fitting := second.root.get_node(path) as MeshInstance3D
+		for surface in fitting.mesh.get_surface_count():
+			_check("%s metal surface %d ignores body paint" % [path, surface], fitting.get_active_material(surface) == stock_fitting.get_active_material(surface))
 	var spinner_paint := spinner.get_active_material(0) as StandardMaterial3D
 	var stock_spinner := second.root.get_node("thrust_frame/spinner").get_active_material(0) as StandardMaterial3D
 	_check("spinner follows body paint", spinner_paint.albedo_color.is_equal_approx(Color("#00A088FF")))
@@ -178,6 +184,102 @@ func _run() -> void:
 	super._run()
 
 
+func _fitting_checks(airplane: Dictionary) -> void:
+	var root: Node3D = airplane.root
+	var heads := root.get_node("cowl_fasteners") as MeshInstance3D
+	_check("four cowl heads form closed finite surfaces across both finishes", heads.mesh.get_surface_count() == 2 and _closed_surface(heads))
+	var bright := heads.get_active_material(0) as StandardMaterial3D
+	var dark := heads.get_active_material(1) as StandardMaterial3D
+	_check("cowl shoulders use satin metal with a darker recess", bright.metallic > 0.7 and bright.roughness < 0.5 and dark.albedo_color.get_luminance() < bright.albedo_color.get_luminance() * 0.5)
+	var head_faces := _render_faces(heads)
+	var z: float = Geometry.DATA.cowl_rear_z - 0.016
+	for side in [-1.0, 1.0]:
+		var axis := Vector3(side, 0, 0)
+		for y in [0.019, -0.055]:
+			var center := Vector3(side * Extra.skin_half_width(z, y), y, z)
+			var floor_height := _head_height(heads, center + Vector3(0, 0.00013, 0.00007), axis)
+			var crown_height := _head_height(heads, center + Vector3(0, 0.00072, 0.00081), axis)
+			_check("cowl %s/%s drive is physically recessed above the skin" % [side, y], floor_height > 0.0007 and floor_height < 0.001 and crown_height - floor_height > 0.00035)
+			var count := 0
+			var seated := true
+			var radius := 0.0
+			var min_height := INF
+			for point in head_faces:
+				if point.x * side <= 0.0 or absf(point.y - y) > 0.003: continue
+				count += 1
+				radius = maxf(radius, Vector2(point.y - y, point.z - z).length())
+				var height := axis.dot(point - center)
+				min_height = minf(min_height, height)
+				seated = seated and height >= -0.00006 and height <= 0.00131
+			_check("cowl %s/%s head is seated and retains small beveled shoulders" % [side, y], count > 100 and seated and min_height < 0.0 and radius > 0.00265 and radius < 0.00275)
+	var wheel: Node3D = airplane.gear.tail
+	var hardware := wheel.get_node("tail_axle_hardware") as MeshInstance3D
+	_check("tail axle and collar form a closed finite solid", _closed_surface(hardware))
+	_check("tail hardware shares the compliant wheel pivot", hardware.get_parent() == wheel)
+	var points: PackedVector3Array = hardware.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var collar_start := INF
+	var collar_end := -INF
+	var max_radius := 0.0
+	for point in points:
+		var radius := Vector2(point.y, point.z).length()
+		max_radius = maxf(max_radius, radius)
+		if radius < 0.002: continue
+		collar_start = minf(collar_start, point.x)
+		collar_end = maxf(collar_end, point.x)
+	var hub_bounds := (wheel.get_node("wheel_tail_hub") as MeshInstance3D).get_aabb()
+	var hub_end: float = hub_bounds.size.y * 0.5 # cylinder is rotated onto X
+	_check("tail collar seats just outside the hub", collar_start - hub_end > 0.00001 and collar_start - hub_end < 0.0001 and collar_end > collar_start + 0.002)
+	_check("tail axle projects through the collar without enlarging the tire", hardware.get_aabb().end.x > collar_end and hardware.get_aabb().position.x < -hub_end and max_radius > 0.0024 and max_radius < 0.0026 and max_radius < float(Geometry.DATA.gear.tail_wheel_diameter) * 0.22)
+	var rest := wheel.position
+	var lowest_rudder := INF
+	var rudder := root.get_node("fin_frame/rudder_hinge/rudder") as MeshInstance3D
+	var clear := true
+	var motion := true
+	# Ground gear translates the wheel's axle while compressing its contact.
+	# Keep the same operation here; independent spin and steering must not detach fittings.
+	for compression in [0.0, 0.01]:
+		for steer in [-0.6, 0.0, 0.6]:
+			for spin in [0.0, 0.37, 1.81]:
+				wheel.position = rest + Vector3.UP * compression
+				AirplaneBuilder.apply_gear(airplane, {tail = spin}, steer)
+				motion = motion and hardware.global_position.distance_to(wheel.global_position) < 0.000001 and hardware.global_basis.x.distance_to(wheel.global_basis.x) < 0.000001
+				for yaw in [-1.0, 0.0, 1.0]:
+					AirplaneBuilder.apply_surfaces(airplane, Commands.hinge_rotations({roll = 0.0, pitch = 0.0, yaw = yaw}, Extra.manual_throws_deg()))
+					lowest_rudder = INF
+					for point in _vertices(rudder): lowest_rudder = minf(lowest_rudder, point.y)
+					for point in _vertices(hardware): clear = clear and lowest_rudder - point.y > 0.005
+	_check("tail fittings follow compression, steering and wheel axle", motion)
+	_check("tail fittings clear the rudder through independent loaded poses", clear)
+	wheel.position = rest
+	AirplaneBuilder.apply_gear(airplane, {tail = 0.0}, 0.0)
+	AirplaneBuilder.apply_surfaces(airplane, Commands.hinge_rotations({roll = 0.0, pitch = 0.0, yaw = 0.0}, Extra.manual_throws_deg()))
+
+
+static func _head_height(mesh: MeshInstance3D, center: Vector3, axis: Vector3) -> float:
+	var height := -INF
+	var faces := _render_faces(mesh)
+	# Geometry3D's absolute determinant epsilon is unsuitable for millimetre
+	# triangles in metres. Intersect in millimetres, matching the pilot probe.
+	for i in range(0, faces.size(), 3):
+		var hit: Variant = Geometry3D.segment_intersects_triangle((center + axis * 0.004) * 1000.0, (center + axis * 0.0004) * 1000.0, faces[i] * 1000.0, faces[i + 1] * 1000.0, faces[i + 2] * 1000.0)
+		if hit != null: height = maxf(height, axis.dot(hit / 1000.0 - center))
+	return height
+
+
+# Mesh.get_faces() quantizes collision vertices and loses the 0.05 mm seating
+# depth. Tiny fitting contracts must inspect the actual emitted render arrays.
+static func _render_faces(mesh: MeshInstance3D) -> PackedVector3Array:
+	var faces := PackedVector3Array()
+	for surface in mesh.mesh.get_surface_count():
+		var arrays := mesh.mesh.surface_get_arrays(surface)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		if arrays[Mesh.ARRAY_INDEX] == null or arrays[Mesh.ARRAY_INDEX].is_empty():
+			faces.append_array(vertices)
+		else:
+			for index in arrays[Mesh.ARRAY_INDEX]: faces.append(vertices[index])
+	return faces
+
+
 # Sample the rendered eyewear triangles against the actual head, rather than
 # repeating its analytic section function. Side arms are outside this front test.
 static func pilot_lens_margin(root: Node3D) -> float:
@@ -248,20 +350,26 @@ static func _curve_height(points: Array[Vector2], z: float) -> float:
 
 
 static func _closed_surface(mesh: MeshInstance3D) -> bool:
-	var arrays := mesh.mesh.surface_get_arrays(0)
-	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-	for normal in normals:
-		if not normal.is_finite() or absf(normal.length() - 1.0) > 0.001: return false
-	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-	var indices: PackedInt32Array = PackedInt32Array() if arrays[Mesh.ARRAY_INDEX] == null else arrays[Mesh.ARRAY_INDEX]
 	var faces := PackedVector3Array()
-	if indices.is_empty(): faces = vertices
-	else:
-		for index in indices: faces.append(vertices[index])
+	var face_normals := PackedVector3Array()
+	for surface in mesh.mesh.get_surface_count():
+		var arrays := mesh.mesh.surface_get_arrays(surface)
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		for normal in normals:
+			if not normal.is_finite() or absf(normal.length() - 1.0) > 0.001: return false
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var indices: PackedInt32Array = PackedInt32Array() if arrays[Mesh.ARRAY_INDEX] == null else arrays[Mesh.ARRAY_INDEX]
+		if indices.is_empty():
+			faces.append_array(vertices)
+			face_normals.append_array(normals)
+		else:
+			for index in indices:
+				faces.append(vertices[index])
+				face_normals.append(normals[index])
 	var edges := {}
 	for i in range(0, faces.size(), 3):
 		var average := Vector3.ZERO
-		for j in 3: average += normals[i + j if indices.is_empty() else indices[i + j]]
+		for j in 3: average += face_normals[i + j]
 		if (faces[i + 2] - faces[i]).cross(faces[i + 1] - faces[i]).dot(average) <= 0.0: return false
 		var keys := []
 		for j in 3:

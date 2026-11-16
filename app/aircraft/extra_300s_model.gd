@@ -7,7 +7,7 @@ extends RefCounted
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-e300-12-nose"
+const VISUAL_REVISION := "gp-extra-300s-60-e300-13-fittings"
 const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const COCKPIT := Color("1a1d22")
@@ -218,19 +218,76 @@ static func _fuselage(root: Node3D) -> void:
 	_cowl_fasteners(root)
 
 
-# Estimated small screw heads on the flat side walls of the removable cowl.
+# GPMA0236 manual p.39: four #4 cowl screws. Pan-head dimensions and cross
+# drive are visual estimates; attachment centers remain on the flat cowl sides.
 static func _cowl_fasteners(root: Node3D) -> void:
-	var st := _surface(material(METAL, 0.45, 0.8))
+	var st := _surface(material(METAL, 0.34, 0.8))
+	var recess := _surface(material(Color("424950"), 0.56, 0.7))
+	# [height above skin, radius], with a shallow domed shoulder.
+	var profile := [[-0.00005, 0.00255], [0.00015, 0.0027],
+		[0.0007, 0.00255], [0.0011, 0.0022], [0.0013, 0.00175]]
+	var arm := 0.00125
+	var half_slot := 0.00028
+	var corner := atan2(half_slot, arm)
+	var angles: Array[float] = []
+	for quadrant in 4:
+		for angle in [0.0, corner, (corner + PI / 4.0) * 0.5, PI / 4.0,
+			(3.0 * PI / 4.0 - corner) * 0.5, PI / 2.0 - corner]:
+			angles.append(quadrant * PI / 2.0 + float(angle))
 	var z: float = D.cowl_rear_z - 0.016
 	for side in [-1.0, 1.0]:
-		var normal := Vector3(side, 0, 0)
+		var axis := Vector3(side, 0, 0)
 		for y in [0.019, -0.055]:
-			var center := Vector3(side * (skin_half_width(z, y) + 0.0003), y, z)
-			for k in 12:
-				var a := Vector3(0, cos(TAU * k / 12.0), sin(TAU * k / 12.0)) * 0.0013
-				var b := Vector3(0, cos(TAU * (k + 1) / 12.0), sin(TAU * (k + 1) / 12.0)) * 0.0013
-				_tri(st, center, center + a, center + b, normal, normal, normal, normal)
-	_instance("cowl_fasteners", st.commit(), root)
+			var center := Vector3(side * skin_half_width(z, y), y, z)
+			var rings: Array = []
+			var normals: Array = []
+			for i in profile.size():
+				var before: Array = profile[maxi(0, i - 1)]
+				var after: Array = profile[mini(profile.size() - 1, i + 1)]
+				var n := Vector2(before[1] - after[1], after[0] - before[0]).normalized()
+				var ring: Array[Vector3] = []
+				var row: Array[Vector3] = []
+				for angle in angles:
+					var radial := Vector3(0, cos(angle), sin(angle))
+					ring.append(center + axis * float(profile[i][0]) + radial * float(profile[i][1]))
+					row.append(axis if i == profile.size() - 1 else axis * n.x + radial * n.y)
+				rings.append(ring)
+				normals.append(row)
+			for k in angles.size():
+				var j := (k + 1) % angles.size()
+				_tri(st, center + axis * float(profile[0][0]), rings[0][k], rings[0][j], -axis, -axis, -axis, -axis, [], [], 1e-22)
+				for i in profile.size() - 1:
+					_detail_quad(st, [rings[i][k], rings[i][j], rings[i + 1][j], rings[i + 1][k]],
+						[normals[i][k], normals[i][j], normals[i + 1][j], normals[i + 1][k]])
+				# Radial intersection with the union of the two slot rectangles.
+				# Exact notch/corner rays retain a real cross-shaped opening.
+				var mouth: Array[Vector3] = []
+				for index in [k, j]:
+					var angle := angles[index]
+					var c := maxf(absf(cos(angle)), 1e-9)
+					var s := maxf(absf(sin(angle)), 1e-9)
+					var radius := maxf(minf(arm / c, half_slot / s), minf(half_slot / c, arm / s))
+					mouth.append(center + axis * 0.0013 + Vector3(0, cos(angle), sin(angle)) * radius)
+				_detail_quad(st, [rings[-1][k], rings[-1][j], mouth[1], mouth[0]], [axis, axis, axis, axis])
+				var bottom_a := mouth[0] - axis * 0.00045
+				var bottom_b := mouth[1] - axis * 0.00045
+				var inward := (center + axis * 0.0013 - (mouth[0] + mouth[1]) * 0.5).normalized()
+				# Flat slot walls: their normal is perpendicular to each boundary edge.
+				var wall := axis.cross(mouth[1] - mouth[0]).normalized()
+				if wall.dot(inward) < 0.0: wall = -wall
+				_detail_quad(recess, [mouth[0], mouth[1], bottom_b, bottom_a], [wall, wall, wall, wall])
+				_tri(recess, center + axis * 0.00085, bottom_a, bottom_b, axis, axis, axis, axis, [], [], 1e-22)
+	var mesh := st.commit()
+	recess.commit(mesh)
+	_instance("cowl_fasteners", mesh, root)
+
+
+# Tiny fittings retain submillimetre bevels without lowering the aircraft's
+# general face cutoff. These quads are emitted only when the model is built.
+static func _detail_quad(st: SurfaceTool, points: Array, normals: Array) -> void:
+	var outward: Vector3 = normals[0] + normals[1] + normals[2] + normals[3]
+	_tri(st, points[0], points[1], points[2], normals[0], normals[1], normals[2], outward, [], [], 1e-22)
+	_tri(st, points[0], points[2], points[3], normals[0], normals[2], normals[3], outward, [], [], 1e-22)
 
 
 # Estimated twin cooling openings within the measured nose outline. The recessed
@@ -1079,8 +1136,35 @@ static func _gear(root: Node3D) -> Dictionary:
 	var axle_local := Vector3(0, g.tail_axle[1], g.tail_axle[0]) - steering.position
 	_strut("tail_wire", Vector3(0, 0.004, 0.008), axle_local, 0.0012, steering)
 	gear["tail"] = _wheel("wheel_tail", g.tail_wheel_diameter, 0.01, axle_local, steering)
+	_tail_axle_hardware(gear["tail"])
 	gear["steering"] = steering
 	return gear
+
+
+# Manual p.41 specifies a 3/32 in axle collar. Its outside dimensions and
+# right-side installation are estimated. The shaft fills the bore, so one
+# closed stepped solid avoids coincident internal shaft/bore faces.
+# Axisymmetric hardware shares the wheel pivot to follow ground compression;
+# rotation about X leaves its visible shape unchanged, including while steering.
+static func _tail_axle_hardware(wheel: Node3D) -> void:
+	var st := _surface(material(METAL, 0.32, 0.8))
+	var profile := [[-0.0057, 0.0], [-0.0057, 0.0012], [0.00525, 0.0012],
+		[0.00525, 0.00225], [0.0055, 0.0025], [0.0074, 0.0025],
+		[0.00765, 0.00225], [0.00765, 0.0012], [0.0082, 0.0012], [0.0082, 0.0]]
+	for i in profile.size() - 1:
+		var a: Array = profile[i]
+		var b: Array = profile[i + 1]
+		var normal := Vector2(a[1] - b[1], b[0] - a[0]).normalized()
+		for k in 24:
+			var points: Array[Vector3] = []
+			var normals: Array[Vector3] = []
+			for key in [[a, k], [a, k + 1], [b, k + 1], [b, k]]:
+				var angle := TAU * float(key[1]) / 24.0
+				var radial := Vector3(0, cos(angle), sin(angle))
+				points.append(Vector3(key[0][0], 0, 0) + radial * float(key[0][1]))
+				normals.append(Vector3(normal.x, 0, 0) + radial * normal.y)
+			_detail_quad(st, points, normals)
+	_instance("tail_axle_hardware", st.commit(), wheel)
 
 
 # Aluminium strap: edge-on chord from the side view (front/rear edges at root and tip), splayed outward in front

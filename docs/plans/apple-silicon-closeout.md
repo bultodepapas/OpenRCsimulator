@@ -1,6 +1,6 @@
 # Apple Silicon closeout
 
-Date: 2026-11-16. Owner: lead developer. Status: executing.
+Date: 2026-11-16. Owner: lead developer. Status: screen refused; native-default admission remains open.
 
 ## Deliverable
 
@@ -68,15 +68,24 @@ in this closeout.
 - [x] 1. Final candidate frozen: `e272d8708a0b8efbcd2f9921482970581df3dfc7`.
   Its metadata and JSON-clock corrections passed 119 native observer checks;
   fresh r6 qualification passed all 650 checks on M1.
-- [ ] 2. R8 package and lifecycle checks. R7 passed all five packaged checks
-  and both complete Home/fallback routes before the observer correction.
-- [ ] 3. Valid 1080p reference/native screen reviewed.
-- [ ] 4. Sustained comparison and required CI passed.
-- [ ] 5. Native default and fallback verified through ordinary launches.
-- [ ] 6. Tested app and concise results delivered.
+- [x] 2. R8 package passed all five packaged checks and both complete
+  Home/fallback routes. Package record: `516b4b9e…`; fallback proof: `92ea9327…`.
+- [x] 3. Both 120-second captures collected at actual 1080p; screen reviewed and
+  refused: p95 18.646/18.650 ms exceeds 18 ms, with no material CPU/FPS benefit.
+- [ ] 4. Sustained campaign not started after the failed screen. Required CI
+  awaits its visual job; exact-head MetalFX source CI passed.
+- [ ] 5. Native-default promotion withheld. Ordinary reference fallback passed;
+  no admission marker was created.
+- [x] 6. Tested app delivered on ANGEL's Desktop; measured results and the
+  refused native-default decision recorded in the existing evidence home.
 
 The R7 reference smoke flew but was rejected for 35 missing optional
 frame-generation metadata errors. Its drawable receipt also rejected JSON clock
 numbers. The replacement fixes both reads in the same observer and adds regression
 coverage. R5 was stopped before qualification; preserve it, R7 and the failed
 capture. No new engine build or performance-threshold change is part of this correction.
+
+The [closeout evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md#2026-11-16-native-cpu-closeout-on-angel)
+contains the measured comparison, package identity and limits. The runnable app
+is available as `OpenRC Simulator M1.app` on ANGEL's Desktop. Native remains an
+explicit experimental backend; the native-default objective is not completed.

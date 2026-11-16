@@ -1,7 +1,7 @@
 ## Native continuous aircraft stages. Discrete tick, event and collision policies
 ## remain owned by each session. A source-bound receipt and exact preparation
 ## guards are required before a native evaluator replaces its reference.
-## Linux/Windows x86_64; macOS ARM64 uses a qualified source default or explicit research opt-in.
+## Linux/Windows x86_64; macOS ARM64 defaults to native inside the supported stock domain.
 ## The owner retains this helper for the installed callback lifetime.
 extends RefCounted
 
@@ -230,11 +230,11 @@ func prepare(session: Node) -> Dictionary:
 		var session_error := _macos_session_error(session)
 		if not session_error.is_empty(): return _refuse(session_error)
 		if not session.experimental_native_macos:
-			var marker := MacosAdmission.read_marker()
-			_macos_automatic_marker = marker
 			var selected := MacosDomain.screen_session(session, true)
-			if not MacosAdmission.selection_allowed(marker, selected, session.soft_hull_contacts):
-				return _refuse("Mac native default has no qualification for this stock selection")
+			# Native is the product default; performance promotion is a separate report.
+			# Keep the stock domain and all loader/configuration checks mandatory.
+			if not selected.get("ok", false):
+				return _refuse(str(selected.get("reason", "Mac stock selection refused")))
 			_macos_domain_context = MacosDomain.freeze_for_session(session, true)
 			if not _macos_domain_context.get("ok", false):
 				return _refuse(str(_macos_domain_context.get("reason", "Mac stock context refused")))
@@ -248,6 +248,11 @@ func prepare(session: Node) -> Dictionary:
 					return _refuse("screened Mac stock context could not be frozen")
 	var status := library_status(is_macos)
 	if not status.ok: return _refuse(status.reason)
+	if is_macos and not session.experimental_native_macos:
+		if _receipt_row.mirrored_sources.get("app/sim/native_macos_domain.gd", "") != FileAccess.get_sha256("res://sim/native_macos_domain.gd"):
+			return _refuse("Mac native default domain differs from the loaded receipt")
+	if is_macos and FileAccess.get_sha256(MACOS_RECEIPT_PATH) != _macos_loaded_receipt_sha256:
+		return _refuse("Mac native receipt differs from the loaded library; restart required")
 	if not _macos_automatic_marker.is_empty():
 		var cached_error := MacosAdmission.loaded_identity_error(_macos_automatic_marker, _macos_loaded_receipt_sha256, _receipt_row)
 		if not cached_error.is_empty(): return _refuse(cached_error)
@@ -411,8 +416,9 @@ static func _macos_session_error(session: Node) -> String:
 		return "native stage on macOS supports experimental fixed-wing sessions only"
 	var opt_in: Variant = session.get("experimental_native_macos")
 	if typeof(opt_in) == TYPE_BOOL and opt_in: return ""
-	if session.get("automatic_native_macos") == true and not MacosAdmission.read_marker().is_empty(): return ""
-	return "Mac native default qualification is unavailable; explicit experimental fixed-wing opt-in remains available"
+	if session.get("automatic_native_macos") == true and OS.get_name() == "macOS" \
+			and Engine.get_architecture_name() == "arm64": return ""
+	return "Mac native stage requires an Apple Silicon app session or explicit research opt-in"
 
 
 ## Return the supported source/debug process target; unknown targets refuse.

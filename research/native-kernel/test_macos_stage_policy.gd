@@ -120,6 +120,11 @@ func test_platform_and_sessions() -> void:
 	helicopter.free()
 	var fixed: Node = Flight.new()
 	check("fixed wing defaults off", not NativeStage._macos_session_error(fixed).is_empty())
+	fixed.automatic_native_macos = true
+	check("Apple Silicon automatic admission needs no performance marker",
+		NativeStage._macos_session_error(fixed).is_empty() == (OS.get_name() == "macOS" and Engine.get_architecture_name() == "arm64"))
+	fixed.automatic_native_macos = false
+	check("low-level reference route remains explicit", not NativeStage._macos_session_error(fixed).is_empty())
 	fixed.experimental_native_macos = true
 	check("explicit fixed-wing opt-in accepted", NativeStage._macos_session_error(fixed).is_empty())
 	fixed.free()
