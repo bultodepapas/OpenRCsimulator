@@ -1627,3 +1627,68 @@ The exact-head [MetalFX source CI](https://github.com/bultodepapas/OpenRCsimulat
 passed. The [required CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43888117712)
 is still awaiting its visual-capture job at this update; the other jobs passed.
 Public Developer ID distribution and integration into main remain pending.
+
+## 2026-11-16 owner-directed native default
+
+The owner's later instruction supersedes the earlier decision to withhold the
+product default. Native physics is now the normal macOS ARM64 Home/Quick Flight
+choice within the structurally screened stock production-trim domain. Explicit
+reference selection, unsupported configurations and failed native validation keep
+the reference route. Engine, OS, library, source, package, immutable-context and
+runtime guards remain mandatory. No performance-promotion marker was fabricated;
+the earlier failed performance screen and incomplete sustained/fleet campaign
+remain unchanged.
+
+The tested runtime is `1bb0434c1dff01f9a9ee8f8927f15ee95ef7cce7`. R10 is installed
+as a **physical app**, replacing the previous Desktop symlink:
+`/Users/g/Desktop/OpenRC Simulator M1.app`. Its app and dylib retain their local
+ad-hoc signatures; public Developer ID distribution remains deferred.
+
+Completed verification:
+
+- Fresh M1 native qualification: all 650 stage/lifecycle/replay checks, the
+  positive oracles, expected negative control, FPCR and packed-domain guards.
+- Ordinary source default: 74 checks, including real native callbacks, exact
+  recorded replay, immutable live guards, explicit reference and unsupported
+  selection fallback. The companion profile test also passed on the official
+  M1 editor.
+- Companion rebind: nine retained tapes, 18 complete official Windows replays,
+  nine identical CSV pairs of 2,881 rows and 49 offline tool controls. Only the
+  companion solver pin changed; aircraft parameters and retained tapes did not.
+- R10 package: all five selected-ARM64 checks passed, including native stage,
+  lifecycle/replay and separate reference/native sessions.
+- Audio-enabled packaged Home: both missing and malformed performance-marker
+  cases passed Home → flight → pause → restart → Home → flight → normal quit.
+  All six flight/restart/reentry observations reported active `native`, positive
+  native context/stage counters and clean checked engine logs. No backend or
+  renderer override was supplied; the shipped graphics configuration was used.
+  These are functional results, not new performance, focus or scanout evidence.
+
+Package record SHA-256:
+`2fbe18e3beae76886c64f889619208f0255ac8432fe9177d9d7cd4bef8ec741c`.
+Five-check result:
+`25b60da5a8895fe287b71d7094d745ea6325e0fb9fdc49a0135452b15843f660`.
+Home proof:
+`52ebceca98a9653e5143e52bc98b0a44ea0ae184d2610909ca727d68265e970c`.
+The signed executable SHA-256 is
+`cdea09c51f15ea29b37b4aff92505e106a057cf7f1fe005992942fe5569cd653`.
+The final private archive contains 289 cross-verified payloads, including raw
+checks and replay tapes (`2a4bff05b0ff545215f4920dd398e4949702e10143478bf138f68d4623e0b10a`).
+It is retained on M1 and under `D:/OpenRCsimulator-evidence/native-default-20261116/`.
+Completed import caches were retired; source, signed apps, binaries, receipts,
+logs and tapes remain. Task app/engine processes exited and the owned keep-awake
+assertion was stopped.
+
+The work branch also contains CI-only follow-up
+`c6e81947b105c6cd0b8797620ce1f3e8cb9a9e75`: the visual job's cold import stopped
+at its 600-second limit before rendering. A checked 1,800-second pre-import now
+runs before the unchanged capture suite, with separate diagnostic retention.
+`app`, `research` and `tools` Git trees are identical between that CI head and
+runtime `1bb0434c`. The runtime evidence and package receipts retain their actual
+`1bb0434c` identity; this equivalence is not acceptance by the legacy promotion
+reader, which requires exact commit/tree/CI-head equality.
+
+The [MetalFX source controls](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43921529985)
+passed on the CI head. The [aggregate CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43921525209)
+remains in progress at delivery. No main merge, public app release or new
+performance qualification is claimed.
