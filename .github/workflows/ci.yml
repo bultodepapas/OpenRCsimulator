@@ -631,6 +631,10 @@ jobs:
             .tools/Godot_v*_linux.x86_64.sha512
             .tools/Godot_v*_linux.x86_64.zip
           key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - name: Import visual resources with checked diagnostics
+        run: |
+          python3 tools/godot/run_checked.py --timeout 1800 --out-dir tmp/visual-resource-import --label visual-resource-import -- \
+            "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import
       - run: app/capture.sh
       - name: Report visual phase timings
         if: always()
@@ -695,6 +699,15 @@ jobs:
         with:
           name: captures-app
           path: app/captures/*
+
+      - name: Upload visual import diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: visual-resource-import
+          path: tmp/visual-resource-import/
+          if-no-files-found: ignore
+          retention-days: 7
 
   # PT1-CI-03 shadow evidence, not a gate: run the seven capture groups on separate runners and
   # compare every output with the unchanged full job above. `CI required` does not depend on these
