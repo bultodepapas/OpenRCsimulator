@@ -462,4 +462,10 @@ continue to hash the complete inventory at their existing boundaries.
 
 Use the [file-hash fixture](../../../research/engine-upgrade/metalfx/README.md#file-hash-correctness-fixture)
 for independently computed vectors and an optional same-file timing comparison.
-The prepared 0024 pair is still being built; no speedup is established here.
+The fresh 1–19+21+24 native pair passes the unchanged full official extension
+API validator and its missing-class controls. Both compiled SHA objects contain
+224 ARM SHA-256 instructions, and the editor passes 25 runtime vector controls.
+Three interleaved runs per editor hash the same warm-cache 2,484,244,643-byte PCK:
+median 7.748414 s before and 1.583237 s after (4.894×). This is file hashing;
+actual new-package startup, native physics, FPS and promotion require their own
+[evidence](../../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md).

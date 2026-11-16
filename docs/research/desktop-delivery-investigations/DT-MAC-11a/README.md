@@ -1534,6 +1534,49 @@ distribution remains deferred. The new host's explicit battery/production-trim
 options require a new export and runtime evidence; portable controls alone do
 not upgrade either retained package.
 
+## ARM SHA-256 native pair and controlled file comparison (2026-11-15)
+
+The separately built 1–19+21+24 pair has editor
+`81dcaa54eb0f2e0fed6f0f9ea21fb92c346bf7533b4426733ccf37f605c31c36`
+and template
+`c64949fa4c95c956a42e9dbe176eba2b2297bf67eae40e2cb6ce74b3cfc8324b`.
+Its five-member export ZIP is
+`f485ea80cdf0914c4697fa852a850541cbed663495a96cdd253d9bffed8d4f75`.
+Fresh intake/catalog, matched toolchain/flags, actual ARM64 builds and pair
+verification pass. The two SHA object files are byte-identical and each contains
+224 ARM SHA-256 instructions. The 25 runtime vectors and changed-byte negative
+pass on the new editor. The unchanged full official extension API validator and
+both missing-class controls pass. This does not qualify the new native physics
+installation or a new application package.
+
+The complete old/new patched catalogs differ only at
+`thirdparty/mbedtls/godot/godot_psa_config.h`; build flags and toolchain agree
+apart from build concurrency. On ANGEL/M1 with AC, no competing compiler/Godot
+process, warm file cache, no recorded thermal/performance warning, and interleaved
+old/new/new/old/old/new order, all six independently checked PCK hashes agree.
+The unchanged PCK is 2,484,244,643 bytes, SHA-256
+`5343f1b6e4fe051af626fce6d9e53d74dae09f009224ca2ba2c0ca760df36aeb`.
+Old call times: 7.748414, 7.747382 and 7.752921 s. New: 1.590479, 1.583107 and
+1.583237 s. Medians are 7.748414 vs 1.583237 s: 4.894× faster, about 79.6% less
+time in that file-hash call. Timing excludes fixture setup, process startup and
+other package checks. End-to-end startup, flight CPU/FPS, stutter, latency and
+automatic default remain unqualified for the new pair.
+
+The explicit release battery/trim implementation at `2ac2f8ce` passes 75 Python
+tests with one platform skip and 111 actual launch/parser checks on both the
+pinned official and new custom editor. The first parser receipt is correctly
+failed only because its coordinator required the wrong completion text; it
+exited zero with 111 passing checks. The corrected required-text runs pass with
+zero diagnosed errors/warnings. An actual new package still must exercise the
+production 0.5-throttle and battery options.
+
+Phase 18 retains 205 payloads, 102,467,081 compressed bytes, SHA-256
+`c8fd9e76181487896d45eeb525e244c9d1f0ea7a24e8e018cdd221bdaef4c715`.
+All retrieved payloads, including both engine binaries, the template ZIP,
+instruction dumps, checked hash runs and launch/API records, are independently
+rehashed. New binding pins are selected from those retained bytes before any
+package binding. The existing a5 development app and R3 ZIP stay unchanged.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is

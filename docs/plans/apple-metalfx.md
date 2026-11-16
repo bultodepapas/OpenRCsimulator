@@ -112,8 +112,10 @@ native stage, lifecycle, replay and both short fixed-session backends; its state
 fingerprints agree. The `e7715a84` companion-profile renewal uses nine identical
 retained-tape comparisons and needs a new package export. Explicit production
 trim/battery coverage, actual 1080p workload measurement and automatic package
-default qualification remain open. Optional 0024 targets expensive package hashing;
-its new engine/pair/package gates remain separate from the retained app.
+default qualification remain open. The optional 0024 native pair passes full
+API/vector controls and makes the same warm-cache PCK hash 4.894× faster. Source
+native correctness and an actual export must be renewed for that engine; this
+file-hash gain does not establish game FPS or upgrade the retained app.
 The R3 development ZIP still contains clean19 and reference physics; the new
 pair does not upgrade it. The linked evidence identifies each tested source.
 
