@@ -158,7 +158,9 @@ class PoolRecoveryTests(unittest.TestCase):
                 self.observed("FINISHED", outcome="INFRA_FAILED", cleanup="CONFIRMED")]):
             report = self.pool.collect(self.identifier)
         self.assertEqual(original.read_text(), "retained original false status")
-        self.assertEqual(Path(report["pool_status"]).parent, destination / "recovery-1")
+        generation = Path(report["pool_status"]).parent
+        self.assertEqual(generation.parent, destination / "recovery-1")
+        self.assertTrue(generation.name.startswith("collection-"))
 
 
 if __name__ == "__main__":

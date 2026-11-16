@@ -626,69 +626,12 @@ class Pool:
         return self._public_status(receipt, identifier, result)
 
     def collect(self, identifier, out_dir=None):
-        status = self.status(identifier)
-        if status.get('state') != 'FINISHED':
-            raise ValueError('Collection requires a confirmed finished attempt')
-        receipt = json.loads((self.root / 'jobs' / (identifier + '.json')).read_text())
-        host = next(item for item in self.hosts if item['id'] == receipt['host'])
-        destination = (Path(out_dir).resolve() if out_dir else self.root / 'results') / identifier
-        if receipt.get('invalidated_nonexecution'):
-            # Keep the old terminal report and its artifacts intact for review.
-            destination /= 'recovery-1'
-        destination.mkdir(parents=True, exist_ok=True)
-        status_path = destination / 'pool-status.json'
-        write_json(status_path, status)
-        if host.get('local'):
-            report = (status.get('runner_verdict') or {}).get('checked')
-            if report:
-                shutil.copyfile(report['log'], destination / 'engine.log')
-        else:
-            total = sum(item['size'] for item in status.get('artifacts', {}).values())
-            if total > 128 * 1024 * 1024:
-                raise ValueError('Artifact collection exceeds 128 MiB budget')
-            for name, metadata in status.get('artifacts', {}).items():
-                from tools.testqueue.snapshots import _relative
-                _relative(name)
-                if name.casefold() in {'pool-status.json', 'pool-infra-report.json'}:
-                    raise ValueError('Remote artifact conflicts with saved pool evidence')
-                target = destination / name
-                target.parent.mkdir(parents=True, exist_ok=True)
-                subprocess.run(['scp', host['ssh'] + ':' + status['output'] + '/' + name, str(target)],
-                               check=True, timeout=120, capture_output=True)
-                if target.stat().st_size != metadata['size'] or digest(target) != metadata['sha256']:
-                    raise ValueError('Collected artifact digest mismatch: ' + name)
-            report = status.get('checked')
-            if report:
-                remote_log = Path(report['log']).relative_to(status['output']).as_posix()
-                shutil.copyfile(destination / remote_log, destination / 'engine.log')
-        if not report:
-            if status.get('outcome') != 'INFRA_FAILED':
-                raise ValueError('Finished attempt has no checked report; infrastructure evidence retained')
-            infrastructure_path = destination / 'pool-infra-report.json'
-            infrastructure = {'pool_job': identifier, 'pool_host': host['id'],
-                              'pool_outcome': 'INFRA_FAILED', 'pool_status': str(status_path),
-                              'pool_report': str(infrastructure_path)}
-            write_json(infrastructure_path, infrastructure)
-            return infrastructure
-        write_json(destination / 'original-report.json', report)
-        if digest(destination / 'engine.log') != report['log_sha256']:
-            raise ValueError('Checked log digest mismatch')
-        local_report = {**report, 'log': str(destination / 'engine.log'),
-                        'report': str(destination / 'report.json'), 'pool_host': host['id'],
-                        'pool_job': identifier, 'pool_outcome': status['outcome']}
-        write_json(destination / 'report.json', local_report)
-        if status['outcome'] == 'PASSED':
-            guard = Singleton(self.root / 'history.lock')
-            try:
-                history_path = self.root / 'history.json'
-                history = json.loads(history_path.read_text()) if history_path.exists() else {}
-                history.setdefault(host['id'], {})[receipt['options']['script']] = max(0.001, report['elapsed_seconds'])
-                if 'import' in status:
-                    history[host['id']]['_setup_seconds'] = max(0.001, status['import']['elapsed_seconds'])
-                write_json(history_path, history)
-            finally:
-                guard.close()
-        return local_report
+        from tools.testqueue.collection import collect
+        return collect(self, identifier, out_dir=out_dir)
+
+    def verify_collection(self, identifier, result):
+        from tools.testqueue.collection import verify_collection
+        return verify_collection(self, identifier, result)
 
 
 def main(argv=None):
@@ -717,6 +660,8 @@ def main(argv=None):
         command.add_argument('job')
         if name == 'wait':
             command.add_argument('--timeout', type=float, default=600)
+        if name == 'collect':
+            command.add_argument('--out', type=Path)
     args = parser.parse_args(argv)
     if not args.config:
         parser.error('--config or OPENRC_TESTPOOL_CONFIG is required')
@@ -741,7 +686,7 @@ def main(argv=None):
         value = pool.submit(args.snapshot, args.script, platform=args.platform, require=args.require,
                             timeout=args.timeout, host_id=args.host)
     elif args.command == 'collect':
-        value = pool.collect(args.job)
+        value = pool.collect(args.job, out_dir=args.out)
     elif args.command == 'recover':
         value = pool.recover(args.job)
     else:

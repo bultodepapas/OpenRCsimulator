@@ -51,8 +51,11 @@ def main(directory: Path) -> int:
             if not manifest.get("import_files") or "--import" in options["argv"]:
                 imported = run_checked([os.environ["OPENRC_GODOT"], "--headless", "--path", str(ROOT / "app"),
                                         "--audio-driver", "Dummy", "--import"], directory / "imports", timeout=600)
-                if not imported["ok"]:
-                    verdict.update(ok=False, complete=True, import_verdict=imported)
+                if (imported.get("ok") is not True or
+                        preset == "checked" and imported.get("complete") is not True):
+                    # The requested checked test did not run. Preserve the
+                    # import report without presenting it as a complete check.
+                    verdict.update(ok=False, complete=preset != "checked", import_verdict=imported)
                     code = 1
                     return code
                 options["argv"] = [arg for arg in options["argv"] if arg != "--import"]
@@ -91,8 +94,10 @@ def main(directory: Path) -> int:
             command += ["--script", options["script"]]
             result = run_checked(command, directory / "checks", timeout=options["timeout"] - 0.5,
                                  required=options["require"], **options.get("settings", {}))
-            verdict.update(ok=result["ok"], complete=True, checked=result)
-            code = 0 if result["ok"] else 1
+            complete = result.get("complete") is True and type(result.get("ok")) is bool
+            ok = complete and result["ok"] is True
+            verdict.update(ok=ok, complete=complete, checked=result)
+            code = 0 if ok else 1
         elif preset == "aircraft-screenshot":
             from tools.godot.run_checked import run_checked
             command = [os.environ["OPENRC_GODOT"], "--path", str(ROOT / "app"),

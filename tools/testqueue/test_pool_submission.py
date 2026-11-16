@@ -11,6 +11,7 @@ from tools.testqueue.test_pool import verified_fixture
 
 from tools.testqueue import pool as transport, snapshots
 from tools.testqueue.common import write_json
+from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.pool_batch import run_batch
 
 
@@ -46,7 +47,9 @@ class SubmissionBoundaryTests(unittest.TestCase):
         rpc = stack.enter_context(patch("tools.testqueue.pool.rpc", return_value={"job": "original"}))
         stack.enter_context(patch.object(self.pool, "status", return_value=PASS))
         stack.enter_context(patch.object(self.pool, "collect", side_effect=lambda identifier:
-                           {"pool_job": identifier, "pool_outcome": "PASSED"}))
+                           {"pool_job": identifier, "pool_outcome": "PASSED",
+                            "collection_format": COLLECTION_FORMAT, "diagnostic_only": False}))
+        stack.enter_context(patch.object(self.pool, "verify_collection", side_effect=lambda identifier, result: result))
         return stack, rpc
 
     def test_transient_lock_failure_retries_same_id_with_backoff(self):

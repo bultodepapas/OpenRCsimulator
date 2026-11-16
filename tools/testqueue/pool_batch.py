@@ -20,6 +20,7 @@ import uuid
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, write_json
+from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.pool import Pool, SubmissionDeferred, SubmissionRejected
 from tools.testqueue.presets import scheduling, validate
 
@@ -71,7 +72,8 @@ def _finished_success(row):
     return (row["phase"] == "DONE" and status.get("state") == "FINISHED"
             and status.get("outcome") == "PASSED" and status.get("evidence") == "COMPLETE"
             and status.get("cleanup") == "CONFIRMED" and collection.get("pool_job") == row["request_id"]
-            and collection.get("pool_outcome") == "PASSED")
+            and collection.get("pool_outcome") == "PASSED" and collection.get("diagnostic_only") is False
+            and collection.get("collection_format") == COLLECTION_FORMAT)
 
 
 def _result(state):
@@ -82,9 +84,11 @@ def _result(state):
 
 
 def reobservation_ids(pool, rows):
-    """Find stale terminal rows using coordinator receipts only, without RPC."""
+    """Find stale or previously unverified terminal rows without RPC."""
     return {row["request_id"] for row in rows if row.get("phase") in {"DONE", "COLLECTING", "COLLECTION_BLOCKED"}
-            and pool.needs_reobservation(row["request_id"], row.get("status") or {})}
+            and (pool.needs_reobservation(row["request_id"], row.get("status") or {})
+                 or row.get("phase") == "DONE"
+                 and (row.get("collection") or {}).get("collection_format") != COLLECTION_FORMAT)}
 
 
 def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=2):
@@ -107,6 +111,7 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
     config_digest, manifest_digest = _digest(config), _digest(manifest)
     guard = Singleton(Path(str(state_path) + ".lock"))
     try:
+        failed_verifications = set()
         if state_path.exists():
             state = json.loads(state_path.read_text(encoding="utf-8"))
             if (state.get("version") not in {1, BATCH_VERSION} or state.get("config_sha256") != config_digest
@@ -139,9 +144,9 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                 if row["request_id"] in reobserve:
                     row.setdefault("previous_results", []).append({
                         "status": row.get("status"), "collection": row.pop("collection", None),
-                        "reason": "Legacy nonexecution result requires original-authority observation"})
+                        "reason": "Legacy outcome or unverified collection requires original-authority observation"})
                     row.update(phase="TRACKING", status={"state": "UNKNOWN", "cleanup": "UNCONFIRMED",
-                                                        "error": "Reobserving legacy nonexecution result"})
+                                                        "error": "Reobserving legacy outcome or unverified collection"})
                     changed = True
                 collection = row.get("collection") or {}
                 if row["phase"] == "DONE" and (collection.get("pool_job") != row["request_id"]
@@ -150,6 +155,19 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
                         raise ValueError("completed row lacks a finished status")
                     row["phase"] = "COLLECTING"
                     changed = True
+                if row["phase"] == "DONE":
+                    try:
+                        # A saved passing result is usable only while its
+                        # original collection still verifies. This reads local
+                        # receipts and artifacts only, even if the host is offline.
+                        pool.verify_collection(row["request_id"], collection)
+                    except Exception as error:
+                        row.setdefault("previous_results", []).append({
+                            "status": row.get("status"), "collection": collection,
+                            "reason": "Saved collection failed local verification", "error": str(error)})
+                        row.update(phase="COLLECTION_BLOCKED", collection_error=str(error))
+                        failed_verifications.add(row["request_id"])
+                        changed = True
             if state["version"] != BATCH_VERSION:
                 state["migrated_from_version"] = state["version"]
                 state["version"] = BATCH_VERSION
@@ -167,7 +185,9 @@ def run_batch(pool, config, manifest, state_path, *, timeout=600, poll_interval=
 
         deadline = time.monotonic() + timeout
         checked_blocked = set()
-        checked_collections = set()
+        # Preserve failed generations for inspection; a later invocation can
+        # retry collection from the same authority without launching new work.
+        checked_collections = set(failed_verifications)
         retry_ready = {row["request_id"]: time.monotonic() + min(RETRY_MAX_SECONDS,
                        max(0, row["retry_after"] - time.time())) for row in state["jobs"]
                        if row["phase"] == "RETRY_WAIT"}

@@ -103,11 +103,12 @@ def launch(request_id, jobs, source=None, *, config=None):
 
 
 def status(request_id, *, config=None):
-    """Read receipts only. No network, snapshots, launches or collection."""
+    """Read cached receipts, without network or rehashing collected artifacts."""
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
     request = _read(directory / "request.json")
     result = {"request_id": request_id, "receipt": str(directory),
+              "evidence_observation": "CACHED_METADATA",
               "supervisor": _read(directory / "supervisor.json") if (directory / "supervisor.json").exists() else {"state": "ACCEPTED"},
               "source": request["source"], "source_frozen": (directory / "manifest.json").exists()}
     result["supervisor_active"] = _active(directory)
@@ -117,7 +118,7 @@ def status(request_id, *, config=None):
         reobserve = reobservation_ids(pool, batch["jobs"])
         if reobserve:
             result.update(result="INCOMPLETE", recovery_required=True,
-                          recovery_reason="Legacy nonexecution results require original-authority observation")
+                          recovery_reason="Legacy outcomes or unverified collections require original-authority observation")
             result["jobs"] = [({**row, "phase": "BLOCKED", "previous_status": row.get("status"),
                                 "status": {"state": "UNKNOWN", "cleanup": "UNCONFIRMED"},
                                 "recovery_required": True} if row["request_id"] in reobserve else row)

@@ -7,8 +7,10 @@ import unittest
 from unittest.mock import patch
 
 from tools.testqueue.test_pool import verified_fixture
+from tools.testqueue.test_collection import checked_fixture
 
 from tools.testqueue.common import Singleton
+from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.pool import Pool
 from tools.testqueue.pool_batch import run_batch
 
@@ -22,6 +24,7 @@ class FakePool:
         self.submit_calls = []
         self.status_calls = []
         self.collect_calls = []
+        self.verify_calls = []
         self.submissions = {}
         self.statuses = {}
         self.wait_once = set()
@@ -54,10 +57,15 @@ class FakePool:
         self.collect_calls.append(request_id)
         state = json.loads(self.state_path.read_text())
         row = next(item for item in state["jobs"] if item["request_id"] == request_id)
-        return {"pool_job": request_id, "pool_outcome": row["status"]["outcome"]}
+        return {"pool_job": request_id, "pool_outcome": row["status"]["outcome"],
+                "collection_format": COLLECTION_FORMAT, "diagnostic_only": False}
 
     def needs_reobservation(self, request_id, status):
         return False
+
+    def verify_collection(self, request_id, result):
+        self.verify_calls.append(request_id)
+        return result
 
 
 class PoolBatchTests(unittest.TestCase):
@@ -203,19 +211,18 @@ class PoolBatchTests(unittest.TestCase):
         self.inputs([{"script": "res://tests/test_a.gd"}, {"script": "res://tests/test_b.gd"}])
         pool = Pool(self.config)
         launched = []
-        engine_log = self.root / "engine.log"
-        engine_log.write_text("checked output", encoding="utf-8")
-        report = {"log": str(engine_log), "log_sha256": hashlib.sha256(engine_log.read_bytes()).hexdigest(),
-                  "elapsed_seconds": 1.5}
+        observations = {}
 
         def rpc(operation, **kwargs):
             if operation == "submit":
                 launched.append(kwargs["request_id"])
+                observations[kwargs["request_id"]] = checked_fixture(
+                    self.root / "attempts" / kwargs["request_id"], script=kwargs["options"]["script"])
                 return {"job": kwargs["request_id"]}
             if operation == "recover":
                 return {"job": kwargs["request_id"]}
             if operation == "status":
-                return {**PASS, "runner_verdict": {"checked": report},
+                return {**observations[kwargs["job"]],
                         "payload": {"manifest": {"source_digest": "source"}}}
             raise AssertionError(operation)
 
@@ -227,11 +234,44 @@ class PoolBatchTests(unittest.TestCase):
             self.assertEqual(result["result"], "PASSED")
             self.assertEqual(len(launched), 2)
             self.assertEqual([row["collection"]["pool_job"] for row in result["jobs"]], launched)
-            self.assertEqual(run_batch(pool, self.config, self.manifest, self.state,
-                                       timeout=1, poll_interval=0)["result"], "PASSED")
+            with patch("tools.testqueue.pool.rpc", side_effect=AssertionError("host offline")) as offline, \
+                    patch.object(pool, "submit") as submit, patch.object(pool, "collect") as collect:
+                resumed = run_batch(pool, self.config, self.manifest, self.state, timeout=1, poll_interval=0)
+                self.assertEqual(resumed["result"], "PASSED")
+                offline.assert_not_called()
+                submit.assert_not_called()
+                collect.assert_not_called()
+
+            original_row = result["jobs"][0]
+            log = Path(original_row["collection"]["log"])
+            original_log = log.read_bytes()
+            for damage in ("missing", "corrupt"):
+                if damage == "missing":
+                    log.unlink()
+                else:
+                    log.write_bytes(b"corrupt collected evidence")
+                with patch("tools.testqueue.pool.rpc", side_effect=AssertionError("host offline")) as offline, \
+                        patch.object(pool, "submit") as submit, patch.object(pool, "collect") as collect:
+                    damaged = run_batch(pool, self.config, self.manifest, self.state, timeout=1, poll_interval=0)
+                    row = damaged["jobs"][0]
+                    self.assertEqual(damaged["result"], "INCOMPLETE")
+                    self.assertEqual(row["phase"], "COLLECTION_BLOCKED")
+                    self.assertEqual(row["collection"], original_row["collection"])
+                    self.assertEqual(row["previous_results"][-1]["collection"], original_row["collection"])
+                    offline.assert_not_called()
+                    submit.assert_not_called()
+                    collect.assert_not_called()
+                if damage == "missing":
+                    # Restoring retained bytes lets a later collection recheck
+                    # the original authority and resume without a new submit.
+                    log.write_bytes(original_log)
+                    with patch.object(pool, "submit") as submit:
+                        repaired = run_batch(pool, self.config, self.manifest, self.state, timeout=1, poll_interval=0)
+                        self.assertEqual(repaired["result"], "PASSED")
+                        submit.assert_not_called()
         self.assertEqual(len(launched), 2)
         history = json.loads((pool.root / "history.json").read_text())
-        self.assertEqual(history["windows"]["res://tests/test_a.gd"], 1.5)
+        self.assertEqual(history["windows"]["res://tests/test_a.gd"], 1.25)
 
 
 if __name__ == "__main__":

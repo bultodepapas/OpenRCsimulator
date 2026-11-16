@@ -9,8 +9,10 @@ from unittest.mock import patch
 
 from tools.testqueue import pool_mcp
 from tools.testqueue.common import write_json
+from tools.testqueue.collection import FORMAT as COLLECTION_FORMAT
 from tools.testqueue.pool import Pool
 from tools.testqueue.pool_batch import run_batch
+from tools.testqueue.test_collection import checked_fixture
 
 
 def file_digest(path):
@@ -39,8 +41,8 @@ class LegacyBatchTests(unittest.TestCase):
                                "pool_report": str(self.root / "prior-report.json")}
         (self.root / "prior-status.json").write_text("original status evidence", encoding="utf-8")
         (self.root / "prior-report.json").write_text("original report evidence", encoding="utf-8")
-        self.log = self.root / "engine.log"
-        self.log.write_text("real failed test evidence", encoding="utf-8")
+        self.finished = checked_fixture(self.root / "attempt", outcome="TEST_FAILED")
+        self.log = Path(self.finished["runner_verdict"]["checked"]["log"])
         self.observed_state = "RUNNING"
         self.calls = []
 
@@ -83,10 +85,7 @@ class LegacyBatchTests(unittest.TestCase):
             self.assertIn(payload["job"], {"authority-" + self.identifier, "authority-liveid"})
             result = {"state": self.observed_state, "payload": {"manifest": {"source_digest": self.source_digest}}}
             if self.observed_state == "FINISHED":
-                result.update(outcome="TEST_FAILED", evidence="COMPLETE", cleanup="CONFIRMED",
-                              runner_verdict={"checked": {"log": str(self.log),
-                                                          "log_sha256": file_digest(self.log),
-                                                          "elapsed_seconds": 1.25}})
+                result.update(self.finished)
             return result
         self.fail(f"unexpected RPC: {operation}")
 
@@ -133,11 +132,11 @@ class LegacyBatchTests(unittest.TestCase):
                     self.assertEqual(current["collection"]["pool_job"], self.identifier)
                     self.assertEqual(current["collection"]["pool_outcome"], "TEST_FAILED")
                     self.assertEqual(len(current["previous_results"]), 1)
-                    self.assertEqual(Path(current["collection"]["report"]).parent,
-                                     previous_destination / "recovery-1")
-                    self.assertTrue((previous_destination / "recovery-1" / "pool-status.json").is_file())
+                    generation = Path(current["collection"]["report"]).parent
+                    self.assertEqual(generation.parent, previous_destination / "recovery-1")
+                    self.assertTrue((generation / "pool-status.json").is_file())
                     self.assertEqual(Path(current["collection"]["log"]).read_text(encoding="utf-8"),
-                                     "real failed test evidence")
+                                     self.log.read_text(encoding="utf-8"))
                     collect.assert_called_once_with(self.identifier)
 
                     third = self.run_batch()
@@ -213,15 +212,55 @@ class LegacyBatchTests(unittest.TestCase):
         self.assertEqual(result["jobs"][1]["status"]["state"], "RUNNING")
         self.assertEqual((directory / "batch.json").read_bytes(), original)
 
+    def test_old_passing_collection_requires_observation_and_verified_recollection(self):
+        self.write_receipt(self.identifier, legacy=False)
+        old_status = {"state": "FINISHED", "outcome": "PASSED", "cleanup": "CONFIRMED", "evidence": "COMPLETE"}
+        old_collection = {"pool_job": self.identifier, "pool_outcome": "PASSED",
+                          "report": str(self.root / "prior-report.json")}
+        row = self.row(self.identifier, "DONE", old_status, old_collection)
+        directory = self.write_mcp_cache([row], result="PASSED")
+        original = (directory / "batch.json").read_bytes()
+        with patch("tools.testqueue.pool.rpc") as rpc, patch.object(Pool, "remote") as remote, \
+                patch.object(pool_mcp, "_start") as start:
+            cached = pool_mcp.status("cached", config=self.config)
+            self.assertEqual(cached["result"], "INCOMPLETE")
+            self.assertTrue(cached["recovery_required"])
+            self.assertEqual(cached["jobs"][0]["status"]["state"], "UNKNOWN")
+            self.assertEqual(cached["jobs"][0]["previous_status"], old_status)
+            self.assertEqual(pool_mcp.recover("cached", config=self.config)["result"], "INCOMPLETE")
+            start.assert_called_once_with(directory)
+            rpc.assert_not_called()
+            remote.assert_not_called()
+        self.assertEqual((directory / "batch.json").read_bytes(), original)
+
+        self.finished = checked_fixture(self.root / "passing-attempt")
+        self.observed_state = "FINISHED"
+        with patch("tools.testqueue.pool.rpc", side_effect=self.rpc), \
+                patch.object(self.pool, "submit") as submit, \
+                patch.object(self.pool, "collect", wraps=self.pool.collect) as collect:
+            result = self.run_batch()
+        self.assertEqual(result["result"], "PASSED")
+        current = result["jobs"][0]
+        self.assertEqual(current["request_id"], self.identifier)
+        self.assertEqual(current["collection"]["collection_format"], COLLECTION_FORMAT)
+        self.assertIs(current["collection"]["diagnostic_only"], False)
+        self.assertEqual(current["previous_results"][0]["status"], old_status)
+        self.assertEqual(current["previous_results"][0]["collection"], old_collection)
+        submit.assert_not_called()
+        collect.assert_called_once_with(self.identifier)
+        self.assertEqual((self.root / "prior-report.json").read_text(), "original report evidence")
+
     def test_legitimate_failed_test_remains_terminal_and_unchanged(self):
         self.write_receipt(self.identifier, legacy=False)
         status = {"state": "FINISHED", "outcome": "TEST_FAILED", "cleanup": "CONFIRMED", "evidence": "COMPLETE"}
-        collection = {"pool_job": self.identifier, "pool_outcome": "TEST_FAILED", "log": str(self.log)}
+        collection = {"pool_job": self.identifier, "pool_outcome": "TEST_FAILED", "log": str(self.log),
+                      "collection_format": COLLECTION_FORMAT, "diagnostic_only": False}
         row = self.row(self.identifier, "DONE", status, collection)
         directory = self.write_mcp_cache([row])
         original = (directory / "batch.json").read_bytes()
         with patch("tools.testqueue.pool.rpc") as rpc, patch.object(Pool, "remote") as remote, \
              patch.object(pool_mcp, "_start") as start, \
+             patch.object(self.pool, "verify_collection", return_value=collection), \
              patch.object(self.pool, "submit") as submit, patch.object(self.pool, "collect") as collect:
             self.assertEqual(self.run_batch()["result"], "FAILED")
             result = pool_mcp.status("cached", config=self.config)
