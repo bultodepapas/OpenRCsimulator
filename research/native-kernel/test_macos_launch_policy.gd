@@ -86,6 +86,26 @@ func test_qualification_options() -> void:
 		PackedStringArray(["--native-qualification=session"]), "macOS").ok)
 	check("qualification rejects malformed bare option", not Qualification._parse_options(
 		PackedStringArray(["--native-qualification=stage", "--experimental-native-macos"]), "macOS").ok)
+	for backend: String in ["gdscript_reference", "native"]:
+		var session_args := PackedStringArray(["--native-qualification=session", "--physics-backend=" + backend,
+			"--output=/tmp/report.json"])
+		for battery: String in ["ideal", "pack"]:
+			for trim: String in ["reference", "production"]:
+				var valid := session_args.duplicate()
+				valid.append_array(PackedStringArray(["--battery=" + battery, "--trim-profile=" + trim]))
+				check("session accepts explicit battery and trim", Qualification._parse_options(valid, "macOS").ok)
+		for invalid: String in ["--battery=", "--battery=IDEAL", "--battery=other", "--battery",
+				"--trim-profile=", "--trim-profile=PRODUCTION", "--trim-profile=other", "--trim-profile"]:
+			var args := session_args.duplicate()
+			args.append(invalid)
+			check("session rejects invalid " + invalid, not Qualification._parse_options(args, "macOS").ok)
+		for option: String in ["--battery=ideal", "--trim-profile=production"]:
+			var duplicate := session_args.duplicate()
+			duplicate.append_array(PackedStringArray([option, option]))
+			check("session rejects duplicate " + option, not Qualification._parse_options(duplicate, "macOS").ok)
+	for option: String in ["--battery=ideal", "--trim-profile=production"]:
+		check("non-session mode rejects " + option, not Qualification._parse_options(
+			PackedStringArray(["--native-qualification=stage", option]), "macOS").ok)
 
 
 func test_replay_options() -> void:

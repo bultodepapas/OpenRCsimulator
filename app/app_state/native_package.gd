@@ -106,6 +106,56 @@ const MAC_IDENTITY_KIND := "macos-reference-bundle-v1"
 const MAC_RECEIPT_SUFFIX := ".openrc-reference-receipt"
 const MAC_MAX_RECEIPT := 4 * 1024 * 1024
 const MAC_MAX_FILES := 10000
+static var _macos_process_receipt_pinned := false
+static var _macos_process_receipt_sha256 := ""
+
+
+## Called once by the real startup scene, before UI/flight dispatch. This only
+## hashes the bounded receipt; later boundaries still verify the entire bundle.
+## A missing or unreadable receipt remains a failed pin for this process.
+static func pin_macos_process_receipt() -> void:
+	if OS.get_name() != "macOS" or not OS.has_feature("template_release"): return
+	if _macos_process_receipt_pinned: return
+	_macos_process_receipt_pinned = true
+	_macos_process_receipt_sha256 = _macos_raw_receipt_sha256(OS.get_executable_path())
+
+
+static func _macos_raw_receipt_sha256(executable: String) -> String:
+	var macos := executable.get_base_dir()
+	var contents := macos.get_base_dir()
+	var bundle := contents.get_base_dir()
+	if macos.get_file() != "MacOS" or contents.get_file() != "Contents" or not bundle.get_file().ends_with(".app"):
+		return ""
+	var parent := DirAccess.open(bundle.get_base_dir())
+	var path := bundle + MAC_RECEIPT_SUFFIX
+	if parent == null or parent.is_link(bundle.get_file()) or parent.is_link(path.get_file()): return ""
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null or file.get_length() <= 0 or file.get_length() > MAC_MAX_RECEIPT: return ""
+	var size := file.get_length()
+	var raw := file.get_buffer(size)
+	if raw.size() != size or parent.is_link(bundle.get_file()) or parent.is_link(path.get_file()): return ""
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(raw)
+	return hash.finish().hex_encode()
+
+
+## Use only with the result of the full reference reader, never a caller's
+## assertion. Kept separate from mac_reference_identity's inspection API.
+static func macos_process_reference_error(reference: Dictionary) -> String:
+	if reference.get("ok", false) != true: return "Mac reference package was not verified"
+	return _macos_process_receipt_error(_macos_process_receipt_pinned,
+		_macos_process_receipt_sha256, reference.get("receipt_sha256"))
+
+
+## Pure seam for portable fixtures; production supplies only the process pin
+## and the independently verified reference receipt from the reader.
+static func _macos_process_receipt_error(pinned: bool, startup_sha: String, verified_sha: Variant) -> String:
+	if not pinned or not _sha256(startup_sha) or startup_sha != startup_sha.to_lower() \
+			or typeof(verified_sha) != TYPE_STRING or not _sha256(verified_sha) \
+			or verified_sha != str(verified_sha).to_lower() or startup_sha != verified_sha:
+		return "Mac package differs from the startup receipt; restart required"
+	return ""
 
 
 static func mac_reference_identity(executable: String, architecture: String, arguments := PackedStringArray()) -> Dictionary:
@@ -207,7 +257,7 @@ const MAC_NATIVE_LIBRARY := "Contents/Frameworks/libopenrc_native_kernel.dylib"
 const MAC_NATIVE_DESCRIPTOR := "Contents/Resources/openrc_native_kernel_macos.gdextension"
 const MAC_NATIVE_LICENSE := "Contents/Resources/LICENSE.godot-cpp.md"
 const MAC_NATIVE_SCOPE := "macos-arm64-fixed-wing-experimental-v1"
-const MAC_NATIVE_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd"]
+const MAC_NATIVE_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd", "package_default_probe.gd"]
 
 
 static func mac_native_identity(executable: String, architecture: String, arguments := PackedStringArray()) -> Dictionary:
@@ -262,7 +312,9 @@ static func mac_native_identity(executable: String, architecture: String, argume
 		return _refuse("Mac native bundle receipt could not be hashed")
 	return {ok = true, reason = "", kind = MAC_NATIVE_IDENTITY_KIND,
 		sha256 = (receipt_hash + "\n" + architecture).sha256_text(), receipt_sha256 = receipt_hash,
-		reference_receipt_sha256 = reference.receipt_sha256, manifest = manifest,
+		reference_receipt_sha256 = reference.receipt_sha256, reference_identity = reference, manifest = manifest,
+		manifest_sha256 = values.manifest_sha256, library_sha256 = values.library_sha256,
+		descriptor_sha256 = values.descriptor_sha256,
 		library_path = bundle.path_join(MAC_NATIVE_LIBRARY), descriptor_path = bundle.path_join(MAC_NATIVE_DESCRIPTOR)}
 
 

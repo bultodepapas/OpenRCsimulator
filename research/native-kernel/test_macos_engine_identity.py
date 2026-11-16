@@ -132,10 +132,40 @@ class ResearchIdentityTests(unittest.TestCase):
         self.assertEqual(compatibility["validator_control"]["research"], "detected")
         self.assertIn("not an attestation", policy.__doc__)
 
+    def test_engine_toolchain_profile_is_independent_explicit_and_exact(self):
+        selected = policy.NEW_TOOLCHAIN_PROFILE
+        self.assertEqual(self.identify()["research_engine"]["build_toolchain"],
+                         {"profile": policy.DEFAULT_TOOLCHAIN_PROFILE,
+                          "compiler_version": policy.APPLE_CLANG, "sdk_version": "27.0"})
+        selection = {**self.selection, "toolchain_profile": selected}
+        with self.assertRaisesRegex(ValueError, "build settings"):
+            self.identify(selection)
+        self.record.update(sdk_version="27.2", clang=policy.TOOLCHAIN_PROFILES[selected]["compiler_version"]
+                           + "\nTarget: arm64-apple-darwin27.0.0")
+        self.write_record()
+        with self.assertRaisesRegex(ValueError, "build settings"):
+            self.identify()
+        identity = self.identify(selection)
+        self.assertEqual(self.identify(selection), identity)
+        result = identity["research_engine"]
+        self.assertEqual(result["selection"]["toolchain_profile"], selected)
+        self.assertEqual(result["build_toolchain"], {"profile": selected,
+            "compiler_version": policy.TOOLCHAIN_PROFILES[selected]["compiler_version"], "sdk_version": "27.2"})
+        for clang, sdk in ((policy.APPLE_CLANG, "27.2"), (policy.TOOLCHAIN_PROFILES[selected]["compiler_version"], "27.0"),
+                           (policy.TOOLCHAIN_PROFILES[selected]["compiler_version"] + " modified", "27.2")):
+            self.record.update(clang=clang + "\nTarget: arm64-apple-darwin27.0.0", sdk_version=sdk)
+            self.write_record()
+            with self.subTest(clang=clang, sdk=sdk), self.assertRaisesRegex(ValueError, "build settings"):
+                self.identify(selection)
+        with self.assertRaises(ValueError):
+            self.identify({**selection, "toolchain_profile": "unknown"})
+
     def test_pins_are_all_or_nothing_and_exact(self):
         self.assertIsNone(policy.selection_from_args(argparse.Namespace()))
         with self.assertRaises(ValueError):
             policy.selection_from_args(argparse.Namespace(research_engine_sha256="a" * 64))
+        with self.assertRaises(ValueError):
+            policy.selection_from_args(argparse.Namespace(research_engine_toolchain_profile=policy.NEW_TOOLCHAIN_PROFILE))
         parser = argparse.ArgumentParser()
         policy.add_arguments(parser)
         without_reference = ["--research-engine-sha256", self.selection["sha256"],
@@ -164,8 +194,16 @@ class ResearchIdentityTests(unittest.TestCase):
     def test_repeated_scalar_pin_is_rejected_instead_of_replaced(self):
         parser = argparse.ArgumentParser()
         policy.add_arguments(parser)
+        policy.add_toolchain_arguments(parser)
+        self.assertEqual(parser.parse_args([]).toolchain_profile, policy.DEFAULT_TOOLCHAIN_PROFILE)
         with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
             parser.parse_args(["--research-engine-sha256", "a" * 64, "--research-engine-sha256", "b" * 64])
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            parser.parse_args(["--research-engine-toolchain-profile", policy.NEW_TOOLCHAIN_PROFILE,
+                               "--research-engine-toolchain-profile", policy.DEFAULT_TOOLCHAIN_PROFILE])
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            parser.parse_args(["--toolchain-profile", policy.NEW_TOOLCHAIN_PROFILE,
+                               "--toolchain-profile", policy.DEFAULT_TOOLCHAIN_PROFILE])
 
     def test_changed_artifacts_commands_or_order_refuse(self):
         mutations = [lambda r: r.update(status="running"), lambda r: r.update(returncode=1),

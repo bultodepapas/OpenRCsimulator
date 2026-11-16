@@ -296,13 +296,18 @@ class GeneratorTests(unittest.TestCase):
         self.args.research_engine_extension_api = self.root / "godot-cpp/gdextension/extension_api-4-7.json"
         self.args.research_engine_reference_godot = self.root / "official-godot"
         self.args.research_engine_patch = [self.root / "0001.patch"]
+        self.args.research_engine_toolchain_profile = promotion.ENGINE_POLICY.DEFAULT_TOOLCHAIN_PROFILE
+        self.args.toolchain_profile = promotion.ENGINE_POLICY.NEW_TOOLCHAIN_PROFILE
         selection = promotion.ENGINE_POLICY.selection_from_args(self.args)
         self.package.verified_mac_install = unittest.mock.Mock(return_value=self.installed)
         self.fleet.snapshot = unittest.mock.Mock(return_value=self.guard)
         self.generate()
         self.assertEqual(self.package.verified_mac_install.call_count, 2)
         self.assertEqual(self.package.verified_mac_install.call_args.args[2], selection)
+        self.assertEqual(self.package.verified_mac_install.call_args.args[3], self.args.toolchain_profile)
         self.assertTrue(all(call.args[0]["research_engine"] == selection for call in self.fleet.snapshot.call_args_list))
+        self.assertTrue(all(call.args[0]["toolchain_profile"] == self.args.toolchain_profile
+                            for call in self.fleet.snapshot.call_args_list))
 
     def test_missing_required_pair_or_mismatched_project_receipt_refused(self) -> None:
         self.args.long_pair.pop()

@@ -1,7 +1,7 @@
 # Apple Silicon closeout
 
 Date: 2026-11-16. Owner: lead developer. Status: native default delivered on M1;
-aggregate CI remains in progress.
+main integration retains pending aggregate CI.
 
 ## Decision and scope
 
@@ -19,7 +19,7 @@ Developer ID distribution stays deferred.
 | 2 | Freeze runtime and run fresh M1 correctness checks. | Done: `1bb0434c`, 650 native checks, positive/negative oracles, FPCR/domain guards and 74 automatic-route checks passed. |
 | 3 | Export the ARM64 app with the existing Engine 26 pair. | Done: R10 passed all five package checks and local signature verification. |
 | 4 | Verify normal source and packaged routes. | Done: native callbacks, exact replay, reference/fallback, two audio-enabled Home/restart/reentry cycles; no forced backend or renderer. |
-| 5 | Deliver, retain evidence and run final CI. | App and evidence delivered; final CI submitted. Aggregate result pending. |
+| 5 | Deliver, retain evidence and run final CI. | App and evidence delivered; implementation integrated into main. Aggregate CI pending. |
 
 ## Delivery and remaining gate
 
@@ -33,9 +33,19 @@ Developer ID distribution stays deferred.
   all 18 real replays and 49 tool controls passed. The official-M1 profile test passed.
 - [MetalFX controls passed](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43921529985).
   [Aggregate CI is running](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43921525209).
-  Its completion remains the integration/release gate; no merge or public release was performed.
+  Its completion remains a software verification gate; public release stays deferred.
 
 The [canonical evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md#2026-11-16-owner-directed-native-default)
 contains source/package/Home hashes and limitations. The [decision](../DECISIONS.md#default-to-native-physics-on-supported-apple-silicon-flights)
 owns the product policy. The four-feature [MetalFX plan](apple-metalfx.md) remains
 separate; no additional rendering feature or engine build was added here.
+
+## Main integration
+
+The merge preserves independent ClearView and Extra 300S work from main while
+retaining the task branch solver, domain and companion inputs byte for byte.
+The retained M1 results apply to those unchanged inputs; they do not qualify
+unrelated aircraft/import changes. Focused default, engine-pair, CI-selection
+and companion tool controls verify the integrated candidate. The main push runs
+[required CI](https://github.com/bultodepapas/OpenRCsimulator/actions/workflows/ci.yml?query=branch%3Amain);
+its result remains pending until the run completes.

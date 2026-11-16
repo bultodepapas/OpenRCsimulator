@@ -1,0 +1,250 @@
+diff --git a/drivers/metal/rendering_context_driver_metal.h b/drivers/metal/rendering_context_driver_metal.h
+index 8bfdfce06..ce91274b7 100644
+--- a/drivers/metal/rendering_context_driver_metal.h
++++ b/drivers/metal/rendering_context_driver_metal.h
+@@ -40,6 +40,7 @@
+ 
+ #ifdef MACOS_ENABLED
+ #include "openrc_mfx_present_bridge.h"
++#include "core/variant/dictionary.h"
+ #endif
+ 
+ namespace MTL3 {
+@@ -134,6 +135,7 @@ public:
+ 		virtual OpenRCMetalPresent::Handle openrc_presenter_start() { return {}; }
+ 		virtual OpenRCMetalPresent::Handle openrc_presenter_get() const { return {}; }
+ 		virtual void openrc_presenter_stop() {}
++		virtual Dictionary openrc_drawable_observation() const { return {}; }
+ #endif
+ 		API_AVAILABLE(macos(26.0), ios(26.0))
+ 		virtual MTL::ResidencySet *get_residency_set() const = 0;
+diff --git a/drivers/metal/rendering_context_driver_metal.cpp b/drivers/metal/rendering_context_driver_metal.cpp
+index 8fc19368d..b06d4bd71 100644
+--- a/drivers/metal/rendering_context_driver_metal.cpp
++++ b/drivers/metal/rendering_context_driver_metal.cpp
+@@ -41,6 +41,10 @@
+ #include <objc/message.h>
+ #include <os/log.h>
+ #include <os/signpost.h>
++#ifdef MACOS_ENABLED
++#include "openrc_drawable_observation.h"
++#include <memory>
++#endif
+ 
+ #if defined(VISIONOS_ENABLED) && defined(MODULE_VISIONOS_XR_ENABLED)
+ #include "modules/visionos_xr/visionos_xr_interface.h"
+@@ -165,6 +169,17 @@ class API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0)) SurfaceLayer final : pub
+ 	CA::MetalLayer *layer = nullptr;
+ #ifdef MACOS_ENABLED
+ 	OpenRCMetalPresent::Handle openrc_presenter;
++	std::unique_ptr<OpenRCDrawableObservation::Tracker> openrc_drawable_tracker;
++	static bool openrc_drawable_requested() {
++		static const bool requested = OS::get_singleton()->get_environment("OPENRC_NATIVE_DRAWABLE_OBSERVATION") == "1";
++		return requested;
++	}
++	void openrc_record_drawable(bool p_framebuffer_requested, CA::MetalDrawable *p_drawable) {
++		if (!openrc_drawable_tracker) { return; }
++		MTL::Texture *texture = p_framebuffer_requested && p_drawable ? p_drawable->texture() : nullptr;
++		openrc_drawable_tracker->record(texture != nullptr, texture ? uint64_t(texture->width()) : 0,
++				texture ? uint64_t(texture->height()) : 0, texture ? uint64_t(texture->pixelFormat()) : 0);
++	}
+ #endif
+ 	LocalVector<MDFrameBufferLayer> frame_buffers;
+ 	uint32_t rear = -1;
+@@ -177,6 +192,10 @@ public:
+ #ifdef MACOS_ENABLED
+ 		(void)RenderingContextDriverMetal::openrc_presenter_requested();
+ 		(void)RenderingContextDriverMetal::openrc_presenter_probe_requested();
++		if (openrc_drawable_requested()) {
++			const uint64_t scope = OpenRCDrawableObservation::allocate_scope();
++			if (scope != 0) { openrc_drawable_tracker = std::make_unique<OpenRCDrawableObservation::Tracker>(scope); }
++		}
+ #endif
+ 		layer->setAllowsNextDrawableTimeout(true);
+ 		layer->setFramebufferOnly(true);
+@@ -200,6 +219,28 @@ public:
+ 		return openrc_presenter;
+ 	}
+ 	OpenRCMetalPresent::Handle openrc_presenter_get() const override { return openrc_presenter; }
++	Dictionary openrc_drawable_observation() const override {
++		Dictionary result;
++		result["status"] = "not_requested";
++		result["owner"] = "ordinary";
++		if (!openrc_drawable_requested()) { return result; }
++		if (RenderingContextDriverMetal::openrc_presenter_requested() || openrc_presenter) {
++			result["status"] = "incompatible_owner"; result["owner"] = "display_link"; return result;
++		}
++		if (!openrc_drawable_tracker) { result["status"] = "scope_exhausted"; return result; }
++		const auto value = openrc_drawable_tracker->snapshot();
++		result["status"] = value.failed ? "failed" : (value.observed ? "observed" : "awaiting_drawable");
++		result["scope"] = int64_t(value.scope);
++		result["attempts"] = int64_t(value.attempts);
++		result["observed"] = int64_t(value.observed);
++		result["missed"] = int64_t(value.missed);
++		result["changes"] = int64_t(value.changes);
++		result["width"] = int64_t(value.width);
++		result["height"] = int64_t(value.height);
++		result["pixel_format"] = int64_t(value.pixel_format);
++		result["evidence"] = "acquired_framebuffer_texture_not_scanout";
++		return result;
++	}
+ 	void openrc_presenter_stop() override {
+ 		OpenRCMetalPresent::stop(openrc_presenter);
+ 		openrc_presenter.reset();
+@@ -286,7 +327,13 @@ public:
+ 		}
+ 
+ 		MDFrameBufferLayer &frame_buffer = frame_buffers[front];
++#ifdef MACOS_ENABLED
++		const bool framebuffer_requested = openrc_drawable_tracker && frame_buffer.has_texture(0);
++#endif
+ 		CA::MetalDrawable *drawable = frame_buffer.get_drawable();
++#ifdef MACOS_ENABLED
++		if (openrc_drawable_tracker) { openrc_record_drawable(framebuffer_requested, drawable); }
++#endif
+ 		frame_buffer.reset();
+ 
+ 		count--;
+@@ -307,7 +354,13 @@ public:
+ 		}
+ 
+ 		MDFrameBufferLayer &frame_buffer = frame_buffers[front];
++#ifdef MACOS_ENABLED
++		const bool framebuffer_requested = openrc_drawable_tracker && frame_buffer.has_texture(0);
++#endif
+ 		CA::MetalDrawable *drawable = frame_buffer.get_drawable();
++#ifdef MACOS_ENABLED
++		if (openrc_drawable_tracker) { openrc_record_drawable(framebuffer_requested, drawable); }
++#endif
+ 		frame_buffer.reset();
+ 
+ 		count--;
+diff --git a/servers/rendering/rendering_device.h b/servers/rendering/rendering_device.h
+index 8fac2caa9..e1fafe943 100644
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -1365,6 +1365,7 @@ public:
+ 	Error screen_prepare_for_external_drawing(DisplayServerEnums::WindowID p_screen, bool &r_resized);
+ 	void screen_external_submission_failed();
+ 	Dictionary openrc_metalfx_present_status() const;
++	Dictionary openrc_drawable_observation() const;
+ 	bool openrc_metalfx_present_requested() const;
+ 	uint64_t openrc_metalfx_present_generation(DisplayServerEnums::WindowID p_screen) const;
+ 	int screen_get_width(DisplayServerEnums::WindowID p_screen = DisplayServerEnums::MAIN_WINDOW_ID) const;
+diff --git a/servers/rendering/rendering_device.cpp b/servers/rendering/rendering_device.cpp
+index 974b6fb4c..eff6c61ed 100644
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -43,6 +43,7 @@
+ #include "servers/rendering/rendering_device_binds.h"
+ #include "servers/rendering/rendering_shader_container.h"
+ #include "servers/rendering/shader_include_db.h"
++#include <limits>
+ 
+ #if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
+ #include "drivers/metal/rendering_context_driver_metal.h"
+@@ -5770,6 +5771,34 @@ uint64_t RenderingDevice::openrc_metalfx_present_generation(DisplayServerEnums::
+ #endif
+ }
+ 
++Dictionary RenderingDevice::openrc_drawable_observation() const {
++	ERR_RENDER_THREAD_GUARD_V(Dictionary());
++	_THREAD_SAFE_METHOD_
++	const uint64_t before = OS::get_singleton()->get_ticks_usec();
++	Dictionary result;
++	result["status"] = "unavailable";
++	result["owner"] = "unknown";
++#if defined(MACOS_ENABLED) && defined(METAL_ENABLED)
++	if (OS::get_singleton()->get_current_rendering_driver_name() == "metal" && context &&
++			screen_swap_chains.has(DisplayServerEnums::MAIN_WINDOW_ID)) {
++		RenderingContextDriver::SurfaceID id = context->surface_get_from_window(DisplayServerEnums::MAIN_WINDOW_ID);
++		auto *surface = reinterpret_cast<RenderingContextDriverMetal::Surface *>(id);
++		if (surface) {
++			Dictionary observed = surface->openrc_drawable_observation();
++			if (!observed.is_empty()) { result = observed; }
++		}
++	}
++#endif
++	const uint64_t after = OS::get_singleton()->get_ticks_usec();
++	if (before == 0 || after < before || after > uint64_t(std::numeric_limits<int64_t>::max())) {
++		result["status"] = "invalid_clock";
++	} else {
++		result["query_before_usec"] = int64_t(before);
++		result["query_after_usec"] = int64_t(after);
++	}
++	return result;
++}
++
+ Dictionary RenderingDevice::openrc_metalfx_present_status() const {
+ 	ERR_RENDER_THREAD_GUARD_V(Dictionary());
+ 	Dictionary result;
+@@ -9823,6 +9852,7 @@ void RenderingDevice::_bind_methods() {
+ 
+ 	ClassDB::bind_method(D_METHOD("screen_get_width", "screen"), &RenderingDevice::screen_get_width, DEFVAL(DisplayServerEnums::MAIN_WINDOW_ID));
+ 	ClassDB::bind_method(D_METHOD("openrc_metalfx_present_status"), &RenderingDevice::openrc_metalfx_present_status);
++	ClassDB::bind_method(D_METHOD("openrc_drawable_observation"), &RenderingDevice::openrc_drawable_observation);
+ 	ClassDB::bind_method(D_METHOD("screen_get_height", "screen"), &RenderingDevice::screen_get_height, DEFVAL(DisplayServerEnums::MAIN_WINDOW_ID));
+ 	ClassDB::bind_method(D_METHOD("screen_get_framebuffer_format", "screen"), &RenderingDevice::screen_get_framebuffer_format, DEFVAL(DisplayServerEnums::MAIN_WINDOW_ID));
+ 
+diff --git a/drivers/metal/openrc_drawable_observation.h b/drivers/metal/openrc_drawable_observation.h
+new file mode 100644
+index 000000000..d993dfde4
+--- /dev/null
++++ b/drivers/metal/openrc_drawable_observation.h
+@@ -0,0 +1,56 @@
++#pragma once
++
++// Opt-in diagnostic value state.  It never retains a Metal object or asserts
++// that an acquired drawable was committed, presented, or scanned out.
++#include <atomic>
++#include <cstdint>
++#include <limits>
++#include <mutex>
++
++namespace OpenRCDrawableObservation {
++constexpr uint64_t LIMIT = uint64_t(std::numeric_limits<int64_t>::max());
++inline std::atomic<uint64_t> next_scope{ 0 };
++
++inline uint64_t allocate_scope() {
++	uint64_t current = next_scope.load(std::memory_order_relaxed);
++	for (;;) {
++		if (current >= LIMIT) { return 0; }
++		if (next_scope.compare_exchange_weak(current, current + 1, std::memory_order_relaxed)) { return current + 1; }
++	}
++}
++
++struct Snapshot {
++	uint64_t scope = 0, attempts = 0, observed = 0, missed = 0, changes = 0;
++	uint64_t width = 0, height = 0, pixel_format = 0;
++	bool failed = false;
++};
++
++class Tracker {
++	mutable std::mutex mutex;
++	Snapshot value;
++
++public:
++	explicit Tracker(uint64_t p_scope) { value.scope = p_scope; value.failed = p_scope == 0 || p_scope > LIMIT; }
++	void record(bool p_framebuffer_requested, uint64_t p_width, uint64_t p_height, uint64_t p_format) {
++		std::lock_guard<std::mutex> guard(mutex);
++		if (value.failed) { return; }
++		if (value.attempts == LIMIT) { value.failed = true; return; }
++		value.attempts++;
++		if (!p_framebuffer_requested || p_width == 0 || p_height == 0 || p_format == 0 || p_width > LIMIT || p_height > LIMIT || p_format > LIMIT) {
++			value.missed++;
++			return;
++		}
++		if (value.observed > 0 && (value.width != p_width || value.height != p_height || value.pixel_format != p_format)) {
++			value.changes++;
++		}
++		value.width = p_width;
++		value.height = p_height;
++		value.pixel_format = p_format;
++		value.observed++;
++	}
++	Snapshot snapshot() const {
++		std::lock_guard<std::mutex> guard(mutex);
++		return value;
++	}
++};
++} // namespace OpenRCDrawableObservation

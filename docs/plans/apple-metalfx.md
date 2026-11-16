@@ -1,6 +1,6 @@
 # Apple MetalFX — four-technology implementation plan
 
-Updated: 2026-11-15. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
+Updated: 2026-11-16. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
 Status: implementation in progress. The [first implementation evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md)
 separates prerequisite fixes, injected checks, native API observations and the
 engine build. No four-feature product qualification is claimed. Source inspected at
@@ -27,6 +27,19 @@ qualify those product paths. Include the drop-cache gravity/rain/mesh negative
 controls when the image workload exercises that pool. These prerequisites improve
 evidence; they do not replace MetalFX input/history/presentation tests or require
 every optional CPU experiment before feature implementation. All four remain in scope.
+
+The latest [native follow-up](../research/desktop-delivery-investigations/DT-MAC-11a/README.md#fresh-pair-drawable-and-bounded-rt-follow-up-2026-11-16)
+verifies a fresh 1–19+21+24+25 pair, the full official extension API and runtime
+SHA vectors. Ordinary acquired textures reach 1920×1080. The incompatible-owner
+control exposed an actual DisplayLink layer resize exception; optional 0026
+fixes it and passes a native active-owner resize regression. Its fresh matched
+pair and package renewal are in progress. A separate disposable RT-view trial
+now completes producer → MetalFX denoiser → consumer GPU work for bounded opaque
+ground/pilot geometry, with rejection and restoration controls. The product RT
+gate remains closed. Full-flight image quality, sustained pacing and physical
+latency remain open. Native physics packaging and the owner-directed default are
+now delivered separately in the [native closeout](apple-silicon-closeout.md);
+this does not qualify the four MetalFX features. The old R3 ZIP is unchanged.
 
 ## 1. Scope and completion
 
@@ -100,16 +113,36 @@ disabled and different Temporal AA. It does not qualify active-flight quality,
 sustained 60 FPS, presentation or latency. The implementation evidence preserves
 the earlier Native fallback, exact sources, raw results and remaining gates.
 
-The custom-engine/native-physics preflight found 15 existing RT method metadata
-incompatibilities in patch 0005. Additive 0021 restores the unsigned API while
-retaining checked wide inputs. Its fresh editor/template pair passes the unchanged
-full official API validator and 81 native query/dispatch processes. The combined
-source candidate also passes native numerical, mutation, FPCR/domain and
-production-path stage/lifecycle/exact-replay gates on M1. Paired export tooling
-and signed-executable/template checks are implemented and tested; actual
-packaged native execution and automatic-default qualification remain open.
-The R3 development ZIP still contains clean19 and reference physics; the new
-pair does not upgrade it. The linked evidence identifies each tested source.
+The custom-engine/native-physics preflight found 15 RT metadata incompatibilities
+in 0005; additive 0021 restores the unsigned API with checked wide inputs. The
+1–19+21+24 pair passes the full official API validator. Source `94d566a7` passes
+17 positive native oracles, the detected mutant, FPCR/domain and 650 installed
+stage/lifecycle/replay checks. Its new locally signed ARM64 app is exported and
+independently retained, and passes all five actual release diagnostics, including
+ideal-battery production-trim reference/native sessions with equal fingerprints.
+Three alternating release CPU pairs retain equal fingerprints over 16,800 ticks
+each. The median input/simulation callback ratio is 1.505× (33.6% less callback
+time); complete headless sample windows save 12.2–14.3%. These are not rendered
+FPS or latency measurements. Optional 0024 makes the same warm-cache PCK hash
+4.894× faster; that call is not game FPS.
+
+At the earlier custom24 observer checkpoint, an explicit packaged direct-flight
+observer and strict reducer were implemented.
+The revised observer passes native parsing and 30 clock/drawable/input-delivery
+controls, plus 18 reducer controls. It is a synthetic no-radio route; its new
+application source is not covered by the earlier `94d566a7` package. Its Main
+behavior pin is renewed through the existing qualification path. A narrow explicit
+custom-runtime declaration now passes 20 source functional stages on each exact
+official and custom24 editor, including positive Home/fleet/Pause/Restart admission.
+These are headless/Dummy checks; actual rendered flight remains separate. Optional
+0025 supplies ordinary drawable acquisition observation behind an explicit flag;
+its fresh matched pair and native controls were pending at that checkpoint.
+The later fresh-pair follow-up above records acquired 1080p textures; the
+[native closeout](apple-silicon-closeout.md) records the R10 package and normal
+Home/native-default checks. Sustained pacing, full fleet/campaign performance
+promotion and physical latency remain open. The older R3 ZIP still uses
+clean19/reference physics. The linked evidence retains each source and package
+identity separately.
 
 Completion has three distinct levels per technology:
 

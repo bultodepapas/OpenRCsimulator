@@ -236,7 +236,7 @@ class DiagnosticPolicyTests(unittest.TestCase):
             engine = engine_identity(official, {})
             validate = Mock(return_value={"binary_sha256": "b" * 64, "link_command": ["link"]})
             mac = SimpleNamespace(locked=SimpleNamespace(load_lock=lambda: {}),
-                host_toolchain=lambda: {"compiler": "cc", "c_compiler": "cc", "sdk_path": "sdk"},
+                host_toolchain=Mock(return_value={"compiler": "cc", "c_compiler": "cc", "sdk_path": "sdk"}),
                 godot_identity=engine_identity, _identity=lambda: {"source": "identity"}, validate_build=validate,
                 clean_build_environment=lambda *_: {}, architectures=lambda _: ["arm64"])
             runner = SimpleNamespace(validate_project=lambda _: {"prepared": True})
@@ -271,7 +271,8 @@ class DiagnosticPolicyTests(unittest.TestCase):
 
             args = SimpleNamespace(timeout=60, states=1, variant_states=1, script=["stage_oracle.gd"],
                 tool_root=tmp / "build", project=project, out=tmp / "result", godot=official,
-                diagnostic_godot=clone, mode="ubsan", seed=1)
+                diagnostic_godot=clone, mode="ubsan", seed=1,
+                toolchain_profile=diag.ENGINE_POLICY.NEW_TOOLCHAIN_PROFILE)
             with patch.object(diag, "ROOT", root), patch.object(diag, "HERE", here), \
                     patch.object(diag.importlib.util, "spec_from_file_location", return_value=spec), \
                     patch.object(diag.importlib.util, "module_from_spec", return_value=helper), \
@@ -293,6 +294,8 @@ class DiagnosticPolicyTests(unittest.TestCase):
             self.assertTrue(summary["official_host_unchanged"] and summary["diagnostic_host_unchanged"])
             self.assertEqual([command[0] for command in commands], [str(clone)] * 12)
             self.assertEqual(validate.call_args.args[4], engine)
+            self.assertEqual(mac.host_toolchain.call_count, 6)
+            self.assertTrue(all(call.args == (args.toolchain_profile,) for call in mac.host_toolchain.call_args_list))
             self.assertTrue(guarded["domain_guard"]["covered"])
             self.assertEqual(guarded["domain_guard"]["checks"], 72)
             self.assertEqual(guarded["domain_guard"]["harness_sha256"], sha(here / "test_macos_domain_guard.gd"))

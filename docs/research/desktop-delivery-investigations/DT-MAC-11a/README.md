@@ -1469,6 +1469,8 @@ every retrieved payload was independently rehashed. This closes source
 correctness for the repaired engine, not release-package or automatic-default
 qualification. Later pair/export/measurement tooling passed 122 portable
 controls on M1; these do not change the qualified runtime or mirrored sources.
+The later main branch lake/contact changes require fresh source-bound native
+qualification; these results remain specific to `b4442e6a`.
 
 The actual new editor/template/ZIP binding passes with independently retained
 phase-14 pins. The signed executable comparison now uses complete disposable
@@ -1485,6 +1487,322 @@ including real pair/package/receipt readers with simulated host operations.
 It independently pins the final signed executable, PCK, both receipts and
 checked export evidence, and rechecks the executable/template binding. Its
 output is callback time per tick and the reference/native ratio, not FPS.
+
+## Actual paired native package and companion rebind (2026-11-15)
+
+The merged runtime at `f99761a7ffe7be2d3851b6b815bd0914419a882b` passes
+the 17 positive native oracles, required mutation, FPCR/domain controls and
+650 installed stage/lifecycle/replay checks with the 1–19+21 custom editor.
+Its native dylib is `ccb90f962583062bde0bab7ddf658c333b690074a245d42fdb48113f570d13e7`.
+The later `a5bf3e0c5277d2ad977f74f1fe2bdb9db72f3de9` changes the prepared-export
+tooling while preserving that application and mirrored native source.
+
+The actual ARM64 template-release app at `a5bf3e0c` passes checked export,
+both endpoint project proofs, exact signed-template binding, strict ad-hoc
+signatures and linked reference/native receipts. Executable SHA-256:
+`6cd60576161531ae194df8451eb2e20f3a4d519dae1f4d24c687e224f924d6f3`;
+PCK: `5343f1b6e4fe051af626fce6d9e53d74dae09f009224ca2ba2c0ca760df36aeb`.
+Actual package tests pass stage (97), lifecycle (343) and replay (211), with
+`preloaded=false`. The two short fixed sessions each complete 24 warmup and
+240 sample ticks with the requested backend; their state fingerprints match.
+All five checked processes exit cleanly with zero diagnosed errors or warnings.
+
+Lifecycle takes 1,381.49 seconds and replay 1,335.77 seconds. These are diagnostic
+durations with other task work possible, not controlled performance results.
+The source shows repeated full-bundle SHA-256 walks at preparation and replay
+boundaries. Its default bundled PSA configuration selects generic SHA-256.
+Additive optional 0024 enables the vendor ARM implementation on the verified
+macOS ARM64 target; its fresh pair, timing and renewed package gates remain open.
+No freshness check is removed. Ordinary 1080p active-flight, sustained FPS,
+latency/endurance and automatic package default qualification remain open.
+
+CI exposed the stale normalized companion solver pin. A full-baseline comparison
+on the pinned official ARM64 editor replays all nine retained tapes: each has
+2,881 rows and byte-identical baseline/candidate CSVs. `e7715a841eb188d089095bcdd1a70a0b6242a476`
+promotes only the profile, qualification and generated nine-tape receipt to
+`2fbe337732bd1a2a42e43fa7fd0a7126d0fd7d765cd8a0c050e95618c9076d37`.
+The behavior manifest and 19 publication fixture pins stay unchanged. Earlier
+missing-history/resource preparation failures remain retained; they did not
+establish behavior parity. The app must be re-exported to include this profile.
+
+Phase 17 retains 205 payloads in 36,709,510 compressed bytes, SHA-256
+`cb4ccbc1e0431f1f0300f0509e8e5fa343452ea3aab11c3ad66fc46a72e39f8a`;
+every retrieved payload was independently rehashed. The original complete PCK
+stays on the M1; this bounded archive retains its signed inventory and hash.
+The old R3 ZIP still contains the clean19/reference package. Public Developer ID
+distribution remains deferred. The new host's explicit battery/production-trim
+options require a new export and runtime evidence; portable controls alone do
+not upgrade either retained package.
+
+## ARM SHA-256 native pair and controlled file comparison (2026-11-15)
+
+The separately built 1–19+21+24 pair has editor
+`81dcaa54eb0f2e0fed6f0f9ea21fb92c346bf7533b4426733ccf37f605c31c36`
+and template
+`c64949fa4c95c956a42e9dbe176eba2b2297bf67eae40e2cb6ce74b3cfc8324b`.
+Its five-member export ZIP is
+`f485ea80cdf0914c4697fa852a850541cbed663495a96cdd253d9bffed8d4f75`.
+Fresh intake/catalog, matched toolchain/flags, actual ARM64 builds and pair
+verification pass. The two SHA object files are byte-identical and each contains
+224 ARM SHA-256 instructions. The 25 runtime vectors and changed-byte negative
+pass on the new editor. The unchanged full official extension API validator and
+both missing-class controls pass. This does not qualify the new native physics
+installation or a new application package.
+
+The complete old/new patched catalogs differ only at
+`thirdparty/mbedtls/godot/godot_psa_config.h`; build flags and toolchain agree
+apart from build concurrency. On ANGEL/M1 with AC, no competing compiler/Godot
+process, warm file cache, no recorded thermal/performance warning, and interleaved
+old/new/new/old/old/new order, all six independently checked PCK hashes agree.
+The unchanged PCK is 2,484,244,643 bytes, SHA-256
+`5343f1b6e4fe051af626fce6d9e53d74dae09f009224ca2ba2c0ca760df36aeb`.
+Old call times: 7.748414, 7.747382 and 7.752921 s. New: 1.590479, 1.583107 and
+1.583237 s. Medians are 7.748414 vs 1.583237 s: 4.894× faster, about 79.6% less
+time in that file-hash call. Timing excludes fixture setup, process startup and
+other package checks. End-to-end startup, flight CPU/FPS, stutter, latency and
+automatic default remain unqualified for the new pair.
+
+The explicit release battery/trim implementation at `2ac2f8ce` passes 75 Python
+tests with one platform skip and 111 actual launch/parser checks on both the
+pinned official and new custom editor. The first parser receipt is correctly
+failed only because its coordinator required the wrong completion text; it
+exited zero with 111 passing checks. The corrected required-text runs pass with
+zero diagnosed errors/warnings. An actual new package still must exercise the
+production 0.5-throttle and battery options.
+
+Phase 18 retains 205 payloads, 102,467,081 compressed bytes, SHA-256
+`c8fd9e76181487896d45eeb525e244c9d1f0ea7a24e8e018cdd221bdaef4c715`.
+All retrieved payloads, including both engine binaries, the template ZIP,
+instruction dumps, checked hash runs and launch/API records, are independently
+rehashed. New binding pins are selected from those retained bytes before any
+package binding. The existing a5 development app and R3 ZIP stay unchanged.
+
+## Engine24 actual package and direct-flight observer (2026-11-15)
+
+Source `94d566a7303cf80931b1c977044bd74db2d0fe83` passes the 17 positive
+native oracles, detected mutant, FPCR/domain controls and 650 installed checks
+with editor `81dcaa54eb0f2e0fed6f0f9ea21fb92c346bf7533b4426733ccf37f605c31c36`.
+The native library is `e79aedd42bfa960eefb3f08749c4d02d3969f27f8f786655b60ff22c93d25fe5`.
+Phase 19 retains 248 payloads / 7,521,935 compressed bytes, SHA-256
+`e09e1fe402628f6d2b3d6bdb1bde625b692cf9c3aa2f6ab5c750943d586416d0`;
+every retrieved payload independently rehashes. The final export preset was frozen
+before the oracles and preserved through export.
+
+The matching app at `ANGEL:metalfx-stack7-20261114/native24-development-r2`
+passes checked prepared export, unchanged endpoint proofs, strict local ad-hoc
+signature and both linked package receipts. Its executable SHA-256 is
+`46d72247991fe0a1feaac9437917cca7ea4d1471f05964f7cdcbcac865732063`, PCK
+`79c850aadfc3a67bd5085e32decec1895578418f4f3a3583b6fc3be641641bbc`, and native
+manifest `bb9ec8f4158a84d0ed4b1399b278f0846c846fe358a18c2cd06798063b361f71`.
+All five actual release checks pass: stage 97, lifecycle 343, replay 211, and short
+reference/native sessions with explicit ideal battery and production trim. The
+existing session reader validates both reports and equal fingerprints. These are
+functional checks; the later quiet-host three-pair CPU campaign is separate.
+Public Developer ID distribution and automatic default remain deferred/unqualified.
+
+Phase 20 retains 60 payloads / 20,827,507 compressed bytes, SHA-256
+`10e9871e73d1539a37eeaf01338059ff1c3eec821452686de2f8d99531d9abd4`.
+All 60 retrieved payloads independently rehash, including actual executable/library,
+signature metadata, export reports/logs and receipts. The large PCK stays in the
+unchanged signed M1 bundle. Release diagnostics are retained separately from this
+package-provenance snapshot.
+
+The next application overlay adds the opt-in fixed direct-flight observer and
+strict frame/health/resource reducer. Its reviewed patch is
+`e6a9b272294dfbd91d7b388623b4a65989043d6a6a51c0d2d505e86662309fd4`.
+Actual pinned-official Godot parsing on the M1 reports no new-file findings and
+only 11 existing Main warnings. The revised 30-check fixture passes, including
+real Viewport delivery of V/Z change-and-restore events and disabled input-watch
+ownership rejection; 18 Python reducer controls pass. Native-generated UID bytes
+are compared before integration. Raw proof remains under `package-live-controls-r4`
+on that M1. The prior 13-check proof in phase 20 is not relabeled as this revision.
+The observer's new source still needs its own package and actual flight run.
+
+The separate compute-primary draft's exact shader
+`568ce48208c5335c80666f082ba6f93c7581ffeeeeff2a4214d9de68d643ab66` compiles
+and creates a local Metal pipeline on M1 with API validation. Clean environment
+correctly refuses the missing triangle-query opt-in. This is not dispatch or
+viewport/SDK qualification. The universal guide gate stays closed; raster-command
+provenance, geometric-versus-smooth shading and custom-bound/depth counterexamples
+remain explicit review findings. Draft engine patches are not part of this app.
+
+## Actual release CPU pairs and observer admission (2026-11-15)
+
+The locally signed source `94d566a7` / 1–19+21+24 package passes all five
+release diagnostics: 97 stage checks, 343 lifecycle checks, 211 replay checks,
+and reference/native short sessions with explicit ideal battery and production
+trim. The executable is
+`46d72247991fe0a1feaac9437917cca7ea4d1471f05964f7cdcbcac865732063`;
+PCK `79c850aadfc3a67bd5085e32decec1895578418f4f3a3583b6fc3be641641bbc`.
+This is a separate development app; the old R3 ZIP remains unchanged.
+
+Three alternating reference/native CPU pairs run in that actual release app on
+ANGEL/M1 with AC and no competing compiler or Godot process. Each run has
+2,400 warmup and 14,400 sampled ticks, production 0.5-throttle trim and ideal
+battery. All six finish and share state fingerprint
+`e5d0acfb1ab13f3182d04a71f9bc117ba39ae25fa2140a4652c43bfdaa9b0665`.
+All 16,801 state boundaries and 33,601 domain checks pass per run; native runs
+record 67,200 stage calls and 16,800 contexts. Raw arrays are retained and their
+means independently recomputed.
+
+| Pair | Reference callback µs/tick | Native callback µs/tick | Reference complete window µs/tick | Native complete window µs/tick |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 437.416250 | 290.594722 | 442.967917 | 380.142292 |
+| 2 | 445.042847 | 295.638056 | 450.698333 | 386.327222 |
+| 3 | 437.329653 | 297.798194 | 442.864028 | 388.981528 |
+
+The median paired callback ratio is 1.505245×, saving 33.5656% callback time.
+That callback excludes fingerprint/domain observers. Complete headless sample
+windows include those observers and save 12.17–14.28% (median ratio 1.165269×).
+Neither measurement establishes whole-game CPU, rendered FPS, stutter or latency.
+Phase 21 retains 78 payloads, 381,882 compressed bytes, archive SHA-256
+`87ee80fe146f723129f917f6be811bd24e8c2bcd09284a1cf74e42e6b6a2cf89`.
+All are independently rehashed, including the revised 30-check observer fixture.
+
+Adding the packaged-flight observer changes Main without changing the simulation
+solver fingerprint. CI correctly refuses its stale companion behavior pin. A
+fresh candidate at source `1e53d2d0` updates only that pin and the profile's manifest
+digest through the existing qualification helper. All 19 official-engine stages
+pass on M1, including profiles, manager, airspace, lifecycle, observation, timing,
+presentation, session, restore, frame-generation policy and strict shell. The
+first attempt failed because two tracked sibling authoring JSON files were absent
+from the isolated test environment; the retained retry restores their exact bytes.
+No failures are suppressed. Checked reports and before/after bounded inputs agree.
+The qualified manifest is
+`78057d5e178bbf6268fda791a1ddfb5dd6355574ead5c7f7f889b0f2d7b462a3`;
+profile `34a74eed643d18864d7ff94b30ba33c0545e6ae26b05f011851c95b579d1bc56`.
+
+Phase 22 retains 203 payloads, 128,120,424 compressed bytes, archive SHA-256
+`fe48184b2c1ff2ba4531d0fa64f8a99b0a0a70ffa5dd3cdac336148c19c040c4`.
+All payloads and the 19 checked-stage outcomes independently verify. This proves
+official-engine behavior admission only: the current runtime comparison still
+refuses the custom engine. A narrow explicit admission and checks on both engines
+remain necessary. The source-1e53 native qualification coordinator was stopped
+with return code -15 after this stale pin was found; its partial work is retained
+and is not counted as a new 650-check result. A fresh final source qualification,
+export and active-flight 1080p/pacing evidence remain open before default promotion.
+
+## Scoped custom-engine companion admission and drawable preparation (2026-11-15)
+
+The v2 aircraft profile retains its primary official engine pin and adds an
+optional exact `additional_runtime_qualification` object for
+`4.8.beta2.openrc_metalfx.unknown`, macOS/arm64, under the same narrow aircraft
+profile restrictions. Unknown or malformed declarations fail closed. Legacy v2
+profiles without the declaration remain supported on the official engine. The
+existing strict JSON parser rejects duplicate keys. Profile identity records the
+actual accepted runtime; saved requests survive an unavailable runtime while the
+effective roster is suppressed. This is functional metadata admission, not an
+executable attestation or cross-engine exact-replay policy change.
+
+The six-file candidate passes 15 portable source/data controls, 15 native-runner
+controls and independent source review. Two separate APFS COW workspaces and user
+profiles run 20 checked stages each on ANGEL/M1: the previous 19 plus focused
+configuration controls. Both exact editors pass current Stik/Club profile
+validation, the actual runtime qualification marker and strict Home shell markers
+for three real AI pilots, Pause and Restart. A successful unqualified-engine
+no-fleet branch cannot satisfy those markers. The stale behavior-source refusal
+is checked before installing the two renewed admission files. Original source,
+bounded clone inputs, authoring assets, cache metadata and engines pass postflight.
+
+| Runtime | Actual editor SHA-256 | Checks | Runner receipt SHA-256 |
+| --- | --- | ---: | --- |
+| Official beta2 | `2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80` | 20 | `50523e605bf14cd30681fdbad1c85bc711f533f8a235b5940d3b1643713aa782` |
+| Custom24 | `81dcaa54eb0f2e0fed6f0f9ea21fb92c346bf7533b4426733ccf37f605c31c36` | 20 | `79c45cc92cdb5499547081dd47d121afbd79f6ee745e3b41445e3ee35af2d8e0` |
+
+These are native CPU/source functional checks using headless rendering and Dummy
+audio. They do not establish rendered fleet quality, audio shutdown, release
+native-physics integration or performance. The manifest is
+`ff1da6295fd0049926498533b48ea3d66cbb856af23ffec1376f958d592d6b61`;
+profile `e5aa95afc04676b293322526d1f7cdea660e2abdd556a4c0f7c7108ef9e94728`.
+The simulation solver fingerprint is unchanged.
+
+Optional engine patch 0025 adds an explicitly enabled ordinary main-window
+drawable acquisition receipt. Four portable tracker/source controls and rejecting
+mutants pass; independent source review and exact patched catalog reconstruction
+pass. It remains off by default and does not add the private RT-view, shared
+argument-buffer or trial gate patches. A fresh editor/template pair, API controls,
+actual flag-off/ordinary/scope/incompatible-owner checks and package rebinding
+remain pending. Texture acquisition is distinct from GPU completion, presentation
+and scanout. The [intake guide](../../../../tools/graphics/metalfx/README.md#ordinary-drawable-acquisition-observation)
+owns its exact ordered selection and commands.
+
+The private RT-view experiment now admits its literal opaque material after a
+four-byte whitespace correction. A native closed-gate test observes alpha and
+invalid-environment refusal and restoration with scene epoch zero and no denoiser
+allocation. A separate disposable gate override reaches scaler creation but
+fails synchronous native texture validation before any accepted/encoded/consumer
+work. A diagnostic proves output slot 8 has usage 3 while the SDK requires 7,
+missing render-target bit 4; device, format, dimensions, sample/mip count and
+private storage match. Its saved 1920×1080 image is raster fallback, not SDK
+output. The product gate remains closed while the allocation is corrected.
+
+Phase 23 retains 251 payloads, 1,241,622 compressed bytes, archive SHA-256
+`8f6de0943128c8bc889c14e5419341729730ae8acad2a7d8e6a846b6ef964f1b`.
+All payloads independently rehash; all 40 checked reports and logs validate with
+zero errors, and both installed six-file candidates match the reviewed overlay.
+It retains the failed RT attempt and its diagnostic as failures. Only regenerable
+`.o`/`.a` outputs from eight retired build caches were removed to recover about
+2.8 GiB; final engine and receipt hashes were verified unchanged. Current native
+source/export, acquired 1080p active flight, pacing and automatic-default gates
+remain open. The old R3 ZIP remains unchanged.
+
+## Fresh pair, drawable and bounded RT follow-up (2026-11-16)
+
+The fresh 1–19+21+24+25 pair uses the same pinned archive, SDK, compiler and
+flags as pair24. Editor SHA-256 is
+`8d8b76858e61c899fccf3fa4947b31e5679e8cfa27ecdb51edf7de47749f92c6`;
+release template `eeaece65c7dbf67b922d22c5f112a63f5f923977a28dc15526f3263bd0194453`.
+Pair receipt `2598d9870c7d34d6e13a9614124cc2a4cd19c02921c05fa8d66bccb389f4a748`
+binds both fresh builds. The unchanged official extension API passes on both
+editors, both missing-class controls are detected, and 25 runtime SHA-vector
+controls pass. A pair/API pass does not qualify a native physics package.
+
+The first ordinary window request acquired 1920×1018, despite requesting
+1920×1080. A fresh display inventory reports a 1920×1080 screen; the calibrated
+fullscreen control then acquires actual 1920×1080 textures and passes off/on and
+resize checks. These are texture-acquisition observations, not GPU completion,
+presentation or scanout. The incompatible-owner case fails with the native
+`CAMetalLayerInvalidOperation` message that the drawable-count setter must not
+run while CAMetalDisplayLink owns the layer. The failed run is retained.
+
+Optional 0026 skips that setter while the per-surface presenter exists, preserves
+the ordinary framebuffer ring, then marks an ordinary resize after the presenter
+has stopped. Four source-bound portable controls and two rejecting mutations
+pass. Incremental editor `d9fcc720d5497ab704367c0dd01d3ae6303804011c33e1a4593c367fd29094d0`
+passes the native regression: two advancing real OS-presented callback samples
+at an admitted 1080p extent, an explicit post-start resize, generation retirement
+and two further advancing callback samples. Receipt
+`c6d295625bbd908769b614f992b9d56ff6b730a4ce0f04b4c47e4ac273a0e5d6`
+binds that run. The latest admitted extent and OS callback progress are separate
+facts, not a per-presented-frame size tuple. Fresh pair26 is still building.
+
+The RT-view trial corrects output render-target usage and joins the dispatch
+ledger to the actual driver pipeline identity. Its disposable gate override
+runs only in a private incremental engine; the product guide gate stays false.
+Editor `de29a25510a1a2c8535cf5be04339fdf115e1e2a2d4b284799c1a884ce8cde99`
+passes the bounded trial with no fixture failures. Initial GPU completion is
+frame 13/serial 1; opacity restoration completes frame 28/serial 3. Alpha and
+invalid environment inputs are refused, then valid input creates fresh epochs.
+The 1920×1080 output SHA is
+`6c2eb77cf98fd4721aa7c78b828f11c3afa027cf4f772ed271d53d65ede45234`.
+This exercises ground and pilot-head geometry with flat opaque materials, not a
+moving whole aircraft, full material coverage or image-quality qualification.
+The generic denoiser flag remains false; matching viewport command completion
+supplies the separate GPU witness. No displayed-FPS benefit is established.
+
+The draft package-default reader, fixed ordinary Home observer and cache fixture
+pass nine native script parses and focused admission/terminal/cache controls.
+These synthetic/draft checks issue no actual marker and do not qualify a package
+or automatic backend. Final runtime/source renewal and real release captures
+remain required. No old receipt or development ZIP is relabelled as a new build.
+
+Phase 24 retains 269 payloads, 21,797,056 compressed bytes, archive SHA-256
+`fff1badecad9ce7284924a9ad3883ca0209b003ea7fb2e7d0ccff95efde061c7`.
+Every payload independently rehashes; successful checked reports/logs validate,
+and the original extent, DisplayLink exception, parse and RT dispatch failures
+remain explicit. Engine binaries stay retained on M1 with their build receipts
+included here. Task-owned old import caches were removed only after inventory;
+source, frozen campaigns and final binaries were preserved.
 
 ## Evidence retention and open gates
 

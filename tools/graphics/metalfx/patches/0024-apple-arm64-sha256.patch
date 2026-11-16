@@ -1,0 +1,18 @@
+diff --git a/thirdparty/mbedtls/godot/godot_psa_config.h b/thirdparty/mbedtls/godot/godot_psa_config.h
+--- a/thirdparty/mbedtls/godot/godot_psa_config.h
++++ b/thirdparty/mbedtls/godot/godot_psa_config.h
+@@ -97,6 +97,14 @@
+ 
+ #endif
+ 
++// The bundled mbedTLS Apple ARM64 path assumes SHA-256 instructions exist.
++// Avoid its unsynchronized runtime dispatch cache on this Apple-only target.
++#if defined(MACOS_ENABLED) && defined(__APPLE__) && defined(__aarch64__) && \
++        !defined(MBEDTLS_SHA256_USE_ARMV8_A_CRYPTO_ONLY) && \
++        !defined(MBEDTLS_SHA256_USE_ARMV8_A_CRYPTO_IF_PRESENT)
++#define MBEDTLS_SHA256_USE_ARMV8_A_CRYPTO_ONLY
++#endif
++
+ // Disable deprecated
+ #define MBEDTLS_DEPRECATED_REMOVED
+ 

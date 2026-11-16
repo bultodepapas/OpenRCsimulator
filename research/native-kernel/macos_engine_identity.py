@@ -29,6 +29,13 @@ RESEARCH_CLI = "4.8.beta2.openrc_metalfx"
 RESEARCH_RUNTIME = "4.8-beta2 (openrc_metalfx)"
 SCOPE = "source-editor-local-custom-engine-research-v1"
 APPLE_CLANG = "Apple clang version 21.0.0 (clang-2100.3.34.2)"
+DEFAULT_TOOLCHAIN_PROFILE = "apple-clang-2100.3.34.2-sdk-27.0"
+NEW_TOOLCHAIN_PROFILE = "apple-clang-2100.4.1.1-sdk-27.2"
+TOOLCHAIN_PROFILES = {
+    DEFAULT_TOOLCHAIN_PROFILE: {"compiler_version": APPLE_CLANG, "sdk_version": "27.0"},
+    NEW_TOOLCHAIN_PROFILE: {"compiler_version": "Apple clang version 21.0.0 (clang-2100.4.1.1)",
+                            "sdk_version": "27.2"},
+}
 MAX_API_BYTES = 64 * 1024 * 1024
 CONTROL_CLASS = "OpenRC_Validator_Control_Absent_8F97A2B6"
 CONTROL_DIAGNOSTIC = f"Validate extension JSON: API was removed: classes/{CONTROL_CLASS}"
@@ -46,6 +53,22 @@ class _Once(argparse.Action):
         setattr(namespace, self.dest, value)
 
 
+class _OnceToolchain(argparse.Action):
+    def __call__(self, parser: argparse.ArgumentParser, namespace: argparse.Namespace,
+                 value: object, option_string: str | None = None) -> None:
+        marker = "_" + self.dest + "_specified"
+        if getattr(namespace, marker, False):
+            parser.error(f"{option_string} may be specified only once")
+        setattr(namespace, marker, True)
+        setattr(namespace, self.dest, value)
+
+
+def add_toolchain_arguments(parser: argparse.ArgumentParser) -> None:
+    """Register the independent native-kernel toolchain selection without loading the builder."""
+    parser.add_argument("--toolchain-profile", action=_OnceToolchain, choices=tuple(TOOLCHAIN_PROFILES), default=DEFAULT_TOOLCHAIN_PROFILE,
+                        help="exact native-kernel compiler/SDK profile; the original profile remains the default")
+
+
 def add_arguments(parser: argparse.ArgumentParser) -> None:
     group = parser.add_argument_group("explicit local MetalFX research engine")
     group.add_argument("--research-engine-sha256", action=_Once, help="independently selected exact editor SHA-256")
@@ -57,6 +80,8 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
                        help="4.7 bindings API JSON in the clean pinned godot-cpp checkout")
     group.add_argument("--research-engine-reference-godot", action=_Once, type=Path,
                        help="independently pinned official macOS Godot editor for the 4.8 API comparison")
+    group.add_argument("--research-engine-toolchain-profile", action=_Once, choices=tuple(TOOLCHAIN_PROFILES),
+                       help="exact toolchain used to build the research engine; omitted selects the legacy profile")
     group.add_argument("--research-engine-patch", type=Path, action="append", default=[],
                        help="exact source patch, in build order; repeat")
 
@@ -66,10 +91,13 @@ def selection_from_args(args: argparse.Namespace) -> dict[str, Any] | None:
              "research_engine_build_receipt", "research_engine_archive", "research_engine_extension_api",
              "research_engine_reference_godot", "research_engine_patch")
     values = [getattr(args, name, None) for name in names]
-    if not any(values):
+    profile = getattr(args, "research_engine_toolchain_profile", None)
+    if not any(values) and profile is None:
         return None
     if any(not value for value in values):
         raise ValueError("All local research-engine pins, receipt, archive, official reference and ordered patches are required")
+    if profile is not None and (not isinstance(profile, str) or profile not in TOOLCHAIN_PROFILES):
+        raise ValueError("Unknown research-engine toolchain profile")
     digest, cli, runtime, receipt, archive, extension_api, reference, patches = values
     reject_dyld_environment()
     if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
@@ -81,11 +109,14 @@ def selection_from_args(args: argparse.Namespace) -> dict[str, Any] | None:
     paths = [str(p.expanduser().absolute()) for p in patches]
     if len(paths) != len(set(paths)):
         raise ValueError("Research engine patches must be distinct and ordered")
-    return {"sha256": digest, "cli_version": cli, "runtime_version": runtime,
+    result = {"sha256": digest, "cli_version": cli, "runtime_version": runtime,
             "receipt": str(Path(receipt).expanduser().absolute()),
             "archive": str(Path(archive).expanduser().absolute()),
             "extension_api": str(Path(extension_api).expanduser().absolute()),
             "reference_godot": str(Path(reference).expanduser().absolute()), "patches": paths}
+    if profile is not None:
+        result["toolchain_profile"] = profile
+    return result
 
 
 def reject_dyld_environment() -> None:
@@ -250,8 +281,8 @@ def _make_control_api(api_dump: Path, control: Path) -> dict[str, Any]:
 def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
              architectures: Callable[[Path], list[str]], output: Callable[..., str]) -> dict[str, Any]:
     """Recheck the caller's pins and the real retained local build inputs/outputs."""
-    if not isinstance(selection, dict) or set(selection) != {
-            "sha256", "cli_version", "runtime_version", "receipt", "archive", "extension_api", "reference_godot", "patches"}:
+    required = {"sha256", "cli_version", "runtime_version", "receipt", "archive", "extension_api", "reference_godot", "patches"}
+    if not isinstance(selection, dict) or set(selection) not in (required, required | {"toolchain_profile"}):
         raise ValueError("Malformed local research-engine selection")
     checked = selection_from_args(argparse.Namespace(
         research_engine_sha256=selection["sha256"], research_engine_cli_version=selection["cli_version"],
@@ -259,7 +290,8 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
         research_engine_build_receipt=Path(selection["receipt"]), research_engine_archive=Path(selection["archive"]),
         research_engine_extension_api=Path(selection["extension_api"]),
         research_engine_reference_godot=Path(selection["reference_godot"]),
-        research_engine_patch=[Path(p) for p in selection["patches"]]))
+        research_engine_patch=[Path(p) for p in selection["patches"]],
+        research_engine_toolchain_profile=selection.get("toolchain_profile")))
     if checked != selection or lock.get("godot", {}).get("version") != OFFICIAL_VERSION \
             or lock["godot"].get("extension_api") != "4.7":
         raise ValueError("Research engine selection or pinned upstream ABI differs")
@@ -313,10 +345,13 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
     controlled.update(GODOT_VERSION_STATUS="beta2", BUILD_NAME="openrc_metalfx")
     sdk = receipt.get("sdk_path")
     command = receipt.get("command")
+    profile_name = selection.get("toolchain_profile", DEFAULT_TOOLCHAIN_PROFILE)
+    profile = TOOLCHAIN_PROFILES[profile_name]
     if (environment != controlled or receipt.get("path") != "/usr/bin:/bin:/usr/sbin:/sbin"
-            or receipt.get("sdk_version") != "27.0" or receipt.get("scons") != helper.SCONS_VERSION
+            or receipt.get("sdk_version") != profile["sdk_version"] or receipt.get("scons") != helper.SCONS_VERSION
             or receipt.get("zstandard") != helper.ZSTANDARD_VERSION
-            or not isinstance(receipt.get("clang"), str) or receipt["clang"].splitlines()[0] != APPLE_CLANG
+            or not isinstance(receipt.get("clang"), str) or not receipt["clang"].splitlines()
+            or receipt["clang"].splitlines()[0] != profile["compiler_version"]
             or not isinstance(sdk, str) or not sdk.startswith("/") or "\n" in sdk
             or not isinstance(command, list) or len(command) != 18
             or not isinstance(command[0], str) or not command[0].startswith("/")
@@ -380,6 +415,8 @@ def identify(godot: Path, lock: dict, selection: dict[str, Any], *,
     return {"path": str(executable.resolve()), "version": actual_version, "sha256": selection["sha256"],
             "architectures": actual_architectures,
             "research_engine": {"scope": SCOPE, "selection": selection,
+                                "build_toolchain": {"profile": profile_name, "compiler_version": receipt["clang"].splitlines()[0],
+                                                    "sdk_version": receipt["sdk_version"]},
                                 "runtime_version": selection["runtime_version"], "source_commit": SOURCE_COMMIT,
                                 "source_catalog_sha256": intake["source_catalog_sha256"],
                                 "build_receipt_sha256": before[str(receipt_path)],

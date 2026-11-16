@@ -27,6 +27,7 @@ const RAW_CLOCK_GODOT_COMMIT := "4d10419cacd6d3009976e8f9fd3abd970fd58018"
 const RAW_CLOCK_BETA2_GODOT_COMMIT := "cafc17a192acf67903910a68aeb3c076c0907a4b"
 const RAW_CLOCK_HELPER_ENV := "OPENRC_RAW_CLOCK_HELPER"
 const RAW_CLOCK_SHA_ENV := "OPENRC_RAW_CLOCK_HELPER_SHA256"
+const RAW_CLOCK_PACKAGE_QUALIFICATION_ENV := "OPENRC_PACKAGE_RAW_CLOCK_QUALIFICATION"
 const GrassSceneSnapshot := preload("res://render/grass_scene_snapshot.gd")
 
 var warmup_s: float = 1.0
@@ -432,14 +433,30 @@ static func _raw_clock_helper_hash(path: String) -> String:
 static func _raw_clock_anchor(config: Dictionary) -> Dictionary:
 	if OS.get_name() != "macOS":
 		return _raw_clock_error("raw uptime helper requires macOS")
-	if not _raw_clock_supported_engine(Engine.get_version_info()):
+	var allow_custom := _raw_clock_custom_opt_in(OS.get_name(), Engine.get_architecture_name(),
+			OS.has_feature("template_release"), OS.get_environment(RAW_CLOCK_PACKAGE_QUALIFICATION_ENV))
+	if not _raw_clock_supported_engine(Engine.get_version_info(), allow_custom):
 		return _raw_clock_error("raw uptime helper requires the vetted Godot build")
 	return _raw_clock_checked_call(config)
 
 
 ## The consumer also verifies the actual executable hash; version metadata
 ## alone is not a cryptographic identity for the running engine.
-static func _raw_clock_supported_engine(version: Dictionary) -> bool:
+static func _raw_clock_custom_opt_in(platform: String, architecture: String, release: bool, flag: String) -> bool:
+	return platform == "macOS" and architecture == "arm64" and release and flag == "1"
+
+
+static func _raw_clock_supported_engine(version: Dictionary, allow_custom := false) -> bool:
+	# Metadata narrows the opt-in but does not attest a binary; the package
+	# capture consumer must independently verify the actual executable and pair.
+	if allow_custom and typeof(version.get("major")) == TYPE_INT and typeof(version.get("minor")) == TYPE_INT \
+			and typeof(version.get("patch")) == TYPE_INT and typeof(version.get("status")) == TYPE_STRING \
+			and typeof(version.get("build")) == TYPE_STRING and typeof(version.get("hash")) == TYPE_STRING \
+			and version.get("major") == 4 \
+			and version.get("minor") == 8 and version.get("patch") == 0 \
+			and version.get("status") == "beta2" and version.get("build") == "openrc_metalfx" \
+			and version.get("hash") == "unknown":
+		return true
 	return version.get("major") == 4 and version.get("minor") == 8 and version.get("patch") == 0 \
 		and version.get("build") == "official" \
 		and ((version.get("status") == "beta1" and version.get("hash") == RAW_CLOCK_GODOT_COMMIT) \

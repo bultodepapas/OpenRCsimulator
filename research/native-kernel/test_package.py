@@ -41,7 +41,7 @@ class PackageAdmissionTests(unittest.TestCase):
     def setUp(self) -> None:
         temporary = tempfile.TemporaryDirectory(prefix="nk3-package-test-")
         self.addCleanup(temporary.cleanup)
-        self.root = Path(temporary.name)
+        self.root = Path(temporary.name).resolve()
         self.install = self.root / "app/native/kernel"
         self.install.mkdir(parents=True)
         self.tool = self.root / "research/native-kernel"
@@ -369,7 +369,7 @@ class MacPackagePortableTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(prefix="nk3-mac-package-test-")
         self.addCleanup(temporary.cleanup)
-        self.root = Path(temporary.name)
+        self.root = Path(temporary.name).resolve()
         self.install = self.root / "app/native/kernel"
         self.install.mkdir(parents=True)
         (self.install / "LICENSE.godot-cpp.md").write_bytes(b"dependency licence")
@@ -447,6 +447,38 @@ class MacPackagePortableTests(unittest.TestCase):
                 package.stage_macos(changed_bundle, tool_root, godot)
             self.assertFalse((changed_bundle / "Contents/Frameworks").exists())
 
+    def test_mac_package_cli_forwards_independent_engine_and_kernel_profiles(self):
+        policy = macos_evidence_tests.mac.engine_policy
+        selected_kernel = policy.NEW_TOOLCHAIN_PROFILE
+        selected_engine = policy.DEFAULT_TOOLCHAIN_PROFILE
+        pins = ["--research-engine-sha256", "a" * 64,
+                "--research-engine-cli-version", policy.RESEARCH_CLI,
+                "--research-engine-runtime-version", policy.RESEARCH_RUNTIME,
+                "--research-engine-build-receipt", str(self.root / "build-editor.json"),
+                "--research-engine-archive", str(self.root / "source.zip"),
+                "--research-engine-extension-api", str(self.root / "extension_api-4-7.json"),
+                "--research-engine-reference-godot", str(self.root / "official"),
+                "--research-engine-patch", str(self.root / "0001.patch"),
+                "--research-engine-toolchain-profile", selected_engine,
+                "--pair-template-intake", str(self.root / "template-intake"),
+                "--pair-receipt", str(self.root / "pair.json"),
+                "--pair-export-template", str(self.root / "export.zip"),
+                "--pair-binding-pins", str(self.root / "binding-pins.json"),
+                "--toolchain-profile", selected_kernel]
+        for command, extra, function in (("prepare-macos", [], "prepare_macos"),
+                                         ("stage-macos", ["--bundle", str(self.root / "OpenRC.app")], "stage_macos")):
+            argv = ["package.py", command, "--tool-root", str(self.root / "tmp/build"),
+                    "--godot", str(self.editor), *extra, *pins]
+            with self.subTest(command=command), patch.object(sys, "argv", argv), \
+                 patch.object(package, function, return_value={}) as called, contextlib.redirect_stdout(io.StringIO()):
+                package.main()
+                selection, profile = called.call_args.args[-2:]
+                self.assertEqual(selection["toolchain_profile"], selected_engine)
+                self.assertEqual(profile, selected_kernel)
+                self.assertEqual(called.call_args.kwargs["pair_selection"], {
+                    "template_intake": self.root / "template-intake", "pair_receipt": self.root / "pair.json",
+                    "export_template": self.root / "export.zip", "pins": self.root / "binding-pins.json"})
+
     def test_mac_verified_install_rejects_changed_receipt_or_library(self):
         library = self.install / "libopenrc_native_kernel.dylib"
         library.write_bytes(b"signed fixture")
@@ -457,10 +489,16 @@ class MacPackagePortableTests(unittest.TestCase):
         descriptor.write_bytes(b"source descriptor\n")
         identity = {"source_sha256": "1" * 64, "lock_sha256": "2" * 64,
                     "reference_sources_sha256": {"app/physics/fixture.gd": "3" * 64}}
-        toolchain = {"os_version": "27.0.1", "os_build": "26A434"}
-        engine = {"version": "engine", "sha256": "4" * 64}
-        candidate = {"binary_sha256": binary, "extension_api_sha256": "5" * 64}
-        mutant = {"binary_sha256": "6" * 64, "extension_api_sha256": "5" * 64}
+        toolchain = {"os_version": "27.0.1", "os_build": "26A434",
+                     "compiler_version": macos_evidence_tests.mac.APPLE_CLANG, "sdk_version": "27.0"}
+        policy = macos_evidence_tests.mac.engine_policy
+        engine = {"version": "engine", "sha256": "4" * 64,
+                  "research_engine": {"scope": policy.SCOPE,
+                                      "selection": {"toolchain_profile": policy.DEFAULT_TOOLCHAIN_PROFILE},
+                                      "build_toolchain": {"profile": policy.DEFAULT_TOOLCHAIN_PROFILE,
+                                                          **policy.TOOLCHAIN_PROFILES[policy.DEFAULT_TOOLCHAIN_PROFILE]}}}
+        candidate = {"binary_sha256": binary, "extension_api_sha256": "5" * 64, "toolchain": toolchain}
+        mutant = {"binary_sha256": "6" * 64, "extension_api_sha256": "5" * 64, "toolchain": toolchain}
         evidence = {}
         roster = {"base_oracle": "results-[0-9]*.json", "negative_control": "stage_mutant-[0-9]*.json"}
 
@@ -473,6 +511,7 @@ class MacPackagePortableTests(unittest.TestCase):
             locked=SimpleNamespace(load_lock=lambda: {}), host_toolchain=lambda: toolchain,
             godot_identity=lambda _godot, _lock: engine, _identity=lambda: identity,
             validate_build=lambda _root, is_mutant, *_args: mutant if is_mutant else candidate,
+            require_matching_toolchains=macos_evidence_tests.mac.require_matching_toolchains,
             validate_signing_pair=lambda _candidate, _mutant: None,
             _runner=lambda: None, verification_roster=lambda: roster, _check_oracle_identity=check_oracle,
             SOURCE_SCOPE="macos-arm64-fixed-wing-experimental-v1", _engine_display=lambda version: version,
@@ -483,7 +522,8 @@ class MacPackagePortableTests(unittest.TestCase):
                "source_sha256": identity["source_sha256"], "lock_sha256": identity["lock_sha256"],
                "mirrored_sources": identity["reference_sources_sha256"], "runtime_os_version": toolchain["os_version"],
                "runtime_os_build": toolchain["os_build"], "engine_version": engine["version"],
-               "engine_sha256": engine["sha256"], "verification": evidence}
+               "engine_sha256": engine["sha256"], "engine": copy.deepcopy(engine),
+               "verification": evidence, "toolchain": toolchain}
         envelope = {"format": builder.RECEIPT_FORMAT, "backend": "native", "backend_version": builder.BACKEND_VERSION,
                     "abi_version": builder.ABI_VERSION, "platforms": {"macos": row}}
         path = self.install / "build-receipt-macos.json"
@@ -500,11 +540,46 @@ class MacPackagePortableTests(unittest.TestCase):
         verified_license.write_bytes((self.install / "LICENSE.godot-cpp.md").read_bytes())
         with patch.object(package, "_mac_builder", return_value=fake):
             self.assertEqual(package.verified_mac_install(tool_root, self.editor), envelope)
+            selected_profile = policy.NEW_TOOLCHAIN_PROFILE
+            updated = {**toolchain, "profile": selected_profile, **policy.TOOLCHAIN_PROFILES[selected_profile]}
+            candidate["toolchain"] = updated
+            mutant["toolchain"] = updated
+            row["toolchain"] = updated
+            path.write_text(json.dumps(envelope))
+            with patch.object(fake, "host_toolchain", return_value=updated) as host:
+                self.assertEqual(package.verified_mac_install(tool_root, self.editor, None, selected_profile), envelope)
+                self.assertTrue(all(call.args == (selected_profile,) for call in host.call_args_list))
+                row["toolchain"] = {**updated, "sdk_version": "27.0"}
+                path.write_text(json.dumps(envelope))
+                with self.assertRaises(ValueError):
+                    package.verified_mac_install(tool_root, self.editor, None, selected_profile)
+            candidate["toolchain"] = toolchain
+            mutant["toolchain"] = toolchain
+            row["toolchain"] = toolchain
+            path.write_text(json.dumps(envelope))
             selection = {"sha256": engine["sha256"], "cli_version": "4.8.beta2.openrc_metalfx"}
             with patch.object(fake, "godot_identity", return_value=engine) as selected:
                 self.assertEqual(package.verified_mac_install(tool_root, self.editor, selection), envelope)
                 self.assertEqual(selected.call_count, 2)
                 self.assertTrue(all(call.args == (self.editor, {}, selection) for call in selected.call_args_list))
+                altered_toolchains = (
+                    ("selection", {"toolchain_profile": policy.NEW_TOOLCHAIN_PROFILE}),
+                    ("build_toolchain", {"profile": policy.NEW_TOOLCHAIN_PROFILE,
+                                         **policy.TOOLCHAIN_PROFILES[policy.NEW_TOOLCHAIN_PROFILE]}),
+                )
+                original_citations = copy.deepcopy(row["verification"])
+                for field, value in altered_toolchains:
+                    row["engine"] = copy.deepcopy(engine)
+                    row["engine"]["research_engine"][field] = value
+                    path.write_text(json.dumps(envelope))
+                    self.assertEqual(row["engine_sha256"], engine["sha256"])
+                    self.assertEqual(row["verification"], original_citations)
+                    with self.subTest(changed_engine_field=field), \
+                         self.assertRaisesRegex(ValueError, "Mac installation differs"):
+                        package.verified_mac_install(tool_root, self.editor, selection)
+                row["engine"] = copy.deepcopy(engine)
+                path.write_text(json.dumps(envelope))
+                self.assertEqual(package.verified_mac_install(tool_root, self.editor, selection), envelope)
             with patch.object(fake, "godot_identity", side_effect=[engine, {**engine, "sha256": "f" * 64}]):
                 with self.assertRaisesRegex(ValueError, "provenance changed"):
                     package.verified_mac_install(tool_root, self.editor, selection)

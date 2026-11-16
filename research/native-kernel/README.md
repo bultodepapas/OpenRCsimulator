@@ -73,6 +73,14 @@ roster from `verification_roster()` using `run.py` and its declared counts/tapes
 The installer revalidates the actual reports, checked logs, source, binary and
 engine; an old report or matching fallback cannot qualify a native install.
 
+The default `--toolchain-profile` remains `apple-clang-2100.3.34.2-sdk-27.0`.
+For a host with exactly Apple Clang `2100.4.1.1` and SDK `27.2`, select
+`--toolchain-profile apple-clang-2100.4.1.1-sdk-27.2` explicitly for the builder,
+installer, FPCR control, diagnostics, fleet, package and promotion commands.
+The selected profile and actual compiler/SDK are bound in the build receipt;
+legacy receipts without a profile retain the original exact pin. A selected
+profile does not qualify a host, candidate, package or performance result.
+
 The separate local MetalFX-engine lane requires explicit independent selection;
 an engine build receipt alone cannot authorize its executable. It binds the exact
 ARM64 editor hash, CLI/runtime versions, original build receipt, upstream ZIP,
@@ -110,6 +118,14 @@ R=(
 Use exactly the ordered patch list in the selected intake; omit later entries
 when testing an earlier stack. The
 [engine guide](../../tools/graphics/metalfx/README.md) owns the current patch list.
+
+The engine-build toolchain is an independent selection. Its omitted
+`--research-engine-toolchain-profile` retains the original Clang `2100.3.34.2` /
+SDK `27.0` receipt check. When the selected engine was built with the second
+exact pair, add `--research-engine-toolchain-profile apple-clang-2100.4.1.1-sdk-27.2`
+to `R`. This does not select or imply the kernel
+build's `--toolchain-profile`, or vice versa. Pass the independent selections to
+each command that validates those identities.
 
 `run.py` reads that identity from the verified native build receipt instead of
 accepting this argument array. Identity checks reconstruct source catalogs and
@@ -180,6 +196,218 @@ separate native bundle and ZIP receipt commands in
 [release tools](../../tools/release/README.md). Its identity is
 `macos-arm64-native-bundle-v1`; reference retains `macos-reference-bundle-v1`.
 The public six-file release contract has not adopted the experimental ZIP.
+
+### Packaged CPU-default admission
+
+This separate workflow covers only the CPU native backend. It has not yet
+qualified a package or issued a marker. A candidate is scoped to the verified
+Ugly Stik, ideal battery, calm airborne start, soft-hull and production trim
+on the recorded M1 hardware, OS and signed package. MetalFX, GPU completion,
+physical radio/pilot behavior, scanout and latency remain unqualified.
+
+First rebind companion and native source identities, complete the existing
+functional/oracle/fleet gates, and create the exact paired editor, template and
+signed release. These commands use the admitted host and do not bypass its
+ownership queue. Do not run timed captures concurrently with other workloads.
+
+Create a non-linked, absolute JSON input file with exactly these keys. All paths
+must exist and be absolute, and all report paths are original raw checked
+artifacts, not manually written summaries:
+
+```json
+{
+  "format": "openrc-package-default-inputs v1",
+  "project": "/absolute/path/to/qualified/app",
+  "godot": "/absolute/path/to/paired/editor",
+  "tool_root": "/absolute/path/to/checked/fleet/shards/inside/source/tmp",
+  "qualification_root": "/absolute/path/to/verified/native/build/inside/source/tmp",
+  "native_toolchain_profile": "apple-clang-2100.4.1.1-sdk-27.2",
+  "engine_selection": "/absolute/path/to/independent/editor-selection.json",
+  "release_selection": "/absolute/path/to/independent/release-selection.json",
+  "executable": "/absolute/path/to/OpenRC.app/Contents/MacOS/OpenRC",
+  "preflight": "/absolute/path/to/macos-preflight.json",
+  "fleet_campaign": "/absolute/path/to/production-trim/fleet.json",
+  "package_checks": {
+    "stage": {"checked": "/absolute/path/to/stage/report.json"},
+    "lifecycle": {"checked": "/absolute/path/to/lifecycle/report.json"},
+    "replay": {"checked": "/absolute/path/to/replay/report.json"},
+    "session_reference": {"checked": "/absolute/path/to/reference/report.json", "output": "/absolute/path/to/reference-session.json"},
+    "session_native": {"checked": "/absolute/path/to/native/report.json", "output": "/absolute/path/to/native-session.json"}
+  },
+  "short_pairs": [["/absolute/ref-1.json", "/absolute/native-1.json"], ["/absolute/ref-2.json", "/absolute/native-2.json"], ["/absolute/ref-3.json", "/absolute/native-3.json"], ["/absolute/ref-4.json", "/absolute/native-4.json"], ["/absolute/ref-5.json", "/absolute/native-5.json"]],
+  "long_pairs": [["/absolute/ref-long-1.json", "/absolute/native-long-1.json"], ["/absolute/ref-long-2.json", "/absolute/native-long-2.json"], ["/absolute/ref-long-3.json", "/absolute/native-long-3.json"]],
+  "ci_run_id": 123456789
+}
+```
+
+Each packaged check must have its original `engine.log` next to the cited
+checked `report.json`. The three diagnostic modes are `stage`, `lifecycle`,
+and `replay`; the two session outputs are the existing fixed 24-warmup/240-sample
+Ugly Stik `trim` sessions with `battery=ideal`, `trim-profile=production` and
+observer enabled. Their real checked commands, native-pass markers, package
+identities and typed reference/native fingerprints must match.
+
+For each flight path the existing strict reader requires its original adjacent
+health, checked, stream and log evidence, the original checked hierarchy,
+resource samples and host-state attachment. Collect independent alternating
+reference/native pairs: five with at least 120 measured seconds and three with
+at least 1,800, each after at least 30 seconds' warmup. All use the fixed
+synthetic no-radio direct AppRoot route, same qualified package and workload,
+and an actually acquired 1920×1080 ordinary framebuffer texture. Each pair must
+have matching initial checkpoints under the fixed screened stock domain,
+6,000-tick state/input windows and sampled activation at the shared measured
+ticks. The actual screened start must equal the qualified fleet row. Original
+backend-bound checkpoint and configuration hashes are separately retained and
+checked within each role; the screened witness is not a general configuration
+equivalence claim.
+The 18/25 ms p95/p99 and 0.99–1.01 simulated/wall
+gates, at most 5% paired CPU/RSS/frame-tail regression, bounded long-run
+early/final resource checks, nominal thermal/AC/no-low-power observations and
+no observed memory-pressure warning apply. The initial pressure level and OS
+notification loss remain unknown. Each short and long group must separately
+show at least a 5% median benefit in **either** process CPU per accepted
+simulated second or process callback-loop FPS. CPU poll boundaries introduce
+uncertainty; callback FPS is not displayed FPS or GPU completion.
+
+Each flight directory also needs the capture wrapper's adjacent
+`host-witness.json`: pre/post model, CPU, memory, OS product/build and boot UUID,
+with UTC and monotonic brackets around the exact checked capture ID, PID,
+report SHA and log SHA. All sixteen must report one boot UUID and match the
+current M1 preflight's hardware and OS. This is a reported host/boot witness,
+not a cryptographic device identity. The marker's `package_session_sha256`
+binds the packaged checks, host witnesses and the frame, stream, health, checked
+report and resource digests for all sixteen captures; the preparation receipt
+retains the individual entries.
+
+Before the timed campaign, the same fixed launcher can exercise the normal Home
+route with missing and malformed markers in two separate private profiles:
+
+```sh
+python3 research/native-kernel/macos_package_default_probe.py \
+  --executable /absolute/path/to/OpenRC.app/Contents/MacOS/OpenRC \
+  --fallback-only --out /absolute/path/to/new-fallback-smoke-directory
+```
+
+The resulting `fallback-smoke.json` is only a functional smoke receipt; it
+cannot replace the later four-case candidate proof or authorize a marker.
+
+The fixed capture launcher must opt in to
+`OPENRC_PACKAGE_RAW_CLOCK_QUALIFICATION=1` only for the verified macOS arm64
+release process. The app still checks the exact custom engine metadata and
+actual helper SHA and takes bounded start/end clock anchors. Metadata is not
+binary attestation: the strict package reader independently verifies the
+selected executable and linked package identity. The host-state attachment,
+alignment and sleep checks remain mandatory.
+
+After creating a fresh directory under this checkout's `tmp/`, prepare the
+candidate. No canonical marker is written by this step:
+
+```sh
+python3 research/native-kernel/macos_package_promotion.py prepare \
+  --inputs /absolute/inputs.json \
+  --candidate /absolute/source/tmp/new/candidate.json \
+  --receipt /absolute/source/tmp/new/preparation.json
+```
+
+Use the printed exact candidate SHA-256 to run the fixed release-only Home
+observer. It creates four separate, newly owned private HOME directories and
+bundle clones, validates each clone's linked receipts and signature, and runs
+missing-marker, malformed-marker, staged-candidate and explicit-reference
+cases in separate checked processes. The first three use ordinary Startup and
+Home with no backend override; they must use the same exact screened selection.
+The reference case is a separate explicit direct-flight control. The launcher
+sets HOME only in each child process and checks the actual Godot user directory
+before preferences. Keep the original signed bundle and all raw case logs and
+reports.
+
+```sh
+python3 research/native-kernel/macos_package_default_probe.py \
+  --executable /absolute/path/to/OpenRC.app/Contents/MacOS/OpenRC \
+  --candidate /absolute/source/tmp/new/candidate.json \
+  --candidate-sha256 EXACT_CANDIDATE_SHA256 \
+  --out /absolute/path/to/new-home-proof-directory
+```
+
+Only after all four cases pass, finalize with the same input file. The tool
+revalidates the source, package, live CI, fleet, package checks, all 16 raw
+flights, candidate bytes and every raw Home case. It first durably writes a
+`verified_for_publication` receipt; only then does it atomically create the
+previously absent marker beside the original `.app`. The receipt alone does not
+say publication succeeded: check the command result and the marker's hash. It
+refuses an existing marker; it never overwrites one.
+
+```sh
+python3 research/native-kernel/macos_package_promotion.py finalize \
+  --inputs /absolute/inputs.json \
+  --candidate /absolute/source/tmp/new/candidate.json \
+  --home-proof /absolute/path/to/new-home-proof-directory/home-proof.json \
+  --receipt /absolute/source/tmp/new/publication.json
+```
+
+The promotion source must match the package receipt's exact commit, tree and
+worktree hash, and CI must pass that same commit. A clean checkout is accepted.
+For the paired local research export, the only allowed tracked modification is
+the unstaged macOS export preset: ARM64, the verified paired template ZIP path,
+and `org.openrc.research.metalfx.native26production` in its bundle-identifier field.
+The tool reconstructs those exact bytes from the committed preset, verifies the
+ZIP against the pair, and rejects staged changes, other tracked changes,
+nonignored untracked files, replacement refs, inherited Git overrides and hidden
+tracked-file index flags. This check does not inventory ignored files; the
+existing prepared-project, package and installation validators remain in force
+for their respective inputs. This is a declared local build setting,
+not an exception for another commit, proof of the bundle's actual identifier, or
+a distribution-signing claim.
+
+The bundle/receipt identities are checked at boundaries, not continuously;
+avoid concurrent modification. The Home probe checks menu-playback retirement and
+the checked log's reported diagnostics, not audible output or an exhaustive
+leak proof. A missing, malformed, unsupported, stale or incomplete input must
+leave promotion pending.
+
+### Paired research export from a prepared project
+
+Set the final ARM64 preset and exact custom release template before native
+qualification. Keep the canonical app, project settings and preset stable through
+export. The preparation tool requires the canonical project name and no custom
+user-data directory; it gives the isolated copy a unique name.
+
+Pass the complete research-engine selection, independent native/engine compiler
+profiles and these four pair inputs to each Mac package command:
+
+```sh
+P=(--pair-template-intake "$TEMPLATE_INTAKE"
+   --pair-receipt "$PAIR_RECEIPT"
+   --pair-export-template "$EXPORT_TEMPLATE_ZIP"
+   --pair-binding-pins "$PAIR_BINDING_PINS")
+```
+
+The pins identify the retained editor/template receipts, source catalog, ordered
+patches and export ZIP; the producer revalidates them instead of deriving trust
+from a manifest. The repaired native-compatible stack uses patches 0001–0019
+followed by 0021; optional diagnostic 0020 is excluded from that pair.
+
+After the verified native installation, run `package.py prepare-macos`. Once its
+native artifacts and package manifest are final, use
+`tools/graphics/prepare_research.py --dest <ROOT/tmp/new-run>`. Export the resulting
+`<new-run>/app`, and copy the canonical `research/performance/session_probe.gd`
+to `<new-run>/research/performance/session_probe.gd`; the plugin reads this sibling.
+Import the prepared project with the checked runner and capture the reference
+bundle inputs using the [release tools](../../tools/release/README.md).
+
+Immediately before the checked export, retain the JSON proof from
+`package._prepared_macos_export_project(project, package._pair_binder())`.
+Immediately afterward, retain another proof and require equality. Set
+`OPENRC_EXPERIMENTAL_NATIVE_MACOS_PACKAGE=1`, select the same paired editor and
+preset, and require exactly the pair's ordered BEGIN/END markers. These are
+endpoint consistency checks, not source-to-PCK reproducibility or protection
+against changes restored during export.
+
+Run `package.py stage-macos`, sign the app without changing the qualified dylib,
+finalize its reference receipt, then run `package.py finalize-research-macos`
+with the same selections and checked export report. Retain the prepared project,
+preparation receipt, sibling probe, both endpoint proofs, checked report and
+finalizer output: later performance readers revalidate the prepared copy.
+Actual package execution, performance and delivery gates remain separate.
 Public distribution of a native Mac bundle remains deferred.
 Developer ID, notarization, downloaded/quarantined launch and product performance
 remain separate target-hardware gates.

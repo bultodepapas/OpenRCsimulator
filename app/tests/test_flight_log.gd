@@ -6,6 +6,14 @@ const Reader := preload("res://tools/flight_log_cli.gd")
 const ReaderHost := preload("res://tools/flight_log_cli_host.gd")
 const Weather := preload("res://physics/wind_config.gd")
 const Package := preload("res://app_state/native_package.gd")
+
+
+class BackendIdentityFlight extends Flight:
+	var identity_for_test := {backend = "gdscript_reference"}
+	func stage_backend_identity() -> Dictionary:
+		return identity_for_test.duplicate(true)
+
+
 var checks := 0
 var failures := 0
 var destination := ""
@@ -32,6 +40,7 @@ func check(label: String, passed: bool) -> void:
 func _run() -> void:
 	_mac_identity_tests()
 	_mac_native_schema_tests()
+	_invalid_backend_recording_tests()
 	_boundary_snapshot_tests()
 	for path in ["res://data/aircraft/jensen_ugly_stik_60.json", "res://data/aircraft/gp_extra_300s_60.json", "res://data/aircraft/p51d_mustang_120.json", "res://data/aircraft/sebart_avanti_s_a200.json", "res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/stik_glow_61fx_2t.json", "res://data/aircraft/stik_electric_6s.json", "res://data/aircraft/battery/stik_electric_6s_pack.json"]:
 		if not FileAccess.file_exists(path):
@@ -44,6 +53,37 @@ func _run() -> void:
 	file.close()
 	print("FL-04 flight logs: %d checks, %d failures; %s" % [checks, failures, destination])
 	quit(1 if failures else 0)
+
+
+## A malformed backend must be refused before checkpoint reads it, and if it
+## appears during a recording the file must remain an incomplete prefix.
+func _invalid_backend_recording_tests() -> void:
+	var flight := BackendIdentityFlight.new()
+	flight.input_enabled = false
+	flight.crash_auto_restart = false
+	flight.setup("res://data/aircraft/jensen_ugly_stik_60.json")
+	check("invalid-backend fixture prepared", flight.is_flyable())
+	if not flight.is_flyable():
+		flight.free()
+		return
+	var writer := Log.new(flight)
+	var start_path := destination.path_join("invalid-backend-at-start.orfl")
+	flight.identity_for_test = {backend = true}
+	check("boolean backend refused before recording", writer.start(start_path) == ERR_INVALID_DATA \
+		and writer.failure.contains("stage backend identity") and not FileAccess.file_exists(start_path))
+	flight.identity_for_test = {backend = "gdscript_reference"}
+	var mid_path := destination.path_join("invalid-backend-during-recording.orfl")
+	var started := writer.start(mid_path) == OK
+	check("valid reference backend starts recording", started)
+	if started:
+		flight.identity_for_test = {backend = true}
+		flight.sim.step()
+		check("boolean backend stops an active recording", not writer.recording \
+			and writer.failure.contains("stage backend changed") and flight.sim.tick == 1)
+		var prefix: Dictionary = Reader.inspect(mid_path, true)
+		check("boolean backend leaves only an incomplete prefix", not Reader.inspect(mid_path).ok \
+			and prefix.get("ok", false) and not prefix.get("complete", true) and prefix.get("rows", 0) == 1)
+	flight.free()
 
 
 ## A logger's accepted arrays and intervention guard must survive later edits to the

@@ -77,17 +77,23 @@ static func solver_changed(recorded_solver: String, current_solver: String,
 
 ## The reader is also rebound to older source trees whose FlightLog predates
 ## package replay identities. Their historical source fingerprint still works.
-static func _current_replay_identity(backend := REFERENCE_STAGE_BACKEND) -> Dictionary:
+static func _current_replay_identity(backend := REFERENCE_STAGE_BACKEND, require_loaded := false) -> Dictionary:
 	var script: Script = Log
 	if script.has_method("replay_identity"):
-		var accepts_backend := false
+		var arguments := 0
 		for method: Dictionary in script.get_script_method_list():
-			if method.name == "replay_identity": accepts_backend = method.args.size() > 0
-		var identity: Variant = script.call("replay_identity", backend) if accepts_backend else script.call("replay_identity")
+			if method.name == "replay_identity": arguments = method.args.size()
+		if require_loaded and arguments < 2:
+			return {sha256 = "unavailable-export", kind = "unavailable"}
+		var identity: Variant
+		if arguments >= 2: identity = script.call("replay_identity", backend, require_loaded)
+		elif arguments == 1: identity = script.call("replay_identity", backend)
+		else: identity = script.call("replay_identity")
 		if identity is Dictionary and typeof(identity.get("sha256")) == TYPE_STRING \
 				and typeof(identity.get("kind")) == TYPE_STRING:
 			return identity
 		return {sha256 = "unavailable-export", kind = "unavailable"}
+	if require_loaded: return {sha256 = "unavailable-export", kind = "unavailable"}
 	if script.has_method("replay_solver_identity") and script.has_method("replay_identity_kind"):
 		var digest: Variant = script.call("replay_solver_identity")
 		var kind: Variant = script.call("replay_identity_kind")
@@ -415,7 +421,7 @@ static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 	return ""
 
 
-## Ordinary source-editor Mac replay may use only the same bounded stock selection
+## Qualified Mac replay may use only the same bounded stock selection
 ## recorded by Main. The live native loader still checks the marker's exact start.
 static func _automatic_macos_replay_selection(header: Dictionary) -> Dictionary:
 	var metadata: Variant = header.get("metadata")
@@ -438,6 +444,15 @@ static func _automatic_macos_replay_selection(header: Dictionary) -> Dictionary:
 	return {ok = true, aircraft_id = id, start_choice = choice}
 
 
+## This only chooses a route; NativeStage still verifies the actual marker,
+## package readers, enabled gate, stock context and loaded identity.
+static func _macos_native_replay_route(os_name: String, architecture: String, template_release: bool,
+		candidate: String, kind: String, backend: String) -> bool:
+	if os_name != "macOS" or architecture != "arm64" or not candidate.is_empty() \
+			or backend != NATIVE_STAGE_BACKEND: return false
+	return kind == ("macos-arm64-native-bundle-v1" if template_release else "source-tree-v1")
+
+
 static func prepare_replay(header: Dictionary, candidate := "", experimental_native_macos := false,
 		automatic_native_macos_allowed := true) -> Dictionary:
 	var mix_error := flap_mix_contract_error(header)
@@ -457,16 +472,18 @@ static func prepare_replay(header: Dictionary, candidate := "", experimental_nat
 	if candidate.is_empty() and (recorded_identity.kind != current_identity.kind \
 			or recorded_identity.sha256 != current_identity.sha256):
 		return {ok = false, error = "Solver identity differs. Exact replay refused; use explicit --candidate for an experiment."}
+	if candidate.is_empty() and recorded_identity.kind == "macos-arm64-native-bundle-v1" \
+			and current_identity.get("stage_backend", {}) != recorded_backend.identity:
+		return {ok = false, error = "Mac package backend differs from the recorded backend; exact replay refused."}
 	if absf(header.dt_s - 1.0 / Engine.physics_ticks_per_second) > 1e-15:
 		return {ok = false, error = "Physics tick rate differs."}
 	var aircraft: Dictionary = header.aircraft if candidate.is_empty() else Data.load_file(candidate)
 	if not aircraft.get("ok", false): return {ok = false, error = "Candidate aircraft data invalid."}
-	var mac_source_native: bool = OS.get_name() == "macOS" and Engine.get_architecture_name() == "arm64" \
-		and not OS.has_feature("template_release") and candidate.is_empty() \
-		and recorded_identity.kind == "source-tree-v1" and recorded_backend.identity.backend == NATIVE_STAGE_BACKEND
-	if mac_source_native and not experimental_native_macos and not automatic_native_macos_allowed:
+	var mac_native: bool = _macos_native_replay_route(OS.get_name(), Engine.get_architecture_name(),
+		OS.has_feature("template_release"), candidate, recorded_identity.kind, recorded_backend.identity.backend)
+	if mac_native and not experimental_native_macos and not automatic_native_macos_allowed:
 		return {ok = false, error = "Automatic Mac native replay was explicitly disabled."}
-	var automatic_macos: bool = mac_source_native and not experimental_native_macos
+	var automatic_macos: bool = mac_native and not experimental_native_macos
 	var selection := {}
 	if automatic_macos:
 		selection = _automatic_macos_replay_selection(header)
@@ -589,6 +606,11 @@ static func prepare_replay(header: Dictionary, candidate := "", experimental_nat
 	if _session_stage_backend(flight) != expected_backend:
 		flight.free()
 		return {ok = false, error = "Stage backend changed while restoring the checkpoint."}
+	if candidate.is_empty() and recorded_identity.kind == "macos-arm64-native-bundle-v1":
+		var installed_identity := _current_replay_identity(NATIVE_STAGE_BACKEND, true)
+		if installed_identity != current_identity or installed_identity.get("stage_backend", {}) != expected_backend:
+			flight.free()
+			return {ok = false, error = "Mac package differs from the installed stage; exact replay refused."}
 	var recorded := input_names(header.layout, header.metadata)
 	var installed := input_names({inputs = flight.sim.inputs.size()}, flight.trace_meta())
 	if not recorded.ok or not installed.ok or recorded.names != installed.names:

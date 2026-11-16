@@ -1,0 +1,37 @@
+diff --git a/drivers/metal/rendering_context_driver_metal.cpp b/drivers/metal/rendering_context_driver_metal.cpp
+index b06d4bd..9338736 100644
+--- a/drivers/metal/rendering_context_driver_metal.cpp
++++ b/drivers/metal/rendering_context_driver_metal.cpp
+@@ -242,8 +242,12 @@ public:
+ 		return result;
+ 	}
+ 	void openrc_presenter_stop() override {
++		const bool had_presenter = bool(openrc_presenter);
+ 		OpenRCMetalPresent::stop(openrc_presenter);
+ 		openrc_presenter.reset();
++		// Once the display link has stopped, the ordinary swap chain must
++		// reapply its requested drawable count before acquiring another frame.
++		if (had_presenter) { needs_resize = true; }
+ 	}
+ #endif
+ 
+@@ -261,7 +265,18 @@ public:
+ 
+ 		// Metal supports a maximum of 3 drawables.
+ 		p_desired_framebuffer_count = MIN(3U, p_desired_framebuffer_count);
+-		layer->setMaximumDrawableCount(p_desired_framebuffer_count);
++#ifdef MACOS_ENABLED
++		if (openrc_presenter) {
++			// CAMetalDisplayLink owns the layer's drawables. Mutating its
++			// maximumDrawableCount while the link exists raises an exception.
++			// Preserve the pre-link ring; no ordinary drawable is acquired here.
++			p_desired_framebuffer_count = frame_buffers.size();
++			ERR_FAIL_COND_V_MSG(p_desired_framebuffer_count == 0, ERR_CANT_CREATE, "Display-link surface has no initialized framebuffer ring.");
++		} else
++#endif
++		{
++			layer->setMaximumDrawableCount(p_desired_framebuffer_count);
++		}
+ 
+ #if TARGET_OS_OSX
+ 		// Display sync is only supported on macOS.

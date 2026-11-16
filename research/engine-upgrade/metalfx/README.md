@@ -222,3 +222,26 @@ Keep the normal full product, its physical backend and audio/HID/effects activat
 separate from these bounded fixtures. The owning plan retains moving-image,
 presentation, latency, end-to-end performance and package gates. No scene-wide
 RT viewport consumer or 13d1 completion is implied by these witnesses.
+
+## File-hash correctness fixture
+
+`sha256_probe.gd` checks FileAccess and incremental HashingContext against 12
+independently computed SHA-256 vectors, including empty, block/chunk boundaries
+and 1,000,000 bytes, plus a changed-byte negative. It requires a fresh absolute
+output directory with an existing parent and writes only its fixture files there.
+Use the checked runner and an isolated project/profile:
+
+```sh
+python3 tools/godot/run_checked.py --out-dir "$CHECKS" --label sha256-vectors \
+  --timeout 120 --require-text 'SHA256_PROBE checks=25 failures=0' -- \
+  "$EDITOR" --headless --path "$PROJECT" --audio-driver Dummy \
+  --script "$ROOT/research/engine-upgrade/metalfx/sha256_probe.gd" -- \
+  --out-dir="$NEW_ABSOLUTE_DIRECTORY"
+```
+
+Optional `--target=ABSOLUTE_PCK --target-sha256=EXPECTED_HEX` adds one check
+and reports the file-hash call's elapsed microseconds; require 26 passing checks.
+Use the same unchanged file and independently retained digest with both exact
+editors, fresh outputs, a quiet host and repeated interleaved order. Record cache
+conditions. This measures file hashing; frame times and package lifecycle need
+their own measurements. The retained 1–19+21 editor passes all 25 vector controls.

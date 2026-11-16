@@ -202,7 +202,8 @@ def run(args: argparse.Namespace) -> dict:
     if root == tmp or not root.is_relative_to(tmp):
         raise ValueError("--tool-root must be a candidate directory inside tmp/")
     lock = mac.locked.load_lock()
-    toolchain = mac.host_toolchain()
+    selected_profile = getattr(args, "toolchain_profile", None)
+    toolchain = mac.host_toolchain(selected_profile) if selected_profile is not None else mac.host_toolchain()
     research_engine = ENGINE_POLICY.selection_from_args(args)
     engine = mac.godot_identity(args.godot, lock, research_engine) if research_engine is not None else mac.godot_identity(args.godot, lock)
     identity = mac._identity()
@@ -263,9 +264,10 @@ def run(args: argparse.Namespace) -> dict:
     log = Path(checked["log"]).read_text(encoding="utf-8", errors="replace")
     observed = control_result(result, checked, log)
     final_engine = mac.godot_identity(args.godot, lock, research_engine) if research_engine is not None else mac.godot_identity(args.godot, lock)
+    final_toolchain = mac.host_toolchain(selected_profile) if selected_profile is not None else mac.host_toolchain()
     if (inputs != {name: _sha(Path(name)) for name in inputs} or mac._identity() != identity
-            or final_engine != engine or runner.validate_project(project) != project_proof):
-        raise ValueError("Candidate inputs, engine or project changed during the control")
+            or final_engine != engine or final_toolchain != toolchain or runner.validate_project(project) != project_proof):
+        raise ValueError("Candidate inputs, toolchain, engine or project changed during the control")
     receipt = {"format": FORMAT, "installable": False, "result": "detected", "scope":
                "Disposable calling-thread FPCR detector control; not a qualification or candidate build",
                "candidate_build_receipt_sha256": inputs[str(root / "build-receipt.json")],
@@ -293,6 +295,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True, help="new directory under tmp/, outside the candidate")
     parser.add_argument("--timeout", type=float, default=600, help="per compile, link and checked oracle timeout")
     ENGINE_POLICY.add_arguments(parser)
+    ENGINE_POLICY.add_toolchain_arguments(parser)
     args = parser.parse_args()
     try:
         receipt = run(args)

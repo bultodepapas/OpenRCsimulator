@@ -2,6 +2,7 @@ extends Node
 ## Lightweight entry: the official mark renders before the shell's large preload graph.
 
 const Languages := preload("res://i18n/languages.gd")
+const NativePackage := preload("res://app_state/native_package.gd")
 const APP_SCENE := "res://app_root.tscn"
 const Intro := preload("res://ui/brand_intro.gd")
 const SceneLoad := preload("res://ui/flight_scene_load.gd")
@@ -12,6 +13,38 @@ const HOME_STAGES := ["Preparing world", "Building landscape", "Preparing sky", 
 	"Finalizing world", "Preparing aircraft"]
 const MILESTONES := 7.0 # scene load + HOME_STAGES
 signal _frame_ready
+
+
+## Only allocated for the explicitly requested packaged-flight diagnostic.
+class PackageFlightWindowReadiness extends Node:
+	const STABLE_USEC := 500_000
+	const TIMEOUT_USEC := 5_000_000
+	var deadline_usec := 0
+	var stable_since_usec := -1
+	var losses := 0
+	var observed_losses := 0
+
+	func _notification(what: int) -> void:
+		if what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+			losses += 1
+
+	func begin(now_usec: int) -> void:
+		deadline_usec = now_usec + TIMEOUT_USEC
+		stable_since_usec = -1
+		observed_losses = losses
+
+	func observe(now_usec: int, focused: bool, drawable: bool) -> int:
+		if now_usec > deadline_usec: return -1
+		if losses != observed_losses:
+			stable_since_usec = -1
+			observed_losses = losses
+		if not focused or not drawable:
+			stable_since_usec = -1
+		elif stable_since_usec < 0:
+			stable_since_usec = now_usec
+		if stable_since_usec >= 0 and now_usec - stable_since_usec >= STABLE_USEC: return 1
+		return -1 if now_usec >= deadline_usec else 0
+
 
 var intro: Control
 var _overlay: CanvasLayer
@@ -31,9 +64,24 @@ var _handoff_app: WeakRef
 var _handoff_process_mode: Node.ProcessMode = Node.PROCESS_MODE_INHERIT
 var _home_milestone := 0
 var _home_stage := ""
+var _package_flight_wait_generation := 0
+
+
+func _enter_tree() -> void:
+	# Pin the process receipt before the intro or deferred application handoff.
+	# This is a bounded receipt read only on a macOS release template.
+	NativePackage.pin_macos_process_receipt()
 
 
 func _ready() -> void:
+	# A fixed, package-bound release diagnostic may observe the ordinary Home
+	# route, but only after proving its private user-data directory. Normal
+	# launches do not load the diagnostic or change their startup path.
+	if OS.get_environment("OPENRC_PACKAGE_DEFAULT_PROBE") == "1":
+		if not _start_package_default_probe():
+			printerr("PACKAGE_DEFAULT_PROBE verdict=fail: qualification setup refused")
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	# GOD-04: opt-in source/debug observer survives the Startup -> AppRoot handoff.
 	# Environment activation preserves the normal no-user-arguments Home route.
 	if OS.is_debug_build() and not OS.get_environment("OPENRC_GODTEST_CONFIG").is_empty():
@@ -46,6 +94,15 @@ func _ready() -> void:
 				observer.free()
 	# Keep command-line flight, reports and headless contracts free of intro delays.
 	if not _animate_requested():
+		if _package_flight_window_wait_requested():
+			set_process(false)
+			var wait_generation := _package_flight_wait_generation
+			var readiness: Dictionary = await _wait_for_package_flight_window(wait_generation)
+			if not is_inside_tree() or wait_generation != _package_flight_wait_generation: return
+			if not readiness.ok:
+				_fail_package_flight_window(readiness.focused, readiness.drawable)
+				return
+			print("PACKAGE_FLIGHT window=ready focused=true drawable=true")
 		get_tree().change_scene_to_file.call_deferred(APP_SCENE)
 		set_process(false)
 		return
@@ -81,6 +138,106 @@ func _ready() -> void:
 		_scene_job.abandon()
 		_scene_job = null
 		_fail()
+
+
+static func _is_package_flight_request(args: PackedStringArray) -> bool:
+	for argument: String in args:
+		if argument.begins_with("--package-flight-receipt="): return true
+	return false
+
+
+func _package_flight_window_wait_requested() -> bool:
+	return _is_package_flight_request(OS.get_cmdline_user_args())
+
+
+func _fail_package_flight_window(focused: bool, drawable: bool) -> void:
+	printerr("PACKAGE_FLIGHT verdict=fail: startup window not ready; focused=", focused,
+		" drawable=", drawable)
+	get_tree().quit(ERR_CANT_CREATE)
+
+
+func _package_flight_window_has_focus() -> bool:
+	var window := get_window()
+	return is_instance_valid(window) and window.has_focus()
+
+
+func _package_flight_window_can_draw() -> bool:
+	var window := get_window()
+	return is_instance_valid(window) and window.can_draw()
+
+
+## The diagnostic waits before AppRoot/Main exist; no session or sampling clock can advance here.
+func _wait_for_package_flight_window(wait_generation: int) -> Dictionary:
+	var readiness := PackageFlightWindowReadiness.new()
+	readiness.name = "_PackageFlightWindowReadiness"
+	add_child(readiness)
+	readiness.begin(Time.get_ticks_usec())
+	while is_inside_tree() and wait_generation == _package_flight_wait_generation:
+		var focused := _package_flight_window_has_focus()
+		var drawable := _package_flight_window_can_draw()
+		var result: int = readiness.observe(Time.get_ticks_usec(), focused, drawable)
+		if result != 0:
+			readiness.free()
+			return {ok = result > 0, focused = focused, drawable = drawable}
+		await _owned_frame(get_tree().process_frame)
+	if is_instance_valid(readiness): readiness.free()
+	return {ok = false, focused = false, drawable = false}
+
+
+func _start_package_default_probe() -> bool:
+	if OS.get_name() != "macOS" or not OS.has_feature("template_release") \
+			or Engine.get_architecture_name() != "arm64": return false
+	var mode := OS.get_environment("OPENRC_PACKAGE_DEFAULT_PROBE_MODE")
+	if mode not in ["missing", "malformed", "candidate", "reference"]: return false
+	var args := OS.get_cmdline_user_args()
+	var reference_args := PackedStringArray(["--quick-flight", "--physics-backend=gdscript_reference"])
+	if (mode == "reference" and args != reference_args) or (mode != "reference" and not args.is_empty()): return false
+	var task_home := OS.get_environment("HOME")
+	var bundle := OS.get_executable_path().get_base_dir().get_base_dir().get_base_dir()
+	var private_parent := bundle.get_base_dir()
+	var prefix := "openrc-package-default-probe-"
+	var case_id := private_parent.get_file().trim_prefix(prefix)
+	if task_home != task_home.simplify_path() or not task_home.is_absolute_path() \
+			or not private_parent.get_file().begins_with(prefix) or case_id.length() != 32 \
+			or task_home != private_parent.path_join("private-home") or not _probe_path_without_links(task_home):
+		return false
+	for index: int in case_id.length():
+		var code := case_id.unicode_at(index)
+		if not (code >= 48 and code <= 57) and not (code >= 97 and code <= 102): return false
+	var private_dir := DirAccess.open(task_home)
+	if private_dir == null or private_dir.is_link(".openrc-package-default-profile"): return false
+	var expected_token := OS.get_environment("OPENRC_PACKAGE_DEFAULT_PROFILE_TOKEN_SHA256")
+	if expected_token.length() != 64 or FileAccess.get_sha256(task_home.path_join(".openrc-package-default-profile")) != expected_token:
+		return false
+	var user_dir := task_home.path_join("Library/Application Support/Godot/app_userdata/OpenRC Simulator")
+	if OS.get_user_data_dir() != user_dir or OS.get_environment("OPENRC_PACKAGE_DEFAULT_EXPECT_USER_DIR") != user_dir \
+			or not _probe_path_without_links(user_dir):
+		return false
+	var identity := NativePackage.mac_native_identity(OS.get_executable_path(), Engine.get_architecture_name(),
+		OS.get_cmdline_args() + args)
+	var path := "res://native/kernel/qualification/package_default_probe.gd"
+	if not identity.get("ok", false) or not identity.get("manifest") is Dictionary \
+			or not identity.manifest.get("qualification_sources") is Dictionary \
+			or FileAccess.get_sha256(path) != identity.manifest.qualification_sources.get("package_default_probe.gd"):
+		return false
+	var script: Script = load(path)
+	if script == null or not script.can_instantiate(): return false
+	var observer: Node = script.new()
+	if observer == null or not observer.has_method("prepare") or not observer.call("prepare", mode, identity, user_dir):
+		if observer != null: observer.free()
+		return false
+	get_tree().root.add_child.call_deferred(observer)
+	return true
+
+
+static func _probe_path_without_links(path: String) -> bool:
+	if not path.is_absolute_path() or not path.begins_with("/") or path != path.simplify_path(): return false
+	var current := "/"
+	for part: String in path.trim_prefix("/").split("/", false):
+		var parent := DirAccess.open(current)
+		if parent == null or parent.is_link(part) or not parent.dir_exists(part): return false
+		current = current.path_join(part)
+	return true
 
 
 func _process(_delta: float) -> void:
@@ -288,6 +445,7 @@ func _release_handoff_pause() -> void:
 
 
 func _exit_tree() -> void:
+	_package_flight_wait_generation += 1
 	_release_quit_policy()
 	_release_handoff_pause()
 	_packed_scene = null

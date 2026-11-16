@@ -43,21 +43,47 @@ func _init(session: Node) -> void:
 
 func _stage_backend_identity() -> Variant:
 	# Older fixed-wing sessions predate selectable stage backends and always use the reference.
-	return _session.call("stage_backend_identity") if _session.has_method("stage_backend_identity") \
+	var identity: Variant = _session.call("stage_backend_identity") if _session.has_method("stage_backend_identity") \
 		else {backend = "gdscript_reference"}
+	if identity is Dictionary:
+		var backend: Variant = identity.get("backend")
+		if typeof(backend) != TYPE_STRING: return null
+		if backend == "gdscript_reference":
+			var sim: Variant = _session.get("sim")
+			if is_instance_valid(sim):
+				var model: Variant = sim.get("model")
+				if is_instance_valid(model) and _has_native_callback(model): return null
+	return identity
+
+
+## A research caller can own a Stage outside the session, so its reported
+## reference identity alone does not establish which evaluator is installed.
+static func _has_native_callback(model: Object) -> bool:
+	for name: String in ["stage", "loads", "rotor_momentum"]:
+		var callback: Variant = model.get(name)
+		if callback is Callable:
+			var target: Object = callback.get_object()
+			if is_instance_valid(target) and target.is_class("OpenRCNativeKernel"): return true
+	return false
+
+
+func _stage_backend_matches_header() -> bool:
+	var current: Variant = _stage_backend_identity()
+	return current is Dictionary and current == header.stage_backend
 
 
 func start(destination := "") -> Error:
 	if recording:
 		return ERR_ALREADY_IN_USE
 	failure = ""
-	var checkpoint: Dictionary = _session.checkpoint()
-	if checkpoint.is_empty() or not _session.physics_enabled:
-		return _failed("Flight log requires a valid fixed-wing checkpoint.", ERR_INVALID_DATA)
+	# Reject malformed reported backends before checkpoint() reads the same value.
 	var stage_backend: Variant = _stage_backend_identity()
 	if not stage_backend is Dictionary:
 		return _failed("Flight log requires a valid stage backend identity.", ERR_INVALID_DATA)
-	var replay_identity := _replay_identity(str(stage_backend.get("backend", "")))
+	var checkpoint: Dictionary = _session.checkpoint()
+	if checkpoint.is_empty() or not _session.physics_enabled:
+		return _failed("Flight log requires a valid fixed-wing checkpoint.", ERR_INVALID_DATA)
+	var replay_identity := _replay_identity(str(stage_backend.get("backend", "")), true)
 	if OS.has_feature("template_release") and OS.get_name() == "macOS" and replay_identity.kind == "unavailable":
 		return _failed("Flight log requires a verified Mac bundle receipt for its selected backend.", ERR_INVALID_DATA)
 	if replay_identity.kind == NativePackage.MAC_IDENTITY_KIND and stage_backend != {backend = "gdscript_reference"}:
@@ -149,13 +175,13 @@ func mark(label := "pilot marker") -> void:
 func stop(reason := "stopped") -> Error:
 	if not recording:
 		return OK if failure.is_empty() else ERR_FILE_CANT_WRITE
-	if _stage_backend_identity() != header.stage_backend:
+	if not _stage_backend_matches_header():
 		return _failed("Flight log stopped: the stage backend changed; file is incomplete.", ERR_INVALID_DATA)
 	_stopping = true
 	_event("stop", reason)
 	_flush_rows()
 	if recording and header.get("solver_identity_kind") in [NativePackage.MAC_IDENTITY_KIND, NativePackage.MAC_NATIVE_IDENTITY_KIND]:
-		var final_identity := _replay_identity(str(header.stage_backend.get("backend", "")))
+		var final_identity := _replay_identity(str(header.stage_backend.get("backend", "")), true)
 		if final_identity.kind != header.solver_identity_kind or final_identity.sha256 != header.solver_sha256:
 			return _failed("Flight log stopped: the Mac bundle changed; file is incomplete.", ERR_INVALID_DATA)
 	if recording:
@@ -195,7 +221,7 @@ func _boundary_bytes() -> Dictionary:
 func _before_step(_tick: int) -> void:
 	if not recording:
 		return
-	if _stage_backend_identity() != header.stage_backend:
+	if not _stage_backend_matches_header():
 		_failed("Flight log stopped: the stage backend changed; file is incomplete.", ERR_INVALID_DATA)
 		return
 	var started := Time.get_ticks_usec()
@@ -258,7 +284,7 @@ func _control_profile_identity() -> Dictionary:
 func _stepped(tick: int, _t: float, _s: PackedFloat64Array, _l: PackedFloat64Array, _i: PackedFloat64Array, _a: PackedFloat64Array) -> void:
 	if not recording:
 		return
-	if _stage_backend_identity() != header.stage_backend:
+	if not _stage_backend_matches_header():
 		_failed("Flight log stopped: the stage backend changed; file is incomplete.", ERR_INVALID_DATA)
 		return
 	var started := Time.get_ticks_usec()
@@ -430,28 +456,28 @@ static func replay_identity_kind() -> String:
 	return str(_replay_identity().kind)
 
 
-static func replay_identity(backend := "gdscript_reference") -> Dictionary:
-	return _replay_identity(backend)
+static func replay_identity(backend := "gdscript_reference", require_loaded := false) -> Dictionary:
+	return _replay_identity(backend, require_loaded)
 
 
-static func _replay_identity(backend := "gdscript_reference") -> Dictionary:
+static func _replay_identity(backend := "gdscript_reference", require_loaded := false) -> Dictionary:
 	if OS.has_feature("template_release"):
 		if OS.get_name() == "macOS":
 			if backend == "native":
-				var native: Dictionary = NativePackage.mac_native_identity(OS.get_executable_path(),
-					Engine.get_architecture_name(), OS.get_cmdline_args())
-				if native.get("ok", false):
-					var row: Dictionary = native.manifest.native_receipt.platforms.macos
-					var stage := {backend = "native", backend_version = row.backend_version, abi_version = int(row.abi_version),
-						binary_sha256 = row.binary_sha256, source_sha256 = row.source_sha256, lock_sha256 = row.lock_sha256}
-					return {kind = native.kind, sha256 = native.sha256, stage_backend = stage}
+				# Runtime lookup avoids a preload cycle via FlightSession. The stage
+				# owns the loaded package cache and verifies the current bundle.
+				var stage: Script = load("res://sim/native_stage.gd")
+				if stage != null and stage.has_method("macos_package_replay_identity"):
+					var identity: Variant = stage.call("macos_package_replay_identity", require_loaded)
+					if identity is Dictionary: return identity
 				return {kind = "unavailable", sha256 = "unavailable-export"}
 			if backend != "gdscript_reference":
 				return {kind = "unavailable", sha256 = "unavailable-export"}
 			var mac: Dictionary = NativePackage.mac_reference_identity(OS.get_executable_path(),
 				Engine.get_architecture_name(), OS.get_cmdline_args())
 			var packaged_probe := "res://native/kernel/qualification/session_probe.gd"
-			if mac.get("ok", false) and FileAccess.file_exists(packaged_probe) \
+			if mac.get("ok", false) and NativePackage.macos_process_reference_error(mac).is_empty() \
+					and FileAccess.file_exists(packaged_probe) \
 					and FileAccess.get_sha256(packaged_probe) == mac.get("probe_sha256", ""):
 				return {kind = mac.kind, sha256 = mac.sha256}
 			return {kind = "unavailable", sha256 = "unavailable-export"}

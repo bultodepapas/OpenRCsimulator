@@ -56,6 +56,27 @@ class TestStartup extends "res://ui/startup.gd":
 		intro.status_text = "Unable to load. Please restart."
 
 
+class DetachedGateStartup extends "res://ui/startup.gd":
+	func _animate_requested() -> bool: return false
+	func _package_flight_window_wait_requested() -> bool: return true
+	func _package_flight_window_has_focus() -> bool: return false
+	func _package_flight_window_can_draw() -> bool: return true
+
+
+class TimeoutGateStartup extends "res://ui/startup.gd":
+	var failure_calls := 0
+	var failure_focused := true
+	var failure_drawable := false
+	func _animate_requested() -> bool: return false
+	func _package_flight_window_wait_requested() -> bool: return true
+	func _package_flight_window_has_focus() -> bool: return false
+	func _package_flight_window_can_draw() -> bool: return true
+	func _fail_package_flight_window(focused: bool, drawable: bool) -> void:
+		failure_calls += 1
+		failure_focused = focused
+		failure_drawable = drawable
+
+
 func _initialize() -> void:
 	_run.call_deferred()
 
@@ -72,6 +93,70 @@ func check(label: String, passed: bool) -> void:
 func _frames(count := 3) -> void:
 	for _frame in count:
 		await process_frame
+
+
+func _package_flight_window_checks() -> void:
+	check("ordinary launches do not request the package-flight wait",
+		not Startup._is_package_flight_request(PackedStringArray())
+		and not Startup._is_package_flight_request(PackedStringArray(["--quick-flight"]))
+		and not Startup._is_package_flight_request(PackedStringArray(["--package-flight-receipt-extra=x"]))
+		and not Startup._is_package_flight_request(PackedStringArray(["--package-flight-receipt"])))
+	check("the exact package-flight receipt option requests the wait",
+		Startup._is_package_flight_request(PackedStringArray(["--package-flight-receipt=/tmp/receipt.json"])))
+	var gate := Startup.PackageFlightWindowReadiness.new()
+	gate.begin(0)
+	check("focused drawable window starts a continuous interval", gate.observe(0, true, true) == 0)
+	check("readiness cannot pass before 500 ms", gate.observe(499_999, true, true) == 0)
+	check("500 ms focused and drawable is ready", gate.observe(500_000, true, true) == 1)
+	for loss: int in [Node.NOTIFICATION_WM_WINDOW_FOCUS_OUT, Node.NOTIFICATION_APPLICATION_FOCUS_OUT]:
+		gate.begin(0)
+		gate.observe(0, true, true)
+		gate.notification(loss)
+		check("intervening focus-loss event restarts the dwell", gate.observe(499_999, true, true) == 0
+			and gate.observe(999_998, true, true) == 0 and gate.observe(999_999, true, true) == 1)
+	for bits: Array in [[false, true], [true, false]]:
+		gate.begin(0)
+		gate.observe(0, true, true)
+		check("unfocused or undrawable state restarts the dwell", gate.observe(499_999, bits[0], bits[1]) == 0
+			and gate.observe(500_000, true, true) == 0 and gate.observe(1_000_000, true, true) == 1)
+	gate.begin(0)
+	check("startup readiness has a five-second deadline", gate.observe(4_999_999, false, true) == 0
+		and gate.observe(5_000_000, false, true) == -1)
+	gate.free()
+	var waiting := DetachedGateStartup.new()
+	var previous_scene := current_scene
+	root.add_child(waiting)
+	check("the opt-in wait starts before any scene handoff",
+		waiting.get_node_or_null("_PackageFlightWindowReadiness") != null and current_scene == previous_scene)
+	root.remove_child(waiting)
+	await _frames(2)
+	check("detached startup cancels its wait without a scene handoff",
+		waiting.get_node_or_null("_PackageFlightWindowReadiness") == null and current_scene == previous_scene)
+	waiting.free()
+	var reattached := DetachedGateStartup.new()
+	root.add_child(reattached)
+	root.remove_child(reattached)
+	root.add_child(reattached)
+	await _frames(2)
+	check("reattachment cannot resume the old wait into a handoff",
+		reattached.get_node_or_null("_PackageFlightWindowReadiness") == null and current_scene == previous_scene)
+	reattached.free()
+	var freed := DetachedGateStartup.new()
+	root.add_child(freed)
+	freed.free()
+	await _frames(2)
+	check("freed startup cannot resume into a scene handoff", not is_instance_valid(freed) and current_scene == previous_scene)
+	var timed_out := TimeoutGateStartup.new()
+	root.add_child(timed_out)
+	var timeout_gate := timed_out.get_node_or_null("_PackageFlightWindowReadiness")
+	check("timeout control enters the real readiness wait", timeout_gate != null)
+	if timeout_gate != null:
+		timeout_gate.set("deadline_usec", Time.get_ticks_usec() - 1)
+	await _frames(2)
+	check("timeout refuses with both real sampled bits and no scene handoff", timed_out.failure_calls == 1
+		and not timed_out.failure_focused and timed_out.failure_drawable
+		and current_scene == previous_scene and not timed_out.is_processing())
+	timed_out.free()
 
 
 func _wait_started(gate: LoadGate) -> bool:
@@ -510,6 +595,7 @@ func _initial_error_focus_checks() -> void:
 
 
 func _run() -> void:
+	await _package_flight_window_checks()
 	check("interactive launch animates", Startup.should_animate("Windows", PackedStringArray()))
 	check("headless launch bypasses intro", not Startup.should_animate("headless", PackedStringArray()))
 	for arg in ["--quick-flight", "--input-report", "--trace=tmp/check.csv", "--vehicle=mt8-bisonte"]:

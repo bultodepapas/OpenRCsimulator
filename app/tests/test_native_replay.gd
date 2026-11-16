@@ -6,6 +6,7 @@ const Log := preload("res://sim/flight_log.gd")
 const Reader := preload("res://tools/flight_log_cli.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const NativePackage := preload("res://app_state/native_package.gd")
+const NativeStage := preload("res://sim/native_stage.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 
 
@@ -155,6 +156,47 @@ func changing_backend_stops_log() -> void:
 		session.free()
 
 
+## Real extension callbacks installed by a research owner are not represented
+## by FlightSession's reference stage identity. They must never produce a
+## complete reference log, including when installed after recording starts.
+func caller_owned_native_recording() -> void:
+	for phase: String in ["before-start", "before-stop", "before-tick"]:
+		var session := flight("gdscript_reference")
+		var helper := NativeStage.new()
+		var prepared: Dictionary = helper.prepare(session)
+		check(phase + " caller-owned stage prepares", prepared.get("ok", false), str(prepared.get("reason", "")))
+		if not prepared.get("ok", false):
+			session.free()
+			continue
+		var writer := Log.new(session)
+		var path := destination.path_join("unowned-native-" + phase + ".orfl")
+		if phase != "before-start":
+			check(phase + " reference log starts", writer.start(path) == OK, writer.failure)
+		helper.install(session)
+		check(phase + " caller-owned native installs while session reports reference",
+			helper.is_installed() and session.stage_backend_identity() == {backend = "gdscript_reference"})
+		if not helper.is_installed():
+			if writer.recording: writer.stop()
+			session.free()
+			continue
+		var active: Callable = session.sim.model.stage if not session.sim.continuous.is_empty() else session.sim.model.loads
+		var target: Object = active.get_object()
+		check(phase + " uses the actual native extension class", is_instance_valid(target) \
+			and target.is_class("OpenRCNativeKernel"))
+		if phase == "before-start":
+			check("caller-owned native cannot start a reference log", writer.start(path) != OK \
+				and writer.failure.contains("stage backend identity") and not FileAccess.file_exists(path), writer.failure)
+		elif phase == "before-stop":
+			check("caller-owned native before stop leaves an incomplete log", writer.stop() != OK \
+				and not writer.recording and not Reader.inspect(path).ok, writer.failure)
+		else:
+			session.sim.step()
+			check("caller-owned native before a tick stops recording", not writer.recording \
+				and not writer.failure.is_empty() and not Reader.inspect(path).ok, writer.failure)
+		helper.uninstall(session)
+		session.free()
+
+
 func run_all() -> void:
 	var reference := flight("gdscript_reference")
 	if not reference.is_flyable():
@@ -244,6 +286,7 @@ func run_all() -> void:
 		else {backend = "gdscript_reference"}
 	if native.is_flyable() and identity.get("backend") == "native":
 		_native_exercised = true
+		caller_owned_native_recording()
 		var native_run := record(native, "native")
 		if native_run.inspected.get("ok", false):
 			var actual_header: Dictionary = native_run.inspected.header
@@ -255,7 +298,11 @@ func run_all() -> void:
 			var changed: Dictionary = actual_header.duplicate(true)
 			changed.stage_backend.binary_sha256 = "0".repeat(64) if identity.binary_sha256 != "0".repeat(64) else "1".repeat(64)
 			changed.checkpoint.stage_backend = changed.stage_backend.duplicate(true)
-			check("different native binary refuses exact replay", not Reader.prepare_replay(changed, "", _experimental_native_macos).ok)
+			var mismatched: Dictionary = Reader.prepare_replay(changed, "", _experimental_native_macos)
+			check("different native binary refuses exact replay", not mismatched.ok)
+			if actual_header.get("solver_identity_kind") == NativePackage.MAC_NATIVE_IDENTITY_KIND:
+				check("Mac native backend mismatch refuses before session construction",
+					str(mismatched.get("error", "")).contains("Mac package backend differs"))
 		catalog_replay()
 	else:
 		print("NK3_NATIVE_REPLAY_SKIP native library unavailable or not yet verified")

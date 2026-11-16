@@ -93,6 +93,50 @@ by the earlier triangle-query native tests. Select a smaller stack explicitly
 when reproducing earlier evidence. Never add patches to an existing intake or
 substitute its recorded patch copies.
 
+### Ordinary drawable acquisition observation
+
+The optional 0025 patch adds a main-window ordinary Metal drawable acquisition
+receipt. It is enabled only when `OPENRC_NATIVE_DRAWABLE_OBSERVATION=1` is set
+before the process starts. With the flag absent it allocates no tracker and does
+not request another drawable. When observation is requested, a requested or active
+display-link owner is reported as incompatible. With `status=not_requested`, the
+`owner` field does not identify the active presenter.
+Query `RenderingDevice.openrc_drawable_observation()` on the render thread.
+The bounded receipt includes a surface scope, attempts, observed and missed
+counts, extent/pixel-format changes, the latest texture width, height and Metal
+pixel format, and CPU query-time bounds. `observed` identifies a texture acquired
+for framebuffer setup; it does not prove a committed command, presentation,
+scanout, displayed frame rate, or latency. Recreated surfaces have a new scope.
+
+For a fresh pair matching the previously verified engine24 selection, start with
+the 0001–0019 `patches` array above and append exactly 0021, 0024, then 0025;
+do not add the RT viewport or trial patches. Use the same pinned source ZIP,
+`engine.py`, Python and toolchain for both new intakes:
+
+```sh
+patches+=(
+  --patch tools/graphics/metalfx/patches/0021-metal-rt-extension-abi.patch
+  --patch tools/graphics/metalfx/patches/0024-apple-arm64-sha256.patch
+  --patch tools/graphics/metalfx/patches/0025-metal-ordinary-drawable-observation.patch
+)
+python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip --out tmp/drawable25-editor "${patches[@]}"
+python tools/graphics/metalfx/engine.py build --archive /cache/godot.zip --out tmp/drawable25-editor --target editor --jobs 2 "${patches[@]}"
+python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip --out tmp/drawable25-template "${patches[@]}"
+python tools/graphics/metalfx/engine.py build --archive /cache/godot.zip --out tmp/drawable25-template --target template_release --jobs 2 "${patches[@]}"
+python tools/graphics/metalfx/engine.py pair --archive /cache/godot.zip --out tmp/drawable25-editor --template tmp/drawable25-template "${patches[@]}" >tmp/drawable25-pair.json
+OPENRC_METALFX_SOURCE_ARCHIVE=/cache/godot.zip python -B tools/graphics/metalfx/test_engine_drawable_observation_patch.py
+```
+
+Do not alter the engine24 intakes. A separate incremental development build can
+check iterations without requalifying a pair; the frozen final source needs one
+fresh pair verification and package binding because both artifact identities
+change. Native evidence must separately check flag-off behavior, the ordinary-owner
+acquisition receipt at the actual 1920×1080 texture extent, scope changes on
+surface recreation and the incompatible-owner refusal. Record real runtime,
+package and build identities.
+Pair verification alone is not that runtime evidence.
+
+
 Intake freezes and hashes archive/ordered patch copies, reconstructs the expected
 patched catalog, rejects unknown source edits, extra inputs, unsafe paths and
 symlinks, and records helper identity. New source files require regular mode
@@ -444,3 +488,66 @@ render-target usage in the observed configuration. The dated record preserves
 the corrected fixture and the empty-device warning/fix separately. This binding
 does not supply OpenRC's whole-scene RT
 lighting, moving geometry/material coverage, composition or a product control.
+
+## Apple ARM64 package hashing (0024)
+
+Optional `0024-apple-arm64-sha256.patch` selects the bundled mbedTLS ARM
+SHA-256 implementation in the default macOS ARM64 PSA configuration. It respects
+custom PSA configuration and explicit acceleration choices. The vendor Apple
+path assumes the instructions exist; verify each intended host. ANGEL reports
+`hw.optional.arm.FEAT_SHA256=1`. Full and light configuration controls pass;
+native build, vectors and package qualification are separate gates.
+
+Apply it after 0001–0019 and 0021 in fresh editor/template intakes. Preserve the
+previous pair and its source/catalog/receipt identities. The source change affects
+bundled SHA-256 users and changes engine bytes; renew both build receipts,
+API/native qualification and signed package receipts. Package freshness checks
+continue to hash the complete inventory at their existing boundaries.
+
+Use the [file-hash fixture](../../../research/engine-upgrade/metalfx/README.md#file-hash-correctness-fixture)
+for independently computed vectors and an optional same-file timing comparison.
+The fresh 1–19+21+24 native pair passes the unchanged full official extension
+API validator and its missing-class controls. Both compiled SHA objects contain
+224 ARM SHA-256 instructions, and the editor passes 25 runtime vector controls.
+Three interleaved runs per editor hash the same warm-cache 2,484,244,643-byte PCK:
+median 7.748414 s before and 1.583237 s after (4.894×). This is file hashing;
+actual new-package startup, native physics, FPS and promotion require their own
+[evidence](../../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md).
+
+## Display-link layer resize (0026)
+
+Optional `0026-metal-displaylink-resize.patch` prevents the Metal layer's
+drawable-count setter from being called while the display-link presenter owns
+that layer. It preserves the existing ordinary framebuffer ring until the
+presenter stops, then requests an ordinary resize before the next acquisition.
+Drawable-size, vsync and pixel-format handling remain on their existing paths.
+The engine25 M1 control raised `CAMetalLayerInvalidOperation` at that setter;
+an incremental 0026 editor subsequently passed an active-owner resize control
+with a 1080p admitted texture, generation retirement and renewed real
+OS-presented callbacks. Those observations do not establish scanout, displayed
+FPS, or that a specific callback corresponds to the latest admitted extent.
+
+For a fresh editor/template pair, append 0026 once after 0025 in the exact
+1–19, 21, 24, 25 selection above and use separate intakes and the same pinned
+archive/toolchain. Re-run the API and native controls, bind the resulting pair
+to new package receipts, and retain the previous pair unchanged. Source-bound
+controls run with:
+
+```sh
+OPENRC_METALFX_SOURCE_ARCHIVE=/cache/godot.zip python -B tools/graphics/metalfx/test_engine_displaylink_resize_patch.py
+```
+
+## Optional opaque RT view (0027)
+
+`0027-metalfx-opaque-rt-view.patch` is an optional, closed-gate source draft
+after 0001-0019, 0021, 0024, 0025 and 0026. Its exact source catalog SHA-256 is
+`a4754c95a2ed6163f3648562287155e89f11001c8cb3bd5281dab178d5cd9707`.
+`GUIDE_INPUT_RECEIPT_IMPLEMENTED` remains false; the patch does not change the
+default engine selection or enable RT denoising. With the
+RT-view switch off, it performs no optional RT-view state allocation, scene scan
+or GPU work; a reference conversion and latched check remain. Separately enabled
+0018 scene capture retains its own costs. Native compilation, completion and
+image validation remain required before any gate change or product claim.
+
+Source-bound controls: `python -B tools/graphics/metalfx/test_engine_opaque_rt_view_patch.py`.
+Set `OPENRC_METALFX_SOURCE_ARCHIVE` to the pinned ZIP for the full-stack check.

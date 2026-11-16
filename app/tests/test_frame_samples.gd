@@ -57,6 +57,21 @@ func _test_raw_clock() -> void:
 	var beta2 := {major = 4, minor = 8, patch = 0, status = "beta2", build = "official",
 		hash = "cafc17a192acf67903910a68aeb3c076c0907a4b"}
 	_check("vetted beta2 metadata is accepted", FrameSamples._raw_clock_supported_engine(beta2))
+	var custom := {major = 4, minor = 8, patch = 0, status = "beta2", build = "openrc_metalfx", hash = "unknown"}
+	_check("custom package metadata remains refused without explicit qualification",
+			not FrameSamples._raw_clock_supported_engine(custom))
+	_check("exact custom package metadata requires an explicit qualified path",
+			FrameSamples._raw_clock_custom_opt_in("macOS", "arm64", true, "1")
+			and FrameSamples._raw_clock_supported_engine(custom, true))
+	for scope: Array in [["Linux", "arm64", true, "1"], ["macOS", "x86_64", true, "1"],
+			["macOS", "arm64", false, "1"], ["macOS", "arm64", true, ""], ["macOS", "arm64", true, "true"]]:
+		_check("custom clock refuses other platform, template or opt-in", not FrameSamples._raw_clock_custom_opt_in(
+				str(scope[0]), str(scope[1]), bool(scope[2]), str(scope[3])), str(scope))
+	for change: Dictionary in [{major = 5}, {minor = 9}, {patch = 1}, {status = "beta1"},
+			{build = "custom"}, {hash = ""}, {hash = "cafc17a19"}, {major = 4.0}, {hash = {}}, {status = false}]:
+		var changed: Dictionary = custom.duplicate()
+		changed.merge(change, true)
+		_check("custom clock refuses changed or malformed metadata", not FrameSamples._raw_clock_supported_engine(changed, true), str(change))
 	var wrong_engine: Dictionary = supported.duplicate()
 	wrong_engine.hash = "other"
 	_check("different engine commit is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine))

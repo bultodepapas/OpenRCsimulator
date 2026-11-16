@@ -358,6 +358,10 @@ mode. For example, `--aircraft=stik-electric-6s --battery=pack` selects the fini
 6S pack; `--battery=ideal` selects its ideal supply. Reports bind the mode, data
 path and hash, and actual dynamic/pack flags. Unsupported combinations refuse.
 Keep the modes separate: timings for one do not establish the other.
+The fixed release-session probe also accepts explicit `--trim-profile=reference|production`;
+production requests and verifies a 0.5 throttle start. Omitting either option retains
+the historical probe defaults. The release host validates both values before invoking
+the fixed probe, and retained Mac backend campaigns bind the exact command and results.
 
 ### FlightAudio sound-speed accessor microprobe
 
@@ -1351,3 +1355,35 @@ python3 research/performance/observer_cadence_bench.py tmp/ab-snap-<base>/app tm
 ```
 
 [Retained audio observer comparison](../../docs/research/visual-quality-implementation/VQ-01c/observer-cadence-2026-10-27/audio-pair.json).
+
+## Packaged direct-flight collection (DT-MAC-11a / PT)
+
+`app/tools/package_flight_observer.gd` is an explicit, fixed Mac ARM64 release
+diagnostic selected by `--package-flight-receipt=ABSOLUTE_HEALTH_PATH`. It hooks
+the real AppRoot direct-flight route before tick zero, then supplies the existing
+circuit pilot through FlightSession's ordinary rate-limited input seam. It never
+owns simulation steps. `--scripted` and release debug-bridge injection are not used.
+Normal launches do not load the observer.
+
+Keep `--frametimes=ABSOLUTE_FRAME_PATH --frametimes-stream` and name the health
+file `health-<frame filename>` in the same new directory outside the app bundle.
+Run the signed executable with `tools/godot/run_checked.py --resources`, an explicit
+reference/native backend, full rates, airborne Stik, calm weather and Club field.
+Retain the checked report/log/resources and independent signed package/engine pins.
+The fixed route has no radio, Home interaction or physical pilot. It records actual
+audio/lens/weather/companion activation rather than assuming product coverage.
+
+The observer fails on unexpected delivered live input, changed render scope,
+tick/backend/ownership gaps, unhealthy physics or output substitution. The per-frame
+scope includes local aircraft shadow mode and autozoom. Programmatic changes
+restored between callbacks and input consumed before the observer remain limits.
+Package identity is checked at boundaries, not continuously.
+
+`package_flight_summary.py FRAME_REPORT --pins PACKAGE_PINS --minimum-seconds 120`
+validates the frame/health/resource/process join. Use 1800 for long runs. A five-second
+wiring smoke must be refused by this reader. A valid single collection always has
+`promotion_eligible=false`; it does not qualify a campaign or automatic default.
+Optional acquired-framebuffer dimensions require the separate ordinary-Metal
+observation API; an unavailable API reports `not_observed`. Logical/fullscreen size
+is not acquired-texture or physical-presentation proof. Completed GPU pacing and
+scanout remain separate unresolved evidence.

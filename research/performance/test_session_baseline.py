@@ -363,6 +363,33 @@ class ReducerTests(unittest.TestCase):
 
 
 class EngineInspectionTests(unittest.TestCase):
+    def test_session_parser_forwards_explicit_engine_profile_to_both_routes(self):
+        policy = baseline.ENGINE_POLICY
+        pins = ["--research-engine-sha256", "a" * 64,
+                "--research-engine-cli-version", policy.RESEARCH_CLI,
+                "--research-engine-runtime-version", policy.RESEARCH_RUNTIME,
+                "--research-engine-build-receipt", "build-editor.json",
+                "--research-engine-archive", "source.zip",
+                "--research-engine-extension-api", "extension_api-4-7.json",
+                "--research-engine-reference-godot", "official-godot",
+                "--research-engine-patch", "0001.patch",
+                "--research-engine-toolchain-profile", policy.NEW_TOOLCHAIN_PROFILE]
+        parsed = baseline.build_parser().parse_args(["--out", "unused", *pins])
+        selection = policy.selection_from_args(parsed)
+        self.assertEqual(selection["toolchain_profile"], policy.NEW_TOOLCHAIN_PROFILE)
+        engine = {"path": "/local/Godot", "version": policy.RESEARCH_CLI, "sha256": "a" * 64,
+                  "architectures": ["arm64"], "research_engine": {"selection": selection}}
+        mac = SimpleNamespace(locked=SimpleNamespace(load_lock=lambda: {}),
+                              godot_identity=unittest.mock.Mock(return_value=engine))
+        spec = SimpleNamespace(loader=SimpleNamespace(exec_module=lambda _module: None))
+        with patch.object(baseline.importlib.util, "spec_from_file_location", return_value=spec), \
+             patch.object(baseline.importlib.util, "module_from_spec", return_value=mac):
+            inspect_godot(Path("/local/Godot"), 30, selection)
+        self.assertEqual(mac.godot_identity.call_args.args[2], selection)
+        with patch.object(baseline, "compare_campaigns", return_value=0) as compare:
+            self.assertEqual(baseline.main(["--out", "unused", "--compare-campaigns", "before", "after", *pins]), 0)
+        self.assertEqual(compare.call_args.args[-1], selection)
+
     def test_only_exact_current_official_build_can_run_a_new_campaign(self):
         with tempfile.TemporaryDirectory() as directory:
             executable = Path(directory) / "godot"
@@ -1812,12 +1839,482 @@ class TrimProfileTests(unittest.TestCase):
             self.assertTrue(all("trim_profile" not in item and "trim_start" not in item
                                 for item in campaign["pairs"][0]["runs"].values()))
 
-    def test_release_and_comparison_do_not_silently_ignore_explicit_profile(self):
-        with patch.object(baseline, "run_campaign") as campaign, patch.object(baseline, "compare_campaigns") as compare:
-            self.assertEqual(baseline.main(["--godot", "fake", "--out", "out", "--release-executable", "--trim-profile", "production"]), 1)
+    def test_release_accepts_profile_but_comparison_refuses_override(self):
+        with patch.object(baseline, "run_campaign", return_value=23) as campaign, \
+             patch.object(baseline, "compare_campaigns") as compare:
+            self.assertEqual(baseline.main(["--godot", "fake", "--out", "out", "--release-executable",
+                                            "--battery", "ideal", "--trim-profile", "production"]), 23)
+            args = campaign.call_args.args[0]
+            self.assertTrue(args.release_executable)
+            self.assertEqual((args.battery, args.trim_profile), ("ideal", "production"))
             self.assertEqual(baseline.main(["--compare-campaigns", "one", "two", "--out", "out", "--trim-profile", "reference"]), 1)
-            campaign.assert_not_called()
+            campaign.assert_called_once()
             compare.assert_not_called()
+
+    def test_parameter_duplicates_invalid_values_and_unknown_options_are_refused(self):
+        options = (["--battery", "ideal", "--battery", "pack"],
+                   ["--trim-profile=production", "--trim-profile=production"],
+                   ["--battery", "IDEAL"], ["--trim-profile", "other"], ["--unrecognized", "yes"])
+        with patch.object(baseline, "run_campaign") as campaign, contextlib.redirect_stderr(io.StringIO()):
+            for extra in options:
+                with self.subTest(extra=extra), self.assertRaises(SystemExit):
+                    baseline.main(["--godot", "fake", "--out", "out", "--release-executable", *extra])
+            campaign.assert_not_called()
+
+    def test_release_profiles_bind_command_and_completed_runtime_proof(self):
+        for profile in (None, "reference", "production"):
+            with self.subTest(profile=profile), tempfile.TemporaryDirectory(prefix="session-trim-release-") as directory:
+                root = Path(directory)
+                executable, _probe, reference, native = mac_release_fixture(root)
+                engine = {"path": str(executable.resolve()), "sha256": reference["executable_sha256"],
+                          "runtime_binary_sha256": reference["executable_sha256"]}
+                commands = []
+
+                class Process:
+                    returncode = 0
+
+                    def __init__(self, command, **kwargs):
+                        commands.append(command)
+                        output = Path(next(arg.removeprefix("--output=") for arg in command if arg.startswith("--output=")))
+                        backend = next(arg.removeprefix("--physics-backend=") for arg in command if arg.startswith("--physics-backend="))
+                        report = mac_release_report(backend, reference, native)
+                        if profile is not None:
+                            report["battery"] = {"mode": "ideal", "data_path": "res://data/aircraft/stik.json",
+                                                 "data_sha256": report["aircraft_sha256"], "dynamic": False, "pack": False}
+                            report["trim_profile"] = profile
+                            if profile == "production":
+                                report["trim_start"] = TrimProfileTests.start(backend)
+                        output.write_text(json.dumps(report))
+                        kwargs["stdout"].write("NATIVE_QUALIFICATION mode=session verdict=pass\n")
+
+                    def wait(self, timeout): return 0
+
+                output = root / "campaign"
+                args = ["--godot", str(executable), "--out", str(output), "--release-executable", "--compare-backends",
+                        "--experimental-native-macos", "--aircraft", "jensen-das-ugly-stik-60", "--case", "trim",
+                        "--warmup-ticks", "4", "--sample-ticks", "5", "--repeats", "1"]
+                if profile is not None:
+                    args += ["--battery", "ideal", "--trim-profile", profile]
+                with patch.object(baseline, "capture_workspace_identity", return_value={}), \
+                     patch.object(baseline, "capture_system_identity", return_value={"system": "Darwin", "machine": "arm64"}), \
+                     patch.object(baseline, "capture_mac_release_source", return_value=mac_release_source_fixture(reference)), \
+                     patch.object(baseline, "inspect_godot", return_value=engine), \
+                     patch.object(baseline, "native_source_digest", return_value="c" * 64), \
+                     patch.object(baseline, "app_source_digest", return_value="app-digest"), \
+                     patch.object(MAC_RECEIPT, "verify", return_value=reference), \
+                     patch.object(MAC_RECEIPT, "verify_native", return_value=native), patch("subprocess.Popen", Process):
+                    self.assertEqual(baseline.main(args), 0)
+                    path = output / "session_baseline.json"
+                    campaign, rows = baseline._campaign_runs(path)
+                    self.assertEqual(len(rows), 1)
+                    for command in commands:
+                        self.assertEqual(any(arg.startswith("--battery=") for arg in command), profile is not None)
+                        self.assertEqual(any(arg.startswith("--trim-profile=") for arg in command), profile is not None)
+                        if profile is not None:
+                            self.assertLess(command.index("--battery=ideal"), command.index("--trim-profile=" + profile))
+                            self.assertLess(command.index("--trim-profile=" + profile), command.index("--experimental-native-macos=true"))
+                    if profile is None:
+                        self.assertNotIn("battery", campaign["configuration"])
+                        self.assertNotIn("trim_profile", campaign["configuration"])
+                        continue
+                    native_run = campaign["pairs"][0]["runs"]["native"]
+                    for mutation in ("missing", "wrong", "reordered"):
+                        changed = copy.deepcopy(campaign)
+                        cmd = changed["pairs"][0]["runs"]["native"]["command"]
+                        index = cmd.index("--trim-profile=" + profile)
+                        if mutation == "missing":
+                            cmd.pop(index)
+                        elif mutation == "wrong":
+                            cmd[index] = "--trim-profile=invalid"
+                        else:
+                            cmd[index], cmd[index - 1] = cmd[index - 1], cmd[index]
+                        path.write_text(json.dumps(changed))
+                        with self.subTest(mutation=mutation), self.assertRaisesRegex(ValueError, "invalid Mac release probe command"):
+                            baseline._campaign_runs(path)
+                    if profile == "production":
+                        raw_path = output / native_run["report_relative_path"]
+                        raw = json.loads(raw_path.read_text())
+                        for field, value in (("requested_throttle", 0.6), ("backend_domain_guard", False),
+                                             ("domain_guard_checks", 0), ("start_sha256", "8" * 64)):
+                            bad = copy.deepcopy(raw)
+                            bad["trim_start"][field] = value
+                            raw_path.write_text(json.dumps(bad))
+                            changed = copy.deepcopy(campaign)
+                            changed["pairs"][0]["runs"]["native"]["report_sha256"] = _sha256_file(raw_path)
+                            path.write_text(json.dumps(changed))
+                            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "not comparable"):
+                                baseline._campaign_runs(path)
+
+
+class ResearchReleaseProvenanceTests(unittest.TestCase):
+    """Real bundle receipt readers; package/editor host observations are synthetic."""
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="custom-release-provenance-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name).resolve()
+        self.bundle = self.root / "OpenRC.app"
+        self.executable = self.bundle / "Contents/MacOS/OpenRC"
+        self.pack = self.bundle / "Contents/Resources/OpenRC.pck"
+        self.library = self.bundle / MAC_RECEIPT.NATIVE_LIBRARY
+        self.descriptor = self.bundle / MAC_RECEIPT.NATIVE_DESCRIPTOR
+        self.license = self.bundle / MAC_RECEIPT.NATIVE_LICENSE
+        for path in (self.executable, self.pack, self.library, self.descriptor, self.license):
+            path.parent.mkdir(parents=True, exist_ok=True)
+        macho = struct.pack("<II", 0xFEEDFACF, 0x0100000C) + bytes(56)
+        self.executable.write_bytes(macho + b"signed release fixture")
+        self.library.write_bytes(macho + b"native dylib")
+        self.pack.write_bytes(struct.pack("<4sIIIIIQQI", b"GDPC", 4, 4, 8, 0, 2, 0, 40, 1) + b"pack bytes")
+        self.descriptor.write_bytes(MAC_RECEIPT.NATIVE_DESCRIPTOR_TEXT.encode())
+        self.license.write_bytes(b"fixture license")
+        self.editor = self.root / "editor"
+        self.editor.write_bytes(b"independent editor")
+        self.tool_root = self.root / "native-tool-root"
+        self.tool_root.mkdir()
+        self.probe = self.root / "research/performance/session_probe.gd"
+        self.probe.parent.mkdir(parents=True)
+        self.probe.write_bytes(Path(baseline.__file__).with_name("session_probe.gd").read_bytes())
+        snapshot = self.root / "source-inputs.json"
+        snapshot.write_bytes(b"fixture snapshot")
+        source = {"commit": "a" * 40, "tree": "b" * 40, "worktree_sha256": "c" * 64}
+        with patch.object(MAC_RECEIPT, "_source_snapshot", return_value=source):
+            MAC_RECEIPT.create(self.bundle, snapshot, self.root)
+        editor_sha = _sha256_file(self.editor)
+        row = {"platform": "macos", "architecture": "arm64", "backend": "native",
+               "backend_version": "openrc-native-kernel-stage-v2", "abi_version": 2,
+               "qualification_scope": MAC_RECEIPT.NATIVE_SCOPE, "binary_sha256": _sha256_file(self.library),
+               "source_sha256": "c" * 64, "lock_sha256": "2" * 64, "engine_sha256": editor_sha,
+               "engine_version": baseline.ENGINE_POLICY.RESEARCH_RUNTIME, "runtime_os_version": "27.0.1",
+               "runtime_os_build": "26A434", "mirrored_sources": {"app/physics/aero.gd": "4" * 64},
+               "verification": {"oracle": "fixture"}}
+        manifest = {"format": MAC_RECEIPT.NATIVE_MANIFEST_FORMAT, "platform": "macos", "architecture": "arm64",
+                    "engine_version": row["engine_version"], "solver_sha256": "5" * 64,
+                    "license_sha256": _sha256_file(self.license),
+                    "native_receipt": {"format": "openrc-native-kernel-receipt", "backend": "native",
+                                       "backend_version": row["backend_version"], "abi_version": 2,
+                                       "platforms": {"macos": row}},
+                    "qualification_sources": {name: _sha256_file(self.probe) if name == "session_probe.gd" else "6" * 64
+                                              for name in MAC_RECEIPT.NATIVE_DIAGNOSTICS}}
+        self.manifest = self.root / "manifest.json"
+        self.manifest.write_text(json.dumps(manifest), encoding="utf-8")
+        MAC_RECEIPT.create_native(self.bundle, self.manifest)
+        self.reference, self.native = baseline.verify_macos_release_identities(self.executable)
+        self.selection = {"sha256": editor_sha, "cli_version": baseline.ENGINE_POLICY.RESEARCH_CLI,
+                          "runtime_version": baseline.ENGINE_POLICY.RESEARCH_RUNTIME,
+                          "toolchain_profile": baseline.ENGINE_POLICY.NEW_TOOLCHAIN_PROFILE}
+        provenance = {"scope": baseline.ENGINE_POLICY.SCOPE, "selection": self.selection}
+        self.editor_identity = {"path": str(self.editor), "sha256": editor_sha, "research_engine": provenance,
+                                "source_engine_identity": {"sha256": editor_sha, "research_engine": provenance}}
+        self.engine = {"path": str(self.executable), "sha256": self.reference["executable_sha256"],
+                       "version": self.selection["cli_version"], "required_version": "4.8-beta2",
+                       "runtime_binary_path": str(self.executable), "runtime_binary_sha256": self.reference["executable_sha256"]}
+        self.pair = {"editor_sha256": editor_sha, "template_sha256": "8" * 64,
+                     "export_template_sha256": "9" * 64}
+        self.checked = {"report_sha256": "a" * 64, "log_sha256": "b" * 64, "editor_sha256": editor_sha}
+        self.package_result = {"engine_pair": self.pair, "manifest_sha256": self.native["manifest_sha256"],
+                               "library_sha256": self.native["library_sha256"],
+                               "descriptor_sha256": self.native["descriptor_sha256"],
+                               "license_sha256": self.native["license_sha256"], "export_runner_sha256": "7" * 64}
+        def ordinary(path, *, directory=False):
+            path = Path(path).absolute()
+            if path.is_symlink() or not (path.is_dir() if directory else path.is_file()):
+                raise ValueError("fixture input is missing or redirected")
+            return path
+        def snapshot_input(path, limit):
+            data = Path(path).read_bytes()
+            if not 0 < len(data) <= limit:
+                raise ValueError("fixture input exceeds limit")
+            return (0, 0, 0, len(data)), hashlib.sha256(data).hexdigest()
+        binder = SimpleNamespace(_path=ordinary, _snapshot=snapshot_input, MAX_JSON=2 * 1024 * 1024,
+                                 _json=lambda path: json.loads(Path(path).read_text(encoding="utf-8")))
+        self.package = SimpleNamespace(_pair_binder=lambda: binder,
+            verify_macos_export=unittest.mock.Mock(return_value=self.package_result),
+            _checked_macos_export=unittest.mock.Mock(return_value=self.checked))
+        report = self.root / "checked-report.json"
+        report.write_text("{}", encoding="utf-8")
+        self.inputs = self.root / "research-release.json"
+        self.requested = {"format": baseline.RESEARCH_RELEASE_SELECTION_FORMAT, "editor": str(self.editor),
+                          "native_tool_root": str(self.tool_root),
+                          "native_toolchain_profile": baseline.ENGINE_POLICY.DEFAULT_TOOLCHAIN_PROFILE,
+                          "pair": {key: str(self.root / key) for key in
+                                   ("template_intake", "pair_receipt", "export_template", "pins")},
+                          "checked_export_report": str(report), "pins": {
+                              "reference_receipt_sha256": self.reference["receipt_sha256"],
+                              "native_receipt_sha256": self.native["receipt_sha256"],
+                              "manifest_sha256": self.native["manifest_sha256"],
+                              "executable_sha256": self.reference["executable_sha256"],
+                              "pack_sha256": self.reference["pack_sha256"],
+                              "checked_export_report_sha256": self.checked["report_sha256"],
+                              "checked_export_log_sha256": self.checked["log_sha256"]}}
+        self.write_inputs()
+        self.start_patch(patch.object(baseline, "_research_package", return_value=self.package))
+        self.start_patch(patch.object(baseline, "inspect_godot", return_value=self.editor_identity))
+        self.start_patch(patch.object(baseline, "inspect_research_release", return_value=self.engine))
+
+    def start_patch(self, mocked):
+        mocked.start()
+        self.addCleanup(mocked.stop)
+
+    def write_inputs(self):
+        self.inputs.write_text(json.dumps(self.requested), encoding="utf-8")
+
+    def verify(self):
+        return baseline.verify_research_release(self.executable, self.selection, self.inputs, 30)
+
+    def test_valid_signed_release_is_not_compared_to_unsigned_template(self):
+        proof = self.verify()
+        self.assertNotEqual(proof["reference"]["executable_sha256"], self.pair["template_sha256"])
+        self.assertEqual(proof["native"]["manifest_sha256"], _sha256_file(self.manifest))
+        self.assertEqual(self.package.verify_macos_export.call_args.args[3], self.selection)
+        self.assertEqual(self.package.verify_macos_export.call_args.args[4], baseline.ENGINE_POLICY.DEFAULT_TOOLCHAIN_PROFILE)
+        self.assertNotEqual(self.selection["toolchain_profile"], self.requested["native_toolchain_profile"])
+
+    def test_missing_independent_pins_and_wrong_package_bindings_refuse(self):
+        original = copy.deepcopy(self.requested)
+        for key in baseline.RESEARCH_RELEASE_PIN_FIELDS:
+            self.requested = copy.deepcopy(original)
+            self.requested["pins"].pop(key)
+            self.write_inputs()
+            with self.subTest(missing=key), self.assertRaisesRegex(ValueError, "all final pins"):
+                self.verify()
+        self.requested = original
+        self.write_inputs()
+        for key in ("editor", "native_tool_root", "native_toolchain_profile", "pair", "checked_export_report"):
+            self.requested = copy.deepcopy(original)
+            self.requested.pop(key)
+            self.write_inputs()
+            with self.subTest(missing_selection=key), self.assertRaisesRegex(ValueError, "complete release selection"):
+                self.verify()
+        self.requested = copy.deepcopy(original)
+        self.requested["native_toolchain_profile"] = "not-a-pinned-profile"
+        self.write_inputs()
+        with self.assertRaisesRegex(ValueError, "explicit toolchains"):
+            self.verify()
+        self.requested = original
+        self.write_inputs()
+        with patch.object(self.package, "verify_macos_export", return_value={**self.package_result, "manifest_sha256": "0" * 64}):
+            with self.assertRaisesRegex(ValueError, "native receipt"):
+                self.verify()
+        with patch.object(self.package, "verify_macos_export", return_value={**self.package_result, "engine_pair": {**self.pair, "editor_sha256": "0" * 64}}):
+            with self.assertRaisesRegex(ValueError, "selected editor"):
+                self.verify()
+        with patch.object(self.package, "_checked_macos_export", return_value={**self.checked, "log_sha256": "0" * 64}):
+            with self.assertRaisesRegex(ValueError, "independent release pins"):
+                self.verify()
+        with patch.object(self.package, "_checked_macos_export", return_value={**self.checked, "editor_sha256": "0" * 64}):
+            with self.assertRaisesRegex(ValueError, "independently selected editor"):
+                self.verify()
+
+    def test_actual_final_pack_and_native_receipt_replacements_refuse(self):
+        for path in (self.pack, self.bundle.with_name(self.bundle.name + MAC_RECEIPT.NATIVE_SUFFIX)):
+            original = path.read_bytes()
+            path.write_bytes(original + b"changed")
+            with self.subTest(path=path.name), self.assertRaises(ValueError):
+                self.verify()
+            path.write_bytes(original)
+
+    def test_release_selection_changed_during_validation_is_rejected(self):
+        def mutate(*_args, **_kwargs):
+            self.inputs.write_bytes(self.inputs.read_bytes() + b" ")
+            return self.package_result
+        with patch.object(self.package, "verify_macos_export", side_effect=mutate):
+            with self.assertRaisesRegex(ValueError, "inputs changed"):
+                self.verify()
+
+
+class ResearchReleaseCampaignTests(unittest.TestCase):
+    def test_custom_release_version_check_uses_final_bytes_and_rejects_drift(self):
+        with tempfile.TemporaryDirectory(prefix="custom-release-version-") as directory:
+            executable = Path(directory) / "signed"
+            executable.write_bytes(b"signed final executable")
+            selection = {"cli_version": baseline.ENGINE_POLICY.RESEARCH_CLI}
+            with patch("subprocess.run", return_value=SimpleNamespace(returncode=0, stdout=selection["cli_version"] + "\n")) as run:
+                identity = baseline.inspect_research_release(executable, 30, selection)
+                self.assertEqual(identity["sha256"], _sha256_file(executable))
+                self.assertIn("env", run.call_args.kwargs)
+            with patch("subprocess.run", return_value=SimpleNamespace(returncode=0, stdout="other version")):
+                with self.assertRaisesRegex(ValueError, "version"):
+                    baseline.inspect_research_release(executable, 30, selection)
+            def mutate(*_args, **_kwargs):
+                executable.write_bytes(b"changed while inspecting")
+                return SimpleNamespace(returncode=0, stdout=selection["cli_version"])
+            with patch("subprocess.run", side_effect=mutate):
+                with self.assertRaisesRegex(ValueError, "executable"):
+                    baseline.inspect_research_release(executable, 30, selection)
+
+    def test_campaign_comparison_requires_pins_and_rejects_fallback_or_forgery(self):
+        with tempfile.TemporaryDirectory(prefix="custom-release-campaign-") as directory:
+            root = Path(directory).resolve()
+            executable, _probe, reference, native = mac_release_fixture(root)
+            source = mac_release_source_fixture(reference)
+            inputs = root / "research-release.json"
+            inputs.write_text("{}", encoding="utf-8")
+            selection = {"sha256": "a" * 64, "runtime_version": baseline.ENGINE_POLICY.RESEARCH_RUNTIME,
+                         "cli_version": baseline.ENGINE_POLICY.RESEARCH_CLI,
+                         "toolchain_profile": baseline.ENGINE_POLICY.NEW_TOOLCHAIN_PROFILE}
+            engine = {"path": str(executable), "version": selection["cli_version"],
+                      "required_version": "4.8-beta2", "sha256": reference["executable_sha256"],
+                      "runtime_binary_path": str(executable), "runtime_binary_sha256": reference["executable_sha256"]}
+            proof = {"reference": reference, "native": native, "release_engine": engine, "fixture": "checked"}
+            fallback = [False]
+            launches = []
+            class Process:
+                returncode = 0
+                def __init__(self, command, **kwargs):
+                    launches.append(command)
+                    out = Path(next(arg.removeprefix("--output=") for arg in command if arg.startswith("--output=")))
+                    backend = next(arg.removeprefix("--physics-backend=") for arg in command
+                                   if arg.startswith("--physics-backend="))
+                    report = mac_release_report(backend, reference, native)
+                    report["machine"]["godot"] = selection["runtime_version"]
+                    if fallback[0] and backend == "native":
+                        report["backend"]["actual"] = {"backend": "gdscript_reference"}
+                    out.write_text(json.dumps(report), encoding="utf-8")
+                    kwargs["stdout"].write("NATIVE_QUALIFICATION mode=session verdict=pass\n")
+                def wait(self, timeout): return 0
+            def arguments(output):
+                return ["--godot", str(executable), "--out", str(output), "--release-executable", "--compare-backends",
+                        "--experimental-native-macos", "--research-release-inputs", str(inputs),
+                        "--aircraft", "jensen-das-ugly-stik-60", "--case", "trim", "--warmup-ticks", "4",
+                        "--sample-ticks", "5", "--repeats", "1"]
+            with patch.object(baseline.ENGINE_POLICY, "selection_from_args", return_value=selection), \
+                 patch.object(baseline, "capture_workspace_identity", return_value={}), \
+                 patch.object(baseline, "capture_system_identity", return_value={"system": "Darwin", "machine": "arm64"}), \
+                 patch.object(baseline, "capture_mac_release_source", return_value=source), \
+                 patch.object(baseline, "verify_macos_release_identities", return_value=(reference, native)), \
+                 patch.object(baseline, "verify_research_release", return_value=proof) as verify, \
+                 patch.object(baseline, "native_source_digest", return_value="c" * 64), \
+                 patch.object(baseline, "app_source_digest", return_value="app-digest"), patch("subprocess.Popen", Process):
+                output = root / "campaign"
+                self.assertEqual(baseline.main(arguments(output)), 0)
+                self.assertGreaterEqual(verify.call_count, 2)
+                self.assertEqual(len(launches), 2)
+                campaign = output / "session_baseline.json"
+                saved = campaign.read_bytes()
+                pin = _sha256_file(campaign)
+                self.assertEqual(len(baseline._campaign_runs(campaign, selection, inputs, pin)[1]), 1)
+                with self.assertRaisesRegex(ValueError, "independent campaign"):
+                    baseline._campaign_runs(campaign, selection, inputs)
+                with self.assertRaisesRegex(ValueError, "independent"):
+                    baseline._campaign_runs(campaign)
+                campaign.write_bytes(saved + b" ")
+                with self.assertRaisesRegex(ValueError, "campaign SHA-256"):
+                    baseline._campaign_runs(campaign, selection, inputs, pin)
+                forged = json.loads(saved)
+                forged["pairs"][0]["runs"]["native"]["command"].append("--script=other.gd")
+                campaign.write_text(json.dumps(forged), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "invalid Mac release probe command"):
+                    baseline._campaign_runs(campaign, selection, inputs, _sha256_file(campaign))
+                campaign.write_bytes(saved)
+                with patch.object(baseline, "verify_research_release", return_value={**proof, "fixture": "different"}):
+                    with self.assertRaisesRegex(ValueError, "provenance differs"):
+                        baseline._campaign_runs(campaign, selection, inputs, pin)
+                with patch.object(baseline, "capture_mac_release_source", return_value={**source, "worktree_sha256": "f" * 64}):
+                    with self.assertRaisesRegex(ValueError, "current source differs"):
+                        baseline._campaign_runs(campaign, selection, inputs, pin)
+                self.assertEqual(baseline.compare_campaigns(campaign, campaign, root / "comparison", selection, inputs,
+                                                            [pin, pin]), 0)
+                with patch.object(baseline, "verify_research_release", side_effect=[proof, {**proof, "fixture": "changed"}]):
+                    self.assertEqual(baseline.main(arguments(root / "drift")), 1)
+                    drift = json.loads((root / "drift/session_baseline.json").read_text(encoding="utf-8"))
+                    self.assertTrue(any("provenance changed" in failure for failure in drift["failures"]))
+                fallback[0] = True
+                launches.clear()
+                self.assertEqual(baseline.main(arguments(root / "fallback")), 1)
+                failed = json.loads((root / "fallback/session_baseline.json").read_text(encoding="utf-8"))
+                self.assertFalse(failed["complete"])
+
+    def test_release_comparison_and_new_campaign_refuse_incomplete_explicit_pins(self):
+        with tempfile.TemporaryDirectory(prefix="custom-release-cli-") as directory:
+            root = Path(directory)
+            inputs = root / "selection.json"
+            inputs.write_text("{}", encoding="utf-8")
+            selection = {"runtime_version": baseline.ENGINE_POLICY.RESEARCH_RUNTIME}
+            with patch.object(baseline.ENGINE_POLICY, "selection_from_args", return_value=selection), \
+                 patch.object(baseline, "compare_campaigns") as compare, \
+                 patch.object(baseline, "run_campaign") as run, contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(baseline.main(["--out", str(root / "comparison"), "--compare-campaigns", "a", "b",
+                                                "--research-release-inputs", str(inputs)]), 1)
+                self.assertEqual(baseline.main(["--out", str(root / "run"), "--godot", "editor",
+                                                "--research-release-inputs", str(inputs)]), 1)
+                self.assertEqual(baseline.main(["--out", str(root / "run2"), "--godot", "editor",
+                                                "--research-campaign-sha256", "a" * 64]), 1)
+                compare.assert_not_called()
+                run.assert_not_called()
+
+
+class ResearchReleaseRealBinderTests(unittest.TestCase):
+    def test_reviewed_pair_and_package_verifiers_compose_with_real_bundle_receipts(self):
+        module_path = os.environ.get("OPENRC_PAIR_EXPORT_TEST_MODULE")
+        if not module_path:
+            self.skipTest("set OPENRC_PAIR_EXPORT_TEST_MODULE to the reviewed pair/export portable fixture")
+        spec = __import__("importlib.util", fromlist=["spec_from_file_location"]).spec_from_file_location(
+            "research_release_pair_fixture", Path(module_path))
+        integration = __import__("importlib.util", fromlist=["module_from_spec"]).module_from_spec(spec)
+        spec.loader.exec_module(integration)
+        integration.fixtures.TEST_ROOT = Path(__file__).resolve().parents[2]
+        fixture = integration.PairExportIntegrationTests(methodName="runTest")
+        fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        fixture.tool_root.mkdir(parents=True)
+        macho = struct.pack("<II", 0xFEEDFACF, 0x0100000C) + bytes(56)
+        fixture.library.write_bytes(macho + b"synthetic dylib")
+        row = fixture.receipt["platforms"]["macos"]
+        row.update(platform="macos", architecture="arm64", backend="native",
+                   backend_version="openrc-native-kernel-stage-v2", abi_version=2,
+                   qualification_scope=MAC_RECEIPT.NATIVE_SCOPE, binary_sha256=_sha256_file(fixture.library),
+                   source_sha256="c" * 64, lock_sha256="d" * 64, runtime_os_version="27.0.1",
+                   runtime_os_build="26A434", mirrored_sources={"app/physics/aero.gd": "e" * 64},
+                   verification={"oracle": "synthetic"})
+        fixture.receipt.update(format="openrc-native-kernel-receipt", backend="native",
+                               backend_version="openrc-native-kernel-stage-v2", abi_version=2)
+        # Integration setup has selected-template bytes plus a simulated app
+        # signature. The real comparison runs; only host codesign is stubbed.
+        executable = fixture.executable
+        pack = fixture.bundle / "Contents/Resources/OpenRC.pck"
+        pack.write_bytes(struct.pack("<4sIIIIIQQI", b"GDPC", 4, 4, 8, 0, 2, 0, 40, 1) + b"fixture pack")
+        fixture.prepare()
+        fixture.stage()
+        probe = fixture.root / "research/performance/session_probe.gd"
+        probe.parent.mkdir(parents=True)
+        probe.write_bytes(fixture.diagnostics["session_probe.gd"].read_bytes())
+        snapshot = fixture.root / "inputs.json"
+        snapshot.write_bytes(b"synthetic source snapshot")
+        source = {"commit": "a" * 40, "tree": "b" * 40, "worktree_sha256": "c" * 64}
+        with patch.object(MAC_RECEIPT, "_source_snapshot", return_value=source):
+            MAC_RECEIPT.create(fixture.bundle, snapshot, fixture.root)
+        MAC_RECEIPT.create_native(fixture.bundle, fixture.manifest)
+        reference, native = baseline.verify_macos_release_identities(executable)
+        checked = integration.package._checked_macos_export(fixture.report, fixture.bundle, fixture.f.expected,
+                                                            _sha256_file(fixture.checked_runner))
+        release = {"format": baseline.RESEARCH_RELEASE_SELECTION_FORMAT, "editor": str(fixture.editor),
+                   "native_tool_root": str(fixture.tool_root),
+                   "native_toolchain_profile": baseline.ENGINE_POLICY.DEFAULT_TOOLCHAIN_PROFILE,
+                   "pair": {key: str(value) for key, value in fixture.pair_selection.items()},
+                   "checked_export_report": str(fixture.report), "pins": {
+                       "reference_receipt_sha256": reference["receipt_sha256"],
+                       "native_receipt_sha256": native["receipt_sha256"], "manifest_sha256": native["manifest_sha256"],
+                       "executable_sha256": reference["executable_sha256"], "pack_sha256": reference["pack_sha256"],
+                       "checked_export_report_sha256": checked["report_sha256"],
+                       "checked_export_log_sha256": checked["log_sha256"]}}
+        selection_path = fixture.root / "release-selection.json"
+        selection_path.write_text(json.dumps(release), encoding="utf-8")
+        editor = {"path": str(fixture.editor), "sha256": fixture.f.selection["sha256"],
+                  "research_engine": fixture.editor_identity["research_engine"],
+                  "source_engine_identity": fixture.editor_identity}
+        final = {"path": str(executable), "version": fixture.f.selection["cli_version"],
+                 "required_version": "4.8-beta2", "sha256": reference["executable_sha256"],
+                 "runtime_binary_path": str(executable), "runtime_binary_sha256": reference["executable_sha256"]}
+        with patch.object(baseline, "_research_package", return_value=integration.package), \
+             patch.object(baseline, "inspect_godot", return_value=editor), \
+             patch.object(baseline, "inspect_research_release", return_value=final), \
+             patch.object(fixture.binder, "verify_export_executable", wraps=fixture.binder.verify_export_executable) as binding:
+            proof = baseline.verify_research_release(executable, fixture.f.selection, selection_path, 30)
+            self.assertEqual(proof["package"]["engine_pair"], fixture.f.expected)
+            self.assertEqual(proof["native"], native)
+            self.assertNotEqual(proof["release_engine"]["sha256"], fixture.f.expected["template_sha256"])
+            self.assertEqual(proof["package"]["executable_binding"]["executable_sha256"], reference["executable_sha256"])
+            self.assertGreaterEqual(binding.call_count, 1)
 
 
 class LaunchAdmissionTests(unittest.TestCase):

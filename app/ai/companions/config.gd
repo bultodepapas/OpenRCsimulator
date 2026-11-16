@@ -41,9 +41,9 @@ static func defaults() -> Dictionary:
 	return DEFAULTS.duplicate(true)
 
 
-## Qualification binds this exact engine build, not just its numeric version.
+## Qualification binds an explicitly declared runtime, not just its numeric version.
 static func engine_qualified() -> bool:
-	return Profiles.engine_build_identity(Engine.get_version_info()) == Profiles.QUALIFIED_ENGINE_VERSION
+	return Profiles.current_engine_qualified()
 
 
 ## Use for saved Home preferences only. Preserve the request and disable an
@@ -52,9 +52,12 @@ static func for_current_engine(raw: Variant) -> Dictionary:
 	var checked := validate(raw)
 	if not checked.ok:
 		return checked
+	return _apply_engine_availability(checked, engine_qualified())
+
+
+static func _apply_engine_availability(checked: Dictionary, available: bool) -> Dictionary:
 	var requested: Dictionary = checked.config.duplicate(true)
 	var effective: Dictionary = requested.duplicate(true)
-	var available := engine_qualified()
 	var suppressed := bool(requested.enabled) and not available
 	if suppressed:
 		effective.enabled = false

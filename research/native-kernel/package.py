@@ -43,6 +43,7 @@ MAC_MANIFEST_FORMAT = "openrc-macos-native-kernel-package-v1"
 MAC_MANIFEST = ROOT / "app/native/kernel/package-macos.json"
 MAC_QUALIFICATION = {name: QUALIFICATION[name] for name in
                      ("session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd")}
+MAC_QUALIFICATION["package_default_probe.gd"] = ROOT / "app/tools/package_default_probe.gd"
 MAC_DESCRIPTOR = (
     "; DT-MAC packaged stage; loaded explicitly after embedded identity verification.\n"
     "[configuration]\n"
@@ -157,6 +158,59 @@ def _mac_builder():
     return mac
 
 
+def _pair_binder():
+    spec = importlib.util.spec_from_file_location("nk3_package_macos_engine_pair", HERE / "macos_engine_pair.py")
+    if spec is None or spec.loader is None:
+        raise ValueError("Mac research engine-pair verifier is unavailable")
+    pair = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pair)
+    return pair
+
+
+def _research_pair(godot: Path, selection: dict | None, pair_selection: dict | None) -> dict | None:
+    """Bind the retained original intakes, never an unverified manifest or receipt alone."""
+    if selection is None and pair_selection is None:
+        return None
+    if not isinstance(selection, dict) or not isinstance(pair_selection, dict) \
+            or set(pair_selection) != {"template_intake", "pair_receipt", "export_template", "pins"} \
+            or any(not isinstance(value, (Path, str)) or not str(value) for value in pair_selection.values()):
+        raise ValueError("Research engine and all four pair inputs must be supplied together")
+    if not isinstance(selection.get("receipt"), str) or not isinstance(selection.get("archive"), str) \
+            or not isinstance(selection.get("patches"), list) \
+            or any(not isinstance(path, str) for path in selection["patches"]):
+        raise ValueError("Research engine selection lacks original ordered intake inputs")
+    binder = _pair_binder()
+    pins = binder._path(pair_selection["pins"])
+    before = binder._snapshot(pins, binder.MAX_JSON)
+    expected = binder._json(pins)
+    result = binder.bind(archive=Path(selection["archive"]), editor_intake=Path(selection["receipt"]).parent,
+                         template_intake=Path(pair_selection["template_intake"]),
+                         patches=[Path(path) for path in selection["patches"]],
+                         pair_receipt=Path(pair_selection["pair_receipt"]),
+                         export_template=Path(pair_selection["export_template"]), godot=godot,
+                         selection=selection, expected=expected)
+    if binder._snapshot(pins, binder.MAX_JSON) != before:
+        raise ValueError("Independent engine-pair pins changed during verification")
+    return result
+
+
+def _match_research_pair(pair: dict, row: dict, selection: dict) -> None:
+    """Join the producer's result to the independently reverified installed editor row."""
+    engine = row.get("engine")
+    provenance = engine.get("research_engine") if isinstance(engine, dict) else None
+    patches = provenance.get("ordered_patches") if isinstance(provenance, dict) else None
+    if not isinstance(pair, dict) or not isinstance(provenance, dict) or not isinstance(patches, list) \
+            or provenance.get("scope") != "source-editor-local-custom-engine-research-v1" \
+            or provenance.get("selection") != selection or provenance.get("runtime_version") != row.get("engine_version") \
+            or engine.get("sha256") != row.get("engine_sha256") or pair.get("editor_sha256") != row.get("engine_sha256") \
+            or pair.get("editor_receipt_sha256") != provenance.get("build_receipt_sha256") \
+            or pair.get("source_archive_sha256") != provenance.get("source_archive_sha256") \
+            or pair.get("source_catalog_sha256") != provenance.get("source_catalog_sha256") \
+            or not all(isinstance(patch, dict) for patch in patches) \
+            or pair.get("patch_sha256") != [patch.get("sha256") for patch in patches]:
+        raise ValueError("Verified pair differs from the installed research editor provenance")
+
+
 def _validate_mac_cited_evidence(root: Path, cited: object, candidate: dict, mutant: dict, mac) -> None:
     """Revalidate the installed receipt's exact reports, never substitute newer runs."""
     roster = mac.verification_roster()
@@ -199,7 +253,8 @@ def _validate_mac_cited_evidence(root: Path, cited: object, candidate: dict, mut
             raise ValueError(f"Cited Mac evidence count or bytes changed: {key}")
 
 
-def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
+def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | None = None,
+                         toolchain_profile: str | None = None) -> dict:
     """Revalidate the exact signed candidate and all required source-oracle evidence."""
     mac = _mac_builder()
     root = tool_root.resolve()
@@ -207,7 +262,7 @@ def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | N
     if root == tmp or not root.is_relative_to(tmp):
         raise ValueError("Mac tool root must be inside this checkout's tmp/")
     lock = mac.locked.load_lock()
-    toolchain = mac.host_toolchain()
+    toolchain = mac.host_toolchain(toolchain_profile) if toolchain_profile is not None else mac.host_toolchain()
     engine = mac.godot_identity(godot, lock, research_engine) if research_engine is not None else mac.godot_identity(godot, lock)
     identity = mac._identity()
     candidate = mac.validate_build(root, False, identity, toolchain, engine, lock)
@@ -245,29 +300,49 @@ def verified_mac_install(tool_root: Path, godot: Path, research_engine: dict | N
                 "source_sha256": identity["source_sha256"], "lock_sha256": identity["lock_sha256"],
                 "mirrored_sources": identity["reference_sources_sha256"], "runtime_os_version": toolchain["os_version"],
                 "runtime_os_build": toolchain["os_build"], "engine_version": mac._engine_display(engine["version"]),
-                "engine_sha256": engine["sha256"]}
+                "engine_sha256": engine["sha256"], "engine": engine}
     if not isinstance(row, dict) or any(row.get(key) != value for key, value in required.items()) \
             or type(row.get("abi_version")) is not int or sha(library) != candidate["binary_sha256"] \
             or descriptor.read_text(encoding="utf-8") != mac.SOURCE_DESCRIPTOR:
         raise ValueError("Mac installation differs from the verified source build or evidence")
+    mac.require_matching_toolchains(row.get("toolchain"), toolchain)
+    mac.require_matching_toolchains(candidate.get("toolchain"), toolchain)
+    mac.require_matching_toolchains(mutant.get("toolchain"), toolchain)
     _validate_mac_cited_evidence(root, row.get("verification"), candidate, mutant, mac)
+    final_toolchain = mac.host_toolchain(toolchain_profile) if toolchain_profile is not None else mac.host_toolchain()
+    if final_toolchain != toolchain:
+        raise ValueError("Mac toolchain changed during installation verification")
     if research_engine is not None and mac.godot_identity(godot, lock, research_engine) != engine:
         raise ValueError("Research engine provenance changed during installation verification")
     return receipt
 
 
-def _mac_manifest(tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
-    receipt = (verified_mac_install(tool_root, godot, research_engine) if research_engine is not None
+def _mac_manifest(tool_root: Path, godot: Path, research_engine: dict | None = None,
+                  toolchain_profile: str | None = None, *, pair_selection: dict | None = None) -> dict:
+    if (research_engine is None) != (pair_selection is None):
+        raise ValueError("Research engine and pair inputs must be supplied together")
+    receipt = (verified_mac_install(tool_root, godot, research_engine, toolchain_profile) if toolchain_profile is not None
+               else verified_mac_install(tool_root, godot, research_engine) if research_engine is not None
                else verified_mac_install(tool_root, godot))
-    return {"format": MAC_MANIFEST_FORMAT, "platform": "macos", "architecture": "arm64",
-            "engine_version": receipt["platforms"]["macos"]["engine_version"], "native_receipt": receipt,
-            "solver_sha256": solver_identity(), "license_sha256": sha(builder.APP_DESTINATION / "LICENSE.godot-cpp.md"),
-            "qualification_sources": {name: sha(path) for name, path in MAC_QUALIFICATION.items()}}
+    manifest = {"format": MAC_MANIFEST_FORMAT, "platform": "macos", "architecture": "arm64",
+                "engine_version": receipt["platforms"]["macos"]["engine_version"], "native_receipt": receipt,
+                "solver_sha256": solver_identity(), "license_sha256": sha(builder.APP_DESTINATION / "LICENSE.godot-cpp.md"),
+                "qualification_sources": {name: sha(path) for name, path in MAC_QUALIFICATION.items()}}
+    if research_engine is not None:
+        pair = _research_pair(godot, research_engine, pair_selection)
+        _match_research_pair(pair, receipt["platforms"]["macos"], research_engine)
+        manifest["engine_pair"] = pair
+        binder = _pair_binder()
+        plugin = binder._path(ROOT / "app/addons/native_kernel/export_plugin.gd")
+        manifest["export_plugin_sha256"] = binder._snapshot(plugin, binder.MAX_PATCH)[1]
+        checked_runner = binder._path(ROOT / "tools/godot/run_checked.py")
+        manifest["export_runner_sha256"] = binder._snapshot(checked_runner, binder.MAX_PATCH)[1]
+    return manifest
 
 
-def prepare_macos(tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
-    manifest = (_mac_manifest(tool_root, godot, research_engine) if research_engine is not None
-                else _mac_manifest(tool_root, godot))
+def prepare_macos(tool_root: Path, godot: Path, research_engine: dict | None = None,
+                  toolchain_profile: str | None = None, *, pair_selection: dict | None = None) -> dict:
+    manifest = _mac_manifest(tool_root, godot, research_engine, toolchain_profile, pair_selection=pair_selection)
     if MAC_MANIFEST.is_symlink():
         raise ValueError("Mac manifest path is redirected")
     with MAC_MANIFEST.open("x", encoding="utf-8", newline="\n") as stream:
@@ -276,15 +351,20 @@ def prepare_macos(tool_root: Path, godot: Path, research_engine: dict | None = N
     return {"manifest": str(MAC_MANIFEST), "manifest_sha256": sha(MAC_MANIFEST)}
 
 
-def stage_macos(bundle: Path, tool_root: Path, godot: Path, research_engine: dict | None = None) -> dict:
+def stage_macos(bundle: Path, tool_root: Path, godot: Path, research_engine: dict | None = None,
+                toolchain_profile: str | None = None, *, pair_selection: dict | None = None) -> dict:
     """Stage exact previously verified bytes before outer app signing; never re-sign the dylib."""
     if bundle.is_symlink() or not bundle.is_dir() or not bundle.name.endswith(".app"):
         raise ValueError("Mac destination must be a real .app directory")
+    if research_engine is not None:
+        _pair_binder()._path(bundle, directory=True)
     if MAC_MANIFEST.is_symlink() or not MAC_MANIFEST.is_file():
         raise ValueError("Missing or redirected Mac package manifest")
-    manifest = json.loads(MAC_MANIFEST.read_text(encoding="utf-8"))
-    current_manifest = lambda: (_mac_manifest(tool_root, godot, research_engine) if research_engine is not None
-                                else _mac_manifest(tool_root, godot))
+    binder = _pair_binder() if research_engine is not None else None
+    manifest_before = binder._snapshot(MAC_MANIFEST, binder.MAX_JSON) if binder is not None else None
+    manifest = binder._json(MAC_MANIFEST) if binder is not None else json.loads(MAC_MANIFEST.read_text(encoding="utf-8"))
+    current_manifest = lambda: _mac_manifest(tool_root, godot, research_engine, toolchain_profile,
+                                             pair_selection=pair_selection)
     if manifest != current_manifest():
         raise ValueError("Mac package inputs changed since preparation")
     contents = bundle / "Contents"
@@ -312,11 +392,275 @@ def stage_macos(bundle: Path, tool_root: Path, godot: Path, research_engine: dic
         shutil.copyfileobj(src, dst, length=1024 * 1024)
     if sha(license_file) != manifest["license_sha256"] or sha(license_source) != manifest["license_sha256"]:
         raise ValueError("Mac native licence changed during staging")
-    if manifest != current_manifest():
+    if manifest != current_manifest() or (binder is not None and binder._snapshot(MAC_MANIFEST, binder.MAX_JSON) != manifest_before):
         raise ValueError("Mac package inputs changed during staging")
     return {"library": str(library), "library_sha256": sha(library), "descriptor": str(descriptor),
             "descriptor_sha256": sha(descriptor), "manifest_sha256": sha(MAC_MANIFEST),
             "license_sha256": sha(license_file)}
+
+
+def verify_macos_export(bundle: Path, tool_root: Path, godot: Path, research_engine: dict | None = None,
+                        toolchain_profile: str | None = None, *, pair_selection: dict | None = None) -> dict:
+    """Revalidate a staged bundle at the caller's final receipt boundary; write nothing."""
+    if bundle.is_symlink() or not bundle.is_dir() or not bundle.name.endswith(".app") \
+            or MAC_MANIFEST.is_symlink() or not MAC_MANIFEST.is_file():
+        raise ValueError("Missing or redirected Mac bundle or package manifest")
+    if research_engine is not None:
+        _pair_binder()._path(bundle, directory=True)
+    binder = _pair_binder() if research_engine is not None else None
+    manifest_before = binder._snapshot(MAC_MANIFEST, binder.MAX_JSON) if binder is not None else None
+    before = manifest_before[1] if binder is not None else sha(MAC_MANIFEST)
+    manifest = binder._json(MAC_MANIFEST) if binder is not None else json.loads(MAC_MANIFEST.read_text(encoding="utf-8"))
+    current = lambda: _mac_manifest(tool_root, godot, research_engine, toolchain_profile,
+                                    pair_selection=pair_selection)
+    if not isinstance(manifest, dict) or manifest != current():
+        raise ValueError("Mac package inputs changed since preparation")
+    contents = bundle / "Contents"
+    frameworks, resources = contents / "Frameworks", contents / "Resources"
+    if any(path.is_symlink() or not path.is_dir() for path in (contents, frameworks, resources)):
+        raise ValueError("Mac staged package paths are missing or redirected")
+    library = frameworks / "libopenrc_native_kernel.dylib"
+    descriptor = resources / "openrc_native_kernel_macos.gdextension"
+    license_file = resources / "LICENSE.godot-cpp.md"
+    if any(path.is_symlink() or not path.is_file() for path in (library, descriptor, license_file)) \
+            or sha(library) != manifest["native_receipt"]["platforms"]["macos"]["binary_sha256"] \
+            or descriptor.read_text(encoding="utf-8") != MAC_DESCRIPTOR \
+            or sha(license_file) != manifest["license_sha256"]:
+        raise ValueError("Staged Mac native package files differ from preparation")
+    library_sha, descriptor_sha, license_sha = sha(library), sha(descriptor), sha(license_file)
+    executable_binding = None
+    if binder is not None:
+        # The checked export report identifies an invocation and target path;
+        # prove that the current app's executable still derives from the exact
+        # independently selected template, including after application signing.
+        if not isinstance(pair_selection, dict) or not isinstance(pair_selection.get("template_intake"), (str, Path)) \
+                or not isinstance(manifest.get("engine_pair"), dict):
+            raise ValueError("Research export is missing its independently verified pair")
+        macos = binder._path(contents / "MacOS", directory=True)
+        entries = list(macos.iterdir())
+        if any(entry.is_symlink() for entry in entries):
+            raise ValueError("Mac export executable directory contains a symbolic link")
+        executables = [entry for entry in entries if entry.is_file()]
+        if len(executables) != 1:
+            raise ValueError("Mac export must contain exactly one executable")
+        template = binder._path(Path(pair_selection["template_intake"]) /
+                                "build-source-template_release/bin/godot.macos.template_release.arm64")
+        executable_binding = binder.verify_export_executable(
+            template, binder._path(executables[0]), manifest["engine_pair"].get("template_sha256"))
+    if sha(MAC_MANIFEST) != before or (binder is not None and binder._snapshot(MAC_MANIFEST, binder.MAX_JSON) != manifest_before) \
+            or manifest != current() \
+            or any(path.is_symlink() or not path.is_file() for path in (library, descriptor, license_file)) \
+            or (sha(library), sha(descriptor), sha(license_file)) != (library_sha, descriptor_sha, license_sha):
+        raise ValueError("Mac package inputs changed during final revalidation")
+    result = {"manifest_sha256": before, "library_sha256": library_sha,
+              "descriptor_sha256": descriptor_sha, "license_sha256": license_sha}
+    if "engine_pair" in manifest:
+        result["engine_pair"] = manifest["engine_pair"]
+        result["export_runner_sha256"] = manifest["export_runner_sha256"]
+        result["executable_binding"] = executable_binding
+    return result
+
+
+def _mac_release_tool():
+    path = ROOT / "tools/release/macos_reference_receipt.py"
+    spec = importlib.util.spec_from_file_location("nk3_package_macos_release", path)
+    if spec is None or spec.loader is None:
+        raise ValueError("Mac native receipt tool is unavailable")
+    release = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(release)
+    return release
+
+
+def _prepared_macos_export_project(project: Path, binder) -> dict:
+    """Bind an isolated export to the real preparation validator and its sibling probe."""
+    tmp = binder._path(ROOT / "tmp", directory=True)
+    project = binder._path(project, directory=True)
+    if project == tmp or not project.is_relative_to(tmp) or ".." in project.relative_to(tmp).parts:
+        raise ValueError("Prepared export project must be below the repository tmp directory")
+    receipt = binder._path(project.parent / "research-preparation.json")
+    validator_path = binder._path(ROOT / "research/native-kernel/run.py")
+    probe = binder._path(ROOT / "research/performance/session_probe.gd")
+    prepared_probe = binder._path(project.parent / "research/performance/session_probe.gd")
+    inputs = ((receipt, binder.MAX_JSON), (validator_path, binder.MAX_PATCH),
+              (probe, binder.MAX_PATCH), (prepared_probe, binder.MAX_PATCH))
+    snapshots = [binder._snapshot(path, limit) for path, limit in inputs]
+    if snapshots[2][1] != snapshots[3][1]:
+        raise ValueError("Prepared export session probe differs from the canonical probe")
+    spec = importlib.util.spec_from_file_location("nk3_package_project_validator", validator_path)
+    if spec is None or spec.loader is None:
+        raise ValueError("Prepared export project validator is unavailable")
+    validator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(validator)
+    proof = validator.validate_project(project)
+    if not proof:
+        raise ValueError("Prepared export project did not produce a validation proof")
+
+    # The reusable validator intentionally allows canonical installation outputs to
+    # advance after preparation. An export must instead use today's exact outputs.
+    def native_inventory(app: Path) -> list[dict]:
+        entries = []
+        for relative in sorted(validator.NATIVE_INSTALL_OUTPUTS):
+            path = app / relative
+            if not path.exists() and not path.is_symlink():
+                continue
+            path = binder._path(path)
+            before = binder._stamp(path.stat())
+            digest = sha(path)
+            if binder._stamp(binder._path(path).stat()) != before:
+                raise ValueError("Prepared export native artifact changed during validation")
+            entries.append({"path": relative, "bytes": before[3], "sha256": digest})
+        return entries
+
+    canonical_native = native_inventory(ROOT / "app")
+    if canonical_native != native_inventory(project):
+        raise ValueError("Prepared export native artifacts differ from the canonical installation")
+    if [binder._snapshot(path, limit) for path, limit in inputs] != snapshots:
+        raise ValueError("Prepared export validation inputs changed during validation")
+    return {"project": str(project), "preparation_sha256": snapshots[0][1],
+            "validator_sha256": snapshots[1][1], "session_probe_sha256": snapshots[2][1],
+            "native_artifacts_sha256": validator._inventory_hash(canonical_native), "inventory": proof}
+
+
+def _checked_macos_export(report_path: Path, bundle: Path, pair: dict, runner_sha256: str) -> dict:
+    """Re-read the checked export report and its bounded log, including both plugin callbacks."""
+    binder = _pair_binder()
+    report_path = binder._path(report_path)
+    bundle = binder._path(bundle, directory=True)
+    before = binder._snapshot(report_path, binder.MAX_JSON)
+    report = binder._json(report_path)
+    markers = [f"OPENRC_MAC_PAIR_EXPORT_{phase} {pair['editor_sha256']} {pair['export_template_sha256']}"
+               for phase in ("BEGIN", "END")]
+    if (report.get("format") != "openrc-godot-check v1" or report.get("ok") is not True
+            or report.get("complete") is not True or type(report.get("process_exit")) is not int
+            or report["process_exit"] != 0 or type(report.get("exit_code")) is not int
+            or report["exit_code"] != 0 or report.get("reason") != "passed"
+            or report.get("required_text") != markers or report.get("missing_required_text") != []
+            or not isinstance(report.get("counts"), dict) or type(report["counts"].get("error")) is not int
+            or report["counts"]["error"] != 0
+            or report.get("report") != str(report_path)):
+        raise ValueError("Checked Mac export report is incomplete or did not pass both pair markers")
+    command = report.get("command")
+    if not isinstance(command, list) or any(not isinstance(arg, str) or not arg for arg in command) \
+            or not command or command.count("--export-release") != 1 or command.count("--path") != 1 \
+            or any(flag in command for flag in ("--script", "-s", "--export-debug", "--export-pack", "--export-patch")):
+        raise ValueError("Checked process is not one explicit release export")
+    index, project_index = command.index("--export-release"), command.index("--path")
+    if index + 3 != len(command) or project_index + 1 >= index or not command[index + 1] \
+            or not Path(command[index + 2]).is_absolute() \
+            or not Path(command[project_index + 1]).is_absolute() \
+            or binder._path(command[index + 2], directory=True) != bundle:
+        raise ValueError("Checked export names a different project or bundle")
+    project = binder._path(command[project_index + 1], directory=True)
+    canonical = binder._path(ROOT / "app", directory=True)
+    prepared = _prepared_macos_export_project(project, binder) if project != canonical else None
+    log = binder._path(report.get("log"))
+    if log.parent != report_path.parent or log.name != "engine.log":
+        raise ValueError("Checked Mac export log is outside the report directory")
+    log_before = binder._snapshot(log, 16 * 1024 * 1024)
+    if log_before[1] != report.get("log_sha256") or type(report.get("log_bytes")) is not int \
+            or report["log_bytes"] != log_before[0][3]:
+        raise ValueError("Checked Mac export log identity differs")
+    runner_path = binder._path(ROOT / "tools/godot/run_checked.py")
+    runner_before = binder._snapshot(runner_path, binder.MAX_PATCH)
+    if runner_before[1] != runner_sha256:
+        raise ValueError("Checked export log inspector differs from package preparation")
+    spec = importlib.util.spec_from_file_location("nk3_package_checked_export_runner", runner_path)
+    if spec is None or spec.loader is None:
+        raise ValueError("Checked export log inspector is unavailable")
+    runner = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(runner)
+    inspected = runner.inspect_log(log, markers, max_chars=16 * 1024 * 1024)
+    lines = [runner.ANSI.sub("", line) for line in log.read_text(encoding="utf-8", errors="replace").splitlines()]
+    if inspected["counts"] != report["counts"] or inspected["counts"]["error"] != 0 \
+            or inspected["missing_required_text"] or any(lines.count(marker) != 1 for marker in markers) \
+            or lines.index(markers[0]) >= lines.index(markers[1]):
+        raise ValueError("Checked Mac export log has errors or lacks ordered pair callbacks")
+    editor = binder._path(command[0])
+    editor_before = binder._snapshot(editor, binder.MAX_BINARY)
+    if editor_before[1] != pair["editor_sha256"]:
+        raise ValueError("Checked export used a different editor")
+    if prepared is not None and _prepared_macos_export_project(project, binder) != prepared:
+        raise ValueError("Prepared export project changed during checked export validation")
+    if binder._snapshot(report_path, binder.MAX_JSON) != before \
+            or binder._snapshot(log, 16 * 1024 * 1024) != log_before \
+            or binder._snapshot(editor, binder.MAX_BINARY) != editor_before \
+            or binder._snapshot(runner_path, binder.MAX_PATCH) != runner_before:
+        raise ValueError("Checked export evidence changed during validation")
+    result = {"report_sha256": before[1], "log_sha256": log_before[1], "editor_sha256": editor_before[1]}
+    if prepared is not None:
+        result["prepared_project"] = prepared
+    return result
+
+
+def finalize_research_macos(bundle: Path, tool_root: Path, godot: Path, research_engine: dict | None,
+                            toolchain_profile: str | None = None, *, pair_selection: dict | None = None,
+                            checked_export_report: Path | None = None) -> dict:
+    """Bracket the existing native receipt producer with exact pair/bundle revalidation."""
+    if research_engine is None or pair_selection is None or checked_export_report is None:
+        raise ValueError("Research finalization requires an explicit editor, pair and checked export report")
+    before = verify_macos_export(bundle, tool_root, godot, research_engine, toolchain_profile,
+                                 pair_selection=pair_selection)
+    checked = _checked_macos_export(checked_export_report, bundle, before["engine_pair"],
+                                    before["export_runner_sha256"])
+    release = _mac_release_tool()
+    destination = bundle.with_name(bundle.name + release.NATIVE_SUFFIX)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"Native receipt already exists: {destination}")
+    created = release.create_native(bundle, MAC_MANIFEST)
+    if created != destination or created.is_symlink() or not created.is_file():
+        raise ValueError("Native receipt producer returned an unexpected path")
+    identity = created.stat()
+    digest = sha(created)
+    try:
+        after = verify_macos_export(bundle, tool_root, godot, research_engine, toolchain_profile,
+                                    pair_selection=pair_selection)
+        current = created.stat()
+        if after != before or _checked_macos_export(checked_export_report, bundle, before["engine_pair"],
+                                                    before["export_runner_sha256"]) != checked \
+                or created.is_symlink() or not created.is_file() \
+                or (current.st_dev, current.st_ino, current.st_size, current.st_mtime_ns) != \
+                   (identity.st_dev, identity.st_ino, identity.st_size, identity.st_mtime_ns) \
+                or sha(created) != digest:
+            raise ValueError("Mac package or native receipt changed during finalization")
+    except Exception as error:
+        # Remove only the exact newly created regular file, never a replacement.
+        if not created.is_symlink() and created.is_file():
+            current = created.stat()
+            if (current.st_dev, current.st_ino, current.st_size, current.st_mtime_ns) == \
+                    (identity.st_dev, identity.st_ino, identity.st_size, identity.st_mtime_ns) \
+                    and sha(created) == digest:
+                created.unlink()
+            else:
+                raise ValueError(f"Finalization failed and the changed native receipt was retained: {created}") from error
+        elif created.is_symlink():
+            raise ValueError(f"Finalization failed and the redirected native receipt was retained: {created}") from error
+        raise
+    return {"receipt": str(created), "receipt_sha256": digest, "manifest_sha256": before["manifest_sha256"],
+            "engine_pair": before["engine_pair"], "executable_binding": before["executable_binding"],
+            "checked_export": checked}
+
+
+class _Once(argparse.Action):
+    def __call__(self, parser, namespace, value, option_string=None):
+        if getattr(namespace, self.dest, None) is not None:
+            parser.error(f"{option_string} may be specified only once")
+        setattr(namespace, self.dest, value)
+
+
+def _add_pair_arguments(parser: argparse.ArgumentParser) -> None:
+    group = parser.add_argument_group("paired research-engine inputs")
+    for flag in ("template-intake", "receipt", "export-template", "binding-pins"):
+        group.add_argument("--pair-" + flag, action=_Once, type=Path)
+
+
+def _pair_selection_from_args(args: argparse.Namespace, research_engine: dict | None) -> dict | None:
+    names = ("pair_template_intake", "pair_receipt", "pair_export_template", "pair_binding_pins")
+    values = [getattr(args, name, None) for name in names]
+    if research_engine is None and not any(value is not None for value in values):
+        return None
+    if research_engine is None or any(value is None for value in values):
+        raise ValueError("Research engine and all four pair inputs must be supplied together")
+    return dict(zip(("template_intake", "pair_receipt", "export_template", "pins"), values))
 
 
 def main() -> None:
@@ -330,19 +674,48 @@ def main() -> None:
     mac_prepare.add_argument("--tool-root", type=Path, required=True)
     mac_prepare.add_argument("--godot", type=Path, required=True)
     _mac_builder().engine_policy.add_arguments(mac_prepare)
+    _mac_builder().add_toolchain_arguments(mac_prepare)
+    _add_pair_arguments(mac_prepare)
     mac_stage = commands.add_parser("stage-macos")
     mac_stage.add_argument("--bundle", type=Path, required=True)
     mac_stage.add_argument("--tool-root", type=Path, required=True)
     mac_stage.add_argument("--godot", type=Path, required=True)
     _mac_builder().engine_policy.add_arguments(mac_stage)
+    _mac_builder().add_toolchain_arguments(mac_stage)
+    _add_pair_arguments(mac_stage)
+    mac_verify = commands.add_parser("verify-macos-export")
+    mac_verify.add_argument("--bundle", type=Path, required=True)
+    mac_verify.add_argument("--tool-root", type=Path, required=True)
+    mac_verify.add_argument("--godot", type=Path, required=True)
+    _mac_builder().engine_policy.add_arguments(mac_verify)
+    _mac_builder().add_toolchain_arguments(mac_verify)
+    _add_pair_arguments(mac_verify)
+    mac_final = commands.add_parser("finalize-research-macos")
+    mac_final.add_argument("--bundle", type=Path, required=True)
+    mac_final.add_argument("--tool-root", type=Path, required=True)
+    mac_final.add_argument("--godot", type=Path, required=True)
+    mac_final.add_argument("--checked-export-report", type=Path, required=True)
+    _mac_builder().engine_policy.add_arguments(mac_final)
+    _mac_builder().add_toolchain_arguments(mac_final)
+    _add_pair_arguments(mac_final)
     args = parser.parse_args()
     if args.command == "prepare": result = prepare()
     elif args.command == "finalize": result = finalize(args.executable, args.template)
-    elif args.command == "prepare-macos":
-        result = prepare_macos(args.tool_root, args.godot, _mac_builder().engine_policy.selection_from_args(args))
     else:
-        result = stage_macos(args.bundle, args.tool_root, args.godot,
-                             _mac_builder().engine_policy.selection_from_args(args))
+        selection = _mac_builder().engine_policy.selection_from_args(args)
+        pair_selection = _pair_selection_from_args(args, selection)
+        if args.command == "prepare-macos":
+            result = prepare_macos(args.tool_root, args.godot, selection, args.toolchain_profile,
+                                   pair_selection=pair_selection)
+        elif args.command == "stage-macos":
+            result = stage_macos(args.bundle, args.tool_root, args.godot, selection, args.toolchain_profile,
+                                 pair_selection=pair_selection)
+        elif args.command == "verify-macos-export":
+            result = verify_macos_export(args.bundle, args.tool_root, args.godot, selection, args.toolchain_profile,
+                                         pair_selection=pair_selection)
+        else:
+            result = finalize_research_macos(args.bundle, args.tool_root, args.godot, selection, args.toolchain_profile,
+                                             pair_selection=pair_selection, checked_export_report=args.checked_export_report)
     print(json.dumps(result, indent=2, sort_keys=True))
 
 
