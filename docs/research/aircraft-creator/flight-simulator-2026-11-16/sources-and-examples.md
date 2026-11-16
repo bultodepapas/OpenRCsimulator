@@ -16,6 +16,21 @@
 
 The proposed first product route accepts a user-prepared GLB with readable source configuration. Automatic modern-source normalization follows AC-FS-04's comparison spike. The comparison should use independently authored asymmetric geometry, visible texture/normal markers and known control pivots; accepting the same input is insufficient evidence of equal output. The production desktop application should not require Blender, the Microsoft SDK or ModelConverterX to launch.
 
+## Additional mod, forum and tool investigations
+
+The [24-question follow-up](follow-up-24-investigations/README.md) adds dated primary-source evidence, including first-person discussions on Microsoft Flight Simulator Community, Microsoft DevSupport and FSDeveloper, plus maintainer issues and author release histories. It qualifies reported symptoms separately from reproduced behavior. Its [tooling backlog](follow-up-24-investigations/tooling-and-fixtures.md) evaluates Khronos Validator, glTF Transform, gltfpack, selected standards fixtures, low-Re tools and measurement references without installing or adopting dependencies.
+
+| Aircraft/mod case | Evidence added | Design use |
+| --- | --- | --- |
+| C152X / JPLogistics | Stock dependency and simulator-update changes | Preserve base/overlay/build identity |
+| MGouge425 / Bagolu C172 | Cross-file circuit and mod-version interactions | Diagnose dependency and precedence conflicts |
+| Savage Carbon | Author-reported geometry, engine, balance and later retuning | Keep datum/CG/installation roles separate |
+| AS33 Me / B21 | Ballast migration, runtime propeller and tow behavior | Preserve unsupported systems and attributed dynamic observations |
+| VL3 Rotax 915 | README documents different visual/physical blade count | Discrepancy report and explicit RC installation |
+| A32NX | Historical merged SU9 engine-control fix | Custom-runtime and host-build context |
+
+Per-case source links, dates, permissions gaps and proposed fixtures are in [R07–R12](follow-up-24-investigations/aircraft-mod-cases.md). These cases add documentary evidence; no package was imported or flown. The three pinned source inspections below remain separate and retain their original measured scope.
+
 ## Inspected aircraft
 
 Three repositories were inspected at pinned commits. The inspection read repository metadata, source trees and selected UTF-8 files. It did **not** download or decode BIN, DDS, Blender or executable assets. glTF counts below are declared counts from triangle-mode primitive accessors, not decoded-buffer validation, instantiated triangle totals or performance measurements.

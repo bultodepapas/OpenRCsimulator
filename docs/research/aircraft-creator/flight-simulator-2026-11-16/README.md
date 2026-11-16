@@ -8,6 +8,8 @@
 | This investigation | Current import audit, version matrix, findings, alternatives and evidence limits |
 | [Conversion and scaling](conversion-and-scaling.md) | Per-field mapping, units, reference frames, inertia, aerodynamic semantics and RC scaling |
 | [Sources and examples](sources-and-examples.md) | Primary-source register, inspected aircraft and conversion-tool assessment |
+| [24 additional investigations](follow-up-24-investigations/README.md) | Specialist forums, GitHub issues, six aircraft-mod case studies, conditional physics, composition, tools and regressions |
+| [Tool and fixture backlog](follow-up-24-investigations/tooling-and-fixtures.md) | Optional tool decisions, exact experiment boundaries and 24 proposed failure-mechanism fixtures |
 
 ## Findings that determine the design
 
@@ -19,6 +21,12 @@
 6. **2024 needs a separate native-source adapter.** Preset/attachment composition and dynamic parameters add a configuration-resolution problem. StreamedPackages is not necessarily a complete local aircraft. [F10–F14](sources-and-examples.md#format-and-package-sources)
 7. **Asset rights affect the fixture strategy.** Public source code, freeware downloads and purchased aircraft do not establish cross-simulator redistribution rights. Inspected realistic projects have mixed asset terms. Start with project-authored fixtures and separately authorized real examples. [Rights and fixtures](sources-and-examples.md#rights-and-fixture-policy)
 8. **Existing flight qualification remains a dependency.** Creator's AC-12 campaign did not pass its registered gate; Home, portable closure and exported-platform work remain open. Format detection and preview can proceed independently. [Current Creator plan](../../../plans/aircraft-creator.md#6-gates)
+
+## Follow-up findings integrated into the plan
+
+The [24 additional investigations](follow-up-24-investigations/README.md) extend this original audit at branch baseline `ce1216e644bd9916c66fa6ee885984a6e5bef1b5`. They add version-qualified base/overlay resolution, field-specific sign/magnitude/subsystem semantics, explicit model/physics discrepancies, material and LOD completeness evidence, motion-preserving optimization, three-way reimport and a concrete tool/corpus backlog. The six aircraft-mod studies cover C152X/JPLogistics, the MGouge425 and Bagolu C172 modifications, Savage Carbon, AS33 Me, VL3 Rotax 915 and A32NX.
+
+The first release remains readable source data plus a prepared Creator-compatible GLB and an explicitly authored supported RC installation. The follow-up provides stronger acceptance cases; it does not change existing flight qualification, Home or packaged-platform status.
 
 ## Repository audit
 
