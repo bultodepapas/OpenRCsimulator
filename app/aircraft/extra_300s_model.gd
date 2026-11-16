@@ -7,7 +7,7 @@ extends RefCounted
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-e300-11-pilot"
+const VISUAL_REVISION := "gp-extra-300s-60-e300-12-nose"
 const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const COCKPIT := Color("1a1d22")
@@ -34,9 +34,9 @@ static func material(color: Color, roughness := 0.55, metallic := 0.0) -> Standa
 
 
 # Godot front faces are clockwise; order the vertices so the face normal agrees with the outward hint.
-static func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, na: Vector3, nb: Vector3, nc: Vector3, outward: Vector3, uv := [], uv2 := []) -> void:
+static func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, na: Vector3, nb: Vector3, nc: Vector3, outward: Vector3, uv := [], uv2 := [], minimum_face_squared := 1e-14) -> void:
 	var face := (c - a).cross(b - a)
-	if face.length_squared() < 1e-14:
+	if face.length_squared() < minimum_face_squared:
 		return
 	var order := [0, 1, 2] if face.dot(outward) >= 0.0 else [0, 2, 1]
 	var points := [a, b, c]
@@ -67,7 +67,7 @@ static func _surface(mat: Material) -> SurfaceTool:
 # Loft through closed rings that share a point count. Vertex normals come from the grid tangents and are
 # turned away from each ring's centroid; flat caps close the first and last rings when requested.
 # uvs/uv2s (optional): one Array[Vector2] per ring, matching its points; consumed by the procedural finish.
-static func _loft(rings: Array, mat: Material, caps := [true, true], uvs := [], uv2s := [], normal_rows := []) -> ArrayMesh:
+static func _loft(rings: Array, mat: Material, caps := [true, true], uvs := [], uv2s := [], normal_rows := [], minimum_face_squared := 1e-14) -> ArrayMesh:
 	var st := _surface(mat)
 	var count: int = rings[0].size()
 	var centers: Array[Vector3] = []
@@ -95,15 +95,15 @@ static func _loft(rings: Array, mat: Material, caps := [true, true], uvs := [], 
 			var k := (j + 1) % count
 			var out: Vector3 = (rings[i][j] + rings[i + 1][k]) * 0.5 - (centers[i] + centers[i + 1]) * 0.5
 			_tri(st, rings[i][j], rings[i][k], rings[i + 1][k], normals[i][j], normals[i][k], normals[i + 1][k], out,
-				_pick(uvs, [[i, j], [i, k], [i + 1, k]]), _pick(uv2s, [[i, j], [i, k], [i + 1, k]]))
+				_pick(uvs, [[i, j], [i, k], [i + 1, k]]), _pick(uv2s, [[i, j], [i, k], [i + 1, k]]), minimum_face_squared)
 			_tri(st, rings[i][j], rings[i + 1][k], rings[i + 1][j], normals[i][j], normals[i + 1][k], normals[i + 1][j], out,
-				_pick(uvs, [[i, j], [i + 1, k], [i + 1, j]]), _pick(uv2s, [[i, j], [i + 1, k], [i + 1, j]]))
+				_pick(uvs, [[i, j], [i + 1, k], [i + 1, j]]), _pick(uv2s, [[i, j], [i + 1, k], [i + 1, j]]), minimum_face_squared)
 	for end in [0, rings.size() - 1]:
 		if not caps[0 if end == 0 else 1]: continue
 		var axis: Vector3 = (centers[end] - centers[1 if end == 0 else end - 1]).normalized()
 		for j in count:
 			var cap := [[end, -1], [end, j], [end, (j + 1) % count]]
-			_tri(st, centers[end], rings[end][j], rings[end][(j + 1) % count], axis, axis, axis, axis, _pick(uvs, cap), _pick(uv2s, cap))
+			_tri(st, centers[end], rings[end][j], rings[end][(j + 1) % count], axis, axis, axis, axis, _pick(uvs, cap), _pick(uv2s, cap), minimum_face_squared)
 	return st.commit()
 
 
@@ -238,6 +238,7 @@ static func _cowl_fasteners(root: Node3D) -> void:
 static func _cowl_face(nose: Array, root: Node3D) -> void:
 	var face := _surface(Finish.material(Finish.FUSELAGE, D.cowl_rear_z))
 	var ducts := _surface(material(COCKPIT, 0.9))
+	var lips := _surface(Finish.material(Finish.COWL_LIP, D.cowl_rear_z))
 	var z: float = nose[0].z
 	var top := profile(z, 2)
 	var bottom := profile(z, 3)
@@ -251,6 +252,7 @@ static func _cowl_face(nose: Array, root: Node3D) -> void:
 		var center := Vector3(side * half_width * 0.67, (top + bottom) * 0.5, z)
 		var outer: Array[Vector3] = []
 		var mouth: Array[Vector3] = []
+		var directions: Array[Vector2] = []
 		var throat: Array[Vector3] = []
 		# Subdivide the straight edges as well as the corners so the inboard
 		# half of each opening has the same smooth silhouette as the outside.
@@ -264,7 +266,8 @@ static func _cowl_face(nose: Array, root: Node3D) -> void:
 				var direction := Vector2((p.x - center.x) / radius.x, (p.y - center.y) / radius.y).normalized()
 				var offset := Vector3(direction.x * radius.x, direction.y * radius.y, 0)
 				outer.append(p)
-				mouth.append(center + offset + Vector3(0, 0, 0.0015))
+				directions.append(direction)
+				mouth.append(center + offset * 1.08)
 				throat.append(center + offset * 0.85 + Vector3(0, 0, 0.018))
 		for i in outer.size():
 			var j := (i + 1) % outer.size()
@@ -275,13 +278,31 @@ static func _cowl_face(nose: Array, root: Node3D) -> void:
 			var forward := Vector3.FORWARD
 			_tri(face, a, b, c, forward, forward, forward, forward, [Vector2(a.y, a.z), Vector2(b.y, b.z), Vector2(c.y, c.z)])
 			_tri(face, a, c, d, forward, forward, forward, forward, [Vector2(a.y, a.z), Vector2(c.y, c.z), Vector2(d.y, d.z)])
-			var ni := Vector3(center.x - d.x, center.y - d.y, 0).normalized()
-			var nj := Vector3(center.x - c.x, center.y - c.y, 0).normalized()
+			var ni := -Vector3(directions[i].x / radius.x, directions[i].y / radius.y, 0).normalized()
+			var nj := -Vector3(directions[j].x / radius.x, directions[j].y / radius.y, 0).normalized()
+			# Estimated rolled ABS lip: tangent to the flat face and to the duct.
+			# Separate finish mode keeps side artwork off its physical curved normals.
+			for step in 4:
+				var t0 := PI * 0.5 * step / 4.0
+				var t1 := PI * 0.5 * (step + 1) / 4.0
+				var q: Array[Vector3] = []
+				var n: Array[Vector3] = []
+				for pair in [[i, t0], [j, t0], [j, t1], [i, t1]]:
+					var direction := directions[int(pair[0])]
+					var angle: float = pair[1]
+					q.append(center + Vector3(direction.x * radius.x, direction.y * radius.y, 0) * (1.08 - 0.08 * sin(angle)) + Vector3(0, 0, 0.0015 * (1.0 - cos(angle))))
+					# Gradient normal of the elliptical fillet, in metres.
+					n.append(Vector3(-direction.x * sin(angle) / radius.x, -direction.y * sin(angle) / radius.y, -0.08 * cos(angle) / 0.0015).normalized())
+				_tri(lips, q[0], q[1], q[2], n[0], n[1], n[2], n[0] + n[2])
+				_tri(lips, q[0], q[2], q[3], n[0], n[2], n[3], n[0] + n[2])
+			d = center + (d - center) / 1.08 + Vector3(0, 0, 0.0015)
+			c = center + (c - center) / 1.08 + Vector3(0, 0, 0.0015)
 			_tri(ducts, d, c, throat[j], ni, nj, nj, ni + nj)
 			_tri(ducts, d, throat[j], throat[i], ni, nj, ni, ni + nj)
 			_tri(ducts, center + Vector3(0, 0, 0.018), throat[i], throat[j], forward, forward, forward, forward)
 	_instance("cowl_face", face.commit(), root)
 	_instance("cowl_intakes", ducts.commit(), root)
+	_instance("cowl_lips", lips.commit(), root)
 
 
 ## Half-width of the fuselage skin at height y (same corner rounding as _fuselage_ring), for parts seated on it.
@@ -1111,18 +1132,36 @@ static func _propeller(root: Node3D) -> Node3D:
 	thrust.position = Vector3(0, 0, s.back_z)
 	thrust.rotation = Vector3(-deg_to_rad(p.down_thrust_deg), -deg_to_rad(p.right_thrust_deg), 0)
 	root.add_child(thrust)
-	# Spinner: lathe from the back plate (z=0 in this frame) to the tip.
+	# The axisymmetric spinner stays outside the diameter-scaled blade pivot.
+	# Analytic normals avoid the collapsed apex ring's arbitrary UP fallback.
 	var rings: Array = []
+	var normals: Array = []
 	var length: float = s.back_z - s.tip_z
-	for k in 11:
-		var u := float(k) / 10.0
-		var r: float = s.radius * pow(sin(u * PI / 2.0), 0.75)
+	var plate_depth := 0.0008 # estimated finish detail, inside the original envelope
+	var last_u := 1.0 - plate_depth / length
+	for k in 21:
+		var u := last_u * (1.0 - cos(PI * float(k) / 20.0)) * 0.5
+		var radius: float = s.radius * pow(sin(u * PI / 2.0), 0.75)
 		var ring: Array[Vector3] = []
-		for j in 20:
-			var angle := TAU * j / 20.0
-			ring.append(Vector3(r * cos(angle), r * sin(angle), -length * (1.0 - u)))
+		var row: Array[Vector3] = []
+		for j in 40:
+			var angle := TAU * j / 40.0
+			ring.append(Vector3(radius * cos(angle), radius * sin(angle), -length * (1.0 - u)))
+			var normal := Vector3.FORWARD
+			if k > 0:
+				var slope: float = s.radius * 0.75 * PI * 0.5 * cos(u * PI * 0.5) * pow(sin(u * PI * 0.5), -0.25) / length
+				normal = Vector3(cos(angle), sin(angle), -slope).normalized()
+			row.append(normal)
 		rings.append(ring)
-	_instance("spinner", _loft(rings, material(RED, 0.3), [false, true]), thrust) # red, as in the owner's photo
+		normals.append(row)
+	_instance("spinner", _loft(rings, material(RED, 0.28), [false, true], [], [], normals), thrust)
+	# One exposed rim, with its cap at the original back plane. The cone ends
+	# at the front of this rim; there are no overlapping external faces.
+	var back: Array[Vector3] = []
+	for j in 40:
+		var angle := TAU * j / 40.0
+		back.append(Vector3(s.radius * cos(angle), s.radius * sin(angle), 0))
+	_instance("spinner_backplate", _loft([rings[-1], back], material(METAL, 0.28, 0.85)), thrust)
 	var propeller := Node3D.new()
 	propeller.name = "propeller"
 	propeller.position = Vector3(0, 0, p.z - s.back_z)
@@ -1152,8 +1191,14 @@ static func _blade_mesh() -> ArrayMesh:
 	var root: float = p.hub_radius
 	var rings: Array = []
 	var stations := 18
-	for i in stations + 1:
-		var r := lerpf(root, tip, sin(PI / 2.0 * float(i) / stations))
+	var radii: Array[float] = []
+	for i in stations + 1: radii.append(lerpf(root, tip, sin(PI / 2.0 * float(i) / stations)))
+	var round_start := radii[16]
+	for row in p.blade.chord_fraction_of_radius:
+		var radius: float = row[0] * tip
+		if radius > round_start + 0.0000001 and radius < tip and not radii.has(radius): radii.append(radius)
+	radii.sort()
+	for r in radii:
 		var x := r / tip
 		var chord := _table(p.blade.chord_fraction_of_radius, x) * tip
 		var thickness := _table(p.blade.thickness_fraction_of_chord, x) * chord
@@ -1169,7 +1214,20 @@ static func _blade_mesh() -> ArrayMesh:
 			var s := float(k) / 20.0
 			ring.append(Vector3(r, 0, 0) + along * (0.35 - s) * chord - face * thickness * 0.08 * sqrt(s) * (1.0 - s) / 0.385)
 		rings.append(ring)
-	return _loft(rings, material(PROP, 0.45))
+	var normals: Array = []
+	for i in rings.size():
+		var row: Array[Vector3] = []
+		for j in rings[i].size():
+			var around: Vector3 = rings[i][(j + 1) % rings[i].size()] - rings[i][posmod(j - 1, rings[i].size())]
+			var along: Vector3 = rings[mini(i + 1, rings.size() - 1)][j] - rings[maxi(i - 1, 0)][j]
+			var n := around.cross(along)
+			var radial: Vector3 = rings[i][j] - Vector3(radii[i], 0, 0)
+			if n.dot(radial) < 0.0: n = -n
+			row.append(Vector3.RIGHT if i == rings.size() - 1 else n.normalized())
+		normals.append(row)
+	# Tiny closing tip triangles are intentional, far below the general model
+	# cutoff; retain them locally without changing any other mesh's threshold.
+	return _loft(rings, material(PROP, 0.36), [true, false], [], [], normals, 1e-22)
 
 
 ## Manual p43 high rates (inches at the widest part of each surface) as hinge angles: delta = asin(d / r), with r the

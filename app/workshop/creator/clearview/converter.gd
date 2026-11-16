@@ -9,6 +9,7 @@ const Package := preload("package.gd")
 const Ac3d := preload("ac3d.gd")
 const Images := preload("images.gd")
 const Motion := preload("motion.gd")
+const Observations := preload("observations.gd")
 const VERSION := "openrc-clearview-visual-v1"
 const MAX_POLYGON_WORK := 4000000
 var _bin := PackedByteArray()
@@ -31,6 +32,7 @@ var _cancel := Callable()
 var _package: Package
 var _model := {}
 var _scene := {}
+var _parameters := {}
 
 static func convert(package: Package, root: String, cancel := Callable()) -> Dictionary:
 	if package == null:
@@ -51,6 +53,10 @@ static func convert(package: Package, root: String, cancel := Callable()) -> Dic
 	converter._model = model
 	converter._scene = scene.value
 	converter._cancel = cancel
+	var parameters := package.archive().read_member(model.params_member, Observations.Params.MAX_BYTES, cancel)
+	if not parameters.ok:
+		return parameters
+	converter._parameters = Observations.parameter_payload(model.params_member,parameters.value)
 	converter._dependencies = [{member = model.params_member, sha256 = model.params.sha256},
 		{member = model.visual_member, sha256 = CreatorBytes.sha256(bytes.value), case_adjusted = model.case_adjusted}]
 	return converter._convert()
@@ -137,6 +143,8 @@ func _convert() -> Dictionary:
 		original_materials = _scene.materials, observations = _model.params.records, markers = _markers,
 		image_notes = _texture_notes, archive_notes = _package.archive().diagnostics(),coordinate_frames = motion.value}
 	_gltf.asset.extras = {openrc_clearview = receipt}
+	if not _parameters.is_empty():
+		receipt.parameters = _parameters
 	# Empty optional collections are omitted; Creator's validator admits the resulting closed subset.
 	var no_images: bool = _gltf.images.is_empty()
 	for key: String in ["images", "textures", "samplers"]:
@@ -145,6 +153,12 @@ func _convert() -> Dictionary:
 	_gltf.buffers = [{byteLength = _bin.size()}]
 	var label := str(_model.name).validate_filename().left(200) + ".glb"
 	var inspected := _admit(label)
+	if not inspected.ok and receipt.has("parameters") and inspected.diagnostics[0].code == R.SOURCE_LIMIT:
+		# An optional source member must not make an otherwise admitted visual unavailable.
+		receipt.erase("parameters")
+		receipt.parameters_omitted = "metadata_limit"
+		_error = {}
+		inspected = _admit(label)
 	if not inspected.ok and not motion.value.prepared.is_empty():
 		# Optional articulation must not make an otherwise admitted static model unavailable.
 		_gltf.nodes = static_nodes

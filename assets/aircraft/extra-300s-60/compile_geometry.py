@@ -54,7 +54,10 @@ def validate(d):
     assert 0.2 < pr['diameter'] < 0.4 and 0.05 < pr['pitch'] < 0.4 and pr['blades'] == 2 and 0 < pr['hub_radius'] < pr['diameter'] / 4
     for key in ('chord_fraction_of_radius', 'thickness_fraction_of_chord'):
         rows = pr['blade'][key]
-        assert all(a[0] < b[0] for a, b in zip(rows, rows[1:])) and rows[-1][0] == 1.0 and all(0 < r[1] < 0.5 for r in rows), key
+        assert all(a[0] < b[0] for a, b in zip(rows, rows[1:])) and rows[-1][0] == 1.0, key
+        assert all(0 < r[1] < 0.5 for r in rows[:-1]), key
+        # A closed visual blade may taper to zero chord at its outermost point.
+        assert (0 <= rows[-1][1] < 0.5 if key == 'chord_fraction_of_radius' else 0 < rows[-1][1] < 0.5), key
     pl = d['pilot']
     assert pl['chin'][1] < pl['nose_front'][1] < pl['cap_brim_front'][1] < pl['cap_top'][1] and pl['nose_front'][0] < pl['head_back'][0]
     assert pl['shoulder_front'][0] < pl['shoulder_back'][0] and 0 < pl['head_half_width'] < pl['shoulder_half_width'] < 0.06

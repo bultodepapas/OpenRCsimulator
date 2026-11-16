@@ -12739,3 +12739,57 @@ msgstr "ヒンジ「%s」：親の変更が精度または階層の制限を超�
 
 msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
 msgstr "ヒンジ「%s」：準備したモデルは拒否されました。元の静的な階層を保持しました。"
+
+msgid "Inspect source declarations"
+msgstr "元の宣言を確認"
+
+msgid "Source declarations are references, not measurements. They do not change the flight configuration."
+msgstr "元の宣言は参考情報であり、測定値ではありません。飛行設定は変更されません。"
+
+msgid "Parameter contents checked. ZIP membership is declared; physical values are unverified."
+msgstr "パラメーターの内容を確認しました。ZIPへの所属は宣言のみで、物理値は未検証です。"
+
+msgid "Unit documented for ClearView v5"
+msgstr "ClearView v5で文書化された単位"
+
+msgid "Unit inferred; confirm independently"
+msgstr "単位は推定です。別途確認してください"
+
+msgid "Unit or meaning unresolved"
+msgstr "単位または意味は未確定"
+
+msgid "Repeated declaration; no value selected"
+msgstr "宣言が重複しているため、値は選択されていません"
+
+msgid "Declaration shortened for display"
+msgstr "表示用に宣言を短縮しました"
+
+msgid "Some declarations are omitted from this view. The original parameters are retained with the model."
+msgstr "一部の宣言は表示されていません。元のパラメーターはモデルと共に保持されています。"
+
+msgid "Parameter file: %s"
+msgstr "パラメーターファイル: %s"
+
+msgid "Parameter SHA-256: %s"
+msgstr "パラメーターのSHA-256: %s"
+
+msgid "%s · line %s"
+msgstr "%s · %s行目"
+
+msgid "Original parameter bytes are absent. Re-import the ZIP to review source declarations."
+msgstr "元のパラメーターがありません。ZIPを再インポートして宣言を確認してください。"
+
+msgid "The source declarations could not be checked. Re-import the ZIP."
+msgstr "元の宣言を確認できませんでした。ZIPを再インポートしてください。"
+
+msgid "The original parameters exceed the converted model's metadata limit. Source declarations are unavailable for this model."
+msgstr "元のパラメーターが変換モデルのメタデータ上限を超えています。このモデルでは元の宣言を表示できません。"
+
+msgid "The saved source declarations do not match this model. Re-import the ZIP."
+msgstr "保存された宣言がモデルと一致しません。ZIPを再インポートしてください。"
+
+msgid "The compiled definition changed. Review the aircraft and save again."
+msgstr "コンパイル済み定義が変更されました。機体を確認して再保存してください。"
+
+msgid "Source observations require the versioned definition format."
+msgstr "元の観測情報にはバージョン付き定義形式が必要です。"

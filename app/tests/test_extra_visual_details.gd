@@ -10,7 +10,9 @@ func _run() -> void:
 	var ducts := root.get_node("cowl_intakes") as MeshInstance3D
 	var z: float = Geometry.DATA.fuselage_stations[0][0]
 	var center_y := (Extra.profile(z, 2) + Extra.profile(z, 3)) * 0.5
+	var lips := root.get_node("cowl_lips") as MeshInstance3D
 	var faces := face.mesh.get_faces()
+	faces.append_array(lips.mesh.get_faces())
 	for side in [-1.0, 1.0]:
 		var center := Vector2(side * Extra.profile(z, 1) * 0.67, center_y)
 		var covered := false
@@ -20,6 +22,33 @@ func _run() -> void:
 			covered = covered or Geometry2D.is_point_in_polygon(center, triangle)
 		_check("cooling opening %s is open through the front face" % side, not covered)
 	_check("cooling throats are recessed", ducts.get_aabb().end.z > z + 0.015)
+	var lip_bounds := lips.get_aabb()
+	_check("painted intake lips have real curved depth", lip_bounds.size.z > 0.0014 and lip_bounds.size.z < 0.0016)
+	var spinner := root.get_node("thrust_frame/spinner") as MeshInstance3D
+	var backplate := root.get_node("thrust_frame/spinner_backplate") as MeshInstance3D
+	_check("spinner cone is closed with finite outward unit normals", _closed_surface(spinner))
+	_check("spinner backplate is closed with finite outward unit normals", _closed_surface(backplate))
+	var spinner_data: Dictionary = Geometry.DATA.spinner
+	var spin_arrays := spinner.mesh.surface_get_arrays(0)
+	var spin_points: PackedVector3Array = spin_arrays[Mesh.ARRAY_VERTEX]
+	var spin_normals: PackedVector3Array = spin_arrays[Mesh.ARRAY_NORMAL]
+	var apex_ok := true
+	var apex_count := 0
+	for i in spin_points.size():
+		if absf(spin_points[i].z - (float(spinner_data.tip_z) - float(spinner_data.back_z))) < 0.000001:
+			apex_count += 1
+			apex_ok = apex_ok and spin_normals[i].dot(Vector3.FORWARD) > 0.99999
+	_check("spinner apex shades along the shaft", apex_ok and apex_count >= 20)
+	_check("spinner retains its measured tip", absf(spinner.get_aabb().position.z - (float(spinner_data.tip_z) - float(spinner_data.back_z))) < 0.000001)
+	_check("backplate retains the measured radius and back plane", absf(backplate.get_aabb().end.z) < 0.000001 and absf(backplate.get_aabb().size.x - 2.0 * float(spinner_data.radius)) < 0.000001)
+	var cowl_gap := INF
+	for point in _vertices(backplate): cowl_gap = minf(cowl_gap, z - point.z)
+	_check("tilted spinner backplate clears the cowl front plane", cowl_gap > 0.0005, "%.3f mm" % (cowl_gap * 1000.0))
+	var spinner_transform := spinner.global_transform
+	var backplate_transform := backplate.global_transform
+	_check("alternate blade diameter applies", AirplaneBuilder.apply_propeller_diameter(airplane, float(Geometry.DATA.propeller.diameter) * 1.15))
+	_check("blade diameter leaves spinner and backplate unchanged", spinner.global_transform.is_equal_approx(spinner_transform) and backplate.global_transform.is_equal_approx(backplate_transform))
+	AirplaneBuilder.apply_propeller_diameter(airplane, float(Geometry.DATA.propeller.diameter))
 	var gear: Dictionary = Geometry.DATA.gear
 	for entry in [["left", gear.main_wheel_diameter, 0.022], ["right", gear.main_wheel_diameter, 0.022],
 		["tail", gear.tail_wheel_diameter, 0.01]]:
@@ -49,6 +78,14 @@ func _run() -> void:
 	var stock := second.root.get_node("cowl_face").get_active_material(0) as ShaderMaterial
 	_check("cowl face follows body paint", Color(painted.get_shader_parameter("red")).is_equal_approx(Color("#00A088FF")))
 	_check("cowl paint is isolated between instances", painted != stock and Color(stock.get_shader_parameter("red")).is_equal_approx(Extra.RED))
+	var lip_paint := lips.get_active_material(0) as ShaderMaterial
+	var stock_lips := second.root.get_node("cowl_lips").get_active_material(0) as ShaderMaterial
+	_check("rounded intake lips follow body paint", Color(lip_paint.get_shader_parameter("red")).is_equal_approx(Color("#00A088FF")))
+	_check("intake lip paint is isolated", lip_paint != stock_lips and Color(stock_lips.get_shader_parameter("red")).is_equal_approx(Extra.RED))
+	var spinner_paint := spinner.get_active_material(0) as StandardMaterial3D
+	var stock_spinner := second.root.get_node("thrust_frame/spinner").get_active_material(0) as StandardMaterial3D
+	_check("spinner follows body paint", spinner_paint.albedo_color.is_equal_approx(Color("#00A088FF")))
+	_check("spinner paint is isolated", spinner_paint != stock_spinner and stock_spinner.albedo_color.is_equal_approx(Extra.RED))
 	var frame := root.get_node("canopy_frame") as MeshInstance3D
 	var frame_paint := frame.get_active_material(0) as ShaderMaterial
 	var stock_frame := second.root.get_node("canopy_frame").get_active_material(0) as ShaderMaterial

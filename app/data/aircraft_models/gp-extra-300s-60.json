@@ -27,7 +27,7 @@
     "script": "res://aircraft/extra_300s_geometry.gd",
     "source": {
       "path": "assets/aircraft/extra-300s-60/geometry.json",
-      "sha256": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c",
+      "sha256": "be54601e12f1e774b7e2d06853d139fa465fee36fcadc7313993ece48ee26954",
       "hash_mode": "lf_text"
     },
     "revision": "gp-extra-300s-60-v1",
@@ -117,7 +117,7 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/extra-300s-60/geometry.json",
-      "sha256": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c",
+      "sha256": "be54601e12f1e774b7e2d06853d139fa465fee36fcadc7313993ece48ee26954",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
@@ -137,19 +137,19 @@
     },
     {
       "path": "res://aircraft/extra_300s_finish.gd",
-      "sha256": "6fc532495d020cf5b20c80b76ea3342c6823c59d6092fdbf6f01040273a8ddab",
+      "sha256": "a058e96f2eec1e580420fcb924209130ab9ee1cf82c8ddca1b6782f5c138a411",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
     {
       "path": "res://aircraft/extra_300s_geometry.gd",
-      "sha256": "4ea01c5ba8f546224faeb4f1a3a3ad5b6e3cf7848acf7a19b06a0587275c6f42",
+      "sha256": "1dd2f17e043ca11929d37af1226c60b3246564cd3f3344ad868d7c63209ea555",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },
     {
       "path": "res://aircraft/extra_300s_model.gd",
-      "sha256": "940d6d587338e4beb3fd763c3ed52de6d4c9cb2c49412e1bd5d990d41f7f993a",
+      "sha256": "fe599814f8130cb5a840b4b1c714b2034ecd32cad7635d8de18d309dd7af8749",
       "hash_mode": "lf_text",
       "role": "builder"
     }

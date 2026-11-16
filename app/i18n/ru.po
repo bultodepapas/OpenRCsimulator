@@ -13489,3 +13489,57 @@ msgstr "Шарнир «%s»: новая иерархия превысила пр
 
 msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
 msgstr "Шарнир «%s»: подготовленная модель отклонена. Исходная статическая иерархия сохранена."
+
+msgid "Inspect source declarations"
+msgstr "Проверить исходные сведения"
+
+msgid "Source declarations are references, not measurements. They do not change the flight configuration."
+msgstr "Исходные сведения служат справкой, а не измерениями. Они не меняют конфигурацию полёта."
+
+msgid "Parameter contents checked. ZIP membership is declared; physical values are unverified."
+msgstr "Содержимое параметров проверено. Принадлежность ZIP заявлена; физические значения не проверены."
+
+msgid "Unit documented for ClearView v5"
+msgstr "Единица документирована для ClearView v5"
+
+msgid "Unit inferred; confirm independently"
+msgstr "Единица предположена; проверьте независимо"
+
+msgid "Unit or meaning unresolved"
+msgstr "Единица или смысл не установлены"
+
+msgid "Repeated declaration; no value selected"
+msgstr "Повторное объявление; значение не выбрано"
+
+msgid "Declaration shortened for display"
+msgstr "Объявление сокращено для отображения"
+
+msgid "Some declarations are omitted from this view. The original parameters are retained with the model."
+msgstr "Часть сведений здесь не показана. Исходные параметры сохранены с моделью."
+
+msgid "Parameter file: %s"
+msgstr "Файл параметров: %s"
+
+msgid "Parameter SHA-256: %s"
+msgstr "SHA-256 параметров: %s"
+
+msgid "%s · line %s"
+msgstr "%s · строка %s"
+
+msgid "Original parameter bytes are absent. Re-import the ZIP to review source declarations."
+msgstr "Исходные параметры отсутствуют. Импортируйте ZIP повторно для просмотра сведений."
+
+msgid "The source declarations could not be checked. Re-import the ZIP."
+msgstr "Не удалось проверить исходные сведения. Импортируйте ZIP повторно."
+
+msgid "The original parameters exceed the converted model's metadata limit. Source declarations are unavailable for this model."
+msgstr "Исходные параметры превышают лимит метаданных преобразованной модели. Исходные сведения для этой модели недоступны."
+
+msgid "The saved source declarations do not match this model. Re-import the ZIP."
+msgstr "Сохранённые сведения не соответствуют модели. Импортируйте ZIP повторно."
+
+msgid "The compiled definition changed. Review the aircraft and save again."
+msgstr "Скомпилированное описание изменилось. Проверьте самолёт и сохраните снова."
+
+msgid "Source observations require the versioned definition format."
+msgstr "Исходные наблюдения требуют версионного формата описания."

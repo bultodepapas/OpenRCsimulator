@@ -405,7 +405,7 @@ func _paint(wizard: Control, doc: Authoring) -> void:
 		str(doc.appearance()))
 
 
-## Save draft, Ctrl+S, a stale save, and two published versions. Returns what a reopen must match.
+## Save draft, the platform shortcut, a stale save and two published versions. Returns what a reopen must match.
 func _save_and_publish(wizard: Control, saved: Dictionary) -> Dictionary:
 	var doc: Authoring = saved.doc
 	var save := _find(wizard, "SaveDraft") as Button
@@ -423,7 +423,7 @@ func _save_and_publish(wizard: Control, saved: Dictionary) -> Dictionary:
 	check("after saving nothing is unsaved", not wizard.has_unsaved_changes() and not doc.has_unsaved_changes()
 		and (_find(wizard, "SaveState") as Label).text == Creator.STATE_SAVED and _note(wizard).is_empty())
 
-	# Ctrl+S saves the next change.
+	# Command+S on macOS, Control+S elsewhere: the same player action on each native platform.
 	var first_hash := doc.saved_record_sha256
 	_type(name_edit, NAME + " 2")
 	await _settle()
@@ -431,7 +431,8 @@ func _save_and_publish(wizard: Control, saved: Dictionary) -> Dictionary:
 	var key := InputEventKey.new()
 	key.keycode = KEY_S
 	key.physical_keycode = KEY_S
-	key.ctrl_pressed = true
+	key.ctrl_pressed = OS.get_name() != "macOS"
+	key.meta_pressed = OS.get_name() == "macOS"
 	key.pressed = true
 	Input.parse_input_event(key)
 	await _settle()
@@ -439,7 +440,7 @@ func _save_and_publish(wizard: Control, saved: Dictionary) -> Dictionary:
 	released.pressed = false
 	Input.parse_input_event(released)
 	await _settle()
-	check("Ctrl+S saves the draft", not wizard.has_unsaved_changes() and doc.saved_record_sha256 != first_hash
+	check("the platform save shortcut saves the draft", not wizard.has_unsaved_changes() and doc.saved_record_sha256 != first_hash
 		and str(_library().drafts[0].name) == NAME + " 2")
 	var second_hash := doc.saved_record_sha256
 

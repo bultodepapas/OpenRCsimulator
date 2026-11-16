@@ -33,6 +33,17 @@ func _run() -> void:
 	var blade: MeshInstance3D = airplane.propeller.get_node("blade_a")
 	var vertices: PackedVector3Array = blade.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = blade.mesh.surface_get_arrays(0)[Mesh.ARRAY_NORMAL]
+	var tip_x := float(Geometry.DATA.propeller.diameter) * 0.5
+	var tip_points := 0
+	var tip_closed := true
+	var finite_normals := normals.size() == vertices.size()
+	for i in vertices.size():
+		finite_normals = finite_normals and vertices[i].is_finite() and normals[i].is_finite() and absf(normals[i].length() - 1.0) < 0.001
+		if absf(vertices[i].x - tip_x) < 0.0000001:
+			tip_points += 1
+			tip_closed = tip_closed and Vector2(vertices[i].y, vertices[i].z).length() < 0.0000001 and normals[i].dot(Vector3.RIGHT) > 0.999
+	check("rounded tip closes at the authored radius with axial normals", tip_closed and tip_points >= 20)
+	check("all emitted blade vertices and normals are finite and unit length", finite_normals)
 	var aligned_area := 0.0
 	var total_area := 0.0
 	var raw_indices = blade.mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX]
@@ -48,6 +59,20 @@ func _run() -> void:
 		total_area += face.length()
 		if face.dot(normals[a] + normals[b] + normals[c]) >= 0.0:
 			aligned_area += face.length()
+	var edges := {}
+	for first in range(0, indices.size(), 3):
+		var keys := []
+		for k in 3:
+			var point := vertices[indices[first + k]]
+			keys.append("%.9f,%.9f,%.9f" % [point.x, point.y, point.z])
+		for k in 3:
+			var pair := [keys[k], keys[(k + 1) % 3]]
+			pair.sort()
+			var key := "%s/%s" % pair
+			edges[key] = int(edges.get(key, 0)) + 1
+	var watertight := not edges.is_empty()
+	for count in edges.values(): watertight = watertight and count == 2
+	check("blade root and rounded tip have no open triangle edges", watertight)
 	check("mesh supplies complete triangles and normals", indices.size() % 3 == 0 and normals.size() == vertices.size())
 	# The inherited loft has tiny tip/edge triangles whose smooth vertex normals disagree.
 	# This gate detects an inverted surface while retaining that existing 0.18 percent area.

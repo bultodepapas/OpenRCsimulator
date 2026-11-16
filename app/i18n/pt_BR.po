@@ -13527,3 +13527,57 @@ msgstr "Dobradiça «%s»: a alteração de hierarquia excedeu os limites de pre
 
 msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
 msgstr "Dobradiça «%s»: o modelo preparado foi recusado. A hierarquia estática original foi preservada."
+
+msgid "Inspect source declarations"
+msgstr "Revisar declarações de origem"
+
+msgid "Source declarations are references, not measurements. They do not change the flight configuration."
+msgstr "As declarações de origem são referências, não medições. Não alteram a configuração de voo."
+
+msgid "Parameter contents checked. ZIP membership is declared; physical values are unverified."
+msgstr "Conteúdo dos parâmetros verificado. A origem no ZIP é declarada; os valores físicos não foram verificados."
+
+msgid "Unit documented for ClearView v5"
+msgstr "Unidade documentada para ClearView v5"
+
+msgid "Unit inferred; confirm independently"
+msgstr "Unidade inferida; confirme de forma independente"
+
+msgid "Unit or meaning unresolved"
+msgstr "Unidade ou significado não resolvido"
+
+msgid "Repeated declaration; no value selected"
+msgstr "Declaração repetida; nenhum valor selecionado"
+
+msgid "Declaration shortened for display"
+msgstr "Declaração abreviada para exibição"
+
+msgid "Some declarations are omitted from this view. The original parameters are retained with the model."
+msgstr "Esta visualização omite algumas declarações. Os parâmetros originais são mantidos com o modelo."
+
+msgid "Parameter file: %s"
+msgstr "Arquivo de parâmetros: %s"
+
+msgid "Parameter SHA-256: %s"
+msgstr "SHA-256 dos parâmetros: %s"
+
+msgid "%s · line %s"
+msgstr "%s · linha %s"
+
+msgid "Original parameter bytes are absent. Re-import the ZIP to review source declarations."
+msgstr "Os parâmetros originais estão ausentes. Importe o ZIP novamente para revisar as declarações de origem."
+
+msgid "The source declarations could not be checked. Re-import the ZIP."
+msgstr "Não foi possível verificar as declarações de origem. Importe o ZIP novamente."
+
+msgid "The original parameters exceed the converted model's metadata limit. Source declarations are unavailable for this model."
+msgstr "Os parâmetros originais excedem o limite de metadados do modelo convertido. As declarações de origem não estão disponíveis para este modelo."
+
+msgid "The saved source declarations do not match this model. Re-import the ZIP."
+msgstr "As declarações salvas não correspondem a este modelo. Importe o ZIP novamente."
+
+msgid "The compiled definition changed. Review the aircraft and save again."
+msgstr "A definição compilada mudou. Revise a aeronave e salve novamente."
+
+msgid "Source observations require the versioned definition format."
+msgstr "As observações de origem exigem o formato de definição com versão."

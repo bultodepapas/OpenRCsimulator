@@ -1,6 +1,6 @@
 # ClearView aircraft import plan
 
-**Date:** 2026-11-15. **Status:** implementation in progress; bounded readers, an experimental visual adapter and conservative v6 hinge proposals are integrated. Flight, Home, portable-source and exported-platform gates remain open. **Owner:** Aircraft Creator / Workshop. **Steps:** AC-CV-00…14, a subtrack of AC. The [research and source inventory](../research/aircraft-creator/clearview-2026-11-15.md) records the inspected downloads, primary documentation, source identities and limits. The [Creator plan](aircraft-creator.md) continues to own AC-00…25 and its gates.
+**Date:** 2026-11-15; updated 2026-11-16. **Status:** implementation in progress; bounded readers, an experimental visual adapter, conservative v6 hinge proposals and source-declaration review are integrated. Flight, Home, portable-source and exported-platform gates remain open. **Owner:** Aircraft Creator / Workshop. **Steps:** AC-CV-00…14, a subtrack of AC. The [research and source inventory](../research/aircraft-creator/clearview-2026-11-15.md) records the inspected downloads, primary documentation, source identities and limits. The [Creator plan](aircraft-creator.md) continues to own AC-00…25 and its gates.
 
 ## 1. Product outcome
 
@@ -136,7 +136,7 @@ Player flow: **Workshop → Import ClearView ZIP → choose model → inspect co
 
 ## 7. Work packages and acceptance
 
-AC-CV-01 has a bounded reader implementation and synthetic/corpus evidence. AC-CV-02/03 have an experimental conversion and Creator integration slice; their fidelity, resource and exported-target gates remain open. AC-CV-04 has four-point render-frame recognition, exact provenance, conservative v6 visual hinge proposals and manual group bindings. V5 hinge/propeller semantics, independent animation comparison and exported evidence remain open. AC-CV-00 is partial, and AC-CV-05…14 remain open. The [implementation evidence](../research/aircraft-creator/clearview-2026-11-15.md#7-implementation-evidence) distinguishes implemented behavior from qualification. No whole step is marked complete by these slices.
+AC-CV-01 has a bounded reader implementation and synthetic/corpus evidence. AC-CV-02/03 have an experimental conversion and Creator integration slice; their fidelity, resource and exported-target gates remain open. AC-CV-04 has four-point render-frame recognition, exact provenance, conservative v6 visual hinge proposals and manual group bindings. V5 hinge/propeller semantics, independent animation comparison and exported evidence remain open. AC-CV-05 has a versioned read-only source report; parameter adoption remains open. AC-CV-00 is partial, and AC-CV-06…14 remain open. The [implementation evidence](../research/aircraft-creator/clearview-2026-11-15.md#7-implementation-evidence) distinguishes implemented behavior from qualification. No whole step is marked complete by these slices.
 
 | ID | Work | Acceptance evidence / dependency |
 | --- | --- | --- |

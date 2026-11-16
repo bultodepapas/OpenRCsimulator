@@ -14,6 +14,8 @@ const Limits := preload("res://workshop/creator/limits.gd")
 const Packages := preload("res://workshop/creator/packages.gd")
 
 const FORMAT := "openrc-creator-definition v1"
+const SOURCE_FORMAT := "openrc-creator-definition v2"
+const Observations := preload("res://workshop/creator/clearview/observations.gd")
 const AIRCRAFT_ID_PREFIX := "user-aircraft-"
 ## Placeholder identity of template(): the caller replaces it with a fresh UUID for a real aircraft.
 const TEMPLATE_UUID := "00000000-0000-4000-8000-000000000000"
@@ -100,9 +102,16 @@ static func validate_complete(definition: Dictionary) -> Dictionary:
 	var out: Array = []
 	var stated := definition.duplicate()
 	stated.erase("evidence")
+	stated.erase("source_observations")
 	_closed(out, stated, "", KEYS, STEP_REVIEW)
 	_evidence(out, definition)
-	if definition.has("format") and definition.get("format") != FORMAT:
+	if definition.get("format") == SOURCE_FORMAT:
+		var observed := Observations.validate(definition.get("source_observations"))
+		if not observed.ok:
+			out.append_array(observed.diagnostics)
+	elif definition.has("source_observations"):
+		out.append(R.diagnostic(R.FIELD_INVALID,"Source observations require the versioned definition format.","source_observations",STEP_REVIEW))
+	if definition.has("format") and definition.get("format") not in [FORMAT,SOURCE_FORMAT]:
 		out.append(R.diagnostic(R.FIELD_INVALID, "The definition format must be %s.", "format", STEP_REVIEW, [FORMAT]))
 	if definition.has("aircraft_uuid") and not _matches(definition.get("aircraft_uuid"), UUID_PATTERN):
 		out.append(R.diagnostic(R.FIELD_INVALID, "The aircraft identity must be a lowercase version 4 UUID.",

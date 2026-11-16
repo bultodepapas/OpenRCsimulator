@@ -29,6 +29,8 @@ const STATUS_NEEDS_ATTENTION := "Needs attention"
 const STATUS_COMPLETE := "Complete"
 
 const SNAPSHOT_FORMAT := "openrc-creator-document v1"
+const SOURCE_SNAPSHOT_FORMAT := "openrc-creator-document v2"
+const Observations := preload("res://workshop/creator/clearview/observations.gd")
 const AIRFRAME_PACKAGE := "conventional-trainer-estimated-v1"
 const POWER_PACKAGE := "electric-4s-800kv-apc12x6-estimated-v1"
 
@@ -92,6 +94,7 @@ var _invalid := {}
 ## Field path -> "estimated" for values the starting-values action supplied and the player has not
 ## typed or confirmed. Anything the player enters is theirs and is removed from this map.
 var _origin := {}
+var _source_observations := {}
 var _inventory: Array = []
 var _compiled := {}
 var _compiled_revision := -1
@@ -160,7 +163,10 @@ func aircraft_uuid() -> String:
 
 ## Adopts a newly admitted source. The placement and the part bindings are reset: axes, units,
 ## datum and node indices belong to a file. The paint choice is kept.
-func set_source(admitted: InspectedSource) -> void:
+func set_source(admitted: InspectedSource, observations: Observations.CheckedReport = null) -> void:
+	_source_observations = {}
+	if observations != null and observations.matches(admitted):
+		_source_observations = observations.context()
 	_source = admitted
 	_placement = Placement.unresolved()
 	_units = ""
@@ -170,6 +176,11 @@ func set_source(admitted: InspectedSource) -> void:
 
 func placement() -> Dictionary:
 	return _placement.duplicate(true)
+
+
+## References only. No observation is adopted into a physical field in this version.
+func source_observations() -> Dictionary:
+	return _source_observations.duplicate(true)
 
 
 func units() -> String:
@@ -430,7 +441,7 @@ func snapshot(step := "") -> Dictionary:
 	for item: Dictionary in _inventory:
 		items.append({"id": str(item.id), "name": str(item.name), "kind": str(item.kind), "mass": exact(float(item.mass)),
 			"position": _exact_point(item.position), "size": _exact_point(item.size)})
-	return {
+	var saved := {
 		"format": SNAPSHOT_FORMAT, "aircraft_uuid": _uuid, "name": name, "step": step,
 		"source_sha256": _source.sha256() if _source != null else "",
 		"placement": {"nose_axis": str(_placement.nose_axis), "up_axis": str(_placement.up_axis),
@@ -440,15 +451,25 @@ func snapshot(step := "") -> Dictionary:
 		"bindings": _bindings.duplicate(true), "appearance": _appearance.duplicate(true),
 		"published_revision": published_revision,
 	}
+	if not _source_observations.is_empty():
+		saved.format = SOURCE_SNAPSHOT_FORMAT
+		saved.source_observations = _source_observations.duplicate(true)
+	return saved
 
 
 ## Rebuilds the document from a snapshot and the re-admitted source (null when the draft had no
 ## model yet). Nothing is taken on trust: unknown fields are dropped, numbers must be finite, and
 ## a source whose identity differs from the one the snapshot was saved with is refused.
 ## Returns the R envelope; on failure the document is unchanged.
-func restore(saved: Dictionary, admitted: InspectedSource) -> Dictionary:
-	if str(saved.get("format", "")) != SNAPSHOT_FORMAT:
+func restore(saved: Dictionary, admitted: InspectedSource, observations: Observations.CheckedReport = null) -> Dictionary:
+	if saved.get("format") not in [SNAPSHOT_FORMAT,SOURCE_SNAPSHOT_FORMAT]:
 		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
+	var context := {}
+	if saved.format == SOURCE_SNAPSHOT_FORMAT:
+		var checked := Observations.validate(saved.get("source_observations"))
+		if not checked.ok or observations == null or not observations.matches(admitted) or checked.value != observations.context():
+			return R.fail(R.IDENTITY_MISMATCH, "The saved source declarations do not match this model. Re-import the ZIP.","source_observations","import")
+		context = checked.value
 	var wanted := str(saved.get("source_sha256", ""))
 	if (admitted == null) != wanted.is_empty() or (admitted != null and admitted.sha256() != wanted):
 		return R.fail(R.IDENTITY_MISMATCH, "The saved model does not match this draft.")
@@ -512,6 +533,7 @@ func restore(saved: Dictionary, admitted: InspectedSource) -> Dictionary:
 	_uuid = uuid
 	name = clean_text(str(saved.get("name", ""))).substr(0, Limits.NAME_CHARACTERS)
 	_source = admitted
+	_source_observations = context
 	_placement = placed
 	_units = str(saved.get("units", "")) if Placement.UNITS.has(str(saved.get("units", ""))) else ""
 	_values = values
@@ -683,6 +705,9 @@ func definition() -> Dictionary:
 		evidence[group if _VECTORS.has(group) else path] = "estimated"
 	if not evidence.is_empty():
 		record["evidence"] = evidence
+	if not _source_observations.is_empty():
+		record.format = Definition.SOURCE_FORMAT
+		record.source_observations = _source_observations.duplicate(true)
 	return record
 
 
