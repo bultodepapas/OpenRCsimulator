@@ -6,6 +6,8 @@ Read the [implementation plan](../../plans/multiplayer.md) for decisions, phases
 
 **Follow-up, 2026-11-16:** [round two](round-2.md) supersedes the initial packet/timing and directory-cap assumptions. The [EOS trial](eos-trial.md) records source-level wrapper adoption blockers; the [current protocol contract](../../plans/multiplayer-protocol.md) owns exact implementation targets. The dated comparison below is retained as the initial evidence.
 
+**Practical reuse, 2026-11-16:** [twenty investigations](round-3-20-investigations.md) evaluate examples, libraries, tools and tutorials with concrete experiments and stop rules. They add synthetic packet vectors, correct fixed-datum semantics, start interpolation without extrapolation, hold unsafe UPnP automation and record newer `main` drift. No multiplayer runtime or provider qualification is claimed.
+
 ## Conclusions
 
 The useful no-spend baseline is **player-hosted ENet**. It needs no hosted account for LAN or reachable direct sessions and fits the existing native engine. Private rooms are application behavior, not a paid hosting feature. The main engineering work is replica presentation, lifecycle, compatibility, timing and testing.
@@ -34,7 +36,7 @@ This survey covers the relevant **families of multiplayer systems** and represen
 | Two-machine LAN | Host/join/leave, compatibility and replica lifecycle | Same subnet; firewall/AP isolation can still interfere | First supported live product |
 | LAN discovery | Bounded broadcast/multicast and responses | May be blocked on guest Wi-Fi/VPN; direct address remains | Convenience after manual LAN works |
 | Direct public IP / IPv6 | Same ENet data plane plus diagnostics | Publicly reachable UDP, correct firewall/port mapping; IPv6 on both ends where used | Qualified advanced access route |
-| UPnP-assisted direct IP | Async mapping attempt and owned cleanup | Router feature only; no ISP-CGNAT control | Optional, explicit and timeout-bounded |
+| UPnP-assisted direct IP | Mapping attempt and provably owned cleanup | A local mapping alone does not prove reachability through ISP CGNAT; interworking support unverified | Held behind ownership/cancellation proof; [round-three findings](round-3-20-investigations.md#14-upnp-ownership-and-alternative-mapping-protocols) |
 | Private virtual LAN | Existing ENet over tester-managed VPN | External software, membership, service terms and possible relay latency | Optional friendly-test access |
 | Four-player private room | Roster, settings, ready/late join, host powers and cleanup | Can live entirely on the listen host | Core product milestone |
 | Directory / short room code | Discovery, TTL, admission and rate controls | Resolves metadata; host can still be unreachable | Later convenience; separate from connectivity |

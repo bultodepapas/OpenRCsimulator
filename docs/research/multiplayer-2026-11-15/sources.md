@@ -64,3 +64,7 @@ The [repository audit](repository-audit.md) cites the immutable project commit d
 ## Follow-up evidence, 2026-11-16
 
 The original 46-URL register above remains the first-pass source set. The [round-two report](round-2.md) links the added Cloudflare rate-limiter, spending-control, SQLite cursor and lifecycle documentation alongside the corrected calculations. The [EOS trial](eos-trial.md) retains immutable EOSG 2.3.1 source links and Epic identity/policy/relay references. The [protocol contract](../../plans/multiplayer-protocol.md) cites Godot's pinned `cafc17a19` source for polling, root paths, automatic relay, channels and cleanup, plus the audited OpenRC presentation/session interfaces. Follow-up source facts do not establish runtime qualification.
+
+## Twenty practical investigations, 2026-11-16
+
+The [round-three report](round-3-20-investigations.md) keeps each primary reference beside its decision and experiment: official Godot demos, netfox/noray, native WebRTC, Valve GNS, Nakama/Colyseus, Linux network tools, Wireshark, test frameworks/fuzzers, current GitHub/Cloudflare/VPN terms, coturn/RFCs, and OpenRC's own trace/manifest/debug sources. Immutable source pins are used for consequential code findings; moving manuals/service terms carry the research date and require rechecking before adoption. The report is the single source register for this round rather than a duplicated URL list. Source-reading and synthetic Python vectors do not establish engine/export/network compatibility.

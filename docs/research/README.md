@@ -54,6 +54,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 [Zero-spend multiplayer research, 2026-11-15](multiplayer-2026-11-15/README.md) compares local/LAN/direct/overlay, rooms, P2P/relay and managed services against the native Godot source. Includes a pinned repository audit, primary references, explicit free-tier limits, traffic calculations and evidence limits. The [MP implementation plan](../plans/multiplayer.md) owns phased work, protocol/lifecycle decisions and acceptance; no multiplayer runtime is delivered by this research. [Round two, 2026-11-16](multiplayer-2026-11-15/round-2.md) adds pinned Godot/EOSG source findings, a concrete LAN contract, an EOS adoption gate and a reproducible directory-write/delay model.
 
+[Twenty practical investigations, 2026-11-16](multiplayer-2026-11-15/round-3-20-investigations.md) evaluate reusable demos, libraries, tools and tutorials, with per-topic experiments, costs and stop rules. Includes synthetic packet vectors, fixed-datum/timing corrections, UPnP ownership limits, existing-tool reuse and a current-main drift check; runtime phases remain pending.
+
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.

@@ -13,7 +13,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Which tool to run for a task; debugging playbooks | [Tool index](tools/README.md) |
 | Record flight handling, replay and compare a physics change | [Flight logging manual](FLIGHT-LOGGING.md) |
 | Implemented architecture, boundaries and repository layout | [STACK](STACK.md) |
-| Zero-spend multiplayer, from LAN to private/online rooms | [Multiplayer implementation plan](plans/multiplayer.md); [first LAN protocol](plans/multiplayer-protocol.md); [research and follow-up](research/multiplayer-2026-11-15/README.md) |
+| Zero-spend multiplayer, from LAN to private/online rooms | [Multiplayer implementation plan](plans/multiplayer.md); [first LAN protocol](plans/multiplayer-protocol.md); [twenty practical investigations](research/multiplayer-2026-11-15/round-3-20-investigations.md); [research index](research/multiplayer-2026-11-15/README.md) |
 | Contribution workflow and durable agent rules | [CONTRIBUTING](../CONTRIBUTING.md), [AGENTS](../AGENTS.md), [Claude Code guidance](../CLAUDE.md) |
 | Senior lead ownership, Codex/Claude helpers, specialist roles and evidence handoffs | [Subagent collaboration guide](SUBAGENTS.md); [21-question research review](research/agent-orchestration-2026-11-15.md) |
 | Main-line work and acceptance gates | [ROADMAP](../ROADMAP.md#where-we-are) |

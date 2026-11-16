@@ -1,0 +1,442 @@
+{
+  "format": "openrc-mp-pose-research-vectors-v1",
+  "status": "synthetic proposed-contract fixtures; no Godot codec or network tested",
+  "contract": "docs/plans/multiplayer-protocol.md",
+  "byte_order": "little-endian",
+  "struct_format": "<2sBBHHIIIIIIqQ3d4f3f3f4hfHH",
+  "application_bytes": 128,
+  "header_bytes": 48,
+  "body_bytes": 80,
+  "scope": [
+    "pass means only the documented outer field guards, not session acceptance",
+    "room/connection ownership, roster, revision, epoch, freshness and model-specific throws still require validation",
+    "input quaternion values precede float32 rounding; use rounded values/tolerances when checking decoded fields",
+    "positions and linear velocities refer to fixed body datum O, not a changing live CG",
+    "surface values are trailing-edge centidegrees, not normalized controls or hinge rotations",
+    "signed sample time and nonnegative tick use decimal strings in JSON metadata",
+    "no control-message schema, transport/auth, pause/reset state machine or impairment is exercised"
+  ],
+  "packets": [
+    {
+      "id": "identity",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "33c6fdcd3c0c743187a3002e8761d215b0d058426d4f0f1ea2ca9fecf985d5d2",
+      "outer_guard_expectation": "pass",
+      "reason": "Synthetic identity attitude; admission and aircraft limits remain external",
+      "input_fields": {
+        "room_low_u32": 19088743,
+        "room_high_u32": 2309737967,
+        "entity_id": 7,
+        "epoch": 3,
+        "sequence": 42,
+        "config_revision": 2,
+        "sample_time_us": "1000000",
+        "sim_tick": "240",
+        "position_datum_ned_m": [
+          12.5,
+          -3.25,
+          -10.0
+        ],
+        "body_to_ned_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_datum_ned_mps": [
+          25.0,
+          0.0,
+          0.0
+        ],
+        "angular_body_frd_radps": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "surfaces_centidegrees": [
+          125,
+          -125,
+          250,
+          -375
+        ],
+        "rpm": 6000.0,
+        "throttle_u16": 32768
+      }
+    },
+    {
+      "id": "yaw_90",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002b000000020000009005100000000000fc0000000000000000000000000029400000000000000ac000000000000024c0f304353f0000000000000000f304353f000000000000c8410000000000000000000000000000c03f7d0083fffa0089fe0080bb4500800000",
+      "sha256": "1802028e064415bb78f35b2053803082dff24c5c006790887751fd19bf0bafa8",
+      "outer_guard_expectation": "pass",
+      "reason": "Positive body-to-NED yaw maps forward velocity north to east",
+      "input_fields": {
+        "room_low_u32": 19088743,
+        "room_high_u32": 2309737967,
+        "entity_id": 7,
+        "epoch": 3,
+        "sequence": 43,
+        "config_revision": 2,
+        "sample_time_us": "1050000",
+        "sim_tick": "252",
+        "position_datum_ned_m": [
+          12.5,
+          -3.25,
+          -10.0
+        ],
+        "body_to_ned_wxyz": [
+          0.7071067811865476,
+          0.0,
+          0.0,
+          0.7071067811865476
+        ],
+        "velocity_datum_ned_mps": [
+          0.0,
+          25.0,
+          0.0
+        ],
+        "angular_body_frd_radps": [
+          0.0,
+          0.0,
+          1.5
+        ],
+        "surfaces_centidegrees": [
+          125,
+          -125,
+          250,
+          -375
+        ],
+        "rpm": 6000.0,
+        "throttle_u16": 32768
+      }
+    },
+    {
+      "id": "paused_before_host_start",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000000000000002000000702ffcffffffffff000000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000000000000000000000000000000000000000000000007d0083fffa0089fe0000000000000000",
+      "sha256": "805e54e53dc08725af403d3b511d116679c3b905742fdf8115c7ccd6fad64205",
+      "outer_guard_expectation": "pass",
+      "reason": "Negative sample time is representable; only a validated paused baseline/status may use this old sample",
+      "input_fields": {
+        "room_low_u32": 19088743,
+        "room_high_u32": 2309737967,
+        "entity_id": 7,
+        "epoch": 3,
+        "sequence": 0,
+        "config_revision": 2,
+        "sample_time_us": "-250000",
+        "sim_tick": "0",
+        "position_datum_ned_m": [
+          12.5,
+          -3.25,
+          -10.0
+        ],
+        "body_to_ned_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_datum_ned_mps": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "angular_body_frd_radps": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "surfaces_centidegrees": [
+          125,
+          -125,
+          250,
+          -375
+        ],
+        "rpm": 0.0,
+        "throttle_u16": 0
+      }
+    },
+    {
+      "id": "short",
+      "bytes": 127,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb45008000",
+      "sha256": "e150a21a438f7553fb00826089e7b8380091c6603ec8ba4655b642923bd997d2",
+      "outer_guard_expectation": "reject",
+      "reason": "Length is 127, not 128"
+    },
+    {
+      "id": "long",
+      "bytes": 129,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb450080000000",
+      "sha256": "4ec23a05f784797491b2e974cd15a9c5ff926cfe9559914d772649e7bb18029b",
+      "outer_guard_expectation": "reject",
+      "reason": "Length is 129, not 128"
+    },
+    {
+      "id": "magic",
+      "bytes": 128,
+      "hex": "4e4f01010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "1dfbc943129aa97f6016a0082bd22ca42ae30c3d178b1033c0a5ffea0f714755",
+      "outer_guard_expectation": "reject",
+      "reason": "Wrong magic"
+    },
+    {
+      "id": "major",
+      "bytes": 128,
+      "hex": "4f5202010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "386353c48f265ceb44023822c77b89294276ab827963eaa936e85ef90c7dcfce",
+      "outer_guard_expectation": "reject",
+      "reason": "Unsupported protocol major"
+    },
+    {
+      "id": "kind",
+      "bytes": 128,
+      "hex": "4f5201ff0000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "e9a56127e2e6f6401456d005f575a2d8e429cc617b8ed802c4c5783fc5d210dd",
+      "outer_guard_expectation": "reject",
+      "reason": "Unknown kind in the pose decoder"
+    },
+    {
+      "id": "header_flags",
+      "bytes": 128,
+      "hex": "4f5201010100300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "d45d8fd2d670deb8c25077d082f739910d4dfd76586c0e931809b4d025d42d87",
+      "outer_guard_expectation": "reject",
+      "reason": "Reserved header flags"
+    },
+    {
+      "id": "header_length",
+      "bytes": 128,
+      "hex": "4f52010100002f0067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "edbdfe6cd07950a5b35c5e3f72aee60b41cd8eb3bd749d4e713221f3c0474be2",
+      "outer_guard_expectation": "reject",
+      "reason": "Header length differs from 48"
+    },
+    {
+      "id": "entity_zero",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8900000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "6faa57aea3fe37b90145396c157518fead3d435a3e60973d3db6e76e9e1ad6ed",
+      "outer_guard_expectation": "reject",
+      "reason": "Entity IDs must be nonzero"
+    },
+    {
+      "id": "clock_magnitude",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a000000020000000000000000001000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "067206efd7be2f3fbf940a5c207d23ee9ddbf9ef69585c2928749dfa1944f654",
+      "outer_guard_expectation": "reject",
+      "reason": "Clock magnitude must be below 2^52"
+    },
+    {
+      "id": "tick_high_bit",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000000000000000008000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "3708888377e01023ea3c00c0073ae5bd8581ad732454db8c861be506ef50f22e",
+      "outer_guard_expectation": "reject",
+      "reason": "Simulation tick high bit must be zero"
+    },
+    {
+      "id": "position_nan",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f000000000000000000000000000f87f0000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "50afea1b03893c1d70daf6717841d7a5b3bfdc8a755e51e9e0c89dafe9c21d33",
+      "outer_guard_expectation": "reject",
+      "reason": "Nonfinite float64 position"
+    },
+    {
+      "id": "position_limit",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000106af8400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "f04fd2f60f23c4f8c166c43ebe3f3aacfb31324913627548300a4e84412b8ef1",
+      "outer_guard_expectation": "reject",
+      "reason": "Position exceeds the broad 100 km guard"
+    },
+    {
+      "id": "attitude_nan",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000c07f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "efa95ff6caa0164afc38c95ce1a5cced993e25e201308e161dfd6f1bea26f2a5",
+      "outer_guard_expectation": "reject",
+      "reason": "Nonfinite float32 quaternion"
+    },
+    {
+      "id": "attitude_zero",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c0000000000000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "334b5bba24b27aec70e5a44ac1bb0001b952168d73272f96666e61df1d4ce65a",
+      "outer_guard_expectation": "reject",
+      "reason": "Quaternion norm is below 0.99"
+    },
+    {
+      "id": "attitude_norm",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c0000000400000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "ed554589e75810be6345f5329ae519d061bc67cea37cb872d02f3094d1d58cd2",
+      "outer_guard_expectation": "reject",
+      "reason": "Quaternion norm is outside 0.99 to 1.01"
+    },
+    {
+      "id": "velocity_inf",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000807f00000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "1c64714271efec72c43c8ff43ab0c8409cc10ec21ca10c25709fdacf371bd14e",
+      "outer_guard_expectation": "reject",
+      "reason": "Nonfinite float32 velocity"
+    },
+    {
+      "id": "velocity_limit",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f00000000000000000000000000407a4400000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "75ee65733d7a4a9ddd39c4d0ad7f0f22391a996e18126b8e2e5f1e5d2dd38d83",
+      "outer_guard_expectation": "reject",
+      "reason": "Velocity component exceeds 1000 m/s"
+    },
+    {
+      "id": "angular_inf",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c8410000000000000000000080ff00000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "a642e62cbe5d96ae5a629f79f6ca7fa5015cdecf65cd2619e7dc0bf939ca20de",
+      "outer_guard_expectation": "reject",
+      "reason": "Nonfinite float32 angular rate"
+    },
+    {
+      "id": "angular_limit",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000ca4200000000000000007d0083fffa0089fe0080bb4500800000",
+      "sha256": "2d7f5d6f3c0be457e999f55a37360a429d8b28a45229b259317efda7b85fc0d6",
+      "outer_guard_expectation": "reject",
+      "reason": "Angular-rate component exceeds 100 rad/s"
+    },
+    {
+      "id": "rpm_nan",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0000c07f00800000",
+      "sha256": "cfdf7b60bdc969554e9085144667e24af1e5e3ed78239bf7775406d815a46a6a",
+      "outer_guard_expectation": "reject",
+      "reason": "Nonfinite float32 RPM"
+    },
+    {
+      "id": "rpm_negative",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe000080bf00800000",
+      "sha256": "92ad7b0ca6e90466abb1c5d434468180a910f8cbc9d7b79fb20755b099eb862d",
+      "outer_guard_expectation": "reject",
+      "reason": "RPM is negative"
+    },
+    {
+      "id": "rpm_limit",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe4024744800800000",
+      "sha256": "81437f0ecf59e94a117f9d0af27d62d433413df5b2ea6fc6722ab889823adae6",
+      "outer_guard_expectation": "reject",
+      "reason": "RPM exceeds the broad 250000 guard"
+    },
+    {
+      "id": "presentation_flags",
+      "bytes": 128,
+      "hex": "4f5201010000300067452301efcdab8907000000030000002a0000000200000040420f0000000000f00000000000000000000000000029400000000000000ac000000000000024c00000803f0000000000000000000000000000c84100000000000000000000000000000000000000007d0083fffa0089fe0080bb4500800100",
+      "sha256": "a73b20b7a6f9e7b36144e68ce9eddb1e10b9c547b4bf624b158c6473bb6ce9f6",
+      "outer_guard_expectation": "reject",
+      "reason": "Reserved presentation flags"
+    }
+  ],
+  "sequence_cases_same_room_entity_epoch": [
+    {
+      "previous": 42,
+      "incoming": 43,
+      "expectation": "newer"
+    },
+    {
+      "previous": 42,
+      "incoming": 42,
+      "expectation": "duplicate"
+    },
+    {
+      "previous": 42,
+      "incoming": 41,
+      "expectation": "old"
+    },
+    {
+      "previous": 4294967294,
+      "incoming": 1,
+      "expectation": "newer"
+    },
+    {
+      "previous": 1,
+      "incoming": 2147483649,
+      "expectation": "ambiguous_reject"
+    },
+    {
+      "previous": 42,
+      "incoming": 10042,
+      "expectation": "newer"
+    },
+    {
+      "previous": 42,
+      "incoming": 10043,
+      "expectation": "fresh_baseline_required"
+    }
+  ],
+  "context_cases": [
+    {
+      "packet": "identity",
+      "context": "connection owns entity 8, packet claims 7",
+      "expectation": "reject_sender_binding"
+    },
+    {
+      "packet": "identity",
+      "context": "accepted configuration revision is 3, packet has 2",
+      "expectation": "reject_revision"
+    },
+    {
+      "packet": "identity",
+      "context": "accepted epoch is 2; epoch 3 baseline has not arrived",
+      "expectation": "drop_until_baseline"
+    },
+    {
+      "packet": "identity",
+      "context": "accepted epoch is 4; packet epoch is 3",
+      "expectation": "reject_old_epoch"
+    },
+    {
+      "packet": "paused_before_host_start",
+      "context": "ACTIVE ingress at host time 1000000 us",
+      "expectation": "reject_sample_older_than_one_second"
+    },
+    {
+      "packet": "paused_before_host_start",
+      "context": "validated current PAUSED baseline or final STATUS at host time 1000000 us",
+      "expectation": "age_lower_bound_exempt; all other admission checks remain"
+    }
+  ],
+  "quantization_cases": [
+    {
+      "field": "throttle",
+      "input": 0.0,
+      "encoded": 0
+    },
+    {
+      "field": "throttle",
+      "input": 0.5,
+      "encoded": 32768
+    },
+    {
+      "field": "throttle",
+      "input": 1.0,
+      "encoded": 65535
+    },
+    {
+      "field": "surface_degrees",
+      "input": 0.125,
+      "encoded_centidegrees": 13
+    },
+    {
+      "field": "surface_degrees",
+      "input": -0.125,
+      "encoded_centidegrees": -13
+    }
+  ]
+}
