@@ -1682,6 +1682,70 @@ with return code -15 after this stale pin was found; its partial work is retaine
 and is not counted as a new 650-check result. A fresh final source qualification,
 export and active-flight 1080p/pacing evidence remain open before default promotion.
 
+## Scoped custom-engine companion admission and drawable preparation (2026-11-15)
+
+The v2 aircraft profile retains its primary official engine pin and adds an
+optional exact `additional_runtime_qualification` object for
+`4.8.beta2.openrc_metalfx.unknown`, macOS/arm64, under the same narrow aircraft
+profile restrictions. Unknown or malformed declarations fail closed. Legacy v2
+profiles without the declaration remain supported on the official engine. The
+existing strict JSON parser rejects duplicate keys. Profile identity records the
+actual accepted runtime; saved requests survive an unavailable runtime while the
+effective roster is suppressed. This is functional metadata admission, not an
+executable attestation or cross-engine exact-replay policy change.
+
+The six-file candidate passes 15 portable source/data controls, 15 native-runner
+controls and independent source review. Two separate APFS COW workspaces and user
+profiles run 20 checked stages each on ANGEL/M1: the previous 19 plus focused
+configuration controls. Both exact editors pass current Stik/Club profile
+validation, the actual runtime qualification marker and strict Home shell markers
+for three real AI pilots, Pause and Restart. A successful unqualified-engine
+no-fleet branch cannot satisfy those markers. The stale behavior-source refusal
+is checked before installing the two renewed admission files. Original source,
+bounded clone inputs, authoring assets, cache metadata and engines pass postflight.
+
+| Runtime | Actual editor SHA-256 | Checks | Runner receipt SHA-256 |
+| --- | --- | ---: | --- |
+| Official beta2 | `2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80` | 20 | `50523e605bf14cd30681fdbad1c85bc711f533f8a235b5940d3b1643713aa782` |
+| Custom24 | `81dcaa54eb0f2e0fed6f0f9ea21fb92c346bf7533b4426733ccf37f605c31c36` | 20 | `79c45cc92cdb5499547081dd47d121afbd79f6ee745e3b41445e3ee35af2d8e0` |
+
+These are native CPU/source functional checks using headless rendering and Dummy
+audio. They do not establish rendered fleet quality, audio shutdown, release
+native-physics integration or performance. The manifest is
+`ff1da6295fd0049926498533b48ea3d66cbb856af23ffec1376f958d592d6b61`;
+profile `e5aa95afc04676b293322526d1f7cdea660e2abdd556a4c0f7c7108ef9e94728`.
+The simulation solver fingerprint is unchanged.
+
+Optional engine patch 0025 adds an explicitly enabled ordinary main-window
+drawable acquisition receipt. Four portable tracker/source controls and rejecting
+mutants pass; independent source review and exact patched catalog reconstruction
+pass. It remains off by default and does not add the private RT-view, shared
+argument-buffer or trial gate patches. A fresh editor/template pair, API controls,
+actual flag-off/ordinary/scope/incompatible-owner checks and package rebinding
+remain pending. Texture acquisition is distinct from GPU completion, presentation
+and scanout. The [intake guide](../../../../tools/graphics/metalfx/README.md#ordinary-drawable-acquisition-observation)
+owns its exact ordered selection and commands.
+
+The private RT-view experiment now admits its literal opaque material after a
+four-byte whitespace correction. A native closed-gate test observes alpha and
+invalid-environment refusal and restoration with scene epoch zero and no denoiser
+allocation. A separate disposable gate override reaches scaler creation but
+fails synchronous native texture validation before any accepted/encoded/consumer
+work. A diagnostic proves output slot 8 has usage 3 while the SDK requires 7,
+missing render-target bit 4; device, format, dimensions, sample/mip count and
+private storage match. Its saved 1920×1080 image is raster fallback, not SDK
+output. The product gate remains closed while the allocation is corrected.
+
+Phase 23 retains 251 payloads, 1,241,622 compressed bytes, archive SHA-256
+`8f6de0943128c8bc889c14e5419341729730ae8acad2a7d8e6a846b6ef964f1b`.
+All payloads independently rehash; all 40 checked reports and logs validate with
+zero errors, and both installed six-file candidates match the reviewed overlay.
+It retains the failed RT attempt and its diagnostic as failures. Only regenerable
+`.o`/`.a` outputs from eight retired build caches were removed to recover about
+2.8 GiB; final engine and receipt hashes were verified unchanged. Current native
+source/export, acquired 1080p active flight, pacing and automatic-default gates
+remain open. The old R3 ZIP remains unchanged.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is

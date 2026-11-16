@@ -42,6 +42,15 @@ func _initialize() -> void:
 	_check("unqualified engine suppresses only the effective roster", runtime.available == Config.engine_qualified()
 		and runtime.suppressed == not runtime.available and runtime.config.enabled == runtime.available
 		and runtime.config.count == 2 and runtime.config.seed == 17)
+	var validated: Dictionary = Config.validate(requested)
+	var allowed: Dictionary = Config._apply_engine_availability(validated, true)
+	var suppressed: Dictionary = Config._apply_engine_availability(validated, false)
+	_check("supported runtime keeps the saved request enabled", allowed.ok and allowed.available \
+		and not allowed.suppressed and allowed.config.enabled and allowed.requested == validated.config)
+	_check("unsupported runtime keeps the saved request while disabling only the effective roster",
+		suppressed.ok and not suppressed.available and suppressed.suppressed and not suppressed.config.enabled \
+		and suppressed.requested.enabled and suppressed.requested.count == 2 and suppressed.requested.seed == 17 \
+		and validated.config.enabled and requested == original)
 	var disabled: Dictionary = Config.for_current_engine({"enabled": false, "count": 2})
 	_check("an already disabled roster is never marked suppressed", disabled.ok and not disabled.suppressed
 		and not disabled.config.enabled and not disabled.requested.enabled)

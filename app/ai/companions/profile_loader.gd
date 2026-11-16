@@ -38,6 +38,15 @@ const BEHAVIOR_SOURCE_PATHS := [
 const AIRCRAFT_DATA_FORMAT := "openrc-aircraft v2"
 const FIELD_DATA_FORMAT := "openrc-field v1"
 const QUALIFIED_ENGINE_VERSION := "4.8.beta2.official.cafc17a19"
+## Archive-built custom engine: the revision is reported as unknown. This is a
+## metadata admission scope, not an executable or package attestation.
+const QUALIFIED_CUSTOM_ENGINE_VERSION := "4.8.beta2.openrc_metalfx.unknown"
+const CUSTOM_RUNTIME_QUALIFICATION := {
+	"engine_version": QUALIFIED_CUSTOM_ENGINE_VERSION,
+	"os": "macOS",
+	"architecture": "arm64",
+	"scope": "aircraft_profile_restrictions",
+}
 const QUALIFIED_PHYSICS_HZ := 240
 const SOLVER_NORMALIZATION := "utf8-lf"
 const SOLVER_SOURCE_DIRECTORIES := ["res://physics", "res://sim", "res://failures"]
@@ -61,6 +70,11 @@ const ROUTE_CENTER_RADIUS_FACTOR := 2.0
 const ROUTE_CENTER_WIDTH_FACTOR := 2.0
 
 const AIRCRAFT_PROFILE_KEYS := [
+	"format", "id", "catalog_id", "aircraft_data", "controller", "behavior_manifest", "solver", "engine_version",
+	"field_profile_id", "qualification", "performance",
+	"additional_runtime_qualification",
+]
+const AIRCRAFT_PROFILE_REQUIRED_KEYS := [
 	"format", "id", "catalog_id", "aircraft_data", "controller", "behavior_manifest", "solver", "engine_version",
 	"field_profile_id", "qualification", "performance",
 ]
@@ -102,7 +116,7 @@ static func load_profile(
 		return _failure(PackedStringArray(["aircraft_id: no qualified AI profile for '%s'" % aircraft_id]))
 
 	var aircraft_profile_path: String = str(AIRCRAFT_PROFILE_PATHS[aircraft_id])
-	var aircraft_file: Dictionary = _read_json_object(aircraft_profile_path)
+	var aircraft_file: Dictionary = _read_aircraft_profile(aircraft_profile_path)
 	if not aircraft_file.get("ok", false):
 		return _failure(aircraft_file.get("errors", PackedStringArray()))
 	var aircraft_profile: Dictionary = aircraft_file.raw
@@ -140,7 +154,7 @@ static func load_profile(
 		"solver_sha256": str(validated.solver_sha256),
 		"solver_qualification_sha256": str(validated.solver_qualification_sha256),
 		"solver_normalization": SOLVER_NORMALIZATION,
-		"engine_version": str(aircraft_profile.engine_version),
+		"engine_version": str(validated.engine_version),
 		"field_profile_id": field_profile_id,
 		"field_data_path": CLUB_FIELD_PATH,
 		"field_data_format": FIELD_DATA_FORMAT,
@@ -170,6 +184,46 @@ static func engine_build_identity(info: Dictionary) -> String:
 		str(info.get("build", "")), str(info.get("hash", "")).left(9)]
 
 
+## Explicit host/build policy. An absent custom declaration preserves the old
+## official profile; it never enables the additional custom runtime.
+static func runtime_engine_qualified(info: Dictionary, os_name: String, architecture: String,
+		custom_declaration: Variant = null) -> bool:
+	for key: String in ["major", "minor", "patch"]:
+		if typeof(info.get(key)) != TYPE_INT:
+			return false
+	for key: String in ["status", "build", "hash"]:
+		if typeof(info.get(key)) != TYPE_STRING:
+			return false
+	var identity: String = engine_build_identity(info)
+	if identity == QUALIFIED_ENGINE_VERSION:
+		if typeof(custom_declaration) == TYPE_NIL:
+			return true
+		return typeof(custom_declaration) == TYPE_DICTIONARY \
+			and custom_declaration == CUSTOM_RUNTIME_QUALIFICATION
+	if typeof(custom_declaration) != TYPE_DICTIONARY:
+		return false
+	return identity == QUALIFIED_CUSTOM_ENGINE_VERSION and info.get("hash") == "unknown" \
+		and os_name == "macOS" and architecture == "arm64" \
+		and custom_declaration == CUSTOM_RUNTIME_QUALIFICATION
+
+
+## Home must not expose a saved custom-engine request when the installed
+## profile does not explicitly declare that additional scope.
+static func current_engine_qualified() -> bool:
+	var info: Dictionary = Engine.get_version_info()
+	var os_name: String = OS.get_name()
+	var architecture: String = Engine.get_architecture_name()
+	if runtime_engine_qualified(info, os_name, architecture):
+		return true
+	if not runtime_engine_qualified(info, os_name, architecture, CUSTOM_RUNTIME_QUALIFICATION):
+		return false
+	var file: Dictionary = _read_aircraft_profile(AIRCRAFT_PROFILE_PATHS[ACCEPTED_AIRCRAFT_ID])
+	if not file.get("ok", false):
+		return false
+	var raw: Dictionary = file.raw
+	return runtime_engine_qualified(info, os_name, architecture, raw.get("additional_runtime_qualification"))
+
+
 ## Validate caller-owned copies without changing them. Useful to qualify data mutations offline.
 static func validate_profile_data(
 	aircraft_raw: Variant,
@@ -186,7 +240,7 @@ static func validate_profile_data(
 
 	var profile: Dictionary = aircraft_raw
 	var field_profile: Dictionary = field_raw
-	_check_keys(errors, "aircraft profile", profile, AIRCRAFT_PROFILE_KEYS, AIRCRAFT_PROFILE_KEYS)
+	_check_keys(errors, "aircraft profile", profile, AIRCRAFT_PROFILE_KEYS, AIRCRAFT_PROFILE_REQUIRED_KEYS)
 	_check_keys(errors, "field profile", field_profile, FIELD_PROFILE_KEYS, FIELD_PROFILE_KEYS)
 	if profile.get("format") != AIRCRAFT_FORMAT:
 		errors.append("aircraft profile.format: expected '%s'" % AIRCRAFT_FORMAT)
@@ -295,9 +349,15 @@ static func validate_profile_data(
 
 	if profile.get("engine_version") != QUALIFIED_ENGINE_VERSION:
 		errors.append("engine_version: profile must pin the qualified Godot %s build" % QUALIFIED_ENGINE_VERSION)
-	var current_engine_version: String = engine_build_identity(Engine.get_version_info())
-	if current_engine_version != QUALIFIED_ENGINE_VERSION:
-		errors.append("engine_version: runtime is %s; qualification requires Godot %s" % [current_engine_version, QUALIFIED_ENGINE_VERSION])
+	var runtime_declaration: Variant = profile.get("additional_runtime_qualification")
+	if profile.has("additional_runtime_qualification") and (typeof(runtime_declaration) != TYPE_DICTIONARY \
+			or runtime_declaration != CUSTOM_RUNTIME_QUALIFICATION):
+		errors.append("additional_runtime_qualification: expected the exact scoped custom runtime declaration")
+	var current_engine_info: Dictionary = Engine.get_version_info()
+	var current_engine_version: String = engine_build_identity(current_engine_info)
+	if not runtime_engine_qualified(current_engine_info, OS.get_name(), Engine.get_architecture_name(), runtime_declaration):
+		errors.append("engine_version: runtime is %s on %s/%s; no matching runtime qualification" \
+			% [current_engine_version, OS.get_name(), Engine.get_architecture_name()])
 	if Engine.physics_ticks_per_second != QUALIFIED_PHYSICS_HZ:
 		errors.append("physics rate: companion qualification requires %d Hz" % QUALIFIED_PHYSICS_HZ)
 
@@ -340,6 +400,7 @@ static func validate_profile_data(
 		"solver_sha256": raw_solver_identity,
 		"solver_qualification_sha256": str(current_solver_identity.sha256),
 		"behavior_manifest_sha256": behavior_sha,
+		"engine_version": current_engine_version,
 	}
 
 
@@ -747,6 +808,28 @@ static func _sha256_file(errors: PackedStringArray, label: String, path: String)
 
 static func _read_json_object(path: String) -> Dictionary:
 	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(path)
+	return _parse_json_object_bytes(path, bytes)
+
+
+static func _read_aircraft_profile(path: String) -> Dictionary:
+	return _parse_aircraft_profile_bytes(path, FileAccess.get_file_as_bytes(path))
+
+
+## Apply the existing bounded duplicate-key guard to the new declaration while
+## retaining the legacy official profile's pre-existing parsing behavior.
+static func _parse_aircraft_profile_bytes(path: String, bytes: PackedByteArray) -> Dictionary:
+	var result: Dictionary = _parse_json_object_bytes(path, bytes)
+	if not result.get("ok", false):
+		return result
+	var raw: Dictionary = result.raw
+	if raw.has("additional_runtime_qualification"):
+		var strict: Dictionary = StrictJSON.parse(bytes, BEHAVIOR_MANIFEST_MAX_BYTES)
+		if not strict.get("ok", false):
+			return {"ok": false, "errors": PackedStringArray(["%s: invalid scoped runtime profile JSON" % path])}
+	return result
+
+
+static func _parse_json_object_bytes(path: String, bytes: PackedByteArray) -> Dictionary:
 	if bytes.is_empty():
 		return {"ok": false, "errors": PackedStringArray(["%s: profile file is missing or empty" % path])}
 	var parser := JSON.new()

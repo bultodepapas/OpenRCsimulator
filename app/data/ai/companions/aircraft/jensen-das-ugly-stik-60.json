@@ -19,6 +19,12 @@
     "normalization": "utf8-lf"
   },
   "engine_version": "4.8.beta2.official.cafc17a19",
+  "additional_runtime_qualification": {
+    "engine_version": "4.8.beta2.openrc_metalfx.unknown",
+    "os": "macOS",
+    "architecture": "arm64",
+    "scope": "aircraft_profile_restrictions"
+  },
   "field_profile_id": "club-default",
   "qualification": {
     "status": "qualified_for_narrow_scope",
@@ -59,6 +65,6 @@
     "path": "res://data/ai/companions/behavior-manifest.json",
     "format": "openrc-ai-behavior-manifest v1",
     "normalization": "utf8-lf",
-    "sha256": "78057d5e178bbf6268fda791a1ddfb5dd6355574ead5c7f7f889b0f2d7b462a3"
+    "sha256": "ff1da6295fd0049926498533b48ea3d66cbb856af23ffec1376f958d592d6b61"
   }
 }

@@ -117,9 +117,12 @@ An explicit packaged direct-flight observer and strict reducer are implemented.
 The revised observer passes native parsing and 30 clock/drawable/input-delivery
 controls, plus 18 reducer controls. It is a synthetic no-radio route; its new
 application source is not covered by the earlier `94d566a7` package. Its Main
-behavior pin is renewed through 19 passing official-engine native checks. The
-custom engine still needs explicit companion admission and its own qualification.
-Actual new
+behavior pin is renewed through the existing qualification path. A narrow explicit
+custom-runtime declaration now passes 20 source functional stages on each exact
+official and custom24 editor, including positive Home/fleet/Pause/Restart admission.
+These are headless/Dummy checks; actual rendered flight remains separate. Optional
+0025 supplies ordinary drawable acquisition observation behind an explicit flag;
+its fresh matched engine pair and native runtime controls remain pending. Actual new
 export/flight, acquired 1080p output, GPU pacing, full Home/fleet/campaign and
 automatic-default gates remain open. The R3 ZIP still uses clean19/reference
 physics. These separate source and package identities are retained in the

@@ -93,6 +93,50 @@ by the earlier triangle-query native tests. Select a smaller stack explicitly
 when reproducing earlier evidence. Never add patches to an existing intake or
 substitute its recorded patch copies.
 
+### Ordinary drawable acquisition observation
+
+The optional 0025 patch adds a main-window ordinary Metal drawable acquisition
+receipt. It is enabled only when `OPENRC_NATIVE_DRAWABLE_OBSERVATION=1` is set
+before the process starts. With the flag absent it allocates no tracker and does
+not request another drawable. When observation is requested, a requested or active
+display-link owner is reported as incompatible. With `status=not_requested`, the
+`owner` field does not identify the active presenter.
+Query `RenderingDevice.openrc_drawable_observation()` on the render thread.
+The bounded receipt includes a surface scope, attempts, observed and missed
+counts, extent/pixel-format changes, the latest texture width, height and Metal
+pixel format, and CPU query-time bounds. `observed` identifies a texture acquired
+for framebuffer setup; it does not prove a committed command, presentation,
+scanout, displayed frame rate, or latency. Recreated surfaces have a new scope.
+
+For a fresh pair matching the previously verified engine24 selection, start with
+the 0001–0019 `patches` array above and append exactly 0021, 0024, then 0025;
+do not add the RT viewport or trial patches. Use the same pinned source ZIP,
+`engine.py`, Python and toolchain for both new intakes:
+
+```sh
+patches+=(
+  --patch tools/graphics/metalfx/patches/0021-metal-rt-extension-abi.patch
+  --patch tools/graphics/metalfx/patches/0024-apple-arm64-sha256.patch
+  --patch tools/graphics/metalfx/patches/0025-metal-ordinary-drawable-observation.patch
+)
+python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip --out tmp/drawable25-editor "${patches[@]}"
+python tools/graphics/metalfx/engine.py build --archive /cache/godot.zip --out tmp/drawable25-editor --target editor --jobs 2 "${patches[@]}"
+python tools/graphics/metalfx/engine.py prepare --archive /cache/godot.zip --out tmp/drawable25-template "${patches[@]}"
+python tools/graphics/metalfx/engine.py build --archive /cache/godot.zip --out tmp/drawable25-template --target template_release --jobs 2 "${patches[@]}"
+python tools/graphics/metalfx/engine.py pair --archive /cache/godot.zip --out tmp/drawable25-editor --template tmp/drawable25-template "${patches[@]}" >tmp/drawable25-pair.json
+OPENRC_METALFX_SOURCE_ARCHIVE=/cache/godot.zip python -B tools/graphics/metalfx/test_engine_drawable_observation_patch.py
+```
+
+Do not alter the engine24 intakes. A separate incremental development build can
+check iterations without requalifying a pair; the frozen final source needs one
+fresh pair verification and package binding because both artifact identities
+change. Native evidence must separately check flag-off behavior, the ordinary-owner
+acquisition receipt at the actual 1920×1080 texture extent, scope changes on
+surface recreation and the incompatible-owner refusal. Record real runtime,
+package and build identities.
+Pair verification alone is not that runtime evidence.
+
+
 Intake freezes and hashes archive/ordered patch copies, reconstructs the expected
 patched catalog, rejects unknown source edits, extra inputs, unsafe paths and
 symlinks, and records helper identity. New source files require regular mode

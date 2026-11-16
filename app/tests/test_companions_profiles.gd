@@ -28,6 +28,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	_test_runtime_engine_policy()
 	var aircraft: Dictionary = AircraftData.load_file(AIRCRAFT_DATA_PATH)
 	var loaded_field: Dictionary = FieldLoader.load_from()
 	_check("qualified source aircraft loads with exact input identity", aircraft.get("ok", false), str(aircraft.get("errors", [])))
@@ -73,7 +74,7 @@ func _run() -> void:
 		and result.identity.behavior_normalization == Loader.BEHAVIOR_NORMALIZATION \
 		and result.identity.solver_sha256 == FlightLog.solver_identity() \
 		and result.identity.solver_qualification_sha256 == result.profile.solver.sha256 \
-		and result.identity.engine_version == Loader.QUALIFIED_ENGINE_VERSION \
+		and result.identity.engine_version == Loader.engine_build_identity(Engine.get_version_info()) \
 		and result.identity.aircraft_profile_sha256.length() == 64 \
 		and result.identity.field_profile_sha256.length() == 64)
 	var solver_identity: Dictionary = Loader.current_solver_qualification_identity()
@@ -88,6 +89,18 @@ func _run() -> void:
 
 	var profile_copy: Dictionary = _profile(AIRCRAFT_PROFILE_PATH)
 	var field_profile_copy: Dictionary = _profile(FIELD_PROFILE_PATH)
+	var legacy_profile: Dictionary = profile_copy.duplicate(true)
+	legacy_profile.erase("additional_runtime_qualification")
+	var legacy_accepted: bool = _validate(legacy_profile, field_profile_copy).get("ok", false)
+	_check("legacy v2 profile remains official-only",
+		legacy_accepted == (Loader.engine_build_identity(Engine.get_version_info()) == Loader.QUALIFIED_ENGINE_VERSION))
+	for invalid_declaration: Variant in [null, {}, "unexpected", false, 0, [], {"engine_version": Loader.QUALIFIED_CUSTOM_ENGINE_VERSION}]:
+		var invalid_scope: Dictionary = profile_copy.duplicate(true)
+		invalid_scope["additional_runtime_qualification"] = invalid_declaration
+		_check("a present malformed custom runtime declaration refuses", not _validate(invalid_scope, field_profile_copy).get("ok", false))
+	var changed_scope: Dictionary = profile_copy.duplicate(true)
+	changed_scope.additional_runtime_qualification.scope = "broader_scope"
+	_check("custom runtime cannot widen the aircraft qualification", not _validate(changed_scope, field_profile_copy).get("ok", false))
 
 	var bad_aircraft: Dictionary = profile_copy.duplicate(true)
 	bad_aircraft.format = "openrc-ai-aircraft v3"
@@ -174,13 +187,9 @@ func _run() -> void:
 	bad_aircraft = profile_copy.duplicate(true)
 	bad_aircraft.engine_version = "4.8.stable.official.4d10419ca"
 	_check("an unqualified engine version fails closed", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
-	_check("runtime engine identity includes the qualified prerelease and revision",
-		Loader.engine_build_identity(Engine.get_version_info()) == Loader.QUALIFIED_ENGINE_VERSION)
-	for changed_key: String in ["status", "build", "hash", "patch"]:
-		var changed_engine: Dictionary = Engine.get_version_info().duplicate(true)
-		changed_engine[changed_key] = 1 if changed_key == "patch" else "unqualified"
-		_check("engine identity rejects changed " + changed_key,
-			Loader.engine_build_identity(changed_engine) != Loader.QUALIFIED_ENGINE_VERSION)
+	_check("the current runtime matches its declared qualification",
+		Loader.runtime_engine_qualified(Engine.get_version_info(), OS.get_name(), Engine.get_architecture_name(),
+			profile_copy.get("additional_runtime_qualification")))
 	var original_physics_hz: int = Engine.physics_ticks_per_second
 	var rates_refused := true
 	for hz: int in [120, 480]:
@@ -246,6 +255,68 @@ func _validate(profile: Dictionary, field_profile: Dictionary, identity: Diction
 	var selected_identity: Dictionary = identity if not identity.is_empty() else _aircraft_identity
 	var selected_field: Dictionary = field if not field.is_empty() else _normalized_field
 	return Loader.validate_profile_data(profile, field_profile, AIRCRAFT_ID, selected_identity, selected_field)
+
+
+func _test_runtime_engine_policy() -> void:
+	var official := {"major": 4, "minor": 8, "patch": 0, "status": "beta2",
+		"build": "official", "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b"}
+	var custom := {"major": 4, "minor": 8, "patch": 0, "status": "beta2",
+		"build": "openrc_metalfx", "hash": "unknown"}
+	var declaration: Dictionary = Loader.CUSTOM_RUNTIME_QUALIFICATION.duplicate(true)
+	_check("official metadata accepts an undeclared legacy profile on its existing host policy",
+		Loader.runtime_engine_qualified(official, "Windows", "x86_64"))
+	_check("official metadata also accepts the exact custom declaration",
+		Loader.runtime_engine_qualified(official, "Linux", "x86_64", declaration))
+	_check("custom metadata requires the exact declaration",
+		not Loader.runtime_engine_qualified(custom, "macOS", "arm64") \
+		and Loader.runtime_engine_qualified(custom, "macOS", "arm64", declaration))
+	for invalid_declaration: Variant in [null, "unexpected", false, 0, []]:
+		_check("custom runtime rejects non-dictionary declaration",
+			not Loader.runtime_engine_qualified(custom, "macOS", "arm64", invalid_declaration))
+		if typeof(invalid_declaration) != TYPE_NIL:
+			_check("official runtime rejects a non-dictionary declaration",
+				not Loader.runtime_engine_qualified(official, "macOS", "arm64", invalid_declaration))
+	for host: Array in [["Windows", "arm64"], ["Linux", "arm64"], ["macOS", "x86_64"], ["", "arm64"], ["macOS", ""]]:
+		_check("custom runtime rejects host %s/%s" % [host[0], host[1]],
+			not Loader.runtime_engine_qualified(custom, str(host[0]), str(host[1]), declaration))
+	var mutations: Array[Dictionary] = [
+		{"key": "major", "value": 5}, {"key": "minor", "value": 9}, {"key": "patch", "value": 1},
+		{"key": "status", "value": "beta1"}, {"key": "build", "value": "custom_build"},
+		{"key": "hash", "value": ""}, {"key": "hash", "value": "cafc17a19"},
+		{"key": "hash", "value": "unknown-extra"}, {"key": "major", "value": "4"},
+	]
+	for mutation: Dictionary in mutations:
+		var changed: Dictionary = custom.duplicate(true)
+		changed[mutation.key] = mutation.value
+		_check("custom runtime rejects changed %s" % mutation.key,
+			not Loader.runtime_engine_qualified(changed, "macOS", "arm64", declaration))
+	for key: String in ["major", "minor", "patch", "status", "build", "hash"]:
+		var missing: Dictionary = custom.duplicate(true)
+		missing.erase(key)
+		_check("custom runtime rejects missing " + key,
+			not Loader.runtime_engine_qualified(missing, "macOS", "arm64", declaration))
+	var wrong_official: Dictionary = official.duplicate(true)
+	wrong_official.hash = "4d10419ca"
+	_check("official runtime rejects a different revision",
+		not Loader.runtime_engine_qualified(wrong_official, "macOS", "arm64", declaration))
+	var altered_declaration: Dictionary = declaration.duplicate(true)
+	altered_declaration.architecture = "x86_64"
+	_check("custom runtime rejects an altered declaration",
+		not Loader.runtime_engine_qualified(custom, "macOS", "arm64", altered_declaration))
+	_check("official runtime rejects a malformed present declaration",
+		not Loader.runtime_engine_qualified(official, "macOS", "arm64", altered_declaration))
+	var record: String = JSON.stringify(declaration)
+	var valid_json: String = '{"additional_runtime_qualification":' + record + '}'
+	var duplicate_json: String = '{"additional_runtime_qualification":' + record \
+		+ ',"additional_runtime_qualification":' + record + '}'
+	var escaped_duplicate_json: String = '{"additional_runtime_qualification":' + record \
+		+ ',"additional_runtime_qualificatio\\u006e":' + record + '}'
+	_check("scoped runtime profile accepts one declaration",
+		Loader._parse_aircraft_profile_bytes("fixture", valid_json.to_utf8_buffer()).get("ok", false))
+	_check("scoped runtime profile rejects duplicate declarations",
+		not Loader._parse_aircraft_profile_bytes("fixture", duplicate_json.to_utf8_buffer()).get("ok", false))
+	_check("scoped runtime profile rejects escaped duplicate declarations",
+		not Loader._parse_aircraft_profile_bytes("fixture", escaped_duplicate_json.to_utf8_buffer()).get("ok", false))
 
 
 func _solver_paths() -> Array[String]:
