@@ -130,7 +130,7 @@ func _flight_ready(app: Node) -> bool:
 func _inspect_flight(app: Node, label: String) -> bool:
 	var flight: Node = app.flight
 	var session: Node = flight.session
-	var expected := "native" if mode == "candidate" else "gdscript_reference"
+	var expected := "gdscript_reference" if mode == "reference" else "native"
 	var requested := "gdscript_reference" if mode == "reference" else "native"
 	var status: Dictionary = session.stage_backend_status()
 	var identity: Variant = status.get("identity")
@@ -139,10 +139,7 @@ func _inspect_flight(app: Node, label: String) -> bool:
 			or session.experimental_native_macos or not is_instance_valid(flight._soundscape_audio):
 		_fail("flight backend, aircraft or soundscape differs")
 		return false
-	if mode in ["missing", "malformed"] and not str(status.get("reason", "")).contains("qualification"):
-		_fail("fallback did not report the missing package qualification")
-		return false
-	if mode in ["candidate", "reference"] and not str(status.get("reason", "")).is_empty():
+	if not str(status.get("reason", "")).is_empty():
 		_fail("selected backend reports an admission failure")
 		return false
 	if mode != "reference":
@@ -150,7 +147,7 @@ func _inspect_flight(app: Node, label: String) -> bool:
 			if argument.begins_with("--physics-backend") or argument.begins_with("--experimental-native-macos"):
 				_fail("automatic flight was given a backend override")
 				return false
-	# The fallback cases must use the same screened selection as the admitted
+	# Missing and malformed performance markers must use the same stock selection as the candidate
 	# case. Reporting only the aircraft would let a different weather/start
 	# explain a reference fallback and make the marker control inconclusive.
 	var selection := {}

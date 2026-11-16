@@ -153,7 +153,7 @@ def verify_observation(observation: Any, mode: str, *, executable: Path, task_ho
     for row in phases:
         if row.get('phase') not in ('flight', 'restart', 'reentry'):
             continue
-        backend = 'native' if mode == 'candidate' else 'gdscript_reference'
+        backend = 'gdscript_reference' if mode == 'reference' else 'native'
         status = row.get('status')
         require(row.get('backend') == backend and type(row.get('tick')) is int and row['tick'] > 0
                 and row.get('soundscape_installed') is True and isinstance(status, dict)
@@ -161,11 +161,10 @@ def verify_observation(observation: Any, mode: str, *, executable: Path, task_ho
                 and status.get('requested') == ('gdscript_reference' if mode == 'reference' else 'native'),
                 'flight backend or active simulation did not match the case')
         reason = status.get('reason')
-        require(isinstance(reason, str) and (('qualification' in reason) if mode in ('missing', 'malformed')
-                                            else reason == ''), 'unexpected backend refusal')
+        require(isinstance(reason, str) and reason == '', 'unexpected backend refusal')
         if mode != 'reference':
             require(row.get('selection') == selection, 'automatic case used a different production selection')
-        if mode == 'candidate':
+        if mode != 'reference':
             stats = row.get('native_stats')
             require(isinstance(stats, dict) and type(stats.get('context_calls')) is int and stats['context_calls'] >= 1
                     and type(stats.get('stage_calls')) is int and stats['stage_calls'] >= 4,
@@ -404,9 +403,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             and receipts.verify_native(executable, 'arm64') == native, 'original candidate or package changed')
     _signature(original_bundle)
     if fallback_only:
-        return {'format': 'openrc-package-default-fallback-smoke v1', 'status': 'passed',
+        return {'format': 'openrc-package-marker-independent-default-smoke v1', 'status': 'passed',
                 'selection': selection, 'reference': reference, 'native': native, 'cases': rows,
-                'scope': 'missing/malformed marker Home fallback only; not a candidate or promotion proof'}
+                'scope': 'native Home lifecycle without a performance marker; not performance-promotion proof'}
     return {'format': 'openrc-package-default-home-proof v1', 'status': 'passed',
             'candidate_sha256': digest(marker_data), 'selection': selection, 'reference': reference, 'native': native,
             'cases': rows, 'scope': 'isolated rendered AppRoot lifecycle; no physical radio, scanout or performance proof'}
@@ -417,12 +416,13 @@ def main() -> int:
     parser.add_argument('--executable', type=Path, required=True)
     parser.add_argument('--candidate', type=Path)
     parser.add_argument('--candidate-sha256')
-    parser.add_argument('--fallback-only', action='store_true', help='run missing/malformed Home fallback without a candidate')
+    parser.add_argument('--default-only', '--fallback-only', dest='fallback_only', action='store_true',
+                        help='run native Home with missing/malformed performance markers, without a candidate')
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
     try:
         proof = run(args)
-        output = args.out / ('fallback-smoke.json' if args.fallback_only else 'home-proof.json')
+        output = args.out / ('default-smoke.json' if args.fallback_only else 'home-proof.json')
         write_new(output, (json.dumps(proof, sort_keys=True, indent=2, allow_nan=False) + '\n').encode())
         print(json.dumps({'status': 'passed', 'home_proof': str(output), 'sha256': digest(read_regular(output))}))
         return 0

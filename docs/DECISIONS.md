@@ -376,3 +376,19 @@ OpenRC outcomes demonstrate a better tradeoff; this policy is not a measured gai
 - Keep parameters, commands, feature inventories, benchmarks, pass counts and next actions in their authoritative homes. A local optimization or bug fix usually belongs in evidence or [LEARNINGS](LEARNINGS.md), not here.
 - Label approved-but-unimplemented designs and experimental admissions explicitly. Check current contracts and consumers before turning an old status into a present-tense claim.
 - Preserve valuable source/evidence records, verify links and heading targets, and update incoming links when consolidating an entry. New proposals and unresolved choices belong with their owner in the [track registry](README.md#tracks-plans-and-step-ids).
+
+
+### Default to native physics on supported Apple Silicon flights
+
+**DT-MAC-11a, 2026-11-16; explicit owner decision.** Normal macOS ARM64
+Home and Quick Flight sessions request the native evaluator without requiring a
+performance-promotion marker. Keep the stock production-trim domain, immutable
+live configuration, exact engine/OS/library/source identities, package receipts,
+applicable engine-pair binding and runtime guards. Unsupported or unavailable
+native configurations retain reference fallback; explicit reference selection
+remains authoritative. Low-level technical tools keep their reference default.
+
+This is a product-default policy, not a claim of higher FPS or a passed performance
+campaign. Preserve the failed performance screen and the separate qualification
+tools. Public Developer ID distribution remains deferred. Measurement and package
+limits belong in [DT-MAC-11a](research/desktop-delivery-investigations/DT-MAC-11a/README.md).

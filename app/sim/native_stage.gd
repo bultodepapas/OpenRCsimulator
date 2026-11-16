@@ -239,6 +239,8 @@ func prepare(session: Node) -> Dictionary:
 			# Keep the stock domain and all loader/configuration checks mandatory.
 			if not selected.get("ok", false):
 				return _refuse(str(selected.get("reason", "Mac stock selection refused")))
+			if selected.get("profile") != "production":
+				return _refuse("Mac native default requires the stock production trim profile")
 			_macos_domain_context = MacosDomain.freeze_for_session(session, true)
 			if not _macos_domain_context.get("ok", false):
 				return _refuse(str(_macos_domain_context.get("reason", "Mac stock context refused")))

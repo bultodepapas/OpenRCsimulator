@@ -29,14 +29,14 @@ class PackageProbeControls(unittest.TestCase):
                         'library_sha256', 'descriptor_sha256')}
 
     def observation(self, mode):
-        backend = 'native' if mode == 'candidate' else 'gdscript_reference'
-        reason = 'Mac native default qualification is unavailable' if mode in ('missing', 'malformed') else ''
+        backend = 'gdscript_reference' if mode == 'reference' else 'native'
+        reason = ''
         def flight(name):
             return {'phase': name, 'backend': backend, 'tick': 40, 'soundscape_installed': True,
                     'selection': self.selection if mode != 'reference' else {},
                     'status': {'identity': {'backend': backend},
                                'requested': 'gdscript_reference' if mode == 'reference' else 'native', 'reason': reason},
-                    'native_stats': {'context_calls': 1, 'stage_calls': 4} if mode == 'candidate' else {}}
+                    'native_stats': {'context_calls': 1, 'stage_calls': 4} if mode != 'reference' else {}}
         phases = ([flight('flight')] if mode == 'reference' else
                   [{'phase': 'home', 'aircraft': probe.SELECTION['aircraft'], 'menu_audio': True}, flight('flight'),
                    {'phase': 'pause', 'paused': True}, flight('restart'), {'phase': 'returned_home'}, flight('reentry')])
@@ -71,7 +71,7 @@ class PackageProbeControls(unittest.TestCase):
         changed['phases'][3]['selection'] = dict(self.selection, start_sha256='4' * 64)
         with self.assertRaises(ValueError): self.check('candidate', changed)
 
-    def test_fallback_smoke_uses_the_actual_fixed_home_selection(self):
+    def test_marker_independent_default_uses_the_actual_fixed_home_selection(self):
         missing = self.observation('missing')
         selected = probe.observed_fallback_selection(missing)
         self.assertEqual(selected, self.selection)
@@ -97,6 +97,16 @@ class PackageProbeControls(unittest.TestCase):
             changed = self.observation('missing')
             mutate(changed)
             with self.subTest(mutation=mutate), self.assertRaises(ValueError): self.check('missing', changed)
+
+    def test_markerless_default_requires_native_backend_and_execution(self):
+        for mode in ('missing', 'malformed'):
+            changed = self.observation(mode)
+            changed['phases'][1]['backend'] = 'gdscript_reference'
+            changed['phases'][1]['status']['identity']['backend'] = 'gdscript_reference'
+            with self.subTest(mode=mode), self.assertRaises(ValueError): self.check(mode, changed)
+            changed = self.observation(mode)
+            changed['phases'][1]['native_stats']['stage_calls'] = 0
+            with self.subTest(mode=mode), self.assertRaises(ValueError): self.check(mode, changed)
 
     def test_candidate_requires_native_activity_and_normal_menu_retirement(self):
         for mutate in (lambda x: x['phases'][1]['native_stats'].update(stage_calls=0),
