@@ -12793,3 +12793,39 @@ msgstr "コンパイル済み定義が変更されました。機体を確認し
 
 msgid "Source observations require the versioned definition format."
 msgstr "元の観測情報にはバージョン付き定義形式が必要です。"
+
+msgid "Choose an estimated OpenRC configuration for this model and review its retained values."
+msgstr "このモデル用の推定OpenRC構成を選択し、保持された値を確認してください。"
+
+msgid "The model or configuration changed. Review the configuration choice again."
+msgstr "モデルまたは構成が変更されました。構成の選択をもう一度確認してください。"
+
+msgid "The saved configuration choice is invalid."
+msgstr "保存された構成の選択が無効です。"
+
+msgid "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+msgstr "ClearViewモデルの飛行は、数値的な適格性がまだ確認されていません。この下書きは編集して保存できます。"
+
+msgid "OpenRC configuration"
+msgstr "OpenRC構成"
+
+msgid "Proposed installation: conventional wing and aft tail, one tractor electric motor, 4S battery and 12×6 propeller."
+msgstr "提案する構成：通常の主翼と後部尾翼、トラクター式の電動モーター1基、4Sバッテリー、12×6プロペラ。"
+
+msgid "Existing values and inventory are kept. Review dimensions, masses and controls for this model."
+msgstr "既存の値と搭載品リストは保持されます。このモデルの寸法、質量、操縦装置を確認してください。"
+
+msgid "I have reviewed the retained values for this model."
+msgstr "このモデルの保持された値を確認しました。"
+
+msgid "Create an estimated OpenRC configuration"
+msgstr "推定OpenRC構成を作成"
+
+msgid "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
+msgstr "独立して作成する推定OpenRC構成が選択されました。ClearViewの飛行設定は元データの参照情報として保持されます。"
+
+msgid "Flight qualification"
+msgstr "飛行の適格性"
+
+msgid "Estimated package proposal. Choose a configuration on Import."
+msgstr "推定パッケージの提案です。「インポート」で構成を選択してください。"

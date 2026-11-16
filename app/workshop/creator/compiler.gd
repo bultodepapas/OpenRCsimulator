@@ -64,9 +64,14 @@ static func compile_candidate(definition: Dictionary) -> Dictionary:
 	if not checked.ok:
 		return R.fail_all(checked.diagnostics)
 	var normal: Dictionary = checked.value
+	# Legacy v2 remains structurally readable for reopening, but cannot silently compile the
+	# default electric package from source observations without an explicit new declaration.
+	if normal.format == Definition.SOURCE_FORMAT:
+		return R.fail(R.UNSUPPORTED_CAPABILITY,Definition.Installation.REQUIRED,"source_installation","import")
 	# Review metadata changes definition identity, never the canonical physical v1 inputs/bytes.
 	var physical: Dictionary = normal.duplicate(true)
 	physical.erase("source_observations")
+	physical.erase("source_installation")
 	physical.format = Definition.FORMAT
 	var encoded_definition: Dictionary = CreatorBytes.encode(normal)
 	if not encoded_definition.ok:
@@ -99,6 +104,8 @@ static func compile_candidate(definition: Dictionary) -> Dictionary:
 	read_out["cg_m"] = Array(loaded.model.cg_le as PackedFloat64Array)
 	read_out["inertia_kg_m2"] = Array(loaded.model.inertia as PackedFloat64Array)
 	read_out["qualification"] = Packages.QUALIFICATION
+	if normal.has("source_installation"):
+		read_out["source_installation"] = normal.source_installation.duplicate(true)
 	if normal.has("source_observations"):
 		read_out["source_observations"] = normal.source_observations.duplicate(true)
 		read_out["source_observations_sha256"] = Definition.Observations.digest(normal.source_observations)

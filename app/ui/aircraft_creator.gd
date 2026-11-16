@@ -36,6 +36,8 @@ const ClearViewPackage := preload("res://workshop/creator/clearview/package.gd")
 const ClearViewConverter := preload("res://workshop/creator/clearview/converter.gd")
 const SourceObservations := preload("res://workshop/creator/clearview/observations.gd")
 const SourceReportPanel := preload("res://ui/aircraft_creator_source_report.gd")
+const InstallationPanel := preload("res://ui/aircraft_creator_installation.gd")
+const PACKAGE_PROPOSAL := "Estimated package proposal. Choose a configuration on Import."
 const ImportCancellation := preload("res://workshop/creator/clearview/cancellation.gd")
 
 ## Quiet time after the last change before the automatic backup is written.
@@ -78,6 +80,7 @@ const KIND_CHOICES: Array[Array] = [["estimated", "Estimated value"], ["measured
 const ITEM_NUMBERS: Array[Array] = [["mass", "Mass", "kg"], ["x", "Aft", "m"], ["y", "Right", "m"], ["z", "Upward", "m"]]
 ## Subjects for diagnostics that name a group of the definition instead of one field.
 const GROUP_LABELS := {
+	"source_installation": "OpenRC configuration", "flight_qualification": "Flight qualification",
 	"wing": "Wing", "horizontal_tail": "Tailplane", "vertical_tail": "Fin", "fuselage": "Fuselage",
 	"equipment": "Equipment positions", "controls": "Control travel", "battery": "Battery",
 	"inventory": "Inventory", "horizontal_tail/position": "Tailplane position",
@@ -173,6 +176,9 @@ var _import_status: Label
 var _import_details: Label
 var _import_notes: VBoxContainer
 var _source_report: SourceReportPanel
+var _installation: InstallationPanel
+var _configuration_cards: Array[Button] = []
+var _configuration_notes: Array[Label] = []
 var _import_errors: VBoxContainer
 var _import_state := "idle"
 var _import_file_name := ""
@@ -1079,6 +1085,9 @@ func _build_import_page(page: VBoxContainer) -> void:
 	_import_notes = VBoxContainer.new()
 	_import_notes.name = "ImportNotes"
 	page.add_child(_import_notes)
+	_installation = InstallationPanel.new()
+	_installation.choice_requested.connect(_choose_source_installation)
+	page.add_child(_installation)
 	_source_report = SourceReportPanel.new()
 	page.add_child(_source_report)
 
@@ -1172,9 +1181,10 @@ func _build_orient_page(page: VBoxContainer) -> void:
 
 
 func _build_layout_page(page: VBoxContainer) -> void:
+	_configuration_notice(page,"SourceLayoutProposal")
 	var grid := _card_grid(page, "LayoutCards", 2)
 	var group := ButtonGroup.new()
-	_add_card(grid, "LayoutConventional", "Conventional", "", group, true)
+	_configuration_cards.append(_add_card(grid, "LayoutConventional", "Conventional", "", group, true))
 	_add_card(grid, "LayoutFlyingWing", "Flying wing", "", group, false, NOT_AVAILABLE)
 	_add_card(grid, "LayoutCanard", "Canard", "", group, false, NOT_AVAILABLE)
 	_add_card(grid, "LayoutVTail", "V-tail", "", group, false, NOT_AVAILABLE)
@@ -1224,9 +1234,10 @@ func _build_weight_page(page: VBoxContainer) -> void:
 
 
 func _build_power_page(page: VBoxContainer) -> void:
+	_configuration_notice(page,"SourcePowerProposal")
 	var cards := _card_grid(page, "PowerCards", 1)
 	var group := ButtonGroup.new()
-	_add_card(cards, "PowerElectric", "Electric", ELECTRIC_PACKAGE, group, true)
+	_configuration_cards.append(_add_card(cards, "PowerElectric", "Electric", ELECTRIC_PACKAGE, group, true))
 	_add_card(cards, "PowerGasoline", "Gasoline", "", group, false, NOT_AVAILABLE)
 	_add_card(cards, "PowerGlow", "Glow", "", group, false, NOT_AVAILABLE)
 	_add_fields(page, "power_mount")
@@ -1247,12 +1258,21 @@ func _build_controls_page(page: VBoxContainer) -> void:
 	_parts.movement_toggled.connect(func(_on: bool) -> void: _update_animation())
 	page.add_child(_parts)
 	page.add_child(Widgets.label("Landing gear", "SectionLabel", true))
+	_configuration_notice(page,"SourceGearProposal")
 	var grid := _card_grid(page, "GearCards", 2)
 	var group := ButtonGroup.new()
-	_add_card(grid, "GearNone", "No gear", "", group, true)
+	_configuration_cards.append(_add_card(grid, "GearNone", "No gear", "", group, true))
 	_add_card(grid, "GearTricycle", "Fixed tricycle", "", group, false, NOT_AVAILABLE)
 	_add_card(grid, "GearTaildragger", "Taildragger", "", group, false, NOT_AVAILABLE)
 	_add_card(grid, "GearRetractable", "Retractable", "", group, false, NOT_AVAILABLE)
+
+
+func _configuration_notice(page: VBoxContainer,node_name: String) -> void:
+	var notice := _label(PACKAGE_PROPOSAL,"SecondaryLabel")
+	notice.name = node_name
+	notice.visible = false
+	page.add_child(notice)
+	_configuration_notes.append(notice)
 
 
 func _build_paint_page(page: VBoxContainer) -> void:
@@ -2098,6 +2118,7 @@ func _focus_target(path: String) -> Control:
 	if path.begins_with("appearance"):
 		return _paint_cards.solid
 	match path:
+		"source_installation": return _installation.focus_target()
 		"source": return _choose_button
 		"placement/nose_axis": return _nose_axis
 		"placement/up_axis": return _up_axis
@@ -2186,6 +2207,17 @@ func _refresh() -> void:
 	if source != _shown_source:
 		_shown_source = source
 		_reset_orient_inputs()
+	var pending := _doc.needs_source_installation()
+	var busy := _opening or _import_state in ["inspecting","choosing"]
+	_installation.show_state(source.get_instance_id() if source != null else 0,_doc.revision,
+		_doc.source_installation_proposal(),not pending,busy)
+	for card: Button in _configuration_cards:
+		card.disabled = pending
+		card.set_pressed_no_signal(not pending)
+		card.set_meta("reason",PACKAGE_PROPOSAL if pending else "")
+		_update_card_text(card)
+	for notice: Label in _configuration_notes:
+		notice.visible = pending
 	if (_doc.placement().datum as Array).size() == 3:
 		# A complete datum, typed or picked, supersedes text that was not a number.
 		_datum_invalid = [false, false, false]
@@ -2312,7 +2344,7 @@ func _refresh_import() -> void:
 			_import_status.text = tr("Model imported") if source != null else tr(NO_MODEL)
 	_fill_lines(_import_errors, _import_diagnostics if _import_state == "failed" else [], "ErrorLabel", false)
 	_fill_lines(_import_notes, (source.notes() + _clearview_notes) if source != null else [], "SecondaryLabel", true)
-	_source_report.show_context(_doc.source_observations())
+	_source_report.show_context(_doc.review_source_observations())
 	if source == null:
 		_import_details.text = ""
 		_import_details.visible = false
@@ -2438,7 +2470,16 @@ func _refresh_readouts() -> void:
 	for readout: Dictionary in _readouts:
 		var label: Label = readout.label
 		if label.is_visible_in_tree() or not is_inside_tree():
-			label.text = _readout_text(_summary, readout.spec)
+			label.text = _readout_text({} if _doc.needs_source_installation() else _summary, readout.spec)
+
+
+func _choose_source_installation(proposal: Dictionary,revision: int) -> void:
+	if _opening or _import_state in ["inspecting","choosing"]:
+		return
+	var selected := _doc.choose_source_installation(proposal,revision,true)
+	if not selected.ok:
+		set_note(_diagnostics_text(selected.diagnostics))
+	_refresh()
 
 
 static func _readout_text(summary: Dictionary, spec: Array) -> String:
@@ -2492,6 +2533,8 @@ func _refresh_review() -> void:
 
 func _section_detail(step: String) -> String:
 	var source: InspectedSource = _doc.source()
+	if step in ["aircraft_layout","power_mount","controls_ground"] and _doc.needs_source_installation():
+		return tr(PACKAGE_PROPOSAL)
 	match step:
 		"import":
 			return source.file_name() if source != null else tr(NO_MODEL)
@@ -2968,7 +3011,11 @@ func _finish_open(kind: String, value: Dictionary, source: InspectedSource,obser
 		set_note(_diagnostics_text(restored.diagnostics))
 		_refresh()
 		return false
-	if kind == "aircraft" and not fresh.source_observations().is_empty():
+	var stored_definition: Variant = value.get("definition")
+	var versioned_stored: bool = stored_definition is Dictionary and typeof(stored_definition.get("format")) == TYPE_STRING \
+		and stored_definition.format in [Definition.SOURCE_FORMAT,Definition.INSTALLATION_FORMAT]
+	var versioned_restored: bool = fresh.definition().get("format") in [Definition.SOURCE_FORMAT,Definition.INSTALLATION_FORMAT]
+	if kind == "aircraft" and (versioned_stored or versioned_restored):
 		var definition: Variant = value.get("definition")
 		var canonical := Definition.validate_complete(fresh.definition())
 		if not definition is Dictionary or not canonical.ok or definition != canonical.value \
@@ -3030,6 +3077,11 @@ func _on_publish_pressed() -> void:
 	_commit_focused_edit()
 	if not _can_save():
 		set_note(_store_reason)
+		return
+	# Saving a draft remains available, but publishing must obey the same qualification
+	# gate as the footer even when this handler is called without pressing the button.
+	if _doc.source_installation_proposal().size() > 0:
+		set_note(tr(Authoring.Installation.FLIGHT_UNAVAILABLE))
 		return
 	if _doc.name.is_empty():
 		set_note(tr(NEEDS_NAME))

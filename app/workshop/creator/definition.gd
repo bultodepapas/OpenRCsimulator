@@ -15,7 +15,9 @@ const Packages := preload("res://workshop/creator/packages.gd")
 
 const FORMAT := "openrc-creator-definition v1"
 const SOURCE_FORMAT := "openrc-creator-definition v2"
+const INSTALLATION_FORMAT := "openrc-creator-definition v3"
 const Observations := preload("res://workshop/creator/clearview/observations.gd")
+const Installation := preload("res://workshop/creator/source_installation.gd")
 const AIRCRAFT_ID_PREFIX := "user-aircraft-"
 ## Placeholder identity of template(): the caller replaces it with a fresh UUID for a real aircraft.
 const TEMPLATE_UUID := "00000000-0000-4000-8000-000000000000"
@@ -103,16 +105,28 @@ static func validate_complete(definition: Dictionary) -> Dictionary:
 	var stated := definition.duplicate()
 	stated.erase("evidence")
 	stated.erase("source_observations")
+	stated.erase("source_installation")
 	_closed(out, stated, "", KEYS, STEP_REVIEW)
 	_evidence(out, definition)
-	if definition.get("format") == SOURCE_FORMAT:
+	var format_value: Variant = definition.get("format")
+	var format_text: String = format_value if typeof(format_value) == TYPE_STRING else ""
+	if format_text == SOURCE_FORMAT or (format_text == INSTALLATION_FORMAT and definition.has("source_observations")):
 		var observed := Observations.validate(definition.get("source_observations"))
 		if not observed.ok:
 			out.append_array(observed.diagnostics)
 	elif definition.has("source_observations"):
 		out.append(R.diagnostic(R.FIELD_INVALID,"Source observations require the versioned definition format.","source_observations",STEP_REVIEW))
-	if definition.has("format") and definition.get("format") not in [FORMAT,SOURCE_FORMAT]:
-		out.append(R.diagnostic(R.FIELD_INVALID, "The definition format must be %s.", "format", STEP_REVIEW, [FORMAT]))
+	if format_text == INSTALLATION_FORMAT:
+		var context: Variant = definition.get("source_observations",{})
+		var installation := Installation.validate(definition.get("source_installation"),context if context is Dictionary else {},
+			str(definition.get("airframe_package","")),str(definition.get("power_package","")))
+		if not installation.ok:
+			out.append_array(installation.diagnostics)
+	elif definition.has("source_installation"):
+		out.append(R.diagnostic(R.FIELD_INVALID,Installation.INVALID,"source_installation",STEP_IMPORT))
+	if definition.has("format") and format_text not in [FORMAT,SOURCE_FORMAT,INSTALLATION_FORMAT]:
+		out.append(R.diagnostic(R.FIELD_INVALID, "The definition format must be %s.", "format", STEP_REVIEW,
+			["%s / %s / %s" % [FORMAT,SOURCE_FORMAT,INSTALLATION_FORMAT]]))
 	if definition.has("aircraft_uuid") and not _matches(definition.get("aircraft_uuid"), UUID_PATTERN):
 		out.append(R.diagnostic(R.FIELD_INVALID, "The aircraft identity must be a lowercase version 4 UUID.",
 			"aircraft_uuid", STEP_REVIEW))

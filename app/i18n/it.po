@@ -13569,3 +13569,39 @@ msgstr "La definizione compilata è cambiata. Controlla l’aereo e salva di nuo
 
 msgid "Source observations require the versioned definition format."
 msgstr "Le osservazioni originali richiedono il formato di definizione con versione."
+
+msgid "Choose an estimated OpenRC configuration for this model and review its retained values."
+msgstr "Scegli una configurazione OpenRC stimata per questo modello e verifica i valori conservati."
+
+msgid "The model or configuration changed. Review the configuration choice again."
+msgstr "Il modello o la configurazione sono cambiati. Verifica di nuovo la configurazione scelta."
+
+msgid "The saved configuration choice is invalid."
+msgstr "La configurazione scelta e salvata non è valida."
+
+msgid "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+msgstr "Il volo dei modelli ClearView non è ancora qualificato numericamente. Puoi modificare e salvare questa bozza."
+
+msgid "OpenRC configuration"
+msgstr "Configurazione OpenRC"
+
+msgid "Proposed installation: conventional wing and aft tail, one tractor electric motor, 4S battery and 12×6 propeller."
+msgstr "Installazione proposta: ala convenzionale e impennaggio posteriore, un motore elettrico in configurazione traente, batteria 4S ed elica 12×6."
+
+msgid "Existing values and inventory are kept. Review dimensions, masses and controls for this model."
+msgstr "I valori e l’inventario esistenti vengono conservati. Verifica dimensioni, masse e comandi per questo modello."
+
+msgid "I have reviewed the retained values for this model."
+msgstr "Ho verificato i valori conservati per questo modello."
+
+msgid "Create an estimated OpenRC configuration"
+msgstr "Crea una configurazione OpenRC stimata"
+
+msgid "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
+msgstr "Configurazione OpenRC stimata e indipendente selezionata. Le impostazioni di volo ClearView restano riferimenti alla fonte."
+
+msgid "Flight qualification"
+msgstr "Qualificazione al volo"
+
+msgid "Estimated package proposal. Choose a configuration on Import."
+msgstr "Proposta di pacchetto stimato. Scegli una configurazione in Importazione."

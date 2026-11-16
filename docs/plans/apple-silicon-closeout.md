@@ -65,10 +65,18 @@ in this closeout.
 
 ## Progress
 
-- [x] 1. Final candidate frozen: `74aff714fe7415238bcd3527299d24945dcc73fa`;
-  unchanged runtime accepted by the existing native verifier on M1.
-- [ ] 2. Development app and package/lifecycle checks passed.
+- [x] 1. Final candidate frozen: `e272d8708a0b8efbcd2f9921482970581df3dfc7`.
+  Its metadata and JSON-clock corrections passed 119 native observer checks;
+  fresh r6 qualification passed all 650 checks on M1.
+- [ ] 2. R8 package and lifecycle checks. R7 passed all five packaged checks
+  and both complete Home/fallback routes before the observer correction.
 - [ ] 3. Valid 1080p reference/native screen reviewed.
 - [ ] 4. Sustained comparison and required CI passed.
 - [ ] 5. Native default and fallback verified through ordinary launches.
 - [ ] 6. Tested app and concise results delivered.
+
+The R7 reference smoke flew but was rejected for 35 missing optional
+frame-generation metadata errors. Its drawable receipt also rejected JSON clock
+numbers. The replacement fixes both reads in the same observer and adds regression
+coverage. R5 was stopped before qualification; preserve it, R7 and the failed
+capture. No new engine build or performance-threshold change is part of this correction.

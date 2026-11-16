@@ -227,6 +227,10 @@ class Scan extends RefCounted:
 		for key: String in ["generator", "copyright"]:
 			if asset.has(key) and typeof(asset[key]) != TYPE_STRING:
 				return _invalid("The model has an invalid asset description.", "asset/" + key)
+		# Non-authoritative namespace presence, cached from the already checked JSON. Values may
+		# be malformed: recognizing a declaration never grants a format or physics capability.
+		if asset.get("extras") is Dictionary and not asset.extras.is_empty():
+			report.asset_metadata_keys = asset.extras.keys()
 
 		var required: Variant = root.get("extensionsRequired", [])
 		if not required is Array:

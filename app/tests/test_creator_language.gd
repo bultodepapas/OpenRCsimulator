@@ -12,6 +12,8 @@ const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const PartsPanel := preload("res://ui/aircraft_creator_parts.gd")
 const VisualBuilder := preload("res://workshop/creator/visual_builder.gd")
 const Fixtures := preload("res://tests/creator_fixtures.gd")
+const InstallationPanel := preload("res://ui/aircraft_creator_installation.gd")
+const Installation := preload("res://workshop/creator/source_installation.gd")
 
 const LOCALES: PackedStringArray = ["es", "pt_BR", "de", "fr", "it", "ru", "ja", "zh_Hans"]
 ## Text that is the same in every language: units, formats, axes, numbers and player data.
@@ -62,6 +64,10 @@ func _run() -> void:
 ## Messages the wizard shows from the document and the readers resolve in every catalog.
 func _catalogs() -> void:
 	var messages := PackedStringArray()
+	messages.append_array([Installation.REQUIRED,Installation.STALE,Installation.INVALID,Installation.FLIGHT_UNAVAILABLE,
+		InstallationPanel.TITLE,InstallationPanel.PROPOSAL,InstallationPanel.RETAINED,InstallationPanel.REVIEW,
+		InstallationPanel.CHOOSE,InstallationPanel.CHOSEN,"Flight qualification",
+		"Estimated package proposal. Choose a configuration on Import."])
 	for step: String in Authoring.STEPS:
 		messages.append(str(Authoring.STEP_TITLES[step]))
 	for entry: Dictionary in Authoring.FIELDS:

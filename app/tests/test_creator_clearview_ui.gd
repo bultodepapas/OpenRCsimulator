@@ -5,6 +5,8 @@ const Fixture := preload("res://tests/test_creator_clearview_readers.gd")
 const Converter := preload("res://workshop/creator/clearview/converter.gd")
 const Definition := preload("res://workshop/creator/definition.gd")
 const Authoring := preload("res://workshop/creator/authoring.gd")
+const Compiler := preload("res://workshop/creator/compiler.gd")
+const InstallationFixture := preload("res://tests/test_creator_source_installation.gd")
 var failures := 0
 var checks := 0
 var _directory := "user://clearview-ui-%d" % Time.get_ticks_usec()
@@ -167,6 +169,7 @@ func _run() -> void:
 	await _wait(wizard)
 	check("navigation alone does not prevent opening", wizard.document().name == "ClearView draft")
 	await _revision(wizard)
+	await _legacy_revision(wizard)
 	wizard.queue_free()
 	await _settle(6)
 	deadline = Time.get_ticks_msec() + 5000
@@ -186,6 +189,26 @@ func _revision(wizard: Control) -> void:
 	doc.set_axis("up_axis","+z")
 	doc.set_units("m")
 	doc.set_datum([0.0,0.0,0.0])
+	wizard.go_to_step("import")
+	await _settle()
+	var review: CheckButton = wizard.find_child("ReviewSourceInstallation",true,false)
+	var choose: Button = wizard.find_child("ChooseSourceInstallation",true,false)
+	var power: Button = wizard.find_child("PowerElectric",true,false)
+	check("source package is an unselected proposal",choose.disabled and power.disabled and not power.button_pressed and not doc.compile().ok)
+	for step: String in ["aircraft_layout","power_mount","controls_ground"]:
+		check("review labels pending configuration as a proposal: "+step,wizard.call("_section_detail",step) == tr(Creator.PACKAGE_PROPOSAL) and doc.step_status(step) == Authoring.STATUS_IN_PROGRESS)
+	for card_name: String in ["LayoutConventional","PowerElectric","GearNone"]:
+		var card: Button = wizard.find_child(card_name,true,false)
+		check("package cards remain unselected before confirmation: "+card_name,card.disabled and not card.button_pressed)
+	review.button_pressed = true
+	check("review enables an explicit package choice",not choose.disabled)
+	choose.pressed.emit()
+	await _settle()
+	check("explicit independent configuration is recorded",not doc.needs_source_installation())
+	check("review names the package after an explicit choice",wizard.call("_section_detail","power_mount") == "%s · %s" % [tr("Electric"),tr(Creator.ELECTRIC_PACKAGE)] and doc.step_status("power_mount") == Authoring.STATUS_COMPLETE)
+	for card_name: String in ["LayoutConventional","PowerElectric","GearNone"]:
+		var card: Button = wizard.find_child(card_name,true,false)
+		check("package cards reflect an explicit configuration: "+card_name,not card.disabled and card.button_pressed)
 	var compiled: Dictionary = doc.compile()
 	check("explicit trainer configuration compiles independently of declarations",compiled.ok)
 	if not compiled.ok:
@@ -193,22 +216,80 @@ func _revision(wizard: Control) -> void:
 		return
 	var context: Dictionary = doc.source_observations()
 	wizard.call("_on_publish_pressed")
-	check("versioned definition publishes through existing store",doc.published_revision == 1)
+	check("publication handler preserves the qualification gate",doc.published_revision == 0)
+	check("v3 can still save as a draft",wizard.call("_save_draft"))
 	var store: RefCounted = wizard.get("_store")
-	var saved: Dictionary = store.load_aircraft(doc.aircraft_uuid())
-	check("saved revision retains versioned context",saved.ok and saved.value.definition.format == Definition.SOURCE_FORMAT and saved.value.definition.source_observations == context)
+	var saved: Dictionary = store.load_draft(doc.draft_id)
+	check("saved draft retains v3 configuration",saved.ok and saved.value.snapshot.format == Authoring.INSTALLATION_SNAPSHOT_FORMAT and saved.value.snapshot.source_observations == context)
 	if not saved.ok:
 		return
-	wizard.call("_begin_open","aircraft",saved.value)
+	wizard.call("_begin_open","draft",saved.value)
 	await _wait(wizard)
-	check("saved aircraft reopens with exact review context",wizard.document().published_revision == 1 and wizard.document().source_observations() == context)
+	check("saved draft reopens with exact review context",wizard.document().source_observations() == context and not wizard.document().needs_source_installation())
 	var forged: Dictionary = saved.value.duplicate(true)
-	forged.definition.source_observations.parameters_sha256 = "0".repeat(64)
+	forged.snapshot.source_observations.parameters_sha256 = "0".repeat(64)
 	var before: Dictionary = wizard.document().snapshot()
-	wizard.call("_begin_open","aircraft",forged)
+	wizard.call("_begin_open","draft",forged)
 	await _wait(wizard)
 	check("revision definition cannot disagree with restored source context",wizard.document().snapshot() == before)
 	check("failed source comparison restores import controls",not (wizard.get("_choose_button") as Button).disabled)
+	# The low-level store preserves opaque historical members independently. Creator must
+	# compare both versioned members when opening a revision, even a downgraded snapshot.
+	var fixture: Dictionary = store.publish_aircraft({aircraft_uuid = doc.aircraft_uuid(),name = doc.name,
+		definition = doc.definition(),raw_bytes = compiled.value.raw_bytes(),source_bytes = doc.source().source_bytes(),
+		source_file_name = doc.source().file_name(),placement = doc.placement(),bindings = doc.bindings(),
+		appearance = doc.appearance(),snapshot = doc.snapshot("import")},0)
+	check("v3 historical fixture stores",fixture.ok)
+	if not fixture.ok:
+		return
+	var revision: Dictionary = store.load_aircraft(doc.aircraft_uuid())
+	wizard.call("_begin_open","aircraft",revision.value)
+	await _wait(wizard)
+	check("v3 revision reopens with exact declaration",wizard.document().source_installation() == doc.source_installation())
+	var downgraded: Dictionary = revision.value.duplicate(true)
+	downgraded.snapshot.erase("source_installation")
+	downgraded.snapshot.erase("source_observations")
+	downgraded.snapshot.format = Authoring.SNAPSHOT_FORMAT
+	before = wizard.document().snapshot()
+	wizard.call("_begin_open","aircraft",downgraded)
+	await _wait(wizard)
+	check("v1 snapshot cannot silently discard a saved v3 definition",wizard.document().snapshot() == before)
+
+func _legacy_revision(wizard: Control) -> void:
+	var source: RefCounted = wizard.document().source()
+	var observed := Converter.Observations.inspect(source)
+	var legacy: RefCounted = InstallationFixture.populated(source,observed.value)
+	legacy.name = "Historical ClearView"
+	var definition: Dictionary = legacy.definition()
+	var physical := definition.duplicate(true)
+	physical.erase("source_observations")
+	physical.format = Definition.FORMAT
+	var compiled := Compiler.compile_candidate(physical)
+	check("historical fixture has valid physical bytes",compiled.ok and definition.format == Definition.SOURCE_FORMAT)
+	if not compiled.ok:
+		return
+	var store: RefCounted = wizard.get("_store")
+	var saved: Dictionary = store.publish_aircraft({aircraft_uuid = legacy.aircraft_uuid(),name = legacy.name,
+		definition = definition,raw_bytes = compiled.value.raw_bytes(),source_bytes = source.source_bytes(),
+		source_file_name = source.file_name(),placement = legacy.placement(),bindings = legacy.bindings(),
+		appearance = legacy.appearance(),snapshot = legacy.snapshot("import")},0)
+	check("historical v2 revision fixture is retained",saved.ok)
+	if not saved.ok:
+		printerr(saved.diagnostics)
+		return
+	var loaded: Dictionary = store.load_aircraft(legacy.aircraft_uuid())
+	wizard.call("_begin_open","aircraft",loaded.value)
+	await _wait(wizard)
+	check("historical v2 opens unchanged and requires a new choice",wizard.document().name == legacy.name and wizard.document().definition() == definition and wizard.document().needs_source_installation())
+	check("historical source can still save a draft",wizard.call("_save_draft"))
+	check("qualification is visible and test flight remains unavailable",(wizard.find_child("TestFly",true,false) as Button).disabled)
+	var downgraded: Dictionary = loaded.value.duplicate(true)
+	downgraded.snapshot.erase("source_observations")
+	downgraded.snapshot.format = Authoring.SNAPSHOT_FORMAT
+	var before: Dictionary = wizard.document().snapshot()
+	wizard.call("_begin_open","aircraft",downgraded)
+	await _wait(wizard)
+	check("v1 snapshot cannot silently discard a saved v2 definition",wizard.document().snapshot() == before)
 
 func _finish() -> void:
 	_remove_test_tree(ProjectSettings.globalize_path(_directory))

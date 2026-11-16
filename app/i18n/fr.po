@@ -13714,3 +13714,39 @@ msgstr "La définition compilée a changé. Vérifiez l’avion et enregistrez-l
 
 msgid "Source observations require the versioned definition format."
 msgstr "Les observations source nécessitent le format de définition versionné."
+
+msgid "Choose an estimated OpenRC configuration for this model and review its retained values."
+msgstr "Choisissez une configuration OpenRC estimée pour ce modèle et vérifiez les valeurs conservées."
+
+msgid "The model or configuration changed. Review the configuration choice again."
+msgstr "Le modèle ou la configuration a changé. Vérifiez à nouveau le choix de configuration."
+
+msgid "The saved configuration choice is invalid."
+msgstr "Le choix de configuration enregistré n’est pas valide."
+
+msgid "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+msgstr "La qualification numérique du vol des modèles ClearView n’est pas encore établie. Vous pouvez modifier et enregistrer ce brouillon."
+
+msgid "OpenRC configuration"
+msgstr "Configuration OpenRC"
+
+msgid "Proposed installation: conventional wing and aft tail, one tractor electric motor, 4S battery and 12×6 propeller."
+msgstr "Installation proposée : aile classique et empennage arrière, un moteur électrique à hélice tractive, batterie 4S et hélice 12×6."
+
+msgid "Existing values and inventory are kept. Review dimensions, masses and controls for this model."
+msgstr "Les valeurs et l’inventaire existants sont conservés. Vérifiez les dimensions, les masses et les commandes de ce modèle."
+
+msgid "I have reviewed the retained values for this model."
+msgstr "J’ai vérifié les valeurs conservées pour ce modèle."
+
+msgid "Create an estimated OpenRC configuration"
+msgstr "Créer une configuration OpenRC estimée"
+
+msgid "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
+msgstr "Configuration OpenRC estimée et indépendante sélectionnée. Les paramètres de vol ClearView restent des références issues de la source."
+
+msgid "Flight qualification"
+msgstr "Qualification de vol"
+
+msgid "Estimated package proposal. Choose a configuration on Import."
+msgstr "Proposition de paquet estimé. Choisissez une configuration dans Importation."

@@ -13543,3 +13543,39 @@ msgstr "Скомпилированное описание изменилось. 
 
 msgid "Source observations require the versioned definition format."
 msgstr "Исходные наблюдения требуют версионного формата описания."
+
+msgid "Choose an estimated OpenRC configuration for this model and review its retained values."
+msgstr "Выберите оценочную конфигурацию OpenRC для этой модели и проверьте сохранённые значения."
+
+msgid "The model or configuration changed. Review the configuration choice again."
+msgstr "Модель или конфигурация изменились. Проверьте выбранную конфигурацию ещё раз."
+
+msgid "The saved configuration choice is invalid."
+msgstr "Сохранённый выбор конфигурации недействителен."
+
+msgid "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+msgstr "Пригодность моделей ClearView к полёту ещё не подтверждена численно. Вы можете изменить и сохранить этот черновик."
+
+msgid "OpenRC configuration"
+msgstr "Конфигурация OpenRC"
+
+msgid "Proposed installation: conventional wing and aft tail, one tractor electric motor, 4S battery and 12×6 propeller."
+msgstr "Предлагаемая установка: обычное крыло и заднее оперение, один электродвигатель с тянущим винтом, аккумулятор 4S и винт 12×6."
+
+msgid "Existing values and inventory are kept. Review dimensions, masses and controls for this model."
+msgstr "Существующие значения и список компонентов сохраняются. Проверьте размеры, массы и органы управления этой модели."
+
+msgid "I have reviewed the retained values for this model."
+msgstr "Я проверил сохранённые значения для этой модели."
+
+msgid "Create an estimated OpenRC configuration"
+msgstr "Создать оценочную конфигурацию OpenRC"
+
+msgid "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
+msgstr "Выбрана независимая оценочная конфигурация OpenRC. Настройки полёта ClearView остаются справочными данными из источника."
+
+msgid "Flight qualification"
+msgstr "Квалификация для полёта"
+
+msgid "Estimated package proposal. Choose a configuration on Import."
+msgstr "Предлагается оценочный пакет. Выберите конфигурацию в разделе «Импорт»."

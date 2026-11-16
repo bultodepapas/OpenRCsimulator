@@ -11,6 +11,7 @@ const R := preload("res://workshop/creator/result.gd")
 const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const AcceptedCandidate := preload("res://workshop/creator/accepted_candidate.gd")
 const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
+const Installation := preload("res://workshop/creator/source_installation.gd")
 const Placement := preload("res://workshop/creator/placement.gd")
 const Parts := preload("res://workshop/creator/visual_parts.gd")
 const Paint := preload("res://workshop/creator/visual_paint.gd")
@@ -60,6 +61,11 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var source: Variant = payload.get("creator_source")
 	if not (source is Object) or (source as Object).get_script() != InspectedSource or not (source as InspectedSource).is_admitted():
 		return _refused("The model source was not admitted.")
+	var association := Installation.check_pair((candidate as AcceptedCandidate).summary(),source as InspectedSource)
+	if not association.ok:
+		return _refused(str(association.diagnostics[0].message))
+	if Installation.required(source as InspectedSource):
+		return _refused(Installation.FLIGHT_UNAVAILABLE)
 	var placement: Variant = payload.get("creator_placement")
 	if typeof(placement) != TYPE_DICTIONARY:
 		return _refused("The model placement is missing.")
@@ -147,6 +153,8 @@ static func verify(trial: Dictionary) -> Dictionary:
 	if not (source is Object) or (source as Object).get_script() != InspectedSource \
 			or (source as InspectedSource).sha256() != str(identity.get("source_sha256", "")):
 		return _refused("The frozen model source does not match the trial identity.")
+	if Installation.required(source as InspectedSource):
+		return _refused(Installation.FLIGHT_UNAVAILABLE)
 	var reloaded: Dictionary = RecordLoader.load_bytes(bytes, aircraft_id)
 	if not reloaded.get("ok", false) or reloaded.model != data.model:
 		return _refused("The frozen model is not what its exact bytes load to.")

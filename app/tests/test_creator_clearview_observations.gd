@@ -199,6 +199,12 @@ func _compiler(context: Dictionary) -> void:
 	enriched.format = Definition.SOURCE_FORMAT
 	enriched.source_observations = context
 	var checked := Definition.validate_complete(enriched)
+	check("legacy v2 is readable but cannot silently compile",checked.ok and not Compiler.compile_candidate(enriched).ok)
+	enriched.format = Definition.INSTALLATION_FORMAT
+	enriched.source_installation = {format = Definition.Installation.FORMAT,mode = Definition.Installation.MODE,
+		source_sha256 = context.visual_sha256,report_state = "available",report_sha256 = Observations.digest(context),
+		airframe_package = original.airframe_package,power_package = original.power_package}
+	checked = Definition.validate_complete(enriched)
 	var compiled := Compiler.compile_candidate(enriched)
 	check("reference context compiles through versioned definition",checked.ok and compiled.ok and base.ok)
 	if compiled.ok and base.ok:
@@ -209,9 +215,10 @@ func _compiler(context: Dictionary) -> void:
 	var invented := enriched.duplicate(true)
 	invented.source_observations.observations = []
 	invented.source_observations.parameters_sha256 = "0".repeat(64)
+	invented.source_installation.report_sha256 = Observations.digest(invented.source_observations)
 	var fabricated := Compiler.compile_candidate(invented)
 	check("a standalone declaration cannot imply source verification",fabricated.ok and fabricated.value.summary().source_observations_validation == "structure_only" and fabricated.value.summary().source_observations.member_integrity == "declared")
 	original.source_observations = context
 	check("v1 definitions cannot silently carry new metadata",not Definition.validate_complete(original).ok)
 	enriched.erase("source_observations")
-	check("v2 definitions require reference context",not Definition.validate_complete(enriched).ok)
+	check("v3 report association requires its declared context",not Definition.validate_complete(enriched).ok)

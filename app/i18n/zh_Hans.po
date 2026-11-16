@@ -12742,3 +12742,39 @@ msgstr "编译后的定义已更改。请检查飞机并重新保存。"
 
 msgid "Source observations require the versioned definition format."
 msgstr "源观测信息需要带版本的定义格式。"
+
+msgid "Choose an estimated OpenRC configuration for this model and review its retained values."
+msgstr "为此模型选择一个估算的 OpenRC 配置，并检查保留的数值。"
+
+msgid "The model or configuration changed. Review the configuration choice again."
+msgstr "模型或配置已更改。请重新检查所选配置。"
+
+msgid "The saved configuration choice is invalid."
+msgstr "保存的配置选择无效。"
+
+msgid "Flight for ClearView models is not numerically qualified yet. You can edit and save this draft."
+msgstr "ClearView 模型的飞行尚未通过数值资格验证。您仍可编辑并保存此草稿。"
+
+msgid "OpenRC configuration"
+msgstr "OpenRC 配置"
+
+msgid "Proposed installation: conventional wing and aft tail, one tractor electric motor, 4S battery and 12×6 propeller."
+msgstr "建议配置：常规机翼和后置尾翼、一台拉力式电动机、4S 电池和 12×6 螺旋桨。"
+
+msgid "Existing values and inventory are kept. Review dimensions, masses and controls for this model."
+msgstr "现有数值和部件清单将予以保留。请检查此模型的尺寸、质量和操纵装置。"
+
+msgid "I have reviewed the retained values for this model."
+msgstr "我已检查此模型保留的数值。"
+
+msgid "Create an estimated OpenRC configuration"
+msgstr "创建估算的 OpenRC 配置"
+
+msgid "Independent estimated OpenRC configuration selected. ClearView flight settings remain source references."
+msgstr "已选择独立的估算 OpenRC 配置。ClearView 飞行设置仍作为来源参考信息保留。"
+
+msgid "Flight qualification"
+msgstr "飞行资格评定"
+
+msgid "Estimated package proposal. Choose a configuration on Import."
+msgstr "估算套件方案。请在“导入”中选择配置。"

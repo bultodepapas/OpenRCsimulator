@@ -30,7 +30,9 @@ const STATUS_COMPLETE := "Complete"
 
 const SNAPSHOT_FORMAT := "openrc-creator-document v1"
 const SOURCE_SNAPSHOT_FORMAT := "openrc-creator-document v2"
+const INSTALLATION_SNAPSHOT_FORMAT := "openrc-creator-document v3"
 const Observations := preload("res://workshop/creator/clearview/observations.gd")
+const Installation := preload("res://workshop/creator/source_installation.gd")
 const AIRFRAME_PACKAGE := "conventional-trainer-estimated-v1"
 const POWER_PACKAGE := "electric-4s-800kv-apc12x6-estimated-v1"
 
@@ -95,6 +97,9 @@ var _invalid := {}
 ## typed or confirmed. Anything the player enters is theirs and is removed from this map.
 var _origin := {}
 var _source_observations := {}
+var _review_observations := {}
+var _source_installation := {}
+var _installation_proposal := {}
 var _inventory: Array = []
 var _compiled := {}
 var _compiled_revision := -1
@@ -165,9 +170,12 @@ func aircraft_uuid() -> String:
 ## datum and node indices belong to a file. The paint choice is kept.
 func set_source(admitted: InspectedSource, observations: Observations.CheckedReport = null) -> void:
 	_source_observations = {}
+	_source_installation = {}
 	if observations != null and observations.matches(admitted):
 		_source_observations = observations.context()
+	_review_observations = _source_observations.duplicate(true)
 	_source = admitted
+	_installation_proposal = Installation.make(_source,_review_observations,AIRFRAME_PACKAGE,POWER_PACKAGE)
 	_placement = Placement.unresolved()
 	_units = ""
 	_bindings = {}
@@ -181,6 +189,39 @@ func placement() -> Dictionary:
 ## References only. No observation is adopted into a physical field in this version.
 func source_observations() -> Dictionary:
 	return _source_observations.duplicate(true)
+
+
+## Freshly checked references can be reviewed without migrating a historical document.
+func review_source_observations() -> Dictionary:
+	return _review_observations.duplicate(true)
+
+
+func source_installation_proposal() -> Dictionary:
+	return _installation_proposal.duplicate(true)
+
+
+func source_installation() -> Dictionary:
+	return _source_installation.duplicate(true) if not needs_source_installation() else {}
+
+
+func needs_source_installation() -> bool:
+	return Installation.required(_source) and (_source_installation.is_empty() or _source_installation != _installation_proposal)
+
+
+## The declaration is source/package-bound; the revision guards queued UI actions after edits.
+## Values/inventory are preserved. The player explicitly reviews those for this source.
+func choose_source_installation(expected: Dictionary,expected_revision: int,reviewed: bool) -> Dictionary:
+	if not reviewed or not Installation.required(_source):
+		return R.fail(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import")
+	if expected_revision != revision or expected != _installation_proposal:
+		return R.fail(R.IDENTITY_MISMATCH,Installation.STALE,"source_installation","import")
+	var checked := Installation.validate(expected,_review_observations,AIRFRAME_PACKAGE,POWER_PACKAGE)
+	if not checked.ok:
+		return checked
+	_source_observations = _review_observations.duplicate(true)
+	_source_installation = checked.value
+	_touch()
+	return R.ok()
 
 
 func units() -> String:
@@ -454,6 +495,9 @@ func snapshot(step := "") -> Dictionary:
 	if not _source_observations.is_empty():
 		saved.format = SOURCE_SNAPSHOT_FORMAT
 		saved.source_observations = _source_observations.duplicate(true)
+	if not _source_installation.is_empty():
+		saved.format = INSTALLATION_SNAPSHOT_FORMAT
+		saved.source_installation = _source_installation.duplicate(true)
 	return saved
 
 
@@ -462,14 +506,22 @@ func snapshot(step := "") -> Dictionary:
 ## a source whose identity differs from the one the snapshot was saved with is refused.
 ## Returns the R envelope; on failure the document is unchanged.
 func restore(saved: Dictionary, admitted: InspectedSource, observations: Observations.CheckedReport = null) -> Dictionary:
-	if saved.get("format") not in [SNAPSHOT_FORMAT,SOURCE_SNAPSHOT_FORMAT]:
+	if saved.get("format") not in [SNAPSHOT_FORMAT,SOURCE_SNAPSHOT_FORMAT,INSTALLATION_SNAPSHOT_FORMAT]:
 		return R.fail(R.RECORD_INVALID, "This draft was saved by an incompatible version.")
 	var context := {}
-	if saved.format == SOURCE_SNAPSHOT_FORMAT:
+	if saved.format == SOURCE_SNAPSHOT_FORMAT or (saved.format == INSTALLATION_SNAPSHOT_FORMAT and saved.has("source_observations")):
 		var checked := Observations.validate(saved.get("source_observations"))
 		if not checked.ok or observations == null or not observations.matches(admitted) or checked.value != observations.context():
 			return R.fail(R.IDENTITY_MISMATCH, "The saved source declarations do not match this model. Re-import the ZIP.","source_observations","import")
 		context = checked.value
+	var installation := {}
+	if saved.format == INSTALLATION_SNAPSHOT_FORMAT:
+		var checked := Installation.validate(saved.get("source_installation"),context,AIRFRAME_PACKAGE,POWER_PACKAGE)
+		if not checked.ok:
+			return checked
+		if not Installation.required(admitted) or checked.value.source_sha256 != admitted.sha256():
+			return R.fail(R.IDENTITY_MISMATCH,Installation.STALE,"source_installation","import")
+		installation = checked.value
 	var wanted := str(saved.get("source_sha256", ""))
 	if (admitted == null) != wanted.is_empty() or (admitted != null and admitted.sha256() != wanted):
 		return R.fail(R.IDENTITY_MISMATCH, "The saved model does not match this draft.")
@@ -534,6 +586,9 @@ func restore(saved: Dictionary, admitted: InspectedSource, observations: Observa
 	name = clean_text(str(saved.get("name", ""))).substr(0, Limits.NAME_CHARACTERS)
 	_source = admitted
 	_source_observations = context
+	_source_installation = installation
+	_review_observations = observations.context() if observations != null and observations.matches(admitted) else context.duplicate(true)
+	_installation_proposal = Installation.make(_source,_review_observations,AIRFRAME_PACKAGE,POWER_PACKAGE)
 	_placement = placed
 	_units = str(saved.get("units", "")) if Placement.UNITS.has(str(saved.get("units", ""))) else ""
 	_values = values
@@ -708,6 +763,9 @@ func definition() -> Dictionary:
 	if not _source_observations.is_empty():
 		record.format = Definition.SOURCE_FORMAT
 		record.source_observations = _source_observations.duplicate(true)
+	if not _source_installation.is_empty():
+		record.format = Definition.INSTALLATION_FORMAT
+		record.source_installation = _source_installation.duplicate(true)
 	return record
 
 
@@ -752,6 +810,10 @@ func summary() -> Dictionary:
 ## Everything that blocks a test flight, as routed diagnostics.
 func issues() -> Array:
 	var found: Array = []
+	if needs_source_installation():
+		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import"))
+	if Installation.required(_source):
+		found.append(R.diagnostic(R.UNSUPPORTED_CAPABILITY,Installation.FLIGHT_UNAVAILABLE,"flight_qualification","review_test"))
 	if _source == null:
 		found.append(R.diagnostic(R.SOURCE_MISSING, "Import a model first.", "source", "import"))
 	else:
@@ -765,7 +827,7 @@ func issues() -> Array:
 	var checked: Dictionary = Definition.validate_complete(definition())
 	if not checked.ok:
 		found.append_array(checked.diagnostics)
-	elif _invalid.is_empty():
+	elif _invalid.is_empty() and not needs_source_installation():
 		var compiled: Dictionary = compile()
 		if not compiled.ok:
 			found.append_array(compiled.diagnostics)
@@ -776,7 +838,9 @@ func issues() -> Array:
 func compile() -> Dictionary:
 	if _compiled_revision == revision:
 		return _compiled
-	if not _invalid.is_empty():
+	if needs_source_installation():
+		_compiled = R.fail(R.UNSUPPORTED_CAPABILITY,Installation.REQUIRED,"source_installation","import")
+	elif not _invalid.is_empty():
 		_compiled = R.fail(R.FIELD_INVALID, "Correct the highlighted values first.")
 	else:
 		_compiled = Compiler.compile_candidate(definition())
@@ -787,7 +851,7 @@ func compile() -> Dictionary:
 func step_status(step: String) -> String:
 	match step:
 		"import":
-			return STATUS_COMPLETE if _source != null else STATUS_NOT_STARTED
+			return STATUS_IN_PROGRESS if needs_source_installation() else (STATUS_COMPLETE if _source != null else STATUS_NOT_STARTED)
 		"orient_size":
 			if _source == null:
 				return STATUS_NOT_STARTED
@@ -814,6 +878,8 @@ func step_status(step: String) -> String:
 		return STATUS_NEEDS_ATTENTION if broken else (STATUS_IN_PROGRESS if resolved > 0 else STATUS_NOT_STARTED)
 	if broken:
 		return STATUS_NEEDS_ATTENTION
+	if step in ["aircraft_layout","power_mount","controls_ground"] and needs_source_installation():
+		return STATUS_IN_PROGRESS
 	if resolved == 0:
 		return STATUS_NOT_STARTED
 	if resolved < owned.size():

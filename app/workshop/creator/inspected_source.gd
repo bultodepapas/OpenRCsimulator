@@ -93,6 +93,12 @@ func details() -> Dictionary:
 	return _details.duplicate(true)
 
 
+## Namespace presence only, from admitted asset metadata. No reparse/copy of model bytes or
+## metadata values on the UI thread. A producer's tag is a declaration, not authentication.
+func has_asset_metadata(metadata_namespace: String) -> bool:
+	return _sealed and _format == FORMAT_GLB and metadata_namespace in _details.get("asset_metadata_keys", [])
+
+
 ## Warnings and notes raised during admission, as diagnostics.
 func notes() -> Array:
 	return _notes.duplicate(true)
