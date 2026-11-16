@@ -1,0 +1,107 @@
+# MP-01/02: protocol and first LAN delivery contract
+
+**Owner:** MP lead with UI/SF/AFC owners. **Status:** proposed, unimplemented. **Updated:** 2026-11-16. The [multiplayer plan](multiplayer.md) owns product scope, effort and release gates. This document owns the candidate wire layout, adapter, state rules and first implementation slices. [Round-two research](../research/multiplayer-2026-11-15/round-2.md) records why the design changed. No provider dependency is needed for MP-01/02.
+
+## 1. One adapter owner, explicit host routing
+
+Add a proposed `MultiplayerSession` child owned by `AppRoot`, outside the replaceable flight subtree, with `PROCESS_MODE_ALWAYS`. It owns one standalone `SceneMultiplayer` and one ENet peer. Set the API's `root_path` to that live child's absolute `get_path()`, `server_relay = false` and `allow_object_decoding = false`; connect callbacks before assigning an already-created CONNECTING/CONNECTED peer. Manually call this API's `poll()` once per render `_process`. Do not register it with `SceneTree.set_multiplayer`, change tree-wide automatic polling, or also consume that peer with `get_packet()`.
+
+This choice follows the pinned engine: [raw packets still require a root path](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/multiplayer/scene_multiplayer.cpp#L215-L216), [registered APIs are automatically polled](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/main/scene_tree.cpp#L707-L712), and [default relay forwards guest traffic before application validation](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/multiplayer/scene_multiplayer.cpp#L260-L350). The standalone arrangement must still pass an exact-engine smoke check.
+
+Guests send only to transport peer **1**. The host binds each connection generation to one logical entity, validates ingress, then explicitly sends accepted application data to each intended recipient. Guests accept room state only from peer 1 and logical entities in the current host roster. Disabling relay also removes automatic guest announcements; the application owns its roster. Peer ID, room nonce and a cleartext invite capability do not authenticate an Internet host or encrypt ENet.
+
+| Traffic | Logical channel | Transfer mode | Application rule |
+| --- | ---: | --- | --- |
+| Authentication before mutual completion | 0, selected internally by `send_auth` | Reliable | HELLO → ACCEPT → AUTH_ACK; separate from post-admission control IDs |
+| Roster, configuration, baseline, status transitions, acknowledgments | 1 | Reliable | Bounded, idempotent control; apply before acknowledging |
+| Pose, clock probes, repeating status/heartbeat | 2 | Unreliable, unordered | Per-entity sequence/revision checks; old data never overwrites new state |
+
+Use explicit channel count **2 on both endpoints**. The [pinned ENet implementation](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/enet/enet_multiplayer_peer.cpp#L53-L104) adds its reserved channels; these application channels map to physical channels 2 and 3. Do not use one unreliable-ordered stream for several aircraft: a later packet for one entity must not discard another entity's useful sample. `peer_packet` reports sender and payload, not incoming mode/channel, so correctness must not depend on checking either in that callback. [Engine raw delivery](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/multiplayer/scene_multiplayer.cpp#L517-L527)
+
+For two admitted pilots allow one admitted guest plus **one temporary admission slot**; for four pilots allow three guests plus one temporary slot. Permit one compatibility negotiation at a time, bounded to five seconds; additional pending applicants are refused. The extra slot permits a best-effort `ROOM_FULL` response without raising the pilot cap. If transport slots are exhausted, report a generic connection failure/timeout, not a supposedly received refusal.
+
+Perform compatibility/capability exchange through `auth_callback` and `send_auth` on both sides, with `auth_timeout = 5.0`; use HELLO → ACCEPT → AUTH_ACK and call `complete_auth` only after the bounded exchange succeeds. The client sends AUTH_ACK through `send_auth` before completing; the host completes after receiving it, with no remaining auth payload to send. Do not require ordinary `send_bytes`/control ACK while authentication is pending: the engine permits only auth traffic, and [`send_auth` rejects further sends once either side has completed](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/multiplayer/scene_multiplayer.cpp#L457-L480). REFUSE uses a bounded auth-stage acknowledgment/grace period or is reported as best-effort. This is application admission, not a cryptographic identity claim. Do not wait for asset loading inside authentication. Explicitly clean up authentication failures, kick, close, cancel and timeout: [local disconnect signals can be suppressed](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/multiplayer/scene_multiplayer.cpp#L429-L437). Callbacks only queue/coalesce work; destructive teardown waits until `poll()` returns and is idempotent.
+
+## 2. Candidate snapshot v1: exactly 128 application bytes
+
+This layout supersedes the original 2026-11-15 **proposal**; no shipped protocol is being changed. All numeric fields are little-endian. The room incarnation is now 64 random bits, compared as two `u32` values, and the configuration revision moves into a 48-byte header. The application size remains 128 bytes. [`send_bytes`](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/multiplayer/scene_multiplayer.cpp#L439-L455) adds one Godot command byte; transport headers, acknowledgments and control traffic are additional.
+
+| Offset | Field | Encoding / rule |
+| --- | --- | --- |
+| 0–1 | Magic | Bytes `4f 52` (`OR`) |
+| 2 | Protocol major | `u8`, 1 |
+| 3 | Message kind | `u8`, 1 = pose |
+| 4–5 | Header flags | `u16`, zero in v1 |
+| 6–7 | Header length | `u16`, 48 |
+| 8–15 | Room incarnation | Low then high `u32`; random per new host room, never an authentication token |
+| 16–19 | Entity ID | `u32`, host-assigned, nonzero, never reused in that room |
+| 20–23 | Flight epoch | `u32`, host-accepted generation, no wrap within a room |
+| 24–27 | Sample sequence | `u32`, per entity and epoch |
+| 28–31 | Configuration revision | `u32`, must equal the accepted room revision |
+| 32–39 | Accepted sample room time | `i64` microseconds, relative to host process monotonic origin; may be negative for an old paused sample |
+| 40–47 | Accepted simulation tick | `u64`; high bit zero; no restamping a repeated tick |
+| 48–71 | CG position NED | Three `float64`, metres |
+| 72–87 | Body→NED attitude | Four `float32`, **w,x,y,z** |
+| 88–99 | Velocity NED | Three `float32`, m/s; rotate accepted body FRD velocity before encoding |
+| 100–111 | Angular velocity body FRD | Three `float32`, rad/s |
+| 112–119 | Surface positions | Four `int16` centidegrees: right aileron, left aileron, elevator, rudder |
+| 120–123 | Propeller RPM | `float32` |
+| 124–125 | Throttle | `u16`; normalized value = encoded / 65535 |
+| 126–127 | Presentation flags | `u16`, zero until an approved model/protocol revision assigns bits |
+
+Surface values are **trailing-edge angles**, not model-axis hinge rotations. Capture [`FlightSession.surface_angles_deg()`](../../app/sim/flight_session.gd); apply [`ControlSurfaces.hinge_rotations_from_surfaces`](../../app/physics/control_surfaces.gd) at the visual boundary. Quantize centidegrees by nearest integer, half away from zero, after validating the admitted aircraft's throws. Use existing [frame/CG conversion](../../app/render/frames.gd); never copy a companion's solver/session to represent a remote plane.
+
+Decode into detached temporary data, validate the whole record, then commit to the replica. Initial outer guards are absolute NED coordinates ≤100,000 m, each velocity component ≤1,000 m/s in magnitude, each body angular-rate component ≤100 rad/s, RPM within 0–250,000, quaternion norm within 0.99–1.01 before normalization, and the approved model's surface limits. These broad engineering caps are not a flight envelope; MP-01a must tighten them for the selected field/aircraft and retain a valid extreme-motion trace. Reject wrong length/magic/version/flags/revision, nonfinite values, illegal IDs and invalid render conversions; do not clamp malformed state into plausibility. No peer-controlled resource paths or engine-object decoding.
+
+## 3. Control, ordering and lifecycle
+
+The proposed control framing is the same four-byte magic/major/kind prefix with kind **2**, followed by UTF-8 JSON, at most **1,024 total bytes**. Authentication frames use the same bounded envelope. Validate an allowlisted schema, nesting ≤4, finite numbers, UTF-8 names ≤32 bytes, array bounds and exact integer ranges; IDs/revisions are `u32`, while microsecond/tick values use validated decimal strings to avoid JSON integer-precision loss (time may be signed; tick is nonnegative). Represent a room incarnation as 16 hex characters in control. The implementation must add golden examples for each selected message before networking is enabled.
+
+| Message family | Required meaning |
+| --- | --- |
+| `HELLO`, `ACCEPT`, `REFUSE` | Build/protocol/content identities and optional capability; assign room/entity only through host admission. A refusal is best-effort and bounded, never an indefinite pending connection |
+| `ROOM` | Host roster, approved content and configuration revision; transport connection alone does not create a visible aircraft |
+| `BASELINE` | Entity, new epoch, current status/revision and a base64-encoded complete 128-byte pose; validate atomically before showing or replacing history |
+| `ACK`, `READY` | Acknowledge applied reliable control IDs. READY requires local loading and all required room/baseline data; no remote message resumes the local controller |
+| `STATUS`, `HEARTBEAT` | Per-entity epoch, status revision, ACTIVE/PAUSED/DEGRADED state and last accepted sample identifiers; reliable PAUSED includes a final full pose; heartbeat also has its own sequence |
+| `CLOCK_PROBE`, `CLOCK_REPLY` | Outstanding probe ID and four-timestamp exchange; no semantic ACK required |
+| `LEAVE`, `REMOVE`, `KICK` | Host-controlled roster removal or a guest's request to leave; explicit local cleanup does not depend on receiving a final packet |
+
+Reliable controls carry a contiguous control ID starting at 1 per directed connection generation, except ACK itself. The host assigns separate streams for each recipient. Accept only the next expected ID; an already-applied ID cannot mutate state, and a gap is a protocol failure with bounded teardown. Do not rely on the unseen transfer mode to impose order. Authentication, probes and heartbeat sequences are separate. Keep at most eight unacknowledged controls and 64 KiB of unacknowledged application data per peer; five seconds without required ACK fails the transition. ACK only after successful application, deduplicate repeated IDs, and do not implement a parallel unbounded retry queue over reliable transport. State transition STATUS is reliable; HEARTBEAT repeats its latest revision unreliably once per second. Initial pose ingress allowance: 30/s with burst 10 per admitted guest; control/probe/heartbeat allowances must be separate and bounded in MP-01a's schema fixtures.
+
+For pose sequences within the same entity/epoch, calculate `d = (new - old) & 0xffffffff`; accept newer only when `0 < d < 0x80000000`. Equality is duplicate; half-range is ambiguous and refused. Apply a maximum forward jump of 10,000 samples before requiring a fresh baseline. Flight epochs/config revisions do not wrap: recreate the room before exhaustion. Every new connection gets a local generation token; stale callbacks cannot mutate a new session even when an engine peer ID is reused.
+
+Drop unknown future-epoch poses until their reliable baseline is accepted; do not accumulate them. Baseline acceptance clears interpolation history atomically. A late join receives each current entity's baseline and status, including an old, intentionally paused pose; it does not wait for another physics tick. Status revisions are scoped to the flight epoch. Old pause messages and old heartbeats cannot override a newer status or new flight. Repeating status changes neither the original pose timestamp nor simulation tick. A PAUSED heartbeat or transition immediately freezes the current display and prevents same-epoch pose traffic from moving it. The reliable PAUSED transition carries the final full pose: allow exactly one atomic final correction for that status revision, even if its heartbeat arrived first, then retain it for late join. Duplicate controls or delayed ordinary poses cannot apply another correction. Only a newer epoch/baseline after successful local resume reopens motion; DEGRADED continues accepting fresh poses but cannot extrapolate.
+
+[`FlightSession.resetting`](../../app/sim/flight_session.gd) also occurs for restore/configuration. Inspect `last_transition().kind` and `.generation`; only a committed `TRANSITION_START` authorizes the reset baseline. Record the receipt in the synchronous callback, then capture/send after the protected transaction and tick-zero publication. A refused reset creates no new epoch. A postcommit observer fault still belongs to the new flight but remains paused. Resume gets a fresh epoch/baseline only after existing local resume succeeds. Unsupported restore, Workshop or configuration changes leave the room through the existing recorder/save flow.
+
+Keep host connection liveness, each guest's liveness and each pose's freshness distinct. The host forwarding its own heartbeat cannot keep a silent guest alive. A live pause remains frozen beyond five seconds; an active pose stale for 500 ms is marked stale. Five seconds without valid peer liveness removes/disconnects it; host loss ends the room and invokes the existing safe local hold with explicit offline continuation. Operating-system sleep stops the network owner too.
+
+## 4. Time, interpolation and bounded work
+
+Retain 240 Hz local physics. Attach the lightweight accepted-time tracker before the flight's first accepted start, including tick zero. Do not admit a pre-existing flight whose last accepted wall time was never observed: use the existing safe Home/start flow to obtain a fresh accepted sample. Never infer acceptance time from simulation tick or join time. Synchronous accepted-step callbacks may record tick/time/transition bookkeeping only; they do not encode, send, call providers or reenter transitions. At the 20 Hz monotonic send deadline, copy the latest completed accepted state outside the solver transaction. Preserve its acceptance timestamp; never call an old state fresh because it was sent again. Send one latest state and skip missed deadlines after a stall.
+
+With guest timestamps `g0,g3` and host timestamps `h1,h2`, estimate host-minus-guest offset as `((h1-g0)+(h2-g3))/2`; corrected RTT is `(g3-g0)-(h2-h1)`. Match outstanding probe IDs, reject negative/over-two-second RTT and impossible host processing intervals. Start with eight probes at 4 Hz; require at least four valid replies within five seconds, then probe at 1 Hz using the lowest-RTT sample in the last eight. With stable clock rates and nonnegative one-way delays, midpoint offset error can range within ±half the corrected RTT; a symmetric path has zero asymmetry error. Report a conservative uncertainty interval of at least ±RTT/2 plus drift/measurement allowance. This is an estimate under stated assumptions, never proof of one-way delay.
+
+Define the room clock as the host's monotonic microseconds since process startup; do not rebase it when creating a room. `h1/h2` use that origin, and the room incarnation distinguishes restarts. An old guest sample can map before host startup, so the snapshot time is signed `i64`; do not restamp it. Bound clock values and mapped sample times to magnitude below `2^52` microseconds before arithmetic, with nonnegative local probe clocks and overflow checks. This is an implementation guard, not a promise of century-long sessions. Clients stamp accepted sample time using their mapping to the host's room clock; the host preserves that timestamp on forwarding. The receiver maps its own playback target into that clock. Bound active sample timestamps at host ingress to `[host_receive_time - 1 s, host_receive_time + 100 ms]`; do not apply the age lower bound to a legitimate paused baseline or its validated final PAUSED STATUS pose for the current epoch/revision; keep future-time, ownership and one-final-correction checks. A timestamp behind the prior accepted sample or a clock-offset correction >50 ms enters resynchronization: freeze presentation, clear timing history and obtain a fresh clock/baseline before resuming. Smaller changes must not make playback or emitted sample times move backward. Record raw offset, RTT, chosen sample and uncertainty so failures are diagnosable; MP-01c must demonstrate monotonic mapping under bounded corrections.
+
+Start with **200 ms render delay**, at most 100 ms extrapolation, then freeze. The previous 100 ms target leaves no bracketing margin on a symmetric guest→host→guest path with two 100 ms RTT legs. At 20 Hz, allowing +20 ms one-way jitter on each traversed leg gives a loss-free worst assumed requirement of 100 + 40 + 50 = **190 ms** before clock error or processing. This is arithmetic, not network qualification; keep gate B's age/error reporting and retune only from evidence. [Reproducible calculation](../../research/multiplayer/capacity_model.py)
+
+Measure simulation/wall-time ratio only over active windows, clearing across pauses/epochs. Below 0.95 over two seconds marks DEGRADED; require two consecutive healthy windows before clearing. PAUSED/DEGRADED replicas never extrapolate. Use shortest-path quaternion interpolation. Keep 64 detached samples per entity and one latest unsent pose per entity/recipient.
+
+These limits bound application-owned data. They do **not** bound ENet reassembly, SDK queues or Godot's drain-all `poll()` work under hostile input. [Pinned polling source](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/modules/multiplayer/scene_multiplayer.cpp#L69-L166). Public stranger rooms require separate transport-level size/rate/work limits and adversarial measurements; `max_sync_packet_size` is not a raw-packet firewall. MP-02 is a friendly LAN qualification.
+
+## 5. Reviewable implementation slices
+
+All slices below are pending. The [main plan](multiplayer.md#3-phases-and-gates) owns the combined phase estimates; do not add these as extra calendar estimates.
+
+| ID | Small deliverable | Required proof before the next slice |
+| --- | --- | --- |
+| MP-01a | Pin one stock field/aircraft; protocol constants, exact control schemas, input/rate bounds and codec | 128-byte golden vector; endianness, signed quantization, all invalid values/lengths; no partial state mutation |
+| MP-01b | Pure room/entity state machine; generations, baseline barrier, ACK/status rules | Wrap/half-range/jump cases; future pose before baseline; control 6 before 5; pause heartbeat before final pose, one final correction and delayed old status; 10 s live pause; reused peer ID; bounded pending admission |
+| MP-01c | Clock mapping and detached visual replica from synthetic/recorded samples | Two-hop asymmetric timestamps, known paused sample before host startup, missing tracker on an already-paused offline flight, delayed final PAUSED pose, lost probes and monotonic corrections; CG/quaternion/surface signs; reset versus refused reset; local accepted-state trace unchanged |
+| MP-02a | Standalone ENet adapter and process owner | Two actual processes; explicit root path, two channels, no double polling; deterministic close/cancel/auth failure and channel-0 completion ordering; outgoing send return never treated as delivery |
+| MP-02b | Minimal host/join/leave and shell integration | Host/guest menus and focus holds, loading/cancel/Home/quit, late join while paused, explicit resume, temporary refusal slot; three-process routing/spoof fixture |
+| MP-02c | Two physical LAN machines | 30-minute session, 50 join/leave cycles, both host directions, exact build/OS/hardware/log receipts; loopback evidence alone cannot pass |
+
+Proposed code remains under `app/networking/`, `app/render/multiplayer/`, `app/ui/multiplayer/` and `app/tests/test_mp_*.gd`; no such implementation is added by this plan. Coordinate the `AppRoot` screen owner and `Main`/session observers. Follow [existing checked-runner and verification scope](../tools/shared.md#verification-scope). A three-process test is needed for guest-to-guest forwarding even while the product cap remains two; a test-only capacity override must not silently raise the shipping cap.

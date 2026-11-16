@@ -59,3 +59,8 @@ Checked **2026-11-15 (America/Bogota)**. Provider pages are live documents and c
 | N13 | [Steam networking](https://partner.steamgames.com/doc/features/multiplayer/networking) | Steam transport/relay capabilities and platform integration |
 
 The [repository audit](repository-audit.md) cites the immutable project commit directly. Source runtime/configuration takes precedence over stale implementation statements in plans. Vendor maximums and suggested examples do not prove this simulator's performance, compatibility or billable usage.
+
+
+## Follow-up evidence, 2026-11-16
+
+The original 46-URL register above remains the first-pass source set. The [round-two report](round-2.md) links the added Cloudflare rate-limiter, spending-control, SQLite cursor and lifecycle documentation alongside the corrected calculations. The [EOS trial](eos-trial.md) retains immutable EOSG 2.3.1 source links and Epic identity/policy/relay references. The [protocol contract](../../plans/multiplayer-protocol.md) cites Godot's pinned `cafc17a19` source for polling, root paths, automatic relay, channels and cleanup, plus the audited OpenRC presentation/session interfaces. Follow-up source facts do not establish runtime qualification.

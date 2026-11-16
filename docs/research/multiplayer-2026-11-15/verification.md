@@ -33,3 +33,23 @@ The 20 Hz/128-byte packet, 2/4/8-pilot caps, interpolation parameters, CPU/motio
 EOSG compatibility with the pinned beta, provider account-specific eligibility/enforcement, actual packet overhead, real connectivity success rate and target-hardware cost remain open implementation gates. GD-Sync's conflicting advertised transfer allowance and Photon's precise Free/Godot traffic-spend enforcement are explicitly unresolved.
 
 Research uses current public primary documentation. Official stable Godot pages may move beyond the repository engine, and free offers may change. Recheck before selecting dependencies or deploying. This branch records a defensible route to small zero-spend sessions; it does not certify an unlimited hosted service.
+
+
+## MP-00-R2 continuation — 2026-11-16
+
+The previous sections record the original delivery and its exact checks. This continuation starts at `81af96688e8111173f15b66e54fdd9dba19d1e02`; GitHub `main` remains `cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b`. It adds a [protocol contract](../../plans/multiplayer-protocol.md), [source/service findings](round-2.md), [EOS trial](eos-trial.md), and a standard-library [analytical model](../../../research/multiplayer/capacity_model.py) with [generated results](../../../research/multiplayer/capacity-results.json), and updates the current plan/navigation/decision record.
+
+Two bounded research helpers examined independent network/lifecycle and EOS integration questions. The lead independently fetched the consequential pinned engine/wrapper code, inspected project integration points, checked official service sources, and integrated/adapted the results. Epic CreateDeviceId/DeleteDeviceId text was verified in the official HTML payload when web-rendered text was empty. No evidence was inferred from an inaccessible page alone.
+
+| Follow-up check | Result / limit |
+| --- | --- |
+| Scope and patch integrity | Twelve intended files: ten Markdown documents plus one analytical Python script and its generated JSON; `git diff --cached --check` passed; no production source/config changes |
+| New local references | **45 local links/anchors passed** against the staged Git tree using the existing documentation validator; unrelated inherited guide debt excluded |
+| New pinned external source references | **17 line ranges across seven retrieved Godot/EOSG source files checked**; source semantics independently inspected, not inferred from an anchor alone |
+| Model regeneration | Fresh standard-library execution exactly reproduced the JSON; all six directory scenarios independently recomputed |
+| Layout and arithmetic | Contiguous bytes 0–127, 48-byte header/80-byte body, signed room-time field, three host bandwidth cases, 190 ms conditional bracket bound and duration allowance checked; no codec runtime test claimed |
+| Independent review / resolution | Corrected pause-versus-late-pose handling, signed time origin, acceptance-time tracker prerequisites, contiguous directed controls, channel-0 auth completion order, clock uncertainty wording and routed-directory fail-closed behavior. Focused review confirmed the layout/model and exposed the final paused-timestamp edge cases; the lead integrated explicit age exceptions and a fresh-start requirement when acceptance time is unknown; a final focused recheck confirmed both remaining findings closed within document scope |
+
+The lead accepted the reviewed source findings, adapted the room nonce without enlarging the payload, and retained unresolved engine/provider/network qualification as gates. The static review does not establish exploitability, platform compatibility or a measured capacity. Source/index checks and arithmetic are proportionate to this research scope; no fabricated CI selection or runtime receipt is used.
+
+The executable model is planning arithmetic only. It does not implement a socket, service, codec decoder, simulation or provider meter. Godot execution, SDK loading, actual packet traffic, operating-system exports, physical-machine tests, adversarial runtime tests and all MP-01…07 gates remain unexecuted. No account, deployment, payment method, port mapping, upstream message or runtime source was changed. A branch update alone does not run the required hosted CI workflow.

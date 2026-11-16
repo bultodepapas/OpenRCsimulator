@@ -4,6 +4,8 @@
 
 Read the [implementation plan](../../plans/multiplayer.md) for decisions, phases and gates; [repository audit](repository-audit.md) for code evidence; [primary sources](sources.md) for URLs; [verification](verification.md) for what was and was not tested. Source identifiers below refer to that register.
 
+**Follow-up, 2026-11-16:** [round two](round-2.md) supersedes the initial packet/timing and directory-cap assumptions. The [EOS trial](eos-trial.md) records source-level wrapper adoption blockers; the [current protocol contract](../../plans/multiplayer-protocol.md) owns exact implementation targets. The dated comparison below is retained as the initial evidence.
+
 ## Conclusions
 
 The useful no-spend baseline is **player-hosted ENet**. It needs no hosted account for LAN or reachable direct sessions and fits the existing native engine. Private rooms are application behavior, not a paid hosting feature. The main engineering work is replica presentation, lifecycle, compatibility, timing and testing.

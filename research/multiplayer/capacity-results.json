@@ -1,0 +1,150 @@
+{
+  "directory_scenarios": [
+    {
+      "continuously_open_browsers": 2,
+      "durable_object_requests_per_day": 11520,
+      "heartbeat_row_writes_per_day": 5760,
+      "heartbeat_seconds": 30,
+      "hosts": 2,
+      "list_seconds": 30,
+      "listing_rows_read_per_day": 11520,
+      "modeled_minimum_sql_writes_per_day": 17280,
+      "quota_counter_row_writes_per_day": 11520,
+      "request_headroom_to_operational_allowance": 58480,
+      "within_both_modeled_allowances": true,
+      "worker_requests_per_day": 11520,
+      "write_headroom_to_operational_allowance": 52720
+    },
+    {
+      "continuously_open_browsers": 10,
+      "durable_object_requests_per_day": 57600,
+      "heartbeat_row_writes_per_day": 28800,
+      "heartbeat_seconds": 30,
+      "hosts": 10,
+      "list_seconds": 30,
+      "listing_rows_read_per_day": 288000,
+      "modeled_minimum_sql_writes_per_day": 86400,
+      "quota_counter_row_writes_per_day": 57600,
+      "request_headroom_to_operational_allowance": 12400,
+      "within_both_modeled_allowances": false,
+      "worker_requests_per_day": 57600,
+      "write_headroom_to_operational_allowance": -16400
+    },
+    {
+      "continuously_open_browsers": 10,
+      "durable_object_requests_per_day": 43200,
+      "heartbeat_row_writes_per_day": 14400,
+      "heartbeat_seconds": 30,
+      "hosts": 5,
+      "list_seconds": 30,
+      "listing_rows_read_per_day": 144000,
+      "modeled_minimum_sql_writes_per_day": 57600,
+      "quota_counter_row_writes_per_day": 43200,
+      "request_headroom_to_operational_allowance": 26800,
+      "within_both_modeled_allowances": true,
+      "worker_requests_per_day": 43200,
+      "write_headroom_to_operational_allowance": 12400
+    },
+    {
+      "continuously_open_browsers": 20,
+      "durable_object_requests_per_day": 72000,
+      "heartbeat_row_writes_per_day": 14400,
+      "heartbeat_seconds": 30,
+      "hosts": 5,
+      "list_seconds": 30,
+      "listing_rows_read_per_day": 288000,
+      "modeled_minimum_sql_writes_per_day": 86400,
+      "quota_counter_row_writes_per_day": 72000,
+      "request_headroom_to_operational_allowance": -2000,
+      "within_both_modeled_allowances": false,
+      "worker_requests_per_day": 72000,
+      "write_headroom_to_operational_allowance": -16400
+    },
+    {
+      "continuously_open_browsers": 10,
+      "durable_object_requests_per_day": 43200,
+      "heartbeat_row_writes_per_day": 28800,
+      "heartbeat_seconds": 30,
+      "hosts": 10,
+      "list_seconds": 60,
+      "listing_rows_read_per_day": 144000,
+      "modeled_minimum_sql_writes_per_day": 72000,
+      "quota_counter_row_writes_per_day": 43200,
+      "request_headroom_to_operational_allowance": 26800,
+      "within_both_modeled_allowances": false,
+      "worker_requests_per_day": 43200,
+      "write_headroom_to_operational_allowance": -2000
+    },
+    {
+      "continuously_open_browsers": 10,
+      "durable_object_requests_per_day": 28800,
+      "heartbeat_row_writes_per_day": 14400,
+      "heartbeat_seconds": 30,
+      "hosts": 5,
+      "list_seconds": 60,
+      "listing_rows_read_per_day": 72000,
+      "modeled_minimum_sql_writes_per_day": 43200,
+      "quota_counter_row_writes_per_day": 28800,
+      "request_headroom_to_operational_allowance": 41200,
+      "within_both_modeled_allowances": true,
+      "worker_requests_per_day": 28800,
+      "write_headroom_to_operational_allowance": 26800
+    }
+  ],
+  "evidence_type": "analytical_planning_model_not_runtime_measurement",
+  "inputs": {
+    "do_free_daily_requests": 100000,
+    "do_free_daily_sql_writes": 100000,
+    "operational_allowance_percent": 70,
+    "pose_application_bytes": 128,
+    "pose_hz": 20,
+    "pose_struct_format": "<2sBBHHIIIIIIqQ3d4f3f3f4hfHH",
+    "worker_free_daily_requests": 100000
+  },
+  "nonhibernating_object_duration": {
+    "assumption": "one object billed continuously for 24 hours at 0.128 GB",
+    "free_daily_gb_seconds": 13000,
+    "gb_seconds_per_day": 11059.2,
+    "operational_daily_gb_seconds": 9100,
+    "within_operational_allowance": false
+  },
+  "pose_payload_bytes_per_second": [
+    {
+      "each_guest_in": 2560,
+      "each_guest_out": 2560,
+      "excludes": "Godot command byte, ENet/UDP/IP, acknowledgments and all control traffic",
+      "host_in": 2560,
+      "host_out": 2560,
+      "total_pilots": 2
+    },
+    {
+      "each_guest_in": 7680,
+      "each_guest_out": 2560,
+      "excludes": "Godot command byte, ENet/UDP/IP, acknowledgments and all control traffic",
+      "host_in": 7680,
+      "host_out": 23040,
+      "total_pilots": 4
+    },
+    {
+      "each_guest_in": 17920,
+      "each_guest_out": 2560,
+      "excludes": "Godot command byte, ENet/UDP/IP, acknowledgments and all control traffic",
+      "host_in": 17920,
+      "host_out": 125440,
+      "total_pilots": 8
+    }
+  ],
+  "production_baseline": "cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b",
+  "research_date": "2026-11-16",
+  "two_hop_interpolation_bound_ms": {
+    "assumption": "symmetric 100 ms RTT per guest-host leg; up to +20 ms one-way delay per traversed leg; no loss",
+    "delay_to_cover_propagation_and_one_sample_period": 190,
+    "excludes": "clock uncertainty, host processing, stalls, loss, queueing and runtime scheduling",
+    "guest_host_guest_base_propagation": 100,
+    "original_render_delay": 100,
+    "proposed_loss_free_margin": 10,
+    "proposed_render_delay": 200,
+    "source_period": 50,
+    "worst_assumed_propagation": 140
+  }
+}

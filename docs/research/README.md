@@ -52,7 +52,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Multiplayer
 
-[Zero-spend multiplayer research, 2026-11-15](multiplayer-2026-11-15/README.md) compares local/LAN/direct/overlay, rooms, P2P/relay and managed services against the native Godot source. Includes a pinned repository audit, primary references, explicit free-tier limits, traffic calculations and evidence limits. The [MP implementation plan](../plans/multiplayer.md) owns phased work, protocol/lifecycle decisions and acceptance; no multiplayer runtime is delivered by this research.
+[Zero-spend multiplayer research, 2026-11-15](multiplayer-2026-11-15/README.md) compares local/LAN/direct/overlay, rooms, P2P/relay and managed services against the native Godot source. Includes a pinned repository audit, primary references, explicit free-tier limits, traffic calculations and evidence limits. The [MP implementation plan](../plans/multiplayer.md) owns phased work, protocol/lifecycle decisions and acceptance; no multiplayer runtime is delivered by this research. [Round two, 2026-11-16](multiplayer-2026-11-15/round-2.md) adds pinned Godot/EOSG source findings, a concrete LAN contract, an EOS adoption gate and a reproducible directory-write/delay model.
 
 ### RC airship
 
