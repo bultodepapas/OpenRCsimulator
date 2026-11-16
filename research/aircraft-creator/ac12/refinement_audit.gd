@@ -48,9 +48,8 @@ func _run_audit() -> void:
 	if _out.is_empty():
 		_out = "user://ac12-audit/%s-%s" % [spec.case_id,spec.tape]
 	_out = ProjectSettings.globalize_path(_out)
-	var project_path := ProjectSettings.globalize_path("res://").replace("\\","/").simplify_path().to_lower().trim_suffix("/")+"/"
-	if (_out.replace("\\","/").simplify_path().to_lower()+"/").begins_with(project_path):
-		_fail("outputs must remain outside the application source")
+	if not valid_output_location(_out,ProjectSettings.globalize_path("res://")):
+		_fail("output must be absolute and outside the application source")
 		return
 	if DirAccess.dir_exists_absolute(_out):
 		var existing := DirAccess.open(_out)
@@ -144,6 +143,15 @@ static func valid_specification(value: Dictionary) -> bool:
 	return value.size() == 3 and typeof(value.get("case_id")) == TYPE_STRING \
 		and typeof(value.get("tape")) == TYPE_STRING and typeof(value.get("calibrate")) == TYPE_BOOL \
 		and (value.case_id+"/"+value.tape) in CELLS
+
+
+## Called after resolving user://; relative paths cannot bypass the source-tree check.
+static func valid_output_location(path: String,project_path: String) -> bool:
+	if not path.is_absolute_path() or not project_path.is_absolute_path():
+		return false
+	var output := path.replace("\\","/").simplify_path().to_lower().trim_suffix("/")+"/"
+	var project := project_path.replace("\\","/").simplify_path().to_lower().trim_suffix("/")+"/"
+	return not output.begins_with(project)
 
 
 ## A complete, exactly replayed prefix is still insufficient for this fixed-duration baseline.

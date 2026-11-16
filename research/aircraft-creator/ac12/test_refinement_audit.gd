@@ -73,6 +73,12 @@ func _initialize() -> void:
 		check("missing replay extent is refused",not Audit.full_baseline_replay(missing))
 		missing[field] = str(baseline[field])
 		check("noninteger replay extent is refused",not Audit.full_baseline_replay(missing))
+	for relative: String in ["app/tmp/ac12","../app/tmp/ac12",""]:
+		check("relative output cannot bypass containment",not Audit.valid_output_location(relative,"/workspace/app"))
+	for inside: String in ["/workspace/app","/workspace/app/tmp/ac12","/workspace/app/other/../tmp"]:
+		check("application source output is refused",not Audit.valid_output_location(inside,"/workspace/app"))
+	check("absolute sibling output is allowed",Audit.valid_output_location("/workspace/app2/ac12","/workspace/app"))
+	check("resolved private user output is allowed",Audit.valid_output_location(ProjectSettings.globalize_path("user://ac12-test"),ProjectSettings.globalize_path("res://")))
 	audit.free()
 	print("AC12 audit contracts: %d checks, %d failures" % [checks,failures])
 	quit(0 if failures == 0 else 1)
