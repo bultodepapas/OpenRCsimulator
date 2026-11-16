@@ -449,10 +449,16 @@ func _on_sealed(exit_code: int) -> void:
 		var file := FileAccess.open(frame_path, FileAccess.READ)
 		var value: Variant = JSON.parse_string(file.get_as_text()) if file != null \
 				and file.get_length() > 0 and file.get_length() <= 8 * 1024 * 1024 else null
-		if value is Dictionary and typeof(value.get("actual_sample_start_monotonic_usec")) == TYPE_INT \
-				and typeof(value.get("actual_sample_end_monotonic_usec")) == TYPE_INT:
-			measured_start_usec = int(value.actual_sample_start_monotonic_usec)
-			measured_end_usec = int(value.actual_sample_end_monotonic_usec)
+		if value is Dictionary:
+			var first: Variant = value.get("actual_sample_start_monotonic_usec")
+			var last: Variant = value.get("actual_sample_end_monotonic_usec")
+			# Godot JSON numbers are floats; cast only exact, finite clock values.
+			if typeof(first) in [TYPE_INT, TYPE_FLOAT] and typeof(last) in [TYPE_INT, TYPE_FLOAT] \
+					and is_finite(first) and is_finite(last) and first > 0 and last > first \
+					and first <= 9_007_199_254_740_991 and last <= 9_007_199_254_740_991 \
+					and first == int(first) and last == int(last):
+				measured_start_usec = int(first)
+				measured_end_usec = int(last)
 		if not drawable_pending:
 			drawable_next_usec = 0
 			_request_drawable()

@@ -10,6 +10,12 @@ class FakeRadio extends RefCounted:
 	var connected := false
 
 class FakePilot extends RefCounted:
+	var input_reads := 0
+	var last_read_tick := -1
+	var pilot_updates := 0
+	var failure := ""
+	var input_elapsed_usec := 0
+	var pilot_elapsed_usec := 0
 	func read_raw() -> Dictionary: return {}
 
 class FakeSession extends Node:
@@ -66,6 +72,7 @@ func _run() -> void:
 	var process_saw_gap: bool = Observer._tick_gap_invalid(previous, catch_up_tick)
 	_check(step_saw_gap and not process_saw_gap, "catch-up step checks before overwriting the previous clock")
 	_check_activation_metadata()
+	_check_sealed_json_clock()
 	_check_drawable_boundaries()
 	_check_flight_local_scope_and_input()
 	_check_screened_scope()
@@ -100,6 +107,76 @@ func _check_activation_metadata() -> void:
 	_check(probe.activation_samples[-1].frame_generation_status == null,
 			"retired frame-generation metadata returns to null")
 	probe.sealed = true
+	fake.free()
+
+
+func _check_sealed_json_clock() -> void:
+	var fake := FakeScene.new()
+	get_root().add_child(fake)
+	var viewport := fake.get_viewport()
+	var had_policy := viewport.has_meta(&"openrc_reconstruction")
+	var previous_policy: Variant = viewport.get_meta(&"openrc_reconstruction") if had_policy else null
+	viewport.set_meta(&"openrc_reconstruction", {fallback = false, requested = "native", selected = "native", provider = "native"})
+	var cases := [
+		{first = 43_058_755, last = 48_075_001, valid = true},
+		{first = 43_058_755.5, last = 48_075_001, valid = false},
+		{first = 43_058_755, last = 48_075_001.5, valid = false},
+		{first = 0, last = 48_075_001, valid = false},
+		{first = -1, last = 48_075_001, valid = false},
+		{first = 48_075_001, last = 48_075_001, valid = false},
+		{first = 48_075_002, last = 48_075_001, valid = false},
+		{first = "43058755", last = 48_075_001, valid = false},
+		{first = true, last = 48_075_001, valid = false},
+		{first = null, last = 48_075_001, valid = false},
+		{first = 43_058_755, last = 9_007_199_254_740_992, valid = false}]
+	for index: int in range(cases.size()):
+		var item: Dictionary = cases[index]
+		var path := "user://package-flight-seal-%d-%d-%d.json" % [OS.get_process_id(), Time.get_ticks_usec(), index]
+		_check(not FileAccess.file_exists(path), "seal test uses a new JSON file")
+		if FileAccess.file_exists(path): continue
+		var file := FileAccess.open(path, FileAccess.WRITE)
+		_check(file != null, "seal JSON file opens")
+		if file == null: continue
+		file.store_string(JSON.stringify({actual_sample_start_monotonic_usec = item.first,
+			actual_sample_end_monotonic_usec = item.last}))
+		file.close()
+		var probe: Node = Observer.new()
+		fake.add_child(probe)
+		probe.set_process(false)
+		probe.scene = fake
+		probe.initial_render_scope = probe._render_scope()
+		probe.adapter = FakePilot.new()
+		probe.adapter.input_reads = 1
+		probe.adapter.last_read_tick = 0
+		probe.last_tick = 1
+		probe.checkpoint_start = 2
+		probe.frame_path = path
+		probe.drawable_requested = true
+		probe.drawable_pending = true
+		probe._on_sealed(0)
+		_check(probe.failure.is_empty(), "seal observes the unchanged live render scope")
+		var before: Dictionary = {status = "observed", owner = "ordinary", evidence = "acquired_framebuffer_texture_not_scanout",
+			scope = 3, attempts = 10, observed = 10, missed = 0, changes = 0, width = 1920, height = 1080,
+			pixel_format = 80, query_before_usec = 43_058_700, query_after_usec = 43_058_710}
+		var after: Dictionary = before.duplicate(true)
+		after.attempts = 60
+		after.observed = 60
+		after.query_before_usec = 48_075_010
+		after.query_after_usec = 48_075_020
+		probe.drawable_before = before
+		probe.drawable_after = after
+		if item.valid:
+			_check(probe.measured_start_usec == item.first and probe.measured_end_usec == item.last,
+					"actual JSON integer timestamps reach the sealed observer")
+			_check(probe._drawable_receipt().status == "observed", "decoded JSON times join the existing drawable boundaries")
+		else:
+			_check(probe.measured_start_usec == 0 and probe.measured_end_usec == 0,
+					"invalid JSON clock bounds remain unaccepted")
+			_check(probe._drawable_receipt().status == "not_observed", "invalid JSON clocks cannot qualify a drawable")
+		probe.free()
+		_check(DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK, "seal test removes its own JSON file")
+	if had_policy: viewport.set_meta(&"openrc_reconstruction", previous_policy)
+	else: viewport.remove_meta(&"openrc_reconstruction")
 	fake.free()
 
 
