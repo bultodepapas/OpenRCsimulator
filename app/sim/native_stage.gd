@@ -253,7 +253,9 @@ func prepare(session: Node) -> Dictionary:
 	var status := library_status(is_macos)
 	if not status.ok: return _refuse(status.reason)
 	if is_macos and not session.experimental_native_macos:
-		if _receipt_row.mirrored_sources.get("app/sim/native_macos_domain.gd", "") != FileAccess.get_sha256("res://sim/native_macos_domain.gd"):
+		var domain_sha := str(_receipt_row.mirrored_sources.get("app/sim/native_macos_domain.gd", ""))
+		if domain_sha.length() != 64 or (not OS.has_feature("template_release") \
+				and domain_sha != FileAccess.get_sha256("res://sim/native_macos_domain.gd")):
 			return _refuse("Mac native default domain differs from the loaded receipt")
 	var source_error := ""
 	if is_macos and OS.has_feature("template_release"):
