@@ -611,6 +611,97 @@ def _input_path(value: Any, probe: Any, *, directory: bool = False) -> Path:
     return path
 
 
+def _source_git(root: Path, *arguments: str) -> bytes:
+    # Do not let inherited Git selectors or global ignore rules hide changes.
+    env = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+    env.update(GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull, GIT_TERMINAL_PROMPT='0')
+    return subprocess.run(['git', '--no-optional-locks', '-c', 'core.fsmonitor=false',
+                           '-c', 'core.untrackedCache=false', '-C', str(root), *arguments],
+                          env=env, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60).stdout
+
+
+def _source_status(root: Path) -> bytes:
+    """Refuse hidden tracked changes and all nonignored untracked files."""
+    top = Path(os.fsdecode(_source_git(root, 'rev-parse', '--show-toplevel').strip())).resolve()
+    require(root.resolve() == top, 'source path is not the Git worktree root')
+    require(not _source_git(root, 'for-each-ref', '--format=%(refname)', 'refs/replace/'),
+            'source has Git replacement refs')
+    flags = _source_git(root, 'ls-files', '-v', '-z')
+    require(all(entry.startswith(b'H ') for entry in flags.split(b'\0') if entry),
+            'source uses assume-unchanged, skip-worktree or unresolved index entries')
+    status = _source_git(root, 'status', '--porcelain=v1', '-z', '--untracked-files=all')
+    require(status in (b'', b' M app/export_presets.cfg\0'),
+            'source contains another tracked change, staged file or untracked file')
+    return status
+
+
+def _require_git_environment(environment: Any) -> None:
+    require(not any(key.startswith('GIT_') for key in environment),
+            'inherited Git overrides would change the source identity')
+
+
+def verify_source_configuration(root: Path, snapshot: Any, reference: Any, release: Any, probe: Any) -> dict[str, Any]:
+    """Allow only the exact paired Mac preset in the actual receipt-bound worktree."""
+    require(isinstance(snapshot, dict) and isinstance(snapshot.get('commit'), str)
+            and re.fullmatch(r'[0-9a-f]{40}', snapshot['commit'])
+            and isinstance(snapshot.get('tree'), str) and re.fullmatch(r'[0-9a-f]{40}', snapshot['tree'])
+            and isinstance(snapshot.get('worktree_sha256'), str)
+            and re.fullmatch(r'[0-9a-f]{64}', snapshot['worktree_sha256'])
+            and type(snapshot.get('dirty')) is bool and isinstance(reference, dict), 'source snapshot is malformed')
+    commit, tree = snapshot['commit'], snapshot['tree']
+    require(reference.get('source_commit') == commit and reference.get('source_tree') == tree
+            and reference.get('source_worktree_sha256') == snapshot['worktree_sha256'],
+            'source snapshot differs from the package receipt')
+    require(_source_git(root, 'rev-parse', '--verify', 'HEAD').strip().decode('ascii') == commit
+            and _source_git(root, 'rev-parse', '--verify', 'HEAD^{tree}').strip().decode('ascii') == tree,
+            'source HEAD or tree differs from the captured receipt')
+    status = _source_status(root)
+    if not status:
+        require(snapshot['dirty'] is False, 'clean checkout does not match captured source')
+        return {'kind': 'clean'}
+    require(snapshot['dirty'] is True, 'changed preset does not match captured source')
+    require(isinstance(release, dict) and isinstance(release.get('selection'), dict)
+            and isinstance(release['selection'].get('pair'), dict) and isinstance(release.get('package'), dict)
+            and isinstance(release['package'].get('engine_pair'), dict), 'verified package pair is unavailable')
+    template = _input_path(release['selection']['pair'].get('export_template'), probe)
+    expected_template = release['package']['engine_pair'].get('export_template_sha256')
+    require(isinstance(expected_template, str) and re.fullmatch(r'[0-9a-f]{64}', expected_template),
+            'paired export template digest is invalid')
+    template_bytes = probe.read_regular(template, 512 * 1024 * 1024)
+    require(hashlib.sha256(template_bytes).hexdigest() == expected_template,
+            'selected export template differs from the verified pair')
+    original = _source_git(root, 'show', commit + ':app/export_presets.cfg')
+    require(0 < len(original) <= 2 * 1024 * 1024 and b'\r' not in original,
+            'committed export preset is not bounded LF text')
+    text = original.decode('utf-8')
+    require(text.count('[preset.2.options]') == 1, 'committed Mac preset is missing or duplicated')
+    prefix, options = text.split('[preset.2.options]', 1)
+    require('[preset.3]' not in options, 'unexpected later preset in committed source')
+    overrides = {'binary_format/architecture': 'arm64', 'custom_template/release': str(template),
+                 'application/bundle_identifier': 'org.openrc.research.metalfx.native26production'}
+    for key, value in overrides.items():
+        pattern = r'(?m)^' + re.escape(key) + '=.*$'
+        matches = list(re.finditer(pattern, options))
+        require(len(matches) <= 1, 'duplicate committed Mac preset key: ' + key)
+        line = key + '=' + json.dumps(value)
+        options = re.sub(pattern, lambda _: line, options) if matches else options + '\n' + line + '\n'
+    expected = (prefix + '[preset.2.options]' + options).encode('utf-8')
+    preset = root / 'app/export_presets.cfg'
+    probe.no_links(preset)
+    actual = probe.read_regular(preset, 2 * 1024 * 1024)
+    require(actual == expected, 'local export preset differs from the three declared Mac overrides')
+    require(_source_status(root) == status
+            and _source_git(root, 'rev-parse', '--verify', 'HEAD').strip().decode('ascii') == commit
+            and _source_git(root, 'rev-parse', '--verify', 'HEAD^{tree}').strip().decode('ascii') == tree
+            and probe.read_regular(preset, 2 * 1024 * 1024) == actual
+            and hashlib.sha256(probe.read_regular(template, 512 * 1024 * 1024)).hexdigest() == expected_template,
+            'source preset or paired export template changed while checking')
+    return {'kind': 'paired-mac-local-export-preset', 'preset_sha256': hashlib.sha256(actual).hexdigest(),
+            'committed_preset_sha256': hashlib.sha256(original).hexdigest(),
+            'export_template': str(template), 'export_template_sha256': expected_template,
+            'bundle_identifier': overrides['application/bundle_identifier']}
+
+
 def _pair_paths(value: Any, count: int, probe: Any) -> list[tuple[Path, Path]]:
     require(isinstance(value, list) and len(value) == count, 'incorrect number of package flight pairs')
     result = []
@@ -642,6 +733,10 @@ def _package_identity(reference: dict[str, Any], native: dict[str, Any], row: di
 def prepare(inputs_path: Path) -> tuple[bytes, dict[str, Any]]:
     """Reread all raw inputs and produce bytes, without writing a marker."""
     require(sys.platform == 'darwin' and not sys.flags.optimize, 'package promotion requires unoptimized macOS Python')
+    # Check before importing repository modules so an untracked package cannot
+    # be selected as a normal project helper on a dirty checkout.
+    _require_git_environment(os.environ)
+    _source_status(ROOT)
     if str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
     from tools.testqueue.common import require_exclusive
@@ -712,8 +807,11 @@ def prepare(inputs_path: Path) -> tuple[bytes, dict[str, Any]]:
             'final signed package does not contain the verified installation and engine pair')
     identity = _package_identity(reference, native, row)
     source_snapshot = baseline.capture_mac_release_source(ROOT)
-    require(source_snapshot.get('dirty') is False and baseline.mac_release_source_matches(reference, source_snapshot),
-            'current source differs from the clean final release source')
+    require(baseline.mac_release_source_matches(reference, source_snapshot),
+            'current source differs from the final release receipt')
+    source_configuration = verify_source_configuration(ROOT, source_snapshot, reference, release, probe)
+    require(baseline.capture_mac_release_source(ROOT) == source_snapshot,
+            'source changed while validating the local build configuration')
     probe._signature(probe._load_receipt_module().bundle_from_executable(executable))
     ci_id = config.get('ci_run_id')
     ci = _ci_snapshot(watch, source_snapshot['commit'], ci_id)
@@ -739,12 +837,14 @@ def prepare(inputs_path: Path) -> tuple[bytes, dict[str, Any]]:
     pairs, host_witnesses, flight_evidence_rows = read_campaign()
     final_rows, final_fleet = source.validate_fleet(fleet, campaign_path, context, guard)
     final_pairs, final_hosts, final_flights = read_campaign()
+    _require_git_environment(os.environ)
     require(final_rows == selected_rows and final_fleet == fleet_proof and final_pairs == pairs
             and final_hosts == host_witnesses and final_flights == flight_evidence_rows and _current_host(source) == current_host
             and fleet.snapshot(context) == guard
             and package.verified_mac_install(qualification_root, godot, engine, profile) == install
             and baseline.verify_research_release(executable, engine, release_selection, 30) == release
             and baseline.capture_mac_release_source(ROOT) == source_snapshot
+            and verify_source_configuration(ROOT, source_snapshot, reference, release, probe) == source_configuration
             and source.sha(preflight_path) == preflight_sha and source.sha(canonical_receipt) == guard['receipt_sha256']
             and probe.read_regular(selection_path) == engine_data and probe.read_regular(inputs_path) == input_data
             and validate_package_checks(config['package_checks'], executable, reference, native, baseline, probe, checked_tool) == checks
@@ -766,7 +866,8 @@ def prepare(inputs_path: Path) -> tuple[bytes, dict[str, Any]]:
     data = (json.dumps(marker, sort_keys=True, indent=2, allow_nan=False) + '\n').encode('utf-8')
     receipt = {'format': 'openrc-package-default-preparation v1', 'status': 'candidate-only',
                'candidate_sha256': hashlib.sha256(data).hexdigest(), 'inputs_sha256': hashlib.sha256(input_data).hexdigest(),
-               'source': source_snapshot, 'fleet': fleet_proof, 'package_release_sha256': canonical_sha(release),
+               'source': source_snapshot, 'source_configuration': source_configuration,
+               'fleet': fleet_proof, 'package_release_sha256': canonical_sha(release),
                'package_checks': checks, 'host_witnesses': host_witnesses, 'flight_evidence': flight_evidence_rows,
                'validation_host': current_host,
                'ci': ci, 'pairs': pairs, 'selection': selection,

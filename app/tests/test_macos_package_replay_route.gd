@@ -29,6 +29,12 @@ func _initialize() -> void:
 		["Linux", "arm64", true, "", "macos-arm64-native-bundle-v1", "native"],
 		["macOS", "arm64", true, "", "macos-arm64-native-bundle-v1", "gdscript_reference"]]:
 		check(not route.callv(values), "other route is not automatic: " + str(values))
-	check(not PackageAdmission.ENABLED, "route selection cannot enable package admission")
+	# Route selection is separate from marker admission. These are pure
+	# validator checks; the release loader enforces the actual marker.
+	check(not PackageAdmission.marker_error({}, {}, {}, "", "", "", "").is_empty(),
+		"empty package marker is rejected after route selection")
+	var incomplete_marker := {format = PackageAdmission.FORMAT, scope = PackageAdmission.SCOPE}
+	check(not PackageAdmission.marker_error(incomplete_marker, {}, {}, "", "", "", "").is_empty(),
+		"package marker without qualification evidence is rejected")
 	print("MAC_PACKAGE_REPLAY_ROUTE checks=%d failures=%d" % [checks, failures])
 	quit(0 if failures == 0 else 1)

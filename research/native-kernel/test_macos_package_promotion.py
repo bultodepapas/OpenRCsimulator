@@ -1,7 +1,10 @@
 import copy
 import hashlib
 import importlib.util
+import json
+import os
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -11,6 +14,141 @@ HERE = Path(__file__).resolve().parent
 SPEC = importlib.util.spec_from_file_location('package_promotion', HERE / 'macos_package_promotion.py')
 promotion = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(promotion)
+PROBE_SPEC = importlib.util.spec_from_file_location('package_promotion_probe', HERE / 'macos_package_default_probe.py')
+probe = importlib.util.module_from_spec(PROBE_SPEC)
+PROBE_SPEC.loader.exec_module(probe)
+BASELINE_SPEC = importlib.util.spec_from_file_location('package_promotion_baseline',
+                                                       HERE.parent / 'performance/session_baseline.py')
+baseline = importlib.util.module_from_spec(BASELINE_SPEC)
+BASELINE_SPEC.loader.exec_module(baseline)
+
+
+class SourceConfigurationControls(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory(dir=HERE)
+        self.addCleanup(self.temporary.cleanup)
+        self.parent = Path(self.temporary.name).resolve()
+        self.root = self.parent / 'checkout'
+        self.root.mkdir()
+        self.env = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+        self.env.update(GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull, GIT_TERMINAL_PROMPT='0')
+        subprocess.run(['git', 'init', '-q', str(self.root)], env=self.env, check=True)
+        self.git('config', 'core.autocrlf', 'false')
+        self.git('config', 'user.name', 'OpenRC test')
+        self.git('config', 'user.email', 'openrc-test@example.invalid')
+        self.git('config', 'commit.gpgsign', 'false')
+        (self.root / 'app').mkdir()
+        (self.root / 'research').mkdir()
+        self.preset = self.root / 'app/export_presets.cfg'
+        self.original = ('[preset.0]\nname="Linux"\n[preset.0.options]\nkey="untouched"\n'
+                         '[preset.2]\nname="macOS"\n[preset.2.options]\n'
+                         'binary_format/architecture="universal"\n'
+                         'application/bundle_identifier="org.openrc.public"\n').encode()
+        self.preset.write_bytes(self.original)
+        (self.root / 'app/settings.gd').write_text('const value = 1\n', encoding='utf-8')
+        (self.root / 'research/source.py').write_text('value = 1\n', encoding='utf-8')
+        self.git('add', '--', 'app', 'research')
+        self.git('commit', '-q', '-m', 'fixture')
+        self.template = self.parent / 'paired-template.zip'
+        self.template.write_bytes(b'qualified template fixture')
+        self.template_sha = hashlib.sha256(self.template.read_bytes()).hexdigest()
+        self.reference = {'source_commit': self.git('rev-parse', 'HEAD').strip(),
+                          'source_tree': self.git('rev-parse', 'HEAD^{tree}').strip(),
+                          'source_worktree_sha256': 'a' * 64}
+        self.snapshot = {'commit': self.reference['source_commit'], 'tree': self.reference['source_tree'],
+                         'dirty': True, 'worktree_sha256': self.reference['source_worktree_sha256']}
+        self.release = {'selection': {'pair': {'export_template': str(self.template)}},
+                        'package': {'engine_pair': {'export_template_sha256': self.template_sha}}}
+        self.expected = ('[preset.0]\nname="Linux"\n[preset.0.options]\nkey="untouched"\n'
+                         '[preset.2]\nname="macOS"\n[preset.2.options]\n'
+                         'binary_format/architecture="arm64"\n'
+                         'application/bundle_identifier="org.openrc.research.metalfx.native26production"\n'
+                         '\ncustom_template/release=' + json.dumps(str(self.template)) + '\n').encode()
+        self.preset.write_bytes(self.expected)
+
+    def git(self, *arguments):
+        return subprocess.run(['git', '-C', str(self.root), *arguments], check=True, env=self.env,
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True).stdout
+
+    def check_source(self):
+        return promotion.verify_source_configuration(self.root, self.snapshot, self.reference, self.release, probe)
+
+    def test_exact_dirty_preset_and_clean_checkout(self):
+        result = self.check_source()
+        self.assertEqual(result['kind'], 'paired-mac-local-export-preset')
+        self.assertEqual(result['export_template_sha256'], self.template_sha)
+        self.assertEqual(result['preset_sha256'], hashlib.sha256(self.expected).hexdigest())
+        self.preset.write_bytes(self.original)
+        self.snapshot['dirty'] = False
+        self.assertEqual(self.check_source(), {'kind': 'clean'})
+
+    def test_other_tracked_staged_or_untracked_file_is_rejected(self):
+        other = self.root / 'research/source.py'
+        other.write_text('value = 2\n', encoding='utf-8')
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
+        other.write_text('value = 1\n', encoding='utf-8')
+        for location in (self.root / 'app/untracked.gd', self.root / 'research/untracked.py'):
+            location.write_text('extra\n', encoding='utf-8')
+            with self.subTest(location=location), self.assertRaises(promotion.AdmissionError): self.check_source()
+            location.unlink()
+        self.git('add', '--', 'app/export_presets.cfg')
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
+
+    def test_extra_override_or_other_preset_bytes_are_rejected(self):
+        for value in (self.expected + b'other/override=true\n',
+                      self.expected.replace(b'key="untouched"', b'key="changed"'),
+                      self.expected.replace(b'architecture="arm64"', b'architecture="universal"'),
+                      self.expected.replace(b'org.openrc.research.metalfx.native26production', b'org.other')):
+            self.preset.write_bytes(value)
+            with self.subTest(value=value[-80:]), self.assertRaises(promotion.AdmissionError): self.check_source()
+
+    def test_different_template_path_or_bytes_are_rejected(self):
+        other = self.parent / 'other-template.zip'
+        other.write_bytes(self.template.read_bytes())
+        self.release['selection']['pair']['export_template'] = str(other)
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
+        self.release['selection']['pair']['export_template'] = str(self.template)
+        self.template.write_bytes(b'changed template fixture')
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
+        self.template.write_bytes(b'qualified template fixture')
+        self.release['package']['engine_pair']['export_template_sha256'] = '0' * 64
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
+
+    def test_hidden_index_flags_and_receipt_mismatch_are_rejected(self):
+        self.git('update-index', '--assume-unchanged', 'app/settings.gd')
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
+        self.git('update-index', '--no-assume-unchanged', 'app/settings.gd')
+        self.git('update-index', '--skip-worktree', 'research/source.py')
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
+        self.git('update-index', '--no-skip-worktree', 'research/source.py')
+        for key, value in (('source_commit', 'b' * 40), ('source_tree', 'b' * 40),
+                           ('source_worktree_sha256', 'b' * 64)):
+            old = self.reference[key]
+            self.reference[key] = value
+            with self.subTest(key=key), self.assertRaises(promotion.AdmissionError): self.check_source()
+            self.reference[key] = old
+
+    def test_actual_capture_rejects_stale_receipt_after_preset_change(self):
+        clean_environment = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+        with patch.dict(os.environ, clean_environment, clear=True):
+            captured = baseline.capture_mac_release_source(self.root)
+            self.assertIs(captured['dirty'], True)
+            reference = {'source_commit': captured['commit'], 'source_tree': captured['tree'],
+                         'source_worktree_sha256': captured['worktree_sha256']}
+            promotion.verify_source_configuration(self.root, captured, reference, self.release, probe)
+            self.preset.write_bytes(self.expected + b'# later change\n')
+            changed = baseline.capture_mac_release_source(self.root)
+            self.assertNotEqual(changed['worktree_sha256'], captured['worktree_sha256'])
+            with self.assertRaises(promotion.AdmissionError):
+                promotion.verify_source_configuration(self.root, changed, reference, self.release, probe)
+
+    def test_git_overrides_and_replacement_refs_are_rejected(self):
+        promotion._require_git_environment({'PATH': 'fixture'})
+        with self.assertRaises(promotion.AdmissionError):
+            promotion._require_git_environment({'GIT_INDEX_FILE': '/different/index'})
+        replacement = self.git('commit-tree', 'HEAD^{tree}', '-p', 'HEAD', '-m', 'replacement').strip()
+        self.git('replace', self.snapshot['commit'], replacement)
+        with self.assertRaises(promotion.AdmissionError): self.check_source()
 
 
 def sample(role: str, capture: str, start: str) -> dict:

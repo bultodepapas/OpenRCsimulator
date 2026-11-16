@@ -344,6 +344,20 @@ python3 research/native-kernel/macos_package_promotion.py finalize \
   --receipt /absolute/source/tmp/new/publication.json
 ```
 
+The promotion source must match the package receipt's exact commit, tree and
+worktree hash, and CI must pass that same commit. A clean checkout is accepted.
+For the paired local research export, the only allowed tracked modification is
+the unstaged macOS export preset: ARM64, the verified paired template ZIP path,
+and `org.openrc.research.metalfx.native26production` in its bundle-identifier field.
+The tool reconstructs those exact bytes from the committed preset, verifies the
+ZIP against the pair, and rejects staged changes, other tracked changes,
+nonignored untracked files, replacement refs, inherited Git overrides and hidden
+tracked-file index flags. This check does not inventory ignored files; the
+existing prepared-project, package and installation validators remain in force
+for their respective inputs. This is a declared local build setting,
+not an exception for another commit, proof of the bundle's actual identifier, or
+a distribution-signing claim.
+
 The bundle/receipt identities are checked at boundaries, not continuously;
 avoid concurrent modification. The Home probe checks menu-playback retirement and
 the checked log's reported diagnostics, not audible output or an exhaustive
