@@ -14,6 +14,38 @@ const HOME_STAGES := ["Preparing world", "Building landscape", "Preparing sky", 
 const MILESTONES := 7.0 # scene load + HOME_STAGES
 signal _frame_ready
 
+
+## Only allocated for the explicitly requested packaged-flight diagnostic.
+class PackageFlightWindowReadiness extends Node:
+	const STABLE_USEC := 500_000
+	const TIMEOUT_USEC := 5_000_000
+	var deadline_usec := 0
+	var stable_since_usec := -1
+	var losses := 0
+	var observed_losses := 0
+
+	func _notification(what: int) -> void:
+		if what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+			losses += 1
+
+	func begin(now_usec: int) -> void:
+		deadline_usec = now_usec + TIMEOUT_USEC
+		stable_since_usec = -1
+		observed_losses = losses
+
+	func observe(now_usec: int, focused: bool, drawable: bool) -> int:
+		if now_usec > deadline_usec: return -1
+		if losses != observed_losses:
+			stable_since_usec = -1
+			observed_losses = losses
+		if not focused or not drawable:
+			stable_since_usec = -1
+		elif stable_since_usec < 0:
+			stable_since_usec = now_usec
+		if stable_since_usec >= 0 and now_usec - stable_since_usec >= STABLE_USEC: return 1
+		return -1 if now_usec >= deadline_usec else 0
+
+
 var intro: Control
 var _overlay: CanvasLayer
 var _requested := false
@@ -32,6 +64,7 @@ var _handoff_app: WeakRef
 var _handoff_process_mode: Node.ProcessMode = Node.PROCESS_MODE_INHERIT
 var _home_milestone := 0
 var _home_stage := ""
+var _package_flight_wait_generation := 0
 
 
 func _enter_tree() -> void:
@@ -61,6 +94,15 @@ func _ready() -> void:
 				observer.free()
 	# Keep command-line flight, reports and headless contracts free of intro delays.
 	if not _animate_requested():
+		if _package_flight_window_wait_requested():
+			set_process(false)
+			var wait_generation := _package_flight_wait_generation
+			var readiness: Dictionary = await _wait_for_package_flight_window(wait_generation)
+			if not is_inside_tree() or wait_generation != _package_flight_wait_generation: return
+			if not readiness.ok:
+				_fail_package_flight_window(readiness.focused, readiness.drawable)
+				return
+			print("PACKAGE_FLIGHT window=ready focused=true drawable=true")
 		get_tree().change_scene_to_file.call_deferred(APP_SCENE)
 		set_process(false)
 		return
@@ -96,6 +138,50 @@ func _ready() -> void:
 		_scene_job.abandon()
 		_scene_job = null
 		_fail()
+
+
+static func _is_package_flight_request(args: PackedStringArray) -> bool:
+	for argument: String in args:
+		if argument.begins_with("--package-flight-receipt="): return true
+	return false
+
+
+func _package_flight_window_wait_requested() -> bool:
+	return _is_package_flight_request(OS.get_cmdline_user_args())
+
+
+func _fail_package_flight_window(focused: bool, drawable: bool) -> void:
+	printerr("PACKAGE_FLIGHT verdict=fail: startup window not ready; focused=", focused,
+		" drawable=", drawable)
+	get_tree().quit(ERR_CANT_CREATE)
+
+
+func _package_flight_window_has_focus() -> bool:
+	var window := get_window()
+	return is_instance_valid(window) and window.has_focus()
+
+
+func _package_flight_window_can_draw() -> bool:
+	var window := get_window()
+	return is_instance_valid(window) and window.can_draw()
+
+
+## The diagnostic waits before AppRoot/Main exist; no session or sampling clock can advance here.
+func _wait_for_package_flight_window(wait_generation: int) -> Dictionary:
+	var readiness := PackageFlightWindowReadiness.new()
+	readiness.name = "_PackageFlightWindowReadiness"
+	add_child(readiness)
+	readiness.begin(Time.get_ticks_usec())
+	while is_inside_tree() and wait_generation == _package_flight_wait_generation:
+		var focused := _package_flight_window_has_focus()
+		var drawable := _package_flight_window_can_draw()
+		var result: int = readiness.observe(Time.get_ticks_usec(), focused, drawable)
+		if result != 0:
+			readiness.free()
+			return {ok = result > 0, focused = focused, drawable = drawable}
+		await _owned_frame(get_tree().process_frame)
+	if is_instance_valid(readiness): readiness.free()
+	return {ok = false, focused = false, drawable = false}
 
 
 func _start_package_default_probe() -> bool:
@@ -359,6 +445,7 @@ func _release_handoff_pause() -> void:
 
 
 func _exit_tree() -> void:
+	_package_flight_wait_generation += 1
 	_release_quit_policy()
 	_release_handoff_pause()
 	_packed_scene = null
