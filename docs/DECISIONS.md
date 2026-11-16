@@ -377,6 +377,17 @@ attempts can retain unconfirmed cleanup, and shared archives can have readers.
 Broader retention waits for explicit evidence ownership and reader lifetimes in
 the [same repair plan](plans/mcp-queue-resilience.md#storage-cleanup-and-retention-acceptance).
 
+**TQ-04-R8 collection, 2026-11-16; review candidate.** Publish isolated, immutable
+evidence generations bound to the original request and finished status, with an
+explicit collection format and verified reuse. An interrupted copy must not
+overwrite the files behind an earlier passing report. Reobserve/recollect older
+unverified batch results under the same execution identity and preserve their
+history. Local control files are excluded, diagnostic-only results cannot pass,
+and collection does not grant authority to delete a workspace. The selected
+checked-evidence contract is intentionally narrower than a complete per-preset
+artifact inventory; broaden retention only after the ownership, reader-lifetime
+and native durability gates in the [handoff](research/testqueue/2026-11-15-resilience/implementation.md#16-november-re-audit-of-current-main-and-the-review-branch).
+
 ### Keep a senior lead with bounded, evidence-producing helpers
 
 **DX-06 agent-guidance follow-up, 2026-11-15; documentation and local profiles.**

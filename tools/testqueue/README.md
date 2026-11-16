@@ -121,6 +121,85 @@ for those records. Old supervisors refuse version-2 state; do not downgrade it.
 The lower-level `pool submit` returns exit 3 when no host is eligible and nothing
 was submitted. `pool run` and the batch driver retain and wait for pending work.
 
+### Verified collection and retry
+
+`pool collect JOB_ID` publishes a new immutable generation under
+`results/JOB_ID/collection-<binding-sha256>/`. The binding covers the retained
+request/destination and the exact finished status observation. The returned
+`report`, `log`, `pool_status` or `pool_report` paths are authoritative; callers
+must not assume the old `results/JOB_ID/report.json` layout. Legacy nonexecution
+recovery retains its `recovery-1` parent. Existing files are preserved.
+
+Collection first writes an isolated pending directory. It checks the declared
+sizes and hashes, the selected report's inventory digest and strict parsed JSON
+value, command, required markers and settings, and the report/log membership in that same inventory. Passing
+reports also require complete evidence, confirmed process cleanup and matching
+log error/warning counts and required markers. A fresh manifest is published only after verification. A retry
+revalidates an existing generation instead of overwriting it or reading a stale
+log from an older directory. For a local authority, it can reuse verified
+evidence after the original attempt directory is no longer available, provided
+the authority still confirms completion. A new remote collection still requires
+original-authority status; local batch revalidation is described below.
+
+Local collection copies only `checks/`, `imports/`, `worker.log` and `verdict.json`
+when declared by the worker. Private request/control files are not copied.
+Remote collection copies the remote inventory through a bounded Python reader
+over noninteractive SSH; it retains the configured host-key policy. The limits
+are 128 MiB of declared artifacts, 4,096 files and 4 MiB per collection JSON.
+Paths must be portable and must not traverse links, device aliases or conflicting
+file/directory names. Cooperating processes under one private account are assumed;
+these checks are not isolation from a hostile writer under the same account.
+
+Interrupted transfers retain their pending evidence and never replace an earlier
+verified generation. Three retained pending attempts block further collection in
+that job/output directory. Inspect them before retrying, or explicitly select
+another output root:
+
+```powershell
+python tools/testqueue/testctl.py pool collect JOB_ID --out C:/OpenRC/review-results
+```
+
+This cap is not a general disk quota or automatic garbage collector. Collection
+does not delete remote originals, workspaces, snapshots, failed output or unknown
+attempts. POSIX publication synchronizes files and directory entries; Windows
+power-loss durability remains separately unqualified. Filesystem operations can
+still block beyond a cooperative observation budget.
+
+An incomplete import, interrupted remote runner or legacy failed attempt can
+produce a `diagnostic_only: true` collection retaining its original outcome and
+available evidence. It cannot satisfy a passing batch or the functional checked
+runner. New results carry `collection_format: openrc-pool-collection-v1`.
+Completed batch rows with older unverified collections require original-identity
+observation and collection; their previous results remain in history. MCP cached
+status exposes recovery required without issuing network requests. Recollection
+does not submit a new execution attempt.
+
+MCP status labels its evidence observation `CACHED_METADATA`: it reads retained
+metadata without continuously hashing large artifacts. An active batch resume
+revalidates a completed generation locally before accepting it again, without
+contacting the authority when that evidence is intact. A missing or changed
+generation blocks collection; it cannot keep passing from cached metadata alone.
+Direct `pool collect` also revalidates existing generations.
+
+### Background consoles on Windows
+
+Queue launch gates, engine probes, snapshot/history Git commands, SSH/SCP
+helpers, checked runners and debug launch/cleanup helpers request
+`CREATE_NO_WINDOW` for background console processes. The launch sites retain their
+existing pipes/logs, Job Object assignment and cancellation code. Preserving these
+behaviors on the combined Windows revision remains a native validation gate. Native simulator GUI windows retain their normal
+visibility; no global `SW_HIDE` policy is applied. The already detached MCP and
+remote supervisors retain their existing detached-process semantics.
+
+These changes affect newly launched helpers after the compatible runtime is
+installed. Updating or restarting a worker must wait for an idle/drained boundary.
+Hosted Windows fixtures can verify console visibility and retained I/O for owned
+fake processes; the user's interactive desktop still needs a controlled check.
+Creation flags apply to the targeted launch, not every descendant a shell or
+external program may create; shell-launched grandchildren need native checking.
+The launcher used by an external MCP client is outside these child-process
+settings and may need separate diagnosis if its own initial window remains.
+
 Placement rejects unavailable/busy hosts, incompatible platforms, mismatched
 engine hashes and insufficient storage/memory. The estimate combines observed
 load, recorded per-test duration, import setup and configured transfer bandwidth.

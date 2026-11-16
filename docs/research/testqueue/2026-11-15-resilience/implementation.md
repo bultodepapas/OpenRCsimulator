@@ -16,6 +16,11 @@ The storage follow-up below also integrates `main` at
 `cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b`. Its ClearView and aircraft changes
 are preserved in a separate merge; they are not queue implementation changes.
 
+The **16 November re-audit** below integrates the newer `main` at
+`6dfe1b9179af408f6b765b91ca164e626570db9f`. It supersedes earlier statements
+that the last required CI run was pending. The system remains a partial review
+candidate: the healthy-process continuity defect is reproduced, not closed.
+
 ## What is implemented
 
 | Boundary | Candidate behavior | Main evidence |
@@ -347,18 +352,164 @@ ClearView, aircraft appearance or the full simulator has been qualified locally.
 PR #13 must run fresh Windows and required CI checks for the published follow-up;
 the inherited aircraft identity blocker above remains open.
 
+## 16 November re-audit of current main and the review branch
+
+### Current source and CI evidence
+
+The re-audit starts from published branch `926614263ea70973c205981f7898558989d35edd`
+and merges `main` at `6dfe1b9179af408f6b765b91ca164e626570db9f`, preserving the
+43 changed paths in the two newer main commits, including ClearView motion/source
+observations, Extra geometry and the Apple Silicon closeout plan.
+Queue implementation findings were compared against both main and the audit
+branch; this is not an assumption that previously proposed work landed in main.
+
+| Revision/evidence | Observed result | Consequence |
+| --- | --- | --- |
+| [Branch required CI, 43788625222](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43788625222) | Completed with failure. `test_skin_fleet.gd` failed 4 of 592 checks; `test_ui_language.gd` failed 14 assertions. | The previous branch cannot be described as fully green. The queue fixtures passing is separate evidence. |
+| [Branch Windows fixtures, 43788625296](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43788625296) | Passed on the earlier `9266142` revision. | Useful baseline for Windows containment; it does not qualify the new console/collection changes. |
+| [Branch MetalFX controls, 43788625172](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43788625172) | Passed source controls. | This is not an Apple GPU campaign. |
+| [Current main CI, 43882413757](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43882413757) | Failed release preflight on 19 missing UID sidecars; production jobs were skipped. | Main's current application/native tests were not run to completion. Fourteen sidecars already exist on the audit branch; this pass generates the remaining five. |
+
+The seven non-Spanish catalogs each lack the same 11 source messages on current
+main. The candidate adds all 77 translations, retaining existing entries and
+format-argument order. The pinned editor generated five UID sidecars from the
+unchanged upstream scripts in a private project; all five are distinct and do
+not collide with any of the 2,023 individually verified indexed application UIDs.
+Those prerequisites do not change test selection or weaken the required gate.
+
+The Extra 300S skin identity remains an aircraft-owner blocker. Current main
+changes geometry again while leaving `app/assets/skin-kit/models.json`,
+`procedural_skin.gd`, `custom_skin.gd` and `test_skin_fleet.gd` unchanged. A changed
+paint identity must be qualified using the owning skin/geometry workflow, not
+accepted by replacing an expected hash. A same-engine comparison of
+all relevant old/current paint surfaces (paths, transforms, meshes, UVs and
+materials; the prior review counted fourteen), or kit regeneration if incompatible,
+remains open under `tools/skins/README.md`. No current surface count is claimed.
+
+### Additional implemented boundaries
+
+**Collection publication and recovery.** The collector now snapshots its accepted
+status/receipt binding under the existing job lock, copies into an isolated
+generation, checks portable path identities, sizes, hashes, report/log inventory
+membership, the selected report's strict JSON value, command and required markers,
+and then publishes a manifest. Failed copies or publication preserve all previous
+generations. Destination locks also serialize different coordinator roots writing
+to the same output location. Cache reuse revalidates evidence; JSON booleans do
+not alias integers, and case/Unicode spelling checks include directory prefixes.
+Normal and diagnostic reports are reconstructed from bound evidence rather than
+trusted solely because a manifest names their files. Active batch resume also
+revalidates current-format generations locally; missing/corrupt evidence blocks
+the row while retaining its history. Intact evidence does not need a live host.
+MCP status remains explicitly cached metadata without continuous artifact hashing.
+
+Local request/control files are excluded from collection. Remote copies use a
+bounded reader over noninteractive SSH with host-key verification. Declared
+artifacts are capped at 128 MiB/4,096 files, collection JSON at 4 MiB, and retained
+failed stages at three per job/output parent. No automatic deletion follows a
+failed transfer. These are cooperating-reader budgets, not a receiver-side quota
+against a compromised SSH peer. POSIX files and directory entries are synchronized;
+Windows power-loss durability is still unqualified. The selected checked report
+can establish its test result, but the manifest is not a complete workspace or
+all-stage evidence inventory; successful-import evidence is not an independent
+new collection prerequisite. Full workspace retirement remains prohibited.
+
+**Checked completion.** A failed/incomplete import cannot be labeled a completed
+requested test. The adapter retains the import verdict and returns incomplete;
+incomplete or malformed checked results cannot pass. Legacy failed imports and
+remote timeout/runner-exit records can be collected as diagnostics with their
+original outcome. `diagnostic_only` cannot satisfy a passing functional check or
+batch. Older unverified completed collections reobserve the original identity
+and preserve prior results; they are not execution retries.
+
+**Windows background commands.** Both queue gate layers and targeted Python
+launch sites now request `CREATE_NO_WINDOW`: engine probes, Git snapshot/history
+operations, SSH/SCP, checked runner processes, debug launch/import/cleanup and
+GOD TEST source probes. The patch retains the existing output/exit handling, Job membership, process
+groups and owned-cancellation calls; native validation must confirm their
+behavior on the combined revision. No global `SW_HIDE` is used;
+native simulator GUI windows keep normal visibility. Existing detached supervisors
+retain their detached semantics. Microsoft documents that
+[`CREATE_NO_WINDOW`](https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags)
+applies to console processes and is ignored for native GUI applications or when
+combined with `DETACHED_PROCESS`/`CREATE_NEW_CONSOLE`.
+
+The directly launched console layers are testable in hosted Windows; this does
+not prove every shell-created grandchild or an external MCP client's initial
+launcher remains invisible. A controlled interactive desktop check is still
+required. No fleet worker was restarted to apply the candidate.
+
+### Confirmed open continuity defect
+
+A private fixture injected one `sqlite3.OperationalError` into the local
+worker's `RUNNING / CREATED_OWNED` journal update after the fake owned process had
+written `started.json` and was observed alive. The worker tore it down and
+reported `FINISHED / INFRA_FAILED / cleanup: CONFIRMED`; its normal `ended.json`
+was absent. The reproduction used only its own fixture process and retained its
+command, hashes and result in the evidence record.
+
+The local worker and remote stage supervisor still couple journal failures to
+owned process teardown. The local hard deadline is also armed after a potentially
+blocking post-start write. Moving a timeout into another thread that still needs
+the same worker/storage lock is insufficient. The required fix must keep process
+ownership and accepted monotonic execution/cancellation policy independent of
+storage availability, order terminal journal retries, retain claims until proved
+teardown plus durable finalization, and reject stale transitions. No partial
+guardian implementation is represented as solving this P0 in the candidate.
+
+### Re-audit verification
+
+The lead ran the six existing regression groups on the combined code candidate
+`8e9938f17dfb54524a2fbc9187374ce53ce87997`: **582 distinct cases, 571 passed,
+11 skipped, zero failures/errors**. Case IDs were checked for duplicates across
+groups, and all initially frozen source files remained unchanged during the run.
+
+| Group | Cases | Passed | Skipped |
+| --- | ---: | ---: | ---: |
+| Queue, ownership, collection and Windows launch policy | 344 | 335 | 9 |
+| Debug/MCP | 120 | 119 | 1 |
+| Checked runner | 22 | 21 | 1 |
+| Resource runner | 14 | 14 | 0 |
+| Performance admission | 64 | 64 | 0 |
+| GOD TEST tooling | 18 | 18 | 0 |
+
+The performance group initially could not load four omitted files in this sparse
+checkout; exact indexed upstream blobs were materialized before its successful
+64-case run. Those setup failures remain recorded, without treating them as code
+regressions or silently discarding their logs. Skips cover native Windows Job,
+locking/path/attribute and desktop behavior, plus the explicit actual-engine
+failure-matrix opt-in. They are not passing coverage.
+
+The exact pinned editor passed UID generation with no error/warning records. A
+separate checked Godot catalog subset passed **45 assertions**, using the existing
+test's verbatim catalog/check functions, the real registry, all eight catalogs and
+the exact indexed font binaries/import sidecars. System font fallback was disabled
+for the bundled CJK checks. An earlier fixture used default import settings; it is
+explicitly superseded for glyph claims. The 77 translations still require
+native-speaker review.
+
+Exact commands, source hashes, grouped regression results, pinned-editor UID
+generation, the scoped Godot catalog check, review findings and platform limits
+are appended under `reaudit_2026_11_16` in the evidence JSON. The draft PR owns the
+fresh published-revision Actions links; historical runs above do not substitute
+for those checks. The unchanged full `test_ui_language.gd` instantiates the main
+application and was not run in the sparse local workspace. The isolated catalog
+subset does not qualify Home, persistence, layout, aircraft assets or native GPUs.
+Resume-time local verification still precedes the batch polling deadline; slow or
+blocked filesystem operations can exceed that nominal budget. This pass does not
+claim a hard end-to-end deadline for preparation, transfer or collection.
+
 ## Remaining senior work and deployment gates
 
 | Priority | Remaining boundary | Concrete next review/acceptance |
 | --- | --- | --- |
-| P0 for continuity claims | A database error in an executing attempt's status loop can still enter teardown and stop a healthy process. Controller and process ownership remain coupled. | Design independent guardians or a qualified ownership-preserving storage-error policy; inject failures after confirmed launch and prove the same process survives without weakening hard cancellation. |
+| P0 for continuity claims | A reproduced post-start journal failure stops a healthy owned process; the hard deadline is armed after blocking storage. Local and remote ownership remain coupled to journals. | Independent ownership/deadline continuity, ordered final-write retries and authenticated cancellation; prove the same process survives storage failure without weakening admitted hard limits or releasing claims. |
 | P0 for rollout | Native Windows process semantics and the operator exception need the exact combined candidate. | Review Windows Actions fixtures, then an idle/private native campaign: start ambiguity, cleanup failure, pending journals, owned cancel and foreign-process preservation. Hosted fixtures do not qualify the interactive desktop. |
 | P1 | `hosts` shares the worker lock with scheduling/storage; a stall holding it can prevent a prompt degraded response. | Separate immutable health snapshots from blocking admission operations; test a held lock and hung storage explicitly. |
 | P1 | Preparation/upload/collection remain synchronous in parts of the pool. | Give each stage owned background lifetime, progress and remaining-budget propagation; do not equate reporting expiry with cleanup. |
 | P1 | Physical host/VM/alias identity, memory/volume reservations and runtime version negotiation remain incomplete. | Implement R4/R5 before increasing capacities or routing CI onto personal machines. |
 | P1 | Pool placement still serializes per host and uses existing estimates. | Measure cold/warm setup, transfer, execution and collection; implement fair global ordering and calibrated durations under R6. |
 | P1 | Windows workflow still has path filters; stable required-gate integration and rule visibility are incomplete. | Confirm repository rules with authorized access, validate selected/missing/canceled results, keep full required CI policy intact. |
-| P1 | General cleanup lacks complete artifact ownership, cache-reader leases and collection transactions. | Continue R8 from the narrow redundant-copy candidate: protect source-contained captures, confirm complete collection before workspace retirement, bind shared readers and retain interrupted uploads until nonuse is proved. |
+| P1 | Immutable collection is implemented, but complete artifact ownership, cache-reader leases and atomic volume reservations are not. | Continue R8: protect source-contained captures, qualify complete per-preset inventory before workspace retirement, bind shared readers and retain interrupted uploads until nonuse is proved. |
 | P2 | Output-byte budgets, paginated status, bounded event/log retention and incident diagnostics. | Add limits that preserve active/unknown evidence and report unavailable observations honestly; do not treat the new copy reclamation as general GC. |
 
 The Windows Ryzen 5900X/RTX3090, Linux host and both Macs remain the intended
