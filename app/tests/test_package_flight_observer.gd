@@ -19,10 +19,19 @@ class FakeSession extends Node:
 	var radio := FakeRadio.new()
 	var sim: Node
 	var read_raw: Callable
+	var external_controller_selection := false
+	func weather_configuration() -> Dictionary: return {}
 
 class FakeScene extends Node:
 	var _rig := FakeRig.new()
 	var _shadow_mode := "sun"
+	var _engine_audio: AudioStreamPlayer3D
+	var _lake_ambience: AudioStreamPlayer3D
+	var companions: Node
+	var _soundscape_audio: Node
+	var _lens: Node
+	var _lens_args: Dictionary = {}
+	var companion_config: Dictionary = {}
 	var watch: Node
 	var input_actions := 0
 	var invalidated_before_action := 0
@@ -56,12 +65,42 @@ func _run() -> void:
 	previous = catch_up_tick
 	var process_saw_gap: bool = Observer._tick_gap_invalid(previous, catch_up_tick)
 	_check(step_saw_gap and not process_saw_gap, "catch-up step checks before overwriting the previous clock")
+	_check_activation_metadata()
 	_check_drawable_boundaries()
 	_check_flight_local_scope_and_input()
 	_check_screened_scope()
 	_check_neutral_checkpoint()
 	print("PACKAGE_FLIGHT_CLOCK_TEST checks=%d failures=%d" % [checks, failures])
 	quit(0 if failures == 0 else 1)
+
+
+func _check_activation_metadata() -> void:
+	var fake := FakeScene.new()
+	get_root().add_child(fake)
+	var fake_session := FakeSession.new()
+	fake.add_child(fake_session)
+	var probe: Node = Observer.new()
+	fake.add_child(probe)
+	probe.set_process(false)
+	probe.scene = fake
+	probe.session = fake_session
+	var viewport := probe.get_viewport()
+	_check(not viewport.has_meta(&"openrc_frame_generation_status"), "disabled frame generation has no metadata")
+	probe._record_activation(0)
+	_check(probe.activation_samples[-1].frame_generation_status == null,
+			"absent frame-generation metadata records null without engine diagnostics")
+	var status := {requested = false, state = "disabled", reason = "test", observer_requested = false,
+		frame_producer_requested = false, attempt_renderer_gated_composition = false}
+	viewport.set_meta(&"openrc_frame_generation_status", status)
+	probe._record_activation(240)
+	_check(probe.activation_samples[-1].frame_generation_status == status,
+			"published frame-generation status keeps the existing projection")
+	viewport.remove_meta(&"openrc_frame_generation_status")
+	probe._record_activation(480)
+	_check(probe.activation_samples[-1].frame_generation_status == null,
+			"retired frame-generation metadata returns to null")
+	probe.sealed = true
+	fake.free()
 
 
 func _check_drawable_boundaries() -> void:

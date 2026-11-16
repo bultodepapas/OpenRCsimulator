@@ -403,7 +403,10 @@ func _record_activation(tick: int) -> void:
 		companion_config = scene.companion_config.duplicate(true), companion_manager_installed = is_instance_valid(companions),
 		companion_status = companion_status,
 		weather = session.weather_configuration()}
-	var fg: Variant = get_viewport().get_meta(&"openrc_frame_generation_status", null)
+	var viewport := get_viewport()
+	var fg: Variant = null
+	if viewport.has_meta(&"openrc_frame_generation_status"):
+		fg = viewport.get_meta(&"openrc_frame_generation_status")
 	var fg_status: Variant = null
 	if fg is Dictionary:
 		fg_status = {requested = fg.get("requested"), state = fg.get("state"), reason = fg.get("reason"),
