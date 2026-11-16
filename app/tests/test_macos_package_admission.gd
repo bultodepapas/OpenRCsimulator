@@ -17,6 +17,20 @@ func digest(ch: String) -> String:
 	return ch.repeat(64)
 
 
+func evidence() -> Dictionary:
+	var short: Array[Dictionary] = []
+	var long: Array[Dictionary] = []
+	for index in 8:
+		var row := {reference_sha256 = digest("1"), native_sha256 = digest("2"), windows_sha256 = digest("3"),
+			reference_capture = "r%d" % index, native_capture = "n%d" % index}
+		if index < 5: short.append(row)
+		else: long.append(row)
+	return {format = PackageAdmission.EVIDENCE_FORMAT, source_fleet_sha256 = digest("4"),
+		package_release_sha256 = digest("5"), package_session_sha256 = digest("6"),
+		ci = {head_sha = "a".repeat(40), repository = "bultodepapas/OpenRCsimulator", run_id = "1",
+			attempt = "1", required_job_id = "2", macos_job_id = "3"}, short_pairs = short, long_pairs = long}
+
+
 func _initialize() -> void:
 	var pair := {format = PackageAdmission.PAIR_FORMAT, editor_sha256 = digest("a"),
 		template_sha256 = digest("b"), editor_receipt_sha256 = digest("c"),
@@ -45,10 +59,30 @@ func _initialize() -> void:
 	var identity := PackageAdmission.package_identity(native, reference, digest("c"))
 	var marker := {format = PackageAdmission.FORMAT, scope = PackageAdmission.SCOPE,
 		package_identity = identity, cpu = "Apple M1", hardware_model = "MacBookAir10,1",
-		os_version = "27.0.1", os_build = "26A434", engine_pair = pair, allowed_selections = [allowed]}
-	check(not PackageAdmission.ENABLED, "unqualified package automatic route stays disabled")
+		os_version = "27.0.1", os_build = "26A434", engine_pair = pair, allowed_selections = [allowed], evidence = evidence()}
+	check(PackageAdmission.ENABLED, "qualified marker reader is available")
 	check(not identity.is_empty(), "complete verified package identity")
 	check(PackageAdmission.marker_error(marker, native, reference, digest("c"), "Apple M1", "MacBookAir10,1", "").is_empty(), "matching draft marker")
+	var missing_evidence := marker.duplicate(true)
+	missing_evidence.erase("evidence")
+	check(not PackageAdmission.marker_error(missing_evidence, native, reference, digest("c"), "Apple M1", "MacBookAir10,1", "").is_empty(), "missing qualification evidence refused")
+	for field: String in ["source_fleet_sha256", "package_release_sha256", "package_session_sha256"]:
+		var changed := marker.duplicate(true)
+		changed.evidence[field] = ""
+		check(not PackageAdmission._evidence_error(changed.evidence).is_empty(), "missing evidence digest " + field)
+	for field: String in ["head_sha", "repository", "run_id", "attempt", "required_job_id", "macos_job_id"]:
+		var changed := marker.duplicate(true)
+		changed.evidence.ci.erase(field)
+		check(not PackageAdmission._evidence_error(changed.evidence).is_empty(), "missing CI field " + field)
+	var changed_pairs := marker.duplicate(true)
+	changed_pairs.evidence.long_pairs.pop_back()
+	check(not PackageAdmission._evidence_error(changed_pairs.evidence).is_empty(), "missing long pair refused")
+	changed_pairs = marker.duplicate(true)
+	changed_pairs.evidence.long_pairs[0].native_capture = changed_pairs.evidence.short_pairs[0].reference_capture
+	check(not PackageAdmission._evidence_error(changed_pairs.evidence).is_empty(), "reused capture refused")
+	changed_pairs = marker.duplicate(true)
+	changed_pairs.evidence.short_pairs[0].windows_sha256 = "bad"
+	check(not PackageAdmission._evidence_error(changed_pairs.evidence).is_empty(), "invalid matched-window digest refused")
 	check(SourceAdmission.selection_allowed(marker, selected, false), "qualified production selection")
 	check(not SourceAdmission.selection_allowed(marker, selected, true), "different contact mode refused")
 	for field: String in ["aircraft", "battery", "start", "weather", "start_sha256", "profile"]:

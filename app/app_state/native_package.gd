@@ -257,7 +257,7 @@ const MAC_NATIVE_LIBRARY := "Contents/Frameworks/libopenrc_native_kernel.dylib"
 const MAC_NATIVE_DESCRIPTOR := "Contents/Resources/openrc_native_kernel_macos.gdextension"
 const MAC_NATIVE_LICENSE := "Contents/Resources/LICENSE.godot-cpp.md"
 const MAC_NATIVE_SCOPE := "macos-arm64-fixed-wing-experimental-v1"
-const MAC_NATIVE_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd"]
+const MAC_NATIVE_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd", "package_default_probe.gd"]
 
 
 static func mac_native_identity(executable: String, architecture: String, arguments := PackedStringArray()) -> Dictionary:

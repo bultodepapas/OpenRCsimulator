@@ -1,9 +1,10 @@
-## Draft package-specific default admission. The producer and native package
-## qualification gates do not exist yet; these checks alone are not promotion.
+## Package-specific default admission. A marker is an artifact-consistency
+## receipt; its presence is not signature, graphics or physical qualification.
 extends RefCounted
 
-const ENABLED := false
-const FORMAT := "openrc-macos-native-package-default v1"
+const ENABLED := true
+const FORMAT := "openrc-macos-native-package-default v2"
+const EVIDENCE_FORMAT := "openrc-macos-native-package-evidence v1"
 const SCOPE := "package-macos-arm64"
 const MARKER_SUFFIX := ".openrc-native-default"
 const NATIVE_KIND := "macos-arm64-native-bundle-v1"
@@ -19,6 +20,51 @@ static func _sha(value: Variant) -> bool:
 		var code: int = value.unicode_at(index)
 		if not (code >= 48 and code <= 57) and not (code >= 97 and code <= 102): return false
 	return true
+
+
+static func _source_commit(value: Variant) -> bool:
+	if typeof(value) != TYPE_STRING or value.length() != 40: return false
+	for index: int in value.length():
+		var code: int = value.unicode_at(index)
+		if not (code >= 48 and code <= 57) and not (code >= 97 and code <= 102): return false
+	return true
+
+
+static func _positive_identifier(value: Variant) -> bool:
+	if typeof(value) != TYPE_STRING or value.is_empty() or value.length() > 20: return false
+	for index: int in value.length():
+		var code: int = value.unicode_at(index)
+		if code < 48 or code > 57: return false
+	return value != "0" and not value.begins_with("0")
+
+
+## This checks the producer's bounded receipt shape. The producer must verify
+## the original signed package, CI, fleet, diagnostics and each paired run.
+static func _evidence_error(value: Variant) -> String:
+	if not value is Dictionary or value.size() != 7 or value.get("format") != EVIDENCE_FORMAT:
+		return "Mac package default evidence is missing or malformed"
+	for key: String in ["source_fleet_sha256", "package_release_sha256", "package_session_sha256"]:
+		if not _sha(value.get(key)): return "Mac package default evidence digest is invalid: " + key
+	var ci: Variant = value.get("ci")
+	if not ci is Dictionary or ci.size() != 6 or not _source_commit(ci.get("head_sha")) \
+			or ci.get("repository") != "bultodepapas/OpenRCsimulator":
+		return "Mac package default CI receipt is malformed"
+	for key: String in ["run_id", "attempt", "required_job_id", "macos_job_id"]:
+		if not _positive_identifier(ci.get(key)): return "Mac package default CI identity is invalid: " + key
+	var seen := {}
+	for group: Array in [["short_pairs", 5], ["long_pairs", 3]]:
+		var pairs: Variant = value.get(group[0])
+		if not pairs is Array or pairs.size() != group[1]: return "Mac package default pair count differs"
+		for item: Variant in pairs:
+			if not item is Dictionary or item.size() != 5: return "Mac package default pair is malformed"
+			for key: String in ["reference_sha256", "native_sha256", "windows_sha256"]:
+				if not _sha(item.get(key)): return "Mac package default pair digest is invalid: " + key
+			for key: String in ["reference_capture", "native_capture"]:
+				var capture: Variant = item.get(key)
+				if typeof(capture) != TYPE_STRING or capture.is_empty() or capture.length() > 128 or seen.has(capture):
+					return "Mac package default capture is missing or reused"
+				seen[capture] = true
+	return ""
 
 
 ## Inputs come only from NativePackage's independently checked native and
@@ -96,6 +142,8 @@ static func marker_error(marker: Dictionary, native: Dictionary, reference: Dict
 		manifest_sha: String, cpu: String, model: String, actual_os_error: String) -> String:
 	if marker.get("format") != FORMAT or marker.get("scope") != SCOPE:
 		return "Mac package default has another format or scope"
+	var evidence_error := _evidence_error(marker.get("evidence"))
+	if not evidence_error.is_empty(): return evidence_error
 	var identity := package_identity(native, reference, manifest_sha)
 	if identity.is_empty(): return "Mac package identity was not verified"
 	if not _sha(identity.get("domain_sha256")):

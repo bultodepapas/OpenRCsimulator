@@ -45,7 +45,7 @@ NATIVE_DESCRIPTOR_TEXT = (
     'macos.arm64 = "../Frameworks/libopenrc_native_kernel.dylib"\n'
 )
 NATIVE_SCOPE = "macos-arm64-fixed-wing-experimental-v1"
-NATIVE_DIAGNOSTICS = ("session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd")
+NATIVE_DIAGNOSTICS = ("session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd", "package_default_probe.gd")
 HEX = re.compile(r"[0-9a-f]{64}\Z")
 GIT = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z")
 ARCH = {0x01000007: "x86_64", 0x0100000C: "arm64"}

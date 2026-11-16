@@ -503,17 +503,20 @@ static func _macos_automatic_admission() -> Dictionary:
 		return {} if marker.is_empty() else {marker = marker}
 	if not MacosPackageAdmission.ENABLED or OS.get_name() != "macOS" \
 			or Engine.get_architecture_name() != "arm64": return {}
-	var verified := _macos_verified_package_snapshot()
-	if verified.is_empty(): return {}
-	var row: Dictionary = verified.native.manifest.native_receipt.platforms.macos
-	var actual_os_error := _macos_runtime_os_error(row)
 	var bundle := OS.get_executable_path().get_base_dir().get_base_dir().get_base_dir()
 	var marker_path := bundle + MacosPackageAdmission.MARKER_SUFFIX
 	var parent := DirAccess.open(bundle.get_base_dir())
 	if parent == null or parent.is_link(bundle.get_file()) or parent.is_link(marker_path.get_file()): return {}
 	var document := MacosAdmission._read_document(marker_path)
 	var marker: Variant = document.get("data")
-	if not marker is Dictionary or not MacosPackageAdmission.marker_error(marker, verified.native, verified.reference,
+	if not marker is Dictionary or marker.get("format") != MacosPackageAdmission.FORMAT \
+			or not MacosPackageAdmission._evidence_error(marker.get("evidence")).is_empty(): return {}
+	# A missing or malformed optional marker does not trigger a full bundle hash.
+	var verified := _macos_verified_package_snapshot()
+	if verified.is_empty(): return {}
+	var row: Dictionary = verified.native.manifest.native_receipt.platforms.macos
+	var actual_os_error := _macos_runtime_os_error(row)
+	if not MacosPackageAdmission.marker_error(marker, verified.native, verified.reference,
 			verified.identity.manifest_sha256, OS.get_processor_name(), OS.get_model_name(), actual_os_error).is_empty(): return {}
 	if parent.is_link(marker_path.get_file()) \
 			or MacosAdmission._read_document(marker_path) != document: return {}

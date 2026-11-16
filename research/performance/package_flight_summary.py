@@ -162,6 +162,13 @@ def _health_errors(health: dict[str, Any], report: dict[str, Any], report_hash: 
         errors.append("native package does not match the selected native receipt")
     if not _sha(health.get("initial_checkpoint_sha256")):
         errors.append("tick-zero checkpoint identity is missing")
+    scenario = health.get("scenario")
+    if ("initial_screened_checkpoint_sha256" in health or
+            (isinstance(scenario, dict) and ("screened_configuration_sha256" in scenario or "screened_domain" in scenario))):
+        if (not _sha(health.get("initial_screened_checkpoint_sha256")) or not isinstance(scenario, dict)
+                or not _sha(scenario.get("screened_configuration_sha256"))
+                or not isinstance(scenario.get("screened_domain"), dict)):
+            errors.append("screened checkpoint or configuration evidence is incomplete")
     render = health.get("render_scope")
     settings = report.get("render_settings")
     camera = report.get("camera")

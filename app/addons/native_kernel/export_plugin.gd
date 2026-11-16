@@ -8,7 +8,7 @@ const MAC_MANIFEST := "res://native/kernel/package-macos.json"
 const MAC_PAIR_FORMAT := "openrc-macos-engine-pair-binding v1"
 const RESEARCH_SCOPE := "source-editor-local-custom-engine-research-v1"
 const PLUGIN_SOURCE := "res://addons/native_kernel/export_plugin.gd"
-const MAC_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd"]
+const MAC_DIAGNOSTICS := ["session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd", "package_default_probe.gd"]
 const SOURCES := {
 	"session_probe.gd": "../research/performance/session_probe.gd",
 	"test_native_stage.gd": "tests/test_native_stage.gd",
@@ -17,6 +17,9 @@ const SOURCES := {
 	"test_native_helicopter_session.gd": "tests/test_native_helicopter_session.gd",
 	"test_heli_restore_radio.gd": "tests/test_heli_restore_radio.gd",
 }
+const MAC_SOURCES := {"session_probe.gd": "../research/performance/session_probe.gd",
+	"test_native_stage.gd": "tests/test_native_stage.gd", "test_native_session.gd": "tests/test_native_session.gd",
+	"test_native_replay.gd": "tests/test_native_replay.gd", "package_default_probe.gd": "tools/package_default_probe.gd"}
 var _manifest: Dictionary = {}
 var _mac_probe_sha256 := ""
 var _mac_manifest: Dictionary = {}
@@ -74,7 +77,7 @@ func _export_begin(features: PackedStringArray, is_debug: bool, _path: String, _
 			add_file(MAC_MANIFEST, bytes, false)
 			for name: String in MAC_DIAGNOSTICS:
 				if name == "session_probe.gd": continue
-				var path := ProjectSettings.globalize_path("res://").path_join(SOURCES[name])
+				var path := ProjectSettings.globalize_path("res://").path_join(MAC_SOURCES[name])
 				add_file("res://native/kernel/qualification/" + name, FileAccess.get_file_as_bytes(path), false)
 			_mac_pair_marker("BEGIN")
 		return
@@ -211,7 +214,7 @@ func _mac_inputs_match() -> bool:
 	if typeof(diagnostics) != TYPE_DICTIONARY or diagnostics.size() != MAC_DIAGNOSTICS.size():
 		return false
 	for name: String in MAC_DIAGNOSTICS:
-		var path := ProjectSettings.globalize_path("res://").path_join(SOURCES[name])
+		var path := ProjectSettings.globalize_path("res://").path_join(MAC_SOURCES[name])
 		if diagnostics.get(name) != FileAccess.get_sha256(path): return false
 	return true
 

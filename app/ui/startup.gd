@@ -41,6 +41,14 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	# A fixed, package-bound release diagnostic may observe the ordinary Home
+	# route, but only after proving its private user-data directory. Normal
+	# launches do not load the diagnostic or change their startup path.
+	if OS.get_environment("OPENRC_PACKAGE_DEFAULT_PROBE") == "1":
+		if not _start_package_default_probe():
+			printerr("PACKAGE_DEFAULT_PROBE verdict=fail: qualification setup refused")
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	# GOD-04: opt-in source/debug observer survives the Startup -> AppRoot handoff.
 	# Environment activation preserves the normal no-user-arguments Home route.
 	if OS.is_debug_build() and not OS.get_environment("OPENRC_GODTEST_CONFIG").is_empty():
@@ -88,6 +96,62 @@ func _ready() -> void:
 		_scene_job.abandon()
 		_scene_job = null
 		_fail()
+
+
+func _start_package_default_probe() -> bool:
+	if OS.get_name() != "macOS" or not OS.has_feature("template_release") \
+			or Engine.get_architecture_name() != "arm64": return false
+	var mode := OS.get_environment("OPENRC_PACKAGE_DEFAULT_PROBE_MODE")
+	if mode not in ["missing", "malformed", "candidate", "reference"]: return false
+	var args := OS.get_cmdline_user_args()
+	var reference_args := PackedStringArray(["--quick-flight", "--physics-backend=gdscript_reference"])
+	if (mode == "reference" and args != reference_args) or (mode != "reference" and not args.is_empty()): return false
+	var task_home := OS.get_environment("HOME")
+	var bundle := OS.get_executable_path().get_base_dir().get_base_dir().get_base_dir()
+	var private_parent := bundle.get_base_dir()
+	var prefix := "openrc-package-default-probe-"
+	var case_id := private_parent.get_file().trim_prefix(prefix)
+	if task_home != task_home.simplify_path() or not task_home.is_absolute_path() \
+			or not private_parent.get_file().begins_with(prefix) or case_id.length() != 32 \
+			or task_home != private_parent.path_join("private-home") or not _probe_path_without_links(task_home):
+		return false
+	for index: int in case_id.length():
+		var code := case_id.unicode_at(index)
+		if not (code >= 48 and code <= 57) and not (code >= 97 and code <= 102): return false
+	var private_dir := DirAccess.open(task_home)
+	if private_dir == null or private_dir.is_link(".openrc-package-default-profile"): return false
+	var expected_token := OS.get_environment("OPENRC_PACKAGE_DEFAULT_PROFILE_TOKEN_SHA256")
+	if expected_token.length() != 64 or FileAccess.get_sha256(task_home.path_join(".openrc-package-default-profile")) != expected_token:
+		return false
+	var user_dir := task_home.path_join("Library/Application Support/Godot/app_userdata/OpenRC Simulator")
+	if OS.get_user_data_dir() != user_dir or OS.get_environment("OPENRC_PACKAGE_DEFAULT_EXPECT_USER_DIR") != user_dir \
+			or not _probe_path_without_links(user_dir):
+		return false
+	var identity := NativePackage.mac_native_identity(OS.get_executable_path(), Engine.get_architecture_name(),
+		OS.get_cmdline_args() + args)
+	var path := "res://native/kernel/qualification/package_default_probe.gd"
+	if not identity.get("ok", false) or not identity.get("manifest") is Dictionary \
+			or not identity.manifest.get("qualification_sources") is Dictionary \
+			or FileAccess.get_sha256(path) != identity.manifest.qualification_sources.get("package_default_probe.gd"):
+		return false
+	var script: Script = load(path)
+	if script == null or not script.can_instantiate(): return false
+	var observer: Node = script.new()
+	if observer == null or not observer.has_method("prepare") or not observer.call("prepare", mode, identity, user_dir):
+		if observer != null: observer.free()
+		return false
+	get_tree().root.add_child.call_deferred(observer)
+	return true
+
+
+static func _probe_path_without_links(path: String) -> bool:
+	if not path.is_absolute_path() or not path.begins_with("/") or path != path.simplify_path(): return false
+	var current := "/"
+	for part: String in path.trim_prefix("/").split("/", false):
+		var parent := DirAccess.open(current)
+		if parent == null or parent.is_link(part) or not parent.dir_exists(part): return false
+		current = current.path_join(part)
+	return true
 
 
 func _process(_delta: float) -> void:

@@ -158,10 +158,21 @@ func _initialize() -> void:
 		start = "airborne", weather = "calm", start_sha256 = "9".repeat(64)}
 	var allowed := {aircraft = selected.aircraft, battery = selected.battery, start = selected.start,
 		weather = selected.weather, soft_hull = false, trim_profile = "production", start_sha256 = selected.start_sha256}
+	var short_pairs: Array[Dictionary] = []
+	var long_pairs: Array[Dictionary] = []
+	for index in 8:
+		var evidence_pair := {reference_sha256 = "1".repeat(64), native_sha256 = "2".repeat(64),
+			windows_sha256 = "3".repeat(64), reference_capture = "r%d" % index, native_capture = "n%d" % index}
+		if index < 5: short_pairs.append(evidence_pair)
+		else: long_pairs.append(evidence_pair)
+	var evidence := {format = Admission.EVIDENCE_FORMAT, source_fleet_sha256 = "4".repeat(64),
+		package_release_sha256 = "5".repeat(64), package_session_sha256 = "6".repeat(64),
+		ci = {head_sha = "a".repeat(40), repository = "bultodepapas/OpenRCsimulator", run_id = "1",
+			attempt = "1", required_job_id = "2", macos_job_id = "3"}, short_pairs = short_pairs, long_pairs = long_pairs}
 	var marker := {format = Admission.FORMAT, scope = Admission.SCOPE, package_identity = cached,
 		cpu = "Apple M1", hardware_model = "MacBookAir10,1", os_version = row.runtime_os_version,
-		os_build = row.runtime_os_build, engine_pair = pair, allowed_selections = [allowed]}
-	check(not Admission.ENABLED, "package default stays disabled")
+		os_build = row.runtime_os_build, engine_pair = pair, allowed_selections = [allowed], evidence = evidence}
+	check(Admission.ENABLED, "package default reader is available")
 	check(Admission.marker_error(marker, native, reference, manifest_sha, "Apple M1", "MacBookAir10,1", "").is_empty()
 		and SourceAdmission.selection_allowed(marker, selected, false),
 		"fixture marker matches actual verified receipt and selected start")

@@ -5,6 +5,8 @@ extends Node
 const InputAdapter := preload("res://tools/package_flight_input.gd")
 const Simulation := preload("res://sim/simulation.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
+const FlightSession := preload("res://sim/flight_session.gd")
+const MacosDomain := preload("res://sim/native_macos_domain.gd")
 const NativePackage := preload("res://app_state/native_package.gd")
 const ContactObserver := preload("res://statistics/fixed_wing_adapter.gd")
 const FORMAT := "openrc-package-live-flight v1"
@@ -38,6 +40,7 @@ var backend_native: Object
 var native_previous: Dictionary = {}
 var native_checked_ticks := 0
 var initial_checkpoint_sha256 := ""
+var initial_screened_checkpoint_sha256 := ""
 var source_scenario: Dictionary = {}
 var initial_render_scope: Dictionary = {}
 var violations: Dictionary = {tick_discontinuity = 0, nonfinite = 0, input_ownership = 0,
@@ -142,6 +145,28 @@ func attach() -> Dictionary:
 		return _refuse("validated tick-zero checkpoint and world identities are required")
 	initial_checkpoint_sha256 = _hash(var_to_bytes(initial_checkpoint))
 	if initial_checkpoint_sha256.length() != 64: return _refuse("cannot hash tick-zero checkpoint")
+	var expected_configuration: String = session._checkpoint_configuration()
+	var screened: Dictionary = MacosDomain.screen_session(session, true)
+	var wheel_count: int = session.wheel_count()
+	var branches := {soft_hull = session.soft_hull_contacts, flap_mix_owner = session._flap_mix_owner,
+		shaft_integrator = session.shaft_integrator(), wheel_count = wheel_count,
+		wheel_layout = session.wheel_state_layout() if wheel_count > 0 else "",
+		gear_retractable = session.gear_is_retractable(), wheel_brake = session.wheel_brake_available(),
+		flaps = session.flaps_available(), battery_dynamic = session.battery_is_dynamic(),
+		battery_pack = session.battery_is_pack(), electric_law = session.electric_law(),
+		turbine_continuous = session.turbine_is_continuous(), glow = session.glow_is_active(),
+		liquid = session.liquid_fuel_is_active(), weather_calm = session._weather.is_calm(),
+		weather_atmosphere = session._weather.has_atmosphere(), weather_spatial = session._weather.is_spatial(),
+		weather_vertical = session._weather.has_vertical_atmosphere()}
+	var screened_scope := _screened_scope(screened, branches)
+	if screened_scope.is_empty(): return _refuse("flight is outside the fixed screened comparison domain")
+	var screened_configuration_sha256 := _hash(var_to_bytes(screened_scope))
+	var neutral_checkpoint := _neutral_checkpoint(initial_checkpoint, backend_identity,
+			expected_configuration, screened_configuration_sha256)
+	if neutral_checkpoint.is_empty(): return _refuse("cannot establish screened tick-zero checkpoint")
+	initial_screened_checkpoint_sha256 = _hash(var_to_bytes(neutral_checkpoint))
+	if initial_screened_checkpoint_sha256.length() != 64:
+		return _refuse("cannot hash screened tick-zero checkpoint")
 	adapter = InputAdapter.new()
 	if not adapter.configure(session, scene.field, SEED):
 		return _refuse("fixed circuit input refused: " + str(adapter.failure))
@@ -154,6 +179,7 @@ func attach() -> Dictionary:
 		start_choice = session.start_choice, trim = session.start.duplicate(true), rate_profile = session.rate_profile,
 		weather = session.weather_configuration(), collision_world_identity = initial_checkpoint.collision_world_identity,
 		lake_identity = initial_checkpoint.lake_identity, configuration = initial_checkpoint.configuration,
+		screened_domain = screened_scope, screened_configuration_sha256 = screened_configuration_sha256,
 		input = "fixed synthetic circuit through rate-limited keyboard callback; no radio",
 		frame_generation_requested = OS.get_environment("OPENRC_METALFX_FRAME_GENERATION") == "1",
 		display_link_requested = OS.get_environment("OPENRC_METALFX_DISPLAY_LINK") == "1",
@@ -460,6 +486,7 @@ func _finish() -> void:
 		capture_id = capture_id, pid = OS.get_process_id(), frame_report = frame_path,
 		frame_report_sha256 = frame_digest, frame_stream_sha256 = stream.get("sha256", "") if stream is Dictionary else "",
 		frame_exit_code = sealed_exit, scenario = source_scenario, initial_checkpoint_sha256 = initial_checkpoint_sha256,
+		initial_screened_checkpoint_sha256 = initial_screened_checkpoint_sha256,
 		package_before = initial_package, package_after = final_package, replay_before = initial_replay, replay_after = final_replay,
 		backend_identity = backend_identity, native_checked_ticks = native_checked_ticks,
 		render_scope = initial_render_scope,
@@ -519,6 +546,65 @@ func _finite(values: PackedFloat64Array) -> bool:
 	for value: float in values:
 		if not is_finite(value): return false
 	return true
+## The returned domain is a fixed stock scenario, not a general configuration identity.
+static func _screened_scope(selection: Dictionary, branches: Dictionary) -> Dictionary:
+	if selection.size() != 8 or typeof(selection.get("ok")) != TYPE_BOOL or selection.ok != true:
+		return {}
+	for key: String in ["reason", "profile", "aircraft", "battery", "start", "weather", "start_sha256"]:
+		if typeof(selection.get(key)) != TYPE_STRING: return {}
+	if selection.reason != "" or selection.profile != "production" or selection.aircraft != "jensen-das-ugly-stik-60" \
+			or selection.battery != "ideal" or selection.start != "airborne" or selection.weather != "calm" \
+			or not _digest_valid(selection.start_sha256): return {}
+	var booleans := ["soft_hull", "gear_retractable", "wheel_brake", "flaps", "battery_dynamic", "battery_pack",
+		"turbine_continuous", "glow", "liquid", "weather_calm", "weather_atmosphere", "weather_spatial", "weather_vertical"]
+	if branches.size() != booleans.size() + 5: return {}
+	for key: String in booleans:
+		if typeof(branches.get(key)) != TYPE_BOOL: return {}
+	for key: String in ["flap_mix_owner", "shaft_integrator", "wheel_layout", "electric_law"]:
+		if typeof(branches.get(key)) != TYPE_STRING: return {}
+	if typeof(branches.get("wheel_count")) != TYPE_INT or branches.wheel_count < 0 \
+			or branches.wheel_count > 64 or branches.soft_hull != true or branches.flap_mix_owner != "simulator":
+		return {}
+	return {selection = selection.duplicate(true), branches = branches.duplicate(true)}
+
+
+## A detached comparison witness only; saved checkpoints and replay remain backend-bound.
+## Reject unexpected wrappers before removing the two known native-only fields.
+static func _neutral_checkpoint(checkpoint: Dictionary, backend: Dictionary,
+		expected_configuration: String, neutral_configuration: String) -> Dictionary:
+	if not _digest_valid(expected_configuration) or not _digest_valid(neutral_configuration) \
+			or typeof(checkpoint.get("configuration")) != TYPE_STRING \
+			or checkpoint.get("configuration") != expected_configuration \
+			or not checkpoint.get("simulation") is Dictionary \
+			or typeof(checkpoint.get("format")) != TYPE_STRING or str(checkpoint.format).is_empty():
+		return {}
+	var role: Variant = backend.get("backend")
+	if typeof(role) != TYPE_STRING: return {}
+	var detached := checkpoint.duplicate(true)
+	if role == "native":
+		var recorded: Variant = detached.get("stage_backend")
+		var inner: Variant = detached.get("stage_physics_format")
+		if detached.format != FlightSession.NATIVE_CHECKPOINT_FORMAT or not recorded is Dictionary \
+				or recorded != backend or typeof(inner) != TYPE_STRING or str(inner).is_empty() \
+				or inner == FlightSession.NATIVE_CHECKPOINT_FORMAT:
+			return {}
+		detached.format = inner
+		detached.erase("stage_physics_format")
+		detached.erase("stage_backend")
+	elif role == "gdscript_reference":
+		if backend.size() != 1 or detached.format == FlightSession.NATIVE_CHECKPOINT_FORMAT \
+				or detached.has("stage_backend") or detached.has("stage_physics_format"):
+			return {}
+	else:
+		return {}
+	detached.configuration = neutral_configuration
+	return detached
+
+
+static func _digest_valid(value: String) -> bool:
+	return value.length() == 64 and value == value.to_lower() and value.is_valid_hex_number()
+
+
 func _hash(bytes: PackedByteArray) -> String:
 	var context := HashingContext.new()
 	if context.start(HashingContext.HASH_SHA256) != OK or context.update(bytes) != OK: return ""

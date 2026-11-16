@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Observer := preload("res://tools/package_flight_observer.gd")
+const Flight := preload("res://sim/flight_session.gd")
 
 class FakeRig extends RefCounted:
 	var auto_zoom := true
@@ -57,6 +58,8 @@ func _run() -> void:
 	_check(step_saw_gap and not process_saw_gap, "catch-up step checks before overwriting the previous clock")
 	_check_drawable_boundaries()
 	_check_flight_local_scope_and_input()
+	_check_screened_scope()
+	_check_neutral_checkpoint()
 	print("PACKAGE_FLIGHT_CLOCK_TEST checks=%d failures=%d" % [checks, failures])
 	quit(0 if failures == 0 else 1)
 
@@ -191,6 +194,92 @@ func _check_flight_local_scope_and_input() -> void:
 	disabled_probe.free()
 	get_root().remove_meta(&"openrc_reconstruction")
 	fake.free()
+
+
+func _check_screened_scope() -> void:
+	var selection := {ok = true, reason = "", profile = "production", aircraft = "jensen-das-ugly-stik-60",
+		battery = "ideal", start = "airborne", weather = "calm", start_sha256 = "a".repeat(64)}
+	var branches := {soft_hull = true, flap_mix_owner = "simulator", shaft_integrator = "coupled-rk4",
+		wheel_count = 3, wheel_layout = "test", gear_retractable = false, wheel_brake = false,
+		flaps = false, battery_dynamic = false, battery_pack = false, electric_law = "test",
+		turbine_continuous = false, glow = false, liquid = false, weather_calm = true,
+		weather_atmosphere = false, weather_spatial = false, weather_vertical = false}
+	var scope: Dictionary = Observer._screened_scope(selection, branches)
+	_check(not scope.is_empty(), "the fixed stock production selection is admitted for comparison")
+	for key: String in ["shaft_integrator", "wheel_layout", "electric_law"]:
+		var changed: Dictionary = branches.duplicate(true)
+		changed[key] = "different"
+		_check(var_to_bytes(Observer._screened_scope(selection, changed)) != var_to_bytes(scope),
+				"changed " + key + " changes the screened witness")
+	var changed: Dictionary = branches.duplicate(true)
+	changed.soft_hull = false
+	_check(Observer._screened_scope(selection, changed).is_empty(), "non-target contact mode is refused")
+	changed = branches.duplicate(true)
+	changed.flap_mix_owner = "transmitter"
+	_check(Observer._screened_scope(selection, changed).is_empty(), "different flap mix owner is refused")
+	changed = branches.duplicate(true)
+	changed.weather_calm = false
+	_check(var_to_bytes(Observer._screened_scope(selection, changed)) != var_to_bytes(scope),
+			"a changed effective weather branch changes the witness")
+	changed = selection.duplicate(true)
+	changed.start_sha256 = "b".repeat(64)
+	_check(var_to_bytes(Observer._screened_scope(changed, branches)) != var_to_bytes(scope),
+			"a changed actual start changes the witness")
+	changed = selection.duplicate(true)
+	changed.weather = "gusty"
+	_check(Observer._screened_scope(changed, branches).is_empty(), "an out-of-scope weather selection is refused")
+	changed = branches.duplicate(true)
+	changed.wheel_count = "three"
+	_check(Observer._screened_scope(selection, changed).is_empty(), "malformed branch facts are refused")
+
+
+func _check_neutral_checkpoint() -> void:
+	var common := "a".repeat(64)
+	var native_config := "b".repeat(64)
+	var reference := {format = "openrc-flight-checkpoint v7", configuration = common,
+		simulation = {tick = 0, state = PackedFloat64Array([1.0, 2.0])}, world = "field"}
+	var native: Dictionary = reference.duplicate(true)
+	native.configuration = native_config
+	native.stage_physics_format = native.format
+	native.format = Flight.NATIVE_CHECKPOINT_FORMAT
+	var native_identity := {backend = "native", binary_sha256 = "c".repeat(64)}
+	native.stage_backend = native_identity.duplicate(true)
+	var original_ref := var_to_bytes(reference)
+	var original_native := var_to_bytes(native)
+	var ref_witness: Dictionary = Observer._neutral_checkpoint(reference, {backend = "gdscript_reference"}, common, common)
+	var native_witness: Dictionary = Observer._neutral_checkpoint(native, native_identity, native_config, common)
+	_check(not ref_witness.is_empty() and var_to_bytes(ref_witness) == var_to_bytes(native_witness),
+			"equivalent native wrapper and reference produce the same detached witness")
+	_check(var_to_bytes(reference) == original_ref and var_to_bytes(native) == original_native,
+			"the actual saved checkpoints remain byte-for-byte unchanged")
+	var changed: Dictionary = native.duplicate(true)
+	changed.simulation.state = PackedFloat64Array([1.0, 3.0])
+	_check(var_to_bytes(Observer._neutral_checkpoint(changed, native_identity, native_config, common)) != var_to_bytes(ref_witness),
+			"a changed physical state changes the witness")
+	changed = native.duplicate(true)
+	changed.world = "different field"
+	_check(var_to_bytes(Observer._neutral_checkpoint(changed, native_identity, native_config, common)) != var_to_bytes(ref_witness),
+			"a changed world remains in the witness")
+	changed = native.duplicate(true)
+	changed.stage_backend.binary_sha256 = "d".repeat(64)
+	_check(Observer._neutral_checkpoint(changed, native_identity, native_config, common).is_empty(),
+			"a mismatched recorded native identity is refused")
+	changed = native.duplicate(true)
+	changed.erase("stage_physics_format")
+	_check(Observer._neutral_checkpoint(changed, native_identity, native_config, common).is_empty(),
+			"a missing native wrapper field is refused")
+	changed = native.duplicate(true)
+	changed.stage_physics_format = Flight.NATIVE_CHECKPOINT_FORMAT
+	_check(Observer._neutral_checkpoint(changed, native_identity, native_config, common).is_empty(),
+			"a recursive native wrapper is refused")
+	changed = reference.duplicate(true)
+	changed.stage_backend = native_identity
+	_check(Observer._neutral_checkpoint(changed, {backend = "gdscript_reference"}, common, common).is_empty(),
+			"native wrapper data on a reference checkpoint is refused")
+	_check(var_to_bytes(Observer._neutral_checkpoint(reference, {backend = "gdscript_reference"}, common, "d".repeat(64))) != var_to_bytes(ref_witness)
+			and Observer._neutral_checkpoint(native, native_identity, common, common).is_empty()
+			and Observer._neutral_checkpoint(native, native_identity, native_config, "A".repeat(64)).is_empty(),
+			"configuration mismatch and malformed digests are refused")
 
 
 func _check(condition: bool, label: String) -> void:

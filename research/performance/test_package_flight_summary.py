@@ -85,6 +85,21 @@ class HealthControls(unittest.TestCase):
         self.assertEqual([], self.errors())
         self.assertEqual([], summary._command_errors(self.command, self.frame, self.health))
 
+    def test_optional_screened_checkpoint_fields_are_complete_and_typed(self):
+        self.health["initial_screened_checkpoint_sha256"] = "6" * 64
+        self.health["scenario"]["screened_configuration_sha256"] = "7" * 64
+        self.health["scenario"]["screened_domain"] = {"selection": {}, "branches": {}}
+        self.assertEqual([], self.errors())
+        for mutation in (
+                lambda h: h.pop("initial_screened_checkpoint_sha256"),
+                lambda h: h["scenario"].pop("screened_configuration_sha256"),
+                lambda h: h["scenario"].update(screened_domain=None),
+                lambda h: h.update(initial_screened_checkpoint_sha256="A" * 64)):
+            changed = copy.deepcopy(self.health)
+            mutation(changed)
+            self.assertIn("screened checkpoint or configuration evidence is incomplete",
+                          summary._health_errors(changed, self.frame, "e" * 64, "f" * 64, self.pins))
+
     def test_package_and_stream_identity_mutations_are_rejected(self):
         for field in ("frame_report_sha256", "frame_stream_sha256", "initial_checkpoint_sha256"):
             with self.subTest(field=field):

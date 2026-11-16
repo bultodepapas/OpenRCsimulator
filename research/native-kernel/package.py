@@ -43,6 +43,7 @@ MAC_MANIFEST_FORMAT = "openrc-macos-native-kernel-package-v1"
 MAC_MANIFEST = ROOT / "app/native/kernel/package-macos.json"
 MAC_QUALIFICATION = {name: QUALIFICATION[name] for name in
                      ("session_probe.gd", "test_native_stage.gd", "test_native_session.gd", "test_native_replay.gd")}
+MAC_QUALIFICATION["package_default_probe.gd"] = ROOT / "app/tools/package_default_probe.gd"
 MAC_DESCRIPTOR = (
     "; DT-MAC packaged stage; loaded explicitly after embedded identity verification.\n"
     "[configuration]\n"
