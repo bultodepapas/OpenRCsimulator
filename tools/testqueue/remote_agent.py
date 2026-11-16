@@ -8,6 +8,7 @@ host.  This is cooperative admission, not a sandbox or native qualification.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import importlib.util
 import json
@@ -16,8 +17,10 @@ import os
 from pathlib import Path, PurePosixPath
 import platform
 import re
+import secrets
 import shutil
 import signal
+import stat
 import subprocess
 import sys
 import tarfile
@@ -29,6 +32,8 @@ RESERVE = 512 * 1024 * 1024
 MAX_ARCHIVE = 128 * 1024**3
 MAX_FILES = 300_000
 START_GRACE = 30.0
+RETENTION_MAX_BYTES = 16 * 1024**3
+RETENTION_MAX_SECONDS = 30.0
 ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}\Z")
 SCRIPT = re.compile(r"res://(?:tests|tools)/[A-Za-z0-9_./-]+\.gd\Z")
 TIMING = re.compile(r"(?:^|[/_.-])(?:bench(?:mark)?|perf(?:ormance)?|profile|timing|latency|soak|stress|memory)(?:[/_.-]|$)", re.I)
@@ -106,6 +111,352 @@ def job_path(root, identifier):
 
 def state_path(root, identifier):
     return job_path(root, identifier) / "state.json"
+
+
+def _retention_supported():
+    """Fail closed when descriptor-relative, no-follow operations are unavailable."""
+    return (os.name == "posix" and hasattr(os, "O_NOFOLLOW") and hasattr(os, "O_DIRECTORY")
+            and all(fn in os.supports_dir_fd for fn in (os.open, os.stat, os.link, os.unlink, os.rename))
+            and all(fn in os.supports_follow_symlinks for fn in (os.stat, os.link)))
+
+
+def _retention_identity(info):
+    return (info.st_dev, info.st_ino, info.st_mode)
+
+
+def _retention_fingerprint(info):
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_nlink, info.st_size,
+            info.st_mtime_ns, info.st_ctime_ns)
+
+
+def _retention_open_dir(name, *, parent=None):
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0)
+    return os.open(name, flags, dir_fd=parent)
+
+
+def _retention_open_file(name, parent):
+    flags = os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NONBLOCK", 0)
+    fd = os.open(name, flags, dir_fd=parent)
+    if not stat.S_ISREG(os.fstat(fd).st_mode):
+        os.close(fd)
+        raise Refused("retention target or backup is not a regular file")
+    return fd
+
+
+def _retention_entry_matches(parent, name, fd, *, full=False):
+    entry = os.stat(name, dir_fd=parent, follow_symlinks=False)
+    opened = os.fstat(fd)
+    compare = _retention_fingerprint if full else _retention_identity
+    if compare(entry) != compare(opened):
+        raise Refused("retention path changed: " + str(name))
+
+
+def _retention_hash(fd, deadline, max_bytes):
+    before = os.fstat(fd)
+    if not stat.S_ISREG(before.st_mode) or before.st_size > max_bytes:
+        raise Refused("retention file exceeds the hash budget or is not regular")
+    os.lseek(fd, 0, os.SEEK_SET)
+    checksum = hashlib.sha256()
+    total = 0
+    while True:
+        if time.monotonic() >= deadline:
+            raise Refused("retention hash deadline exceeded")
+        block = os.read(fd, 1024 * 1024)
+        if time.monotonic() >= deadline:
+            raise Refused("retention hash deadline exceeded")
+        if not block:
+            break
+        total += len(block)
+        if total > max_bytes:
+            raise Refused("retention file exceeds the hash budget")
+        checksum.update(block)
+    if total != before.st_size or _retention_fingerprint(before) != _retention_fingerprint(os.fstat(fd)):
+        raise Refused("retention file changed while hashing")
+    return checksum.hexdigest(), before
+
+
+def _retention_read_state(directory):
+    fd = _retention_open_file("state.json", directory)
+    try:
+        info = os.fstat(fd)
+        if info.st_size > 16 * 1024 * 1024:
+            raise Refused("retention journal is too large")
+        chunks = []
+        while block := os.read(fd, 1024 * 1024):
+            chunks.append(block)
+            if sum(map(len, chunks)) > 16 * 1024 * 1024:
+                raise Refused("retention journal is too large")
+        _retention_entry_matches(directory, "state.json", fd, full=True)
+        return json.loads(b"".join(chunks))
+    finally:
+        os.close(fd)
+
+
+def _retention_write_state(directory, state):
+    """Publish state through this open directory and fsync its replacement."""
+    temporary = ".retention-state-" + secrets.token_hex(16) + ".pending"
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0)
+    fd = os.open(temporary, flags, 0o600, dir_fd=directory)
+    published = False
+    try:
+        data = memoryview(encode(state) + b"\n")
+        while data:
+            written = os.write(fd, data)
+            if written <= 0:
+                raise OSError("short retention journal write")
+            data = data[written:]
+        os.fsync(fd)
+        os.rename(temporary, "state.json", src_dir_fd=directory, dst_dir_fd=directory)
+        published = True
+        os.fsync(directory)
+    finally:
+        identity = _retention_identity(os.fstat(fd))
+        os.close(fd)
+        if not published:
+            # Remove only the unpublished inode created by this invocation. A
+            # rename that succeeded before raising has no temporary name left.
+            try:
+                entry = os.stat(temporary, dir_fd=directory, follow_symlinks=False)
+                if _retention_identity(entry) == identity:
+                    os.unlink(temporary, dir_fd=directory)
+                    os.fsync(directory)
+            except (OSError, ValueError):
+                pass
+
+
+def _reclaim_success_input_locked(root, identifier, *, max_bytes=RETENTION_MAX_BYTES,
+                                  max_seconds=RETENTION_MAX_SECONDS, expected_payload_sha256=None):
+    """Reclaim only a confirmed successful job's redundant input archive.
+
+    The caller owns pool.lock. Directory FDs prevent following substituted links
+    outside the private queue tree; checks refuse detected changes. POSIX cannot
+    make the final name check and unlink atomic against arbitrary same-user
+    writers. This boundary assumes cooperating queue-directory ownership and a
+    process tree already proved stopped. Time limits are cooperative: a single
+    blocked filesystem call can exceed them.
+    """
+    if not _retention_supported():
+        return {"state": "SKIPPED", "reason": "descriptor-relative no-follow operations unavailable"}
+    if (type(max_bytes) is not int or max_bytes < 0 or type(max_seconds) not in (int, float)
+            or not math.isfinite(max_seconds) or max_seconds <= 0):
+        raise ValueError("invalid retention budget")
+    if (expected_payload_sha256 is not None and
+            (not isinstance(expected_payload_sha256, str)
+             or not re.fullmatch(r"[0-9a-f]{64}", expected_payload_sha256))):
+        raise Refused("expected payload SHA-256 must be a lowercase digest")
+    job_path(Path(root), identifier)  # Validate the identifier before opening paths.
+    root = Path(os.path.abspath(root))
+    if Path(os.path.realpath(root)) != root:
+        raise Refused("retention root must be a canonical non-link path")
+    deadline = time.monotonic() + max_seconds
+    state = None
+    intent = False
+    directory = None
+    with contextlib.ExitStack() as stack:
+        def opened(fd):
+            stack.callback(os.close, fd)
+            return fd
+        root_fd = opened(_retention_open_dir(str(root)))
+        jobs_fd = opened(_retention_open_dir("jobs", parent=root_fd))
+        directory = opened(_retention_open_dir(identifier, parent=jobs_fd))
+        incoming_fd = opened(_retention_open_dir("incoming", parent=root_fd))
+
+        def check_directories():
+            if _retention_identity(os.stat(root, follow_symlinks=False)) != _retention_identity(os.fstat(root_fd)):
+                raise Refused("retention root changed")
+            _retention_entry_matches(root_fd, "jobs", jobs_fd)
+            _retention_entry_matches(jobs_fd, identifier, directory)
+            _retention_entry_matches(root_fd, "incoming", incoming_fd)
+
+        check_directories()
+        state = _retention_read_state(directory)
+        if not isinstance(state, dict) or state.get("request_id") != identifier:
+            raise Refused("retention journal has the wrong request identity")
+        request = validate_request(state.get("request"))
+        if request["request_id"] != identifier or state.get("payload_sha256") != hashlib.sha256(encode(request)).hexdigest():
+            raise Refused("retention request identity differs from the journal")
+        if expected_payload_sha256 is not None and not secrets.compare_digest(state["payload_sha256"], expected_payload_sha256):
+            raise Refused("retention payload SHA-256 does not match the durable request", "CONFLICT")
+        if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) != (
+                "FINISHED", "PASSED", "COMPLETE", "CONFIRMED"):
+            return {"state": "SKIPPED", "reason": "attempt is not a confirmed complete success"}
+        archive = request["archive"]
+        archive_path = Path(archive["path"])
+        if archive_path.parent != root / "incoming" or archive_path.name in ("", ".", ".."):
+            raise Refused("retention backup is outside the queue incoming directory")
+        expected = archive["sha256"]
+        previous = state.get("storage_cleanup") or {}
+        if not isinstance(previous, dict):
+            raise Refused("invalid retention journal")
+        if previous.get("state") in {"RECLAIMED", "ABSENT_AFTER_INTENT"}:
+            return previous
+        intent = previous.get("state") == "PENDING" and previous.get("phase") == "UNLINK"
+        anchor_name = "retained-input.tar"
+        anchor_created = False
+        anchor = None
+        try:
+            try:
+                target = opened(_retention_open_file("input.tar", directory))
+            except FileNotFoundError:
+                if not intent or previous.get("sha256") != expected or previous.get("retained_anchor") != anchor_name:
+                    raise Refused("job input is missing without a durable unlink intent")
+                # An intent plus an absent name does not prove who removed it, or
+                # that the unlink was durable before a crash. Keep that distinction.
+                anchor = opened(_retention_open_file(anchor_name, directory))
+                anchor_digest, _ = _retention_hash(anchor, deadline, max_bytes)
+                if anchor_digest != expected:
+                    raise Refused("retained archive anchor changed")
+                _retention_entry_matches(directory, anchor_name, anchor, full=True)
+                os.fsync(anchor)
+                check_directories()
+                os.fsync(directory)
+                state["storage_cleanup"] = {**previous, "state": "ABSENT_AFTER_INTENT", "phase": "UNRESOLVED",
+                                            "logical_bytes_removed": None,
+                                            "reason": "input absent after durable intent; deletion could not be witnessed"}
+                _retention_write_state(directory, state)
+                return state["storage_cleanup"]
+
+            target_initial = os.fstat(target)
+            if target_initial.st_nlink != 1:
+                raise Refused("job input has unexpected hard links")
+            if intent and previous.get("target_identity") != list(_retention_fingerprint(target_initial)):
+                raise Refused("job input changed since the durable unlink intent")
+            backup = opened(_retention_open_file(archive_path.name, incoming_fd))
+            backup_digest, backup_initial = _retention_hash(backup, deadline, max_bytes)
+            target_digest, target_before = _retention_hash(target, deadline, max_bytes)
+            if backup_digest != expected or target_digest != expected:
+                raise Refused("job input or retained incoming archive digest differs")
+            if _retention_identity(target_before) == _retention_identity(backup_initial):
+                raise Refused("job input is not an independent archive copy")
+            _retention_entry_matches(incoming_fd, archive_path.name, backup, full=True)
+            _retention_entry_matches(directory, "input.tar", target, full=True)
+            check_directories()
+            try:
+                os.link(archive_path.name, anchor_name, src_dir_fd=incoming_fd, dst_dir_fd=directory,
+                        follow_symlinks=False)
+                anchor_created = True
+            except FileExistsError:
+                pass
+            anchor = opened(_retention_open_file(anchor_name, directory))
+            _retention_entry_matches(incoming_fd, archive_path.name, backup, full=True)
+            _retention_entry_matches(directory, anchor_name, anchor, full=True)
+            same_inode = _retention_identity(os.fstat(backup)) == _retention_identity(os.fstat(anchor))
+            if not same_inode:
+                if anchor_created:
+                    raise Refused("retained archive anchor does not pin the verified incoming archive")
+                # A previous crash may have left a valid pinned archive before
+                # its intent was published, while incoming was atomically replaced.
+                anchor_digest, anchor_before = _retention_hash(anchor, deadline, max_bytes)
+                if anchor_digest != expected:
+                    raise Refused("existing retained archive anchor digest differs")
+            # Linking changes ctime/link count. Hash once more after the link so
+            # a concurrent in-place mutation cannot hide in that metadata change.
+            backup_digest, backup_before = _retention_hash(backup, deadline, max_bytes)
+            if backup_digest != expected:
+                raise Refused("retained incoming archive changed during pinning")
+            if same_inode:
+                anchor_before = os.fstat(anchor)
+            os.fsync(anchor)
+            os.fsync(directory)  # The retained link must survive before input removal.
+            _retention_entry_matches(incoming_fd, archive_path.name, backup, full=True)
+            _retention_entry_matches(directory, anchor_name, anchor, full=True)
+            if _retention_fingerprint(os.fstat(backup)) != _retention_fingerprint(backup_before):
+                raise Refused("retained incoming archive changed after fsync")
+            if _retention_fingerprint(os.fstat(anchor)) != _retention_fingerprint(anchor_before):
+                raise Refused("retained archive anchor changed after fsync")
+            _retention_entry_matches(directory, "input.tar", target, full=True)
+            if _retention_fingerprint(os.fstat(target)) != _retention_fingerprint(target_before):
+                raise Refused("job input changed before unlink intent")
+            check_directories()
+            if not intent:
+                state["storage_cleanup"] = {"state": "PENDING", "phase": "UNLINK", "sha256": expected,
+                    "retained_anchor": anchor_name, "target_identity": list(_retention_fingerprint(target_before)),
+                    "logical_bytes_removed": None, "size_semantics": "logical bytes; physical space is not guaranteed"}
+                _retention_write_state(directory, state)
+                intent = True
+            # Revalidate after journal I/O, immediately before deleting the name.
+            check_directories()
+            _retention_entry_matches(incoming_fd, archive_path.name, backup, full=True)
+            _retention_entry_matches(directory, anchor_name, anchor, full=True)
+            _retention_entry_matches(directory, "input.tar", target, full=True)
+            if (_retention_fingerprint(os.fstat(target)) != _retention_fingerprint(target_before)
+                    or _retention_fingerprint(os.fstat(backup)) != _retention_fingerprint(backup_before)
+                    or _retention_fingerprint(os.fstat(anchor)) != _retention_fingerprint(anchor_before)):
+                raise Refused("retention inputs changed after intent")
+            os.unlink("input.tar", dir_fd=directory)
+            os.fsync(directory)
+            state["storage_cleanup"] = {**state["storage_cleanup"], "state": "RECLAIMED", "phase": "DONE",
+                                        "logical_bytes_removed": target_before.st_size}
+            _retention_write_state(directory, state)
+            return state["storage_cleanup"]
+        except (OSError, Refused, ValueError) as error:
+            # Do not overwrite a durable intent after a failed unlink/result
+            # publication. A later explicit retry can inspect the original state.
+            try:
+                check_directories()
+                current = _retention_read_state(directory)
+                prior = current.get("storage_cleanup") or {}
+                if anchor_created and not intent and not (
+                        prior.get("state") == "PENDING" and prior.get("phase") == "UNLINK"):
+                    # The anchor was created here and never became part of a
+                    # durable unlink intent. The already-open backup identifies
+                    # it even if opening the new anchor itself failed.
+                    _retention_entry_matches(directory, anchor_name, anchor if anchor is not None else backup)
+                    os.unlink(anchor_name, dir_fd=directory)
+                    os.fsync(directory)
+                if prior.get("state") == "RECLAIMED":
+                    # A final rename can be visible even though its directory
+                    # fsync failed. Restore an unresolved receipt if possible.
+                    current["storage_cleanup"] = {**prior, "state": "PENDING", "phase": "UNLINK",
+                                                  "logical_bytes_removed": None, "last_error": str(error)[:500]}
+                    _retention_write_state(directory, current)
+                    return {"state": "PENDING", "reason": str(error)}
+                if prior.get("state") == "PENDING" and prior.get("phase") == "UNLINK":
+                    current["storage_cleanup"] = {**prior, "last_error": str(error)[:500]}
+                elif intent:
+                    # An unresolved unlink must never be reported as retained
+                    # merely because publication of its result failed.
+                    pending = state.get("storage_cleanup") or previous
+                    current["storage_cleanup"] = {**pending, "state": "PENDING", "phase": "UNLINK",
+                                                  "logical_bytes_removed": None, "last_error": str(error)[:500]}
+                else:
+                    current["storage_cleanup"] = {"state": "SKIPPED", "reason": str(error)[:500],
+                                                  "logical_bytes_removed": 0}
+                _retention_write_state(directory, current)
+            except (OSError, Refused, ValueError):
+                pass
+            return {"state": "PENDING" if intent else "SKIPPED", "reason": str(error)}
+
+
+def reclaim_success_input(root, identifier, *, max_bytes=RETENTION_MAX_BYTES,
+                          max_seconds=RETENTION_MAX_SECONDS, expected_payload_sha256=None):
+    """Retry storage cleanup for one confirmed success, without starting a job."""
+    if not _retention_supported():
+        if expected_payload_sha256 is not None:
+            raise Refused("descriptor-relative no-follow operations unavailable", "UNSUPPORTED")
+        return {"state": "SKIPPED", "reason": "descriptor-relative no-follow operations unavailable"}
+    import fcntl
+    root = Path(os.path.abspath(root))
+    if Path(os.path.realpath(root)) != root:
+        raise Refused("retention root must be a canonical non-link path")
+    root_fd = _retention_open_dir(str(root))
+    lock_fd = None
+    try:
+        flags = os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | getattr(os, "O_CLOEXEC", 0)
+        lock_fd = os.open("pool.lock", flags, 0o600, dir_fd=root_fd)
+        if not stat.S_ISREG(os.fstat(lock_fd).st_mode):
+            raise Refused("retention lock is not a regular file")
+        _retention_entry_matches(root_fd, "pool.lock", lock_fd)
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as error:
+            raise Refused("host pool is busy", "BUSY") from error
+        return _reclaim_success_input_locked(root, identifier, max_bytes=max_bytes, max_seconds=max_seconds,
+                                             expected_payload_sha256=expected_payload_sha256)
+    finally:
+        if lock_fd is not None:
+            os.close(lock_fd)
+        os.close(root_fd)
 
 
 def authority_enrolled():
@@ -626,20 +977,37 @@ def supervise(root, identifier):
         state.update(state="FINISHED", outcome="PASSED" if ok else "TEST_FAILED" if complete else "INFRA_FAILED",
                      cleanup="CONFIRMED", evidence="COMPLETE" if complete else "INCOMPLETE",
                      artifacts=artifact_inventory(directory), finished_at=time.time())
+        if ok:
+            state["storage_cleanup"] = ({"state": "PENDING", "phase": "PREPARING", "logical_bytes_removed": None}
+                                        if _retention_supported() else
+                                        {"state": "SKIPPED", "reason": "descriptor-relative no-follow operations unavailable",
+                                         "logical_bytes_removed": 0})
     except Exception as error:
         uncertain = started and ("not confirmed" in str(error))
         state.update(state="UNKNOWN" if uncertain else "FINISHED", outcome="INFRA_FAILED",
                      cleanup="UNCONFIRMED" if uncertain else "CONFIRMED", evidence="INCOMPLETE",
                      error=f"{type(error).__name__}: {error}", finished_at=time.time())
     finally:
-        write_json(path, state)
-        lock.close()
+        try:
+            # FINISHED and its process-cleanup receipt must be durable before
+            # reclaiming storage. Readers may observe storage cleanup pending.
+            write_json(path, state)
+            if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) == (
+                    "FINISHED", "PASSED", "COMPLETE", "CONFIRMED") and _retention_supported():
+                try:
+                    _reclaim_success_input_locked(root, identifier)
+                except (OSError, Refused, ValueError):
+                    # The already-published execution outcome remains valid;
+                    # unresolved cleanup is visible in its separate field.
+                    pass
+        finally:
+            lock.close()
     return 0
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("probe", "run", "status", "_supervise", "_invoke"))
+    parser.add_argument("action", choices=("probe", "run", "status", "reclaim-input", "_supervise", "_invoke"))
     parser.add_argument("--root", required=True)
     parser.add_argument("--request-id")
     parser.add_argument("--stage")
@@ -662,6 +1030,13 @@ def main():
             result = probe(root, request)
         elif args.action == "run":
             result = launch(root, request)
+        elif args.action == "reclaim-input":
+            if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256"}
+                    or not isinstance(request.get("request_id"), str) or not ID.fullmatch(request["request_id"])
+                    or not isinstance(request.get("payload_sha256"), str)
+                    or not re.fullmatch(r"[0-9a-f]{64}", request["payload_sha256"])):
+                raise Refused("reclaim-input requires request_id and lowercase payload_sha256")
+            result = reclaim_success_input(root, request["request_id"], expected_payload_sha256=request["payload_sha256"])
         else:
             if not isinstance(request, dict) or set(request) != {"request_id"}:
                 raise Refused("status requires request_id")

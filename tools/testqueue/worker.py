@@ -226,10 +226,31 @@ class Worker:
             if not windows or set(identity["binaries_sha512"].values()) != set(windows[1].split()):
                 raise ValueError("ENGINE_MISMATCH: Windows binary digests do not match snapshot's official pins")
 
+    def _storage_capacity(self):
+        """Observe the materialization volume; unknown is never empty/free."""
+        path = self.root / "attempts"
+        try:
+            if not path.exists():
+                path = self.root
+            usage = shutil.disk_usage(path)
+            if (any(type(value) is not int or value < 0 for value in (usage.total, usage.used, usage.free))
+                    or usage.free > usage.total):
+                raise ValueError("invalid filesystem capacity observation")
+            return {"available": True, "path": str(path), "free_bytes": usage.free,
+                    "total_bytes": usage.total, "observed_at": time.time(),
+                    "scope": "attempt filesystem volume; not reserved capacity"}
+        except (OSError, ValueError, RuntimeError) as error:
+            return {"available": False, "path": str(path), "free_bytes": None,
+                    "total_bytes": None, "observed_at": time.time(), "error": str(error),
+                    "scope": "attempt filesystem volume; not reserved capacity"}
+
     def dispatch(self, request: dict):
         if not hmac.compare_digest(str(request.get("auth", "")), self.auth):
             raise ValueError("invalid worker authority")
         operation = request.get("operation")
+        # Filesystem capacity is advisory and can be slow. Do not hold the
+        # admission lock while asking the OS about the attempt volume.
+        storage = self._storage_capacity() if operation == "hosts" else None
         with self.lock:
             if operation == "hosts":
                 scheduler = self._scheduler_health()
@@ -251,6 +272,7 @@ class Worker:
                 return {"id": self.host_id, "platform": platform.system().lower(), "architecture": platform.machine(),
                         "engine": self.engine_identity, "worker_version": VERSION, "observed_at": time.time(),
                         "condition": condition, "scheduler": scheduler, "inventory_error": inventory_error,
+                        "storage": storage,
                         "pending_quarantines": len(self._unresolved_attempts),
                         "reservation": ({key: value for key, value in self.reservation.items() if key != "secret"} if self.reservation else None),
                         "capacities": self.capacities, "claims": claims,
@@ -606,6 +628,9 @@ class Worker:
         try:
             data["process"] = host_identity()
             directory.mkdir(parents=True, exist_ok=False)
+            # Discoverability does not imply teardown or complete artifacts.
+            # Publish the owned path even when preparation or cleanup fails.
+            data["output"] = str(directory)
             with self.lock:
                 status = self.store.get(job)
                 payload = status["payload"]

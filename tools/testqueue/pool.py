@@ -9,16 +9,18 @@ import os
 from pathlib import Path
 import shlex
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
+import tempfile
 import time
 import uuid
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from tools.testqueue.common import Singleton, rpc, state_root, write_json, submission_receipt
-from tools.testqueue.pool_policy import plan
+from tools.testqueue.pool_policy import DISK_RESERVE_BYTES, plan
 from tools.testqueue.presets import validate, scheduling
 from tools.testqueue.snapshots import capture, read_verified_file, verify
 
@@ -29,6 +31,10 @@ class PoolLockTimeout(RuntimeError):
 
 class SubmissionDeferred(RuntimeError):
     """This call did not dispatch. Only retry its original identity, never fail over."""
+
+
+class ArchiveTemporaryUnresolved(RuntimeError):
+    """A failed build left an owned temporary requiring inspection before retry."""
 
 
 class SubmissionRejected(ValueError):
@@ -89,6 +95,25 @@ def acquire_lock(path, timeout=60):
             if time.monotonic() >= deadline:
                 raise PoolLockTimeout('Timed out waiting for pool transaction lock')
             time.sleep(0.1)
+
+
+def _plain_file(info):
+    return (stat.S_ISREG(info.st_mode)
+            and not getattr(info, 'st_file_attributes', 0) & getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400))
+
+
+def _discard_owned_archive_temporary(path, identity):
+    """Only an invocation's unpublished temporary is disposable, never a sweep."""
+    try:
+        current = path.lstat()
+    except FileNotFoundError:
+        return
+    if not _plain_file(current) or (current.st_dev, current.st_ino) != identity:
+        raise ArchiveTemporaryUnresolved(f'Archive temporary identity changed; retained for inspection: {path}')
+    try:
+        path.unlink()
+    except OSError as error:
+        raise ArchiveTemporaryUnresolved(f'Unpublished archive temporary could not be removed: {path}: {error}') from error
 
 
 class Pool:
@@ -161,9 +186,14 @@ class Pool:
             if host.get('local'):
                 import psutil
                 current = rpc('hosts')
+                storage = current.get('storage')
+                storage = storage if isinstance(storage, dict) else {}
+                free_disk = storage.get('free_bytes') if storage.get('available') is True else None
+                if type(free_disk) is not int or free_disk < 0:
+                    free_disk = None
                 value = {'platform': current['platform'], 'online': True,
                          'busy': bool(current['claims']) or current['condition'] != 'READY' or bool(current['reservation']),
-                         'free_disk_bytes': shutil.disk_usage(self.root).free,
+                         'free_disk_bytes': free_disk, 'storage': storage,
                          'free_memory_bytes': psutil.virtual_memory().available,
                          'cores': os.cpu_count(), 'load': psutil.cpu_percent(interval=0.1) * (os.cpu_count() or 1) / 100,
                          'capabilities': ['headless'], 'engine': current['engine']}
@@ -214,6 +244,60 @@ class Pool:
         target = parent / uuid.uuid4().hex
         capture(Path(source).resolve(), target, include_imports=False)
         return target
+
+    def _prepare_archive(self, snapshot, manifest):
+        """Publish a verified archive; discard only this call's failed build."""
+        archive = self.root / 'archives' / (manifest['source_digest'] + '.tar')
+        archive.parent.mkdir(exist_ok=True)
+        parent_info = archive.parent.lstat()
+        if (not stat.S_ISDIR(parent_info.st_mode)
+                or getattr(parent_info, 'st_file_attributes', 0) & getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400)):
+            raise ValueError('Archive directory must not be a link or reparse point')
+        guard = acquire_lock(archive.with_suffix('.lock'))
+        try:
+            try:
+                existing = archive.lstat()
+            except FileNotFoundError:
+                existing = None
+            if existing is not None:
+                if not _plain_file(existing):
+                    raise ValueError('Cached archive must be a regular file, not a link or reparse point')
+                return archive
+            # This is an advisory check on the actual archive volume, not a
+            # reservation against concurrent writes. Failure cleanup remains
+            # necessary even when the volume initially has enough space.
+            self._require_archive_space(manifest, archive.parent)
+            descriptor, name = tempfile.mkstemp(prefix=archive.stem + '.', suffix='.pending', dir=archive.parent)
+            temporary = Path(name)
+            identity = None
+            try:
+                with os.fdopen(descriptor, 'wb') as stream:
+                    info = os.fstat(stream.fileno())
+                    identity = (info.st_dev, info.st_ino)
+                    with tarfile.open(fileobj=stream, mode='w') as bundle:
+                        for member in sorted(manifest['files']):
+                            bundle.add(snapshot / 'source' / member, arcname=member, recursive=False)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                verify_archive(temporary, manifest)
+                current = temporary.lstat()
+                if not _plain_file(current) or (current.st_dev, current.st_ino) != identity:
+                    raise RuntimeError('Archive temporary changed before publication')
+                temporary.replace(archive)
+            finally:
+                if identity is not None:
+                    _discard_owned_archive_temporary(temporary, identity)
+                else:
+                    raise ArchiveTemporaryUnresolved(f'Archive temporary ownership could not be verified: {temporary}')
+            return archive
+        finally:
+            guard.close()
+
+    @staticmethod
+    def _require_archive_space(manifest, directory):
+        source_bytes = sum(item['size'] for item in manifest['files'].values())
+        if shutil.disk_usage(directory).free < source_bytes + DISK_RESERVE_BYTES:
+            raise OSError('INSUFFICIENT_SPACE for pool archive and reserve')
 
     @staticmethod
     def _unproved_nonexecution(receipt):
@@ -351,24 +435,48 @@ class Pool:
             # its own invalid-input row from this returned preflight refusal.
             status = {'state': 'REJECTED', 'reason_code': 'INVALID_INPUT', 'error': str(error)}
             raise SubmissionRejected(str(error), status) from error
+        guard = None
+        archive = None
+        archive_digest = None
         try:
-            guard = acquire_lock(self.root / 'dispatch.lock')
-        except PoolLockTimeout as error:
-            raise SubmissionDeferred(str(error)) from error
-        try:
-            if receipt_path.exists():
-                receipt = self._read_receipt_locked(receipt_path)
-                if receipt.get('inputs') != inputs:
-                    raise ValueError('request id already has different inputs')
-                self._destination(receipt)
-                return self._submission_result(receipt, receipt_path)
-            observations = self.probe()
-            if host_id:
-                observations = [item for item in observations if item['id'] == host_id]
-            decision = plan(job, observations)
-            if decision['selected'] is None:
-                return {'state': 'WAITING', 'decision': decision}
-            host = next(item for item in self.hosts if item['id'] == decision['selected'])
+            while True:
+                try:
+                    guard = acquire_lock(self.root / 'dispatch.lock')
+                except PoolLockTimeout as error:
+                    raise SubmissionDeferred(str(error)) from error
+                if receipt_path.exists():
+                    receipt = self._read_receipt_locked(receipt_path)
+                    if receipt.get('inputs') != inputs:
+                        raise ValueError('request id already has different inputs')
+                    self._destination(receipt)
+                    return self._submission_result(receipt, receipt_path)
+                observations = self.probe()
+                if host_id:
+                    observations = [item for item in observations if item['id'] == host_id]
+                decision = plan(job, observations)
+                if decision['selected'] is None:
+                    return {'state': 'WAITING', 'decision': decision}
+                host = next(item for item in self.hosts if item['id'] == decision['selected'])
+                if not host.get('local') and archive is None:
+                    # Building inputs does not reserve an execution host. Other
+                    # jobs may dispatch while this call holds only its request
+                    # and archive locks; reselect under the dispatch lock after
+                    # preparation, before publishing the destination receipt.
+                    guard.close()
+                    guard = None
+                    try:
+                        archive = self._prepare_archive(snapshot, manifest)
+                        verify_archive(archive, manifest)
+                        archive_digest = digest(archive)
+                    except (OSError, PoolLockTimeout) as error:
+                        # This invocation has not written a dispatch receipt or
+                        # called an execution authority. The typed deferral is
+                        # not evidence about a different historical submission.
+                        raise SubmissionDeferred(f'Coordinator archive preparation unavailable: {error}') from error
+                    except (ValueError, tarfile.TarError) as error:
+                        raise RuntimeError(f'Archive requires inspection before retry: {error}') from error
+                    continue
+                break
             receipt = {'request_id': identifier, 'host': host['id'], 'snapshot': str(snapshot),
                        'inputs': inputs,
                        'source_digest': manifest['source_digest'], 'options': options,
@@ -390,21 +498,6 @@ class Pool:
                 submission_receipt(self.root, request)
                 receipt['request'] = request
             else:
-                archive = self.root / 'archives' / (manifest['source_digest'] + '.tar')
-                archive.parent.mkdir(exist_ok=True)
-                archive_guard = acquire_lock(archive.with_suffix('.lock'))
-                try:
-                    if not archive.exists():
-                        temporary = archive.with_suffix('.pending')
-                        with tarfile.open(temporary, 'w') as bundle:
-                            for name in sorted(manifest['files']):
-                                bundle.add(snapshot / 'source' / name, arcname=name, recursive=False)
-                        verify_archive(temporary, manifest)
-                        temporary.replace(archive)
-                finally:
-                    archive_guard.close()
-                verify_archive(archive, manifest)
-                archive_digest = digest(archive)
                 remote_archive = host['root'] + '/incoming/' + archive_digest + '.tar'
                 command = shlex.join(['mkdir', '-p', host['root'] + '/incoming'])
                 subprocess.run(['ssh', '-T', host['ssh'], command], check=True, timeout=30)
