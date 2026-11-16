@@ -100,24 +100,24 @@ disabled and different Temporal AA. It does not qualify active-flight quality,
 sustained 60 FPS, presentation or latency. The implementation evidence preserves
 the earlier Native fallback, exact sources, raw results and remaining gates.
 
-The custom-engine/native-physics preflight found 15 existing RT method metadata
-incompatibilities in patch 0005. Additive 0021 restores the unsigned API while
-retaining checked wide inputs. Its fresh editor/template pair passes the unchanged
-full official API validator and 81 native query/dispatch processes. The combined
-`b4442e6a` source candidate also passed native numerical, mutation, FPCR/domain
-and production-path stage/lifecycle/exact-replay gates on M1. The later main
-branch lake/contact changes require fresh source-bound native qualification. Paired export tooling
-and signed-executable/template checks pass. The actual `a5bf3e0c` ARM64 app passes
-native stage, lifecycle, replay and both short fixed-session backends; its state
-fingerprints agree. The `e7715a84` companion-profile renewal uses nine identical
-retained-tape comparisons and needs a new package export. Explicit production
-trim/battery coverage, actual 1080p workload measurement and automatic package
-default qualification remain open. The optional 0024 native pair passes full
-API/vector controls and makes the same warm-cache PCK hash 4.894× faster. Source
-native correctness and an actual export must be renewed for that engine; this
-file-hash gain does not establish game FPS or upgrade the retained app.
-The R3 development ZIP still contains clean19 and reference physics; the new
-pair does not upgrade it. The linked evidence identifies each tested source.
+The custom-engine/native-physics preflight found 15 RT metadata incompatibilities
+in 0005; additive 0021 restores the unsigned API with checked wide inputs. The
+1–19+21+24 pair passes the full official API validator. Source `94d566a7` passes
+17 positive native oracles, the detected mutant, FPCR/domain and 650 installed
+stage/lifecycle/replay checks. Its new locally signed ARM64 app is exported and
+independently retained, and passes all five actual release diagnostics, including
+ideal-battery production-trim reference/native sessions with equal fingerprints.
+Three alternating release CPU pairs are being measured separately. The optional
+0024 makes the same warm-cache PCK hash 4.894× faster; that call is not game FPS.
+
+An explicit packaged direct-flight observer and strict reducer are implemented.
+The revised observer passes native parsing and 30 clock/drawable/input-delivery
+controls, plus 18 reducer controls. It is a synthetic no-radio route; its new
+application source is not covered by the earlier `94d566a7` package. Actual new
+export/flight, acquired 1080p output, GPU pacing, full Home/fleet/campaign and
+automatic-default gates remain open. The R3 ZIP still uses clean19/reference
+physics. These separate source and package identities are retained in the
+linked implementation evidence.
 
 Completion has three distinct levels per technology:
 

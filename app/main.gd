@@ -537,6 +537,24 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 func _ready() -> void:
 	if OS.get_environment("OPENRC_METALFX_FRAME_GENERATION") == "1" and OS.get_environment("OPENRC_METALFX_DISPLAY_LINK") == "1":
 		load("res://render/frame_generation.gd").install(self)
+	# This fixed release observer is loaded only for its explicit technical route.
+	var package_observer: Node = null
+	if _user_args().has("package-flight-receipt"):
+		var observer_script: Script = load("res://tools/package_flight_observer.gd")
+		if observer_script == null:
+			printerr("PACKAGE_FLIGHT verdict=fail: fixed observer unavailable")
+			get_tree().quit(ERR_CANT_CREATE)
+			return
+		package_observer = observer_script.new()
+		package_observer.set_process(false)
+		add_child(package_observer)
+		# Node READY auto-enables an overridden _process; keep it off until attach.
+		package_observer.set_process(false)
+		var preparation: Dictionary = package_observer.prepare(self)
+		if preparation.get("ok") != true:
+			printerr("PACKAGE_FLIGHT verdict=fail: ", preparation.get("reason", "preparation refused"))
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	# A fixed diagnostic runs in this same executable and owns its exit; it never starts a flight scene.
 	for argument: String in user_args:
 		if argument.begins_with("--native-qualification"):
@@ -559,6 +577,12 @@ func _ready() -> void:
 		process_mode = Node.PROCESS_MODE_DISABLED
 	await _prepare_flight()
 	await _cancel_preparing_session()
+	if package_observer != null:
+		var attached: Dictionary = package_observer.attach()
+		if attached.get("ok") != true:
+			printerr("PACKAGE_FLIGHT verdict=fail: ", attached.get("reason", "attachment refused"))
+			get_tree().quit(ERR_CANT_CREATE)
+			return
 	var startup_args := _user_args()
 	var prime_pose := (interactive_start and startup_checkpoint.is_valid()) or startup_args.has("quick-flight")
 	if prime_pose and not _capturing and not _scripted and not startup_args.has("capture") and not startup_args.has("trace") \

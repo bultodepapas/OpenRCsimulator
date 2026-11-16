@@ -1577,6 +1577,55 @@ instruction dumps, checked hash runs and launch/API records, are independently
 rehashed. New binding pins are selected from those retained bytes before any
 package binding. The existing a5 development app and R3 ZIP stay unchanged.
 
+## Engine24 actual package and direct-flight observer (2026-11-15)
+
+Source `94d566a7303cf80931b1c977044bd74db2d0fe83` passes the 17 positive
+native oracles, detected mutant, FPCR/domain controls and 650 installed checks
+with editor `81dcaa54eb0f2e0fed6f0f9ea21fb92c346bf7533b4426733ccf37f605c31c36`.
+The native library is `e79aedd42bfa960eefb3f08749c4d02d3969f27f8f786655b60ff22c93d25fe5`.
+Phase 19 retains 248 payloads / 7,521,935 compressed bytes, SHA-256
+`e09e1fe402628f6d2b3d6bdb1bde625b692cf9c3aa2f6ab5c750943d586416d0`;
+every retrieved payload independently rehashes. The final export preset was frozen
+before the oracles and preserved through export.
+
+The matching app at `ANGEL:metalfx-stack7-20261114/native24-development-r2`
+passes checked prepared export, unchanged endpoint proofs, strict local ad-hoc
+signature and both linked package receipts. Its executable SHA-256 is
+`46d72247991fe0a1feaac9437917cca7ea4d1471f05964f7cdcbcac865732063`, PCK
+`79c850aadfc3a67bd5085e32decec1895578418f4f3a3583b6fc3be641641bbc`, and native
+manifest `bb9ec8f4158a84d0ed4b1399b278f0846c846fe358a18c2cd06798063b361f71`.
+All five actual release checks pass: stage 97, lifecycle 343, replay 211, and short
+reference/native sessions with explicit ideal battery and production trim. The
+existing session reader validates both reports and equal fingerprints. These are
+functional checks; the later quiet-host three-pair CPU campaign is separate.
+Public Developer ID distribution and automatic default remain deferred/unqualified.
+
+Phase 20 retains 60 payloads / 20,827,507 compressed bytes, SHA-256
+`10e9871e73d1539a37eeaf01338059ff1c3eec821452686de2f8d99531d9abd4`.
+All 60 retrieved payloads independently rehash, including actual executable/library,
+signature metadata, export reports/logs and receipts. The large PCK stays in the
+unchanged signed M1 bundle. Release diagnostics are retained separately from this
+package-provenance snapshot.
+
+The next application overlay adds the opt-in fixed direct-flight observer and
+strict frame/health/resource reducer. Its reviewed patch is
+`e6a9b272294dfbd91d7b388623b4a65989043d6a6a51c0d2d505e86662309fd4`.
+Actual pinned-official Godot parsing on the M1 reports no new-file findings and
+only 11 existing Main warnings. The revised 30-check fixture passes, including
+real Viewport delivery of V/Z change-and-restore events and disabled input-watch
+ownership rejection; 18 Python reducer controls pass. Native-generated UID bytes
+are compared before integration. Raw proof remains under `package-live-controls-r4`
+on that M1. The prior 13-check proof in phase 20 is not relabeled as this revision.
+The observer's new source still needs its own package and actual flight run.
+
+The separate compute-primary draft's exact shader
+`568ce48208c5335c80666f082ba6f93c7581ffeeeeff2a4214d9de68d643ab66` compiles
+and creates a local Metal pipeline on M1 with API validation. Clean environment
+correctly refuses the missing triangle-query opt-in. This is not dispatch or
+viewport/SDK qualification. The universal guide gate stays closed; raster-command
+provenance, geometric-versus-smooth shading and custom-bound/depth counterexamples
+remain explicit review findings. Draft engine patches are not part of this app.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is
