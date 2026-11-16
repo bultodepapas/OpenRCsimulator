@@ -1,6 +1,6 @@
 # Apple MetalFX — four-technology implementation plan
 
-Updated: 2026-11-15. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
+Updated: 2026-11-16. Owner: DT/VQ/GDU, with PT for measurement and UI for settings.
 Status: implementation in progress. The [first implementation evidence](../research/desktop-delivery-investigations/DT-MAC-11a/README.md)
 separates prerequisite fixes, injected checks, native API observations and the
 engine build. No four-feature product qualification is claimed. Source inspected at
@@ -27,6 +27,17 @@ qualify those product paths. Include the drop-cache gravity/rain/mesh negative
 controls when the image workload exercises that pool. These prerequisites improve
 evidence; they do not replace MetalFX input/history/presentation tests or require
 every optional CPU experiment before feature implementation. All four remain in scope.
+
+The latest [native follow-up](../research/desktop-delivery-investigations/DT-MAC-11a/README.md#fresh-pair-drawable-and-bounded-rt-follow-up-2026-11-16)
+verifies a fresh 1–19+21+24+25 pair, the full official extension API and runtime
+SHA vectors. Ordinary acquired textures reach 1920×1080. The incompatible-owner
+control exposed an actual DisplayLink layer resize exception; optional 0026
+fixes it and passes a native active-owner resize regression. Its fresh matched
+pair and package renewal are in progress. A separate disposable RT-view trial
+now completes producer → MetalFX denoiser → consumer GPU work for bounded opaque
+ground/pilot geometry, with rejection and restoration controls. The product RT
+gate remains closed. Full-flight images, sustained pacing, native package/default
+qualification and physical latency remain open; the old R3 ZIP is unchanged.
 
 ## 1. Scope and completion
 

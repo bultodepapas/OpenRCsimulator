@@ -1746,6 +1746,64 @@ It retains the failed RT attempt and its diagnostic as failures. Only regenerabl
 source/export, acquired 1080p active flight, pacing and automatic-default gates
 remain open. The old R3 ZIP remains unchanged.
 
+## Fresh pair, drawable and bounded RT follow-up (2026-11-16)
+
+The fresh 1–19+21+24+25 pair uses the same pinned archive, SDK, compiler and
+flags as pair24. Editor SHA-256 is
+`8d8b76858e61c899fccf3fa4947b31e5679e8cfa27ecdb51edf7de47749f92c6`;
+release template `eeaece65c7dbf67b922d22c5f112a63f5f923977a28dc15526f3263bd0194453`.
+Pair receipt `2598d9870c7d34d6e13a9614124cc2a4cd19c02921c05fa8d66bccb389f4a748`
+binds both fresh builds. The unchanged official extension API passes on both
+editors, both missing-class controls are detected, and 25 runtime SHA-vector
+controls pass. A pair/API pass does not qualify a native physics package.
+
+The first ordinary window request acquired 1920×1018, despite requesting
+1920×1080. A fresh display inventory reports a 1920×1080 screen; the calibrated
+fullscreen control then acquires actual 1920×1080 textures and passes off/on and
+resize checks. These are texture-acquisition observations, not GPU completion,
+presentation or scanout. The incompatible-owner case fails with the native
+`CAMetalLayerInvalidOperation` message that the drawable-count setter must not
+run while CAMetalDisplayLink owns the layer. The failed run is retained.
+
+Optional 0026 skips that setter while the per-surface presenter exists, preserves
+the ordinary framebuffer ring, then marks an ordinary resize after the presenter
+has stopped. Four source-bound portable controls and two rejecting mutations
+pass. Incremental editor `d9fcc720d5497ab704367c0dd01d3ae6303804011c33e1a4593c367fd29094d0`
+passes the native regression: two advancing real OS-presented callback samples
+at an admitted 1080p extent, an explicit post-start resize, generation retirement
+and two further advancing callback samples. Receipt
+`c6d295625bbd908769b614f992b9d56ff6b730a4ce0f04b4c47e4ac273a0e5d6`
+binds that run. The latest admitted extent and OS callback progress are separate
+facts, not a per-presented-frame size tuple. Fresh pair26 is still building.
+
+The RT-view trial corrects output render-target usage and joins the dispatch
+ledger to the actual driver pipeline identity. Its disposable gate override
+runs only in a private incremental engine; the product guide gate stays false.
+Editor `de29a25510a1a2c8535cf5be04339fdf115e1e2a2d4b284799c1a884ce8cde99`
+passes the bounded trial with no fixture failures. Initial GPU completion is
+frame 13/serial 1; opacity restoration completes frame 28/serial 3. Alpha and
+invalid environment inputs are refused, then valid input creates fresh epochs.
+The 1920×1080 output SHA is
+`6c2eb77cf98fd4721aa7c78b828f11c3afa027cf4f772ed271d53d65ede45234`.
+This exercises ground and pilot-head geometry with flat opaque materials, not a
+moving whole aircraft, full material coverage or image-quality qualification.
+The generic denoiser flag remains false; matching viewport command completion
+supplies the separate GPU witness. No displayed-FPS benefit is established.
+
+The draft package-default reader, fixed ordinary Home observer and cache fixture
+pass nine native script parses and focused admission/terminal/cache controls.
+These synthetic/draft checks issue no actual marker and do not qualify a package
+or automatic backend. Final runtime/source renewal and real release captures
+remain required. No old receipt or development ZIP is relabelled as a new build.
+
+Phase 24 retains 269 payloads, 21,797,056 compressed bytes, archive SHA-256
+`fff1badecad9ce7284924a9ad3883ca0209b003ea7fb2e7d0ccff95efde061c7`.
+Every payload independently rehashes; successful checked reports/logs validate,
+and the original extent, DisplayLink exception, parse and RT dispatch failures
+remain explicit. Engine binaries stay retained on M1 with their build receipts
+included here. Task-owned old import caches were removed only after inventory;
+source, frozen campaigns and final binaries were preserved.
+
 ## Evidence retention and open gates
 
 The next complete-app overlay is

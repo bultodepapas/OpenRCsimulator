@@ -513,3 +513,26 @@ Three interleaved runs per editor hash the same warm-cache 2,484,244,643-byte PC
 median 7.748414 s before and 1.583237 s after (4.894×). This is file hashing;
 actual new-package startup, native physics, FPS and promotion require their own
 [evidence](../../../docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md).
+
+## Display-link layer resize (0026)
+
+Optional `0026-metal-displaylink-resize.patch` prevents the Metal layer's
+drawable-count setter from being called while the display-link presenter owns
+that layer. It preserves the existing ordinary framebuffer ring until the
+presenter stops, then requests an ordinary resize before the next acquisition.
+Drawable-size, vsync and pixel-format handling remain on their existing paths.
+The engine25 M1 control raised `CAMetalLayerInvalidOperation` at that setter;
+an incremental 0026 editor subsequently passed an active-owner resize control
+with a 1080p admitted texture, generation retirement and renewed real
+OS-presented callbacks. Those observations do not establish scanout, displayed
+FPS, or that a specific callback corresponds to the latest admitted extent.
+
+For a fresh editor/template pair, append 0026 once after 0025 in the exact
+1–19, 21, 24, 25 selection above and use separate intakes and the same pinned
+archive/toolchain. Re-run the API and native controls, bind the resulting pair
+to new package receipts, and retain the previous pair unchanged. Source-bound
+controls run with:
+
+```sh
+OPENRC_METALFX_SOURCE_ARCHIVE=/cache/godot.zip python -B tools/graphics/metalfx/test_engine_displaylink_resize_patch.py
+```
