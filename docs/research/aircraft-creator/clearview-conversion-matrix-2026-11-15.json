@@ -1,0 +1,288 @@
+{
+  "format": "openrc-clearview-visual-corpus-v1",
+  "observed_on": "2026-11-15",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "scope": "Conversion and SourceImporter GLB admission only; no rendered comparison, flight, export, resource or rights qualification. Refusals are expected compatibility outcomes. Timing is observational under shared-host load.",
+  "platform": "Windows x86_64 (DEVIL)",
+  "pool_batch": "CLI final-batch2",
+  "pool_job": "1bfe8813af2e4dbc89aac6d03786b3f7",
+  "initial_macos_campaign": {
+    "pool_job": "ffe9d66590094400a0654df4c125f597",
+    "converted": 16,
+    "refused": 10,
+    "scope": "Before source-collinearity and actual float32 triangle-area hardening; superseded by this matrix."
+  },
+  "importer_files": {
+    "ac3d.gd": "c2e84c11d6558317090486ed5d319ae781bf134fa67fa4e5b3aa364963e6b4b9",
+    "archive.gd": "09e33da3712cf7b885c21baafe1dc5e8fcac47d9ee6f9694e7604635cd294977",
+    "cancellation.gd": "c012b51ce9895553f948aa0b1c12e3f0abc0dff5bb5a13fa1a64db6356a560d6",
+    "converter.gd": "2ac27f51e7871cd1e70eb665bf64c1dbbe66da67fca6e63ae0cb0dfee0710268",
+    "deflate.gd": "5c7221c68de3515cd776ecb658c6ab594ce8bca5f8e3ea4240c009dfb096eb0b",
+    "images.gd": "60b5696ffa4f2041b5bc00cb91291a23f1f11ad60f74ff567d2271e58c811e84",
+    "jpeg_check.gd": "d6eb836c87298164bd2640baa0915654b0645c23f0a6cb3cb3b31474c0b09166",
+    "package.gd": "3b589da0a8e1d2548fc36860338d1617f10438fc0397f4ac8212a78fb4b3d2e1",
+    "params.gd": "134bb1769fc2aa0e4428233f1a9991db8a6d03f1e0706b532ffee49745f7eee1"
+  },
+  "models": [
+    {
+      "archive": "extra-v6",
+      "bytes": 853060,
+      "markers": 7,
+      "model": "MC 3D Hobby Shops Extra 330 Red",
+      "ms": 1935,
+      "status": "CONVERTED",
+      "triangles": 3794,
+      "archive_sha256": "3f9ab90947762a66543cf20297aac4564a22011fbe6e2c037514c2295ddb0c85"
+    },
+    {
+      "archive": "ken-pack1",
+      "diagnostics": [
+        "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+      ],
+      "model": "701f",
+      "ms": 426,
+      "status": "REFUSED",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 837696,
+      "markers": 9,
+      "model": "B-25",
+      "ms": 1366,
+      "status": "CONVERTED",
+      "triangles": 7475,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "diagnostics": [
+        "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+      ],
+      "model": "701F2",
+      "ms": 376,
+      "status": "REFUSED",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 856844,
+      "markers": 8,
+      "model": "BD-5J",
+      "ms": 1309,
+      "status": "CONVERTED",
+      "triangles": 6468,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 530436,
+      "markers": 8,
+      "model": "C-130",
+      "ms": 783,
+      "status": "CONVERTED",
+      "triangles": 4201,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 1127588,
+      "markers": 9,
+      "model": "Beluga",
+      "ms": 1554,
+      "status": "CONVERTED",
+      "triangles": 5089,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 728728,
+      "markers": 8,
+      "model": "A6-Zero",
+      "ms": 1020,
+      "status": "CONVERTED",
+      "triangles": 4058,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "diagnostics": [
+        "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+      ],
+      "model": "Beech99",
+      "ms": 260,
+      "status": "REFUSED",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 824656,
+      "markers": 8,
+      "model": "A-10_GWS",
+      "ms": 1118,
+      "status": "CONVERTED",
+      "triangles": 4944,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 456116,
+      "markers": 9,
+      "model": "AlleyCat",
+      "ms": 589,
+      "status": "CONVERTED",
+      "triangles": 1451,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 513452,
+      "markers": 9,
+      "model": "Beginair",
+      "ms": 690,
+      "status": "CONVERTED",
+      "triangles": 2131,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 552868,
+      "markers": 8,
+      "model": "Bell X-5",
+      "ms": 1110,
+      "status": "CONVERTED",
+      "triangles": 3870,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 599756,
+      "markers": 8,
+      "model": "A-7 Corsair",
+      "ms": 926,
+      "status": "CONVERTED",
+      "triangles": 3217,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 762348,
+      "markers": 8,
+      "model": "A-6 Intruder",
+      "ms": 1063,
+      "status": "CONVERTED",
+      "triangles": 4527,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 1674944,
+      "markers": 8,
+      "model": "B-26 Marauder",
+      "ms": 2520,
+      "status": "CONVERTED",
+      "triangles": 7545,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "diagnostics": [
+        "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+      ],
+      "model": "Bellanca C-27",
+      "ms": 884,
+      "status": "REFUSED",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "diagnostics": [
+        "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+      ],
+      "model": "Brown-B1 Racer",
+      "ms": 649,
+      "status": "REFUSED",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "bytes": 660504,
+      "markers": 9,
+      "model": "Agri Duck Duster",
+      "ms": 1306,
+      "status": "CONVERTED",
+      "triangles": 6575,
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "diagnostics": [
+        "SOURCE_INVALID: Polygon 91 in part \"fuse\" has intersecting edges."
+      ],
+      "model": "Ascent Park Glider",
+      "ms": 582,
+      "status": "REFUSED",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "ken-pack1",
+      "diagnostics": [
+        "SOURCE_UNSUPPORTED: Recenter or rescale this model to preserve its detail at render precision."
+      ],
+      "model": "B-52-Stratofortress",
+      "ms": 4573,
+      "status": "REFUSED",
+      "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
+    },
+    {
+      "archive": "calmato",
+      "diagnostics": [
+        "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+      ],
+      "model": "Calmato 40 Sports",
+      "ms": 699,
+      "status": "REFUSED",
+      "archive_sha256": "cb53aa60dc46a919e4a27fbfca4a0d83960cb3a15d4c5cd468e34c6085553017"
+    },
+    {
+      "archive": "biplane-v5",
+      "bytes": 556804,
+      "markers": 8,
+      "model": "MC Tiburon-bipe-7-2",
+      "ms": 538,
+      "status": "CONVERTED",
+      "triangles": 2077,
+      "archive_sha256": "1d346d518cbdfb76c04a7e3cc0978466a1e227d3f442fc7ac4902f7a10568afe"
+    },
+    {
+      "archive": "osprey",
+      "bytes": 992324,
+      "markers": 0,
+      "model": "V22 Osprey",
+      "ms": 1613,
+      "status": "CONVERTED",
+      "triangles": 6595,
+      "archive_sha256": "789247541c924c56ce612bfc0e1b33d89f2463b9abddfe1f0ec2591fda5df604"
+    },
+    {
+      "archive": "paint",
+      "diagnostics": [
+        "SOURCE_INVALID: Polygon 129 in part \"Fuse\" has intersecting edges."
+      ],
+      "model": "MC 300S-Air Guard",
+      "ms": 1360,
+      "status": "REFUSED",
+      "archive_sha256": "39ee27cecb946ce5b4929ed95ab64cd37011f8a56ef4d021ff353b46f8e26e9c"
+    },
+    {
+      "archive": "f117",
+      "bytes": 1763912,
+      "markers": 0,
+      "model": "F-117",
+      "ms": 5126,
+      "status": "CONVERTED",
+      "triangles": 1210,
+      "archive_sha256": "c6ead5a4a348433a3acfaa9d51b841a8a82daa8de0636da582b34192257ace21"
+    }
+  ]
+}

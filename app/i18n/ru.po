@@ -13414,3 +13414,42 @@ msgstr "Не удалось начать калибровку. Выберите 
 
 msgid "All vehicles"
 msgstr "Все машины"
+
+msgid "Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."
+msgstr "Выберите модель STL, автономный GLB или ZIP ClearView. Изображение не является 3D-моделью."
+
+msgid "Choose the aircraft to import from this ClearView ZIP."
+msgstr "Выберите самолёт для импорта из этого ZIP ClearView."
+
+msgid "Choose an aircraft from the ClearView ZIP"
+msgstr "Выберите самолёт из ZIP ClearView"
+
+msgid "Cancel import"
+msgstr "Отменить импорт"
+
+msgid "Wait for the current import, or cancel it first."
+msgstr "Дождитесь текущего импорта или сначала отмените его."
+
+msgid "The previous import is stopping. Try again in a moment."
+msgstr "Предыдущий импорт останавливается. Повторите попытку через мгновение."
+
+msgid "The current draft changed while opening. Your changes were kept. Open the saved model again when ready."
+msgstr "Текущий черновик изменился во время открытия. Ваши изменения сохранены. Когда будете готовы, снова откройте сохранённую модель."
+
+msgid "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Импортируется только внешний вид ClearView. Определите и проверьте конфигурацию полёта OpenRC отдельно."
+
+msgid "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+msgstr "Старые материалы Phong получают приближённое покрытие в OpenRC. Исходные цвета и отображение текстур сохраняются."
+
+msgid "%s zero-area surfaces were omitted."
+msgstr "Пропущено поверхностей с нулевой площадью: %s."
+
+msgid "An empty legacy directory size hint was ignored: %s."
+msgstr "Проигнорирован заявленный размер старой пустой папки: %s."
+
+msgid "JPEG comments were ignored."
+msgstr "Комментарии JPEG проигнорированы."
+
+msgid "Ignored size hints for %s additional empty legacy directories."
+msgstr "Проигнорированы заявленные размеры ещё %s старых пустых папок."

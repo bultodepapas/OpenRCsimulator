@@ -4,7 +4,7 @@
 
 This plan owns the remaining work and acceptance. The [evidence index](../research/aircraft-creator/README.md) owns probes, commands and results. The Revision 6 specification stays the detailed reference for contracts this plan does not restate (record inventory, storage protocol, UI state machines, hostile fixture lists); where the two differ, this plan wins. [DECISIONS](../DECISIONS.md#aircraft-creator-imports-a-model-but-never-its-physics) owns the durable rationale.
 
-The proposed [ClearView compatibility subplan](clearview-aircraft-import.md) owns AC-CV-00…14: legacy ZIP/AC3Db conversion and attributed physical authoring into these same Creator seams. Its [2026-11-15 research](../research/aircraft-creator/clearview-2026-11-15.md) does not close any Creator numerical, persistence, Home or export gate.
+The [ClearView compatibility subplan](clearview-aircraft-import.md) owns AC-CV-00…14: legacy ZIP/AC3Db conversion and attributed physical authoring into these same Creator seams. Its [2026-11-15 research and experimental visual implementation](../research/aircraft-creator/clearview-2026-11-15.md) do not close any Creator numerical, persistence, Home or export gate.
 
 **Owns:** `app/workshop/creator/`, `app/data/creator/`, `app/ui/aircraft_creator*.gd`, `app/tests/test_creator_*.gd`, `docs/research/aircraft-creator/`, this plan.
 

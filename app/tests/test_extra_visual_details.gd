@@ -49,6 +49,157 @@ func _run() -> void:
 	var stock := second.root.get_node("cowl_face").get_active_material(0) as ShaderMaterial
 	_check("cowl face follows body paint", Color(painted.get_shader_parameter("red")).is_equal_approx(Color("#00A088FF")))
 	_check("cowl paint is isolated between instances", painted != stock and Color(stock.get_shader_parameter("red")).is_equal_approx(Extra.RED))
+	var frame := root.get_node("canopy_frame") as MeshInstance3D
+	var frame_paint := frame.get_active_material(0) as ShaderMaterial
+	var stock_frame := second.root.get_node("canopy_frame").get_active_material(0) as ShaderMaterial
+	_check("canopy frame follows body paint", Color(frame_paint.get_shader_parameter("red")).is_equal_approx(Color("#00A088FF")))
+	_check("canopy frame paint is isolated", frame_paint != stock_frame and Color(stock_frame.get_shader_parameter("red")).is_equal_approx(Extra.RED))
+	var glass := (root.get_node("canopy") as MeshInstance3D).get_active_material(0) as StandardMaterial3D
+	_check("glass tint follows the appearance source", Color(glass.albedo_color, 1.0).is_equal_approx(Color(Finish.A.colors.glass)))
+	_check("canopy uses a dielectric material", is_zero_approx(glass.metallic))
+	var brim := root.get_node("pilot/pilot_cap_brim") as MeshInstance3D
+	var front := INF
+	for point in _vertices(brim): front = minf(front, point.z)
+	_check("pilot visor follows the plan point", absf(front - float(Geometry.DATA.pilot.cap_brim_front[0])) < 0.001)
+	for label in ["pilot", "cockpit"]:
+		var interior_meshes: Array[MeshInstance3D] = []
+		_meshes(root.get_node(label), interior_meshes)
+		var outside := 0
+		for mesh in interior_meshes:
+			for point in _vertices(mesh):
+				if not _inside_canopy(point): outside += 1
+		_check(label + " fits the curved canopy", outside == 0, "%d vertices outside" % outside)
+	var wing: Dictionary = Geometry.DATA.wing
+	for side in ["left", "right"]:
+		for outer in [false, true]:
+			for upper in [false, true]:
+				var error := wing_join_error(root, side, outer, upper)
+				_check("%s %s wing join %s matches" % [side, "outer" if outer else "inner", "upper" if upper else "lower"], error <= 0.00001, "%.4f mm" % (error * 1000.0))
+		for part in ["root", "ahead_of_aileron", "tip"]:
+			_check("%s wing %s is closed" % [side, part], _closed_surface(root.get_node("wing_%s/wing_%s_%s" % [side, side, part])))
+		var tip := root.get_node("wing_%s/wing_%s_tip" % [side, side]) as MeshInstance3D
+		var inner_height := 0.0
+		var outer_height := 0.0
+		var planform_ok := true
+		var uv_ok := true
+		var arrays := tip.mesh.surface_get_arrays(0)
+		var points: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+		for i in points.size():
+			var p := points[i]
+			var span := absf(p.x)
+			var chord := lerpf(wing.root_chord, wing.tip_chord, span / (float(wing.span) * 0.5))
+			var le := lerpf(wing.le_z_root, wing.le_z_tip, span / (float(wing.span) * 0.5))
+			planform_ok = planform_ok and p.z >= le - 0.000001 and p.z <= le + chord + 0.000001
+			uv_ok = uv_ok and uv[i].distance_to(Vector2(span, (p.z - le) / chord)) < 0.00001
+			if absf(span - float(wing.aileron_outer)) < 0.000001: inner_height = maxf(inner_height, absf(p.y - float(wing.chord_plane_y)))
+			if absf(span - float(wing.span) * 0.5) < 0.000001: outer_height = maxf(outer_height, absf(p.y - float(wing.chord_plane_y)))
+		var bounds := tip.get_aabb()
+		_check(side + " tip preserves the measured planform", planform_ok and absf(bounds.position.z - Extra._le_z(wing.aileron_outer)) < 0.00001 and absf(bounds.size.z - Extra._chord(wing.aileron_outer)) < 0.00001 and absf(bounds.size.x - (float(wing.span) * 0.5 - float(wing.aileron_outer))) < 0.00001)
+		_check(side + " tip retains a finite tapered cap", outer_height > 0.001 and outer_height < inner_height * 0.5)
+		_check(side + " tip preserves paint coordinates", uv_ok)
+		_check(side + " tip has a closed finite surface", _closed_surface(tip))
+	var stab := root.get_node("tail_frame/stab") as MeshInstance3D
+	var tail: Dictionary = Geometry.DATA.tail
+	var outline := PackedVector2Array([Vector2(-tail.stab_half_span, tail.stab_tip_le_z - tail.elevator_hinge_z), Vector2(0, tail.stab_root_le_z - tail.elevator_hinge_z), Vector2(tail.stab_half_span, tail.stab_tip_le_z - tail.elevator_hinge_z), Vector2(tail.stab_half_span, -tail.hinge_gap * 0.5), Vector2(-tail.stab_half_span, -tail.hinge_gap * 0.5)])
+	var inside := true
+	for p in stab.mesh.get_faces():
+		var point := Vector2(p.x, p.z)
+		var on_edge := false
+		for i in outline.size(): on_edge = on_edge or Geometry2D.get_closest_point_to_segment(point, outline[i], outline[(i + 1) % outline.size()]).distance_to(point) < 0.000001
+		inside = inside and (on_edge or Geometry2D.is_point_in_polygon(point, outline)) and absf(p.y) <= float(tail.stab_thickness) * 0.5 + 0.000001
+	_check("rounded stabilizer stays inside the original envelope", inside)
+	_check("rounded stabilizer has a closed finite surface", _closed_surface(stab))
 	second.root.free()
 	root.free()
 	super._run()
+
+
+# Compare the actual boundary polylines, independent of the generator's sample
+# list. The maximum difference of two piecewise-linear curves is at a vertex
+# of either curve. Cap centres are excluded by height, except the shared LE.
+static func wing_join_error(root: Node3D, side: String, outer: bool, upper: bool) -> float:
+	var wing: Dictionary = Geometry.DATA.wing
+	var seam: float = wing.aileron_outer if outer else wing.aileron_inner
+	var names := ["ahead_of_aileron", "tip"] if outer else ["root", "ahead_of_aileron"]
+	var curves: Array = []
+	for part in names:
+		var mesh := root.get_node("wing_%s/wing_%s_%s" % [side, side, part]) as MeshInstance3D
+		var transform := root.global_transform.affine_inverse() * mesh.global_transform
+		var points: Array[Vector2] = []
+		var vertices: PackedVector3Array = mesh.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+		for vertex in vertices:
+			var p: Vector3 = transform * vertex
+			if absf(absf(p.x) - seam) > 0.000001: continue
+			var height := p.y - float(wing.chord_plane_y)
+			if height * (1.0 if upper else -1.0) > 0.000001 or absf(p.z - Extra._le_z(seam)) < 0.000001:
+				points.append(Vector2(p.z, p.y))
+		points.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
+		var unique: Array[Vector2] = []
+		for point in points:
+			if unique.is_empty() or point.x - unique[-1].x > 0.0000001: unique.append(point)
+		if unique.size() < 2: return INF
+		curves.append(unique)
+	var start := maxf(curves[0][0].x, curves[1][0].x)
+	var end := minf(curves[0][-1].x, curves[1][-1].x)
+	if end <= start: return INF
+	var worst := 0.0
+	for curve in curves:
+		for point in curve:
+			if point.x < start or point.x > end: continue
+			worst = maxf(worst, absf(_curve_height(curves[0], point.x) - _curve_height(curves[1], point.x)))
+	return worst
+
+
+static func _curve_height(points: Array[Vector2], z: float) -> float:
+	for i in points.size() - 1:
+		if z <= points[i + 1].x:
+			return lerpf(points[i].y, points[i + 1].y, (z - points[i].x) / (points[i + 1].x - points[i].x))
+	return points[-1].y
+
+
+static func _closed_surface(mesh: MeshInstance3D) -> bool:
+	var arrays := mesh.mesh.surface_get_arrays(0)
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	for normal in normals:
+		if not normal.is_finite() or absf(normal.length() - 1.0) > 0.001: return false
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var indices: PackedInt32Array = PackedInt32Array() if arrays[Mesh.ARRAY_INDEX] == null else arrays[Mesh.ARRAY_INDEX]
+	var faces := PackedVector3Array()
+	if indices.is_empty(): faces = vertices
+	else:
+		for index in indices: faces.append(vertices[index])
+	var edges := {}
+	for i in range(0, faces.size(), 3):
+		var average := Vector3.ZERO
+		for j in 3: average += normals[i + j if indices.is_empty() else indices[i + j]]
+		if (faces[i + 2] - faces[i]).cross(faces[i + 1] - faces[i]).dot(average) <= 0.0: return false
+		var keys := []
+		for j in 3:
+			var p := faces[i + j]
+			if not p.is_finite(): return false
+			keys.append("%d,%d,%d" % [roundi(p.x * 1000000.0), roundi(p.y * 1000000.0), roundi(p.z * 1000000.0)])
+		for j in 3:
+			var pair := [keys[j], keys[(j + 1) % 3]]
+			pair.sort()
+			var key := "%s/%s" % pair
+			edges[key] = int(edges.get(key, 0)) + 1
+	for count in edges.values():
+		if count != 2: return false
+	return true
+
+
+# Independent containment gate for visible cabin parts. The centerline-only
+# check in the original verifier cannot detect a shoulder through the glass.
+func _inside_canopy(point: Vector3) -> bool:
+	var canopy: Dictionary = Geometry.DATA.canopy
+	var base := Extra.profile(point.z, 2) - 0.002
+	if point.y <= base: return true
+	var height := Extra.monotone(canopy.top, point.z) - base
+	var start: float = canopy.top[0][0]
+	var end: float = canopy.top[-1][0]
+	var u := absf((point.z - (start + end) * 0.5) / ((end - start) * 0.5))
+	var half: float = canopy.halfwidth_fraction * Extra.profile(point.z, 1) * pow(maxf(1.0 - pow(u, 4.0), 0.0), 0.25)
+	half = minf(half, Extra.skin_half_width(point.z, base))
+	if half <= 0.0 or height <= 0.0: return false
+	return pow(point.x / half, 2.0) + pow((point.y - base) / height, 2.0) <= 1.001

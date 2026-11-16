@@ -13452,3 +13452,42 @@ msgstr "Não foi possível iniciar a calibração. Selecione um rádio conectado
 
 msgid "All vehicles"
 msgstr "Todos os veículos"
+
+msgid "Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."
+msgstr "Escolha um modelo STL, GLB autossuficiente ou ZIP do ClearView. Uma imagem não é um modelo 3D."
+
+msgid "Choose the aircraft to import from this ClearView ZIP."
+msgstr "Escolha a aeronave a importar deste ZIP do ClearView."
+
+msgid "Choose an aircraft from the ClearView ZIP"
+msgstr "Escolha uma aeronave do ZIP do ClearView"
+
+msgid "Cancel import"
+msgstr "Cancelar importação"
+
+msgid "Wait for the current import, or cancel it first."
+msgstr "Aguarde a importação atual ou cancele-a primeiro."
+
+msgid "The previous import is stopping. Try again in a moment."
+msgstr "A importação anterior está parando. Tente novamente em instantes."
+
+msgid "The current draft changed while opening. Your changes were kept. Open the saved model again when ready."
+msgstr "O rascunho atual mudou durante a abertura. Suas alterações foram mantidas. Abra o modelo salvo novamente quando estiver pronto."
+
+msgid "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Somente a aparência do ClearView é importada. Defina e valide separadamente a configuração de voo do OpenRC."
+
+msgid "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+msgstr "Os materiais Phong antigos usam um acabamento aproximado no OpenRC. As cores e o mapeamento de texturas originais são mantidos."
+
+msgid "%s zero-area surfaces were omitted."
+msgstr "%s superfícies sem área foram omitidas."
+
+msgid "An empty legacy directory size hint was ignored: %s."
+msgstr "Foi ignorado um tamanho declarado para uma pasta antiga vazia: %s."
+
+msgid "JPEG comments were ignored."
+msgstr "Os comentários JPEG foram ignorados."
+
+msgid "Ignored size hints for %s additional empty legacy directories."
+msgstr "Foram ignorados os tamanhos declarados de outras %s pastas antigas vazias."

@@ -418,6 +418,12 @@
                 "surface": 0,
                 "kind": "shader_color",
                 "parameter": "red"
+              },
+              {
+                "node_path": "canopy_frame",
+                "surface": 0,
+                "kind": "shader_color",
+                "parameter": "red"
             }
           ]
         },

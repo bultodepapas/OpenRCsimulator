@@ -389,6 +389,10 @@ configuration fallback. Keep model/effort pins in the profiles and observe nativ
 runtime limits. Revisit routing and budgets when client behavior changes or representative
 OpenRC outcomes demonstrate a better tradeoff; this policy is not a measured gain.
 
+### Adapt ClearView visuals upstream of Creator admission
+
+**AC-CV-01…03, 2026-11-15; experimental implementation.** Capture local ZIP bytes and parse a bounded ZIP32/AC3Db subset, then re-admit a self-contained GLB through the existing Creator source boundary. Keep legacy parameters as observations and the original ZIP external with its hash. Do not widen the GLB source slot, copy coefficients into the solver or grant flight availability from conversion metadata. Godot ZIPReader's whole-member API does not expose the raw-stream/output-budget contract required here. The GDScript converter remains conditional on independent fidelity and exported-resource campaigns; Assimp/Blender comparison and original-package storage are still open. [Evidence and revisit gates](research/aircraft-creator/clearview-2026-11-15.md#7-implementation-evidence).
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

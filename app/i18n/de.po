@@ -13558,3 +13558,42 @@ msgstr "Die Kalibrierung konnte nicht starten. Wähle einen verbundenen Sender m
 
 msgid "All vehicles"
 msgstr "Alle Fahrzeuge"
+
+msgid "Choose an STL, self-contained GLB, or ClearView ZIP model. A picture is not a 3D model."
+msgstr "Wähle ein STL, eine eigenständige GLB oder ein ClearView-ZIP. Ein Bild ist kein 3D-Modell."
+
+msgid "Choose the aircraft to import from this ClearView ZIP."
+msgstr "Wähle das Flugzeug aus diesem ClearView-ZIP zum Importieren."
+
+msgid "Choose an aircraft from the ClearView ZIP"
+msgstr "Wähle ein Flugzeug aus dem ClearView-ZIP"
+
+msgid "Cancel import"
+msgstr "Import abbrechen"
+
+msgid "Wait for the current import, or cancel it first."
+msgstr "Warte auf den aktuellen Import oder brich ihn zuerst ab."
+
+msgid "The previous import is stopping. Try again in a moment."
+msgstr "Der vorherige Import wird beendet. Versuche es gleich erneut."
+
+msgid "The current draft changed while opening. Your changes were kept. Open the saved model again when ready."
+msgstr "Der aktuelle Entwurf wurde während des Öffnens geändert. Deine Änderungen wurden behalten. Öffne das gespeicherte Modell erneut, wenn du bereit bist."
+
+msgid "Only the ClearView appearance is imported. Define and validate its OpenRC flight configuration separately."
+msgstr "Es wird nur das Aussehen aus ClearView importiert. Definiere und prüfe die OpenRC-Flugkonfiguration separat."
+
+msgid "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained."
+msgstr "Alte Phong-Materialien erhalten eine angenäherte Oberfläche in OpenRC. Originalfarben und Texturzuordnung bleiben erhalten."
+
+msgid "%s zero-area surfaces were omitted."
+msgstr "%s Flächen ohne Flächeninhalt wurden ausgelassen."
+
+msgid "An empty legacy directory size hint was ignored: %s."
+msgstr "Eine Größenangabe für ein leeres altes Verzeichnis wurde ignoriert: %s."
+
+msgid "JPEG comments were ignored."
+msgstr "JPEG-Kommentare wurden ignoriert."
+
+msgid "Ignored size hints for %s additional empty legacy directories."
+msgstr "Größenangaben für %s weitere leere alte Verzeichnisse wurden ignoriert."
