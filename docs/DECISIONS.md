@@ -185,6 +185,10 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ## Flight sessions and observation
 
+### Multiplayer starts with player-hosted visual presence
+
+**MP-00, proposed implementation direction (2026-11-15).** Preserve each pilot's local 240 Hz float64 simulation and represent other pilots through bounded visual snapshots. Start with two-player ENet LAN, then qualified direct access and four-player private rooms; the host owns membership/settings, not every aircraft's solver. Test EOS as the first optional no-fee connectivity/lobby candidate; a Free HTTPS directory is an independent discovery alternative and does not relay ENet UDP. Keep an account-free local/direct path, explicit quota/outage behavior, and no automatic paid fallback. Defer shared collisions, ranked adjudication, full rollback and seamless host migration. The [plan](plans/multiplayer.md) owns scope, proposed values, steps and gates; [dated research](research/multiplayer-2026-11-15/README.md) records alternatives and source limits. This decision does not claim networking implementation or measured capacity.
+
 ### Launch from a supported physical initial condition
 
 **UI-06d-R3 / D6e-R4 / X8-07.** Interactive geared aircraft prefer a qualified runway start; supported gearless aircraft use hand launch, with airborne selection still available. Valid, supported saved choices take precedence, and a refused selected start does not silently become another start. The interactive level-flight trim is an operating-point choice separate from the low-level reference trim. Release position, throw speed and trim parameters belong in the implementation/evidence, not a second defaults table. [Runway decision](research/menu-investigations/UI-06b/README.md#2026-10-16--fleet-runway-default-ui-06d-r3), [hand launch](research/skywalker-x8/X8-07/README.md), [interactive trim](research/flight-dynamics/power-climb-2026-10-19/README.md#d6e-r4-every-launch-trimmed-for-50--throttle).
