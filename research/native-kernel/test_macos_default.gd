@@ -1,9 +1,8 @@
-## Exercise a real promoted source-editor marker on the production Main route.
+## Exercise the owner-requested automatic native default on the production Main route.
 ## This test does not create a marker or qualify a candidate by itself.
 extends SceneTree
 
 const MainScene := preload("res://main.tscn")
-const Admission := preload("res://sim/native_macos_admission.gd")
 const Domain := preload("res://sim/native_macos_domain.gd")
 const Flight := preload("res://sim/flight_session.gd")
 const Log := preload("res://sim/flight_log.gd")
@@ -258,7 +257,7 @@ func _record_and_replay(main: Node, identity: Dictionary) -> void:
 	_check(replay.flight.stage_backend_identity() == identity and replay.flight.automatic_native_macos \
 		and not replay.flight.experimental_native_macos and replay.flight._native_stage != null \
 		and replay.flight._native_stage.configuration_matches(replay.flight),
-		"replay owns the recorded marker-qualified native identity")
+		"replay owns the recorded automatic native identity")
 	var stream := FileAccess.open(path, FileAccess.READ)
 	if stream == null:
 		_check(false, "recorded replay stream opens")
@@ -293,7 +292,7 @@ func _record_and_replay(main: Node, identity: Dictionary) -> void:
 	print("MACOS_DEFAULT_LOG ", path)
 
 
-func _reference_does_not_promote(session: Node, marker: Dictionary, qualified_start: Dictionary) -> void:
+func _reference_does_not_promote(session: Node, qualified_start: Dictionary) -> void:
 	var original: Dictionary = session.stage_backend_identity()
 	var outside: Dictionary = Domain.screen_session(session, true)
 	var initially_reference: bool = session.automatic_native_macos and not session.experimental_native_macos \
@@ -331,15 +330,14 @@ func _reference_does_not_promote(session: Node, marker: Dictionary, qualified_st
 	# that previously invoked the same hidden backend refresh after tick zero.
 	session.set_start_altitude(30.0)
 	var selected: Dictionary = Domain.screen_session(session, true)
-	var eligible: bool = Admission.selection_allowed(marker, selected, session.soft_hull_contacts)
+	var eligible: bool = selected.get("ok", false) and selected.get("profile", "") == "production"
 	if not eligible:
-		# Preserve the actual start from the separately admitted Main instance;
-		# do not manufacture a marker or infer a hash for this reference fixture.
+		# Preserve the actual start from the separately screened Main instance.
 		session.start = qualified_start.duplicate(true)
 		selected = Domain.screen_session(session, true)
-		eligible = Admission.selection_allowed(marker, selected, session.soft_hull_contacts)
+		eligible = selected.get("ok", false) and selected.get("profile", "") == "production"
 	_check(session.start.state[2] == -30.0 and eligible,
-		"reference selection becomes marker-eligible before refresh", str(selected))
+		"reference selection becomes production-screened before refresh", str(selected))
 	var trim_ok: bool = session.setup_out_of_trim(OutOfTrim.defaults(), 0)
 	_check(tick_before > 0 and trim_ok and writer.recording and session._native_stage == null \
 		and session.stage_backend_identity() == original and session.sim.model == model and model.stage == stage \
@@ -448,11 +446,8 @@ func _reject_mutated_packed_world(session: Node) -> void:
 func _run() -> void:
 	if OS.get_name() != "macOS" or Engine.get_architecture_name() != "arm64" or OS.has_feature("template_release"):
 		_check(false, "source-editor Mac arm64 is required")
-	elif Admission.read_marker().is_empty():
-		_check(false, "a separately generated, verified promotion marker is required")
 	else:
 		print("MACOS_DEFAULT_HARDWARE ", JSON.stringify({cpu = OS.get_processor_name(), model = OS.get_model_name()}))
-		var marker: Dictionary = Admission.read_marker()
 		var qualified_start := {}
 		var main: Node = await _launch(PackedStringArray())
 		if main != null:
@@ -472,8 +467,8 @@ func _run() -> void:
 			if session._native_stage != null and identity.get("backend") == "native":
 				qualified_start = session.start.duplicate(true)
 				var selected: Dictionary = Domain.screen_session(session, true)
-				_check(Admission.selection_allowed(marker, selected, session.soft_hull_contacts),
-					"live start matches the independently qualified marker", str(selected))
+				_check(selected.get("ok", false) and selected.get("profile", "") == "production",
+					"live start passes the production domain screen", str(selected))
 				var world: Dictionary = session._collision_world
 				var field: Dictionary = session._runway_field
 				var context: Dictionary = session._native_stage.get("_macos_domain_context")
@@ -496,7 +491,7 @@ func _run() -> void:
 			main.free()
 		var outside: Node = await _launch(PackedStringArray(["--alt=31"]))
 		if outside != null:
-			_reference_does_not_promote(outside.session, marker, qualified_start)
+			_reference_does_not_promote(outside.session, qualified_start)
 			outside.free()
 		var reference: Node = await _launch(PackedStringArray(["--physics-backend=gdscript_reference"]))
 		if reference != null:

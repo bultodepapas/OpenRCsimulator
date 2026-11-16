@@ -8,6 +8,7 @@ Dated evidence for the [Aircraft Creator plan](../../plans/aircraft-creator.md) 
 | [Estimated trainer package](estimated-trainer-package.md) | Derivation, borrowed values, domain and software checks of the first airframe and power packages (AC-05, AC-06). |
 | [ClearView compatibility research](clearview-2026-11-15.md) | Primary documentation, seven ZIPs / 26 model roots, exact source inventory, experimental importer evidence, conversion matrix and limits, 2026-11-15. The [AC-CV subplan](../../plans/clearview-aircraft-import.md) owns implementation and open qualification gates. |
 | [AC-12 current-source audit](AC-12-audit-2026-11-16.md) | Fixed diagnostic cells, strict float64 traces, same-rate repeats and complete exact-replay baselines for the ClearView flight dependency. The historical failed campaign and flight gate remain unchanged. |
+| [AC-12 servo stage-time ablation](AC-12-servo-stage-2026-11-16.md) | Separate controlled investigation using original complete logs, a byte-checked hold control and a private source-hashed ramp candidate. No production law or qualification is implied. |
 
 ## Engine probes (2026-11-10)
 

@@ -235,6 +235,8 @@ func prepare(session: Node) -> Dictionary:
 			# Keep the stock domain and all loader/configuration checks mandatory.
 			if not selected.get("ok", false):
 				return _refuse(str(selected.get("reason", "Mac stock selection refused")))
+			if selected.get("profile") != "production":
+				return _refuse("Mac native default requires the stock production trim profile")
 			_macos_domain_context = MacosDomain.freeze_for_session(session, true)
 			if not _macos_domain_context.get("ok", false):
 				return _refuse(str(_macos_domain_context.get("reason", "Mac stock context refused")))
@@ -249,7 +251,9 @@ func prepare(session: Node) -> Dictionary:
 	var status := library_status(is_macos)
 	if not status.ok: return _refuse(status.reason)
 	if is_macos and not session.experimental_native_macos:
-		if _receipt_row.mirrored_sources.get("app/sim/native_macos_domain.gd", "") != FileAccess.get_sha256("res://sim/native_macos_domain.gd"):
+		var domain_sha := str(_receipt_row.mirrored_sources.get("app/sim/native_macos_domain.gd", ""))
+		if domain_sha.length() != 64 or (not OS.has_feature("template_release") \
+				and domain_sha != FileAccess.get_sha256("res://sim/native_macos_domain.gd")):
 			return _refuse("Mac native default domain differs from the loaded receipt")
 	if is_macos and FileAccess.get_sha256(MACOS_RECEIPT_PATH) != _macos_loaded_receipt_sha256:
 		return _refuse("Mac native receipt differs from the loaded library; restart required")

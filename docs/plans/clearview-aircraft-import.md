@@ -35,6 +35,13 @@ The repository was inspected at `c930dcdbfe16d0f94f25d36c64e4384069730714`, with
 
 **Blocking flight dependency:** the existing [AC-12 campaign](../research/aircraft-creator/AC-12-numerical-campaign.md) did not pass its registered numerical gate. Preview/parser work can proceed. Any player-facing flight milestone must close that gate for its stated domain, or qualify an independently specified configuration/domain through the owning physics process. Preserve the failed campaign and preregister any revised metric; successful trim is insufficient.
 
+The [2026-11-16 current-source audit](../research/aircraft-creator/AC-12-audit-2026-11-16.md)
+adds retained float64 traces, fixed-rate repeats and full exact-replay baselines for five
+registered diagnostic cells. It preserves the failed gate and introduces no replacement
+floor, tolerance, narrowed domain or flight permission.
+The separate [servo stage-time investigation](../research/aircraft-creator/AC-12-servo-stage-2026-11-16.md)
+tests a private candidate and records the remaining numerical and runtime-contract work.
+
 Creator trials currently pin `gdscript_reference`. Keep that policy; imported aircraft do not inherit stock native-backend qualification. Do not modify the float64 kernel or add ClearView/aircraft-ID branches to it. Keep the pinned `aircraft_data.gd` source unchanged unless a separately scoped physics change is necessary.
 
 ## 3. Compatibility scope

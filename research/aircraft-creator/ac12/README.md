@@ -1,6 +1,6 @@
 # AC-12 research scripts: handling probe and numerical campaign
 
-Research drivers for step AC-12 of the [Aircraft Creator plan](../../../docs/plans/aircraft-creator.md). They are not tests and not part of `app/`: they compile in-domain definitions with the unchanged compiler and fly them in the unchanged `FlightSession`. Results and their limits are recorded in [the campaign record](../../../docs/research/aircraft-creator/AC-12-numerical-campaign.md) and [the package derivation](../../../docs/research/aircraft-creator/estimated-trainer-package.md). Software evidence about an estimated package; no physical validation.
+Research drivers and audit contract checks for step AC-12 of the [Aircraft Creator plan](../../../docs/plans/aircraft-creator.md), outside `app/`. The drivers compile in-domain definitions with the unchanged compiler and fly them in the unchanged `FlightSession`. Results and their limits are recorded in [the campaign record](../../../docs/research/aircraft-creator/AC-12-numerical-campaign.md) and [the package derivation](../../../docs/research/aircraft-creator/estimated-trainer-package.md). Software evidence about an estimated package; no physical validation.
 
 | File | Role |
 | --- | --- |
@@ -9,7 +9,7 @@ Research drivers for step AC-12 of the [Aircraft Creator plan](../../../docs/pla
 | `eigenvalues.py` | Coupled eigenvalues of the full Jacobians with NumPy |
 | `campaign.gd` | Preregistered step-refinement campaign: 17 cases × 4 input tapes × 240/480/960 Hz |
 | `refinement_audit.gd` | Separate current-source diagnostic: strict sampling/clock checks, unchanged legacy verdict on cached runs, exact float64 artifacts, pinned reference backend and exact `.orfl` baseline replay |
-| `test_refinement_audit.gd` | Known-answer shape, finite-value, metric, binary-encoding and cell-selection boundaries; no flights |
+| `test_refinement_audit.gd` | Known-answer shape, finite-value, metric, binary-encoding, cell-selection, full-replay and output-path boundaries; no flights |
 
 Run from the repository root with the pinned engine (`app/get-godot.sh`; on Windows `.tools/Godot_v4.8-beta2_win64_console.exe`), scripts by absolute path:
 
@@ -57,6 +57,13 @@ and compiled aircraft JSON, all `.f64le` samples, and the `.orfl`/CSV/replay rep
 pinned engine must expose little-endian packed float64 data; an explicit probe refuses
 other encodings. Sample files contain 1440 rows of 17 binary64 values, without a header:
 13 rigid-body states, airspeed m/s, shaft rpm, battery current A and consumed charge C.
+
+Outputs must resolve to an absolute path outside the application source. The checked pool
+collects runner receipts, not these `user://` artifacts. Recover the printed audit directory,
+verify its SHA-256 against the checked log and every artifact against the report, and retain
+the complete directory outside Git before releasing a completed native job's writable files.
+The 240 Hz replay must include ticks 0 through 1440 and exactly 1441 rows; a normally
+completed, exactly replayed prefix is refused.
 
 `complete=true` means the requested measurement and artifact protocol completed. It is
 distinct from the labelled inherited-rule verdict and from `flight_qualified=false`.
