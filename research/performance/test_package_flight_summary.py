@@ -6,7 +6,6 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-import subprocess
 
 MODULE = Path(__file__).with_name("package_flight_summary.py")
 SPEC = importlib.util.spec_from_file_location("package_flight_summary_draft", MODULE)
@@ -100,9 +99,12 @@ class HealthControls(unittest.TestCase):
 
     def test_pilot_is_the_exact_frozen_existing_adapter(self):
         bundled = MODULE.parents[2] / "app" / "tools" / "package_flight_input.gd"
-        source = subprocess.check_output(["git", "show",
-            "2ac2f8ce38631c9513004dcedf1d8a79695adc84:research/performance/sustained_input.gd"])
-        self.assertEqual(source, bundled.read_bytes())
+        source = MODULE.parents[2] / "research" / "performance" / "sustained_input.gd"
+        source_bytes = source.read_bytes()
+        self.assertEqual(source_bytes, bundled.read_bytes())
+        # Check the repository's LF bytes even on Windows CRLF checkouts.
+        self.assertEqual(hashlib.sha256(source_bytes.replace(b"\r\n", b"\n")).hexdigest(),
+                         "15cde7b99cc7cb1f45d8bcf2e4f9b079e752688216684aa87ab1045d9039b3a5")
 
     def test_step_checks_clock_before_overwriting_it(self):
         observer = MODULE.parents[2] / "app" / "tools" / "package_flight_observer.gd"
