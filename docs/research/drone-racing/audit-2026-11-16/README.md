@@ -2,7 +2,7 @@
 
 ## Verdict and scope
 
-The ION R5 FPV activity and local racing mode are implemented and have substantial working software coverage. This audit nevertheless identifies **18 actionable findings: 2 P1, 11 P2 and 5 P3**, plus the qualification and product gaps listed below. The most urgent problems concern controller authority: a refused saved profile can become a ready default mapping, and an accepted Flight mode AUX assignment can also arm or disarm the motors.
+The ION R5 FPV activity and local racing mode are implemented and have substantial working software coverage. This audit and its follow-up identify **19 actionable findings: 2 P1, 12 P2 and 5 P3**, plus the qualification and product gaps listed below. The most urgent problems concern controller authority: a refused saved profile can become a ready default mapping, and an accepted Flight mode AUX assignment can also arm or disarm the motors.
 
 **Audited source:** [`cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b`](https://github.com/bultodepapas/OpenRCsimulator/commit/cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b), the remote `main` head verified at audit start. **Delivery branch:** `audit/fpv-drone-racing-2026-11-16`. This branch contains findings, diagnostic reproducers and portable verification summaries. Raw logs and host-specific runner metadata are excluded from publication. It does not change production behavior or claim to repair the findings.
 
@@ -11,6 +11,8 @@ The review covers the Home and direct-launch routes, controller profiles and AUX
 **Fresh software verification:** 25 existing FPV-related suites passed **1,120 checks**, with zero checked-run engine errors and warnings in the final selected runs. The generator consistency check passed. Additional diagnostic probes reproduce issues the existing suite does not cover. Passing those probes means the baseline problem was observed; it does **not** mean the behavior is correct. The [verification record](evidence/verification.json) and [test matrix](evidence/test-matrix.md) distinguish normal tests, expected defect observations, and the deliberate malformed-record error.
 
 This is a comprehensive review of the available implementation, not proof that no other defects exist. Hardware acceptance, native rendering/performance, full repository CI, and selected-build physical validation remain open. No normal pad-start flight is claimed for a defect demonstrated only with a component fixture or the research air-start route.
+
+**Follow-up investigation:** [stronger scene/session witnesses and compared repair options](follow-up.md) extend A03, A07 and A10, exercise Start/AUX ownership, bound the normal pad-start regeneration claim, and test an existing persistence recovery pattern. The follow-up adds A19 to the original 18 findings: a matching gamepad arrival can leave the active verifier stale and silently disarm the scene. [The active remediation programme](../../../plans/drone-racing.md#16-audit-remediation-programme-2026-11-16) now owns implementation order and acceptance; the findings below remain the dated, unrepaired baseline.
 
 ## Priority and evidence conventions
 
@@ -31,6 +33,7 @@ This is a comprehensive review of the available implementation, not proof that n
 | A03 | P2 | Ordinary hold/resume silently converts invalid Arm AUX into motor OFF | Input/plant reproduction + scene source |
 | A04 | P2 | Direct launch bypasses the current saved controller store | Route reproduction + source |
 | A05 | P2 | Direct launch removes gamepad menu bindings and never reinstalls them | Route/InputMap reproduction |
+| A19 | P2 | Matching gamepad arrival leaves a stale verifier and disarms without a hold | Real service/registry/scene with synthetic devices |
 | A06 | P2 | Damped regeneration admits charge above pack capacity | Integrated tick + supported research air start |
 | A07 | P2 | Rotor/terrain test misses an uphill disc rim intersection | Collision component geometry |
 | A08 | P2 | Loader admits a custom battery that cannot supply hover power | Strict loader + independent power bound |
@@ -102,6 +105,16 @@ AppRoot removes joypad UI events through `UiInput.isolate_joypads()` before its 
 **Source.** [app_root.gd](../../../../app/app_root.gd), initial joypad isolation and `_refresh_controller_ui`; [ui_input.gd](../../../../app/ui/ui_input.gd), `isolate_joypads`/`set_gamepad`; [multirotor_scene.gd](../../../../app/vehicles/multirotor/multirotor_scene.gd), `_refresh_controller_ui`.
 
 **Repair and acceptance.** Use the shared UI-device ownership path in the quad and initialize it on direct entry. Verify a selected pad can open, navigate, activate and close the menu; another device must not acquire UI or flight authority accidentally. A04 and A05 share initialization work but affect distinct contracts and need separate acceptance checks.
+
+### A19 — Matching gamepad arrival silently disarms the active source
+
+**Added by the follow-up.** The original selected gamepad stays connected and selected when a second same-family device arrives. Registry ambiguity advances its generation, but the quad's selected-controller sync returns on equal numeric ID and leaves its verifier bound to the old generation. The next accepted activity tick is unready and disarms the motor without pausing; removing the duplicate does not restore verification.
+
+**Evidence.** [duplicate_pad_scene.gd](experiments/duplicate_pad_scene.gd) exercises the real service hotplug/refresh, registry, input adapter and activity, with synthetic device enumeration and OS-focus/SDL confirmation. An injected keyboard action first arms the selected-pad session. A different-family device is a passing continuity control. All 12 observation checks pass. This is a software integration witness on the pad, not a physical-controller or airborne trajectory. [Detailed evidence and the additional constructed same-handle case](follow-up.md#a19-a-second-matching-pad-invalidates-the-active-verifier-without-a-hold) retain the reachability limits.
+
+**Source.** [multirotor_scene.gd](../../../../app/vehicles/multirotor/multirotor_scene.gd), `_bind_gamepad_confirmation`, `_joy_connection_changed`, `_sync_selected_controller` and `_physics_process`; [controller_registry.gd](../../../../app/input/controller_registry.gd), ambiguity generation; [controller_service.gd](../../../../app/input/controller_service.gd), refresh and verification; [AppRoot](../../../../app/app_root.gd), active-activity automatic-selection and device-change wiring.
+
+**Repair and acceptance.** Reconcile matching-evidence generations with actual physical continuity. Reverify an uninterrupted authority only under the shared profile/identity policy; otherwise hold and explain recovery before accepting an unready flight tick. Test duplicate arrival/removal, a different-family control, serial-qualified profiles, true identity replacement and same-handle reconnect. Do not treat every generation bump as either permission to reuse stale authority or an unexplained motor cut.
 
 ## Physics and data admission
 
@@ -313,6 +326,8 @@ The selected suites cover data, allocation/rates, shared electrical bus, control
 The full repository suite, required CI status, all supported OSes, physical radios, native 1080p rendering, meaningful performance measurements, long endurance campaigns and real-world flight measurements were not completed here. Existing dated native captures and measurements remain historical evidence; this audit does not re-certify them.
 
 ## Recommended repair order and closure criteria
+
+The sequence below records the original audit recommendation. The [current programme](../../../plans/drone-racing.md#16-audit-remediation-programme-2026-11-16) refines it with explicit alternatives, dependencies and closure tests; the follow-up now includes the real composed A10 tick, still from an initialized state.
 
 1. **Controller authority:** A01–A03 first. Preserve source validity and single-owner bindings, then define ordinary pause versus recovery. Close only with scene-level negative and positive controls, followed by a real-radio/gamepad session.
 2. **Route parity:** A04–A05. Share controller and UI ownership initialization; verify direct and Home routes use the same intended configuration without weakening refusal behavior.
