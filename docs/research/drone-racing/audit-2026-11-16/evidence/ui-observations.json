@@ -1,0 +1,46 @@
+{
+  "baseline_commit": "cfb5acd5cfbcbf83f7f9220116c67fa082e8f27b",
+  "mode": "headless; keyboard/debug-bridge actions; isolated test profile",
+  "flow": [
+    "Home",
+    "Vehicles: ION R5",
+    "FLY",
+    "Course: Tower sprint",
+    "OSD: Full",
+    "Resume",
+    "Arm E",
+    "Race G: COUNTDOWN then RACING",
+    "G: cancel",
+    "R: pad reset",
+    "Escape: menu",
+    "Back to Home"
+  ],
+  "racing": {
+    "phase": "RACING",
+    "tick": 63773,
+    "fault": ""
+  },
+  "cancelled": {
+    "phase": "ABORTED",
+    "pending": 0,
+    "fault": ""
+  },
+  "saved_result": {
+    "phase": "ABORTED",
+    "reason": "cancelled",
+    "reason_code": 9,
+    "saved": true,
+    "terminal_tick": 63791,
+    "track_id": "openrc-tower-sprint-1"
+  },
+  "final_route": "home",
+  "engine_error_records": 0,
+  "stopped": true,
+  "forced_stop": false,
+  "reported_leaked_objects": 0,
+  "limits": [
+    "No complete manual race; full scripted-race and exact-replay suites are separate evidence.",
+    "No native screenshots, hardware controller acceptance, latency or meaningful performance qualification."
+  ],
+  "publication": "Summary only; raw bridge and engine logs and host-specific launch metadata are excluded."
+}

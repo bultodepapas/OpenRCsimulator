@@ -306,6 +306,8 @@ Start **DR-02 + DR-16a**: freeze the sourced build/asset manifest; specify sampl
 
 Software evidence, test names and limits: [M0–M3 slice](../research/drone-racing/M1-M3-2026-11-11/README.md). Decisions: [kernel protocol](../DECISIONS.md#closed-loop-control-samples-the-accepted-frame-through-an-opt-in-protocol), [quad law](../DECISIONS.md#the-first-quad-law-is-transparent-and-its-continuations-are-declared), [race state](../DECISIONS.md#race-state-commits-with-the-physics-tick).
 
+Independent implementation audit: [2026-11-16 findings and reproducible evidence](../research/drone-racing/audit-2026-11-16/README.md), pinned to `cfb5acd5`: 18 prioritized findings across controller authority, lifecycle, physics boundaries, race validity, persistence and presentation. The 25 selected existing suites pass 1,120 checks; targeted diagnostic probes expose additional gaps. Audit evidence does not close native-controller, performance or physical-validation gates.
+
 | IDs | State | Note |
 | --- | --- | --- |
 | DR-03, 16a | Done in software | Reference oracles reproduced; opt-in `framed-sampled-v1` kernel protocol with legacy parity evidence. |
