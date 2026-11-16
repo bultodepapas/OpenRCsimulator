@@ -91,6 +91,7 @@ func _run() -> void:
 				and app.flight.session.is_flyable() and not app.flight.session.sim.paused):
 			_fail("ordinary restart did not settle")
 			return
+		if not await _flight_ready(app): return
 		if not _inspect_flight(app, "restart"): return
 		app.open_pause()
 		if not await _wait_for(func() -> bool: return is_instance_valid(app) and app.pause_menu != null):
