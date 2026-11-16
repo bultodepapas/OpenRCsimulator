@@ -13624,3 +13624,39 @@ msgstr "Les commentaires JPEG ont été ignorés."
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "Les tailles déclarées de %s anciens dossiers vides supplémentaires ont été ignorées."
+
+msgid "Left aileron, second part"
+msgstr "Aileron gauche, deuxième pièce"
+
+msgid "Right aileron, second part"
+msgstr "Aileron droit, deuxième pièce"
+
+msgid "Rudder, second part"
+msgstr "Gouverne de direction, deuxième pièce"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "Le marqueur de coordonnées « %s » est ambigu ou non pris en charge. Corrigez son repère XYZ à quatre points avant l’importation."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "%s marqueurs de coordonnées ont été masqués et conservés comme données sources."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "%s propositions d’articulations visuelles ont été préparées. Sélectionnez leurs groupes de pivot dans Pièces mobiles ; X suit l’axe déclaré. Vérifiez chaque commande et son sens dans l’aperçu."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "%s associations de servos n’ont pas été préparées. Vérifiez leurs déclarations sources avant de lier ces pièces."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Articulation « %s » : fournissez un seul repère visuel nommé et un groupe distinct de pièces visibles."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Articulation « %s » : utilisez un seul servo de rotation déclaré, avec une surface, un groupe visuel et un axe non ambigus."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Articulation « %s » : séparez les pièces étrangères ou imbriquées et appliquez des transformations rigides aux nœuds parents."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Articulation « %s » : la nouvelle hiérarchie dépasse les limites de précision ou de structure. Simplifiez et recentrez le modèle source."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Articulation « %s » : le modèle préparé a été refusé. Sa hiérarchie statique d’origine a été conservée."

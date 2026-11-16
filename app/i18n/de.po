@@ -13597,3 +13597,39 @@ msgstr "JPEG-Kommentare wurden ignoriert."
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "Größenangaben für %s weitere leere alte Verzeichnisse wurden ignoriert."
+
+msgid "Left aileron, second part"
+msgstr "Linkes Querruder, zweiter Teil"
+
+msgid "Right aileron, second part"
+msgstr "Rechtes Querruder, zweiter Teil"
+
+msgid "Rudder, second part"
+msgstr "Seitenruder, zweiter Teil"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "Der Koordinatenmarker „%s“ ist mehrdeutig oder wird nicht unterstützt. Korrigiere sein XYZ-System aus vier Punkten vor dem Import."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "%s Koordinatenmarker wurden ausgeblendet und als Quelldaten erhalten."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "%s visuelle Gelenkvorschläge wurden vorbereitet. Wähle ihre Drehpunktgruppen unter Bewegliche Teile; X folgt der deklarierten Achse. Prüfe jede Steuerung und Richtung in der Vorschau."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "%s Servo-Zuordnungen wurden nicht vorbereitet. Prüfe ihre Quelldeklarationen, bevor du diese Teile zuordnest."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Gelenk „%s“: Lege ein eindeutiges benanntes Koordinatensystem und eine separate sichtbare Teilegruppe an."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Gelenk „%s“: Verwende genau ein aufgeführtes Drehservo mit eindeutiger Fläche, Teilegruppe und Achse."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Gelenk „%s“: Trenne fremde oder verschachtelte Teile und wende starre Transformationen auf die Elternknoten an."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Gelenk „%s“: Die neue Hierarchie überschritt Präzisions- oder Strukturgrenzen. Vereinfache und zentriere das Quellmodell neu."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Gelenk „%s“: Das vorbereitete Modell wurde abgelehnt. Die ursprüngliche statische Hierarchie blieb erhalten."

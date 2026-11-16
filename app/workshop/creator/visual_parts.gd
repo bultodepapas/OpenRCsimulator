@@ -37,7 +37,7 @@ static func empty_bindings() -> Dictionary:
 
 
 ## The rigid parts a player can bind: one entry per node of the shown scene that carries a mesh
-## itself, in file order.
+## itself, or a proper subset group with meshes below it, in file order.
 ## value = [{node: int, name: String, triangles: int, bounds_min, bounds_max: PackedFloat64Array(3),
 ## parent: int}]. `node` and `parent` are glTF node indices (`parent` is -1 for a scene root).
 ## Bounds are in source coordinates, the frame of `InspectedSource.bounds_min` and of the placement
@@ -53,6 +53,7 @@ static func list_parts(source: InspectedSource) -> Dictionary:
 		return read
 	var tree: Dictionary = read.value
 	var parts: Array = []
+	var bounds := {}
 	for index: int in int(tree.count):
 		var mesh: int = tree.mesh[index]
 		if tree.shown[index] == 0 or mesh < 0:
@@ -70,8 +71,31 @@ static func list_parts(source: InspectedSource) -> Dictionary:
 				var value := matrix[axis * 4] * x + matrix[axis * 4 + 1] * y + matrix[axis * 4 + 2] * z + matrix[axis * 4 + 3]
 				low[axis] = minf(low[axis], value)
 				high[axis] = maxf(high[axis], value)
-		parts.append({"node": index, "name": str(tree.names[index]), "triangles": int(tree.mesh_triangles[mesh]),
-			"bounds_min": low, "bounds_max": high, "parent": int(tree.parent[index])})
+		bounds[index] = {low = low,high = high,triangles = int(tree.mesh_triangles[mesh])}
+	# Accumulate in tree order, not node-index order: imported wrappers are appended after their children.
+	var order := PackedInt32Array(tree.roots)
+	var head := 0
+	while head < order.size():
+		order.append_array(tree.children[order[head]])
+		head += 1
+	for at: int in range(order.size()-1,-1,-1):
+		var index := order[at]
+		if not bounds.has(index) or tree.parent[index] < 0:
+			continue
+		var parent: int = tree.parent[index]
+		if not bounds.has(parent):
+			bounds[parent] = {low = PackedFloat64Array([INF,INF,INF]),high = PackedFloat64Array([-INF,-INF,-INF]),triangles = 0}
+		for axis: int in 3:
+			bounds[parent].low[axis] = minf(bounds[parent].low[axis],bounds[index].low[axis])
+			bounds[parent].high[axis] = maxf(bounds[parent].high[axis],bounds[index].high[axis])
+		bounds[parent].triangles += int(bounds[index].triangles)
+	for index: int in int(tree.count):
+		if not bounds.has(index) or tree.shown[index] == 0:
+			continue
+		if tree.mesh[index] < 0 and tree.meshes_below[index] == tree.instances:
+			continue
+		parts.append({"node": index,"name": str(tree.names[index]),"triangles": int(bounds[index].triangles),
+			"bounds_min": bounds[index].low,"bounds_max": bounds[index].high,"parent": int(tree.parent[index])})
 	return R.ok(parts)
 
 
@@ -125,8 +149,11 @@ static func suggest_binding(source: InspectedSource, placement: Dictionary, node
 	if not checked.ok:
 		return checked
 	var chosen := {"node": node, "axis": str(DEFAULT_AXES[role]), "sign": 1}
-	var resolved: Dictionary = Placement.resolve(placement) if not placement.is_empty() else {"ok": false}
 	var read: Dictionary = graph(source)
+	var hint := str(read.value.preferred_axis[node]) if read.ok else ""
+	if not hint.is_empty():
+		chosen.axis = hint
+	var resolved: Dictionary = Placement.resolve(placement) if not placement.is_empty() else {"ok": false}
 	if not resolved.ok or not read.ok:
 		return R.ok(chosen)
 	# Role axis in source coordinates: the rotation rows are orthonormal, so its inverse is its transpose.
@@ -139,6 +166,8 @@ static func suggest_binding(source: InspectedSource, placement: Dictionary, node
 	var matrix: PackedFloat64Array = read.value.world[node]
 	var best := 0.0
 	for axis: int in 3:
+		if not hint.is_empty() and AXES[axis] != hint:
+			continue
 		var length := sqrt(matrix[axis] * matrix[axis] + matrix[4 + axis] * matrix[4 + axis] + matrix[8 + axis] * matrix[8 + axis])
 		if not (length > 0.0):
 			continue
@@ -165,6 +194,7 @@ static func graph(source: InspectedSource) -> Dictionary:
 		return R.fail(R.BUILD_INVALID, "The GLB model could not be read again. Import the model again.", "source", "import")
 	var count: int = (nodes as Array).size()
 	var names: Array[String] = []
+	var preferred_axis: Array[String] = []
 	var parent := PackedInt32Array()
 	parent.resize(count)
 	parent.fill(-1)
@@ -176,6 +206,7 @@ static func graph(source: InspectedSource) -> Dictionary:
 	for index: int in count:
 		var node: Dictionary = nodes[index]
 		names.append(str(node.get("name", "")))
+		preferred_axis.append(_axis_hint(node))
 		if node.has("mesh"):
 			mesh[index] = int(node.mesh)
 		var listed := PackedInt32Array()
@@ -231,9 +262,21 @@ static func graph(source: InspectedSource) -> Dictionary:
 		mesh_triangles.append(triangles)
 		mesh_low.append(low)
 		mesh_high.append(high)
-	return R.ok({count = count, names = names, parent = parent, mesh = mesh, children = children, roots = roots,
+	return R.ok({count = count, names = names, preferred_axis = preferred_axis, parent = parent, mesh = mesh, children = children, roots = roots,
 		shown = shown, meshes_below = meshes_below, instances = instances, world = world,
 		mesh_triangles = mesh_triangles, mesh_low = mesh_low, mesh_high = mesh_high})
+
+
+## Optional author guidance for a user-selected part. Forgeable like names; grants no binding or capability.
+static func _axis_hint(node: Dictionary) -> String:
+	var extras: Variant = node.get("extras")
+	if not extras is Dictionary:
+		return ""
+	var hint: Variant = extras.get("openrc_creator_part")
+	if not hint is Dictionary or hint.size() != 2 or typeof(hint.get("format")) != TYPE_STRING \
+			or hint.format != "openrc-creator-part-hint-v1" or typeof(hint.get("axis")) != TYPE_STRING or hint.axis not in AXES:
+		return ""
+	return hint.axis
 
 
 ## Label of a part for messages: its name, or its number when the file gave it none.

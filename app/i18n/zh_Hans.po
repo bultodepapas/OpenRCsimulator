@@ -12652,3 +12652,39 @@ msgstr "已忽略 JPEG 注释。"
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "已忽略另外 %s 个旧式空文件夹的声明大小。"
+
+msgid "Left aileron, second part"
+msgstr "左副翼，第二部件"
+
+msgid "Right aileron, second part"
+msgstr "右副翼，第二部件"
+
+msgid "Rudder, second part"
+msgstr "方向舵，第二部件"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "坐标标记“%s”不明确或不受支持。请在导入前修正其四点 XYZ 坐标系。"
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "已隐藏 %s 个坐标标记，并将其保留为源数据记录。"
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "已准备 %s 个显示用铰链候选。请在“活动部件”中选择其枢轴组；X 遵循声明的轴。请在预览中确认各操纵功能和方向。"
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "有 %s 个舵机映射未准备。请在绑定这些部件前检查其源声明。"
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "铰链“%s”：请提供一个命名的显示坐标系和一个独立的可见部件组。"
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "铰链“%s”：请使用一个已列出的旋转舵机，并明确指定翼面、显示部件组和轴。"
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "铰链“%s”：请分离无关或嵌套的部件，并为父节点应用刚体变换。"
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "铰链“%s”：更改父节点超出了精度或层级限制。请简化源模型并重新居中。"
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "铰链“%s”：准备的模型被拒绝。已保留其原始静态层级。"

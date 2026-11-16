@@ -2,10 +2,20 @@
   "format": "openrc-clearview-visual-corpus-v1",
   "observed_on": "2026-11-15",
   "engine": "4.8.beta2.official.cafc17a19",
-  "scope": "Conversion and SourceImporter GLB admission only; no rendered comparison, flight, export, resource or rights qualification. Refusals are expected compatibility outcomes. Timing is observational under shared-host load.",
+  "scope": "Conversion and SourceImporter GLB admission; exact coordinate-frame provenance and optional unbound visual hinge proposals. No automatic control/physics mapping, flight, export, performance, independent visual comparison or rights qualification. Timing is observational.",
   "platform": "Windows x86_64 (DEVIL)",
-  "pool_batch": "CLI final-batch2",
-  "pool_job": "1bfe8813af2e4dbc89aac6d03786b3f7",
+  "pool_batch": "CLI motion-corpus",
+  "pool_job": "7470490ad7454e60b49d266662939046",
+  "source_digest": "8a43ce1dda616567a39210db4896482c32c018c97fec152337afb792851896fa",
+  "coordinate_markers_classified": 261,
+  "admitted_coordinate_markers": 203,
+  "unbound_hinge_proposals": 50,
+  "previous_visual_campaign": {
+    "pool_job": "1bfe8813af2e4dbc89aac6d03786b3f7",
+    "converted": 17,
+    "refused": 9,
+    "note": "Before hiding four-point XYZObject render markers; B-52 precision refusal was confined to markers."
+  },
   "initial_macos_campaign": {
     "pool_job": "ffe9d66590094400a0654df4c125f597",
     "converted": 16,
@@ -13,25 +23,121 @@
     "scope": "Before source-collinearity and actual float32 triangle-area hardening; superseded by this matrix."
   },
   "importer_files": {
-    "ac3d.gd": "c2e84c11d6558317090486ed5d319ae781bf134fa67fa4e5b3aa364963e6b4b9",
+    "ac3d.gd": "94f307822d8e4732d3ad9492c111be9f4e1c68a76c43405b1eafb5460b1113c9",
     "archive.gd": "09e33da3712cf7b885c21baafe1dc5e8fcac47d9ee6f9694e7604635cd294977",
     "cancellation.gd": "c012b51ce9895553f948aa0b1c12e3f0abc0dff5bb5a13fa1a64db6356a560d6",
-    "converter.gd": "2ac27f51e7871cd1e70eb665bf64c1dbbe66da67fca6e63ae0cb0dfee0710268",
+    "converter.gd": "dd1af774cff35d5e76152f547c91cc73d58d9400514415997292355f190c6365",
     "deflate.gd": "5c7221c68de3515cd776ecb658c6ab594ce8bca5f8e3ea4240c009dfb096eb0b",
     "images.gd": "60b5696ffa4f2041b5bc00cb91291a23f1f11ad60f74ff567d2271e58c811e84",
     "jpeg_check.gd": "d6eb836c87298164bd2640baa0915654b0645c23f0a6cb3cb3b31474c0b09166",
+    "motion.gd": "601f8566637f856b00c972f9dec4e3711df932ea6df6753bf979321e14975780",
     "package.gd": "3b589da0a8e1d2548fc36860338d1617f10438fc0397f4ac8212a78fb4b3d2e1",
     "params.gd": "134bb1769fc2aa0e4428233f1a9991db8a6d03f1e0706b532ffee49745f7eee1"
+  },
+  "binding_files": {
+    "app/workshop/creator/visual_parts.gd": "cc954e26258778cba76abafbcb680881ca1cf22dd0a3180c4f6413ef71afc008",
+    "app/ui/aircraft_creator_parts.gd": "25d839be88bfe77897f4e6eee23b6c8eb030d5abd6ecee7b8b8619073f23491e"
   },
   "models": [
     {
       "archive": "extra-v6",
-      "bytes": 853060,
-      "markers": 7,
+      "bytes": 869004,
+      "frames": 9,
       "model": "MC 3D Hobby Shops Extra 330 Red",
-      "ms": 1935,
+      "ms": 2023,
+      "prepared": [
+        {
+          "axis": "x",
+          "children": [
+            10
+          ],
+          "group": "PilotHead",
+          "marker_node": 13,
+          "node": 41,
+          "servos": [
+            "servo.PilotHead"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            14
+          ],
+          "group": "Elevator",
+          "marker_node": 20,
+          "node": 42,
+          "servos": [
+            "servo.elevator"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            15
+          ],
+          "group": "LAeleron",
+          "marker_node": 17,
+          "node": 43,
+          "servos": [
+            "servo.laileron"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            29
+          ],
+          "group": "RAeleron",
+          "marker_node": 16,
+          "node": 44,
+          "servos": [
+            "servo.raileron"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            30
+          ],
+          "group": "Ruder2",
+          "marker_node": 19,
+          "node": 45,
+          "servos": [
+            "servo.rudder2Servo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            31
+          ],
+          "group": "Ruder",
+          "marker_node": 18,
+          "node": 46,
+          "servos": [
+            "servo.ruder"
+          ],
+          "source_axis": "z"
+        }
+      ],
+      "source_sha256": "d29188aedb8d4ac1959403a029741a67539a4c714d25ba7724cf3dfc983ac96a",
       "status": "CONVERTED",
-      "triangles": 3794,
+      "triangles": 3776,
+      "unresolved": [
+        {
+          "group": "LElevon",
+          "reason": "multiple_servos_for_render_group",
+          "servos": [
+            "servo.pilotHandX",
+            "servo.pilotHandY"
+          ]
+        }
+      ],
       "archive_sha256": "3f9ab90947762a66543cf20297aac4564a22011fbe6e2c037514c2295ddb0c85"
     },
     {
@@ -40,18 +146,21 @@
         "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
       ],
       "model": "701f",
-      "ms": 426,
+      "ms": 429,
       "status": "REFUSED",
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 837696,
-      "markers": 9,
+      "bytes": 857240,
+      "frames": 11,
       "model": "B-25",
-      "ms": 1366,
+      "ms": 1281,
+      "prepared": [],
+      "source_sha256": "2eeab91a7e3cfa2fb1c1a8e82e95c89e5543cb4dc7c303125874ef7f3d050ab5",
       "status": "CONVERTED",
-      "triangles": 7475,
+      "triangles": 7453,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
@@ -60,48 +169,60 @@
         "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
       ],
       "model": "701F2",
-      "ms": 376,
+      "ms": 380,
       "status": "REFUSED",
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 856844,
-      "markers": 8,
+      "bytes": 865776,
+      "frames": 5,
       "model": "BD-5J",
-      "ms": 1309,
+      "ms": 1451,
+      "prepared": [],
+      "source_sha256": "5e496055556dc05fe9772e119ffcf37663b7aceed48751f7adfa549ef513d1bc",
       "status": "CONVERTED",
-      "triangles": 6468,
+      "triangles": 6458,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 530436,
-      "markers": 8,
+      "bytes": 553544,
+      "frames": 13,
       "model": "C-130",
-      "ms": 783,
+      "ms": 989,
+      "prepared": [],
+      "source_sha256": "a96d9cb4cf8be29be82e0ea2c811c6a1d773bc19ecb01191fbd4889b0b3f9b26",
       "status": "CONVERTED",
-      "triangles": 4201,
+      "triangles": 4175,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 1127588,
-      "markers": 9,
+      "bytes": 1140068,
+      "frames": 7,
       "model": "Beluga",
-      "ms": 1554,
+      "ms": 1724,
+      "prepared": [],
+      "source_sha256": "1d1b3746342dfd96ec4af4ddf7ae249d3ffe1da2e870f11c711261385b065900",
       "status": "CONVERTED",
-      "triangles": 5089,
+      "triangles": 5075,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 728728,
-      "markers": 8,
+      "bytes": 742980,
+      "frames": 8,
       "model": "A6-Zero",
-      "ms": 1020,
+      "ms": 1086,
+      "prepared": [],
+      "source_sha256": "c0afe3a9c6ad7e2bbef4715b69c1bd3dd23ade8ea3305b63f8aa6e617f4c8e97",
       "status": "CONVERTED",
-      "triangles": 4058,
+      "triangles": 4042,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
@@ -110,78 +231,99 @@
         "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
       ],
       "model": "Beech99",
-      "ms": 260,
+      "ms": 322,
       "status": "REFUSED",
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 824656,
-      "markers": 8,
+      "bytes": 840664,
+      "frames": 9,
       "model": "A-10_GWS",
-      "ms": 1118,
+      "ms": 1140,
+      "prepared": [],
+      "source_sha256": "43a3a95ed4bbf6027ae7b65d86bf4ecce92aa156cd072acbe2d6e4aa748a33d4",
       "status": "CONVERTED",
-      "triangles": 4944,
+      "triangles": 4926,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 456116,
-      "markers": 9,
+      "bytes": 465048,
+      "frames": 5,
       "model": "AlleyCat",
-      "ms": 589,
+      "ms": 585,
+      "prepared": [],
+      "source_sha256": "a0455bee2699c60fa4bf39da6ec836e879bb8a467dee6443db0cc95a55ad03c3",
       "status": "CONVERTED",
-      "triangles": 1451,
+      "triangles": 1441,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 513452,
-      "markers": 9,
+      "bytes": 525876,
+      "frames": 7,
       "model": "Beginair",
-      "ms": 690,
+      "ms": 660,
+      "prepared": [],
+      "source_sha256": "801788001d0e859bd3117e54ec78cbf012a800b8284f6d155b2d7a360d0a4812",
       "status": "CONVERTED",
-      "triangles": 2131,
+      "triangles": 2117,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 552868,
-      "markers": 8,
+      "bytes": 568876,
+      "frames": 9,
       "model": "Bell X-5",
-      "ms": 1110,
+      "ms": 1066,
+      "prepared": [],
+      "source_sha256": "c30e5d88936921bf23729a9a33b69f6591d0f303e632271b392dbeac827939ec",
       "status": "CONVERTED",
-      "triangles": 3870,
+      "triangles": 3852,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 599756,
-      "markers": 8,
+      "bytes": 610456,
+      "frames": 6,
       "model": "A-7 Corsair",
-      "ms": 926,
+      "ms": 806,
+      "prepared": [],
+      "source_sha256": "7d8af42b6b04c1485a9fb00f43707f95349e2af1481a094c77802bd88b20216e",
       "status": "CONVERTED",
-      "triangles": 3217,
+      "triangles": 3205,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 762348,
-      "markers": 8,
+      "bytes": 776600,
+      "frames": 8,
       "model": "A-6 Intruder",
-      "ms": 1063,
+      "ms": 1039,
+      "prepared": [],
+      "source_sha256": "a4653ece0343b93fdec10edb985f52011da9e19cdc04a7a35634a75d84e0d3ba",
       "status": "CONVERTED",
-      "triangles": 4527,
+      "triangles": 4511,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 1674944,
-      "markers": 8,
+      "bytes": 1699784,
+      "frames": 14,
       "model": "B-26 Marauder",
-      "ms": 2520,
+      "ms": 2451,
+      "prepared": [],
+      "source_sha256": "6fef7a2427975913ba1b1caee5d5fbdcacb5dcc3e6b470b60ef475f808d1d662",
       "status": "CONVERTED",
-      "triangles": 7545,
+      "triangles": 7517,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
@@ -190,7 +332,7 @@
         "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
       ],
       "model": "Bellanca C-27",
-      "ms": 884,
+      "ms": 811,
       "status": "REFUSED",
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
@@ -200,18 +342,21 @@
         "SOURCE_UNSUPPORTED: This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
       ],
       "model": "Brown-B1 Racer",
-      "ms": 649,
+      "ms": 541,
       "status": "REFUSED",
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "bytes": 660504,
-      "markers": 9,
+      "bytes": 678344,
+      "frames": 11,
       "model": "Agri Duck Duster",
-      "ms": 1306,
+      "ms": 1238,
+      "prepared": [],
+      "source_sha256": "78e0e7452ca9df884a201a2f9224df09174d9c3a50bf1f022947fef7ba921ec9",
       "status": "CONVERTED",
-      "triangles": 6575,
+      "triangles": 6553,
+      "unresolved": [],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
@@ -220,18 +365,343 @@
         "SOURCE_INVALID: Polygon 91 in part \"fuse\" has intersecting edges."
       ],
       "model": "Ascent Park Glider",
-      "ms": 582,
+      "ms": 561,
       "status": "REFUSED",
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
       "archive": "ken-pack1",
-      "diagnostics": [
-        "SOURCE_UNSUPPORTED: Recenter or rescale this model to preserve its detail at render precision."
-      ],
+      "bytes": 2670292,
+      "frames": 41,
       "model": "B-52-Stratofortress",
-      "ms": 4573,
-      "status": "REFUSED",
+      "ms": 5562,
+      "prepared": [
+        {
+          "axis": "x",
+          "children": [
+            49
+          ],
+          "group": "Elevator2",
+          "marker_node": 37,
+          "node": 95,
+          "servos": [
+            "servo.Elevator2Servo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            48
+          ],
+          "group": "Elevator",
+          "marker_node": 36,
+          "node": 96,
+          "servos": [
+            "servo.ElevatorServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            80
+          ],
+          "group": "FLDoor",
+          "marker_node": 6,
+          "node": 97,
+          "servos": [
+            "servo.FLDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            56
+          ],
+          "group": "NStrut",
+          "marker_node": 11,
+          "node": 98,
+          "servos": [
+            "servo.FLRetractServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            83
+          ],
+          "group": "FRDoor",
+          "marker_node": 8,
+          "node": 99,
+          "servos": [
+            "servo.FRDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            61
+          ],
+          "group": "NStrut2",
+          "marker_node": 9,
+          "node": 100,
+          "servos": [
+            "servo.FRRetractServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            2
+          ],
+          "group": "LAeleron",
+          "marker_node": 1,
+          "node": 101,
+          "servos": [
+            "servo.LAeleronServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            67
+          ],
+          "group": "LFlap1",
+          "marker_node": 33,
+          "node": 102,
+          "servos": [
+            "servo.LFlap1Servo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            70
+          ],
+          "group": "LFlap",
+          "marker_node": 32,
+          "node": 103,
+          "servos": [
+            "servo.LFlapServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            55
+          ],
+          "group": "NStrut1",
+          "marker_node": 20,
+          "node": 104,
+          "servos": [
+            "servo.LSteerServo"
+          ],
+          "source_axis": "y"
+        },
+        {
+          "axis": "x",
+          "children": [
+            69
+          ],
+          "group": "LWDoor",
+          "marker_node": 78,
+          "node": 105,
+          "servos": [
+            "servo.LWDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            68
+          ],
+          "group": "LWStrut",
+          "marker_node": 76,
+          "node": 106,
+          "servos": [
+            "servo.LWRetractServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            66
+          ],
+          "group": "RAeleron",
+          "marker_node": 38,
+          "node": 107,
+          "servos": [
+            "servo.RAeleronServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            65
+          ],
+          "group": "RFlap1",
+          "marker_node": 35,
+          "node": 108,
+          "servos": [
+            "servo.RFlap1Servo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            53
+          ],
+          "group": "RFlap",
+          "marker_node": 34,
+          "node": 109,
+          "servos": [
+            "servo.RFlapServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            82
+          ],
+          "group": "RLDoor",
+          "marker_node": 5,
+          "node": 110,
+          "servos": [
+            "servo.RLDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            57
+          ],
+          "group": "RLStrut",
+          "marker_node": 14,
+          "node": 111,
+          "servos": [
+            "servo.RLRestractServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            81
+          ],
+          "group": "RRDoor",
+          "marker_node": 7,
+          "node": 112,
+          "servos": [
+            "servo.RRDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            59
+          ],
+          "group": "RRStrut",
+          "marker_node": 10,
+          "node": 113,
+          "servos": [
+            "servo.RRRetractServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            60
+          ],
+          "group": "NStrut3",
+          "marker_node": 17,
+          "node": 114,
+          "servos": [
+            "servo.RSteerServo"
+          ],
+          "source_axis": "y"
+        },
+        {
+          "axis": "x",
+          "children": [
+            63
+          ],
+          "group": "RWDoor",
+          "marker_node": 52,
+          "node": 115,
+          "servos": [
+            "servo.RWDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            64
+          ],
+          "group": "RWStrut",
+          "marker_node": 51,
+          "node": 116,
+          "servos": [
+            "servo.RWRetractServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            47
+          ],
+          "group": "Ruder",
+          "marker_node": 31,
+          "node": 117,
+          "servos": [
+            "servo.RuderServo"
+          ],
+          "source_axis": "z"
+        }
+      ],
+      "source_sha256": "a7e108cbdcb680fe4e0c8ffc6863499d7c4f7fd937dfbda5cac576cf24bd2139",
+      "status": "CONVERTED",
+      "triangles": 18967,
+      "unresolved": [
+        {
+          "group": "Gear",
+          "reason": "missing_or_duplicate_render_frame",
+          "servos": [
+            "servo.DragGearServo"
+          ]
+        },
+        {
+          "group": "LWing",
+          "reason": "missing_or_duplicate_render_frame",
+          "servos": [
+            "servo.LWingServo"
+          ]
+        },
+        {
+          "group": "RWing",
+          "reason": "missing_or_duplicate_render_frame",
+          "servos": [
+            "servo.RWingServo"
+          ]
+        }
+      ],
       "archive_sha256": "90b105818b8754c5ffb46bebb363aecd22a9aa1fd18c0aea0518c9545c8781d8"
     },
     {
@@ -240,28 +710,252 @@
         "SOURCE_UNSUPPORTED: This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
       ],
       "model": "Calmato 40 Sports",
-      "ms": 699,
+      "ms": 736,
       "status": "REFUSED",
       "archive_sha256": "cb53aa60dc46a919e4a27fbfca4a0d83960cb3a15d4c5cd468e34c6085553017"
     },
     {
       "archive": "biplane-v5",
-      "bytes": 556804,
-      "markers": 8,
+      "bytes": 569928,
+      "frames": 8,
       "model": "MC Tiburon-bipe-7-2",
-      "ms": 538,
+      "ms": 614,
+      "prepared": [],
+      "source_sha256": "a446a6d6563ca22228e2b64df2eff846226f7a5d589b53f2084a165919c00c83",
       "status": "CONVERTED",
-      "triangles": 2077,
+      "triangles": 2061,
+      "unresolved": [],
       "archive_sha256": "1d346d518cbdfb76c04a7e3cc0978466a1e227d3f442fc7ac4902f7a10568afe"
     },
     {
       "archive": "osprey",
-      "bytes": 992324,
-      "markers": 0,
+      "bytes": 1039084,
+      "frames": 26,
       "model": "V22 Osprey",
-      "ms": 1613,
+      "ms": 1670,
+      "prepared": [
+        {
+          "axis": "x",
+          "children": [
+            4
+          ],
+          "group": "FRLDoor",
+          "marker_node": 2,
+          "node": 70,
+          "servos": [
+            "servo.FLDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            3
+          ],
+          "group": "FRRDoor",
+          "marker_node": 1,
+          "node": 71,
+          "servos": [
+            "servo.FRDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            69
+          ],
+          "group": "LDoor",
+          "marker_node": 5,
+          "node": 72,
+          "servos": [
+            "servo.LDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            63
+          ],
+          "group": "LStrut",
+          "marker_node": 12,
+          "node": 73,
+          "servos": [
+            "servo.LGearServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            40
+          ],
+          "group": "NStrut",
+          "marker_node": 13,
+          "node": 74,
+          "servos": [
+            "servo.NGearServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            66
+          ],
+          "group": "NStrut1",
+          "marker_node": 7,
+          "node": 75,
+          "servos": [
+            "servo.NSteerServo"
+          ],
+          "source_axis": "y"
+        },
+        {
+          "axis": "x",
+          "children": [
+            68
+          ],
+          "group": "RDoor",
+          "marker_node": 6,
+          "node": 76,
+          "servos": [
+            "servo.RDoorServo"
+          ],
+          "source_axis": "x"
+        },
+        {
+          "axis": "x",
+          "children": [
+            64
+          ],
+          "group": "RStrut",
+          "marker_node": 11,
+          "node": 77,
+          "servos": [
+            "servo.RGearServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            30
+          ],
+          "group": "elevator",
+          "marker_node": 25,
+          "node": 78,
+          "servos": [
+            "servo.elevServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            60
+          ],
+          "group": "leftAileron",
+          "marker_node": 14,
+          "node": 79,
+          "servos": [
+            "servo.leftAileronServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            37
+          ],
+          "group": "leftFlap",
+          "marker_node": 24,
+          "node": 80,
+          "servos": [
+            "servo.leftFlapServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            35
+          ],
+          "group": "leftRudder",
+          "marker_node": 22,
+          "node": 81,
+          "servos": [
+            "servo.leftRudderServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            59
+          ],
+          "group": "rightAileron",
+          "marker_node": 26,
+          "node": 82,
+          "servos": [
+            "servo.rightAileronServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            58
+          ],
+          "group": "rightFlap",
+          "marker_node": 15,
+          "node": 83,
+          "servos": [
+            "servo.rightFlapServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            34
+          ],
+          "group": "rightRudder",
+          "marker_node": 23,
+          "node": 84,
+          "servos": [
+            "servo.rightRudderServo"
+          ],
+          "source_axis": "z"
+        }
+      ],
+      "source_sha256": "89f3f5bb6d2ab09b6e2c0e56e146009420d4b64108d7f98ccee637639c581a56",
       "status": "CONVERTED",
-      "triangles": 6595,
+      "triangles": 6543,
+      "unresolved": [
+        {
+          "group": "leftEngine",
+          "reason": "missing_or_duplicate_render_frame",
+          "servos": [
+            "servo.leftTiltServo"
+          ]
+        },
+        {
+          "group": "rightEngine",
+          "reason": "missing_or_duplicate_render_frame",
+          "servos": [
+            "servo.rightTiltServo"
+          ]
+        },
+        {
+          "group": "motorSpar",
+          "reason": "nested_coordinate_group",
+          "servos": [
+            "servo.sparTiltServo"
+          ]
+        }
+      ],
       "archive_sha256": "789247541c924c56ce612bfc0e1b33d89f2463b9abddfe1f0ec2591fda5df604"
     },
     {
@@ -270,18 +964,115 @@
         "SOURCE_INVALID: Polygon 129 in part \"Fuse\" has intersecting edges."
       ],
       "model": "MC 300S-Air Guard",
-      "ms": 1360,
+      "ms": 1406,
       "status": "REFUSED",
       "archive_sha256": "39ee27cecb946ce5b4929ed95ab64cd37011f8a56ef4d021ff353b46f8e26e9c"
     },
     {
       "archive": "f117",
-      "bytes": 1763912,
-      "markers": 0,
+      "bytes": 1778520,
+      "frames": 6,
       "model": "F-117",
-      "ms": 5126,
+      "ms": 4938,
+      "prepared": [
+        {
+          "axis": "x",
+          "children": [
+            11
+          ],
+          "group": "LAileron",
+          "marker_node": 6,
+          "node": 24,
+          "servos": [
+            "servo.LAileronServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            10
+          ],
+          "group": "LElevator",
+          "marker_node": 8,
+          "node": 25,
+          "servos": [
+            "servo.LElevatorServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            21
+          ],
+          "group": "RAileron",
+          "marker_node": 5,
+          "node": 26,
+          "servos": [
+            "servo.RAileronServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            20
+          ],
+          "group": "RElevator",
+          "marker_node": 7,
+          "node": 27,
+          "servos": [
+            "servo.RElevatorServo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            17
+          ],
+          "group": "Ruder2",
+          "marker_node": 3,
+          "node": 28,
+          "servos": [
+            "servo.Ruder2Servo"
+          ],
+          "source_axis": "z"
+        },
+        {
+          "axis": "x",
+          "children": [
+            12
+          ],
+          "group": "Ruder",
+          "marker_node": 4,
+          "node": 29,
+          "servos": [
+            "servo.RuderServo"
+          ],
+          "source_axis": "z"
+        }
+      ],
+      "source_sha256": "1c4d7bad3741a462686c899b21d4599b13f061dd5e7a8ede748547af26269ccd",
       "status": "CONVERTED",
-      "triangles": 1210,
+      "triangles": 1198,
+      "unresolved": [
+        {
+          "group": "LWing",
+          "reason": "missing_or_duplicate_render_frame",
+          "servos": [
+            "servo.LWingServo"
+          ]
+        },
+        {
+          "group": "RWing",
+          "reason": "missing_or_duplicate_render_frame",
+          "servos": [
+            "servo.RWingServo"
+          ]
+        }
+      ],
       "archive_sha256": "c6ead5a4a348433a3acfaa9d51b841a8a82daa8de0636da582b34192257ace21"
     }
   ]

@@ -8,6 +8,7 @@ const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 const Package := preload("package.gd")
 const Ac3d := preload("ac3d.gd")
 const Images := preload("images.gd")
+const Motion := preload("motion.gd")
 const VERSION := "openrc-clearview-visual-v1"
 const MAX_POLYGON_WORK := 4000000
 var _bin := PackedByteArray()
@@ -83,6 +84,7 @@ static func source_notes(source: InspectedSource) -> Array:
 	if typeof(dropped) in [TYPE_FLOAT,TYPE_INT] and float(dropped) == floor(float(dropped)) and dropped > 0 and dropped <= Ac3d.MAX_SURFACES:
 		notes.append(R.diagnostic(R.SOURCE_INVALID,"%s zero-area surfaces were omitted.","source","import",[str(int(dropped))],R.SEVERITY_INFO))
 	var image_notes: Variant = receipt.get("image_notes",[])
+	notes.append_array(_motion_notes(receipt.get("coordinate_frames")))
 	if image_notes is Array:
 		for entry: Variant in image_notes.slice(0,Limits.GLB_IMAGES):
 			if entry is Dictionary and typeof(entry.get("message")) == TYPE_STRING and entry.message == "JPEG comments were ignored.":
@@ -105,6 +107,9 @@ static func source_notes(source: InspectedSource) -> Array:
 	return notes
 
 func _convert() -> Dictionary:
+	var frames := Motion.inspect(_scene,_model.params,_cancel)
+	if not frames.ok:
+		return frames
 	_gltf = {asset = {version = "2.0", generator = VERSION}, scene = 0, scenes = [{nodes = _scene.roots}],
 		nodes = [], meshes = [], materials = [], images = [], textures = [], samplers = [{wrapS = 10497, wrapT = 10497}],
 		accessors = [], bufferViews = [], buffers = []}
@@ -113,19 +118,24 @@ func _convert() -> Dictionary:
 			break
 		var output := {name = node.name, matrix = _matrix(node), children = node.children}
 		_capture_markers(node, _gltf.nodes.size())
-		var primitives := _mesh(node)
+		var primitives: Array = [] if frames.value.marked.has(_gltf.nodes.size()) else _mesh(node)
 		if not primitives.is_empty():
 			output.mesh = _gltf.meshes.size()
 			_gltf.meshes.append({name = node.name, primitives = primitives})
 		_gltf.nodes.append(output)
 	if not _error.is_empty():
 		return _error
+	var static_nodes: Array = _gltf.nodes.duplicate(true)
+	var static_roots: Array = _gltf.scenes[0].nodes.duplicate()
+	var motion := Motion.prepare(_gltf,_scene,frames.value,_cancel)
+	if not motion.ok:
+		return motion
 	var receipt := {format = VERSION, archive_sha256 = _package.archive().sha256(), archive_label = _package.archive().label(),
 		model_root = _model.root, params_version = _model.params.version, model_type = _model.params.model_type,
 		members = _dependencies, physics_imported = false, dropped_degenerate_surfaces = _dropped,
 		material_conversion = "AC3D Phong to metallic-roughness approximation; ambient/specular originals retained below",
 		original_materials = _scene.materials, observations = _model.params.records, markers = _markers,
-		image_notes = _texture_notes, archive_notes = _package.archive().diagnostics()}
+		image_notes = _texture_notes, archive_notes = _package.archive().diagnostics(),coordinate_frames = motion.value}
 	_gltf.asset.extras = {openrc_clearview = receipt}
 	# Empty optional collections are omitted; Creator's validator admits the resulting closed subset.
 	var no_images: bool = _gltf.images.is_empty()
@@ -133,22 +143,80 @@ func _convert() -> Dictionary:
 		if no_images or _gltf[key].is_empty():
 			_gltf.erase(key)
 	_gltf.buffers = [{byteLength = _bin.size()}]
-	var encoded := _glb()
-	if not _error.is_empty():
-		return _error
-	if encoded.size() > Limits.MODEL_SOURCE_BYTES:
-		return R.fail(R.SOURCE_LIMIT, "The converted model exceeds the 32 MiB Creator limit.", "source", "import")
 	var label := str(_model.name).validate_filename().left(200) + ".glb"
-	var inspected := Importer.inspect_bytes(encoded, label)
+	var inspected := _admit(label)
+	if not inspected.ok and not motion.value.prepared.is_empty():
+		# Optional articulation must not make an otherwise admitted static model unavailable.
+		_gltf.nodes = static_nodes
+		_gltf.scenes[0].nodes = static_roots
+		for entry: Dictionary in motion.value.prepared:
+			motion.value.unresolved.append({group = entry.group,reason = "rig_admission",servos = entry.servos})
+		motion.value.prepared = []
+		receipt.coordinate_frames = motion.value
+		_gltf.asset.extras.openrc_clearview = receipt
+		_error = {}
+		inspected = _admit(label)
 	if not inspected.ok:
 		return inspected
 	var notes: Array = _model.diagnostics.duplicate(true)
 	notes.append_array(_package.archive().diagnostics())
 	notes.append_array(_texture_notes)
+	notes.append_array(_motion_notes(motion.value))
 	notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED, "Legacy Phong materials use an approximate OpenRC finish. Original colours and texture mapping are retained.", "source", "import", [], R.SEVERITY_INFO))
 	if _dropped > 0:
 		notes.append(R.diagnostic(R.SOURCE_INVALID, "%s zero-area surfaces were omitted.", "source", "import", [str(_dropped)], R.SEVERITY_INFO))
 	return R.ok({source = inspected.value, receipt = receipt}, notes)
+
+func _admit(label: String) -> Dictionary:
+	var encoded := _glb()
+	if not _error.is_empty():
+		return _error
+	if encoded.size() > Limits.MODEL_SOURCE_BYTES:
+		return R.fail(R.SOURCE_LIMIT, "The converted model exceeds the 32 MiB Creator limit.", "source", "import")
+	return Importer.inspect_bytes(encoded,label)
+
+## Read only bounded counts from untrusted extras; never reconstruct or execute a rig from them.
+static func _motion_notes(motion: Variant) -> Array:
+	if not motion is Dictionary or typeof(motion.get("format")) != TYPE_STRING or motion.format != Motion.FORMAT:
+		return []
+	var notes: Array = []
+	for field: String in ["frames","prepared","unresolved"]:
+		if not motion.get(field) is Array or motion[field].size() > Limits.GLB_NODES:
+			return []
+	if not motion.frames.is_empty():
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,"%s coordinate markers were hidden and retained as source evidence.","source","import",[str(motion.frames.size())],R.SEVERITY_INFO))
+	if not motion.prepared.is_empty():
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,"%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview.","source","import",[str(motion.prepared.size())],R.SEVERITY_INFO))
+	if not motion.unresolved.is_empty():
+		notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,"%s servo mappings were left unprepared. Review their source declarations before binding those parts.","source","import",[str(motion.unresolved.size())],R.SEVERITY_WARNING))
+		# Rebuild explanations from a closed reason table, never display arbitrary saved error text.
+		for entry: Variant in motion.unresolved.slice(0,16):
+			if not entry is Dictionary or typeof(entry.get("group")) != TYPE_STRING or typeof(entry.get("reason")) != TYPE_STRING:
+				continue
+			var label: String = entry.group
+			if label.is_empty() or label.length() > 512:
+				continue
+			var printable := true
+			for at: int in label.length():
+				if label.unicode_at(at) < 32 or label.unicode_at(at) == 127:
+					printable = false
+			if not printable:
+				continue
+			var message := ""
+			match entry.reason:
+				"missing_or_duplicate_render_frame", "missing_render_group", "empty_or_whole_model_group":
+					message = "Hinge \"%s\": provide one named render frame and a separate visible part group."
+				"missing_or_conflicting_servo_mapping", "unsupported_or_conflicting_servo_movement", "unsupported_servo_target_type", "missing_or_conflicting_model_servos", "unlisted_servo_section", "missing_listed_servo", "multiple_servos_for_render_group":
+					message = "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+				"multiple_render_parents", "foreign_render_descendant", "nested_coordinate_group", "overlapping_render_groups", "non_rigid_coordinate_frame":
+					message = "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+				"hinge_limit", "node_limit", "depth_limit", "neutral_transform_mismatch", "render_precision":
+					message = "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+				"rig_admission":
+					message = "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+			if not message.is_empty():
+				notes.append(R.diagnostic(R.SOURCE_UNSUPPORTED,message,"source","import",[label],R.SEVERITY_WARNING))
+	return notes
 
 func _mesh(node: Dictionary) -> Array:
 	if not _precision_ok(node):

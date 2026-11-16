@@ -13479,3 +13479,39 @@ msgstr "I commenti JPEG sono stati ignorati."
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "Sono state ignorate le dimensioni dichiarate di altre %s vecchie cartelle vuote."
+
+msgid "Left aileron, second part"
+msgstr "Alettone sinistro, seconda parte"
+
+msgid "Right aileron, second part"
+msgstr "Alettone destro, seconda parte"
+
+msgid "Rudder, second part"
+msgstr "Timone, seconda parte"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "Il marcatore di coordinate «%s» è ambiguo o non supportato. Correggi il suo sistema XYZ a quattro punti prima di importarlo."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "%s marcatori di coordinate sono stati nascosti e conservati come dati di origine."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "Sono state preparate %s proposte di cerniere visive. Seleziona i gruppi di perno in Parti mobili; X segue l’asse dichiarato. Conferma ogni comando e direzione nell’anteprima."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "%s associazioni dei servi non sono state preparate. Controlla le dichiarazioni di origine prima di collegare le parti."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Cerniera «%s»: fornisci un solo sistema di coordinate visivo con nome e un gruppo separato di parti visibili."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Cerniera «%s»: usa un solo servo di rotazione elencato, con superficie, gruppo visivo e asse non ambigui."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Cerniera «%s»: separa le parti estranee o annidate e applica trasformazioni rigide ai nodi genitore."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Cerniera «%s»: la nuova gerarchia supera i limiti di precisione o complessità. Semplifica e ricentra il modello di origine."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Cerniera «%s»: il modello preparato è stato rifiutato. È stata mantenuta la gerarchia statica originale."

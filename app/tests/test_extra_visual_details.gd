@@ -61,13 +61,39 @@ func _run() -> void:
 	var front := INF
 	for point in _vertices(brim): front = minf(front, point.z)
 	_check("pilot visor follows the plan point", absf(front - float(Geometry.DATA.pilot.cap_brim_front[0])) < 0.001)
+	var head := root.get_node("pilot/pilot_head") as MeshInstance3D
+	_check("integrated head and neck form a closed surface", _closed_surface(head))
+	var head_points: PackedVector3Array = head.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	for landmark in ["chin", "nose_front", "head_back"]:
+		var trace: Array = Geometry.DATA.pilot[landmark]
+		var nearest := INF
+		for point in head_points:
+			if absf(point.x) > 0.00001: continue
+			nearest = minf(nearest, Vector2(point.z, point.y).distance_to(Vector2(trace[0], trace[1])))
+		_check("pilot %s follows its side-profile point" % landmark, nearest < 0.00015, "%.3f mm" % (nearest * 1000.0))
+	var cap := root.get_node("pilot/pilot_cap") as MeshInstance3D
+	var cap_points: PackedVector3Array = cap.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var crown_distance := INF
+	for point in cap_points:
+		crown_distance = minf(crown_distance, point.distance_to(Vector3(0, Geometry.DATA.pilot.cap_top[1], Geometry.DATA.pilot.cap_top[0])))
+	_check("cap crown follows the plan point", crown_distance < 0.00015)
+	var lens_margin := pilot_lens_margin(root)
+	_check("eyewear faces clear the emitted skin", lens_margin > 0.0001, "%.3f mm" % (lens_margin * 1000.0))
 	for label in ["pilot", "cockpit"]:
 		var interior_meshes: Array[MeshInstance3D] = []
 		_meshes(root.get_node(label), interior_meshes)
 		var outside := 0
 		for mesh in interior_meshes:
-			for point in _vertices(mesh):
-				if not _inside_canopy(point): outside += 1
+			var points: PackedVector3Array = mesh.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+			var indices: PackedInt32Array = PackedInt32Array() if mesh.mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX] == null else mesh.mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX]
+			var transform := root.global_transform.affine_inverse() * mesh.global_transform
+			var count := points.size() if indices.is_empty() else indices.size()
+			for i in range(0, count, 3):
+				var a: Vector3 = transform * points[i if indices.is_empty() else indices[i]]
+				var b: Vector3 = transform * points[i + 1 if indices.is_empty() else indices[i + 1]]
+				var c: Vector3 = transform * points[i + 2 if indices.is_empty() else indices[i + 2]]
+				for point in [a, b, c, (a + b) * 0.5, (b + c) * 0.5, (a + c) * 0.5, (a + b + c) / 3.0]:
+					if not _inside_canopy(point): outside += 1
 		_check(label + " fits the curved canopy", outside == 0, "%d vertices outside" % outside)
 	var wing: Dictionary = Geometry.DATA.wing
 	for side in ["left", "right"]:
@@ -113,6 +139,32 @@ func _run() -> void:
 	second.root.free()
 	root.free()
 	super._run()
+
+
+# Sample the rendered eyewear triangles against the actual head, rather than
+# repeating its analytic section function. Side arms are outside this front test.
+static func pilot_lens_margin(root: Node3D) -> float:
+	var head := root.get_node("pilot/pilot_head") as MeshInstance3D
+	var eyewear := root.get_node("pilot/pilot_eyewear") as MeshInstance3D
+	var skin: PackedVector3Array = head.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var transform := root.global_transform.affine_inverse() * head.global_transform
+	for i in skin.size(): skin[i] = (transform * skin[i]) * 1000.0
+	var lens: PackedVector3Array = eyewear.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	transform = root.global_transform.affine_inverse() * eyewear.global_transform
+	var margin := INF
+	var count := 0
+	for i in range(0, lens.size(), 3):
+		var point: Vector3 = transform * ((lens[i] + lens[i + 1] + lens[i + 2]) / 3.0)
+		if absf(point.x) > 0.0175: continue
+		var origin := Vector3(point.x, point.y, float(Geometry.DATA.pilot.nose_front[0]) - 0.1) * 1000.0
+		var front := INF
+		for k in range(0, skin.size(), 3):
+			var hit: Variant = Geometry3D.ray_intersects_triangle(origin, Vector3.BACK, skin[k], skin[k + 1], skin[k + 2])
+			if hit is Vector3: front = minf(front, hit.z * 0.001)
+		if not is_finite(front): return -INF
+		margin = minf(margin, front - point.z)
+		count += 1
+	return margin if count > 10 else -INF
 
 
 # Compare the actual boundary polylines, independent of the generator's sample

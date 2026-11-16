@@ -125,11 +125,12 @@ func _parts() -> void:
 		names.append(part.name)
 		parents.append(part.parent)
 		triangles.append(part.triangles)
-	# The stray node 11 is in no scene; rig, tail and marker carry no mesh.
-	check("parts are the mesh nodes of the shown scene, in file order", nodes == [1, 2, 3, 4, 5, 6, 7, 8])
-	check("part names, a repeated name included", names == ["body", "wing", "aileron", "aileron", "elevator_l", "elevator_r", "rudder", "prop"])
-	check("part parents are node indices", parents == [0, 0, 2, 2, 9, 9, 0, 0])
-	check("part triangles", triangles == [4, 2, 1, 1, 1, 1, 1, 2])
+	# The stray node 11 is in no scene; rig covers the whole model; marker has no mesh below it.
+	check("parts include proper subset groups in file order", nodes == [1, 2, 3, 4, 5, 6, 7, 8, 9])
+	check("part names, a repeated name included", names == ["body", "wing", "aileron", "aileron", "elevator_l", "elevator_r", "rudder", "prop", "tail"])
+	check("part parents are node indices", parents == [0, 0, 2, 2, 9, 9, 0, 0, 0])
+	check("part triangles include the whole moved subtree", triangles == [4, 4, 1, 1, 1, 1, 1, 2, 2])
+	check("group bounds enclose both elevators", _close(parts[8].bounds_min,[-0.1,0.45,-3.4]) and _close(parts[8].bounds_max,[1.1,0.45,-3.0]))
 	# By hand, left aileron: rig box x 0.2..0.4, y 0.05, z 0.4..0.6.
 	check("left aileron bounds", _close(parts[2].bounds_min, [1.3, 0.35, -1.8]) and _close(parts[2].bounds_max, [1.7, 0.35, -1.4]))
 	# Right aileron, turned 180 degrees about its own x: rig box x 0.2..0.4, y 0.05, z -0.6..-0.4.

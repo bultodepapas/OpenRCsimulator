@@ -13453,3 +13453,39 @@ msgstr "Комментарии JPEG проигнорированы."
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "Проигнорированы заявленные размеры ещё %s старых пустых папок."
+
+msgid "Left aileron, second part"
+msgstr "Левый элерон, вторая часть"
+
+msgid "Right aileron, second part"
+msgstr "Правый элерон, вторая часть"
+
+msgid "Rudder, second part"
+msgstr "Руль направления, вторая часть"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "Маркер координат «%s» неоднозначен или не поддерживается. Исправьте его систему XYZ из четырёх точек перед импортом."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "Скрыто маркеров координат: %s. Они сохранены как исходные данные."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "Подготовлено предложений визуальных шарниров: %s. Выберите их группы в разделе «Подвижные части»; X следует заявленной оси. Проверьте каждый орган управления и направление в предпросмотре."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "Не подготовлено привязок сервоприводов: %s. Проверьте их исходные объявления перед привязкой этих частей."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Шарнир «%s»: задайте одну именованную визуальную систему координат и отдельную видимую группу частей."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Шарнир «%s»: используйте один указанный сервопривод вращения с однозначными поверхностью, визуальной группой и осью."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Шарнир «%s»: отделите посторонние или вложенные части и примените жёсткие преобразования родительских узлов."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Шарнир «%s»: новая иерархия превысила пределы точности или сложности. Упростите и заново центрируйте исходную модель."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Шарнир «%s»: подготовленная модель отклонена. Исходная статическая иерархия сохранена."

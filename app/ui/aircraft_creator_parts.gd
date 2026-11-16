@@ -17,8 +17,10 @@ const InspectedSource := preload("res://workshop/creator/inspected_source.gd")
 
 ## Role, slot within the role and caption of each row.
 const SLOTS: Array[Array] = [
-	["aileron_left", 0, "Left aileron"], ["aileron_right", 0, "Right aileron"], ["elevator", 0, "Elevator"],
-	["elevator", 1, "Elevator, second part"], ["rudder", 0, "Rudder"], ["propeller", 0, "Propeller"],
+	["aileron_left", 0, "Left aileron"], ["aileron_left", 1, "Left aileron, second part"],
+	["aileron_right", 0, "Right aileron"], ["aileron_right", 1, "Right aileron, second part"],
+	["elevator", 0, "Elevator"], ["elevator", 1, "Elevator, second part"],
+	["rudder", 0, "Rudder"], ["rudder", 1, "Rudder, second part"], ["propeller", 0, "Propeller"],
 ]
 const AXIS_NAMES: PackedStringArray = ["X", "Y", "Z"]
 const NOT_BOUND := "Not bound"

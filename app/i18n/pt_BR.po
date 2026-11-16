@@ -13491,3 +13491,39 @@ msgstr "Os comentários JPEG foram ignorados."
 
 msgid "Ignored size hints for %s additional empty legacy directories."
 msgstr "Foram ignorados os tamanhos declarados de outras %s pastas antigas vazias."
+
+msgid "Left aileron, second part"
+msgstr "Aileron esquerdo, segunda peça"
+
+msgid "Right aileron, second part"
+msgstr "Aileron direito, segunda peça"
+
+msgid "Rudder, second part"
+msgstr "Leme, segunda peça"
+
+msgid "Coordinate marker \"%s\" is ambiguous or unsupported. Correct its four-point XYZ frame before importing."
+msgstr "O marcador de coordenadas «%s» é ambíguo ou não é compatível. Corrija o seu sistema XYZ de quatro pontos antes de importar."
+
+msgid "%s coordinate markers were hidden and retained as source evidence."
+msgstr "%s marcadores de coordenadas foram ocultados e preservados como evidência da origem."
+
+msgid "%s visual hinge proposals were prepared. Select their pivot groups in Moving parts; X follows the declared axis. Confirm each control and direction in the preview."
+msgstr "Foram preparadas %s propostas de dobradiças visuais. Selecione os grupos de pivô em Peças móveis; X segue o eixo declarado. Confirme cada comando e direção na pré-visualização."
+
+msgid "%s servo mappings were left unprepared. Review their source declarations before binding those parts."
+msgstr "%s associações de servo não foram preparadas. Reveja as declarações de origem antes de associar essas peças."
+
+msgid "Hinge \"%s\": provide one named render frame and a separate visible part group."
+msgstr "Dobradiça «%s»: forneça um único sistema visual de coordenadas com nome e um grupo visível de peças separado."
+
+msgid "Hinge \"%s\": use one listed rotation servo with an unambiguous surface, render group and axis."
+msgstr "Dobradiça «%s»: use um único servo de rotação listado, com superfície, grupo visual e eixo inequívocos."
+
+msgid "Hinge \"%s\": separate unrelated or nested parts and apply rigid parent transforms."
+msgstr "Dobradiça «%s»: separe peças alheias ou aninhadas e aplique transformações rígidas aos nós pais."
+
+msgid "Hinge \"%s\": reparenting exceeded precision or hierarchy limits. Simplify and recenter the source."
+msgstr "Dobradiça «%s»: a alteração de hierarquia excedeu os limites de precisão ou complexidade. Simplifique o modelo e recentre a origem."
+
+msgid "Hinge \"%s\": the prepared model was refused. Its original static hierarchy was retained."
+msgstr "Dobradiça «%s»: o modelo preparado foi recusado. A hierarquia estática original foi preservada."
