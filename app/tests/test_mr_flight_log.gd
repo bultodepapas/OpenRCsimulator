@@ -68,7 +68,7 @@ func _run() -> void:
 	var flight_path := DIR + "/flight.orfl"
 	var recorder := MultirotorLog.new(s)
 	_check("recording starts on the prepared, paused flight", recorder.start(context, flight_path) == OK and recorder.recording
-		and recorder.header.layout == {pilot = 9, state = 13, continuous = 8, aux = 31, modes = 8})
+		and recorder.header.layout == {pilot = 9, state = 13, continuous = 9, aux = 31, modes = 8})
 	_check("a second start while recording is refused", recorder.start(context, DIR + "/other.orfl") == ERR_ALREADY_IN_USE)
 	s.resume()
 	var ok: bool = _arm(s) and s.sim.modes[FC.MODE_MOTOR] == FC.MOTOR_ARMED
@@ -114,7 +114,7 @@ func _run() -> void:
 	_check("pause, resume, marker, crash, kernel crash event and stop are kept", kinds.has("pause") and kinds.has("resume")
 		and kinds.has("marker") and kinds.has("crash") and kinds.has("stop") and kernel_crash)
 	var last: int = read.ticks.size() - 1
-	_check("the last row is the live final frame", var_to_bytes({body = read.states.slice(13 * last), continuous = read.continuous.slice(8 * last),
+	_check("the last row is the live final frame", var_to_bytes({body = read.states.slice(13 * last), continuous = read.continuous.slice(int(read.header.layout.continuous) * last),
 		aux = read.aux.slice(31 * last), modes = read.modes.slice(8 * last)}) == final_frame)
 	var report := MultirotorLog.verify(flight_path)
 	_check("REPLAY-01 the complete flight replays exactly from its pilot tape", report.ok and report.exact and report.complete

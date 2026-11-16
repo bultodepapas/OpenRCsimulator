@@ -44,13 +44,15 @@
   "battery": {
     "cells": {"value": 6, "unit": "1", "class": "estimated", "note": "6S pack chosen for this candidate"},
     "capacity": {"value": 1.3, "unit": "A*h", "class": "estimated", "note": "1300 mAh pack chosen for this candidate"},
-    "resistance": {"value": 0.030, "unit": "ohm", "class": "estimated", "note": "about 5 mOhm per cell"},
+    "resistance": {"value": 0.020, "unit": "ohm", "class": "estimated", "note": "instantaneous pack R0; exploratory 20 mOhm + 10 mOhm polarization split preserves the previous estimated 30 mOhm steady DC loss; not identified from this pack"},
+    "polarization_resistance": {"value": 0.010, "unit": "ohm", "class": "estimated", "note": "one-RC Thevenin polarization R1; exploratory split, requires pack-specific pulse/rest identification"},
+    "polarization_time": {"value": 1.0, "unit": "s", "class": "estimated", "note": "one-RC recovery time; exploratory 1 s parameter, not a measured FPV pack time constant; temperature, SOC and aging dependence are not modeled"},
     "auxiliary_current": {"value": 0.6, "unit": "A", "class": "estimated", "note": "VTX/FC/receiver draw"},
     "initial_soc": {"value": 1.0, "unit": "1", "class": "estimated", "note": "fully charged start"},
     "cell_ocv": {"value": [[0.0, 3.30], [0.05, 3.55], [0.10, 3.68], [0.20, 3.74], [0.30, 3.77], [0.40, 3.80], [0.50, 3.84], [0.60, 3.88], [0.70, 3.94], [0.80, 4.02], [0.90, 4.11], [1.0, 4.20]], "unit": "V", "class": "estimated", "note": "generic single-cell LiPo rest curve (soc, volts), not identified for a product"}
   },
   "powertrain": {
-    "braking": {"value": "damped", "class": "estimated", "note": "complementary (damped) bridge switching, the usual default of current FPV ESC firmware: signed motor current, active braking and regeneration into the pack; no ESC was measured and no current limit is modelled"},
+    "braking": {"value": "damped_nonregenerative", "class": "estimated", "note": "experimental averaged ESC policy: retain signed mean braking torque, share generated power with other loads, and dissipate surplus through effective motor-path resistive loss via active-short/coast mixing; the fitted motor/ESC/wiring resistance is reused in every switching state and equivalent RMS is not a measured phase current; no net pack charging, external dump resistor, measured ESC switching map or thermal/current limit; not BLHeli firmware equivalence"},
     "idle_command": {"value": 0.055, "unit": "1", "class": "borrowed", "note": "idle command from the lab fixture / firmware default idle"},
     "max_command": {"value": 1.0, "unit": "1", "class": "borrowed", "note": "maximum command from the lab fixture output limit"}
   },

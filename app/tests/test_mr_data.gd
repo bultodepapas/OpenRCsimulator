@@ -85,7 +85,7 @@ func _shape(p: Dictionary, sha: String) -> void:
 	_keys_are("powertrain", p.powertrain, ["law", "kv_rad_s_per_v", "resistance_ohm", "no_load_current_a", "braking",
 		"idle_command", "max_command"])
 	_keys_are("battery", p.battery, ["cells", "capacity_ah", "ocv_points", "resistance_ohm", "auxiliary_current_a",
-		"initial_soc"])
+		"initial_soc", "polarization_resistance_ohm", "polarization_time_s"])
 	_keys_are("controller", p.controller, ["sample_hz", "kp", "ki", "kd", "i_max", "kaw", "tau_limit", "gyro_lpf_hz",
 		"dterm_lpf_hz", "kff", "setpoint_lpf_hz", "angle_max_tilt_rad", "angle_gain_per_s", "angle_rate_limit_rad_s", "arm_low_throttle",
 		"allocator_weights", "throttle_rate_per_s"])

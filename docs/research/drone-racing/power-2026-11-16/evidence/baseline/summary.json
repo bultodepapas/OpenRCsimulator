@@ -1,0 +1,89 @@
+{
+  "cases": [
+    {
+      "case": "soc-100",
+      "complete": true,
+      "crash": {},
+      "data_sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+      "exact": true,
+      "fault": "",
+      "final_altitude_m": 137.418917055487,
+      "final_charge_c": 4556.38542229517,
+      "footer_reason": "power maneuver complete",
+      "initial_soc": 1.0,
+      "layout": {
+        "aux": 31,
+        "continuous": 8,
+        "modes": 8,
+        "pilot": 9,
+        "state": 13
+      },
+      "maximum_charge_c": 4680.0,
+      "maximum_current_a": 226.073769960461,
+      "minimum_current_a": -34.2456059934067,
+      "minimum_voltage_v": 18.3848362637334,
+      "ok": true,
+      "replay_error": "",
+      "solver_changed": false,
+      "solver_sha256": "4ff2633134c239bfd164f1034fd6b86bb08d5e3c2af1f492d25b59cf5972c01c",
+      "ticks": 1418
+    },
+    {
+      "case": "soc-050",
+      "complete": true,
+      "crash": {},
+      "data_sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+      "exact": true,
+      "fault": "",
+      "final_altitude_m": 119.19653605616,
+      "final_charge_c": 2230.43655690873,
+      "footer_reason": "power maneuver complete",
+      "initial_soc": 0.5,
+      "layout": {
+        "aux": 31,
+        "continuous": 8,
+        "modes": 8,
+        "pilot": 9,
+        "state": 13
+      },
+      "maximum_charge_c": 2340.0,
+      "maximum_current_a": 206.41819802326,
+      "minimum_current_a": -32.6052710969745,
+      "minimum_voltage_v": 16.8345253176878,
+      "ok": true,
+      "replay_error": "",
+      "solver_changed": false,
+      "solver_sha256": "4ff2633134c239bfd164f1034fd6b86bb08d5e3c2af1f492d25b59cf5972c01c",
+      "ticks": 1418
+    },
+    {
+      "case": "soc-020",
+      "complete": true,
+      "crash": {},
+      "data_sha256": "82f1ff64a572e8afd23c1cf84e824ee784bf7d04d5635ac18792001c3dbeeb62",
+      "exact": true,
+      "fault": "",
+      "final_altitude_m": 113.737394791648,
+      "final_charge_c": 830.438307864796,
+      "footer_reason": "power maneuver complete",
+      "initial_soc": 0.2,
+      "layout": {
+        "aux": 31,
+        "continuous": 8,
+        "modes": 8,
+        "pilot": 9,
+        "state": 13
+      },
+      "maximum_charge_c": 936.0,
+      "maximum_current_a": 200.871170302663,
+      "minimum_current_a": -32.0865821071065,
+      "minimum_voltage_v": 16.3951706956657,
+      "ok": true,
+      "replay_error": "",
+      "solver_changed": false,
+      "solver_sha256": "4ff2633134c239bfd164f1034fd6b86bb08d5e3c2af1f492d25b59cf5972c01c",
+      "ticks": 1418
+    }
+  ],
+  "format": "openrc-fpv-power-maneuvers-v1"
+}

@@ -16,6 +16,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const Sim := preload("res://sim/simulation.gd")
 const SimEnvironment := preload("res://sim/environment.gd")
 const Data := preload("res://physics/multirotor_data.gd")
+const BatteryPack := preload("res://physics/multirotor/battery_pack.gd")
 const Plant := preload("res://physics/multirotor/controlled_plant.gd")
 const FC := preload("res://physics/multirotor/flight_controller.gd")
 const Rates := preload("res://physics/multirotor/rates.gd")
@@ -861,7 +862,7 @@ static func _sha256_hex(bytes: PackedByteArray) -> String:
 
 ## Shape screen of an in-memory prepared document before the plant reads it ("" = acceptable). The plant, the
 ## actuator map, the allocator and the controller validate their own values; this only keeps them from reading a
-## missing or mistyped block.
+## missing or mistyped block. Battery and loaded-hover domains are shared with the document reader.
 static func _prepared_shape_error(doc: Dictionary) -> String:
 	for key: String in ["identity", "rotor_law", "airframe", "powertrain", "controller", "contacts", "start"]:
 		if typeof(doc.get(key)) != TYPE_DICTIONARY:
@@ -879,10 +880,13 @@ static func _prepared_shape_error(doc: Dictionary) -> String:
 	for key: String in ["thrust_coefficient_n_s2", "torque_coefficient_n_m_s2", "max_speed_rad_s"]:
 		if not _positive(doc.rotor_law.get(key)):
 			return "prepared_data.rotor_law.%s: positive finite value required" % key
-	if not _number(doc.rotor_law.get("rotor_drag_n_s2_per_m")):
-		return "prepared_data.rotor_law.rotor_drag_n_s2_per_m: finite value required"
+	if not _number(doc.rotor_law.get("rotor_drag_n_s2_per_m")) or float(doc.rotor_law.rotor_drag_n_s2_per_m) < 0.0:
+		return "prepared_data.rotor_law.rotor_drag_n_s2_per_m: nonnegative finite value required"
 	if not _floats(doc.airframe.get("drag_areas_m2"), 3):
 		return "prepared_data.airframe.drag_areas_m2: three finite values required"
+	for area: float in doc.airframe.drag_areas_m2:
+		if area < 0.0:
+			return "prepared_data.airframe.drag_areas_m2: negative drag is not admitted"
 	if not _floats(doc.controller.get("allocator_weights"), 4):
 		return "prepared_data.controller.allocator_weights: four finite values required"
 	var law: Variant = doc.powertrain.get("law")
@@ -905,13 +909,12 @@ static func _prepared_shape_error(doc: Dictionary) -> String:
 	if law == ActuatorMap.LAW_ELECTRIC:
 		if typeof(doc.get("battery")) != TYPE_DICTIONARY:
 			return "prepared_data.battery: required for the electrical law"
-		var battery: Dictionary = doc.battery
-		for key: String in ["capacity_ah", "resistance_ohm", "auxiliary_current_a", "initial_soc"]:
-			if not _number(battery.get(key)):
-				return "prepared_data.battery.%s: finite value required" % key
-		var points: Variant = battery.get("ocv_points")
-		if typeof(points) != TYPE_PACKED_FLOAT64_ARRAY or points.size() < 4 or points.size() % 2 != 0 or not _floats(points, points.size()):
-			return "prepared_data.battery.ocv_points: [soc, volts] pairs required"
+		var battery_error: String = BatteryPack.error(doc.battery)
+		if not battery_error.is_empty():
+			return "prepared_data." + battery_error
+		var hover_error: String = Data.electrical_hover_error(doc)
+		if not hover_error.is_empty():
+			return "prepared_data." + hover_error
 	return ""
 
 

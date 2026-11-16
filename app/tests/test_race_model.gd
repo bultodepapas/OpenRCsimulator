@@ -146,8 +146,8 @@ func _layout() -> void:
 	var sim: Node = h.sim
 	_check("the wrapped model validates, installs and resets through prepare/commit_prepared_reset_frame", h.ok and message.is_empty(),
 		message + str(h.errors))
-	_check("layout: ten inputs, aux 31 + 9, modes 8 + 10, the plant's eight continuous values", sim.model.input_size == 10
-		and sim.model.aux_size == 40 and sim.model.modes_size == 18 and sim.model.continuous_size == 8
+	_check("layout: ten inputs, aux 31 + 9, modes 8 + 10, the plant's nine continuous values", sim.model.input_size == 10
+		and sim.model.aux_size == 40 and sim.model.modes_size == 18 and sim.model.continuous_size == Plant.ELECTRIC_CONTINUOUS
 		and RaceModel.AUX_RACE + Director.AUX_SIZE == RaceModel.AUX_SIZE and RaceModel.MODES_RACE + Director.MODES_SIZE == RaceModel.MODES_SIZE)
 	_check("layout identity is the plant layout plus the ruleset suffix; identity pins ruleset, course and path policy",
 		sim.model.state_layout_identity == Plant.LAYOUT_ELECTRIC + "+openrc-local-race-v1"

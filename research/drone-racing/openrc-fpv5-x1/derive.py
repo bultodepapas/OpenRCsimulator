@@ -307,6 +307,7 @@ def build(sources_bytes):
             "cells": src(bat["cells"]), "capacity": src(bat["capacity"]),
             "ocv_points": q(ocv_points, "V", "derived", "pack open-circuit voltage (soc, volts) = generic per-cell LiPo rest curve (estimated, not identified for a product) times %d cells" % cells),
             "resistance": src(bat["resistance"]), "auxiliary_current": src(bat["auxiliary_current"]),
+            "polarization_resistance": src(bat["polarization_resistance"]), "polarization_time": src(bat["polarization_time"]),
             "initial_soc": src(bat["initial_soc"]),
         },
         "controller": {

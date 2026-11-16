@@ -331,7 +331,7 @@ Next: the repair sequence below, required CI, a native 1080p session with a real
 
 ## 16. Audit remediation programme (2026-11-16)
 
-**Status: planned, no production repairs landed by this audit branch.** The [baseline audit](../research/drone-racing/audit-2026-11-16/README.md) records 18 initial findings plus A19 from the follow-up (19 total); the [follow-up investigation](../research/drone-racing/audit-2026-11-16/follow-up.md) supplies stronger scene/session witnesses, negative search results, alternatives and pinned engine-source analysis. Those documents own dated evidence; this section is the authoritative remaining-work plan. Implementation must reference the owning DR step and applicable A finding, with proof in its commit.
+**Status: battery/power implementation on `fix/fpv-battery-power-2026-11-16`; remaining packets planned.** The original audit branch remains a dated baseline. The [battery/power record](../research/drone-racing/power-2026-11-16/README.md) owns the A06/A08 repairs and battery/negative-drag subset of A09; full A09 parity remains open. The [baseline audit](../research/drone-racing/audit-2026-11-16/README.md) records 18 initial findings plus A19 from the follow-up (19 total); the [follow-up investigation](../research/drone-racing/audit-2026-11-16/follow-up.md) supplies stronger scene/session witnesses, negative search results, alternatives and pinned engine-source analysis. Those documents own dated evidence; this section is the authoritative remaining-work plan. Implementation must reference the owning DR step and applicable A finding, with proof in its commit.
 
 The compared main head is `6dfe1b9179af408f6b765b91ca164e626570db9f`; relevant FPV/input/session/race source is unchanged from `cfb5acd5`. Recheck drift before implementation. Preserve baseline recordings and configuration identities before intentional physics changes. Documentation and observation probes do not promote M2/M3 qualification.
 
@@ -344,11 +344,11 @@ The compared main head is `6dfe1b9179af408f6b765b91ca164e626570db9f`; relevant F
 | Pause | Implement an explicit ordinary-hold continuity contract for an unchanged verified source/mapping/arm intent, with atomic pause entry and a recheck before the first resumed tick. Any observed OFF or continuity loss enters disclosed recovery. | A disclosed pad restart is acceptable temporary containment but does not close ordinary powered resume. Waiting for fresh AUX while paused deadlocks; retaining stale ON indefinitely can hide an actual OFF. A new pilot-frame validity field requires a versioned protocol change. |
 | Results | Stable publication ID and canonical payload outside pure physics; retry and graceful-exit/restore guards; authoritative attempt files and an idempotent recoverable book projection. | A durable queue follows only with an explicit verified acknowledgement boundary, startup recovery and rewind policy. It cannot persist an unavailable first write; graceful-exit safety must not be labeled process-crash durability. |
 | Mutable saves | Reuse validated previous-copy or alternating-generation recovery, with readback, ownership and failure seams. Preserve unknown/future versions. | Native atomic replacement may be preferable once qualified per OS. Removing the application's unlink alone leaves the pinned Windows engine's own delete-before-move failure window. `flush` is not a power-loss guarantee. |
-| Pack energy | First qualify the existing one-quadrant non-regenerative candidate, refusing unsupported signed laws on every admitted path and checking charge bounds. Regenerate source-owned data. | Coasting weakens early chop control in an existing synthetic test. If it fails the declared maneuver gate, implement coherent dissipative braking or bounded regeneration; neither a charge clamp nor clipped pack current repairs the energy law. |
+| Pack energy | Implemented experimental one-RC pack and explicitly named `damped_nonregenerative` policy; regenerate source data, preserve mean brake torque and account surplus as effective motor-path loss. Strict upper charge/energy restore domains and versioned layout. | Pure coasting fails the retained early-chop authority gate. Bounded regeneration needs identified acceptance/overvoltage/event rules; a charge clamp or clipped current does not conserve energy. |
 | Hover admission | Solve loaded shared-pack equilibrium with duty, shaft-speed, voltage and residual checks; retain independent power bounds as negative oracles. | An OCV-only or maximum-power-only guard cannot prove actuator feasibility. A frozen-SOC operating point does not prove sustained or real-FC hover; charge still decreases under load. |
 | Contact and scoring | Bounded full-terrain disc intersection; separately adopt a versioned conservative rule suppressing crossings in a tick with unresolved physical terminal time. | A plane formula is an exact fixture, not a curved-terrain certificate. A certified event locator can later reduce false-invalid finishes; endpoint timestamps cannot do so. |
 
-These are implementation choices, not claims that the patches exist. Record final architectural decisions in DECISIONS when the reviewed implementation settles their exact contracts. Do not silently alter historical local-practice scoring, document semantics or checkpoint compatibility.
+The battery/power choice above is implemented in the linked branch; other rows remain implementation choices, not claims that their patches exist. Record final architectural decisions in DECISIONS when the reviewed implementation settles their exact contracts. Do not silently alter historical local-practice scoring, document semantics or checkpoint compatibility.
 
 ### 16.2 Reviewable work packets and dependencies
 
@@ -388,3 +388,17 @@ For each packet, first turn its baseline observation into a desired-behavior reg
 - **Physical gate:** DR-40 selected-build mass/CG/inertia, thrust/torque/RPM/current, ESC/braking and pack response, independent held-out motion and uncertainty. Estimated coefficients and passing software checks do not close it.
 
 Track each finding as **open → implemented with software evidence → applicable native/hardware acceptance complete**, linking the repair commit and retained evidence. Do not mark all 19 closed because diagnostic probes pass, or describe the baseline 1,120 checks as tests of an unimplemented repair.
+
+
+### 16.5 Battery and power implementation checkpoint
+
+**A06 and A08 addressed; A09 partially addressed (DR-05/10/16/17/18/21).** The [implementation record](../research/drone-racing/power-2026-11-16/README.md)
+contains the one-RC equations and estimated provenance, coherent non-regenerative brake allocation, loaded-hover and
+fixed-tick RC admission, strict charge/energy restore checks, baseline/candidate recordings and targeted verification.
+The original full-charge air-start overcharge route is covered. Existing chop authority and sample-rate gates remain;
+the full three-lap race and new nine-state mid-flight recordings replay exactly under the changed model.
+
+A09 still needs complete raw/prepared geometry, inertia, contacts and command parity, including rotor ID/spin-count
+invariants. A07 contact/event work, controls and persistence packets remain open. The battery `consumed_mah` initial-SOC
+reference issue is also outside this change. Thermal/aging/cell-imbalance models, identified ESC charge acceptance and
+physical pack characterization remain qualification work, not hidden claims of the new estimated model.

@@ -1,0 +1,179 @@
+{
+  "format": "openrc-fpv-power-validation-v1",
+  "platform": "Linux headless",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "solver_sha256": "21a86ec691c87c577fd72070692c61d745578ee1a9048a4bec48a77bf3a43b95",
+  "data_sha256": "03794075fdd09c95e373e001cf0b50a46a0caa1bf824cb46b5fada661c77cda3",
+  "checked_runner_sha256": "55fd7b19a5c7490ab020e2c1b8e732784441375afff17d75a86c01a307a93b46",
+  "suites": [
+    {
+      "script": "app/tests/test_mr_power.gd",
+      "script_sha256": "05d95839ef4cc7fa5477f9eac6fbd7da142b1fdafd682a3ac378cb4b27b511ad",
+      "checks": 26,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_hover_power.gd",
+      "script_sha256": "9e22d66096d939efb22b64797ee5323dd525b36e3e64440837c4b440937145f6",
+      "checks": 88,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_data.gd",
+      "script_sha256": "0d4b98bfc154661e23385672d9ed67a3d401d70e7217e39b958d7d52223bcd80",
+      "checks": 86,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_controlled_plant.gd",
+      "script_sha256": "42872c831b583e65fb8c6ffe0c8c5aa31d7124bb5316982a079ee1d88aef86c4",
+      "checks": 63,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_session.gd",
+      "script_sha256": "60738c8ea8251c88a57f24ec9b47e01a52fa9d26f82bf9169938a809aa97ac91",
+      "checks": 67,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_flight_log.gd",
+      "script_sha256": "aba6bb2ff9531f91a2d293b002ac24769458e02648009dd11c668dd149ac9486",
+      "checks": 31,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_race_model.gd",
+      "script_sha256": "44645229d43583ec684adad41bee20048242260bc90cc5a74a01e77845011c0a",
+      "checks": 30,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_fast_paths.gd",
+      "script_sha256": "4ea532bdee5765dad288100ac641101b5951608e652526c40cf83ae6780fc1a3",
+      "checks": 17,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_sample_rate.gd",
+      "script_sha256": "b69c8e740bf029c4a855368639cddb752a9acffc1fb29c387a09e4c945528c86",
+      "checks": 11,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_race_session_replay.gd",
+      "script_sha256": "73520ea14dc416dcad89119fea51636e9065da1122c450cf2ce56a69ac89d2cd",
+      "checks": 8,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_activity_race.gd",
+      "script_sha256": "14cca92181f588967738e7806772b6f003ee48ab2d2af3be86c60bb8da58abe1",
+      "checks": 19,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "app/tests/test_mr_osd.gd",
+      "script_sha256": "889a641ee1b19574adde5620fb2ed82163ef09039ba54f97d15ae46289de218b",
+      "checks": 78,
+      "failed": 0,
+      "checked_runner_ok": true,
+      "complete": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    }
+  ],
+  "total_suites": 12,
+  "total_checks": 524,
+  "failed": 0,
+  "generator_check": "passed",
+  "baseline_exact_recordings": 3,
+  "candidate_comparisons": 3,
+  "candidate_same_build_exact_recordings": 3,
+  "ticks_per_power_maneuver": 1418,
+  "complete_race": {
+    "accepted_ticks": 16372,
+    "laps": 3,
+    "exact_replay": true,
+    "lap_times_s": [
+      22.8531415177617,
+      21.1832984567114,
+      21.1770572373456
+    ]
+  },
+  "limits": [
+    "Software verification only; no pack, motor or ESC measurements.",
+    "Headless UI checks do not establish visible 1080p/native-controller acceptance.",
+    "Frozen-shaft RC slope admission is not a full coupled-Jacobian stability certificate.",
+    "Hosted CI and cross-platform/native acceptance are separate gates."
+  ],
+  "independent_review": "Read-only mathematical and integrated source review; identified numerical, state-domain and loss-labeling issues resolved by the lead and verified with focused regressions.",
+  "editor_import": {
+    "checked_runner_ok": true,
+    "complete": true,
+    "engine_errors": 0,
+    "engine_warnings": 14,
+    "note": "Imported new scripts and retained their generated UIDs. Warnings concern preexisting missing UIDs in unrelated ClearView/Extra scripts; import-generated unrelated UID files are excluded from this change."
+  },
+  "repository_large_file_check": {
+    "ok": false,
+    "scope": "incomplete local checkout: four existing allowlisted assets are present in the baseline tree but not materialized locally; no artifact-policy change",
+    "missing_allowlisted_paths": [
+      "assets/landscape/vegetation/source/quaternius_stylized_nature_megakit_standard.zip",
+      "docs/research/physics-audit-2026-10-14/remediation/R11/export-resource-probes/package-mount-01/macos-extracted/OpenRC Simulator.pck",
+      "assets/source-deliveries/hx-700-original/UYjm3SGvvYxnGgggCnqPGIuKhQHNNSeM98oX8uMr.pdf",
+      "docs/research/visual-quality-implementation/L4c/captures-and-integration.zip"
+    ],
+    "policy_unchanged_from_baseline": true,
+    "largest_added_artifact_bytes": 71501,
+    "new_files_above_50_mib": 0
+  },
+  "publication": {
+    "public_branch_contains": "Source, tests, research script, report, aggregate summaries and published source identities.",
+    "raw_evidence": "Original recordings, CSVs, their checksum manifest and generated plot retained in a separate private evidence package; not included in the public implementation commit."
+  }
+}

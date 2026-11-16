@@ -368,6 +368,7 @@ func _chop(braking: String) -> Dictionary:
 	var fast: float = sim.continuous[0]
 	var lowest_pack := INF
 	var charge_rose := false
+	var peak_brake_heat := 0.0
 	var rate_at_8 := 0.0
 	var speed_at_12 := 0.0
 	for tick in 96:
@@ -376,6 +377,7 @@ func _chop(braking: String) -> Dictionary:
 		charge_rose = charge_rose or sim.continuous[Plant.C_CHARGE] > before
 		var telemetry: Dictionary = h.plant.telemetry({body = sim.state, continuous = sim.continuous, aux = sim.aux, modes = sim.modes})
 		lowest_pack = minf(lowest_pack, telemetry.pack_current_a)
+		peak_brake_heat = maxf(peak_brake_heat, telemetry.brake_heat_w)
 		if tick == 7:
 			rate_at_8 = _rate(sim, 0)
 		if tick == 11:
@@ -388,7 +390,7 @@ func _chop(braking: String) -> Dictionary:
 		var q1: float = charge_end + (capacity - charge_end) * float(i + 1) / float(steps)
 		chemical += 0.5 * (h.plant._ocv(q0 / capacity) + h.plant._ocv(q1 / capacity)) * (q1 - q0)
 	var result := {ok = ok and sim.fault_reason.is_empty(), fast = fast, speed_at_12 = speed_at_12, rate_at_8 = rate_at_8,
-		target = sim.aux[FC.AUX_SETPOINT], lowest_pack = lowest_pack, charge_rose = charge_rose, chemical = chemical,
+		target = sim.aux[FC.AUX_SETPOINT], lowest_pack = lowest_pack, charge_rose = charge_rose, peak_brake_heat = peak_brake_heat, chemical = chemical,
 		accounted = sim.continuous[Plant.C_TERMINAL_ENERGY] + sim.continuous[Plant.C_PACK_LOSS],
 		bus = str(sim.model.identity.bus), fault = sim.fault_reason}
 	sim.free()
@@ -397,7 +399,7 @@ func _chop(braking: String) -> Dictionary:
 
 func _damped_bridge() -> void:
 	var coast: Dictionary = _chop("none")
-	var damped: Dictionary = _chop("damped")
+	var damped: Dictionary = _chop("damped_nonregenerative")
 	_check("both bridge variants fly the chop manoeuvre and carry their own bus identity", coast.ok and damped.ok
 		and coast.bus == ElectricBus.LAW and damped.bus == Plant.BUS_DAMPED, coast.fault + damped.fault)
 	_check("PHY-08 the one-quadrant bridge never returns current to the pack", coast.lowest_pack >= 0.0 and not coast.charge_rose,
@@ -405,9 +407,9 @@ func _damped_bridge() -> void:
 	_check("the damped bridge brakes: fifty milliseconds after a chop the shaft is far slower than a coasting one",
 		damped.speed_at_12 < 0.6 * coast.speed_at_12 and damped.speed_at_12 >= 0.0 and coast.speed_at_12 < coast.fast,
 		"damped %.0f rad/s, coasting %.0f rad/s, from %.0f" % [damped.speed_at_12, coast.speed_at_12, coast.fast])
-	_check("the damped bridge regenerates: the pack current goes negative and the charge rises during the chop",
-		damped.lowest_pack < 0.0 and damped.charge_rose, "%.2f A" % damped.lowest_pack)
-	_check("PHY-06 the energy books close with signed pack current", damped.chemical > 50.0
+	_check("the non-regenerative brake dissipates surplus without returning charge to the pack",
+		damped.lowest_pack >= 0.0 and not damped.charge_rose and damped.peak_brake_heat > 0.0, "%.2f A" % damped.lowest_pack)
+	_check("PHY-06 battery energy closes under both bridge policies", damped.chemical > 50.0
 		and absf(damped.accounted - damped.chemical) < 1e-5 * damped.chemical and absf(coast.accounted - coast.chemical) < 1e-5 * coast.chemical,
 		"damped %.5f of %.5f J; coasting %.5f of %.5f J" % [damped.accounted, damped.chemical, coast.accounted, coast.chemical])
 	_check("attitude authority survives a throttle chop only with braking", damped.rate_at_8 > 0.3 * damped.target
@@ -419,7 +421,7 @@ func _pad_and_crash() -> void:
 	var h: Dictionary = Fixtures.install(root, data)
 	var sim: Node = h.sim
 	var message: String = Fixtures.reset(sim, h.plant.initial_frame(Fixtures.body(Fixtures.REST_HEIGHT_M)), FC.neutral_input())
-	_check("the electrical plant installs with eight continuous values", h.ok and message.is_empty() and sim.model.continuous_size == 8, message)
+	_check("the electrical plant installs with nine continuous values", h.ok and message.is_empty() and sim.model.continuous_size == Plant.ELECTRIC_CONTINUOUS, message)
 	var ok: bool = Fixtures.run(sim, FC.neutral_input(), 480)
 	_check("CONTACT-01 the disarmed airframe rests on its feet at the solved static sag",
 		ok and absf(-sim.state[RB.POS + 2] - Fixtures.REST_HEIGHT_M) < 5e-4 and absf(sim.state[RB.VEL + 2]) < 1e-4

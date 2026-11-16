@@ -31,9 +31,17 @@ Each output quantity is `{value, unit, kind, source}`. `kind` is the provenance 
   are computed with the parallel-axis theorem. Each prop component carries the borrowed rotor spin inertia once
   (`rotor_id`). Motors are point masses, so the bell is not counted twice.
 - Hover solves the four rotor thrusts from force and moment balance. Static maximum thrust uses the motor torque
-  balance at the full-charge open-circuit voltage, without pack sag.
+  balance at the full-charge open-circuit voltage, without pack sag. These remain generator diagnostics;
+  admission separately solves the loaded four-motor bus at full and low charge, including steady R0+R1 loss.
 - Contacts: the feet are 22 mm below the hub plane. Total stiffness is `m·g/0.004 m`, and heave damping ratio is 0.6.
   The rest height is computed at static sag.
+
+The current battery has an estimated one-RC branch: R0=0.020 Ω, R1=0.010 Ω, tau=1 s. The sum preserves the former
+0.030 Ω estimate at steady DC; the split and recovery time are unmeasured. `damped_nonregenerative` is an experimental
+averaged braking policy with effective motor-path loss accounting and no net pack charging. It reuses the fitted
+motor/ESC/wiring resistance across conceptual switching states and does not establish physical phase RMS current or
+firmware equivalence. The old unbounded `damped` setting is refused. See the [battery/power implementation and
+verification](../../../docs/research/drone-racing/power-2026-11-16/README.md) for equations, state compatibility and limits.
 
 The loader recomputes mass, CG, inertia, clearance, k_T and hover. It refuses a document whose recorded diagnostics
 differ by more than 1e-9 relative.

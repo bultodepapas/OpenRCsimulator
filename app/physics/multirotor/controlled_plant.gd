@@ -8,11 +8,11 @@
 #                 driven by the controller instead of raw duties; disarm is zero drive (the shaft coasts under the
 #                 same lag). Continuous: four shaft speeds.
 #   LAW_ELECTRIC  experimental product law: four motors on one battery bus, either one-quadrant (electric_bus.gd:
-#                 drive only, the shaft coasts above the commanded speed) or, with powertrain.braking = "damped",
-#                 a signed-current bridge (active braking and regeneration into the pack, no current limit),
+#                 drive only, the shaft coasts above the commanded speed) or, with powertrain.braking = "damped_nonregenerative",
+#                 signed mean motor current with surplus braking energy dissipated in effective motor-path resistance,
 #                 coupled shaft/body acceleration (FPV flight dynamics §4), pack charge and energy integrals and
 #                 the terminal cut latch. Continuous: four shaft speeds, charge [C], terminal energy [J], pack
-#                 loss [J], cut latch (exactly 0 or 1, zero derivative).
+#                 resistor heat [J], cut latch (exactly 0 or 1, zero derivative), polarization voltage [V].
 # Both add flat-pad penalty contacts with regularized Coulomb friction at the feet and hull points.
 #
 # Declared simplifications (not the plan's full hybrid event policy): the shaft friction of the electrical law is
@@ -35,28 +35,32 @@ const Rates := preload("res://physics/multirotor/rates.gd")
 const Allocator := preload("res://physics/multirotor/allocator.gd")
 const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
 const ElectricBus := preload("res://physics/multirotor/electric_bus.gd")
+const PowerBus := preload("res://physics/multirotor/power_bus.gd")
+const BatteryPack := preload("res://physics/multirotor/battery_pack.gd")
+const HoverPower := preload("res://physics/multirotor/hover_power.gd")
 const FC := preload("res://physics/multirotor/flight_controller.gd")
 
 const LAW_LAB := "multirotor-controlled-first-order-v1"
-const LAW_ELECTRIC := "multirotor-controlled-el-coupled-v1"
-## Bus law identity of the damped (signed-current) bridge variant; the one-quadrant variant is electric_bus.gd.
-const BUS_DAMPED := "multirotor-four-load-damped-bus-v1"
+const LAW_ELECTRIC := "multirotor-controlled-el-coupled-v2"
+## Explicit non-regenerative brake law; the historical unbounded "damped" setting is no longer admitted.
+const BUS_DAMPED := PowerBus.LAW
 const LAYOUT_LAB := "openrc-multirotor-controlled-lab-v1"
-const LAYOUT_ELECTRIC := "openrc-multirotor-controlled-el-v1"
+const LAYOUT_ELECTRIC := "openrc-multirotor-controlled-el-v2"
 
 const C_SPEED := 0
 const C_CHARGE := 4
 const C_TERMINAL_ENERGY := 5
 const C_PACK_LOSS := 6
 const C_CUT_LATCH := 7
+const C_POLARIZATION := 8
 const LAB_CONTINUOUS := 4
-const ELECTRIC_CONTINUOUS := 8
+const ELECTRIC_CONTINUOUS := 9
 
 ## Below this relative shaft speed (rad/s) the electrical law's friction torque is viscous.
-const FRICTION_SPEED := 30.0
+const FRICTION_SPEED := HoverPower.FRICTION_SPEED
 ## State domain tolerances of the validator.
 const SPEED_TOLERANCE := 5.0
-const CHARGE_TOLERANCE := 2.0
+const CHARGE_TOLERANCE := 2.0 # Endpoint depletion can cross zero within the detecting tick.
 ## Regularization speed of the contact friction (m/s) and the CG height above which no contact is evaluated.
 ## 0.02 m/s (DR-18-R2, 2026-11-12; was 0.05): softer regularization made the friction a 0.64 N·m·s yaw damper whose
 ## 3.2 ms time constant, under the motors' immediate torque response, closed the armed-idle yaw loop above unit gain
@@ -126,7 +130,16 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 	plant.prepared = data
 	var law: String = str(data.get("powertrain", {}).get("law", ""))
 	plant.electric = law == ActuatorMap.LAW_ELECTRIC
-	plant._braking = plant.electric and str(data.powertrain.get("braking", "none")) == "damped"
+	if plant.electric:
+		if str(data.powertrain.get("braking", "")) not in ["none", PowerBus.BRAKING]:
+			errors.append("powertrain.braking: choose none or damped_nonregenerative; unbounded damped regeneration is retired")
+		if typeof(data.get("battery")) != TYPE_DICTIONARY:
+			errors.append("battery: required by the electrical law")
+		else:
+			var battery_error: String = BatteryPack.error(data.battery)
+			if not battery_error.is_empty():
+				errors.append(battery_error)
+	plant._braking = plant.electric and str(data.powertrain.get("braking", "")) == PowerBus.BRAKING
 	var actuator: Dictionary = ActuatorMap.prepare(data.get("powertrain", {}), data.get("rotor_law", {}))
 	if not actuator.ok:
 		errors.append_array(actuator.errors)
@@ -135,6 +148,10 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 		errors.append_array(rates.errors)
 	if not errors.is_empty():
 		return {ok = false, errors = errors, plant = null}
+	if plant.electric:
+		var integration_error: String = BatteryPack.integration_error(data.battery, data.powertrain)
+		if not integration_error.is_empty():
+			return {ok = false, errors = PackedStringArray([integration_error]), plant = null}
 	var k_t: float = data.rotor_law.thrust_coefficient_n_s2
 	var kappa: float = float(data.rotor_law.torque_coefficient_n_m_s2) / k_t
 	var full_voltage: float = plant._ocv(1.0) if plant.electric else 0.0
@@ -255,7 +272,8 @@ func build() -> VehicleModel:
 	vehicle.continuous_size = continuous_size()
 	vehicle.identity = {vehicle = "multirotor", law = law(), layout = layout(), controller = FC.LAW,
 		controller_identity = str(config.identity), allocator = Allocator.LAW, rates = str(config.rates.identity),
-		bus = (BUS_DAMPED if _braking else ElectricBus.LAW) if electric else "ideal-supply", data = str(prepared.identity.get("data_sha256", "")),
+		bus = (BUS_DAMPED if _braking else ElectricBus.LAW) if electric else "ideal-supply",
+		battery = BatteryPack.LAW if electric else "ideal-supply", data = str(prepared.identity.get("data_sha256", "")),
 		variant = str(prepared.identity.get("variant", "")), throttle_policy = int(config.throttle_policy)}
 	vehicle.sample_tick = sample_tick
 	vehicle.stage_sampled = stage_sampled
@@ -282,9 +300,9 @@ func sample_tick(frame: Dictionary, input: PackedFloat64Array, clock: Dictionary
 	return FC.sample(config, frame, input, clock, supply_voltage(frame.continuous))
 
 
-## Supply voltage the controller's static map uses: the pack's open-circuit voltage at the sampled charge.
+## Supply for the controller's static map: OCV minus the sampled polarization drop, before instantaneous load sag.
 func supply_voltage(continuous: PackedFloat64Array) -> float:
-	return _ocv(_soc(continuous)) if electric else 0.0
+	return _ocv(_soc(continuous)) - continuous[C_POLARIZATION] if electric else 0.0
 
 
 func _soc(continuous: PackedFloat64Array) -> float:
@@ -293,15 +311,7 @@ func _soc(continuous: PackedFloat64Array) -> float:
 
 ## Piecewise-linear open-circuit pack voltage; ocv_points = [soc0, v0, soc1, v1, ...] with increasing soc.
 func _ocv(soc: float) -> float:
-	var points: PackedFloat64Array = prepared.battery.ocv_points
-	var last: int = points.size() - 2
-	if soc <= points[0]:
-		return points[1]
-	for i in range(0, last, 2):
-		if soc <= points[i + 2]:
-			var fraction: float = (soc - points[i]) / (points[i + 2] - points[i])
-			return points[i + 1] + fraction * (points[i + 3] - points[i + 1])
-	return points[last + 1]
+	return BatteryPack.voltage(prepared.battery.ocv_points, soc)
 
 
 ## Joint stage: {loads, derivative, rotor_momentum}; loads about the CG in FRD, gravity excluded.
@@ -359,7 +369,7 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 			enabled[i] = 1
 	var bus: Dictionary = {}
 	if connected:
-		bus = _bus(_ocv(_soc(continuous)), duty, back_emf, enabled, drive)
+		bus = _bus(supply_voltage(continuous), duty, back_emf, enabled, drive)
 		if not bus.get("ok", false):
 			return {loads = PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0]), derivative = derivative,
 				rotor_momentum = M.v3(0.0, 0.0, 0.0), bus = bus}
@@ -409,6 +419,13 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 		derivative[C_CHARGE] = -float(bus.i_pack)
 		derivative[C_TERMINAL_ENERGY] = float(bus.p_terminal_w)
 		derivative[C_PACK_LOSS] = float(bus.p_pack_loss_w)
+	# Polarization relaxes and dissipates its stored energy even after the pack is disconnected/depleted.
+	var polarization: Dictionary = BatteryPack.branch(prepared.battery, continuous[C_POLARIZATION],
+		float(bus.i_pack) if connected else 0.0)
+	derivative[C_POLARIZATION] = float(polarization.rate_vps)
+	derivative[C_PACK_LOSS] += float(polarization.loss_w)
+	bus.p_polarization_loss_w = float(polarization.loss_w)
+	bus.polarization_energy_j = float(polarization.stored_j)
 	return {loads = PackedFloat64Array([force[0], force[1], force[2], moment[0], moment[1], moment[2]]),
 		derivative = derivative, rotor_momentum = M.v3(0.0, 0.0, momentum_z), bus = bus}
 
@@ -424,6 +441,8 @@ func _bus(voc: float, duty: PackedFloat64Array, back_emf: PackedFloat64Array, en
 		var idle_bus: float = voc - pack_resistance * auxiliary
 		return {ok = idle_bus > 0.0, v_bus = idle_bus, i_motor = PackedFloat64Array([0.0, 0.0, 0.0, 0.0]), i_pack = auxiliary,
 			p_terminal_w = idle_bus * auxiliary, p_pack_loss_w = pack_resistance * auxiliary * auxiliary}
+	if _braking:
+		return PowerBus.solve(voc, pack_resistance, auxiliary, duty, back_emf, _resistance, enabled)
 	var resistance: float = _resistance[0]
 	var emf_sum := 0.0
 	var duty_sum := 0.0
@@ -433,14 +452,6 @@ func _bus(voc: float, duty: PackedFloat64Array, back_emf: PackedFloat64Array, en
 	var v_bus: float = (voc - pack_resistance * auxiliary + pack_resistance * emf_sum) / (1.0 + pack_resistance * duty_sum)
 	var currents := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 	var pack_current: float = auxiliary
-	if _braking:
-		# Damped bridge: every driven motor carries a signed current, so the four-load bus is linear with no
-		# active set. A negative motor current brakes the shaft; a negative pack current charges the pack.
-		for i in 4:
-			currents[i] = (duty[i] * v_bus - back_emf[i]) / resistance
-			pack_current += duty[i] * currents[i]
-		return {ok = v_bus > 0.0, v_bus = v_bus, i_motor = currents, i_pack = pack_current,
-			p_terminal_w = v_bus * pack_current, p_pack_loss_w = pack_resistance * pack_current * pack_current}
 	var consistent: bool = v_bus > 0.0
 	for i in 4:
 		if duty[i] * v_bus <= back_emf[i]:
@@ -695,6 +706,11 @@ func state_validator(frame: Dictionary, _context: Dictionary) -> bool:
 	if not FC.modes_are_valid(frame.modes):
 		return false
 	var continuous: PackedFloat64Array = frame.continuous
+	if continuous.size() != continuous_size():
+		return false
+	for value: float in continuous:
+		if not is_finite(value):
+			return false
 	var ceiling: float = 1.5 * float(prepared.rotor_law.max_speed_rad_s)
 	# The electrical law's shaft speed is relative to the body: a stopped rotor on a tumbling airframe reads
 	# negative while friction drags it along, so its domain is symmetric. The lag law never goes below rest.
@@ -711,8 +727,15 @@ func state_validator(frame: Dictionary, _context: Dictionary) -> bool:
 		return false
 	if electric:
 		var terminal: bool = frame.modes[FC.MODE_MOTOR] == FC.MOTOR_CRASHED or frame.modes[FC.MODE_MOTOR] == FC.MOTOR_DEPLETED
-		if continuous[C_CHARGE] < -CHARGE_TOLERANCE or continuous[C_CUT_LATCH] not in [0.0, 1.0] \
+		var capacity: float = 3600.0 * float(prepared.battery.capacity_ah)
+		if continuous[C_CHARGE] < -CHARGE_TOLERANCE or continuous[C_CHARGE] > capacity \
+				or continuous[C_CUT_LATCH] not in [0.0, 1.0] \
 				or (continuous[C_CUT_LATCH] == 1.0) != terminal:
+			return false
+		var polarization: float = continuous[C_POLARIZATION]
+		if polarization < 0.0 or supply_voltage(continuous) <= 0.0 \
+				or continuous[C_TERMINAL_ENERGY] < 0.0 or continuous[C_PACK_LOSS] < 0.0 \
+				or (float(prepared.battery.get("polarization_resistance_ohm", 0.0)) == 0.0 and polarization != 0.0):
 			return false
 	return true
 
@@ -731,5 +754,12 @@ func telemetry(frame: Dictionary, t: float = 0.0) -> Dictionary:
 		out.soc = _soc(frame.continuous)
 		out.bus_voltage_v = float(bus.get("v_bus", 0.0))
 		out.pack_current_a = float(bus.get("i_pack", 0.0))
+		out.open_circuit_voltage_v = _ocv(out.soc)
+		out.polarization_voltage_v = frame.continuous[C_POLARIZATION]
+		out.polarization_energy_j = float(bus.get("polarization_energy_j", 0.0))
+		out.terminal_power_w = float(bus.get("p_terminal_w", 0.0))
+		out.pack_heat_w = float(bus.get("p_pack_loss_w", 0.0)) + float(bus.get("p_polarization_loss_w", 0.0))
+		out.brake_heat_w = float(bus.get("p_brake_loss_w", 0.0))
+		out.regeneration_fraction = float(bus.get("regeneration_fraction", 1.0))
 		out.consumed_mah = (float(prepared.battery.initial_soc) * 3600.0 * float(prepared.battery.capacity_ah) - frame.continuous[C_CHARGE]) / 3.6
 	return out

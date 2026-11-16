@@ -205,6 +205,22 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 **NR / EM.** Version and freeze the selected episode, seed, onset and severity so restart/replay preserves the same scenario. Stage physical effects through supported actuator/source capabilities, commit only after an accepted tick, and keep notices outside physical identity. New mechanisms do not redraw old versioned lists. Wing separation remains gated because an intact oracle can mask removed strips; hiding geometry cannot implement structural loss. [Failure contract](plans/failure-mode.md#implementation-checkpoint--current-scope), [EM-29](research/failure-mode/EM-29/README.md), [EM-31](research/failure-mode/EM-31/README.md).
 
+### Keep FPV battery recovery stateful and braking energy accounted
+
+**DR-05/10/16/17/18/21, 2026-11-16; experimental implementation.** Use a constant-parameter one-RC pack with
+checkpointed polarization and explicit resistor heat/stored energy. The R0/R1 split is estimated; it preserves the
+previous total resistance only at steady DC. Select the explicitly named `damped_nonregenerative` averaged ESC law:
+retain signed mean torque, share generated power with concurrent loads and dissipate surplus in the effective
+motor/ESC/wiring resistance. Do not relabel it as BLHeli behavior or measured winding heat. Pure coasting fails the
+retained early-chop authority gate; clamping charge or pack current discards energy. Bounded regeneration waits for
+identified charge acceptance, overvoltage and terminal-event behavior.
+
+Admit the loaded four-motor hover at full/low charge, share battery domains between raw/prepared paths, screen the
+additional frozen-shaft RC pole and enforce strict upper charge/energy domains on restore. The electric layout is
+versioned: old mid-flight polarization is unknown and is not synthesized. Revisit with synchronized pack/current/RPM
+measurements and held-out flight evidence; the [implementation record](research/drone-racing/power-2026-11-16/README.md)
+owns parameters, comparisons and remaining physical gates.
+
 ### Race state commits with the physics tick
 
 **DR-23…26.** Local gate racing wraps the quad's model: the race phase, countdown, next gate, lap slots and attempt generation are a fixed suffix of the model's sampled and discrete arrays, and one endpoint transition composes the physical endpoint with a pure race director. A lap result therefore can never come from a listener that saw a different tick than the physics, and a refused tick commits neither a GO nor a crossing. Gate crossings are swept on the accepted tick's chord with strict aperture edges, a declared acceleration envelope for its in-plane uncertainty, and an unresolved (never scored) outcome when the uncertainty reaches an edge or the tick's body was corrected. Events are ordered by time with a one-microsecond tie group in which a crash wins. Terminal records go to a bounded, checkpointed outbox and are written to disk only on request; a full outbox refuses a new start. These are local practice rules (`openrc-local-race-v1`), with no federation compliance claim. Revisit if curved-path error near grazing crossings matters: supply located path pieces through an integration receipt. [Evidence](research/drone-racing/M1-M3-2026-11-11/README.md#local-racing).

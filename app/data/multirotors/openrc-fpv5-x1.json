@@ -91,11 +91,23 @@
     ]
    ]
   },
+  "polarization_resistance": {
+   "kind": "estimated",
+   "source": "estimated: one-RC Thevenin polarization R1; exploratory split, requires pack-specific pulse/rest identification",
+   "unit": "ohm",
+   "value": 0.01
+  },
+  "polarization_time": {
+   "kind": "estimated",
+   "source": "estimated: one-RC recovery time; exploratory 1 s parameter, not a measured FPV pack time constant; temperature, SOC and aging dependence are not modeled",
+   "unit": "s",
+   "value": 1.0
+  },
   "resistance": {
    "kind": "estimated",
-   "source": "estimated: about 5 mOhm per cell",
+   "source": "estimated: instantaneous pack R0; exploratory 20 mOhm + 10 mOhm polarization split preserves the previous estimated 30 mOhm steady DC loss; not identified from this pack",
    "unit": "ohm",
-   "value": 0.03
+   "value": 0.02
   }
  },
  "camera": {
@@ -698,7 +710,7 @@
   "datum": "centre of the hub plane, FRD axes (x forward, y right, z down); positions in metres"
  },
  "powertrain": {
-  "braking": "damped",
+  "braking": "damped_nonregenerative",
   "idle_command": {
    "kind": "borrowed",
    "source": "borrowed: idle command from the lab fixture / firmware default idle",
@@ -806,7 +818,7 @@
    "lab_fixture": "app/physics/multirotor/plant.gd Plant.research_quad() (DR-01 estimated research-quad fixture)"
   },
   "sources": "research/drone-racing/openrc-fpv5-x1/sources.json",
-  "sources_sha256": "2bb6af6d22baa91c2d39275fe3c6cf6bd728546150ce138455c6672ea6a6c0b2"
+  "sources_sha256": "a5024c9a0ecd16cba935a6f80838b54b189ccf45921773ee0487b6253fbf1937"
  },
  "rotor_law": {
   "law": "quadratic-static-v1",
