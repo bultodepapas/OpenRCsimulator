@@ -432,7 +432,7 @@ Deliberate consequences:
 
 ### 17.2 DR-19c: graded crashes
 
-A declared, deterministic gameplay law (`multirotor-graded-impact-v1`) replaces "every contact ends the flight". The pause menu chooses **Crashes: graded** (default) or **every crash ends the flight** (the previous rule, kept for practice). The choice applies on the next pad restart.
+A declared, deterministic gameplay law (`multirotor-graded-impact-v2` since §19.4) replaces "every contact ends the flight". The pause menu chooses **Crashes: graded** (default) or **every crash ends the flight** (the previous rule, kept for practice). The choice applies on the next pad restart.
 
 - Each rotor's prop health h ∈ [0, 1] is checkpointed state (electrical law, layout v2). Thrust, aerodynamic torque and rotor drag scale with h. h = 1 is bit-identical to the undamaged law.
 - Severity is the closing speed along the contact normal, at the contact point.
@@ -441,14 +441,14 @@ A declared, deterministic gameplay law (`multirotor-graded-impact-v1`) replaces 
 | --- | --- | --- | --- |
 | Feet or hull on terrain | ≤ `crash_speed` (5 m/s): no event | Up to 3 × `crash_speed` (15 m/s): hard landing; the two spinning props nearest the impact are chipped | Above 15 m/s: "Hard impact" |
 | Spinning prop disc on terrain (above `rotor_strike_speed`, so armed idle on the pad is safe) | — | Wear each tick in contact, proportional to shaft speed (one tick at hover speed costs 20 %); below 30 % health the prop breaks (h = 0) | Never by itself: a quad that cannot fly falls and the pilot restarts |
-| Prop disc touching an obstacle | — | Wear as above, plus a break above 6 m/s closing speed; bounce with restitution 0.2 | Never by itself |
-| Frame (CG sphere) on an obstacle | — | Bounce: foliage restitution 0.35, others 0.2. The two nearest spinning props are chipped | Foliage at 12 m/s and above, gate fabric at 10 m/s, everything else at 8 m/s: "Obstacle strike" |
+| Prop disc (thin disc) touching an obstacle | — | Wear as above, plus a break above 6 m/s closing speed; bounce with restitution 0.2 | Never by itself |
+| Frame (box, §19.4) on an obstacle | — | Bounce at the touching face or edge: foliage restitution 0.35, a parked airframe 0.25, others 0.2. The two nearest spinning props are chipped | Foliage and people at 12 m/s and above, a parked foam airframe at 11, frangible stakes, lamps, bales and gate fabric at 10, buildings, trunks and benches at 8: "Obstacle strike" |
 
 - Non-terminal impacts raise `impact` and `prop_damage` events.
 - The OSD shows damaged and broken props. A quad lying upside down shows how to restart it from every source.
 - Race attempts continue through non-terminal impacts. A terminal impact keeps the A10 same-tick rule.
 - **Strict mode** reproduces the previous terminal law exactly (existing tests).
-- **Not claimed:** measured damage thresholds, turtle mode (crash flip), motor or arm damage, or ESC desync. Calibrate later against owner flight logs ([flight logging](../FLIGHT-LOGGING.md)).
+- **Not claimed:** measured damage thresholds, motor or arm damage, or ESC desync. Turtle mode: §19.1. Calibrate later against owner flight logs ([flight logging](../FLIGHT-LOGGING.md)).
 
 ### 17.3 Verification
 
@@ -490,7 +490,7 @@ Affected suites: multirotor plant/session/activity/OSD/flight log and race suite
 | C3 | A spinning prop touching the ground only wore. It never braked or kicked the airframe, so the characteristic prop-strike flip was missing. | Law review | Fixed. A strike halves the shaft speed and applies the ground's reaction on the blade (I_r·Δω/r, against the tip motion, at the hub). Mirror strikes of counter-rotating props cancel. No energy is gained. |
 | C4 | Grinding props reported damage every tick: a flood of messages (and, once added, sounds). | Skid and dive probes | Fixed in presentation. Messages, sounds and effects come once per prop and damage step; touches are paced at 0.12 s and impact messages at 1.2 s. |
 | C5 | No crash sound, dust, chips, debris or camera jolt for the quad. A broken prop still rendered and spun. | Presentation inventory | Fixed by reusing the project's crash kit (synthetic MIT sounds in `render/crash/crash_audio.gd`; dust, chips, marks and debris in `render/crash/effects.gd`), allocated at the first event. Broken blades leave the model (`render/crash/prop_break.gd`, blur kept hidden). Damaged discs wobble. The motor loop gains a detuned rattle with prop damage. Impacts jolt the camera briefly. |
-| C6 | Upside down after a crash, the only way back is a restart (no turtle mode). | Probe | Open, next step: Betaflight-style crash flip (reverse-spinning motors, a dedicated switch/key) needs a reverse-thrust rotor law and FC support. The OSD already names the restart control. |
+| C6 | Upside down after a crash, the only way back is a restart (no turtle mode). | Probe | Fixed in §19.1: turtle mode. |
 | C7 | All thresholds are estimates. | Research (§17) | Open: tune against owner flight logs ([flight logging](../FLIGHT-LOGGING.md)). |
 
 ### 18.2 Verification
@@ -501,3 +501,52 @@ Affected suites: multirotor plant/session/activity/OSD/flight log and race suite
 - **Affected suites:** multirotor activity, visual, camera, plant, session, flight log, race and controls.
 - **Unchanged:** strict-law frames, and normal flight and gentle landings, because the new behaviour runs only for graded contacts above the thresholds.
 - **Not established:** audible quality of the synthetic crash sounds on a quad, native 1080p effect cost, and measured crash physics.
+
+## 19. Turtle mode, thresholds, sound mix and collision review (2026-11-17)
+
+**Owner request:** finish turtle mode, the thresholds and the sound; review the collision volumes of the quad, the trees and the club-house objects near the courses.
+
+### 19.1 DR-19e: turtle mode (crash flip)
+
+- **Request:** F on the keyboard, Y on a gamepad (never a button an AUX channel or Pause owns), toggled while disarmed. It engages only on the arming edge: a request in flight waits for a disarm. One arm cycle consumes the request (the next arm flies); a pad restart or source change clears it.
+- **Law** (`openrc-fc-acro-angle-turtle-v2`): no PID or allocation runs. The motors on the side opposite the stick spin in reverse, so the quad flips toward the stick. The command is −0.4 × √(stick beyond the 0.15 deadband), faded to 35 % as the body's up axis nears vertical. The motors stop past vertical, and for good once the quad is upright (up > 0.8, a latch until the disarm), so a fast roll flip does not cartwheel on.
+- **Plant:** the electrical law admits a negative duty in turtle mode only. A prop driven backwards keeps 35 % of its thrust and drag torque (declared estimate).
+- **HUD:** mode label TRTL; the help line and the upside-down hint name the turtle control.
+- **Evidence:** `test_mr_turtle` (30 checks). Full roll, full pitch, diagonal and half stick flip an inverted quad upright in 0.28–0.68 s with no damage or crash, and the motors stop with the stick still held. A request in flight is ignored, the deadband spins nothing, and the input consumes the request after one arm cycle.
+
+### 19.2 Thresholds
+
+- **Kept:** hard impact at 3 × `crash_speed` (15 m/s, an 11 m free fall), hard landing above 5 m/s, prop break above 6 m/s, wear 20 % per tick at hover speed. These are plausible for a 5-inch quad and not yet measured.
+- **Changed:** frame terminal speeds now cover every scenery response class (table in §17.2). Before, stakes, bales and foam parked airplanes ended the flight at the 8 m/s of a building. A parked airframe bounces with its own shared restitution (0.25).
+- **Noted:** people are classed `soft_foliage_impulse` by the scenery inventory, so a frame hit survives up to 12 m/s. Confirm as a design choice with the scenery owner.
+
+### 19.3 Sound mix
+
+Levels measured from the source WAVs (max 50 ms RMS), FPV listener (Godot's inverse-distance gain is capped at +3 dB near the listener):
+
+| Sound | Before | After |
+| --- | --- | --- |
+| Motor loop at hover | −21.5 dBFS (reference) | unchanged |
+| Touch at 3 / 6 / 12 m/s | 19 / 9 / 2 dB under the motors | 10 / 5 / 2 dB under (strength (v/12)^0.6) |
+| Prop chip | 12 dB under | 8 dB under |
+| Rattle, one chipped (85 %) / one broken prop | 18 / 2 dB under | 12 / 4 dB under, never above (0.5·√missing, at most 0.8) |
+
+The crash voices used the airplane kit's 20 m unit size against the motor loop's 2 m, so from a ground view 20 m away crashes were about 20 dB louder relative to the motors than in FPV. The quad's crash voices, motor loop and rattle now share one distance law (`QuadCrashFx.VOICE_UNIT_SIZE_M`). Evidence: `test_mr_crash_presentation` (15 checks). Not established: listening tests on speakers and headphones.
+
+### 19.4 Collision review
+
+Both courses sit at N35–56, E35–85 from the pilot. The nearest trees are about 70 m away and the club-house group (pavilion, pit shelters, cars, benches) is 55–90 m south, so no tree or club-house proxy is on a race line. The review measured every proxy within 80 m and the scenery prefabs against their visual meshes.
+
+| Item | Finding | Disposition |
+| --- | --- | --- |
+| Quad frame | v1 tested a CG sphere through the hubs: 7.7 cm of invisible cushion above and below the 4.9 cm body. | Fixed (`multirotor-graded-impact-v2`): a box across the hubs (x, y) from the hull's top point to the feet (z). The contact lands on the touching face or edge, so an edge hit spins the quad. |
+| Spinning props | v1 tested spheres of the prop radius: 6.5 cm above and below each disc. | Fixed: thin discs (3 mm half thickness). Exact against walls, roofs and ground; for bars and poles thinner than the quad, never wider than v1. |
+| Pit-shelter roof | A flat slab at 3.15–3.29 m under a roof sloping from 3.47 m to 2.86 m: the back half was fly-through and the front eave sank in. All 18 posts collided to 3.35 m, so the back row's colliders rose 0.55 m through the roof. | Fixed: six stepped strips follow the sheet and the structure under it; front and back posts stop at their visual heights (3.30 m and 2.80 m). |
+| Round bales | A sphere for a cylinder lying on its side: the end faces were fly-through. | Fixed: a core box of the inscribed square section, inside the bale, now covers them to within 0.18 m of the rim. |
+| Windsock mast (3.6 m), pilot station | No proxy: the field declares both flight cues `collides: false` (L10a). | Not changed: owner decision for the field track, because airplane sessions share these proxies. |
+| Pit tables and chairs, flagpole base, flower clumps | Small or low uncovered items. | Not changed: deliberate open design; low severity. |
+| Quad hubs, prop radius, feet, rest height | Match the ion_r5 model within 1 mm. | Verified. |
+| Gates, pavilion, club sign, shed, cars, benches, tables | Proxies within 0.1 m of the visuals. | Verified. |
+| Bushes, shade trees, saplings, people | Proxies come from source bounds; the rendered MultiMesh bounds were not measured. | Not established; none is near a course. |
+
+Evidence: `test_mr_graded_crashes` (35 checks: roof clearance, a frame contact below a roof, an edge hit spinning the quad, every class threshold); scenery collision and companion airspace suites.

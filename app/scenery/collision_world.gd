@@ -384,6 +384,12 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 				if prefab == "round_bale":
 					_add_capsule(proxies, "equipment:%s:%02d:bale" % [group_id, index], "equipment", prefab,
 						"frangible_impulse", north, east, -size.y * 0.5, size.x * 0.5, 0.0)
+					# DR-19e: the bale lies on its side (Prefabs._round_bale: a cylinder along local x). The sphere alone
+					# left its end faces fly-through; a core box of the inscribed square section along the full length
+					# covers them to within 0.18 m of the rim without reaching outside the bale.
+					var core := size.y / sqrt(2.0)
+					_add_box_at_down(proxies, "equipment:%s:%02d:bale_core" % [group_id, index], "equipment", prefab,
+						"frangible_impulse", north, east, -size.y * 0.5, size.x, core, core, heading)
 				else:
 					_add_box(proxies, "equipment:%s:%02d:%s" % [group_id, index, prefab], "equipment", prefab,
 						"hard_terminal", north, east, size.x, size.y, size.z, heading)
@@ -721,21 +727,34 @@ static func _add_pylon(proxies: Array[Dictionary], group_id: String, index: int,
 
 
 static func _add_pit_shelter(proxies: Array[Dictionary], id: String, north: float, east: float, heading: float) -> void:
-	# The shelter is an open pole structure: 9 posts on each long side and one roof slab.
+	# The shelter is an open pole structure: 9 posts on each long side and a sloped roof.
 	# There is deliberately no enclosing solid box and no floor collider.
+	# Prefabs._pit_shelter: posts stand on the 0.14 m standoffs to the front (3.2 m) and back (2.7 m) rail heights;
+	# the roof sheet overhangs to x ±14.3 and z ±2.9 and falls from 3.44 m at the front eave by 0.1 m per metre of
+	# depth; rails (0.2 m) and rafters (0.14 m) hang below it along the line 3.25 m at z -2.5 to 2.75 m at z 2.5.
 	var length := 28.0
 	var depth := 5.0
-	var post_h := 3.35
 	for row: int in 2:
 		var local_z := (-1.0 if row == 0 else 1.0) * (depth * 0.5 - 0.1)
+		var post_h := 3.30 if row == 0 else 2.80
 		for post_index: int in 9:
 			var local_x := -length * 0.5 + float(post_index) * length / 8.0
 			var at := _placement_point(north, east, heading, local_x, local_z)
 			_add_box(proxies, "building:%s:post:%d:%d" % [id, row, post_index], "building", "shelter_post",
 				"hard_terminal", at[0], at[1], 0.16, post_h, 0.16, heading)
-	var roof := _placement_point(north, east, heading, 0.0, 0.0)
-	_add_box_at_down(proxies, "building:%s:roof" % id, "building", "shelter_roof", "hard_terminal",
-		roof[0], roof[1], -3.22, 29.0, 0.14, 6.6, heading)
+	# DR-19e: stepped roof strips follow the slope (a single flat slab at 3.15–3.29 m left the back half fly-through
+	# and the front eave 0.18 m above it). Each strip spans the sheet's top (with its 0.028 m seams) at its front edge
+	# down to the structure's underside at its back edge.
+	var strips := 6
+	var z_front := -2.9
+	var strip_depth := 5.8 / float(strips)
+	for strip: int in strips:
+		var za := z_front + strip_depth * float(strip)
+		var zb := za + strip_depth
+		var top := 3.44 - 0.1 * (za - z_front) + 0.03
+		var bottom := 3.25 - 0.1 * (zb + 2.5) - 0.10
+		_add_local_box(proxies, "building:%s:roof:%d" % [id, strip], "building", "shelter_roof", "hard_terminal",
+			north, east, heading, 0.0, 0.5 * (top + bottom), 0.5 * (za + zb), 28.6, top - bottom, strip_depth)
 
 
 static func _add_pavilion(proxies: Array[Dictionary], id: String, north: float, east: float, heading: float) -> void:
