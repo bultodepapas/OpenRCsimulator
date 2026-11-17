@@ -1076,9 +1076,147 @@ def supervise(root, identifier):
     return 0
 
 
+def _posix_group_absent(leader):
+    """True when no process has the recorded gate as its PID or process group."""
+    result = subprocess.run(["ps", "-A", "-o", "pid=,pgid="], capture_output=True, text=True, timeout=10, check=True)
+    rows = [line.split() for line in result.stdout.splitlines() if line.strip()]
+    if not rows:
+        raise RuntimeError("process table observation was empty")
+    return not any(len(fields) >= 2 and str(leader) in fields[:2] for fields in rows)
+
+
+def _operator_request(request, fields):
+    if (not isinstance(request, dict) or set(request) != fields or request.get("operator_confirm") is not True
+            or not isinstance(request.get("request_id"), str) or not ID.fullmatch(request["request_id"])):
+        raise Refused("operator action requires request_id and operator_confirm: true")
+
+
+def reconcile_unknown(root, request):
+    """Operator release of an UNKNOWN job whose process group is proved gone.
+
+    Proof is a reboot since the recorded boot, or (same boot) a free host lock,
+    meaning no supervisor is alive, and no process left in the recorded gate's
+    PID or process group. Missing identity is never proof.
+    """
+    _operator_request(request, {"request_id", "operator_confirm"})
+    path = state_path(root, request["request_id"])
+    lock = Lock(root / "pool.lock")
+    try:
+        state = read_json(path)
+        if state.get("state") != "UNKNOWN":
+            raise Refused("only an UNKNOWN job can be reconciled", "CONFLICT")
+        process = state.get("process")
+        if not isinstance(process, dict):
+            raise Refused("no recorded process identity; teardown cannot be proved", "CONFLICT")
+        runtime = str(Path(__file__).resolve().parents[2])  # pinned agent runtime, as in execute_stage
+        if runtime not in sys.path:
+            sys.path.insert(0, runtime)
+        from tools.testqueue.processes import confirm_stopped
+        if confirm_stopped({"host": process.get("host"), "boot": process.get("boot")}):
+            proof = "host rebooted since the recorded boot"
+        else:
+            leader = process.get("pid")
+            if type(leader) is not int or leader <= 1:
+                raise Refused("recorded process identity has no usable PID", "CONFLICT")
+            if not _posix_group_absent(leader):
+                raise Refused("recorded process group still has members; not released", "CONFLICT")
+            proof = f"host lock free and no process in PID/PGID {leader} (same boot)"
+        state.update(state="FINISHED", outcome="INFRA_FAILED", cleanup="CONFIRMED", evidence="INCOMPLETE",
+                     reconciliation={"proof": proof, "operator_confirmed": True, "at": time.time(),
+                                     "previous_error": state.get("error")},
+                     finished_at=time.time())
+        publish_terminal(path, state)
+        return public_status(state)
+    finally:
+        lock.close()
+
+
+def _tree_bytes(path):
+    total = 0
+    for base, _, files in os.walk(path):
+        for name in files:
+            with contextlib.suppress(OSError):
+                total += os.lstat(os.path.join(base, name)).st_size
+    return total
+
+
+def collect_garbage(root, request):
+    """Remove the extracted source and archive copies of one collected PASSED job.
+
+    The coordinator calls this only after verifying its own collected evidence.
+    The job record, logs, reports and stage outputs stay; failed, incomplete and
+    UNKNOWN jobs are never touched.
+    """
+    if (not isinstance(request, dict) or set(request) != {"request_id", "payload_sha256", "operator_confirm"}
+            or request.get("operator_confirm") is not True
+            or not isinstance(request.get("payload_sha256"), str)
+            or not re.fullmatch(r"[0-9a-f]{64}", request["payload_sha256"])):
+        raise Refused("gc requires request_id, lowercase payload_sha256 and operator_confirm: true")
+    _operator_request({key: request[key] for key in ("request_id", "operator_confirm")},
+                      {"request_id", "operator_confirm"})
+    directory = job_path(root, request["request_id"])
+    path = directory / "state.json"
+    lock = Lock(root / "pool.lock")
+    try:
+        state = read_json(path)
+        if state.get("payload_sha256") != request["payload_sha256"]:
+            raise Refused("payload identity differs from the collected job", "CONFLICT")
+        if (state.get("state"), state.get("outcome"), state.get("evidence"), state.get("cleanup")) != (
+                "FINISHED", "PASSED", "COMPLETE", "CONFIRMED"):
+            raise Refused("only a FINISHED/PASSED/COMPLETE/CONFIRMED job is collected", "CONFLICT")
+        removed, names = 0, []
+        for name in ("source", "input.tar", "retained-input.tar"):
+            target = directory / name
+            if target.is_symlink():
+                raise Refused(f"{name} is a link; not removed", "CONFLICT")
+            if target.is_dir():
+                removed += _tree_bytes(target)
+                shutil.rmtree(target)  # descriptor-based on POSIX; does not follow links
+                names.append(name)
+            elif target.is_file():
+                removed += target.stat().st_size
+                target.unlink()
+                names.append(name)
+        state["storage_gc"] = {"state": "RECLAIMED", "removed": names, "logical_bytes_removed": removed,
+                               "at": time.time(), "scope": "source and archive copies after verified collection"}
+        publish_terminal(path, state)
+        return {"request_id": request["request_id"], "removed": names, "logical_bytes_removed": removed}
+    finally:
+        lock.close()
+
+
+def collect_incoming(root, request, *, min_age=3600):
+    """Remove cached incoming archives that no unfinished job uses.
+
+    Archives are content-addressed caches: a later dispatch re-uploads a
+    missing one. Uploads in progress (.pending) and recent files are kept.
+    """
+    if not isinstance(request, dict) or set(request) != {"operator_confirm"} or request["operator_confirm"] is not True:
+        raise Refused("gc-incoming requires operator_confirm: true")
+    lock = Lock(root / "pool.lock")
+    try:
+        unfinished = scan(root)
+        if any(not isinstance(state.get("request"), dict) for state in unfinished):
+            raise Refused("an unfinished job's archive is unknown; nothing removed", "CONFLICT")
+        active = {str((state["request"].get("archive") or {}).get("sha256")) for state in unfinished}
+        removed, files = 0, []
+        now = time.time()
+        for path in sorted((root / "incoming").iterdir()):
+            if (path.is_symlink() or not path.is_file() or not re.fullmatch(r"[0-9a-f]{64}\.tar", path.name)
+                    or path.name[:-4] in active or now - path.stat().st_mtime < min_age):
+                continue
+            removed += path.stat().st_size
+            path.unlink()
+            files.append(path.name)
+        return {"removed_files": len(files), "logical_bytes_removed": removed}
+    finally:
+        lock.close()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("probe", "run", "status", "reclaim-input", "_supervise", "_invoke"))
+    parser.add_argument("action", choices=("probe", "run", "status", "reclaim-input", "reconcile", "gc",
+                                           "gc-incoming", "_supervise", "_invoke"))
     parser.add_argument("--root", required=True)
     parser.add_argument("--request-id")
     parser.add_argument("--stage")
@@ -1108,6 +1246,12 @@ def main():
                     or not re.fullmatch(r"[0-9a-f]{64}", request["payload_sha256"])):
                 raise Refused("reclaim-input requires request_id and lowercase payload_sha256")
             result = reclaim_success_input(root, request["request_id"], expected_payload_sha256=request["payload_sha256"])
+        elif args.action == "reconcile":
+            result = reconcile_unknown(root, request)
+        elif args.action == "gc":
+            result = collect_garbage(root, request)
+        elif args.action == "gc-incoming":
+            result = collect_incoming(root, request)
         else:
             if not isinstance(request, dict) or set(request) != {"request_id"}:
                 raise Refused("status requires request_id")

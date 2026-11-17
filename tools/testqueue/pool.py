@@ -628,6 +628,122 @@ class Pool:
         finally:
             guard.close()
 
+    _RECONCILABLE = {'NOT_DISPATCHED', 'SUBMISSION_UNCONFIRMED', 'PREPARING'}
+    _RECONCILED = {'CANCELED_BEFORE_DISPATCH', 'OPERATOR_RECONCILED_ABSENT'}
+
+    def reconcile(self, identifier, *, operator_confirm=False):
+        """Release a host held by a receipt that never reached execution.
+
+        Local receipts are fenced by the authority's durable submission tombstone:
+        if the canceled request was never accepted, it can never run. Remote
+        authorities have no tombstone, so absence of the request there releases
+        the host only with an explicit operator confirmation. An accepted or
+        observed request is never released here; use status/recover instead.
+        """
+        if not identifier.isalnum():
+            raise ValueError('invalid job id')
+        path = self.root / 'jobs' / (identifier + '.json')
+        guard = acquire_lock(self.root / (identifier + '.lock'))
+        try:
+            receipt = self._read_receipt_locked(path)
+            if receipt.get('state') in self._RECONCILED:
+                return self._public_status(receipt, identifier, receipt['last_status'])
+            if receipt.get('state') not in self._RECONCILABLE:
+                raise ValueError(f"receipt state {receipt.get('state')} is not reconcilable; use status or recover")
+            host, local = self._destination(receipt)
+            evidence = {'reconciled_at': time.time(), 'previous_state': receipt.get('state')}
+            if host.get('local'):
+                request = receipt.get('request')
+                if not isinstance(request, dict) or not request.get('request_secret'):
+                    raise ValueError('local receipt has no request credential; nothing can fence it')
+                fenced = rpc('cancel_submission', **local, request_id=identifier, request_secret=request['request_secret'])
+                if fenced.get('job'):
+                    raise ValueError(f"the local authority accepted this request as job {fenced['job']}; "
+                                     'it was canceled through the normal path, observe it with status')
+                receipt.update(state='CANCELED_BEFORE_DISPATCH', reconciliation={**evidence, 'proof': 'local submission tombstone'},
+                               last_status={'state': 'FINISHED', 'outcome': 'NOT_DISPATCHED', 'cleanup': 'CONFIRMED',
+                                            'evidence': 'INCOMPLETE', 'proof': 'durable local submission tombstone'})
+            else:
+                try:
+                    observed = self.remote(host, 'status', {'request_id': identifier})
+                except RemoteRefusal as error:
+                    absent = error.code == 'NOT_FOUND'
+                except RuntimeError as error:
+                    absent = str(error).strip() == 'request not found'  # pre-protocol agents
+                else:
+                    raise ValueError(f"remote authority knows this request ({observed.get('state')}); use status/recover")
+                if not absent:
+                    raise ValueError('remote absence was not observed; nothing changed')
+                if not operator_confirm:
+                    raise ValueError('remote authority has no record of this request; a remote run has no tombstone, '
+                                     'so release requires --operator-confirm after checking no dispatch is in flight')
+                receipt.update(state='OPERATOR_RECONCILED_ABSENT',
+                               reconciliation={**evidence, 'proof': 'remote NOT_FOUND + operator confirmation'},
+                               last_status={'state': 'FINISHED', 'outcome': 'NOT_DISPATCHED', 'cleanup': 'UNCONFIRMED',
+                                            'evidence': 'INCOMPLETE', 'proof': 'operator-confirmed remote absence'})
+            write_json(path, receipt)
+            return self._public_status(receipt, identifier, receipt['last_status'])
+        finally:
+            guard.close()
+
+    def _remote_host(self, host_id):
+        host = next((item for item in self.hosts if item['id'] == host_id), None)
+        if host is None or host.get('local'):
+            raise ValueError('expected a configured remote host id')
+        return host
+
+    def remote_reconcile(self, host_id, request_id):
+        """Operator release of a remote UNKNOWN job; the remote agent checks the proof."""
+        if not request_id.isalnum():
+            raise ValueError('invalid job id')
+        return self.remote(self._remote_host(host_id), 'reconcile',
+                           {'request_id': request_id, 'operator_confirm': True})
+
+    def gc(self, host_id, *, execute=False):
+        """Reclaim a remote host's copies of PASSED jobs whose evidence is collected here.
+
+        Without ``execute`` this only lists candidates. With it, each job is first
+        collected (or its existing collection re-verified) on this coordinator;
+        only then does the remote agent remove that job's extracted source and
+        archive copies. Failed, incomplete and UNKNOWN jobs are never candidates.
+        """
+        host = self._remote_host(host_id)
+        candidates = []
+        for path in sorted((self.root / 'jobs').glob('*.json')):
+            try:
+                receipt = json.loads(path.read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                continue
+            last = receipt.get('last_status') if isinstance(receipt, dict) else None
+            if (not isinstance(last, dict) or receipt.get('host') != host_id or not isinstance(receipt.get('request'), dict)
+                    or (last.get('state'), last.get('outcome'), last.get('evidence'), last.get('cleanup'))
+                    != ('FINISHED', 'PASSED', 'COMPLETE', 'CONFIRMED')
+                    or (last.get('storage_gc') or {}).get('state') == 'RECLAIMED'):
+                continue
+            candidates.append((path.stem, receipt))
+        report = {'host': host_id, 'candidates': len(candidates), 'execute': execute}
+        if not execute:
+            report['request_ids'] = [identifier for identifier, _ in candidates]
+            return report
+        reclaimed, skipped, total = [], [], 0
+        for identifier, receipt in candidates:
+            try:
+                collected = self.collect(identifier)
+                if collected.get('pool_outcome') != 'PASSED' or collected.get('diagnostic_only') is not False:
+                    raise ValueError('collected evidence is not a complete pass')
+                result = self.remote(host, 'gc', {'request_id': identifier, 'operator_confirm': True,
+                                                  'payload_sha256': request_digest(receipt['request'])})
+                total += result.get('logical_bytes_removed', 0)
+                reclaimed.append(identifier)
+            except Exception as error:  # one job's refusal never stops the sweep
+                skipped.append({'request_id': identifier, 'error': str(error)[:300]})
+        try:
+            incoming = self.remote(host, 'gc-incoming', {'operator_confirm': True})
+        except Exception as error:
+            incoming = {'error': str(error)[:300]}
+        report.update(reclaimed=len(reclaimed), skipped=skipped, logical_bytes_removed=total, incoming=incoming)
+        return report
+
     def status(self, identifier):
         if not identifier.isalnum():
             raise ValueError('invalid job id')
@@ -641,6 +757,8 @@ class Pool:
         """Observe and update a receipt while holding its per-job lock."""
         path = self.root / 'jobs' / (identifier + '.json')
         receipt = self._read_receipt_locked(path)
+        if receipt.get('state') in self._RECONCILED:
+            return self._public_status(receipt, identifier, receipt['last_status'])
         if 'request' not in receipt:
             return self._public_status(receipt, identifier, {'state': 'UNKNOWN', 'cleanup': 'UNCONFIRMED',
                     'error': 'Preparation interrupted before durable dispatch request'})
@@ -695,13 +813,22 @@ def main(argv=None):
     submit.add_argument('--host')
     submit.add_argument('--require', action='append', default=[])
     submit.add_argument('--timeout', type=float, default=90)
-    for name in ('status', 'wait', 'collect', 'recover'):
+    gc = sub.add_parser('gc', help='reclaim remote copies of collected PASSED jobs (dry run unless --execute)')
+    gc.add_argument('--host', required=True)
+    gc.add_argument('--execute', action='store_true')
+    remote_reconcile = sub.add_parser('remote-reconcile', help='operator release of a remote UNKNOWN job with proof')
+    remote_reconcile.add_argument('--host', required=True)
+    remote_reconcile.add_argument('job')
+    for name in ('status', 'wait', 'collect', 'recover', 'reconcile'):
         command = sub.add_parser(name)
         command.add_argument('job')
         if name == 'wait':
             command.add_argument('--timeout', type=float, default=600)
         if name == 'collect':
             command.add_argument('--out', type=Path)
+        if name == 'reconcile':
+            command.add_argument('--operator-confirm', action='store_true',
+                                 help='release a remote receipt whose request the remote authority does not know')
     args = parser.parse_args(argv)
     if not args.config:
         parser.error('--config or OPENRC_TESTPOOL_CONFIG is required')
@@ -729,6 +856,12 @@ def main(argv=None):
         value = pool.collect(args.job, out_dir=args.out)
     elif args.command == 'recover':
         value = pool.recover(args.job)
+    elif args.command == 'reconcile':
+        value = pool.reconcile(args.job, operator_confirm=args.operator_confirm)
+    elif args.command == 'gc':
+        value = pool.gc(args.host, execute=args.execute)
+    elif args.command == 'remote-reconcile':
+        value = pool.remote_reconcile(args.host, args.job)
     else:
         deadline = time.monotonic() + (args.timeout if args.command == 'wait' else 0)
         while True:

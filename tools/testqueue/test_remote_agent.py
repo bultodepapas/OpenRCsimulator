@@ -5,10 +5,12 @@ import errno
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import sys
 import tarfile
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -333,6 +335,75 @@ class RemoteAgentTests(unittest.TestCase):
         self.assertEqual((written["state"], written["outcome"], written["cleanup"], written["evidence"]),
                          ("FINISHED", "INFRA_FAILED", "CONFIRMED", "INCOMPLETE"))
         self.assertEqual(written["checked"]["reason"], "not_serializable")
+
+    def test_operator_gc_reclaims_only_a_collected_pass(self):
+        self.accepted(self.request(self.sample_archive()))
+        self.assertEqual(self._supervise(), 0)
+        directory = self.root / "jobs/job1"
+        state = agent.read_json(directory / "state.json")
+        self.assertEqual(state["outcome"], "PASSED")
+        bad = {"request_id": "job1", "payload_sha256": "0" * 64, "operator_confirm": True}
+        with self.assertRaises(agent.Refused) as refused:
+            agent.collect_garbage(self.root, bad)
+        self.assertEqual(refused.exception.code, "CONFLICT")
+        with self.assertRaises(agent.Refused):
+            agent.collect_garbage(self.root, {**bad, "operator_confirm": False})
+        result = agent.collect_garbage(self.root, {**bad, "payload_sha256": state["payload_sha256"]})
+        self.assertIn("source", result["removed"])
+        self.assertGreater(result["logical_bytes_removed"], 0)
+        self.assertFalse((directory / "source").exists())
+        kept = agent.read_json(directory / "state.json")
+        self.assertEqual((kept["outcome"], kept["storage_gc"]["state"]), ("PASSED", "RECLAIMED"))
+        self.assertTrue((directory / "check-result.json").is_file())
+        # A failed job is never a candidate.
+        state["outcome"] = "TEST_FAILED"
+        agent.write_json(directory / "state.json", state)
+        with self.assertRaises(agent.Refused):
+            agent.collect_garbage(self.root, {**bad, "payload_sha256": state["payload_sha256"]})
+
+    def test_operator_gc_incoming_keeps_active_recent_and_pending_archives(self):
+        incoming = self.root / "incoming"
+        old, active, young = ("a" * 64 + ".tar", "b" * 64 + ".tar", "c" * 64 + ".tar")
+        for name in (old, active, young, "d" * 64 + ".tar.job9.pending"):
+            (incoming / name).write_bytes(b"x" * 10)
+        past = time.time() - 7200
+        for name in (old, active):
+            os.utime(incoming / name, (past, past))
+        running = {"state": "RUNNING", "request": {"archive": {"sha256": "b" * 64}}}
+        with mock.patch.object(agent, "scan", return_value=[running]):
+            result = agent.collect_incoming(self.root, {"operator_confirm": True})
+        self.assertEqual(result, {"removed_files": 1, "logical_bytes_removed": 10})
+        self.assertEqual(sorted(path.name for path in incoming.iterdir()),
+                         sorted([active, young, "d" * 64 + ".tar.job9.pending"]))
+        with mock.patch.object(agent, "scan", return_value=[{"state": "UNKNOWN", "error": "unreadable journal"}]), \
+                self.assertRaises(agent.Refused):
+            agent.collect_incoming(self.root, {"operator_confirm": True})
+
+    def test_operator_reconcile_requires_a_proved_absent_process_group(self):
+        directory = self.root / "jobs/lost1"
+        directory.mkdir(parents=True)
+        unknown = {"state": "UNKNOWN", "request_id": "lost1", "cleanup": "UNCONFIRMED", "error": "supervisor disappeared",
+                   "process": {"pid": 4242, "host": "h", "boot": "b"}}
+        agent.write_json(directory / "state.json", unknown)
+        request = {"request_id": "lost1", "operator_confirm": True}
+        from tools.testqueue import processes
+        with mock.patch.object(processes, "confirm_stopped", return_value=False), \
+                mock.patch.object(agent, "_posix_group_absent", return_value=False), \
+                self.assertRaises(agent.Refused):
+            agent.reconcile_unknown(self.root, request)
+        self.assertEqual(agent.read_json(directory / "state.json")["state"], "UNKNOWN")
+        with self.assertRaises(agent.Refused):
+            agent.reconcile_unknown(self.root, {**request, "operator_confirm": False})
+        with mock.patch.object(processes, "confirm_stopped", return_value=False), \
+                mock.patch.object(agent, "_posix_group_absent", return_value=True):
+            result = agent.reconcile_unknown(self.root, request)
+        self.assertEqual((result["state"], result["cleanup"], result["outcome"]), ("FINISHED", "CONFIRMED", "INFRA_FAILED"))
+        self.assertIn("same boot", result["reconciliation"]["proof"])
+        with self.assertRaises(agent.Refused):
+            agent.reconcile_unknown(self.root, request)  # no longer UNKNOWN
+        agent.write_json(directory / "state.json", {**unknown, "process": None})
+        with self.assertRaises(agent.Refused):
+            agent.reconcile_unknown(self.root, request)
 
     def test_unreadable_result_after_confirmed_teardown_is_not_unknown(self):
         self.accepted(self.request(self.sample_archive()))
