@@ -208,6 +208,8 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 	for rotor: Dictionary in data.rotors:
 		hubs.append(PackedFloat64Array(rotor.hub_frd))
 	plant.config.hubs = hubs
+	# DR-19e: only the damped bridge can drive a motor backwards; elsewhere turtle mode commands nothing.
+	plant.config.reverse_drive = plant._braking
 	if plant.electric:
 		var effective: PackedFloat64Array = data.inertia_kg_m2.duplicate()
 		effective[2] -= rotor_inertia # every spin axis is body z
@@ -944,7 +946,7 @@ func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, 
 		var normal := _obstacle_normal(centre)
 		var support := _box_support(M.q_rotate(M.q_conj(attitude), normal))
 		var depth: float = float(support.extent) - float(clearance)
-		if depth < 0.0:
+		if not (depth >= 0.0 and is_finite(depth)):
 			continue
 		var kind := str(obstacle_class.call(centre[0], centre[1], centre[2])) if obstacle_class.is_valid() else ""
 		var contact_body: PackedFloat64Array = support.point
@@ -973,7 +975,7 @@ func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 	var attitude := RB._att(body)
 	var deepest := {}
 	for i in 4:
-		if out.continuous[i] <= strike_speed:
+		if out.continuous[i] <= strike_speed or out.continuous[C_HEALTH + i] <= 0.0:
 			continue
 		var rotor: Dictionary = prepared.rotors[i]
 		var radius: float = 0.5 * float(rotor.diameter_m)
@@ -984,7 +986,7 @@ func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
 		var normal := _obstacle_normal(hub)
 		var support := _disc_support(M.q_rotate(M.q_conj(attitude), normal), M.v3(0.0, 0.0, -1.0), radius) # the admitted thrust axis
 		var depth: float = float(support.extent) - float(clearance)
-		if depth < 0.0:
+		if not (depth >= 0.0 and is_finite(depth)):
 			continue
 		var contact_body := M.add(rotor.hub_frd, support.point)
 		var speed := _closing_speed(body, contact_body, normal)
@@ -1203,7 +1205,7 @@ func state_validator(frame: Dictionary, _context: Dictionary) -> bool:
 		if continuous[i] < floor_speed or continuous[i] > ceiling:
 			return false
 	var aux: PackedFloat64Array = frame.aux
-	var command_floor: float = -1.0 if frame.modes[FC.MODE_FLIGHT] == FC.FLIGHT_TURTLE else 0.0 # DR-19e reverse drive
+	var command_floor: float = -1.0 if _braking and frame.modes[FC.MODE_FLIGHT] == FC.FLIGHT_TURTLE else 0.0 # DR-19e
 	for i in 4:
 		if aux[FC.AUX_COMMAND + i] < command_floor or aux[FC.AUX_COMMAND + i] > 1.0:
 			return false

@@ -432,7 +432,8 @@ static func _turtle(config: Dictionary, frame: Dictionary, input: PackedFloat64A
 	for rotor in 4:
 		aux[AUX_COMMAND + rotor] = 0.0
 		aux[AUX_THRUST_TARGET + rotor] = 0.0
-		if done or up > TURTLE_UPRIGHT or amount <= TURTLE_DEADBAND or rotor >= hubs.size():
+		if done or up > TURTLE_UPRIGHT or amount <= TURTLE_DEADBAND or rotor >= hubs.size() \
+				or not bool(config.get("reverse_drive", false)):
 			continue
 		var hub: PackedFloat64Array = hubs[rotor]
 		# A hub opposite the stick direction (FRD x forward, y right) is the side that must rise.

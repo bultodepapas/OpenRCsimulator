@@ -70,7 +70,8 @@ var _mode_input_held := false
 var _turtle := false
 var _turtle_input_held := false
 var _turtle_button := -1
-## The turtle request was armed once: the following disarm ends it (one flip per request; the next arm flies).
+## The turtle request was engaged on an arming edge: the following disarm ends it (one flip per request; the next arm
+## flies). A request made while armed (after a crash, still armed) waits: the pilot's mode keeps flying until the disarm.
 var _turtle_used := false
 var _actions := 0
 var _keyboard_sticks := {roll = 0.0, pitch = 0.0, yaw = 0.0}
@@ -388,7 +389,8 @@ func reset_for_restart() -> void:
 
 
 func flight_mode() -> int:
-	return FC.FLIGHT_TURTLE if _turtle else _mode
+	# Turtle while disarmed (awaiting the arming edge) or once engaged; a request made while armed waits.
+	return FC.FLIGHT_TURTLE if _turtle and (not _last_arm_level or _turtle_used) else _mode
 
 
 ## DR-19e: whether turtle mode (the crash flip) is requested.
@@ -576,8 +578,9 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 			_end_arm_continuity(true)
 			arm_level = false
 	if integrate:
+		var was_armed_level := _last_arm_level
 		_last_arm_level = arm_level and ready
-		if _turtle and arm_level and ready:
+		if _turtle and arm_level and ready and not was_armed_level:
 			_turtle_used = true
 		elif _turtle_used and not arm_level:
 			_turtle = false
@@ -608,10 +611,10 @@ func sample(dt: float, integrate: bool) -> Dictionary:
 	pilot[FC.IN_YAW] = clampf(yaw, -1.0, 1.0)
 	pilot[FC.IN_THROTTLE] = throttle
 	pilot[FC.IN_ARM] = 1.0 if arm_level else 0.0
-	pilot[FC.IN_MODE] = float(FC.FLIGHT_TURTLE if _turtle else _mode)
+	pilot[FC.IN_MODE] = float(flight_mode())
 	pilot[FC.IN_ACTIONS] = float(actions)
 	var raw := {roll = pilot[FC.IN_ROLL], pitch = pilot[FC.IN_PITCH], yaw = pilot[FC.IN_YAW], throttle = throttle,
-		arm = arm_level, arm_source = arm_source, mode = "turtle" if _turtle else ("angle" if _mode == FC.FLIGHT_ANGLE else "acro"),
+		arm = arm_level, arm_source = arm_source, mode = "turtle" if flight_mode() == FC.FLIGHT_TURTLE else ("angle" if _mode == FC.FLIGHT_ANGLE else "acro"),
 		mode_source = mode_source,
 		arm_key = _arm_key_name, mode_key = _mode_key_name,
 		arm_button = _arm_button, mode_button = _mode_button}

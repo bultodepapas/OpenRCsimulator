@@ -68,6 +68,18 @@ func _inverted() -> Node:
 	return s
 
 
+## Which side of the quad is low in the world: hub heights weighted by body hub · body stick (-pitch, roll).
+func _pivot_side(s: Node, hubs: Array, roll: float, pitch: float) -> String:
+	var q := RB._att(s.sim.state)
+	# The hub heights weighted by how far each hub lies toward the stick: negative when the stick side is low.
+	var tilt := 0.0
+	for hub: PackedFloat64Array in hubs:
+		var world := M.q_rotate(q, hub)
+		var height: float = -(s.sim.state[RB.POS + 2] + world[2])
+		tilt += (hub[0] * -pitch + hub[1] * roll) * height
+	return "stick side low" if tilt < 0.0 else "stick side high (%.5f)" % tilt
+
+
 func _commands(s: Node) -> PackedFloat64Array:
 	return s.sim.aux.slice(FC.AUX_COMMAND, FC.AUX_COMMAND + 4)
 
@@ -98,12 +110,18 @@ func _flips() -> void:
 		_check(label + ": the motors opposite the stick reverse (full stick: the declared maximum)", signs_ok, str(cmds))
 		var flipped_at := -1
 		var reversed := false
+		var pivot := ""
 		for i in 720:
 			s.tick_once(_pilot(float(stick[0]), float(stick[1]), 1, FC.FLIGHT_TURTLE))
 			for k in 4:
 				reversed = reversed or s.sim.continuous[k] < 0.0
+			if pivot.is_empty() and absf(_up(s)) < 0.2:
+				pivot = _pivot_side(s, hubs, float(stick[0]), float(stick[1]))
 			if flipped_at < 0 and _up(s) > 0.9:
 				flipped_at = i
+		# Measured, not the controller's formula: halfway over, the quad pivots on its edge on the stick side (that side
+		# stays low in the world) and the opposite side is up in the air: it flips toward the stick, as a crash flip does.
+		_check(label + ": halfway over, the quad stands on its stick-side edge", pivot == "stick side low", pivot)
 		var health: PackedFloat64Array = s.sim.continuous.slice(Plant.C_HEALTH, Plant.C_HEALTH + 4)
 		_check(label + ": the props spin backwards and the quad lands upright within 1 s", reversed and flipped_at >= 0
 			and flipped_at < 240 and _up(s) > 0.95, "%d ticks, final up %.3f" % [flipped_at, _up(s)])
@@ -163,6 +181,23 @@ func _input_request() -> void:
 	_check("one arm cycle consumes the request: after the disarm the pilot flies the previous mode", kept
 		and not input.turtle_requested() and int(sample.pilot[FC.IN_MODE]) == input.flight_mode()
 		and input.flight_mode() != FC.FLIGHT_TURTLE)
+	# After a crash the quad is usually still armed: the request waits (the pilot's mode keeps flying, so the mode
+	# toggle still works) and survives the disarm; the next arming edge engages it, and that arm cycle consumes it.
+	var flying: int = input.flight_mode()
+	_press(input, keys, "arm")
+	_press(input, keys, "turtle")
+	sample = input.sample(1.0 / 240.0, true)
+	var waits: bool = input.turtle_requested() and int(sample.pilot[FC.IN_MODE]) == flying and str(sample.raw.mode) != "turtle"
+	_press(input, keys, "arm")
+	sample = input.sample(1.0 / 240.0, true)
+	var survives: bool = input.turtle_requested() and int(sample.pilot[FC.IN_MODE]) == FC.FLIGHT_TURTLE
+	_press(input, keys, "arm")
+	sample = input.sample(1.0 / 240.0, true)
+	var engaged: bool = int(sample.pilot[FC.IN_MODE]) == FC.FLIGHT_TURTLE
+	_press(input, keys, "arm")
+	_check("a request made while armed waits for the disarm, engages on the next arm and is consumed by that cycle",
+		waits and survives and engaged and not input.turtle_requested() and input.flight_mode() == flying,
+		"%s %s %s" % [waits, survives, engaged])
 	_press(input, keys, "turtle")
 	input.reset_for_restart()
 	_check("a pad restart clears the request", not input.turtle_requested())

@@ -277,6 +277,13 @@ func _obstacles() -> void:
 		if broken.continuous[Plant.C_HEALTH + i] == 0.0:
 			zero += 1
 	_check("a 7 m/s prop clip (above 6 m/s) breaks the front props, still not terminal", broken.reason == "" and zero == 2)
+	# The broken props keep spinning (stubs) but have no blade left to strike: the same wall touches nothing.
+	var stubs: PackedFloat64Array = broken.continuous.duplicate()
+	for i in 4:
+		stubs[i] = hover
+	var after: Dictionary = p._graded_impacts(hard_clip, hard_clip, stubs, 0.0)
+	_check("broken props spinning at the wall no longer push or bounce the quad", after.reason == "" and after.body == hard_clip
+		and after.events.is_empty(), str(after.events))
 	# Strict law: any touch of the airframe sphere is the original obstacle strike.
 	p.graded_impacts = false
 	_check("strict: the 2 m/s prop clip is the original obstacle strike", p.crash_reason(clip, clip, _speeds(p, clip, hover))

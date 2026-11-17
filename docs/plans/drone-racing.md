@@ -508,11 +508,12 @@ Affected suites: multirotor plant/session/activity/OSD/flight log and race suite
 
 ### 19.1 DR-19e: turtle mode (crash flip)
 
-- **Request:** F on the keyboard, Y on a gamepad (never a button an AUX channel or Pause owns), toggled while disarmed. It engages only on the arming edge: a request in flight waits for a disarm. One arm cycle consumes the request (the next arm flies); a pad restart or source change clears it.
+- **Request:** F on the keyboard, Y on a gamepad (never a button an AUX channel or Pause owns), toggled at any time. It engages only on an arming edge: a request made while armed (a crashed quad usually still is) waits, and the pilot's Acro/Angle mode keeps flying until the disarm. The arm cycle that engaged it consumes it (the next arm flies); a pad restart or source change clears it. Only the damped bridge can drive a motor backwards; on any other powertrain turtle mode commands nothing.
 - **Law** (`openrc-fc-acro-angle-turtle-v2`): no PID or allocation runs. The motors on the side opposite the stick spin in reverse, so the quad flips toward the stick. The command is −0.4 × √(stick beyond the 0.15 deadband), faded to 35 % as the body's up axis nears vertical. The motors stop past vertical, and for good once the quad is upright (up > 0.8, a latch until the disarm), so a fast roll flip does not cartwheel on.
 - **Plant:** the electrical law admits a negative duty in turtle mode only. A prop driven backwards keeps 35 % of its thrust and drag torque (declared estimate).
 - **HUD:** mode label TRTL; the help line and the upside-down hint name the turtle control.
-- **Evidence:** `test_mr_turtle` (30 checks). Full roll, full pitch, diagonal and half stick flip an inverted quad upright in 0.28–0.68 s with no damage or crash, and the motors stop with the stick still held. A request in flight is ignored, the deadband spins nothing, and the input consumes the request after one arm cycle.
+- **Evidence:** `test_mr_turtle` (35 checks). Full roll, full pitch, diagonal and half stick flip an inverted quad upright in 0.28–0.68 s with no damage or crash, and the motors stop with the stick still held. Halfway over, the quad stands on its stick-side edge (measured from the hub heights, not the controller's formula). A request in flight is ignored by the controller, the deadband spins nothing, and the input keeps a request made while armed until the next arming edge.
+- **Known behaviour:** turtle armed in the air reverses the motors as on a real flight controller; armed upright (up > 0.8) it latches done and the motors stay stopped until the disarm.
 
 ### 19.2 Thresholds
 
@@ -549,4 +550,16 @@ Both courses sit at N35–56, E35–85 from the pilot. The nearest trees are abo
 | Gates, pavilion, club sign, shed, cars, benches, tables | Proxies within 0.1 m of the visuals. | Verified. |
 | Bushes, shade trees, saplings, people | Proxies come from source bounds; the rendered MultiMesh bounds were not measured. | Not established; none is near a course. |
 
-Evidence: `test_mr_graded_crashes` (35 checks: roof clearance, a frame contact below a roof, an edge hit spinning the quad, every class threshold); scenery collision and companion airspace suites.
+Evidence: `test_mr_graded_crashes` (36 checks: roof clearance, a frame contact below a roof, an edge hit spinning the quad, every class threshold, broken props no longer striking obstacles); scenery collision and companion airspace suites.
+
+`app/scenery/collision_world.gd` is a source in the AI companions' behavior manifest. The pit-shelter and bale proxies lie off every companion circuit, so the manifest entry and the Stik profile's manifest hash were renewed, as the EdgeTX change did for `main.gd`. The companion airspace (48 checks), manager (53) and session (65) suites pass with the renewed pin. This is not a full behaviour requalification run (see [companion rebinds](../research/ai-companions/AFC-02/README.md)). The solver pin was re-bound with `tools/companions/rebind.py`: all nine companion tapes replay identically (receipt `2026-11-17-ea70a38e-to-5511bbbc.json`). The review fixes in §19.5 change `app/physics` again, so the re-bind must run once more after they are committed.
+
+### 19.5 Adversarial review
+
+An independent review of turtle mode and the v2 shapes found no energy gain, NaN path or nondeterminism in normal use. Fixed with regressions:
+- A turtle request made while still armed after a crash was consumed by the next disarm, and it froze the Acro/Angle toggle in flight. It now waits for the next arming edge.
+- Negative duty was admitted for any powertrain in turtle mode; now only for the damped bridge.
+- A broken prop still struck obstacles and bounced the quad every tick at a wall.
+- A non-finite contact depth could pass the contact guard.
+
+Accepted limits: only the nearest obstacle is tested at the box centre (as in v1); a prop disc has no midpoint check, so at about 10 m/s of axial travel it can skip a bar thinner than 4 cm; the terminal speed uses the edge-blended contact point; quad and airplane terminal speeds per class are separate tables by design.
