@@ -68,6 +68,8 @@ signal resetting
 ## DR-25/26 (race sessions only): every accepted race event, and the terminal record of a finished or aborted attempt.
 signal race_event(event: Dictionary)
 signal race_result(result: Dictionary)
+## DR-19c: a non-terminal impact or prop damage of an accepted tick ({type = "impact" | "prop_damage", ...}).
+signal impact(event: Dictionary)
 
 var sim: Node
 var environment: SimEnvironment = SimEnvironment.new()
@@ -109,7 +111,7 @@ func _init() -> void:
 static func default_options() -> Dictionary:
 	return {data_path = DEFAULT_DATA, rates = {}, throttle_policy = "absolute", start = "pad", altitude_m = 3.0,
 		north_offset_m = 12.0, east_offset_m = 0.0, heading_deg = 0.0, wind_speed_mps = 0.0, wind_from_deg = 0.0,
-		initial_soc = -1.0, source_generation = 0, throttle_limit = 1.0, race_track = "", rc_track = {}}
+		initial_soc = -1.0, source_generation = 0, throttle_limit = 1.0, race_track = "", rc_track = {}, crash_model = "strict"}
 
 
 ## Build every derived object detached, then replace the running configuration. Refusal keeps the old session,
@@ -254,10 +256,15 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	if typeof(opts.throttle_limit) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(opts.throttle_limit)) \
 			or float(opts.throttle_limit) < 0.2 or float(opts.throttle_limit) > 1.0:
 		return _refused("option throttle_limit must lie in 0.2..1")
+	# DR-19c: "strict" ends the flight at any hard contact (the original law); "graded" lets most impacts bounce or wear
+	# the props (electrical law). Part of the model identity, so a log replays with the law it was flown with.
+	if typeof(opts.get("crash_model")) != TYPE_STRING or not str(opts.crash_model) in ["strict", "graded"]:
+		return _refused("option crash_model must be strict or graded")
 	var created: Dictionary = Plant.create(doc, profile, policy, 0, float(opts.throttle_limit))
 	if not created.ok:
 		return _refused("; ".join(created.errors))
 	var candidate_plant: RefCounted = created.plant
+	candidate_plant.graded_impacts = str(opts.crash_model) == "graded"
 	var captured_env := candidate_env
 	candidate_plant.environment = captured_env
 	candidate_plant.ground = contact_ground(captured_env)
@@ -294,6 +301,7 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	var gate_frames: Array = _frame_proxies(race_course.get("frames", []))
 	if not _collision_world.is_empty() or not gate_frames.is_empty():
 		candidate_plant.obstacle = _obstacle_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
+		candidate_plant.obstacle_class = _obstacle_class_query(_collision_world, gate_frames, radius + OBSTACLE_SLACK_M)
 	var frame := _start_frame(framer, doc, candidate_env, start)
 	var kernel: Node = Sim.new()
 	kernel.process_mode = Node.PROCESS_MODE_DISABLED
@@ -605,6 +613,8 @@ func tick_once(pilot: PackedFloat64Array, race_action: int = 0) -> bool:
 					crashed.emit(str(crash.reason))
 			"pack_depleted":
 				depleted.emit()
+			"impact", "prop_damage":
+				impact.emit(event.duplicate(true))
 		if race != null and kind in RACE_EVENT_TYPES:
 			race_event.emit(event.duplicate(true))
 			if kind == "race_finish" or kind == "race_abort":
@@ -672,6 +682,29 @@ static func _obstacle_query(world: Dictionary, frames: Array, reach: float) -> C
 			if absf(north - float(proxy.north)) < proxy.span and absf(east - float(proxy.east)) < proxy.span:
 				nearest = minf(nearest, _clearance(proxy, north, east, down))
 		return nearest
+
+
+## DR-19c: obstacle_class(north, east, down) -> the response class of the nearest proxy within `reach` (gate frames:
+## "gate_frame"), "" when none; the same pure index and candidates as _obstacle_query.
+static func _obstacle_class_query(world: Dictionary, frames: Array, reach: float) -> Callable:
+	var index: Dictionary = obstacle_index(world, reach)
+	return func(north: float, east: float, down: float) -> String:
+		var nearest := reach
+		var kind := ""
+		if not index.is_empty() and is_finite(north) and is_finite(east) and is_finite(down):
+			for proxy: Dictionary in obstacle_candidates(index, north, east):
+				if CollisionWorld._aabb_sphere_overlap(proxy, north, east, down, reach):
+					var clearance := _clearance(proxy, north, east, down)
+					if clearance < nearest:
+						nearest = clearance
+						kind = str(proxy.get("response_class", ""))
+		for proxy: Dictionary in frames:
+			if absf(north - float(proxy.north)) < proxy.span and absf(east - float(proxy.east)) < proxy.span:
+				var clearance := _clearance(proxy, north, east, down)
+				if clearance < nearest:
+					nearest = clearance
+					kind = "gate_frame"
+		return kind
 
 
 ## DR-22/R1 terrain law of the plant's contact, impact and substep queries: the field surface linearized inside

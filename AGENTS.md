@@ -2,6 +2,8 @@
 
 Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable.
 
+Use U drive as cache and temp.
+
 ## Lead agent and subagents
 
 The **main conversation's agent is the senior developer, technical orchestrator and final implementation owner**. The intended lead is the user's selected highest-capability reasoning model. Keep that lead responsible for architecture, difficult reasoning, the definitive code, integration and verification throughout the task. Repository instructions cannot upgrade a running model; report a known mismatch instead of claiming a capability or silently switching the lead to a helper model.

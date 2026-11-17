@@ -419,7 +419,7 @@ func _pad_and_crash() -> void:
 	var h: Dictionary = Fixtures.install(root, data)
 	var sim: Node = h.sim
 	var message: String = Fixtures.reset(sim, h.plant.initial_frame(Fixtures.body(Fixtures.REST_HEIGHT_M)), FC.neutral_input())
-	_check("the electrical plant installs with eight continuous values", h.ok and message.is_empty() and sim.model.continuous_size == 8, message)
+	_check("the electrical plant installs with twelve continuous values (DR-19c: four prop health factors)", h.ok and message.is_empty() and sim.model.continuous_size == Plant.ELECTRIC_CONTINUOUS and Plant.ELECTRIC_CONTINUOUS == 12, message)
 	var ok: bool = Fixtures.run(sim, FC.neutral_input(), 480)
 	_check("CONTACT-01 the disarmed airframe rests on its feet at the solved static sag",
 		ok and absf(-sim.state[RB.POS + 2] - Fixtures.REST_HEIGHT_M) < 5e-4 and absf(sim.state[RB.VEL + 2]) < 1e-4

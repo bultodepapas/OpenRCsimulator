@@ -58,6 +58,8 @@ const RESUME_DISARMS_TEXT := "Resuming disarms the motors: arm again with the th
 const OUTBOX_TEXT := "Race results are not saved (%d pending): check the storage, then try again."
 const DISCARD_TEXT := "%d race results are not saved. Choose Back to Home again within 8 s to discard them."
 const DISCARD_CONFIRM_MS := 8000
+## DR-19c: prop names in the data's rotor order (multirotor_data.gd: 1 rear right, 2 front right, 3 rear left, 4 front left).
+const ROTOR_NAMES := ["rear right", "front right", "rear left", "front left"]
 
 signal home_requested
 
@@ -85,6 +87,9 @@ var frame_model: String = Visual.MODEL_PATH
 var scripted_pilot := Callable()
 ## DR-23/32/36b: the local practice course flown from this activity when it belongs to the loaded field ("" = none).
 var race_track: String = RACE_TRACK
+## DR-19c: the crash law the next prepared flight uses: "graded" (default; most impacts bounce or damage props) or
+## "strict" (every crash ends the flight). A change applies through Restart on pad, like the throttle limit.
+var crash_model := "graded"
 ## Where finished and aborted race records are written (tests point this at an isolated folder).
 var results_directory: String = Session.RESULTS_DIRECTORY
 
@@ -157,6 +162,10 @@ var _menu_reason := ""
 var _resume_note := ""
 ## Audit A11: until when (Time.get_ticks_msec) a second Home discards unsaved race results; 0 = not armed.
 var _discard_until_ms := 0
+## DR-14d: edge state of the controller's Restart flight binding (a fresh OFF is needed after each source change).
+var _restart_active := false
+var _restart_off_seen := false
+var _restart_generation := -1
 
 
 func _enter_tree() -> void:
@@ -236,6 +245,7 @@ func _ready() -> void:
 	session.race_event.connect(_on_race_event)
 	session.race_result.connect(_on_race_result)
 	session.resetting.connect(_invalidate_telemetry)
+	session.impact.connect(_on_impact)
 	_build_gates()
 	# Pay the solver fingerprint (about 70 ms of source hashing, once per process) while loading, not on F10.
 	FlightLogFormat.replay_identity()
@@ -370,7 +380,7 @@ func _pad_grass_exclusions() -> Array:
 func _session_options() -> Dictionary:
 	return {data_path = Catalog.DATA_PATH, throttle_policy = _input_policy(), start = "pad",
 		source_generation = input.source_generation, throttle_limit = input.throttle_limit(), race_track = _race_option,
-		rc_track = _rc_track}
+		rc_track = _rc_track, crash_model = crash_model}
 
 
 ## The prepared flight's throttle limit.
@@ -604,6 +614,39 @@ func _hold(reason: String) -> void:
 
 func _input(event: InputEvent) -> void:
 	input.on_event(event)
+	_route_restart(event)
+
+
+## DR-14d: the flight controller's Restart flight binding (a pad's View/Back, an EdgeTX radio's CH9 switch) acts as R
+## on its OFF-to-ON edge. A source change requires a fresh OFF first, so a switch already ON at connection or after a
+## profile change never restarts the flight; other devices have no say.
+func _route_restart(event: InputEvent) -> void:
+	if scripted_pilot.is_valid() or session == null or not session.prepared or not input.radio.connected:
+		return
+	if not (event is InputEventJoypadButton or event is InputEventJoypadMotion) or event.device != int(input.radio.device_id):
+		return
+	if _restart_generation != input.source_generation:
+		_restart_generation = input.source_generation
+		_restart_active = false
+		_restart_off_seen = false
+	var binding: Dictionary = input.restart_binding()
+	var active := false
+	match str(binding.get("type", "")):
+		"button":
+			if not event is InputEventJoypadButton or event.button_index != int(binding.button):
+				return
+			active = event.pressed
+		"axis":
+			if not event is InputEventJoypadMotion or event.axis != int(binding.axis):
+				return
+			active = ControllerActions.matches_binding(binding, event, int(input.radio.device_id), _restart_active)
+		_:
+			return
+	if not active:
+		_restart_off_seen = true
+	elif not _restart_active and _restart_off_seen:
+		quick_restart()
+	_restart_active = active
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -667,6 +710,7 @@ func _open_menu(reason: String) -> void:
 		session.pause(reason)
 		input.begin_hold()
 	hud.set_throttle_limit(_session_limit(), input.throttle_limit())
+	hud.set_crash_model(str(session.options.get("crash_model", "strict")), crash_model)
 	if session.race != null and not session.results.is_empty():
 		_retry_pending_saves() # audit A11: storage may have been repaired since the last terminal result
 	_menu_reason = reason
@@ -753,6 +797,8 @@ func handle_action(action: String) -> void:
 			restart_on_pad()
 		"throttle_limit":
 			cycle_throttle_limit()
+		"crash_model":
+			cycle_crash_model()
 		"course":
 			cycle_course()
 		"help":
@@ -765,6 +811,16 @@ func handle_action(action: String) -> void:
 			home_requested.emit()
 			if not departure_managed:
 				get_tree().quit()
+
+
+## DR-19c: switch between graded crashes and "every crash ends the flight". Untouched on the pad it applies at once
+## through a fresh prepare; after any flight it waits for Restart on pad.
+func cycle_crash_model() -> void:
+	crash_model = "strict" if crash_model == "graded" else "graded"
+	if _at_start() and session.paused:
+		restart_on_pad()
+		return
+	hud.set_crash_model(str(session.options.get("crash_model", "strict")), crash_model)
 
 
 ## Next throttle limit for the current source. Untouched on the pad it applies at once through a fresh prepare (the
@@ -784,7 +840,7 @@ func restart_on_pad() -> bool:
 	_race_action = RaceDirector.ACTION_NONE
 	var ok: bool
 	var reconfigure: bool = _input_policy() != str(session.options.throttle_policy) \
-		or absf(input.throttle_limit() - _session_limit()) > 1.0e-9 or _race_option != str(session.options.get("race_track", ""))
+		or absf(input.throttle_limit() - _session_limit()) > 1.0e-9 or _race_option != str(session.options.get("race_track", "")) 		or crash_model != str(session.options.get("crash_model", "strict"))
 	if reconfigure:
 		# A fresh prepare publishes no race record: abort an attempt in progress through the pad reset first.
 		ok = true
@@ -895,6 +951,36 @@ func _lens_crash(reason: String) -> void:
 		_obstacle_world if reason == "Obstacle strike" else {}, "quad:%d" % int(session.sim.tick))
 
 
+## DR-19c: a survivable impact or prop damage (graded crashes): say what happened; the flight goes on.
+func _on_impact(event: Dictionary) -> void:
+	match str(event.get("type", "")):
+		"prop_damage":
+			var rotor := int(event.get("rotor", -1))
+			var where: String = tr(str(ROTOR_NAMES[rotor])) if rotor >= 0 and rotor < ROTOR_NAMES.size() else "?"
+			var health := float(event.get("health", 0.0))
+			hud.flash(tr("Prop broken: %s") % where if health <= 0.0 else tr("Prop damaged: %s (%d%%)") % [where, int(round(100.0 * health))], 3.0)
+		"impact":
+			if str(event.get("surface", "")) == "ground":
+				hud.flash(tr("Hard landing (%.1f m/s)") % float(event.get("normal_speed_mps", 0.0)), 2.5)
+			else:
+				hud.flash(tr("Bounced off an obstacle (%.1f m/s)") % float(event.get("normal_speed_mps", 0.0)), 2.5)
+
+
+## DR-19c: lying upside down on the ground, nearly still (no turtle mode: the pilot restarts on the pad).
+func _upside_down() -> bool:
+	if session == null or not session.crash.is_empty():
+		return false
+	var state: PackedFloat64Array = session.sim.state
+	if state.size() < RB.SIZE:
+		return false
+	var q := PackedFloat64Array([state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3]])
+	var body_down_z: float = 1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]) # world down component of the body's down axis
+	var speed := Vector3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]).length()
+	var under: PackedFloat64Array = session.environment.ground(state[RB.POS], state[RB.POS + 1])
+	var agl := -state[RB.POS + 2] - (under[0] if under.size() == 3 and is_finite(under[0]) else 0.0)
+	return body_down_z < -0.3 and agl < 0.5 and speed < 1.0
+
+
 func _on_depleted() -> void:
 	_terminal_text = tr("The battery is depleted. Restart on the pad to fly again.")
 	if _aftermath_until < 0.0:
@@ -978,7 +1064,7 @@ func _process(delta: float) -> void:
 		body = drawn, sticks = raw, stick_policy = str(_last_input.get("throttle_policy", "")),
 		accepted = session.sim.state, tick_dt = DT, gate = _osd_gate(_osd_gate_index(t)), gate_number = _osd_gate_index(t) + 1,
 		flight_s = flight_s, arm_requested = arm_requested, crash_reason = _crash_cause, pilot_mode = pilot_mode,
-		bindings = _osd_bindings(), throttle_limit = _session_limit(), race_on_pad = _on_race_pad()})
+		bindings = _osd_bindings(), throttle_limit = _session_limit(), race_on_pad = _on_race_pad(), upside_down = _upside_down()})
 	_update_gates(t.get("race", {}), delta)
 	_update_audio(t, delta)
 

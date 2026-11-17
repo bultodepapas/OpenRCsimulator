@@ -13,7 +13,8 @@
 #                 pack accepts charge only below its capacity, see CHARGE_ACCEPTANCE_S),
 #                 coupled shaft/body acceleration (FPV flight dynamics §4), pack charge and energy integrals and
 #                 the terminal cut latch. Continuous: four shaft speeds, charge [C], terminal energy [J], pack
-#                 loss [J], cut latch (exactly 0 or 1, zero derivative).
+#                 loss [J], cut latch (exactly 0 or 1, zero derivative), four prop health factors (DR-19c, in [0, 1],
+#                 zero derivative, changed only by the graded impact law at an accepted endpoint).
 # Both add flat-pad penalty contacts with regularized Coulomb friction at the feet and hull points.
 #
 # Declared simplifications (not the plan's full hybrid event policy): the shaft friction of the electrical law is
@@ -36,6 +37,7 @@ const Rates := preload("res://physics/multirotor/rates.gd")
 const Allocator := preload("res://physics/multirotor/allocator.gd")
 const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
 const ElectricBus := preload("res://physics/multirotor/electric_bus.gd")
+const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const FC := preload("res://physics/multirotor/flight_controller.gd")
 
 const LAW_LAB := "multirotor-controlled-first-order-v1"
@@ -52,15 +54,17 @@ const BUS_DAMPED := "multirotor-four-load-damped-bus-v2"
 ## braking, a LiPo's overvoltage limit or its charge chemistry: a coherent bound in place of unbounded regeneration.
 const CHARGE_ACCEPTANCE_S := 0.2
 const LAYOUT_LAB := "openrc-multirotor-controlled-lab-v1"
-const LAYOUT_ELECTRIC := "openrc-multirotor-controlled-el-v1"
+## v2 (DR-19c): four prop health factors after the cut latch.
+const LAYOUT_ELECTRIC := "openrc-multirotor-controlled-el-v2"
 
 const C_SPEED := 0
 const C_CHARGE := 4
 const C_TERMINAL_ENERGY := 5
 const C_PACK_LOSS := 6
 const C_CUT_LATCH := 7
+const C_HEALTH := 8
 const LAB_CONTINUOUS := 4
-const ELECTRIC_CONTINUOUS := 8
+const ELECTRIC_CONTINUOUS := 12
 
 ## Below this relative shaft speed (rad/s) the electrical law's friction torque is viscous.
 const FRICTION_SPEED := 30.0
@@ -133,6 +137,12 @@ var _rotor_inertia := PackedFloat64Array()
 var _k_t := 0.0
 var _k_q := 0.0
 var _k_h := 0.0
+## DR-19c: graded impacts (IMPACT_GRADED) instead of the strict law where every contact ends the flight. Electrical
+## law only; part of the model identity. obstacle_class(north, east, down) names the nearest solid's response class.
+var graded_impacts := false
+var obstacle_class: Callable = Callable()
+var _hover_speed := 0.0
+var _frame_radius := 0.0
 
 
 ## {ok, errors, plant}. `data` is a prepared multirotor document (physics/multirotor_data.gd), `rates_profile` an
@@ -163,6 +173,7 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 	plant._k_t = k_t
 	var hover_speed: float = sqrt(float(data.get("mass_kg", 0.0)) * STANDARD_GRAVITY / (4.0 * k_t)) if k_t > 0.0 else NAN
 	plant._rest_rotor_speed = REST_ROTOR_FRACTION * hover_speed if is_finite(hover_speed) and hover_speed > 0.0 else 0.0
+	plant._hover_speed = hover_speed if is_finite(hover_speed) and hover_speed > 0.0 else 0.0
 	plant._k_q = float(data.rotor_law.torque_coefficient_n_m_s2)
 	plant._k_h = float(data.rotor_law.rotor_drag_n_s2_per_m)
 	for rotor: Dictionary in data.rotors:
@@ -173,6 +184,7 @@ static func create(data: Dictionary, rates_profile: Dictionary, throttle_policy:
 		reach_y = maxf(reach_y, absf(rotor.hub_frd[1]))
 		rotor_inertia += float(rotor.inertia_kg_m2)
 		plant._body_radius = maxf(plant._body_radius, M.norm(rotor.hub_frd) + 0.5 * float(rotor.diameter_m))
+		plant._frame_radius = maxf(plant._frame_radius, M.norm(rotor.hub_frd))
 		plant._rotor_laws.append({thrust_coefficient_n_s2 = k_t,
 			torque_coefficient_n_m_s2 = float(data.rotor_law.torque_coefficient_n_m_s2),
 			rotor_drag_n_s2_per_m = float(data.rotor_law.rotor_drag_n_s2_per_m), inertia_kg_m2 = float(rotor.inertia_kg_m2)})
@@ -274,7 +286,8 @@ func build() -> VehicleModel:
 	vehicle.identity = {vehicle = "multirotor", law = law(), layout = layout(), controller = FC.LAW,
 		controller_identity = str(config.identity), allocator = Allocator.LAW, rates = str(config.rates.identity),
 		bus = (BUS_DAMPED if _braking else ElectricBus.LAW) if electric else "ideal-supply", data = str(prepared.identity.get("data_sha256", "")),
-		variant = str(prepared.identity.get("variant", "")), throttle_policy = int(config.throttle_policy)}
+		variant = str(prepared.identity.get("variant", "")), throttle_policy = int(config.throttle_policy),
+		impacts = IMPACT_GRADED if graded_impacts and electric else IMPACT_STRICT}
 	vehicle.sample_tick = sample_tick
 	vehicle.stage_sampled = stage_sampled
 	vehicle.endpoint_transition = endpoint_transition
@@ -292,6 +305,8 @@ func initial_frame(body: PackedFloat64Array, source_generation: int = 0, soc: fl
 	if electric:
 		var start_soc: float = float(prepared.battery.initial_soc) if soc < 0.0 else soc
 		continuous[C_CHARGE] = start_soc * 3600.0 * float(prepared.battery.capacity_ah)
+		for i in 4:
+			continuous[C_HEALTH + i] = 1.0
 	return {body = body.duplicate(), continuous = continuous, aux = FC.initial_aux(body),
 		modes = FC.initial_modes(source_generation)}
 
@@ -398,10 +413,11 @@ func _evaluate(body: PackedFloat64Array, continuous: PackedFloat64Array, t: floa
 		var hx: float = _hub[3 * i]
 		var hy: float = _hub[3 * i + 1]
 		var hz: float = _hub[3 * i + 2]
-		var thrust: float = _k_t * motoring * motoring
-		var torque: float = _k_q * motoring * motoring
-		var rotor_fx: float = -_k_h * motoring * (v_air[0] + rates[1] * hz - rates[2] * hy)
-		var rotor_fy: float = -_k_h * motoring * (v_air[1] + rates[2] * hx - rates[0] * hz)
+		var health: float = continuous[C_HEALTH + i]
+		var thrust: float = _k_t * motoring * motoring * health
+		var torque: float = _k_q * motoring * motoring * health
+		var rotor_fx: float = -_k_h * motoring * (v_air[0] + rates[1] * hz - rates[2] * hy) * health
+		var rotor_fy: float = -_k_h * motoring * (v_air[1] + rates[2] * hx - rates[0] * hz) * health
 		fx += rotor_fx
 		fy += rotor_fy
 		fz -= thrust
@@ -592,10 +608,20 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 	var modes: PackedInt64Array = candidate.modes
 	var continuous: PackedFloat64Array = candidate.continuous
 	var events: Array = []
+	var terminal := false
 	# A crash is adjudicated until one has happened, also for a quad falling on an exhausted pack.
 	if modes[FC.MODE_MOTOR] != FC.MOTOR_CRASHED:
-		var reason: String = crash_reason(_previous.body, candidate.body, continuous)
+		var reason := ""
+		if graded_impacts and electric:
+			var graded: Dictionary = _graded_impacts(_previous.body, candidate.body, continuous, float(context.time_s))
+			reason = graded.reason
+			candidate.body = graded.body
+			continuous = graded.continuous
+			events.append_array(graded.events)
+		else:
+			reason = crash_reason(_previous.body, candidate.body, continuous)
 		if not reason.is_empty():
+			terminal = true
 			modes[FC.MODE_MOTOR] = FC.MOTOR_CRASHED
 			modes[FC.MODE_ARM_BLOCK] = FC.BLOCK_TERMINAL
 			events.append({type = "crash", time_s = float(context.time_s), reason = reason})
@@ -605,7 +631,8 @@ func endpoint_transition(_previous: Dictionary, candidate: Dictionary, context: 
 			modes[FC.MODE_MOTOR] = FC.MOTOR_DEPLETED
 			modes[FC.MODE_ARM_BLOCK] = FC.BLOCK_TERMINAL
 			events.append({type = "pack_depleted", time_s = float(context.time_s)})
-		if electric and not events.is_empty():
+			terminal = true
+		if electric and terminal:
 			continuous[C_CUT_LATCH] = 1.0
 	var accepted := {body = candidate.body, continuous = continuous, aux = candidate.aux, modes = modes}
 	if not state_validator(accepted, context):
@@ -714,31 +741,255 @@ func crash_reason(previous_body: PackedFloat64Array, body: PackedFloat64Array, c
 	var position: PackedFloat64Array = M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2])
 	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
 	for i in 4:
-		if continuous[i] <= strike_speed:
+		if continuous[i] > strike_speed and _disc_in_ground(i, position, attitude, axis, lowest, lowest_norm):
+			return "Propeller strike"
+	return ""
+
+
+## Whether rotor `i`'s disc reaches the terrain (audit A07 search: hub, world-lowest rim point, and the ring of rim
+## points within ROTOR_RIM_MARGIN; every hit is a real terrain sample below the surface).
+func _disc_in_ground(i: int, position: PackedFloat64Array, attitude: PackedFloat64Array, axis: PackedFloat64Array,
+		lowest: PackedFloat64Array, lowest_norm: float) -> bool:
+	var rotor: Dictionary = prepared.rotors[i]
+	var radius: float = 0.5 * float(rotor.diameter_m)
+	var hub: PackedFloat64Array = M.add(position, M.q_rotate(attitude, rotor.hub_frd))
+	var under_hub: PackedFloat64Array = _ground_at(hub[0], hub[1])
+	var hub_depth: float = hub[2] + under_hub[0]
+	if hub_depth > 0.0:
+		return true
+	if lowest_norm > 1.0e-9 and _rim_depth(hub, M.scale(lowest, 1.0 / lowest_norm), radius) > 0.0:
+		return true
+	var up: PackedFloat64Array = M.v3(under_hub[1], under_hub[2], 1.0)
+	var worst: PackedFloat64Array = M.sub(up, M.scale(axis, M.dot(axis, up)))
+	var worst_norm: float = M.norm(worst)
+	if hub_depth + radius * worst_norm <= -ROTOR_RIM_MARGIN:
+		return false
+	var u: PackedFloat64Array = M.q_rotate(attitude, M.v3(1.0, 0.0, 0.0))
+	if worst_norm > 1.0e-9:
+		u = M.scale(worst, 1.0 / worst_norm)
+	var v: PackedFloat64Array = M.cross(axis, u)
+	for k in ROTOR_RIM_COS.size():
+		var direction: PackedFloat64Array = M.add(M.scale(u, float(ROTOR_RIM_COS[k])), M.scale(v, float(ROTOR_RIM_SIN[k])))
+		if _rim_depth(hub, direction, radius) > 0.0:
+			return true
+	return false
+
+
+## DR-19c (docs/plans/drone-racing.md §17.2): impact laws. The strict law ends the flight at any hard contact, prop
+## strike or obstacle touch (crash_reason). The graded law is a declared, deterministic gameplay law, not measured
+## damage data: severity is the closing speed along the contact normal at the contact point; the frame and the props
+## are told apart; most contacts bounce or wear the props and the flight goes on, and only the hardest impacts end it.
+const IMPACT_STRICT := "multirotor-strict-impact-v1"
+const IMPACT_GRADED := "multirotor-graded-impact-v1"
+## A ground touchdown faster than this multiple of contacts.crash_speed ends the flight ("Hard impact").
+const HARD_IMPACT_FACTOR := 3.0
+## Prop health lost per accepted tick while a spinning prop is in contact, at the hover shaft speed (scales with speed).
+const PROP_WEAR_PER_TICK := 0.2
+## Below this health a prop is broken (health 0: no thrust, torque or rotor drag).
+const PROP_BROKEN_HEALTH := 0.3
+## Health a spinning prop keeps when a hard landing or a frame bounce chips it.
+const PROP_CHIP_FACTOR := 0.85
+## A spinning prop that strikes an obstacle faster than this (m/s along the normal) breaks.
+const PROP_BREAK_SPEED_MPS := 6.0
+## Frame impact speed (m/s along the normal) that ends the flight, by the obstacle's response class.
+const FRAME_TERMINAL_SPEED_MPS := {"soft_foliage_impulse": 12.0, "gate_frame": 10.0}
+const FRAME_TERMINAL_DEFAULT_MPS := 8.0
+## Bounce classes of the shared scenery response (restitution 0.35 for foliage, 0.20 otherwise).
+const FOLIAGE_RESPONSE := "soft_foliage_impulse"
+const SOLID_RESPONSE := "frangible_impulse"
+## Step (m) of the central differences that give an obstacle's surface normal from its clearance field.
+const OBSTACLE_NORMAL_STEP_M := 0.005
+
+
+## The graded law at an accepted endpoint: {reason ("" unless terminal), body (bounced and pushed out of obstacles),
+## continuous (prop health), events (impact and prop_damage)}. Pure: the same frames give the same outcome.
+func _graded_impacts(previous_body: PackedFloat64Array, body: PackedFloat64Array, continuous: PackedFloat64Array,
+		t: float) -> Dictionary:
+	var out := {reason = "", body = body.duplicate(), continuous = continuous.duplicate(), events = []}
+	if obstacle.is_valid():
+		_graded_frame_obstacle(previous_body, out, t)
+		if not str(out.reason).is_empty():
+			return out
+		_graded_prop_obstacles(out, t)
+	_graded_ground(previous_body, out, t)
+	return out
+
+
+## Frame (the sphere through the motor hubs) against an obstacle, at the tick's midpoint and endpoint.
+func _graded_frame_obstacle(previous_body: PackedFloat64Array, out: Dictionary, t: float) -> void:
+	var body: PackedFloat64Array = out.body
+	for fraction: float in [0.5, 1.0]:
+		var centre := PackedFloat64Array()
+		for k in 3:
+			centre.append(lerpf(previous_body[RB.POS + k], body[RB.POS + k], fraction))
+		var clearance: Variant = obstacle.call(centre[0], centre[1], centre[2])
+		if typeof(clearance) != TYPE_FLOAT or float(clearance) > _frame_radius:
 			continue
+		var normal := _obstacle_normal(centre)
+		var kind := str(obstacle_class.call(centre[0], centre[1], centre[2])) if obstacle_class.is_valid() else ""
+		var attitude := RB._att(body)
+		var contact_body := M.q_rotate(M.q_conj(attitude), M.scale(normal, -_frame_radius))
+		var speed := _closing_speed(body, contact_body, normal)
+		if speed >= float(FRAME_TERMINAL_SPEED_MPS.get(kind, FRAME_TERMINAL_DEFAULT_MPS)):
+			out.reason = "Obstacle strike"
+			return
+		# Survivable: back to this contact position, out of the solid, then a bounded bounce; the nearest props chip.
+		var moved := body.duplicate()
+		for k in 3:
+			moved[RB.POS + k] = centre[k] + normal[k] * maxf(0.0, _frame_radius - float(clearance))
+		out.body = _bounce(moved, contact_body, normal, speed, FOLIAGE_RESPONSE if kind == FOLIAGE_RESPONSE else SOLID_RESPONSE)
+		_chip_nearest(out, contact_body, t, "frame")
+		out.events.append({type = "impact", time_s = t, surface = kind if not kind.is_empty() else "obstacle",
+			part = "frame", normal_speed_mps = speed})
+		return
+
+
+## Each spinning prop disc (a sphere of the prop radius at its hub) against an obstacle: wear or a break, a bounce.
+func _graded_prop_obstacles(out: Dictionary, t: float) -> void:
+	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
+	for i in 4:
+		if out.continuous[i] <= strike_speed:
+			continue
+		var body: PackedFloat64Array = out.body
+		var attitude := RB._att(body)
 		var rotor: Dictionary = prepared.rotors[i]
 		var radius: float = 0.5 * float(rotor.diameter_m)
-		var hub: PackedFloat64Array = M.add(position, M.q_rotate(attitude, rotor.hub_frd))
-		var under_hub: PackedFloat64Array = _ground_at(hub[0], hub[1])
-		var hub_depth: float = hub[2] + under_hub[0]
-		if hub_depth > 0.0:
-			return "Propeller strike"
-		if lowest_norm > 1.0e-9 and _rim_depth(hub, M.scale(lowest, 1.0 / lowest_norm), radius) > 0.0:
-			return "Propeller strike"
-		var up: PackedFloat64Array = M.v3(under_hub[1], under_hub[2], 1.0)
-		var worst: PackedFloat64Array = M.sub(up, M.scale(axis, M.dot(axis, up)))
-		var worst_norm: float = M.norm(worst)
-		if hub_depth + radius * worst_norm <= -ROTOR_RIM_MARGIN:
+		var hub := M.add(M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2]), M.q_rotate(attitude, rotor.hub_frd))
+		var clearance: Variant = obstacle.call(hub[0], hub[1], hub[2])
+		if typeof(clearance) != TYPE_FLOAT or float(clearance) > radius:
 			continue
-		var u: PackedFloat64Array = M.q_rotate(attitude, M.v3(1.0, 0.0, 0.0))
-		if worst_norm > 1.0e-9:
-			u = M.scale(worst, 1.0 / worst_norm)
-		var v: PackedFloat64Array = M.cross(axis, u)
-		for k in ROTOR_RIM_COS.size():
-			var direction: PackedFloat64Array = M.add(M.scale(u, float(ROTOR_RIM_COS[k])), M.scale(v, float(ROTOR_RIM_SIN[k])))
-			if _rim_depth(hub, direction, radius) > 0.0:
-				return "Propeller strike"
-	return ""
+		var normal := _obstacle_normal(hub)
+		var contact_body := M.add(rotor.hub_frd, M.q_rotate(M.q_conj(attitude), M.scale(normal, -radius)))
+		var speed := _closing_speed(body, contact_body, normal)
+		if speed > PROP_BREAK_SPEED_MPS:
+			_set_health(out, i, 0.0, t, "obstacle")
+		else:
+			_wear(out, i, t, "obstacle")
+		var moved := body.duplicate()
+		for k in 3:
+			moved[RB.POS + k] += normal[k] * maxf(0.0, radius - float(clearance))
+		out.body = _bounce(moved, contact_body, normal, speed, SOLID_RESPONSE)
+
+
+## Terrain: a new touchdown of a foot or hull point (severity: the faster of its arrival and endpoint closing speeds)
+## is terminal above HARD_IMPACT_FACTOR × crash_speed and a hard landing (chipped props) above crash_speed; every
+## spinning prop disc in the ground wears.
+func _graded_ground(previous_body: PackedFloat64Array, out: Dictionary, t: float) -> void:
+	var body: PackedFloat64Array = out.body
+	var under: PackedFloat64Array = _ground_at(body[RB.POS], body[RB.POS + 1])
+	if -body[RB.POS + 2] - under[0] > CONTACT_REACH:
+		return
+	var attitude := RB._att(body)
+	var previous_attitude := RB._att(previous_body)
+	var velocity: PackedFloat64Array = M.v3(body[RB.VEL], body[RB.VEL + 1], body[RB.VEL + 2])
+	var rates: PackedFloat64Array = M.v3(body[RB.RATE], body[RB.RATE + 1], body[RB.RATE + 2])
+	var previous_velocity: PackedFloat64Array = M.v3(previous_body[RB.VEL], previous_body[RB.VEL + 1], previous_body[RB.VEL + 2])
+	var previous_rates: PackedFloat64Array = M.v3(previous_body[RB.RATE], previous_body[RB.RATE + 1], previous_body[RB.RATE + 2])
+	var crash_speed: float = prepared.contacts.crash_speed_mps
+	var hardest := 0.0
+	var hardest_point := PackedFloat64Array()
+	for point: PackedFloat64Array in _points:
+		var offset: PackedFloat64Array = M.q_rotate(attitude, point)
+		var surface: PackedFloat64Array = _ground_at(body[RB.POS] + offset[0], body[RB.POS + 1] + offset[1])
+		if body[RB.POS + 2] + offset[2] + surface[0] <= 0.0:
+			continue
+		var previous_offset: PackedFloat64Array = M.q_rotate(previous_attitude, point)
+		var previous_surface: PackedFloat64Array = _ground_at(previous_body[RB.POS] + previous_offset[0],
+			previous_body[RB.POS + 1] + previous_offset[1])
+		if previous_body[RB.POS + 2] + previous_offset[2] + previous_surface[0] > 0.0:
+			continue # already resting or sliding: not a new touchdown
+		var normal: PackedFloat64Array = Terrain.normal_from_up_slopes(surface[1], surface[2])
+		var v_world: PackedFloat64Array = M.q_rotate(attitude, M.add(velocity, M.cross(rates, point)))
+		var v_before: PackedFloat64Array = M.q_rotate(previous_attitude, M.add(previous_velocity, M.cross(previous_rates, point)))
+		var speed: float = maxf(-M.dot(v_world, normal), -M.dot(v_before, normal))
+		if speed > hardest:
+			hardest = speed
+			hardest_point = point
+	if hardest > HARD_IMPACT_FACTOR * crash_speed:
+		out.reason = "Hard impact"
+		return
+	if hardest > crash_speed:
+		_chip_nearest(out, hardest_point, t, "ground")
+		out.events.append({type = "impact", time_s = t, surface = "ground", part = "frame", normal_speed_mps = hardest})
+	var axis: PackedFloat64Array = M.q_rotate(attitude, M.v3(0.0, 0.0, -1.0))
+	var lowest: PackedFloat64Array = M.sub(M.v3(0.0, 0.0, 1.0), M.scale(axis, axis[2]))
+	var position: PackedFloat64Array = M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2])
+	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
+	for i in 4:
+		if out.continuous[i] > strike_speed and out.continuous[C_HEALTH + i] > 0.0 \
+				and _disc_in_ground(i, position, attitude, axis, lowest, M.norm(lowest)):
+			_wear(out, i, t, "ground")
+
+
+## Unit outward normal of the nearest obstacle at `point` (central differences of the clearance field); straight up
+## when the field is flat there (inside a solid's interior plateau).
+func _obstacle_normal(point: PackedFloat64Array) -> PackedFloat64Array:
+	var g := PackedFloat64Array([0.0, 0.0, 0.0])
+	for k in 3:
+		var plus := point.duplicate()
+		var minus := point.duplicate()
+		plus[k] += OBSTACLE_NORMAL_STEP_M
+		minus[k] -= OBSTACLE_NORMAL_STEP_M
+		var a: Variant = obstacle.call(plus[0], plus[1], plus[2])
+		var b: Variant = obstacle.call(minus[0], minus[1], minus[2])
+		if typeof(a) == TYPE_FLOAT and typeof(b) == TYPE_FLOAT:
+			g[k] = (float(a) - float(b)) / (2.0 * OBSTACLE_NORMAL_STEP_M)
+	var length := M.norm(g)
+	return M.scale(g, 1.0 / length) if is_finite(length) and length > 1.0e-6 else M.v3(0.0, 0.0, -1.0)
+
+
+## Closing speed (m/s, positive into the surface) of the body point `contact_body` (FRD from the CG) along `normal`.
+func _closing_speed(body: PackedFloat64Array, contact_body: PackedFloat64Array, normal: PackedFloat64Array) -> float:
+	var velocity: PackedFloat64Array = M.v3(body[RB.VEL], body[RB.VEL + 1], body[RB.VEL + 2])
+	var rates: PackedFloat64Array = M.v3(body[RB.RATE], body[RB.RATE + 1], body[RB.RATE + 2])
+	var v_world: PackedFloat64Array = M.q_rotate(RB._att(body), M.add(velocity, M.cross(rates, contact_body)))
+	return -M.dot(v_world, normal)
+
+
+## The shared, energy-bounded scenery normal impulse (scenery_collision.gd) at a body point; a separating contact keeps
+## its velocity.
+func _bounce(body: PackedFloat64Array, contact_body: PackedFloat64Array, normal: PackedFloat64Array, speed: float,
+		response_class: String) -> PackedFloat64Array:
+	if not (speed > 0.0):
+		return body
+	var event := SceneryCollision.Event.new()
+	event.normal_ned = normal
+	event.body_point = contact_body
+	event.normal_speed_mps = speed
+	event.response_class = response_class
+	event.terminal = false
+	var response: Dictionary = SceneryCollision.apply_response(body, event, float(prepared.mass_kg), prepared.inertia_kg_m2)
+	return response.state if bool(response.get("ok", false)) else body
+
+
+## Chip the two spinning props nearest a body point (a hard landing or a frame bounce).
+func _chip_nearest(out: Dictionary, contact_body: PackedFloat64Array, t: float, cause: String) -> void:
+	var strike_speed: float = prepared.contacts.rotor_strike_speed_rad_s
+	var order: Array = []
+	for i in 4:
+		if out.continuous[i] > strike_speed and out.continuous[C_HEALTH + i] > 0.0:
+			order.append([M.norm(M.sub(prepared.rotors[i].hub_frd, contact_body)), i])
+	order.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
+	for k in mini(2, order.size()):
+		var i: int = order[k][1]
+		_set_health(out, i, out.continuous[C_HEALTH + i] * PROP_CHIP_FACTOR, t, cause)
+
+
+## One tick of contact wears a spinning prop in proportion to its shaft speed.
+func _wear(out: Dictionary, i: int, t: float, cause: String) -> void:
+	var share := PROP_WEAR_PER_TICK * absf(out.continuous[i]) / _hover_speed if _hover_speed > 0.0 else 1.0
+	_set_health(out, i, out.continuous[C_HEALTH + i] * (1.0 - clampf(share, 0.0, 1.0)), t, cause)
+
+
+func _set_health(out: Dictionary, i: int, value: float, t: float, cause: String) -> void:
+	var before: float = out.continuous[C_HEALTH + i]
+	var health := clampf(value, 0.0, before)
+	if health < PROP_BROKEN_HEALTH:
+		health = 0.0
+	if health == before:
+		return
+	out.continuous[C_HEALTH + i] = health
+	out.events.append({type = "prop_damage", time_s = t, rotor = i, health = health, cause = cause})
 
 
 ## Penetration (m, positive below the terrain) of the rim point `radius` from `hub` along the world unit `direction`.
@@ -769,6 +1020,9 @@ func state_validator(frame: Dictionary, _context: Dictionary) -> bool:
 	if electric:
 		var terminal: bool = frame.modes[FC.MODE_MOTOR] == FC.MOTOR_CRASHED or frame.modes[FC.MODE_MOTOR] == FC.MOTOR_DEPLETED
 		# Audit A06: the charge never exceeds the capacity (the damped bridge's acceptance bound keeps it there).
+		for i in 4:
+			if not (continuous[C_HEALTH + i] >= 0.0 and continuous[C_HEALTH + i] <= 1.0):
+				return false
 		var capacity: float = 3600.0 * float(prepared.battery.capacity_ah)
 		if continuous[C_CHARGE] < -CHARGE_TOLERANCE or continuous[C_CHARGE] > capacity * (1.0 + 1.0e-12) 				or continuous[C_CUT_LATCH] not in [0.0, 1.0] \
 				or (continuous[C_CUT_LATCH] == 1.0) != terminal:
@@ -788,6 +1042,7 @@ func telemetry(frame: Dictionary, t: float = 0.0) -> Dictionary:
 		var evaluation: Dictionary = _evaluate(frame.body, frame.continuous, t, aux, modes)
 		var bus: Dictionary = evaluation.bus
 		out.soc = _soc(frame.continuous)
+		out.rotor_health = frame.continuous.slice(C_HEALTH, C_HEALTH + 4)
 		out.bus_voltage_v = float(bus.get("v_bus", 0.0))
 		out.pack_current_a = float(bus.get("i_pack", 0.0))
 		out.consumed_mah = (float(prepared.battery.initial_soc) * 3600.0 * float(prepared.battery.capacity_ah) - frame.continuous[C_CHARGE]) / 3.6

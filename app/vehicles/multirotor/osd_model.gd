@@ -257,10 +257,16 @@ static func warning(s: Dictionary) -> Dictionary:
 		return {text = "CRASH", severity = CRITICAL, blink = true}
 	if bool(s.get("depleted", false)):
 		return {text = "BATT EMPTY", severity = CRITICAL, blink = true}
+	# DR-19c graded crashes: the weakest prop's health (1 intact, 0 broken).
+	var prop := float(s.get("prop_health", 1.0))
+	if prop <= 0.0:
+		return {text = "PROP BROKEN", severity = CRITICAL, blink = true}
 	if cell < CELL_LAND_V:
 		return {text = "LAND NOW", severity = CRITICAL, blink = true}
 	if cell < CELL_CAUTION_V:
 		return {text = "LOW BATTERY", severity = WARNING, blink = true}
+	if prop < 1.0:
+		return {text = "PROP DAMAGE", severity = WARNING, blink = false}
 	if not bool(s.get("ever_armed", false)) and cell < CELL_FULL_V:
 		return {text = "BATT < FULL", severity = WARNING, blink = false}
 	if armed and bool(s.get("armed_notice", false)):

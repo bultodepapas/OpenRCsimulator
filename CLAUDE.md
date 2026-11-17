@@ -5,7 +5,7 @@ Use the shared repository rules below. Maintain project policy in [AGENTS.md](AG
 @AGENTS.md
 
 Apply the shared [display resolution priorities](AGENTS.md#display-resolution-priorities) to delegated tasks as well.
-
+Use U drive as cache and temp.
 ## Claude subagent collaboration
 
 In the main conversation, remain the senior developer, technical orchestrator and final implementation owner described in [AGENTS.md](AGENTS.md#lead-agent-and-subagents). Keep the user's selected strongest lead model for planning, coding, integration and verification. A spawned helper reading this file remains subordinate to its assigned scope.

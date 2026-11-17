@@ -76,6 +76,9 @@ var _mode_key_name := OS.get_keycode_string(MODE_KEY)
 var _arm_button := -1
 var _mode_button := -1
 var _pause_button := -1
+## DR-14d: the source's effective "Restart flight" binding ({} = none): a pad's View/Back by default, a radio's
+## saved switch (the EdgeTX FPV preset: CH9). Never a control an AUX channel or Pause owns.
+var _restart_binding: Dictionary = {}
 ## Audit A03: ordinary-hold continuity of an arm SWITCH. A pause resets the AUX channels (no edge may be queued
 ## while the menu is open), so on the first resumed ticks the switch has no valid request yet. While the same
 ## source, mapping and connection hold and the physical switch was read ON through the whole hold, the arm level
@@ -142,7 +145,8 @@ func bindings() -> Dictionary:
 	var result := {arm = _arm_key_name, arm_switch = arm_from_switch(), arm_aux = arm_aux(), throttle_up = "",
 		source = source(), mode = _mode_key_name, mode_switch = mode_from_switch(), arm_button = "", mode_button = "",
 		arm_control = aux_control_text(arm_aux()), mode_control = aux_control_text(MODE_AUX) if mode_from_switch() else "",
-		pause_button = _button_text(_pause_button), axes = {throttle = stick_axis("throttle"), yaw = stick_axis("yaw"),
+		pause_button = _button_text(_pause_button),
+		restart_control = ControllerActions.binding_text(_restart_binding) if not _restart_binding.is_empty() else "", axes = {throttle = stick_axis("throttle"), yaw = stick_axis("yaw"),
 		roll = stick_axis("roll"), pitch = stick_axis("pitch")}}
 	match result.source:
 		"gamepad":
@@ -155,6 +159,11 @@ func bindings() -> Dictionary:
 		"keyboard":
 			result.throttle_up = "W"
 	return result
+
+
+## DR-14d: the source's effective Restart flight binding ({} = none; the keyboard keeps R).
+func restart_binding() -> Dictionary:
+	return _restart_binding
 
 
 ## The active gamepad's effective Pause button (-1: none, or not a gamepad); the activity pauses only on it.
@@ -199,11 +208,18 @@ func _refresh_shortcuts() -> void:
 	_arm_button = -1
 	_mode_button = -1
 	_pause_button = -1
-	if not radio.connected or not radio.is_gamepad():
+	_restart_binding = {}
+	if not radio.connected or not bool(radio.profile.get("configured", true)):
 		return
 	var profile: Dictionary = radio.profile
+	var effective: Dictionary = ControllerActions.effective_bindings(profile, ControllerActions.MULTIROTOR_CAPABILITIES)
 	var owned: Dictionary = ControllerActions.aux_owned_buttons(profile)
-	var pause: Dictionary = ControllerActions.effective_bindings(profile, ControllerActions.MULTIROTOR_CAPABILITIES).get("pause", {})
+	var restart: Variant = effective.get("restart_flight", {})
+	if typeof(restart) == TYPE_DICTIONARY and str((restart as Dictionary).get("type", "")) in ["button", "axis"] 			and not ControllerActions.binding_conflicts_aux(restart, profile) 			and not ControllerActions.same_binding(restart, effective.get("pause", {})):
+		_restart_binding = (restart as Dictionary).duplicate(true)
+	if not radio.is_gamepad():
+		return
+	var pause: Dictionary = effective.get("pause", {})
 	if str(pause.get("type", "")) == "button" and not owned.has(int(pause.get("button", -1))):
 		_pause_button = int(pause.button)
 		owned[_pause_button] = "pause"

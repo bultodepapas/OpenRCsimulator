@@ -14,10 +14,20 @@ const RadioMenu := preload("res://input/radio_menu.gd")
 const DEFAULT_DEADZONE := 0.08
 const DEFAULT_EXPO := 0.3
 const DEFAULT_THROTTLE_RATE := 0.5
+## DR-14d (docs/plans/drone-racing.md §17.1): EdgeTX/OpenTX Classic USB joystick FPV conventions. AETR on axes 0-3
+## (calibrated as any radio); CH5 (axis 4) arms only at its high end, so a 3-position switch's middle never arms;
+## CH6 (axis 5) is the flight mode (low Angle, middle and high Acro); CH9 (joystick button 1 = SDL button 0) restarts
+## on the pad. CH7/CH8 stay free: Windows DirectInput can swap them.
+const EDGETX_FPV_PRESET := "edgetx_fpv"
+const EDGETX_FPV_AUX := {
+	"arm": {"type": "axis", "axis": 4, "invert": false, "off": 0.0, "on": 1.0},
+	"flight_mode": {"type": "axis", "axis": 5, "invert": false, "off": -1.0, "on": 1.0},
+}
+const EDGETX_FPV_RESTART := {"type": "button", "button": 0}
 
 
 ## Returns a complete, validated starter profile. `preset` is one of mode1,
-## mode2, trigger_absolute, radio_custom, or jeti_mode2. Unknown combinations return {}.
+## mode2, trigger_absolute, radio_custom, jeti_mode2 or edgetx_fpv. Unknown combinations return {}.
 static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dictionary:
 	if preset == "custom" and kind in ["radio", "joystick"]:
 		preset = "radio_custom"
@@ -25,7 +35,7 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		return {}
 	if kind == "gamepad" and not ["mode1", "mode2", "trigger_absolute"].has(preset):
 		return {}
-	if kind == "radio" and preset not in ["radio_custom", "jeti_mode2"]:
+	if kind == "radio" and preset not in ["radio_custom", "jeti_mode2", EDGETX_FPV_PRESET]:
 		return {}
 	if kind == "joystick" and preset != "radio_custom":
 		return {}
@@ -52,6 +62,8 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 	var name := "Gamepad Mode 2" if preset == "mode2" else ("Gamepad Mode 1" if preset == "mode1" else ("Gamepad Trigger Throttle" if preset == "trigger_absolute" else ("Radio Custom" if kind == "radio" else "Joystick Custom")))
 	if preset == "jeti_mode2":
 		name = "JETI USB Mode 2"
+	elif preset == EDGETX_FPV_PRESET:
+		name = "EdgeTX FPV quad"
 	var result: Dictionary = {
 		"schema_version": SCHEMA_VERSION,
 		"profile_id": _new_uuid(),
@@ -77,6 +89,9 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 	result["configured"] = true
 	if kind in ["radio", "joystick"]:
 		result.actions = ControllerActions.clean_radio_bindings()
+	if preset == EDGETX_FPV_PRESET:
+		result.aux = EDGETX_FPV_AUX.duplicate(true)
+		result.actions.restart_flight = EDGETX_FPV_RESTART.duplicate(true)
 	return result if validate(result).ok else {}
 
 

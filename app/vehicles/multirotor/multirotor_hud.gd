@@ -194,6 +194,9 @@ var _rate_reset_resume := false
 var _terminal := ""
 ## Throttle limit {active: the flight's, pending: the next prepare's}.
 var _limit := {active = 1.0, pending = 1.0}
+## DR-19c: the crash law of the prepared flight and the one the next Restart on pad applies ("graded" or "strict").
+var _crash_model := {active = "graded", pending = "graded"}
+var crash_button: Button
 ## Last drawn OSD geometry state (horizon, throttle) for the draw callback.
 var _draw_state := {}
 ## Colours last applied per label: a theme override notifies a theme change (text re-layout), so it is set only when
@@ -535,6 +538,9 @@ func _build_menu(s: float) -> void:
 	limit_note.add_theme_color_override("font_color", UiTheme.CAUTION)
 	limit_note.visible = false
 	box.add_child(limit_note)
+	crash_button = _button(box, "", "crash_model")
+	crash_button.name = "CrashModel"
+	crash_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	osd_button = _local_button(box, "OsdSettingsButton", toggle_osd_settings)
 	course_button = _button(box, "", "course")
 	course_button.name = "Course"
@@ -694,7 +700,7 @@ func _notification(what: int) -> void:
 func set_controls_help(bindings: Dictionary) -> void:
 	var key := {}
 	for field: String in ["source", "axes", "arm_button", "arm_aux", "arm_control", "mode_button", "mode_switch",
-			"mode_control", "pause_button"]:
+			"mode_control", "pause_button", "restart_control"]:
 		key[field] = bindings.get(field)
 	if key == _controls_help:
 		return
@@ -738,6 +744,9 @@ func controls_help_lines(bindings: Dictionary) -> PackedStringArray:
 		lines.append(_tr("Flight mode Acro/Angle: M or gamepad RB. Acro on a radio, Angle on a gamepad or keyboard at start."))
 	else:
 		lines.append(_tr("Flight mode Acro/Angle: M. Acro on a radio, Angle on a gamepad or keyboard at start."))
+	var restart := str(bindings.get("restart_control", "")) if bindings.get("restart_control") != null else ""
+	if not restart.is_empty():
+		lines.append(_tr("Restart on the pad: R or %s on the controller.") % restart)
 	return lines
 
 
@@ -765,6 +774,12 @@ func _update_texts() -> void:
 	limit_button.text = _tr("Throttle limit: %d%%") % int(round(100.0 * float(_limit.pending)))
 	limit_note.text = _tr("Throttle limit %d%% applies after Restart on pad.") % int(round(100.0 * float(_limit.pending)))
 	limit_note.visible = absf(float(_limit.pending) - float(_limit.active)) > 1.0e-6
+	if crash_button != null:
+		crash_button.text = _tr("Crashes: graded (impacts can damage props)") if str(_crash_model.pending) == "graded" 			else _tr("Crashes: every crash ends the flight")
+		if str(_crash_model.pending) != str(_crash_model.active):
+			limit_note.text = (limit_note.text + "
+" if limit_note.visible else "") + _tr("The crash setting applies after Restart on pad.")
+			limit_note.visible = true
 	osd_button.text = _tr("OSD settings")
 	course_button.text = _tr("Course: %s") % _tr(_course_name)
 	_update_race_note()
@@ -794,6 +809,12 @@ func set_fixture(shown: bool) -> void:
 
 func toggle_help() -> void:
 	help_panel.visible = not help_panel.visible
+
+
+## DR-19c: active: the prepared flight's crash law; pending: the one the next Restart on pad uses.
+func set_crash_model(active: String, pending: String) -> void:
+	_crash_model = {active = active, pending = pending}
+	_update_texts()
 
 
 ## active: the prepared flight's throttle limit; pending: the value the next prepare (Restart on pad) uses.
@@ -943,6 +964,16 @@ func _set_color(label: Label, color: Color) -> void:
 		return
 	_label_colors[label.name] = color
 	label.add_theme_color_override("font_color", color)
+
+
+## DR-19c: the weakest prop's health in telemetry (1 when the law reports none).
+static func prop_health(t: Dictionary) -> float:
+	var health: Variant = t.get("rotor_health", PackedFloat64Array())
+	var weakest := 1.0
+	if typeof(health) == TYPE_PACKED_FLOAT64_ARRAY:
+		for value: float in health:
+			weakest = minf(weakest, value)
+	return weakest
 
 
 ## The arm line: MOTORS ARMED, or MOTORS DISARMED with the controller's reason when an arm request is being refused.
@@ -1113,8 +1144,13 @@ func update(t: Dictionary, osd_state: Dictionary) -> void:
 	var crashed := bool(t.get("crashed", false)) or not str(osd_state.get("crash_reason", "")).is_empty()
 	_show_warning(Osd.warning({armed = armed, arm_requested = arm_requested, block = int(t.get("arm_block", FC.BLOCK_NONE)),
 		not_ready = controller_not_ready(bindings), crashed = crashed, depleted = bool(t.get("depleted", false)),
-		cell_v = cell_v, ever_armed = _ever_armed, armed_notice = now < _armed_notice_until}), now)
-	hint_label.text = hint_text(t, arm_requested, osd_state.get("bindings", {}), str(osd_state.get("crash_reason", "")))
+		cell_v = cell_v, ever_armed = _ever_armed, armed_notice = now < _armed_notice_until, prop_health = prop_health(t)}), now)
+	if bool(osd_state.get("upside_down", false)) and str(osd_state.get("crash_reason", "")).is_empty():
+		# DR-19c: a graded crash can leave the quad upside down on the ground; there is no turtle mode, so say how back.
+		var restart := str((osd_state.get("bindings", {}) as Dictionary).get("restart_control", ""))
+		hint_label.text = _tr("Upside down: press R to return to the pad.") if restart.is_empty() 			else _tr("Upside down: press R or %s to return to the pad.") % restart
+	else:
+		hint_label.text = hint_text(t, arm_requested, osd_state.get("bindings", {}), str(osd_state.get("crash_reason", "")))
 	if now > _message_until:
 		message.text = ""
 	var horizon := {}

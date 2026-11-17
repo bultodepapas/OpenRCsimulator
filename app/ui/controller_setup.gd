@@ -10,6 +10,7 @@ const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const EdgeTxRadio := preload("res://input/edgetx_radio.gd")
 const ActionAxisCapture := preload("res://input/action_axis_capture.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
 const ControllerDiagnostics := preload("res://input/controller_diagnostics.gd")
@@ -2429,7 +2430,10 @@ func _device_draft_context(device_id: int) -> String:
 func _default_profile_for_device(device_id: int) -> Dictionary:
 	var device := _device_for_id(device_id)
 	var expected_kind := str(device.get("kind", "gamepad"))
-	var preset := "mode2" if expected_kind == "gamepad" else ("jeti_mode2" if _is_jeti_device(device) else "radio_custom")
+	# DR-14d: a recognized EdgeTX/OpenTX radio starts from the FPV switch conventions (CH5 arm, CH6 mode, CH9 restart);
+	# its sticks still need calibration and nothing is saved until the pilot saves the draft.
+	var preset := "mode2" if expected_kind == "gamepad" else ("jeti_mode2" if _is_jeti_device(device) \
+		else (ControllerProfile.EDGETX_FPV_PRESET if expected_kind == "radio" and EdgeTxRadio.matches(device) else "radio_custom"))
 	var candidate_profile := ControllerProfile.defaults(expected_kind, preset)
 	if candidate_profile.is_empty():
 		candidate_profile = ControllerProfile.defaults("gamepad", "mode2")
@@ -2641,9 +2645,11 @@ func _update_preset_options() -> void:
 		for preset in PRESETS:
 			var label := "Mode 1 · rate throttle" if preset == "mode1" else ("Mode 2 · rate throttle" if preset == "mode2" else "Trigger throttle")
 			choices.append({"id": preset, "label": label})
-	elif kind == "radio" and _is_jeti_device(_device_for_id(_draft_flight_device_id)):
+	elif kind == "radio":
 		choices.append({"id": "radio_custom", "label": "Radio custom"})
-		choices.append({"id": "jeti_mode2", "label": "JETI Mode 2"})
+		if _is_jeti_device(_device_for_id(_draft_flight_device_id)):
+			choices.append({"id": "jeti_mode2", "label": "JETI Mode 2"})
+		choices.append({"id": ControllerProfile.EDGETX_FPV_PRESET, "label": "EdgeTX FPV quad (CH5 arm, CH6 mode, CH9 restart)"})
 	for option in choices:
 		var option_index := preset_picker.item_count
 		var translated_label := tr(str(option.label))
@@ -2672,7 +2678,10 @@ func _update_preset_options() -> void:
 				preset_help_label.visible = true
 			"radio_custom":
 				preset_help_label.text = tr("Custom radio mapping. Axis assignments and calibration stay in this profile.")
-				preset_help_label.visible = kind == "radio" and _is_jeti_device(_device_for_id(_draft_flight_device_id))
+				preset_help_label.visible = kind == "radio"
+			ControllerProfile.EDGETX_FPV_PRESET:
+				preset_help_label.text = tr("EdgeTX FPV quad: AETR sticks on CH1-CH4, arm on CH5 (only its high end arms), flight mode on CH6 (low Angle, middle and high Acro), restart on the pad on CH9 (a momentary switch). Assign those switches in your radio's mixer, then calibrate.")
+				preset_help_label.visible = true
 			_:
 				preset_help_label.text = tr("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.")
 				preset_help_label.visible = kind == "gamepad"
@@ -2694,6 +2703,9 @@ func _restore_selected_preset() -> void:
 func _apply_preset(preset: String) -> void:
 	if preset == "jeti_mode2":
 		_apply_jeti_mode2_preset()
+		return
+	if preset == ControllerProfile.EDGETX_FPV_PRESET:
+		_apply_edgetx_fpv_preset()
 		return
 	if preset == "radio_custom":
 		var custom := ControllerProfile.defaults("radio", "radio_custom")
@@ -2730,6 +2742,44 @@ func _apply_preset(preset: String) -> void:
 		replacement["name"] = profile_name_edit.text.strip_edges()
 	_set_draft_profile(replacement)
 	_set_status(tr("Preset restored. Save the profile to keep this mapping."), false)
+
+
+## DR-14d: the EdgeTX FPV switch conventions on the draft. The radio's calibration and its other AUX channels and
+## actions are kept; the preset's arm, flight mode and restart assignments take their places.
+func _apply_edgetx_fpv_preset() -> void:
+	var replacement := ControllerProfile.defaults("radio", ControllerProfile.EDGETX_FPV_PRESET)
+	if replacement.is_empty() or str(_draft_profile.get("kind", "")) != "radio":
+		_set_status(tr("The EdgeTX FPV preset is available only for a radio."), true)
+		return
+	for key in ["profile_id", "name", "association", "presentation", "flap_elevator_mix_owner"]:
+		if _draft_profile.has(key):
+			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
+	var aux_value: Variant = _draft_profile.get("aux", {})
+	if aux_value is Dictionary:
+		var aux: Dictionary = (aux_value as Dictionary).duplicate(true)
+		aux.merge(replacement.aux.duplicate(true), true)
+		replacement["aux"] = aux
+	var actions_value: Variant = _draft_profile.get("actions", {})
+	if actions_value is Dictionary:
+		var actions: Dictionary = (actions_value as Dictionary).duplicate(true)
+		actions.merge(replacement.actions.duplicate(true), true)
+		replacement["actions"] = actions
+	for channel_name in CHANNELS:
+		var current_channel: Variant = _draft_profile.get(channel_name, {})
+		var next_channel: Dictionary = replacement.get(channel_name, {}).duplicate(true)
+		if current_channel is Dictionary:
+			for calibration_key in ["axis", "min", "center", "max", "invert"]:
+				if current_channel.has(calibration_key):
+					next_channel[calibration_key] = current_channel[calibration_key]
+		replacement[channel_name] = next_channel
+	replacement["preset"] = ControllerProfile.EDGETX_FPV_PRESET
+	replacement["name"] = profile_name_edit.text.strip_edges() if not profile_name_edit.text.strip_edges().is_empty() else str(replacement.get("name", "EdgeTX FPV quad"))
+	var validation: Dictionary = ControllerProfile.validate(replacement)
+	if not bool(validation.get("ok", false)):
+		_set_status(tr("Could not apply the EdgeTX FPV preset: %s") % _friendly_validation_text(validation.get("issues", []), validation.get("errors", [])), true)
+		return
+	_set_draft_profile(replacement)
+	_set_status(tr("EdgeTX FPV switches are in the draft. Check them on your radio, then Save to keep them."), false)
 
 
 func _apply_jeti_mode2_preset() -> void:

@@ -411,3 +411,57 @@ Deliberate consequences:
 - Course identities change (A10/A15). Older record-book entries remain history and are not re-ranked.
 - The `app/physics` and `app/sim` edits change the solver identity, so recorded `.orfl` tapes replay as solver-changed.
 - After committing, the owner reruns `tools/companions/rebind.py`. The retained tapes are fixed-wing, so their CSVs are expected to be byte-identical.
+
+## 17. Pilot feedback (2026-11-17): preconfigured controls and graded crashes
+
+**Owner request after flying the repaired build:** connected controllers should arrive with arm, flight mode and a restart control already assigned (EdgeTX radio, Xbox and PlayStation pads), and crashes should not all end the flight: like a real quad, the outcome should depend on how hard and where it hits. Evidence for both designs comes from two research reviews on 2026-11-17. The [EdgeTX USB joystick manual](https://manual.edgetx.org/color-radios/model-settings/model-setup/usb-joystick), [ExpressLRS switch configuration](https://expresslrs.org/software/switch-config/), the [Betaflight arming guide](https://www.betaflight.com/docs/wiki/guides/current/Arming-Sequence-And-Safety) and the SDL3 gamepad drivers back the controls. The crash numbers are estimates: no source gives fly-on/walk-of-shame thresholds. Betaflight's `crash_recovery` defaults to OFF (no disarm on impact), and simulators commonly pair an optional prop-damage setting with a quick reset.
+
+### 17.1 DR-14d: preconfigured controls
+
+| Source | Arm | Flight mode | Restart on the pad | Notes |
+| --- | --- | --- | --- | --- |
+| EdgeTX/OpenTX radio (USB `1209:4F54` or an EdgeTX-family name) | CH5 = axis 4. Only the high end arms (OFF 0, ON +1), so a 3-position switch's middle never arms. | CH6 = axis 5: low Angle, middle and high Acro. | CH9 = joystick button 1 (SDL button 0). Assign a momentary switch (SH/SF) to CH9 in the radio's mixer. | AETR on axes 0–3 as before, and calibration is still required. CH7/CH8 are unused, because Windows DirectInput can swap them. |
+| SDL standard gamepad (Xbox, PlayStation) | LB toggle (existing) | RB toggle (existing) | View/Back (Xbox) or Create/Share (PlayStation): the existing `restart_flight` default, now dispatched by the quad. | Start pauses, as before. |
+| Keyboard | E | M | R | Unchanged |
+
+- Controls offers the EdgeTX preset for every radio, and it is the starting draft for a recognized EdgeTX radio.
+- Saved profiles are never rewritten.
+- The quad routes `restart_flight` through the profile's effective binding. It acts only on an OFF-to-ON edge after fresh OFF evidence, never through a button an AUX channel owns.
+- The help names the restart control.
+- The arm switch keeps the existing fresh OFF→ON at low-throttle rule.
+
+### 17.2 DR-19c: graded crashes
+
+A declared, deterministic gameplay law (`multirotor-graded-impact-v1`) replaces "every contact ends the flight". The pause menu chooses **Crashes: graded** (default) or **every crash ends the flight** (the previous rule, kept for practice). The choice applies on the next pad restart.
+
+- Each rotor's prop health h ∈ [0, 1] is checkpointed state (electrical law, layout v2). Thrust, aerodynamic torque and rotor drag scale with h. h = 1 is bit-identical to the undamaged law.
+- Severity is the closing speed along the contact normal, at the contact point.
+
+| Contact | Below the damage threshold | Damage band | Terminal |
+| --- | --- | --- | --- |
+| Feet or hull on terrain | ≤ `crash_speed` (5 m/s): no event | Up to 3 × `crash_speed` (15 m/s): hard landing; the two spinning props nearest the impact are chipped | Above 15 m/s: "Hard impact" |
+| Spinning prop disc on terrain (above `rotor_strike_speed`, so armed idle on the pad is safe) | — | Wear each tick in contact, proportional to shaft speed (one tick at hover speed costs 20 %); below 30 % health the prop breaks (h = 0) | Never by itself: a quad that cannot fly falls and the pilot restarts |
+| Prop disc touching an obstacle | — | Wear as above, plus a break above 6 m/s closing speed; bounce with restitution 0.2 | Never by itself |
+| Frame (CG sphere) on an obstacle | — | Bounce: foliage restitution 0.35, others 0.2. The two nearest spinning props are chipped | Foliage at 12 m/s and above, gate fabric at 10 m/s, everything else at 8 m/s: "Obstacle strike" |
+
+- Non-terminal impacts raise `impact` and `prop_damage` events.
+- The OSD shows damaged and broken props. A quad lying upside down shows how to restart it from every source.
+- Race attempts continue through non-terminal impacts. A terminal impact keeps the A10 same-tick rule.
+- **Strict mode** reproduces the previous terminal law exactly (existing tests).
+- **Not claimed:** measured damage thresholds, turtle mode (crash flip), motor or arm damage, or ESC desync. Calibrate later against owner flight logs ([flight logging](../FLIGHT-LOGGING.md)).
+
+### 17.3 Verification
+
+New desired-behaviour suites (each fails on the previous behaviour):
+- **Controls:**
+  - The EdgeTX preset validates, a middle switch position does not arm, and a calibrated draft keeps its calibration.
+  - The quad restarts on an EdgeTX CH9 button and on a pad's Back, only after fresh OFF, and never through a button an AUX channel owns.
+  - The help names the restart control.
+- **Graded crashes:**
+  - Landing taps and armed idle on the pad cause no damage.
+  - A hard landing chips props and the flight continues; an extreme impact is terminal.
+  - Prop wear grows with contact time and breaks the prop.
+  - Obstacle bounce dissipates energy and pushes the quad out of the obstacle, prop clips are not terminal, and a frame hit above the threshold is terminal.
+  - The damage is replayed exactly, and strict mode keeps the old outcomes.
+
+Affected suites: multirotor plant/session/activity/OSD/flight log and race suites, controller setup/profile/actions, and `test_ui_language`.

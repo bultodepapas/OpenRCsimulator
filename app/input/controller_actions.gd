@@ -538,6 +538,19 @@ static func aux_owned_buttons(profile: Dictionary) -> Dictionary:
 	return owned
 
 
+## Whether two action bindings name the same control (false for an empty or untyped binding).
+static func same_binding(left: Variant, right: Variant) -> bool:
+	return left is Dictionary and right is Dictionary and _valid_binding(left) and _valid_binding(right) 		and not _is_unbound(left) and not _is_unbound(right) and _same_binding(left, right)
+
+
+## Whether an action binding uses a control a configured AUX channel owns (any member of a button group, a whole axis).
+static func binding_conflicts_aux(binding: Dictionary, profile: Dictionary) -> bool:
+	for entry in _configured_aux_bindings(profile):
+		if _same_aux_control(binding, entry.binding):
+			return true
+	return false
+
+
 static func _configured_aux_bindings(profile: Dictionary) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var aux: Variant = _dict_value(profile, "aux", {})
