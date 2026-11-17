@@ -1,0 +1,209 @@
+{
+  "baseline": "3c91936ab8f9064daa798311b5fb3e89e28d3754",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "fixture_scope": "unchanged selected source modules; minimal project; no production app startup or GPU qualification",
+  "harness": [
+    {
+      "path": "docs/research/shadow-audit-2026-11-17/repro/run.py",
+      "sha256": "fda90ffb86ab0252879a18f61a86ff33995c0f06f49f02d5e7f36175f0eab551"
+    },
+    {
+      "path": "docs/research/shadow-audit-2026-11-17/repro/probe.gd",
+      "sha256": "a103453138440ae62bdaf67ef929592438879d503589c1260b0842f7391ca67c"
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "sha256": "69de29252150e7815e3e44b2d887bd69ed2b76d948460572491baa17e5af2888"
+    },
+    {
+      "path": "tools/testqueue/common.py",
+      "sha256": "d19fb3ecbad3b884689829b76ff0faa0036262c391dfeba6e6781ba76cf2d481"
+    },
+    {
+      "path": "tmp/shadow-audit-run-02/fixture/project.godot",
+      "sha256": "01abe756da2eb9f2463c10a58fba4fc91d825dd540a13439d1355ef6a256895d"
+    }
+  ],
+  "files": [
+    {
+      "path": "app/debug/render_probe.gd",
+      "git_blob": "42081e0c90761f6ed4e6657c3573ecddd96d06c7",
+      "sha256": "67325f9924f00f001f57fc135a38ac65b6b0164eb887b09f8c1f840982ff0938"
+    },
+    {
+      "path": "app/environment/sky_appearance_config.gd",
+      "git_blob": "36b917a1912dfb63054c7d87c71f965a8c45ccd6",
+      "sha256": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+    },
+    {
+      "path": "app/render/aircraft_shadow_proxy.gd",
+      "git_blob": "89843bef9bb1a67d8f6374675f18f8d2db5e44fb",
+      "sha256": "1d9024014168463e916e4c994470f0773068ec203f1c6b00eacea9e909d5abd1"
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "git_blob": "b842aca5ed05391451a0df73f6d8d897bedb32fa",
+      "sha256": "1b5eb746d49cf99610fa00490203052ed1045fab19d1a49f3876818e685f48f1"
+    },
+    {
+      "path": "app/render/cloud_field.gdshaderinc",
+      "git_blob": "bbcd7f23c40814e2327445b039f6ed02eb084258",
+      "sha256": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5"
+    },
+    {
+      "path": "app/render/cloud_relief.gdshaderinc",
+      "git_blob": "63cf46571445ae14a9f2a51603f524e55715bc55",
+      "sha256": "c58454462378b5bfe4cef0d390a0b22127fc278cbf1f5c3678954fbe29c6e64c"
+    },
+    {
+      "path": "app/render/cloud_shader_variants.gd",
+      "git_blob": "05361ecde806f6d560314729df3d8113f3bf7892",
+      "sha256": "09735e06cc1d4055b10303dd2ea5c001d4a403ce7b148f9cd4efb90f9892a6b9"
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gd",
+      "git_blob": "9c186f941e4ac436bb192c80e2bf48e4d493b80a",
+      "sha256": "af4bba2a467203aefce44554f80821cec5cf328989760616753df5975925fa10"
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gdshader",
+      "git_blob": "0069b4e79a182ba64f9de1fe39273596a9d74299",
+      "sha256": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800"
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gdshaderinc",
+      "git_blob": "f3fe6dfad9027ff16634fe4df8a0845886563d4b",
+      "sha256": "a86ecc66c3c03eb02c8af41ea90b18212e264494d4f09488ab86f30379ccdc72"
+    },
+    {
+      "path": "app/render/frames.gd",
+      "git_blob": "47c72e226cd6fe157f3209e6fcc2b169b93edf85",
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8"
+    },
+    {
+      "path": "app/render/grass_surface.gdshaderinc",
+      "git_blob": "433e964b11dc8c84d25a49375df3467505fe48a5",
+      "sha256": "fb97b71db59196c4267f23cbf57ebc3fc08854754337f39736cc3524f91c4127"
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "git_blob": "5680a093dcc31aea56b029273eee5197ab1960fa",
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede"
+    },
+    {
+      "path": "app/render/high_graphics_profile.gd",
+      "git_blob": "14067ace4dbf092240d425fabc27c39a00b8be27",
+      "sha256": "4cc764c4c6c9aa3f5f1b1f8d6074d380432fea2952e9ee8a0b37f43e60d48e6f"
+    },
+    {
+      "path": "app/render/landscape_upgrade/twilight_palette.gd",
+      "git_blob": "89108fd0b02cc89fa8ace40ee10a24d5827c3771",
+      "sha256": "a19098324e298c26dd46c73224cb8aca5dda5b0dd4ba83aaa3ebddadb727cb78"
+    },
+    {
+      "path": "app/render/near_grass.gdshader",
+      "git_blob": "3f9e81c150fe23a8c9fda3f1f6328900642f60c7",
+      "sha256": "fa018122e1ced099ebc3c4a732cecad4d669adcc7ce586e2795945fd2233a0b0"
+    },
+    {
+      "path": "app/render/projected_shadow.gd",
+      "git_blob": "d9d28148ffa16b80d4863451bcdadac8edece1b1",
+      "sha256": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3"
+    },
+    {
+      "path": "app/render/projected_shadow_mask.gdshader",
+      "git_blob": "dd672a943b676a3285814913a78d1957ab2ea312",
+      "sha256": "a0413f6b086fb7f7454263026c5d713794436cf0206bfffafeedd4f5edd77f01"
+    },
+    {
+      "path": "app/render/projected_shadow_receiver.gdshader",
+      "git_blob": "60e952e1eece914bd67f479db829a6b0a7c07e66",
+      "sha256": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b"
+    },
+    {
+      "path": "app/render/rc_ground_detail.gdshaderinc",
+      "git_blob": "90f89157d375e8e3c0888b1850337fcc359f3c3b",
+      "sha256": "1e0c786ee2096c920beae236d7137c6179930c1f98a87e746e32b13a4ebc92ce"
+    },
+    {
+      "path": "app/render/shadow.gd",
+      "git_blob": "fe521c260eda3c30ad18e488160a75e69cf920f0",
+      "sha256": "5abf351b4ad3e3ee6fb1538db148b65e3e4986b52a3cca1b69a6caab5298cfb2"
+    },
+    {
+      "path": "app/render/shadow_settings.gd",
+      "git_blob": "6cf078ac1c3145e00daf0b25ebe60c285701a0cc",
+      "sha256": "7636d2ca7d9a36b96349e63ad531e6ee3aa7c015b3bc37cc599f9884e45b14b0"
+    },
+    {
+      "path": "app/render/sky.gdshader",
+      "git_blob": "2810142e6efa267a972383fabdf12090ba57357d",
+      "sha256": "727935ab19c18dc89bb3b4351d48dccc740fb01ddf80b9c0c7749042f4bf7ede"
+    },
+    {
+      "path": "app/render/sun/sky_mirror.gd",
+      "git_blob": "b288e3560894c075cab2c86638c97a3d84366914",
+      "sha256": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+    },
+    {
+      "path": "app/render/sun/sun_optics.gd",
+      "git_blob": "bb8dc3bf829c5687efc6ae13219551a585496f2a",
+      "sha256": "a6d19d8258b1aca72d75823e5ff37f19c6b6b944cb2026288cf42371013821af"
+    },
+    {
+      "path": "app/render/turf_detail.gdshaderinc",
+      "git_blob": "98b5da2e3f67d6eeecc70bb9a496f5ba679b6c30",
+      "sha256": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1"
+    },
+    {
+      "path": "app/render/weather/cloud_transport.gd",
+      "git_blob": "75389784b32869467049db96ffbdb60f6dd54f87",
+      "sha256": "0d2052cea0e0640f09c5502b57aa78bc0ceed985bade0dc8f538bf6823b8f921"
+    },
+    {
+      "path": "app/render/weather/sky_appearance.gd",
+      "git_blob": "129281cabcfe9dc8648cf8a09037546e69b2477a",
+      "sha256": "fb9888cee67bc5a9d482ff5140e56f0fbeb31c2f07eb9759752085ee773cb2ea"
+    },
+    {
+      "path": "app/render/world/ephemeris.gd",
+      "git_blob": "4533f2da3ec195f85d257b81c9bb3ec87712442a",
+      "sha256": "2ddff868db43ea4e3803b2df9fe3d8bb85d1f84e41d9a4b25bdaac28b6b700a6"
+    },
+    {
+      "path": "app/render/world/lunar.gd",
+      "git_blob": "01e8b736fceb6882826f7950bbcd606c0b5139b5",
+      "sha256": "e7bd23f9306129c1994b7897432400c14c69520754755c38a67db59227e98302"
+    },
+    {
+      "path": "app/render/world/moon_disc.gdshaderinc",
+      "git_blob": "b6f0bdc0ddfcf6b5eab38efb0da2252d7711d61a",
+      "sha256": "c341b3cf3f3eaee5ed1b2fad8d2f1393564a13d6286ceba7e68e137ecf050201"
+    },
+    {
+      "path": "app/render/world/sky_state.gd",
+      "git_blob": "3b886536756148efc411ca3a1b3a23049848a3e9",
+      "sha256": "cb1f9e4536cb4f1c7194ef518f451421161154545c67fdf63b025ac2acaf0e75"
+    },
+    {
+      "path": "app/spec.gd",
+      "git_blob": "1f23310eae82aa29d7721ccbddd58e994df6525e",
+      "sha256": "8d5f216cb6dab23a366c92d17150f0379a06019f86ae24478b9fda778b5f0ef5"
+    },
+    {
+      "path": "app/tests/test_shadow_blur.gd",
+      "git_blob": "c2c519a2f372e2261aaa4e33568fbf71f518a498",
+      "sha256": "5ee21dfac853f1aa351aa5d7cfbb63151f4090e7a8662628c18cb82201bc96df"
+    },
+    {
+      "path": "app/tests/test_shadow_collection.gd",
+      "git_blob": "e2b267ea85781d668708af6e4188cc62666857ba",
+      "sha256": "49bb66d8af49a7adc312e15f7a02765f7991500ab344e8b816a85edfab6ecb48"
+    },
+    {
+      "path": "app/vehicles/ground/track_surface_detail.gdshaderinc",
+      "git_blob": "4c0bfc26a0354079221163eff508fcf8b7291f51",
+      "sha256": "b2d3edeb995e9a2ad2c4c13e78014dcff6bf5db59672ee0172c567669d9d5042"
+    }
+  ]
+}

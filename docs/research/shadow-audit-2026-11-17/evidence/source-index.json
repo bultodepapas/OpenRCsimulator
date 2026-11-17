@@ -1,0 +1,1902 @@
+{
+  "format": "openrc-shadow-audit-source-index-v1",
+  "baseline_commit": "3c91936ab8f9064daa798311b5fb3e89e28d3754",
+  "baseline_repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "findings_report": "docs/research/shadow-audit-2026-11-17/findings.md",
+  "findings_report_sha256_at_indexing": "3ddbb26f1ff59b751b8212e241a0002cfd1b02f61489e9961801288b82cec7f2",
+  "method": [
+    "Enumerated the frozen baseline Git tree and resolved every backtick-enclosed production-source reference in findings.md; numeric line anchors were checked against the indexed source's physical line count.",
+    "Computed the Git blob SHA-1 as SHA-1 of 'blob <byte length>\\0' followed by the exact source bytes, and required it to match the baseline tree object; SHA-256 is over the same bytes.",
+    "Read tracked text from the task worktree where available. Each binary GLB was independently hashed from the alternate local checkout and required to match the exact pinned baseline tree object.",
+    "The Metal RT patch is omitted from the sparse checkout: its baseline Git object was hashed directly in memory and is labeled baseline_git_blob_only. The shadow plan was verified in the worktree before any authorized audit-navigation edit.",
+    "Listed prior shadow plans, implementation/evidence records, existing tests and current Metal RT plan/experiment evidence as supporting sources. Inclusion is provenance, not a claim that each cited test or experiment ran in this audit."
+  ],
+  "limits": [
+    "Hash equality establishes source identity, not rendered shadow correctness, GPU performance, package qualification or physical validation.",
+    "Binary GLBs have no meaningful text line count, so their line_count is null; they retain size, exact bytes' SHA-256, pinned Git blob and permalink.",
+    "New audit report, fixture, validation and evidence files are not part of the baseline commit and are not represented as matching baseline source blobs.",
+    "The sparse-only patch has no working-tree file match; source identity is established by the baseline Git object only."
+  ],
+  "source_count": 106,
+  "sources": [
+    {
+      "path": "app/aircraft/custom_skin.gd",
+      "git_blob_sha1": "f13c286e2fcdc58184cd472b651d1995ba169c30",
+      "sha256": "5acc0ba9f4941866b1ea7fe1dd72280d1d0e15c51b151d2118398e5494abe74a",
+      "line_count": 623,
+      "size_bytes": 31666,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/custom_skin.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-05",
+          "report_line": 58,
+          "source_reference": "aircraft/custom_skin.gd:223–228,423–433",
+          "line_ranges": "223–228,423–433"
+        }
+      ]
+    },
+    {
+      "path": "app/aircraft/extra_300s_finish.gd",
+      "git_blob_sha1": "305f9a484b8bd05aee0858cd8a5e19d845238697",
+      "sha256": "a058e96f2eec1e580420fcb924209130ab9ee1cf82c8ddca1b6782f5c138a411",
+      "line_count": 181,
+      "size_bytes": 6926,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/extra_300s_finish.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/aircraft/hx700_model.gd",
+      "git_blob_sha1": "9d48962c53d8b0f9353a54318ef6d849f86bcf20",
+      "sha256": "59652fb4d2a73d1ef6e3e80eefa5726addf808ed10cdd8583d58ab4e9f7b2afa",
+      "line_count": 215,
+      "size_bytes": 8738,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/hx700_model.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/aircraft/imported_model.gd",
+      "git_blob_sha1": "3fe61c2d6694342293d7c3e26039d100bc406c30",
+      "sha256": "9c652ba260167d5b89346f051a8e5b5dd01447265928afe34a0d3544a76ea464",
+      "line_count": 516,
+      "size_bytes": 25874,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/imported_model.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/aircraft/p51d_finish.gd",
+      "git_blob_sha1": "39646a6d51cd68a28aef1ab2b95aa17ef228b941",
+      "sha256": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c",
+      "line_count": 226,
+      "size_bytes": 9345,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/p51d_finish.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/aircraft/procedural_skin.gd",
+      "git_blob_sha1": "f27f6abbd9885c644369a7cb79408e9c72b1dd0a",
+      "sha256": "42f588a9bbedf4271fb4a13808a153a7a10a4019c60a942018b3c9ad528012a4",
+      "line_count": 400,
+      "size_bytes": 21192,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/procedural_skin.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-05",
+          "report_line": 58,
+          "source_reference": "aircraft/procedural_skin.gd:330–354,371–382",
+          "line_ranges": "330–354,371–382"
+        }
+      ]
+    },
+    {
+      "path": "app/aircraft/timber_visual_details.gd",
+      "git_blob_sha1": "50c9b7093f7a68761983b74c8cca2777befdec8a",
+      "sha256": "0d40bf8bb6261a14c92e27baaa5680e4b7bb9b6b5c2c3b4ffb8916a125a9d3a7",
+      "line_count": 1166,
+      "size_bytes": 53498,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/timber_visual_details.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings",
+        "supporting_production_source"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-05",
+          "report_line": 56,
+          "source_reference": "aircraft/timber_visual_details.gd:65–74",
+          "line_ranges": "65–74"
+        }
+      ]
+    },
+    {
+      "path": "app/aircraft/ugly_stik_finish.gd",
+      "git_blob_sha1": "f1f76aa7e65d16795e2c48897688e9d7019aedec",
+      "sha256": "eff5ebd9c255143fd10a7d263c00d9622ca3a1fbd6ef78766cabcf1eb9e84c40",
+      "line_count": 276,
+      "size_bytes": 12598,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/ugly_stik_finish.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/aircraft/ugly_stik_model.gd",
+      "git_blob_sha1": "8e9584d4d38d4c2efc5f3e032d45b5256ce28093",
+      "sha256": "bccbe905a3d72a6ba75bad0f2cc1f733b4f2d17959257345f95a5a0770dca759",
+      "line_count": 653,
+      "size_bytes": 35334,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/aircraft/ugly_stik_model.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s.glb",
+      "git_blob_sha1": "cd1f969638f1a312a225632f814cc764cc22c4fc",
+      "sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
+      "line_count": null,
+      "size_bytes": 9928440,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/avanti-s-a200/avanti_s.glb",
+      "source_type": "binary_glb",
+      "verification": "external_checkout_file_matches_baseline",
+      "categories": [
+        "hash_matched_material_asset"
+      ],
+      "local_verification_file": "/workspace/scratch/eef8b0550ac3/OpenRCsimulator/app/assets/aircraft/avanti-s-a200/avanti_s.glb"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s.glb.import",
+      "git_blob_sha1": "7e3b1f3742edf2eb65b2e1301dd20cf97f767ec2",
+      "sha256": "129656a31199c912571b0e4ed61084c718f1faca96aee7a36621dec29b28a56e",
+      "line_count": 46,
+      "size_bytes": 1221,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/avanti-s-a200/avanti_s.glb.import",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+      "git_blob_sha1": "4e1677b67add66a8544f200c7767cf84ff22bf63",
+      "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+      "line_count": null,
+      "size_bytes": 20026424,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+      "source_type": "binary_glb",
+      "verification": "external_checkout_file_matches_baseline",
+      "categories": [
+        "hash_matched_material_asset"
+      ],
+      "local_verification_file": "/workspace/scratch/eef8b0550ac3/OpenRCsimulator/app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
+    },
+    {
+      "path": "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb.import",
+      "git_blob_sha1": "5a58cc89afbc53281977bf94bea07e193e6d79e6",
+      "sha256": "8d8d349d06e9e8ca114e7b1bf4411fac1c3fa3d1ce39e739c33a0a3ad70f01a2",
+      "line_count": 46,
+      "size_bytes": 1232,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb.import",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "app/assets/aircraft/hx-700/hx-700.glb",
+      "git_blob_sha1": "f2d00f46a67e0a82856230dab78b6c91ba9c5b99",
+      "sha256": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
+      "line_count": null,
+      "size_bytes": 3086608,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/hx-700/hx-700.glb",
+      "source_type": "binary_glb",
+      "verification": "external_checkout_file_matches_baseline",
+      "categories": [
+        "hash_matched_material_asset"
+      ],
+      "local_verification_file": "/workspace/scratch/eef8b0550ac3/OpenRCsimulator/app/assets/aircraft/hx-700/hx-700.glb"
+    },
+    {
+      "path": "app/assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
+      "git_blob_sha1": "2ef52366e20196c55745d3241e11ff0b08d110bd",
+      "sha256": "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0",
+      "line_count": null,
+      "size_bytes": 11943436,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
+      "source_type": "binary_glb",
+      "verification": "external_checkout_file_matches_baseline",
+      "categories": [
+        "hash_matched_material_asset"
+      ],
+      "local_verification_file": "/workspace/scratch/eef8b0550ac3/OpenRCsimulator/app/assets/aircraft/moonrunner-x99/moonrunner_x99.glb"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "git_blob_sha1": "665338d7b88ca9a18110b604bb1598de0109352a",
+      "sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+      "line_count": null,
+      "size_bytes": 1258464,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "source_type": "binary_glb",
+      "verification": "external_checkout_file_matches_baseline",
+      "categories": [
+        "hash_matched_material_asset"
+      ],
+      "local_verification_file": "/workspace/scratch/eef8b0550ac3/OpenRCsimulator/app/assets/aircraft/turbo-lumber-evolution/timber.glb"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/timber.glb.import",
+      "git_blob_sha1": "e5d6ed29a22af6a000b1faeff58636778f9c020b",
+      "sha256": "a25822325cc792e13f94f20348af900084df347a5bc04f87a7e98e1cc7bef5f1",
+      "line_count": 46,
+      "size_bytes": 1222,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/turbo-lumber-evolution/timber.glb.import",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd",
+      "git_blob_sha1": "dc51cd06647531545b073a57f3268b54c22bea14",
+      "sha256": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "line_count": 290,
+      "size_bytes": 6687,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/data/aircraft_model_overlays/moonrunner-x99.json",
+      "git_blob_sha1": "aaa8e436107a980c9d7c90127a5f997a27678e3d",
+      "sha256": "15ac988ef031678012ddf69d27fb3482388a355693ce771adb4f5d0d30ede0d7",
+      "line_count": 195,
+      "size_bytes": 6135,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/data/aircraft_model_overlays/moonrunner-x99.json",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "app/data/aircraft_models/f4u-corsair-250.json",
+      "git_blob_sha1": "cebf3dd5c6c11dafdef0e53d167973770926e0dc",
+      "sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+      "line_count": 368,
+      "size_bytes": 12240,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/data/aircraft_models/f4u-corsair-250.json",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
+      "git_blob_sha1": "833d8850985271c5e367d1020ccc69d82fc12956",
+      "sha256": "b2196e4dfe6b5f7077e3ee5bdab6a435331cb68ea11f78cb69f46263bb10a82c",
+      "line_count": 215,
+      "size_bytes": 6063,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "app/data/aircraft_models/turbo-lumber-evolution.json",
+      "git_blob_sha1": "e384db6482225df2f2388cdb7ae0305f8a99197e",
+      "sha256": "446d9d66373519a5a79e46fb1d799c3373ae7da1d5d0ddb9647cdfac2bfc46c8",
+      "line_count": 256,
+      "size_bytes": 7200,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/data/aircraft_models/turbo-lumber-evolution.json",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "app/debug/render_probe.gd",
+      "git_blob_sha1": "42081e0c90761f6ed4e6657c3573ecddd96d06c7",
+      "sha256": "67325f9924f00f001f57fc135a38ac65b6b0164eb887b09f8c1f840982ff0938",
+      "line_count": 578,
+      "size_bytes": 26083,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/debug/render_probe.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-13",
+          "report_line": 136,
+          "source_reference": "debug/render_probe.gd:144",
+          "line_ranges": "144"
+        },
+        {
+          "finding": "SA-25",
+          "report_line": 254,
+          "source_reference": "debug/render_probe.gd:69–119",
+          "line_ranges": "69–119"
+        },
+        {
+          "finding": "SA-25",
+          "report_line": 254,
+          "source_reference": ":312–339",
+          "line_ranges": "312–339"
+        }
+      ]
+    },
+    {
+      "path": "app/get-godot.sh",
+      "git_blob_sha1": "9ff9550706730730d1a5ac79f827b70cdc5f02f9",
+      "sha256": "cfd400f5e9220c77f70759f6ee15298bff77af47dcb655f35cb416f87a24c439",
+      "line_count": 189,
+      "size_bytes": 8960,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/get-godot.sh",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/helicopter_main.gd",
+      "git_blob_sha1": "27b5a61c9dee1a4c795bf41aba46934c403afa79",
+      "sha256": "e0c11244339268010ee396f2c8cb099d672d0ae019be32dc9431750f74c6c216",
+      "line_count": 650,
+      "size_bytes": 34407,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/helicopter_main.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-08",
+          "report_line": 86,
+          "source_reference": "helicopter_main.gd:122–135,172–183",
+          "line_ranges": "122–135,172–183"
+        }
+      ]
+    },
+    {
+      "path": "app/main.gd",
+      "git_blob_sha1": "38ccbaf8c49a08b7d3ce70be2a260e1c645e4c75",
+      "sha256": "2fc67f478ab14cb8d124d3321eaafdc27788a2967320dd1a0b1b35643a461a07",
+      "line_count": 4210,
+      "size_bytes": 212776,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/main.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-03",
+          "report_line": 34,
+          "source_reference": "main.gd:3595–3617",
+          "line_ranges": "3595–3617"
+        },
+        {
+          "finding": "SA-06",
+          "report_line": 66,
+          "source_reference": "main.gd:3584–3591",
+          "line_ranges": "3584–3591"
+        },
+        {
+          "finding": "SA-08",
+          "report_line": 86,
+          "source_reference": "main.gd",
+          "line_ranges": null
+        },
+        {
+          "finding": "SA-09",
+          "report_line": 96,
+          "source_reference": "main.gd:3584–3589",
+          "line_ranges": "3584–3589"
+        }
+      ]
+    },
+    {
+      "path": "app/project.godot",
+      "git_blob_sha1": "647257adefaa34ffd3a95245bd616246679a340b",
+      "sha256": "6cd90a50d034873abc372971f132d79d9b82aae08b3b415231cf92d3348b7de1",
+      "line_count": 85,
+      "size_bytes": 3950,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/project.godot",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/render/aircraft_shadow_proxy.gd",
+      "git_blob_sha1": "89843bef9bb1a67d8f6374675f18f8d2db5e44fb",
+      "sha256": "1d9024014168463e916e4c994470f0773068ec203f1c6b00eacea9e909d5abd1",
+      "line_count": 193,
+      "size_bytes": 8473,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/aircraft_shadow_proxy.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-23",
+          "report_line": 236,
+          "source_reference": "aircraft_shadow_proxy.gd:15–88",
+          "line_ranges": "15–88"
+        }
+      ]
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "git_blob_sha1": "0a5cd1d9fc13fc8ca9b85081d8d153a52a23e5c4",
+      "sha256": "93fb697d887e5182518857fdb9c51e73695f9ba4516544b8fa7eb1e9b93a6490",
+      "line_count": 445,
+      "size_bytes": 24734,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/airplane.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "git_blob_sha1": "b842aca5ed05391451a0df73f6d8d897bedb32fa",
+      "sha256": "1b5eb746d49cf99610fa00490203052ed1045fab19d1a49f3876818e685f48f1",
+      "line_count": 1016,
+      "size_bytes": 51976,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/atmosphere.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-06",
+          "report_line": 66,
+          "source_reference": "atmosphere.gd:557–568",
+          "line_ranges": "557–568"
+        },
+        {
+          "finding": "SA-15",
+          "report_line": 156,
+          "source_reference": "atmosphere.gd:655–677,900–932",
+          "line_ranges": "655–677,900–932"
+        },
+        {
+          "finding": "SA-16",
+          "report_line": 166,
+          "source_reference": "atmosphere.gd:655–677,920–932",
+          "line_ranges": "655–677,920–932"
+        },
+        {
+          "finding": "SA-21",
+          "report_line": 216,
+          "source_reference": "atmosphere.gd:997–1005",
+          "line_ranges": "997–1005"
+        }
+      ],
+      "resolution_note": "The report's atmosphere.gd basename is resolved to render/atmosphere.gd; physics/atmosphere.gd is a different tracked file."
+    },
+    {
+      "path": "app/render/cloud_shadow_map.gd",
+      "git_blob_sha1": "9c186f941e4ac436bb192c80e2bf48e4d493b80a",
+      "sha256": "af4bba2a467203aefce44554f80821cec5cf328989760616753df5975925fa10",
+      "line_count": 451,
+      "size_bytes": 17274,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/cloud_shadow_map.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-10",
+          "report_line": 106,
+          "source_reference": "cloud_shadow_map.gd:83–94",
+          "line_ranges": "83–94"
+        },
+        {
+          "finding": "SA-10",
+          "report_line": 106,
+          "source_reference": ":305–317",
+          "line_ranges": "305–317"
+        },
+        {
+          "finding": "SA-10",
+          "report_line": 106,
+          "source_reference": ":193–228,276–293",
+          "line_ranges": "193–228,276–293"
+        }
+      ]
+    },
+    {
+      "path": "app/render/crash/wreck.gd",
+      "git_blob_sha1": "144ef8698ae2c3ce16833d8a09351308f6c5f39e",
+      "sha256": "8a1ba2ac1ad4ed7bcff59f07d92da494f1ec7b21fa5735db7df9f87508609127",
+      "line_count": 1550,
+      "size_bytes": 61864,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/crash/wreck.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-20",
+          "report_line": 206,
+          "source_reference": "crash/wreck.gd:1176–1210",
+          "line_ranges": "1176–1210"
+        }
+      ]
+    },
+    {
+      "path": "app/render/field.gd",
+      "git_blob_sha1": "8c2d65a2926bc8b0f1ea0a7d147fede0584db6aa",
+      "sha256": "8838eac95440080e22153b8da65d7f269c8aa7412a0373c7632d19e9fdb8f10e",
+      "line_count": 573,
+      "size_bytes": 26756,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/field.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-11",
+          "report_line": 116,
+          "source_reference": "field.gd:352–355",
+          "line_ranges": "352–355"
+        }
+      ]
+    },
+    {
+      "path": "app/render/field_projected_shadows.gd",
+      "git_blob_sha1": "41e02d23e51816a85d166211506b52438db3011d",
+      "sha256": "191780e8af7dae4316f3868865cefc2c709c54b0431cfd37c3f7b9550d07285a",
+      "line_count": 250,
+      "size_bytes": 11007,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/field_projected_shadows.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-06",
+          "report_line": 66,
+          "source_reference": "field_projected_shadows.gd:239–250",
+          "line_ranges": "239–250"
+        },
+        {
+          "finding": "SA-11",
+          "report_line": 116,
+          "source_reference": "field_projected_shadows.gd:20–102",
+          "line_ranges": "20–102"
+        },
+        {
+          "finding": "SA-12",
+          "report_line": 126,
+          "source_reference": "field_projected_shadows.gd:62–65",
+          "line_ranges": "62–65"
+        },
+        {
+          "finding": "SA-12",
+          "report_line": 126,
+          "source_reference": ":81–83",
+          "line_ranges": "81–83"
+        }
+      ]
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "git_blob_sha1": "5680a093dcc31aea56b029273eee5197ab1960fa",
+      "sha256": "248c287daef38535f74496603fa30f946896d99966b19773f46c3bf398157ede",
+      "line_count": 414,
+      "size_bytes": 21924,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/ground.gdshader",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-15",
+          "report_line": 156,
+          "source_reference": "ground.gdshader:313–324,394–397",
+          "line_ranges": "313–324,394–397"
+        }
+      ]
+    },
+    {
+      "path": "app/render/high_graphics_profile.gd",
+      "git_blob_sha1": "14067ace4dbf092240d425fabc27c39a00b8be27",
+      "sha256": "4cc764c4c6c9aa3f5f1b1f8d6074d380432fea2952e9ee8a0b37f43e60d48e6f",
+      "line_count": 143,
+      "size_bytes": 7098,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/high_graphics_profile.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/render/lake/water_material.gd",
+      "git_blob_sha1": "e46a4aa2c3c7f90fbb7bd4b60dc3268d3db1b49e",
+      "sha256": "e386e699ab9d095d167fd717fa28b29489c89a36fcbdf69cdbbba24049bbc25e",
+      "line_count": 200,
+      "size_bytes": 9095,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/lake/water_material.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-16",
+          "report_line": 166,
+          "source_reference": "render/lake/water_material.gd:61–88",
+          "line_ranges": "61–88"
+        }
+      ]
+    },
+    {
+      "path": "app/render/landscape_upgrade/airfield_lighting.gd",
+      "git_blob_sha1": "78420a376b72fa7a8c363ac07f326f7323ecd7ee",
+      "sha256": "6993bcdc47ff55883a739b24c27404aebf30adc5e392dadf74bb5ae2636618fe",
+      "line_count": 712,
+      "size_bytes": 35897,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/landscape_upgrade/airfield_lighting.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-17",
+          "report_line": 176,
+          "source_reference": "landscape_upgrade/airfield_lighting.gd:607–619",
+          "line_ranges": "607–619"
+        }
+      ]
+    },
+    {
+      "path": "app/render/lighting/lighting_skins.gd",
+      "git_blob_sha1": "93c50a3bbf784173e5090c2b8bb2a3805405a673",
+      "sha256": "236251a7c6a185a168a657c20c998cd0b4bc119d1b745740d95065def71721fa",
+      "line_count": 545,
+      "size_bytes": 25150,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/lighting/lighting_skins.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/render/lighting/rgb_skin.gdshader",
+      "git_blob_sha1": "ec29ac434d6ddc0f98cbc40869cb26f4669374e5",
+      "sha256": "64cf09b91797bfd09444bbc1c6ab46db3e0fd5b16556bff401931f6be8b3d0f7",
+      "line_count": 25,
+      "size_bytes": 1210,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/lighting/rgb_skin.gdshader",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/render/metalfx_policy.gd",
+      "git_blob_sha1": "a64ab4c6209fd7a1970a4c06d5baf39fccaad763",
+      "sha256": "5696acd4955aba83e023b85c5a43c9af7045590494f437b0fb92403065d9d3f8",
+      "line_count": 109,
+      "size_bytes": 5703,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/metalfx_policy.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/render/near_grass.gd",
+      "git_blob_sha1": "386edd7b662400128cb5101d21da6f03c15f270a",
+      "sha256": "b3963401fd066380da5af4ebeadf9f7e47ab2a1d69491d6c19bee8bc5b48a887",
+      "line_count": 275,
+      "size_bytes": 12699,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/near_grass.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-18",
+          "report_line": 186,
+          "source_reference": "near_grass.gd:270",
+          "line_ranges": "270"
+        }
+      ]
+    },
+    {
+      "path": "app/render/projected_shadow.gd",
+      "git_blob_sha1": "d9d28148ffa16b80d4863451bcdadac8edece1b1",
+      "sha256": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+      "line_count": 255,
+      "size_bytes": 10603,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/projected_shadow.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-01",
+          "report_line": 14,
+          "source_reference": "projected_shadow.gd:137–181,238–241",
+          "line_ranges": "137–181,238–241"
+        },
+        {
+          "finding": "SA-03",
+          "report_line": 34,
+          "source_reference": "projected_shadow.gd:35–67",
+          "line_ranges": "35–67"
+        },
+        {
+          "finding": "SA-04",
+          "report_line": 44,
+          "source_reference": "projected_shadow.gd:119–134,238–241",
+          "line_ranges": "119–134,238–241"
+        },
+        {
+          "finding": "SA-05",
+          "report_line": 54,
+          "source_reference": "projected_shadow.gd:35–67,161–180",
+          "line_ranges": "35–67,161–180"
+        },
+        {
+          "finding": "SA-07",
+          "report_line": 76,
+          "source_reference": "projected_shadow.gd:10–17,222–246",
+          "line_ranges": "10–17,222–246"
+        },
+        {
+          "finding": "SA-19",
+          "report_line": 196,
+          "source_reference": "projected_shadow.gd:35–52",
+          "line_ranges": "35–52"
+        }
+      ]
+    },
+    {
+      "path": "app/render/projected_shadow_mask.gdshader",
+      "git_blob_sha1": "dd672a943b676a3285814913a78d1957ab2ea312",
+      "sha256": "a0413f6b086fb7f7454263026c5d713794436cf0206bfffafeedd4f5edd77f01",
+      "line_count": 20,
+      "size_bytes": 669,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/projected_shadow_mask.gdshader",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-05",
+          "report_line": 54,
+          "source_reference": "projected_shadow_mask.gdshader:1–20",
+          "line_ranges": "1–20"
+        }
+      ]
+    },
+    {
+      "path": "app/render/projected_shadow_receiver.gdshader",
+      "git_blob_sha1": "60e952e1eece914bd67f479db829a6b0a7c07e66",
+      "sha256": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+      "line_count": 19,
+      "size_bytes": 645,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/projected_shadow_receiver.gdshader",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-02",
+          "report_line": 24,
+          "source_reference": "projected_shadow_receiver.gdshader:17–18",
+          "line_ranges": "17–18"
+        }
+      ]
+    },
+    {
+      "path": "app/render/propeller_blur.gd",
+      "git_blob_sha1": "5f033212c4aae37ed68152870b362380d9d2c7d7",
+      "sha256": "e8b4d41c2cbd9a91fd0ae3c51a58aba56809122519abf3d6d4bf507dea242a1f",
+      "line_count": 508,
+      "size_bytes": 21906,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/propeller_blur.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-19",
+          "report_line": 196,
+          "source_reference": "propeller_blur.gd:357–381,413–416,471–498",
+          "line_ranges": "357–381,413–416,471–498"
+        }
+      ]
+    },
+    {
+      "path": "app/render/reconstruction.gd",
+      "git_blob_sha1": "6b758b525980fa8d0a1be8f94d55be3831809cec",
+      "sha256": "d9fcf62d17b7a91b36de6fab280156141f2e14d0622f4146b193ee8f4ce3cc44",
+      "line_count": 778,
+      "size_bytes": 41252,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/reconstruction.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/render/rotor/heli_night_lights.gd",
+      "git_blob_sha1": "6dc7dcfa3272841969fa3060be0deafad1ec6e87",
+      "sha256": "9fb5d33017f6f1b99205c0bf79f10ec32174eb9d0227ade0bd16937678f6ebfc",
+      "line_count": 265,
+      "size_bytes": 12549,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/rotor/heli_night_lights.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-17",
+          "report_line": 176,
+          "source_reference": "rotor/heli_night_lights.gd:116–131",
+          "line_ranges": "116–131"
+        }
+      ]
+    },
+    {
+      "path": "app/render/rotor/heli_rotor_blur.gd",
+      "git_blob_sha1": "3c0ac16c394b7d0d914b2bb05f362f9903098997",
+      "sha256": "461c88665e392dd2784b33a0369c8dfa42105baf57e7dc3a8b756c954c54d238",
+      "line_count": 355,
+      "size_bytes": 14353,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/rotor/heli_rotor_blur.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-19",
+          "report_line": 196,
+          "source_reference": "rotor/heli_rotor_blur.gd:207–220,275–279,322–345",
+          "line_ranges": "207–220,275–279,322–345"
+        }
+      ]
+    },
+    {
+      "path": "app/render/rotor/heli_wreck.gd",
+      "git_blob_sha1": "cb3d287904613303f653cb2ac534bef969efe729",
+      "sha256": "054c319fa1fc68e9a8af22688ff2fa6d0e66759b7fea079f6c548cca06183743",
+      "line_count": 742,
+      "size_bytes": 33286,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/rotor/heli_wreck.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-20",
+          "report_line": 206,
+          "source_reference": "rotor/heli_wreck.gd:318–351",
+          "line_ranges": "318–351"
+        }
+      ]
+    },
+    {
+      "path": "app/render/shadow.gd",
+      "git_blob_sha1": "fe521c260eda3c30ad18e488160a75e69cf920f0",
+      "sha256": "5abf351b4ad3e3ee6fb1538db148b65e3e4986b52a3cca1b69a6caab5298cfb2",
+      "line_count": 307,
+      "size_bytes": 13507,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/shadow.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-04",
+          "report_line": 44,
+          "source_reference": "shadow.gd:189–205,245–257",
+          "line_ranges": "189–205,245–257"
+        },
+        {
+          "finding": "SA-06",
+          "report_line": 66,
+          "source_reference": "shadow.gd:241–243",
+          "line_ranges": "241–243"
+        },
+        {
+          "finding": "SA-23",
+          "report_line": 234,
+          "source_reference": "shadow.gd:130–164",
+          "line_ranges": "130–164"
+        }
+      ]
+    },
+    {
+      "path": "app/render/shadow_field_policy.gd",
+      "git_blob_sha1": "6e9a30635ea132b799d35ec23ec848be27a4f268",
+      "sha256": "5b843e11a13bb2d642340fbf8de548428d52016419a1636102ae46712caf5c6f",
+      "line_count": 367,
+      "size_bytes": 14735,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/shadow_field_policy.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-11",
+          "report_line": 116,
+          "source_reference": "shadow_field_policy.gd:51–71,358–367",
+          "line_ranges": "51–71,358–367"
+        },
+        {
+          "finding": "SA-18",
+          "report_line": 186,
+          "source_reference": "shadow_field_policy.gd:111–161,177–245",
+          "line_ranges": "111–161,177–245"
+        }
+      ]
+    },
+    {
+      "path": "app/render/shadow_settings.gd",
+      "git_blob_sha1": "6cf078ac1c3145e00daf0b25ebe60c285701a0cc",
+      "sha256": "7636d2ca7d9a36b96349e63ad531e6ee3aa7c015b3bc37cc599f9884e45b14b0",
+      "line_count": 241,
+      "size_bytes": 11509,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/shadow_settings.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-01",
+          "report_line": 14,
+          "source_reference": "shadow_settings.gd:64–79",
+          "line_ranges": "64–79"
+        },
+        {
+          "finding": "SA-02",
+          "report_line": 24,
+          "source_reference": "shadow_settings.gd:64–79",
+          "line_ranges": "64–79"
+        },
+        {
+          "finding": "SA-13",
+          "report_line": 136,
+          "source_reference": "shadow_settings.gd:125–139",
+          "line_ranges": "125–139"
+        },
+        {
+          "finding": "SA-14",
+          "report_line": 146,
+          "source_reference": "shadow_settings.gd:94–99",
+          "line_ranges": "94–99"
+        },
+        {
+          "finding": "SA-14",
+          "report_line": 146,
+          "source_reference": ":219–240",
+          "line_ranges": "219–240"
+        },
+        {
+          "finding": "SA-15",
+          "report_line": 156,
+          "source_reference": "shadow_settings.gd:6–25",
+          "line_ranges": "6–25"
+        },
+        {
+          "finding": "SA-22",
+          "report_line": 226,
+          "source_reference": "shadow_settings.gd:52–99,125–139",
+          "line_ranges": "52–99,125–139"
+        },
+        {
+          "finding": "SA-24",
+          "report_line": 244,
+          "source_reference": "shadow_settings.gd:19–25",
+          "line_ranges": "19–25"
+        },
+        {
+          "finding": "SA-24",
+          "report_line": 244,
+          "source_reference": ":80–91",
+          "line_ranges": "80–91"
+        }
+      ]
+    },
+    {
+      "path": "app/render/time_of_day_lighting.gd",
+      "git_blob_sha1": "8d56b3b4dc1ee3f3320ca98c64b8f676b0ab9e5c",
+      "sha256": "4c768bdab12b187008792669cd8871590510884130cf6c4b5310ff065ab68bfd",
+      "line_count": 72,
+      "size_bytes": 3493,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/time_of_day_lighting.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-21",
+          "report_line": 216,
+          "source_reference": "time_of_day_lighting.gd:33–41",
+          "line_ranges": "33–41"
+        }
+      ]
+    },
+    {
+      "path": "app/render/treeline.gd",
+      "git_blob_sha1": "4f7dd56fd60b7a6923b832d33c49f5f746e6c288",
+      "sha256": "915d7f83e5872bf830c6e68cfed4eb393febcbbfe7f3c12d37bb0ab8a39c9498",
+      "line_count": 182,
+      "size_bytes": 9199,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/treeline.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-18",
+          "report_line": 186,
+          "source_reference": "treeline.gd:176",
+          "line_ranges": "176"
+        }
+      ]
+    },
+    {
+      "path": "app/render/world/aircraft_lights.gd",
+      "git_blob_sha1": "8615ecb49e771ad7e2a91d5378e3e2f21c88276f",
+      "sha256": "deddeed684377a97b419d29a211bbc27f1a54779f3fe8cd673a3961901d9ac3a",
+      "line_count": 888,
+      "size_bytes": 42434,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/world/aircraft_lights.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-17",
+          "report_line": 176,
+          "source_reference": "world/aircraft_lights.gd:820–835",
+          "line_ranges": "820–835"
+        }
+      ]
+    },
+    {
+      "path": "app/render/world/field_lights.gd",
+      "git_blob_sha1": "6699a1fed5ea6f3d1967b06fa463eb612e633e41",
+      "sha256": "2476150f88acc58cb02ddbf630c4dbc0360ba129c014f7d505560f39f1539d9a",
+      "line_count": 520,
+      "size_bytes": 27708,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/render/world/field_lights.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-17",
+          "report_line": 176,
+          "source_reference": "world/field_lights.gd:452–466",
+          "line_ranges": "452–466"
+        }
+      ]
+    },
+    {
+      "path": "app/spec.gd",
+      "git_blob_sha1": "1f23310eae82aa29d7721ccbddd58e994df6525e",
+      "sha256": "8d5f216cb6dab23a366c92d17150f0379a06019f86ae24478b9fda778b5f0ef5",
+      "line_count": 81,
+      "size_bytes": 5171,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/spec.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "app/tests/test_aircraft_shadow_proxy.gd",
+      "git_blob_sha1": "271b10f7547a535f38ef058a92ab7120e855fec7",
+      "sha256": "50bf666fefe6ecbccc534fb7c3a31edbf871a86435654b2ff418d65bbf60595f",
+      "line_count": 457,
+      "size_bytes": 24220,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_aircraft_shadow_proxy.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_cloud_shadow_map.gd",
+      "git_blob_sha1": "f02a63f0996def07ed119fcda214b9351ae1f825",
+      "sha256": "16a37dab5781d7b6bdfdbccb19aa7718e13f33d7c5c2040fa00bff41dabc3369",
+      "line_count": 297,
+      "size_bytes": 17526,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_cloud_shadow_map.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_field_population_collection.gd",
+      "git_blob_sha1": "83d008765831e98dd90f2954eaf94fa02f2477db",
+      "sha256": "487ea2a7792bd4818403aa286e5de5c8de41586285058a12854da0bfe3371989",
+      "line_count": 260,
+      "size_bytes": 11549,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_field_population_collection.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_field_projected_shadows.gd",
+      "git_blob_sha1": "768d1d88e5cb8832ae723e0c44a3150f332d109f",
+      "sha256": "52a6d4762e20b47e7746bfdda14370f5e9f049dd46f90fb9f61371ac85eaf8ed",
+      "line_count": 443,
+      "size_bytes": 23219,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_field_projected_shadows.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_procedural_skin.gd",
+      "git_blob_sha1": "5b4d7b804e49745224b2374649fded74107c86d1",
+      "sha256": "eb9904b59774aa63268eb2267d392e0e9fcce7a193370b53a5a2b98c97d82af1",
+      "line_count": 171,
+      "size_bytes": 9811,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_procedural_skin.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_projected_shadow.gd",
+      "git_blob_sha1": "c0532947bf75e23effcc30ab2a15847802e4809f",
+      "sha256": "ec75d00e8e9c159a7f597919de28951ce0300928d6f48954d1b5ee085c98a865",
+      "line_count": 432,
+      "size_bytes": 18913,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_projected_shadow.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_shadow_collection.gd",
+      "git_blob_sha1": "e2b267ea85781d668708af6e4188cc62666857ba",
+      "sha256": "49bb66d8af49a7adc312e15f7a02765f7991500ab344e8b816a85edfab6ecb48",
+      "line_count": 89,
+      "size_bytes": 3806,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_shadow_collection.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_shadow_cue_controls.gd",
+      "git_blob_sha1": "f31d3d92f6c70dd4376e7cf78a800720eac3a138",
+      "sha256": "b11c80e3b8b23cc63e7430b6387060f0d86c7aab56a2f5865214594931c86227",
+      "line_count": 300,
+      "size_bytes": 13334,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_shadow_cue_controls.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_shadow_deferred.gd",
+      "git_blob_sha1": "978c047349aab205b0359742061649ce86718ac1",
+      "sha256": "4dcc9ae7d447154d89cdb024785c7fd5cb1f2d63a6465e434ca0614d72c0ea1b",
+      "line_count": 431,
+      "size_bytes": 21153,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_shadow_deferred.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_shadow_ownership.gd",
+      "git_blob_sha1": "ac4ac24cc765d79ebe046d002e9fc5ffc7722db6",
+      "sha256": "cd50845d9ab8b575fd17edd5b8b06346f27a03bb3c5366cb15cf98d786bb00a5",
+      "line_count": 508,
+      "size_bytes": 24673,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_shadow_ownership.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_shadow_settings.gd",
+      "git_blob_sha1": "c5720ec060c88a9061ef018d2d5546aef932fe79",
+      "sha256": "abb826b76827e0a1ea6c7bb52be55b791a69d2a5988f9d1b145da943cf9fdf57",
+      "line_count": 269,
+      "size_bytes": 15797,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_shadow_settings.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_shadow_settings_ui.gd",
+      "git_blob_sha1": "1b1bac6870022875493961f03a3f7f7b764f2b90",
+      "sha256": "d64f153c6e864b6ab93d319a09c9bd65db6a66d0468cb423506f156f3d7e4a24",
+      "line_count": 220,
+      "size_bytes": 11840,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_shadow_settings_ui.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_windsock_shadow.gd",
+      "git_blob_sha1": "d2eb078ed3ed2232e27d78afad43dfba84de8ffe",
+      "sha256": "4543490c5b6377c057500fa5db26b126df76af421164697a3aafeaa7deb7d629",
+      "line_count": 260,
+      "size_bytes": 14390,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_windsock_shadow.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/tests/test_wreck_shadow_cache.gd",
+      "git_blob_sha1": "b4073c1bfa6ed4485b83545ccc1d109932269ab6",
+      "sha256": "a3d8ee3a3714dad589593c4540e30f1187879ab91dd1500d08eb096b5dfd2919",
+      "line_count": 107,
+      "size_bytes": 4123,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/tests/test_wreck_shadow_cache.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "existing_tests"
+      ]
+    },
+    {
+      "path": "app/ui/home_scene.gd",
+      "git_blob_sha1": "099211b8ac5af01aaa26b8547ed756f156ce53ec",
+      "sha256": "6b5bc06d895ca79d9dd4e120ec85d6bedd2d2c0b7224f9b0ce835283f346b907",
+      "line_count": 603,
+      "size_bytes": 27852,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/ui/home_scene.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-06",
+          "report_line": 66,
+          "source_reference": "ui/home_scene.gd:250–254",
+          "line_ranges": "250–254"
+        },
+        {
+          "finding": "SA-09",
+          "report_line": 96,
+          "source_reference": "ui/home_scene.gd:250–254",
+          "line_ranges": "250–254"
+        }
+      ]
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "git_blob_sha1": "481ac1c250f1ece7c73b099a0b10cf76448be619",
+      "sha256": "e359c4be8d8913c786b1e6ed6ab07946e61c9648d77ca8de636658ab86de3956",
+      "line_count": 1679,
+      "size_bytes": 87016,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/ui/settings_screen.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-14",
+          "report_line": 148,
+          "source_reference": "ui/settings_screen.gd:1045–1074",
+          "line_ranges": "1045–1074"
+        },
+        {
+          "finding": "SA-15",
+          "report_line": 156,
+          "source_reference": "ui/settings_screen.gd:391–410",
+          "line_ranges": "391–410"
+        },
+        {
+          "finding": "SA-24",
+          "report_line": 244,
+          "source_reference": "ui/settings_screen.gd:1045–1074",
+          "line_ranges": "1045–1074"
+        }
+      ]
+    },
+    {
+      "path": "app/vehicles/airship/airship_scene.gd",
+      "git_blob_sha1": "a083d6a32b07d0d5ae77e539b0930ee0ef30119a",
+      "sha256": "b1edeb515b507704ff54a893509065bfb82d6d8067f56035bce903d5bb74d50d",
+      "line_count": 857,
+      "size_bytes": 34156,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/vehicles/airship/airship_scene.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-08",
+          "report_line": 86,
+          "source_reference": "vehicles/airship/airship_scene.gd",
+          "line_ranges": null
+        }
+      ]
+    },
+    {
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "git_blob_sha1": "6b0ac2a6314dddcbf72f3319ee2b26c13ae3a658",
+      "sha256": "7a45e29348eadbb16e4e55f9639ca5831e7f6ae8cd3b4d376bc115851670f629",
+      "line_count": 1302,
+      "size_bytes": 56801,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/vehicles/ground/ground_scene.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-08",
+          "report_line": 86,
+          "source_reference": "vehicles/ground/ground_scene.gd",
+          "line_ranges": null
+        },
+        {
+          "finding": "SA-14",
+          "report_line": 146,
+          "source_reference": "vehicles/ground/ground_scene.gd:258–261",
+          "line_ranges": "258–261"
+        }
+      ]
+    },
+    {
+      "path": "app/vehicles/multirotor/multirotor_scene.gd",
+      "git_blob_sha1": "6ff55ddc683a62bd683d1b2df6a27771b74b60be",
+      "sha256": "b934cc039b0dcbdd28a61c314547668aed31ee8f3c6c0241b2626d8203f81b20",
+      "line_count": 1541,
+      "size_bytes": 70906,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/vehicles/multirotor/multirotor_scene.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-08",
+          "report_line": 86,
+          "source_reference": "vehicles/multirotor/multirotor_scene.gd",
+          "line_ranges": null
+        }
+      ]
+    },
+    {
+      "path": "app/workshop/parameters.gd",
+      "git_blob_sha1": "56efcc2ea8decad44816e31e9f41cfb792d089b8",
+      "sha256": "6b72991e44b1eb3ab7dfa07b16f9db82fcebbf0cf33c1775b391cf2a58aa933e",
+      "line_count": 200,
+      "size_bytes": 9914,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/app/workshop/parameters.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "supporting_production_source"
+      ]
+    },
+    {
+      "path": "docs/VISUAL-QUALITY-PLAN.md",
+      "git_blob_sha1": "6bf767b2e22e2a403670bfd3af5a54ec268fcbda",
+      "sha256": "eff30c50b46c836cf80ce6e96b0f25a745c2375829e6f29a1a2ed7d6d5e9c5b4",
+      "line_count": 64,
+      "size_bytes": 14174,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/VISUAL-QUALITY-PLAN.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "plan"
+      ]
+    },
+    {
+      "path": "docs/plans/amd-fsr-completion.md",
+      "git_blob_sha1": "72058b5a3b1be77c4e04f211dd1e74f012f741ea",
+      "sha256": "07240e45b4c2ca7a01975ab54201a014aa067bcf7f2f2f8a581a474fda01d816",
+      "line_count": 121,
+      "size_bytes": 23684,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/plans/amd-fsr-completion.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "plan"
+      ]
+    },
+    {
+      "path": "docs/plans/apple-metalfx.md",
+      "git_blob_sha1": "224f63c16ab5ffeecd551bcc78b1c1e8e5be877d",
+      "sha256": "0a0784cd5ea9295dfe898d122bffdaf420a2930d7282bdb1b75bfc2179e3b19f",
+      "line_count": 752,
+      "size_bytes": 59046,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/plans/apple-metalfx.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "plan"
+      ]
+    },
+    {
+      "path": "docs/plans/global-performance-visual-quality.md",
+      "git_blob_sha1": "4d2e29461d347314b493b828c5e46531b046a632",
+      "sha256": "76fe9e0019857a2513b6cedab628e125774d8638c01a91b6561cba3cd2bcae0b",
+      "line_count": 321,
+      "size_bytes": 47308,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/plans/global-performance-visual-quality.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "plan"
+      ]
+    },
+    {
+      "path": "docs/plans/shadows.md",
+      "git_blob_sha1": "1b6473e12bee08286f0405b8f572ab7c8b60aaab",
+      "sha256": "5c0416224fce620a34f6a41b4a83eaba8abd5ad9b24e29f2ff9dd423ea86edc4",
+      "line_count": 346,
+      "size_bytes": 54310,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/plans/shadows.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "cited_in_findings",
+        "plan"
+      ],
+      "finding_references": [
+        {
+          "finding": "SA-02",
+          "report_line": 26,
+          "source_reference": "docs/plans/shadows.md:60–65",
+          "line_ranges": "60–65"
+        }
+      ],
+      "pre_navigation_edit_verification": {
+        "git_blob_sha1": "1b6473e12bee08286f0405b8f572ab7c8b60aaab",
+        "sha256": "5c0416224fce620a34f6a41b4a83eaba8abd5ad9b24e29f2ff9dd423ea86edc4",
+        "line_count": 346,
+        "method": "worktree file matched the pinned baseline before the orchestrator's planned navigation edit"
+      }
+    },
+    {
+      "path": "docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md",
+      "git_blob_sha1": "2b7ce02f5be1733d266676d829f0ff90e6aa865e",
+      "sha256": "e0c7a3b2546e3cc8216bec786b6512feb505072110d7f7710a1cf4709b079ec6",
+      "line_count": 2012,
+      "size_bytes": 128613,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/desktop-delivery-investigations/DT-MAC-11a/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "current_metal_rt_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/engine-upgrade/GDU-11/implementation.md",
+      "git_blob_sha1": "a36cd0a7b78f262c2397c5b7bbf672f5aa0e4206",
+      "sha256": "58eaded4158ebb692a22a608612f650893f2a3fd4e7cb2d53b9d4d2e1440723c",
+      "line_count": 73,
+      "size_bytes": 16165,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/engine-upgrade/GDU-11/implementation.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/landscape-upgrade/LU-11/README.md",
+      "git_blob_sha1": "bc04bdf79af3b7465bd2459f200ba2425c8e6856",
+      "sha256": "2f6b807538d4a40ea09255078e42c218272db0cf0cdbdc5b51ccc423dad1bec0",
+      "line_count": 67,
+      "size_bytes": 10538,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/landscape-upgrade/LU-11/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/shadows-2026-10-31.md",
+      "git_blob_sha1": "d91f4efdd2c8f3d874b0031c6f63cca54df29422",
+      "sha256": "6cb0d42d8e051fdaa047e01305ff1c41f674b9018d70f8be0eaa3d36a4ef446f",
+      "line_count": 367,
+      "size_bytes": 61307,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/shadows-2026-10-31.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L15d/README.md",
+      "git_blob_sha1": "afbf910d008ee894e0a1b0af25b75fbe6a988230",
+      "sha256": "5f34891ff027fae9800294f01959dae94fabd053a5e8e1ef2a255805f95922ef",
+      "line_count": 15,
+      "size_bytes": 3084,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/L15d/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L6a-R1/README.md",
+      "git_blob_sha1": "51233ae86570de5f30f14804fbcd0b28f32fd0dc",
+      "sha256": "adbe5dd0b9d28e9f1ea464049f08acbea869f5e5d747408dbd4c078bad529be0",
+      "line_count": 99,
+      "size_bytes": 15708,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/L6a-R1/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-04a/README.md",
+      "git_blob_sha1": "098c95528acda6ff29e4ee5b917635ed1a01e44e",
+      "sha256": "fdc4a6bdff71d5f6a1e55d20d8f068842cd20b94a177a5d9961869d2f9bfa180",
+      "line_count": 205,
+      "size_bytes": 13476,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/VQ-04a/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-04a/aircraft-proxy-20261109/README.md",
+      "git_blob_sha1": "2cb2d49b8db2ab702677472452c042ca8b87e49d",
+      "sha256": "5283d7f72d4de02961fd40caec7e1b5c21b4211a920b62ad4219a9c0e2651724",
+      "line_count": 113,
+      "size_bytes": 6492,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/VQ-04a/aircraft-proxy-20261109/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-04a/deferred-startup-20261109/README.md",
+      "git_blob_sha1": "ecfd18257d1f54ecebe641a6c869f9af0afa2fa1",
+      "sha256": "2a2939527dafaf53ad6f70bc213fe63186ad45f1b62dddbc0fae5f454323361e",
+      "line_count": 81,
+      "size_bytes": 4618,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/VQ-04a/deferred-startup-20261109/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-04a/windsock/README.md",
+      "git_blob_sha1": "8125520617a3c690468c6387360bad4fe9cfc9f2",
+      "sha256": "47a911e181b5742e65a57fdfb854615f3b3c6e9ec08be93dab6688762b0153be",
+      "line_count": 88,
+      "size_bytes": 12731,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/VQ-04a/windsock/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md",
+      "git_blob_sha1": "ec29a20bb49c7cd131db644a489c8dfda5ab296c",
+      "sha256": "a97397c6803b00b24fbb81f496c21e1e28586faa9604efd2068644cc9068b14b",
+      "line_count": 174,
+      "size_bytes": 13315,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/VQ-04b/S01-S03-2026-10-31/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-04b/S06-shelters-2026-10-31/README.md",
+      "git_blob_sha1": "f47d40bba55fad942f1dcd909d64dc93d09efcf3",
+      "sha256": "4d13aae6389b5d30b5b80803a4e58cfc56847f621ba77348a0a4016e7f4ea985",
+      "line_count": 99,
+      "size_bytes": 7032,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/research/visual-quality-implementation/VQ-04b/S06-shelters-2026-10-31/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "historical_evidence"
+      ]
+    },
+    {
+      "path": "docs/tools/graphics.md",
+      "git_blob_sha1": "924534d76d023fc247f3c1b65d2201913754c3f8",
+      "sha256": "ad4a2caa2ad22635bbb52c3e0954b97ad95ababbf5fc9ae09174e36af34aca7e",
+      "line_count": 126,
+      "size_bytes": 15850,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/docs/tools/graphics.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "verification_guides"
+      ]
+    },
+    {
+      "path": "research/engine-upgrade/metalfx/README.md",
+      "git_blob_sha1": "82d3ad4c29124759821670840a594a8dd0c02db6",
+      "sha256": "55879085218be1f2b0a52be7909a1cc50bd64b64a15aa9d3e4b0c10f7474b047",
+      "line_count": 247,
+      "size_bytes": 15898,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/research/engine-upgrade/metalfx/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "current_metal_rt_evidence"
+      ]
+    },
+    {
+      "path": "research/engine-upgrade/metalfx/rt_scene_probe.gd",
+      "git_blob_sha1": "74343225c3484f311256ca42d88734510fc75853",
+      "sha256": "45f69ab5b9e41312840997c9189bbcb00691cb7d923bbc257d4f63456cf2df0a",
+      "line_count": 454,
+      "size_bytes": 19763,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/research/engine-upgrade/metalfx/rt_scene_probe.gd",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "current_metal_rt_evidence"
+      ]
+    },
+    {
+      "path": "tools/graphics/metalfx/README.md",
+      "git_blob_sha1": "ff8b150a430a4039f32244b0c08b291e08a32edc",
+      "sha256": "1fa43ab08503d3a11747b97c71a2f94c7e4d21e3ec0e705d719b51283faa2ead",
+      "line_count": 553,
+      "size_bytes": 35177,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/graphics/metalfx/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "current_metal_rt_evidence"
+      ]
+    },
+    {
+      "path": "tools/graphics/metalfx/patches/0027-metalfx-opaque-rt-view.patch",
+      "git_blob_sha1": "eb1a992760ec9b0905bbbf446f1d3c91f61cabe9",
+      "sha256": "2fa501f6c06938a9d24f107661096641ca6ed8aa2257228fb09c3a89d3584f99",
+      "line_count": 3241,
+      "size_bytes": 171010,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/graphics/metalfx/patches/0027-metalfx-opaque-rt-view.patch",
+      "source_type": "text",
+      "verification": "baseline_git_blob_only; sparse worktree omits file",
+      "categories": [
+        "current_metal_rt_evidence"
+      ],
+      "availability_note": "The source is not checked out in the available sparse trees. Its baseline Git object was read and hashed in memory; no checked-out-file match is asserted."
+    },
+    {
+      "path": "tools/graphics/metalfx/test_engine_opaque_rt_view_patch.py",
+      "git_blob_sha1": "9613921402f4e70f9bddb4b8b803acfb09387f1b",
+      "sha256": "a9ef0bf3e8ae81c2638d7f7915199342947e44181668420ecb6ea9af2d3e098b",
+      "line_count": 311,
+      "size_bytes": 17313,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/graphics/metalfx/test_engine_opaque_rt_view_patch.py",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "current_metal_rt_evidence"
+      ]
+    },
+    {
+      "path": "tools/graphics/native/README.md",
+      "git_blob_sha1": "d7ba445751c1156501e5b75b282fc495ab91ed41",
+      "sha256": "f4d283631bf32a0590b7d02947d77d5e5d1c7fd89fbc00e85e751a96aeb1fc8e",
+      "line_count": 368,
+      "size_bytes": 23042,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/graphics/native/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "verification_guides"
+      ]
+    },
+    {
+      "path": "tools/shadows/README.md",
+      "git_blob_sha1": "dbbf0ab8a296c0429c20115d2bb35482d5311dc7",
+      "sha256": "eeaf7140590ea49963c35a9f8b18a5de717b48c798233e21b779a9cc65fd2ad6",
+      "line_count": 181,
+      "size_bytes": 12591,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/shadows/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "verification_guides"
+      ]
+    },
+    {
+      "path": "tools/skins/README.md",
+      "git_blob_sha1": "4dd86b5cfc814e2cb18172789d25d16697021133",
+      "sha256": "cd162682668cff21250b2fe955d17f58386d8163a111dfc7487f7a7e93ad025d",
+      "line_count": 438,
+      "size_bytes": 26944,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/skins/README.md",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "tools/skins/build_vehicle_paints.py",
+      "git_blob_sha1": "6798fe6d65c0e8e2da14d4622b353e6befb7021b",
+      "sha256": "5dd60ae8a256b3bde46dd7cd3f1df16459950f56f5f9b42eb74da49f4704fe5a",
+      "line_count": 2736,
+      "size_bytes": 147887,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/skins/build_vehicle_paints.py",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    },
+    {
+      "path": "tools/skins/glb_inspect.py",
+      "git_blob_sha1": "5924d9c07083ee34e504c1337f3bc96b6b5777e1",
+      "sha256": "09e787a6525df94031a680fbd417f7801e4541ec4e64f15e305d83fb72d745c0",
+      "line_count": 74,
+      "size_bytes": 3983,
+      "baseline_github_permalink": "https://github.com/bultodepapas/OpenRCsimulator/blob/3c91936ab8f9064daa798311b5fb3e89e28d3754/tools/skins/glb_inspect.py",
+      "source_type": "text",
+      "verification": "worktree_file_matches_baseline",
+      "categories": [
+        "asset_identity_and_inspection"
+      ]
+    }
+  ]
+}

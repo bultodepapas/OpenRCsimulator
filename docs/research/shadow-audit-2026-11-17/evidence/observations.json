@@ -1,0 +1,390 @@
+{
+	"checks": 29,
+	"display": "headless",
+	"engine": {
+		"build": "official",
+		"hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta2",
+		"string": "4.8-beta2 (official)",
+		"timestamp": 0
+	},
+	"failures": 0,
+	"observations": {
+		"animation_snapshot": {
+			"local_rotation_deg": 35,
+			"new_geometry_differs": true,
+			"redraw_after": 1,
+			"redraw_before": 1
+		},
+		"cache_error": {
+			"cache_accepts": true,
+			"limit": "synthetic geometry/cache counterexample at minimum blur; no displayed-pixel or clipping claim",
+			"minimum_blur_m": 0.018,
+			"point_displacement_m": 0.0492666773498058,
+			"radius_m": 3.0,
+			"refresh_redraw_at_0_3_deg": true,
+			"refresh_reuse_at_0_2_deg": true,
+			"rotation_deg": 0.2,
+			"sun_elevation_deg": 12.0,
+			"synthetic_box_size_m": [
+				0.1,
+				0.04,
+				6.0
+			]
+		},
+		"cloud_cache": {
+			"final": {
+				"consumers": {
+					"ground": [
+						{
+							"enabled": false,
+							"seed": 105,
+							"slot": 0,
+							"status": "capacity"
+						}
+					],
+					"sky": []
+				},
+				"effective": {
+					"ground": "capacity",
+					"sky": "disabled"
+				},
+				"environment": {
+					"global": "1",
+					"ground": "1",
+					"sky": "0"
+				},
+				"generation": 19,
+				"requested": {
+					"ground": true,
+					"sky": false
+				},
+				"required_seeds": {
+					"ground": [
+						105
+					],
+					"sky": []
+				},
+				"seeds": [
+					{
+						"attempts": 1,
+						"failure": "",
+						"seed": 101,
+						"status": "pending"
+					},
+					{
+						"attempts": 1,
+						"failure": "",
+						"seed": 102,
+						"status": "pending"
+					},
+					{
+						"attempts": 1,
+						"failure": "",
+						"seed": 103,
+						"status": "pending"
+					},
+					{
+						"attempts": 1,
+						"failure": "",
+						"seed": 104,
+						"status": "pending"
+					}
+				]
+			},
+			"limit": "cache admission/state only; tiles are pending, no graphical bake claimed",
+			"sequence": [
+				{
+					"live_required_seeds": [
+						101
+					],
+					"requested_seed": 101,
+					"retained_tiles": 1,
+					"status": "pending"
+				},
+				{
+					"live_required_seeds": [
+						102
+					],
+					"requested_seed": 102,
+					"retained_tiles": 2,
+					"status": "pending"
+				},
+				{
+					"live_required_seeds": [
+						103
+					],
+					"requested_seed": 103,
+					"retained_tiles": 3,
+					"status": "pending"
+				},
+				{
+					"live_required_seeds": [
+						104
+					],
+					"requested_seed": 104,
+					"retained_tiles": 4,
+					"status": "pending"
+				},
+				{
+					"live_required_seeds": [
+						105
+					],
+					"requested_seed": 105,
+					"retained_tiles": 4,
+					"status": "capacity"
+				}
+			]
+		},
+		"diagnostics": {
+			"actual_sun_shadow_enabled": false,
+			"debug_reported_atlas": 4096,
+			"effective_native": true,
+			"limit": "headless owner/configuration mismatch; no GPU allocation measurement",
+			"rendering_available": false,
+			"selected_atlas": 8192
+		},
+		"low_sun": {
+			"bounded_offset_m_per_height_m": 4.70463037490845,
+			"offset_ratio": 4.24854117414539,
+			"raw_offset_m_per_height_m": 19.9878158569336,
+			"sun_elevation_deg": 2
+		},
+		"material_coverage": {
+			"geometry_equal": true,
+			"mask_replaces_material": true,
+			"opaque_triangles": 12,
+			"transparent_triangles": 12
+		},
+		"mode_matrix": [
+			{
+				"aircraft_cue": "auto",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": true,
+				"projected": true,
+				"quality": "current",
+				"renderer": "gl_compatibility",
+				"softness": "soft",
+				"technique": "auto",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "off",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": true,
+				"projected": false,
+				"quality": "current",
+				"renderer": "gl_compatibility",
+				"softness": "soft",
+				"technique": "native",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "auto",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": false,
+				"projected": true,
+				"quality": "current",
+				"renderer": "gl_compatibility",
+				"softness": "soft",
+				"technique": "projected",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "off",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": false,
+				"projected": false,
+				"quality": "current",
+				"renderer": "gl_compatibility",
+				"softness": "soft",
+				"technique": "off",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "auto",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": true,
+				"projected": true,
+				"quality": "current",
+				"renderer": "mobile",
+				"softness": "soft",
+				"technique": "auto",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "off",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": true,
+				"projected": false,
+				"quality": "current",
+				"renderer": "mobile",
+				"softness": "soft",
+				"technique": "native",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "auto",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": false,
+				"projected": true,
+				"quality": "current",
+				"renderer": "mobile",
+				"softness": "soft",
+				"technique": "projected",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "off",
+				"angular_distance": 0.0,
+				"atlas_size": 4096,
+				"cascades": 2,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 2,
+				"filter_technique": "pcf",
+				"high_profile": false,
+				"native": false,
+				"projected": false,
+				"quality": "current",
+				"renderer": "mobile",
+				"softness": "soft",
+				"technique": "off",
+				"use_16_bits": true
+			},
+			{
+				"aircraft_cue": "auto",
+				"angular_distance": 0.53,
+				"atlas_size": 8192,
+				"cascades": 4,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 3,
+				"filter_technique": "pcss",
+				"high_profile": true,
+				"native": true,
+				"projected": true,
+				"quality": "current",
+				"renderer": "forward_plus",
+				"softness": "soft",
+				"technique": "auto",
+				"use_16_bits": false
+			},
+			{
+				"aircraft_cue": "off",
+				"angular_distance": 0.53,
+				"atlas_size": 8192,
+				"cascades": 4,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 3,
+				"filter_technique": "pcss",
+				"high_profile": true,
+				"native": true,
+				"projected": false,
+				"quality": "current",
+				"renderer": "forward_plus",
+				"softness": "soft",
+				"technique": "native",
+				"use_16_bits": false
+			},
+			{
+				"aircraft_cue": "auto",
+				"angular_distance": 0.53,
+				"atlas_size": 8192,
+				"cascades": 4,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 3,
+				"filter_technique": "pcss",
+				"high_profile": true,
+				"native": false,
+				"projected": true,
+				"quality": "current",
+				"renderer": "forward_plus",
+				"softness": "soft",
+				"technique": "projected",
+				"use_16_bits": false
+			},
+			{
+				"aircraft_cue": "off",
+				"angular_distance": 0.53,
+				"atlas_size": 8192,
+				"cascades": 4,
+				"contact_shadows": false,
+				"distance_m": 300.0,
+				"filter_quality": 3,
+				"filter_technique": "pcss",
+				"high_profile": true,
+				"native": false,
+				"projected": false,
+				"quality": "current",
+				"renderer": "forward_plus",
+				"softness": "soft",
+				"technique": "off",
+				"use_16_bits": false
+			}
+		],
+		"receiver_plane": {
+			"first_model_y": 2.0,
+			"first_receiver_y": 0.0500000007450581,
+			"second_model_y": 12.0,
+			"second_receiver_y": 0.0500000007450581,
+			"terrain_query": "none in production refresh"
+		}
+	},
+	"renderer": "gl_compatibility"
+}

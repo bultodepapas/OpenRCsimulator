@@ -1,0 +1,1074 @@
+{
+  "baseline": "3c91936ab8f9064daa798311b5fb3e89e28d3754",
+  "scope": "five hash-matched default source GLBs; not post-import/native-pass coverage; runtime overrides remain separate",
+  "reader": "tools/skins/build_vehicle_paints.py:read_glb",
+  "reader_sha256": "5dd60ae8a256b3bde46dd7cd3f1df16459950f56f5f9b42eb74da49f4704fe5a",
+  "assets": [
+    {
+      "path": "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+      "git_blob": "4e1677b67add66a8544f200c7767cf84ff22bf63",
+      "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+      "source_materials": [
+        {
+          "name": "paint_wing",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_body",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "glass",
+          "alpha_mode": "BLEND",
+          "alpha": 0.11999999731779099,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "cockpit",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "alloy",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_tail",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "engine_dark",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "gear_finish",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "naval_blade_paint",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "gear_inner_coat",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "nav_left",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0.13999999970197674,
+            0.0016000000998377811,
+            0.0012000000283122064
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_wing_tip",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "detail_alloy",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "nav_right",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0.0008000000499188906,
+            0.08999999895691868,
+            0.005000000149011613
+          ],
+          "emissive_texture": false
+        }
+      ],
+      "counts": {
+        "OPAQUE": 13,
+        "BLEND": 1,
+        "MASK": 0
+      },
+      "unlit_count": 0
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "git_blob": "665338d7b88ca9a18110b604bb1598de0109352a",
+      "sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+      "source_materials": [
+        {
+          "name": "white",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "glass",
+          "alpha_mode": "BLEND",
+          "alpha": 0.44999998807907104,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "black",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "red",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "metal",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "light_red",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            1,
+            0.05555555785511753,
+            0.03333333347130705
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "foam",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "light_grey",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "dark_grey",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "light_green",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0.11111111571023506,
+            1,
+            0.22222223142047012
+          ],
+          "emissive_texture": false
+        }
+      ],
+      "counts": {
+        "OPAQUE": 9,
+        "BLEND": 1,
+        "MASK": 0
+      },
+      "unlit_count": 0
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s.glb",
+      "git_blob": "cd1f969638f1a312a225632f814cc764cc22c4fc",
+      "sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
+      "source_materials": [
+        {
+          "name": "paint_wing",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0.18000000715255737,
+            0.18000000715255737,
+            0.18000000715255737
+          ],
+          "emissive_texture": true
+        },
+        {
+          "name": "metal",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "intake_black",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_trim_carbono",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0.18000000715255737,
+            0.18000000715255737,
+            0.18000000715255737
+          ],
+          "emissive_texture": true
+        },
+        {
+          "name": "paint_fuselage",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0.18000000715255737,
+            0.18000000715255737,
+            0.18000000715255737
+          ],
+          "emissive_texture": true
+        },
+        {
+          "name": "mk_ply",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "canopy_glass",
+          "alpha_mode": "BLEND",
+          "alpha": 0.800000011920929,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "side_console",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "cockpit_tub_grey",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "glare_shield_black",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "instrument_panel",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "seat_cushion",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "seat_tan",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_stab",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0.18000000715255737,
+            0.18000000715255737,
+            0.18000000715255737
+          ],
+          "emissive_texture": true
+        },
+        {
+          "name": "thrust_tube_gold",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "fuel_tank_composite",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "intake_duct",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "rubber",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_doors_ala",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0.18000000715255737,
+            0.18000000715255737,
+            0.18000000715255737
+          ],
+          "emissive_texture": true
+        },
+        {
+          "name": "paint_doors",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_fin",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0.18000000715255737,
+            0.18000000715255737,
+            0.18000000715255737
+          ],
+          "emissive_texture": true
+        },
+        {
+          "name": "turbine_case",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "turbine_red",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_fence",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_fence_lower",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "paint_fillets",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        }
+      ],
+      "counts": {
+        "OPAQUE": 25,
+        "BLEND": 1,
+        "MASK": 0
+      },
+      "unlit_count": 0
+    },
+    {
+      "path": "app/assets/aircraft/moonrunner-x99/moonrunner_x99.glb",
+      "git_blob": "2ef52366e20196c55745d3241e11ff0b08d110bd",
+      "sha256": "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0",
+      "source_materials": [
+        {
+          "name": "x8_foam_interior",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "x8_orange",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "x8_black",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "x8_glass",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "x8_battery",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "x8_electronics",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "x8_livery",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            1,
+            1,
+            1
+          ],
+          "emissive_texture": true
+        },
+        {
+          "name": "x8_metal",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "x8_motor_bell",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": false,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        }
+      ],
+      "counts": {
+        "OPAQUE": 9,
+        "BLEND": 0,
+        "MASK": 0
+      },
+      "unlit_count": 0
+    },
+    {
+      "path": "app/assets/aircraft/hx-700/hx-700.glb",
+      "git_blob": "f2d00f46a67e0a82856230dab78b6c91ba9c5b99",
+      "sha256": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
+      "source_materials": [
+        {
+          "name": "Fibra_de_Carbono",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Envoltura_Bateria",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Etiqueta_Amarilla",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Plastico_Negro",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Conector_Amarillo",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Pintura_Botalon",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Aluminio_Anodizado_Negro",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Aluminio_Grafito",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Acero_Pulido",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Pintura_Carenado",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Cable_Rojo",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Cable_Negro",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "LED_Azul",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0.10000000149011612,
+            0.4000000059604645,
+            1
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Aluminio_Anodizado_Azul",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Aluminio_Anodizado_Amarillo",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Pala_Carbono",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Caucho",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        },
+        {
+          "name": "Plastico_Grafito",
+          "alpha_mode": "OPAQUE",
+          "alpha": 1,
+          "unlit": false,
+          "double_sided": true,
+          "emissive_factor": [
+            0,
+            0,
+            0
+          ],
+          "emissive_texture": false
+        }
+      ],
+      "counts": {
+        "OPAQUE": 18,
+        "BLEND": 0,
+        "MASK": 0
+      },
+      "unlit_count": 0
+    }
+  ]
+}

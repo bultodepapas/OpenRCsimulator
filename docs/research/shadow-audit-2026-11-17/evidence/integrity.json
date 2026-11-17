@@ -1,0 +1,115 @@
+{
+  "format": "openrc-shadow-audit-integrity-v1",
+  "baseline": "3c91936ab8f9064daa798311b5fb3e89e28d3754",
+  "scope": "All audit files except this checksum file; Git commit supplies final artifact identity.",
+  "source_index_revalidated": 106,
+  "assertions_passed": 156,
+  "assertions_failed": 0,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 14115,
+      "sha256": "686eb4fbd2001d3270282bbeff084d29b1e321f6f6b9859e1a75c53651e14fca"
+    },
+    {
+      "path": "evidence/asset-materials.json",
+      "bytes": 25362,
+      "sha256": "c4c97381c92aab414d5d6b49aa1acc521856ccd256976acd10ccee0b2d4081bc"
+    },
+    {
+      "path": "evidence/campaign.json",
+      "bytes": 457,
+      "sha256": "d35c70f1bb639373cf66ee49c25ea5a4b2c9ce16baadbafd11eed6a300f11269"
+    },
+    {
+      "path": "evidence/checked/audit.log",
+      "bytes": 117,
+      "sha256": "a9eafbbc1a076137ad5496689dd76369280377d0c64bf6787b7e111f2c6585d6"
+    },
+    {
+      "path": "evidence/checked/audit.report.json",
+      "bytes": 1398,
+      "sha256": "a712357a325dd4de68f27a87791f3d94c847c23e078c7384c366d0fb13b92e5f"
+    },
+    {
+      "path": "evidence/checked/blur.log",
+      "bytes": 103,
+      "sha256": "faccbbcfab9e05b9ffc0939b61b447bf26906f6249f4b3ea03ab4ba2b166e6b3"
+    },
+    {
+      "path": "evidence/checked/blur.report.json",
+      "bytes": 1296,
+      "sha256": "e6cb91477562d04717ddd4e0a668051c2951dbf3087674201121de9b053cc6d3"
+    },
+    {
+      "path": "evidence/checked/collection.log",
+      "bytes": 109,
+      "sha256": "c1a90a2cd925a54c35e2f025ec7cfa24b2c54c1419a3b0162139d56e808c9bde"
+    },
+    {
+      "path": "evidence/checked/collection.report.json",
+      "bytes": 1320,
+      "sha256": "a8911fde3ae69f8bcc41a46bad7a5889fd5422b357257f34ec5c348a11b6aa80"
+    },
+    {
+      "path": "evidence/checked/import.log",
+      "bytes": 2519,
+      "sha256": "125b0fb88f536c76f7cef52a6171bc6fd05ef301956d11d712811da7af72a094"
+    },
+    {
+      "path": "evidence/checked/import.report.json",
+      "bytes": 1226,
+      "sha256": "c8980c6467010ce2326d83f1bae8b54d41ef86351c097bbbcdb6a5a7da4a1d47"
+    },
+    {
+      "path": "evidence/copy-checksums.json",
+      "bytes": 3196,
+      "sha256": "347aa3de44eb258674db9cd2c68031dfb850627f1c55e512cbe363db2875c1b6"
+    },
+    {
+      "path": "evidence/external-sources.json",
+      "bytes": 5637,
+      "sha256": "c557dede087cdd9329b1aab9a6ca9c44239a61c7dfbed8990cc712e43c3cbb7b"
+    },
+    {
+      "path": "evidence/observations.json",
+      "bytes": 8647,
+      "sha256": "9ab71618126ff7547fa7df67d4c42829fa9977740cd3417ff8703ef38bffe25c"
+    },
+    {
+      "path": "evidence/source-index.json",
+      "bytes": 80063,
+      "sha256": "e069b39e8a7023e64b33dc2e0ad8a681396e358ec796fb7dc04e102a51b86792"
+    },
+    {
+      "path": "evidence/source-manifest.json",
+      "bytes": 8639,
+      "sha256": "fef305e7ad03d797c65c6d0fbb8f0e045cb2eef841b393190f5695d59d753a39"
+    },
+    {
+      "path": "findings.md",
+      "bytes": 29397,
+      "sha256": "3ddbb26f1ff59b751b8212e241a0002cfd1b02f61489e9961801288b82cec7f2"
+    },
+    {
+      "path": "repro/probe.gd",
+      "bytes": 9558,
+      "sha256": "a103453138440ae62bdaf67ef929592438879d503589c1260b0842f7391ca67c"
+    },
+    {
+      "path": "repro/run.py",
+      "bytes": 5808,
+      "sha256": "fda90ffb86ab0252879a18f61a86ff33995c0f06f49f02d5e7f36175f0eab551"
+    },
+    {
+      "path": "technology-review.md",
+      "bytes": 18901,
+      "sha256": "8efd5495bd99f4c768e3a9b37eab6f3ed88d785ee6df02a407c25d1fc35bf395"
+    },
+    {
+      "path": "validation.md",
+      "bytes": 16601,
+      "sha256": "319696d57e9b8819641bc309081919bb3603bdca948b18d2d1f19539b5ed291d"
+    }
+  ]
+}

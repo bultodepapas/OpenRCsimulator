@@ -10,6 +10,12 @@ records paired 1080p Standard/High captures, range/ownership checks and the rema
 Deliver convincing contact, detailed silhouettes and stable motion before increasing range or adding expensive effects.
 Primary acceptance is **1920×1080**, then 1440p/4K and above, then 720p compatibility.
 
+The [strict audit of 17 November 2026](../research/shadow-audit-2026-11-17/README.md)
+records 26 prioritized findings against the current beta2 application baseline,
+156 passing headless assertions, source/material identities and the remaining
+native visual/performance gates. Its findings feed the existing steps below;
+the audit does not change defaults or claim that the visual gaps are fixed.
+
 This is the detailed shadow subplan of [VQ-04b](../VISUAL-QUALITY-PLAN.md#open-work). The [advanced graphics plan](advanced-graphics.md) retains VQ-07e renderer/effect promotion, VQ-06a/b retains settings integration, and [GDU-11](godot-4.8-upgrade.md#phase-11-owner-authorized-48-improvements) retains engine opportunity work. The [dated source audit](../research/shadows-2026-10-31.md) records the inspected implementation and internet references. Parent acceptance gates remain in their existing homes; this document owns the shadow-specific sequence.
 
 [Section 13](#13-targeted-c-efficiency-work) incorporates six additional internet investigations into C++ efficiency. It selects a small optional geometry-preparation helper for consideration after current profiling, while reusing Godot's existing native rendering/import operations.

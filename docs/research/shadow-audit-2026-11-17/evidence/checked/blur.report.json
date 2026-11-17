@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a40552e6-f41d-4689-b41e-740d900c3d1f",
+  "command": [
+    "/workspace/scratch/eef8b0550ac3/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/390c049b5ea1/OpenRCsimulator/tmp/shadow-audit-run-02/fixture",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_shadow_blur.gd"
+  ],
+  "cwd": "/workspace/scratch/390c049b5ea1/OpenRCsimulator",
+  "started_utc": "2026-11-17T22:30:50.147718+00:00",
+  "label": "test_shadow_blur",
+  "log": "/workspace/scratch/390c049b5ea1/OpenRCsimulator/tmp/shadow-audit-run-02/checks/test_shadow_blur-mk8szfil/engine.log",
+  "report": "/workspace/scratch/390c049b5ea1/OpenRCsimulator/tmp/shadow-audit-run-02/checks/test_shadow_blur-mk8szfil/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.979582,
+  "log_bytes": 103,
+  "log_sha256": "faccbbcfab9e05b9ffc0939b61b447bf26906f6249f4b3ea03ab4ba2b166e6b3"
+}

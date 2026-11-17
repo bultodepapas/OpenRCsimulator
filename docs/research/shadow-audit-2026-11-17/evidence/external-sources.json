@@ -1,0 +1,127 @@
+{
+  "format": "openrc-shadow-audit-external-source-index-v1",
+  "research_date": "2026-11-17",
+  "date_timezone": "America/Bogota",
+  "engine_repository": "godotengine/godot",
+  "engine_revision": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+  "limits": [
+    "Mutable web pages are bounded by research date; no claim of archived full content or immutable web-page bytes.",
+    "Engine documents were retrieved through the GitHub file connector at the exact revision after web retrieval of that pinned URL failed; primary file retrieval succeeded.",
+    "Technology availability and vendor demonstrations are not OpenRC execution or performance evidence."
+  ],
+  "engine_documents": [
+    {
+      "path": "doc/classes/Light3D.xml",
+      "git_blob_sha1": "1538617af064936d42cb2b579987a3540336c00f",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/Light3D.xml",
+      "physical_lines": 227,
+      "verified_scope": "Directional PCSS is Forward+ only; positional PCSS supports Forward+ and Mobile; bias and angle contracts."
+    },
+    {
+      "path": "doc/classes/BaseMaterial3D.xml",
+      "git_blob_sha1": "2b0bcc4e130266ce42d0edef3a13c9abbb60006e",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/BaseMaterial3D.xml",
+      "physical_lines": 906,
+      "verified_scope": "Alpha blend vs scissor/hash shadow casting; unshaded receiving behavior."
+    },
+    {
+      "path": "doc/classes/RenderingDevice.xml",
+      "git_blob_sha1": "9930e4d7b854940393baa68b8048c67443cfb297",
+      "url": "https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/doc/classes/RenderingDevice.xml",
+      "physical_lines": 3111,
+      "verified_scope": "Experimental BLAS/TLAS APIs exist; RenderingDevice unavailable in headless/Compatibility."
+    }
+  ],
+  "primary_web_sources": [
+    {
+      "title": "Microsoft CSM",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/dxtecharts/cascaded-shadow-maps",
+      "reviewed_scope": "Cascaded shadow map allocation and transitions"
+    },
+    {
+      "title": "NVIDIA PCSS paper",
+      "url": "https://developer.download.nvidia.com/shaderlibrary/docs/shadow_PCSS.pdf",
+      "reviewed_scope": "Blocker search, penumbra estimate, filtering"
+    },
+    {
+      "title": "NVIDIA NRD",
+      "url": "https://github.com/NVIDIA-RTX/NRD",
+      "reviewed_scope": "SIGMA shadow denoiser and API integration"
+    },
+    {
+      "title": "NVIDIA NRD license",
+      "url": "https://github.com/NVIDIA-RTX/NRD/blob/master/LICENSE.txt",
+      "reviewed_scope": "NVIDIA RTX SDK license identity; not a redistribution approval"
+    },
+    {
+      "title": "NVIDIA RTXDI",
+      "url": "https://github.com/NVIDIA-RTX/RTXDI",
+      "reviewed_scope": "ReSTIR DI/GI/PT framework scope"
+    },
+    {
+      "title": "NVIDIA RTX Kit FAQ",
+      "url": "https://forums.developer.nvidia.com/t/rtx-kit-faq/322358",
+      "reviewed_scope": "Per-SDK hardware support; DLSS distinction"
+    },
+    {
+      "title": "NVIDIA DLSS RR integration",
+      "url": "https://github.com/NVIDIA-RTX/Streamline/blob/main/docs/ProgrammingGuideDLSS_RR.md",
+      "reviewed_scope": "Noisy ray-traced color and required guides"
+    },
+    {
+      "title": "AMD analytical shadow denoiser",
+      "url": "https://gpuopen.com/fidelityfx-denoiser/",
+      "reviewed_scope": "FidelityFX SDK v1 denoiser, MIT, D3D12/Vulkan, single-light mask"
+    },
+    {
+      "title": "AMD analytical denoiser manual",
+      "url": "https://gpuopen.com/manuals/fidelityfx_sdk/techniques/denoiser/",
+      "reviewed_scope": "Visibility, depth, normal, motion and temporal/spatial filtering"
+    },
+    {
+      "title": "AMD Hybrid Shadows",
+      "url": "https://gpuopen.com/fidelityfx-hybrid-shadows/",
+      "reviewed_scope": "Raster and selected ray-traced shadow composition"
+    },
+    {
+      "title": "AMD CACAO",
+      "url": "https://gpuopen.com/fidelityfx-cacao/",
+      "reviewed_scope": "Screen-space ambient occlusion"
+    },
+    {
+      "title": "AMD FSR Ray Regeneration",
+      "url": "https://gpuopen.com/amd-fsr-rayregeneration/",
+      "reviewed_scope": "Version1.2.1; RX9000+, Windows11, DX12 SM6.6; separate from upscaling"
+    },
+    {
+      "title": "AMD FSR SDK",
+      "url": "https://gpuopen.com/amd-fsr-sdk/",
+      "reviewed_scope": "Upscaling and Ray Regeneration responsibility/support distinctions"
+    },
+    {
+      "title": "AMD Ray Regeneration manual",
+      "url": "https://gpuopen.com/manuals/fsr_sdk/techniques/denoising/",
+      "reviewed_scope": "Dominant-light visibility encoding, angular half-radius radians, temporal rejection"
+    },
+    {
+      "title": "Variance shadow maps",
+      "url": "https://developer.nvidia.com/gpugems/gpugems3/part-ii-light-and-shadows/chapter-8-summed-area-variance-shadow-maps",
+      "reviewed_scope": "Filtered moments and light bleeding"
+    },
+    {
+      "title": "Warped variance shadow maps thesis",
+      "url": "https://uwspace.uwaterloo.ca/items/57f02644-02bf-41bf-86e9-8a8dd2858f22",
+      "reviewed_scope": "Moments of exponentially warped depth distributions"
+    },
+    {
+      "title": "Moment shadow maps original research",
+      "url": "https://www.momentsingraphics.de/I3D2015.html",
+      "reviewed_scope": "Four moments, 64-bit representation"
+    },
+    {
+      "title": "Epic virtual shadow maps",
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/virtual-shadow-maps-in-unreal-engine",
+      "reviewed_scope": "Paged maps/cache and invalidation; distinct from variance VSM"
+    }
+  ]
+}

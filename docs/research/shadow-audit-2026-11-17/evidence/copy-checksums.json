@@ -1,0 +1,84 @@
+{
+  "format": "openrc-shadow-audit-evidence-copy-v1",
+  "baseline": "3c91936ab8f9064daa798311b5fb3e89e28d3754",
+  "source_campaign": "tmp/shadow-audit-run-02",
+  "notes": [
+    "Original files were copied byte-for-byte; paths embedded in raw reports refer to their original run location.",
+    "This receipt indexes only the files listed below and does not hash itself or files owned by other contributors."
+  ],
+  "assertions": {
+    "collection": 77,
+    "blur": 50,
+    "audit": 29,
+    "total": 156,
+    "failed": 0
+  },
+  "files": [
+    {
+      "retained": "campaign.json",
+      "original": "tmp/shadow-audit-run-02/campaign.json",
+      "bytes": 457,
+      "sha256": "d35c70f1bb639373cf66ee49c25ea5a4b2c9ce16baadbafd11eed6a300f11269"
+    },
+    {
+      "retained": "checked/audit.log",
+      "original": "tmp/shadow-audit-run-02/checks/shadow-audit-probe-twzd55dn/engine.log",
+      "bytes": 117,
+      "sha256": "a9eafbbc1a076137ad5496689dd76369280377d0c64bf6787b7e111f2c6585d6"
+    },
+    {
+      "retained": "checked/audit.report.json",
+      "original": "tmp/shadow-audit-run-02/checks/shadow-audit-probe-twzd55dn/report.json",
+      "bytes": 1398,
+      "sha256": "a712357a325dd4de68f27a87791f3d94c847c23e078c7384c366d0fb13b92e5f"
+    },
+    {
+      "retained": "checked/blur.log",
+      "original": "tmp/shadow-audit-run-02/checks/test_shadow_blur-mk8szfil/engine.log",
+      "bytes": 103,
+      "sha256": "faccbbcfab9e05b9ffc0939b61b447bf26906f6249f4b3ea03ab4ba2b166e6b3"
+    },
+    {
+      "retained": "checked/blur.report.json",
+      "original": "tmp/shadow-audit-run-02/checks/test_shadow_blur-mk8szfil/report.json",
+      "bytes": 1296,
+      "sha256": "e6cb91477562d04717ddd4e0a668051c2951dbf3087674201121de9b053cc6d3"
+    },
+    {
+      "retained": "checked/collection.log",
+      "original": "tmp/shadow-audit-run-02/checks/test_shadow_collection-j44jypzj/engine.log",
+      "bytes": 109,
+      "sha256": "c1a90a2cd925a54c35e2f025ec7cfa24b2c54c1419a3b0162139d56e808c9bde"
+    },
+    {
+      "retained": "checked/collection.report.json",
+      "original": "tmp/shadow-audit-run-02/checks/test_shadow_collection-j44jypzj/report.json",
+      "bytes": 1320,
+      "sha256": "a8911fde3ae69f8bcc41a46bad7a5889fd5422b357257f34ec5c348a11b6aa80"
+    },
+    {
+      "retained": "checked/import.log",
+      "original": "tmp/shadow-audit-run-02/checks/import-8hog8q36/engine.log",
+      "bytes": 2519,
+      "sha256": "125b0fb88f536c76f7cef52a6171bc6fd05ef301956d11d712811da7af72a094"
+    },
+    {
+      "retained": "checked/import.report.json",
+      "original": "tmp/shadow-audit-run-02/checks/import-8hog8q36/report.json",
+      "bytes": 1226,
+      "sha256": "c8980c6467010ce2326d83f1bae8b54d41ef86351c097bbbcdb6a5a7da4a1d47"
+    },
+    {
+      "retained": "observations.json",
+      "original": "tmp/shadow-audit-run-02/observations.json",
+      "bytes": 8647,
+      "sha256": "9ab71618126ff7547fa7df67d4c42829fa9977740cd3417ff8703ef38bffe25c"
+    },
+    {
+      "retained": "source-manifest.json",
+      "original": "tmp/shadow-audit-run-02/source_manifest.json",
+      "bytes": 8639,
+      "sha256": "fef305e7ad03d797c65c6d0fbb8f0e045cb2eef841b393190f5695d59d753a39"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "131733d9-4864-408a-a063-54b181e3c045",
+  "command": [
+    "/workspace/scratch/eef8b0550ac3/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/390c049b5ea1/OpenRCsimulator/tmp/shadow-audit-run-02/fixture",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://probe.gd",
+    "--",
+    "--out=/workspace/scratch/390c049b5ea1/OpenRCsimulator/tmp/shadow-audit-run-02/observations.json"
+  ],
+  "cwd": "/workspace/scratch/390c049b5ea1/OpenRCsimulator",
+  "started_utc": "2026-11-17T22:30:51.185550+00:00",
+  "label": "shadow-audit-probe",
+  "log": "/workspace/scratch/390c049b5ea1/OpenRCsimulator/tmp/shadow-audit-run-02/checks/shadow-audit-probe-twzd55dn/engine.log",
+  "report": "/workspace/scratch/390c049b5ea1/OpenRCsimulator/tmp/shadow-audit-run-02/checks/shadow-audit-probe-twzd55dn/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.463872,
+  "log_bytes": 117,
+  "log_sha256": "a9eafbbc1a076137ad5496689dd76369280377d0c64bf6787b7e111f2c6585d6"
+}

@@ -1,0 +1,25 @@
+{
+  "baseline": "3c91936ab8f9064daa798311b5fb3e89e28d3754",
+  "results": [
+    {
+      "label": "import",
+      "exit": 0
+    },
+    {
+      "label": "tests/test_shadow_collection.gd",
+      "exit": 0
+    },
+    {
+      "label": "tests/test_shadow_blur.gd",
+      "exit": 0
+    },
+    {
+      "label": "probe",
+      "exit": 0
+    }
+  ],
+  "passed": true,
+  "visual_qualification": "not_run",
+  "gpu_performance": "not_run",
+  "full_app_suite": "not_run"
+}
