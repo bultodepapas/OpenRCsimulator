@@ -167,7 +167,7 @@ class PoolMcpTests(unittest.TestCase):
                                                         pool)["next_action"])
         accepted = api.summarize({**stopped, "supervisor": {"state": "ACCEPTED"}}, pool)["next_action"]
         self.assertTrue(accepted.startswith("poll") and "30 s" in accepted)
-        interrupted = {**stopped, "supervisor": {"state": "SNAPSHOTTING"}}
+        interrupted = {**stopped, "jobs": [], "supervisor": {"state": "SNAPSHOTTING"}}
         self.assertIn("new request_id", api.summarize(interrupted, pool)["next_action"])
         frozen = {**interrupted, "source_frozen": True}
         self.assertIn("sim_test_recover", api.summarize(frozen, pool)["next_action"])
@@ -189,6 +189,42 @@ class PoolMcpTests(unittest.TestCase):
         remote.assert_not_called()
         probe.assert_not_called()
         self.assertEqual((summary["running"], summary["queued"], summary["blocked"]), (1, 1, 1))
+
+    def test_status_puts_summary_first_and_explains_unknown_ids(self):
+        with patch.object(api, "_start"):
+            self.launch()
+        self.assertEqual(list(api.status("test1", config=self.config))[:2], ["request_id", "summary"])
+        for call in (api.status, api.recover):
+            with self.subTest(call=call.__name__), self.assertRaisesRegex(ValueError, "unknown request_id"):
+                call("missing1", config=self.config)
+
+    def test_interrupted_snapshot_and_blocked_only_batches_get_terminal_advice(self):
+        with patch.object(api, "_start"):
+            self.launch()
+        write_json(self.directory / "supervisor.json",
+                   {"state": "ERROR", "error": "snapshot preparation was interrupted; no tests dispatched"})
+        self.assertIn("new request_id", api.status("test1", config=self.config)["summary"]["next_action"])
+        with patch.object(api, "_start") as start, self.assertRaisesRegex(ValueError, "new request_id"):
+            api.recover("test1", config=self.config)
+        start.assert_not_called()
+        blocked = {"request_id": "x", "input": {"script": "res://tests/x.gd"}, "phase": "BLOCKED",
+                   "status": {"state": "UNKNOWN"}}
+        for active in (True, False):
+            summary = api.summarize({"result": "INCOMPLETE", "jobs": [blocked], "supervisor_active": active,
+                                     "supervisor": {"state": "WAITING"}, "source_frozen": True})
+            expected = "blocked rows" if active else "sim_test_recover"
+            self.assertIn(expected, summary["next_action"])
+
+    def test_supervisor_survives_a_brief_liveness_probe_of_its_lock(self):
+        with patch.object(api, "_start"):
+            self.launch()
+        probe = Singleton(self.directory / "worker.lock")
+        import threading
+        threading.Timer(0.3, probe.close).start()
+        with patch.object(api.Pool, "snapshot", return_value=self.root / "frozen"), \
+                patch.object(api, "run_batch", return_value={"result": "PASSED"}) as batch:
+            api.supervise(self.directory)
+        batch.assert_called_once()
 
     def test_duplicate_worker_cannot_dispatch(self):
         with patch.object(api, "_start"):

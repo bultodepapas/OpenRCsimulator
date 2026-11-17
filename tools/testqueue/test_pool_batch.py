@@ -87,7 +87,9 @@ class PoolBatchTests(unittest.TestCase):
         self.manifest.write_text(json.dumps({"snapshot": "snapshot", "jobs": jobs}), encoding="utf-8")
 
     def run_case(self):
-        return run_batch(self.pool, self.config, self.manifest, self.state, timeout=1, poll_interval=0)
+        # Generous budget: run_batch returns as soon as every row is final or blocked,
+        # so this only absorbs slow fsync/antivirus stalls on loaded hosts.
+        return run_batch(self.pool, self.config, self.manifest, self.state, timeout=15, poll_interval=0)
 
     def test_independent_rows_wait_then_run_without_retrying_failure(self):
         first = "res://tests/test_a.gd"

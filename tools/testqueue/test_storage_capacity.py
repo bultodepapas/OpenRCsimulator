@@ -42,6 +42,23 @@ class PoolStorageCapacityTests(unittest.TestCase):
         self.assertEqual(result["free_disk_bytes"], 123456)
         self.assertEqual(result["storage"]["path"], "D:/OpenRC/attempts")
 
+    def test_reservation_covers_dispatches_during_the_unlocked_probe_and_corrupt_receipts(self):
+        jobs = self.pool.root / "jobs"
+        jobs.mkdir(parents=True, exist_ok=True)
+        probed_at = time.time()
+        (jobs / "late.json").write_text(json.dumps({"host": "local", "state": "SUBMITTED",
+                                                    "created": probed_at + 0.5}))
+        (jobs / "broken.json").write_text("{not json")
+        fresh = lambda: [{"id": "local", "busy": False}]
+        observed = self.pool._reserve(fresh(), since=probed_at)[0]
+        self.assertTrue(observed["busy"])
+        self.assertIn("receipt late", observed["busy_reason"])
+        self.assertEqual(observed["unreadable_receipts"], ["broken"])
+        reason = plan({"platform": "windows"}, [{**self.probe(), **observed}])["candidates"][0]["reasons"]
+        self.assertIn("BUSY: receipt late (SUBMITTED)", reason)
+        # Without a concurrent-dispatch window a submitted receipt holds nothing.
+        self.assertFalse(self.pool._reserve(fresh())[0]["busy"])
+
     def test_history_feeds_placement_and_corrupt_history_keeps_host_online(self):
         self.current["storage"] = {"available": True, "free_bytes": 10**12}
         history = self.pool.root / "history.json"

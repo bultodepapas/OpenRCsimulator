@@ -1252,8 +1252,44 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(result.get("outcome"), "TIMED_OUT", result)
         self.assertEqual(result.get("cleanup"), "CONFIRMED", result)
 
+    def test_rpc_waits_for_a_stalled_lock_are_bounded_and_explicit(self):
+        held, release = threading.Event(), threading.Event()
+
+        def hold():
+            with self.worker.lock:
+                held.set()
+                release.wait(20)
+
+        holder = threading.Thread(target=hold, daemon=True)
+        holder.start()
+        self.addCleanup(release.set)
+        self.assertTrue(held.wait(5))
+        with mock.patch.object(worker_module, "_RPC_LOCK_SECONDS", 0.3):
+            began = time.monotonic()
+            with self.assertRaisesRegex(worker_module.WorkerBusy, "WORKER_BUSY"):
+                self._call("list")
+            self.assertLess(time.monotonic() - began, 2.0)
+        release.set()
+        holder.join(5)
+        self.assertIsInstance(self._call("list"), list)
+
+    def test_failed_occupancy_probe_is_cached_instead_of_rerun_per_row(self):
+        calls = []
+
+        def wedged():
+            calls.append(1)
+            raise subprocess.TimeoutExpired("tasklist", 10)
+
+        with mock.patch.object(worker_module, "external_simulators", side_effect=wedged):
+            self.worker._occupancy_cache = None
+            for _ in range(3):
+                with self.assertRaisesRegex(RuntimeError, "occupancy probe failed"):
+                    self.worker._external_conflicts()
+        self.assertEqual(len(calls), 1)
+
     def test_hard_deadline_and_teardown_do_not_wait_for_a_stalled_journal(self):
-        accepted = self._submit("long-stalled-storage", headless=True, timeout=3)
+        # 6 s leaves slow CI room to reach started.json before the deadline.
+        accepted = self._submit("long-stalled-storage", headless=True, timeout=6)
         directory = wait_until(lambda: (candidate if (candidate := self._directory(accepted["job"]))
                                         and (candidate / "started.json").exists() else None))
         observed_start = time.monotonic()
@@ -1277,10 +1313,10 @@ class WorkerFixture(unittest.TestCase):
             self.assertEqual(host["condition"], "DEGRADED", host)
             self.assertIsNone(host["claims"])
             self.assertIn("worker lock unavailable", host["inventory_error"])
-            # The admitted 3 s budget expires and teardown completes while the
+            # The admitted 6 s budget expires and teardown completes while the
             # journal stays stalled; bound the overshoot, not just eventuality.
-            wait_until(lambda: attempt not in self.worker.active, timeout=15)
-            self.assertLess(time.monotonic() - observed_start, 3.0 + 4.0)
+            wait_until(lambda: attempt not in self.worker.active, timeout=18)
+            self.assertLess(time.monotonic() - observed_start, 6.0 + 4.0)
             self.assertFalse((directory / "ended.json").exists())
             self.assertTrue(holder.is_alive())
         finally:

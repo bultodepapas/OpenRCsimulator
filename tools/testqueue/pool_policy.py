@@ -79,7 +79,8 @@ def _candidate(job, host):
     if type(host.get("busy")) is not bool:
         reasons.append("INVALID_INVENTORY: busy must be boolean")
     elif host["busy"]:
-        reasons.append("BUSY")
+        detail = host.get("busy_reason")
+        reasons.append("BUSY" + (": " + detail if isinstance(detail, str) and detail else ""))
     platform = host.get("platform")
     if not isinstance(platform, str) or platform not in _PLATFORMS:
         reasons.append("INVALID_INVENTORY: unknown platform")

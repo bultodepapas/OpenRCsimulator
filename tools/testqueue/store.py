@@ -145,19 +145,19 @@ class Store:
             # This decision belongs in the same transaction as allocation.
             quarantined = self.db.execute("SELECT 1 FROM attempts WHERE state='UNKNOWN' LIMIT 1").fetchone()
             if quarantined:
-                self.db.execute("UPDATE jobs SET reason=? WHERE id=?", ("RESOURCE_BUSY: unresolved cleanup quarantines the managed host", job))
+                self.db.execute("UPDATE jobs SET reason=? WHERE id=? AND reason IS NOT ?", ("RESOURCE_BUSY: unresolved cleanup quarantines the managed host", job, "RESOURCE_BUSY: unresolved cleanup quarantines the managed host"))
                 self.db.commit()
                 return None
             exclusive_busy = self.db.execute("SELECT 1 FROM claims WHERE resource='exclusive' LIMIT 1").fetchone()
             any_busy = self.db.execute("SELECT 1 FROM claims LIMIT 1").fetchone()
             if exclusive_busy or (resources.get("exclusive", 0) and any_busy):
-                self.db.execute("UPDATE jobs SET reason=? WHERE id=?", ("RESOURCE_BUSY: exclusive execution requires an idle managed host", job))
+                self.db.execute("UPDATE jobs SET reason=? WHERE id=? AND reason IS NOT ?", ("RESOURCE_BUSY: exclusive execution requires an idle managed host", job, "RESOURCE_BUSY: exclusive execution requires an idle managed host"))
                 self.db.commit()
                 return None
             for resource, amount in sorted(resources.items()):
                 used = self.db.execute("SELECT COALESCE(SUM(amount),0) FROM claims WHERE resource=?", (resource,)).fetchone()[0]
                 if used + amount > capacities.get(resource, 1):
-                    self.db.execute("UPDATE jobs SET reason=? WHERE id=?", (f"RESOURCE_BUSY: {resource}", job))
+                    self.db.execute("UPDATE jobs SET reason=? WHERE id=? AND reason IS NOT ?", (f"RESOURCE_BUSY: {resource}", job, f"RESOURCE_BUSY: {resource}"))
                     self.db.commit()
                     return None
             attempt = "A-" + uuid.uuid4().hex

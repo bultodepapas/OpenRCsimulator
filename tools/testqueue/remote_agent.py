@@ -39,6 +39,10 @@ SCRIPT = re.compile(r"res://(?:tests|tools)/[A-Za-z0-9_./-]+\.gd\Z")
 TIMING = re.compile(r"(?:^|[/_.-])(?:bench(?:mark)?|perf(?:ormance)?|profile|timing|latency|soak|stress|memory)(?:[/_.-]|$)", re.I)
 
 
+class TeardownUnconfirmed(RuntimeError):
+    """A stage's process start or teardown could not be proved; quarantine the host."""
+
+
 class Refused(Exception):
     def __init__(self, message, code="INVALID"):
         super().__init__(message)
@@ -94,6 +98,19 @@ def publish_terminal(path, value):
     If every attempt fails, the last durable record (RUNNING) stays in place and
     a later status observation quarantines it. Capacity is never released early.
     """
+    try:
+        encode(value)
+    except ValueError:
+        # A runner result with NaN/Infinity cannot be encoded strictly. Replace
+        # only the offending fields; cleanup stays, a pass cannot survive it.
+        for key in list(value):
+            try:
+                encode(value[key])
+            except ValueError:
+                value[key] = {"ok": False, "complete": False, "reason": "not_serializable"}
+                value["evidence"] = "INCOMPLETE"
+                if value.get("outcome") == "PASSED":
+                    value["outcome"] = "INFRA_FAILED"
     for attempt in range(TERMINAL_WRITE_ATTEMPTS):
         try:
             return write_json(path, value)
@@ -807,7 +824,7 @@ def execute_stage(root, directory, state, stage, deadline):
     if time.monotonic() >= deadline:
         return {"ok": False, "complete": False, "reason": "timeout"}
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-    from tools.testqueue.processes import OwnedProcess
+    from tools.testqueue.processes import OwnedProcess, ProcessNotStartedError
     source = directory / "source"
     env = {k: v for k, v in os.environ.items() if not k.startswith(("OPENRC_TESTQUEUE_", "OPENRC_DEBUG_"))}
     profile, tmp = directory / "profile", directory / "temp"
@@ -849,15 +866,16 @@ def execute_stage(root, directory, state, stage, deadline):
         code = process.poll()
         process.close()
         started = False
-    except BaseException:
+    except BaseException as failure:
         if started:
             try:
                 process.close()
             except Exception as error:
-                raise RuntimeError("process cleanup was not confirmed") from error
-        else:
+                raise TeardownUnconfirmed("process cleanup was not confirmed") from error
+        elif not (isinstance(failure, ProcessNotStartedError) and process.nonlaunch_confirmed is True):
             # A failed launch can have dispatched before it reported an identity.
-            raise RuntimeError("process start or cleanup was not confirmed")
+            # Only this adapter's own pre-create receipt proves nothing ran.
+            raise TeardownUnconfirmed("process start or cleanup was not confirmed") from failure
         raise
     # Teardown is proved here. Result I/O faults are evidence gaps, never
     # uncertainty about the process tree.
@@ -1035,7 +1053,7 @@ def supervise(root, identifier):
                                         {"state": "SKIPPED", "reason": "descriptor-relative no-follow operations unavailable",
                                          "logical_bytes_removed": 0})
     except Exception as error:
-        uncertain = started and ("not confirmed" in str(error))
+        uncertain = started and isinstance(error, TeardownUnconfirmed)
         state.update(state="UNKNOWN" if uncertain else "FINISHED", outcome="INFRA_FAILED",
                      cleanup="UNCONFIRMED" if uncertain else "CONFIRMED", evidence="INCOMPLETE",
                      error=f"{type(error).__name__}: {error}", finished_at=time.time())

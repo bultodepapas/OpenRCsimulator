@@ -304,6 +304,36 @@ class RemoteAgentTests(unittest.TestCase):
             self.accepted(self.request(second, "job2"))
         self.assertEqual(refused.exception.code, "QUARANTINED")
 
+    def test_witnessed_nonlaunch_finishes_without_quarantine_but_unproved_start_does_not(self):
+        from tools.testqueue import processes
+
+        def refuse(witnessed):
+            def start(process):
+                process._nonlaunch_confirmed = witnessed
+                raise processes.ProcessNotStartedError("injected runner log open failure")
+            return start
+
+        for identifier, witnessed, expected in [("job1", True, ("FINISHED", "INFRA_FAILED", "CONFIRMED")),
+                                                ("job2", False, ("UNKNOWN", "INFRA_FAILED", "UNCONFIRMED"))]:
+            with self.subTest(witnessed=witnessed):
+                self.accepted(self.request(self.sample_archive(), identifier))
+                with mock.patch.object(processes.OwnedProcess, "start", autospec=True, side_effect=refuse(witnessed)), \
+                        mock.patch.object(agent, "authority_enrolled", return_value=False), \
+                        mock.patch.object(agent, "external_engine_present", return_value=False):
+                    agent.supervise(self.root, identifier)
+                status = agent.read_json(self.root / "jobs" / identifier / "state.json")
+                self.assertEqual((status["state"], status["outcome"], status["cleanup"]), expected, status)
+
+    def test_unencodable_stage_result_is_published_without_a_pass(self):
+        path = self.root / "terminal.json"
+        state = {"state": "FINISHED", "outcome": "PASSED", "cleanup": "CONFIRMED", "evidence": "COMPLETE",
+                 "checked": {"ok": True, "complete": True, "elapsed_seconds": float("nan")}}
+        agent.publish_terminal(path, state)
+        written = agent.read_json(path)
+        self.assertEqual((written["state"], written["outcome"], written["cleanup"], written["evidence"]),
+                         ("FINISHED", "INFRA_FAILED", "CONFIRMED", "INCOMPLETE"))
+        self.assertEqual(written["checked"]["reason"], "not_serializable")
+
     def test_unreadable_result_after_confirmed_teardown_is_not_unknown(self):
         self.accepted(self.request(self.sample_archive()))
         real_read = agent.read_json

@@ -239,15 +239,38 @@ class Pool:
     def probe(self):
         with ThreadPoolExecutor(max_workers=len(self.hosts) or 1) as executor:
             observations = list(executor.map(self.probe_host, self.hosts))
-        reserved = set()
+        return self._reserve(observations)
+
+    def _reserve(self, observations, since=None):
+        """Mark hosts held by local receipts busy; cheap, local and idempotent.
+
+        ``since`` also reserves every host that received a receipt at or after
+        that time: the network probe ran without the dispatch lock, so a
+        dispatch that landed meanwhile is not visible in its observation. An
+        unreadable receipt cannot free a host; it is reported and skipped.
+        """
+        reserved, unreadable = {}, []
         for path in (self.root / 'jobs').glob('*.json'):
-            receipt = json.loads(path.read_text())
-            if (receipt.get('state') in {'PREPARING', 'SUBMISSION_UNCONFIRMED'}
-                    or self._unproved_nonexecution(receipt)):
-                reserved.add(receipt['host'])
+            try:
+                receipt = json.loads(path.read_text(encoding='utf-8'))
+                host = receipt['host']
+                if not isinstance(host, str):
+                    raise ValueError('receipt host is not a string')
+                created = receipt.get('created')
+                holds = (receipt.get('state') in {'PREPARING', 'SUBMISSION_UNCONFIRMED'}
+                         or self._unproved_nonexecution(receipt)
+                         or since is not None and type(created) in (int, float) and created >= since)
+            except (OSError, ValueError, KeyError, TypeError, AttributeError):
+                unreadable.append(path.stem)
+                continue
+            if holds:
+                reserved.setdefault(host, f"receipt {path.stem} ({receipt.get('state')})")
         for observation in observations:
             if observation['id'] in reserved:
                 observation['busy'] = True
+                observation['busy_reason'] = reserved[observation['id']]
+            if unreadable:
+                observation['unreadable_receipts'] = sorted(unreadable)[:10]
         return observations
 
     def snapshot(self, source):
@@ -452,6 +475,11 @@ class Pool:
         archive_digest = None
         try:
             while True:
+                # SSH probes and remote engine hashing run before the global
+                # dispatch lock; only local receipt reservation and planning
+                # happen under it (plan section 7.6).
+                probed_at = time.time()
+                observations = self.probe()
                 try:
                     guard = acquire_lock(self.root / 'dispatch.lock')
                 except PoolLockTimeout as error:
@@ -462,7 +490,7 @@ class Pool:
                         raise ValueError('request id already has different inputs')
                     self._destination(receipt)
                     return self._submission_result(receipt, receipt_path)
-                observations = self.probe()
+                observations = self._reserve(observations, since=probed_at)
                 if host_id:
                     observations = [item for item in observations if item['id'] == host_id]
                 decision = plan(job, observations)

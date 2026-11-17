@@ -1,6 +1,7 @@
 """Persistent host-local coordinator and worker, with fail-closed recovery."""
 from __future__ import annotations
 
+import contextlib
 import copy
 import hashlib
 import hmac
@@ -36,6 +37,19 @@ _JOURNAL_RETRY_SECONDS = 1.0
 _PROCESS_LOCK_SECONDS = 0.2
 _HOSTS_LOCK_SECONDS = 1.0
 _CAPACITY_SECONDS = 1.0
+_RPC_LOCK_SECONDS = 25.0
+
+
+def _exists(path):
+    """Existence check that treats a transient access error as absent (retry next pass)."""
+    try:
+        return path.exists()
+    except OSError:
+        return False
+
+
+class WorkerBusy(RuntimeError):
+    """The worker lock stayed busy; nothing was read or changed."""
 
 
 class _OwnershipBusy(RuntimeError):
@@ -210,7 +224,14 @@ class Worker:
     def _external_conflicts(self, *, refresh=False):
         now = time.monotonic()
         if refresh or self._occupancy_cache is None or now - self._occupancy_cache[0] >= 1:
-            self._occupancy_cache = (now, set(external_simulators()))
+            try:
+                self._occupancy_cache = (now, set(external_simulators()))
+            except (OSError, RuntimeError, subprocess.SubprocessError) as error:
+                # Cache the failure too: a wedged tasklist must not be rerun
+                # (up to 10 s each) under the worker lock for every queued row.
+                self._occupancy_cache = (now, error)
+        if isinstance(self._occupancy_cache[1], BaseException):
+            raise RuntimeError(f"occupancy probe failed: {self._occupancy_cache[1]}")
         managed = set()
         # Callers hold ``lock``; never let them wait out another attempt's
         # teardown. Busy ownership is unknown occupancy, which fails closed.
@@ -307,7 +328,7 @@ class Worker:
         # admission lock while asking the OS about the attempt volume.
         if operation == "hosts":
             return self._hosts(self._storage_capacity())
-        with self.lock:
+        with self._rpc_lock():
             if operation in {"status", "result"}:
                 return self._status(request["job"])
             if operation == "list":
@@ -373,6 +394,21 @@ class Worker:
         if operation == "submit":
             return self.submit(request)
         raise ValueError("unknown worker operation")
+
+    @contextlib.contextmanager
+    def _rpc_lock(self):
+        """Bound RPC waits below the client's 30 s socket step.
+
+        A stalled pass or journal must not pile up handler threads forever; the
+        caller gets an explicit busy answer and simply observes again.
+        """
+        if not self.lock.acquire(timeout=_RPC_LOCK_SECONDS):
+            raise WorkerBusy(f"WORKER_BUSY: worker lock unavailable for {_RPC_LOCK_SECONDS:g} s "
+                             "(storage or scheduler stalled); retry the observation")
+        try:
+            yield
+        finally:
+            self.lock.release()
 
     def _hosts(self, storage):
         """Health snapshot that answers promptly even while storage is stalled."""
@@ -741,6 +777,7 @@ class Worker:
             if self.draining:
                 return
             barrier = None
+            occupancy = None  # one external/ownership observation per pass
             rows = self.store.db.execute("SELECT id FROM jobs WHERE state='QUEUED' ORDER BY submitted,rowid").fetchall()
             for row in rows:
                 job = row[0]
@@ -757,14 +794,18 @@ class Worker:
                 elif not self.fixture and not options["headless"] and not desktop_ready():
                     reason = "GUI_LOCKED_OR_UNAVAILABLE: active user desktop required"
                 elif not self.fixture:
-                    try:
-                        if self._external_conflicts():
-                            reason = "EXTERNAL_SIMULATOR: preserve unmanaged process"
-                    except (OSError, RuntimeError, subprocess.SubprocessError) as error:
-                        reason = "OCCUPANCY_UNKNOWN: " + str(error)
+                    if occupancy is None:
+                        try:
+                            occupancy = ("EXTERNAL_SIMULATOR: preserve unmanaged process"
+                                         if self._external_conflicts() else "")
+                        except (OSError, RuntimeError, subprocess.SubprocessError) as error:
+                            occupancy = "OCCUPANCY_UNKNOWN: " + str(error)
+                    reason = occupancy
                 if reason:
-                    with self.store.db:
-                        self.store.db.execute("UPDATE jobs SET reason=? WHERE id=?", (reason, job))
+                    # Skip the fsync'd write when nothing changed (10 Hz passes).
+                    if status.get("reason") != reason:
+                        with self.store.db:
+                            self.store.db.execute("UPDATE jobs SET reason=? WHERE id=?", (reason, job))
                     continue
                 # Once an eligible exclusive request reaches this point, younger
                 # work cannot continually refill slots while its predecessors drain.
@@ -1002,7 +1043,7 @@ class Worker:
                 # Cancellation is sticky once observed; an unavailable store is
                 # neither a cancel request nor a reason to stop healthy work.
                 canceled = canceled or self._observe_canceled(job, wait=_MONITOR_LOCK_SECONDS) is True
-                if "session" not in data and ready.exists():
+                if "session" not in data and _exists(ready):
                     try:
                         private_session = json.loads(ready.read_text(encoding="utf-8"))
                     except (OSError, ValueError):
@@ -1033,7 +1074,7 @@ class Worker:
                     if lost_desktop:
                         data["session_failure"] = "GUI_LOCKED_OR_UNAVAILABLE"
                     self._journal(job, attempt, "CLEANING", data, wait=_MONITOR_LOCK_SECONDS)
-                    if ready.exists():
+                    if _exists(ready):
                         self._graceful_stop(directory)
                     with self._process_lock:
                         process.terminate()
@@ -1128,9 +1169,13 @@ class Worker:
                     if len(line) > LIMIT:
                         raise ValueError("request exceeds protocol limit")
                     response = {"ok": True, "result": worker.dispatch(json.loads(line))}
+                    encoded = json.dumps(response, allow_nan=False)
                 except Exception as error:
                     response = {"ok": False, "error": str(error)}
-                self.wfile.write((json.dumps(response, allow_nan=False) + "\n").encode())
+                    if isinstance(error, WorkerBusy):
+                        response["code"] = "WORKER_BUSY"
+                    encoded = json.dumps(response, allow_nan=False)
+                self.wfile.write((encoded + "\n").encode())
 
         class Server(socketserver.ThreadingTCPServer):
             daemon_threads = True

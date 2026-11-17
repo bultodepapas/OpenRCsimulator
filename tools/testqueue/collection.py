@@ -553,7 +553,8 @@ def collect(pool, identifier, out_dir=None):
                     elapsed = report["elapsed_seconds"]
                     if type(elapsed) not in (int, float) or not math.isfinite(elapsed) or elapsed < 0:
                         raise ValueError("invalid elapsed time")
-                    history_guard = protocol.Singleton(pool.root / "history.lock")
+                    # Wait briefly: concurrent collectors must not drop a sample.
+                    history_guard = protocol.acquire_lock(pool.root / "history.lock", timeout=10)
                     try:
                         path = pool.root / "history.json"
                         history = _json(path) if path.exists() else {}

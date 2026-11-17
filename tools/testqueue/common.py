@@ -37,7 +37,16 @@ def write_json(path: Path, value: dict) -> None:
         os.fsync(stream.fileno())
     with contextlib.suppress(OSError):
         temporary.chmod(0o600)
-    temporary.replace(path)
+    # Windows refuses to replace a file another process is reading (for example
+    # a cached MCP status read). Readers are brief, so retry for about 2 s.
+    for attempt in range(12):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if os.name != "nt" or attempt == 11:
+                raise
+            time.sleep(min(0.4, 0.01 * 2 ** attempt))
 
 
 def submission_receipt(root: Path, request: dict) -> Path:
@@ -207,6 +216,9 @@ def rpc(operation: str, *, root: Path | None = None, timeout: float = 30,
     except (OSError, KeyError, json.JSONDecodeError) as error:
         raise RuntimeError(f"testqueue worker unavailable at {root}; start testctl serve ({error})") from error
     if not response.get("ok"):
+        if response.get("code") == "WORKER_BUSY":
+            # Same meaning as a socket step timeout: nothing changed; observe again.
+            raise RpcStepTimeout(response.get("error", "worker busy"))
         raise ValueError(response.get("error", "testqueue request refused"))
     return response["result"]
 

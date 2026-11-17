@@ -114,7 +114,7 @@ def status(request_id, *, config=None):
     """Read cached receipts, without network or rehashing collected artifacts."""
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
-    request = _read(directory / "request.json")
+    request = _request(directory, request_id)
     result = {"request_id": request_id, "receipt": str(directory),
               "evidence_observation": "CACHED_METADATA",
               "supervisor": _read(directory / "supervisor.json") if (directory / "supervisor.json").exists() else {"state": "ACCEPTED"},
@@ -131,8 +131,17 @@ def status(request_id, *, config=None):
                                 "status": {"state": "UNKNOWN", "cleanup": "UNCONFIRMED"},
                                 "recovery_required": True} if row["request_id"] in reobserve else row)
                               for row in batch["jobs"]]
-    result["summary"] = summarize(result, pool)
-    return result
+    # Summary first: clients that truncate long tool output keep the digest.
+    return {"request_id": request_id, "summary": summarize(result, pool),
+            **{key: value for key, value in result.items() if key != "request_id"}}
+
+
+def _request(directory, request_id):
+    try:
+        return _read(directory / "request.json")
+    except FileNotFoundError:
+        raise ValueError(f"unknown request_id {request_id!r}; if the sim_test_launch reply was lost, "
+                         "repeat sim_test_launch with the same request_id and inputs") from None
 
 
 _ACTIVE = {"SUBMITTING", "TRACKING", "COLLECTING"}
@@ -185,7 +194,9 @@ def summarize(result, pool=None):
     state = supervisor.get("state")
     if overall == "PASSED":
         action = "none: every test passed with recorded verified evidence (status does not rehash artifacts)"
-    elif not active and state == "SNAPSHOTTING" and not result.get("source_frozen"):
+    elif not active and not result.get("source_frozen") and not rows and (
+            state == "SNAPSHOTTING"
+            or state == "ERROR" and "snapshot preparation was interrupted" in str(supervisor.get("error"))):
         action = "snapshot was interrupted before any dispatch; sim_test_launch with a new request_id"
     elif state == "ERROR" and not active:
         action = "inspect supervisor.error; then sim_test_recover with the same request_id"
@@ -196,6 +207,9 @@ def summarize(result, pool=None):
                   "sim_test_recover with the same request_id")
     elif overall == "FAILED":
         action = "inspect attention[].evidence and attention[].log; fix and launch a new request_id"
+    elif counts["blocked"] and not counts["running"] and not counts["queued"]:
+        action = ("blocked rows cannot finish on their own: inspect attention[] and run "
+                  "testctl pool status/recover with each row request_id; never resubmit them under a new ID")
     else:
         action = "poll sim_test_status"
     summary = {"result": overall, **counts, "attention": attention, "next_action": action}
@@ -218,23 +232,35 @@ def summarize(result, pool=None):
 def recover(request_id, *, config=None):
     pool = Pool(config or default_config())
     directory = _directory(pool, request_id)
-    request = _read(directory / "request.json")
+    request = _request(directory, request_id)
     if digest(pool.config_path) != request["config_sha256"]:
         raise ValueError("pool configuration changed; restore the original configuration before recovery")
     if (directory / "batch.json").exists():
         batch = _read(directory / "batch.json")
         if batch.get("result") in {"PASSED", "FAILED"} and not reobservation_ids(pool, batch["jobs"]):
             return status(request_id, config=config)
+    if not (directory / "manifest.json").exists() and not (directory / "batch.json").exists():
+        supervisor = _read(directory / "supervisor.json") if (directory / "supervisor.json").exists() else {}
+        if supervisor.get("state") not in {None, "ACCEPTED"} and not _active(directory):
+            raise ValueError("snapshot preparation was interrupted before any dispatch; "
+                             "use sim_test_launch with a new request_id for the current source")
     _start(directory)  # worker.lock excludes concurrent supervisors
     return status(request_id, config=config)
 
 
 def supervise(directory):
     directory = Path(directory).resolve()
-    try:
-        guard = Singleton(directory / "worker.lock")
-    except OSError:
-        return
+    # A status observer briefly holds worker.lock to test liveness; retry so a
+    # freshly spawned supervisor is not lost to that probe.
+    deadline = time.monotonic() + 3
+    while True:
+        try:
+            guard = Singleton(directory / "worker.lock")
+            break
+        except OSError:
+            if time.monotonic() >= deadline:
+                return
+            time.sleep(0.1)
     state_path = directory / "supervisor.json"
     def update(state, **extra):
         write_json(state_path, {"state": state, "updated_at": time.time(), **extra})

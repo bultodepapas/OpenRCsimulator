@@ -438,7 +438,7 @@ not prove every shell-created grandchild or an external MCP client's initial
 launcher remains invisible. A controlled interactive desktop check is still
 required. No fleet worker was restarted to apply the candidate.
 
-### Confirmed open continuity defect
+### Confirmed open continuity defect (closed in fixtures 17 November; see below)
 
 A private fixture injected one `sqlite3.OperationalError` into the local
 worker's `RUNNING / CREATED_OWNED` journal update after the fake owned process had
@@ -577,11 +577,41 @@ reports 614 cases (queue 365, debug 120, checked 22, resource 14, performance 75
 GOD TEST 18), 579 passed, 35 skipped, 0 failures. Placement benefit is not
 measured: no fleet comparison is claimed.
 
+### Final audit (17 November, after `b0753a697`)
+
+Three independent read-only Good Enemy reviews (local worker; pool, batch, history
+and MCP; remote supervisor, Windows consoles, documentation and CI) found no path
+to duplicate execution, resubmission under a new identity, early claim release or
+a false `PASSED`. The lead verified and fixed these findings:
+
+| Finding | Repair | Regression (fails on `b0753a697`) |
+| --- | --- | --- |
+| Pool held `dispatch.lock` across SSH probes and remote engine hashing (plan 7.6) | Probes run before the lock; under it only local receipts are re-read, with every receipt created since the probe reserving its host. Unreadable receipts are reported, not fatal; `BUSY` names the reserving receipt. | `test_reservation_covers_dispatches_during_the_unlocked_probe_and_corrupt_receipts` |
+| Worker scheduler re-ran a failing/wedged `tasklist` (10 s) and an fsync'd reason write for every queued row, under the worker lock | One occupancy observation per pass, failures cached for 1 s, reasons written only when changed (also in `Store.allocate`). | `test_failed_occupancy_probe_is_cached_instead_of_rerun_per_row` |
+| RPC handlers waited forever on a stalled worker lock, accumulating threads | Bounded at 25 s with an explicit `WORKER_BUSY` reply that clients treat as a socket-step timeout (observe again). | `test_rpc_waits_for_a_stalled_lock_are_bounded_and_explicit`, `test_worker_busy_reply_is_a_step_timeout_not_a_refusal` |
+| Remote: witnessed nonlaunch quarantined the host; uncertainty was a substring match | Typed `TeardownUnconfirmed`; the adapter's own pre-create receipt finishes `INFRA_FAILED`/`CONFIRMED`. | `test_witnessed_nonlaunch_finishes_without_quarantine_but_unproved_start_does_not` |
+| Remote: a NaN stage result could never be journaled | Offending fields are replaced; a pass cannot survive it. | `test_unencodable_stage_result_is_published_without_a_pass` |
+| Windows atomic replace failed while a status reader held the file | `write_json` retries `PermissionError` for about 2 s. | `test_atomic_replace_retries_while_a_windows_reader_holds_the_file` |
+| MCP: summary at the end of large replies; looping advice after an interrupted snapshot; no advice for blocked-only batches; raw `FileNotFoundError`; a liveness probe could swallow a new supervisor | Summary first; explicit new-ID and operator-inspection advice; recover refuses an interrupted snapshot; explicit unknown-ID error; supervisor retries its lock for 3 s. | `test_status_puts_summary_first_and_explains_unknown_ids`, `test_interrupted_snapshot_and_blocked_only_batches_get_terminal_advice`, `test_supervisor_survives_a_brief_liveness_probe_of_its_lock` |
+| Concurrent collectors lost history samples | History lock waits up to 10 s. | Covered by inspection |
+| Timing-sensitive fixtures | Batch tests use a 15 s budget (they return at completion); the stalled-journal test uses a 6 s deadline. | One full-suite run had failed the 1 s batch budget under load |
+
+A native stress on Windows 11 26100 ran three `OwnedProcess` trials of about
+500 short-lived `cmd` descendants each (including fire-and-forget grandchildren):
+every trial ended with exit 0 and no "could not be witnessed" uncertainty, so no
+false quarantine at that load. Larger real workloads remain part of the native
+campaign. Main CI had failed since before this work because three Creator
+UID sidecars were never committed; they were generated with the pinned 4.8-beta2
+engine (`ResourceUID.create_id`) and pass the release preflight UID check.
+The hermetic Windows-native six-group run of the audited candidate reports 626
+cases (queue 377, debug 120, checked 22, resource 14, performance 75, GOD TEST
+18), 591 passed, 35 skipped, 0 failures.
+
 ## Remaining senior work and deployment gates
 
 | Priority | Remaining boundary | Concrete next review/acceptance |
 | --- | --- | --- |
-| P0 for continuity claims | **Closed in fixtures on 17 November** (see below): storage failure no longer stops a healthy owned process, a watchdog enforces the deadline even while the monitor hangs in storage, terminal journals are ordered and claims stay held until durable. A worker *process* restart still converts live attempts to `UNKNOWN`; a remote supervisor whose filesystem call hangs still blocks its single thread. | Separate guardian process (R4) for restart continuity and authenticated remote cancellation; native Windows/Linux/Mac fault campaign before rollout. |
+| P0 for continuity claims | **Closed in fixtures on 17 November** (see the 17 November section above): storage failure no longer stops a healthy owned process, a watchdog enforces the deadline even while the monitor hangs in storage, terminal journals are ordered and claims stay held until durable. A worker *process* restart still converts live attempts to `UNKNOWN`; a remote supervisor whose filesystem call hangs still blocks its single thread. | Separate guardian process (R4) for restart continuity and authenticated remote cancellation; native Windows/Linux/Mac fault campaign before rollout. |
 | P0 for rollout | Native Windows process semantics and the operator exception need the exact combined candidate. | Review Windows Actions fixtures, then an idle/private native campaign: start ambiguity, cleanup failure, pending journals, owned cancel and foreign-process preservation. Hosted fixtures do not qualify the interactive desktop. |
 | P1 | **Closed in fixtures 17 November:** `hosts` waits at most 1 s for the worker lock and at most 1 s for the shared capacity probe, then reports `DEGRADED`/unknown capacity. | Observe native behavior on a stalled volume during the campaign. |
 | P1 | Preparation/upload/collection remain synchronous in parts of the pool. | Give each stage owned background lifetime, progress and remaining-budget propagation; do not equate reporting expiry with cleanup. |

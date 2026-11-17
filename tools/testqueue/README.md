@@ -40,10 +40,13 @@ Existing Codex sessions must reconnect to load the new tools.
    Read its `summary` first: counts (`passed`, `failed`, `rejected`, `blocked`,
    `running`, `queued`), `attention` (each failed, rejected or blocked test with
    its report/log or error), `next_action` and, while incomplete,
-   `suggested_poll_seconds` and `pending_test_seconds_serial` (serial sum of
+   `suggested_poll_seconds`, `pending_test_seconds_serial` (serial sum of
    historical medians for queued and running tests; parallel hosts finish sooner,
-   advisory, not a deadline). `next_action` recommends recovery only when the
-   supervisor is not running. `jobs` remains authoritative.
+   advisory, not a deadline) and `unmeasured_pending_tests`. `summary` is the
+   first field so it survives client-side truncation of long replies.
+   `next_action` recommends recovery only when the supervisor is not running,
+   a new request ID only when no snapshot was frozen, and operator inspection
+   when only blocked rows remain. An unknown request ID returns an explicit error. `jobs` remains authoritative.
 3. Inspect the checked outcomes, cleanup and collected evidence. A failed test is
    not retried. If interrupted or a reply is lost, use `sim_test_recover` with the
    same ID; recovery retains the frozen snapshot, request identity and selected
@@ -233,6 +236,10 @@ ignored rather than taking a host offline. History only ranks eligible hosts and
 orders submissions; it never admits, reserves or retries. The window format is
 one-way: older pool code refuses history-based placement for those scripts, so
 keep `history.json` with the version that wrote it (or move it aside) on rollback.
+Host probes (SSH, remote engine hashing, the local `hosts` call) run before the
+pool's dispatch lock; under the lock only local receipts are re-read, and any host
+that received a receipt since the probe stays reserved. `BUSY` names the
+reserving receipt; an unreadable receipt is reported instead of stopping placement.
 Bandwidth starts as an estimate. Repeated source archives are content-addressed,
 verified and reused over SSH; each attempt still receives writable isolation.
 Initial capacity is one exclusive attempt per remote host. Windows submissions
@@ -505,8 +512,10 @@ recovers with capped backoff after dispatch/diagnostic faults. Unavailable claim
 inventory is `null`, not an empty list. If the worker lock stays busy for 1 s
 (stalled storage or scheduler), `hosts` answers `DEGRADED` with `claims: null`
 instead of waiting. Scheduler health is not proof that capacity is free: inspect
-claims, reservations and attempt states too. A blocked capacity filesystem call
-can still delay the response.
+claims, reservations and attempt states too. A stalled capacity volume is also
+bounded (1 s) and reported as unknown storage. Other operations wait at most
+25 s for the worker lock and then answer `WORKER_BUSY`; clients treat that like
+a socket-step timeout (nothing changed, observe again) instead of a refusal.
 
 The remote supervisor follows the same rule: a failed post-start `state.json`
 write is retried while the owned child keeps running, a stage result that cannot
