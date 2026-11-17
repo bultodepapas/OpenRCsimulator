@@ -681,7 +681,9 @@ def launch(root, request):
                  "payload_sha256": payload_sha, "accepted_at": time.time(), "cleanup": "UNCONFIRMED",
                  "evidence": "INCOMPLETE", "output": str(directory)}
         write_json(path, state)
-        flags = (subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS) if os.name == "nt" else 0
+        # Hidden private console on Windows (never DETACHED_PROCESS): descendants
+        # inherit it instead of opening visible console windows.
+        flags = (subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW) if os.name == "nt" else 0
         with (directory / "supervisor.log").open("ab") as log:
             subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "_supervise", "--root", str(root), "--request-id", identifier],
                              stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,

@@ -192,5 +192,34 @@ class ConsolePolicyTests(unittest.TestCase):
             self.assertIn('CHILD_VISIBLE=False', text)
             self.assertIn('CHILD_STDERR', text)
 
+    def test_background_supervisors_never_run_without_a_console(self):
+        # DETACHED_PROCESS leaves no console to inherit, so every unflagged
+        # descendant (git, ssh, shells, console wrappers) opens a visible window.
+        root = Path(__file__).resolve().parent
+        for name in ('pool_mcp.py', 'remote_agent.py'):
+            with self.subTest(module=name):
+                used = 'subprocess.DETACHED_PROCESS' in (root / name).read_text(encoding='utf-8')
+                self.assertFalse(used, f'{name} launches a supervisor without a console')
+
+    @unittest.skipUnless(os.name == 'nt', 'requires native Windows consoles')
+    def test_unflagged_grandchild_of_background_supervisor_stays_invisible(self):
+        from tools.testqueue import pool_mcp
+        probe = ("import ctypes\n"
+                 "ctypes.windll.kernel32.GetConsoleWindow.restype=ctypes.c_void_p\n"
+                 "ctypes.windll.user32.IsWindowVisible.argtypes=[ctypes.c_void_p]\n"
+                 "h=ctypes.windll.kernel32.GetConsoleWindow()\n"
+                 "print('VISIBLE='+str(bool(h and ctypes.windll.user32.IsWindowVisible(h))),flush=True)\n")
+        # The supervisor stand-in launches a helper with no creation flags,
+        # exactly like a library or tool that forgets CREATE_NO_WINDOW.
+        supervisor = ("import subprocess,sys\n"
+                      "out=subprocess.run([sys.executable,'-c',sys.argv[1]],capture_output=True,text=True).stdout\n"
+                      "print(out,end='',flush=True)\n")
+        completed = subprocess.run([sys.executable, '-c', supervisor, probe], capture_output=True, text=True,
+                                   timeout=60, creationflags=pool_mcp.BACKGROUND_CREATIONFLAGS)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn('VISIBLE=False', completed.stdout)
+        self.assertEqual(pool_mcp.BACKGROUND_CREATIONFLAGS & 0x00000008, 0)  # DETACHED_PROCESS
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

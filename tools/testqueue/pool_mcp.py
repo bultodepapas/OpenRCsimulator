@@ -54,12 +54,19 @@ def _jobs(jobs):
     return result
 
 
+BACKGROUND_CREATIONFLAGS = ((subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW)
+                            if os.name == "nt" else 0)
+
+
 def _start(directory):
     with (directory / "supervisor.log").open("ab") as output:
         options = {"stdin": subprocess.DEVNULL, "stdout": output, "stderr": output,
                    "cwd": str(REPO), "close_fds": True}
         if os.name == "nt":
-            options["creationflags"] = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW
+            # A private hidden console, not DETACHED_PROCESS: every descendant
+            # (git, ssh, Godot console wrappers, shells) inherits it instead of
+            # opening its own visible window on the user's desktop.
+            options["creationflags"] = BACKGROUND_CREATIONFLAGS
         else:
             options["start_new_session"] = True
         subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "--worker", str(directory)], **options)

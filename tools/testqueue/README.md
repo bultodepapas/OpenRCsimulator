@@ -202,8 +202,13 @@ helpers, checked runners and debug launch/cleanup helpers request
 `CREATE_NO_WINDOW` for background console processes. The launch sites retain their
 existing pipes/logs, Job Object assignment and cancellation code. Preserving these
 behaviors on the combined Windows revision remains a native validation gate. Native simulator GUI windows retain their normal
-visibility; no global `SW_HIDE` policy is applied. The already detached MCP and
-remote supervisors retain their existing detached-process semantics.
+visibility; no global `SW_HIDE` policy is applied. The MCP batch supervisor and
+the Windows remote supervisor start with `CREATE_NO_WINDOW` and a new process
+group, never `DETACHED_PROCESS`: a detached process has no console to inherit,
+so every helper below it that lacks the flag (Git, SSH, shells, console wrappers)
+opened its own visible window. Measured on Windows 11 26100 (17 November 2026):
+an unflagged `git`/`cmd` pair under a detached parent produced 4 visible console
+windows, and none under the hidden-console parent.
 
 These changes affect newly launched helpers after the compatible runtime is
 installed. Updating or restarting a worker must wait for an idle/drained boundary.
