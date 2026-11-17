@@ -1,0 +1,2 @@
+# Research-only verifier; no dependency is added to the game.
+cryptography==50.0.0
