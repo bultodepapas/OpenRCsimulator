@@ -13750,3 +13750,38 @@ msgstr "Qualification de vol"
 
 msgid "Estimated package proposal. Choose a configuration on Import."
 msgstr "Proposition de paquet estimé. Choisissez une configuration dans Importation."
+
+# ClearView import diagnostics.
+
+msgid "This texture format is not supported yet. Convert the texture to a standard PNG or 24-bit uncompressed BMP and update its model reference."
+msgstr "Ce format de texture n’est pas encore pris en charge. Convertissez la texture en PNG standard ou en BMP 24 bits non compressé, puis mettez à jour sa référence dans le modèle."
+
+msgid "This JPEG encoding or metadata is not supported. Re-export it as a standard baseline JPEG or PNG."
+msgstr "Cet encodage JPEG ou ces métadonnées ne sont pas pris en charge. Réexportez la texture en JPEG standard à encodage de base ou en PNG."
+
+msgid "Polygon %s in part \"%s\" has intersecting edges."
+msgstr "Le polygone %s de la pièce « %s » a des arêtes qui se croisent."
+
+msgid "Recenter or rescale this model to preserve its detail at render precision."
+msgstr "Recentrez ce modèle ou modifiez son échelle pour préserver ses détails à la précision du rendu."
+
+msgid "A model triangle loses its area or winding at render precision. Recenter or rescale the source geometry before importing."
+msgstr "À la précision du rendu, un triangle du modèle perd son aire ou l’orientation définie par l’ordre de ses sommets. Recentrez la géométrie source ou modifiez son échelle avant l’importation."
+
+msgid "The import was cancelled."
+msgstr "L’importation a été annulée."
+
+msgid "The ClearView ZIP cannot be opened."
+msgstr "L’archive ZIP ClearView ne peut pas être ouverte."
+
+msgid "The ClearView ZIP must be between 22 bytes and 64 MiB."
+msgstr "L’archive ZIP ClearView doit avoir une taille comprise entre 22 octets et 64 MiB."
+
+msgid "The ZIP contains no ClearView model-root params.txt file."
+msgstr "L’archive ZIP ne contient aucun fichier params.txt à la racine d’un modèle ClearView."
+
+msgid "ClearView model %s: %s"
+msgstr "Modèle ClearView %s : %s"
+
+msgid "ClearView aircraft ZIP"
+msgstr "ZIP d’avion ClearView"

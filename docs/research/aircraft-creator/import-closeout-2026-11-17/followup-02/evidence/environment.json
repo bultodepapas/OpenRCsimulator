@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-17",
+  "base_commit": "08f948265d40d83fbb4726a302b9e1c9490ccfce",
+  "engine_version": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+  "engine_source": "Same pinned binary verified in the first audit; version and SHA-512 independently rechecked for this follow-up.",
+  "host": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "machine": "x86_64",
+  "launch_route": "tools/godot/run_checked.py on an unenrolled isolated Linux executor; sim_test MCP unavailable and tools/testqueue/testctl.py pool hosts had no local config.",
+  "fixture_tracked_files": 738,
+  "fixture_source_bytes_unchanged_after_checks": true,
+  "scope": "Three observational probes plus one editor import in an isolated minimal project; tracked UIDs copied from the new baseline. No full app/Main flight, native OS/GPU, export or numerical campaign."
+}

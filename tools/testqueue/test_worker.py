@@ -4,6 +4,7 @@ These fixtures do not launch Godot or qualify a graphical platform adapter.
 """
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 from contextlib import closing
@@ -20,7 +21,7 @@ from unittest import mock
 import uuid
 from types import SimpleNamespace
 
-from tools.testqueue import processes, snapshots
+from tools.testqueue import processes, snapshots, worker as worker_module
 from tools.testqueue.worker import Worker
 
 
@@ -124,12 +125,18 @@ class WorkerFixture(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
 
+    @contextlib.contextmanager
+    def _owned_view(self):
+        """Stable view of owned processes: the worker's lock order, storage first."""
+        with self.worker.lock, self.worker._process_lock:
+            yield
+
     def _call(self, operation, **args):
         return self.worker.dispatch({"auth": self.worker.auth, "operation": operation, **args})
 
-    def _submit(self, owner, *, headless=False, capture=False):
+    def _submit(self, owner, *, headless=False, capture=False, timeout=40):
         preset = "aircraft-screenshot" if capture else "checked" if headless else "debug-session"
-        options = {"headless": headless, "timeout": 40}
+        options = {"headless": headless, "timeout": timeout}
         if capture:
             options["aircraft"] = "fixture-plane"
         elif headless:
@@ -309,7 +316,7 @@ class WorkerFixture(unittest.TestCase):
         attempt = self._status(first["job"])["attempts"][-1]["id"]
 
         def launcher_exited():
-            with self.worker.lock:
+            with self._owned_view():
                 process = self.worker.active.get(attempt)
                 return process is not None and process.poll() == 0 and process.alive()
 
@@ -386,6 +393,144 @@ class WorkerFixture(unittest.TestCase):
         self.assertIn("snapshot", status.get("error", ""))
         self.assertFalse((self.worker.root / "attempts" / status["attempt"] / "started.json").exists())
 
+    def test_expected_snapshot_identity_rejects_replacement_and_preserves_recovery(self):
+        self.worker.draining = True
+        original = json.loads((self.snapshot / "manifest.json").read_text(encoding="utf-8"))
+        self._write("app/project.godot", "[application]\nconfig/name=\"replacement\"\n")
+        replacement = self.base / "replacement"
+        other = snapshots.capture(self.repo, replacement, scope=("app", "tools"))
+        self.assertNotEqual(original["source_digest"], other["source_digest"])
+        request = dict(owner="expected-identity", preset="debug-session", options={}, source=str(self.repo),
+                       snapshot=str(self.snapshot), request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex,
+                       expected_source_digest=original["source_digest"],
+                       expected_manifest_digest=original["manifest_digest"])
+        rejected = {**request, "snapshot": str(replacement)}
+        with self.assertRaisesRegex(ValueError, "SNAPSHOT_MISMATCH"):
+            self._call("submit", **rejected)
+        self.assertIsNone(self._call("recover", request_id=request["request_id"], request_secret=request["request_secret"]))
+        for field in ("expected_source_digest", "expected_manifest_digest"):
+            for bad in (None, "", "A" * 64, "z" * 64, "0" * 63, 123):
+                with self.subTest(field=field, bad=bad), self.assertRaisesRegex(ValueError, field):
+                    self._call("submit", **{**request, field: bad})
+        accepted = self._call("submit", **request)
+        self.handles.append(accepted)
+        self.assertEqual(self._call("submit", **request), accepted)
+        with self.assertRaisesRegex(ValueError, "SNAPSHOT_MISMATCH"):
+            self._call("submit", **rejected)
+        receipt = self.snapshot / "manifest.json"
+        unavailable = self.snapshot / "manifest.unavailable"
+        receipt.rename(unavailable)
+        try:
+            recovered = self._call("recover", request_id=request["request_id"], request_secret=request["request_secret"])
+        finally:
+            unavailable.rename(receipt)
+        self.assertEqual(recovered, {key: accepted[key] for key in ("job", "handle")})
+        self.assertEqual(self._status(accepted["job"])["payload"]["manifest"]["source_digest"], original["source_digest"])
+
+    def test_submit_uses_verified_object_when_receipt_is_swapped_after_verification(self):
+        self.worker.draining = True
+        original_bytes = (self.snapshot / "manifest.json").read_bytes()
+        original = json.loads(original_bytes)
+        self._write("app/project.godot", "[application]\nconfig/name=\"replacement\"\n")
+        replacement = self.base / "replacement"
+        snapshots.capture(self.repo, replacement, scope=("app", "tools"))
+        replacement_bytes = (replacement / "manifest.json").read_bytes()
+        real_verify = snapshots.verify
+
+        def verify_then_swap(path, **kwargs):
+            result = real_verify(path, **kwargs)
+            (Path(path) / "manifest.json").write_bytes(replacement_bytes)
+            return result
+
+        request = dict(owner="receipt-race", preset="debug-session", options={}, source=str(self.repo),
+                       snapshot=str(self.snapshot), request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex,
+                       expected_source_digest=original["source_digest"],
+                       expected_manifest_digest=original["manifest_digest"])
+        try:
+            with mock.patch.object(snapshots, "verify", side_effect=verify_then_swap):
+                accepted = self._call("submit", **request)
+            recorded = self._status(accepted["job"])["payload"]["manifest"]
+            self.assertEqual(recorded["manifest_digest"], original["manifest_digest"])
+            self.assertEqual(recorded["source_digest"], original["source_digest"])
+        finally:
+            (self.snapshot / "manifest.json").write_bytes(original_bytes)
+        self.assertEqual(self._call("recover", request_id=request["request_id"], request_secret=request["request_secret"])["job"], accepted["job"])
+
+    def test_forged_scope_with_copied_digest_strings_cannot_widen_admission(self):
+        self.worker.draining = True
+        path = self.snapshot / "manifest.json"
+        original_bytes = path.read_bytes()
+        forged = json.loads(original_bytes)
+        forged["scope"] = ["app", "tools", "research", "assets", "site", "docs", ".github"]
+        real_verify = snapshots.verify
+
+        def verify_then_forge(snapshot, **kwargs):
+            report = real_verify(snapshot, **kwargs)
+            path.write_text(json.dumps(forged), encoding="utf-8")
+            return report
+
+        request = dict(owner="forged-scope", preset="suite", options={}, source=str(self.repo),
+                       snapshot=str(self.snapshot), request_id=uuid.uuid4().hex, request_secret=uuid.uuid4().hex)
+        try:
+            with mock.patch.object(snapshots, "verify", side_effect=verify_then_forge):
+                with self.assertRaisesRegex(ValueError, "full repository snapshot"):
+                    self._call("submit", **request)
+            self.assertFalse(real_verify(self.snapshot)["ok"])
+        finally:
+            path.write_bytes(original_bytes)
+        self.assertIsNone(self._call("recover", request_id=request["request_id"], request_secret=request["request_secret"]))
+
+    def test_engine_pin_policy_read_is_bound_to_the_verified_file(self):
+        self.worker.draining = True
+        self._write("app/get-godot.sh", "ENGINE_VERSION=original\n")
+        self.snapshot = self.base / "pin-snapshot"
+        snapshots.capture(self.repo, self.snapshot, scope=("app", "tools"))
+        path = self.snapshot / "source/app/get-godot.sh"
+        original = path.read_bytes()
+        metadata = path.stat()
+        real_verify = snapshots.verify
+
+        def verify_then_swap(snapshot, **kwargs):
+            report = real_verify(snapshot, **kwargs)
+            path.write_bytes(b"ENGINE_VERSION=substituted\n")
+            return report
+
+        try:
+            with mock.patch.object(self.worker, "fixture", False), \
+                    mock.patch.object(snapshots, "verify", side_effect=verify_then_swap), \
+                    mock.patch.object(self.worker, "_check_engine_pin") as check_pin:
+                with self.assertRaisesRegex(ValueError, "policy input differs"):
+                    self._submit("substituted-pin", headless=True)
+                check_pin.assert_not_called()
+        finally:
+            path.write_bytes(original)
+            os.utime(path, ns=(metadata.st_atime_ns, metadata.st_mtime_ns))
+        self.assertTrue(snapshots.verify(self.snapshot)["ok"])
+
+    def test_replacing_queued_snapshot_with_another_valid_snapshot_never_executes(self):
+        self.worker.draining = True
+        accepted = self._submit("queued-snapshot-replacement")
+        recorded = self._status(accepted["job"])["payload"]["manifest"]
+        self._write("app/project.godot", "[application]\nconfig/name=\"replacement\"\n")
+        replacement = self.base / "replacement"
+        replacement_receipt = snapshots.capture(self.repo, replacement, scope=("app", "tools"))
+        self.assertNotEqual(recorded["source_digest"], replacement_receipt["source_digest"])
+        shutil.rmtree(self.snapshot)
+        replacement.rename(self.snapshot)
+        self.assertTrue(snapshots.verify(self.snapshot)["ok"])
+        fixture_identity = {"host": str(uuid.uuid4()), "boot": "fixture-boot"}
+        with mock.patch.object(processes, "host_identity", return_value=fixture_identity), \
+                mock.patch.object(processes.subprocess, "Popen") as popen:
+            self.worker.draining = False
+            status = self._finish(accepted["job"])
+        popen.assert_not_called()
+        self.assertEqual(status["state"], "FINISHED", status)
+        self.assertEqual(status["outcome"], "INFRA_FAILED", status)
+        self.assertEqual(status["cleanup"], "CONFIRMED", status)
+        self.assertIn("snapshot", status["error"])
+        with self.worker.lock:
+            self.assertEqual(self.worker.store.db.execute("SELECT COUNT(*) FROM claims").fetchone()[0], 0)
+
     def test_zero_exit_without_successful_verdict_does_not_pass(self):
         missing = self._submit("no-verdict")
         bad = self._submit("bad-verdict")
@@ -416,6 +561,515 @@ class WorkerFixture(unittest.TestCase):
         with self.worker.lock:
             claims = self.worker.store.db.execute("SELECT resource FROM claims WHERE attempt=?", (result["attempt"],)).fetchall()
         self.assertIn("rendered", {row[0] for row in claims})
+
+    def test_cleanup_uncertainty_and_failed_unknown_write_fence_compatible_work(self):
+        self.worker.draining = True
+        first = self._submit("cleanup-storage-failure", headless=True)
+        real_close = processes.OwnedProcess.close
+        real_event = self.worker.store.event
+        fail_unknown, unknown_write = threading.Event(), threading.Event()
+        fail_unknown.set()
+
+        def lose_cleanup_proof(process):
+            real_close(process)
+            raise RuntimeError("injected cleanup uncertainty")
+
+        def fail_unknown_event(job, event, data=None):
+            if event == "UNKNOWN" and fail_unknown.is_set():
+                unknown_write.set()
+                raise sqlite3.OperationalError("injected UNKNOWN journal failure")
+            return real_event(job, event, data)
+
+        with mock.patch.object(processes.OwnedProcess, "close", new=lose_cleanup_proof), \
+                mock.patch.object(self.worker.store, "event", side_effect=fail_unknown_event), \
+                mock.patch.object(threading, "excepthook"):
+            self.worker.draining = False
+            self.assertTrue(unknown_write.wait(10))
+            second = self._submit("fits-without-global-quarantine", headless=True)
+            time.sleep(0.35)
+            status = self._status(first["job"])
+            self.assertEqual(status["state"], "RUNNING", status)
+            self.assertNotEqual(status.get("cleanup"), "CONFIRMED", status)
+            self.assertEqual(self._status(second["job"])["attempts"], [])
+            host = self._call("hosts")
+            self.assertEqual(host["condition"], "DEGRADED", host)
+            self.assertEqual(host["pending_quarantines"], 1)
+            with self.worker.lock:
+                self.assertGreater(self.worker.store.db.execute(
+                    "SELECT COUNT(*) FROM claims WHERE attempt=?", (status["attempt"],)).fetchone()[0], 0)
+                self.assertGreater(self.worker.capacities["headless"], self.worker.store.db.execute(
+                    "SELECT COALESCE(SUM(amount),0) FROM claims WHERE resource='headless'").fetchone()[0])
+            fail_unknown.clear()
+            result = self._finish(first["job"])
+            self.assertEqual(result["state"], "UNKNOWN", result)
+            self.assertNotEqual(result.get("cleanup"), "CONFIRMED", result)
+            blocked = wait_until(lambda: (item if (item := self._status(second["job"]))["reason"].startswith("RESOURCE_BUSY") else None))
+            self.assertEqual(blocked["attempts"], [])
+            self.assertEqual(self._call("hosts")["pending_quarantines"], 0)
+
+    def _check_execution_thread_start_failure(self, *, after_spawn):
+        self.worker.draining = True
+        first = self._submit("thread-start-failure", headless=True)
+        gate_entered, spawned = threading.Event(), []
+        real_start = threading.Thread.start
+        real_allowed = worker_module._LaunchGate.allowed
+
+        def observe_gate(gate):
+            gate_entered.set()
+            return real_allowed(gate)
+
+        def fail_start(thread):
+            if thread.name.startswith("openrc-attempt-"):
+                if after_spawn:
+                    real_start(thread)
+                    spawned.append(thread)
+                    if not gate_entered.wait(5):
+                        raise AssertionError("spawned thread did not reach the launch gate")
+                raise RuntimeError("injected execution thread start failure")
+            return real_start(thread)
+
+        fixture_identity = {"host": str(uuid.uuid4()), "boot": "fixture-boot"}
+        with mock.patch.object(processes, "host_identity", return_value=fixture_identity), \
+                mock.patch.object(processes.subprocess, "Popen") as popen, \
+                mock.patch.object(worker_module._LaunchGate, "allowed", new=observe_gate), \
+                mock.patch.object(threading.Thread, "start", new=fail_start):
+            self.worker.draining = False
+            result = self._finish(first["job"])
+        popen.assert_not_called()
+        if after_spawn:
+            self.assertTrue(gate_entered.is_set(), "spawned thread did not enter the launch gate")
+        for thread in spawned:
+            thread.join(timeout=5)
+            self.assertFalse(thread.is_alive())
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result["outcome"], "INFRA_FAILED", result)
+        self.assertEqual(result["launch"], "NOT_CREATED", result)
+        self.assertEqual(result["nonlaunch"], "CONFIRMED", result)
+        self.assertEqual(result["cleanup"], "CONFIRMED", result)
+        self.assertFalse((self.worker.root / "attempts" / result["attempt"]).exists())
+        with self.worker.lock:
+            self.assertEqual(self.worker.store.db.execute("SELECT COUNT(*) FROM claims").fetchone()[0], 0)
+        later = self._submit("after-thread-start-failure", headless=True)
+        self.assertEqual(self._finish(later["job"])["outcome"], "PASSED")
+
+    def test_thread_start_error_proves_nonlaunch(self):
+        self._check_execution_thread_start_failure(after_spawn=False)
+
+    def test_thread_start_then_error_denies_the_spawned_thread(self):
+        self._check_execution_thread_start_failure(after_spawn=True)
+
+    def test_thread_start_failure_fences_until_nonlaunch_is_durable(self):
+        self.worker.draining = True
+        first = self._submit("thread-start-journal-failure", headless=True)
+        fail_write, write_attempted, gate_entered = threading.Event(), threading.Event(), threading.Event()
+        fail_write.set()
+        real_start, real_event = threading.Thread.start, self.worker.store.event
+        real_allowed, real_process_start = worker_module._LaunchGate.allowed, processes.OwnedProcess.start
+        injected, process_starts = [], []
+        failed_writes = []
+
+        def observe_gate(gate):
+            gate_entered.set()
+            return real_allowed(gate)
+
+        def fail_first_start(thread):
+            if thread.name.startswith("openrc-attempt-") and not injected:
+                injected.append(thread)
+                real_start(thread)
+                if not gate_entered.wait(5):
+                    raise AssertionError("spawned thread did not reach the launch gate")
+                raise RuntimeError("injected execution thread start failure")
+            return real_start(thread)
+
+        def observe_process_start(process):
+            process_starts.append(process.log.parent.name)
+            return real_process_start(process)
+
+        def fail_nonlaunch_event(job, event, data=None):
+            if event == "FINISHED" and data.get("nonlaunch") == "CONFIRMED" and fail_write.is_set():
+                failed_writes.append(job)
+                write_attempted.set()
+                raise sqlite3.OperationalError("injected nonlaunch journal failure")
+            return real_event(job, event, data)
+
+        with mock.patch.object(worker_module._LaunchGate, "allowed", new=observe_gate), \
+                mock.patch.object(processes.OwnedProcess, "start", new=observe_process_start), \
+                mock.patch.object(threading.Thread, "start", new=fail_first_start), \
+                mock.patch.object(self.worker.store, "event", side_effect=fail_nonlaunch_event):
+            self.worker.draining = False
+            self.assertTrue(write_attempted.wait(5))
+            self.assertTrue(gate_entered.is_set(), "spawned thread did not enter the launch gate")
+            second = self._submit("after-nonlaunch-journal-recovery", headless=True)
+            wait_until(lambda: len(failed_writes) >= 2, timeout=5)
+            held = self._status(first["job"])
+            self.assertEqual(held["state"], "DISPATCHING", held)
+            self.assertNotEqual(held.get("cleanup"), "CONFIRMED", held)
+            self.assertEqual(self._status(second["job"])["attempts"], [])
+            self.assertEqual(process_starts, [])
+            self.assertEqual(self._call("hosts")["pending_quarantines"], 1)
+            with self.worker.lock:
+                self.assertGreater(self.worker.store.db.execute(
+                    "SELECT COUNT(*) FROM claims WHERE attempt=?", (held["attempts"][-1]["id"],)).fetchone()[0], 0)
+                self.assertGreater(self.worker.capacities["headless"], self.worker.store.db.execute(
+                    "SELECT COALESCE(SUM(amount),0) FROM claims WHERE resource='headless'").fetchone()[0])
+            fail_write.clear()
+            result = self._finish(first["job"])
+            self.assertEqual(result["state"], "FINISHED", result)
+            self.assertEqual(result["outcome"], "INFRA_FAILED", result)
+            self.assertEqual(result["nonlaunch"], "CONFIRMED", result)
+            self.assertEqual(result["cleanup"], "CONFIRMED", result)
+            self.assertEqual(self._finish(second["job"])["outcome"], "PASSED")
+            self.assertEqual(len(process_starts), 1)
+            self.assertNotEqual(process_starts[0], held["attempts"][-1]["id"])
+            self.assertEqual(self._call("hosts")["pending_quarantines"], 0)
+        injected[0].join(timeout=5)
+        self.assertFalse(injected[0].is_alive())
+
+    def test_log_failure_proves_nonlaunch_and_next_job_runs(self):
+        self.worker.draining = True
+        first = self._submit("log-failure")
+        real_open = Path.open
+
+        def fail_worker_log(path, *args, **kwargs):
+            if path.name == "worker.log":
+                raise PermissionError("injected log open failure")
+            return real_open(path, *args, **kwargs)
+
+        fixture_identity = {"host": str(uuid.uuid4()), "boot": "fixture-boot"}
+        with mock.patch.object(processes, "host_identity", return_value=fixture_identity), \
+                mock.patch.object(Path, "open", new=fail_worker_log), \
+                mock.patch.object(processes.subprocess, "Popen") as popen:
+            self.worker.draining = False
+            result = self._finish(first["job"])
+        popen.assert_not_called()
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result["outcome"], "INFRA_FAILED", result)
+        self.assertEqual(result["cleanup"], "CONFIRMED", result)
+        self.assertEqual(result["launch"], "NOT_CREATED", result)
+        self.assertEqual(result["nonlaunch"], "CONFIRMED", result)
+        with self.worker.lock:
+            self.assertEqual(self.worker.store.db.execute("SELECT COUNT(*) FROM claims").fetchone()[0], 0)
+        second = self._submit("after-log-failure")
+        following = self._finish(second["job"])
+        self.assertEqual(following.get("outcome"), "PASSED", following)
+
+    def test_lost_creation_result_even_with_receipt_exception_quarantines(self):
+        self.worker.draining = True
+        first = self._submit("uncertain-create")
+        created = []
+        real_popen = processes.subprocess.Popen
+
+        def create_then_raise(*args, **kwargs):
+            created.append(real_popen(*args, **kwargs))
+            # An exception type can also escape from inside process creation;
+            # it must not impersonate this adapter's pre-create receipt.
+            raise processes.ProcessNotStartedError("injected lost creation result")
+
+        def cleanup_owned_gates():
+            for gate in created:
+                if gate.stdin and not gate.stdin.closed:
+                    gate.stdin.close()
+                try:
+                    gate.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    gate.kill()
+                    gate.wait(timeout=5)
+
+        self.addCleanup(cleanup_owned_gates)
+        fixture_identity = {"host": str(uuid.uuid4()), "boot": "fixture-boot"}
+        with mock.patch.object(processes, "host_identity", return_value=fixture_identity), \
+                mock.patch.object(processes.subprocess, "Popen", side_effect=create_then_raise) as popen:
+            self.worker.draining = False
+            result = self._finish(first["job"])
+        popen.assert_called_once()
+        self.assertEqual(len(created), 1)
+        self.assertIsNone(created[0].poll(), "the task-owned gate is still alive")
+        self.assertEqual(result["state"], "UNKNOWN", result)
+        self.assertEqual(result["launch"], "CREATION_UNCERTAIN", result)
+        self.assertNotEqual(result.get("nonlaunch"), "CONFIRMED", result)
+        self.assertNotEqual(result.get("cleanup"), "CONFIRMED", result)
+        second = self._submit("blocked-after-uncertain-create")
+        blocked = wait_until(lambda: (status if (status := self._status(second["job"]))["reason"].startswith("RESOURCE_BUSY") else None))
+        self.assertEqual(blocked["state"], "QUEUED", blocked)
+        self.assertEqual(blocked["attempts"], [])
+        with self.worker.lock:
+            self.assertGreater(self.worker.store.db.execute("SELECT COUNT(*) FROM claims WHERE attempt=?", (result["attempt"],)).fetchone()[0], 0)
+
+    def test_lost_start_ack_after_identity_does_not_release_claims(self):
+        self.worker.draining = True
+        first = self._submit("long-ambiguous-start")
+        started = []
+        real_start = processes.OwnedProcess.start
+
+        def lose_ack(process):
+            real_start(process)
+            started.append(process)
+            raise RuntimeError("injected lost launch acknowledgement")
+
+        def cleanup_owned_process():
+            for process in started:
+                process.close()
+
+        self.addCleanup(cleanup_owned_process)
+        with mock.patch.object(processes.OwnedProcess, "start", new=lose_ack):
+            self.worker.draining = False
+            result = self._finish(first["job"])
+        self.assertEqual(len(started), 1)
+        self.assertIsNotNone(started[0].identity)
+        self.assertEqual(result["state"], "UNKNOWN", result)
+        self.assertEqual(result["launch"], "CREATION_UNCERTAIN", result)
+        self.assertNotEqual(result.get("cleanup"), "CONFIRMED", result)
+        second = self._submit("blocked-after-lost-ack")
+        blocked = wait_until(lambda: (status if (status := self._status(second["job"]))["reason"].startswith("RESOURCE_BUSY") else None))
+        self.assertEqual(blocked["state"], "QUEUED", blocked)
+        self.assertEqual(blocked["attempts"], [])
+        with self.worker.lock:
+            self.assertGreater(self.worker.store.db.execute("SELECT COUNT(*) FROM claims WHERE attempt=?", (result["attempt"],)).fetchone()[0], 0)
+
+    def test_ambiguous_start_fences_admission_before_unknown_is_recorded(self):
+        self.worker.draining = True
+        first = self._submit("uncertain-race", headless=True)
+        handling, release = threading.Event(), threading.Event()
+
+        class PausedStartError(RuntimeError):
+            def __str__(self):
+                handling.set()
+                if not release.wait(5):
+                    raise RuntimeError("test did not release exception handling")
+                return "injected ambiguous start"
+
+        try:
+            with mock.patch.object(processes.OwnedProcess, "start", side_effect=PausedStartError()):
+                self.worker.draining = False
+                self.assertTrue(handling.wait(5))
+                second = self._submit("would-fit-before-quarantine", headless=True)
+                time.sleep(0.35)
+                self.assertEqual(self._status(first["job"])["state"], "RUNNING")
+                self.assertEqual(self._status(second["job"])["attempts"], [])
+                host = self._call("hosts")
+                self.assertEqual(host["condition"], "DEGRADED", host)
+                self.assertEqual(host["pending_quarantines"], 1)
+        finally:
+            release.set()
+        result = self._finish(first["job"])
+        self.assertEqual(result["state"], "UNKNOWN", result)
+        blocked = wait_until(lambda: (status if (status := self._status(second["job"]))["reason"].startswith("RESOURCE_BUSY") else None))
+        self.assertEqual(blocked["state"], "QUEUED", blocked)
+        self.assertEqual(blocked["attempts"], [])
+
+    def test_start_thread_exit_is_persisted_as_unknown(self):
+        self.worker.draining = True
+        first = self._submit("uncertain-thread-exit", headless=True)
+        with mock.patch.object(processes.OwnedProcess, "start", side_effect=SystemExit("injected start exit")):
+            self.worker.draining = False
+            result = self._finish(first["job"])
+        self.assertEqual(result["state"], "UNKNOWN", result)
+        self.assertEqual(result["launch"], "CREATION_UNCERTAIN", result)
+        second = self._submit("blocked-after-start-exit", headless=True)
+        blocked = wait_until(lambda: (status if (status := self._status(second["job"]))["reason"].startswith("RESOURCE_BUSY") else None))
+        self.assertEqual(blocked["attempts"], [])
+
+    def test_failed_unknown_write_blocks_admission_until_quarantine_is_durable(self):
+        self.worker.draining = True
+        first = self._submit("uncertain-write", headless=True)
+        fail_writes, attempted = threading.Event(), threading.Event()
+        fail_writes.set()
+        real_update = self.worker.store.update
+
+        def fail_unknown(job, attempt, state, data):
+            if state == "UNKNOWN" and fail_writes.is_set():
+                attempted.set()
+                raise sqlite3.OperationalError("injected quarantine write failure")
+            return real_update(job, attempt, state, data)
+
+        # The execute thread's failed write is expected; the pending record is
+        # retried by the existing scheduler while new admission stays fenced.
+        with mock.patch.object(processes.OwnedProcess, "start", side_effect=RuntimeError("injected ambiguous start")), \
+                mock.patch.object(self.worker.store, "update", side_effect=fail_unknown), \
+                mock.patch.object(threading, "excepthook"):
+            self.worker.draining = False
+            self.assertTrue(attempted.wait(5))
+            second = self._submit("blocked-until-durable", headless=True)
+            degraded = wait_until(lambda: (host if (host := self._call("hosts"))["condition"] == "DEGRADED" else None))
+            self.assertEqual(degraded["pending_quarantines"], 1, degraded)
+            self.assertEqual(self._status(second["job"])["attempts"], [])
+            fail_writes.clear()
+            result = self._finish(first["job"])
+            self.assertEqual(result["state"], "UNKNOWN", result)
+            blocked = wait_until(lambda: (status if (status := self._status(second["job"]))["reason"].startswith("RESOURCE_BUSY") else None))
+            self.assertEqual(blocked["attempts"], [])
+            self.assertEqual(self._call("hosts")["pending_quarantines"], 0)
+
+    def test_preallocated_attempt_waits_before_launch_during_quarantine(self):
+        self.worker.draining = True
+        first = self._submit("preallocated-uncertain", headless=True)
+        second = self._submit("preallocated-waiting", headless=True)
+        with self.worker.lock:
+            attempts = []
+            for submission in (first, second):
+                resources = self._status(submission["job"])["scheduling"]["resources"]
+                attempt = self.worker.store.allocate(submission["job"], resources, self.worker.capacities)
+                self.assertIsNotNone(attempt)
+                self.worker.active[attempt] = None
+                attempts.append(attempt)
+
+        handling, release, second_started = threading.Event(), threading.Event(), threading.Event()
+        real_start = processes.OwnedProcess.start
+
+        class PausedStartError(RuntimeError):
+            def __str__(self):
+                handling.set()
+                if not release.wait(5):
+                    raise RuntimeError("test did not release exception handling")
+                return "injected ambiguous start"
+
+        def controlled_start(process):
+            if process.log.parent.name == attempts[0]:
+                raise PausedStartError()
+            second_started.set()
+            return real_start(process)
+
+        threads = []
+        try:
+            with mock.patch.object(processes.OwnedProcess, "start", new=controlled_start):
+                first_thread = threading.Thread(target=self.worker.execute, args=(first["job"], attempts[0]))
+                threads.append(first_thread)
+                first_thread.start()
+                self.assertTrue(handling.wait(5))
+                second_thread = threading.Thread(target=self.worker.execute, args=(second["job"], attempts[1]))
+                threads.append(second_thread)
+                second_thread.start()
+                directory = self.worker.root / "attempts" / attempts[1]
+                wait_until(lambda: (directory / "request.json").exists())
+                time.sleep(0.3)
+                self.assertFalse(second_started.is_set())
+                self.assertEqual(self._status(second["job"])["state"], "DISPATCHING")
+                release.set()
+                self.assertEqual(self._finish(first["job"])["state"], "UNKNOWN")
+                time.sleep(0.2)
+                self.assertFalse(second_started.is_set())
+                self._call("cancel", handle=second["handle"])
+                canceled = self._finish(second["job"])
+                self.assertEqual(canceled.get("outcome"), "CANCELED", canceled)
+                self.assertEqual(canceled.get("cleanup"), "CONFIRMED", canceled)
+                self.assertFalse(second_started.is_set())
+        finally:
+            release.set()
+            for thread in threads:
+                thread.join(timeout=5)
+
+    def test_scheduler_recovers_after_operation_and_diagnostic_both_fail(self):
+        live = self._submit("long-scheduler", headless=True)
+        directory = wait_until(lambda: (candidate if (candidate := self._directory(live["job"]))
+                               and (candidate / "started.json").exists() else None))
+        original = self._status(live["job"])
+        attempt = original["attempt"]
+        with self._owned_view():
+            owned = self.worker.active[attempt]
+            original_claims = self.worker.store.db.execute("SELECT resource,amount FROM claims WHERE attempt=? ORDER BY resource", (attempt,)).fetchall()
+            self.assertTrue(owned.alive())
+        initial = wait_until(lambda: (host if (host := self._call("hosts"))["condition"] == "READY" else None))
+        self.assertIsNotNone(initial["scheduler"]["last_dispatch"])
+        failures, diagnostics, recovery_attempts = threading.Event(), threading.Event(), threading.Event()
+        fail_schedule, fail_storage = threading.Event(), threading.Event()
+        fail_schedule.set()
+        fail_storage.set()
+        real_schedule_once = self.worker.schedule_once
+        real_event = self.worker.store.event
+
+        def scheduler_failure():
+            if fail_schedule.is_set():
+                failures.set()
+                raise sqlite3.OperationalError("injected scheduler storage failure")
+            return real_schedule_once()
+
+        def diagnostic_failure(job, event, data=None):
+            if event in {"SCHEDULER_ERROR", "SCHEDULER_RECOVERY_CHECK"} and fail_storage.is_set():
+                if event == "SCHEDULER_ERROR":
+                    diagnostics.set()
+                else:
+                    recovery_attempts.set()
+                raise sqlite3.OperationalError("injected diagnostic storage failure")
+            return real_event(job, event, data)
+
+        with mock.patch.object(self.worker, "schedule_once", side_effect=scheduler_failure), \
+                mock.patch.object(self.worker.store, "event", side_effect=diagnostic_failure):
+            self.assertTrue(failures.wait(5))
+            self.assertTrue(diagnostics.wait(5))
+            degraded = wait_until(lambda: (host if (host := self._call("hosts"))["scheduler"]["diagnostic_error"] else None))
+            self.assertEqual(degraded["condition"], "DEGRADED", degraded)
+            self.assertEqual(degraded["scheduler"]["state"], "DEGRADED", degraded)
+            self.assertEqual(degraded["scheduler"]["thread_id"], initial["scheduler"]["thread_id"])
+            self.assertIn("diagnostic storage failure", degraded["scheduler"]["diagnostic_error"])
+            later = self._submit("after-scheduler-fault", headless=True)
+            # The scheduler operation can now succeed, but a read-only scan is
+            # not enough to advertise recovery while durable writes still fail.
+            fail_schedule.clear()
+            self.assertTrue(recovery_attempts.wait(5))
+            self.assertEqual(self._call("hosts")["condition"], "DEGRADED")
+            self.assertEqual(self._status(later["job"])["state"], "QUEUED")
+            self.assertTrue(self.scheduler.is_alive())
+            with self._owned_view():
+                self.assertIs(self.worker.active[attempt], owned)
+                self.assertTrue(owned.alive())
+                self.assertEqual(self.worker.store.db.execute("SELECT resource,amount FROM claims WHERE attempt=? ORDER BY resource", (attempt,)).fetchall(), original_claims)
+            fail_storage.clear()
+        recovered = wait_until(lambda: (host if (host := self._call("hosts"))["condition"] == "READY" else None))
+        self.assertEqual(recovered["scheduler"]["thread_id"], initial["scheduler"]["thread_id"])
+        self.assertGreater(recovered["scheduler"]["last_heartbeat"], degraded["scheduler"]["last_heartbeat"])
+        self.assertEqual(self._finish(later["job"])["outcome"], "PASSED")
+        with self._owned_view():
+            self.assertIs(self.worker.active[attempt], owned)
+            self.assertTrue(owned.alive())
+        self.assertTrue((directory / "started.json").exists())
+
+    def test_stale_scheduler_is_degraded_without_starting_another(self):
+        ready = wait_until(lambda: (host if (host := self._call("hosts"))["condition"] == "READY" else None))
+        entered, release = threading.Event(), threading.Event()
+        schedule_once = self.worker.schedule_once
+
+        def hold_pass():
+            entered.set()
+            if not release.wait(5):
+                raise RuntimeError("test did not release scheduler")
+            schedule_once()
+
+        try:
+            with mock.patch.object(self.worker, "schedule_once", side_effect=hold_pass):
+                self.assertTrue(entered.wait(5))
+                with self.worker._scheduler_lock:
+                    self.worker._scheduler_last_success_monotonic = time.monotonic() - 31
+                stale = self._call("hosts")
+                self.assertEqual(stale["condition"], "DEGRADED", stale)
+                self.assertEqual(stale["scheduler"]["state"], "STALE", stale)
+                self.assertEqual(stale["scheduler"]["thread_id"], ready["scheduler"]["thread_id"])
+                with self.assertRaisesRegex(RuntimeError, "already started"):
+                    self.worker.schedule()
+        finally:
+            release.set()
+        recovered = wait_until(lambda: (host if (host := self._call("hosts"))["condition"] == "READY" else None))
+        self.assertEqual(recovered["scheduler"]["thread_id"], ready["scheduler"]["thread_id"])
+
+    def test_exited_scheduler_cannot_advertise_ready_or_be_duplicated(self):
+        wait_until(lambda: (host if (host := self._call("hosts"))["condition"] == "READY" else None))
+        with mock.patch.object(self.worker, "schedule_once", side_effect=SystemExit("injected thread exit")):
+            self.scheduler.join(timeout=5)
+        self.assertFalse(self.scheduler.is_alive())
+        host = self._call("hosts")
+        self.assertEqual(host["condition"], "DEGRADED", host)
+        self.assertEqual(host["scheduler"]["state"], "STOPPED", host)
+        with self.assertRaisesRegex(RuntimeError, "already started"):
+            self.worker.schedule()
+
+    def test_unavailable_claim_inventory_does_not_advertise_ready(self):
+        wait_until(lambda: (host if (host := self._call("hosts"))["condition"] == "READY" else None))
+        with self.worker.lock, mock.patch.object(self.worker.store, "db") as db:
+            db.execute.side_effect = sqlite3.OperationalError("injected unavailable inventory")
+            host = self._call("hosts")
+        self.assertEqual(host["condition"], "DEGRADED", host)
+        self.assertIsNone(host["claims"])
+        self.assertIn("unavailable inventory", host["inventory_error"])
+        self.assertEqual(host["scheduler"]["state"], "DEGRADED")
 
     def test_canceled_preparation_acknowledges_nonexecution(self):
         self.worker.draining = True
@@ -487,6 +1141,30 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(result["cleanup"], "UNCONFIRMED")
         self.assertEqual(result["outcome"], "INFRA_FAILED")
 
+    def test_operator_abandonment_cannot_bypass_a_pending_attempt_journal(self):
+        self.worker.draining = True
+        accepted = self._submit("orphan-pending")
+        with self.worker.lock:
+            attempt = self.worker.store.allocate(accepted["job"], {"exclusive": 1}, {"exclusive": 1})
+            data = {"process": {"fixture": True}, "cleanup": "UNCONFIRMED"}
+            self.worker.store.update(accepted["job"], attempt, "UNKNOWN", data)
+            with mock.patch.object(processes, "orphan_absent", return_value=True) as probe:
+                registries = ((self.worker._unresolved_attempts, {attempt}),
+                              (self.worker._pending_unknown, {attempt: (accepted["job"], data)}),
+                              (self.worker._pending_nonlaunch, {attempt: (accepted["job"], data)}),
+                              (self.worker._pending_journal, {attempt: (accepted["job"], "RUNNING", data)}),
+                              (self.worker._closing, {attempt}))
+                for registry, entry in registries:
+                    registry.update(entry)
+                    try:
+                        with self.assertRaisesRegex(ValueError, "pending attempt journals"):
+                            self._call("abandon", handle=accepted["handle"], reason="operator request")
+                        self.assertTrue(self.worker.store.db.execute("SELECT 1 FROM claims WHERE attempt=?", (attempt,)).fetchone())
+                        self.assertEqual(self._status(accepted["job"])["state"], "UNKNOWN")
+                    finally:
+                        registry.clear()
+                probe.assert_not_called()
+
     def test_queued_studio_job_is_rechecked_after_authority_upgrade(self):
         self.worker.draining = True
         self._write("tools/readme/capture_aircraft.gd", "# old reviewed studio script\n")
@@ -505,6 +1183,188 @@ class WorkerFixture(unittest.TestCase):
         self.assertEqual(status.get("outcome"), "INFRA_FAILED")
         self.assertIn("ADAPTER_MISMATCH", status.get("error", ""))
         self.assertEqual(status.get("cleanup"), "CONFIRMED")
+
+    # TQ-04 continuity: storage is observation, not ownership.
+
+    def test_post_start_journal_failure_keeps_the_owned_process_running(self):
+        # The 16 November reproduction tore this healthy process down and
+        # reported INFRA_FAILED. The same injection must now leave it alone.
+        real_update = self.worker.store.update
+        injected = threading.Event()
+
+        def fail_owned_journal_once(job, attempt, state, data):
+            if state == "RUNNING" and data.get("launch") == "CREATED_OWNED" and not injected.is_set():
+                injected.set()
+                raise sqlite3.OperationalError("injected post-start journal failure")
+            return real_update(job, attempt, state, data)
+
+        with mock.patch.object(self.worker.store, "update", side_effect=fail_owned_journal_once):
+            accepted = self._submit("poststart-storage", headless=True)
+            result = self._finish(accepted["job"])
+        self.assertTrue(injected.is_set())
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "PASSED", result)
+        self.assertEqual(result.get("cleanup"), "CONFIRMED", result)
+        self.assertEqual(result.get("evidence"), "COMPLETE", result)
+        self.assertNotIn("error", result)
+        directory = self.worker.root / "attempts" / result["attempt"]
+        self.assertTrue((directory / "ended.json").exists(), "owned workload did not complete normally")
+        self.assertEqual(self._call("hosts")["pending_journals"], 0)
+
+    def test_hard_deadline_is_enforced_while_the_monitor_hangs_in_storage(self):
+        # A call that hangs (rather than fails) inside the CREATED_OWNED journal,
+        # while holding the worker lock, must not suspend the admitted budget.
+        real_update = self.worker.store.update
+        hung, release = threading.Event(), threading.Event()
+        self.addCleanup(release.set)
+
+        def hang_owned_journal(job, attempt, state, data):
+            if state == "RUNNING" and data.get("launch") == "CREATED_OWNED" and not hung.is_set():
+                hung.set()
+                release.wait(30)
+            return real_update(job, attempt, state, data)
+
+        with mock.patch.object(self.worker.store, "update", side_effect=hang_owned_journal):
+            accepted = self._submit("long-hung-journal", headless=True, timeout=2)
+            self.assertTrue(hung.wait(15))
+            began = time.monotonic()
+            with self.worker._process_lock:
+                attempt, owned = next((key, value) for key, value in self.worker.active.items() if value is not None)
+            directory = self.worker.root / "attempts" / attempt
+            host_started = time.monotonic()
+            host = self._call("hosts")
+            self.assertLess(time.monotonic() - host_started, 3.0)
+            self.assertEqual(host["condition"], "DEGRADED", host)
+
+            def stopped():
+                with self.worker._process_lock:
+                    return not owned.alive()
+
+            # Deadline (2 s from creation) plus termination, while the monitor
+            # thread is still blocked inside storage holding the worker lock.
+            wait_until(stopped, timeout=8)
+            self.assertLess(time.monotonic() - began, 7.0)
+            self.assertFalse(release.is_set())
+            self.assertFalse((directory / "ended.json").exists())
+            release.set()
+            result = self._finish(accepted["job"])
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "TIMED_OUT", result)
+        self.assertEqual(result.get("cleanup"), "CONFIRMED", result)
+
+    def test_rpc_waits_for_a_stalled_lock_are_bounded_and_explicit(self):
+        held, release = threading.Event(), threading.Event()
+
+        def hold():
+            with self.worker.lock:
+                held.set()
+                release.wait(20)
+
+        holder = threading.Thread(target=hold, daemon=True)
+        holder.start()
+        self.addCleanup(release.set)
+        self.assertTrue(held.wait(5))
+        with mock.patch.object(worker_module, "_RPC_LOCK_SECONDS", 0.3):
+            began = time.monotonic()
+            with self.assertRaisesRegex(worker_module.WorkerBusy, "WORKER_BUSY"):
+                self._call("list")
+            self.assertLess(time.monotonic() - began, 2.0)
+        release.set()
+        holder.join(5)
+        self.assertIsInstance(self._call("list"), list)
+
+    def test_failed_occupancy_probe_is_cached_instead_of_rerun_per_row(self):
+        calls = []
+
+        def wedged():
+            calls.append(1)
+            raise subprocess.TimeoutExpired("tasklist", 10)
+
+        with mock.patch.object(worker_module, "external_simulators", side_effect=wedged):
+            self.worker._occupancy_cache = None
+            for _ in range(3):
+                with self.assertRaisesRegex(RuntimeError, "occupancy probe failed"):
+                    self.worker._external_conflicts()
+        self.assertEqual(len(calls), 1)
+
+    def test_hard_deadline_and_teardown_do_not_wait_for_a_stalled_journal(self):
+        # 6 s leaves slow CI room to reach started.json before the deadline.
+        accepted = self._submit("long-stalled-storage", headless=True, timeout=6)
+        directory = wait_until(lambda: (candidate if (candidate := self._directory(accepted["job"]))
+                                        and (candidate / "started.json").exists() else None))
+        observed_start = time.monotonic()
+        attempt = directory.name
+        held, release = threading.Event(), threading.Event()
+
+        def hold_storage_lock():
+            # Stand-in for a hung SQLite call that owns the worker lock.
+            with self.worker.lock:
+                held.set()
+                release.wait(20)
+
+        holder = threading.Thread(target=hold_storage_lock, daemon=True)
+        holder.start()
+        self.addCleanup(release.set)
+        self.assertTrue(held.wait(5))
+        try:
+            began = time.monotonic()
+            host = self._call("hosts")
+            self.assertLess(time.monotonic() - began, 3.0)
+            self.assertEqual(host["condition"], "DEGRADED", host)
+            self.assertIsNone(host["claims"])
+            self.assertIn("worker lock unavailable", host["inventory_error"])
+            # The admitted 6 s budget expires and teardown completes while the
+            # journal stays stalled; bound the overshoot, not just eventuality.
+            wait_until(lambda: attempt not in self.worker.active, timeout=18)
+            self.assertLess(time.monotonic() - observed_start, 6.0 + 4.0)
+            self.assertFalse((directory / "ended.json").exists())
+            self.assertTrue(holder.is_alive())
+        finally:
+            release.set()
+            holder.join(5)
+        result = self._finish(accepted["job"])
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "TIMED_OUT", result)
+        self.assertEqual(result.get("cleanup"), "CONFIRMED", result)
+        self.assertEqual(self.worker.store.db.execute(
+            "SELECT COUNT(*) FROM claims WHERE attempt=?", (attempt,)).fetchone()[0], 0)
+
+    def test_failed_terminal_journal_keeps_claims_and_the_real_verdict(self):
+        real_update = self.worker.store.update
+        failing = threading.Event()
+        failing.set()
+
+        def fail_terminal(job, attempt, state, data):
+            if state == "FINISHED" and failing.is_set():
+                raise sqlite3.OperationalError("injected terminal journal failure")
+            return real_update(job, attempt, state, data)
+
+        with mock.patch.object(self.worker.store, "update", side_effect=fail_terminal):
+            first = self._submit("terminal-storage", headless=True)
+            directory = wait_until(lambda: (candidate if (candidate := self._directory(first["job"]))
+                                            and (candidate / "ended.json").exists() else None))
+            attempt = directory.name
+            wait_until(lambda: attempt not in self.worker.active and attempt not in self.worker.contexts)
+            host = wait_until(lambda: (item if (item := self._call("hosts"))["pending_journals"] == 1 else None))
+            self.assertEqual(host["condition"], "DEGRADED", host)
+            self.assertIn("injected terminal journal failure", host["journal_errors"][attempt])
+            second = self._submit("after-terminal-storage", headless=True)
+            time.sleep(0.5)
+            # Capacity is not released before the verdict is durable, and the
+            # scheduler retries that journal before any new allocation.
+            self.assertNotEqual(self._status(first["job"])["state"], "FINISHED")
+            self.assertGreater(self.worker.store.db.execute(
+                "SELECT COUNT(*) FROM claims WHERE attempt=?", (attempt,)).fetchone()[0], 0)
+            self.assertEqual(self._status(second["job"])["attempts"], [])
+            failing.clear()
+            result = self._finish(first["job"])
+            later = self._finish(second["job"])
+        self.assertEqual(result["state"], "FINISHED", result)
+        self.assertEqual(result.get("outcome"), "PASSED", result)
+        self.assertEqual(result.get("evidence"), "COMPLETE", result)
+        self.assertNotIn("error", result)
+        self.assertEqual(later.get("outcome"), "PASSED", later)
+        wait_until(lambda: self._call("hosts")["pending_journals"] == 0)
 
 
 if __name__ == "__main__":

@@ -22,7 +22,8 @@ class CheckedAdmissionTests(unittest.TestCase):
                         patch.object(integration, "state_root", return_value=source / "state"), \
                         patch.object(integration, "rpc", side_effect=[{}, {"job": "accepted"}]) as rpc, \
                         patch.object(integration, "submission_receipt", return_value=source / "receipt"), \
-                        patch("tools.testqueue.snapshots.capture"), \
+                        patch("tools.testqueue.snapshots.capture", return_value={
+                            "source_digest": "a" * 64, "manifest_digest": "b" * 64}), \
                         patch("subprocess.check_output", return_value=b"app/project.godot\0"), \
                         contextlib.redirect_stderr(io.StringIO()):
                     self.assertEqual(integration.submit(preset, {"argv": []}, source), {"job": "accepted"})
@@ -30,6 +31,23 @@ class CheckedAdmissionTests(unittest.TestCase):
                 if preset in {"suite", "ci"}:
                     expected["OPENRC_IMPORT_TIMEOUT"] = "1800"
                 self.assertEqual(rpc.call_args.kwargs["environment"], expected)
+                self.assertEqual(rpc.call_args.kwargs["expected_source_digest"], "a" * 64)
+                self.assertEqual(rpc.call_args.kwargs["expected_manifest_digest"], "b" * 64)
+
+    def test_explicit_owner_does_not_require_system_user_lookup(self):
+        with tempfile.TemporaryDirectory(prefix="openrc-explicit-owner-") as temporary:
+            source = Path(temporary)
+            with patch.dict(os.environ, {"OPENRC_TESTQUEUE_OWNER": "fixture-owner"}, clear=True), \
+                    patch.object(integration.getpass, "getuser", side_effect=RuntimeError("unexpected lookup")) as lookup, \
+                    patch.object(integration, "state_root", return_value=source / "state"), \
+                    patch.object(integration, "rpc", side_effect=[{}, {"job": "accepted"}]) as rpc, \
+                    patch.object(integration, "submission_receipt", return_value=source / "receipt"), \
+                    patch("tools.testqueue.snapshots.capture", return_value={
+                        "source_digest": "a" * 64, "manifest_digest": "b" * 64}), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(integration.submit("debug-session", {"argv": []}, source), {"job": "accepted"})
+            lookup.assert_not_called()
+            self.assertEqual(rpc.call_args.kwargs["owner"], "fixture-owner")
 
     def test_repeated_recovery_failure_keeps_original_receipt_and_never_submits(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -47,6 +65,44 @@ class CheckedAdmissionTests(unittest.TestCase):
                     self.assertEqual(os.environ["OPENRC_TESTQUEUE_SUBMISSION"], str(receipt))
                 self.assertEqual([call.args[0] for call in rpc.call_args_list], ["recover", "recover"])
                 submit.assert_not_called()
+
+    def test_unconfirmed_retry_reuses_original_snapshot_identity(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        manifest = {"source_digest": "a" * 64, "manifest_digest": "b" * 64}
+        submissions = []
+
+        def rpc(operation, **kwargs):
+            if operation == "hosts":
+                return {"condition": "READY"}
+            if operation == "recover":
+                return None
+            if operation == "submit":
+                submissions.append(kwargs)
+                if len(submissions) == 1:
+                    raise RuntimeError("acceptance reply lost")
+                return accepted
+            self.fail(f"unexpected operation: {operation}")
+
+        with tempfile.TemporaryDirectory(prefix="openrc-retry-identity-") as temporary:
+            root = Path(temporary)
+            with patch.dict(os.environ, {"OPENRC_TESTQUEUE_OWNER": "fixture-owner"}, clear=True), \
+                    patch.object(integration, "state_root", return_value=root / "state"), \
+                    patch.object(integration, "rpc", side_effect=rpc), \
+                    patch("tools.testqueue.snapshots.capture", return_value=manifest) as capture, \
+                    contextlib.redirect_stdout(io.StringIO()) as output, contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaisesRegex(RuntimeError, "submission is unresolved"):
+                    integration.open_debug([], root, wait_timeout=0)
+                receipt = json.loads(Path(os.environ["OPENRC_TESTQUEUE_SUBMISSION"]).read_text())
+                self.assertEqual(integration.open_debug([], root, wait_timeout=0), 0)
+                self.assertEqual(json.loads(output.getvalue())["handle"], accepted["handle"])
+                self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
+            capture.assert_called_once()
+            self.assertEqual(len(submissions), 2)
+            self.assertEqual(submissions[0], submissions[1])
+            self.assertEqual(receipt, submissions[0])
+            self.assertEqual(receipt["owner"], "fixture-owner")
+            self.assertEqual(receipt["expected_source_digest"], manifest["source_digest"])
+            self.assertEqual(receipt["expected_manifest_digest"], manifest["manifest_digest"])
 
     def test_research_launch_requires_both_actual_scope_and_exclusive_grant(self):
         with patch.object(common, "enabled", return_value=False), patch.object(common, "inherited") as inherited:
@@ -77,25 +133,66 @@ class CheckedAdmissionTests(unittest.TestCase):
         output, diagnostics = io.StringIO(), io.StringIO()
         with patch.dict(os.environ, {"OPENRC_DEBUG_BRIDGE": "12345"}, clear=True), \
                 patch.object(integration, "submit", return_value=accepted) as submit, \
-                patch.object(integration, "wait", side_effect=[pending, finished]) as wait, \
+                patch.object(integration, "wait", return_value=finished) as wait, \
                 patch.object(integration, "rpc", side_effect=[pending, {"id": "owned"}]) as rpc, \
                 contextlib.redirect_stdout(output), contextlib.redirect_stderr(diagnostics):
             self.assertEqual(integration.open_debug([], Path.cwd(), wait_timeout=0), 0)
             self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
             self.assertNotIn("OPENRC_DEBUG_BRIDGE", os.environ)
+            wait.assert_not_called()
+            rpc.assert_not_called()
             with self.assertRaisesRegex(ValueError, "already owns"):
                 integration.open_debug([], Path.cwd())
             self.assertEqual(integration.close_debug(), 0)
         launch_result = json.loads(output.getvalue().splitlines()[0])
         self.assertEqual(json.loads(diagnostics.getvalue())["handle"], accepted["handle"])
         self.assertTrue(launch_result["ok"])
-        self.assertEqual(launch_result["state"], "QUEUED")
+        self.assertEqual(launch_result["state"], "ACCEPTED")
+        self.assertEqual(launch_result["observation"], "NOT_REQUESTED")
         self.assertFalse(launch_result["ready"])
         self.assertEqual(launch_result["handle"], accepted["handle"])
         submit.assert_called_once()
-        self.assertEqual(wait.call_args_list[0].kwargs, {"timeout": 0, "ready": True})
+        wait.assert_called_once_with("owned", timeout=20)
         self.assertEqual(rpc.call_args_list[1].args, ("cancel",))
         self.assertEqual(rpc.call_args_list[1].kwargs, {"handle": accepted["handle"]})
+
+    def test_invalid_wait_budget_is_rejected_before_acceptance(self):
+        for timeout in (-1, float("inf"), float("nan"), True):
+            with self.subTest(timeout=timeout), patch.object(integration, "submit") as submit, \
+                    patch.object(integration, "rpc") as rpc:
+                with self.assertRaises(ValueError):
+                    integration.open_debug([], Path.cwd(), wait_timeout=timeout)
+                submit.assert_not_called()
+                rpc.assert_not_called()
+
+    def test_first_observation_timeout_returns_accepted_handle(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        with patch.dict(os.environ, {}, clear=True), patch.object(integration, "submit", return_value=accepted), \
+                patch.object(integration, "wait", side_effect=common.ObservationTimeout("expired")) as wait, \
+                patch.object(integration, "rpc") as rpc, \
+                contextlib.redirect_stdout(io.StringIO()) as output, contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(integration.open_debug([], Path.cwd(), wait_timeout=0.5), 0)
+            result = json.loads(output.getvalue())
+            self.assertEqual(result["state"], "ACCEPTED")
+            self.assertEqual(result["observation"], "TIMEOUT")
+            self.assertEqual(result["observation_reason"], "DEADLINE_EXPIRED")
+            self.assertFalse(result["ready"])
+            self.assertEqual(result["handle"], accepted["handle"])
+            self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
+            wait.assert_called_once_with("owned", timeout=0.5, ready=True)
+            rpc.assert_not_called()
+
+    def test_last_observation_timeout_is_reported_as_stale(self):
+        accepted = {"job": "owned", "handle": "owned:secret"}
+        queued = {"state": "QUEUED", "wait_observation": {"state": "STALE", "reason": "RPC_STEP_TIMEOUT"}}
+        with patch.dict(os.environ, {}, clear=True), patch.object(integration, "submit", return_value=accepted), \
+                patch.object(integration, "wait", return_value=queued), \
+                contextlib.redirect_stdout(io.StringIO()) as output, contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(integration.open_debug([], Path.cwd(), wait_timeout=1), 0)
+            result = json.loads(output.getvalue())
+            self.assertEqual(result["state"], "QUEUED")
+            self.assertEqual(result["wait_observation"], queued["wait_observation"])
+            self.assertEqual(result["handle"], accepted["handle"])
 
     def test_session_ownership_survives_wait_failure(self):
         accepted = {"job": "owned", "handle": "owned:secret"}

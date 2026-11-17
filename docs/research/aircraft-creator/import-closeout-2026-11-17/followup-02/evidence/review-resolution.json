@@ -1,0 +1,42 @@
+{
+  "scope": "Three read-only helper investigations and lead review against original source; documentation/evidence only. No helper confidence is treated as executed integration proof.",
+  "required_corrections_integrated": [
+    {
+      "finding": "The compiler/freeze APIs cannot infer raw invalid state from a previously accepted candidate.",
+      "resolution": "Guide now specifies atomic document-bound preparation and revision/state receipts, distinguishes standalone valid definitions and already frozen independent trials, and names the stale-candidate negative test."
+    },
+    {
+      "finding": "test_creator_authoring.gd does not exist.",
+      "resolution": "Guide names existing authoring cases in test_creator_trial.gd and actual-control tests in test_creator_persistence_ui.gd."
+    },
+    {
+      "finding": "An unconditional semantic receipt requirement would wrongly exclude historical inspection-only revisions.",
+      "resolution": "Guide preserves explicitly marked legacy-unbound inspection/new-revision policy and requires semantic proof before flight eligibility."
+    },
+    {
+      "finding": "Scratch post-climb state cannot be compared with a live tick-zero candidate.",
+      "resolution": "Guide retains tick-zero context/checkpoint separately from the later climb-out result."
+    },
+    {
+      "finding": "Main.recorder and Main.flight_log are distinct owners.",
+      "resolution": "Rollback finding identifies the F10 flight_log stream precisely and asks developers to inspect both lifecycle contracts."
+    },
+    {
+      "finding": "Ledger verifier did not bind derived dialect/mass fields or refusal diagnostics to verified source records.",
+      "resolution": "Verifier now asserts those relationships, record-location uniqueness and prior error diagnostics; its final run passes."
+    }
+  ],
+  "independently_preserved_distinctions": [
+    "Estimated-item reproposal is documented current policy, not a new defect.",
+    "Nested-root suppression is observed behavior with a compatibility-policy decision open.",
+    "Package cancellation observation does not prove late UI adoption.",
+    "Runtime log/context findings remain source-derived and unexecuted as whole-app flows.",
+    "The semantic cross-pair probe performs no Store publication, bundle admission or flight.",
+    "Lexical source inventory does not complete Phase0A or qualify a source aircraft."
+  ],
+  "fixture_reconstruction": {
+    "tracked_files_verified": 738,
+    "editor_import_repeated": false,
+    "method": "Retained prepare_fixture.py reconstructed a second disposable directory and verified every source/configuration hash."
+  }
+}

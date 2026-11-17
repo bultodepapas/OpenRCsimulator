@@ -324,3 +324,5 @@
 # Dated aircraft-import audit receipts and logs retain their recorded exact bytes.
 /docs/research/aircraft-creator/import-closeout-2026-11-17/evidence/** -text whitespace=cr-at-eol
 /docs/research/aircraft-creator/import-closeout-2026-11-17/evidence/**/*.log -whitespace
+/docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/evidence/** -text whitespace=cr-at-eol
+/docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/evidence/**/*.log -whitespace

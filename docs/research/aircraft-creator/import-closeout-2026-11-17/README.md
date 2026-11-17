@@ -1,5 +1,7 @@
 # Aircraft import audit — 2026-11-17
 
+**Continuation:** [follow-up 02](followup-02/README.md) reviews upstream `08f94826`, reproduces additional edit/cancellation boundaries and supplies the [implementation guide](../../../plans/aircraft-import-implementation.md). Upstream has resolved the 22 missing UID sidecars; preflight now passes, while other required CI/export checks fail. The results below remain the original `2a3cf04d` audit and have not been relabelled as new runs.
+
 ## Verdict
 
 **The compatibility adapter is useful and substantially implemented; importing a source aircraft into a complete, saved, flyable OpenRC configuration is not implemented.** The main missing bridge is source-aware physical adoption. Visual conversion, parameter reporting, an explicitly different estimated installation, numerical qualification and saved-flight integration are distinct boundaries. They must not be treated as one success.

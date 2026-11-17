@@ -1,0 +1,66 @@
+{
+  "baseline": "c048a4e6834646400070a488b293344dc1e1fd80",
+  "ci_jobs_reviewed_at_utc": "2026-11-15T21:06:45Z",
+  "current_run": {
+    "id": 43758986877,
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43758986877",
+    "returned_jobs": 23,
+    "total_count": 23,
+    "counts": {
+      "success": 12,
+      "skipped": 2,
+      "in_progress": 9
+    },
+    "final_conclusion": "not established; run still active at observation"
+  },
+  "earlier_success": [
+    {
+      "id": 43736986157,
+      "name": "Windows test queue regressions",
+      "head_sha": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43736986157",
+      "updated_at": "2026-11-15T16:44:27Z"
+    },
+    {
+      "id": 43736986190,
+      "name": "CI",
+      "head_sha": "e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/43736986190",
+      "updated_at": "2026-11-15T18:42:05Z"
+    }
+  ],
+  "comparison": {
+    "url": "https://api.github.com/repos/bultodepapas/OpenRCsimulator/compare/e488ef7653e8dd0f0a2e7db18e396bb4da0aaccc...c048a4e6834646400070a488b293344dc1e1fd80",
+    "status": "ahead",
+    "ahead_by": 11,
+    "total_changed_files": 79,
+    "queue_debug_godot_godtest_release_performance_windows_queue_workflow_changes": []
+  },
+  "artifacts": [
+    {
+      "id": 14175301033,
+      "name": "captures-app",
+      "size_in_bytes": 2496652310,
+      "created_at": "2026-11-15T18:39:40Z",
+      "expires_at": "2027-02-13T16:42:33Z"
+    },
+    {
+      "id": 14172825646,
+      "name": "release-builds",
+      "size_in_bytes": 4672183937,
+      "created_at": "2026-11-15T17:30:26Z",
+      "expires_at": "2027-02-13T16:42:33Z"
+    }
+  ],
+  "protection": {
+    "rulesets": [],
+    "legacy_branch_protection_http_status": 403,
+    "legacy_branch_protection_error": "Resource not accessible by integration",
+    "enforcement": "unverified; empty rulesets do not prove absence of legacy protection"
+  },
+  "evidence_limit": "Prior successful Windows fixtures concern unchanged queue code at e488, not a native simulator/GPU run or a completed CI run for c048."
+}

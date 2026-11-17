@@ -9,7 +9,8 @@ import sys
 import uuid
 import getpass
 
-from .common import enabled, inherited, rpc, state_root, wait, submission_receipt
+from .common import (ObservationTimeout, enabled, inherited, rpc, state_root, wait,
+                     submission_receipt, validate_wait_timeout)
 
 
 def submit(preset: str, options: dict, source: Path, *, retain_session: bool = False) -> dict:
@@ -24,15 +25,19 @@ def submit(preset: str, options: dict, source: Path, *, retain_session: bool = F
     scopes = None
     if preset in {"suite", "ci", "capture"}:
         import subprocess
-        names = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=source).decode().split("\0")
+        names = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=source, creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0).decode().split("\0")
         scopes = tuple(sorted({name.split("/")[0] for name in names if name}))
     kwargs = {"scope": scopes} if scopes else {}
-    capture(source, snapshot, include_imports=(source / "app/.godot/imported").is_dir(), **kwargs)
+    manifest = capture(source, snapshot, include_imports=(source / "app/.godot/imported").is_dir(), **kwargs)
     environment_names = ("OPENRC_TEST_PART", "OPENRC_UNIT_SHARDS", "OPENRC_UNIT_SHARD", "OPENRC_PARSE_WITH_UNITS")
     if preset in {"suite", "ci"}:
         environment_names += ("OPENRC_IMPORT_TIMEOUT",)
-    request = {"preset": preset, "options": options, "owner": os.environ.get("OPENRC_TESTQUEUE_OWNER", f"{getpass.getuser()}-{os.getpid()}"),
+    owner = os.environ.get("OPENRC_TESTQUEUE_OWNER")
+    if owner is None:
+        owner = f"{getpass.getuser()}-{os.getpid()}"
+    request = {"preset": preset, "options": options, "owner": owner,
                "source": str(source), "snapshot": str(snapshot), "request_id": identifier, "request_secret": submission_secret,
+               "expected_source_digest": manifest["source_digest"], "expected_manifest_digest": manifest["manifest_digest"],
                "environment": {name: os.environ[name] for name in environment_names if name in os.environ}}
     # Durable before network submission: a lost reply can replay this exact ID,
     # secret and immutable snapshot rather than silently creating another job.
@@ -78,6 +83,7 @@ def _recover_debug(request):
 
 
 def open_debug(argv: list[str], source: Path, *, wait_timeout: float = 600) -> int:
+    wait_timeout = validate_wait_timeout(wait_timeout)
     pending = _pending_debug()
     if pending:
         from .presets import validate
@@ -100,15 +106,28 @@ def open_debug(argv: list[str], source: Path, *, wait_timeout: float = 600) -> i
     _retain_debug(accepted)
     print(json.dumps({"ok": True, **accepted, "state": "ACCEPTED", "ready": False,
                       "use": "Keep the handle for status or cancellation"}), file=sys.stderr, flush=True)
-    status = wait(accepted["job"], timeout=wait_timeout, ready=True)
+    if wait_timeout == 0:
+        print(json.dumps({"ok": True, **accepted, "state": "ACCEPTED", "ready": False,
+                          "observation": "NOT_REQUESTED",
+                          "use": "Use the handle for status or cancellation; waiting does not cancel the job"}))
+        return 0
+    try:
+        status = wait(accepted["job"], timeout=wait_timeout, ready=True)
+    except ObservationTimeout as error:
+        print(json.dumps({"ok": True, **accepted, "state": "ACCEPTED", "ready": False,
+                          "observation": "TIMEOUT", "observation_reason": error.reason,
+                          "use": "Use the handle for status or cancellation; waiting does not cancel the job"}))
+        return 0
     ready = status["state"] == "RUNNING" and bool(status.get("session")) and not status.get("canceled")
     if not ready:
         pending = status["state"] in {"QUEUED", "DISPATCHING", "RUNNING", "CLEANING"}
-        print(json.dumps({"ok": pending, **accepted, "state": status["state"], "ready": False,
-                          "reason": status.get("reason"),
-                          "outcome": status.get("outcome"), "cleanup": status.get("cleanup"),
-                          "error": status.get("error"), "output": status.get("output"),
-                          "use": "Use the handle for status or cancellation; waiting does not cancel the job"}))
+        result = {"ok": pending, **accepted, "state": status["state"], "ready": False,
+                  "reason": status.get("reason"), "outcome": status.get("outcome"),
+                  "cleanup": status.get("cleanup"), "error": status.get("error"), "output": status.get("output"),
+                  "use": "Use the handle for status or cancellation; waiting does not cancel the job"}
+        if "wait_observation" in status:
+            result["wait_observation"] = status["wait_observation"]
+        print(json.dumps(result))
         return 0 if pending else 1
     session = status["session"]
     os.environ["OPENRC_DEBUG_BRIDGE"] = str(session["port"])
@@ -147,7 +166,10 @@ def close_debug() -> int:
     handle = os.environ.get("OPENRC_TESTQUEUE_HANDLE", "")
     status = rpc("cancel", handle=handle)
     status = wait(status["id"], timeout=20)
-    print(json.dumps({"stopped": status["state"] == "FINISHED", "state": status["state"], "cleanup": status.get("cleanup")}))
+    result = {"stopped": status["state"] == "FINISHED", "state": status["state"], "cleanup": status.get("cleanup")}
+    if "wait_observation" in status:
+        result["wait_observation"] = status["wait_observation"]
+    print(json.dumps(result))
     return 0 if status["state"] == "FINISHED" and status.get("cleanup") == "CONFIRMED" else 1
 
 

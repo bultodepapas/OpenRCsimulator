@@ -1,0 +1,16 @@
+{
+  "format": "openrc-import-audit-ledger-check-v1",
+  "ledger_sha256": "4c680e3e2632d594748006c203c93fcffa841f630dabef5606d3207f83368a79",
+  "counts": {
+    "archive_hashes": 7,
+    "parameter_member_hashes": 26,
+    "record_locations_checked": 1075,
+    "auxiliary_member_hashes": 26,
+    "prior_visual_outcomes_checked": 26
+  },
+  "v5_declared_mass_min": 4.1,
+  "v5_declared_mass_max": 15.6,
+  "v5_all_above_current_4kg_upper_bound": true,
+  "scope": "Lexical and hash consistency only. Visual evidence remains the prior 2a3cf04d run. No physical eligibility or full mapping claimed.",
+  "ok": true
+}

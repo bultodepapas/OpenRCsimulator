@@ -12,7 +12,7 @@ import uuid
 from unittest import mock
 
 import processes
-from processes import OwnedProcess, confirm_stopped, host_identity, orphan_absent
+from processes import OwnedProcess, ProcessNotStartedError, confirm_stopped, host_identity, orphan_absent
 
 
 def wait_for(predicate, timeout=8):
@@ -121,9 +121,23 @@ class ProcessFixture(unittest.TestCase):
         log = self.root / "attempt log.txt"
         log.write_text("preserve me")
         process = OwnedProcess([sys.executable, "-c", "pass"], self.root, os.environ.copy(), log)
-        with self.assertRaises(FileExistsError):
-            process.start()
+        with mock.patch.object(processes.subprocess, "Popen") as popen:
+            with self.assertRaises(ProcessNotStartedError) as failure:
+                process.start()
+        popen.assert_not_called()
+        self.assertIsInstance(failure.exception.__cause__, FileExistsError)
+        self.assertTrue(process.nonlaunch_confirmed)
         self.assertEqual(log.read_text(), "preserve me")
+
+    def test_exception_from_process_creation_is_not_a_nonlaunch_receipt(self):
+        process = OwnedProcess([sys.executable, "-c", "pass"], self.root, os.environ.copy(),
+                               self.root / "attempt log.txt")
+        with mock.patch.object(processes.subprocess, "Popen",
+                               side_effect=ProcessNotStartedError("injected at create")) as popen:
+            with self.assertRaises(ProcessNotStartedError):
+                process.start()
+        popen.assert_called_once()
+        self.assertFalse(process.nonlaunch_confirmed)
 
     def test_identity_failure_cleans_gate_before_command_is_released(self):
         marker = self.root / "must not run"

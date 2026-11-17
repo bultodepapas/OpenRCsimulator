@@ -187,12 +187,16 @@ class McpServerTests(unittest.TestCase):
                 patch.object(debugctl.admission, "enabled", return_value=True), \
                 patch.object(debugctl.admission, "inherited", return_value=False), \
                 patch.object(integration, "submit", return_value=accepted) as submit, \
-                patch.object(integration, "wait", side_effect=[pending, finished]) as wait, \
+                patch.object(integration, "wait", return_value=finished) as wait, \
                 patch.object(integration, "rpc", side_effect=rpc):
             launch = self.rpc("tools/call", {"name": "sim_launch"})["result"]
             self.assertFalse(launch["isError"])
-            self.assertEqual(json.loads(launch["content"][0]["text"])["state"], "QUEUED")
+            launched = json.loads(launch["content"][0]["text"])
+            self.assertEqual(launched["state"], "ACCEPTED")
+            self.assertEqual(launched["observation"], "NOT_REQUESTED")
             self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
+            self.assertEqual(operations, [])
+            wait.assert_not_called()
             status = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
             self.assertEqual(json.loads(status["content"][0]["text"])["handle"], accepted["handle"])
             status = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
@@ -205,23 +209,29 @@ class McpServerTests(unittest.TestCase):
             stop = self.rpc("tools/call", {"name": "sim_stop"})["result"]
             self.assertFalse(stop["isError"])
         submit.assert_called_once()
-        self.assertEqual(wait.call_args_list[0].kwargs, {"timeout": 0, "ready": True})
+        wait.assert_called_once_with("owned", timeout=20)
         bridge = next(kwargs for op, kwargs in operations if op == "bridge")
         self.assertEqual(bridge["handle"], accepted["handle"])
         self.assertIsNone(bridge["port"])
         self.assertEqual(next(kwargs for op, kwargs in operations if op == "cancel")["handle"], accepted["handle"])
 
-    def test_managed_accepted_launch_reports_handle_if_status_fails(self) -> None:
+    def test_managed_accepted_launch_keeps_handle_if_later_status_fails(self) -> None:
         accepted = {"job": "owned", "handle": "owned:secret"}
         with patch.dict(os.environ, {}, clear=True), \
                 patch.object(debugctl.admission, "enabled", return_value=True), \
                 patch.object(debugctl.admission, "inherited", return_value=False), \
                 patch.object(integration, "submit", return_value=accepted), \
-                patch.object(integration, "wait", side_effect=RuntimeError("worker unavailable")):
-            result = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+                patch.object(integration, "wait") as wait, \
+                patch.object(integration, "rpc", side_effect=RuntimeError("worker unavailable")) as rpc:
+            launched = self.rpc("tools/call", {"name": "sim_launch"})["result"]
+            self.assertFalse(launched["isError"])
+            self.assertEqual(json.loads(launched["content"][0]["text"])["handle"], accepted["handle"])
+            wait.assert_not_called()
+            rpc.assert_not_called()
+            result = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
             self.assertTrue(result["isError"])
-            self.assertIn("owned:secret", result["content"][0]["text"])
-            self.assertIn("sim_session_status", result["content"][0]["text"])
+            self.assertIn("worker unavailable", result["content"][0]["text"])
+            self.assertEqual(os.environ["OPENRC_TESTQUEUE_HANDLE"], accepted["handle"])
 
     def test_lost_submit_reply_reuses_owned_job_without_recapturing(self):
         with tempfile.TemporaryDirectory() as temporary, contextlib.ExitStack() as cleanup:
@@ -249,7 +259,8 @@ class McpServerTests(unittest.TestCase):
                     patch.object(integration, "state_root", return_value=root), \
                     patch.object(integration.getpass, "getuser", return_value="Fixture"), \
                     patch.object(integration, "rpc", side_effect=rpc), \
-                    patch("tools.testqueue.snapshots.capture") as capture, \
+                    patch("tools.testqueue.snapshots.capture", return_value={
+                        "source_digest": "a" * 64, "manifest_digest": "b" * 64}) as capture, \
                     patch.object(integration, "wait", return_value={"state": "QUEUED"}):
                 failed = self.rpc("tools/call", {"name": "sim_launch"})["result"]
                 self.assertTrue(failed["isError"])
@@ -266,6 +277,8 @@ class McpServerTests(unittest.TestCase):
                 self.assertNotIn("OPENRC_TESTQUEUE_SUBMISSION", os.environ)
                 capture.assert_called_once()
                 self.assertEqual(len(submitted), 1)
+                self.assertEqual(submitted[0]["expected_source_digest"], "a" * 64)
+                self.assertEqual(submitted[0]["expected_manifest_digest"], "b" * 64)
 
     def test_stop_unconfirmed_submission_never_creates_a_session(self):
         with tempfile.TemporaryDirectory() as temporary, contextlib.ExitStack() as cleanup:
@@ -291,7 +304,9 @@ class McpServerTests(unittest.TestCase):
                     patch.object(debugctl.admission, "inherited", return_value=False), \
                     patch.object(integration, "state_root", return_value=root), \
                     patch.object(integration.getpass, "getuser", return_value="Fixture"), \
-                    patch.object(integration, "rpc", side_effect=rpc), patch("tools.testqueue.snapshots.capture"):
+                    patch.object(integration, "rpc", side_effect=rpc), \
+                    patch("tools.testqueue.snapshots.capture", return_value={
+                        "source_digest": "a" * 64, "manifest_digest": "b" * 64}):
                 self.assertTrue(self.rpc("tools/call", {"name": "sim_launch"})["result"]["isError"])
                 status = self.rpc("tools/call", {"name": "sim_session_status"})["result"]
                 self.assertEqual(json.loads(status["content"][0]["text"])["state"], "SUBMISSION_UNCONFIRMED")

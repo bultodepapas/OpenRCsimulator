@@ -8,7 +8,8 @@ In particular, a failed or uncertain attempt must never be replanned here.
 ``plan(job, hosts)`` returns a selected host ID or None, plus an explanation for
 every host. All sizes are bytes and durations seconds. Host load is the number
 of runnable/running CPU tasks, not a percentage. Duration history is keyed by
-the job's optional ``duration_key``, not its source-cache identity. Capabilities
+the job's optional ``duration_key``, not its source-cache identity; an optional
+``duration_sources`` mapping labels a duration ``history`` or ``peer``. Capabilities
 are explicit: ``headless``, ``graphics``, and ``performance`` only advertise
 execution paths the caller has independently qualified on that host.
 """
@@ -78,7 +79,8 @@ def _candidate(job, host):
     if type(host.get("busy")) is not bool:
         reasons.append("INVALID_INVENTORY: busy must be boolean")
     elif host["busy"]:
-        reasons.append("BUSY")
+        detail = host.get("busy_reason")
+        reasons.append("BUSY" + (": " + detail if isinstance(detail, str) and detail else ""))
     platform = host.get("platform")
     if not isinstance(platform, str) or platform not in _PLATFORMS:
         reasons.append("INVALID_INVENTORY: unknown platform")
@@ -150,7 +152,9 @@ def _candidate(job, host):
         if not _number(history[key], minimum=0.001):
             reasons.append("INVALID_INVENTORY: historical duration must be positive")
         else:
-            duration, duration_source = history[key], "history"
+            sources = host.get("duration_sources")
+            source = sources.get(key, "history") if isinstance(sources, dict) else "history"
+            duration, duration_source = history[key], (source if source in {"history", "peer"} else "history")
     if reasons:
         return candidate
 

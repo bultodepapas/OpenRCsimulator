@@ -49,7 +49,7 @@ def checked(command, *, out_dir, timeout, required, max_log_bytes, warnings_as_e
         status = pool.status(identifier)
         if status['state'] == 'FINISHED':
             result = pool.collect(identifier, out_dir=out_dir)
-            if result['pool_outcome'] not in {'PASSED', 'TEST_FAILED'}:
+            if result['pool_outcome'] not in {'PASSED', 'TEST_FAILED'} or result.get('diagnostic_only') is True:
                 raise ValueError('Pool infrastructure failure; receipt ' + submitted['receipt'])
             return result
         if status['state'] in {'UNKNOWN', 'SUBMISSION_UNCONFIRMED'} or time.monotonic() >= deadline:

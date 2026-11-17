@@ -1,0 +1,20 @@
+{
+  "method": "Existing tools/ci/check_docs.py parser/check_target, with cached Git-tree inventory to avoid per-link lazy fetches. Checks all links in new documents, added links in modified documents, and retained links targeting these 11 changed documents. Unrelated unchanged link debt is outside this audit.",
+  "checked_document_sha256": {
+    "docs/README.md": "4519d8274777491e4faa165c9ecc42d9b400e7048b285b00be2143677079e00a",
+    "docs/plans/aircraft-creator.md": "3a5086d8837084030f4b9dde8ac4541ee243956ad5420977647759d732c46704",
+    "docs/plans/clearview-aircraft-import.md": "db7a0fe705f02d585b97aa1cc5d0361eefe35c670c1b0875fb84d344cfa2d8ed",
+    "docs/plans/aircraft-import-closeout.md": "6f44f505b785522730eba5b27bda1f19304aa56daf849b69dcb079c117da9c1c",
+    "docs/plans/aircraft-import-agent-handoff.md": "f12f9ff3ded8be8f6017a6ac67b1a4cce6c76f06f0c7ae9df932fc209936d234",
+    "docs/plans/aircraft-import-implementation.md": "416ecaabceb6e37b4c965a566e9450170eb938662358d6e4f6544fc17e04e043",
+    "docs/research/aircraft-creator/README.md": "516c6004206ddc272c1b1d6411e5d194643acc6b34ffb33ade22d8a40a8ac3ad",
+    "docs/research/aircraft-creator/import-closeout-2026-11-17/README.md": "13d52ed9324145a8d2033b21e9ec9a45820fc5c9a5ef38f5c803b7dfac07be99",
+    "docs/research/aircraft-creator/import-closeout-2026-11-17/verification.md": "4b7d841951572a9f4d68bae648b6586c05cbc89124da9ce082fe2da9a46e1f8f",
+    "docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/README.md": "2636def41c0fe6b0a50c2db02f2bc220229deb8a12e623614201c8861956065b",
+    "docs/research/aircraft-creator/import-closeout-2026-11-17/followup-02/corpus-eligibility.md": "3ac7443f9cccb4eeaa610a55ecf1ede7583a99cdad93c180d2bb162a087e0356"
+  },
+  "checked_links": 134,
+  "errors": [],
+  "existing_baseline_debt": [],
+  "ok": true
+}

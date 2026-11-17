@@ -4,6 +4,8 @@
 **Date:** 2026-11-17. **Engine:** `4.8.beta2.official.cafc17a19`, Linux x86_64, headless.
 The [audit](README.md) owns findings; the [closeout plan](../../../plans/aircraft-import-closeout.md) owns future acceptance. This file distinguishes executed checks from required future work.
 
+**Later same-day work:** [follow-up 02](followup-02/README.md) retains three new observations on `08f94826`, a checked corpus ledger and the updated upstream CI state. The 15-script runs and original preflight failure below remain evidence only for `2a3cf04d`; they were not rerun or relabelled.
+
 ## 1. Exact scope of the executed checks
 
 The repository's large application assets were not fully checked out. The audit used an isolated minimal Godot project with copies of the actual production modules, existing tests, synthetic fixtures and needed preload assets. It used the pinned engine and `tools/godot/run_checked.py`, which treats script/engine errors as failure even when a script prints zero failures or exits zero. The test-pool MCP was unavailable and the pool CLI had no local configuration; the unenrolled-executor checked-runner route was used. No app/physics/test source was patched for the fixture.
